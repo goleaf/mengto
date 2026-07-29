@@ -1,0 +1,132 @@
+- generic [active] [ref=f18e1]:
+  - link "Skip to content" [ref=f18e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=f18e3]:
+    - banner [ref=f18e4]:
+      - generic [ref=f18e5]:
+        - link "PawCircle home" [ref=f18e6] [cursor=pointer]:
+          - /url: https://mengto.test
+          - generic [ref=f18e7]: PC
+          - generic [ref=f18e8]: PawCircle
+        - navigation "Preview navigation" [ref=f18e9]:
+          - button "Bell" [disabled] [ref=f18e10]
+          - button "Msg" [disabled] [ref=f18e11]
+          - img "Mia Carter" [ref=f18e12]
+    - main [ref=f18e13]:
+      - generic [ref=f18e14]:
+        - generic [ref=f18e15]:
+          - generic [ref=f18e16]:
+            - paragraph [ref=f18e17]: Portland meetups
+            - heading "Meet your neighborhood pack" [level=1] [ref=f18e18]
+            - paragraph [ref=f18e19]: Low-pressure walks and social time planned by nearby pet people.
+          - generic [ref=f18e20]:
+            - paragraph [ref=f18e21]: 3 meetups · Portland, OR
+            - button "Create meetup" [disabled] [ref=f18e22]
+        - region "Meetup schedule summary" [ref=f18e23]:
+          - generic [ref=f18e24]:
+            - paragraph [ref=f18e25]: Next
+            - paragraph [ref=f18e26]: Sat, Aug 1
+            - paragraph [ref=f18e27]: 10:00 AM
+          - generic [ref=f18e28]:
+            - paragraph [ref=f18e29]: Upcoming
+            - paragraph [ref=f18e30]: 3 meetups
+            - paragraph [ref=f18e31]: 38 going
+          - generic [ref=f18e32]:
+            - paragraph [ref=f18e33]: Closest
+            - paragraph [ref=f18e34]: 1.2 miles
+            - paragraph [ref=f18e35]: Laurelhurst
+        - region "Meetup filters" [ref=f18e36]:
+          - generic [ref=f18e37]:
+            - group "Meetup type filters" [ref=f18e38]:
+              - button "Upcoming" [disabled] [pressed] [ref=f18e39]
+              - button "Walks" [disabled] [ref=f18e40]
+              - button "Social" [disabled] [ref=f18e41]
+              - button "Indoor" [disabled] [ref=f18e42]
+            - button "Soonest first" [disabled] [ref=f18e43]
+        - region [ref=f18e44]:
+          - heading "Upcoming meetup results" [level=2] [ref=f18e45]
+          - generic [ref=f18e46]:
+            - article [ref=f18e47]:
+              - generic [ref=f18e48]:
+                - img "Small dogs meeting in a fenced neighborhood park" [ref=f18e49]
+                - generic [ref=f18e50]: Social
+                - time [ref=f18e51]:
+                  - generic [ref=f18e52]: SAT
+                  - generic [ref=f18e53]: "01"
+              - generic [ref=f18e54]:
+                - paragraph [ref=f18e55]:
+                  - time [ref=f18e56]: Sat, Aug 1 · 10:00 AM
+                  - text: · 1.2 mi
+                - heading "Small dog social hour" [level=3] [ref=f18e57]
+                - paragraph [ref=f18e58]: A calm, fenced gathering with room for short introductions and plenty of breaks.
+                - generic [ref=f18e59]:
+                  - generic [ref=f18e60]: small dogs
+                  - generic [ref=f18e61]: fenced area
+                - generic [ref=f18e62]:
+                  - paragraph [ref=f18e63]: Laurelhurst Park
+                  - paragraph [ref=f18e64]: Southeast Portland
+                - generic [ref=f18e65]:
+                  - generic [ref=f18e66]: JC
+                  - generic [ref=f18e67]:
+                    - paragraph [ref=f18e68]: Hosted by Jamie Cho
+                    - paragraph [ref=f18e69]: 18 neighbors going
+                  - button "RSVP" [disabled] [ref=f18e70]
+            - article [ref=f18e71]:
+              - generic [ref=f18e72]:
+                - img "Pet owners taking a relaxed community walk through a park" [ref=f18e73]
+                - generic [ref=f18e74]: Coffee walk
+                - time [ref=f18e75]:
+                  - generic [ref=f18e76]: SUN
+                  - generic [ref=f18e77]: "02"
+              - generic [ref=f18e78]:
+                - paragraph [ref=f18e79]:
+                  - time [ref=f18e80]: Sun, Aug 2 · 9:30 AM
+                  - text: · 2.4 mi
+                - heading "Rescue foster coffee walk" [level=3] [ref=f18e81]
+                - paragraph [ref=f18e82]: An easy loop for foster families, recent adopters, and dogs building city confidence.
+                - generic [ref=f18e83]:
+                  - generic [ref=f18e84]: foster friendly
+                  - generic [ref=f18e85]: easy pace
+                - generic [ref=f18e86]:
+                  - paragraph [ref=f18e87]: Tabor Commons
+                  - paragraph [ref=f18e88]: Mount Tabor
+                - generic [ref=f18e89]:
+                  - generic [ref=f18e90]: LB
+                  - generic [ref=f18e91]:
+                    - paragraph [ref=f18e92]: Hosted by Lena Brooks
+                    - paragraph [ref=f18e93]: 12 neighbors going
+                  - button "RSVP" [disabled] [ref=f18e94]
+            - article [ref=f18e95]:
+              - generic [ref=f18e96]:
+                - img "Small dogs exploring an autumn park together" [ref=f18e97]
+                - generic [ref=f18e98]: Slow walk
+                - time [ref=f18e99]:
+                  - generic [ref=f18e100]: WED
+                  - generic [ref=f18e101]: "05"
+              - generic [ref=f18e102]:
+                - paragraph [ref=f18e103]:
+                  - time [ref=f18e104]: Wed, Aug 5 · 6:00 PM
+                  - text: · 3.1 mi
+                - heading "Calm senior dog stroll" [level=3] [ref=f18e105]
+                - paragraph [ref=f18e106]: A shaded riverside route with a gentle pace and frequent sniff stops.
+                - generic [ref=f18e107]:
+                  - generic [ref=f18e108]: senior pets
+                  - generic [ref=f18e109]: shaded route
+                - generic [ref=f18e110]:
+                  - paragraph [ref=f18e111]: Sellwood Riverfront Park
+                  - paragraph [ref=f18e112]: Sellwood
+                - generic [ref=f18e113]:
+                  - generic [ref=f18e114]: NP
+                  - generic [ref=f18e115]:
+                    - paragraph [ref=f18e116]: Hosted by Noah Patel
+                    - paragraph [ref=f18e117]: 8 neighbors going
+                  - button "RSVP" [disabled] [ref=f18e118]
+    - navigation "Mobile preview navigation" [ref=f18e119]:
+      - generic [ref=f18e120]:
+        - link "Feed" [ref=f18e121] [cursor=pointer]:
+          - /url: https://mengto.test
+        - link "Pets" [ref=f18e122] [cursor=pointer]:
+          - /url: https://mengto.test/pets
+        - link "Meet" [ref=f18e123] [cursor=pointer]:
+          - /url: https://mengto.test/meetups
+        - button "Tips" [disabled] [ref=f18e124]

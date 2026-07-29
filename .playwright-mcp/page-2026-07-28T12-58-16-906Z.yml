@@ -1,0 +1,153 @@
+- generic [active] [ref=f11e1]:
+  - link "Skip to content" [ref=f11e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=f11e3]:
+    - banner [ref=f11e4]:
+      - generic [ref=f11e5]:
+        - link "PawCircle home" [ref=f11e6] [cursor=pointer]:
+          - /url: https://mengto.test
+          - generic [ref=f11e7]: PC
+          - generic [ref=f11e8]: PawCircle
+        - navigation "Preview navigation" [ref=f11e9]:
+          - button "Bell" [disabled] [ref=f11e10]
+          - button "Msg" [disabled] [ref=f11e11]
+          - img "Mia Carter" [ref=f11e12]
+    - main [ref=f11e13]:
+      - generic [ref=f11e14]:
+        - complementary [ref=f11e15]:
+          - generic [ref=f11e16]:
+            - generic [ref=f11e17]:
+              - img "Mia Carter" [ref=f11e18]
+              - generic [ref=f11e19]:
+                - heading "Mia Carter" [level=2] [ref=f11e20]
+                - paragraph [ref=f11e21]: Portland, OR
+            - paragraph [ref=f11e22]: Weekend trail walker, foster volunteer, and keeper of two very opinionated companions.
+            - generic [ref=f11e23]:
+              - generic [ref=f11e24]:
+                - heading "Your pets" [level=3] [ref=f11e25]
+                - button "Add" [disabled] [ref=f11e26]
+              - generic [ref=f11e27]:
+                - article [ref=f11e28]:
+                  - generic [ref=f11e29]:
+                    - heading [level=4] [ref=f11e30]:
+                      - link "Scout" [ref=f11e31] [cursor=pointer]:
+                        - /url: https://mengto.test/pets/scout
+                    - generic [ref=f11e32]: Dog
+                  - paragraph [ref=f11e33]: Border Collie mix · 4 years
+                  - paragraph [ref=f11e34]: Available for park walks
+                - article [ref=f11e35]:
+                  - generic [ref=f11e36]:
+                    - heading "Nori" [level=4] [ref=f11e37]
+                    - generic [ref=f11e38]: Cat
+                  - paragraph [ref=f11e39]: Tabby · 2 years
+                  - paragraph [ref=f11e40]: Indoor window watcher
+        - generic [ref=f11e41]:
+          - generic [ref=f11e43]:
+            - paragraph [ref=f11e44]: Neighborhood feed
+            - heading "Today around your pack" [level=1] [ref=f11e45]
+          - generic [ref=f11e46]:
+            - article [ref=f11e47]:
+              - generic [ref=f11e48]:
+                - generic [ref=f11e49]:
+                  - generic [ref=f11e50]:
+                    - heading "Ari Jensen" [level=2] [ref=f11e51]
+                    - paragraph [ref=f11e52]: Mochi · 18 min ago
+                  - button "More" [disabled] [ref=f11e53]
+                - paragraph [ref=f11e54]: Mochi finally made it through the whole cafe patio without asking to inspect every chair. Small wins, very proud.
+                - generic [ref=f11e55]:
+                  - generic [ref=f11e56]: training
+                  - generic [ref=f11e57]: city walks
+              - img "Mochi walking beside another dog on a tree-lined path" [ref=f11e58]
+              - generic [ref=f11e59]:
+                - button "128 Paws" [disabled] [ref=f11e60]
+                - button "24 Replies" [disabled] [ref=f11e61]
+                - button "Share" [disabled] [ref=f11e62]
+            - article [ref=f11e63]:
+              - generic [ref=f11e64]:
+                - generic [ref=f11e65]:
+                  - generic [ref=f11e66]:
+                    - heading "Noah Patel" [level=2] [ref=f11e67]
+                    - paragraph [ref=f11e68]: Juniper · 1 hr ago
+                  - button "More" [disabled] [ref=f11e69]
+                - paragraph [ref=f11e70]: Found a quiet route near Maple Loop with shade almost the whole way. Good for senior pups on warmer afternoons.
+                - generic [ref=f11e71]:
+                  - generic [ref=f11e72]: senior pets
+                  - generic [ref=f11e73]: walk route
+              - img "Juniper relaxing during a shady afternoon walk" [ref=f11e74]
+              - generic [ref=f11e75]:
+                - button "86 Paws" [disabled] [ref=f11e76]
+                - button "11 Replies" [disabled] [ref=f11e77]
+                - button "Share" [disabled] [ref=f11e78]
+            - article [ref=f11e79]:
+              - generic [ref=f11e80]:
+                - generic [ref=f11e81]:
+                  - generic [ref=f11e82]:
+                    - heading "Lena Brooks" [level=2] [ref=f11e83]
+                    - paragraph [ref=f11e84]: Pip · 3 hrs ago
+                  - button "More" [disabled] [ref=f11e85]
+                - paragraph [ref=f11e86]: First successful harness session. Pip mostly accepted the agreement after a careful review of the snack clause.
+                - generic [ref=f11e87]:
+                  - generic [ref=f11e88]: cat life
+                  - generic [ref=f11e89]: first steps
+              - img "Pip looking toward the camera from a soft blanket" [ref=f11e90]
+              - generic [ref=f11e91]:
+                - button "203 Paws" [disabled] [ref=f11e92]
+                - button "37 Replies" [disabled] [ref=f11e93]
+                - button "Share" [disabled] [ref=f11e94]
+        - complementary [ref=f11e95]:
+          - generic [ref=f11e96]:
+            - generic [ref=f11e97]:
+              - heading "Nearby meetups" [level=2] [ref=f11e98]
+              - button "View" [disabled] [ref=f11e99]
+            - article [ref=f11e100]:
+              - generic [ref=f11e101]:
+                - generic [ref=f11e102]:
+                  - heading "Small dog social hour" [level=3] [ref=f11e103]
+                  - paragraph [ref=f11e104]: Laurelhurst Park
+                - generic [ref=f11e105]: Sat 10:00
+              - generic [ref=f11e106]:
+                - paragraph [ref=f11e107]: 18 going
+                - button "Join" [disabled] [ref=f11e108]
+            - article [ref=f11e109]:
+              - generic [ref=f11e110]:
+                - generic [ref=f11e111]:
+                  - heading "Rescue foster coffee walk" [level=3] [ref=f11e112]
+                  - paragraph [ref=f11e113]: Tabor Commons
+                - generic [ref=f11e114]: Sun 09:30
+              - generic [ref=f11e115]:
+                - paragraph [ref=f11e116]: 12 going
+                - button "Join" [disabled] [ref=f11e117]
+          - generic [ref=f11e118]:
+            - generic [ref=f11e119]:
+              - heading "Groups for you" [level=2] [ref=f11e120]
+              - button "View" [disabled] [ref=f11e121]
+            - article [ref=f11e122]:
+              - heading "Apartment Pets PDX" [level=3] [ref=f11e123]
+              - paragraph [ref=f11e124]: Small-space routines
+              - generic [ref=f11e125]:
+                - paragraph [ref=f11e126]: 2.4k members
+                - button "Follow" [disabled] [ref=f11e127]
+            - article [ref=f11e128]:
+              - heading "Trail Tails" [level=3] [ref=f11e129]
+              - paragraph [ref=f11e130]: Local hikes and safety
+              - generic [ref=f11e131]:
+                - paragraph [ref=f11e132]: 8.1k members
+                - button "Follow" [disabled] [ref=f11e133]
+          - generic [ref=f11e134]:
+            - generic [ref=f11e135]:
+              - heading "Care tips" [level=2] [ref=f11e136]
+              - button "View" [disabled] [ref=f11e137]
+            - article [ref=f11e138]:
+              - heading "Warm sidewalk check" [level=3] [ref=f11e139]
+              - paragraph [ref=f11e140]: Hold the back of your hand to pavement before longer walks.
+            - article [ref=f11e141]:
+              - heading "Quiet intro rule" [level=3] [ref=f11e142]
+              - paragraph [ref=f11e143]: Let new pets meet side by side before face-to-face greetings.
+    - navigation "Mobile preview navigation" [ref=f11e144]:
+      - generic [ref=f11e145]:
+        - link "Feed" [ref=f11e146] [cursor=pointer]:
+          - /url: https://mengto.test
+        - link "Pets" [ref=f11e147] [cursor=pointer]:
+          - /url: https://mengto.test/pets
+        - button "Meet" [disabled] [ref=f11e148]
+        - button "Tips" [disabled] [ref=f11e149]

@@ -1,0 +1,187 @@
+- generic [active] [ref=f75e1]:
+  - link "Skip to content" [ref=f75e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=f75e3]:
+    - banner [ref=f75e4]:
+      - generic [ref=f75e5]:
+        - link "PawCircle home" [ref=f75e6] [cursor=pointer]:
+          - /url: http://127.0.0.1:8000
+          - generic [ref=f75e7]: PC
+          - generic [ref=f75e8]: PawCircle
+        - navigation "Primary navigation" [ref=f75e9]:
+          - link "Feed" [ref=f75e10] [cursor=pointer]:
+            - /url: http://127.0.0.1:8000
+          - link "Pets" [ref=f75e11] [cursor=pointer]:
+            - /url: http://127.0.0.1:8000/pets
+          - link "Meetups" [ref=f75e12] [cursor=pointer]:
+            - /url: http://127.0.0.1:8000/meetups
+          - link "Groups" [ref=f75e13] [cursor=pointer]:
+            - /url: http://127.0.0.1:8000/groups
+          - link "Neighbors" [ref=f75e14] [cursor=pointer]:
+            - /url: http://127.0.0.1:8000/neighbors
+        - link "Search PawCircle" [ref=f75e16] [cursor=pointer]:
+          - /url: http://127.0.0.1:8000/discover
+          - generic [ref=f75e20]: Search parks, pets, people, and routines
+        - generic [ref=f75e21]:
+          - link "Notifications" [ref=f75e22] [cursor=pointer]:
+            - /url: http://127.0.0.1:8000/notifications
+          - link "Messages" [ref=f75e26] [cursor=pointer]:
+            - /url: http://127.0.0.1:8000/messages
+          - link "Mia Carter profile" [ref=f75e30] [cursor=pointer]:
+            - /url: http://127.0.0.1:8000/profile/mia-carter
+    - main [ref=f75e31]:
+      - generic [ref=f75e32]:
+        - generic [ref=f75e33]:
+          - img "Scout lying in grass behind a tennis ball" [ref=f75e34]
+          - generic [ref=f75e35]:
+            - generic [ref=f75e36]:
+              - img "Mia Carter" [ref=f75e37]
+              - generic [ref=f75e38]:
+                - paragraph [ref=f75e39]: Pet parent & foster volunteer
+                - heading "Mia Carter" [level=1] [ref=f75e40]
+                - paragraph [ref=f75e41]: Portland, OR · Member since 2024
+              - generic [ref=f75e42]:
+                - button "Share profile" [disabled] [ref=f75e43]
+                - button "Edit profile" [disabled] [ref=f75e51]
+            - generic [ref=f75e56]: Open to weekend walks
+            - generic "Owner profile summary" [ref=f75e61]:
+              - generic [ref=f75e62]:
+                - term [ref=f75e63]:
+                  - generic [ref=f75e69]: Pets
+                - definition [ref=f75e70]: "2"
+                - definition [ref=f75e71]: Scout & Nori
+              - generic [ref=f75e72]:
+                - term [ref=f75e73]:
+                  - generic [ref=f75e79]: Neighbors
+                - definition [ref=f75e80]: "18"
+                - definition [ref=f75e81]: local connections
+              - generic [ref=f75e82]:
+                - term [ref=f75e83]:
+                  - generic [ref=f75e88]: Circles
+                - definition [ref=f75e89]: "6"
+                - definition [ref=f75e90]: joined groups
+        - generic [ref=f75e91]:
+          - generic [ref=f75e92]:
+            - generic [ref=f75e93]:
+              - generic [ref=f75e94]:
+                - paragraph [ref=f75e95]: Around the neighborhood
+                - heading "About Mia" [level=2] [ref=f75e96]
+              - paragraph [ref=f75e97]: Mia plans low-pressure neighborhood walks, shares foster setup notes, and keeps a running list of shaded Portland routes. Scout handles field research while Nori supervises from the nearest window.
+            - region [ref=f75e98]:
+              - generic [ref=f75e99]:
+                - generic [ref=f75e100]:
+                  - paragraph [ref=f75e101]: At home with Mia
+                  - heading "Scout & Nori" [level=2] [ref=f75e102]
+                - button "Add pet" [disabled] [ref=f75e103]
+              - generic [ref=f75e106]:
+                - article [ref=f75e107]:
+                  - img "Scout, a black and white Border Collie, resting on grass" [ref=f75e108]
+                  - generic [ref=f75e109]:
+                    - generic [ref=f75e110]:
+                      - generic [ref=f75e111]:
+                        - paragraph [ref=f75e112]: Dog
+                        - heading [level=3] [ref=f75e113]:
+                          - link "Scout" [ref=f75e114] [cursor=pointer]:
+                            - /url: http://127.0.0.1:8000/pets/scout
+                      - generic [ref=f75e115]: 4 years
+                    - paragraph [ref=f75e116]: Border Collie mix
+                    - paragraph [ref=f75e117]: Available for park walks
+                    - generic [ref=f75e118]:
+                      - generic [ref=f75e119]: high energy
+                      - generic [ref=f75e120]: trail walks
+                - article [ref=f75e121]:
+                  - img "Nori, a tabby cat, looking toward the camera" [ref=f75e122]
+                  - generic [ref=f75e123]:
+                    - generic [ref=f75e124]:
+                      - generic [ref=f75e125]:
+                        - paragraph [ref=f75e126]: Cat
+                        - heading "Nori" [level=3] [ref=f75e127]
+                      - generic [ref=f75e128]: 2 years
+                    - paragraph [ref=f75e129]: Tabby
+                    - paragraph [ref=f75e130]: Window-watching expert
+                    - generic [ref=f75e131]:
+                      - generic [ref=f75e132]: indoor
+                      - generic [ref=f75e133]: curious
+            - generic [ref=f75e134]:
+              - generic [ref=f75e135]:
+                - paragraph [ref=f75e136]: From Mia
+                - heading "Recent moments" [level=2] [ref=f75e137]
+              - generic [ref=f75e138]:
+                - article [ref=f75e139]:
+                  - generic [ref=f75e140]:
+                    - generic [ref=f75e141]:
+                      - generic [ref=f75e142]:
+                        - heading "Mia Carter" [level=3] [ref=f75e143]
+                        - paragraph [ref=f75e144]:
+                          - text: Scout ·
+                          - time [ref=f75e145]: Yesterday
+                      - button "More options" [disabled] [ref=f75e146]
+                    - paragraph [ref=f75e151]: Scout locked onto the yellow frisbee and caught it on the second try. The trip home was much quieter.
+                    - generic [ref=f75e152]:
+                      - generic [ref=f75e153]: fetch
+                      - generic [ref=f75e154]: Scout
+                  - img "Scout catching a yellow frisbee on the grass" [ref=f75e155]
+                  - generic [ref=f75e156]:
+                    - button "94 Paws" [disabled] [ref=f75e157]
+                    - button "16 Replies" [disabled] [ref=f75e164]
+                    - button "Share" [disabled] [ref=f75e168]
+                - article [ref=f75e176]:
+                  - generic [ref=f75e177]:
+                    - generic [ref=f75e178]:
+                      - generic [ref=f75e179]:
+                        - heading "Mia Carter" [level=3] [ref=f75e180]
+                        - paragraph [ref=f75e181]:
+                          - text: Scout ·
+                          - time [ref=f75e182]: 4 days ago
+                      - button "More options" [disabled] [ref=f75e183]
+                    - paragraph [ref=f75e188]: After a calm neighborhood walk, Scout claimed the porch and watched the trees until dinner.
+                    - generic [ref=f75e189]:
+                      - generic [ref=f75e190]: slow afternoon
+                      - generic [ref=f75e191]: small wins
+                  - img "Scout resting on a wooden porch" [ref=f75e192]
+                  - generic [ref=f75e193]:
+                    - button "121 Paws" [disabled] [ref=f75e194]
+                    - button "21 Replies" [disabled] [ref=f75e201]
+                    - button "Share" [disabled] [ref=f75e205]
+          - complementary [ref=f75e213]:
+            - generic [ref=f75e214]:
+              - generic [ref=f75e215]:
+                - paragraph [ref=f75e216]: Walk profile
+                - heading "Availability" [level=2] [ref=f75e217]
+              - generic [ref=f75e218]:
+                - generic [ref=f75e219]:
+                  - term [ref=f75e220]: Best time
+                  - definition [ref=f75e221]: Weekend mornings
+                - generic [ref=f75e222]:
+                  - term [ref=f75e223]: Usual pace
+                  - definition [ref=f75e224]: Easy to moderate
+                - generic [ref=f75e225]:
+                  - term [ref=f75e226]: Home base
+                  - definition [ref=f75e227]: Richmond, Portland
+            - generic [ref=f75e228]:
+              - generic [ref=f75e229]:
+                - paragraph [ref=f75e230]: Common ground
+                - heading "Interests" [level=2] [ref=f75e231]
+              - generic [ref=f75e232]:
+                - generic [ref=f75e233]: trail walks
+                - generic [ref=f75e234]: foster care
+                - generic [ref=f75e235]: cat enrichment
+                - generic [ref=f75e236]: quiet parks
+                - generic [ref=f75e237]: positive training
+            - generic [ref=f75e238]:
+              - generic [ref=f75e239]:
+                - paragraph [ref=f75e240]: Local circles
+                - heading "Communities" [level=2] [ref=f75e241]
+              - generic [ref=f75e242]:
+                - article [ref=f75e243]:
+                  - heading "Apartment Pets PDX" [level=3] [ref=f75e244]
+                  - paragraph [ref=f75e245]: Small-space routines
+                  - paragraph [ref=f75e246]: 2.4k members
+                - article [ref=f75e247]:
+                  - heading "Trail Tails" [level=3] [ref=f75e248]
+                  - paragraph [ref=f75e249]: Local hikes and safety
+                  - paragraph [ref=f75e250]: 8.1k members
+                - article [ref=f75e251]:
+                  - heading "Cat People of Portland" [level=3] [ref=f75e252]
+                  - paragraph [ref=f75e253]: Indoor cats and neighborhood care
+                  - paragraph [ref=f75e254]: 1.9k members

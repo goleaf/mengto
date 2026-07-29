@@ -1,0 +1,124 @@
+- generic [active] [ref=f5e1]:
+  - link "Skip to content" [ref=f5e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=f5e3]:
+    - banner [ref=f5e4]:
+      - generic [ref=f5e5]:
+        - link "PawCircle home" [ref=f5e6] [cursor=pointer]:
+          - /url: https://mengto.test
+          - generic [ref=f5e7]: PC
+          - generic [ref=f5e8]: PawCircle
+        - navigation "Preview navigation" [ref=f5e9]:
+          - button "Bell" [disabled] [ref=f5e10]
+          - button "Msg" [disabled] [ref=f5e11]
+          - img "Mia Carter" [ref=f5e12]
+    - main [ref=f5e13]:
+      - generic [ref=f5e14]:
+        - generic [ref=f5e15]:
+          - img "Scout enjoying an outdoor walk" [ref=f5e16]
+          - generic [ref=f5e17]:
+            - generic [ref=f5e18]:
+              - img "Scout" [ref=f5e19]
+              - generic [ref=f5e20]:
+                - paragraph [ref=f5e21]: Dog
+                - heading "Scout" [level=1] [ref=f5e22]
+                - paragraph [ref=f5e23]: Border Collie mix · 4 years · Portland, OR
+              - button "Plan a walk" [disabled] [ref=f5e24]
+            - paragraph [ref=f5e25]: Available for park walks
+        - generic [ref=f5e26]:
+          - generic [ref=f5e27]:
+            - paragraph [ref=f5e28]: Life with Scout
+            - heading "About Scout" [level=2] [ref=f5e29]
+            - paragraph [ref=f5e30]: Scout is happiest when a walk has a destination, a few new smells, and enough time to watch the world. At home, he settles quickly beside Mia and takes his role as window lookout very seriously.
+          - complementary [ref=f5e31]:
+            - generic [ref=f5e32]:
+              - heading "Care profile" [level=2] [ref=f5e33]
+              - generic [ref=f5e34]:
+                - generic [ref=f5e35]:
+                  - term [ref=f5e36]: Energy
+                  - definition [ref=f5e37]: High, with a calm indoor routine
+                - generic [ref=f5e38]:
+                  - term [ref=f5e39]: Size
+                  - definition [ref=f5e40]: Medium / 42 lb
+                - generic [ref=f5e41]:
+                  - term [ref=f5e42]: Best walk
+                  - definition [ref=f5e43]: 45-60 minutes
+                - generic [ref=f5e44]:
+                  - term [ref=f5e45]: Vaccinations
+                  - definition [ref=f5e46]: Up to date
+                - generic [ref=f5e47]:
+                  - term [ref=f5e48]: Food note
+                  - definition [ref=f5e49]: Chicken-free treats
+            - generic [ref=f5e50]:
+              - heading "Good company" [level=2] [ref=f5e51]
+              - generic [ref=f5e52]:
+                - generic [ref=f5e53]:
+                  - term [ref=f5e54]: Dogs
+                  - definition [ref=f5e55]: Friendly after a calm hello
+                - generic [ref=f5e56]:
+                  - term [ref=f5e57]: Children
+                  - definition [ref=f5e58]: Comfortable with older children
+                - generic [ref=f5e59]:
+                  - term [ref=f5e60]: Cats
+                  - definition [ref=f5e61]: Needs a slow introduction
+            - generic [ref=f5e62]:
+              - paragraph [ref=f5e63]: Lives with
+              - generic [ref=f5e64]:
+                - img "Mia Carter" [ref=f5e65]
+                - generic [ref=f5e66]:
+                  - heading "Mia Carter" [level=2] [ref=f5e67]
+                  - paragraph [ref=f5e68]: Portland, OR
+              - paragraph [ref=f5e69]: Weekend trail walker, foster volunteer, and keeper of two very opinionated companions.
+          - generic [ref=f5e70]:
+            - generic [ref=f5e71]:
+              - paragraph [ref=f5e72]: Field notes
+              - heading "Scout's gallery" [level=2] [ref=f5e73]
+            - generic [ref=f5e74]:
+              - figure "A short break at Maple Loop." [ref=f5e75]:
+                - img "Scout resting in grass beside a frisbee and ball" [ref=f5e76]
+              - figure "Post-walk quiet time." [ref=f5e78]:
+                - img "Scout looking up from green grass" [ref=f5e79]
+              - figure "Practicing a patient wait." [ref=f5e81]:
+                - img "Scout posing for a close outdoor portrait" [ref=f5e82]
+          - generic [ref=f5e84]:
+            - paragraph [ref=f5e85]: From Mia
+            - heading "Recent moments" [level=2] [ref=f5e86]
+            - generic [ref=f5e87]:
+              - article [ref=f5e88]:
+                - generic [ref=f5e89]:
+                  - generic [ref=f5e90]:
+                    - generic [ref=f5e91]:
+                      - heading "Mia Carter" [level=2] [ref=f5e92]
+                      - paragraph [ref=f5e93]: Scout · Yesterday
+                    - button "More" [disabled] [ref=f5e94]
+                  - paragraph [ref=f5e95]: Scout discovered the shallow pool after our shady trail and still had enough energy for one last lap around the garden.
+                  - generic [ref=f5e96]:
+                    - generic [ref=f5e97]: cool down
+                    - generic [ref=f5e98]: Scout
+                - img "Scout shared moment" [ref=f5e99]
+                - generic [ref=f5e100]:
+                  - button "94 Paws" [disabled] [ref=f5e101]
+                  - button "16 Replies" [disabled] [ref=f5e102]
+                  - button "Share" [disabled] [ref=f5e103]
+              - article [ref=f5e104]:
+                - generic [ref=f5e105]:
+                  - generic [ref=f5e106]:
+                    - generic [ref=f5e107]:
+                      - heading "Mia Carter" [level=2] [ref=f5e108]
+                      - paragraph [ref=f5e109]: Scout · 4 days ago
+                    - button "More" [disabled] [ref=f5e110]
+                  - paragraph [ref=f5e111]: A calm cafe visit and a very serious inspection of every bicycle parked outside. Progress looks different every week.
+                  - generic [ref=f5e112]:
+                    - generic [ref=f5e113]: city practice
+                    - generic [ref=f5e114]: small wins
+                - img "Scout shared moment" [ref=f5e115]
+                - generic [ref=f5e116]:
+                  - button "121 Paws" [disabled] [ref=f5e117]
+                  - button "21 Replies" [disabled] [ref=f5e118]
+                  - button "Share" [disabled] [ref=f5e119]
+    - navigation "Mobile preview navigation" [ref=f5e120]:
+      - generic [ref=f5e121]:
+        - button "Feed" [disabled] [ref=f5e122]
+        - button "Pets" [disabled] [ref=f5e123]
+        - button "Meet" [disabled] [ref=f5e124]
+        - button "Tips" [disabled] [ref=f5e125]

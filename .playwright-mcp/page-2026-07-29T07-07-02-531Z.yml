@@ -1,0 +1,177 @@
+- generic [active] [ref=f45e1]:
+  - link "Skip to content" [ref=f45e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=f45e3]:
+    - banner [ref=f45e4]:
+      - generic [ref=f45e5]:
+        - link "PawCircle home" [ref=f45e6] [cursor=pointer]:
+          - /url: https://mengto.test
+          - generic [ref=f45e7]: PC
+          - generic [ref=f45e8]: PawCircle
+        - generic [ref=f45e9]:
+          - link "Notifications" [ref=f45e10] [cursor=pointer]:
+            - /url: https://mengto.test/notifications
+            - text: Bell
+          - link "Messages" [ref=f45e11] [cursor=pointer]:
+            - /url: https://mengto.test/messages
+            - text: Mail
+          - link "Mia Carter profile" [ref=f45e12] [cursor=pointer]:
+            - /url: https://mengto.test/profile/mia-carter
+    - main [ref=f45e13]:
+      - generic [ref=f45e14]:
+        - generic [ref=f45e15]:
+          - img "Scout lying in grass behind a tennis ball" [ref=f45e16]
+          - generic [ref=f45e17]:
+            - generic [ref=f45e18]:
+              - img "Mia Carter" [ref=f45e19]
+              - generic [ref=f45e20]:
+                - paragraph [ref=f45e21]: Pet parent & foster volunteer
+                - heading "Mia Carter" [level=1] [ref=f45e22]
+                - paragraph [ref=f45e23]: Portland, OR · Member since 2024
+              - generic [ref=f45e24]:
+                - button "Share profile" [disabled] [ref=f45e25]
+                - button "Edit profile" [disabled] [ref=f45e26]
+            - paragraph [ref=f45e27]: Open to weekend walks
+            - generic [ref=f45e28]:
+              - generic [ref=f45e29]:
+                - term [ref=f45e30]: Pets
+                - definition [ref=f45e31]: "2"
+                - definition [ref=f45e32]: Scout & Nori
+              - generic [ref=f45e33]:
+                - term [ref=f45e34]: Neighbors
+                - definition [ref=f45e35]: "18"
+                - definition [ref=f45e36]: local connections
+              - generic [ref=f45e37]:
+                - term [ref=f45e38]: Circles
+                - definition [ref=f45e39]: "6"
+                - definition [ref=f45e40]: joined groups
+        - generic [ref=f45e41]:
+          - generic [ref=f45e42]:
+            - generic [ref=f45e43]:
+              - paragraph [ref=f45e44]: Around the neighborhood
+              - heading "About Mia" [level=2] [ref=f45e45]
+              - paragraph [ref=f45e46]: Mia plans low-pressure neighborhood walks, shares foster setup notes, and keeps a running list of shaded Portland routes. Scout handles field research while Nori supervises from the nearest window.
+            - region [ref=f45e47]:
+              - generic [ref=f45e48]:
+                - generic [ref=f45e49]:
+                  - paragraph [ref=f45e50]: At home with Mia
+                  - heading "Scout & Nori" [level=2] [ref=f45e51]
+                - button "Add pet" [disabled] [ref=f45e52]
+              - generic [ref=f45e53]:
+                - article [ref=f45e54]:
+                  - img "Scout, a black and white Border Collie, resting on grass" [ref=f45e55]
+                  - generic [ref=f45e56]:
+                    - generic [ref=f45e57]:
+                      - generic [ref=f45e58]:
+                        - paragraph [ref=f45e59]: Dog
+                        - heading [level=3] [ref=f45e60]:
+                          - link "Scout" [ref=f45e61] [cursor=pointer]:
+                            - /url: https://mengto.test/pets/scout
+                      - generic [ref=f45e62]: 4 years
+                    - paragraph [ref=f45e63]: Border Collie mix
+                    - paragraph [ref=f45e64]: Available for park walks
+                    - generic [ref=f45e65]:
+                      - generic [ref=f45e66]: high energy
+                      - generic [ref=f45e67]: trail walks
+                - article [ref=f45e68]:
+                  - img "Nori, a tabby cat, looking toward the camera" [ref=f45e69]
+                  - generic [ref=f45e70]:
+                    - generic [ref=f45e71]:
+                      - generic [ref=f45e72]:
+                        - paragraph [ref=f45e73]: Cat
+                        - heading "Nori" [level=3] [ref=f45e74]
+                      - generic [ref=f45e75]: 2 years
+                    - paragraph [ref=f45e76]: Tabby
+                    - paragraph [ref=f45e77]: Window-watching expert
+                    - generic [ref=f45e78]:
+                      - generic [ref=f45e79]: indoor
+                      - generic [ref=f45e80]: curious
+            - generic [ref=f45e81]:
+              - paragraph [ref=f45e82]: From Mia
+              - heading "Recent moments" [level=2] [ref=f45e83]
+              - generic [ref=f45e84]:
+                - article [ref=f45e85]:
+                  - generic [ref=f45e86]:
+                    - generic [ref=f45e87]:
+                      - generic [ref=f45e88]:
+                        - heading "Mia Carter" [level=3] [ref=f45e89]
+                        - paragraph [ref=f45e90]: Scout · Yesterday
+                      - button "More" [disabled] [ref=f45e91]
+                    - paragraph [ref=f45e92]: Scout locked onto the yellow frisbee and caught it on the second try. The trip home was much quieter.
+                    - generic [ref=f45e93]:
+                      - generic [ref=f45e94]: fetch
+                      - generic [ref=f45e95]: Scout
+                  - img "Scout catching a yellow frisbee on the grass" [ref=f45e96]
+                  - generic [ref=f45e97]:
+                    - button "94 Paws" [disabled] [ref=f45e98]
+                    - button "16 Replies" [disabled] [ref=f45e99]
+                    - button "Share" [disabled] [ref=f45e100]
+                - article [ref=f45e101]:
+                  - generic [ref=f45e102]:
+                    - generic [ref=f45e103]:
+                      - generic [ref=f45e104]:
+                        - heading "Mia Carter" [level=3] [ref=f45e105]
+                        - paragraph [ref=f45e106]: Scout · 4 days ago
+                      - button "More" [disabled] [ref=f45e107]
+                    - paragraph [ref=f45e108]: After a calm neighborhood walk, Scout claimed the porch and watched the trees until dinner.
+                    - generic [ref=f45e109]:
+                      - generic [ref=f45e110]: slow afternoon
+                      - generic [ref=f45e111]: small wins
+                  - img "Scout resting on a wooden porch" [ref=f45e112]
+                  - generic [ref=f45e113]:
+                    - button "121 Paws" [disabled] [ref=f45e114]
+                    - button "21 Replies" [disabled] [ref=f45e115]
+                    - button "Share" [disabled] [ref=f45e116]
+          - complementary [ref=f45e117]:
+            - generic [ref=f45e118]:
+              - paragraph [ref=f45e119]: Walk profile
+              - heading "Availability" [level=2] [ref=f45e120]
+              - generic [ref=f45e121]:
+                - generic [ref=f45e122]:
+                  - term [ref=f45e123]: Best time
+                  - definition [ref=f45e124]: Weekend mornings
+                - generic [ref=f45e125]:
+                  - term [ref=f45e126]: Usual pace
+                  - definition [ref=f45e127]: Easy to moderate
+                - generic [ref=f45e128]:
+                  - term [ref=f45e129]: Home base
+                  - definition [ref=f45e130]: Richmond, Portland
+            - generic [ref=f45e131]:
+              - paragraph [ref=f45e132]: Common ground
+              - heading "Interests" [level=2] [ref=f45e133]
+              - generic [ref=f45e134]:
+                - generic [ref=f45e135]: trail walks
+                - generic [ref=f45e136]: foster care
+                - generic [ref=f45e137]: cat enrichment
+                - generic [ref=f45e138]: quiet parks
+                - generic [ref=f45e139]: positive training
+            - generic [ref=f45e140]:
+              - paragraph [ref=f45e141]: Local circles
+              - heading "Communities" [level=2] [ref=f45e142]
+              - generic [ref=f45e143]:
+                - article [ref=f45e144]:
+                  - heading "Apartment Pets PDX" [level=3] [ref=f45e145]
+                  - paragraph [ref=f45e146]: Small-space routines
+                  - paragraph [ref=f45e147]: 2.4k members
+                - article [ref=f45e148]:
+                  - heading "Trail Tails" [level=3] [ref=f45e149]
+                  - paragraph [ref=f45e150]: Local hikes and safety
+                  - paragraph [ref=f45e151]: 8.1k members
+                - article [ref=f45e152]:
+                  - heading "Cat People of Portland" [level=3] [ref=f45e153]
+                  - paragraph [ref=f45e154]: Indoor cats and neighborhood care
+                  - paragraph [ref=f45e155]: 1.9k members
+    - navigation "Mobile preview navigation" [ref=f45e156]:
+      - generic [ref=f45e157]:
+        - link "Feed" [ref=f45e158] [cursor=pointer]:
+          - /url: https://mengto.test
+        - link "Pets" [ref=f45e159] [cursor=pointer]:
+          - /url: https://mengto.test/pets
+        - link "Meet" [ref=f45e160] [cursor=pointer]:
+          - /url: https://mengto.test/meetups
+        - link "Group" [ref=f45e161] [cursor=pointer]:
+          - /url: https://mengto.test/groups
+        - link "People" [ref=f45e162] [cursor=pointer]:
+          - /url: https://mengto.test/neighbors
+        - link "Find" [ref=f45e163] [cursor=pointer]:
+          - /url: https://mengto.test/discover

@@ -1,0 +1,46 @@
+$cream: var(--color-paw-cream);
+$paper: var(--color-paw-paper);
+$ink: var(--color-paw-ink);
+$muted: var(--color-paw-muted);
+$line: var(--color-paw-line);
+$leaf: var(--color-paw-leaf);
+$mint: var(--color-paw-mint);
+$coral: var(--color-paw-coral);
+$white: #fff;
+
+$control-radius: 0.375rem;
+$panel-radius: 0.5rem;
+$fast-transition: 160ms ease;
+$control-shadow: 0 1px 2px rgb(39 49 47 / 8%);
+
+@mixin control-frame {
+    border: 1px solid $line;
+    border-radius: $control-radius;
+}
+
+@mixin control-transition {
+    transition:
+        border-color $fast-transition,
+        background-color $fast-transition,
+        color $fast-transition;
+}
+
+@mixin focus-ring {
+    &:focus {
+        outline: none;
+    }
+
+    &:focus-visible {
+        box-shadow:
+            0 0 0 2px $cream,
+            0 0 0 4px $leaf;
+    }
+}
+
+@mixin disabled-control {
+    &:disabled,
+    &[aria-disabled='true'] {
+        cursor: not-allowed;
+        opacity: 0.7;
+    }
+}

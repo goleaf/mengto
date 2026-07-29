@@ -1,0 +1,157 @@
+- generic [active] [ref=f1e1]:
+  - link "Skip to content" [ref=f1e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=f1e3]:
+    - banner [ref=f1e4]:
+      - generic [ref=f1e5]:
+        - link "PawCircle home" [ref=f1e6] [cursor=pointer]:
+          - /url: http://127.0.0.1:8000
+          - generic [ref=f1e7]: PC
+          - generic [ref=f1e8]: PawCircle
+        - generic [ref=f1e9]:
+          - link "Notifications" [ref=f1e10] [cursor=pointer]:
+            - /url: http://127.0.0.1:8000/notifications
+          - link "Messages" [ref=f1e14] [cursor=pointer]:
+            - /url: http://127.0.0.1:8000/messages
+          - link "Mia Carter profile" [ref=f1e18] [cursor=pointer]:
+            - /url: http://127.0.0.1:8000/profile/mia-carter
+    - main [ref=f1e20]:
+      - generic [ref=f1e21]:
+        - link "Back to groups" [ref=f1e22] [cursor=pointer]:
+          - /url: http://127.0.0.1:8000/groups
+        - generic [ref=f1e26]:
+          - img "Dog and cat resting together on a couch at home" [ref=f1e27]
+          - generic [ref=f1e28]:
+            - generic [ref=f1e29]:
+              - generic [ref=f1e30]:
+                - paragraph [ref=f1e31]: Portland community
+                - heading "Apartment Pets PDX" [level=1] [ref=f1e32]
+                - paragraph [ref=f1e33]: Swap enrichment ideas, neighbor-friendly routines, and practical fixes for happy pets in smaller homes.
+              - generic [ref=f1e34]:
+                - button "Share" [disabled] [ref=f1e35]
+                - button "Join group" [disabled] [ref=f1e40]
+            - list [ref=f1e45]:
+              - listitem [ref=f1e46]:
+                - generic [ref=f1e50]: Portland, Oregon
+              - listitem [ref=f1e51]:
+                - generic [ref=f1e56]: Public group
+              - listitem [ref=f1e57]:
+                - generic [ref=f1e60]: Started in 2021
+            - generic [ref=f1e61]:
+              - generic [ref=f1e62]: apartments
+              - generic [ref=f1e63]: indoor enrichment
+            - generic "Community summary" [ref=f1e64]:
+              - generic [ref=f1e65]:
+                - term [ref=f1e66]:
+                  - generic [ref=f1e72]: Members
+                - definition [ref=f1e73]: 2.4k
+                - definition [ref=f1e74]: local pet people
+              - generic [ref=f1e75]:
+                - term [ref=f1e76]:
+                  - generic [ref=f1e80]: This week
+                - definition [ref=f1e81]: 86 posts
+                - definition [ref=f1e82]: steady activity
+              - generic [ref=f1e83]:
+                - term [ref=f1e84]:
+                  - generic [ref=f1e88]: Response
+                - definition [ref=f1e89]: 42 min
+                - definition [ref=f1e90]: typical first reply
+        - generic [ref=f1e91]:
+          - main [ref=f1e92]:
+            - generic [ref=f1e93]:
+              - generic [ref=f1e94]:
+                - paragraph [ref=f1e95]: Small-space routines
+                - heading "About the community" [level=2] [ref=f1e96]
+              - paragraph [ref=f1e97]: Apartment Pets PDX is a practical circle for sharing calm routines, enrichment ideas, and neighbor-friendly solutions. Members compare what works in real homes, from hallway training and sound management to small-space play for every kind of companion.
+              - generic [ref=f1e98]:
+                - generic [ref=f1e99]: apartments
+                - generic [ref=f1e100]: indoor enrichment
+            - generic [ref=f1e101]:
+              - generic [ref=f1e102]:
+                - paragraph [ref=f1e103]: Community care
+                - heading "How the group works" [level=2] [ref=f1e104]
+              - list [ref=f1e105]:
+                - listitem [ref=f1e106]:
+                  - generic [ref=f1e111]:
+                    - heading "Share lived experience" [level=3] [ref=f1e112]
+                    - paragraph [ref=f1e113]: Offer routines you have tried and include enough context for neighbors to adapt them safely.
+                - listitem [ref=f1e114]:
+                  - generic [ref=f1e120]:
+                    - heading "Keep buildings peaceful" [level=3] [ref=f1e121]
+                    - paragraph [ref=f1e122]: Discuss sound, shared hallways, elevators, and outdoor access with care for every resident.
+                - listitem [ref=f1e123]:
+                  - generic [ref=f1e128]:
+                    - heading "Lead with pet welfare" [level=3] [ref=f1e129]
+                    - paragraph [ref=f1e130]: Use qualified professionals for medical or behavioral concerns and keep advice supportive.
+            - generic [ref=f1e131]:
+              - generic [ref=f1e132]:
+                - generic [ref=f1e133]:
+                  - paragraph [ref=f1e134]: Recent and upcoming
+                  - heading "Around the group" [level=2] [ref=f1e135]
+                - button "New post" [disabled] [ref=f1e136]
+              - list [ref=f1e141]:
+                - listitem [ref=f1e142]:
+                  - generic [ref=f1e146]:
+                    - heading "A calmer hallway arrival" [level=3] [ref=f1e147]
+                    - paragraph [ref=f1e148]: Community guide · Updated yesterday
+                - listitem [ref=f1e149]:
+                  - generic [ref=f1e154]:
+                    - heading "Window perch ideas for compact rooms" [level=3] [ref=f1e155]
+                    - paragraph [ref=f1e156]: 24 replies · Active today
+                - listitem [ref=f1e157]:
+                  - generic [ref=f1e163]:
+                    - heading "Indoor enrichment swap" [level=3] [ref=f1e164]
+                    - paragraph [ref=f1e165]: Thursday, Aug 6 · Buckman Community Room
+          - complementary [ref=f1e166]:
+            - generic [ref=f1e167]:
+              - generic [ref=f1e168]:
+                - heading "Community team" [level=2] [ref=f1e169]
+                - generic [ref=f1e170]: 3 organizers
+              - list [ref=f1e171]:
+                - listitem [ref=f1e172]:
+                  - generic [ref=f1e173]: AJ
+                  - generic [ref=f1e174]:
+                    - heading "Ari Jensen" [level=3] [ref=f1e175]
+                    - paragraph [ref=f1e176]: Lead organizer · Dog routines
+                - listitem [ref=f1e177]:
+                  - generic [ref=f1e178]: LB
+                  - generic [ref=f1e179]:
+                    - heading "Lena Brooks" [level=3] [ref=f1e180]
+                    - paragraph [ref=f1e181]: Moderator · Cat enrichment
+                - listitem [ref=f1e182]:
+                  - generic [ref=f1e183]: PS
+                  - generic [ref=f1e184]:
+                    - heading "Priya Shah" [level=3] [ref=f1e185]
+                    - paragraph [ref=f1e186]: Moderator · Small pets
+            - generic [ref=f1e187]:
+              - heading "Group details" [level=2] [ref=f1e188]
+              - generic [ref=f1e189]:
+                - generic [ref=f1e190]:
+                  - term [ref=f1e191]: Who it is for
+                  - definition [ref=f1e192]: Renters, apartment residents, and neighbors sharing compact spaces
+                - generic [ref=f1e193]:
+                  - term [ref=f1e194]: Main topics
+                  - definition [ref=f1e195]: Enrichment, sound, shared spaces, routines, and local resources
+                - generic [ref=f1e196]:
+                  - term [ref=f1e197]: Posting pace
+                  - definition [ref=f1e198]: About 12 new discussions each day
+                - generic [ref=f1e199]:
+                  - term [ref=f1e200]: Community review
+                  - definition [ref=f1e201]: New posts are checked against the group guidelines
+            - generic [ref=f1e206]:
+              - heading "Made for real homes" [level=2] [ref=f1e207]
+              - paragraph [ref=f1e208]: Thoughtful questions are welcome, whether you share a studio with a cat or a high-rise with a senior dog.
+    - navigation "Mobile preview navigation" [ref=f1e209]:
+      - generic [ref=f1e210]:
+        - link "Feed" [ref=f1e211] [cursor=pointer]:
+          - /url: http://127.0.0.1:8000
+        - link "Pets" [ref=f1e216] [cursor=pointer]:
+          - /url: http://127.0.0.1:8000/pets
+        - link "Meet" [ref=f1e223] [cursor=pointer]:
+          - /url: http://127.0.0.1:8000/meetups
+        - link "Group" [ref=f1e227] [cursor=pointer]:
+          - /url: http://127.0.0.1:8000/groups
+        - link "People" [ref=f1e233] [cursor=pointer]:
+          - /url: http://127.0.0.1:8000/neighbors
+        - link "Find" [ref=f1e238] [cursor=pointer]:
+          - /url: http://127.0.0.1:8000/discover

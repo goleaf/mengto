@@ -1,0 +1,156 @@
+- generic [active] [ref=f19e1]:
+  - link "Skip to content" [ref=f19e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=f19e3]:
+    - banner [ref=f19e4]:
+      - generic [ref=f19e5]:
+        - link "PawCircle home" [ref=f19e6] [cursor=pointer]:
+          - /url: https://mengto.test
+          - generic [ref=f19e7]: PC
+          - generic [ref=f19e8]: PawCircle
+        - navigation "Primary navigation" [ref=f19e9]:
+          - link "Feed" [ref=f19e10] [cursor=pointer]:
+            - /url: https://mengto.test
+          - link "Pets" [ref=f19e11] [cursor=pointer]:
+            - /url: https://mengto.test/pets
+          - link "Meetups" [ref=f19e12] [cursor=pointer]:
+            - /url: https://mengto.test/meetups
+          - link "Groups" [ref=f19e13] [cursor=pointer]:
+            - /url: https://mengto.test/groups
+        - generic [ref=f19e14]:
+          - generic [ref=f19e15]: Search PawCircle
+          - searchbox "Search PawCircle" [disabled] [ref=f19e16]: Parks, sitters, breeds, routines
+        - navigation "Preview navigation" [ref=f19e17]:
+          - button "Bell" [disabled] [ref=f19e18]
+          - button "Msg" [disabled] [ref=f19e19]
+          - img "Mia Carter" [ref=f19e20]
+    - main [ref=f19e21]:
+      - generic [ref=f19e22]:
+        - generic [ref=f19e23]:
+          - generic [ref=f19e24]:
+            - paragraph [ref=f19e25]: Portland communities
+            - heading "Find your people and their pets" [level=1] [ref=f19e26]
+            - paragraph [ref=f19e27]: Join local circles built around routines, neighborhoods, and the pets you care for.
+          - generic [ref=f19e28]:
+            - paragraph [ref=f19e29]: 4 groups · Portland, OR
+            - button "Create group" [disabled] [ref=f19e30]
+        - region "Community summary" [ref=f19e31]:
+          - generic [ref=f19e32]:
+            - paragraph [ref=f19e33]: Members
+            - paragraph [ref=f19e34]: 13.8k
+            - paragraph [ref=f19e35]: across all groups
+          - generic [ref=f19e36]:
+            - paragraph [ref=f19e37]: Activity
+            - paragraph [ref=f19e38]: "420"
+            - paragraph [ref=f19e39]: posts this week
+          - generic [ref=f19e40]:
+            - paragraph [ref=f19e41]: Circles
+            - paragraph [ref=f19e42]: "4"
+            - paragraph [ref=f19e43]: around Portland
+        - region "Group filters" [ref=f19e44]:
+          - generic [ref=f19e45]:
+            - group "Group category filters" [ref=f19e46]:
+              - button "Recommended" [disabled] [pressed] [ref=f19e47]
+              - button "Local" [disabled] [ref=f19e48]
+              - button "Care" [disabled] [ref=f19e49]
+              - button "Outdoors" [disabled] [ref=f19e50]
+            - button "Most active" [disabled] [ref=f19e51]
+        - region [ref=f19e52]:
+          - heading "Community group results" [level=2] [ref=f19e53]
+          - generic [ref=f19e54]:
+            - article [ref=f19e55]:
+              - generic [ref=f19e56]:
+                - img "Dog and cat resting together on a couch at home" [ref=f19e57]
+                - generic [ref=f19e58]: Home life
+              - generic [ref=f19e59]:
+                - paragraph [ref=f19e60]: Small-space routines
+                - heading "Apartment Pets PDX" [level=3] [ref=f19e61]
+                - paragraph [ref=f19e62]: Swap enrichment ideas, neighbor-friendly routines, and practical fixes for happy pets in smaller homes.
+                - generic [ref=f19e63]:
+                  - generic [ref=f19e64]: apartments
+                  - generic [ref=f19e65]: indoor enrichment
+                - generic [ref=f19e66]:
+                  - generic [ref=f19e67]:
+                    - term [ref=f19e68]: Community
+                    - definition [ref=f19e69]: 2.4k members
+                  - generic [ref=f19e70]:
+                    - term [ref=f19e71]: Activity
+                    - definition [ref=f19e72]: 86 posts this week
+                - generic [ref=f19e73]:
+                  - generic [ref=f19e74]: AJ
+                  - generic [ref=f19e75]:
+                    - paragraph [ref=f19e76]: Led by Ari Jensen
+                    - paragraph [ref=f19e77]: Local organizer
+                  - button "Follow" [disabled] [ref=f19e78]
+            - article [ref=f19e79]:
+              - generic [ref=f19e80]:
+                - img "Dogs running together in a neighborhood park" [ref=f19e81]
+                - generic [ref=f19e82]: Outdoors
+              - generic [ref=f19e83]:
+                - paragraph [ref=f19e84]: Local hikes and safety
+                - heading "Trail Tails" [level=3] [ref=f19e85]
+                - paragraph [ref=f19e86]: Plan trail days, share seasonal conditions, and compare low-stress routes around Portland.
+                - generic [ref=f19e87]:
+                  - generic [ref=f19e88]: trail walks
+                  - generic [ref=f19e89]: route reports
+                - generic [ref=f19e90]:
+                  - generic [ref=f19e91]:
+                    - term [ref=f19e92]: Community
+                    - definition [ref=f19e93]: 8.1k members
+                  - generic [ref=f19e94]:
+                    - term [ref=f19e95]: Activity
+                    - definition [ref=f19e96]: 214 posts this week
+                - generic [ref=f19e97]:
+                  - generic [ref=f19e98]: NP
+                  - generic [ref=f19e99]:
+                    - paragraph [ref=f19e100]: Led by Noah Patel
+                    - paragraph [ref=f19e101]: Local organizer
+                  - button "Follow" [disabled] [ref=f19e102]
+            - article [ref=f19e103]:
+              - generic [ref=f19e104]:
+                - img "Two fluffy cats sitting together indoors" [ref=f19e105]
+                - generic [ref=f19e106]: Cats
+              - generic [ref=f19e107]:
+                - paragraph [ref=f19e108]: Indoor cats and neighborhood care
+                - heading "Cat People of Portland" [level=3] [ref=f19e109]
+                - paragraph [ref=f19e110]: Compare enrichment, share cat-friendly local services, and help indoor companions thrive.
+                - generic [ref=f19e111]:
+                  - generic [ref=f19e112]: cat care
+                  - generic [ref=f19e113]: enrichment
+                - generic [ref=f19e114]:
+                  - generic [ref=f19e115]:
+                    - term [ref=f19e116]: Community
+                    - definition [ref=f19e117]: 1.9k members
+                  - generic [ref=f19e118]:
+                    - term [ref=f19e119]: Activity
+                    - definition [ref=f19e120]: 72 posts this week
+                - generic [ref=f19e121]:
+                  - generic [ref=f19e122]: LB
+                  - generic [ref=f19e123]:
+                    - paragraph [ref=f19e124]: Led by Lena Brooks
+                    - paragraph [ref=f19e125]: Local organizer
+                  - button "Follow" [disabled] [ref=f19e126]
+            - article [ref=f19e127]:
+              - generic [ref=f19e128]:
+                - img "Foster dog resting on a blue couch" [ref=f19e129]
+                - generic [ref=f19e130]: Care
+              - generic [ref=f19e131]:
+                - paragraph [ref=f19e132]: Foster support and adoption
+                - heading "Foster Network PDX" [level=3] [ref=f19e133]
+                - paragraph [ref=f19e134]: Connect with experienced fosters, coordinate supplies, and support thoughtful transitions into new homes.
+                - generic [ref=f19e135]:
+                  - generic [ref=f19e136]: foster care
+                  - generic [ref=f19e137]: adoption support
+                - generic [ref=f19e138]:
+                  - generic [ref=f19e139]:
+                    - term [ref=f19e140]: Community
+                    - definition [ref=f19e141]: 1.4k members
+                  - generic [ref=f19e142]:
+                    - term [ref=f19e143]: Activity
+                    - definition [ref=f19e144]: 48 posts this week
+                - generic [ref=f19e145]:
+                  - generic [ref=f19e146]: PS
+                  - generic [ref=f19e147]:
+                    - paragraph [ref=f19e148]: Led by Priya Shah
+                    - paragraph [ref=f19e149]: Local organizer
+                  - button "Follow" [disabled] [ref=f19e150]

@@ -1,0 +1,154 @@
+- generic [active] [ref=f21e1]:
+  - link "Skip to content" [ref=f21e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=f21e3]:
+    - banner [ref=f21e4]:
+      - generic [ref=f21e5]:
+        - link "PawCircle home" [ref=f21e6] [cursor=pointer]:
+          - /url: https://mengto.test
+          - generic [ref=f21e7]: PC
+          - generic [ref=f21e8]: PawCircle
+        - navigation "Preview navigation" [ref=f21e9]:
+          - button "Bell" [disabled] [ref=f21e10]
+          - button "Msg" [disabled] [ref=f21e11]
+          - img "Mia Carter" [ref=f21e12]
+    - main [ref=f21e13]:
+      - generic [ref=f21e14]:
+        - generic [ref=f21e15]:
+          - generic [ref=f21e16]:
+            - paragraph [ref=f21e17]: Portland communities
+            - heading "Find your people and their pets" [level=1] [ref=f21e18]
+            - paragraph [ref=f21e19]: Join local circles built around routines, neighborhoods, and the pets you care for.
+          - generic [ref=f21e20]:
+            - paragraph [ref=f21e21]: 4 groups · Portland, OR
+            - button "Create group" [disabled] [ref=f21e22]
+        - region "Community summary" [ref=f21e23]:
+          - generic [ref=f21e24]:
+            - paragraph [ref=f21e25]: Members
+            - paragraph [ref=f21e26]: 13.8k
+            - paragraph [ref=f21e27]: across all groups
+          - generic [ref=f21e28]:
+            - paragraph [ref=f21e29]: Activity
+            - paragraph [ref=f21e30]: "420"
+            - paragraph [ref=f21e31]: posts this week
+          - generic [ref=f21e32]:
+            - paragraph [ref=f21e33]: Circles
+            - paragraph [ref=f21e34]: "4"
+            - paragraph [ref=f21e35]: around Portland
+        - region "Group filters" [ref=f21e36]:
+          - generic [ref=f21e37]:
+            - group "Group category filters" [ref=f21e38]:
+              - button "Recommended" [disabled] [pressed] [ref=f21e39]
+              - button "Local" [disabled] [ref=f21e40]
+              - button "Care" [disabled] [ref=f21e41]
+              - button "Outdoors" [disabled] [ref=f21e42]
+            - button "Most active" [disabled] [ref=f21e43]
+        - region [ref=f21e44]:
+          - heading "Community group results" [level=2] [ref=f21e45]
+          - generic [ref=f21e46]:
+            - article [ref=f21e47]:
+              - generic [ref=f21e48]:
+                - img "Dog and cat resting together on a couch at home" [ref=f21e49]
+                - generic [ref=f21e50]: Home life
+              - generic [ref=f21e51]:
+                - paragraph [ref=f21e52]: Small-space routines
+                - heading "Apartment Pets PDX" [level=3] [ref=f21e53]
+                - paragraph [ref=f21e54]: Swap enrichment ideas, neighbor-friendly routines, and practical fixes for happy pets in smaller homes.
+                - generic [ref=f21e55]:
+                  - generic [ref=f21e56]: apartments
+                  - generic [ref=f21e57]: indoor enrichment
+                - generic [ref=f21e58]:
+                  - generic [ref=f21e59]:
+                    - term [ref=f21e60]: Community
+                    - definition [ref=f21e61]: 2.4k members
+                  - generic [ref=f21e62]:
+                    - term [ref=f21e63]: Activity
+                    - definition [ref=f21e64]: 86 posts this week
+                - generic [ref=f21e65]:
+                  - generic [ref=f21e66]: AJ
+                  - generic [ref=f21e67]:
+                    - paragraph [ref=f21e68]: Led by Ari Jensen
+                    - paragraph [ref=f21e69]: Local organizer
+                  - button "Follow" [disabled] [ref=f21e70]
+            - article [ref=f21e71]:
+              - generic [ref=f21e72]:
+                - img "Dogs running together in a neighborhood park" [ref=f21e73]
+                - generic [ref=f21e74]: Outdoors
+              - generic [ref=f21e75]:
+                - paragraph [ref=f21e76]: Local hikes and safety
+                - heading "Trail Tails" [level=3] [ref=f21e77]
+                - paragraph [ref=f21e78]: Plan trail days, share seasonal conditions, and compare low-stress routes around Portland.
+                - generic [ref=f21e79]:
+                  - generic [ref=f21e80]: trail walks
+                  - generic [ref=f21e81]: route reports
+                - generic [ref=f21e82]:
+                  - generic [ref=f21e83]:
+                    - term [ref=f21e84]: Community
+                    - definition [ref=f21e85]: 8.1k members
+                  - generic [ref=f21e86]:
+                    - term [ref=f21e87]: Activity
+                    - definition [ref=f21e88]: 214 posts this week
+                - generic [ref=f21e89]:
+                  - generic [ref=f21e90]: NP
+                  - generic [ref=f21e91]:
+                    - paragraph [ref=f21e92]: Led by Noah Patel
+                    - paragraph [ref=f21e93]: Local organizer
+                  - button "Follow" [disabled] [ref=f21e94]
+            - article [ref=f21e95]:
+              - generic [ref=f21e96]:
+                - img "Two fluffy cats sitting together indoors" [ref=f21e97]
+                - generic [ref=f21e98]: Cats
+              - generic [ref=f21e99]:
+                - paragraph [ref=f21e100]: Indoor cats and neighborhood care
+                - heading "Cat People of Portland" [level=3] [ref=f21e101]
+                - paragraph [ref=f21e102]: Compare enrichment, share cat-friendly local services, and help indoor companions thrive.
+                - generic [ref=f21e103]:
+                  - generic [ref=f21e104]: cat care
+                  - generic [ref=f21e105]: enrichment
+                - generic [ref=f21e106]:
+                  - generic [ref=f21e107]:
+                    - term [ref=f21e108]: Community
+                    - definition [ref=f21e109]: 1.9k members
+                  - generic [ref=f21e110]:
+                    - term [ref=f21e111]: Activity
+                    - definition [ref=f21e112]: 72 posts this week
+                - generic [ref=f21e113]:
+                  - generic [ref=f21e114]: LB
+                  - generic [ref=f21e115]:
+                    - paragraph [ref=f21e116]: Led by Lena Brooks
+                    - paragraph [ref=f21e117]: Local organizer
+                  - button "Follow" [disabled] [ref=f21e118]
+            - article [ref=f21e119]:
+              - generic [ref=f21e120]:
+                - img "Foster dog resting on a blue couch" [ref=f21e121]
+                - generic [ref=f21e122]: Care
+              - generic [ref=f21e123]:
+                - paragraph [ref=f21e124]: Foster support and adoption
+                - heading "Foster Network PDX" [level=3] [ref=f21e125]
+                - paragraph [ref=f21e126]: Connect with experienced fosters, coordinate supplies, and support thoughtful transitions into new homes.
+                - generic [ref=f21e127]:
+                  - generic [ref=f21e128]: foster care
+                  - generic [ref=f21e129]: adoption support
+                - generic [ref=f21e130]:
+                  - generic [ref=f21e131]:
+                    - term [ref=f21e132]: Community
+                    - definition [ref=f21e133]: 1.4k members
+                  - generic [ref=f21e134]:
+                    - term [ref=f21e135]: Activity
+                    - definition [ref=f21e136]: 48 posts this week
+                - generic [ref=f21e137]:
+                  - generic [ref=f21e138]: PS
+                  - generic [ref=f21e139]:
+                    - paragraph [ref=f21e140]: Led by Priya Shah
+                    - paragraph [ref=f21e141]: Local organizer
+                  - button "Follow" [disabled] [ref=f21e142]
+    - navigation "Mobile preview navigation" [ref=f21e143]:
+      - generic [ref=f21e144]:
+        - link "Feed" [ref=f21e145] [cursor=pointer]:
+          - /url: https://mengto.test
+        - link "Pets" [ref=f21e146] [cursor=pointer]:
+          - /url: https://mengto.test/pets
+        - link "Meet" [ref=f21e147] [cursor=pointer]:
+          - /url: https://mengto.test/meetups
+        - link "Groups" [ref=f21e148] [cursor=pointer]:
+          - /url: https://mengto.test/groups

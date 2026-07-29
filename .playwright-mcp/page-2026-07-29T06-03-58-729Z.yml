@@ -1,0 +1,163 @@
+- generic [active] [ref=f31e1]:
+  - link "Skip to content" [ref=f31e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=f31e3]:
+    - banner [ref=f31e4]:
+      - generic [ref=f31e5]:
+        - link "PawCircle home" [ref=f31e6] [cursor=pointer]:
+          - /url: https://mengto.test
+          - generic [ref=f31e7]: PC
+          - generic [ref=f31e8]: PawCircle
+        - navigation "Primary navigation" [ref=f31e9]:
+          - link "Feed" [ref=f31e10] [cursor=pointer]:
+            - /url: https://mengto.test
+          - link "Pets" [ref=f31e11] [cursor=pointer]:
+            - /url: https://mengto.test/pets
+          - link "Meetups" [ref=f31e12] [cursor=pointer]:
+            - /url: https://mengto.test/meetups
+          - link "Groups" [ref=f31e13] [cursor=pointer]:
+            - /url: https://mengto.test/groups
+          - link "Neighbors" [ref=f31e14] [cursor=pointer]:
+            - /url: https://mengto.test/neighbors
+        - generic [ref=f31e15]:
+          - generic [ref=f31e16]: Search PawCircle
+          - searchbox "Search PawCircle" [disabled] [ref=f31e17]: Parks, sitters, breeds, routines
+        - generic [ref=f31e18]:
+          - button "Notifications" [disabled] [ref=f31e19]: Bell
+          - button "Messages" [disabled] [ref=f31e20]: Msg
+          - img "Mia Carter" [ref=f31e21]
+    - main [ref=f31e22]:
+      - generic [ref=f31e23]:
+        - link "Back to neighbors" [ref=f31e24] [cursor=pointer]:
+          - /url: https://mengto.test/neighbors
+        - generic [ref=f31e25]:
+          - img "Two Shiba Inu dogs ready for a neighborhood walk" [ref=f31e26]
+          - generic [ref=f31e27]:
+            - generic [ref=f31e28]:
+              - img "Ari Jensen with Mochi" [ref=f31e29]
+              - generic [ref=f31e30]:
+                - paragraph [ref=f31e31]: Dog walks
+                - heading "Ari Jensen" [level=1] [ref=f31e32]
+                - paragraph [ref=f31e33]: Pearl District · Portland, OR · Member since 2024
+              - generic [ref=f31e34]:
+                - button "Message" [disabled] [ref=f31e35]
+                - button "Follow" [disabled] [ref=f31e36]
+            - paragraph [ref=f31e37]: Open to calm cafe walks
+            - generic [ref=f31e38]:
+              - generic [ref=f31e39]:
+                - term [ref=f31e40]: Pet
+                - definition [ref=f31e41]: Mochi
+                - definition [ref=f31e42]: Shiba mix
+              - generic [ref=f31e43]:
+                - term [ref=f31e44]: Mutuals
+                - definition [ref=f31e45]: "4"
+                - definition [ref=f31e46]: nearby neighbors
+              - generic [ref=f31e47]:
+                - term [ref=f31e48]: Home
+                - definition [ref=f31e49]: Pearl
+                - definition [ref=f31e50]: 0.8 mi away
+        - generic [ref=f31e51]:
+          - generic [ref=f31e52]:
+            - generic [ref=f31e53]:
+              - paragraph [ref=f31e54]: Around the neighborhood
+              - heading "About Ari" [level=2] [ref=f31e55]
+              - paragraph [ref=f31e56]: Ari and Mochi keep a steady loop between quiet Pearl District blocks, Fields Park, and patios with enough room for a patient hello. They enjoy trading practical training notes with neighbors and helping newer city dogs settle into familiar routes.
+            - generic [ref=f31e58]:
+              - img "Mochi sitting with another Shiba at a neighborhood cafe" [ref=f31e59]
+              - generic [ref=f31e60]:
+                - generic [ref=f31e61]:
+                  - generic [ref=f31e62]:
+                    - paragraph [ref=f31e63]: Lives with Ari
+                    - heading "Mochi" [level=2] [ref=f31e64]
+                    - paragraph [ref=f31e65]: Shiba mix · 3 years
+                  - button "Plan a walk" [disabled] [ref=f31e66]
+                - paragraph [ref=f31e67]: Calm in familiar places and happiest with patient introductions.
+                - generic [ref=f31e68]:
+                  - generic [ref=f31e69]: patient hellos
+                  - generic [ref=f31e70]: city confident
+                  - generic [ref=f31e71]: treat motivated
+                - generic [ref=f31e72]:
+                  - generic [ref=f31e73]:
+                    - term [ref=f31e74]: Favorite route
+                    - definition [ref=f31e75]: NW 11th to Fields Park
+                  - generic [ref=f31e76]:
+                    - term [ref=f31e77]: Best time
+                    - definition [ref=f31e78]: Early morning
+                  - generic [ref=f31e79]:
+                    - term [ref=f31e80]: Cafe rule
+                    - definition [ref=f31e81]: Patio first, table second
+            - generic [ref=f31e82]:
+              - paragraph [ref=f31e83]: From Ari and Mochi
+              - heading "Recent moments" [level=2] [ref=f31e84]
+              - generic [ref=f31e85]:
+                - article [ref=f31e86]:
+                  - generic [ref=f31e87]:
+                    - generic [ref=f31e88]:
+                      - generic [ref=f31e89]:
+                        - heading "Ari Jensen" [level=3] [ref=f31e90]
+                        - paragraph [ref=f31e91]: Mochi · 18 min ago
+                      - button "More" [disabled] [ref=f31e92]
+                    - paragraph [ref=f31e93]: Mochi finally made it through the whole cafe patio without asking to inspect every chair. Small wins, very proud.
+                    - generic [ref=f31e94]:
+                      - generic [ref=f31e95]: training
+                      - generic [ref=f31e96]: city walks
+                  - img "Mochi walking beside another dog on a tree-lined path" [ref=f31e97]
+                  - generic [ref=f31e98]:
+                    - button "128 Paws" [disabled] [ref=f31e99]
+                    - button "24 Replies" [disabled] [ref=f31e100]
+                    - button "Share" [disabled] [ref=f31e101]
+                - article [ref=f31e102]:
+                  - generic [ref=f31e103]:
+                    - generic [ref=f31e104]:
+                      - generic [ref=f31e105]:
+                        - heading "Ari Jensen" [level=3] [ref=f31e106]
+                        - paragraph [ref=f31e107]: Mochi · 3 days ago
+                      - button "More" [disabled] [ref=f31e108]
+                    - paragraph [ref=f31e109]: Tried the quiet corner at our neighborhood cafe before the morning rush. Mochi shared the space with another Shiba and settled after one careful lap.
+                    - generic [ref=f31e110]:
+                      - generic [ref=f31e111]: cafe routine
+                      - generic [ref=f31e112]: calm introductions
+                  - img "Mochi sitting with another Shiba at a neighborhood cafe" [ref=f31e113]
+                  - generic [ref=f31e114]:
+                    - button "96 Paws" [disabled] [ref=f31e115]
+                    - button "18 Replies" [disabled] [ref=f31e116]
+                    - button "Share" [disabled] [ref=f31e117]
+          - complementary [ref=f31e118]:
+            - generic [ref=f31e119]:
+              - heading "Shared interests" [level=2] [ref=f31e120]
+              - generic [ref=f31e121]:
+                - generic [ref=f31e122]: city walks
+                - generic [ref=f31e123]: training
+                - generic [ref=f31e124]: quiet patios
+                - generic [ref=f31e125]: urban routines
+            - generic [ref=f31e126]:
+              - generic [ref=f31e127]:
+                - heading "Mutual neighbors" [level=2] [ref=f31e128]
+                - generic [ref=f31e129]: 4 total
+              - generic [ref=f31e130]:
+                - generic [ref=f31e131]:
+                  - generic [ref=f31e132]: MC
+                  - generic [ref=f31e133]:
+                    - heading "Mia Carter" [level=3] [ref=f31e134]
+                    - paragraph [ref=f31e135]: Richmond Walks
+                - generic [ref=f31e136]:
+                  - generic [ref=f31e137]: JC
+                  - generic [ref=f31e138]:
+                    - heading "Jamie Cho" [level=3] [ref=f31e139]
+                    - paragraph [ref=f31e140]: Apartment Pets PDX
+                - generic [ref=f31e141]:
+                  - generic [ref=f31e142]: NP
+                  - generic [ref=f31e143]:
+                    - heading "Noah Patel" [level=3] [ref=f31e144]
+                    - paragraph [ref=f31e145]: Trail Tails
+            - generic [ref=f31e146]:
+              - heading "Communities" [level=2] [ref=f31e147]
+              - generic [ref=f31e148]:
+                - article [ref=f31e149]:
+                  - heading "Apartment Pets PDX" [level=3] [ref=f31e150]
+                  - paragraph [ref=f31e151]: Small-space routines
+                  - paragraph [ref=f31e152]: 2.4k members
+                - article [ref=f31e153]:
+                  - heading "Trail Tails" [level=3] [ref=f31e154]
+                  - paragraph [ref=f31e155]: Weekend city loops
+                  - paragraph [ref=f31e156]: 8.1k members

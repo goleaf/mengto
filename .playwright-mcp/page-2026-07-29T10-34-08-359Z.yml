@@ -1,0 +1,134 @@
+- generic [active] [ref=f12e1]:
+  - link "Skip to content" [ref=f12e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=f12e3]:
+    - banner [ref=f12e4]:
+      - generic [ref=f12e5]:
+        - link "PawCircle home" [ref=f12e6] [cursor=pointer]:
+          - /url: http://127.0.0.1:8000
+          - generic [ref=f12e7]: PC
+          - generic [ref=f12e8]: PawCircle
+        - link "Search PawCircle" [ref=f12e10] [cursor=pointer]:
+          - /url: http://127.0.0.1:8000/discover
+          - generic [ref=f12e14]: Search parks, pets, people, and routines
+        - generic [ref=f12e15]:
+          - link "Notifications" [ref=f12e16] [cursor=pointer]:
+            - /url: http://127.0.0.1:8000/notifications
+          - link "Messages" [ref=f12e20] [cursor=pointer]:
+            - /url: http://127.0.0.1:8000/messages
+          - link "Mia Carter profile" [ref=f12e24] [cursor=pointer]:
+            - /url: http://127.0.0.1:8000/profile/mia-carter
+    - main [ref=f12e26]:
+      - generic [ref=f12e27]:
+        - generic [ref=f12e28]:
+          - generic [ref=f12e29]:
+            - paragraph [ref=f12e30]: PawCircle inbox
+            - heading "Neighborhood messages" [level=1] [ref=f12e31]
+            - paragraph [ref=f12e32]: Keep walk plans, care notes, and everyday pet updates in one quiet place.
+          - generic [ref=f12e33]:
+            - paragraph [ref=f12e34]: 4 conversations · 2 unread
+            - button "New message" [disabled] [ref=f12e35]
+        - generic [ref=f12e40]:
+          - generic [ref=f12e41]:
+            - generic [ref=f12e42]:
+              - generic [ref=f12e43]:
+                - heading "Conversations" [level=2] [ref=f12e45]
+                - generic [ref=f12e46]: 2 unread
+              - generic [ref=f12e48]:
+                - generic [ref=f12e49]: Search conversations
+                - searchbox "Search conversations" [disabled] [ref=f12e50]
+              - group "Conversation filters" [ref=f12e51]:
+                - button "All" [disabled] [pressed] [ref=f12e52]
+                - button "Unread" [disabled] [ref=f12e56]
+                - button "Walk plans" [disabled] [ref=f12e58]
+            - list "Message conversations" [ref=f12e60]:
+              - listitem [ref=f12e61]:
+                - generic [ref=f12e63]:
+                  - heading "Ari Jensen" [level=3] [ref=f12e64]
+                  - paragraph [ref=f12e65]: Mochi
+                  - paragraph [ref=f12e66]: Perfect. We will take the quiet patio corner.
+                - generic [ref=f12e67]:
+                  - time [ref=f12e68]: 18 min
+                  - generic "2 unread messages" [ref=f12e69]: "2"
+              - listitem [ref=f12e70]:
+                - generic [ref=f12e72]:
+                  - heading "Lena Brooks" [level=3] [ref=f12e73]
+                  - paragraph [ref=f12e74]: Pip
+                  - paragraph [ref=f12e75]: Pip approved the new foster setup after one lap.
+                - time [ref=f12e77]: 2 hr
+              - listitem [ref=f12e78]:
+                - generic [ref=f12e80]:
+                  - heading "Noah Patel" [level=3] [ref=f12e81]
+                  - paragraph [ref=f12e82]: Juniper
+                  - paragraph [ref=f12e83]: That shaded route stays comfortable before sunset.
+                - time [ref=f12e85]: Yesterday
+              - listitem [ref=f12e86]:
+                - generic [ref=f12e88]:
+                  - heading "Priya Shah" [level=3] [ref=f12e89]
+                  - paragraph [ref=f12e90]: Clover
+                  - paragraph [ref=f12e91]: I added the garden routine notes you asked for.
+                - time [ref=f12e93]: Mon
+          - generic [ref=f12e94]:
+            - generic [ref=f12e95]:
+              - img "Ari relaxing with Mochi in a neighborhood park" [ref=f12e96]
+              - generic [ref=f12e97]:
+                - heading "Ari Jensen" [level=2] [ref=f12e98]
+                - paragraph [ref=f12e99]: Mochi · Pearl District
+                - paragraph [ref=f12e100]: Usually replies within an hour
+              - generic [ref=f12e101]:
+                - button "Call" [disabled] [ref=f12e102]
+                - button "Info" [disabled] [ref=f12e106]
+            - generic [ref=f12e110]:
+              - img "Two Shiba Inu dogs sitting together at a cafe" [ref=f12e111]
+              - generic [ref=f12e112]:
+                - paragraph [ref=f12e113]: Walk context
+                - heading "Calm cafe walk" [level=3] [ref=f12e114]
+                - paragraph [ref=f12e115]: Saturday morning · quiet patio route
+            - generic [ref=f12e116]:
+              - generic "Today" [ref=f12e117]
+              - list "Conversation messages" [ref=f12e121]:
+                - listitem [ref=f12e122]:
+                  - generic [ref=f12e123]:
+                    - generic [ref=f12e124]: Morning! Mochi did well near the cafe yesterday. Would Scout like a short loop before the patio gets busy?
+                    - paragraph [ref=f12e125]:
+                      - text: Ari ·
+                      - time [ref=f12e126]: 9:12 AM
+                - listitem [ref=f12e127]:
+                  - generic [ref=f12e128]:
+                    - generic [ref=f12e129]: Scout and I can meet near Fields Park at ten. A short loop sounds perfect.
+                    - paragraph [ref=f12e130]:
+                      - text: Mia ·
+                      - time [ref=f12e131]: 9:18 AM
+                - listitem [ref=f12e132]:
+                  - generic [ref=f12e133]:
+                    - generic [ref=f12e134]: Perfect. We will take the quiet patio corner and bring the chicken-free treats for Scout.
+                    - paragraph [ref=f12e135]:
+                      - text: Ari ·
+                      - time [ref=f12e136]: 9:21 AM
+                - listitem [ref=f12e137]:
+                  - generic [ref=f12e138]:
+                    - generic [ref=f12e139]: Thank you. We will keep the first hello slow and meet you by the park entrance.
+                    - paragraph [ref=f12e140]:
+                      - text: Mia ·
+                      - time [ref=f12e141]: 9:24 AM
+            - generic [ref=f12e142]:
+              - generic [ref=f12e143]: Reply to Ari Jensen
+              - textbox "Reply to Ari Jensen" [disabled] [ref=f12e144]:
+                - /placeholder: Reply to Ari and Mochi
+              - generic [ref=f12e145]:
+                - button "Attach" [disabled] [ref=f12e146]
+                - button "Send" [disabled] [ref=f12e150]
+    - navigation "Mobile preview navigation" [ref=f12e155]:
+      - generic [ref=f12e156]:
+        - link "Feed" [ref=f12e157] [cursor=pointer]:
+          - /url: http://127.0.0.1:8000
+        - link "Pets" [ref=f12e162] [cursor=pointer]:
+          - /url: http://127.0.0.1:8000/pets
+        - link "Meet" [ref=f12e169] [cursor=pointer]:
+          - /url: http://127.0.0.1:8000/meetups
+        - link "Group" [ref=f12e173] [cursor=pointer]:
+          - /url: http://127.0.0.1:8000/groups
+        - link "People" [ref=f12e179] [cursor=pointer]:
+          - /url: http://127.0.0.1:8000/neighbors
+        - link "Find" [ref=f12e184] [cursor=pointer]:
+          - /url: http://127.0.0.1:8000/discover

@@ -1,0 +1,146 @@
+- generic [active] [ref=f16e1]:
+  - link "Skip to content" [ref=f16e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=f16e3]:
+    - banner [ref=f16e4]:
+      - generic [ref=f16e5]:
+        - link "PawCircle home" [ref=f16e6] [cursor=pointer]:
+          - /url: https://mengto.test
+          - generic [ref=f16e7]: PC
+          - generic [ref=f16e8]: PawCircle
+        - navigation "Preview navigation" [ref=f16e9]:
+          - button "Bell" [disabled] [ref=f16e10]
+          - button "Msg" [disabled] [ref=f16e11]
+          - img "Mia Carter" [ref=f16e12]
+    - main [ref=f16e13]:
+      - generic [ref=f16e14]:
+        - generic [ref=f16e15]:
+          - generic [ref=f16e16]:
+            - paragraph [ref=f16e17]: Portland neighbors
+            - heading "Pets nearby" [level=1] [ref=f16e18]
+            - paragraph [ref=f16e19]: Meet companions whose routines, favorite places, and people overlap with yours.
+          - paragraph [ref=f16e20]: 6 companions across 5 neighborhoods
+        - region "Pet directory filters" [ref=f16e21]:
+          - generic [ref=f16e22]:
+            - generic [ref=f16e23]:
+              - generic [ref=f16e24]: Search pets
+              - searchbox "Search pets" [disabled] [ref=f16e25]
+            - group "Species filters" [ref=f16e26]:
+              - button "All pets" [disabled] [pressed] [ref=f16e27]
+              - button "Dogs" [disabled] [ref=f16e28]
+              - button "Cats" [disabled] [ref=f16e29]
+              - button "Small pets" [disabled] [ref=f16e30]
+            - button "Nearby first" [disabled] [ref=f16e31]
+        - region [ref=f16e32]:
+          - heading "Pet directory results" [level=2] [ref=f16e33]
+          - generic [ref=f16e34]:
+            - article [ref=f16e35]:
+              - generic [ref=f16e36]:
+                - img "Scout, a black and white Border Collie, resting on grass" [ref=f16e37]
+                - generic [ref=f16e38]: Dog
+              - generic [ref=f16e39]:
+                - generic [ref=f16e41]:
+                  - heading [level=2] [ref=f16e42]:
+                    - link "Scout" [ref=f16e43] [cursor=pointer]:
+                      - /url: https://mengto.test/pets/scout
+                  - paragraph [ref=f16e44]: Border Collie mix · 4 years
+                - paragraph [ref=f16e45]: Available for park walks
+                - generic [ref=f16e46]:
+                  - generic [ref=f16e47]: high energy
+                  - generic [ref=f16e48]: trail walks
+                - generic [ref=f16e49]:
+                  - paragraph [ref=f16e50]: With Mia Carter
+                  - paragraph [ref=f16e51]: Richmond · Portland, OR
+                  - generic [ref=f16e52]:
+                    - link "View profile" [ref=f16e53] [cursor=pointer]:
+                      - /url: https://mengto.test/pets/scout
+                    - button "Follow" [disabled] [ref=f16e54]
+            - article [ref=f16e55]:
+              - generic [ref=f16e56]:
+                - img "Nori, a tabby cat, looking toward the camera" [ref=f16e57]
+                - generic [ref=f16e58]: Cat
+              - generic [ref=f16e59]:
+                - generic [ref=f16e61]:
+                  - heading "Nori" [level=2] [ref=f16e62]
+                  - paragraph [ref=f16e63]: Tabby · 2 years
+                - paragraph [ref=f16e64]: Window-watching expert
+                - generic [ref=f16e65]:
+                  - generic [ref=f16e66]: indoor
+                  - generic [ref=f16e67]: curious
+                - generic [ref=f16e68]:
+                  - paragraph [ref=f16e69]: With Mia Carter
+                  - paragraph [ref=f16e70]: Richmond · Portland, OR
+                  - button "Follow" [disabled] [ref=f16e72]
+            - article [ref=f16e73]:
+              - generic [ref=f16e74]:
+                - img "Maple, a golden retriever, sitting outside with a flower" [ref=f16e75]
+                - generic [ref=f16e76]: Dog
+              - generic [ref=f16e77]:
+                - generic [ref=f16e79]:
+                  - heading "Maple" [level=2] [ref=f16e80]
+                  - paragraph [ref=f16e81]: Golden Retriever · 6 years
+                - paragraph [ref=f16e82]: Easy trail companion
+                - generic [ref=f16e83]:
+                  - generic [ref=f16e84]: calm
+                  - generic [ref=f16e85]: water fan
+                - generic [ref=f16e86]:
+                  - paragraph [ref=f16e87]: With Ari Jensen
+                  - paragraph [ref=f16e88]: Sellwood · Portland, OR
+                  - button "Follow" [disabled] [ref=f16e90]
+            - article [ref=f16e91]:
+              - generic [ref=f16e92]:
+                - img "Olive, a corgi, sitting on a sunny path" [ref=f16e93]
+                - generic [ref=f16e94]: Dog
+              - generic [ref=f16e95]:
+                - generic [ref=f16e97]:
+                  - heading "Olive" [level=2] [ref=f16e98]
+                  - paragraph [ref=f16e99]: Pembroke Corgi · 3 years
+                - paragraph [ref=f16e100]: Likes short social walks
+                - generic [ref=f16e101]:
+                  - generic [ref=f16e102]: small dog
+                  - generic [ref=f16e103]: social
+                - generic [ref=f16e104]:
+                  - paragraph [ref=f16e105]: With Jamie Cho
+                  - paragraph [ref=f16e106]: Alberta Arts · Portland, OR
+                  - button "Follow" [disabled] [ref=f16e108]
+            - article [ref=f16e109]:
+              - generic [ref=f16e110]:
+                - img "Pico, a green-cheek conure, perched on a camera tripod" [ref=f16e111]
+                - generic [ref=f16e112]: Bird
+              - generic [ref=f16e113]:
+                - generic [ref=f16e115]:
+                  - heading "Pico" [level=2] [ref=f16e116]
+                  - paragraph [ref=f16e117]: Green-cheek Conure · 5 years
+                - paragraph [ref=f16e118]: Quiet mornings, curious afternoons
+                - generic [ref=f16e119]:
+                  - generic [ref=f16e120]: indoor
+                  - generic [ref=f16e121]: talkative
+                - generic [ref=f16e122]:
+                  - paragraph [ref=f16e123]: With Sam Rivera
+                  - paragraph [ref=f16e124]: Hawthorne · Portland, OR
+                  - button "Follow" [disabled] [ref=f16e126]
+            - article [ref=f16e127]:
+              - generic [ref=f16e128]:
+                - img "Clover, a white rabbit, sitting in grass" [ref=f16e129]
+                - generic [ref=f16e130]: Rabbit
+              - generic [ref=f16e131]:
+                - generic [ref=f16e133]:
+                  - heading "Clover" [level=2] [ref=f16e134]
+                  - paragraph [ref=f16e135]: Mini Lop mix · 2 years
+                - paragraph [ref=f16e136]: Gentle garden observer
+                - generic [ref=f16e137]:
+                  - generic [ref=f16e138]: gentle
+                  - generic [ref=f16e139]: garden time
+                - generic [ref=f16e140]:
+                  - paragraph [ref=f16e141]: With Priya Shah
+                  - paragraph [ref=f16e142]: St. Johns · Portland, OR
+                  - button "Follow" [disabled] [ref=f16e144]
+    - navigation "Mobile preview navigation" [ref=f16e145]:
+      - generic [ref=f16e146]:
+        - link "Feed" [ref=f16e147] [cursor=pointer]:
+          - /url: https://mengto.test
+        - link "Pets" [ref=f16e148] [cursor=pointer]:
+          - /url: https://mengto.test/pets
+        - link "Meet" [ref=f16e149] [cursor=pointer]:
+          - /url: https://mengto.test/meetups
+        - button "Tips" [disabled] [ref=f16e150]

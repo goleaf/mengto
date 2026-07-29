@@ -1,0 +1,115 @@
+- generic [active] [ref=f36e1]:
+  - link "Skip to content" [ref=f36e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=f36e3]:
+    - banner [ref=f36e4]:
+      - generic [ref=f36e5]:
+        - link "PawCircle home" [ref=f36e6] [cursor=pointer]:
+          - /url: https://mengto.test
+          - generic [ref=f36e7]: PC
+          - generic [ref=f36e8]: PawCircle
+        - generic [ref=f36e9]:
+          - button "Notifications" [disabled] [ref=f36e10]: Bell
+          - link "Messages" [ref=f36e11] [cursor=pointer]:
+            - /url: https://mengto.test/messages
+            - text: Msg
+          - img "Mia Carter" [ref=f36e12]
+    - main [ref=f36e13]:
+      - generic [ref=f36e14]:
+        - generic [ref=f36e15]:
+          - generic [ref=f36e16]:
+            - paragraph [ref=f36e17]: PawCircle inbox
+            - heading "Neighborhood messages" [level=1] [ref=f36e18]
+            - paragraph [ref=f36e19]: Keep walk plans, care notes, and everyday pet updates in one quiet place.
+          - generic [ref=f36e20]:
+            - paragraph [ref=f36e21]: 4 conversations · 2 unread
+            - button "New message" [disabled] [ref=f36e22]
+        - generic [ref=f36e23]:
+          - generic [ref=f36e24]:
+            - generic [ref=f36e25]:
+              - generic [ref=f36e26]:
+                - heading "Conversations" [level=2] [ref=f36e27]
+                - generic [ref=f36e28]: 2 unread
+              - generic [ref=f36e29]: Search conversations
+              - searchbox "Search conversations" [disabled] [ref=f36e30]: Search messages
+              - group "Conversation filters" [ref=f36e31]:
+                - button "All" [disabled] [pressed] [ref=f36e32]
+                - button "Unread" [disabled] [ref=f36e33]
+                - button "Walk plans" [disabled] [ref=f36e34]
+            - list "Message conversations" [ref=f36e35]:
+              - listitem [ref=f36e36]:
+                - generic [ref=f36e38]:
+                  - heading "Ari Jensen" [level=3] [ref=f36e39]
+                  - paragraph [ref=f36e40]: Mochi
+                  - paragraph [ref=f36e41]: Perfect. We will take the quiet patio corner.
+                - generic [ref=f36e42]:
+                  - time [ref=f36e43]: 18 min
+                  - generic "2 unread messages" [ref=f36e44]: "2"
+              - listitem [ref=f36e45]:
+                - generic [ref=f36e47]:
+                  - heading "Lena Brooks" [level=3] [ref=f36e48]
+                  - paragraph [ref=f36e49]: Pip
+                  - paragraph [ref=f36e50]: Pip approved the new foster setup after one lap.
+                - time [ref=f36e52]: 2 hr
+              - listitem [ref=f36e53]:
+                - generic [ref=f36e55]:
+                  - heading "Noah Patel" [level=3] [ref=f36e56]
+                  - paragraph [ref=f36e57]: Juniper
+                  - paragraph [ref=f36e58]: That shaded route stays comfortable before sunset.
+                - time [ref=f36e60]: Yesterday
+              - listitem [ref=f36e61]:
+                - generic [ref=f36e63]:
+                  - heading "Priya Shah" [level=3] [ref=f36e64]
+                  - paragraph [ref=f36e65]: Clover
+                  - paragraph [ref=f36e66]: I added the garden routine notes you asked for.
+                - time [ref=f36e68]: Mon
+          - generic [ref=f36e69]:
+            - generic [ref=f36e70]:
+              - img "Ari relaxing with Mochi in a neighborhood park" [ref=f36e71]
+              - generic [ref=f36e72]:
+                - heading "Ari Jensen" [level=2] [ref=f36e73]
+                - paragraph [ref=f36e74]: Mochi · Pearl District
+                - paragraph [ref=f36e75]: Usually replies within an hour
+              - generic [ref=f36e76]:
+                - button "Call" [disabled] [ref=f36e77]
+                - button "Info" [disabled] [ref=f36e78]
+            - generic [ref=f36e79]:
+              - img "Two Shiba Inu dogs sitting together at a cafe" [ref=f36e80]
+              - generic [ref=f36e81]:
+                - paragraph [ref=f36e82]: Walk context
+                - heading "Calm cafe walk" [level=3] [ref=f36e83]
+                - paragraph [ref=f36e84]: Saturday morning · quiet patio route
+            - generic [ref=f36e85]:
+              - generic "Today" [ref=f36e86]
+              - generic [ref=f36e90]:
+                - generic [ref=f36e92]:
+                  - generic [ref=f36e93]: Morning! Mochi did well near the cafe yesterday. Would Scout like a short loop before the patio gets busy?
+                  - paragraph [ref=f36e94]: Ari · 9:12 AM
+                - generic [ref=f36e96]:
+                  - generic [ref=f36e97]: Scout and I can meet near Fields Park at ten. A short loop sounds perfect.
+                  - paragraph [ref=f36e98]: Mia · 9:18 AM
+                - generic [ref=f36e100]:
+                  - generic [ref=f36e101]: Perfect. We will take the quiet patio corner and bring the chicken-free treats for Scout.
+                  - paragraph [ref=f36e102]: Ari · 9:21 AM
+                - generic [ref=f36e104]:
+                  - generic [ref=f36e105]: Thank you. We will keep the first hello slow and meet you by the park entrance.
+                  - paragraph [ref=f36e106]: Mia · 9:24 AM
+            - generic [ref=f36e107]:
+              - generic [ref=f36e108]: Reply to Ari Jensen
+              - textbox "Reply to Ari Jensen" [disabled] [ref=f36e109]:
+                - /placeholder: Reply to Ari and Mochi
+              - generic [ref=f36e110]:
+                - button "Attach" [disabled] [ref=f36e111]
+                - button "Send" [disabled] [ref=f36e112]
+    - navigation "Mobile preview navigation" [ref=f36e113]:
+      - generic [ref=f36e114]:
+        - link "Feed" [ref=f36e115] [cursor=pointer]:
+          - /url: https://mengto.test
+        - link "Pets" [ref=f36e116] [cursor=pointer]:
+          - /url: https://mengto.test/pets
+        - link "Meet" [ref=f36e117] [cursor=pointer]:
+          - /url: https://mengto.test/meetups
+        - link "Groups" [ref=f36e118] [cursor=pointer]:
+          - /url: https://mengto.test/groups
+        - link "People" [ref=f36e119] [cursor=pointer]:
+          - /url: https://mengto.test/neighbors

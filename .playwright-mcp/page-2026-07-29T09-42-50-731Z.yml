@@ -1,0 +1,154 @@
+- generic [active] [ref=f2e1]:
+  - link "Skip to content" [ref=f2e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=f2e3]:
+    - banner [ref=f2e4]:
+      - generic [ref=f2e5]:
+        - link "PawCircle home" [ref=f2e6] [cursor=pointer]:
+          - /url: http://127.0.0.1:8000
+          - generic [ref=f2e7]: PC
+          - generic [ref=f2e8]: PawCircle
+        - navigation "Primary navigation" [ref=f2e9]:
+          - link "Feed" [ref=f2e10] [cursor=pointer]:
+            - /url: http://127.0.0.1:8000
+          - link "Pets" [ref=f2e11] [cursor=pointer]:
+            - /url: http://127.0.0.1:8000/pets
+          - link "Meetups" [ref=f2e12] [cursor=pointer]:
+            - /url: http://127.0.0.1:8000/meetups
+          - link "Groups" [ref=f2e13] [cursor=pointer]:
+            - /url: http://127.0.0.1:8000/groups
+          - link "Neighbors" [ref=f2e14] [cursor=pointer]:
+            - /url: http://127.0.0.1:8000/neighbors
+        - link "Search PawCircle" [ref=f2e16] [cursor=pointer]:
+          - /url: http://127.0.0.1:8000/discover
+          - generic [ref=f2e20]: Search parks, pets, people, and routines
+        - generic [ref=f2e21]:
+          - link "Notifications" [ref=f2e22] [cursor=pointer]:
+            - /url: http://127.0.0.1:8000/notifications
+          - link "Messages" [ref=f2e26] [cursor=pointer]:
+            - /url: http://127.0.0.1:8000/messages
+          - link "Mia Carter profile" [ref=f2e30] [cursor=pointer]:
+            - /url: http://127.0.0.1:8000/profile/mia-carter
+    - main [ref=f2e32]:
+      - generic [ref=f2e33]:
+        - link "Back to meetups" [ref=f2e34] [cursor=pointer]:
+          - /url: http://127.0.0.1:8000/meetups
+        - generic [ref=f2e38]:
+          - img "Small dogs meeting in a fenced neighborhood park" [ref=f2e39]
+          - generic [ref=f2e40]:
+            - generic [ref=f2e41]:
+              - generic [ref=f2e42]:
+                - paragraph [ref=f2e43]: Neighborhood meetup
+                - heading "Small dog social hour" [level=1] [ref=f2e44]
+                - paragraph [ref=f2e45]: A calm, fenced gathering with room for short introductions and plenty of breaks.
+              - generic [ref=f2e46]:
+                - button "Share" [disabled] [ref=f2e47]
+                - button "RSVP" [disabled] [ref=f2e52]
+            - list [ref=f2e56]:
+              - listitem [ref=f2e57]:
+                - time [ref=f2e60]: Sat, Aug 1 · 10:00 AM
+              - listitem [ref=f2e61]:
+                - generic [ref=f2e65]: Laurelhurst Park · Southeast Portland
+              - listitem [ref=f2e66]:
+                - generic [ref=f2e69]: 1.2 mi from you
+            - generic [ref=f2e70]:
+              - generic [ref=f2e71]: small dogs
+              - generic [ref=f2e72]: fenced area
+            - generic "Meetup summary" [ref=f2e73]:
+              - generic [ref=f2e74]:
+                - term [ref=f2e75]:
+                  - generic [ref=f2e81]: Going
+                - definition [ref=f2e82]: "18"
+                - definition [ref=f2e83]: 8 spots left
+              - generic [ref=f2e84]:
+                - term [ref=f2e85]:
+                  - generic [ref=f2e89]: Duration
+                - definition [ref=f2e90]: 60 min
+                - definition [ref=f2e91]: easy pace
+              - generic [ref=f2e92]:
+                - term [ref=f2e93]:
+                  - generic [ref=f2e99]: Dog size
+                - definition [ref=f2e100]: Under 30 lb
+                - definition [ref=f2e101]: calm arrivals
+        - generic [ref=f2e102]:
+          - main [ref=f2e103]:
+            - generic [ref=f2e104]:
+              - generic [ref=f2e105]:
+                - paragraph [ref=f2e106]: A comfortable social
+                - heading "About this meetup" [level=2] [ref=f2e107]
+              - paragraph [ref=f2e108]: This small, host-guided social gives dogs time to arrive, observe, and join at their own pace. The fenced lawn is split into an active play area and a quieter decompression corner, with water and shaded benches close by.
+            - generic [ref=f2e109]:
+              - generic [ref=f2e110]:
+                - paragraph [ref=f2e111]: Before you arrive
+                - heading "What to expect" [level=2] [ref=f2e112]
+              - list [ref=f2e113]:
+                - listitem [ref=f2e114]:
+                  - generic [ref=f2e119]:
+                    - heading "Arrive on leash" [level=3] [ref=f2e120]
+                    - paragraph [ref=f2e121]: Take one quiet lap outside the enclosure before choosing a comfortable entry.
+                - listitem [ref=f2e122]:
+                  - generic [ref=f2e128]:
+                    - heading "Pause when needed" [level=3] [ref=f2e129]
+                    - paragraph [ref=f2e130]: A shaded reset area gives pets and people room to step away without leaving.
+                - listitem [ref=f2e131]:
+                  - generic [ref=f2e135]:
+                    - heading "Follow each dog’s pace" [level=3] [ref=f2e136]
+                    - paragraph [ref=f2e137]: Ask before greetings and keep toys or shared treats packed until the host invites them.
+            - generic [ref=f2e138]:
+              - generic [ref=f2e139]:
+                - paragraph [ref=f2e140]: Laurelhurst Park
+                - heading "Meeting spot and route" [level=2] [ref=f2e141]
+              - generic [ref=f2e148]:
+                - heading "Covered picnic tables by the SE Ankeny entrance" [level=3] [ref=f2e149]
+                - paragraph [ref=f2e150]: Jamie will be beside the park map with a yellow PawCircle bandana. The social stays inside the adjacent fenced lawn.
+              - generic [ref=f2e151]:
+                - generic [ref=f2e152]:
+                  - term [ref=f2e153]: Meeting point
+                  - definition [ref=f2e154]: SE Ankeny entrance, beside the covered picnic tables
+                - generic [ref=f2e155]:
+                  - term [ref=f2e156]: Parking
+                  - definition [ref=f2e157]: Street parking along SE 37th Avenue
+                - generic [ref=f2e158]:
+                  - term [ref=f2e159]: Bring
+                  - definition [ref=f2e160]: Leash, water bowl, waste bags, and your dog’s usual rewards
+                - generic [ref=f2e161]:
+                  - term [ref=f2e162]: Weather plan
+                  - definition [ref=f2e163]: Moves to the covered pavilion during light rain
+          - complementary [ref=f2e164]:
+            - generic [ref=f2e165]:
+              - paragraph [ref=f2e166]: Your host
+              - generic [ref=f2e167]:
+                - generic [ref=f2e168]: JC
+                - generic [ref=f2e169]:
+                  - heading "Jamie Cho" [level=2] [ref=f2e170]
+                  - paragraph [ref=f2e171]: Meetup host · Alberta Arts
+              - paragraph [ref=f2e172]: Jamie plans low-pressure gatherings for smaller dogs and helps new arrivals find a comfortable starting point.
+              - button "Message host" [disabled] [ref=f2e173]
+            - generic [ref=f2e177]:
+              - generic [ref=f2e178]:
+                - heading "Who's going" [level=2] [ref=f2e179]
+                - generic [ref=f2e180]: 18 neighbors
+              - list [ref=f2e181]:
+                - listitem [ref=f2e182]:
+                  - generic [ref=f2e183]: JO
+                  - generic [ref=f2e184]:
+                    - heading "Jamie & Olive" [level=3] [ref=f2e185]
+                    - paragraph [ref=f2e186]: Host · Corgi
+                - listitem [ref=f2e187]:
+                  - generic [ref=f2e188]: MS
+                  - generic [ref=f2e189]:
+                    - heading "Mia & Scout" [level=3] [ref=f2e190]
+                    - paragraph [ref=f2e191]: Border Collie
+                - listitem [ref=f2e192]:
+                  - generic [ref=f2e193]: AM
+                  - generic [ref=f2e194]:
+                    - heading "Ari & Mochi" [level=3] [ref=f2e195]
+                    - paragraph [ref=f2e196]: Shiba mix
+                - listitem [ref=f2e197]:
+                  - generic [ref=f2e198]: TB
+                  - generic [ref=f2e199]:
+                    - heading "Theo & Bean" [level=3] [ref=f2e200]
+                    - paragraph [ref=f2e201]: Terrier mix
+            - generic [ref=f2e206]:
+              - heading "A considerate gathering" [level=2] [ref=f2e207]
+              - paragraph [ref=f2e208]: Give every pet room, follow park rules, and check with the host before bringing shared treats.

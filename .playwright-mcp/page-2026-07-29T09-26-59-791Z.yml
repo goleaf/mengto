@@ -1,0 +1,182 @@
+- generic [active] [ref=f4e1]:
+  - link "Skip to content" [ref=f4e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=f4e3]:
+    - banner [ref=f4e4]:
+      - generic [ref=f4e5]:
+        - link "PawCircle home" [ref=f4e6] [cursor=pointer]:
+          - /url: http://127.0.0.1:8000
+          - generic [ref=f4e7]: PC
+          - generic [ref=f4e8]: PawCircle
+        - navigation "Primary navigation" [ref=f4e9]:
+          - link "Feed" [ref=f4e10] [cursor=pointer]:
+            - /url: http://127.0.0.1:8000
+          - link "Pets" [ref=f4e11] [cursor=pointer]:
+            - /url: http://127.0.0.1:8000/pets
+          - link "Meetups" [ref=f4e12] [cursor=pointer]:
+            - /url: http://127.0.0.1:8000/meetups
+          - link "Groups" [ref=f4e13] [cursor=pointer]:
+            - /url: http://127.0.0.1:8000/groups
+          - link "Neighbors" [ref=f4e14] [cursor=pointer]:
+            - /url: http://127.0.0.1:8000/neighbors
+        - link "Search PawCircle" [ref=f4e16] [cursor=pointer]:
+          - /url: http://127.0.0.1:8000/discover
+          - generic [ref=f4e20]: Search parks, pets, people, and routines
+        - generic [ref=f4e21]:
+          - link "Notifications" [ref=f4e22] [cursor=pointer]:
+            - /url: http://127.0.0.1:8000/notifications
+          - link "Messages" [ref=f4e26] [cursor=pointer]:
+            - /url: http://127.0.0.1:8000/messages
+          - link "Mia Carter profile" [ref=f4e30] [cursor=pointer]:
+            - /url: http://127.0.0.1:8000/profile/mia-carter
+    - main [ref=f4e32]:
+      - generic [ref=f4e33]:
+        - generic [ref=f4e34]:
+          - generic [ref=f4e35]:
+            - generic [ref=f4e36]:
+              - paragraph [ref=f4e37]: Neighborhood feed
+              - heading "Today around your pack" [level=1] [ref=f4e38]
+            - button "New post" [disabled] [ref=f4e39]
+          - list [ref=f4e42]:
+            - listitem [ref=f4e43]:
+              - generic [ref=f4e44]:
+                - generic [ref=f4e45]:
+                  - generic [ref=f4e46]:
+                    - heading "Ari Jensen" [level=2] [ref=f4e47]
+                    - paragraph [ref=f4e48]:
+                      - text: Mochi ·
+                      - time [ref=f4e49]: 18 min ago
+                  - button "More options" [disabled] [ref=f4e50]
+                - paragraph [ref=f4e55]: Mochi finally made it through the whole cafe patio without asking to inspect every chair. Small wins, very proud.
+                - generic [ref=f4e56]:
+                  - generic [ref=f4e57]: training
+                  - generic [ref=f4e58]: city walks
+              - img "Mochi walking beside another dog on a tree-lined path" [ref=f4e59]
+              - generic [ref=f4e60]:
+                - button "128 Paws" [disabled] [ref=f4e61]
+                - button "24 Replies" [disabled] [ref=f4e68]
+                - button "Share" [disabled] [ref=f4e72]
+            - listitem [ref=f4e80]:
+              - generic [ref=f4e81]:
+                - generic [ref=f4e82]:
+                  - generic [ref=f4e83]:
+                    - heading "Noah Patel" [level=2] [ref=f4e84]
+                    - paragraph [ref=f4e85]:
+                      - text: Juniper ·
+                      - time [ref=f4e86]: 1 hr ago
+                  - button "More options" [disabled] [ref=f4e87]
+                - paragraph [ref=f4e92]: Found a quiet route near Maple Loop with shade almost the whole way. Good for senior pups on warmer afternoons.
+                - generic [ref=f4e93]:
+                  - generic [ref=f4e94]: senior pets
+                  - generic [ref=f4e95]: walk route
+              - img "Juniper relaxing during a shady afternoon walk" [ref=f4e96]
+              - generic [ref=f4e97]:
+                - button "86 Paws" [disabled] [ref=f4e98]
+                - button "11 Replies" [disabled] [ref=f4e105]
+                - button "Share" [disabled] [ref=f4e109]
+            - listitem [ref=f4e117]:
+              - generic [ref=f4e118]:
+                - generic [ref=f4e119]:
+                  - generic [ref=f4e120]:
+                    - heading "Lena Brooks" [level=2] [ref=f4e121]
+                    - paragraph [ref=f4e122]:
+                      - text: Pip ·
+                      - time [ref=f4e123]: 3 hrs ago
+                  - button "More options" [disabled] [ref=f4e124]
+                - paragraph [ref=f4e129]: First successful harness session. Pip mostly accepted the agreement after a careful review of the snack clause.
+                - generic [ref=f4e130]:
+                  - generic [ref=f4e131]: cat life
+                  - generic [ref=f4e132]: first steps
+              - img "Pip looking toward the camera from a soft blanket" [ref=f4e133]
+              - generic [ref=f4e134]:
+                - button "203 Paws" [disabled] [ref=f4e135]
+                - button "37 Replies" [disabled] [ref=f4e142]
+                - button "Share" [disabled] [ref=f4e146]
+        - complementary [ref=f4e154]:
+          - generic [ref=f4e155]:
+            - generic [ref=f4e156]:
+              - img "Mia Carter" [ref=f4e157]
+              - generic [ref=f4e158]:
+                - heading "Mia Carter" [level=2] [ref=f4e159]
+                - paragraph [ref=f4e160]:
+                  - generic [ref=f4e164]: Portland, OR
+            - paragraph [ref=f4e165]: Weekend trail walker, foster volunteer, and keeper of two very opinionated companions.
+            - generic [ref=f4e166]:
+              - generic [ref=f4e167]:
+                - heading "Your pets" [level=3] [ref=f4e168]
+                - button "Add" [disabled] [ref=f4e169]
+              - list [ref=f4e172]:
+                - listitem [ref=f4e173]:
+                  - generic [ref=f4e174]:
+                    - heading [level=4] [ref=f4e175]:
+                      - link "Scout" [ref=f4e176] [cursor=pointer]:
+                        - /url: http://127.0.0.1:8000/pets/scout
+                    - generic [ref=f4e178]: Dog
+                  - paragraph [ref=f4e184]: Border Collie mix · 4 years
+                  - paragraph [ref=f4e185]: Available for park walks
+                - listitem [ref=f4e186]:
+                  - generic [ref=f4e187]:
+                    - heading "Nori" [level=4] [ref=f4e188]
+                    - generic [ref=f4e189]: Cat
+                  - paragraph [ref=f4e194]: Tabby · 2 years
+                  - paragraph [ref=f4e195]: Indoor window watcher
+        - complementary [ref=f4e196]:
+          - generic [ref=f4e197]:
+            - generic [ref=f4e198]:
+              - heading "Nearby meetups" [level=2] [ref=f4e199]
+              - button "View" [disabled] [ref=f4e200]
+            - list [ref=f4e205]:
+              - listitem [ref=f4e206]:
+                - generic [ref=f4e207]:
+                  - generic [ref=f4e208]:
+                    - heading "Small dog social hour" [level=3] [ref=f4e209]
+                    - paragraph [ref=f4e210]:
+                      - generic [ref=f4e214]: Laurelhurst Park
+                  - time [ref=f4e215]:
+                    - generic [ref=f4e216]: SAT 10:00 AM
+                - generic [ref=f4e218]:
+                  - paragraph [ref=f4e219]:
+                    - generic [ref=f4e225]: 18 neighbors going
+                  - button "Join" [disabled] [ref=f4e226]
+              - listitem [ref=f4e231]:
+                - generic [ref=f4e232]:
+                  - generic [ref=f4e233]:
+                    - heading "Rescue foster coffee walk" [level=3] [ref=f4e234]
+                    - paragraph [ref=f4e235]:
+                      - generic [ref=f4e239]: Tabor Commons
+                  - time [ref=f4e240]:
+                    - generic [ref=f4e241]: SUN 9:30 AM
+                - generic [ref=f4e243]:
+                  - paragraph [ref=f4e244]:
+                    - generic [ref=f4e250]: 12 neighbors going
+                  - button "Join" [disabled] [ref=f4e251]
+          - generic [ref=f4e256]:
+            - generic [ref=f4e257]:
+              - heading "Groups for you" [level=2] [ref=f4e258]
+              - button "View" [disabled] [ref=f4e259]
+            - list [ref=f4e264]:
+              - listitem [ref=f4e265]:
+                - heading "Apartment Pets PDX" [level=3] [ref=f4e266]
+                - paragraph [ref=f4e267]: Small-space routines
+                - generic [ref=f4e268]:
+                  - paragraph [ref=f4e269]:
+                    - generic [ref=f4e275]: 2.4k members
+                  - button "Follow" [disabled] [ref=f4e276]
+              - listitem [ref=f4e281]:
+                - heading "Trail Tails" [level=3] [ref=f4e282]
+                - paragraph [ref=f4e283]: Local hikes and safety
+                - generic [ref=f4e284]:
+                  - paragraph [ref=f4e285]:
+                    - generic [ref=f4e291]: 8.1k members
+                  - button "Follow" [disabled] [ref=f4e292]
+          - generic [ref=f4e297]:
+            - generic [ref=f4e298]:
+              - heading "Care tips" [level=2] [ref=f4e299]
+              - button "View" [disabled] [ref=f4e300]
+            - list [ref=f4e305]:
+              - listitem [ref=f4e306]:
+                - heading "Warm sidewalk check" [level=3] [ref=f4e307]
+                - paragraph [ref=f4e308]: Hold the back of your hand to pavement before longer walks.
+              - listitem [ref=f4e309]:
+                - heading "Quiet intro rule" [level=3] [ref=f4e310]
+                - paragraph [ref=f4e311]: Let new pets meet side by side before face-to-face greetings.

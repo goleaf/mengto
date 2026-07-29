@@ -1,0 +1,154 @@
+- generic [active] [ref=f5e1]:
+  - link "Skip to content" [ref=f5e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=f5e3]:
+    - banner [ref=f5e4]:
+      - generic [ref=f5e5]:
+        - link "PawCircle home" [ref=f5e6] [cursor=pointer]:
+          - /url: http://127.0.0.1:8000
+          - generic [ref=f5e7]: PC
+          - generic [ref=f5e8]: PawCircle
+        - generic [ref=f5e9]:
+          - link "Notifications" [ref=f5e10] [cursor=pointer]:
+            - /url: http://127.0.0.1:8000/notifications
+          - link "Messages" [ref=f5e14] [cursor=pointer]:
+            - /url: http://127.0.0.1:8000/messages
+          - link "Mia Carter profile" [ref=f5e18] [cursor=pointer]:
+            - /url: http://127.0.0.1:8000/profile/mia-carter
+    - main [ref=f5e20]:
+      - generic [ref=f5e21]:
+        - link "Back to meetups" [ref=f5e22] [cursor=pointer]:
+          - /url: http://127.0.0.1:8000/meetups
+        - generic [ref=f5e26]:
+          - img "Small dogs meeting in a fenced neighborhood park" [ref=f5e27]
+          - generic [ref=f5e28]:
+            - generic [ref=f5e29]:
+              - generic [ref=f5e30]:
+                - paragraph [ref=f5e31]: Neighborhood meetup
+                - heading "Small dog social hour" [level=1] [ref=f5e32]
+                - paragraph [ref=f5e33]: A calm, fenced gathering with room for short introductions and plenty of breaks.
+              - generic [ref=f5e34]:
+                - button "Share" [disabled] [ref=f5e35]
+                - button "RSVP" [disabled] [ref=f5e40]
+            - list [ref=f5e44]:
+              - listitem [ref=f5e45]:
+                - time [ref=f5e48]: Sat, Aug 1 · 10:00 AM
+              - listitem [ref=f5e49]:
+                - generic [ref=f5e53]: Laurelhurst Park · Southeast Portland
+              - listitem [ref=f5e54]:
+                - generic [ref=f5e57]: 1.2 mi from you
+            - generic [ref=f5e58]:
+              - generic [ref=f5e59]: small dogs
+              - generic [ref=f5e60]: fenced area
+            - generic "Meetup summary" [ref=f5e61]:
+              - generic [ref=f5e62]:
+                - term [ref=f5e63]:
+                  - generic [ref=f5e64]: Going
+                - definition [ref=f5e65]: "18"
+                - definition [ref=f5e66]: 8 spots left
+              - generic [ref=f5e67]:
+                - term [ref=f5e68]:
+                  - generic [ref=f5e69]: Duration
+                - definition [ref=f5e70]: 60 min
+                - definition [ref=f5e71]: easy pace
+              - generic [ref=f5e72]:
+                - term [ref=f5e73]:
+                  - generic [ref=f5e74]: Dog size
+                - definition [ref=f5e75]: Under 30 lb
+                - definition [ref=f5e76]: calm arrivals
+        - generic [ref=f5e77]:
+          - main [ref=f5e78]:
+            - generic [ref=f5e79]:
+              - generic [ref=f5e80]:
+                - paragraph [ref=f5e81]: A comfortable social
+                - heading "About this meetup" [level=2] [ref=f5e82]
+              - paragraph [ref=f5e83]: This small, host-guided social gives dogs time to arrive, observe, and join at their own pace. The fenced lawn is split into an active play area and a quieter decompression corner, with water and shaded benches close by.
+            - generic [ref=f5e84]:
+              - generic [ref=f5e85]:
+                - paragraph [ref=f5e86]: Before you arrive
+                - heading "What to expect" [level=2] [ref=f5e87]
+              - list [ref=f5e88]:
+                - listitem [ref=f5e89]:
+                  - generic [ref=f5e94]:
+                    - heading "Arrive on leash" [level=3] [ref=f5e95]
+                    - paragraph [ref=f5e96]: Take one quiet lap outside the enclosure before choosing a comfortable entry.
+                - listitem [ref=f5e97]:
+                  - generic [ref=f5e103]:
+                    - heading "Pause when needed" [level=3] [ref=f5e104]
+                    - paragraph [ref=f5e105]: A shaded reset area gives pets and people room to step away without leaving.
+                - listitem [ref=f5e106]:
+                  - generic [ref=f5e110]:
+                    - heading "Follow each dog’s pace" [level=3] [ref=f5e111]
+                    - paragraph [ref=f5e112]: Ask before greetings and keep toys or shared treats packed until the host invites them.
+            - generic [ref=f5e113]:
+              - generic [ref=f5e114]:
+                - paragraph [ref=f5e115]: Laurelhurst Park
+                - heading "Meeting spot and route" [level=2] [ref=f5e116]
+              - generic [ref=f5e123]:
+                - heading "Covered picnic tables by the SE Ankeny entrance" [level=3] [ref=f5e124]
+                - paragraph [ref=f5e125]: Jamie will be beside the park map with a yellow PawCircle bandana. The social stays inside the adjacent fenced lawn.
+              - generic [ref=f5e126]:
+                - generic [ref=f5e127]:
+                  - term [ref=f5e128]: Meeting point
+                  - definition [ref=f5e129]: SE Ankeny entrance, beside the covered picnic tables
+                - generic [ref=f5e130]:
+                  - term [ref=f5e131]: Parking
+                  - definition [ref=f5e132]: Street parking along SE 37th Avenue
+                - generic [ref=f5e133]:
+                  - term [ref=f5e134]: Bring
+                  - definition [ref=f5e135]: Leash, water bowl, waste bags, and your dog’s usual rewards
+                - generic [ref=f5e136]:
+                  - term [ref=f5e137]: Weather plan
+                  - definition [ref=f5e138]: Moves to the covered pavilion during light rain
+          - complementary [ref=f5e139]:
+            - generic [ref=f5e140]:
+              - paragraph [ref=f5e141]: Your host
+              - generic [ref=f5e142]:
+                - generic [ref=f5e143]: JC
+                - generic [ref=f5e144]:
+                  - heading "Jamie Cho" [level=2] [ref=f5e145]
+                  - paragraph [ref=f5e146]: Meetup host · Alberta Arts
+              - paragraph [ref=f5e147]: Jamie plans low-pressure gatherings for smaller dogs and helps new arrivals find a comfortable starting point.
+              - button "Message host" [disabled] [ref=f5e148]
+            - generic [ref=f5e152]:
+              - generic [ref=f5e153]:
+                - heading "Who's going" [level=2] [ref=f5e154]
+                - generic [ref=f5e155]: 18 neighbors
+              - list [ref=f5e156]:
+                - listitem [ref=f5e157]:
+                  - generic [ref=f5e158]: JO
+                  - generic [ref=f5e159]:
+                    - heading "Jamie & Olive" [level=3] [ref=f5e160]
+                    - paragraph [ref=f5e161]: Host · Corgi
+                - listitem [ref=f5e162]:
+                  - generic [ref=f5e163]: MS
+                  - generic [ref=f5e164]:
+                    - heading "Mia & Scout" [level=3] [ref=f5e165]
+                    - paragraph [ref=f5e166]: Border Collie
+                - listitem [ref=f5e167]:
+                  - generic [ref=f5e168]: AM
+                  - generic [ref=f5e169]:
+                    - heading "Ari & Mochi" [level=3] [ref=f5e170]
+                    - paragraph [ref=f5e171]: Shiba mix
+                - listitem [ref=f5e172]:
+                  - generic [ref=f5e173]: TB
+                  - generic [ref=f5e174]:
+                    - heading "Theo & Bean" [level=3] [ref=f5e175]
+                    - paragraph [ref=f5e176]: Terrier mix
+            - generic [ref=f5e181]:
+              - heading "A considerate gathering" [level=2] [ref=f5e182]
+              - paragraph [ref=f5e183]: Give every pet room, follow park rules, and check with the host before bringing shared treats.
+    - navigation "Mobile preview navigation" [ref=f5e184]:
+      - generic [ref=f5e185]:
+        - link "Feed" [ref=f5e186] [cursor=pointer]:
+          - /url: http://127.0.0.1:8000
+        - link "Pets" [ref=f5e191] [cursor=pointer]:
+          - /url: http://127.0.0.1:8000/pets
+        - link "Meet" [ref=f5e198] [cursor=pointer]:
+          - /url: http://127.0.0.1:8000/meetups
+        - link "Group" [ref=f5e202] [cursor=pointer]:
+          - /url: http://127.0.0.1:8000/groups
+        - link "People" [ref=f5e208] [cursor=pointer]:
+          - /url: http://127.0.0.1:8000/neighbors
+        - link "Find" [ref=f5e213] [cursor=pointer]:
+          - /url: http://127.0.0.1:8000/discover

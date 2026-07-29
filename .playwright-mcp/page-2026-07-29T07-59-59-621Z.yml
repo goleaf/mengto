@@ -1,0 +1,146 @@
+- generic [active] [ref=f63e1]:
+  - link "Skip to content" [ref=f63e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=f63e3]:
+    - banner [ref=f63e4]:
+      - generic [ref=f63e5]:
+        - link "PawCircle home" [ref=f63e6] [cursor=pointer]:
+          - /url: http://127.0.0.1:8000
+          - generic [ref=f63e7]: PC
+          - generic [ref=f63e8]: PawCircle
+        - navigation "Primary navigation" [ref=f63e9]:
+          - link "Feed" [ref=f63e10] [cursor=pointer]:
+            - /url: http://127.0.0.1:8000
+          - link "Pets" [ref=f63e11] [cursor=pointer]:
+            - /url: http://127.0.0.1:8000/pets
+          - link "Meetups" [ref=f63e12] [cursor=pointer]:
+            - /url: http://127.0.0.1:8000/meetups
+          - link "Groups" [ref=f63e13] [cursor=pointer]:
+            - /url: http://127.0.0.1:8000/groups
+          - link "Neighbors" [ref=f63e14] [cursor=pointer]:
+            - /url: http://127.0.0.1:8000/neighbors
+        - link "Search PawCircle" [ref=f63e16] [cursor=pointer]:
+          - /url: http://127.0.0.1:8000/discover
+          - generic [ref=f63e20]: Search parks, pets, people, and routines
+        - generic [ref=f63e21]:
+          - link "Notifications" [ref=f63e22] [cursor=pointer]:
+            - /url: http://127.0.0.1:8000/notifications
+          - link "Messages" [ref=f63e26] [cursor=pointer]:
+            - /url: http://127.0.0.1:8000/messages
+          - link "Mia Carter profile" [ref=f63e30] [cursor=pointer]:
+            - /url: http://127.0.0.1:8000/profile/mia-carter
+    - main [ref=f63e31]:
+      - generic [ref=f63e32]:
+        - generic [ref=f63e33]:
+          - generic [ref=f63e34]:
+            - paragraph [ref=f63e35]: Portland meetups
+            - heading "Meet your neighborhood pack" [level=1] [ref=f63e36]
+            - paragraph [ref=f63e37]: Low-pressure walks and social time planned by nearby pet people.
+          - generic [ref=f63e38]:
+            - paragraph [ref=f63e39]: 3 meetups · Portland, OR
+            - button "Create meetup" [disabled] [ref=f63e40]
+        - region "Meetup schedule summary" [ref=f63e44]:
+          - generic [ref=f63e45]:
+            - generic [ref=f63e46]: Next
+            - paragraph [ref=f63e50]: Sat, Aug 1
+            - paragraph [ref=f63e51]: 10:00 AM
+          - generic [ref=f63e52]:
+            - generic [ref=f63e53]: Upcoming
+            - paragraph [ref=f63e60]: 3 meetups
+            - paragraph [ref=f63e61]: 38 going
+          - generic [ref=f63e62]:
+            - generic [ref=f63e63]: Closest
+            - paragraph [ref=f63e67]: 1.2 miles
+            - paragraph [ref=f63e68]: Laurelhurst
+        - region "Meetup filters" [ref=f63e69]:
+          - generic [ref=f63e70]:
+            - group "Meetup type filters" [ref=f63e71]:
+              - button "Upcoming" [disabled] [pressed] [ref=f63e72]
+              - button "Walks" [disabled] [ref=f63e73]
+              - button "Social" [disabled] [ref=f63e74]
+              - button "Indoor" [disabled] [ref=f63e75]
+            - button "Soonest first" [disabled] [ref=f63e76]
+        - region [ref=f63e81]:
+          - heading "Upcoming meetup results" [level=2] [ref=f63e82]
+          - generic [ref=f63e83]:
+            - article [ref=f63e84]:
+              - generic [ref=f63e85]:
+                - img "Small dogs meeting in a fenced neighborhood park" [ref=f63e86]
+                - generic [ref=f63e87]: Social
+                - time [ref=f63e88]:
+                  - generic [ref=f63e89]: SAT
+                  - generic [ref=f63e90]: "01"
+              - generic [ref=f63e91]:
+                - generic [ref=f63e92]:
+                  - time [ref=f63e93]: Sat, Aug 1 · 10:00 AM
+                  - generic [ref=f63e94]: 1.2 mi
+                - heading "Small dog social hour" [level=3] [ref=f63e98]
+                - paragraph [ref=f63e99]: A calm, fenced gathering with room for short introductions and plenty of breaks.
+                - generic [ref=f63e100]:
+                  - generic [ref=f63e101]: small dogs
+                  - generic [ref=f63e102]: fenced area
+                - generic [ref=f63e103]:
+                  - paragraph [ref=f63e104]:
+                    - generic [ref=f63e108]: Laurelhurst Park
+                  - paragraph [ref=f63e109]: Southeast Portland
+                - generic [ref=f63e110]:
+                  - generic [ref=f63e111]: JC
+                  - generic [ref=f63e112]:
+                    - paragraph [ref=f63e113]: Hosted by Jamie Cho
+                    - paragraph [ref=f63e114]:
+                      - generic [ref=f63e120]: 18 neighbors going
+                  - button "RSVP" [disabled] [ref=f63e121]
+            - article [ref=f63e125]:
+              - generic [ref=f63e126]:
+                - img "Pet owners taking a relaxed community walk through a park" [ref=f63e127]
+                - generic [ref=f63e128]: Coffee walk
+                - time [ref=f63e129]:
+                  - generic [ref=f63e130]: SUN
+                  - generic [ref=f63e131]: "02"
+              - generic [ref=f63e132]:
+                - generic [ref=f63e133]:
+                  - time [ref=f63e134]: Sun, Aug 2 · 9:30 AM
+                  - generic [ref=f63e135]: 2.4 mi
+                - heading "Rescue foster coffee walk" [level=3] [ref=f63e139]
+                - paragraph [ref=f63e140]: An easy loop for foster families, recent adopters, and dogs building city confidence.
+                - generic [ref=f63e141]:
+                  - generic [ref=f63e142]: foster friendly
+                  - generic [ref=f63e143]: easy pace
+                - generic [ref=f63e144]:
+                  - paragraph [ref=f63e145]:
+                    - generic [ref=f63e149]: Tabor Commons
+                  - paragraph [ref=f63e150]: Mount Tabor
+                - generic [ref=f63e151]:
+                  - generic [ref=f63e152]: LB
+                  - generic [ref=f63e153]:
+                    - paragraph [ref=f63e154]: Hosted by Lena Brooks
+                    - paragraph [ref=f63e155]:
+                      - generic [ref=f63e161]: 12 neighbors going
+                  - button "RSVP" [disabled] [ref=f63e162]
+            - article [ref=f63e166]:
+              - generic [ref=f63e167]:
+                - img "Small dogs exploring an autumn park together" [ref=f63e168]
+                - generic [ref=f63e169]: Slow walk
+                - time [ref=f63e170]:
+                  - generic [ref=f63e171]: WED
+                  - generic [ref=f63e172]: "05"
+              - generic [ref=f63e173]:
+                - generic [ref=f63e174]:
+                  - time [ref=f63e175]: Wed, Aug 5 · 6:00 PM
+                  - generic [ref=f63e176]: 3.1 mi
+                - heading "Calm senior dog stroll" [level=3] [ref=f63e180]
+                - paragraph [ref=f63e181]: A shaded riverside route with a gentle pace and frequent sniff stops.
+                - generic [ref=f63e182]:
+                  - generic [ref=f63e183]: senior pets
+                  - generic [ref=f63e184]: shaded route
+                - generic [ref=f63e185]:
+                  - paragraph [ref=f63e186]:
+                    - generic [ref=f63e190]: Sellwood Riverfront Park
+                  - paragraph [ref=f63e191]: Sellwood
+                - generic [ref=f63e192]:
+                  - generic [ref=f63e193]: NP
+                  - generic [ref=f63e194]:
+                    - paragraph [ref=f63e195]: Hosted by Noah Patel
+                    - paragraph [ref=f63e196]:
+                      - generic [ref=f63e202]: 8 neighbors going
+                  - button "RSVP" [disabled] [ref=f63e203]

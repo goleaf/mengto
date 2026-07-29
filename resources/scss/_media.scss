@@ -1,0 +1,67 @@
+@use 'tokens' as *;
+
+.pc-avatar {
+    display: block;
+    aspect-ratio: 1;
+    flex: none;
+    object-fit: cover;
+
+    &--header {
+        inline-size: 2.5rem;
+        block-size: 2.5rem;
+    }
+
+    &--thread {
+        inline-size: 2.75rem;
+        block-size: 2.75rem;
+    }
+
+    &--compact {
+        inline-size: 3rem;
+        block-size: 3rem;
+    }
+
+    &--profile {
+        inline-size: 4rem;
+        block-size: 4rem;
+    }
+
+    &--circle {
+        border-radius: 50%;
+    }
+
+    &--square {
+        border-radius: $control-radius;
+    }
+}
+
+.pc-initials-avatar {
+    display: grid;
+    inline-size: 2.25rem;
+    block-size: 2.25rem;
+    flex: none;
+    place-items: center;
+    border-radius: 50%;
+    font-size: 0.75rem;
+    font-weight: 600;
+
+    &--regular {
+        inline-size: 2.5rem;
+        block-size: 2.5rem;
+    }
+
+    &--sun {
+        background: var(--color-paw-sun);
+        color: $ink;
+    }
+
+    &--mint {
+        background: $mint;
+        color: $leaf;
+    }
+
+    &--paper {
+        background: $paper;
+        color: $muted;
+    }
+}

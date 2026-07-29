@@ -1,0 +1,137 @@
+@use 'tokens' as *;
+
+.pc-icon {
+    inline-size: 1.125rem;
+    block-size: 1.125rem;
+    flex: none;
+    stroke-width: 1.9;
+
+    &--sm {
+        inline-size: 1rem;
+        block-size: 1rem;
+    }
+}
+
+.pc-panel {
+    border: 1px solid $line;
+    border-radius: $panel-radius;
+    background: $white;
+    box-shadow: $control-shadow;
+
+    &--clip {
+        overflow: hidden;
+    }
+
+    &--padded {
+        padding: 1.25rem;
+    }
+
+    &--padded-sm {
+        padding: 1rem;
+    }
+}
+
+.pc-panel-heading {
+    display: flex;
+    min-inline-size: 0;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.75rem;
+
+    &__content {
+        min-inline-size: 0;
+    }
+
+    &__title {
+        color: $ink;
+        font-size: 0.875rem;
+        font-weight: 600;
+        line-height: 1.25rem;
+        overflow-wrap: anywhere;
+    }
+
+    &__aside {
+        display: flex;
+        flex: none;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    &__meta {
+        color: $muted;
+        font-size: 0.75rem;
+        font-weight: 600;
+        line-height: 1.25rem;
+        white-space: nowrap;
+    }
+}
+
+.pc-tag-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+
+    &--reserved {
+        min-block-size: 1.75rem;
+    }
+
+    &--roomy {
+        .pc-tag {
+            padding-block: 0.375rem;
+        }
+    }
+
+    &__empty {
+        color: $muted;
+        font-size: 0.75rem;
+    }
+}
+
+@media (max-width: 22.4375rem) {
+    .pc-panel-heading {
+        flex-direction: column;
+
+        &__aside {
+            inline-size: 100%;
+        }
+    }
+}
+
+.pc-tag {
+    max-inline-size: 100%;
+    border-radius: $control-radius;
+    background: $mint;
+    padding: 0.25rem 0.625rem;
+    color: $leaf;
+    font-size: 0.75rem;
+    font-weight: 600;
+    overflow-wrap: anywhere;
+}
+
+.pc-meta {
+    display: inline-flex;
+    min-inline-size: 0;
+    align-items: center;
+    gap: 0.375rem;
+    color: $muted;
+    font-size: 0.75rem;
+    font-weight: 600;
+
+    &--accent {
+        color: $leaf;
+    }
+
+    &--strong {
+        color: $ink;
+        font-size: 0.875rem;
+    }
+
+    &--nowrap {
+        white-space: nowrap;
+    }
+
+    span {
+        min-inline-size: 0;
+        overflow-wrap: anywhere;
+    }
+}

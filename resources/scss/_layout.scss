@@ -1,0 +1,150 @@
+@use 'tokens' as *;
+
+.pc-page-header {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    border-block-end: 1px solid $line;
+    padding-block-end: 1.25rem;
+
+    &__content {
+        max-inline-size: 42rem;
+    }
+
+    &__eyebrow {
+        color: $leaf;
+        font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 0;
+        text-transform: uppercase;
+    }
+
+    &__title {
+        margin-block-start: 0.5rem;
+        color: $ink;
+        font-size: 1.5rem;
+        font-weight: 600;
+        line-height: 1.2;
+        overflow-wrap: anywhere;
+        text-wrap: balance;
+    }
+
+    &__description {
+        max-inline-size: 70ch;
+        margin-block-start: 0.5rem;
+        color: $muted;
+        font-size: 0.875rem;
+        line-height: 1.5rem;
+        text-wrap: pretty;
+    }
+
+    &__aside {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+
+    &__count {
+        color: $muted;
+        font-size: 0.875rem;
+        font-weight: 600;
+    }
+}
+
+.pc-section-heading {
+    &__eyebrow {
+        color: $leaf;
+        font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 0;
+        line-height: 1rem;
+        text-transform: uppercase;
+
+        &--coral {
+            color: $coral;
+        }
+    }
+
+    &__title {
+        margin-block-start: 0.5rem;
+        color: $ink;
+        font-size: 1.25rem;
+        font-weight: 600;
+        line-height: 1.5rem;
+        overflow-wrap: anywhere;
+        text-wrap: balance;
+
+        &--compact {
+            font-size: 1rem;
+            line-height: 1.25rem;
+        }
+
+        &--directory {
+            margin-block-start: 0.25rem;
+            font-size: 1.125rem;
+            line-height: 1.5rem;
+        }
+    }
+}
+
+.pc-empty-state {
+    display: flex;
+    min-inline-size: 0;
+    flex-direction: column;
+    align-items: center;
+    border: 1px dashed $line;
+    border-radius: $panel-radius;
+    background: $white;
+    padding: 2rem 1.25rem;
+    text-align: center;
+
+    &--compact {
+        padding: 1.25rem;
+    }
+
+    &__icon {
+        display: grid;
+        inline-size: 2.75rem;
+        block-size: 2.75rem;
+        place-items: center;
+        border-radius: 50%;
+        background: $mint;
+        color: $leaf;
+    }
+
+    &__title {
+        margin-block-start: 0.75rem;
+        color: $ink;
+        font-size: 1rem;
+        font-weight: 600;
+        line-height: 1.25rem;
+        overflow-wrap: anywhere;
+        text-wrap: balance;
+    }
+
+    &__description {
+        max-inline-size: 32rem;
+        margin-block-start: 0.5rem;
+        color: $muted;
+        font-size: 0.875rem;
+        line-height: 1.375rem;
+        text-wrap: pretty;
+    }
+}
+
+@media (min-width: 40rem) {
+    .pc-page-header {
+        flex-direction: row;
+        align-items: flex-end;
+        justify-content: space-between;
+
+        &__title {
+            font-size: 1.875rem;
+        }
+
+        &__aside {
+            align-items: flex-end;
+        }
+    }
+}

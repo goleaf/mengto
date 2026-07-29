@@ -1,0 +1,144 @@
+- generic [active] [ref=f33e1]:
+  - link "Skip to content" [ref=f33e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=f33e3]:
+    - banner [ref=f33e4]:
+      - generic [ref=f33e5]:
+        - link "PawCircle home" [ref=f33e6] [cursor=pointer]:
+          - /url: https://mengto.test
+          - generic [ref=f33e7]: PC
+          - generic [ref=f33e8]: PawCircle
+        - navigation "Primary navigation" [ref=f33e9]:
+          - link "Feed" [ref=f33e10] [cursor=pointer]:
+            - /url: https://mengto.test
+          - link "Pets" [ref=f33e11] [cursor=pointer]:
+            - /url: https://mengto.test/pets
+          - link "Meetups" [ref=f33e12] [cursor=pointer]:
+            - /url: https://mengto.test/meetups
+          - link "Groups" [ref=f33e13] [cursor=pointer]:
+            - /url: https://mengto.test/groups
+          - link "Neighbors" [ref=f33e14] [cursor=pointer]:
+            - /url: https://mengto.test/neighbors
+        - generic [ref=f33e15]:
+          - generic [ref=f33e16]: Search PawCircle
+          - searchbox "Search PawCircle" [disabled] [ref=f33e17]: Parks, sitters, breeds, routines
+        - generic [ref=f33e18]:
+          - button "Notifications" [disabled] [ref=f33e19]: Bell
+          - button "Messages" [disabled] [ref=f33e20]: Msg
+          - img "Mia Carter" [ref=f33e21]
+    - main [ref=f33e22]:
+      - generic [ref=f33e23]:
+        - generic [ref=f33e24]:
+          - generic [ref=f33e25]:
+            - paragraph [ref=f33e26]: Portland neighbors
+            - heading "Meet the people behind the pets" [level=1] [ref=f33e27]
+            - paragraph [ref=f33e28]: Find nearby owners who share your routes, routines, and approach to everyday care.
+          - generic [ref=f33e29]:
+            - paragraph [ref=f33e30]: 4 people · Portland, OR
+            - button "Invite friends" [disabled] [ref=f33e31]
+        - region "Neighbor summary" [ref=f33e32]:
+          - generic [ref=f33e33]:
+            - paragraph [ref=f33e34]: Closest
+            - paragraph [ref=f33e35]: 0.8 mi
+            - paragraph [ref=f33e36]: Pearl District
+          - generic [ref=f33e37]:
+            - paragraph [ref=f33e38]: Shared circles
+            - paragraph [ref=f33e39]: "7"
+            - paragraph [ref=f33e40]: across PawCircle
+          - generic [ref=f33e41]:
+            - paragraph [ref=f33e42]: Pets
+            - paragraph [ref=f33e43]: "4"
+            - paragraph [ref=f33e44]: dogs, cats & rabbits
+        - region "Neighbor filters" [ref=f33e45]:
+          - generic [ref=f33e46]:
+            - group "Neighbor category filters" [ref=f33e47]:
+              - button "Recommended" [disabled] [pressed] [ref=f33e48]
+              - button "Dog people" [disabled] [ref=f33e49]
+              - button "Cat people" [disabled] [ref=f33e50]
+              - button "Foster network" [disabled] [ref=f33e51]
+            - button "Closest first" [disabled] [ref=f33e52]
+        - region [ref=f33e53]:
+          - heading "People nearby" [level=2] [ref=f33e54]
+          - generic [ref=f33e55]:
+            - article [ref=f33e56]:
+              - generic [ref=f33e57]:
+                - img "Ari relaxing with Mochi in a neighborhood park" [ref=f33e58]
+                - generic [ref=f33e59]: Dog walks
+              - generic [ref=f33e60]:
+                - generic [ref=f33e61]:
+                  - generic [ref=f33e62]: Pearl District
+                  - generic [ref=f33e63]: 0.8 mi
+                - heading [level=3] [ref=f33e64]:
+                  - link "Ari Jensen" [ref=f33e65] [cursor=pointer]:
+                    - /url: https://mengto.test/neighbors/ari-jensen
+                - paragraph [ref=f33e66]: Mochi · Shiba mix
+                - paragraph [ref=f33e67]: Open to calm cafe walks
+                - generic [ref=f33e68]:
+                  - generic [ref=f33e69]: city walks
+                  - generic [ref=f33e70]: training
+                - generic [ref=f33e71]:
+                  - generic [ref=f33e72]:
+                    - generic [ref=f33e73]: PC
+                    - generic [ref=f33e74]: "+4"
+                  - paragraph [ref=f33e75]: 4 mutual neighbors
+                  - button "Follow" [disabled] [ref=f33e76]
+            - article [ref=f33e77]:
+              - generic [ref=f33e78]:
+                - img "Noah practicing with a small dog in a wooded park" [ref=f33e79]
+                - generic [ref=f33e80]: Senior care
+              - generic [ref=f33e81]:
+                - generic [ref=f33e82]:
+                  - generic [ref=f33e83]: Sellwood
+                  - generic [ref=f33e84]: 1.7 mi
+                - heading "Noah Patel" [level=3] [ref=f33e85]
+                - paragraph [ref=f33e86]: Juniper · Senior retriever
+                - paragraph [ref=f33e87]: Usually out before sunset
+                - generic [ref=f33e88]:
+                  - generic [ref=f33e89]: senior pets
+                  - generic [ref=f33e90]: shaded routes
+                - generic [ref=f33e91]:
+                  - generic [ref=f33e92]:
+                    - generic [ref=f33e93]: PC
+                    - generic [ref=f33e94]: "+3"
+                  - paragraph [ref=f33e95]: 3 mutual neighbors
+                  - button "Follow" [disabled] [ref=f33e96]
+            - article [ref=f33e97]:
+              - generic [ref=f33e98]:
+                - img "Lena holding a white kitten at home" [ref=f33e99]
+                - generic [ref=f33e100]: Cat people
+              - generic [ref=f33e101]:
+                - generic [ref=f33e102]:
+                  - generic [ref=f33e103]: Alberta Arts
+                  - generic [ref=f33e104]: 2.1 mi
+                - heading "Lena Brooks" [level=3] [ref=f33e105]
+                - paragraph [ref=f33e106]: Pip · Domestic shorthair
+                - paragraph [ref=f33e107]: Sharing foster setup notes
+                - generic [ref=f33e108]:
+                  - generic [ref=f33e109]: cat care
+                  - generic [ref=f33e110]: fostering
+                - generic [ref=f33e111]:
+                  - generic [ref=f33e112]:
+                    - generic [ref=f33e113]: PC
+                    - generic [ref=f33e114]: "+5"
+                  - paragraph [ref=f33e115]: 5 mutual neighbors
+                  - button "Follow" [disabled] [ref=f33e116]
+            - article [ref=f33e117]:
+              - generic [ref=f33e118]:
+                - img "Priya holding a spotted rabbit indoors" [ref=f33e119]
+                - generic [ref=f33e120]: Small pets
+              - generic [ref=f33e121]:
+                - generic [ref=f33e122]:
+                  - generic [ref=f33e123]: St. Johns
+                  - generic [ref=f33e124]: 3.8 mi
+                - heading "Priya Shah" [level=3] [ref=f33e125]
+                - paragraph [ref=f33e126]: Clover · Mini Lop mix
+                - paragraph [ref=f33e127]: Garden routines and quiet care
+                - generic [ref=f33e128]:
+                  - generic [ref=f33e129]: rabbits
+                  - generic [ref=f33e130]: garden time
+                - generic [ref=f33e131]:
+                  - generic [ref=f33e132]:
+                    - generic [ref=f33e133]: PC
+                    - generic [ref=f33e134]: "+2"
+                  - paragraph [ref=f33e135]: 2 mutual neighbors
+                  - button "Follow" [disabled] [ref=f33e136]

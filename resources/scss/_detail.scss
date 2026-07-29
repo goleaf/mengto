@@ -1,0 +1,150 @@
+@use 'tokens' as *;
+
+.pc-detail-page,
+.pc-detail-main,
+.pc-detail-sidebar {
+    display: grid;
+    min-inline-size: 0;
+    align-content: start;
+    gap: 1.25rem;
+}
+
+.pc-detail-layout {
+    display: grid;
+    min-inline-size: 0;
+    align-items: start;
+    gap: 1.25rem;
+}
+
+.pc-detail-hero {
+    &__cover {
+        inline-size: 100%;
+        aspect-ratio: 4 / 3;
+        object-fit: cover;
+    }
+
+    &__body {
+        padding: 1.25rem;
+    }
+
+    &__heading-row {
+        display: grid;
+        gap: 1rem;
+    }
+
+    &__identity {
+        min-inline-size: 0;
+        max-inline-size: 46rem;
+    }
+
+    &__eyebrow,
+    &__meta-item {
+        color: $leaf;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+
+    &__eyebrow {
+        line-height: 1rem;
+        text-transform: uppercase;
+    }
+
+    &__title {
+        margin-block-start: 0.375rem;
+        color: $ink;
+        font-size: 1.75rem;
+        font-weight: 600;
+        line-height: 2.125rem;
+        overflow-wrap: anywhere;
+        text-wrap: balance;
+    }
+
+    &__description {
+        max-inline-size: 65ch;
+        margin-block-start: 0.625rem;
+        color: $muted;
+        font-size: 0.875rem;
+        line-height: 1.5rem;
+        text-wrap: pretty;
+    }
+
+    &__actions {
+        min-inline-size: 0;
+    }
+
+    &__meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.625rem 1.25rem;
+        margin-block-start: 1rem;
+        border-block-start: 1px solid $line;
+        padding-block-start: 1rem;
+    }
+
+    &__meta-item {
+        display: inline-flex;
+        min-inline-size: 0;
+        align-items: center;
+        gap: 0.375rem;
+        line-height: 1.25rem;
+
+        span,
+        time {
+            min-inline-size: 0;
+            overflow-wrap: anywhere;
+        }
+    }
+
+    &__meta-empty {
+        color: $muted;
+        font-size: 0.75rem;
+    }
+
+    &__tags {
+        margin-block-start: 1rem;
+    }
+}
+
+@media (min-width: 40rem) {
+    .pc-detail-hero {
+        &__cover {
+            aspect-ratio: 16 / 7;
+        }
+
+        &__body {
+            padding: 1.5rem;
+        }
+
+        &__title {
+            font-size: 2rem;
+            line-height: 2.375rem;
+        }
+    }
+}
+
+@media (min-width: 64rem) {
+    .pc-detail-hero {
+        &__cover {
+            aspect-ratio: 16 / 6;
+        }
+
+        &__heading-row {
+            grid-template-columns: minmax(0, 1fr) auto;
+            align-items: end;
+        }
+
+        &__actions {
+            min-inline-size: 15rem;
+        }
+    }
+
+    .pc-detail-layout {
+        grid-template-columns: minmax(0, 1fr) 20rem;
+    }
+}
+
+@media (max-width: 22.4375rem) {
+    .pc-detail-hero__actions {
+        grid-template-columns: 1fr;
+    }
+}

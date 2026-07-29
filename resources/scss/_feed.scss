@@ -1,0 +1,46 @@
+@use 'tokens' as *;
+
+.pc-card-icon-button {
+    display: grid;
+    inline-size: 2.25rem;
+    block-size: 2.25rem;
+    flex: none;
+    place-items: center;
+    color: $muted;
+
+    @include control-frame;
+    @include disabled-control;
+}
+
+
+.pc-feed-actions {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    border-block-start: 1px solid $line;
+    background: $paper;
+}
+
+.pc-feed-action {
+    display: inline-flex;
+    min-inline-size: 0;
+    min-block-size: 2.75rem;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25rem;
+    padding-inline: 0.25rem;
+    color: $muted;
+    font-size: 0.75rem;
+    font-weight: 600;
+
+    & + & {
+        border-inline-start: 1px solid $line;
+    }
+
+    span {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    @include disabled-control;
+}

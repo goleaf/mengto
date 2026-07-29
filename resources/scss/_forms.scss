@@ -1,0 +1,87 @@
+@use 'tokens' as *;
+
+.pc-field-wrap {
+    position: relative;
+    color: $muted;
+
+    > .pc-icon {
+        position: absolute;
+        inset-block-start: 50%;
+        inset-inline-start: 0.75rem;
+        z-index: 1;
+        pointer-events: none;
+        transform: translateY(-50%);
+    }
+}
+
+.pc-field {
+    inline-size: 100%;
+    min-block-size: 2.5rem;
+    background: $paper;
+    padding: 0.625rem 0.75rem;
+    color: $muted;
+    font-size: 0.875rem;
+
+    @include control-frame;
+    @include disabled-control;
+
+    &::placeholder {
+        color: $muted;
+        opacity: 1;
+    }
+
+    &--with-icon {
+        padding-inline-start: 2.25rem;
+    }
+
+    &--textarea {
+        resize: none;
+    }
+}
+
+.pc-setting-option {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    border-block-end: 1px solid $line;
+    padding-block: 0.75rem;
+
+    &:first-child {
+        padding-block-start: 0;
+    }
+
+    &:last-child {
+        border-block-end: 0;
+        padding-block-end: 0;
+    }
+
+    &__control {
+        inline-size: 1rem;
+        block-size: 1rem;
+        flex: none;
+        margin-block-start: 0.125rem;
+        accent-color: $leaf;
+
+        @include disabled-control;
+    }
+
+    &__content {
+        min-inline-size: 0;
+    }
+
+    &__label {
+        display: block;
+        color: $ink;
+        font-size: 0.875rem;
+        font-weight: 600;
+        line-height: 1.25rem;
+    }
+
+    &__description {
+        display: block;
+        margin-block-start: 0.25rem;
+        color: $muted;
+        font-size: 0.75rem;
+        line-height: 1.25rem;
+    }
+}

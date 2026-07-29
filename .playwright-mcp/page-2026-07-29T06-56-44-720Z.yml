@@ -1,0 +1,169 @@
+- generic [active] [ref=f42e1]:
+  - link "Skip to content" [ref=f42e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=f42e3]:
+    - banner [ref=f42e4]:
+      - generic [ref=f42e5]:
+        - link "PawCircle home" [ref=f42e6] [cursor=pointer]:
+          - /url: https://mengto.test
+          - generic [ref=f42e7]: PC
+          - generic [ref=f42e8]: PawCircle
+        - generic [ref=f42e9]:
+          - link "Notifications" [ref=f42e10] [cursor=pointer]:
+            - /url: https://mengto.test/notifications
+            - text: Bell
+          - link "Messages" [ref=f42e11] [cursor=pointer]:
+            - /url: https://mengto.test/messages
+            - text: Mail
+          - img "Mia Carter" [ref=f42e12]
+    - main [ref=f42e13]:
+      - generic [ref=f42e14]:
+        - generic [ref=f42e15]:
+          - generic [ref=f42e16]:
+            - paragraph [ref=f42e17]: Local discovery
+            - heading "Find your next pet-friendly plan" [level=1] [ref=f42e18]
+            - paragraph [ref=f42e19]: A focused mix of nearby pets, people, walks, and circles that match your pace.
+          - generic [ref=f42e20]:
+            - paragraph [ref=f42e21]: 4 top matches
+            - button "Search again" [disabled] [ref=f42e22]
+        - region [ref=f42e23]:
+          - generic [ref=f42e24]:
+            - generic [ref=f42e25]:
+              - paragraph [ref=f42e26]: Showing matches for
+              - paragraph [ref=f42e27]: “calm weekend walks”
+            - paragraph [ref=f42e28]: Richmond · within 5 miles
+          - group "Discover category filters" [ref=f42e29]:
+            - button "Top matches" [disabled] [pressed] [ref=f42e30]
+            - button "Pets" [disabled] [ref=f42e31]
+            - button "People" [disabled] [ref=f42e32]
+            - button "Meetups" [disabled] [ref=f42e33]
+            - button "Groups" [disabled] [ref=f42e34]
+        - generic [ref=f42e35]:
+          - region [ref=f42e36]:
+            - generic [ref=f42e37]:
+              - generic [ref=f42e38]:
+                - paragraph [ref=f42e39]: Best nearby
+                - heading "Top matches" [level=2] [ref=f42e40]
+              - paragraph [ref=f42e41]: Sorted for Mia & Scout
+            - generic [ref=f42e42]:
+              - article [ref=f42e43]:
+                - img "Scout, a black and white Border Collie, resting on grass" [ref=f42e44]
+                - generic [ref=f42e45]:
+                  - generic [ref=f42e46]:
+                    - paragraph [ref=f42e47]: Pet
+                    - paragraph [ref=f42e48]: Border Collie mix · Richmond
+                  - heading [level=3] [ref=f42e49]:
+                    - link "Scout" [ref=f42e50] [cursor=pointer]:
+                      - /url: https://mengto.test/pets/scout
+                  - paragraph [ref=f42e51]: Available for park walks. A bright, social companion who likes focused games and roomy park loops.
+                  - generic [ref=f42e52]:
+                    - generic [ref=f42e53]: high energy
+                    - generic [ref=f42e54]: trail walks
+                  - paragraph [ref=f42e55]: 4 years · with Mia Carter
+              - article [ref=f42e56]:
+                - img "Ari relaxing with Mochi in a neighborhood park" [ref=f42e57]
+                - generic [ref=f42e58]:
+                  - generic [ref=f42e59]:
+                    - paragraph [ref=f42e60]: Neighbor
+                    - paragraph [ref=f42e61]: Pearl District · 0.8 mi
+                  - heading [level=3] [ref=f42e62]:
+                    - link "Ari Jensen" [ref=f42e63] [cursor=pointer]:
+                      - /url: https://mengto.test/neighbors/ari-jensen
+                  - paragraph [ref=f42e64]: Open to calm cafe walks. Usually planning easy neighborhood routes with Mochi · Shiba mix.
+                  - generic [ref=f42e65]:
+                    - generic [ref=f42e66]: city walks
+                    - generic [ref=f42e67]: training
+                  - paragraph [ref=f42e68]: 4 mutual neighbors
+              - article [ref=f42e69]:
+                - img "Small dogs exploring an autumn park together" [ref=f42e70]
+                - generic [ref=f42e71]:
+                  - generic [ref=f42e72]:
+                    - paragraph [ref=f42e73]: Meetup
+                    - paragraph [ref=f42e74]: Wed, Aug 5 · 6:00 PM
+                  - heading [level=3] [ref=f42e75]:
+                    - link "Calm senior dog stroll" [ref=f42e76] [cursor=pointer]:
+                      - /url: https://mengto.test/meetups
+                  - paragraph [ref=f42e77]: A shaded riverside route with a gentle pace and frequent sniff stops.
+                  - generic [ref=f42e78]:
+                    - generic [ref=f42e79]: senior pets
+                    - generic [ref=f42e80]: shaded route
+                  - paragraph [ref=f42e81]: Sellwood Riverfront Park · 3.1 mi
+              - article [ref=f42e82]:
+                - img "Dogs running together in a neighborhood park" [ref=f42e83]
+                - generic [ref=f42e84]:
+                  - generic [ref=f42e85]:
+                    - paragraph [ref=f42e86]: Group
+                    - paragraph [ref=f42e87]: Local hikes and safety
+                  - heading [level=3] [ref=f42e88]:
+                    - link "Trail Tails" [ref=f42e89] [cursor=pointer]:
+                      - /url: https://mengto.test/groups
+                  - paragraph [ref=f42e90]: Plan trail days, share seasonal conditions, and compare low-stress routes around Portland.
+                  - generic [ref=f42e91]:
+                    - generic [ref=f42e92]: trail walks
+                    - generic [ref=f42e93]: route reports
+                  - paragraph [ref=f42e94]: 8.1k members · 214 posts this week
+          - complementary [ref=f42e95]:
+            - generic [ref=f42e96]:
+              - paragraph [ref=f42e97]: Local pulse
+              - heading "Around you now" [level=2] [ref=f42e98]
+              - generic [ref=f42e99]:
+                - generic [ref=f42e100]:
+                  - definition [ref=f42e101]: "27"
+                  - generic [ref=f42e102]:
+                    - term [ref=f42e103]: Walk plans
+                    - paragraph [ref=f42e104]: this week
+                - generic [ref=f42e105]:
+                  - definition [ref=f42e106]: "14"
+                  - generic [ref=f42e107]:
+                    - term [ref=f42e108]: Fresh posts
+                    - paragraph [ref=f42e109]: near Richmond
+                - generic [ref=f42e110]:
+                  - definition [ref=f42e111]: "9"
+                  - generic [ref=f42e112]:
+                    - term [ref=f42e113]: New neighbors
+                    - paragraph [ref=f42e114]: within 5 miles
+            - generic [ref=f42e115]:
+              - paragraph [ref=f42e116]: Popular this week
+              - heading "Topics nearby" [level=2] [ref=f42e117]
+              - list [ref=f42e118]:
+                - listitem [ref=f42e119]:
+                  - generic [ref=f42e120]: "1"
+                  - generic [ref=f42e121]:
+                    - paragraph [ref=f42e122]: Shaded summer routes
+                    - paragraph [ref=f42e123]: Walks · 46 posts
+                - listitem [ref=f42e124]:
+                  - generic [ref=f42e125]: "2"
+                  - generic [ref=f42e126]:
+                    - paragraph [ref=f42e127]: Calm dog introductions
+                    - paragraph [ref=f42e128]: Care · 31 posts
+                - listitem [ref=f42e129]:
+                  - generic [ref=f42e130]: "3"
+                  - generic [ref=f42e131]:
+                    - paragraph [ref=f42e132]: Indoor cat enrichment
+                    - paragraph [ref=f42e133]: Cats · 28 posts
+                - listitem [ref=f42e134]:
+                  - generic [ref=f42e135]: "4"
+                  - generic [ref=f42e136]:
+                    - paragraph [ref=f42e137]: Foster supply swaps
+                    - paragraph [ref=f42e138]: Community · 19 posts
+            - generic [ref=f42e139]:
+              - img "Small dogs meeting in a fenced neighborhood park" [ref=f42e140]
+              - generic [ref=f42e141]:
+                - paragraph [ref=f42e142]: This weekend
+                - heading "Small dog social hour" [level=2] [ref=f42e143]
+                - paragraph [ref=f42e144]: Sat, Aug 1 · 10:00 AM
+                - paragraph [ref=f42e145]: Laurelhurst Park
+    - navigation "Mobile preview navigation" [ref=f42e146]:
+      - generic [ref=f42e147]:
+        - link "Feed" [ref=f42e148] [cursor=pointer]:
+          - /url: https://mengto.test
+        - link "Pets" [ref=f42e149] [cursor=pointer]:
+          - /url: https://mengto.test/pets
+        - link "Meet" [ref=f42e150] [cursor=pointer]:
+          - /url: https://mengto.test/meetups
+        - link "Groups" [ref=f42e151] [cursor=pointer]:
+          - /url: https://mengto.test/groups
+        - link "People" [ref=f42e152] [cursor=pointer]:
+          - /url: https://mengto.test/neighbors
+        - link "Find" [ref=f42e153] [cursor=pointer]:
+          - /url: https://mengto.test/discover

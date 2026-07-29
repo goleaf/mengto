@@ -1,0 +1,25 @@
+@import 'tailwindcss' source(none);
+
+@source '../views/pet-social/**/*.blade.php';
+@source '../views/components/pet-social/**/*.blade.php';
+
+@theme {
+    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+        'Segoe UI Symbol', 'Noto Color Emoji';
+    --color-paw-cream: #f7f4ed;
+    --color-paw-paper: #fbfaf6;
+    --color-paw-ink: #27312f;
+    --color-paw-muted: #66706b;
+    --color-paw-line: #dedbd0;
+    --color-paw-leaf: #24745d;
+    --color-paw-mint: #e2f3eb;
+    --color-paw-coral: #b44739;
+    --color-paw-sun: #f5df91;
+}
+
+@layer base {
+    body {
+        background: var(--color-paw-cream);
+        color: var(--color-paw-ink);
+    }
+}

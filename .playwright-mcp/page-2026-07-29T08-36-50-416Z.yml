@@ -1,0 +1,142 @@
+- generic [active] [ref=f83e1]:
+  - link "Skip to content" [ref=f83e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=f83e3]:
+    - banner [ref=f83e4]:
+      - generic [ref=f83e5]:
+        - link "PawCircle home" [ref=f83e6] [cursor=pointer]:
+          - /url: http://127.0.0.1:8000
+          - generic [ref=f83e7]: PC
+          - generic [ref=f83e8]: PawCircle
+        - generic [ref=f83e9]:
+          - link "Notifications" [ref=f83e10] [cursor=pointer]:
+            - /url: http://127.0.0.1:8000/notifications
+          - link "Messages" [ref=f83e14] [cursor=pointer]:
+            - /url: http://127.0.0.1:8000/messages
+          - link "Mia Carter profile" [ref=f83e18] [cursor=pointer]:
+            - /url: http://127.0.0.1:8000/profile/mia-carter
+    - main [ref=f83e19]:
+      - generic [ref=f83e20]:
+        - generic [ref=f83e21]:
+          - img "Scout enjoying an outdoor walk" [ref=f83e22]
+          - generic [ref=f83e23]:
+            - generic [ref=f83e24]:
+              - img "Scout" [ref=f83e25]
+              - generic [ref=f83e26]:
+                - paragraph [ref=f83e27]: Dog
+                - heading "Scout" [level=1] [ref=f83e28]
+                - paragraph [ref=f83e29]: Border Collie mix · 4 years · Portland, OR
+              - button "Plan a walk" [disabled] [ref=f83e30]
+            - generic [ref=f83e35]: Available for park walks
+        - generic [ref=f83e40]:
+          - generic [ref=f83e41]:
+            - generic [ref=f83e42]:
+              - paragraph [ref=f83e43]: Life with Scout
+              - heading "About Scout" [level=2] [ref=f83e44]
+            - paragraph [ref=f83e45]: Scout is happiest when a walk has a destination, a few new smells, and enough time to watch the world. At home, he settles quickly beside Mia and takes his role as window lookout very seriously.
+          - complementary [ref=f83e46]:
+            - generic [ref=f83e47]:
+              - heading "Care profile" [level=2] [ref=f83e48]
+              - generic [ref=f83e49]:
+                - generic [ref=f83e50]:
+                  - term [ref=f83e51]: Energy
+                  - definition [ref=f83e52]: High, with a calm indoor routine
+                - generic [ref=f83e53]:
+                  - term [ref=f83e54]: Size
+                  - definition [ref=f83e55]: Medium / 42 lb
+                - generic [ref=f83e56]:
+                  - term [ref=f83e57]: Best walk
+                  - definition [ref=f83e58]: 45-60 minutes
+                - generic [ref=f83e59]:
+                  - term [ref=f83e60]: Vaccinations
+                  - definition [ref=f83e61]: Up to date
+                - generic [ref=f83e62]:
+                  - term [ref=f83e63]: Food note
+                  - definition [ref=f83e64]: Chicken-free treats
+            - generic [ref=f83e65]:
+              - heading "Good company" [level=2] [ref=f83e66]
+              - generic [ref=f83e67]:
+                - generic [ref=f83e68]:
+                  - term [ref=f83e69]: Dogs
+                  - definition [ref=f83e70]: Friendly after a calm hello
+                - generic [ref=f83e71]:
+                  - term [ref=f83e72]: Children
+                  - definition [ref=f83e73]: Comfortable with older children
+                - generic [ref=f83e74]:
+                  - term [ref=f83e75]: Cats
+                  - definition [ref=f83e76]: Needs a slow introduction
+            - generic [ref=f83e77]:
+              - paragraph [ref=f83e78]: Lives with
+              - generic [ref=f83e79]:
+                - img "Mia Carter" [ref=f83e80]
+                - generic [ref=f83e81]:
+                  - heading "Mia Carter" [level=2] [ref=f83e82]
+                  - paragraph [ref=f83e83]:
+                    - generic [ref=f83e87]: Portland, OR
+              - paragraph [ref=f83e88]: Weekend trail walker, foster volunteer, and keeper of two very opinionated companions.
+          - generic [ref=f83e89]:
+            - generic [ref=f83e90]:
+              - paragraph [ref=f83e91]: Field notes
+              - heading "Scout's gallery" [level=2] [ref=f83e92]
+            - generic [ref=f83e93]:
+              - figure "Waiting for one more throw." [ref=f83e94]:
+                - img "Scout lying in grass behind a tennis ball" [ref=f83e95]
+              - figure "Settling in after a neighborhood walk." [ref=f83e97]:
+                - img "Scout resting on a wooden porch" [ref=f83e98]
+              - figure "The catch that ended fetch practice." [ref=f83e100]:
+                - img "Scout catching a yellow frisbee on the grass" [ref=f83e101]
+          - generic [ref=f83e103]:
+            - generic [ref=f83e104]:
+              - paragraph [ref=f83e105]: From Mia
+              - heading "Recent moments" [level=2] [ref=f83e106]
+            - generic [ref=f83e107]:
+              - article [ref=f83e108]:
+                - generic [ref=f83e109]:
+                  - generic [ref=f83e110]:
+                    - generic [ref=f83e111]:
+                      - heading "Mia Carter" [level=3] [ref=f83e112]
+                      - paragraph [ref=f83e113]:
+                        - text: Scout ·
+                        - time [ref=f83e114]: Yesterday
+                    - button "More options" [disabled] [ref=f83e115]
+                  - paragraph [ref=f83e120]: Scout locked onto the yellow frisbee and caught it on the second try. The trip home was much quieter.
+                  - generic [ref=f83e121]:
+                    - generic [ref=f83e122]: fetch
+                    - generic [ref=f83e123]: Scout
+                - img "Scout catching a yellow frisbee on the grass" [ref=f83e124]
+                - generic [ref=f83e125]:
+                  - button "94 Paws" [disabled] [ref=f83e126]
+                  - button "16 Replies" [disabled] [ref=f83e133]
+                  - button "Share" [disabled] [ref=f83e137]
+              - article [ref=f83e145]:
+                - generic [ref=f83e146]:
+                  - generic [ref=f83e147]:
+                    - generic [ref=f83e148]:
+                      - heading "Mia Carter" [level=3] [ref=f83e149]
+                      - paragraph [ref=f83e150]:
+                        - text: Scout ·
+                        - time [ref=f83e151]: 4 days ago
+                    - button "More options" [disabled] [ref=f83e152]
+                  - paragraph [ref=f83e157]: After a calm neighborhood walk, Scout claimed the porch and watched the trees until dinner.
+                  - generic [ref=f83e158]:
+                    - generic [ref=f83e159]: slow afternoon
+                    - generic [ref=f83e160]: small wins
+                - img "Scout resting on a wooden porch" [ref=f83e161]
+                - generic [ref=f83e162]:
+                  - button "121 Paws" [disabled] [ref=f83e163]
+                  - button "21 Replies" [disabled] [ref=f83e170]
+                  - button "Share" [disabled] [ref=f83e174]
+    - navigation "Mobile preview navigation" [ref=f83e182]:
+      - generic [ref=f83e183]:
+        - link "Feed" [ref=f83e184] [cursor=pointer]:
+          - /url: http://127.0.0.1:8000
+        - link "Pets" [ref=f83e189] [cursor=pointer]:
+          - /url: http://127.0.0.1:8000/pets
+        - link "Meet" [ref=f83e196] [cursor=pointer]:
+          - /url: http://127.0.0.1:8000/meetups
+        - link "Group" [ref=f83e200] [cursor=pointer]:
+          - /url: http://127.0.0.1:8000/groups
+        - link "People" [ref=f83e206] [cursor=pointer]:
+          - /url: http://127.0.0.1:8000/neighbors
+        - link "Find" [ref=f83e211] [cursor=pointer]:
+          - /url: http://127.0.0.1:8000/discover

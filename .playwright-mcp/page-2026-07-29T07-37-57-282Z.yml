@@ -1,0 +1,154 @@
+- generic [active] [ref=f54e1]:
+  - link "Skip to content" [ref=f54e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=f54e3]:
+    - banner [ref=f54e4]:
+      - generic [ref=f54e5]:
+        - link "PawCircle home" [ref=f54e6] [cursor=pointer]:
+          - /url: http://127.0.0.1:8000
+          - generic [ref=f54e7]: PC
+          - generic [ref=f54e8]: PawCircle
+        - generic [ref=f54e9]:
+          - link "Notifications" [ref=f54e10] [cursor=pointer]:
+            - /url: http://127.0.0.1:8000/notifications
+          - link "Messages" [ref=f54e14] [cursor=pointer]:
+            - /url: http://127.0.0.1:8000/messages
+          - link "Mia Carter profile" [ref=f54e18] [cursor=pointer]:
+            - /url: http://127.0.0.1:8000/profile/mia-carter
+    - main [ref=f54e19]:
+      - generic [ref=f54e20]:
+        - generic [ref=f54e21]:
+          - generic [ref=f54e22]:
+            - paragraph [ref=f54e23]: Portland neighbors
+            - heading "Pets nearby" [level=1] [ref=f54e24]
+            - paragraph [ref=f54e25]: Meet companions whose routines, favorite places, and people overlap with yours.
+          - paragraph [ref=f54e26]: 6 companions across 5 neighborhoods
+        - region "Pet directory filters" [ref=f54e27]:
+          - generic [ref=f54e28]:
+            - generic [ref=f54e29]:
+              - generic [ref=f54e30]: Search pets
+              - searchbox "Search pets" [disabled] [ref=f54e32]
+            - group "Species filters" [ref=f54e33]:
+              - button "All pets" [disabled] [pressed] [ref=f54e34]
+              - button "Dogs" [disabled] [ref=f54e35]
+              - button "Cats" [disabled] [ref=f54e36]
+              - button "Small pets" [disabled] [ref=f54e37]
+            - button "Nearby first" [disabled] [ref=f54e38]
+        - region [ref=f54e43]:
+          - heading "Pet directory results" [level=2] [ref=f54e44]
+          - generic [ref=f54e45]:
+            - article [ref=f54e46]:
+              - generic [ref=f54e47]:
+                - img "Scout, a black and white Border Collie, resting on grass" [ref=f54e48]
+                - generic [ref=f54e49]: Dog
+              - generic [ref=f54e50]:
+                - generic [ref=f54e52]:
+                  - heading [level=2] [ref=f54e53]:
+                    - link "Scout" [ref=f54e54] [cursor=pointer]:
+                      - /url: http://127.0.0.1:8000/pets/scout
+                  - paragraph [ref=f54e55]: Border Collie mix · 4 years
+                - paragraph [ref=f54e56]: Available for park walks
+                - generic [ref=f54e57]:
+                  - generic [ref=f54e58]: high energy
+                  - generic [ref=f54e59]: trail walks
+                - generic [ref=f54e60]:
+                  - paragraph [ref=f54e61]: With Mia Carter
+                  - paragraph [ref=f54e62]: Richmond · Portland, OR
+                  - generic [ref=f54e63]:
+                    - link "View profile" [ref=f54e64] [cursor=pointer]:
+                      - /url: http://127.0.0.1:8000/pets/scout
+                    - button "Follow" [disabled] [ref=f54e68]
+            - article [ref=f54e73]:
+              - generic [ref=f54e74]:
+                - img "Nori, a tabby cat, looking toward the camera" [ref=f54e75]
+                - generic [ref=f54e76]: Cat
+              - generic [ref=f54e77]:
+                - generic [ref=f54e79]:
+                  - heading "Nori" [level=2] [ref=f54e80]
+                  - paragraph [ref=f54e81]: Tabby · 2 years
+                - paragraph [ref=f54e82]: Window-watching expert
+                - generic [ref=f54e83]:
+                  - generic [ref=f54e84]: indoor
+                  - generic [ref=f54e85]: curious
+                - generic [ref=f54e86]:
+                  - paragraph [ref=f54e87]: With Mia Carter
+                  - paragraph [ref=f54e88]: Richmond · Portland, OR
+                  - button "Follow" [disabled] [ref=f54e90]
+            - article [ref=f54e95]:
+              - generic [ref=f54e96]:
+                - img "Maple, a golden retriever, sitting outside with a flower" [ref=f54e97]
+                - generic [ref=f54e98]: Dog
+              - generic [ref=f54e99]:
+                - generic [ref=f54e101]:
+                  - heading "Maple" [level=2] [ref=f54e102]
+                  - paragraph [ref=f54e103]: Golden Retriever · 6 years
+                - paragraph [ref=f54e104]: Easy trail companion
+                - generic [ref=f54e105]:
+                  - generic [ref=f54e106]: calm
+                  - generic [ref=f54e107]: water fan
+                - generic [ref=f54e108]:
+                  - paragraph [ref=f54e109]: With Ari Jensen
+                  - paragraph [ref=f54e110]: Sellwood · Portland, OR
+                  - button "Follow" [disabled] [ref=f54e112]
+            - article [ref=f54e117]:
+              - generic [ref=f54e118]:
+                - img "Olive, a corgi, sitting on a sunny path" [ref=f54e119]
+                - generic [ref=f54e120]: Dog
+              - generic [ref=f54e121]:
+                - generic [ref=f54e123]:
+                  - heading "Olive" [level=2] [ref=f54e124]
+                  - paragraph [ref=f54e125]: Pembroke Corgi · 3 years
+                - paragraph [ref=f54e126]: Likes short social walks
+                - generic [ref=f54e127]:
+                  - generic [ref=f54e128]: small dog
+                  - generic [ref=f54e129]: social
+                - generic [ref=f54e130]:
+                  - paragraph [ref=f54e131]: With Jamie Cho
+                  - paragraph [ref=f54e132]: Alberta Arts · Portland, OR
+                  - button "Follow" [disabled] [ref=f54e134]
+            - article [ref=f54e139]:
+              - generic [ref=f54e140]:
+                - img "Pico, a green-cheek conure, perched on a camera tripod" [ref=f54e141]
+                - generic [ref=f54e142]: Bird
+              - generic [ref=f54e143]:
+                - generic [ref=f54e145]:
+                  - heading "Pico" [level=2] [ref=f54e146]
+                  - paragraph [ref=f54e147]: Green-cheek Conure · 5 years
+                - paragraph [ref=f54e148]: Quiet mornings, curious afternoons
+                - generic [ref=f54e149]:
+                  - generic [ref=f54e150]: indoor
+                  - generic [ref=f54e151]: talkative
+                - generic [ref=f54e152]:
+                  - paragraph [ref=f54e153]: With Sam Rivera
+                  - paragraph [ref=f54e154]: Hawthorne · Portland, OR
+                  - button "Follow" [disabled] [ref=f54e156]
+            - article [ref=f54e161]:
+              - generic [ref=f54e162]:
+                - img "Clover, a white rabbit, sitting in grass" [ref=f54e163]
+                - generic [ref=f54e164]: Rabbit
+              - generic [ref=f54e165]:
+                - generic [ref=f54e167]:
+                  - heading "Clover" [level=2] [ref=f54e168]
+                  - paragraph [ref=f54e169]: Mini Lop mix · 2 years
+                - paragraph [ref=f54e170]: Gentle garden observer
+                - generic [ref=f54e171]:
+                  - generic [ref=f54e172]: gentle
+                  - generic [ref=f54e173]: garden time
+                - generic [ref=f54e174]:
+                  - paragraph [ref=f54e175]: With Priya Shah
+                  - paragraph [ref=f54e176]: St. Johns · Portland, OR
+                  - button "Follow" [disabled] [ref=f54e178]
+    - navigation "Mobile preview navigation" [ref=f54e183]:
+      - generic [ref=f54e184]:
+        - link "Feed" [ref=f54e185] [cursor=pointer]:
+          - /url: http://127.0.0.1:8000
+        - link "Pets" [ref=f54e190] [cursor=pointer]:
+          - /url: http://127.0.0.1:8000/pets
+        - link "Meet" [ref=f54e197] [cursor=pointer]:
+          - /url: http://127.0.0.1:8000/meetups
+        - link "Group" [ref=f54e201] [cursor=pointer]:
+          - /url: http://127.0.0.1:8000/groups
+        - link "People" [ref=f54e207] [cursor=pointer]:
+          - /url: http://127.0.0.1:8000/neighbors
+        - link "Find" [ref=f54e212] [cursor=pointer]:
+          - /url: http://127.0.0.1:8000/discover

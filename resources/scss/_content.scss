@@ -1,0 +1,359 @@
+@use 'tokens' as *;
+
+%pc-content-title {
+    color: $ink;
+    font-size: 0.875rem;
+    font-weight: 600;
+    line-height: 1.25rem;
+    overflow-wrap: anywhere;
+}
+
+%pc-content-detail {
+    color: $muted;
+    font-size: 0.75rem;
+    line-height: 1.25rem;
+    overflow-wrap: anywhere;
+}
+
+%pc-content-empty {
+    color: $muted;
+    font-size: 0.875rem;
+}
+
+%pc-divided-item {
+    border-block-end: 1px solid $line;
+
+    &:first-child {
+        padding-block-start: 0;
+    }
+
+    &:last-child {
+        border-block-end: 0;
+        padding-block-end: 0;
+    }
+}
+
+.pc-section-copy {
+    max-inline-size: 75ch;
+    margin-block-start: 0.75rem;
+    color: $muted;
+    font-size: 0.875rem;
+    line-height: 1.75rem;
+    text-wrap: pretty;
+}
+
+.pc-section-body {
+    margin-block-start: 1rem;
+}
+
+.pc-promo-card {
+    &__image {
+        inline-size: 100%;
+        aspect-ratio: 3 / 2;
+        object-fit: cover;
+    }
+
+    &__body {
+        padding: 1.25rem;
+    }
+
+    &__date {
+        display: flex;
+        min-inline-size: 0;
+        align-items: center;
+        gap: 0.375rem;
+        margin-block-start: 0.75rem;
+        color: $leaf;
+        font-size: 0.875rem;
+        font-weight: 600;
+        line-height: 1.25rem;
+
+        span {
+            min-inline-size: 0;
+            overflow-wrap: anywhere;
+        }
+    }
+}
+
+
+.pc-status-badge {
+    display: inline-flex;
+    max-inline-size: 100%;
+    align-items: center;
+    justify-content: center;
+    gap: 0.375rem;
+    border-radius: $control-radius;
+    font-weight: 600;
+    line-height: 1;
+
+    > span {
+        min-inline-size: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    &--compact {
+        min-block-size: 1.75rem;
+        padding-inline: 0.625rem;
+        font-size: 0.75rem;
+    }
+
+    &--regular {
+        min-block-size: 2rem;
+        padding-inline: 0.75rem;
+        font-size: 0.875rem;
+    }
+
+    &--surface {
+        border: 1px solid rgb(255 255 255 / 70%);
+        background: rgb(255 255 255 / 90%);
+        color: $ink;
+        box-shadow: $control-shadow;
+    }
+
+    &--mint {
+        background: $mint;
+        color: $leaf;
+    }
+
+    &--sun {
+        background: var(--color-paw-sun);
+        color: $ink;
+    }
+
+    &--ink {
+        background: $ink;
+        color: $white;
+    }
+}
+
+.pc-definition-list {
+    &__item {
+        display: grid;
+        gap: 0.25rem;
+        padding-block: 0.75rem;
+
+        @extend %pc-divided-item;
+    }
+
+    &__term {
+        color: $muted;
+        font-size: 0.75rem;
+        font-weight: 600;
+        line-height: 1rem;
+        text-transform: uppercase;
+    }
+
+    &__value {
+        color: $ink;
+        font-size: 0.875rem;
+        line-height: 1.5rem;
+        overflow-wrap: anywhere;
+
+        &--strong {
+            font-weight: 600;
+        }
+    }
+}
+
+.pc-content-list {
+    &__item {
+        padding-block: 0.75rem;
+
+        @extend %pc-divided-item;
+    }
+
+    &__title {
+        @extend %pc-content-title;
+    }
+
+    &__detail {
+        @extend %pc-content-detail;
+
+        margin-block-start: 0.25rem;
+    }
+
+    &__meta {
+        margin-block-start: 0.5rem;
+        color: $leaf;
+        font-size: 0.75rem;
+        font-weight: 600;
+        line-height: 1rem;
+        overflow-wrap: anywhere;
+    }
+
+    &__empty {
+        @extend %pc-content-empty;
+    }
+}
+
+.pc-icon-list {
+    &__item {
+        display: grid;
+        min-inline-size: 0;
+        grid-template-columns: 2.5rem minmax(0, 1fr);
+        gap: 0.75rem;
+        padding-block: 1rem;
+
+        @extend %pc-divided-item;
+    }
+
+    &__icon {
+        display: grid;
+        inline-size: 2.5rem;
+        block-size: 2.5rem;
+        place-items: center;
+        border-radius: 50%;
+        background: $mint;
+        color: $leaf;
+    }
+
+    &__content {
+        min-inline-size: 0;
+    }
+
+    &__title {
+        @extend %pc-content-title;
+    }
+
+    &__description {
+        @extend %pc-content-detail;
+
+        margin-block-start: 0.25rem;
+        text-wrap: pretty;
+    }
+
+    &__empty {
+        @extend %pc-content-empty;
+    }
+}
+
+.pc-member-list {
+    &__item {
+        display: flex;
+        min-inline-size: 0;
+        align-items: center;
+        gap: 0.75rem;
+        padding-block: 0.75rem;
+
+        @extend %pc-divided-item;
+    }
+
+    &__content {
+        min-inline-size: 0;
+    }
+
+    &__name {
+        @extend %pc-content-title;
+    }
+
+    &__detail {
+        @extend %pc-content-detail;
+
+        margin-block-start: 0.125rem;
+    }
+
+    &__empty {
+        @extend %pc-content-empty;
+    }
+}
+
+.pc-person-summary {
+    &__kicker {
+        color: $leaf;
+        font-size: 0.75rem;
+        font-weight: 600;
+        line-height: 1rem;
+        text-transform: uppercase;
+    }
+
+    &__identity {
+        display: flex;
+        min-inline-size: 0;
+        align-items: center;
+        gap: 0.75rem;
+        margin-block-start: 1rem;
+    }
+
+    &__content {
+        min-inline-size: 0;
+    }
+
+    &__name {
+        @extend %pc-content-title;
+    }
+
+    &__detail,
+    &__bio {
+        @extend %pc-content-detail;
+    }
+
+    &__detail {
+        margin-block-start: 0.125rem;
+    }
+
+    &__bio {
+        margin-block-start: 1rem;
+        text-wrap: pretty;
+    }
+
+    &__action {
+        inline-size: 100%;
+        margin-block-start: 1rem;
+    }
+}
+
+.pc-callout,
+.pc-notice {
+    display: flex;
+    min-inline-size: 0;
+    align-items: flex-start;
+    gap: 0.75rem;
+
+    &__content {
+        min-inline-size: 0;
+    }
+
+    &__title {
+        @extend %pc-content-title;
+    }
+
+    &__description {
+        @extend %pc-content-detail;
+
+        margin-block-start: 0.25rem;
+        text-wrap: pretty;
+    }
+}
+
+.pc-callout {
+    border-inline-start: 3px solid $coral;
+    background: $paper;
+    padding: 1rem;
+
+    &__icon {
+        display: grid;
+        inline-size: 2.25rem;
+        block-size: 2.25rem;
+        flex: none;
+        place-items: center;
+        border-radius: 50%;
+        background: $white;
+        color: $coral;
+    }
+}
+
+.pc-notice {
+    border: 1px solid color-mix(in srgb, $leaf 22%, $line);
+    border-radius: $panel-radius;
+    background: $mint;
+    padding: 1rem;
+
+    &__icon {
+        inline-size: 1.25rem;
+        block-size: 1.25rem;
+        flex: none;
+        color: $leaf;
+    }
+}
