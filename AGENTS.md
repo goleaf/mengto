@@ -1,3 +1,114 @@
+<project-execution-contract>
+=== full prompt coverage rules ===
+
+# Giant Plan and Full Prompt Coverage
+
+These rules apply to every substantial task and are mandatory for long, detailed, numbered, or multi-message requests.
+
+## Treat the Full Conversation as the Specification
+
+- Before planning or editing, review every available user message for the current project task from the earliest relevant prompt through the newest one.
+- Treat related prompts as one cumulative specification. A newer prompt adds requirements unless it explicitly replaces or contradicts an older requirement.
+- When requirements conflict, follow the newest explicit instruction and record which older requirement was superseded.
+- Preserve exact constraints, exclusions, naming rules, architecture choices, requested tools, verification methods, and definition-of-done statements.
+- Never focus only on the latest message when earlier messages contain unfinished requirements.
+- After context compaction or continuation, use the available conversation summary, plans, repository documentation, and current code to reconstruct the complete task contract before continuing.
+
+## Build a Giant Plan Before Implementation
+
+- For every non-trivial or multi-message task, create a detailed implementation plan before changing code.
+- The plan must be large enough to cover every requirement individually. Do not collapse a long specification into a few vague phases.
+- Convert the complete prompt history into a requirements ledger with stable identifiers.
+- For each requirement, record its source, intended behavior, affected surface, dependencies, acceptance criteria, verification method, and current status.
+- The plan must cover repository discovery, architecture, data model, authorization, privacy, security, backend behavior, frontend states, responsive behavior, accessibility, performance, moderation, failure states, and verification whenever they apply.
+- Identify reusable components, Actions, Services, Requests, Policies, Models, scopes, events, jobs, Blade components, and SCSS primitives before creating page-specific code.
+- Distinguish MVP requirements, later-stage requirements, and explicitly excluded work only when the user made that distinction. Do not silently defer requested work.
+- Present the plan to the user, then continue into implementation unless the user explicitly requested planning only.
+- Keep the plan updated while working. Mark items complete only after implementation and verification evidence exist.
+
+## Autonomous Execution: No Questions
+
+- Do not ask the user clarification, preference, confirmation, scope, continuation, or implementation questions during normal project work.
+- Do not pause after presenting a plan. Begin implementation immediately and continue through every phase without waiting for permission to proceed.
+- Do not ask whether to continue, whether to run checks, whether to fix discovered in-scope issues, or which reasonable implementation option to choose.
+- Resolve uncertainty by inspecting the complete prompt history, repository, schemas, routes, sibling files, documentation, installed skills, and runtime behavior.
+- When several valid approaches remain, choose the safest solution that best matches the existing architecture and the complete user specification.
+- State necessary assumptions briefly and continue. An assumption is not a reason to stop.
+- Treat the user's task as authorization for all non-destructive, in-repository actions required to complete and verify it.
+- Automatically perform applicable implementation, formatting, tests, builds, browser checks, responsive checks, accessibility checks, and regression checks.
+- If a true blocker requires unavailable credentials, inaccessible external state, destructive authority, or a decision that cannot be inferred safely, finish every unblocked item first. Then report the exact blocker and required external action without turning the response into a questionnaire.
+- Never fabricate missing information, bypass security boundaries, expose secrets, or perform destructive external actions merely to avoid asking a question.
+
+## Automatic Commit and Push
+
+- Every completed prompt that changes repository files must end with an automatic Git commit and push before the final response.
+- Treat commit and push as acceptance criteria, not optional follow-up work.
+- First complete implementation and all applicable verification. Do not publish work that is knowingly broken merely to satisfy this rule.
+- Inspect the branch, remotes, upstream, `git status`, staged diff, unstaged diff, and untracked files before staging anything.
+- Stage only the files and exact changes owned by the current prompt. Never use `git add .`, `git add -A`, broad path staging, or any command that can absorb unrelated work.
+- In a dirty or shared worktree, create the commit with a temporary scoped `GIT_INDEX_FILE` initialized from `HEAD`. Preserve the user's existing normal index, staged changes, unstaged changes, and untracked files.
+- Inspect the scoped staged diff before committing and confirm that it contains no secrets, credentials, generated caches, debug artifacts, unrelated formatting, or changes from another task.
+- Use a concise Conventional Commit message that accurately describes the current prompt.
+- Never amend, squash, reset, rebase, rewrite history, or force-push unless the user explicitly requested that exact operation.
+- Push the new commit to the current branch's configured upstream. If no upstream exists, establish the matching branch on `origin` with a normal non-force push.
+- After pushing, verify the local commit hash, remote branch hash, upstream relationship, and exact committed file list.
+- Do not claim that delivery succeeded when commit or push failed. Preserve the local commit, complete all other safe work, and report the exact failure.
+- Do not create empty commits for prompts that make no repository changes.
+- A newer explicit instruction from the user not to commit or not to push overrides this default for that prompt only.
+
+## Requirements Ledger
+
+Maintain a checklist or matrix for the full task with these statuses:
+
+- `pending`: understood but not started
+- `in_progress`: actively being implemented
+- `implemented`: code exists but verification is incomplete
+- `verified`: implementation and relevant checks pass
+- `blocked`: cannot be completed without a concrete external dependency or user decision
+- `superseded`: replaced by a newer explicit user instruction
+
+Every numbered point, bullet, workflow, role, state, permission, privacy rule, responsive rule, and verification request in the user's prompts must map to an entry. Similar items may share one implementation only when the ledger explicitly shows how that implementation satisfies each source requirement.
+
+## Execute the Whole Plan
+
+- Do not stop after producing the plan unless the user asked for a plan only.
+- Continue through implementation, integration, validation, and final audit.
+- Do not replace a requested feature with an adjacent feature, a visual approximation, or a smaller convenient scope.
+- Do not claim a long prompt is complete because its primary screen exists.
+- A static fixture, UI-only mock, placeholder link, disabled control, session-only simulation, or hard-coded catalog is not complete functionality when the user requested persistent working behavior.
+- If the user explicitly requested a prototype or interface-only implementation, label it accurately and verify only the promised prototype surface.
+- Preserve prior completed behavior while adding later prompt sections. Re-check earlier workflows after shared components or architecture change.
+- When the task is too large for one uninterrupted pass, continue in ordered phases with the same ledger. Never mark deferred work complete and never hide remaining items.
+- Do not request confirmation between phases. Document conservative assumptions, continue automatically, and report only proven blockers.
+
+## End-to-End Prompt Audit
+
+Before finalizing any substantial task:
+
+1. Re-read the available prompt chain from the first relevant message to the last.
+2. Re-open the requirements ledger and inspect every entry.
+3. Compare each requirement with the actual repository, routes, schemas, controllers, Actions, Services, Policies, views, components, styles, and runtime behavior.
+4. Search for prohibited names, prefixes, technologies, placeholders, dead controls, duplicated logic, and unfinished states mentioned anywhere in the prompt history.
+5. Verify desktop, tablet, and mobile behavior when UI work is involved.
+6. Run the relevant formatter, static checks, focused tests, build, route checks, browser checks, accessibility checks, and runtime smoke tests.
+7. Record evidence for every verified requirement.
+8. Re-run affected regression checks after fixes.
+9. Commit and push the verified prompt-owned changes using the automatic delivery rules.
+10. Report every remaining `pending`, `implemented`, or `blocked` item explicitly.
+
+Completion means every in-scope requirement is `verified` or has an honestly documented blocker. A plan, code volume, visual polish, or confidence statement is never completion evidence by itself.
+
+## Final Response Contract
+
+- State what was implemented.
+- State what was verified and include the exact evidence.
+- State the commit hash and pushed branch when repository files changed.
+- State what remains incomplete or blocked.
+- Never use phrases such as "everything is complete" or "works 100%" unless the full requirements ledger has been audited and every required gate passed.
+- Keep the final response concise, but never omit unfinished requirements from a long prompt.
+
+</project-execution-contract>
+
 <laravel-boost-guidelines>
 === foundation rules ===
 
