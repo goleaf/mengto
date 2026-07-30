@@ -1,6 +1,6 @@
-<x-layout.app-shell :owner="$owner" :title="$page_title" :active-section="$active_section">
-    <x-layout.page-stack gap="compact" class="pet-friends-page">
-        <x-layout.page-header
+<x-app-shell :owner="$owner" :title="$page_title" :active-section="$active_section">
+    <x-page-stack gap="compact" class="pet-friends-page">
+        <x-page-header
             :eyebrow="$summary['eyebrow']"
             :title="$summary['title']"
             :description="$summary['description']"
@@ -10,9 +10,9 @@
             :action-href="route($friend_center['source']['route_name'], $friend_center['source']['route_parameters'])"
         />
 
-        <x-feature.pet-friend-dashboard
+        <x-pet-friend-dashboard
             :summary="$summary"
             :center="$friend_center"
         />
-    </x-layout.page-stack>
-</x-layout.app-shell>
+    </x-page-stack>
+</x-app-shell>

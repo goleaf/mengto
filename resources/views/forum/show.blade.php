@@ -1,4 +1,4 @@
-<x-layout.app-shell :owner="$owner" :title="$page_title" :active-section="$active_section">
+<x-app-shell :owner="$owner" :title="$page_title" :active-section="$active_section">
     <div class="forum-page">
         <nav class="forum-filter-tabs" aria-label="Breadcrumb">
             <a href="{{ route('forum.index') }}">
@@ -134,7 +134,7 @@
 
                     <div class="forum-topic-list">
                         @forelse ($answers as $answer)
-                            <x-object.forum-answer :answer="$answer" :topic="$topic" :can-manage="$can_manage" />
+                            <x-forum-answer :answer="$answer" :topic="$topic" :can-manage="$can_manage" />
                         @empty
                             <div class="forum-form">
                                 <h3>This topic still needs an answer</h3>
@@ -279,4 +279,4 @@
             </aside>
         </div>
     </div>
-</x-layout.app-shell>
+</x-app-shell>

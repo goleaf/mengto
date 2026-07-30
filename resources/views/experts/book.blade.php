@@ -1,4 +1,4 @@
-<x-layout.app-shell :owner="$owner" :title="$page_title" :active-section="$active_section">
+<x-app-shell :owner="$owner" :title="$page_title" :active-section="$active_section">
     <div class="mx-auto grid w-full min-w-0 max-w-5xl gap-6">
         <header class="border-b border-paw-line pb-6">
             <a href="{{ route('experts.show', $expert['slug']) }}" class="inline-flex items-center gap-2 text-sm font-bold text-paw-leaf">
@@ -133,7 +133,7 @@
             </section>
 
             <footer class="flex flex-wrap justify-end gap-2">
-                <x-ui.action-control label="Cancel" icon="x" :href="route('experts.show', $expert['slug'])" />
+                <x-action-control label="Cancel" icon="x" :href="route('experts.show', $expert['slug'])" />
                 <button type="submit" class="action action--primary action--comfortable" @disabled($services === [] || $slots === [])>
                     <x-lucide-calendar-check class="icon icon--sm" aria-hidden="true" />
                     <span>Submit appointment request</span>
@@ -141,4 +141,4 @@
             </footer>
         </form>
     </div>
-</x-layout.app-shell>
+</x-app-shell>

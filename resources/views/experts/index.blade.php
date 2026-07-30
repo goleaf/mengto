@@ -1,4 +1,4 @@
-<x-layout.app-shell :owner="$owner" :title="$page_title" :active-section="$active_section">
+<x-app-shell :owner="$owner" :title="$page_title" :active-section="$active_section">
     <div class="grid gap-6">
         <header class="flex flex-col gap-4 border-b border-paw-line pb-6 sm:flex-row sm:items-end sm:justify-between">
             <div class="max-w-3xl">
@@ -9,8 +9,8 @@
                 </p>
             </div>
             <div class="flex flex-wrap gap-2">
-                <x-ui.action-control label="Professional workspace" icon="briefcase-business" :href="route('experts.dashboard')" />
-                <x-ui.action-control label="Create professional profile" icon="badge-plus" variant="primary" :href="route('experts.create')" />
+                <x-action-control label="Professional workspace" icon="briefcase-business" :href="route('experts.dashboard')" />
+                <x-action-control label="Create professional profile" icon="badge-plus" variant="primary" :href="route('experts.create')" />
             </div>
         </header>
 
@@ -152,7 +152,7 @@
 
             <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
                 @forelse ($experts as $expert)
-                    <x-object.expert-card :expert="$expert" />
+                    <x-expert-card :expert="$expert" />
                 @empty
                     <div class="md:col-span-2 xl:col-span-3">
                         <h3 class="text-xl font-bold">No exact match yet</h3>
@@ -164,4 +164,4 @@
             <div class="mt-6">{{ $experts->links() }}</div>
         </section>
     </div>
-</x-layout.app-shell>
+</x-app-shell>

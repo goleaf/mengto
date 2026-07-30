@@ -1,4 +1,4 @@
-<x-layout.app-shell :owner="$owner" :title="$page_title" :active-section="$active_section">
+<x-app-shell :owner="$owner" :title="$page_title" :active-section="$active_section">
     <div class="forum-page">
         <header class="forum-header">
             <div class="forum-header__copy">
@@ -110,7 +110,7 @@
 
                 <section class="forum-topic-list" aria-label="Forum topics">
                     @forelse ($topics as $topic)
-                        <x-object.forum-topic-card :topic="$topic" />
+                        <x-forum-topic-card :topic="$topic" />
                     @empty
                         <div class="forum-form">
                             <h2>No matching discussion yet</h2>
@@ -167,4 +167,4 @@
             </aside>
         </div>
     </div>
-</x-layout.app-shell>
+</x-app-shell>

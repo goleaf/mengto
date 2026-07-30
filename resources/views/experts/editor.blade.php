@@ -1,4 +1,4 @@
-<x-layout.app-shell :owner="$owner" :title="$page_title" :active-section="$active_section">
+<x-app-shell :owner="$owner" :title="$page_title" :active-section="$active_section">
     @php
         $isEditing = $expert !== null;
         $selectedSpecializations = old('specializations', $expert?->specializations ?? []);
@@ -246,7 +246,7 @@
             @endunless
 
             <footer class="flex flex-wrap justify-end gap-2">
-                <x-ui.action-control label="Cancel" icon="x" :href="$isEditing ? route('experts.show', $expert) : route('experts.index')" />
+                <x-action-control label="Cancel" icon="x" :href="$isEditing ? route('experts.show', $expert) : route('experts.index')" />
                 <button type="submit" class="action action--primary action--comfortable">
                     <x-lucide-save class="icon icon--sm" aria-hidden="true" />
                     <span>{{ $isEditing ? 'Save profile' : 'Create profile' }}</span>
@@ -254,4 +254,4 @@
             </footer>
         </form>
     </div>
-</x-layout.app-shell>
+</x-app-shell>

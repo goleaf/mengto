@@ -1,4 +1,4 @@
-<x-layout.app-shell :owner="$owner" :title="$page_title" :active-section="$active_section">
+<x-app-shell :owner="$owner" :title="$page_title" :active-section="$active_section">
     <div class="grid gap-8">
         <a href="{{ route('experts.index') }}" class="inline-flex w-fit items-center gap-2 text-sm font-bold text-paw-leaf">
             <x-lucide-arrow-left class="size-4" aria-hidden="true" />
@@ -15,7 +15,7 @@
                 <div>
                     <div class="flex flex-wrap items-center gap-2">
                         <h1 class="text-3xl font-bold sm:text-4xl">{{ $expert['name'] }}</h1>
-                        <x-ui.status-badge
+                        <x-status-badge
                             :label="$expert['qualification_verified'] ? 'Qualification verified' : $expert['verification']"
                             :icon="$expert['qualification_verified'] ? 'badge-check' : 'circle-help'"
                             :tone="$expert['qualification_verified'] ? 'success' : 'surface'"
@@ -35,7 +35,7 @@
 
             <div class="grid min-w-60 gap-2">
                 @if ($expert['accepts_new_clients'])
-                    <x-ui.action-control label="Book consultation" icon="calendar-plus" variant="primary" :href="route('experts.bookings.create', $expert['slug'])" />
+                    <x-action-control label="Book consultation" icon="calendar-plus" variant="primary" :href="route('experts.bookings.create', $expert['slug'])" />
                 @endif
                 <form method="POST" action="{{ route('experts.actions', $expert['slug']) }}" class="grid grid-cols-2 gap-2">
                     @csrf
@@ -49,9 +49,9 @@
                     </button>
                 </form>
                 @if ($can_manage)
-                    <x-ui.action-control label="Edit profile" icon="pencil" :href="route('experts.edit', $expert['slug'])" />
+                    <x-action-control label="Edit profile" icon="pencil" :href="route('experts.edit', $expert['slug'])" />
                 @else
-                    <x-ui.action-control label="Send a message request" icon="message-circle" :href="url('/messages')" />
+                    <x-action-control label="Send a message request" icon="message-circle" :href="url('/messages')" />
                 @endif
             </div>
         </header>
@@ -100,7 +100,7 @@
                     </div>
                     <div class="mt-4 grid gap-4 md:grid-cols-2">
                         @forelse ($services as $service)
-                            <x-object.service-card :service="$service" :expert-slug="$expert['slug']" />
+                            <x-service-card :service="$service" :expert-slug="$expert['slug']" />
                         @empty
                             <p class="text-paw-muted">No active services are published.</p>
                         @endforelse
@@ -162,7 +162,7 @@
                                 <div class="flex flex-wrap items-center gap-2">
                                     <h3 class="font-bold">{{ $review['reviewer_name'] }}</h3>
                                     @if ($review['is_verified_client'])
-                                        <x-ui.status-badge label="Verified client" icon="badge-check" tone="success" />
+                                        <x-status-badge label="Verified client" icon="badge-check" tone="success" />
                                     @endif
                                     <span class="text-sm font-bold">{{ $review['rating'] }} / 5</span>
                                 </div>
@@ -235,7 +235,7 @@
                     <h2 id="verification-heading" class="text-xl font-bold">What was checked</h2>
                     <p class="mt-1 text-sm text-paw-muted">Identity, education, qualification, license, workplace, organization, and contact are separate checks.</p>
                     <div class="mt-4">
-                        <x-object.verification-list :items="$expert['verification_items']" :expires="$expert['verification_expires']" />
+                        <x-verification-list :items="$expert['verification_items']" :expires="$expert['verification_expires']" />
                     </div>
                 </section>
 
@@ -295,4 +295,4 @@
             </aside>
         </div>
     </div>
-</x-layout.app-shell>
+</x-app-shell>

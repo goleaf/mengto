@@ -1,6 +1,6 @@
-<x-layout.app-shell :owner="$owner" title="Notifications | PawCircle" active-section="notifications">
-    <x-layout.page-stack>
-        <x-layout.page-header
+<x-app-shell :owner="$owner" title="Notifications | PawCircle" active-section="notifications">
+    <x-page-stack>
+        <x-page-header
             :eyebrow="$summary['eyebrow']"
             :title="$summary['title']"
             :description="$summary['description']"
@@ -12,9 +12,9 @@
             data-section="notification-header"
         />
 
-        <x-layout.main-sidebar-layout variant="compact">
+        <x-main-sidebar-layout variant="compact">
             <x-slot:main>
-                <x-object.activity-timeline
+                <x-activity-timeline
                     :groups="$activityGroups"
                     :filters="$filters"
                     :unread-count="$summary['unread_count']"
@@ -23,13 +23,13 @@
             </x-slot:main>
 
             <x-slot:sidebar>
-                <x-ui.content-panel
+                <x-content-panel
                     section="weekly-activity"
                     eyebrow="This week"
                     title="Your activity"
                     size="compact"
                 >
-                    <x-ui.stat-grid
+                    <x-stat-grid
                         :items="$weeklyStats"
                         label="Weekly activity summary"
                         :icons="['paw-print', 'message-circle', 'users']"
@@ -38,16 +38,16 @@
                         tone="muted"
                         large
                     />
-                </x-ui.content-panel>
+                </x-content-panel>
 
-                <x-object.promo-card
+                <x-promo-card
                     :item="$upcoming"
                     section="activity-meetup"
                     :attendees="$upcoming['attendees']"
                 />
 
-                <x-feature.notification-settings :settings="$settings" />
+                <x-notification-settings :settings="$settings" />
             </x-slot:sidebar>
-        </x-layout.main-sidebar-layout>
-    </x-layout.page-stack>
-</x-layout.app-shell>
+        </x-main-sidebar-layout>
+    </x-page-stack>
+</x-app-shell>

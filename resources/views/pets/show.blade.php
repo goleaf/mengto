@@ -1,1 +1,1 @@
-<x-feature.pet-profile :profile="$profile" />
+<x-pet-profile :profile="$profile" />

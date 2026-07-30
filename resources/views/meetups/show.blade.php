@@ -1,22 +1,22 @@
-<x-layout.app-shell
+<x-app-shell
     :owner="$owner"
     :title="$page_title"
     :active-section="$active_section"
 >
-    <x-layout.page-stack>
-        <x-ui.text-link :href="route('meetups.index')" icon="arrow-left" variant="back">
+    <x-page-stack>
+        <x-text-link :href="route('meetups.index')" icon="arrow-left" variant="back">
             Back to events
-        </x-ui.text-link>
+        </x-text-link>
 
-        <x-object.event-hero :event="$event" />
+        <x-event-hero :event="$event" />
 
-        <x-ui.tab-list
+        <x-tab-list
             :tabs="$tabs"
             :label="$event['title'].' sections'"
             class="event-tabs"
         />
 
-        <x-feature.event-dashboard
+        <x-event-dashboard
             :event="$event"
             :active-tab="$active_tab"
             :content="$content"
@@ -24,5 +24,5 @@
             :can-view-private-details="$can_view_private_details"
             :organizer-tools="$organizer_tools"
         />
-    </x-layout.page-stack>
-</x-layout.app-shell>
+    </x-page-stack>
+</x-app-shell>

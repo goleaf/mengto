@@ -6,7 +6,7 @@
     $topicStatus = $editing ? $topic->status->value : 'published';
 @endphp
 
-<x-layout.app-shell :owner="$owner" :title="$page_title" :active-section="$active_section">
+<x-app-shell :owner="$owner" :title="$page_title" :active-section="$active_section">
     <div class="forum-page">
         <header class="forum-header">
             <div class="forum-header__copy">
@@ -268,4 +268,4 @@
             </aside>
         </div>
     </div>
-</x-layout.app-shell>
+</x-app-shell>

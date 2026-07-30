@@ -1,4 +1,4 @@
-<x-layout.directory-page
+<x-directory-page
     :owner="$owner"
     title="Neighbors | PawCircle"
     active-section="neighbors"
@@ -9,7 +9,7 @@
     :action-href="route('compose', 'message')"
 >
     <x-slot:summary-strip>
-        <x-ui.summary-strip
+        <x-summary-strip
             :items="$summary['highlights']"
             label="Neighbor summary"
             :icons="['navigation', 'heart-handshake', 'paw-print']"
@@ -19,7 +19,7 @@
     </x-slot:summary-strip>
 
     <x-slot:toolbar>
-        <x-feature.directory-toolbar
+        <x-directory-toolbar
             :filters="$filters"
             label="Neighbor filters"
             filters-label="Neighbor category filters"
@@ -36,6 +36,6 @@
     </x-slot:toolbar>
 
     <x-slot:results>
-        <x-feature.neighbor-directory-results :neighbors="$directoryNeighbors" />
+        <x-neighbor-directory-results :neighbors="$directoryNeighbors" />
     </x-slot:results>
-</x-layout.directory-page>
+</x-directory-page>

@@ -1,4 +1,4 @@
-<x-layout.app-shell :owner="$owner" :title="$page_title" :active-section="$active_section">
+<x-app-shell :owner="$owner" :title="$page_title" :active-section="$active_section">
     <div class="forum-page">
         <header class="forum-header">
             <div class="forum-header__copy">
@@ -47,7 +47,7 @@
 
         <section class="knowledge-grid" aria-label="Knowledge articles">
             @forelse ($articles as $article)
-                <x-object.knowledge-article-card :article="$article" />
+                <x-knowledge-article-card :article="$article" />
             @empty
                 <div class="forum-form">
                     <h2>No reviewed article matches these filters</h2>
@@ -58,4 +58,4 @@
 
         <div>{{ $articles->links() }}</div>
     </div>
-</x-layout.app-shell>
+</x-app-shell>

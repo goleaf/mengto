@@ -1,4 +1,4 @@
-<x-layout.app-shell :owner="$owner" title="Messages and calls | PawCircle" active-section="messages">
+<x-app-shell :owner="$owner" title="Messages and calls | PawCircle" active-section="messages">
     <div
         class="messaging-page"
         data-messaging-center
@@ -22,7 +22,7 @@
         </header>
 
         <div class="messaging-shell">
-            <x-feature.messaging-inbox
+            <x-messaging-inbox
                 :conversations="$conversations"
                 :filters="$filters"
                 :active-filter="$active_filter"
@@ -32,13 +32,13 @@
             />
 
             <main class="messaging-thread" aria-label="Conversation with {{ $selected['name'] }}">
-                <x-feature.messaging-thread-header
+                <x-messaging-thread-header
                     :conversation="$selected"
                     :active-filter="$active_filter"
                 />
 
                 @if ($selected['request'] && $selected['request_status'] === 'pending')
-                    <x-feature.messaging-request :conversation="$selected" />
+                    <x-messaging-request :conversation="$selected" />
                 @elseif ($selected['request_status'] === 'declined')
                     <section class="messaging-state messaging-state--quiet">
                         <x-lucide-message-square-off class="icon" aria-hidden="true" />
@@ -49,11 +49,11 @@
                     </section>
                 @else
                     @if ($professional)
-                        <x-feature.messaging-professional-banner :professional="$professional" />
+                        <x-messaging-professional-banner :professional="$professional" />
                     @endif
 
                     @if ($channels !== [])
-                        <x-feature.messaging-channels
+                        <x-messaging-channels
                             :channels="$channels"
                             :active-channel="$active_channel"
                             :conversation="$selected['key']"
@@ -69,19 +69,19 @@
                         </div>
                     @endif
 
-                    <x-feature.messaging-message-list
+                    <x-messaging-message-list
                         :messages="$messages"
                         :conversation="$selected"
                     />
 
-                    <x-feature.messaging-composer
+                    <x-messaging-composer
                         :conversation="$selected"
                         :active-filter="$active_filter"
                     />
                 @endif
             </main>
 
-            <x-feature.messaging-context
+            <x-messaging-context
                 :conversation="$selected"
                 :context="$context"
                 :members="$members"
@@ -94,11 +94,11 @@
             />
         </div>
 
-        <x-feature.messaging-call-stage
+        <x-messaging-call-stage
             :conversation="$selected"
             :call="$call"
             :boundary="$call_boundary"
             :active-filter="$active_filter"
         />
     </div>
-</x-layout.app-shell>
+</x-app-shell>

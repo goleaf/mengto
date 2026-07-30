@@ -77,6 +77,16 @@ test('booking uses server price reserves one slot and ignores an idempotent retr
         ->and($slot->refresh()->booked_count)->toBe(1)
         ->and($slot->status)->toBe('booked')
         ->and($booking->consultation()->exists())->toBeTrue();
+
+    $this->get(route('bookings.show', $booking))
+        ->assertOk()
+        ->assertSee('Appointment '.$booking->reference)
+        ->assertSee('Professional summary');
+
+    $this->get(route('consultations.show', $booking->consultation()->firstOrFail()))
+        ->assertOk()
+        ->assertSee('Secure consultation room')
+        ->assertSee('Access is limited to this appointment');
 });
 
 test('booking rejects a slot from another service', function () {

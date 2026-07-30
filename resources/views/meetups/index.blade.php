@@ -1,4 +1,4 @@
-<x-layout.directory-page
+<x-directory-page
     :owner="$owner"
     :title="$page_title"
     :active-section="$active_section"
@@ -9,7 +9,7 @@
     :action-href="$events['create_url']"
 >
     <x-slot:summary-strip>
-        <x-ui.summary-strip
+        <x-summary-strip
             :items="$summary['highlights']"
             label="Event schedule summary"
             :icons="['calendar-days', 'sparkles', 'bookmark', 'clock-3']"
@@ -23,6 +23,6 @@
     </x-slot:toolbar>
 
     <x-slot:results>
-        <x-feature.event-directory :events="$events" />
+        <x-event-directory :events="$events" />
     </x-slot:results>
-</x-layout.directory-page>
+</x-directory-page>

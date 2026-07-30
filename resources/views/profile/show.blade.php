@@ -1,1 +1,1 @@
-<x-feature.owner-profile :profile="$profile" />
+<x-owner-profile :profile="$profile" />

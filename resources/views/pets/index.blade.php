@@ -1,4 +1,4 @@
-<x-layout.directory-page
+<x-directory-page
     :owner="$owner"
     title="Pets | PawCircle"
     active-section="pets"
@@ -9,7 +9,7 @@
     :action-href="route('compose', 'pet')"
 >
     <x-slot:toolbar>
-        <x-feature.directory-toolbar
+        <x-directory-toolbar
             :filters="$filters"
             label="Pet directory filters"
             filters-label="Species filters"
@@ -26,6 +26,6 @@
     </x-slot:toolbar>
 
     <x-slot:results>
-        <x-feature.pet-directory-results :pets="$directoryPets" />
+        <x-pet-directory-results :pets="$directoryPets" />
     </x-slot:results>
-</x-layout.directory-page>
+</x-directory-page>

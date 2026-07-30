@@ -1,11 +1,11 @@
-<x-layout.app-shell :owner="$owner" :title="$page_title" :active-section="$active_section">
+<x-app-shell :owner="$owner" :title="$page_title" :active-section="$active_section">
     @if ($expert === null)
         <section class="mx-auto max-w-2xl py-16 text-center">
             <x-lucide-briefcase-business class="mx-auto size-12 text-paw-leaf" aria-hidden="true" />
             <h1 class="mt-5 text-3xl font-bold">Create your professional workspace</h1>
             <p class="mt-3 leading-7 text-paw-muted">Publish a precise scope, submit credentials privately, offer services, and manage consultation requests without mixing professional activity with your personal profile.</p>
             <div class="mt-6 flex justify-center">
-                <x-ui.action-control label="Create professional profile" icon="badge-plus" variant="primary" :href="route('experts.create')" />
+                <x-action-control label="Create professional profile" icon="badge-plus" variant="primary" :href="route('experts.create')" />
             </div>
         </section>
     @else
@@ -17,8 +17,8 @@
                     <p class="mt-2 text-paw-muted">{{ $expert['type'] }} · {{ $expert['profile_status'] }} · {{ $expert['verification'] }}</p>
                 </div>
                 <div class="flex flex-wrap gap-2">
-                    <x-ui.action-control label="View public profile" icon="external-link" :href="route('experts.show', $expert['slug'])" />
-                    <x-ui.action-control label="Edit profile" icon="pencil" variant="primary" :href="route('experts.edit', $expert['slug'])" />
+                    <x-action-control label="View public profile" icon="external-link" :href="route('experts.show', $expert['slug'])" />
+                    <x-action-control label="Edit profile" icon="pencil" variant="primary" :href="route('experts.edit', $expert['slug'])" />
                 </div>
             </header>
 
@@ -75,7 +75,7 @@
                         <h2 id="workspace-services" class="text-2xl font-bold">Published services</h2>
                         <div class="mt-4 grid gap-4 md:grid-cols-2">
                             @forelse ($services as $service)
-                                <x-object.service-card :service="$service" />
+                                <x-service-card :service="$service" />
                             @empty
                                 <p class="text-paw-muted">No services have been configured.</p>
                             @endforelse
@@ -87,7 +87,7 @@
                     <section aria-labelledby="workspace-verification">
                         <h2 id="workspace-verification" class="text-xl font-bold">Verification status</h2>
                         <div class="mt-4">
-                            <x-object.verification-list :items="$expert['verification_items']" :expires="$expert['verification_expires']" />
+                            <x-verification-list :items="$expert['verification_items']" :expires="$expert['verification_expires']" />
                         </div>
                     </section>
 
@@ -114,4 +114,4 @@
             </div>
         </div>
     @endif
-</x-layout.app-shell>
+</x-app-shell>

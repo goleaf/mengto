@@ -1,50 +1,50 @@
-<x-layout.app-shell :owner="$owner" title="Ari Jensen | PawCircle" active-section="neighbors">
-    <x-layout.page-stack data-section="neighbor-profile">
-        <x-ui.text-link :href="route('neighbors.index')" icon="arrow-left" variant="back">
+<x-app-shell :owner="$owner" title="Ari Jensen | PawCircle" active-section="neighbors">
+    <x-page-stack data-section="neighbor-profile">
+        <x-text-link :href="route('neighbors.index')" icon="arrow-left" variant="back">
             Back to neighbors
-        </x-ui.text-link>
+        </x-text-link>
 
-        <x-object.profile-hero
+        <x-profile-hero
             :profile="$neighbor"
             section="neighbor-profile-hero"
             summary-label="Neighbor profile summary"
             :summary-icons="['paw-print', 'users', 'map-pin']"
         />
 
-        <x-layout.main-sidebar-layout variant="stacked">
+        <x-main-sidebar-layout variant="stacked">
             <x-slot:main>
-                <x-layout.page-stack gap="content">
-                    <x-ui.content-panel
+                <x-page-stack gap="content">
+                    <x-content-panel
                         section="about-neighbor"
                         eyebrow="Around the neighborhood"
                         title="About Ari"
                     >
-                        <x-ui.section-copy :text="$neighbor['bio']" />
-                    </x-ui.content-panel>
+                        <x-section-copy :text="$neighbor['bio']" />
+                    </x-content-panel>
 
-                    <x-object.neighbor-pet-summary :pet="$pet" />
-                    <x-feature.recent-moments
+                    <x-neighbor-pet-summary :pet="$pet" />
+                    <x-recent-moments
                         :posts="$recentMoments"
                         eyebrow="From Ari and Mochi"
                         section="neighbor-moments"
                     />
-                </x-layout.page-stack>
+                </x-page-stack>
             </x-slot:main>
 
             <x-slot:sidebar>
-                <x-ui.content-panel section="neighbor-interests" title="Shared interests">
-                    <x-ui.tag-list :items="$neighbor['interests']" empty="No shared interests yet." roomy class="section-body" />
-                </x-ui.content-panel>
+                <x-content-panel section="neighbor-interests" title="Shared interests">
+                    <x-tag-list :items="$neighbor['interests']" empty="No shared interests yet." roomy class="section-body" />
+                </x-content-panel>
 
-                <x-object.mutual-neighbor-list
+                <x-mutual-neighbor-list
                     :neighbors="$mutualNeighbors"
                     :count="$neighbor['mutual_count']"
                 />
 
-                <x-ui.content-panel section="neighbor-communities" title="Communities">
-                    <x-object.community-list :communities="$communities" class="section-body" />
-                </x-ui.content-panel>
+                <x-content-panel section="neighbor-communities" title="Communities">
+                    <x-community-list :communities="$communities" class="section-body" />
+                </x-content-panel>
             </x-slot:sidebar>
-        </x-layout.main-sidebar-layout>
-    </x-layout.page-stack>
-</x-layout.app-shell>
+        </x-main-sidebar-layout>
+    </x-page-stack>
+</x-app-shell>

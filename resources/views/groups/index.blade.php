@@ -1,4 +1,4 @@
-<x-layout.directory-page
+<x-directory-page
     :owner="$owner"
     title="Groups | PawCircle"
     active-section="groups"
@@ -9,7 +9,7 @@
     :action-href="route('compose', 'group')"
 >
     <x-slot:summary-strip>
-        <x-ui.summary-strip
+        <x-summary-strip
             :items="$summary['highlights']"
             label="Community summary"
             :icons="['users', 'activity', 'map-pin']"
@@ -20,7 +20,7 @@
 
     <x-slot:toolbar>
         @if ($groups['last_dismissed'])
-            <x-ui.notice
+            <x-notice
                 section="group-recommendation-feedback"
                 icon="eye-off"
                 title="Recommendation hidden"
@@ -28,7 +28,7 @@
                 class="mb-5"
             >
                 <x-slot:actions>
-                    <x-ui.action-control
+                    <x-action-control
                         :label="$groups['last_dismissed']['action']['label']"
                         :icon="$groups['last_dismissed']['action']['icon']"
                         :endpoint="$groups['last_dismissed']['action']['endpoint']"
@@ -36,10 +36,10 @@
                         variant="paper"
                     />
                 </x-slot:actions>
-            </x-ui.notice>
+            </x-notice>
         @endif
 
-        <x-feature.directory-toolbar
+        <x-directory-toolbar
             :filters="$groups['filters']"
             label="Group filters"
             filters-label="Group category filters"
@@ -57,6 +57,6 @@
     </x-slot:toolbar>
 
     <x-slot:results>
-        <x-feature.group-directory-results :groups="$groups['items']" />
+        <x-group-directory-results :groups="$groups['items']" />
     </x-slot:results>
-</x-layout.directory-page>
+</x-directory-page>
