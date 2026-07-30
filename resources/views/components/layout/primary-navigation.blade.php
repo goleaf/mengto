@@ -8,6 +8,7 @@
         ['route' => 'pet-social.preview', 'label' => 'Feed', 'mobile_label' => 'Feed', 'icon' => 'house', 'name' => 'feed'],
         ['route' => 'pet-social.pets.index', 'label' => 'Pets', 'mobile_label' => 'Pets', 'icon' => 'paw-print', 'name' => 'pets'],
         ['route' => 'pet-social.meetups.index', 'label' => 'Meetups', 'mobile_label' => 'Meet', 'icon' => 'calendar-days', 'name' => 'meetups'],
+        ['route' => 'pet-social.places.index', 'label' => 'Places', 'mobile_label' => 'Places', 'icon' => 'map-pinned', 'name' => 'places'],
         ['route' => 'pet-social.groups.index', 'label' => 'Groups', 'mobile_label' => 'Group', 'icon' => 'users-round', 'name' => 'groups'],
         ['route' => 'pet-social.neighbors.index', 'label' => 'Neighbors', 'mobile_label' => 'People', 'icon' => 'user-round', 'name' => 'neighbors'],
         ['route' => 'pet-social.discover.index', 'label' => 'Discover', 'mobile_label' => 'Find', 'icon' => 'search', 'name' => 'discover'],
@@ -32,7 +33,7 @@
     </nav>
 @else
     <nav {{ $attributes->class(['hidden items-center gap-1 lg:flex']) }} aria-label="Primary navigation">
-        @forelse (array_slice($items, 0, 5) as $item)
+        @forelse (array_slice($items, 0, 6) as $item)
             <x-layout.desktop-nav-item
                 :href="route($item['route'])"
                 :label="$item['label']"

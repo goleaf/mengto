@@ -20,6 +20,8 @@ final class PawCirclePreviewService
         private readonly PawCircleFeedPresenter $feed,
         private readonly PawCircleGroupCatalog $groups,
         private readonly PawCircleEventCatalog $events,
+        private readonly PawCirclePlaceCatalog $places,
+        private readonly PawCirclePlacePresenter $placePresenter,
     ) {}
 
     /**
@@ -1278,6 +1280,15 @@ final class PawCirclePreviewService
         $eventReport = isset($context['target'])
             ? $this->events->reportContext((string) $context['target'])
             : null;
+        $placeReport = isset($context['target'])
+            ? $this->placePresenter->reportContext((string) $context['target'])
+            : null;
+        $placeCorrection = isset($context['target'])
+            ? $this->placePresenter->correctionContext((string) $context['target'])
+            : null;
+        $placeContext = isset($context['place'])
+            ? $this->places->find((string) $context['place'])
+            : null;
 
         return [
             'owner' => $owner,
@@ -1294,6 +1305,9 @@ final class PawCirclePreviewService
                     'post_report' => $postReport,
                     'group_report' => $groupReport,
                     'event_report' => $eventReport,
+                    'place_report' => $placeReport,
+                    'place_correction' => $placeCorrection,
+                    'place_context' => $placeContext,
                     'identities' => $this->feed->identities(),
                     'topics' => $this->feed->topics(),
                     'audiences' => $this->feed->audiences(),

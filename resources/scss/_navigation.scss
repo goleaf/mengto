@@ -99,7 +99,7 @@
         display: grid;
         max-inline-size: 80rem;
         margin-inline: auto;
-        grid-template-columns: repeat(6, minmax(0, 1fr));
+        grid-template-columns: repeat(7, minmax(0, 1fr));
         border: 1px solid $line;
         border-radius: $panel-radius;
         background: $white;

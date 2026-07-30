@@ -6,6 +6,8 @@ use App\Http\Requests\BrowseComposerRequest;
 use App\Services\PawCircleEventCatalog;
 use App\Services\PawCircleFeedPresenter;
 use App\Services\PawCircleGroupCatalog;
+use App\Services\PawCirclePlaceCatalog;
+use App\Services\PawCirclePlacePresenter;
 use App\Services\PawCirclePreviewService;
 use App\Services\PawCircleProfilePresenter;
 use Illuminate\Contracts\View\View;
@@ -20,6 +22,8 @@ class PawCircleComposerController extends Controller
         PawCircleProfilePresenter $profiles,
         PawCircleGroupCatalog $groups,
         PawCircleEventCatalog $events,
+        PawCirclePlaceCatalog $places,
+        PawCirclePlacePresenter $placePresenter,
     ): View {
         abort_unless(in_array($kind, [
             'post',
@@ -27,6 +31,12 @@ class PawCircleComposerController extends Controller
             'meetup',
             'walk',
             'pet',
+            'place',
+            'place-correction',
+            'place-warning',
+            'place-review',
+            'place-question',
+            'place-claim',
             'message',
             'profile',
             'pet-profile',
@@ -37,6 +47,7 @@ class PawCircleComposerController extends Controller
             'report-post',
             'report-group',
             'report-event',
+            'report-place',
             'delete-post',
         ], true), 404);
 
@@ -46,6 +57,17 @@ class PawCircleComposerController extends Controller
         abort_if($kind === 'report-post' && ! isset($validated['target']), 404);
         abort_if($kind === 'report-group' && ! isset($validated['target']), 404);
         abort_if($kind === 'report-event' && ! isset($validated['target']), 404);
+        abort_if(
+            in_array($kind, [
+                'place-correction',
+                'place-warning',
+                'place-review',
+                'place-question',
+                'place-claim',
+                'report-place',
+            ], true) && ! isset($validated['target']),
+            404,
+        );
         abort_if($kind === 'post-edit' && ! isset($validated['post']), 404);
         abort_if($kind === 'delete-post' && ! isset($validated['post']), 404);
         abort_if(
@@ -62,6 +84,27 @@ class PawCircleComposerController extends Controller
         );
         abort_if(
             $kind === 'report-event' && $events->reportContext((string) $validated['target']) === null,
+            404,
+        );
+        abort_if(
+            in_array($kind, [
+                'place-warning',
+                'place-review',
+                'place-question',
+                'place-claim',
+                'report-place',
+            ], true)
+                && $placePresenter->reportContext((string) $validated['target']) === null,
+            404,
+        );
+        abort_if(
+            $kind === 'place-correction'
+                && $placePresenter->correctionContext((string) $validated['target']) === null,
+            404,
+        );
+        abort_if(
+            isset($validated['place'])
+                && $places->find((string) $validated['place']) === null,
             404,
         );
         abort_if(

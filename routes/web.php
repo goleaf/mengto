@@ -20,6 +20,8 @@ use App\Http\Controllers\PetDirectoryPreviewController;
 use App\Http\Controllers\PetFriendCenterPreviewController;
 use App\Http\Controllers\PetProfilePreviewController;
 use App\Http\Controllers\PetSocialPreviewController;
+use App\Http\Controllers\PlaceDetailPreviewController;
+use App\Http\Controllers\PlaceDirectoryPreviewController;
 use App\Http\Controllers\PostThreadPreviewController;
 use App\Http\Controllers\SharePreviewController;
 use App\Http\Controllers\WalkPlanPreviewController;
@@ -71,6 +73,23 @@ Route::middleware('web')
                 'travel-ready-webinar',
             ])
             ->name('meetups.show');
+        Route::get('/places', PlaceDirectoryPreviewController::class)->name('places.index');
+        Route::get('/places/{place}', PlaceDetailPreviewController::class)
+            ->whereIn('place', [
+                'vingis-quiet-loop',
+                'bernardine-evening-park',
+                'pavilniai-calm-trail',
+                'zverynas-small-dog-run',
+                'naujininkai-secure-dog-field',
+                'paws-24-veterinary-center',
+                'night-paw-clinic',
+                'green-paw-neighborhood-clinic',
+                'quiet-whiskers-grooming',
+                'old-town-pet-cafe',
+                'city-pet-market',
+                'vilnius-animal-aid',
+            ])
+            ->name('places.show');
         Route::get('/messages', MessageCenterPreviewController::class)->name('messages.index');
         Route::get('/messages/{conversation}/details', ConversationDetailPreviewController::class)
             ->whereIn('conversation', ['ari', 'lena', 'noah', 'priya'])
@@ -106,6 +125,12 @@ Route::middleware('web')
                 'meetup',
                 'walk',
                 'pet',
+                'place',
+                'place-correction',
+                'place-warning',
+                'place-review',
+                'place-question',
+                'place-claim',
                 'message',
                 'profile',
                 'pet-profile',
@@ -116,6 +141,7 @@ Route::middleware('web')
                 'report-post',
                 'report-group',
                 'report-event',
+                'report-place',
                 'delete-post',
             ])
             ->name('compose');

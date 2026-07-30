@@ -25,9 +25,15 @@ final class PawCircleComposerCatalog
             'post-edit' => $this->post($context, true),
             'delete-post' => $this->deletePost($context),
             'group' => $this->group(),
-            'meetup' => $this->meetup(),
+            'meetup' => $this->meetup($context),
             'walk' => $this->walk(),
             'pet' => $this->pet(),
+            'place' => $this->place(),
+            'place-correction' => $this->placeCorrection($context),
+            'place-warning' => $this->placeWarning($context),
+            'place-review' => $this->placeReview($context),
+            'place-question' => $this->placeQuestion($context),
+            'place-claim' => $this->placeClaim($context),
             'message' => $this->message(),
             'profile' => $this->profile($owner),
             'pet-profile' => $this->petProfile($pet),
@@ -37,6 +43,7 @@ final class PawCircleComposerCatalog
             'report-post' => $this->postReport($context),
             'report-group' => $this->groupReport($context),
             'report-event' => $this->eventReport($context),
+            'report-place' => $this->placeReport($context),
             default => throw new InvalidArgumentException("Unknown PawCircle composer kind [{$kind}]."),
         };
     }
@@ -263,8 +270,12 @@ final class PawCircleComposerCatalog
     /**
      * @return array<string, mixed>
      */
-    private function meetup(): array
+    private function meetup(array $context): array
     {
+        $place = is_array($context['place_context'] ?? null)
+            ? $context['place_context']
+            : [];
+
         return $this->definition(
             eyebrow: 'Event studio',
             title: 'Create a pet-friendly event',
@@ -343,7 +354,13 @@ final class PawCircleComposerCatalog
                         'UTC' => 'UTC',
                     ],
                 ),
-                $this->field('location', 'Meeting place', 'text', '', 'Required for in-person events'),
+                $this->field(
+                    'location',
+                    'Meeting place',
+                    'text',
+                    (string) ($place['address'] ?? ''),
+                    'Required for in-person events',
+                ),
                 $this->field('event_online_url', 'Online room link', 'url', '', 'Required for online events'),
                 $this->field(
                     'privacy',
@@ -399,8 +416,24 @@ final class PawCircleComposerCatalog
                         'online' => 'Online learning',
                     ],
                 ),
-                $this->field('body', 'Description', 'textarea', '', 'Describe who it is for, what happens, and what to bring.', required: true),
-                $this->field('rules', 'Participation rules', 'textarea', '', 'Add leash, contact, photography, and cancellation rules.', required: true),
+                $this->field(
+                    'body',
+                    'Description',
+                    'textarea',
+                    $place === []
+                        ? ''
+                        : 'Meet at '.$place['name'].'. Confirm the current place status and exact entrance before departure.',
+                    'Describe who it is for, what happens, and what to bring.',
+                    required: true,
+                ),
+                $this->field(
+                    'rules',
+                    'Participation rules',
+                    'textarea',
+                    $place === [] ? '' : implode("\n", $place['rules'] ?? []),
+                    'Add leash, contact, photography, and cancellation rules.',
+                    required: true,
+                ),
                 $this->field('event_safety_plan', 'Safety plan', 'textarea', '', 'Add meeting boundaries, emergency contact path, and animal-comfort precautions.', required: true),
             ],
         );
@@ -810,6 +843,393 @@ final class PawCircleComposerCatalog
             ],
             cancelParameters: $report['route_parameters'],
         );
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function place(): array
+    {
+        return $this->definition(
+            eyebrow: 'Community map',
+            title: 'Add a place',
+            description: 'Share enough source-backed information for moderators to check the place without exposing a private home address.',
+            action: 'create-place',
+            submitLabel: 'Send for review',
+            submitIcon: 'map-pin-plus',
+            cancelRoute: 'pet-social.places.index',
+            activeSection: 'places',
+            fields: [
+                $this->field('title', 'Place name', 'text', '', 'Use the name shown at the location.', required: true),
+                $this->field(
+                    'category',
+                    'Primary category',
+                    'select',
+                    'park',
+                    '',
+                    required: true,
+                    options: [
+                        'park' => 'Park',
+                        'dog-park' => 'Dog park',
+                        'route' => 'Walking route',
+                        'vet' => 'Veterinary clinic',
+                        'emergency-vet' => '24-hour veterinary clinic',
+                        'pet-store' => 'Pet store',
+                        'grooming' => 'Grooming',
+                        'shelter' => 'Shelter',
+                        'pet-cafe' => 'Pet-friendly cafe',
+                    ],
+                ),
+                $this->field('city', 'City or area', 'text', 'Vilnius', 'City, district, or region', required: true),
+                $this->field('place_address', 'Public address or entrance', 'text', '', 'Do not enter a private home address.', required: true),
+                $this->field('place_coordinates', 'Approximate coordinates', 'text', '', 'Example: 54.6892, 25.2537'),
+                $this->field('body', 'Description', 'textarea', '', 'What is here, who is it useful for, and what should visitors know?', required: true),
+                $this->field('place_hours', 'Hours', 'textarea', '', 'Add regular, seasonal, appointment-only, or emergency hours.'),
+                $this->field('rules', 'Pet rules', 'textarea', '', 'Add leash, species, size, access, and event rules.', required: true),
+                $this->field('place_features', 'Facilities and accessibility', 'textarea', '', 'Water, lighting, fencing, parking, ramps, quiet zones...'),
+                $this->field('place_source', 'Information source', 'url', '', 'Official page or another public source'),
+                $this->field('place_evidence', 'Evidence note', 'textarea', '', 'Describe a sign, recent visit, or official source.'),
+                $this->field(
+                    'place_relationship',
+                    'Your relationship',
+                    'select',
+                    'visitor',
+                    '',
+                    required: true,
+                    options: [
+                        'visitor' => 'Visitor',
+                        'owner' => 'Owner',
+                        'employee' => 'Employee',
+                        'organization' => 'Organization representative',
+                        'city-representative' => 'City representative',
+                    ],
+                ),
+            ],
+        );
+    }
+
+    /**
+     * @param  array<string, mixed>  $context
+     * @return array<string, mixed>
+     */
+    private function placeCorrection(array $context): array
+    {
+        $place = $this->requiredPlaceContext($context, 'place_correction');
+
+        return $this->definition(
+            eyebrow: 'Community correction',
+            title: 'Correct '.$place['label'],
+            description: 'Propose one precise change and include a recent source. Important details stay unchanged until reviewed.',
+            action: 'create-place-correction',
+            submitLabel: 'Submit correction',
+            submitIcon: 'file-check-2',
+            cancelRoute: $place['route'],
+            activeSection: 'places',
+            fields: [
+                $this->field(
+                    'place_field',
+                    'What changed?',
+                    'select',
+                    'hours',
+                    '',
+                    required: true,
+                    options: [
+                        'hours' => 'Hours',
+                        'pet-rules' => 'Pet rules',
+                        'address' => 'Address or map point',
+                        'contact' => 'Contact details',
+                        'services' => 'Services',
+                        'accessibility' => 'Accessibility',
+                        'closure' => 'Temporary or permanent closure',
+                    ],
+                ),
+                $this->field('place_current_value', 'Current information', 'textarea', '', 'What does the place page currently say?'),
+                $this->field('body', 'Proposed information', 'textarea', '', 'Write the corrected information clearly.', required: true),
+                $this->field('place_visit_date', 'Date checked', 'date', today()->format('Y-m-d'), ''),
+                $this->field('place_source', 'Public source', 'url', '', 'Official website or public notice'),
+                $this->field('place_evidence', 'Evidence', 'textarea', '', 'Describe the sign, source, photo, or visit that confirms this change.', required: true),
+            ],
+            payload: ['target' => $place['target']],
+            cancelParameters: $place['route_parameters'],
+        );
+    }
+
+    /**
+     * @param  array<string, mixed>  $context
+     * @return array<string, mixed>
+     */
+    private function placeWarning(array $context): array
+    {
+        $place = $this->requiredPlaceContext($context, 'place_report');
+
+        return $this->definition(
+            eyebrow: 'Temporary safety alert',
+            title: 'Report a hazard at '.$place['label'],
+            description: 'Alerts are time-limited and reviewed. Describe the exact area without exposing another person’s private information.',
+            action: 'create-place-warning',
+            submitLabel: 'Publish alert for review',
+            submitIcon: 'triangle-alert',
+            cancelRoute: $place['route'],
+            activeSection: 'places',
+            fields: [
+                $this->field('title', 'Short warning', 'text', '', 'Example: Broken glass near the north gate', required: true),
+                $this->field(
+                    'category',
+                    'Hazard',
+                    'select',
+                    'broken-glass',
+                    '',
+                    required: true,
+                    options: [
+                        'broken-glass' => 'Broken glass or sharp debris',
+                        'poison' => 'Suspected poison',
+                        'dangerous-food' => 'Dangerous food',
+                        'damaged-fence' => 'Damaged fence or gate',
+                        'ice' => 'Ice or slippery surface',
+                        'road-closure' => 'Closed route or entrance',
+                        'chemicals' => 'Chemical treatment',
+                        'water' => 'Unsafe water',
+                        'fire' => 'Fire or smoke',
+                        'flood' => 'Flooding',
+                        'lighting' => 'Lighting failure',
+                        'other' => 'Other temporary hazard',
+                    ],
+                ),
+                $this->field('place_zone', 'Area inside the place', 'text', '', 'Entrance, small-dog zone, path marker...'),
+                $this->field('body', 'What did you see?', 'textarea', '', 'Add when it happened and what visitors should avoid.', required: true),
+                $this->field('place_evidence', 'Evidence note', 'textarea', '', 'Describe a current photo or another verifiable source.'),
+            ],
+            payload: ['target' => $place['target']],
+            cancelParameters: $place['route_parameters'],
+        );
+    }
+
+    /**
+     * @param  array<string, mixed>  $context
+     * @return array<string, mixed>
+     */
+    private function placeReview(array $context): array
+    {
+        $place = $this->requiredPlaceContext($context, 'place_report');
+
+        return $this->definition(
+            eyebrow: 'Verified experience',
+            title: 'Review '.$place['label'],
+            description: 'Review the place and its published information. Do not include medical records or another person’s private details.',
+            action: 'create-place-review',
+            submitLabel: 'Publish review',
+            submitIcon: 'star',
+            cancelRoute: $place['route'],
+            activeSection: 'places',
+            fields: [
+                $this->field(
+                    'place_rating',
+                    'Overall rating',
+                    'select',
+                    '5',
+                    '',
+                    required: true,
+                    options: [
+                        '5' => '5 — Excellent',
+                        '4' => '4 — Good',
+                        '3' => '3 — Mixed',
+                        '2' => '2 — Poor',
+                        '1' => '1 — Very poor',
+                    ],
+                ),
+                $this->field(
+                    'place_pet',
+                    'Visited with',
+                    'select',
+                    'scout',
+                    '',
+                    required: true,
+                    options: [
+                        'scout' => 'Scout',
+                        'nori' => 'Nori',
+                    ],
+                ),
+                $this->field(
+                    'place_review_criterion',
+                    'Main topic',
+                    'select',
+                    'overall',
+                    '',
+                    options: [
+                        'overall' => 'Overall experience',
+                        'safety' => 'Safety',
+                        'accessibility' => 'Accessibility',
+                        'accuracy' => 'Information accuracy',
+                        'communication' => 'Communication',
+                        'cleanliness' => 'Cleanliness',
+                        'price' => 'Price clarity',
+                    ],
+                ),
+                $this->field('place_visit_date', 'Visit date', 'date', today()->format('Y-m-d'), ''),
+                $this->field('body', 'Review', 'textarea', '', 'What matched the listing, and what should another owner know?', required: true),
+                $this->field(
+                    'place_anonymous',
+                    'Public identity',
+                    'select',
+                    'no',
+                    '',
+                    options: [
+                        'no' => 'Show my profile',
+                        'yes' => 'Hide my name publicly',
+                    ],
+                ),
+            ],
+            payload: ['target' => $place['target']],
+            cancelParameters: $place['route_parameters'],
+        );
+    }
+
+    /**
+     * @param  array<string, mixed>  $context
+     * @return array<string, mixed>
+     */
+    private function placeQuestion(array $context): array
+    {
+        $place = $this->requiredPlaceContext($context, 'place_report');
+
+        return $this->definition(
+            eyebrow: 'Place questions',
+            title: 'Ask about '.$place['label'],
+            description: 'Ask one practical question. Answers identify whether they came from an owner, staff member, specialist, moderator, or visitor.',
+            action: 'create-place-question',
+            submitLabel: 'Ask question',
+            submitIcon: 'message-circle-question',
+            cancelRoute: $place['route'],
+            activeSection: 'places',
+            fields: [
+                $this->field('body', 'Question', 'textarea', '', 'Example: Is the small-dog gate working today?', required: true),
+            ],
+            payload: ['target' => $place['target']],
+            cancelParameters: $place['route_parameters'],
+        );
+    }
+
+    /**
+     * @param  array<string, mixed>  $context
+     * @return array<string, mixed>
+     */
+    private function placeClaim(array $context): array
+    {
+        $place = $this->requiredPlaceContext($context, 'place_report');
+
+        return $this->definition(
+            eyebrow: 'Business verification',
+            title: 'Claim '.$place['label'],
+            description: 'Verification grants management tools, not control over community reviews or moderation decisions.',
+            action: 'create-place-claim',
+            submitLabel: 'Request access',
+            submitIcon: 'badge-check',
+            cancelRoute: $place['route'],
+            activeSection: 'places',
+            fields: [
+                $this->field('title', 'Organization or business name', 'text', '', 'Legal or public trading name', required: true),
+                $this->field(
+                    'place_relationship',
+                    'Your relationship',
+                    'select',
+                    'owner',
+                    '',
+                    required: true,
+                    options: [
+                        'owner' => 'Owner',
+                        'employee' => 'Employee',
+                        'organization' => 'Organization representative',
+                        'city-representative' => 'City representative',
+                        'visitor' => 'Other relationship',
+                    ],
+                ),
+                $this->field('place_contact', 'Official contact', 'text', '', 'Domain email or public business phone', required: true),
+                $this->field(
+                    'place_verification_method',
+                    'Verification method',
+                    'select',
+                    'domain-email',
+                    '',
+                    required: true,
+                    options: [
+                        'domain-email' => 'Email on the official domain',
+                        'phone' => 'Call the published business number',
+                        'address-code' => 'Code delivered to the place',
+                        'organization-document' => 'Organization document',
+                        'manual-review' => 'Manual review',
+                    ],
+                ),
+                $this->field('place_evidence', 'Verification evidence', 'textarea', '', 'Explain how the moderation team can verify your authority.', required: true),
+            ],
+            payload: ['target' => $place['target']],
+            cancelParameters: $place['route_parameters'],
+        );
+    }
+
+    /**
+     * @param  array<string, mixed>  $context
+     * @return array<string, mixed>
+     */
+    private function placeReport(array $context): array
+    {
+        $place = $this->requiredPlaceContext($context, 'place_report');
+
+        return $this->definition(
+            eyebrow: 'Private place report',
+            title: 'Report '.$place['label'],
+            description: 'Send a private report for persistent, fraudulent, privacy, or serious safety concerns. Use a temporary alert for a short-lived local hazard.',
+            action: 'create-place-report',
+            submitLabel: 'Submit report',
+            submitIcon: 'flag',
+            cancelRoute: $place['route'],
+            activeSection: 'places',
+            fields: [
+                $this->field(
+                    'category',
+                    'Reason',
+                    'select',
+                    '',
+                    '',
+                    required: true,
+                    options: [
+                        'does-not-exist' => 'Place does not exist',
+                        'wrong-address' => 'Wrong address',
+                        'closed' => 'Closed permanently',
+                        'fake-business' => 'Fake or impersonated business',
+                        'dangerous-information' => 'Dangerous or misleading information',
+                        'animal-cruelty' => 'Animal cruelty concern',
+                        'fraud' => 'Fraud or payment concern',
+                        'hidden-fees' => 'Hidden fees',
+                        'privacy' => 'Private information exposed',
+                        'stolen-photos' => 'Stolen photos',
+                        'false-professional-info' => 'False professional information',
+                        'other' => 'Other concern',
+                    ],
+                ),
+                $this->field('body', 'What happened?', 'textarea', '', 'Add dates, context, and the practical risk.', required: true),
+                $this->field('place_evidence', 'Evidence', 'textarea', '', 'Optional public source, photo description, or supporting context.'),
+            ],
+            payload: [
+                'target' => $place['target'],
+                'label' => $place['label'],
+            ],
+            cancelParameters: $place['route_parameters'],
+        );
+    }
+
+    /**
+     * @param  array<string, mixed>  $context
+     * @return array<string, mixed>
+     */
+    private function requiredPlaceContext(array $context, string $key): array
+    {
+        $place = $context[$key] ?? null;
+
+        if (! is_array($place)) {
+            throw new InvalidArgumentException('A valid place target is required.');
+        }
+
+        return $place;
     }
 
     /**

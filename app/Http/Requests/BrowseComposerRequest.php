@@ -27,6 +27,7 @@ class BrowseComposerRequest extends FormRequest
                 'regex:/^[a-z0-9-]+$/',
             ],
             'post' => ['nullable', 'string', 'max:80', 'regex:/^[a-z0-9-]+$/'],
+            'place' => ['nullable', 'string', 'max:80', 'regex:/^[a-z0-9-]+$/'],
             'label' => ['nullable', 'string', 'max:120'],
         ];
     }

@@ -20,6 +20,7 @@ use Illuminate\Validation\ValidationException;
 class PerformPawCircleAction
 {
     public function __construct(
+        private readonly PerformPlaceAction $places,
         private readonly PawCirclePrototypeState $state,
         private readonly PawCirclePreviewService $preview,
         private readonly PawCircleProfilePresenter $profiles,
@@ -47,6 +48,10 @@ class PerformPawCircleAction
         $action = (string) $data['action'];
         $target = (string) ($data['target'] ?? '');
         $label = (string) ($data['label'] ?? 'Item');
+
+        if (Str::contains($action, 'place')) {
+            return $this->places->handle($data);
+        }
 
         return match ($action) {
             'toggle-follow' => $this->toggle('follows', $target, $label, 'Following', 'No longer following'),

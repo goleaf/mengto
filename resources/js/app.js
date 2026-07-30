@@ -1,1 +1,1 @@
-//
+import './places-map';
