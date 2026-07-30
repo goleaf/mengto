@@ -6,6 +6,22 @@ use App\Http\Controllers\BookingActionController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\BookingCreateController;
 use App\Http\Controllers\BookingStoreController;
+use App\Http\Controllers\CareAccessRevokeController;
+use App\Http\Controllers\CareAccessStoreController;
+use App\Http\Controllers\CareEntryStoreController;
+use App\Http\Controllers\CareJournalController;
+use App\Http\Controllers\CareJournalCreateController;
+use App\Http\Controllers\CareJournalDirectoryController;
+use App\Http\Controllers\CareJournalManageController;
+use App\Http\Controllers\CareJournalReportController;
+use App\Http\Controllers\CareJournalStoreController;
+use App\Http\Controllers\CareMediaDownloadController;
+use App\Http\Controllers\CareRoutineStoreController;
+use App\Http\Controllers\CareSharedEntryStoreController;
+use App\Http\Controllers\CareSharedJournalController;
+use App\Http\Controllers\CareSharedMediaDownloadController;
+use App\Http\Controllers\CareTaskCompleteController;
+use App\Http\Controllers\CareTaskStoreController;
 use App\Http\Controllers\CirclePreviewController;
 use App\Http\Controllers\CommentStoreController;
 use App\Http\Controllers\ComposerController;
@@ -85,6 +101,7 @@ use App\Http\Controllers\TopicEditController;
 use App\Http\Controllers\TopicStoreController;
 use App\Http\Controllers\TopicUpdateController;
 use App\Http\Controllers\WalkPlanPreviewController;
+use App\Http\Middleware\ProtectCareResponse;
 use App\Http\Middleware\ProtectMedicalResponse;
 use Illuminate\Support\Facades\Route;
 
@@ -377,6 +394,66 @@ Route::middleware(['web', ProtectMedicalResponse::class])
             MedicalAccessRevokeController::class,
         )->name('access.revoke');
         Route::get('/{medicalRecord}', MedicalRecordController::class)->name('show');
+    });
+
+Route::middleware(['web', ProtectCareResponse::class])
+    ->prefix('care-journals')
+    ->name('care-journals.')
+    ->group(function (): void {
+        Route::get('/', CareJournalDirectoryController::class)->name('index');
+        Route::get('/new', CareJournalCreateController::class)->name('create');
+        Route::post('/', CareJournalStoreController::class)
+            ->middleware('throttle:6,1')
+            ->name('store');
+        Route::get('/{careJournal}/manage', CareJournalManageController::class)
+            ->name('manage');
+        Route::get('/{careJournal}/report', CareJournalReportController::class)
+            ->name('report');
+        Route::post('/{careJournal}/entries', CareEntryStoreController::class)
+            ->middleware('throttle:40,1')
+            ->name('entries.store');
+        Route::post('/{careJournal}/tasks', CareTaskStoreController::class)
+            ->middleware('throttle:30,1')
+            ->name('tasks.store');
+        Route::post(
+            '/{careJournal}/tasks/{careTask}/complete',
+            CareTaskCompleteController::class,
+        )
+            ->middleware('throttle:40,1')
+            ->name('tasks.complete');
+        Route::post('/{careJournal}/routines', CareRoutineStoreController::class)
+            ->middleware('throttle:20,1')
+            ->name('routines.store');
+        Route::post('/{careJournal}/access', CareAccessStoreController::class)
+            ->middleware('throttle:12,1')
+            ->name('access.store');
+        Route::delete(
+            '/{careJournal}/access/{careAccessGrant}',
+            CareAccessRevokeController::class,
+        )->name('access.revoke');
+        Route::get(
+            '/{careJournal}/media/{careMedia}',
+            CareMediaDownloadController::class,
+        )->name('media.download');
+        Route::get('/{careJournal}', CareJournalController::class)->name('show');
+    });
+
+Route::middleware(['web', ProtectCareResponse::class])
+    ->prefix('care-access')
+    ->name('care-access.')
+    ->group(function (): void {
+        Route::get('/{token}', CareSharedJournalController::class)
+            ->where('token', '[A-Za-z0-9]{64}')
+            ->middleware('throttle:30,1')
+            ->name('show');
+        Route::post('/{token}/entries', CareSharedEntryStoreController::class)
+            ->where('token', '[A-Za-z0-9]{64}')
+            ->middleware('throttle:20,1')
+            ->name('entries.store');
+        Route::get('/{token}/media/{careMedia}', CareSharedMediaDownloadController::class)
+            ->where('token', '[A-Za-z0-9]{64}')
+            ->middleware('throttle:20,1')
+            ->name('media.download');
     });
 
 Route::middleware(['web', ProtectMedicalResponse::class])

@@ -128,13 +128,21 @@
                                 description="Care details are shown for this audience by the profile owner. Exact medical records remain private."
                             />
                             @if ($profile['audience'] === 'owner')
-                                <x-action-control
-                                    :href="route('medical-records.index')"
-                                    label="Open private medical records"
-                                    icon="stethoscope"
-                                    variant="primary"
-                                    size="regular"
-                                />
+                                <x-action-group class="mt-4">
+                                    <x-action-control
+                                        :href="route('medical-records.index')"
+                                        label="Health record"
+                                        icon="stethoscope"
+                                        size="regular"
+                                    />
+                                    <x-action-control
+                                        :href="route('care-journals.index')"
+                                        label="Care journal"
+                                        icon="notebook-tabs"
+                                        variant="primary"
+                                        size="regular"
+                                    />
+                                </x-action-group>
                             @endif
                         </x-slot:sidebar>
                     </x-main-sidebar-layout>

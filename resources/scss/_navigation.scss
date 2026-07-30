@@ -100,7 +100,7 @@
         inline-size: max(100%, 38rem);
         max-inline-size: 80rem;
         margin-inline: auto;
-        grid-template-columns: repeat(10, minmax(3.25rem, 1fr));
+        grid-template-columns: repeat(11, minmax(3.25rem, 1fr));
         border: 1px solid $line;
         border-radius: $panel-radius;
         background: $white;
@@ -196,7 +196,9 @@
     .search-link {
         inline-size: 100%;
     }
+}
 
+@media (min-width: 80rem) {
     .app-main {
         padding-block-end: 2rem;
     }
