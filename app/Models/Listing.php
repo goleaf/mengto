@@ -4,6 +4,8 @@ namespace App\Models;
 
 use App\Enums\ListingStatus;
 use App\Enums\ListingType;
+use App\Enums\ModerationStatus;
+use App\Enums\SellerType;
 use Database\Factories\ListingFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -19,22 +21,37 @@ class Listing extends Model
 
     private const ROUTE_COLUMNS = [
         'id', 'owner_id', 'owner_key', 'owner_name', 'owner_initials', 'slug',
-        'type', 'category', 'title', 'description', 'condition', 'price',
-        'currency', 'is_free', 'exchange_preferences', 'species', 'pet_size',
-        'city', 'area', 'delivery_options', 'meetup_notes', 'cover_url',
-        'gallery', 'status', 'safety_status', 'is_business', 'business_name',
-        'contact_policy', 'view_count', 'published_at', 'reserved_at',
-        'completed_at', 'created_at', 'updated_at',
+        'type', 'category', 'brand', 'model', 'material', 'title', 'description',
+        'condition', 'price', 'currency', 'is_free', 'quantity', 'availability',
+        'exchange_preferences', 'species', 'pet_size', 'age_group', 'attributes',
+        'defects', 'hygiene_status', 'sealed_package', 'city', 'area',
+        'delivery_options', 'meetup_notes', 'return_policy', 'cover_url',
+        'gallery', 'video_url', 'status', 'safety_status', 'moderation_status',
+        'risk_flags', 'is_business', 'business_name', 'seller_type',
+        'is_verified_seller', 'contact_policy', 'view_count', 'published_at',
+        'reserved_at', 'completed_at', 'expires_at', 'created_at', 'updated_at',
     ];
 
     protected $fillable = [
         'owner_id', 'owner_key', 'owner_name', 'owner_initials', 'slug', 'type',
-        'category', 'title', 'description', 'condition', 'price', 'currency',
-        'is_free', 'exchange_preferences', 'species', 'pet_size', 'city',
-        'area', 'delivery_options', 'meetup_notes', 'cover_url', 'gallery',
-        'status', 'safety_status', 'is_business', 'business_name',
-        'contact_policy', 'view_count', 'published_at', 'reserved_at',
-        'completed_at',
+        'category', 'brand', 'model', 'material', 'title', 'description',
+        'condition', 'price', 'currency', 'is_free', 'quantity', 'availability',
+        'exchange_preferences', 'species', 'pet_size', 'age_group', 'attributes',
+        'defects', 'hygiene_status', 'sealed_package', 'city', 'area',
+        'delivery_options', 'meetup_notes', 'return_policy', 'cover_url',
+        'gallery', 'video_url', 'status', 'safety_status', 'moderation_status',
+        'risk_flags', 'is_business', 'business_name', 'seller_type',
+        'is_verified_seller', 'contact_policy', 'view_count', 'published_at',
+        'reserved_at', 'completed_at', 'expires_at',
+    ];
+
+    protected $attributes = [
+        'quantity' => 1,
+        'availability' => 'in-stock',
+        'seller_type' => 'private',
+        'is_verified_seller' => false,
+        'moderation_status' => 'approved',
+        'sealed_package' => false,
     ];
 
     protected static function booted(): void
@@ -48,15 +65,22 @@ class Listing extends Model
         return [
             'type' => ListingType::class,
             'status' => ListingStatus::class,
+            'seller_type' => SellerType::class,
+            'moderation_status' => ModerationStatus::class,
             'price' => 'decimal:2',
             'is_free' => 'boolean',
+            'is_verified_seller' => 'boolean',
+            'sealed_package' => 'boolean',
             'species' => 'array',
+            'attributes' => 'array',
             'delivery_options' => 'array',
             'gallery' => 'array',
+            'risk_flags' => 'array',
             'is_business' => 'boolean',
             'published_at' => 'datetime',
             'reserved_at' => 'datetime',
             'completed_at' => 'datetime',
+            'expires_at' => 'datetime',
         ];
     }
 
@@ -91,20 +115,34 @@ class Listing extends Model
         return $this->hasMany(ListingReport::class);
     }
 
+    public function orders(): HasMany
+    {
+        return $this->hasMany(Order::class);
+    }
+
+    public function reviews(): HasMany
+    {
+        return $this->hasMany(ListingReview::class);
+    }
+
     public function scopeForDirectory(Builder $query): Builder
     {
         return $query->select([
             'id', 'owner_key', 'owner_name', 'owner_initials', 'slug', 'type',
-            'category', 'title', 'description', 'condition', 'price', 'currency',
-            'is_free', 'exchange_preferences', 'species', 'pet_size', 'city',
+            'category', 'brand', 'model', 'title', 'description', 'condition',
+            'price', 'currency', 'is_free', 'quantity', 'availability',
+            'exchange_preferences', 'species', 'pet_size', 'age_group', 'city',
             'area', 'delivery_options', 'cover_url', 'status', 'safety_status',
-            'is_business', 'business_name', 'published_at', 'created_at',
+            'moderation_status', 'is_business', 'business_name', 'seller_type',
+            'is_verified_seller', 'published_at', 'created_at',
         ]);
     }
 
     public function scopePublished(Builder $query): Builder
     {
-        return $query->where('status', ListingStatus::Published->value);
+        return $query
+            ->where('status', ListingStatus::Published->value)
+            ->where('moderation_status', ModerationStatus::Approved->value);
     }
 
     public function scopeSearch(Builder $query, ?string $search): Builder
@@ -122,6 +160,9 @@ class Listing extends Model
                 ->where('title', 'like', $term)
                 ->orWhere('description', 'like', $term)
                 ->orWhere('category', 'like', $term)
+                ->orWhere('brand', 'like', $term)
+                ->orWhere('model', 'like', $term)
+                ->orWhere('material', 'like', $term)
                 ->orWhere('city', 'like', $term)
                 ->orWhere('business_name', 'like', $term);
         });
@@ -162,13 +203,30 @@ class Listing extends Model
         };
     }
 
-    /** @return array{available: int, adoption: int, free: int, cities: int} */
+    public function scopeInCondition(Builder $query, ?string $condition): Builder
+    {
+        return filled($condition) ? $query->where('condition', $condition) : $query;
+    }
+
+    public function scopeFromSellerType(Builder $query, ?string $sellerType): Builder
+    {
+        return filled($sellerType) ? $query->where('seller_type', $sellerType) : $query;
+    }
+
+    public function scopeWithAvailability(Builder $query, ?string $availability): Builder
+    {
+        return filled($availability) ? $query->where('availability', $availability) : $query;
+    }
+
+    /** @return array{available: int, adoption: int, free: int, rental: int, shelter: int, cities: int} */
     public static function directoryStats(): array
     {
         return Cache::remember('listings.directory.stats', now()->addMinutes(5), fn (): array => [
             'available' => self::query()->published()->count(),
             'adoption' => self::query()->published()->where('type', ListingType::Adoption->value)->count(),
             'free' => self::query()->published()->where('is_free', true)->count(),
+            'rental' => self::query()->published()->where('type', ListingType::Rental->value)->count(),
+            'shelter' => self::query()->published()->where('type', ListingType::ShelterNeed->value)->count(),
             'cities' => self::query()->published()->distinct()->count('city'),
         ]);
     }

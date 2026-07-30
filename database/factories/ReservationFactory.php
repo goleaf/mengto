@@ -26,9 +26,17 @@ class ReservationFactory extends Factory
             'requester_name' => fake()->name(),
             'idempotency_key' => (string) Str::uuid(),
             'status' => ReservationStatus::Requested,
+            'request_kind' => 'purchase',
+            'quantity' => 1,
+            'offered_price' => null,
             'message' => fake()->sentence(14),
             'exchange_method' => 'meetup',
             'proposed_at' => now()->addDay(),
+            'rental_starts_at' => null,
+            'rental_ends_at' => null,
+            'questionnaire' => [],
+            'terms_accepted' => true,
+            'privacy_accepted' => true,
             'expires_at' => now()->addDays(3),
         ];
     }

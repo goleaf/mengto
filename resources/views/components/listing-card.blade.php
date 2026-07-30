@@ -3,7 +3,7 @@
 <article class="market-card">
     <a href="{{ route('marketplace.show', $listing['slug']) }}" class="market-card__media" aria-label="View {{ $listing['title'] }}">
         @if ($listing['cover_url'])
-            <img src="{{ $listing['cover_url'] }}" alt="" loading="lazy">
+            <img src="{{ $listing['cover_url'] }}" alt="{{ $listing['title'] }}" loading="lazy">
         @else
             <span class="market-card__placeholder" aria-hidden="true">
                 <x-dynamic-component :component="'lucide-'.$listing['type_icon']" class="size-10" />
@@ -28,6 +28,10 @@
             <strong class="shrink-0 text-lg">{{ $listing['price_label'] }}</strong>
         </div>
 
+        @if ($listing['brand_model'])
+            <p class="text-sm font-semibold text-paw-muted">{{ $listing['brand_model'] }}</p>
+        @endif
+
         <p class="market-card__excerpt">{{ $listing['excerpt'] }}</p>
 
         <div class="flex flex-wrap gap-2" aria-label="Suitable pets">
@@ -44,15 +48,25 @@
                 <dd>{{ $listing['location_label'] }}</dd>
             </div>
             <div>
-                <dt><x-lucide-sparkles class="size-3.5" aria-hidden="true" /> Condition</dt>
-                <dd>{{ $listing['condition_label'] }}</dd>
+                <dt><x-lucide-package-check class="size-3.5" aria-hidden="true" /> Availability</dt>
+                <dd>{{ $listing['availability_label'] }} · {{ $listing['quantity'] }}</dd>
             </div>
         </dl>
 
         <footer class="market-card__footer">
             <div class="min-w-0 text-xs text-paw-muted">
-                <span class="block truncate font-semibold text-paw-ink">{{ $listing['business_name'] ?? $listing['owner_name'] }}</span>
-                <span>{{ $listing['published_label'] }}</span>
+                <span class="flex items-center gap-1 truncate font-semibold text-paw-ink">
+                    {{ $listing['business_name'] ?? $listing['owner_name'] }}
+                    @if ($listing['seller_verified'])
+                        <x-lucide-badge-check class="size-3.5 shrink-0 text-paw-leaf" aria-label="Verified seller" />
+                    @endif
+                </span>
+                <span>
+                    {{ $listing['seller_type_label'] }}
+                    @if ($listing['item_rating'])
+                        · {{ $listing['item_rating'] }}/5 ({{ $listing['reviews_count'] }})
+                    @endif
+                </span>
             </div>
             <div class="flex shrink-0 gap-2">
                 <x-action-control

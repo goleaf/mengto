@@ -3,11 +3,15 @@
 namespace App\Actions;
 
 use App\Enums\ListingStatus;
+use App\Enums\ListingType;
+use App\Enums\OrderStatus;
+use App\Enums\PaymentStatus;
 use App\Enums\ReservationStatus;
 use App\Models\AuditLog;
 use App\Models\Listing;
 use App\Models\ListingEngagement;
 use App\Models\ListingReport;
+use App\Models\Order;
 use App\Models\Reservation;
 use App\Services\ForumActor;
 use Illuminate\Support\Facades\DB;
@@ -15,7 +19,10 @@ use Illuminate\Validation\ValidationException;
 
 class PerformListingAction
 {
-    public function __construct(private readonly ForumActor $actor) {}
+    public function __construct(
+        private readonly ForumActor $actor,
+        private readonly CreateOrder $createOrder,
+    ) {}
 
     /**
      * @param  array<string, mixed>  $data
@@ -73,7 +80,7 @@ class PerformListingAction
             }
 
             $lockedListing = Listing::query()
-                ->select(['id', 'owner_key', 'status'])
+                ->select(['id', 'owner_key', 'status', 'quantity'])
                 ->lockForUpdate()
                 ->findOrFail($listing->id);
 
@@ -105,9 +112,23 @@ class PerformListingAction
                 'requester_name' => $identity['name'],
                 'idempotency_key' => $data['idempotency_key'],
                 'status' => ReservationStatus::Requested,
+                'request_kind' => $listing->type->requestKind(),
+                'quantity' => $data['quantity'],
+                'offered_price' => $data['offered_price'] ?? null,
                 'message' => $data['message'],
                 'exchange_method' => $data['exchange_method'],
                 'proposed_at' => $data['proposed_at'] ?? null,
+                'rental_starts_at' => $data['rental_starts_at'] ?? null,
+                'rental_ends_at' => $data['rental_ends_at'] ?? null,
+                'questionnaire' => array_filter([
+                    'experience' => $data['experience'] ?? null,
+                    'home_context' => $data['home_context'] ?? null,
+                    'other_pets' => $data['other_pets'] ?? null,
+                    'care_plan' => $data['care_plan'] ?? null,
+                    'adoption_reason' => $data['adoption_reason'] ?? null,
+                ], filled(...)),
+                'terms_accepted' => $data['terms_accepted'],
+                'privacy_accepted' => $data['privacy_accepted'],
                 'expires_at' => now()->addDays(3),
             ]);
 
@@ -132,16 +153,58 @@ class PerformListingAction
         }
 
         return DB::transaction(function () use ($listing, $reservation): array {
-            $wasAccepted = $reservation->status === ReservationStatus::Accepted;
-            $reservation->update([
+            $lockedReservation = Reservation::query()
+                ->select([
+                    'id', 'listing_id', 'requester_key', 'status', 'quantity',
+                    'responded_at',
+                ])
+                ->lockForUpdate()
+                ->findOrFail($reservation->id);
+
+            if ($lockedReservation->requester_key !== $this->actor->key()) {
+                throw ValidationException::withMessages(['reservation_id' => 'This request does not belong to you.']);
+            }
+
+            if (! in_array($lockedReservation->status, [ReservationStatus::Requested, ReservationStatus::Accepted], true)) {
+                throw ValidationException::withMessages(['reservation_id' => 'This request can no longer be cancelled.']);
+            }
+
+            $wasAccepted = $lockedReservation->status === ReservationStatus::Accepted;
+
+            $lockedReservation->update([
                 'status' => ReservationStatus::Cancelled,
                 'responded_at' => now(),
             ]);
 
             if ($wasAccepted) {
-                $listing->update([
+                $lockedListing = Listing::query()
+                    ->select(['id', 'quantity', 'status', 'availability'])
+                    ->lockForUpdate()
+                    ->findOrFail($listing->id);
+                $lockedListing->update([
+                    'quantity' => $lockedListing->quantity + $lockedReservation->quantity,
+                    'availability' => 'in-stock',
                     'status' => ListingStatus::Published,
                     'reserved_at' => null,
+                ]);
+
+                $order = Order::query()
+                    ->select(['id', 'status', 'payment_status', 'cancelled_at'])
+                    ->where('reservation_id', $lockedReservation->id)
+                    ->first();
+
+                if ($order?->payment_status === PaymentStatus::Paid) {
+                    throw ValidationException::withMessages([
+                        'reservation_id' => 'A paid order must be refunded through the dispute process.',
+                    ]);
+                }
+
+                $order?->update([
+                    'status' => OrderStatus::Cancelled,
+                    'payment_status' => $order->payment_status === PaymentStatus::NotRequired
+                        ? PaymentStatus::NotRequired
+                        : PaymentStatus::Cancelled,
+                    'cancelled_at' => now(),
                 ]);
             }
 
@@ -160,7 +223,17 @@ class PerformListingAction
 
         return DB::transaction(function () use ($listing, $reservation): array {
             $lockedListing = Listing::query()
-                ->select(['id', 'status'])
+                ->select([
+                    'id', 'owner_id', 'owner_key', 'owner_name', 'slug', 'type',
+                    'category', 'brand', 'model', 'material', 'title',
+                    'description', 'condition', 'price', 'currency', 'quantity',
+                    'availability', 'exchange_preferences', 'species',
+                    'pet_size', 'age_group', 'attributes', 'defects',
+                    'hygiene_status', 'sealed_package', 'area', 'city',
+                    'delivery_options', 'meetup_notes', 'return_policy',
+                    'cover_url', 'gallery', 'seller_type',
+                    'is_verified_seller', 'contact_policy', 'status',
+                ])
                 ->lockForUpdate()
                 ->findOrFail($listing->id);
 
@@ -168,28 +241,65 @@ class PerformListingAction
                 throw ValidationException::withMessages(['action' => 'This listing is already reserved or completed.']);
             }
 
-            $reservation->update([
+            $lockedReservation = Reservation::query()
+                ->select([
+                    'id', 'listing_id', 'requester_id', 'requester_key',
+                    'requester_name', 'status', 'request_kind', 'quantity',
+                    'offered_price', 'message', 'exchange_method', 'proposed_at',
+                    'rental_starts_at', 'rental_ends_at', 'questionnaire',
+                    'terms_accepted', 'privacy_accepted', 'responded_at',
+                ])
+                ->lockForUpdate()
+                ->findOrFail($reservation->id);
+
+            if ($lockedReservation->status !== ReservationStatus::Requested) {
+                throw ValidationException::withMessages(['reservation_id' => 'Only pending requests can be accepted.']);
+            }
+
+            if ($lockedReservation->quantity > $lockedListing->quantity) {
+                throw ValidationException::withMessages([
+                    'reservation_id' => 'The requested quantity is no longer available.',
+                ]);
+            }
+
+            $remainingQuantity = $lockedListing->quantity - $lockedReservation->quantity;
+
+            $lockedReservation->update([
                 'status' => ReservationStatus::Accepted,
                 'responded_at' => now(),
             ]);
 
-            Reservation::query()
-                ->where('listing_id', $listing->id)
-                ->whereKeyNot($reservation->id)
-                ->where('status', ReservationStatus::Requested->value)
-                ->update([
-                    'status' => ReservationStatus::Declined->value,
-                    'responded_at' => now(),
-                ]);
+            if ($remainingQuantity === 0) {
+                Reservation::query()
+                    ->where('listing_id', $listing->id)
+                    ->whereKeyNot($lockedReservation->id)
+                    ->where('status', ReservationStatus::Requested->value)
+                    ->update([
+                        'status' => ReservationStatus::Declined->value,
+                        'responded_at' => now(),
+                    ]);
+            }
 
-            $listing->update([
-                'status' => ListingStatus::Reserved,
-                'reserved_at' => now(),
+            $lockedListing->update([
+                'quantity' => $remainingQuantity,
+                'availability' => $remainingQuantity === 0 ? 'out-of-stock' : 'in-stock',
+                'status' => $remainingQuantity === 0 ? ListingStatus::Reserved : ListingStatus::Published,
+                'reserved_at' => $remainingQuantity === 0 ? now() : null,
             ]);
 
-            $this->audit('reservation.accepted', $listing, ['reservation_id' => $reservation->id]);
+            $order = $this->createOrder->handle($lockedListing, $lockedReservation);
+            $this->audit('reservation.accepted', $listing, [
+                'reservation_id' => $lockedReservation->id,
+                'order_reference' => $order->reference,
+                'remaining_quantity' => $remainingQuantity,
+            ]);
 
-            return ['message' => 'Request accepted. Arrange a safe meetup before completing the exchange.', 'listing' => $listing];
+            return [
+                'message' => $order->payment_status === PaymentStatus::Pending
+                    ? 'Request accepted. The order is ready for protected payment.'
+                    : 'Request accepted. The order is confirmed.',
+                'listing' => $listing,
+            ];
         });
     }
 
@@ -217,15 +327,68 @@ class PerformListingAction
         }
 
         return DB::transaction(function () use ($listing, $reservation): array {
-            $reservation->update([
+            $lockedReservation = Reservation::query()
+                ->select(['id', 'listing_id', 'status', 'quantity', 'completed_at'])
+                ->lockForUpdate()
+                ->findOrFail($reservation->id);
+
+            if ($lockedReservation->status !== ReservationStatus::Accepted) {
+                throw ValidationException::withMessages([
+                    'reservation_id' => 'Accept a request before completing the exchange.',
+                ]);
+            }
+
+            $order = Order::query()
+                ->select([
+                    'id', 'reservation_id', 'status', 'payment_status',
+                    'completed_at',
+                ])
+                ->where('reservation_id', $lockedReservation->id)
+                ->lockForUpdate()
+                ->firstOrFail();
+
+            if (! in_array($order->payment_status, [PaymentStatus::Paid, PaymentStatus::NotRequired], true)) {
+                throw ValidationException::withMessages([
+                    'reservation_id' => 'Protected payment must be confirmed before completion.',
+                ]);
+            }
+
+            if ($order->status === OrderStatus::Disputed) {
+                throw ValidationException::withMessages([
+                    'reservation_id' => 'Resolve the active dispute before completion.',
+                ]);
+            }
+
+            $lockedReservation->update([
                 'status' => ReservationStatus::Completed,
                 'completed_at' => now(),
             ]);
-            $listing->update([
-                'status' => ListingStatus::Completed,
+
+            $order->update([
+                'status' => OrderStatus::Completed,
                 'completed_at' => now(),
             ]);
-            $this->audit('listing.completed', $listing, ['reservation_id' => $reservation->id]);
+
+            $lockedListing = Listing::query()
+                ->select(['id', 'type', 'quantity', 'status', 'availability'])
+                ->lockForUpdate()
+                ->findOrFail($listing->id);
+            $isRental = $lockedListing->type === ListingType::Rental;
+            $availableQuantity = $isRental
+                ? $lockedListing->quantity + $lockedReservation->quantity
+                : $lockedListing->quantity;
+
+            $lockedListing->update([
+                'quantity' => $availableQuantity,
+                'availability' => $availableQuantity > 0 ? 'in-stock' : 'out-of-stock',
+                'status' => $availableQuantity > 0 ? ListingStatus::Published : ListingStatus::Completed,
+                'completed_at' => $availableQuantity > 0 ? null : now(),
+                'reserved_at' => null,
+            ]);
+            $this->audit('listing.completed', $listing, [
+                'reservation_id' => $lockedReservation->id,
+                'order_id' => $order->id,
+            ]);
 
             return ['message' => 'Exchange marked complete.', 'listing' => $listing];
         });
@@ -271,7 +434,10 @@ class PerformListingAction
         return Reservation::query()
             ->select([
                 'id', 'listing_id', 'requester_key', 'requester_name', 'status',
-                'exchange_method', 'proposed_at', 'responded_at', 'completed_at',
+                'request_kind', 'quantity', 'offered_price', 'message',
+                'exchange_method', 'proposed_at', 'rental_starts_at',
+                'rental_ends_at', 'questionnaire', 'terms_accepted',
+                'privacy_accepted', 'responded_at', 'completed_at',
             ])
             ->where('listing_id', $listing->id)
             ->findOrFail((int) $data['reservation_id']);

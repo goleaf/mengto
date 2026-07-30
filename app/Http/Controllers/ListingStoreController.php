@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Actions\CreateListing;
 use App\Enums\ListingStatus;
+use App\Enums\ModerationStatus;
 use App\Http\Requests\StoreListingRequest;
 use App\Models\Listing;
 use Illuminate\Http\RedirectResponse;
@@ -21,7 +22,9 @@ class ListingStoreController extends Controller
                 'feedback',
                 $listing->status === ListingStatus::Published
                     ? 'Listing published. Keep conversations and arrangements inside the platform.'
-                    : 'Draft saved. Only you can see it.',
+                    : ($listing->moderation_status === ModerationStatus::Pending
+                        ? 'Listing saved and sent for safety review. Only you can see it until approval.'
+                        : 'Draft saved. Only you can see it.'),
             );
     }
 }

@@ -162,6 +162,18 @@
     color: $ink;
 }
 
+.market-feedback {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    border-block: 1px solid color-mix(in srgb, $leaf 32%, $line);
+    background: color-mix(in srgb, $mint 55%, $white);
+    padding: 0.875rem 1rem;
+    color: $leaf;
+    font-size: 0.875rem;
+    font-weight: 700;
+}
+
 .market-facts {
     display: grid;
     gap: 1rem;
@@ -183,5 +195,70 @@
 
     @media (min-width: 40rem) {
         grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+.market-attributes {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1px;
+    overflow: hidden;
+    border: 1px solid $line;
+    border-radius: $control-radius;
+    background: $line;
+
+    > div {
+        min-inline-size: 0;
+        background: $white;
+        padding: 0.75rem;
+    }
+
+    dt {
+        color: $muted;
+        font-size: 0.75rem;
+        font-weight: 700;
+    }
+
+    dd {
+        margin-block-start: 0.25rem;
+        font-size: 0.875rem;
+        font-weight: 700;
+        overflow-wrap: anywhere;
+    }
+
+    @media (max-width: 32rem) {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+
+.market-fieldset {
+    min-inline-size: 0;
+    border-block: 1px solid $line;
+    padding-block: 1rem;
+
+    legend {
+        padding-inline-end: 0.75rem;
+        font-size: 1rem;
+        font-weight: 800;
+    }
+
+    label {
+        display: grid;
+        gap: 0.25rem;
+        min-inline-size: 0;
+        font-size: 0.875rem;
+        font-weight: 600;
+    }
+
+    input,
+    select,
+    textarea {
+        inline-size: 100%;
+        min-inline-size: 0;
+        border: 1px solid $line;
+        border-radius: $control-radius;
+        background: $white;
+        padding: 0.625rem 0.75rem;
+        color: $ink;
     }
 }

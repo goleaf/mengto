@@ -34,6 +34,9 @@ class BrowseListingsRequest extends FormRequest
             'city' => ['nullable', 'string', 'max:80'],
             'delivery' => ['nullable', Rule::in(array_keys($taxonomy->deliveryOptions()))],
             'price' => ['nullable', Rule::in(array_keys($taxonomy->priceFilters()))],
+            'condition' => ['nullable', Rule::in(array_keys($taxonomy->conditions()))],
+            'seller_type' => ['nullable', Rule::in(array_keys($taxonomy->sellerTypes()))],
+            'availability' => ['nullable', Rule::in(array_keys($taxonomy->availabilityOptions()))],
             'sort' => ['nullable', Rule::in(array_keys($taxonomy->sortOptions()))],
         ];
     }

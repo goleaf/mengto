@@ -2,11 +2,14 @@
 
 use App\Enums\ListingStatus;
 use App\Enums\ListingType;
+use App\Enums\OrderStatus;
+use App\Enums\PaymentStatus;
 use App\Enums\ReservationStatus;
 use App\Models\AuditLog;
 use App\Models\Listing;
 use App\Models\ListingEngagement;
 use App\Models\ListingReport;
+use App\Models\Order;
 use App\Models\Reservation;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
@@ -152,6 +155,17 @@ test('accepting one request reserves the listing declines competitors and suppor
         ->and($accepted->refresh()->status)->toBe(ReservationStatus::Accepted)
         ->and($declined->refresh()->status)->toBe(ReservationStatus::Declined);
 
+    $order = Order::query()->where('reservation_id', $accepted->id)->firstOrFail();
+    expect($order)
+        ->status->toBe(OrderStatus::AwaitingPayment)
+        ->payment_status->toBe(PaymentStatus::Pending);
+
+    $order->update([
+        'status' => OrderStatus::Confirmed,
+        'payment_status' => PaymentStatus::Paid,
+        'paid_at' => now(),
+    ]);
+
     $this->post(route('marketplace.actions', $listing), [
         'action' => 'mark-complete',
         'reservation_id' => $accepted->id,
@@ -231,7 +245,10 @@ function listingRequestPayload(string $key): array
         'action' => 'request',
         'idempotency_key' => $key,
         'message' => 'Could we meet near the public library on Saturday afternoon so I can inspect the item?',
+        'quantity' => 1,
         'exchange_method' => 'meetup',
         'proposed_at' => now()->addDays(2)->format('Y-m-d H:i:s'),
+        'terms_accepted' => 1,
+        'privacy_accepted' => 1,
     ];
 }

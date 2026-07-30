@@ -46,8 +46,11 @@ class ListingActionController extends Controller
         return Reservation::query()
             ->select([
                 'id', 'listing_id', 'requester_key', 'requester_name', 'status',
-                'message', 'exchange_method', 'proposed_at', 'expires_at',
-                'responded_at', 'completed_at', 'created_at',
+                'request_kind', 'quantity', 'offered_price', 'message',
+                'exchange_method', 'proposed_at', 'rental_starts_at',
+                'rental_ends_at', 'questionnaire', 'terms_accepted',
+                'privacy_accepted', 'expires_at', 'responded_at',
+                'completed_at', 'created_at',
             ])
             ->where('listing_id', $listing->id)
             ->findOrFail((int) $data['reservation_id']);

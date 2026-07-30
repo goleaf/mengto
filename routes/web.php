@@ -32,6 +32,7 @@ use App\Http\Controllers\ListingActionController;
 use App\Http\Controllers\ListingController;
 use App\Http\Controllers\ListingCreateController;
 use App\Http\Controllers\ListingDirectoryController;
+use App\Http\Controllers\ListingReviewController;
 use App\Http\Controllers\ListingStoreController;
 use App\Http\Controllers\MeetupDetailPreviewController;
 use App\Http\Controllers\MeetupDirectoryPreviewController;
@@ -40,6 +41,8 @@ use App\Http\Controllers\MessageCenterPreviewController;
 use App\Http\Controllers\NeighborDirectoryPreviewController;
 use App\Http\Controllers\NeighborProfilePreviewController;
 use App\Http\Controllers\NotificationCenterPreviewController;
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\OrderDisputeController;
 use App\Http\Controllers\PerformActionController;
 use App\Http\Controllers\PerformMessageActionController;
 use App\Http\Controllers\PetDirectoryPreviewController;
@@ -274,6 +277,17 @@ Route::middleware('web')
         Route::post('/', ListingStoreController::class)
             ->middleware('throttle:8,1')
             ->name('store');
+        Route::get('/{listing}/orders/{order}', OrderController::class)
+            ->scopeBindings()
+            ->name('orders.show');
+        Route::post('/{listing}/orders/{order}/disputes', OrderDisputeController::class)
+            ->scopeBindings()
+            ->middleware('throttle:6,1')
+            ->name('orders.disputes.store');
+        Route::post('/{listing}/orders/{order}/reviews', ListingReviewController::class)
+            ->scopeBindings()
+            ->middleware('throttle:6,1')
+            ->name('orders.reviews.store');
         Route::get('/{listing}', ListingController::class)->name('show');
         Route::post('/{listing}/actions', ListingActionController::class)
             ->middleware('throttle:30,1')

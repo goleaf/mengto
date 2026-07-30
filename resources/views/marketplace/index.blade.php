@@ -11,11 +11,13 @@
             <x-action-control label="Create listing" icon="badge-plus" variant="primary" :href="route('marketplace.create')" />
         </header>
 
-        <section class="grid grid-cols-2 gap-px overflow-hidden rounded-md border border-paw-line bg-paw-line lg:grid-cols-4" aria-label="Marketplace summary">
+        <section class="grid grid-cols-2 gap-px overflow-hidden rounded-md border border-paw-line bg-paw-line md:grid-cols-3 xl:grid-cols-6" aria-label="Marketplace summary">
             @forelse ([
                 ['label' => 'Available', 'value' => $stats['available'], 'icon' => 'store'],
                 ['label' => 'For adoption', 'value' => $stats['adoption'], 'icon' => 'heart-handshake'],
                 ['label' => 'Free', 'value' => $stats['free'], 'icon' => 'gift'],
+                ['label' => 'For rent', 'value' => $stats['rental'], 'icon' => 'calendar-clock'],
+                ['label' => 'Shelter needs', 'value' => $stats['shelter'], 'icon' => 'hand-heart'],
                 ['label' => 'Cities', 'value' => $stats['cities'], 'icon' => 'map-pin'],
             ] as $stat)
                 <div class="flex items-center gap-3 bg-white p-4">
@@ -74,7 +76,7 @@
                 </label>
             </div>
 
-            <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+            <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
                 <label class="grid gap-1 text-sm font-semibold">
                     City
                     <input name="city" value="{{ $filters['city'] ?? '' }}" class="rounded-md border border-paw-line bg-white px-3 py-2.5" placeholder="Vilnius">
@@ -97,6 +99,39 @@
                             <option value="{{ $value }}" @selected(($filters['price'] ?? 'any') === $value)>{{ $label }}</option>
                         @empty
                             <option disabled>No price filters</option>
+                        @endforelse
+                    </select>
+                </label>
+                <label class="grid gap-1 text-sm font-semibold">
+                    Condition
+                    <select name="condition" class="rounded-md border border-paw-line bg-white px-3 py-2.5">
+                        <option value="">Any condition</option>
+                        @forelse ($conditions as $value => $label)
+                            <option value="{{ $value }}" @selected(($filters['condition'] ?? '') === $value)>{{ $label }}</option>
+                        @empty
+                            <option disabled>No condition filters</option>
+                        @endforelse
+                    </select>
+                </label>
+                <label class="grid gap-1 text-sm font-semibold">
+                    Seller
+                    <select name="seller_type" class="rounded-md border border-paw-line bg-white px-3 py-2.5">
+                        <option value="">Any seller</option>
+                        @forelse ($seller_types as $value => $label)
+                            <option value="{{ $value }}" @selected(($filters['seller_type'] ?? '') === $value)>{{ $label }}</option>
+                        @empty
+                            <option disabled>No seller filters</option>
+                        @endforelse
+                    </select>
+                </label>
+                <label class="grid gap-1 text-sm font-semibold">
+                    Availability
+                    <select name="availability" class="rounded-md border border-paw-line bg-white px-3 py-2.5">
+                        <option value="">Any availability</option>
+                        @forelse ($availability_options as $value => $label)
+                            <option value="{{ $value }}" @selected(($filters['availability'] ?? '') === $value)>{{ $label }}</option>
+                        @empty
+                            <option disabled>No availability filters</option>
                         @endforelse
                     </select>
                 </label>
