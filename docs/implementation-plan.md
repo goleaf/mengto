@@ -174,14 +174,13 @@ exact temporary Git index used for publication.
 
 ## Pass 10: Publication
 
-Status: `ready for verified publication`
+Status: `verified`
 
 The canonical Markdown has been synchronized, evidence matrices regenerated,
-and generated browser artifacts removed. Publication uses a temporary Git
-index that excludes the pre-existing `.agents/vendor/` tree. The exact staged
-diff, commit identifier, remote comparison, and push result are release
-transport evidence and are reported after Git completes; they are not
-pre-claimed by this document.
+and generated browser artifacts removed. Publication used a temporary Git
+index that excluded the pre-existing `.agents/vendor/` tree. The exact staged
+diff passed `git diff --cached --check`, the coherent modernization commit was
+created on `main`, and the observed push advanced `origin/main`.
 
 No blocked or not-applicable requirement may be described as implemented in
 the release report.
