@@ -1,10 +1,11 @@
 @use 'tokens' as *;
 
-.pc-profile-hero {
+.profile-hero {
     &__cover {
         inline-size: 100%;
-        aspect-ratio: 5 / 3;
+        aspect-ratio: 16 / 7;
         object-fit: cover;
+        object-position: center;
     }
 
     &__body {
@@ -12,16 +13,16 @@
     }
 
     &__identity-row {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
+        display: grid;
+        grid-template-columns: 5rem minmax(0, 1fr);
+        align-items: start;
         gap: 1rem;
-        margin-block-start: -3rem;
+        margin-block-start: -2.5rem;
     }
 
     &__avatar {
-        inline-size: 6rem;
-        block-size: 6rem;
+        inline-size: 5rem;
+        block-size: 5rem;
         flex: none;
         border: 4px solid $white;
         border-radius: 50%;
@@ -31,6 +32,7 @@
 
     &__identity {
         min-inline-size: 0;
+        padding-block-start: 3rem;
     }
 
     &__eyebrow {
@@ -44,9 +46,9 @@
     &__name {
         margin-block-start: 0.25rem;
         color: $ink;
-        font-size: 1.875rem;
+        font-size: 1.5rem;
         font-weight: 600;
-        line-height: 2.25rem;
+        line-height: 1.875rem;
         overflow-wrap: anywhere;
         text-wrap: balance;
     }
@@ -59,13 +61,327 @@
         overflow-wrap: anywhere;
     }
 
-    &__actions {
+    &__handle {
+        margin-block-start: 0.25rem;
+        color: $leaf;
+        font-size: 0.875rem;
+        font-weight: 600;
+        line-height: 1.25rem;
+        overflow-wrap: anywhere;
+    }
+
+    &__signals {
+        display: flex;
+        flex-wrap: nowrap;
+        align-items: center;
+        gap: 0.625rem;
+        margin-block-start: 1rem;
+        overflow-x: auto;
+        overscroll-behavior-inline: contain;
+        scrollbar-width: none;
+
+        > * {
+            flex: none;
+        }
+    }
+
+    &__identity-row > .profile-actions {
+        grid-column: 1 / -1;
+        display: flex;
         inline-size: 100%;
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+        overflow-x: auto;
+        overscroll-behavior-inline: contain;
+        scrollbar-width: none;
+
+        .action {
+            inline-size: auto;
+            flex: none;
+        }
+    }
+
+    .stat-grid--four {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+
+        .stat-grid__item {
+            &:nth-child(n) {
+                margin-block-start: 0;
+                padding: 0 0.25rem;
+                border-block-start: 0;
+            }
+
+            &:first-child {
+                padding-inline-start: 0;
+            }
+
+            &:last-child {
+                padding-inline-end: 0;
+            }
+
+            & + .stat-grid__item {
+                border-inline-start: 1px solid $line;
+            }
+        }
+
+        .stat-grid__detail {
+            display: none;
+        }
+
+        .stat-grid__label {
+            font-size: 0.625rem;
+
+            .icon {
+                display: none;
+            }
+        }
+    }
+
+    .action--profile {
+        font-size: 0.75rem;
+    }
+}
+
+.profile-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.5rem;
+
+    .action {
+        inline-size: 100%;
+        min-inline-size: 0;
+    }
+}
+
+.profile-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+
+    &--compact {
+        gap: 0.375rem;
+    }
+}
+
+.tabs {
+    min-inline-size: 0;
+    border-block-end: 1px solid $line;
+
+    &__rail {
+        display: flex;
+        gap: 0.25rem;
+        min-block-size: $touch-target;
+        overflow-x: auto;
+        overscroll-behavior-inline: contain;
+        scrollbar-width: thin;
+    }
+
+    &__item {
+        @include focus-ring;
+        @include control-transition;
+
+        position: relative;
+        display: inline-flex;
+        min-block-size: $touch-target;
+        flex: none;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        padding-inline: 0.875rem;
+        color: $muted;
+        font-size: 0.875rem;
+        font-weight: 600;
+        text-decoration: none;
+        white-space: nowrap;
+
+        &::after {
+            position: absolute;
+            inset-inline: 0.75rem;
+            inset-block-end: -1px;
+            block-size: 2px;
+            background: transparent;
+            content: '';
+        }
+
+        &:hover {
+            color: $ink;
+        }
+
+        &[aria-current='page'] {
+            color: $ink;
+
+            &::after {
+                background: $coral;
+            }
+        }
+    }
+
+    &__count {
+        min-inline-size: 1.375rem;
+        padding: 0.125rem 0.375rem;
+        border-radius: 999px;
+        background: $paper;
+        color: $muted;
+        font-size: 0.6875rem;
+        line-height: 1rem;
+        text-align: center;
+    }
+
+    &--audience {
+        border-block-end: 0;
+
+        .tabs__rail {
+            gap: 0;
+            border: 1px solid $line;
+            border-radius: $control-radius;
+            background: $paper;
+            scrollbar-width: none;
+        }
+
+        .tabs__item {
+            min-block-size: 2.5rem;
+            padding-inline: 0.75rem;
+            font-size: 0.75rem;
+
+            &::after {
+                display: none;
+            }
+
+            &[aria-current='page'] {
+                background: $ink;
+                color: $white;
+            }
+        }
+    }
+}
+
+.profile-preview {
+    display: grid;
+    gap: 0.875rem;
+    align-items: center;
+    padding: 0.875rem 1rem;
+    border: 1px solid $line;
+    border-radius: $panel-radius;
+    background: $cream;
+
+    &__copy {
+        display: flex;
+        min-inline-size: 0;
+        align-items: flex-start;
+        gap: 0.75rem;
+        color: $leaf;
+    }
+
+    &__title {
+        color: $ink;
+        font-size: 0.875rem;
+        font-weight: 600;
+        line-height: 1.25rem;
+    }
+
+    &__description {
+        margin-block-start: 0.125rem;
+        color: $muted;
+        font-size: 0.75rem;
+        line-height: 1.125rem;
+    }
+}
+
+.progress {
+    &__header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+    }
+
+    &__label,
+    &__value {
+        color: $ink;
+        font-size: 0.875rem;
+        font-weight: 600;
+        line-height: 1.25rem;
+    }
+
+    &__track {
+        display: block;
+        inline-size: 100%;
+        block-size: 0.625rem;
+        margin-block-start: 0.75rem;
+        overflow: hidden;
+        border: 0;
+        border-radius: 999px;
+        background: $paper;
+
+        &::-webkit-progress-bar {
+            border-radius: 999px;
+            background: $paper;
+        }
+
+        &::-webkit-progress-value {
+            border-radius: 999px;
+            background: $coral;
+        }
+
+        &::-moz-progress-bar {
+            border-radius: 999px;
+            background: $coral;
+        }
+    }
+
+    &__detail {
+        margin-block-start: 0.75rem;
+        color: $muted;
+        font-size: 0.75rem;
+        line-height: 1.25rem;
+    }
+}
+
+.manager-list {
+    display: grid;
+
+    &__item {
+        display: grid;
+        grid-template-columns: 3rem minmax(0, 1fr);
+        gap: 0.875rem;
+        padding-block: 1rem;
+        border-block-end: 1px solid $line;
+
+        &:first-child {
+            padding-block-start: 0;
+        }
+
+        &:last-child {
+            padding-block-end: 0;
+            border-block-end: 0;
+        }
+    }
+
+    &__name {
+        color: $ink;
+        font-size: 0.875rem;
+        font-weight: 600;
+        line-height: 1.25rem;
+    }
+
+    &__role {
+        margin-block-start: 0.125rem;
+        color: $leaf;
+        font-size: 0.75rem;
+        font-weight: 600;
+        line-height: 1.125rem;
+    }
+
+    &__detail {
+        margin-block-start: 0.25rem;
+        color: $muted;
+        font-size: 0.75rem;
+        line-height: 1.25rem;
     }
 }
 
 @media (min-width: 40rem) {
-    .pc-profile-hero {
+    .profile-hero {
         &__cover {
             aspect-ratio: 16 / 6;
         }
@@ -76,6 +392,7 @@
         }
 
         &__identity-row {
+            display: flex;
             flex-direction: row;
             align-items: flex-start;
             margin-block-start: -3.5rem;
@@ -90,10 +407,65 @@
             padding-block-start: 4rem;
         }
 
-        &__actions {
+        &__identity-row > .profile-actions {
+            display: flex;
             inline-size: auto;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+            overflow: visible;
             margin-block-start: 4rem;
             margin-inline-start: auto;
+        }
+
+        &__name {
+            font-size: 1.875rem;
+            line-height: 2.25rem;
+        }
+
+        &__signals {
+            flex-wrap: wrap;
+            overflow: visible;
+        }
+
+        .stat-grid--four {
+            .stat-grid__detail {
+                display: block;
+            }
+
+            .stat-grid__label {
+                font-size: 0.75rem;
+
+                .icon {
+                    display: block;
+                }
+            }
+        }
+
+        .action--profile {
+            font-size: 0.8125rem;
+        }
+    }
+
+    .profile-actions {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+
+        .action {
+            inline-size: auto;
+        }
+    }
+
+    .profile-preview {
+        grid-template-columns: minmax(0, 1fr) auto;
+        padding-inline: 1.25rem;
+    }
+}
+
+@media (min-width: 64rem) {
+    .profile-hero {
+        &__cover {
+            aspect-ratio: 16 / 5;
         }
     }
 }

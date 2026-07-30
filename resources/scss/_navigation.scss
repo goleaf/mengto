@@ -1,7 +1,7 @@
 @use 'tokens' as *;
 
-.pc-header-icon,
-.pc-search-link {
+.header-icon,
+.search-link {
     background: $white;
     color: $muted;
     box-shadow: $control-shadow;
@@ -14,26 +14,31 @@
     }
 }
 
-.pc-header-icon,
-.pc-search-link,
-.pc-desktop-nav__item {
+.header-icon,
+.search-link,
+.desktop-nav__item {
     @include control-transition;
 }
 
-.pc-header-icon,
-.pc-brand-link,
-.pc-search-link,
-.pc-desktop-nav__item,
-.pc-mobile-nav__item {
+.header-icon,
+.brand-link,
+.search-link,
+.desktop-nav__item,
+.mobile-nav__item {
     @include focus-ring;
 }
 
-.pc-header-icon {
+.header-icon {
     display: grid;
-    inline-size: 2.5rem;
-    block-size: 2.5rem;
+    inline-size: $touch-target;
+    block-size: $touch-target;
     flex: none;
     place-items: center;
+
+    &--from-sm {
+        display: none;
+    }
+
     &[aria-current='page'] {
         border-color: $ink;
         background: $ink;
@@ -41,18 +46,19 @@
     }
 }
 
-.pc-brand-link {
+.brand-link {
     display: flex;
     min-inline-size: 0;
+    min-block-size: $touch-target;
     align-items: center;
     gap: 0.75rem;
     border-radius: $control-radius;
 }
 
-.pc-search-link {
+.search-link {
     display: flex;
     inline-size: 100%;
-    block-size: 2.5rem;
+    block-size: $touch-target;
     align-items: center;
     gap: 0.625rem;
     padding-inline: 1rem;
@@ -67,7 +73,7 @@
     }
 }
 
-.pc-desktop-nav {
+.desktop-nav {
     &__item {
         display: block;
         border-radius: $control-radius;
@@ -88,7 +94,7 @@
     }
 }
 
-.pc-mobile-nav {
+.mobile-nav {
     &__rail {
         display: grid;
         max-inline-size: 80rem;
@@ -110,7 +116,7 @@
         border-radius: $control-radius;
         padding: 0.375rem 0.125rem;
         color: $muted;
-        font-size: 0.6875rem;
+        font-size: 0.75rem;
         font-weight: 600;
         line-height: 1rem;
         text-align: center;
@@ -137,25 +143,59 @@
     }
 }
 
-.pc-app-main {
+.header-profile {
+    display: grid;
+    inline-size: $touch-target;
+    block-size: $touch-target;
+    place-items: center;
+}
+
+@media (min-width: 40rem) {
+    .header-icon--from-sm {
+        display: grid;
+    }
+}
+
+@media (max-width: 21.25rem) {
+    .brand-link {
+        min-inline-size: $touch-target;
+        justify-content: center;
+    }
+
+    .brand-link__name {
+        display: none;
+    }
+}
+
+.app-main {
     padding-block-end: calc(7rem + env(safe-area-inset-bottom));
 }
 
-.pc-mobile-dock {
+.mobile-dock {
     padding-block-end: calc(0.75rem + env(safe-area-inset-bottom));
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .pc-header-icon,
-    .pc-search-link,
-    .pc-desktop-nav__item,
-    .pc-mobile-nav__item {
+    .header-icon,
+    .search-link,
+    .desktop-nav__item,
+    .mobile-nav__item {
         transition: none;
     }
 }
 
 @media (min-width: 64rem) {
-    .pc-app-main {
+    .header-icon,
+    .search-link {
+        inline-size: 2.5rem;
+        block-size: 2.5rem;
+    }
+
+    .search-link {
+        inline-size: 100%;
+    }
+
+    .app-main {
         padding-block-end: 2rem;
     }
 }

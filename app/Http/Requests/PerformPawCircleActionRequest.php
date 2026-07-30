@@ -1,0 +1,733 @@
+<?php
+
+namespace App\Http\Requests;
+
+use App\Services\PawCircleProfileVisibility;
+use Illuminate\Contracts\Validation\ValidationRule;
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
+
+class PerformPawCircleActionRequest extends FormRequest
+{
+    public function authorize(): bool
+    {
+        return true;
+    }
+
+    /**
+     * Get the validation rules that apply to the request.
+     *
+     * @return array<string, ValidationRule|array<mixed>|string>
+     */
+    public function rules(): array
+    {
+        $action = (string) $this->input('action');
+        $eventActions = [
+            'toggle-event-interest',
+            'register-event',
+            'cancel-event-registration',
+            'complete-event-payment',
+            'toggle-event-calendar',
+            'toggle-event-reminder',
+            'check-in-event',
+            'acknowledge-event-reschedule',
+            'set-event-travel-status',
+            'send-event-message',
+            'publish-event-announcement',
+            'approve-event-application',
+            'decline-event-application',
+            'promote-event-waitlist',
+            'reschedule-event',
+            'cancel-event',
+            'add-event-photo',
+            'submit-event-review',
+            'create-event-report',
+        ];
+
+        return [
+            'action' => [
+                'required',
+                'string',
+                Rule::in([
+                    'toggle-follow',
+                    'toggle-group',
+                    'toggle-meetup',
+                    'toggle-paw',
+                    'toggle-save',
+                    'toggle-setting',
+                    'toggle-friend',
+                    'toggle-block',
+                    'toggle-subscription',
+                    'toggle-follow-request',
+                    'toggle-subscription-favorite',
+                    'toggle-subscription-mute',
+                    'toggle-connection-block',
+                    'set-subscription-notifications',
+                    'dismiss-recommendation',
+                    'undo-recommendation-dismissal',
+                    'remove-follower',
+                    'accept-follow-request',
+                    'decline-follow-request',
+                    'send-pet-friend-request',
+                    'cancel-pet-friend-request',
+                    'accept-pet-friend-request',
+                    'decline-pet-friend-request',
+                    'toggle-pet-friend-pause',
+                    'remove-pet-friendship',
+                    'toggle-pet-friend-block',
+                    'dismiss-pet-friend-recommendation',
+                    'undo-pet-friend-recommendation',
+                    'join-group',
+                    'cancel-group-request',
+                    'leave-group',
+                    'set-group-notifications',
+                    'vote-group-poll',
+                    'dismiss-group-recommendation',
+                    'undo-group-recommendation',
+                    ...$eventActions,
+                    'mark-all-read',
+                    'send-message',
+                    'create-comment',
+                    'create-post',
+                    'create-group',
+                    'create-meetup',
+                    'create-walk-plan',
+                    'create-pet',
+                    'update-profile',
+                    'update-pet',
+                    'update-profile-privacy',
+                    'update-pet-privacy',
+                    'create-profile-report',
+                    'set-reaction',
+                    'toggle-post-subscription',
+                    'hide-post',
+                    'mute-author',
+                    'block-post-author',
+                    'repost-post',
+                    'update-post',
+                    'archive-post',
+                    'restore-post',
+                    'delete-post',
+                    'create-post-report',
+                    'create-group-report',
+                    'share',
+                    'plan-walk',
+                    'advance-walk-plan',
+                    'cancel-walk-plan',
+                    'call',
+                    'show-info',
+                ]),
+            ],
+            'target' => [
+                Rule::requiredIf(str_starts_with($action, 'toggle-') || in_array($action, [
+                    'send-message',
+                    'create-comment',
+                    'share',
+                    'plan-walk',
+                    'create-walk-plan',
+                    'advance-walk-plan',
+                    'cancel-walk-plan',
+                    'call',
+                    'show-info',
+                    'update-pet',
+                    'update-pet-privacy',
+                    'create-profile-report',
+                    'set-reaction',
+                    'toggle-post-subscription',
+                    'hide-post',
+                    'mute-author',
+                    'block-post-author',
+                    'repost-post',
+                    'update-post',
+                    'archive-post',
+                    'restore-post',
+                    'delete-post',
+                    'create-post-report',
+                    'set-subscription-notifications',
+                    'dismiss-recommendation',
+                    'undo-recommendation-dismissal',
+                    'remove-follower',
+                    'accept-follow-request',
+                    'decline-follow-request',
+                    'send-pet-friend-request',
+                    'cancel-pet-friend-request',
+                    'accept-pet-friend-request',
+                    'decline-pet-friend-request',
+                    'toggle-pet-friend-pause',
+                    'remove-pet-friendship',
+                    'toggle-pet-friend-block',
+                    'dismiss-pet-friend-recommendation',
+                    'undo-pet-friend-recommendation',
+                    'join-group',
+                    'cancel-group-request',
+                    'leave-group',
+                    'set-group-notifications',
+                    'vote-group-poll',
+                    'dismiss-group-recommendation',
+                    'undo-group-recommendation',
+                    'create-group-report',
+                ], true) || in_array($action, $eventActions, true)),
+                'nullable',
+                'string',
+                'max:80',
+                'regex:/^[a-z0-9-]+$/',
+                ...($action === 'send-message'
+                    ? [Rule::in(['ari', 'lena', 'noah', 'priya'])]
+                    : []),
+                ...(in_array($action, ['call', 'show-info'], true)
+                    ? [Rule::in(['ari', 'lena', 'noah', 'priya'])]
+                    : []),
+                ...(in_array($action, ['plan-walk', 'create-walk-plan'], true)
+                    ? [Rule::in(['scout', 'mochi', 'juniper'])]
+                    : []),
+                ...($action === 'toggle-friend'
+                    ? [Rule::in(['owner-mia-carter'])]
+                    : []),
+                ...($action === 'toggle-block'
+                    ? [Rule::in(['owner-mia-carter', 'pet-scout', 'pet-nori'])]
+                    : []),
+                ...(in_array($action, ['update-pet', 'update-pet-privacy'], true)
+                    ? [Rule::in(['scout', 'nori'])]
+                    : []),
+                ...(in_array($action, [
+                    'send-pet-friend-request',
+                    'cancel-pet-friend-request',
+                    'accept-pet-friend-request',
+                    'decline-pet-friend-request',
+                    'toggle-pet-friend-pause',
+                    'remove-pet-friendship',
+                    'toggle-pet-friend-block',
+                    'dismiss-pet-friend-recommendation',
+                    'undo-pet-friend-recommendation',
+                ], true)
+                    ? [Rule::in([
+                        'pet-mochi',
+                        'pet-juniper',
+                        'pet-luna-labrador',
+                        'pet-pip',
+                        'pet-olive-rabbit',
+                        'pet-coco-spaniel',
+                    ])]
+                    : []),
+                ...($action === 'create-profile-report'
+                    ? [Rule::in([
+                        'owner-mia-carter',
+                        'pet-scout',
+                        'pet-nori',
+                        'pet-mochi',
+                        'pet-juniper',
+                        'pet-luna-labrador',
+                        'pet-pip',
+                        'pet-olive-rabbit',
+                        'pet-coco-spaniel',
+                    ])]
+                    : []),
+                ...(in_array($action, [
+                    'join-group',
+                    'cancel-group-request',
+                    'leave-group',
+                    'set-group-notifications',
+                    'vote-group-poll',
+                    'dismiss-group-recommendation',
+                    'undo-group-recommendation',
+                    'create-group-report',
+                ], true)
+                    ? [Rule::in([
+                        'apartment-pets',
+                        'trail-tails',
+                        'cat-people',
+                        'foster-network',
+                        'portland-labradors',
+                        'senior-companions',
+                    ])]
+                    : []),
+                ...(in_array($action, $eventActions, true)
+                    ? [Rule::in([
+                        'small-dog-social',
+                        'puppy-social-lab',
+                        'beginner-training-series',
+                        'rose-city-pet-show',
+                        'shelter-open-house',
+                        'missing-scout-search',
+                        'baxter-birthday',
+                        'travel-ready-webinar',
+                    ])]
+                    : []),
+            ],
+            'label' => ['nullable', 'string', 'max:120'],
+            'title' => [
+                Rule::requiredIf(in_array($action, [
+                    'create-group',
+                    'create-meetup',
+                    'create-walk-plan',
+                    'create-pet',
+                    'update-profile',
+                    'update-pet',
+                    'publish-event-announcement',
+                ], true)),
+                'nullable',
+                'string',
+                'max:120',
+            ],
+            'body' => [
+                Rule::requiredIf(in_array($action, [
+                    'send-message',
+                    'create-comment',
+                    'create-post',
+                    'update-post',
+                    'create-post-report',
+                    'create-group-report',
+                    'create-group',
+                    'create-meetup',
+                    'create-walk-plan',
+                    'create-pet',
+                    'update-profile',
+                    'update-pet',
+                    'create-profile-report',
+                    'send-event-message',
+                    'publish-event-announcement',
+                    'submit-event-review',
+                    'create-event-report',
+                ], true)),
+                'nullable',
+                'string',
+                'max:1200',
+            ],
+            'detail' => ['nullable', 'string', 'max:160'],
+            'location' => [
+                Rule::requiredIf(
+                    in_array($action, ['create-walk-plan', 'update-profile'], true)
+                        || ($action === 'create-meetup' && (string) $this->input('event_format', 'offline') === 'offline'),
+                ),
+                'nullable',
+                'string',
+                'max:120',
+            ],
+            'category' => [
+                Rule::requiredIf(in_array($action, [
+                    'create-group',
+                    'create-pet',
+                    'update-pet',
+                    'create-profile-report',
+                    'create-post-report',
+                    'create-event-report',
+                    'create-meetup',
+                ], true)),
+                'nullable',
+                'string',
+                'max:80',
+                ...($action === 'create-meetup'
+                    ? [Rule::in([
+                        'walk',
+                        'training',
+                        'show',
+                        'lecture',
+                        'webinar',
+                        'adoption',
+                        'volunteering',
+                        'charity',
+                        'contest',
+                        'photo-session',
+                        'travel',
+                        'celebration',
+                        'search-action',
+                        'other',
+                    ])]
+                    : []),
+                ...(in_array($action, ['create-profile-report', 'create-post-report', 'create-group-report', 'create-event-report'], true)
+                    ? [Rule::in([
+                        'fake-profile',
+                        'stolen-photos',
+                        'animal-safety',
+                        'fraud',
+                        'spam',
+                        'harassment',
+                        'dangerous-advice',
+                        'misinformation',
+                        'personal-data',
+                        'illegal-sales',
+                        'sexual-content',
+                        'stolen-media',
+                        'false-alert',
+                        'other',
+                    ])]
+                    : []),
+            ],
+            'identity' => [
+                Rule::requiredIf(in_array($action, ['create-post', 'update-post'], true)),
+                'nullable',
+                Rule::in(['mia', 'scout', 'nori']),
+            ],
+            'format' => [
+                Rule::requiredIf(in_array($action, ['create-post', 'update-post'], true)),
+                'nullable',
+                Rule::in(['text', 'photo', 'video', 'question', 'lost', 'adoption']),
+            ],
+            'topic' => [
+                Rule::requiredIf(in_array($action, ['create-post', 'update-post'], true)),
+                'nullable',
+                Rule::in([
+                    'care',
+                    'health',
+                    'training',
+                    'enrichment',
+                    'walks',
+                    'adoption',
+                    'lost-found',
+                    'photography',
+                    'community',
+                ]),
+            ],
+            'tags' => ['nullable', 'string', 'max:160'],
+            'media' => [
+                'nullable',
+                Rule::in(['none', 'scout-field', 'nori-window', 'park-carousel', 'play-video']),
+            ],
+            'media_alt' => [
+                Rule::requiredIf(
+                    in_array($action, ['create-post', 'update-post'], true)
+                        && (string) $this->input('media', 'none') !== 'none',
+                ),
+                'nullable',
+                'string',
+                'max:240',
+            ],
+            'audience' => [
+                Rule::requiredIf(in_array($action, ['create-post', 'update-post'], true)),
+                'nullable',
+                Rule::in(['public', 'members', 'followers', 'friends', 'close-friends', 'owners', 'private']),
+            ],
+            'comment_policy' => [
+                Rule::requiredIf(in_array($action, ['create-post', 'update-post'], true)),
+                'nullable',
+                Rule::in(['all', 'followers', 'friends', 'mentioned', 'none']),
+            ],
+            'sensitive' => ['nullable', Rule::in(['yes', 'no'])],
+            'intent' => ['nullable', Rule::in(['published', 'draft'])],
+            'reaction' => ['nullable', Rule::in(['like', 'love', 'funny', 'support', 'useful'])],
+            'notification_level' => [
+                Rule::requiredIf($action === 'set-subscription-notifications'),
+                'nullable',
+                Rule::in(['all', 'important', 'standard', 'feed', 'off']),
+            ],
+            'group_notification_level' => [
+                Rule::requiredIf($action === 'set-group-notifications'),
+                'nullable',
+                Rule::in(['all', 'important', 'events', 'mentions', 'digest', 'off']),
+            ],
+            'group_return_tab' => [
+                'nullable',
+                Rule::in([
+                    'overview',
+                    'posts',
+                    'discussions',
+                    'events',
+                    'members',
+                    'pets',
+                    'resources',
+                    'rules',
+                ]),
+            ],
+            'group_return_filter' => [
+                'nullable',
+                Rule::in(['recommended', 'joined', 'local', 'breed', 'care', 'official']),
+            ],
+            'group_return_sort' => ['nullable', Rule::in(['active', 'members', 'name'])],
+            'group_return_q' => ['nullable', 'string', 'max:80'],
+            'poll' => [
+                Rule::requiredIf($action === 'vote-group-poll'),
+                'nullable',
+                Rule::in(['august-focus']),
+            ],
+            'poll_option' => [
+                Rule::requiredIf($action === 'vote-group-poll'),
+                'nullable',
+                Rule::in(['routine', 'events', 'expert']),
+            ],
+            'return_tab' => [
+                'nullable',
+                Rule::in(['following', 'followers', 'requests', 'recommendations']),
+            ],
+            'return_type' => [
+                'nullable',
+                Rule::in(['all', 'people', 'pets', 'organizations', 'specialists', 'groups', 'topics']),
+            ],
+            'return_sort' => ['nullable', Rule::in(['recommended', 'recent', 'name'])],
+            'source_pet' => [
+                Rule::requiredIf(in_array($action, [
+                    'send-pet-friend-request',
+                    'cancel-pet-friend-request',
+                    'accept-pet-friend-request',
+                    'decline-pet-friend-request',
+                    'toggle-pet-friend-pause',
+                    'remove-pet-friendship',
+                    'toggle-pet-friend-block',
+                    'dismiss-pet-friend-recommendation',
+                    'undo-pet-friend-recommendation',
+                ], true)),
+                'nullable',
+                Rule::in(['pet-scout', 'pet-nori']),
+            ],
+            'friendship_intent' => [
+                Rule::requiredIf($action === 'send-pet-friend-request'),
+                'nullable',
+                Rule::in(['friend', 'walk', 'play', 'training', 'neighbor']),
+            ],
+            'friendship_message' => ['nullable', 'string', 'max:280'],
+            'met_at' => ['nullable', 'string', 'max:120'],
+            'share_area' => ['nullable', Rule::in(['yes', 'no'])],
+            'pet_return_tab' => [
+                'nullable',
+                Rule::in(['friends', 'requests', 'discover', 'walks']),
+            ],
+            'pet_return_intent' => [
+                'nullable',
+                Rule::in(['all', 'walk', 'play', 'training', 'neighbor']),
+            ],
+            'pet_return_sort' => [
+                'nullable',
+                Rule::in(['compatibility', 'recent', 'name']),
+            ],
+            'pet_return_q' => ['nullable', 'string', 'max:80'],
+            'privacy' => [
+                Rule::requiredIf(in_array($action, ['create-group', 'create-meetup'], true)),
+                'nullable',
+                ...($action === 'create-meetup'
+                    ? [Rule::in(['public', 'closed', 'hidden'])]
+                    : [Rule::in(['public', 'closed'])]),
+            ],
+            'city' => [
+                Rule::requiredIf($action === 'create-group'),
+                'nullable',
+                'string',
+                'max:120',
+            ],
+            'language' => [
+                Rule::requiredIf($action === 'create-group'),
+                'nullable',
+                Rule::in(['English', 'English + Spanish', 'Russian', 'Lithuanian']),
+            ],
+            'rules' => [
+                Rule::requiredIf(in_array($action, ['create-group', 'create-meetup'], true)),
+                'nullable',
+                'string',
+                'max:1200',
+            ],
+            'pet_identity' => [
+                Rule::requiredIf($action === 'create-group'),
+                'nullable',
+                Rule::in(['mia', 'scout', 'nori', 'all']),
+            ],
+            'posting_policy' => [
+                Rule::requiredIf($action === 'create-group'),
+                'nullable',
+                Rule::in(['members', 'review', 'staff']),
+            ],
+            'parent' => ['nullable', 'string', 'max:80', 'regex:/^[a-z0-9-]+$/'],
+            'original_key' => ['nullable', 'string', 'max:80', 'regex:/^[a-z0-9-]+$/'],
+            'location_visibility' => [
+                Rule::requiredIf(in_array($action, ['update-profile-privacy', 'update-pet-privacy'], true)),
+                'nullable',
+                Rule::in(PawCircleProfileVisibility::values()),
+            ],
+            'pets_visibility' => [
+                Rule::requiredIf($action === 'update-profile-privacy'),
+                'nullable',
+                Rule::in(PawCircleProfileVisibility::values()),
+            ],
+            'posts_visibility' => [
+                Rule::requiredIf(in_array($action, ['update-profile-privacy', 'update-pet-privacy'], true)),
+                'nullable',
+                Rule::in(PawCircleProfileVisibility::values()),
+            ],
+            'friends_visibility' => [
+                Rule::requiredIf(in_array($action, ['update-profile-privacy', 'update-pet-privacy'], true)),
+                'nullable',
+                Rule::in(PawCircleProfileVisibility::values()),
+            ],
+            'care_visibility' => [
+                Rule::requiredIf($action === 'update-pet-privacy'),
+                'nullable',
+                Rule::in(PawCircleProfileVisibility::values()),
+            ],
+            'activity_visibility' => [
+                Rule::requiredIf(in_array($action, ['update-profile-privacy', 'update-pet-privacy'], true)),
+                'nullable',
+                Rule::in(PawCircleProfileVisibility::values()),
+            ],
+            'date' => [
+                Rule::requiredIf(in_array($action, ['create-meetup', 'create-walk-plan'], true)),
+                'nullable',
+                'date_format:Y-m-d',
+                'after_or_equal:today',
+            ],
+            'time' => [
+                Rule::requiredIf(in_array($action, ['create-meetup', 'create-walk-plan'], true)),
+                'nullable',
+                'date_format:H:i',
+            ],
+            'event_format' => [
+                Rule::requiredIf($action === 'create-meetup'),
+                'nullable',
+                Rule::in(['offline', 'online']),
+            ],
+            'event_organizer' => [
+                Rule::requiredIf($action === 'create-meetup'),
+                'nullable',
+                Rule::in(['mia', 'scout', 'group', 'organization']),
+            ],
+            'event_timezone' => [
+                Rule::requiredIf($action === 'create-meetup'),
+                'nullable',
+                Rule::in([
+                    'America/Los_Angeles',
+                    'America/New_York',
+                    'Europe/Vilnius',
+                    'Europe/London',
+                    'UTC',
+                ]),
+            ],
+            'event_capacity' => [
+                Rule::requiredIf($action === 'create-meetup'),
+                'nullable',
+                'integer',
+                'min:2',
+                'max:500',
+            ],
+            'event_registration_policy' => [
+                Rule::requiredIf($action === 'create-meetup'),
+                'nullable',
+                Rule::in(['instant', 'approval', 'invitation']),
+            ],
+            'event_ticket_model' => [
+                Rule::requiredIf($action === 'create-meetup'),
+                'nullable',
+                Rule::in(['free', 'paid']),
+            ],
+            'event_ticket_price' => [
+                Rule::requiredIf(
+                    $action === 'create-meetup'
+                        && (string) $this->input('event_ticket_model', 'free') === 'paid',
+                ),
+                'nullable',
+                'numeric',
+                'min:1',
+                'max:10000',
+            ],
+            'event_online_url' => [
+                Rule::requiredIf(
+                    $action === 'create-meetup'
+                        && (string) $this->input('event_format', 'offline') === 'online',
+                ),
+                'nullable',
+                'url:http,https',
+                'max:255',
+            ],
+            'event_cover' => [
+                Rule::requiredIf($action === 'create-meetup'),
+                'nullable',
+                Rule::in(['walk', 'training', 'community', 'online']),
+            ],
+            'event_safety_plan' => [
+                Rule::requiredIf($action === 'create-meetup'),
+                'nullable',
+                'string',
+                'max:1200',
+            ],
+            'event_return_tab' => [
+                'nullable',
+                Rule::in([
+                    'overview',
+                    'tickets',
+                    'schedule',
+                    'attendees',
+                    'pets',
+                    'chat',
+                    'announcements',
+                    'location',
+                    'media',
+                    'rules',
+                    'reviews',
+                    'manage',
+                ]),
+            ],
+            'event_pet' => [
+                Rule::requiredIf($action === 'register-event'),
+                'nullable',
+                Rule::in(['scout', 'nori', 'owner-only']),
+            ],
+            'ticket_type' => [
+                Rule::requiredIf($action === 'register-event'),
+                'nullable',
+                Rule::in(['standard', 'owner-only']),
+            ],
+            'attendance_format' => [
+                Rule::requiredIf($action === 'register-event'),
+                'nullable',
+                Rule::in(['offline', 'online']),
+            ],
+            'guest_count' => ['nullable', 'integer', 'min:0', 'max:5'],
+            'requirements_note' => ['nullable', 'string', 'max:500'],
+            'photo_consent' => [
+                Rule::requiredIf($action === 'register-event'),
+                'nullable',
+                Rule::in(['yes', 'ask-first', 'no']),
+            ],
+            'accepted_rules' => [
+                Rule::requiredIf($action === 'register-event'),
+                'nullable',
+                Rule::in(['yes']),
+            ],
+            'payment_outcome' => [
+                Rule::requiredIf($action === 'complete-event-payment'),
+                'nullable',
+                Rule::in(['success', 'failure']),
+            ],
+            'check_in_method' => [
+                Rule::requiredIf($action === 'check-in-event'),
+                'nullable',
+                Rule::in(['qr', 'manual']),
+            ],
+            'travel_status' => [
+                Rule::requiredIf($action === 'set-event-travel-status'),
+                'nullable',
+                Rule::in(['leaving', 'approaching', 'late', 'arrived', 'cannot-find', 'not-coming']),
+            ],
+            'event_application' => [
+                Rule::requiredIf(in_array($action, ['approve-event-application', 'decline-event-application'], true)),
+                'nullable',
+                Rule::in(['ari-mochi', 'noah-juniper']),
+            ],
+            'event_candidate' => [
+                Rule::requiredIf($action === 'promote-event-waitlist'),
+                'nullable',
+                Rule::in(['lena-pip']),
+            ],
+            'event_date' => [
+                Rule::requiredIf($action === 'reschedule-event'),
+                'nullable',
+                'date_format:Y-m-d',
+                'after_or_equal:today',
+            ],
+            'event_time' => [
+                Rule::requiredIf($action === 'reschedule-event'),
+                'nullable',
+                'date_format:H:i',
+            ],
+            'event_note' => [
+                Rule::requiredIf($action === 'reschedule-event'),
+                'nullable',
+                'string',
+                'max:500',
+            ],
+            'event_reason' => ['nullable', 'string', 'max:500'],
+            'photo_caption' => ['nullable', 'string', 'max:240'],
+            'event_rating' => [
+                Rule::requiredIf($action === 'submit-event-review'),
+                'nullable',
+                'integer',
+                'between:1,5',
+            ],
+        ];
+    }
+}

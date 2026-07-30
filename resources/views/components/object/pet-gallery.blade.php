@@ -1,0 +1,37 @@
+@props(['photos' => []])
+
+<section data-section="gallery" {{ $attributes->merge(['class' => 'panel panel--padded']) }}>
+    <x-ui.section-heading eyebrow="Field notes" title="Scout's gallery" />
+
+    <div class="mt-4 grid gap-3 sm:grid-cols-2">
+        @forelse ($photos as $photo)
+            <figure @class([
+                'overflow-hidden rounded-md border border-paw-line bg-paw-paper',
+                'sm:col-span-2' => $loop->first,
+            ])>
+                <x-ui.responsive-image
+                    :src="$photo['image']"
+                    :small="$photo['image_small'] ?? null"
+                    :medium="$photo['image_medium'] ?? null"
+                    :alt="$photo['alt']"
+                    :width="1200"
+                    :height="$loop->first ? 675 : 900"
+                    :sizes="$loop->first ? '(min-width: 1024px) 50vw, calc(100vw - 3rem)' : '(min-width: 640px) 50vw, calc(100vw - 3rem)'"
+                    @class([
+                        'w-full object-cover',
+                        'aspect-[16/9]' => $loop->first,
+                        'aspect-[4/3]' => ! $loop->first,
+                    ])
+                />
+                <figcaption class="px-3 py-2.5 text-sm text-paw-muted">{{ $photo['caption'] }}</figcaption>
+            </figure>
+        @empty
+            <x-ui.empty-state
+                icon="images"
+                title="No photos shared yet"
+                compact
+                class="sm:col-span-2"
+            />
+        @endforelse
+    </div>
+</section>

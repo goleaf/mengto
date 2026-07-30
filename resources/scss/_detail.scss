@@ -1,22 +1,22 @@
 @use 'tokens' as *;
 
-.pc-detail-page,
-.pc-detail-main,
-.pc-detail-sidebar {
+.detail-page,
+.detail-main,
+.detail-sidebar {
     display: grid;
     min-inline-size: 0;
     align-content: start;
     gap: 1.25rem;
 }
 
-.pc-detail-layout {
+.detail-layout {
     display: grid;
     min-inline-size: 0;
     align-items: start;
     gap: 1.25rem;
 }
 
-.pc-detail-hero {
+.detail-hero {
     &__cover {
         inline-size: 100%;
         aspect-ratio: 4 / 3;
@@ -106,7 +106,7 @@
 }
 
 @media (min-width: 40rem) {
-    .pc-detail-hero {
+    .detail-hero {
         &__cover {
             aspect-ratio: 16 / 7;
         }
@@ -123,7 +123,7 @@
 }
 
 @media (min-width: 64rem) {
-    .pc-detail-hero {
+    .detail-hero {
         &__cover {
             aspect-ratio: 16 / 6;
         }
@@ -138,13 +138,13 @@
         }
     }
 
-    .pc-detail-layout {
+    .detail-layout {
         grid-template-columns: minmax(0, 1fr) 20rem;
     }
 }
 
 @media (max-width: 22.4375rem) {
-    .pc-detail-hero__actions {
+    .detail-hero__actions {
         grid-template-columns: 1fr;
     }
 }

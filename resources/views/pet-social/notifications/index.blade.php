@@ -1,32 +1,35 @@
-<x-pet-social.app-shell :owner="$owner" title="Notifications | PawCircle" active-section="notifications">
-    <x-pet-social.page-stack>
-        <x-pet-social.page-header
+<x-layout.app-shell :owner="$owner" title="Notifications | PawCircle" active-section="notifications">
+    <x-layout.page-stack>
+        <x-layout.page-header
             :eyebrow="$summary['eyebrow']"
             :title="$summary['title']"
             :description="$summary['description']"
             :count="$summary['count']"
             action-label="Mark all read"
             action-icon="check-check"
+            :action-endpoint="route('pet-social.actions.perform')"
+            :action-payload="['action' => 'mark-all-read', 'target' => 'notifications', 'label' => 'Notifications']"
             data-section="notification-header"
         />
 
-        <x-pet-social.main-sidebar-layout variant="compact">
+        <x-layout.main-sidebar-layout variant="compact">
             <x-slot:main>
-                <x-pet-social.activity-timeline
+                <x-object.activity-timeline
                     :groups="$activityGroups"
                     :filters="$filters"
                     :unread-count="$summary['unread_count']"
+                    :active-filter="$activeFilter"
                 />
             </x-slot:main>
 
             <x-slot:sidebar>
-                <x-pet-social.content-panel
+                <x-ui.content-panel
                     section="weekly-activity"
                     eyebrow="This week"
                     title="Your activity"
                     size="compact"
                 >
-                    <x-pet-social.stat-grid
+                    <x-ui.stat-grid
                         :items="$weeklyStats"
                         label="Weekly activity summary"
                         :icons="['paw-print', 'message-circle', 'users']"
@@ -35,16 +38,16 @@
                         tone="muted"
                         large
                     />
-                </x-pet-social.content-panel>
+                </x-ui.content-panel>
 
-                <x-pet-social.promo-card
+                <x-object.promo-card
                     :item="$upcoming"
                     section="activity-meetup"
                     :attendees="$upcoming['attendees']"
                 />
 
-                <x-pet-social.notification-settings :settings="$settings" />
+                <x-feature.notification-settings :settings="$settings" />
             </x-slot:sidebar>
-        </x-pet-social.main-sidebar-layout>
-    </x-pet-social.page-stack>
-</x-pet-social.app-shell>
+        </x-layout.main-sidebar-layout>
+    </x-layout.page-stack>
+</x-layout.app-shell>

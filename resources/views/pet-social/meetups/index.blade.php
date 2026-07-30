@@ -1,33 +1,28 @@
-<x-pet-social.directory-page
+<x-layout.directory-page
     :owner="$owner"
-    title="Meetups | PawCircle"
-    active-section="meetups"
+    :title="$page_title"
+    :active-section="$active_section"
     :summary="$summary"
-    header-section="meetup-header"
-    action-label="Create meetup"
+    header-section="event-header"
+    action-label="Create event"
     action-icon="calendar-plus"
+    :action-href="$events['create_url']"
 >
     <x-slot:summary-strip>
-        <x-pet-social.summary-strip
-            :items="$summary['schedule']"
-            label="Meetup schedule summary"
-            :icons="['calendar-days', 'users', 'navigation']"
-            empty="Schedule unavailable."
-            data-section="meetup-schedule"
+        <x-ui.summary-strip
+            :items="$summary['highlights']"
+            label="Event schedule summary"
+            :icons="['calendar-days', 'sparkles', 'bookmark', 'clock-3']"
+            empty="Event summary unavailable."
+            :columns="4"
+            data-section="event-summary"
         />
     </x-slot:summary-strip>
 
     <x-slot:toolbar>
-        <x-pet-social.directory-toolbar
-            :filters="$filters"
-            label="Meetup filters"
-            filters-label="Meetup type filters"
-            sort-label="Soonest first"
-            section="meetup-filters"
-        />
     </x-slot:toolbar>
 
     <x-slot:results>
-        <x-pet-social.meetup-directory-results :meetups="$directoryMeetups" />
+        <x-feature.event-directory :events="$events" />
     </x-slot:results>
-</x-pet-social.directory-page>
+</x-layout.directory-page>

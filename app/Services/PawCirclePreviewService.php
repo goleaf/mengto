@@ -2,27 +2,128 @@
 
 namespace App\Services;
 
+use Illuminate\Support\Str;
+
 final class PawCirclePreviewService
 {
+    public function __construct(
+        private readonly PawCirclePrototypeState $state,
+        private readonly PawCircleComposerCatalog $composers,
+        private readonly PawCircleThreadCatalog $threads,
+        private readonly PawCircleInteractionPresenter $interactions,
+        private readonly PawCircleCirclePresenter $circle,
+        private readonly PawCircleWalkPlanPresenter $walks,
+        private readonly PawCircleSharePresenter $shares,
+        private readonly PawCircleConversationPresenter $conversationDetails,
+        private readonly PawCircleCreatedContentPresenter $created,
+        private readonly PawCircleProfilePresenter $profiles,
+        private readonly PawCircleFeedPresenter $feed,
+        private readonly PawCircleGroupCatalog $groups,
+        private readonly PawCircleEventCatalog $events,
+    ) {}
+
     /**
-     * @return array{
-     *     owner: array{name: string, location: string, avatar: string, summary: string},
-     *     pets: array<int, array{name: string, type: string, breed: string, age: string, status: string, profile_route: string|null}>,
-     *     posts: array<int, array{author: string, pet: string, time: string, datetime: string, body: string, image: string, image_small: string, image_medium: string, image_alt: string, tags: array<int, string>, stats: array{paws: string, replies: string}}>,
-     *     meetups: array<int, array{title: string, place: string, time: string, datetime: string, date_accessible: string, attendees: string}>,
-     *     groups: array<int, array{name: string, members: string, topic: string}>,
-     *     tips: array<int, array{title: string, description: string}>
-     * }
+     * @return array<string, mixed>
      */
     public function homePageData(): array
     {
+        return $this->feed->page();
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function circleData(string $filter = 'overview'): array
+    {
+        return $this->circle->present(
+            filter: $filter,
+            owner: $this->owner(),
+            posts: array_values(array_column($this->interactions->posts([
+                ...$this->created->posts(),
+                ...$this->posts(),
+                ...$this->ariMoments(),
+                ...$this->scoutMoments(),
+            ]), null, 'key')),
+            pets: $this->interactions->pets([
+                ...$this->created->pets(),
+                ...$this->directoryPets(),
+            ]),
+            neighbors: $this->interactions->neighbors($this->directoryNeighbors()),
+            groups: $this->interactions->groups([
+                ...$this->created->groups(),
+                ...$this->directoryGroups(),
+            ]),
+            meetups: $this->interactions->meetups([
+                ...$this->created->meetups(),
+                ...$this->directoryMeetups(),
+            ]),
+        );
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function walkPlanData(string $filter = 'upcoming'): array
+    {
+        return $this->walks->present($filter, $this->owner());
+    }
+
+    /**
+     * @return array{name: string, location: string, avatar: string, summary: string}
+     */
+    public function ownerData(): array
+    {
+        return $this->profiles->owner();
+    }
+
+    /**
+     * @return array<string, mixed>|null
+     */
+    public function shareData(string $target): ?array
+    {
+        $item = $this->shareTarget($target);
+
+        if ($item === null) {
+            return null;
+        }
+
         return [
             'owner' => $this->owner(),
-            'pets' => $this->pets(),
-            'posts' => $this->posts(),
-            'meetups' => $this->meetups(),
-            'groups' => $this->groups(),
-            'tips' => $this->tips(),
+            'share' => $this->shares->present($item, $this->directoryNeighbors()),
+        ];
+    }
+
+    /**
+     * @return array<string, mixed>|null
+     */
+    public function postThreadData(string $key): ?array
+    {
+        $post = $this->feed->post($key);
+
+        if ($post === null) {
+            return null;
+        }
+
+        $comments = [
+            ...$this->threads->comments($post),
+            ...$this->state->comments($key),
+        ];
+        $comments = array_map(
+            static fn (array $comment, int $index): array => [
+                ...$comment,
+                'id' => $comment['id'] ?? 'comment-'.$key.'-'.$index,
+                'parent' => $comment['parent'] ?? '',
+            ],
+            $comments,
+            array_keys($comments),
+        );
+
+        return [
+            'owner' => $this->owner(),
+            'post' => $post,
+            'comments' => $comments,
+            'commentCount' => count($comments),
+            'threadGuide' => $this->threads->guide(),
         ];
     }
 
@@ -53,7 +154,7 @@ final class PawCirclePreviewService
         return [
             'owner' => $this->owner(),
             'pet' => $this->scout(),
-            'recentMoments' => $this->scoutMoments(),
+            'recentMoments' => $this->interactions->posts($this->scoutMoments()),
         ];
     }
 
@@ -90,7 +191,10 @@ final class PawCirclePreviewService
                 'count' => '6 companions across 5 neighborhoods',
             ],
             'filters' => ['All pets', 'Dogs', 'Cats', 'Small pets'],
-            'directoryPets' => $this->directoryPets(),
+            'directoryPets' => $this->interactions->pets([
+                ...$this->created->pets(),
+                ...$this->directoryPets(),
+            ]),
         ];
     }
 
@@ -147,7 +251,10 @@ final class PawCirclePreviewService
                 ],
             ],
             'filters' => ['Upcoming', 'Walks', 'Social', 'Indoor'],
-            'directoryMeetups' => $this->directoryMeetups(),
+            'directoryMeetups' => $this->interactions->meetups([
+                ...$this->created->meetups(),
+                ...$this->directoryMeetups(),
+            ]),
         ];
     }
 
@@ -197,7 +304,10 @@ final class PawCirclePreviewService
                 ],
             ],
             'filters' => ['Recommended', 'Local', 'Care', 'Outdoors'],
-            'directoryGroups' => $this->directoryGroups(),
+            'directoryGroups' => $this->interactions->groups([
+                ...$this->created->groups(),
+                ...$this->directoryGroups(),
+            ]),
         ];
     }
 
@@ -236,6 +346,7 @@ final class PawCirclePreviewService
                     ['label' => 'Duration', 'value' => '60 min', 'detail' => 'easy pace'],
                     ['label' => 'Dog size', 'value' => 'Under 30 lb', 'detail' => 'calm arrivals'],
                 ],
+                'rsvp' => $this->state->isActive('meetups', $meetup['key']),
             ]),
             'expectations' => [
                 [
@@ -308,6 +419,7 @@ final class PawCirclePreviewService
                     ['label' => 'This week', 'value' => '86 posts', 'detail' => 'steady activity'],
                     ['label' => 'Response', 'value' => '42 min', 'detail' => 'typical first reply'],
                 ],
+                'joined' => $this->state->isActive('groups', $group['key']),
             ],
             'principles' => [
                 [
@@ -403,7 +515,7 @@ final class PawCirclePreviewService
                 ],
             ],
             'filters' => ['Recommended', 'Dog people', 'Cat people', 'Foster network'],
-            'directoryNeighbors' => $this->directoryNeighbors(),
+            'directoryNeighbors' => $this->interactions->neighbors($this->directoryNeighbors()),
         ];
     }
 
@@ -460,7 +572,10 @@ final class PawCirclePreviewService
         return [
             'owner' => $this->owner(),
             'neighbor' => [
+                'key' => 'ari',
                 'name' => 'Ari Jensen',
+                'handle' => '@ari-jensen',
+                'role' => 'Dog walks',
                 'category' => 'Dog walks',
                 'location' => 'Pearl District · Portland, OR',
                 'distance' => '0.8 mi away',
@@ -480,6 +595,30 @@ final class PawCirclePreviewService
                     ['label' => 'Home', 'value' => 'Pearl', 'detail' => '0.8 mi away'],
                 ],
                 'interests' => ['city walks', 'training', 'quiet patios', 'urban routines'],
+                'followed' => $this->state->isActive('follows', 'ari'),
+                'actions' => [
+                    [
+                        'label' => 'Follow',
+                        'icon' => 'user-plus',
+                        'endpoint' => route('pet-social.actions.perform'),
+                        'payload' => [
+                            'action' => 'toggle-follow',
+                            'target' => 'ari',
+                            'label' => 'Ari Jensen',
+                        ],
+                        'variant' => 'primary',
+                        'active' => $this->state->isActive('follows', 'ari'),
+                        'active_label' => 'Following',
+                        'active_icon' => 'user-check',
+                        'pressed' => $this->state->isActive('follows', 'ari'),
+                    ],
+                    [
+                        'label' => 'Message',
+                        'icon' => 'message-circle',
+                        'href' => route('pet-social.messages.index'),
+                        'variant' => 'paper',
+                    ],
+                ],
             ],
             'pet' => [
                 'name' => 'Mochi',
@@ -503,7 +642,7 @@ final class PawCirclePreviewService
                 ['name' => 'Apartment Pets PDX', 'topic' => 'Small-space routines', 'members' => '2.4k members'],
                 ['name' => 'Trail Tails', 'topic' => 'Weekend city loops', 'members' => '8.1k members'],
             ],
-            'recentMoments' => $this->ariMoments(),
+            'recentMoments' => $this->interactions->posts($this->ariMoments()),
         ];
     }
 
@@ -513,6 +652,7 @@ final class PawCirclePreviewService
      *     summary: array{eyebrow: string, title: string, description: string, count: string, unread_count: int},
      *     filters: array<int, string>,
      *     conversations: array<int, array{
+     *         key: string,
      *         name: string,
      *         pet: string,
      *         preview: string,
@@ -524,7 +664,7 @@ final class PawCirclePreviewService
      *         image_alt: string
      *     }>,
      *     thread: array{
-     *         contact: array{name: string, detail: string, response_note: string, avatar: string, avatar_alt: string},
+     *         contact: array{key: string, name: string, detail: string, response_note: string, avatar: string, avatar_alt: string, call_requested: bool},
      *         context: array{eyebrow: string, title: string, detail: string, image: string, image_alt: string},
      *         date_label: string,
      *         reply_placeholder: string,
@@ -532,11 +672,25 @@ final class PawCirclePreviewService
      *     }
      * }
      */
-    public function messageCenterData(): array
+    public function messageCenterData(string $selectedKey = 'ari'): array
     {
         $neighbors = array_column($this->directoryNeighbors(), null, 'key');
+        $selectedKey = isset($neighbors[$selectedKey]) ? $selectedKey : 'ari';
+        $this->state->markConversationRead($selectedKey);
         $conversations = $this->messageConversations($neighbors);
+        $walkPlanConversations = $this->walks->conversationKeys();
+        $conversations = array_map(fn (array $conversation): array => [
+            ...$conversation,
+            'selected' => $conversation['key'] === $selectedKey,
+            'unread' => $this->state->conversationIsRead($conversation['key']) ? 0 : $conversation['unread'],
+            'walk_plan' => in_array($conversation['key'], $walkPlanConversations, true) ? 'planned' : '',
+        ], $conversations);
         $unreadCount = array_sum(array_column($conversations, 'unread'));
+        $selectedConversation = array_values(array_filter(
+            $conversations,
+            static fn (array $conversation): bool => $conversation['key'] === $selectedKey,
+        ))[0];
+        $selectedNeighbor = $neighbors[$selectedKey];
 
         return [
             'owner' => $this->owner(),
@@ -549,60 +703,65 @@ final class PawCirclePreviewService
             ],
             'filters' => ['All', 'Unread', 'Walk plans'],
             'conversations' => $conversations,
+            'walkPlans' => $this->walks->messagePlans(),
             'thread' => [
                 'contact' => [
-                    'name' => 'Ari Jensen',
-                    'detail' => 'Mochi · Pearl District',
+                    'key' => $selectedKey,
+                    'name' => $selectedConversation['name'],
+                    'detail' => $selectedConversation['pet'].' · '.$selectedNeighbor['neighborhood'],
                     'response_note' => 'Usually replies within an hour',
-                    'avatar' => $neighbors['ari']['thumbnail'],
-                    'avatar_alt' => $neighbors['ari']['image_alt'],
+                    'avatar' => $selectedNeighbor['thumbnail'],
+                    'avatar_alt' => $selectedNeighbor['image_alt'],
+                    'call_requested' => $this->state->isActive('call-requests', $selectedKey),
                 ],
                 'context' => [
-                    'eyebrow' => 'Walk context',
-                    'title' => 'Calm cafe walk',
-                    'detail' => 'Saturday morning · quiet patio route',
-                    'image' => 'https://images.unsplash.com/photo-1765193091032-da4cc0f568e8?auto=format&fit=crop&w=160&h=160&q=80',
-                    'image_alt' => 'Two Shiba Inu dogs sitting together at a cafe',
+                    'eyebrow' => 'Conversation context',
+                    'title' => $selectedConversation['pet'].' and Scout',
+                    'detail' => $selectedNeighbor['status'],
+                    'image' => $selectedNeighbor['thumbnail'],
+                    'image_alt' => $selectedNeighbor['image_alt'],
                 ],
                 'date_label' => 'Today',
-                'reply_placeholder' => 'Reply to Ari and Mochi',
+                'reply_placeholder' => 'Reply to '.$selectedConversation['name'].' and '.$selectedConversation['pet'],
                 'messages' => [
-                    [
-                        'sender' => 'Ari',
-                        'time' => '9:12 AM',
-                        'datetime' => '2026-07-29T09:12:00-07:00',
-                        'body' => 'Morning! Mochi did well near the cafe yesterday. Would Scout like a short loop before the patio gets busy?',
-                        'mine' => false,
-                    ],
-                    [
-                        'sender' => 'Mia',
-                        'time' => '9:18 AM',
-                        'datetime' => '2026-07-29T09:18:00-07:00',
-                        'body' => 'Scout and I can meet near Fields Park at ten. A short loop sounds perfect.',
-                        'mine' => true,
-                    ],
-                    [
-                        'sender' => 'Ari',
-                        'time' => '9:21 AM',
-                        'datetime' => '2026-07-29T09:21:00-07:00',
-                        'body' => 'Perfect. We will take the quiet patio corner and bring the chicken-free treats for Scout.',
-                        'mine' => false,
-                    ],
-                    [
-                        'sender' => 'Mia',
-                        'time' => '9:24 AM',
-                        'datetime' => '2026-07-29T09:24:00-07:00',
-                        'body' => 'Thank you. We will keep the first hello slow and meet you by the park entrance.',
-                        'mine' => true,
-                    ],
+                    ...$this->messageThreadMessages($selectedKey, $selectedConversation),
+                    ...$this->state->messages($selectedKey),
                 ],
             ],
         ];
     }
 
     /**
+     * @return array<string, mixed>|null
+     */
+    public function conversationDetailsData(string $selectedKey): ?array
+    {
+        $neighbors = array_column($this->directoryNeighbors(), null, 'key');
+        $conversations = array_column($this->messageConversations($neighbors), null, 'key');
+        $neighbor = $neighbors[$selectedKey] ?? null;
+        $conversation = $conversations[$selectedKey] ?? null;
+
+        if ($neighbor === null || $conversation === null) {
+            return null;
+        }
+
+        $messages = [
+            ...$this->messageThreadMessages($selectedKey, $conversation),
+            ...$this->state->messages($selectedKey),
+        ];
+
+        return $this->conversationDetails->present(
+            owner: $this->owner(),
+            neighbor: $neighbor,
+            conversation: $conversation,
+            messages: $messages,
+        );
+    }
+
+    /**
      * @param  array<string, array{thumbnail: string, image_alt: string}>  $neighbors
      * @return array<int, array{
+     *     key: string,
      *     name: string,
      *     pet: string,
      *     preview: string,
@@ -618,6 +777,7 @@ final class PawCirclePreviewService
     {
         return [
             [
+                'key' => 'ari',
                 'name' => 'Ari Jensen',
                 'pet' => 'Mochi',
                 'preview' => 'Perfect. We will take the quiet patio corner.',
@@ -629,6 +789,7 @@ final class PawCirclePreviewService
                 'image_alt' => $neighbors['ari']['image_alt'],
             ],
             [
+                'key' => 'lena',
                 'name' => 'Lena Brooks',
                 'pet' => 'Pip',
                 'preview' => 'Pip approved the new foster setup after one lap.',
@@ -640,6 +801,7 @@ final class PawCirclePreviewService
                 'image_alt' => $neighbors['lena']['image_alt'],
             ],
             [
+                'key' => 'noah',
                 'name' => 'Noah Patel',
                 'pet' => 'Juniper',
                 'preview' => 'That shaded route stays comfortable before sunset.',
@@ -651,6 +813,7 @@ final class PawCirclePreviewService
                 'image_alt' => $neighbors['noah']['image_alt'],
             ],
             [
+                'key' => 'priya',
                 'name' => 'Priya Shah',
                 'pet' => 'Clover',
                 'preview' => 'I added the garden routine notes you asked for.',
@@ -660,6 +823,63 @@ final class PawCirclePreviewService
                 'selected' => false,
                 'image' => $neighbors['priya']['thumbnail'],
                 'image_alt' => $neighbors['priya']['image_alt'],
+            ],
+        ];
+    }
+
+    /**
+     * @param  array<string, mixed>  $conversation
+     * @return array<int, array{sender: string, time: string, datetime: string, body: string, mine: bool}>
+     */
+    private function messageThreadMessages(string $selectedKey, array $conversation): array
+    {
+        if ($selectedKey === 'ari') {
+            return [
+                [
+                    'sender' => 'Ari',
+                    'time' => '9:12 AM',
+                    'datetime' => '2026-07-29T09:12:00-07:00',
+                    'body' => 'Morning! Mochi did well near the cafe yesterday. Would Scout like a short loop before the patio gets busy?',
+                    'mine' => false,
+                ],
+                [
+                    'sender' => 'Mia',
+                    'time' => '9:18 AM',
+                    'datetime' => '2026-07-29T09:18:00-07:00',
+                    'body' => 'Scout and I can meet near Fields Park at ten. A short loop sounds perfect.',
+                    'mine' => true,
+                ],
+                [
+                    'sender' => 'Ari',
+                    'time' => '9:21 AM',
+                    'datetime' => '2026-07-29T09:21:00-07:00',
+                    'body' => 'Perfect. We will take the quiet patio corner and bring the chicken-free treats for Scout.',
+                    'mine' => false,
+                ],
+                [
+                    'sender' => 'Mia',
+                    'time' => '9:24 AM',
+                    'datetime' => '2026-07-29T09:24:00-07:00',
+                    'body' => 'Thank you. We will keep the first hello slow and meet you by the park entrance.',
+                    'mine' => true,
+                ],
+            ];
+        }
+
+        return [
+            [
+                'sender' => Str::before($conversation['name'], ' '),
+                'time' => $conversation['time'],
+                'datetime' => $conversation['datetime'],
+                'body' => $conversation['preview'],
+                'mine' => false,
+            ],
+            [
+                'sender' => 'Mia',
+                'time' => 'Recently',
+                'datetime' => '2026-07-29T09:30:00-07:00',
+                'body' => 'Thanks for the update. I saved the note for our next neighborhood plan.',
+                'mine' => true,
             ],
         ];
     }
@@ -773,8 +993,26 @@ final class PawCirclePreviewService
             ],
         ];
 
+        if ($this->state->notificationsAreRead()) {
+            $activityGroups = array_map(
+                static fn (array $group): array => [
+                    ...$group,
+                    'items' => array_map(
+                        static fn (array $item): array => [...$item, 'unread' => false],
+                        $group['items'],
+                    ),
+                ],
+                $activityGroups,
+            );
+        }
+
         $activityItems = array_merge(...array_column($activityGroups, 'items'));
         $unreadCount = count(array_filter($activityItems, static fn (array $item): bool => $item['unread']));
+        $settings = $this->state->settings([
+            'meetup-reminders' => true,
+            'neighbor-replies' => true,
+            'weekly-digest' => false,
+        ]);
 
         return [
             'owner' => $this->owner(),
@@ -806,9 +1044,9 @@ final class PawCirclePreviewService
                 'image_alt' => $meetups['small-dog-social']['image_alt'],
             ],
             'settings' => [
-                ['label' => 'Meetup reminders', 'description' => 'A day before local events', 'enabled' => true],
-                ['label' => 'Neighbor replies', 'description' => 'Replies and mentions', 'enabled' => true],
-                ['label' => 'Weekly digest', 'description' => 'Sunday activity summary', 'enabled' => false],
+                ['key' => 'meetup-reminders', 'label' => 'Meetup reminders', 'description' => 'A day before local events', 'enabled' => $settings['meetup-reminders']],
+                ['key' => 'neighbor-replies', 'label' => 'Neighbor replies', 'description' => 'Replies and mentions', 'enabled' => $settings['neighbor-replies']],
+                ['key' => 'weekly-digest', 'label' => 'Weekly digest', 'description' => 'Sunday activity summary', 'enabled' => $settings['weekly-digest']],
             ],
         ];
     }
@@ -978,23 +1216,6 @@ final class PawCirclePreviewService
      */
     public function miaProfileData(): array
     {
-        $owner = [
-            ...$this->owner(),
-            'role' => 'Pet parent & foster volunteer',
-            'member_since' => 'Member since 2024',
-            'status' => 'Open to weekend walks',
-            'bio' => 'Mia plans low-pressure neighborhood walks, shares foster setup notes, and keeps a running list of shaded Portland routes. Scout handles field research while Nori supervises from the nearest window.',
-            'cover_image' => 'https://images.unsplash.com/photo-1624361239583-7ba5ffb376f5?auto=format&fit=crop&w=1600&h=760&q=85',
-            'cover_image_small' => 'https://images.unsplash.com/photo-1624361239583-7ba5ffb376f5?auto=format&fit=crop&w=720&h=480&q=80',
-            'cover_image_medium' => 'https://images.unsplash.com/photo-1624361239583-7ba5ffb376f5?auto=format&fit=crop&w=1200&h=600&q=82',
-            'cover_image_alt' => 'Scout lying in grass behind a tennis ball',
-            'stats' => [
-                ['label' => 'Pets', 'value' => '2', 'detail' => 'Scout & Nori'],
-                ['label' => 'Neighbors', 'value' => '18', 'detail' => 'local connections'],
-                ['label' => 'Circles', 'value' => '6', 'detail' => 'joined groups'],
-            ],
-        ];
-
         $communities = array_map(
             static fn (array $group): array => [
                 'name' => $group['name'],
@@ -1005,9 +1226,12 @@ final class PawCirclePreviewService
         );
 
         return [
-            'owner' => $owner,
-            'pets' => array_slice($this->directoryPets(), 0, 2),
-            'recentMoments' => $this->scoutMoments(),
+            'owner' => $this->miaOwner(),
+            'pets' => array_slice($this->interactions->pets([
+                ...$this->created->pets(),
+                ...$this->directoryPets(),
+            ]), 0, 4),
+            'recentMoments' => $this->interactions->posts($this->scoutMoments()),
             'availability' => [
                 ['label' => 'Best time', 'value' => 'Weekend mornings'],
                 ['label' => 'Usual pace', 'value' => 'Easy to moderate'],
@@ -1019,16 +1243,199 @@ final class PawCirclePreviewService
     }
 
     /**
+     * @return array{
+     *     owner: array<string, mixed>,
+     *     form: array{
+     *         eyebrow: string,
+     *         title: string,
+     *         description: string,
+     *         action: string,
+     *         submit_label: string,
+     *         submit_icon: string,
+     *         cancel_route: string,
+     *         active_section: string,
+     *         fields: array<int, array<string, mixed>>
+     *     }
+     * }
+     */
+    public function composerData(string $kind, array $context = []): array
+    {
+        $owner = $this->miaOwner();
+        $petSlug = (string) ($context['pet'] ?? 'scout');
+        $pet = $this->profiles->pet($petSlug) ?? $this->scout();
+        $report = isset($context['target'])
+            ? $this->profiles->reportContext((string) $context['target'])
+            : null;
+        $post = isset($context['post'])
+            ? $this->feed->editablePost((string) $context['post'])
+            : null;
+        $postReport = isset($context['target'])
+            ? $this->feed->reportContext((string) $context['target'])
+            : null;
+        $groupReport = isset($context['target'])
+            ? $this->groups->reportContext((string) $context['target'])
+            : null;
+        $eventReport = isset($context['target'])
+            ? $this->events->reportContext((string) $context['target'])
+            : null;
+
+        return [
+            'owner' => $owner,
+            'form' => $this->composers->form(
+                kind: $kind,
+                owner: $owner,
+                pet: $pet,
+                context: [
+                    ...$context,
+                    'owner_privacy' => $this->state->ownerPrivacy(),
+                    'pet_privacy' => $this->state->petPrivacy($petSlug),
+                    'report' => $report,
+                    'post' => $post,
+                    'post_report' => $postReport,
+                    'group_report' => $groupReport,
+                    'event_report' => $eventReport,
+                    'identities' => $this->feed->identities(),
+                    'topics' => $this->feed->topics(),
+                    'audiences' => $this->feed->audiences(),
+                    'comment_policies' => $this->feed->commentPolicies(),
+                    'safe_places' => $this->feed->safePlaces(),
+                    'media_presets' => $this->feed->mediaPresets(),
+                    'post_report_reasons' => $this->feed->reportReasons(),
+                ],
+                visibilityOptions: $this->profiles->visibilityOptions(),
+            ),
+        ];
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function miaOwner(): array
+    {
+        return $this->profiles->ownerProfile();
+    }
+
+    /**
+     * @return array<string, mixed>|null
+     */
+    private function shareTarget(string $target): ?array
+    {
+        $postThread = $this->postThreadData($target);
+
+        if ($postThread !== null) {
+            $post = $postThread['post'];
+
+            return [
+                'target' => $target,
+                'type' => 'Pet moment',
+                'active_section' => 'feed',
+                'eyebrow' => 'Share a pet moment',
+                'title' => $post['pet'].' with '.$post['author'],
+                'description' => $post['body'],
+                'image' => $post['image'],
+                'image_small' => $post['image_small'],
+                'image_medium' => $post['image_medium'],
+                'image_alt' => $post['image_alt'],
+                'route' => 'pet-social.posts.show',
+                'route_parameters' => ['post' => $target],
+            ];
+        }
+
+        $createdTarget = $this->created->shareTarget($target);
+
+        if ($createdTarget !== null) {
+            return $createdTarget;
+        }
+
+        $group = $this->groups->find($target);
+
+        if ($group !== null) {
+            return [
+                'target' => $target,
+                'type' => 'Community',
+                'active_section' => 'groups',
+                'eyebrow' => 'Share a community',
+                'title' => $group['name'],
+                'description' => $group['description'],
+                'image' => $group['image'],
+                'image_small' => $group['image_small'],
+                'image_medium' => $group['image_medium'],
+                'image_alt' => $group['image_alt'],
+                'route' => 'pet-social.groups.show',
+                'route_parameters' => ['group' => $target],
+            ];
+        }
+
+        $event = $this->events->find($target);
+
+        if ($event !== null) {
+            return [
+                'target' => $target,
+                'type' => 'Event',
+                'active_section' => 'meetups',
+                'eyebrow' => 'Share a public event card',
+                'title' => $event['title'],
+                'description' => $event['short_description'],
+                'image' => $event['image'],
+                'image_small' => $event['image_small'],
+                'image_medium' => $event['image_medium'],
+                'image_alt' => $event['image_alt'],
+                'route' => 'pet-social.meetups.show',
+                'route_parameters' => ['event' => $target],
+            ];
+        }
+
+        if ($target === 'mia-carter') {
+            $owner = $this->miaOwner();
+
+            return [
+                'target' => $target,
+                'type' => 'Member profile',
+                'active_section' => 'profile',
+                'eyebrow' => 'Share a neighbor profile',
+                'title' => $owner['name'],
+                'description' => $owner['bio'],
+                'image' => $owner['cover_image'],
+                'image_small' => $owner['cover_image_small'],
+                'image_medium' => $owner['cover_image_medium'],
+                'image_alt' => $owner['cover_image_alt'],
+                'route' => 'pet-social.profile.mia',
+                'route_parameters' => [],
+            ];
+        }
+
+        if (in_array($target, ['scout', 'nori'], true)) {
+            $pet = $this->profiles->pet($target);
+
+            if ($pet === null) {
+                return null;
+            }
+
+            return [
+                'target' => $target,
+                'type' => 'Pet profile',
+                'active_section' => 'pets',
+                'eyebrow' => 'Share a pet profile',
+                'title' => $pet['name'],
+                'description' => $pet['story'],
+                'image' => $pet['cover_image'],
+                'image_small' => $pet['cover_image_small'],
+                'image_medium' => $pet['cover_image_medium'],
+                'image_alt' => $pet['cover_image_alt'],
+                'route' => $pet['route'],
+                'route_parameters' => [],
+            ];
+        }
+
+        return null;
+    }
+
+    /**
      * @return array{name: string, location: string, avatar: string, summary: string}
      */
     private function owner(): array
     {
-        return [
-            'name' => 'Mia Carter',
-            'location' => 'Portland, OR',
-            'avatar' => 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&crop=faces&w=320&h=320&q=80',
-            'summary' => 'Weekend trail walker, foster volunteer, and keeper of two very opinionated companions.',
-        ];
+        return $this->profiles->owner();
     }
 
     /**
@@ -1036,22 +1443,25 @@ final class PawCirclePreviewService
      */
     private function pets(): array
     {
+        $scout = $this->profiles->pet('scout');
+        $nori = $this->profiles->pet('nori');
+
         return [
             [
-                'name' => 'Scout',
+                'name' => $scout['name'] ?? 'Scout',
                 'type' => 'Dog',
-                'breed' => 'Border Collie mix',
-                'age' => '4 years',
-                'status' => 'Available for park walks',
+                'breed' => $scout['breed'] ?? 'Border Collie mix',
+                'age' => $scout['age'] ?? '4 years',
+                'status' => $scout['status'] ?? 'Available for park walks',
                 'profile_route' => 'pet-social.pets.scout',
             ],
             [
-                'name' => 'Nori',
+                'name' => $nori['name'] ?? 'Nori',
                 'type' => 'Cat',
-                'breed' => 'Tabby',
-                'age' => '2 years',
-                'status' => 'Indoor window watcher',
-                'profile_route' => null,
+                'breed' => $nori['breed'] ?? 'Tabby',
+                'age' => $nori['age'] ?? '2 years',
+                'status' => $nori['status'] ?? 'Indoor window watcher',
+                'profile_route' => 'pet-social.pets.nori',
             ],
         ];
     }
@@ -1104,7 +1514,7 @@ final class PawCirclePreviewService
                 'image_medium' => 'https://images.unsplash.com/photo-1518791841217-8f162f1e1131?auto=format&fit=crop&w=900&h=675&q=82',
                 'image_alt' => 'Nori, a tabby cat, looking toward the camera',
                 'traits' => ['indoor', 'curious'],
-                'profile_route' => null,
+                'profile_route' => 'pet-social.pets.nori',
             ],
             [
                 'name' => 'Maple',
@@ -1200,6 +1610,7 @@ final class PawCirclePreviewService
         return [
             [
                 'key' => 'small-dog-social',
+                'detail_route' => 'pet-social.meetups.small_dog_social',
                 'title' => 'Small dog social hour',
                 'category' => 'Social',
                 'day' => 'SAT',
@@ -1224,6 +1635,7 @@ final class PawCirclePreviewService
             ],
             [
                 'key' => 'foster-coffee-walk',
+                'detail_route' => null,
                 'title' => 'Rescue foster coffee walk',
                 'category' => 'Coffee walk',
                 'day' => 'SUN',
@@ -1248,6 +1660,7 @@ final class PawCirclePreviewService
             ],
             [
                 'key' => 'senior-stroll',
+                'detail_route' => null,
                 'title' => 'Calm senior dog stroll',
                 'category' => 'Slow walk',
                 'day' => 'WED',
@@ -1297,6 +1710,7 @@ final class PawCirclePreviewService
         return [
             [
                 'key' => 'apartment-pets',
+                'detail_route' => 'pet-social.groups.apartment_pets',
                 'name' => 'Apartment Pets PDX',
                 'category' => 'Home life',
                 'members' => '2.4k members',
@@ -1314,6 +1728,7 @@ final class PawCirclePreviewService
             ],
             [
                 'key' => 'trail-tails',
+                'detail_route' => null,
                 'name' => 'Trail Tails',
                 'category' => 'Outdoors',
                 'members' => '8.1k members',
@@ -1331,6 +1746,7 @@ final class PawCirclePreviewService
             ],
             [
                 'key' => 'cat-people',
+                'detail_route' => null,
                 'name' => 'Cat People of Portland',
                 'category' => 'Cats',
                 'members' => '1.9k members',
@@ -1348,6 +1764,7 @@ final class PawCirclePreviewService
             ],
             [
                 'key' => 'foster-network',
+                'detail_route' => null,
                 'name' => 'Foster Network PDX',
                 'category' => 'Care',
                 'members' => '1.4k members',
@@ -1545,6 +1962,8 @@ final class PawCirclePreviewService
     {
         return array_map(
             static fn (array $meetup): array => [
+                'key' => $meetup['key'],
+                'detail_route' => $meetup['detail_route'],
                 'title' => $meetup['title'],
                 'place' => $meetup['place'],
                 'time' => $meetup['day'].' '.$meetup['time'],
@@ -1563,6 +1982,8 @@ final class PawCirclePreviewService
     {
         return array_map(
             static fn (array $group): array => [
+                'key' => $group['key'],
+                'detail_route' => $group['detail_route'],
                 'name' => $group['name'],
                 'members' => $group['members'],
                 'topic' => $group['topic'],
@@ -1589,73 +2010,11 @@ final class PawCirclePreviewService
     }
 
     /**
-     * @return array{
-     *     name: string,
-     *     species: string,
-     *     breed: string,
-     *     age: string,
-     *     location: string,
-     *     status: string,
-     *     story: string,
-     *     profile_image: string,
-     *     cover_image: string,
-     *     cover_image_small: string,
-     *     cover_image_medium: string,
-     *     facts: array<int, array{label: string, value: string}>,
-     *     compatibility: array<int, array{label: string, value: string}>,
-     *     gallery: array<int, array{image: string, image_small: string, image_medium: string, alt: string, caption: string}>
-     * }
+     * @return array<string, mixed>
      */
     private function scout(): array
     {
-        return [
-            'name' => 'Scout',
-            'species' => 'Dog',
-            'breed' => 'Border Collie mix',
-            'age' => '4 years',
-            'location' => 'Portland, OR',
-            'status' => 'Available for park walks',
-            'story' => 'Scout is happiest when a walk has a destination, a few new smells, and enough time to watch the world. At home, he settles quickly beside Mia and takes his role as window lookout very seriously.',
-            'profile_image' => 'https://images.unsplash.com/photo-1654256578072-b932c33cb92e?auto=format&fit=crop&crop=faces&w=480&h=480&q=85',
-            'cover_image' => 'https://images.unsplash.com/photo-1654256578072-b932c33cb92e?auto=format&fit=crop&w=1600&h=760&q=85',
-            'cover_image_small' => 'https://images.unsplash.com/photo-1654256578072-b932c33cb92e?auto=format&fit=crop&w=720&h=480&q=80',
-            'cover_image_medium' => 'https://images.unsplash.com/photo-1654256578072-b932c33cb92e?auto=format&fit=crop&w=1200&h=600&q=82',
-            'facts' => [
-                ['label' => 'Energy', 'value' => 'High, with a calm indoor routine'],
-                ['label' => 'Size', 'value' => 'Medium / 42 lb'],
-                ['label' => 'Best walk', 'value' => '45-60 minutes'],
-                ['label' => 'Vaccinations', 'value' => 'Up to date'],
-                ['label' => 'Food note', 'value' => 'Chicken-free treats'],
-            ],
-            'compatibility' => [
-                ['label' => 'Dogs', 'value' => 'Friendly after a calm hello'],
-                ['label' => 'Children', 'value' => 'Comfortable with older children'],
-                ['label' => 'Cats', 'value' => 'Needs a slow introduction'],
-            ],
-            'gallery' => [
-                [
-                    'image' => 'https://images.unsplash.com/photo-1624361239583-7ba5ffb376f5?auto=format&fit=crop&w=1200&h=675&q=85',
-                    'image_small' => 'https://images.unsplash.com/photo-1624361239583-7ba5ffb376f5?auto=format&fit=crop&w=576&h=324&q=80',
-                    'image_medium' => 'https://images.unsplash.com/photo-1624361239583-7ba5ffb376f5?auto=format&fit=crop&w=900&h=506&q=82',
-                    'alt' => 'Scout lying in grass behind a tennis ball',
-                    'caption' => 'Waiting for one more throw.',
-                ],
-                [
-                    'image' => 'https://images.unsplash.com/photo-1621169225409-5de158d10015?auto=format&fit=crop&w=1200&h=900&q=85',
-                    'image_small' => 'https://images.unsplash.com/photo-1621169225409-5de158d10015?auto=format&fit=crop&w=576&h=432&q=80',
-                    'image_medium' => 'https://images.unsplash.com/photo-1621169225409-5de158d10015?auto=format&fit=crop&w=900&h=675&q=82',
-                    'alt' => 'Scout resting on a wooden porch',
-                    'caption' => 'Settling in after a neighborhood walk.',
-                ],
-                [
-                    'image' => 'https://images.unsplash.com/photo-1625679895477-526b21a77f0c?auto=format&fit=crop&w=1200&h=900&q=85',
-                    'image_small' => 'https://images.unsplash.com/photo-1625679895477-526b21a77f0c?auto=format&fit=crop&w=576&h=432&q=80',
-                    'image_medium' => 'https://images.unsplash.com/photo-1625679895477-526b21a77f0c?auto=format&fit=crop&w=900&h=675&q=82',
-                    'alt' => 'Scout catching a yellow frisbee on the grass',
-                    'caption' => 'The catch that ended fetch practice.',
-                ],
-            ],
-        ];
+        return $this->profiles->pet('scout') ?? [];
     }
 
     /**

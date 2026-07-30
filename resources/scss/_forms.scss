@@ -1,10 +1,10 @@
 @use 'tokens' as *;
 
-.pc-field-wrap {
+.field-wrap {
     position: relative;
     color: $muted;
 
-    > .pc-icon {
+    > .icon {
         position: absolute;
         inset-block-start: 50%;
         inset-inline-start: 0.75rem;
@@ -14,16 +14,26 @@
     }
 }
 
-.pc-field {
+.field {
     inline-size: 100%;
-    min-block-size: 2.5rem;
+    min-block-size: $touch-target;
     background: $paper;
     padding: 0.625rem 0.75rem;
     color: $muted;
     font-size: 0.875rem;
 
     @include control-frame;
+    @include control-transition;
     @include disabled-control;
+    @include focus-ring;
+
+    &:not(:disabled):hover {
+        border-color: color-mix(in srgb, $leaf 55%, $line);
+    }
+
+    &[aria-invalid='true'] {
+        border-color: $coral;
+    }
 
     &::placeholder {
         color: $muted;
@@ -35,16 +45,92 @@
     }
 
     &--textarea {
-        resize: none;
+        min-block-size: 7rem;
+        resize: vertical;
     }
 }
 
-.pc-setting-option {
+.feedback {
     display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    border: 1px solid color-mix(in srgb, $leaf 35%, $line);
+    border-radius: $control-radius;
+    background: $mint;
+    padding: 0.75rem 1rem;
+    color: $leaf;
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+.form-panel {
+    inline-size: min(100%, 46rem);
+    margin-inline: auto;
+    padding: clamp(1rem, 3vw, 2rem);
+
+    &__description {
+        max-inline-size: 40rem;
+        margin-block-start: 0.75rem;
+        color: $muted;
+        font-size: 0.875rem;
+        line-height: 1.5rem;
+    }
+}
+
+.form-grid {
+    display: grid;
+    gap: 1rem;
+    margin-block-start: 1.5rem;
+}
+
+.form-field {
+    display: grid;
+    gap: 0.5rem;
+
+    &__label {
+        color: $ink;
+        font-size: 0.8125rem;
+        font-weight: 600;
+    }
+
+    &__error {
+        color: $coral;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+}
+
+.form-errors {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-block-start: 1rem;
+    border: 1px solid color-mix(in srgb, $coral 45%, $line);
+    border-radius: $control-radius;
+    background: color-mix(in srgb, $coral 9%, $white);
+    padding: 0.75rem;
+    color: $coral;
+    font-size: 0.8125rem;
+    font-weight: 600;
+}
+
+.form-actions {
+    justify-content: flex-end;
+    grid-template-columns: minmax(0, 1fr);
+    border-block-start: 1px solid $line;
+    padding-block-start: 1rem;
+}
+
+.setting-option {
+    display: flex;
+    inline-size: 100%;
     align-items: flex-start;
     gap: 0.75rem;
     border-block-end: 1px solid $line;
+    background: transparent;
     padding-block: 0.75rem;
+    text-align: start;
+    cursor: pointer;
 
     &:first-child {
         padding-block-start: 0;
@@ -56,13 +142,16 @@
     }
 
     &__control {
-        inline-size: 1rem;
-        block-size: 1rem;
+        display: grid;
+        inline-size: 1.125rem;
+        block-size: 1.125rem;
+        place-items: center;
         flex: none;
         margin-block-start: 0.125rem;
-        accent-color: $leaf;
-
-        @include disabled-control;
+        border: 1px solid $line;
+        border-radius: $control-radius;
+        background: $white;
+        color: $white;
     }
 
     &__content {
@@ -75,6 +164,7 @@
         font-size: 0.875rem;
         font-weight: 600;
         line-height: 1.25rem;
+        overflow-wrap: anywhere;
     }
 
     &__description {
@@ -83,5 +173,38 @@
         color: $muted;
         font-size: 0.75rem;
         line-height: 1.25rem;
+        overflow-wrap: anywhere;
+    }
+
+    &[aria-pressed='true'] &__control {
+        border-color: $leaf;
+        background: $leaf;
+    }
+
+    @include focus-ring;
+}
+
+.form-field__required {
+    margin-inline-start: 0.25rem;
+    color: $coral;
+}
+
+.reply-composer {
+    background: $white;
+    padding: 1rem;
+
+    &--message,
+    &--thread {
+        border-block-start: 1px solid $line;
+    }
+
+    .field--textarea {
+        min-block-size: 6.5rem;
+    }
+}
+
+@media (min-width: 40rem) {
+    .reply-composer {
+        padding: 1.25rem;
     }
 }

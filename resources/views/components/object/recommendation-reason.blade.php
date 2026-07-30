@@ -1,0 +1,31 @@
+@props([
+    'item' => null,
+    'reason' => null,
+    'signals' => [],
+])
+
+@php
+    $resolvedReason = $reason ?? ($item['recommendation_reason'] ?? null);
+    $resolvedSignals = $signals ?: ($item['signals'] ?? []);
+@endphp
+
+@if ($resolvedReason)
+    <div {{ $attributes->class(['recommendation-reason']) }}>
+        <div class="recommendation-reason__copy">
+            <x-lucide-sparkles class="icon icon--sm" aria-hidden="true" />
+            <div>
+                <p class="recommendation-reason__label">Why this profile</p>
+                <p>{{ $resolvedReason }}</p>
+            </div>
+        </div>
+
+        @if ($resolvedSignals !== [])
+            <div class="recommendation-reason__signals" aria-label="Recommendation signals">
+                @forelse ($resolvedSignals as $signal)
+                    <span>{{ $signal }}</span>
+                @empty
+                @endforelse
+            </div>
+        @endif
+    </div>
+@endif

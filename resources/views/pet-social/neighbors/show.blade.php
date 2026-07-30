@@ -1,58 +1,50 @@
-<x-pet-social.app-shell :owner="$owner" title="Ari Jensen | PawCircle" active-section="neighbors">
-    <x-pet-social.page-stack data-section="neighbor-profile">
-        <x-pet-social.text-link :href="route('pet-social.neighbors.index')" icon="arrow-left" variant="back">
+<x-layout.app-shell :owner="$owner" title="Ari Jensen | PawCircle" active-section="neighbors">
+    <x-layout.page-stack data-section="neighbor-profile">
+        <x-ui.text-link :href="route('pet-social.neighbors.index')" icon="arrow-left" variant="back">
             Back to neighbors
-        </x-pet-social.text-link>
+        </x-ui.text-link>
 
-        <x-pet-social.member-profile-hero
+        <x-object.profile-hero
             :profile="$neighbor"
             section="neighbor-profile-hero"
-            :eyebrow="$neighbor['category']"
-            :avatar-alt="$neighbor['avatar_alt']"
-            :cover-small="$neighbor['cover_image_small']"
-            :cover-medium="$neighbor['cover_image_medium']"
-            secondary-label="Message"
-            secondary-icon="message-circle"
-            primary-label="Follow"
-            primary-icon="user-plus"
             summary-label="Neighbor profile summary"
             :summary-icons="['paw-print', 'users', 'map-pin']"
         />
 
-        <x-pet-social.main-sidebar-layout variant="stacked">
+        <x-layout.main-sidebar-layout variant="stacked">
             <x-slot:main>
-                <x-pet-social.page-stack gap="content">
-                    <x-pet-social.content-panel
+                <x-layout.page-stack gap="content">
+                    <x-ui.content-panel
                         section="about-neighbor"
                         eyebrow="Around the neighborhood"
                         title="About Ari"
                     >
-                        <x-pet-social.section-copy :text="$neighbor['bio']" />
-                    </x-pet-social.content-panel>
+                        <x-ui.section-copy :text="$neighbor['bio']" />
+                    </x-ui.content-panel>
 
-                    <x-pet-social.neighbor-pet-summary :pet="$pet" />
-                    <x-pet-social.recent-moments
+                    <x-object.neighbor-pet-summary :pet="$pet" />
+                    <x-feature.recent-moments
                         :posts="$recentMoments"
                         eyebrow="From Ari and Mochi"
                         section="neighbor-moments"
                     />
-                </x-pet-social.page-stack>
+                </x-layout.page-stack>
             </x-slot:main>
 
             <x-slot:sidebar>
-                <x-pet-social.content-panel section="neighbor-interests" title="Shared interests">
-                    <x-pet-social.tag-list :items="$neighbor['interests']" empty="No shared interests yet." roomy class="pc-section-body" />
-                </x-pet-social.content-panel>
+                <x-ui.content-panel section="neighbor-interests" title="Shared interests">
+                    <x-ui.tag-list :items="$neighbor['interests']" empty="No shared interests yet." roomy class="section-body" />
+                </x-ui.content-panel>
 
-                <x-pet-social.mutual-neighbor-list
+                <x-object.mutual-neighbor-list
                     :neighbors="$mutualNeighbors"
                     :count="$neighbor['mutual_count']"
                 />
 
-                <x-pet-social.content-panel section="neighbor-communities" title="Communities">
-                    <x-pet-social.community-list :communities="$communities" class="pc-section-body" />
-                </x-pet-social.content-panel>
+                <x-ui.content-panel section="neighbor-communities" title="Communities">
+                    <x-object.community-list :communities="$communities" class="section-body" />
+                </x-ui.content-panel>
             </x-slot:sidebar>
-        </x-pet-social.main-sidebar-layout>
-    </x-pet-social.page-stack>
-</x-pet-social.app-shell>
+        </x-layout.main-sidebar-layout>
+    </x-layout.page-stack>
+</x-layout.app-shell>

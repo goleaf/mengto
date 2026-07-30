@@ -1,6 +1,6 @@
 @use 'tokens' as *;
 
-.pc-card-icon-button {
+.card-icon-button {
     display: grid;
     inline-size: 2.25rem;
     block-size: 2.25rem;
@@ -13,14 +13,14 @@
 }
 
 
-.pc-feed-actions {
+.feed-actions {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     border-block-start: 1px solid $line;
     background: $paper;
 }
 
-.pc-feed-action {
+.feed-action {
     display: inline-flex;
     min-inline-size: 0;
     min-block-size: 2.75rem;
@@ -43,4 +43,810 @@
     }
 
     @include disabled-control;
+}
+
+.feed-action__label {
+    display: none;
+}
+
+.feed-action__compact-label {
+    display: inline;
+}
+
+.feed-header {
+    display: flex;
+    min-inline-size: 0;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem;
+
+    &__description {
+        max-inline-size: 42rem;
+        margin-block-start: 0.5rem;
+        color: $muted;
+        font-size: 0.875rem;
+        line-height: 1.5rem;
+    }
+}
+
+.story-rail {
+    margin-block-start: 1rem;
+    border-block: 1px solid $line;
+    padding-block: 0.875rem;
+
+    &__heading {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 1rem;
+        margin-block-end: 0.75rem;
+
+        h2 {
+            color: $ink;
+            font-size: 0.875rem;
+            font-weight: 700;
+        }
+
+        span {
+            color: $muted;
+            font-size: 0.75rem;
+        }
+    }
+
+    &__items {
+        display: grid;
+        grid-auto-columns: 4.75rem;
+        grid-auto-flow: column;
+        gap: 0.75rem;
+        overflow-x: auto;
+        overscroll-behavior-inline: contain;
+        padding-block-end: 0.25rem;
+        scrollbar-width: thin;
+    }
+}
+
+.story {
+    display: grid;
+    min-inline-size: 0;
+    justify-items: center;
+    color: $ink;
+    text-align: center;
+    text-decoration: none;
+
+    &__image-wrap {
+        position: relative;
+        display: block;
+        inline-size: 4rem;
+        block-size: 4rem;
+    }
+
+    &__image {
+        inline-size: 100%;
+        block-size: 100%;
+        border: 2px solid $white;
+        border-radius: 50%;
+        object-fit: cover;
+        outline: 1px solid $line;
+    }
+
+    &__unseen {
+        position: absolute;
+        inset-inline-end: 0;
+        inset-block-end: 0.125rem;
+        inline-size: 0.875rem;
+        block-size: 0.875rem;
+        border: 2px solid $white;
+        border-radius: 50%;
+        background: $coral;
+    }
+
+    &__name,
+    &__caption {
+        inline-size: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    &__name {
+        margin-block-start: 0.375rem;
+        font-size: 0.75rem;
+        font-weight: 700;
+    }
+
+    &__caption {
+        color: $muted;
+        font-size: 0.6875rem;
+    }
+
+    @include focus-ring;
+}
+
+.feed-toolbar {
+    margin-block-start: 1rem;
+    border: 1px solid $line;
+    border-radius: $panel-radius;
+    background: $white;
+
+    .tabs {
+        padding-inline: 0.5rem;
+    }
+}
+
+.feed-filters {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.5rem;
+    padding: 0.75rem;
+}
+
+.compact-select {
+    display: grid;
+    min-inline-size: 0;
+    gap: 0.25rem;
+
+    span {
+        color: $muted;
+        font-size: 0.6875rem;
+        font-weight: 700;
+    }
+
+    select {
+        min-inline-size: 0;
+        min-block-size: $touch-target;
+        border: 1px solid $line;
+        border-radius: $control-radius;
+        background: $paper;
+        padding-inline: 0.625rem;
+        color: $ink;
+        font-size: 0.75rem;
+        font-weight: 600;
+
+        @include focus-ring;
+    }
+}
+
+.quick-composer {
+    margin-block-start: 1rem;
+    border: 1px solid $line;
+    border-radius: $panel-radius;
+    background: $white;
+    box-shadow: $control-shadow;
+
+    &__prompt {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.875rem;
+    }
+
+    &__input {
+        display: flex;
+        min-block-size: $touch-target;
+        min-inline-size: 0;
+        flex: 1;
+        align-items: center;
+        border: 1px solid $line;
+        border-radius: $control-radius;
+        background: $paper;
+        padding-inline: 0.875rem;
+        color: $muted;
+        font-size: 0.875rem;
+        text-decoration: none;
+
+        @include focus-ring;
+    }
+
+    &__tools {
+        display: flex;
+        min-inline-size: 0;
+        align-items: center;
+        gap: 0.25rem;
+        border-block-start: 1px solid $line;
+        padding: 0.375rem 0.5rem;
+        overflow-x: auto;
+    }
+
+    &__tool,
+    &__drafts {
+        display: inline-flex;
+        min-block-size: $touch-target;
+        flex: none;
+        align-items: center;
+        gap: 0.375rem;
+        padding-inline: 0.75rem;
+        border-radius: $control-radius;
+        color: $muted;
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-decoration: none;
+
+        &:hover {
+            background: $paper;
+            color: $leaf;
+        }
+
+        @include focus-ring;
+    }
+
+    &__drafts {
+        margin-inline-start: auto;
+        color: $coral;
+    }
+}
+
+.feed-card {
+    position: relative;
+}
+
+.post-alert,
+.post-expert {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-block-size: 2.25rem;
+    padding-inline: 1rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.post-alert {
+    border-block-end: 1px solid color-mix(in srgb, $coral 45%, $line);
+    background: color-mix(in srgb, $coral 12%, $white);
+    color: color-mix(in srgb, $coral 70%, $ink);
+}
+
+.post-expert {
+    border-block-end: 1px solid color-mix(in srgb, $leaf 35%, $line);
+    background: $mint;
+    color: $leaf;
+}
+
+.post-heading-row {
+    display: flex;
+    min-inline-size: 0;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.75rem;
+}
+
+.post-identity {
+    display: flex;
+    min-inline-size: 0;
+    align-items: flex-start;
+    gap: 0.75rem;
+
+    &__avatar {
+        flex: none;
+        border-radius: 50%;
+
+        @include focus-ring;
+    }
+
+    &__name {
+        display: flex;
+        min-inline-size: 0;
+        align-items: center;
+        gap: 0.375rem;
+        color: $ink;
+        font-size: 0.875rem;
+        font-weight: 700;
+        line-height: 1.25rem;
+
+        a {
+            min-inline-size: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+    }
+
+    &__meta,
+    &__manager {
+        display: flex;
+        min-inline-size: 0;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.25rem;
+        color: $muted;
+        font-size: 0.75rem;
+        line-height: 1.125rem;
+    }
+
+    &__manager {
+        margin-block-start: 0.125rem;
+        color: color-mix(in srgb, $muted 82%, $leaf);
+    }
+}
+
+.post-title {
+    margin-block-start: 1rem;
+    color: $ink;
+    font-size: 1.125rem;
+    font-weight: 700;
+    line-height: 1.5rem;
+}
+
+.post-body {
+    margin-block-start: 0.625rem;
+    color: $ink;
+    font-size: 0.9375rem;
+    line-height: 1.625rem;
+    white-space: pre-line;
+}
+
+.post-context {
+    display: flex;
+    min-inline-size: 0;
+    flex-wrap: wrap;
+    gap: 0.375rem 0.75rem;
+    margin-block-start: 0.875rem;
+    color: $muted;
+    font-size: 0.75rem;
+
+    span {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+    }
+}
+
+.repost-source {
+    display: grid;
+    gap: 0.375rem;
+    margin-block-start: 0.875rem;
+    border-inline-start: 3px solid $coral;
+    background: $paper;
+    padding: 0.75rem;
+    color: $ink;
+    font-size: 0.8125rem;
+    line-height: 1.35rem;
+    text-decoration: none;
+
+    &__meta {
+        display: flex;
+        align-items: center;
+        gap: 0.375rem;
+        color: $muted;
+        font-size: 0.75rem;
+        font-weight: 700;
+    }
+}
+
+.post-media {
+    position: relative;
+    display: grid;
+    border-block: 1px solid $line;
+    background: $ink;
+
+    &--carousel {
+        grid-auto-columns: 86%;
+        grid-auto-flow: column;
+        gap: 2px;
+        overflow-x: auto;
+        scroll-snap-type: inline mandatory;
+        overscroll-behavior-inline: contain;
+        scrollbar-width: thin;
+    }
+
+    &__item {
+        min-inline-size: 0;
+        scroll-snap-align: start;
+
+        figcaption {
+            padding: 0.5rem 0.75rem;
+            background: $white;
+            color: $muted;
+            font-size: 0.6875rem;
+            line-height: 1rem;
+
+            a {
+                color: $leaf;
+            }
+        }
+    }
+
+    &__image,
+    &__video {
+        display: block;
+        inline-size: 100%;
+        aspect-ratio: 4 / 3;
+        background: $ink;
+        object-fit: cover;
+    }
+
+    &__video {
+        aspect-ratio: 16 / 9;
+    }
+
+    &__count {
+        position: absolute;
+        inset-block-start: 0.75rem;
+        inset-inline-end: 0.75rem;
+        border-radius: $control-radius;
+        background: rgb(39 49 47 / 82%);
+        padding: 0.25rem 0.5rem;
+        color: $white;
+        font-size: 0.6875rem;
+        font-weight: 700;
+    }
+}
+
+.sensitive-media {
+    border-block: 1px solid $line;
+    background: $paper;
+
+    > summary {
+        display: flex;
+        min-block-size: 8rem;
+        cursor: pointer;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+        padding: 1.5rem;
+        color: $ink;
+        text-align: left;
+
+        span {
+            display: grid;
+            gap: 0.25rem;
+            font-size: 0.8125rem;
+        }
+    }
+}
+
+.post-poll {
+    display: grid;
+    gap: 0.5rem;
+    border-block-end: 1px solid $line;
+    padding: 1rem;
+    background: $paper;
+
+    &__option {
+        position: relative;
+        display: flex;
+        min-block-size: $touch-target;
+        align-items: center;
+        justify-content: space-between;
+        overflow: hidden;
+        border: 1px solid $line;
+        border-radius: $control-radius;
+        background: $white;
+        padding-inline: 0.75rem;
+        color: $ink;
+        font-size: 0.8125rem;
+        text-align: left;
+
+        > span,
+        > strong {
+            position: relative;
+            z-index: 1;
+        }
+    }
+
+    &__meter {
+        position: absolute !important;
+        inset: 0;
+        inline-size: var(--poll-value);
+        background: $mint;
+    }
+
+    p {
+        color: $muted;
+        font-size: 0.75rem;
+    }
+}
+
+.post-social-proof,
+.post-why {
+    display: flex;
+    min-inline-size: 0;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding: 0.625rem 1rem;
+    color: $muted;
+    font-size: 0.75rem;
+}
+
+.post-social-proof {
+    border-block-start: 1px solid $line;
+}
+
+.post-why {
+    justify-content: flex-start;
+    border-block-start: 1px solid $line;
+    background: $paper;
+    color: color-mix(in srgb, $muted 82%, $leaf);
+}
+
+.post-menu,
+.reaction-picker {
+    position: relative;
+    min-inline-size: 0;
+
+    > summary {
+        list-style: none;
+        cursor: pointer;
+
+        &::-webkit-details-marker {
+            display: none;
+        }
+
+        @include focus-ring;
+    }
+}
+
+.post-menu {
+    > summary {
+        display: grid;
+        inline-size: $touch-target;
+        block-size: $touch-target;
+        place-items: center;
+        border-radius: $control-radius;
+        color: $muted;
+    }
+
+    &__items {
+        position: absolute;
+        z-index: 20;
+        inset-block-start: calc(100% + 0.25rem);
+        inset-inline-end: 0;
+        display: grid;
+        inline-size: min(15rem, calc(100vw - 2rem));
+        border: 1px solid $line;
+        border-radius: $panel-radius;
+        background: $white;
+        padding: 0.375rem;
+        box-shadow: 0 12px 32px rgb(39 49 47 / 16%);
+
+        a,
+        button {
+            display: flex;
+            inline-size: 100%;
+            min-block-size: $touch-target;
+            cursor: pointer;
+            align-items: center;
+            gap: 0.625rem;
+            border-radius: $control-radius;
+            padding-inline: 0.75rem;
+            color: $ink;
+            font-size: 0.8125rem;
+            font-weight: 600;
+            text-align: left;
+            text-decoration: none;
+
+            &:hover {
+                background: $paper;
+            }
+
+            @include focus-ring;
+        }
+    }
+
+    &__danger {
+        color: color-mix(in srgb, $coral 72%, $ink) !important;
+    }
+}
+
+.reaction-picker {
+    > summary {
+        inline-size: 100%;
+    }
+
+    &__menu {
+        position: absolute;
+        z-index: 25;
+        inset-inline-start: 0;
+        inset-block-end: calc(100% + 0.25rem);
+        display: grid;
+        inline-size: min(14rem, calc(100vw - 2rem));
+        gap: 0.25rem;
+        border: 1px solid $line;
+        border-radius: $panel-radius;
+        background: $white;
+        padding: 0.375rem;
+        box-shadow: 0 12px 32px rgb(39 49 47 / 16%);
+    }
+
+    &__option {
+        display: grid;
+        inline-size: 100%;
+        min-block-size: $touch-target;
+        cursor: pointer;
+        grid-template-columns: 1.25rem minmax(0, 1fr) auto;
+        align-items: center;
+        gap: 0.5rem;
+        border-radius: $control-radius;
+        padding-inline: 0.625rem;
+        color: $ink;
+        font-size: 0.8125rem;
+        text-align: left;
+
+        &:hover,
+        &[aria-pressed='true'] {
+            background: $mint;
+            color: $leaf;
+        }
+
+        small {
+            color: $muted;
+        }
+
+        @include focus-ring;
+    }
+}
+
+.feed-pagination {
+    display: flex;
+    min-inline-size: 0;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-block-start: 1rem;
+    border-block-start: 1px solid $line;
+    padding-block-start: 1rem;
+    color: $muted;
+    font-size: 0.75rem;
+
+    &__end {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.375rem;
+        color: $leaf;
+        font-weight: 700;
+    }
+}
+
+.comment-thread {
+    &__header {
+        display: flex;
+        min-inline-size: 0;
+        flex-wrap: wrap;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 0.75rem;
+        border-block-end: 1px solid $line;
+        padding: 1rem;
+    }
+}
+
+.comment-list {
+    background: $white;
+}
+
+.comment-item {
+    display: grid;
+    min-inline-size: 0;
+    grid-template-columns: 2.5rem minmax(0, 1fr);
+    gap: 0.75rem;
+    border-block-end: 1px solid $line;
+    padding: 1rem;
+
+    &--mine {
+        background: color-mix(in srgb, $mint 55%, $white);
+    }
+
+    &--reply {
+        padding-inline-start: 2rem;
+        border-inline-start: 3px solid $mint;
+    }
+
+    &__avatar {
+        grid-column: 1;
+    }
+
+    &__content {
+        min-inline-size: 0;
+    }
+
+    &__header {
+        display: flex;
+        min-inline-size: 0;
+        flex-wrap: wrap;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 0.5rem;
+    }
+
+    &__author {
+        color: $ink;
+        font-size: 0.875rem;
+        font-weight: 600;
+        line-height: 1.25rem;
+        overflow-wrap: anywhere;
+    }
+
+    &__time {
+        flex: none;
+        color: $muted;
+        font-size: 0.75rem;
+        font-weight: 600;
+        line-height: 1.25rem;
+    }
+
+    &__body {
+        margin-block-start: 0.75rem;
+        color: $ink;
+        font-size: 0.875rem;
+        line-height: 1.5rem;
+        overflow-wrap: anywhere;
+    }
+}
+
+.comment-reply {
+    margin-block-start: 0.5rem;
+
+    > summary {
+        display: inline-flex;
+        min-block-size: $touch-target;
+        cursor: pointer;
+        align-items: center;
+        gap: 0.375rem;
+        color: $muted;
+        font-size: 0.75rem;
+        font-weight: 700;
+        list-style: none;
+
+        &::-webkit-details-marker {
+            display: none;
+        }
+
+        @include focus-ring;
+    }
+
+    &__form {
+        display: grid;
+        gap: 0.5rem;
+        margin-block-start: 0.375rem;
+
+        .action {
+            justify-self: end;
+        }
+    }
+}
+
+@media (min-width: 40rem) {
+    .story-rail__items {
+        grid-auto-columns: 5.25rem;
+    }
+
+    .feed-action__label {
+        display: inline;
+    }
+
+    .feed-action__compact-label {
+        display: none;
+    }
+
+    .post-media--carousel {
+        grid-auto-columns: 72%;
+    }
+
+    .post-poll {
+        padding: 1.25rem;
+    }
+
+    .comment-thread__header,
+    .comment-item {
+        padding: 1.25rem;
+    }
+}
+
+@media (max-width: 30rem) {
+    .feed-filters {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .quick-composer__tool {
+        padding-inline: 0.625rem;
+    }
+
+    .post-social-proof {
+        display: grid;
+    }
 }

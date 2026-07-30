@@ -1,0 +1,9 @@
+@props(['items', 'empty' => 'Details unavailable.'])
+
+<ul role="list" {{ $attributes->class(['detail-hero__meta']) }}>
+    @forelse ($items as $item)
+        <x-object.detail-meta-item :item="$item" />
+    @empty
+        <li class="detail-hero__meta-empty">{{ $empty }}</li>
+    @endforelse
+</ul>

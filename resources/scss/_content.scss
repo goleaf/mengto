@@ -1,6 +1,6 @@
 @use 'tokens' as *;
 
-%pc-content-title {
+%content-title {
     color: $ink;
     font-size: 0.875rem;
     font-weight: 600;
@@ -8,19 +8,19 @@
     overflow-wrap: anywhere;
 }
 
-%pc-content-detail {
+%content-detail {
     color: $muted;
     font-size: 0.75rem;
     line-height: 1.25rem;
     overflow-wrap: anywhere;
 }
 
-%pc-content-empty {
+%content-empty {
     color: $muted;
     font-size: 0.875rem;
 }
 
-%pc-divided-item {
+%divided-item {
     border-block-end: 1px solid $line;
 
     &:first-child {
@@ -33,7 +33,20 @@
     }
 }
 
-.pc-section-copy {
+.sidebar-list {
+    &__item {
+        padding-block: 1rem;
+
+        @extend %divided-item;
+    }
+
+    &__empty {
+        color: $muted;
+        font-size: 0.875rem;
+    }
+}
+
+.section-copy {
     max-inline-size: 75ch;
     margin-block-start: 0.75rem;
     color: $muted;
@@ -42,11 +55,11 @@
     text-wrap: pretty;
 }
 
-.pc-section-body {
+.section-body {
     margin-block-start: 1rem;
 }
 
-.pc-promo-card {
+.promo-card {
     &__image {
         inline-size: 100%;
         aspect-ratio: 3 / 2;
@@ -76,7 +89,7 @@
 }
 
 
-.pc-status-badge {
+.status-badge {
     display: inline-flex;
     max-inline-size: 100%;
     align-items: center;
@@ -128,13 +141,13 @@
     }
 }
 
-.pc-definition-list {
+.definition-list {
     &__item {
         display: grid;
         gap: 0.25rem;
         padding-block: 0.75rem;
 
-        @extend %pc-divided-item;
+        @extend %divided-item;
     }
 
     &__term {
@@ -157,19 +170,19 @@
     }
 }
 
-.pc-content-list {
+.content-list {
     &__item {
         padding-block: 0.75rem;
 
-        @extend %pc-divided-item;
+        @extend %divided-item;
     }
 
     &__title {
-        @extend %pc-content-title;
+        @extend %content-title;
     }
 
     &__detail {
-        @extend %pc-content-detail;
+        @extend %content-detail;
 
         margin-block-start: 0.25rem;
     }
@@ -184,11 +197,11 @@
     }
 
     &__empty {
-        @extend %pc-content-empty;
+        @extend %content-empty;
     }
 }
 
-.pc-icon-list {
+.icon-list {
     &__item {
         display: grid;
         min-inline-size: 0;
@@ -196,7 +209,7 @@
         gap: 0.75rem;
         padding-block: 1rem;
 
-        @extend %pc-divided-item;
+        @extend %divided-item;
     }
 
     &__icon {
@@ -214,22 +227,22 @@
     }
 
     &__title {
-        @extend %pc-content-title;
+        @extend %content-title;
     }
 
     &__description {
-        @extend %pc-content-detail;
+        @extend %content-detail;
 
         margin-block-start: 0.25rem;
         text-wrap: pretty;
     }
 
     &__empty {
-        @extend %pc-content-empty;
+        @extend %content-empty;
     }
 }
 
-.pc-member-list {
+.member-list {
     &__item {
         display: flex;
         min-inline-size: 0;
@@ -237,7 +250,7 @@
         gap: 0.75rem;
         padding-block: 0.75rem;
 
-        @extend %pc-divided-item;
+        @extend %divided-item;
     }
 
     &__content {
@@ -245,21 +258,21 @@
     }
 
     &__name {
-        @extend %pc-content-title;
+        @extend %content-title;
     }
 
     &__detail {
-        @extend %pc-content-detail;
+        @extend %content-detail;
 
         margin-block-start: 0.125rem;
     }
 
     &__empty {
-        @extend %pc-content-empty;
+        @extend %content-empty;
     }
 }
 
-.pc-person-summary {
+.person-summary {
     &__kicker {
         color: $leaf;
         font-size: 0.75rem;
@@ -281,12 +294,12 @@
     }
 
     &__name {
-        @extend %pc-content-title;
+        @extend %content-title;
     }
 
     &__detail,
     &__bio {
-        @extend %pc-content-detail;
+        @extend %content-detail;
     }
 
     &__detail {
@@ -304,8 +317,8 @@
     }
 }
 
-.pc-callout,
-.pc-notice {
+.callout,
+.notice {
     display: flex;
     min-inline-size: 0;
     align-items: flex-start;
@@ -316,19 +329,20 @@
     }
 
     &__title {
-        @extend %pc-content-title;
+        @extend %content-title;
     }
 
     &__description {
-        @extend %pc-content-detail;
+        @extend %content-detail;
 
         margin-block-start: 0.25rem;
         text-wrap: pretty;
     }
 }
 
-.pc-callout {
-    border-inline-start: 3px solid $coral;
+.callout {
+    border: 1px solid color-mix(in srgb, $coral 35%, $line);
+    border-radius: $panel-radius;
     background: $paper;
     padding: 1rem;
 
@@ -344,7 +358,7 @@
     }
 }
 
-.pc-notice {
+.notice {
     border: 1px solid color-mix(in srgb, $leaf 22%, $line);
     border-radius: $panel-radius;
     background: $mint;

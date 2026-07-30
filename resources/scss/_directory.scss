@@ -1,6 +1,6 @@
 @use 'tokens' as *;
 
-.pc-directory-toolbar {
+.directory-toolbar {
     display: flex;
     flex-direction: column;
     gap: 1rem;
@@ -16,14 +16,44 @@
         align-self: flex-start;
     }
 
-    &__empty {
-        color: $muted;
-        font-size: 0.875rem;
+    &__commands {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
     }
 }
 
+.select-wrap {
+    position: relative;
+    display: inline-flex;
+    min-inline-size: 0;
+
+    > .icon {
+        position: absolute;
+        inset-block-start: 50%;
+        inset-inline-start: 0.75rem;
+        z-index: 1;
+        pointer-events: none;
+        transform: translateY(-50%);
+    }
+}
+
+.field--select {
+    min-inline-size: 8.5rem;
+    padding-inline: 2.25rem 2rem;
+    color: $ink;
+    cursor: pointer;
+}
+
+.discover-search {
+    display: grid;
+    gap: 0.75rem;
+    border-block-start: 1px solid $line;
+    padding: 1rem;
+}
+
 @media (min-width: 64rem) {
-    .pc-directory-toolbar {
+    .directory-toolbar {
         flex-direction: row;
         align-items: center;
         justify-content: space-between;
@@ -36,5 +66,11 @@
         &__sort {
             align-self: auto;
         }
+    }
+
+    .discover-search {
+        grid-template-columns: minmax(14rem, 1fr) auto auto;
+        align-items: center;
+        padding-inline: 1.25rem;
     }
 }
