@@ -1,8 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services;
 
 use App\Enums\DeviceAutomationStatus;
+use App\Enums\DeviceLifecycleKind;
+use App\Enums\DeviceLifecycleStatus;
 use App\Enums\DeviceType;
 use App\Models\AuditLog;
 use App\Models\CareJournal;
@@ -11,6 +15,7 @@ use App\Models\DeviceAutomation;
 use App\Models\DeviceAutomationRun;
 use App\Models\DeviceCommand;
 use App\Models\DeviceEvent;
+use App\Models\DeviceLifecycleRecord;
 use App\Models\DeviceReading;
 use App\Models\DeviceSafeZone;
 use App\Models\MedicalRecord;
@@ -24,6 +29,7 @@ class SmartDevicePresenter
     public function __construct(
         private readonly ProfilePresenter $profiles,
         private readonly ForumActor $actor,
+        private readonly LocaleFormatter $formatter,
     ) {}
 
     /** @return array<string, mixed> */
@@ -74,7 +80,7 @@ class SmartDevicePresenter
         $devices->through(fn (SmartDevice $device): array => $this->deviceCard($device));
 
         return [
-            ...$this->page('Private smart devices'),
+            ...$this->page(__('messages.private_smart_devices_24df61f205')),
             'devices' => $devices,
             'summary' => $summary,
         ];
@@ -83,8 +89,17 @@ class SmartDevicePresenter
     /** @return array<string, mixed> */
     public function editor(): array
     {
+        $connectionTypes = [
+            'wi-fi',
+            'bluetooth',
+            'cellular',
+            'radio',
+            'matter',
+            'manual',
+        ];
+
         return [
-            ...$this->page('Connect a smart device'),
+            ...$this->page(__('messages.connect_a_smart_device_778fc41657')),
             'device_types' => collect(DeviceType::cases())
                 ->map(fn (DeviceType $type): array => [
                     'value' => $type->value,
@@ -92,6 +107,10 @@ class SmartDevicePresenter
                     'icon' => $type->icon(),
                 ])
                 ->all(),
+            'connection_types' => $this->labelledOptions(
+                $connectionTypes,
+                'devices.connection_type',
+            ),
             'pets' => collect(['scout', 'nori'])
                 ->map(function (string $key): array {
                     $pet = $this->profiles->pet($key);
@@ -132,7 +151,8 @@ class SmartDevicePresenter
         $events = $device->events()
             ->select([
                 'id', 'smart_device_id', 'pet_profile_key', 'pet_name', 'type',
-                'severity', 'status', 'title', 'summary', 'details',
+                'severity', 'status', 'occurrence_count', 'first_occurred_at',
+                'last_occurred_at', 'title', 'summary', 'details',
                 'occurred_at', 'timezone', 'confidence', 'source',
                 'requires_attention', 'acknowledged_at', 'care_entry_id',
                 'search_case_id',
@@ -260,6 +280,15 @@ class SmartDevicePresenter
             ->latest('started_at')
             ->limit(20)
             ->get();
+        $lifecycleRecords = $device->lifecycleRecords()
+            ->select([
+                'id', 'smart_device_id', 'kind', 'status', 'created_by_key',
+                'version_from', 'version_to', 'severity', 'details',
+                'effective_at', 'resolved_at',
+            ])
+            ->latest('effective_at')
+            ->limit(20)
+            ->get();
         $audit = AuditLog::query()
             ->select([
                 'id', 'actor_key', 'actor_role', 'action', 'target_type',
@@ -268,7 +297,9 @@ class SmartDevicePresenter
             ->whereIn('action', [
                 'smart-device.created',
                 'device-reading.recorded',
-                'device-command.completed',
+                'device-command.accepted',
+                'device-lifecycle.recorded',
+                'device-retention.updated',
                 'device-event.acknowledged',
                 'device-safe-zone.created',
                 'device-automation.created',
@@ -289,7 +320,7 @@ class SmartDevicePresenter
             ->get();
 
         return [
-            ...$this->page($device->name.' settings'),
+            ...$this->page(__('presentation.device_settings_for', ['device' => $device->name])),
             'device' => $this->device($device),
             'access_grants' => $access
                 ->map(fn (DeviceAccessGrant $grant): array => $this->grant($grant))
@@ -300,11 +331,78 @@ class SmartDevicePresenter
             'automation_runs' => $runs
                 ->map(fn (DeviceAutomationRun $run): array => $this->automationRun($run))
                 ->all(),
+            'lifecycle_records' => $lifecycleRecords
+                ->map(fn (DeviceLifecycleRecord $record): array => $this->lifecycle($record))
+                ->all(),
+            'lifecycle_kinds' => collect(DeviceLifecycleKind::cases())
+                ->map(fn (DeviceLifecycleKind $kind): array => [
+                    'value' => $kind->value,
+                    'label' => $kind->label(),
+                ])
+                ->all(),
+            'lifecycle_statuses' => collect(DeviceLifecycleStatus::cases())
+                ->map(fn (DeviceLifecycleStatus $status): array => [
+                    'value' => $status->value,
+                    'label' => $status->label(),
+                ])
+                ->all(),
+            'lifecycle_severities' => collect(['normal', 'important', 'critical'])
+                ->map(fn (string $severity): array => [
+                    'value' => $severity,
+                    'label' => __("devices.severity.{$severity}"),
+                ])
+                ->all(),
+            'retention_options' => [
+                'location' => $this->retentionOptions([0, 1, 7, 30, 90, 365]),
+                'media' => $this->retentionOptions([0, 1, 3, 7, 30, 90]),
+                'telemetry' => $this->retentionOptions([30, 90, 365, 730]),
+            ],
+            'automation_triggers' => $this->labelledOptions([
+                'safe-zone-exit',
+                'battery-low',
+                'device-offline',
+                'feeding-failed',
+                'water-low',
+                'temperature-high',
+                'temperature-low',
+                'door-open',
+                'leak-detected',
+            ], 'devices.automation_trigger'),
+            'automation_modes' => $this->labelledOptions([
+                'any',
+                'home',
+                'away',
+                'sitter',
+                'night',
+                'lost-mode',
+            ], 'devices.automation_mode'),
+            'automation_actions' => $this->labelledOptions([
+                'send-notification',
+                'create-task',
+                'lock-door',
+                'stop-water-pump',
+                'enable-lost-mode',
+            ], 'devices.automation_action'),
+            'automation_priorities' => $this->labelledOptions([
+                'normal',
+                'important',
+                'urgent',
+                'critical',
+            ], 'devices.automation_priority'),
+            'access_permission_options' => $this->labelledOptions([
+                'view-status',
+                'view-readings',
+                'view-events',
+                'control',
+            ], 'devices.access_permission'),
+            'lifecycle_effective_at' => now()
+                ->startOfMinute()
+                ->format('Y-m-d\TH:i'),
             'audit' => $audit->map(fn (AuditLog $item): array => [
                 'action' => Str::headline(str_replace('.', ' ', $item->action)),
                 'actor' => Str::headline($item->actor_key),
                 'role' => Str::headline($item->actor_role),
-                'at' => $item->created_at?->format('M j · H:i'),
+                'at' => $this->formatter->dateTime($item->created_at),
             ])->all(),
         ];
     }
@@ -335,6 +433,7 @@ class SmartDevicePresenter
                 ->select([
                     'id', 'smart_device_id', 'pet_profile_key', 'pet_name',
                     'type', 'severity', 'status', 'title', 'summary',
+                    'occurrence_count', 'first_occurred_at', 'last_occurred_at',
                     'occurred_at', 'confidence', 'source',
                     'requires_attention', 'acknowledged_at',
                 ])
@@ -347,13 +446,13 @@ class SmartDevicePresenter
         $sharedDevice['exact_location'] = null;
         $sharedDevice['location_label'] = $grant->allow_location
             ? $device->public_zone_label
-            : 'Location not shared';
+            : __('messages.location_not_shared_4c6e250730');
         $sharedDevice['camera_available'] = $grant->allow_camera
             && $device->type === DeviceType::Camera;
         $sharedDevice['audio_available'] = $grant->allow_audio;
 
         return [
-            ...$this->page($device->name.' shared status'),
+            ...$this->page(__('presentation.device_shared_status_for', ['device' => $device->name])),
             'device' => $sharedDevice,
             'grant' => $this->grant($grant),
             'token' => $token,
@@ -375,7 +474,7 @@ class SmartDevicePresenter
     {
         return [
             'owner' => $this->profiles->owner(),
-            'page_title' => $title.' | PawCircle',
+            'page_title' => __('presentation.brand_title', ['title' => $title]),
             'active_section' => 'devices',
         ];
     }
@@ -406,27 +505,44 @@ class SmartDevicePresenter
             'operating_mode' => Str::headline($device->operating_mode),
             'connection_type' => $device->connection_type
                 ? Str::headline($device->connection_type)
-                : 'Not recorded',
-            'firmware_version' => $device->firmware_version ?: 'Not reported',
+                : __('ui.not_recorded_b37c7879f6'),
+            'provider_status' => __("devices.provider_status.{$device->provider_status}"),
+            'firmware_version' => $device->firmware_version ?: __('ui.not_reported_adadface01'),
             'battery_percent' => $device->battery_percent,
             'battery_label' => $device->battery_percent !== null
-                ? $device->battery_percent.'%'
-                : 'Not reported',
+                ? $this->formatter->percent($device->battery_percent)
+                : __('ui.not_reported_adadface01'),
             'signal_strength' => $device->signal_strength,
-            'last_seen' => $device->last_seen_at?->diffForHumans() ?? 'No signal yet',
-            'last_seen_exact' => $device->last_seen_at?->format('M j · H:i:s'),
-            'last_synced' => $device->last_synced_at?->diffForHumans() ?? 'Not synced',
-            'last_location' => $device->last_location_at?->diffForHumans() ?? 'No location yet',
+            'last_seen' => $this->formatter->relative($device->last_seen_at)
+                ?? __('ui.no_signal_yet_e2df9f4a13'),
+            'last_seen_exact' => $this->formatter->dateTime($device->last_seen_at),
+            'last_synced' => $this->formatter->relative($device->last_synced_at)
+                ?? __('ui.not_synced_ed65095553'),
+            'last_location' => $this->formatter->relative($device->last_location_at)
+                ?? __('ui.no_location_yet_8fcba1f55b'),
             'location_label' => $device->private_location_label
                 ?: $device->public_zone_label
-                ?: 'Location not recorded',
-            'public_zone_label' => $device->public_zone_label ?: 'Private zone',
+                ?: __('ui.location_not_recorded_1851de591f'),
+            'public_zone_label' => $device->public_zone_label
+                ?: __('ui.private_zone_43997bb41f'),
             'exact_location' => $latitude !== null && $longitude !== null
-                ? number_format((float) $latitude, 5).', '.number_format((float) $longitude, 5)
+                ? __('presentation.coordinates', [
+                    'latitude' => $this->formatter->number((float) $latitude, 5, 5),
+                    'longitude' => $this->formatter->number((float) $longitude, 5, 5),
+                ])
                 : null,
             'location_accuracy' => $device->location_accuracy_meters !== null
-                ? '±'.number_format((float) $device->location_accuracy_meters, 0).' m'
-                : 'Accuracy unavailable',
+                ? __('presentation.approximate_meters', ['count' => $this->formatter->number((float) $device->location_accuracy_meters)])
+                : __('ui.accuracy_unavailable_100be90b04'),
+            'location_retention_days' => $device->location_retention_days,
+            'media_retention_days' => $device->media_retention_days,
+            'telemetry_retention_days' => $device->telemetry_retention_days,
+            'safety_state_recorded_at' => $this->formatter->dateTime(
+                $device->safety_state_recorded_at,
+            ),
+            'has_fresh_safety_state' => $device->safety_state_recorded_at?->isAfter(
+                now()->subMinutes(2),
+            ) === true,
             'has_backup_power' => $device->has_backup_power,
             'supports_local_operation' => $device->supports_local_operation,
             'requires_cloud' => $device->requires_cloud,
@@ -445,14 +561,31 @@ class SmartDevicePresenter
     /** @return array<string, mixed> */
     private function deviceCard(SmartDevice $device): array
     {
+        $openEvents = (int) $device->open_events_count;
+        $urgentEvents = (int) $device->urgent_events_count;
+        $eventSummary = trans_choice(
+            'devices.events.open',
+            $openEvents,
+            ['count' => $openEvents],
+        );
+
+        if ($urgentEvents > 0) {
+            $eventSummary .= ' · '.trans_choice(
+                'devices.events.urgent',
+                $urgentEvents,
+                ['count' => $urgentEvents],
+            );
+        }
+
         return [
             ...$this->device($device),
             'pets' => $device->assignments
                 ->pluck('pet_name')
                 ->values()
                 ->all(),
-            'open_events_count' => (int) $device->open_events_count,
-            'urgent_events_count' => (int) $device->urgent_events_count,
+            'open_events_count' => $openEvents,
+            'urgent_events_count' => $urgentEvents,
+            'event_summary' => $eventSummary,
             'enabled_automations_count' => (int) $device->enabled_automations_count,
         ];
     }
@@ -464,7 +597,7 @@ class SmartDevicePresenter
     private function reading(DeviceReading $reading, Collection $medicalProfiles): array
     {
         $value = $reading->numeric_value !== null
-            ? rtrim(rtrim((string) $reading->numeric_value, '0'), '.')
+            ? $this->formatter->number((float) $reading->numeric_value, 6)
             : $reading->text_value;
         $record = $reading->pet_profile_key !== null
             ? $medicalProfiles->get($reading->pet_profile_key)
@@ -474,15 +607,15 @@ class SmartDevicePresenter
             'id' => $reading->id,
             'metric_type' => $reading->metric_type,
             'metric_label' => Str::headline($reading->metric_type),
-            'value' => trim(($value ?? 'Not reported').' '.($reading->unit ?? '')),
-            'pet_name' => $reading->pet_name ?: 'Pet not identified',
-            'recorded_at' => $reading->recorded_at?->format('M j · H:i:s'),
-            'recorded_relative' => $reading->recorded_at?->diffForHumans(),
+            'value' => trim(($value ?? __('ui.not_reported_adadface01')).' '.($reading->unit ?? '')),
+            'pet_name' => $reading->pet_name ?: __('ui.pet_not_identified_4feadfda07'),
+            'recorded_at' => $this->formatter->dateTime($reading->recorded_at),
+            'recorded_relative' => $this->formatter->relative($reading->recorded_at),
             'confidence' => $reading->confidence->label(),
             'verification' => Str::headline($reading->verification_status),
             'is_stale' => $reading->is_stale,
             'accuracy' => $reading->accuracy_meters !== null
-                ? '±'.number_format((float) $reading->accuracy_meters, 0).' m'
+                ? __('presentation.approximate_meters', ['count' => $this->formatter->number((float) $reading->accuracy_meters)])
                 : null,
             'can_add_medical' => $record !== null
                 && $reading->medical_event_id === null
@@ -515,11 +648,23 @@ class SmartDevicePresenter
             'severity_tone' => $event->severity->tone(),
             'status' => $event->status,
             'status_label' => Str::headline($event->status),
+            'occurrence_count' => $event->occurrence_count,
+            'occurrence_label' => trans_choice(
+                'devices.events.occurrences',
+                $event->occurrence_count,
+                ['count' => $event->occurrence_count],
+            ),
+            'first_occurred_at' => $this->formatter->dateTime(
+                $event->first_occurred_at,
+            ),
+            'last_occurred_at' => $this->formatter->dateTime(
+                $event->last_occurred_at,
+            ),
             'title' => $event->title,
             'summary' => $event->summary,
-            'pet_name' => $event->pet_name ?: 'Pet not identified',
-            'occurred_at' => $event->occurred_at?->format('M j · H:i:s'),
-            'occurred_relative' => $event->occurred_at?->diffForHumans(),
+            'pet_name' => $event->pet_name ?: __('ui.pet_not_identified_4feadfda07'),
+            'occurred_at' => $this->formatter->dateTime($event->occurred_at),
+            'occurred_relative' => $this->formatter->relative($event->occurred_at),
             'confidence' => $event->confidence->label(),
             'source' => Str::headline($event->source),
             'requires_attention' => $event->requires_attention,
@@ -539,12 +684,12 @@ class SmartDevicePresenter
         return [
             'id' => $command->id,
             'type' => $command->command_type,
-            'type_label' => Str::headline($command->command_type),
+            'type_label' => __("devices.command.{$command->command_type}"),
             'status' => $command->status->value,
             'status_label' => $command->status->label(),
             'author_name' => $command->author_name,
             'safety_level' => Str::headline($command->safety_level),
-            'issued_at' => $command->issued_at?->format('M j · H:i:s'),
+            'issued_at' => $this->formatter->dateTime($command->issued_at),
             'parameters' => collect($command->parameters ?? [])
                 ->map(fn (mixed $value, string $key): array => [
                     'label' => Str::headline($key),
@@ -553,6 +698,56 @@ class SmartDevicePresenter
                 ->values()
                 ->all(),
         ];
+    }
+
+    /** @return array<string, mixed> */
+    private function lifecycle(DeviceLifecycleRecord $record): array
+    {
+        return [
+            'id' => $record->id,
+            'kind' => $record->kind->label(),
+            'status' => $record->status->label(),
+            'severity' => __("devices.severity.{$record->severity}"),
+            'version' => trim(implode(' → ', array_filter([
+                $record->version_from,
+                $record->version_to,
+            ]))),
+            'note' => $record->details['note'] ?? null,
+            'reference' => $record->details['reference'] ?? null,
+            'effective_at' => $this->formatter->dateTime($record->effective_at),
+            'resolved_at' => $this->formatter->dateTime($record->resolved_at),
+        ];
+    }
+
+    /**
+     * @param  list<int>  $days
+     * @return list<array{value: int, label: string}>
+     */
+    private function retentionOptions(array $days): array
+    {
+        return collect($days)
+            ->map(fn (int $value): array => [
+                'value' => $value,
+                'label' => $value === 0
+                    ? __('devices.retention.disabled')
+                    : trans_choice('devices.retention.days', $value, ['count' => $value]),
+            ])
+            ->all();
+    }
+
+    /**
+     * @param  list<string>  $values
+     * @return list<array{value: string, label: string}>
+     */
+    private function labelledOptions(array $values, string $translationGroup): array
+    {
+        return array_map(
+            static fn (string $value): array => [
+                'value' => $value,
+                'label' => __("{$translationGroup}.{$value}"),
+            ],
+            $values,
+        );
     }
 
     /** @return array<string, mixed> */
@@ -566,13 +761,20 @@ class SmartDevicePresenter
             'shape' => Str::headline($zone->shape),
             'public_area_label' => $zone->public_area_label,
             'radius' => isset($geometry['radius_meters'])
-                ? number_format((float) $geometry['radius_meters'], 0).' m'
+                ? __('presentation.meters', ['count' => $this->formatter->number((float) $geometry['radius_meters'])])
                 : null,
             'coordinates' => isset($geometry['latitude'], $geometry['longitude'])
-                ? number_format((float) $geometry['latitude'], 5).', '.number_format((float) $geometry['longitude'], 5)
+                ? __('presentation.coordinates', [
+                    'latitude' => $this->formatter->number((float) $geometry['latitude'], 5, 5),
+                    'longitude' => $this->formatter->number((float) $geometry['longitude'], 5, 5),
+                ])
                 : null,
-            'exit_delay' => $zone->exit_delay_seconds.' sec confirmation',
-            'accuracy_threshold' => 'Ignore accuracy worse than '.number_format((float) $zone->accuracy_threshold_meters, 0).' m',
+            'exit_delay' => __('presentation.seconds_confirmation', [
+                'count' => $this->formatter->number($zone->exit_delay_seconds),
+            ]),
+            'accuracy_threshold' => __('presentation.ignore_accuracy_worse', [
+                'distance' => __('presentation.meters', ['count' => $this->formatter->number((float) $zone->accuracy_threshold_meters)]),
+            ]),
             'status' => Str::headline($zone->status),
             'is_home' => $zone->is_home,
         ];
@@ -594,9 +796,14 @@ class SmartDevicePresenter
             'status_tone' => $automation->status->tone(),
             'priority' => Str::headline($automation->priority),
             'safety_level' => Str::headline($automation->safety_level),
-            'cooldown' => $automation->cooldown_seconds.' sec',
-            'max_runs' => $automation->max_runs_per_hour.' / hour',
-            'last_run' => $automation->last_run_at?->diffForHumans() ?? 'Never run',
+            'cooldown' => __('presentation.seconds_short', [
+                'count' => $this->formatter->number($automation->cooldown_seconds),
+            ]),
+            'max_runs' => __('presentation.runs_per_hour', [
+                'count' => $this->formatter->number($automation->max_runs_per_hour),
+            ]),
+            'last_run' => $this->formatter->relative($automation->last_run_at)
+                ?? __('ui.never_run_e23ed30c16'),
         ];
     }
 
@@ -608,8 +815,8 @@ class SmartDevicePresenter
             'automation_id' => $run->device_automation_id,
             'status' => Str::headline($run->status),
             'is_simulation' => $run->is_simulation,
-            'started_at' => $run->started_at?->format('M j · H:i:s'),
-            'result' => $run->result['message'] ?? 'No result message',
+            'started_at' => $this->formatter->dateTime($run->started_at),
+            'result' => $run->result['message'] ?? __('ui.no_result_message_c1d9d0886a'),
         ];
     }
 
@@ -628,10 +835,12 @@ class SmartDevicePresenter
             'allow_camera' => $grant->allow_camera,
             'allow_commands' => $grant->allow_commands,
             'allow_audio' => $grant->allow_audio,
-            'views' => $grant->views_used.' / '.$grant->max_views,
-            'starts_at' => $grant->starts_at?->format('M j · H:i'),
-            'expires_at' => $grant->expires_at?->format('M j · H:i'),
-            'last_opened' => $grant->last_opened_at?->diffForHumans() ?? 'Never',
+            'views' => $this->formatter->number($grant->views_used)
+                .' / '.$this->formatter->number($grant->max_views),
+            'starts_at' => $this->formatter->dateTime($grant->starts_at),
+            'expires_at' => $this->formatter->dateTime($grant->expires_at),
+            'last_opened' => $this->formatter->relative($grant->last_opened_at)
+                ?? __('ui.never_7e0c679ec7'),
             'is_active' => $grant->canBeOpened(),
         ];
     }
@@ -651,14 +860,20 @@ class SmartDevicePresenter
             DeviceType::Camera => [
                 'refresh-status', 'enable-privacy-mode', 'disable-privacy-mode',
             ],
+            DeviceType::LitterBox => ['refresh-status', 'clean-litter'],
             DeviceType::SmartDoor => ['refresh-status', 'lock-door', 'unlock-door'],
             default => ['refresh-status'],
         };
 
         return collect($commands)->map(fn (string $command): array => [
             'value' => $command,
-            'label' => Str::headline($command),
-            'confirmation' => in_array($command, ['unlock-door', 'enable-lost-mode'], true),
+            'label' => __("devices.command.{$command}"),
+            'confirmation' => in_array($command, [
+                'unlock-door',
+                'lock-door',
+                'clean-litter',
+                'enable-lost-mode',
+            ], true),
         ])->all();
     }
 
@@ -666,16 +881,16 @@ class SmartDevicePresenter
     private function metricOptions(DeviceType $type): array
     {
         $metrics = match ($type) {
-            DeviceType::GpsTracker => [['location', 'Location', 'coordinates'], ['battery-percent', 'Battery', '%']],
-            DeviceType::ActivityTracker => [['activity-minutes', 'Activity', 'min'], ['sleep-minutes', 'Sleep', 'min']],
-            DeviceType::Feeder => [['food-dispensed', 'Food dispensed', 'g']],
-            DeviceType::Waterer => [['water-use', 'Water use', 'ml']],
-            DeviceType::LitterBox => [['litter-visit', 'Litter visit', 'times'], ['weight-grams', 'Weight', 'g']],
-            DeviceType::Scale => [['weight-grams', 'Weight', 'g']],
-            DeviceType::TemperatureSensor => [['temperature-c', 'Temperature', '°C']],
-            DeviceType::HumiditySensor => [['humidity-percent', 'Humidity', '%']],
-            DeviceType::SmartDoor => [['door-use', 'Door use', 'times']],
-            DeviceType::Camera => [['activity-minutes', 'Observed activity', 'min'], ['sleep-minutes', 'Estimated sleep', 'min']],
+            DeviceType::GpsTracker => [['location', __('messages.location_15b61974b2'), 'coordinates'], ['battery-percent', __('messages.battery_dfcb7c1619'), '%']],
+            DeviceType::ActivityTracker => [['activity-minutes', __('messages.activity_38da1505ca'), 'min'], ['sleep-minutes', __('messages.sleep_d466bcf52e'), 'min']],
+            DeviceType::Feeder => [['food-dispensed', __('messages.food_dispensed_cf51683374'), 'g']],
+            DeviceType::Waterer => [['water-use', __('messages.water_use_3dceacf63b'), 'ml']],
+            DeviceType::LitterBox => [['litter-visit', __('messages.litter_visit_a743a4fff5'), 'times'], ['weight-grams', __('messages.weight_81d27ef6d5'), 'g']],
+            DeviceType::Scale => [['weight-grams', __('messages.weight_81d27ef6d5'), 'g']],
+            DeviceType::TemperatureSensor => [['temperature-c', __('messages.temperature_b958ce8b87'), '°C']],
+            DeviceType::HumiditySensor => [['humidity-percent', __('messages.humidity_46819ccb5e'), '%']],
+            DeviceType::SmartDoor => [['door-use', __('messages.door_use_c755ea3d75'), 'times']],
+            DeviceType::Camera => [['activity-minutes', __('messages.observed_activity_e48b576b41'), 'min'], ['sleep-minutes', __('messages.estimated_sleep_0a231ab440'), 'min']],
         };
 
         return collect($metrics)->map(fn (array $metric): array => [

@@ -1,16 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories;
 
 use App\Models\MedicalAccessGrant;
 use App\Models\MedicalRecord;
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
 /**
- * @extends Factory<MedicalAccessGrant>
+ * @extends ApplicationFactory<MedicalAccessGrant>
  */
-class MedicalAccessGrantFactory extends Factory
+class MedicalAccessGrantFactory extends ApplicationFactory
 {
     public function definition(): array
     {

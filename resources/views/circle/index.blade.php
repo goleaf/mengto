@@ -1,4 +1,4 @@
-<x-app-shell :owner="$owner" title="My Circle | PawCircle" active-section="circle">
+<x-app-shell :owner="$owner" title="{{ __('ui.my_circle_brand_80cfb33331') }}" active-section="circle">
     <x-page-stack>
         <x-page-header
             :eyebrow="$summary['eyebrow']"
@@ -10,14 +10,14 @@
                 <x-action-group>
                     <x-action-control
                         :href="route('connections.index')"
-                        label="Connections"
+                        label="{{ __('ui.connections_dc27311748') }}"
                         icon="users-round"
                         variant="paper"
                         size="regular"
                     />
                     <x-action-control
                         :href="route('pet-friends.index')"
-                        label="Pet friends"
+                        label="{{ __('ui.pet_friends_8866f0adbb') }}"
                         icon="heart-handshake"
                         variant="primary"
                         size="regular"

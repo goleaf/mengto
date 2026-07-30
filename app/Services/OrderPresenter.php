@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services;
 
 use App\Enums\DisputeStatus;
@@ -16,6 +18,7 @@ class OrderPresenter
         private readonly ProfilePresenter $profiles,
         private readonly ForumActor $actor,
         private readonly ListingTaxonomy $taxonomy,
+        private readonly LocaleFormatter $formatter,
     ) {}
 
     /** @return array<string, mixed> */
@@ -38,7 +41,7 @@ class OrderPresenter
                 'priority' => Str::headline($dispute->priority),
                 'status' => $dispute->status->label(),
                 'resolution' => $dispute->resolution,
-                'created_label' => $dispute->created_at?->diffForHumans(),
+                'created_label' => $this->formatter->relative($dispute->created_at),
             ])
             ->all();
 
@@ -61,10 +64,15 @@ class OrderPresenter
                 DisputeStatus::Appealed->value,
             ])
             ->exists();
+        $item = $order->item_snapshot;
+        $brandModel = implode(' ', array_filter([
+            (string) ($item['brand'] ?? ''),
+            (string) ($item['model'] ?? ''),
+        ]));
 
         return [
             'owner' => $this->profiles->owner(),
-            'page_title' => $order->reference.' · Marketplace order',
+            'page_title' => __('presentation.marketplace_order_title', ['reference' => $order->reference]),
             'active_section' => 'marketplace',
             'listing' => [
                 'slug' => $listing->slug,
@@ -87,10 +95,16 @@ class OrderPresenter
                 'status_label' => $order->status->label(),
                 'payment_status' => $order->payment_status->value,
                 'payment_label' => $order->payment_status->label(),
-                'item' => $order->item_snapshot,
+                'item' => $item,
+                'item_brand_model' => $brandModel !== ''
+                    ? $brandModel
+                    : __('ui.not_specified_dc12bec5d7'),
+                'item_condition_label' => Str::headline(
+                    (string) ($item['condition'] ?? ''),
+                ),
                 'terms' => $order->terms_snapshot,
-                'ordered_at' => $order->ordered_at?->format('M j, Y · H:i'),
-                'completed_at' => $order->completed_at?->format('M j, Y · H:i'),
+                'ordered_at' => $this->formatter->dateTime($order->ordered_at),
+                'completed_at' => $this->formatter->dateTime($order->completed_at),
             ],
             'is_buyer' => $isBuyer,
             'can_dispute' => ! $hasActiveDispute
@@ -108,7 +122,7 @@ class OrderPresenter
                 'body' => $review->body,
                 'status' => $review->status->label(),
                 'seller_reply' => $review->seller_reply,
-                'created_label' => $review->created_at?->diffForHumans(),
+                'created_label' => $this->formatter->relative($review->created_at),
             ] : null,
             'dispute_reasons' => $this->taxonomy->disputeReasons(),
         ];
@@ -116,6 +130,6 @@ class OrderPresenter
 
     private function money(float|string|null $amount, string $currency): string
     {
-        return $currency.' '.number_format((float) $amount, 2);
+        return $this->formatter->currency((float) $amount, $currency);
     }
 }

@@ -1,5 +1,7 @@
 # Owner And Pet Profile MVP Design
 
+> Product design source. Preserve its domain detail; current production, security, persistence, and verification requirements are governed by `docs/index.md`.
+
 ## Status
 
 Approved from the user-provided profile specification. This document narrows

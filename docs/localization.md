@@ -1,0 +1,88 @@
+# Localization
+
+## Locales
+
+- `en`: source and fallback locale
+- `lt`: Lithuanian
+- `ru`: Russian
+
+Locale values are allow-listed. User preference is stored on the account; a
+safe session preference may be used before login. Dates and times also use the
+user's validated timezone.
+
+## Translation Architecture
+
+Use Laravel language files under `lang/{locale}`. Current files are:
+
+- `auth.php`
+- `validation.php`
+- `messages.php`
+- `places.php`
+- `presentation.php`
+- `ui.php`
+
+`ui.php` contains mechanically extracted static interface text.
+`messages.php` contains complete action, HTTP, Livewire, and service messages.
+`presentation.php` contains reviewed placeholder/plural templates used to
+compose dynamic output without grammatical fragments.
+
+Do not add a parallel database or JavaScript translation system. JavaScript
+receives only the explicit translated strings it needs from prepared data or a
+small safe bootstrap payload.
+
+## Contributor Workflow
+
+1. Search for an existing stable key.
+2. Add/update the key in all three locales.
+3. Keep placeholders identical.
+4. Use pluralization for counts rather than sentence concatenation.
+5. Format dates, numbers, currency, lists, and measurements through a
+   locale-aware formatter.
+6. Run localization tests and render one critical page per locale.
+7. Record a human-review note if a translation is structurally valid but needs
+   native-language review.
+
+Never ship the raw key as normal visible content.
+
+## Current Translation Quality
+
+English is the source language and fallback. Lithuanian and Russian catalogues
+currently maintain complete key/placeholder parity but mostly contain the
+English source wording pending native-speaker translation. This is deliberate:
+the interface resolves stable keys and never breaks or exposes raw identifiers,
+but the repository does not claim those two catalogues have completed
+linguistic review.
+
+Source-authored fixture/catalogue content such as demo post bodies, names, and
+locations is translated through stable keys where it is rendered as
+first-party content. Dynamic sentences use complete templates rather than
+translated fragments. `I18N-002` and `I18N-004` are enforced by architecture
+and rendering tests.
+
+## Formatting
+
+- Store money in minor units; format with locale and currency.
+- Store normalized time; render in user timezone and locale.
+- Preserve exact device/model/version/serial/error/Wi-Fi identifiers.
+- Convert display units without losing original precision.
+- Do not concatenate translated sentence fragments.
+
+## Tests
+
+- key parity across locales;
+- placeholder parity;
+- pluralization;
+- fallback;
+- localized validation and auth feedback;
+- date/time/currency/measurement formatting;
+- critical Blade and Livewire rendering in every locale;
+- no untranslated raw key on critical pages.
+
+Architecture gates:
+
+```bash
+php scripts/localize-blade-literals.php --check
+php scripts/localize-php-messages.php --check
+php artisan test --compact tests/Feature/LocalizationTest.php tests/Feature/ArchitectureComplianceTest.php
+php artisan view:cache
+```

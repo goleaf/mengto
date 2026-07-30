@@ -3,23 +3,23 @@
     'center',
 ])
 
-<section class="friend-dashboard" aria-label="Pet friendship center">
+<section class="friend-dashboard" aria-label="{{ __('ui.pet_friendship_center_7323941f70') }}">
     <x-pet-friend-switcher :pets="$center['pet_switcher']" />
 
     <x-summary-strip
         :items="$summary['stats']"
-        label="Pet friendship summary"
+        label="{{ __('ui.pet_friendship_summary_fe57f2f733') }}"
         :icons="['heart-handshake', 'inbox', 'send', 'route']"
         :columns="4"
     />
 
-    <x-tab-list :tabs="$center['tabs']" label="Pet friendship views" />
+    <x-tab-list :tabs="$center['tabs']" label="{{ __('ui.pet_friendship_views_960c18c50c') }}" />
 
     @if ($center['last_dismissed'])
         <div class="friend-feedback" role="status">
             <span>
                 <x-lucide-eye-off class="icon icon--sm" aria-hidden="true" />
-                {{ $center['last_dismissed']['name'] }} was hidden from recommendations.
+                {{ __('presentation.hidden_from_recommendations', ['name' => $center['last_dismissed']['name']]) }}
             </span>
             <x-action-control
                 :label="$center['last_dismissed']['action']['label']"
@@ -36,7 +36,7 @@
         <div class="friend-feedback" role="status">
             <span>
                 <x-lucide-ban class="icon icon--sm" aria-hidden="true" />
-                {{ $center['last_blocked']['name'] }} and their owner are blocked.
+                {{ __('presentation.blocked_owner', ['name' => $center['last_blocked']['name']]) }}
             </span>
             <x-action-control
                 :label="$center['last_blocked']['action']['label']"
@@ -70,9 +70,9 @@
                 <h2 id="friend-safety-title">{{ $center['safety_note']['title'] }}</h2>
                 <p>{{ $center['safety_note']['description'] }}</p>
                 <ul>
-                    <li>Choose a neutral public place.</li>
-                    <li>Share exact meeting details only after acceptance.</li>
-                    <li>End an introduction whenever either pet is uncomfortable.</li>
+                    <li>{{ __('ui.choose_a_neutral_public_place_fd36e64017') }}</li>
+                    <li>{{ __('ui.share_exact_meeting_details_only_after_acceptance_91a3d9f1a5') }}</li>
+                    <li>{{ __('ui.end_an_introduction_whenever_either_pet_is_uncomfortable_142ce42a01') }}</li>
                 </ul>
             </div>
         </aside>

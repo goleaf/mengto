@@ -1,6 +1,6 @@
 @props([
     'communities' => [],
-    'empty' => 'No communities joined yet.',
+    'empty' => __('ui.no_communities_joined_yet_03e4154cf1'),
 ])
 
 <div role="list" {{ $attributes->class(['content-list']) }}>

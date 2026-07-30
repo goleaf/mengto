@@ -1,13 +1,59 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use Database\Factories\MedicalRecordFactory;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Carbon;
 
+/**
+ * @property-read Collection<int, MedicalAccessGrant> $accessGrants
+ * @property Carbon|null $birth_date
+ * @property bool $birth_date_estimated
+ * @property string|null $blood_group
+ * @property string|null $breed
+ * @property array<array-key, mixed>|null $chronic_conditions
+ * @property Carbon|null $created_at
+ * @property array<array-key, mixed>|null $critical_allergies
+ * @property int|null $current_weight_grams
+ * @property-read Collection<int, MedicalDocument> $documents
+ * @property-read Collection<int, MedicationDose> $doses
+ * @property array<array-key, mixed>|null $emergency_contact
+ * @property string|null $emergency_notes
+ * @property-read Collection<int, MedicalEvent> $events
+ * @property int $id
+ * @property string|null $image_url
+ * @property Carbon|null $last_visit_at
+ * @property int $lock_version
+ * @property-read Collection<int, Medication> $medications
+ * @property Carbon|null $microchip_checked_on
+ * @property string|null $microchip_number
+ * @property string $microchip_status
+ * @property Carbon|null $next_appointment_at
+ * @property int|null $owner_id
+ * @property string $owner_key
+ * @property string $pet_name
+ * @property string $pet_profile_key
+ * @property string|null $primary_clinic_contact
+ * @property string|null $primary_clinic_name
+ * @property string $privacy
+ * @property-read Collection<int, MedicalReminder> $reminders
+ * @property string $reproductive_status
+ * @property string|null $sex
+ * @property string $slug
+ * @property string $species
+ * @property string $status
+ * @property string $timezone
+ * @property Carbon|null $updated_at
+ * @property-read Collection<int, Vaccination> $vaccinations
+ * @property-read Collection<int, WeightEntry> $weightEntries
+ */
 class MedicalRecord extends Model
 {
     /** @use HasFactory<MedicalRecordFactory> */
@@ -82,41 +128,49 @@ class MedicalRecord extends Model
             ->select(self::ROUTE_COLUMNS);
     }
 
+    /** @return HasMany<\App\Models\MedicalEvent, $this>*/
     public function events(): HasMany
     {
         return $this->hasMany(MedicalEvent::class);
     }
 
+    /** @return HasMany<\App\Models\Vaccination, $this>*/
     public function vaccinations(): HasMany
     {
         return $this->hasMany(Vaccination::class);
     }
 
+    /** @return HasMany<\App\Models\WeightEntry, $this>*/
     public function weightEntries(): HasMany
     {
         return $this->hasMany(WeightEntry::class);
     }
 
+    /** @return HasMany<\App\Models\Medication, $this>*/
     public function medications(): HasMany
     {
         return $this->hasMany(Medication::class);
     }
 
+    /** @return HasMany<\App\Models\MedicationDose, $this>*/
     public function doses(): HasMany
     {
         return $this->hasMany(MedicationDose::class);
     }
 
+    /** @return HasMany<\App\Models\MedicalDocument, $this>*/
     public function documents(): HasMany
     {
         return $this->hasMany(MedicalDocument::class);
     }
 
+    /** @return HasMany<\App\Models\MedicalReminder, $this>*/
     public function reminders(): HasMany
     {
         return $this->hasMany(MedicalReminder::class);
     }
 
+    /** @return HasMany<\App\Models\MedicalAccessGrant, $this>*/
     public function accessGrants(): HasMany
     {
         return $this->hasMany(MedicalAccessGrant::class);

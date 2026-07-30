@@ -1,5 +1,7 @@
 # PawCircle Places Map MVP Design
 
+> Product design source. Preserve its domain detail; current production, security, persistence, and verification requirements are governed by `docs/index.md`.
+
 ## Goal
 
 Build a privacy-aware navigator for pet owners that combines a visual map,

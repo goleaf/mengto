@@ -1,18 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories;
 
 use App\Enums\DeviceConnectionStatus;
 use App\Enums\DeviceStatus;
 use App\Enums\DeviceType;
 use App\Models\SmartDevice;
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
 /**
- * @extends Factory<SmartDevice>
+ * @extends ApplicationFactory<SmartDevice>
  */
-class SmartDeviceFactory extends Factory
+class SmartDeviceFactory extends ApplicationFactory
 {
     /**
      * Define the model's default state.
@@ -41,11 +42,15 @@ class SmartDeviceFactory extends Factory
             'connection_status' => DeviceConnectionStatus::Online,
             'operating_mode' => 'normal',
             'connection_type' => 'wi-fi',
+            'provider_status' => 'not-configured',
             'firmware_version' => '1.2.0',
             'battery_percent' => fake()->numberBetween(35, 100),
             'signal_strength' => fake()->numberBetween(-85, -35),
             'last_seen_at' => now()->subMinutes(2),
             'last_synced_at' => now()->subMinutes(2),
+            'location_retention_days' => 30,
+            'media_retention_days' => 7,
+            'telemetry_retention_days' => 365,
             'has_backup_power' => true,
             'supports_local_operation' => true,
             'requires_cloud' => false,

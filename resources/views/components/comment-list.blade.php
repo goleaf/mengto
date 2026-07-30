@@ -6,8 +6,8 @@
     @empty
         <x-empty-state
             icon="messages-square"
-            title="Start this conversation"
-            description="Add a useful care note, a kind question, or a local recommendation."
+            title="{{ __('ui.start_this_conversation_71cd4bdb26') }}"
+            description="{{ __('ui.add_a_useful_care_note_a_kind_question_70928ec16b') }}"
             compact
             role="listitem"
         />

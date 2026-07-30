@@ -13,10 +13,10 @@
                     class="post-media__video"
                 >
                     <source src="{{ $item['source'] }}" type="{{ $item['mime'] }}">
-                    Your browser does not support embedded video.
+                    {{ __('ui.your_browser_does_not_support_embedded_video_7dd705b10c') }}
                 </video>
             @else
-                <a href="{{ $item['image'] }}" target="_blank" rel="noopener" aria-label="Open full-size image">
+                <a href="{{ $item['image'] }}" target="_blank" rel="noopener" aria-label="{{ __('ui.open_full_size_image_13c6227aee') }}">
                     <x-responsive-image
                         :src="$item['image']"
                         :small="$item['image_small']"
@@ -45,6 +45,6 @@
     @endforeach
 
     @if (count($media) > 1)
-        <span class="post-media__count">{{ count($media) }} photos</span>
+        <span class="post-media__count">{{ trans_choice('presentation.photos_count', count($media), ['count' => count($media)]) }}</span>
     @endif
 </div>

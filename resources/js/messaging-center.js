@@ -31,7 +31,7 @@ const initializeComposer = () => {
             window.clearTimeout(draftTimer);
 
             if (draftStatus) {
-                draftStatus.textContent = 'Saving draft…';
+                draftStatus.textContent = form.dataset.draftSaving ?? '';
             }
 
             draftTimer = window.setTimeout(() => {
@@ -40,7 +40,7 @@ const initializeComposer = () => {
                 }
 
                 if (draftStatus) {
-                    draftStatus.textContent = 'Draft saved on this device';
+                    draftStatus.textContent = form.dataset.draftSaved ?? '';
                 }
             }, 250);
         });
@@ -67,19 +67,8 @@ const initializeComposer = () => {
                     );
                 });
 
-                const labels = {
-                    audio: 'Audio message',
-                    image: 'Photo for this conversation',
-                    video: 'Video for this conversation',
-                    file: 'Document for this conversation',
-                    pet: 'Shared pet profile',
-                    place: 'Shared place',
-                    event: 'Shared event',
-                    task: 'New shared task',
-                };
-
                 if (!isActive && body.value.trim() === '') {
-                    body.value = labels[selectedType] ?? '';
+                    body.value = button.dataset.messageTypeLabel ?? '';
                     body.dispatchEvent(new Event('input'));
                 }
 
@@ -100,7 +89,12 @@ const initializeAudio = () => {
         button.addEventListener('click', () => {
             const playing = button.getAttribute('aria-pressed') === 'true';
             button.setAttribute('aria-pressed', playing ? 'false' : 'true');
-            button.setAttribute('aria-label', playing ? 'Play audio message' : 'Pause audio message');
+            button.setAttribute(
+                'aria-label',
+                playing
+                    ? button.dataset.audioPlayLabel ?? ''
+                    : button.dataset.audioPauseLabel ?? '',
+            );
 
             const icon = button.querySelector('svg');
             if (icon) {
@@ -157,7 +151,7 @@ const initializeCallStage = () => {
         button.addEventListener('click', async () => {
             if (!navigator.mediaDevices?.getUserMedia) {
                 if (status) {
-                    status.textContent = 'Device preview is unavailable in this browser.';
+                    status.textContent = stage.dataset.deviceUnavailable ?? '';
                 }
 
                 return;
@@ -174,8 +168,8 @@ const initializeCallStage = () => {
 
                 if (status) {
                     status.textContent = camera
-                        ? 'Camera and microphone preview active only on this device.'
-                        : 'Microphone permission granted. Remote media is not connected.';
+                        ? stage.dataset.cameraActive ?? ''
+                        : stage.dataset.microphoneActive ?? '';
                 }
 
                 if (camera && preview instanceof HTMLVideoElement) {
@@ -186,7 +180,7 @@ const initializeCallStage = () => {
                 }
             } catch {
                 if (status) {
-                    status.textContent = 'Device permission was not granted. You can keep using text chat.';
+                    status.textContent = stage.dataset.deviceDenied ?? '';
                 }
             }
         });

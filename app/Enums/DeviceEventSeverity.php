@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Enums;
 
 enum DeviceEventSeverity: string
@@ -11,12 +13,7 @@ enum DeviceEventSeverity: string
 
     public function label(): string
     {
-        return match ($this) {
-            self::Routine => 'Routine',
-            self::Important => 'Important',
-            self::Urgent => 'Urgent',
-            self::Critical => 'Critical',
-        };
+        return __("devices.event_severity.{$this->value}");
     }
 
     public function tone(): string

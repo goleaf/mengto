@@ -16,7 +16,7 @@
     </div>
     @if ($href)
         <x-action-control
-            label="View event"
+            label="{{ __('ui.view_event_691f700a56') }}"
             icon="arrow-up-right"
             variant="paper"
             size="compact"

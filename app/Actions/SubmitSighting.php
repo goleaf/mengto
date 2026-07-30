@@ -35,7 +35,7 @@ class SubmitSighting
                 if ($existing->search_case_id !== $searchCase->id
                     || $existing->reporter_key !== $this->actor->key()) {
                     throw ValidationException::withMessages([
-                        'idempotency_key' => 'This observation key is already in use.',
+                        'idempotency_key' => __('messages.this_observation_key_is_already_in_use_dbace23b87'),
                     ]);
                 }
 
@@ -49,7 +49,7 @@ class SubmitSighting
 
             if ($lockedCase->status->isClosed() || ! $lockedCase->alerts_active) {
                 throw ValidationException::withMessages([
-                    'observed_at' => 'This urgent search is closed. The observation was not submitted.',
+                    'observed_at' => __('messages.this_urgent_search_is_closed_the_observation_was_not_sub_00f872c818'),
                 ]);
             }
 
@@ -97,7 +97,7 @@ class SubmitSighting
             $lockedCase->update([
                 'status' => $caseStatus,
                 'last_sighting_at' => $sighting->observed_at,
-                'latest_update' => 'A new sighting is awaiting coordinator verification.',
+                'latest_update' => __('messages.a_new_sighting_is_awaiting_coordinator_verification_d2efe4cfe3'),
             ]);
 
             SearchUpdate::query()->create([
@@ -106,7 +106,7 @@ class SubmitSighting
                 'author_name' => $identity['name'],
                 'type' => 'sighting-submitted',
                 'visibility' => 'team',
-                'title' => 'New sighting awaiting verification',
+                'title' => __('messages.new_sighting_awaiting_verification'),
                 'body' => $sighting->notes,
                 'public_area' => $sighting->public_area,
                 'occurred_at' => $sighting->observed_at,

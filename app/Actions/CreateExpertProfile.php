@@ -23,8 +23,8 @@ class CreateExpertProfile
             $identity = $this->actor->identity();
             $credentialFile = $data['credential_file'] ?? null;
             $credentialType = $data['credential_type'] ?? 'qualification';
-            $credentialTitle = $data['credential_title'] ?? 'Professional qualification';
-            $credentialIssuer = $data['credential_issuer'] ?? 'Issuer pending confirmation';
+            $credentialTitle = $data['credential_title'] ?? __('messages.expert.professional_qualification');
+            $credentialIssuer = $data['credential_issuer'] ?? __('messages.expert.issuer_pending_confirmation');
             unset($data['credential_file'], $data['credential_type'], $data['credential_title'], $data['credential_issuer']);
 
             $profile = ExpertProfile::query()->create([

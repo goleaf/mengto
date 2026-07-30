@@ -21,17 +21,17 @@
                     <form method="POST" action="{{ route('care-journals.tasks.complete', [$journalSlug, $task['id']]) }}" class="care-task__complete">
                         @csrf
                         <input type="hidden" name="idempotency_key" value="{{ $task['idempotency_key'] }}">
-                        <select name="status" aria-label="Outcome for {{ $task['title'] }}">
-                            <option value="completed">Completed</option>
-                            <option value="partial">Partially completed</option>
-                            <option value="refused">Pet refused</option>
-                            <option value="skipped">Skipped</option>
-                            <option value="needs-help">Needs help</option>
+                        <select name="status" aria-label="{{ __('presentation.task_outcome', ['task' => $task['title']]) }}">
+                            <option value="completed">{{ __('ui.completed_22a970d2e5') }}</option>
+                            <option value="partial">{{ __('ui.partially_completed_24421344ab') }}</option>
+                            <option value="refused">{{ __('ui.pet_refused_323b25a990') }}</option>
+                            <option value="skipped">{{ __('ui.skipped_12698ce1ea') }}</option>
+                            <option value="needs-help">{{ __('ui.needs_help_102dd0fe0f') }}</option>
                         </select>
-                        <input name="completion_note" maxlength="2000" placeholder="Optional outcome note" aria-label="Completion note">
+                        <input name="completion_note" maxlength="2000" placeholder="{{ __('ui.optional_outcome_note_89275bfde7') }}" aria-label="{{ __('ui.completion_note_2a5d64b27b') }}">
                         <button type="submit" class="action action--primary action--compact">
                             <x-lucide-check class="icon icon--sm" aria-hidden="true" />
-                            <span>Record</span>
+                            <span>{{ __('ui.record_bfdd510698') }}</span>
                         </button>
                     </form>
                 @endif
@@ -40,7 +40,7 @@
     @empty
         <div class="care-empty">
             <x-lucide-list-checks class="size-7" aria-hidden="true" />
-            <p>No open tasks. Unrecorded care is not assumed to be missed.</p>
+            <p>{{ __('ui.no_open_tasks_unrecorded_care_is_not_assumed_7c5b27f384') }}</p>
         </div>
     @endforelse
 </div>

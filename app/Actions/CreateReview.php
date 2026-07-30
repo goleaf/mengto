@@ -28,12 +28,12 @@ class CreateReview
 
             if ($booking->status !== BookingStatus::Completed) {
                 throw ValidationException::withMessages([
-                    'booking_id' => 'A verified review is available after the consultation is completed.',
+                    'booking_id' => __('messages.a_verified_review_is_available_after_the_consultation_is_0fb47fcedc'),
                 ]);
             }
 
             if (Review::query()->where('booking_id', $booking->id)->exists()) {
-                throw ValidationException::withMessages(['booking_id' => 'This booking already has a review.']);
+                throw ValidationException::withMessages(['booking_id' => __('messages.this_booking_already_has_a_review_8406ae4f0e')]);
             }
 
             $review = Review::query()->create([

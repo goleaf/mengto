@@ -1,7 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Http\Controllers\AnswerStoreController;
 use App\Http\Controllers\ArticleController;
+use App\Http\Controllers\Auth\LogoutController;
+use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\BookingActionController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\BookingCreateController;
@@ -37,8 +41,10 @@ use App\Http\Controllers\DeviceAutomationTestController;
 use App\Http\Controllers\DeviceCommandStoreController;
 use App\Http\Controllers\DeviceEventAcknowledgeController;
 use App\Http\Controllers\DeviceEventCareEntryController;
+use App\Http\Controllers\DeviceLifecycleStoreController;
 use App\Http\Controllers\DeviceReadingMedicalEventController;
 use App\Http\Controllers\DeviceReadingStoreController;
+use App\Http\Controllers\DeviceRetentionUpdateController;
 use App\Http\Controllers\DeviceSafeZoneStoreController;
 use App\Http\Controllers\DeviceSharedDashboardController;
 use App\Http\Controllers\DiscoverPreviewController;
@@ -120,14 +126,89 @@ use App\Http\Controllers\WalkPlanPreviewController;
 use App\Http\Middleware\ProtectCareResponse;
 use App\Http\Middleware\ProtectDeviceResponse;
 use App\Http\Middleware\ProtectMedicalResponse;
+use App\Livewire\Auth\ConfirmPassword;
+use App\Livewire\Auth\ForgotPassword;
+use App\Livewire\Auth\Login;
+use App\Livewire\Auth\Register;
+use App\Livewire\Auth\ResetPassword;
+use App\Livewire\Auth\VerifyEmail;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('web')
     ->group(function (): void {
         Route::get('/', PreviewController::class)->name('home');
-        Route::get('/circle', CirclePreviewController::class)->name('circle.index');
-        Route::get('/circle/connections', ConnectionCenterPreviewController::class)->name('connections.index');
-        Route::get('/circle/pet-friends', PetFriendCenterPreviewController::class)->name('pet-friends.index');
+
+        Route::middleware('guest')
+            ->group(function (): void {
+                Route::get('/login', Login::class)->name('login');
+                Route::get('/register', Register::class)->name('register');
+                Route::get('/forgot-password', ForgotPassword::class)->name('password.request');
+                Route::get('/reset-password/{token}', ResetPassword::class)->name('password.reset');
+            });
+
+        Route::middleware(['auth', 'active'])
+            ->group(function (): void {
+                Route::get('/confirm-password', ConfirmPassword::class)
+                    ->name('password.confirm');
+                Route::get('/verify-email', VerifyEmail::class)->name('verification.notice');
+                Route::get('/verify-email/{id}/{hash}', VerifyEmailController::class)
+                    ->middleware(['signed', 'throttle:6,1'])
+                    ->name('verification.verify');
+                Route::post('/logout', LogoutController::class)->name('logout');
+
+                Route::get('/circle', CirclePreviewController::class)->name('circle.index');
+                Route::get('/circle/connections', ConnectionCenterPreviewController::class)
+                    ->name('connections.index');
+                Route::get('/circle/pet-friends', PetFriendCenterPreviewController::class)
+                    ->name('pet-friends.index');
+                Route::get('/messages', MessageCenterPreviewController::class)->name('messages.index');
+                Route::get('/messages/{conversation}/details', ConversationDetailPreviewController::class)
+                    ->whereIn('conversation', [
+                        'ari',
+                        'family-care',
+                        'vingis-walk',
+                        'paws-vet',
+                        'foster-adoption',
+                        'lost-luna',
+                        'trail-tails',
+                        'luna-request',
+                    ])
+                    ->name('messages.details');
+                Route::post('/messages/actions', PerformMessageActionController::class)
+                    ->name('messages.actions');
+                Route::get('/walks', WalkPlanPreviewController::class)->name('walks.index');
+                Route::get('/notifications', NotificationCenterPreviewController::class)
+                    ->name('notifications.index');
+                Route::get('/compose/{kind}', ComposerController::class)
+                    ->whereIn('kind', [
+                        'post',
+                        'group',
+                        'meetup',
+                        'walk',
+                        'pet',
+                        'place',
+                        'place-correction',
+                        'place-warning',
+                        'place-review',
+                        'place-question',
+                        'place-claim',
+                        'message',
+                        'profile',
+                        'pet-profile',
+                        'profile-privacy',
+                        'pet-privacy',
+                        'report-profile',
+                        'post-edit',
+                        'report-post',
+                        'report-group',
+                        'report-event',
+                        'report-place',
+                        'delete-post',
+                    ])
+                    ->name('compose');
+                Route::post('/actions', PerformActionController::class)->name('actions.perform');
+            });
+
         Route::get('/discover', DiscoverPreviewController::class)->name('discover.index');
         Route::get('/groups', GroupDirectoryPreviewController::class)->name('groups.index');
         Route::get('/groups/apartment-pets-pdx', GroupDetailPreviewController::class)
@@ -187,24 +268,31 @@ Route::middleware('web')
             ->name('forum.')
             ->group(function (): void {
                 Route::get('/', ForumController::class)->name('index');
-                Route::get('/ask', TopicCreateController::class)->name('topics.create');
                 Route::get('/similar', SimilarTopicController::class)->name('topics.similar');
-                Route::post('/topics', TopicStoreController::class)
-                    ->middleware('throttle:12,1')
-                    ->name('topics.store');
                 Route::get('/topics/{forumTopic}', TopicController::class)->name('topics.show');
-                Route::get('/topics/{forumTopic}/edit', TopicEditController::class)->name('topics.edit');
-                Route::put('/topics/{forumTopic}', TopicUpdateController::class)->name('topics.update');
-                Route::delete('/topics/{forumTopic}', TopicDeleteController::class)->name('topics.destroy');
-                Route::post('/topics/{forumTopic}/answers', AnswerStoreController::class)
-                    ->middleware('throttle:24,1')
-                    ->name('answers.store');
-                Route::post('/topics/{forumTopic}/comments', CommentStoreController::class)
-                    ->middleware('throttle:40,1')
-                    ->name('comments.store');
-                Route::post('/actions', ForumActionController::class)
-                    ->middleware('throttle:60,1')
-                    ->name('actions');
+
+                Route::middleware(['auth', 'active'])
+                    ->group(function (): void {
+                        Route::get('/ask', TopicCreateController::class)->name('topics.create');
+                        Route::post('/topics', TopicStoreController::class)
+                            ->middleware('throttle:12,1')
+                            ->name('topics.store');
+                        Route::get('/topics/{forumTopic}/edit', TopicEditController::class)
+                            ->name('topics.edit');
+                        Route::put('/topics/{forumTopic}', TopicUpdateController::class)
+                            ->name('topics.update');
+                        Route::delete('/topics/{forumTopic}', TopicDeleteController::class)
+                            ->name('topics.destroy');
+                        Route::post('/topics/{forumTopic}/answers', AnswerStoreController::class)
+                            ->middleware('throttle:24,1')
+                            ->name('answers.store');
+                        Route::post('/topics/{forumTopic}/comments', CommentStoreController::class)
+                            ->middleware('throttle:40,1')
+                            ->name('comments.store');
+                        Route::post('/actions', ForumActionController::class)
+                            ->middleware('throttle:60,1')
+                            ->name('actions');
+                    });
             });
         Route::prefix('knowledge')
             ->name('knowledge.')
@@ -212,28 +300,11 @@ Route::middleware('web')
                 Route::get('/', KnowledgeController::class)->name('index');
                 Route::get('/{knowledgeArticle}', ArticleController::class)->name('articles.show');
                 Route::post('/{knowledgeArticle}/corrections', CorrectionStoreController::class)
-                    ->middleware('throttle:12,1')
+                    ->middleware(['auth', 'active', 'throttle:12,1'])
                     ->name('corrections.store');
             });
-        Route::get('/messages', MessageCenterPreviewController::class)->name('messages.index');
-        Route::get('/messages/{conversation}/details', ConversationDetailPreviewController::class)
-            ->whereIn('conversation', [
-                'ari',
-                'family-care',
-                'vingis-walk',
-                'paws-vet',
-                'foster-adoption',
-                'lost-luna',
-                'trail-tails',
-                'luna-request',
-            ])
-            ->name('messages.details');
-        Route::post('/messages/actions', PerformMessageActionController::class)
-            ->name('messages.actions');
-        Route::get('/walks', WalkPlanPreviewController::class)->name('walks.index');
         Route::get('/neighbors', NeighborDirectoryPreviewController::class)->name('neighbors.index');
         Route::get('/neighbors/ari-jensen', NeighborProfilePreviewController::class)->name('neighbors.ari');
-        Route::get('/notifications', NotificationCenterPreviewController::class)->name('notifications.index');
         Route::get('/pets', PetDirectoryPreviewController::class)->name('pets.index');
         Route::get('/@mia-carter/scout', PetProfilePreviewController::class)
             ->defaults('pet', 'scout')
@@ -254,34 +325,6 @@ Route::middleware('web')
         Route::get('/share/{target}', SharePreviewController::class)
             ->where('target', '[A-Za-z0-9-]+')
             ->name('share.show');
-        Route::get('/compose/{kind}', ComposerController::class)
-            ->whereIn('kind', [
-                'post',
-                'group',
-                'meetup',
-                'walk',
-                'pet',
-                'place',
-                'place-correction',
-                'place-warning',
-                'place-review',
-                'place-question',
-                'place-claim',
-                'message',
-                'profile',
-                'pet-profile',
-                'profile-privacy',
-                'pet-privacy',
-                'report-profile',
-                'post-edit',
-                'report-post',
-                'report-group',
-                'report-event',
-                'report-place',
-                'delete-post',
-            ])
-            ->name('compose');
-        Route::post('/actions', PerformActionController::class)->name('actions.perform');
     });
 
 Route::middleware('web')
@@ -289,27 +332,31 @@ Route::middleware('web')
     ->name('experts.')
     ->group(function (): void {
         Route::get('/', ExpertDirectoryController::class)->name('index');
-        Route::get('/new', ExpertProfileCreateController::class)->name('create');
-        Route::post('/', ExpertProfileStoreController::class)
-            ->middleware('throttle:6,1')
-            ->name('store');
-        Route::get('/workspace', ExpertDashboardController::class)->name('dashboard');
-        Route::get('/{expertProfile}/edit', ExpertProfileEditController::class)->name('edit');
-        Route::put('/{expertProfile}', ExpertProfileUpdateController::class)->name('update');
-        Route::get('/{expertProfile}/book', BookingCreateController::class)->name('bookings.create');
-        Route::post('/{expertProfile}/book', BookingStoreController::class)
-            ->middleware('throttle:8,1')
-            ->name('bookings.store');
-        Route::post('/{expertProfile}/actions', ExpertActionController::class)
-            ->middleware('throttle:30,1')
-            ->name('actions');
-        Route::post('/{expertProfile}/reviews', ReviewStoreController::class)
-            ->middleware('throttle:6,1')
-            ->name('reviews.store');
+        Route::middleware(['auth', 'active', 'verified'])
+            ->group(function (): void {
+                Route::get('/new', ExpertProfileCreateController::class)->name('create');
+                Route::post('/', ExpertProfileStoreController::class)
+                    ->middleware('throttle:6,1')
+                    ->name('store');
+                Route::get('/workspace', ExpertDashboardController::class)->name('dashboard');
+                Route::get('/{expertProfile}/edit', ExpertProfileEditController::class)->name('edit');
+                Route::put('/{expertProfile}', ExpertProfileUpdateController::class)->name('update');
+                Route::get('/{expertProfile}/book', BookingCreateController::class)
+                    ->name('bookings.create');
+                Route::post('/{expertProfile}/book', BookingStoreController::class)
+                    ->middleware('throttle:8,1')
+                    ->name('bookings.store');
+                Route::post('/{expertProfile}/actions', ExpertActionController::class)
+                    ->middleware('throttle:30,1')
+                    ->name('actions');
+                Route::post('/{expertProfile}/reviews', ReviewStoreController::class)
+                    ->middleware('throttle:6,1')
+                    ->name('reviews.store');
+            });
         Route::get('/{expertProfile}', ExpertProfileController::class)->name('show');
     });
 
-Route::middleware('web')
+Route::middleware(['web', 'auth', 'active', 'verified'])
     ->prefix('bookings')
     ->name('bookings.')
     ->group(function (): void {
@@ -319,7 +366,7 @@ Route::middleware('web')
             ->name('actions');
     });
 
-Route::middleware('web')
+Route::middleware(['web', 'auth', 'active', 'verified'])
     ->prefix('consultations')
     ->name('consultations.')
     ->group(function (): void {
@@ -331,25 +378,28 @@ Route::middleware('web')
     ->name('marketplace.')
     ->group(function (): void {
         Route::get('/', ListingDirectoryController::class)->name('index');
-        Route::get('/new', ListingCreateController::class)->name('create');
-        Route::post('/', ListingStoreController::class)
-            ->middleware('throttle:8,1')
-            ->name('store');
-        Route::get('/{listing}/orders/{order}', OrderController::class)
-            ->scopeBindings()
-            ->name('orders.show');
-        Route::post('/{listing}/orders/{order}/disputes', OrderDisputeController::class)
-            ->scopeBindings()
-            ->middleware('throttle:6,1')
-            ->name('orders.disputes.store');
-        Route::post('/{listing}/orders/{order}/reviews', ListingReviewController::class)
-            ->scopeBindings()
-            ->middleware('throttle:6,1')
-            ->name('orders.reviews.store');
+        Route::middleware(['auth', 'active', 'verified'])
+            ->group(function (): void {
+                Route::get('/new', ListingCreateController::class)->name('create');
+                Route::post('/', ListingStoreController::class)
+                    ->middleware('throttle:8,1')
+                    ->name('store');
+                Route::get('/{listing}/orders/{order}', OrderController::class)
+                    ->scopeBindings()
+                    ->name('orders.show');
+                Route::post('/{listing}/orders/{order}/disputes', OrderDisputeController::class)
+                    ->scopeBindings()
+                    ->middleware('throttle:6,1')
+                    ->name('orders.disputes.store');
+                Route::post('/{listing}/orders/{order}/reviews', ListingReviewController::class)
+                    ->scopeBindings()
+                    ->middleware('throttle:6,1')
+                    ->name('orders.reviews.store');
+                Route::post('/{listing}/actions', ListingActionController::class)
+                    ->middleware('throttle:30,1')
+                    ->name('actions');
+            });
         Route::get('/{listing}', ListingController::class)->name('show');
-        Route::post('/{listing}/actions', ListingActionController::class)
-            ->middleware('throttle:30,1')
-            ->name('actions');
     });
 
 Route::middleware('web')
@@ -357,27 +407,30 @@ Route::middleware('web')
     ->name('lost-found.')
     ->group(function (): void {
         Route::get('/', SearchDirectoryController::class)->name('index');
-        Route::get('/new', SearchCaseCreateController::class)->name('create');
-        Route::post('/', SearchCaseStoreController::class)
-            ->middleware('throttle:6,1')
-            ->name('store');
-        Route::get('/{searchCase}/coordinate', SearchCoordinationController::class)
-            ->name('coordinate');
+        Route::middleware(['auth', 'active', 'verified'])
+            ->group(function (): void {
+                Route::get('/new', SearchCaseCreateController::class)->name('create');
+                Route::post('/', SearchCaseStoreController::class)
+                    ->middleware('throttle:6,1')
+                    ->name('store');
+                Route::get('/{searchCase}/coordinate', SearchCoordinationController::class)
+                    ->name('coordinate');
+                Route::post('/{searchCase}/actions', SearchActionController::class)
+                    ->middleware('throttle:30,1')
+                    ->name('actions');
+            });
         Route::get('/{searchCase}/poster', SearchPosterController::class)
             ->name('poster');
         Route::post('/{searchCase}/sightings', SightingStoreController::class)
             ->middleware('throttle:12,1')
             ->name('sightings.store');
-        Route::post('/{searchCase}/actions', SearchActionController::class)
-            ->middleware('throttle:30,1')
-            ->name('actions');
         Route::post('/{searchCase}/reports', SearchReportController::class)
             ->middleware('throttle:6,1')
             ->name('reports.store');
         Route::get('/{searchCase}', SearchCaseController::class)->name('show');
     });
 
-Route::middleware(['web', ProtectMedicalResponse::class])
+Route::middleware(['web', 'auth', 'active', 'verified', ProtectMedicalResponse::class])
     ->prefix('medical-records')
     ->name('medical-records.')
     ->group(function (): void {
@@ -413,7 +466,7 @@ Route::middleware(['web', ProtectMedicalResponse::class])
         Route::get('/{medicalRecord}', MedicalRecordController::class)->name('show');
     });
 
-Route::middleware(['web', ProtectCareResponse::class])
+Route::middleware(['web', 'auth', 'active', 'verified', ProtectCareResponse::class])
     ->prefix('care-journals')
     ->name('care-journals.')
     ->group(function (): void {
@@ -455,7 +508,7 @@ Route::middleware(['web', ProtectCareResponse::class])
         Route::get('/{careJournal}', CareJournalController::class)->name('show');
     });
 
-Route::middleware(['web', ProtectDeviceResponse::class])
+Route::middleware(['web', 'auth', 'active', 'verified', ProtectDeviceResponse::class])
     ->prefix('devices')
     ->name('devices.')
     ->group(function (): void {
@@ -465,13 +518,20 @@ Route::middleware(['web', ProtectDeviceResponse::class])
             ->middleware('throttle:6,1')
             ->name('store');
         Route::get('/{smartDevice}/manage', SmartDeviceManageController::class)
+            ->middleware('password.confirm')
             ->name('manage');
         Route::post('/{smartDevice}/readings', DeviceReadingStoreController::class)
             ->middleware('throttle:40,1')
             ->name('readings.store');
         Route::post('/{smartDevice}/commands', DeviceCommandStoreController::class)
-            ->middleware('throttle:20,1')
+            ->middleware(['password.confirm', 'throttle:20,1'])
             ->name('commands.store');
+        Route::put('/{smartDevice}/retention', DeviceRetentionUpdateController::class)
+            ->middleware(['password.confirm', 'throttle:12,1'])
+            ->name('retention.update');
+        Route::post('/{smartDevice}/lifecycle', DeviceLifecycleStoreController::class)
+            ->middleware(['password.confirm', 'throttle:12,1'])
+            ->name('lifecycle.store');
         Route::post(
             '/{smartDevice}/events/{deviceEvent}/acknowledge',
             DeviceEventAcknowledgeController::class,
@@ -503,7 +563,9 @@ Route::middleware(['web', ProtectDeviceResponse::class])
             '/{smartDevice}/access/{deviceAccessGrant}',
             DeviceAccessRevokeController::class,
         )->name('access.revoke');
-        Route::get('/{smartDevice}', SmartDeviceController::class)->name('show');
+        Route::get('/{smartDevice}', SmartDeviceController::class)
+            ->middleware('password.confirm')
+            ->name('show');
     });
 
 Route::middleware(['web', ProtectCareResponse::class])

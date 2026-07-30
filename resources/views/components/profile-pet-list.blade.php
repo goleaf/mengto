@@ -1,10 +1,10 @@
 @props([
     'pets',
-    'eyebrow' => 'At home',
-    'title' => 'Pets',
+    'eyebrow' => __('ui.at_home_fbccda060e'),
+    'title' => __('ui.pets_7dc1cd7eaf'),
     'section' => 'profile-pets',
     'canManage' => false,
-    'emptyTitle' => 'No pets added yet',
+    'emptyTitle' => __('ui.no_pets_added_yet_5728267e77'),
 ])
 
 <x-collection-section
@@ -16,7 +16,7 @@
 >
     @if ($canManage)
         <x-slot:action>
-            <x-action-control :href="route('compose', 'pet')" label="Add pet" icon="plus" />
+            <x-action-control :href="route('compose', 'pet')" label="{{ __('ui.add_pet_7065b90594') }}" icon="plus" />
         </x-slot:action>
     @endif
 

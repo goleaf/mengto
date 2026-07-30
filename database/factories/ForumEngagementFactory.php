@@ -1,16 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories;
 
 use App\Enums\ForumSubscriptionLevel;
 use App\Models\ForumEngagement;
 use App\Models\ForumTopic;
-use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<ForumEngagement>
+ * @extends ApplicationFactory<ForumEngagement>
  */
-class ForumEngagementFactory extends Factory
+class ForumEngagementFactory extends ApplicationFactory
 {
     /**
      * Define the model's default state.

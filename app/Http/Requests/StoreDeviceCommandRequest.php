@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests;
 
 use Illuminate\Contracts\Validation\ValidationRule;
@@ -31,7 +33,7 @@ class StoreDeviceCommandRequest extends FormRequest
                     'refresh-status', 'enable-lost-mode', 'disable-lost-mode',
                     'dispense-food', 'stop-water-pump', 'start-water-pump',
                     'enable-privacy-mode', 'disable-privacy-mode',
-                    'lock-door', 'unlock-door', 'locate-device',
+                    'lock-door', 'unlock-door', 'clean-litter', 'locate-device',
                 ]),
             ],
             'portion_grams' => ['nullable', 'numeric', 'between:1,1000'],

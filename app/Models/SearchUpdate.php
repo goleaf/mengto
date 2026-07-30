@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use Database\Factories\SearchUpdateFactory;
@@ -7,7 +9,23 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
+/**
+ * @property string $author_key
+ * @property string $author_name
+ * @property string|null $body
+ * @property Carbon|null $created_at
+ * @property int $id
+ * @property Carbon $occurred_at
+ * @property string|null $public_area
+ * @property-read SearchCase|null $searchCase
+ * @property int $search_case_id
+ * @property string $title
+ * @property string $type
+ * @property Carbon|null $updated_at
+ * @property string $visibility
+ */
 class SearchUpdate extends Model
 {
     /** @use HasFactory<SearchUpdateFactory> */
@@ -25,6 +43,7 @@ class SearchUpdate extends Model
         return ['occurred_at' => 'datetime'];
     }
 
+    /** @return BelongsTo<\App\Models\SearchCase, $this>*/
     public function searchCase(): BelongsTo
     {
         return $this->belongsTo(SearchCase::class);

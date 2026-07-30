@@ -20,7 +20,7 @@ class DeviceAccessStoreController extends Controller
         $url = route('device-access.show', $result['token']);
 
         return to_route('devices.manage', $smartDevice)
-            ->with('feedback', 'Temporary access created. The link is shown once below.')
+            ->with('feedback', __('messages.temporary_access_created_the_link_is_shown_once_below_6ae5652c2e'))
             ->with('device_access_url', $url);
     }
 }

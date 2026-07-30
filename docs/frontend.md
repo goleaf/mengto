@@ -1,0 +1,69 @@
+# Frontend Architecture
+
+## Layers
+
+| Layer | Responsibility |
+| --- | --- |
+| Blade pages | Server-rendered document structure and prepared data |
+| Blade components | Reusable presentation without persistence or queries |
+| Livewire components | Authorized, validated server-backed interaction |
+| Alpine | Local ephemeral UI state supplied by Livewire |
+| Vanilla modules | Map, messaging, and browser media progressive enhancement |
+| Tailwind CSS | Utility tokens, responsive primitives, state variants |
+| SCSS | Existing semantic component system pending measured migration |
+
+No React, Vue, Svelte, jQuery, Axios, Volt, Flux, or Filament is part of the
+current architecture.
+
+## Blade Data Contract
+
+- Controllers/Livewire prepare every value.
+- Blade loops only over prepared bounded collections.
+- Presentation conditions are allowed; business/state/permission decisions
+  are not.
+- User content is escaped.
+- Repeated markup becomes a Blade component with explicit props.
+- All visible static text uses translation keys.
+
+## Livewire Navigation Lifecycle
+
+For any `wire:navigate` page:
+
+1. normal anchor navigation remains functional;
+2. document title, focus, scroll, and navigation announcement are restored;
+3. maps, media tracks, observers, timers, and event listeners are torn down;
+4. initialization is idempotent after repeated navigation;
+5. persisted DOM never contains stale authorization-sensitive data.
+
+## JavaScript Boundaries
+
+`resources/js/forum.js`, `messaging-center.js`, and `places-map.js` may:
+
+- manage local DOM state;
+- request browser media/geolocation only after explicit user action;
+- synchronize accessible controls and visualizations;
+- provide cleanup hooks.
+
+They may not:
+
+- decide authorization;
+- issue custom fetch mutations when Livewire/forms already provide them;
+- embed secrets or private server data;
+- claim provider delivery or recording that does not exist.
+
+## Interface States
+
+Every data surface defines applicable loading, empty, filtered-empty, success,
+recoverable error, fatal error, offline, unauthorized, disabled, pending, and
+completed states. Status is textual and not color-only.
+
+## Verification
+
+- architecture tests for passive Blade and no Volt;
+- translation-key checks;
+- Vite production build;
+- responsive screenshots/checks at 320, 375, 768, 1024, 1440, and wide
+  desktop;
+- keyboard and focus review;
+- no console/network errors on critical flows;
+- repeated Livewire navigation teardown check.

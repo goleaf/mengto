@@ -1,5 +1,7 @@
 # Implementation Plan: PawCircle Places Map MVP
 
+> Historical delivery record. Production requirements, security rules, testing gates, and runtime versions are governed by `docs/index.md` and its canonical documents.
+
 ## Requirement Ledger
 
 Status values are `pending`, `in_progress`, `implemented`, `verified`,

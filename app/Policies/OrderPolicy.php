@@ -1,33 +1,33 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Policies;
 
 use App\Models\Order;
 use App\Models\User;
-use App\Services\ForumActor;
 
 class OrderPolicy
 {
-    public function __construct(private readonly ForumActor $actor) {}
-
     public function viewAny(?User $user): bool
     {
-        return true;
+        return $user?->isActive() === true;
     }
 
     public function view(?User $user, Order $order): bool
     {
-        return $this->isParticipant($order);
+        return $this->isParticipant($user, $order);
     }
 
     public function dispute(?User $user, Order $order): bool
     {
-        return $this->isParticipant($order);
+        return $this->isParticipant($user, $order);
     }
 
     public function review(?User $user, Order $order): bool
     {
-        return $order->buyer_key === $this->actor->key();
+        return $user?->isActive() === true
+            && $order->buyer_key === $user->actor_key;
     }
 
     public function create(?User $user): bool
@@ -45,8 +45,9 @@ class OrderPolicy
         return false;
     }
 
-    private function isParticipant(Order $order): bool
+    private function isParticipant(?User $user, Order $order): bool
     {
-        return in_array($this->actor->key(), [$order->buyer_key, $order->seller_key], true);
+        return $user?->isActive() === true
+            && in_array($user->actor_key, [$order->buyer_key, $order->seller_key], true);
     }
 }

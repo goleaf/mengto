@@ -22,23 +22,23 @@
         </div>
         <div class="forum-topic-card__tags">
             @if ($answer['is_accepted'])
-                <span class="forum-badge"><x-lucide-circle-check-big aria-hidden="true" /> Accepted answer</span>
+                <span class="forum-badge"><x-lucide-circle-check-big aria-hidden="true" /> {{ __('ui.accepted_answer_205ea1c1e2') }}</span>
             @endif
             @if ($answer['is_verified_expert'])
                 <span class="forum-badge">
                     <x-lucide-badge-check aria-hidden="true" />
-                    {{ ($answer['expert_profile']['qualification_verified'] ?? false) ? 'Qualification verified' : $answer['expertise'] }}
+                    {{ ($answer['expert_profile']['qualification_verified'] ?? false) ? __('ui.qualification_verified_bfd453f9ac') : $answer['expertise'] }}
                 </span>
                 @if ($answer['expert_profile'] && $answer['expert_profile']['profile_status'] !== 'Published')
                     <span class="forum-badge forum-badge--sun">
-                        Current profile status: {{ $answer['expert_profile']['profile_status'] }}
+                        {{ __('presentation.profile_status', ['status' => $answer['expert_profile']['profile_status']]) }}
                     </span>
                 @endif
             @else
                 <span class="forum-badge forum-badge--neutral">{{ $answer['experience_label'] }}</span>
             @endif
             @if ($answer['needs_source'])
-                <span class="forum-badge forum-badge--sun"><x-lucide-link aria-hidden="true" /> Source requested</span>
+                <span class="forum-badge forum-badge--sun"><x-lucide-link aria-hidden="true" /> {{ __('ui.source_requested_dd87a1a3ea') }}</span>
             @endif
         </div>
     </header>
@@ -47,28 +47,28 @@
 
     @if ($answer['sources'] !== [])
         <div class="forum-answer__sources">
-            <strong>Sources</strong>
+            <strong>{{ __('ui.sources_caf85b0888') }}</strong>
             @forelse ($answer['sources'] as $source)
                 <a href="{{ $source }}" target="_blank" rel="noopener noreferrer">{{ $source }}</a>
             @empty
-                <span>No sources listed.</span>
+                <span>{{ __('ui.no_sources_listed_5a688e193a') }}</span>
             @endforelse
         </div>
     @endif
 
     @if ($answer['comments'] !== [])
-        <div class="forum-comments" aria-label="Comments on this answer">
+        <div class="forum-comments" aria-label="{{ __('ui.comments_on_this_answer_6d23397bb0') }}">
             @forelse ($answer['comments'] as $comment)
                 <div class="forum-comments__item {{ $comment['parent_id'] ? 'forum-comments__item--reply' : '' }}">
                     <strong>{{ $comment['author_name'] }}</strong>
                     <span> / {{ $comment['created_label'] }}</span>
                     @if ($comment['is_pinned'])
-                        <span class="forum-badge forum-badge--sun">Pinned clarification</span>
+                        <span class="forum-badge forum-badge--sun">{{ __('ui.pinned_clarification_f22d156e4e') }}</span>
                     @endif
                     <p>{{ $comment['body'] }}</p>
                 </div>
             @empty
-                <span>No comments.</span>
+                <span>{{ __('ui.no_comments_71153e6b23') }}</span>
             @endforelse
         </div>
     @endif
@@ -82,7 +82,7 @@
                 <input type="hidden" name="value" value="helpful">
                 <button type="submit" class="forum-button" aria-pressed="{{ $answer['voted'] === 'helpful' ? 'true' : 'false' }}">
                     <x-lucide-thumbs-up aria-hidden="true" />
-                    Helpful {{ $answer['helpful_count'] }}
+                    {{ __('presentation.helpful_count', ['count' => $answer['helpful_count']]) }}
                 </button>
             </form>
 
@@ -93,7 +93,7 @@
                     <input type="hidden" name="answer_id" value="{{ $answer['id'] }}">
                     <button type="submit" class="forum-button">
                         <x-lucide-circle-check-big aria-hidden="true" />
-                        Accept
+                        {{ __('ui.accept_89713b9c9c') }}
                     </button>
                 </form>
             @endif
@@ -101,25 +101,25 @@
             <details>
                 <summary class="forum-button">
                     <x-lucide-flag aria-hidden="true" />
-                    Report
+                    {{ __('ui.report_b6ce788d97') }}
                 </summary>
                 <form method="POST" action="{{ route('forum.actions') }}" class="forum-form mt-2">
                     @csrf
                     <input type="hidden" name="action" value="report-answer">
                     <input type="hidden" name="answer_id" value="{{ $answer['id'] }}">
                     <label class="forum-form__field">
-                        <span>Reason</span>
+                        <span>{{ __('ui.reason_f81ab834de') }}</span>
                         <select name="reason" required>
-                            <option value="dangerous-advice">Dangerous advice</option>
-                            <option value="misinformation">Misinformation</option>
-                            <option value="spam">Spam</option>
-                            <option value="harassment">Harassment</option>
-                            <option value="other">Other</option>
+                            <option value="dangerous-advice">{{ __('ui.dangerous_advice_df40777716') }}</option>
+                            <option value="misinformation">{{ __('ui.misinformation_34d52e35bd') }}</option>
+                            <option value="spam">{{ __('ui.spam_94a9eac404') }}</option>
+                            <option value="harassment">{{ __('ui.harassment_98a7655d02') }}</option>
+                            <option value="other">{{ __('ui.other_f97e9da0e3') }}</option>
                         </select>
                     </label>
                     <button type="submit" class="forum-button forum-button--danger">
                         <x-lucide-send aria-hidden="true" />
-                        Send report
+                        {{ __('ui.send_report_a44d353113') }}
                     </button>
                 </form>
             </details>
@@ -129,18 +129,18 @@
             <details>
                 <summary class="forum-button">
                     <x-lucide-message-circle-plus aria-hidden="true" />
-                    Comment
+                    {{ __('ui.comment_44f5e3fbec') }}
                 </summary>
                 <form method="POST" action="{{ route('forum.comments.store', $topic['slug']) }}" class="forum-form mt-2">
                     @csrf
                     <input type="hidden" name="answer_id" value="{{ $answer['id'] }}">
                     <label class="forum-form__field">
-                        <span>Clarification or focused comment</span>
+                        <span>{{ __('ui.clarification_or_focused_comment_557b219d7a') }}</span>
                         <textarea name="body" minlength="2" maxlength="1500" required></textarea>
                     </label>
                     <button type="submit" class="forum-button forum-button--primary">
                         <x-lucide-send aria-hidden="true" />
-                        Add comment
+                        {{ __('ui.add_comment_c4d891e9a8') }}
                     </button>
                 </form>
             </details>

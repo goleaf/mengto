@@ -48,8 +48,8 @@ class CreateAnswer
                         'topic_id' => $topic->id,
                         'user_key' => $topic->author_key,
                         'type' => 'new-answer',
-                        'title' => 'A new answer was added',
-                        'body' => $answer->author_name.' replied to your topic.',
+                        'title' => __('messages.new_answer_added'),
+                        'body' => __('presentation.replied_to_topic', ['name' => $answer->author_name]),
                     ],
                 );
             }

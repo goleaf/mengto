@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Actions;
 
 use App\Enums\ForumSubscriptionLevel;
@@ -14,13 +16,17 @@ use App\Models\ForumTopic;
 use App\Models\ForumVote;
 use App\Models\KnowledgeArticle;
 use App\Services\ForumActor;
+use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
 class PerformForumAction
 {
-    public function __construct(private readonly ForumActor $actor) {}
+    public function __construct(
+        private readonly ForumActor $actor,
+        private readonly Gate $gate,
+    ) {}
 
     /**
      * @param  array<string, mixed>  $data
@@ -40,6 +46,9 @@ class PerformForumAction
             'block-author' => $this->blockAuthor((string) $data['author_key']),
             'mark-notification-read' => $this->markNotificationRead((int) $data['notification_id']),
             'convert-to-knowledge' => $this->convertToKnowledge((int) $data['topic_id']),
+            default => throw ValidationException::withMessages([
+                'action' => __('actions.invalid'),
+            ]),
         });
     }
 
@@ -55,7 +64,9 @@ class PerformForumAction
         $engagement->update(['is_bookmarked' => ! $engagement->is_bookmarked]);
 
         return [
-            'message' => $engagement->is_bookmarked ? 'Topic saved.' : 'Topic removed from saved items.',
+            'message' => $engagement->is_bookmarked
+                ? __('forum.feedback.topic_saved')
+                : __('forum.feedback.topic_unsaved'),
             'topic' => $topic,
             'article' => null,
         ];
@@ -67,7 +78,9 @@ class PerformForumAction
         $level = ForumSubscriptionLevel::tryFrom($value);
 
         if ($level === null) {
-            throw ValidationException::withMessages(['value' => 'Choose a valid notification level.']);
+            throw ValidationException::withMessages([
+                'value' => __('forum.validation.notification_level'),
+            ]);
         }
 
         $topic = $this->topic($topicId);
@@ -78,7 +91,7 @@ class PerformForumAction
         );
 
         return [
-            'message' => 'Topic notifications updated.',
+            'message' => __('forum.feedback.notifications_updated'),
             'topic' => $topic,
             'article' => null,
         ];
@@ -88,7 +101,9 @@ class PerformForumAction
     private function vote(int $answerId, string $value, ?string $reason): array
     {
         if (! in_array($value, ['helpful', 'not-helpful', 'needs-source', 'outdated', 'dangerous', 'off-topic'], true)) {
-            throw ValidationException::withMessages(['value' => 'Choose a valid answer rating.']);
+            throw ValidationException::withMessages([
+                'value' => __('forum.validation.answer_rating'),
+            ]);
         }
 
         $answer = ForumAnswer::query()
@@ -108,7 +123,7 @@ class PerformForumAction
         ]);
 
         return [
-            'message' => 'Your answer rating was saved.',
+            'message' => __('forum.feedback.answer_rating_saved'),
             'topic' => $this->topic($answer->topic_id),
             'article' => null,
         ];
@@ -136,7 +151,11 @@ class PerformForumAction
             'last_activity_at' => now(),
         ]);
 
-        return ['message' => 'Answer accepted and topic marked resolved.', 'topic' => $topic, 'article' => null];
+        return [
+            'message' => __('forum.feedback.answer_accepted'),
+            'topic' => $topic,
+            'article' => null,
+        ];
     }
 
     /** @return array{message: string, topic: ForumTopic, article: null} */
@@ -147,7 +166,9 @@ class PerformForumAction
         $topic->update(['status' => $status, 'last_activity_at' => now()]);
 
         return [
-            'message' => $status === ForumTopicStatus::Resolved ? 'Topic marked resolved.' : 'Topic reopened.',
+            'message' => $status === ForumTopicStatus::Resolved
+                ? __('forum.feedback.topic_resolved')
+                : __('forum.feedback.topic_reopened'),
             'topic' => $topic,
             'article' => null,
         ];
@@ -159,7 +180,7 @@ class PerformForumAction
         $answer = $type === 'answer'
             ? ForumAnswer::query()->select(['id', 'topic_id'])->findOrFail($id)
             : null;
-        $topic = $this->topic($answer?->topic_id ?? $id);
+        $topic = $this->topic($answer === null ? $id : $answer->topic_id);
         $highPriority = in_array($reason, [
             'dangerous-advice',
             'animal-cruelty',
@@ -177,14 +198,20 @@ class PerformForumAction
             'status' => 'submitted',
         ]);
 
-        return ['message' => 'Report submitted for review.', 'topic' => $topic, 'article' => null];
+        return [
+            'message' => __('forum.feedback.report_submitted'),
+            'topic' => $topic,
+            'article' => null,
+        ];
     }
 
     /** @return array{message: string, topic: null, article: null} */
     private function blockAuthor(string $authorKey): array
     {
         if ($authorKey === $this->actor->key()) {
-            throw ValidationException::withMessages(['author_key' => 'You cannot block your own profile.']);
+            throw ValidationException::withMessages([
+                'author_key' => __('forum.validation.block_self'),
+            ]);
         }
 
         ForumBlock::query()->updateOrCreate(
@@ -192,7 +219,11 @@ class PerformForumAction
             ['reason' => 'user-choice'],
         );
 
-        return ['message' => 'Author blocked.', 'topic' => null, 'article' => null];
+        return [
+            'message' => __('forum.feedback.author_blocked'),
+            'topic' => null,
+            'article' => null,
+        ];
     }
 
     /** @return array{message: string, topic: ForumTopic|null, article: null} */
@@ -205,7 +236,7 @@ class PerformForumAction
         $notification->update(['read_at' => now()]);
 
         return [
-            'message' => 'Notification marked read.',
+            'message' => __('forum.feedback.notification_read'),
             'topic' => $notification->topic_id ? $this->topic($notification->topic_id) : null,
             'article' => null,
         ];
@@ -241,12 +272,15 @@ class PerformForumAction
 
         if ($topic->status !== ForumTopicStatus::Resolved || $topic->acceptedAnswer === null) {
             throw ValidationException::withMessages([
-                'topic_id' => 'Resolve the topic and accept an answer before creating a knowledge draft.',
+                'topic_id' => __('forum.validation.resolve_before_knowledge'),
             ]);
         }
 
         $answer = $topic->acceptedAnswer;
-        $body = "Question context\n\n{$topic->body}\n\nRecommended approach\n\n{$answer->body}";
+        $body = __('forum.knowledge.question_context')
+            ."\n\n{$topic->body}\n\n"
+            .__('forum.knowledge.recommended_approach')
+            ."\n\n{$answer->body}";
         $article = KnowledgeArticle::query()->firstOrCreate(
             ['source_topic_id' => $topic->id],
             [
@@ -257,14 +291,14 @@ class PerformForumAction
                 'category' => $topic->category,
                 'type' => 'guide',
                 'difficulty' => 'beginner',
-                'audience' => 'Pet owners looking for a practical starting point',
+                'audience' => __('forum.knowledge.default_audience'),
                 'status' => KnowledgeStatus::Review,
                 'language' => $topic->language,
                 'tags' => $topic->tags,
                 'sources' => $answer->sources,
                 'contributors' => [
-                    ['name' => $topic->author_name, 'role' => 'question author'],
-                    ['name' => $answer->author_name, 'role' => 'answer author'],
+                    ['name' => $topic->author_name, 'role' => __('forum.knowledge.question_author')],
+                    ['name' => $answer->author_name, 'role' => __('forum.knowledge.answer_author')],
                 ],
                 'current_version' => 1,
             ],
@@ -276,26 +310,30 @@ class PerformForumAction
                 'title' => $article->title,
                 'body' => $body,
                 'edited_by' => $this->actor->identity()['name'],
-                'change_summary' => 'Initial editorial draft from a resolved forum topic.',
+                'change_summary' => __('forum.knowledge.initial_change_summary'),
             ]);
         }
 
-        return ['message' => 'Knowledge-base draft created for editorial review.', 'topic' => $topic, 'article' => $article];
+        return [
+            'message' => __('forum.feedback.knowledge_draft_created'),
+            'topic' => $topic,
+            'article' => $article,
+        ];
     }
 
     private function topic(int $topicId): ForumTopic
     {
-        return ForumTopic::query()
-            ->select(['id', 'author_key', 'slug', 'status'])
+        $topic = ForumTopic::query()
+            ->select(['id', 'author_key', 'slug', 'status', 'visibility'])
             ->findOrFail($topicId);
+
+        $this->gate->authorize('view', $topic);
+
+        return $topic;
     }
 
     private function ensureOwner(ForumTopic $topic): void
     {
-        if ($topic->author_key !== $this->actor->key()) {
-            throw ValidationException::withMessages([
-                'topic_id' => 'Only the topic author can perform this action.',
-            ]);
-        }
+        $this->gate->authorize('update', $topic);
     }
 }

@@ -12,6 +12,7 @@ use App\Enums\DeviceType;
 use App\Models\DeviceAutomation;
 use App\Models\DeviceCommand;
 use App\Models\DeviceEvent;
+use App\Models\DeviceLifecycleRecord;
 use App\Models\DevicePetAssignment;
 use App\Models\DeviceReading;
 use App\Models\DeviceSafeZone;
@@ -114,6 +115,25 @@ class SmartDeviceSeeder extends Seeder
                 'delivered_at' => $now->subMinutes(38),
                 'completed_at' => $now->subMinutes(38),
                 'result' => ['message' => 'Walk tracking started locally.'],
+            ],
+        );
+        DeviceLifecycleRecord::query()->updateOrCreate(
+            [
+                'smart_device_id' => $gps->id,
+                'kind' => 'firmware',
+                'version_to' => '4.8.2',
+            ],
+            [
+                'status' => 'completed',
+                'created_by_key' => 'mia-carter',
+                'version_from' => '4.8.1',
+                'severity' => 'normal',
+                'details' => [
+                    'note' => 'Security and battery stability update verified locally.',
+                    'reference' => 'DEMO-FW-482',
+                ],
+                'effective_at' => $now->subDays(12),
+                'resolved_at' => $now->subDays(12),
             ],
         );
         DeviceAutomation::query()->updateOrCreate(

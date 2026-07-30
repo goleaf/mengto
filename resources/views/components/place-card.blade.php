@@ -11,7 +11,7 @@
     ]) }}
     data-place-card="{{ $place['key'] }}"
 >
-    <a href="{{ $place['detail_url'] }}" class="place-card__media" aria-label="Open {{ $place['name'] }}">
+    <a href="{{ $place['detail_url'] }}" class="place-card__media" aria-label="{{ __('presentation.open_place', ['name' => $place['name']]) }}">
         <img
             src="{{ $place['image_small'] }}"
             srcset="{{ $place['image_small'] }} 720w, {{ $place['image_medium'] }} 1200w"
@@ -42,7 +42,7 @@
 
         <p class="place-card__summary">{{ $place['summary'] }}</p>
 
-        <div class="place-card__facts" aria-label="Place highlights">
+        <div class="place-card__facts" aria-label="{{ __('ui.place_highlights_e9c48986d7') }}">
             <span>
                 <x-lucide-star class="icon icon--sm" aria-hidden="true" />
                 {{ $place['rating_label'] }}
@@ -60,7 +60,7 @@
         @if ($place['warning_count'] > 0)
             <a href="{{ $place['detail_url'].'?tab=updates' }}" class="place-card__warning">
                 <x-lucide-triangle-alert class="icon icon--sm" aria-hidden="true" />
-                <span>{{ $place['warning_count'] }} active {{ str('warning')->plural($place['warning_count']) }}</span>
+                <span>{{ trans_choice('presentation.active_warnings', $place['warning_count'], ['count' => $place['warning_count']]) }}</span>
             </a>
         @endif
 
@@ -82,16 +82,25 @@
             />
             <x-action-control
                 :href="$place['route_url']"
-                label="Route"
+                label="{{ __('ui.route_adc74704d6') }}"
                 icon="navigation"
                 variant="primary"
                 size="compact"
                 target="_blank"
                 rel="noopener noreferrer"
             />
+            @if ($place['call_url'])
+                <x-action-control
+                    :href="$place['call_url']"
+                    label="{{ __('ui.call_d6e645b7d2') }}"
+                    icon="phone"
+                    variant="surface"
+                    size="compact"
+                />
+            @endif
             <x-action-control
                 :href="$place['detail_url']"
-                label="Details"
+                label="{{ __('ui.details_45989de49f') }}"
                 icon="arrow-right"
                 variant="ghost"
                 size="compact"

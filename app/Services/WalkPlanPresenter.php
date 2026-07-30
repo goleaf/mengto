@@ -1,15 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services;
 
 use Carbon\CarbonImmutable;
-use Illuminate\Support\Str;
 
 final class WalkPlanPresenter
 {
-    private const FILTERS = ['Upcoming', 'Drafts', 'Completed', 'Cancelled'];
+    private const FILTER_VALUES = ['upcoming', 'drafts', 'completed', 'cancelled'];
 
-    public function __construct(private readonly PrototypeState $state) {}
+    public function __construct(
+        private readonly PrototypeState $state,
+        private readonly LocaleFormatter $formatter,
+    ) {}
 
     /**
      * @param  array<string, mixed>  $owner
@@ -27,7 +31,7 @@ final class WalkPlanPresenter
         return [
             'owner' => $owner,
             'summary' => $this->summary($plans),
-            'filters' => self::FILTERS,
+            'filters' => $this->filters(),
             'activeFilter' => $activeFilter,
             'plans' => $visiblePlans,
             'hasPlans' => $plans !== [],
@@ -110,25 +114,25 @@ final class WalkPlanPresenter
             'status_label' => $statusMeta['label'],
             'status_icon' => $statusMeta['icon'],
             'status_tone' => $statusMeta['tone'],
-            'date_label' => $dateTime->format('D, M j'),
-            'time_label' => $dateTime->format('g:i A'),
+            'date_label' => $this->formatter->weekdayMonthDay($dateTime),
+            'time_label' => $this->formatter->time($dateTime),
             'datetime' => $dateTime->toAtomString(),
             'next_action' => $this->nextAction($status),
             'steps' => [
                 [
                     'icon' => 'map-pin',
-                    'label' => 'Meet',
-                    'title' => $plan['location'] ?? 'Choose a familiar meeting point',
+                    'label' => __('messages.meet_74567d3512'),
+                    'title' => $plan['location'] ?? __('messages.choose_a_familiar_meeting_point_0b782ca18e'),
                 ],
                 [
                     'icon' => 'footprints',
-                    'label' => 'Walk',
-                    'title' => $plan['detail'] ?: 'Easy pace, 30 min',
+                    'label' => __('messages.walk_08ee52ae12'),
+                    'title' => $plan['detail'] ?: __('messages.easy_pace_30_min_c2585b7d4e'),
                 ],
                 [
                     'icon' => 'message-circle',
-                    'label' => 'Settle',
-                    'title' => 'Share a quick check-in before heading home',
+                    'label' => __('messages.settle_a0c79a8531'),
+                    'title' => __('messages.share_a_quick_check_in_before_heading_home_5b797466a0'),
                 ],
             ],
         ];
@@ -136,12 +140,20 @@ final class WalkPlanPresenter
 
     private function activeFilter(string $filter): string
     {
-        $allowed = array_map(
-            static fn (string $label): string => Str::slug($label),
-            self::FILTERS,
-        );
+        return in_array($filter, self::FILTER_VALUES, true) ? $filter : 'upcoming';
+    }
 
-        return in_array($filter, $allowed, true) ? $filter : 'upcoming';
+    /**
+     * @return array<int, array{value: string, label: string}>
+     */
+    private function filters(): array
+    {
+        return [
+            ['value' => 'upcoming', 'label' => __('messages.upcoming_5f1a2542e4')],
+            ['value' => 'drafts', 'label' => __('messages.drafts_f592e6a4db')],
+            ['value' => 'completed', 'label' => __('messages.completed_22a970d2e5')],
+            ['value' => 'cancelled', 'label' => __('messages.cancelled_d353a99eb4')],
+        ];
     }
 
     /**
@@ -171,15 +183,15 @@ final class WalkPlanPresenter
         $neighbors = array_unique(array_filter(array_column($activePlans, 'conversation')));
 
         return [
-            'eyebrow' => 'Walk planner',
-            'title' => 'Clear plans make calmer walks',
-            'description' => 'Keep timing, meeting points, pace, and neighbor context together from the first draft through the final check-in.',
-            'count' => count($plans).' '.Str::plural('plan', count($plans)),
+            'eyebrow' => __('messages.walk_planner_46c2829124'),
+            'title' => __('messages.clear_plans_make_calmer_walks_c2629160b5'),
+            'description' => __('messages.keep_timing_meeting_points_pace_and_neighbor_context_tog_835975886d'),
+            'count' => trans_choice('presentation.plans_count', count($plans), ['count' => count($plans)]),
             'stats' => [
-                ['label' => 'Upcoming', 'value' => (string) count($activePlans), 'detail' => 'draft or confirmed'],
-                ['label' => 'Confirmed', 'value' => (string) ($countByStatus['confirmed'] ?? 0), 'detail' => 'ready to go'],
-                ['label' => 'Completed', 'value' => (string) ($countByStatus['completed'] ?? 0), 'detail' => 'walks finished'],
-                ['label' => 'Neighbors', 'value' => (string) count($neighbors), 'detail' => 'in active plans'],
+                ['label' => __('messages.upcoming_5f1a2542e4'), 'value' => (string) count($activePlans), 'detail' => __('messages.draft_or_confirmed_7115043976')],
+                ['label' => __('messages.confirmed_fe00b67b6d'), 'value' => (string) ($countByStatus['confirmed'] ?? 0), 'detail' => __('messages.ready_to_go_feb320ee9c')],
+                ['label' => __('messages.completed_22a970d2e5'), 'value' => (string) ($countByStatus['completed'] ?? 0), 'detail' => __('messages.walks_finished_920a60a508')],
+                ['label' => __('messages.neighbors_ecc05289ef'), 'value' => (string) count($neighbors), 'detail' => __('messages.in_active_plans_95c99c2c87')],
             ],
         ];
     }
@@ -190,10 +202,10 @@ final class WalkPlanPresenter
     private function statusMeta(string $status): array
     {
         return match ($status) {
-            'confirmed' => ['label' => 'Confirmed', 'icon' => 'calendar-check', 'tone' => 'mint'],
-            'completed' => ['label' => 'Completed', 'icon' => 'circle-check', 'tone' => 'ink'],
-            'cancelled' => ['label' => 'Cancelled', 'icon' => 'circle-x', 'tone' => 'surface'],
-            default => ['label' => 'Draft', 'icon' => 'pencil-line', 'tone' => 'sun'],
+            'confirmed' => ['label' => __('messages.confirmed_fe00b67b6d'), 'icon' => 'calendar-check', 'tone' => 'mint'],
+            'completed' => ['label' => __('messages.completed_22a970d2e5'), 'icon' => 'circle-check', 'tone' => 'ink'],
+            'cancelled' => ['label' => __('messages.cancelled_d353a99eb4'), 'icon' => 'circle-x', 'tone' => 'surface'],
+            default => ['label' => __('messages.draft_ebf12ef47c'), 'icon' => 'pencil-line', 'tone' => 'sun'],
         };
     }
 
@@ -203,8 +215,8 @@ final class WalkPlanPresenter
     private function nextAction(string $status): ?array
     {
         return match ($status) {
-            'draft' => ['label' => 'Confirm plan', 'icon' => 'calendar-check'],
-            'confirmed' => ['label' => 'Mark complete', 'icon' => 'circle-check'],
+            'draft' => ['label' => __('messages.confirm_plan_d80926e20d'), 'icon' => 'calendar-check'],
+            'confirmed' => ['label' => __('messages.mark_complete_6470f48e43'), 'icon' => 'circle-check'],
             default => null,
         };
     }
@@ -216,31 +228,31 @@ final class WalkPlanPresenter
     {
         return match ($target) {
             'mochi' => [
-                'pet' => 'Mochi',
-                'person' => 'Ari Jensen',
+                'pet' => __('messages.mochi_95114c81f3'),
+                'person' => __('messages.ari_jensen_6c670df410'),
                 'conversation' => 'ari',
                 'image' => 'https://images.unsplash.com/photo-1753685723016-78c233daa8a2?auto=format&fit=crop&w=1200&h=800&q=85',
                 'image_small' => 'https://images.unsplash.com/photo-1753685723016-78c233daa8a2?auto=format&fit=crop&w=576&h=384&q=80',
                 'image_medium' => 'https://images.unsplash.com/photo-1753685723016-78c233daa8a2?auto=format&fit=crop&w=900&h=600&q=82',
-                'image_alt' => 'Ari relaxing with Mochi in a neighborhood park',
+                'image_alt' => __('messages.ari_relaxing_with_mochi_in_a_neighborhood_park_2e4ba2f4ec'),
             ],
             'juniper' => [
-                'pet' => 'Juniper',
-                'person' => 'Noah Patel',
+                'pet' => __('messages.juniper_fe6a448ec9'),
+                'person' => __('messages.noah_patel_147a9793ed'),
                 'conversation' => 'noah',
                 'image' => 'https://images.unsplash.com/photo-1638552718376-7d4881e31418?auto=format&fit=crop&w=1200&h=800&q=85',
                 'image_small' => 'https://images.unsplash.com/photo-1638552718376-7d4881e31418?auto=format&fit=crop&w=576&h=384&q=80',
                 'image_medium' => 'https://images.unsplash.com/photo-1638552718376-7d4881e31418?auto=format&fit=crop&w=900&h=600&q=82',
-                'image_alt' => 'Noah practicing with a small dog in a wooded park',
+                'image_alt' => __('messages.noah_practicing_with_a_small_dog_in_a_wooded_park_a01c6fa46c'),
             ],
             default => [
-                'pet' => 'Scout',
-                'person' => 'Mia Carter',
+                'pet' => __('messages.scout_8a1db462be'),
+                'person' => __('messages.mia_carter_0e5b29cc3b'),
                 'conversation' => '',
                 'image' => 'https://images.unsplash.com/photo-1654256578072-b932c33cb92e?auto=format&fit=crop&w=1200&h=800&q=85',
                 'image_small' => 'https://images.unsplash.com/photo-1654256578072-b932c33cb92e?auto=format&fit=crop&w=576&h=384&q=80',
                 'image_medium' => 'https://images.unsplash.com/photo-1654256578072-b932c33cb92e?auto=format&fit=crop&w=900&h=600&q=82',
-                'image_alt' => 'Scout, a black and white Border Collie, resting on grass',
+                'image_alt' => __('messages.scout_a_black_and_white_border_collie_resting_on_grass_4abc84adab'),
             ],
         };
     }
@@ -252,33 +264,33 @@ final class WalkPlanPresenter
     {
         return [
             [
-                'title' => 'Start with a familiar companion',
-                'meta' => 'Scout and Mia',
+                'title' => __('messages.start_with_a_familiar_companion_644a17d04c'),
+                'meta' => __('messages.scout_and_mia_a4d8a1fd0f'),
                 'image' => 'https://images.unsplash.com/photo-1654256578072-b932c33cb92e?auto=format&fit=crop&w=1200&h=800&q=85',
                 'image_small' => 'https://images.unsplash.com/photo-1654256578072-b932c33cb92e?auto=format&fit=crop&w=576&h=384&q=80',
                 'image_medium' => 'https://images.unsplash.com/photo-1654256578072-b932c33cb92e?auto=format&fit=crop&w=900&h=600&q=82',
-                'image_alt' => 'Scout, a black and white Border Collie, resting on grass',
+                'image_alt' => __('messages.scout_a_black_and_white_border_collie_resting_on_grass_4abc84adab'),
                 'href' => route('compose', 'walk'),
                 'icon' => 'calendar-plus',
             ],
             [
-                'title' => 'Plan a quiet city loop',
-                'meta' => 'Ari and Mochi',
+                'title' => __('messages.plan_a_quiet_city_loop_86a2350f59'),
+                'meta' => __('messages.ari_and_mochi_6ab978b432'),
                 'image' => 'https://images.unsplash.com/photo-1753685723016-78c233daa8a2?auto=format&fit=crop&w=1200&h=800&q=85',
                 'image_small' => 'https://images.unsplash.com/photo-1753685723016-78c233daa8a2?auto=format&fit=crop&w=576&h=384&q=80',
                 'image_medium' => 'https://images.unsplash.com/photo-1753685723016-78c233daa8a2?auto=format&fit=crop&w=900&h=600&q=82',
-                'image_alt' => 'Ari relaxing with Mochi in a neighborhood park',
+                'image_alt' => __('messages.ari_relaxing_with_mochi_in_a_neighborhood_park_2e4ba2f4ec'),
                 'href' => route('neighbors.ari'),
                 'icon' => 'map',
             ],
             [
-                'title' => 'Choose a shaded route',
-                'meta' => 'Noah and Juniper',
+                'title' => __('messages.choose_a_shaded_route_8cd4ac8c8a'),
+                'meta' => __('messages.noah_and_juniper_875732f92f'),
                 'image' => 'https://images.unsplash.com/photo-1638552718376-7d4881e31418?auto=format&fit=crop&w=1200&h=800&q=85',
                 'image_small' => 'https://images.unsplash.com/photo-1638552718376-7d4881e31418?auto=format&fit=crop&w=576&h=384&q=80',
                 'image_medium' => 'https://images.unsplash.com/photo-1638552718376-7d4881e31418?auto=format&fit=crop&w=900&h=600&q=82',
-                'image_alt' => 'Noah practicing with a small dog in a wooded park',
-                'href' => route('neighbors.index', ['q' => 'Noah']),
+                'image_alt' => __('messages.noah_practicing_with_a_small_dog_in_a_wooded_park_a01c6fa46c'),
+                'href' => route('neighbors.index', ['q' => __('messages.noah_678202b3c0')]),
                 'icon' => 'trees',
             ],
         ];

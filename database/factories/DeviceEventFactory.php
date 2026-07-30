@@ -1,18 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories;
 
 use App\Enums\DeviceConfidence;
 use App\Enums\DeviceEventSeverity;
 use App\Models\DeviceEvent;
 use App\Models\SmartDevice;
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
 /**
- * @extends Factory<DeviceEvent>
+ * @extends ApplicationFactory<DeviceEvent>
  */
-class DeviceEventFactory extends Factory
+class DeviceEventFactory extends ApplicationFactory
 {
     /**
      * Define the model's default state.
@@ -29,6 +30,9 @@ class DeviceEventFactory extends Factory
             'type' => 'device-offline',
             'severity' => DeviceEventSeverity::Important,
             'status' => 'open',
+            'occurrence_count' => 1,
+            'first_occurred_at' => now()->subMinutes(10),
+            'last_occurred_at' => now()->subMinutes(10),
             'title' => 'Device connection needs checking',
             'summary' => 'The device has not sent a recent update.',
             'details' => ['last_signal' => now()->subMinutes(20)->toAtomString()],

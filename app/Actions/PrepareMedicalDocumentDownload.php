@@ -75,7 +75,7 @@ class PrepareMedicalDocumentDownload
     ): void {
         if ($document->medical_record_id !== $record->id) {
             throw ValidationException::withMessages([
-                'document' => 'This document does not belong to the selected medical record.',
+                'document' => __('messages.this_document_does_not_belong_to_the_selected_medical_re_f2729f2963'),
             ]);
         }
     }

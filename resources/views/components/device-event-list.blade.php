@@ -23,20 +23,23 @@
                     <span>{{ $event['occurred_at'] }}</span>
                     <span>{{ $event['confidence'] }}</span>
                     <span>{{ $event['source'] }}</span>
+                    @if ($event['occurrence_count'] > 1)
+                        <span>{{ $event['occurrence_label'] }} · {{ $event['first_occurred_at'] }} – {{ $event['last_occurred_at'] }}</span>
+                    @endif
                 </div>
                 @unless ($shared)
                     <div class="device-event__actions">
                         @unless ($event['is_acknowledged'])
                             <form method="POST" action="{{ $event['acknowledge_url'] }}">
                                 @csrf
-                                <button class="device-text-button" type="submit">Mark checked</button>
+                                <button class="device-text-button" type="submit">{{ __('ui.mark_checked_e5aaa31d48') }}</button>
                             </form>
                         @endunless
                         @if ($event['can_add_care'])
                             <form method="POST" action="{{ $event['care_entry_url'] }}">
                                 @csrf
                                 <input type="hidden" name="confirmed" value="1">
-                                <button class="device-text-button" type="submit">Add to care journal</button>
+                                <button class="device-text-button" type="submit">{{ __('ui.add_to_care_journal_363d373726') }}</button>
                             </form>
                         @endif
                     </div>
@@ -47,8 +50,8 @@
         <div class="device-empty">
             <x-lucide-shield-check class="size-7" aria-hidden="true" />
             <div>
-                <h3>No events in this scope</h3>
-                <p>Routine telemetry remains separate from alerts that need a person to check them.</p>
+                <h3>{{ __('ui.no_events_in_this_scope_8196b3adde') }}</h3>
+                <p>{{ __('ui.routine_telemetry_remains_separate_from_alerts_that_need_5685e619eb') }}</p>
             </div>
         </div>
     @endforelse

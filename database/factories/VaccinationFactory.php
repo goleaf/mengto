@@ -1,17 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories;
 
 use App\Enums\MedicalVerificationStatus;
 use App\Enums\VaccinationStatus;
 use App\Models\MedicalRecord;
 use App\Models\Vaccination;
-use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<Vaccination>
+ * @extends ApplicationFactory<Vaccination>
  */
-class VaccinationFactory extends Factory
+class VaccinationFactory extends ApplicationFactory
 {
     public function definition(): array
     {

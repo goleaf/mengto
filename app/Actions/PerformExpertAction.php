@@ -23,7 +23,7 @@ class PerformExpertAction
             'toggle-subscribe' => $this->toggle($profile, 'is_subscribed'),
             'submit-verification' => $this->submitVerification($profile),
             'report' => $this->report($profile, $data),
-            default => throw ValidationException::withMessages(['action' => 'Unsupported profile action.']),
+            default => throw ValidationException::withMessages(['action' => __('messages.unsupported_profile_action_ae2cc1fae5')]),
         });
     }
 
@@ -36,24 +36,24 @@ class PerformExpertAction
         $engagement->update([$field => ! $engagement->{$field}, 'last_viewed_at' => now()]);
 
         return $field === 'is_saved'
-            ? ($engagement->is_saved ? 'Specialist saved.' : 'Specialist removed from saved profiles.')
-            : ($engagement->is_subscribed ? 'Profile updates enabled.' : 'Profile updates disabled.');
+            ? ($engagement->is_saved ? __('messages.specialist_saved_390e2f1b76') : __('messages.specialist_removed_from_saved_profiles_c8d73d025b'))
+            : ($engagement->is_subscribed ? __('messages.profile_updates_enabled_25136ab770') : __('messages.profile_updates_disabled_d2fa778c98'));
     }
 
     private function submitVerification(ExpertProfile $profile): string
     {
         if ($profile->owner_key !== $this->actor->key()) {
-            throw ValidationException::withMessages(['action' => 'Only the profile owner can request verification.']);
+            throw ValidationException::withMessages(['action' => __('messages.only_the_profile_owner_can_request_verification_880cface2c')]);
         }
 
         if (! $profile->credentials()->exists()) {
-            throw ValidationException::withMessages(['action' => 'Add at least one qualification document first.']);
+            throw ValidationException::withMessages(['action' => __('messages.add_at_least_one_qualification_document_first_127b03e81a')]);
         }
 
         $profile->update(['verification_status' => VerificationStatus::Submitted]);
         $this->audit($profile, 'verification.submitted', []);
 
-        return 'Verification request submitted.';
+        return __('messages.verification_request_submitted_928a3a312b');
     }
 
     /** @param array<string, mixed> $data */
@@ -76,7 +76,7 @@ class PerformExpertAction
         ]);
         $this->audit($profile, 'expert-report.submitted', ['report_id' => $report->id]);
 
-        return 'Report submitted for review. Your identity is not shared with the specialist.';
+        return __('messages.report_submitted_for_review_your_identity_is_not_shared__af00537fb0');
     }
 
     /** @param array<string, mixed> $metadata */

@@ -3,10 +3,10 @@
         <header class="flex flex-wrap items-center justify-between gap-3 border-b border-paw-line pb-5">
             <div>
                 <a href="{{ route('experts.show', $expert['slug']) }}" class="inline-flex items-center gap-2 text-sm font-bold text-paw-leaf"><x-lucide-arrow-left class="size-4" aria-hidden="true" />{{ $expert['name'] }}</a>
-                <h1 class="mt-2 text-3xl font-bold">Appointment details</h1>
+                <h1 class="mt-2 text-3xl font-bold">{{ __('ui.appointment_details_f938bdb863') }}</h1>
             </div>
             @if ($consultation && $booking['format'] === 'Video')
-                <x-action-control label="Open consultation room" icon="video" variant="primary" :href="route('consultations.show', $consultation['id'])" />
+                <x-action-control label="{{ __('ui.open_consultation_room_f2236af786') }}" icon="video" variant="primary" :href="route('consultations.show', $consultation['id'])" />
             @endif
         </header>
 

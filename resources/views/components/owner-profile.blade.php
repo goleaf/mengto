@@ -10,13 +10,13 @@
             :profile="$profile['identity']"
             :badges="$profile['badges']"
             section="owner-profile-hero"
-            summary-label="Owner profile summary"
+            summary-label="{{ __('ui.owner_profile_summary_6ca384ad6a') }}"
             :summary-icons="['paw-print', 'users', 'user-round-check', 'images']"
         />
 
         <x-tab-list
             :tabs="$profile['tabs']"
-            label="Owner profile sections"
+            label="{{ __('ui.owner_profile_sections_a02fb9e1e6') }}"
         />
 
         <x-profile-view-switcher
@@ -30,14 +30,14 @@
                     <x-notice
                         section="owner-pets-private"
                         icon="lock-keyhole"
-                        title="Pet profiles are private"
-                        description="Mia shares this list only with the audience selected in her privacy settings."
+                        title="{{ __('ui.pet_profiles_are_private_a2b7104fd0') }}"
+                        description="{{ __('ui.mia_shares_this_list_only_with_the_audience_466e8eeeae') }}"
                     />
                 @else
                     <x-profile-pet-list
                         :pets="$profile['pets']"
-                        eyebrow="Separate social profiles"
-                        title="Mia's pets"
+                        eyebrow="{{ __('ui.separate_social_profiles_ab5cfb68f8') }}"
+                        title="{{ __('ui.mia_s_pets_4ba9532eb0') }}"
                         :can-manage="$profile['audience'] === 'owner'"
                     />
                 @endif
@@ -48,14 +48,14 @@
                     <x-notice
                         section="owner-posts-private"
                         icon="lock-keyhole"
-                        title="Posts are limited"
-                        description="Follow or connect with Mia to see the moments available to this audience."
+                        title="{{ __('ui.posts_are_limited_f801cbd804') }}"
+                        description="{{ __('ui.follow_or_connect_with_mia_to_see_the_1c4176d85e') }}"
                     />
                 @else
                     <x-recent-moments
                         :posts="$profile['moments']"
-                        eyebrow="Published by Mia"
-                        title="Owner posts"
+                        eyebrow="{{ __('ui.published_by_mia_9c4c9d21f9') }}"
+                        title="{{ __('ui.owner_posts_8986a90a06') }}"
                         section="owner-posts"
                     />
                 @endif
@@ -67,8 +67,8 @@
                         <x-page-stack gap="content">
                             <x-content-panel
                                 section="owner-about-details"
-                                eyebrow="Public identity"
-                                title="Profile details"
+                                eyebrow="{{ __('ui.public_identity_284303e3ab') }}"
+                                title="{{ __('ui.profile_details_73949bb1bd') }}"
                             >
                                 <x-definition-list
                                     :items="$profile['details']"
@@ -79,8 +79,8 @@
 
                             <x-content-panel
                                 section="owner-interests"
-                                eyebrow="Common ground"
-                                title="Interests"
+                                eyebrow="{{ __('ui.common_ground_c295bed5fb') }}"
+                                title="{{ __('ui.interests_756aaea140') }}"
                             >
                                 <x-tag-list
                                     :items="$profile['interests']"
@@ -94,8 +94,8 @@
                     <x-slot:sidebar>
                         <x-content-panel
                             section="owner-languages"
-                            eyebrow="Conversation"
-                            title="Languages"
+                            eyebrow="{{ __('ui.conversation_ccca181757') }}"
+                            title="{{ __('ui.languages_318655cea4') }}"
                             size="compact"
                         >
                             <x-icon-list
@@ -106,8 +106,8 @@
 
                         <x-content-panel
                             section="owner-privacy-summary"
-                            eyebrow="Audience controls"
-                            title="Privacy summary"
+                            eyebrow="{{ __('ui.audience_controls_5b3f1cd201') }}"
+                            title="{{ __('ui.privacy_summary_3c83b0e331') }}"
                             size="compact"
                         >
                             <x-definition-list
@@ -128,8 +128,8 @@
                         <x-page-stack gap="content">
                             <x-content-panel
                                 section="about-owner"
-                                eyebrow="Around the neighborhood"
-                                title="About Mia"
+                                eyebrow="{{ __('ui.around_the_neighborhood_db1c68dbb1') }}"
+                                title="{{ __('ui.about_mia_45de98db9b') }}"
                             >
                                 <x-section-copy :text="$profile['identity']['bio']" />
                             </x-content-panel>
@@ -138,14 +138,14 @@
                                 <x-notice
                                     section="owner-pets-private"
                                     icon="lock-keyhole"
-                                    title="Pet profiles are private"
-                                    description="This audience cannot see Mia's pet list."
+                                    title="{{ __('ui.pet_profiles_are_private_a2b7104fd0') }}"
+                                    description="{{ __('ui.this_audience_cannot_see_mia_s_pet_list_e106bf7e2b') }}"
                                 />
                             @else
                                 <x-profile-pet-list
                                     :pets="$profile['pets']"
-                                    eyebrow="At home with Mia"
-                                    title="Scout, Nori, and family"
+                                    eyebrow="{{ __('ui.at_home_with_mia_ccd49f05ec') }}"
+                                    title="{{ __('ui.scout_nori_and_family_da531492d5') }}"
                                     :can-manage="$profile['audience'] === 'owner'"
                                 />
                             @endif
@@ -154,13 +154,13 @@
                                 <x-notice
                                     section="owner-posts-private"
                                     icon="lock-keyhole"
-                                    title="Owner posts are limited"
-                                    description="Mia shares these moments with a closer audience."
+                                    title="{{ __('ui.owner_posts_are_limited_b0f790305b') }}"
+                                    description="{{ __('ui.mia_shares_these_moments_with_a_closer_audience_a6180e10ed') }}"
                                 />
                             @else
                                 <x-recent-moments
                                     :posts="$profile['moments']"
-                                    eyebrow="From Mia"
+                                    eyebrow="{{ __('ui.from_mia_f791282978') }}"
                                     section="owner-moments"
                                 />
                             @endif
@@ -170,8 +170,8 @@
                     <x-slot:sidebar>
                         <x-content-panel
                             section="owner-profile-completion"
-                            eyebrow="Profile basics"
-                            title="Profile readiness"
+                            eyebrow="{{ __('ui.profile_basics_0145f57561') }}"
+                            title="{{ __('ui.profile_readiness_e75c4c7ee1') }}"
                             size="compact"
                             tone="coral"
                         >
@@ -185,8 +185,8 @@
 
                         <x-content-panel
                             section="owner-profile-badges"
-                            eyebrow="Trust signals"
-                            title="Badges"
+                            eyebrow="{{ __('ui.trust_signals_a02028d200') }}"
+                            title="{{ __('ui.badges_185d8ef0ae') }}"
                             size="compact"
                         >
                             <x-profile-badge-list
@@ -197,8 +197,8 @@
 
                         <x-content-panel
                             section="owner-availability"
-                            eyebrow="Walk profile"
-                            title="Availability"
+                            eyebrow="{{ __('ui.walk_profile_3ccfc4f87c') }}"
+                            title="{{ __('ui.availability_12f67f8539') }}"
                             size="compact"
                             tone="coral"
                         >

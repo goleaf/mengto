@@ -2,22 +2,22 @@
 
 <section class="messaging-request" aria-labelledby="message-request-title">
     <img src="{{ $conversation['avatar'] }}" alt="{{ $conversation['avatar_alt'] }}" width="88" height="88">
-    <p>New message request</p>
+    <p>{{ __('ui.new_message_request_fccaa57776') }}</p>
     <h2 id="message-request-title">{{ $conversation['name'] }}</h2>
     <span>{{ $conversation['verified'] }} · {{ $conversation['pet'] }}</span>
     <blockquote>{{ $conversation['preview'] }}</blockquote>
 
     <div class="messaging-request__context">
-        <span><x-lucide-paw-print class="icon icon--sm" aria-hidden="true" /> Linked pet context only</span>
-        <span><x-lucide-eye-off class="icon icon--sm" aria-hidden="true" /> Read status hidden</span>
-        <span><x-lucide-paperclip class="icon icon--sm" aria-hidden="true" /> Media blocked until accepted</span>
+        <span><x-lucide-paw-print class="icon icon--sm" aria-hidden="true" /> {{ __('ui.linked_pet_context_only_72358e44e9') }}</span>
+        <span><x-lucide-eye-off class="icon icon--sm" aria-hidden="true" /> {{ __('ui.read_status_hidden_118784a0e4') }}</span>
+        <span><x-lucide-paperclip class="icon icon--sm" aria-hidden="true" /> {{ __('ui.media_blocked_until_accepted_7506bc5901') }}</span>
     </div>
 
     <div class="messaging-request__actions">
         @foreach ([
-            ['action' => 'accept-message-request', 'label' => 'Accept', 'icon' => 'check', 'class' => 'action--primary'],
-            ['action' => 'decline-message-request', 'label' => 'Decline', 'icon' => 'x', 'class' => 'action--paper'],
-            ['action' => 'block-conversation', 'label' => 'Block', 'icon' => 'ban', 'class' => 'action--danger'],
+            ['action' => 'accept-message-request', 'label' => __('ui.accept_89713b9c9c'), 'icon' => 'check', 'class' => 'action--primary'],
+            ['action' => 'decline-message-request', 'label' => __('ui.decline_a2d285b352'), 'icon' => 'x', 'class' => 'action--paper'],
+            ['action' => 'block-conversation', 'label' => __('ui.block_211d0bb8cf'), 'icon' => 'ban', 'class' => 'action--danger'],
         ] as $requestAction)
             <form method="POST" action="{{ route('messages.actions') }}">
                 @csrf
@@ -31,5 +31,5 @@
         @endforeach
     </div>
 
-    <p class="messaging-request__note">Accepting allows replies and call requests. It never reveals your phone, email, home address, exact location, or other profiles.</p>
+    <p class="messaging-request__note">{{ __('ui.accepting_allows_replies_and_call_requests_it_never_ee55223e5f') }}</p>
 </section>

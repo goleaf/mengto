@@ -1,17 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories;
 
 use App\Enums\SightingStatus;
 use App\Models\SearchCase;
 use App\Models\Sighting;
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
 /**
- * @extends Factory<Sighting>
+ * @extends ApplicationFactory<Sighting>
  */
-class SightingFactory extends Factory
+class SightingFactory extends ApplicationFactory
 {
     public function definition(): array
     {

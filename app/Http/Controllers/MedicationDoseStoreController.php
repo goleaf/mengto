@@ -27,6 +27,6 @@ class MedicationDoseStoreController extends Controller
         $recordDose->handle($medicalRecord, $medication, $data);
 
         return to_route('medical-records.show', $medicalRecord)
-            ->with('feedback', 'Medication outcome recorded. Other caregivers will see this dose slot as handled.');
+            ->with('feedback', __('messages.medication_outcome_recorded_other_caregivers_will_see_th_a7e1923041'));
     }
 }

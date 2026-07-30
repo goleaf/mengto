@@ -16,7 +16,7 @@ class TopicStoreController extends Controller
         $topic = $createTopic->handle($request->validated());
 
         return $topic->status->value === 'draft'
-            ? to_route('forum.index')->with('feedback', 'Draft saved.')
-            : to_route('forum.topics.show', $topic)->with('feedback', 'Topic published.');
+            ? to_route('forum.index')->with('feedback', __('messages.draft_saved_be997844b2'))
+            : to_route('forum.topics.show', $topic)->with('feedback', __('messages.topic_published_79226b67d5'));
     }
 }

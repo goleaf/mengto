@@ -5,7 +5,7 @@
             :title="$summary['title']"
             :description="$summary['description']"
             :count="$summary['count']"
-            action-label="Open pet profile"
+            action-label="{{ __('ui.open_pet_profile_c2c2f89833') }}"
             action-icon="circle-user-round"
             :action-href="route($friend_center['source']['route_name'], $friend_center['source']['route_parameters'])"
         />

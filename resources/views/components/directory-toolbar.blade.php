@@ -38,7 +38,7 @@
 
             <x-action-control
                 type="submit"
-                label="Search"
+                label="{{ __('ui.search_49c266baaa') }}"
                 icon="search"
                 variant="primary"
                 size="toolbar"

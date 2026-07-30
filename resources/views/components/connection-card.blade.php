@@ -37,13 +37,13 @@
 
         @if ($item['secondary_actions'] !== [] || $item['notification_options'] !== [])
             <details class="connection-menu">
-                <summary aria-label="More settings for {{ $item['name'] }}" title="More settings">
+                <summary aria-label="{{ __('presentation.more_settings_for', ['name' => $item['name']]) }}" title="{{ __('ui.more_settings_fb39125df6') }}">
                     <x-lucide-ellipsis class="icon" aria-hidden="true" />
                 </summary>
 
                 <div class="connection-menu__panel">
                     @if ($item['notification_options'] !== [])
-                        <p class="connection-menu__label">Notifications</p>
+                        <p class="connection-menu__label">{{ __('ui.notifications_788011833a') }}</p>
                         <div class="connection-menu__options">
                             @forelse ($item['notification_options'] as $option)
                                 <x-action-form :action="route('actions.perform')" :payload="$option['payload']">

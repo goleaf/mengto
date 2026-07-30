@@ -1,16 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories;
 
 use App\Enums\MedicalReminderStatus;
 use App\Models\MedicalRecord;
 use App\Models\MedicalReminder;
-use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<MedicalReminder>
+ * @extends ApplicationFactory<MedicalReminder>
  */
-class MedicalReminderFactory extends Factory
+class MedicalReminderFactory extends ApplicationFactory
 {
     public function definition(): array
     {

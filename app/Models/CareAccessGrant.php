@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use Database\Factories\CareAccessGrantFactory;
@@ -7,7 +9,31 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
+/**
+ * @property bool $allow_add
+ * @property bool $allow_location
+ * @property bool $allow_media
+ * @property-read CareJournal|null $careJournal
+ * @property int $care_journal_id
+ * @property Carbon|null $created_at
+ * @property Carbon $expires_at
+ * @property string $granted_by_key
+ * @property int $id
+ * @property string $label
+ * @property Carbon|null $last_opened_at
+ * @property int $max_views
+ * @property array<array-key, mixed> $permissions
+ * @property string|null $recipient_key
+ * @property string $recipient_name
+ * @property string $recipient_role
+ * @property Carbon|null $revoked_at
+ * @property array<array-key, mixed> $sections
+ * @property string $token_hash
+ * @property Carbon|null $updated_at
+ * @property int $views_used
+ */
 class CareAccessGrant extends Model
 {
     /** @use HasFactory<CareAccessGrantFactory> */
@@ -49,6 +75,7 @@ class CareAccessGrant extends Model
             ]);
     }
 
+    /** @return BelongsTo<\App\Models\CareJournal, $this>*/
     public function careJournal(): BelongsTo
     {
         return $this->belongsTo(CareJournal::class);

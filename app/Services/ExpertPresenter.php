@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services;
 
 use App\Enums\BookingStatus;
@@ -22,6 +24,7 @@ class ExpertPresenter
         private readonly ProfilePresenter $profiles,
         private readonly ForumActor $actor,
         private readonly ExpertTaxonomy $taxonomy,
+        private readonly LocaleFormatter $formatter,
     ) {}
 
     /** @param array<string, mixed> $filters */
@@ -77,7 +80,7 @@ class ExpertPresenter
 
         return [
             'owner' => $this->profiles->owner(),
-            'page_title' => 'Expert community',
+            'page_title' => __('messages.expert_community_b9f71bc7cd'),
             'active_section' => 'experts',
             'experts' => $experts,
             'filters' => $filters,
@@ -170,7 +173,7 @@ class ExpertPresenter
 
         return [
             'owner' => $this->profiles->owner(),
-            'page_title' => $profile->public_name.' · Expert profile',
+            'page_title' => __('presentation.expert_profile_title', ['name' => $profile->public_name]),
             'active_section' => 'experts',
             'expert' => $this->detail($profile),
             'services' => $profile->services->map(fn (Service $service): array => $this->service($service))->all(),
@@ -180,17 +183,19 @@ class ExpertPresenter
                 'type' => Str::headline($credential->type),
                 'issuer' => $credential->issuer,
                 'region' => $credential->region,
-                'masked_number' => $credential->number_last_four ? 'Ends in '.$credential->number_last_four : null,
+                'masked_number' => $credential->number_last_four
+                    ? __('presentation.ends_in', ['digits' => $credential->number_last_four])
+                    : null,
                 'status' => $credential->status->label(),
-                'verified_at' => $credential->verified_at?->format('M Y'),
-                'expires_at' => $credential->expires_at?->format('M Y'),
+                'verified_at' => $this->formatter->monthYear($credential->verified_at),
+                'expires_at' => $this->formatter->monthYear($credential->expires_at),
             ])->all(),
             'publications' => $profile->publications->map(fn (Publication $publication): array => [
                 'title' => $publication->title,
                 'summary' => $publication->summary,
                 'type' => Str::headline($publication->type),
                 'category' => Str::headline($publication->category),
-                'reviewed' => $publication->last_reviewed_at?->format('M j, Y'),
+                'reviewed' => $this->formatter->date($publication->last_reviewed_at),
                 'sources' => $publication->sources ?? [],
                 'conflict_disclosure' => $publication->conflict_disclosure,
             ])->all(),
@@ -202,7 +207,7 @@ class ExpertPresenter
                     'topic_title' => $answer->topic->title,
                     'excerpt' => Str::limit($answer->body, 210),
                     'helpful_count' => $answer->helpful_count,
-                    'created_label' => $answer->created_at->diffForHumans(),
+                    'created_label' => $this->formatter->relative($answer->created_at),
                 ])
                 ->values()
                 ->all(),
@@ -223,7 +228,7 @@ class ExpertPresenter
     {
         return [
             'owner' => $this->profiles->owner(),
-            'page_title' => $profile ? 'Edit professional profile' : 'Create professional profile',
+            'page_title' => $profile ? __('messages.edit_professional_profile_9016d6cd8b') : __('messages.create_professional_profile_30276b75d3'),
             'active_section' => 'experts',
             'expert' => $profile,
             'types' => $this->taxonomy->types(),
@@ -232,19 +237,19 @@ class ExpertPresenter
             'formats' => $this->taxonomy->formats(),
             'languages' => $this->taxonomy->languages(),
             'age_groups' => [
-                'newborn' => 'Newborn',
-                'young' => 'Young',
-                'adult' => 'Adult',
-                'senior' => 'Senior',
-                'special-needs' => 'Special needs',
+                'newborn' => __('messages.newborn_c391a8da21'),
+                'young' => __('messages.young_548674f78c'),
+                'adult' => __('messages.adult_ad08defcbf'),
+                'senior' => __('messages.senior_92613a8f43'),
+                'special-needs' => __('messages.special_needs_5b40738d71'),
             ],
             'accessibility_options' => [
-                'ramp' => 'Ramp',
-                'lift' => 'Lift',
-                'accessible-toilet' => 'Accessible toilet',
-                'quiet-zone' => 'Quiet waiting zone',
-                'parking' => 'Nearby parking',
-                'wait-in-car' => 'Wait in car',
+                'ramp' => __('messages.ramp_70a5ae4aa4'),
+                'lift' => __('messages.lift_871eee33f7'),
+                'accessible-toilet' => __('messages.accessible_toilet_46c10025cb'),
+                'quiet-zone' => __('messages.quiet_waiting_zone_33480bd061'),
+                'parking' => __('messages.nearby_parking_6eafdf3c83'),
+                'wait-in-car' => __('messages.wait_in_car_4f7a7f89c8'),
             ],
         ];
     }
@@ -274,7 +279,7 @@ class ExpertPresenter
 
         return [
             'owner' => $this->profiles->owner(),
-            'page_title' => 'Book '.$profile->public_name,
+            'page_title' => __('messages.book_0201d95de8').$profile->public_name,
             'active_section' => 'experts',
             'expert' => $this->detail($profile),
             'services' => $profile->services->map(fn (Service $service): array => $this->service($service))->all(),
@@ -322,7 +327,7 @@ class ExpertPresenter
 
         return [
             'owner' => $this->profiles->owner(),
-            'page_title' => 'Appointment '.$booking->reference,
+            'page_title' => __('messages.appointment_a07e82a82c').$booking->reference,
             'active_section' => 'experts',
             'booking' => [
                 'reference' => $booking->reference,
@@ -332,12 +337,25 @@ class ExpertPresenter
                 'pet_name' => $booking->pet_name,
                 'pet_species' => Str::headline($booking->pet_species),
                 'format' => Str::headline($booking->format),
-                'starts_at' => $booking->starts_at->format('D, M j · H:i'),
+                'starts_at' => $this->formatter->dateTime($booking->starts_at, $booking->timezone),
                 'timezone' => $booking->timezone,
                 'location' => $booking->location_label,
                 'amount' => $booking->amount,
                 'currency' => $booking->currency,
                 'questionnaire' => $booking->questionnaire,
+                'questionnaire_rows' => collect($booking->questionnaire)
+                    ->reject(
+                        static fn (mixed $value, string $key): bool => $key === 'urgent_signs'
+                            || blank($value),
+                    )
+                    ->map(fn (mixed $value, string $key): array => [
+                        'label' => Str::headline(str_replace('_', ' ', $key)),
+                        'value' => is_bool($value)
+                            ? ($value ? __('ui.yes_85a39ab345') : __('ui.no_1ea442a134'))
+                            : (string) $value,
+                    ])
+                    ->values()
+                    ->all(),
                 'can_cancel' => ! in_array($booking->status, [BookingStatus::Cancelled, BookingStatus::Completed], true),
             ],
             'expert' => $this->detail($booking->expertProfile),
@@ -348,21 +366,21 @@ class ExpertPresenter
                 'client_summary' => $booking->consultation->client_summary,
                 'action_plan' => $booking->consultation->action_plan ?? [],
                 'referral_summary' => $booking->consultation->referral_summary,
-                'follow_up_until' => $booking->consultation->follow_up_until?->format('M j, Y'),
+                'follow_up_until' => $this->formatter->date($booking->consultation->follow_up_until),
                 'is_confirmed' => $booking->consultation->summary_confirmed_at !== null,
             ] : null,
             'documents' => $booking->documentGrants->map(fn ($grant): array => [
                 'id' => $grant->id,
                 'label' => $grant->label,
                 'type' => Str::headline($grant->document_type),
-                'expires_at' => $grant->expires_at->format('M j, Y · H:i'),
+                'expires_at' => $this->formatter->dateTime($grant->expires_at),
                 'revoked' => $grant->revoked_at !== null,
                 'downloaded' => $grant->downloaded_at !== null,
             ])->all(),
             'audit' => $audit->map(fn (AuditLog $log): array => [
                 'action' => Str::headline(str_replace('.', ' ', $log->action)),
                 'role' => Str::headline($log->actor_role),
-                'created_label' => $log->created_at->format('M j · H:i'),
+                'created_label' => $this->formatter->dateTime($log->created_at),
             ])->all(),
             'can_manage_expert' => $booking->expertProfile->owner_key === $this->actor->key(),
         ];
@@ -380,7 +398,7 @@ class ExpertPresenter
         if ($profile === null) {
             return [
                 'owner' => $this->profiles->owner(),
-                'page_title' => 'Professional workspace',
+                'page_title' => __('messages.professional_workspace_eb8eb6dde6'),
                 'active_section' => 'experts',
                 'expert' => null,
                 'bookings' => [],
@@ -416,7 +434,7 @@ class ExpertPresenter
 
         return [
             'owner' => $this->profiles->owner(),
-            'page_title' => 'Professional workspace',
+            'page_title' => __('messages.professional_workspace_eb8eb6dde6'),
             'active_section' => 'experts',
             'expert' => $this->detail($profile),
             'bookings' => $profile->bookings->map(fn (Booking $booking): array => [
@@ -426,7 +444,7 @@ class ExpertPresenter
                 'pet_species' => Str::headline($booking->pet_species),
                 'service' => $booking->service->name,
                 'format' => Str::headline($booking->format),
-                'starts_at' => $booking->starts_at->format('M j · H:i'),
+                'starts_at' => $this->formatter->dateTime($booking->starts_at),
                 'status' => $booking->status->label(),
                 'payment_status' => $booking->payment_status->label(),
             ])->all(),
@@ -434,14 +452,14 @@ class ExpertPresenter
                 'title' => $credential->title,
                 'issuer' => $credential->issuer,
                 'status' => $credential->status->label(),
-                'expires_at' => $credential->expires_at?->format('M Y'),
+                'expires_at' => $this->formatter->monthYear($credential->expires_at),
             ])->all(),
             'services' => $profile->services->map(fn (Service $service): array => $this->service($service))->all(),
             'metrics' => [
-                ['label' => 'Profile views', 'value' => 0, 'note' => 'Private viewer identities are never exposed'],
-                ['label' => 'Bookings', 'value' => $profile->bookings->count(), 'note' => 'Current workspace data'],
-                ['label' => 'Verified reviews', 'value' => $profile->verified_review_count, 'note' => 'Linked to completed services'],
-                ['label' => 'Forum answers', 'value' => $profile->forum_answer_count, 'note' => 'Professional contributions'],
+                ['label' => __('messages.profile_views_63c2d118f7'), 'value' => 0, 'note' => __('messages.private_viewer_identities_are_never_exposed_c2359c0069')],
+                ['label' => __('messages.bookings_4e5f81ada7'), 'value' => $profile->bookings->count(), 'note' => __('messages.current_workspace_data_0531772b33')],
+                ['label' => __('messages.verified_reviews_dd3744117b'), 'value' => $profile->verified_review_count, 'note' => __('messages.linked_to_completed_services_a9d0793c9a')],
+                ['label' => __('messages.forum_answers_58a4040bb0'), 'value' => $profile->forum_answer_count, 'note' => __('messages.professional_contributions_6b23600de2')],
             ],
         ];
     }
@@ -468,10 +486,10 @@ class ExpertPresenter
         $published = fn (): Builder => ExpertProfile::query()->published();
 
         return [
-            ['label' => 'Published profiles', 'value' => $published()->count(), 'icon' => 'stethoscope'],
-            ['label' => 'Qualifications verified', 'value' => $published()->where('qualification_verified', true)->count(), 'icon' => 'badge-check'],
-            ['label' => 'Accepting clients', 'value' => $published()->where('accepts_new_clients', true)->count(), 'icon' => 'calendar-check'],
-            ['label' => 'Species covered', 'value' => count($this->taxonomy->species()), 'icon' => 'paw-print'],
+            ['label' => __('messages.published_profiles_948161d31f'), 'value' => $published()->count(), 'icon' => 'stethoscope'],
+            ['label' => __('messages.qualifications_verified_a49aaeb0ef'), 'value' => $published()->where('qualification_verified', true)->count(), 'icon' => 'badge-check'],
+            ['label' => __('messages.accepting_clients_34310f30b5'), 'value' => $published()->where('accepts_new_clients', true)->count(), 'icon' => 'calendar-check'],
+            ['label' => __('messages.species_covered_acf9471e40'), 'value' => count($this->taxonomy->species()), 'icon' => 'paw-print'],
         ];
     }
 
@@ -479,11 +497,21 @@ class ExpertPresenter
     private function card(ExpertProfile $profile, array $filters = []): array
     {
         $reasons = collect([
-            filled($filters['species'] ?? null) ? 'Works with '.Str::headline((string) $filters['species']) : null,
-            filled($filters['specialization'] ?? null) ? 'Specializes in '.Str::headline((string) $filters['specialization']) : null,
-            filled($filters['city'] ?? null) ? 'Available in '.$profile->city : null,
-            filled($filters['language'] ?? null) ? 'Consults in '.$filters['language'] : null,
-            $profile->qualification_verified ? 'Qualification verified' : null,
+            filled($filters['species'] ?? null)
+                ? __('presentation.works_with', ['species' => Str::headline((string) $filters['species'])])
+                : null,
+            filled($filters['specialization'] ?? null)
+                ? __('presentation.specializes_in', [
+                    'specialization' => Str::headline((string) $filters['specialization']),
+                ])
+                : null,
+            filled($filters['city'] ?? null)
+                ? __('presentation.available_in', ['city' => $profile->city])
+                : null,
+            filled($filters['language'] ?? null)
+                ? __('presentation.consults_in', ['language' => $filters['language']])
+                : null,
+            $profile->qualification_verified ? __('messages.qualification_verified_bfd453f9ac') : null,
         ])->filter()->take(3)->values()->all();
 
         return [
@@ -501,7 +529,7 @@ class ExpertPresenter
             'verification' => $profile->verification_status->label(),
             'qualification_verified' => $profile->qualification_verified,
             'accepts_new_clients' => $profile->accepts_new_clients,
-            'next_available' => $profile->next_available_at?->format('D, M j · H:i'),
+            'next_available' => $this->formatter->dateTime($profile->next_available_at),
             'price_from' => $profile->price_from,
             'currency' => $profile->currency,
             'rating' => $profile->review_average,
@@ -531,15 +559,15 @@ class ExpertPresenter
             'offers_emergency_care' => $profile->offers_emergency_care,
             'profile_status' => $profile->status->label(),
             'verification_items' => [
-                ['label' => 'Identity', 'verified' => $profile->identity_verified, 'detail' => 'Government identity checked privately'],
-                ['label' => 'Education', 'verified' => $profile->education_verified, 'detail' => 'Education document matched to the stated field'],
-                ['label' => 'Qualification', 'verified' => $profile->qualification_verified, 'detail' => 'Professional scope checked'],
-                ['label' => 'License', 'verified' => $profile->license_verified, 'detail' => 'Current license checked where required'],
-                ['label' => 'Workplace', 'verified' => $profile->workplace_verified, 'detail' => 'Current workplace relationship confirmed'],
-                ['label' => 'Organization', 'verified' => $profile->organization_verified, 'detail' => 'Organization record confirmed separately'],
-                ['label' => 'Contact', 'verified' => $profile->contact_verified, 'detail' => 'Professional contact channel confirmed'],
+                ['label' => __('messages.identity_999f23fcd7'), 'verified' => $profile->identity_verified, 'detail' => __('messages.government_identity_checked_privately_ee97bd4448')],
+                ['label' => __('messages.education_512ab3c6b9'), 'verified' => $profile->education_verified, 'detail' => __('messages.education_document_matched_to_the_stated_field_98a3940a1e')],
+                ['label' => __('messages.qualification_00945c89f7'), 'verified' => $profile->qualification_verified, 'detail' => __('messages.professional_scope_checked_5d8e8beb47')],
+                ['label' => __('messages.license_c011d6097b'), 'verified' => $profile->license_verified, 'detail' => __('messages.current_license_checked_where_required_443fbbe3fa')],
+                ['label' => __('messages.workplace_09fd2948a8'), 'verified' => $profile->workplace_verified, 'detail' => __('messages.current_workplace_relationship_confirmed_6f73805b7e')],
+                ['label' => __('messages.organization_d764d42592'), 'verified' => $profile->organization_verified, 'detail' => __('messages.organization_record_confirmed_separately_7440e2247f')],
+                ['label' => __('messages.contact_2b5c3d2672'), 'verified' => $profile->contact_verified, 'detail' => __('messages.professional_contact_channel_confirmed_60a8501a85')],
             ],
-            'verification_expires' => $profile->verification_expires_at?->format('M Y'),
+            'verification_expires' => $this->formatter->monthYear($profile->verification_expires_at),
         ];
     }
 
@@ -552,7 +580,9 @@ class ExpertPresenter
             'format' => Str::headline($service->format),
             'format_value' => $service->format,
             'description' => $service->description,
-            'duration' => $service->duration_minutes.' min',
+            'duration' => __('presentation.minutes', [
+                'count' => $this->formatter->number($service->duration_minutes),
+            ]),
             'price' => $service->price,
             'currency' => $service->currency,
             'pricing_model' => Str::headline($service->pricing_model ?? 'fixed'),
@@ -572,8 +602,8 @@ class ExpertPresenter
         return [
             'id' => $slot->id,
             'service_id' => $slot->service_id,
-            'label' => $slot->starts_at->format('D, M j · H:i'),
-            'ends_at' => $slot->ends_at->format('H:i'),
+            'label' => $this->formatter->dateTime($slot->starts_at, $slot->timezone),
+            'ends_at' => $this->formatter->time($slot->ends_at, $slot->timezone),
             'timezone' => $slot->timezone,
             'format' => Str::headline($slot->format),
             'location' => $slot->location_label,
@@ -585,7 +615,7 @@ class ExpertPresenter
     private function review(Review $review): array
     {
         return [
-            'reviewer_name' => $review->is_anonymous ? 'Verified client' : $review->reviewer_name,
+            'reviewer_name' => $review->is_anonymous ? __('messages.verified_client_4f33afac44') : $review->reviewer_name,
             'is_verified_client' => $review->is_verified_client,
             'rating' => $review->rating,
             'communication_rating' => $review->communication_rating,
@@ -594,7 +624,7 @@ class ExpertPresenter
             'price_transparency_rating' => $review->price_transparency_rating,
             'body' => $review->body,
             'expert_reply' => $review->expert_reply,
-            'created_label' => $review->created_at->format('M j, Y'),
+            'created_label' => $this->formatter->date($review->created_at),
         ];
     }
 }

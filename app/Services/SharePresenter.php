@@ -12,7 +12,7 @@ final class SharePresenter
     public function present(array $item, array $recipients): array
     {
         $url = route($item['route'], $item['route_parameters'] ?? []);
-        $message = 'I thought you would enjoy '.$item['title'].' on PawCircle: '.$url;
+        $message = __('presentation.share_message', ['title' => $item['title'], 'url' => $url]);
 
         return [
             'item' => [
@@ -21,25 +21,25 @@ final class SharePresenter
             ],
             'channels' => [
                 [
-                    'title' => 'Email',
-                    'description' => 'Open a ready-to-send email with the PawCircle link.',
+                    'title' => __('messages.email_969ccbd3cf'),
+                    'description' => __('messages.open_a_ready_to_send_email_with_the_pawcircle_link_0a3b3462f2'),
                     'icon' => 'mail',
                     'href' => $this->emailUrl($item['title'], $message),
-                    'label' => 'Open email',
+                    'label' => __('messages.open_email_02377d0df1'),
                 ],
                 [
-                    'title' => 'Text message',
-                    'description' => 'Open your messaging app with the link already included.',
+                    'title' => __('messages.text_message_ca47049e48'),
+                    'description' => __('messages.open_your_messaging_app_with_the_link_already_included_bd6c71f256'),
                     'icon' => 'message-square-text',
                     'href' => 'sms:?body='.rawurlencode($message),
-                    'label' => 'Open messages',
+                    'label' => __('messages.open_messages_cf997592c9'),
                 ],
                 [
-                    'title' => 'Original page',
-                    'description' => 'Review the full PawCircle page before you send it.',
+                    'title' => __('messages.original_page_a7fd19fbb1'),
+                    'description' => __('messages.review_the_full_pawcircle_page_before_you_send_it_3bc5ba94a9'),
                     'icon' => 'external-link',
                     'href' => $url,
-                    'label' => 'Open original',
+                    'label' => __('messages.open_original_44a915faf3'),
                 ],
             ],
             'recipients' => array_map(
@@ -54,9 +54,9 @@ final class SharePresenter
                 $recipients,
             ),
             'linkDetails' => [
-                ['label' => 'Share type', 'value' => $item['type']],
-                ['label' => 'Destination', 'value' => $item['title']],
-                ['label' => 'Link', 'value' => $url],
+                ['label' => __('messages.share_type_418f2bb1d1'), 'value' => $item['type']],
+                ['label' => __('messages.destination_293d404a50'), 'value' => $item['title']],
+                ['label' => __('messages.link_a6a32dbc56'), 'value' => $url],
             ],
         ];
     }
@@ -64,7 +64,7 @@ final class SharePresenter
     private function emailUrl(string $title, string $message): string
     {
         return 'mailto:?'.http_build_query([
-            'subject' => 'From PawCircle: '.$title,
+            'subject' => __('presentation.share_subject', ['title' => $title]),
             'body' => $message,
         ], '', '&', PHP_QUERY_RFC3986);
     }

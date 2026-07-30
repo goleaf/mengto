@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Actions;
 
 use App\Models\AuditLog;
@@ -54,10 +56,13 @@ class ResolveDeviceAccess
                     'serial_number', 'image_url', 'public_zone_label',
                     'private_location_label', 'privacy', 'status',
                     'connection_status', 'operating_mode', 'connection_type',
-                    'firmware_version', 'battery_percent', 'signal_strength',
+                    'provider_status', 'firmware_version', 'battery_percent',
+                    'signal_strength',
                     'last_seen_at', 'last_synced_at', 'last_location_at',
                     'current_latitude', 'current_longitude',
-                    'location_accuracy_meters', 'has_backup_power',
+                    'location_accuracy_meters', 'location_retention_days',
+                    'media_retention_days', 'telemetry_retention_days',
+                    'safety_state_recorded_at', 'has_backup_power',
                     'supports_local_operation', 'requires_cloud',
                     'is_medical_device', 'is_blocked', 'is_reported_stolen',
                     'updated_at',

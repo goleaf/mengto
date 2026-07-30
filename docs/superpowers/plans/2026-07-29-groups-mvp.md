@@ -1,5 +1,7 @@
 # Implementation Plan: PawCircle Groups MVP
 
+> Historical delivery record. Production requirements, security rules, testing gates, and runtime versions are governed by `docs/index.md` and its canonical documents.
+
 ## Architecture Decisions
 
 - Keep the feature session-backed because the current application is an interactive prototype.

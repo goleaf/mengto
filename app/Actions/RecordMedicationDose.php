@@ -28,7 +28,7 @@ class RecordMedicationDose
                 if ($existingByKey->medical_record_id !== $record->id
                     || $existingByKey->medication_id !== $medication->id) {
                     throw ValidationException::withMessages([
-                        'idempotency_key' => 'This dose submission key is already in use.',
+                        'idempotency_key' => __('messages.this_dose_submission_key_is_already_in_use_7f9d7e9c37'),
                     ]);
                 }
 
@@ -45,13 +45,13 @@ class RecordMedicationDose
 
             if ($lockedMedication->medical_record_id !== $record->id) {
                 throw ValidationException::withMessages([
-                    'medication_id' => 'This medication does not belong to the selected medical record.',
+                    'medication_id' => __('messages.this_medication_does_not_belong_to_the_selected_medical__e0e36cb34b'),
                 ]);
             }
 
             if (! $lockedMedication->status->isDoseable()) {
                 throw ValidationException::withMessages([
-                    'medication_id' => 'This medication is not active. Check the current veterinary plan.',
+                    'medication_id' => __('messages.this_medication_is_not_active_check_the_current_veterina_d487e8874b'),
                 ]);
             }
 
@@ -67,7 +67,7 @@ class RecordMedicationDose
             if ($existingSlot !== null) {
                 throw ValidationException::withMessages([
                     'scheduled_for' => sprintf(
-                        'This dose slot is already marked %s by %s.',
+                        __('messages.this_dose_slot_is_already_marked_s_by_s_4dcbe77c01'),
                         $existingSlot->status->label(),
                         $existingSlot->administered_by_name,
                     ),

@@ -1,17 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories;
 
 use App\Enums\ReviewStatus;
 use App\Models\Listing;
 use App\Models\ListingReview;
 use App\Models\Order;
-use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<ListingReview>
+ * @extends ApplicationFactory<ListingReview>
  */
-class ListingReviewFactory extends Factory
+class ListingReviewFactory extends ApplicationFactory
 {
     public function configure(): static
     {

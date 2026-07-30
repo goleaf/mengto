@@ -64,16 +64,19 @@ local alerts. People can choose recommended or chronological order and switch
 between following, friends, pets, local, groups, experts, shelters, alerts,
 video, photos, saved posts, drafts, and archive views.
 
-The first functional prototype supports text, photos, native video, questions,
+The publication surface supports text, photos, native video, questions,
 lost-pet notices, adoption posts, curated polls, and repost presentation.
 Managed publications can be drafted, edited, archived, restored, and deleted
 through an explicit confirmation screen. Social actions include reactions,
 comments, one-level replies, reposts, bookmarks, update subscriptions,
 not-interested, mute, block, and private reports.
 
-Mutable feed state remains browser-session-backed in the prototype. Database
-storage, uploads, queues, moderation operations, ranking models, notification
-delivery, and analytics are production milestones rather than simulated claims.
+Mutable feed state is stored in encrypted per-user domain records behind
+authenticated Actions. Browser session data is never authoritative for
+identity, access control, payments, private care, medical records, device
+control, social mutations, or audit history. Provider-backed uploads,
+delivery, ranking, and analytics remain explicit integrations and are never
+simulated as completed capabilities.
 
 Posts use public places or approximate areas instead of home coordinates.
 Sensitive media requires an explicit reveal, videos never autoplay, and

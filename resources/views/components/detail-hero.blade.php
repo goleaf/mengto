@@ -54,13 +54,13 @@
 
         <x-detail-meta-list :items="$detail['meta']" />
 
-        <x-tag-list :items="$detail['tags']" empty="No topics listed." roomy class="detail-hero__tags" />
+        <x-tag-list :items="$detail['tags']" empty="{{ __('ui.no_topics_listed_5812c5b7da') }}" roomy class="detail-hero__tags" />
 
         <x-stat-grid
             :items="$detail['stats']"
             :label="$summaryLabel"
             :icons="$summaryIcons"
-            empty="Summary unavailable."
+            empty="{{ __('ui.summary_unavailable_3a2c4e48c8') }}"
             large
         />
     </div>

@@ -16,23 +16,23 @@
         <div class="p-5">
             <div class="flex items-start justify-between gap-4">
                 <div>
-                    <p class="text-xs font-semibold uppercase tracking-normal text-paw-leaf">Lives with {{ $pet['owner_name'] }}</p>
+                    <p class="text-xs font-semibold uppercase tracking-normal text-paw-leaf">{{ __('presentation.lives_with', ['owner' => $pet['owner_name']]) }}</p>
                     <h2 class="mt-2 break-words text-xl font-semibold text-paw-ink">{{ $pet['name'] }}</h2>
                     <p class="mt-1 text-sm font-semibold text-paw-coral">{{ $pet['breed'] }} · {{ $pet['age'] }}</p>
                 </div>
                 <x-action-control
-                    label="Plan a walk"
+                    label="{{ __('ui.plan_a_walk_10f67c3800') }}"
                     icon="footprints"
                     variant="paper"
                     :endpoint="route('actions.perform')"
-                    :payload="['action' => 'plan-walk', 'target' => 'mochi', 'label' => 'Mochi']"
+                    :payload="['action' => 'plan-walk', 'target' => 'mochi', 'label' => __('ui.mochi_95114c81f3')]"
                     class="shrink-0"
                 />
             </div>
 
             <p class="mt-3 text-sm leading-6 text-paw-muted">{{ $pet['status'] }}</p>
 
-            <x-tag-list :items="$pet['traits']" empty="Routine notes unavailable." class="mt-4" />
+            <x-tag-list :items="$pet['traits']" empty="{{ __('ui.routine_notes_unavailable_ad69e4efba') }}" class="mt-4" />
 
             <dl class="mt-5 grid gap-3 border-t border-paw-line pt-4 sm:grid-cols-3">
                 @forelse ($pet['routine'] as $item)
@@ -41,7 +41,7 @@
                         <dd class="mt-1 text-sm font-semibold leading-5 text-paw-ink">{{ $item['value'] }}</dd>
                     </div>
                 @empty
-                    <div class="text-sm text-paw-muted">No routine details yet.</div>
+                    <div class="text-sm text-paw-muted">{{ __('ui.no_routine_details_yet_73d49deb32') }}</div>
                 @endforelse
             </dl>
         </div>

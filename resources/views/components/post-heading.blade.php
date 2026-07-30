@@ -23,7 +23,7 @@
                     {{ $post['author'] }}
                 @endif
                 @if ($post['verified'] ?? false)
-                    <x-lucide-badge-check class="icon icon--sm text-paw-teal" aria-label="Verified profile" />
+                    <x-lucide-badge-check class="icon icon--sm text-paw-teal" aria-label="{{ __('ui.verified_profile_445947549b') }}" />
                 @endif
         @if ((int) $level === 3)
             </h3>

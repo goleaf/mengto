@@ -19,6 +19,6 @@ class DeviceEventAcknowledgeController extends Controller
         $acknowledge->handle($smartDevice, $deviceEvent);
 
         return to_route('devices.show', $smartDevice)
-            ->with('feedback', 'Event acknowledged. The original device fact remains in history.');
+            ->with('feedback', __('messages.event_acknowledged_the_original_device_fact_remains_in_h_0ad111098c'));
     }
 }

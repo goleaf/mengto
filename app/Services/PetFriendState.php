@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Services;
+declare(strict_types=1);
 
-use Illuminate\Contracts\Session\Session;
+namespace App\Services;
 
 final class PetFriendState
 {
-    private const SESSION_KEY = 'pet-friends.state.v1';
+    private const STATE_NAMESPACE = 'pet-friends.state.v1';
 
-    public function __construct(private readonly Session $session) {}
+    public function __construct(private readonly PersistentStateStore $states) {}
 
     /**
      * @return array<string, array<string, mixed>>
@@ -72,7 +72,7 @@ final class PetFriendState
             'share_area' => $details['share_area'],
             'requested_at' => now()->toAtomString(),
             'accepted_at' => '',
-            'last_activity' => 'Request sent just now',
+            'last_activity' => __('messages.request_sent_just_now_3d449d1369'),
         ];
         $this->store($state);
 
@@ -91,7 +91,7 @@ final class PetFriendState
             return false;
         }
 
-        return $this->setStatus($source, $target, 'removed', 'Request cancelled');
+        return $this->setStatus($source, $target, 'removed', __('messages.request_cancelled_7108183f18'));
     }
 
     public function resolveRequest(string $source, string $target, string $status): bool
@@ -113,7 +113,7 @@ final class PetFriendState
             ...$relationship,
             'status' => $status,
             'accepted_at' => $status === 'accepted' ? now()->toAtomString() : '',
-            'last_activity' => $status === 'accepted' ? 'Friends since today' : 'Request declined',
+            'last_activity' => $status === 'accepted' ? __('messages.friends_since_today_ae7fd8685d') : __('messages.request_declined_1df48b2da0'),
         ];
         $this->store($state);
 
@@ -129,7 +129,7 @@ final class PetFriendState
         }
 
         $status = $relationship['status'] === 'accepted' ? 'paused' : 'accepted';
-        $activity = $status === 'paused' ? 'Friendship paused' : 'Friendship restored';
+        $activity = $status === 'paused' ? __('messages.friendship_paused_bece4e4bfe') : __('messages.friendship_restored_f991206499');
         $this->setStatus($source, $target, $status, $activity);
 
         return $status;
@@ -143,7 +143,7 @@ final class PetFriendState
             return false;
         }
 
-        return $this->setStatus($source, $target, 'removed', 'Friendship removed');
+        return $this->setStatus($source, $target, 'removed', __('messages.friendship_removed_a34bf9cab9'));
     }
 
     public function setBlocked(string $source, string $target, bool $blocked): void
@@ -167,7 +167,7 @@ final class PetFriendState
                 'accepted_at' => '',
             ]),
             'status' => $blocked ? 'blocked' : 'removed',
-            'last_activity' => $blocked ? 'Profile blocked' : 'Block removed',
+            'last_activity' => $blocked ? __('messages.profile_blocked_6daa462432') : __('messages.block_removed_8de2508233'),
         ];
         $state['last_blocked'][$source] = $blocked ? $target : null;
         $this->store($state);
@@ -254,21 +254,14 @@ final class PetFriendState
      */
     private function state(): array
     {
-        $state = $this->session->get(self::SESSION_KEY, []);
+        $state = $this->states->get(self::STATE_NAMESPACE);
 
-        return is_array($state)
-            ? [
-                'relationships' => $state['relationships'] ?? [],
-                'dismissed' => $state['dismissed'] ?? [],
-                'last_dismissed' => $state['last_dismissed'] ?? [],
-                'last_blocked' => $state['last_blocked'] ?? [],
-            ]
-            : [
-                'relationships' => [],
-                'dismissed' => [],
-                'last_dismissed' => [],
-                'last_blocked' => [],
-            ];
+        return [
+            'relationships' => $state['relationships'] ?? [],
+            'dismissed' => $state['dismissed'] ?? [],
+            'last_dismissed' => $state['last_dismissed'] ?? [],
+            'last_blocked' => $state['last_blocked'] ?? [],
+        ];
     }
 
     /**
@@ -276,7 +269,7 @@ final class PetFriendState
      */
     private function store(array $state): void
     {
-        $this->session->put(self::SESSION_KEY, $state);
+        $this->states->put(self::STATE_NAMESPACE, $state);
     }
 
     /**
@@ -292,10 +285,10 @@ final class PetFriendState
                 'pet-mochi',
                 'accepted',
                 ['walk', 'neighbor'],
-                'We met through Ari after a calm Fields Park walk.',
-                'Fields Park',
+                __('messages.we_met_through_ari_after_a_calm_fields_park_walk_ede421f870'),
+                __('messages.fields_park_82bb556189'),
                 '2025-09-14T10:00:00-07:00',
-                'Walked together 3 days ago',
+                __('messages.walked_together_3_days_ago_1e3aa30e32'),
             ),
             $this->defaultRelationship(
                 'pet-nori',
@@ -304,10 +297,10 @@ final class PetFriendState
                 'pet-pip',
                 'accepted',
                 ['play', 'neighbor'],
-                'Quiet indoor friends through Lena and Mia.',
-                'Kerns neighborhood',
+                __('messages.quiet_indoor_friends_through_lena_and_mia_f38478f7e5'),
+                __('messages.kerns_neighborhood_4a912bd124'),
                 '2026-02-08T11:30:00-08:00',
-                'Shared a photo 2 weeks ago',
+                __('messages.shared_a_photo_2_weeks_ago_080755aed8'),
             ),
             $this->defaultRelationship(
                 'pet-juniper',
@@ -316,10 +309,10 @@ final class PetFriendState
                 'pet-scout',
                 'pending',
                 ['walk', 'training'],
-                'We met near the river trail. Juniper does best with a parallel first walk.',
-                'Sellwood Riverfront',
+                __('messages.we_met_near_the_river_trail_juniper_does_best_with_a_par_0e0ee057e1'),
+                __('messages.sellwood_riverfront_0bd0c8c5f7'),
                 '',
-                'Requested yesterday',
+                __('messages.requested_yesterday_abd3e3657c'),
             ),
             $this->defaultRelationship(
                 'pet-scout',
@@ -328,10 +321,10 @@ final class PetFriendState
                 'pet-luna-labrador',
                 'pending',
                 ['walk', 'play'],
-                'Scout and Luna have similar energy. We could start with a leashed park loop.',
-                'Wallace Park',
+                __('messages.scout_and_luna_have_similar_energy_we_could_start_with_a_8bc6712356'),
+                __('messages.wallace_park_59b65dd2e0'),
                 '',
-                'Requested 4 days ago',
+                __('messages.requested_4_days_ago_f0c153da61'),
             ),
             $this->defaultRelationship(
                 'pet-olive-rabbit',
@@ -340,10 +333,10 @@ final class PetFriendState
                 'pet-nori',
                 'pending',
                 ['neighbor'],
-                'We share quiet indoor enrichment ideas. Any visit would use separate rooms.',
-                'Sellwood neighbors',
+                __('messages.we_share_quiet_indoor_enrichment_ideas_any_visit_would_u_a7fd1af583'),
+                __('messages.sellwood_neighbors_575768cd4a'),
                 '',
-                'Requested 2 days ago',
+                __('messages.requested_2_days_ago_b796b08cd2'),
             ),
         ];
 

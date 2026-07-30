@@ -18,7 +18,7 @@ class RevokeMedicalAccess
         DB::transaction(function () use ($record, $grant): void {
             if ($grant->medical_record_id !== $record->id) {
                 throw ValidationException::withMessages([
-                    'grant' => 'This access grant does not belong to the selected record.',
+                    'grant' => __('messages.this_access_grant_does_not_belong_to_the_selected_record_dd280436cc'),
                 ]);
             }
 

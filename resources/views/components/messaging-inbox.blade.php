@@ -7,10 +7,10 @@
     'summary',
 ])
 
-<aside class="messaging-inbox" aria-label="Message inbox">
+<aside class="messaging-inbox" aria-label="{{ __('ui.message_inbox_168d0cd2fe') }}">
     <form method="GET" action="{{ route('messages.index') }}" class="messaging-inbox__search">
         <input type="hidden" name="filter" value="{{ $activeFilter }}">
-        <label for="message-conversation-search">Search dialogs</label>
+        <label for="message-conversation-search">{{ __('ui.search_dialogs_45fd1f64fc') }}</label>
         <div>
             <x-lucide-search class="icon icon--sm" aria-hidden="true" />
             <input
@@ -18,16 +18,16 @@
                 name="q"
                 value="{{ $query }}"
                 type="search"
-                placeholder="Person, pet, group, case"
+                placeholder="{{ __('ui.person_pet_group_case_74b3675b57') }}"
                 maxlength="80"
             >
-            <button type="submit" title="Search conversations" aria-label="Search conversations">
+            <button type="submit" title="{{ __('ui.search_conversations_8abdf3b226') }}" aria-label="{{ __('ui.search_conversations_8abdf3b226') }}">
                 <x-lucide-arrow-right class="icon icon--sm" aria-hidden="true" />
             </button>
         </div>
     </form>
 
-    <nav class="messaging-inbox__filters" aria-label="Inbox folders">
+    <nav class="messaging-inbox__filters" aria-label="{{ __('ui.inbox_folders_16c4c4771a') }}">
         @forelse ($filters as $filter)
             <a
                 href="{{ route('messages.index', array_filter(['filter' => $filter['key'], 'q' => $query])) }}"
@@ -38,16 +38,16 @@
                 <span>{{ $filter['label'] }}</span>
             </a>
         @empty
-            <span class="messaging-filter">Folders unavailable</span>
+            <span class="messaging-filter">{{ __('ui.folders_unavailable_c1856009a2') }}</span>
         @endforelse
     </nav>
 
     <div class="messaging-inbox__meta">
-        <strong>{{ count($conversations) }} shown</strong>
+        <strong>{{ __('presentation.shown_count', ['count' => count($conversations)]) }}</strong>
         <span>{{ $summary['count'] }}</span>
     </div>
 
-    <nav class="messaging-inbox__list" aria-label="Conversations">
+    <nav class="messaging-inbox__list" aria-label="{{ __('ui.conversations_1d432f5869') }}">
         @forelse ($conversations as $conversation)
             <a
                 href="{{ route('messages.index', ['conversation' => $conversation['key'], 'filter' => $activeFilter, 'q' => $query]) }}"
@@ -68,21 +68,21 @@
                     <span class="messaging-conversation__pet">{{ $conversation['pet'] }}</span>
                     <span class="messaging-conversation__preview">{{ $conversation['preview'] }}</span>
                     <span class="messaging-conversation__status">
-                        <span>{{ str($conversation['type'])->headline() }}</span>
+                        <span>{{ $conversation['type_label'] }}</span>
                         @if ($conversation['pinned'])
-                            <x-lucide-pin class="icon icon--xs" aria-label="Pinned" />
+                            <x-lucide-pin class="icon icon--xs" aria-label="{{ __('ui.pinned_f20c879465') }}" />
                         @endif
                         @if ($conversation['muted'])
-                            <x-lucide-bell-off class="icon icon--xs" aria-label="Muted" />
+                            <x-lucide-bell-off class="icon icon--xs" aria-label="{{ __('ui.muted_2346f214ad') }}" />
                         @endif
                         @if ($conversation['blocked'])
-                            <x-lucide-ban class="icon icon--xs" aria-label="Blocked" />
+                            <x-lucide-ban class="icon icon--xs" aria-label="{{ __('ui.blocked_18f2a0947f') }}" />
                         @endif
                     </span>
                 </span>
 
                 @if ($conversation['unread'] > 0)
-                    <span class="messaging-conversation__unread" aria-label="{{ $conversation['unread'] }} unread">
+                    <span class="messaging-conversation__unread" aria-label="{{ __('presentation.unread_count', ['count' => $conversation['unread']]) }}">
                         {{ $conversation['unread'] }}
                     </span>
                 @endif
@@ -90,8 +90,8 @@
         @empty
             <div class="messaging-inbox__empty">
                 <x-lucide-inbox class="icon" aria-hidden="true" />
-                <strong>No matching dialogs</strong>
-                <span>Change a folder or search phrase.</span>
+                <strong>{{ __('ui.no_matching_dialogs_8fb154f1ae') }}</strong>
+                <span>{{ __('ui.change_a_folder_or_search_phrase_4faaa96f3c') }}</span>
             </div>
         @endforelse
     </nav>

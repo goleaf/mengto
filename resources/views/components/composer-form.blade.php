@@ -14,7 +14,7 @@
     @if ($errors->any())
         <div role="alert" class="form-errors">
             <x-lucide-circle-alert class="icon icon--sm" aria-hidden="true" />
-            <p>Please review the highlighted fields.</p>
+            <p>{{ __('ui.please_review_the_highlighted_fields_9941c0ee3c') }}</p>
         </div>
     @endif
 
@@ -33,7 +33,7 @@
         <x-action-group class="form-actions">
             <x-action-control
                 :href="route($form['cancel_route'], $form['cancel_parameters'] ?? [])"
-                label="Cancel"
+                label="{{ __('ui.cancel_19766ed6cc') }}"
                 icon="x"
                 variant="paper"
                 size="regular"

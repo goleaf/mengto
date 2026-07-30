@@ -5,7 +5,7 @@
 
 <div
     role="list"
-    aria-label="Profile badges"
+    aria-label="{{ __('ui.profile_badges_d02d047bc0') }}"
     {{ $attributes->class([
         'profile-badges',
         'profile-badges--compact' => $compact,
@@ -20,6 +20,6 @@
             :size="$compact ? 'compact' : 'regular'"
         />
     @empty
-        <span class="text-sm text-paw-muted">No profile badges yet.</span>
+        <span class="text-sm text-paw-muted">{{ __('ui.no_profile_badges_yet_1094e6f23a') }}</span>
     @endforelse
 </div>

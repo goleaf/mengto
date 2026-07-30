@@ -19,6 +19,6 @@ class DeviceAutomationTestController extends Controller
         $test->handle($smartDevice, $deviceAutomation);
 
         return to_route('devices.manage', $smartDevice)
-            ->with('feedback', 'Simulation completed. No real device command was sent.');
+            ->with('feedback', __('messages.simulation_completed_no_real_device_command_was_sent_9bdc9094da'));
     }
 }

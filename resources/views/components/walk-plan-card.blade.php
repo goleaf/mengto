@@ -24,7 +24,7 @@
 
     <div class="walk-card__body">
         <header class="walk-card__header">
-            <p class="walk-card__eyebrow">{{ $plan['participant']['person'] }} and {{ $plan['participant']['pet'] }}</p>
+            <p class="walk-card__eyebrow">{{ __('presentation.pet_pair', ['person' => $plan['participant']['person'], 'pet' => $plan['participant']['pet']]) }}</p>
             <h2 class="walk-card__title">{{ $plan['title'] }}</h2>
             <p class="walk-card__description">{{ $plan['body'] }}</p>
         </header>

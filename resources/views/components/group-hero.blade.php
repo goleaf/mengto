@@ -36,14 +36,14 @@
             <h1 id="group-title" class="group-hero__title">{{ $group['name'] }}</h1>
             <p class="group-hero__description">{{ $group['long_description'] }}</p>
 
-            <div class="group-hero__meta" role="list" aria-label="Group details">
+            <div class="group-hero__meta" role="list" aria-label="{{ __('ui.group_details_e25e031235') }}">
                 @forelse ($group['meta'] as $item)
                     <x-icon-text :icon="$item['icon']" role="listitem">
                         {{ $item['label'] }}
                     </x-icon-text>
                 @empty
                     <x-icon-text icon="info" role="listitem">
-                        No public group details.
+                        {{ __('ui.no_public_group_details_6585df57a4') }}
                     </x-icon-text>
                 @endforelse
             </div>
@@ -81,7 +81,7 @@
 
     <x-summary-strip
         :items="$group['stats']"
-        label="Group summary"
+        label="{{ __('ui.group_summary_7192c8337e') }}"
         :icons="['users', 'paw-print', 'newspaper', 'calendar-days']"
         :columns="4"
         class="group-hero__summary"

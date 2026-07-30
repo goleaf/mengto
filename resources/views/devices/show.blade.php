@@ -5,17 +5,17 @@
                 <span><x-dynamic-component :component="'lucide-'.$device['icon']" class="size-8" aria-hidden="true" /></span>
                 <div>
                     <div class="flex flex-wrap items-center gap-2">
-                        <a href="{{ route('devices.index') }}" class="text-sm font-bold text-paw-leaf">Smart devices</a>
+                        <a href="{{ route('devices.index') }}" class="text-sm font-bold text-paw-leaf">{{ __('ui.smart_devices_228fd3f770') }}</a>
                         <span class="text-paw-line">/</span>
-                        <x-status-badge label="Private" icon="lock-keyhole" tone="surface" />
+                        <x-status-badge label="{{ __('ui.private_c63eb6720c') }}" icon="lock-keyhole" tone="surface" />
                     </div>
                     <h1 class="mt-2 text-3xl font-bold sm:text-4xl">{{ $device['name'] }}</h1>
-                    <p class="mt-2 text-paw-muted">{{ $device['type_label'] }} · {{ $device['brand_model'] ?: 'Manual device record' }} · {{ $device['serial'] ?: 'serial not recorded' }}</p>
+                    <p class="mt-2 text-paw-muted">{{ $device['type_label'] }} · {{ $device['brand_model'] ?: __('ui.manual_device_record_a4104fd24f') }} · {{ $device['serial'] ?: 'serial not recorded' }}</p>
                 </div>
             </div>
             <div class="flex flex-wrap gap-2">
-                <x-action-control :href="$device['manage_url']" label="Rules & access" icon="settings-2" />
-                <x-action-control :href="$device['lost_found_url']" label="Lost-pet center" icon="search" variant="primary" />
+                <x-action-control :href="$device['manage_url']" label="{{ __('ui.rules_access_5f59f5debe') }}" icon="settings-2" />
+                <x-action-control :href="$device['lost_found_url']" label="{{ __('ui.lost_pet_center_a82025ff33') }}" icon="search" variant="primary" />
             </div>
         </header>
 
@@ -23,37 +23,37 @@
             <div class="device-form-errors" role="alert">
                 <x-lucide-circle-alert class="size-5" aria-hidden="true" />
                 <div>
-                    <strong>The device action was not saved</strong>
+                    <strong>{{ __('ui.the_device_action_was_not_saved_a87ecd9fff') }}</strong>
                     <ul>
                         @forelse ($errors->all() as $error)
                             <li>{{ $error }}</li>
                         @empty
-                            <li>Validation failed.</li>
+                            <li>{{ __('ui.validation_failed_fa0dce7e0b') }}</li>
                         @endforelse
                     </ul>
                 </div>
             </div>
         @endif
 
-        <section class="device-status-strip" aria-label="Current device status">
+        <section class="device-status-strip" aria-label="{{ __('ui.current_device_status_31c25170b2') }}">
             <div>
                 <span class="device-status-strip__icon"><x-lucide-radio class="size-5" aria-hidden="true" /></span>
-                <small>Status</small>
+                <small>{{ __('ui.status_920e413c7d') }}</small>
                 <strong>{{ $device['status_label'] }}</strong>
             </div>
             <div>
                 <span class="device-status-strip__icon"><x-lucide-wifi class="size-5" aria-hidden="true" /></span>
-                <small>Connection</small>
+                <small>{{ __('ui.connection_639a40e82b') }}</small>
                 <strong>{{ $device['connection_label'] }}</strong>
             </div>
             <div>
                 <span class="device-status-strip__icon"><x-lucide-battery-medium class="size-5" aria-hidden="true" /></span>
-                <small>Battery</small>
+                <small>{{ __('ui.battery_dfcb7c1619') }}</small>
                 <strong>{{ $device['battery_label'] }}</strong>
             </div>
             <div>
                 <span class="device-status-strip__icon"><x-lucide-clock-3 class="size-5" aria-hidden="true" /></span>
-                <small>Last signal</small>
+                <small>{{ __('ui.last_signal_6f2cfbf3ce') }}</small>
                 <strong>{{ $device['last_seen'] }}</strong>
             </div>
         </section>
@@ -64,22 +64,22 @@
                     <section class="device-panel" aria-labelledby="device-location-title">
                         <div class="device-panel__heading">
                             <div>
-                                <p>Owner-only location</p>
-                                <h2 id="device-location-title">Last known position</h2>
+                                <p>{{ __('ui.owner_only_location_6a8732fbbf') }}</p>
+                                <h2 id="device-location-title">{{ __('ui.last_known_position_45a6c99e28') }}</h2>
                             </div>
                             <x-status-badge :label="$device['location_accuracy']" icon="crosshair" tone="surface" />
                         </div>
                         <div class="device-location">
-                            <div class="device-location__map" aria-label="Private map preview for {{ $device['location_label'] }}">
+                            <div class="device-location__map" aria-label="{{ __('presentation.private_map_preview', ['location' => $device['location_label']]) }}">
                                 <span class="device-location__route"></span>
                                 <span class="device-location__marker"><x-lucide-paw-print class="size-5" aria-hidden="true" /></span>
                                 <span class="device-location__home"><x-lucide-house class="size-4" aria-hidden="true" /></span>
                             </div>
                             <dl>
-                                <div><dt>Exact point</dt><dd>{{ $device['exact_location'] ?: 'No current coordinates' }}</dd></div>
-                                <div><dt>Installed / last area</dt><dd>{{ $device['location_label'] }}</dd></div>
-                                <div><dt>Location received</dt><dd>{{ $device['last_location'] }}</dd></div>
-                                <div><dt>Mode</dt><dd>{{ $device['operating_mode'] }}</dd></div>
+                                <div><dt>{{ __('ui.exact_point_bab90d06d4') }}</dt><dd>{{ $device['exact_location'] ?: __('ui.no_current_coordinates_d53a111f93') }}</dd></div>
+                                <div><dt>{{ __('ui.installed_last_area_62990fb5df') }}</dt><dd>{{ $device['location_label'] }}</dd></div>
+                                <div><dt>{{ __('ui.location_received_afd13ab77f') }}</dt><dd>{{ $device['last_location'] }}</dd></div>
+                                <div><dt>{{ __('ui.mode_5e23ec6a30') }}</dt><dd>{{ $device['operating_mode'] }}</dd></div>
                             </dl>
                         </div>
                     </section>
@@ -88,10 +88,10 @@
                 <section class="device-panel" aria-labelledby="device-events-title">
                     <div class="device-panel__heading">
                         <div>
-                            <p>Human review queue</p>
-                            <h2 id="device-events-title">Recent events</h2>
+                            <p>{{ __('ui.human_review_queue_2dd715e9d0') }}</p>
+                            <h2 id="device-events-title">{{ __('ui.recent_events_8ecce94dc3') }}</h2>
                         </div>
-                        <span class="text-sm font-semibold text-paw-muted">{{ count($events) }} shown</span>
+                        <span class="text-sm font-semibold text-paw-muted">{{ __('presentation.shown_count', ['count' => count($events)]) }}</span>
                     </div>
                     <x-device-event-list :events="$events" :device="$device" />
                 </section>
@@ -99,11 +99,11 @@
                 <section class="device-panel" aria-labelledby="device-readings-title">
                     <div class="device-panel__heading">
                         <div>
-                            <p>Source-aware telemetry</p>
-                            <h2 id="device-readings-title">Latest readings</h2>
+                            <p>{{ __('ui.source_aware_telemetry_5f88e716e9') }}</p>
+                            <h2 id="device-readings-title">{{ __('ui.latest_readings_5f0d3d253c') }}</h2>
                         </div>
                     </div>
-                    <p class="device-panel__note">A shared source remains unassigned until a person or supported identifier confirms the pet. Device measurements are non-clinical unless explicitly verified.</p>
+                    <p class="device-panel__note">{{ __('ui.a_shared_source_remains_unassigned_until_a_person_98f394a271') }}</p>
                     <x-device-reading-table :readings="$readings" :device="$device" />
                 </section>
             </main>
@@ -112,8 +112,8 @@
                 <section class="device-panel" aria-labelledby="device-control-title">
                     <div class="device-panel__heading">
                         <div>
-                            <p>Idempotent command</p>
-                            <h2 id="device-control-title">Device control</h2>
+                            <p>{{ __('ui.idempotent_command_2b03806393') }}</p>
+                            <h2 id="device-control-title">{{ __('ui.device_control_1c3da27ae2') }}</h2>
                         </div>
                         <x-lucide-shield-check class="size-5 text-paw-leaf" aria-hidden="true" />
                     </div>
@@ -121,32 +121,32 @@
                         @csrf
                         <input type="hidden" name="idempotency_key" value="{{ $command_idempotency_key }}">
                         <label>
-                            Command
+                            {{ __('ui.command_713166971d') }}
                             <select name="command_type" required>
                                 @forelse ($command_options as $command)
                                     <option value="{{ $command['value'] }}">{{ $command['label'] }}</option>
                                 @empty
-                                    <option value="">No remote commands</option>
+                                    <option value="">{{ __('ui.no_remote_commands_c3ab88273c') }}</option>
                                 @endforelse
                             </select>
                         </label>
                         @if ($device['type'] === 'feeder')
                             <label>
-                                Portion in grams
+                                {{ __('ui.portion_in_grams_6136d07a42') }}
                                 <input type="number" name="portion_grams" min="1" max="1000" value="20">
                             </label>
                         @endif
                         <label>
-                            Reason or context
-                            <input name="reason" maxlength="500" placeholder="Manual owner check">
+                            {{ __('ui.reason_or_context_1d108ab24a') }}
+                            <input name="reason" maxlength="500" placeholder="{{ __('ui.manual_owner_check_aacd44ff7d') }}">
                         </label>
                         <label class="device-check">
                             <input type="checkbox" name="confirmed" value="1">
-                            <span>Confirm high-impact command</span>
+                            <span>{{ __('ui.confirm_high_impact_command_42b24522e4') }}</span>
                         </label>
                         <button class="action action--primary" type="submit">
                             <x-lucide-send class="icon" aria-hidden="true" />
-                            <span>Send once</span>
+                            <span>{{ __('ui.send_once_477fa53d9a') }}</span>
                         </button>
                     </form>
                 </section>
@@ -154,8 +154,8 @@
                 <section class="device-panel" aria-labelledby="device-source-title">
                     <div class="device-panel__heading">
                         <div>
-                            <p>Identity boundaries</p>
-                            <h2 id="device-source-title">Assigned pets</h2>
+                            <p>{{ __('ui.identity_boundaries_0d8ce3b1b8') }}</p>
+                            <h2 id="device-source-title">{{ __('ui.assigned_pets_dd50d74ca4') }}</h2>
                         </div>
                     </div>
                     <div class="device-assignment-list">
@@ -168,7 +168,7 @@
                                 </div>
                             </article>
                         @empty
-                            <p class="text-sm text-paw-muted">No pet assignment. Readings stay unassigned.</p>
+                            <p class="text-sm text-paw-muted">{{ __('ui.no_pet_assignment_readings_stay_unassigned_778ebf6526') }}</p>
                         @endforelse
                     </div>
                 </section>
@@ -176,16 +176,24 @@
                 <section class="device-panel" aria-labelledby="device-technical-title">
                     <div class="device-panel__heading">
                         <div>
-                            <p>Technical status</p>
-                            <h2 id="device-technical-title">Diagnostics</h2>
+                            <p>{{ __('ui.technical_status_c44a5a72b5') }}</p>
+                            <h2 id="device-technical-title">{{ __('ui.diagnostics_268f14bbfe') }}</h2>
                         </div>
                     </div>
                     <dl class="device-definition-list">
-                        <div><dt>Connection</dt><dd>{{ $device['connection_type'] }}</dd></div>
-                        <div><dt>Firmware</dt><dd>{{ $device['firmware_version'] }}</dd></div>
-                        <div><dt>Signal</dt><dd>{{ $device['signal_strength'] ?? 'Not reported' }}</dd></div>
-                        <div><dt>Local fallback</dt><dd>{{ $device['supports_local_operation'] ? 'Available' : 'Not confirmed' }}</dd></div>
-                        <div><dt>Cloud dependency</dt><dd>{{ $device['requires_cloud'] ? 'Required' : 'Core functions local' }}</dd></div>
+                        <div><dt>{{ __('ui.connection_639a40e82b') }}</dt><dd>{{ $device['connection_type'] }}</dd></div>
+                        <div><dt>{{ __('devices.lifecycle.provider') }}</dt><dd>{{ $device['provider_status'] }}</dd></div>
+                        <div><dt>{{ __('ui.firmware_c2a314c3b3') }}</dt><dd>{{ $device['firmware_version'] }}</dd></div>
+                        <div><dt>{{ __('ui.signal_1e9806e422') }}</dt><dd>{{ $device['signal_strength'] ?? __('ui.not_reported_adadface01') }}</dd></div>
+                        <div><dt>{{ __('ui.local_fallback_0ef5a6159f') }}</dt><dd>{{ $device['supports_local_operation'] ? __('ui.available_e674447337') : __('ui.not_confirmed_bc1c29a467') }}</dd></div>
+                        <div><dt>{{ __('ui.cloud_dependency_22a834d986') }}</dt><dd>{{ $device['requires_cloud'] ? __('ui.required_4850b174b7') : __('ui.core_functions_local_f8de935179') }}</dd></div>
+                        <div><dt>{{ __('devices.retention.location') }}</dt><dd>{{ trans_choice('devices.retention.days', $device['location_retention_days'], ['count' => $device['location_retention_days']]) }}</dd></div>
+                        <div><dt>{{ __('devices.retention.media') }}</dt><dd>{{ trans_choice('devices.retention.days', $device['media_retention_days'], ['count' => $device['media_retention_days']]) }}</dd></div>
+                        <div><dt>{{ __('devices.retention.telemetry') }}</dt><dd>{{ trans_choice('devices.retention.days', $device['telemetry_retention_days'], ['count' => $device['telemetry_retention_days']]) }}</dd></div>
+                        <div>
+                            <dt>{{ __('devices.lifecycle.safety_interlock') }}</dt>
+                            <dd>{{ $device['has_fresh_safety_state'] ? __('devices.lifecycle.safety_fresh') : __('devices.lifecycle.safety_missing_or_stale') }}</dd>
+                        </div>
                     </dl>
                 </section>
 
@@ -193,8 +201,8 @@
                     <section class="device-panel" aria-labelledby="device-zones-title">
                         <div class="device-panel__heading">
                             <div>
-                                <p>Exact geometry encrypted</p>
-                                <h2 id="device-zones-title">Safe zones</h2>
+                                <p>{{ __('ui.exact_geometry_encrypted_1f0b6f6a6a') }}</p>
+                                <h2 id="device-zones-title">{{ __('ui.safe_zones_7092f20d84') }}</h2>
                             </div>
                         </div>
                         <div class="device-compact-list">
@@ -208,7 +216,7 @@
                                     </div>
                                 </article>
                             @empty
-                                <p>No zones.</p>
+                                <p>{{ __('ui.no_zones_a39700efdc') }}</p>
                             @endforelse
                         </div>
                     </section>
@@ -217,8 +225,8 @@
                 <section class="device-panel" aria-labelledby="device-reading-form-title">
                     <div class="device-panel__heading">
                         <div>
-                            <p>Manual import test</p>
-                            <h2 id="device-reading-form-title">Record a reading</h2>
+                            <p>{{ __('ui.manual_import_test_776404428c') }}</p>
+                            <h2 id="device-reading-form-title">{{ __('ui.record_a_reading_e82c73ca1b') }}</h2>
                         </div>
                     </div>
                     <form method="POST" action="{{ route('devices.readings.store', $device['slug']) }}" class="device-form-compact">
@@ -227,32 +235,32 @@
                         <input type="hidden" name="timezone" value="Europe/Vilnius">
                         <input type="hidden" name="confidence" value="medium">
                         <label>
-                            Metric
+                            {{ __('ui.metric_2d275a7491') }}
                             <select name="metric_type" required>
                                 @forelse ($metric_options as $metric)
                                     <option value="{{ $metric['value'] }}">{{ $metric['label'] }} ({{ $metric['unit'] }})</option>
                                 @empty
-                                    <option value="">No metrics</option>
+                                    <option value="">{{ __('ui.no_metrics_fd195330a4') }}</option>
                                 @endforelse
                             </select>
                         </label>
                         <label>
-                            Pet
+                            {{ __('ui.pet_8f0d1b30eb') }}
                             <select name="pet_profile_key">
-                                <option value="">Unknown / shared</option>
+                                <option value="">{{ __('ui.unknown_shared_e91fada2b0') }}</option>
                                 @forelse ($assignments as $assignment)
                                     <option value="{{ $assignment['pet_profile_key'] }}">{{ $assignment['pet_name'] }}</option>
                                 @empty
-                                    <option value="" disabled>No assigned pets</option>
+                                    <option value="" disabled>{{ __('ui.no_assigned_pets_740f9d089b') }}</option>
                                 @endforelse
                             </select>
                         </label>
                         <div class="device-form-grid device-form-grid--compact">
-                            <label>Value<input type="number" step="any" name="numeric_value"></label>
-                            <label>Unit<input name="unit" maxlength="40"></label>
+                            <label>{{ __('ui.value_8e37953d23') }}<input type="number" step="any" name="numeric_value"></label>
+                            <label>{{ __('ui.unit_4e545960f1') }}<input name="unit" maxlength="40"></label>
                         </div>
-                        <label>Recorded at<input type="datetime-local" name="recorded_at" value="{{ $now_local }}" required></label>
-                        <button class="action" type="submit"><x-lucide-plus class="icon" aria-hidden="true" /><span>Add unverified reading</span></button>
+                        <label>{{ __('ui.recorded_at_e4cea0827a') }}<input type="datetime-local" name="recorded_at" value="{{ $now_local }}" required></label>
+                        <button class="action" type="submit"><x-lucide-plus class="icon" aria-hidden="true" /><span>{{ __('ui.add_unverified_reading_3164d45d9b') }}</span></button>
                     </form>
                 </section>
             </aside>

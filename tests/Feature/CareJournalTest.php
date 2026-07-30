@@ -1,6 +1,7 @@
 <?php
 
 use App\Enums\CareEntryType;
+use App\Enums\CareSyncStatus;
 use App\Enums\CareTaskStatus;
 use App\Models\AuditLog;
 use App\Models\CareAccessGrant;
@@ -99,6 +100,47 @@ test('care entries are structured idempotent and guard against accidental double
         ->assertSessionHasErrors('confirm_duplicate');
 
     expect(CareEntry::query()->count())->toBe(1);
+});
+
+test('offline care entries preserve source time and synchronize idempotently', function () {
+    $journal = CareJournal::factory()->create([
+        'owner_key' => 'mia-carter',
+        'timezone' => 'Europe/Vilnius',
+    ]);
+    $key = (string) Str::uuid();
+    $payload = careEntryPayload($key, [
+        'started_at' => '2026-07-30 08:15:00',
+        'source_recorded_at' => '2026-07-30T12:20:00Z',
+        'source_timezone' => 'America/New_York',
+        'submitted_offline' => true,
+    ]);
+
+    $this->get(route('care-journals.show', $journal))
+        ->assertOk()
+        ->assertSee('data-care-entry-offline-form', false)
+        ->assertSee('name="source_recorded_at"', false)
+        ->assertSee('data-care-sync-status', false);
+
+    $this->postJson(route('care-journals.entries.store', $journal), $payload)
+        ->assertOk()
+        ->assertJsonPath('data.idempotency_key', $key)
+        ->assertJsonPath('data.sync_status', 'synchronized');
+
+    $this->postJson(route('care-journals.entries.store', $journal), $payload)
+        ->assertOk()
+        ->assertJsonPath('data.idempotency_key', $key);
+
+    $entry = CareEntry::query()->firstOrFail();
+
+    expect(CareEntry::query()->count())->toBe(1)
+        ->and($entry->sync_status)->toBe(CareSyncStatus::Synchronized)
+        ->and($entry->source_timezone)->toBe('America/New_York')
+        ->and($entry->source_recorded_at?->toIso8601String())
+        ->toBe('2026-07-30T12:20:00+00:00')
+        ->and($entry->started_at?->toIso8601String())
+        ->toBe('2026-07-30T12:15:00+00:00')
+        ->and($entry->synchronized_at)->not->toBeNull()
+        ->and(AuditLog::query()->where('action', 'care-entry.created')->count())->toBe(1);
 });
 
 test('completing a care task creates exactly one timeline entry', function () {
@@ -361,6 +403,7 @@ test('care schema includes owner timeline task and temporary access indexes', fu
         ->toContain('care_entries_idempotency_key_unique')
         ->toContain('care_entries_care_task_id_unique')
         ->toContain('care_entries_care_journal_id_type_started_at_index')
+        ->toContain('care_entries_journal_sync_recorded_index')
         ->and($taskIndexes)->toContain('care_tasks_care_journal_id_status_due_at_index')
         ->and($accessIndexes)
         ->toContain('care_access_grants_token_hash_unique')

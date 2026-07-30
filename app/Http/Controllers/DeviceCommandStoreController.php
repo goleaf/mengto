@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
 use App\Actions\IssueDeviceCommand;
@@ -15,10 +17,11 @@ class DeviceCommandStoreController extends Controller
         SmartDevice $smartDevice,
         IssueDeviceCommand $issue,
     ): RedirectResponse {
-        Gate::authorize('control', $smartDevice);
-        $issue->handle($smartDevice, $request->validated());
+        $validated = $request->validated();
+        Gate::authorize('controlCommand', [$smartDevice, $validated['command_type']]);
+        $issue->handle($smartDevice, $validated);
 
         return to_route('devices.show', $smartDevice)
-            ->with('feedback', 'Command applied once and recorded in the device audit.');
+            ->with('feedback', __('messages.command_accepted_once_delivery_status_is_shown_in_the_audit'));
     }
 }

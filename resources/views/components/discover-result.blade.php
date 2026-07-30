@@ -26,7 +26,7 @@
         </h3>
         <p class="mt-2 text-sm leading-6 text-paw-muted">{{ $result['description'] }}</p>
 
-        <x-tag-list :items="$result['tags']" empty="Open to local connections." class="mt-3" />
+        <x-tag-list :items="$result['tags']" empty="{{ __('ui.open_to_local_connections_f933964e4a') }}" class="mt-3" />
 
         <p class="mt-4 border-t border-paw-line pt-3 text-xs font-semibold text-paw-muted">{{ $result['detail'] }}</p>
     </div>

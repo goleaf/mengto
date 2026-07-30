@@ -1,17 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories;
 
 use App\Enums\ReservationStatus;
 use App\Models\Listing;
 use App\Models\Reservation;
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
 /**
- * @extends Factory<Reservation>
+ * @extends ApplicationFactory<Reservation>
  */
-class ReservationFactory extends Factory
+class ReservationFactory extends ApplicationFactory
 {
     /**
      * Define the model's default state.

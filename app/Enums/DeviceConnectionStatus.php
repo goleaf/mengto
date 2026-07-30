@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Enums;
 
 enum DeviceConnectionStatus: string
@@ -14,15 +16,7 @@ enum DeviceConnectionStatus: string
 
     public function label(): string
     {
-        return match ($this) {
-            self::Online => 'Online',
-            self::Offline => 'Offline',
-            self::Weak => 'Weak connection',
-            self::Connecting => 'Connecting',
-            self::Syncing => 'Syncing',
-            self::AuthenticationError => 'Sign-in required',
-            self::Unsupported => 'Support ended',
-        };
+        return __("devices.connection_status.{$this->value}");
     }
 
     public function tone(): string

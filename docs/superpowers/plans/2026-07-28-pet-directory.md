@@ -1,5 +1,7 @@
 # Pet Directory Implementation Plan
 
+> Historical delivery record. Production requirements, security rules, testing gates, and runtime versions are governed by `docs/index.md` and its canonical documents.
+
 > Execute with TDD and keep the current no-database prototype boundary.
 
 **Goal:** Add a polished static `/pets` directory and connect it to the shared

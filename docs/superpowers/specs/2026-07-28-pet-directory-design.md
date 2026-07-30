@@ -1,5 +1,7 @@
 # Pet Directory Design
 
+> Product design source. Preserve its domain detail; current production, security, persistence, and verification requirements are governed by `docs/index.md`.
+
 ## Status
 
 Approved by delegated user direction: proceed without further questions and

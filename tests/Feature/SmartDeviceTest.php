@@ -3,6 +3,7 @@
 use App\Actions\IssueDeviceCommand;
 use App\Enums\CareEntryStatus;
 use App\Enums\DeviceAutomationStatus;
+use App\Enums\DeviceCommandStatus;
 use App\Enums\DeviceConfidence;
 use App\Enums\DeviceType;
 use App\Enums\MedicalVerificationStatus;
@@ -14,6 +15,7 @@ use App\Models\DeviceAutomation;
 use App\Models\DeviceAutomationRun;
 use App\Models\DeviceCommand;
 use App\Models\DeviceEvent;
+use App\Models\DeviceLifecycleRecord;
 use App\Models\DevicePetAssignment;
 use App\Models\DeviceReading;
 use App\Models\DeviceSafeZone;
@@ -25,6 +27,10 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
+
+beforeEach(function () {
+    session()->passwordConfirmed();
+});
 
 test('an owner can connect a private multi-pet device with encrypted identifiers', function () {
     $this->post(route('devices.store'), smartDevicePayload())
@@ -45,6 +51,25 @@ test('an owner can connect a private multi-pet device with encrypted identifiers
         ->not->toContain('private entrance')
         ->and(AuditLog::query()->where('action', 'smart-device.created')->count())
         ->toBe(1);
+});
+
+test('precise device pages and commands require recent password confirmation', function () {
+    $device = SmartDevice::factory()->create([
+        'owner_key' => 'mia-carter',
+        'type' => DeviceType::GpsTracker,
+    ]);
+    session()->forget('auth.password_confirmed_at');
+
+    $this->get(route('devices.show', $device))
+        ->assertRedirect(route('password.confirm'));
+    $this->get(route('devices.manage', $device))
+        ->assertRedirect(route('password.confirm'));
+    $this->post(route('devices.commands.store', $device), [
+        'idempotency_key' => (string) Str::uuid(),
+        'command_type' => 'refresh-status',
+    ])->assertRedirect(route('password.confirm'));
+
+    expect(DeviceCommand::query()->doesntExist())->toBeTrue();
 });
 
 test('device pages are owner-only and return private response headers', function () {
@@ -109,6 +134,33 @@ test('readings are encrypted idempotent and shared devices do not invent a pet',
         ->toBe(1);
 });
 
+test('stale reconnect telemetry is grouped without discarding source readings', function () {
+    $device = SmartDevice::factory()->create([
+        'owner_key' => 'mia-carter',
+        'type' => DeviceType::Waterer,
+    ]);
+    $recordedAt = now()->subMinutes(20)->startOfMinute();
+
+    foreach ([1, 2] as $sequence) {
+        $this->post(route('devices.readings.store', $device), deviceReadingPayload([
+            'external_event_id' => 'reconnect-water-'.$sequence,
+            'metric_type' => 'water-use',
+            'numeric_value' => 40 + $sequence,
+            'unit' => 'ml',
+            'recorded_at' => $recordedAt->copy()->addMinutes($sequence)->format('Y-m-d H:i:s'),
+            'is_stale' => 1,
+        ]))->assertRedirect();
+    }
+
+    $event = DeviceEvent::query()->firstOrFail();
+
+    expect(DeviceReading::query()->count())->toBe(2)
+        ->and(DeviceEvent::query()->count())->toBe(1)
+        ->and($event->occurrence_count)->toBe(2)
+        ->and($event->details['grouped_after_reconnect'])->toBeTrue()
+        ->and($event->details['reading_ids'])->toHaveCount(2);
+});
+
 test('remote commands are idempotent and feeder duplication requires an override', function () {
     $device = SmartDevice::factory()->create([
         'owner_key' => 'mia-carter',
@@ -131,7 +183,16 @@ test('remote commands are idempotent and feeder duplication requires an override
     $this->post(route('devices.commands.store', $device), $payload)->assertRedirect();
 
     expect(DeviceCommand::query()->count())->toBe(1)
-        ->and(DeviceEvent::query()->where('type', 'dispense-food')->count())->toBe(1);
+        ->and(DeviceEvent::query()->where('type', 'dispense-food')->count())->toBe(1)
+        ->and(DeviceCommand::query()->firstOrFail()->status)
+        ->toBe(DeviceCommandStatus::Accepted)
+        ->and(DeviceCommand::query()->firstOrFail()->delivered_at)->toBeNull()
+        ->and(DeviceCommand::query()->firstOrFail()->completed_at)->toBeNull()
+        ->and(DeviceCommand::query()->firstOrFail()->result)
+        ->toMatchArray([
+            'platform_state_updated' => false,
+            'device_execution_confirmed' => false,
+        ]);
 
     $this->from(route('devices.show', $device))
         ->post(route('devices.commands.store', $device), [
@@ -165,6 +226,119 @@ test('high-impact and prohibited commands are guarded server-side', function () 
         'command_type' => 'electroshock',
     ]);
 })->throws(ValidationException::class, 'not allowed');
+
+test('physical movement commands fail closed without fresh clear interlocks', function () {
+    $door = SmartDevice::factory()->create([
+        'owner_key' => 'mia-carter',
+        'type' => DeviceType::SmartDoor,
+    ]);
+
+    $this->from(route('devices.show', $door))
+        ->post(route('devices.commands.store', $door), [
+            'idempotency_key' => (string) Str::uuid(),
+            'command_type' => 'unlock-door',
+            'confirmed' => 1,
+        ])
+        ->assertRedirect(route('devices.show', $door))
+        ->assertSessionHasErrors('command_type');
+
+    $door->update([
+        'safety_state' => [
+            'pet_in_doorway' => false,
+            'obstruction_detected' => false,
+        ],
+        'safety_state_recorded_at' => now(),
+    ]);
+
+    $this->post(route('devices.commands.store', $door), [
+        'idempotency_key' => (string) Str::uuid(),
+        'command_type' => 'unlock-door',
+        'confirmed' => 1,
+    ])->assertRedirect();
+
+    $command = DeviceCommand::query()->firstOrFail();
+
+    expect($command->status)->toBe(DeviceCommandStatus::Accepted)
+        ->and($command->completed_at)->toBeNull()
+        ->and($door->refresh()->operating_mode)->toBe('normal');
+});
+
+test('a theft report preserves owner access to lost mode', function () {
+    $gps = SmartDevice::factory()->create([
+        'owner_key' => 'mia-carter',
+        'type' => DeviceType::GpsTracker,
+        'is_reported_stolen' => true,
+    ]);
+
+    $this->post(route('devices.commands.store', $gps), [
+        'idempotency_key' => (string) Str::uuid(),
+        'command_type' => 'enable-lost-mode',
+        'confirmed' => 1,
+    ])->assertRedirect();
+
+    expect(DeviceCommand::query()->count())->toBe(1)
+        ->and($gps->refresh()->status->value)->toBe('lost-mode');
+});
+
+test('owners can configure retention and record an encrypted device lifecycle', function () {
+    $device = SmartDevice::factory()->create([
+        'owner_key' => 'mia-carter',
+        'firmware_version' => '1.0.0',
+    ]);
+    $oldLocation = DeviceReading::factory()->for($device)->create([
+        'metric_type' => 'location',
+        'recorded_at' => now()->subDays(40),
+    ]);
+    $currentLocation = DeviceReading::factory()->for($device)->create([
+        'metric_type' => 'location',
+        'recorded_at' => now()->subMinute(),
+    ]);
+    $oldEvent = DeviceEvent::factory()->for($device)->create([
+        'occurred_at' => now()->subDays(120),
+    ]);
+
+    $this->put(route('devices.retention.update', $device), [
+        'location_retention_days' => 7,
+        'media_retention_days' => 3,
+        'telemetry_retention_days' => 90,
+    ])
+        ->assertSessionHasNoErrors()
+        ->assertRedirect(route('devices.manage', $device));
+
+    $this->post(route('devices.lifecycle.store', $device), [
+        'kind' => 'firmware',
+        'status' => 'completed',
+        'severity' => 'important',
+        'effective_at' => now()->format('Y-m-d H:i:s'),
+        'version_from' => '1.0.0',
+        'version_to' => '1.1.0',
+        'reference' => 'SEC-UPDATE-110',
+        'note' => 'Installed after reviewing the vendor signature.',
+    ])
+        ->assertSessionHasNoErrors()
+        ->assertRedirect(route('devices.manage', $device));
+
+    $record = DeviceLifecycleRecord::query()->firstOrFail();
+    $device->refresh();
+
+    expect($device->location_retention_days)->toBe(7)
+        ->and($device->media_retention_days)->toBe(3)
+        ->and($device->telemetry_retention_days)->toBe(90)
+        ->and($device->firmware_version)->toBe('1.1.0')
+        ->and($record->details['reference'])->toBe('SEC-UPDATE-110')
+        ->and((string) $record->getRawOriginal('details'))
+        ->not->toContain('SEC-UPDATE-110')
+        ->and(DeviceReading::query()->whereKey($oldLocation->id)->doesntExist())
+        ->toBeTrue()
+        ->and(DeviceReading::query()->whereKey($currentLocation->id)->exists())
+        ->toBeTrue()
+        ->and(DeviceEvent::query()->whereKey($oldEvent->id)->doesntExist())
+        ->toBeTrue()
+        ->and(AuditLog::query()->where('action', 'device-retention.updated')->count())
+        ->toBe(1)
+        ->and(AuditLog::query()->where('action', 'device-lifecycle.recorded')->count())
+        ->toBe(1);
+});
 
 test('safe-zone geometry is encrypted and only gps trackers accept zones', function () {
     $gps = SmartDevice::factory()->create([
@@ -395,6 +569,7 @@ test('the smart device seeder is idempotent and keeps shared readings honest', f
         ->and(DeviceEvent::query()->count())->toBe(4)
         ->and(DeviceSafeZone::query()->count())->toBe(1)
         ->and(DeviceAutomation::query()->count())->toBe(1)
+        ->and(DeviceLifecycleRecord::query()->count())->toBe(1)
         ->and($sharedReading->pet_profile_key)->toBeNull()
         ->and($sharedReading->confidence)->toBe(DeviceConfidence::Low);
 });
@@ -405,6 +580,7 @@ test('device schema includes directory telemetry command and access indexes', fu
     $events = collect(Schema::getIndexes('device_events'))->pluck('name');
     $commands = collect(Schema::getIndexes('device_commands'))->pluck('name');
     $access = collect(Schema::getIndexes('device_access_grants'))->pluck('name');
+    $lifecycle = collect(Schema::getIndexes('device_lifecycle_records'))->pluck('name');
 
     expect($devices)
         ->toContain('smart_devices_owner_key_status_updated_at_index')
@@ -415,12 +591,15 @@ test('device schema includes directory telemetry command and access indexes', fu
         ->and($events)
         ->toContain('device_events_smart_device_id_external_event_id_unique')
         ->toContain('device_events_severity_status_occurred_at_index')
+        ->toContain('device_events_grouping_window_idx')
         ->and($commands)
         ->toContain('device_commands_idempotency_key_unique')
         ->toContain('device_commands_smart_device_id_command_type_issued_at_index')
         ->and($access)
         ->toContain('device_access_grants_token_hash_unique')
-        ->toContain('device_access_grants_smart_device_id_revoked_at_expires_at_index');
+        ->toContain('device_access_grants_smart_device_id_revoked_at_expires_at_index')
+        ->and($lifecycle)
+        ->toContain('device_lifecycle_device_kind_status_idx');
 });
 
 /** @param array<string, mixed> $overrides */

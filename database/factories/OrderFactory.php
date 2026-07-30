@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories;
 
 use App\Enums\OrderStatus;
@@ -7,13 +9,12 @@ use App\Enums\PaymentStatus;
 use App\Models\Listing;
 use App\Models\Order;
 use App\Models\Reservation;
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
 /**
- * @extends Factory<Order>
+ * @extends ApplicationFactory<Order>
  */
-class OrderFactory extends Factory
+class OrderFactory extends ApplicationFactory
 {
     public function configure(): static
     {

@@ -24,7 +24,7 @@
         </time>
 
         @if ($conversation['unread'] > 0)
-            <span class="grid size-5 place-items-center rounded-full bg-paw-leaf text-xs font-semibold text-white" aria-label="{{ $conversation['unread'] }} unread messages">
+            <span class="grid size-5 place-items-center rounded-full bg-paw-leaf text-xs font-semibold text-white" aria-label="{{ trans_choice('presentation.unread_messages', $conversation['unread'], ['count' => $conversation['unread']]) }}">
                 {{ $conversation['unread'] }}
             </span>
         @endif

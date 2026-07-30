@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use App\Enums\ForumTopicStatus;
@@ -7,12 +9,57 @@ use App\Enums\ForumTopicType;
 use App\Enums\ForumVisibility;
 use Database\Factories\ForumTopicFactory;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Carbon;
 
+/**
+ * @property-read ForumAnswer|null $acceptedAnswer
+ * @property int|null $accepted_answer_id
+ * @property-read Collection<int, ForumAnswer> $answers
+ * @property-read User|null $author
+ * @property int|null $author_id
+ * @property string $author_initials
+ * @property string $author_key
+ * @property string $author_name
+ * @property string|null $author_role
+ * @property string $body
+ * @property string $category
+ * @property string $comment_policy
+ * @property-read Collection<int, ForumComment> $comments
+ * @property Carbon|null $created_at
+ * @property string|null $desired_answer
+ * @property-read Collection<int, ForumEngagement> $engagements
+ * @property bool $has_expert_answer
+ * @property int $id
+ * @property bool $is_locked
+ * @property bool $is_medical
+ * @property bool $is_urgent
+ * @property-read Collection<int, KnowledgeArticle> $knowledgeArticles
+ * @property string $language
+ * @property Carbon|null $last_activity_at
+ * @property string|null $location
+ * @property array<array-key, mixed>|null $media
+ * @property string|null $pet_age_label
+ * @property string|null $pet_key
+ * @property string|null $pet_name
+ * @property string|null $pet_species
+ * @property Carbon|null $published_at
+ * @property-read Collection<int, ForumReport> $reports
+ * @property string $slug
+ * @property ForumTopicStatus $status
+ * @property string|null $subcategory
+ * @property array<array-key, mixed>|null $tags
+ * @property string $title
+ * @property ForumTopicType $type
+ * @property Carbon|null $updated_at
+ * @property int $view_count
+ * @property ForumVisibility $visibility
+ */
 class ForumTopic extends Model
 {
     /** @use HasFactory<ForumTopicFactory> */
@@ -117,36 +164,43 @@ class ForumTopic extends Model
             ->select(self::ROUTE_COLUMNS);
     }
 
+    /** @return BelongsTo<\App\Models\User, $this>*/
     public function author(): BelongsTo
     {
         return $this->belongsTo(User::class, 'author_id');
     }
 
+    /** @return HasMany<\App\Models\ForumAnswer, $this>*/
     public function answers(): HasMany
     {
         return $this->hasMany(ForumAnswer::class, 'topic_id');
     }
 
+    /** @return HasMany<\App\Models\ForumComment, $this>*/
     public function comments(): HasMany
     {
         return $this->hasMany(ForumComment::class, 'topic_id');
     }
 
+    /** @return HasOne<\App\Models\ForumAnswer, $this>*/
     public function acceptedAnswer(): HasOne
     {
         return $this->hasOne(ForumAnswer::class, 'topic_id')->where('is_accepted', true);
     }
 
+    /** @return HasMany<\App\Models\ForumEngagement, $this>*/
     public function engagements(): HasMany
     {
         return $this->hasMany(ForumEngagement::class, 'topic_id');
     }
 
+    /** @return HasMany<\App\Models\ForumReport, $this>*/
     public function reports(): HasMany
     {
         return $this->hasMany(ForumReport::class, 'topic_id');
     }
 
+    /** @return HasMany<\App\Models\KnowledgeArticle, $this>*/
     public function knowledgeArticles(): HasMany
     {
         return $this->hasMany(KnowledgeArticle::class, 'source_topic_id');

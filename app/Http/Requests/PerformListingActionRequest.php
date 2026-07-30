@@ -85,19 +85,19 @@ class PerformListingActionRequest extends FormRequest
                 }
 
                 if ((int) $this->input('quantity', 1) > $listing->quantity) {
-                    $validator->errors()->add('quantity', 'The requested quantity is no longer available.');
+                    $validator->errors()->add('quantity', __('messages.the_requested_quantity_is_no_longer_available_91358bffe6'));
                 }
 
                 if ($listing->type->value === 'rental') {
                     if (blank($this->input('rental_starts_at')) || blank($this->input('rental_ends_at'))) {
-                        $validator->errors()->add('rental_starts_at', 'Choose a rental start and end date.');
+                        $validator->errors()->add('rental_starts_at', __('messages.choose_a_rental_start_and_end_date_530d30c6d9'));
                     }
                 }
 
                 if ($listing->type->value === 'adoption') {
                     foreach (['experience', 'home_context', 'care_plan', 'adoption_reason'] as $field) {
                         if (blank($this->input($field))) {
-                            $validator->errors()->add($field, 'Complete the adoption application before sending it.');
+                            $validator->errors()->add($field, __('messages.complete_the_adoption_application_before_sending_it_3ec75b99ba'));
                         }
                     }
                 }

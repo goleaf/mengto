@@ -1,17 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories;
 
 use App\Enums\DisputeStatus;
 use App\Models\Listing;
 use App\Models\Order;
 use App\Models\OrderDispute;
-use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<OrderDispute>
+ * @extends ApplicationFactory<OrderDispute>
  */
-class OrderDisputeFactory extends Factory
+class OrderDisputeFactory extends ApplicationFactory
 {
     public function configure(): static
     {

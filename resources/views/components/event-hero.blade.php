@@ -14,7 +14,7 @@
         />
         <div class="event-hero__badges">
             <x-status-badge :label="$event['status_label']" :tone="$event['status_tone']" />
-            <x-status-badge :label="str($event['format'])->headline()" tone="surface" />
+            <x-status-badge :label="$event['format_label']" tone="surface" />
             @if ($event['verification_label'])
                 <x-status-badge :label="$event['verification_label']" icon="badge-check" tone="safe" />
             @endif
@@ -52,10 +52,10 @@
         </div>
 
         <x-detail-meta-list :items="$event['meta']" />
-        <x-tag-list :items="$event['tags']" empty="No event topics." class="event-hero__tags" />
+        <x-tag-list :items="$event['tags']" empty="{{ __('ui.no_event_topics_fd8c95b02f') }}" class="event-hero__tags" />
         <x-stat-grid
             :items="$event['stats']"
-            label="Event summary"
+            label="{{ __('ui.event_summary_1540bcaad2') }}"
             :icons="['users', 'clock-3', 'ticket-check', 'languages']"
             large
         />

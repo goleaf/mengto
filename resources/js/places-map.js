@@ -126,7 +126,7 @@ const initializeLocation = () => {
         trigger?.addEventListener('click', () => {
             if (!navigator.geolocation) {
                 if (status) {
-                    status.textContent = 'Location is unavailable in this browser.';
+                    status.textContent = form.dataset.locationUnavailable ?? '';
                 }
 
                 return;
@@ -135,7 +135,7 @@ const initializeLocation = () => {
             trigger.disabled = true;
 
             if (status) {
-                status.textContent = 'Getting an approximate current area…';
+                status.textContent = form.dataset.locationLoading ?? '';
             }
 
             navigator.geolocation.getCurrentPosition(
@@ -149,7 +149,7 @@ const initializeLocation = () => {
                     }
 
                     if (status) {
-                        status.textContent = 'Approximate area received.';
+                        status.textContent = form.dataset.locationReceived ?? '';
                     }
 
                     form.requestSubmit();
@@ -158,7 +158,7 @@ const initializeLocation = () => {
                     trigger.disabled = false;
 
                     if (status) {
-                        status.textContent = 'Location permission was not granted. Manual area search remains available.';
+                        status.textContent = form.dataset.locationDenied ?? '';
                     }
                 },
                 {

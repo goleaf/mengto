@@ -9,7 +9,8 @@ tests, and reviews cite requirements without copying the entire source prompt.
 
 - `MUST` is a release requirement for code in the affected surface.
 - `SHOULD` requires a documented reason when not followed.
-- A technology-specific group is `N/A` when that technology is not installed.
+- A technology-specific group is `N/A` only when the canonical requirements do
+  not activate that technology. Livewire 4 and Tailwind 4 are active baselines.
 - A project-specific constraint applies only when a product document activates
   it. Generic preferences never justify an unrelated package or architecture.
 - Existing prototype boundaries remain explicit debt; documentation must not
@@ -19,9 +20,9 @@ tests, and reviews cite requirements without copying the entire source prompt.
 
 ### LAR-01 Runtime Stack (source 1.1-1.15)
 
-Use the project-supported PHP and Laravel versions. Prefer server-rendered
-interaction and the installed UI stack. When Livewire is present, use supported
-class-based multi-file components, never Volt by default. Use Tailwind 4 and
+Use PHP 8.5, Laravel 13, and the project-supported package versions. Prefer
+server-rendered interaction and the installed UI stack. Use supported Livewire
+4 class-based multi-file components and never Volt. Use Tailwind 4 and
 installed Flux components according to their official APIs. Do not add or
 duplicate a JavaScript framework without measured technical need.
 
@@ -52,7 +53,7 @@ project localization policy.
 
 ### LAR-05 Livewire (source 5.1-5.37)
 
-If Livewire is installed: use class components and Form objects for complex
+Use Livewire class components and Form objects for complex
 forms; keep browser state minimal and untrusted; lock sensitive identifiers;
 authorize and validate every mutation; use stable keys; control render queries;
 use lazy/defer/islands/navigation only where beneficial; clean up JavaScript

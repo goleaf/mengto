@@ -42,7 +42,7 @@ final class PerformPlaceAction
             'create-place-claim' => $this->createClaim($data),
             'create-place-report' => $this->createReport($data),
             default => throw ValidationException::withMessages([
-                'action' => 'This place action is unavailable.',
+                'action' => __('messages.this_place_action_is_unavailable_beb1e64e42'),
             ]),
         };
     }
@@ -58,7 +58,9 @@ final class PerformPlaceAction
 
         return $this->placeResult(
             $place,
-            $active ? $place['name'].' saved.' : $place['name'].' removed from favorites.',
+            $active
+                ? __('messages.place.saved', ['place' => $place['name']])
+                : __('messages.place.unsaved', ['place' => $place['name']]),
             $data,
         );
     }
@@ -74,7 +76,7 @@ final class PerformPlaceAction
 
         return $this->placeResult(
             $place,
-            $active ? 'Place updates enabled.' : 'Place updates paused.',
+            $active ? __('messages.place_updates_enabled_60cd691dfb') : __('messages.place_updates_paused_6c7fb2288f'),
             $data,
         );
     }
@@ -91,7 +93,7 @@ final class PerformPlaceAction
 
         return $this->placeResult(
             $place,
-            $active ? 'Place added to the selected collection.' : 'Place removed from the selected collection.',
+            $active ? __('messages.place_added_to_the_selected_collection_9ae9bcfdff') : __('messages.place_removed_from_the_selected_collection_28a687124f'),
             $data,
         );
     }
@@ -105,7 +107,7 @@ final class PerformPlaceAction
         $place = $this->requirePlace($data);
         $this->state->markVisited($place['key'], (string) ($data['place_pet'] ?? 'scout'));
 
-        return $this->placeResult($place, 'Visit saved privately to your history.', $data);
+        return $this->placeResult($place, __('messages.visit_saved_privately_to_your_history_9c47cfe823'), $data);
     }
 
     /**
@@ -123,7 +125,7 @@ final class PerformPlaceAction
 
         return $this->placeResult(
             $place,
-            'Check-in active for two hours. Your exact position is not published.',
+            __('messages.check_in_active_for_two_hours_your_exact_position_is_not_a63cd5f631'),
             $data,
         );
     }
@@ -137,10 +139,10 @@ final class PerformPlaceAction
         $place = $this->requirePlace($data);
 
         if (! $this->state->clearCheckIn($place['key'])) {
-            throw ValidationException::withMessages(['target' => 'There is no active check-in to end.']);
+            throw ValidationException::withMessages(['target' => __('messages.there_is_no_active_check_in_to_end_687d5a4687')]);
         }
 
-        return $this->placeResult($place, 'Check-in ended.', $data);
+        return $this->placeResult($place, __('messages.check_in_ended_3f3fb06d29'), $data);
     }
 
     /**
@@ -151,7 +153,7 @@ final class PerformPlaceAction
         $this->state->clearRecent();
 
         return [
-            'message' => 'Recent place history cleared.',
+            'message' => __('messages.recent_place_history_cleared_abcac04962'),
             'route' => 'places.index',
             'parameters' => ['mode' => 'browse'],
         ];
@@ -169,7 +171,7 @@ final class PerformPlaceAction
         );
 
         return [
-            'message' => 'Approximate current area enabled. No home point or location history was saved.',
+            'message' => __('messages.approximate_current_area_enabled_no_home_point_or_locati_a48cf43587'),
             'route' => 'places.index',
             'parameters' => ['view' => 'split'],
         ];
@@ -183,7 +185,7 @@ final class PerformPlaceAction
         $this->state->clearGeneralizedLocation();
 
         return [
-            'message' => 'Location access removed. Manual city search remains available.',
+            'message' => __('messages.location_access_removed_manual_city_search_remains_avail_4b3ba1cf71'),
             'route' => 'places.index',
             'parameters' => ['area' => 'Vilnius'],
         ];
@@ -202,7 +204,7 @@ final class PerformPlaceAction
             'body' => trim((string) ($data['body'] ?? '')),
         ]);
 
-        return $this->placeResult($place, 'Private place invitation sent.', $data);
+        return $this->placeResult($place, __('messages.private_place_invitation_sent_10fea480d5'), $data);
     }
 
     /**
@@ -214,7 +216,7 @@ final class PerformPlaceAction
         $place = $this->requirePlace($data);
         $this->state->confirmWarning($place['key'], (string) $data['place_warning']);
 
-        return $this->placeResult($place, 'Warning confirmation recorded with the current time.', $data, 'updates');
+        return $this->placeResult($place, __('messages.warning_confirmation_recorded_with_the_current_time_5a2d8d4ba4'), $data, 'updates');
     }
 
     /**
@@ -226,7 +228,7 @@ final class PerformPlaceAction
         $place = $this->requirePlace($data);
         $this->state->resolveWarning($place['key'], (string) $data['place_warning']);
 
-        return $this->placeResult($place, 'Warning marked resolved and moved to history.', $data, 'updates');
+        return $this->placeResult($place, __('messages.warning_marked_resolved_and_moved_to_history_aa0b43945e'), $data, 'updates');
     }
 
     /**
@@ -238,7 +240,7 @@ final class PerformPlaceAction
         $place = $this->requirePlace($data);
 
         if (! $place['owner_managed']) {
-            throw ValidationException::withMessages(['target' => 'Only a verified place manager can add an official answer.']);
+            throw ValidationException::withMessages(['target' => __('messages.only_a_verified_place_manager_can_add_an_official_answer_906927afbe')]);
         }
 
         if (! $this->state->answerQuestion(
@@ -246,10 +248,10 @@ final class PerformPlaceAction
             (string) $data['place_question'],
             $this->requiredText($data, 'body'),
         )) {
-            throw ValidationException::withMessages(['place_question' => 'This question is unavailable.']);
+            throw ValidationException::withMessages(['place_question' => __('messages.this_question_is_unavailable_c7a448c053')]);
         }
 
-        return $this->placeResult($place, 'Official answer published.', $data, 'questions');
+        return $this->placeResult($place, __('messages.official_answer_published_c243e535c0'), $data, 'questions');
     }
 
     /**
@@ -267,7 +269,9 @@ final class PerformPlaceAction
 
         if ($duplicate !== null) {
             throw ValidationException::withMessages([
-                'title' => 'A similar place already exists: '.$duplicate['name'].'. Suggest a correction instead.',
+                'title' => __('messages.similar_place_exists', [
+                    'name' => $duplicate['name'],
+                ]),
             ]);
         }
 
@@ -281,13 +285,13 @@ final class PerformPlaceAction
             'hours' => trim((string) ($data['place_hours'] ?? '')),
             'pet_rules' => trim((string) ($data['rules'] ?? '')),
             'features' => trim((string) ($data['place_features'] ?? '')),
-            'source' => trim((string) ($data['place_source'] ?? 'Community visit')),
+            'source' => trim((string) ($data['place_source'] ?? __('messages.place.community_visit'))),
             'evidence' => trim((string) ($data['place_evidence'] ?? '')),
             'relationship' => (string) ($data['place_relationship'] ?? 'visitor'),
         ]);
 
         return [
-            'message' => 'Place submitted for duplicate and information review.',
+            'message' => __('messages.place_submitted_for_duplicate_and_information_review_df37779e01'),
             'route' => 'places.index',
             'parameters' => ['mode' => 'browse', 'q' => $submission['title']],
         ];
@@ -309,7 +313,7 @@ final class PerformPlaceAction
             'source' => (string) ($data['place_source'] ?? 'personal-visit'),
         ]);
 
-        return $this->placeResult($place, 'Correction submitted with evidence.', $data, 'corrections');
+        return $this->placeResult($place, __('messages.correction_submitted_with_evidence_7d964aa734'), $data, 'corrections');
     }
 
     /**
@@ -323,13 +327,13 @@ final class PerformPlaceAction
             'title' => $this->requiredText($data, 'title'),
             'category' => (string) $data['category'],
             'detail' => $this->requiredText($data, 'body'),
-            'zone' => trim((string) ($data['place_zone'] ?? 'General place area')),
+            'zone' => trim((string) ($data['place_zone'] ?? __('messages.place.general_area'))),
             'evidence' => trim((string) ($data['place_evidence'] ?? '')),
         ]);
 
         return $this->placeResult(
             $place,
-            'Temporary warning published for review and automatic expiry.',
+            __('messages.temporary_warning_published_for_review_and_automatic_exp_76764068a4'),
             $data,
             'updates',
         );
@@ -350,7 +354,7 @@ final class PerformPlaceAction
             'anonymous' => ($data['place_anonymous'] ?? 'no') === 'yes',
         ]);
 
-        return $this->placeResult($place, 'Review published with its visit context.', $data, 'reviews');
+        return $this->placeResult($place, __('messages.review_published_with_its_visit_context_d0d6ca5e07'), $data, 'reviews');
     }
 
     /**
@@ -364,7 +368,7 @@ final class PerformPlaceAction
             'question' => $this->requiredText($data, 'body'),
         ]);
 
-        return $this->placeResult($place, 'Question sent to the place community.', $data, 'questions');
+        return $this->placeResult($place, __('messages.question_sent_to_the_place_community_e6b6dec133'), $data, 'questions');
     }
 
     /**
@@ -376,7 +380,7 @@ final class PerformPlaceAction
         $place = $this->requirePlace($data);
 
         if ($place['owner_managed']) {
-            throw ValidationException::withMessages(['target' => 'This demo place already has an active manager.']);
+            throw ValidationException::withMessages(['target' => __('messages.this_demo_place_already_has_an_active_manager_808e171ba6')]);
         }
 
         $this->state->addClaim($place['key'], [
@@ -387,7 +391,7 @@ final class PerformPlaceAction
             'evidence' => $this->requiredText($data, 'place_evidence'),
         ]);
 
-        return $this->placeResult($place, 'Management claim sent for scoped verification.', $data, 'updates');
+        return $this->placeResult($place, __('messages.management_claim_sent_for_scoped_verification_6f89507342'), $data, 'updates');
     }
 
     /**
@@ -403,7 +407,7 @@ final class PerformPlaceAction
             'evidence' => trim((string) ($data['place_evidence'] ?? '')),
         ]);
 
-        return $this->placeResult($place, 'Private report received by the moderation queue.', $data);
+        return $this->placeResult($place, __('messages.private_report_received_by_the_moderation_queue_6e7db0e9d9'), $data);
     }
 
     /**
@@ -415,7 +419,7 @@ final class PerformPlaceAction
         $place = $this->catalog->find((string) ($data['target'] ?? ''));
 
         if ($place === null) {
-            throw ValidationException::withMessages(['target' => 'This place is unavailable.']);
+            throw ValidationException::withMessages(['target' => __('messages.this_place_is_unavailable_61355a19b2')]);
         }
 
         return $place;
@@ -448,7 +452,7 @@ final class PerformPlaceAction
         $value = trim((string) ($data[$field] ?? ''));
 
         if ($value === '') {
-            throw ValidationException::withMessages([$field => 'This field is required.']);
+            throw ValidationException::withMessages([$field => __('messages.this_field_is_required_68cadcee19')]);
         }
 
         return $value;

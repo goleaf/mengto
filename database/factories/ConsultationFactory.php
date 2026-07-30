@@ -1,15 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories;
 
 use App\Enums\ConsultationStatus;
 use App\Models\Booking;
 use App\Models\Consultation;
 use App\Models\ExpertProfile;
-use Illuminate\Database\Eloquent\Factories\Factory;
 
-/** @extends Factory<Consultation> */
-class ConsultationFactory extends Factory
+/** @extends ApplicationFactory<Consultation> */
+class ConsultationFactory extends ApplicationFactory
 {
     public function definition(): array
     {

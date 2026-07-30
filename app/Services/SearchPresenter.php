@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services;
 
+use App\Enums\SearchCaseType;
 use App\Enums\SearchTaskStatus;
 use App\Enums\SearchVolunteerStatus;
 use App\Enums\SightingStatus;
@@ -15,6 +18,7 @@ use App\Models\Sighting;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Str;
 
 class SearchPresenter
@@ -25,6 +29,7 @@ class SearchPresenter
         private readonly SearchTaxonomy $taxonomy,
         private readonly PlaceCatalog $places,
         private readonly QrCodeGenerator $qrCodes,
+        private readonly LocaleFormatter $formatter,
     ) {}
 
     /**
@@ -66,7 +71,7 @@ class SearchPresenter
         $searchCases->through(fn (SearchCase $searchCase): array => $this->card($searchCase));
 
         return [
-            ...$this->page('Lost & found', 'lost-found'),
+            ...$this->page(__('messages.lost_found_217c655848'), 'lost-found'),
             'search_cases' => $searchCases,
             'filters' => $filters,
             'types' => $this->taxonomy->types(),
@@ -91,14 +96,14 @@ class SearchPresenter
         $pet = $this->profiles->pet($petKey) ?? $this->profiles->pet('scout');
 
         return [
-            ...$this->page('Report a missing or found animal', 'lost-found'),
+            ...$this->page(__('messages.report_a_missing_or_found_animal_d04bc18c2b'), 'lost-found'),
             'types' => $this->taxonomy->types(),
             'species_options' => $this->taxonomy->species(),
             'size_options' => $this->taxonomy->sizes(),
             'microchip_options' => $this->taxonomy->microchipStatuses(),
             'pet_options' => [
-                'scout' => 'Scout · dog',
-                'nori' => 'Nori · cat',
+                'scout' => __('messages.scout_dog_72b1dcface'),
+                'nori' => __('messages.nori_cat_a01db5ea36'),
             ],
             'default_pet' => $pet,
         ];
@@ -170,7 +175,7 @@ class SearchPresenter
         $canManage = $searchCase->isManagedBy($this->actor->key());
 
         return [
-            ...$this->page($searchCase->pet_name.' · Lost & found', 'lost-found'),
+            ...$this->page(__('presentation.lost_found_for', ['pet' => $searchCase->pet_name]), 'lost-found'),
             'search_case' => $this->publicDetail($searchCase),
             'sightings' => $sightings->map(fn (Sighting $sighting): array => $this->sighting($sighting))->all(),
             'updates' => $updates->map(fn (SearchUpdate $update): array => $this->update($update))->all(),
@@ -247,7 +252,7 @@ class SearchPresenter
         ]);
 
         return [
-            ...$this->page('Coordinate '.$searchCase->pet_name."'s search", 'lost-found'),
+            ...$this->page(__('presentation.coordinate_search_for', ['pet' => $searchCase->pet_name]), 'lost-found'),
             'search_case' => [
                 ...$this->publicDetail($searchCase),
                 'hidden_marks' => $searchCase->hidden_marks,
@@ -268,7 +273,7 @@ class SearchPresenter
                 'risk_notes' => $sector->risk_notes,
                 'access_notes' => $sector->access_notes,
                 'checked_by_key' => $sector->checked_by_key,
-                'checked_label' => $sector->checked_at?->diffForHumans(),
+                'checked_label' => $this->formatter->relative($sector->checked_at),
             ])->all(),
             'tasks' => $searchCase->tasks->map(fn (SearchTask $task): array => $this->task($task))->all(),
             'volunteers' => $searchCase->volunteers
@@ -287,12 +292,30 @@ class SearchPresenter
     public function poster(SearchCase $searchCase): array
     {
         $url = route('lost-found.show', $searchCase);
+        $detail = $this->publicDetail($searchCase);
+        $headingKey = $searchCase->status->isClosed()
+            ? 'found'
+            : ($searchCase->type === SearchCaseType::Lost ? 'missing' : 'found_animal');
 
         return [
-            ...$this->page('Poster · '.$searchCase->pet_name, 'lost-found'),
-            'search_case' => $this->publicDetail($searchCase),
+            ...$this->page(__('lost_found.poster.page_title', ['pet' => $searchCase->pet_name]), 'lost-found'),
+            'html_locale' => str_replace('_', '-', App::currentLocale()),
+            'search_case' => $detail,
             'public_url' => $url,
             'qr_code' => $this->qrCodes->dataUri($url),
+            'poster' => [
+                'heading' => __("lost_found.poster.headings.{$headingKey}"),
+                'pet_summary' => __('lost_found.poster.pet_summary', [
+                    'species' => $detail['species_label'],
+                    'breed' => $searchCase->breed ?: __('lost_found.poster.breed_unknown'),
+                    'color' => $detail['color'],
+                ]),
+                'image_alt' => __('lost_found.poster.image_alt', [
+                    'pet' => $searchCase->pet_name,
+                    'species' => mb_strtolower($detail['species_label']),
+                    'color' => $detail['color'],
+                ]),
+            ],
         ];
     }
 
@@ -327,10 +350,10 @@ class SearchPresenter
             'distinctive_marks' => $searchCase->distinctive_marks,
             'health_notice' => $searchCase->health_notice,
             'last_seen_area' => $searchCase->last_seen_area,
-            'last_seen_label' => $searchCase->last_seen_at?->diffForHumans(),
+            'last_seen_label' => $this->formatter->relative($searchCase->last_seen_at),
             'latest_update' => $searchCase->latest_update,
-            'latest_update_label' => $searchCase->last_sighting_at?->diffForHumans()
-                ?? $searchCase->updated_at?->diffForHumans(),
+            'latest_update_label' => $this->formatter->relative($searchCase->last_sighting_at)
+                ?? $this->formatter->relative($searchCase->updated_at),
             'cover_url' => $searchCase->cover_url,
             'confirmed_sightings_count' => (int) ($searchCase->confirmed_sightings_count ?? 0),
             'active_volunteers_count' => (int) ($searchCase->active_volunteers_count ?? 0),
@@ -368,8 +391,8 @@ class SearchPresenter
             'animal_secured' => $searchCase->animal_secured,
             'contact_protected' => $searchCase->contact_protected,
             'photos' => $searchCase->photos ?? [],
-            'reported_label' => $searchCase->reported_at?->format('M j, Y · H:i'),
-            'returned_label' => $searchCase->returned_at?->format('M j, Y · H:i'),
+            'reported_label' => $this->formatter->dateTime($searchCase->reported_at),
+            'returned_label' => $this->formatter->dateTime($searchCase->returned_at),
             'closure_reason' => $searchCase->closure_reason,
             'view_count' => $searchCase->view_count,
             'poster_url' => route('lost-found.poster', $searchCase),
@@ -381,12 +404,12 @@ class SearchPresenter
     {
         return [
             'id' => $sighting->id,
-            'reporter_name' => $sighting->is_anonymous ? 'Anonymous witness' : $sighting->reporter_name,
+            'reporter_name' => $sighting->is_anonymous ? __('messages.anonymous_witness_ae85cd41aa') : $sighting->reporter_name,
             'status' => $sighting->status->value,
             'status_label' => $sighting->status->label(),
             'public_area' => $sighting->public_area,
-            'observed_label' => $sighting->observed_at?->format('M j · H:i'),
-            'submitted_label' => $sighting->submitted_at?->diffForHumans(),
+            'observed_label' => $this->formatter->dateTime($sighting->observed_at),
+            'submitted_label' => $this->formatter->relative($sighting->submitted_at),
             'direction' => $sighting->direction,
             'confidence' => $this->taxonomy->confidenceOptions()[$sighting->confidence]
                 ?? Str::headline($sighting->confidence),
@@ -432,8 +455,8 @@ class SearchPresenter
             'assignee_name' => $task->assignee_name,
             'is_actor_assignee' => $task->assignee_key === $this->actor->key(),
             'sector' => $task->sector?->label,
-            'starts_label' => $task->starts_at?->format('M j · H:i'),
-            'due_label' => $task->due_at?->format('M j · H:i'),
+            'starts_label' => $this->formatter->dateTime($task->starts_at),
+            'due_label' => $this->formatter->dateTime($task->due_at),
             'result' => $task->result,
         ];
     }
@@ -451,8 +474,8 @@ class SearchPresenter
                 ->all(),
             'status' => $volunteer->status->value,
             'status_label' => $volunteer->status->label(),
-            'available_until' => $volunteer->available_until?->format('M j · H:i'),
-            'last_check_in' => $volunteer->last_check_in_at?->diffForHumans(),
+            'available_until' => $this->formatter->dateTime($volunteer->available_until),
+            'last_check_in' => $this->formatter->relative($volunteer->last_check_in_at),
         ];
     }
 
@@ -468,7 +491,7 @@ class SearchPresenter
             'body' => $update->body,
             'public_area' => $update->public_area,
             'visibility' => $update->visibility,
-            'occurred_label' => $update->occurred_at?->format('M j · H:i'),
+            'occurred_label' => $this->formatter->dateTime($update->occurred_at),
         ];
     }
 
@@ -485,7 +508,7 @@ class SearchPresenter
             'status' => $alert->status,
             'recipient_count' => $alert->recipient_count,
             'message' => $alert->message,
-            'sent_label' => $alert->sent_at?->diffForHumans(),
+            'sent_label' => $this->formatter->relative($alert->sent_at),
         ];
     }
 
@@ -497,9 +520,9 @@ class SearchPresenter
     {
         return collect([[
             'kind' => 'last-seen',
-            'label' => 'Last confirmed location',
+            'label' => __('messages.last_confirmed_location_78ced54d1e'),
             'area' => $searchCase->last_seen_area,
-            'time' => $searchCase->last_seen_at?->format('M j · H:i'),
+            'time' => $this->formatter->dateTime($searchCase->last_seen_at),
             'x' => $this->mapPosition($searchCase->public_longitude, $searchCase->id, 18),
             'y' => $this->mapPosition($searchCase->public_latitude, $searchCase->id, 27),
         ]])
@@ -507,7 +530,7 @@ class SearchPresenter
                 'kind' => $sighting->status === SightingStatus::Confirmed ? 'confirmed' : 'possible',
                 'label' => $sighting->status->label(),
                 'area' => $sighting->public_area,
-                'time' => $sighting->observed_at?->format('M j · H:i'),
+                'time' => $this->formatter->dateTime($sighting->observed_at),
                 'x' => $this->mapPosition($sighting->public_longitude, $sighting->id, 37),
                 'y' => $this->mapPosition($sighting->public_latitude, $sighting->id, 49),
             ]))

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services;
 
 use Illuminate\Support\Str;
@@ -42,10 +44,17 @@ final class MessagePresenter
         return [
             'owner' => $this->profiles->owner(),
             'summary' => [
-                'eyebrow' => 'Private communication',
-                'title' => 'Messages and calls',
-                'description' => 'Talk to pet people, family, specialists, groups, and event organizers without exposing personal contact details.',
-                'count' => count($conversations).' dialogs · '.$this->unreadCount($conversations).' unread',
+                'eyebrow' => __('messages.private_communication_b3ecd460d1'),
+                'title' => __('messages.messages_and_calls_2bda9155c7'),
+                'description' => __('messages.talk_to_pet_people_family_specialists_groups_and_event_o_7a75ff5b8e'),
+                'count' => __('presentation.dialogs_with_unread', [
+                    'dialogs' => trans_choice('presentation.dialogs_count', count($conversations), [
+                        'count' => count($conversations),
+                    ]),
+                    'unread' => __('presentation.unread_count', [
+                        'count' => $this->unreadCount($conversations),
+                    ]),
+                ]),
                 'unread_count' => $this->unreadCount($conversations),
                 'request_count' => count(array_filter(
                     $this->state->requestStatuses(),
@@ -71,19 +80,29 @@ final class MessagePresenter
             'messages' => $messages,
             'channels' => $this->catalog->channels()[$selectedKey] ?? [],
             'active_channel' => (string) ($filters['channel'] ?? $selected['channel']),
-            'members' => $this->catalog->members()[$selectedKey] ?? [
-                ['name' => 'Mia Carter', 'role' => 'Owner', 'pet' => implode(', ', $selected['pet_names'])],
-                ['name' => $selected['name'], 'role' => $selected['role'], 'pet' => $selected['pet']],
-            ],
+            'members' => array_map(
+                static fn (array $member): array => [
+                    ...$member,
+                    'initial' => Str::substr((string) $member['name'], 0, 1),
+                ],
+                $this->catalog->members()[$selectedKey] ?? [
+                    ['name' => __('messages.mia_carter_0e5b29cc3b'), 'role' => __('messages.owner_4b1b8aa360'), 'pet' => implode(', ', $selected['pet_names'])],
+                    ['name' => $selected['name'], 'role' => $selected['role'], 'pet' => $selected['pet']],
+                ],
+            ),
             'context' => $this->context($selected),
             'poll' => $this->poll($selectedKey),
             'tasks' => $this->tasks($selectedKey),
             'professional' => $this->professional($selected),
-            'call' => $call,
+            'call' => $call === null ? null : [
+                ...$call,
+                'type_label' => Str::headline((string) $call['type']),
+                'status_label' => Str::headline((string) $call['status']),
+            ],
             'call_boundary' => [
-                'transport' => 'Local preflight and call-session controls are active. A realtime WebRTC provider is not connected in this prototype.',
-                'recording' => 'Recording never starts silently and is unavailable without explicit consent and a storage provider.',
-                'emergency' => 'Calls and chats are not emergency veterinary services.',
+                'transport' => __('messages.local_preflight_and_call_session_controls_are_active_a_r_4c9879ef87'),
+                'recording' => __('messages.recording_never_starts_silently_and_is_unavailable_witho_28696294de'),
+                'emergency' => __('messages.calls_and_chats_are_not_emergency_veterinary_services_2f8969f9de'),
             ],
             'panel' => (string) ($filters['panel'] ?? ($detailsOpen ? 'context' : '')),
             'details_open' => $detailsOpen,
@@ -117,6 +136,7 @@ final class MessagePresenter
                 'selected' => $conversation['key'] === $selectedKey,
                 'unread' => $unread,
                 'request_status' => $requestStatus,
+                'type_label' => Str::headline((string) $conversation['type']),
                 'archived' => (bool) ($state['archived'] ?? false),
                 'pinned' => (bool) ($state['pinned'] ?? false),
                 'muted' => (bool) ($state['muted'] ?? false),
@@ -202,15 +222,15 @@ final class MessagePresenter
     private function filters(): array
     {
         return [
-            ['key' => 'all', 'label' => 'All', 'icon' => 'inbox'],
-            ['key' => 'unread', 'label' => 'Unread', 'icon' => 'mail'],
-            ['key' => 'friends', 'label' => 'Friends', 'icon' => 'user-round'],
-            ['key' => 'groups', 'label' => 'Groups', 'icon' => 'users-round'],
-            ['key' => 'events', 'label' => 'Events', 'icon' => 'calendar-days'],
-            ['key' => 'specialists', 'label' => 'Specialists', 'icon' => 'badge-check'],
-            ['key' => 'family', 'label' => 'Family', 'icon' => 'house'],
-            ['key' => 'requests', 'label' => 'Requests', 'icon' => 'message-square-more'],
-            ['key' => 'archived', 'label' => 'Archive', 'icon' => 'archive'],
+            ['key' => 'all', 'label' => __('messages.all_a52ace420f'), 'icon' => 'inbox'],
+            ['key' => 'unread', 'label' => __('messages.unread_1b9f384c14'), 'icon' => 'mail'],
+            ['key' => 'friends', 'label' => __('messages.friends_bd104d1b98'), 'icon' => 'user-round'],
+            ['key' => 'groups', 'label' => __('messages.groups_39bbb719fa'), 'icon' => 'users-round'],
+            ['key' => 'events', 'label' => __('messages.events_8d14f6e72d'), 'icon' => 'calendar-days'],
+            ['key' => 'specialists', 'label' => __('messages.specialists_fc75c064bb'), 'icon' => 'badge-check'],
+            ['key' => 'family', 'label' => __('messages.family_bd2d677b2e'), 'icon' => 'house'],
+            ['key' => 'requests', 'label' => __('messages.requests_ada27592c9'), 'icon' => 'message-square-more'],
+            ['key' => 'archived', 'label' => __('messages.archive_66f4804ee2'), 'icon' => 'archive'],
         ];
     }
 
@@ -221,25 +241,31 @@ final class MessagePresenter
     private function context(array $conversation): array
     {
         return [
-            'identity_note' => 'Messages are always sent by a person. Pet profiles only provide context.',
+            'identity_note' => __('messages.messages_are_always_sent_by_a_person_pet_profiles_only_p_0956a55d9e'),
             'linked_pets' => $conversation['pet_names'],
             'shared_cards' => [
-                ['icon' => 'paw-print', 'label' => 'Pet profiles', 'value' => count($conversation['pet_names']).' linked'],
-                ['icon' => 'map-pinned', 'label' => 'Places', 'value' => $conversation['type'] === 'event' ? '1 private point' : 'Public places only'],
-                ['icon' => 'calendar-days', 'label' => 'Events', 'value' => in_array($conversation['type'], ['event', 'search'], true) ? '1 active' : 'Create from chat'],
-                ['icon' => 'files', 'label' => 'Files', 'value' => $conversation['professional'] ? 'Time-limited access' : 'Scanned before access'],
+                [
+                    'icon' => 'paw-print',
+                    'label' => __('messages.pet_profiles_6d3a4fd8d3'),
+                    'value' => trans_choice('presentation.linked_count', count($conversation['pet_names']), [
+                        'count' => count($conversation['pet_names']),
+                    ]),
+                ],
+                ['icon' => 'map-pinned', 'label' => __('messages.places_eb5cfb7367'), 'value' => $conversation['type'] === 'event' ? __('messages.1_private_point_a6bf2bc8ef') : __('messages.public_places_only_4c3f5db83b')],
+                ['icon' => 'calendar-days', 'label' => __('messages.events_8d14f6e72d'), 'value' => in_array($conversation['type'], ['event', 'search'], true) ? __('messages.1_active_82e489fddb') : __('messages.create_from_chat_676cd19bbf')],
+                ['icon' => 'files', 'label' => __('messages.files_abc7e98928'), 'value' => $conversation['professional'] ? __('messages.time_limited_access_d0477c64cf') : __('messages.scanned_before_access_b8816f1cac')],
             ],
             'safety' => [
-                ['icon' => 'shield-check', 'title' => 'Private by default', 'description' => 'Phone, email, home address, exact location, medical history, and payment data are not exposed automatically.'],
-                ['icon' => 'map-pin-off', 'title' => 'Location expires', 'description' => 'Temporary location sharing requires chosen recipients, an end time, and a visible stop control.'],
-                ['icon' => 'triangle-alert', 'title' => 'Report with context', 'description' => 'A report can include selected messages, media, a call, or the surrounding sequence without publishing it.'],
+                ['icon' => 'shield-check', 'title' => __('messages.private_by_default_f52e06762e'), 'description' => __('messages.phone_email_home_address_exact_location_medical_history__000cb043e1')],
+                ['icon' => 'map-pin-off', 'title' => __('messages.location_expires_b719177905'), 'description' => __('messages.temporary_location_sharing_requires_chosen_recipients_an_0aa88fb3cd')],
+                ['icon' => 'triangle-alert', 'title' => __('messages.report_with_context_42f5adb71a'), 'description' => __('messages.a_report_can_include_selected_messages_media_a_call_or_t_39bc694fe4')],
             ],
             'media_sections' => [
-                ['label' => 'Photos', 'count' => 2],
-                ['label' => 'Video', 'count' => 1],
-                ['label' => 'Audio', 'count' => 1],
-                ['label' => 'Documents', 'count' => $conversation['professional'] ? 1 : 0],
-                ['label' => 'Places', 'count' => 1],
+                ['label' => __('messages.photos_5e3147ab51'), 'count' => 2],
+                ['label' => __('messages.video_d534be829e'), 'count' => 1],
+                ['label' => __('messages.audio_bc1b88907d'), 'count' => 1],
+                ['label' => __('messages.documents_b4e929d8bc'), 'count' => $conversation['professional'] ? 1 : 0],
+                ['label' => __('messages.places_eb5cfb7367'), 'count' => 1],
             ],
         ];
     }
@@ -255,12 +281,12 @@ final class MessagePresenter
 
         return [
             'case' => $conversation['handle'],
-            'status' => $conversation['key'] === 'paws-vet' ? 'Waiting for client photo' : 'Visit scheduled',
-            'hours' => 'Mon-Sat · 08:00-20:00',
-            'assigned' => $conversation['key'] === 'paws-vet' ? 'Dr. Emilia Vaitke' : 'Adoption team',
-            'queue' => 'Assigned · no advertising consent',
-            'privacy' => 'Internal notes are visually separate and never rendered to the client.',
-            'urgent' => 'If life may be at risk, do not wait for a chat or video consultation. Contact a local emergency clinic.',
+            'status' => $conversation['key'] === 'paws-vet' ? __('messages.waiting_for_client_photo_0bc37e1318') : __('messages.visit_scheduled_63d6c02ec9'),
+            'hours' => __('messages.mon_sat_08_00_20_00_3d4b4879fc'),
+            'assigned' => $conversation['key'] === 'paws-vet' ? __('messages.dr_emilia_vaitke_a0f21f8b96') : __('messages.adoption_team_9b86634596'),
+            'queue' => __('messages.assigned_no_advertising_consent_4dd184f146'),
+            'privacy' => __('messages.internal_notes_are_visually_separate_and_never_rendered__407a8b56ec'),
+            'urgent' => __('messages.if_life_may_be_at_risk_do_not_wait_for_a_chat_or_video_c_373ae0bc7e'),
         ];
     }
 
@@ -274,12 +300,12 @@ final class MessagePresenter
         }
 
         return [
-            'question' => 'When should the next calm walk start?',
+            'question' => __('messages.when_should_the_next_calm_walk_start_2807110e76'),
             'selected' => $this->state->pollSelection($conversation),
             'options' => [
-                ['key' => 'saturday-morning', 'label' => 'Saturday morning', 'votes' => 6],
-                ['key' => 'saturday-evening', 'label' => 'Saturday evening', 'votes' => 3],
-                ['key' => 'sunday-morning', 'label' => 'Sunday morning', 'votes' => 4],
+                ['key' => 'saturday-morning', 'label' => __('messages.saturday_morning_9c8d80b4eb'), 'votes' => 6],
+                ['key' => 'saturday-evening', 'label' => __('messages.saturday_evening_58938b1a0b'), 'votes' => 3],
+                ['key' => 'sunday-morning', 'label' => __('messages.sunday_morning_d0cc9cb260'), 'votes' => 4],
             ],
         ];
     }
@@ -291,22 +317,31 @@ final class MessagePresenter
     {
         $tasks = match ($conversation) {
             'family-care' => [
-                ['key' => 'evening-walk', 'label' => 'Evening walk', 'status' => 'assigned', 'owner' => 'Alex'],
-                ['key' => 'buy-food', 'label' => 'Buy Scout\'s food', 'status' => 'in-progress', 'owner' => 'Mia'],
+                ['key' => 'evening-walk', 'label' => __('messages.evening_walk_51fede72ad'), 'status' => 'assigned', 'owner' => __('messages.alex_db74c940d4')],
+                ['key' => 'buy-food', 'label' => __('messages.buy_scout_s_food_d4ac46fe53'), 'status' => 'in-progress', 'owner' => __('messages.mia_4150950870')],
             ],
             'lost-luna' => [
-                ['key' => 'sector-c', 'label' => 'Check sector C', 'status' => 'completed', 'owner' => 'Tomas'],
+                ['key' => 'sector-c', 'label' => __('messages.check_sector_c_235e386018'), 'status' => 'completed', 'owner' => __('messages.tomas_86c496b088')],
             ],
             'paws-vet' => [
-                ['key' => 'photo-before-friday', 'label' => 'Send one clear photo', 'status' => 'assigned', 'owner' => 'Mia'],
+                ['key' => 'photo-before-friday', 'label' => __('messages.send_one_clear_photo_6f132e5bb7'), 'status' => 'assigned', 'owner' => __('messages.mia_4150950870')],
             ],
             default => [],
         };
 
-        return array_map(fn (array $task): array => [
-            ...$task,
-            'status' => $this->state->taskStatus($conversation, $task['key'], $task['status']),
-        ], $tasks);
+        return array_map(function (array $task) use ($conversation): array {
+            $status = $this->state->taskStatus(
+                $conversation,
+                $task['key'],
+                $task['status'],
+            );
+
+            return [
+                ...$task,
+                'status' => $status,
+                'status_label' => Str::headline($status),
+            ];
+        }, $tasks);
     }
 
     /**
@@ -315,10 +350,10 @@ final class MessagePresenter
     private function coverage(): array
     {
         return [
-            ['label' => 'Available now', 'value' => 'Personal requests, rich messages, group/event/family/professional contexts, moderation, call preflight'],
-            ['label' => 'Provider boundary', 'value' => 'Realtime WebRTC transport, media storage, malware scanning, transcription, translation, and end-to-end encryption'],
-            ['label' => 'Privacy baseline', 'value' => 'People remain accountable senders; linked pets never reveal medical or location data automatically'],
-            ['label' => 'Accessibility', 'value' => 'Keyboard controls, text statuses, captions/transcripts surfaces, reduced motion, and non-color indicators'],
+            ['label' => __('messages.available_now_2a4729fa76'), 'value' => __('messages.personal_requests_rich_messages_group_event_family_profe_c82506fb3d')],
+            ['label' => __('messages.provider_boundary_18eba0c102'), 'value' => __('messages.realtime_webrtc_transport_media_storage_malware_scanning_12fbdb85a3')],
+            ['label' => __('messages.privacy_baseline_51c53e36f3'), 'value' => __('messages.people_remain_accountable_senders_linked_pets_never_reve_6fc5efbaeb')],
+            ['label' => __('messages.accessibility_d3368cbffe'), 'value' => __('messages.keyboard_controls_text_statuses_captions_transcripts_sur_857da2cf45')],
         ];
     }
 

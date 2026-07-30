@@ -1,17 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories;
 
 use App\Enums\DeviceCommandStatus;
 use App\Models\DeviceCommand;
 use App\Models\SmartDevice;
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
 /**
- * @extends Factory<DeviceCommand>
+ * @extends ApplicationFactory<DeviceCommand>
  */
-class DeviceCommandFactory extends Factory
+class DeviceCommandFactory extends ApplicationFactory
 {
     /**
      * Define the model's default state.

@@ -4,7 +4,7 @@
     <a
         href="{{ $event['primary_action']['href'] }}"
         class="event-card__media"
-        aria-label="Open {{ $event['title'] }}"
+        aria-label="{{ __('presentation.open_event', ['title' => $event['title']]) }}"
     >
         <x-responsive-image
             :src="$event['image']"
@@ -43,17 +43,17 @@
         <dl class="event-card__facts">
             <div>
                 <x-lucide-clock-3 class="icon icon--sm" aria-hidden="true" />
-                <dt class="sr-only">Time</dt>
+                <dt class="sr-only">{{ __('ui.time_33b93476cf') }}</dt>
                 <dd><time datetime="{{ $event['datetime'] }}">{{ $event['date_label'] }} · {{ $event['time'] }}</time></dd>
             </div>
             <div>
                 <x-lucide-map-pin class="icon icon--sm" aria-hidden="true" />
-                <dt class="sr-only">Place</dt>
+                <dt class="sr-only">{{ __('ui.place_e9463dccf0') }}</dt>
                 <dd>{{ $event['place'] }} · {{ $event['distance'] }}</dd>
             </div>
             <div>
                 <x-lucide-users class="icon icon--sm" aria-hidden="true" />
-                <dt class="sr-only">Capacity</dt>
+                <dt class="sr-only">{{ __('ui.capacity_ae65d09655') }}</dt>
                 <dd>{{ $event['attendees'] }} · {{ $event['capacity_label'] }}</dd>
             </div>
         </dl>
@@ -65,14 +65,14 @@
             </p>
         @endif
 
-        <x-tag-list :items="$event['tags']" empty="No event tags." class="event-card__tags" />
+        <x-tag-list :items="$event['tags']" empty="{{ __('ui.no_event_tags_3bb78592cf') }}" class="event-card__tags" />
 
         <div class="event-card__footer">
             <div class="event-card__organizer">
                 <x-initials-avatar :initials="$event['organizer_initials']" tone="mint" />
                 <div>
                     <p>{{ $event['organizer'] }}</p>
-                    <span>{{ $event['verification_label'] ?? str($event['organizer_type'])->headline() }}</span>
+                    <span>{{ $event['verification_label'] ?? $event['organizer_type_label'] }}</span>
                 </div>
             </div>
             <div class="event-card__actions">

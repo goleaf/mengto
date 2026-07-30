@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services;
 
 use App\Models\KnowledgeArticle;
@@ -11,6 +13,7 @@ class KnowledgePresenter
     public function __construct(
         private readonly ProfilePresenter $profiles,
         private readonly ForumTaxonomy $taxonomy,
+        private readonly LocaleFormatter $formatter,
     ) {}
 
     /**
@@ -45,18 +48,18 @@ class KnowledgePresenter
 
         return [
             'owner' => $this->profiles->owner(),
-            'page_title' => 'Knowledge base | PawCircle',
+            'page_title' => __('messages.knowledge_base_pawcircle_8a93af1398'),
             'active_section' => 'forum',
             'articles' => $articles,
             'filters' => ['q' => $query, 'category' => $category, 'type' => $type],
             'categories' => $this->taxonomy->categoryOptions(),
             'types' => [
-                'all' => 'All formats',
-                'guide' => 'Guides',
-                'checklist' => 'Checklists',
+                'all' => __('messages.all_formats_8a01c6b5b4'),
+                'guide' => __('messages.guides_572cd72feb'),
+                'checklist' => __('messages.checklists_4d03ed9d62'),
                 'faq' => 'FAQ',
-                'comparison' => 'Comparisons',
-                'local-guide' => 'Local guides',
+                'comparison' => __('messages.comparisons_3f7ad4a6c1'),
+                'local-guide' => __('messages.local_guides_3d464b3b96'),
             ],
         ];
     }
@@ -74,7 +77,7 @@ class KnowledgePresenter
 
         return [
             'owner' => $this->profiles->owner(),
-            'page_title' => $article->title.' | PawCircle',
+            'page_title' => __('presentation.brand_title', ['title' => $article->title]),
             'active_section' => 'forum',
             'article' => [
                 ...$this->card($article),
@@ -91,12 +94,12 @@ class KnowledgePresenter
                 'contributors' => collect($article->contributors ?? [])
                     ->map(fn (array|string $contributor): array => is_array($contributor)
                         ? [
-                            'name' => (string) ($contributor['name'] ?? 'Editorial contributor'),
-                            'role' => (string) ($contributor['role'] ?? 'Contributor'),
+                            'name' => (string) ($contributor['name'] ?? __('messages.editorial_contributor_497377eedf')),
+                            'role' => (string) ($contributor['role'] ?? __('messages.contributor_d5535b9113')),
                         ]
-                        : ['name' => $contributor, 'role' => 'Contributor'])
+                        : ['name' => $contributor, 'role' => __('messages.contributor_d5535b9113')])
                     ->all(),
-                'next_review_label' => $article->next_review_at?->format('M j, Y'),
+                'next_review_label' => $this->formatter->date($article->next_review_at),
                 'source_topic' => $article->sourceTopic ? [
                     'slug' => $article->sourceTopic->slug,
                     'title' => $article->sourceTopic->title,
@@ -129,7 +132,8 @@ class KnowledgePresenter
             'difficulty_label' => Str::headline($article->difficulty),
             'status_label' => $article->status->label(),
             'is_outdated' => $article->status->value === 'outdated',
-            'reviewed_label' => $article->last_reviewed_at?->format('M j, Y') ?? 'Editorial review pending',
+            'reviewed_label' => $this->formatter->date($article->last_reviewed_at)
+                ?? __('presentation.editorial_review_pending'),
             'version' => $article->current_version,
         ];
     }

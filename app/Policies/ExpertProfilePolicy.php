@@ -1,16 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Policies;
 
 use App\Enums\ExpertProfileStatus;
 use App\Models\ExpertProfile;
 use App\Models\User;
-use App\Services\ForumActor;
 
 class ExpertProfilePolicy
 {
-    public function __construct(private readonly ForumActor $actor) {}
-
     public function viewAny(?User $user): bool
     {
         return true;
@@ -19,22 +18,23 @@ class ExpertProfilePolicy
     public function view(?User $user, ExpertProfile $expertProfile): bool
     {
         return $expertProfile->status === ExpertProfileStatus::Published
-            || $expertProfile->owner_key === $this->actor->key();
+            || ($user?->isActive() === true && $expertProfile->owner_key === $user->actor_key);
     }
 
     public function create(?User $user): bool
     {
-        return true;
+        return $user?->isActive() === true;
     }
 
     public function update(?User $user, ExpertProfile $expertProfile): bool
     {
-        return $expertProfile->owner_key === $this->actor->key();
+        return $user?->isActive() === true
+            && $expertProfile->owner_key === $user->actor_key;
     }
 
     public function delete(?User $user, ExpertProfile $expertProfile): bool
     {
-        return $expertProfile->owner_key === $this->actor->key();
+        return $this->update($user, $expertProfile);
     }
 
     public function restore(?User $user, ExpertProfile $expertProfile): bool

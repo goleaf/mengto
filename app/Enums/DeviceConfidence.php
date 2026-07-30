@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Enums;
 
 enum DeviceConfidence: string
@@ -11,11 +13,6 @@ enum DeviceConfidence: string
 
     public function label(): string
     {
-        return match ($this) {
-            self::High => 'High confidence',
-            self::Medium => 'Medium confidence',
-            self::Low => 'Low confidence',
-            self::Unknown => 'Confidence unknown',
-        };
+        return __("devices.confidence.{$this->value}");
     }
 }

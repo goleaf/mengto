@@ -1,9 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services;
 
 use App\Enums\CareEntryStatus;
 use App\Enums\CareEntryType;
+use App\Enums\CareSyncStatus;
 use App\Enums\CareTaskStatus;
 use App\Enums\MedicationStatus;
 use App\Models\AuditLog;
@@ -15,6 +18,7 @@ use App\Models\CareTask;
 use App\Models\MedicalRecord;
 use App\Models\Medication;
 use Carbon\CarbonImmutable;
+use DateTimeInterface;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
@@ -24,6 +28,7 @@ class CareJournalPresenter
     public function __construct(
         private readonly ProfilePresenter $profiles,
         private readonly ForumActor $actor,
+        private readonly LocaleFormatter $formatter,
     ) {}
 
     /** @return array<string, mixed> */
@@ -51,7 +56,7 @@ class CareJournalPresenter
         $records->through(fn (CareJournal $journal): array => $this->journalCard($journal));
 
         return [
-            ...$this->page('Private care journals', 'care'),
+            ...$this->page(__('messages.private_care_journals_f718a9186c'), 'care'),
             'journals' => $records,
         ];
     }
@@ -76,7 +81,7 @@ class CareJournalPresenter
             ->all();
 
         return [
-            ...$this->page('Create a private care journal', 'care'),
+            ...$this->page(__('messages.create_a_private_care_journal_4275e0de97'), 'care'),
             'pet_options' => $options,
             'timezone' => 'Europe/Vilnius',
         ];
@@ -132,7 +137,7 @@ class CareJournalPresenter
             ->values();
 
         $data = [
-            ...$this->page($journal->pet_name.' care journal', 'care'),
+            ...$this->page(__('presentation.care_journal_for', ['pet' => $journal->pet_name]), 'care'),
             'care_journal' => $this->journal($journal),
             'today_summary' => $this->todaySummary($journal, $todayEntries, $tasks),
             'entries' => $entries
@@ -144,6 +149,21 @@ class CareJournalPresenter
             'routines' => $routines->map(fn (CareRoutine $routine): array => $this->routine($routine))->all(),
             'weekly' => $this->weekly($entries, $weekStart, $dayEnd),
             'entry_types' => $this->entryTypes(),
+            'access_section_options' => collect([
+                'summary',
+                'feeding',
+                'water',
+                'walks',
+                'toilet',
+                'sleep',
+                'activity',
+                'care',
+                'observations',
+                'tasks',
+            ])->map(fn (string $section): array => [
+                'value' => $section,
+                'label' => Str::headline($section),
+            ])->all(),
             'entry_idempotency_key' => (string) Str::uuid(),
             'form_defaults' => [
                 'started_at' => $today->startOfMinute()->format('Y-m-d\TH:i'),
@@ -183,7 +203,7 @@ class CareJournalPresenter
             ->map(fn (AuditLog $log): array => [
                 'action' => Str::headline($log->action),
                 'actor' => $log->actor_role,
-                'time' => $log->created_at?->format('M j · H:i'),
+                'time' => $this->formatter->dateTime($log->created_at),
             ])
             ->values()
             ->all();
@@ -220,14 +240,14 @@ class CareJournalPresenter
             ->get();
 
         return [
-            ...$this->page($journal->pet_name.' care report', 'care'),
+            ...$this->page(__('presentation.care_report_for', ['pet' => $journal->pet_name]), 'care'),
             'care_journal' => $this->journal($journal),
-            'period' => $from->format('M j, Y').' - '.$to->format('M j, Y'),
+            'period' => $this->formatter->date($from).' - '.$this->formatter->date($to),
             'entries' => $entries
                 ->map(fn (CareEntry $entry): array => $this->entry($journal, $entry))
                 ->all(),
             'weekly' => $this->weekly($entries, $from, $to),
-            'source_note' => 'This report contains recorded facts only. Missing entries mean not recorded, not necessarily not completed.',
+            'source_note' => __('messages.this_report_contains_recorded_facts_only_missing_entries_eb18d34b1e'),
         ];
     }
 
@@ -266,7 +286,7 @@ class CareJournalPresenter
         }
 
         return [
-            ...$this->page($journal->pet_name.' shared care plan', 'care'),
+            ...$this->page(__('presentation.shared_care_plan_for', ['pet' => $journal->pet_name]), 'care'),
             'care_journal' => $this->journal($journal),
             'grant' => $this->grant($grant),
             'token' => $token,
@@ -299,7 +319,7 @@ class CareJournalPresenter
     {
         return [
             'owner' => $this->profiles->owner(),
-            'page_title' => $title.' | PawCircle',
+            'page_title' => __('presentation.brand_title', ['title' => $title]),
             'active_section' => $activeSection,
         ];
     }
@@ -313,11 +333,11 @@ class CareJournalPresenter
             'pet_profile_key' => $journal->pet_profile_key,
             'pet_name' => $journal->pet_name,
             'species' => Str::headline($journal->species),
-            'breed' => $journal->breed ?: 'Breed not recorded',
+            'breed' => $journal->breed ?: __('messages.breed_not_recorded_ebcac0c0af'),
             'image_url' => $journal->image_url,
             'privacy' => Str::headline($journal->privacy),
             'timezone' => $journal->timezone,
-            'current_caregiver' => $journal->current_caregiver_name ?: 'Not assigned',
+            'current_caregiver' => $journal->current_caregiver_name ?: __('messages.not_assigned_13075c2336'),
             'show_url' => route('care-journals.show', $journal),
             'manage_url' => route('care-journals.manage', $journal),
             'report_url' => route('care-journals.report', $journal),
@@ -336,7 +356,7 @@ class CareJournalPresenter
             'unusual_entries_count' => (int) $journal->unusual_entries_count,
             'last_feeding' => $this->relative($journal->last_feeding_at),
             'last_walk' => $this->relative($journal->last_walk_at),
-            'updated_at' => $journal->updated_at?->diffForHumans(),
+            'updated_at' => $this->formatter->relative($journal->updated_at),
         ];
     }
 
@@ -399,7 +419,7 @@ class CareJournalPresenter
             ? $entry->media->map(fn ($item): array => [
                 'id' => $item->id,
                 'mime_type' => $item->mime_type,
-                'alt_text' => $item->alt_text ?: 'Private care journal attachment',
+                'alt_text' => $item->alt_text ?: __('messages.private_care_journal_attachment_dba75610bc'),
                 'sensitivity' => $item->sensitivity,
                 'sensitivity_label' => Str::headline($item->sensitivity),
                 'download_url' => $accessToken === null
@@ -421,39 +441,45 @@ class CareJournalPresenter
             'icon' => $entry->type->icon(),
             'title' => $entry->title,
             'subtype' => $entry->subtype,
-            'started_at' => $entry->started_at?->format('M j · H:i'),
+            'started_at' => $this->formatter->dateTime($entry->started_at),
             'started_date' => $entry->started_at?->toDateString(),
-            'ended_at' => $entry->ended_at?->format('H:i'),
+            'ended_at' => $this->formatter->time($entry->ended_at),
             'status' => $entry->status->value,
             'status_label' => $entry->status->label(),
             'status_tone' => $entry->status->tone(),
             'source' => $entry->source_type->label(),
             'source_name' => $entry->source_name,
+            'source_recorded_at' => $this->formatter->dateTime($entry->source_recorded_at),
+            'source_timezone' => $entry->source_timezone,
+            'sync_status' => $entry->sync_status->value,
+            'sync_label' => $entry->sync_status === CareSyncStatus::Synchronized
+                ? __('presentation.synchronized_offline_entry')
+                : __('presentation.recorded_online'),
             'verification' => Str::headline($entry->verification_status),
             'author_name' => $entry->author_name,
             'notes' => $entry->notes,
             'measurements' => $this->labeledDetails($entry->measurements ?? []),
             'context' => $this->labeledDetails($context),
             'quantity' => $entry->quantity_value !== null
-                ? rtrim(rtrim((string) $entry->quantity_value, '0'), '.').' '.$entry->quantity_unit
+                ? $this->formatter->number((float) $entry->quantity_value, 3).' '.$entry->quantity_unit
                 : null,
             'duration' => $entry->duration_minutes !== null
-                ? $entry->duration_minutes.' min'
+                ? __('presentation.minutes', ['count' => $this->formatter->number($entry->duration_minutes)])
                 : null,
             'distance' => $entry->distance_meters !== null
-                ? number_format($entry->distance_meters / 1000, 1).' km'
+                ? __('presentation.kilometers', ['count' => $this->formatter->number($entry->distance_meters / 1000, 1)])
                 : null,
             'appetite' => $entry->appetite ? Str::headline($entry->appetite) : null,
             'intensity' => $entry->intensity ? Str::headline($entry->intensity) : null,
             'facts' => collect([
                 'Amount' => $entry->quantity_value !== null
-                    ? rtrim(rtrim((string) $entry->quantity_value, '0'), '.').' '.$entry->quantity_unit
+                    ? $this->formatter->number((float) $entry->quantity_value, 3).' '.$entry->quantity_unit
                     : null,
                 'Duration' => $entry->duration_minutes !== null
-                    ? $entry->duration_minutes.' min'
+                    ? __('presentation.minutes', ['count' => $this->formatter->number($entry->duration_minutes)])
                     : null,
                 'Distance' => $entry->distance_meters !== null
-                    ? number_format($entry->distance_meters / 1000, 1).' km'
+                    ? __('presentation.kilometers', ['count' => $this->formatter->number($entry->distance_meters / 1000, 1)])
                     : null,
                 'Appetite' => $entry->appetite ? Str::headline($entry->appetite) : null,
                 'Intensity' => $entry->intensity ? Str::headline($entry->intensity) : null,
@@ -490,8 +516,8 @@ class CareJournalPresenter
             'type' => $task->type->value,
             'type_label' => $task->type->label(),
             'icon' => $task->type->icon(),
-            'assignee' => $task->assignee_name ?: 'Anyone available',
-            'due_at' => $task->due_at?->format('M j · H:i'),
+            'assignee' => $task->assignee_name ?: __('messages.anyone_available_7913b79c03'),
+            'due_at' => $this->formatter->dateTime($task->due_at),
             'is_overdue' => $task->due_at?->isPast() ?? false,
             'priority' => $task->priority->label(),
             'status' => $task->status->value,
@@ -509,8 +535,8 @@ class CareJournalPresenter
             'id' => $routine->id,
             'name' => $routine->name,
             'period' => Str::headline($routine->period),
-            'starts_on' => $routine->starts_on?->format('M j, Y'),
-            'ends_on' => $routine->ends_on?->format('M j, Y'),
+            'starts_on' => $this->formatter->date($routine->starts_on),
+            'ends_on' => $this->formatter->date($routine->ends_on),
             'days' => collect($routine->days ?? [])->map(fn (string $day): string => Str::headline($day))->all(),
             'start_time' => $routine->start_time,
             'status' => $routine->status->label(),
@@ -532,9 +558,9 @@ class CareJournalPresenter
             'allow_location' => $grant->allow_location,
             'allow_media' => $grant->allow_media,
             'views' => $grant->views_used.'/'.$grant->max_views,
-            'expires_at' => $grant->expires_at?->format('M j · H:i'),
+            'expires_at' => $this->formatter->dateTime($grant->expires_at),
             'active' => $grant->canBeOpened(),
-            'status' => $grant->canBeOpened() ? 'Active' : 'Expired or revoked',
+            'status' => $grant->canBeOpened() ? __('messages.active_9234069589') : __('messages.expired_or_revoked_eebe0c11e5'),
         ];
     }
 
@@ -557,7 +583,8 @@ class CareJournalPresenter
                 );
 
                 return [
-                    'date' => $date->format('D, M j'),
+                    'date' => $this->formatter->weekdayMonthDay($date),
+                    'date_short' => $this->formatter->weekdayShort($date),
                     'feeding' => $dayEntries->where('type', CareEntryType::Feeding)->count(),
                     'water' => $dayEntries->where('type', CareEntryType::Water)->count(),
                     'walk_minutes' => (int) $dayEntries
@@ -570,6 +597,13 @@ class CareJournalPresenter
                     'activity_minutes' => (int) $dayEntries
                         ->whereIn('type', [CareEntryType::Activity, CareEntryType::Training])
                         ->sum('duration_minutes'),
+                    'activity_bar_percent' => min(100, (int) $dayEntries
+                        ->whereIn('type', [
+                            CareEntryType::Walk,
+                            CareEntryType::Activity,
+                            CareEntryType::Training,
+                        ])
+                        ->sum('duration_minutes')),
                     'unusual' => $dayEntries->where('is_unusual', true)->count(),
                     'recorded' => $dayEntries->isNotEmpty(),
                 ];
@@ -615,7 +649,7 @@ class CareJournalPresenter
                 'name' => $medication->name,
                 'dose' => $medication->dose,
                 'schedule' => $medication->schedule_text,
-                'next_dose' => $medication->next_dose_at?->format('M j · H:i'),
+                'next_dose' => $this->formatter->dateTime($medication->next_dose_at),
                 'latest_status' => $medication->doses->first()?->status->label(),
                 'latest_by' => $medication->doses->first()?->administered_by_name,
             ])
@@ -651,8 +685,8 @@ class CareJournalPresenter
         ];
     }
 
-    private function relative(mixed $value): string
+    private function relative(?DateTimeInterface $value): string
     {
-        return $value?->diffForHumans() ?? 'Not recorded';
+        return $this->formatter->relative($value) ?? __('ui.not_recorded_b37c7879f6');
     }
 }

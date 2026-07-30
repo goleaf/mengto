@@ -3,7 +3,7 @@
 <x-result-grid
     section="group-directory"
     title-id="group-directory-title"
-    title="Community group results"
+    title="{{ __('ui.community_group_results_88b232865f') }}"
     :columns="4"
 >
     @forelse ($groups as $group)
@@ -11,9 +11,9 @@
     @empty
         <x-empty-state
             icon="users"
-            title="No groups match these filters"
+            title="{{ __('ui.no_groups_match_these_filters_7051ff11e4') }}"
             role="listitem"
-            description="Try a broader topic, category, or organizer."
+            description="{{ __('ui.try_a_broader_topic_category_or_organizer_25f4a422e4') }}"
             :href="route('groups.index')"
             class="sm:col-span-2 xl:col-span-4"
         />

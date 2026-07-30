@@ -1,15 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories;
 
 use App\Models\ForumAnswer;
 use App\Models\ForumTopic;
-use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<ForumAnswer>
+ * @extends ApplicationFactory<ForumAnswer>
  */
-class ForumAnswerFactory extends Factory
+class ForumAnswerFactory extends ApplicationFactory
 {
     /**
      * Define the model's default state.

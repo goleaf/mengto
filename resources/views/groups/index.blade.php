@@ -1,19 +1,19 @@
 <x-directory-page
     :owner="$owner"
-    title="Groups | PawCircle"
+    title="{{ __('ui.groups_brand_2cc8a218be') }}"
     active-section="groups"
     :summary="$summary"
     header-section="group-header"
-    action-label="Create group"
+    action-label="{{ __('ui.create_group_35be9c541d') }}"
     action-icon="users-round"
     :action-href="route('compose', 'group')"
 >
     <x-slot:summary-strip>
         <x-summary-strip
             :items="$summary['highlights']"
-            label="Community summary"
+            label="{{ __('ui.community_summary_2014a7ddb6') }}"
             :icons="['users', 'activity', 'map-pin']"
-            empty="Community summary unavailable."
+            empty="{{ __('ui.community_summary_unavailable_2b08b30afc') }}"
             data-section="group-summary"
         />
     </x-slot:summary-strip>
@@ -23,7 +23,7 @@
             <x-notice
                 section="group-recommendation-feedback"
                 icon="eye-off"
-                title="Recommendation hidden"
+                title="{{ __('ui.recommendation_hidden_28d507ab00') }}"
                 :description="$groups['last_dismissed']['message']"
                 class="mb-5"
             >
@@ -41,13 +41,13 @@
 
         <x-directory-toolbar
             :filters="$groups['filters']"
-            label="Group filters"
-            filters-label="Group category filters"
-            sort-label="Sort groups"
+            label="{{ __('ui.group_filters_6abd03f6d9') }}"
+            filters-label="{{ __('ui.group_category_filters_2e1d2c99cc') }}"
+            sort-label="{{ __('ui.sort_groups_f511b3d2dc') }}"
             section="group-filters"
             search-id="group-search"
-            search-label="Search groups"
-            search-placeholder="Name, topic, city, or organizer"
+            search-label="{{ __('ui.search_groups_6b6482a28b') }}"
+            search-placeholder="{{ __('ui.name_topic_city_or_organizer_0ed7b1b6f6') }}"
             :query="$groups['query']"
             :active-filter="$groups['filter']"
             :active-sort="$groups['sort']"

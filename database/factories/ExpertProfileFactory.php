@@ -1,15 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories;
 
 use App\Enums\ExpertProfileStatus;
 use App\Enums\VerificationStatus;
 use App\Models\ExpertProfile;
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
-/** @extends Factory<ExpertProfile> */
-class ExpertProfileFactory extends Factory
+/** @extends ApplicationFactory<ExpertProfile> */
+class ExpertProfileFactory extends ApplicationFactory
 {
     public function definition(): array
     {

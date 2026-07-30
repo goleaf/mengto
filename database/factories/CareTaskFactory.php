@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories;
 
 use App\Enums\CareEntryType;
@@ -7,12 +9,11 @@ use App\Enums\CareTaskPriority;
 use App\Enums\CareTaskStatus;
 use App\Models\CareJournal;
 use App\Models\CareTask;
-use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<CareTask>
+ * @extends ApplicationFactory<CareTask>
  */
-class CareTaskFactory extends Factory
+class CareTaskFactory extends ApplicationFactory
 {
     /**
      * Define the model's default state.

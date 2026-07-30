@@ -1,17 +1,23 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services;
 
+use Carbon\CarbonImmutable;
 use Illuminate\Support\Str;
 
 final class PlacePresenter
 {
+    private const int PLACES_PER_PAGE = 6;
+
     public function __construct(
         private readonly PlaceCatalog $catalog,
         private readonly PlaceContentCatalog $content,
         private readonly PlaceState $state,
         private readonly ProfilePresenter $profiles,
         private readonly EventCatalog $events,
+        private readonly LocaleFormatter $formatter,
     ) {}
 
     /**
@@ -42,18 +48,26 @@ final class PlacePresenter
         ));
         usort($places, fn (array $left, array $right): int => $this->compare($left, $right, $filters['sort']));
 
-        $selectedKey = (string) ($parameters['selected'] ?? ($places[0]['key'] ?? ''));
+        $totalPlaces = count($places);
+        $lastPage = max(1, (int) ceil($totalPlaces / self::PLACES_PER_PAGE));
+        $currentPage = min((int) ($parameters['page'] ?? 1), $lastPage);
+        $pageItems = array_slice(
+            $places,
+            ($currentPage - 1) * self::PLACES_PER_PAGE,
+            self::PLACES_PER_PAGE,
+        );
+        $selectedKey = (string) ($parameters['selected'] ?? ($pageItems[0]['key'] ?? ''));
         $selected = collect($places)->firstWhere('key', $selectedKey) ?? ($places[0] ?? null);
         $location = $this->state->generalizedLocation();
         $summary = $this->directorySummary($places, $filters, $emergency);
 
         return [
             'owner' => $this->profiles->owner(),
-            'page_title' => $emergency ? 'Emergency veterinary help | PawCircle' : 'Places map | PawCircle',
+            'page_title' => $emergency ? __('messages.emergency_veterinary_help_pawcircle_164829d5e3') : __('messages.places_map_pawcircle_3cab208400'),
             'active_section' => 'places',
             'summary' => $summary,
             'places' => [
-                'items' => $places,
+                'items' => $pageItems,
                 'map_items' => $this->mapItems($places, $emergency),
                 'selected' => $selected,
                 'query' => $query,
@@ -61,6 +75,7 @@ final class PlacePresenter
                 'filters' => $filters,
                 'advanced_filters_active' => $this->advancedFiltersActive($filters),
                 'filter_options' => $this->filterOptions(),
+                'filter_labels' => $this->filterLabels(),
                 'category_options' => $this->catalog->categoryOptions(),
                 'species_options' => $this->catalog->speciesOptions(),
                 'size_options' => $this->catalog->sizeOptions(),
@@ -73,13 +88,20 @@ final class PlacePresenter
                 'emergency_url' => route('places.index', ['emergency' => 1, 'open_now' => 1]),
                 'location' => $location,
                 'comparison' => array_slice($places, 0, 3),
+                'pagination' => $this->pagination(
+                    $parameters,
+                    $currentPage,
+                    $lastPage,
+                    $totalPlaces,
+                    count($pageItems),
+                ),
                 'recent' => $this->recentPlaces(),
                 'collections' => $this->state->collections(),
                 'submissions' => $this->state->submissions(),
                 'emergency' => $emergency,
                 'empty_message' => $emergency
-                    ? 'No suitable open clinic matches every filter. Widen the area and call the nearest capable clinic.'
-                    : 'No places match every selected filter. Remove one filter or search another area.',
+                    ? __('messages.no_suitable_open_clinic_matches_every_filter_widen_the_a_51daaa4fc8')
+                    : __('messages.no_places_match_every_selected_filter_remove_one_filter__4a57379874'),
             ],
         ];
     }
@@ -100,30 +122,51 @@ final class PlacePresenter
         $tabOptions = $this->tabOptions($place);
         $tab = array_key_exists($tab, $tabOptions) ? $tab : 'overview';
         $content = $this->content->content($place);
-        $content['reviews'] = [
-            ...$this->state->reviews($key),
-            ...$content['reviews'],
-        ];
+        $content['reviews'] = array_map(
+            static fn (array $review): array => [
+                ...$review,
+                'criterion_label' => Str::headline((string) $review['criterion']),
+            ],
+            [
+                ...$this->stateReviews($key),
+                ...$content['reviews'],
+            ],
+        );
         $content['questions'] = [
             ...$this->state->questions($key),
             ...$content['questions'],
         ];
         $content['events'] = $this->placeEvents($place['events']);
-        $content['warnings'] = $this->state->warnings($key, $place['base_warnings']);
+        $content['warnings'] = $this->presentWarnings(
+            $this->state->warnings($key, $place['base_warnings']),
+        );
         $content['history'] = $this->history($key, $content['updates']);
 
         return [
             'owner' => $this->profiles->owner(),
-            'page_title' => $place['name'].' | PawCircle',
+            'page_title' => __('presentation.brand_title', ['title' => $place['name']]),
             'active_section' => 'places',
             'place' => $place,
             'tabs' => $this->tabs($place, $tab, $tabOptions),
             'active_tab' => $tab,
             'content' => $content,
-            'check_in' => $this->state->currentCheckIn($key),
+            'check_in' => $this->presentCheckIn($this->state->currentCheckIn($key)),
             'collections' => $this->collectionOptions($key),
-            'claims' => $this->state->claims($key),
-            'corrections' => $this->state->corrections($key),
+            'claims' => array_map(
+                static fn (array $claim): array => [
+                    ...$claim,
+                    'status_label' => Str::headline((string) $claim['status']),
+                ],
+                $this->state->claims($key),
+            ),
+            'corrections' => array_map(
+                static fn (array $correction): array => [
+                    ...$correction,
+                    'field_label' => Str::headline((string) $correction['field']),
+                    'status_label' => Str::headline((string) $correction['status']),
+                ],
+                $this->state->corrections($key),
+            ),
             'can_manage' => (bool) $place['owner_managed'],
             'report_url' => route('compose', [
                 'kind' => 'report-place',
@@ -193,13 +236,13 @@ final class PlacePresenter
             'route_parameters' => ['place' => $target],
             'place' => $place,
             'fields' => [
-                'hours' => 'Opening hours',
-                'pet-rules' => 'Pet access rules',
-                'address' => 'Address or entrance',
-                'contact' => 'Phone or website',
-                'services' => 'Services',
-                'accessibility' => 'Accessibility',
-                'closure' => 'Temporary or permanent closure',
+                'hours' => __('messages.opening_hours_7c01795782'),
+                'pet-rules' => __('messages.pet_access_rules_34a9479c55'),
+                'address' => __('messages.address_or_entrance_8e5e4b084f'),
+                'contact' => __('messages.phone_or_website_2b95fb94ab'),
+                'services' => __('messages.services_604dce445e'),
+                'accessibility' => __('messages.accessibility_d3368cbffe'),
+                'closure' => __('messages.temporary_or_permanent_closure_77ec4e1cb7'),
             ],
         ];
     }
@@ -210,14 +253,18 @@ final class PlacePresenter
      */
     private function decoratePlace(array $place): array
     {
-        $warnings = $this->state->warnings($place['key'], $place['base_warnings']);
+        $warnings = $this->presentWarnings(
+            $this->state->warnings($place['key'], $place['base_warnings']),
+        );
         $activeWarnings = array_values(array_filter(
             $warnings,
             static fn (array $warning): bool => ! in_array($warning['status'], ['resolved', 'expired', 'false'], true),
         ));
         $saved = $this->state->isSaved($place['key']);
         $followed = $this->state->isFollowed($place['key']);
-        $checkIn = $this->state->currentCheckIn($place['key']);
+        $checkIn = $this->presentCheckIn(
+            $this->state->currentCheckIn($place['key']),
+        );
         $statusTone = match ($place['open_state']) {
             'open', 'appointment-only' => 'positive',
             'closing-soon', 'on-call', 'open-with-warning' => 'warning',
@@ -238,25 +285,57 @@ final class PlacePresenter
             'warnings' => $warnings,
             'active_warnings' => $activeWarnings,
             'warning_count' => count($activeWarnings),
-            'distance_label' => number_format((float) $place['distance_km'], 1).' km',
-            'travel_label' => $place['travel_minutes'].' min',
-            'rating_label' => number_format((float) $place['rating'], 1).' · '.$place['review_count'].' reviews',
+            'accepted_species_label' => collect($place['accepted_species'])
+                ->map(static fn (string $species): string => Str::headline($species))
+                ->implode(' · '),
+            'distance_label' => __('presentation.kilometers', [
+                'count' => $this->formatter->number((float) $place['distance_km'], 1),
+            ]),
+            'travel_label' => __('presentation.minutes', [
+                'count' => $this->formatter->number((int) $place['travel_minutes']),
+            ]),
+            'rating_label' => trans_choice('presentation.rating_reviews', (int) $place['review_count'], [
+                'rating' => $this->formatter->number((float) $place['rating'], 1, 1),
+                'count' => $this->formatter->number((int) $place['review_count']),
+            ]),
             'pet_fit' => $this->petFit($place),
-            'marker_label' => $place['category_label'].', '.$place['name'].', '.$place['open_label'].', '.number_format((float) $place['distance_km'], 1).' kilometers',
+            'marker_label' => __('presentation.place_marker', [
+                'category' => $place['category_label'],
+                'name' => $place['name'],
+                'status' => $place['open_label'],
+                'distance' => __('presentation.kilometers', [
+                    'count' => $this->formatter->number((float) $place['distance_km'], 1),
+                ]),
+            ]),
             'category_tone' => $this->categoryTone((string) $place['primary_category']),
             'save_action' => [
-                'label' => $saved ? 'Saved' : 'Save place',
+                'label' => $saved ? __('messages.saved_b5c120b316') : __('messages.save_place_56a1824be3'),
                 'icon' => $saved ? 'bookmark-check' : 'bookmark',
                 'active' => $saved,
                 'payload' => ['action' => 'toggle-place-save', 'target' => $place['key']],
             ],
             'follow_action' => [
-                'label' => $followed ? 'Following updates' : 'Follow updates',
+                'label' => $followed ? __('messages.following_updates_e3a51fab34') : __('messages.follow_updates_2fea7c083c'),
                 'icon' => $followed ? 'bell-ring' : 'bell',
                 'active' => $followed,
                 'payload' => ['action' => 'toggle-place-follow', 'target' => $place['key']],
             ],
         ];
+    }
+
+    /** @return array<int, array<string, mixed>> */
+    private function stateReviews(string $place): array
+    {
+        return array_map(function (array $review): array {
+            $createdAt = $review['created_at'] ?? null;
+
+            return [
+                ...$review,
+                'date' => is_string($createdAt)
+                    ? $this->formatter->date(CarbonImmutable::parse($createdAt))
+                    : ($review['date'] ?? null),
+            ];
+        }, $this->state->reviews($place));
     }
 
     /**
@@ -293,7 +372,7 @@ final class PlacePresenter
         $openMatches = ! $filters['open_now']
             || in_array($place['open_state'], ['open', 'closing-soon', 'open-with-warning', 'on-call', 'appointment-only'], true);
         $leashMatches = match ($filters['leash']) {
-            'off-leash' => Str::contains(Str::lower($place['leash_policy']), 'off leash'),
+            'off-leash' => Str::contains(Str::lower($place['leash_policy']), __('messages.off_leash_7dff2e2a33')),
             'fenced' => (bool) $place['fenced'],
             'required' => Str::contains(Str::lower($place['leash_policy']), 'required'),
             default => true,
@@ -399,7 +478,7 @@ final class PlacePresenter
             'view' => (string) ($parameters['view'] ?? 'split'),
             'mode' => (string) ($parameters['mode'] ?? 'browse'),
             'layer' => (string) ($parameters['layer'] ?? 'places'),
-            'area' => (string) ($parameters['area'] ?? 'Vilnius'),
+            'area' => (string) ($parameters['area'] ?? __('messages.vilnius_c283e0869a')),
         ];
     }
 
@@ -438,23 +517,23 @@ final class PlacePresenter
         $labels = [];
 
         $rules = [
-            [['24 hour', '24-hour', 'emergency', 'srocn', 'kruglosut'], 'category', 'emergency-vet', '24-hour veterinary clinics'],
-            [['clinic', 'vet', 'veterinar'], 'category', 'vet', 'veterinary clinics'],
+            [[__('messages.24_hour_84f0698f17'), '24-hour', 'emergency', 'srocn', 'kruglosut'], 'category', 'emergency-vet', __('messages.24_hour_veterinary_clinics_d381151d3c')],
+            [['clinic', 'vet', 'veterinar'], 'category', 'vet', __('messages.veterinary_clinics_4f3327b75c')],
             [['groom', 'grumer'], 'category', 'grooming', 'grooming'],
-            [['dog park', 'ploscad'], 'category', 'dog-park', 'dog parks'],
+            [[__('messages.dog_park_ceddb484e3'), 'ploscad'], 'category', 'dog-park', __('messages.dog_parks_bfe21efe5c')],
             [['park', 'progulk'], 'category', 'park', 'parks'],
-            [['cafe', 'kafe', 'terrace'], 'category', 'pet-cafe', 'pet-friendly cafes'],
-            [['bird', 'ptic', 'popug'], 'species', 'bird', 'accepts birds'],
-            [['cat', 'kosk'], 'species', 'cat', 'accepts cats'],
-            [['large dog', 'krupn'], 'size', 'large', 'large pets'],
-            [['small dog', 'malenk'], 'size', 'small', 'small pets'],
-            [['quiet', 'tix', 'calm', 'spok'], 'crowd', 'low', 'usually quiet'],
-            [['evening', 'vecer'], 'visit_time', 'evening', 'evening visit'],
-            [['night', 'noc'], 'visit_time', 'night', 'night visit'],
-            [['fenced', 'ogoroz'], 'safety', 'fenced', 'fully fenced'],
-            [['water', 'voda'], 'safety', 'water', 'water available'],
+            [['cafe', 'kafe', 'terrace'], 'category', 'pet-cafe', __('messages.pet_friendly_cafes_77a59de51a')],
+            [['bird', 'ptic', 'popug'], 'species', 'bird', __('messages.accepts_birds_951f93aefe')],
+            [['cat', 'kosk'], 'species', 'cat', __('messages.accepts_cats_1dd2494733')],
+            [[__('messages.large_dog_de9d648ca7'), 'krupn'], 'size', 'large', __('messages.large_pets_c77a4a8f5a')],
+            [[__('messages.small_dog_549c2cc898'), 'malenk'], 'size', 'small', __('messages.small_pets_8333383867')],
+            [['quiet', 'tix', 'calm', 'spok'], 'crowd', 'low', __('messages.usually_quiet_9cebc349d7')],
+            [['evening', 'vecer'], 'visit_time', 'evening', __('messages.evening_visit_1be721e982')],
+            [['night', 'noc'], 'visit_time', 'night', __('messages.night_visit_b95a11c9fb')],
+            [['fenced', 'ogoroz'], 'safety', 'fenced', __('messages.fully_fenced_3be36389ac')],
+            [['water', 'voda'], 'safety', 'water', __('messages.water_available_d14ee16b8b')],
             [['light', 'osves'], 'accessibility', 'lighting', 'lighting'],
-            [['open now', 'otkryt'], 'open_now', true, 'open now'],
+            [[__('messages.open_now_66632d70dc'), 'otkryt'], 'open_now', true, __('messages.open_now_66632d70dc')],
         ];
 
         foreach ($rules as [$needles, $key, $filter, $label]) {
@@ -473,7 +552,7 @@ final class PlacePresenter
             'labels' => $labels,
             'summary' => $labels === []
                 ? null
-                : 'We understood: '.implode(' · ', $labels),
+                : __('presentation.interpreted_filters', ['filters' => implode(' · ', $labels)]),
         ];
     }
 
@@ -519,36 +598,110 @@ final class PlacePresenter
         ));
 
         return [
-            'eyebrow' => $emergency ? 'Urgent veterinary navigator' : 'Map and place catalog',
-            'title' => $emergency ? 'Find suitable veterinary help now' : 'Plan the next place with your pet',
+            'eyebrow' => $emergency ? __('messages.urgent_veterinary_navigator_36b5ceda88') : __('messages.map_and_place_catalog_e874309a26'),
+            'title' => $emergency ? __('messages.find_suitable_veterinary_help_now_4d0c2c5c2b') : __('messages.plan_the_next_place_with_your_pet_47805e2905'),
             'description' => $emergency
-                ? 'Showing open or on-call clinics that match the selected species. Call before travel because intake and clinicians can change.'
-                : 'Compare parks, dog runs, routes, clinics, services, shelters, stores, and pet-friendly places without exposing your home or movement history.',
-            'count' => count($places).' '.Str::plural('place', count($places)).' · '.$filters['area'],
+                ? __('messages.showing_open_or_on_call_clinics_that_match_the_selected__018c1023e4')
+                : __('messages.compare_parks_dog_runs_routes_clinics_services_shelters__f8d00ec18d'),
+            'count' => __('presentation.places_in_area', [
+                'count' => trans_choice('presentation.places_count', count($places), ['count' => count($places)]),
+                'area' => $filters['area'],
+            ]),
             'highlights' => [
-                ['label' => 'Open now', 'value' => (string) $open, 'detail' => 'based on stored hours'],
-                ['label' => 'Selected pet', 'value' => Str::headline($filters['pet']), 'detail' => 'recommendations are editable'],
-                ['label' => 'Map privacy', 'value' => 'Generalized', 'detail' => 'no home point published'],
-                ['label' => 'Active mode', 'value' => Str::headline($filters['mode']), 'detail' => 'filters stay in place'],
+                ['label' => __('messages.open_now_14b67e6207'), 'value' => (string) $open, 'detail' => __('messages.based_on_stored_hours_cbc489530c')],
+                ['label' => __('messages.selected_pet_fec59d3d54'), 'value' => Str::headline($filters['pet']), 'detail' => __('messages.recommendations_are_editable_9c98126337')],
+                ['label' => __('messages.map_privacy_cb5b532cd2'), 'value' => __('messages.generalized_d2f705b2f2'), 'detail' => __('messages.no_home_point_published_aee7985f18')],
+                ['label' => __('messages.active_mode_75f1e987eb'), 'value' => Str::headline($filters['mode']), 'detail' => __('messages.filters_stay_in_place_386bc45155')],
             ],
         ];
     }
 
     /**
-     * @return array<string, array<string, string>>
+     * @param  array<string, mixed>  $parameters
+     * @return array{
+     *     current_page: int,
+     *     last_page: int,
+     *     total: int,
+     *     summary: string,
+     *     previous_url: string|null,
+     *     next_url: string|null,
+     *     pages: array<int, array{label: string, url: string, current: bool}>
+     * }
+     */
+    private function pagination(
+        array $parameters,
+        int $currentPage,
+        int $lastPage,
+        int $total,
+        int $pageCount,
+    ): array {
+        $query = array_filter(
+            $parameters,
+            static fn (mixed $value, string $key): bool => $key !== 'page'
+                && $value !== null
+                && $value !== '',
+            ARRAY_FILTER_USE_BOTH,
+        );
+        $from = $total === 0 ? 0 : (($currentPage - 1) * self::PLACES_PER_PAGE) + 1;
+        $to = $from + max(0, $pageCount - 1);
+
+        return [
+            'current_page' => $currentPage,
+            'last_page' => $lastPage,
+            'total' => $total,
+            'summary' => __('places.pagination.summary', [
+                'from' => $from,
+                'to' => $to,
+                'total' => $total,
+            ]),
+            'previous_url' => $currentPage > 1
+                ? route('places.index', [...$query, 'page' => $currentPage - 1])
+                : null,
+            'next_url' => $currentPage < $lastPage
+                ? route('places.index', [...$query, 'page' => $currentPage + 1])
+                : null,
+            'pages' => array_map(
+                static fn (int $page): array => [
+                    'label' => __('places.pagination.page', ['page' => $page]),
+                    'url' => route('places.index', [...$query, 'page' => $page]),
+                    'current' => $page === $currentPage,
+                ],
+                range(1, $lastPage),
+            ),
+        ];
+    }
+
+    /**
+     * @return array<string, array<int|string, string>>
      */
     private function filterOptions(): array
     {
         return [
-            'distance' => ['any' => 'Any distance', '1' => 'Up to 1 km', '5' => 'Up to 5 km', '10' => 'Up to 10 km'],
-            'leash' => ['any' => 'Any leash rule', 'off-leash' => 'Off-leash area', 'fenced' => 'Fenced', 'required' => 'Leash required'],
-            'accessibility' => ['any' => 'Any access', 'wheelchair' => 'Step-free or wheelchair access', 'quiet' => 'Quiet zone', 'parking' => 'Parking', 'lighting' => 'Lighting'],
-            'safety' => ['any' => 'Any safety features', 'fenced' => 'Fully fenced', 'water' => 'Water', 'lighting' => 'Lighting', 'no-warnings' => 'No active warnings'],
-            'price' => ['any' => 'Any price', 'free' => 'Free', 'paid' => 'Paid'],
-            'rating' => ['any' => 'Any rating', '4' => '4.0 and above', '4.5' => '4.5 and above'],
-            'verification' => ['any' => 'Any source', 'verified' => 'Verified or managed', 'community' => 'Community verified', 'recent' => 'Updated recently'],
-            'crowd' => ['any' => 'Any crowd level', 'low' => 'Usually quiet', 'medium' => 'Moderate', 'high' => 'Often busy', 'unknown' => 'No data'],
-            'visit_time' => ['any' => 'Any time', 'morning' => 'Morning', 'evening' => 'Evening', 'night' => 'Night', 'quiet' => 'Quiet time'],
+            'distance' => ['any' => __('messages.any_distance_259532822d'), '1' => __('messages.up_to_1_km_f42baab3f5'), '5' => __('messages.up_to_5_km_a2dd8f44b2'), '10' => __('messages.up_to_10_km_e64168ccc8')],
+            'leash' => ['any' => __('messages.any_leash_rule_4631115f15'), 'off-leash' => __('messages.off_leash_area_0e3c0e0ee5'), 'fenced' => __('messages.fenced_620063310a'), 'required' => __('messages.leash_required_7ea874a2cb')],
+            'accessibility' => ['any' => __('messages.any_access_2ba9ccfee7'), 'wheelchair' => __('messages.step_free_or_wheelchair_access_813f8c1121'), 'quiet' => __('messages.quiet_zone_14e9fd069e'), 'parking' => __('messages.parking_4a64d6c849'), 'lighting' => __('messages.lighting_07607d609f')],
+            'safety' => ['any' => __('messages.any_safety_features_eb295e22b9'), 'fenced' => __('messages.fully_fenced_9a51f98506'), 'water' => __('messages.water_7ca7dea906'), 'lighting' => __('messages.lighting_07607d609f'), 'no-warnings' => __('messages.no_active_warnings_11cfa35292')],
+            'price' => ['any' => __('messages.any_price_63df5dcc99'), 'free' => __('messages.free_f411a1fb62'), 'paid' => __('messages.paid_fb81b961af')],
+            'rating' => ['any' => __('messages.any_rating_eb448ef89a'), '4' => __('messages.4_0_and_above_396ac80126'), '4.5' => __('messages.4_5_and_above_9538114b40')],
+            'verification' => ['any' => __('messages.any_source_8c7bc20d51'), 'verified' => __('messages.verified_or_managed_dbbfbaac69'), 'community' => __('messages.community_verified_5f4632da31'), 'recent' => __('messages.updated_recently_1206596132')],
+            'crowd' => ['any' => __('messages.any_crowd_level_e8ee29e691'), 'low' => __('messages.usually_quiet_c8b6cfea6b'), 'medium' => __('messages.moderate_5c42afc7a2'), 'high' => __('messages.often_busy_be95954ef4'), 'unknown' => __('messages.no_data_3b41ba9c7c')],
+            'visit_time' => ['any' => __('messages.any_time_5e7de49a40'), 'morning' => __('messages.morning_e9376a281a'), 'evening' => __('messages.evening_458c1fed57'), 'night' => __('messages.night_4e9f8db824'), 'quiet' => __('messages.quiet_time_417c2be235')],
+        ];
+    }
+
+    /** @return array<string, string> */
+    private function filterLabels(): array
+    {
+        return [
+            'distance' => __('messages.distance_b7bdf7a2d6'),
+            'leash' => __('messages.leash_rule_c1ac5d532d'),
+            'accessibility' => __('messages.accessibility_d3368cbffe'),
+            'safety' => __('messages.safety_726d11bd5b'),
+            'price' => __('messages.price_93c91c851e'),
+            'rating' => __('messages.rating_9f29530464'),
+            'verification' => __('messages.verification_7140f4f19d'),
+            'crowd' => __('messages.crowd_level_00d26eb623'),
+            'visit_time' => __('messages.visit_time_1d9762a5fe'),
         ];
     }
 
@@ -558,14 +711,14 @@ final class PlacePresenter
     private function sortOptions(): array
     {
         return [
-            'recommended' => 'Recommended',
-            'distance' => 'Distance',
-            'travel-time' => 'Travel time',
-            'rating' => 'Rating',
-            'reviews' => 'Review count',
-            'open' => 'Open status',
-            'freshness' => 'Recently updated',
-            'name' => 'Name',
+            'recommended' => __('messages.recommended_d70604e843'),
+            'distance' => __('messages.distance_b7bdf7a2d6'),
+            'travel-time' => __('messages.travel_time_fc2dc45944'),
+            'rating' => __('messages.rating_9f29530464'),
+            'reviews' => __('messages.review_count_47ee12806e'),
+            'open' => __('messages.open_status_0ec35c6e2a'),
+            'freshness' => __('messages.recently_updated_474b2a869a'),
+            'name' => __('messages.name_dcd1d5223f'),
         ];
     }
 
@@ -575,11 +728,11 @@ final class PlacePresenter
     private function viewOptions(): array
     {
         return [
-            'split' => 'Map + list',
-            'map' => 'Map',
-            'list' => 'List',
-            'fullscreen' => 'Fullscreen map',
-            'route' => 'Route mode',
+            'split' => __('messages.map_list_50c13b0456'),
+            'map' => __('messages.map_be176b0015'),
+            'list' => __('messages.list_6f202f54a7'),
+            'fullscreen' => __('messages.fullscreen_map_46259bcfd6'),
+            'route' => __('messages.route_mode_0bb6ec8534'),
         ];
     }
 
@@ -589,12 +742,12 @@ final class PlacePresenter
     private function modeOptions(): array
     {
         return [
-            'browse' => 'All places',
-            'favorites' => 'Favorites',
-            'visited' => 'Visited',
-            'events' => 'With events',
-            'warnings' => 'Warnings',
-            'emergency' => 'Emergency clinics',
+            'browse' => __('messages.all_places_b4c2045f3a'),
+            'favorites' => __('messages.favorites_7a1f2a83ac'),
+            'visited' => __('messages.visited_ec1e62325e'),
+            'events' => __('messages.with_events_7f8c568597'),
+            'warnings' => __('messages.warnings_0e04cd10f9'),
+            'emergency' => __('messages.emergency_clinics_73201eeeca'),
         ];
     }
 
@@ -604,12 +757,43 @@ final class PlacePresenter
     private function layerOptions(): array
     {
         return [
-            'places' => 'Places',
-            'routes' => 'Walking routes',
-            'events' => 'Events',
-            'warnings' => 'Warnings',
-            'lost-pets' => 'Lost pets',
-            'emergency' => 'Emergency clinics',
+            'places' => __('messages.places_eb5cfb7367'),
+            'routes' => __('messages.walking_routes_defb081135'),
+            'events' => __('messages.events_8d14f6e72d'),
+            'warnings' => __('messages.warnings_0e04cd10f9'),
+            'lost-pets' => __('messages.lost_pets_0219466249'),
+            'emergency' => __('messages.emergency_clinics_73201eeeca'),
+        ];
+    }
+
+    /**
+     * @param  list<array<string, mixed>>  $warnings
+     * @return list<array<string, mixed>>
+     */
+    private function presentWarnings(array $warnings): array
+    {
+        return array_map(
+            static fn (array $warning): array => [
+                ...$warning,
+                'status_label' => Str::headline((string) $warning['status']),
+            ],
+            $warnings,
+        );
+    }
+
+    /**
+     * @param  array<string, mixed>|null  $checkIn
+     * @return array<string, mixed>|null
+     */
+    private function presentCheckIn(?array $checkIn): ?array
+    {
+        if ($checkIn === null) {
+            return null;
+        }
+
+        return [
+            ...$checkIn,
+            'visibility_label' => Str::headline((string) $checkIn['visibility']),
         ];
     }
 
@@ -620,23 +804,23 @@ final class PlacePresenter
     private function tabOptions(array $place): array
     {
         $tabs = [
-            'overview' => 'Overview',
-            'photos' => 'Photos',
-            'services' => 'Services',
-            'rules' => 'Rules',
-            'hours' => 'Hours',
-            'reviews' => 'Reviews',
-            'events' => 'Events',
-            'questions' => 'Questions',
-            'map' => 'Map',
-            'updates' => 'Updates',
-            'corrections' => 'Corrections',
+            'overview' => __('messages.overview_d4b1ea5708'),
+            'photos' => __('messages.photos_5e3147ab51'),
+            'services' => __('messages.services_604dce445e'),
+            'rules' => __('messages.rules_4228aeb07c'),
+            'hours' => __('messages.hours_21e8492938'),
+            'reviews' => __('messages.reviews_84cb7871b7'),
+            'events' => __('messages.events_8d14f6e72d'),
+            'questions' => __('messages.questions_9a72221a27'),
+            'map' => __('messages.map_be176b0015'),
+            'updates' => __('messages.updates_22e2bada8f'),
+            'corrections' => __('messages.corrections_443b744e50'),
         ];
 
         if (in_array($place['primary_category'], ['vet', 'emergency-vet', 'grooming'], true)) {
             $tabs = [
                 ...array_slice($tabs, 0, 5, true),
-                'specialists' => 'Specialists',
+                'specialists' => __('messages.specialists_fc75c064bb'),
                 ...array_slice($tabs, 5, null, true),
             ];
         }
@@ -680,6 +864,7 @@ final class PlacePresenter
                     'key' => $event['key'],
                     'title' => $event['title'],
                     'category' => $event['category'],
+                    'category_label' => Str::headline($event['category']),
                     'starts_at' => $event['starts_at'],
                     'place' => $event['general_location'],
                     'status' => Str::headline($event['status']),
@@ -699,10 +884,10 @@ final class PlacePresenter
         $stateHistory = array_map(
             static fn (array $item): array => [
                 'title' => $item['message'],
-                'body' => 'Recorded in the private place action history.',
+                'body' => __('messages.recorded_in_the_private_place_action_history_8aecb0f4d2'),
                 'time' => $item['created_at'],
                 'icon' => 'history',
-                'status' => 'Account action',
+                'status' => __('messages.account_action_ff17cf80c5'),
             ],
             $this->state->history($place),
         );
@@ -744,25 +929,25 @@ final class PlacePresenter
     {
         if (in_array('dog', $place['accepted_species'], true) && in_array('large', $place['accepted_sizes'], true)) {
             return [
-                'label' => $place['quiet_zone'] ? 'May suit Scout' : 'Discuss crowd level',
+                'label' => $place['quiet_zone'] ? __('messages.may_suit_scout_8503e3b5eb') : __('messages.discuss_crowd_level_b69b39d988'),
                 'detail' => $place['quiet_zone']
-                    ? 'Large dogs and a quiet-space preference are supported.'
-                    : 'Large dogs are accepted; current crowd conditions still matter.',
+                    ? __('messages.large_dogs_and_a_quiet_space_preference_are_supported_68bf4bcdb4')
+                    : __('messages.large_dogs_are_accepted_current_crowd_conditions_still_m_5bedd179ad'),
                 'tone' => $place['quiet_zone'] ? 'positive' : 'warning',
             ];
         }
 
         if ($place['primary_category'] === 'grooming' && in_array('cat', $place['accepted_species'], true)) {
             return [
-                'label' => 'May suit Nori',
-                'detail' => 'Cat handling and a quiet appointment are listed.',
+                'label' => __('messages.may_suit_nori_ec20b15fb9'),
+                'detail' => __('messages.cat_handling_and_a_quiet_appointment_are_listed_8d780bed2b'),
                 'tone' => 'positive',
             ];
         }
 
         return [
-            'label' => 'Review pet access',
-            'detail' => 'Choose another pet profile or contact the place for current suitability.',
+            'label' => __('messages.review_pet_access_12ebc9faaf'),
+            'detail' => __('messages.choose_another_pet_profile_or_contact_the_place_for_curr_94c5b94c4a'),
             'tone' => 'neutral',
         ];
     }

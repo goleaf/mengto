@@ -1,15 +1,39 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use App\Enums\CareRoutineStatus;
 use Database\Factories\CareRoutineFactory;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Carbon;
 
+/**
+ * @property-read CareJournal|null $careJournal
+ * @property int $care_journal_id
+ * @property Carbon|null $created_at
+ * @property string $created_by_key
+ * @property string $created_by_name
+ * @property array<array-key, mixed>|null $days
+ * @property Carbon|null $ends_on
+ * @property int $id
+ * @property string|null $instructions
+ * @property string $name
+ * @property string $period
+ * @property string|null $start_time
+ * @property Carbon $starts_on
+ * @property CareRoutineStatus $status
+ * @property-read Collection<int, CareTask> $tasks
+ * @property string $timezone
+ * @property Carbon|null $updated_at
+ * @property int $version
+ */
 class CareRoutine extends Model
 {
     /** @use HasFactory<CareRoutineFactory> */
@@ -40,11 +64,13 @@ class CareRoutine extends Model
         ];
     }
 
+    /** @return BelongsTo<\App\Models\CareJournal, $this>*/
     public function careJournal(): BelongsTo
     {
         return $this->belongsTo(CareJournal::class);
     }
 
+    /** @return HasMany<\App\Models\CareTask, $this>*/
     public function tasks(): HasMany
     {
         return $this->hasMany(CareTask::class);

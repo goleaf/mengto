@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Services;
+declare(strict_types=1);
 
-use Illuminate\Support\Str;
+namespace App\Services;
 
 final class CirclePresenter
 {
-    private const FILTERS = ['Overview', 'Saved posts', 'Following', 'Groups', 'Meetups'];
+    private const FILTER_VALUES = ['overview', 'saved-posts', 'following', 'groups', 'meetups'];
 
     /**
      * @param  array<string, mixed>  $owner
@@ -40,7 +40,7 @@ final class CirclePresenter
         return [
             'owner' => $owner,
             'summary' => $this->summary($savedPosts, $following, $joinedGroups, $rsvpMeetups, $total),
-            'filters' => self::FILTERS,
+            'filters' => $this->filters(),
             'activeFilter' => $activeFilter,
             'collections' => $this->visibleCollections($collections, $activeFilter),
             'showStarter' => $activeFilter === 'overview' && $total === 0,
@@ -50,12 +50,21 @@ final class CirclePresenter
 
     private function activeFilter(string $filter): string
     {
-        $allowed = array_map(
-            static fn (string $label): string => Str::slug($label),
-            self::FILTERS,
-        );
+        return in_array($filter, self::FILTER_VALUES, true) ? $filter : 'overview';
+    }
 
-        return in_array($filter, $allowed, true) ? $filter : 'overview';
+    /**
+     * @return array<int, array{value: string, label: string}>
+     */
+    private function filters(): array
+    {
+        return [
+            ['value' => 'overview', 'label' => __('messages.overview_d4b1ea5708')],
+            ['value' => 'saved-posts', 'label' => __('messages.saved_posts_c6171ac089')],
+            ['value' => 'following', 'label' => __('messages.following_344b4271ca')],
+            ['value' => 'groups', 'label' => __('messages.groups_39bbb719fa')],
+            ['value' => 'meetups', 'label' => __('messages.meetups_ce225ab027')],
+        ];
     }
 
     /**
@@ -98,50 +107,50 @@ final class CirclePresenter
         return [
             $this->collection(
                 key: 'saved-posts',
-                eyebrow: 'Keep for later',
-                title: 'Saved moments',
+                eyebrow: __('messages.keep_for_later_8c4fffde3f'),
+                title: __('messages.saved_moments_536af8f7ef'),
                 items: $this->entries('post', $savedPosts),
                 emptyIcon: 'bookmark',
-                emptyTitle: 'No saved moments yet',
-                emptyDescription: 'Save useful routines, local recommendations, and pet updates from the feed.',
+                emptyTitle: __('messages.no_saved_moments_yet_8638ac0095'),
+                emptyDescription: __('messages.save_useful_routines_local_recommendations_and_pet_updat_ae5e33da81'),
                 actionRoute: 'home',
-                actionLabel: 'Browse the feed',
+                actionLabel: __('messages.browse_the_feed_deef0dc0b4'),
                 actionIcon: 'newspaper',
             ),
             $this->collection(
                 key: 'following',
-                eyebrow: 'Stay connected',
-                title: 'People and pets you follow',
+                eyebrow: __('messages.stay_connected_208e29928a'),
+                title: __('messages.people_and_pets_you_follow_54fb2e1c40'),
                 items: $following,
                 emptyIcon: 'user-round-plus',
-                emptyTitle: 'Your following list is open',
-                emptyDescription: 'Follow nearby people and pets to keep their routines easy to find.',
+                emptyTitle: __('messages.your_following_list_is_open_a41b9bb72a'),
+                emptyDescription: __('messages.follow_nearby_people_and_pets_to_keep_their_routines_eas_acd4269e04'),
                 actionRoute: 'neighbors.index',
-                actionLabel: 'Find neighbors',
+                actionLabel: __('messages.find_neighbors_af90a9d101'),
                 actionIcon: 'users',
             ),
             $this->collection(
                 key: 'groups',
-                eyebrow: 'Shared routines',
-                title: 'Joined groups',
+                eyebrow: __('messages.shared_routines_36e841cb6c'),
+                title: __('messages.joined_groups_527c48db8d'),
                 items: $this->entries('group', $joinedGroups),
                 emptyIcon: 'users-round',
-                emptyTitle: 'No groups joined yet',
-                emptyDescription: 'Join a focused local group when its routines match life with your pets.',
+                emptyTitle: __('messages.no_groups_joined_yet_c942287138'),
+                emptyDescription: __('messages.join_a_focused_local_group_when_its_routines_match_life__bd313117ca'),
                 actionRoute: 'groups.index',
-                actionLabel: 'Explore groups',
+                actionLabel: __('messages.explore_groups_aa9347c42f'),
                 actionIcon: 'users-round',
             ),
             $this->collection(
                 key: 'meetups',
-                eyebrow: 'On your calendar',
-                title: 'Meetups you are attending',
+                eyebrow: __('messages.on_your_calendar_06a50f1c20'),
+                title: __('messages.meetups_you_are_attending_625c53f3f5'),
                 items: $this->entries('meetup', $rsvpMeetups),
                 emptyIcon: 'calendar-days',
-                emptyTitle: 'No meetup plans yet',
-                emptyDescription: 'RSVP to a nearby walk or social hour and it will stay collected here.',
+                emptyTitle: __('messages.no_meetup_plans_yet_c0c8eadf52'),
+                emptyDescription: __('messages.rsvp_to_a_nearby_walk_or_social_hour_and_it_will_stay_co_1ecd235e12'),
                 actionRoute: 'meetups.index',
-                actionLabel: 'See meetups',
+                actionLabel: __('messages.see_meetups_a15bc595fd'),
                 actionIcon: 'calendar-days',
             ),
         ];
@@ -184,15 +193,15 @@ final class CirclePresenter
         int $total,
     ): array {
         return [
-            'eyebrow' => 'Your PawCircle',
-            'title' => 'Everything you chose to keep close',
-            'description' => 'Saved moments, familiar neighbors, joined groups, and meetup plans stay together without adding noise to the main feed.',
-            'count' => $total.' '.Str::plural('item', $total).' collected',
+            'eyebrow' => __('messages.your_pawcircle_0e89d31f86'),
+            'title' => __('messages.everything_you_chose_to_keep_close_1b17f803d1'),
+            'description' => __('messages.saved_moments_familiar_neighbors_joined_groups_and_meetu_a906de654b'),
+            'count' => trans_choice('presentation.collected_items', $total, ['count' => $total]),
             'stats' => [
-                ['label' => 'Saved', 'value' => (string) count($savedPosts), 'detail' => 'moments'],
-                ['label' => 'Following', 'value' => (string) count($following), 'detail' => 'people and pets'],
-                ['label' => 'Groups', 'value' => (string) count($joinedGroups), 'detail' => 'joined'],
-                ['label' => 'Meetups', 'value' => (string) count($rsvpMeetups), 'detail' => 'going'],
+                ['label' => __('messages.saved_b5c120b316'), 'value' => (string) count($savedPosts), 'detail' => 'moments'],
+                ['label' => __('messages.following_344b4271ca'), 'value' => (string) count($following), 'detail' => __('messages.people_and_pets_a74d68d13d')],
+                ['label' => __('messages.groups_39bbb719fa'), 'value' => (string) count($joinedGroups), 'detail' => 'joined'],
+                ['label' => __('messages.meetups_ce225ab027'), 'value' => (string) count($rsvpMeetups), 'detail' => 'going'],
             ],
         ];
     }
@@ -207,14 +216,17 @@ final class CirclePresenter
     {
         return [
             [
-                'title' => $posts[0]['pet'].' moments',
-                'meta' => 'Neighborhood feed',
+                'title' => __('presentation.pet_moments', ['pet' => $posts[0]['pet']]),
+                'meta' => __('messages.neighborhood_feed_3f7d71b76a'),
                 ...array_intersect_key($posts[0], array_flip(['image', 'image_small', 'image_medium', 'image_alt'])),
                 'route' => 'home',
                 'icon' => 'bookmark',
             ],
             [
-                'title' => $neighbors[0]['name'].' and '.$neighbors[0]['pet'],
+                'title' => __('presentation.pet_pair', [
+                    'person' => $neighbors[0]['name'],
+                    'pet' => $neighbors[0]['pet'],
+                ]),
                 'meta' => $neighbors[0]['neighborhood'],
                 ...array_intersect_key($neighbors[0], array_flip(['image', 'image_small', 'image_medium', 'image_alt'])),
                 'route' => 'neighbors.index',

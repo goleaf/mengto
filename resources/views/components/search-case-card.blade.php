@@ -1,7 +1,7 @@
 @props(['searchCase'])
 
 <article {{ $attributes->class('grid min-h-full overflow-hidden rounded-md border border-paw-line bg-white') }}>
-    <a href="{{ route('lost-found.show', $searchCase['slug']) }}" class="group grid" aria-label="Open search for {{ $searchCase['pet_name'] }}">
+    <a href="{{ route('lost-found.show', $searchCase['slug']) }}" class="group grid" aria-label="{{ __('presentation.open_search_for', ['pet' => $searchCase['pet_name']]) }}">
         <div class="relative aspect-[16/10] overflow-hidden bg-paw-mint">
             @if ($searchCase['cover_url'])
                 <img
@@ -42,21 +42,21 @@
                 <div class="flex items-start gap-2">
                     <x-lucide-map-pin class="mt-0.5 size-4 shrink-0 text-paw-coral" aria-hidden="true" />
                     <div>
-                        <dt class="sr-only">Area</dt>
+                        <dt class="sr-only">{{ __('ui.area_024dc204d7') }}</dt>
                         <dd class="font-semibold">{{ $searchCase['last_seen_area'] }}</dd>
                     </div>
                 </div>
                 <div class="flex items-center gap-2 text-paw-muted">
                     <x-lucide-clock-3 class="size-4 shrink-0" aria-hidden="true" />
-                    <dt class="sr-only">Last seen</dt>
+                    <dt class="sr-only">{{ __('ui.last_seen_21fd79c7de') }}</dt>
                     <dd>{{ $searchCase['last_seen_label'] }}</dd>
                 </div>
             </dl>
 
             <div class="flex flex-wrap gap-3 text-xs font-semibold text-paw-muted">
-                <span>{{ $searchCase['confirmed_sightings_count'] }} sightings</span>
-                <span>{{ $searchCase['active_volunteers_count'] }} volunteers</span>
-                <span>{{ $searchCase['open_tasks_count'] }} tasks</span>
+                <span>{{ trans_choice('presentation.sightings_count', $searchCase['confirmed_sightings_count'], ['count' => $searchCase['confirmed_sightings_count']]) }}</span>
+                <span>{{ trans_choice('presentation.volunteers_count', $searchCase['active_volunteers_count'], ['count' => $searchCase['active_volunteers_count']]) }}</span>
+                <span>{{ trans_choice('presentation.tasks_count', $searchCase['open_tasks_count'], ['count' => $searchCase['open_tasks_count']]) }}</span>
             </div>
         </div>
     </a>

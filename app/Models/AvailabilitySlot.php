@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use Database\Factories\AvailabilitySlotFactory;
@@ -7,7 +9,25 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
+/**
+ * @property int $booked_count
+ * @property int $capacity
+ * @property Carbon|null $created_at
+ * @property Carbon $ends_at
+ * @property-read ExpertProfile|null $expertProfile
+ * @property int $expert_profile_id
+ * @property string $format
+ * @property int $id
+ * @property string|null $location_label
+ * @property-read Service|null $service
+ * @property int|null $service_id
+ * @property Carbon $starts_at
+ * @property string $status
+ * @property string $timezone
+ * @property Carbon|null $updated_at
+ */
 class AvailabilitySlot extends Model
 {
     /** @use HasFactory<AvailabilitySlotFactory> */
@@ -26,11 +46,13 @@ class AvailabilitySlot extends Model
         ];
     }
 
+    /** @return BelongsTo<\App\Models\ExpertProfile, $this>*/
     public function expertProfile(): BelongsTo
     {
         return $this->belongsTo(ExpertProfile::class);
     }
 
+    /** @return BelongsTo<\App\Models\Service, $this>*/
     public function service(): BelongsTo
     {
         return $this->belongsTo(Service::class);

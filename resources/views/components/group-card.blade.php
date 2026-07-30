@@ -20,7 +20,7 @@
                     />
                 @endif
                 @if ($group['official'] ?? false)
-                    <x-status-badge label="Official" icon="badge-check" tone="mint" />
+                    <x-status-badge label="{{ __('ui.official_c409c66f71') }}" icon="badge-check" tone="mint" />
                 @endif
             </div>
         </x-card-media>
@@ -45,13 +45,13 @@
     </h3>
     <p class="group-card__description">{{ $group['description'] }}</p>
 
-    <x-tag-list :items="$group['tags']" empty="Open to new neighbors." reserve class="group-card__tags" />
+    <x-tag-list :items="$group['tags']" empty="{{ __('ui.open_to_new_neighbors_7c8828df91') }}" reserve class="group-card__tags" />
 
     <dl class="group-card__metrics">
         <div class="min-w-0">
             <dt>
                 <x-icon-text icon="users" class="text-xs">
-                    Community
+                    {{ __('ui.community_bb501d7877') }}
                 </x-icon-text>
             </dt>
             <dd class="mt-1 text-sm font-semibold text-paw-ink">{{ $group['members'] }}</dd>
@@ -59,7 +59,7 @@
         <div class="min-w-0">
             <dt>
                 <x-icon-text icon="activity" class="text-xs">
-                    Activity
+                    {{ __('ui.activity_38da1505ca') }}
                 </x-icon-text>
             </dt>
             <dd class="mt-1 text-sm font-semibold text-paw-ink">{{ $group['activity'] }}</dd>
@@ -76,8 +76,8 @@
         <div class="group-card__organizer">
             <x-initials-avatar :initials="$group['organizer_initials']" />
             <div>
-                <p>Led by {{ $group['organizer'] }}</p>
-                <span>{{ $group['location'] ?? 'Community organizer' }}</span>
+                <p>{{ __('presentation.group_led_by', ['organizer' => $group['organizer']]) }}</p>
+                <span>{{ $group['location'] ?? __('ui.community_organizer_8e4618300a') }}</span>
             </div>
         </div>
 

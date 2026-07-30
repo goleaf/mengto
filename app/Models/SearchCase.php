@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use App\Enums\ModerationStatus;
@@ -9,11 +11,81 @@ use App\Enums\SearchVolunteerStatus;
 use App\Enums\SightingStatus;
 use Database\Factories\SearchCaseFactory;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 
+/**
+ * @property array<array-key, mixed>|null $accessories
+ * @property string|null $active_key
+ * @property string|null $age_label
+ * @property-read Collection<int, SearchAlert> $alerts
+ * @property bool $alerts_active
+ * @property bool $animal_secured
+ * @property string|null $approach_instructions
+ * @property string|null $avoid_instructions
+ * @property string|null $breed
+ * @property string $city
+ * @property Carbon|null $closed_at
+ * @property string|null $closure_reason
+ * @property string|null $coat
+ * @property array<array-key, mixed>|null $contact_details
+ * @property bool $contact_protected
+ * @property string $contact_token
+ * @property string|null $coordinator_key
+ * @property string|null $coordinator_name
+ * @property string $country
+ * @property string|null $cover_url
+ * @property Carbon|null $created_at
+ * @property string $description
+ * @property string|null $direction
+ * @property string|null $distinctive_marks
+ * @property array<array-key, mixed>|null $exact_location
+ * @property Carbon|null $found_at
+ * @property string|null $health_notice
+ * @property string|null $hidden_marks
+ * @property int $id
+ * @property string $last_seen_area
+ * @property Carbon $last_seen_at
+ * @property Carbon|null $last_sighting_at
+ * @property string|null $latest_update
+ * @property string $microchip_status
+ * @property ModerationStatus $moderation_status
+ * @property int $notification_radius_km
+ * @property int|null $owner_id
+ * @property string $owner_initials
+ * @property string $owner_key
+ * @property string $owner_name
+ * @property string $pet_name
+ * @property string|null $pet_profile_key
+ * @property array<array-key, mixed>|null $photos
+ * @property string $primary_color
+ * @property string $public_code
+ * @property numeric-string|null $public_latitude
+ * @property numeric-string|null $public_longitude
+ * @property Carbon $reported_at
+ * @property-read Collection<int, SearchReport> $reports
+ * @property Carbon|null $returned_at
+ * @property array<array-key, mixed>|null $risk_flags
+ * @property-read Collection<int, SearchSector> $sectors
+ * @property string|null $sex
+ * @property-read Collection<int, Sighting> $sightings
+ * @property string|null $size
+ * @property string $slug
+ * @property string $species
+ * @property SearchStatus $status
+ * @property-read Collection<int, SearchTask> $tasks
+ * @property SearchCaseType $type
+ * @property Carbon|null $updated_at
+ * @property-read Collection<int, SearchUpdate> $updates
+ * @property int $view_count
+ * @property string $visibility
+ * @property bool $volunteer_join_open
+ * @property-read Collection<int, SearchVolunteer> $volunteers
+ */
 class SearchCase extends Model
 {
     /** @use HasFactory<SearchCaseFactory> */
@@ -118,36 +190,43 @@ class SearchCase extends Model
             ->select(self::ROUTE_COLUMNS);
     }
 
+    /** @return HasMany<\App\Models\Sighting, $this>*/
     public function sightings(): HasMany
     {
         return $this->hasMany(Sighting::class);
     }
 
+    /** @return HasMany<\App\Models\SearchSector, $this>*/
     public function sectors(): HasMany
     {
         return $this->hasMany(SearchSector::class);
     }
 
+    /** @return HasMany<\App\Models\SearchTask, $this>*/
     public function tasks(): HasMany
     {
         return $this->hasMany(SearchTask::class);
     }
 
+    /** @return HasMany<\App\Models\SearchVolunteer, $this>*/
     public function volunteers(): HasMany
     {
         return $this->hasMany(SearchVolunteer::class);
     }
 
+    /** @return HasMany<\App\Models\SearchUpdate, $this>*/
     public function updates(): HasMany
     {
         return $this->hasMany(SearchUpdate::class);
     }
 
+    /** @return HasMany<\App\Models\SearchAlert, $this>*/
     public function alerts(): HasMany
     {
         return $this->hasMany(SearchAlert::class);
     }
 
+    /** @return HasMany<\App\Models\SearchReport, $this>*/
     public function reports(): HasMany
     {
         return $this->hasMany(SearchReport::class);

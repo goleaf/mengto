@@ -1,10 +1,9 @@
-@props(['owner', 'title' => 'PawCircle', 'activeSection' => 'feed'])
-
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ $htmlLocale }}">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+        <meta name="csrf-token" content="{{ $csrfToken }}">
 
         <title>{{ $title }}</title>
 
@@ -16,7 +15,7 @@
     </head>
     <body>
         <a href="#main-content" class="sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:not-sr-only focus:rounded-md focus:bg-paw-ink focus:px-4 focus:py-3 focus:text-sm focus:font-semibold focus:text-white focus:outline-none focus:ring-2 focus:ring-paw-leaf focus:ring-offset-2">
-            Skip to content
+            {{ __('auth.accessibility.skip_to_content') }}
         </a>
 
         <div class="min-h-screen bg-paw-cream text-paw-ink">

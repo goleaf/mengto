@@ -1,21 +1,21 @@
 @props([
     'plans',
-    'title' => 'Active walk plans',
+    'title' => __('ui.active_walk_plans_37c7dfdd97'),
     'titleId' => 'message-walk-plans-title',
-    'emptyTitle' => 'No active walk plans',
-    'emptyDescription' => 'Create a plan first, then its neighbor conversation will appear in this filter.',
+    'emptyTitle' => __('ui.no_active_walk_plans_02706c5174'),
+    'emptyDescription' => __('ui.create_a_plan_first_then_its_neighbor_conversation_ab81e781a0'),
 ])
 
 <section aria-labelledby="{{ $titleId }}" {{ $attributes->class('walk-message-summary') }}>
     <x-panel-heading
-        :meta="count($plans).' '.str('plan')->plural(count($plans))"
+        :meta="trans_choice('presentation.plans_count', count($plans), ['count' => count($plans)])"
     >
         <x-slot:heading>
             <h2 id="{{ $titleId }}" class="panel-heading__title">{{ $title }}</h2>
         </x-slot:heading>
         <x-slot:aside>
             <x-text-link :href="route('walks.index')" icon="arrow-right" variant="action">
-                View planner
+                {{ __('ui.view_planner_b9cf04d5d6') }}
             </x-text-link>
         </x-slot:aside>
     </x-panel-heading>
@@ -52,7 +52,7 @@
                 :title="$emptyTitle"
                 :description="$emptyDescription"
                 :href="route('compose', 'walk')"
-                action-label="Create a plan"
+                action-label="{{ __('ui.create_a_plan_7f7eafae4f') }}"
                 action-icon="calendar-plus"
                 compact
                 role="listitem"

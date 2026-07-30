@@ -1,16 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories;
 
 use App\Models\ForumNotification;
 use App\Models\ForumTopic;
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
 /**
- * @extends Factory<ForumNotification>
+ * @extends ApplicationFactory<ForumNotification>
  */
-class ForumNotificationFactory extends Factory
+class ForumNotificationFactory extends ApplicationFactory
 {
     /**
      * Define the model's default state.

@@ -1,32 +1,32 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Policies;
 
 use App\Models\Booking;
 use App\Models\User;
-use App\Services\ForumActor;
 
 class BookingPolicy
 {
-    public function __construct(private readonly ForumActor $actor) {}
-
     public function viewAny(?User $user): bool
     {
-        return true;
+        return $user?->isActive() === true;
     }
 
     public function view(?User $user, Booking $booking): bool
     {
-        return $booking->client_key === $this->actor->key()
+        return $user?->isActive() === true
+            && ($booking->client_key === $user->actor_key
             || $booking->expertProfile()
                 ->select(['id', 'owner_key'])
-                ->where('owner_key', $this->actor->key())
-                ->exists();
+                ->where('owner_key', $user->actor_key)
+                ->exists());
     }
 
     public function create(?User $user): bool
     {
-        return true;
+        return $user?->isActive() === true;
     }
 
     public function update(?User $user, Booking $booking): bool

@@ -11,7 +11,7 @@
 <button
     type="{{ $type }}"
     name="{{ $name }}"
-    value="{{ $value ?? str($label)->slug() }}"
+    value="{{ $value }}"
     aria-pressed="{{ $active ? 'true' : 'false' }}"
     {{ $attributes->class([
         'filter-chip',

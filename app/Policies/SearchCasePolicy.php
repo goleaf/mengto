@@ -1,16 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Policies;
 
 use App\Enums\ModerationStatus;
 use App\Models\SearchCase;
 use App\Models\User;
-use App\Services\ForumActor;
 
 class SearchCasePolicy
 {
-    public function __construct(private readonly ForumActor $actor) {}
-
     public function viewAny(?User $user): bool
     {
         return true;
@@ -18,24 +17,25 @@ class SearchCasePolicy
 
     public function view(?User $user, SearchCase $searchCase): bool
     {
-        return $searchCase->isManagedBy($this->actor->key())
+        return ($user?->isActive() === true && $searchCase->isManagedBy($user->actor_key))
             || ($searchCase->moderation_status === ModerationStatus::Approved
                 && in_array($searchCase->visibility, ['public', 'link'], true));
     }
 
     public function create(?User $user): bool
     {
-        return true;
+        return $user?->isActive() === true;
     }
 
     public function update(?User $user, SearchCase $searchCase): bool
     {
-        return $searchCase->isManagedBy($this->actor->key());
+        return $user?->isActive() === true
+            && $searchCase->isManagedBy($user->actor_key);
     }
 
     public function coordinate(?User $user, SearchCase $searchCase): bool
     {
-        return $searchCase->isManagedBy($this->actor->key());
+        return $this->update($user, $searchCase);
     }
 
     public function submitSighting(?User $user, SearchCase $searchCase): bool

@@ -21,11 +21,11 @@ class PerformBookingAction
     {
         return DB::transaction(function () use ($booking, $data): string {
             return match ($data['action']) {
-                'cancel' => $this->cancel($booking, (string) ($data['reason'] ?? 'Cancelled by client')),
-                'request-reschedule' => $this->requestReschedule($booking, (string) ($data['reason'] ?? 'New time requested')),
+                'cancel' => $this->cancel($booking, (string) ($data['reason'] ?? __('messages.booking.cancelled_by_client'))),
+                'request-reschedule' => $this->requestReschedule($booking, (string) ($data['reason'] ?? __('messages.booking.new_time_requested'))),
                 'revoke-document' => $this->revokeDocument($booking, (int) $data['document_grant_id']),
                 'complete-consultation' => $this->completeConsultation($booking, $data),
-                default => throw ValidationException::withMessages(['action' => 'Unsupported booking action.']),
+                default => throw ValidationException::withMessages(['action' => __('messages.unsupported_booking_action_166e1bc5a9')]),
             };
         });
     }
@@ -33,7 +33,7 @@ class PerformBookingAction
     private function cancel(Booking $booking, string $reason): string
     {
         if (in_array($booking->status, [BookingStatus::Cancelled, BookingStatus::Completed], true)) {
-            return 'The booking is already closed.';
+            return __('messages.the_booking_is_already_closed_15fd759d9e');
         }
 
         $booking->update([
@@ -59,7 +59,7 @@ class PerformBookingAction
         $booking->documentGrants()->whereNull('revoked_at')->update(['revoked_at' => now()]);
         $this->audit($booking, 'booking.cancelled', ['reason' => $reason]);
 
-        return 'Booking cancelled and temporary document access revoked.';
+        return __('messages.booking_cancelled_and_temporary_document_access_revoked_ad10e4c376');
     }
 
     private function requestReschedule(Booking $booking, string $reason): string
@@ -71,7 +71,7 @@ class PerformBookingAction
         ]);
         $this->audit($booking, 'booking.reschedule-requested', ['reason' => $reason]);
 
-        return 'Reschedule request sent. The current time remains visible until a new slot is agreed.';
+        return __('messages.reschedule_request_sent_the_current_time_remains_visible_82a7ed9dd9');
     }
 
     private function revokeDocument(Booking $booking, int $grantId): string
@@ -87,14 +87,14 @@ class PerformBookingAction
             $this->audit($booking, 'document-access.revoked', ['grant_id' => $grant->id]);
         }
 
-        return 'Document access revoked.';
+        return __('messages.document_access_revoked_cc7fbd37f6');
     }
 
     /** @param array<string, mixed> $data */
     private function completeConsultation(Booking $booking, array $data): string
     {
         if ($booking->expertProfile->owner_key !== $this->actor->key()) {
-            throw ValidationException::withMessages(['action' => 'Only the responsible specialist can confirm a summary.']);
+            throw ValidationException::withMessages(['action' => __('messages.only_the_responsible_specialist_can_confirm_a_summary_aad1af423c')]);
         }
 
         $consultation = $booking->consultation;
@@ -110,7 +110,7 @@ class PerformBookingAction
         $booking->update(['status' => BookingStatus::Completed, 'completed_at' => now()]);
         $this->audit($booking, 'consultation.summary-confirmed', []);
 
-        return 'Consultation summary confirmed and shared with the client.';
+        return __('messages.consultation_summary_confirmed_and_shared_with_the_clien_482f06b712');
     }
 
     /** @param array<string, mixed> $metadata */

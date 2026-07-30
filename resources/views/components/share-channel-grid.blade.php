@@ -1,6 +1,6 @@
 @props([
     'channels' => [],
-    'empty' => 'No sharing channels are available.',
+    'empty' => __('ui.no_sharing_channels_are_available_486d524105'),
 ])
 
 <div role="list" {{ $attributes->class(['share-channel-list']) }}>
@@ -9,7 +9,7 @@
     @empty
         <x-empty-state
             icon="share-2"
-            title="No sharing channels"
+            title="{{ __('ui.no_sharing_channels_d3390ed990') }}"
             :description="$empty"
             compact
             role="listitem"

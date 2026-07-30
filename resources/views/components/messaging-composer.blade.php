@@ -1,12 +1,18 @@
 @props(['conversation', 'activeFilter'])
 
-<section class="messaging-composer" aria-label="Write a message">
+<section class="messaging-composer" aria-label="{{ __('ui.write_a_message_143ec68982') }}">
     <div class="messaging-composer__reply" data-message-reply hidden>
-        <span><x-lucide-reply class="icon icon--sm" aria-hidden="true" /> Replying to selected message</span>
-        <button type="button" data-message-reply-clear aria-label="Cancel reply"><x-lucide-x class="icon icon--sm" /></button>
+        <span><x-lucide-reply class="icon icon--sm" aria-hidden="true" /> {{ __('ui.replying_to_selected_message_0e2599f52e') }}</span>
+        <button type="button" data-message-reply-clear aria-label="{{ __('ui.cancel_reply_2355f73150') }}"><x-lucide-x class="icon icon--sm" /></button>
     </div>
 
-    <form method="POST" action="{{ route('messages.actions') }}" data-message-composer>
+    <form
+        method="POST"
+        action="{{ route('messages.actions') }}"
+        data-message-composer
+        data-draft-saving="{{ __('ui.saving_draft_7ce627c3ef') }}"
+        data-draft-saved="{{ __('ui.draft_saved_on_this_device_3aa3ab0be8') }}"
+    >
         @csrf
         <input type="hidden" name="action" value="send-message">
         <input type="hidden" name="conversation" value="{{ $conversation['key'] }}">
@@ -14,22 +20,23 @@
         <input type="hidden" name="reply_to" value="" data-message-reply-value>
         <input type="hidden" name="return_filter" value="{{ $activeFilter }}">
 
-        <div class="messaging-composer__tools" aria-label="Message type">
+        <div class="messaging-composer__tools" aria-label="{{ __('ui.message_type_6d646db006') }}">
             @foreach ([
-                ['type' => 'image', 'icon' => 'image', 'label' => 'Photo'],
-                ['type' => 'video', 'icon' => 'video', 'label' => 'Video'],
-                ['type' => 'file', 'icon' => 'paperclip', 'label' => 'File'],
-                ['type' => 'audio', 'icon' => 'mic', 'label' => 'Audio'],
-                ['type' => 'pet', 'icon' => 'paw-print', 'label' => 'Pet'],
-                ['type' => 'place', 'icon' => 'map-pin', 'label' => 'Place'],
-                ['type' => 'event', 'icon' => 'calendar-days', 'label' => 'Event'],
-                ['type' => 'task', 'icon' => 'list-checks', 'label' => 'Task'],
+                ['type' => 'image', 'icon' => 'image', 'label' => __('ui.photo_d84eebada9')],
+                ['type' => 'video', 'icon' => 'video', 'label' => __('ui.video_d534be829e')],
+                ['type' => 'file', 'icon' => 'paperclip', 'label' => __('ui.file_50009ce1da')],
+                ['type' => 'audio', 'icon' => 'mic', 'label' => __('ui.audio_bc1b88907d')],
+                ['type' => 'pet', 'icon' => 'paw-print', 'label' => __('ui.pet_8f0d1b30eb')],
+                ['type' => 'place', 'icon' => 'map-pin', 'label' => __('ui.place_e9463dccf0')],
+                ['type' => 'event', 'icon' => 'calendar-days', 'label' => __('ui.event_4e1f49a9c8')],
+                ['type' => 'task', 'icon' => 'list-checks', 'label' => __('ui.task_4bc74b2135')],
             ] as $tool)
                 <button
                     type="button"
                     data-message-type-button="{{ $tool['type'] }}"
+                    data-message-type-label="{{ __('presentation.message_attachment', ['item' => $tool['label']]) }}"
                     title="{{ $tool['label'] }}"
-                    aria-label="Send {{ strtolower($tool['label']) }}"
+                    aria-label="{{ __('presentation.send_item', ['item' => strtolower($tool['label'])]) }}"
                     aria-pressed="false"
                 >
                     <x-dynamic-component :component="'lucide-'.$tool['icon']" class="icon icon--sm" aria-hidden="true" />
@@ -37,7 +44,7 @@
             @endforeach
         </div>
 
-        <label for="message-body-{{ $conversation['key'] }}" class="sr-only">Message {{ $conversation['name'] }}</label>
+        <label for="message-body-{{ $conversation['key'] }}" class="sr-only">{{ __('presentation.message_recipient', ['name' => $conversation['name']]) }}</label>
         <textarea
             id="message-body-{{ $conversation['key'] }}"
             name="body"
@@ -46,7 +53,7 @@
             required
             data-message-body
             data-draft-key="message-draft-{{ $conversation['key'] }}"
-            placeholder="Message {{ $conversation['name'] }} as Mia"
+            placeholder="{{ __('presentation.message_as', ['name' => $conversation['name'], 'sender' => __('ui.mia_4150950870')]) }}"
             @if ($errors->has('body')) aria-invalid="true" aria-describedby="message-body-error" @endif
         >{{ old('body') }}</textarea>
 
@@ -58,28 +65,28 @@
             <div>
                 <label>
                     <input type="checkbox" name="silent" value="yes">
-                    <span><x-lucide-bell-off class="icon icon--sm" aria-hidden="true" /> Send quietly</span>
+                    <span><x-lucide-bell-off class="icon icon--sm" aria-hidden="true" /> {{ __('ui.send_quietly_fe08c8d89e') }}</span>
                 </label>
-                <span data-message-draft-status>Draft saved on this device</span>
+                <span data-message-draft-status>{{ __('ui.draft_saved_on_this_device_3aa3ab0be8') }}</span>
             </div>
             <button type="submit" class="action action--primary action--regular">
                 <x-lucide-send class="icon icon--sm" aria-hidden="true" />
-                <span>Send</span>
+                <span>{{ __('ui.send_f6f4688ff2') }}</span>
             </button>
         </div>
 
         <details class="messaging-composer__schedule">
-            <summary><x-lucide-clock-3 class="icon icon--sm" aria-hidden="true" /> Schedule delivery</summary>
+            <summary><x-lucide-clock-3 class="icon icon--sm" aria-hidden="true" /> {{ __('ui.schedule_delivery_51ea1cb13f') }}</summary>
             <label for="message-scheduled-{{ $conversation['key'] }}">
-                Send at
+                {{ __('ui.send_at_12e76f1262') }}
                 <input id="message-scheduled-{{ $conversation['key'] }}" type="datetime-local" name="scheduled_for">
             </label>
-            <p>You can edit, move, send now, or cancel before delivery. Business messages may be held until working hours.</p>
+            <p>{{ __('ui.you_can_edit_move_send_now_or_cancel_6a7363fed6') }}</p>
         </details>
     </form>
 
     <p class="messaging-composer__privacy">
         <x-lucide-shield-check class="icon icon--sm" aria-hidden="true" />
-        Photo GPS metadata is removed by default. Files require format, size, MIME, and malware checks before real delivery.
+        {{ __('ui.photo_gps_metadata_is_removed_by_default_files_275f4e697d') }}
     </p>
 </section>

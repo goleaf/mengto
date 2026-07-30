@@ -1,16 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories;
 
 use App\Enums\CareRoutineStatus;
 use App\Models\CareJournal;
 use App\Models\CareRoutine;
-use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<CareRoutine>
+ * @extends ApplicationFactory<CareRoutine>
  */
-class CareRoutineFactory extends Factory
+class CareRoutineFactory extends ApplicationFactory
 {
     /**
      * Define the model's default state.

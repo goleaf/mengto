@@ -19,6 +19,6 @@ class CareTaskStoreController extends Controller
         $create->handle($careJournal, $request->validated());
 
         return to_route('care-journals.manage', $careJournal)
-            ->with('feedback', 'Care task scheduled and assigned.');
+            ->with('feedback', __('messages.care_task_scheduled_and_assigned_922a801f59'));
     }
 }

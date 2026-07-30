@@ -1,4 +1,4 @@
-@props(['items', 'empty' => 'No ranked items.'])
+@props(['items', 'empty' => __('ui.no_ranked_items_e3c8e805be')])
 
 <ol {{ $attributes->class(['mt-4']) }}>
     @forelse ($items as $item)

@@ -19,6 +19,6 @@ class TopicUpdateController extends Controller
         $topic = $updateTopic->handle($forumTopic, $request->validated());
 
         return to_route('forum.topics.show', $topic)
-            ->with('feedback', 'Topic updated.');
+            ->with('feedback', __('messages.topic_updated_6d4780cb98'));
     }
 }

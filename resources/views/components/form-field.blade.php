@@ -3,7 +3,7 @@
         {{ $field['label'] }}
         @if ($required)
             <span class="form-field__required" aria-hidden="true">*</span>
-            <span class="sr-only">required</span>
+            <span class="sr-only">{{ __('ui.required_d0a3630555') }}</span>
         @endif
     </label>
 

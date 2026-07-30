@@ -36,20 +36,20 @@
 
     <x-tag-list
         :items="$neighbor['interests']"
-        empty="Open to new pet circles."
+        empty="{{ __('ui.open_to_new_pet_circles_7cd570a75b') }}"
         reserve
         class="mt-4"
     />
 
     <div class="mt-auto flex items-center gap-3 border-t border-paw-line pt-5">
         <div class="flex -space-x-2" aria-hidden="true">
-            <span class="grid size-8 place-items-center rounded-full border-2 border-white bg-paw-sun text-xs font-semibold text-paw-ink">PC</span>
+            <span class="grid size-8 place-items-center rounded-full border-2 border-white bg-paw-sun text-xs font-semibold text-paw-ink">{{ __('ui.pc_21d017c40a') }}</span>
             <span class="grid size-8 place-items-center rounded-full border-2 border-white bg-paw-mint text-xs font-semibold text-paw-leaf">+{{ $neighbor['mutual_count'] }}</span>
         </div>
-        <p class="min-w-0 flex-1 text-xs font-semibold leading-4 text-paw-muted">{{ $neighbor['mutual_count'] }} mutual neighbors</p>
+        <p class="min-w-0 flex-1 text-xs font-semibold leading-4 text-paw-muted">{{ trans_choice('presentation.mutual_neighbors', $neighbor['mutual_count'], ['count' => $neighbor['mutual_count']]) }}</p>
         <x-action-control
-            label="Follow"
-            active-label="Following"
+            label="{{ __('ui.follow_641d1ef657') }}"
+            active-label="{{ __('ui.following_344b4271ca') }}"
             icon="user-plus"
             active-icon="user-check"
             variant="paper"

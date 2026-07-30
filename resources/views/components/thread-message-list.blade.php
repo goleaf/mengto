@@ -7,11 +7,11 @@
         <span class="h-px flex-1 bg-paw-line"></span>
     </div>
 
-    <div role="list" aria-label="Conversation messages" class="mt-5 grid gap-4">
+    <div role="list" aria-label="{{ __('ui.conversation_messages_f5f8903fca') }}" class="mt-5 grid gap-4">
         @forelse ($messages as $message)
             <x-message-bubble :message="$message" />
         @empty
-            <p role="listitem" class="text-center text-sm text-paw-muted">No messages in this conversation.</p>
+            <p role="listitem" class="text-center text-sm text-paw-muted">{{ __('ui.no_messages_in_this_conversation_1e56e882e6') }}</p>
         @endforelse
     </div>
 </div>

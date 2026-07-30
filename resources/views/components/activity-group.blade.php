@@ -7,11 +7,11 @@
         </h2>
     </div>
 
-    <div role="list" aria-label="{{ $group['label'] }} notifications">
+    <div role="list" aria-label="{{ __('presentation.notifications_for', ['name' => $group['label']]) }}">
         @forelse ($group['items'] as $item)
             <x-activity-item :item="$item" />
         @empty
-            <p role="listitem" class="px-5 py-6 text-sm text-paw-muted">No activity in this group.</p>
+            <p role="listitem" class="px-5 py-6 text-sm text-paw-muted">{{ __('ui.no_activity_in_this_group_d4ca16d95c') }}</p>
         @endforelse
     </div>
 </section>

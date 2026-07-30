@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Actions;
 
 use App\Enums\DeviceEventSeverity;
@@ -14,6 +16,10 @@ use Illuminate\Validation\ValidationException;
 
 class RecordDeviceReading
 {
+    public function __construct(
+        private readonly EnforceDeviceRetention $enforceRetention,
+    ) {}
+
     /** @param array<string, mixed> $data */
     public function handle(SmartDevice $device, array $data): DeviceReading
     {
@@ -34,6 +40,7 @@ class RecordDeviceReading
                     'connection_status', 'battery_percent', 'last_seen_at',
                     'last_synced_at', 'last_location_at', 'current_latitude',
                     'current_longitude', 'location_accuracy_meters',
+                    'location_retention_days', 'telemetry_retention_days',
                     'lock_version',
                 ])
                 ->lockForUpdate()
@@ -70,6 +77,7 @@ class RecordDeviceReading
 
             $this->refreshDeviceState($lockedDevice, $reading);
             $this->recordEvent($lockedDevice, $reading);
+            $pruned = $this->enforceRetention->handle($lockedDevice, $reading->id);
             $lockedDevice->increment('lock_version');
 
             AuditLog::query()->create([
@@ -84,6 +92,7 @@ class RecordDeviceReading
                     'pet_profile_key' => $reading->pet_profile_key,
                     'confidence' => $reading->confidence->value,
                     'verification_status' => $reading->verification_status,
+                    'retention_pruned' => $pruned,
                 ],
             ]);
 
@@ -101,7 +110,7 @@ class RecordDeviceReading
 
             if ($assignment === null) {
                 throw ValidationException::withMessages([
-                    'pet_profile_key' => 'This pet is not assigned to the device.',
+                    'pet_profile_key' => __('messages.this_pet_is_not_assigned_to_the_device_37b9f2a03b'),
                 ]);
             }
 
@@ -145,23 +154,27 @@ class RecordDeviceReading
         $event = match ($reading->metric_type) {
             'food-dispensed' => [
                 'type' => 'food-dispensed',
-                'title' => 'Portion dispensed; eating not confirmed',
+                'title' => __('messages.portion_dispensed_eating_unconfirmed'),
                 'severity' => DeviceEventSeverity::Routine,
             ],
             'litter-visit' => [
                 'type' => 'litter-visit',
-                'title' => 'Litter box visit detected',
+                'title' => __('messages.litter_box_visit_detected'),
                 'severity' => DeviceEventSeverity::Routine,
             ],
             'water-use' => [
                 'type' => 'water-use',
-                'title' => 'Water use detected; intake not confirmed',
+                'title' => __('messages.water_use_intake_unconfirmed'),
                 'severity' => DeviceEventSeverity::Routine,
             ],
             default => null,
         };
 
         if ($event === null) {
+            return;
+        }
+
+        if ($reading->is_stale && $this->groupStaleEvent($device, $reading, $event['type'])) {
             return;
         }
 
@@ -173,10 +186,14 @@ class RecordDeviceReading
             'type' => $event['type'],
             'severity' => $event['severity'],
             'status' => 'open',
+            'occurrence_count' => 1,
+            'first_occurred_at' => $reading->recorded_at,
+            'last_occurred_at' => $reading->recorded_at,
             'title' => $event['title'],
-            'summary' => 'Automatic device event. Confirm the real-world outcome before using it as a care fact.',
+            'summary' => __('messages.automatic_device_event_confirm_the_real_world_outcome_be_9b61052aae'),
             'details' => [
                 'reading_id' => $reading->id,
+                'reading_ids' => [$reading->id],
                 'numeric_value' => $reading->numeric_value,
                 'unit' => $reading->unit,
             ],
@@ -186,5 +203,49 @@ class RecordDeviceReading
             'source' => 'device-reading',
             'requires_attention' => false,
         ]);
+    }
+
+    private function groupStaleEvent(
+        SmartDevice $device,
+        DeviceReading $reading,
+        string $eventType,
+    ): bool {
+        $existing = $device->events()
+            ->select([
+                'id', 'smart_device_id', 'type', 'status', 'occurrence_count',
+                'first_occurred_at', 'last_occurred_at', 'occurred_at',
+                'details',
+            ])
+            ->where('type', $eventType)
+            ->where('status', 'open')
+            ->where('last_occurred_at', '>=', $reading->recorded_at->copy()->subHour())
+            ->where('last_occurred_at', '<=', $reading->recorded_at)
+            ->latest('last_occurred_at')
+            ->lockForUpdate()
+            ->first();
+
+        if ($existing === null) {
+            return false;
+        }
+
+        $readingIds = collect($existing->details['reading_ids'] ?? [])
+            ->push($reading->id)
+            ->unique()
+            ->take(-20)
+            ->values()
+            ->all();
+
+        $existing->forceFill([
+            'occurrence_count' => $existing->occurrence_count + 1,
+            'last_occurred_at' => $reading->recorded_at,
+            'occurred_at' => $reading->recorded_at,
+            'details' => [
+                ...($existing->details ?? []),
+                'reading_ids' => $readingIds,
+                'grouped_after_reconnect' => true,
+            ],
+        ])->save();
+
+        return true;
     }
 }

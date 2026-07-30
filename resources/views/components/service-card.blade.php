@@ -7,7 +7,7 @@
             <p class="mt-1 text-sm text-paw-muted">{{ $service['format'] }} · {{ $service['duration'] }}</p>
         </div>
         <p class="whitespace-nowrap font-bold">
-            {{ $service['price'] !== null ? $service['currency'].' '.$service['price'] : 'Ask' }}
+            {{ $service['price'] !== null ? $service['currency'].' '.$service['price'] : __('ui.ask_b8c209cdea') }}
         </p>
     </header>
 
@@ -18,14 +18,14 @@
             @forelse ($service['includes'] as $item)
                 <li class="flex gap-2"><x-lucide-check class="mt-0.5 size-4 text-paw-leaf" aria-hidden="true" /> {{ $item }}</li>
             @empty
-                <li>Details provided during booking.</li>
+                <li>{{ __('ui.details_provided_during_booking_4101ac194a') }}</li>
             @endforelse
         </ul>
     @endif
 
     @if ($expertSlug)
         <x-action-control
-            label="Choose service"
+            label="{{ __('ui.choose_service_9f35b91dc2') }}"
             icon="calendar-plus"
             variant="primary"
             :href="route('experts.bookings.create', ['expertProfile' => $expertSlug, 'service' => $service['id']])"

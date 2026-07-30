@@ -1,6 +1,6 @@
 @props(['professional'])
 
-<section class="messaging-professional" aria-label="Professional conversation status">
+<section class="messaging-professional" aria-label="{{ __('ui.professional_conversation_status_3f38e4c701') }}">
     <div>
         <x-lucide-briefcase-medical class="icon" aria-hidden="true" />
         <span>

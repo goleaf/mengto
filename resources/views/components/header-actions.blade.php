@@ -3,7 +3,7 @@
 <div class="ml-auto flex items-center gap-2">
     <x-icon-link
         :href="route('circle.index')"
-        label="My circle"
+        label="{{ __('ui.my_circle_201c8528b5') }}"
         icon="bookmark"
         name="circle"
         :active="$activeSection === 'circle'"
@@ -11,22 +11,22 @@
     />
     <x-icon-link
         :href="route('notifications.index')"
-        label="Notifications"
+        label="{{ __('ui.notifications_788011833a') }}"
         icon="bell"
         name="notifications"
         :active="$activeSection === 'notifications'"
     />
     <x-icon-link
         :href="route('messages.index')"
-        label="Messages"
+        label="{{ __('ui.messages_04d7b48339') }}"
         icon="mail"
         name="messages"
         :active="$activeSection === 'messages'"
     />
     <a
         href="{{ route('profile.mia') }}"
-        aria-label="{{ $owner['name'] }} profile"
-        title="{{ $owner['name'] }} profile"
+        aria-label="{{ __('presentation.profile_for', ['name' => $owner['name']]) }}"
+        title="{{ __('presentation.profile_for', ['name' => $owner['name']]) }}"
         data-header-link="profile"
         @if ($activeSection === 'profile') aria-current="page" @endif
         class="header-profile rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-paw-leaf focus-visible:ring-offset-2"

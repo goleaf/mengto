@@ -1,11 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
 use App\Actions\CreateCareEntry;
 use App\Actions\ResolveCareAccess;
 use App\Enums\CareEntryType;
 use App\Http\Requests\StoreSharedCareEntryRequest;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Validation\ValidationException;
 
@@ -16,7 +19,7 @@ class CareSharedEntryStoreController extends Controller
         string $token,
         ResolveCareAccess $resolve,
         CreateCareEntry $create,
-    ): RedirectResponse {
+    ): JsonResponse|RedirectResponse {
         $grant = $resolve->handle($token, 'care-access.entry-submitted', false);
         $data = $request->validated();
         $type = CareEntryType::from($data['entry_type']);
@@ -30,13 +33,13 @@ class CareSharedEntryStoreController extends Controller
             || filled($data['route_summary'] ?? null)
         )) {
             throw ValidationException::withMessages([
-                'location_label' => 'This access link does not allow location details.',
+                'location_label' => __('messages.this_access_link_does_not_allow_location_details_c4899af7a0'),
             ]);
         }
 
         if (! $grant->allow_media && isset($data['media'])) {
             throw ValidationException::withMessages([
-                'media' => 'This access link does not allow media uploads.',
+                'media' => __('messages.this_access_link_does_not_allow_media_uploads_9ff792ddc7'),
             ]);
         }
 
@@ -46,7 +49,7 @@ class CareSharedEntryStoreController extends Controller
             default => 'specialist',
         };
 
-        $create->handle($grant->careJournal, [
+        $entry = $create->handle($grant->careJournal, [
             ...$data,
             'source_type' => $source,
             'source_name' => $grant->recipient_name,
@@ -55,8 +58,20 @@ class CareSharedEntryStoreController extends Controller
             'name' => $grant->recipient_name,
             'role' => $source,
         ]);
+        $message = __('messages.care_report_added_with_your_name_and_contributor_role_2ad163127b');
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'data' => [
+                    'id' => $entry->id,
+                    'idempotency_key' => $entry->idempotency_key,
+                    'sync_status' => $entry->sync_status->value,
+                ],
+                'message' => $message,
+            ]);
+        }
 
         return to_route('care-access.show', ['token' => $token])
-            ->with('feedback', 'Care report added with your name and contributor role.');
+            ->with('feedback', $message);
     }
 }

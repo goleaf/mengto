@@ -21,6 +21,6 @@ class DeviceReadingMedicalEventController extends Controller
         $promote->handle($smartDevice, $deviceReading);
 
         return to_route('devices.show', $smartDevice)
-            ->with('feedback', 'Reading added to the health record as a device-sourced item requiring review.');
+            ->with('feedback', __('messages.reading_added_to_the_health_record_as_a_device_sourced_i_5f95242625'));
     }
 }

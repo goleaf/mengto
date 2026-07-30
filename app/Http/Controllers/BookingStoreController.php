@@ -21,6 +21,6 @@ class BookingStoreController extends Controller
         $booking = $create->handle($expertProfile, $request->validated());
 
         return to_route('bookings.show', $booking)
-            ->with('feedback', 'Appointment request saved. Call the provider directly if the situation becomes urgent.');
+            ->with('feedback', __('messages.appointment_request_saved_call_the_provider_directly_if__8f5cc5a523'));
     }
 }

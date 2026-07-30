@@ -19,7 +19,7 @@ class CreateDeviceSafeZone
     {
         if ($device->type !== DeviceType::GpsTracker) {
             throw ValidationException::withMessages([
-                'name' => 'Safe zones can only be added to a GPS tracker.',
+                'name' => __('messages.safe_zones_can_only_be_added_to_a_gps_tracker_dfa3cf764b'),
             ]);
         }
 

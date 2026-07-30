@@ -1,16 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories;
 
 use App\Models\DeviceAccessGrant;
 use App\Models\SmartDevice;
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
 /**
- * @extends Factory<DeviceAccessGrant>
+ * @extends ApplicationFactory<DeviceAccessGrant>
  */
-class DeviceAccessGrantFactory extends Factory
+class DeviceAccessGrantFactory extends ApplicationFactory
 {
     /**
      * Define the model's default state.

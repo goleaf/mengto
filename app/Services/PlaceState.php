@@ -1,16 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services;
 
-use Illuminate\Contracts\Session\Session;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 
 final class PlaceState
 {
-    private const SESSION_KEY = 'places.state.v1';
+    private const STATE_NAMESPACE = 'places.state.v1';
 
-    public function __construct(private readonly Session $session) {}
+    public function __construct(private readonly PersistentStateStore $states) {}
 
     public function isSaved(string $place): bool
     {
@@ -22,7 +23,7 @@ final class PlaceState
         $state = $this->state();
         $active = ! in_array($place, $state['saved'], true);
         $state['saved'] = $this->toggleListValue($state['saved'], $place, $active);
-        $this->recordHistory($state, $place, $active ? 'Saved to favorites.' : 'Removed from favorites.');
+        $this->recordHistory($state, $place, $active ? __('messages.saved_to_favorites_81216bed76') : __('messages.removed_from_favorites_500eefc6a6'));
         $this->store($state);
 
         return $active;
@@ -38,7 +39,7 @@ final class PlaceState
         $state = $this->state();
         $active = ! in_array($place, $state['followed'], true);
         $state['followed'] = $this->toggleListValue($state['followed'], $place, $active);
-        $this->recordHistory($state, $place, $active ? 'Place updates enabled.' : 'Place updates paused.');
+        $this->recordHistory($state, $place, $active ? __('messages.place_updates_enabled_60cd691dfb') : __('messages.place_updates_paused_6c7fb2288f'));
         $this->store($state);
 
         return $active;
@@ -56,7 +57,9 @@ final class PlaceState
             'pet' => $pet,
             'visited_at' => now()->toAtomString(),
         ];
-        $this->recordHistory($state, $place, 'Marked as visited with '.Str::headline($pet).'.');
+        $this->recordHistory($state, $place, __('messages.place.visited_with', [
+            'pet' => Str::headline($pet),
+        ]));
         $this->store($state);
     }
 
@@ -91,8 +94,8 @@ final class PlaceState
             $state,
             $place,
             $active
-                ? 'Added to '.$state['collections'][$collection]['name'].'.'
-                : 'Removed from '.$state['collections'][$collection]['name'].'.',
+                ? __('messages.place.collection_added', ['collection' => $state['collections'][$collection]['name']])
+                : __('messages.place.collection_removed', ['collection' => $state['collections'][$collection]['name']]),
         );
         $this->store($state);
 
@@ -137,7 +140,7 @@ final class PlaceState
                     'expires_at' => now()->addHours(2)->toAtomString(),
                 ];
                 $state['check_ins'][$place] = $checkIn;
-                $this->recordHistory($state, $place, 'Private check-in created with automatic expiry.');
+                $this->recordHistory($state, $place, __('messages.private_check_in_created_with_automatic_expiry_447e088f40'));
                 $this->store($state);
 
                 return $checkIn;
@@ -154,7 +157,7 @@ final class PlaceState
         }
 
         unset($state['check_ins'][$place]);
-        $this->recordHistory($state, $place, 'Check-in ended.');
+        $this->recordHistory($state, $place, __('messages.check_in_ended_3f3fb06d29'));
         $this->store($state);
 
         return true;
@@ -197,7 +200,7 @@ final class PlaceState
             'status' => 'sent',
         ]);
         $state['invitations'][$place] = array_slice($state['invitations'][$place], 0, 20);
-        $this->recordHistory($state, $place, 'Place invitation sent through PawCircle.');
+        $this->recordHistory($state, $place, __('messages.place_invitation_sent_through_pawcircle_2c3ac56106'));
         $this->store($state);
     }
 
@@ -224,7 +227,7 @@ final class PlaceState
             'enabled' => true,
             'latitude' => round($latitude, 3),
             'longitude' => round($longitude, 3),
-            'label' => 'Approximate current area',
+            'label' => __('messages.approximate_current_area_08434d1dfa'),
         ];
         $this->store($state);
     }
@@ -236,7 +239,7 @@ final class PlaceState
             'enabled' => false,
             'latitude' => null,
             'longitude' => null,
-            'label' => 'Vilnius selected manually',
+            'label' => __('messages.vilnius_selected_manually_f7b2652331'),
         ];
         $this->store($state);
     }
@@ -260,7 +263,7 @@ final class PlaceState
                 ];
                 array_unshift($state['submissions'], $submission);
                 $state['submissions'] = array_slice($state['submissions'], 0, 20);
-                $this->recordHistory($state, (string) $submission['key'], 'Community place submitted for review.');
+                $this->recordHistory($state, (string) $submission['key'], __('messages.community_place_submitted_for_review_cedf6b7f9f'));
                 $this->store($state);
 
                 return $submission;
@@ -295,7 +298,7 @@ final class PlaceState
                 $state['corrections'][$place] ??= [];
                 array_unshift($state['corrections'][$place], $record);
                 $state['corrections'][$place] = array_slice($state['corrections'][$place], 0, 20);
-                $this->recordHistory($state, $place, 'Correction submitted with evidence for review.');
+                $this->recordHistory($state, $place, __('messages.correction_submitted_with_evidence_for_review_8e55fbda02'));
                 $this->store($state);
             },
         );
@@ -327,12 +330,12 @@ final class PlaceState
                     'confirmations' => 1,
                     'reported_at' => now()->toAtomString(),
                     'expires_at' => now()->addDays(3)->toAtomString(),
-                    'source' => 'Community report awaiting review',
+                    'source' => __('messages.community_report_awaiting_review_7c78837179'),
                 ];
                 $state['warnings'][$place] ??= [];
                 array_unshift($state['warnings'][$place], $warning);
                 $state['warnings'][$place] = array_slice($state['warnings'][$place], 0, 20);
-                $this->recordHistory($state, $place, 'Temporary warning submitted.');
+                $this->recordHistory($state, $place, __('messages.temporary_warning_submitted_d7711e9c90'));
                 $this->store($state);
 
                 return $warning;
@@ -385,14 +388,18 @@ final class PlaceState
 
             $state['warnings'][$place][$index]['confirmations'] = (int) $record['confirmations'] + 1;
             $state['warnings'][$place][$index]['status'] = 'confirmed';
-            $this->recordHistory($state, $place, 'A visitor confirmed warning '.$warning.'.');
+            $this->recordHistory($state, $place, __('messages.place.warning_confirmed', [
+                'warning' => $warning,
+            ]));
             $this->store($state);
 
             return true;
         }
 
         $state['warning_confirmations'][$place][$warning] = (int) ($state['warning_confirmations'][$place][$warning] ?? 0) + 1;
-        $this->recordHistory($state, $place, 'A visitor confirmed catalog warning '.$warning.'.');
+        $this->recordHistory($state, $place, __('messages.place.catalog_warning_confirmed', [
+            'warning' => $warning,
+        ]));
         $this->store($state);
 
         return true;
@@ -409,7 +416,9 @@ final class PlaceState
 
             $state['warnings'][$place][$index]['status'] = 'resolved';
             $state['warnings'][$place][$index]['resolved_at'] = now()->toAtomString();
-            $this->recordHistory($state, $place, 'Warning '.$warning.' resolved and archived.');
+            $this->recordHistory($state, $place, __('messages.place.warning_resolved', [
+                'warning' => $warning,
+            ]));
             $this->store($state);
 
             return true;
@@ -417,7 +426,9 @@ final class PlaceState
 
         $state['resolved_warnings'][$place][$warning] = true;
         $state['resolved_warnings_at'][$place][$warning] = now()->toAtomString();
-        $this->recordHistory($state, $place, 'Catalog warning '.$warning.' resolved and archived.');
+        $this->recordHistory($state, $place, __('messages.place.catalog_warning_resolved', [
+            'warning' => $warning,
+        ]));
         $this->store($state);
 
         return true;
@@ -433,16 +444,17 @@ final class PlaceState
             ...$review,
             'key' => 'review-'.Str::lower(Str::random(10)),
             'place' => $place,
-            'author' => ($review['anonymous'] ?? false) ? 'Anonymous visitor' : 'Mia Carter',
+            'author' => ($review['anonymous'] ?? false) ? __('messages.anonymous_visitor_47b92b1cef') : __('messages.mia_carter_0e5b29cc3b'),
             'initials' => ($review['anonymous'] ?? false) ? 'AV' : 'MC',
             'verified' => $this->hasVisited($place),
-            'date' => now()->format('M j, Y'),
+            'created_at' => now()->toAtomString(),
+            'date' => null,
             'owner_response' => null,
         ];
         $state['reviews'][$place] ??= [];
         array_unshift($state['reviews'][$place], $review);
         $state['reviews'][$place] = array_slice($state['reviews'][$place], 0, 20);
-        $this->recordHistory($state, $place, 'Review submitted.');
+        $this->recordHistory($state, $place, __('messages.review_submitted_8e5db58e85'));
         $this->store($state);
     }
 
@@ -464,7 +476,7 @@ final class PlaceState
             ...$question,
             'key' => 'question-'.Str::lower(Str::random(10)),
             'place' => $place,
-            'author' => 'Mia Carter',
+            'author' => __('messages.mia_carter_0e5b29cc3b'),
             'answer' => null,
             'answer_author' => null,
             'answered_at' => null,
@@ -473,7 +485,7 @@ final class PlaceState
         $state['questions'][$place] ??= [];
         array_unshift($state['questions'][$place], $question);
         $state['questions'][$place] = array_slice($state['questions'][$place], 0, 20);
-        $this->recordHistory($state, $place, 'Question submitted to the place community.');
+        $this->recordHistory($state, $place, __('messages.question_submitted_to_the_place_community_7b6f16bb7c'));
         $this->store($state);
     }
 
@@ -495,9 +507,9 @@ final class PlaceState
             }
 
             $state['questions'][$place][$index]['answer'] = $body;
-            $state['questions'][$place][$index]['answer_author'] = 'Official place response';
-            $state['questions'][$place][$index]['answered_at'] = 'Answered now';
-            $this->recordHistory($state, $place, 'Official answer added.');
+            $state['questions'][$place][$index]['answer_author'] = __('messages.official_place_response_971983fa5f');
+            $state['questions'][$place][$index]['answered_at'] = __('messages.answered_now_bc00b88546');
+            $this->recordHistory($state, $place, __('messages.official_answer_added_cd93eac4e8'));
             $this->store($state);
 
             return true;
@@ -520,7 +532,7 @@ final class PlaceState
             'created_at' => now()->toAtomString(),
         ]);
         $state['claims'][$place] = array_slice($state['claims'][$place], 0, 10);
-        $this->recordHistory($state, $place, 'Management claim submitted for verification.');
+        $this->recordHistory($state, $place, __('messages.management_claim_submitted_for_verification_1aefaa5b8c'));
         $this->store($state);
     }
 
@@ -546,7 +558,7 @@ final class PlaceState
             'created_at' => now()->toAtomString(),
         ]);
         $state['reports'] = array_slice($state['reports'], 0, 30);
-        $this->recordHistory($state, $place, 'Private place report received.');
+        $this->recordHistory($state, $place, __('messages.private_place_report_received_2a17b76cf1'));
         $this->store($state);
     }
 
@@ -592,7 +604,7 @@ final class PlaceState
      */
     private function state(): array
     {
-        $stored = $this->session->get(self::SESSION_KEY, []);
+        $stored = $this->states->get(self::STATE_NAMESPACE);
 
         return [
             'saved' => $stored['saved'] ?? [],
@@ -600,17 +612,17 @@ final class PlaceState
             'visited' => $stored['visited'] ?? [],
             'collections' => $stored['collections'] ?? [
                 'evening-walks' => [
-                    'name' => 'Evening walks',
+                    'name' => __('messages.evening_walks_a42d7d237f'),
                     'privacy' => 'private',
                     'places' => [],
                 ],
                 'vilnius-trip' => [
-                    'name' => 'Vilnius trip',
-                    'privacy' => 'shared with family',
+                    'name' => __('messages.vilnius_trip_d31c336f1a'),
+                    'privacy' => __('messages.shared_with_family_ea8ca92148'),
                     'places' => ['vingis-quiet-loop', 'paws-24-veterinary-center', 'old-town-pet-cafe'],
                 ],
                 'scout-places' => [
-                    'name' => 'Places for Scout',
+                    'name' => __('messages.places_for_scout_078410f983'),
                     'privacy' => 'private',
                     'places' => [],
                 ],
@@ -622,7 +634,7 @@ final class PlaceState
                 'enabled' => false,
                 'latitude' => null,
                 'longitude' => null,
-                'label' => 'Vilnius selected manually',
+                'label' => __('messages.vilnius_selected_manually_f7b2652331'),
             ],
             'submissions' => $stored['submissions'] ?? [],
             'corrections' => $stored['corrections'] ?? [],
@@ -643,6 +655,6 @@ final class PlaceState
      */
     private function store(array $state): void
     {
-        $this->session->put(self::SESSION_KEY, $state);
+        $this->states->put(self::STATE_NAMESPACE, $state);
     }
 }

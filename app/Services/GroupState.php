@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Services;
+declare(strict_types=1);
 
-use Illuminate\Contracts\Session\Session;
+namespace App\Services;
 
 final class GroupState
 {
-    private const SESSION_KEY = 'groups.state.v1';
+    private const STATE_NAMESPACE = 'groups.state.v1';
 
-    public function __construct(private readonly Session $session) {}
+    public function __construct(private readonly PersistentStateStore $states) {}
 
     public function membership(string $group): ?string
     {
@@ -158,7 +158,7 @@ final class GroupState
      */
     private function state(): array
     {
-        $stored = $this->session->get(self::SESSION_KEY, []);
+        $stored = $this->states->get(self::STATE_NAMESPACE);
 
         return [
             'memberships' => [
@@ -184,6 +184,6 @@ final class GroupState
      */
     private function store(array $state): void
     {
-        $this->session->put(self::SESSION_KEY, $state);
+        $this->states->put(self::STATE_NAMESPACE, $state);
     }
 }

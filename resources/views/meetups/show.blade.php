@@ -5,14 +5,14 @@
 >
     <x-page-stack>
         <x-text-link :href="route('meetups.index')" icon="arrow-left" variant="back">
-            Back to events
+            {{ __('ui.back_to_events_6f92c8203b') }}
         </x-text-link>
 
         <x-event-hero :event="$event" />
 
         <x-tab-list
             :tabs="$tabs"
-            :label="$event['title'].' sections'"
+            :label="__('presentation.sections_for', ['name' => $event['title']])"
             class="event-tabs"
         />
 

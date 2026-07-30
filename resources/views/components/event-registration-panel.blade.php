@@ -1,22 +1,22 @@
 <x-content-panel
     section="event-registration"
-    eyebrow="Your place"
-    title="Registration and ticket"
+    eyebrow="{{ __('ui.your_place_cc9cdfb43b') }}"
+    title="{{ __('ui.registration_and_ticket_1b0d0107d0') }}"
     :meta="$registration['status_label']"
     class="event-registration"
 >
     @if ($event['status'] === 'cancelled')
         <x-notice
             icon="calendar-x"
-            title="This event was cancelled"
-            description="New registration and payments are closed. Existing obligations remain visible to affected attendees."
+            title="{{ __('ui.this_event_was_cancelled_ae1a6acc0c') }}"
+            description="{{ __('ui.new_registration_and_payments_are_closed_existing_obligations_196d67445d') }}"
             class="section-body"
         />
     @elseif ($event['registration_policy'] === 'invitation' && $record === null)
         <x-notice
             icon="lock-keyhole"
-            title="Invitation required"
-            description="This private event accepts only profiles selected by the organizer."
+            title="{{ __('ui.invitation_required_771b7240e7') }}"
+            description="{{ __('ui.this_private_event_accepts_only_profiles_selected_by_f11623d75a') }}"
             class="section-body"
         />
     @elseif ($record === null || in_array($record['status'], ['cancelled', 'declined'], true))
@@ -37,13 +37,13 @@
                         <b>{{ $ticket['price_label'] }}</b>
                     </label>
                 @empty
-                    <p class="event-directory__empty">Ticket options are unavailable.</p>
+                    <p class="event-directory__empty">{{ __('ui.ticket_options_are_unavailable_c1564147ab') }}</p>
                 @endforelse
             </div>
 
             <div class="event-registration__fields">
                 <label class="form-field">
-                    <span class="form-field__label">Attending profile</span>
+                    <span class="form-field__label">{{ __('ui.attending_profile_5da031a1d1') }}</span>
                     <select name="event_pet" class="field field--select" required>
                         @foreach ($registration['pets'] as $value => $label)
                             <option value="{{ $value }}" @selected(! $registration['can_register_pet'] && $value === 'owner-only')>{{ $label }}</option>
@@ -51,39 +51,39 @@
                     </select>
                 </label>
                 <label class="form-field">
-                    <span class="form-field__label">Attendance format</span>
+                    <span class="form-field__label">{{ __('ui.attendance_format_92ed405299') }}</span>
                     <select name="attendance_format" class="field field--select" required>
-                        <option value="{{ $event['format'] }}">{{ str($event['format'])->headline() }}</option>
+                        <option value="{{ $event['format'] }}">{{ $event['format_label'] }}</option>
                     </select>
                 </label>
                 <label class="form-field">
-                    <span class="form-field__label">Guests</span>
+                    <span class="form-field__label">{{ __('ui.guests_3c8e0fde6f') }}</span>
                     <input type="number" name="guest_count" value="0" min="0" max="5" class="field">
                 </label>
                 <label class="form-field">
-                    <span class="form-field__label">Photography</span>
+                    <span class="form-field__label">{{ __('ui.photography_7be8b75c22') }}</span>
                     <select name="photo_consent" class="field field--select" required>
-                        <option value="ask-first">Ask before publishing</option>
-                        <option value="yes">Photography is okay</option>
-                        <option value="no">No photos or tags</option>
+                        <option value="ask-first">{{ __('ui.ask_before_publishing_075ca9bb33') }}</option>
+                        <option value="yes">{{ __('ui.photography_is_okay_b0c8f552d3') }}</option>
+                        <option value="no">{{ __('ui.no_photos_or_tags_2f4d16dbfd') }}</option>
                     </select>
                 </label>
             </div>
 
             <label class="form-field">
-                <span class="form-field__label">Private note for organizers</span>
-                <textarea name="requirements_note" rows="3" maxlength="500" class="field field--textarea" placeholder="Accessibility, distance, or arrival needs"></textarea>
+                <span class="form-field__label">{{ __('ui.private_note_for_organizers_2f8a9f7b89') }}</span>
+                <textarea name="requirements_note" rows="3" maxlength="500" class="field field--textarea" placeholder="{{ __('ui.accessibility_distance_or_arrival_needs_a062e3cb89') }}"></textarea>
             </label>
 
             <label class="event-registration__consent">
                 <input type="checkbox" name="accepted_rules" value="yes" required>
-                <span>I reviewed the event rules, cancellation terms, and pet-safety boundaries.</span>
+                <span>{{ __('ui.i_reviewed_the_event_rules_cancellation_terms_and_432528dacb') }}</span>
             </label>
 
             <p class="event-registration__terms">{{ $registration['terms'] }}</p>
             <x-action-control
                 type="submit"
-                :label="$event['registration_policy'] === 'approval' ? 'Send application' : 'Confirm registration'"
+                :label="$event['registration_policy'] === 'approval' ? __('ui.send_application_174b538fa4') : __('ui.confirm_registration_6218dc7b18')"
                 icon="ticket-check"
                 variant="primary"
                 size="regular"
@@ -100,24 +100,24 @@
                 }"
                 :title="$registration['status_label']"
                 :description="match ($record['status']) {
-                    'pending' => 'The organizer is reviewing the selected pet and private participation note.',
-                    'waitlisted' => 'Your place will not be charged until a real opening is offered.',
-                    'payment_required' => 'Your place is reserved temporarily. Complete the prototype payment to issue a ticket.',
-                    'payment_failed' => 'No charge was created. You can retry without creating a duplicate registration.',
-                    'checked_in' => 'Attendance is confirmed and this ticket cannot be checked in twice.',
-                    default => 'Your place and event access are confirmed.',
+                    'pending' => __('ui.the_organizer_is_reviewing_the_selected_pet_and_862a4b2dc1'),
+                    'waitlisted' => __('ui.your_place_will_not_be_charged_until_a_d2a8005d31'),
+                    'payment_required' => __('ui.your_place_is_reserved_temporarily_complete_the_prototype_3925be51fa'),
+                    'payment_failed' => __('ui.no_charge_was_created_you_can_retry_without_06cbc80c5f'),
+                    'checked_in' => __('ui.attendance_is_confirmed_and_this_ticket_cannot_be_3ac174f366'),
+                    default => __('ui.your_place_and_event_access_are_confirmed_a0bb26a9f5'),
                 }"
             />
 
             @if (in_array($record['status'], ['payment_required', 'payment_failed'], true))
                 <div class="event-registration__payment">
                     <div>
-                        <span>Prototype payment</span>
+                        <span>{{ __('ui.prototype_payment_c7ec07f196') }}</span>
                         <strong>{{ $event['price_label'] }}</strong>
-                        <small>No payment credentials are collected on this preview.</small>
+                        <small>{{ __('ui.no_payment_credentials_are_collected_on_this_preview_66d30647ed') }}</small>
                     </div>
                     <x-action-control
-                        label="Complete payment"
+                        label="{{ __('ui.complete_payment_c030632f07') }}"
                         icon="credit-card"
                         :endpoint="route('actions.perform')"
                         :payload="[
@@ -130,7 +130,7 @@
                         size="regular"
                     />
                     <x-action-control
-                        label="Simulate failure"
+                        label="{{ __('ui.simulate_failure_b44d3cb37c') }}"
                         icon="triangle-alert"
                         :endpoint="route('actions.perform')"
                         :payload="[
@@ -151,9 +151,9 @@
                         <x-lucide-qr-code class="icon" />
                     </span>
                     <div>
-                        <small>Ticket code</small>
+                        <small>{{ __('ui.ticket_code_68067daecb') }}</small>
                         <strong>{{ $record['ticket_code'] }}</strong>
-                        <span>{{ str($record['ticket_type'])->headline() }} · {{ $record['pet'] }}</span>
+                        <span>{{ $record['ticket_type_label'] }} · {{ $record['pet'] }}</span>
                     </div>
                 </div>
             @endif
@@ -202,20 +202,20 @@
                     <input type="hidden" name="action" value="set-event-travel-status">
                     <input type="hidden" name="target" value="{{ $event['key'] }}">
                     <input type="hidden" name="event_return_tab" value="tickets">
-                    <label for="travel-status" class="form-field__label">Arrival status</label>
+                    <label for="travel-status" class="form-field__label">{{ __('ui.arrival_status_45373f71f9') }}</label>
                     <select id="travel-status" name="travel_status" class="field field--select" required>
                         @foreach ([
-                            'leaving' => 'Leaving now',
-                            'approaching' => 'Approaching',
-                            'late' => 'Running late',
-                            'arrived' => 'At the meeting point',
-                            'cannot-find' => 'Cannot find the entrance',
-                            'not-coming' => 'Not coming',
+                            'leaving' => __('ui.leaving_now_13338e1c94'),
+                            'approaching' => __('ui.approaching_8b228f5424'),
+                            'late' => __('ui.running_late_5d9471f0b6'),
+                            'arrived' => __('ui.at_the_meeting_point_1aaac4b56f'),
+                            'cannot-find' => __('ui.cannot_find_the_entrance_a5048a6c7c'),
+                            'not-coming' => __('ui.not_coming_2fc32e45d9'),
                         ] as $value => $label)
                             <option value="{{ $value }}" @selected($registration['travel_status'] === $value)>{{ $label }}</option>
                         @endforeach
                     </select>
-                    <x-action-control type="submit" label="Update" icon="navigation" variant="paper" />
+                    <x-action-control type="submit" label="{{ __('ui.update_c1c1009d3f') }}" icon="navigation" variant="paper" />
                 </form>
             @endif
         </div>

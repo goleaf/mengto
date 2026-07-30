@@ -1,5 +1,7 @@
 # PawCircle Subscriptions And Profile Recommendations MVP Implementation Plan
 
+> Historical delivery record. Production requirements, security rules, testing gates, and runtime versions are governed by `docs/index.md` and its canonical documents.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Build a session-backed relationship center with independent subscriptions, private requests, settings, explainable recommendations, and Following-feed integration.

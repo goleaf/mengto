@@ -14,60 +14,60 @@ class ForumTaxonomy
     public function categories(): array
     {
         return [
-            'health' => ['label' => 'Health', 'icon' => 'heart-pulse', 'subcategories' => [
+            'health' => ['label' => __('messages.health_55898449eb'), 'icon' => 'heart-pulse', 'subcategories' => [
                 'symptoms' => 'Symptoms and next steps',
                 'recovery' => 'Recovery and aftercare',
                 'senior-care' => 'Senior care',
                 'preventive-care' => 'Preventive care',
             ]],
-            'nutrition' => ['label' => 'Nutrition', 'icon' => 'utensils', 'subcategories' => [
+            'nutrition' => ['label' => __('messages.nutrition_7ab78b7058'), 'icon' => 'utensils', 'subcategories' => [
                 'daily-feeding' => 'Daily feeding',
                 'diet-transition' => 'Diet transitions',
                 'allergies' => 'Allergies and sensitivities',
             ]],
-            'behavior' => ['label' => 'Behavior', 'icon' => 'brain', 'subcategories' => [
+            'behavior' => ['label' => __('messages.behavior_edf8d3f178'), 'icon' => 'brain', 'subcategories' => [
                 'fear' => 'Fear and confidence',
                 'introductions' => 'Safe introductions',
                 'home-alone' => 'Staying home',
                 'reactivity' => 'Reactivity',
             ]],
-            'training' => ['label' => 'Training', 'icon' => 'graduation-cap', 'subcategories' => [
+            'training' => ['label' => __('messages.training_36a798e3f3'), 'icon' => 'graduation-cap', 'subcategories' => [
                 'foundations' => 'Foundations',
                 'leash-skills' => 'Leash skills',
                 'sport' => 'Sport and agility',
             ]],
-            'care' => ['label' => 'Everyday care', 'icon' => 'sparkles', 'subcategories' => [
+            'care' => ['label' => __('messages.everyday_care_407711dde9'), 'icon' => 'sparkles', 'subcategories' => [
                 'grooming' => 'Grooming',
                 'enrichment' => 'Enrichment',
                 'routines' => 'Home routines',
             ]],
-            'walks' => ['label' => 'Walks and places', 'icon' => 'map-pinned', 'subcategories' => [
+            'walks' => ['label' => __('messages.walks_and_places_090b833d1a'), 'icon' => 'map-pinned', 'subcategories' => [
                 'routes' => 'Routes',
                 'parks' => 'Parks',
                 'meetups' => 'Meetups',
             ]],
-            'travel' => ['label' => 'Travel and documents', 'icon' => 'luggage', 'subcategories' => [
+            'travel' => ['label' => __('messages.travel_and_documents_9e93e2f161'), 'icon' => 'luggage', 'subcategories' => [
                 'documents' => 'Documents',
                 'transport' => 'Transport',
                 'accommodation' => 'Accommodation',
             ]],
-            'adoption' => ['label' => 'Adoption and shelters', 'icon' => 'house-heart', 'subcategories' => [
+            'adoption' => ['label' => __('messages.adoption_and_shelters_8ac2ab86df'), 'icon' => 'house-heart', 'subcategories' => [
                 'first-days' => 'First days',
                 'fostering' => 'Fostering',
                 'shelter-support' => 'Shelter support',
             ]],
-            'lost-found' => ['label' => 'Lost and found', 'icon' => 'scan-search', 'subcategories' => [
+            'lost-found' => ['label' => __('messages.lost_and_found_a64c586261'), 'icon' => 'scan-search', 'subcategories' => [
                 'lost-pet' => 'Lost pet',
                 'found-pet' => 'Found pet',
                 'search-coordination' => 'Search coordination',
             ]],
-            'services' => ['label' => 'Services and gear', 'icon' => 'briefcase-medical', 'subcategories' => [
+            'services' => ['label' => __('messages.services_and_gear_cfde79b2e8'), 'icon' => 'briefcase-medical', 'subcategories' => [
                 'clinics' => 'Clinics',
                 'grooming' => 'Grooming',
                 'boarding' => 'Boarding and sitters',
                 'technology' => 'Technology and trackers',
             ]],
-            'support' => ['label' => 'Support', 'icon' => 'heart-handshake', 'subcategories' => [
+            'support' => ['label' => __('messages.support_be91940b79'), 'icon' => 'heart-handshake', 'subcategories' => [
                 'loss' => 'Pet loss',
                 'caregiver' => 'Caregiver support',
                 'volunteers' => 'Volunteer support',
@@ -145,8 +145,8 @@ class ForumTaxonomy
     public function pets(): array
     {
         return [
-            'scout' => ['name' => 'Scout', 'species' => 'Dog', 'age' => '4 years'],
-            'nori' => ['name' => 'Nori', 'species' => 'Cat', 'age' => '2 years'],
+            'scout' => ['name' => __('messages.scout_8a1db462be'), 'species' => __('messages.dog_0eb129bf94'), 'age' => __('messages.4_years_cfd73a0bc4')],
+            'nori' => ['name' => __('messages.nori_a64203ba20'), 'species' => __('messages.cat_48735c4fae'), 'age' => __('messages.2_years_7dab2372ff')],
         ];
     }
 

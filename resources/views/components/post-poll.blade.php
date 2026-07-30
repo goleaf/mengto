@@ -1,6 +1,6 @@
 @props(['poll'])
 
-<div class="post-poll" aria-label="Poll">
+<div class="post-poll" aria-label="{{ __('ui.poll_d54f7d124c') }}">
     @foreach ($poll['options'] as $option)
         <button type="button" class="post-poll__option" disabled>
             <span>{{ $option['label'] }}</span>
@@ -8,5 +8,5 @@
             <span class="post-poll__meter" style="--poll-value: {{ $option['percent'] }}%"></span>
         </button>
     @endforeach
-    <p>{{ $poll['votes'] }} votes · {{ $poll['ends'] }}</p>
+    <p>{{ __('presentation.poll_votes_ends', ['votes' => $poll['votes'], 'ends' => $poll['ends']]) }}</p>
 </div>

@@ -18,6 +18,6 @@ class ExpertProfileStoreController extends Controller
         $profile = $create->handle($request->validated());
 
         return to_route('experts.show', $profile)
-            ->with('feedback', 'Professional profile created. Verification details remain private while reviewed.');
+            ->with('feedback', __('messages.professional_profile_created_verification_details_remain_bc32282bb8'));
     }
 }

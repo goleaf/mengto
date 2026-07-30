@@ -36,7 +36,7 @@ class CreateSearchCase
 
             if ($activeKey !== null && SearchCase::query()->where('active_key', $activeKey)->exists()) {
                 throw ValidationException::withMessages([
-                    'pet_profile_key' => 'This pet already has an active search. Update that search instead.',
+                    'pet_profile_key' => __('messages.this_pet_already_has_an_active_search_update_that_search_434f1d4269'),
                 ]);
             }
 
@@ -108,8 +108,8 @@ class CreateSearchCase
                 'photos' => $photos,
                 'risk_flags' => $assessment['flags'],
                 'latest_update' => $publish
-                    ? 'Search published. Report sightings without chasing the animal.'
-                    : 'Draft saved for safety review.',
+                    ? __('messages.search_published_report_sightings_without_chasing_the_an_685599a0f1')
+                    : __('messages.draft_saved_for_safety_review_07e75d694f'),
             ]);
 
             SearchUpdate::query()->create([
@@ -119,8 +119,8 @@ class CreateSearchCase
                 'type' => 'case-created',
                 'visibility' => $publish ? 'public' : 'team',
                 'title' => $type === SearchCaseType::Lost
-                    ? 'Search started'
-                    : 'Found animal report created',
+                    ? __('messages.search.started')
+                    : __('messages.search.found_report_created'),
                 'body' => $searchCase->latest_update,
                 'public_area' => $searchCase->last_seen_area,
                 'occurred_at' => now(),

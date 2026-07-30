@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Enums;
 
 enum DeviceStatus: string
@@ -14,15 +16,7 @@ enum DeviceStatus: string
 
     public function label(): string
     {
-        return match ($this) {
-            self::Active => 'Active',
-            self::NeedsAttention => 'Needs attention',
-            self::Maintenance => 'Maintenance',
-            self::PrivacyMode => 'Privacy mode',
-            self::LostMode => 'Lost mode',
-            self::Blocked => 'Blocked',
-            self::Retired => 'Retired',
-        };
+        return __("devices.status.{$this->value}");
     }
 
     public function tone(): string

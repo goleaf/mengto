@@ -3,10 +3,10 @@
 <section {{ $attributes->class(['medical-section']) }} aria-labelledby="medical-timeline-title">
     <div class="medical-section__heading">
         <div>
-            <p class="text-xs font-bold uppercase text-paw-leaf">History</p>
-            <h2 id="medical-timeline-title" class="mt-1 text-xl font-bold">Medical timeline</h2>
+            <p class="text-xs font-bold uppercase text-paw-leaf">{{ __('ui.history_0e76960093') }}</p>
+            <h2 id="medical-timeline-title" class="mt-1 text-xl font-bold">{{ __('ui.medical_timeline_81bce0a0b8') }}</h2>
         </div>
-        <span class="text-sm font-semibold text-paw-muted">{{ count($events) }} entries</span>
+        <span class="text-sm font-semibold text-paw-muted">{{ trans_choice('presentation.entries_count', count($events), ['count' => count($events)]) }}</span>
     </div>
 
     <ol class="medical-timeline">
@@ -30,7 +30,7 @@
                     @if ($event['follow_up'])
                         <p class="mt-2 inline-flex items-center gap-1 text-xs font-bold text-paw-leaf">
                             <x-lucide-calendar-clock class="size-3.5" aria-hidden="true" />
-                            Follow-up {{ $event['follow_up'] }}
+                            {{ __('presentation.follow_up', ['value' => $event['follow_up']]) }}
                         </p>
                     @endif
                 </div>
@@ -38,7 +38,7 @@
         @empty
             <li class="medical-empty">
                 <x-lucide-notebook-pen class="size-7" aria-hidden="true" />
-                <p>No medical events have been recorded.</p>
+                <p>{{ __('ui.no_medical_events_have_been_recorded_aa044cc03b') }}</p>
             </li>
         @endforelse
     </ol>

@@ -1,5 +1,7 @@
 # PawCircle Messaging Center — Giant Implementation Plan
 
+> Historical delivery record. Production requirements, security rules, testing gates, and runtime versions are governed by `docs/index.md` and its canonical documents.
+
 ## Definition Of Done
 
 Point 8 is complete for this server-rendered prototype when all 296 requirements are assigned, the point-287 MVP works through server-validated actions, post-MVP capabilities are represented by honest integration boundaries, all eight ideal scenarios have corresponding screens/states, the existing suite is executed without adding test files, responsive behavior is browser-verified, and an isolated commit is pushed.

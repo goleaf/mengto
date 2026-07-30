@@ -1,6 +1,6 @@
 @props(['groups'])
 
-<x-sidebar-section title="Groups for you" section="groups" :href="route('groups.index')">
+<x-sidebar-section title="{{ __('ui.groups_for_you_6e9b6f4af0') }}" section="groups" :href="route('groups.index')">
     <x-sidebar-list>
         @forelse ($groups as $group)
             <x-sidebar-list-item>
@@ -17,8 +17,8 @@
                 <div class="mt-3 flex items-center justify-between gap-3">
                     <x-icon-text icon="users">{{ $group['members'] }}</x-icon-text>
                     <x-action-control
-                        label="Join"
-                        active-label="Joined"
+                        label="{{ __('ui.join_fd30fe681b') }}"
+                        active-label="{{ __('ui.joined_69318b0c6a') }}"
                         icon="user-plus"
                         active-icon="check"
                         variant="quiet"
@@ -31,7 +31,7 @@
                 </div>
             </x-sidebar-list-item>
         @empty
-            <p role="listitem" class="sidebar-list__empty">No group suggestions yet.</p>
+            <p role="listitem" class="sidebar-list__empty">{{ __('ui.no_group_suggestions_yet_41b3d0c865') }}</p>
         @endforelse
     </x-sidebar-list>
 </x-sidebar-section>

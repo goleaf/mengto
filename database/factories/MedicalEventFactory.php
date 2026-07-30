@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories;
 
 use App\Enums\MedicalEventType;
@@ -7,12 +9,11 @@ use App\Enums\MedicalSourceType;
 use App\Enums\MedicalVerificationStatus;
 use App\Models\MedicalEvent;
 use App\Models\MedicalRecord;
-use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<MedicalEvent>
+ * @extends ApplicationFactory<MedicalEvent>
  */
-class MedicalEventFactory extends Factory
+class MedicalEventFactory extends ApplicationFactory
 {
     public function definition(): array
     {

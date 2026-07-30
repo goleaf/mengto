@@ -1,15 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories;
 
 use App\Enums\PublicationStatus;
 use App\Models\ExpertProfile;
 use App\Models\Publication;
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
-/** @extends Factory<Publication> */
-class PublicationFactory extends Factory
+/** @extends ApplicationFactory<Publication> */
+class PublicationFactory extends ApplicationFactory
 {
     public function definition(): array
     {

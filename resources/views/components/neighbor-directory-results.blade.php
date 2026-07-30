@@ -3,7 +3,7 @@
 <x-result-grid
     section="neighbor-directory"
     title-id="neighbor-directory-title"
-    title="People nearby"
+    title="{{ __('ui.people_nearby_690d8bdc6b') }}"
     :columns="4"
 >
     @forelse ($neighbors as $neighbor)
@@ -11,9 +11,9 @@
     @empty
         <x-empty-state
             icon="users-round"
-            title="No neighbors match these filters"
+            title="{{ __('ui.no_neighbors_match_these_filters_e2a3976714') }}"
             role="listitem"
-            description="Try a broader person, pet, or neighborhood."
+            description="{{ __('ui.try_a_broader_person_pet_or_neighborhood_4f267326cd') }}"
             :href="route('neighbors.index')"
             class="sm:col-span-2 xl:col-span-4"
         />

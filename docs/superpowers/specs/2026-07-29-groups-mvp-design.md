@@ -1,5 +1,7 @@
 # PawCircle Groups MVP Design
 
+> Product design source. Preserve its domain detail; current production, security, persistence, and verification requirements are governed by `docs/index.md`.
+
 ## Goal
 
 Turn groups into structured communities for breeds, interests, care topics, and local neighborhoods. The first release remains a session-backed Blade prototype, but every interaction must behave like a coherent product flow and be ready to move behind Eloquent models later.

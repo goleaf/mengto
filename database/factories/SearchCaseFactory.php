@@ -1,18 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories;
 
 use App\Enums\ModerationStatus;
 use App\Enums\SearchCaseType;
 use App\Enums\SearchStatus;
 use App\Models\SearchCase;
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
 /**
- * @extends Factory<SearchCase>
+ * @extends ApplicationFactory<SearchCase>
  */
-class SearchCaseFactory extends Factory
+class SearchCaseFactory extends ApplicationFactory
 {
     public function definition(): array
     {

@@ -1,7 +1,7 @@
 @props([
     'items',
     'label',
-    'empty' => 'Summary unavailable.',
+    'empty' => __('ui.summary_unavailable_3a2c4e48c8'),
     'icons' => [],
     'variant' => 'profile',
     'tone' => 'leaf',

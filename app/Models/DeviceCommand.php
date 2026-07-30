@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use App\Enums\DeviceCommandStatus;
@@ -7,7 +9,30 @@ use Database\Factories\DeviceCommandFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
+/**
+ * @property string $author_key
+ * @property string $author_name
+ * @property string $command_type
+ * @property Carbon|null $completed_at
+ * @property Carbon|null $confirmed_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $delivered_at
+ * @property Carbon|null $expires_at
+ * @property string|null $failure_reason
+ * @property int $id
+ * @property string $idempotency_key
+ * @property Carbon $issued_at
+ * @property array<array-key, mixed>|null $parameters
+ * @property bool $requires_confirmation
+ * @property array<array-key, mixed>|null $result
+ * @property string $safety_level
+ * @property-read SmartDevice|null $smartDevice
+ * @property int $smart_device_id
+ * @property DeviceCommandStatus $status
+ * @property Carbon|null $updated_at
+ */
 class DeviceCommand extends Model
 {
     /** @use HasFactory<DeviceCommandFactory> */
@@ -39,6 +64,7 @@ class DeviceCommand extends Model
         ];
     }
 
+    /** @return BelongsTo<\App\Models\SmartDevice, $this>*/
     public function smartDevice(): BelongsTo
     {
         return $this->belongsTo(SmartDevice::class);

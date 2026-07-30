@@ -1,6 +1,6 @@
 @props([
     'recipients' => [],
-    'empty' => 'No PawCircle neighbors are available.',
+    'empty' => __('ui.no_brand_neighbors_are_available_92bb8ec323'),
 ])
 
 <div role="list" {{ $attributes->class(['share-recipient-list']) }}>
@@ -9,7 +9,7 @@
     @empty
         <x-empty-state
             icon="users"
-            title="No neighbors to send to"
+            title="{{ __('ui.no_neighbors_to_send_to_9a3ba8c390') }}"
             :description="$empty"
             compact
             role="listitem"

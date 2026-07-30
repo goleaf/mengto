@@ -3,9 +3,9 @@
 <div class="post-social-proof">
     <span>
         @if ($post['selected_reaction_label'])
-            Your reaction: {{ $post['selected_reaction_label'] }} ·
+            {{ __('presentation.your_reaction', ['reaction' => $post['selected_reaction_label']]) }} ·
         @endif
-        {{ $post['reaction_total'] }} {{ str('reaction')->plural($post['reaction_total']) }}
+        {{ trans_choice('presentation.reactions_count', $post['reaction_total'], ['count' => $post['reaction_total']]) }}
     </span>
-    <span>{{ $post['reply_total'] }} comments · {{ $post['reposts'] }} reposts</span>
+    <span>{{ __('presentation.comments_reposts', ['comments' => $post['reply_total'], 'reposts' => $post['reposts']]) }}</span>
 </div>

@@ -17,7 +17,7 @@
             <div class="flex min-w-0 items-center gap-2">
                 <p class="text-xs font-semibold text-paw-coral">{{ $item['category'] }}</p>
                 @if ($item['unread'])
-                    <x-status-badge label="New" icon="circle" tone="mint" size="compact" />
+                    <x-status-badge label="{{ __('ui.new_18fdd549b2') }}" icon="circle" tone="mint" size="compact" />
                 @endif
             </div>
             <time datetime="{{ $item['datetime'] }}" class="shrink-0 text-xs font-semibold text-paw-muted">{{ $item['time'] }}</time>

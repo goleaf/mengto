@@ -65,13 +65,13 @@ class CreateBooking
 
             if (! $slot->hasCapacity() || ($slot->service_id !== null && $slot->service_id !== $service->id)) {
                 throw ValidationException::withMessages([
-                    'availability_slot_id' => 'This appointment time is no longer available.',
+                    'availability_slot_id' => __('messages.this_appointment_time_is_no_longer_available_2ca3f4142c'),
                 ]);
             }
 
             $pet = $this->taxonomy->petData()[$data['pet_key']] ?? null;
             if ($pet === null) {
-                throw ValidationException::withMessages(['pet_key' => 'Choose an available pet profile.']);
+                throw ValidationException::withMessages(['pet_key' => __('messages.choose_an_available_pet_profile_b76dc60a71')]);
             }
 
             $status = $service->requires_payment
@@ -136,7 +136,7 @@ class CreateBooking
                     'booking_id' => $booking->id,
                     'expert_profile_id' => $profile->id,
                     'owner_key' => $this->actor->key(),
-                    'label' => $data['document_label'] ?? 'Consultation document',
+                    'label' => $data['document_label'] ?? __('messages.booking.consultation_document'),
                     'document_type' => $data['document_type'] ?? 'supporting-document',
                     'file_path' => $document->store('consultation-documents', 'local'),
                     'permissions' => ['view'],

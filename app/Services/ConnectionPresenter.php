@@ -2,8 +2,6 @@
 
 namespace App\Services;
 
-use Illuminate\Support\Str;
-
 final class ConnectionPresenter
 {
     public function __construct(
@@ -31,13 +29,13 @@ final class ConnectionPresenter
         $summary = $this->summary();
 
         return [
-            'page_title' => 'Connections and recommendations | PawCircle',
+            'page_title' => __('messages.connections_and_recommendations_pawcircle_f952cfc656'),
             'active_section' => 'circle',
             'summary' => [
-                'eyebrow' => 'Your social graph',
-                'title' => 'Connections you control',
-                'description' => 'People, pets, organizations, and interests stay separate, with clear feed and notification settings.',
-                'count' => count($items).' '.Str::plural('result', count($items)),
+                'eyebrow' => __('messages.your_social_graph_5e99767a29'),
+                'title' => __('messages.connections_you_control_0a4f0a20d7'),
+                'description' => __('messages.people_pets_organizations_and_interests_stay_separate_wi_aa07a86bc8'),
+                'count' => trans_choice('presentation.results_count', count($items), ['count' => count($items)]),
                 'stats' => $summary,
             ],
             'connections' => [
@@ -122,7 +120,9 @@ final class ConnectionPresenter
             }
 
             $items[] = $this->decorate($record, [
-                'context' => 'Following since '.$this->followedDate((string) $subscription['followed_at']),
+                'context' => __('presentation.following_since', [
+                    'date' => $this->followedDate((string) $subscription['followed_at']),
+                ]),
                 'following' => true,
                 'favorite' => (bool) $subscription['favorite'],
                 'muted' => (bool) $subscription['muted'],
@@ -131,7 +131,7 @@ final class ConnectionPresenter
                 'primary_action' => $this->action(
                     'toggle-subscription',
                     $target,
-                    'Following',
+                    __('messages.following_344b4271ca'),
                     'user-check',
                     'paper',
                     'following',
@@ -140,16 +140,16 @@ final class ConnectionPresenter
                     $this->action(
                         'toggle-subscription-favorite',
                         $target,
-                        (bool) $subscription['favorite'] ? 'Remove favorite' : 'Add to favorites',
+                        (bool) $subscription['favorite'] ? __('messages.remove_favorite_5bc0aa08d6') : __('messages.add_to_favorites_7f3c0782af'),
                         (bool) $subscription['favorite'] ? 'star-off' : 'star',
                     ),
                     $this->action(
                         'toggle-subscription-mute',
                         $target,
-                        (bool) $subscription['muted'] ? 'Show in feed' : 'Mute in feed',
+                        (bool) $subscription['muted'] ? __('messages.show_in_feed_6905741e64') : __('messages.mute_in_feed_4b05e4a21e'),
                         (bool) $subscription['muted'] ? 'volume-2' : 'volume-x',
                     ),
-                    $this->action('toggle-connection-block', $target, 'Block profile', 'ban'),
+                    $this->action('toggle-connection-block', $target, __('messages.block_profile_fe810d74e7'), 'ban'),
                 ],
                 'notification_options' => $this->notificationOptions(
                     $target,
@@ -180,17 +180,17 @@ final class ConnectionPresenter
             }
 
             $items[] = $this->decorate($record, [
-                'context' => $index === 0 ? 'New follower this week' : 'Follows your public updates',
+                'context' => $index === 0 ? __('messages.new_follower_this_week_f79e52e2fc') : __('messages.follows_your_public_updates_3e725dc2db'),
                 'sort_order' => str_pad((string) (99 - $index), 2, '0', STR_PAD_LEFT),
                 'primary_action' => [
-                    'label' => 'View profile',
+                    'label' => __('messages.view_profile_d4788f256f'),
                     'icon' => 'circle-user-round',
                     'href' => $this->href($record),
                     'variant' => 'paper',
                 ],
                 'secondary_actions' => [
-                    $this->action('remove-follower', $target, 'Remove follower', 'user-minus', 'quiet', 'followers'),
-                    $this->action('toggle-connection-block', $target, 'Block profile', 'ban', 'quiet', 'followers'),
+                    $this->action('remove-follower', $target, __('messages.remove_follower_abea22ee75'), 'user-minus', 'quiet', 'followers'),
+                    $this->action('toggle-connection-block', $target, __('messages.block_profile_fe810d74e7'), 'ban', 'quiet', 'followers'),
                 ],
             ]);
         }
@@ -217,20 +217,20 @@ final class ConnectionPresenter
             }
 
             $items[] = $this->decorate($record, [
-                'context' => 'Wants to follow your owner profile',
+                'context' => __('messages.wants_to_follow_your_owner_profile_e653df5e16'),
                 'request_direction' => 'incoming',
                 'sort_order' => str_pad((string) (99 - $index), 2, '0', STR_PAD_LEFT),
                 'primary_action' => $this->action(
                     'accept-follow-request',
                     $target,
-                    'Accept',
+                    __('messages.accept_89713b9c9c'),
                     'user-check',
                     'primary',
                     'requests',
                 ),
                 'secondary_actions' => [
-                    $this->action('decline-follow-request', $target, 'Decline', 'user-x', 'paper', 'requests'),
-                    $this->action('toggle-connection-block', $target, 'Block profile', 'ban', 'quiet', 'requests'),
+                    $this->action('decline-follow-request', $target, __('messages.decline_a2d285b352'), 'user-x', 'paper', 'requests'),
+                    $this->action('toggle-connection-block', $target, __('messages.block_profile_fe810d74e7'), 'ban', 'quiet', 'requests'),
                 ],
             ]);
         }
@@ -249,7 +249,7 @@ final class ConnectionPresenter
             $primaryAction = $this->action(
                 'toggle-follow-request',
                 $target,
-                'Request sent',
+                __('messages.request_sent_a73f99f6bf'),
                 'clock-3',
                 'paper',
                 'requests',
@@ -258,7 +258,7 @@ final class ConnectionPresenter
             $primaryAction['pressed'] = true;
 
             $items[] = $this->decorate($record, [
-                'context' => 'Your request is waiting for approval',
+                'context' => __('messages.your_request_is_waiting_for_approval_1b63d48504'),
                 'request_direction' => 'outgoing',
                 'sort_order' => '10',
                 'primary_action' => $primaryAction,
@@ -298,7 +298,7 @@ final class ConnectionPresenter
                 ? $this->action(
                     'toggle-follow-request',
                     $target,
-                    $requestPending ? 'Request sent' : 'Request follow',
+                    $requestPending ? __('messages.request_sent_a73f99f6bf') : __('messages.request_follow_8bd513a22d'),
                     $requestPending ? 'clock-3' : 'user-plus',
                     $requestPending ? 'paper' : 'primary',
                     'recommendations',
@@ -306,7 +306,7 @@ final class ConnectionPresenter
                 : $this->action(
                     'toggle-subscription',
                     $target,
-                    'Follow',
+                    __('messages.follow_641d1ef657'),
                     'user-plus',
                     'primary',
                     'recommendations',
@@ -324,7 +324,7 @@ final class ConnectionPresenter
                     $this->action(
                         'dismiss-recommendation',
                         $target,
-                        'Not interested',
+                        __('messages.not_interested_7991fb9792'),
                         'eye-off',
                         'quiet',
                         'recommendations',
@@ -332,7 +332,7 @@ final class ConnectionPresenter
                     $this->action(
                         'toggle-connection-block',
                         $target,
-                        'Block profile',
+                        __('messages.block_profile_fe810d74e7'),
                         'ban',
                         'quiet',
                         'recommendations',
@@ -442,10 +442,10 @@ final class ConnectionPresenter
         ));
 
         return [
-            ['label' => 'Following', 'value' => (string) $following, 'detail' => 'exact targets'],
-            ['label' => 'Followers', 'value' => (string) $followers, 'detail' => 'visible profiles'],
-            ['label' => 'Requests', 'value' => (string) $requests, 'detail' => 'need attention'],
-            ['label' => 'Favorites', 'value' => (string) $favorites, 'detail' => 'priority profiles'],
+            ['label' => __('messages.following_344b4271ca'), 'value' => (string) $following, 'detail' => __('messages.exact_targets_f218a155ed')],
+            ['label' => __('messages.followers_a145ab342a'), 'value' => (string) $followers, 'detail' => __('messages.visible_profiles_73d919ac75')],
+            ['label' => __('messages.requests_ada27592c9'), 'value' => (string) $requests, 'detail' => __('messages.need_attention_8db7dd4122')],
+            ['label' => __('messages.favorites_7a1f2a83ac'), 'value' => (string) $favorites, 'detail' => __('messages.priority_profiles_821d4bdbf2')],
         ];
     }
 
@@ -456,10 +456,10 @@ final class ConnectionPresenter
     private function tabs(string $active, string $type, string $sort, array $summary): array
     {
         $definitions = [
-            'following' => ['label' => 'Following', 'icon' => 'user-check', 'count' => $summary[0]['value']],
-            'followers' => ['label' => 'Followers', 'icon' => 'users-round', 'count' => $summary[1]['value']],
-            'requests' => ['label' => 'Requests', 'icon' => 'inbox', 'count' => $summary[2]['value']],
-            'recommendations' => ['label' => 'Recommendations', 'icon' => 'sparkles'],
+            'following' => ['label' => __('messages.following_344b4271ca'), 'icon' => 'user-check', 'count' => $summary[0]['value']],
+            'followers' => ['label' => __('messages.followers_a145ab342a'), 'icon' => 'users-round', 'count' => $summary[1]['value']],
+            'requests' => ['label' => __('messages.requests_ada27592c9'), 'icon' => 'inbox', 'count' => $summary[2]['value']],
+            'recommendations' => ['label' => __('messages.recommendations_0738ee00b6'), 'icon' => 'sparkles'],
         ];
         $tabs = [];
 
@@ -484,13 +484,13 @@ final class ConnectionPresenter
     private function typeOptions(): array
     {
         return [
-            'all' => 'All types',
-            'people' => 'People',
-            'pets' => 'Pets',
-            'organizations' => 'Organizations',
-            'specialists' => 'Specialists',
-            'groups' => 'Groups',
-            'topics' => 'Topics',
+            'all' => __('messages.all_types_f10988e79e'),
+            'people' => __('messages.people_7db2089705'),
+            'pets' => __('messages.pets_7dc1cd7eaf'),
+            'organizations' => __('messages.organizations_2730183d6b'),
+            'specialists' => __('messages.specialists_fc75c064bb'),
+            'groups' => __('messages.groups_39bbb719fa'),
+            'topics' => __('messages.topics_e22820fcf5'),
         ];
     }
 
@@ -500,9 +500,9 @@ final class ConnectionPresenter
     private function sortOptions(): array
     {
         return [
-            'recommended' => 'Best match',
-            'recent' => 'Most recent',
-            'name' => 'Name',
+            'recommended' => __('messages.best_match_d83ab68f74'),
+            'recent' => __('messages.most_recent_7459b86904'),
+            'name' => __('messages.name_dcd1d5223f'),
         ];
     }
 
@@ -514,23 +514,23 @@ final class ConnectionPresenter
         return match ($tab) {
             'followers' => [
                 'icon' => 'users-round',
-                'title' => 'No followers match this filter',
-                'description' => 'Change the profile type or return to all followers.',
+                'title' => __('messages.no_followers_match_this_filter_03c0ff705c'),
+                'description' => __('messages.change_the_profile_type_or_return_to_all_followers_d3ebb96d09'),
             ],
             'requests' => [
                 'icon' => 'inbox',
-                'title' => 'No requests need attention',
-                'description' => 'Incoming and private-profile requests will appear here.',
+                'title' => __('messages.no_requests_need_attention_f2b6b9cbfa'),
+                'description' => __('messages.incoming_and_private_profile_requests_will_appear_here_a249607804'),
             ],
             'recommendations' => [
                 'icon' => 'sparkles',
-                'title' => 'Recommendations are tuned',
-                'description' => 'Change the type filter or restore a recently hidden suggestion.',
+                'title' => __('messages.recommendations_are_tuned_5a8cb5cfdb'),
+                'description' => __('messages.change_the_type_filter_or_restore_a_recently_hidden_sugg_787db10838'),
             ],
             default => [
                 'icon' => 'user-check',
-                'title' => 'No subscriptions match this filter',
-                'description' => 'Follow a recommendation or change the selected profile type.',
+                'title' => __('messages.no_subscriptions_match_this_filter_5e4281feea'),
+                'description' => __('messages.follow_a_recommendation_or_change_the_selected_profile_t_cdcc1deb4f'),
             ],
         };
     }
@@ -550,7 +550,7 @@ final class ConnectionPresenter
         $action = $this->action(
             'undo-recommendation-dismissal',
             $target,
-            'Undo',
+            __('messages.undo_a8283ade31'),
             'undo-2',
             'paper',
             'recommendations',
@@ -582,7 +582,7 @@ final class ConnectionPresenter
         $action = $this->action(
             'toggle-connection-block',
             $target,
-            'Undo block',
+            __('messages.undo_block_6b7c1d55a0'),
             'undo-2',
             'paper',
             $tab,
@@ -664,11 +664,11 @@ final class ConnectionPresenter
     private function notificationOptions(string $target, string $active): array
     {
         $labels = [
-            'all' => 'All posts',
-            'important' => 'Important only',
-            'standard' => 'Standard',
-            'feed' => 'Feed only',
-            'off' => 'Paused',
+            'all' => __('messages.all_posts_3a2e5c2c34'),
+            'important' => __('messages.important_only_c2c4224926'),
+            'standard' => __('messages.standard_ef6691545d'),
+            'feed' => __('messages.feed_only_1e67b011dc'),
+            'off' => __('messages.paused_e159b06187'),
         ];
         $options = [];
 
@@ -728,8 +728,8 @@ final class ConnectionPresenter
     private function followedDate(string $value): string
     {
         return match (true) {
-            str_starts_with($value, '2026-07-') => 'July 2026',
-            str_starts_with($value, '2026-06-') => 'June 2026',
+            str_starts_with($value, '2026-07-') => __('messages.july_2026_012fc02ad4'),
+            str_starts_with($value, '2026-06-') => __('messages.june_2026_ee00ffb56d'),
             default => 'recently',
         };
     }

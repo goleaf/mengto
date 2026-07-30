@@ -1,15 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories;
 
 use App\Models\SearchAlert;
 use App\Models\SearchCase;
-use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<SearchAlert>
+ * @extends ApplicationFactory<SearchAlert>
  */
-class SearchAlertFactory extends Factory
+class SearchAlertFactory extends ApplicationFactory
 {
     public function definition(): array
     {

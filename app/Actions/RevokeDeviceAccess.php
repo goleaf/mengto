@@ -19,7 +19,7 @@ class RevokeDeviceAccess
     ): DeviceAccessGrant {
         if ($grant->smart_device_id !== $device->id) {
             throw ValidationException::withMessages([
-                'access' => 'This access grant does not belong to the selected device.',
+                'access' => __('messages.this_access_grant_does_not_belong_to_the_selected_device_0cbf67282e'),
             ]);
         }
 

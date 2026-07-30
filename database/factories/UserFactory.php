@@ -1,16 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories;
 
+use App\Enums\UserStatus;
 use App\Models\User;
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
 /**
- * @extends Factory<User>
+ * @extends ApplicationFactory<User>
  */
-class UserFactory extends Factory
+class UserFactory extends ApplicationFactory
 {
     /**
      * The current password being used by the factory.
@@ -25,10 +27,16 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
+            'actor_key' => 'user-'.Str::lower((string) Str::ulid()),
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
+            'locale' => 'en',
+            'timezone' => 'UTC',
+            'status' => UserStatus::Active,
+            'is_admin' => false,
+            'last_login_at' => null,
             'remember_token' => Str::random(10),
         ];
     }
@@ -40,6 +48,44 @@ class UserFactory extends Factory
     {
         return $this->state(fn (array $attributes) => [
             'email_verified_at' => null,
+        ]);
+    }
+
+    public function blocked(): static
+    {
+        return $this->state(fn (array $attributes): array => [
+            'status' => UserStatus::Blocked,
+        ]);
+    }
+
+    public function suspended(): static
+    {
+        return $this->state(fn (array $attributes): array => [
+            'status' => UserStatus::Suspended,
+        ]);
+    }
+
+    public function administrator(): static
+    {
+        return $this->state(fn (array $attributes): array => [
+            'is_admin' => true,
+            'status' => UserStatus::Active,
+        ]);
+    }
+
+    public function lithuanian(): static
+    {
+        return $this->state(fn (array $attributes): array => [
+            'locale' => 'lt',
+            'timezone' => 'Europe/Vilnius',
+        ]);
+    }
+
+    public function russian(): static
+    {
+        return $this->state(fn (array $attributes): array => [
+            'locale' => 'ru',
+            'timezone' => 'Europe/Vilnius',
         ]);
     }
 }

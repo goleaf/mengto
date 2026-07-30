@@ -15,19 +15,19 @@
 
     <x-action-group class="col-span-2 sm:ml-auto sm:shrink-0">
         <x-action-control
-            label="Call"
+            label="{{ __('ui.call_d6e645b7d2') }}"
             icon="phone"
             variant="paper"
             size="toolbar"
             :endpoint="route('actions.perform')"
             :payload="['action' => 'call', 'target' => $contact['key'], 'label' => $contact['name']]"
             :active="$contact['call_requested']"
-            active-label="Cancel request"
+            active-label="{{ __('ui.cancel_request_5619668359') }}"
             active-icon="phone-off"
             :pressed="$contact['call_requested']"
         />
         <x-action-control
-            label="Info"
+            label="{{ __('ui.info_170322a32f') }}"
             icon="info"
             variant="paper"
             size="toolbar"

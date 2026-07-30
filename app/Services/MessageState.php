@@ -1,15 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services;
 
-use Illuminate\Contracts\Session\Session;
 use Illuminate\Support\Str;
 
 final class MessageState
 {
-    private const SESSION_KEY = 'messaging.state.v1';
+    private const STATE_NAMESPACE = 'messaging.state.v1';
 
-    public function __construct(private readonly Session $session) {}
+    public function __construct(private readonly PersistentStateStore $states) {}
 
     /**
      * @return array<string, mixed>
@@ -97,7 +98,7 @@ final class MessageState
         if ($status === 'accepted') {
             $state['messages'][] = $this->newMessage(
                 conversation: $conversation,
-                body: 'Message request accepted. You can now share messages and request a call.',
+                body: __('messages.message_request_accepted_you_can_now_share_messages_and__474a282278'),
                 type: 'system',
                 mine: false,
             );
@@ -237,7 +238,7 @@ final class MessageState
             'microphone' => true,
             'camera' => $type === 'video',
             'captions' => false,
-            'quality' => 'Checking connection',
+            'quality' => __('messages.checking_connection_537585d95f'),
         ];
         $this->store($state);
     }
@@ -252,12 +253,12 @@ final class MessageState
         }
 
         $call = match ($control) {
-            'join' => [...$call, 'status' => 'connected', 'quality' => 'Connection stable'],
+            'join' => [...$call, 'status' => 'connected', 'quality' => __('messages.connection_stable_0fc2aaa131')],
             'microphone' => [...$call, 'microphone' => ! $call['microphone']],
             'camera' => [...$call, 'camera' => ! $call['camera']],
             'captions' => [...$call, 'captions' => ! $call['captions']],
-            'audio-only' => [...$call, 'type' => 'audio', 'camera' => false, 'quality' => 'Audio only'],
-            'reconnect' => [...$call, 'status' => 'connected', 'quality' => 'Reconnected'],
+            'audio-only' => [...$call, 'type' => 'audio', 'camera' => false, 'quality' => __('messages.audio_only_224b45b631')],
+            'reconnect' => [...$call, 'status' => 'connected', 'quality' => __('messages.reconnected_20a447dbc6')],
             default => $call,
         };
 
@@ -298,7 +299,7 @@ final class MessageState
         if (in_array($id, $state['deleted_everyone'], true)) {
             return [
                 ...$message,
-                'body' => 'Message deleted',
+                'body' => __('messages.message_deleted_7e94d4b9a4'),
                 'type' => 'deleted',
                 'meta' => null,
                 'reply' => null,
@@ -320,7 +321,7 @@ final class MessageState
      */
     private function state(): array
     {
-        return $this->session->get(self::SESSION_KEY, [
+        return $this->states->get(self::STATE_NAMESPACE, [
             'conversations' => [],
             'requests' => ['luna-request' => 'pending'],
             'messages' => [],
@@ -342,7 +343,7 @@ final class MessageState
      */
     private function store(array $state): void
     {
-        $this->session->put(self::SESSION_KEY, $state);
+        $this->states->put(self::STATE_NAMESPACE, $state);
     }
 
     /**
@@ -358,8 +359,8 @@ final class MessageState
         return [
             'id' => $id ?? 'system-'.Str::lower(Str::random(10)),
             'conversation' => $conversation,
-            'sender' => $mine ? 'Mia Carter' : 'PawCircle',
-            'time' => 'Now',
+            'sender' => $mine ? __('messages.mia_carter_0e5b29cc3b') : __('messages.brand_name'),
+            'time' => __('messages.now_fe18013d93'),
             'datetime' => now()->toAtomString(),
             'body' => $body,
             'mine' => $mine,
@@ -367,7 +368,9 @@ final class MessageState
             'meta' => null,
             'reply' => null,
             'edited' => false,
-            'status' => $mine ? 'Sent' : 'Delivered',
+            'status' => $mine
+                ? __('messages.message.sent')
+                : __('messages.message.delivered'),
             'reactions' => [],
         ];
     }
@@ -375,14 +378,14 @@ final class MessageState
     private function messageMeta(string $type): ?string
     {
         return match ($type) {
-            'audio' => 'Audio message · 0:18 · transcript requested',
-            'image' => 'Photo · location metadata removed',
-            'video' => 'Video · captions can be added',
-            'file' => 'Document · virus scan required before download',
-            'pet' => 'Pet profile card · public fields only',
-            'place' => 'Place card · exact home location excluded',
-            'event' => 'Event card · registration status private',
-            'task' => 'Shared task · awaiting owner',
+            'audio' => __('messages.audio_message_0_18_transcript_requested_84dedac6db'),
+            'image' => __('messages.photo_location_metadata_removed_ae2cf1fc7f'),
+            'video' => __('messages.video_captions_can_be_added_49b10f94a3'),
+            'file' => __('messages.document_virus_scan_required_before_download_2fa77c9312'),
+            'pet' => __('messages.pet_profile_card_public_fields_only_ed899af941'),
+            'place' => __('messages.place_card_exact_home_location_excluded_fbc22c1fa7'),
+            'event' => __('messages.event_card_registration_status_private_4ec236ba31'),
+            'task' => __('messages.shared_task_awaiting_owner_9df29e4ca5'),
             default => null,
         };
     }

@@ -1,28 +1,28 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Policies;
 
 use App\Models\MedicalRecord;
 use App\Models\User;
-use App\Services\ForumActor;
 
 class MedicalRecordPolicy
 {
-    public function __construct(private readonly ForumActor $actor) {}
-
     public function viewAny(?User $user): bool
     {
-        return true;
+        return $user?->isActive() === true;
     }
 
     public function view(?User $user, MedicalRecord $medicalRecord): bool
     {
-        return $medicalRecord->isOwnedBy($this->actor->key());
+        return $user?->isActive() === true
+            && $medicalRecord->isOwnedBy($user->actor_key);
     }
 
     public function create(?User $user): bool
     {
-        return true;
+        return $user?->isActive() === true;
     }
 
     public function update(?User $user, MedicalRecord $medicalRecord): bool

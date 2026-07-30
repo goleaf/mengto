@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services;
 
 use App\Enums\MedicalEventType;
@@ -27,6 +29,7 @@ class MedicalRecordPresenter
         private readonly ProfilePresenter $profiles,
         private readonly ForumActor $actor,
         private readonly QrCodeGenerator $qrCodes,
+        private readonly LocaleFormatter $formatter,
     ) {}
 
     /** @return array<string, mixed> */
@@ -51,7 +54,7 @@ class MedicalRecordPresenter
         $records->through(fn (MedicalRecord $record): array => $this->recordCard($record));
 
         return [
-            ...$this->page('Pet health records', 'health'),
+            ...$this->page(__('messages.pet_health_records_911c3e19be'), 'health'),
             'records' => $records,
         ];
     }
@@ -76,7 +79,7 @@ class MedicalRecordPresenter
             ->all();
 
         return [
-            ...$this->page('Create a private health record', 'health'),
+            ...$this->page(__('messages.create_a_private_health_record_78b6de7a5e'), 'health'),
             'pet_options' => $options,
             'timezone' => 'Europe/Vilnius',
         ];
@@ -205,7 +208,7 @@ class MedicalRecordPresenter
                 'action' => Str::headline(str($log->action)->after('medical-access.')->toString()),
                 'actor' => $log->actor_key,
                 'role' => Str::headline($log->actor_role),
-                'time' => $log->created_at?->format('M j · H:i'),
+                'time' => $this->formatter->dateTime($log->created_at),
                 'sections' => $log->metadata['sections'] ?? [],
             ])->all(),
             'entry_options' => $manage ? $this->entryOptions() : [],
@@ -226,13 +229,13 @@ class MedicalRecordPresenter
             ->get();
 
         return [
-            ...$this->page('Emergency card · '.$record->pet_name, 'health'),
+            ...$this->page(__('presentation.emergency_card_for', ['pet' => $record->pet_name]), 'health'),
             'medical_record' => $this->emergencyCard($record),
             'medications' => $medications
                 ->map(fn (Medication $medication): array => $this->medication($medication))
                 ->all(),
             'qr_code' => $this->qrCodes->dataUri($url),
-            'updated_label' => $record->updated_at?->format('M j, Y · H:i'),
+            'updated_label' => $this->formatter->dateTime($record->updated_at),
         ];
     }
 
@@ -242,14 +245,14 @@ class MedicalRecordPresenter
         $record = $grant->medicalRecord;
         $sections = $grant->sections ?? [];
         $data = [
-            ...$this->page($record->pet_name.' · Shared health record', 'health'),
+            ...$this->page(__('presentation.shared_health_record_for', ['pet' => $record->pet_name]), 'health'),
             'grant' => [
                 'label' => $grant->label,
                 'recipient_name' => $grant->recipient_name,
                 'recipient_role' => Str::headline($grant->recipient_role),
                 'sections' => $sections,
-                'expires_at' => $grant->expires_at?->format('M j, Y · H:i'),
-                'views_remaining' => max(0, $grant->max_views - $grant->views_used),
+                'expires_at' => $this->formatter->dateTime($grant->expires_at),
+                'views_remaining' => $this->formatter->number(max(0, $grant->max_views - $grant->views_used)),
                 'allow_download' => $grant->allow_download,
             ],
             'medical_record' => $this->sharedSummary($record, $sections),
@@ -352,7 +355,7 @@ class MedicalRecordPresenter
     {
         return [
             'owner' => $this->profiles->owner(),
-            'page_title' => $title.' | PawCircle',
+            'page_title' => __('presentation.brand_title', ['title' => $title]),
             'active_section' => $section,
         ];
     }
@@ -367,12 +370,13 @@ class MedicalRecordPresenter
             'breed' => $record->breed,
             'image_url' => $record->image_url,
             'current_weight' => $this->weightLabel($record->current_weight_grams, $record->species),
-            'last_visit' => $record->last_visit_at?->format('M j, Y') ?? 'No visit recorded',
-            'next_appointment' => $record->next_appointment_at?->format('M j · H:i'),
+            'last_visit' => $this->formatter->date($record->last_visit_at)
+                ?? __('presentation.no_visit_recorded'),
+            'next_appointment' => $this->formatter->dateTime($record->next_appointment_at),
             'active_medications_count' => (int) ($record->active_medications_count ?? 0),
             'upcoming_reminders_count' => (int) ($record->upcoming_reminders_count ?? 0),
             'documents_count' => (int) ($record->documents_count ?? 0),
-            'updated_label' => $record->updated_at?->diffForHumans(),
+            'updated_label' => $this->formatter->relative($record->updated_at),
         ];
     }
 
@@ -382,10 +386,14 @@ class MedicalRecordPresenter
         return [
             ...$this->recordCard($record),
             'pet_profile_key' => $record->pet_profile_key,
-            'birth_date' => $record->birth_date?->format('M j, Y'),
+            'birth_date' => $this->formatter->date($record->birth_date),
             'birth_date_estimated' => $record->birth_date_estimated,
-            'age' => $record->birth_date ? $record->birth_date->age.' years' : 'Unknown',
-            'sex' => $record->sex ? Str::headline($record->sex) : 'Unknown',
+            'age' => $record->birth_date
+                ? trans_choice('presentation.years_count', $record->birth_date->age, [
+                    'count' => $this->formatter->number($record->birth_date->age),
+                ])
+                : __('presentation.unknown'),
+            'sex' => $record->sex ? Str::headline($record->sex) : __('presentation.unknown'),
             'reproductive_status' => Str::headline($record->reproductive_status),
             'privacy' => Str::headline($record->privacy),
             'microchip_status' => Str::headline($record->microchip_status),
@@ -411,7 +419,11 @@ class MedicalRecordPresenter
             'pet_name' => $record->pet_name,
             'species' => Str::headline($record->species),
             'breed' => $record->breed,
-            'age' => $record->birth_date ? $record->birth_date->age.' years' : 'Unknown',
+            'age' => $record->birth_date
+                ? trans_choice('presentation.years_count', $record->birth_date->age, [
+                    'count' => $this->formatter->number($record->birth_date->age),
+                ])
+                : __('presentation.unknown'),
             'current_weight' => $this->weightLabel($record->current_weight_grams, $record->species),
             'image_url' => $record->image_url,
             'critical_allergies' => $record->critical_allergies ?? [],
@@ -467,7 +479,7 @@ class MedicalRecordPresenter
             'type_label' => $event->type->label(),
             'icon' => $event->type->icon(),
             'title' => $event->title,
-            'occurred_at' => $event->occurred_at?->format('M j, Y · H:i'),
+            'occurred_at' => $this->formatter->dateTime($event->occurred_at),
             'status' => Str::headline($event->status),
             'source' => $event->source_type->label(),
             'source_name' => $event->source_name,
@@ -475,7 +487,7 @@ class MedicalRecordPresenter
             'verification_tone' => $event->verification_status->tone(),
             'summary' => $event->summary,
             'details' => $event->details ?? [],
-            'follow_up' => $event->follow_up_at?->format('M j, Y · H:i'),
+            'follow_up' => $this->formatter->dateTime($event->follow_up_at),
             'is_critical' => $event->is_critical,
         ];
     }
@@ -500,8 +512,8 @@ class MedicalRecordPresenter
             'name' => $vaccination->name,
             'manufacturer' => $vaccination->manufacturer,
             'lot_number' => $vaccination->lot_number,
-            'administered_on' => $vaccination->administered_on?->format('M j, Y'),
-            'next_due_on' => $vaccination->next_due_on?->format('M j, Y'),
+            'administered_on' => $this->formatter->date($vaccination->administered_on),
+            'next_due_on' => $this->formatter->date($vaccination->next_due_on),
             'status' => $status->value,
             'status_label' => $status->label(),
             'clinic_name' => $vaccination->clinic_name,
@@ -516,7 +528,7 @@ class MedicalRecordPresenter
     {
         return [
             'id' => $weight->id,
-            'measured_at' => $weight->measured_at?->format('M j, Y · H:i'),
+            'measured_at' => $this->formatter->dateTime($weight->measured_at),
             'weight' => $this->weightLabel($weight->weight_grams, $record->species),
             'weight_grams' => $weight->weight_grams,
             'source' => $weight->source_type->label(),
@@ -543,9 +555,9 @@ class MedicalRecordPresenter
             'dose' => $medication->dose,
             'route' => $medication->route,
             'schedule' => $medication->schedule_text,
-            'starts_on' => $medication->starts_on?->format('M j, Y'),
-            'ends_on' => $medication->ends_on?->format('M j, Y'),
-            'next_dose_at' => $medication->next_dose_at?->format('M j · H:i'),
+            'starts_on' => $this->formatter->date($medication->starts_on),
+            'ends_on' => $this->formatter->date($medication->ends_on),
+            'next_dose_at' => $this->formatter->dateTime($medication->next_dose_at),
             'next_dose_value' => $medication->next_dose_at?->format('Y-m-d H:i:s'),
             'status' => $medication->status->value,
             'status_label' => $medication->status->label(),
@@ -555,7 +567,10 @@ class MedicalRecordPresenter
             'instructions' => $medication->instructions,
             'is_high_risk' => $medication->is_high_risk,
             'remaining' => $medication->remaining_quantity !== null
-                ? rtrim(rtrim($medication->remaining_quantity, '0'), '.').' '.$medication->remaining_unit
+                ? __('presentation.measurement', [
+                    'value' => $this->formatter->number((float) $medication->remaining_quantity, 4),
+                    'unit' => $medication->remaining_unit,
+                ])
                 : null,
             'verification' => $medication->verification_status->label(),
             'can_record_dose' => $medication->status->isDoseable(),
@@ -563,8 +578,8 @@ class MedicalRecordPresenter
             'latest_dose' => $latestDose instanceof MedicationDose ? [
                 'status' => $latestDose->status->label(),
                 'prevents_repeat' => $latestDose->status->preventsRepeat(),
-                'scheduled_for' => $latestDose->scheduled_for?->format('M j · H:i'),
-                'administered_at' => $latestDose->administered_at?->format('M j · H:i'),
+                'scheduled_for' => $this->formatter->dateTime($latestDose->scheduled_for),
+                'administered_at' => $this->formatter->dateTime($latestDose->administered_at),
                 'administered_by' => $latestDose->administered_by_name,
             ] : null,
         ];
@@ -577,8 +592,8 @@ class MedicalRecordPresenter
             'id' => $reminder->id,
             'type' => Str::headline($reminder->type),
             'title' => $reminder->title,
-            'due_at' => $reminder->due_at?->format('M j, Y · H:i'),
-            'due_relative' => $reminder->due_at?->diffForHumans(),
+            'due_at' => $this->formatter->dateTime($reminder->due_at),
+            'due_relative' => $this->formatter->relative($reminder->due_at),
             'priority' => Str::headline($reminder->priority),
             'status' => $reminder->status->value,
             'status_label' => $reminder->status->label(),
@@ -595,12 +610,14 @@ class MedicalRecordPresenter
             'title' => $document->title,
             'original_name' => $document->original_name,
             'mime_type' => $document->mime_type,
-            'size' => number_format($document->size_bytes / 1024, 1).' KB',
+            'size' => __('presentation.kilobytes', [
+                'count' => $this->formatter->number($document->size_bytes / 1024, 1),
+            ]),
             'source' => $document->source_type->label(),
             'source_name' => $document->source_name,
             'verification' => $document->verification_status->label(),
-            'expires_on' => $document->expires_on?->format('M j, Y'),
-            'created_at' => $document->created_at?->format('M j, Y'),
+            'expires_on' => $this->formatter->date($document->expires_on),
+            'created_at' => $this->formatter->date($document->created_at),
             'download_url' => route('medical-records.documents.download', [
                 'medicalRecord' => $record,
                 'medicalDocument' => $document,
@@ -621,13 +638,18 @@ class MedicalRecordPresenter
             'sections' => collect($grant->sections)->map(fn (string $section): string => Str::headline($section))->all(),
             'allow_download' => $grant->allow_download,
             'allow_edit' => $grant->allow_edit,
-            'views' => $grant->views_used.' / '.$grant->max_views,
-            'expires_at' => $grant->expires_at?->format('M j, Y · H:i'),
-            'last_opened_at' => $grant->last_opened_at?->format('M j · H:i'),
+            'views' => __('presentation.value_of_total', [
+                'value' => $this->formatter->number($grant->views_used),
+                'total' => $this->formatter->number($grant->max_views),
+            ]),
+            'expires_at' => $this->formatter->dateTime($grant->expires_at),
+            'last_opened_at' => $this->formatter->dateTime($grant->last_opened_at),
             'active' => $active,
             'status' => $grant->revoked_at !== null
-                ? 'Revoked'
-                : ($grant->expires_at?->isPast() ? 'Expired' : ($active ? 'Active' : 'View limit reached')),
+                ? __('presentation.revoked')
+                : ($grant->expires_at?->isPast()
+                    ? __('presentation.expired')
+                    : ($active ? __('presentation.active') : __('presentation.view_limit_reached'))),
             'revoke_url' => route('medical-records.access.revoke', [
                 'medicalRecord' => $record,
                 'medicalAccessGrant' => $grant,
@@ -648,7 +670,7 @@ class MedicalRecordPresenter
                 'points' => [],
                 'minimum' => null,
                 'maximum' => null,
-                'trend' => 'Not enough data',
+                'trend' => __('presentation.not_enough_data'),
             ];
         }
 
@@ -664,13 +686,13 @@ class MedicalRecordPresenter
                 'x' => round($x, 2),
                 'y' => round($y, 2),
                 'label' => $this->weightLabel($weight->weight_grams, $record->species),
-                'date' => $weight->measured_at?->format('M j'),
+                'date' => $this->formatter->monthDay($weight->measured_at),
             ];
         });
 
-        $first = $weights->first()?->weight_grams;
-        $last = $weights->last()?->weight_grams;
-        $delta = ($first !== null && $last !== null) ? $last - $first : 0;
+        $first = $weights->first()->weight_grams;
+        $last = $weights->last()->weight_grams;
+        $delta = $last - $first;
 
         return [
             'has_data' => true,
@@ -679,9 +701,13 @@ class MedicalRecordPresenter
             'minimum' => $this->weightLabel($minimum, $record->species),
             'maximum' => $this->weightLabel($maximum, $record->species),
             'trend' => match (true) {
-                abs($delta) < 50 => 'Stable across this period',
-                $delta > 0 => 'Up '.$this->weightLabel(abs($delta), 'small'),
-                default => 'Down '.$this->weightLabel(abs($delta), 'small'),
+                abs($delta) < 50 => __('presentation.stable_across_period'),
+                $delta > 0 => __('presentation.trend_up', [
+                    'value' => $this->weightLabel(abs($delta), 'small'),
+                ]),
+                default => __('presentation.trend_down', [
+                    'value' => $this->weightLabel(abs($delta), 'small'),
+                ]),
             },
         ];
     }
@@ -703,14 +729,14 @@ class MedicalRecordPresenter
                 ->mapWithKeys(fn (MedicationDoseStatus $status): array => [$status->value => $status->label()])
                 ->all(),
             'share_sections' => [
-                'summary' => 'Health summary',
-                'emergency' => 'Emergency instructions',
-                'timeline' => 'Medical timeline',
-                'medications' => 'Active medications',
-                'vaccinations' => 'Vaccinations',
-                'weight' => 'Weight history',
-                'documents' => 'Documents',
-                'reminders' => 'Upcoming reminders',
+                'summary' => __('messages.health_summary_0550871563'),
+                'emergency' => __('messages.emergency_instructions_136f946766'),
+                'timeline' => __('messages.medical_timeline_81bce0a0b8'),
+                'medications' => __('messages.active_medications_2a3bd50cbe'),
+                'vaccinations' => __('messages.vaccinations_ed3861e631'),
+                'weight' => __('messages.weight_history_a1ea27c673'),
+                'documents' => __('messages.documents_b4e929d8bc'),
+                'reminders' => __('messages.upcoming_reminders_2ca835d9e9'),
             ],
         ];
     }
@@ -718,13 +744,17 @@ class MedicalRecordPresenter
     private function weightLabel(?int $grams, string $species): string
     {
         if ($grams === null) {
-            return 'Not recorded';
+            return __('presentation.not_recorded');
         }
 
         if ($grams < 1000 || in_array($species, ['bird', 'rodent', 'small'], true)) {
-            return number_format($grams).' g';
+            return __('presentation.grams', [
+                'count' => $this->formatter->number($grams),
+            ]);
         }
 
-        return number_format($grams / 1000, 2).' kg';
+        return __('presentation.kilograms', [
+            'count' => $this->formatter->number($grams / 1000, 2),
+        ]);
     }
 }

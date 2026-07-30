@@ -65,11 +65,11 @@ class StoreSearchCaseRequest extends FormRequest
         return [
             function (Validator $validator) use ($safety): void {
                 if ($this->string('type')->toString() === 'lost' && blank($this->input('pet_profile_key'))) {
-                    $validator->errors()->add('pet_profile_key', 'Choose the pet profile for a missing-pet search.');
+                    $validator->errors()->add('pet_profile_key', __('messages.choose_the_pet_profile_for_a_missing_pet_search_b22b0b96d2'));
                 }
 
                 if ($this->string('contact_channel')->toString() !== 'platform' && blank($this->input('contact_value'))) {
-                    $validator->errors()->add('contact_value', 'Add the protected contact value.');
+                    $validator->errors()->add('contact_value', __('messages.add_the_protected_contact_value_aa102be0b3'));
                 }
 
                 $assessment = $safety->assessCase($this->all());
@@ -77,7 +77,7 @@ class StoreSearchCaseRequest extends FormRequest
                     if (in_array($flag, ['sensitive-payment-data', 'threat-language'], true)) {
                         $validator->errors()->add(
                             'description',
-                            'Remove payment codes, threats, or other unsafe details before publishing.',
+                            __('messages.remove_payment_codes_threats_or_other_unsafe_details_bef_76f50669e4'),
                         );
                     }
                 }

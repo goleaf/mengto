@@ -1,10 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Actions;
 
 use App\Enums\CareEntryStatus;
 use App\Enums\CareEntryType;
 use App\Enums\CareSourceType;
+use App\Enums\CareSyncStatus;
 use App\Enums\CareTaskStatus;
 use App\Models\AuditLog;
 use App\Models\CareEntry;
@@ -49,7 +52,7 @@ class CreateCareEntry
                 if ($existing !== null) {
                     if ($existing->care_journal_id !== $journal->id) {
                         throw ValidationException::withMessages([
-                            'idempotency_key' => 'This submission key is already in use.',
+                            'idempotency_key' => __('messages.this_submission_key_is_already_in_use_dae6feeffb'),
                         ]);
                     }
 
@@ -67,7 +70,7 @@ class CreateCareEntry
 
                 if ($lockedJournal->status !== 'active') {
                     throw ValidationException::withMessages([
-                        'entry_type' => 'This care journal is not active.',
+                        'entry_type' => __('messages.this_care_journal_is_not_active_8c3a076094'),
                     ]);
                 }
 
@@ -76,10 +79,26 @@ class CreateCareEntry
                 $source = CareSourceType::from(
                     $contributor === null ? $data['source_type'] : $contributor['role'],
                 );
+                $sourceTimezone = (string) (($data['source_timezone'] ?? null) ?: $lockedJournal->timezone);
                 $startedAt = CarbonImmutable::parse(
                     (string) $data['started_at'],
-                    $lockedJournal->timezone,
-                );
+                    $sourceTimezone,
+                )->utc();
+                $endedAt = ($data['ended_at'] ?? null) === null
+                    ? null
+                    : CarbonImmutable::parse(
+                        (string) $data['ended_at'],
+                        $sourceTimezone,
+                    )->utc();
+                $sourceRecordedAt = ($data['source_recorded_at'] ?? null) === null
+                    ? CarbonImmutable::now('UTC')
+                    : CarbonImmutable::parse(
+                        (string) $data['source_recorded_at'],
+                        $sourceTimezone,
+                    )->utc();
+                $syncStatus = (bool) ($data['submitted_offline'] ?? false)
+                    ? CareSyncStatus::Synchronized
+                    : CareSyncStatus::Direct;
                 $task = $this->task($lockedJournal, $data['care_task_id'] ?? null);
 
                 $this->guardDuplicateFeeding(
@@ -101,8 +120,14 @@ class CreateCareEntry
                     'type' => $type,
                     'subtype' => $data['subtype'] ?? null,
                     'started_at' => $startedAt,
-                    'ended_at' => $data['ended_at'] ?? null,
+                    'ended_at' => $endedAt,
                     'timezone' => $lockedJournal->timezone,
+                    'source_recorded_at' => $sourceRecordedAt,
+                    'source_timezone' => $sourceTimezone,
+                    'sync_status' => $syncStatus,
+                    'synchronized_at' => $syncStatus === CareSyncStatus::Synchronized
+                        ? CarbonImmutable::now('UTC')
+                        : null,
                     'status' => $status,
                     'source_type' => $source,
                     'source_name' => $data['source_name'] ?: $identity['name'],
@@ -153,6 +178,8 @@ class CreateCareEntry
                         'source_type' => $source->value,
                         'task_id' => $task?->id,
                         'has_media' => $storedPath !== null,
+                        'sync_status' => $syncStatus->value,
+                        'source_timezone' => $sourceTimezone,
                     ],
                 ]);
 
@@ -183,13 +210,13 @@ class CreateCareEntry
 
         if ($task->care_journal_id !== $journal->id) {
             throw ValidationException::withMessages([
-                'care_task_id' => 'This task does not belong to the selected care journal.',
+                'care_task_id' => __('messages.this_task_does_not_belong_to_the_selected_care_journal_62cdb67e40'),
             ]);
         }
 
         if (! $task->status->isOpen()) {
             throw ValidationException::withMessages([
-                'care_task_id' => 'This task has already been handled.',
+                'care_task_id' => __('messages.this_task_has_already_been_handled_bdf94378ba'),
             ]);
         }
 
@@ -225,10 +252,10 @@ class CreateCareEntry
         if ($recent !== null) {
             throw ValidationException::withMessages([
                 'confirm_duplicate' => sprintf(
-                    '%s was already marked as fed by %s at %s. Confirm only if this is a separate feeding.',
-                    $journal->pet_name,
-                    $recent->author_name,
-                    $recent->started_at?->format('H:i'),
+                    (string) __('messages.care_feeding_duplicate'),
+                    (string) $journal->pet_name,
+                    (string) $recent->author_name,
+                    (string) $recent->started_at?->format('H:i'),
                 ),
             ]);
         }

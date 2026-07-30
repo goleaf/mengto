@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use App\Enums\MedicalReminderStatus;
@@ -8,7 +10,28 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
+/**
+ * @property Carbon|null $confirmed_at
+ * @property string|null $confirmed_by_key
+ * @property Carbon|null $created_at
+ * @property string $created_by_key
+ * @property Carbon $due_at
+ * @property int $id
+ * @property string|null $instructions
+ * @property-read MedicalRecord|null $medicalRecord
+ * @property int $medical_record_id
+ * @property string $priority
+ * @property array<array-key, mixed>|null $recipients
+ * @property int|null $related_id
+ * @property string|null $related_type
+ * @property MedicalReminderStatus $status
+ * @property string $timezone
+ * @property string $title
+ * @property string $type
+ * @property Carbon|null $updated_at
+ */
 class MedicalReminder extends Model
 {
     /** @use HasFactory<MedicalReminderFactory> */
@@ -33,6 +56,7 @@ class MedicalReminder extends Model
         ];
     }
 
+    /** @return BelongsTo<\App\Models\MedicalRecord, $this>*/
     public function medicalRecord(): BelongsTo
     {
         return $this->belongsTo(MedicalRecord::class);

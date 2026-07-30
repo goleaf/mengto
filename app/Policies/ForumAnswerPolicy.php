@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Policies;
 
 use App\Models\ForumAnswer;
@@ -28,7 +30,7 @@ class ForumAnswerPolicy
      */
     public function create(?User $user): bool
     {
-        return true;
+        return $user?->isActive() === true;
     }
 
     /**
@@ -36,7 +38,8 @@ class ForumAnswerPolicy
      */
     public function update(?User $user, ForumAnswer $forumAnswer): bool
     {
-        return $forumAnswer->author_key === 'mia-carter';
+        return $user?->isActive() === true
+            && $forumAnswer->author_key === $user->actor_key;
     }
 
     /**
@@ -44,7 +47,7 @@ class ForumAnswerPolicy
      */
     public function delete(?User $user, ForumAnswer $forumAnswer): bool
     {
-        return $forumAnswer->author_key === 'mia-carter';
+        return $this->update($user, $forumAnswer);
     }
 
     /**

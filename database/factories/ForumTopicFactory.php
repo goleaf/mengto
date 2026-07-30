@@ -1,18 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories;
 
 use App\Enums\ForumTopicStatus;
 use App\Enums\ForumTopicType;
 use App\Enums\ForumVisibility;
 use App\Models\ForumTopic;
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
 /**
- * @extends Factory<ForumTopic>
+ * @extends ApplicationFactory<ForumTopic>
  */
-class ForumTopicFactory extends Factory
+class ForumTopicFactory extends ApplicationFactory
 {
     /**
      * Define the model's default state.

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Enums;
 
 enum DeviceCommandStatus: string
@@ -15,16 +17,7 @@ enum DeviceCommandStatus: string
 
     public function label(): string
     {
-        return match ($this) {
-            self::Created => 'Created',
-            self::Sent => 'Sent',
-            self::Delivered => 'Delivered',
-            self::Accepted => 'Accepted',
-            self::Completed => 'Completed',
-            self::Failed => 'Failed',
-            self::Expired => 'Expired',
-            self::Unknown => 'Result unknown',
-        };
+        return __("devices.command_status.{$this->value}");
     }
 
     public function isFinal(): bool

@@ -139,9 +139,9 @@ class ExpertTaxonomy
     public function petData(): array
     {
         return [
-            'scout' => ['name' => 'Scout', 'species' => 'dog', 'age' => '4 years'],
-            'nori' => ['name' => 'Nori', 'species' => 'cat', 'age' => '2 years'],
-            'kesha' => ['name' => 'Kesha', 'species' => 'bird', 'age' => '2 years'],
+            'scout' => ['name' => __('messages.scout_8a1db462be'), 'species' => 'dog', 'age' => __('messages.4_years_cfd73a0bc4')],
+            'nori' => ['name' => __('messages.nori_a64203ba20'), 'species' => 'cat', 'age' => __('messages.2_years_7dab2372ff')],
+            'kesha' => ['name' => __('messages.kesha_b8b1fc4ca7'), 'species' => 'bird', 'age' => __('messages.2_years_7dab2372ff')],
         ];
     }
 }

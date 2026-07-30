@@ -1,17 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories;
 
 use App\Enums\DeviceConfidence;
 use App\Models\DeviceReading;
 use App\Models\SmartDevice;
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
 /**
- * @extends Factory<DeviceReading>
+ * @extends ApplicationFactory<DeviceReading>
  */
-class DeviceReadingFactory extends Factory
+class DeviceReadingFactory extends ApplicationFactory
 {
     /**
      * Define the model's default state.

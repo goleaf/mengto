@@ -1,17 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Policies;
 
 use App\Enums\ListingStatus;
 use App\Models\Listing;
 use App\Models\Reservation;
 use App\Models\User;
-use App\Services\ForumActor;
 
 class ListingPolicy
 {
-    public function __construct(private readonly ForumActor $actor) {}
-
     public function viewAny(?User $user): bool
     {
         return true;
@@ -19,7 +18,7 @@ class ListingPolicy
 
     public function view(?User $user, Listing $listing): bool
     {
-        return $listing->owner_key === $this->actor->key()
+        return ($user?->isActive() === true && $listing->owner_key === $user->actor_key)
             || in_array($listing->status, [
                 ListingStatus::Published,
                 ListingStatus::Reserved,
@@ -29,29 +28,32 @@ class ListingPolicy
 
     public function create(?User $user): bool
     {
-        return true;
+        return $user?->isActive() === true;
     }
 
     public function update(?User $user, Listing $listing): bool
     {
-        return $listing->owner_key === $this->actor->key();
+        return $user?->isActive() === true
+            && $listing->owner_key === $user->actor_key;
     }
 
     public function delete(?User $user, Listing $listing): bool
     {
-        return $listing->owner_key === $this->actor->key();
+        return $this->update($user, $listing);
     }
 
     public function reserve(?User $user, Listing $listing): bool
     {
-        return $listing->owner_key !== $this->actor->key()
+        return $user?->isActive() === true
+            && $listing->owner_key !== $user->actor_key
             && $listing->status === ListingStatus::Published;
     }
 
     public function cancelReservation(?User $user, Listing $listing, Reservation $reservation): bool
     {
         return $reservation->listing_id === $listing->id
-            && $reservation->requester_key === $this->actor->key();
+            && $user?->isActive() === true
+            && $reservation->requester_key === $user->actor_key;
     }
 
     public function restore(?User $user, Listing $listing): bool

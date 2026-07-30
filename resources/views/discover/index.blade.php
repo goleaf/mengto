@@ -1,4 +1,4 @@
-<x-app-shell :owner="$owner" title="Discover | PawCircle" active-section="discover">
+<x-app-shell :owner="$owner" title="{{ __('ui.discover_brand_b18e6020d1') }}" active-section="discover">
     <x-page-stack>
         <x-page-header
             :eyebrow="$summary['eyebrow']"
@@ -23,24 +23,24 @@
             <x-slot:sidebar>
                 <x-content-panel
                     section="discover-pulse"
-                    eyebrow="Local pulse"
-                    title="Around you now"
+                    eyebrow="{{ __('ui.local_pulse_617ee5b089') }}"
+                    title="{{ __('ui.around_you_now_57b5d36d0f') }}"
                     size="compact"
                 >
                     <x-metric-list
                         :items="$pulse"
-                        empty="Local activity unavailable."
+                        empty="{{ __('ui.local_activity_unavailable_8c8c11ec3d') }}"
                     />
                 </x-content-panel>
 
                 <x-content-panel
                     section="discover-trending"
-                    eyebrow="Popular this week"
-                    title="Topics nearby"
+                    eyebrow="{{ __('ui.popular_this_week_4c021c3e7c') }}"
+                    title="{{ __('ui.topics_nearby_af5fe4f48a') }}"
                     size="compact"
                     tone="coral"
                 >
-                    <x-ranked-list :items="$trending" empty="No trending topics." />
+                    <x-ranked-list :items="$trending" empty="{{ __('ui.no_trending_topics_83742bc18b') }}" />
                 </x-content-panel>
 
                 <x-promo-card :item="$weekend" section="discover-weekend" />

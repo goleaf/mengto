@@ -1,5 +1,7 @@
 # Pet Friendships MVP Design
 
+> Product design source. Preserve its domain detail; current production, security, persistence, and verification requirements are governed by `docs/index.md`.
+
 ## Product Boundary
 
 Pet friendship is a two-sided relationship between two pet profiles. A person always performs the action on behalf of a pet, and every request identifies both the acting owner and the source pet. Following remains separate and never creates friendship automatically.

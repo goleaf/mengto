@@ -25,7 +25,7 @@ class CreateCareJournal
 
             if ($pet === null) {
                 throw ValidationException::withMessages([
-                    'pet_profile_key' => 'Choose a pet profile you manage.',
+                    'pet_profile_key' => __('messages.choose_a_pet_profile_you_manage_de4a79e7f0'),
                 ]);
             }
 
@@ -34,7 +34,7 @@ class CreateCareJournal
                 ->where('pet_profile_key', $pet['slug'])
                 ->exists()) {
                 throw ValidationException::withMessages([
-                    'pet_profile_key' => 'This pet already has a care journal.',
+                    'pet_profile_key' => __('messages.this_pet_already_has_a_care_journal_84e3fec126'),
                 ]);
             }
 

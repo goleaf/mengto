@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Enums;
 
 enum DeviceType: string
@@ -17,18 +19,7 @@ enum DeviceType: string
 
     public function label(): string
     {
-        return match ($this) {
-            self::GpsTracker => 'GPS tracker',
-            self::ActivityTracker => 'Activity tracker',
-            self::Feeder => 'Smart feeder',
-            self::Waterer => 'Smart waterer',
-            self::Camera => 'Pet camera',
-            self::LitterBox => 'Smart litter box',
-            self::Scale => 'Connected scale',
-            self::TemperatureSensor => 'Temperature sensor',
-            self::HumiditySensor => 'Humidity sensor',
-            self::SmartDoor => 'Smart pet door',
-        };
+        return __("devices.type.{$this->value}");
     }
 
     public function icon(): string

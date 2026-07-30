@@ -14,7 +14,7 @@
             :section="$content['section'].'-hero'"
             :primary-label="$content['primary']['label']"
             :primary-icon="$content['primary']['icon']"
-            secondary-label="Share"
+            secondary-label="{{ __('ui.share_29887a5ff9') }}"
             secondary-icon="send"
             :summary-label="$content['summary_label']"
             :summary-icons="$content['summary_icons']"
@@ -46,8 +46,8 @@
         </x-content-panel>
 
         <x-content-panel
-            eyebrow="Good first steps"
-            title="Help the connection start well"
+            eyebrow="{{ __('ui.good_first_steps_0106c7c32c') }}"
+            title="{{ __('ui.help_the_connection_start_well_70bcf76846') }}"
             :section="$content['section'].'-guidance'"
         >
             <x-icon-list :items="$content['guidance']" class="section-body" />
@@ -56,7 +56,7 @@
 
     <x-slot:sidebar>
         <x-content-panel
-            title="At a glance"
+            title="{{ __('ui.at_a_glance_46b396c859') }}"
             :section="$content['section'].'-facts'"
         >
             <x-definition-list :items="$content['facts']" strong class="section-body" />

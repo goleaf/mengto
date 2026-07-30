@@ -20,7 +20,7 @@ class CareAccessStoreController extends Controller
         $url = route('care-access.show', ['token' => $result['token']]);
 
         return to_route('care-journals.manage', $careJournal)
-            ->with('feedback', 'Temporary care access created. The link is shown once and expires automatically.')
+            ->with('feedback', __('messages.temporary_care_access_created_the_link_is_shown_once_and_cd59ec5baf'))
             ->with('care_access_url', $url);
     }
 }

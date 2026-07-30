@@ -12,7 +12,7 @@
         <x-action-group>
             @if ($feed['sort'] !== 'latest')
                 <x-action-control
-                    label="New posts"
+                    label="{{ __('ui.new_posts_35b75561fc') }}"
                     icon="refresh-cw"
                     :href="$feed['new_posts_url']"
                     variant="paper"
@@ -20,7 +20,7 @@
                 />
             @endif
             <x-action-control
-                label="New post"
+                label="{{ __('ui.new_post_7e50e2667b') }}"
                 icon="plus"
                 :href="$feed['composer_url']"
                 size="regular"
@@ -40,7 +40,7 @@
         @empty
             <x-empty-state
                 icon="newspaper"
-                title="No publications match these filters"
+                title="{{ __('ui.no_publications_match_these_filters_3ccadd0d18') }}"
                 compact
                 role="listitem"
             />

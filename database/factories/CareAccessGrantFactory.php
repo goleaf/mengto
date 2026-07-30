@@ -1,16 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories;
 
 use App\Models\CareAccessGrant;
 use App\Models\CareJournal;
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
 /**
- * @extends Factory<CareAccessGrant>
+ * @extends ApplicationFactory<CareAccessGrant>
  */
-class CareAccessGrantFactory extends Factory
+class CareAccessGrantFactory extends ApplicationFactory
 {
     /**
      * Define the model's default state.

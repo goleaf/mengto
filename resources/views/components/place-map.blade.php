@@ -2,6 +2,7 @@
     'places',
     'selected' => null,
     'layer' => 'places',
+    'layerLabel' => __('presentation.default_place_layer'),
     'emergency' => false,
 ])
 
@@ -13,26 +14,26 @@
 >
     <header class="place-map__header">
         <div>
-            <p class="place-map__eyebrow">{{ $emergency ? 'Urgent mode' : str($layer)->headline().' layer' }}</p>
-            <h2 id="place-map-title">{{ $emergency ? 'Suitable open clinics' : 'Places in the selected area' }}</h2>
+            <p class="place-map__eyebrow">{{ $emergency ? __('ui.urgent_mode_6593baaaa0') : __('presentation.layer_name', ['name' => $layerLabel]) }}</p>
+            <h2 id="place-map-title">{{ $emergency ? __('ui.suitable_open_clinics_f0eae2582a') : __('ui.places_in_the_selected_area_8f304ae7f9') }}</h2>
         </div>
-        <div class="place-map__controls" aria-label="Map controls">
-            <button type="button" class="icon-button" data-place-zoom="in" aria-label="Zoom in">
+        <div class="place-map__controls" aria-label="{{ __('ui.map_controls_e463873f9f') }}">
+            <button type="button" class="icon-button" data-place-zoom="in" aria-label="{{ __('ui.zoom_in_0e47f09a74') }}">
                 <x-lucide-plus class="icon icon--sm" aria-hidden="true" />
             </button>
-            <button type="button" class="icon-button" data-place-zoom="out" aria-label="Zoom out">
+            <button type="button" class="icon-button" data-place-zoom="out" aria-label="{{ __('ui.zoom_out_bc7b631a68') }}">
                 <x-lucide-minus class="icon icon--sm" aria-hidden="true" />
             </button>
-            <button type="button" class="icon-button" data-place-fullscreen aria-label="Toggle fullscreen map" aria-pressed="false">
+            <button type="button" class="icon-button" data-place-fullscreen aria-label="{{ __('ui.toggle_fullscreen_map_55b5219245') }}" aria-pressed="false">
                 <x-lucide-maximize-2 class="icon icon--sm" aria-hidden="true" />
             </button>
         </div>
     </header>
 
     <div class="place-map__canvas" data-place-map-canvas>
-        <span class="place-map__district place-map__district--old-town">Old Town</span>
-        <span class="place-map__district place-map__district--zverynas">Žvėrynas</span>
-        <span class="place-map__district place-map__district--naujamiestis">Naujamiestis</span>
+        <span class="place-map__district place-map__district--old-town">{{ __('ui.old_town_9a9e4acaf8') }}</span>
+        <span class="place-map__district place-map__district--zverynas">{{ __('ui.žvėrynas_76cb91baf6') }}</span>
+        <span class="place-map__district place-map__district--naujamiestis">{{ __('ui.naujamiestis_17a26d0ce9') }}</span>
         <span class="place-map__river" aria-hidden="true"></span>
         <span class="place-map__road place-map__road--north" aria-hidden="true"></span>
         <span class="place-map__road place-map__road--south" aria-hidden="true"></span>
@@ -50,11 +51,11 @@
             >
                 <x-dynamic-component :component="'lucide-'.$marker['category_icon']" class="icon icon--sm" aria-hidden="true" />
                 @if ($marker['warning_count'] > 0)
-                    <span class="place-marker__warning" aria-label="{{ $marker['warning_count'] }} active warnings">{{ $marker['warning_count'] }}</span>
+                    <span class="place-marker__warning" aria-label="{{ trans_choice('presentation.warning_count', $marker['warning_count'], ['count' => $marker['warning_count']]) }}">{{ $marker['warning_count'] }}</span>
                 @endif
             </button>
         @empty
-            <p class="place-map__empty">No map points match these filters.</p>
+            <p class="place-map__empty">{{ __('ui.no_map_points_match_these_filters_813101d503') }}</p>
         @endforelse
     </div>
 
@@ -68,7 +69,7 @@
                 @if ($selected['call_url'])
                     <x-action-control
                         :href="$selected['call_url']"
-                        label="Call"
+                        label="{{ __('ui.call_d6e645b7d2') }}"
                         icon="phone"
                         variant="surface"
                         size="compact"
@@ -76,7 +77,7 @@
                 @endif
                 <x-action-control
                     :href="$selected['detail_url']"
-                    label="Open"
+                    label="{{ __('ui.open_ed077f3d81') }}"
                     icon="arrow-right"
                     variant="primary"
                     size="compact"
@@ -84,15 +85,15 @@
                 />
             </div>
         @else
-            <span>No place selected.</span>
+            <span>{{ __('ui.no_place_selected_21564af90e') }}</span>
         @endif
     </div>
 
-    <ol class="sr-only" aria-label="Text alternative for map locations">
+    <ol class="sr-only" aria-label="{{ __('ui.text_alternative_for_map_locations_9fcfc6f49c') }}">
         @forelse ($places as $marker)
             <li>{{ $marker['label'] }}</li>
         @empty
-            <li>No locations available.</li>
+            <li>{{ __('ui.no_locations_available_c1f36516a2') }}</li>
         @endforelse
     </ol>
 </section>

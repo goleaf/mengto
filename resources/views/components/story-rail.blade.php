@@ -2,8 +2,8 @@
 
 <section class="story-rail" aria-labelledby="story-rail-title">
     <div class="story-rail__heading">
-        <h2 id="story-rail-title">Stories</h2>
-        <span>Fresh moments</span>
+        <h2 id="story-rail-title">{{ __('ui.stories_6d09cf5748') }}</h2>
+        <span>{{ __('ui.fresh_moments_acde105101') }}</span>
     </div>
 
     <div class="story-rail__items" role="list">
@@ -20,14 +20,14 @@
                         class="story__image"
                     >
                     @if ($story['unseen'])
-                        <span class="story__unseen" aria-label="New story"></span>
+                        <span class="story__unseen" aria-label="{{ __('ui.new_story_df78ffebe2') }}"></span>
                     @endif
                 </span>
                 <span class="story__name">{{ $story['name'] }}</span>
                 <span class="story__caption">{{ $story['caption'] }}</span>
             </a>
         @empty
-            <p class="text-sm text-paw-muted">No active stories.</p>
+            <p class="text-sm text-paw-muted">{{ __('ui.no_active_stories_db596948b2') }}</p>
         @endforelse
     </div>
 </section>

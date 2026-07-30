@@ -296,6 +296,17 @@
     min-block-size: 4.5rem;
 }
 
+.care-sync-status {
+    border-inline-start: 0.25rem solid $leaf;
+    border-radius: $control-radius;
+    background: color-mix(in srgb, $leaf 8%, $white);
+    padding: 0.75rem 0.875rem;
+    color: $ink;
+    font-size: 0.875rem;
+    font-weight: 700;
+    line-height: 1.5;
+}
+
 .care-form-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));

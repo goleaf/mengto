@@ -1,16 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories;
 
 use App\Enums\DeviceConfidence;
 use App\Models\DevicePetAssignment;
 use App\Models\SmartDevice;
-use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<DevicePetAssignment>
+ * @extends ApplicationFactory<DevicePetAssignment>
  */
-class DevicePetAssignmentFactory extends Factory
+class DevicePetAssignmentFactory extends ApplicationFactory
 {
     /**
      * Define the model's default state.

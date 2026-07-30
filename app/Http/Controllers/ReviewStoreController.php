@@ -18,6 +18,6 @@ class ReviewStoreController extends Controller
         Gate::authorize('view', $expertProfile);
         $create->handle($expertProfile, $request->validated());
 
-        return to_route('experts.show', $expertProfile)->with('feedback', 'Verified client review published.');
+        return to_route('experts.show', $expertProfile)->with('feedback', __('messages.verified_client_review_published_427eb92051'));
     }
 }

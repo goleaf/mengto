@@ -12,7 +12,7 @@
     </div>
 
     <div class="call-consent__copy">
-        <p class="call-consent__eyebrow">Voice consent</p>
+        <p class="call-consent__eyebrow">{{ __('ui.voice_consent_b4d220633f') }}</p>
         <h2 id="call-consent-title" class="call-consent__title">{{ $call['title'] }}</h2>
         <p class="call-consent__description">{{ $call['description'] }}</p>
     </div>
@@ -20,7 +20,7 @@
     <x-action-group class="call-consent__actions">
         <x-action-control
             :href="route('messages.index', ['conversation' => $contact['key']])"
-            label="Keep messaging"
+            label="{{ __('ui.keep_messaging_23ed9808b6') }}"
             icon="message-circle"
             variant="paper"
             size="regular"

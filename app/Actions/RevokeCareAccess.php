@@ -18,7 +18,7 @@ class RevokeCareAccess
         DB::transaction(function () use ($journal, $grant): void {
             if ($grant->care_journal_id !== $journal->id) {
                 throw ValidationException::withMessages([
-                    'grant' => 'This access grant does not belong to the selected journal.',
+                    'grant' => __('messages.this_access_grant_does_not_belong_to_the_selected_journa_a0a9c4230d'),
                 ]);
             }
 

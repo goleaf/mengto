@@ -1,6 +1,6 @@
 @props(['meetups'])
 
-<x-sidebar-section title="Nearby meetups" section="meetups" :href="route('meetups.index')">
+<x-sidebar-section title="{{ __('ui.nearby_meetups_6642b05b7d') }}" section="meetups" :href="route('meetups.index')">
     <x-sidebar-list>
         @forelse ($meetups as $meetup)
             <x-sidebar-list-item>
@@ -27,8 +27,8 @@
                 <div class="mt-3 flex items-center justify-between gap-3">
                     <x-icon-text icon="users">{{ $meetup['attendees'] }}</x-icon-text>
                     <x-action-control
-                        label="Join"
-                        active-label="Going"
+                        label="{{ __('ui.join_fd30fe681b') }}"
+                        active-label="{{ __('ui.going_7bd49cdc7d') }}"
                         icon="user-plus"
                         active-icon="check"
                         variant="quiet"
@@ -41,7 +41,7 @@
                 </div>
             </x-sidebar-list-item>
         @empty
-            <p role="listitem" class="sidebar-list__empty">No meetups nearby.</p>
+            <p role="listitem" class="sidebar-list__empty">{{ __('ui.no_meetups_nearby_03aef29df8') }}</p>
         @endforelse
     </x-sidebar-list>
 </x-sidebar-section>

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services;
 
 use App\Enums\ListingStatus;
@@ -20,6 +22,7 @@ class ListingPresenter
         private readonly ProfilePresenter $profiles,
         private readonly ForumActor $actor,
         private readonly ListingTaxonomy $taxonomy,
+        private readonly LocaleFormatter $formatter,
     ) {}
 
     /**
@@ -68,7 +71,7 @@ class ListingPresenter
 
         return [
             'owner' => $this->profiles->owner(),
-            'page_title' => 'Marketplace',
+            'page_title' => __('messages.marketplace_c608981d8d'),
             'active_section' => 'marketplace',
             'listings' => $listings,
             'filters' => $filters,
@@ -194,7 +197,7 @@ class ListingPresenter
 
         return [
             'owner' => $this->profiles->owner(),
-            'page_title' => $listing->title.' · Marketplace',
+            'page_title' => __('presentation.marketplace_listing_title', ['title' => $listing->title]),
             'active_section' => 'marketplace',
             'listing' => $this->detail($listing),
             'engagement' => ['is_saved' => $engagement->is_saved],
@@ -221,12 +224,12 @@ class ListingPresenter
                 'delivery_rating' => $review->delivery_rating,
                 'body' => $review->body,
                 'seller_reply' => $review->seller_reply,
-                'created_label' => $review->created_at?->diffForHumans(),
+                'created_label' => $this->formatter->relative($review->created_at),
             ])->all(),
             'review_summary' => [
                 'count' => (int) $reviewSummary->reviews_count,
                 'rating' => $reviewSummary->item_rating !== null
-                    ? number_format((float) $reviewSummary->item_rating, 1)
+                    ? $this->formatter->number((float) $reviewSummary->item_rating, 1, 1)
                     : null,
             ],
             'related' => $related,
@@ -241,7 +244,7 @@ class ListingPresenter
     {
         return [
             'owner' => $this->profiles->owner(),
-            'page_title' => 'Create marketplace listing',
+            'page_title' => __('messages.create_marketplace_listing_e4c5eb524e'),
             'active_section' => 'marketplace',
             'types' => $this->taxonomy->types(),
             'categories' => $this->taxonomy->categories(),
@@ -286,10 +289,10 @@ class ListingPresenter
             'reviews_count' => (int) ($listing->reviews_count ?? 0),
             'item_rating' => $listing->hasAttribute('item_rating')
                 && $listing->item_rating !== null
-                ? number_format((float) $listing->item_rating, 1)
+                ? $this->formatter->number((float) $listing->item_rating, 1, 1)
                 : null,
             'owner_name' => $listing->owner_name,
-            'published_label' => $listing->published_at?->diffForHumans(),
+            'published_label' => $this->formatter->relative($listing->published_at),
         ];
     }
 
@@ -309,6 +312,7 @@ class ListingPresenter
                 : null,
             'material' => $listing->material,
             'attributes' => $listing->attributes ?? [],
+            'attribute_rows' => $this->presentationRows($listing->attributes ?? []),
             'defects' => $listing->defects,
             'hygiene_status' => $listing->hygiene_status
                 ? ($this->taxonomy->hygieneStatuses()[$listing->hygiene_status] ?? Str::headline($listing->hygiene_status))
@@ -332,8 +336,8 @@ class ListingPresenter
             'request_label' => $listing->type->requestLabel(),
             'request_kind' => $listing->type->requestKind(),
             'view_count' => $listing->view_count,
-            'published_at' => $listing->published_at?->format('M j, Y'),
-            'completed_at' => $listing->completed_at?->format('M j, Y'),
+            'published_at' => $this->formatter->date($listing->published_at),
+            'completed_at' => $this->formatter->date($listing->completed_at),
         ];
     }
 
@@ -349,51 +353,68 @@ class ListingPresenter
             'request_kind' => Str::headline($reservation->request_kind),
             'quantity' => $reservation->quantity,
             'offered_price' => $reservation->offered_price !== null
-                ? $listing->currency.' '.number_format((float) $reservation->offered_price, 2)
+                ? $this->formatter->currency((float) $reservation->offered_price, $listing->currency)
                 : null,
             'message' => $reservation->message,
             'exchange_method' => $this->taxonomy->deliveryOptions()[$reservation->exchange_method]
                 ?? Str::headline($reservation->exchange_method),
-            'proposed_at' => $reservation->proposed_at?->format('M j · H:i'),
-            'rental_starts_at' => $reservation->rental_starts_at?->format('M j, Y'),
-            'rental_ends_at' => $reservation->rental_ends_at?->format('M j, Y'),
+            'proposed_at' => $this->formatter->dateTime($reservation->proposed_at),
+            'rental_starts_at' => $this->formatter->date($reservation->rental_starts_at),
+            'rental_ends_at' => $this->formatter->date($reservation->rental_ends_at),
             'questionnaire' => $reservation->questionnaire ?? [],
-            'expires_at' => $reservation->expires_at?->format('M j · H:i'),
-            'created_label' => $reservation->created_at?->diffForHumans(),
+            'questionnaire_rows' => $this->presentationRows($reservation->questionnaire ?? []),
+            'expires_at' => $this->formatter->dateTime($reservation->expires_at),
+            'created_label' => $this->formatter->relative($reservation->created_at),
             'order' => $order ? [
                 'reference' => $order->reference,
                 'status' => $order->status->label(),
                 'payment_status' => $order->payment_status->label(),
-                'total' => $order->currency.' '.number_format((float) $order->total_amount, 2),
+                'total' => $this->formatter->currency((float) $order->total_amount, $order->currency),
                 'url' => route('marketplace.orders.show', [$listing, $order]),
             ] : null,
         ];
     }
 
+    /**
+     * @param  array<string, mixed>  $values
+     * @return list<array{label: string, value: string}>
+     */
+    private function presentationRows(array $values): array
+    {
+        return collect($values)
+            ->filter(static fn (mixed $value): bool => filled($value))
+            ->map(fn (mixed $value, string $key): array => [
+                'label' => Str::headline(str_replace('_', ' ', $key)),
+                'value' => is_array($value) ? implode(', ', $value) : (string) $value,
+            ])
+            ->values()
+            ->all();
+    }
+
     private function priceLabel(Listing $listing): string
     {
         if ($listing->type->value === 'shelter-need') {
-            return 'Help requested';
+            return __('presentation.help_requested');
         }
 
         if ($listing->is_free || in_array($listing->type->value, ['adoption', 'free'], true)) {
-            return 'Free';
+            return __('presentation.free');
         }
 
         if ($listing->type->value === 'exchange' && $listing->price === null) {
-            return 'Exchange';
+            return __('presentation.exchange');
         }
 
         if ($listing->price === null) {
-            return 'Ask owner';
+            return __('presentation.ask_owner');
         }
 
-        $suffix = match ($listing->type->value) {
-            'rental' => ' / day',
-            'service' => ' / service',
-            default => '',
-        };
+        $price = $this->formatter->currency((float) $listing->price, $listing->currency);
 
-        return $listing->currency.' '.number_format((float) $listing->price, 2).$suffix;
+        return match ($listing->type->value) {
+            'rental' => __('presentation.price_per_day', ['price' => $price]),
+            'service' => __('presentation.price_per_service', ['price' => $price]),
+            default => $price,
+        };
     }
 }

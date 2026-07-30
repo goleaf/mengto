@@ -1,4 +1,4 @@
-<x-app-shell :owner="$owner" title="Messages and calls | PawCircle" active-section="messages">
+<x-app-shell :owner="$owner" title="{{ __('ui.messages_and_calls_brand_d76656782d') }}" active-section="messages">
     <div
         class="messaging-page"
         data-messaging-center
@@ -11,12 +11,12 @@
                 <span>{{ $summary['description'] }}</span>
             </div>
 
-            <div class="messaging-page__summary" aria-label="Inbox summary">
-                <span><x-lucide-mail class="icon icon--sm" aria-hidden="true" /> {{ $summary['unread_count'] }} unread</span>
-                <span><x-lucide-message-square-more class="icon icon--sm" aria-hidden="true" /> {{ $summary['request_count'] }} request</span>
+            <div class="messaging-page__summary" aria-label="{{ __('ui.inbox_summary_4323d5eb2a') }}">
+                <span><x-lucide-mail class="icon icon--sm" aria-hidden="true" /> {{ __('presentation.unread_count', ['count' => $summary['unread_count']]) }}</span>
+                <span><x-lucide-message-square-more class="icon icon--sm" aria-hidden="true" /> {{ trans_choice('presentation.requests_count', $summary['request_count'], ['count' => $summary['request_count']]) }}</span>
                 <a href="{{ route('compose', 'message') }}" class="action action--primary action--regular">
                     <x-lucide-square-pen class="icon icon--sm" aria-hidden="true" />
-                    <span>New message</span>
+                    <span>{{ __('ui.new_message_78f5975a5d') }}</span>
                 </a>
             </div>
         </header>
@@ -31,7 +31,7 @@
                 :summary="$summary"
             />
 
-            <main class="messaging-thread" aria-label="Conversation with {{ $selected['name'] }}">
+            <main class="messaging-thread" aria-label="{{ __('presentation.conversation_with', ['name' => $selected['name']]) }}">
                 <x-messaging-thread-header
                     :conversation="$selected"
                     :active-filter="$active_filter"
@@ -43,8 +43,8 @@
                     <section class="messaging-state messaging-state--quiet">
                         <x-lucide-message-square-off class="icon" aria-hidden="true" />
                         <div>
-                            <h2>Request declined</h2>
-                            <p>The sender is not told when you viewed or declined the request. You can still block or report the profile.</p>
+                            <h2>{{ __('ui.request_declined_1df48b2da0') }}</h2>
+                            <p>{{ __('ui.the_sender_is_not_told_when_you_viewed_b9db847ee0') }}</p>
                         </div>
                     </section>
                 @else
@@ -64,8 +64,8 @@
                     @if ($message_query !== '')
                         <div class="messaging-search-result" role="status">
                             <x-lucide-search class="icon icon--sm" aria-hidden="true" />
-                            <span>{{ count($messages) }} results for “{{ $message_query }}” with surrounding context preserved.</span>
-                            <a href="{{ route('messages.index', ['conversation' => $selected['key'], 'filter' => $active_filter]) }}">Clear</a>
+                            <span>{{ __('presentation.search_results_context', ['count' => count($messages), 'query' => $message_query]) }}</span>
+                            <a href="{{ route('messages.index', ['conversation' => $selected['key'], 'filter' => $active_filter]) }}">{{ __('ui.clear_83b12c2216') }}</a>
                         </div>
                     @endif
 

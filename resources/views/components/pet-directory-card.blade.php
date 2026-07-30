@@ -31,12 +31,12 @@
 
     <p class="mt-4 text-sm font-medium text-paw-coral">{{ $pet['status'] }}</p>
 
-    <x-tag-list :items="$pet['traits']" empty="No traits shared." reserve class="mt-4" />
+    <x-tag-list :items="$pet['traits']" empty="{{ __('ui.no_traits_shared_251b121ad1') }}" reserve class="mt-4" />
 
     <div class="mt-5 border-t border-paw-line pt-4">
-        <p class="text-sm font-semibold text-paw-ink">With {{ $pet['owner'] }}</p>
+        <p class="text-sm font-semibold text-paw-ink">{{ __('presentation.with_owner', ['owner' => $pet['owner']]) }}</p>
         <x-icon-text icon="map-pin" class="mt-1">
-            {{ $pet['neighborhood'] }} · Portland, OR
+            {{ __('presentation.neighborhood_location', ['neighborhood' => $pet['neighborhood']]) }}
         </x-icon-text>
 
         <div class="mt-4 flex flex-wrap items-center gap-3">
@@ -47,13 +47,13 @@
                     icon="eye"
                     variant="action"
                 >
-                    View profile
+                    {{ __('ui.view_profile_d4788f256f') }}
                 </x-text-link>
             @endif
 
             <x-action-control
-                label="Follow"
-                active-label="Following"
+                label="{{ __('ui.follow_641d1ef657') }}"
+                active-label="{{ __('ui.following_344b4271ca') }}"
                 icon="user-plus"
                 active-icon="user-check"
                 variant="paper"

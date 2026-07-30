@@ -28,8 +28,8 @@
     @elseif ($activeTab === 'posts')
         <section aria-labelledby="group-posts-title">
             <x-section-heading
-                eyebrow="Member feed"
-                title="Recent group posts"
+                eyebrow="{{ __('ui.member_feed_0e259ee595') }}"
+                title="{{ __('ui.recent_group_posts_58931aab97') }}"
                 title-id="group-posts-title"
                 size="directory"
             />
@@ -37,12 +37,12 @@
                 @forelse ($content['posts'] as $post)
                     <x-group-post-card :post="$post" />
                 @empty
-                    <p class="group-dashboard__empty">No group posts have been published yet.</p>
+                    <p class="group-dashboard__empty">{{ __('ui.no_group_posts_have_been_published_yet_907b2e09af') }}</p>
                 @endforelse
             </div>
         </section>
     @elseif ($activeTab === 'discussions')
-        <x-content-panel section="group-discussions" eyebrow="Structured conversations" title="Active discussions">
+        <x-content-panel section="group-discussions" eyebrow="{{ __('ui.structured_conversations_f123524612') }}" title="{{ __('ui.active_discussions_2b28959464') }}">
             <div class="discussion-list section-body">
                 @forelse ($content['discussions'] as $discussion)
                     <article class="discussion-row">
@@ -57,22 +57,22 @@
                         </div>
                     </article>
                 @empty
-                    <p class="group-dashboard__empty">No active discussions are available.</p>
+                    <p class="group-dashboard__empty">{{ __('ui.no_active_discussions_are_available_853abf17e2') }}</p>
                 @endforelse
             </div>
         </x-content-panel>
     @elseif ($activeTab === 'events')
-        <x-content-panel section="group-events" eyebrow="Group calendar" title="Upcoming events">
+        <x-content-panel section="group-events" eyebrow="{{ __('ui.group_calendar_4b4216fa5b') }}" title="{{ __('ui.upcoming_events_df9110b56f') }}">
             <div class="event-list section-body">
                 @forelse ($content['events'] as $event)
                     <x-group-event-card :event="$event" />
                 @empty
-                    <p class="group-dashboard__empty">No upcoming events are scheduled.</p>
+                    <p class="group-dashboard__empty">{{ __('ui.no_upcoming_events_are_scheduled_5e3c2e1b79') }}</p>
                 @endforelse
             </div>
         </x-content-panel>
     @elseif ($activeTab === 'members')
-        <x-content-panel section="group-members" eyebrow="Owner-managed participation" title="Community members">
+        <x-content-panel section="group-members" eyebrow="{{ __('ui.owner_managed_participation_deb4c70b44') }}" title="{{ __('ui.community_members_6efb83e499') }}">
             <div class="member-directory section-body" role="list">
                 @forelse ($content['members'] as $member)
                     <article class="member-directory__item" role="listitem">
@@ -84,15 +84,15 @@
                         <x-status-badge :label="$member['badge']" tone="surface" />
                     </article>
                 @empty
-                    <p role="listitem" class="group-dashboard__empty">No members are visible in this directory.</p>
+                    <p role="listitem" class="group-dashboard__empty">{{ __('ui.no_members_are_visible_in_this_directory_96595af060') }}</p>
                 @endforelse
             </div>
         </x-content-panel>
     @elseif ($activeTab === 'pets')
         <section aria-labelledby="group-pets-title">
             <x-section-heading
-                eyebrow="Participating profiles"
-                title="Pets in this community"
+                eyebrow="{{ __('ui.participating_profiles_51b5b8dd44') }}"
+                title="{{ __('ui.pets_in_this_community_2531d9c8e1') }}"
                 title-id="group-pets-title"
                 size="directory"
             />
@@ -100,12 +100,12 @@
                 @forelse ($content['pets'] as $pet)
                     <x-group-pet-card :pet="$pet" />
                 @empty
-                    <p class="group-dashboard__empty">No pet profiles are visible in this community.</p>
+                    <p class="group-dashboard__empty">{{ __('ui.no_pet_profiles_are_visible_in_this_community_95a86ad6a0') }}</p>
                 @endforelse
             </div>
         </section>
     @elseif ($activeTab === 'resources')
-        <x-content-panel section="group-resources" eyebrow="Group knowledge" title="Guides and resources">
+        <x-content-panel section="group-resources" eyebrow="{{ __('ui.group_knowledge_4f421fa6c6') }}" title="{{ __('ui.guides_and_resources_109c219906') }}">
             <div class="resource-list section-body">
                 @forelse ($content['resources'] as $resource)
                     <article class="resource-row">
@@ -120,13 +120,13 @@
                         <x-lucide-chevron-right class="icon icon--sm" aria-hidden="true" />
                     </article>
                 @empty
-                    <p class="group-dashboard__empty">No guides or resources have been added yet.</p>
+                    <p class="group-dashboard__empty">{{ __('ui.no_guides_or_resources_have_been_added_yet_08d7121d50') }}</p>
                 @endforelse
             </div>
         </x-content-panel>
     @elseif ($activeTab === 'rules')
         <div class="group-dashboard__columns">
-            <x-content-panel section="group-rules" eyebrow="Community boundary" title="Rules everyone agrees to">
+            <x-content-panel section="group-rules" eyebrow="{{ __('ui.community_boundary_2e272f13ce') }}" title="{{ __('ui.rules_everyone_agrees_to_9fde042d75') }}">
                 <ol class="rule-list section-body">
                     @forelse ($content['rules'] as $rule)
                         <li>
@@ -137,17 +137,17 @@
                             </div>
                         </li>
                     @empty
-                        <li class="group-dashboard__empty">No additional group rules are listed.</li>
+                        <li class="group-dashboard__empty">{{ __('ui.no_additional_group_rules_are_listed_b58cda5efc') }}</li>
                     @endforelse
                 </ol>
             </x-content-panel>
-            <x-content-panel section="group-requirements" title="Joining requirements">
+            <x-content-panel section="group-requirements" title="{{ __('ui.joining_requirements_6399184f74') }}">
                 <x-icon-list
                     :items="array_map(
                         static fn ($requirement) => [
                             'icon' => 'circle-check-big',
                             'title' => $requirement,
-                            'description' => 'Required before active participation.',
+                            'description' => __('ui.required_before_active_participation_99abd2353c'),
                         ],
                         $group['requirements'],
                     )"
@@ -168,7 +168,7 @@
                 </x-icon-text>
             </x-content-panel>
 
-            <x-content-panel section="group-principles" eyebrow="Community care" title="How this group works">
+            <x-content-panel section="group-principles" eyebrow="{{ __('ui.community_care_d0650d1a0a') }}" title="{{ __('ui.how_this_group_works_ea33488aba') }}">
                 <x-icon-list :items="$content['principles']" class="section-body" />
             </x-content-panel>
         </div>
@@ -193,8 +193,8 @@
         @else
             <section aria-labelledby="overview-posts-title">
                 <x-section-heading
-                    eyebrow="From the group"
-                    title="Recent posts"
+                    eyebrow="{{ __('ui.from_the_group_c73400d709') }}"
+                    title="{{ __('ui.recent_posts_eba7045ba5') }}"
                     title-id="overview-posts-title"
                     size="directory"
                 />
@@ -202,13 +202,13 @@
                     @forelse (array_slice($content['posts'], 0, 2) as $post)
                         <x-group-post-card :post="$post" />
                     @empty
-                        <p class="group-dashboard__empty">No recent posts are available.</p>
+                        <p class="group-dashboard__empty">{{ __('ui.no_recent_posts_are_available_f5cfd52689') }}</p>
                     @endforelse
                 </div>
             </section>
 
             <div class="group-dashboard__columns">
-                <x-content-panel section="overview-events" eyebrow="Coming up" title="Events">
+                <x-content-panel section="overview-events" eyebrow="{{ __('ui.coming_up_b743c76082') }}" title="{{ __('ui.events_8d14f6e72d') }}">
                     <div class="event-list section-body">
                         @forelse ($content['events'] as $event)
                             <x-group-event-card
@@ -216,7 +216,7 @@
                                 :href="route('groups.show', ['group' => $group['key'], 'tab' => 'events'])"
                             />
                         @empty
-                            <p class="group-dashboard__empty">No upcoming events are scheduled.</p>
+                            <p class="group-dashboard__empty">{{ __('ui.no_upcoming_events_are_scheduled_5e3c2e1b79') }}</p>
                         @endforelse
                     </div>
                 </x-content-panel>
@@ -225,7 +225,7 @@
 
             <div class="group-dashboard__columns">
                 <x-group-chat-preview :messages="$content['chat']" />
-                <x-content-panel section="group-team" title="Community team">
+                <x-content-panel section="group-team" title="{{ __('ui.community_team_53d704af04') }}">
                     <x-member-list :members="$content['moderators']" class="section-body" />
                 </x-content-panel>
             </div>
@@ -233,8 +233,8 @@
     @endif
 
     @if ($membership['status'] === 'joined')
-        <x-content-panel section="group-notifications" title="Group notifications" meta="Applies only to this group">
-            <div class="notification-options section-body" role="group" aria-label="Group notification level">
+        <x-content-panel section="group-notifications" title="{{ __('ui.group_notifications_30706f75cc') }}" meta="Applies only to this group">
+            <div class="notification-options section-body" role="group" aria-label="{{ __('ui.group_notification_level_4217391593') }}">
                 @forelse ($membership['notification_options'] as $option)
                     <x-action-control
                         :label="$option['label']"
@@ -246,7 +246,7 @@
                         variant="paper"
                     />
                 @empty
-                    <p class="group-dashboard__empty">Notification settings are unavailable.</p>
+                    <p class="group-dashboard__empty">{{ __('ui.notification_settings_are_unavailable_40b8672453') }}</p>
                 @endforelse
             </div>
         </x-content-panel>

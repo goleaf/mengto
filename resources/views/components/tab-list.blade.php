@@ -25,7 +25,7 @@
                 @endif
             </a>
         @empty
-            <span class="text-sm text-paw-muted">Profile sections unavailable.</span>
+            <span class="text-sm text-paw-muted">{{ __('ui.profile_sections_unavailable_a85cf2c744') }}</span>
         @endforelse
     </div>
 </nav>

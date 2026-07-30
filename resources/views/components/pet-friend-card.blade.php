@@ -50,7 +50,7 @@
 
         @if ($item['secondary_actions'] !== [])
             <details class="friend-actions">
-                <summary aria-label="More friendship actions for {{ $item['name'] }}" title="More actions">
+                <summary aria-label="{{ __('presentation.more_friendship_actions', ['name' => $item['name']]) }}" title="{{ __('ui.more_actions_f8d46c2570') }}">
                     <x-lucide-ellipsis class="icon" aria-hidden="true" />
                 </summary>
                 <div class="friend-actions__panel">

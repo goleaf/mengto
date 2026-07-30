@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use App\Enums\ConsultationStatus;
@@ -7,7 +9,26 @@ use Database\Factories\ConsultationFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
+/**
+ * @property array<array-key, mixed>|null $action_plan
+ * @property-read Booking|null $booking
+ * @property int $booking_id
+ * @property string|null $client_summary
+ * @property Carbon|null $created_at
+ * @property Carbon|null $ended_at
+ * @property-read ExpertProfile|null $expertProfile
+ * @property int $expert_profile_id
+ * @property Carbon|null $follow_up_until
+ * @property int $id
+ * @property string|null $private_notes
+ * @property string|null $referral_summary
+ * @property Carbon|null $started_at
+ * @property ConsultationStatus $status
+ * @property Carbon|null $summary_confirmed_at
+ * @property Carbon|null $updated_at
+ */
 class Consultation extends Model
 {
     /** @use HasFactory<ConsultationFactory> */
@@ -46,11 +67,13 @@ class Consultation extends Model
             ->select(self::ROUTE_COLUMNS);
     }
 
+    /** @return BelongsTo<\App\Models\Booking, $this>*/
     public function booking(): BelongsTo
     {
         return $this->belongsTo(Booking::class);
     }
 
+    /** @return BelongsTo<\App\Models\ExpertProfile, $this>*/
     public function expertProfile(): BelongsTo
     {
         return $this->belongsTo(ExpertProfile::class);

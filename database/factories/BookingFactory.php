@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories;
 
 use App\Enums\BookingStatus;
@@ -7,11 +9,10 @@ use App\Enums\PaymentStatus;
 use App\Models\Booking;
 use App\Models\ExpertProfile;
 use App\Models\Service;
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
-/** @extends Factory<Booking> */
-class BookingFactory extends Factory
+/** @extends ApplicationFactory<Booking> */
+class BookingFactory extends ApplicationFactory
 {
     public function definition(): array
     {

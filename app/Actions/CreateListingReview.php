@@ -30,19 +30,19 @@ class CreateListingReview
 
             if ($lockedOrder->buyer_key !== $this->actor->key()) {
                 throw ValidationException::withMessages([
-                    'order' => 'Only the buyer can review this order.',
+                    'order' => __('messages.only_the_buyer_can_review_this_order_86f89b2460'),
                 ]);
             }
 
             if ($lockedOrder->status !== OrderStatus::Completed) {
                 throw ValidationException::withMessages([
-                    'order' => 'Complete the order before leaving a review.',
+                    'order' => __('messages.complete_the_order_before_leaving_a_review_37d94e1070'),
                 ]);
             }
 
             if (ListingReview::query()->where('order_id', $lockedOrder->id)->exists()) {
                 throw ValidationException::withMessages([
-                    'order' => 'This order already has a review.',
+                    'order' => __('messages.this_order_already_has_a_review_3134a967df'),
                 ]);
             }
 

@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Services;
+declare(strict_types=1);
 
-use Illuminate\Contracts\Session\Session;
+namespace App\Services;
 
 class PrototypeState
 {
-    private const SESSION_KEY = 'prototype.state.v1';
+    private const STATE_NAMESPACE = 'prototype.state.v1';
 
-    public function __construct(private readonly Session $session) {}
+    public function __construct(private readonly PersistentStateStore $states) {}
 
     public function isActive(string $collection, string $target): bool
     {
@@ -782,7 +782,7 @@ class PrototypeState
      */
     private function state(): array
     {
-        return $this->session->get(self::SESSION_KEY, [
+        return $this->states->get(self::STATE_NAMESPACE, [
             'toggles' => [],
             'messages' => [],
             'comments' => [],
@@ -822,7 +822,7 @@ class PrototypeState
      */
     private function store(array $state): void
     {
-        $this->session->put(self::SESSION_KEY, $state);
+        $this->states->put(self::STATE_NAMESPACE, $state);
     }
 
     /**

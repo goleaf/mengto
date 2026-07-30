@@ -18,6 +18,6 @@ class CareJournalStoreController extends Controller
         $journal = $create->handle($request->validated());
 
         return to_route('care-journals.show', $journal)
-            ->with('feedback', 'Private care journal created. Nothing was added to the public pet profile.');
+            ->with('feedback', __('messages.private_care_journal_created_nothing_was_added_to_the_pu_8432f2301d'));
     }
 }

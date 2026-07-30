@@ -19,6 +19,6 @@ class DeviceAutomationStoreController extends Controller
         $create->handle($smartDevice, $request->validated());
 
         return to_route('devices.manage', $smartDevice)
-            ->with('feedback', 'Automation saved with cooldown and safety limits.');
+            ->with('feedback', __('messages.automation_saved_with_cooldown_and_safety_limits_ec8a23dcc4'));
     }
 }

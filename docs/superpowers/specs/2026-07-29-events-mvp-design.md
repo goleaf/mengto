@@ -1,5 +1,7 @@
 # PawCircle Events MVP Design
 
+> Product design source. Preserve its domain detail; current production, security, persistence, and verification requirements are governed by `docs/index.md`.
+
 ## Goal
 
 Turn meetups into an end-to-end event workspace for walks, training, shows,

@@ -2,8 +2,8 @@
     'pets',
 ])
 
-<nav aria-label="Choose one of your pets" {{ $attributes->class(['pet-switcher']) }}>
-    <span class="pet-switcher__label">Managing friendships for</span>
+<nav aria-label="{{ __('ui.choose_one_of_your_pets_5ff38ca14c') }}" {{ $attributes->class(['pet-switcher']) }}>
+    <span class="pet-switcher__label">{{ __('ui.managing_friendships_for_193f7e8d60') }}</span>
 
     <div class="pet-switcher__options">
         @forelse ($pets as $pet)
@@ -24,7 +24,7 @@
                 @endif
             </a>
         @empty
-            <span class="text-sm text-paw-muted">No managed pet profiles.</span>
+            <span class="text-sm text-paw-muted">{{ __('ui.no_managed_pet_profiles_8831d42c02') }}</span>
         @endforelse
     </div>
 </nav>

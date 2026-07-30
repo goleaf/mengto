@@ -1,14 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories;
 
 use App\Models\Booking;
 use App\Models\DocumentGrant;
 use App\Models\ExpertProfile;
-use Illuminate\Database\Eloquent\Factories\Factory;
 
-/** @extends Factory<DocumentGrant> */
-class DocumentGrantFactory extends Factory
+/** @extends ApplicationFactory<DocumentGrant> */
+class DocumentGrantFactory extends ApplicationFactory
 {
     public function definition(): array
     {

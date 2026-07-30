@@ -1,15 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories;
 
 use App\Models\KnowledgeArticle;
 use App\Models\KnowledgeCorrection;
-use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<KnowledgeCorrection>
+ * @extends ApplicationFactory<KnowledgeCorrection>
  */
-class KnowledgeCorrectionFactory extends Factory
+class KnowledgeCorrectionFactory extends ApplicationFactory
 {
     /**
      * Define the model's default state.

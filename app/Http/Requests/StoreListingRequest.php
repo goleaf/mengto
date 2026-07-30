@@ -125,26 +125,26 @@ class StoreListingRequest extends FormRequest
                 $price = $this->input('price');
 
                 if (in_array($type, ['sale', 'service', 'rental'], true) && ! $isFree && blank($price)) {
-                    $validator->errors()->add('price', 'Add a price or mark the listing as free.');
+                    $validator->errors()->add('price', __('messages.add_a_price_or_mark_the_listing_as_free_3f0718a9b5'));
                 }
 
                 if (in_array($type, ['adoption', 'free', 'shelter-need'], true)
                     && ! blank($price)
                     && (float) $price > 0) {
-                    $validator->errors()->add('price', 'This listing type cannot include a sale price.');
+                    $validator->errors()->add('price', __('messages.this_listing_type_cannot_include_a_sale_price_0c32b17444'));
                 }
 
                 if ($type === 'adoption') {
                     foreach (['animal_name', 'animal_age', 'temperament', 'adoption_conditions'] as $field) {
                         if (blank($this->input($field))) {
-                            $validator->errors()->add($field, 'Complete the adoption profile before publishing.');
+                            $validator->errors()->add($field, __('messages.complete_the_adoption_profile_before_publishing_94f6b9713b'));
                         }
                     }
                 }
 
                 if ($type === 'shelter-need'
                     && (int) $this->input('received_quantity', 0) > (int) $this->input('quantity', 0)) {
-                    $validator->errors()->add('received_quantity', 'Received quantity cannot exceed the amount needed.');
+                    $validator->errors()->add('received_quantity', __('messages.received_quantity_cannot_exceed_the_amount_needed_0a3466528d'));
                 }
 
                 if ($this->string('intent')->toString() === 'publish') {

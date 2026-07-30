@@ -95,7 +95,7 @@ The system uses compact fixed typography, modest radii, clear borders, and a sma
 - Mobile-first and useful with one hand.
 - Familiar controls with explicit labels and Lucide icons.
 - Flat, compact surfaces with restrained depth.
-- URL-backed filters and session-backed prototype state.
+- URL-backed filters and durable server-authoritative interaction state.
 - Shared Blade primitives as the default construction method.
 - Semantic CSS names without product-specific prefixes, such as `.form-actions`, `.connection-card`, and `.page-header`.
 
@@ -219,11 +219,11 @@ PawCircle is flat by default. Depth comes from tonal layers and one-pixel border
 - Newly created groups, meetups, and pet profiles open from every directory or profile card through parameter-aware shared link primitives.
 - One created-content presenter resolves cards, detail pages, active state, and canonical share targets without adding type logic to Blade pages.
 - One feature composition assembles all created detail pages from the existing detail hero, content panel, icon list, definition list, notice, and action primitives.
-- Created detail URLs remain server-rendered and return a real 404 when the session-backed item no longer exists.
+- Created detail URLs remain server-rendered and return a real 404 when the persisted item is unavailable to the current actor.
 
 ### Publication Feed
 - `BrowseFeedRequest` validates shareable mode, order, format, pet, and page state before the presenter receives it.
-- `FeedCatalog` owns immutable sample content and dictionaries; `FeedPresenter` combines it with session state and returns the complete Blade contract.
+- `FeedCatalog` owns immutable sample content and dictionaries; `FeedPresenter` combines it with encrypted per-user domain state and returns the complete Blade contract.
 - `PerformAction` is the only feed mutation boundary. Blade performs no queries and receives stable author, represented-profile, media, interaction, safety, and lifecycle fields.
 - The feed page composes stories, toolbar, quick composer, publication cards, and finite pagination. Each card separately composes identity, context, media, social proof, reaction picker, and action menu.
 - Photo carousels use horizontal scroll snapping and stable aspect ratios. Video uses native controls, `preload="metadata"`, useful alternative copy, and no autoplay.

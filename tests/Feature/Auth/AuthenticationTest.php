@@ -1,0 +1,328 @@
+<?php
+
+declare(strict_types=1);
+
+use App\Livewire\Auth\ConfirmPassword;
+use App\Livewire\Auth\ForgotPassword;
+use App\Livewire\Auth\Login;
+use App\Livewire\Auth\Register;
+use App\Livewire\Auth\ResetPassword;
+use App\Livewire\Auth\VerifyEmail;
+use App\Models\User;
+use Illuminate\Auth\Notifications\ResetPassword as ResetPasswordNotification;
+use Illuminate\Auth\Notifications\VerifyEmail as VerifyEmailNotification;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Facades\URL;
+use Livewire\Livewire;
+
+test('guest can render localized authentication pages', function () {
+    auth()->logout();
+
+    $this->withSession(['locale' => 'ru'])
+        ->get(route('login'))
+        ->assertOk()
+        ->assertSee('Вход')
+        ->assertSee('Электронная почта')
+        ->assertSee('wire:offline', false)
+        ->assertSee(__('auth.connection.offline'));
+});
+
+test('stateful authentication forms expose localized unsaved state feedback', function () {
+    auth()->logout();
+
+    Livewire::test(Register::class)
+        ->assertSee('wire:dirty', false)
+        ->assertSee(__('auth.form.unsaved'));
+
+    Livewire::test(ResetPassword::class, ['token' => 'test-token'])
+        ->assertSee('wire:dirty', false)
+        ->assertSee(__('auth.form.unsaved'));
+});
+
+test('every authentication component renders precise loading and offline feedback', function () {
+    Livewire::test(Login::class)
+        ->assertSee('wire:loading', false)
+        ->assertSee('wire:target="authenticate"', false);
+    Livewire::test(Register::class)
+        ->assertSee('wire:loading', false)
+        ->assertSee('wire:target="register"', false);
+    Livewire::test(ForgotPassword::class)
+        ->assertSee('wire:loading', false)
+        ->assertSee('wire:target="sendResetLink"', false);
+    Livewire::test(ResetPassword::class, ['token' => 'test-token'])
+        ->assertSee('wire:loading', false)
+        ->assertSee('wire:target="resetPassword"', false);
+    Livewire::test(ConfirmPassword::class)
+        ->assertSee('wire:loading', false)
+        ->assertSee('wire:target="confirm"', false);
+
+    $unverified = User::factory()->unverified()->create();
+    $this->actingAs($unverified);
+
+    Livewire::test(VerifyEmail::class)
+        ->assertSee('wire:loading', false)
+        ->assertSee('wire:target="resend"', false);
+});
+
+test('protected private routes redirect guests to login', function () {
+    auth()->logout();
+
+    $this->get(route('medical-records.index'))
+        ->assertRedirect(route('login'));
+});
+
+test('authenticated user can confirm a password before a high-risk action', function () {
+    session()->put('url.intended', route('devices.index'));
+
+    Livewire::test(ConfirmPassword::class)
+        ->set('form.password', 'password')
+        ->call('confirm')
+        ->assertHasNoErrors()
+        ->assertRedirect(route('devices.index'));
+
+    expect(session()->has('auth.password_confirmed_at'))->toBeTrue();
+});
+
+test('password confirmation rejects an invalid password without opening the window', function () {
+    Livewire::test(ConfirmPassword::class)
+        ->set('form.password', 'incorrect-password')
+        ->call('confirm')
+        ->assertHasErrors(['form.password'])
+        ->assertDispatched('auth-validation-failed');
+
+    expect(session()->has('auth.password_confirmed_at'))->toBeFalse();
+});
+
+test('password confirmation direct action rejects a guest', function () {
+    auth()->logout();
+
+    $this->get(route('password.confirm'))
+        ->assertRedirect(route('login'));
+
+    Livewire::test(ConfirmPassword::class)
+        ->set('form.password', 'password')
+        ->call('confirm')
+        ->assertRedirect(route('login'));
+});
+
+test('password confirmation rate limits repeated invalid attempts', function () {
+    foreach (range(1, 5) as $attempt) {
+        Livewire::test(ConfirmPassword::class)
+            ->set('form.password', 'incorrect-'.$attempt)
+            ->call('confirm')
+            ->assertHasErrors(['form.password']);
+    }
+
+    Livewire::test(ConfirmPassword::class)
+        ->set('form.password', 'password')
+        ->call('confirm')
+        ->assertHasErrors(['form.password'])
+        ->assertSee(__('auth.confirm_password.throttled', ['seconds' => 60]));
+
+    expect(session()->has('auth.password_confirmed_at'))->toBeFalse();
+});
+
+test('active user can authenticate through livewire', function () {
+    auth()->logout();
+
+    Livewire::test(Login::class)
+        ->set('form.email', $this->authenticatedUser->email)
+        ->set('form.password', 'password')
+        ->set('form.remember', true)
+        ->call('authenticate')
+        ->assertHasNoErrors()
+        ->assertRedirect(route('home'));
+
+    $this->assertAuthenticatedAs($this->authenticatedUser);
+    expect($this->authenticatedUser->fresh()?->last_login_at)->not->toBeNull();
+});
+
+test('login rejects invalid and blocked accounts with the same safe error', function () {
+    $blocked = User::factory()->blocked()->create([
+        'email' => 'blocked@example.test',
+        'password' => 'Correct-Horse-42',
+    ]);
+    auth()->logout();
+
+    Livewire::test(Login::class)
+        ->set('form.email', $blocked->email)
+        ->set('form.password', 'Correct-Horse-42')
+        ->call('authenticate')
+        ->assertHasErrors(['form.email'])
+        ->assertDispatched('auth-validation-failed');
+
+    $this->assertGuest();
+});
+
+test('registration creates a normalized verified-pending account', function () {
+    Notification::fake();
+    auth()->logout();
+
+    Livewire::test(Register::class)
+        ->set('form.name', '  Ona Petraitė  ')
+        ->set('form.email', 'ONA@example.test')
+        ->set('form.password', 'Secure-Paw-2026')
+        ->set('form.password_confirmation', 'Secure-Paw-2026')
+        ->set('form.locale', 'lt')
+        ->set('form.timezone', 'Europe/Vilnius')
+        ->call('register')
+        ->assertHasNoErrors()
+        ->assertRedirect(route('verification.notice'));
+
+    $user = User::query()->where('email', 'ona@example.test')->firstOrFail();
+
+    expect($user->name)->toBe('Ona Petraitė')
+        ->and($user->actor_key)->toStartWith('user-')
+        ->and($user->email_verified_at)->toBeNull()
+        ->and($user->locale)->toBe('lt')
+        ->and($user->timezone)->toBe('Europe/Vilnius');
+
+    $this->assertAuthenticatedAs($user);
+});
+
+test('registration validates every untrusted account field', function () {
+    auth()->logout();
+
+    Livewire::test(Register::class)
+        ->set('form.name', 'x')
+        ->set('form.email', 'not-an-email')
+        ->set('form.password', 'short')
+        ->set('form.password_confirmation', 'different')
+        ->set('form.locale', 'unsupported')
+        ->set('form.timezone', 'not-a-timezone')
+        ->call('register')
+        ->assertHasErrors([
+            'form.name',
+            'form.email',
+            'form.password',
+            'form.locale',
+            'form.timezone',
+        ]);
+
+    $this->assertGuest();
+});
+
+test('password reset request does not reveal whether an account exists', function () {
+    Notification::fake();
+    auth()->logout();
+
+    Livewire::test(ForgotPassword::class)
+        ->set('email', $this->authenticatedUser->email)
+        ->call('sendResetLink')
+        ->assertSet('sent', true)
+        ->assertHasNoErrors();
+
+    Livewire::test(ForgotPassword::class)
+        ->set('email', 'missing@example.test')
+        ->call('sendResetLink')
+        ->assertSet('sent', true)
+        ->assertHasNoErrors();
+
+    Notification::assertSentTo($this->authenticatedUser, ResetPasswordNotification::class);
+});
+
+test('password reset request validates malformed input', function () {
+    auth()->logout();
+
+    Livewire::test(ForgotPassword::class)
+        ->set('email', 'not-an-email')
+        ->call('sendResetLink')
+        ->assertHasErrors(['email'])
+        ->assertSet('sent', false);
+});
+
+test('valid password reset token can be consumed once', function () {
+    $user = User::factory()->create([
+        'email' => 'reset@example.test',
+        'password' => 'Before-Password-42',
+    ]);
+    $token = Password::createToken($user);
+    auth()->logout();
+
+    Livewire::test(ResetPassword::class, ['token' => $token])
+        ->set('form.email', $user->email)
+        ->set('form.password', 'After-Password-84')
+        ->set('form.password_confirmation', 'After-Password-84')
+        ->call('resetPassword')
+        ->assertHasNoErrors()
+        ->assertRedirect(route('login'));
+
+    expect(Hash::check('After-Password-84', (string) $user->fresh()?->password))->toBeTrue();
+
+    Livewire::test(ResetPassword::class, ['token' => $token])
+        ->set('form.email', $user->email)
+        ->set('form.password', 'Another-Password-96')
+        ->set('form.password_confirmation', 'Another-Password-96')
+        ->call('resetPassword')
+        ->assertHasErrors(['form.email']);
+});
+
+test('password reset form rejects invalid fields before token consumption', function () {
+    auth()->logout();
+
+    Livewire::test(ResetPassword::class, ['token' => 'not-a-valid-token'])
+        ->set('form.email', 'not-an-email')
+        ->set('form.password', 'short')
+        ->set('form.password_confirmation', 'different')
+        ->call('resetPassword')
+        ->assertHasErrors(['form.email', 'form.password']);
+});
+
+test('signed verification link verifies the authenticated account', function () {
+    $user = User::factory()->unverified()->create();
+    $this->actingAs($user);
+
+    $url = URL::temporarySignedRoute(
+        'verification.verify',
+        now()->addMinutes(30),
+        [
+            'id' => $user->getKey(),
+            'hash' => sha1($user->getEmailForVerification()),
+        ],
+    );
+
+    $this->get($url)
+        ->assertRedirect(route('home'))
+        ->assertSessionHas('feedback');
+
+    expect($user->fresh()?->hasVerifiedEmail())->toBeTrue();
+});
+
+test('unverified account can resend verification and verified account is redirected', function () {
+    Notification::fake();
+    $unverified = User::factory()->unverified()->create();
+    $this->actingAs($unverified);
+
+    Livewire::test(VerifyEmail::class)
+        ->call('resend')
+        ->assertSet('sent', true);
+
+    Notification::assertSentTo($unverified, VerifyEmailNotification::class);
+
+    $verified = User::factory()->create();
+    $this->actingAs($verified);
+
+    Livewire::test(VerifyEmail::class)
+        ->call('resend')
+        ->assertRedirect(route('home'));
+});
+
+test('blocked authenticated account is logged out before protected access', function () {
+    $blocked = User::factory()->blocked()->create();
+    $this->actingAs($blocked);
+
+    $this->get(route('messages.index'))
+        ->assertRedirect(route('login'))
+        ->assertSessionHas('feedback');
+
+    $this->assertGuest();
+});
+
+test('logout invalidates authentication and redirects to login', function () {
+    $this->post(route('logout'))
+        ->assertRedirect(route('login'));
+
+    $this->assertGuest();
+});

@@ -1,15 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories;
 
 use App\Models\DeviceSafeZone;
 use App\Models\SmartDevice;
-use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<DeviceSafeZone>
+ * @extends ApplicationFactory<DeviceSafeZone>
  */
-class DeviceSafeZoneFactory extends Factory
+class DeviceSafeZoneFactory extends ApplicationFactory
 {
     /**
      * Define the model's default state.

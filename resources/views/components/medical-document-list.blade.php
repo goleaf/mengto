@@ -14,18 +14,18 @@
                 <p class="mt-1 text-xs font-semibold text-paw-muted">{{ $document['source_name'] }} · {{ $document['verification'] }}</p>
             </div>
             @if ($document['download_url'])
-                <a href="{{ $document['download_url'] }}" class="action action--surface action--compact" title="Download {{ $document['title'] }}">
+                <a href="{{ $document['download_url'] }}" class="action action--surface action--compact" title="{{ __('presentation.download_document', ['title' => $document['title']]) }}">
                     <x-lucide-download class="icon icon--sm" aria-hidden="true" />
-                    <span class="sr-only">Download {{ $document['title'] }}</span>
+                    <span class="sr-only">{{ __('presentation.download_document', ['title' => $document['title']]) }}</span>
                 </a>
             @else
-                <x-status-badge label="View only" icon="eye" tone="surface" />
+                <x-status-badge label="{{ __('ui.view_only_9b4c6c8590') }}" icon="eye" tone="surface" />
             @endif
         </article>
     @empty
         <div class="medical-empty">
             <x-lucide-file-x class="size-7" aria-hidden="true" />
-            <p>No documents in this view.</p>
+            <p>{{ __('ui.no_documents_in_this_view_38f3bf316f') }}</p>
         </div>
     @endforelse
 </div>

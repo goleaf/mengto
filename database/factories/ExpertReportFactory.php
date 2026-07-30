@@ -1,13 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories;
 
 use App\Models\ExpertProfile;
 use App\Models\ExpertReport;
-use Illuminate\Database\Eloquent\Factories\Factory;
 
-/** @extends Factory<ExpertReport> */
-class ExpertReportFactory extends Factory
+/** @extends ApplicationFactory<ExpertReport> */
+class ExpertReportFactory extends ApplicationFactory
 {
     public function definition(): array
     {

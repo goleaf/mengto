@@ -19,6 +19,6 @@ class MedicalDocumentStoreController extends Controller
         $store->handle($medicalRecord, $request->validated());
 
         return to_route('medical-records.manage', $medicalRecord)
-            ->with('feedback', 'Document stored privately. The original file remains available for verification.');
+            ->with('feedback', __('messages.document_stored_privately_the_original_file_remains_avai_0f22068033'));
     }
 }

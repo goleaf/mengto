@@ -1,15 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories;
 
 use App\Models\CareEntry;
 use App\Models\CareMedia;
-use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<CareMedia>
+ * @extends ApplicationFactory<CareMedia>
  */
-class CareMediaFactory extends Factory
+class CareMediaFactory extends ApplicationFactory
 {
     /**
      * Define the model's default state.

@@ -7,13 +7,13 @@
 >
     <header class="comment-thread__header">
         <x-section-heading
-            eyebrow="Neighbor conversation"
-            title="Replies"
+            eyebrow="{{ __('ui.neighbor_conversation_8ab26ebc32') }}"
+            title="{{ __('ui.replies_31ecb5e00f') }}"
             title-id="conversation-title"
             size="compact"
         />
         <x-status-badge
-            :label="$count.' visible '.str('reply')->plural($count)"
+            :label="trans_choice('presentation.visible_replies', $count, ['count' => $count])"
             icon="messages-square"
             tone="mint"
         />

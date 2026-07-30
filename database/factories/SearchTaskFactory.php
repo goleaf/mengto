@@ -1,16 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories;
 
 use App\Enums\SearchTaskStatus;
 use App\Models\SearchCase;
 use App\Models\SearchTask;
-use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<SearchTask>
+ * @extends ApplicationFactory<SearchTask>
  */
-class SearchTaskFactory extends Factory
+class SearchTaskFactory extends ApplicationFactory
 {
     public function definition(): array
     {

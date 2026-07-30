@@ -25,7 +25,7 @@ class CreateMedicalRecord
 
             if ($pet === null) {
                 throw ValidationException::withMessages([
-                    'pet_profile_key' => 'Choose a pet profile you manage.',
+                    'pet_profile_key' => __('messages.choose_a_pet_profile_you_manage_de4a79e7f0'),
                 ]);
             }
 
@@ -34,7 +34,7 @@ class CreateMedicalRecord
                 ->where('pet_profile_key', $pet['slug'])
                 ->exists()) {
                 throw ValidationException::withMessages([
-                    'pet_profile_key' => 'This pet already has a medical record.',
+                    'pet_profile_key' => __('messages.this_pet_already_has_a_medical_record_d4c3459ec6'),
                 ]);
             }
 
@@ -76,8 +76,8 @@ class CreateMedicalRecord
                     'timezone' => $record->timezone,
                     'weight_grams' => $record->current_weight_grams,
                     'source_type' => 'owner',
-                    'source_name' => 'Initial medical record',
-                    'measurement_context' => 'Initial value',
+                    'source_name' => __('messages.medical.initial_record'),
+                    'measurement_context' => __('messages.medical.initial_value'),
                     'verification_status' => 'owner-reported',
                     'created_by_key' => $this->actor->key(),
                 ]);

@@ -1,7 +1,7 @@
 @props([
     'posts',
     'eyebrow',
-    'title' => 'Recent moments',
+    'title' => __('ui.recent_moments_091f9f27cf'),
     'section' => 'recent-moments',
 ])
 
@@ -15,7 +15,7 @@
     @empty
         <x-empty-state
             icon="images"
-            title="No moments shared yet"
+            title="{{ __('ui.no_moments_shared_yet_6f33794cde') }}"
             compact
             role="listitem"
         />

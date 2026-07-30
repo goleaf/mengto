@@ -2,7 +2,7 @@
     'items',
     'label',
     'icons' => [],
-    'empty' => 'Summary unavailable.',
+    'empty' => __('ui.summary_unavailable_3a2c4e48c8'),
     'columns' => 3,
 ])
 

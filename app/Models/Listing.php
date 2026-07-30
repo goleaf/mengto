@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use App\Enums\ListingStatus;
@@ -8,12 +10,74 @@ use App\Enums\ModerationStatus;
 use App\Enums\SellerType;
 use Database\Factories\ListingFactory;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 
+/**
+ * @property string|null $age_group
+ * @property string|null $area
+ * @property array<array-key, mixed>|null $attributes
+ * @property string $availability
+ * @property string|null $brand
+ * @property string|null $business_name
+ * @property string $category
+ * @property string $city
+ * @property Carbon|null $completed_at
+ * @property string|null $condition
+ * @property string $contact_policy
+ * @property string|null $cover_url
+ * @property Carbon|null $created_at
+ * @property string $currency
+ * @property string|null $defects
+ * @property array<array-key, mixed>|null $delivery_options
+ * @property string $description
+ * @property-read Collection<int, ListingEngagement> $engagements
+ * @property string|null $exchange_preferences
+ * @property Carbon|null $expires_at
+ * @property array<array-key, mixed>|null $gallery
+ * @property string|null $hygiene_status
+ * @property int $id
+ * @property bool $is_business
+ * @property bool $is_free
+ * @property bool $is_verified_seller
+ * @property float|null $item_rating
+ * @property string|null $material
+ * @property string|null $meetup_notes
+ * @property string|null $model
+ * @property ModerationStatus $moderation_status
+ * @property-read Collection<int, Order> $orders
+ * @property-read User|null $owner
+ * @property int|null $owner_id
+ * @property string $owner_initials
+ * @property string $owner_key
+ * @property string $owner_name
+ * @property string|null $pet_size
+ * @property numeric-string|null $price
+ * @property Carbon|null $published_at
+ * @property int $quantity
+ * @property-read Collection<int, ListingReport> $reports
+ * @property-read Collection<int, Reservation> $reservations
+ * @property Carbon|null $reserved_at
+ * @property string|null $return_policy
+ * @property-read Collection<int, ListingReview> $reviews
+ * @property array<array-key, mixed>|null $risk_flags
+ * @property string $safety_status
+ * @property bool $sealed_package
+ * @property SellerType $seller_type
+ * @property string $slug
+ * @property array<array-key, mixed>|null $species
+ * @property ListingStatus $status
+ * @property string $title
+ * @property ListingType $type
+ * @property Carbon|null $updated_at
+ * @property string|null $video_url
+ * @property int $view_count
+ */
 class Listing extends Model
 {
     /** @use HasFactory<ListingFactory> */
@@ -95,31 +159,37 @@ class Listing extends Model
             ->select(self::ROUTE_COLUMNS);
     }
 
+    /** @return BelongsTo<\App\Models\User, $this>*/
     public function owner(): BelongsTo
     {
         return $this->belongsTo(User::class, 'owner_id');
     }
 
+    /** @return HasMany<\App\Models\ListingEngagement, $this>*/
     public function engagements(): HasMany
     {
         return $this->hasMany(ListingEngagement::class);
     }
 
+    /** @return HasMany<\App\Models\Reservation, $this>*/
     public function reservations(): HasMany
     {
         return $this->hasMany(Reservation::class);
     }
 
+    /** @return HasMany<\App\Models\ListingReport, $this>*/
     public function reports(): HasMany
     {
         return $this->hasMany(ListingReport::class);
     }
 
+    /** @return HasMany<\App\Models\Order, $this>*/
     public function orders(): HasMany
     {
         return $this->hasMany(Order::class);
     }
 
+    /** @return HasMany<\App\Models\ListingReview, $this>*/
     public function reviews(): HasMany
     {
         return $this->hasMany(ListingReview::class);

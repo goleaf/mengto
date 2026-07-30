@@ -9,14 +9,14 @@
             icon="arrow-left"
             variant="back"
         >
-            Back to groups
+            {{ __('ui.back_to_groups_033bcce2e9') }}
         </x-text-link>
 
         <x-group-hero :group="$group" />
 
         <x-tab-list
             :tabs="$tabs"
-            :label="$group['name'].' sections'"
+            :label="__('presentation.sections_for', ['name' => $group['name']])"
             class="group-tabs"
         />
 

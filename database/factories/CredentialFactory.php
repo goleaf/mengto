@@ -1,14 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories;
 
 use App\Enums\CredentialStatus;
 use App\Models\Credential;
 use App\Models\ExpertProfile;
-use Illuminate\Database\Eloquent\Factories\Factory;
 
-/** @extends Factory<Credential> */
-class CredentialFactory extends Factory
+/** @extends ApplicationFactory<Credential> */
+class CredentialFactory extends ApplicationFactory
 {
     public function definition(): array
     {

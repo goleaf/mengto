@@ -97,7 +97,7 @@ class CreateMedicalEntry
                 ? $this->grams((float) $data['tare'], $data['weight_unit'])
                 : null,
             'source_type' => $data['source_type'] ?? 'owner',
-            'source_name' => $data['source_name'] ?: 'Home scale',
+            'source_name' => $data['source_name'] ?: __('messages.medical.home_scale'),
             'measurement_context' => $data['measurement_context'] ?? null,
             'notes' => $data['notes'] ?? null,
             'verification_status' => ($data['source_type'] ?? 'owner') === 'owner'

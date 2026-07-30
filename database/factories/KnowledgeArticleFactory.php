@@ -1,16 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories;
 
 use App\Enums\KnowledgeStatus;
 use App\Models\KnowledgeArticle;
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
 /**
- * @extends Factory<KnowledgeArticle>
+ * @extends ApplicationFactory<KnowledgeArticle>
  */
-class KnowledgeArticleFactory extends Factory
+class KnowledgeArticleFactory extends ApplicationFactory
 {
     /**
      * Define the model's default state.

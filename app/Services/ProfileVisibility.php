@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services;
 
 final class ProfileVisibility
@@ -18,12 +20,12 @@ final class ProfileVisibility
     public function options(): array
     {
         return [
-            'public' => 'Everyone',
-            'members' => 'Registered members',
-            'followers' => 'Followers',
-            'friends' => 'Friends',
-            'owners' => 'Owners and managers',
-            'hidden' => 'Hidden',
+            'public' => __('messages.visibility.everyone'),
+            'members' => __('messages.registered_members_1757e26849'),
+            'followers' => __('messages.followers_a145ab342a'),
+            'friends' => __('messages.visibility.friends'),
+            'owners' => __('messages.owners_and_managers_28539cb842'),
+            'hidden' => __('messages.visibility.hidden'),
         ];
     }
 

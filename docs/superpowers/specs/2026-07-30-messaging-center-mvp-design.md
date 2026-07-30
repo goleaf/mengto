@@ -1,5 +1,7 @@
 # PawCircle Messaging Center — Design Specification
 
+> Product design source. Preserve its domain detail; current production, security, persistence, and verification requirements are governed by `docs/index.md`.
+
 ## Contract
 
 Point 8 defines one safe communication center for pet owners, co-owners, family members, groups, event participants, specialists, shelters, organizers, businesses, and platform support. A human account is always the accountable sender. Pet profiles, places, events, services, tasks, and documents are contextual cards and never autonomous senders.

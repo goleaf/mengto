@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services;
 
 use Illuminate\Support\Str;
@@ -12,6 +14,7 @@ final class GroupPresenter
         private readonly GroupState $state,
         private readonly ProfilePresenter $profiles,
         private readonly CreatedContentPresenter $created,
+        private readonly LocaleFormatter $formatter,
     ) {}
 
     /**
@@ -47,17 +50,17 @@ final class GroupPresenter
 
         return [
             'owner' => $this->profiles->owner(),
-            'page_title' => 'Groups | PawCircle',
+            'page_title' => __('messages.groups_pawcircle_2cc8a218be'),
             'active_section' => 'groups',
             'summary' => [
-                'eyebrow' => 'Communities with a purpose',
-                'title' => 'Find your people and build something useful',
-                'description' => 'Explore local, breed, care, adoption, and interest groups with clear privacy and moderation boundaries.',
-                'count' => count($groups).' '.Str::plural('group', count($groups)),
+                'eyebrow' => __('messages.communities_with_a_purpose_b2d3a5a7b6'),
+                'title' => __('messages.find_your_people_and_build_something_useful_b7d93d9c88'),
+                'description' => __('messages.explore_local_breed_care_adoption_and_interest_groups_wi_219f9d1209'),
+                'count' => trans_choice('presentation.groups_count', count($groups), ['count' => count($groups)]),
                 'highlights' => [
-                    ['label' => 'Your groups', 'value' => (string) $joinedCount, 'detail' => 'joined communities'],
-                    ['label' => 'Nearby', 'value' => '5', 'detail' => 'Portland communities'],
-                    ['label' => 'This week', 'value' => '563', 'detail' => 'posts across groups'],
+                    ['label' => __('messages.your_groups_62375359a1'), 'value' => (string) $joinedCount, 'detail' => __('messages.joined_communities_571c20b623')],
+                    ['label' => __('messages.nearby_a994cd47d4'), 'value' => '5', 'detail' => __('messages.portland_communities_48a16a45e9')],
+                    ['label' => __('messages.this_week_8c4eef5ab2'), 'value' => '563', 'detail' => __('messages.posts_across_groups_d5c791547f')],
                 ],
             ],
             'groups' => [
@@ -65,7 +68,7 @@ final class GroupPresenter
                 'query' => $query,
                 'filter' => $filter,
                 'sort' => $sort,
-                'filters' => array_values($this->filterOptions()),
+                'filters' => $this->labelledOptions($this->filterOptions()),
                 'sort_options' => $this->sortOptions(),
                 'browse_url' => route('groups.index'),
                 'create_url' => route('compose', ['kind' => 'group']),
@@ -93,26 +96,32 @@ final class GroupPresenter
 
         return [
             'owner' => $this->profiles->owner(),
-            'page_title' => $group['name'].' | PawCircle',
+            'page_title' => __('presentation.brand_title', ['title' => $group['name']]),
             'active_section' => 'groups',
             'group' => [
                 ...$group,
-                'privacy_label' => $group['privacy'] === 'closed' ? 'Closed group' : 'Public group',
+                'privacy_label' => $group['privacy'] === 'closed' ? __('messages.closed_group_e1f1a48f09') : __('messages.public_group_b99668e88a'),
                 'privacy_icon' => $group['privacy'] === 'closed' ? 'lock-keyhole' : 'globe-2',
-                'members' => $this->compactNumber($group['member_count']).' members',
-                'pets' => $this->compactNumber($group['pet_count']).' pets',
-                'activity' => $group['posts_week'].' posts this week',
+                'members' => trans_choice('presentation.members_count', $group['member_count'], [
+                    'count' => $this->compactNumber($group['member_count']),
+                ]),
+                'pets' => trans_choice('presentation.pets_count', $group['pet_count'], [
+                    'count' => $this->compactNumber($group['pet_count']),
+                ]),
+                'activity' => trans_choice('presentation.posts_this_week', $group['posts_week'], [
+                    'count' => $group['posts_week'],
+                ]),
                 'membership' => $membership,
                 'membership_label' => $this->membershipLabel($membership),
                 'primary_action' => $this->membershipAction($group, $tab),
                 'share_action' => [
-                    'label' => 'Share',
+                    'label' => __('messages.share_29887a5ff9'),
                     'icon' => 'send',
                     'variant' => 'paper',
                     'href' => route('share.show', ['target' => $key]),
                 ],
                 'report_action' => [
-                    'label' => 'Report group',
+                    'label' => __('messages.report_group_daa5c248b2'),
                     'icon' => 'flag',
                     'variant' => 'quiet',
                     'href' => route('compose', [
@@ -121,14 +130,14 @@ final class GroupPresenter
                     ]),
                 ],
                 'stats' => [
-                    ['label' => 'Members', 'value' => $this->compactNumber($group['member_count']), 'detail' => 'people in the community'],
-                    ['label' => 'Pets', 'value' => $this->compactNumber($group['pet_count']), 'detail' => 'owner-managed profiles'],
-                    ['label' => 'This week', 'value' => (string) $group['posts_week'], 'detail' => 'new posts'],
-                    ['label' => 'Since', 'value' => $group['started'], 'detail' => 'community history'],
+                    ['label' => __('messages.members_1044a4c056'), 'value' => $this->compactNumber($group['member_count']), 'detail' => __('messages.people_in_the_community_90c6b042ed')],
+                    ['label' => __('messages.pets_7dc1cd7eaf'), 'value' => $this->compactNumber($group['pet_count']), 'detail' => __('messages.owner_managed_profiles_ec265b1755')],
+                    ['label' => __('messages.this_week_8c4eef5ab2'), 'value' => (string) $group['posts_week'], 'detail' => __('messages.new_posts_297e9b6fbf')],
+                    ['label' => __('messages.since_98af1ed618'), 'value' => $group['started'], 'detail' => __('messages.community_history_d83fb270c3')],
                 ],
                 'meta' => [
                     ['icon' => 'map-pin', 'label' => $group['location']],
-                    ['icon' => $group['privacy'] === 'closed' ? 'lock-keyhole' : 'globe-2', 'label' => $group['privacy'] === 'closed' ? 'Closed group' : 'Public group'],
+                    ['icon' => $group['privacy'] === 'closed' ? 'lock-keyhole' : 'globe-2', 'label' => $group['privacy'] === 'closed' ? __('messages.closed_group_e1f1a48f09') : __('messages.public_group_b99668e88a')],
                     ['icon' => 'languages', 'label' => $group['language']],
                 ],
             ],
@@ -144,10 +153,10 @@ final class GroupPresenter
             ],
             'access_gate' => [
                 'icon' => 'lock-keyhole',
-                'title' => $membership === 'pending' ? 'Your request is waiting for review' : 'Join to see member content',
+                'title' => $membership === 'pending' ? __('messages.your_request_is_waiting_for_review_e7ad75e893') : __('messages.join_to_see_member_content_f278c69ce0'),
                 'description' => $membership === 'pending'
-                    ? 'Moderators can review your profile and application. Group posts, members, files, and private event details stay closed meanwhile.'
-                    : 'The group is discoverable, while posts, members, files, chats, and private event details remain visible only to approved members.',
+                    ? __('messages.moderators_can_review_your_profile_and_application_group_764a880f8f')
+                    : __('messages.the_group_is_discoverable_while_posts_members_files_chat_db8bccc335'),
                 'action' => $this->membershipAction($group, $tab),
             ],
         ];
@@ -169,10 +178,14 @@ final class GroupPresenter
             ...$group,
             'detail_route' => 'groups.show',
             'detail_parameters' => ['group' => $group['key']],
-            'privacy_label' => $group['privacy'] === 'closed' ? 'Closed' : 'Public',
+            'privacy_label' => $group['privacy'] === 'closed' ? __('messages.closed_c21ead0614') : __('messages.public_591935b15b'),
             'privacy_icon' => $group['privacy'] === 'closed' ? 'lock-keyhole' : 'globe-2',
-            'members' => $this->compactNumber($group['member_count']).' members',
-            'activity' => $group['posts_week'].' posts this week',
+            'members' => trans_choice('presentation.members_count', $group['member_count'], [
+                'count' => $this->compactNumber($group['member_count']),
+            ]),
+            'activity' => trans_choice('presentation.posts_this_week', $group['posts_week'], [
+                'count' => $group['posts_week'],
+            ]),
             'membership' => $membership,
             'joined' => $membership === 'joined',
             'primary_action' => $this->membershipAction(
@@ -184,7 +197,7 @@ final class GroupPresenter
                 ? $this->directoryAction(
                     'dismiss-group-recommendation',
                     $group['key'],
-                    'Hide suggestion',
+                    __('messages.hide_suggestion_c8973fe5a9'),
                     'x',
                     $query,
                     $filter,
@@ -212,10 +225,10 @@ final class GroupPresenter
                 'official' => false,
                 'membership' => 'joined',
                 'joined' => true,
-                'recommendation_reason' => 'Created by you',
+                'recommendation_reason' => __('messages.created_by_you_39467b6ea2'),
                 'next_event' => null,
                 'primary_action' => [
-                    'label' => 'Open group',
+                    'label' => __('messages.open_group_83ffa7c96e'),
                     'icon' => 'arrow-up-right',
                     'variant' => 'paper',
                     'href' => route($group['detail_route'], $group['detail_parameters']),
@@ -297,9 +310,9 @@ final class GroupPresenter
     {
         $membership = $this->state->membership($group['key']);
         $action = match ($membership) {
-            'joined' => ['leave-group', 'Joined', 'check', 'paper'],
-            'pending' => ['cancel-group-request', 'Cancel request', 'x', 'paper'],
-            default => ['join-group', $group['privacy'] === 'closed' ? 'Request to join' : 'Join group', 'user-plus', 'primary'],
+            'joined' => ['leave-group', __('messages.joined_69318b0c6a'), 'check', 'paper'],
+            'pending' => ['cancel-group-request', __('messages.cancel_request_5619668359'), 'x', 'paper'],
+            default => ['join-group', $group['privacy'] === 'closed' ? __('messages.request_to_join_dc80ecbe94') : __('messages.join_group_48a2587a6c'), 'user-plus', 'primary'],
         };
 
         return [
@@ -360,12 +373,12 @@ final class GroupPresenter
         $options = [];
 
         foreach ([
-            'all' => 'All activity',
-            'important' => 'Important only',
-            'events' => 'Events',
-            'mentions' => 'Mentions and replies',
-            'digest' => 'Weekly digest',
-            'off' => 'Off',
+            'all' => __('messages.all_activity_29ebb2ef2d'),
+            'important' => __('messages.important_only_c2c4224926'),
+            'events' => __('messages.events_8d14f6e72d'),
+            'mentions' => __('messages.mentions_and_replies_d2cae6302b'),
+            'digest' => __('messages.weekly_digest_b134b14f1c'),
+            'off' => __('messages.off_ca7981b46e'),
         ] as $value => $label) {
             $options[] = [
                 'label' => $label,
@@ -425,11 +438,11 @@ final class GroupPresenter
         }
 
         return [
-            'message' => $group['name'].' hidden from recommendations.',
+            'message' => __('presentation.hidden_from_recommendations', ['name' => $group['name']]),
             'action' => $this->directoryAction(
                 'undo-group-recommendation',
                 $target,
-                'Undo',
+                __('messages.undo_a8283ade31'),
                 'undo-2',
                 $query,
                 $filter,
@@ -471,12 +484,12 @@ final class GroupPresenter
     private function filterOptions(): array
     {
         return [
-            'recommended' => 'Recommended',
-            'joined' => 'Joined',
-            'local' => 'Local',
-            'breed' => 'Breed',
-            'care' => 'Care',
-            'official' => 'Official',
+            'recommended' => __('messages.recommended_d70604e843'),
+            'joined' => __('messages.joined_69318b0c6a'),
+            'local' => __('messages.local_8c31e6e722'),
+            'breed' => __('messages.breed_d1ac8a8093'),
+            'care' => __('messages.care_4262074d6c'),
+            'official' => __('ui.official_c409c66f71'),
         ];
     }
 
@@ -486,10 +499,26 @@ final class GroupPresenter
     private function sortOptions(): array
     {
         return [
-            'active' => 'Most active',
-            'members' => 'Most members',
-            'name' => 'Name',
+            'active' => __('messages.most_active_202997c941'),
+            'members' => __('messages.most_members_3d586b1705'),
+            'name' => __('messages.name_dcd1d5223f'),
         ];
+    }
+
+    /**
+     * @param  array<string, string>  $options
+     * @return list<array{value: string, label: string}>
+     */
+    private function labelledOptions(array $options): array
+    {
+        return array_map(
+            static fn (string $label, string $value): array => [
+                'value' => $value,
+                'label' => $label,
+            ],
+            array_values($options),
+            array_keys($options),
+        );
     }
 
     /**
@@ -498,32 +527,34 @@ final class GroupPresenter
     private function tabOptions(): array
     {
         return [
-            'overview' => ['label' => 'Overview', 'icon' => 'layout-dashboard'],
-            'posts' => ['label' => 'Posts', 'icon' => 'newspaper'],
-            'discussions' => ['label' => 'Discussions', 'icon' => 'messages-square'],
-            'events' => ['label' => 'Events', 'icon' => 'calendar-days'],
-            'members' => ['label' => 'Members', 'icon' => 'users'],
-            'pets' => ['label' => 'Pets', 'icon' => 'paw-print'],
-            'resources' => ['label' => 'Resources', 'icon' => 'library'],
-            'rules' => ['label' => 'Rules', 'icon' => 'scroll-text'],
+            'overview' => ['label' => __('messages.overview_d4b1ea5708'), 'icon' => 'layout-dashboard'],
+            'posts' => ['label' => __('messages.posts_a80811cf68'), 'icon' => 'newspaper'],
+            'discussions' => ['label' => __('messages.discussions_60157cfcfe'), 'icon' => 'messages-square'],
+            'events' => ['label' => __('messages.events_8d14f6e72d'), 'icon' => 'calendar-days'],
+            'members' => ['label' => __('messages.members_1044a4c056'), 'icon' => 'users'],
+            'pets' => ['label' => __('messages.pets_7dc1cd7eaf'), 'icon' => 'paw-print'],
+            'resources' => ['label' => __('messages.resources_e89b30aa1d'), 'icon' => 'library'],
+            'rules' => ['label' => __('messages.rules_4228aeb07c'), 'icon' => 'scroll-text'],
         ];
     }
 
     private function membershipLabel(?string $membership): string
     {
         return match ($membership) {
-            'joined' => 'Member',
-            'pending' => 'Request pending',
-            default => 'Not a member',
+            'joined' => __('messages.member_7c968fb71f'),
+            'pending' => __('messages.request_pending_bc26ab4d4b'),
+            default => __('messages.not_a_member_1099a75b03'),
         };
     }
 
     private function compactNumber(int $value): string
     {
         if ($value < 1000) {
-            return number_format($value);
+            return $this->formatter->number($value);
         }
 
-        return rtrim(rtrim(number_format($value / 1000, 1), '0'), '.').'k';
+        return __('presentation.compact_thousands', [
+            'count' => $this->formatter->number($value / 1000, 1),
+        ]);
     }
 }

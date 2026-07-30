@@ -1,5 +1,7 @@
 # Pet Profile Design
 
+> Product design source. Preserve its domain detail; current production, security, persistence, and verification requirements are governed by `docs/index.md`.
+
 ## Status
 
 Approved direction, awaiting review of this written specification.

@@ -5,11 +5,11 @@
                 <span><x-dynamic-component :component="'lucide-'.$device['icon']" class="size-8" aria-hidden="true" /></span>
                 <div>
                     <div class="flex flex-wrap items-center gap-2">
-                        <x-status-badge label="Temporary access" icon="key-round" tone="warning" />
+                        <x-status-badge label="{{ __('ui.temporary_access_7059688673') }}" icon="key-round" tone="warning" />
                         <x-status-badge :label="$grant['recipient_role']" icon="user-round" tone="surface" />
                     </div>
                     <h1 class="mt-2 text-3xl font-bold sm:text-4xl">{{ $device['name'] }}</h1>
-                    <p class="mt-2 text-paw-muted">{{ $grant['label'] }} · expires {{ $grant['expires_at'] }} · view {{ $grant['views'] }}</p>
+                    <p class="mt-2 text-paw-muted">{{ __('presentation.access_expires_views', ['label' => $grant['label'], 'expires' => $grant['expires_at'], 'views' => $grant['views']]) }}</p>
                 </div>
             </div>
         </header>
@@ -17,25 +17,25 @@
         <section class="device-access-scope">
             <x-lucide-shield-check class="size-5" aria-hidden="true" />
             <div>
-                <strong>Only explicitly granted device data is visible</strong>
-                <p>Exact home coordinates, serial number, raw payloads, household camera history, and unrelated pet records are not included.</p>
+                <strong>{{ __('ui.only_explicitly_granted_device_data_is_visible_63a51a9296') }}</strong>
+                <p>{{ __('ui.exact_home_coordinates_serial_number_raw_payloads_household_be68c0b5fb') }}</p>
             </div>
         </section>
 
-        <section class="device-status-strip" aria-label="Shared device status">
-            <div><span class="device-status-strip__icon"><x-lucide-radio class="size-5" aria-hidden="true" /></span><small>Status</small><strong>{{ $device['status_label'] }}</strong></div>
-            <div><span class="device-status-strip__icon"><x-lucide-wifi class="size-5" aria-hidden="true" /></span><small>Connection</small><strong>{{ $device['connection_label'] }}</strong></div>
-            <div><span class="device-status-strip__icon"><x-lucide-battery-medium class="size-5" aria-hidden="true" /></span><small>Battery</small><strong>{{ $device['battery_label'] }}</strong></div>
-            <div><span class="device-status-strip__icon"><x-lucide-map-pin class="size-5" aria-hidden="true" /></span><small>Shared area</small><strong>{{ $device['location_label'] }}</strong></div>
+        <section class="device-status-strip" aria-label="{{ __('ui.shared_device_status_d293a96bbe') }}">
+            <div><span class="device-status-strip__icon"><x-lucide-radio class="size-5" aria-hidden="true" /></span><small>{{ __('ui.status_920e413c7d') }}</small><strong>{{ $device['status_label'] }}</strong></div>
+            <div><span class="device-status-strip__icon"><x-lucide-wifi class="size-5" aria-hidden="true" /></span><small>{{ __('ui.connection_639a40e82b') }}</small><strong>{{ $device['connection_label'] }}</strong></div>
+            <div><span class="device-status-strip__icon"><x-lucide-battery-medium class="size-5" aria-hidden="true" /></span><small>{{ __('ui.battery_dfcb7c1619') }}</small><strong>{{ $device['battery_label'] }}</strong></div>
+            <div><span class="device-status-strip__icon"><x-lucide-map-pin class="size-5" aria-hidden="true" /></span><small>{{ __('ui.shared_area_ede2cdd8af') }}</small><strong>{{ $device['location_label'] }}</strong></div>
         </section>
 
         <section class="device-panel">
-            <div class="device-panel__heading"><div><p>Shared alerts</p><h2>Recent events</h2></div></div>
+            <div class="device-panel__heading"><div><p>{{ __('ui.shared_alerts_41679147a3') }}</p><h2>{{ __('ui.recent_events_8ecce94dc3') }}</h2></div></div>
             <x-device-event-list :events="$events" :shared="true" />
         </section>
 
         <section class="device-panel">
-            <div class="device-panel__heading"><div><p>Source and confidence visible</p><h2>Recent readings</h2></div></div>
+            <div class="device-panel__heading"><div><p>{{ __('ui.source_and_confidence_visible_3d47c2e552') }}</p><h2>{{ __('ui.recent_readings_cbfec84666') }}</h2></div></div>
             <x-device-reading-table :readings="$readings" :shared="true" />
         </section>
     </div>

@@ -3,23 +3,23 @@
         <header class="border-b border-paw-line pb-6">
             <a href="{{ route('devices.index') }}" class="inline-flex items-center gap-2 text-sm font-bold text-paw-leaf">
                 <x-lucide-arrow-left class="size-4" aria-hidden="true" />
-                Smart devices
+                {{ __('ui.smart_devices_228fd3f770') }}
             </a>
-            <p class="mt-5 text-sm font-bold uppercase text-paw-leaf">Ownership first</p>
-            <h1 class="mt-2 text-3xl font-bold sm:text-4xl">Connect a device</h1>
-            <p class="mt-2 max-w-2xl text-paw-muted">Create a private inventory record, assign the correct pets, and confirm how the device works before any signal is trusted.</p>
+            <p class="mt-5 text-sm font-bold uppercase text-paw-leaf">{{ __('ui.ownership_first_9c51bc8cc9') }}</p>
+            <h1 class="mt-2 text-3xl font-bold sm:text-4xl">{{ __('ui.connect_a_device_0b4a51f394') }}</h1>
+            <p class="mt-2 max-w-2xl text-paw-muted">{{ __('ui.create_a_private_inventory_record_assign_the_correct_aa8293bef0') }}</p>
         </header>
 
         @if ($errors->any())
             <div class="device-form-errors" role="alert">
                 <x-lucide-circle-alert class="size-5" aria-hidden="true" />
                 <div>
-                    <strong>The device was not connected</strong>
+                    <strong>{{ __('ui.the_device_was_not_connected_2169b1d288') }}</strong>
                     <ul>
                         @forelse ($errors->all() as $error)
                             <li>{{ $error }}</li>
                         @empty
-                            <li>Validation failed.</li>
+                            <li>{{ __('ui.validation_failed_fa0dce7e0b') }}</li>
                         @endforelse
                     </ul>
                 </div>
@@ -30,64 +30,64 @@
             @csrf
             <div class="device-form-grid">
                 <label>
-                    Device name
-                    <input name="name" value="{{ old('name') }}" maxlength="120" required placeholder="Scout GPS">
+                    {{ __('ui.device_name_155106be11') }}
+                    <input name="name" value="{{ old('name') }}" maxlength="120" required placeholder="{{ __('ui.scout_gps_0fb7d9221f') }}">
                 </label>
                 <label>
-                    Device type
+                    {{ __('ui.device_type_8562a30fdd') }}
                     <select name="type" required>
-                        <option value="">Choose a type</option>
+                        <option value="">{{ __('ui.choose_a_type_251f71e358') }}</option>
                         @forelse ($device_types as $type)
                             <option value="{{ $type['value'] }}" @selected(old('type') === $type['value'])>{{ $type['label'] }}</option>
                         @empty
-                            <option value="" disabled>No supported types</option>
+                            <option value="" disabled>{{ __('ui.no_supported_types_7098fb9cad') }}</option>
                         @endforelse
                     </select>
                 </label>
                 <label>
-                    Brand
+                    {{ __('ui.brand_090ed4316f') }}
                     <input name="brand" value="{{ old('brand') }}" maxlength="100">
                 </label>
                 <label>
-                    Model
+                    {{ __('ui.model_5e2c614c23') }}
                     <input name="model" value="{{ old('model') }}" maxlength="120">
                 </label>
                 <label>
-                    Serial number
+                    {{ __('ui.serial_number_f2307baf1c') }}
                     <input name="serial_number" value="{{ old('serial_number') }}" maxlength="255" autocomplete="off">
-                    <small>Encrypted and masked outside owner settings.</small>
+                    <small>{{ __('ui.encrypted_and_masked_outside_owner_settings_1f82f19d42') }}</small>
                 </label>
                 <label>
-                    Connection
+                    {{ __('ui.connection_639a40e82b') }}
                     <select name="connection_type">
-                        <option value="">Not recorded</option>
-                        @forelse (['wi-fi', 'bluetooth', 'cellular', 'radio', 'matter', 'manual'] as $connection)
-                            <option value="{{ $connection }}" @selected(old('connection_type') === $connection)>{{ str($connection)->headline() }}</option>
+                        <option value="">{{ __('ui.not_recorded_b37c7879f6') }}</option>
+                        @forelse ($connection_types as $connection)
+                            <option value="{{ $connection['value'] }}" @selected(old('connection_type') === $connection['value'])>{{ $connection['label'] }}</option>
                         @empty
-                            <option value="">No connections</option>
+                            <option value="">{{ __('ui.no_connections_9fc195c94c') }}</option>
                         @endforelse
                     </select>
                 </label>
                 <label>
-                    Public area label
-                    <input name="public_zone_label" value="{{ old('public_zone_label') }}" maxlength="160" placeholder="Home area">
+                    {{ __('ui.public_area_label_5d9b790916') }}
+                    <input name="public_zone_label" value="{{ old('public_zone_label') }}" maxlength="160" placeholder="{{ __('ui.home_area_df8f366499') }}">
                 </label>
                 <label>
-                    Exact installation place
-                    <input name="private_location_label" value="{{ old('private_location_label') }}" maxlength="500" placeholder="Hallway shelf">
+                    {{ __('ui.exact_installation_place_80a9e88189') }}
+                    <input name="private_location_label" value="{{ old('private_location_label') }}" maxlength="500" placeholder="{{ __('ui.hallway_shelf_fe5445c71d') }}">
                 </label>
                 <label>
-                    Firmware
+                    {{ __('ui.firmware_c2a314c3b3') }}
                     <input name="firmware_version" value="{{ old('firmware_version') }}" maxlength="80">
                 </label>
                 <label>
-                    Battery percent
+                    {{ __('ui.battery_percent_2fa5d7a972') }}
                     <input type="number" name="battery_percent" value="{{ old('battery_percent') }}" min="0" max="100">
                 </label>
             </div>
 
             <fieldset>
-                <legend>Assigned pets</legend>
+                <legend>{{ __('ui.assigned_pets_dd50d74ca4') }}</legend>
                 <div class="device-check-grid">
                     @forelse ($pets as $pet)
                         <label class="device-check">
@@ -95,30 +95,30 @@
                             <span><strong>{{ $pet['name'] }}</strong><small>{{ $pet['species'] }}</small></span>
                         </label>
                     @empty
-                        <span>No managed pets.</span>
+                        <span>{{ __('ui.no_managed_pets_3c6570a574') }}</span>
                     @endforelse
                 </div>
             </fieldset>
 
             <div class="device-check-grid">
-                <label class="device-check"><input type="checkbox" name="has_backup_power" value="1"><span>Backup power</span></label>
-                <label class="device-check"><input type="checkbox" name="supports_local_operation" value="1"><span>Works locally offline</span></label>
-                <label class="device-check"><input type="checkbox" name="requires_cloud" value="1"><span>Requires manufacturer cloud</span></label>
-                <label class="device-check"><input type="checkbox" name="is_medical_device" value="1"><span>Professional or medical device</span></label>
+                <label class="device-check"><input type="checkbox" name="has_backup_power" value="1"><span>{{ __('ui.backup_power_c459b63fee') }}</span></label>
+                <label class="device-check"><input type="checkbox" name="supports_local_operation" value="1"><span>{{ __('ui.works_locally_offline_dffec6f4f7') }}</span></label>
+                <label class="device-check"><input type="checkbox" name="requires_cloud" value="1"><span>{{ __('ui.requires_manufacturer_cloud_a254c149e3') }}</span></label>
+                <label class="device-check"><input type="checkbox" name="is_medical_device" value="1"><span>{{ __('ui.professional_or_medical_device_8059af0cfc') }}</span></label>
             </div>
 
             <label class="device-check device-check--boxed">
                 <input type="checkbox" name="ownership_confirmed" value="1" required>
-                <span>I own or am authorized to connect this device, and it is not still bound to another account.</span>
+                <span>{{ __('ui.i_own_or_am_authorized_to_connect_this_83251e5f9b') }}</span>
             </label>
             <label class="device-check device-check--boxed">
                 <input type="checkbox" name="privacy_acknowledged" value="1" required>
-                <span>I understand that location, home routines, camera data, and device payloads are private by default.</span>
+                <span>{{ __('ui.i_understand_that_location_home_routines_camera_data_38cf218ee0') }}</span>
             </label>
 
             <button type="submit" class="action action--primary">
                 <x-lucide-link class="icon" aria-hidden="true" />
-                <span>Connect privately</span>
+                <span>{{ __('ui.connect_privately_363eb4f684') }}</span>
             </button>
         </form>
     </div>

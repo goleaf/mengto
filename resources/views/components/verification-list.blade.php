@@ -15,11 +15,11 @@
                 </div>
             </div>
         @empty
-            <p class="text-sm text-paw-muted">No verification details are available.</p>
+            <p class="text-sm text-paw-muted">{{ __('ui.no_verification_details_are_available_a54b79a51a') }}</p>
         @endforelse
     </div>
 
     @if ($expires)
-        <p class="text-xs text-paw-muted">Current verification review period ends {{ $expires }}.</p>
+        <p class="text-xs text-paw-muted">{{ __('presentation.current_review_ends', ['date' => $expires]) }}</p>
     @endif
 </div>

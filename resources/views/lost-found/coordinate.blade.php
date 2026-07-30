@@ -4,15 +4,15 @@
             <div>
                 <a href="{{ route('lost-found.show', $search_case['slug']) }}" class="inline-flex items-center gap-2 text-sm font-semibold text-paw-leaf">
                     <x-lucide-arrow-left class="size-4" aria-hidden="true" />
-                    Public report
+                    {{ __('ui.public_report_bc3484d9da') }}
                 </a>
-                <p class="mt-5 text-sm font-bold uppercase text-paw-coral">Private coordination workspace</p>
-                <h1 class="mt-2 text-3xl font-bold sm:text-4xl">{{ $search_case['pet_name'] }} search</h1>
+                <p class="mt-5 text-sm font-bold uppercase text-paw-coral">{{ __('ui.private_coordination_workspace_3d6ad9a2d6') }}</p>
+                <h1 class="mt-2 text-3xl font-bold sm:text-4xl">{{ __('presentation.pet_search', ['pet' => $search_case['pet_name']]) }}</h1>
                 <p class="mt-2 text-paw-muted">{{ $search_case['public_code'] }} · {{ $search_case['status_label'] }} · {{ $search_case['last_seen_area'] }}</p>
             </div>
             <div class="flex flex-wrap gap-2">
-                <x-action-control label="Public report" icon="external-link" variant="surface" :href="route('lost-found.show', $search_case['slug'])" />
-                <x-action-control label="Print poster" icon="printer" variant="surface" :href="route('lost-found.poster', $search_case['slug'])" />
+                <x-action-control label="{{ __('ui.public_report_bc3484d9da') }}" icon="external-link" variant="surface" :href="route('lost-found.show', $search_case['slug'])" />
+                <x-action-control label="{{ __('ui.print_poster_ce47549129') }}" icon="printer" variant="surface" :href="route('lost-found.poster', $search_case['slug'])" />
             </div>
         </header>
 
@@ -20,42 +20,42 @@
             <div class="rounded-md border border-red-300 bg-red-50 p-4 text-sm text-red-900" role="alert">
                 <div class="flex items-center gap-2 font-bold">
                     <x-lucide-circle-alert class="size-5" aria-hidden="true" />
-                    Action could not be completed
+                    {{ __('ui.action_could_not_be_completed_cef35dda32') }}
                 </div>
                 <ul class="mt-2 list-disc space-y-1 pl-5">
                     @forelse ($errors->all() as $error)
                         <li>{{ $error }}</li>
                     @empty
-                        <li>Review the submitted values.</li>
+                        <li>{{ __('ui.review_the_submitted_values_dc2af8a06e') }}</li>
                     @endforelse
                 </ul>
             </div>
         @endif
 
-        <section class="grid gap-px overflow-hidden rounded-md border border-paw-line bg-paw-line md:grid-cols-4" aria-label="Coordination status">
+        <section class="grid gap-px overflow-hidden rounded-md border border-paw-line bg-paw-line md:grid-cols-4" aria-label="{{ __('ui.coordination_status_6756f05144') }}">
             @forelse ([
-                ['label' => 'Sightings', 'value' => count($sightings), 'icon' => 'eye'],
-                ['label' => 'Sectors', 'value' => count($sectors), 'icon' => 'map'],
-                ['label' => 'Tasks', 'value' => count($tasks), 'icon' => 'list-checks'],
-                ['label' => 'Volunteers', 'value' => count($volunteers), 'icon' => 'users-round'],
+                ['label' => __('ui.sightings_4906ba1ea4'), 'value' => count($sightings), 'icon' => 'eye'],
+                ['label' => __('ui.sectors_5e5b5fad50'), 'value' => count($sectors), 'icon' => 'map'],
+                ['label' => __('ui.tasks_b3a60e61a5'), 'value' => count($tasks), 'icon' => 'list-checks'],
+                ['label' => __('ui.volunteers_6ec733ad33'), 'value' => count($volunteers), 'icon' => 'users-round'],
             ] as $stat)
                 <div class="flex items-center gap-3 bg-white p-4">
                     <x-dynamic-component :component="'lucide-'.$stat['icon']" class="size-5 text-paw-leaf" aria-hidden="true" />
                     <div><strong class="block text-xl">{{ $stat['value'] }}</strong><span class="text-xs text-paw-muted">{{ $stat['label'] }}</span></div>
                 </div>
             @empty
-                <p class="col-span-full bg-white p-4 text-sm text-paw-muted">No coordination totals.</p>
+                <p class="col-span-full bg-white p-4 text-sm text-paw-muted">{{ __('ui.no_coordination_totals_2f37c9164a') }}</p>
             @endforelse
         </section>
 
         <div class="grid gap-7 xl:grid-cols-[minmax(0,1.35fr)_minmax(22rem,.65fr)]">
             <div class="grid content-start gap-8">
-                <x-search-map :markers="$map_markers" :title="'Team map for '.$search_case['pet_name']" />
+                <x-search-map :markers="$map_markers" :title="__('ui.team_map_for_2667612817').' '.$search_case['pet_name']" />
 
                 <section aria-labelledby="sightings-review-title">
                     <div class="flex items-center justify-between gap-3">
-                        <h2 id="sightings-review-title" class="text-2xl font-bold">Sighting review</h2>
-                        <span class="text-sm text-paw-muted">{{ count($sightings) }} submitted</span>
+                        <h2 id="sightings-review-title" class="text-2xl font-bold">{{ __('ui.sighting_review_61fa4e351d') }}</h2>
+                        <span class="text-sm text-paw-muted">{{ __('presentation.submitted_count', ['count' => count($sightings)]) }}</span>
                     </div>
                     <div class="mt-4 grid gap-3">
                         @forelse ($sightings as $sighting)
@@ -65,22 +65,22 @@
                                         <h3 class="font-bold">{{ $sighting['public_area'] }}</h3>
                                         <span class="rounded bg-paw-sun/60 px-2 py-1 text-xs font-bold">{{ $sighting['status_label'] }}</span>
                                         @if ($sighting['risk_flags'])
-                                            <span class="rounded bg-red-100 px-2 py-1 text-xs font-bold text-red-800">Review risk</span>
+                                            <span class="rounded bg-red-100 px-2 py-1 text-xs font-bold text-red-800">{{ __('ui.review_risk_5966ca74bb') }}</span>
                                         @endif
                                     </div>
-                                    <p class="mt-1 text-sm text-paw-muted">{{ $sighting['reporter_name'] }} · observed {{ $sighting['observed_label'] }} · sent {{ $sighting['submitted_label'] }}</p>
+                                    <p class="mt-1 text-sm text-paw-muted">{{ __('presentation.observed_and_sent', ['reporter' => $sighting['reporter_name'], 'observed' => $sighting['observed_label'], 'sent' => $sighting['submitted_label']]) }}</p>
                                     @if ($sighting['notes'])
                                         <p class="mt-3 text-sm leading-6">{{ $sighting['notes'] }}</p>
                                     @endif
                                     <dl class="mt-3 grid gap-2 text-xs sm:grid-cols-3">
-                                        <div><dt class="text-paw-muted">Confidence</dt><dd class="font-semibold">{{ $sighting['confidence'] }}</dd></div>
-                                        <div><dt class="text-paw-muted">Contact</dt><dd class="font-semibold">{{ $sighting['contact_status'] }}</dd></div>
-                                        <div><dt class="text-paw-muted">Direction</dt><dd class="font-semibold">{{ $sighting['direction'] ?: 'Unknown' }}</dd></div>
+                                        <div><dt class="text-paw-muted">{{ __('ui.confidence_6422e3e78f') }}</dt><dd class="font-semibold">{{ $sighting['confidence'] }}</dd></div>
+                                        <div><dt class="text-paw-muted">{{ __('ui.contact_2b5c3d2672') }}</dt><dd class="font-semibold">{{ $sighting['contact_status'] }}</dd></div>
+                                        <div><dt class="text-paw-muted">{{ __('ui.direction_9c8a9579ab') }}</dt><dd class="font-semibold">{{ $sighting['direction'] ?: __('ui.unknown_b764cdc0ea') }}</dd></div>
                                     </dl>
                                     @if ($sighting['exact_location'])
                                         <p class="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-paw-coral">
                                             <x-lucide-lock-keyhole class="size-3.5" aria-hidden="true" />
-                                            Exact point {{ $sighting['exact_location']['latitude'] }}, {{ $sighting['exact_location']['longitude'] }}
+                                            {{ __('presentation.exact_point', ['latitude' => $sighting['exact_location']['latitude'], 'longitude' => $sighting['exact_location']['longitude']]) }}
                                         </p>
                                     @endif
                                 </div>
@@ -92,7 +92,7 @@
                                             <input type="hidden" name="sighting_id" value="{{ $sighting['id'] }}">
                                             <button type="submit" class="action action--primary action--compact w-full">
                                                 <x-lucide-map-pin-check class="icon icon--sm" aria-hidden="true" />
-                                                <span>Confirm</span>
+                                                <span>{{ __('ui.confirm_eebdd24a77') }}</span>
                                             </button>
                                         </form>
                                         <form method="POST" action="{{ route('lost-found.actions', $search_case['slug']) }}">
@@ -101,44 +101,44 @@
                                             <input type="hidden" name="sighting_id" value="{{ $sighting['id'] }}">
                                             <button type="submit" class="action action--surface action--compact w-full">
                                                 <x-lucide-x class="icon icon--sm" aria-hidden="true" />
-                                                <span>Reject</span>
+                                                <span>{{ __('ui.reject_ab604a3607') }}</span>
                                             </button>
                                         </form>
                                     </div>
                                 @endif
                             </article>
                         @empty
-                            <p class="rounded-md border border-dashed border-paw-line p-6 text-sm text-paw-muted">No sightings have been submitted.</p>
+                            <p class="rounded-md border border-dashed border-paw-line p-6 text-sm text-paw-muted">{{ __('ui.no_sightings_have_been_submitted_440eb5398b') }}</p>
                         @endforelse
                     </div>
                 </section>
 
                 <section aria-labelledby="sectors-title">
                     <div class="flex items-center justify-between gap-3">
-                        <h2 id="sectors-title" class="text-2xl font-bold">Search sectors</h2>
-                        <span class="text-sm text-paw-muted">{{ count($sectors) }} sectors</span>
+                        <h2 id="sectors-title" class="text-2xl font-bold">{{ __('ui.search_sectors_f08a2cfb10') }}</h2>
+                        <span class="text-sm text-paw-muted">{{ trans_choice('presentation.sectors_count', count($sectors), ['count' => count($sectors)]) }}</span>
                     </div>
                     <div class="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                         @forelse ($sectors as $sector)
                             <article class="rounded-md border border-paw-line bg-white p-4">
                                 <div class="flex items-start justify-between gap-3">
                                     <div><p class="text-xs font-bold uppercase text-paw-muted">{{ $sector['code'] }}</p><h3 class="mt-1 font-bold">{{ $sector['label'] }}</h3></div>
-                                    <span class="rounded bg-paw-mint px-2 py-1 text-xs font-bold text-paw-leaf">P{{ $sector['priority'] }}</span>
+                                    <span class="rounded bg-paw-mint px-2 py-1 text-xs font-bold text-paw-leaf">{{ __('presentation.priority', ['priority' => $sector['priority']]) }}</span>
                                 </div>
                                 <p class="mt-3 text-sm font-semibold">{{ $sector['status_label'] }}</p>
                                 @if ($sector['risk_notes'])<p class="mt-2 text-xs leading-5 text-paw-coral">{{ $sector['risk_notes'] }}</p>@endif
                                 @if ($sector['access_notes'])<p class="mt-2 text-xs leading-5 text-paw-muted">{{ $sector['access_notes'] }}</p>@endif
                             </article>
                         @empty
-                            <p class="rounded-md border border-dashed border-paw-line p-6 text-sm text-paw-muted sm:col-span-2 lg:col-span-3">Create sectors before assigning area tasks.</p>
+                            <p class="rounded-md border border-dashed border-paw-line p-6 text-sm text-paw-muted sm:col-span-2 lg:col-span-3">{{ __('ui.create_sectors_before_assigning_area_tasks_f36449b323') }}</p>
                         @endforelse
                     </div>
                 </section>
 
                 <section aria-labelledby="tasks-work-title">
                     <div class="flex items-center justify-between gap-3">
-                        <h2 id="tasks-work-title" class="text-2xl font-bold">Volunteer tasks</h2>
-                        <span class="text-sm text-paw-muted">{{ count($tasks) }} total</span>
+                        <h2 id="tasks-work-title" class="text-2xl font-bold">{{ __('ui.volunteer_tasks_0fab28959b') }}</h2>
+                        <span class="text-sm text-paw-muted">{{ __('presentation.total_count', ['count' => count($tasks)]) }}</span>
                     </div>
                     <div class="mt-4 grid gap-3 sm:grid-cols-2">
                         @forelse ($tasks as $task)
@@ -160,7 +160,7 @@
                                         <input type="hidden" name="task_id" value="{{ $task['id'] }}">
                                         <button type="submit" class="action action--surface action--compact w-full">
                                             <x-lucide-play class="icon icon--sm" aria-hidden="true" />
-                                            <span>Start task</span>
+                                            <span>{{ __('ui.start_task_643f02f48b') }}</span>
                                         </button>
                                     </form>
                                 @elseif ($task['is_actor_assignee'] && $task['status'] === 'in-progress')
@@ -169,25 +169,25 @@
                                         <input type="hidden" name="action" value="complete-task">
                                         <input type="hidden" name="task_id" value="{{ $task['id'] }}">
                                         <label class="grid gap-1 text-xs font-semibold">
-                                            Result
+                                            {{ __('ui.result_6e7d50e84f') }}
                                             <textarea name="task_result" rows="2" class="rounded-md border border-paw-line px-3 py-2" required maxlength="2000"></textarea>
                                         </label>
                                         <button type="submit" class="action action--primary action--compact w-full">
                                             <x-lucide-check class="icon icon--sm" aria-hidden="true" />
-                                            <span>Complete</span>
+                                            <span>{{ __('ui.complete_143b270a32') }}</span>
                                         </button>
                                     </form>
                                 @endif
                             </article>
                         @empty
-                            <p class="rounded-md border border-dashed border-paw-line p-6 text-sm text-paw-muted sm:col-span-2">No volunteer tasks yet.</p>
+                            <p class="rounded-md border border-dashed border-paw-line p-6 text-sm text-paw-muted sm:col-span-2">{{ __('ui.no_volunteer_tasks_yet_0643206208') }}</p>
                         @endforelse
                     </div>
                 </section>
 
                 <section class="grid gap-6 lg:grid-cols-2">
                     <div>
-                        <h2 class="text-xl font-bold">Volunteers</h2>
+                        <h2 class="text-xl font-bold">{{ __('ui.volunteers_6ec733ad33') }}</h2>
                         <div class="mt-4 grid gap-3">
                             @forelse ($volunteers as $volunteer)
                                 <article class="rounded-md border border-paw-line bg-white p-4">
@@ -195,25 +195,25 @@
                                         <h3 class="font-bold">{{ $volunteer['display_name'] }}</h3>
                                         <span class="text-xs font-semibold text-paw-leaf">{{ $volunteer['status_label'] }}</span>
                                     </div>
-                                    <p class="mt-2 text-sm text-paw-muted">{{ implode(' · ', $volunteer['capabilities']) ?: 'Available for general coordination' }}</p>
+                                    <p class="mt-2 text-sm text-paw-muted">{{ implode(' · ', $volunteer['capabilities']) ?: __('ui.available_for_general_coordination_aececf7c0a') }}</p>
                                 </article>
                             @empty
-                                <p class="text-sm text-paw-muted">No volunteers have joined.</p>
+                                <p class="text-sm text-paw-muted">{{ __('ui.no_volunteers_have_joined_1a9cd8015b') }}</p>
                             @endforelse
                         </div>
                     </div>
 
                     <div>
-                        <h2 class="text-xl font-bold">Alert delivery</h2>
+                        <h2 class="text-xl font-bold">{{ __('ui.alert_delivery_f2e8386e32') }}</h2>
                         <div class="mt-4 grid gap-3">
                             @forelse ($alerts as $alert)
                                 <article class="rounded-md border border-paw-line bg-white p-4">
                                     <div class="flex items-center justify-between gap-3"><h3 class="font-bold">{{ $alert['kind'] }}</h3><span class="text-xs font-semibold">{{ ucfirst($alert['status']) }}</span></div>
-                                    <p class="mt-2 text-sm text-paw-muted">{{ $alert['region'] }} · {{ $alert['radius_km'] }} km</p>
-                                    <p class="mt-2 text-xs font-semibold">{{ $alert['recipient_count'] }} recipients</p>
+                                    <p class="mt-2 text-sm text-paw-muted">{{ $alert['region'] }} · {{ __('presentation.kilometers', ['count' => $alert['radius_km']]) }}</p>
+                                    <p class="mt-2 text-xs font-semibold">{{ trans_choice('presentation.recipients_count', $alert['recipient_count'], ['count' => $alert['recipient_count']]) }}</p>
                                 </article>
                             @empty
-                                <p class="text-sm text-paw-muted">No alert records.</p>
+                                <p class="text-sm text-paw-muted">{{ __('ui.no_alert_records_3e1921a17b') }}</p>
                             @endforelse
                         </div>
                     </div>
@@ -224,79 +224,79 @@
                 <section class="rounded-md border border-paw-line bg-white p-4">
                     <div class="flex items-center gap-2">
                         <x-lucide-lock-keyhole class="size-5 text-paw-leaf" aria-hidden="true" />
-                        <h2 class="font-bold">Private case details</h2>
+                        <h2 class="font-bold">{{ __('ui.private_case_details_b6312ab47a') }}</h2>
                     </div>
                     <dl class="mt-4 grid gap-3 text-sm">
-                        <div><dt class="text-paw-muted">Exact point</dt><dd class="mt-1 font-semibold">{{ $search_case['exact_location']['latitude'] ?? 'Not set' }}, {{ $search_case['exact_location']['longitude'] ?? 'Not set' }}</dd></div>
-                        @if ($search_case['exact_location']['note'] ?? null)<div><dt class="text-paw-muted">Location note</dt><dd class="mt-1 font-semibold">{{ $search_case['exact_location']['note'] }}</dd></div>@endif
-                        @if ($search_case['hidden_marks'])<div><dt class="text-paw-muted">Hidden mark</dt><dd class="mt-1 font-semibold">{{ $search_case['hidden_marks'] }}</dd></div>@endif
-                        <div><dt class="text-paw-muted">Protected contact</dt><dd class="mt-1 font-semibold">{{ $search_case['contact_details']['channel'] ?? 'platform' }} · {{ $search_case['contact_details']['value'] ?? 'owner account' }}</dd></div>
+                        <div><dt class="text-paw-muted">{{ __('ui.exact_point_bab90d06d4') }}</dt><dd class="mt-1 font-semibold">{{ $search_case['exact_location']['latitude'] ?? __('ui.not_set_4895f73177') }}, {{ $search_case['exact_location']['longitude'] ?? __('ui.not_set_4895f73177') }}</dd></div>
+                        @if ($search_case['exact_location']['note'] ?? null)<div><dt class="text-paw-muted">{{ __('ui.location_note_05c557e48b') }}</dt><dd class="mt-1 font-semibold">{{ $search_case['exact_location']['note'] }}</dd></div>@endif
+                        @if ($search_case['hidden_marks'])<div><dt class="text-paw-muted">{{ __('ui.hidden_mark_ed6f7d75b3') }}</dt><dd class="mt-1 font-semibold">{{ $search_case['hidden_marks'] }}</dd></div>@endif
+                        <div><dt class="text-paw-muted">{{ __('ui.protected_contact_d474199259') }}</dt><dd class="mt-1 font-semibold">{{ $search_case['contact_details']['channel'] ?? 'platform' }} · {{ $search_case['contact_details']['value'] ?? 'owner account' }}</dd></div>
                     </dl>
                 </section>
 
                 <details open class="rounded-md border border-paw-line bg-white">
                     <summary class="flex cursor-pointer list-none items-center gap-2 p-4 font-bold">
                         <x-lucide-radio-tower class="size-5 text-paw-coral" aria-hidden="true" />
-                        Publish update
+                        {{ __('ui.publish_update_a74a0a4b0b') }}
                     </summary>
                     <form method="POST" action="{{ route('lost-found.actions', $search_case['slug']) }}" class="grid gap-3 border-t border-paw-line p-4">
                         @csrf
                         <input type="hidden" name="action" value="publish-update">
-                        <label class="grid gap-1 text-sm font-semibold">Title<input name="update_title" class="rounded-md border border-paw-line px-3 py-2" required maxlength="160"></label>
-                        <label class="grid gap-1 text-sm font-semibold">Update<textarea name="update_body" rows="3" class="rounded-md border border-paw-line px-3 py-2" maxlength="2000"></textarea></label>
-                        <label class="grid gap-1 text-sm font-semibold">Public area<input name="update_area" class="rounded-md border border-paw-line px-3 py-2" maxlength="160"></label>
-                        <button type="submit" class="action action--primary w-full"><x-lucide-send class="icon" aria-hidden="true" /><span>Publish</span></button>
+                        <label class="grid gap-1 text-sm font-semibold">{{ __('ui.title_7e8cd2056d') }}<input name="update_title" class="rounded-md border border-paw-line px-3 py-2" required maxlength="160"></label>
+                        <label class="grid gap-1 text-sm font-semibold">{{ __('ui.update_c1c1009d3f') }}<textarea name="update_body" rows="3" class="rounded-md border border-paw-line px-3 py-2" maxlength="2000"></textarea></label>
+                        <label class="grid gap-1 text-sm font-semibold">{{ __('ui.public_area_911f5d1f74') }}<input name="update_area" class="rounded-md border border-paw-line px-3 py-2" maxlength="160"></label>
+                        <button type="submit" class="action action--primary w-full"><x-lucide-send class="icon" aria-hidden="true" /><span>{{ __('ui.publish_859390eb49') }}</span></button>
                     </form>
                 </details>
 
                 <details class="rounded-md border border-paw-line bg-white">
                     <summary class="flex cursor-pointer list-none items-center gap-2 p-4 font-bold">
                         <x-lucide-grid-2x2-plus class="size-5 text-paw-leaf" aria-hidden="true" />
-                        Add sector
+                        {{ __('ui.add_sector_a323b9ef8c') }}
                     </summary>
                     <form method="POST" action="{{ route('lost-found.actions', $search_case['slug']) }}" class="grid gap-3 border-t border-paw-line p-4">
                         @csrf
                         <input type="hidden" name="action" value="create-sector">
                         <div class="grid grid-cols-[6rem_1fr] gap-2">
-                            <label class="grid gap-1 text-sm font-semibold">Code<input name="sector_code" class="min-w-0 rounded-md border border-paw-line px-3 py-2" required maxlength="30" placeholder="A1"></label>
-                            <label class="grid gap-1 text-sm font-semibold">Label<input name="sector_label" class="min-w-0 rounded-md border border-paw-line px-3 py-2" required maxlength="120"></label>
+                            <label class="grid gap-1 text-sm font-semibold">{{ __('ui.code_340f463033') }}<input name="sector_code" class="min-w-0 rounded-md border border-paw-line px-3 py-2" required maxlength="30" placeholder="{{ __('ui.a1_16a36e86f6') }}"></label>
+                            <label class="grid gap-1 text-sm font-semibold">{{ __('ui.label_0e66373f45') }}<input name="sector_label" class="min-w-0 rounded-md border border-paw-line px-3 py-2" required maxlength="120"></label>
                         </div>
-                        <label class="grid gap-1 text-sm font-semibold">Priority<select name="sector_priority" class="rounded-md border border-paw-line px-3 py-2"><option value="1">High</option><option value="2" selected>Normal</option><option value="3">Low</option></select></label>
-                        <label class="grid gap-1 text-sm font-semibold">Safety notes<textarea name="sector_risk_notes" rows="2" class="rounded-md border border-paw-line px-3 py-2" maxlength="1000"></textarea></label>
-                        <label class="grid gap-1 text-sm font-semibold">Access notes<textarea name="sector_access_notes" rows="2" class="rounded-md border border-paw-line px-3 py-2" maxlength="1000"></textarea></label>
-                        <button type="submit" class="action action--surface w-full"><x-lucide-plus class="icon" aria-hidden="true" /><span>Create sector</span></button>
+                        <label class="grid gap-1 text-sm font-semibold">{{ __('ui.priority_d60dbba079') }}<select name="sector_priority" class="rounded-md border border-paw-line px-3 py-2"><option value="1">{{ __('ui.high_c4ebc6d4a5') }}</option><option value="2" selected>{{ __('ui.normal_a7248eeb45') }}</option><option value="3">{{ __('ui.low_f793de205e') }}</option></select></label>
+                        <label class="grid gap-1 text-sm font-semibold">{{ __('ui.safety_notes_7e092bf4ec') }}<textarea name="sector_risk_notes" rows="2" class="rounded-md border border-paw-line px-3 py-2" maxlength="1000"></textarea></label>
+                        <label class="grid gap-1 text-sm font-semibold">{{ __('ui.access_notes_c982c65a00') }}<textarea name="sector_access_notes" rows="2" class="rounded-md border border-paw-line px-3 py-2" maxlength="1000"></textarea></label>
+                        <button type="submit" class="action action--surface w-full"><x-lucide-plus class="icon" aria-hidden="true" /><span>{{ __('ui.create_sector_363b857b12') }}</span></button>
                     </form>
                 </details>
 
                 <details class="rounded-md border border-paw-line bg-white">
                     <summary class="flex cursor-pointer list-none items-center gap-2 p-4 font-bold">
                         <x-lucide-list-plus class="size-5 text-paw-leaf" aria-hidden="true" />
-                        Add task
+                        {{ __('ui.add_task_ba423a4640') }}
                     </summary>
                     <form method="POST" action="{{ route('lost-found.actions', $search_case['slug']) }}" class="grid gap-3 border-t border-paw-line p-4">
                         @csrf
                         <input type="hidden" name="action" value="create-task">
-                        <label class="grid gap-1 text-sm font-semibold">Task type<select name="task_type" class="rounded-md border border-paw-line px-3 py-2">@forelse ($task_types as $value => $label)<option value="{{ $value }}">{{ $label }}</option>@empty<option disabled>No types</option>@endforelse</select></label>
-                        <label class="grid gap-1 text-sm font-semibold">Sector<select name="sector_id" class="rounded-md border border-paw-line px-3 py-2"><option value="">No sector</option>@forelse ($sectors as $sector)<option value="{{ $sector['id'] }}">{{ $sector['code'] }} · {{ $sector['label'] }}</option>@empty<option disabled>No sectors yet</option>@endforelse</select></label>
-                        <label class="grid gap-1 text-sm font-semibold">Title<input name="task_title" class="rounded-md border border-paw-line px-3 py-2" required maxlength="140"></label>
-                        <label class="grid gap-1 text-sm font-semibold">Instructions<textarea name="task_description" rows="3" class="rounded-md border border-paw-line px-3 py-2" required maxlength="2000"></textarea></label>
-                        <label class="grid gap-1 text-sm font-semibold">Safety<select name="safety_level" class="rounded-md border border-paw-line px-3 py-2"><option value="standard">Standard</option><option value="pair-required">Pair required</option><option value="specialist-only">Specialist only</option><option value="dangerous">Dangerous area</option></select></label>
-                        <button type="submit" class="action action--surface w-full"><x-lucide-plus class="icon" aria-hidden="true" /><span>Create task</span></button>
+                        <label class="grid gap-1 text-sm font-semibold">{{ __('ui.task_type_7d3f5caf45') }}<select name="task_type" class="rounded-md border border-paw-line px-3 py-2">@forelse ($task_types as $value => $label)<option value="{{ $value }}">{{ $label }}</option>@empty<option disabled>{{ __('ui.no_types_c57cc94337') }}</option>@endforelse</select></label>
+                        <label class="grid gap-1 text-sm font-semibold">{{ __('ui.sector_31a231c06e') }}<select name="sector_id" class="rounded-md border border-paw-line px-3 py-2"><option value="">{{ __('ui.no_sector_869ab03c8d') }}</option>@forelse ($sectors as $sector)<option value="{{ $sector['id'] }}">{{ $sector['code'] }} · {{ $sector['label'] }}</option>@empty<option disabled>{{ __('ui.no_sectors_yet_e4ca3596cf') }}</option>@endforelse</select></label>
+                        <label class="grid gap-1 text-sm font-semibold">{{ __('ui.title_7e8cd2056d') }}<input name="task_title" class="rounded-md border border-paw-line px-3 py-2" required maxlength="140"></label>
+                        <label class="grid gap-1 text-sm font-semibold">{{ __('ui.instructions_934652dce4') }}<textarea name="task_description" rows="3" class="rounded-md border border-paw-line px-3 py-2" required maxlength="2000"></textarea></label>
+                        <label class="grid gap-1 text-sm font-semibold">{{ __('ui.safety_726d11bd5b') }}<select name="safety_level" class="rounded-md border border-paw-line px-3 py-2"><option value="standard">{{ __('ui.standard_ef6691545d') }}</option><option value="pair-required">{{ __('ui.pair_required_ddacefc0a2') }}</option><option value="specialist-only">{{ __('ui.specialist_only_83c6268f89') }}</option><option value="dangerous">{{ __('ui.dangerous_area_05d820efaf') }}</option></select></label>
+                        <button type="submit" class="action action--surface w-full"><x-lucide-plus class="icon" aria-hidden="true" /><span>{{ __('ui.create_task_6f541e1b25') }}</span></button>
                     </form>
                 </details>
 
                 <details class="rounded-md border border-paw-coral/40 bg-white">
                     <summary class="flex cursor-pointer list-none items-center gap-2 p-4 font-bold">
                         <x-lucide-circle-dot-dashed class="size-5 text-paw-coral" aria-hidden="true" />
-                        Change search status
+                        {{ __('ui.change_search_status_4fe634b8ba') }}
                     </summary>
                     <form method="POST" action="{{ route('lost-found.actions', $search_case['slug']) }}" class="grid gap-3 border-t border-paw-line p-4">
                         @csrf
                         <input type="hidden" name="action" value="update-status">
-                        <label class="grid gap-1 text-sm font-semibold">Status<select name="status" class="rounded-md border border-paw-line px-3 py-2">@forelse ($statuses as $value => $label)<option value="{{ $value }}" @selected($search_case['status'] === $value)>{{ $label }}</option>@empty<option disabled>No statuses</option>@endforelse</select></label>
-                        <label class="grid gap-1 text-sm font-semibold">Public note<textarea name="status_note" rows="3" class="rounded-md border border-paw-line px-3 py-2" maxlength="1500"></textarea></label>
-                        <label class="flex items-start gap-2 text-xs"><input type="checkbox" name="return_confirmed" value="1" class="mt-0.5"><span>When choosing returned or returned home, I confirm the animal is safe and urgent processes can stop.</span></label>
-                        <button type="submit" class="action action--primary w-full"><x-lucide-refresh-cw class="icon" aria-hidden="true" /><span>Update status</span></button>
+                        <label class="grid gap-1 text-sm font-semibold">{{ __('ui.status_920e413c7d') }}<select name="status" class="rounded-md border border-paw-line px-3 py-2">@forelse ($statuses as $value => $label)<option value="{{ $value }}" @selected($search_case['status'] === $value)>{{ $label }}</option>@empty<option disabled>{{ __('ui.no_statuses_b34efdc994') }}</option>@endforelse</select></label>
+                        <label class="grid gap-1 text-sm font-semibold">{{ __('ui.public_note_12ccc50767') }}<textarea name="status_note" rows="3" class="rounded-md border border-paw-line px-3 py-2" maxlength="1500"></textarea></label>
+                        <label class="flex items-start gap-2 text-xs"><input type="checkbox" name="return_confirmed" value="1" class="mt-0.5"><span>{{ __('ui.when_choosing_returned_or_returned_home_i_confirm_b3aca5919a') }}</span></label>
+                        <button type="submit" class="action action--primary w-full"><x-lucide-refresh-cw class="icon" aria-hidden="true" /><span>{{ __('ui.update_status_1e6bf669df') }}</span></button>
                     </form>
                 </details>
             </aside>

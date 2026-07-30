@@ -11,7 +11,7 @@
     <header>
         <strong>{{ $message['sender'] }}</strong>
         @if ($message['type'] === 'professional')
-            <x-lucide-badge-check class="icon icon--sm" aria-label="Verified professional answer" />
+            <x-lucide-badge-check class="icon icon--sm" aria-label="{{ __('ui.verified_professional_answer_eed084c091') }}" />
         @endif
         <time datetime="{{ $message['datetime'] }}">{{ $message['time'] }}</time>
     </header>
@@ -35,7 +35,15 @@
                     @endif
                 </div>
                 @if ($message['type'] === 'audio')
-                    <button type="button" class="messaging-audio" data-audio-toggle aria-label="Play audio message" aria-pressed="false">
+                    <button
+                        type="button"
+                        class="messaging-audio"
+                        data-audio-toggle
+                        data-audio-play-label="{{ __('ui.play_audio_message_c1c2401fcb') }}"
+                        data-audio-pause-label="{{ __('ui.pause_audio_message_c07d456af7') }}"
+                        aria-label="{{ __('ui.play_audio_message_c1c2401fcb') }}"
+                        aria-pressed="false"
+                    >
                         <x-lucide-play class="icon icon--sm" aria-hidden="true" />
                         <span aria-hidden="true">
                             @for ($bar = 0; $bar < 12; $bar++)
@@ -52,13 +60,13 @@
 
     <footer>
         @if ($message['edited'])
-            <span>Edited</span>
+            <span>{{ __('ui.edited_7117f08071') }}</span>
         @endif
         @if ($message['pinned'] ?? false)
-            <span><x-lucide-pin class="icon icon--xs" aria-hidden="true" /> Pinned</span>
+            <span><x-lucide-pin class="icon icon--xs" aria-hidden="true" /> {{ __('ui.pinned_f20c879465') }}</span>
         @endif
         @if ($message['bookmarked'] ?? false)
-            <span><x-lucide-bookmark class="icon icon--xs" aria-hidden="true" /> Saved privately</span>
+            <span><x-lucide-bookmark class="icon icon--xs" aria-hidden="true" /> {{ __('ui.saved_privately_8ec8c9b372') }}</span>
         @endif
         @if ($message['reaction'] ?? null)
             <span><x-lucide-smile-plus class="icon icon--xs" aria-hidden="true" /> {{ $reactionLabel }}</span>
@@ -66,7 +74,7 @@
         <span>{{ $message['status'] }}</span>
 
         <details class="messaging-message-menu">
-            <summary aria-label="Message actions"><x-lucide-ellipsis class="icon icon--sm" aria-hidden="true" /></summary>
+            <summary aria-label="{{ __('ui.message_actions_f532ee1f72') }}"><x-lucide-ellipsis class="icon icon--sm" aria-hidden="true" /></summary>
             <div>
                 <form method="POST" action="{{ route('messages.actions') }}">
                     @csrf
@@ -74,35 +82,35 @@
                     <input type="hidden" name="conversation" value="{{ $conversation['key'] }}">
                     <input type="hidden" name="message" value="{{ $message['id'] }}">
                     <input type="hidden" name="reaction" value="thanks">
-                    <button type="submit"><x-lucide-smile-plus class="icon icon--sm" /> Thanks</button>
+                    <button type="submit"><x-lucide-smile-plus class="icon icon--sm" /> {{ __('ui.thanks_bb47b8ff5f') }}</button>
                 </form>
                 <form method="POST" action="{{ route('messages.actions') }}">
                     @csrf
                     <input type="hidden" name="action" value="pin-message">
                     <input type="hidden" name="conversation" value="{{ $conversation['key'] }}">
                     <input type="hidden" name="message" value="{{ $message['id'] }}">
-                    <button type="submit"><x-lucide-pin class="icon icon--sm" /> Pin</button>
+                    <button type="submit"><x-lucide-pin class="icon icon--sm" /> {{ __('ui.pin_ff1cee7441') }}</button>
                 </form>
                 <form method="POST" action="{{ route('messages.actions') }}">
                     @csrf
                     <input type="hidden" name="action" value="bookmark-message">
                     <input type="hidden" name="conversation" value="{{ $conversation['key'] }}">
                     <input type="hidden" name="message" value="{{ $message['id'] }}">
-                    <button type="submit"><x-lucide-bookmark class="icon icon--sm" /> Save</button>
+                    <button type="submit"><x-lucide-bookmark class="icon icon--sm" /> {{ __('ui.save_1509f561f2') }}</button>
                 </form>
                 <button
                     type="button"
                     data-message-reply-trigger
                     data-message-reply-text="{{ $replyText }}"
                 >
-                    <x-lucide-reply class="icon icon--sm" /> Reply
+                    <x-lucide-reply class="icon icon--sm" /> {{ __('ui.reply_c253f451bd') }}
                 </button>
                 <form method="POST" action="{{ route('messages.actions') }}">
                     @csrf
                     <input type="hidden" name="action" value="delete-message-self">
                     <input type="hidden" name="conversation" value="{{ $conversation['key'] }}">
                     <input type="hidden" name="message" value="{{ $message['id'] }}">
-                    <button type="submit"><x-lucide-eye-off class="icon icon--sm" /> Delete for me</button>
+                    <button type="submit"><x-lucide-eye-off class="icon icon--sm" /> {{ __('ui.delete_for_me_2c95e9e132') }}</button>
                 </form>
                 @if ($message['mine'])
                     <form method="POST" action="{{ route('messages.actions') }}">
@@ -110,7 +118,7 @@
                         <input type="hidden" name="action" value="delete-message-everyone">
                         <input type="hidden" name="conversation" value="{{ $conversation['key'] }}">
                         <input type="hidden" name="message" value="{{ $message['id'] }}">
-                        <button type="submit"><x-lucide-trash-2 class="icon icon--sm" /> Delete for all</button>
+                        <button type="submit"><x-lucide-trash-2 class="icon icon--sm" /> {{ __('ui.delete_for_all_423b02dbc6') }}</button>
                     </form>
                 @endif
                 <form method="POST" action="{{ route('messages.actions') }}">
@@ -120,7 +128,7 @@
                     <input type="hidden" name="message" value="{{ $message['id'] }}">
                     <input type="hidden" name="report_reason" value="other">
                     <input type="hidden" name="body" value="Review this message with its surrounding context.">
-                    <button type="submit"><x-lucide-flag class="icon icon--sm" /> Report</button>
+                    <button type="submit"><x-lucide-flag class="icon icon--sm" /> {{ __('ui.report_b6ce788d97') }}</button>
                 </form>
                 @if ($editable)
                     <form method="POST" action="{{ route('messages.actions') }}" class="messaging-message-menu__edit">
@@ -129,10 +137,10 @@
                         <input type="hidden" name="conversation" value="{{ $conversation['key'] }}">
                         <input type="hidden" name="message" value="{{ $message['id'] }}">
                         <label>
-                            <span>Edit message</span>
+                            <span>{{ __('ui.edit_message_9757ccd5ef') }}</span>
                             <input type="text" name="body" value="{{ $message['body'] }}" maxlength="4000" required>
                         </label>
-                        <button type="submit"><x-lucide-check class="icon icon--sm" /> Save edit</button>
+                        <button type="submit"><x-lucide-check class="icon icon--sm" /> {{ __('ui.save_edit_a7fde19840') }}</button>
                     </form>
                 @endif
             </div>

@@ -1,6 +1,6 @@
 @props([
     'items' => [],
-    'empty' => 'No details available.',
+    'empty' => __('ui.no_details_available_1c787606df'),
     'strong' => false,
 ])
 
@@ -17,7 +17,7 @@
         </div>
     @empty
         <div>
-            <dt class="sr-only">Details</dt>
+            <dt class="sr-only">{{ __('ui.details_45989de49f') }}</dt>
             <dd class="text-sm text-paw-muted">{{ $empty }}</dd>
         </div>
     @endforelse

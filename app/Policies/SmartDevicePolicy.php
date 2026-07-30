@@ -1,21 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Policies;
 
 use App\Models\SmartDevice;
 use App\Models\User;
-use App\Services\ForumActor;
 
 class SmartDevicePolicy
 {
-    public function __construct(private readonly ForumActor $actor) {}
-
     /**
      * Determine whether the user can view any models.
      */
     public function viewAny(?User $user): bool
     {
-        return true;
+        return $user?->isActive() === true;
     }
 
     /**
@@ -23,7 +22,8 @@ class SmartDevicePolicy
      */
     public function view(?User $user, SmartDevice $smartDevice): bool
     {
-        return $smartDevice->isOwnedBy($this->actor->key());
+        return $user?->isActive() === true
+            && $smartDevice->isOwnedBy($user->actor_key);
     }
 
     /**
@@ -31,7 +31,7 @@ class SmartDevicePolicy
      */
     public function create(?User $user): bool
     {
-        return true;
+        return $user?->isActive() === true;
     }
 
     /**
@@ -47,6 +47,19 @@ class SmartDevicePolicy
         return $this->view($user, $smartDevice)
             && ! $smartDevice->is_blocked
             && ! $smartDevice->is_reported_stolen;
+    }
+
+    public function controlCommand(
+        ?User $user,
+        SmartDevice $smartDevice,
+        string $command,
+    ): bool {
+        if ($command === 'enable-lost-mode') {
+            return $this->view($user, $smartDevice)
+                && ! $smartDevice->is_blocked;
+        }
+
+        return $this->control($user, $smartDevice);
     }
 
     public function share(?User $user, SmartDevice $smartDevice): bool

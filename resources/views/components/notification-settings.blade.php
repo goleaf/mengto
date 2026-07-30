@@ -1,6 +1,6 @@
 @props(['settings'])
 
-<x-content-panel section="notification-settings" title="Quiet settings">
+<x-content-panel section="notification-settings" title="{{ __('ui.quiet_settings_ce4695a9ba') }}">
     <div class="section-body">
         @forelse ($settings as $setting)
             <x-action-form
@@ -24,7 +24,7 @@
                 </button>
             </x-action-form>
         @empty
-            <p class="text-sm text-paw-muted">Notification settings unavailable.</p>
+            <p class="text-sm text-paw-muted">{{ __('ui.notification_settings_unavailable_76d0b29f6f') }}</p>
         @endforelse
     </div>
 </x-content-panel>

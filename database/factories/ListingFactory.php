@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories;
 
 use App\Enums\ListingStatus;
@@ -7,13 +9,12 @@ use App\Enums\ListingType;
 use App\Enums\ModerationStatus;
 use App\Enums\SellerType;
 use App\Models\Listing;
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
 /**
- * @extends Factory<Listing>
+ * @extends ApplicationFactory<Listing>
  */
-class ListingFactory extends Factory
+class ListingFactory extends ApplicationFactory
 {
     /**
      * Define the model's default state.

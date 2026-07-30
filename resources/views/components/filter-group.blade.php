@@ -2,7 +2,7 @@
     'filters',
     'label',
     'size' => 'compact',
-    'empty' => 'Filters unavailable.',
+    'empty' => __('ui.filters_unavailable_8c77a59db6'),
     'active' => null,
     'submit' => false,
 ])
@@ -14,8 +14,9 @@
 >
     @forelse ($filters as $filter)
         <x-filter-chip
-            :label="$filter"
-            :active="$active ? str($filter)->slug()->toString() === $active : $loop->first"
+            :label="$filter['label']"
+            :value="$filter['value']"
+            :active="$active ? $filter['value'] === $active : $loop->first"
             :size="$size"
             :type="$submit ? 'submit' : 'button'"
         />

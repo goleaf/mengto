@@ -15,22 +15,22 @@
     <form method="GET" action="{{ route('discover.index') }}" class="discover-search">
         <x-search-field
             id="discover-search"
-            label="Search PawCircle"
-            placeholder="Search pets, people, meetups, and groups"
+            label="{{ __('ui.search_brand_a6f8e15d35') }}"
+            placeholder="{{ __('ui.search_pets_people_meetups_and_groups_49b01f3814') }}"
             :value="$search"
         />
 
         <x-filter-group
             :filters="$filters"
             :active="$activeFilter"
-            label="Discover category filters"
-            empty="Categories unavailable."
+            label="{{ __('ui.discover_category_filters_db5c46449b') }}"
+            empty="{{ __('ui.categories_unavailable_4e5733146b') }}"
             submit
         />
 
         <x-action-control
             type="submit"
-            label="Search"
+            label="{{ __('ui.search_49c266baaa') }}"
             icon="search"
             variant="primary"
             size="toolbar"

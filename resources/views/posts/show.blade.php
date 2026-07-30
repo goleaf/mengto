@@ -1,17 +1,17 @@
 <x-app-shell
     :owner="$owner"
-    :title="'Conversation about '.$post['pet'].' | PawCircle'"
+    :title="__('presentation.brand_title', ['title' => __('ui.conversation_about_b2a67196e2').' '.$post['pet']])"
     active-section="feed"
 >
     <x-page-stack>
         <x-page-header
-            eyebrow="Neighborhood conversation"
-            :title="$post['pet'].'’s moment'"
-            description="Follow the local context, add a thoughtful reply, or return to the neighborhood feed."
+            eyebrow="{{ __('ui.neighborhood_conversation_6eaef6c1b4') }}"
+            :title="__('presentation.pet_moment_title', ['pet' => $post['pet']])"
+            description="{{ __('ui.follow_the_local_context_add_a_thoughtful_reply_1f8cd21f51') }}"
         >
             <x-slot:actions>
                 <x-action-control
-                    label="Back to feed"
+                    label="{{ __('ui.back_to_feed_34c445f7d7') }}"
                     icon="arrow-left"
                     :href="$post['return_url'] ?? route('home')"
                     variant="paper"
@@ -36,8 +36,8 @@
 
                 <x-content-panel
                     section="thread-guide"
-                    eyebrow="Community notes"
-                    title="Keep replies useful"
+                    eyebrow="{{ __('ui.community_notes_1828955e92') }}"
+                    title="{{ __('ui.keep_replies_useful_3f0ea8e178') }}"
                     size="compact"
                 >
                     <x-icon-list :items="$threadGuide" class="mt-4" />

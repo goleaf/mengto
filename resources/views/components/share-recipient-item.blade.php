@@ -20,7 +20,7 @@
             'target' => $recipient['key'],
             'body' => $recipient['message'],
         ]"
-        label="Send"
+        label="{{ __('ui.send_f6f4688ff2') }}"
         icon="send"
         variant="primary"
         size="compact"

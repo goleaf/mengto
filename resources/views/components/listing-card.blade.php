@@ -1,7 +1,7 @@
 @props(['listing'])
 
 <article class="market-card">
-    <a href="{{ route('marketplace.show', $listing['slug']) }}" class="market-card__media" aria-label="View {{ $listing['title'] }}">
+    <a href="{{ route('marketplace.show', $listing['slug']) }}" class="market-card__media" aria-label="{{ __('presentation.view_listing', ['title' => $listing['title']]) }}">
         @if ($listing['cover_url'])
             <img src="{{ $listing['cover_url'] }}" alt="{{ $listing['title'] }}" loading="lazy">
         @else
@@ -34,21 +34,21 @@
 
         <p class="market-card__excerpt">{{ $listing['excerpt'] }}</p>
 
-        <div class="flex flex-wrap gap-2" aria-label="Suitable pets">
+        <div class="flex flex-wrap gap-2" aria-label="{{ __('ui.suitable_pets_f64e6eef51') }}">
             @forelse (array_slice($listing['species_labels'], 0, 3) as $species)
                 <span class="tag">{{ $species }}</span>
             @empty
-                <span class="text-xs text-paw-muted">Pet type not specified</span>
+                <span class="text-xs text-paw-muted">{{ __('ui.pet_type_not_specified_af58a4e2cc') }}</span>
             @endforelse
         </div>
 
         <dl class="market-card__facts">
             <div>
-                <dt><x-lucide-map-pin class="size-3.5" aria-hidden="true" /> Location</dt>
+                <dt><x-lucide-map-pin class="size-3.5" aria-hidden="true" /> {{ __('ui.location_15b61974b2') }}</dt>
                 <dd>{{ $listing['location_label'] }}</dd>
             </div>
             <div>
-                <dt><x-lucide-package-check class="size-3.5" aria-hidden="true" /> Availability</dt>
+                <dt><x-lucide-package-check class="size-3.5" aria-hidden="true" /> {{ __('ui.availability_12f67f8539') }}</dt>
                 <dd>{{ $listing['availability_label'] }} · {{ $listing['quantity'] }}</dd>
             </div>
         </dl>
@@ -58,7 +58,7 @@
                 <span class="flex items-center gap-1 truncate font-semibold text-paw-ink">
                     {{ $listing['business_name'] ?? $listing['owner_name'] }}
                     @if ($listing['seller_verified'])
-                        <x-lucide-badge-check class="size-3.5 shrink-0 text-paw-leaf" aria-label="Verified seller" />
+                        <x-lucide-badge-check class="size-3.5 shrink-0 text-paw-leaf" aria-label="{{ __('ui.verified_seller_8988c729d5') }}" />
                     @endif
                 </span>
                 <span>
@@ -70,8 +70,8 @@
             </div>
             <div class="flex shrink-0 gap-2">
                 <x-action-control
-                    :label="$listing['is_saved'] ? 'Saved' : 'Save'"
-                    :active-label="$listing['is_saved'] ? 'Saved' : null"
+                    :label="$listing['is_saved'] ? __('ui.saved_b5c120b316') : __('ui.save_1509f561f2')"
+                    :active-label="$listing['is_saved'] ? __('ui.saved_b5c120b316') : null"
                     icon="bookmark"
                     active-icon="bookmark-check"
                     :active="$listing['is_saved']"
@@ -79,7 +79,7 @@
                     :endpoint="route('marketplace.actions', $listing['slug'])"
                     :payload="['action' => 'toggle-save']"
                 />
-                <x-action-control label="View" icon="arrow-right" variant="primary" :href="route('marketplace.show', $listing['slug'])" />
+                <x-action-control label="{{ __('ui.view_dcc839a401') }}" icon="arrow-right" variant="primary" :href="route('marketplace.show', $listing['slug'])" />
             </div>
         </footer>
     </div>

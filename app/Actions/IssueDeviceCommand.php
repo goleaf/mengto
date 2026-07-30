@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Actions;
 
 use App\Enums\DeviceCommandStatus;
@@ -28,7 +30,7 @@ class IssueDeviceCommand
         return DB::transaction(function () use ($device, $data): DeviceCommand {
             if (in_array($data['command_type'], self::FORBIDDEN_COMMANDS, true)) {
                 throw ValidationException::withMessages([
-                    'command_type' => 'This command is not allowed by the platform safety policy.',
+                    'command_type' => __('messages.this_command_is_not_allowed_by_the_platform_safety_polic_d02835f564'),
                 ]);
             }
 
@@ -40,7 +42,7 @@ class IssueDeviceCommand
             if ($existing !== null) {
                 if ($existing->smart_device_id !== $device->id) {
                     throw ValidationException::withMessages([
-                        'idempotency_key' => 'This command key is already in use.',
+                        'idempotency_key' => __('messages.this_command_key_is_already_in_use_d64c47642c'),
                     ]);
                 }
 
@@ -51,19 +53,21 @@ class IssueDeviceCommand
                 ->select([
                     'id', 'owner_key', 'name', 'type', 'status',
                     'connection_status', 'operating_mode', 'battery_percent',
-                    'is_blocked', 'is_reported_stolen', 'lock_version',
+                    'is_blocked', 'is_reported_stolen', 'safety_state',
+                    'safety_state_recorded_at', 'lock_version',
                 ])
                 ->lockForUpdate()
                 ->findOrFail($device->id);
 
-            if ($lockedDevice->is_blocked || $lockedDevice->is_reported_stolen) {
+            if ($lockedDevice->is_blocked) {
                 throw ValidationException::withMessages([
-                    'command_type' => 'Remote control is blocked for this device.',
+                    'command_type' => __('messages.remote_control_is_blocked_for_this_device_c0b2dc51f0'),
                 ]);
             }
 
             $this->guardCapability($lockedDevice, $data['command_type']);
             $this->guardConfirmation($data);
+            $this->guardSafetyInterlocks($lockedDevice, $data['command_type']);
             $this->guardDuplicateDispense($lockedDevice, $data);
 
             $command = DeviceCommand::query()->create([
@@ -77,17 +81,16 @@ class IssueDeviceCommand
                     'duration_minutes' => $data['duration_minutes'] ?? null,
                     'reason' => $data['reason'] ?? null,
                 ], static fn (mixed $value): bool => $value !== null && $value !== ''),
-                'status' => DeviceCommandStatus::Completed,
+                'status' => DeviceCommandStatus::Accepted,
                 'safety_level' => $this->safetyLevel($data['command_type']),
                 'requires_confirmation' => $this->requiresConfirmation($data['command_type']),
                 'confirmed_at' => ($data['confirmed'] ?? false) ? now() : null,
                 'issued_at' => now(),
-                'delivered_at' => now(),
-                'completed_at' => now(),
                 'expires_at' => now()->addMinutes(5),
                 'result' => [
-                    'adapter' => 'local-demo',
-                    'message' => 'Command accepted and applied by the local demo adapter.',
+                    'platform_state_updated' => $this->updatesPlatformState($data['command_type']),
+                    'device_execution_confirmed' => false,
+                    'message' => __('messages.command_accepted_device_execution_not_yet_confirmed'),
                 ],
             ]);
 
@@ -98,7 +101,7 @@ class IssueDeviceCommand
             AuditLog::query()->create([
                 'actor_key' => $this->actor->key(),
                 'actor_role' => 'device-owner',
-                'action' => 'device-command.completed',
+                'action' => 'device-command.accepted',
                 'target_type' => DeviceCommand::class,
                 'target_id' => (string) $command->id,
                 'metadata' => [
@@ -127,13 +130,33 @@ class IssueDeviceCommand
             DeviceType::Camera => [
                 'refresh-status', 'enable-privacy-mode', 'disable-privacy-mode',
             ],
+            DeviceType::LitterBox => ['refresh-status', 'clean-litter'],
             DeviceType::SmartDoor => ['refresh-status', 'lock-door', 'unlock-door'],
             default => ['refresh-status'],
         };
 
         if (! in_array($command, $allowed, true)) {
             throw ValidationException::withMessages([
-                'command_type' => 'This command is not supported by the selected device type.',
+                'command_type' => __('messages.this_command_is_not_supported_by_the_selected_device_typ_60d0f37c98'),
+            ]);
+        }
+    }
+
+    private function guardSafetyInterlocks(SmartDevice $device, string $command): void
+    {
+        $requiredClearKeys = match ($command) {
+            'lock-door', 'unlock-door' => ['pet_in_doorway', 'obstruction_detected'],
+            'clean-litter' => ['pet_present'],
+            'start-water-pump' => ['leak_detected'],
+            default => [],
+        };
+
+        if (
+            $requiredClearKeys !== []
+            && ! $device->hasFreshClearInterlocks($requiredClearKeys)
+        ) {
+            throw ValidationException::withMessages([
+                'command_type' => __('messages.device_safety_interlock_is_missing_stale_or_not_clear'),
             ]);
         }
     }
@@ -146,7 +169,7 @@ class IssueDeviceCommand
             && ! ($data['confirmed'] ?? false)
         ) {
             throw ValidationException::withMessages([
-                'confirmed' => 'Confirm this high-impact command before it is sent.',
+                'confirmed' => __('messages.confirm_this_high_impact_command_before_it_is_sent_78f41d9b30'),
             ]);
         }
     }
@@ -176,7 +199,7 @@ class IssueDeviceCommand
         if ($recent !== null) {
             throw ValidationException::withMessages([
                 'confirm_duplicate' => sprintf(
-                    'A portion was already issued by %s at %s. Confirm only if another portion is intended.',
+                    __('messages.a_portion_was_already_issued_by_s_at_s_confirm_only_if_a_7e62030100'),
                     $recent->author_name,
                     $recent->issued_at?->format('H:i:s'),
                 ),
@@ -186,13 +209,18 @@ class IssueDeviceCommand
 
     private function requiresConfirmation(string $command): bool
     {
-        return in_array($command, ['unlock-door', 'enable-lost-mode'], true);
+        return in_array($command, [
+            'unlock-door',
+            'lock-door',
+            'clean-litter',
+            'enable-lost-mode',
+        ], true);
     }
 
     private function safetyLevel(string $command): string
     {
         return match ($command) {
-            'unlock-door' => 'critical',
+            'unlock-door', 'lock-door', 'clean-litter' => 'critical',
             'enable-lost-mode', 'dispense-food' => 'important',
             default => 'normal',
         };
@@ -217,16 +245,22 @@ class IssueDeviceCommand
                 'status' => DeviceStatus::Active,
                 'operating_mode' => 'normal',
             ],
-            'lock-door' => ['operating_mode' => 'locked'],
-            'unlock-door' => ['operating_mode' => 'unlocked'],
-            'stop-water-pump' => ['operating_mode' => 'pump-stopped'],
-            'start-water-pump' => ['operating_mode' => 'normal'],
             default => [],
         };
 
         if ($updates !== []) {
             $device->forceFill($updates)->save();
         }
+    }
+
+    private function updatesPlatformState(string $command): bool
+    {
+        return in_array($command, [
+            'enable-lost-mode',
+            'disable-lost-mode',
+            'enable-privacy-mode',
+            'disable-privacy-mode',
+        ], true);
     }
 
     private function recordCommandEvent(SmartDevice $device, DeviceCommand $command): void
@@ -248,18 +282,21 @@ class IssueDeviceCommand
                 default => DeviceEventSeverity::Routine,
             },
             'status' => 'open',
+            'occurrence_count' => 1,
+            'first_occurred_at' => $command->issued_at,
+            'last_occurred_at' => $command->issued_at,
             'title' => match ($command->command_type) {
-                'dispense-food' => 'Portion dispensed; eating not confirmed',
-                'enable-lost-mode' => 'Lost mode enabled',
-                'unlock-door' => 'Pet door unlocked by confirmed command',
+                'dispense-food' => __('messages.portion_dispensed_eating_unconfirmed'),
+                'enable-lost-mode' => __('messages.lost_mode_enabled'),
+                'unlock-door' => __('messages.pet_door_unlocked'),
                 default => str($command->command_type)->headline()->toString(),
             },
-            'summary' => 'A device command completed. Its physical outcome may still require a person to verify it.',
+            'summary' => __('messages.device_command_accepted_physical_outcome_unconfirmed'),
             'details' => [
                 'command_id' => $command->id,
                 ...($command->parameters ?? []),
             ],
-            'occurred_at' => $command->completed_at,
+            'occurred_at' => $command->issued_at,
             'timezone' => 'Europe/Vilnius',
             'confidence' => 'high',
             'source' => 'device-command',

@@ -1,6 +1,6 @@
 @props([
     'markers',
-    'title' => 'Search map',
+    'title' => __('ui.search_map_c802781b2d'),
     'compact' => false,
 ])
 
@@ -9,7 +9,7 @@
         <h2 id="search-map-title" class="text-lg font-bold">{{ $title }}</h2>
         <span class="inline-flex items-center gap-1 text-xs font-semibold text-paw-muted">
             <x-lucide-shield-check class="size-4 text-paw-leaf" aria-hidden="true" />
-            Generalized locations
+            {{ __('ui.generalized_locations_f8a7558000') }}
         </span>
     </div>
 
@@ -32,12 +32,12 @@
             </a>
         @empty
             <p class="absolute inset-0 grid place-items-center p-6 text-center text-sm font-semibold text-paw-muted">
-                No public map points match these filters.
+                {{ __('ui.no_public_map_points_match_these_filters_2df593b49d') }}
             </p>
         @endforelse
     </div>
 
-    <ol class="grid gap-2 sm:grid-cols-2" aria-label="Map points in text form">
+    <ol class="grid gap-2 sm:grid-cols-2" aria-label="{{ __('ui.map_points_in_text_form_591995251f') }}">
         @forelse ($markers as $marker)
             <li class="flex items-start gap-2 border-l-2 border-paw-coral pl-3 text-sm">
                 <x-lucide-map-pin class="mt-0.5 size-4 shrink-0 text-paw-coral" aria-hidden="true" />
@@ -48,7 +48,7 @@
                 </span>
             </li>
         @empty
-            <li class="text-sm text-paw-muted">No locations available.</li>
+            <li class="text-sm text-paw-muted">{{ __('ui.no_locations_available_c1f36516a2') }}</li>
         @endforelse
     </ol>
 </section>

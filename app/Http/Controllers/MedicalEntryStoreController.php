@@ -19,6 +19,6 @@ class MedicalEntryStoreController extends Controller
         $create->handle($medicalRecord, $request->validated());
 
         return to_route('medical-records.manage', $medicalRecord)
-            ->with('feedback', 'Health entry saved with its source and verification status.');
+            ->with('feedback', __('messages.health_entry_saved_with_its_source_and_verification_stat_e889628728'));
     }
 }

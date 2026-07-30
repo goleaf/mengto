@@ -19,6 +19,6 @@ class CareRoutineStoreController extends Controller
         $create->handle($careJournal, $request->validated());
 
         return to_route('care-journals.manage', $careJournal)
-            ->with('feedback', 'Routine saved as a versioned private care plan.');
+            ->with('feedback', __('messages.routine_saved_as_a_versioned_private_care_plan_dfca765984'));
     }
 }

@@ -1,16 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories;
 
 use App\Enums\DeviceAutomationStatus;
 use App\Models\DeviceAutomation;
 use App\Models\SmartDevice;
-use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<DeviceAutomation>
+ * @extends ApplicationFactory<DeviceAutomation>
  */
-class DeviceAutomationFactory extends Factory
+class DeviceAutomationFactory extends ApplicationFactory
 {
     /**
      * Define the model's default state.

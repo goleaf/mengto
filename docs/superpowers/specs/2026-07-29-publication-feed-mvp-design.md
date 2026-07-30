@@ -1,5 +1,7 @@
 # PawCircle Publication Feed MVP Design
 
+> Product design source. Preserve its domain detail; current production, security, persistence, and verification requirements are governed by `docs/index.md`.
+
 ## Status
 
 Approved from the user's Point 2 product specification. This document narrows

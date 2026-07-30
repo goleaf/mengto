@@ -31,7 +31,7 @@ class CreateCareTask
 
                 if (! $belongs) {
                     throw ValidationException::withMessages([
-                        'care_routine_id' => 'This routine does not belong to the selected journal.',
+                        'care_routine_id' => __('messages.this_routine_does_not_belong_to_the_selected_journal_ed6a8c6fd7'),
                     ]);
                 }
             }

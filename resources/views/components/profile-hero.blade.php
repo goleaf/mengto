@@ -2,7 +2,7 @@
     'profile',
     'section',
     'badges' => [],
-    'summaryLabel' => 'Profile summary',
+    'summaryLabel' => __('ui.profile_summary_b5913ff585'),
     'summaryIcons' => [],
 ])
 
@@ -35,7 +35,7 @@
 
             <x-action-list
                 :actions="$profile['actions']"
-                :label="$profile['name'].' profile actions'"
+                :label="__('presentation.profile_actions', ['name' => $profile['name']])"
             />
         </div>
 
@@ -53,7 +53,7 @@
             :items="$profile['stats']"
             :label="$summaryLabel"
             :icons="$summaryIcons"
-            empty="Profile summary unavailable."
+            empty="{{ __('ui.profile_summary_unavailable_4509769cdd') }}"
         />
     </div>
 </section>

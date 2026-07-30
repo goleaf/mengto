@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests;
 
 use App\Enums\CareEntryStatus;
@@ -30,6 +32,9 @@ class StoreCareEntryRequest extends FormRequest
             'title' => ['required', 'string', 'max:180'],
             'started_at' => ['required', 'date'],
             'ended_at' => ['nullable', 'date', 'after_or_equal:started_at'],
+            'source_recorded_at' => ['nullable', 'date'],
+            'source_timezone' => ['nullable', 'timezone:all'],
+            'submitted_offline' => ['nullable', 'boolean'],
             'status' => [
                 'required',
                 Rule::in(array_column(CareEntryStatus::cases(), 'value')),
@@ -92,6 +97,8 @@ class StoreCareEntryRequest extends FormRequest
             'source_type' => $this->input('source_type', 'owner'),
             'status' => $this->input('status', 'completed'),
             'source_name' => $this->input('source_name', ''),
+            'source_timezone' => $this->input('source_timezone', ''),
+            'submitted_offline' => $this->boolean('submitted_offline'),
         ]);
     }
 }

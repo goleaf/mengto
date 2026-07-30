@@ -13,7 +13,7 @@
                 variant="back"
                 class="mb-3 md:hidden"
             >
-                Back to conversations
+                {{ __('ui.back_to_conversations_d456fc7566') }}
             </x-text-link>
         @endif
 

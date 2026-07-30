@@ -10,7 +10,7 @@
 <div {{ $attributes->class('circle-dashboard') }}>
     <x-summary-strip
         :items="$summary['stats']"
-        label="Your circle summary"
+        label="{{ __('ui.your_circle_summary_39d25b4e7f') }}"
         :icons="['bookmark', 'user-round-check', 'users-round', 'calendar-check']"
         :columns="4"
     />
@@ -20,16 +20,16 @@
         :filters="$filters"
         :active="$activeFilter"
         :count="$summary['count']"
-        title="Collection view"
-        label="Filter your circle"
+        title="{{ __('ui.collection_view_ddc0d8cbe8') }}"
+        label="{{ __('ui.filter_your_circle_dbaff85629') }}"
     />
 
     @if ($showStarter)
         <x-media-starter
-            eyebrow="Start with one useful thing"
-            title="Build a circle around real routines"
+            eyebrow="{{ __('ui.start_with_one_useful_thing_8a85f9bcd9') }}"
+            title="{{ __('ui.build_a_circle_around_real_routines_3ec77af975') }}"
             title-id="circle-starter-title"
-            description="Save a useful post, follow a familiar neighbor, or RSVP to a comfortable meetup. Each choice will return here."
+            description="{{ __('ui.save_a_useful_post_follow_a_familiar_neighbor_cac470a75c') }}"
             :items="$starterItems"
         />
     @else
@@ -45,10 +45,10 @@
             @empty
                 <x-empty-state
                     icon="inbox"
-                    title="This collection is quiet"
-                    description="Choose another view or collect something useful from around PawCircle."
+                    title="{{ __('ui.this_collection_is_quiet_3653cb0ecb') }}"
+                    description="{{ __('ui.choose_another_view_or_collect_something_useful_from_8086b1797a') }}"
                     :href="route('discover.index')"
-                    action-label="Open Discover"
+                    action-label="{{ __('ui.open_discover_43454afd16') }}"
                     action-icon="search"
                 />
             @endforelse

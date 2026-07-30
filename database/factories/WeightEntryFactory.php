@@ -1,17 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories;
 
 use App\Enums\MedicalSourceType;
 use App\Enums\MedicalVerificationStatus;
 use App\Models\MedicalRecord;
 use App\Models\WeightEntry;
-use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<WeightEntry>
+ * @extends ApplicationFactory<WeightEntry>
  */
-class WeightEntryFactory extends Factory
+class WeightEntryFactory extends ApplicationFactory
 {
     public function definition(): array
     {

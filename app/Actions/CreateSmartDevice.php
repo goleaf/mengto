@@ -31,7 +31,7 @@ class CreateSmartDevice
 
                     if ($pet === null) {
                         throw ValidationException::withMessages([
-                            'pet_profile_keys' => 'One selected pet profile is unavailable.',
+                            'pet_profile_keys' => __('messages.one_selected_pet_profile_is_unavailable_cf9fce95da'),
                         ]);
                     }
 

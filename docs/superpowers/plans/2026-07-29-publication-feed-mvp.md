@@ -1,5 +1,7 @@
 # PawCircle Publication Feed MVP Implementation Plan
 
+> Historical delivery record. Production requirements, security rules, testing gates, and runtime versions are governed by `docs/index.md` and its canonical documents.
+
 ## Goal
 
 Deliver the Point 2 feed as a functional, responsive, session-backed Blade MVP

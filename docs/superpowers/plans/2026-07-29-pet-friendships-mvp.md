@@ -1,5 +1,7 @@
 # Pet Friendships MVP Implementation Plan
 
+> Historical delivery record. Production requirements, security rules, testing gates, and runtime versions are governed by `docs/index.md` and its canonical documents.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Build a responsive, interactive pet-friendship center with two-sided requests, established friendships, recommendations, and walk-planning entry points.

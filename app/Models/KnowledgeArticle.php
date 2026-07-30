@@ -1,15 +1,45 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use App\Enums\KnowledgeStatus;
 use Database\Factories\KnowledgeArticleFactory;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Carbon;
 
+/**
+ * @property string|null $audience
+ * @property string $body
+ * @property string $category
+ * @property array<array-key, mixed>|null $contributors
+ * @property-read Collection<int, KnowledgeCorrection> $corrections
+ * @property Carbon|null $created_at
+ * @property int $current_version
+ * @property string $difficulty
+ * @property int $id
+ * @property string $language
+ * @property Carbon|null $last_reviewed_at
+ * @property Carbon|null $next_review_at
+ * @property Carbon|null $published_at
+ * @property string $slug
+ * @property-read ForumTopic|null $sourceTopic
+ * @property int|null $source_topic_id
+ * @property array<array-key, mixed>|null $sources
+ * @property KnowledgeStatus $status
+ * @property string $summary
+ * @property array<array-key, mixed>|null $tags
+ * @property string $title
+ * @property string $type
+ * @property Carbon|null $updated_at
+ * @property-read Collection<int, KnowledgeVersion> $versions
+ */
 class KnowledgeArticle extends Model
 {
     /** @use HasFactory<KnowledgeArticleFactory> */
@@ -84,16 +114,19 @@ class KnowledgeArticle extends Model
             ->select(self::ROUTE_COLUMNS);
     }
 
+    /** @return BelongsTo<\App\Models\ForumTopic, $this>*/
     public function sourceTopic(): BelongsTo
     {
         return $this->belongsTo(ForumTopic::class, 'source_topic_id');
     }
 
+    /** @return HasMany<\App\Models\KnowledgeVersion, $this>*/
     public function versions(): HasMany
     {
         return $this->hasMany(KnowledgeVersion::class, 'article_id');
     }
 
+    /** @return HasMany<\App\Models\KnowledgeCorrection, $this>*/
     public function corrections(): HasMany
     {
         return $this->hasMany(KnowledgeCorrection::class, 'article_id');

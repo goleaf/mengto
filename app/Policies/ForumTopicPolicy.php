@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Policies;
 
 use App\Models\ForumTopic;
@@ -21,7 +23,7 @@ class ForumTopicPolicy
     public function view(?User $user, ForumTopic $forumTopic): bool
     {
         return $forumTopic->visibility->value !== 'private'
-            || $forumTopic->author_key === 'mia-carter';
+            || ($user?->isActive() === true && $forumTopic->author_key === $user->actor_key);
     }
 
     /**
@@ -29,7 +31,7 @@ class ForumTopicPolicy
      */
     public function create(?User $user): bool
     {
-        return true;
+        return $user?->isActive() === true;
     }
 
     /**
@@ -37,7 +39,21 @@ class ForumTopicPolicy
      */
     public function update(?User $user, ForumTopic $forumTopic): bool
     {
-        return $forumTopic->author_key === 'mia-carter';
+        return $user?->isActive() === true
+            && $forumTopic->author_key === $user->actor_key;
+    }
+
+    public function answer(?User $user, ForumTopic $forumTopic): bool
+    {
+        return $this->view($user, $forumTopic)
+            && $user?->isActive() === true
+            && ! $forumTopic->is_locked;
+    }
+
+    public function comment(?User $user, ForumTopic $forumTopic): bool
+    {
+        return $this->answer($user, $forumTopic)
+            && $forumTopic->comment_policy !== 'closed';
     }
 
     /**
@@ -45,7 +61,7 @@ class ForumTopicPolicy
      */
     public function delete(?User $user, ForumTopic $forumTopic): bool
     {
-        return $forumTopic->author_key === 'mia-carter';
+        return $this->update($user, $forumTopic);
     }
 
     /**

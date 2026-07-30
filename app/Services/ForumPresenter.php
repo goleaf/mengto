@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services;
 
 use App\Enums\ForumTopicStatus;
@@ -17,6 +19,7 @@ class ForumPresenter
         private readonly ProfilePresenter $profiles,
         private readonly ForumTaxonomy $taxonomy,
         private readonly ForumActor $actor,
+        private readonly LocaleFormatter $formatter,
     ) {}
 
     /**
@@ -77,7 +80,7 @@ class ForumPresenter
 
         return [
             'owner' => $this->profiles->owner(),
-            'page_title' => 'Forum and knowledge | PawCircle',
+            'page_title' => __('messages.forum_and_knowledge_pawcircle_664109d235'),
             'active_section' => 'forum',
             'topics' => $topics,
             'filters' => [
@@ -150,7 +153,7 @@ class ForumPresenter
 
         return [
             'owner' => $this->profiles->owner(),
-            'page_title' => $topic->title.' | PawCircle',
+            'page_title' => __('presentation.brand_title', ['title' => $topic->title]),
             'active_section' => 'forum',
             'topic' => $this->topicDetail($topic),
             'answers' => $topic->answers
@@ -179,7 +182,7 @@ class ForumPresenter
                     'needs_source' => $answer->needs_source,
                     'helpful_count' => $answer->helpful_count,
                     'voted' => $answer->votes->firstWhere('user_key', $this->actor->key())?->value,
-                    'created_label' => $answer->created_at->diffForHumans(),
+                    'created_label' => $this->formatter->relative($answer->created_at),
                     'comments' => $answer->comments->map(fn ($comment): array => [
                         'id' => $comment->id,
                         'parent_id' => $comment->parent_id,
@@ -187,7 +190,7 @@ class ForumPresenter
                         'author_initials' => $comment->author_initials,
                         'body' => $comment->body,
                         'is_pinned' => $comment->is_pinned,
-                        'created_label' => $comment->created_at->diffForHumans(),
+                        'created_label' => $this->formatter->relative($comment->created_at),
                     ])->all(),
                 ])
                 ->all(),
@@ -214,7 +217,7 @@ class ForumPresenter
     {
         return [
             'owner' => $this->profiles->owner(),
-            'page_title' => $topic ? 'Edit topic | PawCircle' : 'Ask the community | PawCircle',
+            'page_title' => $topic ? __('messages.edit_topic_pawcircle_aea297c81d') : __('messages.ask_the_community_pawcircle_81f7f8f052'),
             'active_section' => 'forum',
             'topic' => $topic,
             'types' => $this->taxonomy->typeOptions(),
@@ -252,10 +255,10 @@ class ForumPresenter
         $base = fn (): Builder => ForumTopic::query()->published();
 
         return [
-            ['label' => 'Open topics', 'value' => $base()->count(), 'icon' => 'messages-square'],
-            ['label' => 'Need an answer', 'value' => $base()->whereDoesntHave('answers')->count(), 'icon' => 'circle-help'],
-            ['label' => 'Resolved', 'value' => $base()->where('status', ForumTopicStatus::Resolved->value)->count(), 'icon' => 'circle-check-big'],
-            ['label' => 'Expert replies', 'value' => $base()->where('has_expert_answer', true)->count(), 'icon' => 'badge-check'],
+            ['label' => __('messages.open_topics_5207eb9e06'), 'value' => $base()->count(), 'icon' => 'messages-square'],
+            ['label' => __('messages.need_an_answer_8824024b01'), 'value' => $base()->whereDoesntHave('answers')->count(), 'icon' => 'circle-help'],
+            ['label' => __('messages.resolved_5be3c2c835'), 'value' => $base()->where('status', ForumTopicStatus::Resolved->value)->count(), 'icon' => 'circle-check-big'],
+            ['label' => __('messages.expert_replies_c909ce7644'), 'value' => $base()->where('has_expert_answer', true)->count(), 'icon' => 'badge-check'],
         ];
     }
 
@@ -288,7 +291,8 @@ class ForumPresenter
             'comments_count' => (int) ($topic->comments_count ?? 0),
             'helpful_score' => (int) ($topic->helpful_score ?? 0),
             'view_count' => $topic->view_count,
-            'activity_label' => $topic->last_activity_at?->diffForHumans() ?? 'Recently',
+            'activity_label' => $this->formatter->relative($topic->last_activity_at)
+                ?? __('presentation.recently'),
             'bookmarked' => $bookmarked,
         ];
     }
@@ -326,7 +330,8 @@ class ForumPresenter
             'category' => $article->category,
             'type_label' => Str::headline($article->type),
             'difficulty_label' => Str::headline($article->difficulty),
-            'reviewed_label' => $article->last_reviewed_at?->format('M j, Y') ?? 'Editorial review pending',
+            'reviewed_label' => $this->formatter->date($article->last_reviewed_at)
+                ?? __('presentation.editorial_review_pending'),
             'is_outdated' => $article->status->value === 'outdated',
         ];
     }

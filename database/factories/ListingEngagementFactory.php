@@ -1,15 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories;
 
 use App\Models\Listing;
 use App\Models\ListingEngagement;
-use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<ListingEngagement>
+ * @extends ApplicationFactory<ListingEngagement>
  */
-class ListingEngagementFactory extends Factory
+class ListingEngagementFactory extends ApplicationFactory
 {
     /**
      * Define the model's default state.
