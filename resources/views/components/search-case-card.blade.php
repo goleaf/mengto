@@ -1,0 +1,63 @@
+@props(['searchCase'])
+
+<article {{ $attributes->class('grid min-h-full overflow-hidden rounded-md border border-paw-line bg-white') }}>
+    <a href="{{ route('lost-found.show', $searchCase['slug']) }}" class="group grid" aria-label="Open search for {{ $searchCase['pet_name'] }}">
+        <div class="relative aspect-[16/10] overflow-hidden bg-paw-mint">
+            @if ($searchCase['cover_url'])
+                <img
+                    src="{{ $searchCase['cover_url'] }}"
+                    alt="{{ $searchCase['pet_name'] }}, {{ strtolower($searchCase['species_label']) }}, {{ $searchCase['color'] }}"
+                    class="size-full object-cover transition duration-300 group-hover:scale-[1.02]"
+                >
+            @else
+                <div class="grid size-full place-items-center">
+                    <x-dynamic-component :component="'lucide-'.$searchCase['type_icon']" class="size-12 text-paw-leaf" aria-hidden="true" />
+                </div>
+            @endif
+            <span class="absolute left-3 top-3 inline-flex items-center gap-1 rounded bg-white/95 px-2 py-1 text-xs font-bold shadow-sm">
+                <x-dynamic-component :component="'lucide-'.$searchCase['type_icon']" class="size-3.5" aria-hidden="true" />
+                {{ $searchCase['type_label'] }}
+            </span>
+        </div>
+
+        <div class="grid content-start gap-3 p-4">
+            <div class="flex items-start justify-between gap-3">
+                <div class="min-w-0">
+                    <h2 class="text-xl font-bold">{{ $searchCase['pet_name'] }}</h2>
+                    <p class="mt-1 text-sm text-paw-muted">
+                        {{ $searchCase['species_label'] }}
+                        @if ($searchCase['breed'])
+                            · {{ $searchCase['breed'] }}
+                        @endif
+                    </p>
+                </div>
+                <span class="shrink-0 rounded px-2 py-1 text-xs font-bold {{ $searchCase['urgent'] ? 'bg-red-100 text-red-800' : 'bg-paw-mint text-paw-leaf' }}">
+                    {{ $searchCase['status_label'] }}
+                </span>
+            </div>
+
+            <p class="text-sm leading-6 text-paw-muted">{{ $searchCase['description'] }}</p>
+
+            <dl class="grid gap-2 border-t border-paw-line pt-3 text-sm">
+                <div class="flex items-start gap-2">
+                    <x-lucide-map-pin class="mt-0.5 size-4 shrink-0 text-paw-coral" aria-hidden="true" />
+                    <div>
+                        <dt class="sr-only">Area</dt>
+                        <dd class="font-semibold">{{ $searchCase['last_seen_area'] }}</dd>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2 text-paw-muted">
+                    <x-lucide-clock-3 class="size-4 shrink-0" aria-hidden="true" />
+                    <dt class="sr-only">Last seen</dt>
+                    <dd>{{ $searchCase['last_seen_label'] }}</dd>
+                </div>
+            </dl>
+
+            <div class="flex flex-wrap gap-3 text-xs font-semibold text-paw-muted">
+                <span>{{ $searchCase['confirmed_sightings_count'] }} sightings</span>
+                <span>{{ $searchCase['active_volunteers_count'] }} volunteers</span>
+                <span>{{ $searchCase['open_tasks_count'] }} tasks</span>
+            </div>
+        </div>
+    </a>
+</article>

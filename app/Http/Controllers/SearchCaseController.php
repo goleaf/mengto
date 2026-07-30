@@ -1,0 +1,18 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\SearchCase;
+use App\Services\SearchPresenter;
+use Illuminate\Contracts\View\View;
+use Illuminate\Support\Facades\Gate;
+
+class SearchCaseController extends Controller
+{
+    public function __invoke(SearchCase $searchCase, SearchPresenter $presenter): View
+    {
+        Gate::authorize('view', $searchCase);
+
+        return view('lost-found.show', $presenter->detail($searchCase));
+    }
+}

@@ -53,7 +53,16 @@ use App\Http\Controllers\PlaceDirectoryPreviewController;
 use App\Http\Controllers\PostThreadPreviewController;
 use App\Http\Controllers\PreviewController;
 use App\Http\Controllers\ReviewStoreController;
+use App\Http\Controllers\SearchActionController;
+use App\Http\Controllers\SearchCaseController;
+use App\Http\Controllers\SearchCaseCreateController;
+use App\Http\Controllers\SearchCaseStoreController;
+use App\Http\Controllers\SearchCoordinationController;
+use App\Http\Controllers\SearchDirectoryController;
+use App\Http\Controllers\SearchPosterController;
+use App\Http\Controllers\SearchReportController;
 use App\Http\Controllers\SharePreviewController;
+use App\Http\Controllers\SightingStoreController;
 use App\Http\Controllers\SimilarTopicController;
 use App\Http\Controllers\TopicController;
 use App\Http\Controllers\TopicCreateController;
@@ -292,4 +301,29 @@ Route::middleware('web')
         Route::post('/{listing}/actions', ListingActionController::class)
             ->middleware('throttle:30,1')
             ->name('actions');
+    });
+
+Route::middleware('web')
+    ->prefix('lost-found')
+    ->name('lost-found.')
+    ->group(function (): void {
+        Route::get('/', SearchDirectoryController::class)->name('index');
+        Route::get('/new', SearchCaseCreateController::class)->name('create');
+        Route::post('/', SearchCaseStoreController::class)
+            ->middleware('throttle:6,1')
+            ->name('store');
+        Route::get('/{searchCase}/coordinate', SearchCoordinationController::class)
+            ->name('coordinate');
+        Route::get('/{searchCase}/poster', SearchPosterController::class)
+            ->name('poster');
+        Route::post('/{searchCase}/sightings', SightingStoreController::class)
+            ->middleware('throttle:12,1')
+            ->name('sightings.store');
+        Route::post('/{searchCase}/actions', SearchActionController::class)
+            ->middleware('throttle:30,1')
+            ->name('actions');
+        Route::post('/{searchCase}/reports', SearchReportController::class)
+            ->middleware('throttle:6,1')
+            ->name('reports.store');
+        Route::get('/{searchCase}', SearchCaseController::class)->name('show');
     });
