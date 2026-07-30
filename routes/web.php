@@ -30,6 +30,17 @@ use App\Http\Controllers\ConsultationController;
 use App\Http\Controllers\ConversationDetailPreviewController;
 use App\Http\Controllers\CorrectionStoreController;
 use App\Http\Controllers\CreatedContentPreviewController;
+use App\Http\Controllers\DeviceAccessRevokeController;
+use App\Http\Controllers\DeviceAccessStoreController;
+use App\Http\Controllers\DeviceAutomationStoreController;
+use App\Http\Controllers\DeviceAutomationTestController;
+use App\Http\Controllers\DeviceCommandStoreController;
+use App\Http\Controllers\DeviceEventAcknowledgeController;
+use App\Http\Controllers\DeviceEventCareEntryController;
+use App\Http\Controllers\DeviceReadingMedicalEventController;
+use App\Http\Controllers\DeviceReadingStoreController;
+use App\Http\Controllers\DeviceSafeZoneStoreController;
+use App\Http\Controllers\DeviceSharedDashboardController;
 use App\Http\Controllers\DiscoverPreviewController;
 use App\Http\Controllers\ExpertActionController;
 use App\Http\Controllers\ExpertDashboardController;
@@ -94,6 +105,11 @@ use App\Http\Controllers\SearchReportController;
 use App\Http\Controllers\SharePreviewController;
 use App\Http\Controllers\SightingStoreController;
 use App\Http\Controllers\SimilarTopicController;
+use App\Http\Controllers\SmartDeviceController;
+use App\Http\Controllers\SmartDeviceCreateController;
+use App\Http\Controllers\SmartDeviceDirectoryController;
+use App\Http\Controllers\SmartDeviceManageController;
+use App\Http\Controllers\SmartDeviceStoreController;
 use App\Http\Controllers\TopicController;
 use App\Http\Controllers\TopicCreateController;
 use App\Http\Controllers\TopicDeleteController;
@@ -102,6 +118,7 @@ use App\Http\Controllers\TopicStoreController;
 use App\Http\Controllers\TopicUpdateController;
 use App\Http\Controllers\WalkPlanPreviewController;
 use App\Http\Middleware\ProtectCareResponse;
+use App\Http\Middleware\ProtectDeviceResponse;
 use App\Http\Middleware\ProtectMedicalResponse;
 use Illuminate\Support\Facades\Route;
 
@@ -438,6 +455,57 @@ Route::middleware(['web', ProtectCareResponse::class])
         Route::get('/{careJournal}', CareJournalController::class)->name('show');
     });
 
+Route::middleware(['web', ProtectDeviceResponse::class])
+    ->prefix('devices')
+    ->name('devices.')
+    ->group(function (): void {
+        Route::get('/', SmartDeviceDirectoryController::class)->name('index');
+        Route::get('/new', SmartDeviceCreateController::class)->name('create');
+        Route::post('/', SmartDeviceStoreController::class)
+            ->middleware('throttle:6,1')
+            ->name('store');
+        Route::get('/{smartDevice}/manage', SmartDeviceManageController::class)
+            ->name('manage');
+        Route::post('/{smartDevice}/readings', DeviceReadingStoreController::class)
+            ->middleware('throttle:40,1')
+            ->name('readings.store');
+        Route::post('/{smartDevice}/commands', DeviceCommandStoreController::class)
+            ->middleware('throttle:20,1')
+            ->name('commands.store');
+        Route::post(
+            '/{smartDevice}/events/{deviceEvent}/acknowledge',
+            DeviceEventAcknowledgeController::class,
+        )->name('events.acknowledge');
+        Route::post(
+            '/{smartDevice}/events/{deviceEvent}/care-entry',
+            DeviceEventCareEntryController::class,
+        )->name('events.care-entry');
+        Route::post(
+            '/{smartDevice}/readings/{deviceReading}/medical-entry',
+            DeviceReadingMedicalEventController::class,
+        )->name('readings.medical-entry');
+        Route::post('/{smartDevice}/safe-zones', DeviceSafeZoneStoreController::class)
+            ->middleware('throttle:12,1')
+            ->name('safe-zones.store');
+        Route::post('/{smartDevice}/automations', DeviceAutomationStoreController::class)
+            ->middleware('throttle:12,1')
+            ->name('automations.store');
+        Route::post(
+            '/{smartDevice}/automations/{deviceAutomation}/test',
+            DeviceAutomationTestController::class,
+        )
+            ->middleware('throttle:20,1')
+            ->name('automations.test');
+        Route::post('/{smartDevice}/access', DeviceAccessStoreController::class)
+            ->middleware('throttle:12,1')
+            ->name('access.store');
+        Route::delete(
+            '/{smartDevice}/access/{deviceAccessGrant}',
+            DeviceAccessRevokeController::class,
+        )->name('access.revoke');
+        Route::get('/{smartDevice}', SmartDeviceController::class)->name('show');
+    });
+
 Route::middleware(['web', ProtectCareResponse::class])
     ->prefix('care-access')
     ->name('care-access.')
@@ -471,4 +539,14 @@ Route::middleware(['web', ProtectMedicalResponse::class])
             ->where('token', '[A-Za-z0-9]{64}')
             ->middleware('throttle:20,1')
             ->name('documents.download');
+    });
+
+Route::middleware(['web', ProtectDeviceResponse::class])
+    ->prefix('device-access')
+    ->name('device-access.')
+    ->group(function (): void {
+        Route::get('/{token}', DeviceSharedDashboardController::class)
+            ->where('token', '[A-Za-z0-9]{64}')
+            ->middleware('throttle:30,1')
+            ->name('show');
     });

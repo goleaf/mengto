@@ -142,6 +142,12 @@
                                         variant="primary"
                                         size="regular"
                                     />
+                                    <x-action-control
+                                        :href="route('devices.index')"
+                                        label="Smart devices"
+                                        icon="radio-tower"
+                                        size="regular"
+                                    />
                                 </x-action-group>
                             @endif
                         </x-slot:sidebar>

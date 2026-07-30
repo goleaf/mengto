@@ -27,5 +27,6 @@ class DatabaseSeeder extends Seeder
         $this->call(SearchSeeder::class);
         $this->call(MedicalRecordSeeder::class);
         $this->call(CareJournalSeeder::class);
+        $this->call(SmartDeviceSeeder::class);
     }
 }
