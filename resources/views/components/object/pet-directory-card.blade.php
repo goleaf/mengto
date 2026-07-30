@@ -66,7 +66,7 @@
                 variant="paper"
                 :active="$followed"
                 :pressed="$followed"
-                :endpoint="route('pet-social.actions.perform')"
+                :endpoint="route('actions.perform')"
                 :payload="['action' => 'toggle-follow', 'target' => $petKey, 'label' => $pet['name']]"
                 class="ml-auto shrink-0"
             />

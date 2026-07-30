@@ -13,7 +13,7 @@ final class ConversationDetailPreviewController extends Controller
         BrowseMessagesRequest $request,
         MessagePresenter $presenter,
     ): View {
-        return view('pet-social.messages.index', $presenter->page([
+        return view('messages.index', $presenter->page([
             ...$request->validated(),
             'conversation' => $conversation,
             'panel' => 'context',

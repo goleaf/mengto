@@ -74,7 +74,7 @@ final class ComposerCatalog
             action: $editing ? 'update-post' : 'create-post',
             submitLabel: $editing ? 'Save changes' : 'Publish',
             submitIcon: $editing ? 'check' : 'send',
-            cancelRoute: 'pet-social.preview',
+            cancelRoute: 'home',
             activeSection: 'feed',
             fields: [
                 $this->field(
@@ -185,7 +185,7 @@ final class ComposerCatalog
             action: 'create-group',
             submitLabel: 'Create group',
             submitIcon: 'users-round',
-            cancelRoute: 'pet-social.groups.index',
+            cancelRoute: 'groups.index',
             activeSection: 'groups',
             fields: [
                 $this->field('title', 'Group name', 'text', '', 'Example: Richmond Morning Walks', required: true),
@@ -283,7 +283,7 @@ final class ComposerCatalog
             action: 'create-meetup',
             submitLabel: 'Publish event',
             submitIcon: 'calendar-plus',
-            cancelRoute: 'pet-social.meetups.index',
+            cancelRoute: 'meetups.index',
             activeSection: 'meetups',
             fields: [
                 $this->field('title', 'Event name', 'text', '', 'Example: Quiet Sunday park loop', required: true),
@@ -451,7 +451,7 @@ final class ComposerCatalog
             action: 'create-walk-plan',
             submitLabel: 'Save walk draft',
             submitIcon: 'calendar-plus',
-            cancelRoute: 'pet-social.walks.index',
+            cancelRoute: 'walks.index',
             activeSection: 'meetups',
             fields: [
                 $this->field(
@@ -501,7 +501,7 @@ final class ComposerCatalog
             action: 'create-pet',
             submitLabel: 'Add pet',
             submitIcon: 'paw-print',
-            cancelRoute: 'pet-social.pets.index',
+            cancelRoute: 'pets.index',
             activeSection: 'pets',
             fields: [
                 $this->field('title', 'Pet name', 'text', '', 'Pet name', required: true),
@@ -524,7 +524,7 @@ final class ComposerCatalog
             action: 'send-message',
             submitLabel: 'Send message',
             submitIcon: 'send',
-            cancelRoute: 'pet-social.messages.index',
+            cancelRoute: 'messages.index',
             activeSection: 'messages',
             fields: [
                 $this->field(
@@ -559,7 +559,7 @@ final class ComposerCatalog
             action: 'update-profile',
             submitLabel: 'Save profile',
             submitIcon: 'check',
-            cancelRoute: 'pet-social.profile.mia',
+            cancelRoute: 'profile.mia',
             activeSection: 'profile',
             fields: [
                 $this->field('title', 'Name', 'text', $owner['name'], 'Your name', required: true, autocomplete: 'name'),
@@ -611,7 +611,7 @@ final class ComposerCatalog
             action: 'update-profile-privacy',
             submitLabel: 'Save owner privacy',
             submitIcon: 'shield-check',
-            cancelRoute: 'pet-social.profile.mia',
+            cancelRoute: 'profile.mia',
             activeSection: 'profile',
             fields: [
                 $this->field('location_visibility', 'City and area', 'select', (string) ($privacy['location'] ?? 'public'), '', required: true, options: $visibilityOptions),
@@ -857,7 +857,7 @@ final class ComposerCatalog
             action: 'create-place',
             submitLabel: 'Send for review',
             submitIcon: 'map-pin-plus',
-            cancelRoute: 'pet-social.places.index',
+            cancelRoute: 'places.index',
             activeSection: 'places',
             fields: [
                 $this->field('title', 'Place name', 'text', '', 'Use the name shown at the location.', required: true),
@@ -1251,7 +1251,7 @@ final class ComposerCatalog
             action: 'delete-post',
             submitLabel: 'Delete publication',
             submitIcon: 'trash-2',
-            cancelRoute: 'pet-social.posts.show',
+            cancelRoute: 'posts.show',
             activeSection: 'feed',
             fields: [],
             payload: ['target' => $post['key']],

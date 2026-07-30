@@ -2,7 +2,7 @@
 
 <header class="messaging-thread-header">
     <a
-        href="{{ route('pet-social.messages.index', ['filter' => $activeFilter]) }}"
+        href="{{ route('messages.index', ['filter' => $activeFilter]) }}"
         class="messaging-thread-header__back"
         aria-label="Back to conversations"
     >
@@ -23,7 +23,7 @@
     </div>
 
     <div class="messaging-thread-header__actions">
-        <form method="POST" action="{{ route('pet-social.messages.actions') }}">
+        <form method="POST" action="{{ route('messages.actions') }}">
             @csrf
             <input type="hidden" name="action" value="start-message-call">
             <input type="hidden" name="conversation" value="{{ $conversation['key'] }}">
@@ -36,7 +36,7 @@
             </button>
         </form>
 
-        <form method="POST" action="{{ route('pet-social.messages.actions') }}">
+        <form method="POST" action="{{ route('messages.actions') }}">
             @csrf
             <input type="hidden" name="action" value="start-message-call">
             <input type="hidden" name="conversation" value="{{ $conversation['key'] }}">
@@ -50,7 +50,7 @@
         </form>
 
         <a
-            href="{{ route('pet-social.messages.details', ['conversation' => $conversation['key']]) }}"
+            href="{{ route('messages.details', ['conversation' => $conversation['key']]) }}"
             class="messaging-icon-button"
             title="Conversation details"
         >

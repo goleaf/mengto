@@ -18,7 +18,7 @@
         </div>
     @endif
 
-    <form method="POST" action="{{ route('pet-social.actions.perform') }}" class="form-grid">
+    <form method="POST" action="{{ route('actions.perform') }}" class="form-grid">
         @csrf
         <input type="hidden" name="action" value="{{ $form['action'] }}">
 

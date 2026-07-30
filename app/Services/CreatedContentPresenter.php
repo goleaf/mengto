@@ -40,7 +40,7 @@ final class CreatedContentPresenter
 
             return [
                 'key' => $key,
-                'detail_route' => 'pet-social.groups.created',
+                'detail_route' => 'groups.created',
                 'detail_parameters' => ['item' => $key],
                 'name' => $group['title'],
                 'category' => $group['category'] ?: 'Local',
@@ -91,7 +91,7 @@ final class CreatedContentPresenter
 
             return [
                 'key' => $key,
-                'detail_route' => 'pet-social.meetups.created',
+                'detail_route' => 'meetups.created',
                 'detail_parameters' => ['item' => $key],
                 'title' => $meetup['title'],
                 'category' => Str::headline($meetup['category'] ?: 'Community'),
@@ -163,7 +163,7 @@ final class CreatedContentPresenter
                 'image_medium' => 'https://images.unsplash.com/photo-1654256578072-b932c33cb92e?auto=format&fit=crop&w=900&h=675&q=82',
                 'image_alt' => $pet['title'].' relaxing outdoors',
                 'traits' => ['new to PawCircle'],
-                'profile_route' => 'pet-social.pets.created',
+                'profile_route' => 'pets.created',
                 'profile_parameters' => ['item' => $key],
             ];
         }, $this->state->created('pets'));
@@ -250,10 +250,10 @@ final class CreatedContentPresenter
     {
         return [
             'kind' => 'group',
-            'route' => 'pet-social.groups.created',
+            'route' => 'groups.created',
             'page_title' => $group['name'].' | PawCircle',
             'active_section' => 'groups',
-            'back_route' => 'pet-social.groups.index',
+            'back_route' => 'groups.index',
             'back_label' => 'Back to groups',
             'section' => 'created-group-detail',
             'share_type' => 'Community',
@@ -329,10 +329,10 @@ final class CreatedContentPresenter
     {
         return [
             'kind' => 'meetup',
-            'route' => 'pet-social.meetups.created',
+            'route' => 'meetups.created',
             'page_title' => $meetup['title'].' | PawCircle',
             'active_section' => 'meetups',
-            'back_route' => 'pet-social.meetups.index',
+            'back_route' => 'meetups.index',
             'back_label' => 'Back to meetups',
             'section' => 'created-meetup-detail',
             'share_type' => 'Meetup',
@@ -423,10 +423,10 @@ final class CreatedContentPresenter
     {
         return [
             'kind' => 'pet',
-            'route' => 'pet-social.pets.created',
+            'route' => 'pets.created',
             'page_title' => $pet['name'].' | PawCircle',
             'active_section' => 'pets',
-            'back_route' => 'pet-social.pets.index',
+            'back_route' => 'pets.index',
             'back_label' => 'Back to pets',
             'section' => 'created-pet-detail',
             'share_type' => 'Pet profile',

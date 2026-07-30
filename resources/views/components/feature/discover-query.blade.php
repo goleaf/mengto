@@ -12,7 +12,7 @@
         </x-ui.icon-text>
     </div>
 
-    <form method="GET" action="{{ route('pet-social.discover.index') }}" class="discover-search">
+    <form method="GET" action="{{ route('discover.index') }}" class="discover-search">
         <x-ui.search-field
             id="discover-search"
             label="Search PawCircle"

@@ -16,7 +16,7 @@
     />
 
     <x-feature.collection-toolbar
-        :action="route('pet-social.circle.index')"
+        :action="route('circle.index')"
         :filters="$filters"
         :active="$activeFilter"
         :count="$summary['count']"
@@ -47,7 +47,7 @@
                     icon="inbox"
                     title="This collection is quiet"
                     description="Choose another view or collect something useful from around PawCircle."
-                    :href="route('pet-social.discover.index')"
+                    :href="route('discover.index')"
                     action-label="Open Discover"
                     action-icon="search"
                 />

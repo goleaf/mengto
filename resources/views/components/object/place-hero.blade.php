@@ -67,7 +67,7 @@
 
         <div class="place-hero__actions">
             <x-ui.action-control
-                :endpoint="route('pet-social.actions.perform')"
+                :endpoint="route('actions.perform')"
                 :payload="$place['save_action']['payload']"
                 :label="$place['save_action']['label']"
                 :icon="$place['save_action']['icon']"
@@ -77,7 +77,7 @@
                 size="compact"
             />
             <x-ui.action-control
-                :endpoint="route('pet-social.actions.perform')"
+                :endpoint="route('actions.perform')"
                 :payload="$place['follow_action']['payload']"
                 :label="$place['follow_action']['label']"
                 :icon="$place['follow_action']['icon']"

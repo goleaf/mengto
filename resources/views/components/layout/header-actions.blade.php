@@ -2,7 +2,7 @@
 
 <div class="ml-auto flex items-center gap-2">
     <x-ui.icon-link
-        :href="route('pet-social.circle.index')"
+        :href="route('circle.index')"
         label="My circle"
         icon="bookmark"
         name="circle"
@@ -10,21 +10,21 @@
         class="header-icon--from-sm"
     />
     <x-ui.icon-link
-        :href="route('pet-social.notifications.index')"
+        :href="route('notifications.index')"
         label="Notifications"
         icon="bell"
         name="notifications"
         :active="$activeSection === 'notifications'"
     />
     <x-ui.icon-link
-        :href="route('pet-social.messages.index')"
+        :href="route('messages.index')"
         label="Messages"
         icon="mail"
         name="messages"
         :active="$activeSection === 'messages'"
     />
     <a
-        href="{{ route('pet-social.profile.mia') }}"
+        href="{{ route('profile.mia') }}"
         aria-label="{{ $owner['name'] }} profile"
         title="{{ $owner['name'] }} profile"
         data-header-link="profile"

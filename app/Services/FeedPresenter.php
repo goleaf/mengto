@@ -63,7 +63,7 @@ final class FeedPresenter
                 'total' => count($posts),
                 'showing' => count($visiblePosts),
                 'next_url' => $visibleCount < count($posts)
-                    ? route('pet-social.preview', [
+                    ? route('home', [
                         'feed' => $mode,
                         'sort' => $sort,
                         'type' => $type,
@@ -71,13 +71,13 @@ final class FeedPresenter
                         'page' => $page + 1,
                     ])
                     : null,
-                'new_posts_url' => route('pet-social.preview', [
+                'new_posts_url' => route('home', [
                     'feed' => $mode,
                     'sort' => 'latest',
                     'type' => $type,
                     'pet' => $pet,
                 ]),
-                'composer_url' => route('pet-social.compose', ['kind' => 'post']),
+                'composer_url' => route('compose', ['kind' => 'post']),
                 'draft_count' => count(array_filter(
                     $this->state->posts(),
                     static fn (array $post): bool => ($post['status'] ?? 'published') === 'draft',
@@ -132,7 +132,7 @@ final class FeedPresenter
         return [
             'target' => $key,
             'label' => $post['title'] ?: $post['represented'].' post',
-            'route' => 'pet-social.posts.show',
+            'route' => 'posts.show',
             'route_parameters' => ['post' => $key],
         ];
     }
@@ -392,13 +392,13 @@ final class FeedPresenter
             'connection_targets' => $post['connection_targets'] ?? $this->connectionTargets($post),
             'can_manage' => ($post['created_by_current'] ?? false) && $this->state->post($key) !== null,
             'anchor' => 'post-'.$key,
-            'thread_url' => route('pet-social.posts.show', ['post' => $key]),
-            'return_url' => route('pet-social.preview').'#post-'.$key,
-            'share_url' => route('pet-social.share.show', ['target' => $key]),
+            'thread_url' => route('posts.show', ['post' => $key]),
+            'return_url' => route('home').'#post-'.$key,
+            'share_url' => route('share.show', ['target' => $key]),
             'edit_url' => ($post['created_by_current'] ?? false)
-                ? route('pet-social.compose', ['kind' => 'post-edit', 'post' => $key])
+                ? route('compose', ['kind' => 'post-edit', 'post' => $key])
                 : null,
-            'report_url' => route('pet-social.compose', ['kind' => 'report-post', 'target' => $key]),
+            'report_url' => route('compose', ['kind' => 'report-post', 'target' => $key]),
             'image' => is_array($firstMedia)
                 ? ($firstMedia['image'] ?? $firstMedia['poster'] ?? '')
                 : '',
@@ -428,7 +428,7 @@ final class FeedPresenter
         foreach ($this->catalog->modes() as $key => $mode) {
             $options[] = [
                 ...$mode,
-                'href' => route('pet-social.preview', [
+                'href' => route('home', [
                     'feed' => $key,
                     'sort' => $query['sort'],
                     'type' => $query['type'],
@@ -658,7 +658,7 @@ final class FeedPresenter
                 'datetime' => '2026-08-01T10:00:00-07:00',
                 'date_accessible' => 'Saturday, August 1, 2026 at 10:00 AM',
                 'attendees' => '18 neighbors going',
-                'detail_route' => 'pet-social.meetups.small_dog_social',
+                'detail_route' => 'meetups.small_dog_social',
             ],
             [
                 'key' => 'foster-coffee-walk',
@@ -683,7 +683,7 @@ final class FeedPresenter
                 'name' => 'Apartment Pets PDX',
                 'members' => '2.4k members',
                 'topic' => 'Small-space routines',
-                'detail_route' => 'pet-social.groups.apartment_pets',
+                'detail_route' => 'groups.apartment_pets',
             ],
             [
                 'key' => 'trail-tails',

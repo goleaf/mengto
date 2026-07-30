@@ -194,7 +194,7 @@
                 <strong>{{ $places['location']['enabled'] ? 'Generalized location active' : 'Location not shared' }}</strong>
                 <span>{{ $places['location']['label'] ?? 'Search still works by city, area, address, or map point.' }}</span>
             </div>
-            <form method="POST" action="{{ route('pet-social.actions.perform') }}" data-place-location-form>
+            <form method="POST" action="{{ route('actions.perform') }}" data-place-location-form>
                 @csrf
                 <input type="hidden" name="action" value="set-place-location">
                 <input type="hidden" name="place_latitude" value="" data-place-latitude>
@@ -207,7 +207,7 @@
             </form>
             @if ($places['location']['enabled'])
                 <x-ui.action-control
-                    :endpoint="route('pet-social.actions.perform')"
+                    :endpoint="route('actions.perform')"
                     :payload="['action' => 'clear-place-location']"
                     label="Stop using"
                     icon="locate-off"

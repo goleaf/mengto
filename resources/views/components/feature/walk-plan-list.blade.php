@@ -11,7 +11,7 @@
                 icon="calendar-search"
                 title="No walk plans found"
                 description="Start a new plan to keep the route, pace, and neighbor details together."
-                :href="route('pet-social.compose', 'walk')"
+                :href="route('compose', 'walk')"
                 action-label="Create a walk plan"
                 action-icon="calendar-plus"
                 role="listitem"

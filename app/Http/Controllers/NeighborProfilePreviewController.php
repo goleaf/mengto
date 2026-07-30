@@ -9,6 +9,6 @@ class NeighborProfilePreviewController extends Controller
 {
     public function __invoke(PreviewService $preview): View
     {
-        return view('pet-social.neighbors.show', $preview->ariNeighborProfileData());
+        return view('neighbors.show', $preview->ariNeighborProfileData());
     }
 }

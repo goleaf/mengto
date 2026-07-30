@@ -16,7 +16,7 @@
 >
     @if ($canManage)
         <x-slot:action>
-            <x-ui.action-control :href="route('pet-social.compose', 'pet')" label="Add pet" icon="plus" />
+            <x-ui.action-control :href="route('compose', 'pet')" label="Add pet" icon="plus" />
         </x-slot:action>
     @endif
 

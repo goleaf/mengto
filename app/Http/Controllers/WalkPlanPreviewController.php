@@ -12,6 +12,6 @@ class WalkPlanPreviewController extends Controller
     {
         $parameters = $request->validated();
 
-        return view('pet-social.walks.index', $preview->walkPlanData($parameters['filter'] ?? 'upcoming'));
+        return view('walks.index', $preview->walkPlanData($parameters['filter'] ?? 'upcoming'));
     }
 }

@@ -11,7 +11,7 @@
 
 <form
     method="POST"
-    action="{{ route('pet-social.actions.perform') }}"
+    action="{{ route('actions.perform') }}"
     {{ $attributes->class([
         'reply-composer',
         'reply-composer--'.$variant,

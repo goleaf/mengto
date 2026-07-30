@@ -14,7 +14,7 @@
     <div class="reaction-picker__menu" aria-label="Choose reaction">
         @foreach ($post['reaction_items'] as $reaction)
             <x-ui.action-form
-                :action="route('pet-social.actions.perform')"
+                :action="route('actions.perform')"
                 :payload="['action' => 'set-reaction', 'target' => $post['key'], 'reaction' => $reaction['value']]"
             >
                 <button

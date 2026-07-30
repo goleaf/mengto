@@ -14,7 +14,7 @@
     </div>
 
     <x-ui.action-control
-        :endpoint="route('pet-social.actions.perform')"
+        :endpoint="route('actions.perform')"
         :payload="[
             'action' => 'send-message',
             'target' => $recipient['key'],

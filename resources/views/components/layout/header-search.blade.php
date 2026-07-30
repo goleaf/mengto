@@ -2,7 +2,7 @@
 
 <div class="hidden min-w-0 flex-1 md:block">
     <a
-        href="{{ route('pet-social.discover.index') }}"
+        href="{{ route('discover.index') }}"
         aria-label="Search PawCircle"
         data-header-link="discover"
         @if ($active) aria-current="page" @endif

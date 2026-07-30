@@ -50,7 +50,7 @@
                         <p class="connection-menu__label">Notifications</p>
                         <div class="connection-menu__options">
                             @forelse ($item['notification_options'] as $option)
-                                <x-ui.action-form :action="route('pet-social.actions.perform')" :payload="$option['payload']">
+                                <x-ui.action-form :action="route('actions.perform')" :payload="$option['payload']">
                                     <button
                                         type="submit"
                                         aria-pressed="{{ $option['active'] ? 'true' : 'false' }}"

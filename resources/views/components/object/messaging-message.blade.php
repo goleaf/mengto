@@ -92,7 +92,7 @@
         <details class="messaging-message-menu">
             <summary aria-label="Message actions"><x-lucide-ellipsis class="icon icon--sm" aria-hidden="true" /></summary>
             <div>
-                <form method="POST" action="{{ route('pet-social.messages.actions') }}">
+                <form method="POST" action="{{ route('messages.actions') }}">
                     @csrf
                     <input type="hidden" name="action" value="react-message">
                     <input type="hidden" name="conversation" value="{{ $conversation['key'] }}">
@@ -100,14 +100,14 @@
                     <input type="hidden" name="reaction" value="thanks">
                     <button type="submit"><x-lucide-smile-plus class="icon icon--sm" /> Thanks</button>
                 </form>
-                <form method="POST" action="{{ route('pet-social.messages.actions') }}">
+                <form method="POST" action="{{ route('messages.actions') }}">
                     @csrf
                     <input type="hidden" name="action" value="pin-message">
                     <input type="hidden" name="conversation" value="{{ $conversation['key'] }}">
                     <input type="hidden" name="message" value="{{ $message['id'] }}">
                     <button type="submit"><x-lucide-pin class="icon icon--sm" /> Pin</button>
                 </form>
-                <form method="POST" action="{{ route('pet-social.messages.actions') }}">
+                <form method="POST" action="{{ route('messages.actions') }}">
                     @csrf
                     <input type="hidden" name="action" value="bookmark-message">
                     <input type="hidden" name="conversation" value="{{ $conversation['key'] }}">
@@ -121,7 +121,7 @@
                 >
                     <x-lucide-reply class="icon icon--sm" /> Reply
                 </button>
-                <form method="POST" action="{{ route('pet-social.messages.actions') }}">
+                <form method="POST" action="{{ route('messages.actions') }}">
                     @csrf
                     <input type="hidden" name="action" value="delete-message-self">
                     <input type="hidden" name="conversation" value="{{ $conversation['key'] }}">
@@ -129,7 +129,7 @@
                     <button type="submit"><x-lucide-eye-off class="icon icon--sm" /> Delete for me</button>
                 </form>
                 @if ($message['mine'])
-                    <form method="POST" action="{{ route('pet-social.messages.actions') }}">
+                    <form method="POST" action="{{ route('messages.actions') }}">
                         @csrf
                         <input type="hidden" name="action" value="delete-message-everyone">
                         <input type="hidden" name="conversation" value="{{ $conversation['key'] }}">
@@ -137,7 +137,7 @@
                         <button type="submit"><x-lucide-trash-2 class="icon icon--sm" /> Delete for all</button>
                     </form>
                 @endif
-                <form method="POST" action="{{ route('pet-social.messages.actions') }}">
+                <form method="POST" action="{{ route('messages.actions') }}">
                     @csrf
                     <input type="hidden" name="action" value="report-message">
                     <input type="hidden" name="conversation" value="{{ $conversation['key'] }}">
@@ -147,7 +147,7 @@
                     <button type="submit"><x-lucide-flag class="icon icon--sm" /> Report</button>
                 </form>
                 @if ($message['mine'] && Str::startsWith($message['id'], 'local-'))
-                    <form method="POST" action="{{ route('pet-social.messages.actions') }}" class="messaging-message-menu__edit">
+                    <form method="POST" action="{{ route('messages.actions') }}" class="messaging-message-menu__edit">
                         @csrf
                         <input type="hidden" name="action" value="edit-message">
                         <input type="hidden" name="conversation" value="{{ $conversation['key'] }}">

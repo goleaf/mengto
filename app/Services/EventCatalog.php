@@ -34,7 +34,7 @@ final class EventCatalog
         return [
             'target' => $target,
             'label' => $event['title'],
-            'route' => 'pet-social.meetups.show',
+            'route' => 'meetups.show',
             'route_parameters' => ['event' => $target],
         ];
     }

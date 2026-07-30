@@ -13,7 +13,7 @@
             title="No pets match these filters"
             role="listitem"
             description="Try a broader name, breed, or species."
-            :href="route('pet-social.pets.index')"
+            :href="route('pets.index')"
             class="sm:col-span-2 xl:col-span-3"
         />
     @endforelse

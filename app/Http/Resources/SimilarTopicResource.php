@@ -19,7 +19,7 @@ class SimilarTopicResource extends JsonResource
             'status' => $this['status_label'],
             'category' => $this['category_label'],
             'answers' => $this['answers_count'],
-            'url' => route('pet-social.forum.topics.show', $this['slug']),
+            'url' => route('forum.topics.show', $this['slug']),
         ];
     }
 }

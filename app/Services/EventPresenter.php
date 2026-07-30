@@ -64,8 +64,8 @@ final class EventPresenter
                 'filters' => array_values($this->filterOptions()),
                 'sort_options' => $this->sortOptions(),
                 'view_options' => $this->viewOptions(),
-                'browse_url' => route('pet-social.meetups.index'),
-                'create_url' => route('pet-social.compose', ['kind' => 'meetup']),
+                'browse_url' => route('meetups.index'),
+                'create_url' => route('compose', ['kind' => 'meetup']),
                 'calendar' => $this->calendarSummary($events),
                 'map' => $this->mapSummary($events),
             ],
@@ -138,7 +138,7 @@ final class EventPresenter
             'status' => $status,
             'status_label' => $this->statusLabel($status),
             'status_tone' => $this->statusTone($status),
-            'detail_route' => 'pet-social.meetups.show',
+            'detail_route' => 'meetups.show',
             'detail_parameters' => ['event' => $event['key']],
             'day' => Str::upper($startsAt->format('D')),
             'date' => $startsAt->format('d'),
@@ -163,13 +163,13 @@ final class EventPresenter
                 'label' => 'View event',
                 'icon' => 'arrow-up-right',
                 'variant' => 'primary',
-                'href' => route('pet-social.meetups.show', ['event' => $event['key']]),
+                'href' => route('meetups.show', ['event' => $event['key']]),
             ],
             'interest_action' => [
                 'label' => $this->state->isInterested($event['key']) ? 'Interested' : 'Save event',
                 'icon' => $this->state->isInterested($event['key']) ? 'bookmark-check' : 'bookmark',
                 'active' => $this->state->isInterested($event['key']),
-                'endpoint' => route('pet-social.actions.perform'),
+                'endpoint' => route('actions.perform'),
                 'payload' => [
                     'action' => 'toggle-event-interest',
                     'target' => $event['key'],
@@ -232,7 +232,7 @@ final class EventPresenter
                     'label' => $this->state->isInCalendar($event['key']) ? 'In calendar' : 'Add to calendar',
                     'icon' => $this->state->isInCalendar($event['key']) ? 'calendar-check' : 'calendar-plus',
                     'active' => $this->state->isInCalendar($event['key']),
-                    'endpoint' => route('pet-social.actions.perform'),
+                    'endpoint' => route('actions.perform'),
                     'payload' => [
                         'action' => 'toggle-event-calendar',
                         'target' => $event['key'],
@@ -241,12 +241,12 @@ final class EventPresenter
                 [
                     'label' => 'Share',
                     'icon' => 'send',
-                    'href' => route('pet-social.share.show', ['target' => $event['key']]),
+                    'href' => route('share.show', ['target' => $event['key']]),
                 ],
                 [
                     'label' => 'Report',
                     'icon' => 'flag',
-                    'href' => route('pet-social.compose', [
+                    'href' => route('compose', [
                         'kind' => 'report-event',
                         'target' => $event['key'],
                     ]),
@@ -267,7 +267,7 @@ final class EventPresenter
                 'label' => $event['registration_policy'] === 'approval' ? 'Apply to attend' : 'Register',
                 'icon' => 'ticket-check',
                 'variant' => 'primary',
-                'href' => route('pet-social.meetups.show', ['event' => $event['key'], 'tab' => 'tickets']),
+                'href' => route('meetups.show', ['event' => $event['key'], 'tab' => 'tickets']),
             ];
         }
 
@@ -276,7 +276,7 @@ final class EventPresenter
                 'label' => $registration['status'] === 'payment_failed' ? 'Retry payment' : 'Complete payment',
                 'icon' => 'credit-card',
                 'variant' => 'primary',
-                'href' => route('pet-social.meetups.show', ['event' => $event['key'], 'tab' => 'tickets']),
+                'href' => route('meetups.show', ['event' => $event['key'], 'tab' => 'tickets']),
             ];
         }
 
@@ -284,7 +284,7 @@ final class EventPresenter
             'label' => $this->registrationLabel($registration['status']),
             'icon' => $registration['status'] === 'checked_in' ? 'badge-check' : 'ticket-check',
             'variant' => 'paper',
-            'href' => route('pet-social.meetups.show', ['event' => $event['key'], 'tab' => 'tickets']),
+            'href' => route('meetups.show', ['event' => $event['key'], 'tab' => 'tickets']),
         ];
     }
 
@@ -321,7 +321,7 @@ final class EventPresenter
             'terms' => $event['price_minor'] > 0
                 ? 'Prototype checkout only. No card details are collected. Cancel before the published deadline for the represented full refund.'
                 : 'Cancelling releases this place to the next eligible person on the waitlist.',
-            'register_action' => route('pet-social.actions.perform'),
+            'register_action' => route('actions.perform'),
             'register_payload' => [
                 'action' => 'register-event',
                 'target' => $event['key'],
@@ -331,7 +331,7 @@ final class EventPresenter
                 'label' => $event['in_calendar'] ? 'Remove from calendar' : 'Add to calendar',
                 'icon' => $event['in_calendar'] ? 'calendar-x' : 'calendar-plus',
                 'active' => $event['in_calendar'],
-                'endpoint' => route('pet-social.actions.perform'),
+                'endpoint' => route('actions.perform'),
                 'payload' => [
                     'action' => 'toggle-event-calendar',
                     'target' => $event['key'],
@@ -342,7 +342,7 @@ final class EventPresenter
                 'label' => $event['reminder_enabled'] ? 'Reminders on' : 'Enable reminders',
                 'icon' => $event['reminder_enabled'] ? 'bell-ring' : 'bell',
                 'active' => $event['reminder_enabled'],
-                'endpoint' => route('pet-social.actions.perform'),
+                'endpoint' => route('actions.perform'),
                 'payload' => [
                     'action' => 'toggle-event-reminder',
                     'target' => $event['key'],
@@ -353,7 +353,7 @@ final class EventPresenter
                 ? [
                     'label' => 'Cancel registration',
                     'icon' => 'ticket-x',
-                    'endpoint' => route('pet-social.actions.perform'),
+                    'endpoint' => route('actions.perform'),
                     'payload' => [
                         'action' => 'cancel-event-registration',
                         'target' => $event['key'],
@@ -366,7 +366,7 @@ final class EventPresenter
                     'label' => $registration['status'] === 'checked_in' ? 'Checked in' : 'QR check-in',
                     'icon' => $registration['status'] === 'checked_in' ? 'badge-check' : 'qr-code',
                     'active' => $registration['status'] === 'checked_in',
-                    'endpoint' => route('pet-social.actions.perform'),
+                    'endpoint' => route('actions.perform'),
                     'payload' => [
                         'action' => 'check-in-event',
                         'target' => $event['key'],
@@ -385,12 +385,12 @@ final class EventPresenter
     private function organizerTools(array $event, string $tab): array
     {
         return [
-            'announcement_action' => route('pet-social.actions.perform'),
-            'reschedule_action' => route('pet-social.actions.perform'),
+            'announcement_action' => route('actions.perform'),
+            'reschedule_action' => route('actions.perform'),
             'cancel_action' => [
                 'label' => 'Cancel event',
                 'icon' => 'calendar-x',
-                'endpoint' => route('pet-social.actions.perform'),
+                'endpoint' => route('actions.perform'),
                 'payload' => [
                     'action' => 'cancel-event',
                     'target' => $event['key'],
@@ -546,7 +546,7 @@ final class EventPresenter
 
         return array_map(static fn (string $label, string $key): array => [
             'label' => $label,
-            'href' => route('pet-social.meetups.show', ['event' => $event['key'], 'tab' => $key]),
+            'href' => route('meetups.show', ['event' => $event['key'], 'tab' => $key]),
             'active' => $active === $key,
             'icon' => $icons[$key],
         ], $tabOptions, array_keys($tabOptions));
@@ -757,7 +757,7 @@ final class EventPresenter
             'title' => $event['title'],
             'time' => $event['time'],
             'href' => route(
-                $event['detail_route'] ?? 'pet-social.meetups.show',
+                $event['detail_route'] ?? 'meetups.show',
                 $event['detail_parameters'] ?? ['event' => $event['key']],
             ),
             'status' => $event['status_label'],
@@ -776,7 +776,7 @@ final class EventPresenter
             'distance' => $event['distance'],
             'category' => $event['category'],
             'href' => route(
-                $event['detail_route'] ?? 'pet-social.meetups.show',
+                $event['detail_route'] ?? 'meetups.show',
                 $event['detail_parameters'] ?? ['event' => $event['key']],
             ),
         ], array_values(array_filter(

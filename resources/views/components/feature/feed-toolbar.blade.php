@@ -3,7 +3,7 @@
 <div class="feed-toolbar">
     <x-ui.tab-list :tabs="$feed['modes']" label="Choose feed" />
 
-    <form method="GET" action="{{ route('pet-social.preview') }}" class="feed-filters">
+    <form method="GET" action="{{ route('home') }}" class="feed-filters">
         <input type="hidden" name="feed" value="{{ $feed['mode'] }}">
 
         <label class="compact-select">

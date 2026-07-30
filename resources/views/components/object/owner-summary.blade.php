@@ -5,7 +5,7 @@
 
     <x-object.owner-identity
         :owner="$owner"
-        route-name="pet-social.profile.mia"
+        route-name="profile.mia"
         class="mt-4"
     />
 

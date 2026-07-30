@@ -119,6 +119,10 @@ class ForumPresenter
             'answers' => fn ($answers) => $answers
                 ->forThread()
                 ->with([
+                    'expertProfile' => fn ($profiles) => $profiles->select([
+                        'id', 'slug', 'public_name', 'primary_type', 'country',
+                        'qualification_verified', 'verification_status', 'status',
+                    ]),
                     'comments' => fn ($comments) => $comments
                         ->forThread()
                         ->orderBy('created_at')
@@ -161,6 +165,14 @@ class ForumPresenter
                     'is_verified_expert' => $answer->is_verified_expert,
                     'expertise' => $answer->expertise,
                     'qualification_region' => $answer->qualification_region,
+                    'expert_profile' => $answer->expertProfile ? [
+                        'slug' => $answer->expertProfile->slug,
+                        'name' => $answer->expertProfile->public_name,
+                        'type' => Str::headline($answer->expertProfile->primary_type),
+                        'qualification_verified' => $answer->expertProfile->qualification_verified,
+                        'verification_status' => $answer->expertProfile->verification_status->label(),
+                        'profile_status' => $answer->expertProfile->status->label(),
+                    ] : null,
                     'sources' => $answer->sources ?? [],
                     'is_accepted' => $answer->is_accepted,
                     'is_highlighted' => $answer->is_highlighted,

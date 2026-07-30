@@ -103,7 +103,7 @@ final class ProfilePresenter
             'active_section' => 'profile',
             'audience' => $audience,
             'audience_options' => $this->audienceOptions(
-                routeName: 'pet-social.profile.mia',
+                routeName: 'profile.mia',
                 tab: $tab,
                 audience: $audience,
             ),
@@ -255,7 +255,7 @@ final class ProfilePresenter
             return [
                 'target' => $target,
                 'label' => 'Mia Carter',
-                'route' => 'pet-social.profile.mia',
+                'route' => 'profile.mia',
                 'route_parameters' => [],
             ];
         }
@@ -297,11 +297,11 @@ final class ProfilePresenter
     {
         if ($audience === 'owner') {
             return [
-                $this->linkAction('Edit profile', 'pencil', route('pet-social.compose', 'profile'), 'primary'),
+                $this->linkAction('Edit profile', 'pencil', route('compose', 'profile'), 'primary'),
                 $this->linkAction(
                     'Privacy',
                     'shield-check',
-                    route('pet-social.compose', ['kind' => 'profile-privacy']),
+                    route('compose', ['kind' => 'profile-privacy']),
                 ),
                 $this->postAction('Share', 'share-2', [
                     'action' => 'share',
@@ -335,7 +335,7 @@ final class ProfilePresenter
             $this->linkAction(
                 'Message',
                 'message-circle',
-                route('pet-social.compose', ['kind' => 'message']),
+                route('compose', ['kind' => 'message']),
             ),
             $this->postAction('Share', 'share-2', [
                 'action' => 'share',
@@ -356,18 +356,18 @@ final class ProfilePresenter
                 $this->linkAction(
                     'Edit profile',
                     'pencil',
-                    route('pet-social.compose', ['kind' => 'pet-profile', 'pet' => $pet['slug']]),
+                    route('compose', ['kind' => 'pet-profile', 'pet' => $pet['slug']]),
                     'primary',
                 ),
                 $this->linkAction(
                     'Privacy',
                     'shield-check',
-                    route('pet-social.compose', ['kind' => 'pet-privacy', 'pet' => $pet['slug']]),
+                    route('compose', ['kind' => 'pet-privacy', 'pet' => $pet['slug']]),
                 ),
                 $this->linkAction(
                     'Pet friends',
                     'heart-handshake',
-                    route('pet-social.pet-friends.index', ['pet' => $pet['slug']]),
+                    route('pet-friends.index', ['pet' => $pet['slug']]),
                 ),
             ];
 
@@ -375,7 +375,7 @@ final class ProfilePresenter
                 $actions[] = $this->linkAction(
                     'Plan a walk',
                     'footprints',
-                    route('pet-social.compose', ['kind' => 'walk-plan', 'target' => 'mochi']),
+                    route('compose', ['kind' => 'walk-plan', 'target' => 'mochi']),
                 );
             }
 
@@ -405,7 +405,7 @@ final class ProfilePresenter
             $actions[] = $this->linkAction(
                 'Invite to walk',
                 'footprints',
-                route('pet-social.compose', ['kind' => 'walk-plan', 'target' => 'scout']),
+                route('compose', ['kind' => 'walk-plan', 'target' => 'scout']),
             );
         }
 
@@ -442,7 +442,7 @@ final class ProfilePresenter
             $this->linkAction(
                 'Report profile',
                 'flag',
-                route('pet-social.compose', ['kind' => 'report-profile', 'target' => $target]),
+                route('compose', ['kind' => 'report-profile', 'target' => $target]),
             ),
         ];
     }
@@ -453,7 +453,7 @@ final class ProfilePresenter
     private function ownerTabs(string $active, string $audience): array
     {
         return $this->tabs(
-            routeName: 'pet-social.profile.mia',
+            routeName: 'profile.mia',
             active: $active,
             audience: $audience,
             definitions: [
@@ -606,7 +606,7 @@ final class ProfilePresenter
         return [
             'label' => $label,
             'icon' => $icon,
-            'endpoint' => route('pet-social.actions.perform'),
+            'endpoint' => route('actions.perform'),
             'payload' => $payload,
             'variant' => $variant,
         ];
@@ -633,7 +633,7 @@ final class ProfilePresenter
         return [
             'label' => $label,
             'icon' => $icon,
-            'endpoint' => route('pet-social.actions.perform'),
+            'endpoint' => route('actions.perform'),
             'payload' => [
                 'action' => $action,
                 'target' => $target,

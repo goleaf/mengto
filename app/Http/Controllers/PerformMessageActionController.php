@@ -16,6 +16,6 @@ final class PerformMessageActionController extends Controller
 
         return redirect()
             ->route($result['route'], $result['parameters'])
-            ->with('pawcircle.feedback', $result['message']);
+            ->with('feedback', $result['message']);
     }
 }

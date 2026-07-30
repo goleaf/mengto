@@ -14,7 +14,7 @@
             <h2 id="{{ $titleId }}" class="panel-heading__title">{{ $title }}</h2>
         </x-slot:heading>
         <x-slot:aside>
-            <x-ui.text-link :href="route('pet-social.walks.index')" icon="arrow-right" variant="action">
+            <x-ui.text-link :href="route('walks.index')" icon="arrow-right" variant="action">
                 View planner
             </x-ui.text-link>
         </x-slot:aside>
@@ -24,7 +24,7 @@
         @forelse ($plans as $plan)
             <div role="listitem">
                 <a
-                    href="{{ route('pet-social.walks.index', ['filter' => $plan['status'] === 'draft' ? 'drafts' : 'upcoming']) }}"
+                    href="{{ route('walks.index', ['filter' => $plan['status'] === 'draft' ? 'drafts' : 'upcoming']) }}"
                     class="walk-message-item"
                 >
                     <x-ui.responsive-image
@@ -51,7 +51,7 @@
                 icon="footprints"
                 :title="$emptyTitle"
                 :description="$emptyDescription"
-                :href="route('pet-social.compose', 'walk')"
+                :href="route('compose', 'walk')"
                 action-label="Create a plan"
                 action-icon="calendar-plus"
                 compact

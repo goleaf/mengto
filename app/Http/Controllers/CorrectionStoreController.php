@@ -16,7 +16,7 @@ class CorrectionStoreController extends Controller
     ): RedirectResponse {
         $proposeCorrection->handle($knowledgeArticle, $request->validated());
 
-        return to_route('pet-social.knowledge.articles.show', $knowledgeArticle)
-            ->with('pawcircle.feedback', 'Correction sent to the editorial queue.');
+        return to_route('knowledge.articles.show', $knowledgeArticle)
+            ->with('feedback', 'Correction sent to the editorial queue.');
     }
 }

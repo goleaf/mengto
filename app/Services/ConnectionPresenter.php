@@ -51,9 +51,9 @@ final class ConnectionPresenter
                 'empty' => $this->emptyState($tab),
                 'last_dismissed' => $this->lastDismissed($type, $sort),
                 'last_blocked' => $this->lastBlocked($tab, $type, $sort),
-                'endpoint' => route('pet-social.actions.perform'),
-                'browse_url' => route('pet-social.connections.index'),
-                'feed_url' => route('pet-social.preview', [
+                'endpoint' => route('actions.perform'),
+                'browse_url' => route('connections.index'),
+                'feed_url' => route('home', [
                     'feed' => 'following',
                     'sort' => 'latest',
                 ]),
@@ -466,7 +466,7 @@ final class ConnectionPresenter
         foreach ($definitions as $key => $definition) {
             $tabs[] = [
                 ...$definition,
-                'href' => route('pet-social.connections.index', [
+                'href' => route('connections.index', [
                     'tab' => $key,
                     'type' => $type,
                     'sort' => $sort,
@@ -702,7 +702,7 @@ final class ConnectionPresenter
         return [
             'label' => $label,
             'icon' => $icon,
-            'endpoint' => route('pet-social.actions.perform'),
+            'endpoint' => route('actions.perform'),
             'payload' => [
                 'action' => $action,
                 'target' => $target,

@@ -56,7 +56,7 @@
             :items="$center['items']"
             :empty="$center['empty']"
             :endpoint="$center['endpoint']"
-            :clear-href="route('pet-social.pet-friends.index', [
+            :clear-href="route('pet-friends.index', [
                 'pet' => $center['source']['slug'],
                 'tab' => $center['tab'],
             ])"

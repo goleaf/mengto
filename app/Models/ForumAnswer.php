@@ -17,6 +17,7 @@ class ForumAnswer extends Model
     protected $fillable = [
         'topic_id',
         'author_id',
+        'expert_profile_id',
         'author_key',
         'author_name',
         'author_initials',
@@ -57,6 +58,11 @@ class ForumAnswer extends Model
         return $this->belongsTo(User::class, 'author_id');
     }
 
+    public function expertProfile(): BelongsTo
+    {
+        return $this->belongsTo(ExpertProfile::class);
+    }
+
     public function comments(): HasMany
     {
         return $this->hasMany(ForumComment::class, 'answer_id');
@@ -72,6 +78,7 @@ class ForumAnswer extends Model
         return $query->select([
             'id',
             'topic_id',
+            'expert_profile_id',
             'author_key',
             'author_name',
             'author_initials',

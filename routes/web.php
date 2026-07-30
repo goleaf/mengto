@@ -2,14 +2,27 @@
 
 use App\Http\Controllers\AnswerStoreController;
 use App\Http\Controllers\ArticleController;
+use App\Http\Controllers\BookingActionController;
+use App\Http\Controllers\BookingController;
+use App\Http\Controllers\BookingCreateController;
+use App\Http\Controllers\BookingStoreController;
 use App\Http\Controllers\CirclePreviewController;
 use App\Http\Controllers\CommentStoreController;
 use App\Http\Controllers\ComposerController;
 use App\Http\Controllers\ConnectionCenterPreviewController;
+use App\Http\Controllers\ConsultationController;
 use App\Http\Controllers\ConversationDetailPreviewController;
 use App\Http\Controllers\CorrectionStoreController;
 use App\Http\Controllers\CreatedContentPreviewController;
 use App\Http\Controllers\DiscoverPreviewController;
+use App\Http\Controllers\ExpertActionController;
+use App\Http\Controllers\ExpertDashboardController;
+use App\Http\Controllers\ExpertDirectoryController;
+use App\Http\Controllers\ExpertProfileController;
+use App\Http\Controllers\ExpertProfileCreateController;
+use App\Http\Controllers\ExpertProfileEditController;
+use App\Http\Controllers\ExpertProfileStoreController;
+use App\Http\Controllers\ExpertProfileUpdateController;
 use App\Http\Controllers\ForumActionController;
 use App\Http\Controllers\ForumController;
 use App\Http\Controllers\GroupDetailPreviewController;
@@ -31,6 +44,7 @@ use App\Http\Controllers\PlaceDetailPreviewController;
 use App\Http\Controllers\PlaceDirectoryPreviewController;
 use App\Http\Controllers\PostThreadPreviewController;
 use App\Http\Controllers\PreviewController;
+use App\Http\Controllers\ReviewStoreController;
 use App\Http\Controllers\SharePreviewController;
 use App\Http\Controllers\SimilarTopicController;
 use App\Http\Controllers\TopicController;
@@ -43,10 +57,8 @@ use App\Http\Controllers\WalkPlanPreviewController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('web')
-    ->prefix('')
-    ->name('pet-social.')
     ->group(function (): void {
-        Route::get('/', PreviewController::class)->name('preview');
+        Route::get('/', PreviewController::class)->name('home');
         Route::get('/circle', CirclePreviewController::class)->name('circle.index');
         Route::get('/circle/connections', ConnectionCenterPreviewController::class)->name('connections.index');
         Route::get('/circle/pet-friends', PetFriendCenterPreviewController::class)->name('pet-friends.index');
@@ -204,4 +216,46 @@ Route::middleware('web')
             ])
             ->name('compose');
         Route::post('/actions', PerformActionController::class)->name('actions.perform');
+    });
+
+Route::middleware('web')
+    ->prefix('experts')
+    ->name('experts.')
+    ->group(function (): void {
+        Route::get('/', ExpertDirectoryController::class)->name('index');
+        Route::get('/new', ExpertProfileCreateController::class)->name('create');
+        Route::post('/', ExpertProfileStoreController::class)
+            ->middleware('throttle:6,1')
+            ->name('store');
+        Route::get('/workspace', ExpertDashboardController::class)->name('dashboard');
+        Route::get('/{expertProfile}/edit', ExpertProfileEditController::class)->name('edit');
+        Route::put('/{expertProfile}', ExpertProfileUpdateController::class)->name('update');
+        Route::get('/{expertProfile}/book', BookingCreateController::class)->name('bookings.create');
+        Route::post('/{expertProfile}/book', BookingStoreController::class)
+            ->middleware('throttle:8,1')
+            ->name('bookings.store');
+        Route::post('/{expertProfile}/actions', ExpertActionController::class)
+            ->middleware('throttle:30,1')
+            ->name('actions');
+        Route::post('/{expertProfile}/reviews', ReviewStoreController::class)
+            ->middleware('throttle:6,1')
+            ->name('reviews.store');
+        Route::get('/{expertProfile}', ExpertProfileController::class)->name('show');
+    });
+
+Route::middleware('web')
+    ->prefix('bookings')
+    ->name('bookings.')
+    ->group(function (): void {
+        Route::get('/{booking}', BookingController::class)->name('show');
+        Route::post('/{booking}/actions', BookingActionController::class)
+            ->middleware('throttle:20,1')
+            ->name('actions');
+    });
+
+Route::middleware('web')
+    ->prefix('consultations')
+    ->name('consultations.')
+    ->group(function (): void {
+        Route::get('/{consultation}', ConsultationController::class)->name('show');
     });

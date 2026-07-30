@@ -30,7 +30,7 @@ class DiscoverPreviewController extends Controller
             ['kind', 'title', 'meta', 'description', 'detail', 'tags'],
         );
 
-        return view('pet-social.discover.index', [
+        return view('discover.index', [
             ...$data,
             'directoryQuery' => $parameters['q'] ?? '',
             'activeFilter' => $parameters['filter'] ?? 'top-matches',

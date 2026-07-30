@@ -14,7 +14,7 @@ class MemberProfilePreviewController extends Controller
     ): View {
         $validated = $request->validated();
 
-        return view('pet-social.profile.show', [
+        return view('profile.show', [
             'profile' => $profiles->ownerPage(
                 (string) ($validated['tab'] ?? 'overview'),
                 (string) ($validated['view'] ?? 'owner'),

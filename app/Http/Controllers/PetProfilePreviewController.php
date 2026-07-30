@@ -21,6 +21,6 @@ class PetProfilePreviewController extends Controller
 
         abort_if($profile === null, 404);
 
-        return view('pet-social.pets.show', compact('profile'));
+        return view('pets.show', compact('profile'));
     }
 }

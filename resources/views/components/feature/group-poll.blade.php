@@ -20,7 +20,7 @@
                 <x-ui.action-control
                     :label="$option['active'] ? 'Selected' : 'Vote'"
                     :icon="$option['active'] ? 'check' : 'circle'"
-                    :endpoint="$membership === 'joined' ? route('pet-social.actions.perform') : null"
+                    :endpoint="$membership === 'joined' ? route('actions.perform') : null"
                     :payload="$option['payload']"
                     :active="$option['active']"
                     :pressed="$option['active']"

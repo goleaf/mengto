@@ -11,7 +11,7 @@
         </span>
     </div>
     <h3>
-        <a href="{{ route('pet-social.knowledge.articles.show', $article['slug']) }}">{{ $article['title'] }}</a>
+        <a href="{{ route('knowledge.articles.show', $article['slug']) }}">{{ $article['title'] }}</a>
     </h3>
     <p>{{ $article['summary'] }}</p>
     <div class="knowledge-card__meta">

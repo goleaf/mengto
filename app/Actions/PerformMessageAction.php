@@ -56,7 +56,7 @@ final class PerformMessageAction
 
         return [
             'message' => $message,
-            'route' => 'pet-social.messages.index',
+            'route' => 'messages.index',
             'parameters' => array_filter([
                 'conversation' => $conversation,
                 'filter' => (string) ($data['return_filter'] ?? 'all'),

@@ -142,7 +142,7 @@ final class PetProfileCatalog
     {
         return [
             'slug' => 'scout',
-            'route' => 'pet-social.pets.scout',
+            'route' => 'pets.scout',
             'name' => 'Scout',
             'handle' => '@mia-carter/scout',
             'role' => 'Dog profile',
@@ -215,7 +215,7 @@ final class PetProfileCatalog
     {
         return [
             'slug' => 'nori',
-            'route' => 'pet-social.pets.nori',
+            'route' => 'pets.nori',
             'name' => 'Nori',
             'handle' => '@mia-carter/nori',
             'role' => 'Cat profile',

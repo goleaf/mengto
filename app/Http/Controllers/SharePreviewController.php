@@ -13,6 +13,6 @@ class SharePreviewController extends Controller
 
         abort_if($data === null, 404);
 
-        return view('pet-social.share.show', $data);
+        return view('share.show', $data);
     }
 }

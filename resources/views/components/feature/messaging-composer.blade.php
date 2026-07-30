@@ -6,7 +6,7 @@
         <button type="button" data-message-reply-clear aria-label="Cancel reply"><x-lucide-x class="icon icon--sm" /></button>
     </div>
 
-    <form method="POST" action="{{ route('pet-social.messages.actions') }}" data-message-composer>
+    <form method="POST" action="{{ route('messages.actions') }}" data-message-composer>
         @csrf
         <input type="hidden" name="action" value="send-message">
         <input type="hidden" name="conversation" value="{{ $conversation['key'] }}">

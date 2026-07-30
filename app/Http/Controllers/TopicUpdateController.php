@@ -18,7 +18,7 @@ class TopicUpdateController extends Controller
         Gate::authorize('update', $forumTopic);
         $topic = $updateTopic->handle($forumTopic, $request->validated());
 
-        return to_route('pet-social.forum.topics.show', $topic)
-            ->with('pawcircle.feedback', 'Topic updated.');
+        return to_route('forum.topics.show', $topic)
+            ->with('feedback', 'Topic updated.');
     }
 }

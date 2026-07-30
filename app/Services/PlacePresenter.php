@@ -68,9 +68,9 @@ final class PlacePresenter
                 'view_options' => $this->viewOptions(),
                 'mode_options' => $this->modeOptions(),
                 'layer_options' => $this->layerOptions(),
-                'browse_url' => route('pet-social.places.index'),
-                'add_url' => route('pet-social.compose', ['kind' => 'place']),
-                'emergency_url' => route('pet-social.places.index', ['emergency' => 1, 'open_now' => 1]),
+                'browse_url' => route('places.index'),
+                'add_url' => route('compose', ['kind' => 'place']),
+                'emergency_url' => route('places.index', ['emergency' => 1, 'open_now' => 1]),
                 'location' => $location,
                 'comparison' => array_slice($places, 0, 3),
                 'recent' => $this->recentPlaces(),
@@ -125,31 +125,31 @@ final class PlacePresenter
             'claims' => $this->state->claims($key),
             'corrections' => $this->state->corrections($key),
             'can_manage' => (bool) $place['owner_managed'],
-            'report_url' => route('pet-social.compose', [
+            'report_url' => route('compose', [
                 'kind' => 'report-place',
                 'target' => $key,
             ]),
-            'correction_url' => route('pet-social.compose', [
+            'correction_url' => route('compose', [
                 'kind' => 'place-correction',
                 'target' => $key,
             ]),
-            'warning_url' => route('pet-social.compose', [
+            'warning_url' => route('compose', [
                 'kind' => 'place-warning',
                 'target' => $key,
             ]),
-            'review_url' => route('pet-social.compose', [
+            'review_url' => route('compose', [
                 'kind' => 'place-review',
                 'target' => $key,
             ]),
-            'question_url' => route('pet-social.compose', [
+            'question_url' => route('compose', [
                 'kind' => 'place-question',
                 'target' => $key,
             ]),
-            'claim_url' => route('pet-social.compose', [
+            'claim_url' => route('compose', [
                 'kind' => 'place-claim',
                 'target' => $key,
             ]),
-            'event_url' => route('pet-social.compose', [
+            'event_url' => route('compose', [
                 'kind' => 'meetup',
                 'place' => $key,
             ]),
@@ -170,7 +170,7 @@ final class PlacePresenter
         return [
             'target' => $target,
             'label' => $place['name'],
-            'route' => 'pet-social.places.show',
+            'route' => 'places.show',
             'route_parameters' => ['place' => $target],
         ];
     }
@@ -189,7 +189,7 @@ final class PlacePresenter
         return [
             'target' => $target,
             'label' => $place['name'],
-            'route' => 'pet-social.places.show',
+            'route' => 'places.show',
             'route_parameters' => ['place' => $target],
             'place' => $place,
             'fields' => [
@@ -226,7 +226,7 @@ final class PlacePresenter
 
         return [
             ...$place,
-            'detail_url' => route('pet-social.places.show', ['place' => $place['key']]),
+            'detail_url' => route('places.show', ['place' => $place['key']]),
             'map_url' => 'https://www.openstreetmap.org/?mlat='.$place['latitude'].'&mlon='.$place['longitude'].'#map=16/'.$place['latitude'].'/'.$place['longitude'],
             'route_url' => 'https://www.openstreetmap.org/directions?engine=fossgis_osrm_foot&route=54.687%2C25.279%3B'.$place['latitude'].'%2C'.$place['longitude'],
             'call_url' => $place['phone'] === null ? null : 'tel:'.preg_replace('/[^+0-9]/', '', $place['phone']),
@@ -654,7 +654,7 @@ final class PlacePresenter
         return array_map(
             static fn (string $label, string $value): array => [
                 'label' => $label,
-                'href' => route('pet-social.places.show', ['place' => $place['key'], 'tab' => $value]),
+                'href' => route('places.show', ['place' => $place['key'], 'tab' => $value]),
                 'active' => $active === $value,
             ],
             array_values($options),
@@ -683,7 +683,7 @@ final class PlacePresenter
                     'starts_at' => $event['starts_at'],
                     'place' => $event['general_location'],
                     'status' => Str::headline($event['status']),
-                    'href' => route('pet-social.meetups.show', ['event' => $event['key']]),
+                    'href' => route('meetups.show', ['event' => $event['key']]),
                 ];
             },
             $eventKeys,

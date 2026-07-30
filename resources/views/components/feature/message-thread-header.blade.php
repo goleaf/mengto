@@ -19,7 +19,7 @@
             icon="phone"
             variant="paper"
             size="toolbar"
-            :endpoint="route('pet-social.actions.perform')"
+            :endpoint="route('actions.perform')"
             :payload="['action' => 'call', 'target' => $contact['key'], 'label' => $contact['name']]"
             :active="$contact['call_requested']"
             active-label="Cancel request"
@@ -31,7 +31,7 @@
             icon="info"
             variant="paper"
             size="toolbar"
-            :endpoint="route('pet-social.actions.perform')"
+            :endpoint="route('actions.perform')"
             :payload="['action' => 'show-info', 'target' => $contact['key'], 'label' => $contact['name']]"
         />
     </x-ui.action-group>

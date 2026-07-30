@@ -13,6 +13,6 @@ class PostThreadPreviewController extends Controller
 
         abort_unless($data !== null, 404);
 
-        return view('pet-social.posts.show', $data);
+        return view('posts.show', $data);
     }
 }

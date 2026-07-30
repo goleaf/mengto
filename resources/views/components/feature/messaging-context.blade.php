@@ -20,7 +20,7 @@
         </div>
     </section>
 
-    <form method="GET" action="{{ route('pet-social.messages.index') }}" class="messaging-context__search">
+    <form method="GET" action="{{ route('messages.index') }}" class="messaging-context__search">
         <input type="hidden" name="conversation" value="{{ $conversation['key'] }}">
         <input type="hidden" name="filter" value="{{ $activeFilter }}">
         <label for="message-history-search">Search this dialog</label>
@@ -37,7 +37,7 @@
             ['action' => 'archive-conversation', 'icon' => 'archive', 'label' => $conversation['archived'] ? 'Restore' : 'Archive'],
             ['action' => 'mark-conversation-unread', 'icon' => 'mail', 'label' => 'Unread'],
         ] as $control)
-            <form method="POST" action="{{ route('pet-social.messages.actions') }}">
+            <form method="POST" action="{{ route('messages.actions') }}">
                 @csrf
                 <input type="hidden" name="action" value="{{ $control['action'] }}">
                 <input type="hidden" name="conversation" value="{{ $conversation['key'] }}">
@@ -68,7 +68,7 @@
             <p>{{ $poll['question'] }}</p>
             <div class="messaging-poll">
                 @forelse ($poll['options'] as $option)
-                    <form method="POST" action="{{ route('pet-social.messages.actions') }}">
+                    <form method="POST" action="{{ route('messages.actions') }}">
                         @csrf
                         <input type="hidden" name="action" value="vote-chat-poll">
                         <input type="hidden" name="conversation" value="{{ $conversation['key'] }}">
@@ -90,7 +90,7 @@
             <header><x-lucide-list-todo class="icon icon--sm" /><h3>Shared tasks</h3></header>
             <div class="messaging-tasks">
                 @forelse ($tasks as $task)
-                    <form method="POST" action="{{ route('pet-social.messages.actions') }}">
+                    <form method="POST" action="{{ route('messages.actions') }}">
                         @csrf
                         <input type="hidden" name="action" value="update-chat-task">
                         <input type="hidden" name="conversation" value="{{ $conversation['key'] }}">
@@ -159,7 +159,7 @@
                 ['action' => 'block-conversation', 'label' => $conversation['blocked'] ? 'Unblock' : 'Block', 'icon' => 'ban'],
                 ['action' => 'export-conversation', 'label' => 'Export my data', 'icon' => 'download'],
             ] as $safetyAction)
-                <form method="POST" action="{{ route('pet-social.messages.actions') }}">
+                <form method="POST" action="{{ route('messages.actions') }}">
                     @csrf
                     <input type="hidden" name="action" value="{{ $safetyAction['action'] }}">
                     <input type="hidden" name="conversation" value="{{ $conversation['key'] }}">

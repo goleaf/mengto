@@ -13,7 +13,7 @@
             :label="$post['reposts'].' '.\Illuminate\Support\Str::plural('Repost', $post['reposts'])"
             compact-label="Repost"
             icon="repeat-2"
-            :endpoint="route('pet-social.actions.perform')"
+            :endpoint="route('actions.perform')"
             :payload="['action' => 'repost-post', 'target' => $post['key'], 'label' => $post['represented'].' publication']"
         />
         <x-feature.feed-action
@@ -21,7 +21,7 @@
             active-label="Saved"
             icon="bookmark"
             :active="$post['saved']"
-            :endpoint="route('pet-social.actions.perform')"
+            :endpoint="route('actions.perform')"
             :payload="['action' => 'toggle-save', 'target' => $post['key'], 'label' => $post['represented'].' publication']"
         />
     @else
@@ -31,19 +31,19 @@
         active-label="Pawed"
         icon="paw-print"
         :active="$post['pawed']"
-        :endpoint="route('pet-social.actions.perform')"
+        :endpoint="route('actions.perform')"
         :payload="['action' => 'toggle-paw', 'target' => $post['key'], 'label' => $post['pet'].' moment']"
     />
     <x-feature.feed-action
         :label="$post['stats']['replies'].' '.\Illuminate\Support\Str::plural('Reply', (int) $post['stats']['replies'])"
         :compact-label="$post['stats']['replies']"
         icon="message-circle"
-        :href="route('pet-social.posts.show', ['post' => $post['key']])"
+        :href="route('posts.show', ['post' => $post['key']])"
     />
     <x-feature.feed-action
         label="Share"
         icon="share-2"
-        :endpoint="route('pet-social.actions.perform')"
+        :endpoint="route('actions.perform')"
         :payload="['action' => 'share', 'target' => $post['key'], 'label' => $post['pet'].' moment']"
     />
     <x-feature.feed-action
@@ -51,7 +51,7 @@
         active-label="Saved"
         icon="bookmark"
         :active="$post['saved']"
-        :endpoint="route('pet-social.actions.perform')"
+        :endpoint="route('actions.perform')"
         :payload="['action' => 'toggle-save', 'target' => $post['key'], 'label' => $post['pet'].' moment']"
     />
     @endif

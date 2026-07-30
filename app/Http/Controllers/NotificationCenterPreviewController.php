@@ -32,7 +32,7 @@ class NotificationCenterPreviewController extends Controller
             ), static fn (array $group): bool => $group['items'] !== []));
         }
 
-        return view('pet-social.notifications.index', [
+        return view('notifications.index', [
             ...$data,
             'activeFilter' => $activeFilter,
         ]);

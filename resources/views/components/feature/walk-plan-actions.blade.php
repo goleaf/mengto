@@ -3,7 +3,7 @@
 <footer {{ $attributes->class('walk-actions') }}>
     @if ($plan['next_action'])
         <x-ui.action-control
-            :endpoint="route('pet-social.actions.perform')"
+            :endpoint="route('actions.perform')"
             :payload="[
                 'action' => 'advance-walk-plan',
                 'target' => $plan['id'],
@@ -18,7 +18,7 @@
 
     @if ($plan['conversation'])
         <x-ui.action-control
-            :href="route('pet-social.messages.index', ['conversation' => $plan['conversation']])"
+            :href="route('messages.index', ['conversation' => $plan['conversation']])"
             label="Open messages"
             icon="message-circle"
             variant="paper"
@@ -28,7 +28,7 @@
 
     @if (in_array($plan['status'], ['draft', 'confirmed'], true))
         <x-ui.action-control
-            :endpoint="route('pet-social.actions.perform')"
+            :endpoint="route('actions.perform')"
             :payload="[
                 'action' => 'cancel-walk-plan',
                 'target' => $plan['id'],
@@ -41,7 +41,7 @@
         />
     @else
         <x-ui.action-control
-            :href="route('pet-social.compose', 'walk')"
+            :href="route('compose', 'walk')"
             label="Plan another"
             icon="calendar-plus"
             variant="paper"

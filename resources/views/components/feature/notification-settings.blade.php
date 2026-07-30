@@ -4,7 +4,7 @@
     <div class="section-body">
         @forelse ($settings as $setting)
             <x-ui.action-form
-                :action="route('pet-social.actions.perform')"
+                :action="route('actions.perform')"
                 :payload="[
                     'action' => 'toggle-setting',
                     'target' => $setting['key'],

@@ -12,6 +12,6 @@ class CirclePreviewController extends Controller
     {
         $parameters = $request->validated();
 
-        return view('pet-social.circle.index', $preview->circleData($parameters['filter'] ?? 'overview'));
+        return view('circle.index', $preview->circleData($parameters['filter'] ?? 'overview'));
     }
 }

@@ -1,7 +1,7 @@
 @props(['conversation'])
 
 <a
-    href="{{ route('pet-social.messages.index', ['conversation' => $conversation['key']]) }}"
+    href="{{ route('messages.index', ['conversation' => $conversation['key']]) }}"
     role="listitem"
     @if ($conversation['selected']) data-selected="true" aria-current="true" @endif
     @class([

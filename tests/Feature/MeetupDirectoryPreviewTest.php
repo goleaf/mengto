@@ -3,56 +3,46 @@
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Route;
 
-test('the meetup directory renders as a static local schedule', function () {
-    expect(Route::has('pet-social.meetups.index'))->toBeTrue();
+test('the meetup directory renders a functional event schedule', function () {
+    expect(Route::has('meetups.index'))->toBeTrue();
 
-    $this->expectsDatabaseQueryCount(0);
-
-    $response = $this->get(route('pet-social.meetups.index'));
+    $response = $this->get(route('meetups.index'));
 
     $response
         ->assertSuccessful()
-        ->assertSee('<title>Meetups | PawCircle</title>', false)
-        ->assertSee('data-section="meetup-header"', false)
-        ->assertSee('data-section="meetup-schedule"', false)
-        ->assertSee('data-section="meetup-filters"', false)
-        ->assertSee('data-section="meetup-directory"', false)
-        ->assertSee('Small dog social hour')
-        ->assertSee('Rescue foster coffee walk')
-        ->assertSee('Calm senior dog stroll')
-        ->assertSee('Upcoming')
-        ->assertDontSee('This week')
-        ->assertSee('alt="Small dogs meeting in a fenced neighborhood park"', false)
-        ->assertSee('alt="Pet owners taking a relaxed community walk through a park"', false)
-        ->assertSee('alt="Small dogs exploring an autumn park together"', false);
+        ->assertSee('<title>Events | PawCircle</title>', false)
+        ->assertSee('data-section="event-header"', false)
+        ->assertSee('data-section="event-summary"', false)
+        ->assertSee('class="event-toolbar__form"', false)
+        ->assertSee('class="event-grid"', false)
+        ->assertSee('Urgent neighborhood search for Scout')
+        ->assertSee('Calm walk at Laurelhurst Park')
+        ->assertSee('Puppy socialization lab')
+        ->assertSee('Travel-ready pet webinar')
+        ->assertSee('Registration open')
+        ->assertSee('Search events')
+        ->assertSee('Event view');
 
-    $xpath = pawCircleResponseXPath($response);
+    $xpath = responseXPath($response);
 
     expect($xpath->query('//h1')->length)->toBe(1)
-        ->and(trim((string) $xpath->query('//h1')->item(0)?->textContent))->toBe('Meet your neighborhood pack')
-        ->and($xpath->query('//article[@data-meetup-card]')->length)->toBe(3)
-        ->and($xpath->query('//section[@data-section="meetup-directory"]/h2')->length)->toBe(1)
-        ->and($xpath->query('//article[@data-meetup-card]//h3')->length)->toBe(3)
-        ->and($xpath->query('//article[@data-meetup-card]//time[@data-meetup-date and @datetime]')->length)->toBe(3)
-        ->and($xpath->query('//article[@data-meetup-card]//img[@loading="eager" and @fetchpriority="high" and @srcset and @sizes]')->length)->toBe(1)
-        ->and($xpath->query('//article[@data-meetup-card]//img[@loading="lazy" and @decoding="async" and @srcset and @sizes]')->length)->toBe(2)
-        ->and($xpath->query('//article[@data-meetup-card]//a')->length)->toBe(0)
-        ->and($xpath->query('//main//button[@disabled]')->length)->toBe(9)
-        ->and($xpath->query('//main//button[not(@disabled)]')->length)->toBe(0)
-        ->and($xpath->query('//main//button[@aria-pressed="true" and @disabled]')->length)->toBe(1)
-        ->and($xpath->query('//main//a')->length)->toBe(0)
-        ->and($xpath->query('//main//input | //main//select | //main//textarea')->length)->toBe(0)
-        ->and($xpath->query('//main//*[@role="button" and not(@aria-disabled="true")]')->length)->toBe(0)
-        ->and($xpath->query('//main//form')->length)->toBe(0);
+        ->and(trim((string) $xpath->query('//h1')->item(0)?->textContent))->toBe('Find a gathering that fits you and your pet')
+        ->and($xpath->query('//article[contains(concat(" ", normalize-space(@class), " "), " event-card ")]')->length)->toBe(8)
+        ->and($xpath->query('//article[contains(concat(" ", normalize-space(@class), " "), " event-card ")]//h2')->length)->toBe(8)
+        ->and($xpath->query('//article[contains(concat(" ", normalize-space(@class), " "), " event-card ")]//time[@datetime]')->length)->toBe(8)
+        ->and($xpath->query('//main//input[@id="event-search" and not(@disabled)]')->length)->toBe(1)
+        ->and($xpath->query('//main//button[not(@disabled)]')->length)->toBeGreaterThan(0)
+        ->and($xpath->query('//main//a')->length)->toBeGreaterThan(0)
+        ->and($xpath->query('//main//form')->length)->toBeGreaterThan(0);
 });
 
 test('meetups navigation is active on the schedule and linked from existing pages', function () {
-    $meetupsUrl = route('pet-social.meetups.index');
+    $meetupsUrl = route('meetups.index');
 
     $meetupsResponse = $this->get($meetupsUrl);
-    $feedResponse = $this->get(route('pet-social.preview'));
-    $petsResponse = $this->get(route('pet-social.pets.index'));
-    $profileResponse = $this->get(route('pet-social.pets.scout'));
+    $feedResponse = $this->get(route('home'));
+    $petsResponse = $this->get(route('pets.index'));
+    $profileResponse = $this->get(route('pets.scout'));
 
     foreach ([$meetupsResponse, $feedResponse, $petsResponse, $profileResponse] as $response) {
         $response
@@ -61,9 +51,9 @@ test('meetups navigation is active on the schedule and linked from existing page
             ->assertSee('data-nav-item="meetups"', false);
     }
 
-    $meetupsXPath = pawCircleResponseXPath($meetupsResponse);
-    $feedXPath = pawCircleResponseXPath($feedResponse);
-    $petsXPath = pawCircleResponseXPath($petsResponse);
+    $meetupsXPath = responseXPath($meetupsResponse);
+    $feedXPath = responseXPath($feedResponse);
+    $petsXPath = responseXPath($petsResponse);
 
     expect($meetupsXPath->query('//a[@data-nav-item="meetups" and @aria-current="page"]')->length)->toBe(2)
         ->and($meetupsXPath->query('//a[@data-nav-item="feed" and @aria-current]')->length)->toBe(0)
@@ -97,7 +87,7 @@ test('the meetup card renders an explicit empty tags state', function () {
     ];
 
     $card = Blade::render(
-        '<x-pet-social.meetup-card :meetup="$meetup" />',
+        '<x-object.meetup-card :meetup="$meetup" />',
         ['meetup' => $meetup],
     );
 

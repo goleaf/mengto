@@ -14,7 +14,7 @@ final class PetFriendCenterPreviewController extends Controller
     ): View {
         $parameters = $request->validated();
 
-        return view('pet-social.pet-friends.index', $presenter->page(
+        return view('pet-friends.index', $presenter->page(
             pet: (string) ($parameters['pet'] ?? 'scout'),
             tab: (string) ($parameters['tab'] ?? 'friends'),
             intent: (string) ($parameters['intent'] ?? 'all'),

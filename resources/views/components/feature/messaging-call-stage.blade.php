@@ -15,7 +15,7 @@
                     <h2 id="call-stage-title">{{ $conversation['name'] }}</h2>
                     <span>{{ $conversation['pet'] }} · {{ $call['quality'] }}</span>
                 </div>
-                <form method="POST" action="{{ route('pet-social.messages.actions') }}" data-call-end>
+                <form method="POST" action="{{ route('messages.actions') }}" data-call-end>
                     @csrf
                     <input type="hidden" name="action" value="end-message-call">
                     <input type="hidden" name="conversation" value="{{ $conversation['key'] }}">
@@ -60,7 +60,7 @@
                     ['control' => 'captions', 'icon' => 'captions', 'label' => $call['captions'] ? 'Captions off' : 'Captions'],
                     ['control' => 'audio-only', 'icon' => 'phone', 'label' => 'Audio only'],
                 ] as $control)
-                    <form method="POST" action="{{ route('pet-social.messages.actions') }}" data-call-end>
+                    <form method="POST" action="{{ route('messages.actions') }}" data-call-end>
                         @csrf
                         <input type="hidden" name="action" value="update-message-call">
                         <input type="hidden" name="conversation" value="{{ $conversation['key'] }}">
@@ -77,7 +77,7 @@
             <footer>
                 <p><x-lucide-triangle-alert class="icon icon--sm" /> {{ $boundary['emergency'] }}</p>
                 @if ($call['status'] === 'preflight')
-                    <form method="POST" action="{{ route('pet-social.messages.actions') }}">
+                    <form method="POST" action="{{ route('messages.actions') }}">
                         @csrf
                         <input type="hidden" name="action" value="update-message-call">
                         <input type="hidden" name="conversation" value="{{ $conversation['key'] }}">
@@ -89,7 +89,7 @@
                         </button>
                     </form>
                 @else
-                    <form method="POST" action="{{ route('pet-social.messages.actions') }}">
+                    <form method="POST" action="{{ route('messages.actions') }}">
                         @csrf
                         <input type="hidden" name="action" value="end-message-call">
                         <input type="hidden" name="conversation" value="{{ $conversation['key'] }}">

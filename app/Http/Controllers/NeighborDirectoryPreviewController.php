@@ -29,7 +29,7 @@ class NeighborDirectoryPreviewController extends Controller
             ['name', 'category', 'neighborhood', 'pet', 'status', 'interests'],
         );
 
-        return view('pet-social.neighbors.index', [
+        return view('neighbors.index', [
             ...$data,
             'directoryQuery' => $parameters['q'] ?? '',
             'activeFilter' => $parameters['filter'] ?? 'recommended',

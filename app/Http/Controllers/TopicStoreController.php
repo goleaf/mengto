@@ -16,7 +16,7 @@ class TopicStoreController extends Controller
         $topic = $createTopic->handle($request->validated());
 
         return $topic->status->value === 'draft'
-            ? to_route('pet-social.forum.index')->with('pawcircle.feedback', 'Draft saved.')
-            : to_route('pet-social.forum.topics.show', $topic)->with('pawcircle.feedback', 'Topic published.');
+            ? to_route('forum.index')->with('feedback', 'Draft saved.')
+            : to_route('forum.topics.show', $topic)->with('feedback', 'Topic published.');
     }
 }

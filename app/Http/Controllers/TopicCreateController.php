@@ -13,6 +13,6 @@ class TopicCreateController extends Controller
     {
         Gate::authorize('create', ForumTopic::class);
 
-        return view('pet-social.forum.editor', $presenter->editor());
+        return view('forum.editor', $presenter->editor());
     }
 }

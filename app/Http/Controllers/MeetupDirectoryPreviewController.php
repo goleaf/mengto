@@ -14,7 +14,7 @@ class MeetupDirectoryPreviewController extends Controller
     ): View {
         $parameters = $request->validated();
 
-        return view('pet-social.meetups.index', $events->directory(
+        return view('meetups.index', $events->directory(
             $parameters['q'] ?? '',
             $parameters['filter'] ?? 'recommended',
             $parameters['sort'] ?? 'soonest',

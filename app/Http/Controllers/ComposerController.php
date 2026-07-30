@@ -113,6 +113,6 @@ class ComposerController extends Controller
             404,
         );
 
-        return view('pet-social.compose', $preview->composerData($kind, $validated));
+        return view('compose', $preview->composerData($kind, $validated));
     }
 }

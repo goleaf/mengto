@@ -20,6 +20,6 @@ class GroupDetailPreviewController extends Controller
 
         abort_if($data === null, 404);
 
-        return view('pet-social.groups.show', $data);
+        return view('groups.show', $data);
     }
 }

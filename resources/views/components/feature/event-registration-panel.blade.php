@@ -123,7 +123,7 @@
                     <x-ui.action-control
                         label="Complete payment"
                         icon="credit-card"
-                        :endpoint="route('pet-social.actions.perform')"
+                        :endpoint="route('actions.perform')"
                         :payload="[
                             'action' => 'complete-event-payment',
                             'target' => $event['key'],
@@ -136,7 +136,7 @@
                     <x-ui.action-control
                         label="Simulate failure"
                         icon="triangle-alert"
-                        :endpoint="route('pet-social.actions.perform')"
+                        :endpoint="route('actions.perform')"
                         :payload="[
                             'action' => 'complete-event-payment',
                             'target' => $event['key'],
@@ -201,7 +201,7 @@
             </div>
 
             @if (in_array($record['status'], ['confirmed', 'checked_in'], true) && $event['format'] !== 'online')
-                <form method="POST" action="{{ route('pet-social.actions.perform') }}" class="event-registration__travel">
+                <form method="POST" action="{{ route('actions.perform') }}" class="event-registration__travel">
                     @csrf
                     <input type="hidden" name="action" value="set-event-travel-status">
                     <input type="hidden" name="target" value="{{ $event['key'] }}">

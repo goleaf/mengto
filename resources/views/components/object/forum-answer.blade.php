@@ -12,7 +12,11 @@
         <div class="forum-topic-card__author">
             <span class="forum-topic-card__avatar" aria-hidden="true">{{ $answer['author_initials'] }}</span>
             <span>
-                <strong>{{ $answer['author_name'] }}</strong>
+                @if ($answer['expert_profile'])
+                    <strong><a href="{{ route('experts.show', $answer['expert_profile']['slug']) }}">{{ $answer['author_name'] }}</a></strong>
+                @else
+                    <strong>{{ $answer['author_name'] }}</strong>
+                @endif
                 <span>{{ $answer['author_role'] }} / {{ $answer['created_label'] }}</span>
             </span>
         </div>
@@ -23,8 +27,13 @@
             @if ($answer['is_verified_expert'])
                 <span class="forum-badge">
                     <x-lucide-badge-check aria-hidden="true" />
-                    {{ $answer['expertise'] }}
+                    {{ ($answer['expert_profile']['qualification_verified'] ?? false) ? 'Qualification verified' : $answer['expertise'] }}
                 </span>
+                @if ($answer['expert_profile'] && $answer['expert_profile']['profile_status'] !== 'Published')
+                    <span class="forum-badge forum-badge--sun">
+                        Current profile status: {{ $answer['expert_profile']['profile_status'] }}
+                    </span>
+                @endif
             @else
                 <span class="forum-badge forum-badge--neutral">{{ $answer['experience_label'] }}</span>
             @endif
@@ -66,7 +75,7 @@
 
     <footer class="forum-answer__footer">
         <div class="forum-actions">
-            <form method="POST" action="{{ route('pet-social.forum.actions') }}">
+            <form method="POST" action="{{ route('forum.actions') }}">
                 @csrf
                 <input type="hidden" name="action" value="vote-answer">
                 <input type="hidden" name="answer_id" value="{{ $answer['id'] }}">
@@ -78,7 +87,7 @@
             </form>
 
             @if ($canManage && ! $answer['is_accepted'])
-                <form method="POST" action="{{ route('pet-social.forum.actions') }}">
+                <form method="POST" action="{{ route('forum.actions') }}">
                     @csrf
                     <input type="hidden" name="action" value="accept-answer">
                     <input type="hidden" name="answer_id" value="{{ $answer['id'] }}">
@@ -94,7 +103,7 @@
                     <x-lucide-flag aria-hidden="true" />
                     Report
                 </summary>
-                <form method="POST" action="{{ route('pet-social.forum.actions') }}" class="forum-form mt-2">
+                <form method="POST" action="{{ route('forum.actions') }}" class="forum-form mt-2">
                     @csrf
                     <input type="hidden" name="action" value="report-answer">
                     <input type="hidden" name="answer_id" value="{{ $answer['id'] }}">
@@ -122,7 +131,7 @@
                     <x-lucide-message-circle-plus aria-hidden="true" />
                     Comment
                 </summary>
-                <form method="POST" action="{{ route('pet-social.forum.comments.store', $topic['slug']) }}" class="forum-form mt-2">
+                <form method="POST" action="{{ route('forum.comments.store', $topic['slug']) }}" class="forum-form mt-2">
                     @csrf
                     <input type="hidden" name="answer_id" value="{{ $answer['id'] }}">
                     <label class="forum-form__field">

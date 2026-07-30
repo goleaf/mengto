@@ -23,8 +23,8 @@
             <x-layout.site-header :owner="$owner" :active-section="$activeSection" />
 
             <main id="main-content" tabindex="-1" class="app-main mx-auto max-w-7xl px-4 py-5 sm:px-6 lg:px-8 focus:outline-none">
-                @if (session('pawcircle.feedback'))
-                    <x-ui.flash-feedback :message="session('pawcircle.feedback')" class="mb-4" />
+                @if (session('feedback'))
+                    <x-ui.flash-feedback :message="session('feedback')" class="mb-4" />
                 @endif
 
                 {{ $slot }}

@@ -9,7 +9,7 @@
         <div class="flex items-center justify-between gap-3">
             <h3 class="text-xs font-semibold text-paw-leaf">Your pets</h3>
             <x-ui.action-control
-                :href="route('pet-social.compose', 'pet')"
+                :href="route('compose', 'pet')"
                 label="Add"
                 icon="plus"
                 variant="quiet"
@@ -27,7 +27,7 @@
     </div>
 
     <x-ui.action-control
-        :href="route('pet-social.circle.index')"
+        :href="route('circle.index')"
         label="Open my circle"
         icon="bookmark"
         variant="paper"

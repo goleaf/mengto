@@ -4,44 +4,48 @@ use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route;
 
-test('the Scout profile renders as a static preview page', function () {
-    expect(Route::has('pet-social.pets.scout'))->toBeTrue();
+test('the Scout profile renders as a functional pet page', function () {
+    expect(Route::has('pets.scout'))->toBeTrue();
 
-    $response = $this->get(route('pet-social.pets.scout'));
+    $response = $this->get(route('pets.scout'));
 
     $response
         ->assertSuccessful()
         ->assertSee('Scout')
         ->assertSee('data-section="pet-profile"', false)
-        ->assertSee('data-section="care"', false)
-        ->assertSee('data-section="compatibility"', false)
+        ->assertSee('data-section="pet-profile-hero"', false)
         ->assertSee('data-section="owner"', false)
-        ->assertSee('data-section="gallery"', false)
-        ->assertSee('data-section="recent-moments"', false)
-        ->assertSee('aria-disabled="true"', false)
-        ->assertSee('aria-disabled="true" disabled', false)
-        ->assertSee('About Scout')
-        ->assertSee('<title>Scout | PawCircle</title>', false)
+        ->assertSee('data-section="pet-moments"', false)
+        ->assertSee('data-section="pet-profile-badges"', false)
+        ->assertSee('<title>Scout @mia-carter/scout | PawCircle</title>', false)
         ->assertSee('href="#main-content"', false)
-        ->assertSee('<h3 class="truncate text-base font-semibold text-paw-ink">Mia Carter</h3>', false)
+        ->assertSee('Mia Carter')
         ->assertSee('alt="Scout catching a yellow frisbee on the grass"', false)
         ->assertSee('alt="Scout resting on a wooden porch"', false)
         ->assertDontSee('alt="Scout shared moment"', false)
-        ->assertDontSee('<form', false);
+        ->assertSee('<form', false);
+
+    $xpath = responseXPath($response);
+
+    expect($xpath->query('//h1[normalize-space()="Scout"]')->length)->toBe(1)
+        ->and($xpath->query('//main//form')->length)->toBeGreaterThan(0)
+        ->and($xpath->query('//main//button[not(@disabled)]')->length)->toBeGreaterThan(0);
 });
 
 test('the home preview links Scout to the pet profile', function () {
-    $response = $this->get(route('pet-social.preview'));
+    $response = $this->get(route('home'));
 
     $response
         ->assertSuccessful()
-        ->assertSee('href="'.route('pet-social.pets.scout').'"', false)
-        ->assertSee('data-profile-link', false)
-        ->assertSee('<h2 class="truncate text-base font-semibold text-paw-ink">Ari Jensen</h2>', false);
+        ->assertSee('href="'.route('pets.scout').'"', false)
+        ->assertSee('data-profile-link', false);
+
+    expect(responseXPath($response)->query('//h2[contains(@class, "post-identity__name")][normalize-space()="Ari Jensen"]')->length)
+        ->toBe(1);
 });
 
 test('the Scout profile uses a consistent Border Collie photo set', function () {
-    $response = $this->get(route('pet-social.pets.scout'));
+    $response = $this->get(route('pets.scout', ['tab' => 'photos']));
 
     $response
         ->assertSuccessful()
@@ -58,7 +62,7 @@ test('the Scout profile uses a consistent Border Collie photo set', function () 
 
 test('profile accessibility markup keeps valid empty facts and readable status color', function () {
     $facts = Blade::render(
-        '<x-pet-social.pet-facts title="Care profile" section="care" :facts="$facts" />',
+        '<x-object.pet-facts title="Care profile" section="care" :facts="$facts" />',
         ['facts' => []],
     );
 

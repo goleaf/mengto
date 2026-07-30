@@ -258,7 +258,7 @@ final class WalkPlanPresenter
                 'image_small' => 'https://images.unsplash.com/photo-1654256578072-b932c33cb92e?auto=format&fit=crop&w=576&h=384&q=80',
                 'image_medium' => 'https://images.unsplash.com/photo-1654256578072-b932c33cb92e?auto=format&fit=crop&w=900&h=600&q=82',
                 'image_alt' => 'Scout, a black and white Border Collie, resting on grass',
-                'href' => route('pet-social.compose', 'walk'),
+                'href' => route('compose', 'walk'),
                 'icon' => 'calendar-plus',
             ],
             [
@@ -268,7 +268,7 @@ final class WalkPlanPresenter
                 'image_small' => 'https://images.unsplash.com/photo-1753685723016-78c233daa8a2?auto=format&fit=crop&w=576&h=384&q=80',
                 'image_medium' => 'https://images.unsplash.com/photo-1753685723016-78c233daa8a2?auto=format&fit=crop&w=900&h=600&q=82',
                 'image_alt' => 'Ari relaxing with Mochi in a neighborhood park',
-                'href' => route('pet-social.neighbors.ari'),
+                'href' => route('neighbors.ari'),
                 'icon' => 'map',
             ],
             [
@@ -278,7 +278,7 @@ final class WalkPlanPresenter
                 'image_small' => 'https://images.unsplash.com/photo-1638552718376-7d4881e31418?auto=format&fit=crop&w=576&h=384&q=80',
                 'image_medium' => 'https://images.unsplash.com/photo-1638552718376-7d4881e31418?auto=format&fit=crop&w=900&h=600&q=82',
                 'image_alt' => 'Noah practicing with a small dog in a wooded park',
-                'href' => route('pet-social.neighbors.index', ['q' => 'Noah']),
+                'href' => route('neighbors.index', ['q' => 'Noah']),
                 'icon' => 'trees',
             ],
         ];

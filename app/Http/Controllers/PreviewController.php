@@ -14,7 +14,7 @@ class PreviewController extends Controller
     ): View {
         $filters = $request->validated();
 
-        return view('pet-social.index', $feed->page(
+        return view('home', $feed->page(
             mode: (string) ($filters['feed'] ?? 'home'),
             sort: (string) ($filters['sort'] ?? 'recommended'),
             type: (string) ($filters['type'] ?? 'all'),

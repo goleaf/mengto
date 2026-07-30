@@ -12,7 +12,7 @@
         </a>
 
         <x-ui.action-form
-            :action="route('pet-social.actions.perform')"
+            :action="route('actions.perform')"
             :payload="[
                 'action' => 'toggle-post-subscription',
                 'target' => $post['key'],
@@ -31,7 +31,7 @@
                 Edit
             </a>
             <x-ui.action-form
-                :action="route('pet-social.actions.perform')"
+                :action="route('actions.perform')"
                 :payload="[
                     'action' => $post['status'] === 'archived' ? 'restore-post' : 'archive-post',
                     'target' => $post['key'],
@@ -47,7 +47,7 @@
                 </button>
             </x-ui.action-form>
             <a
-                href="{{ route('pet-social.compose', ['kind' => 'delete-post', 'post' => $post['key']]) }}"
+                href="{{ route('compose', ['kind' => 'delete-post', 'post' => $post['key']]) }}"
                 class="post-menu__danger"
             >
                 <x-lucide-trash-2 class="icon icon--sm" aria-hidden="true" />
@@ -55,7 +55,7 @@
             </a>
         @else
             <x-ui.action-form
-                :action="route('pet-social.actions.perform')"
+                :action="route('actions.perform')"
                 :payload="['action' => 'hide-post', 'target' => $post['key'], 'label' => 'Publication']"
             >
                 <button type="submit">
@@ -64,7 +64,7 @@
                 </button>
             </x-ui.action-form>
             <x-ui.action-form
-                :action="route('pet-social.actions.perform')"
+                :action="route('actions.perform')"
                 :payload="['action' => 'mute-author', 'target' => $post['key']]"
             >
                 <button type="submit">
@@ -73,7 +73,7 @@
                 </button>
             </x-ui.action-form>
             <x-ui.action-form
-                :action="route('pet-social.actions.perform')"
+                :action="route('actions.perform')"
                 :payload="['action' => 'block-post-author', 'target' => $post['key']]"
             >
                 <button type="submit" class="post-menu__danger">

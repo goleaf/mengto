@@ -13,6 +13,6 @@ class TopicController extends Controller
     {
         Gate::authorize('view', $forumTopic);
 
-        return view('pet-social.forum.show', $presenter->topic($forumTopic));
+        return view('forum.show', $presenter->topic($forumTopic));
     }
 }

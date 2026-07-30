@@ -1,5 +1,5 @@
 <a
-    href="{{ route('pet-social.preview') }}"
+    href="{{ route('home') }}"
     {{ $attributes->class(['brand-link']) }}
     aria-label="PawCircle home"
 >

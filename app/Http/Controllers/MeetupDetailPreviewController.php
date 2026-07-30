@@ -17,6 +17,6 @@ class MeetupDetailPreviewController extends Controller
 
         abort_if($data === null, 404);
 
-        return view('pet-social.meetups.show', $data);
+        return view('meetups.show', $data);
     }
 }

@@ -14,6 +14,6 @@ class TopicDeleteController extends Controller
         Gate::authorize('delete', $forumTopic);
         $deleteTopic->handle($forumTopic);
 
-        return to_route('pet-social.forum.index')->with('pawcircle.feedback', 'Topic deleted.');
+        return to_route('forum.index')->with('feedback', 'Topic deleted.');
     }
 }

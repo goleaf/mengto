@@ -24,7 +24,7 @@
             <span>Question</span>
         </a>
         @if ((int) $draftCount > 0)
-            <a href="{{ route('pet-social.preview', ['feed' => 'drafts']) }}" class="quick-composer__drafts">
+            <a href="{{ route('home', ['feed' => 'drafts']) }}" class="quick-composer__drafts">
                 {{ $draftCount }} {{ \Illuminate\Support\Str::plural('draft', (int) $draftCount) }}
             </a>
         @endif

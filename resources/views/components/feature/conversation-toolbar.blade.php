@@ -1,6 +1,6 @@
 @props(['filters', 'unreadCount', 'query' => '', 'activeFilter' => 'all'])
 
-<form method="GET" action="{{ route('pet-social.messages.index') }}" class="border-b border-paw-line p-4">
+<form method="GET" action="{{ route('messages.index') }}" class="border-b border-paw-line p-4">
     <x-ui.panel-heading title="Conversations" :meta="$unreadCount.' unread'" />
 
     <x-ui.search-field

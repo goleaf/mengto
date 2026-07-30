@@ -14,7 +14,7 @@
             title="No neighbors match these filters"
             role="listitem"
             description="Try a broader person, pet, or neighborhood."
-            :href="route('pet-social.neighbors.index')"
+            :href="route('neighbors.index')"
             class="sm:col-span-2 xl:col-span-4"
         />
     @endforelse

@@ -20,7 +20,7 @@
                 title="No nearby matches"
                 role="listitem"
                 description="Try a broader search or another category."
-                :href="route('pet-social.discover.index')"
+                :href="route('discover.index')"
             />
         @endforelse
     </div>

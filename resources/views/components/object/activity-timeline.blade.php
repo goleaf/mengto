@@ -3,7 +3,7 @@
 <section data-section="activity-timeline" {{ $attributes->class(['panel', 'panel--clip']) }}>
     <h2 class="sr-only">Activity updates</h2>
 
-    <form method="GET" action="{{ route('pet-social.notifications.index') }}" class="border-b border-paw-line p-4 sm:p-5">
+    <form method="GET" action="{{ route('notifications.index') }}" class="border-b border-paw-line p-4 sm:p-5">
         <x-ui.panel-heading title="Activity filters" :meta="$unreadCount.' new'" />
 
         <x-ui.filter-group

@@ -16,7 +16,7 @@ class CommentStoreController extends Controller
     ): RedirectResponse {
         $createComment->handle($forumTopic, $request->validated());
 
-        return to_route('pet-social.forum.topics.show', $forumTopic)
-            ->with('pawcircle.feedback', 'Comment added.');
+        return to_route('forum.topics.show', $forumTopic)
+            ->with('feedback', 'Comment added.');
     }
 }

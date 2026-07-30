@@ -1,6 +1,6 @@
 @props(['meetups'])
 
-<x-layout.sidebar-section title="Nearby meetups" section="meetups" :href="route('pet-social.meetups.index')">
+<x-layout.sidebar-section title="Nearby meetups" section="meetups" :href="route('meetups.index')">
     <x-object.sidebar-list>
         @forelse ($meetups as $meetup)
             <x-object.sidebar-list-item>
@@ -35,7 +35,7 @@
                         size="micro"
                         :active="$meetup['rsvp']"
                         :pressed="$meetup['rsvp']"
-                        :endpoint="route('pet-social.actions.perform')"
+                        :endpoint="route('actions.perform')"
                         :payload="['action' => 'toggle-meetup', 'target' => $meetup['key'], 'label' => $meetup['title']]"
                     />
                 </div>

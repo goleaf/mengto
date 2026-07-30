@@ -10,6 +10,6 @@ class KnowledgeController extends Controller
 {
     public function __invoke(BrowseKnowledgeRequest $request, KnowledgePresenter $presenter): View
     {
-        return view('pet-social.knowledge.index', $presenter->library($request->validated()));
+        return view('knowledge.index', $presenter->library($request->validated()));
     }
 }

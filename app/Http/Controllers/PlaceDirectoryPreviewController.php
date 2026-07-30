@@ -12,6 +12,6 @@ final class PlaceDirectoryPreviewController extends Controller
         BrowsePlacesRequest $request,
         PlacePresenter $places,
     ): View {
-        return view('pet-social.places.index', $places->directory($request->validated()));
+        return view('places.index', $places->directory($request->validated()));
     }
 }

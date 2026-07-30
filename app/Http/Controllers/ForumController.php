@@ -10,6 +10,6 @@ class ForumController extends Controller
 {
     public function __invoke(BrowseForumRequest $request, ForumPresenter $presenter): View
     {
-        return view('pet-social.forum.index', $presenter->directory($request->validated()));
+        return view('forum.index', $presenter->directory($request->validated()));
     }
 }

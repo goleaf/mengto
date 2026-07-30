@@ -17,6 +17,6 @@ final class PlaceDetailPreviewController extends Controller
 
         abort_if($data === null, 404);
 
-        return view('pet-social.places.show', $data);
+        return view('places.show', $data);
     }
 }

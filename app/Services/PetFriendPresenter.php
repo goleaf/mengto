@@ -54,8 +54,8 @@ final class PetFriendPresenter
                 'query' => $query,
                 'items' => $items,
                 'empty' => $this->emptyState($tab, $source['name']),
-                'endpoint' => route('pet-social.actions.perform'),
-                'browse_url' => route('pet-social.pet-friends.index'),
+                'endpoint' => route('actions.perform'),
+                'browse_url' => route('pet-friends.index'),
                 'last_dismissed' => $this->lastDismissed($source['id'], $tab, $intent, $sort, $query),
                 'last_blocked' => $this->lastBlocked($source['id'], $tab, $intent, $sort, $query),
                 'safety_note' => [
@@ -257,7 +257,7 @@ final class PetFriendPresenter
                 'label' => 'Message owner',
                 'icon' => 'message-circle',
                 'variant' => 'primary',
-                'href' => route('pet-social.messages.index', [
+                'href' => route('messages.index', [
                     'conversation' => $candidate['owner_conversation'],
                 ]),
             ];
@@ -297,7 +297,7 @@ final class PetFriendPresenter
                 'label' => 'Message '.$candidate['owner'],
                 'icon' => 'message-circle',
                 'variant' => 'paper',
-                'href' => route('pet-social.messages.index', [
+                'href' => route('messages.index', [
                     'conversation' => $candidate['owner_conversation'],
                 ]),
             ];
@@ -361,7 +361,7 @@ final class PetFriendPresenter
             'label' => 'Report profile',
             'icon' => 'flag',
             'variant' => 'quiet',
-            'href' => route('pet-social.compose', [
+            'href' => route('compose', [
                 'kind' => 'report-profile',
                 'target' => $target,
             ]),
@@ -387,7 +387,7 @@ final class PetFriendPresenter
             'label' => $label,
             'icon' => $icon,
             'variant' => $variant,
-            'endpoint' => route('pet-social.actions.perform'),
+            'endpoint' => route('actions.perform'),
             'payload' => [
                 'action' => $action,
                 'source_pet' => $source,
@@ -531,7 +531,7 @@ final class PetFriendPresenter
                 ...$tab,
                 'active' => $tab['key'] === $active,
                 'count' => $counts[$tab['key']] ?? null,
-                'href' => route('pet-social.pet-friends.index', array_filter([
+                'href' => route('pet-friends.index', array_filter([
                     'pet' => str_replace('pet-', '', $source),
                     'tab' => $tab['key'],
                     'intent' => $intent,
@@ -565,7 +565,7 @@ final class PetFriendPresenter
                 'image' => $record['image'],
                 'image_alt' => $record['image_alt'],
                 'active' => $record['id'] === $source,
-                'href' => route('pet-social.pet-friends.index', array_filter([
+                'href' => route('pet-friends.index', array_filter([
                     'pet' => $record['slug'],
                     'tab' => $tab,
                     'intent' => $intent,
@@ -622,7 +622,7 @@ final class PetFriendPresenter
     private function walkHref(array $candidate): ?string
     {
         return in_array($candidate['slug'], ['mochi', 'juniper'], true)
-            ? route('pet-social.compose', ['kind' => 'walk', 'target' => $candidate['slug']])
+            ? route('compose', ['kind' => 'walk', 'target' => $candidate['slug']])
             : null;
     }
 

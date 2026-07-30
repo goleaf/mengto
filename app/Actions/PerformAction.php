@@ -127,7 +127,7 @@ class PerformAction
             'create-group' => $this->createGroup($data),
             'create-meetup' => $this->createEvent($data),
             'create-walk-plan' => $this->createWalkPlan($data),
-            'create-pet' => $this->create('pets', $data, 'Your pet was added to PawCircle.', 'pet-social.pets.index'),
+            'create-pet' => $this->create('pets', $data, 'Your pet was added to PawCircle.', 'pets.index'),
             'update-profile' => $this->updateProfile($data),
             'update-pet' => $this->updatePet($data),
             'update-profile-privacy' => $this->updateProfilePrivacy($data),
@@ -601,7 +601,7 @@ class PerformAction
 
         return [
             'message' => $message,
-            'route' => 'pet-social.pet-friends.index',
+            'route' => 'pet-friends.index',
             'parameters' => $parameters,
         ];
     }
@@ -758,14 +758,14 @@ class PerformAction
 
             return [
                 'message' => $message,
-                'route' => 'pet-social.groups.index',
+                'route' => 'groups.index',
                 'parameters' => $parameters,
             ];
         }
 
         return [
             'message' => $message,
-            'route' => 'pet-social.groups.show',
+            'route' => 'groups.show',
             'parameters' => [
                 'group' => (string) ($data['target'] ?? ''),
                 'tab' => (string) ($data['group_return_tab'] ?? 'overview'),
@@ -1191,7 +1191,7 @@ class PerformAction
 
         return [
             'message' => $message,
-            'route' => 'pet-social.meetups.show',
+            'route' => 'meetups.show',
             'parameters' => [
                 'event' => (string) ($data['target'] ?? ''),
                 'tab' => (string) ($data['event_return_tab'] ?? $defaultTab),
@@ -1240,7 +1240,7 @@ class PerformAction
 
         return [
             'message' => $message,
-            'route' => 'pet-social.connections.index',
+            'route' => 'connections.index',
             'parameters' => $parameters,
         ];
     }
@@ -1275,7 +1275,7 @@ class PerformAction
 
         return [
             'message' => 'Message sent to your neighbor.',
-            'route' => 'pet-social.messages.index',
+            'route' => 'messages.index',
             'parameters' => ['conversation' => (string) ($data['target'] ?? 'ari')],
         ];
     }
@@ -1311,7 +1311,7 @@ class PerformAction
 
         return [
             'message' => 'Your reply joined the conversation.',
-            'route' => 'pet-social.posts.show',
+            'route' => 'posts.show',
             'parameters' => ['post' => $post],
         ];
     }
@@ -1339,7 +1339,7 @@ class PerformAction
             'message' => $status === 'draft'
                 ? 'Draft saved privately.'
                 : 'Your publication is live.',
-            'route' => 'pet-social.preview',
+            'route' => 'home',
             'parameters' => ['feed' => $status === 'draft' ? 'drafts' : 'home'],
         ];
     }
@@ -1362,7 +1362,7 @@ class PerformAction
 
         return [
             'message' => $status === 'draft' ? 'Changes saved as a draft.' : 'Publication updated.',
-            'route' => 'pet-social.preview',
+            'route' => 'home',
             'parameters' => ['feed' => $status === 'draft' ? 'drafts' : 'home'],
         ];
     }
@@ -1488,7 +1488,7 @@ class PerformAction
 
         return [
             'message' => 'Repost added to your feed.',
-            'route' => 'pet-social.preview',
+            'route' => 'home',
             'parameters' => ['feed' => 'home'],
         ];
     }
@@ -1504,7 +1504,7 @@ class PerformAction
 
         return [
             'message' => $status === 'archived' ? 'Publication moved to archive.' : 'Publication restored.',
-            'route' => 'pet-social.preview',
+            'route' => 'home',
             'parameters' => ['feed' => $status === 'archived' ? 'archive' : 'home'],
         ];
     }
@@ -1520,7 +1520,7 @@ class PerformAction
 
         return [
             'message' => 'Publication deleted from this prototype.',
-            'route' => 'pet-social.preview',
+            'route' => 'home',
             'parameters' => ['feed' => 'home'],
         ];
     }
@@ -1569,7 +1569,7 @@ class PerformAction
 
         return [
             'message' => 'Your private group report was received.',
-            'route' => 'pet-social.groups.show',
+            'route' => 'groups.show',
             'parameters' => ['group' => $group['key']],
         ];
     }
@@ -1597,7 +1597,7 @@ class PerformAction
 
         return [
             'message' => 'Your new group is ready in the directory.',
-            'route' => 'pet-social.groups.index',
+            'route' => 'groups.index',
         ];
     }
 
@@ -1632,7 +1632,7 @@ class PerformAction
 
         return [
             'message' => 'Your event is published with registration and safety settings.',
-            'route' => 'pet-social.meetups.index',
+            'route' => 'meetups.index',
         ];
     }
 
@@ -1683,7 +1683,7 @@ class PerformAction
 
         return [
             'message' => 'Your walk draft is ready to review.',
-            'route' => 'pet-social.walks.index',
+            'route' => 'walks.index',
             'parameters' => ['filter' => 'drafts'],
         ];
     }
@@ -1717,7 +1717,7 @@ class PerformAction
 
         return [
             'message' => 'A calm walk with '.$participant['pet'].' is ready in your drafts.',
-            'route' => 'pet-social.walks.index',
+            'route' => 'walks.index',
             'parameters' => ['filter' => 'drafts'],
         ];
     }
@@ -1738,7 +1738,7 @@ class PerformAction
             'message' => $status === 'confirmed'
                 ? $label.' is confirmed and ready to share.'
                 : $label.' is marked complete.',
-            'route' => 'pet-social.walks.index',
+            'route' => 'walks.index',
             'parameters' => ['filter' => $status === 'completed' ? 'completed' : 'upcoming'],
         ];
     }
@@ -1756,7 +1756,7 @@ class PerformAction
 
         return [
             'message' => $label.' was moved to cancelled plans.',
-            'route' => 'pet-social.walks.index',
+            'route' => 'walks.index',
             'parameters' => ['filter' => 'cancelled'],
         ];
     }
@@ -1774,7 +1774,7 @@ class PerformAction
 
         return [
             'message' => $label.' is ready to share.',
-            'route' => 'pet-social.share.show',
+            'route' => 'share.show',
             'parameters' => ['target' => $target],
         ];
     }
@@ -1791,7 +1791,7 @@ class PerformAction
             'message' => $isRequested
                 ? 'Call request sent to '.$label.'.'
                 : 'Call request to '.$label.' was cancelled.',
-            'route' => 'pet-social.messages.details',
+            'route' => 'messages.details',
             'parameters' => ['conversation' => $target],
         ];
     }
@@ -1805,7 +1805,7 @@ class PerformAction
 
         return [
             'message' => 'Conversation details are ready.',
-            'route' => 'pet-social.messages.details',
+            'route' => 'messages.details',
             'parameters' => ['conversation' => $target],
         ];
     }
@@ -1823,7 +1823,7 @@ class PerformAction
             'location' => (string) ($data['location'] ?? ''),
         ]);
 
-        return ['message' => 'Your profile was updated.', 'route' => 'pet-social.profile.mia'];
+        return ['message' => 'Your profile was updated.', 'route' => 'profile.mia'];
     }
 
     /**
@@ -1843,7 +1843,7 @@ class PerformAction
 
         return [
             'message' => ucfirst($pet).' profile was updated.',
-            'route' => $pet === 'nori' ? 'pet-social.pets.nori' : 'pet-social.pets.scout',
+            'route' => $pet === 'nori' ? 'pets.nori' : 'pets.scout',
         ];
     }
 
@@ -1863,7 +1863,7 @@ class PerformAction
 
         return [
             'message' => 'Owner profile privacy was updated.',
-            'route' => 'pet-social.profile.mia',
+            'route' => 'profile.mia',
         ];
     }
 
@@ -1884,7 +1884,7 @@ class PerformAction
 
         return [
             'message' => ucfirst($pet).' privacy was updated.',
-            'route' => $pet === 'nori' ? 'pet-social.pets.nori' : 'pet-social.pets.scout',
+            'route' => $pet === 'nori' ? 'pets.nori' : 'pets.scout',
         ];
     }
 

@@ -33,7 +33,7 @@
                 <x-lucide-reply class="icon icon--sm" aria-hidden="true" />
                 Reply
             </summary>
-            <form method="POST" action="{{ route('pet-social.actions.perform') }}" class="comment-reply__form">
+            <form method="POST" action="{{ route('actions.perform') }}" class="comment-reply__form">
                 @csrf
                 <input type="hidden" name="action" value="create-comment">
                 <input type="hidden" name="target" value="{{ $post['key'] }}">

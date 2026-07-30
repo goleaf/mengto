@@ -12,6 +12,6 @@ final class MessageCenterPreviewController extends Controller
         BrowseMessagesRequest $request,
         MessagePresenter $presenter,
     ): View {
-        return view('pet-social.messages.index', $presenter->page($request->validated()));
+        return view('messages.index', $presenter->page($request->validated()));
     }
 }

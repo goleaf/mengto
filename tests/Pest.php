@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\AvailabilitySlot;
+use App\Models\Service;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Testing\TestResponse;
 use Tests\TestCase;
@@ -50,10 +52,33 @@ function something()
     // ..
 }
 
-function pawCircleResponseXPath(TestResponse $response): DOMXPath
+function responseXPath(TestResponse $response): DOMXPath
 {
     $document = new DOMDocument;
     $document->loadHTML((string) $response->getContent(), LIBXML_NOERROR | LIBXML_NOWARNING);
 
     return new DOMXPath($document);
+}
+
+function expertBookingPayload(
+    Service $service,
+    AvailabilitySlot $slot,
+    string $key,
+): array {
+    return [
+        'service_id' => $service->id,
+        'availability_slot_id' => $slot->id,
+        'idempotency_key' => $key,
+        'pet_key' => 'nori',
+        'main_question' => 'Nori becomes frightened by the carrier and we need a gradual preparation plan.',
+        'started_at' => 'The fear became stronger after the last clinic visit.',
+        'tried' => 'We left the carrier open with a familiar blanket.',
+        'previous_professional' => '',
+        'desired_result' => 'Calm voluntary entry before the next appointment.',
+        'access_needs' => '',
+        'urgent_signs' => 0,
+        'recording_consent' => 0,
+        'terms_accepted' => 1,
+        'data_consent' => 1,
+    ];
 }

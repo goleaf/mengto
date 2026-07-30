@@ -1,6 +1,6 @@
 @props(['groups'])
 
-<x-layout.sidebar-section title="Groups for you" section="groups" :href="route('pet-social.groups.index')">
+<x-layout.sidebar-section title="Groups for you" section="groups" :href="route('groups.index')">
     <x-object.sidebar-list>
         @forelse ($groups as $group)
             <x-object.sidebar-list-item>
@@ -25,7 +25,7 @@
                         size="micro"
                         :active="$group['joined']"
                         :pressed="$group['joined']"
-                        :endpoint="route('pet-social.actions.perform')"
+                        :endpoint="route('actions.perform')"
                         :payload="['action' => 'toggle-group', 'target' => $group['key'], 'label' => $group['name']]"
                     />
                 </div>

@@ -16,7 +16,7 @@
     </div>
 
     <h2>
-        <a href="{{ route('pet-social.forum.topics.show', $topic['slug']) }}">{{ $topic['title'] }}</a>
+        <a href="{{ route('forum.topics.show', $topic['slug']) }}">{{ $topic['title'] }}</a>
     </h2>
 
     <p class="forum-topic-card__excerpt">{{ $topic['excerpt'] }}</p>
@@ -56,7 +56,7 @@
         </div>
 
         <div class="forum-actions">
-            <form method="POST" action="{{ route('pet-social.forum.actions') }}">
+            <form method="POST" action="{{ route('forum.actions') }}">
                 @csrf
                 <input type="hidden" name="action" value="toggle-bookmark">
                 <input type="hidden" name="topic_id" value="{{ $topic['id'] }}">
@@ -68,7 +68,7 @@
                     {{ $topic['bookmarked'] ? 'Saved' : 'Save' }}
                 </button>
             </form>
-            <a href="{{ route('pet-social.forum.topics.show', $topic['slug']) }}" class="forum-button forum-button--primary">
+            <a href="{{ route('forum.topics.show', $topic['slug']) }}" class="forum-button forum-button--primary">
                 Open
                 <x-lucide-arrow-right aria-hidden="true" />
             </a>

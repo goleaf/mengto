@@ -16,7 +16,7 @@ final class ConnectionCenterPreviewController extends Controller
     ): View {
         $parameters = $request->validated();
 
-        return view('pet-social.connections.index', [
+        return view('connections.index', [
             ...$connections->page(
                 tab: (string) ($parameters['tab'] ?? 'following'),
                 type: (string) ($parameters['type'] ?? 'all'),

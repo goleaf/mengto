@@ -19,14 +19,14 @@
 
     <x-ui.action-group class="call-consent__actions">
         <x-ui.action-control
-            :href="route('pet-social.messages.index', ['conversation' => $contact['key']])"
+            :href="route('messages.index', ['conversation' => $contact['key']])"
             label="Keep messaging"
             icon="message-circle"
             variant="paper"
             size="regular"
         />
         <x-ui.action-control
-            :endpoint="route('pet-social.actions.perform')"
+            :endpoint="route('actions.perform')"
             :payload="['action' => 'call', 'target' => $contact['key'], 'label' => $contact['title']]"
             :label="$call['label']"
             :icon="$call['icon']"

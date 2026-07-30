@@ -12,6 +12,6 @@ class ArticleController extends Controller
     {
         abort_unless(in_array($knowledgeArticle->status->value, ['published', 'outdated'], true), 404);
 
-        return view('pet-social.knowledge.show', $presenter->article($knowledgeArticle));
+        return view('knowledge.show', $presenter->article($knowledgeArticle));
     }
 }

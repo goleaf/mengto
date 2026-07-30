@@ -31,7 +31,7 @@ test('forum directory filters searchable public topics and keeps private topics 
         'category' => 'behavior',
     ]);
 
-    $response = $this->get(route('pet-social.forum.index', [
+    $response = $this->get(route('forum.index', [
         'q' => 'carrier',
         'category' => 'behavior',
         'filter' => 'all',
@@ -61,7 +61,7 @@ test('blocked authors disappear from the directory without exposing the block', 
         'blocked_author_key' => 'blocked-author',
     ]);
 
-    $this->get(route('pet-social.forum.index'))
+    $this->get(route('forum.index'))
         ->assertOk()
         ->assertDontSee('A noisy topic')
         ->assertSee('A useful topic');
@@ -86,7 +86,7 @@ test('similar topic endpoint returns published matches only', function () {
         'status' => ForumTopicStatus::Draft,
     ]);
 
-    $this->getJson(route('pet-social.forum.topics.similar', [
+    $this->getJson(route('forum.topics.similar', [
         'q' => 'dog enter the lift',
         'category' => 'behavior',
     ]))

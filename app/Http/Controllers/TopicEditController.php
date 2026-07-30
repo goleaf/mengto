@@ -13,6 +13,6 @@ class TopicEditController extends Controller
     {
         Gate::authorize('update', $forumTopic);
 
-        return view('pet-social.forum.editor', $presenter->editor($forumTopic));
+        return view('forum.editor', $presenter->editor($forumTopic));
     }
 }

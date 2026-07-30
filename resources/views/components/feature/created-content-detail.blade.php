@@ -18,7 +18,7 @@
             secondary-icon="send"
             :summary-label="$content['summary_label']"
             :summary-icons="$content['summary_icons']"
-            :primary-endpoint="route('pet-social.actions.perform')"
+            :primary-endpoint="route('actions.perform')"
             :primary-payload="[
                 'action' => $content['primary']['action'],
                 'target' => $content['hero']['key'],
@@ -27,7 +27,7 @@
             :primary-active="$content['primary']['active']"
             :primary-active-label="$content['primary']['active_label']"
             :primary-active-icon="$content['primary']['active_icon']"
-            :secondary-endpoint="route('pet-social.actions.perform')"
+            :secondary-endpoint="route('actions.perform')"
             :secondary-payload="[
                 'action' => 'share',
                 'target' => $content['hero']['key'],

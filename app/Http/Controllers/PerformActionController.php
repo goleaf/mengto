@@ -16,9 +16,9 @@ class PerformActionController extends Controller
 
         if ($result['route'] !== null) {
             return to_route($result['route'], $result['parameters'] ?? [])
-                ->with('pawcircle.feedback', $result['message']);
+                ->with('feedback', $result['message']);
         }
 
-        return back()->with('pawcircle.feedback', $result['message']);
+        return back()->with('feedback', $result['message']);
     }
 }

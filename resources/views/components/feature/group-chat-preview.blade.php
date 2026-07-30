@@ -28,6 +28,6 @@
         icon="message-circle"
         variant="paper"
         class="section-body"
-        :href="route('pet-social.messages.index')"
+        :href="route('messages.index')"
     />
 </x-ui.content-panel>

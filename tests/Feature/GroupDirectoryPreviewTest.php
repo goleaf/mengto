@@ -1,14 +1,11 @@
 <?php
 
 use App\Http\Controllers\GroupDirectoryPreviewController;
-use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
-use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Route;
-use Illuminate\View\Middleware\ShareErrorsFromSession;
 
-test('the group directory renders as a static local community catalog', function () {
-    $route = Route::getRoutes()->getByName('pet-social.groups.index');
+test('the group directory renders a functional local community catalog', function () {
+    $route = Route::getRoutes()->getByName('groups.index');
 
     expect($route)
         ->not->toBeNull()
@@ -17,16 +14,10 @@ test('the group directory renders as a static local community catalog', function
         ->and($route?->getActionName())->toBe(GroupDirectoryPreviewController::class)
         ->and($route?->gatherMiddleware())->toContain('web');
 
-    config()->set('session.driver', 'database');
-
-    $this->expectsDatabaseQueryCount(0);
-
-    $response = $this->get(route('pet-social.groups.index'));
+    $response = $this->get(route('groups.index'));
 
     $response
         ->assertSuccessful()
-        ->assertCookieMissing(config('session.cookie'))
-        ->assertCookieMissing('XSRF-TOKEN')
         ->assertSee('<title>Groups | PawCircle</title>', false)
         ->assertSee('data-section="group-header"', false)
         ->assertSee('data-section="group-summary"', false)
@@ -36,46 +27,38 @@ test('the group directory renders as a static local community catalog', function
         ->assertSee('Trail Tails')
         ->assertSee('Cat People of Portland')
         ->assertSee('Foster Network PDX')
+        ->assertSee('Gentle Senior Companions')
+        ->assertSee('Portland Labradors')
         ->assertSee('Recommended')
-        ->assertSee('alt="Dog and cat resting together on a couch at home"', false)
-        ->assertSee('alt="Dogs running together in a neighborhood park"', false)
+        ->assertSee('alt="Dog and cat resting together in a compact home"', false)
+        ->assertSee('alt="Dogs running together beside a wooded trail"', false)
         ->assertSee('alt="Two fluffy cats sitting together indoors"', false)
-        ->assertSee('alt="Foster dog resting on a blue couch"', false);
+        ->assertSee('alt="Foster dog resting safely on a blue couch"', false);
 
-    expect($route?->excludedMiddleware())->toContain(
-        StartSession::class,
-        ShareErrorsFromSession::class,
-        PreventRequestForgery::class,
-    );
-
-    $xpath = pawCircleResponseXPath($response);
+    $xpath = responseXPath($response);
 
     expect($xpath->query('//h1')->length)->toBe(1)
-        ->and(trim((string) $xpath->query('//h1')->item(0)?->textContent))->toBe('Find your people and their pets')
-        ->and($xpath->query('//article[@data-group-card]')->length)->toBe(4)
+        ->and(trim((string) $xpath->query('//h1')->item(0)?->textContent))->toBe('Find your people and build something useful')
+        ->and($xpath->query('//article[@data-group-card]')->length)->toBe(6)
         ->and($xpath->query('//section[@data-section="group-directory"]/h2')->length)->toBe(1)
-        ->and($xpath->query('//article[@data-group-card]//h3')->length)->toBe(4)
+        ->and($xpath->query('//article[@data-group-card]//h3')->length)->toBe(6)
         ->and($xpath->query('//article[@data-group-card]//img[@loading="eager" and @fetchpriority="high" and @srcset and @sizes]')->length)->toBe(1)
-        ->and($xpath->query('//article[@data-group-card]//img[@loading="lazy" and @decoding="async" and @srcset and @sizes]')->length)->toBe(3)
-        ->and($xpath->query('//article[@data-group-card]//a')->length)->toBe(0)
-        ->and($xpath->query('//main//button[@disabled]')->length)->toBe(10)
-        ->and($xpath->query('//main//button[not(@disabled)]')->length)->toBe(0)
-        ->and($xpath->query('//main//button[@aria-pressed="true" and @disabled]')->length)->toBe(1)
-        ->and($xpath->query('//main//a')->length)->toBe(0)
-        ->and($xpath->query('//main//input | //main//select | //main//textarea')->length)->toBe(0)
-        ->and($xpath->query('//main//*[@role="button" and not(@aria-disabled="true")]')->length)->toBe(0)
-        ->and($xpath->query('//main//form')->length)->toBe(0)
+        ->and($xpath->query('//article[@data-group-card]//img[@loading="lazy" and @decoding="async" and @srcset and @sizes]')->length)->toBe(5)
+        ->and($xpath->query('//article[@data-group-card]//a')->length)->toBeGreaterThan(0)
+        ->and($xpath->query('//main//button[not(@disabled)]')->length)->toBeGreaterThan(0)
+        ->and($xpath->query('//main//input[@id="group-search" and not(@disabled)]')->length)->toBe(1)
+        ->and($xpath->query('//main//form')->length)->toBeGreaterThan(0)
         ->and($xpath->query('//header//nav[@aria-label="Preview navigation"]')->length)->toBe(0);
 });
 
 test('groups navigation is active in the catalog and linked from existing pages', function () {
-    $groupsUrl = route('pet-social.groups.index');
+    $groupsUrl = route('groups.index');
 
     $groupsResponse = $this->get($groupsUrl);
-    $feedResponse = $this->get(route('pet-social.preview'));
-    $petsResponse = $this->get(route('pet-social.pets.index'));
-    $profileResponse = $this->get(route('pet-social.pets.scout'));
-    $meetupsResponse = $this->get(route('pet-social.meetups.index'));
+    $feedResponse = $this->get(route('home'));
+    $petsResponse = $this->get(route('pets.index'));
+    $profileResponse = $this->get(route('pets.scout'));
+    $meetupsResponse = $this->get(route('meetups.index'));
 
     foreach ([$groupsResponse, $feedResponse, $petsResponse, $profileResponse, $meetupsResponse] as $response) {
         $response
@@ -84,10 +67,10 @@ test('groups navigation is active in the catalog and linked from existing pages'
             ->assertSee('data-nav-item="groups"', false);
     }
 
-    $groupsXPath = pawCircleResponseXPath($groupsResponse);
-    $feedXPath = pawCircleResponseXPath($feedResponse);
-    $petsXPath = pawCircleResponseXPath($petsResponse);
-    $meetupsXPath = pawCircleResponseXPath($meetupsResponse);
+    $groupsXPath = responseXPath($groupsResponse);
+    $feedXPath = responseXPath($feedResponse);
+    $petsXPath = responseXPath($petsResponse);
+    $meetupsXPath = responseXPath($meetupsResponse);
 
     expect($groupsXPath->query('//a[@data-nav-item="groups" and @aria-current="page"]')->length)->toBe(2)
         ->and($groupsXPath->query('//a[@data-nav-item="feed" and @aria-current]')->length)->toBe(0)
@@ -116,7 +99,7 @@ test('the group card renders an explicit empty tags state', function () {
     ];
 
     $card = Blade::render(
-        '<x-pet-social.group-card :group="$group" />',
+        '<x-object.group-card :group="$group" />',
         ['group' => $group],
     );
 

@@ -7,7 +7,7 @@
         'label' => $joined ? 'Joined' : 'Join',
         'icon' => $joined ? 'check' : 'user-plus',
         'variant' => 'paper',
-        'endpoint' => route('pet-social.actions.perform'),
+        'endpoint' => route('actions.perform'),
         'payload' => ['action' => 'toggle-group', 'target' => $groupKey, 'label' => $group['name']],
         'active' => $joined,
     ];

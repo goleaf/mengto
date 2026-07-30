@@ -3,7 +3,7 @@
 <nav class="messaging-channels" aria-label="Conversation channels">
     @forelse ($channels as $channel)
         <a
-            href="{{ route('pet-social.messages.index', ['conversation' => $conversation, 'filter' => $activeFilter, 'channel' => $channel['key']]) }}"
+            href="{{ route('messages.index', ['conversation' => $conversation, 'filter' => $activeFilter, 'channel' => $channel['key']]) }}"
             @if ($activeChannel === $channel['key']) aria-current="page" @endif
             @class(['messaging-channel', 'messaging-channel--active' => $activeChannel === $channel['key']])
         >

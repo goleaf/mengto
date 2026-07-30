@@ -21,7 +21,7 @@ class CreatedContentPreviewController extends Controller
 
         abort_if($content === null, 404);
 
-        return view('pet-social.created.show', [
+        return view('created.show', [
             'owner' => $preview->ownerData(),
             'content' => $content,
         ]);

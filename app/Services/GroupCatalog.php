@@ -34,7 +34,7 @@ final class GroupCatalog
         return [
             'target' => $target,
             'label' => $group['name'],
-            'route' => 'pet-social.groups.show',
+            'route' => 'groups.show',
             'route_parameters' => ['group' => $target],
         ];
     }

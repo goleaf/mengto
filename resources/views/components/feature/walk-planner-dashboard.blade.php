@@ -16,7 +16,7 @@
     />
 
     <x-feature.collection-toolbar
-        :action="route('pet-social.walks.index')"
+        :action="route('walks.index')"
         :filters="$filters"
         :active="$activeFilter"
         :count="$summary['count']"
@@ -39,7 +39,7 @@
             icon="calendar-search"
             title="No plans in this view"
             description="Choose another status or start a fresh walk plan with a familiar neighbor."
-            :href="route('pet-social.compose', 'walk')"
+            :href="route('compose', 'walk')"
             action-label="Create a walk plan"
             action-icon="calendar-plus"
         />

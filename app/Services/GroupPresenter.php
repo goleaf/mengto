@@ -67,8 +67,8 @@ final class GroupPresenter
                 'sort' => $sort,
                 'filters' => array_values($this->filterOptions()),
                 'sort_options' => $this->sortOptions(),
-                'browse_url' => route('pet-social.groups.index'),
-                'create_url' => route('pet-social.compose', ['kind' => 'group']),
+                'browse_url' => route('groups.index'),
+                'create_url' => route('compose', ['kind' => 'group']),
                 'last_dismissed' => $this->lastDismissed($query, $filter, $sort),
             ],
         ];
@@ -109,13 +109,13 @@ final class GroupPresenter
                     'label' => 'Share',
                     'icon' => 'send',
                     'variant' => 'paper',
-                    'href' => route('pet-social.share.show', ['target' => $key]),
+                    'href' => route('share.show', ['target' => $key]),
                 ],
                 'report_action' => [
                     'label' => 'Report group',
                     'icon' => 'flag',
                     'variant' => 'quiet',
-                    'href' => route('pet-social.compose', [
+                    'href' => route('compose', [
                         'kind' => 'report-group',
                         'target' => $key,
                     ]),
@@ -167,7 +167,7 @@ final class GroupPresenter
 
         return [
             ...$group,
-            'detail_route' => 'pet-social.groups.show',
+            'detail_route' => 'groups.show',
             'detail_parameters' => ['group' => $group['key']],
             'privacy_label' => $group['privacy'] === 'closed' ? 'Closed' : 'Public',
             'privacy_icon' => $group['privacy'] === 'closed' ? 'lock-keyhole' : 'globe-2',
@@ -308,7 +308,7 @@ final class GroupPresenter
             'variant' => $action[3],
             'active' => $membership !== null,
             'pressed' => $membership === 'joined',
-            'endpoint' => route('pet-social.actions.perform'),
+            'endpoint' => route('actions.perform'),
             'payload' => [
                 'action' => $action[0],
                 'target' => $group['key'],
@@ -340,7 +340,7 @@ final class GroupPresenter
                 ...$option,
                 'active' => $value === $active,
                 'count' => isset($counts[$value]) ? $this->compactNumber($counts[$value]) : null,
-                'href' => route('pet-social.groups.show', [
+                'href' => route('groups.show', [
                     'group' => $group['key'],
                     'tab' => $value,
                 ]),
@@ -454,7 +454,7 @@ final class GroupPresenter
             'label' => $label,
             'icon' => $icon,
             'variant' => 'quiet',
-            'endpoint' => route('pet-social.actions.perform'),
+            'endpoint' => route('actions.perform'),
             'payload' => [
                 'action' => $action,
                 'target' => $target,

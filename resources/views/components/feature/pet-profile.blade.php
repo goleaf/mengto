@@ -78,7 +78,7 @@
                     @if ($profile['audience'] === 'owner')
                         <x-ui.action-group class="profile-friend-actions">
                             <x-ui.action-control
-                                :href="route('pet-social.pet-friends.index', [
+                                :href="route('pet-friends.index', [
                                     'pet' => $profile['identity']['slug'],
                                     'tab' => 'friends',
                                 ])"
@@ -88,7 +88,7 @@
                                 size="regular"
                             />
                             <x-ui.action-control
-                                :href="route('pet-social.pet-friends.index', [
+                                :href="route('pet-friends.index', [
                                     'pet' => $profile['identity']['slug'],
                                     'tab' => 'discover',
                                 ])"

@@ -18,7 +18,7 @@
                 <x-ui.action-control
                     label="Confirm revised details"
                     icon="calendar-check"
-                    :endpoint="route('pet-social.actions.perform')"
+                    :endpoint="route('actions.perform')"
                     :payload="[
                         'action' => 'acknowledge-event-reschedule',
                         'target' => $event['key'],
@@ -136,7 +136,7 @@
 
             <x-ui.content-panel section="event-message-composer" title="Send a message" meta="Owners speak for pet profiles">
                 @if ($registration['registration'] || $event['managed_by_current_user'])
-                    <form method="POST" action="{{ route('pet-social.actions.perform') }}" class="event-message-form section-body">
+                    <form method="POST" action="{{ route('actions.perform') }}" class="event-message-form section-body">
                         @csrf
                         <input type="hidden" name="action" value="send-event-message">
                         <input type="hidden" name="target" value="{{ $event['key'] }}">
@@ -245,7 +245,7 @@
             </div>
 
             @if ($registration['registration'] || $event['managed_by_current_user'])
-                <form method="POST" action="{{ route('pet-social.actions.perform') }}" class="event-photo-form section-body">
+                <form method="POST" action="{{ route('actions.perform') }}" class="event-photo-form section-body">
                     @csrf
                     <input type="hidden" name="action" value="add-event-photo">
                     <input type="hidden" name="target" value="{{ $event['key'] }}">
@@ -319,7 +319,7 @@
 
             <x-ui.content-panel section="event-review-form" title="Share private or public feedback">
                 @if (($registration['status'] ?? null) === 'checked_in')
-                    <form method="POST" action="{{ route('pet-social.actions.perform') }}" class="event-message-form section-body">
+                    <form method="POST" action="{{ route('actions.perform') }}" class="event-message-form section-body">
                         @csrf
                         <input type="hidden" name="action" value="submit-event-review">
                         <input type="hidden" name="target" value="{{ $event['key'] }}">
@@ -384,7 +384,7 @@
                                         <x-ui.action-control
                                             label="Approve"
                                             icon="check"
-                                            :endpoint="route('pet-social.actions.perform')"
+                                            :endpoint="route('actions.perform')"
                                             :payload="[
                                                 'action' => 'approve-event-application',
                                                 'target' => $event['key'],
@@ -396,7 +396,7 @@
                                         <x-ui.action-control
                                             label="Decline"
                                             icon="x"
-                                            :endpoint="route('pet-social.actions.perform')"
+                                            :endpoint="route('actions.perform')"
                                             :payload="[
                                                 'action' => 'decline-event-application',
                                                 'target' => $event['key'],
@@ -428,7 +428,7 @@
                                     <x-ui.action-control
                                         label="Offer place"
                                         icon="ticket-plus"
-                                        :endpoint="route('pet-social.actions.perform')"
+                                        :endpoint="route('actions.perform')"
                                         :payload="[
                                             'action' => 'promote-event-waitlist',
                                             'target' => $event['key'],

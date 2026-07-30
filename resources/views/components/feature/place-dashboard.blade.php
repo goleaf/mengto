@@ -86,7 +86,7 @@
                                 <span>{{ \Illuminate\Support\Str::headline($checkIn['visibility']) }} · ends automatically</span>
                             </div>
                             <x-ui.action-control
-                                :endpoint="route('pet-social.actions.perform')"
+                                :endpoint="route('actions.perform')"
                                 :payload="[
                                     'action' => 'clear-place-check-in',
                                     'target' => $place['key'],
@@ -99,7 +99,7 @@
                             />
                         </div>
                     @else
-                        <form method="POST" action="{{ route('pet-social.actions.perform') }}" class="place-check-in-form">
+                        <form method="POST" action="{{ route('actions.perform') }}" class="place-check-in-form">
                             @csrf
                             <input type="hidden" name="action" value="check-in-place">
                             <input type="hidden" name="target" value="{{ $place['key'] }}">
@@ -121,7 +121,7 @@
                     @endif
 
                     <x-ui.action-control
-                        :endpoint="route('pet-social.actions.perform')"
+                        :endpoint="route('actions.perform')"
                         :payload="[
                             'action' => 'mark-place-visited',
                             'target' => $place['key'],
@@ -139,7 +139,7 @@
                     <div class="place-collection-list">
                         @forelse ($collections as $key => $collection)
                             <x-ui.action-control
-                                :endpoint="route('pet-social.actions.perform')"
+                                :endpoint="route('actions.perform')"
                                 :payload="[
                                     'action' => 'toggle-place-collection',
                                     'target' => $place['key'],
@@ -185,7 +185,7 @@
                     @endforelse
                 </div>
 
-                <form method="POST" action="{{ route('pet-social.actions.perform') }}" class="place-invite-form">
+                <form method="POST" action="{{ route('actions.perform') }}" class="place-invite-form">
                     @csrf
                     <input type="hidden" name="action" value="invite-to-place">
                     <input type="hidden" name="target" value="{{ $place['key'] }}">
@@ -462,7 +462,7 @@
                                 </div>
                             </div>
                         @elseif ($canManage)
-                            <form method="POST" action="{{ route('pet-social.actions.perform') }}">
+                            <form method="POST" action="{{ route('actions.perform') }}">
                                 @csrf
                                 <input type="hidden" name="action" value="answer-place-question">
                                 <input type="hidden" name="target" value="{{ $place['key'] }}">
@@ -550,7 +550,7 @@
                         @if (! in_array($warning['status'], ['resolved', 'expired', 'false'], true))
                             <div class="place-warning__actions">
                                 <x-ui.action-control
-                                    :endpoint="route('pet-social.actions.perform')"
+                                    :endpoint="route('actions.perform')"
                                     :payload="[
                                         'action' => 'confirm-place-warning',
                                         'target' => $place['key'],
@@ -563,7 +563,7 @@
                                     size="compact"
                                 />
                                 <x-ui.action-control
-                                    :endpoint="route('pet-social.actions.perform')"
+                                    :endpoint="route('actions.perform')"
                                     :payload="[
                                         'action' => 'resolve-place-warning',
                                         'target' => $place['key'],

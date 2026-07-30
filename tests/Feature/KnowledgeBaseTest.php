@@ -17,7 +17,7 @@ test('knowledge library exposes reviewed articles but not editorial drafts', fun
         'published_at' => null,
     ]);
 
-    $this->get(route('pet-social.knowledge.index', [
+    $this->get(route('knowledge.index', [
         'q' => 'carrier',
         'category' => 'behavior',
         'type' => 'all',
@@ -43,20 +43,20 @@ test('article page presents sources version history and accepts corrections', fu
         'change_summary' => 'Initial expert review.',
     ]);
 
-    $this->get(route('pet-social.knowledge.articles.show', $article))
+    $this->get(route('knowledge.articles.show', $article))
         ->assertOk()
         ->assertSee($article->title)
         ->assertSee('Sofia Arden')
         ->assertSee('Initial expert review')
         ->assertSee('catvets.com');
 
-    $this->post(route('pet-social.knowledge.corrections.store', $article), [
+    $this->post(route('knowledge.corrections.store', $article), [
         'field' => 'body',
         'suggestion' => 'Clarify that the door should move only after the cat remains relaxed.',
         'source_url' => 'https://catvets.com/resource/feline-behavior-guidelines/',
     ])
-        ->assertRedirect(route('pet-social.knowledge.articles.show', $article))
-        ->assertSessionHas('pawcircle.feedback');
+        ->assertRedirect(route('knowledge.articles.show', $article))
+        ->assertSessionHas('feedback');
 
     expect(KnowledgeCorrection::query()->firstOrFail())
         ->article_id->toBe($article->id)
@@ -70,5 +70,5 @@ test('unpublished knowledge article is not publicly readable', function () {
         'published_at' => null,
     ]);
 
-    $this->get(route('pet-social.knowledge.articles.show', $article))->assertNotFound();
+    $this->get(route('knowledge.articles.show', $article))->assertNotFound();
 });

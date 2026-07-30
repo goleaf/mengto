@@ -14,7 +14,7 @@
             title="No groups match these filters"
             role="listitem"
             description="Try a broader topic, category, or organizer."
-            :href="route('pet-social.groups.index')"
+            :href="route('groups.index')"
             class="sm:col-span-2 xl:col-span-4"
         />
     @endforelse

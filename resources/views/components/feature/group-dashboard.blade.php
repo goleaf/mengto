@@ -213,7 +213,7 @@
                         @forelse ($content['events'] as $event)
                             <x-object.group-event-card
                                 :event="$event"
-                                :href="route('pet-social.groups.show', ['group' => $group['key'], 'tab' => 'events'])"
+                                :href="route('groups.show', ['group' => $group['key'], 'tab' => 'events'])"
                             />
                         @empty
                             <p class="group-dashboard__empty">No upcoming events are scheduled.</p>
@@ -239,7 +239,7 @@
                     <x-ui.action-control
                         :label="$option['label']"
                         :icon="$option['active'] ? 'check' : 'bell'"
-                        :endpoint="route('pet-social.actions.perform')"
+                        :endpoint="route('actions.perform')"
                         :payload="$option['payload']"
                         :active="$option['active']"
                         :pressed="$option['active']"

@@ -152,7 +152,7 @@ final class PerformPlaceAction
 
         return [
             'message' => 'Recent place history cleared.',
-            'route' => 'pet-social.places.index',
+            'route' => 'places.index',
             'parameters' => ['mode' => 'browse'],
         ];
     }
@@ -170,7 +170,7 @@ final class PerformPlaceAction
 
         return [
             'message' => 'Approximate current area enabled. No home point or location history was saved.',
-            'route' => 'pet-social.places.index',
+            'route' => 'places.index',
             'parameters' => ['view' => 'split'],
         ];
     }
@@ -184,7 +184,7 @@ final class PerformPlaceAction
 
         return [
             'message' => 'Location access removed. Manual city search remains available.',
-            'route' => 'pet-social.places.index',
+            'route' => 'places.index',
             'parameters' => ['area' => 'Vilnius'],
         ];
     }
@@ -288,7 +288,7 @@ final class PerformPlaceAction
 
         return [
             'message' => 'Place submitted for duplicate and information review.',
-            'route' => 'pet-social.places.index',
+            'route' => 'places.index',
             'parameters' => ['mode' => 'browse', 'q' => $submission['title']],
         ];
     }
@@ -432,7 +432,7 @@ final class PerformPlaceAction
 
         return [
             'message' => $message,
-            'route' => 'pet-social.places.show',
+            'route' => 'places.show',
             'parameters' => [
                 'place' => $place['key'],
                 'tab' => $tab === '' ? 'overview' : $tab,

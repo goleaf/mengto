@@ -29,7 +29,7 @@ class PetDirectoryPreviewController extends Controller
             ['name', 'species', 'breed', 'owner', 'neighborhood', 'status', 'traits'],
         );
 
-        return view('pet-social.pets.index', [
+        return view('pets.index', [
             ...$data,
             'directoryQuery' => $parameters['q'] ?? '',
             'activeFilter' => $parameters['filter'] ?? 'all-pets',

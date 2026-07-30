@@ -8,7 +8,7 @@
     <div @class(['min-w-0', 'order-1 md:order-2' => $threadFirst])>
         @if ($threadFirst)
             <x-ui.text-link
-                :href="route('pet-social.messages.index')"
+                :href="route('messages.index')"
                 icon="arrow-left"
                 variant="back"
                 class="mb-3 md:hidden"

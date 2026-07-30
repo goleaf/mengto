@@ -24,7 +24,7 @@
                     label="Plan a walk"
                     icon="footprints"
                     variant="paper"
-                    :endpoint="route('pet-social.actions.perform')"
+                    :endpoint="route('actions.perform')"
                     :payload="['action' => 'plan-walk', 'target' => 'mochi', 'label' => 'Mochi']"
                     class="shrink-0"
                 />

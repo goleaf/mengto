@@ -602,7 +602,7 @@ final class PreviewService
                     [
                         'label' => 'Follow',
                         'icon' => 'user-plus',
-                        'endpoint' => route('pet-social.actions.perform'),
+                        'endpoint' => route('actions.perform'),
                         'payload' => [
                             'action' => 'toggle-follow',
                             'target' => 'ari',
@@ -617,7 +617,7 @@ final class PreviewService
                     [
                         'label' => 'Message',
                         'icon' => 'message-circle',
-                        'href' => route('pet-social.messages.index'),
+                        'href' => route('messages.index'),
                         'variant' => 'paper',
                     ],
                 ],
@@ -1135,7 +1135,7 @@ final class PreviewService
                     'image_small' => $meetups['senior-stroll']['image_small'],
                     'image_medium' => $meetups['senior-stroll']['image_medium'],
                     'image_alt' => $meetups['senior-stroll']['image_alt'],
-                    'route' => 'pet-social.meetups.index',
+                    'route' => 'meetups.index',
                     'tags' => $meetups['senior-stroll']['tags'],
                 ],
                 [
@@ -1148,7 +1148,7 @@ final class PreviewService
                     'image_small' => $groups['trail-tails']['image_small'],
                     'image_medium' => $groups['trail-tails']['image_medium'],
                     'image_alt' => $groups['trail-tails']['image_alt'],
-                    'route' => 'pet-social.groups.index',
+                    'route' => 'groups.index',
                     'tags' => $groups['trail-tails']['tags'],
                 ],
             ],
@@ -1350,7 +1350,7 @@ final class PreviewService
                 'image_small' => $post['image_small'],
                 'image_medium' => $post['image_medium'],
                 'image_alt' => $post['image_alt'],
-                'route' => 'pet-social.posts.show',
+                'route' => 'posts.show',
                 'route_parameters' => ['post' => $target],
             ];
         }
@@ -1375,7 +1375,7 @@ final class PreviewService
                 'image_small' => $group['image_small'],
                 'image_medium' => $group['image_medium'],
                 'image_alt' => $group['image_alt'],
-                'route' => 'pet-social.groups.show',
+                'route' => 'groups.show',
                 'route_parameters' => ['group' => $target],
             ];
         }
@@ -1394,7 +1394,7 @@ final class PreviewService
                 'image_small' => $event['image_small'],
                 'image_medium' => $event['image_medium'],
                 'image_alt' => $event['image_alt'],
-                'route' => 'pet-social.meetups.show',
+                'route' => 'meetups.show',
                 'route_parameters' => ['event' => $target],
             ];
         }
@@ -1413,7 +1413,7 @@ final class PreviewService
                 'image_small' => $owner['cover_image_small'],
                 'image_medium' => $owner['cover_image_medium'],
                 'image_alt' => $owner['cover_image_alt'],
-                'route' => 'pet-social.profile.mia',
+                'route' => 'profile.mia',
                 'route_parameters' => [],
             ];
         }
@@ -1467,7 +1467,7 @@ final class PreviewService
                 'breed' => $scout['breed'] ?? 'Border Collie mix',
                 'age' => $scout['age'] ?? '4 years',
                 'status' => $scout['status'] ?? 'Available for park walks',
-                'profile_route' => 'pet-social.pets.scout',
+                'profile_route' => 'pets.scout',
             ],
             [
                 'name' => $nori['name'] ?? 'Nori',
@@ -1475,7 +1475,7 @@ final class PreviewService
                 'breed' => $nori['breed'] ?? 'Tabby',
                 'age' => $nori['age'] ?? '2 years',
                 'status' => $nori['status'] ?? 'Indoor window watcher',
-                'profile_route' => 'pet-social.pets.nori',
+                'profile_route' => 'pets.nori',
             ],
         ];
     }
@@ -1513,7 +1513,7 @@ final class PreviewService
                 'image_medium' => 'https://images.unsplash.com/photo-1654256578072-b932c33cb92e?auto=format&fit=crop&w=900&h=675&q=82',
                 'image_alt' => 'Scout, a black and white Border Collie, resting on grass',
                 'traits' => ['high energy', 'trail walks'],
-                'profile_route' => 'pet-social.pets.scout',
+                'profile_route' => 'pets.scout',
             ],
             [
                 'name' => 'Nori',
@@ -1528,7 +1528,7 @@ final class PreviewService
                 'image_medium' => 'https://images.unsplash.com/photo-1518791841217-8f162f1e1131?auto=format&fit=crop&w=900&h=675&q=82',
                 'image_alt' => 'Nori, a tabby cat, looking toward the camera',
                 'traits' => ['indoor', 'curious'],
-                'profile_route' => 'pet-social.pets.nori',
+                'profile_route' => 'pets.nori',
             ],
             [
                 'name' => 'Maple',
@@ -1624,7 +1624,7 @@ final class PreviewService
         return [
             [
                 'key' => 'small-dog-social',
-                'detail_route' => 'pet-social.meetups.small_dog_social',
+                'detail_route' => 'meetups.small_dog_social',
                 'title' => 'Small dog social hour',
                 'category' => 'Social',
                 'day' => 'SAT',
@@ -1724,7 +1724,7 @@ final class PreviewService
         return [
             [
                 'key' => 'apartment-pets',
-                'detail_route' => 'pet-social.groups.apartment_pets',
+                'detail_route' => 'groups.apartment_pets',
                 'name' => 'Apartment Pets PDX',
                 'category' => 'Home life',
                 'members' => '2.4k members',
@@ -1834,7 +1834,7 @@ final class PreviewService
                 'thumbnail' => 'https://images.unsplash.com/photo-1753685723016-78c233daa8a2?auto=format&fit=crop&crop=faces&w=160&h=160&q=80',
                 'image_alt' => 'Ari relaxing with Mochi in a neighborhood park',
                 'interests' => ['city walks', 'training'],
-                'profile_route' => 'pet-social.neighbors.ari',
+                'profile_route' => 'neighbors.ari',
             ],
             [
                 'key' => 'noah',

@@ -57,7 +57,7 @@
         detail-icon="users"
         action-label="RSVP"
         action-icon="calendar-plus"
-        :action-endpoint="route('pet-social.actions.perform')"
+        :action-endpoint="route('actions.perform')"
         :action-payload="['action' => 'toggle-meetup', 'target' => $meetupKey, 'label' => $meetup['title']]"
         :active="$rsvp"
         active-label="Going"

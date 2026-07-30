@@ -13,7 +13,7 @@
             title="No meetups match these filters"
             role="listitem"
             description="Try a broader plan, place, or meetup type."
-            :href="route('pet-social.meetups.index')"
+            :href="route('meetups.index')"
             class="sm:col-span-2 xl:col-span-3"
         />
     @endforelse

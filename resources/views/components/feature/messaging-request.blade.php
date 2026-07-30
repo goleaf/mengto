@@ -19,7 +19,7 @@
             ['action' => 'decline-message-request', 'label' => 'Decline', 'icon' => 'x', 'class' => 'action--paper'],
             ['action' => 'block-conversation', 'label' => 'Block', 'icon' => 'ban', 'class' => 'action--danger'],
         ] as $requestAction)
-            <form method="POST" action="{{ route('pet-social.messages.actions') }}">
+            <form method="POST" action="{{ route('messages.actions') }}">
                 @csrf
                 <input type="hidden" name="action" value="{{ $requestAction['action'] }}">
                 <input type="hidden" name="conversation" value="{{ $conversation['key'] }}">

@@ -21,5 +21,6 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $this->call(ForumSeeder::class);
+        $this->call(ExpertSeeder::class);
     }
 }

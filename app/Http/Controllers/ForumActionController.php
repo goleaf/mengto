@@ -15,15 +15,15 @@ class ForumActionController extends Controller
         $result = $performForumAction->handle($request->validated());
 
         if ($result['article'] !== null) {
-            return to_route('pet-social.knowledge.articles.show', $result['article'])
-                ->with('pawcircle.feedback', $result['message']);
+            return to_route('knowledge.articles.show', $result['article'])
+                ->with('feedback', $result['message']);
         }
 
         if ($result['topic'] !== null) {
-            return to_route('pet-social.forum.topics.show', $result['topic'])
-                ->with('pawcircle.feedback', $result['message']);
+            return to_route('forum.topics.show', $result['topic'])
+                ->with('feedback', $result['message']);
         }
 
-        return to_route('pet-social.forum.index')->with('pawcircle.feedback', $result['message']);
+        return to_route('forum.index')->with('feedback', $result['message']);
     }
 }

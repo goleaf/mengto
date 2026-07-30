@@ -14,7 +14,7 @@ class GroupDirectoryPreviewController extends Controller
     ): View {
         $parameters = $request->validated();
 
-        return view('pet-social.groups.index', $groups->directory(
+        return view('groups.index', $groups->directory(
             query: $parameters['q'] ?? '',
             filter: $parameters['filter'] ?? 'recommended',
             sort: $parameters['sort'] ?? 'active',

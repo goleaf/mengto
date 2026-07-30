@@ -8,7 +8,7 @@
 ])
 
 <aside class="messaging-inbox" aria-label="Message inbox">
-    <form method="GET" action="{{ route('pet-social.messages.index') }}" class="messaging-inbox__search">
+    <form method="GET" action="{{ route('messages.index') }}" class="messaging-inbox__search">
         <input type="hidden" name="filter" value="{{ $activeFilter }}">
         <label for="message-conversation-search">Search dialogs</label>
         <div>
@@ -30,7 +30,7 @@
     <nav class="messaging-inbox__filters" aria-label="Inbox folders">
         @forelse ($filters as $filter)
             <a
-                href="{{ route('pet-social.messages.index', array_filter(['filter' => $filter['key'], 'q' => $query])) }}"
+                href="{{ route('messages.index', array_filter(['filter' => $filter['key'], 'q' => $query])) }}"
                 @if ($activeFilter === $filter['key']) aria-current="page" @endif
                 @class(['messaging-filter', 'messaging-filter--active' => $activeFilter === $filter['key']])
             >
@@ -50,7 +50,7 @@
     <nav class="messaging-inbox__list" aria-label="Conversations">
         @forelse ($conversations as $conversation)
             <a
-                href="{{ route('pet-social.messages.index', ['conversation' => $conversation['key'], 'filter' => $activeFilter, 'q' => $query]) }}"
+                href="{{ route('messages.index', ['conversation' => $conversation['key'], 'filter' => $activeFilter, 'q' => $query]) }}"
                 @if ($conversation['selected']) aria-current="page" @endif
                 @class([
                     'messaging-conversation',

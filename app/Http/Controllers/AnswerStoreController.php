@@ -19,7 +19,7 @@ class AnswerStoreController extends Controller
         Gate::authorize('create', ForumAnswer::class);
         $createAnswer->handle($forumTopic, $request->validated());
 
-        return to_route('pet-social.forum.topics.show', $forumTopic)
-            ->with('pawcircle.feedback', 'Answer published.');
+        return to_route('forum.topics.show', $forumTopic)
+            ->with('feedback', 'Answer published.');
     }
 }
