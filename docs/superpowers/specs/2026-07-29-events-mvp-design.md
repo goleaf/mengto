@@ -44,19 +44,19 @@ The following source point 278 capabilities remain explicit later work:
 
 ### Catalog
 
-`PawCircleEventCatalog` owns stable event identity, discovery metadata, format,
+`EventCatalog` owns stable event identity, discovery metadata, format,
 privacy, capacity, ticket configuration, organizer verification labels,
 location disclosure rules, and recommendation reasons.
 
 ### Content
 
-`PawCircleEventContentCatalog` owns schedule items, organizer team, FAQ,
+`EventContentCatalog` owns schedule items, organizer team, FAQ,
 attendees, pets, announcements, chat seed messages, files, gallery items,
 rules, safety notes, reviews, and analytics seed data.
 
 ### State
 
-`PawCircleEventState` owns one registration per event occurrence and account.
+`EventState` owns one registration per event occurrence and account.
 It also owns waitlist order, payment state, check-in state, reminder/calendar
 state, chat messages, announcements, reviews, reports, event status changes,
 and action history. Capacity mutations use a session lock so the prototype does
@@ -64,7 +64,7 @@ not create duplicate seats during concurrent requests.
 
 ### Presentation
 
-`PawCircleEventPresenter` combines catalog, content, state, created-event
+`EventPresenter` combines catalog, content, state, created-event
 fixtures, and owner data. Controllers pass complete view models to Blade. Blade
 performs no queries and does not decide business transitions.
 

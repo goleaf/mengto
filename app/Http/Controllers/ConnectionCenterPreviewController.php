@@ -3,16 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\BrowseConnectionsRequest;
-use App\Services\PawCircleConnectionPresenter;
-use App\Services\PawCircleProfilePresenter;
+use App\Services\ConnectionPresenter;
+use App\Services\ProfilePresenter;
 use Illuminate\Contracts\View\View;
 
 final class ConnectionCenterPreviewController extends Controller
 {
     public function __invoke(
         BrowseConnectionsRequest $request,
-        PawCircleConnectionPresenter $connections,
-        PawCircleProfilePresenter $profiles,
+        ConnectionPresenter $connections,
+        ProfilePresenter $profiles,
     ): View {
         $parameters = $request->validated();
 

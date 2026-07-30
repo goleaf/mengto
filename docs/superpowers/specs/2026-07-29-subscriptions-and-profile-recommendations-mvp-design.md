@@ -55,19 +55,19 @@ All tabs remain server-rendered and shareable. The feed keeps
 
 ## Service Boundaries
 
-### `PawCircleConnectionCatalog`
+### `ConnectionCatalog`
 
 Owns immutable profile, topic, follower, request, and recommendation records.
 Every target has a stable key, type, public route, image, safe location,
 verification state, and recommendation explanation.
 
-### `PawCircleConnectionPresenter`
+### `ConnectionPresenter`
 
 Combines catalog records with session state, applies filters and sorting,
 decorates actions, computes counts, and hides blocked or dismissed records.
 Blade receives display-ready arrays only.
 
-### `PawCirclePrototypeState`
+### `PrototypeState`
 
 Owns mutable relationship state:
 
@@ -79,7 +79,7 @@ Owns mutable relationship state:
 - recommendation dismissal and undo history;
 - blocked targets.
 
-### `PerformPawCircleAction`
+### `PerformAction`
 
 Receives only allow-listed actions and target keys. It validates target
 existence through the connection presenter, mutates state, and redirects with

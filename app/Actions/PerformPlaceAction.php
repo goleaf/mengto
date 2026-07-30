@@ -2,16 +2,16 @@
 
 namespace App\Actions;
 
-use App\Services\PawCirclePlaceCatalog;
-use App\Services\PawCirclePlaceState;
+use App\Services\PlaceCatalog;
+use App\Services\PlaceState;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
 final class PerformPlaceAction
 {
     public function __construct(
-        private readonly PawCirclePlaceCatalog $catalog,
-        private readonly PawCirclePlaceState $state,
+        private readonly PlaceCatalog $catalog,
+        private readonly PlaceState $state,
     ) {}
 
     /**

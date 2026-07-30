@@ -22,7 +22,7 @@
 
 ## Phase 2: Directory Slice
 
-- [ ] Build `PawCircleGroupPresenter::directory()`.
+- [ ] Build `GroupPresenter::directory()`.
 - [ ] Switch the group directory controller to the presenter.
 - [ ] Upgrade group cards with privacy, verification, recommendation reasons, and contextual actions.
 - [ ] Add joined, local, breed, care, and official filters.

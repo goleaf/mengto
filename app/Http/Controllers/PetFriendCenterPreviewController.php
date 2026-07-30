@@ -3,14 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\BrowsePetFriendsRequest;
-use App\Services\PawCirclePetFriendPresenter;
+use App\Services\PetFriendPresenter;
 use Illuminate\Contracts\View\View;
 
 final class PetFriendCenterPreviewController extends Controller
 {
     public function __invoke(
         BrowsePetFriendsRequest $request,
-        PawCirclePetFriendPresenter $presenter,
+        PetFriendPresenter $presenter,
     ): View {
         $parameters = $request->validated();
 

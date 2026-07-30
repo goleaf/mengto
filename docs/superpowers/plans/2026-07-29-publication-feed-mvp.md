@@ -26,17 +26,17 @@ without creating or modifying PHP test files.
 
 ## Phase 3: Feed Data Services
 
-1. Create `PawCircleFeedCatalog` for immutable identities, stories, media, and
+1. Create `FeedCatalog` for immutable identities, stories, media, and
    seeded posts.
-2. Create `PawCircleFeedPresenter` for filtering, ordering, pagination, and
+2. Create `FeedPresenter` for filtering, ordering, pagination, and
    interaction decoration.
-3. Move home-feed post data out of `PawCirclePreviewService`.
+3. Move home-feed post data out of `PreviewService`.
 4. Keep existing directory, profile, and conversation contracts compatible.
 5. Resolve post detail, edit, report, share, and back-to-feed contexts centrally.
 
 ## Phase 4: Action Layer
 
-1. Expand `PerformPawCircleActionRequest` action and payload unions.
+1. Expand `PerformActionRequest` action and payload unions.
 2. Add publish and save-draft actions.
 3. Add update, archive, restore, and delete actions.
 4. Add reaction selection.

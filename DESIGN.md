@@ -223,8 +223,8 @@ PawCircle is flat by default. Depth comes from tonal layers and one-pixel border
 
 ### Publication Feed
 - `BrowseFeedRequest` validates shareable mode, order, format, pet, and page state before the presenter receives it.
-- `PawCircleFeedCatalog` owns immutable sample content and dictionaries; `PawCircleFeedPresenter` combines it with session state and returns the complete Blade contract.
-- `PerformPawCircleAction` is the only feed mutation boundary. Blade performs no queries and receives stable author, represented-profile, media, interaction, safety, and lifecycle fields.
+- `FeedCatalog` owns immutable sample content and dictionaries; `FeedPresenter` combines it with session state and returns the complete Blade contract.
+- `PerformAction` is the only feed mutation boundary. Blade performs no queries and receives stable author, represented-profile, media, interaction, safety, and lifecycle fields.
 - The feed page composes stories, toolbar, quick composer, publication cards, and finite pagination. Each card separately composes identity, context, media, social proof, reaction picker, and action menu.
 - Photo carousels use horizontal scroll snapping and stable aspect ratios. Video uses native controls, `preload="metadata"`, useful alternative copy, and no autoplay.
 - The three-column shell begins at `xl`; narrower desktops retain a readable single-column feed instead of compressing the central stream.
@@ -232,8 +232,8 @@ PawCircle is flat by default. Depth comes from tonal layers and one-pixel border
 - Eloquent models, policies, media jobs, moderation queues, ranking, analytics, and geographic services remain explicit production boundaries.
 
 ### Subscriptions And Recommendations
-- `PawCircleConnectionCatalog` is the immutable allow-list for person, pet, organization, specialist, group, and topic targets.
-- `PawCircleConnectionPresenter` joins catalog records to session state and returns tabs, counts, filters, actions, settings, and recommendation reasons without exposing mutation logic to Blade.
+- `ConnectionCatalog` is the immutable allow-list for person, pet, organization, specialist, group, and topic targets.
+- `ConnectionPresenter` joins catalog records to session state and returns tabs, counts, filters, actions, settings, and recommendation reasons without exposing mutation logic to Blade.
 - Exact namespaced keys such as `owner-ari-jensen` and `pet-mochi` prevent owner and pet audiences from collapsing into one relationship.
 - The connection page is a thin composition of one dashboard feature, reusable list/grid features, one connection card, and portable identity, state, and reason objects.
 - Following rows remain compact and operational. Recommendation cards may use two columns on wide screens but collapse to one column with 44-pixel actions on mobile.

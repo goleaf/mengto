@@ -4,7 +4,7 @@
 
 **Goal:** Build a session-backed relationship center with independent subscriptions, private requests, settings, explainable recommendations, and Following-feed integration.
 
-**Architecture:** Add a focused immutable catalog and presenter beside the existing feed/profile services. Store exact-target relationship state in `PawCirclePrototypeState`, mutate it only through the validated shared Action, and keep all Blade views display-only.
+**Architecture:** Add a focused immutable catalog and presenter beside the existing feed/profile services. Store exact-target relationship state in `PrototypeState`, mutate it only through the validated shared Action, and keep all Blade views display-only.
 
 **Tech Stack:** Laravel Blade, Form Requests, PHP session state, named routes, shared Blade components, SCSS, Vite, Lucide Blade icons, Playwright.
 
@@ -22,7 +22,7 @@
 ### Task 2: Build The Immutable Connection Catalog
 
 **Files:**
-- Create: `app/Services/PawCircleConnectionCatalog.php`
+- Create: `app/Services/ConnectionCatalog.php`
 
 - [ ] Define stable namespaced targets for owners, pets, organizations,
   specialists, groups, and topics.
@@ -35,7 +35,7 @@
 ### Task 3: Extend Prototype Relationship State
 
 **Files:**
-- Modify: `app/Services/PawCirclePrototypeState.php`
+- Modify: `app/Services/PrototypeState.php`
 
 - [ ] Add exact-target subscriptions seeded from catalog-compatible keys.
 - [ ] Add request status, notification level, favorite, muted, removed follower,
@@ -46,7 +46,7 @@
 ### Task 4: Present Display-Ready Relationship Data
 
 **Files:**
-- Create: `app/Services/PawCircleConnectionPresenter.php`
+- Create: `app/Services/ConnectionPresenter.php`
 
 - [ ] Build summary counts and tab definitions.
 - [ ] Filter and sort following/follower/request/recommendation records.
@@ -57,8 +57,8 @@
 ### Task 5: Validate And Execute Relationship Actions
 
 **Files:**
-- Modify: `app/Http/Requests/PerformPawCircleActionRequest.php`
-- Modify: `app/Actions/PerformPawCircleAction.php`
+- Modify: `app/Http/Requests/PerformActionRequest.php`
+- Modify: `app/Actions/PerformAction.php`
 
 - [ ] Add allow-listed actions for follow, request, favorite, mute, notification
   level, recommendation dismissal/undo, and follower removal.
@@ -115,7 +115,7 @@
 ### Task 10: Integrate Profile Follow Actions
 
 **Files:**
-- Modify: `app/Services/PawCircleProfilePresenter.php`
+- Modify: `app/Services/ProfilePresenter.php`
 - Modify: relevant profile and directory presenters only where an exact target
   is already available.
 
@@ -126,7 +126,7 @@
 ### Task 11: Integrate The Following Feed
 
 **Files:**
-- Modify: `app/Services/PawCircleFeedPresenter.php`
+- Modify: `app/Services/FeedPresenter.php`
 
 - [ ] Filter Following mode by exact subscribed author or represented target.
 - [ ] Exclude muted and blocked targets.

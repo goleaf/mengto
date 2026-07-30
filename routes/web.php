@@ -14,13 +14,13 @@ use App\Http\Controllers\MessageCenterPreviewController;
 use App\Http\Controllers\NeighborDirectoryPreviewController;
 use App\Http\Controllers\NeighborProfilePreviewController;
 use App\Http\Controllers\NotificationCenterPreviewController;
-use App\Http\Controllers\PawCircleComposerController;
-use App\Http\Controllers\PerformPawCircleActionController;
+use App\Http\Controllers\ComposerController;
+use App\Http\Controllers\PerformActionController;
 use App\Http\Controllers\PerformMessageActionController;
 use App\Http\Controllers\PetDirectoryPreviewController;
 use App\Http\Controllers\PetFriendCenterPreviewController;
 use App\Http\Controllers\PetProfilePreviewController;
-use App\Http\Controllers\PetSocialPreviewController;
+use App\Http\Controllers\FeedPreviewController;
 use App\Http\Controllers\PlaceDetailPreviewController;
 use App\Http\Controllers\PlaceDirectoryPreviewController;
 use App\Http\Controllers\PostThreadPreviewController;
@@ -32,7 +32,7 @@ Route::middleware('web')
     ->prefix('')
     ->name('pet-social.')
     ->group(function (): void {
-        Route::get('/', PetSocialPreviewController::class)->name('preview');
+        Route::get('/', FeedPreviewController::class)->name('preview');
         Route::get('/circle', CirclePreviewController::class)->name('circle.index');
         Route::get('/circle/connections', ConnectionCenterPreviewController::class)->name('connections.index');
         Route::get('/circle/pet-friends', PetFriendCenterPreviewController::class)->name('pet-friends.index');
@@ -130,7 +130,7 @@ Route::middleware('web')
         Route::get('/share/{target}', SharePreviewController::class)
             ->where('target', '[A-Za-z0-9-]+')
             ->name('share.show');
-        Route::get('/compose/{kind}', PawCircleComposerController::class)
+        Route::get('/compose/{kind}', ComposerController::class)
             ->whereIn('kind', [
                 'post',
                 'group',
@@ -157,5 +157,5 @@ Route::middleware('web')
                 'delete-post',
             ])
             ->name('compose');
-        Route::post('/actions', PerformPawCircleActionController::class)->name('actions.perform');
+        Route::post('/actions', PerformActionController::class)->name('actions.perform');
     });

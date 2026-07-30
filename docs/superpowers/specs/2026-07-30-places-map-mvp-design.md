@@ -61,7 +61,7 @@ claim that unavailable providers are connected.
 
 ### Catalog
 
-`PawCirclePlaceCatalog` owns stable place identity, multiple categories,
+`PlaceCatalog` owns stable place identity, multiple categories,
 branch-aware contact data, geographic coordinates, map positions, public
 location accuracy, hours, species and size eligibility, pet rules,
 accessibility, safety features, services, pricing, verification labels,
@@ -72,14 +72,14 @@ without creating duplicate records.
 
 ### Content
 
-`PawCirclePlaceContentCatalog` owns galleries, operating schedules, rules,
+`PlaceContentCatalog` owns galleries, operating schedules, rules,
 service groups, route metadata, facilities, specialists, pricing, events,
 seed reviews, questions, official answers, social context, accessibility
 details, seasonal notes, and analytics summaries.
 
 ### State
 
-`PawCirclePlaceState` owns:
+`PlaceState` owns:
 
 - saved places, visits, follows, collections, private check-ins, and recent
   views;
@@ -94,7 +94,7 @@ creation and correction transitions use cache locks and idempotent identifiers.
 
 ### Presentation
 
-`PawCirclePlacePresenter` combines catalog, content, session state, events, and
+`PlacePresenter` combines catalog, content, session state, events, and
 the active owner. It interprets validated filters and natural-language query
 phrases, applies deterministic filtering and sorting, creates textual map
 equivalents, and controls whether exact or generalized details are disclosed.

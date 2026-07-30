@@ -3,14 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\BrowseProfileRequest;
-use App\Services\PawCircleProfilePresenter;
+use App\Services\ProfilePresenter;
 use Illuminate\Contracts\View\View;
 
 class PetProfilePreviewController extends Controller
 {
     public function __invoke(
         BrowseProfileRequest $request,
-        PawCircleProfilePresenter $profiles,
+        ProfilePresenter $profiles,
     ): View {
         $validated = $request->validated();
         $profile = $profiles->petPage(

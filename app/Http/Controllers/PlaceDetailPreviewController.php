@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\BrowsePlacesRequest;
-use App\Services\PawCirclePlacePresenter;
+use App\Services\PlacePresenter;
 use Illuminate\Contracts\View\View;
 
 final class PlaceDetailPreviewController extends Controller
@@ -11,7 +11,7 @@ final class PlaceDetailPreviewController extends Controller
     public function __invoke(
         BrowsePlacesRequest $request,
         string $place,
-        PawCirclePlacePresenter $places,
+        PlacePresenter $places,
     ): View {
         $data = $places->detail($place, $request->validated('tab', 'overview'));
 

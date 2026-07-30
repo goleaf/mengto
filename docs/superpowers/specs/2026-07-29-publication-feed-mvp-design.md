@@ -56,18 +56,18 @@ canonical feed plus `#post-{key}`.
 
 ## Service Boundaries
 
-### `PawCircleFeedCatalog`
+### `FeedCatalog`
 
 Owns immutable sample stories, posts, identity metadata, topics, media presets,
 and recommendation explanations. It performs no session reads and no routing.
 
-### `PawCircleFeedPresenter`
+### `FeedPresenter`
 
 Combines catalog records with created posts and state. It filters, sorts,
 paginates, decorates interactions, builds navigation options, and resolves
 post/report/edit contexts.
 
-### `PawCirclePrototypeState`
+### `PrototypeState`
 
 Owns mutable prototype records:
 
@@ -78,9 +78,9 @@ Owns mutable prototype records:
 - bookmarks, subscriptions, hidden posts, and muted authors;
 - reposts and private reports.
 
-### `PerformPawCircleAction`
+### `PerformAction`
 
-Validates intent through `PerformPawCircleActionRequest`, delegates mutations to
+Validates intent through `PerformActionRequest`, delegates mutations to
 state, and returns a named route plus feedback. Blade never contains business
 logic or queries.
 

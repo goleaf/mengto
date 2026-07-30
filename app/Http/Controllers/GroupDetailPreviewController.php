@@ -3,14 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\BrowseGroupsRequest;
-use App\Services\PawCircleGroupPresenter;
+use App\Services\GroupPresenter;
 use Illuminate\Contracts\View\View;
 
 class GroupDetailPreviewController extends Controller
 {
     public function __invoke(
         BrowseGroupsRequest $request,
-        PawCircleGroupPresenter $groups,
+        GroupPresenter $groups,
         string $group,
     ): View {
         $data = $groups->detail(

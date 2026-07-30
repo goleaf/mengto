@@ -28,18 +28,18 @@
 ### Task 2: Audience Visibility Resolver
 
 **Files:**
-- Create: `app/Services/PawCircleProfileVisibility.php`
+- Create: `app/Services/ProfileVisibility.php`
 
 - [ ] Define the visibility options `public`, `members`, `followers`, `friends`, `owners`, and `hidden`.
 - [ ] Implement `allows(string $visibility, string $audience): bool`.
 - [ ] Implement `options(): array` for composer select fields.
 - [ ] Keep this service free of session, HTTP, and Blade concerns.
-- [ ] Run `php -l app/Services/PawCircleProfileVisibility.php`.
+- [ ] Run `php -l app/Services/ProfileVisibility.php`.
 
 ### Task 3: Profile Prototype State
 
 **Files:**
-- Modify: `app/Services/PawCirclePrototypeState.php`
+- Modify: `app/Services/PrototypeState.php`
 
 - [ ] Store pet overrides by slug so Scout and Nori never share editable values.
 - [ ] Preserve compatibility with the existing Scout state.
@@ -47,13 +47,13 @@
 - [ ] Add owner and per-pet privacy update methods.
 - [ ] Add a bounded report collection containing target, reason, description, and timestamp.
 - [ ] Keep all state writes behind focused public methods.
-- [ ] Run `php -l app/Services/PawCirclePrototypeState.php`.
+- [ ] Run `php -l app/Services/PrototypeState.php`.
 
 ### Task 4: Dedicated Profile Presenter
 
 **Files:**
-- Create: `app/Services/PawCircleProfilePresenter.php`
-- Modify: `app/Services/PawCirclePreviewService.php`
+- Create: `app/Services/ProfilePresenter.php`
+- Modify: `app/Services/PreviewService.php`
 
 - [ ] Define Mia, Scout, and Nori base identity data with stable image dimensions and alt text.
 - [ ] Add unique handles and canonical route metadata.
@@ -137,9 +137,9 @@
 ### Task 9: Composer Support For Profiles
 
 **Files:**
-- Modify: `app/Http/Controllers/PawCircleComposerController.php`
-- Modify: `app/Services/PawCircleComposerCatalog.php`
-- Modify: `app/Services/PawCirclePreviewService.php`
+- Modify: `app/Http/Controllers/ComposerController.php`
+- Modify: `app/Services/ComposerCatalog.php`
+- Modify: `app/Services/PreviewService.php`
 - Modify: `resources/views/components/feature/composer-form.blade.php`
 - Modify: `routes/web.php`
 
@@ -154,8 +154,8 @@
 ### Task 10: Profile Actions And Validation
 
 **Files:**
-- Modify: `app/Http/Requests/PerformPawCircleActionRequest.php`
-- Modify: `app/Actions/PerformPawCircleAction.php`
+- Modify: `app/Http/Requests/PerformActionRequest.php`
+- Modify: `app/Actions/PerformAction.php`
 
 - [ ] Add `toggle-friend`, `toggle-pet-friend`, and `toggle-block`.
 - [ ] Add `update-profile-privacy` and `update-pet-privacy`.

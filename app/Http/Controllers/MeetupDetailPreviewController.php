@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\BrowseEventsRequest;
-use App\Services\PawCircleEventPresenter;
+use App\Services\EventPresenter;
 use Illuminate\Contracts\View\View;
 
 class MeetupDetailPreviewController extends Controller
@@ -11,7 +11,7 @@ class MeetupDetailPreviewController extends Controller
     public function __invoke(
         BrowseEventsRequest $request,
         string $event,
-        PawCircleEventPresenter $events,
+        EventPresenter $events,
     ): View {
         $data = $events->detail($event, $request->validated('tab', 'overview'));
 

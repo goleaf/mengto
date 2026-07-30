@@ -58,12 +58,12 @@ values before they reach presentation code.
 
 ## Presentation Architecture
 
-`PawCircleProfilePresenter` owns owner/pet profile contracts and translates
+`ProfilePresenter` owns owner/pet profile contracts and translates
 prototype state into view-ready arrays. It also resolves visibility for the
 selected audience. Existing controllers stay invokable and only pass validated
 query state to the presenter.
 
-`PawCirclePrototypeState` stores:
+`PrototypeState` stores:
 
 - Owner profile overrides.
 - Per-pet profile overrides.

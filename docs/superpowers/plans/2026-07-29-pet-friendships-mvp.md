@@ -24,8 +24,8 @@
 ### Task 2: Catalog And Canonical State
 
 **Files:**
-- Create: `app/Services/PawCirclePetFriendCatalog.php`
-- Create: `app/Services/PawCirclePetFriendState.php`
+- Create: `app/Services/PetFriendCatalog.php`
+- Create: `app/Services/PetFriendState.php`
 
 - [ ] Define allow-listed owned pets, candidate pets, owner attribution, compatibility signals, cautions, and safe locations.
 - [ ] Represent every pair with one sorted canonical key.
@@ -36,8 +36,8 @@
 ### Task 3: Validated Friendship Actions
 
 **Files:**
-- Modify: `app/Http/Requests/PerformPawCircleActionRequest.php`
-- Modify: `app/Actions/PerformPawCircleAction.php`
+- Modify: `app/Http/Requests/PerformActionRequest.php`
+- Modify: `app/Actions/PerformAction.php`
 
 - [ ] Add explicit allow-listed actions for every friendship transition.
 - [ ] Validate source and target pet identifiers, relationship intent, short message, meeting context, and return state.
@@ -47,7 +47,7 @@
 ### Task 4: Presentation Layer
 
 **Files:**
-- Create: `app/Services/PawCirclePetFriendPresenter.php`
+- Create: `app/Services/PetFriendPresenter.php`
 
 - [ ] Build summary metrics and source-pet tabs.
 - [ ] Shape Friends, Requests, Find friends, and Walks datasets.
@@ -86,7 +86,7 @@
 ### Task 7: Profile And Circle Integration
 
 **Files:**
-- Modify: `app/Services/PawCircleProfilePresenter.php`
+- Modify: `app/Services/ProfilePresenter.php`
 - Modify: `resources/views/components/feature/pet-profile.blade.php`
 - Modify: `resources/views/pet-social/circle/index.blade.php`
 - Modify: `PRODUCT.md`

@@ -2,15 +2,15 @@
 
 namespace App\Actions;
 
-use App\Services\PawCircleMessageCatalog;
-use App\Services\PawCircleMessageState;
+use App\Services\MessageCatalog;
+use App\Services\MessageState;
 use Illuminate\Validation\ValidationException;
 
 final class PerformMessageAction
 {
     public function __construct(
-        private readonly PawCircleMessageCatalog $catalog,
-        private readonly PawCircleMessageState $state,
+        private readonly MessageCatalog $catalog,
+        private readonly MessageState $state,
     ) {}
 
     /**

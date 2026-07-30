@@ -2,17 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\BrowsePawCircleRequest;
-use App\Services\PawCircleDirectoryFilter;
-use App\Services\PawCirclePreviewService;
+use App\Http\Requests\BrowseRequest;
+use App\Services\DirectoryFilter;
+use App\Services\PreviewService;
 use Illuminate\Contracts\View\View;
 
 class DiscoverPreviewController extends Controller
 {
     public function __invoke(
-        BrowsePawCircleRequest $request,
-        PawCirclePreviewService $preview,
-        PawCircleDirectoryFilter $filter,
+        BrowseRequest $request,
+        PreviewService $preview,
+        DirectoryFilter $filter,
     ): View {
         $data = $preview->discoverData();
         $parameters = $request->validated();

@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\PawCircleCreatedContentPresenter;
-use App\Services\PawCirclePreviewService;
+use App\Services\CreatedContentPresenter;
+use App\Services\PreviewService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 
@@ -11,8 +11,8 @@ class CreatedContentPreviewController extends Controller
 {
     public function __invoke(
         Request $request,
-        PawCircleCreatedContentPresenter $created,
-        PawCirclePreviewService $preview,
+        CreatedContentPresenter $created,
+        PreviewService $preview,
     ): View {
         $content = $created->detail(
             (string) $request->route('kind'),

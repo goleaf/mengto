@@ -3,14 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\BrowseEventsRequest;
-use App\Services\PawCircleEventPresenter;
+use App\Services\EventPresenter;
 use Illuminate\Contracts\View\View;
 
 class MeetupDirectoryPreviewController extends Controller
 {
     public function __invoke(
         BrowseEventsRequest $request,
-        PawCircleEventPresenter $events,
+        EventPresenter $events,
     ): View {
         $parameters = $request->validated();
 

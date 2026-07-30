@@ -25,17 +25,17 @@ Hidden groups, paid memberships, file uploads, regional branches, wiki editing, 
 
 ### Catalog
 
-`PawCircleGroupCatalog` owns stable group identity and discovery metadata. It has no session or presentation concerns.
+`GroupCatalog` owns stable group identity and discovery metadata. It has no session or presentation concerns.
 
-`PawCircleGroupContentCatalog` owns the structured content shown inside a group: posts, discussions, events, members, pets, resources, rules, chat preview, and poll options.
+`GroupContentCatalog` owns the structured content shown inside a group: posts, discussions, events, members, pets, resources, rules, chat preview, and poll options.
 
 ### State
 
-`PawCircleGroupState` owns prototype membership, notification, poll, recommendation, and report state under a dedicated session key. One group has one membership state per account.
+`GroupState` owns prototype membership, notification, poll, recommendation, and report state under a dedicated session key. One group has one membership state per account.
 
 ### Presentation
 
-`PawCircleGroupPresenter` combines catalog, content, state, created groups, and the current owner. Controllers pass prepared arrays to Blade; views perform no queries or business decisions.
+`GroupPresenter` combines catalog, content, state, created groups, and the current owner. Controllers pass prepared arrays to Blade; views perform no queries or business decisions.
 
 ### Actions
 
