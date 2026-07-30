@@ -28,6 +28,11 @@ use App\Http\Controllers\ForumController;
 use App\Http\Controllers\GroupDetailPreviewController;
 use App\Http\Controllers\GroupDirectoryPreviewController;
 use App\Http\Controllers\KnowledgeController;
+use App\Http\Controllers\ListingActionController;
+use App\Http\Controllers\ListingController;
+use App\Http\Controllers\ListingCreateController;
+use App\Http\Controllers\ListingDirectoryController;
+use App\Http\Controllers\ListingStoreController;
 use App\Http\Controllers\MeetupDetailPreviewController;
 use App\Http\Controllers\MeetupDirectoryPreviewController;
 use App\Http\Controllers\MemberProfilePreviewController;
@@ -258,4 +263,19 @@ Route::middleware('web')
     ->name('consultations.')
     ->group(function (): void {
         Route::get('/{consultation}', ConsultationController::class)->name('show');
+    });
+
+Route::middleware('web')
+    ->prefix('marketplace')
+    ->name('marketplace.')
+    ->group(function (): void {
+        Route::get('/', ListingDirectoryController::class)->name('index');
+        Route::get('/new', ListingCreateController::class)->name('create');
+        Route::post('/', ListingStoreController::class)
+            ->middleware('throttle:8,1')
+            ->name('store');
+        Route::get('/{listing}', ListingController::class)->name('show');
+        Route::post('/{listing}/actions', ListingActionController::class)
+            ->middleware('throttle:30,1')
+            ->name('actions');
     });

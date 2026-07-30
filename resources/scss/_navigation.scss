@@ -97,9 +97,10 @@
 .mobile-nav {
     &__rail {
         display: grid;
+        inline-size: max(100%, 30rem);
         max-inline-size: 80rem;
         margin-inline: auto;
-        grid-template-columns: repeat(7, minmax(0, 1fr));
+        grid-template-columns: repeat(8, minmax(3.25rem, 1fr));
         border: 1px solid $line;
         border-radius: $panel-radius;
         background: $white;
@@ -172,6 +173,7 @@
 }
 
 .mobile-dock {
+    overflow-x: auto;
     padding-block-end: calc(0.75rem + env(safe-area-inset-bottom));
 }
 
