@@ -1,0 +1,8 @@
+{
+  "name": "mengto-skill-compass",
+  "private": true,
+  "type": "commonjs",
+  "license": "MIT",
+  "repository": "https://github.com/by-sonic/skill-compass",
+  "upstreamCommit": "de3810304e274cb855b9ddfbf2d40317d0bcf9d0"
+}

@@ -4,7 +4,9 @@
     "type": "module",
     "scripts": {
         "build": "vite build",
-        "dev": "vite"
+        "dev": "vite",
+        "skill-compass:check": "node .claude/skill-compass/install.js --check",
+        "skill-compass:test": "node .claude/skill-compass/compass.js --self-test"
     },
     "devDependencies": {
         "@tailwindcss/vite": "^4.0.0",

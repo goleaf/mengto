@@ -1,0 +1,307 @@
+{
+  "version": 2,
+  "description": "Project-local Skill Compass routing for the mengto Laravel application.",
+  "upstream": {
+    "repository": "https://github.com/by-sonic/skill-compass",
+    "commit": "de3810304e274cb855b9ddfbf2d40317d0bcf9d0",
+    "license": "MIT"
+  },
+  "_doc": {
+    "stacks": "Framework-level signals from root manifests.",
+    "directions": "Cross-cutting signals from dependencies, relative paths, and file extensions.",
+    "keywords": "Task text and PostToolUse findings. Single words use Unicode boundaries; phrases use substring matching.",
+    "always": "Skills included whenever a project or task signal is detected."
+  },
+  "stacks": [
+    {
+      "id": "php-laravel",
+      "name": "Laravel application",
+      "indicators": [
+        {
+          "file": "artisan"
+        },
+        {
+          "file": "composer.json",
+          "contains": "laravel/framework"
+        }
+      ],
+      "skills": [
+        "laravel-best-practices"
+      ]
+    }
+  ],
+  "directions": [
+    {
+      "id": "ui",
+      "name": "Blade and Tailwind UI",
+      "deps": [
+        "tailwindcss",
+        "sass"
+      ],
+      "paths": [
+        "resources",
+        "resources/views",
+        "resources/css",
+        "resources/js"
+      ],
+      "ext": [
+        ".blade.php",
+        ".css",
+        ".scss"
+      ],
+      "skills": [
+        "tailwindcss-development"
+      ]
+    },
+    {
+      "id": "backend",
+      "name": "Laravel backend",
+      "deps": [
+        "laravel/framework"
+      ],
+      "paths": [
+        "app",
+        "app/http",
+        "routes"
+      ],
+      "ext": [
+        ".php"
+      ],
+      "skills": [
+        "laravel-best-practices"
+      ]
+    },
+    {
+      "id": "database",
+      "name": "Eloquent and database",
+      "deps": [
+        "laravel/framework"
+      ],
+      "paths": [
+        "app/models",
+        "database",
+        "database/migrations"
+      ],
+      "ext": [],
+      "skills": [
+        "laravel-best-practices",
+        "pest-testing"
+      ]
+    },
+    {
+      "id": "testing",
+      "name": "Pest and application tests",
+      "deps": [
+        "pestphp/pest",
+        "phpunit/phpunit"
+      ],
+      "paths": [
+        "tests",
+        "tests/feature",
+        "tests/unit",
+        "tests/browser"
+      ],
+      "ext": [],
+      "skills": [
+        "pest-testing"
+      ]
+    },
+    {
+      "id": "security",
+      "name": "Authorization and sensitive data",
+      "deps": [
+        "laravel/sanctum",
+        "laravel/fortify",
+        "laravel/cashier",
+        "laravel/socialite"
+      ],
+      "paths": [
+        "app/policies",
+        "app/http/middleware",
+        "app/http/requests"
+      ],
+      "ext": [],
+      "skills": [
+        "laravel-best-practices",
+        "pest-testing"
+      ]
+    }
+  ],
+  "keywords": [
+    {
+      "id": "laravel-backend",
+      "name": "Laravel architecture",
+      "match": [
+        "laravel",
+        "blade",
+        "filament",
+        "controller",
+        "middleware",
+        "form request",
+        "action class",
+        "service class",
+        "маршрут",
+        "контроллер",
+        "сервис",
+        "бэкенд",
+        "bekend",
+        "marshrut",
+        "kontroller"
+      ],
+      "skills": [
+        "laravel-best-practices"
+      ]
+    },
+    {
+      "id": "ui",
+      "name": "Blade and Tailwind interface",
+      "match": [
+        "tailwind",
+        "blade component",
+        "responsive",
+        "accessibility",
+        "wcag",
+        "frontend",
+        "ui",
+        "интерфейс",
+        "адаптив",
+        "доступность",
+        "фронтенд",
+        "interfejs",
+        "adaptiv",
+        "dostupnost"
+      ],
+      "skills": [
+        "tailwindcss-development"
+      ]
+    },
+    {
+      "id": "testing",
+      "name": "Automated testing",
+      "match": [
+        "pest",
+        "phpunit",
+        "test",
+        "tests",
+        "tdd",
+        "browser test",
+        "feature test",
+        "unit test",
+        "тест",
+        "тесты",
+        "браузерный тест",
+        "prover",
+        "testy",
+        "pereprover"
+      ],
+      "skills": [
+        "pest-testing"
+      ]
+    },
+    {
+      "id": "database",
+      "name": "Eloquent and query performance",
+      "match": [
+        "eloquent",
+        "migration",
+        "schema",
+        "database",
+        "n+1",
+        "eager load",
+        "query",
+        "index",
+        "модель",
+        "миграция",
+        "схема",
+        "база данных",
+        "запрос",
+        "индекс",
+        "model",
+        "migracija",
+        "zapros",
+        "indeks"
+      ],
+      "skills": [
+        "laravel-best-practices",
+        "pest-testing"
+      ]
+    },
+    {
+      "id": "security",
+      "name": "Security and authorization",
+      "match": [
+        "authorization",
+        "authentication",
+        "policy",
+        "privacy",
+        "security",
+        "payment",
+        "secret",
+        "pii",
+        "авторизация",
+        "аутентификация",
+        "приватность",
+        "безопасность",
+        "платеж",
+        "секрет",
+        "bezopasnost",
+        "privatnost",
+        "platezh"
+      ],
+      "skills": [
+        "laravel-best-practices",
+        "pest-testing"
+      ]
+    },
+    {
+      "id": "performance",
+      "name": "Laravel performance",
+      "match": [
+        "performance",
+        "cache",
+        "caching",
+        "optimization",
+        "slow query",
+        "производительность",
+        "кеш",
+        "кэш",
+        "оптимизация",
+        "медленный запрос",
+        "proizvoditelnost",
+        "optimizacija"
+      ],
+      "skills": [
+        "laravel-best-practices",
+        "pest-testing"
+      ]
+    },
+    {
+      "id": "skill-compass",
+      "name": "Skill Compass routing",
+      "match": [
+        "skill-compass",
+        "skill compass",
+        "directions.json",
+        "userpromptsubmit",
+        "posttooluse",
+        "маршрутизация навыков",
+        "роутер навыков",
+        "skills",
+        "навыки",
+        "skilly"
+      ],
+      "skills": [
+        "skill-compass"
+      ]
+    }
+  ],
+  "always": [
+    {
+      "id": "verification",
+      "name": "Verification before completion",
+      "skills": [
+        "pest-testing"
+      ]
+    }
+  ]
+}
