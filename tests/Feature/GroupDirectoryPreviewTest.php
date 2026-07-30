@@ -99,7 +99,7 @@ test('the group card renders an explicit empty tags state', function () {
     ];
 
     $card = Blade::render(
-        '<x-object.group-card :group="$group" />',
+        '<x-group-card :group="$group" />',
         ['group' => $group],
     );
 

@@ -89,7 +89,7 @@ test('the directory card renders an explicit empty traits state', function () {
     ];
 
     $card = Blade::render(
-        '<x-object.pet-directory-card :pet="$pet" />',
+        '<x-pet-directory-card :pet="$pet" />',
         ['pet' => $pet],
     );
 

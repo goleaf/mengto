@@ -87,7 +87,7 @@ test('the meetup card renders an explicit empty tags state', function () {
     ];
 
     $card = Blade::render(
-        '<x-object.meetup-card :meetup="$meetup" />',
+        '<x-meetup-card :meetup="$meetup" />',
         ['meetup' => $meetup],
     );
 

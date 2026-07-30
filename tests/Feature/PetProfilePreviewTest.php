@@ -62,7 +62,7 @@ test('the Scout profile uses a consistent Border Collie photo set', function () 
 
 test('profile accessibility markup keeps valid empty facts and readable status color', function () {
     $facts = Blade::render(
-        '<x-object.pet-facts title="Care profile" section="care" :facts="$facts" />',
+        '<x-pet-facts title="Care profile" section="care" :facts="$facts" />',
         ['facts' => []],
     );
 
