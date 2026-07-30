@@ -22,13 +22,13 @@ class BrowseKnowledgeRequest extends FormRequest
      *
      * @return array<string, ValidationRule|array<mixed>|string>
      */
-    public function rules(): array
+    public function rules(ForumTaxonomy $taxonomy): array
     {
         return [
             'q' => ['nullable', 'string', 'max:160'],
             'category' => [
                 'nullable',
-                Rule::in(['all', ...array_keys(app(ForumTaxonomy::class)->categoryOptions())]),
+                Rule::in(['all', ...array_keys($taxonomy->categoryOptions())]),
             ],
             'type' => ['nullable', Rule::in(['all', 'guide', 'checklist', 'faq', 'comparison', 'local-guide'])],
             'page' => ['nullable', 'integer', 'min:1'],

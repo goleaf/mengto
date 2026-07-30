@@ -11,7 +11,7 @@
         @if ($call)
             <header>
                 <div>
-                    <p>{{ Str::headline($call['type']) }} call · {{ Str::headline($call['status']) }}</p>
+                    <p>{{ str($call['type'])->headline() }} call · {{ str($call['status'])->headline() }}</p>
                     <h2 id="call-stage-title">{{ $conversation['name'] }}</h2>
                     <span>{{ $conversation['pet'] }} · {{ $call['quality'] }}</span>
                 </div>

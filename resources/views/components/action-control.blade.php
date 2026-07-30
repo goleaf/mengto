@@ -1,33 +1,3 @@
-@props([
-    'label',
-    'icon' => null,
-    'variant' => 'surface',
-    'size' => 'compact',
-    'endpoint' => null,
-    'payload' => [],
-    'href' => null,
-    'type' => 'button',
-    'active' => false,
-    'activeLabel' => null,
-    'activeIcon' => null,
-    'pressed' => null,
-    'disabled' => false,
-    'name' => null,
-    'value' => null,
-])
-
-@php
-    $resolvedLabel = $active && $activeLabel ? $activeLabel : $label;
-    $resolvedIcon = $active && $activeIcon ? $activeIcon : $icon;
-    $classes = [
-        'action',
-        'action--'.$variant,
-        'action--'.$size,
-        'action--active' => $active,
-    ];
-    $isDisabled = $disabled || ($endpoint === null && $href === null && $type === 'button');
-@endphp
-
 @if ($endpoint)
     <x-action-form :action="$endpoint" :payload="$payload">
         <button

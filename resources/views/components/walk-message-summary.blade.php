@@ -8,7 +8,7 @@
 
 <section aria-labelledby="{{ $titleId }}" {{ $attributes->class('walk-message-summary') }}>
     <x-panel-heading
-        :meta="count($plans).' '.\Illuminate\Support\Str::plural('plan', count($plans))"
+        :meta="count($plans).' '.str('plan')->plural(count($plans))"
     >
         <x-slot:heading>
             <h2 id="{{ $titleId }}" class="panel-heading__title">{{ $title }}</h2>

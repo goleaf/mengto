@@ -15,7 +15,7 @@
     @forelse ($filters as $filter)
         <x-filter-chip
             :label="$filter"
-            :active="$active ? \Illuminate\Support\Str::slug($filter) === $active : $loop->first"
+            :active="$active ? str($filter)->slug()->toString() === $active : $loop->first"
             :size="$size"
             :type="$submit ? 'submit' : 'button'"
         />

@@ -1,10 +1,3 @@
-@props(['neighbor', 'eager' => false])
-
-@php
-    $neighborKey = $neighbor['key'] ?? \Illuminate\Support\Str::slug($neighbor['name']);
-    $followed = $neighbor['followed'] ?? false;
-@endphp
-
 <x-directory-card data-neighbor-card {{ $attributes }}>
     <x-slot:media>
         <x-card-media

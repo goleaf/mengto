@@ -3,10 +3,6 @@
     'endpoint',
 ])
 
-@php
-    $primary = $item['primary_action'];
-@endphp
-
 <article id="friend-{{ $item['key'] }}" class="pet-friend-card">
     <header class="pet-friend-card__header">
         <x-connection-identity :item="$item" />
@@ -43,13 +39,13 @@
 
     <footer class="pet-friend-card__actions">
         <x-action-control
-            :label="$primary['label']"
-            :icon="$primary['icon']"
-            :variant="$primary['variant']"
+            :label="$item['primary_action']['label']"
+            :icon="$item['primary_action']['icon']"
+            :variant="$item['primary_action']['variant']"
             size="regular"
-            :endpoint="$primary['endpoint'] ?? null"
-            :payload="$primary['payload'] ?? []"
-            :href="$primary['href'] ?? null"
+            :endpoint="$item['primary_action']['endpoint'] ?? null"
+            :payload="$item['primary_action']['payload'] ?? []"
+            :href="$item['primary_action']['href'] ?? null"
         />
 
         @if ($item['secondary_actions'] !== [])

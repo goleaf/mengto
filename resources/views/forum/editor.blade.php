@@ -1,21 +1,13 @@
-@php
-    $editing = $topic !== null;
-    $topicType = $editing ? $topic->type->value : 'question';
-    $topicCategory = $editing ? $topic->category : 'behavior';
-    $topicVisibility = $editing ? $topic->visibility->value : 'public';
-    $topicStatus = $editing ? $topic->status->value : 'published';
-@endphp
-
 <x-app-shell :owner="$owner" :title="$page_title" :active-section="$active_section">
     <div class="forum-page">
         <header class="forum-header">
             <div class="forum-header__copy">
-                <p class="forum-header__eyebrow">{{ $editing ? 'Update discussion' : 'New forum topic' }}</p>
-                <h1>{{ $editing ? 'Keep the context current.' : 'Make the question useful later.' }}</h1>
+                <p class="forum-header__eyebrow">{{ $topic !== null ? 'Update discussion' : 'New forum topic' }}</p>
+                <h1>{{ $topic !== null ? 'Keep the context current.' : 'Make the question useful later.' }}</h1>
                 <p>A precise title, relevant pet context, and what you already tried help the community answer the situation rather than guess around it.</p>
             </div>
             <div class="forum-header__actions">
-                <a href="{{ $editing ? route('forum.topics.show', $topic) : route('forum.index') }}" class="forum-button">
+                <a href="{{ $topic !== null ? route('forum.topics.show', $topic) : route('forum.index') }}" class="forum-button">
                     <x-lucide-x aria-hidden="true" />
                     Cancel
                 </a>
@@ -37,15 +29,15 @@
             <main>
                 <form
                     method="POST"
-                    action="{{ $editing ? route('forum.topics.update', $topic) : route('forum.topics.store') }}"
+                    action="{{ $topic !== null ? route('forum.topics.update', $topic) : route('forum.topics.store') }}"
                     enctype="multipart/form-data"
                     class="forum-form"
                     data-forum-editor
-                    data-draft-key="{{ $editing ? 'topic-'.$topic->id : 'new' }}"
+                    data-draft-key="{{ $topic !== null ? 'topic-'.$topic->id : 'new' }}"
                     data-similar-endpoint="{{ route('forum.topics.similar') }}"
                 >
                     @csrf
-                    @if ($editing)
+                    @if ($topic !== null)
                         @method('PUT')
                     @endif
 
@@ -54,7 +46,7 @@
                             <span>Topic type</span>
                             <select name="type" required>
                                 @forelse ($types as $key => $label)
-                                    <option value="{{ $key }}" @selected(old('type', $topicType) === $key)>{{ $label }}</option>
+                                    <option value="{{ $key }}" @selected(old('type', $topic?->type->value ?? 'question') === $key)>{{ $label }}</option>
                                 @empty
                                     <option value="question">Question</option>
                                 @endforelse
@@ -65,7 +57,7 @@
                             <span>Category</span>
                             <select name="category" required>
                                 @forelse ($categories as $key => $category)
-                                    <option value="{{ $key }}" @selected(old('category', $topicCategory) === $key)>{{ $category['label'] }}</option>
+                                    <option value="{{ $key }}" @selected(old('category', $topic?->category ?? 'behavior') === $key)>{{ $category['label'] }}</option>
                                 @empty
                                     <option value="other">Other</option>
                                 @endforelse
@@ -79,7 +71,7 @@
                                 @forelse ($categories as $category)
                                     <optgroup label="{{ $category['label'] }}">
                                         @forelse ($category['subcategories'] as $key => $label)
-                                            <option value="{{ $key }}" @selected(old('subcategory', $editing ? $topic->subcategory : '') === $key)>{{ $label }}</option>
+                                            <option value="{{ $key }}" @selected(old('subcategory', $topic?->subcategory ?? '') === $key)>{{ $label }}</option>
                                         @empty
                                             <option disabled>No subcategories</option>
                                         @endforelse
@@ -94,7 +86,7 @@
                             <span>Related pet</span>
                             <select name="pet_key">
                                 @forelse ($pets as $key => $label)
-                                    <option value="{{ $key }}" @selected(old('pet_key', $editing ? $topic->pet_key : '') === $key)>{{ $label }}</option>
+                                    <option value="{{ $key }}" @selected(old('pet_key', $topic?->pet_key ?? '') === $key)>{{ $label }}</option>
                                 @empty
                                     <option value="">No pet attached</option>
                                 @endforelse
@@ -105,7 +97,7 @@
                             <span>Clear title</span>
                             <input
                                 name="title"
-                                value="{{ old('title', $editing ? $topic->title : '') }}"
+                                value="{{ old('title', $topic?->title ?? '') }}"
                                 minlength="20"
                                 maxlength="180"
                                 placeholder="Young dog avoids the lift after a loud noise"
@@ -122,7 +114,7 @@
 
                         <label class="forum-form__field forum-form__field--full">
                             <span>What happened and what result do you need?</span>
-                            <textarea name="body" minlength="60" maxlength="10000" required>{{ old('body', $editing ? $topic->body : '') }}</textarea>
+                            <textarea name="body" minlength="60" maxlength="10000" required>{{ old('body', $topic?->body ?? '') }}</textarea>
                             <small>Include timing, frequency, triggers, changes, and relevant limits. Do not publish a home address or full medical record.</small>
                         </label>
 
@@ -136,7 +128,7 @@
                             <select name="desired_answer">
                                 <option value="">Any relevant answer</option>
                                 @forelse ($desired_answers as $key => $label)
-                                    <option value="{{ $key }}" @selected(old('desired_answer', $editing ? $topic->desired_answer : '') === $key)>{{ $label }}</option>
+                                    <option value="{{ $key }}" @selected(old('desired_answer', $topic?->desired_answer ?? '') === $key)>{{ $label }}</option>
                                 @empty
                                     <option value="">Any relevant answer</option>
                                 @endforelse
@@ -145,14 +137,14 @@
 
                         <label class="forum-form__field">
                             <span>Location, only as precise as needed</span>
-                            <input name="location" value="{{ old('location', $editing ? $topic->location : '') }}" maxlength="120" placeholder="Vilnius">
+                            <input name="location" value="{{ old('location', $topic?->location ?? '') }}" maxlength="120" placeholder="Vilnius">
                         </label>
 
                         <label class="forum-form__field forum-form__field--full">
                             <span>Tags separated by commas</span>
                             <input
                                 name="tags"
-                                value="{{ old('tags', $editing ? implode(', ', $topic->tags ?? []) : '') }}"
+                                value="{{ old('tags', implode(', ', $topic?->tags ?? [])) }}"
                                 maxlength="300"
                                 placeholder="{{ implode(', ', array_slice($suggested_tags, 0, 5)) }}"
                             >
@@ -162,7 +154,7 @@
                             <span>Audience</span>
                             <select name="visibility" required>
                                 @forelse ($visibility_options as $key => $label)
-                                    <option value="{{ $key }}" @selected(old('visibility', $topicVisibility) === $key)>{{ $label }}</option>
+                                    <option value="{{ $key }}" @selected(old('visibility', $topic?->visibility->value ?? 'public') === $key)>{{ $label }}</option>
                                 @empty
                                     <option value="public">Public</option>
                                 @endforelse
@@ -173,7 +165,7 @@
                             <span>Who can reply?</span>
                             <select name="comment_policy" required>
                                 @forelse ($comment_policies as $key => $label)
-                                    <option value="{{ $key }}" @selected(old('comment_policy', $editing ? $topic->comment_policy : 'registered') === $key)>{{ $label }}</option>
+                                    <option value="{{ $key }}" @selected(old('comment_policy', $topic?->comment_policy ?? 'registered') === $key)>{{ $label }}</option>
                                 @empty
                                     <option value="registered">Registered members</option>
                                 @endforelse
@@ -183,9 +175,9 @@
                         <label class="forum-form__field">
                             <span>Language</span>
                             <select name="language" required>
-                                <option value="en" @selected(old('language', $editing ? $topic->language : 'en') === 'en')>English</option>
-                                <option value="lt" @selected(old('language', $editing ? $topic->language : 'en') === 'lt')>Lithuanian</option>
-                                <option value="ru" @selected(old('language', $editing ? $topic->language : 'en') === 'ru')>Russian</option>
+                                <option value="en" @selected(old('language', $topic?->language ?? 'en') === 'en')>English</option>
+                                <option value="lt" @selected(old('language', $topic?->language ?? 'en') === 'lt')>Lithuanian</option>
+                                <option value="ru" @selected(old('language', $topic?->language ?? 'en') === 'ru')>Russian</option>
                             </select>
                         </label>
 
@@ -220,11 +212,11 @@
 
                     <div class="forum-form__checks">
                         <label>
-                            <input type="checkbox" name="is_medical" value="1" @checked(old('is_medical', $editing ? $topic->is_medical : false))>
+                            <input type="checkbox" name="is_medical" value="1" @checked(old('is_medical', $topic?->is_medical ?? false))>
                             Health or medical context
                         </label>
                         <label>
-                            <input type="checkbox" name="is_urgent" value="1" @checked(old('is_urgent', $editing ? $topic->is_urgent : false))>
+                            <input type="checkbox" name="is_urgent" value="1" @checked(old('is_urgent', $topic?->is_urgent ?? false))>
                             Time-sensitive context
                         </label>
                         <label>
@@ -248,7 +240,7 @@
                         </button>
                         <button type="submit" name="intent" value="publish" class="forum-button forum-button--primary">
                             <x-lucide-send aria-hidden="true" />
-                            {{ $topicStatus === 'draft' ? 'Publish topic' : ($editing ? 'Save changes' : 'Publish topic') }}
+                            {{ ($topic?->status->value ?? 'published') === 'draft' ? 'Publish topic' : ($topic !== null ? 'Save changes' : 'Publish topic') }}
                         </button>
                     </div>
                 </form>

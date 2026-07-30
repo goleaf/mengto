@@ -1,14 +1,3 @@
-@props([
-    'item' => null,
-    'reason' => null,
-    'signals' => [],
-])
-
-@php
-    $resolvedReason = $reason ?? ($item['recommendation_reason'] ?? null);
-    $resolvedSignals = $signals ?: ($item['signals'] ?? []);
-@endphp
-
 @if ($resolvedReason)
     <div {{ $attributes->class(['recommendation-reason']) }}>
         <div class="recommendation-reason__copy">

@@ -24,7 +24,7 @@ class PerformListingActionRequest extends FormRequest
      *
      * @return array<string, ValidationRule|array<mixed>|string>
      */
-    public function rules(): array
+    public function rules(ListingTaxonomy $taxonomy): array
     {
         $actions = [
             'toggle-save',
@@ -49,7 +49,7 @@ class PerformListingActionRequest extends FormRequest
             'offered_price' => ['nullable', 'numeric', 'min:0', 'max:999999.99'],
             'exchange_method' => [
                 'nullable',
-                Rule::in(array_keys(app(ListingTaxonomy::class)->deliveryOptions())),
+                Rule::in(array_keys($taxonomy->deliveryOptions())),
                 'required_if:action,request',
             ],
             'proposed_at' => ['nullable', 'date', 'after:now'],
@@ -64,7 +64,7 @@ class PerformListingActionRequest extends FormRequest
             'privacy_accepted' => ['exclude_unless:action,request', 'required', 'accepted'],
             'reason' => [
                 'nullable',
-                Rule::in(array_keys(app(ListingTaxonomy::class)->reportReasons())),
+                Rule::in(array_keys($taxonomy->reportReasons())),
                 'required_if:action,report',
             ],
             'details' => ['nullable', 'string', 'max:2000'],

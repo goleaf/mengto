@@ -1,9 +1,3 @@
-@props(['item', 'eager' => false])
-
-@php
-    $href = $item['href'] ?? route($item['route'], $item['route_parameters'] ?? []);
-@endphp
-
 <a
     href="{{ $href }}"
     aria-label="{{ $item['title'] }}: {{ $item['meta'] }}"

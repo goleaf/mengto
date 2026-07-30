@@ -3,10 +3,6 @@
     'variant' => 'list',
 ])
 
-@php
-    $primary = $item['primary_action'];
-@endphp
-
 <article
     id="connection-{{ $item['key'] }}"
     class="connection-card connection-card--{{ $variant }}"
@@ -28,15 +24,15 @@
 
     <div class="connection-card__actions">
         <x-action-control
-            :label="$primary['label']"
-            :icon="$primary['icon']"
-            :variant="$primary['variant']"
+            :label="$item['primary_action']['label']"
+            :icon="$item['primary_action']['icon']"
+            :variant="$item['primary_action']['variant']"
             size="regular"
-            :endpoint="$primary['endpoint'] ?? null"
-            :payload="$primary['payload'] ?? []"
-            :href="$primary['href'] ?? null"
-            :active="$primary['active'] ?? $item['following']"
-            :pressed="$primary['pressed'] ?? ($item['following'] ? true : null)"
+            :endpoint="$item['primary_action']['endpoint'] ?? null"
+            :payload="$item['primary_action']['payload'] ?? []"
+            :href="$item['primary_action']['href'] ?? null"
+            :active="$item['primary_action']['active'] ?? $item['following']"
+            :pressed="$item['primary_action']['pressed'] ?? ($item['following'] ? true : null)"
         />
 
         @if ($item['secondary_actions'] !== [] || $item['notification_options'] !== [])

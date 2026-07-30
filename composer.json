@@ -1,11 +1,13 @@
 {
     "$schema": "https://getcomposer.org/schema.json",
-    "name": "laravel/laravel",
+    "name": "pawcircle/pawcircle",
     "type": "project",
-    "description": "The skeleton application for the Laravel framework.",
+    "description": "A privacy-aware pet community and care platform.",
     "keywords": [
         "laravel",
-        "framework"
+        "pets",
+        "community",
+        "care"
     ],
     "license": "MIT",
     "require": {

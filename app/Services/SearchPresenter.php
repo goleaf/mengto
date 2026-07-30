@@ -146,7 +146,7 @@ class SearchPresenter
             ->select([
                 'id', 'search_case_id', 'search_sector_id', 'type', 'title',
                 'description', 'status', 'safety_level', 'assignee_name',
-                'starts_at', 'due_at',
+                'assignee_key', 'starts_at', 'due_at', 'result',
             ])
             ->where('search_case_id', $searchCase->id)
             ->whereIn('status', [

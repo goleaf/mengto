@@ -4,13 +4,13 @@
     @if (isset($post['reaction_options']))
         <x-reaction-picker :post="$post" />
         <x-feed-action
-            :label="$post['reply_total'].' '.\Illuminate\Support\Str::plural('Comment', $post['reply_total'])"
+            :label="$post['reply_total'].' '.str('Comment')->plural($post['reply_total'])"
             :compact-label="$post['reply_total']"
             icon="message-circle"
             :href="$post['thread_url']"
         />
         <x-feed-action
-            :label="$post['reposts'].' '.\Illuminate\Support\Str::plural('Repost', $post['reposts'])"
+            :label="$post['reposts'].' '.str('Repost')->plural($post['reposts'])"
             compact-label="Repost"
             icon="repeat-2"
             :endpoint="route('actions.perform')"
@@ -35,7 +35,7 @@
         :payload="['action' => 'toggle-paw', 'target' => $post['key'], 'label' => $post['pet'].' moment']"
     />
     <x-feed-action
-        :label="$post['stats']['replies'].' '.\Illuminate\Support\Str::plural('Reply', (int) $post['stats']['replies'])"
+        :label="$post['stats']['replies'].' '.str('Reply')->plural((int) $post['stats']['replies'])"
         :compact-label="$post['stats']['replies']"
         icon="message-circle"
         :href="route('posts.show', ['post' => $post['key']])"

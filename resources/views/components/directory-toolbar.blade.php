@@ -1,22 +1,3 @@
-@props([
-    'filters' => [],
-    'label',
-    'filtersLabel',
-    'sortLabel',
-    'section',
-    'searchId' => null,
-    'searchLabel' => null,
-    'searchPlaceholder' => null,
-    'query' => '',
-    'activeFilter' => null,
-    'activeSort' => 'recommended',
-    'sortOptions' => [],
-])
-
-@php
-    $hasSearch = $searchId && $searchLabel && $searchPlaceholder;
-@endphp
-
 <section
     data-section="{{ $section }}"
     aria-label="{{ $label }}"

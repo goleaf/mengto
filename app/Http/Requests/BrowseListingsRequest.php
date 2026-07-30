@@ -22,10 +22,8 @@ class BrowseListingsRequest extends FormRequest
      *
      * @return array<string, ValidationRule|array<mixed>|string>
      */
-    public function rules(): array
+    public function rules(ListingTaxonomy $taxonomy): array
     {
-        $taxonomy = app(ListingTaxonomy::class);
-
         return [
             'q' => ['nullable', 'string', 'max:120'],
             'type' => ['nullable', Rule::in(array_keys($taxonomy->types()))],

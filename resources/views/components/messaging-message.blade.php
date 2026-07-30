@@ -1,27 +1,3 @@
-@props(['message', 'conversation'])
-
-@php
-    $typeIcons = [
-        'audio' => 'audio-lines',
-        'image' => 'image',
-        'video' => 'video',
-        'file' => 'file-text',
-        'place' => 'map-pin',
-        'event' => 'calendar-days',
-        'task' => 'list-checks',
-        'announcement' => 'megaphone',
-        'status' => 'clock-3',
-        'warning' => 'triangle-alert',
-        'professional' => 'badge-check',
-        'call' => 'phone-call',
-        'system' => 'sparkles',
-        'deleted' => 'message-square-off',
-        'text' => 'message-circle',
-    ];
-    $icon = $typeIcons[$message['type']] ?? 'message-circle';
-    $structured = ! in_array($message['type'], ['text', 'deleted'], true);
-@endphp
-
 <article
     id="message-{{ $message['id'] }}"
     @class([
@@ -52,7 +28,7 @@
             <div class="messaging-message__media">
                 <span><x-dynamic-component :component="'lucide-'.$icon" class="icon" aria-hidden="true" /></span>
                 <div>
-                    <small>{{ Str::headline($message['type']) }}</small>
+                    <small>{{ $typeLabel }}</small>
                     <strong>{{ $message['body'] }}</strong>
                     @if ($message['meta'])
                         <p>{{ $message['meta'] }}</p>
@@ -85,7 +61,7 @@
             <span><x-lucide-bookmark class="icon icon--xs" aria-hidden="true" /> Saved privately</span>
         @endif
         @if ($message['reaction'] ?? null)
-            <span><x-lucide-smile-plus class="icon icon--xs" aria-hidden="true" /> {{ Str::headline($message['reaction']) }}</span>
+            <span><x-lucide-smile-plus class="icon icon--xs" aria-hidden="true" /> {{ $reactionLabel }}</span>
         @endif
         <span>{{ $message['status'] }}</span>
 
@@ -117,7 +93,7 @@
                 <button
                     type="button"
                     data-message-reply-trigger
-                    data-message-reply-text="{{ $message['sender'] }}: {{ Str::limit($message['body'], 100) }}"
+                    data-message-reply-text="{{ $replyText }}"
                 >
                     <x-lucide-reply class="icon icon--sm" /> Reply
                 </button>
@@ -146,7 +122,7 @@
                     <input type="hidden" name="body" value="Review this message with its surrounding context.">
                     <button type="submit"><x-lucide-flag class="icon icon--sm" /> Report</button>
                 </form>
-                @if ($message['mine'] && Str::startsWith($message['id'], 'local-'))
+                @if ($editable)
                     <form method="POST" action="{{ route('messages.actions') }}" class="messaging-message-menu__edit">
                         @csrf
                         <input type="hidden" name="action" value="edit-message">

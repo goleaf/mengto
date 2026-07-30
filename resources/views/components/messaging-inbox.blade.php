@@ -68,7 +68,7 @@
                     <span class="messaging-conversation__pet">{{ $conversation['pet'] }}</span>
                     <span class="messaging-conversation__preview">{{ $conversation['preview'] }}</span>
                     <span class="messaging-conversation__status">
-                        <span>{{ Str::headline($conversation['type']) }}</span>
+                        <span>{{ str($conversation['type'])->headline() }}</span>
                         @if ($conversation['pinned'])
                             <x-lucide-pin class="icon icon--xs" aria-label="Pinned" />
                         @endif

@@ -476,7 +476,7 @@
                                 <x-lucide-history class="icon icon--sm" aria-hidden="true" />
                                 <div>
                                     <p>{{ $item['message'] }}</p>
-                                    <time datetime="{{ $item['created_at'] }}">{{ \Carbon\CarbonImmutable::parse($item['created_at'])->format('M j · g:i A') }}</time>
+                                    <time datetime="{{ $item['created_at'] }}">{{ $item['created_at_label'] }}</time>
                                 </div>
                             </li>
                         @empty
@@ -498,7 +498,7 @@
     @else
         <div class="event-dashboard__overview">
             <div class="event-dashboard__main">
-                <x-content-panel section="event-about" eyebrow="{{ \Illuminate\Support\Str::headline($event['event_type']) }}" title="What to expect">
+                <x-content-panel section="event-about" eyebrow="{{ str($event['event_type'])->headline() }}" title="What to expect">
                     <p class="event-dashboard__copy">{{ $event['long_description'] }}</p>
                     <x-icon-list :items="$content['safety']" class="section-body" />
                 </x-content-panel>

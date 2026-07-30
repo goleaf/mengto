@@ -1,15 +1,3 @@
-@props([
-    'href' => null,
-    'routeName' => null,
-    'routeParameters' => [],
-    'icon' => null,
-    'variant' => 'inline',
-])
-
-@php
-    $resolvedHref = $href ?? ($routeName ? route($routeName, $routeParameters) : null);
-@endphp
-
 <a
     href="{{ $resolvedHref }}"
     {{ $attributes->class([

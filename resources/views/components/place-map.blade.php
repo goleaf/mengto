@@ -13,7 +13,7 @@
 >
     <header class="place-map__header">
         <div>
-            <p class="place-map__eyebrow">{{ $emergency ? 'Urgent mode' : \Illuminate\Support\Str::headline($layer).' layer' }}</p>
+            <p class="place-map__eyebrow">{{ $emergency ? 'Urgent mode' : str($layer)->headline().' layer' }}</p>
             <h2 id="place-map-title">{{ $emergency ? 'Suitable open clinics' : 'Places in the selected area' }}</h2>
         </div>
         <div class="place-map__controls" aria-label="Map controls">

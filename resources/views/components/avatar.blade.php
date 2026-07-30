@@ -1,21 +1,3 @@
-@props([
-    'src',
-    'alt' => '',
-    'size' => 'compact',
-    'shape' => 'circle',
-    'lazy' => false,
-    'decorative' => false,
-])
-
-@php
-    $dimension = match ($size) {
-        'header' => 40,
-        'thread' => 44,
-        'profile' => 64,
-        default => 48,
-    };
-@endphp
-
 <img
     src="{{ $src }}"
     alt="{{ $decorative ? '' : $alt }}"

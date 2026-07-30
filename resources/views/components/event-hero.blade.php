@@ -14,7 +14,7 @@
         />
         <div class="event-hero__badges">
             <x-status-badge :label="$event['status_label']" :tone="$event['status_tone']" />
-            <x-status-badge :label="\Illuminate\Support\Str::headline($event['format'])" tone="surface" />
+            <x-status-badge :label="str($event['format'])->headline()" tone="surface" />
             @if ($event['verification_label'])
                 <x-status-badge :label="$event['verification_label']" icon="badge-check" tone="safe" />
             @endif

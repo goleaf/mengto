@@ -15,11 +15,11 @@ class StoreSearchReportRequest extends FormRequest
     }
 
     /** @return array<string, ValidationRule|array<mixed>|string> */
-    public function rules(): array
+    public function rules(SearchTaxonomy $taxonomy): array
     {
         return [
             'sighting_id' => ['nullable', 'integer', 'exists:sightings,id'],
-            'reason' => ['required', Rule::in(array_keys(app(SearchTaxonomy::class)->reportReasons()))],
+            'reason' => ['required', Rule::in(array_keys($taxonomy->reportReasons()))],
             'details' => ['nullable', 'string', 'max:2500'],
         ];
     }

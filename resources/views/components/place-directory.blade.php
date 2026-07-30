@@ -1,33 +1,3 @@
-@props(['places'])
-
-@php
-    $filters = $places['filters'];
-    $queryParameters = [
-        'q' => $places['query'],
-        'area' => $filters['area'],
-        'category' => $filters['category'],
-        'species' => $filters['species'],
-        'size' => $filters['size'],
-        'distance' => $filters['distance'],
-        'open_now' => $filters['open_now'] ? 1 : null,
-        'leash' => $filters['leash'],
-        'accessibility' => $filters['accessibility'],
-        'safety' => $filters['safety'],
-        'price' => $filters['price'],
-        'rating' => $filters['rating'],
-        'verification' => $filters['verification'],
-        'crowd' => $filters['crowd'],
-        'visit_time' => $filters['visit_time'],
-        'pet' => $filters['pet'],
-        'sort' => $filters['sort'],
-        'view' => $filters['view'],
-        'mode' => $filters['mode'],
-        'layer' => $filters['layer'],
-        'selected' => $places['selected']['key'] ?? null,
-        'emergency' => $places['emergency'] ? 1 : null,
-    ];
-@endphp
-
 <div class="place-directory">
     <section class="place-search" aria-labelledby="place-search-title">
         <div class="place-search__heading">
@@ -153,7 +123,7 @@
 
                     @forelse ($places['filter_options'] as $name => $options)
                         <label class="field-group" for="place-{{ $name }}">
-                            <span class="field-group__label">{{ \Illuminate\Support\Str::headline($name) }}</span>
+                            <span class="field-group__label">{{ str($name)->headline() }}</span>
                             <select id="place-{{ $name }}" name="{{ $name }}" class="field field--select">
                                 @forelse ($options as $value => $label)
                                     <option value="{{ $value }}" @selected((string) $filters[$name] === (string) $value)>{{ $label }}</option>

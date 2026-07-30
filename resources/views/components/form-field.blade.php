@@ -1,14 +1,3 @@
-@props([
-    'field',
-])
-
-@php
-    $name = $field['name'];
-    $errorId = $name.'-error';
-    $value = old($name, $field['value']);
-    $required = $field['required'] ?? false;
-@endphp
-
 <div class="form-field">
     <label for="{{ $name }}" class="form-field__label">
         {{ $field['label'] }}

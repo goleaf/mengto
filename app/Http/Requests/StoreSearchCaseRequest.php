@@ -17,10 +17,8 @@ class StoreSearchCaseRequest extends FormRequest
     }
 
     /** @return array<string, ValidationRule|array<mixed>|string> */
-    public function rules(): array
+    public function rules(SearchTaxonomy $taxonomy): array
     {
-        $taxonomy = app(SearchTaxonomy::class);
-
         return [
             'type' => ['required', Rule::in(array_keys($taxonomy->types()))],
             'intent' => ['required', Rule::in(['publish', 'draft'])],
@@ -62,10 +60,10 @@ class StoreSearchCaseRequest extends FormRequest
         ];
     }
 
-    public function after(): array
+    public function after(SearchSafety $safety): array
     {
         return [
-            function (Validator $validator): void {
+            function (Validator $validator) use ($safety): void {
                 if ($this->string('type')->toString() === 'lost' && blank($this->input('pet_profile_key'))) {
                     $validator->errors()->add('pet_profile_key', 'Choose the pet profile for a missing-pet search.');
                 }
@@ -74,7 +72,7 @@ class StoreSearchCaseRequest extends FormRequest
                     $validator->errors()->add('contact_value', 'Add the protected contact value.');
                 }
 
-                $assessment = app(SearchSafety::class)->assessCase($this->all());
+                $assessment = $safety->assessCase($this->all());
                 foreach ($assessment['flags'] as $flag) {
                     if (in_array($flag, ['sensitive-payment-data', 'threat-language'], true)) {
                         $validator->errors()->add(

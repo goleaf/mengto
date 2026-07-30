@@ -23,10 +23,8 @@ class StoreTopicRequest extends FormRequest
      *
      * @return array<string, ValidationRule|array<mixed>|string>
      */
-    public function rules(): array
+    public function rules(ForumTaxonomy $taxonomy): array
     {
-        $taxonomy = app(ForumTaxonomy::class);
-
         return [
             'type' => ['required', Rule::in(array_keys($taxonomy->typeOptions()))],
             'category' => ['required', Rule::in(array_keys($taxonomy->categoryOptions()))],

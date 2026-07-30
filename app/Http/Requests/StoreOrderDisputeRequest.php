@@ -15,10 +15,10 @@ class StoreOrderDisputeRequest extends FormRequest
     }
 
     /** @return array<string, ValidationRule|array<mixed>|string> */
-    public function rules(): array
+    public function rules(ListingTaxonomy $taxonomy): array
     {
         return [
-            'reason' => ['required', Rule::in(array_keys(app(ListingTaxonomy::class)->disputeReasons()))],
+            'reason' => ['required', Rule::in(array_keys($taxonomy->disputeReasons()))],
             'details' => ['required', 'string', 'min:20', 'max:4000'],
         ];
     }

@@ -128,7 +128,7 @@
                     <div class="forum-header">
                         <div class="forum-header__copy">
                             <p class="forum-header__eyebrow">Community answers</p>
-                            <h2 id="answers-heading">{{ count($answers) }} thoughtful {{ \Illuminate\Support\Str::plural('answer', count($answers)) }}</h2>
+                            <h2 id="answers-heading">{{ count($answers) }} thoughtful {{ str('answer')->plural(count($answers)) }}</h2>
                         </div>
                     </div>
 

@@ -25,7 +25,7 @@
         </a>
         @if ((int) $draftCount > 0)
             <a href="{{ route('home', ['feed' => 'drafts']) }}" class="quick-composer__drafts">
-                {{ $draftCount }} {{ \Illuminate\Support\Str::plural('draft', (int) $draftCount) }}
+                {{ $draftCount }} {{ str('draft')->plural((int) $draftCount) }}
             </a>
         @endif
     </div>

@@ -1,3 +1,22 @@
+<project-source-of-truth>
+=== required reading order ===
+
+1. Read `AGENTS.md`.
+2. Read `PRODUCT.md` and `DESIGN.md`.
+3. Read `docs/requirements/laravel-engineering-standard.md`.
+4. Read `docs/requirements/compliance-matrix.md`.
+5. Read `docs/architecture.md` and `docs/implementation-plan.md`.
+6. Read the feature-specific spec and plan under `docs/superpowers/`.
+7. Use `README.md` for local setup and verification commands.
+
+`AGENTS.md` is the canonical agent contract. Product-specific constraints
+override generic preferences when they explicitly differ. The current runtime
+is Laravel 13, Blade, Eloquent, SQLite, Tailwind 4, Sass, Vite, and Pest.
+Livewire, Flux, Filament, Volt, and a JavaScript framework are not installed;
+do not add them without a feature-specific, measured need.
+
+</project-source-of-truth>
+
 <project-execution-contract>
 === full prompt coverage rules ===
 

@@ -56,7 +56,7 @@ class ResolveCareAccess
                 'careJournal' => fn ($journals) => $journals->select([
                     'id', 'owner_key', 'slug', 'pet_profile_key', 'pet_name',
                     'species', 'breed', 'image_url', 'privacy', 'timezone',
-                    'status', 'last_feeding_at', 'last_water_at',
+                    'current_caregiver_name', 'status', 'last_feeding_at', 'last_water_at',
                     'last_walk_at', 'last_toilet_at', 'updated_at',
                 ]),
             ]);

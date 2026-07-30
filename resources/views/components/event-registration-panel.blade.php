@@ -1,5 +1,3 @@
-@props(['event', 'registration'])
-
 <x-content-panel
     section="event-registration"
     eyebrow="Your place"
@@ -7,8 +5,6 @@
     :meta="$registration['status_label']"
     class="event-registration"
 >
-    @php($record = $registration['registration'])
-
     @if ($event['status'] === 'cancelled')
         <x-notice
             icon="calendar-x"
@@ -57,7 +53,7 @@
                 <label class="form-field">
                     <span class="form-field__label">Attendance format</span>
                     <select name="attendance_format" class="field field--select" required>
-                        <option value="{{ $event['format'] }}">{{ \Illuminate\Support\Str::headline($event['format']) }}</option>
+                        <option value="{{ $event['format'] }}">{{ str($event['format'])->headline() }}</option>
                     </select>
                 </label>
                 <label class="form-field">
@@ -157,7 +153,7 @@
                     <div>
                         <small>Ticket code</small>
                         <strong>{{ $record['ticket_code'] }}</strong>
-                        <span>{{ \Illuminate\Support\Str::headline($record['ticket_type']) }} · {{ $record['pet'] }}</span>
+                        <span>{{ str($record['ticket_type'])->headline() }} · {{ $record['pet'] }}</span>
                     </div>
                 </div>
             @endif

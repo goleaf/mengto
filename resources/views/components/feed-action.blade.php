@@ -1,16 +1,3 @@
-@props([
-    'label',
-    'icon',
-    'endpoint' => null,
-    'payload' => [],
-    'href' => null,
-    'active' => false,
-    'activeLabel' => null,
-    'compactLabel' => null,
-])
-
-@php($resolvedLabel = $active && $activeLabel ? $activeLabel : $label)
-
 @if ($endpoint)
     <x-action-form :action="$endpoint" :payload="$payload">
         <button

@@ -36,10 +36,8 @@ class StoreListingRequest extends FormRequest
      *
      * @return array<string, ValidationRule|array<mixed>|string>
      */
-    public function rules(): array
+    public function rules(ListingTaxonomy $taxonomy): array
     {
-        $taxonomy = app(ListingTaxonomy::class);
-
         return [
             'type' => ['required', Rule::in(array_keys($taxonomy->types()))],
             'category' => ['required', Rule::in(array_keys($taxonomy->categories()))],
@@ -118,10 +116,10 @@ class StoreListingRequest extends FormRequest
         ];
     }
 
-    public function after(): array
+    public function after(ListingSafety $safety): array
     {
         return [
-            function (Validator $validator): void {
+            function (Validator $validator) use ($safety): void {
                 $type = $this->string('type')->toString();
                 $isFree = $this->boolean('is_free');
                 $price = $this->input('price');
@@ -150,7 +148,7 @@ class StoreListingRequest extends FormRequest
                 }
 
                 if ($this->string('intent')->toString() === 'publish') {
-                    $assessment = app(ListingSafety::class)->assess($this->validatedInput());
+                    $assessment = $safety->assess($this->validatedInput());
 
                     foreach ($assessment['blocked'] as $message) {
                         $validator->errors()->add('description', $message);

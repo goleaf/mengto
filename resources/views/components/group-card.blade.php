@@ -1,18 +1,3 @@
-@props(['group', 'eager' => false])
-
-@php
-    $groupKey = $group['key'] ?? \Illuminate\Support\Str::slug($group['name']);
-    $joined = $group['joined'] ?? false;
-    $primary = $group['primary_action'] ?? [
-        'label' => $joined ? 'Joined' : 'Join',
-        'icon' => $joined ? 'check' : 'user-plus',
-        'variant' => 'paper',
-        'endpoint' => route('actions.perform'),
-        'payload' => ['action' => 'toggle-group', 'target' => $groupKey, 'label' => $group['name']],
-        'active' => $joined,
-    ];
-@endphp
-
 <x-directory-card data-group-card class="group-card" {{ $attributes }}>
     <x-slot:media>
         <x-card-media

@@ -59,7 +59,7 @@
             <a href="{{ $place['detail_url'].'?tab=updates' }}" class="place-hero__warning">
                 <x-lucide-triangle-alert class="icon" aria-hidden="true" />
                 <span>
-                    <strong>{{ $place['warning_count'] }} active {{ \Illuminate\Support\Str::plural('warning', $place['warning_count']) }}</strong>
+                    <strong>{{ $place['warning_count'] }} active {{ str('warning')->plural($place['warning_count']) }}</strong>
                     Review current conditions before travel.
                 </span>
             </a>

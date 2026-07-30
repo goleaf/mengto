@@ -284,7 +284,8 @@ class ListingPresenter
             'seller_type_label' => $listing->seller_type->label(),
             'seller_verified' => $listing->is_verified_seller,
             'reviews_count' => (int) ($listing->reviews_count ?? 0),
-            'item_rating' => $listing->item_rating !== null
+            'item_rating' => $listing->hasAttribute('item_rating')
+                && $listing->item_rating !== null
                 ? number_format((float) $listing->item_rating, 1)
                 : null,
             'owner_name' => $listing->owner_name,

@@ -15,10 +15,8 @@ class BrowseSearchCasesRequest extends FormRequest
     }
 
     /** @return array<string, ValidationRule|array<mixed>|string> */
-    public function rules(): array
+    public function rules(SearchTaxonomy $taxonomy): array
     {
-        $taxonomy = app(SearchTaxonomy::class);
-
         return [
             'q' => ['nullable', 'string', 'max:120'],
             'type' => ['nullable', Rule::in(array_keys($taxonomy->types()))],

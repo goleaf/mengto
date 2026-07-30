@@ -520,7 +520,10 @@ final class EventPresenter
             'created_at' => $change['created_at'],
         ], $this->state->changes($event));
 
-        return [...$changes, ...$this->state->history($event)];
+        return array_map(static fn (array $item): array => [
+            ...$item,
+            'created_at_label' => CarbonImmutable::parse($item['created_at'])->format('M j · g:i A'),
+        ], [...$changes, ...$this->state->history($event)]);
     }
 
     /**

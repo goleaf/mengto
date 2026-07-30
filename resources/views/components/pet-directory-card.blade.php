@@ -1,10 +1,3 @@
-@props(['pet', 'eager' => false])
-
-@php
-    $petKey = $pet['key'] ?? \Illuminate\Support\Str::slug($pet['name']);
-    $followed = $pet['followed'] ?? false;
-@endphp
-
 <x-directory-card data-directory-pet {{ $attributes }}>
     <x-slot:media>
         <x-card-media

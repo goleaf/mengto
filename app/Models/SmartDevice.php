@@ -143,10 +143,12 @@ class SmartDevice extends Model
         return $query
             ->select([
                 'id', 'owner_key', 'slug', 'name', 'type', 'brand', 'model',
-                'image_url', 'public_zone_label', 'status', 'connection_status',
+                'serial_number', 'image_url', 'public_zone_label',
+                'private_location_label', 'privacy', 'status', 'connection_status',
                 'operating_mode', 'connection_type', 'firmware_version',
                 'battery_percent', 'signal_strength', 'last_seen_at',
-                'last_synced_at', 'last_location_at',
+                'last_synced_at', 'last_location_at', 'current_latitude',
+                'current_longitude',
                 'location_accuracy_meters',
                 'has_backup_power', 'supports_local_operation',
                 'requires_cloud', 'is_medical_device', 'is_blocked',

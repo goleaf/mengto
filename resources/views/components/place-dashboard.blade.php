@@ -40,7 +40,7 @@
                         </div>
                         <div>
                             <dt>Accepted pets</dt>
-                            <dd>{{ implode(' · ', array_map(fn ($item) => \Illuminate\Support\Str::headline($item), $place['accepted_species'])) }}</dd>
+                            <dd>{{ implode(' · ', array_map(fn ($item) => str($item)->headline()->toString(), $place['accepted_species'])) }}</dd>
                         </div>
                         <div>
                             <dt>Typical crowd</dt>
@@ -83,7 +83,7 @@
                             <x-lucide-map-pin-check class="icon" aria-hidden="true" />
                             <div>
                                 <strong>Check-in active</strong>
-                                <span>{{ \Illuminate\Support\Str::headline($checkIn['visibility']) }} · ends automatically</span>
+                                <span>{{ str($checkIn['visibility'])->headline() }} · ends automatically</span>
                             </div>
                             <x-action-control
                                 :endpoint="route('actions.perform')"
@@ -391,7 +391,7 @@
                             size="compact"
                         />
                         <p>{{ $review['body'] }}</p>
-                        <small>{{ \Illuminate\Support\Str::headline($review['criterion']) }}</small>
+                                <small>{{ str($review['criterion'])->headline() }}</small>
                         @if ($review['owner_response'])
                             <div class="place-review__response">
                                 <strong>Place response</strong>
@@ -421,7 +421,7 @@
                         <span class="place-event-list__date">{{ $event['starts_at'] }}</span>
                         <div>
                             <strong>{{ $event['title'] }}</strong>
-                            <small>{{ \Illuminate\Support\Str::headline($event['category']) }} · {{ $event['place'] }} · {{ $event['status'] }}</small>
+                            <small>{{ str($event['category'])->headline() }} · {{ $event['place'] }} · {{ $event['status'] }}</small>
                         </div>
                         <x-lucide-chevron-right class="icon" aria-hidden="true" />
                     </a>
@@ -542,7 +542,7 @@
                             <x-lucide-triangle-alert class="icon" aria-hidden="true" />
                             <div>
                                 <strong>{{ $warning['title'] }}</strong>
-                                <span>{{ \Illuminate\Support\Str::headline($warning['status']) }} · {{ $warning['confirmations'] }} confirmations</span>
+                                <span>{{ str($warning['status'])->headline() }} · {{ $warning['confirmations'] }} confirmations</span>
                             </div>
                         </header>
                         <p>{{ $warning['detail'] }}</p>
@@ -611,7 +611,7 @@
             @if (count($claims) > 0)
                 <div class="place-claim-status">
                     @forelse ($claims as $claim)
-                        <span>{{ $claim['organization'] }} · {{ \Illuminate\Support\Str::headline($claim['status']) }}</span>
+                        <span>{{ $claim['organization'] }} · {{ str($claim['status'])->headline() }}</span>
                     @empty
                         <span>No claims.</span>
                     @endforelse
@@ -643,8 +643,8 @@
                 @forelse ($corrections as $correction)
                     <article>
                         <header>
-                            <strong>{{ \Illuminate\Support\Str::headline($correction['field']) }}</strong>
-                            <x-status-badge :label="\Illuminate\Support\Str::headline($correction['status'])" tone="neutral" />
+                            <strong>{{ str($correction['field'])->headline() }}</strong>
+                            <x-status-badge :label="str($correction['status'])->headline()" tone="neutral" />
                         </header>
                         <p>{{ $correction['proposed_value'] }}</p>
                         <small>Evidence: {{ $correction['evidence'] }} · {{ $correction['created_at'] }}</small>

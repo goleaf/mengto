@@ -100,9 +100,9 @@
                             @if ($task['status'] === 'completed')
                                 <x-lucide-circle-check-big class="icon icon--sm" aria-label="Completed" />
                             @else
-                                <x-lucide-circle class="icon icon--sm" aria-label="{{ Str::headline($task['status']) }}" />
+                                <x-lucide-circle class="icon icon--sm" aria-label="{{ str($task['status'])->headline() }}" />
                             @endif
-                            <span><strong>{{ $task['label'] }}</strong><small>{{ $task['owner'] }} · {{ Str::headline($task['status']) }}</small></span>
+                            <span><strong>{{ $task['label'] }}</strong><small>{{ $task['owner'] }} · {{ str($task['status'])->headline() }}</small></span>
                         </button>
                     </form>
                 @empty
@@ -117,7 +117,7 @@
         <div class="messaging-members">
             @forelse ($members as $member)
                 <div>
-                    <span>{{ Str::substr($member['name'], 0, 1) }}</span>
+                    <span>{{ str($member['name'])->substr(0, 1) }}</span>
                     <p><strong>{{ $member['name'] }}</strong><small>{{ $member['role'] }} · {{ $member['pet'] }}</small></p>
                 </div>
             @empty

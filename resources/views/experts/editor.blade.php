@@ -1,21 +1,11 @@
 <x-app-shell :owner="$owner" :title="$page_title" :active-section="$active_section">
-    @php
-        $isEditing = $expert !== null;
-        $selectedSpecializations = old('specializations', $expert?->specializations ?? []);
-        $selectedSpecies = old('species', $expert?->species ?? []);
-        $selectedAges = old('age_groups', $expert?->age_groups ?? []);
-        $selectedLanguages = old('languages', $expert?->languages ?? []);
-        $selectedFormats = old('formats', $expert?->formats ?? []);
-        $selectedAccessibility = old('accessibility', $expert?->accessibility ?? []);
-    @endphp
-
     <div class="mx-auto grid max-w-5xl gap-6">
         <header class="border-b border-paw-line pb-6">
-            <a href="{{ $isEditing ? route('experts.show', $expert) : route('experts.index') }}" class="inline-flex items-center gap-2 text-sm font-bold text-paw-leaf">
+            <a href="{{ $expert !== null ? route('experts.show', $expert) : route('experts.index') }}" class="inline-flex items-center gap-2 text-sm font-bold text-paw-leaf">
                 <x-lucide-arrow-left class="size-4" aria-hidden="true" />
-                {{ $isEditing ? 'Back to profile' : 'Expert directory' }}
+                {{ $expert !== null ? 'Back to profile' : 'Expert directory' }}
             </a>
-            <h1 class="mt-4 text-3xl font-bold">{{ $isEditing ? 'Edit professional profile' : 'Create a professional profile' }}</h1>
+            <h1 class="mt-4 text-3xl font-bold">{{ $expert !== null ? 'Edit professional profile' : 'Create a professional profile' }}</h1>
             <p class="mt-2 max-w-3xl leading-7 text-paw-muted">
                 Describe only the work you are qualified to perform. Identity, education, qualification, license, workplace, and organization are reviewed separately.
             </p>
@@ -36,12 +26,12 @@
 
         <form
             method="POST"
-            action="{{ $isEditing ? route('experts.update', $expert) : route('experts.store') }}"
+            action="{{ $expert !== null ? route('experts.update', $expert) : route('experts.store') }}"
             enctype="multipart/form-data"
             class="grid gap-8"
         >
             @csrf
-            @if ($isEditing)
+            @if ($expert !== null)
                 @method('PUT')
             @endif
 
@@ -105,7 +95,7 @@
                     <legend class="text-sm font-bold">Specializations</legend>
                     <div class="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
                         @forelse ($specializations as $value => $label)
-                            <label class="flex items-start gap-2 text-sm"><input type="checkbox" name="specializations[]" value="{{ $value }}" @checked(in_array($value, $selectedSpecializations, true)) class="mt-0.5 size-4 rounded border-paw-line text-paw-leaf"><span>{{ $label }}</span></label>
+                            <label class="flex items-start gap-2 text-sm"><input type="checkbox" name="specializations[]" value="{{ $value }}" @checked(in_array($value, old('specializations', $expert?->specializations ?? []), true)) class="mt-0.5 size-4 rounded border-paw-line text-paw-leaf"><span>{{ $label }}</span></label>
                         @empty
                             <p class="text-sm text-paw-muted">No specialization options.</p>
                         @endforelse
@@ -116,7 +106,7 @@
                     <legend class="text-sm font-bold">Animal species</legend>
                     <div class="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
                         @forelse ($species_options as $value => $label)
-                            <label class="flex items-start gap-2 text-sm"><input type="checkbox" name="species[]" value="{{ $value }}" @checked(in_array($value, $selectedSpecies, true)) class="mt-0.5 size-4 rounded border-paw-line text-paw-leaf"><span>{{ $label }}</span></label>
+                            <label class="flex items-start gap-2 text-sm"><input type="checkbox" name="species[]" value="{{ $value }}" @checked(in_array($value, old('species', $expert?->species ?? []), true)) class="mt-0.5 size-4 rounded border-paw-line text-paw-leaf"><span>{{ $label }}</span></label>
                         @empty
                             <p class="text-sm text-paw-muted">No species options.</p>
                         @endforelse
@@ -127,7 +117,7 @@
                     <legend class="text-sm font-bold">Age groups</legend>
                     <div class="mt-3 flex flex-wrap gap-4">
                         @forelse ($age_groups as $value => $label)
-                            <label class="flex items-center gap-2 text-sm"><input type="checkbox" name="age_groups[]" value="{{ $value }}" @checked(in_array($value, $selectedAges, true)) class="size-4 rounded border-paw-line text-paw-leaf">{{ $label }}</label>
+                            <label class="flex items-center gap-2 text-sm"><input type="checkbox" name="age_groups[]" value="{{ $value }}" @checked(in_array($value, old('age_groups', $expert?->age_groups ?? []), true)) class="size-4 rounded border-paw-line text-paw-leaf">{{ $label }}</label>
                         @empty
                             <p class="text-sm text-paw-muted">No age group options.</p>
                         @endforelse
@@ -156,7 +146,7 @@
                     <legend class="text-sm font-bold">Consultation languages</legend>
                     <div class="mt-3 flex flex-wrap gap-4">
                         @forelse ($languages as $value => $label)
-                            <label class="flex items-center gap-2 text-sm"><input type="checkbox" name="languages[]" value="{{ $value }}" @checked(in_array($value, $selectedLanguages, true)) class="size-4 rounded border-paw-line text-paw-leaf">{{ $label }}</label>
+                            <label class="flex items-center gap-2 text-sm"><input type="checkbox" name="languages[]" value="{{ $value }}" @checked(in_array($value, old('languages', $expert?->languages ?? []), true)) class="size-4 rounded border-paw-line text-paw-leaf">{{ $label }}</label>
                         @empty
                             <p class="text-sm text-paw-muted">No language options.</p>
                         @endforelse
@@ -167,7 +157,7 @@
                     <legend class="text-sm font-bold">Work formats</legend>
                     <div class="mt-3 flex flex-wrap gap-4">
                         @forelse ($formats as $value => $label)
-                            <label class="flex items-center gap-2 text-sm"><input type="checkbox" name="formats[]" value="{{ $value }}" @checked(in_array($value, $selectedFormats, true)) class="size-4 rounded border-paw-line text-paw-leaf">{{ $label }}</label>
+                            <label class="flex items-center gap-2 text-sm"><input type="checkbox" name="formats[]" value="{{ $value }}" @checked(in_array($value, old('formats', $expert?->formats ?? []), true)) class="size-4 rounded border-paw-line text-paw-leaf">{{ $label }}</label>
                         @empty
                             <p class="text-sm text-paw-muted">No format options.</p>
                         @endforelse
@@ -185,7 +175,7 @@
                         <legend class="text-sm font-bold">Place accessibility</legend>
                         <div class="mt-3 grid gap-2">
                             @forelse ($accessibility_options as $value => $label)
-                                <label class="flex items-center gap-2 text-sm"><input type="checkbox" name="accessibility[]" value="{{ $value }}" @checked(in_array($value, $selectedAccessibility, true)) class="size-4 rounded border-paw-line text-paw-leaf">{{ $label }}</label>
+                                <label class="flex items-center gap-2 text-sm"><input type="checkbox" name="accessibility[]" value="{{ $value }}" @checked(in_array($value, old('accessibility', $expert?->accessibility ?? []), true)) class="size-4 rounded border-paw-line text-paw-leaf">{{ $label }}</label>
                             @empty
                                 <p class="text-sm text-paw-muted">No accessibility options.</p>
                             @endforelse
@@ -227,7 +217,7 @@
                 </div>
             </section>
 
-            @unless ($isEditing)
+            @unless ($expert !== null)
                 <section class="grid gap-4 border-y border-paw-line py-7" aria-labelledby="credential-section">
                     <div>
                         <h2 id="credential-section" class="text-xl font-bold">Private verification document</h2>
@@ -246,10 +236,10 @@
             @endunless
 
             <footer class="flex flex-wrap justify-end gap-2">
-                <x-action-control label="Cancel" icon="x" :href="$isEditing ? route('experts.show', $expert) : route('experts.index')" />
+                <x-action-control label="Cancel" icon="x" :href="$expert !== null ? route('experts.show', $expert) : route('experts.index')" />
                 <button type="submit" class="action action--primary action--comfortable">
                     <x-lucide-save class="icon icon--sm" aria-hidden="true" />
-                    <span>{{ $isEditing ? 'Save profile' : 'Create profile' }}</span>
+                    <span>{{ $expert !== null ? 'Save profile' : 'Create profile' }}</span>
                 </button>
             </footer>
         </form>

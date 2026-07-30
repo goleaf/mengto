@@ -1,10 +1,3 @@
-@props(['meetup', 'eager' => false])
-
-@php
-    $meetupKey = $meetup['key'] ?? \Illuminate\Support\Str::slug($meetup['title']);
-    $rsvp = $meetup['rsvp'] ?? false;
-@endphp
-
 <x-directory-card data-meetup-card {{ $attributes }}>
     <x-slot:media>
         <x-card-media

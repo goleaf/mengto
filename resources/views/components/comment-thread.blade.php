@@ -13,7 +13,7 @@
             size="compact"
         />
         <x-status-badge
-            :label="$count.' visible '.\Illuminate\Support\Str::plural('reply', $count)"
+            :label="$count.' visible '.str('reply')->plural($count)"
             icon="messages-square"
             tone="mint"
         />

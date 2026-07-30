@@ -1,8 +1,6 @@
 @props(['media', 'eager' => false])
 
-@php($isCarousel = count($media) > 1)
-
-<div @class(['post-media', 'post-media--carousel' => $isCarousel])>
+<div @class(['post-media', 'post-media--carousel' => count($media) > 1])>
     @foreach ($media as $item)
         <figure class="post-media__item">
             @if ($item['type'] === 'video')
@@ -46,7 +44,7 @@
         </figure>
     @endforeach
 
-    @if ($isCarousel)
+    @if (count($media) > 1)
         <span class="post-media__count">{{ count($media) }} photos</span>
     @endif
 </div>

@@ -72,7 +72,7 @@
                 <x-initials-avatar :initials="$event['organizer_initials']" tone="mint" />
                 <div>
                     <p>{{ $event['organizer'] }}</p>
-                    <span>{{ $event['verification_label'] ?? \Illuminate\Support\Str::headline($event['organizer_type']) }}</span>
+                    <span>{{ $event['verification_label'] ?? str($event['organizer_type'])->headline() }}</span>
                 </div>
             </div>
             <div class="event-card__actions">

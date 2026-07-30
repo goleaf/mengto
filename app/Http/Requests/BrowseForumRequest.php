@@ -22,10 +22,8 @@ class BrowseForumRequest extends FormRequest
      *
      * @return array<string, ValidationRule|array<mixed>|string>
      */
-    public function rules(): array
+    public function rules(ForumTaxonomy $taxonomy): array
     {
-        $taxonomy = app(ForumTaxonomy::class);
-
         return [
             'q' => ['nullable', 'string', 'max:160'],
             'category' => ['nullable', Rule::in(['all', ...array_keys($taxonomy->categoryOptions())])],

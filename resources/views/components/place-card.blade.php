@@ -60,7 +60,7 @@
         @if ($place['warning_count'] > 0)
             <a href="{{ $place['detail_url'].'?tab=updates' }}" class="place-card__warning">
                 <x-lucide-triangle-alert class="icon icon--sm" aria-hidden="true" />
-                <span>{{ $place['warning_count'] }} active {{ \Illuminate\Support\Str::plural('warning', $place['warning_count']) }}</span>
+                <span>{{ $place['warning_count'] }} active {{ str('warning')->plural($place['warning_count']) }}</span>
             </a>
         @endif
 
