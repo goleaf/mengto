@@ -15,7 +15,7 @@
 ## File Map
 
 - Create `app/Services/PreviewService.php`: own all static PawCircle preview content.
-- Modify `app/Http/Controllers/FeedPreviewController.php`: delegate home data preparation to the service.
+- Modify `app/Http/Controllers/PreviewController.php`: delegate home data preparation to the service.
 - Create `app/Http/Controllers/PetProfilePreviewController.php`: return Scout's profile view.
 - Modify `routes/web.php`: register the fixed, named Scout route in the existing group.
 - Modify `resources/views/components/pet-social/app-shell.blade.php`: accept a generic page slot.
@@ -79,14 +79,14 @@ Expected: `NO_GIT_REPOSITORY`.
 **Files:**
 
 - Create: `app/Services/PreviewService.php`
-- Modify: `app/Http/Controllers/FeedPreviewController.php`
+- Modify: `app/Http/Controllers/PreviewController.php`
 - Create: `app/Http/Controllers/PetProfilePreviewController.php`
 - Modify: `routes/web.php`
 - Modify: `resources/views/components/pet-social/app-shell.blade.php`
 - Modify: `resources/views/pet-social/index.blade.php`
 - Create: `resources/views/pet-social/pets/show.blade.php`
 - Test: `tests/Feature/PetProfilePreviewTest.php`
-- Test: `tests/Feature/FeedPreviewTest.php`
+- Test: `tests/Feature/PreviewTest.php`
 
 - [x] **Step 1: Add the shared data service**
 
@@ -139,7 +139,7 @@ final class PreviewService
 }
 ```
 
-Move the existing `owner()`, `posts()`, `meetups()`, `groups()`, and `tips()` arrays from `FeedPreviewController` into private methods on the service without changing their visible content. Move `pets()` and add one presentation contract to each item:
+Move the existing `owner()`, `posts()`, `meetups()`, `groups()`, and `tips()` arrays from `PreviewController` into private methods on the service without changing their visible content. Move `pets()` and add one presentation contract to each item:
 
 ```php
 'profile_route' => 'pet-social.pets.scout',
@@ -241,7 +241,7 @@ namespace App\Http\Controllers;
 use App\Services\PreviewService;
 use Illuminate\Contracts\View\View;
 
-class FeedPreviewController extends Controller
+class PreviewController extends Controller
 {
     public function __invoke(PreviewService $preview): View
     {
@@ -275,9 +275,10 @@ Add the controller import and route inside the existing group:
 
 ```php
 use App\Http\Controllers\PetProfilePreviewController;
+use App\Http\Controllers\PreviewController;
 
 Route::middleware('web')->name('pet-social.')->group(function (): void {
-    Route::get('/', FeedPreviewController::class)->name('preview');
+    Route::get('/', PreviewController::class)->name('preview');
     Route::get('/pets/scout', PetProfilePreviewController::class)->name('pets.scout');
 });
 ```
@@ -313,7 +314,7 @@ Move the former three-column `<main>` classes into a wrapper inside
 Run:
 
 ```bash
-php artisan test --compact tests/Feature/PetProfilePreviewTest.php tests/Feature/FeedPreviewTest.php
+php artisan test --compact tests/Feature/PetProfilePreviewTest.php tests/Feature/PreviewTest.php
 ```
 
 Expected: 2 passing tests.
@@ -487,7 +488,7 @@ Inside the existing `@forelse`, replace the name heading with:
 Run:
 
 ```bash
-php artisan test --compact tests/Feature/PetProfilePreviewTest.php tests/Feature/FeedPreviewTest.php
+php artisan test --compact tests/Feature/PetProfilePreviewTest.php tests/Feature/PreviewTest.php
 ```
 
 Expected: 3 passing tests.

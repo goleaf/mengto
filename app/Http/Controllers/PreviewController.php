@@ -6,7 +6,7 @@ use App\Http\Requests\BrowseFeedRequest;
 use App\Services\FeedPresenter;
 use Illuminate\Contracts\View\View;
 
-class FeedPreviewController extends Controller
+class PreviewController extends Controller
 {
     public function __invoke(
         BrowseFeedRequest $request,

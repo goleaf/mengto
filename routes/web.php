@@ -20,7 +20,7 @@ use App\Http\Controllers\PerformMessageActionController;
 use App\Http\Controllers\PetDirectoryPreviewController;
 use App\Http\Controllers\PetFriendCenterPreviewController;
 use App\Http\Controllers\PetProfilePreviewController;
-use App\Http\Controllers\FeedPreviewController;
+use App\Http\Controllers\PreviewController;
 use App\Http\Controllers\PlaceDetailPreviewController;
 use App\Http\Controllers\PlaceDirectoryPreviewController;
 use App\Http\Controllers\PostThreadPreviewController;
@@ -32,7 +32,7 @@ Route::middleware('web')
     ->prefix('')
     ->name('pet-social.')
     ->group(function (): void {
-        Route::get('/', FeedPreviewController::class)->name('preview');
+        Route::get('/', PreviewController::class)->name('preview');
         Route::get('/circle', CirclePreviewController::class)->name('circle.index');
         Route::get('/circle/connections', ConnectionCenterPreviewController::class)->name('connections.index');
         Route::get('/circle/pet-friends', PetFriendCenterPreviewController::class)->name('pet-friends.index');

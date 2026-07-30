@@ -110,7 +110,7 @@ route model binding exist before the prototype gains a persistence layer.
 
 ### Controllers And Data
 
-`FeedPreviewController` and `PetProfilePreviewController` remain invokable
+`PreviewController` and `PetProfilePreviewController` remain invokable
 and thin. Shared static content moves from controller-private methods into one
 dedicated `App\Services\PreviewService`. The service exposes
 `homePageData()` and `scoutProfileData()` methods so each controller receives a

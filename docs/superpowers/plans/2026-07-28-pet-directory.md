@@ -97,7 +97,7 @@ Commands:
 
 ```bash
 php artisan test --compact tests/Feature/PetDirectoryPreviewTest.php
-php artisan test --compact tests/Feature/FeedPreviewTest.php
+php artisan test --compact tests/Feature/PreviewTest.php
 php artisan test --compact tests/Feature/PetProfilePreviewTest.php
 ```
 

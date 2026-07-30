@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 
-test('the feed preview renders as a static app shell', function () {
+test('the preview renders as a static app shell', function () {
     expect(Route::has('pet-social.preview'))->toBeTrue();
 
     $response = $this->get(route('pet-social.preview'));
