@@ -1,12 +1,20 @@
 <?php
 
+use App\Http\Controllers\AnswerStoreController;
+use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\CirclePreviewController;
+use App\Http\Controllers\CommentStoreController;
+use App\Http\Controllers\ComposerController;
 use App\Http\Controllers\ConnectionCenterPreviewController;
 use App\Http\Controllers\ConversationDetailPreviewController;
+use App\Http\Controllers\CorrectionStoreController;
 use App\Http\Controllers\CreatedContentPreviewController;
 use App\Http\Controllers\DiscoverPreviewController;
+use App\Http\Controllers\ForumActionController;
+use App\Http\Controllers\ForumController;
 use App\Http\Controllers\GroupDetailPreviewController;
 use App\Http\Controllers\GroupDirectoryPreviewController;
+use App\Http\Controllers\KnowledgeController;
 use App\Http\Controllers\MeetupDetailPreviewController;
 use App\Http\Controllers\MeetupDirectoryPreviewController;
 use App\Http\Controllers\MemberProfilePreviewController;
@@ -14,17 +22,23 @@ use App\Http\Controllers\MessageCenterPreviewController;
 use App\Http\Controllers\NeighborDirectoryPreviewController;
 use App\Http\Controllers\NeighborProfilePreviewController;
 use App\Http\Controllers\NotificationCenterPreviewController;
-use App\Http\Controllers\ComposerController;
 use App\Http\Controllers\PerformActionController;
 use App\Http\Controllers\PerformMessageActionController;
 use App\Http\Controllers\PetDirectoryPreviewController;
 use App\Http\Controllers\PetFriendCenterPreviewController;
 use App\Http\Controllers\PetProfilePreviewController;
-use App\Http\Controllers\PreviewController;
 use App\Http\Controllers\PlaceDetailPreviewController;
 use App\Http\Controllers\PlaceDirectoryPreviewController;
 use App\Http\Controllers\PostThreadPreviewController;
+use App\Http\Controllers\PreviewController;
 use App\Http\Controllers\SharePreviewController;
+use App\Http\Controllers\SimilarTopicController;
+use App\Http\Controllers\TopicController;
+use App\Http\Controllers\TopicCreateController;
+use App\Http\Controllers\TopicDeleteController;
+use App\Http\Controllers\TopicEditController;
+use App\Http\Controllers\TopicStoreController;
+use App\Http\Controllers\TopicUpdateController;
 use App\Http\Controllers\WalkPlanPreviewController;
 use Illuminate\Support\Facades\Route;
 
@@ -91,6 +105,38 @@ Route::middleware('web')
                 'vilnius-animal-aid',
             ])
             ->name('places.show');
+        Route::prefix('forum')
+            ->name('forum.')
+            ->group(function (): void {
+                Route::get('/', ForumController::class)->name('index');
+                Route::get('/ask', TopicCreateController::class)->name('topics.create');
+                Route::get('/similar', SimilarTopicController::class)->name('topics.similar');
+                Route::post('/topics', TopicStoreController::class)
+                    ->middleware('throttle:12,1')
+                    ->name('topics.store');
+                Route::get('/topics/{forumTopic}', TopicController::class)->name('topics.show');
+                Route::get('/topics/{forumTopic}/edit', TopicEditController::class)->name('topics.edit');
+                Route::put('/topics/{forumTopic}', TopicUpdateController::class)->name('topics.update');
+                Route::delete('/topics/{forumTopic}', TopicDeleteController::class)->name('topics.destroy');
+                Route::post('/topics/{forumTopic}/answers', AnswerStoreController::class)
+                    ->middleware('throttle:24,1')
+                    ->name('answers.store');
+                Route::post('/topics/{forumTopic}/comments', CommentStoreController::class)
+                    ->middleware('throttle:40,1')
+                    ->name('comments.store');
+                Route::post('/actions', ForumActionController::class)
+                    ->middleware('throttle:60,1')
+                    ->name('actions');
+            });
+        Route::prefix('knowledge')
+            ->name('knowledge.')
+            ->group(function (): void {
+                Route::get('/', KnowledgeController::class)->name('index');
+                Route::get('/{knowledgeArticle}', ArticleController::class)->name('articles.show');
+                Route::post('/{knowledgeArticle}/corrections', CorrectionStoreController::class)
+                    ->middleware('throttle:12,1')
+                    ->name('corrections.store');
+            });
         Route::get('/messages', MessageCenterPreviewController::class)->name('messages.index');
         Route::get('/messages/{conversation}/details', ConversationDetailPreviewController::class)
             ->whereIn('conversation', [

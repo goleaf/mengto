@@ -9,6 +9,7 @@
         ['route' => 'pet-social.pets.index', 'label' => 'Pets', 'mobile_label' => 'Pets', 'icon' => 'paw-print', 'name' => 'pets'],
         ['route' => 'pet-social.meetups.index', 'label' => 'Meetups', 'mobile_label' => 'Meet', 'icon' => 'calendar-days', 'name' => 'meetups'],
         ['route' => 'pet-social.places.index', 'label' => 'Places', 'mobile_label' => 'Places', 'icon' => 'map-pinned', 'name' => 'places'],
+        ['route' => 'pet-social.forum.index', 'label' => 'Forum', 'mobile_label' => 'Forum', 'icon' => 'messages-square', 'name' => 'forum'],
         ['route' => 'pet-social.groups.index', 'label' => 'Groups', 'mobile_label' => 'Group', 'icon' => 'users-round', 'name' => 'groups'],
         ['route' => 'pet-social.neighbors.index', 'label' => 'Neighbors', 'mobile_label' => 'People', 'icon' => 'user-round', 'name' => 'neighbors'],
         ['route' => 'pet-social.discover.index', 'label' => 'Discover', 'mobile_label' => 'Find', 'icon' => 'search', 'name' => 'discover'],
