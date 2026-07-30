@@ -97,10 +97,10 @@
 .mobile-nav {
     &__rail {
         display: grid;
-        inline-size: max(100%, 34rem);
+        inline-size: max(100%, 38rem);
         max-inline-size: 80rem;
         margin-inline: auto;
-        grid-template-columns: repeat(9, minmax(3.25rem, 1fr));
+        grid-template-columns: repeat(10, minmax(3.25rem, 1fr));
         border: 1px solid $line;
         border-radius: $panel-radius;
         background: $white;

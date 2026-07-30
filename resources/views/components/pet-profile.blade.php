@@ -127,6 +127,15 @@
                                 title="Shared with permission"
                                 description="Care details are shown for this audience by the profile owner. Exact medical records remain private."
                             />
+                            @if ($profile['audience'] === 'owner')
+                                <x-action-control
+                                    :href="route('medical-records.index')"
+                                    label="Open private medical records"
+                                    icon="stethoscope"
+                                    variant="primary"
+                                    size="regular"
+                                />
+                            @endif
                         </x-slot:sidebar>
                     </x-main-sidebar-layout>
                 @else

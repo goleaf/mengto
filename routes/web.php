@@ -34,6 +34,20 @@ use App\Http\Controllers\ListingCreateController;
 use App\Http\Controllers\ListingDirectoryController;
 use App\Http\Controllers\ListingReviewController;
 use App\Http\Controllers\ListingStoreController;
+use App\Http\Controllers\MedicalAccessRevokeController;
+use App\Http\Controllers\MedicalAccessStoreController;
+use App\Http\Controllers\MedicalDocumentDownloadController;
+use App\Http\Controllers\MedicalDocumentStoreController;
+use App\Http\Controllers\MedicalEmergencyCardController;
+use App\Http\Controllers\MedicalEntryStoreController;
+use App\Http\Controllers\MedicalRecordController;
+use App\Http\Controllers\MedicalRecordCreateController;
+use App\Http\Controllers\MedicalRecordDirectoryController;
+use App\Http\Controllers\MedicalRecordManageController;
+use App\Http\Controllers\MedicalRecordStoreController;
+use App\Http\Controllers\MedicalSharedDocumentDownloadController;
+use App\Http\Controllers\MedicalSharedRecordController;
+use App\Http\Controllers\MedicationDoseStoreController;
 use App\Http\Controllers\MeetupDetailPreviewController;
 use App\Http\Controllers\MeetupDirectoryPreviewController;
 use App\Http\Controllers\MemberProfilePreviewController;
@@ -71,6 +85,7 @@ use App\Http\Controllers\TopicEditController;
 use App\Http\Controllers\TopicStoreController;
 use App\Http\Controllers\TopicUpdateController;
 use App\Http\Controllers\WalkPlanPreviewController;
+use App\Http\Middleware\ProtectMedicalResponse;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('web')
@@ -326,4 +341,57 @@ Route::middleware('web')
             ->middleware('throttle:6,1')
             ->name('reports.store');
         Route::get('/{searchCase}', SearchCaseController::class)->name('show');
+    });
+
+Route::middleware(['web', ProtectMedicalResponse::class])
+    ->prefix('medical-records')
+    ->name('medical-records.')
+    ->group(function (): void {
+        Route::get('/', MedicalRecordDirectoryController::class)->name('index');
+        Route::get('/new', MedicalRecordCreateController::class)->name('create');
+        Route::post('/', MedicalRecordStoreController::class)
+            ->middleware('throttle:6,1')
+            ->name('store');
+        Route::get('/{medicalRecord}/manage', MedicalRecordManageController::class)
+            ->name('manage');
+        Route::get('/{medicalRecord}/emergency', MedicalEmergencyCardController::class)
+            ->name('emergency');
+        Route::post('/{medicalRecord}/entries', MedicalEntryStoreController::class)
+            ->middleware('throttle:30,1')
+            ->name('entries.store');
+        Route::post('/{medicalRecord}/doses', MedicationDoseStoreController::class)
+            ->middleware('throttle:40,1')
+            ->name('doses.store');
+        Route::post('/{medicalRecord}/documents', MedicalDocumentStoreController::class)
+            ->middleware('throttle:12,1')
+            ->name('documents.store');
+        Route::get(
+            '/{medicalRecord}/documents/{medicalDocument}',
+            MedicalDocumentDownloadController::class,
+        )->name('documents.download');
+        Route::post('/{medicalRecord}/access', MedicalAccessStoreController::class)
+            ->middleware('throttle:12,1')
+            ->name('access.store');
+        Route::delete(
+            '/{medicalRecord}/access/{medicalAccessGrant}',
+            MedicalAccessRevokeController::class,
+        )->name('access.revoke');
+        Route::get('/{medicalRecord}', MedicalRecordController::class)->name('show');
+    });
+
+Route::middleware(['web', ProtectMedicalResponse::class])
+    ->prefix('medical-access')
+    ->name('medical-access.')
+    ->group(function (): void {
+        Route::get('/{token}', MedicalSharedRecordController::class)
+            ->where('token', '[A-Za-z0-9]{64}')
+            ->middleware('throttle:30,1')
+            ->name('show');
+        Route::get(
+            '/{token}/documents/{medicalDocument}',
+            MedicalSharedDocumentDownloadController::class,
+        )
+            ->where('token', '[A-Za-z0-9]{64}')
+            ->middleware('throttle:20,1')
+            ->name('documents.download');
     });

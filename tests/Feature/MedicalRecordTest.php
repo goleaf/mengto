@@ -1,0 +1,311 @@
+<?php
+
+use App\Enums\MedicationStatus;
+use App\Models\AuditLog;
+use App\Models\MedicalAccessGrant;
+use App\Models\MedicalDocument;
+use App\Models\MedicalEvent;
+use App\Models\MedicalRecord;
+use App\Models\Medication;
+use App\Models\MedicationDose;
+use App\Models\Vaccination;
+use App\Models\WeightEntry;
+use Database\Seeders\MedicalRecordSeeder;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+
+test('an owner can create one private medical record for a managed pet', function () {
+    $this->post(route('medical-records.store'), medicalRecordPayload())
+        ->assertRedirect();
+
+    $record = MedicalRecord::query()->firstOrFail();
+
+    expect($record)
+        ->owner_key->toBe('mia-carter')
+        ->pet_profile_key->toBe('scout')
+        ->privacy->toBe('private')
+        ->current_weight_grams->toBe(18700)
+        ->and($record->weightEntries()->count())->toBe(1)
+        ->and(AuditLog::query()->where('action', 'medical-record.created')->count())->toBe(1);
+
+    $this->from(route('medical-records.create'))
+        ->post(route('medical-records.store'), medicalRecordPayload())
+        ->assertRedirect(route('medical-records.create'))
+        ->assertSessionHasErrors('pet_profile_key');
+
+    expect(MedicalRecord::query()->where('pet_profile_key', 'scout')->count())->toBe(1);
+});
+
+test('sensitive medical values are encrypted and never shown to another owner', function () {
+    $record = MedicalRecord::factory()->create([
+        'owner_key' => 'another-owner',
+        'microchip_number' => '981020009999999',
+        'critical_allergies' => ['Private allergy detail'],
+        'emergency_notes' => 'Private emergency instruction',
+    ]);
+
+    expect((string) $record->getRawOriginal('microchip_number'))
+        ->not->toContain('981020009999999')
+        ->and((string) $record->getRawOriginal('critical_allergies'))
+        ->not->toContain('Private allergy detail')
+        ->and((string) $record->getRawOriginal('emergency_notes'))
+        ->not->toContain('Private emergency instruction');
+
+    $this->get(route('medical-records.show', $record))->assertForbidden();
+    $this->get(route('medical-records.emergency', $record))->assertForbidden();
+    $this->get(route('medical-records.manage', $record))->assertForbidden();
+});
+
+test('medical events preserve their source and owner observations remain unverified', function () {
+    $record = MedicalRecord::factory()->create(['owner_key' => 'mia-carter']);
+
+    $this->post(route('medical-records.entries.store', $record), [
+        'entry_type' => 'event',
+        'title' => 'Reduced appetite after breakfast',
+        'source_type' => 'owner',
+        'source_name' => 'Mia Carter',
+        'event_type' => 'symptom',
+        'occurred_at' => now()->subHour()->format('Y-m-d H:i:s'),
+        'event_status' => 'active',
+        'summary' => 'Scout ate less than usual but remained alert.',
+        'severity' => 'mild',
+        'next_step' => 'Continue observation and contact the clinic if symptoms worsen.',
+    ])->assertRedirect(route('medical-records.manage', $record));
+
+    expect(MedicalEvent::query()->firstOrFail())
+        ->source_type->value->toBe('owner')
+        ->verification_status->value->toBe('owner-reported')
+        ->and(AuditLog::query()->where('action', 'medical-entry.created')->count())->toBe(1);
+});
+
+test('weight entries retain gram precision and update the current summary', function () {
+    $record = MedicalRecord::factory()->create([
+        'owner_key' => 'mia-carter',
+        'species' => 'bird',
+        'current_weight_grams' => 92,
+    ]);
+
+    $this->post(route('medical-records.entries.store', $record), [
+        'entry_type' => 'weight',
+        'weight' => '89',
+        'weight_unit' => 'g',
+        'measured_at' => now()->format('Y-m-d H:i:s'),
+        'source_type' => 'owner',
+        'source_name' => 'Home gram scale',
+        'measurement_context' => 'Before breakfast without carrier',
+    ])->assertRedirect(route('medical-records.manage', $record));
+
+    expect(WeightEntry::query()->firstOrFail())
+        ->weight_grams->toBe(89)
+        ->and($record->refresh()->current_weight_grams)->toBe(89);
+});
+
+test('a medication dose is idempotent and a handled slot cannot be marked twice', function () {
+    $record = MedicalRecord::factory()->create(['owner_key' => 'mia-carter']);
+    $medication = Medication::factory()->for($record)->create([
+        'status' => MedicationStatus::Active,
+    ]);
+    $slot = now()->startOfMinute();
+    $key = (string) Str::uuid();
+    $payload = [
+        'medication_id' => $medication->id,
+        'idempotency_key' => $key,
+        'scheduled_for' => $slot->format('Y-m-d H:i:s'),
+        'administered_at' => $slot->addMinutes(2)->format('Y-m-d H:i:s'),
+        'status' => 'given',
+        'dose_given' => '1 tablet',
+        'notes' => 'Given with food.',
+    ];
+
+    $this->post(route('medical-records.doses.store', $record), $payload)->assertRedirect();
+    $this->post(route('medical-records.doses.store', $record), $payload)->assertRedirect();
+
+    expect(MedicationDose::query()->count())->toBe(1)
+        ->and(AuditLog::query()->where('action', 'medication-dose.recorded')->count())->toBe(1);
+
+    $this->from(route('medical-records.show', $record))
+        ->post(route('medical-records.doses.store', $record), [
+            ...$payload,
+            'idempotency_key' => (string) Str::uuid(),
+        ])
+        ->assertRedirect(route('medical-records.show', $record))
+        ->assertSessionHasErrors('scheduled_for');
+
+    expect(MedicationDose::query()->count())->toBe(1);
+});
+
+test('temporary access reveals only selected sections and can be revoked', function () {
+    $record = MedicalRecord::factory()->create([
+        'owner_key' => 'mia-carter',
+        'microchip_number' => '981020001112223',
+        'critical_allergies' => ['Do not expose without emergency permission'],
+    ]);
+    Medication::factory()->for($record)->create(['name' => 'Selected medication']);
+    Vaccination::factory()->for($record)->create(['name' => 'Hidden vaccination']);
+
+    $response = $this->post(route('medical-records.access.store', $record), [
+        'recipient_name' => 'Dr. Temporary',
+        'recipient_role' => 'veterinarian',
+        'label' => 'Medication review only',
+        'sections' => ['medications'],
+        'max_views' => 2,
+        'expires_in_hours' => 24,
+        'privacy_acknowledged' => 1,
+    ])->assertRedirect(route('medical-records.manage', $record));
+
+    $accessUrl = $response->getSession()->get('medical_access_url');
+    $grant = MedicalAccessGrant::query()->firstOrFail();
+
+    expect($accessUrl)->toBeString()
+        ->and($grant->token_hash)->not->toContain(str($accessUrl)->afterLast('/')->toString());
+
+    $this->get($accessUrl)
+        ->assertOk()
+        ->assertSee('Selected medication')
+        ->assertDontSee('Hidden vaccination')
+        ->assertDontSee('981020001112223')
+        ->assertDontSee('Do not expose without emergency permission');
+
+    expect($grant->refresh()->views_used)->toBe(1)
+        ->and(AuditLog::query()->where('action', 'medical-access.opened')->count())->toBe(1);
+
+    $this->delete(route('medical-records.access.revoke', [$record, $grant]))
+        ->assertRedirect(route('medical-records.manage', $record));
+
+    $this->get($accessUrl)->assertNotFound();
+});
+
+test('medical documents stay on private storage and downloads are audited', function () {
+    Storage::fake('local');
+    $record = MedicalRecord::factory()->create(['owner_key' => 'mia-carter']);
+
+    $this->post(route('medical-records.documents.store', $record), [
+        'title' => 'Clinic visit summary',
+        'document_type' => 'visit-summary',
+        'source_type' => 'clinic',
+        'source_name' => 'Paws 24',
+        'document' => UploadedFile::fake()->create('visit-summary.pdf', 120, 'application/pdf'),
+    ])->assertRedirect(route('medical-records.manage', $record));
+
+    $document = MedicalDocument::query()->firstOrFail();
+
+    Storage::disk('local')->assertExists($document->file_path);
+    expect($document)
+        ->verification_status->value->toBe('needs-review')
+        ->and($document->file_path)->toStartWith('medical-records/'.$record->id.'/');
+
+    $this->get(route('medical-records.documents.download', [$record, $document]))
+        ->assertOk()
+        ->assertDownload('visit-summary.pdf');
+
+    expect($document->refresh()->download_count)->toBe(1)
+        ->and(AuditLog::query()->where('action', 'medical-document.downloaded')->count())->toBe(1);
+});
+
+test('directory detail manage emergency and create screens render', function () {
+    $record = MedicalRecord::factory()->create([
+        'owner_key' => 'mia-carter',
+        'pet_name' => 'Scout Health Test',
+    ]);
+    Medication::factory()->for($record)->create();
+    Vaccination::factory()->for($record)->create();
+    WeightEntry::factory()->for($record)->create();
+    MedicalEvent::factory()->for($record)->create();
+
+    $this->get(route('medical-records.index'))
+        ->assertOk()
+        ->assertSee('Pet health records')
+        ->assertSee('Scout Health Test');
+    $this->get(route('medical-records.create'))
+        ->assertOk()
+        ->assertSee('Create a medical record');
+    $this->get(route('medical-records.show', $record))
+        ->assertOk()
+        ->assertSee('Before treatment or emergency care')
+        ->assertSee('Medical timeline')
+        ->assertSee('Today');
+    $this->get(route('medical-records.manage', $record))
+        ->assertOk()
+        ->assertSee('Update health record')
+        ->assertSee('Temporary access');
+    $this->get(route('medical-records.emergency', $record))
+        ->assertOk()
+        ->assertSee('Emergency health card')
+        ->assertSee('Last updated');
+});
+
+test('medical responses cannot be cached indexed or leak temporary links through referrers', function () {
+    $record = MedicalRecord::factory()->create(['owner_key' => 'mia-carter']);
+
+    $this->get(route('medical-records.show', $record))
+        ->assertOk()
+        ->assertHeader('Cache-Control', 'must-revalidate, no-cache, no-store, private')
+        ->assertHeader('Pragma', 'no-cache')
+        ->assertHeader('Referrer-Policy', 'no-referrer')
+        ->assertHeader('X-Robots-Tag', 'noindex, nofollow, noarchive');
+});
+
+test('the medical record seeder is idempotent and creates a useful demo timeline', function () {
+    $seeder = app(MedicalRecordSeeder::class);
+
+    $seeder->run();
+    $seeder->run();
+
+    $scout = MedicalRecord::query()->where('slug', 'scout-health')->firstOrFail();
+
+    expect(MedicalRecord::query()->where('owner_key', 'mia-carter')->count())->toBe(2)
+        ->and($scout->events()->count())->toBe(3)
+        ->and($scout->vaccinations()->count())->toBe(2)
+        ->and($scout->weightEntries()->count())->toBe(4)
+        ->and($scout->medications()->count())->toBe(1)
+        ->and($scout->reminders()->count())->toBe(2);
+});
+
+test('medical schema includes owner timeline schedule and access indexes', function () {
+    $recordIndexes = collect(Schema::getIndexes('medical_records'))->pluck('name');
+    $eventIndexes = collect(Schema::getIndexes('medical_events'))->pluck('name');
+    $medicationIndexes = collect(Schema::getIndexes('medications'))->pluck('name');
+    $doseIndexes = collect(Schema::getIndexes('medication_doses'))->pluck('name');
+    $accessIndexes = collect(Schema::getIndexes('medical_access_grants'))->pluck('name');
+
+    expect($recordIndexes)
+        ->toContain('medical_records_owner_pet_unique')
+        ->toContain('medical_records_owner_status_idx')
+        ->and($eventIndexes)->toContain('medical_events_record_occurred_idx')
+        ->and($medicationIndexes)->toContain('medications_record_status_dose_idx')
+        ->and($doseIndexes)
+        ->toContain('medication_doses_medication_slot_unique')
+        ->toContain('medication_doses_record_schedule_idx')
+        ->and($accessIndexes)->toContain('medical_access_record_active_idx');
+});
+
+/** @param array<string, mixed> $overrides */
+function medicalRecordPayload(array $overrides = []): array
+{
+    return [
+        'pet_profile_key' => 'scout',
+        'birth_date' => now()->subYears(4)->toDateString(),
+        'birth_date_estimated' => 0,
+        'sex' => 'male',
+        'reproductive_status' => 'neutered',
+        'weight' => '18.7',
+        'weight_unit' => 'kg',
+        'timezone' => 'Europe/Vilnius',
+        'microchip_status' => 'registered',
+        'microchip_number' => '981020001234567',
+        'microchip_checked_on' => now()->subMonth()->toDateString(),
+        'blood_group' => 'DEA 1 negative',
+        'critical_allergies' => "Chicken protein\nBee stings",
+        'chronic_conditions' => 'Seasonal skin sensitivity',
+        'emergency_notes' => 'Approach calmly and call the owner.',
+        'primary_clinic_name' => 'Paws 24',
+        'primary_clinic_contact' => '+370 600 00001',
+        'emergency_contact_name' => 'Mia Carter',
+        'emergency_contact_phone' => '+370 600 00002',
+        'emergency_contact_relationship' => 'Owner',
+        'privacy_acknowledged' => 1,
+        ...$overrides,
+    ];
+}

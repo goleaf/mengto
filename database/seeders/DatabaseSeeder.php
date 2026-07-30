@@ -25,5 +25,6 @@ class DatabaseSeeder extends Seeder
         $this->call(ListingSeeder::class);
         $this->call(MarketplaceExpansionSeeder::class);
         $this->call(SearchSeeder::class);
+        $this->call(MedicalRecordSeeder::class);
     }
 }
