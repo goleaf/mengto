@@ -2,17 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\PawCirclePreviewService;
+use App\Http\Requests\BrowseMessagesRequest;
+use App\Services\PawCircleMessagePresenter;
 use Illuminate\Contracts\View\View;
 
-class ConversationDetailPreviewController extends Controller
+final class ConversationDetailPreviewController extends Controller
 {
-    public function __invoke(string $conversation, PawCirclePreviewService $preview): View
-    {
-        $data = $preview->conversationDetailsData($conversation);
-
-        abort_if($data === null, 404);
-
-        return view('pet-social.messages.details', $data);
+    public function __invoke(
+        string $conversation,
+        BrowseMessagesRequest $request,
+        PawCircleMessagePresenter $presenter,
+    ): View {
+        return view('pet-social.messages.index', $presenter->page([
+            ...$request->validated(),
+            'conversation' => $conversation,
+            'panel' => 'context',
+        ], true));
     }
 }

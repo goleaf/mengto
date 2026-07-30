@@ -16,6 +16,7 @@ use App\Http\Controllers\NeighborProfilePreviewController;
 use App\Http\Controllers\NotificationCenterPreviewController;
 use App\Http\Controllers\PawCircleComposerController;
 use App\Http\Controllers\PerformPawCircleActionController;
+use App\Http\Controllers\PerformMessageActionController;
 use App\Http\Controllers\PetDirectoryPreviewController;
 use App\Http\Controllers\PetFriendCenterPreviewController;
 use App\Http\Controllers\PetProfilePreviewController;
@@ -92,8 +93,19 @@ Route::middleware('web')
             ->name('places.show');
         Route::get('/messages', MessageCenterPreviewController::class)->name('messages.index');
         Route::get('/messages/{conversation}/details', ConversationDetailPreviewController::class)
-            ->whereIn('conversation', ['ari', 'lena', 'noah', 'priya'])
+            ->whereIn('conversation', [
+                'ari',
+                'family-care',
+                'vingis-walk',
+                'paws-vet',
+                'foster-adoption',
+                'lost-luna',
+                'trail-tails',
+                'luna-request',
+            ])
             ->name('messages.details');
+        Route::post('/messages/actions', PerformMessageActionController::class)
+            ->name('messages.actions');
         Route::get('/walks', WalkPlanPreviewController::class)->name('walks.index');
         Route::get('/neighbors', NeighborDirectoryPreviewController::class)->name('neighbors.index');
         Route::get('/neighbors/ari-jensen', NeighborProfilePreviewController::class)->name('neighbors.ari');

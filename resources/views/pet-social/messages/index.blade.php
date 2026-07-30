@@ -1,50 +1,104 @@
-<x-layout.app-shell :owner="$owner" title="Messages | PawCircle" active-section="messages">
-    <x-layout.page-stack>
-        <x-layout.page-header
-            :eyebrow="$summary['eyebrow']"
-            :title="$summary['title']"
-            :description="$summary['description']"
-            :count="$summary['count']"
-            data-section="message-header"
-        >
-            <x-slot:actions>
-                <x-ui.action-group>
-                    <x-ui.action-control
-                        :href="route('pet-social.walks.index')"
-                        label="Walk planner"
-                        icon="footprints"
-                        variant="paper"
-                        size="regular"
-                    />
-                    <x-ui.action-control
-                        :href="route('pet-social.compose', 'message')"
-                        label="New message"
-                        icon="mail"
-                        variant="primary"
-                        size="regular"
-                    />
-                </x-ui.action-group>
-            </x-slot:actions>
-        </x-layout.page-header>
+<x-layout.app-shell :owner="$owner" title="Messages and calls | PawCircle" active-section="messages">
+    <div
+        class="messaging-page"
+        data-messaging-center
+        @if ($thread_first) data-selected-conversation="{{ $selected['key'] }}" @endif
+    >
+        <header class="messaging-page__header">
+            <div class="messaging-page__heading">
+                <p>{{ $summary['eyebrow'] }}</p>
+                <h1>{{ $summary['title'] }}</h1>
+                <span>{{ $summary['description'] }}</span>
+            </div>
 
-        @if ($activeFilter === 'walk-plans')
-            <x-feature.walk-message-summary :plans="$walkPlans" />
-        @endif
+            <div class="messaging-page__summary" aria-label="Inbox summary">
+                <span><x-lucide-mail class="icon icon--sm" aria-hidden="true" /> {{ $summary['unread_count'] }} unread</span>
+                <span><x-lucide-message-square-more class="icon icon--sm" aria-hidden="true" /> {{ $summary['request_count'] }} request</span>
+                <a href="{{ route('pet-social.compose', 'message') }}" class="action action--primary action--regular">
+                    <x-lucide-square-pen class="icon icon--sm" aria-hidden="true" />
+                    <span>New message</span>
+                </a>
+            </div>
+        </header>
 
-        <x-layout.message-center-layout :thread-first="$threadFirst">
-            <x-slot:conversations>
-            <x-feature.conversation-list
+        <div class="messaging-shell">
+            <x-feature.messaging-inbox
                 :conversations="$conversations"
                 :filters="$filters"
-                :unread-count="$summary['unread_count']"
-                :query="$conversationQuery"
-                :active-filter="$activeFilter"
+                :active-filter="$active_filter"
+                :query="$query"
+                :selected="$selected"
+                :summary="$summary"
             />
-            </x-slot:conversations>
 
-            <x-slot:thread>
-                <x-feature.message-thread :thread="$thread" />
-            </x-slot:thread>
-        </x-layout.message-center-layout>
-    </x-layout.page-stack>
+            <main class="messaging-thread" aria-label="Conversation with {{ $selected['name'] }}">
+                <x-feature.messaging-thread-header
+                    :conversation="$selected"
+                    :active-filter="$active_filter"
+                />
+
+                @if ($selected['request'] && $selected['request_status'] === 'pending')
+                    <x-feature.messaging-request :conversation="$selected" />
+                @elseif ($selected['request_status'] === 'declined')
+                    <section class="messaging-state messaging-state--quiet">
+                        <x-lucide-message-square-off class="icon" aria-hidden="true" />
+                        <div>
+                            <h2>Request declined</h2>
+                            <p>The sender is not told when you viewed or declined the request. You can still block or report the profile.</p>
+                        </div>
+                    </section>
+                @else
+                    @if ($professional)
+                        <x-feature.messaging-professional-banner :professional="$professional" />
+                    @endif
+
+                    @if ($channels !== [])
+                        <x-feature.messaging-channels
+                            :channels="$channels"
+                            :active-channel="$active_channel"
+                            :conversation="$selected['key']"
+                            :active-filter="$active_filter"
+                        />
+                    @endif
+
+                    @if ($message_query !== '')
+                        <div class="messaging-search-result" role="status">
+                            <x-lucide-search class="icon icon--sm" aria-hidden="true" />
+                            <span>{{ count($messages) }} results for “{{ $message_query }}” with surrounding context preserved.</span>
+                            <a href="{{ route('pet-social.messages.index', ['conversation' => $selected['key'], 'filter' => $active_filter]) }}">Clear</a>
+                        </div>
+                    @endif
+
+                    <x-feature.messaging-message-list
+                        :messages="$messages"
+                        :conversation="$selected"
+                    />
+
+                    <x-feature.messaging-composer
+                        :conversation="$selected"
+                        :active-filter="$active_filter"
+                    />
+                @endif
+            </main>
+
+            <x-feature.messaging-context
+                :conversation="$selected"
+                :context="$context"
+                :members="$members"
+                :poll="$poll"
+                :tasks="$tasks"
+                :professional="$professional"
+                :active-filter="$active_filter"
+                :message-query="$message_query"
+                :coverage="$coverage"
+            />
+        </div>
+
+        <x-feature.messaging-call-stage
+            :conversation="$selected"
+            :call="$call"
+            :boundary="$call_boundary"
+            :active-filter="$active_filter"
+        />
+    </div>
 </x-layout.app-shell>
