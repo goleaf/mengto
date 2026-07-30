@@ -8,7 +8,7 @@ use Illuminate\Support\Str;
 
 final class EventState
 {
-    private const SESSION_KEY = 'paw-circle.events.v1';
+    private const SESSION_KEY = 'events.state.v1';
 
     public function __construct(private readonly Session $session) {}
 
@@ -27,7 +27,7 @@ final class EventState
      */
     public function register(array $event, array $data): array
     {
-        return Cache::lock('paw-circle:event-registration:'.$event['key'], 5)->block(
+        return Cache::lock('event-registration:'.$event['key'], 5)->block(
             2,
             function () use ($event, $data): array {
                 $existing = $this->registration($event['key']);

@@ -7,7 +7,7 @@ use Illuminate\Support\Str;
 
 final class MessageState
 {
-    private const SESSION_KEY = 'paw-circle.messaging.v1';
+    private const SESSION_KEY = 'messaging.state.v1';
 
     public function __construct(private readonly Session $session) {}
 

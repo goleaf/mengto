@@ -6,7 +6,7 @@ use Illuminate\Contracts\Session\Session;
 
 final class PetFriendState
 {
-    private const SESSION_KEY = 'paw-circle.pet-friends.v1';
+    private const SESSION_KEY = 'pet-friends.state.v1';
 
     public function __construct(private readonly Session $session) {}
 

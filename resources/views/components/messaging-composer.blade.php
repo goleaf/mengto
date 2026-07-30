@@ -45,7 +45,7 @@
             maxlength="4000"
             required
             data-message-body
-            data-draft-key="pawcircle-draft-{{ $conversation['key'] }}"
+            data-draft-key="message-draft-{{ $conversation['key'] }}"
             placeholder="Message {{ $conversation['name'] }} as Mia"
             @if ($errors->has('body')) aria-invalid="true" aria-describedby="message-body-error" @endif
         >{{ old('body') }}</textarea>

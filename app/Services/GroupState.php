@@ -6,7 +6,7 @@ use Illuminate\Contracts\Session\Session;
 
 final class GroupState
 {
-    private const SESSION_KEY = 'paw-circle.groups.v1';
+    private const SESSION_KEY = 'groups.state.v1';
 
     public function __construct(private readonly Session $session) {}
 

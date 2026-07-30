@@ -8,7 +8,7 @@ use Illuminate\Support\Str;
 
 final class PlaceState
 {
-    private const SESSION_KEY = 'paw-circle.places.v1';
+    private const SESSION_KEY = 'places.state.v1';
 
     public function __construct(private readonly Session $session) {}
 
@@ -124,7 +124,7 @@ final class PlaceState
      */
     public function checkIn(string $place, string $pet, string $visibility): array
     {
-        return Cache::lock('paw-circle:place-check-in:'.$place, 5)->block(
+        return Cache::lock('place-check-in:'.$place, 5)->block(
             2,
             function () use ($place, $pet, $visibility): array {
                 $state = $this->state();
@@ -247,7 +247,7 @@ final class PlaceState
      */
     public function addSubmission(array $submission): array
     {
-        return Cache::lock('paw-circle:place-submission:'.Str::slug((string) $submission['title']), 5)->block(
+        return Cache::lock('place-submission:'.Str::slug((string) $submission['title']), 5)->block(
             2,
             function () use ($submission): array {
                 $state = $this->state();
@@ -281,7 +281,7 @@ final class PlaceState
      */
     public function addCorrection(string $place, array $correction): void
     {
-        Cache::lock('paw-circle:place-correction:'.$place, 5)->block(
+        Cache::lock('place-correction:'.$place, 5)->block(
             2,
             function () use ($place, $correction): void {
                 $state = $this->state();
@@ -315,7 +315,7 @@ final class PlaceState
      */
     public function addWarning(string $place, array $warning): array
     {
-        return Cache::lock('paw-circle:place-warning:'.$place, 5)->block(
+        return Cache::lock('place-warning:'.$place, 5)->block(
             2,
             function () use ($place, $warning): array {
                 $state = $this->state();

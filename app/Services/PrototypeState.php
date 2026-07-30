@@ -6,7 +6,7 @@ use Illuminate\Contracts\Session\Session;
 
 class PrototypeState
 {
-    private const SESSION_KEY = 'paw-circle.prototype';
+    private const SESSION_KEY = 'prototype.state.v1';
 
     public function __construct(private readonly Session $session) {}
 
