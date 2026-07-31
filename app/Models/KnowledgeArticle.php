@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Enums\KnowledgeStatus;
+use App\Enums\KnowledgeTranslationSource;
 use Database\Factories\KnowledgeArticleFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -47,6 +48,9 @@ use Illuminate\Support\Carbon;
  * @property array<array-key, mixed>|null $tags
  * @property int|null $taxon_id
  * @property string $title
+ * @property int|null $translated_by_user_id
+ * @property int|null $translated_from_article_id
+ * @property KnowledgeTranslationSource|null $translation_source
  * @property string|null $translation_group_key
  * @property string $type
  * @property Carbon|null $updated_at
@@ -67,8 +71,11 @@ class KnowledgeArticle extends Model
         'discussion_topic_id',
         'taxon_id',
         'replaced_by_article_id',
+        'translated_from_article_id',
+        'translated_by_user_id',
         'slug',
         'translation_group_key',
+        'translation_source',
         'title',
         'summary',
         'body',
@@ -102,8 +109,11 @@ class KnowledgeArticle extends Model
         'discussion_topic_id',
         'taxon_id',
         'replaced_by_article_id',
+        'translated_from_article_id',
+        'translated_by_user_id',
         'slug',
         'translation_group_key',
+        'translation_source',
         'title',
         'summary',
         'body',
@@ -132,6 +142,7 @@ class KnowledgeArticle extends Model
     {
         return [
             'status' => KnowledgeStatus::class,
+            'translation_source' => KnowledgeTranslationSource::class,
             'tags' => 'array',
             'sources' => 'array',
             'contributors' => 'array',
@@ -183,6 +194,18 @@ class KnowledgeArticle extends Model
     public function replacement(): BelongsTo
     {
         return $this->belongsTo(self::class, 'replaced_by_article_id');
+    }
+
+    /** @return BelongsTo<KnowledgeArticle, $this> */
+    public function translatedFrom(): BelongsTo
+    {
+        return $this->belongsTo(self::class, 'translated_from_article_id');
+    }
+
+    /** @return BelongsTo<User, $this> */
+    public function translator(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'translated_by_user_id');
     }
 
     /** @return BelongsTo<User, $this> */
@@ -237,8 +260,11 @@ class KnowledgeArticle extends Model
             'discussion_topic_id',
             'taxon_id',
             'replaced_by_article_id',
+            'translated_from_article_id',
+            'translated_by_user_id',
             'slug',
             'translation_group_key',
+            'translation_source',
             'title',
             'summary',
             'category',

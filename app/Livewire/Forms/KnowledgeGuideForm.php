@@ -123,6 +123,26 @@ final class KnowledgeGuideForm extends Form
         $this->changeSummary = '';
     }
 
+    public function fillTranslationFromArticle(
+        KnowledgeArticle $source,
+        string $targetLocale,
+    ): void {
+        $this->title = '';
+        $this->summary = '';
+        $this->body = '';
+        $this->category = $source->category;
+        $this->type = $source->type;
+        $this->difficulty = $source->difficulty;
+        $this->audience = '';
+        $this->language = $targetLocale;
+        $this->jurisdiction = $source->jurisdiction ?? '';
+        $this->taxonIds = $source->taxon_id === null ? [] : [$source->taxon_id];
+        $this->discussionTopicId = $source->discussion_topic_id;
+        $this->sourcesText = implode("\n", $source->sources ?? []);
+        $this->protectedSectionsText = '';
+        $this->changeSummary = '';
+    }
+
     public function data(int $expectedLockVersion): KnowledgeGuideData
     {
         $validated = $this->validate();

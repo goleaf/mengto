@@ -163,16 +163,16 @@ command environment. This incident remains recorded for transparency.
 | Larastan / PHPStan | 3.10.0 / 2.2.7, level 5 |
 | First-party models / factory coverage | 157 / 157 models covered |
 | Explicit / enum-backed factory states | 145 / 862 |
-| Migrations / tables | 98 / 172 |
-| Application / total routes | 151 / 164 |
-| Full PHP suite | 1,666 passed, 58,350 assertions |
+| Migrations / tables | 99 / 172 |
+| Application / total routes | 150 / 164 |
+| Full PHP suite | 1,684 passed, 64,597 assertions |
 
 Final production assets:
 
 - font CSS: 1.31 kB / 0.32 kB gzip;
 - Tailwind application CSS: 50.35 kB / 9.54 kB gzip;
-- retained semantic SCSS CSS: 263.56 kB / 34.82 kB gzip;
-- application JavaScript: 30.02 kB / 9.55 kB gzip;
+- retained semantic SCSS CSS: 264.39 kB / 34.98 kB gzip;
+- application JavaScript: 33.04 kB / 10.36 kB gzip;
 - PhotoSwipe JavaScript: 58.82 kB / 17.06 kB gzip.
 
 The Tailwind increase reflects the auth, responsive, forced-colors, and
@@ -203,8 +203,8 @@ implementation for hundreds of components.
 The first-pass defects that could be repaired without selecting external
 hardware or a provider were implemented and regression-tested. The compliance
 matrix for the original modernization remains its historical evidence. The
-forum extension's authoritative matrix currently records 472 verified
-requirements and 6,812 planned or discovered requirements, with no blocked or
+forum extension's authoritative matrix currently records 513 verified
+requirements and 6,771 planned or discovered requirements, with no blocked or
 intentionally-not-applicable records.
 
 This modernization does not claim that physical hardware transport or

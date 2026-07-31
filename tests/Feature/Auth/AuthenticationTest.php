@@ -298,14 +298,19 @@ test('active user can update language and timezone from profile settings', funct
         ->set('form.timezone', 'Europe/Riga')
         ->call('save')
         ->assertHasNoErrors()
+        ->assertRedirect(route('profile.settings'))
         ->assertSet('feedback', $savedMessage);
 
     expect($this->authenticatedUser->fresh())
         ->locale->toBe('ru')
         ->timezone->toBe('Europe/Riga')
-        ->and(session('locale'))->toBe('ru');
+        ->and(session('locale'))->toBe('ru')
+        ->and(session('profile-settings-feedback'))->toBe($savedMessage);
 
-    app()->setLocale('en');
+    $this->get(route('profile.settings'))
+        ->assertSuccessful()
+        ->assertSee('lang="ru"', false)
+        ->assertSee($savedMessage);
 });
 
 test('active user can render the full profile settings route', function () {

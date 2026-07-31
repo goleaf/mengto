@@ -86,6 +86,16 @@ class KnowledgePresenter
             'sourceTopic' => fn ($topic) => $topic->forDirectory(),
             'discussionTopic' => fn ($topic) => $topic->forDirectory(),
             'replacement' => fn ($replacement) => $replacement->forLibrary(),
+            'translatedFrom' => fn ($source) => $source->select([
+                'id',
+                'created_by_user_id',
+                'forum_group_id',
+                'slug',
+                'title',
+                'status',
+                'language',
+            ]),
+            'translator:id,name',
             'activeCollaborators' => fn ($collaborators) => $collaborators
                 ->select([
                     'id',
@@ -120,6 +130,25 @@ class KnowledgePresenter
                     'title' => $translation->title,
                     'language' => __("auth.locales.{$translation->language}"),
                 ]);
+        $supportedLocales = config('platform.supported_locales', ['en']);
+        $canTranslate = $article->translation_group_key !== null
+            && $this->gate->allows('translate', $article);
+        $usedTranslationLocaleCount = $canTranslate
+            ? KnowledgeArticle::query()
+                ->where('translation_group_key', $article->translation_group_key)
+                ->whereIn('language', $supportedLocales)
+                ->distinct()
+                ->count('language')
+            : count($supportedLocales);
+        $source = $article->translatedFrom;
+        $visibleSource = $source instanceof KnowledgeArticle
+            && $this->gate->allows('view', $source)
+                ? [
+                    'slug' => $source->slug,
+                    'title' => $source->title,
+                    'language' => __("auth.locales.{$source->language}"),
+                ]
+                : null;
         $normalizedContributors = $article->activeCollaborators
             ->map(static fn (KnowledgeArticleCollaborator $collaborator): array => [
                 'name' => $collaborator->attribution_name ?? $collaborator->user->name,
@@ -176,7 +205,15 @@ class KnowledgePresenter
                     'rank' => $article->taxon->activeVersion->rank,
                 ],
                 'translations' => $translations->all(),
+                'translation' => $article->translation_source === null ? null : [
+                    'source_type' => $article->translation_source->value,
+                    'source_label' => $article->translation_source->label(),
+                    'source_article' => $visibleSource,
+                    'translator' => $article->translator?->name,
+                ],
                 'can_edit' => $this->gate->allows('update', $article),
+                'can_translate' => $canTranslate
+                    && $usedTranslationLocaleCount < count($supportedLocales),
             ],
             'versions' => $article->versions
                 ->map(fn (KnowledgeVersion $version): array => [

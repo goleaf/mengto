@@ -82,8 +82,8 @@ destructive command.
 ## Baseline And Current Checkpoint
 
 The modernization baseline was 116 passing tests and 3,881 assertions. The
-latest complete serial checkpoint reports 1,666 passing tests and 58,350
-assertions after the forum accessibility package. This checkpoint is not a
+latest complete serial checkpoint reports 1,684 passing tests and 64,597
+assertions after the forum multilingual-behavior package. This checkpoint is not a
 final coverage claim while requirements remain unimplemented.
 
 Pest coverage cannot run in the current environment because PHP 8.5 has neither
@@ -290,3 +290,37 @@ Package evidence:
 The browser runner requires a locally reachable isolated application and a
 Chromium-compatible executable. It does not install or contact a second
 browser-test framework.
+
+## Multilingual Behavior Verification
+
+`ForumMultilingualBehaviorTest` covers the additive provenance migration,
+definition-key resolution in EN/LT/RU, reviewed root-category rows, all-locale
+cache invalidation, recipient-locale notifications, original-content
+preservation, human translation attribution, private/draft source denial,
+locale uniqueness, locked Livewire identity, connected draft creation,
+translation-action availability, scientific-name invariance, verified
+common-name preference, explicit-locale unidentified fallback,
+taxonomy-selector synonym context, and denial of translation editing when a
+guide has no translation family.
+
+Package evidence:
+
+- final multilingual/guide/auth/localization/architecture slice: 75 tests and
+  56,753 assertions;
+- final serial repository suite: 1,684 tests and 64,597 assertions in 97.037
+  seconds;
+- full Larastan: zero errors;
+- full Pint and first-party PHP syntax: passed;
+- isolated fresh SQLite: 99 migrations and 172 tables; complete seed and
+  repeated `DatabaseSeeder` preserved five users;
+- additive translation migration rollback and re-application: passed;
+- Composer strict validation/audit and npm audit: zero advisories;
+- Vite 8.2.0 production build and config/event/route/view cache compilation:
+  passed;
+- dependency-free headless Chrome: English desktop/mobile/320px forum,
+  Lithuanian desktop/mobile translation source, Russian forum, full-document
+  locale changes/restoration, no raw keys, overflow, unnamed controls, invalid
+  tables/images, or console errors.
+
+The coverage command was executed and returned
+`Code coverage driver not available. Did you install Xdebug or PCOV?`.

@@ -3,7 +3,13 @@
         <div class="forum-header__copy">
             <p class="forum-header__eyebrow">{{ __('knowledge.editor.eyebrow') }}</p>
             <h1 id="knowledge-guide-editor-heading">
-                {{ $articleId === null ? __('knowledge.editor.create_title') : __('knowledge.editor.edit_title') }}
+                @if ($articleId !== null)
+                    {{ __('knowledge.editor.edit_title') }}
+                @elseif ($this->translationSourceData !== null)
+                    {{ __('knowledge.editor.translate_title') }}
+                @else
+                    {{ __('knowledge.editor.create_title') }}
+                @endif
             </h1>
             <p>{{ __('knowledge.editor.description') }}</p>
         </div>
@@ -30,6 +36,24 @@
     <p wire:offline class="border-s-4 border-status-warning py-3 ps-4" role="status">
         {{ __('knowledge.editor.offline') }}
     </p>
+
+    @if ($this->translationSourceData !== null)
+        <aside class="forum-safety" aria-labelledby="knowledge-translation-source-heading">
+            <x-lucide-languages aria-hidden="true" />
+            <div>
+                <strong id="knowledge-translation-source-heading">
+                    {{ __('knowledge.translations.source_heading') }}
+                </strong>
+                <span>
+                    {{ __('knowledge.translations.source_description', [
+                        'title' => $this->translationSourceData['title'],
+                        'language' => $this->translationSourceData['locale_label'],
+                    ]) }}
+                </span>
+                <span>{{ __('knowledge.translations.original_preserved') }}</span>
+            </div>
+        </aside>
+    @endif
 
     <div class="flex flex-wrap items-center gap-3 border-y border-paw-line py-4">
         <x-status-badge :label="$this->articleData['status_label']" icon="book-open-check" />
@@ -133,6 +157,9 @@
                             <option disabled>{{ __('knowledge.empty.locales') }}</option>
                         @endforelse
                     </select>
+                    @if ($this->translationSourceData !== null)
+                        <small>{{ __('knowledge.translations.target_locale_help') }}</small>
+                    @endif
                     @error('form.language') <small role="alert">{{ $message }}</small> @enderror
                 </label>
 
@@ -196,7 +223,13 @@
         <button type="submit" wire:loading.attr="disabled" wire:target="save" class="forum-button forum-button--primary w-fit">
             <x-lucide-save aria-hidden="true" />
             <span wire:loading.remove wire:target="save">
-                {{ $articleId === null ? __('knowledge.actions.create_draft') : __('knowledge.actions.save_revision') }}
+                @if ($articleId !== null)
+                    {{ __('knowledge.actions.save_revision') }}
+                @elseif ($this->translationSourceData !== null)
+                    {{ __('knowledge.actions.create_translation_draft') }}
+                @else
+                    {{ __('knowledge.actions.create_draft') }}
+                @endif
             </span>
             <span wire:loading wire:target="save">{{ __('knowledge.actions.saving') }}</span>
         </button>

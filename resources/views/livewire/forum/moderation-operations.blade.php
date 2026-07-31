@@ -344,6 +344,7 @@
                             <td class="px-3 py-3">{{ $appeal['appellant'] }}</td>
                             <td class="px-3 py-3">
                                 <span class="block">{{ $appeal['action'] }}</span>
+                                <span class="forum-badge mt-1">{{ $appeal['status'] }}</span>
                                 <span class="block max-w-xl whitespace-pre-wrap break-words text-xs text-paw-muted">{{ $appeal['reason'] }}</span>
                             </td>
                             <td class="px-3 py-3">{{ $appeal['submitted'] }}</td>

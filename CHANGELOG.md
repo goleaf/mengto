@@ -101,8 +101,17 @@
   content-validated WebVTT captions, localized legacy-media fallbacks,
   44-pixel controls, contrast/reflow guards, textual map alternatives, and a
   repeatable dependency-free Chrome smoke runner.
+- Completed the forum multilingual-behavior contract with reviewed EN/LT/RU
+  root-category descriptions, moderation definitions, animal-community
+  groups, recipient-locale notifications, source-preserving human guide
+  translations, private-source authorization, and verified common-name to
+  exact-scientific-name taxonomy fallback.
+- Corrected profile-locale updates to reload the complete document so the
+  shell, title, navigation, and `html` language change together, and made the
+  isolated fresh-database verifier enter testing mode before application
+  bootstrap.
 - Added an evidence overlay that prevents requirement verification without
-  concrete file or test evidence; 472 atomic requirements are currently
+  concrete file or test evidence; 513 atomic requirements are currently
   verified.
 
 ### Runtime And Architecture

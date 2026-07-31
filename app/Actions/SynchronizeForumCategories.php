@@ -143,13 +143,14 @@ final class SynchronizeForumCategories
                         $locale,
                         $source['slug'],
                         $source['name'],
+                        $source['description'],
                         $source['root'],
                     );
                     $translationRows[] = [
                         'forum_category_id' => (int) $categoryIds->get($stableKey),
                         'locale' => $locale,
                         'name' => $translation['name'],
-                        'description' => $source['description'],
+                        'description' => $translation['description'],
                         'notice' => null,
                         'rules_summary' => null,
                         'is_reviewed' => $translation['reviewed'],
@@ -294,24 +295,39 @@ final class SynchronizeForumCategories
     }
 
     /**
-     * @return array{name: string, reviewed: bool}
+     * @return array{name: string, description: string|null, reviewed: bool}
      */
     private function translation(
         string $locale,
         string $slug,
         string $fallback,
+        ?string $fallbackDescription,
         bool $isRoot,
     ): array {
         if (! $isRoot) {
-            return ['name' => $fallback, 'reviewed' => $locale === 'en'];
+            return [
+                'name' => $fallback,
+                'description' => null,
+                'reviewed' => $locale === 'en',
+            ];
         }
 
-        $key = 'forum_categories.roots.'.str_replace('/', '.', $slug);
-        $translated = $this->translator->get($key, locale: $locale);
+        $normalizedSlug = str_replace('/', '.', $slug);
+        $nameKey = "forum_categories.roots.{$normalizedSlug}";
+        $descriptionKey = "forum_categories.descriptions.{$normalizedSlug}";
+        $translatedName = $this->translator->get($nameKey, locale: $locale);
+        $translatedDescription = $this->translator->get(
+            $descriptionKey,
+            locale: $locale,
+        );
 
         return [
-            'name' => $translated === $key ? $fallback : $translated,
-            'reviewed' => $translated !== $key,
+            'name' => $translatedName === $nameKey ? $fallback : $translatedName,
+            'description' => $translatedDescription === $descriptionKey
+                ? $fallbackDescription
+                : $translatedDescription,
+            'reviewed' => $translatedName !== $nameKey
+                && $translatedDescription !== $descriptionKey,
         ];
     }
 }

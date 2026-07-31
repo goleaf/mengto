@@ -57,7 +57,7 @@ as complete.
   immutable case events, protected idempotent contact relays, advisory
   duplicate detection, unified false-sighting/reward-scam reports, and
   privacy-safe archival that preserves the complete operational history.
-- Requirement evidence is a deterministic overlay. `472` atomic requirements
+- Requirement evidence is a deterministic overlay. `513` atomic requirements
   are verified with file/test evidence and none are currently marked
   in-progress.
 - Current repository checkpoint: expert-session plus architecture verification
@@ -166,6 +166,16 @@ as complete.
   full Larastan/Pint, audits, Vite/cache compilation, and a real headless
   Chrome desktop/mobile/320px/login/invalid-submit/admin flow passed. All 24
   scoped IDs are verified.
+- The source-section 72 multilingual contract is implemented through the
+  existing EN/LT/RU architecture: reviewed system category and moderation
+  definitions, recipient-locale notifications, full-document locale changes,
+  source-preserving human guide translation provenance, private-source
+  authorization, and verified common-name to exact-scientific-name fallback.
+  The final focused multilingual/guide/auth/localization/architecture slice
+  passed 75 tests and 56,753 assertions; the final suite passed 1,684 tests
+  and 64,597 assertions. Fresh/repeat seed passed across 99 migrations and 172
+  tables; Pint, Larastan, audits, Vite/cache compilation, and reproducible
+  EN/LT/RU headless-Chrome checks passed. All 41 scoped IDs are verified.
 
 ## Phase Counts
 
@@ -181,7 +191,7 @@ as complete.
 | 7 | 463 | operations verified; duplicate grouping, transparency, and broad entity coverage remain |
 | 8 | 3,345 | adoption, lost/found, collaborative guides, mentorship, persistent groups, group content, polls, journals, events, expert question sessions, and topic lifecycle verified; remaining structured domains planned |
 | 9 | 93 | planned |
-| 10 | 67 | in progress |
+| 10 | 67 | accessibility and multilingual behavior verified; remaining interface packages in progress |
 | 11 | 13 | topic category/taxonomy backfill implemented; reports pending |
 | 12 | 29 | fixed definitions implemented; demo graph pending |
 | 13 | 131 | planned |
@@ -189,16 +199,15 @@ as complete.
 
 ## Next Verified Pass
 
-1. Create and read the next work-package plan for source-section 72
-   multilingual behavior before production changes.
-2. Inventory all platform-controlled forum text, category/state/reason labels,
-   user-generated translation boundaries, scientific/common-name fallback,
-   and private-content authorization against the existing EN/LT/RU system.
-3. Preserve original user content and scientific names while adding stable
-   translated keys, source labels, correction paths, and fallback behavior
-   only where the source requirements demand them.
-4. Add locale, placeholder, pluralization, rendering, privacy, and browser
-   regressions before marking any translation ID verified.
+1. Create and read the next work-package plan for source-section 73 optional
+   artificial-intelligence assistance before production changes.
+2. Inventory whether any AI provider, feature flag, privacy contract, audit
+   boundary, or product requirement already exists; do not add a provider
+   merely to satisfy syntax.
+3. Map every source-section 73 ID to an implemented safeguarded workflow or a
+   precise evidence-backed applicability decision.
+4. Add privacy, authorization, transparency, fallback, and no-autonomous-
+   decision tests before changing any selected requirement status.
 5. Update evidence, rerun the applicable full quality gates, and perform the
    next phase completeness audit.
 

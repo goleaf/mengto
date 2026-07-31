@@ -65,6 +65,18 @@ final class KnowledgeArticlePolicy
             );
     }
 
+    public function translate(?User $user, KnowledgeArticle $knowledgeArticle): bool
+    {
+        return $user?->isActive() === true
+            && $knowledgeArticle->translation_group_key !== null
+            && $this->create($user)
+            && $this->view($user, $knowledgeArticle)
+            && (
+                $knowledgeArticle->status->isPublic()
+                || $this->update($user, $knowledgeArticle)
+            );
+    }
+
     private function canViewGroup(User $user, KnowledgeArticle $article): bool
     {
         $group = ForumGroup::query()->find($article->forum_group_id);

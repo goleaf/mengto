@@ -7,6 +7,7 @@ namespace App\Livewire\Forum;
 use App\Models\Taxon;
 use App\Models\TaxonName;
 use App\Models\TaxonVersion;
+use App\Services\LocalizedTaxonName;
 use App\Services\TaxonIdentity;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\App;
@@ -24,6 +25,8 @@ final class AnimalTaxonomySelector extends Component
 
     private TaxonIdentity $identity;
 
+    private LocalizedTaxonName $localizedNames;
+
     public string $search = '';
 
     /** @var list<int> */
@@ -38,9 +41,12 @@ final class AnimalTaxonomySelector extends Component
     #[Locked]
     public int $selectionLimit = 5;
 
-    public function boot(TaxonIdentity $identity): void
-    {
+    public function boot(
+        TaxonIdentity $identity,
+        LocalizedTaxonName $localizedNames,
+    ): void {
         $this->identity = $identity;
+        $this->localizedNames = $localizedNames;
     }
 
     /**
@@ -78,6 +84,9 @@ final class AnimalTaxonomySelector extends Component
             return [];
         }
 
+        $locale = App::currentLocale();
+        $fallback = (string) config('app.fallback_locale', 'en');
+
         return TaxonName::query()
             ->select([
                 'id',
@@ -113,6 +122,26 @@ final class AnimalTaxonomySelector extends Component
                     'parent_taxon_id',
                     'is_active_version',
                 ]),
+                'taxon.names' => fn ($builder) => $builder
+                    ->select([
+                        'id',
+                        'taxon_id',
+                        'locale',
+                        'name',
+                        'name_type',
+                        'is_preferred',
+                        'is_verified',
+                        'is_active',
+                    ])
+                    ->where('is_active', true)
+                    ->where('is_verified', true)
+                    ->whereIn('locale', array_values(array_unique([
+                        $locale,
+                        $fallback,
+                    ])))
+                    ->orderByDesc('is_preferred')
+                    ->orderBy('name_type')
+                    ->orderBy('name'),
             ])
             ->orderByDesc('is_preferred')
             ->orderByDesc('is_verified')
@@ -121,18 +150,25 @@ final class AnimalTaxonomySelector extends Component
             ->get()
             ->unique('taxon_id')
             ->take(12)
-            ->map(static function (TaxonName $name): array {
+            ->map(function (TaxonName $name) use ($fallback, $locale): array {
                 $activeVersion = $name->taxon->activeVersion;
+                $display = $this->localizedNames->present(
+                    $name->taxon,
+                    $locale,
+                    $fallback,
+                );
 
                 return [
                     'id' => $name->taxon_id,
-                    'name' => $name->name,
-                    'scientific_name' => $activeVersion instanceof TaxonVersion
-                        ? $activeVersion->scientific_name
-                        : $name->name,
+                    'name' => $display['name'],
+                    'scientific_name' => $display['scientific_name'] ?? $name->name,
                     'rank' => $activeVersion instanceof TaxonVersion
                         ? $activeVersion->rank
                         : __('taxonomy.unknown_rank'),
+                    'matched_name' => $name->is_verified
+                        && $name->name !== $display['name']
+                            ? $name->name
+                            : null,
                     'is_synonym' => $name->taxon->accepted_taxon_id !== null,
                     'requires_review' => $name->taxon->requires_review,
                 ];
@@ -182,8 +218,10 @@ final class AnimalTaxonomySelector extends Component
                         'name_type',
                         'is_preferred',
                         'is_verified',
+                        'is_active',
                     ])
                     ->where('is_active', true)
+                    ->where('is_verified', true)
                     ->whereIn('locale', [$locale, $fallback])
                     ->orderByDesc('is_verified')
                     ->orderByDesc('is_preferred'),
@@ -194,21 +232,18 @@ final class AnimalTaxonomySelector extends Component
                 $this->selectedTaxonIds,
                 true,
             ))
-            ->map(static function (Taxon $taxon) use ($fallback, $locale): array {
-                $preferred = $taxon->names->firstWhere('locale', $locale)
-                    ?? $taxon->names->firstWhere('locale', $fallback);
+            ->map(function (Taxon $taxon) use ($fallback, $locale): array {
                 $activeVersion = $taxon->activeVersion;
+                $display = $this->localizedNames->present(
+                    $taxon,
+                    $locale,
+                    $fallback,
+                );
 
                 return [
                     'id' => $taxon->id,
-                    'name' => $preferred instanceof TaxonName
-                        ? $preferred->name
-                        : ($activeVersion instanceof TaxonVersion
-                            ? $activeVersion->scientific_name
-                            : __('taxonomy.unidentified')),
-                    'scientific_name' => $activeVersion instanceof TaxonVersion
-                        ? $activeVersion->scientific_name
-                        : null,
+                    'name' => $display['name'],
+                    'scientific_name' => $display['scientific_name'],
                     'rank' => $activeVersion instanceof TaxonVersion
                         ? $activeVersion->rank
                         : __('taxonomy.unknown_rank'),

@@ -11,23 +11,26 @@ use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 
-final class KnowledgeGuideCreateController extends Controller
+final class KnowledgeGuideTranslationCreateController extends Controller
 {
     public function __invoke(
         Request $request,
+        KnowledgeArticle $knowledgeArticle,
         Gate $gate,
         ProfilePresenter $profiles,
     ): View {
         $user = $request->user();
         abort_unless($user instanceof User, 403);
-        $gate->forUser($user)->authorize('create', KnowledgeArticle::class);
+        $gate->forUser($user)->authorize('translate', $knowledgeArticle);
 
         return view('knowledge.editor', [
             'owner' => $profiles->owner(),
-            'page_title' => __('knowledge.editor.create_page_title'),
+            'page_title' => __('knowledge.editor.translate_page_title', [
+                'title' => $knowledgeArticle->title,
+            ]),
             'active_section' => 'forum',
             'article_id' => null,
-            'source_article_id' => null,
+            'source_article_id' => $knowledgeArticle->id,
         ]);
     }
 }

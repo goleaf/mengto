@@ -47,6 +47,11 @@
                     <span>
                         <strong class="block">{{ $result['name'] }}</strong>
                         <small class="text-paw-muted"><i>{{ $result['scientific_name'] }}</i> · {{ $result['rank'] }}</small>
+                        @if ($result['matched_name'] !== null)
+                            <small class="block text-paw-muted">
+                                {{ __('taxonomy.selector.matched_as', ['name' => $result['matched_name']]) }}
+                            </small>
+                        @endif
                     </span>
                     @if ($result['is_synonym'])
                         <span class="forum-badge">{{ __('taxonomy.selector.synonym') }}</span>

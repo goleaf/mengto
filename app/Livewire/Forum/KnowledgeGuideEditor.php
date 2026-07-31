@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Livewire\Forum;
 
 use App\Actions\CreateKnowledgeGuide;
+use App\Actions\CreateKnowledgeGuideTranslation;
 use App\Actions\ManageKnowledgeCollaborator;
 use App\Actions\ReviewKnowledgeCorrection;
 use App\Actions\RollbackKnowledgeGuideVersion;
@@ -39,6 +40,9 @@ final class KnowledgeGuideEditor extends Component
     public ?int $articleId = null;
 
     #[Locked]
+    public ?int $sourceArticleId = null;
+
+    #[Locked]
     public int $articleLockVersion = 0;
 
     public string $workflowStatus = '';
@@ -69,6 +73,8 @@ final class KnowledgeGuideEditor extends Component
 
     private CreateKnowledgeGuide $createAction;
 
+    private CreateKnowledgeGuideTranslation $createTranslationAction;
+
     private Gate $gate;
 
     private ManageKnowledgeCollaborator $manageCollaboratorAction;
@@ -93,6 +99,7 @@ final class KnowledgeGuideEditor extends Component
         KnowledgeArticlePolicy $policy,
         ForumTaxonomy $taxonomy,
         CreateKnowledgeGuide $createAction,
+        CreateKnowledgeGuideTranslation $createTranslationAction,
         SaveKnowledgeGuideRevision $saveAction,
         TransitionKnowledgeGuide $transitionAction,
         ManageKnowledgeCollaborator $manageCollaboratorAction,
@@ -105,6 +112,7 @@ final class KnowledgeGuideEditor extends Component
         $this->policy = $policy;
         $this->taxonomy = $taxonomy;
         $this->createAction = $createAction;
+        $this->createTranslationAction = $createTranslationAction;
         $this->saveAction = $saveAction;
         $this->transitionAction = $transitionAction;
         $this->manageCollaboratorAction = $manageCollaboratorAction;
@@ -113,12 +121,28 @@ final class KnowledgeGuideEditor extends Component
         $this->setLockAction = $setLockAction;
     }
 
-    public function mount(?int $articleId = null): void
-    {
+    public function mount(
+        ?int $articleId = null,
+        ?int $sourceArticleId = null,
+    ): void {
         $this->articleId = $articleId;
+        $this->sourceArticleId = $sourceArticleId;
 
         if ($articleId === null) {
-            $this->gate->forUser($this->user())->authorize('create', KnowledgeArticle::class);
+            if ($sourceArticleId !== null) {
+                $source = $this->sourceArticle();
+                $this->gate->forUser($this->user())->authorize('translate', $source);
+                $this->form->fillTranslationFromArticle(
+                    $source,
+                    $this->firstAvailableTranslationLocale($source),
+                );
+                $this->form->changeSummary = __('knowledge.defaults.translation_change_summary');
+
+                return;
+            }
+
+            $this->gate->forUser($this->user())
+                ->authorize('create', KnowledgeArticle::class);
             $this->form->language = $this->user()->locale;
             $this->form->category = (string) array_key_first($this->taxonomy->categoryOptions());
             $this->form->changeSummary = __('knowledge.defaults.initial_change_summary');
@@ -131,6 +155,25 @@ final class KnowledgeGuideEditor extends Component
         $this->articleLockVersion = $article->lock_version;
         $this->form->fillFromArticle($article);
         $this->workflowStatus = $article->status->allowedTransitions()[0]->value ?? '';
+    }
+
+    /** @return array{id: int, title: string, locale: string, locale_label: string}|null */
+    #[Computed]
+    public function translationSourceData(): ?array
+    {
+        if ($this->sourceArticleId === null) {
+            return null;
+        }
+
+        $source = $this->sourceArticle();
+        $this->gate->forUser($this->user())->authorize('translate', $source);
+
+        return [
+            'id' => $source->id,
+            'title' => $source->title,
+            'locale' => $source->language,
+            'locale_label' => __("auth.locales.{$source->language}"),
+        ];
     }
 
     /** @return array<string, int|string|bool|null> */
@@ -195,7 +238,22 @@ final class KnowledgeGuideEditor extends Component
     #[Computed]
     public function localeOptions(): array
     {
-        return collect(config('platform.supported_locales', ['en']))
+        $locales = collect(config('platform.supported_locales', ['en']));
+
+        if ($this->sourceArticleId !== null) {
+            $source = $this->sourceArticle();
+            $usedLocales = KnowledgeArticle::query()
+                ->where('translation_group_key', $source->translation_group_key)
+                ->pluck('language')
+                ->all();
+            $locales = $locales->reject(static fn (string $locale): bool => in_array(
+                $locale,
+                $usedLocales,
+                true,
+            ));
+        }
+
+        return $locales
             ->mapWithKeys(static fn (string $locale): array => [
                 $locale => __("auth.locales.{$locale}"),
             ])
@@ -374,7 +432,13 @@ final class KnowledgeGuideEditor extends Component
         $data = $this->form->data($this->articleLockVersion);
 
         if ($this->articleId === null) {
-            $article = $this->createAction->handle($this->user(), $data);
+            $article = $this->sourceArticleId === null
+                ? $this->createAction->handle($this->user(), $data)
+                : $this->createTranslationAction->handle(
+                    $this->user(),
+                    $this->sourceArticle(),
+                    $data,
+                );
             $this->redirectRoute('knowledge.guides.edit', $article, navigate: true);
 
             return;
@@ -548,6 +612,13 @@ final class KnowledgeGuideEditor extends Component
             ->findOrFail($this->articleId);
     }
 
+    private function sourceArticle(): KnowledgeArticle
+    {
+        return KnowledgeArticle::query()
+            ->forEditor()
+            ->findOrFail($this->sourceArticleId);
+    }
+
     private function user(): User
     {
         $user = $this->auth->guard()->user();
@@ -573,6 +644,14 @@ final class KnowledgeGuideEditor extends Component
             $this->workflowOptions,
             $this->replacementOptions,
         );
+    }
+
+    private function firstAvailableTranslationLocale(
+        KnowledgeArticle $source,
+    ): string {
+        $available = array_key_first($this->localeOptions());
+
+        return is_string($available) ? $available : $source->language;
     }
 
     private function canTransition(

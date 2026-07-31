@@ -8,8 +8,10 @@ use App\Enums\ForumTopicStatus;
 use App\Models\ForumAnswer;
 use App\Models\ForumNotification;
 use App\Models\ForumTopic;
+use App\Models\User;
 use App\Services\ForumActor;
 use App\Services\ForumTopicLifecycle;
+use Illuminate\Contracts\Translation\Translator;
 use Illuminate\Support\Facades\DB;
 
 final readonly class CreateAnswer
@@ -17,6 +19,7 @@ final readonly class CreateAnswer
     public function __construct(
         private ForumActor $actor,
         private ForumTopicLifecycle $lifecycle,
+        private Translator $translator,
     ) {}
 
     /** @param array<string, mixed> $data */
@@ -63,14 +66,24 @@ final readonly class CreateAnswer
             }
 
             if ($topic->author_key !== $identity['key']) {
+                $recipientLocale = (string) (User::query()
+                    ->where('actor_key', $topic->author_key)
+                    ->value('locale') ?? config('app.fallback_locale', 'en'));
                 ForumNotification::query()->updateOrCreate(
                     ['deduplication_key' => "answer:{$answer->id}:{$topic->author_key}"],
                     [
                         'topic_id' => $topic->id,
                         'user_key' => $topic->author_key,
                         'type' => 'new-answer',
-                        'title' => __('messages.new_answer_added'),
-                        'body' => __('presentation.replied_to_topic', ['name' => $answer->author_name]),
+                        'title' => $this->translator->get(
+                            'messages.new_answer_added',
+                            locale: $recipientLocale,
+                        ),
+                        'body' => $this->translator->get(
+                            'presentation.replied_to_topic',
+                            ['name' => $answer->author_name],
+                            $recipientLocale,
+                        ),
                     ],
                 );
             }

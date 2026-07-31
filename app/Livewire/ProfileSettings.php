@@ -10,7 +10,6 @@ use App\Models\User;
 use App\Services\ProfilePresenter;
 use Illuminate\Contracts\Auth\Factory as AuthFactory;
 use Illuminate\Contracts\View\View;
-use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Session;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
@@ -40,6 +39,7 @@ final class ProfileSettings extends Component
     public function mount(): void
     {
         $this->form->fillFromUser($this->requireUser());
+        $this->feedback = (string) Session::get('profile-settings-feedback', '');
     }
 
     /**
@@ -76,8 +76,9 @@ final class ProfileSettings extends Component
         );
 
         Session::put('locale', $user->locale);
-        App::setLocale($user->locale);
-        $this->feedback = __('auth.settings.saved');
+        $this->feedback = trans('auth.settings.saved', locale: $user->locale);
+        Session::flash('profile-settings-feedback', $this->feedback);
+        $this->redirectRoute('profile.settings');
     }
 
     public function render(): View

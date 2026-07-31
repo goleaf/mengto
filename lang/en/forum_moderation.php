@@ -16,6 +16,14 @@ $labels = static fn (array $keys): array => array_combine(
 return [
     'reasons' => $labels(ForumReportReasonCatalog::KEYS),
     'actions' => $labels(ForumModerationActionCatalog::KEYS),
+    'appeal_statuses' => [
+        'submitted' => 'Submitted',
+        'appeal-review' => 'Under appeal review',
+        'upheld' => 'Upheld',
+        'modified' => 'Modified',
+        'reversed' => 'Reversed',
+        'new-review' => 'Returned for a new review',
+    ],
     'forms' => [
         'truthfulness' => 'I confirm that this report is truthful to the best of my knowledge.',
         'immediate_safety' => 'This may involve immediate safety risk.',

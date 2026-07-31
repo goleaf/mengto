@@ -3,7 +3,7 @@
 ## Storage Baseline
 
 - 68 migrations created 71 SQLite tables at baseline; the current additive
-  schema has 98 migrations and 172 tables after identity, care-sync,
+  schema has 99 migrations and 172 tables after identity, care-sync,
   social-state, device-lifecycle, forum taxonomy, global animal taxonomy,
   reputation, moderation, credential verification, structured-community, and
   persistent-group work.
@@ -20,7 +20,7 @@
 | Social identity/state | `pet_profiles`, encrypted/versioned `user_domain_states`, `photo_assets`, `photo_comments`, `photo_reactions` |
 | Forum | topics, answers, comments, votes, engagements, blocks, polymorphic reports, report events/evidence, categories/translations/aliases/redirects/lifecycle rules, topic definitions/lifecycle events/update requests/legal holds, reputation/trust/badges, confirmations, moderation cases/actions/appeals/recusals, notifications, persistent groups/memberships/invitations/audit events/taxon links, group activities/announcements/private files/polls/options/votes |
 | Animal taxonomy | versioned sources/imports/versions/issues, taxa, names, external identifiers, change history, domestic classifications, breed registries, community groups |
-| Knowledge | articles, append-only versions, corrections, normalized collaborators, append-only workflow events |
+| Knowledge | articles with translation provenance, append-only versions, corrections, normalized collaborators, append-only workflow events |
 | Experts | profiles, credentials, services, availability slots, bookings, document grants, consultations, publications, reviews, engagements, reports |
 | Marketplace and adoption | listings, listing engagements, reservations, compatibility listing reports, orders, disputes, listing reviews, adoption cases, encrypted applications, append-only adoption events |
 | Lost/found | cases, sightings, sectors, tasks, volunteers, updates, alerts, reports, immutable case events, encrypted contact relays |
@@ -74,7 +74,9 @@ legacy key has a verified user mapping.
   collaborator roles, correction review lookup, workflow history, public state,
   and review dates have dedicated compound indexes. Optimistic `lock_version`
   protects content saves, while append-only versions and events preserve
-  rollback and transition evidence.
+  rollback and transition evidence. Nullable self/source and translator
+  foreign keys plus a controlled source enum preserve translation provenance
+  without guessing relationships for historical locale families.
 - Taxonomy imports remain inactive until a completed validated version is
   explicitly activated; source identifiers never replace stable internal keys.
 - Topic lifecycle events are append-only and optionally idempotent. Category

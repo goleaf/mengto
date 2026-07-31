@@ -401,6 +401,115 @@ try {
         'Administrator login did not complete.',
     );
 
+    await navigate(client, sessionId, `${baseUrl}/profile/settings`);
+    const profileSettingsAudit = await evaluate(client, sessionId, pageAuditExpression);
+    assertPageAudit(profileSettingsAudit, 'profile settings');
+    const originalProfileLocale = await evaluate(
+        client,
+        sessionId,
+        `document.querySelector('#profile-settings-locale')?.value`,
+    );
+    await evaluate(client, sessionId, `(() => {
+        const locale = document.querySelector('#profile-settings-locale');
+        locale.value = 'lt';
+        locale.dispatchEvent(new Event('input', { bubbles: true }));
+        locale.dispatchEvent(new Event('change', { bubbles: true }));
+        locale.blur();
+        document.querySelector('form button[type="submit"]').click();
+        return true;
+    })()`);
+    await waitUntil(
+        async () => await evaluate(
+            client,
+            sessionId,
+            `document.body.innerText.includes('Profilio nustatymai išsaugoti.')`,
+        ),
+        'Profile locale update did not complete in Lithuanian.',
+    );
+    const profileLocaleAudit = await evaluate(client, sessionId, `({
+        documentLanguage: document.documentElement.lang,
+        selectedLocale: document.querySelector('#profile-settings-locale')?.value,
+        savedMessageVisible: document.body.innerText.includes('Profilio nustatymai išsaugoti.'),
+    })`);
+    assert(profileLocaleAudit.documentLanguage === 'lt', 'The document language did not change to Lithuanian.');
+    assert(profileLocaleAudit.selectedLocale === 'lt', 'The Lithuanian profile locale was not selected.');
+    assert(profileLocaleAudit.savedMessageVisible, 'The localized profile success message is missing.');
+
+    const translationUrl = `${baseUrl}/knowledge/dog-travel-documents-lithuania-to-poland/translations/new`;
+    await navigate(client, sessionId, translationUrl);
+    const translationEditorAudit = await evaluate(client, sessionId, pageAuditExpression);
+    assertPageAudit(translationEditorAudit, 'knowledge translation editor');
+    const translationBehavior = await evaluate(client, sessionId, `(() => {
+        const language = document.querySelector('select[wire\\\\:model="form.language"]');
+        const title = document.querySelector('input[wire\\\\:model="form.title"]');
+        const summary = document.querySelector('textarea[wire\\\\:model="form.summary"]');
+        const body = document.querySelector('textarea[wire\\\\:model="form.body"]');
+        const rawKeyPattern = /\\b(?:auth|forum_categories|knowledge)\\.[a-z0-9_.-]+/gi;
+
+        return {
+            documentLanguage: document.documentElement.lang,
+            sourceNoticeVisible: document.body.innerText.includes('Vertimo šaltinis'),
+            sourceTitleVisible: document.body.innerText.includes(
+                'Dog travel documents: Lithuania to Poland',
+            ),
+            originalPreservedNoticeVisible: document.body.innerText.includes(
+                'Originalas lieka nepakeistas',
+            ),
+            targetLocale: language?.value,
+            availableLocales: [...(language?.options ?? [])].map((option) => option.value),
+            translatedProseStartsEmpty: [title, summary, body].every(
+                (field) => field?.value === '',
+            ),
+            rawTranslationKeys: document.body.innerText.match(rawKeyPattern) ?? [],
+        };
+    })()`);
+    assert(translationBehavior.documentLanguage === 'lt', 'Translation editor locale is not Lithuanian.');
+    assert(translationBehavior.sourceNoticeVisible, 'The localized translation-source notice is missing.');
+    assert(translationBehavior.sourceTitleVisible, 'The source guide title is not visible to the translator.');
+    assert(
+        translationBehavior.originalPreservedNoticeVisible,
+        'The localized original-preservation notice is missing.',
+    );
+    assert(translationBehavior.targetLocale === 'lt', 'The first available target locale is not selected.');
+    assert(
+        !translationBehavior.availableLocales.includes('en'),
+        'The source locale remains selectable as a translation target.',
+    );
+    assert(
+        translationBehavior.translatedProseStartsEmpty,
+        'Source prose was copied into the human translation draft.',
+    );
+    assert(
+        translationBehavior.rawTranslationKeys.length === 0,
+        `Raw translation keys are visible: ${translationBehavior.rawTranslationKeys.join(', ')}.`,
+    );
+
+    await client.send('Emulation.setDeviceMetricsOverride', {
+        width: 375,
+        height: 812,
+        deviceScaleFactor: 1,
+        mobile: true,
+        screenWidth: 375,
+        screenHeight: 812,
+    }, sessionId);
+    await navigate(client, sessionId, translationUrl);
+    const translationMobileAudit = await evaluate(client, sessionId, pageAuditExpression);
+    assertPageAudit(translationMobileAudit, 'mobile knowledge translation editor');
+    const translationScreenshot = await client.send('Page.captureScreenshot', {
+        format: 'png',
+        captureBeyondViewport: true,
+    }, sessionId);
+    await writeFile(
+        join(outputDirectory, 'knowledge-translation-mobile.png'),
+        Buffer.from(translationScreenshot.data, 'base64'),
+    );
+
+    await client.send('Emulation.setDeviceMetricsOverride', {
+        width: 1440,
+        height: 900,
+        deviceScaleFactor: 1,
+        mobile: false,
+    }, sessionId);
     await navigate(client, sessionId, `${baseUrl}/forum/ask`);
     const editorAudit = await evaluate(client, sessionId, pageAuditExpression);
     assertPageAudit(editorAudit, 'topic editor');
@@ -458,6 +567,54 @@ try {
     assert(tableAudit.length > 0, 'Forum administration did not render its data tables.');
     assert(tableAudit.every((table) => table.caption && table.scopedHeaders > 0), 'An admin table is not semantically labeled.');
 
+    await navigate(client, sessionId, `${baseUrl}/profile/settings`);
+    await evaluate(client, sessionId, `(() => {
+        const locale = document.querySelector('#profile-settings-locale');
+        locale.value = 'ru';
+        locale.dispatchEvent(new Event('input', { bubbles: true }));
+        locale.dispatchEvent(new Event('change', { bubbles: true }));
+        locale.blur();
+        document.querySelector('form button[type="submit"]').click();
+        return true;
+    })()`);
+    await waitUntil(
+        async () => await evaluate(client, sessionId, `document.documentElement.lang === 'ru'`),
+        'Profile locale update did not complete in Russian.',
+    );
+    await navigate(client, sessionId, `${baseUrl}/forum`);
+    const russianForumAudit = await evaluate(client, sessionId, pageAuditExpression);
+    assertPageAudit(russianForumAudit, 'Russian forum');
+    const russianBehavior = await evaluate(client, sessionId, `(() => ({
+        documentLanguage: document.documentElement.lang,
+        rawTranslationKeys: document.body.innerText.match(
+            /\\b(?:auth|forum|forum_categories|knowledge)\\.[a-z0-9_.-]+/gi,
+        ) ?? [],
+    }))()`);
+    assert(russianBehavior.documentLanguage === 'ru', 'The forum document language is not Russian.');
+    assert(
+        russianBehavior.rawTranslationKeys.length === 0,
+        `Raw Russian translation keys are visible: ${russianBehavior.rawTranslationKeys.join(', ')}.`,
+    );
+
+    await navigate(client, sessionId, `${baseUrl}/profile/settings`);
+    await evaluate(client, sessionId, `((originalLocale) => {
+        const locale = document.querySelector('#profile-settings-locale');
+        locale.value = originalLocale;
+        locale.dispatchEvent(new Event('input', { bubbles: true }));
+        locale.dispatchEvent(new Event('change', { bubbles: true }));
+        locale.blur();
+        document.querySelector('form button[type="submit"]').click();
+        return true;
+    })(${JSON.stringify(originalProfileLocale)})`);
+    await waitUntil(
+        async () => await evaluate(
+            client,
+            sessionId,
+            `document.documentElement.lang === ${JSON.stringify(originalProfileLocale)}`,
+        ),
+        'The browser check did not restore the original profile locale.',
+    );
+
     assert(consoleErrors.length === 0, `Browser console errors: ${consoleErrors.join(' | ')}`);
 
     const report = {
@@ -467,12 +624,21 @@ try {
         mobileAudit,
         zoomAudit,
         skipFocus,
+        profileSettingsAudit,
+        originalProfileLocale,
+        profileLocaleAudit,
+        translationEditorAudit,
+        translationBehavior,
+        translationMobileAudit,
         validationAudit,
         adminTables: tableAudit,
+        russianForumAudit,
+        russianBehavior,
         consoleErrors,
         screenshots: [
             join(outputDirectory, 'forum-desktop.png'),
             join(outputDirectory, 'forum-mobile.png'),
+            join(outputDirectory, 'knowledge-translation-mobile.png'),
         ],
     };
 

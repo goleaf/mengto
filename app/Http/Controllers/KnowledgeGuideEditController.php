@@ -30,6 +30,7 @@ final class KnowledgeGuideEditController extends Controller
             ]),
             'active_section' => 'forum',
             'article_id' => $knowledgeArticle->id,
+            'source_article_id' => null,
         ]);
     }
 }

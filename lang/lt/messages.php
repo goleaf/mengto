@@ -1243,7 +1243,7 @@ return [
     'forest_soil_roots_and_compact_gravel_a69978ea3c' => 'Forest soil, roots, and compact gravel',
     'formal_city_garden_with_broad_paved_walking_paths_7d5fbc0e77' => 'Formal city garden with broad paved walking paths',
     'format_2f343666aa' => 'Format',
-    'forum_and_knowledge_pawcircle_664109d235' => 'Forum and knowledge | PawCircle',
+    'forum_and_knowledge_pawcircle_664109d235' => 'Forumas ir žinių bazė | PawCircle',
     'forum_answers_58a4040bb0' => 'Forum answers',
     'foster_care_12c77089f0' => 'foster care',
     'foster_coffee_walk_c7e7e0019b' => 'Foster coffee walk',

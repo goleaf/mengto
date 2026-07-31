@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace Database\Factories;
 
 use App\Enums\KnowledgeStatus;
+use App\Enums\KnowledgeTranslationSource;
 use App\Models\ForumGroup;
 use App\Models\KnowledgeArticle;
+use App\Models\User;
 use Illuminate\Support\Str;
 
 /**
@@ -123,6 +125,25 @@ class KnowledgeArticleFactory extends ApplicationFactory
     {
         return $this->state(fn (): array => [
             'forum_group_id' => $group === null ? ForumGroup::factory() : $group->id,
+        ]);
+    }
+
+    public function translatedFrom(
+        KnowledgeArticle $source,
+        ?User $translator = null,
+        string $language = 'lt',
+    ): static {
+        return $this->state(fn (): array => [
+            'created_by_user_id' => $translator?->id,
+            'forum_group_id' => $source->forum_group_id,
+            'source_topic_id' => $source->source_topic_id,
+            'discussion_topic_id' => $source->discussion_topic_id,
+            'taxon_id' => $source->taxon_id,
+            'translated_from_article_id' => $source->id,
+            'translated_by_user_id' => $translator?->id,
+            'translation_group_key' => $source->translation_group_key,
+            'translation_source' => KnowledgeTranslationSource::HumanCommunity,
+            'language' => $language,
         ]);
     }
 }

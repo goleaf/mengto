@@ -20,7 +20,9 @@ Use Laravel language files under `lang/{locale}`. Current files are:
 - `places.php`
 - `presentation.php`
 - `ui.php`
-- domain catalogues including `forum_groups.php` and `forum_polls.php`
+- domain catalogues including `forum_categories.php`, `forum_moderation.php`,
+  `forum_groups.php`, `forum_polls.php`, `knowledge.php`, `taxonomy.php`, and
+  `animal_taxonomy.php`
 
 `ui.php` contains mechanically extracted static interface text.
 `messages.php` contains complete action, HTTP, Livewire, and service messages.
@@ -45,6 +47,67 @@ small safe bootstrap payload.
 
 Never ship the raw key as normal visible content.
 
+## Forum Platform Definitions
+
+Forum category, topic-type, report-reason, moderation-action, appeal-state,
+trust-level, reputation-dimension, badge, and community-animal-group records
+store stable language-independent keys. Every stored translation key must
+resolve in `en`, `lt`, and `ru`.
+
+The 44 system root categories have reviewed names and descriptions in all
+three locales. Subcategories retain their immutable source names until a
+reviewed locale-specific value exists; they have no source description, so an
+empty description is intentional rather than a missing translation. Category
+tree caches are locale-scoped as
+`forum:category-tree:v1:locale:{locale}` and synchronization invalidates every
+supported locale.
+
+Forum notifications are materialized in the recipient's validated locale.
+Notification writers pass that locale directly to Laravel's translator and
+must not rely on the request actor's locale or mutate the global application
+locale.
+
+## User Content And Guide Translations
+
+User-generated prose remains in the language supplied by its author. A
+community guide translation is a separate `KnowledgeArticle`; it never
+rewrites or hides the source article. New translations record:
+
+- `translated_from_article_id`;
+- `translated_by_user_id`;
+- controlled `translation_source`;
+- the existing stable translation family and target locale.
+
+The connected translation editor copies safe scope and source metadata, but
+starts title, summary, body, and protected-section prose empty. The source ID
+is a locked Livewire value and is reloaded and authorized server-side.
+Private, draft, and group-scoped source material is not exposed to an
+unauthorized translator. Published translations show public-safe source and
+translator attribution and retain independent versions and correction
+history.
+
+There is no automatic translation service. If one is introduced later, it
+must preserve the original, label its source, require human review, and follow
+the repository's AI/privacy requirements.
+
+## Taxonomy Names
+
+Scientific names are immutable source data and are never passed through the
+translation catalogue. `LocalizedTaxonName` resolves display names in this
+order:
+
+1. verified preferred common name for the current locale;
+2. another verified current-locale common name;
+3. verified common name for the configured fallback locale;
+4. the exact active scientific name;
+5. the localized unidentified-animal label only when no scientific identity
+   exists.
+
+Unverified names may remain searchable source evidence but cannot silently
+become the preferred displayed fact. The reusable Livewire selector loads
+only bounded matching rows plus current/fallback verified names; it never
+hydrates the full taxonomy tree.
+
 ## Persistent Group Catalogue
 
 `lang/{en,lt,ru}/forum_groups.php` owns group visibility, status, role,
@@ -66,11 +129,12 @@ language supplied by their author.
 ## Current Translation Quality
 
 English is the source language and fallback. Lithuanian and Russian catalogues
-currently maintain complete key/placeholder parity but mostly contain the
-English source wording pending native-speaker translation. This is deliberate:
-the interface resolves stable keys and never breaks or exposes raw identifiers,
-but the repository does not claim those two catalogues have completed
-linguistic review.
+maintain complete key/placeholder parity. The system root-category names and
+descriptions, moderation reasons/actions/appeal states, animal community
+groups, and this package's guide/taxonomy interface text have explicit
+localized wording. Other mechanically extracted legacy catalogue entries can
+still contain English source wording pending native-speaker review; the
+repository does not claim complete linguistic review of every legacy sentence.
 
 Source-authored fixture/catalogue content such as demo post bodies, names, and
 locations is translated through stable keys where it is rendered as
@@ -95,6 +159,11 @@ and rendering tests.
 - localized validation and auth feedback;
 - date/time/currency/measurement formatting;
 - critical Blade and Livewire rendering in every locale;
+- every seeded forum definition key in every locale;
+- recipient-locale notification materialization;
+- user-guide source preservation, provenance, and private-source denial;
+- verified common-name fallback and scientific-name invariance;
+- locale-scoped category cache invalidation;
 - no untranslated raw key on critical pages.
 
 Architecture gates:
@@ -102,7 +171,7 @@ Architecture gates:
 ```bash
 php scripts/localize-blade-literals.php --check
 php scripts/localize-php-messages.php --check
-php artisan test --compact tests/Feature/LocalizationTest.php tests/Feature/ArchitectureComplianceTest.php
+php artisan test --compact tests/Feature/Forum/ForumMultilingualBehaviorTest.php tests/Feature/LocalizationTest.php tests/Feature/ArchitectureComplianceTest.php
 php artisan view:cache
 ```
 

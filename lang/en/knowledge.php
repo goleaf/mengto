@@ -8,6 +8,7 @@ return [
         'apply_transition' => 'Update workflow',
         'create_draft' => 'Create draft',
         'create_guide' => 'Create guide',
+        'create_translation_draft' => 'Create translation draft',
         'edit' => 'Edit guide',
         'export' => 'Export',
         'library' => 'Knowledge library',
@@ -24,6 +25,7 @@ return [
         'saving' => 'Saving...',
         'select_replacement' => 'Select replacement guide',
         'select_version' => 'Select for restoration',
+        'translate' => 'Translate guide',
         'unlock' => 'Unlock editing',
         'updating' => 'Updating...',
         'view_public' => 'View public guide',
@@ -49,6 +51,7 @@ return [
     ],
     'defaults' => [
         'initial_change_summary' => 'Initial community guide draft.',
+        'translation_change_summary' => 'Initial human community translation draft.',
     ],
     'difficulty' => [
         'advanced' => 'Advanced',
@@ -76,6 +79,8 @@ return [
         'scope_heading' => 'Audience and scope',
         'sources_heading' => 'Sources and editorial boundaries',
         'sources_help' => 'One HTTP or HTTPS source URL per line.',
+        'translate_page_title' => 'Translate :title',
+        'translate_title' => 'Translate community guide',
         'unsaved' => 'Unsaved changes',
     ],
     'empty' => [
@@ -100,6 +105,7 @@ return [
         'editorial_unlocked' => 'Editorial editing was unlocked.',
         'rolled_back' => 'An earlier version was restored as a new revision.',
         'status_changed' => 'The guide workflow state changed.',
+        'translation_created' => 'A human community translation draft was created.',
     ],
     'export' => [
         'contributors' => 'Contributors: :contributors',
@@ -154,7 +160,17 @@ return [
         'open' => 'Open current guidance',
     ],
     'translations' => [
+        'correction_available' => 'This translation has its own version history and correction path.',
         'heading' => 'Other languages',
+        'original_preserved' => 'The original remains unchanged and available in its recorded language.',
+        'source_description' => 'Translate “:title” from :language. Enter translated prose below; source text is not copied into the draft.',
+        'source_heading' => 'Translation source',
+        'target_locale_help' => 'Only languages not already present in this guide family are available.',
+        'translated_by' => 'Translated by :name',
+        'translated_from' => 'Translated from',
+    ],
+    'translation_sources' => [
+        'human-community' => 'Human community translation',
     ],
     'status' => [
         'archived' => 'Archived',
@@ -184,11 +200,14 @@ return [
         'invalid_category' => 'Select an active forum category.',
         'invalid_correction_decision' => 'Select a supported correction decision.',
         'invalid_source_url' => 'Every source must be a valid HTTP or HTTPS URL.',
+        'invalid_translation_locale' => 'Select a supported language different from the source language.',
         'invalid_transition' => 'The guide cannot move from :from to :to.',
         'last_maintainer' => 'Add another maintainer before removing the final maintainer.',
         'replacement_must_be_public' => 'The replacement must be a published public guide.',
         'replacement_required' => 'Select a different published guide as the replacement.',
         'summary' => 'Review the highlighted guide fields.',
+        'translation_family_missing' => 'This guide does not have a stable translation family.',
+        'translation_locale_exists' => 'A guide in this language already exists in the translation family.',
         'version_mismatch' => 'The selected version does not belong to this guide.',
     ],
     'versions' => [

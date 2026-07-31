@@ -75,6 +75,7 @@ use App\Http\Controllers\KnowledgeGuideCreateController;
 use App\Http\Controllers\KnowledgeGuideEditController;
 use App\Http\Controllers\KnowledgeGuideExportController;
 use App\Http\Controllers\KnowledgeGuidePrintController;
+use App\Http\Controllers\KnowledgeGuideTranslationCreateController;
 use App\Http\Controllers\ListingActionController;
 use App\Http\Controllers\ListingController;
 use App\Http\Controllers\ListingCreateController;
@@ -364,6 +365,10 @@ Route::middleware('web')
                     ->group(function (): void {
                         Route::get('/guides/new', KnowledgeGuideCreateController::class)
                             ->name('guides.create');
+                        Route::get(
+                            '/{knowledgeArticle}/translations/new',
+                            KnowledgeGuideTranslationCreateController::class,
+                        )->name('guides.translations.create');
                         Route::get('/{knowledgeArticle}/edit', KnowledgeGuideEditController::class)
                             ->name('guides.edit');
                     });

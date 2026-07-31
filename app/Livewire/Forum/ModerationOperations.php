@@ -363,6 +363,7 @@ final class ModerationOperations extends Component
                     $appeal->moderationAction->definition->translation_key,
                     'forum_moderation.actions.'.$appeal->moderationAction->definition->stable_key,
                 ),
+                'status' => __("forum_moderation.appeal_statuses.{$appeal->status}"),
                 'reason' => $appeal->reason,
                 'submitted' => $this->formattedDateTime($appeal->submitted_at),
             ])

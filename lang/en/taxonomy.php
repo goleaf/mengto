@@ -14,6 +14,7 @@ return [
         'searching' => 'Searching taxonomy...',
         'results' => 'Animal taxonomy search results',
         'no_results' => 'No matching animal was found.',
+        'matched_as' => 'Matched name: :name',
         'synonym' => 'Synonym',
         'unidentified' => 'The animal is unidentified',
         'remove' => 'Remove :name',

@@ -361,6 +361,16 @@ test('environment variables are only read by configuration files', function () {
     }
 });
 
+test('fresh database verifier enters testing environment before application bootstrap', function () {
+    $source = File::get(base_path('scripts/verify-fresh-database.php'));
+    $testingEnvironment = strpos($source, "putenv('APP_ENV=testing')");
+    $applicationBootstrap = strpos($source, "require dirname(__DIR__).'/bootstrap/app.php'");
+
+    expect($testingEnvironment)->not->toBeFalse()
+        ->and($applicationBootstrap)->not->toBeFalse()
+        ->and($testingEnvironment)->toBeLessThan($applicationBootstrap);
+});
+
 test('every application model has explicit fillable fields and a factory', function () {
     foreach (File::files(app_path('Models')) as $file) {
         $modelClass = 'App\\Models\\'.$file->getFilenameWithoutExtension();

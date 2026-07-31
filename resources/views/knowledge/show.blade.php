@@ -20,6 +20,12 @@
                     {{ __('knowledge.actions.edit') }}
                 </a>
             @endif
+            @if ($article['can_translate'])
+                <a href="{{ route('knowledge.guides.translations.create', $article['slug']) }}">
+                    <x-lucide-languages aria-hidden="true" />
+                    {{ __('knowledge.actions.translate') }}
+                </a>
+            @endif
         </nav>
 
         <div class="knowledge-layout">
@@ -47,6 +53,34 @@
                             <div>
                                 <strong>{{ __('ui.this_material_may_be_outdated_87a18e480c') }}</strong>
                                 <span>{{ __('ui.check_the_listed_primary_sources_and_submit_a_7065642b8d') }}</span>
+                            </div>
+                        </aside>
+                    @endif
+
+                    @if ($article['translation'] !== null)
+                        <aside class="forum-safety" aria-labelledby="knowledge-translation-attribution-heading">
+                            <x-lucide-languages aria-hidden="true" />
+                            <div>
+                                <strong id="knowledge-translation-attribution-heading">
+                                    {{ $article['translation']['source_label'] }}
+                                </strong>
+                                @if ($article['translation']['source_article'] !== null)
+                                    <span>
+                                        {{ __('knowledge.translations.translated_from') }}
+                                        <a href="{{ route('knowledge.articles.show', $article['translation']['source_article']['slug']) }}">
+                                            {{ $article['translation']['source_article']['title'] }}
+                                        </a>
+                                        · {{ $article['translation']['source_article']['language'] }}
+                                    </span>
+                                @endif
+                                @if ($article['translation']['translator'] !== null)
+                                    <span>
+                                        {{ __('knowledge.translations.translated_by', [
+                                            'name' => $article['translation']['translator'],
+                                        ]) }}
+                                    </span>
+                                @endif
+                                <span>{{ __('knowledge.translations.correction_available') }}</span>
                             </div>
                         </aside>
                     @endif

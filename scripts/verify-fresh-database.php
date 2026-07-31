@@ -7,6 +7,10 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
+putenv('APP_ENV=testing');
+$_ENV['APP_ENV'] = 'testing';
+$_SERVER['APP_ENV'] = 'testing';
+
 require dirname(__DIR__).'/vendor/autoload.php';
 
 $application = require dirname(__DIR__).'/bootstrap/app.php';

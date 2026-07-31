@@ -188,3 +188,18 @@ non-color status, and drag-only architecture are guarded in PHP tests.
 Dependency-free headless Chrome verified desktop, mobile, and 320-pixel
 reflow, keyboard skip focus, a real Livewire login, invalid-submit focus and
 error association, an authorized administration table, and a clean console.
+
+## Resolved Multilingual Behavior Gap
+
+Every stored forum definition key now resolves through the established
+EN/LT/RU catalogues, including all moderation reasons/actions, appeal states,
+reputation/trust/badge definitions, and community animal groups. Root category
+descriptions are no longer English values marked reviewed in every locale.
+Notifications use the recipient locale directly.
+
+Community guide translations now preserve and authorize the original, record
+source and translator provenance, create an independent immutable first
+version, and expose only public-safe attribution. The reusable taxonomy
+selector applies one tested verified current-locale, fallback-locale, exact
+scientific-name order without translating scientific source data or loading
+the full tree.

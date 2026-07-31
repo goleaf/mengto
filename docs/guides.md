@@ -45,6 +45,37 @@ Public pages expose only published or outdated locale variants. Draft locale
 variants, editorial lock reasons, private correction decisions, unpublished
 versions, and workflow metadata are not public.
 
+## Translation Workflow
+
+An active verified user with guide-create trust can start a translation only
+when the source guide is visible to that user. A private or draft source also
+requires update authority. The named translation route opens the class-based
+`KnowledgeGuideEditor` with a locked source ID; every render and save reloads
+and reauthorizes the source.
+
+Translation creation:
+
+1. validates the target against supported locales;
+2. rejects the source locale and an existing locale in the same family;
+3. locks the source row inside a short transaction;
+4. creates a separate draft with `human-community` provenance;
+5. records the source article and translator;
+6. creates the maintainer relation, first immutable version, and workflow
+   event;
+7. redirects to the normal versioned editor.
+
+Title, summary, and body start empty. Safe category, type, difficulty,
+jurisdiction, taxon, discussion, and cited-source scope may be copied, but
+source prose and protected sections are never silently copied. The database
+unique constraint on translation family and locale remains the final
+concurrency boundary.
+
+Public translated guides show the translation source, translator, and source
+guide only when the source itself is public to the viewer. A public
+translation cannot leak a private source title. Corrections, review,
+publication, rollback, and replacement use the same independent workflow as
+every other guide.
+
 ## Editing
 
 The class-based `KnowledgeGuideEditor` Livewire component uses a separate form
@@ -91,7 +122,8 @@ explanation. Do not update or delete version or workflow rows.
 The schema migration is additive. Application rollback should retain its
 columns and history tables after collaborative data exists. A schema `down()`
 is suitable only before production use; operators must export guide versions
-and workflow events before any exceptional destructive rollback.
+and workflow events plus translation provenance before any exceptional
+destructive rollback.
 
 ## Verification
 
@@ -103,3 +135,4 @@ Primary behavioural evidence:
 - `tests/Feature/Database/FactoryAndSeederTest.php`;
 - `tests/Feature/ArchitectureComplianceTest.php`;
 - `tests/Feature/LocalizationTest.php`.
+- `tests/Feature/Forum/ForumMultilingualBehaviorTest.php`.

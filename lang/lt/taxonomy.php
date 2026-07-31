@@ -14,6 +14,7 @@ return [
         'searching' => 'Ieškoma taksonomijoje...',
         'results' => 'Gyvūnų taksonomijos paieškos rezultatai',
         'no_results' => 'Atitinkančio gyvūno nerasta.',
+        'matched_as' => 'Rastas pavadinimas: :name',
         'synonym' => 'Sinonimas',
         'unidentified' => 'Gyvūnas neatpažintas',
         'remove' => 'Pašalinti :name',
