@@ -13,9 +13,10 @@ use App\Models\ForumGroup;
 use App\Models\ForumGroupInvitation;
 use App\Models\ForumReportReason;
 use App\Models\Taxon;
+use App\Models\TaxonVersion;
 use App\Models\User;
 use App\Services\ForumReportReasonCatalog;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
@@ -87,8 +88,8 @@ final class GroupWorkspace extends Component
                 'owner:id,name',
                 'taxa:id,stable_key',
                 'taxa.activeVersion:id,taxon_id,rank,scientific_name,is_active_version',
-                'memberships' => fn (HasMany $query): HasMany => $query
-                    ->select([
+                'memberships' => function (Relation $query) use ($user): void {
+                    $query->select([
                         'id',
                         'forum_group_id',
                         'user_id',
@@ -96,9 +97,10 @@ final class GroupWorkspace extends Component
                         'state',
                         'lock_version',
                     ])
-                    ->where('user_id', $user->id),
-                'invitations' => fn (HasMany $query): HasMany => $query
-                    ->select([
+                        ->where('user_id', $user->id);
+                },
+                'invitations' => function (Relation $query) use ($user): void {
+                    $query->select([
                         'id',
                         'forum_group_id',
                         'invited_user_id',
@@ -107,14 +109,16 @@ final class GroupWorkspace extends Component
                         'message',
                         'expires_at',
                     ])
-                    ->where('invited_user_id', $user->id)
-                    ->where('state', 'pending')
-                    ->where('expires_at', '>', now()),
+                        ->where('invited_user_id', $user->id)
+                        ->where('state', 'pending')
+                        ->where('expires_at', '>', now());
+                },
             ])
             ->findOrFail($this->groupId);
         Gate::authorize('view', $group);
         $membership = $group->memberships->first();
         $invitation = $group->invitations->first();
+        $owner = $group->getRelation('owner');
 
         return [
             'id' => $group->id,
@@ -130,14 +134,10 @@ final class GroupWorkspace extends Component
             'location_scope' => $group->location_scope,
             'membership_questions' => $group->displayMembershipQuestions(),
             'member_count' => $group->active_member_count,
-            'owner_name' => $group->owner?->name ?? __('forum_groups.system.platform_managed'),
-            'taxa' => $group->taxa->map(static fn (Taxon $taxon): array => [
-                'id' => $taxon->id,
-                'scientific_name' => $taxon->activeVersion?->scientific_name
-                    ?? __('taxonomy.unidentified'),
-                'rank' => $taxon->activeVersion?->rank
-                    ?? __('taxonomy.unknown_rank'),
-            ])->all(),
+            'owner_name' => $owner instanceof User
+                ? $owner->name
+                : __('forum_groups.system.platform_managed'),
+            'taxa' => $group->taxa->map($this->presentTaxon(...))->all(),
             'membership_id' => $membership?->id,
             'membership_state' => $membership?->state->label(),
             'membership_state_key' => $membership?->state->value,
@@ -151,6 +151,22 @@ final class GroupWorkspace extends Component
             'can_view_content' => Gate::forUser($user)->allows('viewMemberContent', $group),
             'can_report' => Gate::forUser($user)->allows('report', $group),
             'can_manage' => Gate::forUser($user)->allows('viewAudit', $group),
+        ];
+    }
+
+    /** @return array{id: int, scientific_name: string, rank: string} */
+    private function presentTaxon(Taxon $taxon): array
+    {
+        $activeVersion = $taxon->getRelation('activeVersion');
+
+        return [
+            'id' => $taxon->id,
+            'scientific_name' => $activeVersion instanceof TaxonVersion
+                ? $activeVersion->scientific_name
+                : __('taxonomy.unidentified'),
+            'rank' => $activeVersion instanceof TaxonVersion
+                ? $activeVersion->rank
+                : __('taxonomy.unknown_rank'),
         ];
     }
 

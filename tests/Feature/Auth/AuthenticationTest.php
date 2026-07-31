@@ -108,6 +108,8 @@ test('password confirmation direct action rejects a guest', function () {
 });
 
 test('password confirmation rate limits repeated invalid attempts', function () {
+    $this->freezeTime();
+
     foreach (range(1, 5) as $attempt) {
         Livewire::test(ConfirmPassword::class)
             ->set('form.password', 'incorrect-'.$attempt)

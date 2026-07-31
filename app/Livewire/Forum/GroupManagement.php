@@ -20,7 +20,7 @@ use App\Models\ForumGroupInvitation;
 use App\Models\ForumGroupMembership;
 use App\Models\User;
 use Carbon\CarbonImmutable;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
@@ -66,8 +66,8 @@ final class GroupManagement extends Component
         }
 
         $group->load([
-            'memberships' => fn (HasMany $query): HasMany => $query
-                ->select([
+            'memberships' => function (Relation $query): void {
+                $query->select([
                     'id',
                     'forum_group_id',
                     'user_id',
@@ -79,12 +79,13 @@ final class GroupManagement extends Component
                     'restriction_reason',
                     'lock_version',
                 ])
-                ->with('user:id,name,email')
-                ->orderBy('state')
-                ->orderBy('id')
-                ->limit(100),
-            'invitations' => fn (HasMany $query): HasMany => $query
-                ->select([
+                    ->with('user:id,name,email')
+                    ->orderBy('state')
+                    ->orderBy('id')
+                    ->limit(100);
+            },
+            'invitations' => function (Relation $query): void {
+                $query->select([
                     'id',
                     'forum_group_id',
                     'invited_user_id',
@@ -94,13 +95,14 @@ final class GroupManagement extends Component
                     'message',
                     'expires_at',
                 ])
-                ->where('state', 'pending')
-                ->where('expires_at', '>', now())
-                ->with(['invitee:id,name,email', 'inviter:id,name'])
-                ->orderBy('expires_at')
-                ->limit(50),
-            'events' => fn (HasMany $query): HasMany => $query
-                ->select([
+                    ->where('state', 'pending')
+                    ->where('expires_at', '>', now())
+                    ->with(['invitee:id,name,email', 'inviter:id,name'])
+                    ->orderBy('expires_at')
+                    ->limit(50);
+            },
+            'events' => function (Relation $query): void {
+                $query->select([
                     'id',
                     'forum_group_id',
                     'actor_user_id',
@@ -110,10 +112,11 @@ final class GroupManagement extends Component
                     'summary_translation_key',
                     'created_at',
                 ])
-                ->with(['actor:id,name', 'subjectUser:id,name'])
-                ->latest('created_at')
-                ->latest('id')
-                ->limit(50),
+                    ->with(['actor:id,name', 'subjectUser:id,name'])
+                    ->latest('created_at')
+                    ->latest('id')
+                    ->limit(50);
+            },
         ]);
 
         return [

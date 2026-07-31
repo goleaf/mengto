@@ -11,10 +11,11 @@ use App\Livewire\Forms\ForumGroupForm;
 use App\Models\ForumGroup;
 use App\Models\ForumGroupInvitation;
 use App\Models\Taxon;
+use App\Models\TaxonVersion;
 use App\Models\User;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
@@ -75,8 +76,8 @@ final class GroupDirectory extends Component
                 'owner:id,name',
                 'taxa:id,stable_key',
                 'taxa.activeVersion:id,taxon_id,rank,scientific_name,is_active_version',
-                'memberships' => fn (HasMany $membershipQuery): HasMany => $membershipQuery
-                    ->select([
+                'memberships' => function (Relation $membershipQuery) use ($user): void {
+                    $membershipQuery->select([
                         'id',
                         'forum_group_id',
                         'user_id',
@@ -84,7 +85,8 @@ final class GroupDirectory extends Component
                         'state',
                         'lock_version',
                     ])
-                    ->where('user_id', $user->id),
+                        ->where('user_id', $user->id);
+                },
             ]);
 
         if ($filters['search'] !== '') {
@@ -241,6 +243,7 @@ final class GroupDirectory extends Component
     private function presentGroup(ForumGroup $group, User $user): array
     {
         $membership = $group->memberships->first();
+        $owner = $group->getRelation('owner');
 
         return [
             'id' => $group->id,
@@ -252,9 +255,9 @@ final class GroupDirectory extends Component
             'status' => $group->status->label(),
             'location_scope' => $group->location_scope,
             'member_count' => $group->active_member_count,
-            'owner_name' => $group->owner?->name,
+            'owner_name' => $owner instanceof User ? $owner->name : null,
             'taxa' => $group->taxa
-                ->map(static fn (Taxon $taxon): ?string => $taxon->activeVersion?->scientific_name)
+                ->map($this->presentTaxonName(...))
                 ->filter()
                 ->implode(', '),
             'is_member' => $membership?->state === ForumGroupMembershipState::Active,
@@ -262,6 +265,15 @@ final class GroupDirectory extends Component
             'url' => route('forum.groups.show', $group),
             'owned_by_user' => $group->owner_user_id === $user->id,
         ];
+    }
+
+    private function presentTaxonName(Taxon $taxon): ?string
+    {
+        $activeVersion = $taxon->getRelation('activeVersion');
+
+        return $activeVersion instanceof TaxonVersion
+            ? $activeVersion->scientific_name
+            : null;
     }
 
     private function requireUser(): User

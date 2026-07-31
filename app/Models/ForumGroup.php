@@ -36,7 +36,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string $stable_key
  * @property ForumGroupStatus $status
  * @property ForumGroupVisibility $visibility
- * @property-read User $owner
+ * @property-read User|null $owner
  */
 final class ForumGroup extends Model
 {

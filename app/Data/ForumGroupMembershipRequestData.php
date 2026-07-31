@@ -7,7 +7,7 @@ namespace App\Data;
 final readonly class ForumGroupMembershipRequestData
 {
     /**
-     * @param  array<string, string>  $answers
+     * @param  array<array-key, string>  $answers
      */
     public function __construct(
         public array $answers,
