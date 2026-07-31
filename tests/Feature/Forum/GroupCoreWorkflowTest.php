@@ -27,9 +27,13 @@ use App\Livewire\Forum\GroupManagement;
 use App\Livewire\Forum\GroupWorkspace;
 use App\Models\ForumBlock;
 use App\Models\ForumGroup;
+use App\Models\ForumGroupActivity;
+use App\Models\ForumGroupAnnouncement;
 use App\Models\ForumGroupEvent;
+use App\Models\ForumGroupFile;
 use App\Models\ForumGroupInvitation;
 use App\Models\ForumGroupMembership;
+use App\Models\ForumPoll;
 use App\Models\ForumReport;
 use App\Models\TaxonVersion;
 use App\Models\User;
@@ -685,10 +689,18 @@ test('demo group seed is environment gated and repeatable with stable membership
     $groupCount = ForumGroup::query()->count();
     $membershipCount = ForumGroupMembership::query()->count();
     $invitationCount = ForumGroupInvitation::query()->count();
+    $activityCount = ForumGroupActivity::query()->count();
+    $announcementCount = ForumGroupAnnouncement::query()->count();
+    $fileCount = ForumGroupFile::query()->count();
+    $pollCount = ForumPoll::query()->count();
 
     $this->seed(ForumGroupDemoSeeder::class);
 
     expect(ForumGroup::query()->count())->toBe($groupCount)
         ->and(ForumGroupMembership::query()->count())->toBe($membershipCount)
-        ->and(ForumGroupInvitation::query()->count())->toBe($invitationCount);
+        ->and(ForumGroupInvitation::query()->count())->toBe($invitationCount)
+        ->and(ForumGroupActivity::query()->count())->toBe($activityCount)
+        ->and(ForumGroupAnnouncement::query()->count())->toBe($announcementCount)
+        ->and(ForumGroupFile::query()->count())->toBe($fileCount)
+        ->and(ForumPoll::query()->count())->toBe($pollCount);
 });

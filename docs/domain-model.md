@@ -198,9 +198,22 @@ group: active -> closed -> active
 membership: pending -> active / rejected
 active -> left / removed / banned
 invitation: pending -> accepted / declined / revoked / expired
+activity: scheduled -> active -> completed / cancelled / archived
+announcement: published -> archived
+group file: active -> archived
+poll: draft -> open -> closed / archived
 ```
 
 Visibility is public, request-to-join, private, or unlisted. Roles are owner,
 administrator, moderator, steward, member, or restricted member. Ownership
 transfer updates owner projections atomically; role/member management cannot
-remove the owner. Every mutation appends an event. See `docs/groups.md`.
+remove the owner. Every mutation appends an event.
+
+Existing topics and guides may be associated with one group without changing
+their IDs, replies, versions, reactions, subscriptions, bookmarks, reports,
+or URLs. Group activities, announcements, and files have independent stable
+keys and lifecycle state. A poll owns ordered stable options and at most one
+vote projection per user; that projection stores the validated selected or
+ranked option IDs, while option counters are reconciled in the same locked
+transaction. Closing time is effective even before the stored lifecycle value
+is changed. See `docs/groups.md` and `docs/polls.md`.

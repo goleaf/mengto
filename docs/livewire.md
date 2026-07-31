@@ -100,3 +100,19 @@ Eager loads select only fields required by presentation; owner and taxonomy
 relations are read from loaded relation values so Blade cannot trigger lazy
 queries. The group package has a focused query-budget and direct-action
 authorization suite. See `docs/groups.md`.
+
+## Group Content And Poll Component
+
+`GroupContentWorkspace` is a normal class-based component with separate
+`ForumGroupActivityForm`, `ForumGroupAnnouncementForm`,
+`ForumGroupAssociationForm`, and `ForumPollForm` objects. Public state is
+limited to a locked group ID, idempotency tokens, bounded form fields, one
+temporary upload, and current ballot selections. Models, memberships, voter
+identities, files, and policy results remain server-side.
+
+The component uses computed bounded presentation data, precise
+`wire:loading`/`wire:target` feedback, offline status, stable database-backed
+keys, native fieldsets, and server-authorized actions. Its first-render query
+budget is constant between one and ten polls; poll eligibility consumes the
+already authorized and loaded membership instead of issuing a policy query per
+poll. See `docs/polls.md`.

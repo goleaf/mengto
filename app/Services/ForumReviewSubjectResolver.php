@@ -34,7 +34,15 @@ final readonly class ForumReviewSubjectResolver
     private function topic(User $viewer, int $subjectId): ForumReviewSubjectData
     {
         $topic = ForumTopic::query()
-            ->select(['id', 'author_id', 'title', 'body', 'is_medical', 'visibility'])
+            ->select([
+                'id',
+                'author_id',
+                'forum_group_id',
+                'title',
+                'body',
+                'is_medical',
+                'visibility',
+            ])
             ->findOrFail($subjectId);
         $this->gate->forUser($viewer)->authorize('view', $topic);
 
@@ -53,7 +61,7 @@ final readonly class ForumReviewSubjectResolver
     {
         $answer = ForumAnswer::query()
             ->select(['id', 'topic_id', 'author_id', 'body', 'status'])
-            ->with('topic:id,title,visibility,is_medical,author_id,author_key')
+            ->with('topic:id,title,visibility,is_medical,author_id,author_key,forum_group_id')
             ->findOrFail($subjectId);
         $this->gate->forUser($viewer)->authorize('view', $answer);
         $this->gate->forUser($viewer)->authorize('view', $answer->topic);
@@ -72,7 +80,7 @@ final readonly class ForumReviewSubjectResolver
     private function guide(User $viewer, int $subjectId): ForumReviewSubjectData
     {
         $article = KnowledgeArticle::query()
-            ->select(['id', 'created_by_user_id', 'title', 'summary', 'status'])
+            ->select(['id', 'created_by_user_id', 'forum_group_id', 'title', 'summary', 'status'])
             ->findOrFail($subjectId);
         $this->gate->forUser($viewer)->authorize('view', $article);
 

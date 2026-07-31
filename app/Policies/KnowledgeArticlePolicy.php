@@ -6,10 +6,12 @@ namespace App\Policies;
 
 use App\Enums\KnowledgeCollaboratorRole;
 use App\Enums\VerificationStatus;
+use App\Models\ForumGroup;
 use App\Models\ForumUserTrustLevel;
 use App\Models\KnowledgeArticle;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Gate;
 
 final class KnowledgeArticlePolicy
 {
@@ -20,6 +22,19 @@ final class KnowledgeArticlePolicy
 
     public function view(?User $user, KnowledgeArticle $knowledgeArticle): bool
     {
+        if ($knowledgeArticle->forum_group_id !== null) {
+            if ($user?->isActive() !== true) {
+                return false;
+            }
+
+            $group = ForumGroup::query()->find($knowledgeArticle->forum_group_id);
+
+            return $group !== null
+                && Gate::forUser($user)->allows('viewMemberContent', $group)
+                && ($knowledgeArticle->status->isPublic()
+                    || $this->update($user, $knowledgeArticle));
+        }
+
         return $knowledgeArticle->status->isPublic()
             || ($user !== null && $this->update($user, $knowledgeArticle));
     }
@@ -39,6 +54,8 @@ final class KnowledgeArticlePolicy
     public function update(?User $user, KnowledgeArticle $knowledgeArticle): bool
     {
         return $user?->isActive() === true
+            && ($knowledgeArticle->forum_group_id === null
+                || $this->canViewGroup($user, $knowledgeArticle))
             && (
                 $user->isAdministrator()
                 || $this->hasActiveRole($user, $knowledgeArticle, [
@@ -46,6 +63,14 @@ final class KnowledgeArticlePolicy
                     KnowledgeCollaboratorRole::Contributor,
                 ])
             );
+    }
+
+    private function canViewGroup(User $user, KnowledgeArticle $article): bool
+    {
+        $group = ForumGroup::query()->find($article->forum_group_id);
+
+        return $group !== null
+            && Gate::forUser($user)->allows('viewMemberContent', $group);
     }
 
     public function manageCollaborators(?User $user, KnowledgeArticle $knowledgeArticle): bool

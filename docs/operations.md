@@ -194,3 +194,18 @@ Do not delete group events, use the compatibility catalogue as authority, or
 roll back the group tables after user activity without an export and reviewed
 forward plan. Production runs only `ForumGroupDefinitionSeeder`; demo graph
 creation remains environment-gated. See `docs/groups.md`.
+
+Group content adds nullable topic/guide relations and additive activity,
+announcement, private-file, poll, option, and vote tables. After user activity
+exists, rollback is forward-only: archive a bad file/announcement/poll,
+re-associate the existing topic or guide through the authorized Action, and
+reconcile poll counters from the unique vote projections. Do not delete vote
+rows to change public totals, expose private storage paths, or force a stored
+poll close through a scheduler; the effective close is derived from
+`closes_at`.
+
+Production deployment order is migration, normal application release, and
+cache/view rebuild. `ForumGroupDemoSeeder` remains limited to local, demo, and
+testing environments. It uses production Actions and stable idempotency keys
+to create one topic, guide, event, announcement, private file, and all three
+poll modes without duplicating records on rerun. See `docs/polls.md`.

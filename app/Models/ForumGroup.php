@@ -10,6 +10,7 @@ use App\Enums\ForumGroupVisibility;
 use Carbon\CarbonImmutable;
 use Database\Factories\ForumGroupFactory;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -36,7 +37,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string $stable_key
  * @property ForumGroupStatus $status
  * @property ForumGroupVisibility $visibility
+ * @property-read Collection<int, ForumGroupActivity> $activities
+ * @property-read Collection<int, ForumGroupAnnouncement> $announcements
+ * @property-read Collection<int, ForumGroupFile> $files
  * @property-read User|null $owner
+ * @property-read Collection<int, ForumPoll> $polls
  */
 final class ForumGroup extends Model
 {
@@ -197,6 +202,42 @@ final class ForumGroup extends Model
     public function events(): HasMany
     {
         return $this->hasMany(ForumGroupEvent::class);
+    }
+
+    /** @return HasMany<ForumTopic, $this> */
+    public function topics(): HasMany
+    {
+        return $this->hasMany(ForumTopic::class);
+    }
+
+    /** @return HasMany<KnowledgeArticle, $this> */
+    public function guides(): HasMany
+    {
+        return $this->hasMany(KnowledgeArticle::class);
+    }
+
+    /** @return HasMany<ForumGroupActivity, $this> */
+    public function activities(): HasMany
+    {
+        return $this->hasMany(ForumGroupActivity::class);
+    }
+
+    /** @return HasMany<ForumGroupAnnouncement, $this> */
+    public function announcements(): HasMany
+    {
+        return $this->hasMany(ForumGroupAnnouncement::class);
+    }
+
+    /** @return HasMany<ForumGroupFile, $this> */
+    public function files(): HasMany
+    {
+        return $this->hasMany(ForumGroupFile::class);
+    }
+
+    /** @return HasMany<ForumPoll, $this> */
+    public function polls(): HasMany
+    {
+        return $this->hasMany(ForumPoll::class);
     }
 
     /** @return BelongsToMany<Taxon, $this> */

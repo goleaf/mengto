@@ -55,8 +55,14 @@
   restriction, ownership, and lifecycle Actions; append-only events; unified
   reports; taxonomy focus; deterministic definitions; and localized
   class-based Livewire directory, workspace, and management interfaces.
+- Added durable group topic/guide associations, events, announcements, private
+  files, and single-, multiple-, and ranked-choice polls with configurable
+  voter/result visibility, trusted/location eligibility, timestamp-derived
+  closure, database-enforced one-vote projections, safe editable votes,
+  localized non-authority notices, repeatable demo data, and accessible
+  class-based Livewire ballots.
 - Added an evidence overlay that prevents requirement verification without
-  concrete file or test evidence; 319 atomic requirements are currently
+  concrete file or test evidence; 343 atomic requirements are currently
   verified.
 
 ### Runtime And Architecture
@@ -117,7 +123,7 @@
 - Added an asserted temporary-SQLite fresh migration/seed verifier so
   destructive database checks cannot silently target the development file.
 - Expanded Pest from a baseline of 116 tests / 3,881 assertions to the current
-  checkpoint of 1,338 tests / 48,931 assertions.
+  checkpoint of 1,384 tests / 50,006 assertions.
 - Added auth, authorization, localization, schema, factory/seeder,
   architecture, and responsive regression coverage.
 
@@ -133,7 +139,7 @@
 
 ### Verification
 
-- Full Pest suite checkpoint: 1,338 passed, 48,931 assertions in serial mode.
+- Full Pest suite checkpoint: 1,384 passed, 50,006 assertions in serial mode.
 - Larastan/PHPStan level 5: zero errors.
 - Composer strict validation and security audit: passed, zero advisories.
 - NPM high-severity audit: passed, zero vulnerabilities.

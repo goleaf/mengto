@@ -11,6 +11,10 @@ use App\Models\Credential;
 use App\Models\ExpertProfile;
 use App\Models\ForumAnswer;
 use App\Models\ForumCommunityNote;
+use App\Models\ForumGroupActivity;
+use App\Models\ForumGroupAnnouncement;
+use App\Models\ForumGroupFile;
+use App\Models\ForumPoll;
 use App\Models\ForumTopic;
 use App\Models\KnowledgeArticle;
 use App\Models\KnowledgeArticleCollaborator;
@@ -170,6 +174,10 @@ test('database seeding is repeatable without changing stable entity counts', fun
     $firstCounts = [
         'users' => User::query()->count(),
         'topics' => ForumTopic::query()->count(),
+        'group_activities' => ForumGroupActivity::query()->count(),
+        'group_announcements' => ForumGroupAnnouncement::query()->count(),
+        'group_files' => ForumGroupFile::query()->count(),
+        'group_polls' => ForumPoll::query()->count(),
         'listings' => Listing::query()->count(),
         'credentials' => Credential::query()->count(),
         'guides' => KnowledgeArticle::query()->count(),
@@ -185,6 +193,10 @@ test('database seeding is repeatable without changing stable entity counts', fun
     expect([
         'users' => User::query()->count(),
         'topics' => ForumTopic::query()->count(),
+        'group_activities' => ForumGroupActivity::query()->count(),
+        'group_announcements' => ForumGroupAnnouncement::query()->count(),
+        'group_files' => ForumGroupFile::query()->count(),
+        'group_polls' => ForumPoll::query()->count(),
         'listings' => Listing::query()->count(),
         'credentials' => Credential::query()->count(),
         'guides' => KnowledgeArticle::query()->count(),

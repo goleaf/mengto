@@ -78,7 +78,7 @@ destructive command.
 ## Baseline And Current Checkpoint
 
 The modernization baseline was 116 passing tests and 3,881 assertions. The
-latest complete serial checkpoint reports 1,338 passing tests and 48,931
+latest complete serial checkpoint reports 1,384 passing tests and 50,006
 assertions. This checkpoint is not a final coverage claim while requirements
 remain unimplemented.
 
@@ -139,6 +139,24 @@ Current evidence:
 - Larastan: zero errors;
 - Playwright: private visibility, desktop/mobile overflow, labels, touch
   targets, management evidence, and console output passed.
+
+## Group Content And Poll Coverage
+
+`GroupContentAndPollWorkflowTest` covers durable topic/guide association,
+private directory and direct-route isolation, activities, announcements,
+private file lifecycle, all three choice modes, both voter visibility modes,
+all result visibility modes, editable/final ballots, trusted/location/member
+eligibility, timestamp-derived closure, retry idempotency, result counters,
+Livewire action authorization, and bounded query growth.
+
+Current verified package checkpoint:
+
+- focused group content and polls: 18 tests and 72 assertions;
+- community review selective-projection regression: 52 tests and 165
+  assertions;
+- group-content plus architecture slice: 33 tests and 18,366 assertions;
+- final full serial suite: 1,384 tests and 50,006 assertions;
+- fresh database: 93 migrations, 146 tables, repeat seed passed.
 
 The authentication rate-limit test freezes framework time so its strict
 localized 60-second assertion cannot fail merely because rendering crosses a

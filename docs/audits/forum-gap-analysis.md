@@ -104,6 +104,16 @@ The relational group core now covers visibility, six bounded roles, reviewed
 membership, expiring invitations, member restrictions, ownership transfer,
 lifecycle, append-only audit, unified reports, taxon focus, deterministic
 definitions, and class-based Livewire management. Private/unlisted
-discoverability is scoped before rows and counts. Group content links, polls,
-and other structured group-owned resources remain explicit later requirement
-packages and are not represented as complete by this core.
+discoverability is scoped before rows and counts.
+
+## Resolved Group Content And Poll Gap
+
+Existing topics and guides now retain identity while gaining authorized group
+associations. Durable group activities, announcements, private files, and
+single-, multiple-, and ranked-choice polls replace the static group-content
+fixtures. Polls enforce typed voter/result/eligibility modes, one locked
+user/poll projection, editability, timestamp-derived closure, private voter
+identity, and a strict non-authority boundary. Focused authorization,
+validation, seed, query-budget, localization, architecture, full-suite, fresh
+database, build, and browser evidence is recorded in the package plan and
+requirements overlay.

@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
+use App\Models\ForumGroup;
 use App\Models\ForumTopic;
 use App\Models\User;
+use Illuminate\Support\Facades\Gate;
 
 class ForumTopicPolicy
 {
@@ -22,6 +24,17 @@ class ForumTopicPolicy
      */
     public function view(?User $user, ForumTopic $forumTopic): bool
     {
+        if ($forumTopic->forum_group_id !== null) {
+            if ($user?->isActive() !== true) {
+                return false;
+            }
+
+            $group = ForumGroup::query()->find($forumTopic->forum_group_id);
+
+            return $group !== null
+                && Gate::forUser($user)->allows('viewMemberContent', $group);
+        }
+
         return $forumTopic->visibility->value !== 'private'
             || ($user?->isActive() === true && $forumTopic->author_key === $user->actor_key);
     }
@@ -40,7 +53,8 @@ class ForumTopicPolicy
     public function update(?User $user, ForumTopic $forumTopic): bool
     {
         return $user?->isActive() === true
-            && $forumTopic->author_key === $user->actor_key;
+            && $forumTopic->author_key === $user->actor_key
+            && ($forumTopic->forum_group_id === null || $this->view($user, $forumTopic));
     }
 
     public function answer(?User $user, ForumTopic $forumTopic): bool

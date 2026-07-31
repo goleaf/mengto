@@ -92,3 +92,16 @@ offline feedback, bounded pagination, and empty/private/invited/member states.
 The static `/groups` route remains a clearly separate compatibility preview.
 It does not render or mutate relational membership authority. See
 `docs/groups.md`.
+
+`GroupContentWorkspace` is composed inside the authorized persistent group
+workspace. It renders bounded announcement, topic, guide, event, file, and
+poll sections and exposes manager controls through native expandable forms.
+Poll ballots use native radio, checkbox, and select controls with fieldsets,
+legends, textual result states, action-specific loading, and 44-pixel mobile
+targets. Files remain ordinary authorized download links, and normal links
+remain functional with or without `wire:navigate`.
+
+The rendered package was checked at 1440x900 and 375x812. It had one page
+heading, no horizontal overflow, no unnamed controls, 44-pixel poll controls,
+successful Livewire vote/update feedback, and no current-page console errors.
+See `docs/polls.md`.

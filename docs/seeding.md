@@ -44,9 +44,11 @@ rerun.
 `ForumGroupDefinitionSeeder` synchronizes six system-managed group definitions
 by stable key without replacing administrator-created groups or IDs.
 `ForumGroupDemoSeeder` is environment-gated and creates owner, member, private,
-unlisted, invitation, and request examples without production identities.
-Repeated runs preserve memberships and append-only evidence through stable
-keys and idempotent Actions.
+unlisted, invitation, and request examples without production identities. It
+also creates one member topic, guide, activity, announcement, private fixture,
+and single/multiple/ranked poll examples after the base forum graph exists.
+Repeated runs preserve memberships, content IDs, private paths, poll rows, and
+append-only evidence through stable slugs and idempotent Actions.
 
 ## Production Safeguards
 
@@ -64,6 +66,8 @@ keys and idempotent Actions.
   and never writes fake mentorships from production-safe definition seeders.
 - Group definitions update only system-managed metadata; group demo records
   are prohibited outside local, demo, and testing environments.
+- Group demo files use the private configured disk and are never created by
+  the production-safe definition seeder.
 
 ## Coverage Matrix
 

@@ -32,6 +32,7 @@ or grant records. They do not rely on an ambient fixed identity.
 | Smart device | No | Owner-selected view/control | Selected fields/actions until expiry | No implicit camera/GPS bypass |
 | Exact GPS/camera/door | No | Explicit high-risk capability | Time-window capability | Step-up and audit required |
 | Persistent group | Discoverable identity only | Membership/content by visibility and role | Live invitation only | Explicit policy plus audit |
+| Group content/poll | No independent public grant | Active member; creator/manager writes by role | Visible voters/results only when configured | Explicit group policy; no anonymous-ballot identity UI |
 
 ## Required Policy Methods
 
@@ -53,6 +54,20 @@ authorization and domain transitions.
 Precise smart-device views, management, and command submission additionally
 require a fresh password confirmation. This step-up check supplements
 `SmartDevicePolicy`; it never replaces owner/grant authorization.
+
+## Group Content Authorization
+
+`ForumGroupPolicy` owns `createContent`, `manageContent`,
+`publishAnnouncement`, `uploadFile`, and `createPoll`. Topic and knowledge
+policies additionally require the parent group boundary when a record is
+grouped. Activity, announcement, file, and poll policies resolve their parent
+group server-side.
+
+The Livewire workspace authorizes member content before querying any child
+rows. Association, file storage/download/archive, poll creation, and vote
+casting authorize again in dedicated Actions. Poll closure, active-account
+state, membership, trusted assignment, location scope, option ownership, and
+optimistic vote version are server decisions.
 
 ## Collaborative Guide Authorization
 

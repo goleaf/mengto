@@ -207,4 +207,12 @@ owns every read and mutation decision. `GroupDirectory`, `GroupWorkspace`, and
 `GroupManagement` coordinate those boundaries with bounded eager-loaded
 projections and never serialize private group graphs into public state.
 
-See `docs/groups.md`.
+Topics and guides retain their existing identities and gain an optional group
+relation. Events, announcements, private files, polls, options, and one
+user/poll vote projection are normalized group children. Dedicated Actions
+own every association and mutation; the group policy is rechecked before
+child policy decisions. Poll closure is derived from `closes_at`, voting uses
+a short locked transaction plus database uniqueness, and poll results never
+write professional, medical, legal, scientific, or confirmation authority.
+
+See `docs/groups.md` and `docs/polls.md`.

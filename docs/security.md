@@ -119,6 +119,14 @@ private keys, payment credentials, or complete private records.
 | Covert camera/location access | Explicit time capability, step-up, view audit |
 | Lost-case exact location/contact leak | Rounded public coordinates, encrypted private fields, relay-only contact, fail-closed archive policy |
 | Private/unlisted group enumeration | One discoverability scope before rows/counts; direct view policy; invitation/member checks |
+| Draft guide or private editorial leak | Public-state scope, policy-protected editor/export, bounded public translation lookup, escaped body |
+| Fraudulent guide authority | Independent scoped community review, current credential-backed expert review, no popularity conversion |
+| Concurrent guide overwrite/history rewrite | Optimistic lock version, append-only snapshots/events, rollback as a new version |
+| Mentorship contact or private-thread disclosure | Participant policy, block checks on each contact mutation, dedicated private store, restrictive audit foreign keys |
+| Mentorship authority/reputation farming | Independent credential boundary, capacity and pair limits, idempotency, two-party interaction evidence, uninvolved administrator validation |
+| Group poll manipulation | Parent-scoped policy, one user/poll row, locked transaction, typed options, idempotency, visibility rules |
+| Private group file disclosure | Private disk, generated path, content validation, request-time parent/child authorization |
+| Log disclosure | Redaction and structured allow-list |
 
 ## Persistent Group Security
 
@@ -136,12 +144,6 @@ private keys, payment credentials, or complete private records.
 - The static compatibility catalogue cannot grant persistent access.
 
 See `docs/groups.md`.
-| Draft guide or private editorial leak | Public-state scope, policy-protected editor/export, bounded public translation lookup, escaped body |
-| Fraudulent guide authority | Independent scoped community review, current credential-backed expert review, no popularity conversion |
-| Concurrent guide overwrite/history rewrite | Optimistic lock version, append-only snapshots/events, rollback as a new version |
-| Mentorship contact or private-thread disclosure | Participant policy, block checks on each contact mutation, dedicated private store, restrictive audit foreign keys |
-| Mentorship authority/reputation farming | Independent credential boundary, capacity and pair limits, idempotency, two-party interaction evidence, uninvolved administrator validation |
-| Log disclosure | Redaction and structured allow-list |
 
 Precise device pages and every remote device command use Laravel's
 `password.confirm` middleware. `App\Livewire\Auth\ConfirmPassword` validates the
@@ -177,6 +179,31 @@ escaped append-only messages, pair/block/capacity controls, explicit safety
 acknowledgements, and participant-only reports. The report form exposes the
 unified reason catalogue, requires an explicit truthfulness confirmation, and
 never infers conviction from urgency.
+
+## Group Content And Poll Controls
+
+- Every group child is resolved under an authorized parent group; a child ID
+  cannot broaden membership or management access.
+- Group topics and guides remain excluded from public directories unless the
+  corresponding group content is publicly visible to the current viewer.
+- Group files use the private local disk, content-derived MIME validation,
+  generated storage names, checksums, bounded size, request-time policy
+  authorization, and compensation cleanup after a failed write.
+- Poll action parameters and option IDs are untrusted. The server reloads the
+  poll and its options, checks group membership, lifecycle, eligibility,
+  closure, cardinality, duplicate ranks, and editability, then writes inside a
+  locked transaction.
+- One database row per poll/user prevents duplicate voting. Anonymous means
+  voter identity is hidden from the interface; it does not remove the private
+  anti-abuse identity needed for uniqueness and authorization.
+- Result and voter projections apply the configured visibility rule. A
+  location-limited poll uses only the group's generalized location key and
+  does not expose private addresses.
+- Poll output carries a localized authority disclaimer and has no integration
+  with credential verification, diagnosis, legal conclusions, scientific
+  confirmation, or automatic moderation.
+
+See `docs/polls.md`.
 
 Completion reputation is withheld when interaction evidence is missing, the
 participants block one another, or a related report is open. Trust and karma

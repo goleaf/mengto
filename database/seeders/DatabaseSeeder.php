@@ -84,9 +84,9 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $this->call(SocialIdentitySeeder::class);
-        $this->call(ForumGroupDemoSeeder::class);
         $this->call(ForumSeeder::class);
         $this->call(CollaborativeGuideDemoSeeder::class);
+        $this->call(ForumGroupDemoSeeder::class);
         $this->call(MentorshipDemoSeeder::class);
         $this->call(ForumTopicTaxonomyBackfillSeeder::class);
         $this->call(ExpertSeeder::class);

@@ -57,12 +57,12 @@ as complete.
   immutable case events, protected idempotent contact relays, advisory
   duplicate detection, unified false-sighting/reward-scam reports, and
   privacy-safe archival that preserves the complete operational history.
-- Requirement evidence is a deterministic overlay. `319` atomic requirements
+- Requirement evidence is a deterministic overlay. `343` atomic requirements
   are verified with file/test evidence and none are currently marked
   in-progress.
-- Current repository checkpoint: group focused 22 / 1,208; full Pest
-  1,338 / 48,931; full Pint passed; full Larastan 0 errors; fresh verifier
-  passed 92 migrations and 140 tables with stable repeat-seed counts; the Vite
+- Current repository checkpoint: group-content focused 18 / 72; full Pest
+  1,384 / 50,006; full Pint passed; full Larastan 0 errors; fresh verifier
+  passed 93 migrations and 146 tables with stable repeat-seed counts; the Vite
   8.2.0 production build passed.
 - Playwright verified the lost/found editor at 375x812 and 1440x900 with one
   page heading, no main-content overflow, no workflow target below 44px, and
@@ -108,6 +108,14 @@ as complete.
   tests passed 22 / 1,208; full Pest passed 1,338 / 48,931; fresh/repeat seed,
   Larastan, Vite, and mobile/desktop browser checks passed. All 32 scoped IDs
   are verified.
+- Group topics, guides, events, announcements, private files, and polls are
+  now durable and membership-scoped. All three ballot modes, voter/result
+  visibility modes, editable/final behavior, trusted/location eligibility,
+  timestamp-derived closure, private downloads, repeatable demo data, and a
+  class-based accessible Livewire workspace are verified. Focused tests passed
+  18 / 72; the final full Pest suite passed 1,384 / 50,006; fresh/repeat seed,
+  Larastan, Vite, and desktop/mobile browser checks passed. All 24 scoped IDs
+  are verified.
 
 ## Phase Counts
 
@@ -121,7 +129,7 @@ as complete.
 | 5 | 825 | core/import pipeline implemented; full external snapshot pending |
 | 6 | 347 | foundation, panels/notes, and mentorship verified; additional trust packages remain |
 | 7 | 463 | operations verified; duplicate grouping, transparency, and broad entity coverage remain |
-| 8 | 3,345 | adoption, lost/found, collaborative guides, mentorship, and persistent-group core verified; remaining structured domains planned |
+| 8 | 3,345 | adoption, lost/found, collaborative guides, mentorship, persistent groups, group content, and polls verified; remaining structured domains planned |
 | 9 | 93 | planned |
 | 10 | 67 | in progress |
 | 11 | 13 | topic category/taxonomy backfill implemented; reports pending |
@@ -133,10 +141,10 @@ as complete.
 
 1. Read the next Phase 8 work-package plan and include explicit requirement
    IDs before production changes.
-2. Implement group content links (`forum.feature.3134` through `.3139`) and
-   polls (`forum.feature.3143` through `.3160`) without overloading group core.
-3. Add policy, validation, concurrency, factory, seed, and direct-action tests
-   for that package.
+2. Plan journals and progress tracking (`forum.feature.3161` through `.3186`)
+   against existing care journals, forum topics, privacy, and media boundaries.
+3. Add policy, validation, optimistic-editing, factory, seed, and direct-action
+   tests for that package before marking any journal ID verified.
 4. Extend privacy-first search and following only after subject visibility is
    enforced before matching and counts.
 5. Update evidence, rerun migration/seed checks, and perform the next phase

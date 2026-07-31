@@ -7,6 +7,7 @@ namespace Database\Factories;
 use App\Enums\ForumTopicStatus;
 use App\Enums\ForumTopicType;
 use App\Enums\ForumVisibility;
+use App\Models\ForumGroup;
 use App\Models\ForumTopic;
 use Illuminate\Support\Str;
 
@@ -78,6 +79,14 @@ class ForumTopicFactory extends ApplicationFactory
             'status' => ForumTopicStatus::Draft,
             'visibility' => ForumVisibility::Private,
             'published_at' => null,
+        ]);
+    }
+
+    public function forGroup(?ForumGroup $group = null): static
+    {
+        return $this->state(fn (): array => [
+            'forum_group_id' => $group === null ? ForumGroup::factory() : $group->id,
+            'visibility' => ForumVisibility::Group,
         ]);
     }
 }

@@ -60,6 +60,7 @@ use App\Http\Controllers\ForumActionController;
 use App\Http\Controllers\ForumAdministrationController;
 use App\Http\Controllers\ForumController;
 use App\Http\Controllers\ForumGroupDirectoryController;
+use App\Http\Controllers\ForumGroupFileDownloadController;
 use App\Http\Controllers\ForumGroupShowController;
 use App\Http\Controllers\ForumMentorshipController;
 use App\Http\Controllers\GroupDetailPreviewController;
@@ -310,6 +311,12 @@ Route::middleware('web')
                             ->group(function (): void {
                                 Route::get('/', ForumGroupDirectoryController::class)
                                     ->name('index');
+                                Route::get(
+                                    '/{forumGroup:stable_key}/files/{file:stable_key}',
+                                    ForumGroupFileDownloadController::class,
+                                )
+                                    ->middleware('throttle:60,1')
+                                    ->name('files.download');
                                 Route::get('/{forumGroup:stable_key}', ForumGroupShowController::class)
                                     ->name('show');
                             });

@@ -7,12 +7,12 @@ management, audit, discovery, and reporting boundary. The earlier `/groups`
 preview remains a compatibility presentation route; authoritative persistent
 records live under `/forum/groups`.
 
-This package verifies `forum.feature.3108` through `forum.feature.3133`,
+The group-core package verifies `forum.feature.3108` through `forum.feature.3133`,
 `forum.moderation.0323`, `forum.moderation.0324`,
 `forum.feature.3140` through `forum.feature.3142`, and
-`forum.search.0123`. Group topics, events, guides, polls, files, and
-announcements remain separate requirement packages and are not implied by the
-existence of the group core.
+`forum.search.0123`. Persistent topics, activities, guides, polls, private
+files, and announcements are implemented by the separate boundary documented
+in `docs/polls.md`; their existence does not broaden group-core permissions.
 
 ## Domain Model
 
@@ -34,6 +34,12 @@ invitation for the same group/recipient pair.
 `ForumGroupEvent` is append-only audit evidence for creation, membership,
 invitation, role, ownership, lifecycle, and report activity. Routine
 operations never edit or delete event history.
+
+Group content is stored in `forum_group_activities`,
+`forum_group_announcements`, `forum_group_files`, `forum_polls`,
+`forum_poll_options`, and `forum_poll_votes`, plus nullable group relations on
+topics and knowledge guides. These records inherit the member-content boundary
+and do not expose private groups through public directories.
 
 The `forum_group_taxon` pivot links groups to the global animal taxonomy. It
 does not create a parallel species list.
@@ -66,6 +72,14 @@ Every write uses a dedicated Action:
 - `LeaveForumGroup`
 - `TransferForumGroupOwnership`
 - `TransitionForumGroup`
+- `AssociateForumTopicWithGroup`
+- `AssociateKnowledgeGuideWithGroup`
+- `CreateForumGroupActivity`
+- `PublishForumGroupAnnouncement`
+- `CreateForumPoll`
+- `CastForumPollVote`
+- `StoreForumGroupFile`
+- `ArchiveForumGroupFile`
 
 Actions reload and authorize records, validate typed input, use bounded
 transactions and row locks where a race changes state, check optimistic
@@ -100,7 +114,8 @@ stable key. It updates only system-managed metadata, preserves IDs and
 relationships, and does not overwrite administrator-created groups.
 
 `ForumGroupDemoSeeder` is restricted to local, demo, and testing environments.
-It creates deterministic owner/member/invitation examples through the same
+It creates deterministic owner/member/invitation examples plus a topic, guide,
+activity, announcement, private file, and three poll modes through the same
 domain constraints used by production code. Repeated full seeding is
 idempotent and non-destructive.
 

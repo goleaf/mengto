@@ -20,7 +20,7 @@ Use Laravel language files under `lang/{locale}`. Current files are:
 - `places.php`
 - `presentation.php`
 - `ui.php`
-- domain catalogues including `forum_groups.php`
+- domain catalogues including `forum_groups.php` and `forum_polls.php`
 
 `ui.php` contains mechanically extracted static interface text.
 `messages.php` contains complete action, HTTP, Livewire, and service messages.
@@ -55,6 +55,13 @@ rules, questions, and answers remain in their original locale.
 
 Scientific names are rendered from taxonomy source data and are not
 translated. The usual English fallback and placeholder-parity rules apply.
+
+`lang/{en,lt,ru}/forum_polls.php` owns group-content section labels, event and
+poll modes, eligibility/result/voter visibility, private-file notices,
+medical/legal/scientific authority boundaries, validation, empty states, and
+action feedback. User-authored announcements, poll questions/options, event
+details, topic titles, guide summaries, and file descriptions remain in the
+language supplied by their author.
 
 ## Current Translation Quality
 

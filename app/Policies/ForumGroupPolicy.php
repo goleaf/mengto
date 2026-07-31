@@ -159,6 +159,60 @@ final class ForumGroupPolicy
         return $this->reviewMembership($user, $group);
     }
 
+    public function createContent(User $user, ForumGroup $group): bool
+    {
+        if (! $user->isActive() || $group->status !== ForumGroupStatus::Active) {
+            return false;
+        }
+
+        if ($this->managesPlatform($user) || $group->owner_user_id === $user->id) {
+            return true;
+        }
+
+        $role = $this->role($user, $group);
+
+        return $role !== null && $role !== ForumGroupRole::RestrictedMember;
+    }
+
+    public function manageContent(User $user, ForumGroup $group): bool
+    {
+        if (! $user->isActive() || $group->status !== ForumGroupStatus::Active) {
+            return false;
+        }
+
+        return $this->managesPlatform($user)
+            || in_array($this->role($user, $group), [
+                ForumGroupRole::Owner,
+                ForumGroupRole::Administrator,
+                ForumGroupRole::Moderator,
+                ForumGroupRole::Steward,
+            ], true);
+    }
+
+    public function publishAnnouncement(User $user, ForumGroup $group): bool
+    {
+        if (! $user->isActive() || $group->status !== ForumGroupStatus::Active) {
+            return false;
+        }
+
+        return $this->managesPlatform($user)
+            || in_array($this->role($user, $group), [
+                ForumGroupRole::Owner,
+                ForumGroupRole::Administrator,
+                ForumGroupRole::Moderator,
+            ], true);
+    }
+
+    public function uploadFile(User $user, ForumGroup $group): bool
+    {
+        return $this->createContent($user, $group);
+    }
+
+    public function createPoll(User $user, ForumGroup $group): bool
+    {
+        return $this->createContent($user, $group);
+    }
+
     private function role(User $user, ForumGroup $group): ?ForumGroupRole
     {
         if ($group->owner_user_id === $user->id) {

@@ -54,5 +54,13 @@ buttons, zero unlabeled visible controls, zero controls below 44px, and no
 console warnings/errors. Private management, owner membership, and pending
 invitation content remained inside the authorized view.
 
+The group-content and poll workspace was checked at 1440x900 and 375x812.
+Single-, multiple-, and ranked-choice ballots expose native grouped controls,
+visible textual state, localized authority notices, and targets at least 44px
+high. The page had one logical heading, no horizontal overflow, no unlabeled
+controls, and no current-page console errors. A real Livewire vote changed the
+button to `Update vote`, exposed the permitted result, and announced the
+success status without a full-page reload.
+
 Known tool limitations belong in `docs/known-limitations.md`; a missing tool
 does not waive semantic implementation or manual review.

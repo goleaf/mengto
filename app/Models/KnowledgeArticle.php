@@ -25,6 +25,7 @@ use Illuminate\Support\Carbon;
  * @property int $current_version
  * @property string $difficulty
  * @property int|null $discussion_topic_id
+ * @property int|null $forum_group_id
  * @property Carbon|null $editorial_locked_at
  * @property int|null $editorial_locked_by_user_id
  * @property string|null $editorial_lock_reason
@@ -61,6 +62,7 @@ class KnowledgeArticle extends Model
     private const ROUTE_COLUMNS = [
         'id',
         'created_by_user_id',
+        'forum_group_id',
         'source_topic_id',
         'discussion_topic_id',
         'taxon_id',
@@ -95,6 +97,7 @@ class KnowledgeArticle extends Model
 
     protected $fillable = [
         'created_by_user_id',
+        'forum_group_id',
         'source_topic_id',
         'discussion_topic_id',
         'taxon_id',
@@ -156,6 +159,12 @@ class KnowledgeArticle extends Model
     public function sourceTopic(): BelongsTo
     {
         return $this->belongsTo(ForumTopic::class, 'source_topic_id');
+    }
+
+    /** @return BelongsTo<ForumGroup, $this> */
+    public function group(): BelongsTo
+    {
+        return $this->belongsTo(ForumGroup::class, 'forum_group_id');
     }
 
     /** @return BelongsTo<ForumTopic, $this> */
@@ -223,6 +232,7 @@ class KnowledgeArticle extends Model
         return $query->select([
             'id',
             'created_by_user_id',
+            'forum_group_id',
             'source_topic_id',
             'discussion_topic_id',
             'taxon_id',
@@ -248,7 +258,9 @@ class KnowledgeArticle extends Model
             'next_review_at',
             'published_at',
             'updated_at',
-        ])->whereIn('status', KnowledgeStatus::publicValues());
+        ])
+            ->whereNull('forum_group_id')
+            ->whereIn('status', KnowledgeStatus::publicValues());
     }
 
     public function scopeForEditor(Builder $query): Builder

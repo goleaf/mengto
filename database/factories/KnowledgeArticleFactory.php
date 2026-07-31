@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Database\Factories;
 
 use App\Enums\KnowledgeStatus;
+use App\Models\ForumGroup;
 use App\Models\KnowledgeArticle;
 use Illuminate\Support\Str;
 
@@ -115,6 +116,13 @@ class KnowledgeArticleFactory extends ApplicationFactory
         return $this->state(fn (): array => [
             'status' => KnowledgeStatus::Replaced,
             'published_at' => null,
+        ]);
+    }
+
+    public function forGroup(?ForumGroup $group = null): static
+    {
+        return $this->state(fn (): array => [
+            'forum_group_id' => $group === null ? ForumGroup::factory() : $group->id,
         ]);
     }
 }

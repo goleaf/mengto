@@ -37,6 +37,7 @@ use Illuminate\Support\Carbon;
  * @property-read Collection<int, ForumEngagement> $engagements
  * @property bool $has_expert_answer
  * @property int $id
+ * @property int|null $forum_group_id
  * @property bool $is_locked
  * @property bool $is_medical
  * @property bool $is_urgent
@@ -80,6 +81,7 @@ class ForumTopic extends Model
         'category',
         'subcategory',
         'forum_category_id',
+        'forum_group_id',
         'forum_topic_type_id',
         'tags',
         'pet_key',
@@ -123,6 +125,7 @@ class ForumTopic extends Model
         'category',
         'subcategory',
         'forum_category_id',
+        'forum_group_id',
         'forum_topic_type_id',
         'tags',
         'pet_key',
@@ -193,6 +196,12 @@ class ForumTopic extends Model
     public function normalizedCategory(): BelongsTo
     {
         return $this->belongsTo(ForumCategory::class, 'forum_category_id');
+    }
+
+    /** @return BelongsTo<ForumGroup, $this> */
+    public function group(): BelongsTo
+    {
+        return $this->belongsTo(ForumGroup::class, 'forum_group_id');
     }
 
     /** @return BelongsTo<\App\Models\ForumTopicType, $this> */
@@ -272,6 +281,7 @@ class ForumTopic extends Model
             'body',
             'category',
             'forum_category_id',
+            'forum_group_id',
             'subcategory',
             'tags',
             'pet_key',
@@ -300,7 +310,9 @@ class ForumTopic extends Model
             ForumTopicStatus::Review->value,
             ForumTopicStatus::Archived->value,
             ForumTopicStatus::Merged->value,
-        ])->where('visibility', '!=', ForumVisibility::Private->value);
+        ])
+            ->whereNull('forum_group_id')
+            ->where('visibility', '!=', ForumVisibility::Private->value);
     }
 
     public function scopeSearch(Builder $query, string $search): Builder

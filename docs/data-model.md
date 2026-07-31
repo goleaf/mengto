@@ -3,7 +3,7 @@
 ## Storage Baseline
 
 - 68 migrations created 71 SQLite tables at baseline; the current additive
-  schema has 92 migrations and 140 tables after identity, care-sync,
+  schema has 93 migrations and 146 tables after identity, care-sync,
   social-state, device-lifecycle, forum taxonomy, global animal taxonomy,
   reputation, moderation, credential verification, structured-community, and
   persistent-group work.
@@ -18,7 +18,7 @@
 | --- | --- |
 | Framework | `users`, password reset, sessions, cache/locks, jobs/batches/failed jobs |
 | Social identity/state | `pet_profiles`, encrypted/versioned `user_domain_states` |
-| Forum | topics, answers, comments, votes, engagements, blocks, polymorphic reports, report events/evidence, categories/translations/aliases/redirects, topic definitions, reputation/trust/badges, confirmations, moderation cases/actions/appeals/recusals, notifications, persistent groups/memberships/invitations/events/taxon links |
+| Forum | topics, answers, comments, votes, engagements, blocks, polymorphic reports, report events/evidence, categories/translations/aliases/redirects, topic definitions, reputation/trust/badges, confirmations, moderation cases/actions/appeals/recusals, notifications, persistent groups/memberships/invitations/audit events/taxon links, group activities/announcements/private files/polls/options/votes |
 | Animal taxonomy | versioned sources/imports/versions/issues, taxa, names, external identifiers, change history, domestic classifications, breed registries, community groups |
 | Knowledge | articles, append-only versions, corrections, normalized collaborators, append-only workflow events |
 | Experts | profiles, credentials, services, availability slots, bookings, document grants, consultations, publications, reviews, engagements, reports |
@@ -161,3 +161,21 @@ Discovery, owner/status, location, membership state/role, invitation state and
 expiry, audit timeline, and reverse taxon paths have explicit compound
 indexes. Restrictive foreign keys prevent silent audit or membership loss.
 See `docs/groups.md`.
+
+## Group Content And Poll Tables
+
+- `forum_topics.forum_group_id` and
+  `knowledge_articles.forum_group_id` are nullable indexed foreign keys; a
+  grouped record retains its original identity.
+- `forum_group_activities`, `forum_group_announcements`, and
+  `forum_group_files` use group-first list indexes and restrictive ownership
+  references.
+- `forum_polls` stores typed visibility, eligibility, editability, closure,
+  aggregate count, and optimistic version.
+- `forum_poll_options` is unique by poll/stable key and poll/position.
+- `forum_poll_votes` is unique by poll/user and by idempotency key. Ordered
+  choices are validated before persistence; option counters are maintained in
+  the same locked transaction.
+
+The additive migration creates no trigger, raw SQL, destructive backfill, or
+automatic legacy classification. See `docs/polls.md`.

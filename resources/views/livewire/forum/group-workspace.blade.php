@@ -140,6 +140,13 @@
         </p>
     </section>
 
+    @if ($this->group['can_view_content'])
+        <livewire:forum.group-content-workspace
+            :group-id="$this->group['id']"
+            :key="'group-content-'.$this->group['id']"
+        />
+    @endif
+
     @if ($this->group['can_report'])
         <details class="forum-form">
             <summary class="forum-button min-h-11">

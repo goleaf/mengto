@@ -437,6 +437,7 @@ final class CommunityNotesPanel extends Component
                 'id',
                 'author_id',
                 'author_key',
+                'forum_group_id',
                 'status',
                 'visibility',
                 'is_locked',
