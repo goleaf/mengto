@@ -218,3 +218,16 @@ through a nullable `forum_event_id`.
 Exact location, online URL, emergency plan, attendee notes, invitation
 messages, and private review feedback use encrypted casts. See
 `docs/events.md` for lifecycle and recovery.
+
+## Expert Session Tables
+
+The additive expert-session schema consists of `forum_expert_sessions`,
+`forum_expert_session_questions`, `forum_expert_session_answers`,
+`forum_expert_session_corrections`, and `forum_expert_session_history`.
+
+Unique constraints protect stable and idempotency keys, queue position within
+a session, one answer per question, and one immutable correction version per
+answer. Compound indexes cover public schedule discovery, queue state/order,
+answer lookup, and append-only history. Restrictive foreign keys preserve
+professional, author, and audit ownership. See
+`docs/expert-question-sessions.md`.

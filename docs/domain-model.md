@@ -252,3 +252,21 @@ journal topics. All required named types remain typed and localized. See
   models are reused rather than duplicated.
 
 The complete lifecycle and invariants are in `docs/events.md`.
+
+## Verified Professional Question Sessions
+
+- `ForumExpertSession` owns the verified host snapshot, professional scope,
+  jurisdiction, educational topic, schedule, locale, disclaimer, lifecycle,
+  and optimistic version.
+- `ForumExpertSessionQuestion` owns one ordered moderated member submission
+  with private-pending and explicit unanswered states.
+- `ForumExpertSessionAnswer` owns the current host-authored answer and bounded
+  source links; one answer belongs to one question.
+- `ForumExpertSessionCorrection` preserves immutable prior and corrected
+  answer snapshots.
+- `ForumExpertSessionHistory` preserves append-only lifecycle, moderation, and
+  correction evidence.
+- `ExpertProfile`, `Credential`, and `ForumReport` remain reused boundaries;
+  no duplicate authority or complaint model is introduced.
+
+The lifecycle and invariants are in `docs/expert-question-sessions.md`.

@@ -11,6 +11,10 @@
                     <x-lucide-library aria-hidden="true" />
                     {{ __('ui.knowledge_dcb3e1c00e') }}
                 </a>
+                <a href="{{ route('forum.expert-sessions.index') }}" class="forum-button">
+                    <x-lucide-circle-help aria-hidden="true" />
+                    {{ __('forum_expert_sessions.navigation.label') }}
+                </a>
                 @auth
                     <a href="{{ route('forum.journals.index') }}" class="forum-button">
                         <x-lucide-notebook-tabs aria-hidden="true" />

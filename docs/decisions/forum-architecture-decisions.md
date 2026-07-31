@@ -258,3 +258,52 @@ constraints protect idempotency, registrations, invitations, and reviews.
 Paid-event amounts are stored as integer minor units with an ISO currency and
 visible refund terms. No payment credentials or successful payment state are
 invented while the repository has no real payment-provider boundary.
+
+## ADR-FORUM-023: Separate Expert Sessions From Advice And Appointments
+
+Date: 2026-07-31
+
+Status: accepted
+
+`ForumExpertSession` is a scheduled, public community-question aggregate. It
+does not represent a private consultation, veterinary examination, patient
+relationship, prescription, diagnosis, legal engagement, or formal legal
+advice. Ordinary `ForumTopic`, `ForumAnswer`, `Consultation`, and
+`KnowledgeArticle` records remain authoritative in their existing domains.
+
+A session displays a versioned localized disclaimer and records professional
+scope and jurisdiction as context. Community reactions, acceptance, karma,
+trust, badges, and administrative status cannot elevate an answer into a
+medical or legal conclusion.
+
+## ADR-FORUM-024: Derive Host Eligibility From Current Credentials
+
+Date: 2026-07-31
+
+Status: accepted
+
+Hosting and answering require an active owner of a published, current,
+independently verified `ExpertProfile` and a current compatible reviewed
+credential. The session stores host name, scope, and jurisdiction snapshots
+for historical attribution, but rechecks current eligibility for every
+professional mutation.
+
+Professional scope remains an extensible stable key. Known keys receive
+localized labels, while the credential and profile retain the authoritative
+identifier. Credential evidence, identifiers, notes, and reviewer metadata
+never enter public or Livewire state.
+
+## ADR-FORUM-025: Derive Session Windows Without Runtime Workers
+
+Date: 2026-07-31
+
+Status: accepted
+
+Question-window and live-session phases are derived from validated timestamps.
+Archival is an explicit audited action. Voting and submission boundaries
+therefore remain correct without cron, scheduler, queue worker, websocket
+server, or another operational dependency.
+
+Questions, answers, corrections, moderation decisions, and history are
+normalized and database constrained. Source links are displayed as validated
+HTTP(S) references and are never fetched by the application.

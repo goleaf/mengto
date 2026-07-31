@@ -85,3 +85,11 @@ non-color status text, and normal link fallbacks. Controls use existing
 minimum touch targets and visible focus. Waitlist and capacity information is
 available as text, and no event operation requires drag-and-drop, hover, or
 animation.
+
+## Expert Session Workflows
+
+The directory and workspace use one logical heading, explicit labels,
+field-linked validation, live status output, localized safety disclaimers,
+non-color queue states, source-link text, action-specific loading, offline
+feedback, visible focus, and mobile-safe touch targets. No session operation
+requires drag-and-drop, hover, animation, or a pointer-only gesture.

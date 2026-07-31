@@ -9,6 +9,9 @@ runner and is not a second test style.
 
 - Feature: routes, middleware, auth, policies, validation, persistence,
   downloads, integrations, and rendered pages.
+- Private-file security: traversal and absolute path representations,
+  cross-domain stored paths, symlink escapes, and audit side effects that must
+  not occur after a rejected download.
 - Unit: pure state transitions, value objects, normalization, and safety rules.
 - Livewire: component state, forms, direct action authorization, repeated
   submission, events, redirects, and rendered states.
@@ -210,3 +213,20 @@ Current verified event package checkpoint:
 Coverage remains unavailable because the PHP 8.5 CLI has neither PCOV nor
 Xdebug. Parallel execution is not accepted as evidence while test processes
 share one SQLite topology.
+
+## Expert Session Verification
+
+`ExpertQuestionSessionWorkflowTest` covers additive rollback, host credential
+scope/jurisdiction/expiry, timestamp-derived windows, idempotent and
+rate-limited queue submission, pending-question privacy, moderation,
+answer-source validation without external I/O, immutable corrections,
+optimistic conflicts, archive preservation, unified reports, direct Livewire
+authorization, routes, factories, seed reruns, and EN/LT/RU catalogues.
+
+`ExpertCredentialVerificationTest`, `ExpertDirectoryTest`, `ExpertSafetyTest`,
+`ForumModerationTest`, `FactoryAndSeederTest`, `LocalizationTest`, and
+`ArchitectureComplianceTest` provide integration gates. The expert-session plus
+architecture slice passed 31 tests and 22,249 assertions; the expanded
+regression slice passed 1,108 tests and 52,428 assertions; the final serial
+suite passed 1,594 tests and 56,870 assertions. Exact commands and browser
+evidence are recorded in the expert-session work-package plan.

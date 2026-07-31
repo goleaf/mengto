@@ -124,3 +124,17 @@ resolve labels through stable keys; dates, times, counts, and money use locale
 formatters or plural-aware translation calls. Stored user event content
 retains its original locale. Scientific names linked through event taxa are
 never translated.
+
+## Expert Session Catalogue
+
+Platform session text lives in matching
+`lang/en/forum_expert_sessions.php`,
+`lang/lt/forum_expert_sessions.php`, and
+`lang/ru/forum_expert_sessions.php` catalogues. They own scope labels,
+lifecycle/moderation states, queue/answer/correction/report forms, errors,
+feedback, loading/offline text, accessibility labels, and the versioned
+medical/legal disclaimer.
+
+Stored scope, jurisdiction, status, reason, and disclaimer-version values are
+stable identifiers. User questions, answers, and correction prose remain in
+their original language.

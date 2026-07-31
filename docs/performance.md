@@ -87,3 +87,14 @@ small relevant registration set rather than scanning the catalogue.
 No event-detail cache is introduced because protected access depends on user,
 invitation, group, and registration context. Stable taxonomy and category
 caches remain owned by their existing domains.
+
+## Expert Session Query Contract
+
+Directory queries apply publication, archive, search, scope, and schedule
+filters before bounded pagination. Workspace queries select presentation
+columns and load host, queue author, answer, and correction data in bounded
+relations. Pending question visibility is resolved before presentation.
+
+Candidate host profiles eager-load credentials once, and eligibility reuses
+the loaded relation. No session-detail cache is introduced because queue
+visibility depends on author, current credential, and moderation context.

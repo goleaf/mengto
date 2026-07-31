@@ -50,3 +50,15 @@ Repository rules prohibit raw SQL strings. Large imports need bulk operations.
 indexes, and supported database transactions. Any future engine-specific
 optimization needs a new ADR and cross-database fallback.
 
+## Conflict 6: Deferred Live Expert Sessions Versus Current Master Specification
+
+`docs/forum-scope.md` classified live expert sessions as a later-release item.
+The current canonical source section 69 explicitly requires verified
+professional question sessions as part of the complete forum.
+
+**Resolution:** The current canonical requirement has higher precedence than
+the historical release note. Implement normalized, scheduled community
+question sessions now, rewrite the stale scope statement, and preserve the
+medical/legal non-authority and independent credential boundaries. This
+decision does not create private telemedicine, appointments, realtime video,
+or formal legal representation.

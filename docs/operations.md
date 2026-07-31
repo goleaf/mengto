@@ -241,3 +241,16 @@ protected attendee access. Demo event seeding is forbidden in production.
 For recovery, retain the database backup, inspect append-only event history,
 and apply a reviewed forward Action or migration. Never repair an event by
 deleting registrations, reports, reviews, or history.
+
+## Expert Session Operations
+
+- Session phase and question-window closure are timestamp-derived and need no
+  scheduler.
+- Monitor question/report throttles, pending queue age, expired host
+  credentials, stale sessions, and correction conflicts.
+- If a credential expires or is suspended, host mutations stop immediately;
+  existing educational history remains readable under its normal policy.
+- A failed transaction leaves no partial question, answer, correction, or
+  history event.
+- After normalized session data exists, recover through a forward fix and do
+  not drop the new tables.

@@ -59,6 +59,8 @@ use App\Http\Controllers\ExpertProfileUpdateController;
 use App\Http\Controllers\ForumActionController;
 use App\Http\Controllers\ForumAdministrationController;
 use App\Http\Controllers\ForumController;
+use App\Http\Controllers\ForumExpertSessionDirectoryController;
+use App\Http\Controllers\ForumExpertSessionShowController;
 use App\Http\Controllers\ForumGroupDirectoryController;
 use App\Http\Controllers\ForumGroupFileDownloadController;
 use App\Http\Controllers\ForumGroupShowController;
@@ -274,6 +276,12 @@ Route::middleware('web')
             ->group(function (): void {
                 Route::get('/', ForumController::class)->name('index');
                 Route::get('/similar', SimilarTopicController::class)->name('topics.similar');
+                Route::get('/expert-sessions', ForumExpertSessionDirectoryController::class)
+                    ->name('expert-sessions.index');
+                Route::get(
+                    '/expert-sessions/{forumExpertSession:stable_key}',
+                    ForumExpertSessionShowController::class,
+                )->name('expert-sessions.show');
                 Route::get('/topics/{forumTopic}', TopicController::class)->name('topics.show');
                 Route::get(
                     '/journals/{forumJournal:stable_key}/media/{forumJournalMedia:stable_key}',

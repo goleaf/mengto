@@ -94,3 +94,13 @@ forum system seeder, then verify old stable URLs, event counts, group links,
 registration counts, and protected fields. Rollback is safe only before event
 data is used. After production writes, recover through a forward fix; do not
 drop event tables.
+
+## Expert Session Migration
+
+`2026_07_31_001240_create_forum_expert_session_tables.php` is additive and
+does not rewrite topics, answers, guides, events, consultations, profiles, or
+credentials. Run migrations, then the production-safe forum system seeder.
+Verify host qualification, queue privacy, source links, archive retention, and
+the public disclaimer. Demo seeding remains forbidden outside configured
+non-production environments. After user data exists, use a forward fix rather
+than dropping the session tables.

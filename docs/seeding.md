@@ -128,3 +128,12 @@ event states through production Actions.
 Every event model has a factory. The event workflow test creates all seven
 factory-backed models, and the shared factory/seeder suite validates schema
 constraints plus repeat execution.
+
+## Expert Session Seeders
+
+`ForumExpertSessionBackfillSeeder` is production-safe and does not infer a
+session from prose or another domain. `ForumExpertSessionDemoSeeder` is
+environment-gated and creates a deterministic verified host, credential,
+session, moderated question, and answer. Repeated execution preserves stable
+session and credential identities. Every new model has a valid factory and
+meaningful lifecycle states.

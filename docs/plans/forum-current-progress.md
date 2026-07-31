@@ -57,14 +57,14 @@ as complete.
   immutable case events, protected idempotent contact relays, advisory
   duplicate detection, unified false-sighting/reward-scam reports, and
   privacy-safe archival that preserves the complete operational history.
-- Requirement evidence is a deterministic overlay. `397` atomic requirements
+- Requirement evidence is a deterministic overlay. `415` atomic requirements
   are verified with file/test evidence and none are currently marked
   in-progress.
-- Current repository checkpoint: event focused 18 / 125; full Pint passed;
-  full Larastan 0 errors; fresh verifier passed 95 migrations and 160 tables
-  with stable repeat-seed counts; the Vite 8.2.0 production build and Laravel
-  config/route/view cache compilation passed. The latest serial full suite
-  passed 1,514 tests and 53,062 assertions in the isolated event snapshot.
+- Current repository checkpoint: expert-session plus architecture verification
+  passed 31 tests and 22,249 assertions; full Pint and Larastan passed; the
+  fresh verifier applied 97 migrations across 168 tables with stable
+  repeat-seed counts; npm audit and the Vite 8.2.0 production build passed.
+  The latest serial full suite passed 1,594 tests and 56,870 assertions.
 - Playwright verified the lost/found editor at 375x812 and 1440x900 with one
   page heading, no main-content overflow, no workflow target below 44px, and
   no current-page console warning or error.
@@ -134,6 +134,16 @@ as complete.
   Vite, cache compilation, and real mobile/desktop Livewire search and
   registration flows passed; the isolated serial suite passed 1,514 / 53,062.
   All 27 scoped IDs are verified.
+- Verified professional question sessions use independently reviewed current
+  credentials, exact scope and jurisdiction, timestamp-derived question
+  windows, private moderated queues, idempotent answers, immutable corrections,
+  non-destructive archives, unified reports, and explicit medical/legal
+  non-authority language. Focused tests passed 31 / 22,249 and the expanded
+  regression slice passed 1,108 / 52,428; the final serial suite passed
+  1,594 / 56,870. A real mobile/desktop localized flow covered submission,
+  moderation, answer, correction, report, and archive without overflow, raw
+  keys, undersized primary controls, or console errors. All 18 scoped IDs are
+  verified.
 
 ## Phase Counts
 
@@ -147,7 +157,7 @@ as complete.
 | 5 | 825 | core/import pipeline implemented; full external snapshot pending |
 | 6 | 347 | foundation, panels/notes, and mentorship verified; additional trust packages remain |
 | 7 | 463 | operations verified; duplicate grouping, transparency, and broad entity coverage remain |
-| 8 | 3,345 | adoption, lost/found, collaborative guides, mentorship, persistent groups, group content, polls, journals, and events verified; remaining structured domains planned |
+| 8 | 3,345 | adoption, lost/found, collaborative guides, mentorship, persistent groups, group content, polls, journals, events, and expert question sessions verified; remaining structured domains planned |
 | 9 | 93 | planned |
 | 10 | 67 | in progress |
 | 11 | 13 | topic category/taxonomy backfill implemented; reports pending |
@@ -157,14 +167,15 @@ as complete.
 
 ## Next Verified Pass
 
-1. Read the next Phase 8 work-package plan and include explicit requirement
-   IDs before production changes.
-2. Plan verified professional question sessions (`forum.feature.3211` through
-   `.3226`) against existing credential, report, guide, topic, notification,
-   and moderation boundaries.
-3. Preserve the medical/legal non-authority boundary and add policy,
-   jurisdiction, scheduling, queue, correction, archive, factory, seed, and
-   direct-action tests before marking any expert-session ID verified.
+1. Create and read the next Phase 8 work-package plan with every source-section
+   70 content-lifecycle requirement ID before production changes.
+2. Implement `forum.feature.3227` through `.3257` together with
+   `forum.moderation.0328` and `forum.category.1400` against the existing topic,
+   guide, journal, merge, redirect, moderation, retention, and audit domains.
+3. Preserve content and stable URLs across reopen, merge, redirect, archive,
+   restore, legal-hold, stale-warning, update-request, and controlled-bump
+   transitions; verify policy and direct-action boundaries before marking any
+   lifecycle ID verified.
 4. Extend privacy-first search and following only after subject visibility is
    enforced before matching and counts.
 5. Update evidence, rerun migration/seed checks, and perform the next phase

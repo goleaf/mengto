@@ -1154,6 +1154,107 @@
                 "unresolved_risks": [],
                 "final_result": "verified"
             }
+        },
+        {
+            "requirement_ids": [
+                "forum.feature.3211",
+                "forum.feature.3212",
+                "forum.feature.3213",
+                "forum.feature.3214",
+                "forum.feature.3215",
+                "forum.feature.3216",
+                "forum.feature.3217",
+                "forum.feature.3218",
+                "forum.feature.3219",
+                "forum.moderation.0326",
+                "forum.feature.3220",
+                "forum.feature.3221",
+                "forum.feature.3222",
+                "forum.feature.3223",
+                "forum.feature.3224",
+                "forum.feature.3225",
+                "forum.moderation.0327",
+                "forum.feature.3226"
+            ],
+            "fields": {
+                "current_implementation_status": "verified",
+                "discovered_existing_files": [
+                    "app/Models/ExpertProfile.php",
+                    "app/Models/Credential.php",
+                    "app/Models/ForumReport.php",
+                    "app/Models/ForumNotification.php",
+                    "app/Actions/SubmitForumReport.php",
+                    "app/Policies/ExpertProfilePolicy.php",
+                    "routes/web.php"
+                ],
+                "planned_files": [
+                    "database/migrations/2026_07_31_001240_create_forum_expert_session_tables.php",
+                    "app/Models/ForumExpertSession.php",
+                    "app/Models/ForumExpertSessionQuestion.php",
+                    "app/Models/ForumExpertSessionAnswer.php",
+                    "app/Models/ForumExpertSessionCorrection.php",
+                    "app/Models/ForumExpertSessionHistory.php",
+                    "app/Policies/ForumExpertSessionPolicy.php",
+                    "app/Policies/ForumExpertSessionQuestionPolicy.php",
+                    "app/Policies/ForumExpertSessionAnswerPolicy.php",
+                    "app/Actions/CreateForumExpertSession.php",
+                    "app/Actions/SubmitForumExpertSessionQuestion.php",
+                    "app/Actions/ModerateForumExpertSessionQuestion.php",
+                    "app/Actions/WithdrawForumExpertSessionQuestion.php",
+                    "app/Actions/PublishForumExpertSessionAnswer.php",
+                    "app/Actions/CorrectForumExpertSessionAnswer.php",
+                    "app/Actions/ArchiveForumExpertSession.php",
+                    "app/Services/ForumExpertSessionHostEligibility.php",
+                    "app/Services/ForumExpertSessionAudit.php",
+                    "app/Livewire/Forum/ForumExpertSessionDirectory.php",
+                    "app/Livewire/Forum/ForumExpertSessionWorkspace.php",
+                    "database/seeders/ForumExpertSessionBackfillSeeder.php",
+                    "database/seeders/ForumExpertSessionDemoSeeder.php"
+                ],
+                "test_identifiers": [
+                    "tests/Feature/Forum/ExpertQuestionSessionWorkflowTest.php",
+                    "tests/Feature/ExpertSafetyTest.php",
+                    "tests/Feature/ArchitectureComplianceTest.php",
+                    "tests/Feature/LocalizationTest.php",
+                    "tests/Feature/Database/FactoryAndSeederTest.php",
+                    "tests/Feature/Database/SchemaIntegrityTest.php"
+                ],
+                "documentation_identifiers": [
+                    "docs/plans/forum-phase8-expert-question-sessions-work-package.md",
+                    "docs/expert-question-sessions.md",
+                    "docs/architecture.md",
+                    "docs/domain-model.md",
+                    "docs/data-model.md",
+                    "docs/authorization.md",
+                    "docs/privacy.md",
+                    "docs/security.md",
+                    "docs/frontend.md",
+                    "docs/livewire.md",
+                    "docs/accessibility.md",
+                    "docs/localization.md",
+                    "docs/seeding.md",
+                    "docs/testing.md",
+                    "docs/performance.md",
+                    "docs/deployment.md",
+                    "docs/operations.md"
+                ],
+                "implementation_status": "implemented",
+                "verification_status": "verified",
+                "evidence": [
+                    "database/migrations/2026_07_31_001240_create_forum_expert_session_tables.php: additive session, question, answer, correction, and append-only history schema with stable keys, scoped foreign-key indexes, queue and answer uniqueness, idempotency, source-timezone preservation, and reversible ownership-safe teardown",
+                    "CreateForumExpertSession, SubmitForumExpertSessionQuestion, ModerateForumExpertSessionQuestion, WithdrawForumExpertSessionQuestion, PublishForumExpertSessionAnswer, CorrectForumExpertSessionAnswer, and ArchiveForumExpertSession: authorized, validated, transactional, idempotent workflows with bounded submission rate, deterministic queueing, optimistic correction conflicts, non-destructive archive, and durable audit evidence",
+                    "ForumExpertSessionHostEligibility and the three expert-session policies: current independently verified credentials, exact professional scope, jurisdiction, ownership, expiry, public moderation state, and direct mutation boundaries are enforced without deriving authority from popularity, karma, or administrator role",
+                    "ForumExpertSessionDirectory, ForumExpertSessionWorkspace, six separate form objects, and passive Blade views: class-based Livewire with URL-backed bounded search, locked scalar identity, selective eager-loaded projections, action-specific feedback, offline state, localized medical/legal disclaimer, and responsive accessible controls",
+                    "ForumExpertSessionBackfillSeeder and ForumExpertSessionDemoSeeder: production-safe disclaimer normalization plus environment-gated deterministic credential-backed demonstration graph; repeated execution preserves stable session and credential identity",
+                    "tests/Feature/Forum/ExpertQuestionSessionWorkflowTest.php and SchemaIntegrityTest.php: focused package and architecture slice passed 31 tests and 22,249 assertions, including credential eligibility, timezone fidelity, queue privacy and rate limiting, correction history, reports, routes, seed idempotency, bounded query growth, and foreign-key index coverage",
+                    "expanded forum, expert, report, route, localization, factory, seeder, schema, and architecture regression slice passed 1,108 tests and 52,428 assertions",
+                    "final serial suite passed 1,594 tests and 56,870 assertions; Pint and Larastan passed; isolated fresh verification applied 97 migrations across 168 tables and preserved five users after repeated seeding",
+                    "Composer strict validation, npm audit, Vite 8.2 production build, and Laravel cache compilation passed; Composer audit had reported no advisories for the unchanged lock file before a final Packagist HTTP 502 retry",
+                    "Headless Chrome at 375x812 and 1440x900 exercised localized question submission, moderation, answer, immutable correction, private reporting, and archive preservation with one H1, no horizontal overflow, raw translation keys, unnamed controls, undersized primary targets, console warnings, or console errors"
+                ],
+                "unresolved_risks": [],
+                "final_result": "verified"
+            }
         }
     ]
 }

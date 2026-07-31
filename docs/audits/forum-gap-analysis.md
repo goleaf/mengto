@@ -144,3 +144,16 @@ and reminder preferences. Class-based Livewire directory/workspace screens,
 EN/LT/RU catalogues, factories, production/demo seed separation, query-budget
 coverage, reversible migration coverage, and mobile/desktop registration
 evidence close the 27-requirement event package.
+
+## Resolved Verified Expert Question Session Gap
+
+Verified professional sessions now reuse the independent credential-review
+boundary and require exact current scope and jurisdiction. The durable domain
+adds timestamp-derived question windows, a private moderated queue, explicit
+answered and unanswered states, safe source links, immutable corrections,
+non-destructive archives, unified reports, and a localized medical/legal
+non-authority notice. Popularity, karma, administrator role, and community
+votes cannot manufacture professional authority. Direct Action and Livewire
+authorization, rate limiting, idempotency, seed repeatability, query growth,
+foreign-key indexes, translations, and responsive presentation are covered by
+the package evidence.

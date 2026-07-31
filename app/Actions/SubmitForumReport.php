@@ -11,6 +11,9 @@ use App\Models\ForumAnswer;
 use App\Models\ForumBlock;
 use App\Models\ForumComment;
 use App\Models\ForumEvent;
+use App\Models\ForumExpertSession;
+use App\Models\ForumExpertSessionAnswer;
+use App\Models\ForumExpertSessionQuestion;
 use App\Models\ForumGroup;
 use App\Models\ForumMentorship;
 use App\Models\ForumReport;
@@ -75,6 +78,9 @@ final readonly class SubmitForumReport
             ForumMentorship::class,
             ForumGroup::class,
             ForumEvent::class,
+            ForumExpertSession::class,
+            ForumExpertSessionQuestion::class,
+            ForumExpertSessionAnswer::class,
         ], true)) {
             throw ValidationException::withMessages([
                 'subject' => __('forum_moderation.validation.unsupported_subject'),
@@ -86,6 +92,13 @@ final readonly class SubmitForumReport
         }
 
         if ($subject instanceof ForumGroup) {
+            $this->gate->forUser($reporter)->authorize('report', $subject);
+        }
+
+        if ($subject instanceof ForumExpertSession
+            || $subject instanceof ForumExpertSessionQuestion
+            || $subject instanceof ForumExpertSessionAnswer
+        ) {
             $this->gate->forUser($reporter)->authorize('report', $subject);
         }
 
@@ -236,6 +249,9 @@ final readonly class SubmitForumReport
             $subject instanceof ForumMentorship => $subject->counterpartId($reporter),
             $subject instanceof ForumGroup => $subject->owner_user_id,
             $subject instanceof ForumEvent => $subject->organizer_user_id,
+            $subject instanceof ForumExpertSession => $subject->created_by_user_id,
+            $subject instanceof ForumExpertSessionQuestion => $subject->author_user_id,
+            $subject instanceof ForumExpertSessionAnswer => $subject->author_user_id,
             default => null,
         };
 

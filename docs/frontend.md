@@ -118,3 +118,17 @@ elements, textual metric fallbacks, field-linked validation, precise loading
 targets, an offline status, and neutral milestone/setback language. It does
 not require a chart library, drag-and-drop, hover, or client-owned business
 state. See `docs/journals.md`.
+
+## Expert Question Sessions
+
+`/forum/expert-sessions` uses a class-based Livewire directory and a
+server-rendered session workspace. The directory supports bounded URL-backed
+search, scope, and period filters. The workspace coordinates the moderated
+question queue, answer sources, immutable corrections, reports, archive, and
+localized safety disclaimer.
+
+Blade receives prepared arrays and never queries models or services. Pending
+questions are removed by server policy before rendering. Normal links remain
+functional without `wire:navigate`; no workflow requires hover,
+drag-and-drop, or client-owned business state. See
+`docs/expert-question-sessions.md`.

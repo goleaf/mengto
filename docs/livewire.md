@@ -134,3 +134,12 @@ Each mutation delegates to an Action that reloads and authorizes the subject.
 Directory/timeline queries paginate or cap their results, select presentation
 columns, eager load constrained relations, and prepare passive Blade arrays.
 See `docs/journals.md`.
+
+## Expert Session Components
+
+`ForumExpertSessionDirectory` and `ForumExpertSessionWorkspace` use locked
+scalar identity, URL-backed bounded discovery, separate session/question/
+answer/correction/moderation/report forms, and prepared presentation arrays.
+Pending queue rows are policy-filtered before rendering. Credential evidence,
+models, service instances, and protected moderation data never enter public
+component state. See `docs/expert-question-sessions.md`.

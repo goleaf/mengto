@@ -34,3 +34,7 @@ They do not replace source requirements.
     Modernization adds compatible fields, indexes, actions, and presentation;
     it does not convert or replace them destructively. Existing accessories
     already represent collars and other visible equipment.
+13. No durable legacy expert-session aggregate exists. Ordinary topics,
+    consultations, events, and expert publications are not silently converted
+    into scheduled sessions; a production backfill records a zero-row result
+    unless a stable legacy source is discovered before implementation ends.

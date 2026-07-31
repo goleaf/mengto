@@ -29,6 +29,7 @@ This index is the source-of-truth map for first-party documentation.
 | `docs/groups.md` | Persistent group identity, membership, privacy, management, seeding, and recovery | Product + engineering | Canonical |
 | `docs/polls.md` | Persistent group content, polls, private files, concurrency, seeding, and recovery | Product + engineering | Canonical |
 | `docs/events.md` | Events, attendance, clubs, privacy, backfill, and recovery | Product + engineering | Canonical |
+| `docs/expert-question-sessions.md` | Verified-host question sessions, queue privacy, corrections, and recovery | Product + engineering | Canonical |
 | `docs/tailwind.md` | Tailwind 4 rules and applicability matrix | Frontend | Canonical |
 | `docs/accessibility.md` | Accessibility acceptance criteria | Design + QA | Canonical |
 | `docs/localization.md` | Locale architecture and translation workflow | Product + frontend | Canonical |

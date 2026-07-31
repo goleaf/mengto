@@ -190,3 +190,23 @@ online access, and the emergency plan require organizer, administrator, or
 confirmed/checked-in attendee access. Group events additionally enforce the
 current group policy. Professional organizer presentation reads independent
 current credential evidence and cannot be granted by event reputation.
+
+## Verified Expert Sessions
+
+- Any guest may view a published, non-archived session and approved public
+  queue content.
+- Only an active verified member may submit a question during the timestamp-
+  derived question window.
+- Pending questions are limited to their author, a currently qualified host,
+  and administrators.
+- Only the question author may withdraw an eligible question.
+- Only the currently qualified host or an authorized administrator may
+  moderate the queue; administrators do not acquire host-answer authority.
+- Only the current independently credentialed host may publish or correct an
+  answer in the session scope and jurisdiction.
+- Active users may report only subjects they are authorized to view.
+- Archive is authorized and auditable; delete, restore, and force-delete are
+  not application abilities.
+
+Every Livewire action reauthorizes the current database record. Locked IDs,
+hidden controls, popularity, trust, and reputation are not authorization.

@@ -8,6 +8,7 @@
 - Answers, comments, reactions, useful votes, accepted answers, solved states, author updates, bookmarks, and subscriptions.
 - Reports, blocks, moderation priority, medical warnings, dangerous-advice reporting, and private-topic cache protection.
 - Editorial knowledge articles with sources, contributors, review dates, versions, related discussions, and correction proposals.
+- Verified professional question sessions with scoped credentials, scheduled moderated queues, versioned corrections, safety disclaimers, and unified reports.
 - Responsive Blade interfaces for the directory, topic, editor, knowledge library, and article pages.
 - Factories, representative seed data, policies, Form Requests, Actions, thin controllers, and focused feature tests.
 
@@ -22,6 +23,12 @@
 
 ## Deliberately deferred
 
-The later-release items from section 305 remain outside this release: anonymous topics, professional closed areas, semantic or AI search, collaborative answers, audio and video answers, automatic transcripts, live expert sessions, advanced reputation, editorial teams, local article variants, offline packs, answer comparison, automated stale-content detection, advanced anti-spam analytics, and AI summaries.
+The later-release items from section 305 that remain outside this release are:
+anonymous topics, professional closed areas, semantic or AI search,
+collaborative answers, audio and video answers, automatic transcripts,
+editorial teams, local article variants, offline packs, answer comparison,
+automated stale-content detection, advanced anti-spam analytics, and AI
+summaries. Verified professional question sessions and the implemented scoped
+reputation foundation are no longer deferred.
 
 The schema and service boundaries keep these additions possible without changing the public topic, answer, comment, vote, subscription, report, or knowledge-article contracts.

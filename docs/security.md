@@ -244,3 +244,19 @@ See `docs/journals.md`, `docs/privacy.md`, and `docs/files.md`.
 - organizer verification is independent from karma and event popularity;
 - unified reports preserve reporter privacy and moderation evidence;
 - the retired shared action endpoint rejects authoritative event mutations.
+
+## Expert Session Controls
+
+- Professional eligibility requires current independent profile and credential
+  status, exact scope, and exact/global jurisdiction at each authority-bearing
+  mutation.
+- Questions use UUID idempotency, per-session limits, user-scoped rate
+  limiting, transactionally unique ordering, and pending-by-default privacy.
+- Direct policy and report paths cannot expose a guessed pending-question ID.
+- Answers require approved questions, one-answer uniqueness, optimistic
+  correction versions, and append-only audit evidence.
+- External source links accept only bounded HTTP(S) values and are never
+  fetched by the server.
+- Model serialization hides idempotency keys and credential private fields.
+- Session, question, and answer complaints reuse the rate-limited unified
+  report pipeline.

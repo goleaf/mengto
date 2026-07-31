@@ -250,3 +250,16 @@ The previous JSON event state now owns only personal interest, calendar, and
 reminder preferences. Legacy creation URLs redirect to the class-based
 Livewire workflow, so there is one authoritative mutation path. See
 `docs/events.md`.
+
+## Verified Expert Session Boundary
+
+`ForumExpertSession` is a scheduled educational aggregate separate from
+appointments, consultations, ordinary topics, events, and guides. It owns the
+scope/jurisdiction snapshot and schedule; questions, answers, corrections, and
+history are normalized children. Current `ExpertProfile` plus `Credential`
+state remains the sole professional-authority boundary.
+
+Dedicated Actions own transactional mutations, policies run before private
+queue data is returned, and timestamp-derived windows avoid a scheduler
+dependency. Source URLs are validated but never fetched. Reports reuse unified
+moderation. See `docs/expert-question-sessions.md`.

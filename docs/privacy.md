@@ -58,3 +58,16 @@ reporter to the reported organizer by default.
 Photo consent is explicit per registration. Event cancellation, archive, and
 backfill preserve registrations, invitations, reports, reviews, messages, and
 history instead of deleting evidence.
+
+## Expert Session Privacy
+
+Public session projections include the preserved host name, professional
+scope, jurisdiction, topic, schedule, approved questions, published answers,
+source labels/URLs, correction history, and disclaimer. Credential evidence,
+credential identifiers, reviewer notes, file paths, idempotency keys, pending
+questions belonging to other users, reporter identity, and moderation evidence
+remain private.
+
+Pending queue authorization is applied before matching or presentation.
+Archival retains audit-bearing records; it does not publish previously private
+queue content.

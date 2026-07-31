@@ -77,8 +77,14 @@
   verification, unified reports, stable-key backfill, and accessible
   class-based Livewire directory and workspace flows. Retired event presenters
   and styles were removed while legacy create/report URLs remain compatible.
+- Added credential-backed professional question sessions with exact scope and
+  jurisdiction eligibility, timestamp-derived question windows, private
+  moderated queues, idempotent answers, safe source links, immutable
+  corrections, non-destructive archives, unified reports, localized
+  medical/legal non-authority notices, repeatable demo data, and accessible
+  class-based Livewire directory and workspace flows.
 - Added an evidence overlay that prevents requirement verification without
-  concrete file or test evidence; 397 atomic requirements are currently
+  concrete file or test evidence; 415 atomic requirements are currently
   verified.
 
 ### Runtime And Architecture
