@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
@@ -25,6 +26,7 @@ use Illuminate\Support\Facades\Cache;
  * @property-read Collection<int, SearchAlert> $alerts
  * @property bool $alerts_active
  * @property bool $animal_secured
+ * @property Carbon|null $archived_at
  * @property string|null $approach_instructions
  * @property string|null $avoid_instructions
  * @property string|null $breed
@@ -77,6 +79,7 @@ use Illuminate\Support\Facades\Cache;
  * @property string $slug
  * @property string $species
  * @property SearchStatus $status
+ * @property string|null $temperament
  * @property-read Collection<int, SearchTask> $tasks
  * @property SearchCaseType $type
  * @property Carbon|null $updated_at
@@ -95,34 +98,44 @@ class SearchCase extends Model
         'id', 'owner_id', 'owner_key', 'owner_name', 'owner_initials',
         'coordinator_key', 'coordinator_name', 'slug', 'public_code',
         'active_key', 'type', 'status', 'moderation_status', 'pet_profile_key',
-        'pet_name', 'species', 'breed', 'sex', 'age_label', 'size',
+        'pet_profile_id', 'taxon_id', 'domestic_classification_id',
+        'duplicate_of_search_case_id', 'pet_name', 'species', 'breed', 'sex',
+        'age_label', 'size',
         'primary_color', 'coat', 'distinctive_marks', 'hidden_marks',
         'description', 'health_notice', 'approach_instructions',
-        'avoid_instructions', 'accessories', 'microchip_status',
+        'avoid_instructions', 'accessories', 'temperament', 'microchip_status',
         'last_seen_area', 'city', 'country', 'public_latitude',
         'public_longitude', 'exact_location', 'direction', 'last_seen_at',
         'reported_at', 'notification_radius_km', 'visibility', 'alerts_active',
         'volunteer_join_open', 'animal_secured', 'contact_protected',
-        'contact_details', 'contact_token', 'cover_url', 'photos', 'risk_flags',
-        'latest_update', 'last_sighting_at', 'found_at', 'returned_at',
-        'closed_at', 'closure_reason', 'view_count', 'created_at', 'updated_at',
+        'contact_details', 'contact_token', 'reward_offered', 'reward_summary',
+        'cover_url', 'photos', 'risk_flags', 'animal_snapshot',
+        'requires_taxonomy_review', 'latest_update', 'last_sighting_at',
+        'found_at', 'returned_at', 'reunited_confirmed_by_user_id',
+        'reunited_at', 'closed_at', 'archived_at', 'closure_reason',
+        'view_count', 'lock_version', 'created_at', 'updated_at',
     ];
 
     protected $fillable = [
         'owner_id', 'owner_key', 'owner_name', 'owner_initials',
         'coordinator_key', 'coordinator_name', 'slug', 'public_code',
         'active_key', 'type', 'status', 'moderation_status', 'pet_profile_key',
-        'pet_name', 'species', 'breed', 'sex', 'age_label', 'size',
+        'pet_profile_id', 'taxon_id', 'domestic_classification_id',
+        'duplicate_of_search_case_id', 'pet_name', 'species', 'breed', 'sex',
+        'age_label', 'size',
         'primary_color', 'coat', 'distinctive_marks', 'hidden_marks',
         'description', 'health_notice', 'approach_instructions',
-        'avoid_instructions', 'accessories', 'microchip_status',
+        'avoid_instructions', 'accessories', 'temperament', 'microchip_status',
         'last_seen_area', 'city', 'country', 'public_latitude',
         'public_longitude', 'exact_location', 'direction', 'last_seen_at',
         'reported_at', 'notification_radius_km', 'visibility', 'alerts_active',
         'volunteer_join_open', 'animal_secured', 'contact_protected',
-        'contact_details', 'contact_token', 'cover_url', 'photos', 'risk_flags',
-        'latest_update', 'last_sighting_at', 'found_at', 'returned_at',
-        'closed_at', 'closure_reason', 'view_count',
+        'contact_details', 'contact_token', 'reward_offered', 'reward_summary',
+        'cover_url', 'photos', 'risk_flags', 'animal_snapshot',
+        'requires_taxonomy_review', 'latest_update', 'last_sighting_at',
+        'found_at', 'returned_at', 'reunited_confirmed_by_user_id',
+        'reunited_at', 'closed_at', 'archived_at', 'closure_reason',
+        'view_count', 'lock_version',
     ];
 
     protected $hidden = [
@@ -131,6 +144,7 @@ class SearchCase extends Model
         'contact_details',
         'contact_token',
         'active_key',
+        'animal_snapshot',
     ];
 
     protected $attributes = [
@@ -144,6 +158,10 @@ class SearchCase extends Model
         'volunteer_join_open' => true,
         'animal_secured' => false,
         'contact_protected' => true,
+        'reward_offered' => false,
+        'requires_taxonomy_review' => false,
+        'lock_version' => 1,
+        'archived_at' => null,
     ];
 
     protected static function booted(): void
@@ -162,6 +180,7 @@ class SearchCase extends Model
             'accessories' => 'array',
             'exact_location' => 'encrypted:array',
             'contact_details' => 'encrypted:array',
+            'animal_snapshot' => 'encrypted:array',
             'photos' => 'array',
             'risk_flags' => 'array',
             'public_latitude' => 'decimal:6',
@@ -172,10 +191,14 @@ class SearchCase extends Model
             'volunteer_join_open' => 'boolean',
             'animal_secured' => 'boolean',
             'contact_protected' => 'boolean',
+            'reward_offered' => 'boolean',
+            'requires_taxonomy_review' => 'boolean',
             'last_sighting_at' => 'datetime',
             'found_at' => 'datetime',
             'returned_at' => 'datetime',
+            'reunited_at' => 'datetime',
             'closed_at' => 'datetime',
+            'archived_at' => 'datetime',
         ];
     }
 
@@ -194,6 +217,54 @@ class SearchCase extends Model
     public function sightings(): HasMany
     {
         return $this->hasMany(Sighting::class);
+    }
+
+    /** @return BelongsTo<User, $this> */
+    public function owner(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'owner_id');
+    }
+
+    /** @return BelongsTo<PetProfile, $this> */
+    public function petProfile(): BelongsTo
+    {
+        return $this->belongsTo(PetProfile::class);
+    }
+
+    /** @return BelongsTo<Taxon, $this> */
+    public function taxon(): BelongsTo
+    {
+        return $this->belongsTo(Taxon::class);
+    }
+
+    /** @return BelongsTo<DomesticClassification, $this> */
+    public function domesticClassification(): BelongsTo
+    {
+        return $this->belongsTo(DomesticClassification::class);
+    }
+
+    /** @return BelongsTo<SearchCase, $this> */
+    public function duplicateOf(): BelongsTo
+    {
+        return $this->belongsTo(self::class, 'duplicate_of_search_case_id');
+    }
+
+    /** @return BelongsTo<User, $this> */
+    public function reunitedConfirmer(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'reunited_confirmed_by_user_id');
+    }
+
+    /** @return HasMany<SearchCaseEvent, $this> */
+    public function events(): HasMany
+    {
+        return $this->hasMany(SearchCaseEvent::class);
+    }
+
+    /** @return HasMany<SearchContactRelay, $this> */
+    public function contactRelays(): HasMany
+    {
+        return $this->hasMany(SearchContactRelay::class);
     }
 
     /** @return HasMany<\App\Models\SearchSector, $this>*/
@@ -236,13 +307,16 @@ class SearchCase extends Model
     {
         return $query->select([
             'id', 'owner_key', 'owner_name', 'owner_initials', 'slug',
-            'public_code', 'type', 'status', 'pet_name', 'species', 'breed',
+            'public_code', 'type', 'status', 'pet_profile_id', 'taxon_id',
+            'domestic_classification_id', 'duplicate_of_search_case_id',
+            'pet_name', 'species', 'breed',
             'size', 'primary_color', 'distinctive_marks', 'description',
             'health_notice', 'approach_instructions', 'last_seen_area', 'city',
             'public_latitude', 'public_longitude', 'direction', 'last_seen_at',
             'notification_radius_km', 'visibility', 'alerts_active',
-            'animal_secured', 'contact_protected', 'cover_url', 'photos',
-            'latest_update', 'last_sighting_at', 'view_count', 'created_at',
+            'animal_secured', 'contact_protected', 'reward_offered',
+            'reward_summary', 'cover_url', 'photos', 'latest_update',
+            'last_sighting_at', 'archived_at', 'view_count', 'created_at',
             'updated_at',
         ]);
     }
@@ -251,7 +325,8 @@ class SearchCase extends Model
     {
         return $query
             ->where('moderation_status', ModerationStatus::Approved->value)
-            ->where('visibility', 'public');
+            ->where('visibility', 'public')
+            ->whereNull('archived_at');
     }
 
     public function scopeUrgent(Builder $query): Builder

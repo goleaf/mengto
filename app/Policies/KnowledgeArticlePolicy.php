@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
-use App\Enums\KnowledgeStatus;
+use App\Enums\KnowledgeCollaboratorRole;
+use App\Enums\VerificationStatus;
+use App\Models\ForumUserTrustLevel;
 use App\Models\KnowledgeArticle;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
 
 final class KnowledgeArticlePolicy
 {
@@ -17,10 +20,8 @@ final class KnowledgeArticlePolicy
 
     public function view(?User $user, KnowledgeArticle $knowledgeArticle): bool
     {
-        return in_array($knowledgeArticle->status, [
-            KnowledgeStatus::Published,
-            KnowledgeStatus::Outdated,
-        ], true);
+        return $knowledgeArticle->status->isPublic()
+            || ($user !== null && $this->update($user, $knowledgeArticle));
     }
 
     public function proposeCorrection(?User $user, KnowledgeArticle $knowledgeArticle): bool
@@ -31,12 +32,77 @@ final class KnowledgeArticlePolicy
 
     public function create(?User $user): bool
     {
-        return $user?->isActive() === true && $user->isAdministrator();
+        return $user?->isActive() === true
+            && ($user->isAdministrator() || $this->hasEditorialTrust($user));
     }
 
     public function update(?User $user, KnowledgeArticle $knowledgeArticle): bool
     {
-        return $user?->isActive() === true && $user->isAdministrator();
+        return $user?->isActive() === true
+            && (
+                $user->isAdministrator()
+                || $this->hasActiveRole($user, $knowledgeArticle, [
+                    KnowledgeCollaboratorRole::Maintainer,
+                    KnowledgeCollaboratorRole::Contributor,
+                ])
+            );
+    }
+
+    public function manageCollaborators(?User $user, KnowledgeArticle $knowledgeArticle): bool
+    {
+        return $user?->isActive() === true
+            && (
+                $user->isAdministrator()
+                || $this->hasActiveRole($user, $knowledgeArticle, [
+                    KnowledgeCollaboratorRole::Maintainer,
+                ])
+            );
+    }
+
+    public function manageWorkflow(?User $user, KnowledgeArticle $knowledgeArticle): bool
+    {
+        return $this->manageCollaborators($user, $knowledgeArticle);
+    }
+
+    public function communityReview(?User $user, KnowledgeArticle $knowledgeArticle): bool
+    {
+        return $user?->isActive() === true
+            && $this->hasEditorialTrust($user, ['community-reviewer', 'category-steward'])
+            && $this->hasActiveRole($user, $knowledgeArticle, [
+                KnowledgeCollaboratorRole::CommunityReviewer,
+            ]);
+    }
+
+    public function expertReview(?User $user, KnowledgeArticle $knowledgeArticle): bool
+    {
+        return $user?->isActive() === true
+            && $this->hasActiveRole($user, $knowledgeArticle, [
+                KnowledgeCollaboratorRole::ExpertReviewer,
+            ])
+            && $user->expertProfiles()
+                ->where('verification_status', VerificationStatus::Verified->value)
+                ->where(function (Builder $query): void {
+                    $query
+                        ->whereNull('verification_expires_at')
+                        ->orWhere('verification_expires_at', '>', now());
+                })
+                ->exists();
+    }
+
+    public function reviewCorrection(?User $user, KnowledgeArticle $knowledgeArticle): bool
+    {
+        return $this->manageWorkflow($user, $knowledgeArticle);
+    }
+
+    public function rollback(?User $user, KnowledgeArticle $knowledgeArticle): bool
+    {
+        return $this->manageWorkflow($user, $knowledgeArticle);
+    }
+
+    public function export(?User $user, KnowledgeArticle $knowledgeArticle): bool
+    {
+        return $knowledgeArticle->status->isPublic()
+            || ($user !== null && $this->update($user, $knowledgeArticle));
     }
 
     public function delete(?User $user, KnowledgeArticle $knowledgeArticle): bool
@@ -52,5 +118,46 @@ final class KnowledgeArticlePolicy
     public function forceDelete(?User $user, KnowledgeArticle $knowledgeArticle): bool
     {
         return false;
+    }
+
+    /**
+     * @param  list<KnowledgeCollaboratorRole>  $roles
+     */
+    private function hasActiveRole(
+        User $user,
+        KnowledgeArticle $article,
+        array $roles,
+    ): bool {
+        return $article->collaborators()
+            ->where('user_id', $user->id)
+            ->whereIn('role', array_map(
+                static fn (KnowledgeCollaboratorRole $role): string => $role->value,
+                $roles,
+            ))
+            ->whereNull('revoked_at')
+            ->exists();
+    }
+
+    /**
+     * @param  list<string>  $keys
+     */
+    private function hasEditorialTrust(
+        User $user,
+        array $keys = ['trusted-contributor', 'community-reviewer', 'category-steward'],
+    ): bool {
+        return ForumUserTrustLevel::query()
+            ->where('user_id', $user->id)
+            ->where(function (Builder $query): void {
+                $query
+                    ->whereNull('expires_at')
+                    ->orWhere('expires_at', '>', now());
+            })
+            ->whereHas(
+                'level',
+                fn (Builder $query): Builder => $query
+                    ->where('is_active', true)
+                    ->whereIn('stable_key', $keys),
+            )
+            ->exists();
     }
 }

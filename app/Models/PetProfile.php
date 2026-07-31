@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 
@@ -63,6 +64,18 @@ final class PetProfile extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    /** @return HasMany<AdoptionCase, $this> */
+    public function adoptionCases(): HasMany
+    {
+        return $this->hasMany(AdoptionCase::class);
+    }
+
+    /** @return HasMany<SearchCase, $this> */
+    public function searchCases(): HasMany
+    {
+        return $this->hasMany(SearchCase::class);
     }
 
     public function scopeVisibleTo(Builder $query, ?User $user): Builder

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests;
 
 use App\Models\Listing;
@@ -68,6 +70,16 @@ class PerformListingActionRequest extends FormRequest
                 'required_if:action,report',
             ],
             'details' => ['nullable', 'string', 'max:2000'],
+            'truthfulness_confirmed' => [
+                'exclude_unless:action,report',
+                'required',
+                'accepted',
+            ],
+            'immediate_safety' => [
+                'exclude_unless:action,report',
+                'sometimes',
+                'boolean',
+            ],
         ];
     }
 

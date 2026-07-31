@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Enums;
 
 enum SightingStatus: string
@@ -11,11 +13,6 @@ enum SightingStatus: string
 
     public function label(): string
     {
-        return match ($this) {
-            self::Submitted => 'Awaiting review',
-            self::NeedsReview => 'Needs verification',
-            self::Confirmed => 'Confirmed sighting',
-            self::Rejected => 'Not a match',
-        };
+        return __("lost_found.sighting_status.{$this->value}");
     }
 }

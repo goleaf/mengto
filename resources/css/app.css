@@ -46,6 +46,7 @@
 
 @layer base {
     html {
+        overflow-x: clip;
         color-scheme: light;
         text-size-adjust: 100%;
     }

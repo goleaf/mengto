@@ -7,17 +7,18 @@ namespace App\Http\Controllers;
 use App\Actions\ProposeCorrection;
 use App\Http\Requests\StoreCorrectionRequest;
 use App\Models\KnowledgeArticle;
+use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Gate;
 
-class CorrectionStoreController extends Controller
+final class CorrectionStoreController extends Controller
 {
     public function __invoke(
         StoreCorrectionRequest $request,
         KnowledgeArticle $knowledgeArticle,
         ProposeCorrection $proposeCorrection,
+        Gate $gate,
     ): RedirectResponse {
-        Gate::authorize('proposeCorrection', $knowledgeArticle);
+        $gate->authorize('proposeCorrection', $knowledgeArticle);
         $proposeCorrection->handle($knowledgeArticle, $request->validated());
 
         return to_route('knowledge.articles.show', $knowledgeArticle)

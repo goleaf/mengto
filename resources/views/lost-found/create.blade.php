@@ -1,7 +1,7 @@
 <x-app-shell :owner="$owner" :title="$page_title" :active-section="$active_section">
     <div class="mx-auto grid max-w-5xl gap-6">
         <header class="border-b border-paw-line pb-6">
-            <a href="{{ route('lost-found.index') }}" class="inline-flex items-center gap-2 text-sm font-semibold text-paw-leaf">
+            <a href="{{ route('lost-found.index') }}" class="inline-flex min-h-11 items-center gap-2 py-3 text-sm font-semibold text-paw-leaf">
                 <x-lucide-arrow-left class="size-4" aria-hidden="true" />
                 {{ __('ui.lost_found_217c655848') }}
             </a>
@@ -28,21 +28,21 @@
             </div>
         @endif
 
-        <form method="POST" action="{{ route('lost-found.store') }}" enctype="multipart/form-data" class="grid gap-8">
+        <form method="POST" action="{{ route('lost-found.store') }}" enctype="multipart/form-data" class="lost-found-case-form grid gap-8">
             @csrf
             <input type="hidden" name="intent" value="publish">
-            <input type="hidden" name="country" value="LT">
+            <input type="hidden" name="country" value="{{ $default_country }}">
 
             <section class="grid gap-4 border-b border-paw-line pb-8" aria-labelledby="report-kind-title">
                 <h2 id="report-kind-title" class="text-xl font-bold">{{ __('ui.what_happened_c4dc542b51') }}</h2>
                 <div class="grid gap-3 sm:grid-cols-2">
                     @forelse ($types as $value => $label)
                         <label class="flex cursor-pointer items-start gap-3 rounded-md border border-paw-line bg-white p-4 has-[:checked]:border-paw-leaf has-[:checked]:bg-paw-mint">
-                            <input type="radio" name="type" value="{{ $value }}" class="mt-1" @checked(old('type', 'lost') === $value)>
+                            <input type="radio" name="type" value="{{ $value }}" class="mt-1" @checked(old('type', $default_type) === $value)>
                             <span>
                                 <strong class="block">{{ $label }}</strong>
                                 <span class="mt-1 block text-sm text-paw-muted">
-                                    {{ $value === 'lost' ? __('ui.start_an_active_search_from_a_pet_profile_7c530ff322') : __('ui.create_a_protected_handover_and_owner_verification_path_4b32d22867') }}
+                                    {{ $type_descriptions[$value] }}
                                 </span>
                             </span>
                         </label>
@@ -57,10 +57,10 @@
                 <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                     <label class="grid gap-1 text-sm font-semibold">
                         {{ __('ui.pet_profile_fc2c49bb42') }}
-                        <select name="pet_profile_key" class="rounded-md border border-paw-line bg-white px-3 py-2.5">
+                        <select name="pet_profile_id" class="min-h-11 rounded-md border border-paw-line bg-white px-3 py-2.5">
                             <option value="">{{ __('ui.no_saved_profile_af8b04d165') }}</option>
                             @forelse ($pet_options as $value => $label)
-                                <option value="{{ $value }}" @selected(old('pet_profile_key', 'scout') === $value)>{{ $label }}</option>
+                                <option value="{{ $value }}" @selected(old('pet_profile_id', $default_pet_id) == $value)>{{ $label }}</option>
                             @empty
                                 <option disabled>{{ __('ui.no_profiles_c5b4331f0e') }}</option>
                             @endforelse
@@ -74,7 +74,7 @@
                         {{ __('ui.species_56205e12c2') }}
                         <select name="species" class="rounded-md border border-paw-line bg-white px-3 py-2.5" required>
                             @forelse ($species_options as $value => $label)
-                                <option value="{{ $value }}" @selected(old('species', 'dog') === $value)>{{ $label }}</option>
+                                <option value="{{ $value }}" @selected(old('species', $default_species) === $value)>{{ $label }}</option>
                             @empty
                                 <option disabled>{{ __('ui.no_species_7079df2086') }}</option>
                             @endforelse
@@ -86,14 +86,14 @@
                     </label>
                     <label class="grid gap-1 text-sm font-semibold">
                         {{ __('ui.primary_color_2b03958ca7') }}
-                        <input name="primary_color" value="{{ old('primary_color', 'black with white chest') }}" class="rounded-md border border-paw-line bg-white px-3 py-2.5" required maxlength="80">
+                        <input name="primary_color" value="{{ old('primary_color') }}" class="rounded-md border border-paw-line bg-white px-3 py-2.5" required maxlength="80">
                     </label>
                     <label class="grid gap-1 text-sm font-semibold">
                         {{ __('ui.size_1af8519073') }}
                         <select name="size" class="rounded-md border border-paw-line bg-white px-3 py-2.5">
                             <option value="">{{ __('ui.choose_size_03f6ea82bd') }}</option>
                             @forelse ($size_options as $value => $label)
-                                <option value="{{ $value }}" @selected(old('size', 'large') === $value)>{{ $label }}</option>
+                                <option value="{{ $value }}" @selected(old('size', $default_size) === $value)>{{ $label }}</option>
                             @empty
                                 <option disabled>{{ __('ui.no_size_options_60cfd1979a') }}</option>
                             @endforelse
@@ -115,7 +115,7 @@
                         {{ __('ui.microchip_230fe79bc1') }}
                         <select name="microchip_status" class="rounded-md border border-paw-line bg-white px-3 py-2.5">
                             @forelse ($microchip_options as $value => $label)
-                                <option value="{{ $value }}" @selected(old('microchip_status', 'present') === $value)>{{ $label }}</option>
+                                <option value="{{ $value }}" @selected(old('microchip_status', $default_microchip_status) === $value)>{{ $label }}</option>
                             @empty
                                 <option disabled>{{ __('ui.no_microchip_options_9f87ae5553') }}</option>
                             @endforelse
@@ -123,9 +123,15 @@
                     </label>
                 </div>
 
+                <livewire:forum.animal-taxonomy-selector
+                    :selected="old('taxon_id')"
+                    input-name="taxon_id"
+                    :selection-limit="1"
+                />
+
                 <label class="grid gap-1 text-sm font-semibold">
                     {{ __('ui.public_description_05a15f0699') }}
-                    <textarea name="description" rows="4" class="rounded-md border border-paw-line bg-white px-3 py-2.5" required maxlength="3000">{{ old('description', __('ui.friendly_at_home_but_may_run_if_approached_f06276fae2')) }}</textarea>
+                    <textarea name="description" rows="4" class="rounded-md border border-paw-line bg-white px-3 py-2.5" required maxlength="4000">{{ old('description') }}</textarea>
                 </label>
 
                 <div class="grid gap-4 sm:grid-cols-2">
@@ -140,10 +146,23 @@
                     </label>
                 </div>
 
+                <div class="grid gap-4 sm:grid-cols-2">
+                    <label class="grid gap-1 text-sm font-semibold">
+                        {{ __('lost_found.interface.temperament') }}
+                        <input name="temperament" value="{{ old('temperament') }}" class="rounded-md border border-paw-line bg-white px-3 py-2.5" maxlength="300">
+                        <span class="text-xs font-normal text-paw-muted">{{ __('lost_found.interface.temperament_help') }}</span>
+                    </label>
+                    <label class="grid gap-1 text-sm font-semibold">
+                        {{ __('lost_found.interface.collar_accessories') }}
+                        <input name="accessories[]" value="{{ old('accessories.0') }}" class="rounded-md border border-paw-line bg-white px-3 py-2.5" maxlength="80">
+                        <span class="text-xs font-normal text-paw-muted">{{ __('lost_found.interface.collar_accessories_help') }}</span>
+                    </label>
+                </div>
+
                 <label class="grid gap-1 text-sm font-semibold">
                     {{ __('ui.current_photos_2b2ce7b708') }}
                     <input type="file" name="photos[]" accept="image/jpeg,image/png,image/webp" multiple class="rounded-md border border-paw-line bg-white px-3 py-2.5">
-                    <span class="text-xs font-normal text-paw-muted">{{ __('ui.up_to_six_jpg_png_or_webp_files_943f8f7f98') }}</span>
+                    <span class="text-xs font-normal text-paw-muted">{{ __('lost_found.interface.photo_limits') }}</span>
                 </label>
             </section>
 
@@ -160,7 +179,7 @@
                     </label>
                     <label class="grid gap-1 text-sm font-semibold">
                         {{ __('ui.observed_at_2f4add0f44') }}
-                        <input type="datetime-local" name="last_seen_at" value="{{ old('last_seen_at', now()->subMinutes(30)->format('Y-m-d\TH:i')) }}" class="rounded-md border border-paw-line bg-white px-3 py-2.5" required>
+                        <input type="datetime-local" name="last_seen_at" value="{{ old('last_seen_at', $default_last_seen_at) }}" class="rounded-md border border-paw-line bg-white px-3 py-2.5" required>
                     </label>
                     <label class="grid gap-1 text-sm font-semibold">
                         {{ __('ui.direction_9c8a9579ab') }}
@@ -168,11 +187,11 @@
                     </label>
                     <label class="grid gap-1 text-sm font-semibold">
                         {{ __('ui.exact_latitude_27be947b0b') }}
-                        <input type="number" step="0.000001" name="latitude" value="{{ old('latitude', '54.683400') }}" class="rounded-md border border-paw-line bg-white px-3 py-2.5" required>
+                        <input type="number" step="0.000001" name="latitude" value="{{ old('latitude') }}" class="rounded-md border border-paw-line bg-white px-3 py-2.5" required>
                     </label>
                     <label class="grid gap-1 text-sm font-semibold">
                         {{ __('ui.exact_longitude_a1f25ad693') }}
-                        <input type="number" step="0.000001" name="longitude" value="{{ old('longitude', '25.236800') }}" class="rounded-md border border-paw-line bg-white px-3 py-2.5" required>
+                        <input type="number" step="0.000001" name="longitude" value="{{ old('longitude') }}" class="rounded-md border border-paw-line bg-white px-3 py-2.5" required>
                     </label>
                     <label class="grid gap-1 text-sm font-semibold sm:col-span-2">
                         {{ __('ui.exact_location_note_fc4b4ef378') }}
@@ -187,11 +206,11 @@
                 <div class="grid gap-4 sm:grid-cols-2">
                     <label class="grid gap-1 text-sm font-semibold">
                         {{ __('ui.what_to_do_f47f1edc44') }}
-                        <textarea name="approach_instructions" rows="4" class="rounded-md border border-paw-line bg-white px-3 py-2.5" maxlength="1500">{{ old('approach_instructions', __('ui.stay_at_a_distance_speak_quietly_note_the_34b218d3d8')) }}</textarea>
+                        <textarea name="approach_instructions" rows="4" class="rounded-md border border-paw-line bg-white px-3 py-2.5" maxlength="1500">{{ old('approach_instructions') }}</textarea>
                     </label>
                     <label class="grid gap-1 text-sm font-semibold">
                         {{ __('ui.what_to_avoid_48d524c96f') }}
-                        <textarea name="avoid_instructions" rows="4" class="rounded-md border border-paw-line bg-white px-3 py-2.5" maxlength="1500">{{ old('avoid_instructions', __('ui.do_not_chase_surround_shout_or_enter_unsafe_b85df37377')) }}</textarea>
+                        <textarea name="avoid_instructions" rows="4" class="rounded-md border border-paw-line bg-white px-3 py-2.5" maxlength="1500">{{ old('avoid_instructions') }}</textarea>
                     </label>
                 </div>
                 <label class="grid gap-1 text-sm font-semibold">
@@ -218,8 +237,8 @@
                     <label class="grid gap-1 text-sm font-semibold">
                         {{ __('ui.alert_radius_4f78cfba5d') }}
                         <select name="notification_radius_km" class="rounded-md border border-paw-line bg-white px-3 py-2.5">
-                            @forelse ([2, 5, 10, 25, 50] as $radius)
-                                <option value="{{ $radius }}" @selected((int) old('notification_radius_km', 5) === $radius)>{{ __('presentation.kilometers', ['count' => $radius]) }}</option>
+                            @forelse ($notification_radius_options as $radius => $label)
+                                <option value="{{ $radius }}" @selected(old('notification_radius_km', $default_notification_radius) == $radius)>{{ $label }}</option>
                             @empty
                                 <option value="">{{ __('ui.no_radius_options_available_e1e895c158') }}</option>
                             @endforelse
@@ -233,6 +252,20 @@
                             <option value="registered" @selected(old('visibility') === 'registered')>{{ __('ui.registered_community_41422b19f4') }}</option>
                             <option value="local-group" @selected(old('visibility') === 'local-group')>{{ __('ui.local_group_only_6829d1d78d') }}</option>
                         </select>
+                    </label>
+                </div>
+
+                <div class="grid gap-3 rounded-md border border-paw-line bg-white p-4">
+                    <label class="flex min-h-11 items-start gap-3">
+                        <input type="checkbox" name="reward_offered" value="1" class="mt-1" @checked(old('reward_offered'))>
+                        <span class="text-sm">
+                            <strong class="block">{{ __('lost_found.interface.reward_offered') }}</strong>
+                            <span class="mt-1 block text-paw-muted">{{ __('lost_found.interface.reward_safety_help') }}</span>
+                        </span>
+                    </label>
+                    <label class="grid gap-1 text-sm font-semibold">
+                        {{ __('lost_found.interface.reward_summary') }}
+                        <textarea name="reward_summary" rows="2" maxlength="300" class="rounded-md border border-paw-line bg-white px-3 py-2.5">{{ old('reward_summary') }}</textarea>
                     </label>
                 </div>
 
@@ -253,8 +286,8 @@
                 </label>
 
                 <div class="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
-                    <a href="{{ route('lost-found.index') }}" class="action action--surface">{{ __('ui.cancel_19766ed6cc') }}</a>
-                    <button type="submit" class="action action--primary">
+                    <a href="{{ route('lost-found.index') }}" class="action action--surface min-h-11 justify-center">{{ __('ui.cancel_19766ed6cc') }}</a>
+                    <button type="submit" class="action action--primary min-h-11 justify-center">
                         <x-lucide-siren class="icon" aria-hidden="true" />
                         <span>{{ __('ui.publish_urgent_report_1de0655879') }}</span>
                     </button>

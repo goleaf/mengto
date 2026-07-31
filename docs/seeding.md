@@ -2,9 +2,10 @@
 
 ## Baseline
 
-All 66 first-party Eloquent models now have a verified model factory. The
-generated matrix records 23 explicit helper states and 412 enum-backed states;
-valid existence alone is not accepted without persistence tests.
+All 122 first-party Eloquent models now have a model factory and are guarded by
+an architecture test. The generated matrix records 674
+documented and enum-backed state cases; valid existence alone is not accepted
+without persistence tests.
 
 ## Seeder Layers
 
@@ -19,6 +20,28 @@ valid existence alone is not accepted without persistence tests.
 `PerformanceSeeder` creates 250 deterministic pet profiles only when invoked
 explicitly in a local, demo, or testing environment.
 
+Forum reference seeding is split into deterministic category, topic-type,
+reputation, moderation, taxonomy-source, core-taxonomy, and community-group
+seeders. Adoption case synchronization is production-safe and non-destructive;
+the private sample application remains development/demo/testing only. The demo
+organization provider reaches verified state only through the same submitted,
+reviewed, and approved credential action used by the application; repeated
+seeding reuses its deterministic profile and credential without duplicating
+audit events.
+Lost/found integrity backfill resolves only exact owner/profile matches,
+preserves existing IDs and content, creates missing immutable creation events
+idempotently, and leaves ambiguous animal identity for review.
+`CollaborativeGuideDemoSeeder` is a demo-only repair/synchronization layer for
+the two stable knowledge examples. It assigns deterministic translation groups,
+discussion links, maintainers, version snapshots, and immutable creation events
+without replacing IDs or user content. Stable uniqueness makes reruns
+idempotent.
+`MentorshipDemoSeeder` is environment-gated and reuses the audited trust and
+mentorship Actions. It synchronizes one opted-in mentor profile, two
+independent scopes, one accepted private mentorship, and one message from each
+participant. Stable request/message idempotency keys prevent duplicates on
+rerun.
+
 ## Production Safeguards
 
 - No truncation.
@@ -27,6 +50,12 @@ explicitly in a local, demo, or testing environment.
 - No real personal data.
 - No public internet downloads.
 - No destructive reset hidden inside a seeder.
+- Seeded marketplace records synchronize by stable slug and preserve IDs on
+  rerun; adoption cases synchronize by existing listing ID.
+- Collaborative demo guide synchronization targets only two fixed demo slugs
+  and runs only after the environment-gated demo users and forum graph exist.
+- Mentorship demo synchronization runs only in configured demo environments
+  and never writes fake mentorships from production-safe definition seeders.
 
 ## Coverage Matrix
 

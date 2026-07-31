@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Actions;
 
+use App\Enums\CredentialType;
 use App\Enums\ExpertProfileStatus;
 use App\Enums\VerificationStatus;
 use App\Models\AuditLog;
@@ -22,7 +25,7 @@ class CreateExpertProfile
         return DB::transaction(function () use ($data): ExpertProfile {
             $identity = $this->actor->identity();
             $credentialFile = $data['credential_file'] ?? null;
-            $credentialType = $data['credential_type'] ?? 'qualification';
+            $credentialType = $data['credential_type'] ?? CredentialType::Qualification->value;
             $credentialTitle = $data['credential_title'] ?? __('messages.expert.professional_qualification');
             $credentialIssuer = $data['credential_issuer'] ?? __('messages.expert.issuer_pending_confirmation');
             unset($data['credential_file'], $data['credential_type'], $data['credential_title'], $data['credential_issuer']);

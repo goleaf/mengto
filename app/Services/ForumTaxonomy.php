@@ -1,78 +1,41 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services;
 
 use App\Enums\ForumSubscriptionLevel;
 use App\Enums\ForumTopicType;
 use App\Enums\ForumVisibility;
+use App\Models\ForumCategory;
+use App\Models\ForumTopicType as ForumTopicTypeModel;
 
-class ForumTaxonomy
+final readonly class ForumTaxonomy
 {
+    public const LEGACY_CATEGORY_SLUGS = [
+        'health' => 'health',
+        'nutrition' => 'nutrition',
+        'behavior' => 'behavior',
+        'training' => 'training-education',
+        'care' => 'everyday-care',
+        'walks' => 'walks-exercise-places',
+        'travel' => 'travel-documents',
+        'adoption' => 'adoption-rescue-shelters',
+        'lost-found' => 'lost-found',
+        'services' => 'services-professionals',
+        'support' => 'owner-support-wellbeing',
+    ];
+
+    public function __construct(
+        private ForumCategoryTree $categoryTree,
+    ) {}
+
     /**
      * @return array<string, array{label: string, icon: string, subcategories: array<string, string>}>
      */
     public function categories(): array
     {
-        return [
-            'health' => ['label' => __('messages.health_55898449eb'), 'icon' => 'heart-pulse', 'subcategories' => [
-                'symptoms' => 'Symptoms and next steps',
-                'recovery' => 'Recovery and aftercare',
-                'senior-care' => 'Senior care',
-                'preventive-care' => 'Preventive care',
-            ]],
-            'nutrition' => ['label' => __('messages.nutrition_7ab78b7058'), 'icon' => 'utensils', 'subcategories' => [
-                'daily-feeding' => 'Daily feeding',
-                'diet-transition' => 'Diet transitions',
-                'allergies' => 'Allergies and sensitivities',
-            ]],
-            'behavior' => ['label' => __('messages.behavior_edf8d3f178'), 'icon' => 'brain', 'subcategories' => [
-                'fear' => 'Fear and confidence',
-                'introductions' => 'Safe introductions',
-                'home-alone' => 'Staying home',
-                'reactivity' => 'Reactivity',
-            ]],
-            'training' => ['label' => __('messages.training_36a798e3f3'), 'icon' => 'graduation-cap', 'subcategories' => [
-                'foundations' => 'Foundations',
-                'leash-skills' => 'Leash skills',
-                'sport' => 'Sport and agility',
-            ]],
-            'care' => ['label' => __('messages.everyday_care_407711dde9'), 'icon' => 'sparkles', 'subcategories' => [
-                'grooming' => 'Grooming',
-                'enrichment' => 'Enrichment',
-                'routines' => 'Home routines',
-            ]],
-            'walks' => ['label' => __('messages.walks_and_places_090b833d1a'), 'icon' => 'map-pinned', 'subcategories' => [
-                'routes' => 'Routes',
-                'parks' => 'Parks',
-                'meetups' => 'Meetups',
-            ]],
-            'travel' => ['label' => __('messages.travel_and_documents_9e93e2f161'), 'icon' => 'luggage', 'subcategories' => [
-                'documents' => 'Documents',
-                'transport' => 'Transport',
-                'accommodation' => 'Accommodation',
-            ]],
-            'adoption' => ['label' => __('messages.adoption_and_shelters_8ac2ab86df'), 'icon' => 'house-heart', 'subcategories' => [
-                'first-days' => 'First days',
-                'fostering' => 'Fostering',
-                'shelter-support' => 'Shelter support',
-            ]],
-            'lost-found' => ['label' => __('messages.lost_and_found_a64c586261'), 'icon' => 'scan-search', 'subcategories' => [
-                'lost-pet' => 'Lost pet',
-                'found-pet' => 'Found pet',
-                'search-coordination' => 'Search coordination',
-            ]],
-            'services' => ['label' => __('messages.services_and_gear_cfde79b2e8'), 'icon' => 'briefcase-medical', 'subcategories' => [
-                'clinics' => 'Clinics',
-                'grooming' => 'Grooming',
-                'boarding' => 'Boarding and sitters',
-                'technology' => 'Technology and trackers',
-            ]],
-            'support' => ['label' => __('messages.support_be91940b79'), 'icon' => 'heart-handshake', 'subcategories' => [
-                'loss' => 'Pet loss',
-                'caregiver' => 'Caregiver support',
-                'volunteers' => 'Volunteer support',
-            ]],
-        ];
+        return $this->categoryTree->forLocale(app()->getLocale());
     }
 
     /** @return array<string, string> */
@@ -81,6 +44,43 @@ class ForumTaxonomy
         return collect($this->categories())
             ->mapWithKeys(fn (array $category, string $key): array => [$key => $category['label']])
             ->all();
+    }
+
+    /** @return list<string> */
+    public function acceptedCategoryKeys(): array
+    {
+        return array_values(array_unique([
+            ...array_keys($this->categoryOptions()),
+            ...array_keys(self::LEGACY_CATEGORY_SLUGS),
+        ]));
+    }
+
+    public function resolveCategoryKey(string $category): string
+    {
+        return self::LEGACY_CATEGORY_SLUGS[$category] ?? $category;
+    }
+
+    public function categoryLabel(string $category): string
+    {
+        $canonical = $this->resolveCategoryKey($category);
+
+        return $this->categoryOptions()[$canonical] ?? $canonical;
+    }
+
+    public function categoryId(string $category): ?int
+    {
+        return ForumCategory::query()
+            ->active()
+            ->where('slug', $this->resolveCategoryKey($category))
+            ->value('id');
+    }
+
+    public function topicTypeId(string $type): ?int
+    {
+        return ForumTopicTypeModel::query()
+            ->where('stable_key', $type)
+            ->where('is_active', true)
+            ->value('id');
     }
 
     /** @return array<string, string> */

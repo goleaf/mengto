@@ -6,6 +6,20 @@
                 {{ __('ui.knowledge_base_f56819a30d') }}
             </a>
             <a href="{{ route('forum.index', ['category' => $article['category']]) }}">{{ __('ui.related_forum_topics_7266208c18') }}</a>
+            <a href="{{ route('knowledge.articles.print', $article['slug']) }}">
+                <x-lucide-printer aria-hidden="true" />
+                {{ __('knowledge.actions.print') }}
+            </a>
+            <a href="{{ route('knowledge.articles.export', $article['slug']) }}">
+                <x-lucide-download aria-hidden="true" />
+                {{ __('knowledge.actions.export') }}
+            </a>
+            @if ($article['can_edit'])
+                <a href="{{ route('knowledge.guides.edit', $article['slug']) }}">
+                    <x-lucide-file-pen-line aria-hidden="true" />
+                    {{ __('knowledge.actions.edit') }}
+                </a>
+            @endif
         </nav>
 
         <div class="knowledge-layout">
@@ -59,6 +73,15 @@
                         @endif
                         <span>{{ __('ui.audience_545c023576') }} <small>{{ $article['audience'] }}</small></span>
                         <span>{{ __('ui.language_a4fe65264e') }} <small>{{ $article['language'] }}</small></span>
+                        @if ($article['jurisdiction'])
+                            <span>{{ __('knowledge.fields.jurisdiction') }} <small>{{ $article['jurisdiction'] }}</small></span>
+                        @endif
+                        @if ($article['taxon'])
+                            <span>
+                                {{ __('knowledge.fields.taxon') }}
+                                <small>{{ $article['taxon']['scientific_name'] }} · {{ $article['taxon']['rank'] }}</small>
+                            </span>
+                        @endif
                     </div>
                 </section>
 
@@ -106,6 +129,44 @@
                     </section>
                 @endif
 
+                @if ($article['discussion_topic'])
+                    <section class="forum-sidebar__section">
+                        <div class="forum-sidebar__title"><span>{{ __('knowledge.discussion.heading') }}</span></div>
+                        <div class="forum-mini-list">
+                            <a href="{{ route('forum.topics.show', $article['discussion_topic']['slug']) }}">
+                                {{ $article['discussion_topic']['title'] }}
+                                <small>{{ __('knowledge.discussion.open') }}</small>
+                            </a>
+                        </div>
+                    </section>
+                @endif
+
+                @if ($article['replacement'])
+                    <section class="forum-sidebar__section">
+                        <div class="forum-sidebar__title"><span>{{ __('knowledge.replacement.heading') }}</span></div>
+                        <div class="forum-mini-list">
+                            <a href="{{ route('knowledge.articles.show', $article['replacement']['slug']) }}">
+                                {{ $article['replacement']['title'] }}
+                                <small>{{ __('knowledge.replacement.open') }}</small>
+                            </a>
+                        </div>
+                    </section>
+                @endif
+
+                @if ($article['translations'] !== [])
+                    <section class="forum-sidebar__section">
+                        <div class="forum-sidebar__title"><span>{{ __('knowledge.translations.heading') }}</span></div>
+                        <div class="forum-mini-list">
+                            @foreach ($article['translations'] as $translation)
+                                <a href="{{ route('knowledge.articles.show', $translation['slug']) }}">
+                                    {{ $translation['title'] }}
+                                    <small>{{ $translation['language'] }}</small>
+                                </a>
+                            @endforeach
+                        </div>
+                    </section>
+                @endif
+
                 <section class="forum-sidebar__section">
                     <details>
                         <summary class="forum-button">
@@ -146,8 +207,8 @@
                     <div class="forum-mini-list">
                         @forelse ($versions as $version)
                             <span>
-                                {{ __('presentation.version', ['version' => $version->version_number]) }}
-                                <small>{{ $version->change_summary }} / {{ $version->created_at->format('M j, Y') }}</small>
+                                {{ __('presentation.version', ['version' => $version['number']]) }}
+                                <small>{{ $version['summary'] }} / {{ $version['created'] }}</small>
                             </span>
                         @empty
                             <span>{{ __('ui.no_earlier_revisions_824ac356f1') }}</span>

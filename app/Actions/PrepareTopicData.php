@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Actions;
 
 use App\Enums\ForumTopicStatus;
@@ -23,8 +25,10 @@ class PrepareTopicData
     public function handle(array $data, array $existingMedia = []): array
     {
         $identity = $this->actor->identity();
+        $user = $this->actor->requireUser();
         $pet = $this->taxonomy->pets()[$data['pet_key'] ?? ''] ?? null;
         $body = trim((string) $data['body']);
+        $category = $this->taxonomy->resolveCategoryKey((string) $data['category']);
 
         if (filled($data['tried'] ?? null)) {
             $body .= "\n\nWhat I have already tried:\n".trim((string) $data['tried']);
@@ -39,17 +43,20 @@ class PrepareTopicData
             : ForumTopicStatus::Published;
 
         return [
+            'author_id' => $user->id,
             'author_key' => $identity['key'],
             'author_name' => $identity['name'],
             'author_initials' => $identity['initials'],
             'author_role' => $identity['role'],
             'type' => $data['type'],
+            'forum_topic_type_id' => $this->taxonomy->topicTypeId((string) $data['type']),
             'title' => trim((string) $data['title']),
             'body' => $body,
-            'category' => $data['category'],
+            'category' => $category,
+            'forum_category_id' => $this->taxonomy->categoryId($category),
             'subcategory' => $data['subcategory'] ?? null,
             'tags' => $this->tags((string) ($data['tags'] ?? '')),
-            'pet_key' => $data['pet_key'] ?: null,
+            'pet_key' => filled($data['pet_key'] ?? null) ? $data['pet_key'] : null,
             'pet_name' => $pet['name'] ?? null,
             'pet_species' => $pet['species'] ?? null,
             'pet_age_label' => $pet['age'] ?? null,

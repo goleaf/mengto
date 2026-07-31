@@ -93,6 +93,10 @@
                             </select>
                         </label>
 
+                        <livewire:forum.animal-taxonomy-selector
+                            :selected="$selected_taxon_ids"
+                        />
+
                         <label class="forum-form__field forum-form__field--full">
                             <span>{{ __('ui.clear_title_24abd2f8a8') }}</span>
                             <input

@@ -117,6 +117,18 @@
                             <option value="other">{{ __('ui.other_f97e9da0e3') }}</option>
                         </select>
                     </label>
+                    <label class="forum-form__check">
+                        <input type="checkbox" name="truthfulness_confirmed" value="1" required>
+                        <span>{{ __('forum_moderation.forms.truthfulness') }}</span>
+                    </label>
+                    <label class="forum-form__check">
+                        <input type="checkbox" name="immediate_safety" value="1">
+                        <span>{{ __('forum_moderation.forms.immediate_safety') }}</span>
+                    </label>
+                    <label class="forum-form__check">
+                        <input type="checkbox" name="block_user" value="1">
+                        <span>{{ __('forum_moderation.forms.block_user') }}</span>
+                    </label>
                     <button type="submit" class="forum-button forum-button--danger">
                         <x-lucide-send aria-hidden="true" />
                         {{ __('ui.send_report_a44d353113') }}

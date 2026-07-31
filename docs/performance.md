@@ -14,14 +14,14 @@ claims. Query budgets are added to critical flows with deterministic fixtures.
 
 ## Final Measured State
 
-- Full Pest suite: 696 tests and 31,698 assertions in 16.79 seconds serially
-  and 11.36 seconds with process isolation.
+- Full Pest suite: 1,263 tests and 46,373 assertions in 58.845 seconds
+  serially.
 - Vite 8.2 production build: passed.
 - Font CSS: 1.31 kB, 0.32 kB gzip.
-- Tailwind application CSS: 46.92 kB, 9.07 kB gzip.
-- Retained semantic SCSS CSS: 250.16 kB, 31.94 kB gzip.
-- JavaScript: 12.31 kB, 4.17 kB gzip.
-- Application routes: 134.
+- Tailwind application CSS: 50.79 kB.
+- Retained semantic SCSS CSS: 250.28 kB.
+- JavaScript: 12.31 kB.
+- Application routes: 154.
 
 The Tailwind increase is attributable to localized authentication, responsive,
 offline, reduced-motion, and forced-colors states. The larger semantic SCSS
@@ -54,6 +54,9 @@ remains at or below 12 queries as timeline fixtures grow.
 `tests/Feature/SmartDeviceTest.php` verifies bounded directory and detail query
 counts as readings and events grow. These tests use deterministic SQLite
 fixtures and are regression budgets, not production latency claims.
+`tests/Feature/Forum/MentorshipWorkflowTest.php` verifies that the composed
+mentorship page remains at or below 45 queries with multiple mentors, scopes,
+requests, and messages.
 
 All previously uncovered foreign keys gained leading indexes. The deterministic
 performance seeder supports repeatable local growth tests; production latency

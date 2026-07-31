@@ -144,6 +144,8 @@
                     </div>
                 </section>
 
+                <livewire:forum.community-notes-panel :topic-id="$topic['id']" />
+
                 @if (! $topic['is_locked'])
                     <form method="POST" action="{{ route('forum.answers.store', $topic['slug']) }}" class="forum-form">
                         @csrf
@@ -256,6 +258,18 @@
                                         <option value="spam">{{ __('ui.spam_94a9eac404') }}</option>
                                         <option value="other">{{ __('ui.other_f97e9da0e3') }}</option>
                                     </select>
+                                </label>
+                                <label class="forum-form__check">
+                                    <input type="checkbox" name="truthfulness_confirmed" value="1" required>
+                                    <span>{{ __('forum_moderation.forms.truthfulness') }}</span>
+                                </label>
+                                <label class="forum-form__check">
+                                    <input type="checkbox" name="immediate_safety" value="1">
+                                    <span>{{ __('forum_moderation.forms.immediate_safety') }}</span>
+                                </label>
+                                <label class="forum-form__check">
+                                    <input type="checkbox" name="block_user" value="1">
+                                    <span>{{ __('forum_moderation.forms.block_user') }}</span>
                                 </label>
                                 <button type="submit" class="forum-button forum-button--danger">
                                     <x-lucide-flag aria-hidden="true" />

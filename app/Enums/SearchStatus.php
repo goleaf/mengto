@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Enums;
 
 enum SearchStatus: string
@@ -11,6 +13,7 @@ enum SearchStatus: string
     case IdentityConfirmed = 'identity-confirmed';
     case Returned = 'returned';
     case SelfReturned = 'self-returned';
+    case Reunited = 'reunited';
     case Paused = 'paused';
     case LongTerm = 'long-term';
     case Closed = 'closed';
@@ -18,19 +21,7 @@ enum SearchStatus: string
 
     public function label(): string
     {
-        return match ($this) {
-            self::Active => 'Active search',
-            self::PossibleSighting => 'Possible sighting',
-            self::PossibleFound => 'Possibly found',
-            self::Safe => 'Animal is safe',
-            self::IdentityConfirmed => 'Identity confirmed',
-            self::Returned => 'Returned to owner',
-            self::SelfReturned => 'Returned home',
-            self::Paused => 'Search paused',
-            self::LongTerm => 'Long-term search',
-            self::Closed => 'Search closed',
-            self::FalseReport => 'Incorrect report',
-        };
+        return __("lost_found.status.{$this->value}");
     }
 
     public function isUrgent(): bool
@@ -48,6 +39,7 @@ enum SearchStatus: string
         return in_array($this, [
             self::Returned,
             self::SelfReturned,
+            self::Reunited,
             self::Closed,
             self::FalseReport,
         ], true);
@@ -58,7 +50,7 @@ enum SearchStatus: string
         return match ($this) {
             self::Active, self::PossibleSighting => 'danger',
             self::PossibleFound, self::Safe, self::IdentityConfirmed => 'warning',
-            self::Returned, self::SelfReturned => 'success',
+            self::Returned, self::SelfReturned, self::Reunited => 'success',
             default => 'neutral',
         };
     }

@@ -27,6 +27,9 @@ class ForumVote extends Model
 
     protected $fillable = [
         'answer_id',
+        'user_id',
+        'reputation_event_id',
+        'effect_revision',
         'user_key',
         'value',
         'reason',
@@ -36,5 +39,22 @@ class ForumVote extends Model
     public function answer(): BelongsTo
     {
         return $this->belongsTo(ForumAnswer::class, 'answer_id');
+    }
+
+    /** @return BelongsTo<User, $this> */
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    /** @return BelongsTo<ForumReputationEvent, $this> */
+    public function reputationEvent(): BelongsTo
+    {
+        return $this->belongsTo(ForumReputationEvent::class);
+    }
+
+    protected function casts(): array
+    {
+        return ['effect_revision' => 'integer'];
     }
 }

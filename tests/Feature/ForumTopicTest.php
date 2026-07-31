@@ -1,12 +1,16 @@
 <?php
 
 use App\Enums\ForumTopicStatus;
+use App\Enums\KnowledgeCollaboratorRole;
+use App\Enums\KnowledgeStatus;
 use App\Models\ForumAnswer;
 use App\Models\ForumComment;
 use App\Models\ForumReport;
 use App\Models\ForumTopic;
 use App\Models\ForumVote;
 use App\Models\KnowledgeArticle;
+use App\Models\User;
+use Database\Seeders\ForumModerationDefinitionSeeder;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 
@@ -65,12 +69,15 @@ test('topic creation validates structure before persistence', function () {
 
 test('answers votes acceptance and knowledge conversion remain idempotent', function () {
     $topic = ForumTopic::factory()->create([
+        'author_id' => $this->authenticatedUser->id,
         'author_key' => 'mia-carter',
         'title' => 'How can I prepare a calm carrier routine for my cat?',
         'category' => 'behavior',
         'tags' => ['cat', 'carrier'],
     ]);
+    $answerAuthor = User::factory()->create();
 
+    $this->actingAs($answerAuthor);
     $this->post(route('forum.answers.store', $topic), [
         'body' => 'Leave the carrier open in normal living space and reward voluntary approaches before touching the door.',
         'experience_type' => 'personal-experience',
@@ -78,14 +85,19 @@ test('answers votes acceptance and knowledge conversion remain idempotent', func
     ])->assertRedirect(route('forum.topics.show', $topic));
 
     $answer = ForumAnswer::query()->firstOrFail();
+    $this->actingAs($this->authenticatedUser);
 
     $votePayload = [
         'action' => 'vote-answer',
         'answer_id' => $answer->id,
         'value' => 'helpful',
     ];
-    $this->post(route('forum.actions'), $votePayload)->assertRedirect();
-    $this->post(route('forum.actions'), $votePayload)->assertRedirect();
+    $this->post(route('forum.actions'), $votePayload)
+        ->assertRedirect()
+        ->assertSessionHasNoErrors();
+    $this->post(route('forum.actions'), $votePayload)
+        ->assertRedirect()
+        ->assertSessionHasNoErrors();
 
     expect(ForumVote::query()->count())->toBe(1)
         ->and($answer->refresh()->helpful_count)->toBe(1);
@@ -112,7 +124,19 @@ test('answers votes acceptance and knowledge conversion remain idempotent', func
 
     expect(KnowledgeArticle::query()->count())->toBe(1)
         ->and($article->versions()->count())->toBe(1)
-        ->and($article->source_topic_id)->toBe($topic->id);
+        ->and($article->source_topic_id)->toBe($topic->id)
+        ->and($article->discussion_topic_id)->toBe($topic->id)
+        ->and($article->translation_group_key)->toBe("topic-{$topic->id}")
+        ->and($article->status)->toBe(KnowledgeStatus::SubmittedForReview)
+        ->and($article->activeCollaborators()->count())->toBe(2)
+        ->and($article->activeCollaborators()
+            ->orderBy('role')
+            ->pluck('role')
+            ->all())->toBe([
+                KnowledgeCollaboratorRole::Contributor,
+                KnowledgeCollaboratorRole::Maintainer,
+            ])
+        ->and($article->workflowEvents()->count())->toBe(1);
 });
 
 test('comments cannot cross topic boundaries or exceed one reply level', function () {
@@ -132,6 +156,7 @@ test('comments cannot cross topic boundaries or exceed one reply level', functio
 });
 
 test('medical topics show an emergency boundary and reports enter moderation', function () {
+    $this->seed(ForumModerationDefinitionSeeder::class);
     $topic = ForumTopic::factory()->medical()->create([
         'is_urgent' => true,
         'title' => 'My dog is breathing heavily and cannot stand normally',
@@ -147,9 +172,11 @@ test('medical topics show an emergency boundary and reports enter moderation', f
         'topic_id' => $topic->id,
         'reason' => 'dangerous-advice',
         'details' => 'The thread includes a risky treatment suggestion.',
+        'truthfulness_confirmed' => '1',
+        'immediate_safety' => '1',
     ])->assertRedirect(route('forum.topics.show', $topic));
 
     expect(ForumReport::query()->firstOrFail())
-        ->priority->toBe('high')
-        ->status->toBe('submitted');
+        ->priority->toBe('critical')
+        ->status->toBe('received');
 });

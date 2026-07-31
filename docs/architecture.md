@@ -43,12 +43,27 @@ route or Blade host
 Blade does not perform data access, service resolution, policy decisions, or
 business calculations.
 
+## Collaborative Guide Boundary
+
+`KnowledgeArticle` is the canonical guide aggregate. `CreateKnowledgeGuide`,
+`SaveKnowledgeGuideRevision`, `TransitionKnowledgeGuide`,
+`ReviewKnowledgeCorrection`, `ManageKnowledgeCollaborator`,
+`SetKnowledgeEditorialLock`, and `RollbackKnowledgeGuideVersion` are explicit
+use cases. `KnowledgeGuideHistory` owns immutable snapshots and workflow
+events. The Livewire editor coordinates those use cases but does not duplicate
+their transactions or policy rules.
+
+Forum topics remain discussion records. `PerformForumAction` may create one
+submitted guide from one resolved topic only after an explicit owner action.
+The resulting guide retains source/discussion links and normalized
+attribution. No ranking, vote, or reaction path calls that conversion.
+
 ## Domain Modules
 
 | Module | Persistence | Primary application boundary |
 | --- | --- | --- |
 | Identity | `users`, `pet_profiles`, sessions, password reset | Auth controllers/Livewire, policies, `ForumActor` |
-| Forum and knowledge | Eloquent | Form Requests, Actions, policies, presenters |
+| Forum and knowledge | Eloquent | Form Requests, class-based Livewire, use-case Actions, policies, presenters |
 | Experts | Eloquent | Profile/booking Actions and participant policies |
 | Marketplace | Eloquent | Locked state transitions and order Actions |
 | Lost/found | Eloquent | Search Actions, owner/coordinator policies |
@@ -151,3 +166,30 @@ observable.
 - Larastan
 - route and cache build checks
 - browser console and repeated-navigation checks
+
+## Community Review Boundary
+
+Low-risk classification uses assigned `ForumReviewPanel` records, independent
+`ForumReviewAssignment` rows, and append-only panel events. Contextual
+`ForumCommunityNote` records use append-only versions and never overwrite
+review evidence. Review panels are structurally limited to seven low-risk
+types; unified moderation remains authoritative for safety, legal, privacy,
+fraud, credential, cruelty, and permanent-account decisions.
+
+See `docs/community-review.md`.
+
+## Peer Mentorship Boundary
+
+Mentorship is a dedicated private workflow, not an extension of the prototype
+message center. `ForumMentorProfile` and `ForumMentorScope` expose only
+opted-in public-safe matching data. `ForumMentorship` owns request and lifecycle
+state; messages, feedback, and events are append-only evidence protected from
+parent deletion.
+
+`MentorMatcher` and `MentorshipEligibility` form the read/eligibility boundary.
+Actions form the only mutation boundary and repeat authorization, validation,
+transaction, idempotency, lock, and audit controls. Trust and mentoring
+reputation may establish community eligibility, while professional status is
+derived only from a separate current credential.
+
+See `docs/mentorship.md`.

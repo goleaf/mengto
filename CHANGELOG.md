@@ -1,6 +1,58 @@
 # Changelog
 
-## Unreleased - 2026-07-30
+## Unreleased - 2026-07-31
+
+### Forum And Animal Taxonomy
+
+- Preserved the combined forum/taxonomy specification with a deterministic
+  SHA-256 and generated 7,284 source-linked atomic requirements.
+- Added a deterministic 44-root, 1,637-subcategory forum hierarchy with
+  stable keys, translations, aliases, redirects, safe synchronization, topic
+  backfill, and cache invalidation.
+- Added versioned animal taxonomy sources, names, identifiers, changes,
+  domestic classifications, breed registries, community groups, and a
+  checksummed chunked import pipeline with analysis, resume, validation,
+  activation, rollback, and conflict-safe history.
+- Added scoped append-only reputation, audited trust and badges, qualified
+  confirmations, accepted-answer history, unified reports, moderation cases,
+  actions, appeals, recusal, and private evidence.
+- Added the authorized moderation operations UI for triage, case assignment,
+  audited actions, conflict recusal, and independent appeal review, including
+  linked report state synchronization and mobile-safe tables.
+- Added independent professional credential review with expiry, suspension,
+  appeal, audit events, and authorized class-based Livewire administration.
+- Added structured adoption/foster cases, encrypted idempotent applications,
+  controlled review/adoption/follow-up/return/foster transitions,
+  append-only history, taxonomy links, policy enforcement, localized Livewire
+  UI, and an atomic bridge from marketplace reports to unified moderation.
+- Connected adoption provider identity to independent purpose-compatible
+  credential review with owner isolation, natural expiry, rejection,
+  suspension, revocation, appeal propagation, private evidence boundaries,
+  and an idempotent backfill path.
+- Extended lost/found into structured owned-pet cases with global taxonomy
+  links, encrypted historical animal snapshots, sighted/stolen/reunited
+  states, immutable history, idempotent protected contact relay, advisory
+  duplicate detection, reward-abuse controls, unified safety reports, and
+  privacy-safe archive preservation.
+- Extended the existing knowledge base into collaborative guides with
+  independent review states, normalized collaborators, immutable versions and
+  workflow events, optimistic editing, correction review, editorial locks,
+  rollback-as-new-version, locale/taxon/jurisdiction scope, print/export, and
+  an authorized class-based Livewire editor and administration registry.
+- Added assigned low-risk community review panels and contextual notes with
+  trust-based eligibility, conflict-aware reviewer balancing, reasoned
+  one-reviewer decisions, deadline enforcement, replacement, appeals,
+  append-only versions/events, author responses, moderator outcomes,
+  revalidation, localized Livewire presentation, and a strict boundary to
+  high-risk human moderation.
+- Added opt-in peer mentorship for thirteen scopes with transparent bounded
+  matching, independent professional-verification display, participant-only
+  private threads, block/report safety, optional immutable feedback,
+  optimistic lifecycle transitions, independently validated reputation,
+  repeatable demo data, and class-based localized Livewire interfaces.
+- Added an evidence overlay that prevents requirement verification without
+  concrete file or test evidence; 287 atomic requirements are currently
+  verified.
 
 ### Runtime And Architecture
 
@@ -27,6 +79,9 @@
   grouped device-event provenance through additive migrations.
 - Preserved private file authorization, encrypted sensitive values,
   idempotency, source provenance, and audit behavior in critical workflows.
+- Prevented archived lost/found cases from appearing through directories,
+  direct public URLs, or poster routes while retaining owner access and all
+  sightings, updates, reports, identifiers, and events.
 - Added fail-closed stolen/blocked-device policy while retaining owner-only
   lost-mode activation.
 - Added baseline browser security headers and environment-gated demo accounts.
@@ -49,15 +104,15 @@
 
 ### Factories, Seeders, And Tests
 
-- Added valid model factories for all 66 first-party Eloquent models, 23
-  explicit helper states, and automated coverage of 412 enum-backed states.
+- Added valid model factories for all 109 first-party Eloquent models and a
+  complete automated factory/enum-state creation matrix.
 - Made full demo seeding repeatable and production-safe.
 - Added deterministic role/locale/privacy demo graphs and an opt-in
   production-blocked 250-profile performance seeder.
 - Added an asserted temporary-SQLite fresh migration/seed verifier so
   destructive database checks cannot silently target the development file.
-- Expanded Pest from a baseline of 116 tests / 3,881 assertions to 696 tests /
-  31,698 assertions, then removed the two meaningless framework example tests.
+- Expanded Pest from a baseline of 116 tests / 3,881 assertions to the current
+  checkpoint of 963 tests / 42,451 assertions.
 - Added auth, authorization, localization, schema, factory/seeder,
   architecture, and responsive regression coverage.
 
@@ -73,8 +128,7 @@
 
 ### Verification
 
-- Full Pest suite: 696 passed, 31,698 assertions in both serial and parallel
-  process-isolated runs.
+- Full Pest suite checkpoint: 963 passed, 42,451 assertions in serial mode.
 - Larastan/PHPStan level 5: zero errors.
 - Composer strict validation and security audit: passed, zero advisories.
 - NPM high-severity audit: passed, zero vulnerabilities.

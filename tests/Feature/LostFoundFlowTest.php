@@ -5,6 +5,7 @@ use App\Enums\SearchStatus;
 use App\Enums\SearchTaskStatus;
 use App\Enums\SearchVolunteerStatus;
 use App\Models\AuditLog;
+use App\Models\PetProfile;
 use App\Models\SearchAlert;
 use App\Models\SearchCase;
 use App\Models\SearchReport;
@@ -12,6 +13,7 @@ use App\Models\SearchTask;
 use App\Models\SearchVolunteer;
 use App\Models\Sighting;
 use App\Services\QrCodeGenerator;
+use Database\Seeders\ForumModerationDefinitionSeeder;
 use Database\Seeders\SearchSeeder;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
@@ -20,6 +22,10 @@ use Illuminate\Validation\ValidationException;
 
 test('a missing pet report stores only generalized public coordinates', function () {
     Storage::fake('public');
+    PetProfile::factory()->for($this->authenticatedUser)->create([
+        'profile_key' => 'pet-scout',
+        'slug' => 'scout',
+    ]);
 
     $this->post(route('lost-found.store'), searchCasePayload())
         ->assertRedirect();
@@ -29,7 +35,7 @@ test('a missing pet report stores only generalized public coordinates', function
 
     expect($searchCase)
         ->owner_key->toBe('mia-carter')
-        ->active_key->toBe('mia-carter:scout')
+        ->active_key->toBe('mia-carter:pet-scout')
         ->public_latitude->toBe('54.683000')
         ->public_longitude->toBe('25.237000')
         ->alerts_active->toBeTrue()
@@ -65,6 +71,11 @@ test('public report never exposes exact location hidden marks or contact', funct
 });
 
 test('one pet cannot have two active searches', function () {
+    PetProfile::factory()->for($this->authenticatedUser)->create([
+        'profile_key' => 'pet-scout',
+        'slug' => 'scout',
+    ]);
+
     $this->post(route('lost-found.store'), searchCasePayload())
         ->assertRedirect();
 
@@ -75,7 +86,7 @@ test('one pet cannot have two active searches', function () {
         ->assertRedirect(route('lost-found.create'))
         ->assertSessionHasErrors('pet_profile_key');
 
-    expect(SearchCase::query()->where('active_key', 'mia-carter:scout')->count())->toBe(1);
+    expect(SearchCase::query()->where('active_key', 'mia-carter:pet-scout')->count())->toBe(1);
 });
 
 test('sighting submissions are idempotent and retain actual observation time', function () {
@@ -218,11 +229,13 @@ test('reactivating a closed search restores the unique active pet key', function
 });
 
 test('danger and extortion reports receive high priority', function () {
+    $this->seed(ForumModerationDefinitionSeeder::class);
     $searchCase = SearchCase::factory()->create();
 
     $this->post(route('lost-found.reports.store', $searchCase), [
         'reason' => 'threat',
         'details' => 'The sender is demanding payment and threatening the animal.',
+        'truthfulness_confirmed' => 1,
     ])->assertRedirect(route('lost-found.show', $searchCase));
 
     expect(SearchReport::query()->firstOrFail())

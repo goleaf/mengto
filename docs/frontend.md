@@ -57,6 +57,16 @@ Every data surface defines applicable loading, empty, filtered-empty, success,
 recoverable error, fatal error, offline, unauthorized, disabled, pending, and
 completed states. Status is textual and not color-only.
 
+## Peer Mentorship
+
+`/forum/mentorship` composes three class-based Livewire components for
+discovery, mentor-scope management, and private participant workflows. The
+components keep filters and form data in small validated state, expose why a
+mentor matched, and retain normal form semantics for keyboard and assistive
+technology users. Private messages, lifecycle actions, report reasons, and
+truthfulness acknowledgement are prepared by PHP and rendered through
+localized Blade templates. See `docs/mentorship.md`.
+
 ## Verification
 
 - architecture tests for passive Blade and no Volt;
@@ -67,3 +77,6 @@ completed states. Status is textual and not color-only.
 - keyboard and focus review;
 - no console/network errors on critical flows;
 - repeated Livewire navigation teardown check.
+- mentorship desktop/mobile checks for overflow, labels, 44-pixel action
+  targets, private-thread visibility, report controls, and a real Livewire
+  message mutation.

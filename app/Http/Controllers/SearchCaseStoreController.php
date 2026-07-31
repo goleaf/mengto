@@ -1,19 +1,24 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
 use App\Actions\CreateSearchCase;
 use App\Enums\ModerationStatus;
 use App\Http\Requests\StoreSearchCaseRequest;
 use App\Models\SearchCase;
+use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Gate;
 
-class SearchCaseStoreController extends Controller
+final class SearchCaseStoreController extends Controller
 {
-    public function __invoke(StoreSearchCaseRequest $request, CreateSearchCase $create): RedirectResponse
-    {
-        Gate::authorize('create', SearchCase::class);
+    public function __invoke(
+        StoreSearchCaseRequest $request,
+        CreateSearchCase $create,
+        Gate $gate,
+    ): RedirectResponse {
+        $gate->authorize('create', SearchCase::class);
         $searchCase = $create->handle($request->validated());
 
         return to_route('lost-found.show', $searchCase)

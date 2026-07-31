@@ -111,6 +111,13 @@ class ForumAnswer extends Model
         return $this->hasMany(ForumVote::class, 'answer_id');
     }
 
+    /** @return HasMany<ForumCommunityNote, $this> */
+    public function communityNotes(): HasMany
+    {
+        return $this->hasMany(ForumCommunityNote::class, 'subject_id')
+            ->where('subject_type', 'forum-answer');
+    }
+
     public function scopeForThread(Builder $query): Builder
     {
         return $query->select([

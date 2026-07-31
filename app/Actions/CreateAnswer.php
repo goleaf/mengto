@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Actions;
 
 use App\Enums\ForumTopicStatus;
@@ -18,8 +20,10 @@ class CreateAnswer
     {
         return DB::transaction(function () use ($topic, $data): ForumAnswer {
             $identity = $this->actor->identity();
+            $user = $this->actor->requireUser();
 
             $answer = $topic->answers()->create([
+                'author_id' => $user->id,
                 'author_key' => $identity['key'],
                 'author_name' => $identity['name'],
                 'author_initials' => $identity['initials'],

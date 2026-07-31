@@ -24,6 +24,7 @@ class PerformListingAction
     public function __construct(
         private readonly ForumActor $actor,
         private readonly CreateOrder $createOrder,
+        private readonly SubmitForumReport $submitForumReport,
     ) {}
 
     /**
@@ -411,20 +412,42 @@ class PerformListingAction
             'animal-welfare',
             'personal-data',
         ], true);
+        $canonicalReason = match ($data['reason']) {
+            'fraud' => 'marketplace-fraud',
+            'animal-welfare' => 'animal-neglect',
+            'counterfeit' => 'counterfeit-product',
+            'misleading' => 'misinformation',
+            default => $data['reason'],
+        };
 
-        ListingReport::query()->create([
-            'listing_id' => $listing->id,
-            'reporter_key' => $this->actor->key(),
-            'reason' => $data['reason'],
-            'details' => $data['details'] ?? null,
-            'priority' => $highPriority ? 'high' : 'normal',
-            'status' => 'submitted',
-        ]);
+        DB::transaction(function () use ($canonicalReason, $data, $highPriority, $listing): void {
+            $reporter = $this->actor->requireUser();
 
-        $this->audit('listing.reported', $listing, [
-            'reason' => $data['reason'],
-            'priority' => $highPriority ? 'high' : 'normal',
-        ]);
+            $this->submitForumReport->handle(
+                reporter: $reporter,
+                subject: $listing,
+                reasonKey: $canonicalReason,
+                details: $data['details'] ?? null,
+                truthfulnessConfirmed: (bool) ($data['truthfulness_confirmed'] ?? false),
+                immediateSafety: (bool) ($data['immediate_safety'] ?? false),
+                metadata: ['legacy_listing_reason' => $data['reason']],
+            );
+
+            ListingReport::query()->create([
+                'listing_id' => $listing->id,
+                'reporter_id' => $reporter->id,
+                'reporter_key' => $reporter->actor_key,
+                'reason' => $data['reason'],
+                'details' => $data['details'] ?? null,
+                'priority' => $highPriority ? 'high' : 'normal',
+                'status' => 'submitted',
+            ]);
+
+            $this->audit('listing.reported', $listing, [
+                'reason' => $data['reason'],
+                'priority' => $highPriority ? 'high' : 'normal',
+            ]);
+        }, 3);
 
         return ['message' => __('messages.report_submitted_for_safety_review_4aa74b8eb9'), 'listing' => $listing];
     }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests;
 
 use App\Services\ForumTaxonomy;
@@ -28,7 +30,7 @@ class BrowseKnowledgeRequest extends FormRequest
             'q' => ['nullable', 'string', 'max:160'],
             'category' => [
                 'nullable',
-                Rule::in(['all', ...array_keys($taxonomy->categoryOptions())]),
+                Rule::in(['all', ...$taxonomy->acceptedCategoryKeys()]),
             ],
             'type' => ['nullable', Rule::in(['all', 'guide', 'checklist', 'faq', 'comparison', 'local-guide'])],
             'page' => ['nullable', 'integer', 'min:1'],

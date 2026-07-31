@@ -105,6 +105,8 @@
                         ['label' => __('ui.age_39b7370f30'), 'value' => $search_case['age_label']],
                         ['label' => __('ui.sex_953dd6f2b4'), 'value' => $search_case['sex']],
                         ['label' => __('ui.microchip_230fe79bc1'), 'value' => $search_case['microchip_label']],
+                        ['label' => __('lost_found.interface.temperament'), 'value' => $search_case['temperament']],
+                        ['label' => __('lost_found.interface.collar_accessories'), 'value' => $search_case['accessories_label']],
                     ] as $detail)
                         @if ($detail['value'])
                             <div class="bg-white p-3">
@@ -129,6 +131,33 @@
                         <x-lucide-heart-pulse class="mt-0.5 size-5 shrink-0 text-paw-coral" aria-hidden="true" />
                         <p class="text-sm font-semibold">{{ $search_case['health_notice'] }}</p>
                     </div>
+                @endif
+
+                @if ($search_case['reward_offered'] && $search_case['reward_summary'])
+                    <div class="flex items-start gap-3 rounded-md border border-paw-sun bg-paw-sun/20 p-4">
+                        <x-lucide-badge-dollar-sign class="mt-0.5 size-5 shrink-0" aria-hidden="true" />
+                        <div>
+                            <h3 class="font-bold">{{ __('lost_found.interface.reward_available') }}</h3>
+                            <p class="mt-1 text-sm leading-6 text-paw-muted">{{ $search_case['reward_summary'] }}</p>
+                        </div>
+                    </div>
+                @endif
+
+                @if ($search_case['scientific_name'] || $search_case['domestic_classification'])
+                    <dl class="grid gap-2 text-sm">
+                        @if ($search_case['scientific_name'])
+                            <div>
+                                <dt class="text-paw-muted">{{ __('lost_found.interface.scientific_name') }}</dt>
+                                <dd class="font-semibold italic">{{ $search_case['scientific_name'] }}</dd>
+                            </div>
+                        @endif
+                        @if ($search_case['domestic_classification'])
+                            <div>
+                                <dt class="text-paw-muted">{{ __('lost_found.interface.classification') }}</dt>
+                                <dd class="font-semibold">{{ $search_case['domestic_classification'] }}</dd>
+                            </div>
+                        @endif
+                    </dl>
                 @endif
             </div>
         </section>
@@ -399,6 +428,40 @@
                     </details>
                 @endif
 
+                @if ($can_contact)
+                    <details class="rounded-md border border-paw-leaf/40 bg-white">
+                        <summary class="flex cursor-pointer list-none items-center gap-3 p-4 font-bold">
+                            <span class="grid size-9 place-items-center rounded bg-paw-mint text-paw-leaf">
+                                <x-lucide-shield-check class="size-5" aria-hidden="true" />
+                            </span>
+                            {{ __('lost_found.interface.protected_contact_heading') }}
+                        </summary>
+                        <form method="POST" action="{{ route('lost-found.contact.store', $search_case['slug']) }}" class="grid gap-3 border-t border-paw-line p-4">
+                            @csrf
+                            <input type="hidden" name="idempotency_key" value="{{ $contact_idempotency_key }}">
+                            <p class="text-xs leading-5 text-paw-muted">{{ __('lost_found.interface.protected_contact_description') }}</p>
+                            <label class="grid gap-1 text-sm font-semibold">
+                                {{ __('lost_found.interface.protected_contact_purpose') }}
+                                <select name="purpose" class="rounded-md border border-paw-line px-3 py-2" required>
+                                    @forelse ($relay_purposes as $value => $label)
+                                        <option value="{{ $value }}">{{ $label }}</option>
+                                    @empty
+                                        <option disabled>{{ __('ui.no_options_d7a8974566') }}</option>
+                                    @endforelse
+                                </select>
+                            </label>
+                            <label class="grid gap-1 text-sm font-semibold">
+                                {{ __('lost_found.interface.protected_contact_message') }}
+                                <textarea name="message" rows="4" class="rounded-md border border-paw-line px-3 py-2" required minlength="20" maxlength="2000">{{ old('message') }}</textarea>
+                            </label>
+                            <button type="submit" class="action action--primary w-full">
+                                <x-lucide-send class="icon" aria-hidden="true" />
+                                <span>{{ __('lost_found.interface.send_protected_message') }}</span>
+                            </button>
+                        </form>
+                    </details>
+                @endif
+
                 <details class="rounded-md border border-paw-line bg-white">
                     <summary class="flex cursor-pointer list-none items-center gap-3 p-4 font-bold">
                         <span class="grid size-9 place-items-center rounded bg-paw-sun/60">
@@ -421,6 +484,14 @@
                         <label class="grid gap-1 text-sm font-semibold">
                             {{ __('ui.details_45989de49f') }}
                             <textarea name="details" rows="3" class="rounded-md border border-paw-line px-3 py-2" maxlength="2500"></textarea>
+                        </label>
+                        <label class="flex min-h-11 items-center gap-3 text-sm">
+                            <input type="checkbox" name="truthfulness_confirmed" value="1" required>
+                            <span>{{ __('lost_found.interface.report_truthful') }}</span>
+                        </label>
+                        <label class="flex min-h-11 items-center gap-3 text-sm">
+                            <input type="checkbox" name="immediate_safety" value="1">
+                            <span>{{ __('lost_found.interface.immediate_safety') }}</span>
                         </label>
                         <button type="submit" class="action action--surface w-full">
                             <x-lucide-shield-alert class="icon" aria-hidden="true" />

@@ -57,10 +57,18 @@ use App\Http\Controllers\ExpertProfileEditController;
 use App\Http\Controllers\ExpertProfileStoreController;
 use App\Http\Controllers\ExpertProfileUpdateController;
 use App\Http\Controllers\ForumActionController;
+use App\Http\Controllers\ForumAdministrationController;
 use App\Http\Controllers\ForumController;
+use App\Http\Controllers\ForumGroupDirectoryController;
+use App\Http\Controllers\ForumGroupShowController;
+use App\Http\Controllers\ForumMentorshipController;
 use App\Http\Controllers\GroupDetailPreviewController;
 use App\Http\Controllers\GroupDirectoryPreviewController;
 use App\Http\Controllers\KnowledgeController;
+use App\Http\Controllers\KnowledgeGuideCreateController;
+use App\Http\Controllers\KnowledgeGuideEditController;
+use App\Http\Controllers\KnowledgeGuideExportController;
+use App\Http\Controllers\KnowledgeGuidePrintController;
 use App\Http\Controllers\ListingActionController;
 use App\Http\Controllers\ListingController;
 use App\Http\Controllers\ListingCreateController;
@@ -104,6 +112,7 @@ use App\Http\Controllers\SearchActionController;
 use App\Http\Controllers\SearchCaseController;
 use App\Http\Controllers\SearchCaseCreateController;
 use App\Http\Controllers\SearchCaseStoreController;
+use App\Http\Controllers\SearchContactRelayController;
 use App\Http\Controllers\SearchCoordinationController;
 use App\Http\Controllers\SearchDirectoryController;
 use App\Http\Controllers\SearchPosterController;
@@ -292,12 +301,35 @@ Route::middleware('web')
                         Route::post('/actions', ForumActionController::class)
                             ->middleware('throttle:60,1')
                             ->name('actions');
+                        Route::get('/mentorship', ForumMentorshipController::class)
+                            ->middleware('verified')
+                            ->name('mentorship.index');
+                        Route::middleware('verified')
+                            ->prefix('groups')
+                            ->name('groups.')
+                            ->group(function (): void {
+                                Route::get('/', ForumGroupDirectoryController::class)
+                                    ->name('index');
+                                Route::get('/{forumGroup:stable_key}', ForumGroupShowController::class)
+                                    ->name('show');
+                            });
                     });
             });
         Route::prefix('knowledge')
             ->name('knowledge.')
             ->group(function (): void {
                 Route::get('/', KnowledgeController::class)->name('index');
+                Route::middleware(['auth', 'active', 'verified'])
+                    ->group(function (): void {
+                        Route::get('/guides/new', KnowledgeGuideCreateController::class)
+                            ->name('guides.create');
+                        Route::get('/{knowledgeArticle}/edit', KnowledgeGuideEditController::class)
+                            ->name('guides.edit');
+                    });
+                Route::get('/{knowledgeArticle}/export', KnowledgeGuideExportController::class)
+                    ->name('articles.export');
+                Route::get('/{knowledgeArticle}/print', KnowledgeGuidePrintController::class)
+                    ->name('articles.print');
                 Route::get('/{knowledgeArticle}', ArticleController::class)->name('articles.show');
                 Route::post('/{knowledgeArticle}/corrections', CorrectionStoreController::class)
                     ->middleware(['auth', 'active', 'throttle:12,1'])
@@ -367,6 +399,13 @@ Route::middleware(['web', 'auth', 'active', 'verified'])
     });
 
 Route::middleware(['web', 'auth', 'active', 'verified'])
+    ->prefix('admin/forum')
+    ->name('admin.forum.')
+    ->group(function (): void {
+        Route::get('/', ForumAdministrationController::class)->name('index');
+    });
+
+Route::middleware(['web', 'auth', 'active', 'verified'])
     ->prefix('consultations')
     ->name('consultations.')
     ->group(function (): void {
@@ -418,15 +457,18 @@ Route::middleware('web')
                 Route::post('/{searchCase}/actions', SearchActionController::class)
                     ->middleware('throttle:30,1')
                     ->name('actions');
+                Route::post('/{searchCase}/contact', SearchContactRelayController::class)
+                    ->middleware('throttle:6,1')
+                    ->name('contact.store');
+                Route::post('/{searchCase}/reports', SearchReportController::class)
+                    ->middleware('throttle:6,1')
+                    ->name('reports.store');
             });
         Route::get('/{searchCase}/poster', SearchPosterController::class)
             ->name('poster');
         Route::post('/{searchCase}/sightings', SightingStoreController::class)
             ->middleware('throttle:12,1')
             ->name('sightings.store');
-        Route::post('/{searchCase}/reports', SearchReportController::class)
-            ->middleware('throttle:6,1')
-            ->name('reports.store');
         Route::get('/{searchCase}', SearchCaseController::class)->name('show');
     });
 

@@ -19,6 +19,8 @@ class SearchCasePolicy
     {
         return ($user?->isActive() === true && $searchCase->isManagedBy($user->actor_key))
             || ($searchCase->moderation_status === ModerationStatus::Approved
+                && array_key_exists('archived_at', $searchCase->getAttributes())
+                && $searchCase->archived_at === null
                 && in_array($searchCase->visibility, ['public', 'link'], true));
     }
 
@@ -54,7 +56,16 @@ class SearchCasePolicy
 
     public function report(?User $user, SearchCase $searchCase): bool
     {
-        return $this->view($user, $searchCase);
+        return $user?->isActive() === true && $this->view($user, $searchCase);
+    }
+
+    public function contact(?User $user, SearchCase $searchCase): bool
+    {
+        return $user?->isActive() === true
+            && ! $searchCase->isManagedBy($user->actor_key)
+            && $searchCase->owner_id !== null
+            && $this->view($user, $searchCase)
+            && ! $searchCase->status->isClosed();
     }
 
     public function viewPoster(?User $user, SearchCase $searchCase): bool

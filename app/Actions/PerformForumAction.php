@@ -6,16 +6,18 @@ namespace App\Actions;
 
 use App\Enums\ForumSubscriptionLevel;
 use App\Enums\ForumTopicStatus;
+use App\Enums\KnowledgeCollaboratorRole;
 use App\Enums\KnowledgeStatus;
+use App\Enums\KnowledgeWorkflowEventType;
 use App\Models\ForumAnswer;
 use App\Models\ForumBlock;
 use App\Models\ForumEngagement;
 use App\Models\ForumNotification;
-use App\Models\ForumReport;
 use App\Models\ForumTopic;
-use App\Models\ForumVote;
 use App\Models\KnowledgeArticle;
+use App\Models\User;
 use App\Services\ForumActor;
+use App\Services\KnowledgeGuideHistory;
 use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -26,6 +28,10 @@ class PerformForumAction
     public function __construct(
         private readonly ForumActor $actor,
         private readonly Gate $gate,
+        private readonly RecordAnswerVote $recordAnswerVote,
+        private readonly AcceptForumAnswer $acceptForumAnswer,
+        private readonly SubmitForumReport $submitForumReport,
+        private readonly KnowledgeGuideHistory $knowledgeHistory,
     ) {}
 
     /**
@@ -37,12 +43,16 @@ class PerformForumAction
         return DB::transaction(fn (): array => match ($data['action']) {
             'toggle-bookmark' => $this->toggleBookmark((int) $data['topic_id']),
             'set-subscription' => $this->setSubscription((int) $data['topic_id'], (string) $data['value']),
-            'vote-answer' => $this->vote((int) $data['answer_id'], (string) $data['value'], $data['reason'] ?? null),
+            'vote-answer' => $this->vote(
+                (int) $data['answer_id'],
+                (string) $data['value'],
+                $data['reason'] ?? null,
+            ),
             'accept-answer' => $this->acceptAnswer((int) $data['answer_id']),
             'resolve-topic' => $this->changeStatus((int) $data['topic_id'], ForumTopicStatus::Resolved),
             'reopen-topic' => $this->changeStatus((int) $data['topic_id'], ForumTopicStatus::Answered),
-            'report-topic' => $this->report('topic', (int) $data['topic_id'], (string) $data['reason'], $data['details'] ?? null),
-            'report-answer' => $this->report('answer', (int) $data['answer_id'], (string) $data['reason'], $data['details'] ?? null),
+            'report-topic' => $this->report('topic', (int) $data['topic_id'], $data),
+            'report-answer' => $this->report('answer', (int) $data['answer_id'], $data),
             'block-author' => $this->blockAuthor((string) $data['author_key']),
             'mark-notification-read' => $this->markNotificationRead((int) $data['notification_id']),
             'convert-to-knowledge' => $this->convertToKnowledge((int) $data['topic_id']),
@@ -100,31 +110,11 @@ class PerformForumAction
     /** @return array{message: string, topic: ForumTopic, article: null} */
     private function vote(int $answerId, string $value, ?string $reason): array
     {
-        if (! in_array($value, ['helpful', 'not-helpful', 'needs-source', 'outdated', 'dangerous', 'off-topic'], true)) {
-            throw ValidationException::withMessages([
-                'value' => __('forum.validation.answer_rating'),
-            ]);
-        }
-
-        $answer = ForumAnswer::query()
-            ->select(['id', 'topic_id'])
-            ->findOrFail($answerId);
-
-        ForumVote::query()->updateOrCreate(
-            ['answer_id' => $answer->id, 'user_key' => $this->actor->key()],
-            ['value' => $value, 'reason' => $reason],
-        );
-
-        $answer->update([
-            'helpful_count' => ForumVote::query()
-                ->where('answer_id', $answer->id)
-                ->where('value', 'helpful')
-                ->count(),
-        ]);
+        $topic = $this->recordAnswerVote->handle($answerId, $value, $reason);
 
         return [
             'message' => __('forum.feedback.answer_rating_saved'),
-            'topic' => $this->topic($answer->topic_id),
+            'topic' => $topic,
             'article' => null,
         ];
     }
@@ -132,24 +122,7 @@ class PerformForumAction
     /** @return array{message: string, topic: ForumTopic, article: null} */
     private function acceptAnswer(int $answerId): array
     {
-        $answer = ForumAnswer::query()
-            ->select(['id', 'topic_id'])
-            ->findOrFail($answerId);
-        $topic = $this->topic($answer->topic_id);
-
-        $this->ensureOwner($topic);
-
-        ForumAnswer::query()
-            ->where('topic_id', $topic->id)
-            ->where('is_accepted', true)
-            ->update(['is_accepted' => false]);
-
-        $answer->update(['is_accepted' => true, 'is_highlighted' => true]);
-        $topic->update([
-            'accepted_answer_id' => $answer->id,
-            'status' => ForumTopicStatus::Resolved,
-            'last_activity_at' => now(),
-        ]);
+        $topic = $this->acceptForumAnswer->handle($answerId);
 
         return [
             'message' => __('forum.feedback.answer_accepted'),
@@ -175,28 +148,27 @@ class PerformForumAction
     }
 
     /** @return array{message: string, topic: ForumTopic, article: null} */
-    private function report(string $type, int $id, string $reason, ?string $details): array
+    private function report(string $type, int $id, array $data): array
     {
         $answer = $type === 'answer'
-            ? ForumAnswer::query()->select(['id', 'topic_id'])->findOrFail($id)
+            ? ForumAnswer::query()->select([
+                'id',
+                'topic_id',
+                'author_id',
+                'author_key',
+            ])->findOrFail($id)
             : null;
         $topic = $this->topic($answer === null ? $id : $answer->topic_id);
-        $highPriority = in_array($reason, [
-            'dangerous-advice',
-            'animal-cruelty',
-            'fraud',
-            'personal-data',
-        ], true);
-
-        ForumReport::query()->create([
-            'topic_id' => $topic->id,
-            'answer_id' => $answer?->id,
-            'reporter_key' => $this->actor->key(),
-            'reason' => $reason,
-            'details' => $details,
-            'priority' => $highPriority ? 'high' : 'normal',
-            'status' => 'submitted',
-        ]);
+        $subject = $answer ?? $topic;
+        $this->submitForumReport->handle(
+            reporter: $this->actor->requireUser(),
+            subject: $subject,
+            reasonKey: (string) $data['reason'],
+            details: isset($data['details']) ? (string) $data['details'] : null,
+            truthfulnessConfirmed: (bool) ($data['truthfulness_confirmed'] ?? false),
+            immediateSafety: (bool) ($data['immediate_safety'] ?? false),
+            blockAffectedUser: (bool) ($data['block_user'] ?? false),
+        );
 
         return [
             'message' => __('forum.feedback.report_submitted'),
@@ -262,6 +234,7 @@ class PerformForumAction
             ->with(['acceptedAnswer' => fn ($query) => $query->select([
                 'id',
                 'topic_id',
+                'author_id',
                 'author_name',
                 'body',
                 'sources',
@@ -277,6 +250,7 @@ class PerformForumAction
         }
 
         $answer = $topic->acceptedAnswer;
+        $actor = $this->actor->requireUser();
         $body = __('forum.knowledge.question_context')
             ."\n\n{$topic->body}\n\n"
             .__('forum.knowledge.recommended_approach')
@@ -284,7 +258,10 @@ class PerformForumAction
         $article = KnowledgeArticle::query()->firstOrCreate(
             ['source_topic_id' => $topic->id],
             [
+                'created_by_user_id' => $actor->id,
+                'discussion_topic_id' => $topic->id,
                 'slug' => Str::slug($topic->title).'-guide',
+                'translation_group_key' => "topic-{$topic->id}",
                 'title' => $topic->title,
                 'summary' => Str::limit(strip_tags($answer->body), 240),
                 'body' => $body,
@@ -292,7 +269,7 @@ class PerformForumAction
                 'type' => 'guide',
                 'difficulty' => 'beginner',
                 'audience' => __('forum.knowledge.default_audience'),
-                'status' => KnowledgeStatus::Review,
+                'status' => KnowledgeStatus::SubmittedForReview,
                 'language' => $topic->language,
                 'tags' => $topic->tags,
                 'sources' => $answer->sources,
@@ -300,18 +277,52 @@ class PerformForumAction
                     ['name' => $topic->author_name, 'role' => __('forum.knowledge.question_author')],
                     ['name' => $answer->author_name, 'role' => __('forum.knowledge.answer_author')],
                 ],
+                'protected_sections' => [],
                 'current_version' => 1,
+                'lock_version' => 0,
             ],
         );
 
         if ($article->wasRecentlyCreated) {
-            $article->versions()->create([
-                'version_number' => 1,
-                'title' => $article->title,
-                'body' => $body,
-                'edited_by' => $this->actor->identity()['name'],
-                'change_summary' => __('forum.knowledge.initial_change_summary'),
+            $article->collaborators()->create([
+                'user_id' => $actor->id,
+                'role' => KnowledgeCollaboratorRole::Maintainer,
+                'added_by_user_id' => $actor->id,
+                'attribution_name' => $actor->name,
             ]);
+            $this->addAnswerContributor($article, $answer->author_id, $actor);
+            $this->knowledgeHistory->snapshot(
+                $article,
+                $actor,
+                __('forum.knowledge.initial_change_summary'),
+            );
+            $this->knowledgeHistory->record(
+                $article,
+                $actor,
+                KnowledgeWorkflowEventType::Created,
+                'resolved-topic-converted',
+                'knowledge.events.created',
+                ['source_topic_id' => $topic->id],
+                toStatus: KnowledgeStatus::SubmittedForReview->value,
+                versionNumber: 1,
+            );
+        } else {
+            $article->forceFill([
+                'created_by_user_id' => $article->created_by_user_id ?? $actor->id,
+                'discussion_topic_id' => $article->discussion_topic_id ?? $topic->id,
+                'translation_group_key' => $article->translation_group_key ?? "topic-{$topic->id}",
+            ])->save();
+            $article->collaborators()->firstOrCreate(
+                [
+                    'user_id' => $actor->id,
+                    'role' => KnowledgeCollaboratorRole::Maintainer->value,
+                ],
+                [
+                    'added_by_user_id' => $actor->id,
+                    'attribution_name' => $actor->name,
+                ],
+            );
+            $this->addAnswerContributor($article, $answer->author_id, $actor);
         }
 
         return [
@@ -321,10 +332,46 @@ class PerformForumAction
         ];
     }
 
+    private function addAnswerContributor(
+        KnowledgeArticle $article,
+        ?int $answerAuthorId,
+        User $actor,
+    ): void {
+        if ($answerAuthorId === null || $answerAuthorId === $actor->id) {
+            return;
+        }
+
+        $answerAuthor = User::query()
+            ->select(['id', 'name', 'status'])
+            ->find($answerAuthorId);
+
+        if (! $answerAuthor?->isActive()) {
+            return;
+        }
+
+        $article->collaborators()->firstOrCreate(
+            [
+                'user_id' => $answerAuthor->id,
+                'role' => KnowledgeCollaboratorRole::Contributor->value,
+            ],
+            [
+                'added_by_user_id' => $actor->id,
+                'attribution_name' => $answerAuthor->name,
+            ],
+        );
+    }
+
     private function topic(int $topicId): ForumTopic
     {
         $topic = ForumTopic::query()
-            ->select(['id', 'author_key', 'slug', 'status', 'visibility'])
+            ->select([
+                'id',
+                'author_id',
+                'author_key',
+                'slug',
+                'status',
+                'visibility',
+            ])
             ->findOrFail($topicId);
 
         $this->gate->authorize('view', $topic);

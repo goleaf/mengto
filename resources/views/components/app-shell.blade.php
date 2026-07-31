@@ -12,6 +12,7 @@
 
         @fonts
         @vite(['resources/css/app.css', 'resources/scss/app.scss', 'resources/js/app.js'])
+        @livewireStyles
     </head>
     <body>
         <a href="#main-content" class="sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:not-sr-only focus:rounded-md focus:bg-paw-ink focus:px-4 focus:py-3 focus:text-sm focus:font-semibold focus:text-white focus:outline-none focus:ring-2 focus:ring-paw-leaf focus:ring-offset-2">
@@ -31,5 +32,6 @@
 
             <x-primary-navigation :active-section="$activeSection" variant="mobile" />
         </div>
+        @livewireScripts
     </body>
 </html>

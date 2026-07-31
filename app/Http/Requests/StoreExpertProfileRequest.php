@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests;
 
+use App\Enums\CredentialType;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -48,7 +51,7 @@ class StoreExpertProfileRequest extends FormRequest
             'currency' => ['required', 'string', 'size:3'],
             'avatar_url' => ['nullable', 'url:http,https', 'max:2048'],
             'cover_url' => ['nullable', 'url:http,https', 'max:2048'],
-            'credential_type' => ['nullable', 'string', 'max:60'],
+            'credential_type' => ['nullable', Rule::enum(CredentialType::class)],
             'credential_title' => ['nullable', 'string', 'max:180'],
             'credential_issuer' => ['nullable', 'string', 'max:180'],
             'credential_file' => ['nullable', 'file', 'mimes:pdf,jpg,jpeg,png,webp', 'max:10240'],

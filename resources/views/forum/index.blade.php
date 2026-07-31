@@ -11,6 +11,16 @@
                     <x-lucide-library aria-hidden="true" />
                     {{ __('ui.knowledge_dcb3e1c00e') }}
                 </a>
+                @auth
+                    <a href="{{ route('forum.groups.index') }}" class="forum-button">
+                        <x-lucide-users aria-hidden="true" />
+                        {{ __('forum_groups.navigation.label') }}
+                    </a>
+                    <a href="{{ route('forum.mentorship.index') }}" class="forum-button">
+                        <x-lucide-users-round aria-hidden="true" />
+                        {{ __('forum_mentorship.navigation.label') }}
+                    </a>
+                @endauth
                 <a href="{{ route('forum.topics.create') }}" class="forum-button forum-button--primary">
                     <x-lucide-square-pen aria-hidden="true" />
                     {{ __('ui.ask_a_question_3a533d7ef8') }}
@@ -153,10 +163,13 @@
                             <form method="POST" action="{{ route('forum.actions') }}">
                                 @csrf
                                 <input type="hidden" name="action" value="mark-notification-read">
-                                <input type="hidden" name="notification_id" value="{{ $notification->id }}">
+                                <input type="hidden" name="notification_id" value="{{ $notification['id'] }}">
                                 <button type="submit">
                                     {{ $notification->title }}
-                                    <small>{{ $notification->created_at->diffForHumans() }}{{ $notification->read_at ? ' / read' : ' / new' }}</small>
+                                    <small>{{ __('forum.notifications.summary', [
+                                        'date' => $notification['created_label'],
+                                        'state' => $notification['state_label'],
+                                    ]) }}</small>
                                 </button>
                             </form>
                         @empty

@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\KnowledgeCorrectionStatus;
 use App\Enums\KnowledgeStatus;
 use App\Models\KnowledgeArticle;
 use App\Models\KnowledgeCorrection;
@@ -13,7 +14,7 @@ test('knowledge library exposes reviewed articles but not editorial drafts', fun
     KnowledgeArticle::factory()->create([
         'title' => 'An internal carrier editorial draft',
         'category' => 'behavior',
-        'status' => KnowledgeStatus::Review,
+        'status' => KnowledgeStatus::SubmittedForReview,
         'published_at' => null,
     ]);
 
@@ -61,12 +62,12 @@ test('article page presents sources version history and accepts corrections', fu
     expect(KnowledgeCorrection::query()->firstOrFail())
         ->article_id->toBe($article->id)
         ->reporter_key->toBe('mia-carter')
-        ->status->toBe('submitted');
+        ->status->toBe(KnowledgeCorrectionStatus::Submitted);
 });
 
 test('unpublished knowledge article is not publicly readable', function () {
     $article = KnowledgeArticle::factory()->create([
-        'status' => KnowledgeStatus::Review,
+        'status' => KnowledgeStatus::SubmittedForReview,
         'published_at' => null,
     ]);
 

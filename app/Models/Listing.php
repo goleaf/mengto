@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 
@@ -195,6 +196,12 @@ class Listing extends Model
         return $this->hasMany(ListingReview::class);
     }
 
+    /** @return HasOne<AdoptionCase, $this> */
+    public function adoptionCase(): HasOne
+    {
+        return $this->hasOne(AdoptionCase::class);
+    }
+
     public function scopeForDirectory(Builder $query): Builder
     {
         return $query->select([
@@ -213,6 +220,19 @@ class Listing extends Model
         return $query
             ->where('status', ListingStatus::Published->value)
             ->where('moderation_status', ModerationStatus::Approved->value);
+    }
+
+    public function scopeWithAdoptionIdentity(Builder $query): Builder
+    {
+        return $query->with([
+            'adoptionCase' => fn ($cases) => $cases->select([
+                'id',
+                'listing_id',
+                'provider_identity_status',
+                'provider_verified',
+                'provider_verification_expires_at',
+            ]),
+        ]);
     }
 
     public function scopeSearch(Builder $query, ?string $search): Builder

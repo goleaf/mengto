@@ -155,6 +155,33 @@ test('compliance matrix contains every canonical requirement exactly once', func
         ->toBeEmpty();
 });
 
+test('forum atomic requirements and evidence remain deterministic and traceable', function () {
+    $result = Process::path(base_path())
+        ->timeout(30)
+        ->run([PHP_BINARY, 'scripts/generate-forum-requirements.php', '--check']);
+    $catalogue = json_decode(
+        File::get(base_path('docs/requirements/forum-requirements.json')),
+        true,
+        flags: JSON_THROW_ON_ERROR,
+    );
+    $requirements = collect($catalogue['requirements']);
+
+    expect($result->successful(), $result->errorOutput().$result->output())
+        ->toBeTrue()
+        ->and($requirements)->toHaveCount(7284)
+        ->and($requirements->pluck('requirement_id')->unique())->toHaveCount(7284);
+
+    $requirements
+        ->where('verification_status', 'verified')
+        ->each(function (array $requirement): void {
+            expect($requirement['evidence'], $requirement['requirement_id'])
+                ->toBeArray()
+                ->not->toBeEmpty()
+                ->and($requirement['final_result'])
+                ->toBe('verified');
+        });
+});
+
 test('application source avoids prohibited database and service locator calls', function () {
     $prohibitedDatabaseCalls = '/\bDB::(?:select|statement|raw|unprepared)\s*\(|->(?:selectRaw|whereRaw|orWhereRaw|havingRaw|orderByRaw|groupByRaw)\s*\(/';
 
@@ -170,6 +197,62 @@ test('application source avoids prohibited database and service locator calls', 
     foreach (sourceFiles(app_path('Http/Requests')) as $file) {
         expect($file->getContents(), $file->getRelativePathname())
             ->not->toMatch('/\bapp\s*\(/');
+    }
+});
+
+test('first party source contains no volt components or debug calls', function () {
+    $sourcePaths = [
+        app_path(),
+        base_path('bootstrap'),
+        base_path('database'),
+        resource_path('views'),
+        base_path('routes'),
+    ];
+    $voltPatterns = [
+        '/\bLivewire\\\\Volt\b/',
+        '/\bVolt::/',
+        '/\bnew\s+class\s+extends\s+Component\b/',
+    ];
+    $debugPattern = '/\b(?:dd|dump|ray|var_dump|print_r)\s*\(/';
+
+    foreach ($sourcePaths as $path) {
+        foreach (sourceFiles($path) as $file) {
+            $contents = $file->getContents();
+
+            foreach ($voltPatterns as $pattern) {
+                expect(
+                    preg_match($pattern, $contents),
+                    $file->getRelativePathname(),
+                )->toBe(0);
+            }
+
+            expect(
+                preg_match($debugPattern, $contents),
+                $file->getRelativePathname(),
+            )->toBe(0);
+        }
+    }
+});
+
+test('tailwind utility names are statically discoverable', function () {
+    $frontendPaths = [
+        app_path(),
+        resource_path(),
+    ];
+    $dynamicUtilityPattern = '/\b(?:bg|text|border|ring|outline|fill|stroke|grid-cols|col-span|from|via|to)-\$\{|'
+        .'\b(?:bg|text|border|ring|outline|fill|stroke|grid-cols|col-span|from|via|to)-\{\{\s*\$/';
+
+    foreach ($frontendPaths as $path) {
+        foreach (File::allFiles($path) as $file) {
+            if (! in_array($file->getExtension(), ['php', 'js', 'css'], true)) {
+                continue;
+            }
+
+            expect(
+                preg_match($dynamicUtilityPattern, $file->getContents()),
+                $file->getRelativePathname(),
+            )->toBe(0);
+        }
     }
 });
 

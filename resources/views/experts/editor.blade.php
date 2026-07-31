@@ -224,7 +224,14 @@
                         <p class="mt-1 text-sm text-paw-muted">{{ __('ui.the_original_file_is_stored_privately_and_never_f4e144d833') }}</p>
                     </div>
                     <div class="grid gap-4 sm:grid-cols-3">
-                        <label class="grid gap-1 text-sm font-semibold">{{ __('ui.document_type_5b81f70d59') }}<input name="credential_type" value="{{ old('credential_type') }}" class="rounded-md border border-paw-line bg-white px-3 py-2.5" placeholder="{{ __('ui.license_or_diploma_39c8d6d05e') }}"></label>
+                        <label class="grid gap-1 text-sm font-semibold">
+                            {{ __('ui.document_type_5b81f70d59') }}
+                            <select name="credential_type" class="rounded-md border border-paw-line bg-white px-3 py-2.5">
+                                @foreach ($credential_types as $credentialType => $credentialTypeLabel)
+                                    <option value="{{ $credentialType }}" @selected(old('credential_type', 'qualification') === $credentialType)>{{ $credentialTypeLabel }}</option>
+                                @endforeach
+                            </select>
+                        </label>
                         <label class="grid gap-1 text-sm font-semibold">{{ __('ui.document_title_02c6aae53d') }}<input name="credential_title" value="{{ old('credential_title') }}" class="rounded-md border border-paw-line bg-white px-3 py-2.5"></label>
                         <label class="grid gap-1 text-sm font-semibold">{{ __('ui.issuer_39e02c46a0') }}<input name="credential_issuer" value="{{ old('credential_issuer') }}" class="rounded-md border border-paw-line bg-white px-3 py-2.5"></label>
                     </div>

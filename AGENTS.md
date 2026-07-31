@@ -30,7 +30,16 @@ state, and private domain boundaries must remain consistent.
 11. `docs/testing.md`, `docs/seeding.md`, and `docs/deployment.md`
 12. `docs/implementation-plan.md` and
     `docs/requirements/compliance-matrix.md`
-13. The applicable feature specification under `docs/superpowers/specs`
+13. For forum or animal-taxonomy work:
+    `docs/requirements/forum-source-prompt.md`,
+    `docs/requirements/forum-master-requirements.md`,
+    `docs/traceability/forum-requirements-matrix.md`,
+    `docs/plans/forum-master-plan.md`,
+    `docs/plans/forum-phase-requirement-index.md`,
+    `docs/plans/forum-current-progress.md`, the applicable canonical forum
+    feature document such as `docs/mentorship.md`, and the forum
+    decisions/audits
+14. The applicable feature specification under `docs/superpowers/specs`
 
 Historical implementation plans under `docs/superpowers/plans` explain how an
 earlier prototype slice was delivered. They are evidence, not current global
@@ -256,6 +265,12 @@ calls, debug functions, and `env()` outside configuration.
 - Preserve useful historical specifications. Mark superseded instructions
   clearly rather than leaving contradictory active documents.
 - Do not publish secrets or real personal data.
+- Forum and animal-taxonomy changes must preserve the immutable source prompt,
+  update atomic requirement evidence, and complete a phase audit before moving
+  the affected requirement IDs to `verified`.
+- Run `php scripts/preserve-forum-source-prompt.php --check` and
+  `php scripts/generate-forum-requirements.php --check` whenever forum
+  requirements, plans, evidence, or generated matrices change.
 
 ## Quality Gates
 

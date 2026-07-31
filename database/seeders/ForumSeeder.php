@@ -336,7 +336,11 @@ class ForumSeeder extends Seeder
         KnowledgeVersion::factory()->create([
             'article_id' => $travelArticle->id,
             'title' => $travelArticle->title,
+            'summary' => $travelArticle->summary,
             'body' => $travelArticle->body,
+            'sources' => $travelArticle->sources,
+            'language' => $travelArticle->language,
+            'status' => $travelArticle->status,
             'edited_by' => 'PawCircle editorial team',
             'change_summary' => 'Initial checklist reviewed against current EU sources.',
         ]);
@@ -344,7 +348,11 @@ class ForumSeeder extends Seeder
         KnowledgeVersion::factory()->create([
             'article_id' => $carrierArticle->id,
             'title' => $carrierArticle->title,
+            'summary' => $carrierArticle->summary,
             'body' => $carrierArticle->body,
+            'sources' => $carrierArticle->sources,
+            'language' => $carrierArticle->language,
+            'status' => $carrierArticle->status,
             'edited_by' => 'Sofia Arden',
             'change_summary' => 'Initial guide with a choice-based handling review.',
         ]);

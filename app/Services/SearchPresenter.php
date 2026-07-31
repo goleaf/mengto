@@ -5,16 +5,21 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Enums\SearchCaseType;
+use App\Enums\SearchStatus;
 use App\Enums\SearchTaskStatus;
 use App\Enums\SearchVolunteerStatus;
 use App\Enums\SightingStatus;
+use App\Models\PetProfile;
 use App\Models\SearchAlert;
 use App\Models\SearchCase;
+use App\Models\SearchCaseEvent;
+use App\Models\SearchContactRelay;
 use App\Models\SearchSector;
 use App\Models\SearchTask;
 use App\Models\SearchUpdate;
 use App\Models\SearchVolunteer;
 use App\Models\Sighting;
+use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
@@ -30,6 +35,7 @@ class SearchPresenter
         private readonly PlaceCatalog $places,
         private readonly QrCodeGenerator $qrCodes,
         private readonly LocaleFormatter $formatter,
+        private readonly Gate $gate,
     ) {}
 
     /**
@@ -92,27 +98,92 @@ class SearchPresenter
     /** @return array<string, mixed> */
     public function editor(?string $petKey = null): array
     {
-        $petKey = filled($petKey) ? $petKey : 'scout';
-        $pet = $this->profiles->pet($petKey) ?? $this->profiles->pet('scout');
+        $user = $this->actor->requireUser();
+        $speciesOptions = $this->taxonomy->species();
+        $petProfiles = PetProfile::query()
+            ->select([
+                'id',
+                'user_id',
+                'profile_key',
+                'slug',
+                'name',
+                'species',
+                'breed',
+                'birth_date',
+                'status',
+            ])
+            ->where('user_id', $user->id)
+            ->where('status', 'active')
+            ->orderBy('name')
+            ->orderBy('id')
+            ->limit(50)
+            ->get();
+        $selectedPet = $petProfiles->first(
+            static fn (PetProfile $profile): bool => filled($petKey)
+                && in_array($petKey, [$profile->profile_key, $profile->slug], true),
+        ) ?? $petProfiles->first();
+        $defaultSpecies = $selectedPet instanceof PetProfile
+            ? $this->petSpeciesKey($selectedPet, $speciesOptions)
+            : 'other';
 
         return [
             ...$this->page(__('messages.report_a_missing_or_found_animal_d04bc18c2b'), 'lost-found'),
             'types' => $this->taxonomy->types(),
-            'species_options' => $this->taxonomy->species(),
+            'type_descriptions' => $this->taxonomy->typeDescriptions(),
+            'species_options' => $speciesOptions,
             'size_options' => $this->taxonomy->sizes(),
             'microchip_options' => $this->taxonomy->microchipStatuses(),
-            'pet_options' => [
-                'scout' => __('messages.scout_dog_72b1dcface'),
-                'nori' => __('messages.nori_cat_a01db5ea36'),
-            ],
-            'default_pet' => $pet,
+            'pet_options' => $petProfiles
+                ->mapWithKeys(fn (PetProfile $profile): array => [
+                    $profile->id => __('lost_found.interface.pet_option', [
+                        'name' => $profile->name,
+                        'species' => $speciesOptions[$this->petSpeciesKey($profile, $speciesOptions)],
+                        'breed' => $profile->breed ?: __('lost_found.interface.breed_not_recorded'),
+                    ]),
+                ])
+                ->all(),
+            'default_pet_id' => $selectedPet?->id,
+            'default_pet' => $selectedPet instanceof PetProfile
+                ? [
+                    'name' => $selectedPet->name,
+                    'breed' => $selectedPet->breed,
+                    'age' => $selectedPet->birth_date === null
+                        ? null
+                        : __('lost_found.interface.pet_age_years', [
+                            'count' => $selectedPet->birth_date->age,
+                        ]),
+                ]
+                : null,
+            'default_species' => $defaultSpecies,
+            'default_type' => SearchCaseType::Lost->value,
+            'default_size' => 'unknown',
+            'default_microchip_status' => 'unknown',
+            'default_last_seen_at' => now()->subMinutes(30)->format('Y-m-d\TH:i'),
+            'default_country' => 'LT',
+            'notification_radius_options' => collect([2, 5, 10, 25, 50])
+                ->mapWithKeys(static fn (int $radius): array => [
+                    $radius => __('presentation.kilometers', ['count' => $radius]),
+                ])
+                ->all(),
+            'default_notification_radius' => 5,
         ];
+    }
+
+    /**
+     * @param  array<string, string>  $speciesOptions
+     */
+    private function petSpeciesKey(PetProfile $profile, array $speciesOptions): string
+    {
+        $speciesKey = Str::kebab($profile->species);
+
+        return array_key_exists($speciesKey, $speciesOptions) ? $speciesKey : 'other';
     }
 
     /** @return array<string, mixed> */
     public function detail(SearchCase $searchCase): array
     {
         $searchCase->increment('view_count');
+        $this->loadTaxonomyContext($searchCase);
 
         $sightings = Sighting::query()
             ->select([
@@ -185,6 +256,7 @@ class SearchPresenter
             'map_markers' => $this->caseMarkers($searchCase, $sightings),
             'alert_reach' => $alertReach,
             'can_manage' => $canManage,
+            'can_contact' => $this->gate->allows('contact', $searchCase),
             'can_submit_sighting' => $searchCase->alerts_active && ! $searchCase->status->isClosed(),
             'can_volunteer' => $searchCase->volunteer_join_open
                 && $searchCase->alerts_active
@@ -194,12 +266,15 @@ class SearchPresenter
             'volunteer_capabilities' => $this->taxonomy->volunteerCapabilities(),
             'report_reasons' => $this->taxonomy->reportReasons(),
             'idempotency_key' => (string) Str::uuid(),
+            'contact_idempotency_key' => (string) Str::uuid(),
+            'relay_purposes' => $this->taxonomy->relayPurposes(),
         ];
     }
 
     /** @return array<string, mixed> */
     public function coordination(SearchCase $searchCase): array
     {
+        $this->loadTaxonomyContext($searchCase);
         $searchCase->load([
             'sightings' => fn ($query) => $query
                 ->select([
@@ -249,6 +324,23 @@ class SearchPresenter
                     'message', 'sent_at', 'stopped_at',
                 ])
                 ->latest('created_at'),
+            'events' => fn ($query) => $query
+                ->select([
+                    'id', 'search_case_id', 'actor_user_id', 'event_type',
+                    'previous_status', 'current_status', 'reason_translation_key',
+                    'metadata', 'created_at',
+                ])
+                ->with(['actor' => fn ($actors) => $actors->select(['id', 'name', 'actor_key'])])
+                ->latest('created_at')
+                ->limit(50),
+            'contactRelays' => fn ($query) => $query
+                ->select([
+                    'id', 'search_case_id', 'sender_user_id', 'recipient_user_id',
+                    'purpose', 'message', 'status', 'read_at', 'created_at',
+                ])
+                ->with(['sender' => fn ($senders) => $senders->select(['id', 'name', 'actor_key'])])
+                ->latest('created_at')
+                ->limit(50),
         ]);
 
         return [
@@ -281,6 +373,31 @@ class SearchPresenter
                 ->all(),
             'updates' => $searchCase->updates->map(fn (SearchUpdate $update): array => $this->update($update))->all(),
             'alerts' => $searchCase->alerts->map(fn (SearchAlert $alert): array => $this->alert($alert))->all(),
+            'events' => $searchCase->events
+                ->map(fn (SearchCaseEvent $event): array => [
+                    'id' => $event->id,
+                    'type' => $event->event_type,
+                    'label' => __($event->reason_translation_key),
+                    'actor_name' => $event->actor?->name,
+                    'previous_status' => $event->previous_status !== null
+                        ? (SearchStatus::tryFrom($event->previous_status)?->label() ?? $event->previous_status)
+                        : null,
+                    'current_status' => $event->current_status !== null
+                        ? (SearchStatus::tryFrom($event->current_status)?->label() ?? $event->current_status)
+                        : null,
+                    'created_label' => $this->formatter->dateTime($event->created_at),
+                ])
+                ->all(),
+            'contact_relays' => $searchCase->contactRelays
+                ->map(fn (SearchContactRelay $relay): array => [
+                    'id' => $relay->id,
+                    'sender_name' => $relay->sender->name,
+                    'purpose' => $this->taxonomy->relayPurposes()[$relay->purpose] ?? $relay->purpose,
+                    'message' => $relay->message,
+                    'status' => $relay->status,
+                    'created_label' => $this->formatter->dateTime($relay->created_at),
+                ])
+                ->all(),
             'organizations' => $this->nearbyOrganizations(),
             'map_markers' => $this->caseMarkers($searchCase, $searchCase->sightings),
             'statuses' => $this->taxonomy->statuses(),
@@ -381,6 +498,8 @@ class SearchPresenter
             'approach_instructions' => $searchCase->approach_instructions,
             'avoid_instructions' => $searchCase->avoid_instructions,
             'accessories' => $searchCase->accessories ?? [],
+            'accessories_label' => collect($searchCase->accessories ?? [])->join(', '),
+            'temperament' => $searchCase->temperament,
             'microchip_label' => $this->taxonomy->microchipStatuses()[$searchCase->microchip_status]
                 ?? Str::headline($searchCase->microchip_status),
             'direction' => $searchCase->direction,
@@ -390,13 +509,36 @@ class SearchPresenter
             'volunteer_join_open' => $searchCase->volunteer_join_open,
             'animal_secured' => $searchCase->animal_secured,
             'contact_protected' => $searchCase->contact_protected,
+            'reward_offered' => $searchCase->reward_offered,
+            'reward_summary' => $searchCase->reward_summary,
+            'scientific_name' => $searchCase->relationLoaded('taxon')
+                ? $searchCase->taxon?->activeVersion?->scientific_name
+                : null,
+            'domestic_classification' => $searchCase->relationLoaded('domesticClassification')
+                ? $searchCase->domesticClassification?->canonical_name
+                : null,
             'photos' => $searchCase->photos ?? [],
             'reported_label' => $this->formatter->dateTime($searchCase->reported_at),
             'returned_label' => $this->formatter->dateTime($searchCase->returned_at),
             'closure_reason' => $searchCase->closure_reason,
+            'archived' => $searchCase->archived_at !== null,
+            'archived_label' => $this->formatter->dateTime($searchCase->archived_at),
+            'can_archive' => $searchCase->status->isClosed() && $searchCase->archived_at === null,
+            'lock_version' => $searchCase->lock_version,
             'view_count' => $searchCase->view_count,
             'poster_url' => route('lost-found.poster', $searchCase),
         ];
+    }
+
+    private function loadTaxonomyContext(SearchCase $searchCase): void
+    {
+        $searchCase->loadMissing([
+            'taxon' => fn ($taxa) => $taxa->select(['id', 'stable_key']),
+            'taxon.activeVersion' => fn ($versions) => $versions
+                ->select(['id', 'taxon_id', 'scientific_name', 'rank']),
+            'domesticClassification' => fn ($classifications) => $classifications
+                ->select(['id', 'taxon_id', 'canonical_name', 'classification_type']),
+        ]);
     }
 
     /** @return array<string, mixed> */

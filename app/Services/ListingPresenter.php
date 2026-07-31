@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Enums\ListingStatus;
+use App\Enums\ListingType;
 use App\Enums\ModerationStatus;
 use App\Enums\ReservationStatus;
 use App\Enums\ReviewStatus;
@@ -33,6 +34,7 @@ class ListingPresenter
     {
         $query = Listing::query()
             ->forDirectory()
+            ->withAdoptionIdentity()
             ->published()
             ->search($filters['q'] ?? null)
             ->forType($filters['type'] ?? null)
@@ -92,6 +94,9 @@ class ListingPresenter
     public function listing(Listing $listing): array
     {
         $listing->increment('view_count');
+        $listing->load([
+            'adoptionCase:id,listing_id,provider_identity_status,provider_verified,provider_verification_expires_at',
+        ]);
 
         $engagement = ListingEngagement::query()->firstOrCreate(
             ['listing_id' => $listing->id, 'user_key' => $this->actor->key()],
@@ -182,6 +187,7 @@ class ListingPresenter
 
         $related = Listing::query()
             ->forDirectory()
+            ->withAdoptionIdentity()
             ->published()
             ->whereKeyNot($listing->id)
             ->where(function (Builder $builder) use ($listing): void {
@@ -285,7 +291,9 @@ class ListingPresenter
             'business_name' => $listing->is_business ? $listing->business_name : null,
             'seller_type' => $listing->seller_type->value,
             'seller_type_label' => $listing->seller_type->label(),
-            'seller_verified' => $listing->is_verified_seller,
+            'seller_verified' => $listing->type === ListingType::Adoption
+                ? $listing->adoptionCase?->effectiveProviderIdentityStatus()->isVerified() === true
+                : $listing->is_verified_seller,
             'reviews_count' => (int) ($listing->reviews_count ?? 0),
             'item_rating' => $listing->hasAttribute('item_rating')
                 && $listing->item_rating !== null

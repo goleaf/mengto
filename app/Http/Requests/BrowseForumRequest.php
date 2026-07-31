@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests;
 
 use App\Services\ForumTaxonomy;
@@ -26,7 +28,7 @@ class BrowseForumRequest extends FormRequest
     {
         return [
             'q' => ['nullable', 'string', 'max:160'],
-            'category' => ['nullable', Rule::in(['all', ...array_keys($taxonomy->categoryOptions())])],
+            'category' => ['nullable', Rule::in(['all', ...$taxonomy->acceptedCategoryKeys()])],
             'filter' => ['nullable', Rule::in(array_keys($taxonomy->filterOptions()))],
             'sort' => ['nullable', Rule::in(array_keys($taxonomy->sortOptions()))],
             'language' => ['nullable', Rule::in(['all', 'en', 'lt', 'ru'])],

@@ -15,6 +15,12 @@
                     <x-lucide-circle-help aria-hidden="true" />
                     {{ __('ui.ask_a_question_3a533d7ef8') }}
                 </a>
+                @if ($can_create)
+                    <a href="{{ route('knowledge.guides.create') }}" class="forum-button forum-button--primary">
+                        <x-lucide-file-plus-2 aria-hidden="true" />
+                        {{ __('knowledge.actions.create_guide') }}
+                    </a>
+                @endif
             </div>
         </header>
 

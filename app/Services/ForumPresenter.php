@@ -106,7 +106,16 @@ class ForumPresenter
                 ->where('user_key', $this->actor->key())
                 ->latest('created_at')
                 ->limit(4)
-                ->get(),
+                ->get()
+                ->map(fn (ForumNotification $notification): array => [
+                    'id' => $notification->id,
+                    'title' => $notification->title,
+                    'created_label' => $this->formatter->relative($notification->created_at),
+                    'state_label' => $notification->read_at === null
+                        ? __('forum.notifications.unread')
+                        : __('forum.notifications.read'),
+                ])
+                ->all(),
             'draft_count' => ForumTopic::query()
                 ->where('author_key', $this->actor->key())
                 ->where('status', ForumTopicStatus::Draft->value)
@@ -220,6 +229,12 @@ class ForumPresenter
             'page_title' => $topic ? __('messages.edit_topic_pawcircle_aea297c81d') : __('messages.ask_the_community_pawcircle_81f7f8f052'),
             'active_section' => 'forum',
             'topic' => $topic,
+            'selected_taxon_ids' => $topic instanceof ForumTopic
+                ? $topic->taxa()
+                    ->pluck('taxa.id')
+                    ->map(static fn (int $id): int => $id)
+                    ->all()
+                : [],
             'types' => $this->taxonomy->typeOptions(),
             'categories' => $this->taxonomy->categories(),
             'pets' => $this->taxonomy->petOptions(),
@@ -273,7 +288,7 @@ class ForumPresenter
             'type_label' => $topic->type->label(),
             'status_label' => $topic->status->label(),
             'category' => $topic->category,
-            'category_label' => $this->taxonomy->categoryOptions()[$topic->category] ?? Str::headline($topic->category),
+            'category_label' => $this->taxonomy->categoryLabel($topic->category),
             'tags' => $topic->tags ?? [],
             'author_name' => $topic->author_name,
             'author_key' => $topic->author_key,

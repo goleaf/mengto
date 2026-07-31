@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services;
 
 use App\Enums\SearchCaseType;
 use App\Enums\SearchStatus;
 
-class SearchTaxonomy
+final class SearchTaxonomy
 {
     /** @return array<string, string> */
     public function types(): array
@@ -13,6 +15,15 @@ class SearchTaxonomy
         return collect(SearchCaseType::cases())
             ->mapWithKeys(fn (SearchCaseType $type): array => [$type->value => $type->label()])
             ->all();
+    }
+
+    /** @return array<string, string> */
+    public function typeDescriptions(): array
+    {
+        return $this->labels('type_description', array_map(
+            static fn (SearchCaseType $type): string => $type->value,
+            SearchCaseType::cases(),
+        ));
     }
 
     /** @return array<string, string> */
@@ -26,143 +37,121 @@ class SearchTaxonomy
     /** @return array<string, string> */
     public function directoryStatuses(): array
     {
-        return [
-            'active' => 'Active search',
-            'possible-sighting' => 'Possible sighting',
-            'possible-found' => 'Possibly found',
-            'safe' => 'Animal is safe',
-            'identity-confirmed' => 'Identity confirmed',
-            'long-term' => 'Long-term search',
-            'returned' => 'Returned',
-        ];
+        return $this->labels('status', [
+            'active',
+            'possible-sighting',
+            'possible-found',
+            'safe',
+            'identity-confirmed',
+            'long-term',
+            'returned',
+            'reunited',
+        ]);
     }
 
     /** @return array<string, string> */
     public function species(): array
     {
-        return [
-            'dog' => 'Dog',
-            'cat' => 'Cat',
-            'bird' => 'Bird',
-            'rabbit' => 'Rabbit',
-            'rodent' => 'Small mammal',
-            'reptile' => 'Reptile',
-            'amphibian' => 'Amphibian',
-            'horse' => 'Horse',
-            'farm-animal' => 'Farm animal',
-            'exotic' => 'Exotic animal',
-            'other' => 'Other',
-        ];
+        return $this->labels('species', [
+            'dog', 'cat', 'bird', 'rabbit', 'rodent', 'reptile', 'amphibian',
+            'horse', 'farm-animal', 'exotic', 'other',
+        ]);
     }
 
     /** @return array<string, string> */
     public function sizes(): array
     {
-        return [
-            'very-small' => 'Very small',
-            'small' => 'Small',
-            'medium' => 'Medium',
-            'large' => 'Large',
-            'very-large' => 'Very large',
-            'unknown' => 'Unknown',
-        ];
+        return $this->labels('size', [
+            'very-small', 'small', 'medium', 'large', 'very-large', 'unknown',
+        ]);
     }
 
     /** @return array<string, string> */
     public function microchipStatuses(): array
     {
-        return [
-            'present' => 'Microchip present',
-            'possible' => 'May have a microchip',
-            'absent' => 'No microchip',
-            'unknown' => 'Unknown',
-        ];
+        return $this->labels('microchip', ['present', 'possible', 'absent', 'unknown']);
     }
 
     /** @return array<string, string> */
     public function confidenceOptions(): array
     {
-        return [
-            'exact' => 'I am certain',
-            'very-similar' => 'Very similar',
-            'possible' => 'Possibly similar',
-            'uncertain' => 'Not sure',
-        ];
+        return $this->labels('confidence', ['exact', 'very-similar', 'possible', 'uncertain']);
     }
 
     /** @return array<string, string> */
     public function contactStatuses(): array
     {
-        return [
-            'seen-only' => 'Only saw the animal',
-            'approached' => 'Animal approached',
-            'fed' => 'Offered food',
-            'ran-away' => 'Animal moved away',
-            'secured' => 'Secured in a safe place',
-            'with-reporter' => 'Animal is with me',
-            'transferred' => 'Transferred to another person or organization',
-            'service-called' => 'Called a service',
-        ];
+        return $this->labels('contact_status', [
+            'seen-only', 'approached', 'fed', 'ran-away', 'secured',
+            'with-reporter', 'transferred', 'service-called',
+        ]);
     }
 
     /** @return array<string, string> */
     public function taskTypes(): array
     {
-        return [
-            'search-area' => 'Check an area',
-            'posters' => 'Place posters',
-            'call-clinics' => 'Call clinics',
-            'call-shelters' => 'Call shelters',
-            'check-cameras' => 'Request camera review',
-            'transport' => 'Provide transport',
-            'equipment' => 'Deliver equipment',
-            'translation' => 'Translate the alert',
-            'online-coordination' => 'Coordinate online',
-        ];
+        return $this->labels('task_type', [
+            'search-area', 'posters', 'call-clinics', 'call-shelters',
+            'check-cameras', 'transport', 'equipment', 'translation',
+            'online-coordination',
+        ]);
     }
 
     /** @return array<string, string> */
     public function volunteerCapabilities(): array
     {
-        return [
-            'walking-search' => 'Search on foot',
-            'posters' => 'Place or remove posters',
-            'phone-calls' => 'Call clinics and shelters',
-            'camera-review' => 'Help review camera footage',
-            'transport' => 'Provide transport',
-            'equipment' => 'Provide a carrier or equipment',
-            'translation' => 'Translate',
-            'online-coordination' => 'Coordinate online',
-            'temporary-care' => 'Provide temporary safe care',
-        ];
+        return $this->labels('volunteer_capability', [
+            'walking-search', 'posters', 'phone-calls', 'camera-review',
+            'transport', 'equipment', 'translation', 'online-coordination',
+            'temporary-care',
+        ]);
     }
 
     /** @return array<string, string> */
     public function reportReasons(): array
     {
-        return [
-            'false-report' => 'False report',
-            'stolen-photos' => 'Stolen photos',
-            'scam' => 'Scam or suspicious payment request',
-            'outdated' => 'No longer current',
-            'personal-data' => 'Personal data exposed',
-            'animal-danger' => 'Animal is in danger',
-            'cruelty' => 'Cruel treatment',
-            'illegal-animal' => 'Illegal ownership or species',
-            'threat' => 'Threat or extortion',
-            'hidden-sale' => 'Hidden sale',
-            'other' => 'Other',
-        ];
+        return $this->labels('report_reason', [
+            'false-lost-animal-sighting',
+            'reward-scam',
+            'lost-animal-scam',
+            'stolen-image',
+            'outdated-critical-information',
+            'private-address-exposure',
+            'animal-cruelty',
+            'prohibited-animal-sale',
+            'threats',
+            'other',
+        ]);
     }
 
     /** @return array<string, string> */
     public function sortOptions(): array
     {
-        return [
-            'latest-sighting' => 'Latest sighting',
-            'newest' => 'Newest report',
-            'urgent' => 'Urgent first',
-            'nearest' => 'Nearest area',
-        ];
+        return $this->labels('sort', ['latest-sighting', 'newest', 'urgent', 'nearest']);
+    }
+
+    /** @return array<string, string> */
+    public function relayPurposes(): array
+    {
+        return $this->labels('relay_purpose', [
+            'sighting',
+            'identity-evidence',
+            'safe-custody',
+            'safety',
+            'other',
+        ]);
+    }
+
+    /**
+     * @param  list<string>  $keys
+     * @return array<string, string>
+     */
+    private function labels(string $group, array $keys): array
+    {
+        return collect($keys)
+            ->mapWithKeys(fn (string $key): array => [
+                $key => __("lost_found.{$group}.{$key}"),
+            ])
+            ->all();
     }
 }

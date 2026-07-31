@@ -2,9 +2,10 @@
 
 ## Storage Baseline
 
-- 68 migrations created 71 SQLite tables at baseline; the modernized schema has
-  76 migrations and 74 tables after additive identity, care-sync, social-state,
-  device-lifecycle, retention, event-grouping, and index work.
+- 68 migrations created 71 SQLite tables at baseline; the current additive
+  schema has 88 migrations and 124 tables after identity, care-sync,
+  social-state, device-lifecycle, forum taxonomy, global animal taxonomy,
+  reputation, moderation, credential verification, and adoption work.
 - Tests use isolated in-memory or temporary SQLite.
 - Schema and Eloquent queries remain portable unless an ADR explicitly accepts
   a production-engine-specific optimization.
@@ -16,11 +17,12 @@
 | --- | --- |
 | Framework | `users`, password reset, sessions, cache/locks, jobs/batches/failed jobs |
 | Social identity/state | `pet_profiles`, encrypted/versioned `user_domain_states` |
-| Forum | topics, answers, comments, votes, engagements, blocks, reports, notifications |
-| Knowledge | articles, versions, corrections |
+| Forum | topics, answers, comments, votes, engagements, blocks, polymorphic reports, report events/evidence, categories/translations/aliases/redirects, topic definitions, reputation/trust/badges, confirmations, moderation cases/actions/appeals/recusals, notifications |
+| Animal taxonomy | versioned sources/imports/versions/issues, taxa, names, external identifiers, change history, domestic classifications, breed registries, community groups |
+| Knowledge | articles, append-only versions, corrections, normalized collaborators, append-only workflow events |
 | Experts | profiles, credentials, services, availability slots, bookings, document grants, consultations, publications, reviews, engagements, reports |
-| Marketplace | listings, listing engagements, reservations, listing reports, orders, disputes, listing reviews |
-| Lost/found | cases, sightings, sectors, tasks, volunteers, updates, alerts, reports |
+| Marketplace and adoption | listings, listing engagements, reservations, compatibility listing reports, orders, disputes, listing reviews, adoption cases, encrypted applications, append-only adoption events |
+| Lost/found | cases, sightings, sectors, tasks, volunteers, updates, alerts, reports, immutable case events, encrypted contact relays |
 | Care | journals, routines, tasks, entries, media, access grants |
 | Medical | records, events, vaccinations, weights, medications, doses, documents, reminders, access grants |
 | Devices | devices, assignments, readings, events, commands, safe zones, automations, runs, access grants, lifecycle records |
@@ -48,6 +50,29 @@ legacy key has a verified user mapping.
 - Timestamps use a normalized instant and carry source timezone where domain
   scheduling or device travel requires it.
 - Original device data and corrective human interpretations coexist.
+- Adoption applications use an idempotency UUID, a unique case/applicant
+  boundary, optimistic lock version, encrypted private screening data, and
+  append-only events. Public cases retain only safe animal and placement facts.
+- Lost/found cases retain stable public codes and slugs while linking an owned
+  pet, global taxon, and domestic classification where known. The encrypted
+  case-time animal snapshot preserves historical context without exposing
+  private pet data. Exact coordinates, hidden marks, direct contacts, and relay
+  messages remain encrypted; public coordinates are rounded.
+- Lost/found state changes and archival append immutable events. Reunion and
+  archival use optimistic locking. Archival removes public access, stops open
+  alerts/tasks/volunteer assignments, and preserves sightings, updates,
+  reports, attachments, and identifiers.
+- Moderation reports remain distinct from cases. Case/report assignment,
+  action, recusal, and appeal transitions run in bounded transactions under
+  row locks, retain append-only report events, and never expose reporter
+  identity or private operational notes through model serialization.
+- Guide translation groups permit only one article per locale. Version numbers,
+  collaborator roles, correction review lookup, workflow history, public state,
+  and review dates have dedicated compound indexes. Optimistic `lock_version`
+  protects content saves, while append-only versions and events preserve
+  rollback and transition evidence.
+- Taxonomy imports remain inactive until a completed validated version is
+  explicitly activated; source identifiers never replace stable internal keys.
 
 ## Query Rules
 
@@ -85,3 +110,35 @@ Retention is category-specific:
   safety evidence.
 
 The application must not infer absence of an activity from missing device data.
+
+## Community Review Tables
+
+`forum_review_panels` and `forum_review_assignments` store bounded low-risk
+review work. Assignment uniqueness, active-panel uniqueness, state/deadline
+indexes, and leading foreign-key indexes protect concurrent selection and
+bounded queues. `forum_review_panel_events` is append-only.
+
+`forum_community_notes` stores the current contextual-note projection with
+optimistic `lock_version`, publication/revalidation dates, controlled subject
+type, and moderator decision. `forum_community_note_versions` is append-only
+and unique by note/version. The migration is additive and does not rewrite
+legacy forum rows.
+
+## Mentorship Tables
+
+- `forum_mentor_profiles`: one per user; opt-in state, public-safe summary,
+  locales, broad location, platform communication, capacity, acknowledgement,
+  and optimistic lock.
+- `forum_mentor_scopes`: independent type with optional category/taxon and a
+  stable unique scope key.
+- `forum_mentorships`: request/lifecycle projection with participant foreign
+  keys, unique idempotency/open keys, acknowledgements, timestamps, and
+  optimistic lock.
+- `forum_mentorship_messages`: append-only participant messages with globally
+  unique idempotency keys.
+- `forum_mentorship_feedback`: one append-only record per mentorship/author.
+- `forum_mentorship_events`: append-only lifecycle evidence.
+
+Messages, feedback, and events use restrictive parent foreign keys so direct
+deletion cannot erase an audit-bearing mentorship. All list and thread indexes
+begin with their filtering foreign key. See `docs/mentorship.md`.

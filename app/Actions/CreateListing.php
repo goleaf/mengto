@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Actions;
 
 use App\Enums\ListingStatus;
@@ -20,6 +22,7 @@ class CreateListing
     public function __construct(
         private readonly ForumActor $actor,
         private readonly ListingSafety $safety,
+        private readonly SynchronizeAdoptionCase $synchronizeAdoptionCase,
     ) {}
 
     /** @param array<string, mixed> $data */
@@ -112,6 +115,10 @@ class CreateListing
                     'risk_flags' => $listing->risk_flags,
                 ],
             ]);
+
+            if ($type === ListingType::Adoption) {
+                $this->synchronizeAdoptionCase->handle($listing);
+            }
 
             return $listing;
         });

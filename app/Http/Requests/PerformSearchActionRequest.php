@@ -1,17 +1,33 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests;
 
+use App\Models\SearchCase;
 use App\Services\SearchTaxonomy;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class PerformSearchActionRequest extends FormRequest
+final class PerformSearchActionRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return true;
+        $searchCase = $this->route('searchCase');
+
+        if (! $searchCase instanceof SearchCase || $this->user() === null) {
+            return false;
+        }
+
+        $ability = in_array($this->input('action'), [
+            'join-search',
+            'claim-task',
+            'start-task',
+            'complete-task',
+        ], true) ? 'volunteer' : 'update';
+
+        return $this->user()->can($ability, $searchCase);
     }
 
     /** @return array<string, ValidationRule|array<mixed>|string> */
@@ -31,6 +47,7 @@ class PerformSearchActionRequest extends FormRequest
                     'reject-sighting',
                     'publish-update',
                     'update-status',
+                    'archive-case',
                 ]),
             ],
             'capabilities' => ['nullable', 'array', 'max:8', 'required_if:action,join-search'],
@@ -73,9 +90,15 @@ class PerformSearchActionRequest extends FormRequest
                 'required_if:action,update-status',
             ],
             'status_note' => ['nullable', 'string', 'max:1500'],
+            'lock_version' => ['nullable', 'integer', 'min:1'],
             'return_confirmed' => [
                 'exclude_unless:action,update-status',
-                'accepted_if:status,returned,self-returned',
+                'accepted_if:status,returned,self-returned,reunited',
+            ],
+            'archive_confirmed' => [
+                'exclude_unless:action,archive-case',
+                'required_if:action,archive-case',
+                'accepted',
             ],
         ];
     }

@@ -20,6 +20,9 @@ This index is the source-of-truth map for first-party documentation.
 | `docs/authorization.md` | Role, ownership, and temporary-access decisions | Security | Canonical |
 | `docs/frontend.md` | Blade, Livewire, JavaScript, and navigation boundaries | Frontend | Canonical |
 | `docs/livewire.md` | Livewire 4 rules and applicability matrix | Frontend | Canonical |
+| `docs/guides.md` | Collaborative guide workflow, review, editing, and recovery | Product + engineering | Canonical |
+| `docs/community-review.md` | Low-risk review panels and contextual-note workflow | Product + engineering | Canonical |
+| `docs/mentorship.md` | Peer mentorship, matching, privacy, lifecycle, reports, seeding, and recovery | Product + engineering | Canonical |
 | `docs/tailwind.md` | Tailwind 4 rules and applicability matrix | Frontend | Canonical |
 | `docs/accessibility.md` | Accessibility acceptance criteria | Design + QA | Canonical |
 | `docs/localization.md` | Locale architecture and translation workflow | Product + frontend | Canonical |
@@ -37,6 +40,31 @@ This index is the source-of-truth map for first-party documentation.
 | `docs/code-review.md` | Final structured review findings | Engineering | Living evidence |
 | `docs/known-limitations.md` | External and environmental blockers only | Product + engineering | Living evidence |
 | `CHANGELOG.md` | User-visible and operational history | Release | Canonical history |
+
+## Forum Modernization Sources
+
+The complete forum and global animal-taxonomy specification is an additive
+domain contract under the canonical requirements above:
+
+| Document | Purpose | Status |
+| --- | --- | --- |
+| `docs/requirements/forum-source-prompt.md` | Immutable recovered source specification and checksum | Canonical immutable input |
+| `docs/requirements/forum-master-requirements.md` | Generated domain and state summary | Canonical generated |
+| `docs/requirements/forum-requirements.json` | All 7,284 atomic requirement records | Canonical machine-readable |
+| `docs/traceability/forum-requirements-matrix.md` | Requirement-level implementation and verification evidence | Living generated evidence |
+| `docs/plans/forum-master-plan.md` | Dependency-aware implementation contract | Living canonical plan |
+| `docs/plans/forum-phase-requirement-index.md` | One primary phase for every atomic requirement | Canonical generated |
+| `docs/plans/forum-current-progress.md` | Current phase, checks, and preservation ledger | Living evidence |
+| `docs/audits/forum-existing-system-audit.md` | Forum baseline and discovered architecture | Living evidence |
+| `docs/audits/forum-gap-analysis.md` | Gaps, risks, and migration constraints | Living evidence |
+| `docs/audits/forum-final-completeness-audit.md` | Gate status and final totals | Living evidence |
+| `docs/decisions/forum-architecture-decisions.md` | Forum and taxonomy ADR summary | Canonical decisions |
+| `docs/decisions/forum-assumptions.md` | Repository-derived assumptions | Living decisions |
+| `docs/decisions/forum-conflicts.md` | Explicit conflict resolution | Living decisions |
+
+Future forum work must read these documents after the global canonical
+requirements and before changing forum production code. Statuses are
+conservative: a generated file or checkbox is not proof of implementation.
 
 ## Feature Specifications
 

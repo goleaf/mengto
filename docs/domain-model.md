@@ -36,7 +36,8 @@ No role is inferred from a hidden button or browser-provided identifier.
 
 - Topic -> answers -> comments.
 - Topic/answer engagements, votes, reports, blocks, notifications.
-- Knowledge article -> versions -> corrections.
+- Knowledge article -> immutable versions, collaborators, corrections, and
+  append-only workflow events.
 
 ### Experts
 
@@ -134,6 +135,21 @@ planned -> due -> completed / partially-completed
 
 Completion is idempotent and audit-preserving.
 
+### Collaborative Guide
+
+```text
+draft -> submitted-for-review -> changes-requested
+                              \-> community-reviewed
+                              \-> expert-reviewed
+community-reviewed / expert-reviewed -> published
+published -> correction-requested / outdated / archived / replaced
+```
+
+Community and expert review are independent from authorship. Expert review is
+also independent from reputation and requires current professional
+verification. A rollback creates another version. Locale variants share a
+stable translation group but remain separate articles.
+
 ## Ownership Invariants
 
 - Every private record has one authoritative owner actor key.
@@ -143,3 +159,33 @@ Completion is idempotent and audit-preserving.
 - Pets remain distinct even when one device, fountain, litter box, camera,
   aquarium, or household zone is shared.
 - Uncertain device attribution is stored as uncertain, never guessed.
+
+## Community Review And Notes
+
+```text
+panel: awaiting-assignment -> in-review -> decided / overridden / appealed
+                            \-> expired / cancelled
+note: proposed -> in-review -> community-assessed -> moderator-review
+               \-> gathering-evidence -> in-review
+      moderator-reviewed -> published / rejected / archived
+      published -> revised / revalidation-due
+```
+
+Panel decisions classify low-risk content and do not replace moderation.
+Changing a pending note cancels the stale panel and assignments before a new
+review can begin. See `docs/community-review.md`.
+
+### Peer Mentorship
+
+```text
+requested -> active -> completed / ended
+         \-> declined
+requested -> cancelled
+completed -> independently validated
+```
+
+The mentor and mentee acknowledge peer-support boundaries independently.
+Participants may communicate only while active, and either participant may
+end, block, report, or leave one optional feedback record. Completion does not
+create reputation until an uninvolved administrator validates interaction
+evidence, blocks, and open reports. See `docs/mentorship.md`.

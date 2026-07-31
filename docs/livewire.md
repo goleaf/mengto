@@ -14,7 +14,7 @@
 
 | Feature | Candidate | Decision | Performance / accessibility | Test evidence |
 | --- | --- | --- | --- | --- |
-| `#[Computed]` | Account/auth derived display data | Not currently needed | Current components have no expensive derived state to duplicate | N/A |
+| `#[Computed]` | Administration and guide derived data | Used by bounded admin registries and guide editor projections | Derived collections are not serialized as mutable public state | `tests/Feature/Forum/CollaborativeGuideWorkflowTest.php` |
 | `#[Locked]` | Password reset token | Used by `ResetPassword` | Prevents browser mutation; token still validated server-side | `tests/Feature/Auth/AuthenticationTest.php` |
 | Livewire form objects | Registration/login/reset/confirmation forms | Used | Central validation and field errors | `tests/Feature/Auth/AuthenticationTest.php` |
 | `#[Url]` | Shareable feed/directory filters | Later per converted component | Keeps linkable state; never secrets | URL/reset tests |
@@ -27,7 +27,7 @@
 | `#[Json]` | Explicit JS data endpoint | Not currently required | Never raw models | N/A |
 | `#[Renderless]` | Action with no DOM change | Avoid unless measured | Feedback still required | N/A |
 | `#[On]` | Narrow parent/child event | Use only with explicit payload | Avoid global event bus | Receiver auth tests |
-| Reactive/modelable props | Reusable form child | Not initially needed | Prefer clear parent contract | N/A |
+| Reactive/modelable props | Reusable animal selector | `#[Modelable]` used for one selected taxon ID | The child paginates/searches server-side and never serializes the taxonomy tree | taxonomy and guide Livewire tests |
 | Islands | Large independently updating page | Not until profiling identifies one | No islands in loops/conditions | N/A |
 | `wire:navigate` | Authentication navigation | Used after JS lifecycle audit | Normal links remain functional; title/focus reviewed | Connected Playwright repetition check |
 | `wire:loading` / `wire:target` | Every auth mutation | Used | Precise status and duplicate prevention | `tests/Feature/Auth/AuthenticationTest.php` |
@@ -57,3 +57,33 @@
 Use `Livewire::test()` for mount authorization, initial state, form validation,
 locked/tampered IDs, direct action authorization, repeated submit, dispatched
 events, redirects, and rendered loading/dirty/offline states.
+
+## Collaborative Guide Editor
+
+`KnowledgeGuideEditor` is a normal class component with
+`KnowledgeGuideForm`. Its public state is limited to IDs, form fields,
+transition input, lock versions, and short action controls. `articleId` is
+locked, but policies remain authoritative. The component composes the reusable
+modelable taxonomy selector and uses action-specific `wire:target` loading
+states. See `docs/guides.md`.
+
+## Community Notes Panel
+
+`CommunityNotesPanel` uses a locked topic ID, typed scalar form state,
+computed bounded projections, eager-loaded panel state, action-specific
+loading targets, offline feedback, and direct server-side authorization for
+every mutation. It never stores models, evidence graphs, or reviewer lists in
+public state. Numeric action arguments are untrusted and resolved again by the
+Action layer. See `docs/community-review.md`.
+
+## Peer Mentorship Components
+
+`MentorDiscovery`, `MentorshipInbox`, and `MentorProfileManager` are separate
+class-based components composed by `/forum/mentorship`. They use form objects,
+computed bounded projections, locked idempotency identity, precise loading
+targets, offline/status feedback, and the modelable taxonomy selector.
+
+Tampered filter state returns an empty computed projection and fails explicit
+validation without causing a render exception. Mentorship, scope, message, and
+report IDs are always resolved and authorized again server-side. The first
+render has a tested budget of at most 45 queries. See `docs/mentorship.md`.

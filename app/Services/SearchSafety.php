@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services;
 
 use Illuminate\Support\Str;
 
-class SearchSafety
+final class SearchSafety
 {
     /**
      * @param  array<string, mixed>  $data
@@ -66,6 +68,36 @@ class SearchSafety
         ];
     }
 
+    public function rewardSummaryIsSafe(?string $summary): bool
+    {
+        if (blank($summary)) {
+            return true;
+        }
+
+        $normalized = Str::lower((string) $summary);
+
+        if ($this->contains($normalized, [
+            'bank account',
+            'card number',
+            'verification code',
+            'one-time code',
+            'transfer money',
+            'crypto wallet',
+            'gift card',
+            'paypal',
+            'venmo',
+            'cashapp',
+            'http://',
+            'https://',
+        ])) {
+            return false;
+        }
+
+        return preg_match('/\\b[A-Z]{2}\\d{2}[A-Z0-9]{10,30}\\b/i', $summary) !== 1
+            && preg_match('/\\b\\+?\\d[\\d\\s().-]{7,}\\d\\b/', $summary) !== 1
+            && filter_var($summary, FILTER_VALIDATE_EMAIL) === false;
+    }
+
     /** @param array<string, mixed> $data */
     public function priority(array $data): string
     {
@@ -75,6 +107,11 @@ class SearchSafety
             'threat',
             'illegal-animal',
             'scam',
+            'reward-scam',
+            'lost-animal-scam',
+            'false-lost-animal-sighting',
+            'threats',
+            'animal-cruelty',
         ], true) ? 'high' : 'normal';
     }
 

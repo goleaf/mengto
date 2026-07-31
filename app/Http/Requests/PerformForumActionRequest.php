@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Requests;
 
+use App\Services\ForumReportReasonCatalog;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -23,9 +24,10 @@ class PerformForumActionRequest extends FormRequest
      *
      * @return array<string, ValidationRule|array<mixed>|string>
      */
-    public function rules(): array
+    public function rules(ForumReportReasonCatalog $reportReasons): array
     {
         $action = $this->string('action')->toString();
+        $isReport = in_array($action, ['report-topic', 'report-answer'], true);
 
         return [
             'action' => ['required', Rule::in([
@@ -82,22 +84,24 @@ class PerformForumActionRequest extends FormRequest
             'reason' => [
                 Rule::requiredIf(in_array($action, ['report-topic', 'report-answer'], true)),
                 'nullable',
-                Rule::in([
-                    'spam',
-                    'duplicate',
-                    'dangerous-advice',
-                    'misinformation',
-                    'animal-cruelty',
-                    'fraud',
-                    'personal-data',
-                    'harassment',
-                    'hidden-advertising',
-                    'illegal-sale',
-                    'copyright',
-                    'other',
-                ]),
+                Rule::in($reportReasons->acceptedInputKeys()),
             ],
             'details' => ['nullable', 'string', 'max:1200'],
+            'truthfulness_confirmed' => [
+                Rule::excludeIf(! $isReport),
+                Rule::requiredIf($isReport),
+                'accepted',
+            ],
+            'immediate_safety' => [
+                Rule::excludeIf(! $isReport),
+                'sometimes',
+                'boolean',
+            ],
+            'block_user' => [
+                Rule::excludeIf(! $isReport),
+                'sometimes',
+                'boolean',
+            ],
         ];
     }
 }

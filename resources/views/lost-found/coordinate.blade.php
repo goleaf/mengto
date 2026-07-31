@@ -218,6 +218,48 @@
                         </div>
                     </div>
                 </section>
+
+                <section class="grid gap-6 lg:grid-cols-2">
+                    <div>
+                        <h2 class="text-xl font-bold">{{ __('lost_found.interface.contact_relays') }}</h2>
+                        <div class="mt-4 grid gap-3">
+                            @forelse ($contact_relays as $relay)
+                                <article class="rounded-md border border-paw-line bg-white p-4">
+                                    <div class="flex flex-wrap items-center justify-between gap-2">
+                                        <h3 class="font-bold">{{ $relay['sender_name'] }}</h3>
+                                        <time class="text-xs text-paw-muted">{{ $relay['created_label'] }}</time>
+                                    </div>
+                                    <p class="mt-1 text-xs font-semibold text-paw-leaf">{{ $relay['purpose'] }}</p>
+                                    <p class="mt-3 whitespace-pre-line text-sm leading-6">{{ $relay['message'] }}</p>
+                                </article>
+                            @empty
+                                <p class="rounded-md border border-dashed border-paw-line p-5 text-sm text-paw-muted">{{ __('lost_found.interface.no_contact_relays') }}</p>
+                            @endforelse
+                        </div>
+                    </div>
+
+                    <div>
+                        <h2 class="text-xl font-bold">{{ __('lost_found.interface.case_events') }}</h2>
+                        <ol class="mt-4 grid gap-3">
+                            @forelse ($events as $event)
+                                <li class="rounded-md border border-paw-line bg-white p-4">
+                                    <div class="flex flex-wrap items-center justify-between gap-2">
+                                        <p class="font-bold">{{ $event['label'] }}</p>
+                                        <time class="text-xs text-paw-muted">{{ $event['created_label'] }}</time>
+                                    </div>
+                                    @if ($event['previous_status'] && $event['current_status'])
+                                        <p class="mt-2 text-sm text-paw-muted">{{ __('lost_found.interface.status_transition', ['from' => $event['previous_status'], 'to' => $event['current_status']]) }}</p>
+                                    @endif
+                                    @if ($event['actor_name'])
+                                        <p class="mt-1 text-xs font-semibold">{{ $event['actor_name'] }}</p>
+                                    @endif
+                                </li>
+                            @empty
+                                <li class="rounded-md border border-dashed border-paw-line p-5 text-sm text-paw-muted">{{ __('lost_found.interface.no_case_events') }}</li>
+                            @endforelse
+                        </ol>
+                    </div>
+                </section>
             </div>
 
             <aside class="grid content-start gap-5 xl:sticky xl:top-24 xl:self-start">
@@ -293,12 +335,36 @@
                     <form method="POST" action="{{ route('lost-found.actions', $search_case['slug']) }}" class="grid gap-3 border-t border-paw-line p-4">
                         @csrf
                         <input type="hidden" name="action" value="update-status">
+                        <input type="hidden" name="lock_version" value="{{ $search_case['lock_version'] }}">
                         <label class="grid gap-1 text-sm font-semibold">{{ __('ui.status_920e413c7d') }}<select name="status" class="rounded-md border border-paw-line px-3 py-2">@forelse ($statuses as $value => $label)<option value="{{ $value }}" @selected($search_case['status'] === $value)>{{ $label }}</option>@empty<option disabled>{{ __('ui.no_statuses_b34efdc994') }}</option>@endforelse</select></label>
                         <label class="grid gap-1 text-sm font-semibold">{{ __('ui.public_note_12ccc50767') }}<textarea name="status_note" rows="3" class="rounded-md border border-paw-line px-3 py-2" maxlength="1500"></textarea></label>
-                        <label class="flex items-start gap-2 text-xs"><input type="checkbox" name="return_confirmed" value="1" class="mt-0.5"><span>{{ __('ui.when_choosing_returned_or_returned_home_i_confirm_b3aca5919a') }}</span></label>
+                        <label class="flex min-h-11 items-center gap-3 text-xs"><input type="checkbox" name="return_confirmed" value="1"><span>{{ __('lost_found.interface.return_confirmation') }}</span></label>
                         <button type="submit" class="action action--primary w-full"><x-lucide-refresh-cw class="icon" aria-hidden="true" /><span>{{ __('ui.update_status_1e6bf669df') }}</span></button>
                     </form>
                 </details>
+
+                @if ($search_case['can_archive'])
+                    <details class="rounded-md border border-paw-line bg-white">
+                        <summary class="flex min-h-11 cursor-pointer list-none items-center gap-2 p-4 font-bold">
+                            <x-lucide-archive class="size-5 text-paw-muted" aria-hidden="true" />
+                            {{ __('lost_found.interface.archive_case') }}
+                        </summary>
+                        <form method="POST" action="{{ route('lost-found.actions', $search_case['slug']) }}" class="grid gap-3 border-t border-paw-line p-4">
+                            @csrf
+                            <input type="hidden" name="action" value="archive-case">
+                            <input type="hidden" name="lock_version" value="{{ $search_case['lock_version'] }}">
+                            <p class="text-sm leading-6 text-paw-muted">{{ __('lost_found.interface.archive_case_help') }}</p>
+                            <label class="flex min-h-11 items-start gap-3 text-sm">
+                                <input type="checkbox" name="archive_confirmed" value="1" class="mt-1" required>
+                                <span>{{ __('lost_found.interface.archive_confirmation') }}</span>
+                            </label>
+                            <button type="submit" class="action action--surface min-h-11 w-full">
+                                <x-lucide-archive class="icon" aria-hidden="true" />
+                                <span>{{ __('lost_found.interface.archive_case') }}</span>
+                            </button>
+                        </form>
+                    </details>
+                @endif
             </aside>
         </div>
     </div>

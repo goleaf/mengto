@@ -536,7 +536,7 @@
     align-items: center;
     justify-content: center;
     gap: 0.4rem;
-    min-height: 2.45rem;
+    min-height: 2.75rem;
     padding: 0.55rem 0.78rem;
     border: 1px solid #d4d9d5;
     border-radius: 6px;
@@ -566,6 +566,12 @@
     svg {
         width: 0.95rem;
         height: 0.95rem;
+    }
+}
+
+.lost-found-case-form {
+    :where(input:not([type='checkbox'], [type='radio'], [type='hidden']), select, button) {
+        min-block-size: 2.75rem;
     }
 }
 

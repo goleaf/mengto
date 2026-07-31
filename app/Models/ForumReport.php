@@ -8,6 +8,9 @@ use Database\Factories\ForumReportFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Carbon;
 
 /**
@@ -35,12 +38,76 @@ class ForumReport extends Model
         'topic_id',
         'answer_id',
         'comment_id',
+        'subject_type',
+        'subject_id',
+        'reporter_id',
         'reporter_key',
         'reason',
+        'forum_report_reason_id',
         'details',
         'priority',
         'status',
+        'affected_user_id',
+        'affected_pet_profile_id',
+        'duplicate_of_report_id',
+        'urgency',
+        'location_scope',
+        'contact_preference',
+        'immediate_safety',
+        'truthfulness_confirmed',
+        'deduplication_key',
+        'metadata',
     ];
+
+    protected $hidden = [
+        'reporter_id',
+        'reporter_key',
+        'details',
+        'location_scope',
+        'metadata',
+    ];
+
+    protected function casts(): array
+    {
+        return [
+            'immediate_safety' => 'boolean',
+            'truthfulness_confirmed' => 'boolean',
+            'metadata' => 'array',
+        ];
+    }
+
+    /** @return MorphTo<Model, $this> */
+    public function subject(): MorphTo
+    {
+        return $this->morphTo();
+    }
+
+    /** @return BelongsTo<User, $this> */
+    public function reporter(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'reporter_id');
+    }
+
+    /** @return BelongsTo<ForumReportReason, $this> */
+    public function reasonDefinition(): BelongsTo
+    {
+        return $this->belongsTo(ForumReportReason::class, 'forum_report_reason_id');
+    }
+
+    /** @return HasMany<ForumReportEvent, $this> */
+    public function events(): HasMany
+    {
+        return $this->hasMany(ForumReportEvent::class);
+    }
+
+    /** @return BelongsToMany<ForumModerationCase, $this> */
+    public function moderationCases(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            ForumModerationCase::class,
+            'forum_moderation_case_reports',
+        )->withPivot(['linked_by_user_id', 'created_at']);
+    }
 
     /** @return BelongsTo<\App\Models\ForumTopic, $this>*/
     public function topic(): BelongsTo

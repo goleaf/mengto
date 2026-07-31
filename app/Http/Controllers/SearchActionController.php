@@ -1,27 +1,30 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
 use App\Actions\PerformSearchAction;
 use App\Http\Requests\PerformSearchActionRequest;
 use App\Models\SearchCase;
 use App\Services\ForumActor;
+use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Gate;
 
-class SearchActionController extends Controller
+final class SearchActionController extends Controller
 {
     public function __invoke(
         PerformSearchActionRequest $request,
         SearchCase $searchCase,
         PerformSearchAction $perform,
         ForumActor $actor,
+        Gate $gate,
     ): RedirectResponse {
         $data = $request->validated();
 
         match ($data['action']) {
-            'join-search', 'claim-task', 'start-task', 'complete-task' => Gate::authorize('volunteer', $searchCase),
-            default => Gate::authorize('update', $searchCase),
+            'join-search', 'claim-task', 'start-task', 'complete-task' => $gate->authorize('volunteer', $searchCase),
+            default => $gate->authorize('update', $searchCase),
         };
 
         $result = $perform->handle($searchCase, $data);
@@ -33,6 +36,7 @@ class SearchActionController extends Controller
             'complete-task',
             'confirm-sighting',
             'reject-sighting',
+            'archive-case',
         ], true) && $result['search_case']->isManagedBy($actor->key())
             ? 'lost-found.coordinate'
             : 'lost-found.show';

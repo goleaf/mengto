@@ -18,6 +18,10 @@ runner and is not a second test style.
 - Browser: browser permissions, media teardown, focus/modal behaviour,
   responsive overflow, maps, and repeated navigation.
 - Architecture: repository constraints.
+- Collaborative guides: complete state graph, independent reviewers,
+  authorization, optimistic edits, immutable versions/events, rollback,
+  corrections, translation families, export/print privacy, Livewire identity,
+  admin discovery, popularity non-conversion, factories, and repeat seeding.
 
 ## Required Commands
 
@@ -71,11 +75,12 @@ Never run `migrate:fresh` against the local or production database as a test.
 SQLite file, asserts that it is outside the repository, and only then runs the
 destructive command.
 
-## Baseline
+## Baseline And Current Checkpoint
 
 The modernization baseline was 116 passing tests and 3,881 assertions. The
-final complete serial and parallel runs both report 696 passing tests and
-31,698 assertions after removing two meaningless framework example tests.
+latest complete serial checkpoint reports 1,172 passing tests and 44,853
+assertions. This checkpoint is not a final coverage claim while requirements
+remain unimplemented.
 
 Pest coverage cannot run in the current environment because PHP 8.5 has neither
 PCOV nor Xdebug. The expected failing command and its exact reason remain part
@@ -84,3 +89,35 @@ of final evidence:
 ```bash
 php artisan test --coverage --min=90 --compact
 ```
+
+## Community Review Coverage
+
+`CommunityReviewAndNotesTest` covers all low-risk and prohibited panel types,
+balanced selection, conflict replacement, deadlines, one-vote constraints,
+all note purposes and moderator outcomes, stale-review cancellation,
+append-only history, optimistic locking, appeals, privacy, and direct
+Livewire authorization. Architecture, localization, schema, factory, fresh
+migration/seed, static-analysis, build, and browser checks remain required
+alongside that focused suite.
+
+## Mentorship Coverage
+
+`MentorshipWorkflowTest` covers all thirteen types, profile eligibility,
+optimistic locking, scope ownership/idempotency, independent credentials,
+bounded transparent matching, blocks/capacity, request idempotency,
+accept/decline/cancel, private messages, participant-only reports, explicit
+truthfulness confirmation, optional feedback, independent completion
+validation, reputation/badge idempotency, append-only/deletion constraints,
+factories, repeated demo seed, route/Livewire authorization, tampered filters,
+translation parity, and a 45-query first-render budget.
+
+Current evidence:
+
+- focused: 29 tests, 117 assertions;
+- architecture/schema/factory/localization/mentorship: 899 tests, 43,799
+  assertions;
+- full serial: 1,263 tests, 46,373 assertions;
+- fresh database: 91 migrations, 135 tables, repeat seed passed;
+- Larastan: zero errors;
+- Playwright: desktop/mobile accessibility, privacy, overflow, report options,
+  and real Livewire message submission passed.

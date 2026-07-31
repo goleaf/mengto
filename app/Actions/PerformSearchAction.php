@@ -13,16 +13,19 @@ use App\Enums\SightingStatus;
 use App\Models\AuditLog;
 use App\Models\SearchAlert;
 use App\Models\SearchCase;
+use App\Models\SearchCaseEvent;
 use App\Models\SearchSector;
 use App\Models\SearchTask;
 use App\Models\SearchUpdate;
 use App\Models\SearchVolunteer;
 use App\Models\Sighting;
 use App\Services\ForumActor;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
-class PerformSearchAction
+final class PerformSearchAction
 {
     public function __construct(private readonly ForumActor $actor) {}
 
@@ -43,6 +46,7 @@ class PerformSearchAction
             'reject-sighting' => $this->reviewSighting($searchCase, $data, false),
             'publish-update' => $this->publishUpdate($searchCase, $data),
             'update-status' => $this->updateStatus($searchCase, $data),
+            'archive-case' => $this->archiveCase($searchCase, $data),
             default => throw ValidationException::withMessages([
                 'action' => __('actions.invalid'),
             ]),
@@ -351,18 +355,39 @@ class PerformSearchAction
         return DB::transaction(function () use ($searchCase, $data): array {
             $lockedCase = SearchCase::query()
                 ->select([
-                    'id', 'owner_key', 'coordinator_key', 'pet_name', 'active_key',
+                    'id', 'owner_id', 'owner_key', 'coordinator_key', 'pet_name', 'active_key',
                     'type', 'pet_profile_key', 'status', 'alerts_active', 'volunteer_join_open',
-                    'notification_radius_km', 'last_seen_area', 'city',
+                    'animal_secured', 'found_at', 'returned_at', 'reunited_at',
+                    'reunited_confirmed_by_user_id', 'closed_at', 'closure_reason',
+                    'notification_radius_km', 'last_seen_area', 'city', 'lock_version',
                 ])
                 ->lockForUpdate()
                 ->findOrFail($searchCase->id);
             $status = SearchStatus::from((string) $data['status']);
+            $previousStatus = $lockedCase->status;
+            $actorUser = $this->actor->requireUser();
             $now = now();
             $isClosing = $status->isClosed() || $status === SearchStatus::LongTerm;
             $isReactivated = $status === SearchStatus::Active;
+            $isReunited = $status === SearchStatus::Reunited;
+
+            if (
+                isset($data['lock_version'])
+                && (int) $data['lock_version'] !== $lockedCase->lock_version
+            ) {
+                throw ValidationException::withMessages([
+                    'lock_version' => __('lost_found.validation.case_version_conflict'),
+                ]);
+            }
+
+            if ($status === $previousStatus) {
+                throw ValidationException::withMessages([
+                    'status' => __('lost_found.validation.status_unchanged'),
+                ]);
+            }
+
             $reactivatedKey = $isReactivated
-                && $lockedCase->type === SearchCaseType::Lost
+                && in_array($lockedCase->type, [SearchCaseType::Lost, SearchCaseType::Stolen], true)
                 && filled($lockedCase->pet_profile_key)
                     ? $lockedCase->owner_key.':'.$lockedCase->pet_profile_key
                     : null;
@@ -388,37 +413,33 @@ class PerformSearchAction
                     SearchStatus::IdentityConfirmed,
                     SearchStatus::Returned,
                     SearchStatus::SelfReturned,
+                    SearchStatus::Reunited,
                 ], true),
                 'found_at' => in_array($status, [
                     SearchStatus::PossibleFound,
                     SearchStatus::Safe,
                     SearchStatus::IdentityConfirmed,
-                ], true) ? ($searchCase->found_at ?? $now) : $searchCase->found_at,
+                    SearchStatus::Reunited,
+                ], true) ? ($lockedCase->found_at ?? $now) : $lockedCase->found_at,
                 'returned_at' => in_array($status, [
                     SearchStatus::Returned,
                     SearchStatus::SelfReturned,
-                ], true) ? $now : $searchCase->returned_at,
+                    SearchStatus::Reunited,
+                ], true) ? $now : $lockedCase->returned_at,
+                'reunited_confirmed_by_user_id' => $isReunited
+                    ? $actorUser->id
+                    : ($isReactivated ? null : $lockedCase->reunited_confirmed_by_user_id),
+                'reunited_at' => $isReunited
+                    ? $now
+                    : ($isReactivated ? null : $lockedCase->reunited_at),
                 'closed_at' => $status->isClosed() ? $now : null,
                 'closure_reason' => $status->isClosed() ? $status->value : null,
                 'latest_update' => $data['status_note'] ?? $status->label(),
+                'lock_version' => $lockedCase->lock_version + 1,
             ]);
 
             if ($isClosing) {
-                SearchAlert::query()
-                    ->where('search_case_id', $searchCase->id)
-                    ->whereIn('status', ['queued', 'sent'])
-                    ->update(['status' => 'stopped', 'stopped_at' => $now]);
-                SearchTask::query()
-                    ->where('search_case_id', $searchCase->id)
-                    ->whereNotIn('status', [
-                        SearchTaskStatus::Completed->value,
-                        SearchTaskStatus::Cancelled->value,
-                    ])
-                    ->update(['status' => SearchTaskStatus::Cancelled->value]);
-                SearchVolunteer::query()
-                    ->where('search_case_id', $searchCase->id)
-                    ->where('status', SearchVolunteerStatus::Active->value)
-                    ->update(['status' => SearchVolunteerStatus::Left->value]);
+                $this->stopUrgentProcesses($searchCase->id, $now);
             } elseif ($isReactivated) {
                 SearchAlert::query()->create([
                     'search_case_id' => $searchCase->id,
@@ -447,8 +468,22 @@ class PerformSearchAction
                 'occurred_at' => $now,
             ]);
 
+            SearchCaseEvent::query()->create([
+                'search_case_id' => $lockedCase->id,
+                'actor_user_id' => $actorUser->id,
+                'event_type' => 'status-changed',
+                'previous_status' => $previousStatus->value,
+                'current_status' => $status->value,
+                'reason_translation_key' => 'lost_found.events.status_changed',
+                'idempotency_key' => (string) Str::uuid(),
+                'metadata' => [
+                    'note' => $data['status_note'] ?? null,
+                    'urgent_processes_stopped' => $isClosing,
+                ],
+            ]);
+
             $this->audit('search-case.status-changed', $searchCase, [
-                'from' => $searchCase->status->value,
+                'from' => $previousStatus->value,
                 'to' => $status->value,
                 'urgent_processes_stopped' => $isClosing,
             ]);
@@ -460,6 +495,104 @@ class PerformSearchAction
                 'search_case' => $searchCase->fresh(),
             ];
         });
+    }
+
+    /** @param array<string, mixed> $data @return array{message: string, search_case: SearchCase} */
+    private function archiveCase(SearchCase $searchCase, array $data): array
+    {
+        return DB::transaction(function () use ($searchCase, $data): array {
+            $lockedCase = SearchCase::query()
+                ->select([
+                    'id', 'owner_key', 'coordinator_key', 'status', 'active_key',
+                    'alerts_active', 'volunteer_join_open', 'closed_at',
+                    'archived_at', 'closure_reason', 'lock_version',
+                ])
+                ->lockForUpdate()
+                ->findOrFail($searchCase->id);
+            $actorUser = $this->actor->requireUser();
+
+            if (! $lockedCase->isManagedBy($actorUser->actor_key)) {
+                throw ValidationException::withMessages([
+                    'action' => __('actions.invalid'),
+                ]);
+            }
+
+            if (
+                isset($data['lock_version'])
+                && (int) $data['lock_version'] !== $lockedCase->lock_version
+            ) {
+                throw ValidationException::withMessages([
+                    'lock_version' => __('lost_found.validation.case_version_conflict'),
+                ]);
+            }
+
+            if ($lockedCase->archived_at !== null) {
+                throw ValidationException::withMessages([
+                    'action' => __('lost_found.validation.case_already_archived'),
+                ]);
+            }
+
+            if (! $lockedCase->status->isClosed()) {
+                throw ValidationException::withMessages([
+                    'action' => __('lost_found.validation.archive_requires_closed_case'),
+                ]);
+            }
+
+            $now = now();
+            $lockedCase->update([
+                'active_key' => null,
+                'alerts_active' => false,
+                'volunteer_join_open' => false,
+                'closed_at' => $lockedCase->closed_at ?? $now,
+                'archived_at' => $now,
+                'closure_reason' => $lockedCase->closure_reason ?? $lockedCase->status->value,
+                'lock_version' => $lockedCase->lock_version + 1,
+            ]);
+            $this->stopUrgentProcesses($lockedCase->id, $now);
+
+            SearchCaseEvent::query()->create([
+                'search_case_id' => $lockedCase->id,
+                'actor_user_id' => $actorUser->id,
+                'event_type' => 'case-archived',
+                'previous_status' => $lockedCase->status->value,
+                'current_status' => $lockedCase->status->value,
+                'reason_translation_key' => 'lost_found.events.case_archived',
+                'idempotency_key' => (string) Str::uuid(),
+                'metadata' => [
+                    'history_preserved' => true,
+                    'public_access_removed' => true,
+                ],
+            ]);
+
+            $this->audit('search-case.archived', $lockedCase, [
+                'status' => $lockedCase->status->value,
+                'history_preserved' => true,
+            ]);
+
+            return [
+                'message' => __('lost_found.interface.case_archived'),
+                'search_case' => $lockedCase->fresh(),
+            ];
+        });
+    }
+
+    private function stopUrgentProcesses(int $searchCaseId, Carbon $stoppedAt): void
+    {
+        SearchAlert::query()
+            ->where('search_case_id', $searchCaseId)
+            ->whereIn('status', ['queued', 'sent'])
+            ->update(['status' => 'stopped', 'stopped_at' => $stoppedAt]);
+        SearchTask::query()
+            ->where('search_case_id', $searchCaseId)
+            ->whereNotIn('status', [
+                SearchTaskStatus::Completed->value,
+                SearchTaskStatus::Cancelled->value,
+            ])
+            ->update(['status' => SearchTaskStatus::Cancelled->value]);
+        SearchVolunteer::query()
+            ->where('search_case_id', $searchCaseId)
+            ->where('status', SearchVolunteerStatus::Active->value)
+            ->update(['status' => SearchVolunteerStatus::Left->value]);
     }
 
     private function validatedSectorId(SearchCase $searchCase, mixed $sectorId): ?int

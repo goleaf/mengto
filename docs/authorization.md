@@ -53,6 +53,19 @@ Precise smart-device views, management, and command submission additionally
 require a fresh password confirmation. This step-up check supplements
 `SmartDevicePolicy`; it never replaces owner/grant authorization.
 
+## Collaborative Guide Authorization
+
+- Public users view only `published` and `outdated` guides.
+- Active members may propose corrections against visible guides.
+- Guide creation, content edits, collaboration changes, correction decisions,
+  rollback, locks, publication, archival, and replacement are policy methods,
+  not interface assumptions.
+- Community review requires scoped trust and an independent reviewer.
+- Expert review requires current verified professional status and an
+  independent reviewer; the administrator bypass is deliberately not applied.
+- Every `KnowledgeGuideEditor` mutation reloads the record and invokes the
+  policy or the corresponding authorized Action.
+
 ## Temporary Grants
 
 A grant defines:
@@ -77,3 +90,37 @@ that consequence and use short-lived links.
 - JSON receives the stable error envelope and correct HTTP status.
 - Authorization failure never mutates data and never exposes protected values
   in validation errors or logs.
+
+## Community Review
+
+- Eligible trust is required to propose; verified review trust is required to
+  receive an assignment.
+- Requesters, subject authors, existing reviewers, and declared conflicts are
+  excluded from reviewer selection.
+- Only the assigned active reviewer may submit one decision before deadline.
+- Only administrators may replace reviewers manually, enter moderator review,
+  publish/reject/archive notes, or override a panel.
+- Subject authors may respond but cannot edit or delete an approved note.
+- Appeal access is limited to the panel requester or subject author.
+- Every Livewire mutation reloads its target and repeats authorization in the
+  Action.
+
+See `docs/community-review.md`.
+
+## Peer Mentorship
+
+- Verified active users with current mentor trust, or administrators, may
+  activate an opted-in profile.
+- Only the profile owner manages profile/scopes.
+- The requester cannot select themselves, a blocked/inactive/full mentor, or
+  an unavailable scope.
+- Only the selected mentor accepts or declines.
+- Only participants view/message; either participant may end, block, report,
+  or submit one feedback record.
+- Only an uninvolved administrator validates completion.
+- Reputation, trust, badges, or engagement cannot create professional
+  verification.
+- Every Livewire numeric argument is reloaded and authorized in the policy or
+  Action layer.
+
+See `docs/mentorship.md`.

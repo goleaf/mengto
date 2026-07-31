@@ -31,8 +31,8 @@ class SearchReport extends Model
     use HasFactory;
 
     protected $fillable = [
-        'search_case_id', 'sighting_id', 'reporter_id', 'reporter_key',
-        'reason', 'details', 'priority', 'status',
+        'search_case_id', 'sighting_id', 'forum_report_id', 'reporter_id',
+        'reporter_key', 'reason', 'details', 'priority', 'status',
     ];
 
     protected $attributes = [
@@ -50,5 +50,11 @@ class SearchReport extends Model
     public function sighting(): BelongsTo
     {
         return $this->belongsTo(Sighting::class);
+    }
+
+    /** @return BelongsTo<ForumReport, $this> */
+    public function forumReport(): BelongsTo
+    {
+        return $this->belongsTo(ForumReport::class);
     }
 }

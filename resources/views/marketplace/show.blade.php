@@ -96,6 +96,13 @@
             </section>
         @endif
 
+        @if ($listing['type'] === 'adoption')
+            <livewire:forum.adoption-workflow
+                :listing-id="$listing['id']"
+                wire:key="adoption-workflow-{{ $listing['id'] }}"
+            />
+        @endif
+
         <div class="grid gap-8 lg:grid-cols-[minmax(0,2fr)_minmax(19rem,1fr)]">
             <div class="grid content-start gap-8">
                 <section aria-labelledby="details-heading">
@@ -302,7 +309,7 @@
                     </dl>
                 </section>
 
-                @if ($can_request)
+                @if ($can_request && $listing['type'] !== 'adoption')
                     <form method="POST" action="{{ route('marketplace.actions', $listing['slug']) }}" class="grid gap-3" aria-labelledby="request-heading">
                         @csrf
                         <input type="hidden" name="action" value="request">
@@ -422,6 +429,14 @@
                         </select>
                     </label>
                     <textarea name="details" rows="3" maxlength="2000" class="rounded-md border border-paw-line bg-white px-3 py-2.5" placeholder="{{ __('ui.describe_the_specific_issue_b065c1f092') }}"></textarea>
+                    <label class="flex min-h-11 items-center gap-2 text-sm leading-5">
+                        <input type="checkbox" name="truthfulness_confirmed" value="1" required class="size-5 shrink-0 rounded border-paw-line text-paw-leaf">
+                        <span>{{ __('forum_moderation.forms.truthfulness') }}</span>
+                    </label>
+                    <label class="flex min-h-11 items-center gap-2 text-sm leading-5">
+                        <input type="checkbox" name="immediate_safety" value="1" class="size-5 shrink-0 rounded border-paw-line text-paw-leaf">
+                        <span>{{ __('forum_moderation.forms.immediate_safety') }}</span>
+                    </label>
                     <button type="submit" class="action action--surface action--compact w-fit">
                         <x-lucide-flag class="icon icon--sm" aria-hidden="true" />
                         <span>{{ __('ui.send_report_a44d353113') }}</span>

@@ -24,6 +24,7 @@ class KnowledgeArticleFactory extends ApplicationFactory
 
         return [
             'slug' => Str::slug($title).'-'.Str::lower(Str::random(6)),
+            'translation_group_key' => 'guide-'.fake()->unique()->uuid(),
             'title' => $title,
             'summary' => fake()->paragraph(),
             'body' => fake()->paragraphs(5, true),
@@ -40,6 +41,80 @@ class KnowledgeArticleFactory extends ApplicationFactory
             'last_reviewed_at' => now(),
             'next_review_at' => now()->addMonths(6),
             'published_at' => now(),
+            'lock_version' => 0,
         ];
+    }
+
+    public function draft(): static
+    {
+        return $this->state(fn (): array => [
+            'status' => KnowledgeStatus::Draft,
+            'published_at' => null,
+            'last_reviewed_at' => null,
+        ]);
+    }
+
+    public function submittedForReview(): static
+    {
+        return $this->state(fn (): array => [
+            'status' => KnowledgeStatus::SubmittedForReview,
+            'published_at' => null,
+        ]);
+    }
+
+    public function changesRequested(): static
+    {
+        return $this->state(fn (): array => [
+            'status' => KnowledgeStatus::ChangesRequested,
+            'published_at' => null,
+        ]);
+    }
+
+    public function communityReviewed(): static
+    {
+        return $this->state(fn (): array => [
+            'status' => KnowledgeStatus::CommunityReviewed,
+            'published_at' => null,
+        ]);
+    }
+
+    public function expertReviewed(): static
+    {
+        return $this->state(fn (): array => [
+            'status' => KnowledgeStatus::ExpertReviewed,
+            'published_at' => null,
+        ]);
+    }
+
+    public function correctionRequested(): static
+    {
+        return $this->state(fn (): array => [
+            'status' => KnowledgeStatus::CorrectionRequested,
+        ]);
+    }
+
+    public function outdated(): static
+    {
+        return $this->state(fn (): array => [
+            'status' => KnowledgeStatus::Outdated,
+            'published_at' => now()->subYear(),
+            'next_review_at' => now()->subDay(),
+        ]);
+    }
+
+    public function archived(): static
+    {
+        return $this->state(fn (): array => [
+            'status' => KnowledgeStatus::Archived,
+            'published_at' => null,
+        ]);
+    }
+
+    public function replaced(): static
+    {
+        return $this->state(fn (): array => [
+            'status' => KnowledgeStatus::Replaced,
+            'published_at' => null,
+        ]);
     }
 }

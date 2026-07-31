@@ -6,11 +6,13 @@ use App\Enums\OrderStatus;
 use App\Enums\PaymentStatus;
 use App\Enums\ReservationStatus;
 use App\Models\AuditLog;
+use App\Models\ForumReport;
 use App\Models\Listing;
 use App\Models\ListingEngagement;
 use App\Models\ListingReport;
 use App\Models\Order;
 use App\Models\Reservation;
+use Database\Seeders\ForumModerationDefinitionSeeder;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 
@@ -179,6 +181,7 @@ test('accepting one request reserves the listing declines competitors and suppor
 
 test('save is idempotent and animal welfare reports enter the high priority queue', function () {
     $listing = Listing::factory()->create();
+    $this->seed(ForumModerationDefinitionSeeder::class);
 
     $this->post(route('marketplace.actions', $listing), ['action' => 'toggle-save'])->assertRedirect();
     $this->post(route('marketplace.actions', $listing), ['action' => 'toggle-save'])->assertRedirect();
@@ -186,15 +189,33 @@ test('save is idempotent and animal welfare reports enter the high priority queu
     expect(ListingEngagement::query()->count())->toBe(1)
         ->and(ListingEngagement::query()->firstOrFail()->is_saved)->toBeFalse();
 
+    $this->from(route('marketplace.show', $listing))
+        ->post(route('marketplace.actions', $listing), [
+            'action' => 'report',
+            'reason' => 'animal-welfare',
+            'details' => 'The listing appears to show unsafe living conditions.',
+        ])
+        ->assertRedirect(route('marketplace.show', $listing))
+        ->assertSessionHasErrors('truthfulness_confirmed');
+
+    expect(ListingReport::query()->count())->toBe(0)
+        ->and(ForumReport::query()->count())->toBe(0);
+
     $this->post(route('marketplace.actions', $listing), [
         'action' => 'report',
         'reason' => 'animal-welfare',
         'details' => 'The listing appears to show unsafe living conditions.',
+        'truthfulness_confirmed' => 1,
     ])->assertRedirect();
 
     expect(ListingReport::query()->firstOrFail())
         ->priority->toBe('high')
-        ->status->toBe('submitted');
+        ->status->toBe('submitted')
+        ->and(ForumReport::query()->firstOrFail())
+        ->reason->toBe('animal-neglect')
+        ->subject_type->toBe(Listing::class)
+        ->subject_id->toBe((string) $listing->id)
+        ->truthfulness_confirmed->toBeTrue();
 });
 
 test('marketplace migrations include directory and reservation indexes', function () {

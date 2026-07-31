@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Enums;
 
 enum VerificationStatus: string
@@ -16,16 +18,6 @@ enum VerificationStatus: string
 
     public function label(): string
     {
-        return match ($this) {
-            self::Unsubmitted => 'Not submitted',
-            self::Submitted => 'Documents submitted',
-            self::InReview => 'Under review',
-            self::MoreInformation => 'More information needed',
-            self::PartiallyVerified => 'Partially verified',
-            self::Verified => 'Qualification verified',
-            self::Expiring => 'Verification needs renewal',
-            self::Suspended => 'Verification paused',
-            self::Rejected => 'Documents not accepted',
-        };
+        return __("credential_verification.profile_status.{$this->value}");
     }
 }

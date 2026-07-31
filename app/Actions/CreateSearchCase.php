@@ -1,14 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Actions;
 
 use App\Enums\ModerationStatus;
 use App\Enums\SearchCaseType;
 use App\Enums\SearchStatus;
 use App\Models\AuditLog;
+use App\Models\DomesticClassification;
+use App\Models\PetProfile;
 use App\Models\SearchAlert;
 use App\Models\SearchCase;
+use App\Models\SearchCaseEvent;
 use App\Models\SearchUpdate;
+use App\Models\Taxon;
+use App\Services\FindSearchCaseDuplicates;
 use App\Services\ForumActor;
 use App\Services\SearchSafety;
 use Illuminate\Http\UploadedFile;
@@ -17,21 +24,37 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
-class CreateSearchCase
+final class CreateSearchCase
 {
     public function __construct(
         private readonly ForumActor $actor,
         private readonly SearchSafety $safety,
+        private readonly FindSearchCaseDuplicates $duplicates,
     ) {}
 
     /** @param array<string, mixed> $data */
     public function handle(array $data): SearchCase
     {
         return DB::transaction(function () use ($data): SearchCase {
+            $user = $this->actor->requireUser();
             $identity = $this->actor->identity();
             $type = SearchCaseType::from((string) $data['type']);
-            $activeKey = $type === SearchCaseType::Lost
-                ? $identity['key'].':'.$data['pet_profile_key']
+            $petProfile = $this->resolvePetProfile($user->id, $data);
+            $taxonId = $this->resolveTaxonId($data);
+            $domesticClassificationId = $this->resolveDomesticClassificationId($data, $taxonId);
+            $petProfileKey = $petProfile?->profile_key;
+
+            if (
+                in_array($type, [SearchCaseType::Lost, SearchCaseType::Stolen], true)
+                && $petProfileKey === null
+            ) {
+                throw ValidationException::withMessages([
+                    'pet_profile_key' => __('messages.choose_the_pet_profile_for_a_missing_pet_search_b22b0b96d2'),
+                ]);
+            }
+
+            $activeKey = in_array($type, [SearchCaseType::Lost, SearchCaseType::Stolen], true)
+                ? $identity['key'].':'.$petProfileKey
                 : null;
 
             if ($activeKey !== null && SearchCase::query()->where('active_key', $activeKey)->exists()) {
@@ -41,6 +64,13 @@ class CreateSearchCase
             }
 
             $assessment = $this->safety->assessCase($data);
+            $duplicateCandidates = $this->duplicates->handle($data);
+
+            if ($duplicateCandidates->isNotEmpty()) {
+                $assessment['flags'][] = 'possible-duplicate';
+                $assessment['flags'] = array_values(array_unique($assessment['flags']));
+            }
+
             $publish = $data['intent'] === 'publish' && ! $assessment['manual_review'];
             $photos = $this->storePhotos($data['photos'] ?? []);
             $status = $type === SearchCaseType::Found && (bool) ($data['animal_secured'] ?? false)
@@ -48,6 +78,7 @@ class CreateSearchCase
                 : SearchStatus::Active;
 
             $searchCase = SearchCase::query()->create([
+                'owner_id' => $user->id,
                 'owner_key' => $identity['key'],
                 'owner_name' => $identity['name'],
                 'owner_initials' => $identity['initials'],
@@ -61,7 +92,10 @@ class CreateSearchCase
                 'moderation_status' => $publish
                     ? ModerationStatus::Approved
                     : ModerationStatus::Pending,
-                'pet_profile_key' => $data['pet_profile_key'] ?? null,
+                'pet_profile_key' => $petProfileKey,
+                'pet_profile_id' => $petProfile?->id,
+                'taxon_id' => $taxonId,
+                'domestic_classification_id' => $domesticClassificationId,
                 'pet_name' => $data['pet_name'],
                 'species' => $data['species'],
                 'breed' => $data['breed'] ?? null,
@@ -77,6 +111,7 @@ class CreateSearchCase
                 'approach_instructions' => $data['approach_instructions'] ?? null,
                 'avoid_instructions' => $data['avoid_instructions'] ?? null,
                 'accessories' => array_values($data['accessories'] ?? []),
+                'temperament' => $data['temperament'] ?? null,
                 'microchip_status' => $data['microchip_status'],
                 'last_seen_area' => $data['last_seen_area'],
                 'city' => $data['city'],
@@ -104,9 +139,21 @@ class CreateSearchCase
                         : ($data['contact_value'] ?? null),
                 ],
                 'contact_token' => Str::random(48),
+                'reward_offered' => (bool) ($data['reward_offered'] ?? false),
+                'reward_summary' => $data['reward_offered'] ?? false
+                    ? ($data['reward_summary'] ?? null)
+                    : null,
                 'cover_url' => $data['cover_url'] ?? ($photos[0] ?? null),
                 'photos' => $photos,
                 'risk_flags' => $assessment['flags'],
+                'animal_snapshot' => $this->animalSnapshot(
+                    $data,
+                    $petProfile,
+                    $taxonId,
+                    $domesticClassificationId,
+                ),
+                'requires_taxonomy_review' => $taxonId === null
+                    && in_array($type, [SearchCaseType::Sighted, SearchCaseType::Found], true),
                 'latest_update' => $publish
                     ? __('messages.search_published_report_sightings_without_chasing_the_an_685599a0f1')
                     : __('messages.draft_saved_for_safety_review_07e75d694f'),
@@ -139,6 +186,20 @@ class CreateSearchCase
                     'message' => $searchCase->pet_name.' · '.$searchCase->last_seen_area,
                 ]);
             }
+
+            SearchCaseEvent::query()->create([
+                'search_case_id' => $searchCase->id,
+                'actor_user_id' => $user->id,
+                'event_type' => 'case-created',
+                'current_status' => $status->value,
+                'reason_translation_key' => 'lost_found.events.case_created',
+                'idempotency_key' => (string) Str::uuid(),
+                'metadata' => [
+                    'type' => $type->value,
+                    'published' => $publish,
+                    'duplicate_candidate_ids' => $duplicateCandidates->pluck('id')->all(),
+                ],
+            ]);
 
             $this->audit($searchCase, 'search-case.created', [
                 'type' => $type->value,
@@ -185,6 +246,113 @@ class CreateSearchCase
         } while (SearchCase::query()->where('public_code', $code)->exists());
 
         return $code;
+    }
+
+    /** @param array<string, mixed> $data */
+    private function resolvePetProfile(int $userId, array $data): ?PetProfile
+    {
+        $petProfileId = $data['pet_profile_id'] ?? null;
+        $petProfileKey = $data['pet_profile_key'] ?? null;
+
+        if (blank($petProfileId) && blank($petProfileKey)) {
+            return null;
+        }
+
+        $petProfile = PetProfile::query()
+            ->select(['id', 'user_id', 'profile_key', 'name', 'species', 'breed', 'birth_date', 'status'])
+            ->where('user_id', $userId)
+            ->where('status', 'active')
+            ->when(
+                filled($petProfileId),
+                fn ($query) => $query->whereKey((int) $petProfileId),
+                fn ($query) => $query->where(
+                    fn ($profiles) => $profiles
+                        ->where('profile_key', $petProfileKey)
+                        ->orWhere('slug', $petProfileKey),
+                ),
+            )
+            ->first();
+
+        if (($petProfileId !== null || $petProfileKey !== null) && $petProfile === null) {
+            throw ValidationException::withMessages([
+                ($petProfileId !== null ? 'pet_profile_id' : 'pet_profile_key') => __('lost_found.validation.pet_ownership'),
+            ]);
+        }
+
+        return $petProfile;
+    }
+
+    /** @param array<string, mixed> $data */
+    private function resolveTaxonId(array $data): ?int
+    {
+        if (blank($data['taxon_id'] ?? null)) {
+            return null;
+        }
+
+        $taxonId = Taxon::query()
+            ->active()
+            ->whereKey((int) $data['taxon_id'])
+            ->value('id');
+
+        if ($taxonId === null) {
+            throw ValidationException::withMessages([
+                'taxon_id' => __('lost_found.validation.taxonomy_relation'),
+            ]);
+        }
+
+        return (int) $taxonId;
+    }
+
+    /** @param array<string, mixed> $data */
+    private function resolveDomesticClassificationId(array $data, ?int $taxonId): ?int
+    {
+        if (blank($data['domestic_classification_id'] ?? null)) {
+            return null;
+        }
+
+        $classificationId = DomesticClassification::query()
+            ->whereKey((int) $data['domestic_classification_id'])
+            ->where('is_active', true)
+            ->when($taxonId !== null, fn ($query) => $query->where('taxon_id', $taxonId))
+            ->value('id');
+
+        if ($classificationId === null) {
+            throw ValidationException::withMessages([
+                'domestic_classification_id' => __('lost_found.validation.taxonomy_relation'),
+            ]);
+        }
+
+        return (int) $classificationId;
+    }
+
+    /**
+     * @param  array<string, mixed>  $data
+     * @return array<string, mixed>
+     */
+    private function animalSnapshot(
+        array $data,
+        ?PetProfile $petProfile,
+        ?int $taxonId,
+        ?int $domesticClassificationId,
+    ): array {
+        return [
+            'pet_profile_id' => $petProfile?->id,
+            'pet_profile_key' => $petProfile === null
+                ? ($data['pet_profile_key'] ?? null)
+                : $petProfile->profile_key,
+            'name' => $data['pet_name'],
+            'species' => $data['species'],
+            'breed' => $data['breed'] ?? null,
+            'sex' => $data['sex'] ?? null,
+            'age_label' => $data['age_label'] ?? null,
+            'size' => $data['size'] ?? null,
+            'primary_color' => $data['primary_color'],
+            'temperament' => $data['temperament'] ?? null,
+            'accessories' => array_values($data['accessories'] ?? []),
+            'taxon_id' => $taxonId,
+            'domestic_classification_id' => $domesticClassificationId,
+            'captured_at' => now()->toIso8601String(),
+        ];
     }
 
     /** @param array<string, mixed> $metadata */

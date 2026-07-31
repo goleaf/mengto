@@ -1,23 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Seeders;
 
 use App\Enums\ListingStatus;
 use App\Enums\ListingType;
+use App\Enums\SellerType;
 use App\Models\Listing;
 use App\Models\ListingEngagement;
 use App\Models\Reservation;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Str;
 
-class ListingSeeder extends Seeder
+final class ListingSeeder extends Seeder
 {
     public function run(): void
     {
-        if (Listing::query()->exists()) {
-            return;
-        }
-
         $listings = collect([
             [
                 'owner_key' => 'lena-petrauskaite',
@@ -71,9 +69,20 @@ class ListingSeeder extends Seeder
                 'city' => 'Vilnius',
                 'area' => 'Antakalnis',
                 'delivery_options' => ['meetup'],
+                'attributes' => [
+                    'animal_name' => 'Mėta',
+                    'animal_age' => 'Adult',
+                    'animal_sex' => 'female',
+                    'sterilization_status' => 'sterilized',
+                    'vaccination_status' => 'current',
+                    'microchip_status' => 'registered',
+                    'temperament' => 'Calm indoors and comfortable with a predictable routine.',
+                    'adoption_conditions' => 'Indoor home, two meetings, and a signed transfer agreement.',
+                ],
                 'cover_url' => 'https://images.unsplash.com/photo-1573865526739-10659fec78a5?auto=format&fit=crop&w=1400&q=85',
                 'is_business' => true,
                 'business_name' => 'Vilnius Animal Aid',
+                'seller_type' => SellerType::Shelter,
             ],
             [
                 'owner_key' => 'tomas-jankauskas',
@@ -163,17 +172,27 @@ class ListingSeeder extends Seeder
                 'cover_url' => 'https://images.unsplash.com/photo-1507146426996-ef05306b995a?auto=format&fit=crop&w=1400&q=85',
             ],
         ])->map(function (array $attributes): Listing {
-            $title = $attributes['title'];
-
-            return Listing::factory()->create([
+            $slug = str($attributes['title'])->slug()->toString();
+            $values = [
                 ...$attributes,
-                'slug' => Str::slug($title),
+                'slug' => $slug,
                 'currency' => 'EUR',
                 'meetup_notes' => 'Use platform messages, confirm the item or service first, and choose a safe public location.',
                 'gallery' => [],
                 'status' => ListingStatus::Published,
                 'safety_status' => 'community',
                 'contact_policy' => 'platform-only',
+            ];
+            $listing = Listing::query()->where('slug', $slug)->first();
+
+            if ($listing instanceof Listing) {
+                $listing->fill($values)->save();
+
+                return $listing->refresh();
+            }
+
+            return Listing::factory()->create([
+                ...$values,
                 'published_at' => now()->subDays(fake()->numberBetween(0, 12)),
             ]);
         });
@@ -182,25 +201,37 @@ class ListingSeeder extends Seeder
         $ownerListing = $listings->firstWhere('owner_key', 'mia-carter');
 
         if ($firstListing instanceof Listing) {
-            ListingEngagement::factory()->create([
-                'listing_id' => $firstListing->id,
-                'user_key' => 'mia-carter',
-                'is_saved' => true,
-            ]);
+            ListingEngagement::query()->updateOrCreate(
+                [
+                    'listing_id' => $firstListing->id,
+                    'user_key' => 'mia-carter',
+                ],
+                [
+                    'is_saved' => true,
+                    'last_viewed_at' => now(),
+                ],
+            );
         }
 
         if ($ownerListing instanceof Listing) {
-            Reservation::factory()->create([
-                'listing_id' => $ownerListing->id,
-                'requester_key' => 'noah-williams',
-                'requester_name' => 'Noah Williams',
-                'idempotency_key' => (string) Str::uuid(),
-                'message' => 'Could we meet near the library on Saturday afternoon? I would like to check that every piece moves smoothly.',
-                'exchange_method' => 'meetup',
-                'status' => 'requested',
-                'proposed_at' => now()->addDays(3)->setTime(15, 0),
-                'expires_at' => now()->addDays(4),
-            ]);
+            Reservation::query()->updateOrCreate(
+                ['idempotency_key' => '10000000-0000-4000-8000-000000000001'],
+                [
+                    'listing_id' => $ownerListing->id,
+                    'requester_key' => 'noah-williams',
+                    'requester_name' => 'Noah Williams',
+                    'request_kind' => 'purchase',
+                    'quantity' => 1,
+                    'message' => 'Could we meet near the library on Saturday afternoon? I would like to check that every piece moves smoothly.',
+                    'exchange_method' => 'meetup',
+                    'status' => 'requested',
+                    'questionnaire' => [],
+                    'terms_accepted' => true,
+                    'privacy_accepted' => true,
+                    'proposed_at' => now()->addDays(3)->setTime(15, 0),
+                    'expires_at' => now()->addDays(4),
+                ],
+            );
         }
     }
 }

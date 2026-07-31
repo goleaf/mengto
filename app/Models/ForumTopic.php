@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Carbon;
@@ -78,6 +79,8 @@ class ForumTopic extends Model
         'body',
         'category',
         'subcategory',
+        'forum_category_id',
+        'forum_topic_type_id',
         'tags',
         'pet_key',
         'pet_name',
@@ -98,6 +101,11 @@ class ForumTopic extends Model
         'view_count',
         'last_activity_at',
         'published_at',
+        'structured_data',
+        'structured_data_version',
+        'lock_version',
+        'archived_at',
+        'merged_into_topic_id',
         'created_at',
         'updated_at',
     ];
@@ -114,6 +122,8 @@ class ForumTopic extends Model
         'body',
         'category',
         'subcategory',
+        'forum_category_id',
+        'forum_topic_type_id',
         'tags',
         'pet_key',
         'pet_name',
@@ -134,6 +144,11 @@ class ForumTopic extends Model
         'view_count',
         'last_activity_at',
         'published_at',
+        'structured_data',
+        'structured_data_version',
+        'lock_version',
+        'archived_at',
+        'merged_into_topic_id',
     ];
 
     protected function casts(): array
@@ -144,12 +159,16 @@ class ForumTopic extends Model
             'visibility' => ForumVisibility::class,
             'tags' => 'array',
             'media' => 'array',
+            'structured_data' => 'array',
+            'structured_data_version' => 'integer',
+            'lock_version' => 'integer',
             'is_urgent' => 'boolean',
             'is_medical' => 'boolean',
             'is_locked' => 'boolean',
             'has_expert_answer' => 'boolean',
             'last_activity_at' => 'datetime',
             'published_at' => 'datetime',
+            'archived_at' => 'immutable_datetime',
         ];
     }
 
@@ -168,6 +187,39 @@ class ForumTopic extends Model
     public function author(): BelongsTo
     {
         return $this->belongsTo(User::class, 'author_id');
+    }
+
+    /** @return BelongsTo<ForumCategory, $this> */
+    public function normalizedCategory(): BelongsTo
+    {
+        return $this->belongsTo(ForumCategory::class, 'forum_category_id');
+    }
+
+    /** @return BelongsTo<\App\Models\ForumTopicType, $this> */
+    public function topicTypeDefinition(): BelongsTo
+    {
+        return $this->belongsTo(\App\Models\ForumTopicType::class, 'forum_topic_type_id');
+    }
+
+    /** @return HasMany<ForumTopicAcceptance, $this> */
+    public function acceptances(): HasMany
+    {
+        return $this->hasMany(ForumTopicAcceptance::class);
+    }
+
+    /** @return HasMany<ForumCommunityNote, $this> */
+    public function communityNotes(): HasMany
+    {
+        return $this->hasMany(ForumCommunityNote::class, 'subject_id')
+            ->where('subject_type', 'forum-topic');
+    }
+
+    /** @return BelongsToMany<Taxon, $this> */
+    public function taxa(): BelongsToMany
+    {
+        return $this->belongsToMany(Taxon::class, 'forum_topic_taxon')
+            ->withPivot(['context_type', 'topic_time_snapshot'])
+            ->withTimestamps();
     }
 
     /** @return HasMany<\App\Models\ForumAnswer, $this>*/
@@ -219,6 +271,7 @@ class ForumTopic extends Model
             'title',
             'body',
             'category',
+            'forum_category_id',
             'subcategory',
             'tags',
             'pet_key',
@@ -272,7 +325,18 @@ class ForumTopic extends Model
 
     public function scopeInCategory(Builder $query, string $category): Builder
     {
-        return $category === 'all' ? $query : $query->where('category', $category);
+        if ($category === 'all') {
+            return $query;
+        }
+
+        return $query->where(function (Builder $categoryQuery) use ($category): void {
+            $categoryQuery
+                ->where('category', $category)
+                ->orWhereHas(
+                    'normalizedCategory',
+                    fn (Builder $normalized): Builder => $normalized->where('slug', $category),
+                );
+        });
     }
 
     public function scopeWithStatusFilter(Builder $query, string $status): Builder

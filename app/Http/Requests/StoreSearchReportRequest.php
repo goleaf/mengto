@@ -1,13 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests;
 
-use App\Services\SearchTaxonomy;
+use App\Services\ForumReportReasonCatalog;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class StoreSearchReportRequest extends FormRequest
+final class StoreSearchReportRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -15,12 +17,14 @@ class StoreSearchReportRequest extends FormRequest
     }
 
     /** @return array<string, ValidationRule|array<mixed>|string> */
-    public function rules(SearchTaxonomy $taxonomy): array
+    public function rules(ForumReportReasonCatalog $reasons): array
     {
         return [
             'sighting_id' => ['nullable', 'integer', 'exists:sightings,id'],
-            'reason' => ['required', Rule::in(array_keys($taxonomy->reportReasons()))],
+            'reason' => ['required', Rule::in($reasons->acceptedInputKeys())],
             'details' => ['nullable', 'string', 'max:2500'],
+            'truthfulness_confirmed' => ['required', 'accepted'],
+            'immediate_safety' => ['nullable', 'boolean'],
         ];
     }
 }

@@ -31,12 +31,20 @@ Target: WCAG 2.1 AA for critical workflows.
 5. Create forum content and resolve validation.
 6. Browse and filter marketplace, lost/found, and place results.
 7. Open/close message call preflight and stop media.
+8. Discover a mentor, review match reasons, send a private message, and open
+   the report form with its truthfulness acknowledgement.
 
 ## Automated And Manual Evidence
 
 Automated browser checks cover semantic names, focus visibility, page overflow,
 console errors, and critical interaction. Manual review covers keyboard order,
 screen-reader announcements, touch, zoom, reduced motion, and forced colors.
+
+The mentorship flow was checked at 1440x900 and 375x812 with one logical
+heading, no unnamed buttons, no unlabeled controls, no horizontal overflow,
+44-pixel primary controls, no raw translation keys, and no browser-console
+warnings or errors. A participant-only Livewire message was submitted through
+the rendered interface.
 
 Known tool limitations belong in `docs/known-limitations.md`; a missing tool
 does not waive semantic implementation or manual review.

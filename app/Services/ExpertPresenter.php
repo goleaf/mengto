@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Enums\BookingStatus;
+use App\Enums\CredentialType;
 use App\Models\AuditLog;
 use App\Models\AvailabilitySlot;
 use App\Models\Booking;
@@ -180,7 +181,7 @@ class ExpertPresenter
             'slots' => $profile->availabilitySlots->map(fn (AvailabilitySlot $slot): array => $this->slot($slot))->all(),
             'credentials' => $profile->credentials->map(fn (Credential $credential): array => [
                 'title' => $credential->title,
-                'type' => Str::headline($credential->type),
+                'type' => $credential->credentialType()?->label() ?? Str::headline($credential->type),
                 'issuer' => $credential->issuer,
                 'region' => $credential->region,
                 'masked_number' => $credential->number_last_four
@@ -236,6 +237,11 @@ class ExpertPresenter
             'specializations' => $this->taxonomy->specializations(),
             'formats' => $this->taxonomy->formats(),
             'languages' => $this->taxonomy->languages(),
+            'credential_types' => collect(CredentialType::cases())
+                ->mapWithKeys(static fn (CredentialType $type): array => [
+                    $type->value => $type->label(),
+                ])
+                ->all(),
             'age_groups' => [
                 'newborn' => __('messages.newborn_c391a8da21'),
                 'young' => __('messages.young_548674f78c'),

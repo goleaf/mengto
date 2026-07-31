@@ -48,6 +48,7 @@ class SearchCaseFactory extends ApplicationFactory
             'approach_instructions' => 'Stay sideways, speak softly, and report the location.',
             'avoid_instructions' => 'Do not chase, surround, or call loudly.',
             'accessories' => ['blue collar'],
+            'temperament' => 'Usually social, but may hide when frightened.',
             'microchip_status' => 'present',
             'last_seen_area' => 'Vingis Park near the river path',
             'city' => 'Vilnius',
@@ -73,7 +74,17 @@ class SearchCaseFactory extends ApplicationFactory
             'cover_url' => 'https://images.unsplash.com/photo-1558788353-f76d92427f16?auto=format&fit=crop&w=1400&q=85',
             'photos' => [],
             'risk_flags' => [],
+            'animal_snapshot' => [
+                'name' => $name,
+                'species' => 'dog',
+                'breed' => 'Mixed breed',
+                'captured_at' => now()->toIso8601String(),
+            ],
+            'requires_taxonomy_review' => false,
+            'reward_offered' => false,
+            'reward_summary' => null,
             'latest_update' => 'Search teams are checking the river path quietly.',
+            'lock_version' => 1,
             'view_count' => fake()->numberBetween(20, 500),
         ];
     }
@@ -104,6 +115,44 @@ class SearchCaseFactory extends ApplicationFactory
             'returned_at' => now(),
             'closed_at' => now(),
             'closure_reason' => 'returned',
+        ]);
+    }
+
+    public function sighted(): static
+    {
+        return $this->state(fn (): array => [
+            'active_key' => null,
+            'type' => SearchCaseType::Sighted,
+            'status' => SearchStatus::PossibleSighting,
+            'pet_profile_key' => null,
+            'pet_name' => 'Unidentified animal',
+            'requires_taxonomy_review' => true,
+        ]);
+    }
+
+    public function stolen(): static
+    {
+        return $this->state(fn (): array => [
+            'type' => SearchCaseType::Stolen,
+            'status' => SearchStatus::Active,
+            'alerts_active' => true,
+            'volunteer_join_open' => true,
+        ]);
+    }
+
+    public function reunited(): static
+    {
+        return $this->state(fn (): array => [
+            'active_key' => null,
+            'status' => SearchStatus::Reunited,
+            'alerts_active' => false,
+            'volunteer_join_open' => false,
+            'animal_secured' => true,
+            'found_at' => now()->subHour(),
+            'returned_at' => now(),
+            'reunited_at' => now(),
+            'closed_at' => now(),
+            'closure_reason' => SearchStatus::Reunited->value,
         ]);
     }
 }

@@ -1,7 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests;
 
+use App\Enums\SearchCaseType;
+use App\Models\DomesticClassification;
+use App\Models\PetProfile;
+use App\Models\SearchCase;
+use App\Models\User;
 use App\Services\SearchSafety;
 use App\Services\SearchTaxonomy;
 use Illuminate\Contracts\Validation\ValidationRule;
@@ -9,20 +16,32 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
 
-class StoreSearchCaseRequest extends FormRequest
+final class StoreSearchCaseRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return true;
+        return $this->user()?->can('create', SearchCase::class) === true;
     }
 
     /** @return array<string, ValidationRule|array<mixed>|string> */
     public function rules(SearchTaxonomy $taxonomy): array
     {
         return [
-            'type' => ['required', Rule::in(array_keys($taxonomy->types()))],
+            'type' => ['required', Rule::enum(SearchCaseType::class)],
             'intent' => ['required', Rule::in(['publish', 'draft'])],
             'pet_profile_key' => ['nullable', 'string', 'max:80', 'regex:/^[a-z0-9-]+$/'],
+            'pet_profile_id' => ['nullable', 'integer', 'exists:pet_profiles,id'],
+            'taxon_id' => [
+                'nullable',
+                'integer',
+                'required_with:domestic_classification_id',
+                'exists:taxa,id',
+            ],
+            'domestic_classification_id' => [
+                'nullable',
+                'integer',
+                'exists:domestic_classifications,id',
+            ],
             'pet_name' => ['required', 'string', 'max:100'],
             'species' => ['required', Rule::in(array_keys($taxonomy->species()))],
             'breed' => ['nullable', 'string', 'max:120'],
@@ -39,6 +58,7 @@ class StoreSearchCaseRequest extends FormRequest
             'avoid_instructions' => ['nullable', 'string', 'max:1500'],
             'accessories' => ['nullable', 'array', 'max:8'],
             'accessories.*' => ['string', 'max:80'],
+            'temperament' => ['nullable', 'string', 'max:300'],
             'microchip_status' => ['required', Rule::in(array_keys($taxonomy->microchipStatuses()))],
             'last_seen_area' => ['required', 'string', 'max:160'],
             'city' => ['required', 'string', 'max:100'],
@@ -53,6 +73,8 @@ class StoreSearchCaseRequest extends FormRequest
             'animal_secured' => ['nullable', 'boolean'],
             'contact_channel' => ['required', Rule::in(['platform', 'email', 'phone'])],
             'contact_value' => ['nullable', 'string', 'max:160'],
+            'reward_offered' => ['nullable', 'boolean'],
+            'reward_summary' => ['nullable', 'string', 'max:300', 'required_if_accepted:reward_offered'],
             'cover_url' => ['nullable', 'url:http,https', 'max:2048'],
             'photos' => ['nullable', 'array', 'max:8'],
             'photos.*' => ['image', 'mimes:jpg,jpeg,png,webp', 'max:8192'],
@@ -64,12 +86,74 @@ class StoreSearchCaseRequest extends FormRequest
     {
         return [
             function (Validator $validator) use ($safety): void {
-                if ($this->string('type')->toString() === 'lost' && blank($this->input('pet_profile_key'))) {
+                $type = $this->string('type')->toString();
+
+                if (
+                    in_array($type, [SearchCaseType::Lost->value, SearchCaseType::Stolen->value], true)
+                    && blank($this->input('pet_profile_key'))
+                    && blank($this->input('pet_profile_id'))
+                ) {
                     $validator->errors()->add('pet_profile_key', __('messages.choose_the_pet_profile_for_a_missing_pet_search_b22b0b96d2'));
+                }
+
+                $user = $this->user();
+                $petProfileId = $this->integer('pet_profile_id');
+                $petProfileKey = $this->string('pet_profile_key')->toString();
+
+                if (
+                    $petProfileId > 0
+                    && $user instanceof User
+                    && ! PetProfile::query()
+                        ->whereKey($petProfileId)
+                        ->where('user_id', $user->id)
+                        ->where('status', 'active')
+                        ->exists()
+                ) {
+                    $validator->errors()->add('pet_profile_id', __('lost_found.validation.pet_ownership'));
+                }
+
+                if (
+                    $petProfileKey !== ''
+                    && $user instanceof User
+                    && ! PetProfile::query()
+                        ->where('user_id', $user->id)
+                        ->where('status', 'active')
+                        ->where(
+                            fn ($profiles) => $profiles
+                                ->where('profile_key', $petProfileKey)
+                                ->orWhere('slug', $petProfileKey),
+                        )
+                        ->exists()
+                ) {
+                    $validator->errors()->add('pet_profile_key', __('lost_found.validation.pet_ownership'));
+                }
+
+                $classificationId = $this->integer('domestic_classification_id');
+                $taxonId = $this->integer('taxon_id');
+
+                if (
+                    $classificationId > 0
+                    && ! DomesticClassification::query()
+                        ->whereKey($classificationId)
+                        ->where('taxon_id', $taxonId)
+                        ->where('is_active', true)
+                        ->exists()
+                ) {
+                    $validator->errors()->add(
+                        'domestic_classification_id',
+                        __('lost_found.validation.taxonomy_relation'),
+                    );
                 }
 
                 if ($this->string('contact_channel')->toString() !== 'platform' && blank($this->input('contact_value'))) {
                     $validator->errors()->add('contact_value', __('messages.add_the_protected_contact_value_aa102be0b3'));
+                }
+
+                if (! $safety->rewardSummaryIsSafe($this->string('reward_summary')->toString())) {
+                    $validator->errors()->add(
+                        'reward_summary',
+                        __('lost_found.validation.reward_safety'),
+                    );
                 }
 
                 $assessment = $safety->assessCase($this->all());

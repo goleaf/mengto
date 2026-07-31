@@ -25,6 +25,8 @@ class DatabaseSeeder extends Seeder
             throw new LogicException('Demo seed data may only be created in an explicitly allowed environment.');
         }
 
+        $this->call(ForumSystemSeeder::class);
+
         $this->demoUser([
             'actor_key' => 'mia-carter',
             'name' => 'Mia Carter',
@@ -82,11 +84,18 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $this->call(SocialIdentitySeeder::class);
+        $this->call(ForumGroupDemoSeeder::class);
         $this->call(ForumSeeder::class);
+        $this->call(CollaborativeGuideDemoSeeder::class);
+        $this->call(MentorshipDemoSeeder::class);
+        $this->call(ForumTopicTaxonomyBackfillSeeder::class);
         $this->call(ExpertSeeder::class);
         $this->call(ListingSeeder::class);
+        $this->call(AdoptionCaseSeeder::class);
+        $this->call(AdoptionDemoSeeder::class);
         $this->call(MarketplaceExpansionSeeder::class);
         $this->call(SearchSeeder::class);
+        $this->call(SearchCaseIntegritySeeder::class);
         $this->call(MedicalRecordSeeder::class);
         $this->call(CareJournalSeeder::class);
         $this->call(SmartDeviceSeeder::class);

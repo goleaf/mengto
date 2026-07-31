@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests;
 
 use App\Services\ForumTaxonomy;
@@ -27,9 +29,16 @@ class StoreTopicRequest extends FormRequest
     {
         return [
             'type' => ['required', Rule::in(array_keys($taxonomy->typeOptions()))],
-            'category' => ['required', Rule::in(array_keys($taxonomy->categoryOptions()))],
+            'category' => ['required', Rule::in($taxonomy->acceptedCategoryKeys())],
             'subcategory' => ['nullable', 'string', 'max:80'],
             'pet_key' => ['nullable', Rule::in(array_keys($taxonomy->petOptions()))],
+            'taxon_ids' => ['nullable', 'array', 'max:5'],
+            'taxon_ids.*' => [
+                'integer',
+                Rule::exists('taxa', 'id')->where('is_active', true),
+                'distinct',
+            ],
+            'animal_context' => ['nullable', Rule::in(['taxa', 'unidentified'])],
             'title' => ['required', 'string', 'min:20', 'max:180'],
             'body' => ['required', 'string', 'min:60', 'max:10000'],
             'tried' => ['nullable', 'string', 'max:2500'],

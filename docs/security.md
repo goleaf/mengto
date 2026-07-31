@@ -27,6 +27,38 @@ default and requires authenticated ownership or an explicit scoped grant.
 - Separate view, share, export, command, precise location, camera, and
   administrative capabilities.
 
+### Professional And Adoption Identity
+
+- Professional verification and forum reputation are independent.
+- Credential owners cannot approve their own evidence.
+- Credential review and appeal decisions are authorized, idempotent, audited,
+  expiring, suspendable, rejectable, and revocable.
+- Private credential files, identifiers, evidence, and reviewer notes remain
+  hidden from public serialization and adoption pages.
+- Adoption providers are matched by server-owned account identity and a
+  purpose-compatible credential; browser IDs and the legacy seller-trust flag
+  are not proof.
+- Natural expiry removes the public verified state without requiring a
+  scheduler or deleting history.
+
+### Lost And Found Privacy
+
+- Lost and stolen cases can reference only the authenticated owner's active
+  pet profile. Taxon and domestic classification IDs are resolved and scoped
+  server-side.
+- Exact coordinates, location notes, hidden identifying marks, direct contact
+  values, case-time animal snapshots, and relay messages are encrypted and
+  excluded from public serialization. Public maps receive rounded coordinates
+  and textual area context.
+- Contact uses an authorized, idempotent relay; the recipient is derived from
+  the case owner and neither party's direct contact value is exposed.
+- Reward text rejects transfer instructions, payment codes, links, and direct
+  contact details. False-sighting and reward-scam reports enter the unified
+  private moderation pipeline.
+- Archival is owner/coordinator-only, requires a closed case and explicit
+  confirmation, uses optimistic locking, preserves immutable history, and
+  fails closed for public direct URLs and posters.
+
 ### Tokens
 
 - Cryptographically random raw token returned once.
@@ -85,6 +117,12 @@ private keys, payment credentials, or complete private records.
 | Webhook forgery/replay | Signature and provider event uniqueness |
 | Cache privacy leak | Actor/role/locale scope and invalidation |
 | Covert camera/location access | Explicit time capability, step-up, view audit |
+| Lost-case exact location/contact leak | Rounded public coordinates, encrypted private fields, relay-only contact, fail-closed archive policy |
+| Draft guide or private editorial leak | Public-state scope, policy-protected editor/export, bounded public translation lookup, escaped body |
+| Fraudulent guide authority | Independent scoped community review, current credential-backed expert review, no popularity conversion |
+| Concurrent guide overwrite/history rewrite | Optimistic lock version, append-only snapshots/events, rollback as a new version |
+| Mentorship contact or private-thread disclosure | Participant policy, block checks on each contact mutation, dedicated private store, restrictive audit foreign keys |
+| Mentorship authority/reputation farming | Independent credential boundary, capacity and pair limits, idempotency, two-party interaction evidence, uninvolved administrator validation |
 | Log disclosure | Redaction and structured allow-list |
 
 Precise device pages and every remote device command use Laravel's
@@ -104,3 +142,24 @@ effect.
 5. Patch and add a regression test.
 6. Notify affected users according to legal and product policy.
 7. Record the finding and resolution in the changelog and compliance matrix.
+
+## Community Review Controls
+
+Community review is restricted to a closed low-risk type allowlist. Reviewer
+selection excludes interested parties, exposes no private report evidence,
+requires reasoned one-reviewer/one-panel submissions, and records immutable
+events. Community notes require trusted proposers, bounded evidence, rate
+limits, independent assessment, escaped presentation, versioned moderator
+changes, and explicit deletion denial for content authors.
+
+## Mentorship Controls
+
+Mentorship uses broad optional location only, platform-only communication,
+escaped append-only messages, pair/block/capacity controls, explicit safety
+acknowledgements, and participant-only reports. The report form exposes the
+unified reason catalogue, requires an explicit truthfulness confirmation, and
+never infers conviction from urgency.
+
+Completion reputation is withheld when interaction evidence is missing, the
+participants block one another, or a related report is open. Trust and karma
+never project professional status. See `docs/mentorship.md`.
