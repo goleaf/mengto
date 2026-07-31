@@ -6,6 +6,7 @@ const FORUM_PRIMARY_PROMPT_TIMESTAMP = 1785397895;
 const FORUM_EXTENSION_PROMPT_TIMESTAMP = 1785445633;
 const PET_PROFILE_PROMPT_TIMESTAMP = 1785514046;
 const SOCIAL_RELATIONSHIPS_PROMPT_TIMESTAMP = 1785521058;
+const CONTENT_FEED_PROMPT_TIMESTAMP = 1785527132;
 
 $root = dirname(__DIR__);
 $target = $root.'/docs/requirements/forum-source-prompt.md';
@@ -39,6 +40,7 @@ while (($line = fgets($handle)) !== false) {
         FORUM_EXTENSION_PROMPT_TIMESTAMP,
         PET_PROFILE_PROMPT_TIMESTAMP,
         SOCIAL_RELATIONSHIPS_PROMPT_TIMESTAMP,
+        CONTENT_FEED_PROMPT_TIMESTAMP,
     ], true)) {
         $prompts[$timestamp] = (string) $entry['text'];
     }
@@ -51,6 +53,7 @@ foreach ([
     FORUM_EXTENSION_PROMPT_TIMESTAMP,
     PET_PROFILE_PROMPT_TIMESTAMP,
     SOCIAL_RELATIONSHIPS_PROMPT_TIMESTAMP,
+    CONTENT_FEED_PROMPT_TIMESTAMP,
 ] as $timestamp) {
     if (! isset($prompts[$timestamp])) {
         fwrite(STDERR, "Required forum prompt entry {$timestamp} is missing.\n");
@@ -62,6 +65,7 @@ $primary = $prompts[FORUM_PRIMARY_PROMPT_TIMESTAMP];
 $extension = $prompts[FORUM_EXTENSION_PROMPT_TIMESTAMP];
 $petProfile = $prompts[PET_PROFILE_PROMPT_TIMESTAMP];
 $socialRelationships = $prompts[SOCIAL_RELATIONSHIPS_PROMPT_TIMESTAMP];
+$contentFeed = $prompts[CONTENT_FEED_PROMPT_TIMESTAMP];
 $forumPayload = $primary."\n\n".$extension;
 $forumChecksum = hash('sha256', $forumPayload);
 $petProfileChecksum = hash('sha256', $petProfile);
@@ -70,6 +74,9 @@ $petProfileMasterChecksum = hash('sha256', $petProfileMasterPayload);
 $socialRelationshipsChecksum = hash('sha256', $socialRelationships);
 $masterPayload = $petProfileMasterPayload."\n\n".$socialRelationships;
 $masterChecksum = hash('sha256', $masterPayload);
+$contentFeedChecksum = hash('sha256', $contentFeed);
+$latestMasterPayload = $masterPayload."\n\n".$contentFeed;
+$latestMasterChecksum = hash('sha256', $latestMasterPayload);
 $document = <<<'MARKDOWN'
 # Forum Source Prompt
 
@@ -108,16 +115,29 @@ $document .= "- Social revision raw payload SHA-256: `{$socialRelationshipsCheck
 $document .= "- Current master raw payload SHA-256: `{$masterChecksum}`\n";
 $document .= "- Current master checksum payload: prior master checksum payload, two LF characters, exact social revision payload\n\n";
 $document .= "<social-relationships-source-revision>\n{$socialRelationships}\n</social-relationships-source-revision>\n";
+$socialRelationshipsDocument = $document;
+$document .= "\n## Revision 2026-07-31: Content Feed And Distribution\n\n";
+$document .= "This dated revision is additive. All prior source parts and revisions remain\n";
+$document .= "unchanged and mandatory. The revision payload below is preserved verbatim from\n";
+$document .= "local Codex history and is part of the indivisible master specification.\n\n";
+$document .= '- Content revision source timestamp: `'.CONTENT_FEED_PROMPT_TIMESTAMP."`\n";
+$document .= "- Content revision raw payload SHA-256: `{$contentFeedChecksum}`\n";
+$document .= "- Latest master raw payload SHA-256: `{$latestMasterChecksum}`\n";
+$document .= "- Latest master checksum payload: prior master checksum payload, two LF characters, exact content revision payload\n\n";
+$document .= "<content-feed-source-revision>\n{$contentFeed}\n</content-feed-source-revision>\n";
 
 if (is_file($target)) {
     $existing = file_get_contents($target);
 
     if ($existing === $document) {
-        fwrite(STDOUT, "Master source prompt is unchanged ({$masterChecksum}).\n");
+        fwrite(STDOUT, "Master source prompt is unchanged ({$latestMasterChecksum}).\n");
         exit(0);
     }
 
-    if ($existing !== $legacyDocument && $existing !== $petProfileDocument) {
+    if ($existing !== $legacyDocument
+        && $existing !== $petProfileDocument
+        && $existing !== $socialRelationshipsDocument
+    ) {
         fwrite(STDERR, "Refusing to replace or rewrite preserved source-prompt content.\n");
         exit(1);
     }
@@ -145,4 +165,4 @@ if (file_put_contents($target, $document, LOCK_EX) === false) {
     exit(1);
 }
 
-fwrite(STDOUT, "Preserved master source prompt ({$masterChecksum}).\n");
+fwrite(STDOUT, "Preserved master source prompt ({$latestMasterChecksum}).\n");

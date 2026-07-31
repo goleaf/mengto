@@ -22,8 +22,13 @@
   relationship center.
 
 - Preserved the combined forum/taxonomy/pet/social specification with a
-  deterministic SHA-256 and generated 14,629 source-linked atomic
-  requirements.
+  deterministic SHA-256, added the complete content-feed and distribution
+  revision, and generated 18,640 source-linked atomic requirements without
+  renumbering the existing catalogue.
+- Audited the preview feed and persistent photo/forum boundaries, then defined
+  the phased canonical publication, audience, media, distribution,
+  moderation, integration, accessibility, and resilient-delivery architecture
+  for all 4,011 content requirements.
 - Added a deterministic 44-root, 1,637-subcategory forum hierarchy with
   stable keys, translations, aliases, redirects, safe synchronization, topic
   backfill, and cache invalidation.

@@ -23295,3 +23295,7755 @@ glavn oe dostizenie etogo punkta zakliucaetsia v tom, cto socialnye sviazi budut
 
 sledujusc ij punkt — lenta publikacij, posty, fotografii, video, istorii, reakcii, kommentarii, upominanija, xeshtegi, reposty i polnaja logika rasprostraneniia kontenta
 </social-relationships-source-revision>
+
+## Revision 2026-07-31: Content Feed And Distribution
+
+This dated revision is additive. All prior source parts and revisions remain
+unchanged and mandatory. The revision payload below is preserved verbatim from
+local Codex history and is part of the indivisible master specification.
+
+- Content revision source timestamp: `1785527132`
+- Content revision raw payload SHA-256: `5cbd87b770f415102de3bc90acd87c434bd0b99d508b17b3e039e6266474ff10`
+- Latest master raw payload SHA-256: `af59796f91aaccd42cb5af1322082db79b25fb4248eb235cbeb049a645f5348f`
+- Latest master checksum payload: prior master checksum payload, two LF characters, exact content revision payload
+
+<content-feed-source-revision>
+# punkt 4 — lenta publikacij, posty, fotografii, video, istorii, reakcii, kommentarii, upominanija, xeshtegi, reposty i polnaja logika rasprostraneniia kontenta
+
+## 1 — glavnaja cel vsego punkta
+
+**cto eto dolzno delat**
+
+sistema kontenta dolzna pozvoliat xoziaevam, pitomcam, priutam, volonteram, specialistam i organizacijam sozdaivat publikacii, delitsia fotografijami, video, istoriiami, poleznoj informaciej, sobytijami, nabludenijami i vaznymi obnovlenijami
+
+**pocemu eto nuzno**
+
+profilej i socialnye sviazi sami po sebe ne sozdaijut aktivnoe soobscestvo
+
+imenno kontent pomogaet polzovateliam uznavat drug druga, delitsia opytom, prosit pomosc, rasskazyvat o pitomcax, naxodit druzej, organizovyvat sobytija i soxran iat istoriju zizni zivotnogo
+
+**kak eto dolzno rabotat po logike**
+
+kazdaia publikacija dolzna byt otdelnym upravljaemym obektom, u kotorogo est realnyj avtor, profil publikacii, tip kontenta, auditorija, privatnost, status, media, sviazannye obekty, moderacija, istoria izmenenij i pravila rasprostraneniia
+
+**dlia kogo i dlia kakoj celi**
+
+dlia oby cnyx xoziaev, profilej pitomcev, professionalov, priutov, grupp, organizatorov sobytij, volonterov i biznesov
+
+**kakoj rezultat dolzen byt dostignut**
+
+polzovatel moz et sozdat kontent odin raz, tocno vybrat ego auditoriju i ponimat, gde, komu i pocemu etot material budet pokaz yvatsia
+
+---
+
+# osnovnye principy sistemy kontenta
+
+## 2 — kontent ne dolzen byt odnim universalnym tipom
+
+**cto eto dolzno delat**
+
+sistema dolzna razdeliat
+
+* oby cn yj post
+* fotografiju
+* fotoalbom
+* video
+* korotkoe video
+* audio
+* istoriju
+* opros
+* vopros
+* sobytie
+* obnovlenie adopcii
+* srocn oe objavlenie
+* professionaln yj material
+* reklamn uju publikaciju
+* blagotvoriteln yj sb or
+* memorialn uju publikaciju
+
+**pocemu eto nuzno**
+
+raznye tipy kontenta imejut razn yj zivotn yj cikl, privatnost, sposob otobrazheniia, moderaciju, uvedomlenija i celi
+
+**kak eto dolzno rabotat po logike**
+
+vse tipy mogut ispolzovat obsch uju osnovu publikacii, no poluchat dopolnitelnye polia i pravila
+
+naprimer istorija istekaet, opros imeet varianty otveta, a srocn oe objavlenie imeet status i geografic esk ij radius
+
+**dlia kogo i dlia kakoj celi**
+
+dlia avt orov i zritelej, kotorym nuzno ponimat, cto imenno oni sozdajut ili smotriat
+
+**kakoj rezultat dolzen byt dostignut**
+
+kontent ne prevrashch a etsia v nepon iatn yj nabor teksta i fajlov, a kazdyj tip polucaet podxodiasc uju logiku
+
+---
+
+## 3 — razdelenie realnogo avtora i profilia publikacii
+
+**cto eto dolzno delat**
+
+sistema dolzna znat
+
+* kakoi realn yj akkaunt sozdal material
+* ot imeni kakogo profilia on opublikovan
+* v kakoj roli dejstvoval avtor
+* imel li on pravo publikovat
+* kto pozze redaktiroval material
+
+**pocemu eto nuzno**
+
+post moz et byt opublikovan ot imeni pitomca, priuta, kliniki, gruppy ili organizacii, no fakticeski ego sozdaet konkretn yj celovek
+
+**kak eto dolzno rabotat po logike**
+
+publicno moz et pokaz yvatsia profil baksa, no vnutrennij audit xranit
+
+`andrej opublikoval ot imeni baksa`
+
+dlia professionalnogo, reklamnogo, spornogo ili moderacionnogo kontenta realn yj avtor moz et byt pokaz an bolee zametno
+
+**dlia kogo i dlia kakoj celi**
+
+dlia komandnogo upravleniia, sem ej, priutov, biznesov, specialistov i moderacii
+
+**kakoj rezultat dolzen byt dostignut**
+
+nelzia izb ezat otvetstvennosti, skryvayas za profilem pitomca ili organizacii
+
+---
+
+## 4 — odin material i neskolko sposobov otobrazheniia
+
+**cto eto dolzno delat**
+
+odin post moz et pokaz yvatsia
+
+* v profile avtora
+* v domashnej l ent e
+* v gruppe
+* na stranice xeshtega
+* v sobytii
+* v lokalnoj l ent e
+* v poisk e
+* po priamoj ssylke
+* v rekomendacijax
+
+**pocemu eto nuzno**
+
+odin i tot ze material ne nuzno fiziceski kopirovat v kazdyj razdel
+
+**kak eto dolzno rabotat po logike**
+
+sushestvuet odin original publikacii, a raznye l ent y i razdely polucajut pravo pokazat ejo pri vypolnenii uslovij auditorii, privatnosti i statusa
+
+**dlia kogo i dlia kakoj celi**
+
+dlia avt orov, grupp, profilej i rekomendacionnoj sistemy
+
+**kakoj rezultat dolzen byt dostignut**
+
+redaktirovanie ili udaleniie originala korrektno otrazaetsia vo vseh mestax, gde on byl dostup en
+
+---
+
+## 5 — kontent ne dolzen avtomaticeski byt publicnym
+
+**cto eto dolzno delat**
+
+pered publikaciej avtor dolzen vybrat ili podtverdit auditoriju
+
+**pocemu eto nuzno**
+
+fotografija pitomca moz et byt semejnoj, medicinskoj, gruppovoj, publicnoj ili prednaznachenn oj tolko specialistu
+
+**kak eto dolzno rabotat po logike**
+
+sistema moz et predlagat bezopasn oe znachenie po umolcaniju na osnove mesta sozdaniia
+
+naprimer post iz zakrytoj gruppy ostajotsia v zakrytoj gruppe, a zapis iz medkartocki ne moz et avtomaticeski stat publicnym postom
+
+**dlia kogo i dlia kakoj celi**
+
+dlia vseh avt orov
+
+**kakoj rezultat dolzen byt dostignut**
+
+odin slucajn yj klik ne publik uet semejn uju fotografiju, diagnoz, adres ili gps na vsej platforme
+
+---
+
+## 6 — kontrol nad rasprostraneniem dolzen prinadlezat avt oru i vladelcam dannyx
+
+**cto eto dolzno delat**
+
+avtor dolzen upravliat
+
+* auditoriej
+* kommentariiami
+* repostami
+* vneshnim rasprostraneniem
+* skachivaniem media
+* tagami
+* upominaniiami
+* poiskovoj vidimostiu
+* indeksaciej
+* srokom dostup a
+
+**pocemu eto nuzno**
+
+publicnaia publikacija ne obyazatelno oznachaet soglasie na liuboe skachivanie, peredelku, reklamu ili vneshnee ispolzovanie
+
+**kak eto dolzno rabotat po logike**
+
+kazdaia funkcia rasprostraneniia dolzna imet otdeln oe pravo, a ne odin flazok publicno
+
+**dlia kogo i dlia kakoj celi**
+
+dlia avt orov, fotografov, priutov, biznesov i vladelcev profilej pitomcev
+
+**kakoj rezultat dolzen byt dostignut**
+
+avtor ponimaet ne tolko kto vidit post, no i cto zritel moz et s nim sdelat
+
+---
+
+# osnovnaja model publikacii
+
+## 7 — publikacija kak otdelnyj obekt
+
+**cto eto dolzno delat**
+
+kazdaia publikacija dolzna xranit
+
+* unikaln yj identifikator
+* realnogo avtora
+* profil publikacii
+* tip
+* tekst
+* media
+* auditoriju
+* datu sozdaniia
+* datu publicacii
+* status
+* jazyk
+* sviazannye obekty
+* prava vzaimodejstviia
+* moderaciju
+* istoriju izmenenij
+
+**pocemu eto nuzno**
+
+prostaja zapis s tekstom i kartinkoj ne podderzhit slozn uju privatnost, reposty, gruppy, raspisanie, perevody i audit
+
+**kak eto dolzno rabotat po logike**
+
+obsch ie polia ispolzujutsia vsem i tipami, a dopolnitelnye struktury podkliucajutsia po neobxodimosti
+
+**dlia kogo i dlia kakoj celi**
+
+dlia vsej arhitektury kontenta
+
+**kakoj rezultat dolzen byt dostignut**
+
+novyj tip publikacii mozno dobavit bez poln oj peredelki l ent y i moderacii
+
+---
+
+## 8 — statusy publikacii
+
+**cto eto dolzno delat**
+
+post moz et imet status
+
+* cernovik
+* podgotavlivaetsia
+* zagruzhaetsia
+* ozhidaet obrabotki
+* ozhidaet odobreniia
+* zaplanirov an
+* opublikovan
+* vrem enno skryt
+* ogranichen
+* zablokirovan
+* arhivirovan
+* udal en avt orom
+* udal en moderatorom
+* vosstanovlen
+* iste k
+* perenesen
+
+**pocemu eto nuzno**
+
+odin flazok opublikovan ne opis yvaet realn yj zivotn yj cikl materiala
+
+**kak eto dolzno rabotat po logike**
+
+kazdyj status opredeliaet, gde vid en post, mozno li ego redaktirovat, polucat li zriteli uvedomlenija i cto proisxodit s vzaimodejstviiami
+
+**dlia kogo i dlia kakoj celi**
+
+dlia avt orov, komand, moderatorov i sistemy dostavki
+
+**kakoj rezultat dolzen byt dostignut**
+
+nezavershenn oe video ne pokaz yvaetsia kak slomann yj publicn yj post, a udalenn yj material ne prodolzaet rasprostraniatsia
+
+---
+
+## 9 — auditorija kak otdeln oe pravilo
+
+**cto eto dolzno delat**
+
+kazdyj post moz et byt dostup en
+
+* vsem
+* tolko zaregistrirovannym
+* podpiscikam
+* druzjam
+* blizkomu krugu
+* semejnomu prostranstvu
+* konkretnoj gruppe
+* uchastnikam sobytija
+* vybrannym profiljam
+* po vrem enn oj ssylke
+* tolko avt oru
+
+**pocemu eto nuzno**
+
+raznye publikacii imejut razn yj socialn yj i konfidencialn yj kontekst
+
+**kak eto dolzno rabotat po logike**
+
+auditorija dolzna proveriatsia pri kazdom otkrytii, a ne tolko v moment publicacii
+
+**dlia kogo i dlia kakoj celi**
+
+dlia avt orov, kotorye del iatsia raznym kontentom s raznymi krugami
+
+**kakoj rezultat dolzen byt dostignut**
+
+udalenn yj iz druzej polzovatel ne moz et otkryt star yj post dlia druzej po soxranenn oj ssylke
+
+---
+
+## 10 — auditorija ne dolzna byt sire profilia bez podtverzhdeniia
+
+**cto eto dolzno delat**
+
+esli profil zakryt, post ne dolzen slucajno publikovatsia dlia vseh
+
+**pocemu eto nuzno**
+
+polzovatel moz et polagat, cto zakryt yj profil avtomaticeski zasciscaet ves kontent
+
+**kak eto dolzno rabotat po logike**
+
+pri popytke rasshirit auditoriju sistema pokaz yvaet zametn oe preduprezhdenie i predprosmotr
+
+**dlia kogo i dlia kakoj celi**
+
+dlia zakrytyx profilej xoziaev, pitomcev i grupp
+
+**kakoj rezultat dolzen byt dostignut**
+
+odin publicn yj post ne stanovitsia slucajnoj uteckoj iz zakrytogo profilia
+
+---
+
+## 11 — sviazannye obekty publikacii
+
+**cto eto dolzno delat**
+
+post moz et byt sviazan s
+
+* pitomcem
+* xoziajinom
+* gruppoj
+* sobytiem
+* mestom
+* uslugoj
+* tovarom
+* adopcionnym profilem
+* poiskovym objavleniem
+* dostizeniem
+* dokumentom
+* professionalnym materialom
+
+**pocemu eto nuzno**
+
+tekstovaia ssylka ne daet stabilnoj logiki i moz et ustaret
+
+**kak eto dolzno rabotat po logike**
+
+sviaz imeet tip, prava, vidimost i povedenie pri udaleni i ili izmenenii obekta
+
+**dlia kogo i dlia kakoj celi**
+
+dlia vsej integracii modul ej
+
+**kakoj rezultat dolzen byt dostignut**
+
+post o sobytii avtomaticeski pokaz yvaet aktualn yj status sobytija, a ne star yj skopirovann yj tekst
+
+---
+
+## 12 — lokalizovann yj jazyk publikacii
+
+**cto eto dolzno delat**
+
+kazdyj post dolzen imet originaln yj jazyk i po zhelaniju perevody
+
+**pocemu eto nuzno**
+
+v mnogojazy cnoj socialnoj seti algoritm, poisk i uvedomlenija dolzny ponimat jazyk kontenta
+
+**kak eto dolzno rabotat po logike**
+
+original ne zameniaetsia perevodom
+
+perevod xranitsia otdelno i imeet status
+
+* avtomaticeskij
+* rucnoj
+* proverenn yj
+* ustarevshij posle redaktirovanija originala
+
+**dlia kogo i dlia kakoj celi**
+
+dlia mezhdunarodnyx xoziaev, priutov i specialistov
+
+**kakoj rezultat dolzen byt dostignut**
+
+zritel c itaet material na pon iatnom jazyke i moz et vsegda otkryt original
+
+---
+
+# tipy publikacij
+
+## 13 — oby cn yj tekstovyj post
+
+**cto eto dolzno delat**
+
+avtor moz et opublikovat tekst bez obyazatelnogo media
+
+**pocemu eto nuzno**
+
+ne kazdaia mysl, vopros ili obnovlenie trebuet fotografii
+
+**kak eto dolzno rabotat po logike**
+
+tekst podderzhivaet abzacy, ssylki, upominanija, xeshtegi, spiski i bezopasn oe bazovoe format iro vanie
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev, specialistov, grupp i organizacij
+
+**kakoj rezultat dolzen byt dostignut**
+
+polezn yj tekst ne stanovitsia menee zametnym tolko iz-za otsutstviia fotografii
+
+---
+
+## 14 — dlinn a ia publikacija ili statja
+
+**cto eto dolzno delat**
+
+platforma moz et podderzhivat bolee strukturirovann yj material
+
+* zagolovok
+* vvedenie
+* razdely
+* izobrazheniia
+* istochniki
+* avtorov
+* datu obnovleniia
+* soderzanie
+* sviazannye materialy
+
+**pocemu eto nuzno**
+
+professionalnaia statja, instrukcija priuta ili dlinn a ia istoria neudobna v oby cnom korotkom post e
+
+**kak eto dolzno rabotat po logike**
+
+statja ispolzuet te ze prava, moderaciju i lokalizaciju, no polucaet rasshirenn yj redaktor i versii
+
+**dlia kogo i dlia kakoj celi**
+
+dlia specialistov, priutov, organizacij i opytnyx avt orov
+
+**kakoj rezultat dolzen byt dostignut**
+
+dlinn yj material ostajotsia cit aemym, strukturirovannym i obnovliaemym
+
+---
+
+## 15 — fotograficeskij post
+
+**cto eto dolzno delat**
+
+avtor moz et zagruzit odnu ili neskolko fotografij s opisaniem
+
+**pocemu eto nuzno**
+
+fotografii javliajutsia osnovnym tipom kontenta dlia profilej pitomcev
+
+**kak eto dolzno rabotat po logike**
+
+kazdaia fotografija imeet svoj poriadok, alternativn yj tekst, opisanie, privatnost v ramkax posta, avtora i status obrabotki
+
+**dlia kogo i dlia kakoj celi**
+
+dlia vseh xoziaev, priutov, fotografov i grupp
+
+**kakoj rezultat dolzen byt dostignut**
+
+fotografii bystro zagruzhajutsia, pravilno otobrazajutsia i ne teriajut kontekst
+
+---
+
+## 16 — karusel iz neskolkix media
+
+**cto eto dolzno delat**
+
+odin post moz et soderzhat uporiadocenn yj nabor fotografij i video
+
+**pocemu eto nuzno**
+
+odna progulka, fotosessija ili sobytie moz et trebovat neskolkix kadrov
+
+**kak eto dolzno rabotat po logike**
+
+avtor vybiraet poriadok, oblozhku i individualnye opisaniia
+
+udaleniie odnogo elementa ne dolzno unictozhat ves post
+
+**dlia kogo i dlia kakoj celi**
+
+dlia vizualnyx istorij i otchetov
+
+**kakoj rezultat dolzen byt dostignut**
+
+zritel moz et prosmotret sviazann y e media v pon iatnoj posledovatelnosti
+
+---
+
+## 17 — fotoalbom
+
+**cto eto dolzno delat**
+
+albom dolzen objediniat mnogo media po teme, periodu ili sobytiju
+
+**pocemu eto nuzno**
+
+odin karusel ne podxodit dlia mnogoletnej istorii, fotosessii ili gruppovogo sobytija s desiatkami fotografij
+
+**kak eto dolzno rabotat po logike**
+
+albom imeet
+
+* nazvanie
+* opisanie
+* oblozhku
+* auditoriju
+* avt orov
+* prava dobavleniia
+* poriadok
+* sviazannye profilej
+* kommentarii
+* status
+
+**dlia kogo i dlia kakoj celi**
+
+dlia sem ej, grupp, sobytij, priutov i fotografov
+
+**kakoj rezultat dolzen byt dostignut**
+
+media ne ter iajutsia v l ent e i mogut byt udobno prosmotreny pozze
+
+---
+
+## 18 — video publikacija
+
+**cto eto dolzno delat**
+
+avtor moz et zagruzit video s nazvaniem, opisaniem, oblozhkoj, subtitrami i auditoriej
+
+**pocemu eto nuzno**
+
+video polezno dlia povedeniia, treninga, zabavnyx momentov, obzora mesta, instrukcii i otcheta
+
+**kak eto dolzno rabotat po logike**
+
+original obrabatyvaetsia v neskolko kachestv, a publicacija ne stanovitsia aktivnoj do gotovnosti bezopasnogo predprosmotra
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev, kinologov, veterinarov, priutov i avt orov
+
+**kakoj rezultat dolzen byt dostignut**
+
+video rabotaet na raznyx skorostiax interneta i ustrojstvax bez obyazatelnoj zagruzki originala polnogo razmera
+
+---
+
+## 19 — korotkoe vertikalnoe video
+
+**cto eto dolzno delat**
+
+platforma moz et podderzhivat korotkij dinamic esk ij format dlia bystrogo prosmotra
+
+**pocemu eto nuzno**
+
+takoi format udob en na telefone i moz et byt polezen dlia korotkix momentov, treningovyx sovetov i predstavleniia pitomca
+
+**kak eto dolzno rabotat po logike**
+
+korotkoe video dolzno imet te ze pravila privatnosti, moderacii, subtitrov, avtorskix prav i blokirovok, cto i oby cnyj post
+
+**dlia kogo i dlia kakoj celi**
+
+dlia mobilnyx avt orov i zritelej
+
+**kakoj rezultat dolzen byt dostignut**
+
+korotkij format ne stanovitsia otdelnoj nekontroliruemoj socialnoj setju vnutri platformy
+
+---
+
+## 20 — audio publikacija
+
+**cto eto dolzno delat**
+
+avtor moz et opublikovat golosovuju zametku, podkast, interviu ili audio instrukciju
+
+**pocemu eto nuzno**
+
+ne vsem udobno smotret video ili c itat dlinn yj tekst
+
+**kak eto dolzno rabotat po logike**
+
+audio dolzno imet nazvanie, opisanie, oblozhku, prodolzhitelnost, rasshifrovku i upravlenie skorostju
+
+**dlia kogo i dlia kakoj celi**
+
+dlia ekspertov, priutov, avt orov i polzovatelej s ogranichennym zreniem
+
+**kakoj rezultat dolzen byt dostignut**
+
+audio kontent dostup en, poiskov yj i pon iatn yj bez obyazatelnogo proslushivaniia ot nacala do konca
+
+---
+
+## 21 — opros
+
+**cto eto dolzno delat**
+
+avtor moz et zadat vopros s neskolkimi variantami otveta
+
+**pocemu eto nuzno**
+
+opros pomogaet sobrat mnenie gruppy, vybrat datu sobytija ili uznat interes auditorii
+
+**kak eto dolzno rabotat po logike**
+
+nuzno nastroit
+
+* odin ili neskolko otvetov
+* anonimnost
+* srok
+* vozmoznost izmenit golos
+* kto vidit rezultaty
+* kto moz et golosovat
+* mozno li dobavliat varianty
+
+**dlia kogo i dlia kakoj celi**
+
+dlia grupp, sobytij, avt orov i organizacij
+
+**kakoj rezultat dolzen byt dostignut**
+
+opros sobiraet pon iatn yj rezultat bez raskrytiia lichnosti golosujusc ix, esli vybrana anonimnost
+
+---
+
+## 22 — publikacija voprosa
+
+**cto eto dolzno delat**
+
+avtor moz et sozdat vopros, otlicajusc ijsia ot oby cnogo posta
+
+**pocemu eto nuzno**
+
+vopros trebuet otvetov, statusa resheno, kategorii i vozmoznosti vybrat polezn yj otvet
+
+**kak eto dolzno rabotat po logike**
+
+vopros moz et imet
+
+* temu
+* opisanie
+* vid pitomca
+* kontekst
+* media
+* status
+* vybrann yj otvet
+* metku professionalnogo otveta
+* preduprezhdenie, cto forum ne zameniaet srocn uju pomosc
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev, novickov, grupp i ekspertov
+
+**kakoj rezultat dolzen byt dostignut**
+
+otvety strukturirovany, a opasn yj medicinskij vopros ne maskiruetsia pod oby cnoe obsuzhdenie
+
+---
+
+## 23 — publikacija sobytija
+
+**cto eto dolzno delat**
+
+post moz et predstavliat ili obnovliat sobytie
+
+**pocemu eto nuzno**
+
+oby cn yj tekst s datoj ne podderzhivaet registraciju, izmenenie vremeni, otmen u i spisok uchastnikov
+
+**kak eto dolzno rabotat po logike**
+
+publikacija ssyl a etsia na original sobytija i vsegda pokaz yvaet aktualn yj status
+
+**dlia kogo i dlia kakoj celi**
+
+dlia organizatorov, grupp, priutov i specialistov
+
+**kakoj rezultat dolzen byt dostignut**
+
+izmenenie mesta ili otmena sobytija avtomaticeski otrazaetsia vo vseh sviazannyx publikacijax
+
+---
+
+## 24 — publikacija o meste
+
+**cto eto dolzno delat**
+
+avtor moz et podelitsia parkom, klinikoj, kafe, marsrutom ili drugim mestom
+
+**pocemu eto nuzno**
+
+prostaja gps tochka ne pokazyvaet pravila, dostupnost, uslugi i opyt pitomca
+
+**kak eto dolzno rabotat po logike**
+
+post ssyl a etsia na kartocku mesta, a avtor dobavliaet lichn yj opyt, fotografii i kontekst
+
+**dlia kogo i dlia kakoj celi**
+
+dlia mestnyx xoziaev, putesestvennikov i grupp
+
+**kakoj rezultat dolzen byt dostignut**
+
+zritel vidit aktualnuju kartocku mesta i otdelno subjektivn yj opyt avtora
+
+---
+
+## 25 — publikacija dostizeniia
+
+**cto eto dolzno delat**
+
+pitomec moz et podelitsia kursom, sportivnym rezultatom, vystavkoj, volonterskim uchastiem ili lichnym etapom
+
+**pocemu eto nuzno**
+
+dostizenie dolzno byt strukturirovano i sviazano s profilem, a ne ter iatsia v oby cnom post e
+
+**kak eto dolzno rabotat po logike**
+
+material moz et soderzhat organizatora, datu, rezultat, dokument, fotografii i status proverki
+
+**dlia kogo i dlia kakoj celi**
+
+dlia profilej pitomcev, trenerov, organizatorov i xoziaev
+
+**kakoj rezultat dolzen byt dostignut**
+
+zritel ponimaet, cto podtverzhdeno organizaciej, a cto javliaetsia lichnym dostizeniem
+
+---
+
+## 26 — adopcionnaja publikacija
+
+**cto eto dolzno delat**
+
+priut ili upolnomochenn yj xoziajin moz et opublikovat, cto pitomec ishchet dom
+
+**pocemu eto nuzno**
+
+adopcionn yj post dolzen byt sviazan s realnym profilem i proces som adopcii
+
+**kak eto dolzno rabotat po logike**
+
+post pokaz yvaet aktualn yj status, osnovnye potrebnosti, region, uslovija i knopku podat zayavku
+
+on ne dolzen soderzhat tocn yj adres perederzki ili polnye dokumenty
+
+**dlia kogo i dlia kakoj celi**
+
+dlia priutov, volonterov, perederzhek i buduscix xoziaev
+
+**kakoj rezultat dolzen byt dostignut**
+
+posle adopcii post avtomaticeski pokaz yvaet, cto poisk doma zavershen, i ne prodolzaet sobirat novye zayavki
+
+---
+
+## 27 — publikacija o poterjannom ili najdennom pitomce
+
+**cto eto dolzno delat**
+
+srocn oe objavlenie dolzno byt otdelnym tipom s kartoj, statusom, nabludenijami i uvedomlenijami
+
+**pocemu eto nuzno**
+
+oby cn yj post ne moz et koordinirivat aktivn yj poisk i bystro ostanovit rasprostranenie posle vozvrata
+
+**kak eto dolzno rabotat po logike**
+
+publikacija ssyl a etsia na poiskovuju operaciju i vsegda pokaz yvaet
+
+* tekusc ij status
+* poslednee obnovlenie
+* primern uju zonu
+* instrukciju
+* knopku ja videl
+* kontakt cerez platformu
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev, svidetelej, priutov, klinik i volonterov
+
+**kakoj rezultat dolzen byt dostignut**
+
+srocn yj post rasprostraniaetsia relevantnym liudiam, a posle vozvrata zametno meniaetsia na pitomec najden
+
+---
+
+## 28 — medicinskaia ili chuvstvitelnaia publikacija
+
+**cto eto dolzno delat**
+
+xoziajin moz et dobrovolno podelitsia iskustvom lecheniia, vosstanovleniia ili simptomami
+
+**pocemu eto nuzno**
+
+takoi kontent moz et byt poleznym dlia podderzki i obmena opytom, no soderzit graficeskie media, diagnozy i lichnye dokumenty
+
+**kak eto dolzno rabotat po logike**
+
+pered publicaciej sistema predlagaet
+
+* ubrat dokumenty
+* zamazat identifikatory
+* ustanovit preduprezhdenie
+* ogranichit auditoriju
+* ukazat, cto eto lichn yj opyt
+* ne vydavat material za universaln uju medicinskuju instrukciju
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev, grupp podderzki i specialistov
+
+**kakoj rezultat dolzen byt dostignut**
+
+polezn yj opyt dostup en, no ne raskryvaet lishnie dannye i ne podtalkivaet k samolecheniju
+
+---
+
+## 29 — professionaln yj obrazovateln yj material
+
+**cto eto dolzno delat**
+
+proverenn yj specialist moz et publikovat statji, video, otvety, instrukcii i razbory
+
+**pocemu eto nuzno**
+
+polzovateliam nuzna vozmoznost otlicit professionaln yj material ot lichnogo mneniia
+
+**kak eto dolzno rabotat po logike**
+
+post pokaz yvaet
+
+* professionaln yj profil
+* oblast kompetencii
+* status proverki
+* datu
+* istochniki
+* regionalnye ogranicheniia
+* konflikty interesov
+* cto material ne zameniaet individualn uju konsultaciju
+
+**dlia kogo i dlia kakoj celi**
+
+dlia veterinarov, kinologov, grumerov, reabilitologov i xoziaev
+
+**kakoj rezultat dolzen byt dostignut**
+
+zritel ponimaet kvalifikaciju avtora i granicy obschej informacii
+
+---
+
+## 30 — reklamnaja publikacija
+
+**cto eto dolzno delat**
+
+biznes ili specialist moz et prodvigat tovar, uslugu ili sobytie s jasnoj reklamnoj metkoj
+
+**pocemu eto nuzno**
+
+kommerceskij material ne dolzen maskirovatsia pod lichn uju rekomendaciju ili oby cn yj post
+
+**kak eto dolzno rabotat po logike**
+
+post dolzen pokaz yvat
+
+* reklama
+* kto oplatil
+* cto prodvigaetsia
+* pocemu pokazano v obobschonnom vide
+* kak skryt
+* kak pozhalovatsia
+* est li partnerskaia ssylka
+
+**dlia kogo i dlia kakoj celi**
+
+dlia biznesov, avt orov i polzovatelej
+
+**kakoj rezultat dolzen byt dostignut**
+
+zritel moz et otlicit reklamu ot redakcionnogo, professionalnogo i lichnogo kontenta
+
+---
+
+## 31 — partnerskij ili sponsorskii post
+
+**cto eto dolzno delat**
+
+avtor moz et ukazat, cto poluchil oplatu, podarok, skidku ili druguju vygodu
+
+**pocemu eto nuzno**
+
+bez raskrytiia partnerstva rekomendacija moz et sozdat lozn oe vpechatlenie nezavisimogo mneniia
+
+**kak eto dolzno rabotat po logike**
+
+metka partnerstva dolzna byt zametnoj do raskrytiia polnogo teksta, a ne spriatana v konce
+
+**dlia kogo i dlia kakoj celi**
+
+dlia blogerov, specialistov, biznesov i auditorii
+
+**kakoj rezultat dolzen byt dostignut**
+
+polzovatel ponimaet finansov yj kontekst do pokupki ili perehoda po ssylke
+
+---
+
+## 32 — publikacija sbora sredstv
+
+**cto eto dolzno delat**
+
+priut, organizacija ili proverenn yj xoziajin moz et sozdat post o neobxodimom sbore
+
+**pocemu eto nuzno**
+
+sbory mogut pomogat lecheniju i spaseni i u, no takze imejut vysokij risk moshennicestva
+
+**kak eto dolzno rabotat po logike**
+
+post sviazyvaetsia s proveriaemym sb orom i pokaz yvaet
+
+* cel
+* summu
+* kto poluchaet
+* dokumenty v dopustimom vide
+* sobrano
+* potracheno
+* status
+* otchet
+* cto budet s ostatkom
+
+**dlia kogo i dlia kakoj celi**
+
+dlia priutov, organizacij, volonterov, xoziaev i donorov
+
+**kakoj rezultat dolzen byt dostignut**
+
+donor vidit realn uju cel i prozracn yj progress, a post ne ostajotsia aktivnym posle zaversheniia sbora
+
+---
+
+## 33 — publikacija so vneshnej ssylkoj
+
+**cto eto dolzno delat**
+
+post moz et soderzhat ssylku na statju, video, dokument, servis ili vneshnee sobytie
+
+**pocemu eto nuzno**
+
+polezn yj kontent moz et naxoditsia za predelami platformy
+
+**kak eto dolzno rabotat po logike**
+
+sistema sozdaet bezopasn yj predprosmotr, pokaz yvaet realn yj domen, proveriaet risk i ne peredaet lishnie dannye zritel ia do ego klika
+
+**dlia kogo i dlia kakoj celi**
+
+dlia avt orov, ekspertov, grupp i zritelej
+
+**kakoj rezultat dolzen byt dostignut**
+
+polzovatel ponimaet, kuda perejdot, i ne otkryvaet fishing stranicu iz-za poddelnogo nazvaniia
+
+---
+
+# redaktor publikacii
+
+## 34 — universalnaia knopka sozdat
+
+**cto eto dolzno delat**
+
+polzovatel dolzen moc nacat sozdanie iz
+
+* glavn oj l ent y
+* profilia
+* gruppy
+* sobytija
+* alboma
+* adopcii
+* poiskovogo razdela
+* professionalnogo profilia
+
+**pocemu eto nuzno**
+
+raznye nesovmestimye redaktory sozda dut dublikaty pravil i nepon iatn oe povedenie
+
+**kak eto dolzno rabotat po logike**
+
+otkryvaetsia odin bazovyj redaktor, kotoryj polucaet kontekst tekuscego razdela
+
+**dlia kogo i dlia kakoj celi**
+
+dlia vseh avt orov
+
+**kakoj rezultat dolzen byt dostignut**
+
+polzovatel moz et sozdat post iz liubogo mesta, no privatnost i audit rabotajut odinakovo
+
+---
+
+## 35 — vybor profilia publikacii
+
+**cto eto dolzno delat**
+
+pered sozdaniem avtor vybiraet
+
+* lichn yj profil
+* konkretnogo pitomca
+* professionaln yj profil
+* organizaciju
+* grup pu pri nalichii prava
+
+**pocemu eto nuzno**
+
+odin akkaunt moz et upravliat mnogimi profiljami i roliami
+
+**kak eto dolzno rabotat po logike**
+
+redaktor zametno pokaz yvaet aktivn yj profil, a pri ego smene povtorno proveriaet prava, auditoriju i dostupnye tipy postov
+
+**dlia kogo i dlia kakoj celi**
+
+dlia sem ej, specialistov, priutov i organizacij
+
+**kakoj rezultat dolzen byt dostignut**
+
+lichn oe mnenie ne publik uetsia slucajno ot imeni kliniki ili pitomca
+
+---
+
+## 36 — vybor tipa publikacii
+
+**cto eto dolzno delat**
+
+redaktor dolzen predlozhit podxodiasc ie varianty
+
+* post
+* fotografii
+* video
+* istorija
+* vopros
+* opros
+* sobytie
+* adopcija
+* srocn oe objavlenie
+* professionaln yj material
+
+**pocemu eto nuzno**
+
+avtoru ne nuzno samostojatelno ponimat, kakimi poliami dolzen obladat post
+
+**kak eto dolzno rabotat po logike**
+
+spisok zavisit ot prav profilia i tekuscego konteksta
+
+naprimer oby cn yj polzovatel ne moz et sozdat oficialn oe municipaln oe preduprezhdenie
+
+**dlia kogo i dlia kakoj celi**
+
+dlia avt orov s raznymi roliami
+
+**kakoj rezultat dolzen byt dostignut**
+
+kazdyj material sozdaetsia v pravilnom format e i ne maskiruetsia pod drugoj tip
+
+---
+
+## 37 — vybor auditorii do publicacii
+
+**cto eto dolzno delat**
+
+auditorija dolzna byt vidna neposredstvenno v redaktore
+
+**pocemu eto nuzno**
+
+polzovatel ne dolzen publikovat, a potom uznavat, kto uvidel material
+
+**kak eto dolzno rabotat po logike**
+
+riadom s auditoriej pokazyvaetsia kratkoe objasnenie
+
+* vse
+* podpisciki
+* druzia
+* blizkij krug
+* zakrytaia gruppa
+* tolko vybrannye liudi
+
+**dlia kogo i dlia kakoj celi**
+
+dlia vseh avt orov
+
+**kakoj rezultat dolzen byt dostignut**
+
+polzovatel ponimaet budusc uju vidimost do nazhatiia opublikovat
+
+---
+
+## 38 — predprosmotr privatnosti
+
+**cto eto dolzno delat**
+
+pered publicaciej mozno posmotret post glazami
+
+* gosta
+* podpiscika
+* druga
+* blizkogo kruga
+* uchastnika gruppy
+* konkretnogo polzovatelia
+
+**pocemu eto nuzno**
+
+kombinacija privatnosti profilia, alboma, gruppy i posta moz et byt sloznoj
+
+**kak eto dolzno rabotat po logike**
+
+predprosmotr dolzen ispolzovat realn y e servernye pravila, a ne dekorativn uju imitaciju
+
+**dlia kogo i dlia kakoj celi**
+
+dlia avt orov zakrytogo i chuvstitelnogo kontenta
+
+**kakoj rezultat dolzen byt dostignut**
+
+avtor uvidit, cto slucajno otkryl mesto, tag ili komentar, esio do publicacii
+
+---
+
+## 39 — avtomaticeskoe soxranenie cernovika
+
+**cto eto dolzno delat**
+
+tekst, vybrannye media, auditorija i nastojki dolzny periodiceski soxraniatsia
+
+**pocemu eto nuzno**
+
+dlinn yj post moz et byt poterian iz-za zakrytiia prilozheniia, obryva interneta ili razriada telefona
+
+**kak eto dolzno rabotat po logike**
+
+avtosoxranenie ne dolzno sozda vat nov yj cernovik pri kazdom povtore
+
+**dlia kogo i dlia kakoj celi**
+
+dlia mobilnyx i desktop avt orov
+
+**kakoj rezultat dolzen byt dostignut**
+
+avtor vozvrashchaetsia k poslednej soxranenn oj versii bez dublikatov
+
+---
+
+## 40 — spisok cernovikov
+
+**cto eto dolzno delat**
+
+avtor moz et videt
+
+* lichnye cernoviki
+* cernoviki pitomca
+* komandnye cernoviki
+* ozhidajusc ie odobreniia
+* nezavershenn y e zagruzki
+* konfliktujusc ie versii
+
+**pocemu eto nuzno**
+
+pri neskolkix profilj a h i avt orax cernoviki mogut ter iatsia
+
+**kak eto dolzno rabotat po logike**
+
+kazdyj cernovik pokaz yvaet profil, tip, poslednego redaktora, datu i status dostup a
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev, priutov, biznesov i komand
+
+**kakoj rezultat dolzen byt dostignut**
+
+nezavershenn y e materialy legko najti i prodolzit
+
+---
+
+## 41 — oflajn cernovik
+
+**cto eto dolzno delat**
+
+post moz et sozdavatsia bez interneta i otpravljatsia pozze
+
+**pocemu eto nuzno**
+
+fotografii i zametki c asto sozdaijutsia v parke, lesu, poezdke ili priute so slaboj sviazju
+
+**kak eto dolzno rabotat po logike**
+
+prilozhenie xranit lokaln yj cernovik, zametno pokaz yvaet ego status i ne schitaet material opublikovannym do podtverzhdeniia servera
+
+**dlia kogo i dlia kakoj celi**
+
+dlia polzovatelej pri slabom internet e
+
+**kakoj rezultat dolzen byt dostignut**
+
+kontent ne ter iaetsia, a zritel ne vidit polupublikovann yj post
+
+---
+
+## 42 — ochered zagruzki
+
+**cto eto dolzno delat**
+
+pri neskolkix bolsh ix fajlax redaktor dolzen pokaz yvat progress kazdogo elementa
+
+**pocemu eto nuzno**
+
+odin problemn yj video fajl ne dolzen ostanavlivat vse fotografii bez objasneniia
+
+**kak eto dolzno rabotat po logike**
+
+kazdyj fajl imeet status
+
+* ozhidaet
+* zagruzhaetsia
+* proveriaetsia
+* obrabatyvaetsia
+* gotovo
+* oshibka
+* otmeneno
+
+**dlia kogo i dlia kakoj celi**
+
+dlia avt orov media kontenta
+
+**kakoj rezultat dolzen byt dostignut**
+
+polzovatel znaet, kakoi fajl ne zagruzilsia i moz et povtorit tolko ego
+
+---
+
+## 43 — predprosmotr posta
+
+**cto eto dolzno delat**
+
+pered publicaciej avtor vidit realn oe oformlenie na
+
+* telefone
+* kompiutere
+* v l ent e
+* v profile
+* po vneshnej ssylke
+
+**pocemu eto nuzno**
+
+dlinn yj tekst, oblozhka ili karusel mogut vygl iadet po-raznomu
+
+**kak eto dolzno rabotat po logike**
+
+predprosmotr dolzen pokaz yvat sokrashchenie teksta, poriadok media, metki, reklamn y e oznacheniia i auditoriju
+
+**dlia kogo i dlia kakoj celi**
+
+dlia avt orov i komand
+
+**kakoj rezultat dolzen byt dostignut**
+
+avtor ispravliaet problem u do publicacii, a ne posle zhalob auditorii
+
+---
+
+## 44 — proverka pered publicaciej
+
+**cto eto dolzno delat**
+
+sistema moz et predlozhit ispravit
+
+* otsutstvujusc ij alternativn yj tekst
+* slucajn yj telefon
+* domashnij adres
+* gps metadannye
+* lic a detej
+* nomer avtomobilia
+* vneshnju fishing ssylku
+* neukazann oe partnerstvo
+* graficeskoe media bez preduprezhdeniia
+
+**pocemu eto nuzno**
+
+bolshinstvo utecek i narushenij proishodit ne namerenno
+
+**kak eto dolzno rabotat po logike**
+
+sistema preduprezhdaet, no ne vydajot avtomaticeskij analiz za bezoshibocn yj
+
+kriticeskij risk moz et trebovat podtverzhdeniia ili blokirovat publicaciju do ispravleniia
+
+**dlia kogo i dlia kakoj celi**
+
+dlia zascity avt orov i zritelej
+
+**kakoj rezultat dolzen byt dostignut**
+
+slucajn y e lichnye dannye i opasn y e ssylki reze popadajut v publicn yj dostup
+
+---
+
+## 45 — shablony publikacij
+
+**cto eto dolzno delat**
+
+platforma moz et predlozhit shablony
+
+* predstavlenie novogo pitomca
+* otchet o progulke
+* adopcionn yj profil
+* nuzhna pomosc
+* otchet priuta
+* vopros specialistu
+* sobytie
+* memorialnaja istoria
+* obnovlenie poisk a
+
+**pocemu eto nuzno**
+
+novicku trudno ponimat, kak uju informaciju nuzno vkliucit
+
+**kak eto dolzno rabotat po logike**
+
+shablon sozdaet cernovik s podskazkami, no ne publik uetsia i ne zapolniaet neizvestnye fakty avtomaticeski
+
+**dlia kogo i dlia kakoj celi**
+
+dlia novyx xoziaev, priutov i redkix scenariev
+
+**kakoj rezultat dolzen byt dostignut**
+
+publikacija poluchaetsia poleznoj i strukturirovannoj bez vymyslennyx dannyx
+
+---
+
+## 46 — zaplanirovannaia publikacija
+
+**cto eto dolzno delat**
+
+avtor moz et ustanovit budusc uju datu i vremia publicacii
+
+**pocemu eto nuzno**
+
+eto polezno dlia priutov, specialistov, sobytij, kampanij i mnogoiazy cnyx publikacij
+
+**kak eto dolzno rabotat po logike**
+
+pered realnoj publicaciej sistema povtorno proveriaet
+
+* prava
+* status profilia
+* auditoriju
+* aktualnost
+* dostupnost media
+* moderacionnye ogranicheniia
+* status sviazannogo obekta
+
+**dlia kogo i dlia kakoj celi**
+
+dlia komand, organizacij i avt orov
+
+**kakoj rezultat dolzen byt dostignut**
+
+zaplanirovann yj post ne vyxodit ot imeni profilia, kotoryj uze peredan, zablokirovan ili udal en
+
+---
+
+## 47 — vrem ennaia zona raspisaniia
+
+**cto eto dolzno delat**
+
+pri planiro vanii nuzno pokazat casovoj pojas avtora i auditorii
+
+**pocemu eto nuzno**
+
+priut, specialist ili komanda mogut rabotat iz raznyx stran
+
+**kak eto dolzno rabotat po logike**
+
+vnutri xranitsia tocn oe vremia i zona, a v interfejse pokaz yvaetsia lokaln oe znachenie
+
+**dlia kogo i dlia kakoj celi**
+
+dlia mezhdunarodnyx komand
+
+**kakoj rezultat dolzen byt dostignut**
+
+post ne publik uetsia v neozhidann oe vremia iz-za nevernogo casovogo pojasa
+
+---
+
+## 48 — komandn yj cernovik
+
+**cto eto dolzno delat**
+
+neskolko upolnomochennyx avt orov mogut rabotat nad odnim materialom
+
+**pocemu eto nuzno**
+
+priut, klinika ili organizacija moz et imet fotografa, redaktora, perevodcika i administratora
+
+**kak eto dolzno rabotat po logike**
+
+kazdyj redaktor imeet otdelnoe pravo, versii, kommentarii i audit
+
+**dlia kogo i dlia kakoj celi**
+
+dlia priutov, biznesov, grupp i professionalnyx komand
+
+**kakoj rezultat dolzen byt dostignut**
+
+komanda ne peredaet odin obsch ij parol i znaet, kto cto izmenil
+
+---
+
+## 49 — process odobreniia
+
+**cto eto dolzno delat**
+
+organizacija moz et trebovat, ctob material proveril drugoj polzovatel pered publicaciej
+
+**pocemu eto nuzno**
+
+vazn yj professionaln yj, juridiceskij, srocn yj ili reklamn yj kontent ne dolzen vyxodit bez proverki
+
+**kak eto dolzno rabotat po logike**
+
+statusy mogut byt
+
+* cernovik
+* otpravlen na proverku
+* nuzny izmeneniia
+* odobren
+* zaplanirov an
+* opublikovan
+
+**dlia kogo i dlia kakoj celi**
+
+dlia klinik, priutov, biznesov i bolsh ix grupp
+
+**kakoj rezultat dolzen byt dostignut**
+
+odin sotrudnik ne moz et slucajno opublikovat neproverenn oe oficialn oe zayavlenie
+
+---
+
+## 50 — podtverzhdenie neposredstvenno pered publicaciej
+
+**cto eto dolzno delat**
+
+pered nazhatiem opublikovat redaktor moz et pokazat kratkuju svodku
+
+* profil
+* auditorija
+* kommentarii
+* reposty
+* lokacija
+* reklamnaja metka
+* zaplanirovann oe vremia
+
+**pocemu eto nuzno**
+
+naibolee opasnye oshibki sviazany s nepravilnym profilem ili auditoriej
+
+**kak eto dolzno rabotat po logike**
+
+podtverzhdenie dolzno byt korotkim i ne pojavliatsia dlia kazdogo malenjkogo izmeneniia, no obyazatelnym pri sushestvennom risk e
+
+**dlia kogo i dlia kakoj celi**
+
+dlia vseh avt orov
+
+**kakoj rezultat dolzen byt dostignut**
+
+polzovatel esio raz vidit, cto publik uet ot imeni kliniki dlia vseh, a ne ot imeni pitomca dlia druzej
+
+---
+
+# tekst i format iro vanie
+
+## 51 — bazovoe format iro vanie teksta
+
+**cto eto dolzno delat**
+
+redaktor moz et podderzhivat
+
+* abzacy
+* zagolovki v dlinn yx materialax
+* spiski
+* citaty
+* ssylki
+* vydelenie
+* kod pri tehniceskix temax
+* razdeliteli
+
+**pocemu eto nuzno**
+
+dlinn yj tekst bez struktury trudno c itat
+
+**kak eto dolzno rabotat po logike**
+
+format iro vanie dolzno byt ogranicheno bezopasnym naborom i ne razresat proizvoln yj kod, skrytye elementy i opasnye vstavki
+
+**dlia kogo i dlia kakoj celi**
+
+dlia avt orov tekstov i statej
+
+**kakoj rezultat dolzen byt dostignut**
+
+post vygl iadit cit aemo i ne moz et lomat interfejs ili vypolniat opasnyj kod
+
+---
+
+## 52 — dlina posta
+
+**cto eto dolzno delat**
+
+platforma dolzna podderzhivat korotkie i dlinn y e publikacii bez iskusstvennogo obrezaniia vazn oj informacii
+
+**pocemu eto nuzno**
+
+razvlekateln yj podpis moz et byt korotkim, a otchet priuta ili professionaln yj razbor dlinn ym
+
+**kak eto dolzno rabotat po logike**
+
+v l ent e dlinn yj tekst sokrashchaetsia s knopkoj pokazat polnostiu, no original xranitsia bez poteri
+
+**dlia kogo i dlia kakoj celi**
+
+dlia raznyx tipov avt orov
+
+**kakoj rezultat dolzen byt dostignut**
+
+lenta ostajotsia kompaktnoj, no avtor ne vynuzden razbivat odin material na mnogo iskusstvennyx postov
+
+---
+
+## 53 — avtomaticeskoe soxranenie perenosov i struktury
+
+**cto eto dolzno delat**
+
+tekst dolzen soxran iat pon iatnye abzacy, spiski i citaty
+
+**pocemu eto nuzno**
+
+pri kopirovanii iz zametok ili dokumenta format moz et razrushitsia
+
+**kak eto dolzno rabotat po logike**
+
+sistema ochiscaet opasn oe format iro vanie, no soxraniaet semanticeskuju strukturu
+
+**dlia kogo i dlia kakoj celi**
+
+dlia avt orov dlinn yx materialov
+
+**kakoj rezultat dolzen byt dostignut**
+
+tekst posle publicacii ostajotsia cit aemym i ne soderzit slucajn y e skrytye stili
+
+---
+
+## 54 — cit iro vanie istochnika
+
+**cto eto dolzno delat**
+
+avtor moz et ukazat istochnik fakta, citaty, fotografii ili rekomendacii
+
+**pocemu eto nuzno**
+
+professionaln yj i obrazovateln yj kontent dolzen byt proveriaemym
+
+**kak eto dolzno rabotat po logike**
+
+ssylka na istochnik otdeliaetsia ot reklamy, a priam a ia citata oznachaetsia kak citata
+
+**dlia kogo i dlia kakoj celi**
+
+dlia specialistov, avt orov i grupp
+
+**kakoj rezultat dolzen byt dostignut**
+
+zritel moz et proverit osnovanie zayavleniia i ne putajet cuzoj tekst s avtorskim
+
+---
+
+## 55 — tekstovoe preduprezhdenie o cuvstitelnom soderzhanii
+
+**cto eto dolzno delat**
+
+avtor moz et skryt fragment ili ves post za preduprezhdeniem
+
+**pocemu eto nuzno**
+
+material moz et soderzhat travmu, operaciju, smert, poteriu, nasil ie ili druguju emocionalno slozn uju temu
+
+**kak eto dolzno rabotat po logike**
+
+zritel vidit kratkoe opisanie kategorii i sam reshaet, otkryvat li material
+
+**dlia kogo i dlia kakoj celi**
+
+dlia chuvstvitelnyx grupp i publicnoj l ent y
+
+**kakoj rezultat dolzen byt dostignut**
+
+polezn yj dokumentaln yj material ne udal iaetsia avtomaticeski, no ne pokazyvaetsia vnezapno
+
+---
+
+# fotografii
+
+## 56 — original i optimizirovannye kopii
+
+**cto eto dolzno delat**
+
+sistema dolzna otdelno obrabatyvat originaln yj fajl i versii dlia ekrana
+
+**pocemu eto nuzno**
+
+original moz et byt slishkom bolshim dlia l ent y, no poleznym dlia pecati, dokumenta ili poisk a pitomca
+
+**kak eto dolzno rabotat po logike**
+
+sozdaijutsia bezopasnye kopii raznogo razmera, a dostup k originalu ogranichivaetsia pravami
+
+**dlia kogo i dlia kakoj celi**
+
+dlia fotografov, xoziaev, priutov i poiskovyx operacij
+
+**kakoj rezultat dolzen byt dostignut**
+
+lenta zagruzhaetsia bystro, a original ne ter iaetsia pri neobxodimosti
+
+---
+
+## 57 — avtomaticeskaia orientacija i obrezka
+
+**cto eto dolzno delat**
+
+fotografija dolzna korrektno povorachivatsia i otobrazatsia v raznyx format ax
+
+**pocemu eto nuzno**
+
+metadannye kamery i raznye ustrojstva mogut soxraniat orientaciju po-raznomu
+
+**kak eto dolzno rabotat po logike**
+
+sistema ispravliaet orientaciju, no avtor sam vybiraet kadr dlia avatara, oblozhki ili karuseli
+
+**dlia kogo i dlia kakoj celi**
+
+dlia mobilnyx avt orov
+
+**kakoj rezultat dolzen byt dostignut**
+
+fotografija ne pojavliaetsia bokom ili s obrezann oj mordoj pitomca
+
+---
+
+## 58 — udalenie gps metadannyx
+
+**cto eto dolzno delat**
+
+publicnaia kopija fotografii dolzna po umolcaniju udal iat tocn y e koordinaty
+
+**pocemu eto nuzno**
+
+fotografija iz doma, priuta ili perederzki moz et nezametno raskryt adres
+
+**kak eto dolzno rabotat po logike**
+
+originalnye metadannye mogut xranitsia zakryto tolko pri neobxodimosti i soglasii, no ne peredajutsia zriteliu
+
+**dlia kogo i dlia kakoj celi**
+
+dlia fiziceskoj bezopasnosti pitomcev i xoziaev
+
+**kakoj rezultat dolzen byt dostignut**
+
+skachannaia publicnaia fotografija ne soderzit domashnjuju gps tochku
+
+---
+
+## 59 — skrytie lic liudej
+
+**cto eto dolzno delat**
+
+avtor moz et zamazat lic a liudej, osobenno detej i slucajnyx prohozh ix
+
+**pocemu eto nuzno**
+
+fotografija pitomca ne dolzna avtomaticeski publikovat lichnost vsej semji ili postoronnix
+
+**kak eto dolzno rabotat po logike**
+
+sistema moz et predlozhit avtomaticeskoe obnaruzhenie, no avtor proveriaet rezultat i moz et redaktirovat vrucnuju
+
+**dlia kogo i dlia kakoj celi**
+
+dlia vseh avt orov fotografij i video
+
+**kakoj rezultat dolzen byt dostignut**
+
+postoronnij celovek ne stanovitsia publicnym uchastnikom kontenta bez soglasiia
+
+---
+
+## 60 — skrytie nomerov avtomobilej i dokumentov
+
+**cto eto dolzno delat**
+
+redaktor dolzen pomogat ubrat
+
+* nomer avtomobilia
+* adres
+* telefon
+* qr kod
+* pasport
+* chip dokument
+* identifikacionn yj braslet
+* ekran kompiutera
+
+**pocemu eto nuzno**
+
+takie detali mogut byt malozametnymi na zadnem plane
+
+**kak eto dolzno rabotat po logike**
+
+avtomaticeskaia podskazka ne zameniaet rucn uju proverku
+
+**dlia kogo i dlia kakoj celi**
+
+dlia zascity lichnyx i identifikacionnyx dannyx
+
+**kakoj rezultat dolzen byt dostignut**
+
+krasivaia fotografija ne stanovitsia istochnikom adresa, telefona ili dokumenta
+
+---
+
+## 61 — alternativn yj tekst
+
+**cto eto dolzno delat**
+
+kazdaia znachimaia fotografija dolzna imet tekstovoe opisanie
+
+**pocemu eto nuzno**
+
+polzovateli s narushenijami zreniia ne mogut polnocenno vosprinimat vizualn yj kontent bez opisaniia
+
+**kak eto dolzno rabotat po logike**
+
+ai moz et predlozhit cernovik, no avtor dolzen proverit imia, vid, dejstvie i vaznye detali
+
+**dlia kogo i dlia kakoj celi**
+
+dlia dostupnosti i poisk a
+
+**kakoj rezultat dolzen byt dostignut**
+
+fotografija imeet smysl daze bez vizualnogo prosmotra
+
+---
+
+## 62 — fotografii s graficeskim medicinskim soderzhaniem
+
+**cto eto dolzno delat**
+
+foto rany, operacii, tualeta ili drugogo cuvstitelnogo soderzhaniia dolzno imet otdelnoe preduprezhdenie
+
+**pocemu eto nuzno**
+
+material moz et byt poleznym specialistu, no ne podxodit dlia avtomaticeskogo pokaz a v obschej l ent e
+
+**kak eto dolzno rabotat po logike**
+
+predprosmotr skryt, auditorija ogranichena po zhelaniju, a fotografija ne popadaet v obsch uju krasiv uju galereju pitomca avtomaticeski
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev, klinik i grupp podderzki
+
+**kakoj rezultat dolzen byt dostignut**
+
+cuvstiteln oe media dostupno po neobxodimosti, no ne pokazyvaetsia vnezapno
+
+---
+
+## 63 — markirovka obrabotann oj fotografii
+
+**cto eto dolzno delat**
+
+avtor moz et ukazat, cto fotografija byla znachitelno izmenena, skomponovana ili soz dana s pomoschiu ai
+
+**pocemu eto nuzno**
+
+silnaia obrabotka moz et izmenit vneshnost pitomca, mesto ili realn yj kontekst
+
+**kak eto dolzno rabotat po logike**
+
+oby cnaia cvetokorrekcija ne trebuet toj ze metki, cto polnaia zamena fona, lica ili dobavlenie obektov
+
+**dlia kogo i dlia kakoj celi**
+
+dlia zritelej, poiskovyx objavlenij, konkursov i dokumentalnyx postov
+
+**kakoj rezultat dolzen byt dostignut**
+
+zritel ponimaet, kak uju stepen realnosti mozno pripisyvat izobrazheniju
+
+---
+
+## 64 — zapret ispolzovaniia stilizovann oj fotografii kak edinstvennoj identifikacionnoj
+
+**cto eto dolzno delat**
+
+dlia poisk a, dokumentov i proverki nuzna realisticeskaia aktualnaia fotografija
+
+**pocemu eto nuzno**
+
+risunok, filtr ili ai portret moz et byt krasivym, no ne pomozet uznat pitomca na ulice
+
+**kak eto dolzno rabotat po logike**
+
+stilizovann oe media moz et byt socialnym, no poiskov yj modul zaprashivaet otdeln uju identifikacionnuju fotografiju
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev i poiskovyx komand
+
+**kakoj rezultat dolzen byt dostignut**
+
+objavlenie o propazhe ne ispolzuet mult i ashn yj portret vmesto realnogo vida pitomca
+
+---
+
+# video i audio
+
+## 65 — obrabotka video v neskolko kachestv
+
+**cto eto dolzno delat**
+
+video dolzno avtomaticeski podgotavlivatsia dlia slabogo, srednego i bystrogo interneta
+
+**pocemu eto nuzno**
+
+odin original vysokogo kachestva moz et byt nedostup en na mobilnoj seti
+
+**kak eto dolzno rabotat po logike**
+
+pleer vy biraet kachestvo avtomaticeski, no zritel moz et izmenit ego vrucnuju
+
+**dlia kogo i dlia kakoj celi**
+
+dlia vseh zritelej video
+
+**kakoj rezultat dolzen byt dostignut**
+
+video nac inaetsia bez dlinn oj zagruzki i ne tratit lishnij trafik
+
+---
+
+## 66 — oblozhka video
+
+**cto eto dolzno delat**
+
+avtor moz et vybrat kadr ili zagruzit otdeln uju oblozhku
+
+**pocemu eto nuzno**
+
+slucajn yj perv yj kadr moz et byt nepon iatnym, razmytym ili cuvstitelnym
+
+**kak eto dolzno rabotat po logike**
+
+oblozhka prohodit te ze pravila moderacii i privatnosti, cto i sam video
+
+**dlia kogo i dlia kakoj celi**
+
+dlia avt orov video
+
+**kakoj rezultat dolzen byt dostignut**
+
+zritel ponimaet temu video do vosproizvedeniia
+
+---
+
+## 67 — subtitry
+
+**cto eto dolzno delat**
+
+video s recju dolzno podderzhivat subtitry
+
+**pocemu eto nuzno**
+
+subtitry nuzny gluxim polzovateliam, pri prosmotre bez zvuka i dlia mnogoiazy cnoj auditorii
+
+**kak eto dolzno rabotat po logike**
+
+avtomaticeskaia rasshifrovka pokaz yvaetsia avt oru dlia proverki, osobenno dlia nazvanij lekarstv, porod, klinik i imen
+
+**dlia kogo i dlia kakoj celi**
+
+dlia vseh zritelej video
+
+**kakoj rezultat dolzen byt dostignut**
+
+video pon iatno bez zvuka, a vazn y e terminy ne iskazheny avtomaticeski
+
+---
+
+## 68 — tekstovaia rasshifrovka audio
+
+**cto eto dolzno delat**
+
+audio publikacija moz et imet poln yj ili kratkij tekst
+
+**pocemu eto nuzno**
+
+ne kazdyj polzovatel moz et ili xocet slushat zapis
+
+**kak eto dolzno rabotat po logike**
+
+rasshifrovka sviazyvaetsia s vrem enn ymi metkami i moz et ispravliatsia avt orom
+
+**dlia kogo i dlia kakoj celi**
+
+dlia dostupnosti, poisk a i bystrogo prosmotra
+
+**kakoj rezultat dolzen byt dostignut**
+
+audio mozno c itat, iskat po nemu i perevodit
+
+---
+
+## 69 — avtomaticeskoe vosproizvedenie
+
+**cto eto dolzno delat**
+
+zritel dolzen upravliat, nac inajutsia li video avtomaticeski
+
+**pocemu eto nuzno**
+
+avtovosproizvedenie rasxoduet trafik, moz et napugat pitomca ili polzovatelia i sozdaet lishn ij shum
+
+**kak eto dolzno rabotat po logike**
+
+varianty
+
+* nikogda
+* tolko bez zvuka
+* tolko po wi-fi
+* vsegda
+* ne vosproizvodit cuvstiteln yj kontent
+
+**dlia kogo i dlia kakoj celi**
+
+dlia mobilnyx polzovatelej i dostupnosti
+
+**kakoj rezultat dolzen byt dostignut**
+
+video ne nac inaetsia gromko bez soglasiia
+
+---
+
+## 70 — preduprezhdenie o rezkix zvukax
+
+**cto eto dolzno delat**
+
+video s gromkim laem, krikom, sirenoj ili drugimi rezkimi zvukami moz et imet metku
+
+**pocemu eto nuzno**
+
+takoi zvuk moz et napugat zivotnyx, detej ili polzovatelej
+
+**kak eto dolzno rabotat po logike**
+
+pleer moz et nacat bez zvuka i pokazat preduprezhdenie
+
+**dlia kogo i dlia kakoj celi**
+
+dlia zritelej doma s pitomcami
+
+**kakoj rezultat dolzen byt dostignut**
+
+prosmotr ne prov ocir uet vnezapn yj stress iz-za gromkogo zvuka
+
+---
+
+## 71 — video povedeniia
+
+**cto eto dolzno delat**
+
+avtor moz et opublikovat ili peredat video povedeniia dlia obsuzhdeniia
+
+**pocemu eto nuzno**
+
+video moz et pomoch kinologu ili veterinaru ponimat kontekst, no publicnaja auditorija moz et davat opasnye sovety
+
+**kak eto dolzno rabotat po logike**
+
+avtor vybiraet
+
+* publicn oe obsuzhdenie
+* zakryt uju grup pu
+* tolko specialista
+* semejn yj krug
+* preduprezhdenie ne stavit diagnoz po video
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev, kinologov i veterinarov
+
+**kakoj rezultat dolzen byt dostignut**
+
+video poluchaet podxodiasc uju auditoriju, a ne stanovitsia istochnikom massovyx neproverennyx diagnozov
+
+---
+
+## 72 — priamaja transliacija
+
+**cto eto dolzno delat**
+
+platforma moz et pozze podderzhivat priam y e efiry
+
+* sobytija
+* lekcii
+* priut
+* trening
+* voprosy specialistu
+* blagotvoriteln yj marafon
+
+**pocemu eto nuzno**
+
+priam oj format daet interaktivnost, no imeet bolsh ie risk i moderacii, privatnosti i nepredskazuemogo kontenta
+
+**kak eto dolzno rabotat po logike**
+
+nuzny
+
+* prava na transliaciju
+* zaderzhka pri vysokom risk e
+* moderator
+* zhaloby v realnom vremeni
+* ogranichenie kommentarev
+* zapis po soglasiju
+* preduprezhdenie o lokacii
+* avarijnoe zavershenie
+
+**dlia kogo i dlia kakoj celi**
+
+dlia proverennyx avt orov, organizacij i specialistov
+
+**kakoj rezultat dolzen byt dostignut**
+
+priam yj efir ne stanovitsia nekontroliruemym kanalom zhestokogo, lichnogo ili moshenniceskogo kontenta
+
+---
+
+# istorii
+
+## 73 — osnovnaja logika istorij
+
+**cto eto dolzno delat**
+
+istorija dolzna pozvoliat delitsia korotkim vrem ennym kontentom, kotoryj ischezaet iz aktivnogo prosmotra posle ustanovlennogo perioda
+
+**pocemu eto nuzno**
+
+ne kazdyj povsednevn yj moment nuzno soxran iat v osnovnoj l ent e navsegda
+
+**kak eto dolzno rabotat po logike**
+
+istorija imeet
+
+* media ili tekst
+* auditoriju
+* srok
+* otvety
+* reakcii
+* arhiv avtora
+* vozmoznost dobavit v podborku
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev, pitomcev, priutov i avt orov
+
+**kakoj rezultat dolzen byt dostignut**
+
+polzovatel delitsia povsednevnym momentom bez zasoreniia osnovnogo profilia
+
+---
+
+## 74 — auditorija istorii
+
+**cto eto dolzno delat**
+
+istorija moz et byt dostupna
+
+* vsem
+* podpiscikam
+* druzjam
+* blizkomu krugu
+* vybrannym liudiam
+* gruppe
+* tolko avt oru
+
+**pocemu eto nuzno**
+
+vrem ennyj format ne dolzen avtomaticeski byt publicnym
+
+**kak eto dolzno rabotat po logike**
+
+auditorija proveriaetsia pri kazdom prosmotre, a skrinshot zritel ia nelzia polnostiu predotvratit, cto nuzno chestno objasnit
+
+**dlia kogo i dlia kakoj celi**
+
+dlia avt orov lichnogo kontenta
+
+**kakoj rezultat dolzen byt dostignut**
+
+istoriia dlia blizkogo kruga ne dostupna udal ennomu iz kruga polzovateliu
+
+---
+
+## 75 — srok istorii
+
+**cto eto dolzno delat**
+
+istorija dolzna istekat po pravilam platformy ili avtora
+
+**pocemu eto nuzno**
+
+bez sroka ona stanovitsia oby cnym postom s nepon iatnoj logik oj
+
+**kak eto dolzno rabotat po logike**
+
+posle istecheniia istorija
+
+* ischezaet iz aktivn oj l ent y
+* moz et ostatcia v lichnom arhive
+* ne dostupna po star oj publicnoj ssylke
+* soxraniaetsia dlia zhaloby pri neobxodimosti
+
+**dlia kogo i dlia kakoj celi**
+
+dlia avt orov i zritelej
+
+**kakoj rezultat dolzen byt dostignut**
+
+vrem ennyj kontent realno perestaet byt aktivno publicnym
+
+---
+
+## 76 — lichn yj arhiv istorij
+
+**cto eto dolzno delat**
+
+avtor moz et soxran iat iste ksh ie istorii v zakrytom arhive
+
+**pocemu eto nuzno**
+
+vrem ennaia publicnost ne oznachaet, cto avtor xocet poteriat original
+
+**kak eto dolzno rabotat po logike**
+
+arhiv dostup en tolko upravliajusc im profilia i ne publik uetsia bez novogo dejstviia
+
+**dlia kogo i dlia kakoj celi**
+
+dlia avt orov i semejnyx profilej
+
+**kakoj rezultat dolzen byt dostignut**
+
+xoziajin moz et pozze dobavit vazn uju istoriju v album ili memorialn uju podborku
+
+---
+
+## 77 — podborki istorij
+
+**cto eto dolzno delat**
+
+avtor moz et soxranit vybrannye istorii v postojann y e tematiceskie podborki
+
+* shenok
+* puteshestvija
+* trening
+* adopcija
+* druzia
+* vosstanovlenie
+* priut
+
+**pocemu eto nuzno**
+
+nekotorye vrem ennye materialy okaz yvajutsia vaznymi dlia profilia
+
+**kak eto dolzno rabotat po logike**
+
+podborka imeet sobstvenn uju auditoriju i ne dolzna avtomaticeski nasledovat publicnost istorii bez proverki
+
+**dlia kogo i dlia kakoj celi**
+
+dlia avt orov aktivnyx profilej
+
+**kakoj rezultat dolzen byt dostignut**
+
+vazn y e istorii strukturirovanno soxraniajutsia bez slucajnogo rasshireniia auditorii
+
+---
+
+## 78 — otvety na istoriju
+
+**cto eto dolzno delat**
+
+zritel moz et otvetit, esli avtor razresil
+
+**pocemu eto nuzno**
+
+istoriia c asto stanovitsia nacalom lichnogo dialoga
+
+**kak eto dolzno rabotat po logike**
+
+otvet idet v lichn yj chat ili zapros na dialog, a ne stanovitsia publicnym kommentariem bez jasnogo oboznac eniia
+
+**dlia kogo i dlia kakoj celi**
+
+dlia druzej, podpiscikov i avt orov
+
+**kakoj rezultat dolzen byt dostignut**
+
+polzovatel ponimaet, budet li ego otvet publicnym ili lichnym
+
+---
+
+## 79 — skrytie istorij konkretnogo profilia
+
+**cto eto dolzno delat**
+
+zritel moz et ne videt istorii, soxraniaja podpis ku na oby cnye posty
+
+**pocemu eto nuzno**
+
+istorii mogut publikovatsia casto i peregruzhat interfejs
+
+**kak eto dolzno rabotat po logike**
+
+skrytie ne otpravliaet avt oru uvedomlenie i moz et byt vrem ennym ili postojannym
+
+**dlia kogo i dlia kakoj celi**
+
+dlia upravleniia lichn oj nagruzk oj
+
+**kakoj rezultat dolzen byt dostignut**
+
+polzovatel soxraniaet interes k profilem bez obyazatelnogo prosmotra vseh istorij
+
+---
+
+# lenty kontenta
+
+## 80 — glavnaja domashniaia lenta
+
+**cto eto dolzno delat**
+
+domashniaia lenta dolzna objediniat relevantn y e publikacii iz raznyx razreshennyx istochnikov
+
+**pocemu eto nuzno**
+
+polzovatel ne dolzen otkryvat kazdyj profil, grup pu i priut otdelno
+
+**kak eto dolzno rabotat po logike**
+
+lenta moz et vkliucat
+
+* druzej
+* podpiski
+* gruppy
+* sobytija
+* mestn y e preduprezhdeniia
+* rekomendacii
+* srocn y e objavleniia
+* ogranichenn uju reklamu
+
+**dlia kogo i dlia kakoj celi**
+
+dlia vseh aktivnyx polzovatelej
+
+**kakoj rezultat dolzen byt dostignut**
+
+polzovatel vidit polezn yj obzor soobscestva bez neobxodimosti vrucnuju proveriat desiatki razdelov
+
+---
+
+## 81 — lenta podpisok
+
+**cto eto dolzno delat**
+
+otdelnaia lenta dolzna pokaz yvat tolko profilej, na kotorye polzovatel podpisan
+
+**pocemu eto nuzno**
+
+polzovatel dolzen imet sposob posmotret vybrann yx avt orov bez rekomendacij
+
+**kak eto dolzno rabotat po logike**
+
+ona moz et byt xronologiceskoj ili imet prost y e filtry, no ne dolzna nezametno dobavliat cuzie profilej
+
+**dlia kogo i dlia kakoj celi**
+
+dlia polzovatelej, kotorye xotiat bolshe kontrolia
+
+**kakoj rezultat dolzen byt dostignut**
+
+podpiska realno garantiruet vozmoznost najti publikacii avtora v otdelnom razdele
+
+---
+
+## 82 — lenta druzej
+
+**cto eto dolzno delat**
+
+mozno pokaz yvat materialy tolko ot druzej xoziajina ili druzej ego pitomcev
+
+**pocemu eto nuzno**
+
+blizkij socialn yj krug moz et byt vaznee publicnyx rekomendacij
+
+**kak eto dolzno rabotat po logike**
+
+polzovatel moz et vybrat, vkliucat li druzej pitomcev, druzej xoziajina ili oba tipa
+
+**dlia kogo i dlia kakoj celi**
+
+dlia aktivnyx socialnyx profilej
+
+**kakoj rezultat dolzen byt dostignut**
+
+lenta ne smeshivaet vse tipy druzhby bez kontrolia
+
+---
+
+## 83 — lenta konkretnogo pitomca
+
+**cto eto dolzno delat**
+
+xoziajin moz et prosmotret vse razreshenn y e materialy, sviazannye s konkretnym pitomcem
+
+**pocemu eto nuzno**
+
+odin akkaunt moz et upravliat neskolkimi pitomcami
+
+**kak eto dolzno rabotat po logike**
+
+lenta vkliucaet
+
+* posty pitomca
+* upominanija
+* albomy
+* sobytija
+* dostizeniia
+* reposty po pravilam
+* gruppovye materialy
+
+**dlia kogo i dlia kakoj celi**
+
+dlia sem ej i profilej s dlinn oj istoriej
+
+**kakoj rezultat dolzen byt dostignut**
+
+istorija odnogo pitomca ne smeshivaetsia s kontentom vseh ostalnyx profilej akkaunta
+
+---
+
+## 84 — gruppovaja lenta
+
+**cto eto dolzno delat**
+
+kazdaia gruppa dolzna imet svoi posty, zakreplenn y e materialy, pravila i filtry
+
+**pocemu eto nuzno**
+
+gruppov yj kontekst moz et byt zakrytym, tematiceskim ili professionalnym
+
+**kak eto dolzno rabotat po logike**
+
+post gruppy podcinaetsia pravilam gruppy i ne stanovitsia publicnym avtomaticeski
+
+**dlia kogo i dlia kakoj celi**
+
+dlia tematiceskix, mestnyx, professionalnyx i semejnyx grupp
+
+**kakoj rezultat dolzen byt dostignut**
+
+zakryt oe obsuzhdenie ne vytekaet v publicn uju domashnjuju lentu
+
+---
+
+## 85 — lokalnaja lenta
+
+**cto eto dolzno delat**
+
+polzovatel moz et videt materialy iz goroda, rajona ili obobschonn oj oblasti
+
+**pocemu eto nuzno**
+
+mestnye sobytija, priuty, opasnosti, progulki i poterjannye pitomcy imejut geograficeskuju vaznost
+
+**kak eto dolzno rabotat po logike**
+
+lokacija ispolzuetsia v obobschonnom vide, a post popadaet v lokaln uju lentu tolko pri razreshenii avtora
+
+**dlia kogo i dlia kakoj celi**
+
+dlia mestnyx soobscestv
+
+**kakoj rezultat dolzen byt dostignut**
+
+polzovatel vidit relevantn y e sobytija riadom, no ne polucaet tocn y e domashnie koordinaty avt orov
+
+---
+
+## 86 — lenta rekomendacij
+
+**cto eto dolzno delat**
+
+otdeln yj razdel moz et pokaz yvat kontent ot profilej, na kotorye polzovatel esio ne podpisan
+
+**pocemu eto nuzno**
+
+bez otkrytiia novogo kontenta socialnaia set zakryvaetsia v uzkom krugu
+
+**kak eto dolzno rabotat po logike**
+
+kazdaia rekomendacija dolzna imet objasnenie i knopki
+
+* skryt
+* ne interesno
+* ne pokaz yvat avtora
+* ne pokaz yvat temu
+* pocemu eto pokazano
+
+**dlia kogo i dlia kakoj celi**
+
+dlia polzovatelej, kotorye xotiat otkryvat novye profilej i temy
+
+**kakoj rezultat dolzen byt dostignut**
+
+nov yj kontent pojavliaetsia prozracno i upravljaemo, a ne kak nepon iatnaia primes v l ent e druzej
+
+---
+
+## 87 — srocnaja lenta
+
+**cto eto dolzno delat**
+
+otdeln yj razdel dolzen pokaz yvat
+
+* poterjannyx pitomcev
+* najdennyx zivotnyx
+* lokalnye ugrozy
+* srocn y e potrebnosti priutov
+* vaznye otzyvy opasn yx tovarov
+* zakrytie mesta iz-za opasnosti
+
+**pocemu eto nuzno**
+
+takoi kontent moz et byt vaznee razvlekatelnyx fotografij, no ne dolzen zatopliat oby cn uju lentu na postojannoj osnove
+
+**kak eto dolzno rabotat po logike**
+
+prioritet zavisit ot regiona, vremeni, statusa i proverki
+
+ustarevsh ij srocn yj post avtomaticeski snizhaetsia ili zakryvaetsia
+
+**dlia kogo i dlia kakoj celi**
+
+dlia mestnyx polzovatelej, volonterov, priutov i xoziaev
+
+**kakoj rezultat dolzen byt dostignut**
+
+realno srocn a ia informacija bystro dostigaet podxodiasc ej auditorii i ne ostajotsia vechno aktivnoj
+
+---
+
+## 88 — xronologiceskaia lenta
+
+**cto eto dolzno delat**
+
+polzovatel dolzen imet variant prosmotra po vremeni publicacii
+
+**pocemu eto nuzno**
+
+algoritmiceskij poriadok ne vsegda sootvetstvuet potrebnostiam polzovatelia
+
+**kak eto dolzno rabotat po logike**
+
+xronologiceskaia lenta ne dolzna nezametno podnimat st ar y e rekomendacii vyshe novyx podpisok
+
+**dlia kogo i dlia kakoj celi**
+
+dlia polzovatelej, kotorye xotiat poln yj kontrol nad poriadkom
+
+**kakoj rezultat dolzen byt dostignut**
+
+polzovatel moz et proverit vse novye publikacii v predskazuemoj posledovatelnosti
+
+---
+
+## 89 — personalizirovannaia lenta
+
+**cto eto dolzno delat**
+
+algoritm moz et uporiadocit dostupn yj kontent po predpolagaemoj poleznosti
+
+**pocemu eto nuzno**
+
+pri bolshom kolichestve podpisok polzovatel ne moz et prosmotret vse
+
+**kak eto dolzno rabotat po logike**
+
+algoritm ucit yvaet razreshenn y e signaly, no ne dolzen skryvat vazn y e posty bez vozmoznosti posmotret xronologiju
+
+**dlia kogo i dlia kakoj celi**
+
+dlia aktivnyx polzovatelej s bolshim obemom kontenta
+
+**kakoj rezultat dolzen byt dostignut**
+
+lenta stanovitsia poleznee, no polzovatel ne ter iaet kontrol
+
+---
+
+# algoritm lenty
+
+## 90 — dopustimye faktory ranzhirovaniia
+
+**cto eto dolzno delat**
+
+algoritm moz et ucit yvat
+
+* druzhbu
+* podpis ku
+* blizkij krug
+* obsc ie gruppy
+* interesy
+* jazyk
+* aktualnost
+* mesto v obobschonnom vide
+* tip kontenta
+* skrytie podobnogo kontenta
+* predydusc ee vzaimodejstvie
+* vaznost statusa
+
+**pocemu eto nuzno**
+
+bez faktorov lenta budet slucajnoj ili polnostiu zaviset ot populiarnosti
+
+**kak eto dolzno rabotat po logike**
+
+kazdyj faktor dolzen byt sviazan s realnoj produktovoj celju i ne narushat privatnost
+
+**dlia kogo i dlia kakoj celi**
+
+dlia personalizirovann oj l ent y
+
+**kakoj rezultat dolzen byt dostignut**
+
+polzovatel case vidit relevantn yj kontent i reze slucajn yj shum
+
+---
+
+## 91 — zapreshchennye ili ogranichennye faktory
+
+**cto eto dolzno delat**
+
+algoritm ne dolzen ispolzovat bez jasnogo osnovaniia
+
+* diagnozy
+* lekarstva
+* tocn uju gps lokaciju
+* lichnye dokumenty
+* privatnye soobsenija
+* straxovye dannye
+* platezn y e problem y
+* istoriju zhalob zhalobscika
+* vozrast rebenka v reklamnyx celiax
+
+**pocemu eto nuzno**
+
+takie dannye cuvstitelny i ne nuzny dlia oby cnogo ranzhirovaniia socialnoj l ent y
+
+**kak eto dolzno rabotat po logike**
+
+dostup k cuvstitelnym signalam dolzen byt tehniceski otdelen ot rekomendacionnoj sistemy
+
+**dlia kogo i dlia kakoj celi**
+
+dlia zascity vseh polzovatelej
+
+**kakoj rezultat dolzen byt dostignut**
+
+po sostavu l ent y nelzia dogadatsia o diagnoze, finansovoj problem e ili tocnom mestopolozhenii
+
+---
+
+## 92 — objasnenie pocemu ja eto vizu
+
+**cto eto dolzno delat**
+
+riadom s rekomenduemym postom polzovatel moz et otkryt prichinu
+
+**pocemu eto nuzno**
+
+neobjasnim yj algoritm moz et sozda vat oshchushchenie slezhki ili manipuliacii
+
+**kak eto dolzno rabotat po logike**
+
+objasnenie moz et byt
+
+* vy podpisany na avtora
+* eto post iz vashej gruppy
+* u vas est obsc ij interes
+* sobytie v vashem gorode
+* vashi druzia vzaimodejstvovali
+* eto srocn oe lokaln oe objavlenie
+* eto reklama
+
+**dlia kogo i dlia kakoj celi**
+
+dlia zritelej l ent y
+
+**kakoj rezultat dolzen byt dostignut**
+
+polzovatel ponimaet osnovn uju logiku pokaz a i moz et ejo izmenit
+
+---
+
+## 93 — kontrol signalov personalizacii
+
+**cto eto dolzno delat**
+
+polzovatel moz et otkliucit ili ogranichit
+
+* lokaciju
+* istoriju prosmotrov
+* podobie profilej
+* obsc ix druzej
+* interesy
+* pov edencesk ie signaly
+* personalizirovann uju reklamu
+
+**pocemu eto nuzno**
+
+personalizacija dolzna byt upravljaemoj, a ne obyazatelnoj
+
+**kak eto dolzno rabotat po logike**
+
+otkaz ne blokiruet osnovn uju xronologiceskuju lentu i poisk
+
+**dlia kogo i dlia kakoj celi**
+
+dlia polzovatelej, kotorye xotiat menshe algoritmiceskogo profilirovaniia
+
+**kakoj rezultat dolzen byt dostignut**
+
+socialnaia set ostajotsia rabotosposobnoj daze bez glubokoj personalizacii
+
+---
+
+## 94 — svezhest kontenta
+
+**cto eto dolzno delat**
+
+algoritm dolzen ucit yvat, kogda material byl opublikovan i obnovlen
+
+**pocemu eto nuzno**
+
+st ar yj srocn yj post ili st araia rekomendacija mesta moz et byt neaktualnoj
+
+**kak eto dolzno rabotat po logike**
+
+raznye tipy imejut razn uju skorost ustarevaniia
+
+* propazha i pogoda ustarevajut bystro
+* statja moz et byt poleznoj dolgo
+* memorialn yj post ne trebuet takogo ze snizeniia
+* sobytie posle daty meniaet status
+
+**dlia kogo i dlia kakoj celi**
+
+dlia vsej l ent y
+
+**kakoj rezultat dolzen byt dostignut**
+
+aktualn a ia informacija imeet prioritet tam, gde vremia kriticeski vazno
+
+---
+
+## 95 — raznoobrazie avt orov
+
+**cto eto dolzno delat**
+
+lenta ne dolzna byt polnostiu zan iata odnim ocen aktivnym profilem
+
+**pocemu eto nuzno**
+
+odin avtor moz et opublikovat desiatki postov i vytesnit vseh ostalnyx
+
+**kak eto dolzno rabotat po logike**
+
+algoritm moz et gruppirovat ili razbavliat povtoriajusc ijsia kontent, ne skryvaia ego iz otdeln oj l ent y podpisok
+
+**dlia kogo i dlia kakoj celi**
+
+dlia zritelej s mnogimi podpis kami
+
+**kakoj rezultat dolzen byt dostignut**
+
+domashniaia lenta pokaz yvaet bolshe raznyx profilej bez poteri dostup a k polnoj istorii konkretnogo avtora
+
+---
+
+## 96 — raznoobrazie tipov kontenta
+
+**cto eto dolzno delat**
+
+algoritm moz et balansirovat tekst, fotografii, video, voprosy, sobytija i vazn y e obnovleniia
+
+**pocemu eto nuzno**
+
+esli optimizirovat tolko pod video, polezn y e teksty i mestnye objavleniia mogut ischeznut
+
+**kak eto dolzno rabotat po logike**
+
+polzovatel moz et otdelno skryt ili povysit interes k konkretnomu tipu
+
+**dlia kogo i dlia kakoj celi**
+
+dlia zritelej s raznymi predpocteniiami
+
+**kakoj rezultat dolzen byt dostignut**
+
+lenta ne prevrashch a etsia tolko v odin format, sam yj vygodn yj platforme
+
+---
+
+## 97 — podderzka novyx avt orov
+
+**cto eto dolzno delat**
+
+nov y e realnye profilej dolzny imet vozmoznost poluchit organiceskij pokaz bez bolshogo starogo socialnogo grafa
+
+**pocemu eto nuzno**
+
+esli algoritm ucit yvaet tolko star uju populiarnost, nov yj priut, xoziajin ili specialist ostanetsia nevidimym
+
+**kak eto dolzno rabotat po logike**
+
+mozno pokaz yvat ogranichenn y e bezopasnye bloki
+
+* nov y e v gruppe
+* nov y e v gorode
+* nov y e proverennye specialisty
+* nov y e pitomcy priuta
+
+**dlia kogo i dlia kakoj celi**
+
+dlia novyx profilej
+
+**kakoj rezultat dolzen byt dostignut**
+
+kachestvenn yj nov yj avtor moz et najti perv uju auditoriju bez nakrutki
+
+---
+
+## 98 — populiarnost ne dolzna byt edinstvennym signalom
+
+**cto eto dolzno delat**
+
+algoritm ne dolzen pokazyvat tolko posty s bolshim kolichestvom reakcij
+
+**pocemu eto nuzno**
+
+polezn yj vopros, lokaln oe preduprezhdenie ili post malenjkogo priuta moz et imet malo reakcij, no bolsh uju cennost
+
+**kak eto dolzno rabotat po logike**
+
+nuzno ucit yvat relevantnost, srochnost, originalnost, blizost socialnoj sviazi i kachestvo, a ne tolko lajki
+
+**dlia kogo i dlia kakoj celi**
+
+dlia vsego soobscestva
+
+**kakoj rezultat dolzen byt dostignut**
+
+lenta ne stanovitsia konkursom uze populiarnyx profilej
+
+---
+
+## 99 — vazn yj kontent s nizkim vzaimodejstviem
+
+**cto eto dolzno delat**
+
+sistema dolzna podderzhivat vidimost
+
+* obnavleniia pravil gruppy
+* otmeny sobytija
+* statusa poterjannogo pitomca
+* otzyva opasnogo tovara
+* izmeneniia kontakta priuta
+* professionalnogo ispravleniia oshibki
+
+**pocemu eto nuzno**
+
+takoi material moz et ne sobirat mnogo reakcij, no trebuet byt uvidennym
+
+**kak eto dolzno rabotat po logike**
+
+vaznost opredeliaetsia tipom i podtverzhdennym kontekstom, a ne prostym flazkom avtora
+
+**dlia kogo i dlia kakoj celi**
+
+dlia grupp, sobytij, poiskovyx operacij i bezopasnosti
+
+**kakoj rezultat dolzen byt dostignut**
+
+kriticeskoe izmenenie ne ischezaet iz-za nizkogo kolichestva lajkov
+
+---
+
+## 100 — zascita ot engagement bait
+
+**cto eto dolzno delat**
+
+algoritm dolzen snizhat iskusstvennye manipulacii
+
+* postav lajk esli liubish zivotnyx
+* otmet piat druzej
+* napishi da dlia udaci
+* repostni inache
+* iskusstvennoe razdelenie istorii na desiatki postov
+
+**pocemu eto nuzno**
+
+takoi kontent polucaet reakcii ne iz-za cennosti, a iz-za davleniia i manipulacii
+
+**kak eto dolzno rabotat po logike**
+
+odna fraza ne dolzna avtomaticeski nakazyvat post, no povtoriajusc eesia manipulativnaia model moz et snizhat rasprostranenie
+
+**dlia kogo i dlia kakoj celi**
+
+dlia kachestva vsej l ent y
+
+**kakoj rezultat dolzen byt dostignut**
+
+algoritm voznagrazhdaet polezn yj i interesn yj kontent, a ne prosbu nakrutit pokazateli
+
+---
+
+## 101 — zascita ot informacionnogo puzyria
+
+**cto eto dolzno delat**
+
+platforma moz et predlagat raznye bezopasnye istochniki, jazyki i tochki zreniia
+
+**pocemu eto nuzno**
+
+slishkom uzkaia personalizacija moz et pokaz yvat tolko odin tip sovetov ili odnu grup pu profilej
+
+**kak eto dolzno rabotat po logike**
+
+raznoobrazie ne dolzno vkljucat opasn uju dezinformaciju ili nasil stvenn yj kontent radi balansa
+
+**dlia kogo i dlia kakoj celi**
+
+dlia polzovatelej obrazovatelnogo i socialnogo kontenta
+
+**kakoj rezultat dolzen byt dostignut**
+
+zritel otkryvaet nov y e polezn y e temy, ne ter iaja bezopasnosti i kontrolia
+
+---
+
+## 102 — pom etka prosmotrennogo kontenta
+
+**cto eto dolzno delat**
+
+sistema moz et pomnit, cto polzovatel uze videl, i ne pokaz yvat odin post beskonecno
+
+**pocemu eto nuzno**
+
+povtory sozdaijut oshchushchenie pustoj l ent y
+
+**kak eto dolzno rabotat po logike**
+
+vazn yj obnovlenn yj post moz et pokaz atcia povtorno s metkoj cto izmenilos
+
+**dlia kogo i dlia kakoj celi**
+
+dlia aktivnyx zritelej
+
+**kakoj rezultat dolzen byt dostignut**
+
+lenta dvizhetsia vpered, no vazn oe obnovlenie ne ter iaetsia
+
+---
+
+## 103 — prodolzit s mesta ostanovki
+
+**cto eto dolzno delat**
+
+polzovatel moz et vernutsia k poslednej pozicii v l ent e
+
+**pocemu eto nuzno**
+
+zakrytie prilozheniia ili perehod v drugoj razdel ne dolzny zastavliat prosmatrivat vse zanovo
+
+**kak eto dolzno rabotat po logike**
+
+sistema pokaz yvaet metku nov y e publikacii vyshe ili nizhe, ne smeshivaja poziciju nezametno
+
+**dlia kogo i dlia kakoj celi**
+
+dlia mobilnyx i desktop polzovatelej
+
+**kakoj rezultat dolzen byt dostignut**
+
+polzovatel ne ter iaet mesto i ponimaet, gde pojav ilsia nov yj kontent
+
+---
+
+# reakcii
+
+## 104 — reakcii na publikaciju
+
+**cto eto dolzno delat**
+
+zritel moz et bystro vyrazit otnoshenie bez obyazatelnogo kommentariia
+
+**pocemu eto nuzno**
+
+ne kazdyj post trebuet tekstovogo otveta
+
+**kak eto dolzno rabotat po logike**
+
+nabor reakcij dolzen byt pon iatnym, dostupnym i uvazitelnym k kontekstu
+
+**dlia kogo i dlia kakoj celi**
+
+dlia vseh zritelej i avt orov
+
+**kakoj rezultat dolzen byt dostignut**
+
+avtor polucaet bystr uju obratn uju sviaz bez peregruzki kommentariiami
+
+---
+
+## 105 — nabor reakcij
+
+**cto eto dolzno delat**
+
+platforma moz et podderzhivat
+
+* nravitsia
+* liubov
+* radost
+* podderzka
+* interesno
+* grust
+* spasibo
+
+**pocemu eto nuzno**
+
+odna reakcija ne podxodit dlia memorialnogo posta, sbora pomosci i zabavnogo video odinakovo
+
+**kak eto dolzno rabotat po logike**
+
+nabor moz et adapt i rovatsia pod kontekst, no ne dolzen byt slishkom bolshim i nepon iatnym
+
+**dlia kogo i dlia kakoj celi**
+
+dlia raznyx tipov kontenta
+
+**kakoj rezultat dolzen byt dostignut**
+
+zritel moz et vyrazit podderzku memorialnomu postu bez neumesnogo ves iologo simvola
+
+---
+
+## 106 — odna aktivnaja reakcia odnogo profilia
+
+**cto eto dolzno delat**
+
+odin profil moz et imet odnu osnovnuju reakciju na konkretn yj post
+
+**pocemu eto nuzno**
+
+mnogokratnoe nazhatie ne dolzno nakruchivat cifry
+
+**kak eto dolzno rabotat po logike**
+
+nov a ia reakcia zameniaet predydusc uju, a povtorn oe nazhatie moz et ejo ubrat
+
+**dlia kogo i dlia kakoj celi**
+
+dlia chestn oj statistiki
+
+**kakoj rezultat dolzen byt dostignut**
+
+odin akkaunt ne moz et sozdat desiatki reakcij odnim profilem
+
+---
+
+## 107 — realn yj avtor reakcii
+
+**cto eto dolzno delat**
+
+pri reakcii ot imeni pitomca sistema dolzna xranit upravliajuscego celoveka
+
+**pocemu eto nuzno**
+
+odin xoziajin moz et upravliat mnogimi pitomcami i ispolzovat ix dlia nakrutki
+
+**kak eto dolzno rabotat po logike**
+
+publicno pokazyvaetsia profil pitomca, no anti fraud moz et ucit yvat obsch ego upravliajuscego
+
+**dlia kogo i dlia kakoj celi**
+
+dlia chestn oj popularnosti i moderacii
+
+**kakoj rezultat dolzen byt dostignut**
+
+odin celovek s desiatju profiljami pitomcev ne moz et bezogranichno manipulirovat rejtingom
+
+---
+
+## 108 — skrytie kolichestva reakcij
+
+**cto eto dolzno delat**
+
+avtor ili zritel moz et ne videt obsch ee kolichestvo reakcij
+
+**pocemu eto nuzno**
+
+publicnye cifry mogut sozda vat davlenie, sorevnovanie i orientaciju tolko na populiarnost
+
+**kak eto dolzno rabotat po logike**
+
+reakcii prodolzajut rabotat, no schetcik moz et byt skryt tolko dlia avtora, tolko dlia zritel ia ili dlia vseh
+
+**dlia kogo i dlia kakoj celi**
+
+dlia avt orov, podrostkov i polzovatelej, kotorym vazno menshe socialnogo davleniia
+
+**kakoj rezultat dolzen byt dostignut**
+
+kontent moz et polucat obratn uju sviaz bez publicnogo sorevnovaniia cifr
+
+---
+
+## 109 — kto vidit spisok reakcij
+
+**cto eto dolzno delat**
+
+avtor moz et nastroit
+
+* vse vidat
+* tolko druzia
+* tolko avtor
+* tolko kolichestvo
+* skryt v chuvstvitelnyx gruppax
+
+**pocemu eto nuzno**
+
+sam fakt reakcii na medicinskij, adopcionn yj ili chuvstviteln yj post moz et raskryvat interes ili sviaz
+
+**kak eto dolzno rabotat po logike**
+
+privatnost spiska i schetcika nast r aivaetsia otdelno
+
+**dlia kogo i dlia kakoj celi**
+
+dlia zakrytyx grupp i chuvstvitelnyx tem
+
+**kakoj rezultat dolzen byt dostignut**
+
+post moz et polucit podderzku bez publicacii polnogo spiska uchastnikov
+
+---
+
+## 110 — zascita ot massovyx reakcij
+
+**cto eto dolzno delat**
+
+platforma dolzna vyiavliat botov, massov uju nakrutku i koordinir ovannye reakcii
+
+**pocemu eto nuzno**
+
+iskusstvenn y e pokazateli vliiajut na l ent u, konkursy i reklamn uju cennost
+
+**kak eto dolzno rabotat po logike**
+
+podozriteln y e reakcii mogut vrem enno ne ucit yvatsia v ranzhirovanii do proverki
+
+**dlia kogo i dlia kakoj celi**
+
+dlia avt orov, reklamodatelej i vsego soobscestva
+
+**kakoj rezultat dolzen byt dostignut**
+
+populiarnost bolee tocn o otrazaet realn uju auditoriju
+
+---
+
+# kommentarii
+
+## 111 — bazovaja logika kommentariia
+
+**cto eto dolzno delat**
+
+zritel moz et ostavit tekstov yj otvet pod postom, esli eto razresheno
+
+**pocemu eto nuzno**
+
+kommentarii sozdaijut obsuzhdenie, utochnenie, podderzku i obmen opytom
+
+**kak eto dolzno rabotat po logike**
+
+kazdyj kommentarij imeet realnogo avtora, profil publikacii, tekst, media, status, auditoriju v ramkax posta, moderaciju i istoriju
+
+**dlia kogo i dlia kakoj celi**
+
+dlia avt orov i zritelej
+
+**kakoj rezultat dolzen byt dostignut**
+
+obsuzhdenie sviazano s postom i podciniaetsia ego pravilam privatnosti
+
+---
+
+## 112 — vlozhennye otvety
+
+**cto eto dolzno delat**
+
+polzovatel moz et otvetit na konkretn yj kommentarij
+
+**pocemu eto nuzno**
+
+bez sviazi s konkret n ym soobsen iem dlinn oe obsuzhdenie stanovitcia nepon iatnym
+
+**kak eto dolzno rabotat po logike**
+
+platforma moz et podderzhivat ogranichenn uju glubinu vlozhennosti, a bolee dlinn y e cepochki vizualno up roshchat
+
+**dlia kogo i dlia kakoj celi**
+
+dlia aktivnyx diskussij
+
+**kakoj rezultat dolzen byt dostignut**
+
+zritel ponimaet, na kak uju mysl otvecaet kazdyj uchastnik
+
+---
+
+## 113 — prava kommentirovaniia
+
+**cto eto dolzno delat**
+
+avtor vybiraet, kto moz et kommentirovat
+
+* vse zriteli
+* tolko podpisciki
+* tolko druzia
+* tolko uchastniki gruppy
+* tolko upomian uty e
+* tolko proverennye specialisty
+* nikto
+
+**pocemu eto nuzno**
+
+publicn yj prosmotr ne obyazatelno oznachaet otkrytoe obsuzhdenie
+
+**kak eto dolzno rabotat po logike**
+
+prava proveriajutsia pri otpravke i povtorno pri zagruzke kommentarev
+
+**dlia kogo i dlia kakoj celi**
+
+dlia avt orov s raznym urovnem gotovnosti k obsuzhdeniiu
+
+**kakoj rezultat dolzen byt dostignut**
+
+avtor moz et publikovat informaciju bez obyazatelnogo poluceniia otkrytyx sovetov i spora
+
+---
+
+## 114 — ogranichenie kommentariev do odobreniia
+
+**cto eto dolzno delat**
+
+nov y e kommentarii mogut ozhidat odobreniia avtora ili moderatora
+
+**pocemu eto nuzno**
+
+eto polezno dlia podrostkov, chuvstvitelnyx tem, memorialov, priutov i profilej pod atakoj
+
+**kak eto dolzno rabotat po logike**
+
+avtor vidit komentarij, no drugie ne vidat ego do prin iatiia
+
+**dlia kogo i dlia kakoj celi**
+
+dlia zascity chuvstvitelnyx publikacij
+
+**kakoj rezultat dolzen byt dostignut**
+
+travlia, spam i opasnye sovety ne pojavliajutsia publicno srazu
+
+---
+
+## 115 — zakreplenn yj kommentarij
+
+**cto eto dolzno delat**
+
+avtor moz et zakrepit vazn oe utochnenie, otvet specialista ili obnovlenie
+
+**pocemu eto nuzno**
+
+v dlinn om obsuzhdenii vazn a ia informacija moz et poteriatsia
+
+**kak eto dolzno rabotat po logike**
+
+zakreplenn yj kommentarij imeet metku, kto ego zakrepil, i ne avtomaticeski schitaetsia oficialnym bez professionalnogo statusa
+
+**dlia kogo i dlia kakoj celi**
+
+dlia avt orov, grupp i specialistov
+
+**kakoj rezultat dolzen byt dostignut**
+
+zritel srazu vidit aktualn oe utochnenie ili praviln yj kontekst
+
+---
+
+## 116 — sortirovka kommentariev
+
+**cto eto dolzno delat**
+
+zritel moz et vybrat
+
+* nov y e
+* star y e
+* polezn y e
+* ot avtora
+* ot specialistov
+* vse vetki
+
+**pocemu eto nuzno**
+
+odin poriadok ne podxodit i dlia novostnogo obsuzhdeniia, i dlia voprosa specialistu
+
+**kak eto dolzno rabotat po logike**
+
+sortirovka ne dolzna skryvat ogranichennye ili zablokirovannye kommentarii bez pon iatnoj metki avt oru
+
+**dlia kogo i dlia kakoj celi**
+
+dlia zritelej dlinn yx diskussij
+
+**kakoj rezultat dolzen byt dostignut**
+
+polzovatel bystree naxodit nuzn yj tip otvetov
+
+---
+
+## 117 — redaktirovanie kommentariia
+
+**cto eto dolzno delat**
+
+avtor kommentariia moz et ispravit tekst
+
+**pocemu eto nuzno**
+
+opечатki, oshibki i slucajn y e lichnye dannye nuzno umet ubrat
+
+**kak eto dolzno rabotat po logike**
+
+sushestvenno izmenenn yj kommentarij imeet metku izmeneno, a istoria dostupna moderatoru pri zhalobe
+
+**dlia kogo i dlia kakoj celi**
+
+dlia vseh kommentatorov
+
+**kakoj rezultat dolzen byt dostignut**
+
+polzovatel ispravliaet oshibku, no ne moz et tixo perepisat ugrozu posle zhaloby
+
+---
+
+## 118 — udaleniie kommentariia avt orom
+
+**cto eto dolzno delat**
+
+avtor moz et udal it svoj kommentarij
+
+**pocemu eto nuzno**
+
+celovek moz et peredumat, slucajno raskryt dannye ili napisat ne tomu postu
+
+**kak eto dolzno rabotat po logike**
+
+pri nalichii otvetov moz et ostatcia nejtralnaia metka komentarij udal en, ctob struktura vetki ne lom a las
+
+**dlia kogo i dlia kakoj celi**
+
+dlia kommentatorov i celostnosti diskussii
+
+**kakoj rezultat dolzen byt dostignut**
+
+lichn yj tekst ischezaet, no otvety drugih ne stanoviatsia bessmyslennymi ili priviazannymi k drugomu kommentariiu
+
+---
+
+## 119 — udaleniie kommentariia avt orom posta
+
+**cto eto dolzno delat**
+
+vladelec publikacii moz et skryt kommentarij v ramkax svoego posta
+
+**pocemu eto nuzno**
+
+avtor dolzen upravliat spamom, travlej i off topic pod sobstvennym kontentom
+
+**kak eto dolzno rabotat po logike**
+
+sistema razdeli aet
+
+* skryt v etom post e
+* pozhalovatsia platforme
+* zablokirovat avtora
+* ubrat tolko media
+* ogranichit budusc ie kommentarii
+
+**dlia kogo i dlia kakoj celi**
+
+dlia avt orov i moderatorov grupp
+
+**kakoj rezultat dolzen byt dostignut**
+
+odin spam kommentarij mozno ubrat bez neobxodimosti srazu blokirovat ves akkaunt
+
+---
+
+## 120 — media v kommentariiax
+
+**cto eto dolzno delat**
+
+pri razreshenii mozno dobavit fotografiju, video ili dokumentaln yj fragment
+
+**pocemu eto nuzno**
+
+media polezno dlia otveta, nabludenija, primera ili podtverzhdeniia
+
+**kak eto dolzno rabotat po logike**
+
+predprosmotr neznakomogo ili cuvstitelnogo media moz et byt skryt do otkrytija, a fajly prohodiat proverku
+
+**dlia kogo i dlia kakoj celi**
+
+dlia grupp, voprosov, poiskovyx objavlenij i specialistov
+
+**kakoj rezultat dolzen byt dostignut**
+
+polezn oe media dostupno, no kommentarij ne stanovitsia kanalom vnezapnogo shokirujusc ego kontenta
+
+---
+
+## 121 — filtry slov i fraz
+
+**cto eto dolzno delat**
+
+avtor moz et skryvat kommentarii s vybrannymi slovami, ssylkami ili temami
+
+**pocemu eto nuzno**
+
+populiarn y e profilej mogut polucat povtoriajusc ijsia spam, oskorbleniia ili lichnye dannye
+
+**kak eto dolzno rabotat po logike**
+
+filtr moz et
+
+* skryt avtomaticeski
+* otpravit na odobrenie
+* tolko predupredit
+* primeniat k konkretnomu profiliu
+* ne primeniat k blizkim druzjam
+
+**dlia kogo i dlia kakoj celi**
+
+dlia avt orov i grupp
+
+**kakoj rezultat dolzen byt dostignut**
+
+povtoriajusc ijsia nezhelateln yj kontent ne trebuet udal iat vrucnuju kazdyj raz
+
+---
+
+## 122 — ogranichenie ssylok v kommentariiax
+
+**cto eto dolzno delat**
+
+avtor ili gruppa moz et zapretit ili ogranichit vneshnie ssylki
+
+**pocemu eto nuzno**
+
+kommentarii c asto ispolzujutsia dlia reklamy, fishinga i obxoda moderacii
+
+**kak eto dolzno rabotat po logike**
+
+proverennye sistemnye ssylki, istochniki i ssylki avtora mogut obrabatyvatsia otdelno
+
+**dlia kogo i dlia kakoj celi**
+
+dlia avt orov, grupp i zritelej
+
+**kakoj rezultat dolzen byt dostignut**
+
+kommentarii ne prevrashchajutsia v katalog podozritelnyx vneshnix sajtov
+
+---
+
+## 123 — limit castoty kommentariev
+
+**cto eto dolzno delat**
+
+odin akkaunt ne dolzen otpravljat ocen mnogo kommentariev za korotkoe vremia
+
+**pocemu eto nuzno**
+
+eto moz et byt spam, nakrutka, travlia ili avtomatizacija
+
+**kak eto dolzno rabotat po logike**
+
+limit ucit yvaet vozrast akkaunta, zhaloby, odinakov yj tekst, skorost i kontekst gruppy
+
+**dlia kogo i dlia kakoj celi**
+
+dlia zascity diskussij
+
+**kakoj rezultat dolzen byt dostignut**
+
+bot ne moz et zapolnit sotni postov odinakovym kommentariem za minutu
+
+---
+
+## 124 — medlenn yj rezhim kommentarii ev
+
+**cto eto dolzno delat**
+
+avtor ili moderator moz et razresit odin kommentarij raz v ustanovlenn yj period
+
+**pocemu eto nuzno**
+
+pri konfliktnoj teme medlenn yj temp snizhaet impul sivn y e otvety i massov uju eskalaciju
+
+**kak eto dolzno rabotat po logike**
+
+polzovatel vidit, kogda moz et napisat sledujusc ij kommentarij
+
+**dlia kogo i dlia kakoj celi**
+
+dlia bolsh ix grupp, priamyx efirov i konfliktov
+
+**kakoj rezultat dolzen byt dostignut**
+
+diskussiia stanovitsia bolee upravljaemoj i menee agressivnoj
+
+---
+
+## 125 — zakrytie kommentariev
+
+**cto eto dolzno delat**
+
+avtor moz et ostanovit novye kommentarii, soxraniv st ar y e
+
+**pocemu eto nuzno**
+
+obsuzhdenie moz et byt zaversheno, ujti v off topic ili privlec massov uju travliu
+
+**kak eto dolzno rabotat po logike**
+
+riadom pokaz yvaetsia kommentarii zakryty avt orom ili moderatorom
+
+**dlia kogo i dlia kakoj celi**
+
+dlia avt orov i grupp
+
+**kakoj rezultat dolzen byt dostignut**
+
+post ostajotsia dostupnym, no eskalacija prekrashchaetsia
+
+---
+
+# upominanija
+
+## 126 — upominanie profilia
+
+**cto eto dolzno delat**
+
+avtor moz et upomianut xoziajina, pitomca, specialista, organizaciju ili grup pu
+
+**pocemu eto nuzno**
+
+upominanie sviazyvaet kontent s relevantnym uchastnikom i moz et privlec ego vnimanie
+
+**kak eto dolzno rabotat po logike**
+
+profilej dolzny imet nastojki
+
+* razresat vsem
+* tolko druzjam
+* tolko uchastnikam obsc ix grupp
+* trebovat odobrenie
+* polnostiu zapretit
+
+**dlia kogo i dlia kakoj celi**
+
+dlia avt orov i upominaemyx profilej
+
+**kakoj rezultat dolzen byt dostignut**
+
+upominanie rabotaet kak dobrovoln a ia socialn a ia sviaz, a ne kak instrument spama
+
+---
+
+## 127 — realn yj avtor upominaniia ot imeni pitomca
+
+**cto eto dolzno delat**
+
+sistema dolzna xranit, kto imenno upomianul drugoj profil
+
+**pocemu eto nuzno**
+
+odin celovek moz et upravliat mnogimi pitomcami i massovo upominat avt orov ot ix imeni
+
+**kak eto dolzno rabotat po logike**
+
+anti spam i moderacija ucit yvajut osnovnoj akkaunt, a publicno pokaz yvaetsia vybrann yj profil
+
+**dlia kogo i dlia kakoj celi**
+
+dlia chestn oj otvetstvennosti
+
+**kakoj rezultat dolzen byt dostignut**
+
+mnogie profilej pitomcev ne mogut ispolzovatsia kak massov y e anonimnye akkaunty
+
+---
+
+## 128 — odobrenie upominaniia
+
+**cto eto dolzno delat**
+
+upomian uty j profil moz et odobrit, skryt ili udal it sviaz s postom
+
+**pocemu eto nuzno**
+
+pitomca ili xoziajina mogut upomianut v reklame, spore, cuzoj fotografii ili nepravdivom kontekste
+
+**kak eto dolzno rabotat po logike**
+
+post moz et ostatcia, no aktivnaia ssylka i pokaz v profile upomianutogo udal iajutsia
+
+**dlia kogo i dlia kakoj celi**
+
+dlia zascity profilej ot nezhelateln oj associacii
+
+**kakoj rezultat dolzen byt dostignut**
+
+profil ne pojavliaetsia v cuzo m post e kak podtverzhdenn yj uchastnik bez soglasiia
+
+---
+
+## 129 — massovye upominaniia
+
+**cto eto dolzno delat**
+
+platforma dolzna ogranichivat bolshoe kolichestvo upominanij v odn om post e ili kommentarii
+
+**pocemu eto nuzno**
+
+massovoe upominanie ispolzuetsia dlia spama, nakrutki i travli
+
+**kak eto dolzno rabotat po logike**
+
+bolsh im proverennym organizacijam moz et byt dostupna otdeln a ia sistema uvedomlenij svoix uchastnikov, ne ravnaia massovym publicnym upominaniiam
+
+**dlia kogo i dlia kakoj celi**
+
+dlia zascity zritelej i grupp
+
+**kakoj rezultat dolzen byt dostignut**
+
+odin post ne otpravliaet tysiachi nezhelatelnyx uvedomlenij
+
+---
+
+## 130 — upominanie v chuvstvitelnom kontente
+
+**cto eto dolzno delat**
+
+profil ne dolzen avtomaticeski sviazyvatsia s medicinskim, konfliktnym ili memorialnym postom bez odobreniia
+
+**pocemu eto nuzno**
+
+sam fakt sviazi moz et raskryt diagnoz, utratu ili lichn yj konflikt
+
+**kak eto dolzno rabotat po logike**
+
+upominanie moz et ozhidat odobreniia daze pri oby cno otkrytyx nast rojkax
+
+**dlia kogo i dlia kakoj celi**
+
+dlia zascity cuvstitelnyx profilej
+
+**kakoj rezultat dolzen byt dostignut**
+
+po publicnomu postu nelzia bez soglasiia ustanovit, cto konkretn yj pitomec prohodit lechenie
+
+---
+
+# xeshtegi
+
+## 131 — bazovaja logika xeshtegov
+
+**cto eto dolzno delat**
+
+xeshteg dolzen objediniat publicn y e ili dostupnye polzovateliu materialy po teme
+
+**pocemu eto nuzno**
+
+xeshtegi pomogajut otkryvat kontent vne kruga podpisok
+
+**kak eto dolzno rabotat po logike**
+
+odin vnutrennij identifikator moz et imet napisaniia na raznyx jazykax i alfavitax, no avtorskoe napisanie soxraniaetsia
+
+**dlia kogo i dlia kakoj celi**
+
+dlia avt orov, zritelej, grupp i kampanij
+
+**kakoj rezultat dolzen byt dostignut**
+
+polzovatel naxodit tematiceskij kontent bez dublikatov iz-za registra ili raznyx form napisaniia
+
+---
+
+## 132 — stranica xeshtega
+
+**cto eto dolzno delat**
+
+stranica dolzna pokaz yvat
+
+* nov y e posty
+* relevantn y e
+* media
+* profilej
+* sviazannye temy
+* pravila
+* vozmoznost podpisatsia ili skryt
+
+**pocemu eto nuzno**
+
+prostoj poisk teksta ne daet strukturirovannogo tematiceskogo razdela
+
+**kak eto dolzno rabotat po logike**
+
+pokazyvaetsia tolko kontent, dostupn yj tekuscemu zriteliu
+
+**dlia kogo i dlia kakoj celi**
+
+dlia otkrytiia novyx tem
+
+**kakoj rezultat dolzen byt dostignut**
+
+zakryt yj post s xeshtegom ne stanovitsia publicnym na stranice tegi
+
+---
+
+## 133 — podpiska na xeshteg
+
+**cto eto dolzno delat**
+
+polzovatel moz et sledit za interesujusc ej temoj
+
+**pocemu eto nuzno**
+
+ne vsegda vazen konkretn yj avtor, inogda vazna tema
+
+**kak eto dolzno rabotat po logike**
+
+mozno nastroit
+
+* pokaz yvat v l ent e
+* tolko svodka
+* tolko iz grupp
+* tolko professionaln y e materialy
+* skryt reklamu
+* skryt video
+
+**dlia kogo i dlia kakoj celi**
+
+dlia tematiceskogo prosmotra
+
+**kakoj rezultat dolzen byt dostignut**
+
+polzovatel polucaet nov y e materialy po teme bez massovoj podpiski na avt orov
+
+---
+
+## 134 — skrytie xeshtega
+
+**cto eto dolzno delat**
+
+polzovatel moz et ne videt kontent po konkretn oj teme
+
+**pocemu eto nuzno**
+
+nekotorye temy mogut byt neinteresnymi, emocionalno sloznymi ili povtoriajusc imisia
+
+**kak eto dolzno rabotat po logike**
+
+skrytie moz et dejstvovat
+
+* v domashnej l ent e
+* v rekomendacijax
+* v uvedomlenijax
+* vrem enno
+* postojanno
+
+**dlia kogo i dlia kakoj celi**
+
+dlia personalnogo kontrolia kontenta
+
+**kakoj rezultat dolzen byt dostignut**
+
+polzovatel ne vidit nezhelateln uju temu, ne blokiruja vseh avt orov
+
+---
+
+## 135 — zascita ot spama xeshtegami
+
+**cto eto dolzno delat**
+
+odin post ne dolzen ispolzovat desiatki nerelevantnyx tegov radi oxvata
+
+**pocemu eto nuzno**
+
+eto zasoriaet tematiceskie stranicy i manipuliruet rekomendacijami
+
+**kak eto dolzno rabotat po logike**
+
+sistema moz et ogranichivat kolichestvo, proveriat sviaz s tekstom i snizhat rasprostranenie povtoriajusc ego spama
+
+**dlia kogo i dlia kakoj celi**
+
+dlia kachestva tematiceskogo poisk a
+
+**kakoj rezultat dolzen byt dostignut**
+
+stranica tegi soderzit realno sviazann yj kontent
+
+---
+
+## 136 — zapreshchennye i opasnye xeshtegi
+
+**cto eto dolzno delat**
+
+platforma dolzna ogranichivat tegi, sviazannye s
+
+* zhestokim obrashcheniem
+* nelegalnoj torgovlej
+* moshennicestvom
+* organizaciej travli
+* seksualizaciej zivotnyx
+* opasnymi metodami
+* ekologiceskoj kontrabandoj
+
+**pocemu eto nuzno**
+
+xeshteg moz et sozdat katalog zapreshchennogo kontenta
+
+**kak eto dolzno rabotat po logike**
+
+nekotorye tegi blokirujutsia, drugie pokazyvajut obrazovateln oe preduprezhdenie ili tolko proverenn y e istochniki
+
+**dlia kogo i dlia kakoj celi**
+
+dlia zascity zivotnyx i soobscestva
+
+**kakoj rezultat dolzen byt dostignut**
+
+poisk po tegu ne stanovitsia sposobom najti nelegaln yj tovar ili zhestokij kontent
+
+---
+
+## 137 — trendy
+
+**cto eto dolzno delat**
+
+platforma moz et pokaz yvat rastusc ie temy po gorodu, strane, grupp e ili vsemu soobscestvu
+
+**pocemu eto nuzno**
+
+trendy pomogajut zam etit nov y e sobytija i obsuzhdeniia
+
+**kak eto dolzno rabotat po logike**
+
+nuzno ucit yvat
+
+* realn y e unik alnye akkaunty
+* skorost rosta
+* zhaloby
+* geografic esk ij kontekst
+* koordinir ovann uju nakrutku
+* srochnost
+* bezopasnost
+
+**dlia kogo i dlia kakoj celi**
+
+dlia zritelej i mestnyx soobscestv
+
+**kakoj rezultat dolzen byt dostignut**
+
+trend otrazaet realn yj interes, a ne massov uju rassylku odn oj gruppy botov
+
+---
+
+# reposty i rasprostranenie
+
+## 138 — vnutrennij repost
+
+**cto eto dolzno delat**
+
+zritel moz et podelitsia originalnym postom v svoem profile, gruppe ili s druzjami, esli avtor razresil
+
+**pocemu eto nuzno**
+
+repost pomogaet rasprostranit vazn oe objavlenie, istoriju ili polezn yj material bez kopirovaniia
+
+**kak eto dolzno rabotat po logike**
+
+repost xranit ssylku na original i ego avtora
+
+auditorija repost a ne moz et obojti privatnost originala
+
+**dlia kogo i dlia kakoj celi**
+
+dlia zritelej, avt orov i srocn yx objavlenij
+
+**kakoj rezultat dolzen byt dostignut**
+
+original polucaet praviln uju atribuciju, a zakryt yj post ne stanovitsia publicnym cerez repost
+
+---
+
+## 139 — repost s kommentariem
+
+**cto eto dolzno delat**
+
+polzovatel moz et dobavit sobstvenn yj tekst nad sviazannym originalom
+
+**pocemu eto nuzno**
+
+inogda nuzno objasnit, pocemu material vazen ili kak on sviazan s auditoriej
+
+**kak eto dolzno rabotat po logike**
+
+kommentarij repost a javliaetsia otdeln ym kontentom so svoej auditoriej, no original vse ravno podciniaetsia sobstvennym prav am
+
+**dlia kogo i dlia kakoj celi**
+
+dlia avt orov, grupp i organizacij
+
+**kakoj rezultat dolzen byt dostignut**
+
+polzovatel moz et dobavit kontekst, ne prisvaivaia originaln yj material
+
+---
+
+## 140 — zapret repostov
+
+**cto eto dolzno delat**
+
+avtor moz et otkliucit
+
+* vse reposty
+* reposty v publicnye profilej
+* reposty v gruppy
+* reposty s kommentariem
+* vneshnee rasprostranenie
+
+**pocemu eto nuzno**
+
+nekotoryj kontent prednaznachen tolko dlia konkretnoj auditorii
+
+**kak eto dolzno rabotat po logike**
+
+otkliuchenie repost a ne moz et polnostiu zapretit skrinshot, cto dolzno byt chestno objasneno
+
+**dlia kogo i dlia kakoj celi**
+
+dlia zakrytyx, semejnyx i chuvstvitelnyx profilej
+
+**kakoj rezultat dolzen byt dostignut**
+
+platforma ne predostavliaet vstroenn yj sposob rasshiriat auditoriju protiv resheniia avtora
+
+---
+
+## 141 — repost srocnogo objavleniia
+
+**cto eto dolzno delat**
+
+objavlenie o propazhe ili srocn oj pomosci moz et bystro rasprostraniatsia s aktualnym statusom
+
+**pocemu eto nuzno**
+
+kopii starogo teksta prodolzajut rasprostraniatsia daze posle vozvrata pitomca
+
+**kak eto dolzno rabotat po logike**
+
+repost pokaz yvaet aktualn uju kartocku originala
+
+pri zavershenii poisk a vse reposty polucajut zametn oe obnovlenie
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev, volonterov i mestnogo soobscestva
+
+**kakoj rezultat dolzen byt dostignut**
+
+polzovateli ne prodolzajut zvonit, iskat ili rasprostraniat ustarevsh uju informaciju
+
+---
+
+## 142 — cto proisxodit posle udaleniia originala
+
+**cto eto dolzno delat**
+
+repost dolzen korrektno otrazit udaleniie ili skrytie originala
+
+**pocemu eto nuzno**
+
+kopija ne dolzna soxran iat kontent, kotoryj avtor udal il ili moderator zablokiroval
+
+**kak eto dolzno rabotat po logike**
+
+vozmozny statusy
+
+* original udal en
+* original nedostup en vam
+* original ogranichen
+* original skryt na proverku
+* repost udal en vmeste s originalom pri opasnom kontente
+
+**dlia kogo i dlia kakoj celi**
+
+dlia zritelej i moderacii
+
+**kakoj rezultat dolzen byt dostignut**
+
+zakryt yj ili opasn yj material ne ostajotsia dostupnym v kopii repost a
+
+---
+
+## 143 — cto proisxodit posle redaktirovanija originala
+
+**cto eto dolzno delat**
+
+repost dolzen pokaz yvat aktualn uju versiju ili zametn uju metku ob izmenenii
+
+**pocemu eto nuzno**
+
+avtor moz et ispravit oshibku, status ili osnovn oe zayavlenie
+
+**kak eto dolzno rabotat po logike**
+
+kommentarij avtora repost a soxr aniaetsia, no originaln a ia kartocka obnovliaetsia
+
+**dlia kogo i dlia kakoj celi**
+
+dlia zritelej, rasprostraniajusc ix informaciju
+
+**kakoj rezultat dolzen byt dostignut**
+
+repost ne prodolzaet pokaz yvat opisa nn uju avt orom kak oshibocn uju star uju versiju
+
+---
+
+## 144 — vneshnee rasprostranenie
+
+**cto eto dolzno delat**
+
+avtor moz et razresit ssylku na post dlia messendzherov, vneshnix socialnyx setej i sajtov
+
+**pocemu eto nuzno**
+
+vazn yj kontent moz et trebovat auditoriju za predelami platformy
+
+**kak eto dolzno rabotat po logike**
+
+predprosmotr dolzen soderzhat tolko publicn y e razreshenn y e dannye i ne raskryvat zakrytye kommentarii, lokaciju ili imena zritelej
+
+**dlia kogo i dlia kakoj celi**
+
+dlia publicnyx avt orov, priutov i srocn yx kampanij
+
+**kakoj rezultat dolzen byt dostignut**
+
+vneshniaia ssylka pokaz yvaet polezn yj minimum bez utecki privatnyx polej
+
+---
+
+## 145 — korotkaia i stabilnaia ssylka
+
+**cto eto dolzno delat**
+
+publicn yj post moz et imet stabiln yj url, ne zavisiashch ij ot teksta ili imeni avtora
+
+**pocemu eto nuzno**
+
+post moz et byt otredaktirovan, a profil pereimenovan
+
+**kak eto dolzno rabotat po logike**
+
+vnutrennij identifikator ostajotsia stabilnym, a cit aemaia chast url moz et obnovliatsia s perenapravleniem
+
+**dlia kogo i dlia kakoj celi**
+
+dlia publicnyx materialov, qr kodov i vneshnix ssylok
+
+**kakoj rezultat dolzen byt dostignut**
+
+st araia ssylka prodolzaet rabotat posle redaktirovanija nazvaniia
+
+---
+
+## 146 — skachivanie media
+
+**cto eto dolzno delat**
+
+avtor moz et razresit ili zapretit vstroenn uju knopku skachivaniia
+
+**pocemu eto nuzno**
+
+publicn yj prosmotr ne obyazatelno oznachaet soglasie na soxranenie originalnogo fajla
+
+**kak eto dolzno rabotat po logike**
+
+mozhno razresit
+
+* optimizirovann uju kopiju
+* original
+* tolko druzjam
+* tolko organizatoru
+* nikomu
+
+**dlia kogo i dlia kakoj celi**
+
+dlia fotografov, avt orov i grupp
+
+**kakoj rezultat dolzen byt dostignut**
+
+platforma uvazaet pravila avtora, chestno priznavaya, cto polnostiu zapretit vneshnie skrinshoty nelzia
+
+---
+
+# soxranenie i zakladki
+
+## 147 — soxranit post
+
+**cto eto dolzno delat**
+
+zritel moz et dobavit material v lichnye zakladki
+
+**pocemu eto nuzno**
+
+polezn a ia statja, adres mesta ili instrukcija moz et potrebovatsia pozze
+
+**kak eto dolzno rabotat po logike**
+
+soxranenie privatno po umolcaniju i ne sozdaet publicn uju reakciju
+
+**dlia kogo i dlia kakoj celi**
+
+dlia vseh zritelej
+
+**kakoj rezultat dolzen byt dostignut**
+
+polzovatel bystro naxodit material pozze bez obyazatelnogo repost a ili lajka
+
+---
+
+## 148 — kollekcii soxranennogo
+
+**cto eto dolzno delat**
+
+zakladki mozno razdelit po papkam
+
+* veterinar
+* mesta
+* trening
+* puteshestvija
+* idei
+* priuty
+* tovary
+* recepty uxoda
+* procitat pozze
+
+**pocemu eto nuzno**
+
+odin dlinn yj spisok soxranennogo bystro stanovitsia neudobnym
+
+**kak eto dolzno rabotat po logike**
+
+kollekcija privatnaia po umolcaniju, no moz et byt dobrovolno podelena
+
+**dlia kogo i dlia kakoj celi**
+
+dlia aktivnyx polzovatelej
+
+**kakoj rezultat dolzen byt dostignut**
+
+soxranenn yj kontent organizovan i legko ischetsia
+
+---
+
+## 149 — lichnaia zametka k soxranennomu
+
+**cto eto dolzno delat**
+
+polzovatel moz et dobavit privatn yj kommentarij
+
+naprimer
+
+`obsudit s veterinarom`
+
+**pocemu eto nuzno**
+
+bez konteksta pozze moz et byt nepon iatno, pocemu post byl soxranen
+
+**kak eto dolzno rabotat po logike**
+
+zametka vidna tolko vladelcu i ne peredajotsia avt oru posta
+
+**dlia kogo i dlia kakoj celi**
+
+dlia lichnogo plan iro vaniia
+
+**kakoj rezultat dolzen byt dostignut**
+
+soxranenie stanovitsia poleznym rabochim instrumentom, a ne tolko arhivom ssylok
+
+---
+
+## 150 — nedostupn yj soxranenn yj post
+
+**cto eto dolzno delat**
+
+esli avtor udal il post ili zakryl profil, zakladka dolzna pokazat korrektn yj status
+
+**pocemu eto nuzno**
+
+soxranenie ne dolzno obxodit izmenenie privatnosti
+
+**kak eto dolzno rabotat po logike**
+
+zritel vidit
+
+* post udal en
+* post bolshe nedostup en
+* dostup iste k
+* polucite novoe razreshenie
+
+**dlia kogo i dlia kakoj celi**
+
+dlia zascity prav avtora
+
+**kakoj rezultat dolzen byt dostignut**
+
+zakladka ne stanovitsia tajnoj kopiej zakrytogo kontenta
+
+---
+
+# uvedomlenija kontenta
+
+## 151 — kategorii uvedomlenij
+
+**cto eto dolzno delat**
+
+polzovatel moz et polucat signal o
+
+* kommentarii
+* otvete
+* upominanii
+* reakcii
+* repost e
+* novom post e blizkogo kruga
+* obnovlenii sobytija
+* srocn om lokalnom objavlenii
+* publikacii vybrannogo avtora
+* odobrenii cernovika
+
+**pocemu eto nuzno**
+
+bez razdeleniia vse uvedomlenija prevrashchajutsia v odin shum
+
+**kak eto dolzno rabotat po logike**
+
+kazdaia kategoriia imeet kanal, chastotu, prioritet i vozmoznost otkliucheniia, krome kriticeskix bezopasnostnyx signalov
+
+**dlia kogo i dlia kakoj celi**
+
+dlia avt orov i zritelej
+
+**kakoj rezultat dolzen byt dostignut**
+
+polzovatel ne propuskaet vazn oe i ne polucaet push o kazdom malenkom lajke
+
+---
+
+## 152 — gruppirovka reakcij
+
+**cto eto dolzno delat**
+
+neskolko reakcij na odin post mogut obed iniatsia v odno uvedomlenie
+
+**pocemu eto nuzno**
+
+populiarn yj post moz et sozdat sotni odinakov yx signalov
+
+**kak eto dolzno rabotat po logike**
+
+uvedomlenie pokaz yvaet neskolko imen i obsch ee kolichestvo bez rassylki po odnomu push
+
+**dlia kogo i dlia kakoj celi**
+
+dlia aktivnyx avt orov
+
+**kakoj rezultat dolzen byt dostignut**
+
+avtor vidit interes auditorii bez peregruzki
+
+---
+
+## 153 — gruppirovka kommentariev
+
+**cto eto dolzno delat**
+
+nov y e kommentarii pod odnim postom mogut prihodit svodkoj
+
+**pocemu eto nuzno**
+
+aktivn oe obsuzhdenie moz et sozdat mnogo signalov za korotkoe vremia
+
+**kak eto dolzno rabotat po logike**
+
+priam oj otvet avt oru ili upominanie moz et imet bolee vysokij prioritet, chem oby cn yj nov yj kommentarij
+
+**dlia kogo i dlia kakoj celi**
+
+dlia avt orov i uchastnikov diskussii
+
+**kakoj rezultat dolzen byt dostignut**
+
+vazn yj priam oj otvet ne ter iaetsia v obschej svodke
+
+---
+
+## 154 — uvedomlenie ob upominanii
+
+**cto eto dolzno delat**
+
+upomian uty j profil moz et polucit kartocku posta i kontekst
+
+**pocemu eto nuzno**
+
+polzovatel dolzen bystro ponimat, gde i pocemu ego upomianuli
+
+**kak eto dolzno rabotat po logike**
+
+iz uvedomleniia mozno
+
+* otkryt
+* skryt upominanie
+* udal it sviaz
+* zablokirovat
+* pozhalovatsia
+* nastroit budusc ie upominaniia
+
+**dlia kogo i dlia kakoj celi**
+
+dlia upominaemyx profilej
+
+**kakoj rezultat dolzen byt dostignut**
+
+nezhelateln oe upominanie mozno obrabotat za neskolko dejstvij
+
+---
+
+## 155 — tixie casy
+
+**cto eto dolzno delat**
+
+oby cnye reakcii, kommentarii i rekomendacii ne dolzny budit polzovatelia nochju
+
+**pocemu eto nuzno**
+
+socialn yj kontent redko trebuet nemedlennogo nocnogo otveta
+
+**kak eto dolzno rabotat po logike**
+
+iskliuceniia
+
+* propazha pitomca
+* srocn oe izmenenie sobytija
+* ugroza bezopasnosti
+* vazn oe professionaln oe obnovlenie po aktivnoj usluge
+
+**dlia kogo i dlia kakoj celi**
+
+dlia vseh polzovatelej
+
+**kakoj rezultat dolzen byt dostignut**
+
+socialnaia set uvazaet son i ne smeshivaet lajki so srocn ymi signalami
+
+---
+
+## 156 — individualn y e uvedomlenija avtora
+
+**cto eto dolzno delat**
+
+polzovatel moz et vkliucit signal o kazdom novom post e konkretnogo profilia
+
+**pocemu eto nuzno**
+
+nekotorye priuty, specialisty ili blizkie druzia imejut osobenno vazn yj kontent
+
+**kak eto dolzno rabotat po logike**
+
+avtor ne vidit, kto vkliucil takoi signal, esli eto ne razresheno
+
+**dlia kogo i dlia kakoj celi**
+
+dlia zritelej s prioritetnymi podpis kami
+
+**kakoj rezultat dolzen byt dostignut**
+
+vazn yj avtor ne ter iaetsia v bolsh oj l ent e
+
+---
+
+# prava avtora posle publicacii
+
+## 157 — redaktirovanie posta
+
+**cto eto dolzno delat**
+
+avtor moz et ispravit tekst, media, alternativn yj tekst, auditoriju i sviazannye obekty v dopustimyx granicax
+
+**pocemu eto nuzno**
+
+osh ibka moz et byt obnaruzhena tolko posle publicacii
+
+**kak eto dolzno rabotat po logike**
+
+sushestvenn y e izmeneniia imejut metku, a pri izmenenii srocnogo ili professionalnogo fakta moz et otpravliatsia obnovlenie auditorii
+
+**dlia kogo i dlia kakoj celi**
+
+dlia avt orov i zritelej
+
+**kakoj rezultat dolzen byt dostignut**
+
+avtor moz et ispravit oshibku, a zritel ponimaet, cto material izmenilsia
+
+---
+
+## 158 — istoria versij
+
+**cto eto dolzno delat**
+
+platforma dolzna xranit predydusc ie versii vaznyx postov
+
+**pocemu eto nuzno**
+
+avtor moz et tixo perepisat obvinenie, instrukciju, status sbora ili professionaln yj sovet posle zhaloby
+
+**kak eto dolzno rabotat po logike**
+
+publicnaia dostupnost istorii zavisit ot tipa, no moderator i upolnomochenn yj avtor dolzny videt ejo
+
+**dlia kogo i dlia kakoj celi**
+
+dlia audita, sporov i ispravleniia
+
+**kakoj rezultat dolzen byt dostignut**
+
+mozhno vosstanovit, kakoi tekst videla auditorija v konkretn yj moment
+
+---
+
+## 159 — izmenenie auditorii posle publicacii
+
+**cto eto dolzno delat**
+
+avtor moz et suzit ili rasshirit auditoriju
+
+**pocemu eto nuzno**
+
+post moz et byt slucajno otkryt ili, naoborot, pozze reshen pokazat sire
+
+**kak eto dolzno rabotat po logike**
+
+suzhenie primeniaetsia srazu i invalidiruet kesh
+
+rasshirenie moz et trebovat podtverzhdenie, osobenno esli v post e est cuzie profilej ili lokacija
+
+**dlia kogo i dlia kakoj celi**
+
+dlia upravleniia privatnostju
+
+**kakoj rezultat dolzen byt dostignut**
+
+post mozno bystro zakryt, a rasshirenie publicnosti ne proisxodit nezametno
+
+---
+
+## 160 — zakreplenie posta v profile
+
+**cto eto dolzno delat**
+
+avtor moz et zakrepit vazn oe predstavlenie, objavlenie, adopciju ili obnovlenie
+
+**pocemu eto nuzno**
+
+vazn yj post moz et ujti vniz posle novyx publikacij
+
+**kak eto dolzno rabotat po logike**
+
+profil moz et imet ogranichenn oe kolichestvo zakreplenn yx materialov s pon iatnym poriadkom
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev, priutov, specialistov i biznesov
+
+**kakoj rezultat dolzen byt dostignut**
+
+posetitel srazu vidit aktualn uju osnovn uju informaciju
+
+---
+
+## 161 — arhivirovanie
+
+**cto eto dolzno delat**
+
+avtor moz et ubrat post iz publicnogo profilia, ne udal iaja ego polnostiu
+
+**pocemu eto nuzno**
+
+st ar yj material moz et byt lichno vaznym, no bolshe ne aktualnym dlia auditorii
+
+**kak eto dolzno rabotat po logike**
+
+arhiv nedostup en zriteliu, ne ucit yvaetsia v rekomendacijax i moz et byt vosstanovlen
+
+**dlia kogo i dlia kakoj celi**
+
+dlia dlinn oj istorii profilej
+
+**kakoj rezultat dolzen byt dostignut**
+
+profil mozno ochistit bez neobratimoj poteri kontenta
+
+---
+
+## 162 — udaleniie posta avt orom
+
+**cto eto dolzno delat**
+
+avtor moz et udal it material
+
+**pocemu eto nuzno**
+
+kontent moz et byt oshibocnym, lichnym, ustarevshim ili opublikovannym bez soglasiia
+
+**kak eto dolzno rabotat po logike**
+
+pered udaleniem pokaz yvaetsia, cto proizojdet s
+
+* kommentariiami
+* repostami
+* soxraneniiami
+* vneshnimi ssylkami
+* albomami
+* sviazannymi sobytijami
+* dokazatelstvami zhaloby
+
+**dlia kogo i dlia kakoj celi**
+
+dlia avt orov
+
+**kakoj rezultat dolzen byt dostignut**
+
+avtor prinimaet osoznann oe reshenie i ne lom a et aktivn yj srocn yj process slucajno
+
+---
+
+## 163 — period vosstanovleniia
+
+**cto eto dolzno delat**
+
+udalenn yj avt orom post moz et vrem enno xranitsia v korzine
+
+**pocemu eto nuzno**
+
+udaleniie moz et byt slucajnym ili proizojti posle vzloma
+
+**kak eto dolzno rabotat po logike**
+
+vo vremia perioda post ne dostup en zritel iam, no moz et byt vosstanovlen upolnomochennym avt orom
+
+**dlia kogo i dlia kakoj celi**
+
+dlia zascity mnogoletnego kontenta
+
+**kakoj rezultat dolzen byt dostignut**
+
+odin oshibocn yj klik ne unictozhaet bezvozvratno vazn uju istoriju
+
+---
+
+## 164 — peredaca prav na post
+
+**cto eto dolzno delat**
+
+pri peredace profilia pitomca ili organizacii nuzno resit, kto upravliaet star ymi publikacijami
+
+**pocemu eto nuzno**
+
+post moz et byt sozdan star ym xoziajinom, priutom, fotografom ili organizaciej
+
+**kak eto dolzno rabotat po logike**
+
+mozno razdeliat
+
+* avtorstvo
+* administrativn oe upravlenie
+* pravo udaleniia
+* pravo redaktirovanija
+* pravo kommerc eskogo ispolzovaniia
+* pravo publicacii v profile pitomca
+
+**dlia kogo i dlia kakoj celi**
+
+dlia adopcii, smeny xoziajina i komandn yx profilej
+
+**kakoj rezultat dolzen byt dostignut**
+
+nov yj xoziajin moz et upravliat profilem, no ne prisvaivaet avtomaticeski avtorskie prava fotografa
+
+---
+
+# avtorskie prava i atribucija
+
+## 165 — ukazanie avtora media
+
+**cto eto dolzno delat**
+
+fotografija, video, ilustracija ili audio mogut imet otdelnogo avtora
+
+**pocemu eto nuzno**
+
+post moz et publikovat xoziajin, no media sozdal professionaln yj fotograf ili organizacija
+
+**kak eto dolzno rabotat po logike**
+
+xranitsia
+
+* avtor
+* istochnik
+* licenziia
+* pravo publicacii
+* pravo redaktirovanija
+* pravo kommerceskogo ispolzovaniia
+* srok
+
+**dlia kogo i dlia kakoj celi**
+
+dlia fotografov, avt orov, priutov i biznesov
+
+**kakoj rezultat dolzen byt dostignut**
+
+media ne stanovitsia avtomaticeski sobstvennostju akkaunta, kotoryj ego zagruzil
+
+---
+
+## 166 — zhaloba avtora media
+
+**cto eto dolzno delat**
+
+prav o ob ladatel moz et soobscit o nepravomernom ispolzovanii
+
+**pocemu eto nuzno**
+
+cuzie fotografii mogut ispolzovatsia v falshiv yx profilej, adopcii, reklame ili sbore deneg
+
+**kak eto dolzno rabotat po logike**
+
+zhaloba moz et soderzhat original, datu, dokazatelstvo avt orstva i konkretn oe narushenie
+
+**dlia kogo i dlia kakoj celi**
+
+dlia fotografov, xoziaev i organizacij
+
+**kakoj rezultat dolzen byt dostignut**
+
+nepravomernoe ispolzovanie mozno ostanovit bez obyazatelnogo udaleniia vsego profilia
+
+---
+
+## 167 — atribucija pri repost e
+
+**cto eto dolzno delat**
+
+repost dolzen vsegda pokaz yvat originalnogo avtora i profil
+
+**pocemu eto nuzno**
+
+bez etogo polzovatel moz et prisvoit cuzoj material
+
+**kak eto dolzno rabotat po logike**
+
+udal it ili skryt blok atribucii nelzia, poka pokazyvaetsia originaln yj kontent
+
+**dlia kogo i dlia kakoj celi**
+
+dlia avt orov i zritelej
+
+**kakoj rezultat dolzen byt dostignut**
+
+rasprostranenie povysaet oxvat originala, a ne sozdaet anonimn uju kopiju
+
+---
+
+## 168 — vodianoj znak
+
+**cto eto dolzno delat**
+
+avtor moz et dobavit svoi vodianoj znak ili sistemn uju metku istochnika
+
+**pocemu eto nuzno**
+
+eto moz et pomoch pri vneshnem rasprostranenii fotografij
+
+**kak eto dolzno rabotat po logike**
+
+vodianoj znak ne dolzen zakryvat vazn y e detali identifikacionnoj fotografii ili vydavat media za proverenn oe platformoj
+
+**dlia kogo i dlia kakoj celi**
+
+dlia fotografov, priutov i publicnyx profilej
+
+**kakoj rezultat dolzen byt dostignut**
+
+avtorstvo zametno, no izobrazhenie ostajotsia poleznym i dostupnym
+
+---
+
+# lokalizacija i perevod
+
+## 169 — avtomaticeskij perevod posta
+
+**cto eto dolzno delat**
+
+zritel moz et otkryt perevod teksta na svoj jazyk
+
+**pocemu eto nuzno**
+
+mezhdunarodnaia socialnaia set ne dolzna razdeliat polzovatelej tolko po jazykam
+
+**kak eto dolzno rabotat po logike**
+
+perevod imeet metku, original dostup en, a avtor moz et ispravit ili dobavit proverenn uju versiju
+
+**dlia kogo i dlia kakoj celi**
+
+dlia mnogojazy cnyx polzovatelej
+
+**kakoj rezultat dolzen byt dostignut**
+
+post pon iaten bolshej auditorii bez poteri originalnogo teksta
+
+---
+
+## 170 — perevod posle redaktirovanija
+
+**cto eto dolzno delat**
+
+pri izmenenii originala st ar y e perevody dolzny poluchit status ustareli
+
+**pocemu eto nuzno**
+
+st ar yj perevod moz et soderzhat informaciju, kotoruju avtor uze ispravil
+
+**kak eto dolzno rabotat po logike**
+
+avtomaticeskij perevod obnovliaetsia, a rucnoj otpravliaetsia na povtorn uju proverku
+
+**dlia kogo i dlia kakoj celi**
+
+dlia avt orov i zritelej
+
+**kakoj rezultat dolzen byt dostignut**
+
+perevedenn a ia versija ne protivorechit aktualnomu originalu nezametno
+
+---
+
+## 171 — cto ne nado perevodit avtomaticeski
+
+**cto eto dolzno delat**
+
+bez podtverzhdeniia ne nado izmeniat
+
+* imena
+* username
+* nazvaniia lekarstv
+* dozy
+* edinicy
+* adres a
+* kody
+* mikrochip
+* nazvaniia klinik
+* komandy pitomca
+* pravovye formulirovki
+
+**pocemu eto nuzno**
+
+oshibka v takom fragmente moz et stat opasnoj ili slomat identifikaciju
+
+**kak eto dolzno rabotat po logike**
+
+takie fragmenty oznachajutsia kak zascischenn y e i soxraniajutsia v originalnom vide ili proverenn om perevode
+
+**dlia kogo i dlia kakoj celi**
+
+dlia medicinskix, poiskovyx, juridiceskix i organizacionnyx postov
+
+**kakoj rezultat dolzen byt dostignut**
+
+perevod ne meniaet dozu, adres vstrechi ili imia pitomca
+
+---
+
+## 172 — mnogojazy cn yj post avtora
+
+**cto eto dolzno delat**
+
+avtor moz et sam dobavit neskolko jazykovyx versij odnogo materiala
+
+**pocemu eto nuzno**
+
+priut ili organizacija moz et rabotat s neskolkimi lokalnymi soobscestvami
+
+**kak eto dolzno rabotat po logike**
+
+versii sviazany s odnim postom, imejut obsch ie media i otdeln yj tekst
+
+**dlia kogo i dlia kakoj celi**
+
+dlia priutov, municipalnyx organizacij, specialistov i mezhdunarodnyx avt orov
+
+**kakoj rezultat dolzen byt dostignut**
+
+ne sozdaijutsia neskolko dublirujusc ix postov dlia kazdogo jazyka
+
+---
+
+## 173 — kommentarii na raznyx jazykax
+
+**cto eto dolzno delat**
+
+zritel moz et perevesti otdeln yj kommentarij ili vse obsuzhdenie
+
+**pocemu eto nuzno**
+
+post moz et sobrat mnogoiazy cnuju auditoriju
+
+**kak eto dolzno rabotat po logike**
+
+original kommentariia ostajotsia dostupnym, a perevod ne meniaet upominaniia, ssylki i imena
+
+**dlia kogo i dlia kakoj celi**
+
+dlia mezhdunarodnyx diskussij
+
+**kakoj rezultat dolzen byt dostignut**
+
+polzovateli mogut obschatsia, ne poteria v kontekste originala
+
+---
+
+# dostupnost
+
+## 174 — semanticeskaia struktura posta
+
+**cto eto dolzno delat**
+
+zagolovok, avtor, vremia, auditorija, media, tekst i dejstviia dolzny imet praviln uju strukturu
+
+**pocemu eto nuzno**
+
+ekrann yj diktor dolzen ponimat, gde nac inaetsia i zavershaetsia kazdaia publikacija
+
+**kak eto dolzno rabotat po logike**
+
+odin post predstavliaetsia kak otdeln yj logiceskij blok s pon iatnymi nazvaniiami knopok
+
+**dlia kogo i dlia kakoj celi**
+
+dlia polzovatelej s narushenijami zreniia
+
+**kakoj rezultat dolzen byt dostignut**
+
+lentu mozno prosmatrivat i ponimat bez vizualnogo interfejsa
+
+---
+
+## 175 — upravlenie klaviaturoj
+
+**cto eto dolzno delat**
+
+bez myshi dolzny rabotat
+
+* prosmotr l ent y
+* otkrytie posta
+* reakcia
+* kommentarij
+* repost
+* zakladka
+* zhaloba
+* redaktor
+* zagruzka media
+* vybor auditorii
+
+**pocemu eto nuzno**
+
+eto vazno dlia dostupnosti i bystroj desktop raboty
+
+**kak eto dolzno rabotat po logike**
+
+poriadok fokusa dolzen byt predskazuemym, a beskonecnaia lenta ne dolzna postojanno perenosit fokus
+
+**dlia kogo i dlia kakoj celi**
+
+dlia polzovatelej s motor nymi ogranichenijami i klaviaturnogo upravleniia
+
+**kakoj rezultat dolzen byt dostignut**
+
+ves cikl sozdaniia i vzaimodejstviia dostup en bez myshi
+
+---
+
+## 176 — subtitry i rasshifrovki
+
+**cto eto dolzno delat**
+
+video i audio dolzny podderzhivat tekstov uju alternativu
+
+**pocemu eto nuzno**
+
+kontent bez subtitrov nedostup en gluxim polzovateliam i neudob en bez zvuka
+
+**kak eto dolzno rabotat po logike**
+
+avtomaticeskij tekst proh od it proverku avt orom, a zritel moz et nastroit razmer i kontrast subtitrov
+
+**dlia kogo i dlia kakoj celi**
+
+dlia dostupnosti i mnogoiazy cnosti
+
+**kakoj rezultat dolzen byt dostignut**
+
+osnovn yj smysl media dostup en v tekstovom vide
+
+---
+
+## 177 — upravlenie animaciej i avtomaticeskim dvizheniem
+
+**cto eto dolzno delat**
+
+polzovatel moz et otkliucit
+
+* avtomaticeskoe vosproizvedenie
+* animir ovannye perehody
+* mi ganie
+* avtomaticeskuju prokrutku
+* dvizhusc iesia fon y
+
+**pocemu eto nuzno**
+
+takie effekty mogut vyz yvat diskomfort, otvlekat ili mesh at koncentracii
+
+**kak eto dolzno rabotat po logike**
+
+sistema dolzna uvazat sistemn uju nast roiku umenshennogo dvizheniia
+
+**dlia kogo i dlia kakoj celi**
+
+dlia polzovatelej s vestibuliarnymi, nevrologiceskimi i kognitivnymi ogranichenijami
+
+**kakoj rezultat dolzen byt dostignut**
+
+lenta ostajotsia polnostiu funkcionalnoj bez animacij
+
+---
+
+## 178 — krupn yj tekst
+
+**cto eto dolzno delat**
+
+posty, kommentarii, knopki i metki dolzny korrektno rabotat pri uvelichenii teksta
+
+**pocemu eto nuzno**
+
+dlinn y e imena, xeshtegi i statusy mogut obrezat vazn uju informaciju
+
+**kak eto dolzno rabotat po logike**
+
+kartocka rasshiri a etsia, tekst perenositsia, a dejstviia ostajutsia dostupnymi bez gorizontalnoj prokrutki
+
+**dlia kogo i dlia kakoj celi**
+
+dlia slabovid iasc ix i pozhilyx polzovatelej
+
+**kakoj rezultat dolzen byt dostignut**
+
+polzovatel ne ter iaet auditoriju, avtorstvo ili preduprezhdenie iz-za obrezannogo interfejsa
+
+---
+
+## 179 — ne tolko cvet
+
+**cto eto dolzno delat**
+
+statusy dolzny imet tekst i ikonku
+
+* reklama
+* srocn o
+* podtverzhdeno
+* ogranicheno
+* udal eno
+* cernovik
+* zakrytaia gruppa
+* chuvstviteln yj kontent
+
+**pocemu eto nuzno**
+
+cvet ne vsegda vid en ili odnoznachno pon iaten
+
+**kak eto dolzno rabotat po logike**
+
+odin status odinakovo oznachaetsia vo vseh razdelax
+
+**dlia kogo i dlia kakoj celi**
+
+dlia dostupnosti i posledovatelnosti
+
+**kakoj rezultat dolzen byt dostignut**
+
+vazn yj kontekst pon iaten bez neobxodimosti razlicat cveta
+
+---
+
+# mobilnaja rabota i slab yj internet
+
+## 180 — mobiln yj redaktor odnoj rukoj
+
+**cto eto dolzno delat**
+
+osnovnye dejstviia dolzny byt dostupny v niznej casti ekrana
+
+* fotografija
+* video
+* tekst
+* profil
+* auditorija
+* cernovik
+* opublikovat
+
+**pocemu eto nuzno**
+
+bolshinstvo kontenta o pitomcax sozdaetsia na telefone
+
+**kak eto dolzno rabotat po logike**
+
+kriticeskie knopki udal it i opublikovat dlia vseh ne dolzny byt slishkom blizko
+
+**dlia kogo i dlia kakoj celi**
+
+dlia mobilnyx avt orov
+
+**kakoj rezultat dolzen byt dostignut**
+
+post mozno sozdat odnoj rukoj bez slucajnogo udaleniia ili publicacii
+
+---
+
+## 181 — bystraia fotografija iz redaktora
+
+**cto eto dolzno delat**
+
+avtor moz et sdelat foto i srazu vybrat ego naznachenie
+
+* post
+* istorija
+* avatar
+* album
+* identifikacionnaia fotografija
+* zakryt yj otchet
+* dokumentaln oe media
+
+**pocemu eto nuzno**
+
+odin snimok moz et imet ocen razn uju privatnost
+
+**kak eto dolzno rabotat po logike**
+
+pered soxraneniem sistema zametno pokaz yvaet vybrann yj tip i auditoriju
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev, sitterov i specialistov
+
+**kakoj rezultat dolzen byt dostignut**
+
+fotografija rany ne pojavliaetsia slucajno v publicnoj istorii
+
+---
+
+## 182 — rezhim ekonomii trafika
+
+**cto eto dolzno delat**
+
+polzovatel moz et sokratit zagruzku media
+
+**pocemu eto nuzno**
+
+mobiln yj internet moz et byt medlennym, dorogim ili ogranichennym
+
+**kak eto dolzno rabotat po logike**
+
+rezhim moz et
+
+* zagruzhat nizkoe kachestvo
+* ne zapuskat video
+* ne zagruzhat vse fotografii karuseli
+* pokaz yvat tekst perv ym
+* otkladyvat originaly do wi-fi
+
+**dlia kogo i dlia kakoj celi**
+
+dlia mobilnyx polzovatelej
+
+**kakoj rezultat dolzen byt dostignut**
+
+osnovn oe soderzhanie l ent y dostupno pri slaboj sviazi
+
+---
+
+## 183 — otpravka v fone
+
+**cto eto dolzno delat**
+
+bolshoe video moz et prodolzhit zagruzhatsia posle svorachivaniia prilozheniia
+
+**pocemu eto nuzno**
+
+polzovatel ne dolzen derzhat redaktor otkrytym dlinn oe vremia
+
+**kak eto dolzno rabotat po logike**
+
+prilozhenie pokaz yvaet status, a post ne publik uetsia do gotovnosti vseh obyazatelnyx elementov
+
+**dlia kogo i dlia kakoj celi**
+
+dlia mobilnyx avt orov video
+
+**kakoj rezultat dolzen byt dostignut**
+
+zagruzka ne ter iaetsia, no polzovatel ne vidit slomann yj polupost
+
+---
+
+## 184 — vosstanovlenie posle oshibki seti
+
+**cto eto dolzno delat**
+
+zagruzka dolzna prodolzhatsia s mesta ostanovki, esli eto vozmozno
+
+**pocemu eto nuzno**
+
+povtorn a ia polnaia otpravka bolshogo fajla tratit vremia i trafik
+
+**kak eto dolzno rabotat po logike**
+
+kazdyj fragment fajla proveriaetsia, a povtorn oe nazhatie ne sozdaet vtoroj post
+
+**dlia kogo i dlia kakoj celi**
+
+dlia slabogo i preryvistogo interneta
+
+**kakoj rezultat dolzen byt dostignut**
+
+obryv ne zastavliaet nac inat vse zanovo
+
+---
+
+# bezopasnost kontenta
+
+## 185 — zascita tocn oj lokacii
+
+**cto eto dolzno delat**
+
+pered publikaciej mesta, marshruta ili fotografii sistema dolzna proverit risk raskrytiia
+
+**pocemu eto nuzno**
+
+post moz et pokazat dom, mesto reguliarnoj progulki, priut, perederzku ili vremia otsutstviia xoziajina
+
+**kak eto dolzno rabotat po logike**
+
+mozno
+
+* skryt start i finish marshruta
+* pokazat tolko park
+* udal it gps iz media
+* otlozhit publicaciju do zaversheniia progulki
+* pokazat primern uju zonu
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev, volonterov, priutov i putesestvennikov
+
+**kakoj rezultat dolzen byt dostignut**
+
+socialn yj post ne stanovitsia publicn ym raspisaniem i kartoj doma
+
+---
+
+## 186 — otlozhenn a ia publicacija lokacii
+
+**cto eto dolzno delat**
+
+post o tekuscej progulke moz et opublikovatsia posle vozvrata
+
+**pocemu eto nuzno**
+
+realn oe vremia raskryvaet, gde sejcias naxoditsia xoziajin i cto doma ego net
+
+**kak eto dolzno rabotat po logike**
+
+polzovatel sozdaet post srazu, no publikaciia proishodit posle zaversheniia aktivnosti ili rucnogo podtverzhdeniia
+
+**dlia kogo i dlia kakoj celi**
+
+dlia polzovatelej, del iasc ix marshruty i mesta
+
+**kakoj rezultat dolzen byt dostignut**
+
+kontent ostajotsia aktualnym, no ne raskryvaet tekusc uju lokaciju v realnom vremeni
+
+---
+
+## 187 — zascita nesovershennoletnix v media
+
+**cto eto dolzno delat**
+
+fotografii i video s detmi dolzny poluchat dopolnitelnye podskazki privatnosti
+
+**pocemu eto nuzno**
+
+profil pitomca ne dolzen stanovitsia nekontroliruemym publicnym albumom rebenka
+
+**kak eto dolzno rabotat po logike**
+
+sistema moz et predlozhit
+
+* zamazat lico
+* ogranichit auditoriju
+* udal it skoln uju formu, adres ili geometku
+* zapretit vneshnee rasprostranenie
+* ne rekomendovat publicno
+
+**dlia kogo i dlia kakoj celi**
+
+dlia sem ej i organizatorov sobytij
+
+**kakoj rezultat dolzen byt dostignut**
+
+kontent o pitomce ne raskryvaet lichnost, mesto ucheby i raspisanie rebenka
+
+---
+
+## 188 — zascita ot doxxinga
+
+**cto eto dolzno delat**
+
+platforma dolzna obnaruzhivat publicaciju cuzix
+
+* adresov
+* telefonov
+* dokumentov
+* plateznyx rekvizitov
+* gps
+* rabocix grafikov
+* licenzionnyx nomerov avtomobilej
+* lichnyx soobsenij
+
+**pocemu eto nuzno**
+
+takie dannye mogut ispolzovatsia dlia presledovaniia, ugroz i moshennicestva
+
+**kak eto dolzno rabotat po logike**
+
+kontent moz et byt vrem enno skryt do proverki, a opublikovann yj avt or polucaet objasnenie i vozmoznost redaktirovanija
+
+**dlia kogo i dlia kakoj celi**
+
+dlia zascity vseh polzovatelej i tretix lic
+
+**kakoj rezultat dolzen byt dostignut**
+
+lichn y e dannye ne ostajutsia publicnymi do momenta dlinn oj rucnoj zhaloby
+
+---
+
+## 189 — zhestokoe obrashenie
+
+**cto eto dolzno delat**
+
+platforma dolzna prioritetno obrabatyvat kontent s
+
+* fiziceskim nasiliem
+* opasnym nakazaniem
+* travlej zivotnyx
+* prichineniem boli
+* lisheniem vody ili edy
+* namerenn ym zapugivaniem
+* prodvizheniem zhestokix metodov
+* organizaciej poedinkov
+
+**pocemu eto nuzno**
+
+takoi kontent moz et prichiniat realn yj vred i kopirovatsia drugimi
+
+**kak eto dolzno rabotat po logike**
+
+nuzno razdeliat
+
+* dokumentaln oe dokazatelstvo dlia spaseniia
+* obrazovateln yj material s preduprezhdeniem
+* glorifikaciju ili instrukciju zhestokosti
+
+**dlia kogo i dlia kakoj celi**
+
+dlia zascity zivotnyx, volonterov i auditorii
+
+**kakoj rezultat dolzen byt dostignut**
+
+dokazatelstvo moz et byt soxraneno dlia proverki, no zhestokost ne polucaet algoritmiceskoe prodvizhenie
+
+---
+
+## 190 — opasnye metody treninga
+
+**cto eto dolzno delat**
+
+kontent ne dolzen prodvigat
+
+* udary
+* udushenie
+* elektroshok
+* lishenie bazovyx potrebnostej
+* namerenn oe zapugivanie
+* prichinenie boli
+* prinuditelnoe stolknovenie s triggerom bez bezopasnosti
+* opasn y e ustrojstva
+
+**pocemu eto nuzno**
+
+socialnaja set moz et normalizovat vred, esli sam y e shokirujusc ie video polucajut bolsh e reakcii
+
+**kak eto dolzno rabotat po logike**
+
+obrazovateln oe obsuzhdenie problem y moz et byt dostupno s kontekstom, no instrukcija po prichineniiu boli ogranichivaetsia
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev, trenerov i zivotnyx
+
+**kakoj rezultat dolzen byt dostignut**
+
+algoritm ne voznagrazhdaet zhestokij kontent bolshim oxvatom
+
+---
+
+## 191 — opasnye medicinskie sovety
+
+**cto eto dolzno delat**
+
+platforma dolzna vyiavliat rekomendacii
+
+* otmenit lekarstvo
+* udvoit dozu
+* dat chelovecheskij preparat
+* ne obrashchatsia v kliniku pri srocn yx simptomax
+* ispolzovat toksicn oe sredstvo
+* samostojatelno provodit opasn uju proceduru
+
+**pocemu eto nuzno**
+
+neproverenn yj sovet moz et prichinit vred ili smert
+
+**kak eto dolzno rabotat po logike**
+
+opasn yj kontent moz et byt skryt, poluchit preduprezhdenie ili byt udal en v zavisimosti ot riska
+
+professionaln yj status avtora ne osvobozhdaet material ot moderacii
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev i pitomcev
+
+**kakoj rezultat dolzen byt dostignut**
+
+srocn yj simptom ne poluchaet tolko komentarij podozdat doma vmesto rekomendacii obr atitsia za pomoschiu
+
+---
+
+## 192 — lichn yj opyt ne ravnjaetsia universalnoj instrukcii
+
+**cto eto dolzno delat**
+
+avtor moz et rasskazat, cto pomoglo ego pitomcu, no dolzen otlicit opyt ot obschej rekomendacii
+
+**pocemu eto nuzno**
+
+odno lechenie ili dieta ne obyazatelno bezopasny dlia drugogo zivotnogo
+
+**kak eto dolzno rabotat po logike**
+
+sistema moz et predlozhit formulirovku lichn yj opyt i ssylku na specialista
+
+**dlia kogo i dlia kakoj celi**
+
+dlia grupp podderzki i xoziaev
+
+**kakoj rezultat dolzen byt dostignut**
+
+polezn a ia istoria ne sozdaet vpechatleniia garantirovannogo medicinskogo soveta
+
+---
+
+## 193 — nelegalnaja prodaza zivotnyx i ekologiceskaia kontrabanda
+
+**cto eto dolzno delat**
+
+kontent ne dolzen ispolzovatsia dlia skrytoj prodazi
+
+* oxraniaemyx vidov
+* ukradennyx pitomcev
+* nelegalno vvezennyx zivotnyx
+* zivotnyx bez neobxodimyx dokumentov
+* zivotnyx dlia zhestokogo ispolzovaniia
+* biologiceskix materialov s narusheniem pravil
+
+**pocemu eto nuzno**
+
+socialnye posty mogut obxodit formalnye pravila marketplace
+
+**kak eto dolzno rabotat po logike**
+
+podozriteln yj post peredaetsia specialnoj proverke, a pri visok om risk e vrem enno skryvaetsia
+
+**dlia kogo i dlia kakoj celi**
+
+dlia zascity zivotnyx, prirody i polzovatelej
+
+**kakoj rezultat dolzen byt dostignut**
+
+oby cn yj post ne stanovitsia tajnym katalogom nelegalnoj torgovli
+
+---
+
+## 194 — skrytaia reklama i spam
+
+**cto eto dolzno delat**
+
+platforma dolzna raspoznavat massovye posty, kommentarii i reposty s odinakovoj reklamoj
+
+**pocemu eto nuzno**
+
+bez ogranichenij gruppy i xeshtegi bystro zasoriajutsia prodazami
+
+**kak eto dolzno rabotat po logike**
+
+signal y
+
+* odinakov yj tekst
+* mnogo ssylok
+* odinakov y e media
+* massovye upominaniia
+* nov yj akkaunt
+* nizkij procent realnogo vzaimodejstviia
+* skrytoe partnerstvo
+
+**dlia kogo i dlia kakoj celi**
+
+dlia vsego soobscestva
+
+**kakoj rezultat dolzen byt dostignut**
+
+reklama ostajotsia v oznachennyx format ax i ne vytesniaet organiceskij kontent
+
+---
+
+## 195 — fishing
+
+**cto eto dolzno delat**
+
+sistema dolzna blokirovat ili preduprezhdat o ssylkax, imit irujusc ix
+
+* podderzhku
+* platezn yj servis
+* dostavku
+* kliniku
+* proverku akkaunta
+* vosstanovlenie parolia
+* sb or sredstv
+
+**pocemu eto nuzno**
+
+polzovatel moz et doverit ssylke iz posta priuta ili druga
+
+**kak eto dolzno rabotat po logike**
+
+pokazyvaetsia realn yj domen, a podozriteln yj perehod trebuet dopolnitelnogo podtverzhdeniia
+
+**dlia kogo i dlia kakoj celi**
+
+dlia zascity akkauntov i platezej
+
+**kakoj rezultat dolzen byt dostignut**
+
+poddeln a ia stranic a ne otkryvaetsia kak budto eto officialn yj servis platformy
+
+---
+
+## 196 — moshenniceskie sbory
+
+**cto eto dolzno delat**
+
+posty s prosboj o dengax dolzny prohodit dopolniteln uju proverku pri vysokom risk e
+
+**pocemu eto nuzno**
+
+fotografii bolnogo pitomca mogut byt ukraden y, dokumenty poddelan y, a platezn y e rekvizity prinadlezhat drugomu licu
+
+**kak eto dolzno rabotat po logike**
+
+platforma moz et proveriat
+
+* sviaz s profilem
+* lichnost poluchatelia
+* dokumenty
+* kliniku
+* istoriju sbora
+* otchet
+* povtorn oe ispolzovanie media
+
+**dlia kogo i dlia kakoj celi**
+
+dlia donorov, xoziaev i priutov
+
+**kakoj rezultat dolzen byt dostignut**
+
+sb or ne polucaet bolsh oj oxvat tolko iz-za emocionaln oj fotografii bez bazovoj proverki
+
+---
+
+## 197 — koordinir ovannaia travlia
+
+**cto eto dolzno delat**
+
+platforma dolzna zam ec at massovye kommentarii, upominaniia, reposty i zhaloby protiv odnogo profilia
+
+**pocemu eto nuzno**
+
+odin konflikt moz et prevratitsia v organizovann uju ataku i raskrytie lichnyx dannyx
+
+**kak eto dolzno rabotat po logike**
+
+pri podozrenii mozno
+
+* ogranichit kommentarii
+* skryt massovye upominaniia
+* zamedlit novye reposty
+* ogranichit poisk profilia
+* predlozhit rezhim bezopasnosti
+* peredat slucaj moderatoru
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev, specialistov, priutov i publicnyx profilej
+
+**kakoj rezultat dolzen byt dostignut**
+
+massovaia ataka ne polucaet avtomaticeskij algoritmiceskij oxvat
+
+---
+
+## 198 — dezinformacija o srocn oj situacii
+
+**cto eto dolzno delat**
+
+podozriteln y e posty o poiske, opasnosti, klinike ili priute dolzny proveriatsia po originalnomu istochniku
+
+**pocemu eto nuzno**
+
+lozhn oe objavlenie moz et napravit volonterov ne v to mesto, sozdat paniku ili sobrat dengi
+
+**kak eto dolzno rabotat po logike**
+
+sistema pokaz yvaet
+
+* original
+* status proverki
+* poslednee obnovlenie
+* organizaciju
+* prichinu somneniia
+* knopku soobscit ob oshibke
+
+**dlia kogo i dlia kakoj celi**
+
+dlia mestnyx soobscestv i srocn yx operacij
+
+**kakoj rezultat dolzen byt dostignut**
+
+repost kopii bez originala ne polucajut bolsh ij prioritet srocnogo kanala
+
+---
+
+# moderacija
+
+## 199 — mnogo urovnevaja moderacija
+
+**cto eto dolzno delat**
+
+kontent moz et prohodit
+
+* avtomaticeskuju proverku
+* pravil a gruppy
+* proverku avtora ili organizacii
+* zhaloby soobscestva
+* rucn uju moderaciju platformy
+* specialn uju proverku vysokogo riska
+
+**pocemu eto nuzno**
+
+odin algoritm ne ponimaet vsego konteksta, a odna rucnaia komanda ne moz et prosmotret ves kontent srazu
+
+**kak eto dolzno rabotat po logike**
+
+raznye urovni dopolniajut drug druga, a kriticeskie resheniia imejut audit i apellaciju
+
+**dlia kogo i dlia kakoj celi**
+
+dlia vsego soobscestva
+
+**kakoj rezultat dolzen byt dostignut**
+
+opasn yj kontent bystro ogranichivaetsia, a dopustim yj chuvstviteln yj material ne udal iaetsia bez konteksta
+
+---
+
+## 200 — zhaloba na post
+
+**cto eto dolzno delat**
+
+zritel moz et vybrat prichinu
+
+* spam
+* moshennicestvo
+* zhestokoe obrashenie
+* opasn yj sovet
+* lichnye dannye
+* ugroza
+* presledovanie
+* poddeln a ia adopcija
+* nelegalnaja prodaza
+* ukradenn oe media
+* dezinformacija
+* seksualn yj kontent
+* narushenie avtorskix prav
+* drugoe
+
+**pocemu eto nuzno**
+
+strukturirovannaia zhaloba pomogaet vybrat praviln yj prioritet i komandu
+
+**kak eto dolzno rabotat po logike**
+
+polzovatel moz et ukazat konkretn yj fragment, media, kommentarij ili lichn y e dannye
+
+**dlia kogo i dlia kakoj celi**
+
+dlia zritelej i moderatorov
+
+**kakoj rezultat dolzen byt dostignut**
+
+moderator ne polucaet tolko obsch ee mne ne nravitsia, a vidit realn uju problem u
+
+---
+
+## 201 — zhaloba bez raskrytiia zhalobscika
+
+**cto eto dolzno delat**
+
+avtor posta ne dolzen avtomaticeski uznavat, kto otpravil zhalobu
+
+**pocemu eto nuzno**
+
+eto moz et privesti k mesti, presledovaniiu ili travle
+
+**kak eto dolzno rabotat po logike**
+
+moderator vidit neobxodim y e dannye, no narushiteliu pokaz yvaetsia pravilo i reshenie bez lichnosti zhalobscika
+
+**dlia kogo i dlia kakoj celi**
+
+dlia bezopasnosti zhalobscikov
+
+**kakoj rezultat dolzen byt dostignut**
+
+polzovateli ne boiatsia soobscat o realnom vrede
+
+---
+
+## 202 — vrem ennoe skrytie pri vysokom risk e
+
+**cto eto dolzno delat**
+
+podozriteln yj kontent moz et byt vrem enno nedostup en do proverki
+
+**pocemu eto nuzno**
+
+zhestokoe video, adres ili fishing ssylka mogut prichinit vred, poka moderator rassmatrivaet zhalobu
+
+**kak eto dolzno rabotat po logike**
+
+vrem ennoe skrytie ne ravno okonchatelnomu resheniiu, a avtor polucaet status i vozmoznost otveta
+
+**dlia kogo i dlia kakoj celi**
+
+dlia kontenta vysokogo riska
+
+**kakoj rezultat dolzen byt dostignut**
+
+potencialn yj vred ostanavlivaetsia bez avtomaticeskogo neobratimogo udaleniia
+
+---
+
+## 203 — moderacionnye dejstviia
+
+**cto eto dolzno delat**
+
+moderator moz et
+
+* ubrat media
+* skryt lichnye dannye
+* ogranichit auditoriju
+* otkliucit kommentarii
+* otkliucit reposty
+* dobavit preduprezhdenie
+* snizit rasprostranenie
+* udal it post
+* ogranichit avtora
+* peredat slucaj specialnoj komande
+* vosstanovit post
+
+**pocemu eto nuzno**
+
+ne kazdoe narushenie trebuet odinakovogo nakazaniia
+
+**kak eto dolzno rabotat po logike**
+
+dejstvie dolzno byt proportionalnym, imet osnovanie, srok i audit
+
+**dlia kogo i dlia kakoj celi**
+
+dlia moderatorov i zatronutyx polzovatelej
+
+**kakoj rezultat dolzen byt dostignut**
+
+odin lichn yj nomer mozno ubrat bez udaleniia poleznogo posta, esli ostaln oe soderzhanie dopustimo
+
+---
+
+## 204 — objasnenie resheniia
+
+**cto eto dolzno delat**
+
+avtor dolzen polucit
+
+* kakoi material
+* kakoe pravilo
+* kakoe dejstvie
+* cto mozno ispravit
+* srok
+* mozno li podat apellaciju
+* kakie funkcii ogranicheny
+
+**pocemu eto nuzno**
+
+nepon iatnoe udaleniie ne pomogaet izmenit povedenie i snizaet doverie
+
+**kak eto dolzno rabotat po logike**
+
+lichnost zhalobscika i zascischenn y e dokazatelstva ne raskryvajutsia
+
+**dlia kogo i dlia kakoj celi**
+
+dlia avt orov i komand
+
+**kakoj rezultat dolzen byt dostignut**
+
+avtor ponimaet granicy resheniia i moz et ego ispravit ili osparivat
+
+---
+
+## 205 — apellacija
+
+**cto eto dolzno delat**
+
+avtor moz et osparivat udaleniie, ogranichenie, markirovku ili snizhenie rasprostraneniia
+
+**pocemu eto nuzno**
+
+algoritm i moderator mogut oshibatsia
+
+**kak eto dolzno rabotat po logike**
+
+apellacija soderzit objasnenie, kontekst, dokazatelstva, pravo na media i pri vozmoznosti proverku drugim moderatorom
+
+**dlia kogo i dlia kakoj celi**
+
+dlia zascity avt orov ot oshibocnyx reshenij
+
+**kakoj rezultat dolzen byt dostignut**
+
+dopustim yj material moz et byt vosstanovlen vmeste s kommentariiami i statist ikoj
+
+---
+
+## 206 — lozhn y e i massovye zhaloby
+
+**cto eto dolzno delat**
+
+platforma dolzna vyiavliat koordinir ovann y e zhaloby, napravlennye na travliu ili konkurenciju
+
+**pocemu eto nuzno**
+
+bolshoe kolichestvo zhalob ne vsegda oznachaet realn oe narushenie
+
+**kak eto dolzno rabotat po logike**
+
+vazny kachestvo dokazatelstv, nezavisimost istochnikov, kontekst i istoria, a ne tolko chislo klikov
+
+**dlia kogo i dlia kakoj celi**
+
+dlia zascity realnyx avt orov, specialistov i priutov
+
+**kakoj rezultat dolzen byt dostignut**
+
+gruppa nedobrozhelatelej ne moz et avtomaticeski udal it profilem mnogoletn yj kontent
+
+---
+
+## 207 — soxranenie dokazatelstv
+
+**cto eto dolzno delat**
+
+pri zhalobe sistema moz et vrem enno soxranit original i istoriju, daze esli avtor ego udal il
+
+**pocemu eto nuzno**
+
+bez etogo ugroza, moshenniceskaia ssylka ili doxxing mogut ischeznut do rassledovaniia
+
+**kak eto dolzno rabotat po logike**
+
+dokazatelstvo dostupno tolko upolnomochenn oj komande i xranitsia ogranichenn yj period po pravilam
+
+**dlia kogo i dlia kakoj celi**
+
+dlia bezopasnosti, apellacij i pravov yx obrashenij
+
+**kakoj rezultat dolzen byt dostignut**
+
+udaleniie posta ne unictozhaet material, neobxodim yj dlia proverki serioznogo incidenta
+
+---
+
+# ai funkcii
+
+## 208 — ai pomosch pri napisanii
+
+**cto eto dolzno delat**
+
+ai moz et pomoch
+
+* strukturirovat tekst
+* ispravit oshibki
+* sokratit
+* sozdat zagolovok
+* predlozhit alternativn yj tekst
+* perevesti
+* podgotovit neskolko variantov tona
+* najti lichnye dannye
+
+**pocemu eto nuzno**
+
+ne vsem polzovateliam legko napisat pon iatn yj ili mnogoiazy cn yj post
+
+**kak eto dolzno rabotat po logike**
+
+ai sozdaet tolko cernovik, a avtor proveriaet i prinimaet ego
+
+**dlia kogo i dlia kakoj celi**
+
+dlia avt orov s raznym urovnem pisma i jazyka
+
+**kakoj rezultat dolzen byt dostignut**
+
+post stanovitsia pon iatnee, no avtor ostajotsia otvetstvennym za fakty i finaln yj tekst
+
+---
+
+## 209 — ai ne dolzen pridumyvat fakty o pitomce
+
+**cto eto dolzno delat**
+
+sistema ne dolzna avtomaticeski dobavliat porodu, diagnoz, vozrast, xarakter ili sobytie, kotorogo net v dannyx
+
+**pocemu eto nuzno**
+
+ubediteln yj vymyslenn yj fakt moz et ispolzovatsia v adopcii, poisk e ili medicinskom kontekste
+
+**kak eto dolzno rabotat po logike**
+
+kazdaia personalnaia detal dolzna byt podtverzhdena avt orom ili vzjata iz razreshennogo polia profilia s ukazaniem istochnika
+
+**dlia kogo i dlia kakoj celi**
+
+dlia zascity identichnosti pitomca
+
+**kakoj rezultat dolzen byt dostignut**
+
+ai ne sozdaet lozn uju istoriju tolko radi krasivogo teksta
+
+---
+
+## 210 — ai alternativn yj tekst
+
+**cto eto dolzno delat**
+
+ai moz et predlozhit opisanie fotografii ili video
+
+**pocemu eto nuzno**
+
+rucn oe opisanie kazdogo media trebuet vremeni
+
+**kak eto dolzno rabotat po logike**
+
+avtor dolzen proverit imia, okras, vid, mesto, dejstvie i cuvstiteln y e detali
+
+**dlia kogo i dlia kakoj celi**
+
+dlia dostupnosti
+
+**kakoj rezultat dolzen byt dostignut**
+
+bolsh e media polucaet polezn uju tekstov uju alternativu bez loznyx imen i faktov
+
+---
+
+## 211 — ai moderacija
+
+**cto eto dolzno delat**
+
+ai moz et podsvetit
+
+* lichnye dannye
+* zhestokost
+* spam
+* fishing
+* poddeln uju reklamu
+* opasn yj sovet
+* graficeskoe media
+* koordinir ovann uju travliu
+* nelegaln uju prodazu
+
+**pocemu eto nuzno**
+
+obem kontenta moz et byt slishkom bolshim dlia tolko rucnoj proverki
+
+**kak eto dolzno rabotat po logike**
+
+ai risk ne dolzen avtomaticeski stanovitsia okonchatelnym nakazaniem dlia slozhnogo slucaia bez apellacii i rucnogo konteksta
+
+**dlia kogo i dlia kakoj celi**
+
+dlia moderatorov i bezopasnosti
+
+**kakoj rezultat dolzen byt dostignut**
+
+opasn y e materialy bystree popadajut na praviln uju proverku, a dopustim y e ne udal iajutsia bezvozvratno po odn oj ocenke
+
+---
+
+## 212 — ai perevod
+
+**cto eto dolzno delat**
+
+ai moz et perevodit tekst, subtitry i kommentar ii
+
+**pocemu eto nuzno**
+
+eto rasshiri a et mnogoiazy cnoe obsuzhdenie
+
+**kak eto dolzno rabotat po logike**
+
+original vsegda dostup en, a nazvaniia lekarstv, dozy, imena i adres a zascischajutsia ot neproverennogo izmeneniia
+
+**dlia kogo i dlia kakoj celi**
+
+dlia mezhdunarodnyx polzovatelej
+
+**kakoj rezultat dolzen byt dostignut**
+
+perevod ulucshaet ponimanie bez poteri kriticeskix detalej
+
+---
+
+## 213 — ai kratkaia svodka dlinnogo obsuzhdeniia
+
+**cto eto dolzno delat**
+
+polzovatel moz et poluchit cernov uju svodku dlinn yx kommentariev
+
+**pocemu eto nuzno**
+
+v diskussii mogut byt sotni otvetov
+
+**kak eto dolzno rabotat po logike**
+
+svodka dolzna ssylatsia na originalnye vetki, pokaz yvat, cto ona avtomaticeskaia, i ne vydavat mnenie bolshinstva za professionaln yj fakt
+
+**dlia kogo i dlia kakoj celi**
+
+dlia zritelej bolsh ix obsuzhdenij
+
+**kakoj rezultat dolzen byt dostignut**
+
+polzovatel bystree ponimaet osnovnye temy i moz et proverit originalnye kommentarii
+
+---
+
+## 214 — ai poisk dublirujusc ego kontenta
+
+**cto eto dolzno delat**
+
+sistema moz et zam ec at odinakov y e fotografii, video, teksty i srocn y e objavleniia
+
+**pocemu eto nuzno**
+
+dublikaty zasoriajut l ent u, mogut byt moshennicestvom ili raskalyvat kommentarii
+
+**kak eto dolzno rabotat po logike**
+
+avt oru predlagaetsia
+
+* eto novoe obnovlenie
+* eto repost
+* eto drugoj material
+* obed init
+* ssyl a tcia na original
+
+**dlia kogo i dlia kakoj celi**
+
+dlia avt orov, priutov, grupp i moderacii
+
+**kakoj rezultat dolzen byt dostignut**
+
+odin srocn yj slucaj imeet odin original s aktualnym statusom vmesto desiatkov nesviazannyx kopij
+
+---
+
+## 215 — ai v ranzhirovanii
+
+**cto eto dolzno delat**
+
+algoritm moz et ocenivat temu, kachestvo, povtory i relevantnost
+
+**pocemu eto nuzno**
+
+prost y e pravil a ne vsegda ponimajut slozhn yj kontent
+
+**kak eto dolzno rabotat po logike**
+
+polzovatel dolzen imet objasnenie, kontrol signalov i alternativn uju xronologiceskuju lentu
+
+**dlia kogo i dlia kakoj celi**
+
+dlia personalizirovann oj l ent y
+
+**kakoj rezultat dolzen byt dostignut**
+
+ai pomogaet uporiadocivat dostupn yj kontent, no ne reshaet skryto, cto polzovatel moz et videt voobsche
+
+---
+
+## 216 — ai i privatnost
+
+**cto eto dolzno delat**
+
+polzovatel dolzen ponimat
+
+* kakie teksty obrabatyvajutsia
+* obrabatyvajutsia li media
+* gde
+* kak dolgo
+* ispolzujutsia li dlia obucheniia
+* mozno li otkliucit
+* mozno li udal it rezultat
+* kto vidit cernovik
+
+**pocemu eto nuzno**
+
+post moz et soderzhat lichnye, medicinskie i semejnye dannye
+
+**kak eto dolzno rabotat po logike**
+
+cuvstiteln y e zakryty e materialy ne dolzny avtomaticeski peredavatsia vneshnemu ai servisu bez osnovaniia i soglasiia
+
+**dlia kogo i dlia kakoj celi**
+
+dlia vseh avt orov
+
+**kakoj rezultat dolzen byt dostignut**
+
+polzovatel ne ter iaet kontrol nad zakrytym cernovikom radi udobnoj funkc ii
+
+---
+
+# integracija s drugimi moduljami
+
+## 217 — integracija s profilem pitomca
+
+**cto eto dolzno delat**
+
+post moz et publikovatsia ot imeni pitomca i pojavliatsia v ego istorii
+
+**pocemu eto nuzno**
+
+socialn yj kontent dolzen byt sviazan s stabiln ym profilem, a ne tolko s akkauntom xoziajina
+
+**kak eto dolzno rabotat po logike**
+
+realn yj avtor fiksiruetsia, prava proveriajutsia, a peredaca profilia ne avtomaticeski meniaet avt orstvo star yx postov
+
+**dlia kogo i dlia kakoj celi**
+
+dlia vseh profilej pitomcev
+
+**kakoj rezultat dolzen byt dostignut**
+
+pitomec imeet celostn uju socialn uju istoriju s prozracn ym upravleniem
+
+---
+
+## 218 — integracija s dnevnikom uxoda
+
+**cto eto dolzno delat**
+
+xoziajin moz et dobrovolno sozdat post iz
+
+* progulki
+* treninga
+* dostizeniia
+* fotografii
+* aktivnosti
+* izmeneniia rutin y
+
+**pocemu eto nuzno**
+
+ne nuzno povtorno vvodit vremia, mesto i media
+
+**kak eto dolzno rabotat po logike**
+
+dnevnik ostajotsia zakrytym, a v post peredajotsia tolko vybrann y e polia
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev, del iasc ix povsednevn oj ziznju pitomca
+
+**kakoj rezultat dolzen byt dostignut**
+
+publicn yj post moz et pokazat fotografiju progulki, ne raskryvaja poln yj marshrut, tualet i med icinskie nabludeniia
+
+---
+
+## 219 — integracija s medkartockoj
+
+**cto eto dolzno delat**
+
+xoziajin moz et dobrovolno podelitsia obobschonn ym obnovleniem iz medkartocki
+
+**pocemu eto nuzno**
+
+sem ja ili podpisciki mogut xotet znat, cto pitomec vosstanavlivaetsia, no im ne nuzny analiz y i dozirovki
+
+**kak eto dolzno rabotat po logike**
+
+sistema sozdaet nov yj cernovik s minimalnym obemom dannyx i predlagaet ubrat lichnye dokumenty
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev, memorialnyx profilej i grupp podderzki
+
+**kakoj rezultat dolzen byt dostignut**
+
+xoziajin delitsia obnovleniem, ne publik uja vsiu medkartocku
+
+---
+
+## 220 — integracija s poiskom poterjannogo pitomca
+
+**cto eto dolzno delat**
+
+post dolzen otrazat aktualn yj status poiskovoj operacii
+
+**pocemu eto nuzno**
+
+oby cnaia kopija bystro ustarevaet
+
+**kak eto dolzno rabotat po logike**
+
+knopki, karta, poslednee nabludenie i kontakt berutsia iz originalnogo poiskovogo obekta
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev, svidetelej i volonterov
+
+**kakoj rezultat dolzen byt dostignut**
+
+liuboj repost pokazyvaet odin aktualn yj status i ne prodolzaet sobirat ustarevsh ie nabludeniia
+
+---
+
+## 221 — integracija s adopciej
+
+**cto eto dolzno delat**
+
+adopcionnye posty dolzny byt sviazany s anketami, statusom i profil em pitomca
+
+**pocemu eto nuzno**
+
+kommentarii pod fotografiej ne dolzny zamen iat proverenn yj process adopcii
+
+**kak eto dolzno rabotat po logike**
+
+glavn oe dejstvie vedet v strukturirovann uju zayavku, a ne trebuet publikovat telefon ili lichnye dannye v kommentarii
+
+**dlia kogo i dlia kakoj celi**
+
+dlia priutov i kandidatov
+
+**kakoj rezultat dolzen byt dostignut**
+
+interes k pitomcu prevrashch a etsia v bezopasn uju zayavku, a ne v haotichn uju ochered kommentarev
+
+---
+
+## 222 — integracija s gruppami
+
+**cto eto dolzno delat**
+
+post moz et byt sozdan neposredstvenno v gruppe i podciniatsia ejo pravilam
+
+**pocemu eto nuzno**
+
+gruppa moz et imet zakryt uju auditoriju, odobrenie i specialn y e kategorii
+
+**kak eto dolzno rabotat po logike**
+
+repost iz gruppy za ejo predely vozmoz en tolko pri pravilax gruppy i avtora
+
+**dlia kogo i dlia kakoj celi**
+
+dlia tematiceskix soobscestv
+
+**kakoj rezultat dolzen byt dostignut**
+
+zakryt a ia gruppa ne stanovitsia istochnikom avtomaticeski publicn yx postov
+
+---
+
+## 223 — integracija s sobytijami
+
+**cto eto dolzno delat**
+
+uchastnik moz et sozdat otchet, album ili vopros po sobytiju
+
+**pocemu eto nuzno**
+
+kontent posle sobytija dolzen byt sviazan s realnym kontekstom i uchastnikami
+
+**kak eto dolzno rabotat po logike**
+
+tag profilej i fotografii uchastnikov trebujut soglasiia, a mesto i vremia mogut pokaz yvatsia v obobschonnom vide
+
+**dlia kogo i dlia kakoj celi**
+
+dlia organizatorov i uchastnikov
+
+**kakoj rezultat dolzen byt dostignut**
+
+sobytie polucaet istoriju bez avtomaticeskoj publicacii lic, lokacii i profilej vseh prisutstvujusc ix
+
+---
+
+## 224 — integracija s marketplace
+
+**cto eto dolzno delat**
+
+post moz et predstavliat tovar ili uslugu, no dolzen ssyl a tsia na originaln uju kartocku predlozheniia
+
+**pocemu eto nuzno**
+
+cena, nalichie, dostavka i status mogut izmenitsia
+
+**kak eto dolzno rabotat po logike**
+
+post pokaz yvaet aktualn yj status i ne kopiruet platezn yj process v kommentarii
+
+**dlia kogo i dlia kakoj celi**
+
+dlia prodavcov, pokupatelej i biznesov
+
+**kakoj rezultat dolzen byt dostignut**
+
+post ne prodolzaet reklamirovat prodann yj tovar kak dostupn yj
+
+---
+
+## 225 — integracija s ekspertami
+
+**cto eto dolzno delat**
+
+professionaln yj otvet ili statja mogut byt sviazany s profil em specialista i oblastju kompetencii
+
+**pocemu eto nuzno**
+
+odin znachok prover en ne pokaz yvaet, imeet li specialist otnoshenie k konkretnoj teme
+
+**kak eto dolzno rabotat po logike**
+
+post pokaz yvaet
+
+* rol
+* oblast
+* region
+* status proverki
+* konflikt interesov
+* datu obnovleniia
+
+**dlia kogo i dlia kakoj celi**
+
+dlia specialistov i xoziaev
+
+**kakoj rezultat dolzen byt dostignut**
+
+zritel moz et ocenit kontekst professionalnogo zayavleniia
+
+---
+
+## 226 — integracija s umnymi ustrojstvami
+
+**cto eto dolzno delat**
+
+ustrojstvo moz et sozdat cernovik posta iz fotografii, marsruta, aktivnosti ili sobytija
+
+**pocemu eto nuzno**
+
+avtomaticeskie dannye mogut byt interesnymi, no ne dolzny publikovatsia bez kontrolia
+
+**kak eto dolzno rabotat po logike**
+
+po umolcaniju sozdaetsia cernovik s podtverzhdeniem avtora i zascitoj lokacii
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev s gps, kamerami i trekerami
+
+**kakoj rezultat dolzen byt dostignut**
+
+umn yj oshejnik ne publik uet tekusc ij domashnij marshrut avtomaticeski
+
+---
+
+## 227 — integracija s kartoj mest
+
+**cto eto dolzno delat**
+
+post moz et ssyl a tsia na proveriaem uju kartocku mesta
+
+**pocemu eto nuzno**
+
+adres, pravila i status mesta mogut izmenitsia
+
+**kak eto dolzno rabotat po logike**
+
+avtor dobavliaet lichn oe mnenie, a bazovye fakty berutsia iz kartocki s datoj proverki
+
+**dlia kogo i dlia kakoj celi**
+
+dlia putesestvennikov i mestnyx xoziaev
+
+**kakoj rezultat dolzen byt dostignut**
+
+subjektivn yj otzyv i obektivnaia informacija mesta ne smeshivajutsia
+
+---
+
+# tehniceskaia logika
+
+## 228 — media kak otdeln yj obekt
+
+**cto eto dolzno delat**
+
+kazdyj fajl dolzen xranit
+
+* vladelca
+* avtora
+* tip
+* format
+* razmer
+* original
+* proizvodnye kopii
+* privatnost
+* status obrabotki
+* metadannye
+* moderaciju
+* alt tekst
+* licenziiu
+* sviazannye posty
+
+**pocemu eto nuzno**
+
+odin fajl moz et ispolzovatsia v post e, albome, profile i poiskovom objavlenii
+
+**kak eto dolzno rabotat po logike**
+
+udaleniie sviazi iz odnogo posta ne obyazatelno unictozhaet fajl, esli on legitimno ispolzuetsia v drugom razdele
+
+**dlia kogo i dlia kakoj celi**
+
+dlia nadezhnogo upravleniia media
+
+**kakoj rezultat dolzen byt dostignut**
+
+net lishnix kopij, no prava kazdogo ispolzovaniia proveriajutsia otdelno
+
+---
+
+## 229 — pravilo auditorii kak otdeln yj obekt
+
+**cto eto dolzno delat**
+
+auditorija dolzna byt ne prostym public ili private, a strukturirovannym pravilom
+
+**pocemu eto nuzno**
+
+nuzny druzia, blizkij krug, gruppy, sobytija, vybrannye profilej i vrem ennye ssylki
+
+**kak eto dolzno rabotat po logike**
+
+pravilo moz et vkliucat i iskliucat profilej i proveriatsia pri kazdom zaprose
+
+**dlia kogo i dlia kakoj celi**
+
+dlia realnoj privatnosti
+
+**kakoj rezultat dolzen byt dostignut**
+
+individualno zablokirovann yj drug ne polucaet post tolko potomu, cto on vse esio v obschej gruppe druzej
+
+---
+
+## 230 — vzaimodejstvie kak otdeln yj obekt
+
+**cto eto dolzno delat**
+
+reakcia, kommentarij, repost, zakladka, prosmotr i zhaloba dolzny byt razdeleny
+
+**pocemu eto nuzno**
+
+u nix raznye prava, privatnost, audit, analitika i zivotn yj cikl
+
+**kak eto dolzno rabotat po logike**
+
+kazdoe dejstvie ssyl a etsia na post, realnogo avtora i profil dejstviia
+
+**dlia kogo i dlia kakoj celi**
+
+dlia stabilnoj arhitektury socialnyx funkcii
+
+**kakoj rezultat dolzen byt dostignut**
+
+udaleniie reakc ii ne zat ragivaet zakladku, a zhaloba ne pokaz yvaetsia publicno kak komentarij
+
+---
+
+## 231 — idempotentnost publicacii
+
+**cto eto dolzno delat**
+
+povtorn oe nazhatie ne dolzno sozda vat dva odinakov yx posta
+
+**pocemu eto nuzno**
+
+medlenn yj internet moz et zastavit avtora nazhat opublikovat neskolko raz
+
+**kak eto dolzno rabotat po logike**
+
+operacija polucaet unikaln yj identifikator, a povtorn yj zapros vozvrashchaet uze soz dann yj rezultat
+
+**dlia kogo i dlia kakoj celi**
+
+dlia vseh avt orov
+
+**kakoj rezultat dolzen byt dostignut**
+
+odin cernovik prevrashch a etsia v odin post
+
+---
+
+## 232 — idempotentnost reakcij i repostov
+
+**cto eto dolzno delat**
+
+povtorn oe dejstvie ne dolzno nakruchivat schetciki
+
+**pocemu eto nuzno**
+
+povtorn y e setev y e zaprosy mogut sozda vat desiatki reakcij ili repostov
+
+**kak eto dolzno rabotat po logike**
+
+unikalnost proveriaetsia po profiliu, postu i tipu dejstviia
+
+**dlia kogo i dlia kakoj celi**
+
+dlia chestn oj statistiki
+
+**kakoj rezultat dolzen byt dostignut**
+
+odin polzovatel ne moz et slucajno ili namerenno sozdat mnogo odinakov yx vzaimodejstvij
+
+---
+
+## 233 — odnovremenn oe redaktirovanie
+
+**cto eto dolzno delat**
+
+sistema dolzna obrabatyvat situaciju, kogda dva redaktora izmeniajut odin post odnovremenno
+
+**pocemu eto nuzno**
+
+priut ili organizacija moz et imet neskolko avt orov
+
+**kak eto dolzno rabotat po logike**
+
+pri konflikte pokaz yvajutsia obe versii i predlagaetsia obed inenie, a ne tixaja potera odnoj iz nix
+
+**dlia kogo i dlia kakoj celi**
+
+dlia komandnyx profilej
+
+**kakoj rezultat dolzen byt dostignut**
+
+odin redaktor ne perepis yvaet nezametno izmeneniia drugogo
+
+---
+
+## 234 — schetciki vzaimodejstvij
+
+**cto eto dolzno delat**
+
+kolichestvo reakcij, kommentariev, repostov i soxranenij dolzno byt posledovatelnym
+
+**pocemu eto nuzno**
+
+raznye cifry v l ent e i profile snizajut doverie
+
+**kak eto dolzno rabotat po logike**
+
+schetciki ucit yvajut
+
+* udaleniia
+* blokirovki
+* privatnost
+* moderaciju
+* falshiv y e akkaunty
+* status zritel ia
+
+**dlia kogo i dlia kakoj celi**
+
+dlia avt orov, zritelej i analitiki
+
+**kakoj rezultat dolzen byt dostignut**
+
+kazdyj polzovatel vidit korrektn oe znachenie v ramkax svoix prav
+
+---
+
+## 235 — invalidacija kesa posle izmeneniia privatnosti
+
+**cto eto dolzno delat**
+
+posle zakrytiia posta nuzno obnovit
+
+* l ent y
+* profil
+* poisk
+* xeshtegi
+* rekomendacii
+* reposty
+* predprosmotry
+* vneshnie ssylki
+* lokaln y e keshi
+* media url
+
+**pocemu eto nuzno**
+
+nov a ia nast roika bespolezna, esli st araia publicnaia kopija prodolzaet rabotat
+
+**kak eto dolzno rabotat po logike**
+
+bezopasnostnoe suzhenie auditorii imeet vysokij prioritet i ne dolzno zdat oby cnogo cikla kesa
+
+**dlia kogo i dlia kakoj celi**
+
+dlia zascity avt orov
+
+**kakoj rezultat dolzen byt dostignut**
+
+skrytyj post bystro stanovitsia nedostupnym vo vseh tochkax vhod a
+
+---
+
+## 236 — zascischennye ssylki na media
+
+**cto eto dolzno delat**
+
+zakryty e fotografii i video ne dolzny imet bessrocn yj publicn yj url
+
+**pocemu eto nuzno**
+
+odin raz poluchenn a ia ssylka mogla by obojti budusc uju smenu privatnosti
+
+**kak eto dolzno rabotat po logike**
+
+ispolzujutsia vrem ennye podpisannye ssylki ili proverka dostup a pri kazdom zaprose
+
+**dlia kogo i dlia kakoj celi**
+
+dlia zakrytyx profilej, grupp, med icinskix i semejnyx media
+
+**kakoj rezultat dolzen byt dostignut**
+
+udalenn yj iz gruppy polzovatel ne moz et beskonecno otkryvat star yj fajl po priamomu url
+
+---
+
+## 237 — proverka zagruzhaemyx fajlov
+
+**cto eto dolzno delat**
+
+kazdyj fajl dolzen prohodit proverku na
+
+* realn yj format
+* vredonosn oe soderzhanie
+* slomann yj fajl
+* opasn yj vstroenn yj kod
+* razmer
+* prodolzhitelnost
+* podderzhivaem yj kodek
+* dublikaty
+
+**pocemu eto nuzno**
+
+rasshirenie fajla ne garantir uet ego realn yj tip i bezopasnost
+
+**kak eto dolzno rabotat po logike**
+
+proverka proishodit do publicnogo dostup a, a original izoliruetsia do obrabotki
+
+**dlia kogo i dlia kakoj celi**
+
+dlia zascity platformy i zritelej
+
+**kakoj rezultat dolzen byt dostignut**
+
+media ne moz et ispolzovatsia dlia rasprostraneniia vredonosnogo fajla
+
+---
+
+## 238 — limity fajlov
+
+**cto eto dolzno delat**
+
+platforma dolzna ustanovit pon iatnye limity po razmeru, prodolzhitelnosti i kolichestvu
+
+**pocemu eto nuzno**
+
+bez limitov odin akkaunt moz et ispolzovat ogromn yj obem xraneniia ili narushat stabilnost
+
+**kak eto dolzno rabotat po logike**
+
+limit moz et zaviset ot tipa kontenta, roli, plana i proverki, no ne dolzen zastavliat avtora bez obiasneniia obrezat vazn oe dokazatelstvo
+
+**dlia kogo i dlia kakoj celi**
+
+dlia vseh avt orov i stabilnosti servisa
+
+**kakoj rezultat dolzen byt dostignut**
+
+polzovatel zaranee znaet dopustim yj format i polucaet variant szhatiia ili drugogo bezopasnogo sposoba peredaci
+
+---
+
+## 239 — xranenie originalov
+
+**cto eto dolzno delat**
+
+avtor dolzen znat, xranitsia li original i kak dolgo
+
+**pocemu eto nuzno**
+
+original moz et soderzhat vysokoe kachestvo i metadannye, no takze povys a et risk i stoimost xraneniia
+
+**kak eto dolzno rabotat po logike**
+
+mozno vybrat
+
+* xranit original
+* udal it posle obrabotki
+* xranit tolko dlia zakrytogo arhiva
+* xranit do istecheniia sroka
+* eksportirovat i udal it
+
+**dlia kogo i dlia kakoj celi**
+
+dlia fotografov, xoziaev i organizacij
+
+**kakoj rezultat dolzen byt dostignut**
+
+polzovatel ponimaet, kak a ia versija ostanetsia v servise
+
+---
+
+## 240 — rezervnye kopii i vosstanovlenie
+
+**cto eto dolzno delat**
+
+kontent dolzen imet rezervn uju zascitu ot tehniceskoj poteri
+
+**pocemu eto nuzno**
+
+profil pitomca moz et soderzhat mnogoletn uju nevosstanovim uju istoriju
+
+**kak eto dolzno rabotat po logike**
+
+rezervnye kopii dolzny byt zascischeny, imet srok i ne stanovitsia obxodom udaleniia bessrocno
+
+**dlia kogo i dlia kakoj celi**
+
+dlia nadezhnosti platformy
+
+**kakoj rezultat dolzen byt dostignut**
+
+tehniceskaia oshibka ne unictozhaet vse fotografii, no udalenn y e dannye ne xran iatsia beskonecno bez osnovaniia
+
+---
+
+## 241 — poiskov yj indeks
+
+**cto eto dolzno delat**
+
+tekst, razreshenn y e xeshtegi, opisaniia i publicn y e metadannye mogut byt dostupny v poisk e
+
+**pocemu eto nuzno**
+
+bez indeksa polezn yj star yj kontent trudno najti
+
+**kak eto dolzno rabotat po logike**
+
+indeks xranit tolko razreshenn y e polia i obnovliaetsia pri redaktirovan ii, blokirovke, udaleni i i smene auditorii
+
+**dlia kogo i dlia kakoj celi**
+
+dlia vnutrennego poisk a
+
+**kakoj rezultat dolzen byt dostignut**
+
+zakryt yj post ne raskryvaetsia cerez fragment teksta ili podskazku
+
+---
+
+## 242 — vneshniaia indeksacija
+
+**cto eto dolzno delat**
+
+avtor moz et razresit ili zapretit poj av lenie publicnogo posta vo vneshnix poiskovyx sistemax
+
+**pocemu eto nuzno**
+
+publicn oe vnutri platformy i bessrocn oe v globalnom internet e imejut raznye posledstviia
+
+**kak eto dolzno rabotat po logike**
+
+pri zaprete nuzno ubrat publicn y e meta dannye, kartu sajta i strukturirovann yj predprosmotr
+
+**dlia kogo i dlia kakoj celi**
+
+dlia avt orov, kotorye xotiat vnutrennjuju, no ne globaln uju publicnost
+
+**kakoj rezultat dolzen byt dostignut**
+
+post dostup en soobscestvu, no ne obyazatelno pojavliaetsia v globalnom poiske po imeni pitomca
+
+---
+
+# analitika avtora
+
+## 243 — bazovaia statistika posta
+
+**cto eto dolzno delat**
+
+avtor moz et videt
+
+* prosmotry
+* oxvat
+* reakcii
+* kommentarii
+* reposty
+* soxraneniia
+* perehody
+* skrytiia
+* zhaloby v obobschonnom vide
+
+**pocemu eto nuzno**
+
+avtoru nuzno ponimat, dostig li material svoej celi
+
+**kak eto dolzno rabotat po logike**
+
+metrik i dolzny imet pon iatnye opredeleniia i ne obed iniat odin slucajn yj pokaz s realnym prosmotrom video
+
+**dlia kogo i dlia kakoj celi**
+
+dlia avt orov, priutov, specialistov i biznesov
+
+**kakoj rezultat dolzen byt dostignut**
+
+avtor prinimaet resheniia na osnove pon iatnyx, a ne dekorativnyx cifr
+
+---
+
+## 244 — unikaln yj oxvat
+
+**cto eto dolzno delat**
+
+statistika dolzna razdeliat obsch ee kolichestvo pokazov i primernoe kolichestvo unikalnyx zritelej
+
+**pocemu eto nuzno**
+
+odin polzovatel moz et otkryt post mnogo raz
+
+**kak eto dolzno rabotat po logike**
+
+lichnosti zritelej ne raskryvajutsia avt oru bez socialnogo dejstviia
+
+**dlia kogo i dlia kakoj celi**
+
+dlia tocn oj ocenki auditorii
+
+**kakoj rezultat dolzen byt dostignut**
+
+avtor ne prinimaet desiat povtornyx prosmotrov odnogo celoveka za desiat raznyx zritelej
+
+---
+
+## 245 — prosmotr video
+
+**cto eto dolzno delat**
+
+statistika moz et pokaz yvat
+
+* zapuski
+* srednjuju prodolzhitelnost
+* dosmotry
+* moment y vyxoda
+* prosmotr bez zvuka
+* vkliuchenie subtitrov
+
+**pocemu eto nuzno**
+
+odin avtomaticeskij start ne oznachaet realnogo interesa
+
+**kak eto dolzno rabotat po logike**
+
+metrik i dolzny razdeliat predprosmotr, aktivn yj zapusk i znachim uju prodolzhitelnost
+
+**dlia kogo i dlia kakoj celi**
+
+dlia avt orov video
+
+**kakoj rezultat dolzen byt dostignut**
+
+avtor ponimaet, smotriat li video realno, a ne tolko prokrut ili ego v l ent e
+
+---
+
+## 246 — statistika perevoda
+
+**cto eto dolzno delat**
+
+avtor moz et videt, skolko raz otkryvali perevod i na kakie jazyki v agregirovannom vide
+
+**pocemu eto nuzno**
+
+eto pomogaet ponimat mnogoiazy cnuju auditoriju
+
+**kak eto dolzno rabotat po logike**
+
+ne nuzno raskryvat j azy k konkretnogo polzovatelia, esli eto moz et ego identif icirovat
+
+**dlia kogo i dlia kakoj celi**
+
+dlia priutov, specialistov i mezhdunarodnyx avt orov
+
+**kakoj rezultat dolzen byt dostignut**
+
+avtor ponimaet, nuzno li dobavliat rucn y e perevody
+
+---
+
+## 247 — zhaloby v analitike
+
+**cto eto dolzno delat**
+
+avtor moz et videt agregirovann oe kolichestvo i kategorii reshenii moderacii
+
+**pocemu eto nuzno**
+
+avtoru nuzno ponimat risk, no lichnosti zhalobscikov dolzny byt zascischeny
+
+**kak eto dolzno rabotat po logike**
+
+ne pokaz yvajutsia podrobnosti, kotorye mogut raskryt konkretnogo zhalobscika
+
+**dlia kogo i dlia kakoj celi**
+
+dlia avt orov i bezopasnosti
+
+**kakoj rezultat dolzen byt dostignut**
+
+avtor moz et ispravit problem u, ne nachinaia presledovat zhalobscikov
+
+---
+
+## 248 — ne prevrashchat analitiku v davlenie
+
+**cto eto dolzno delat**
+
+platforma ne dolzna postojanno st ydit avtora za nizkij oxvat ili trebu vat publikovat bolsh e
+
+**pocemu eto nuzno**
+
+profilej pitomcev i xoziaev ne obyazatelno sozdaijutsia dlia karery blogera
+
+**kak eto dolzno rabotat po logike**
+
+analitika moz et byt otkliuchena ili skryta, a sovety dolzny byt neytralnymi i ne manipulativnymi
+
+**dlia kogo i dlia kakoj celi**
+
+dlia oby cnyx xoziaev, podrostkov i nekommerceskix profilej
+
+**kakoj rezultat dolzen byt dostignut**
+
+polzovatel delitsia kontentom radi obsch eniia i pamiati, a ne tolko radi cifr
+
+---
+
+# analitika platformy
+
+## 249 — pokazateli kachestva lenty
+
+**cto eto dolzno delat**
+
+platforma moz et analizirovat agregirovanno
+
+* skrytiia
+* otpiski
+* blokirovki
+* zhaloby
+* soxraneniia
+* dolgosrocn oe vzaimodejstvie
+* raznoobrazie avt orov
+* doliu novyx profilej
+* dostupnost vaznogo kontenta
+
+**pocemu eto nuzno**
+
+bolsh oe vremia v prilozhenii ne vsegda oznachaet polezn yj opyt
+
+**kak eto dolzno rabotat po logike**
+
+kachestvo dolzno ucit yvat udovletvorennost, bezopasnost i kontrol, a ne tolko kolichestvo prokrutki
+
+**dlia kogo i dlia kakoj celi**
+
+dlia produktovoj komandy
+
+**kakoj rezultat dolzen byt dostignut**
+
+lenta ulucshaetsia v storonu polzy, a ne beskonecnoj zavisimosti
+
+---
+
+## 250 — pokazateli bezopasnosti
+
+**cto eto dolzno delat**
+
+nuzno analizirovat
+
+* vremia do skrytiia opasnogo kontenta
+* fishing
+* doxxing
+* zhestokost
+* falshiv y e sbory
+* koordinir ovann uju travliu
+* obxod blokirovok
+* opasnye sovety
+* zhaloby nesovershennoletnix
+* oshibocnye udaleniia
+
+**pocemu eto nuzno**
+
+bezopasnost nelzia ocenivat tolko nalichiem knopki pozhalovatsia
+
+**kak eto dolzno rabotat po logike**
+
+individualnye slucai dostupny tolko upolnomochenn oj komande, a obsch a ia analitika anonimna
+
+**dlia kogo i dlia kakoj celi**
+
+dlia komandy doveriia i bezopasnosti
+
+**kakoj rezultat dolzen byt dostignut**
+
+opasn y e scenarii vyiavliajutsia bystree, a oshibocnye resheniia snizajutsia
+
+---
+
+## 251 — pokazateli privatnosti
+
+**cto eto dolzno delat**
+
+nuzno otslezhivat
+
+* slucai publicacii adresa
+* slucai polnogo mikrochipa
+* gps metadannye
+* skryty e posty v poisk e
+* dostup po star ym ssylkam
+* oshibki auditorii
+* peredacu media posle otzyva prav
+* slucai publicacii detej
+
+**pocemu eto nuzno**
+
+formaln y e nast roiki ne garantirujut realn uju zascitu
+
+**kak eto dolzno rabotat po logike**
+
+analitika dolzna ispolzovatsia dlia ispravleniia arhitektury, a ne dlia novogo profilirovaniia polzovatelej
+
+**dlia kogo i dlia kakoj celi**
+
+dlia komandy privatnosti i produkta
+
+**kakoj rezultat dolzen byt dostignut**
+
+kolichestvo slucajnyx utecek snizaetsia
+
+---
+
+## 252 — kontrol eksperimentov lenty
+
+**cto eto dolzno delat**
+
+izmeneniia algoritma dolzny prohodit bezopasn y e eksperimenty
+
+**pocemu eto nuzno**
+
+optimizacija tolko pod reakcii moz et vnezapno povysit zhestokij, konflikt n yj ili manipulativn yj kontent
+
+**kak eto dolzno rabotat po logike**
+
+pered rasshireniem eksperiment ocenivaet
+
+* zhaloby
+* blokirovki
+* raznoobrazie
+* dobrovoln yj kontrol
+* bezopasnost detej
+* srocn yj kontent
+* sostojanie avt orov
+
+**dlia kogo i dlia kakoj celi**
+
+dlia produktovoj komandy i vsego soobscestva
+
+**kakoj rezultat dolzen byt dostignut**
+
+rost vzaimodejstviia ne dostigaetsia cenoj rosta travli, moshennicestva i zavisimosti
+
+---
+
+# minimalnaja versija dlia pervogo zapuska
+
+## 253 — obyazatelnye tipy kontenta
+
+**cto eto dolzno delat**
+
+pervaja versija dolzna podderzhivat
+
+* tekstov yj post
+* odnu ili neskolko fotografij
+* video
+* vopros
+* opros
+* ssylku
+* post sobytija
+* adopcionn yj post
+* srocn oe objavlenie
+* istoriju
+
+**pocemu eto nuzno**
+
+eto pokryvaet osnovnye socialnye, prakticeskie i srocn y e scenarii
+
+**kak eto dolzno rabotat po logike**
+
+vse tipy ispolzujut odni prava, audit, moderaciju i mnogoiazy cnost
+
+**dlia kogo i dlia kakoj celi**
+
+dlia vseh osnovnyx rolej platformy
+
+**kakoj rezultat dolzen byt dostignut**
+
+nov yj tip ne sozdaet alternativn uju nekontroliruem uju sistemu kontenta
+
+---
+
+## 254 — obyazatelnye lenty
+
+**cto eto dolzno delat**
+
+pervaja versija dolzna imet
+
+* domashnjuju
+* podpiski
+* druzia
+* gruppy
+* konkretn yj profil
+* lokaln uju
+* srocn uju
+* xronologiceskuju
+
+**pocemu eto nuzno**
+
+odin algoritmiceskij ekran ne daet dostatocnogo kontrolia
+
+**kak eto dolzno rabotat po logike**
+
+polzovatel moz et perekljucatsia mezhdu personalizirovannym i predskazuemym rezhimom
+
+**dlia kogo i dlia kakoj celi**
+
+dlia vseh zritelej
+
+**kakoj rezultat dolzen byt dostignut**
+
+podpiski, srocn y e posty i gruppy ne teriajutsia v odnoj obschej smesi
+
+---
+
+## 255 — obyazatelnye vzaimodejstviia
+
+**cto eto dolzno delat**
+
+pervaja versija dolzna vkliucat
+
+* reakcii
+* kommentarii
+* otvety
+* upominaniia
+* xeshtegi
+* repost
+* repost s kommentariem
+* zakladki
+* zhaloby
+* blokirovku
+* skrytie
+
+**pocemu eto nuzno**
+
+bez etogo kontent ne sozdaet socialnogo vzaimodejstviia i ne daet kontrolia zriteliu
+
+**kak eto dolzno rabotat po logike**
+
+kazdoe dejstvie imeet prava, audit, zascitu ot dublikatov i anti spam
+
+**dlia kogo i dlia kakoj celi**
+
+dlia avt orov i zritelej
+
+**kakoj rezultat dolzen byt dostignut**
+
+polzovatel moz et vzaimodejstvovat, no takze ogranichit i ostanovit nezhelateln yj kontakt
+
+---
+
+## 256 — obyazatelnye funkcii privatnosti
+
+**cto eto dolzno delat**
+
+pervaja versija dolzna vkliucat
+
+* auditoriju
+* predprosmotr
+* prava kommentariev
+* prava repostov
+* zascitu lokacii
+* udalenie gps metadannyx
+* odobrenie upominanij
+* skrytie kolichestva reakcij
+* zakryt y e media url
+* invalidaciju kesa
+
+**pocemu eto nuzno**
+
+kontent bez etix funkcii sozdaet vysokij risk utecki
+
+**kak eto dolzno rabotat po logike**
+
+privatnost proveriaetsia na servere pri kazdom otkrytii
+
+**dlia kogo i dlia kakoj celi**
+
+dlia vseh avt orov
+
+**kakoj rezultat dolzen byt dostignut**
+
+slucajn yj zritel ne moz et obojti auditoriju cerez priam uju ssylku ili st ar yj kesh
+
+---
+
+## 257 — obyazatelnye funkcii moderacii
+
+**cto eto dolzno delat**
+
+pervaja versija dolzna imet
+
+* proverku fajlov
+* zhaloby
+* blokirovku fishing ssylok
+* skrytie lichnyx dannyx
+* moderaciju zhestokosti
+* zascitu ot spama
+* anti fraud
+* vrem ennoe skrytie
+* audit
+* objasnenie resheniia
+* apellaciju
+
+**pocemu eto nuzno**
+
+socialnaia lenta bez etogo bystro stanovitsia istochnikom vreda i moshennicestva
+
+**kak eto dolzno rabotat po logike**
+
+avtomaticeskaia i rucnaia proverka dopolniajut drug druga
+
+**dlia kogo i dlia kakoj celi**
+
+dlia vsego soobscestva
+
+**kakoj rezultat dolzen byt dostignut**
+
+opasn yj kontent bystro ogranichivaetsia, a oshibocn oe reshenie mozno ispravit
+
+---
+
+## 258 — obyazatelnye tehniceskie funkcii
+
+**cto eto dolzno delat**
+
+nuzny
+
+* cernoviki
+* avtosoxranenie
+* oflajn ochered
+* idempotentnost
+* obrabotka media
+* neskolko kachestv video
+* alt tekst
+* subtitry
+* versii
+* arhiv
+* korzina
+* poiskov yj indeks
+* audit
+* rezervnoe kopirovanie
+
+**pocemu eto nuzno**
+
+bez etogo platforma budet ter iat kontent, sozda vat dublikaty i ploho rabotat na telefonax
+
+**kak eto dolzno rabotat po logike**
+
+tehnicesk ie statusy dolzny byt vidny avt oru i ne maskirovatsia pod uspeshn uju publicaciju
+
+**dlia kogo i dlia kakoj celi**
+
+dlia vseh polzovatelej i stabilnosti platformy
+
+**kakoj rezultat dolzen byt dostignut**
+
+odin material nadezhno sozdajotsia, dostavliaetsia i moz et byt vosstanovlen pri oshibke
+
+---
+
+## 259 — cto mozno dobavit pozze
+
+**cto eto dolzno delat**
+
+posle stabilizacii osnovy mozno dobavit
+
+* priam y e efiry
+* dlinn y e professionalnye statji
+* komandn y e processy odobreniia
+* rasshirenn y e podborki istorij
+* ai svodki
+* ai opisaniia media
+* rasshirenn yj semanticeskij poisk
+* lokaln oe xranenie video
+* publicn y e kollekcii
+* platn yj kontent
+* podpiski avt orov
+* donaty
+* rasshirenn uju analitiku
+* cifrov uju proverku proisxozhdeniia media
+* mezhplatformenn y e reposty
+* professionaln yj redakcionn yj kalendar
+
+**pocemu eto nuzno**
+
+eti funkcii polezny, no oni dolzny opiratsia na stabiln uju privatnost, moderaciju i model originala
+
+**kak eto dolzno rabotat po logike**
+
+nov a ia funkcia ne dolzna sozda vat otdeln yj obxod prav i audita
+
+**dlia kogo i dlia kakoj celi**
+
+dlia dalnejshego rosta platformy
+
+**kakoj rezultat dolzen byt dostignut**
+
+sistema rasshiri a etsia bez razrusheniia bazovoj logiki kontenta
+
+---
+
+# idealnye scenarii
+
+## 260 — idealnyj scenarij oby cnoj fotografii
+
+andrej fotografiruet baksa v parke i sozdaet post ot imeni baksa
+
+redaktor avtomaticeski udal iaet gps metadannye i predlagaet alternativn yj tekst
+
+andrej vybiraet auditoriju druzia i podpisciki, ne dobavliaet tocn oe mesto i publik uet
+
+v rezultate post pojavliaetsia v profile baksa i l ent e razreshenn yx zritelej, no ne raskryvaet domashnij adres ili tekusc uju gps tochku
+
+---
+
+## 261 — idealnyj scenarij semejnogo posta
+
+andrej zagruzhaet fotografiju baksa s rebenkom
+
+sistema predlagaet zamazat lico rebenka, udal iaet metadannye i pokaz yvaet, cto auditorija vse
+
+andrej meniaet auditoriju na blizkij krug i zapreshchaet vneshnie reposty
+
+v rezultate semejn a ia fotografija dostupna tolko vybrannym liudiam
+
+---
+
+## 262 — idealnyj scenarij posta ot imeni pitomca
+
+dva sovladelca upravljajut profilem luny
+
+odin iz nix sozdaet post ot imeni luny
+
+publicno vid en profil luny, no v audit e ukazano, kto imenno opublikoval
+
+vtoroj sovladelec vidit post i moz et ego redaktirovat tolko pri nalichii prava
+
+---
+
+## 263 — idealnyj scenarij priuta
+
+priut gotovit adopcionn yj post dlia koski
+
+fotograf zagruzaet media, volonter pishet bio, perevodcik dobavliaet litovskuju i anglijskuju versii, a koordinator adopcii odobriaet finaln yj cernovik
+
+post ssyl a etsia na realn yj profil koski i knopku podat zayavku
+
+posle adopcii vse reposty pokaz yvajut, cto pitomec uze nashol dom
+
+---
+
+## 264 — idealnyj scenarij srocn oj propazhi
+
+baks propadaet vo vremia progulki
+
+andrej iz profilia zapuskaet poisk, a sistema sozdaet srocn yj post s aktualnoj fotografiej, opisaniem, kartoj, knopkoj ja videl i maskirovannym kontaktom
+
+post rasprostraniaetsia v lokalnoj srocn oj l ent e
+
+posle vozvrata baksa original i vse reposty meniajut status na najden
+
+---
+
+## 265 — idealnyj scenarij obnovleniia srocnogo posta
+
+cherez dva casa pojavliaetsia novoe podtverzhdenn oe nabludenie
+
+vmesto sozdaniia novogo nesviazannogo posta koordinator obnovliaet original
+
+lenta povtorno pokaz yvaet ego s metkoj nov a ia zona i ukazyvaet, cto imenno izmenilos
+
+v rezultate volontery ne sled uiut staromu napravleniiu
+
+---
+
+## 266 — idealnyj scenarij medicinskoj fotografii
+
+andrej xocet pokazat v zakrytoj gruppe fotografiju posleoperacionnogo shva
+
+sistema opredeliaet graficeskoe medicinskoe soderzhanie, skryvaet predprosmotr i predlagaet ne publikovat dokument kliniki
+
+andrej vy biraet zakryt uju grup pu i dobavliaet vopros
+
+v rezultate fotografija ne pojavliaetsia v obschej galeree baksa i ne pokazyvaetsia vnezapno
+
+---
+
+## 267 — idealnyj scenarij opasnogo medicinskogo soveta
+
+v kommentarii neproverenn yj polzovatel rekomenduet udvoit dozu lekarstva bez konsultacii
+
+sistema podsv ecivaet vysokij risk, vrem enno skryvaet komentarij i predlagaet avt oru posta sviazatsia s klinikoj
+
+moderator proveriaet kontekst
+
+v rezultate opasn a ia instrukcija ne rasprostraniaetsia kak oby cn yj sovet
+
+---
+
+## 268 — idealnyj scenarij kommentarev
+
+post priuta polucaet mnogo odinakov yx voprosov
+
+koordinator zakreplyaet kommentarij s otvetami i ssylkoj na adopcionn uju anketu
+
+nov y e kommentarii sort irujutsia po novizne, a spam ssylki avtomaticeski idut na proverku
+
+v rezultate diskussiia ostajotsia pon iatnoj i ne prevrashch a etsia v haos
+
+---
+
+## 269 — idealnyj scenarij upominaniia
+
+fotograf publik uet album s baksom i upominaet ego profil
+
+andrej polucaet zapros na podtverzhdenie metki
+
+on odobriaet fotografii, no zapreshchaet pokaz alboma v glavn oj galeree baksa
+
+v rezultate sviaz s profilem podtverzhdena, no xoziajin kontroliruet, gde ona pokaz yvaetsia
+
+---
+
+## 270 — idealnyj scenarij nezhelatelnogo upominaniia
+
+biznes upominaet lunu v reklame, hotia xoziajin ne daval soglasiia
+
+xoziajin udal iaet sviaz, zhaluetsia na reklamn yj spam i blokiruet budusc ie upominaniia ot etogo akkaunta
+
+post moz et ostatcia bez aktivnoj ssylki na lunu, poka moderacija proveriaet reklamu
+
+---
+
+## 271 — idealnyj scenarij repost a
+
+andrej repostit professionaln uju statju veterinara s sobstvennym kommentariem
+
+v repost e vsegda vid en originaln yj avtor, status ego professionalnoj proverki i ssylka na original
+
+esli veterinar ispr av it oshibku, repost avtomaticeski pokaz yvaet obnovlenn uju versiju
+
+---
+
+## 272 — idealnyj scenarij udalennogo originala
+
+polzovatel repostil post, kotoryj pozze byl udal en iz-za fishing ssylki
+
+platforma ubr a et originaln yj kontent iz repost a, soxraniaet tolko bezopasn oe uvedomlenie i preduprezhdaet polzovatelej, kotorye perehodili po ssylke
+
+---
+
+## 273 — idealnyj scenarij istorii
+
+andrej publik uet korotkoe video baksa tolko dlia blizkogo kruga
+
+cherez ustanovlenn yj period istoriia ischezaet iz aktivnogo prosmotra i ostajotsia v lichnom arhive
+
+odin iz druzej otvecaet, i otvet popadaet v lichn yj chat, a ne v publicn y e kommentarii
+
+---
+
+## 274 — idealnyj scenarij slabogo interneta
+
+andrej sozdaet post s tremia fotografijami za gorodom
+
+internet propadaet
+
+post soxr aniaetsia kak oflajn cernovik, fotografii staviatsia v ochered, a prilozhenie ne pokaz yvaet ego opublikovannym
+
+posle vozvrata seti zagruzka prodolzhaetsia bez dublikatov, i andrej esio raz podtverzhdaet auditoriju
+
+---
+
+## 275 — idealnyj scenarij nakrutki
+
+nov yj akkaunt publik uet odinakov yj post v sotne grupp, upominaet mnogo profilej i pokupaet falshiv y e reakcii
+
+sistema ogranichivaet rasprostranenie, ne ucit yvaet podozriteln y e reakcii v trend ax i zaprashivaet proverku
+
+v rezultate spam ne vytesniaet organiceskij kontent
+
+---
+
+## 276 — idealnyj scenarij fishinga
+
+moshennik publik uet ssylku, vizualno poxoz uju na stranicu podderzhki
+
+platforma pokaz yvaet realn yj podozriteln yj domen, blokiruet avtomaticeskij predprosmotr i ne daet ssylke popast v reklamn yj ili rekomendacionn yj oxvat
+
+polzovatel moz et odnim dejstviem pozhalovatsia
+
+---
+
+## 277 — idealnyj scenarij koordinir ovann oj travli
+
+posle konflikta v gruppe odin profil polucaet mnogo upominanij, komentariev i zhalob za korotkoe vremia
+
+sistema vkliucaet rezhim zascity
+
+* kommentar ii na odobrenie
+* massovye upominaniia skryty
+* rekomendacii profilia ne ispolzujut konflikt
+* zhaloby obed injajutsia v odin incident
+* lichnye dannye proveriajutsia na utecku
+
+moderator rassmatrivaet obsch uju kartinu, a ne nakazyvaet profil tolko po kolichestvu zhalob
+
+---
+
+## 278 — idealnyj scenarij nesovershennoletnego avtora
+
+podrostok publik uet fotografiju semejnogo pitomca
+
+po umolcaniju auditorija ogranichena, geometadannye udal eny, kommentarii ot neznakom yx idut na odobrenie, a vneshnie reposty vykliucheny
+
+vzrosl yj semejn yj upravliajusc ij moz et proverit nastojki bez publicacii lichnyx soobsenij podrostka
+
+---
+
+## 279 — idealnyj scenarij professionalnogo materiala
+
+veterinar publik uet statju o profilaktike
+
+post pokaz yvaet ego oblast kompetencii, datu obnovleniia, istochniki i konflikt interesov, esli upomian ut konkretn yj proizvoditel
+
+kommentarii ne pozvoliajut avt oru davat individualn yj diagnoz bez konsultacii
+
+v rezultate material polezen, no ne sozdaet lozn oe vpechatlenie lichnogo medicinskogo naznacheniia
+
+---
+
+## 280 — idealnyj scenarij partnerskogo posta
+
+bloger polucaet besplatn uju kormushku i delaet obzor
+
+pered publicaciej on vy biraet metku poluchen tovar ot brenda
+
+post zametno pokaz yvaet partnerstvo i otdeliaet lichn oe mnenie ot tehniceskix faktov proizvoditelia
+
+v rezultate auditorija znaet o vy gode avtora do pokupki
+
+---
+
+## 281 — idealnyj scenarij avtorskix prav
+
+priut ispolzuet professionaln uju fotografiju pitomca s razresheniem fotografa
+
+v media ukazan avtor, ssylka na portfolio i zapret kommerceskogo ispolzovaniia tretimi licami
+
+drugoj biznes kopiruet fotografiju v reklamu
+
+fotograf otpravliaet strukturirovann uju zhalobu, i reklamn a ia kopija skryvaetsia bez udaleniia originalnogo adopcionnogo profilia
+
+---
+
+## 282 — idealnyj scenarij mnogoiazy cnogo posta
+
+priut publik uet odin post na litovskom, anglijskom i russkom jazykax
+
+fotografii i kommentarii ostajutsia obsch imi, a zritel vidit predpoctiteln uju jazykov uju versiju
+
+posle izmeneniia statusa adopcii vse perevody polucajut odinakov oe aktualn oe obnovlenie
+
+---
+
+## 283 — idealnyj scenarij ai pomoschi
+
+andrej zagruzhaet fotografiju baksa i prosit ai pomoch s opisaniem
+
+ai predlagaet cernovik i alternativn yj tekst, no ne pridumyvaet porodu, mesto i sobytie
+
+andrej ispravliaet tekst, vy biraet auditoriju i tolko potom publik uet
+
+---
+
+## 284 — idealnyj scenarij oshibki ai moderacii
+
+obrazovateln yj post veterinar a o pomosci ranenomu zivotnomu vrem enno skryt kak zhestokij
+
+veterinar podajot apellaciju i objasniaet professionaln yj kontekst
+
+drugoj moderator proveriaet material, dobavliaet graficeskoe preduprezhdenie i vosstanavlivaet post vmeste s kommentar iiami
+
+---
+
+## 285 — idealnyj scenarij peredaci pitomca
+
+luna peredaetsia iz priuta novomu xoziajinu
+
+publicn y e posty ostajutsia v ee profile, avtorstvo priuta soxr aniaetsia, vnutrennie adopcionnye zametki ne peredajutsia, a nov yj xoziajin polucaet pravo upravliat budusc imi publikacijami
+
+st ar y e vrem ennye prava perederzki otzyvajutsia
+
+---
+
+## 286 — idealnyj scenarij memorialnogo profilia
+
+posle perevoda profilia baksa v memorialn yj rezhim
+
+* avtomaticeskie posty iz gps i dnevnika otkliucajutsia
+* srocn y e i reklamn y e rekomendacii prekrashchajutsia
+* st ar y e fotografii ostajutsia
+* kommentarii mogut byt ogranicheny blizkim krugom
+* ne pokazyvajutsia neumesnye predlozheniia kupit korm
+
+profil stanovitsia spokojn oj istoriej pamiati
+
+---
+
+## 287 — idealnyj scenarij udaleniia akkaunta avtora
+
+xoziajin zapuskaet udaleniie akkaunta, no upravliaet profilem pitomca vmeste s drugim sovladelcem
+
+pered udaleniem sistema predlagaet peredat administrativn y e prava na posty pitomca
+
+lichn y e posty xoziajina udaliajutsia ili anonimnizirujutsia po vybrannym pravilam, a socialnaia istoria pitomca ne ischezaet slucajno
+
+---
+
+# itogovyj rezultat punkta 4
+
+posle polnoj realizacii punkta 4 socialnaja set dolzna poluchit ne prosto l ent u fotografij i lajkov, a polnocenn uju sistemu sozdaniia, dostavki, obsuzhdeniia, zascity i dolgosrocnogo xraneniia kontenta
+
+v rezultate polzovatel dolzen moc
+
+* publikovat ot imeni sebia, pitomca, specialista, gruppy ili organizacii
+* vsegda ponimat realnogo avtora dejstviia
+* sozda vat tekst, fotografii, karuseli, albomy, video, audio, istorii, oprosy i voprosy
+* sozda vat specialn y e adopcionnye, srocn y e, professionalnye i reklamn y e posty
+* vybirat auditoriju do publicacii
+* prosmatrivat post glazami raznyx kategorij zritelej
+* soxran iat cernoviki avtomaticeski
+* rabotat oflajn i pri slabom internete
+* planiro vat publicacii
+* rabotat nad cernovikom komandoj
+* ustanavlivat process odobreniia
+* udal iat gps i lichnye metadannye iz media
+* zamazyvat lic a, dokumenty, adres a i nomera avtomobilej
+* dobavliat alternativn yj tekst, subtitry i rasshifrovki
+* upravliat avtomaticeskim vosproizvedeniem
+* publikovat vrem ennye istorii i soxran iat ix v lichnom arhive
+* prosmatrivat xronologiceskuju, personalizirovann uju, lokaln uju, gruppovuju i srocn uju l ent y
+* ponimat, pocemu post rekomendovan
+* otkliucat signal y personalizacii
+* skryvat avt orov, temy, xeshtegi i tipy kontenta
+* reagirovat bez nakrutki
+* upravliat kommentariiami i otvetami
+* vkljucat odobrenie, filtry slov, medlenn yj rezhim i zakrytie kommentariev
+* kontrolirivat upominaniia
+* ispolzovat xeshtegi bez spama i opasn yx katalogov
+* delat repost s atribuciej originala
+* ne raskryvat zakryt yj post cerez repost
+* rasprostraniat srocn oe objavlenie s aktualnym statusom
+* soxran iat posty v lichnye kollekcii
+* polucat upravljaemye uvedomlenija
+* redaktirovat, arhivirovat, udaliat i vosstanavlivat material
+* videt istoriju versij vaznyx postov
+* zascischat avtorskie prava
+* markirovat reklamu, partnerstvo i ai obrabotku
+* polucat avtomaticeskij perevod s dostupnym originalom
+* polzovatsia vsej sistemoj s klaviaturoj, ekrannym diktorom i krupnym tekstom
+* zascischatsia ot doxxinga, fishinga, spama, travli i falshiv yx sborov
+* soobscat o zhestokom obrashchenii i opasnyx sovetax
+* polucat objasnenie moderacionnogo resheniia i podavat apellaciju
+* ispolzovat ai tolko kak pomoschnika pri sozdanii, perevode i proverke, a ne kak nekontroliruemogo avtora faktov
+* sviazyvat kontent s profilem pitomca, medkartockoj, dnevnikom, adopciej, poiskom, gruppoj, sobytiem, mestom, uslugoj i marketplace
+* videt pon iatnuju analitiku bez davleniia i manipuliacii ciframi
+
+glavn oe dostizenie etogo punkta zakliucaetsia v tom, cto kontent budet ne prosto privlekat vnimanie, a pomogat xoziaevam, pitomcam, priutam i specialistam bezopasno obschatsia, soxran iat istoriju, naxodit pomosc i rasprostraniat aktualn uju informaciju bez poteri privatnosti, avt orstva i kontrolia
+
+sledujusc ij punkt — lichnye soobsenija, gruppovye chat y, audio i videozvonki, vrem ennye dialogi, peredaca fajlov, zascita ot moshennikov, shifrovanie, arhiv i polnaja logika bezopasnoj kommunikacii
+</content-feed-source-revision>

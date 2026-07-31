@@ -27,22 +27,28 @@ preg_match('/<forum-source-primary>\n(.*)\n<\/forum-source-primary>/sU', $source
 preg_match('/<forum-source-extension>\n(.*)\n<\/forum-source-extension>/sU', $source, $extensionMatch);
 preg_match('/<pet-profile-source-revision>\n(.*)\n<\/pet-profile-source-revision>/sU', $source, $petProfileMatch);
 preg_match('/<social-relationships-source-revision>\n(.*)\n<\/social-relationships-source-revision>/sU', $source, $socialRelationshipsMatch);
+preg_match('/<content-feed-source-revision>\n(.*)\n<\/content-feed-source-revision>/sU', $source, $contentFeedMatch);
 preg_match('/Combined raw payload SHA-256: `([a-f0-9]{64})`/', $source, $checksumMatch);
 preg_match('/Revision raw payload SHA-256: `([a-f0-9]{64})`/', $source, $petProfileChecksumMatch);
 preg_match('/Master raw payload SHA-256: `([a-f0-9]{64})`/', $source, $masterChecksumMatch);
 preg_match('/Social revision raw payload SHA-256: `([a-f0-9]{64})`/', $source, $socialRelationshipsChecksumMatch);
 preg_match('/Current master raw payload SHA-256: `([a-f0-9]{64})`/', $source, $currentMasterChecksumMatch);
+preg_match('/Content revision raw payload SHA-256: `([a-f0-9]{64})`/', $source, $contentFeedChecksumMatch);
+preg_match('/Latest master raw payload SHA-256: `([a-f0-9]{64})`/', $source, $latestMasterChecksumMatch);
 
 if (! isset(
     $primaryMatch[1],
     $extensionMatch[1],
     $petProfileMatch[1],
     $socialRelationshipsMatch[1],
+    $contentFeedMatch[1],
     $checksumMatch[1],
     $petProfileChecksumMatch[1],
     $masterChecksumMatch[1],
     $socialRelationshipsChecksumMatch[1],
     $currentMasterChecksumMatch[1],
+    $contentFeedChecksumMatch[1],
+    $latestMasterChecksumMatch[1],
 )) {
     fwrite(STDERR, "The preserved forum prompt markers or checksum are invalid.\n");
     exit(1);
@@ -53,6 +59,7 @@ $parts = [
     'extension' => $extensionMatch[1],
     'pet-profile-revision' => $petProfileMatch[1],
     'social-relationships-revision' => $socialRelationshipsMatch[1],
+    'content-feed-revision' => $contentFeedMatch[1],
 ];
 $forumPayload = $parts['primary']."\n\n".$parts['extension'];
 $forumPayloadChecksum = hash('sha256', $forumPayload);
@@ -60,13 +67,18 @@ $petProfilePayloadChecksum = hash('sha256', $parts['pet-profile-revision']);
 $petProfileMasterPayload = $forumPayload."\n\n".$parts['pet-profile-revision'];
 $petProfileMasterChecksum = hash('sha256', $petProfileMasterPayload);
 $socialRelationshipsPayloadChecksum = hash('sha256', $parts['social-relationships-revision']);
-$payloadChecksum = hash('sha256', $petProfileMasterPayload."\n\n".$parts['social-relationships-revision']);
+$socialRelationshipsMasterPayload = $petProfileMasterPayload."\n\n".$parts['social-relationships-revision'];
+$socialRelationshipsMasterChecksum = hash('sha256', $socialRelationshipsMasterPayload);
+$contentFeedPayloadChecksum = hash('sha256', $parts['content-feed-revision']);
+$payloadChecksum = hash('sha256', $socialRelationshipsMasterPayload."\n\n".$parts['content-feed-revision']);
 
 if (! hash_equals($checksumMatch[1], $forumPayloadChecksum)
     || ! hash_equals($petProfileChecksumMatch[1], $petProfilePayloadChecksum)
     || ! hash_equals($masterChecksumMatch[1], $petProfileMasterChecksum)
     || ! hash_equals($socialRelationshipsChecksumMatch[1], $socialRelationshipsPayloadChecksum)
-    || ! hash_equals($currentMasterChecksumMatch[1], $payloadChecksum)
+    || ! hash_equals($currentMasterChecksumMatch[1], $socialRelationshipsMasterChecksum)
+    || ! hash_equals($contentFeedChecksumMatch[1], $contentFeedPayloadChecksum)
+    || ! hash_equals($latestMasterChecksumMatch[1], $payloadChecksum)
 ) {
     fwrite(STDERR, "A preserved source-prompt checksum does not match its payload.\n");
     exit(1);
@@ -95,7 +107,8 @@ foreach ($parts as $part => $contents) {
         'primary' => 'Original forum specification',
         'extension' => 'Additive master extension',
         'pet-profile-revision' => 'Pet profile and full lifecycle revision',
-        default => 'Social relationships and safe introductions revision',
+        'social-relationships-revision' => 'Social relationships and safe introductions revision',
+        default => 'Content feed and distribution revision',
     };
     $sectionPath = [$section];
     $lines = preg_split('/\R/u', $contents) ?: [];
@@ -419,6 +432,10 @@ function domainForRequirement(array $sectionPath, string $verbatim, string $sour
         return socialDomainForRequirement($sectionPath, $verbatim);
     }
 
+    if ($sourcePart === 'content-feed-revision') {
+        return contentDomainForRequirement($sectionPath, $verbatim);
+    }
+
     $context = strtolower(implode(' ', $sectionPath).' '.$verbatim);
 
     return match (true) {
@@ -466,6 +483,47 @@ function domainForRequirement(array $sectionPath, string $verbatim, string $sour
         str_contains($context, 'audit'),
         str_contains($context, 'final report') => 'planning-and-documentation',
         default => 'forum-feature',
+    };
+}
+
+/** @param list<string> $sectionPath */
+function contentDomainForRequirement(array $sectionPath, string $verbatim): string
+{
+    $context = strtolower(implode(' ', $sectionPath).' '.$verbatim);
+    preg_match_all('/(?:^|\s)(\d{1,3})\s*[—-]/u', $context, $sectionNumbers);
+    $sectionNumber = isset($sectionNumbers[1]) && $sectionNumbers[1] !== []
+        ? (int) end($sectionNumbers[1])
+        : null;
+
+    return match (true) {
+        $sectionNumber !== null && $sectionNumber >= 1 && $sectionNumber <= 12 => 'content-foundation',
+        $sectionNumber !== null && $sectionNumber >= 13 && $sectionNumber <= 33 => 'content-types',
+        $sectionNumber !== null && $sectionNumber >= 34 && $sectionNumber <= 50 => 'content-authoring',
+        $sectionNumber !== null && $sectionNumber >= 51 && $sectionNumber <= 72 => 'content-media',
+        $sectionNumber !== null && $sectionNumber >= 73 && $sectionNumber <= 79 => 'content-stories',
+        $sectionNumber !== null && $sectionNumber >= 80 && $sectionNumber <= 103 => 'content-feed',
+        $sectionNumber !== null && $sectionNumber >= 104 && $sectionNumber <= 110 => 'content-reaction',
+        $sectionNumber !== null && $sectionNumber >= 111 && $sectionNumber <= 125 => 'content-comment',
+        $sectionNumber !== null && $sectionNumber >= 126 && $sectionNumber <= 130 => 'content-mention',
+        $sectionNumber !== null && $sectionNumber >= 131 && $sectionNumber <= 137 => 'content-hashtag',
+        $sectionNumber !== null && $sectionNumber >= 138 && $sectionNumber <= 146 => 'content-sharing',
+        $sectionNumber !== null && $sectionNumber >= 147 && $sectionNumber <= 156 => 'content-library-notification',
+        $sectionNumber !== null && $sectionNumber >= 157 && $sectionNumber <= 168 => 'content-lifecycle-rights',
+        $sectionNumber !== null && $sectionNumber >= 169 && $sectionNumber <= 179 => 'content-localization-interface',
+        $sectionNumber !== null && $sectionNumber >= 180 && $sectionNumber <= 184 => 'content-offline',
+        $sectionNumber !== null && $sectionNumber >= 185 && $sectionNumber <= 207 => 'content-safety-moderation',
+        $sectionNumber !== null && $sectionNumber >= 208 && $sectionNumber <= 216 => 'content-ai',
+        $sectionNumber !== null && $sectionNumber >= 217 && $sectionNumber <= 227 => 'content-integration',
+        $sectionNumber !== null && $sectionNumber >= 228 && $sectionNumber <= 242 => 'content-data',
+        $sectionNumber !== null && $sectionNumber >= 243 && $sectionNumber <= 252 => 'content-quality',
+        $sectionNumber !== null && $sectionNumber >= 253 && $sectionNumber <= 259 => 'content-release',
+        $sectionNumber !== null && $sectionNumber >= 260 && $sectionNumber <= 287 => 'content-scenario',
+        str_contains($context, 'moderac') || str_contains($context, 'bezopasn') => 'content-safety-moderation',
+        str_contains($context, 'media') || str_contains($context, 'video') || str_contains($context, 'fotograf') => 'content-media',
+        str_contains($context, 'lenta') || str_contains($context, 'rekomendac') => 'content-feed',
+        str_contains($context, 'perevod') || str_contains($context, 'dostupnost') => 'content-localization-interface',
+        str_contains($context, 'audit') || str_contains($context, 'texnicesk') => 'content-data',
+        default => 'content-foundation',
     };
 }
 
@@ -597,6 +655,28 @@ function identifierPrefix(string $domain): string
         'social-quality' => 'social.quality',
         'social-release' => 'social.release',
         'social-scenario' => 'social.scenario',
+        'content-foundation' => 'content.foundation',
+        'content-types' => 'content.type',
+        'content-authoring' => 'content.authoring',
+        'content-media' => 'content.media',
+        'content-stories' => 'content.story',
+        'content-feed' => 'content.feed',
+        'content-reaction' => 'content.reaction',
+        'content-comment' => 'content.comment',
+        'content-mention' => 'content.mention',
+        'content-hashtag' => 'content.hashtag',
+        'content-sharing' => 'content.sharing',
+        'content-library-notification' => 'content.library-notification',
+        'content-lifecycle-rights' => 'content.lifecycle-rights',
+        'content-localization-interface' => 'content.translation-interface',
+        'content-offline' => 'content.offline',
+        'content-safety-moderation' => 'content.safety-moderation',
+        'content-ai' => 'content.ai',
+        'content-integration' => 'content.integration',
+        'content-data' => 'content.data',
+        'content-quality' => 'content.quality',
+        'content-release' => 'content.release',
+        'content-scenario' => 'content.scenario',
         default => 'forum.feature',
     };
 }
@@ -635,6 +715,23 @@ function phaseForRequirement(
             'social-release', 'social-quality' => 33,
             'social-scenario' => 34,
             default => 26,
+        };
+    }
+
+    if ($sourcePart === 'content-feed-revision') {
+        return match ($domain) {
+            'content-foundation', 'content-types', 'content-data' => 36,
+            'content-authoring', 'content-lifecycle-rights' => 37,
+            'content-stories', 'content-feed', 'content-reaction', 'content-comment',
+            'content-mention', 'content-hashtag', 'content-sharing',
+            'content-library-notification' => 38,
+            'content-media' => 39,
+            'content-quality' => 40,
+            'content-safety-moderation' => 41,
+            'content-ai', 'content-integration' => 42,
+            'content-localization-interface', 'content-offline' => 43,
+            'content-release', 'content-scenario' => 44,
+            default => 35,
         };
     }
 
@@ -762,6 +859,7 @@ function priorityForRequirement(string $domain, string $verbatim): string
             'social-safety',
             'social-moderation',
             'social-privacy-notifications',
+            'content-safety-moderation',
         ], true)
         || str_contains($value, 'must not')
         || str_contains($value, 'never')
@@ -780,6 +878,8 @@ function priorityForRequirement(string $domain, string $verbatim): string
         'pet-lifecycle',
         'social-data',
         'social-request',
+        'content-foundation',
+        'content-data',
     ], true)
         ? 'high'
         : 'standard';
@@ -807,6 +907,30 @@ function impactFor(string $domain, string $impact): string
         'social-release',
         'social-scenario',
     ];
+    $contentDomains = [
+        'content-foundation',
+        'content-types',
+        'content-authoring',
+        'content-media',
+        'content-stories',
+        'content-feed',
+        'content-reaction',
+        'content-comment',
+        'content-mention',
+        'content-hashtag',
+        'content-sharing',
+        'content-library-notification',
+        'content-lifecycle-rights',
+        'content-localization-interface',
+        'content-offline',
+        'content-safety-moderation',
+        'content-ai',
+        'content-integration',
+        'content-data',
+        'content-quality',
+        'content-release',
+        'content-scenario',
+    ];
     $relevant = [
         'database' => ['animal-taxonomy', 'moderation', 'reputation-and-trust', 'forum-category', 'persistence', 'forum-feature', 'pet-profile', 'pet-creation', 'pet-identity', 'pet-media', 'pet-behavior', 'pet-public-profile', 'pet-privacy', 'pet-ownership', 'pet-social', 'pet-integration', 'pet-lifecycle', 'pet-discovery', 'pet-moderation', 'pet-data', 'pet-release', 'pet-quality'],
         'backend' => ['animal-taxonomy', 'moderation', 'reputation-and-trust', 'forum-category', 'search-and-discovery', 'persistence', 'forum-feature', 'pet-profile', 'pet-creation', 'pet-identity', 'pet-media', 'pet-behavior', 'pet-public-profile', 'pet-privacy', 'pet-ownership', 'pet-social', 'pet-integration', 'pet-lifecycle', 'pet-discovery', 'pet-localization', 'pet-interface', 'pet-moderation', 'pet-data', 'pet-release', 'pet-quality'],
@@ -823,18 +947,23 @@ function impactFor(string $domain, string $impact): string
     ];
 
     foreach (['database', 'backend', 'migration', 'factory'] as $key) {
-        $relevant[$key] = array_merge($relevant[$key], $socialDomains);
+        $relevant[$key] = array_merge($relevant[$key], $socialDomains, $contentDomains);
     }
 
     foreach (['livewire', 'interface'] as $key) {
-        $relevant[$key] = array_merge($relevant[$key], array_diff($socialDomains, ['social-data']));
+        $relevant[$key] = array_merge(
+            $relevant[$key],
+            array_diff($socialDomains, ['social-data']),
+            array_diff($contentDomains, ['content-data']),
+        );
     }
 
     foreach (['authorization', 'privacy', 'security', 'cache'] as $key) {
-        $relevant[$key] = array_merge($relevant[$key], array_diff($socialDomains, [
-            'social-localization',
-            'social-scenario',
-        ]));
+        $relevant[$key] = array_merge(
+            $relevant[$key],
+            array_diff($socialDomains, ['social-localization', 'social-scenario']),
+            array_diff($contentDomains, ['content-localization-interface', 'content-scenario']),
+        );
     }
 
     $relevant['moderation'] = array_merge($relevant['moderation'], [
@@ -842,6 +971,13 @@ function impactFor(string $domain, string $impact): string
         'social-messaging',
         'social-safety',
         'social-moderation',
+        'content-types',
+        'content-media',
+        'content-comment',
+        'content-mention',
+        'content-sharing',
+        'content-safety-moderation',
+        'content-ai',
     ]);
 
     $relevant['seed'] = array_merge($relevant['seed'], [
@@ -849,6 +985,10 @@ function impactFor(string $domain, string $impact): string
         'social-follow',
         'social-safety',
         'social-release',
+        'content-foundation',
+        'content-types',
+        'content-safety-moderation',
+        'content-release',
     ]);
 
     return in_array($domain, $relevant[$impact] ?? [], true)

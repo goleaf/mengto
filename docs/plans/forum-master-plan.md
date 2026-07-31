@@ -4,7 +4,7 @@
 
 This plan implements the immutable source in
 `docs/requirements/forum-source-prompt.md`. The generated
-`docs/plans/forum-phase-requirement-index.md` assigns every one of the 14,629
+`docs/plans/forum-phase-requirement-index.md` assigns every one of the 18,640
 atomic requirement IDs to a primary phase; no identifier is represented by a
 generic “implement everything” checkbox.
 
@@ -274,3 +274,20 @@ contract are maintained in
 to existing user, pet, expert, organization, group, event, moderation, and
 message aggregates. They never replace those identities or grant their
 administrative permissions.
+
+## Phases 35-44: Content Feed And Distribution Revision
+
+The additive content-feed revision contributes 4,011 stable `content.*`
+requirements without renumbering the prior 14,629 IDs. Control phase 35
+preserves, audits, and designs the revision. Implementation phases 36-44 cover
+the publication/audience/media foundation; authoring and lifecycle; stories,
+feeds, and social interactions; media processing; quality, search, analytics,
+and notifications; safety and moderation; domain integrations and optional AI;
+localization, accessibility, and resilient web operation; and complete release
+scenario verification.
+
+The exact boundaries, invariants, compatibility strategy, and acceptance gates
+are maintained in `docs/plans/content-feed-master-plan.md`. Canonical content
+links to existing forum, pet, social, group, event, lost/found, adoption,
+marketplace, knowledge, care, moderation, and media records. It does not copy
+their private or mutable business state into feed payloads.

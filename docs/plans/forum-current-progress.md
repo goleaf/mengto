@@ -10,18 +10,20 @@ discovery. Additive schema, forum categories, animal taxonomy,
 reputation/confirmation, and moderation foundations have been implemented.
 Phase 8 structured-community work and Phase 10 Livewire administration are in
 progress; pet phases 17-25 are planned and the first canonical identity/access
-foundation package is verified. Social phase 27 has an audited and selected
-foundation package but no verified production IDs yet. Verification remains
-incremental; no incomplete phase is described as complete.
+foundation package is verified. The social phase 27 foundation is also
+verified, while later social packages remain open. Content phase 35 has now
+preserved, atomized, audited, and designed the feed revision; production
+content phases 36-44 remain open. Verification remains incremental; no
+incomplete phase is described as complete.
 
 ## Completed Evidence
 
-- Master source prompt plus dated pet-profile and social revisions preserved
+- Master source prompt plus dated pet-profile, social, and content revisions preserved
   with SHA-256
-  `ad88d55de0faf7d5fe62c97479be42f6539316a13eeae9d2bbfd8a6b3716c32d`.
-- 14,629 atomic requirements generated with full source coordinates; the
-  4,135 `pet.*` and 3,210 `social.*` records did not renumber the original
-  7,284 IDs or each other.
+  `af59796f91aaccd42cb5af1322082db79b25fb4248eb235cbeb049a645f5348f`.
+- 18,640 atomic requirements generated with full source coordinates; the
+  4,135 `pet.*`, 3,210 `social.*`, and 4,011 `content.*` records did not
+  renumber the original 7,284 IDs or each other.
 - Every atomic requirement assigned to one primary phase.
 - Existing forum, policies, requests, migrations, adjacent domains,
   translations, seeds, factories, and focused tests inventoried.
@@ -81,6 +83,13 @@ incremental; no incomplete phase is described as complete.
   verified after 22 focused tests, 63 expanded tests, the 1,861-test full
   suite, isolated migration/seed/rollback, static analysis, build, cache, and
   desktop/mobile/320px browser gates. Later social packages remain open.
+- The content revision is preserved and atomized across 22 domains and phases
+  36-44. Its existing-system audit distinguishes durable domain content from
+  private prototype state, and its ADRs define canonical publication,
+  read-time audience, original-preserving distribution, independent media,
+  authoritative typed links, unified moderation, and workerless processing
+  boundaries. All 4,011 content IDs remain open until production behavior is
+  implemented and evidenced.
 - Current complete serial repository checkpoint: 1,861 tests and 69,718
   assertions in 90.930 seconds.
 - Current repository checkpoint: expert-session plus architecture verification

@@ -255,16 +255,17 @@ test('forum atomic requirements and evidence remain deterministic and traceable'
         ->and($result->successful(), $result->errorOutput().$result->output())
         ->toBeTrue()
         ->and($catalogue['source_payload_sha256'])
-        ->toBe('ad88d55de0faf7d5fe62c97479be42f6539316a13eeae9d2bbfd8a6b3716c32d')
+        ->toBe('af59796f91aaccd42cb5af1322082db79b25fb4248eb235cbeb049a645f5348f')
         ->and($catalogue['source_parts'])
         ->toBe([
             'primary',
             'extension',
             'pet-profile-revision',
             'social-relationships-revision',
+            'content-feed-revision',
         ])
-        ->and($requirements)->toHaveCount(14629)
-        ->and($requirements->pluck('requirement_id')->unique())->toHaveCount(14629)
+        ->and($requirements)->toHaveCount(18640)
+        ->and($requirements->pluck('requirement_id')->unique())->toHaveCount(18640)
         ->and($requirements->where('source_part', 'pet-profile-revision'))
         ->toHaveCount(4135)
         ->and($requirements->where('source_part', 'pet-profile-revision')
@@ -276,7 +277,17 @@ test('forum atomic requirements and evidence remain deterministic and traceable'
         ->and($requirements->where('source_part', 'social-relationships-revision')
             ->pluck('requirement_id')
             ->filter(fn (string $id): bool => str_starts_with($id, 'social.')))
-        ->toHaveCount(3210);
+        ->toHaveCount(3210)
+        ->and($requirements->where('source_part', 'content-feed-revision'))
+        ->toHaveCount(4011)
+        ->and($requirements->where('source_part', 'content-feed-revision')
+            ->pluck('requirement_id')
+            ->filter(fn (string $id): bool => str_starts_with($id, 'content.')))
+        ->toHaveCount(4011)
+        ->and($requirements->where('source_part', 'content-feed-revision')
+            ->filter(fn (array $requirement): bool => $requirement['implementation_phase'] < 36
+                || $requirement['implementation_phase'] > 44))
+        ->toBeEmpty();
 
     $requirements
         ->where('verification_status', 'verified')

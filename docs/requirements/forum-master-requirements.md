@@ -3,8 +3,8 @@
 This catalogue is generated from the immutable source prompt. It normalizes
 the implementation contract without replacing or shortening source text.
 
-- Source payload SHA-256: `ad88d55de0faf7d5fe62c97479be42f6539316a13eeae9d2bbfd8a6b3716c32d`
-- Atomic requirements: `14629`
+- Source payload SHA-256: `af59796f91aaccd42cb5af1322082db79b25fb4248eb235cbeb049a645f5348f`
+- Atomic requirements: `18640`
 - Complete machine-readable catalogue: `docs/requirements/forum-requirements.json`
 - Complete traceability index: `docs/traceability/forum-requirements-matrix.md`
 
@@ -15,6 +15,28 @@ the implementation contract without replacing or shortening source text.
 | Domain | Atomic requirements |
 | --- | ---: |
 | animal-taxonomy | 896 |
+| content-ai | 129 |
+| content-authoring | 280 |
+| content-comment | 188 |
+| content-data | 209 |
+| content-feed | 345 |
+| content-foundation | 300 |
+| content-hashtag | 109 |
+| content-integration | 133 |
+| content-library-notification | 145 |
+| content-lifecycle-rights | 153 |
+| content-localization-interface | 159 |
+| content-media | 287 |
+| content-mention | 60 |
+| content-offline | 74 |
+| content-quality | 159 |
+| content-reaction | 89 |
+| content-release | 157 |
+| content-safety-moderation | 379 |
+| content-scenario | 134 |
+| content-sharing | 116 |
+| content-stories | 102 |
+| content-types | 304 |
 | forum-category | 1461 |
 | forum-feature | 3354 |
 | interface | 76 |
