@@ -26,24 +26,8 @@ class PerformActionRequest extends FormRequest
         $action = (string) $this->input('action');
         $eventActions = [
             'toggle-event-interest',
-            'register-event',
-            'cancel-event-registration',
-            'complete-event-payment',
             'toggle-event-calendar',
             'toggle-event-reminder',
-            'check-in-event',
-            'acknowledge-event-reschedule',
-            'set-event-travel-status',
-            'send-event-message',
-            'publish-event-announcement',
-            'approve-event-application',
-            'decline-event-application',
-            'promote-event-waitlist',
-            'reschedule-event',
-            'cancel-event',
-            'add-event-photo',
-            'submit-event-review',
-            'create-event-report',
         ];
         $placeActions = [
             'toggle-place-save',
@@ -121,7 +105,6 @@ class PerformActionRequest extends FormRequest
                     'create-comment',
                     'create-post',
                     'create-group',
-                    'create-meetup',
                     'create-walk-plan',
                     'create-pet',
                     'update-profile',
@@ -305,12 +288,10 @@ class PerformActionRequest extends FormRequest
             'title' => [
                 Rule::requiredIf(in_array($action, [
                     'create-group',
-                    'create-meetup',
                     'create-walk-plan',
                     'create-pet',
                     'update-profile',
                     'update-pet',
-                    'publish-event-announcement',
                     'create-place',
                     'create-place-warning',
                     'create-place-claim',
@@ -328,16 +309,11 @@ class PerformActionRequest extends FormRequest
                     'create-post-report',
                     'create-group-report',
                     'create-group',
-                    'create-meetup',
                     'create-walk-plan',
                     'create-pet',
                     'update-profile',
                     'update-pet',
                     'create-profile-report',
-                    'send-event-message',
-                    'publish-event-announcement',
-                    'submit-event-review',
-                    'create-event-report',
                     'invite-to-place',
                     'answer-place-question',
                     'create-place',
@@ -353,10 +329,7 @@ class PerformActionRequest extends FormRequest
             ],
             'detail' => ['nullable', 'string', 'max:160'],
             'location' => [
-                Rule::requiredIf(
-                    in_array($action, ['create-walk-plan', 'update-profile'], true)
-                        || ($action === 'create-meetup' && (string) $this->input('event_format', 'offline') === 'offline'),
-                ),
+                Rule::requiredIf(in_array($action, ['create-walk-plan', 'update-profile'], true)),
                 'nullable',
                 'string',
                 'max:120',
@@ -368,8 +341,6 @@ class PerformActionRequest extends FormRequest
                     'update-pet',
                     'create-profile-report',
                     'create-post-report',
-                    'create-event-report',
-                    'create-meetup',
                     'create-place',
                     'create-place-warning',
                     'create-place-report',
@@ -377,25 +348,7 @@ class PerformActionRequest extends FormRequest
                 'nullable',
                 'string',
                 'max:80',
-                ...($action === 'create-meetup'
-                    ? [Rule::in([
-                        'walk',
-                        'training',
-                        'show',
-                        'lecture',
-                        'webinar',
-                        'adoption',
-                        'volunteering',
-                        'charity',
-                        'contest',
-                        'photo-session',
-                        'travel',
-                        'celebration',
-                        'search-action',
-                        'other',
-                    ])]
-                    : []),
-                ...(in_array($action, ['create-profile-report', 'create-post-report', 'create-group-report', 'create-event-report'], true)
+                ...(in_array($action, ['create-profile-report', 'create-post-report', 'create-group-report'], true)
                     ? [Rule::in([
                         'fake-profile',
                         'stolen-photos',
@@ -596,11 +549,9 @@ class PerformActionRequest extends FormRequest
             ],
             'pet_return_q' => ['nullable', 'string', 'max:80'],
             'privacy' => [
-                Rule::requiredIf(in_array($action, ['create-group', 'create-meetup'], true)),
+                Rule::requiredIf($action === 'create-group'),
                 'nullable',
-                ...($action === 'create-meetup'
-                    ? [Rule::in(['public', 'closed', 'hidden'])]
-                    : [Rule::in(['public', 'closed'])]),
+                Rule::in(['public', 'closed']),
             ],
             'city' => [
                 Rule::requiredIf(in_array($action, ['create-group', 'create-place'], true)),
@@ -614,7 +565,7 @@ class PerformActionRequest extends FormRequest
                 Rule::in(['English', 'English + Spanish', 'Russian', 'Lithuanian']),
             ],
             'rules' => [
-                Rule::requiredIf(in_array($action, ['create-group', 'create-meetup', 'create-place'], true)),
+                Rule::requiredIf(in_array($action, ['create-group', 'create-place'], true)),
                 'nullable',
                 'string',
                 'max:1200',
@@ -662,83 +613,15 @@ class PerformActionRequest extends FormRequest
                 Rule::in(ProfileVisibility::values()),
             ],
             'date' => [
-                Rule::requiredIf(in_array($action, ['create-meetup', 'create-walk-plan'], true)),
+                Rule::requiredIf($action === 'create-walk-plan'),
                 'nullable',
                 'date_format:Y-m-d',
                 'after_or_equal:today',
             ],
             'time' => [
-                Rule::requiredIf(in_array($action, ['create-meetup', 'create-walk-plan'], true)),
+                Rule::requiredIf($action === 'create-walk-plan'),
                 'nullable',
                 'date_format:H:i',
-            ],
-            'event_format' => [
-                Rule::requiredIf($action === 'create-meetup'),
-                'nullable',
-                Rule::in(['offline', 'online']),
-            ],
-            'event_organizer' => [
-                Rule::requiredIf($action === 'create-meetup'),
-                'nullable',
-                Rule::in(['mia', 'scout', 'group', 'organization']),
-            ],
-            'event_timezone' => [
-                Rule::requiredIf($action === 'create-meetup'),
-                'nullable',
-                Rule::in([
-                    'America/Los_Angeles',
-                    'America/New_York',
-                    'Europe/Vilnius',
-                    'Europe/London',
-                    'UTC',
-                ]),
-            ],
-            'event_capacity' => [
-                Rule::requiredIf($action === 'create-meetup'),
-                'nullable',
-                'integer',
-                'min:2',
-                'max:500',
-            ],
-            'event_registration_policy' => [
-                Rule::requiredIf($action === 'create-meetup'),
-                'nullable',
-                Rule::in(['instant', 'approval', 'invitation']),
-            ],
-            'event_ticket_model' => [
-                Rule::requiredIf($action === 'create-meetup'),
-                'nullable',
-                Rule::in(['free', 'paid']),
-            ],
-            'event_ticket_price' => [
-                Rule::requiredIf(
-                    $action === 'create-meetup'
-                        && (string) $this->input('event_ticket_model', 'free') === 'paid',
-                ),
-                'nullable',
-                'numeric',
-                'min:1',
-                'max:10000',
-            ],
-            'event_online_url' => [
-                Rule::requiredIf(
-                    $action === 'create-meetup'
-                        && (string) $this->input('event_format', 'offline') === 'online',
-                ),
-                'nullable',
-                'url:http,https',
-                'max:255',
-            ],
-            'event_cover' => [
-                Rule::requiredIf($action === 'create-meetup'),
-                'nullable',
-                Rule::in(['walk', 'training', 'community', 'online']),
-            ],
-            'event_safety_plan' => [
-                Rule::requiredIf($action === 'create-meetup'),
-                'nullable',
-                'string',
-                'max:1200',
             ],
             'event_return_tab' => [
                 'nullable',
@@ -756,83 +639,6 @@ class PerformActionRequest extends FormRequest
                     'reviews',
                     'manage',
                 ]),
-            ],
-            'event_pet' => [
-                Rule::requiredIf($action === 'register-event'),
-                'nullable',
-                Rule::in(['scout', 'nori', 'owner-only']),
-            ],
-            'ticket_type' => [
-                Rule::requiredIf($action === 'register-event'),
-                'nullable',
-                Rule::in(['standard', 'owner-only']),
-            ],
-            'attendance_format' => [
-                Rule::requiredIf($action === 'register-event'),
-                'nullable',
-                Rule::in(['offline', 'online']),
-            ],
-            'guest_count' => ['nullable', 'integer', 'min:0', 'max:5'],
-            'requirements_note' => ['nullable', 'string', 'max:500'],
-            'photo_consent' => [
-                Rule::requiredIf($action === 'register-event'),
-                'nullable',
-                Rule::in(['yes', 'ask-first', 'no']),
-            ],
-            'accepted_rules' => [
-                Rule::requiredIf($action === 'register-event'),
-                'nullable',
-                Rule::in(['yes']),
-            ],
-            'payment_outcome' => [
-                Rule::requiredIf($action === 'complete-event-payment'),
-                'nullable',
-                Rule::in(['success', 'failure']),
-            ],
-            'check_in_method' => [
-                Rule::requiredIf($action === 'check-in-event'),
-                'nullable',
-                Rule::in(['qr', 'manual']),
-            ],
-            'travel_status' => [
-                Rule::requiredIf($action === 'set-event-travel-status'),
-                'nullable',
-                Rule::in(['leaving', 'approaching', 'late', 'arrived', 'cannot-find', 'not-coming']),
-            ],
-            'event_application' => [
-                Rule::requiredIf(in_array($action, ['approve-event-application', 'decline-event-application'], true)),
-                'nullable',
-                Rule::in(['ari-mochi', 'noah-juniper']),
-            ],
-            'event_candidate' => [
-                Rule::requiredIf($action === 'promote-event-waitlist'),
-                'nullable',
-                Rule::in(['lena-pip']),
-            ],
-            'event_date' => [
-                Rule::requiredIf($action === 'reschedule-event'),
-                'nullable',
-                'date_format:Y-m-d',
-                'after_or_equal:today',
-            ],
-            'event_time' => [
-                Rule::requiredIf($action === 'reschedule-event'),
-                'nullable',
-                'date_format:H:i',
-            ],
-            'event_note' => [
-                Rule::requiredIf($action === 'reschedule-event'),
-                'nullable',
-                'string',
-                'max:500',
-            ],
-            'event_reason' => ['nullable', 'string', 'max:500'],
-            'photo_caption' => ['nullable', 'string', 'max:240'],
-            'event_rating' => [
-                Rule::requiredIf($action === 'submit-event-review'),
-                'nullable',
-                'integer',
-                'between:1,5',
             ],
             'place_return_tab' => [
                 'nullable',

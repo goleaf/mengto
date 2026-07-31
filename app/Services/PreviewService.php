@@ -1337,9 +1337,6 @@ final class PreviewService
         $groupReport = isset($context['target'])
             ? $this->groups->reportContext((string) $context['target'])
             : null;
-        $eventReport = isset($context['target'])
-            ? $this->events->reportContext((string) $context['target'])
-            : null;
         $placeReport = isset($context['target'])
             ? $this->placePresenter->reportContext((string) $context['target'])
             : null;
@@ -1364,7 +1361,6 @@ final class PreviewService
                     'post' => $post,
                     'post_report' => $postReport,
                     'group_report' => $groupReport,
-                    'event_report' => $eventReport,
                     'place_report' => $placeReport,
                     'place_correction' => $placeCorrection,
                     'place_context' => $placeContext,

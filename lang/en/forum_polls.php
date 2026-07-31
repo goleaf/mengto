@@ -62,6 +62,7 @@ return [
         'activity_ends_at' => 'Ends',
         'activity_timezone' => 'Time zone',
         'activity_location' => 'General location',
+        'activity_online_url' => 'Online access link',
         'activity_capacity' => 'Capacity',
         'activity_notes' => 'Participation notes',
         'announcement_title' => 'Announcement title',

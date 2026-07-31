@@ -27,7 +27,6 @@ final class ComposerCatalog
             'post-edit' => $this->post($context, true),
             'delete-post' => $this->deletePost($context),
             'group' => $this->group(),
-            'meetup' => $this->meetup($context),
             'walk' => $this->walk(),
             'pet' => $this->pet(),
             'place' => $this->place(),
@@ -44,7 +43,6 @@ final class ComposerCatalog
             'report-profile' => $this->profileReport($context),
             'report-post' => $this->postReport($context),
             'report-group' => $this->groupReport($context),
-            'report-event' => $this->eventReport($context),
             'report-place' => $this->placeReport($context),
             default => throw new InvalidArgumentException("Unknown PawCircle composer kind [{$kind}]."),
         };
@@ -265,178 +263,6 @@ final class ComposerCatalog
                 ),
                 $this->field('body', __('messages.description_526e0087cc'), 'textarea', '', __('messages.who_is_this_group_for_and_what_belongs_here_8104670eb4'), required: true),
                 $this->field('rules', __('messages.first_community_rules_140f742606'), 'textarea', '', __('messages.add_privacy_safety_promotion_and_respectful_conversation_5f60a82918'), required: true),
-            ],
-        );
-    }
-
-    /**
-     * @return array<string, mixed>
-     */
-    private function meetup(array $context): array
-    {
-        $place = is_array($context['place_context'] ?? null)
-            ? $context['place_context']
-            : [];
-
-        return $this->definition(
-            eyebrow: __('messages.event_studio_b83d54b8d9'),
-            title: __('messages.create_a_pet_friendly_event_9b4f075ffa'),
-            description: __('messages.set_the_format_audience_registration_boundary_tickets_an_022889198d'),
-            action: 'create-meetup',
-            submitLabel: __('messages.publish_event_175ef37539'),
-            submitIcon: 'calendar-plus',
-            cancelRoute: 'meetups.index',
-            activeSection: 'meetups',
-            fields: [
-                $this->field('title', __('messages.event_name_25bc9efedf'), 'text', '', __('messages.example_quiet_sunday_park_loop_bb135f8b7f'), required: true),
-                $this->field(
-                    'category',
-                    __('messages.category_292c06f004'),
-                    'select',
-                    'walk',
-                    '',
-                    required: true,
-                    options: [
-                        'walk' => __('messages.walk_or_first_meeting_7590ef5748'),
-                        'training' => __('messages.training_36a798e3f3'),
-                        'show' => __('messages.show_or_exhibition_2efcdb139b'),
-                        'lecture' => __('messages.lecture_a757c6b403'),
-                        'webinar' => __('messages.webinar_83584124b5'),
-                        'adoption' => __('messages.adoption_day_f7aecb1fd3'),
-                        'volunteering' => __('messages.volunteer_action_e20372cfb7'),
-                        'charity' => __('messages.charity_event_b30f9ee3b4'),
-                        'contest' => __('messages.contest_7da8d6db37'),
-                        'photo-session' => __('messages.photo_session_5b0a24c2d6'),
-                        'travel' => __('messages.pet_friendly_trip_01fe9a5588'),
-                        'celebration' => __('messages.celebration_or_memorial_93d6c69d42'),
-                        'search-action' => __('messages.urgent_search_action_7e47454493'),
-                        'other' => __('messages.other_f97e9da0e3'),
-                    ],
-                ),
-                $this->field(
-                    'event_organizer',
-                    __('messages.organize_as_1fa2d52f38'),
-                    'select',
-                    'mia',
-                    '',
-                    required: true,
-                    options: [
-                        'mia' => __('messages.mia_carter_0e5b29cc3b'),
-                        'scout' => __('messages.scout_managed_by_mia_68a8dadfc0'),
-                        'group' => __('messages.richmond_pet_circle_34411217bc'),
-                        'organization' => __('messages.brand.community_team'),
-                    ],
-                ),
-                $this->field(
-                    'event_format',
-                    __('messages.format_2f343666aa'),
-                    'select',
-                    'offline',
-                    '',
-                    required: true,
-                    options: [
-                        'offline' => __('messages.in_person_5cf02dbb1e'),
-                        'online' => __('messages.online_0d21bd5202'),
-                    ],
-                ),
-                $this->field('date', __('messages.date_99c40ab405'), 'date', '', '', required: true, min: today()->format('Y-m-d')),
-                $this->field('time', __('messages.start_time_babe9dda85'), 'time', '10:00', '', required: true),
-                $this->field(
-                    'event_timezone',
-                    __('messages.time_zone_b9fe146478'),
-                    'select',
-                    'America/Los_Angeles',
-                    '',
-                    required: true,
-                    options: [
-                        'America/Los_Angeles' => __('messages.pacific_time_292bbb9d60'),
-                        'America/New_York' => __('messages.eastern_time_7c1e3f83d1'),
-                        'Europe/Vilnius' => __('messages.vilnius_time_abe275522c'),
-                        'Europe/London' => __('messages.london_time_2da158fbc8'),
-                        'UTC' => 'UTC',
-                    ],
-                ),
-                $this->field(
-                    'location',
-                    __('messages.meeting_place_46d1e79522'),
-                    'text',
-                    (string) ($place['address'] ?? ''),
-                    __('messages.required_for_in_person_events_f5c920a937'),
-                ),
-                $this->field('event_online_url', __('messages.online_room_link_fb6fa2e93b'), 'url', '', __('messages.required_for_online_events_a27ee7bee8')),
-                $this->field(
-                    'privacy',
-                    __('messages.privacy_54a57c3147'),
-                    'select',
-                    'public',
-                    '',
-                    required: true,
-                    options: [
-                        'public' => __('messages.public_and_discoverable_bd781ffa15'),
-                        'closed' => __('messages.closed_with_limited_details_a4e6ac5b74'),
-                        'hidden' => __('messages.invitation_only_700463f25d'),
-                    ],
-                ),
-                $this->field(
-                    'event_registration_policy',
-                    __('messages.registration_c793e0d9a1'),
-                    'select',
-                    'approval',
-                    '',
-                    required: true,
-                    options: [
-                        'instant' => __('messages.instant_confirmation_e9af9a74f1'),
-                        'approval' => __('messages.organizer_approval_08d724dd81'),
-                        'invitation' => __('messages.invitation_only_700463f25d'),
-                    ],
-                ),
-                $this->field('event_capacity', __('messages.capacity_ae65d09655'), 'number', '8', __('messages.people_and_pets_together_37ab91742e'), required: true, min: '2'),
-                $this->field(
-                    'event_ticket_model',
-                    __('messages.tickets_3d131368b4'),
-                    'select',
-                    'free',
-                    '',
-                    required: true,
-                    options: [
-                        'free' => __('messages.free_registration_46424ced98'),
-                        'paid' => __('messages.paid_ticket_80e85547b6'),
-                    ],
-                ),
-                $this->field('event_ticket_price', __('messages.ticket_price_usd_df4146fc30'), 'number', '', __('messages.required_for_paid_events_f88e3aee0a'), min: '1'),
-                $this->field(
-                    'event_cover',
-                    __('messages.cover_fa8d845666'),
-                    'select',
-                    'walk',
-                    '',
-                    required: true,
-                    options: [
-                        'walk' => __('messages.calm_park_walk_5121d71c0d'),
-                        'training' => __('messages.training_session_86d6036c90'),
-                        'community' => __('messages.community_gathering_c8b7eba0c1'),
-                        'online' => __('messages.online_learning_548ab2a6ef'),
-                    ],
-                ),
-                $this->field(
-                    'body',
-                    __('messages.description_526e0087cc'),
-                    'textarea',
-                    $place === []
-                        ? ''
-                        : __('presentation.meet_at_place_safely', ['place' => $place['name']]),
-                    __('messages.describe_who_it_is_for_what_happens_and_what_to_bring_cb89971ddc'),
-                    required: true,
-                ),
-                $this->field(
-                    'rules',
-                    __('messages.participation_rules_fc920a8994'),
-                    'textarea',
-                    $place === [] ? '' : implode("\n", $place['rules'] ?? []),
-                    __('messages.add_leash_contact_photography_and_cancellation_rules_81ada16c6c'),
-                    required: true,
-                ),
-                $this->field('event_safety_plan', __('messages.safety_plan_502d6dbea8'), 'textarea', '', __('messages.add_meeting_boundaries_emergency_contact_path_and_animal_04055f3f52'), required: true),
             ],
         );
     }
@@ -788,56 +614,6 @@ final class ComposerCatalog
                     ],
                 ),
                 $this->field('body', __('messages.what_happened_c4dc542b51'), 'textarea', '', __('messages.add_relevant_context_dates_or_evidence_c1a2ca3b18'), required: true),
-            ],
-            payload: [
-                'target' => $report['target'],
-                'label' => $report['label'],
-            ],
-            cancelParameters: $report['route_parameters'],
-        );
-    }
-
-    /**
-     * @param  array<string, mixed>  $context
-     * @return array<string, mixed>
-     */
-    private function eventReport(array $context): array
-    {
-        $report = $context['event_report'] ?? null;
-
-        if (! is_array($report)) {
-            throw new InvalidArgumentException(__('messages.a_valid_event_report_target_is_required_f7367e27e6'));
-        }
-
-        return $this->definition(
-            eyebrow: __('messages.private_event_report_713316acc8'),
-            title: __('messages.report_83e2982ce4').$report['label'],
-            description: __('messages.tell_the_safety_team_what_happened_the_organizer_will_no_4edf5c2f06'),
-            action: 'create-event-report',
-            submitLabel: __('messages.submit_report_b41fd589ad'),
-            submitIcon: 'flag',
-            cancelRoute: $report['route'],
-            activeSection: 'meetups',
-            fields: [
-                $this->field(
-                    'category',
-                    __('messages.reason_f81ab834de'),
-                    'select',
-                    '',
-                    '',
-                    required: true,
-                    options: [
-                        'fraud' => __('messages.fraud_hidden_fees_or_a_fake_event_1bf69b8044'),
-                        'animal-safety' => __('messages.animal_safety_or_cruel_treatment_26b23e270c'),
-                        'harassment' => __('messages.threats_harassment_or_stalking_8bb72a2b01'),
-                        'personal-data' => __('messages.private_information_was_exposed_a8f4163194'),
-                        'illegal-sales' => __('messages.prohibited_animal_sale_5fbf80a1fb'),
-                        'false-alert' => __('messages.false_emergency_or_search_alert_d711069c15'),
-                        'dangerous-advice' => __('messages.dangerous_professional_advice_e332f6edb4'),
-                        'other' => __('messages.other_concern_910bb13965'),
-                    ],
-                ),
-                $this->field('body', __('messages.what_happened_c4dc542b51'), 'textarea', '', __('messages.add_dates_messages_payment_context_or_other_evidence_3c6bb195e2'), required: true),
             ],
             payload: [
                 'target' => $report['target'],

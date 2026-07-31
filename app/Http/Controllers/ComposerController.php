@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\BrowseComposerRequest;
-use App\Services\EventCatalog;
 use App\Services\FeedPresenter;
 use App\Services\GroupCatalog;
 use App\Services\PlaceCatalog;
@@ -11,6 +10,7 @@ use App\Services\PlacePresenter;
 use App\Services\PreviewService;
 use App\Services\ProfilePresenter;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 
 class ComposerController extends Controller
 {
@@ -21,10 +21,9 @@ class ComposerController extends Controller
         FeedPresenter $feed,
         ProfilePresenter $profiles,
         GroupCatalog $groups,
-        EventCatalog $events,
         PlaceCatalog $places,
         PlacePresenter $placePresenter,
-    ): View {
+    ): View|RedirectResponse {
         abort_unless(in_array($kind, [
             'post',
             'group',
@@ -51,12 +50,23 @@ class ComposerController extends Controller
             'delete-post',
         ], true), 404);
 
+        if ($kind === 'meetup') {
+            return to_route('meetups.index');
+        }
+
         $validated = $request->validated();
 
         abort_if($kind === 'report-profile' && ! isset($validated['target']), 404);
         abort_if($kind === 'report-post' && ! isset($validated['target']), 404);
         abort_if($kind === 'report-group' && ! isset($validated['target']), 404);
         abort_if($kind === 'report-event' && ! isset($validated['target']), 404);
+
+        if ($kind === 'report-event') {
+            return to_route('meetups.show', [
+                'event' => (string) $validated['target'],
+            ]);
+        }
+
         abort_if(
             in_array($kind, [
                 'place-correction',
@@ -80,10 +90,6 @@ class ComposerController extends Controller
         );
         abort_if(
             $kind === 'report-group' && $groups->reportContext((string) $validated['target']) === null,
-            404,
-        );
-        abort_if(
-            $kind === 'report-event' && $events->reportContext((string) $validated['target']) === null,
             404,
         );
         abort_if(

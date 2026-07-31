@@ -26,6 +26,8 @@ final class ForumGroupActivityForm extends Form
 
     public string $locationScope = '';
 
+    public string $onlineUrl = '';
+
     public ?int $capacity = null;
 
     public string $participationNotes = '';
@@ -41,6 +43,17 @@ final class ForumGroupActivityForm extends Form
             'endsAt' => ['required', 'date', 'after:startsAt'],
             'timezone' => ['required', 'timezone:all'],
             'locationScope' => ['nullable', 'string', 'max:160'],
+            'onlineUrl' => [
+                Rule::requiredIf(
+                    in_array($this->format, [
+                        ForumGroupActivityFormat::Online->value,
+                        ForumGroupActivityFormat::Hybrid->value,
+                    ], true),
+                ),
+                'nullable',
+                'url:http,https',
+                'max:2000',
+            ],
             'capacity' => ['nullable', 'integer', 'min:1', 'max:100000'],
             'participationNotes' => ['nullable', 'string', 'max:3000'],
         ];
@@ -60,6 +73,9 @@ final class ForumGroupActivityForm extends Form
             timezone: $timezone,
             locationScope: filled($validated['locationScope'] ?? null)
                 ? trim((string) $validated['locationScope'])
+                : null,
+            onlineUrl: filled($validated['onlineUrl'] ?? null)
+                ? trim((string) $validated['onlineUrl'])
                 : null,
             capacity: isset($validated['capacity']) ? (int) $validated['capacity'] : null,
             participationNotes: filled($validated['participationNotes'] ?? null)

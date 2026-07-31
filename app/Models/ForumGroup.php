@@ -40,6 +40,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property-read Collection<int, ForumGroupActivity> $activities
  * @property-read Collection<int, ForumGroupAnnouncement> $announcements
  * @property-read Collection<int, ForumGroupFile> $files
+ * @property-read Collection<int, ForumEvent> $scheduledEvents
  * @property-read User|null $owner
  * @property-read Collection<int, ForumPoll> $polls
  */
@@ -220,6 +221,12 @@ final class ForumGroup extends Model
     public function activities(): HasMany
     {
         return $this->hasMany(ForumGroupActivity::class);
+    }
+
+    /** @return HasMany<ForumEvent, $this> */
+    public function scheduledEvents(): HasMany
+    {
+        return $this->hasMany(ForumEvent::class);
     }
 
     /** @return HasMany<ForumGroupAnnouncement, $this> */

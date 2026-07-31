@@ -62,6 +62,7 @@ return [
         'activity_ends_at' => 'Окончание',
         'activity_timezone' => 'Часовой пояс',
         'activity_location' => 'Общая локация',
+        'activity_online_url' => 'Ссылка для онлайн-доступа',
         'activity_capacity' => 'Количество мест',
         'activity_notes' => 'Условия участия',
         'announcement_title' => 'Заголовок объявления',

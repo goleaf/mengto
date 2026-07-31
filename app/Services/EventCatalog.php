@@ -21,25 +21,6 @@ final class EventCatalog
     }
 
     /**
-     * @return array{target: string, label: string, route: string, route_parameters: array<string, string>}|null
-     */
-    public function reportContext(string $target): ?array
-    {
-        $event = $this->find($target);
-
-        if ($event === null) {
-            return null;
-        }
-
-        return [
-            'target' => $target,
-            'label' => $event['title'],
-            'route' => 'meetups.show',
-            'route_parameters' => ['event' => $target],
-        ];
-    }
-
-    /**
      * @return array<string, array<string, mixed>>
      */
     private function records(): array

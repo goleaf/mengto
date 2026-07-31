@@ -116,3 +116,11 @@ text, media, export, and archive copy. Shared navigation keys remain in
 All three catalogues must have key and placeholder parity. Journal user prose,
 captions, and comments remain in their original language. Metric keys and
 stored units are stable identifiers; only their labels are translated.
+## Event Catalogue
+
+Platform event text lives in matching `lang/en/forum_events.php`,
+`lang/lt/forum_events.php`, and `lang/ru/forum_events.php` catalogues. Enums
+resolve labels through stable keys; dates, times, counts, and money use locale
+formatters or plural-aware translation calls. Stored user event content
+retains its original locale. Scientific names linked through event taxa are
+never translated.

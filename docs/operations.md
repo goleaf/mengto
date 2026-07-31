@@ -231,3 +231,13 @@ After user journal data exists, recovery is forward-only:
 
 Do not roll back by dropping journal tables or removing the additive comment
 foreign key after production writes. See `docs/journals.md`.
+## Event Operations
+
+Event workflows require no new queue, cron, websocket, or supervisor.
+Deployment must run the additive migration and production-safe event backfill,
+then verify `/meetups`, one legacy stable URL, one group-linked event, and
+protected attendee access. Demo event seeding is forbidden in production.
+
+For recovery, retain the database backup, inspect append-only event history,
+and apply a reviewed forward Action or migration. Never repair an event by
+deleting registrations, reports, reviews, or history.

@@ -46,3 +46,15 @@ evidence.
 
 Implemented controls and incident procedures are detailed in
 `docs/security.md`, `docs/authorization.md`, and `docs/operations.md`.
+## Event Privacy
+
+Public discovery selects no exact location, online URL, emergency plan,
+private invitation text, attendee requirements note, or private review safety
+feedback. These fields are encrypted and excluded from model serialization.
+Private-event search visibility depends on a current accepted invitation.
+Reports use the unified moderation privacy boundary and never disclose the
+reporter to the reported organizer by default.
+
+Photo consent is explicit per registration. Event cancellation, archive, and
+backfill preserve registrations, invitations, reports, reviews, messages, and
+history instead of deleting evidence.

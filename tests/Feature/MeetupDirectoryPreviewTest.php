@@ -1,39 +1,50 @@
 <?php
 
+declare(strict_types=1);
+
+use App\Models\ForumEvent;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Route;
 
+uses(RefreshDatabase::class);
+
 test('the meetup directory renders a functional event schedule', function () {
+    ForumEvent::factory()
+        ->count(8)
+        ->sequence(
+            ['title' => 'Calm walk at Laurelhurst Park'],
+            ['title' => 'Puppy socialization lab'],
+            ['title' => 'Travel-ready pet webinar'],
+            ['title' => 'Accessible senior-animal club'],
+            ['title' => 'Rescue volunteer orientation'],
+            ['title' => 'Community bird-care session'],
+            ['title' => 'Aquarium keeper meetup'],
+            ['title' => 'First-time owner circle'],
+        )
+        ->create();
+
     expect(Route::has('meetups.index'))->toBeTrue();
 
     $response = $this->get(route('meetups.index'));
 
     $response
         ->assertSuccessful()
-        ->assertSee('<title>Events | PawCircle</title>', false)
-        ->assertSee('data-section="event-header"', false)
-        ->assertSee('data-section="event-summary"', false)
-        ->assertSee('data-section="event-directory-results"', false)
-        ->assertSee('class="event-toolbar__form"', false)
-        ->assertSee('event-grid', false)
-        ->assertSee('Urgent neighborhood search for Scout')
+        ->assertSee('<title>Community events</title>', false)
+        ->assertSee('data-section="event-directory"', false)
         ->assertSee('Calm walk at Laurelhurst Park')
         ->assertSee('Puppy socialization lab')
         ->assertSee('Travel-ready pet webinar')
-        ->assertSee('Registration open')
         ->assertSee('Search events')
-        ->assertSee('Event view');
+        ->assertSee('Create an event');
 
     $xpath = responseXPath($response);
 
     expect($xpath->query('//h1')->length)->toBe(1)
-        ->and(trim((string) $xpath->query('//h1')->item(0)?->textContent))->toBe('Find a gathering that fits you and your pet')
-        ->and($xpath->query('//article[contains(concat(" ", normalize-space(@class), " "), " event-card ")]')->length)->toBe(8)
-        ->and($xpath->query('//article[contains(concat(" ", normalize-space(@class), " "), " event-card ") and @role="listitem"]')->length)->toBe(8)
-        ->and($xpath->query('//article[contains(concat(" ", normalize-space(@class), " "), " event-card ")]//h2')->length)->toBe(8)
-        ->and($xpath->query('//article[contains(concat(" ", normalize-space(@class), " "), " event-card ")]//time[@datetime]')->length)->toBe(8)
-        ->and($xpath->query('//section[@data-section="event-directory-results"]/*[@role="list" and contains(concat(" ", normalize-space(@class), " "), " sm:grid-cols-2 ") and contains(concat(" ", normalize-space(@class), " "), " xl:grid-cols-3 ") and not(contains(concat(" ", normalize-space(@class), " "), " xl:grid-cols-4 "))]')->length)->toBe(1)
-        ->and($xpath->query('//main//input[@id="event-search" and not(@disabled)]')->length)->toBe(1)
+        ->and(trim((string) $xpath->query('//h1')->item(0)?->textContent))->toBe('Events and clubs')
+        ->and($xpath->query('//section[@data-section="event-directory"]//article')->length)->toBe(8)
+        ->and($xpath->query('//section[@data-section="event-directory"]//article//h3')->length)->toBe(8)
+        ->and($xpath->query('//main//input[@type="search" and not(@disabled)]')->length)->toBeGreaterThan(0)
         ->and($xpath->query('//main//button[not(@disabled)]')->length)->toBeGreaterThan(0)
         ->and($xpath->query('//main//a')->length)->toBeGreaterThan(0)
         ->and($xpath->query('//main//form')->length)->toBeGreaterThan(0);

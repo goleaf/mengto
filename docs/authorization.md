@@ -176,3 +176,17 @@ See `docs/groups.md`.
   verifies parent consistency, and authorizes again.
 
 See `docs/journals.md`.
+## Event Abilities
+
+`ForumEventPolicy` controls listing, viewing, creation, updates, cancellation,
+registration, invitation, attendee management, protected access details,
+updates, communication, reviews, and reports.
+`ForumEventRegistrationPolicy` controls cancellation of a concrete
+registration. Every Livewire mutation reloads its record and repeats policy
+authorization; `#[Locked]` identifiers are only hydration protection.
+
+Private events require an accepted, unexpired invitation. Exact location,
+online access, and the emergency plan require organizer, administrator, or
+confirmed/checked-in attendee access. Group events additionally enforce the
+current group policy. Professional organizer presentation reads independent
+current credential evidence and cannot be granted by event reputation.

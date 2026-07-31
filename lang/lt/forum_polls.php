@@ -62,6 +62,7 @@ return [
         'activity_ends_at' => 'Pabaiga',
         'activity_timezone' => 'Laiko juosta',
         'activity_location' => 'Bendra vieta',
+        'activity_online_url' => 'Internetinė prieigos nuoroda',
         'activity_capacity' => 'Vietų skaičius',
         'activity_notes' => 'Dalyvavimo pastabos',
         'announcement_title' => 'Pranešimo pavadinimas',

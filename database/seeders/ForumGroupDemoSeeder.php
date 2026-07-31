@@ -180,6 +180,7 @@ final class ForumGroupDemoSeeder extends Seeder
                 endsAt: CarbonImmutable::now()->addDays(14)->addHours(2),
                 timezone: 'America/Los_Angeles',
                 locationScope: $publicGroup->location_scope,
+                onlineUrl: null,
                 capacity: 18,
                 participationNotes: 'Bring individual water and allow animals space.',
                 idempotencyKey: 'demo-group-content:activity:v1',

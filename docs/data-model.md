@@ -3,7 +3,7 @@
 ## Storage Baseline
 
 - 68 migrations created 71 SQLite tables at baseline; the current additive
-  schema has 93 migrations and 146 tables after identity, care-sync,
+  schema has 95 migrations and 160 tables after identity, care-sync,
   social-state, device-lifecycle, forum taxonomy, global animal taxonomy,
   reputation, moderation, credential verification, structured-community, and
   persistent-group work.
@@ -200,3 +200,21 @@ automatic legacy classification. See `docs/polls.md`.
 All schema changes are additive, use foreign keys and bounded-query indexes,
 and avoid raw SQL, triggers, destructive legacy classification, or a
 cross-domain transaction with external I/O. See `docs/journals.md`.
+## Event Tables
+
+The additive event schema consists of `forum_events`,
+`forum_event_registrations`, `forum_event_invitations`,
+`forum_event_updates`, `forum_event_messages`, `forum_event_reviews`,
+`forum_event_history`, and `forum_event_taxon`.
+
+Unique constraints protect stable keys, creation/action idempotency, one
+registration and one review per event/user, one invitation per event/user,
+and one taxon link. Compound indexes cover visible schedules, group schedules,
+registration capacity/waitlist ordering, invitation status/expiry, message and
+update timelines, review status, and append-only history. Every foreign key
+has a leading index. The migration is additive and links group activities
+through a nullable `forum_event_id`.
+
+Exact location, online URL, emergency plan, attendee notes, invitation
+messages, and private review feedback use encrypted casts. See
+`docs/events.md` for lifecycle and recovery.

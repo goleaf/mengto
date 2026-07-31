@@ -82,3 +82,15 @@ Prefer forward fixes after an additive migration. Rolling application code
 back is safe only while the schema remains backward compatible. Never restore
 old code that cannot understand new mandatory data. Restore database backup
 only through an approved incident process.
+## Event Migration And Backfill
+
+`2026_07_31_001230_create_forum_event_tables.php` adds event tables,
+constraints, indexes, and the nullable group-activity link without rewriting
+legacy data. `BackfillForumEvents` then converts first-party catalogue records
+and unlinked group activities using stable keys and idempotent lookups.
+
+After migration, run the production-safe event backfill through the normal
+forum system seeder, then verify old stable URLs, event counts, group links,
+registration counts, and protected fields. Rollback is safe only before event
+data is used. After production writes, recover through a forward fix; do not
+drop event tables.

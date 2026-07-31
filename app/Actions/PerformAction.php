@@ -89,7 +89,6 @@ class PerformAction
             'delete-post' => $this->deletePost($target),
             'create-post-report' => $this->createPostReport($data),
             'create-group' => $this->createGroup($data),
-            'create-meetup' => $this->createEvent($data),
             'create-walk-plan' => $this->createWalkPlan($data),
             'create-pet' => $this->createPet($data),
             'update-profile' => $this->updateProfile($data),
@@ -468,41 +467,6 @@ class PerformAction
         return [
             'message' => __('messages.your_new_group_is_ready_in_the_directory_52f9d90542'),
             'route' => 'groups.index',
-        ];
-    }
-
-    /**
-     * @param  array<string, mixed>  $data
-     * @return array{message: string, route: string}
-     */
-    private function createEvent(array $data): array
-    {
-        $this->state->addCreated('meetups', [
-            'id' => (string) Str::uuid(),
-            'title' => $this->requireText($data, 'title'),
-            'body' => $this->requireText($data, 'body'),
-            'detail' => (string) ($data['event_safety_plan'] ?? ''),
-            'location' => (string) ($data['location'] ?? ''),
-            'category' => (string) ($data['category'] ?? 'walk'),
-            'date' => (string) ($data['date'] ?? ''),
-            'time' => (string) ($data['time'] ?? ''),
-            'format' => (string) ($data['event_format'] ?? 'offline'),
-            'organizer' => (string) ($data['event_organizer'] ?? 'mia'),
-            'timezone' => (string) ($data['event_timezone'] ?? 'America/Los_Angeles'),
-            'privacy' => (string) ($data['privacy'] ?? 'public'),
-            'registration_policy' => (string) ($data['event_registration_policy'] ?? 'approval'),
-            'capacity' => (string) ($data['event_capacity'] ?? '8'),
-            'ticket_model' => (string) ($data['event_ticket_model'] ?? 'free'),
-            'ticket_price' => (string) ($data['event_ticket_price'] ?? ''),
-            'online_url' => (string) ($data['event_online_url'] ?? ''),
-            'cover' => (string) ($data['event_cover'] ?? 'walk'),
-            'rules' => $this->requireText($data, 'rules'),
-            'created_at' => now()->toAtomString(),
-        ]);
-
-        return [
-            'message' => __('messages.your_event_is_published_with_registration_and_safety_set_a536993799'),
-            'route' => 'meetups.index',
         ];
     }
 

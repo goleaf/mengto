@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $created_by_user_id
  * @property CarbonImmutable $ends_at
  * @property ForumGroupActivityFormat $format
+ * @property int|null $forum_event_id
  * @property int $forum_group_id
  * @property int $id
  * @property string|null $location_scope
@@ -30,6 +31,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string $title
  * @property string $timezone
  * @property-read User $creator
+ * @property-read ForumEvent|null $event
  * @property-read ForumGroup $group
  */
 final class ForumGroupActivity extends Model
@@ -39,6 +41,7 @@ final class ForumGroupActivity extends Model
 
     protected $fillable = [
         'forum_group_id',
+        'forum_event_id',
         'created_by_user_id',
         'stable_key',
         'creation_idempotency_key',
@@ -78,6 +81,12 @@ final class ForumGroupActivity extends Model
     public function group(): BelongsTo
     {
         return $this->belongsTo(ForumGroup::class, 'forum_group_id');
+    }
+
+    /** @return BelongsTo<ForumEvent, $this> */
+    public function event(): BelongsTo
+    {
+        return $this->belongsTo(ForumEvent::class, 'forum_event_id');
     }
 
     /** @return BelongsTo<User, $this> */

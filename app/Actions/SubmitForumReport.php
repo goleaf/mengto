@@ -10,6 +10,7 @@ use App\Models\AdoptionCase;
 use App\Models\ForumAnswer;
 use App\Models\ForumBlock;
 use App\Models\ForumComment;
+use App\Models\ForumEvent;
 use App\Models\ForumGroup;
 use App\Models\ForumMentorship;
 use App\Models\ForumReport;
@@ -73,6 +74,7 @@ final readonly class SubmitForumReport
             Sighting::class,
             ForumMentorship::class,
             ForumGroup::class,
+            ForumEvent::class,
         ], true)) {
             throw ValidationException::withMessages([
                 'subject' => __('forum_moderation.validation.unsupported_subject'),
@@ -233,6 +235,7 @@ final readonly class SubmitForumReport
             $subject instanceof Sighting => $subject->searchCase()->value('owner_id'),
             $subject instanceof ForumMentorship => $subject->counterpartId($reporter),
             $subject instanceof ForumGroup => $subject->owner_user_id,
+            $subject instanceof ForumEvent => $subject->organizer_user_id,
             default => null,
         };
 

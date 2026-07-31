@@ -183,3 +183,30 @@ Current verified journal package checkpoint:
 
 Static-analysis, build, cache, and browser details are recorded in
 `docs/plans/forum-phase8-journals-work-package.md`.
+## Event Coverage
+
+`tests/Feature/Forum/EventWorkflowTest.php` covers event creation,
+idempotency, validation, encryption, visibility, invitations, capacity,
+waitlists, registration review, check-in, protected access, updates,
+messages, rescheduling, cancellation, reviews, reports, Livewire direct-action
+authorization, filters, legacy backfill, retired legacy mutations, and every
+event factory.
+
+`MeetupDirectoryPreviewTest` protects route compatibility, while
+`GroupContentAndPollWorkflowTest` proves group activities create linked
+canonical events. Shared architecture, localization, schema, and
+factory/seeder suites cover cross-cutting gates.
+
+Current verified event package checkpoint:
+
+- focused event suite: 18 tests and 125 assertions;
+- event/meetup/group/social regression slice: 45 tests and 287 assertions
+  before the reversible-migration regression was added;
+- architecture/localization/factory/schema slice: 1,049 tests and 49,125
+  assertions;
+- isolated final full serial suite: 1,514 tests and 53,062 assertions;
+- isolated fresh database: 95 migrations, 160 tables, repeat seed passed.
+
+Coverage remains unavailable because the PHP 8.5 CLI has neither PCOV nor
+Xdebug. Parallel execution is not accepted as evidence while test processes
+share one SQLite topology.

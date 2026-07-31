@@ -70,8 +70,15 @@
   export, archive, and idempotent legacy backfill. The private operational
   care journal remains a separate domain, and no streak, shame, reputation, or
   professional-authority side effect was introduced.
+- Replaced authoritative session-only event mutations with normalized events,
+  registrations, invitations, updates, attendee messages, reviews, immutable
+  history, global taxon links, club links, encrypted access details,
+  transactional capacity/waitlist handling, independent organizer
+  verification, unified reports, stable-key backfill, and accessible
+  class-based Livewire directory and workspace flows. Retired event presenters
+  and styles were removed while legacy create/report URLs remain compatible.
 - Added an evidence overlay that prevents requirement verification without
-  concrete file or test evidence; 370 atomic requirements are currently
+  concrete file or test evidence; 397 atomic requirements are currently
   verified.
 
 ### Runtime And Architecture
@@ -135,7 +142,7 @@
 - Added an asserted temporary-SQLite fresh migration/seed verifier so
   destructive database checks cannot silently target the development file.
 - Expanded Pest from a baseline of 116 tests / 3,881 assertions to the current
-  checkpoint of 1,437 tests / 51,568 assertions.
+  checkpoint of 1,514 tests / 53,062 assertions.
 - Added auth, authorization, localization, schema, factory/seeder,
   architecture, and responsive regression coverage.
 
@@ -151,7 +158,7 @@
 
 ### Verification
 
-- Full Pest suite checkpoint: 1,437 passed, 51,568 assertions in serial mode.
+- Full Pest suite checkpoint: 1,514 passed, 53,062 assertions in serial mode.
 - Larastan/PHPStan level 5: zero errors.
 - Composer strict validation and security audit: passed, zero advisories.
 - NPM high-severity audit: passed, zero vulnerabilities.

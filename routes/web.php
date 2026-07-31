@@ -250,15 +250,7 @@ Route::middleware('web')
             ->where('item', 'created-meetup-[A-Za-z0-9-]+')
             ->name('meetups.created');
         Route::get('/meetups/{event}', MeetupDetailPreviewController::class)
-            ->whereIn('event', [
-                'puppy-social-lab',
-                'beginner-training-series',
-                'rose-city-pet-show',
-                'shelter-open-house',
-                'missing-scout-search',
-                'baxter-birthday',
-                'travel-ready-webinar',
-            ])
+            ->where('event', '[A-Za-z0-9-]+')
             ->name('meetups.show');
         Route::get('/places', PlaceDirectoryPreviewController::class)->name('places.index');
         Route::get('/places/{place}', PlaceDetailPreviewController::class)

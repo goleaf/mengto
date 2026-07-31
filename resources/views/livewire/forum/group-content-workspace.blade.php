@@ -339,6 +339,12 @@
                     <label class="forum-form__field">
                         <span>{{ __('forum_polls.fields.activity_location') }}</span>
                         <input type="text" wire:model="activity.locationScope" maxlength="160">
+                        @error('activity.locationScope') <small role="alert">{{ $message }}</small> @enderror
+                    </label>
+                    <label class="forum-form__field">
+                        <span>{{ __('forum_polls.fields.activity_online_url') }}</span>
+                        <input type="url" wire:model="activity.onlineUrl" maxlength="2000">
+                        @error('activity.onlineUrl') <small role="alert">{{ $message }}</small> @enderror
                     </label>
                     <label class="forum-form__field">
                         <span>{{ __('forum_polls.fields.activity_capacity') }}</span>

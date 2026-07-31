@@ -4,7 +4,13 @@ declare(strict_types=1);
 
 namespace App\Actions;
 
+use App\Data\CreateForumEventData;
 use App\Data\CreateForumGroupActivityData;
+use App\Enums\ForumEventFormat;
+use App\Enums\ForumEventPhotoConsent;
+use App\Enums\ForumEventRegistrationPolicy;
+use App\Enums\ForumEventType;
+use App\Enums\ForumEventVisibility;
 use App\Enums\ForumGroupActivityStatus;
 use App\Models\ForumGroup;
 use App\Models\ForumGroupActivity;
@@ -16,7 +22,10 @@ use Illuminate\Validation\ValidationException;
 
 final class CreateForumGroupActivity
 {
-    public function __construct(private readonly Gate $gate) {}
+    public function __construct(
+        private readonly Gate $gate,
+        private readonly CreateForumEvent $createEvent,
+    ) {}
 
     public function handle(
         User $actor,
@@ -26,7 +35,11 @@ final class CreateForumGroupActivity
         $this->gate->forUser($actor)->authorize('create', [ForumGroupActivity::class, $group]);
         $this->validate($group, $data);
 
-        return DB::transaction(function () use ($actor, $group, $data): ForumGroupActivity {
+        return DB::transaction(function () use ($actor, $data, $group): ForumGroupActivity {
+            $event = $this->createEvent->handle(
+                $actor,
+                $this->eventData($group, $data),
+            );
             $existing = ForumGroupActivity::query()
                 ->where('creation_idempotency_key', $data->idempotencyKey)
                 ->first();
@@ -40,11 +53,16 @@ final class CreateForumGroupActivity
                     ]);
                 }
 
+                if ($existing->forum_event_id === null) {
+                    $existing->forceFill(['forum_event_id' => $event->id])->save();
+                }
+
                 return $existing;
             }
 
             return ForumGroupActivity::query()->create([
                 'forum_group_id' => $group->id,
+                'forum_event_id' => $event->id,
                 'created_by_user_id' => $actor->id,
                 'stable_key' => 'group-activity-'.Str::lower((string) Str::ulid()),
                 'creation_idempotency_key' => $data->idempotencyKey,
@@ -62,6 +80,56 @@ final class CreateForumGroupActivity
                 'participation_notes' => $data->participationNotes,
             ]);
         }, 3);
+    }
+
+    private function eventData(
+        ForumGroup $group,
+        CreateForumGroupActivityData $data,
+    ): CreateForumEventData {
+        $participationNotes = filled($data->participationNotes)
+            ? trim((string) $data->participationNotes)
+            : null;
+        $welfareRules = $participationNotes !== null
+            && mb_strlen($participationNotes) >= 10
+            ? $participationNotes
+            : __('forum_events.defaults.group_welfare_rules');
+
+        return new CreateForumEventData(
+            title: $data->title,
+            summary: $data->summary,
+            type: ForumEventType::ClubMeetup,
+            visibility: ForumEventVisibility::Group,
+            format: ForumEventFormat::from($data->format->value),
+            startsAt: $data->startsAt,
+            endsAt: $data->endsAt,
+            timezone: $data->timezone,
+            capacity: $data->capacity,
+            registrationPolicy: ForumEventRegistrationPolicy::Approval,
+            waitlistEnabled: true,
+            locationScope: $data->locationScope,
+            exactLocation: null,
+            onlineUrl: $data->onlineUrl,
+            attendanceRequirements: $participationNotes,
+            vaccinationRequirements: null,
+            vaccinationJurisdiction: null,
+            minimumAnimalAgeMonths: null,
+            maximumAnimalAgeMonths: null,
+            accessibilityInformation: null,
+            costMinor: 0,
+            currency: 'EUR',
+            refundPolicy: null,
+            photoConsentMode: ForumEventPhotoConsent::AskFirst,
+            animalWelfareRules: $welfareRules,
+            emergencyContactPlan: __('forum_events.defaults.group_emergency_plan'),
+            groupId: $group->id,
+            taxonIds: $group->taxa()
+                ->orderByPivot('is_primary', 'desc')
+                ->pluck('taxa.id')
+                ->map(static fn (mixed $id): int => (int) $id)
+                ->all(),
+            locale: $group->default_locale,
+            idempotencyKey: 'group-activity-event:'.$data->idempotencyKey,
+        );
     }
 
     private function validate(
@@ -90,6 +158,10 @@ final class CreateForumGroupActivity
             && ($data->locationScope === null || trim($data->locationScope) === '')
         ) {
             $errors['activityLocation'] = __('forum_polls.validation.activity_location');
+        }
+
+        if ($data->format->value !== 'physical' && blank($data->onlineUrl)) {
+            $errors['activityOnlineUrl'] = __('forum_events.validation.online_url');
         }
 
         if ($data->capacity !== null && ($data->capacity < 1 || $data->capacity > 100000)) {

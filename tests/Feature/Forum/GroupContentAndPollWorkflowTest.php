@@ -144,6 +144,7 @@ test('group event and announcement creation are validated and idempotent', funct
         endsAt: now()->addWeek()->addHours(2)->toImmutable(),
         timezone: 'Europe/Vilnius',
         locationScope: 'lt-vilnius',
+        onlineUrl: null,
         capacity: 20,
         participationNotes: 'Bring individual water.',
         idempotencyKey: 'activity:create:one',
@@ -168,7 +169,10 @@ test('group event and announcement creation are validated and idempotent', funct
     expect($sameActivity->is($activity))->toBeTrue()
         ->and($sameAnnouncement->is($announcement))->toBeTrue()
         ->and(ForumGroupActivity::query()->count())->toBe(1)
-        ->and(ForumGroupAnnouncement::query()->count())->toBe(1);
+        ->and(ForumGroupAnnouncement::query()->count())->toBe(1)
+        ->and($activity->forum_event_id)->not->toBeNull()
+        ->and($activity->event?->forum_group_id)->toBe($group->id)
+        ->and($activity->event?->type->value)->toBe('club_meetup');
 });
 
 test('group files remain private and require membership at download time', function () {

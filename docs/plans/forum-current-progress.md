@@ -57,13 +57,14 @@ as complete.
   immutable case events, protected idempotent contact relays, advisory
   duplicate detection, unified false-sighting/reward-scam reports, and
   privacy-safe archival that preserves the complete operational history.
-- Requirement evidence is a deterministic overlay. `370` atomic requirements
+- Requirement evidence is a deterministic overlay. `397` atomic requirements
   are verified with file/test evidence and none are currently marked
   in-progress.
-- Current repository checkpoint: journal focused 17 / 164; full Pest
-  1,437 / 51,568; full Pint passed; full Larastan 0 errors; fresh verifier
-  passed 94 migrations and 152 tables with stable repeat-seed counts; the Vite
-  8.2.0 production build passed.
+- Current repository checkpoint: event focused 18 / 125; full Pint passed;
+  full Larastan 0 errors; fresh verifier passed 95 migrations and 160 tables
+  with stable repeat-seed counts; the Vite 8.2.0 production build and Laravel
+  config/route/view cache compilation passed. The latest serial full suite
+  passed 1,514 tests and 53,062 assertions in the isolated event snapshot.
 - Playwright verified the lost/found editor at 375x812 and 1440x900 with one
   page heading, no main-content overflow, no workflow target below 44px, and
   no current-page console warning or error.
@@ -124,6 +125,15 @@ as complete.
   tests passed 17 / 164; the final full suite passed 1,437 / 51,568;
   fresh/repeat seed, Larastan, Vite, cache compilation, and real
   mobile/desktop Livewire flows passed. All 27 scoped IDs are verified.
+- Events, attendance, and clubs now use a durable relational aggregate linked
+  to existing groups and global taxa. Capacity and waitlist changes are
+  transactional, access details are encrypted and policy-scoped, organizer
+  verification remains independent, event history is append-only, reports
+  reuse unified moderation, and stable legacy URLs/backfill are preserved.
+  Focused tests passed 18 / 125; fresh/repeat seed, rollback, Larastan, Pint,
+  Vite, cache compilation, and real mobile/desktop Livewire search and
+  registration flows passed; the isolated serial suite passed 1,514 / 53,062.
+  All 27 scoped IDs are verified.
 
 ## Phase Counts
 
@@ -137,7 +147,7 @@ as complete.
 | 5 | 825 | core/import pipeline implemented; full external snapshot pending |
 | 6 | 347 | foundation, panels/notes, and mentorship verified; additional trust packages remain |
 | 7 | 463 | operations verified; duplicate grouping, transparency, and broad entity coverage remain |
-| 8 | 3,345 | adoption, lost/found, collaborative guides, mentorship, persistent groups, group content, polls, and journals verified; remaining structured domains planned |
+| 8 | 3,345 | adoption, lost/found, collaborative guides, mentorship, persistent groups, group content, polls, journals, and events verified; remaining structured domains planned |
 | 9 | 93 | planned |
 | 10 | 67 | in progress |
 | 11 | 13 | topic category/taxonomy backfill implemented; reports pending |
@@ -149,11 +159,12 @@ as complete.
 
 1. Read the next Phase 8 work-package plan and include explicit requirement
    IDs before production changes.
-2. Plan events, attendance, and clubs (`forum.feature.3187` through `.3210`)
-   against existing meetup, group-event, notification, location, and
-   professional-verification boundaries.
-3. Add policy, validation, capacity/waitlist concurrency, factory, seed, and
-   direct-action tests before marking any event ID verified.
+2. Plan verified professional question sessions (`forum.feature.3211` through
+   `.3226`) against existing credential, report, guide, topic, notification,
+   and moderation boundaries.
+3. Preserve the medical/legal non-authority boundary and add policy,
+   jurisdiction, scheduling, queue, correction, archive, factory, seed, and
+   direct-action tests before marking any expert-session ID verified.
 4. Extend privacy-first search and following only after subject visibility is
    enforced before matching and counts.
 5. Update evidence, rerun migration/seed checks, and perform the next phase

@@ -76,3 +76,14 @@ All previously uncovered foreign keys gained leading indexes. The deterministic
 performance seeder supports repeatable local growth tests; production latency
 and explain-plan evidence must still be measured against the selected
 deployment database before a capacity change.
+## Event Query Contract
+
+Event discovery applies visibility and date filters before pagination, selects
+only presentation columns, eager loads bounded taxonomy context, and computes
+registration counts/review averages in SQL. Detail queries load each required
+relation once. Capacity and waitlist mutations lock one event row and the
+small relevant registration set rather than scanning the catalogue.
+
+No event-detail cache is introduced because protected access depends on user,
+invitation, group, and registration context. Stable taxonomy and category
+caches remain owned by their existing domains.

@@ -117,3 +117,14 @@ Documented demo identities use `*.example.test` addresses and an explicit
 non-production password. They may exist only when
 `APP_ENV` is `local`, `demo`, or `testing`. Production attempts must fail
 closed.
+## Event Seeders
+
+`ForumEventBackfillSeeder` is production-safe, additive, and rerunnable. It
+preserves legacy stable keys and links existing group activities without
+rewriting registrations or user content. `ForumEventDemoSeeder` is restricted
+to local, demo, and testing environments and creates deterministic end-to-end
+event states through production Actions.
+
+Every event model has a factory. The event workflow test creates all seven
+factory-backed models, and the shared factory/seeder suite validates schema
+constraints plus repeat execution.

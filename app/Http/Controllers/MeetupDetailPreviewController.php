@@ -1,22 +1,27 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
-use App\Http\Requests\BrowseEventsRequest;
-use App\Services\EventPresenter;
+use App\Models\ForumEvent;
+use App\Services\PreviewService;
 use Illuminate\Contracts\View\View;
+use Illuminate\Support\Facades\Gate;
 
-class MeetupDetailPreviewController extends Controller
+final class MeetupDetailPreviewController extends Controller
 {
     public function __invoke(
-        BrowseEventsRequest $request,
-        string $event,
-        EventPresenter $events,
+        ForumEvent $event,
+        PreviewService $preview,
     ): View {
-        $data = $events->detail($event, $request->validated('tab', 'overview'));
+        Gate::authorize('view', $event);
 
-        abort_if($data === null, 404);
-
-        return view('meetups.show', $data);
+        return view('meetups.show', [
+            'owner' => $preview->ownerData(),
+            'page_title' => $event->title,
+            'active_section' => 'meetups',
+            'event_id' => $event->id,
+        ]);
     }
 }

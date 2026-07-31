@@ -176,6 +176,24 @@ class User extends Authenticatable implements MustVerifyEmailContract
         return $this->hasMany(ForumGroupInvitation::class, 'invited_user_id');
     }
 
+    /** @return HasMany<ForumEvent, $this> */
+    public function organizedForumEvents(): HasMany
+    {
+        return $this->hasMany(ForumEvent::class, 'organizer_user_id');
+    }
+
+    /** @return HasMany<ForumEventRegistration, $this> */
+    public function forumEventRegistrations(): HasMany
+    {
+        return $this->hasMany(ForumEventRegistration::class);
+    }
+
+    /** @return HasMany<ForumEventInvitation, $this> */
+    public function forumEventInvitations(): HasMany
+    {
+        return $this->hasMany(ForumEventInvitation::class, 'invited_user_id');
+    }
+
     /**
      * Get the attributes that should be cast.
      *

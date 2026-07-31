@@ -74,6 +74,10 @@ default and requires authenticated ownership or an explicit scoped grant.
 - Escaped output by default.
 - No raw user HTML without sanitization.
 - Safe redirect and URL validation.
+- Publication-photo reactions and comments require an active authenticated
+  member, server catalogue resolution, policy authorization, CSRF, throttling,
+  bounded validation, and duplicate-safe comment idempotency. Comments remain
+  plain text and are escaped on every render.
 
 ### Files
 
@@ -228,3 +232,15 @@ never project professional status. See `docs/mentorship.md`.
   reputation, streak loss, punitive ranking, or public negative score.
 
 See `docs/journals.md`, `docs/privacy.md`, and `docs/files.md`.
+## Event Security Controls
+
+- policies and active-account checks guard every event mutation;
+- event capacity, waitlist promotion, review creation, and lifecycle changes
+  use short transactions, row locks, uniqueness, and bounded retries;
+- idempotency keys are unique and actor/event ownership is checked on replay;
+- encrypted access details are loaded only after explicit authorization;
+- paid-event metadata cannot produce a payment or confirmation without a
+  verified payment flow;
+- organizer verification is independent from karma and event popularity;
+- unified reports preserve reporter privacy and moderation evidence;
+- the retired shared action endpoint rejects authoritative event mutations.

@@ -193,3 +193,68 @@ context remains in the entry body. The first interface renders bounded
 server-prepared history through semantic tables, textual values, and native
 `progress` elements; no chart framework or unbounded browser payload is
 introduced.
+
+## ADR-FORUM-019: Normalize Platform Events And Reuse Groups As Clubs
+
+Date: 2026-07-31
+
+Status: accepted
+
+`ForumEvent` is the canonical platform event aggregate. A club is an existing
+`ForumGroup`; an event can belong to a group without creating a second club
+identity. Existing `ForumGroupActivity` rows remain as compatibility
+projections and gain a nullable canonical event relation. New group
+activities create their canonical event in the same transaction.
+
+The old `EventCatalog` keys are preserved through an idempotent additive
+backfill. New event mutations write normalized tables rather than the
+user-scoped session snapshot. The old snapshot may be inspected for migration
+evidence but cannot decide global capacity, authorization, or attendance.
+
+## ADR-FORUM-020: Derive Organizer Verification From Credentials
+
+Date: 2026-07-31
+
+Status: accepted
+
+An event never stores a self-asserted or reputation-derived verified-organizer
+boolean. Public verification is a current projection of the organizer's
+published expert profile and independently reviewed, unexpired credential
+state. Expiry, suspension, or revocation therefore changes the displayed
+state without rewriting event history.
+
+An organizer name snapshot preserves historical attribution when an account
+is unavailable. It grants no management ability and cannot display as
+verified.
+
+## ADR-FORUM-021: Protect Event Access Details And Emergency Plans
+
+Date: 2026-07-31
+
+Status: accepted
+
+Public location scope, accessibility information, attendance rules, animal
+welfare rules, cost, and refund terms are presentation data. Exact physical
+locations, online access links, participant requirements notes, and emergency
+contact plans are encrypted and hidden from serialization. Policies disclose
+exact access details only to the organizer, an authorized administrator, or
+an eligible confirmed attendee.
+
+Event vaccination text is an organizer's lawful attendance requirement, not
+medical proof. This package does not collect or publish participant
+vaccination documents.
+
+## ADR-FORUM-022: Use Database Capacity And Waitlist Invariants
+
+Date: 2026-07-31
+
+Status: accepted
+
+One event and user can have only one registration row. Registration,
+cancellation, approval, and waitlist promotion lock the canonical event row,
+recalculate seat use inside a short transaction, and append history. Unique
+constraints protect idempotency, registrations, invitations, and reviews.
+
+Paid-event amounts are stored as integer minor units with an ISO currency and
+visible refund terms. No payment credentials or successful payment state are
+invented while the repository has no real payment-provider boundary.

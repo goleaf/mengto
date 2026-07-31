@@ -17,6 +17,7 @@ final readonly class CreateForumGroupActivityData
         public CarbonImmutable $endsAt,
         public string $timezone,
         public ?string $locationScope,
+        public ?string $onlineUrl,
         public ?int $capacity,
         public ?string $participationNotes,
         public string $idempotencyKey,

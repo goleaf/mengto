@@ -76,3 +76,12 @@ Livewire. At 375x812 and 1440x900 the rendered topic had one `main`, one `h1`,
 zero horizontal overflow, no raw translation keys, no unnamed buttons, no
 visible unlabeled controls, three semantic progress elements, and no console
 warnings or errors. Exact evidence is recorded in the journal work package.
+## Event Workflows
+
+The event directory and workspace provide one logical heading, explicit form
+labels, field-associated validation, semantic definition lists and tables,
+action-specific loading states, an offline notice, localized confirmations,
+non-color status text, and normal link fallbacks. Controls use existing
+minimum touch targets and visible focus. Waitlist and capacity information is
+available as text, and no event operation requires drag-and-drop, hover, or
+animation.

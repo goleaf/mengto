@@ -236,3 +236,17 @@ child data is queried. The two class-based Livewire components coordinate
 small scalar/form state and bounded computed presentation arrays.
 
 See `docs/journals.md`.
+
+## Event And Club Boundary
+
+`ForumEvent` is the durable event aggregate; `ForumGroup` remains the club
+aggregate. Group calendar activities link to a canonical event and create it
+inside the same transaction. Registration, invitations, updates, attendee
+messages, reviews, and history are normalized children. Dedicated Actions own
+all mutations, and policies run before protected fields or child records are
+queried.
+
+The previous JSON event state now owns only personal interest, calendar, and
+reminder preferences. Legacy creation URLs redirect to the class-based
+Livewire workflow, so there is one authoritative mutation path. See
+`docs/events.md`.

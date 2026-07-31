@@ -130,3 +130,17 @@ Timezone-normalized validation, optimistic locking, idempotency, direct
 Livewire authorization, neutral progress language, and bounded private
 projections are verified by focused, full-suite, fresh-database, and
 mobile/desktop browser evidence.
+
+## Resolved Event, Attendance, And Club Gap
+
+The static/session event prototype now has one additive canonical
+`ForumEvent` domain linked to existing `ForumGroup` clubs and the global
+animal taxonomy. Transactional registration, approval, waitlist promotion,
+invitation, check-in, cancellation, updates, attendee messages, reviews,
+unified reports, encrypted access details, professional-verification
+projection, immutable history, and stable-key backfill replace authoritative
+JSON mutations. The old endpoint retains only personal interest, calendar,
+and reminder preferences. Class-based Livewire directory/workspace screens,
+EN/LT/RU catalogues, factories, production/demo seed separation, query-budget
+coverage, reversible migration coverage, and mobile/desktop registration
+evidence close the 27-requirement event package.

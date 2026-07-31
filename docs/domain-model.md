@@ -236,3 +236,19 @@ preserves every child and audit record while disabling mutation.
 The neutral `general` type is a review-required fallback for explicit legacy
 journal topics. All required named types remain typed and localized. See
 `docs/journals.md`.
+## Events And Clubs
+
+- `ForumEvent` owns event identity, organizer snapshot, schedule, visibility,
+  capacity, requirements, access details, cost metadata, lifecycle, and taxon
+  scope.
+- `ForumEventRegistration` owns one user's application, waitlist position,
+  attendance, selected pet, requirements note, and photo consent.
+- `ForumEventInvitation`, `ForumEventUpdate`, `ForumEventMessage`,
+  `ForumEventReview`, and `ForumEventHistory` preserve explicit workflow and
+  evidence boundaries.
+- `ForumGroup` remains the club; `ForumGroupActivity` is a linked calendar
+  projection rather than a second event aggregate.
+- `ForumReport`, `ForumNotification`, `Taxon`, and professional credential
+  models are reused rather than duplicated.
+
+The complete lifecycle and invariants are in `docs/events.md`.
