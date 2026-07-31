@@ -448,20 +448,21 @@ The package is complete only when:
   22,249 assertions. The expanded forum, expert, report, localization,
   factory/seeder, schema, route, and architecture slice passed 1,108 tests and
   52,428 assertions.
-- The final serial suite passed 1,594 tests and 56,870 assertions. Pint and
-  Larastan passed with zero findings. The isolated fresh-database verifier
-  applied 97 migrations, found 168 tables, and preserved five demo users after
-  the repeated seed.
-- Composer strict validation, npm audit, and the Vite 8.2 production build
-  passed. Composer audit had already reported no advisories for the unchanged
-  lock file; its final retry was unavailable because Packagist returned HTTP
-  502, which did not affect application verification.
-- Headless Chrome exercised a real localized member/host flow at 375x812 and
-  1440x900: question submission, queue approval, answer publication, immutable
-  correction, private report, and archive all persisted. The archived page
-  retained its answer and correction history with one H1, no horizontal
-  overflow, raw translation keys, unnamed controls, undersized primary
-  targets, console warnings, or console errors.
+- The detached `f1e2fcc` package snapshot passed 1,554 serial tests and 54,317
+  assertions. Pint and Larastan passed with zero findings. Its isolated
+  fresh-database verifier applied 96 migrations, found 165 tables, and
+  preserved five demo users after the repeated seed. The larger shared
+  worktree also passed 1,594 tests and 56,870 assertions before publication.
+- Composer strict validation and audit, npm audit, the Vite 8.2 production
+  build, and Laravel config/event/route/view/icon cache compilation passed in
+  the detached package snapshot.
+- Headless Chrome exercised the same expert-session implementation in the
+  current shared worktree through a real localized member/host flow at 375x812
+  and 1440x900: question submission, queue approval, answer publication,
+  immutable correction, private report, and archive all persisted. The final
+  archived-page scan retained the answer and correction history with one H1,
+  no horizontal overflow, raw translation keys, unnamed controls, undersized
+  primary targets, current-page console warnings, or console errors.
 - The requirements evidence overlay maps all 18 scoped IDs to implementation,
   test, documentation, and verification evidence. No scoped requirement is
   blocked or intentionally not applicable.

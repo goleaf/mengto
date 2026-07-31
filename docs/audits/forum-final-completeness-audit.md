@@ -10,7 +10,7 @@ This is a living gate record. It is deliberately not a completion claim.
 | 1 Discovery | in progress | `forum-existing-system-audit.md` |
 | 2 Atomic plan coverage | verified | 7,284 records in JSON and generated phase index |
 | 3 Implementation | not complete | production implementation has not yet reached all phases |
-| 4 Tests | not complete | event and expert-session packages have focused and expanded regression evidence; the expert-session final serial suite passed 1,594 tests and 56,870 assertions, with migration/seed, analysis, build, cache, and browser evidence recorded in its completed work-package plan; unimplemented requirement suites remain |
+| 4 Tests | not complete | event and expert-session packages have focused and expanded regression evidence; the detached expert-session package passed 1,554 serial tests and 54,317 assertions, with migration/seed, analysis, build, cache, and browser evidence recorded in its completed work-package plan; unimplemented requirement suites remain |
 | 5 Documentation | in progress | initial canonical pass exists |
 | 6 Final traceability | not complete | deterministic evidence overlay records verified and in-progress slices; most records remain planned/discovered |
 

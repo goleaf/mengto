@@ -227,6 +227,7 @@ authorization, routes, factories, seed reruns, and EN/LT/RU catalogues.
 `ForumModerationTest`, `FactoryAndSeederTest`, `LocalizationTest`, and
 `ArchitectureComplianceTest` provide integration gates. The expert-session plus
 architecture slice passed 31 tests and 22,249 assertions; the expanded
-regression slice passed 1,108 tests and 52,428 assertions; the final serial
-suite passed 1,594 tests and 56,870 assertions. Exact commands and browser
-evidence are recorded in the expert-session work-package plan.
+regression slice passed 1,108 tests and 52,428 assertions; the detached
+`f1e2fcc` package snapshot passed 1,554 tests and 54,317 assertions in serial
+mode. Exact commands and browser evidence are recorded in the expert-session
+work-package plan.

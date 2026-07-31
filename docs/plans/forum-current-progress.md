@@ -61,10 +61,11 @@ as complete.
   are verified with file/test evidence and none are currently marked
   in-progress.
 - Current repository checkpoint: expert-session plus architecture verification
-  passed 31 tests and 22,249 assertions; full Pint and Larastan passed; the
-  fresh verifier applied 97 migrations across 168 tables with stable
-  repeat-seed counts; npm audit and the Vite 8.2.0 production build passed.
-  The latest serial full suite passed 1,594 tests and 56,870 assertions.
+  passed 31 tests and 22,249 assertions. The detached `f1e2fcc` package
+  snapshot passed full Pint and Larastan, 1,554 serial tests and 54,317
+  assertions, and 96 migrations across 165 tables with stable repeat-seed
+  counts. Composer/npm audits and the Vite 8.2.0 production build passed. The
+  larger current shared worktree also passed 1,594 tests and 56,870 assertions.
 - Playwright verified the lost/found editor at 375x812 and 1440x900 with one
   page heading, no main-content overflow, no workflow target below 44px, and
   no current-page console warning or error.
@@ -139,8 +140,8 @@ as complete.
   windows, private moderated queues, idempotent answers, immutable corrections,
   non-destructive archives, unified reports, and explicit medical/legal
   non-authority language. Focused tests passed 31 / 22,249 and the expanded
-  regression slice passed 1,108 / 52,428; the final serial suite passed
-  1,594 / 56,870. A real mobile/desktop localized flow covered submission,
+  regression slice passed 1,108 / 52,428; the detached package snapshot passed
+  1,554 / 54,317. A real mobile/desktop localized flow covered submission,
   moderation, answer, correction, report, and archive without overflow, raw
   keys, undersized primary controls, or console errors. All 18 scoped IDs are
   verified.
