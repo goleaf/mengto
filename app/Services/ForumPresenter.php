@@ -9,6 +9,7 @@ use App\Models\ForumEngagement;
 use App\Models\ForumNotification;
 use App\Models\ForumTopic;
 use App\Models\KnowledgeArticle;
+use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -20,6 +21,7 @@ class ForumPresenter
         private readonly ForumTaxonomy $taxonomy,
         private readonly ForumActor $actor,
         private readonly LocaleFormatter $formatter,
+        private readonly Gate $gate,
     ) {}
 
     /**
@@ -221,7 +223,8 @@ class ForumPresenter
                 ->get()
                 ->map(fn (KnowledgeArticle $article): array => $this->knowledgeCard($article))
                 ->all(),
-            'can_manage' => $topic->author_key === $this->actor->key(),
+            'can_manage' => $this->gate->allows('update', $topic),
+            'can_answer' => $this->gate->allows('answer', $topic),
             'journal_id' => is_int($journalId) ? $journalId : null,
         ];
     }
@@ -277,7 +280,10 @@ class ForumPresenter
         return [
             ['label' => __('messages.open_topics_5207eb9e06'), 'value' => $base()->count(), 'icon' => 'messages-square'],
             ['label' => __('messages.need_an_answer_8824024b01'), 'value' => $base()->whereDoesntHave('answers')->count(), 'icon' => 'circle-help'],
-            ['label' => __('messages.resolved_5be3c2c835'), 'value' => $base()->where('status', ForumTopicStatus::Resolved->value)->count(), 'icon' => 'circle-check-big'],
+            ['label' => __('messages.resolved_5be3c2c835'), 'value' => $base()->whereIn('status', [
+                ForumTopicStatus::Solved->value,
+                ForumTopicStatus::Resolved->value,
+            ])->count(), 'icon' => 'circle-check-big'],
             ['label' => __('messages.expert_replies_c909ce7644'), 'value' => $base()->where('has_expert_answer', true)->count(), 'icon' => 'badge-check'],
         ];
     }

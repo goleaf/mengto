@@ -57,7 +57,7 @@ as complete.
   immutable case events, protected idempotent contact relays, advisory
   duplicate detection, unified false-sighting/reward-scam reports, and
   privacy-safe archival that preserves the complete operational history.
-- Requirement evidence is a deterministic overlay. `415` atomic requirements
+- Requirement evidence is a deterministic overlay. `448` atomic requirements
   are verified with file/test evidence and none are currently marked
   in-progress.
 - Current repository checkpoint: expert-session plus architecture verification
@@ -145,6 +145,17 @@ as complete.
   moderation, answer, correction, report, and archive without overflow, raw
   keys, undersized primary controls, or console errors. All 18 scoped IDs are
   verified.
+- Forum topics now use a durable lifecycle boundary with canonical and
+  compatibility states, optimistic and row locking, immutable events,
+  category-specific staleness and necropost rules, reversible removal,
+  update requests, controlled bumping, merge/redirect history, and encrypted
+  legal holds. The implementation preserves topic identity and every existing
+  relation, performs no scheduled write-on-read transition, and exposes a
+  policy-scoped class-based Livewire panel. Focused tests passed 13 tests and
+  133 assertions; the final isolated full suite passed 1,613 tests and 55,337
+  assertions in 94.727 seconds on Livewire 4.3.4. Fresh and
+  repeated seeding, full Larastan, Pint, Vite, cache compilation, and real
+  mobile/desktop browser checks also passed. All 33 scoped IDs are verified.
 
 ## Phase Counts
 
@@ -158,7 +169,7 @@ as complete.
 | 5 | 825 | core/import pipeline implemented; full external snapshot pending |
 | 6 | 347 | foundation, panels/notes, and mentorship verified; additional trust packages remain |
 | 7 | 463 | operations verified; duplicate grouping, transparency, and broad entity coverage remain |
-| 8 | 3,345 | adoption, lost/found, collaborative guides, mentorship, persistent groups, group content, polls, journals, events, and expert question sessions verified; remaining structured domains planned |
+| 8 | 3,345 | adoption, lost/found, collaborative guides, mentorship, persistent groups, group content, polls, journals, events, expert question sessions, and topic lifecycle verified; remaining structured domains planned |
 | 9 | 93 | planned |
 | 10 | 67 | in progress |
 | 11 | 13 | topic category/taxonomy backfill implemented; reports pending |
@@ -168,19 +179,17 @@ as complete.
 
 ## Next Verified Pass
 
-1. Create and read the next Phase 8 work-package plan with every source-section
-   70 content-lifecycle requirement ID before production changes.
-2. Implement `forum.feature.3227` through `.3257` together with
-   `forum.moderation.0328` and `forum.category.1400` against the existing topic,
-   guide, journal, merge, redirect, moderation, retention, and audit domains.
-3. Preserve content and stable URLs across reopen, merge, redirect, archive,
-   restore, legal-hold, stale-warning, update-request, and controlled-bump
-   transitions; verify policy and direct-action boundaries before marking any
-   lifecycle ID verified.
-4. Extend privacy-first search and following only after subject visibility is
-   enforced before matching and counts.
-5. Update evidence, rerun migration/seed checks, and perform the next phase
-   completeness audit.
+1. Create and read the next work-package plan with all source-section 71
+   accessibility IDs before production changes.
+2. Inventory critical forum workflows against keyboard, focus, screen-reader,
+   zoom, reduced-motion, contrast, touch-target, map-alternative, table,
+   pagination, upload, and drag-and-drop requirements.
+3. Reuse native semantics and the existing design system; add ARIA only where
+   native HTML cannot express the required relationship or announcement.
+4. Add automated architecture/browser checks and manually verify representative
+   mobile and desktop workflows before marking an accessibility ID verified.
+5. Update evidence, rerun the applicable full quality gates, and perform the
+   next phase completeness audit.
 
 ## Preservation Ledger
 

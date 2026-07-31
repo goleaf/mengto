@@ -3,7 +3,7 @@
 ## Storage Baseline
 
 - 68 migrations created 71 SQLite tables at baseline; the current additive
-  schema has 96 migrations and 163 tables after identity, care-sync,
+  schema has 98 migrations and 172 tables after identity, care-sync,
   social-state, device-lifecycle, forum taxonomy, global animal taxonomy,
   reputation, moderation, credential verification, structured-community, and
   persistent-group work.
@@ -18,7 +18,7 @@
 | --- | --- |
 | Framework | `users`, password reset, sessions, cache/locks, jobs/batches/failed jobs |
 | Social identity/state | `pet_profiles`, encrypted/versioned `user_domain_states`, `photo_assets`, `photo_comments`, `photo_reactions` |
-| Forum | topics, answers, comments, votes, engagements, blocks, polymorphic reports, report events/evidence, categories/translations/aliases/redirects, topic definitions, reputation/trust/badges, confirmations, moderation cases/actions/appeals/recusals, notifications, persistent groups/memberships/invitations/audit events/taxon links, group activities/announcements/private files/polls/options/votes |
+| Forum | topics, answers, comments, votes, engagements, blocks, polymorphic reports, report events/evidence, categories/translations/aliases/redirects/lifecycle rules, topic definitions/lifecycle events/update requests/legal holds, reputation/trust/badges, confirmations, moderation cases/actions/appeals/recusals, notifications, persistent groups/memberships/invitations/audit events/taxon links, group activities/announcements/private files/polls/options/votes |
 | Animal taxonomy | versioned sources/imports/versions/issues, taxa, names, external identifiers, change history, domestic classifications, breed registries, community groups |
 | Knowledge | articles, append-only versions, corrections, normalized collaborators, append-only workflow events |
 | Experts | profiles, credentials, services, availability slots, bookings, document grants, consultations, publications, reviews, engagements, reports |
@@ -77,6 +77,11 @@ legacy key has a verified user mapping.
   rollback and transition evidence.
 - Taxonomy imports remain inactive until a completed validated version is
   explicitly activated; source identifiers never replace stable internal keys.
+- Topic lifecycle events are append-only and optionally idempotent. Category
+  lifecycle rules are one-to-one. Update requests have scoped idempotency and
+  optimistic review versions. Legal holds keep one active key per topic and
+  encrypted private reasons. Every nullable actor foreign key has a leading
+  index.
 
 ## Query Rules
 

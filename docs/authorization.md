@@ -217,3 +217,20 @@ current credential evidence and cannot be granted by event reputation.
 
 Every Livewire action reauthorizes the current database record. Locked IDs,
 hidden controls, popularity, trust, and reputation are not authorization.
+
+## Forum Topic Lifecycle
+
+- Public visibility is evaluated before lifecycle presentation. Topic authors
+  do not bypass private group or journal membership, and administrators do not
+  receive an implicit bypass to ordinary private topics.
+- Owners may update, request reopening, bump, archive, remove, or restore only
+  eligible owned topics and only when category rules and legal holds permit.
+- Readers may request an update only for a topic they may already view.
+- Administrators may moderate state, review requests, redirect/merge, and
+  manage legal holds, but policy checks still protect destination visibility
+  and private topic access.
+- Every HTTP and Livewire mutation reloads the topic/request, authorizes,
+  validates current state and optimistic version, and then invokes the Action.
+- `#[Locked]` protects hydration identity only; it does not grant access.
+
+See `docs/topic-lifecycle.md`.

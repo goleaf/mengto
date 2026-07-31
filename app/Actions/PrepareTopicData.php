@@ -71,6 +71,8 @@ class PrepareTopicData
             'is_urgent' => (bool) ($data['is_urgent'] ?? false),
             'is_medical' => (bool) ($data['is_medical'] ?? false),
             'last_activity_at' => now(),
+            'last_author_update_at' => now(),
+            'state_entered_at' => now(),
             'published_at' => $status === ForumTopicStatus::Published ? now() : null,
         ];
     }

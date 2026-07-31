@@ -71,3 +71,15 @@ remain private.
 Pending queue authorization is applied before matching or presentation.
 Archival retains audit-bearing records; it does not publish previously private
 queue content.
+
+## Topic Lifecycle Privacy
+
+Public topic output contains only public-safe state, age warning, and bounded
+event history. Update-request prose is visible only to its requester, the
+topic owner, or an administrator. Legal-hold evidence and release reasons are
+administrator-only, encrypted, and excluded from model serialization.
+
+Removal, archive, merge, redirect, retention review, and restoration preserve
+content and moderation evidence without making private topics searchable or
+granting an administrator an ordinary private-content read bypass. Redirects
+occur only after destination authorization. See `docs/topic-lifecycle.md`.

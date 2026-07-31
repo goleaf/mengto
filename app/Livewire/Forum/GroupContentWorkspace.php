@@ -163,12 +163,7 @@ final class GroupContentWorkspace extends Component
                 'last_activity_at',
             ])
             ->where('forum_group_id', $group->id)
-            ->whereNotIn('status', [
-                ForumTopicStatus::Draft->value,
-                ForumTopicStatus::Review->value,
-                ForumTopicStatus::Archived->value,
-                ForumTopicStatus::Merged->value,
-            ])
+            ->whereIn('status', ForumTopicStatus::publicValues())
             ->latest('last_activity_at')
             ->limit(12)
             ->get();

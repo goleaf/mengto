@@ -10,6 +10,7 @@ use App\Models\ForumJournal;
 use App\Models\ForumTopic;
 use App\Models\User;
 use App\Services\ForumJournalAudit;
+use App\Services\ForumTopicLifecycle;
 use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -20,6 +21,7 @@ final readonly class ArchiveForumJournal
     public function __construct(
         private Gate $gate,
         private ForumJournalAudit $audit,
+        private ForumTopicLifecycle $topicLifecycle,
     ) {}
 
     public function handle(
@@ -71,12 +73,14 @@ final readonly class ArchiveForumJournal
                     'pre_archive_topic_status' => $previousTopicStatus,
                 ],
             ])->save();
-            $topic->forceFill([
-                'status' => ForumTopicStatus::Archived,
-                'archived_at' => now(),
-                'is_locked' => true,
-                'lock_version' => $topic->lock_version + 1,
-            ])->save();
+            $this->topicLifecycle->transition(
+                topic: $topic,
+                target: ForumTopicStatus::Archived,
+                actor: $actor,
+                reasonCode: 'journal-'.$reasonCode,
+                expectedLockVersion: $topic->lock_version,
+                idempotencyKey: "forum-journal-archive:{$locked->id}:{$locked->lock_version}",
+            );
 
             $this->audit->record($locked, $actor, 'forum-journal.archived', [
                 'reason_code' => $reasonCode,

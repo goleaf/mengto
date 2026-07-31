@@ -157,3 +157,17 @@ votes cannot manufacture professional authority. Direct Action and Livewire
 authorization, rate limiting, idempotency, seed repeatability, query growth,
 foreign-key indexes, translations, and responsive presentation are covered by
 the package evidence.
+
+## Resolved Topic Lifecycle Gap
+
+Forum topics now have one explicit lifecycle boundary across canonical and
+legacy states. Category-specific read-time staleness and necropost projection,
+reversible removal, archive and restore, controlled bumping, update requests,
+author updates, merge and redirect preservation, and encrypted legal holds are
+implemented through authorized Actions and an audited transactional service.
+No age-based scheduler deletes content or mutates topics on read. Existing
+topic IDs, slugs, replies, reactions, subscriptions, reports, attachments,
+answers, groups, guides, journals, and taxonomy links remain intact. A
+class-based Livewire panel exposes only policy-safe bounded history and request
+data, and focused, full-suite, fresh-seed, static-analysis, build, and browser
+evidence is recorded in the completed package plan.

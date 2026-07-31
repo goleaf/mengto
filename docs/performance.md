@@ -12,10 +12,11 @@
 The small seeded database is not representative enough for broad latency
 claims. Query budgets are added to critical flows with deterministic fixtures.
 
-## Final Measured State
+## Latest Measured State
 
-- Full Pest suite: 1,384 tests and 50,006 assertions in 67.670 seconds
-  serially.
+- Full Pest suite: 1,613 tests and 55,337 assertions in 94.727 seconds on
+  Livewire 4.3.4
+  serially before the final documentation-only pass.
 - Vite 8.2 production build: passed.
 - Font CSS: 1.31 kB, 0.32 kB gzip.
 - Tailwind application CSS: 51.14 kB.
@@ -98,3 +99,16 @@ relations. Pending question visibility is resolved before presentation.
 Candidate host profiles eager-load credentials once, and eligibility reuses
 the loaded relation. No session-detail cache is introduced because queue
 visibility depends on author, current credential, and moderation context.
+
+## Topic Lifecycle Query Contract
+
+The read-time projection performs one indexed category-rule lookup and no
+write. History and request queries select only presentation columns and use
+configured limits of 20. The topic ID, event timeline, requester timeline,
+state/age, legal-hold, and redirect indexes match the implemented access
+patterns; every new foreign key has a leading index.
+
+The Livewire panel holds scalar/form state only and does not serialize topic
+models or relationship graphs. The browser check found no horizontal overflow
+at 375px. The Vite 8.2 build remained 51.52 kB Tailwind CSS, 225.89 kB
+semantic CSS, and 12.31 kB JavaScript before gzip.

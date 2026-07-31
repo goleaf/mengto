@@ -152,3 +152,17 @@ answer/correction/moderation/report forms, and prepared presentation arrays.
 Pending queue rows are policy-filtered before rendering. Credential evidence,
 models, service instances, and protected moderation data never enter public
 component state. See `docs/expert-question-sessions.md`.
+
+## Topic Lifecycle Panel
+
+`ForumTopicLifecyclePanel` is a normal class-based component with a separate
+`ForumTopicLifecycleForm` and passive Blade view. Its locked topic ID and
+optimistic version are hydration guards only; every action reloads and
+authorizes its target.
+
+Computed properties return bounded presentation arrays for the lifecycle
+projection, abilities, public-safe history, and viewer-scoped update requests.
+Public state never contains models, query builders, relationship graphs,
+private legal-hold reasons, or moderator evidence. Precise loading targets,
+offline feedback, native confirmations, and stable database keys cover every
+mutation. See `docs/topic-lifecycle.md`.

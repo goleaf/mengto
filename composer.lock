@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "cb85f5bc4006bf59f6239e420098cf9d",
+    "content-hash": "a992847cc2be7f2c2c9e887f19d3b1b7",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -2364,16 +2364,16 @@
         },
         {
             "name": "livewire/livewire",
-            "version": "v4.3.3",
+            "version": "v4.3.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/livewire/livewire.git",
-                "reference": "8021f2561865c4c297a3bfca37212a99034377e7"
+                "reference": "e6c8d631e9687fbdd5c2bb7be9d7a5d699cce0e2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/livewire/livewire/zipball/8021f2561865c4c297a3bfca37212a99034377e7",
-                "reference": "8021f2561865c4c297a3bfca37212a99034377e7",
+                "url": "https://api.github.com/repos/livewire/livewire/zipball/e6c8d631e9687fbdd5c2bb7be9d7a5d699cce0e2",
+                "reference": "e6c8d631e9687fbdd5c2bb7be9d7a5d699cce0e2",
                 "shasum": ""
             },
             "require": {
@@ -2428,7 +2428,7 @@
             "description": "A front-end framework for Laravel.",
             "support": {
                 "issues": "https://github.com/livewire/livewire/issues",
-                "source": "https://github.com/livewire/livewire/tree/v4.3.3"
+                "source": "https://github.com/livewire/livewire/tree/v4.3.4"
             },
             "funding": [
                 {
@@ -2436,20 +2436,20 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-06-27T03:16:11+00:00"
+            "time": "2026-07-31T00:19:18+00:00"
         },
         {
             "name": "mallardduck/blade-lucide-icons",
-            "version": "1.26.31",
+            "version": "1.26.32",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mallardduck/blade-lucide-icons.git",
-                "reference": "b7bd575d13f9c9630d7cc3ce5698506dba2fd76d"
+                "reference": "73f340c115fc1de71474d1413505ac931ed7af0a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mallardduck/blade-lucide-icons/zipball/b7bd575d13f9c9630d7cc3ce5698506dba2fd76d",
-                "reference": "b7bd575d13f9c9630d7cc3ce5698506dba2fd76d",
+                "url": "https://api.github.com/repos/mallardduck/blade-lucide-icons/zipball/73f340c115fc1de71474d1413505ac931ed7af0a",
+                "reference": "73f340c115fc1de71474d1413505ac931ed7af0a",
                 "shasum": ""
             },
             "require": {
@@ -2494,9 +2494,9 @@
             ],
             "support": {
                 "issues": "https://github.com/mallardduck/blade-lucide-icons/issues",
-                "source": "https://github.com/mallardduck/blade-lucide-icons/tree/1.26.31"
+                "source": "https://github.com/mallardduck/blade-lucide-icons/tree/1.26.32"
             },
-            "time": "2026-07-26T02:25:48+00:00"
+            "time": "2026-07-31T02:26:33+00:00"
         },
         {
             "name": "monolog/monolog",

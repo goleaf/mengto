@@ -62,3 +62,15 @@ question sessions now, rewrite the stale scope statement, and preserve the
 medical/legal non-authority and independent credential boundaries. This
 decision does not create private telemedicine, appointments, realtime video,
 or formal legal representation.
+
+## Conflict 7: Legacy Topic Statuses Versus Canonical Lifecycle
+
+Existing rows and tests use `review`, `resolved`, `partially-resolved`,
+`unanswered`, and `closed`, while source section 70 requires canonical
+pending-moderation, solved, partially-solved, open, disputed, outdated,
+redirected, removed, and restored states.
+
+**Resolution:** Keep legacy values enum-readable and public-scope compatible so
+existing rows boot safely. Route all new mutations through the canonical state
+machine, treat unanswered as a derived answer-count condition, and backfill
+only unambiguous timestamps. Do not guess historical state from topic text.

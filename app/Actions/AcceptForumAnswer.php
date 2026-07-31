@@ -14,6 +14,7 @@ use App\Models\ForumTopic;
 use App\Models\ForumTopicAcceptance;
 use App\Models\User;
 use App\Services\ForumActor;
+use App\Services\ForumTopicLifecycle;
 use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
@@ -25,6 +26,7 @@ final readonly class AcceptForumAnswer
         private Gate $gate,
         private RecordReputationEvent $recordReputation,
         private ReverseReputationEvent $reverseReputation,
+        private ForumTopicLifecycle $lifecycle,
     ) {}
 
     public function handle(int $answerId): ForumTopic
@@ -79,9 +81,18 @@ final readonly class AcceptForumAnswer
             ])->save();
             $topic->forceFill([
                 'accepted_answer_id' => $topic->accepted_answer_id ?? $answer->id,
-                'status' => ForumTopicStatus::Resolved,
-                'last_activity_at' => now(),
             ])->save();
+
+            if ($topic->status->canonical() !== ForumTopicStatus::Solved) {
+                $topic = $this->lifecycle->transition(
+                    topic: $topic,
+                    target: ForumTopicStatus::Solved,
+                    actor: $actor,
+                    reasonCode: 'answer-accepted',
+                    expectedLockVersion: $topic->lock_version,
+                    idempotencyKey: "topic-answer-accepted:{$acceptance->id}",
+                );
+            }
             $recipient = $this->answerAuthor($answer);
 
             if (

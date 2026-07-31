@@ -4,13 +4,20 @@ declare(strict_types=1);
 
 namespace App\Actions;
 
+use App\Enums\ForumTopicLifecycleEventType;
 use App\Models\ForumTopic;
+use App\Services\ForumActor;
+use App\Services\ForumTopicLifecycle;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
-class CreateTopic
+final readonly class CreateTopic
 {
-    public function __construct(private readonly PrepareTopicData $prepareTopicData) {}
+    public function __construct(
+        private PrepareTopicData $prepareTopicData,
+        private ForumActor $actor,
+        private ForumTopicLifecycle $lifecycle,
+    ) {}
 
     /** @param array<string, mixed> $data */
     public function handle(array $data): ForumTopic
@@ -24,6 +31,16 @@ class CreateTopic
                 ],
             ]);
             $topic->taxa()->sync($this->taxonPivot($data));
+            $this->lifecycle->record(
+                topic: $topic,
+                type: ForumTopicLifecycleEventType::StateChanged,
+                actor: $this->actor->requireUser(),
+                reasonCode: $topic->status->canonical()->value === 'draft'
+                    ? 'author-created-draft'
+                    : 'author-published',
+                toStatus: $topic->status->canonical(),
+                idempotencyKey: "topic-created:{$topic->id}",
+            );
 
             return $topic;
         }, 3);

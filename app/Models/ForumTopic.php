@@ -37,14 +37,19 @@ use Illuminate\Support\Carbon;
  * @property-read Collection<int, ForumEngagement> $engagements
  * @property bool $has_expert_answer
  * @property int $id
+ * @property int|null $forum_category_id
  * @property int|null $forum_group_id
  * @property bool $is_locked
  * @property bool $is_medical
  * @property bool $is_urgent
+ * @property Carbon|null $last_author_update_at
+ * @property Carbon|null $last_bumped_at
  * @property-read ForumJournal|null $journal
  * @property-read Collection<int, KnowledgeArticle> $knowledgeArticles
  * @property string $language
  * @property Carbon|null $last_activity_at
+ * @property Carbon|null $legal_hold_at
+ * @property int $lock_version
  * @property string|null $location
  * @property array<array-key, mixed>|null $media
  * @property string|null $pet_age_label
@@ -52,9 +57,17 @@ use Illuminate\Support\Carbon;
  * @property string|null $pet_name
  * @property string|null $pet_species
  * @property Carbon|null $published_at
+ * @property Carbon|null $redirected_at
+ * @property array<int, int>|null $redirect_path
+ * @property Carbon|null $removed_at
  * @property-read Collection<int, ForumReport> $reports
+ * @property Carbon|null $restored_at
+ * @property Carbon|null $retention_until
  * @property string $slug
+ * @property Carbon|null $state_entered_at
  * @property ForumTopicStatus $status
+ * @property Carbon|null $stale_review_requested_at
+ * @property int $structured_data_version
  * @property string|null $subcategory
  * @property array<array-key, mixed>|null $tags
  * @property string $title
@@ -67,6 +80,11 @@ class ForumTopic extends Model
 {
     /** @use HasFactory<ForumTopicFactory> */
     use HasFactory;
+
+    protected $attributes = [
+        'structured_data_version' => 1,
+        'lock_version' => 1,
+    ];
 
     private const ROUTE_COLUMNS = [
         'id',
@@ -104,6 +122,18 @@ class ForumTopic extends Model
         'view_count',
         'last_activity_at',
         'published_at',
+        'state_entered_at',
+        'last_author_update_at',
+        'last_bumped_at',
+        'stale_review_requested_at',
+        'outdated_at',
+        'locked_at',
+        'removed_at',
+        'restored_at',
+        'redirected_at',
+        'redirect_path',
+        'legal_hold_at',
+        'retention_until',
         'structured_data',
         'structured_data_version',
         'lock_version',
@@ -148,6 +178,18 @@ class ForumTopic extends Model
         'view_count',
         'last_activity_at',
         'published_at',
+        'state_entered_at',
+        'last_author_update_at',
+        'last_bumped_at',
+        'stale_review_requested_at',
+        'outdated_at',
+        'locked_at',
+        'removed_at',
+        'restored_at',
+        'redirected_at',
+        'redirect_path',
+        'legal_hold_at',
+        'retention_until',
         'structured_data',
         'structured_data_version',
         'lock_version',
@@ -172,6 +214,18 @@ class ForumTopic extends Model
             'has_expert_answer' => 'boolean',
             'last_activity_at' => 'datetime',
             'published_at' => 'datetime',
+            'state_entered_at' => 'immutable_datetime',
+            'last_author_update_at' => 'immutable_datetime',
+            'last_bumped_at' => 'immutable_datetime',
+            'stale_review_requested_at' => 'immutable_datetime',
+            'outdated_at' => 'immutable_datetime',
+            'locked_at' => 'immutable_datetime',
+            'removed_at' => 'immutable_datetime',
+            'restored_at' => 'immutable_datetime',
+            'redirected_at' => 'immutable_datetime',
+            'redirect_path' => 'array',
+            'legal_hold_at' => 'immutable_datetime',
+            'retention_until' => 'immutable_datetime',
             'archived_at' => 'immutable_datetime',
         ];
     }
@@ -221,6 +275,39 @@ class ForumTopic extends Model
     public function acceptances(): HasMany
     {
         return $this->hasMany(ForumTopicAcceptance::class);
+    }
+
+    /** @return HasMany<ForumTopicLifecycleEvent, $this> */
+    public function lifecycleEvents(): HasMany
+    {
+        return $this->hasMany(ForumTopicLifecycleEvent::class)
+            ->orderByDesc('occurred_at')
+            ->orderByDesc('id');
+    }
+
+    /** @return HasMany<ForumTopicUpdateRequest, $this> */
+    public function updateRequests(): HasMany
+    {
+        return $this->hasMany(ForumTopicUpdateRequest::class);
+    }
+
+    /** @return HasMany<ForumTopicLegalHold, $this> */
+    public function legalHolds(): HasMany
+    {
+        return $this->hasMany(ForumTopicLegalHold::class);
+    }
+
+    /** @return HasOne<ForumTopicLegalHold, $this> */
+    public function activeLegalHold(): HasOne
+    {
+        return $this->hasOne(ForumTopicLegalHold::class)
+            ->whereNull('released_at');
+    }
+
+    /** @return BelongsTo<ForumTopic, $this> */
+    public function redirectionTarget(): BelongsTo
+    {
+        return $this->belongsTo(self::class, 'merged_into_topic_id');
     }
 
     /** @return HasMany<ForumCommunityNote, $this> */
@@ -312,12 +399,7 @@ class ForumTopic extends Model
 
     public function scopePublished(Builder $query): Builder
     {
-        return $query->whereNotIn('status', [
-            ForumTopicStatus::Draft->value,
-            ForumTopicStatus::Review->value,
-            ForumTopicStatus::Archived->value,
-            ForumTopicStatus::Merged->value,
-        ])
+        return $query->whereIn('status', ForumTopicStatus::publicValues())
             ->whereNull('forum_group_id')
             ->where('visibility', ForumVisibility::Public->value);
     }
@@ -362,7 +444,10 @@ class ForumTopic extends Model
     {
         return match ($status) {
             'unanswered' => $query->whereDoesntHave('answers', fn (Builder $answers): Builder => $answers->where('status', 'published')),
-            'resolved' => $query->where('status', ForumTopicStatus::Resolved->value),
+            'resolved' => $query->whereIn('status', [
+                ForumTopicStatus::Solved->value,
+                ForumTopicStatus::Resolved->value,
+            ]),
             'expert' => $query->where('has_expert_answer', true),
             'local' => $query->whereNotNull('location'),
             'medical' => $query->where('is_medical', true),
@@ -378,5 +463,10 @@ class ForumTopic extends Model
                 ->select('blocked_author_key')
                 ->where('user_key', $userKey),
         );
+    }
+
+    public function hasActiveLegalHold(): bool
+    {
+        return $this->legal_hold_at !== null;
     }
 }

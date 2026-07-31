@@ -97,19 +97,7 @@
                                 <x-lucide-pencil aria-hidden="true" />
                                 {{ __('ui.edit_464c4ffd01') }}
                             </a>
-                            <form method="POST" action="{{ route('forum.actions') }}">
-                                @csrf
-                                <input type="hidden" name="action" value="{{ $topic['status_value'] === 'resolved' ? 'reopen-topic' : 'resolve-topic' }}">
-                                <input type="hidden" name="topic_id" value="{{ $topic['id'] }}">
-                                <button type="submit" class="forum-button">
-                                    <x-dynamic-component
-                                        :component="$topic['status_value'] === 'resolved' ? 'lucide-rotate-ccw' : 'lucide-circle-check-big'"
-                                        aria-hidden="true"
-                                    />
-                                    {{ $topic['status_value'] === 'resolved' ? __('ui.reopen_a886d1dc4f') : __('ui.mark_resolved_d6d8eeddd8') }}
-                                </button>
-                            </form>
-                            @if ($topic['status_value'] === 'resolved' && $topic['has_accepted_answer'])
+                            @if (in_array($topic['status_value'], ['solved', 'resolved'], true) && $topic['has_accepted_answer'])
                                 <form method="POST" action="{{ route('forum.actions') }}">
                                     @csrf
                                     <input type="hidden" name="action" value="convert-to-knowledge">
@@ -123,6 +111,8 @@
                         @endif
                     </div>
                 </article>
+
+                <livewire:forum.forum-topic-lifecycle-panel :topic-id="$topic['id']" />
 
                 @if ($journal_id !== null)
                     <livewire:forum.forum-journal-timeline :journal-id="$journal_id" />
@@ -152,7 +142,7 @@
 
                 <livewire:forum.community-notes-panel :topic-id="$topic['id']" />
 
-                @if (! $topic['is_locked'] && $journal_id === null)
+                @if ($can_answer && $journal_id === null)
                     <form method="POST" action="{{ route('forum.answers.store', $topic['slug']) }}" class="forum-form">
                         @csrf
                         <div>

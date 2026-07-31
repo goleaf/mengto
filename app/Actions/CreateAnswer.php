@@ -9,11 +9,15 @@ use App\Models\ForumAnswer;
 use App\Models\ForumNotification;
 use App\Models\ForumTopic;
 use App\Services\ForumActor;
+use App\Services\ForumTopicLifecycle;
 use Illuminate\Support\Facades\DB;
 
-class CreateAnswer
+final readonly class CreateAnswer
 {
-    public function __construct(private readonly ForumActor $actor) {}
+    public function __construct(
+        private ForumActor $actor,
+        private ForumTopicLifecycle $lifecycle,
+    ) {}
 
     /** @param array<string, mixed> $data */
     public function handle(ForumTopic $topic, array $data): ForumAnswer
@@ -22,6 +26,7 @@ class CreateAnswer
             $identity = $this->actor->identity();
             $user = $this->actor->requireUser();
 
+            $topic = ForumTopic::query()->lockForUpdate()->findOrFail($topic->id);
             $answer = $topic->answers()->create([
                 'author_id' => $user->id,
                 'author_key' => $identity['key'],
@@ -38,12 +43,24 @@ class CreateAnswer
                 'status' => 'published',
             ]);
 
-            $topic->update([
-                'status' => $topic->status === ForumTopicStatus::Published
-                    ? ForumTopicStatus::Answered
-                    : $topic->status,
-                'last_activity_at' => now(),
-            ]);
+            if (in_array($topic->status->canonical(), [
+                ForumTopicStatus::Published,
+                ForumTopicStatus::Open,
+            ], true)) {
+                $topic = $this->lifecycle->transition(
+                    topic: $topic,
+                    target: ForumTopicStatus::Answered,
+                    actor: $user,
+                    reasonCode: 'answer-published',
+                    expectedLockVersion: $topic->lock_version,
+                    idempotencyKey: "topic-first-answer:{$answer->id}",
+                );
+            } else {
+                $topic->forceFill([
+                    'last_activity_at' => now(),
+                    'lock_version' => $topic->lock_version + 1,
+                ])->save();
+            }
 
             if ($topic->author_key !== $identity['key']) {
                 ForumNotification::query()->updateOrCreate(

@@ -38,3 +38,7 @@ They do not replace source requirements.
     consultations, events, and expert publications are not silently converted
     into scheduled sessions; a production backfill records a zero-row result
     unless a stable legacy source is discovered before implementation ends.
+14. A topic author may archive, remove, restore, reopen, update, or bump their
+    own eligible topic. Administrators alone may apply legal holds, force
+    moderation states, merge, or redirect. An active legal hold always wins
+    over owner convenience.

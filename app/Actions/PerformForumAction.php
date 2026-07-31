@@ -32,6 +32,7 @@ class PerformForumAction
         private readonly AcceptForumAnswer $acceptForumAnswer,
         private readonly SubmitForumReport $submitForumReport,
         private readonly KnowledgeGuideHistory $knowledgeHistory,
+        private readonly ChangeForumTopicState $changeTopicState,
     ) {}
 
     /**
@@ -49,8 +50,8 @@ class PerformForumAction
                 $data['reason'] ?? null,
             ),
             'accept-answer' => $this->acceptAnswer((int) $data['answer_id']),
-            'resolve-topic' => $this->changeStatus((int) $data['topic_id'], ForumTopicStatus::Resolved),
-            'reopen-topic' => $this->changeStatus((int) $data['topic_id'], ForumTopicStatus::Answered),
+            'resolve-topic' => $this->changeStatus((int) $data['topic_id'], ForumTopicStatus::Solved),
+            'reopen-topic' => $this->changeStatus((int) $data['topic_id'], ForumTopicStatus::Open),
             'report-topic' => $this->report('topic', (int) $data['topic_id'], $data),
             'report-answer' => $this->report('answer', (int) $data['answer_id'], $data),
             'block-author' => $this->blockAuthor((string) $data['author_key']),
@@ -135,11 +136,18 @@ class PerformForumAction
     private function changeStatus(int $topicId, ForumTopicStatus $status): array
     {
         $topic = $this->topic($topicId);
-        $this->ensureOwner($topic);
-        $topic->update(['status' => $status, 'last_activity_at' => now()]);
+        $topic = $this->changeTopicState->handle(
+            actor: $this->actor->requireUser(),
+            topic: $topic,
+            target: $status,
+            reasonCode: $status === ForumTopicStatus::Solved
+                ? 'author-marked-solved'
+                : 'author-reopened',
+            expectedLockVersion: $topic->lock_version,
+        );
 
         return [
-            'message' => $status === ForumTopicStatus::Resolved
+            'message' => $status === ForumTopicStatus::Solved
                 ? __('forum.feedback.topic_resolved')
                 : __('forum.feedback.topic_reopened'),
             'topic' => $topic,
@@ -244,7 +252,13 @@ class PerformForumAction
 
         $this->ensureOwner($topic);
 
-        if ($topic->status !== ForumTopicStatus::Resolved || $topic->acceptedAnswer === null) {
+        if (
+            ! in_array($topic->status, [
+                ForumTopicStatus::Solved,
+                ForumTopicStatus::Resolved,
+            ], true)
+            || $topic->acceptedAnswer === null
+        ) {
             throw ValidationException::withMessages([
                 'topic_id' => __('forum.validation.resolve_before_knowledge'),
             ]);

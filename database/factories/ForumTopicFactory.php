@@ -55,6 +55,11 @@ class ForumTopicFactory extends ApplicationFactory
             'view_count' => fake()->numberBetween(12, 900),
             'last_activity_at' => now(),
             'published_at' => now(),
+            'state_entered_at' => now(),
+            'last_author_update_at' => now(),
+            'retention_until' => now()->addYears(7),
+            'structured_data_version' => 1,
+            'lock_version' => 1,
         ];
     }
 
@@ -69,7 +74,7 @@ class ForumTopicFactory extends ApplicationFactory
     public function resolved(): static
     {
         return $this->state(fn (): array => [
-            'status' => ForumTopicStatus::Resolved,
+            'status' => ForumTopicStatus::Solved,
         ]);
     }
 
@@ -79,6 +84,54 @@ class ForumTopicFactory extends ApplicationFactory
             'status' => ForumTopicStatus::Draft,
             'visibility' => ForumVisibility::Private,
             'published_at' => null,
+        ]);
+    }
+
+    public function outdated(): static
+    {
+        return $this->state(fn (): array => [
+            'status' => ForumTopicStatus::Outdated,
+            'outdated_at' => now(),
+            'state_entered_at' => now(),
+            'last_activity_at' => now()->subYear(),
+            'last_author_update_at' => now()->subYear(),
+        ]);
+    }
+
+    public function locked(): static
+    {
+        return $this->state(fn (): array => [
+            'status' => ForumTopicStatus::Locked,
+            'is_locked' => true,
+            'locked_at' => now(),
+            'state_entered_at' => now(),
+        ]);
+    }
+
+    public function archived(): static
+    {
+        return $this->state(fn (): array => [
+            'status' => ForumTopicStatus::Archived,
+            'archived_at' => now(),
+            'state_entered_at' => now(),
+        ]);
+    }
+
+    public function removed(): static
+    {
+        return $this->state(fn (): array => [
+            'status' => ForumTopicStatus::Removed,
+            'removed_at' => now(),
+            'state_entered_at' => now(),
+        ]);
+    }
+
+    public function restored(): static
+    {
+        return $this->state(fn (): array => [
+            'status' => ForumTopicStatus::Restored,
+            'restored_at' => now(),
+            'state_entered_at' => now(),
         ]);
     }
 

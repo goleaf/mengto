@@ -281,3 +281,17 @@ Dedicated Actions own transactional mutations, policies run before private
 queue data is returned, and timestamp-derived windows avoid a scheduler
 dependency. Source URLs are validated but never fetched. Reports reuse unified
 moderation. See `docs/expert-question-sessions.md`.
+
+## Forum Topic Lifecycle Boundary
+
+`ForumTopic` remains the stable content aggregate. `ForumTopicLifecycle` owns
+canonical state transitions, row and optimistic locking, lifecycle timestamps,
+terminal lock projection, and append-only history. Update requests and legal
+holds are normalized children; category lifecycle rules own age and bump
+thresholds.
+
+State-changing Actions authorize and validate before delegating to the shared
+service. `ForumTopicLifecycleProjection` computes stale, necropost, archive,
+retention, and bump state without writes. Physical deletion is not an ordinary
+topic operation, and legacy state values remain readable while new mutations
+write canonical values. See `docs/topic-lifecycle.md`.

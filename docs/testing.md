@@ -81,9 +81,9 @@ destructive command.
 ## Baseline And Current Checkpoint
 
 The modernization baseline was 116 passing tests and 3,881 assertions. The
-latest complete serial checkpoint reports 1,437 passing tests and 51,568
-assertions. This checkpoint is not a final coverage claim while requirements
-remain unimplemented.
+latest complete serial checkpoint reports 1,613 passing tests and 55,337
+assertions before the final documentation-only pass. This checkpoint is not a
+final coverage claim while requirements remain unimplemented.
 
 Pest coverage cannot run in the current environment because PHP 8.5 has neither
 PCOV nor Xdebug. The expected failing command and its exact reason remain part
@@ -229,5 +229,32 @@ authorization, routes, factories, seed reruns, and EN/LT/RU catalogues.
 architecture slice passed 31 tests and 22,249 assertions; the expanded
 regression slice passed 1,108 tests and 52,428 assertions; the detached
 `f1e2fcc` package snapshot passed 1,554 tests and 54,317 assertions in serial
-mode. Exact commands and browser evidence are recorded in the expert-session
-work-package plan.
+mode. The scoped percentage-coverage command was also attempted, but the PHP
+8.5 CLI has neither Xdebug nor PCOV. Exact commands and browser evidence are
+recorded in the expert-session work-package plan.
+
+## Topic Lifecycle Verification
+
+`ForumTopicLifecycleTest` covers additive schema/indexes, canonical and legacy
+states, row/optimistic locking, reversible removal preservation, encrypted
+legal hold, update request privacy/idempotency/review, bump cooldown,
+redirect/301, private-group ownership isolation, class-based Livewire direct
+authorization, rendered history/stale warnings, idempotent backfill, and
+append-only events. `ForumTopicStatusTest` adds the pure legacy compatibility
+and visibility contract.
+
+Package evidence:
+
+- lifecycle suite: 13 tests and 133 assertions;
+- related forum, seeder, localization, and architecture slice: 1,155 tests and
+  51,061 assertions;
+- final serial checkpoint: 1,613 tests and 55,337
+  assertions;
+- Larastan: zero errors;
+- fresh database: 97 migrations, 169 tables, full seed passed;
+- repeated production-safe forum seed: passed;
+- Playwright: public history, stale notice, permanent redirect, 375px
+  overflow, and current-console checks passed.
+
+Coverage remains unavailable because PHP 8.5 has neither PCOV nor Xdebug.
+Exact commands are in the lifecycle work-package plan.

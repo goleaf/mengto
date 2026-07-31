@@ -109,7 +109,7 @@ test('answers votes acceptance and knowledge conversion remain idempotent', func
     ])->assertRedirect();
 
     expect($topic->refresh())
-        ->status->toBe(ForumTopicStatus::Resolved)
+        ->status->toBe(ForumTopicStatus::Solved)
         ->accepted_answer_id->toBe($answer->id);
 
     $this->post(route('forum.actions'), [

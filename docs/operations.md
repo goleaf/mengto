@@ -254,3 +254,22 @@ deleting registrations, reports, reviews, or history.
   history event.
 - After normalized session data exists, recover through a forward fix and do
   not drop the new tables.
+
+## Topic Lifecycle Operations
+
+- Age warnings and state projections are computed at read time; no cron,
+  queue, or scheduler is required.
+- Monitor stale/retention review queues, update-request age, rejected optimistic
+  versions, bump-rate denials, redirect cycles, and legal-hold review dates.
+- Use owner or moderator Actions for archive, remove, restore, merge, and
+  redirect. Never edit lifecycle events or physically delete a topic as
+  routine cleanup.
+- A legal hold must be released only through the authorized audited Action.
+  Do not expose its encrypted private reason in support output.
+- Repair an incorrect state through a reviewed forward transition. Preserve
+  the topic ID, slug, answers, comments, reactions, subscriptions, bookmarks,
+  reports, attachments, and history.
+- `ForumTopicLifecycleBackfillSeeder` is rerunnable; inspect conflicts rather
+  than replacing administrator-owned category rules.
+
+See `docs/topic-lifecycle.md`.

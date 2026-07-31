@@ -115,3 +115,19 @@ Verify host qualification, queue privacy, source links, archive retention, and
 the public disclaimer. Demo seeding remains forbidden outside configured
 non-production environments. After user data exists, use a forward fix rather
 than dropping the session tables.
+
+## Topic Lifecycle Migration
+
+`2026_07_31_001250_create_forum_topic_lifecycle_tables.php` adds topic
+timestamps/indexes plus category rule, event, update-request, and legal-hold
+tables without rewriting or deleting existing content. Deploy the migration
+before lifecycle-capable application code, then run the production-safe
+`ForumSystemSeeder` only when the release procedure explicitly includes
+reference synchronization.
+
+Verify public/owner/moderator visibility, one stale warning, one archive and
+restore, one authorized redirect, one active legal hold, old slug continuity,
+and preservation of answers, reactions, subscriptions, reports, and
+attachments. Do not run `ForumTopicLifecycleDemoSeeder` in production. After
+production lifecycle writes exist, retain the additive schema and recover with
+an audited forward transition or migration.

@@ -2,9 +2,9 @@
 
 ## Baseline
 
-All 138 first-party Eloquent models now have a model factory and are guarded by
-an architecture test. The generated matrix records 109 explicit helpers and
-768 enum-backed state cases; valid existence alone is not accepted without
+All 154 first-party Eloquent models now have a model factory and are guarded by
+an architecture test. The generated matrix records explicit helpers and
+enum-backed state cases; valid existence alone is not accepted without
 persistence tests.
 
 ## Seeder Layers
@@ -137,3 +137,17 @@ environment-gated and creates a deterministic verified host, credential,
 session, moderated question, and answer. Repeated execution preserves stable
 session and credential identities. Every new model has a valid factory and
 meaningful lifecycle states.
+
+## Topic Lifecycle Seeders
+
+`ForumTopicLifecycleBackfillSeeder` is production-safe and runs after category
+definitions and again after legacy demo topics are synchronized. It processes
+topics with `chunkById`, fills only missing lifecycle timestamps, creates one
+stable baseline event per topic, and creates missing category rules without
+overwriting administrator-owned rows.
+
+`ForumTopicLifecycleDemoSeeder` is local/demo/testing only. It creates
+deterministic outdated, archived, restored, and legal-hold examples through
+the production lifecycle boundary. The four lifecycle child models have
+factories and meaningful states. Fresh seed and repeat `ForumSystemSeeder`
+execution are verified against a temporary SQLite database.

@@ -10,6 +10,7 @@ use App\Models\Booking;
 use App\Models\Credential;
 use App\Models\ExpertProfile;
 use App\Models\ForumAnswer;
+use App\Models\ForumCategoryLifecycleRule;
 use App\Models\ForumCommunityNote;
 use App\Models\ForumGroupActivity;
 use App\Models\ForumGroupAnnouncement;
@@ -20,6 +21,8 @@ use App\Models\ForumJournalEntry;
 use App\Models\ForumJournalMedia;
 use App\Models\ForumPoll;
 use App\Models\ForumTopic;
+use App\Models\ForumTopicLegalHold;
+use App\Models\ForumTopicUpdateRequest;
 use App\Models\KnowledgeArticle;
 use App\Models\KnowledgeArticleCollaborator;
 use App\Models\KnowledgeCorrection;
@@ -75,6 +78,15 @@ dataset('factory states', [
     'forum topic draft' => [ForumTopic::class, 'draft'],
     'forum topic medical' => [ForumTopic::class, 'medical'],
     'forum topic resolved' => [ForumTopic::class, 'resolved'],
+    'forum topic outdated' => [ForumTopic::class, 'outdated'],
+    'forum topic locked' => [ForumTopic::class, 'locked'],
+    'forum topic archived' => [ForumTopic::class, 'archived'],
+    'forum topic removed' => [ForumTopic::class, 'removed'],
+    'forum topic restored' => [ForumTopic::class, 'restored'],
+    'forum category lifecycle restrictive' => [ForumCategoryLifecycleRule::class, 'restrictive'],
+    'forum topic update community proposal' => [ForumTopicUpdateRequest::class, 'communityProposal'],
+    'forum topic update accepted' => [ForumTopicUpdateRequest::class, 'accepted'],
+    'forum topic legal hold released' => [ForumTopicLegalHold::class, 'released'],
     'knowledge article draft' => [KnowledgeArticle::class, 'draft'],
     'knowledge article submitted' => [KnowledgeArticle::class, 'submittedForReview'],
     'knowledge article changes requested' => [KnowledgeArticle::class, 'changesRequested'],

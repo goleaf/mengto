@@ -110,3 +110,16 @@ field-linked validation, live status output, localized safety disclaimers,
 non-color queue states, source-link text, action-specific loading, offline
 feedback, visible focus, and mobile-safe touch targets. No session operation
 requires drag-and-drop, hover, animation, or a pointer-only gesture.
+
+## Topic Lifecycle Workflow
+
+The lifecycle panel uses the topic's existing H1, a semantic status/history
+region, native details/buttons/forms, explicit labels, an error summary,
+polite status output, text-plus-icon warnings, action-specific loading, and an
+offline notice. Destructive actions use localized native confirmation.
+
+Playwright verified the public history and stale warning at desktop width and
+at 375x812. The mobile document and lifecycle region had no horizontal
+overflow; the current navigation had no console warning or error. Redirect
+navigation also preserved the canonical destination. No lifecycle operation
+depends on hover, drag-and-drop, animation, or pointer-only input.

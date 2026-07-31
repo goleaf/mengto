@@ -89,14 +89,23 @@
   corrections, non-destructive archives, unified reports, localized
   medical/legal non-authority notices, repeatable demo data, and accessible
   class-based Livewire directory and workspace flows.
+- Added a durable forum-topic lifecycle with canonical and legacy-compatible
+  states, optimistic and row locking, immutable transition history,
+  category-specific stale and necropost projection, reversible removal,
+  update requests and proposals, controlled bumping, merge and redirect
+  preservation, encrypted legal holds, production-safe backfill, and an
+  authorized class-based Livewire management panel.
 - Added an evidence overlay that prevents requirement verification without
-  concrete file or test evidence; 415 atomic requirements are currently
+  concrete file or test evidence; 448 atomic requirements are currently
   verified.
 
 ### Runtime And Architecture
 
 - Raised the runtime contract to PHP `>=8.5.0 <8.6.0`, Laravel `^13.0`,
-  Livewire `^4.3.3`, Tailwind/Vite plugin `^4.3.3`, and Vite `^8.2.0`.
+  Livewire `^4.3.4`, Tailwind/Vite plugin `^4.3.3`, and Vite `^8.2.0`.
+- Updated the Laravel Boost Livewire skill while keeping canonical repository
+  instructions in `AGENTS.md` instead of duplicating generated guideline
+  blocks across agent entry points.
 - Added Larastan 3.10 at PHPStan level 5 and resolved all reported
   first-party findings without a broad baseline.
 - Added production authentication around the existing actor-key ownership

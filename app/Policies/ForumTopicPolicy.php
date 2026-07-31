@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
+use App\Enums\ForumTopicStatus;
 use App\Enums\ForumTopicType;
 use App\Enums\ForumVisibility;
 use App\Models\ForumGroup;
@@ -63,6 +64,10 @@ class ForumTopicPolicy
             return true;
         }
 
+        if (! $forumTopic->status->isPubliclyVisible()) {
+            return false;
+        }
+
         return match ($forumTopic->visibility) {
             ForumVisibility::Public,
             ForumVisibility::Link => true,
@@ -87,8 +92,17 @@ class ForumTopicPolicy
      */
     public function update(?User $user, ForumTopic $forumTopic): bool
     {
+        if ($user?->isAdministrator() === true) {
+            return true;
+        }
+
         return $user?->isActive() === true
             && $forumTopic->author_key === $user->actor_key
+            && ! in_array($this->status($forumTopic)->canonical(), [
+                ForumTopicStatus::Merged,
+                ForumTopicStatus::Redirected,
+                ForumTopicStatus::Removed,
+            ], true)
             && ($forumTopic->forum_group_id === null || $this->view($user, $forumTopic));
     }
 
@@ -96,7 +110,8 @@ class ForumTopicPolicy
     {
         return $this->view($user, $forumTopic)
             && $user?->isActive() === true
-            && ! $forumTopic->is_locked;
+            && ! $forumTopic->is_locked
+            && $this->status($forumTopic)->acceptsAnswers();
     }
 
     public function comment(?User $user, ForumTopic $forumTopic): bool
@@ -114,7 +129,68 @@ class ForumTopicPolicy
             return false;
         }
 
-        return $this->update($user, $forumTopic);
+        return $this->manageOwnedLifecycle($user, $forumTopic)
+            && ! $forumTopic->hasActiveLegalHold();
+    }
+
+    public function requestUpdate(?User $user, ForumTopic $forumTopic): bool
+    {
+        return $user?->isActive() === true
+            && $forumTopic->author_key !== $user->actor_key
+            && $this->view($user, $forumTopic)
+            && $this->status($forumTopic)->isPubliclyVisible();
+    }
+
+    public function proposeUpdate(?User $user, ForumTopic $forumTopic): bool
+    {
+        return $this->requestUpdate($user, $forumTopic);
+    }
+
+    public function reviewUpdateRequests(?User $user, ForumTopic $forumTopic): bool
+    {
+        return $user?->isAdministrator() === true
+            || $this->manageOwnedLifecycle($user, $forumTopic);
+    }
+
+    public function reopen(?User $user, ForumTopic $forumTopic): bool
+    {
+        return $user?->isAdministrator() === true
+            || $this->manageOwnedLifecycle($user, $forumTopic);
+    }
+
+    public function bump(?User $user, ForumTopic $forumTopic): bool
+    {
+        return $this->manageOwnedLifecycle($user, $forumTopic)
+            && $this->status($forumTopic)->isPubliclyVisible()
+            && ! $forumTopic->hasActiveLegalHold();
+    }
+
+    public function archive(?User $user, ForumTopic $forumTopic): bool
+    {
+        return ($user?->isAdministrator() === true
+            || $this->manageOwnedLifecycle($user, $forumTopic))
+            && ! $forumTopic->hasActiveLegalHold();
+    }
+
+    public function remove(?User $user, ForumTopic $forumTopic): bool
+    {
+        return $this->delete($user, $forumTopic);
+    }
+
+    public function moderateLifecycle(?User $user, ForumTopic $forumTopic): bool
+    {
+        return $user?->isAdministrator() === true;
+    }
+
+    public function manageLegalHold(?User $user, ForumTopic $forumTopic): bool
+    {
+        return $user?->isAdministrator() === true;
+    }
+
+    public function redirect(?User $user, ForumTopic $forumTopic): bool
+    {
+        return $user?->isAdministrator() === true
+            && ! $forumTopic->hasActiveLegalHold();
     }
 
     private function isJournal(ForumTopic $forumTopic): bool
@@ -128,7 +204,15 @@ class ForumTopicPolicy
     private function viewProjection(ForumTopic $forumTopic): ?ForumTopic
     {
         $attributes = $forumTopic->getAttributes();
-        $required = ['id', 'type', 'forum_group_id', 'author_key', 'visibility'];
+        $required = [
+            'id',
+            'type',
+            'forum_group_id',
+            'author_key',
+            'visibility',
+            'status',
+            'legal_hold_at',
+        ];
 
         if (array_diff($required, array_keys($attributes)) === []) {
             return $forumTopic;
@@ -144,7 +228,22 @@ class ForumTopicPolicy
      */
     public function restore(?User $user, ForumTopic $forumTopic): bool
     {
-        return false;
+        $status = $this->status($forumTopic)->canonical();
+
+        if ($user?->isAdministrator() === true) {
+            return in_array($status, [
+                ForumTopicStatus::Archived,
+                ForumTopicStatus::Merged,
+                ForumTopicStatus::Redirected,
+                ForumTopicStatus::Removed,
+            ], true);
+        }
+
+        return $this->manageOwnedLifecycle($user, $forumTopic)
+            && in_array($status, [
+                ForumTopicStatus::Archived,
+                ForumTopicStatus::Removed,
+            ], true);
     }
 
     /**
@@ -153,5 +252,21 @@ class ForumTopicPolicy
     public function forceDelete(?User $user, ForumTopic $forumTopic): bool
     {
         return false;
+    }
+
+    private function manageOwnedLifecycle(?User $user, ForumTopic $forumTopic): bool
+    {
+        return $user?->isActive() === true
+            && $forumTopic->author_key === $user->actor_key;
+    }
+
+    private function status(ForumTopic $forumTopic): ForumTopicStatus
+    {
+        $status = $forumTopic->getAttributes()['status']
+            ?? ForumTopic::query()->whereKey($forumTopic->id)->value('status');
+
+        return $status instanceof ForumTopicStatus
+            ? $status
+            : ForumTopicStatus::from((string) $status);
     }
 }

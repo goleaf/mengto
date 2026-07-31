@@ -281,3 +281,22 @@ See `docs/journals.md`, `docs/privacy.md`, and `docs/files.md`.
 - Model serialization hides idempotency keys and credential private fields.
 - Session, question, and answer complaints reuse the rate-limited unified
   report pipeline.
+
+## Topic Lifecycle Controls
+
+- All state mutations authorize and validate again inside an Action, lock the
+  current topic row, and reject stale optimistic versions.
+- The database preserves one append-only history and idempotency boundary;
+  application code rejects event updates and deletion.
+- Owner removal is reversible and does not erase reports, reactions, replies,
+  subscriptions, attachments, or moderation evidence.
+- Active legal holds block archive, removal, merge, redirect, and destructive
+  maintenance. Private reasons are encrypted and hidden from serialization.
+- Redirect targets are visibility-authorized, cycle-checked, and limited to a
+  distinct existing topic. Old URLs disclose no private destination.
+- Update requests are viewer-scoped, bounded, rate-limited, and never rewrite
+  author content automatically.
+- Private group and journal policy checks run before author ownership; an
+  administrator has no implicit read bypass to ordinary private topics.
+
+See `docs/topic-lifecycle.md`.

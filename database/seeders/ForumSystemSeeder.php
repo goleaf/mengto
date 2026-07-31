@@ -15,6 +15,7 @@ final class ForumSystemSeeder extends Seeder
             ForumTopicTypeSeeder::class,
             ForumReputationDefinitionSeeder::class,
             ForumModerationDefinitionSeeder::class,
+            ForumTopicLifecycleBackfillSeeder::class,
             ForumTopicTaxonomyBackfillSeeder::class,
             CatalogueOfLifeSourceSeeder::class,
             CoreAnimalTaxonomySeeder::class,

@@ -138,3 +138,14 @@ medical/legal disclaimer.
 Stored scope, jurisdiction, status, reason, and disclaimer-version values are
 stable identifiers. User questions, answers, and correction prose remain in
 their original language.
+
+## Topic Lifecycle Catalogue
+
+`lang/{en,lt,ru}/forum_topic_lifecycle.php` owns canonical and legacy state
+labels, event labels, request kinds/states, warnings, controls, fields,
+validation, confirmations, feedback, and audit-reason explanations.
+
+Stored status, event, kind, reason-code, and idempotency values remain stable
+language-independent identifiers. Topic, request, proposal, and private hold
+prose are retained in the language supplied by their author. All three
+catalogues have tested key and placeholder parity.

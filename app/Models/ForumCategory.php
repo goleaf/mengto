@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * @property-read Collection<int, ForumCategory> $children
@@ -72,6 +73,12 @@ final class ForumCategory extends Model
     public function translations(): HasMany
     {
         return $this->hasMany(ForumCategoryTranslation::class);
+    }
+
+    /** @return HasOne<ForumCategoryLifecycleRule, $this> */
+    public function lifecycleRule(): HasOne
+    {
+        return $this->hasOne(ForumCategoryLifecycleRule::class);
     }
 
     /** @return HasMany<ForumCategoryAlias, $this> */

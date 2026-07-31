@@ -307,3 +307,48 @@ server, or another operational dependency.
 Questions, answers, corrections, moderation decisions, and history are
 normalized and database constrained. Source links are displayed as validated
 HTTP(S) references and are never fetched by the application.
+
+## ADR-FORUM-026: Use An Audited Topic Lifecycle State Machine
+
+Date: 2026-07-31
+
+Status: accepted
+
+Topic status changes pass through one domain service that validates an
+explicit transition graph, locks the row, checks an optimistic version, updates
+state timestamps, and appends immutable history. Answer creation, answer
+acceptance, owner actions, and moderator actions use the same boundary.
+
+Legacy status values remain readable during migration, but new mutations write
+canonical values. Derived facts such as "unanswered" remain query projections
+instead of contradictory persisted lifecycle states.
+
+## ADR-FORUM-027: Preserve Removed And Old Topics
+
+Date: 2026-07-31
+
+Status: accepted
+
+User deletion becomes a reversible `removed` transition. Archive, removal,
+merge, redirect, and restore preserve the topic ID, slug, text, replies,
+reactions, subscriptions, bookmarks, reports, attachments, moderation history,
+and taxonomy relations. Public visibility is controlled by policy and scopes.
+
+Legal holds are separate private audit records. An active hold blocks sensitive
+lifecycle transitions and destructive maintenance. No age-based process
+physically deletes topic content.
+
+## ADR-FORUM-028: Derive Staleness At Read Time
+
+Date: 2026-07-31
+
+Status: accepted
+
+Category lifecycle rules define stale, necropost, archive-review, retention,
+reopen, and bump thresholds. A bounded projection derives warnings and
+effective read state from stored timestamps. GET requests never mutate topic
+state, and correctness does not depend on cron, a queue worker, or a long-lived
+runtime.
+
+Archive and removal remain explicit authorized actions. A retention deadline
+creates a review signal, not an automatic deletion command.
