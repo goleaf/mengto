@@ -2,10 +2,10 @@
 
 ## Baseline
 
-All 126 first-party Eloquent models now have a model factory and are guarded by
-an architecture test. The generated matrix records 723
-documented and enum-backed state cases; valid existence alone is not accepted
-without persistence tests.
+All 138 first-party Eloquent models now have a model factory and are guarded by
+an architecture test. The generated matrix records 109 explicit helpers and
+768 enum-backed state cases; valid existence alone is not accepted without
+persistence tests.
 
 ## Seeder Layers
 
@@ -49,6 +49,13 @@ also creates one member topic, guide, activity, announcement, private fixture,
 and single/multiple/ranked poll examples after the base forum graph exists.
 Repeated runs preserve memberships, content IDs, private paths, poll rows, and
 append-only evidence through stable slugs and idempotent Actions.
+`ForumJournalBackfillSeeder` is production-safe and converts only explicitly
+journal-typed topics into the normalized one-to-one extension. It preserves
+topic identity and marks missing/invalid subtype metadata for review.
+`ForumJournalDemoSeeder` is environment-gated and uses deterministic
+production Actions to create representative types, entries, metrics,
+milestones, setbacks, collaborators, and comments without duplicating records
+on rerun.
 
 ## Production Safeguards
 
@@ -68,6 +75,8 @@ append-only evidence through stable slugs and idempotent Actions.
   are prohibited outside local, demo, and testing environments.
 - Group demo files use the private configured disk and are never created by
   the production-safe definition seeder.
+- Journal backfill never infers a type from prose, and journal demo content is
+  prohibited in production.
 
 ## Coverage Matrix
 

@@ -66,6 +66,11 @@ taxonomy tree is never serialized into Livewire state.
 class-based group-content workspace with one and ten polls. Eager-loaded
 options/current votes and one precomputed trust decision keep query growth
 constant rather than multiplying policy and result lookups per poll.
+`ForumJournalDirectory` paginates journals and eager loads only topic
+presentation fields. `ForumJournalTimeline` caps entries and chart points,
+loads comments/measurements/media/collaborators in bounded projections, and
+never serializes the full taxonomy or private storage data. Metrics are
+aggregated from normalized selected columns; no query runs in Blade.
 
 All previously uncovered foreign keys gained leading indexes. The deterministic
 performance seeder supports repeatable local growth tests; production latency

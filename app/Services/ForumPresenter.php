@@ -160,6 +160,10 @@ class ForumPresenter
             $engagement->update(['last_read_at' => now()]);
         }
 
+        $journalId = $topic->type->value === 'journal'
+            ? $topic->journal()->value('id')
+            : null;
+
         return [
             'owner' => $this->profiles->owner(),
             'page_title' => __('presentation.brand_title', ['title' => $topic->title]),
@@ -218,6 +222,7 @@ class ForumPresenter
                 ->map(fn (KnowledgeArticle $article): array => $this->knowledgeCard($article))
                 ->all(),
             'can_manage' => $topic->author_key === $this->actor->key(),
+            'journal_id' => is_int($journalId) ? $journalId : null,
         ];
     }
 

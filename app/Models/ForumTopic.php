@@ -41,6 +41,7 @@ use Illuminate\Support\Carbon;
  * @property bool $is_locked
  * @property bool $is_medical
  * @property bool $is_urgent
+ * @property-read ForumJournal|null $journal
  * @property-read Collection<int, KnowledgeArticle> $knowledgeArticles
  * @property string $language
  * @property Carbon|null $last_activity_at
@@ -210,6 +211,12 @@ class ForumTopic extends Model
         return $this->belongsTo(\App\Models\ForumTopicType::class, 'forum_topic_type_id');
     }
 
+    /** @return HasOne<ForumJournal, $this> */
+    public function journal(): HasOne
+    {
+        return $this->hasOne(ForumJournal::class);
+    }
+
     /** @return HasMany<ForumTopicAcceptance, $this> */
     public function acceptances(): HasMany
     {
@@ -312,7 +319,7 @@ class ForumTopic extends Model
             ForumTopicStatus::Merged->value,
         ])
             ->whereNull('forum_group_id')
-            ->where('visibility', '!=', ForumVisibility::Private->value);
+            ->where('visibility', ForumVisibility::Public->value);
     }
 
     public function scopeSearch(Builder $query, string $search): Builder

@@ -179,3 +179,24 @@ See `docs/groups.md`.
 
 The additive migration creates no trigger, raw SQL, destructive backfill, or
 automatic legacy classification. See `docs/polls.md`.
+
+## Forum Journal Tables
+
+- `forum_journals` is unique by topic, stable key, and creation idempotency
+  key; owner/type/status list paths have leading compound indexes.
+- `forum_journal_entries` owns dated entry, milestone, or setback prose and an
+  optimistic version. Stable and idempotency keys are unique.
+- `forum_journal_measurements` stores one validated decimal metric per
+  entry/key with a canonical unit and display position.
+- `forum_journal_entry_versions` stores immutable prior snapshots with a
+  unique monotonically increasing entry/version pair.
+- `forum_journal_collaborators` stores one active or revoked viewer/editor
+  projection per journal/user.
+- `forum_journal_media` stores private generated paths, encrypted original
+  names, actual MIME, checksum, size, text alternatives, and lifecycle state.
+- `forum_comments.forum_journal_entry_id` reuses the established comment
+  entity; the journal comment path has an optional unique idempotency key.
+
+All schema changes are additive, use foreign keys and bounded-query indexes,
+and avoid raw SQL, triggers, destructive legacy classification, or a
+cross-domain transaction with external I/O. See `docs/journals.md`.

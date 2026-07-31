@@ -18,8 +18,11 @@ This index is the source-of-truth map for first-party documentation.
 | `docs/data-model.md` | Persistence model and integrity rules | Data | Canonical |
 | `docs/security.md` | Threats and implemented controls | Security | Canonical |
 | `docs/authorization.md` | Role, ownership, and temporary-access decisions | Security | Canonical |
+| `docs/privacy.md` | Data classes, visibility boundaries, and retention | Security | Canonical |
+| `docs/files.md` | File ownership, validation, storage, and download rules | Security + operations | Canonical |
 | `docs/frontend.md` | Blade, Livewire, JavaScript, and navigation boundaries | Frontend | Canonical |
 | `docs/livewire.md` | Livewire 4 rules and applicability matrix | Frontend | Canonical |
+| `docs/journals.md` | Forum journal lifecycle, privacy, media, backfill, and recovery | Product + engineering | Canonical |
 | `docs/guides.md` | Collaborative guide workflow, review, editing, and recovery | Product + engineering | Canonical |
 | `docs/community-review.md` | Low-risk review panels and contextual-note workflow | Product + engineering | Canonical |
 | `docs/mentorship.md` | Peer mentorship, matching, privacy, lifecycle, reports, seeding, and recovery | Product + engineering | Canonical |

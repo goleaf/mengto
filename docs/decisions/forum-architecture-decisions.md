@@ -135,3 +135,61 @@ stable translation-group key.
 making editing auditable and race-safe. It also prevents forum popularity,
 general reputation, or administrative authority from being presented as
 scientific or professional review.
+## ADR-FORUM-015: Separate Forum Journals From Private Care Journals
+
+Date: 2026-07-31
+
+Status: accepted
+
+`CareJournal` remains the private operational record for a managed pet,
+including routines, tasks, medication-adjacent events, encrypted measurements,
+temporary access grants, and private care files. A forum journal is public or
+selectively shared community content and must not read, copy, or weaken that
+care boundary.
+
+Forum journals therefore use `ForumTopic` as their publication, category,
+group, locale, moderation, and engagement shell and add normalized
+journal-specific tables for entries, measurements, collaborators, and private
+images. The two domains may reference the same pet only through separately
+authorized context; they do not share entries or files.
+
+## ADR-FORUM-016: Reuse Topic Comments With An Entry Relation
+
+Date: 2026-07-31
+
+Status: accepted
+
+Journal entry comments reuse `ForumComment` through an additive nullable
+`forum_journal_entry_id`. Existing answer comments retain their current path.
+The journal comment Action requires exactly one journal entry, reloads it
+under the topic and journal, and writes an idempotency key. This avoids a
+second incompatible community-comment model while preserving existing rows.
+
+## ADR-FORUM-017: Keep Journal Privacy Canonical On The Topic
+
+Date: 2026-07-31
+
+Status: accepted
+
+`forum_topics.visibility` remains the single privacy value for a journal.
+Journal policies evaluate that value together with owner, selected
+collaborator, group-membership, and active-account context before querying
+entry, comment, measurement, image, or export data. The journal table does not
+duplicate privacy state.
+
+Member, expert, link, group, and private topics are excluded from anonymous
+directory queries. Direct access is evaluated by policy. This closes the
+existing risk in which every non-private visibility value behaved as public.
+
+## ADR-FORUM-018: Use Normalized Measurements And Native Progress Semantics
+
+Date: 2026-07-31
+
+Status: accepted
+
+Queryable numeric measurements use a normalized table and a typed
+journal-type metric registry with canonical units and bounds. Narrative
+context remains in the entry body. The first interface renders bounded
+server-prepared history through semantic tables, textual values, and native
+`progress` elements; no chart framework or unbounded browser payload is
+introduced.

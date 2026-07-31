@@ -936,6 +936,112 @@
                 "unresolved_risks": [],
                 "final_result": "verified"
             }
+        },
+        {
+            "requirement_ids": [
+                "forum.feature.3161",
+                "forum.feature.3162",
+                "forum.feature.3163",
+                "forum.feature.3164",
+                "forum.feature.3165",
+                "forum.feature.3166",
+                "forum.feature.3167",
+                "forum.feature.3168",
+                "forum.feature.3169",
+                "forum.feature.3170",
+                "forum.feature.3171",
+                "forum.feature.3172",
+                "forum.feature.3173",
+                "forum.feature.3174",
+                "forum.feature.3175",
+                "forum.feature.3176",
+                "forum.feature.3177",
+                "forum.feature.3178",
+                "forum.feature.3179",
+                "forum.feature.3180",
+                "forum.security.0020",
+                "forum.feature.3181",
+                "forum.feature.3182",
+                "forum.feature.3183",
+                "forum.feature.3184",
+                "forum.feature.3185",
+                "forum.feature.3186"
+            ],
+            "fields": {
+                "current_implementation_status": "verified",
+                "discovered_existing_files": [
+                    "app/Models/CareJournal.php",
+                    "app/Models/ForumTopic.php",
+                    "app/Models/ForumComment.php",
+                    "app/Policies/ForumTopicPolicy.php",
+                    "app/Enums/ForumTopicType.php",
+                    "database/seeders/ForumTopicTypeSeeder.php"
+                ],
+                "planned_files": [
+                    "database/migrations/2026_07_31_001220_create_forum_journal_tables.php",
+                    "app/Models/ForumJournal.php",
+                    "app/Models/ForumJournalEntry.php",
+                    "app/Models/ForumJournalMeasurement.php",
+                    "app/Models/ForumJournalEntryVersion.php",
+                    "app/Models/ForumJournalCollaborator.php",
+                    "app/Models/ForumJournalMedia.php",
+                    "app/Policies/ForumJournalPolicy.php",
+                    "app/Policies/ForumJournalMediaPolicy.php",
+                    "app/Services/ForumJournalMetricRegistry.php",
+                    "app/Livewire/Forum/ForumJournalDirectory.php",
+                    "app/Livewire/Forum/ForumJournalTimeline.php",
+                    "database/seeders/ForumJournalBackfillSeeder.php",
+                    "database/seeders/ForumJournalDemoSeeder.php"
+                ],
+                "test_identifiers": [
+                    "tests/Feature/Forum/ForumJournalWorkflowTest.php",
+                    "tests/Feature/Forum/ForumTopicTest.php",
+                    "tests/Feature/Forum/ForumDirectoryTest.php",
+                    "tests/Feature/Forum/GroupCoreWorkflowTest.php",
+                    "tests/Feature/Forum/GroupContentAndPollWorkflowTest.php",
+                    "tests/Feature/Database/FactoryAndSeederTest.php",
+                    "tests/Feature/ArchitectureComplianceTest.php",
+                    "tests/Feature/LocalizationTest.php"
+                ],
+                "documentation_identifiers": [
+                    "docs/plans/forum-phase8-journals-work-package.md",
+                    "docs/journals.md",
+                    "docs/architecture.md",
+                    "docs/domain-model.md",
+                    "docs/data-model.md",
+                    "docs/authorization.md",
+                    "docs/privacy.md",
+                    "docs/security.md",
+                    "docs/files.md",
+                    "docs/frontend.md",
+                    "docs/livewire.md",
+                    "docs/accessibility.md",
+                    "docs/localization.md",
+                    "docs/seeding.md",
+                    "docs/testing.md",
+                    "docs/performance.md",
+                    "docs/operations.md"
+                ],
+                "implementation_status": "implemented",
+                "verification_status": "verified",
+                "evidence": [
+                    "database/migrations/2026_07_31_001220_create_forum_journal_tables.php: additive normalized journal, collaborator, entry, measurement, immutable version, private media, and journal-comment schema with restrictive ownership, uniqueness, idempotency, optimistic versions, and leading indexes",
+                    "CreateForumJournal, BackfillForumJournals, CreateForumJournalEntry, UpdateForumJournalEntry, GrantForumJournalCollaborator, RevokeForumJournalCollaborator, CreateForumJournalComment, StoreForumJournalMedia, PrepareForumJournalMediaResponse, PrepareForumJournalExport, and ArchiveForumJournal: authorized validated transactional lifecycle with explicit legacy typing, bounded export, private storage, generated names, compensation cleanup, and audit evidence",
+                    "ForumJournalPolicy, ForumJournalMediaPolicy, and ForumTopicPolicy: guest/member/expert/link/group/private access is enforced before nested data, counts, media, and export; direct nested media access rechecks parent identity",
+                    "ForumJournalDirectory, ForumJournalTimeline, five separate form objects, and passive Blade views: class-based Livewire with boot-injected non-persisted services, locked scalar identity, bounded computed projections, typed measurements, field-linked errors, loading/offline states, semantic progress alternatives, and no punitive gamification",
+                    "ForumJournalBackfillSeeder and ForumJournalDemoSeeder: production-safe explicit-type backfill plus environment-gated deterministic demo graph; repeated execution preserves identities and does not duplicate data",
+                    "php artisan test tests/Feature/Forum/ForumJournalWorkflowTest.php: 17 tests and 164 assertions passed, including local-time future-boundary normalization",
+                    "journal plus forum regression slice: 1,025 tests and 4,334 assertions passed",
+                    "journal plus architecture/localization slice: 38 tests and 44,600 assertions passed",
+                    "app-shell regression slice: 61 tests and 19,471 assertions passed after nested main landmarks were removed from six child views",
+                    "php artisan test: 1,437 tests and 51,568 assertions passed in serial mode",
+                    "php scripts/verify-fresh-database.php: 94 migrations, 152 tables, fresh seed and repeated seed passed with stable user count 5",
+                    "PAO_DISABLE=1 vendor/bin/phpstan analyse --memory-limit=1G --no-progress: zero errors; Pint passed; Composer strict validation/audit passed; npm high-severity audit reported zero vulnerabilities; Vite 8.2.0 production build passed",
+                    "Playwright real Lithuanian private-journal creation and local-time entry flow at 375x812 and 1440x900: entry and three measurements persisted; one main, one H1, no horizontal overflow, raw keys, unnamed buttons, visible unlabeled controls, console warnings, or console errors"
+                ],
+                "unresolved_risks": [],
+                "final_result": "verified"
+            }
         }
     ]
 }

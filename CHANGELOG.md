@@ -61,8 +61,17 @@
   closure, database-enforced one-vote projections, safe editable votes,
   localized non-authority notices, repeatable demo data, and accessible
   class-based Livewire ballots.
+- Added typed forum progress journals for training, behavior, recovery,
+  weight, rehabilitation, adoption adaptation, foster, aquarium, terrarium,
+  pregnancy/newborn, and senior care. Journals retain the forum topic shell
+  while adding dated entries, normalized measurements, milestones, setbacks,
+  selected collaborators, comments, optimistic edit history, private
+  content-validated images, bounded progress presentation, protected JSON
+  export, archive, and idempotent legacy backfill. The private operational
+  care journal remains a separate domain, and no streak, shame, reputation, or
+  professional-authority side effect was introduced.
 - Added an evidence overlay that prevents requirement verification without
-  concrete file or test evidence; 343 atomic requirements are currently
+  concrete file or test evidence; 370 atomic requirements are currently
   verified.
 
 ### Runtime And Architecture
@@ -115,7 +124,7 @@
 
 ### Factories, Seeders, And Tests
 
-- Added valid model factories for all 126 first-party Eloquent models and a
+- Added valid model factories for all 138 first-party Eloquent models and a
   complete automated factory/enum-state creation matrix.
 - Made full demo seeding repeatable and production-safe.
 - Added deterministic role/locale/privacy demo graphs and an opt-in
@@ -123,7 +132,7 @@
 - Added an asserted temporary-SQLite fresh migration/seed verifier so
   destructive database checks cannot silently target the development file.
 - Expanded Pest from a baseline of 116 tests / 3,881 assertions to the current
-  checkpoint of 1,384 tests / 50,006 assertions.
+  checkpoint of 1,437 tests / 51,568 assertions.
 - Added auth, authorization, localization, schema, factory/seeder,
   architecture, and responsive regression coverage.
 
@@ -139,7 +148,7 @@
 
 ### Verification
 
-- Full Pest suite checkpoint: 1,384 passed, 50,006 assertions in serial mode.
+- Full Pest suite checkpoint: 1,437 passed, 51,568 assertions in serial mode.
 - Larastan/PHPStan level 5: zero errors.
 - Composer strict validation and security audit: passed, zero advisories.
 - NPM high-severity audit: passed, zero vulnerabilities.

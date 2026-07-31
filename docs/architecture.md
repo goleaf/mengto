@@ -216,3 +216,23 @@ a short locked transaction plus database uniqueness, and poll results never
 write professional, medical, legal, scientific, or confirmation authority.
 
 See `docs/groups.md` and `docs/polls.md`.
+
+## Forum Journal Boundary
+
+`ForumTopic` remains the publication, visibility, category, group,
+localization, engagement, and moderation shell. `ForumJournal` is a
+one-to-one extension that owns typed progress state, dated entries,
+measurements, selected collaborators, immutable pre-edit versions, and private
+media. The existing `ForumComment` model is reused through an additive
+journal-entry relation.
+
+`CareJournal` remains a separate private operational-care aggregate. No care
+entry, medication-adjacent field, access grant, or private care file is copied
+into a forum journal.
+
+Dedicated Actions own creation, legacy backfill, entry mutation,
+collaboration, comments, files, archive, and export. Policies run before
+child data is queried. The two class-based Livewire components coordinate
+small scalar/form state and bounded computed presentation arrays.
+
+See `docs/journals.md`.

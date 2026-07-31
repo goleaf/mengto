@@ -31,7 +31,7 @@
                 :summary="$summary"
             />
 
-            <main class="messaging-thread" aria-label="{{ __('presentation.conversation_with', ['name' => $selected['name']]) }}">
+            <section class="messaging-thread" aria-label="{{ __('presentation.conversation_with', ['name' => $selected['name']]) }}">
                 <x-messaging-thread-header
                     :conversation="$selected"
                     :active-filter="$active_filter"
@@ -79,7 +79,7 @@
                         :active-filter="$active_filter"
                     />
                 @endif
-            </main>
+            </section>
 
             <x-messaging-context
                 :conversation="$selected"

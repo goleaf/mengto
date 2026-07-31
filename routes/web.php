@@ -62,6 +62,9 @@ use App\Http\Controllers\ForumController;
 use App\Http\Controllers\ForumGroupDirectoryController;
 use App\Http\Controllers\ForumGroupFileDownloadController;
 use App\Http\Controllers\ForumGroupShowController;
+use App\Http\Controllers\ForumJournalDirectoryController;
+use App\Http\Controllers\ForumJournalExportController;
+use App\Http\Controllers\ForumJournalMediaController;
 use App\Http\Controllers\ForumMentorshipController;
 use App\Http\Controllers\GroupDetailPreviewController;
 use App\Http\Controllers\GroupDirectoryPreviewController;
@@ -280,6 +283,13 @@ Route::middleware('web')
                 Route::get('/', ForumController::class)->name('index');
                 Route::get('/similar', SimilarTopicController::class)->name('topics.similar');
                 Route::get('/topics/{forumTopic}', TopicController::class)->name('topics.show');
+                Route::get(
+                    '/journals/{forumJournal:stable_key}/media/{forumJournalMedia:stable_key}',
+                    ForumJournalMediaController::class,
+                )
+                    ->withoutScopedBindings()
+                    ->middleware('throttle:60,1')
+                    ->name('journals.media.show');
 
                 Route::middleware(['auth', 'active'])
                     ->group(function (): void {
@@ -305,6 +315,19 @@ Route::middleware('web')
                         Route::get('/mentorship', ForumMentorshipController::class)
                             ->middleware('verified')
                             ->name('mentorship.index');
+                        Route::middleware('verified')
+                            ->prefix('journals')
+                            ->name('journals.')
+                            ->group(function (): void {
+                                Route::get('/', ForumJournalDirectoryController::class)
+                                    ->name('index');
+                                Route::get(
+                                    '/{forumJournal:stable_key}/export',
+                                    ForumJournalExportController::class,
+                                )
+                                    ->middleware('throttle:12,1')
+                                    ->name('export');
+                            });
                         Route::middleware('verified')
                             ->prefix('groups')
                             ->name('groups.')

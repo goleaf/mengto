@@ -38,6 +38,21 @@ test('blade templates remain passive', function () {
     }
 });
 
+test('app shell views do not introduce nested main landmarks', function () {
+    foreach (sourceFiles(resource_path('views'), 'php') as $file) {
+        $contents = $file->getContents();
+
+        if (! str_contains($contents, '<x-app-shell')) {
+            continue;
+        }
+
+        expect(
+            preg_match('/<main(?:\s|>)/', $contents),
+            $file->getRelativePathname(),
+        )->toBe(0);
+    }
+});
+
 test('blade presentation literals are localized', function () {
     $result = Process::path(base_path())
         ->timeout(30)

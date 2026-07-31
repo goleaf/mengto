@@ -159,3 +159,20 @@ See `docs/mentorship.md`.
   policy authorization inside the Action.
 
 See `docs/groups.md`.
+
+## Forum Journals
+
+- Active authenticated users may create journals.
+- Public journals are guest-readable. Member, expert, group, link-only, and
+  private states apply explicit topic/journal policy rules before data
+  selection.
+- Owners manage collaborators and archive journals.
+- Active editors may create/edit entries, upload media, comment, and export.
+- Active viewers may read and comment but cannot mutate entries, media, access,
+  or lifecycle.
+- Expert-only access requires current independently verified professional
+  evidence; reputation and trust do not substitute.
+- Every controller and Livewire Action reloads the journal and nested subject,
+  verifies parent consistency, and authorizes again.
+
+See `docs/journals.md`.

@@ -37,7 +37,9 @@ final readonly class ForumReviewSubjectResolver
             ->select([
                 'id',
                 'author_id',
+                'author_key',
                 'forum_group_id',
+                'type',
                 'title',
                 'body',
                 'is_medical',

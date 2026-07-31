@@ -116,3 +116,21 @@ keys, native fieldsets, and server-authorized actions. Its first-render query
 budget is constant between one and ten polls; poll eligibility consumes the
 already authorized and loaded membership instead of issuing a policy query per
 poll. See `docs/polls.md`.
+
+## Forum Journal Components
+
+`ForumJournalDirectory` and `ForumJournalTimeline` are normal class-based,
+multi-file Livewire components. Their separate form objects own normalized
+creation, entry, collaborator, comment, and media input.
+
+Public state is limited to locked scalar identity, stable URL filters,
+idempotency tokens, bounded form values, and one temporary upload. Models,
+query builders, policies, files, paths, historical versions, and full
+relationship graphs remain server-side. Computed methods resolve their
+dependencies through the container because Livewire invokes computed methods
+without arbitrary service arguments.
+
+Each mutation delegates to an Action that reloads and authorizes the subject.
+Directory/timeline queries paginate or cap their results, select presentation
+columns, eager load constrained relations, and prepare passive Blade arrays.
+See `docs/journals.md`.

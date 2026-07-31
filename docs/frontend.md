@@ -105,3 +105,16 @@ The rendered package was checked at 1440x900 and 375x812. It had one page
 heading, no horizontal overflow, no unnamed controls, 44-pixel poll controls,
 successful Livewire vote/update feedback, and no current-page console errors.
 See `docs/polls.md`.
+
+## Forum Journals
+
+`/forum/journals` hosts a class-based Livewire directory and creation form.
+The existing topic page composes the journal timeline for an explicitly
+journal-backed topic. Normal links remain functional and route/controller
+authorization protects export and media responses.
+
+The timeline uses native forms, semantic time elements, tables and progress
+elements, textual metric fallbacks, field-linked validation, precise loading
+targets, an offline status, and neutral milestone/setback language. It does
+not require a chart library, drag-and-drop, hover, or client-owned business
+state. See `docs/journals.md`.

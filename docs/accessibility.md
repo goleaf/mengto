@@ -35,6 +35,8 @@ Target: WCAG 2.1 AA for critical workflows.
    the report form with its truthfulness acknowledgement.
 9. Discover a group, inspect privacy/membership state, respond to an
    invitation, and manage membership through keyboard-accessible controls.
+10. Create a journal, add a dated entry and measurements, review a textual
+    progress table, comment, export, and archive without drag-only controls.
 
 ## Automated And Manual Evidence
 
@@ -64,3 +66,13 @@ success status without a full-page reload.
 
 Known tool limitations belong in `docs/known-limitations.md`; a missing tool
 does not waive semantic implementation or manual review.
+
+The forum journal UI uses one existing topic heading, sequential section
+headings, explicit labels/descriptions, field-linked errors, polite status
+feedback, semantic dates, native progress/table alternatives, required image
+alt text, action-specific loading, and neutral missed-update language.
+A real Lithuanian journal and local-time milestone entry were created through
+Livewire. At 375x812 and 1440x900 the rendered topic had one `main`, one `h1`,
+zero horizontal overflow, no raw translation keys, no unnamed buttons, no
+visible unlabeled controls, three semantic progress elements, and no console
+warnings or errors. Exact evidence is recorded in the journal work package.

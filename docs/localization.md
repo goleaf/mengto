@@ -105,3 +105,14 @@ php scripts/localize-php-messages.php --check
 php artisan test --compact tests/Feature/LocalizationTest.php tests/Feature/ArchitectureComplianceTest.php
 php artisan view:cache
 ```
+
+## Forum Journal Catalogue
+
+`lang/{en,lt,ru}/forum_journals.php` owns journal types, lifecycle and
+collaboration states, metric labels/units, forms, errors, notices, progress
+text, media, export, and archive copy. Shared navigation keys remain in
+`forum.php`.
+
+All three catalogues must have key and placeholder parity. Journal user prose,
+captions, and comments remain in their original language. Metric keys and
+stored units are stable identifiers; only their labels are translated.

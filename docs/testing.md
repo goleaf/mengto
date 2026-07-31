@@ -78,7 +78,7 @@ destructive command.
 ## Baseline And Current Checkpoint
 
 The modernization baseline was 116 passing tests and 3,881 assertions. The
-latest complete serial checkpoint reports 1,384 passing tests and 50,006
+latest complete serial checkpoint reports 1,437 passing tests and 51,568
 assertions. This checkpoint is not a final coverage claim while requirements
 remain unimplemented.
 
@@ -149,7 +149,7 @@ all result visibility modes, editable/final ballots, trusted/location/member
 eligibility, timestamp-derived closure, retry idempotency, result counters,
 Livewire action authorization, and bounded query growth.
 
-Current verified package checkpoint:
+Previous group-content package checkpoint:
 
 - focused group content and polls: 18 tests and 72 assertions;
 - community review selective-projection regression: 52 tests and 165
@@ -161,3 +161,25 @@ Current verified package checkpoint:
 The authentication rate-limit test freezes framework time so its strict
 localized 60-second assertion cannot fail merely because rendering crosses a
 wall-clock second.
+
+## Forum Journal Coverage
+
+`ForumJournalWorkflowTest` covers additive schema/indexes, all twelve typed
+values, EN/LT/RU labels, transactional/idempotent creation, explicit legacy
+backfill, guest/member/expert/private/group visibility, metric validation,
+optimistic entry history, collaborator revocation, parent-scoped comments,
+content-validated private files, protected export/routes, archive behavior,
+direct Livewire authorization, locked identity, timezone-normalized future
+boundaries, and repeated production/demo seeding.
+
+Current verified journal package checkpoint:
+
+- focused journal suite: 17 tests and 164 assertions;
+- journal/forum regression slice: 1,025 tests and 4,334 assertions;
+- architecture/localization slice: 38 tests and 44,600 assertions;
+- app-shell regression slice: 61 tests and 19,471 assertions;
+- final full serial suite: 1,437 tests and 51,568 assertions;
+- fresh database: 94 migrations, 152 tables, repeat seed passed.
+
+Static-analysis, build, cache, and browser details are recorded in
+`docs/plans/forum-phase8-journals-work-package.md`.

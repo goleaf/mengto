@@ -3,6 +3,14 @@
 declare(strict_types=1);
 
 return [
+    'visibility' => [
+        'public' => 'Public',
+        'members' => 'Registered members',
+        'group' => 'Group members',
+        'experts' => 'Verified specialists',
+        'link' => 'Anyone with the link',
+        'private' => 'Private',
+    ],
     'topic_types' => [
         'question' => ['name' => 'Question', 'description' => 'Ask for a clear, practical answer.'],
         'discussion' => ['name' => 'Discussion', 'description' => 'Explore experiences and viewpoints without requiring one answer.'],

@@ -51,7 +51,7 @@
         </nav>
 
         <div class="device-manage-grid">
-            <main class="grid min-w-0 content-start gap-5">
+            <div class="grid min-w-0 content-start gap-5">
                 <section id="retention" class="device-form-section">
                     <div class="device-panel__heading">
                         <div>
@@ -311,7 +311,7 @@
                         </form>
                     </section>
                 @endif
-            </main>
+            </div>
 
             <aside class="grid min-w-0 content-start gap-5">
                 <section id="access" class="device-form-section">

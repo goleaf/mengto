@@ -208,3 +208,23 @@ See `docs/polls.md`.
 Completion reputation is withheld when interaction evidence is missing, the
 participants block one another, or a related report is open. Trust and karma
 never project professional status. See `docs/mentorship.md`.
+
+## Forum Journal Controls
+
+- Topic visibility is the sole privacy source; public discovery excludes
+  member, expert, link-only, group, and private journals before rows/counts.
+- Public Livewire state contains locked scalar IDs and bounded form values,
+  never models, relationship graphs, paths, credentials, or care records.
+- Entry, collaborator, comment, media, export, and archive actions reload and
+  authorize their parent. Nested media routes additionally reject a media row
+  outside the route journal.
+- Mutations use validation, unique idempotency keys, short transactions, and
+  optimistic versions. Archived journals reject writes.
+- Journal prose stays escaped plain text.
+- Images require actual image content, bounded dimensions/size, generated
+  private paths, encrypted original names, alt text, and request-time policy
+  checks.
+- No journal event creates professional verification, trust authority,
+  reputation, streak loss, punitive ranking, or public negative score.
+
+See `docs/journals.md`, `docs/privacy.md`, and `docs/files.md`.

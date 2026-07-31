@@ -3,6 +3,14 @@
 declare(strict_types=1);
 
 return [
+    'visibility' => [
+        'public' => 'Vieša',
+        'members' => 'Registruoti nariai',
+        'group' => 'Grupės nariai',
+        'experts' => 'Patvirtinti specialistai',
+        'link' => 'Visi, turintys nuorodą',
+        'private' => 'Privatu',
+    ],
     'topic_types' => [
         'question' => ['name' => 'Klausimas', 'description' => 'Prašykite aiškaus ir praktiško atsakymo.'],
         'discussion' => ['name' => 'Diskusija', 'description' => 'Aptarkite patirtis ir požiūrius be vieno privalomo atsakymo.'],

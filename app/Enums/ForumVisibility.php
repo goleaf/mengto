@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Enums;
 
 enum ForumVisibility: string
@@ -13,13 +15,6 @@ enum ForumVisibility: string
 
     public function label(): string
     {
-        return match ($this) {
-            self::Public => 'Public',
-            self::Members => 'Registered members',
-            self::Group => 'Group members',
-            self::Experts => 'Verified specialists',
-            self::Link => 'Anyone with the link',
-            self::Private => 'Private draft',
-        };
+        return __("forum.visibility.{$this->value}");
     }
 }

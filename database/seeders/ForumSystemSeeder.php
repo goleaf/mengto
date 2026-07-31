@@ -20,6 +20,7 @@ final class ForumSystemSeeder extends Seeder
             CoreAnimalTaxonomySeeder::class,
             CommunityAnimalGroupSeeder::class,
             ForumGroupDefinitionSeeder::class,
+            ForumJournalBackfillSeeder::class,
         ]);
     }
 }

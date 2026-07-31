@@ -117,3 +117,16 @@ identity, and a strict non-authority boundary. Focused authorization,
 validation, seed, query-budget, localization, architecture, full-suite, fresh
 database, build, and browser evidence is recorded in the package plan and
 requirements overlay.
+
+## Resolved Journal And Progress Gap
+
+Forum progress journals now preserve the existing topic shell while adding
+typed journal lifecycle, dated entries, queryable measurements, milestones,
+setbacks, selected collaborators, parent-scoped comments, immutable edit
+history, private content-validated media, protected export, and archival.
+Legacy backfill uses only the explicit journal topic type; it never infers
+sensitive history from prose or copies private operational care records.
+Timezone-normalized validation, optimistic locking, idempotency, direct
+Livewire authorization, neutral progress language, and bounded private
+projections are verified by focused, full-suite, fresh-database, and
+mobile/desktop browser evidence.

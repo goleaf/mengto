@@ -77,6 +77,11 @@ final class ForumTopicTypeSeeder extends Seeder
         ];
 
         return match ($type) {
+            ForumTopicType::Journal => [
+                ...$base,
+                'journal_type' => ['type' => 'forum-journal-type', 'required' => true],
+                'started_on' => ['type' => 'date', 'required' => true],
+            ],
             ForumTopicType::EmergencyAlert => [
                 ...$base,
                 'location' => ['type' => 'location-scope', 'required' => true],
@@ -136,6 +141,7 @@ final class ForumTopicTypeSeeder extends Seeder
                 ForumTopicType::FosterRequest => 'adoption',
                 ForumTopicType::MarketplaceListing => 'marketplace',
                 ForumTopicType::Event => 'event',
+                ForumTopicType::Journal => 'forum-journal',
                 default => null,
             },
         ];

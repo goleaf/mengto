@@ -23,7 +23,7 @@
         </nav>
 
         <div class="knowledge-layout">
-            <main>
+            <div>
                 <article class="knowledge-article">
                     <div class="forum-topic-card__meta">
                         <span class="forum-badge {{ $article['is_outdated'] ? 'forum-badge--danger' : '' }}">
@@ -61,7 +61,7 @@
                         @endforelse
                     </div>
                 </article>
-            </main>
+            </div>
 
             <aside class="forum-sidebar">
                 <section class="forum-sidebar__section">

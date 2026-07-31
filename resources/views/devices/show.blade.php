@@ -59,7 +59,7 @@
         </section>
 
         <div class="device-dashboard">
-            <main class="grid min-w-0 content-start gap-5">
+            <div class="grid min-w-0 content-start gap-5">
                 @if ($device['type'] === 'gps-tracker')
                     <section class="device-panel" aria-labelledby="device-location-title">
                         <div class="device-panel__heading">
@@ -106,7 +106,7 @@
                     <p class="device-panel__note">{{ __('ui.a_shared_source_remains_unassigned_until_a_person_98f394a271') }}</p>
                     <x-device-reading-table :readings="$readings" :device="$device" />
                 </section>
-            </main>
+            </div>
 
             <aside class="grid min-w-0 content-start gap-5">
                 <section class="device-panel" aria-labelledby="device-control-title">

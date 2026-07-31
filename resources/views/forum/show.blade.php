@@ -9,7 +9,7 @@
         </nav>
 
         <div class="forum-thread-layout">
-            <main class="forum-thread">
+            <div class="forum-thread">
                 @if ($topic['is_medical'])
                     <aside class="forum-safety" role="note">
                         <x-lucide-triangle-alert aria-hidden="true" />
@@ -124,29 +124,35 @@
                     </div>
                 </article>
 
-                <section aria-labelledby="answers-heading">
-                    <div class="forum-header">
-                        <div class="forum-header__copy">
-                            <p class="forum-header__eyebrow">{{ __('ui.community_answers_793d6c2f23') }}</p>
-                            <h2 id="answers-heading">{{ trans_choice('presentation.thoughtful_answers', count($answers), ['count' => count($answers)]) }}</h2>
-                        </div>
-                    </div>
+                @if ($journal_id !== null)
+                    <livewire:forum.forum-journal-timeline :journal-id="$journal_id" />
+                @endif
 
-                    <div class="forum-topic-list">
-                        @forelse ($answers as $answer)
-                            <x-forum-answer :answer="$answer" :topic="$topic" :can-manage="$can_manage" />
-                        @empty
-                            <div class="forum-form">
-                                <h3>{{ __('ui.this_topic_still_needs_an_answer_0810c1f0fe') }}</h3>
-                                <p>{{ __('ui.share_a_relevant_experience_a_careful_professional_perspective_b7d2787789') }}</p>
+                @if ($journal_id === null || $answers !== [])
+                    <section aria-labelledby="answers-heading">
+                        <div class="forum-header">
+                            <div class="forum-header__copy">
+                                <p class="forum-header__eyebrow">{{ __('ui.community_answers_793d6c2f23') }}</p>
+                                <h2 id="answers-heading">{{ trans_choice('presentation.thoughtful_answers', count($answers), ['count' => count($answers)]) }}</h2>
                             </div>
-                        @endforelse
-                    </div>
-                </section>
+                        </div>
+
+                        <div class="forum-topic-list">
+                            @forelse ($answers as $answer)
+                                <x-forum-answer :answer="$answer" :topic="$topic" :can-manage="$can_manage" />
+                            @empty
+                                <div class="forum-form">
+                                    <h3>{{ __('ui.this_topic_still_needs_an_answer_0810c1f0fe') }}</h3>
+                                    <p>{{ __('ui.share_a_relevant_experience_a_careful_professional_perspective_b7d2787789') }}</p>
+                                </div>
+                            @endforelse
+                        </div>
+                    </section>
+                @endif
 
                 <livewire:forum.community-notes-panel :topic-id="$topic['id']" />
 
-                @if (! $topic['is_locked'])
+                @if (! $topic['is_locked'] && $journal_id === null)
                     <form method="POST" action="{{ route('forum.answers.store', $topic['slug']) }}" class="forum-form">
                         @csrf
                         <div>
@@ -183,7 +189,7 @@
                         </button>
                     </form>
                 @endif
-            </main>
+            </div>
 
             <aside class="forum-sidebar">
                 <section class="forum-sidebar__section">

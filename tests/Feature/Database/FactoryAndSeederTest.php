@@ -14,6 +14,10 @@ use App\Models\ForumCommunityNote;
 use App\Models\ForumGroupActivity;
 use App\Models\ForumGroupAnnouncement;
 use App\Models\ForumGroupFile;
+use App\Models\ForumJournal;
+use App\Models\ForumJournalCollaborator;
+use App\Models\ForumJournalEntry;
+use App\Models\ForumJournalMedia;
 use App\Models\ForumPoll;
 use App\Models\ForumTopic;
 use App\Models\KnowledgeArticle;
@@ -62,6 +66,12 @@ dataset('factory states', [
     'forum answer expert' => [ForumAnswer::class, 'expert'],
     'community note published' => [ForumCommunityNote::class, 'published'],
     'community note safety warning' => [ForumCommunityNote::class, 'safetyWarning'],
+    'forum journal archived' => [ForumJournal::class, 'archived'],
+    'forum journal collaborator editor' => [ForumJournalCollaborator::class, 'editor'],
+    'forum journal collaborator revoked' => [ForumJournalCollaborator::class, 'revoked'],
+    'forum journal entry milestone' => [ForumJournalEntry::class, 'milestone'],
+    'forum journal entry setback' => [ForumJournalEntry::class, 'setback'],
+    'forum journal media archived' => [ForumJournalMedia::class, 'archived'],
     'forum topic draft' => [ForumTopic::class, 'draft'],
     'forum topic medical' => [ForumTopic::class, 'medical'],
     'forum topic resolved' => [ForumTopic::class, 'resolved'],
@@ -178,6 +188,8 @@ test('database seeding is repeatable without changing stable entity counts', fun
         'group_announcements' => ForumGroupAnnouncement::query()->count(),
         'group_files' => ForumGroupFile::query()->count(),
         'group_polls' => ForumPoll::query()->count(),
+        'forum_journals' => ForumJournal::query()->count(),
+        'forum_journal_entries' => ForumJournalEntry::query()->count(),
         'listings' => Listing::query()->count(),
         'credentials' => Credential::query()->count(),
         'guides' => KnowledgeArticle::query()->count(),
@@ -197,6 +209,8 @@ test('database seeding is repeatable without changing stable entity counts', fun
         'group_announcements' => ForumGroupAnnouncement::query()->count(),
         'group_files' => ForumGroupFile::query()->count(),
         'group_polls' => ForumPoll::query()->count(),
+        'forum_journals' => ForumJournal::query()->count(),
+        'forum_journal_entries' => ForumJournalEntry::query()->count(),
         'listings' => Listing::query()->count(),
         'credentials' => Credential::query()->count(),
         'guides' => KnowledgeArticle::query()->count(),

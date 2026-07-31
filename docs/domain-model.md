@@ -217,3 +217,22 @@ vote projection per user; that projection stores the validated selected or
 ranked option IDs, while option counters are reconciled in the same locked
 transaction. Closing time is effective even before the stored lifecycle value
 is changed. See `docs/groups.md` and `docs/polls.md`.
+
+### Forum Journals
+
+```text
+journal: active -> archived
+entry: entry | milestone | setback
+collaborator: active -> revoked
+role: viewer | editor
+```
+
+A journal belongs one-to-one to a journal-typed forum topic. It owns dated
+entries, normalized metrics, immutable pre-edit versions, private images, and
+selected collaborators. Entry comments reuse `ForumComment`. The owner cannot
+be duplicated as a collaborator, revoked users lose future access, and archive
+preserves every child and audit record while disabling mutation.
+
+The neutral `general` type is a review-required fallback for explicit legacy
+journal topics. All required named types remain typed and localized. See
+`docs/journals.md`.

@@ -26,7 +26,7 @@
         @endif
 
         <div class="forum-thread-layout">
-            <main>
+            <div>
                 <form
                     method="POST"
                     action="{{ $topic !== null ? route('forum.topics.update', $topic) : route('forum.topics.store') }}"
@@ -248,7 +248,7 @@
                         </button>
                     </div>
                 </form>
-            </main>
+            </div>
 
             <aside class="forum-sidebar">
                 <section class="forum-sidebar__section">

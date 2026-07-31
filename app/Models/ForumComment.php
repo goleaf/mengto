@@ -23,11 +23,14 @@ use Illuminate\Support\Carbon;
  * @property string $body
  * @property Carbon|null $created_at
  * @property int $id
+ * @property string|null $idempotency_key
  * @property bool $is_pinned
  * @property-read ForumComment|null $parent
  * @property int|null $parent_id
  * @property-read Collection<int, ForumComment> $replies
  * @property string $status
+ * @property-read ForumJournalEntry|null $journalEntry
+ * @property int|null $forum_journal_entry_id
  * @property-read ForumTopic|null $topic
  * @property int $topic_id
  * @property Carbon|null $updated_at
@@ -40,6 +43,7 @@ class ForumComment extends Model
     protected $fillable = [
         'topic_id',
         'answer_id',
+        'forum_journal_entry_id',
         'parent_id',
         'author_id',
         'author_key',
@@ -48,7 +52,10 @@ class ForumComment extends Model
         'body',
         'status',
         'is_pinned',
+        'idempotency_key',
     ];
+
+    protected $hidden = ['idempotency_key'];
 
     protected function casts(): array
     {
@@ -65,6 +72,12 @@ class ForumComment extends Model
     public function answer(): BelongsTo
     {
         return $this->belongsTo(ForumAnswer::class, 'answer_id');
+    }
+
+    /** @return BelongsTo<ForumJournalEntry, $this> */
+    public function journalEntry(): BelongsTo
+    {
+        return $this->belongsTo(ForumJournalEntry::class);
     }
 
     /** @return BelongsTo<\App\Models\ForumComment, $this>*/
@@ -92,6 +105,22 @@ class ForumComment extends Model
             'body',
             'status',
             'is_pinned',
+            'created_at',
+        ])->where('status', 'published');
+    }
+
+    public function scopeForJournalEntry(Builder $query): Builder
+    {
+        return $query->select([
+            'id',
+            'topic_id',
+            'forum_journal_entry_id',
+            'author_id',
+            'author_key',
+            'author_name',
+            'author_initials',
+            'body',
+            'status',
             'created_at',
         ])->where('status', 'published');
     }

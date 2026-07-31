@@ -12,6 +12,10 @@
                     {{ __('ui.knowledge_dcb3e1c00e') }}
                 </a>
                 @auth
+                    <a href="{{ route('forum.journals.index') }}" class="forum-button">
+                        <x-lucide-notebook-tabs aria-hidden="true" />
+                        {{ __('forum_journals.navigation.label') }}
+                    </a>
                     <a href="{{ route('forum.groups.index') }}" class="forum-button">
                         <x-lucide-users aria-hidden="true" />
                         {{ __('forum_groups.navigation.label') }}
@@ -95,7 +99,7 @@
                 </section>
             </aside>
 
-            <main>
+            <div>
                 <nav class="forum-filter-tabs" aria-label="{{ __('ui.topic_filters_9250e8d56b') }}">
                     @forelse ($filter_options as $key => $label)
                         <a
@@ -134,7 +138,7 @@
                 </section>
 
                 <div class="mt-5">{{ $topics->links() }}</div>
-            </main>
+            </div>
 
             <aside class="forum-sidebar" aria-label="{{ __('ui.knowledge_and_notifications_b349fb1522') }}">
                 <section class="forum-sidebar__section">

@@ -209,3 +209,25 @@ cache/view rebuild. `ForumGroupDemoSeeder` remains limited to local, demo, and
 testing environments. It uses production Actions and stable idempotency keys
 to create one topic, guide, event, announcement, private file, and all three
 poll modes without duplicating records on rerun. See `docs/polls.md`.
+
+## Forum Journal Operations
+
+Deploy the additive journal migration before the application release, then run
+the normal production-safe `ForumSystemSeeder`. The backfill recognizes only
+topics whose stored type is exactly `journal`, preserves their identity and
+children, and marks unknown subtype metadata for review. It is safe to rerun.
+Do not execute `ForumJournalDemoSeeder` in production.
+
+After user journal data exists, recovery is forward-only:
+
+1. retain topic, journal, entry, version, comment, collaborator, media, and
+   audit rows;
+2. restore incorrect lifecycle or type state through an authorized reviewed
+   Action or additive migration;
+3. reconcile a missing private file from backup without changing its parent
+   or exposing a public path;
+4. reload the latest optimistic version before retrying a conflicting edit;
+5. rebuild views/config/routes and rerun the journal workflow tests.
+
+Do not roll back by dropping journal tables or removing the additive comment
+foreign key after production writes. See `docs/journals.md`.
