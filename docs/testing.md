@@ -229,5 +229,6 @@ authorization, routes, factories, seed reruns, and EN/LT/RU catalogues.
 architecture slice passed 31 tests and 22,249 assertions; the expanded
 regression slice passed 1,108 tests and 52,428 assertions; the detached
 `f1e2fcc` package snapshot passed 1,554 tests and 54,317 assertions in serial
-mode. Exact commands and browser evidence are recorded in the expert-session
-work-package plan.
+mode. The scoped percentage-coverage command was also attempted, but the PHP
+8.5 CLI has neither Xdebug nor PCOV. Exact commands and browser evidence are
+recorded in the expert-session work-package plan.

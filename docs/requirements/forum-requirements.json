@@ -234449,7 +234449,8 @@
                 "expanded forum, expert, report, route, localization, factory, seeder, schema, and architecture regression slice passed 1,108 tests and 52,428 assertions",
                 "detached f1e2fcc package snapshot passed 1,554 serial tests and 54,317 assertions; Pint and Larastan passed; isolated fresh verification applied 96 migrations across 165 tables and preserved five users after repeated seeding",
                 "Composer strict validation and audit, npm audit, Vite 8.2 production build, and Laravel config, event, route, view, and icon cache compilation passed in the detached package snapshot",
-                "Headless Chrome at 375x812 and 1440x900 exercised the expert-session implementation in the shared worktree through localized question submission, moderation, answer, immutable correction, private reporting, and archive preservation; the final archived page had one H1, no horizontal overflow, raw translation keys, unnamed controls, undersized primary targets, current-page console warnings, or console errors"
+                "Headless Chrome at 375x812 and 1440x900 exercised the expert-session implementation in the shared worktree through localized question submission, moderation, answer, immutable correction, private reporting, and archive preservation; the final archived page had one H1, no horizontal overflow, raw translation keys, unnamed controls, undersized primary targets, current-page console warnings, or console errors",
+                "php artisan test --coverage --compact tests/Feature/Forum/ExpertQuestionSessionWorkflowTest.php reported that no Xdebug or PCOV coverage driver is installed; behavioral gates remain passing and coverage is the only environmental measurement unavailable"
             ],
             "unresolved_risks": [],
             "final_result": "verified"
@@ -234552,7 +234553,8 @@
                 "expanded forum, expert, report, route, localization, factory, seeder, schema, and architecture regression slice passed 1,108 tests and 52,428 assertions",
                 "detached f1e2fcc package snapshot passed 1,554 serial tests and 54,317 assertions; Pint and Larastan passed; isolated fresh verification applied 96 migrations across 165 tables and preserved five users after repeated seeding",
                 "Composer strict validation and audit, npm audit, Vite 8.2 production build, and Laravel config, event, route, view, and icon cache compilation passed in the detached package snapshot",
-                "Headless Chrome at 375x812 and 1440x900 exercised the expert-session implementation in the shared worktree through localized question submission, moderation, answer, immutable correction, private reporting, and archive preservation; the final archived page had one H1, no horizontal overflow, raw translation keys, unnamed controls, undersized primary targets, current-page console warnings, or console errors"
+                "Headless Chrome at 375x812 and 1440x900 exercised the expert-session implementation in the shared worktree through localized question submission, moderation, answer, immutable correction, private reporting, and archive preservation; the final archived page had one H1, no horizontal overflow, raw translation keys, unnamed controls, undersized primary targets, current-page console warnings, or console errors",
+                "php artisan test --coverage --compact tests/Feature/Forum/ExpertQuestionSessionWorkflowTest.php reported that no Xdebug or PCOV coverage driver is installed; behavioral gates remain passing and coverage is the only environmental measurement unavailable"
             ],
             "unresolved_risks": [],
             "final_result": "verified"
@@ -234655,7 +234657,8 @@
                 "expanded forum, expert, report, route, localization, factory, seeder, schema, and architecture regression slice passed 1,108 tests and 52,428 assertions",
                 "detached f1e2fcc package snapshot passed 1,554 serial tests and 54,317 assertions; Pint and Larastan passed; isolated fresh verification applied 96 migrations across 165 tables and preserved five users after repeated seeding",
                 "Composer strict validation and audit, npm audit, Vite 8.2 production build, and Laravel config, event, route, view, and icon cache compilation passed in the detached package snapshot",
-                "Headless Chrome at 375x812 and 1440x900 exercised the expert-session implementation in the shared worktree through localized question submission, moderation, answer, immutable correction, private reporting, and archive preservation; the final archived page had one H1, no horizontal overflow, raw translation keys, unnamed controls, undersized primary targets, current-page console warnings, or console errors"
+                "Headless Chrome at 375x812 and 1440x900 exercised the expert-session implementation in the shared worktree through localized question submission, moderation, answer, immutable correction, private reporting, and archive preservation; the final archived page had one H1, no horizontal overflow, raw translation keys, unnamed controls, undersized primary targets, current-page console warnings, or console errors",
+                "php artisan test --coverage --compact tests/Feature/Forum/ExpertQuestionSessionWorkflowTest.php reported that no Xdebug or PCOV coverage driver is installed; behavioral gates remain passing and coverage is the only environmental measurement unavailable"
             ],
             "unresolved_risks": [],
             "final_result": "verified"
@@ -234758,7 +234761,8 @@
                 "expanded forum, expert, report, route, localization, factory, seeder, schema, and architecture regression slice passed 1,108 tests and 52,428 assertions",
                 "detached f1e2fcc package snapshot passed 1,554 serial tests and 54,317 assertions; Pint and Larastan passed; isolated fresh verification applied 96 migrations across 165 tables and preserved five users after repeated seeding",
                 "Composer strict validation and audit, npm audit, Vite 8.2 production build, and Laravel config, event, route, view, and icon cache compilation passed in the detached package snapshot",
-                "Headless Chrome at 375x812 and 1440x900 exercised the expert-session implementation in the shared worktree through localized question submission, moderation, answer, immutable correction, private reporting, and archive preservation; the final archived page had one H1, no horizontal overflow, raw translation keys, unnamed controls, undersized primary targets, current-page console warnings, or console errors"
+                "Headless Chrome at 375x812 and 1440x900 exercised the expert-session implementation in the shared worktree through localized question submission, moderation, answer, immutable correction, private reporting, and archive preservation; the final archived page had one H1, no horizontal overflow, raw translation keys, unnamed controls, undersized primary targets, current-page console warnings, or console errors",
+                "php artisan test --coverage --compact tests/Feature/Forum/ExpertQuestionSessionWorkflowTest.php reported that no Xdebug or PCOV coverage driver is installed; behavioral gates remain passing and coverage is the only environmental measurement unavailable"
             ],
             "unresolved_risks": [],
             "final_result": "verified"
@@ -234861,7 +234865,8 @@
                 "expanded forum, expert, report, route, localization, factory, seeder, schema, and architecture regression slice passed 1,108 tests and 52,428 assertions",
                 "detached f1e2fcc package snapshot passed 1,554 serial tests and 54,317 assertions; Pint and Larastan passed; isolated fresh verification applied 96 migrations across 165 tables and preserved five users after repeated seeding",
                 "Composer strict validation and audit, npm audit, Vite 8.2 production build, and Laravel config, event, route, view, and icon cache compilation passed in the detached package snapshot",
-                "Headless Chrome at 375x812 and 1440x900 exercised the expert-session implementation in the shared worktree through localized question submission, moderation, answer, immutable correction, private reporting, and archive preservation; the final archived page had one H1, no horizontal overflow, raw translation keys, unnamed controls, undersized primary targets, current-page console warnings, or console errors"
+                "Headless Chrome at 375x812 and 1440x900 exercised the expert-session implementation in the shared worktree through localized question submission, moderation, answer, immutable correction, private reporting, and archive preservation; the final archived page had one H1, no horizontal overflow, raw translation keys, unnamed controls, undersized primary targets, current-page console warnings, or console errors",
+                "php artisan test --coverage --compact tests/Feature/Forum/ExpertQuestionSessionWorkflowTest.php reported that no Xdebug or PCOV coverage driver is installed; behavioral gates remain passing and coverage is the only environmental measurement unavailable"
             ],
             "unresolved_risks": [],
             "final_result": "verified"
@@ -234964,7 +234969,8 @@
                 "expanded forum, expert, report, route, localization, factory, seeder, schema, and architecture regression slice passed 1,108 tests and 52,428 assertions",
                 "detached f1e2fcc package snapshot passed 1,554 serial tests and 54,317 assertions; Pint and Larastan passed; isolated fresh verification applied 96 migrations across 165 tables and preserved five users after repeated seeding",
                 "Composer strict validation and audit, npm audit, Vite 8.2 production build, and Laravel config, event, route, view, and icon cache compilation passed in the detached package snapshot",
-                "Headless Chrome at 375x812 and 1440x900 exercised the expert-session implementation in the shared worktree through localized question submission, moderation, answer, immutable correction, private reporting, and archive preservation; the final archived page had one H1, no horizontal overflow, raw translation keys, unnamed controls, undersized primary targets, current-page console warnings, or console errors"
+                "Headless Chrome at 375x812 and 1440x900 exercised the expert-session implementation in the shared worktree through localized question submission, moderation, answer, immutable correction, private reporting, and archive preservation; the final archived page had one H1, no horizontal overflow, raw translation keys, unnamed controls, undersized primary targets, current-page console warnings, or console errors",
+                "php artisan test --coverage --compact tests/Feature/Forum/ExpertQuestionSessionWorkflowTest.php reported that no Xdebug or PCOV coverage driver is installed; behavioral gates remain passing and coverage is the only environmental measurement unavailable"
             ],
             "unresolved_risks": [],
             "final_result": "verified"
@@ -235067,7 +235073,8 @@
                 "expanded forum, expert, report, route, localization, factory, seeder, schema, and architecture regression slice passed 1,108 tests and 52,428 assertions",
                 "detached f1e2fcc package snapshot passed 1,554 serial tests and 54,317 assertions; Pint and Larastan passed; isolated fresh verification applied 96 migrations across 165 tables and preserved five users after repeated seeding",
                 "Composer strict validation and audit, npm audit, Vite 8.2 production build, and Laravel config, event, route, view, and icon cache compilation passed in the detached package snapshot",
-                "Headless Chrome at 375x812 and 1440x900 exercised the expert-session implementation in the shared worktree through localized question submission, moderation, answer, immutable correction, private reporting, and archive preservation; the final archived page had one H1, no horizontal overflow, raw translation keys, unnamed controls, undersized primary targets, current-page console warnings, or console errors"
+                "Headless Chrome at 375x812 and 1440x900 exercised the expert-session implementation in the shared worktree through localized question submission, moderation, answer, immutable correction, private reporting, and archive preservation; the final archived page had one H1, no horizontal overflow, raw translation keys, unnamed controls, undersized primary targets, current-page console warnings, or console errors",
+                "php artisan test --coverage --compact tests/Feature/Forum/ExpertQuestionSessionWorkflowTest.php reported that no Xdebug or PCOV coverage driver is installed; behavioral gates remain passing and coverage is the only environmental measurement unavailable"
             ],
             "unresolved_risks": [],
             "final_result": "verified"
@@ -235170,7 +235177,8 @@
                 "expanded forum, expert, report, route, localization, factory, seeder, schema, and architecture regression slice passed 1,108 tests and 52,428 assertions",
                 "detached f1e2fcc package snapshot passed 1,554 serial tests and 54,317 assertions; Pint and Larastan passed; isolated fresh verification applied 96 migrations across 165 tables and preserved five users after repeated seeding",
                 "Composer strict validation and audit, npm audit, Vite 8.2 production build, and Laravel config, event, route, view, and icon cache compilation passed in the detached package snapshot",
-                "Headless Chrome at 375x812 and 1440x900 exercised the expert-session implementation in the shared worktree through localized question submission, moderation, answer, immutable correction, private reporting, and archive preservation; the final archived page had one H1, no horizontal overflow, raw translation keys, unnamed controls, undersized primary targets, current-page console warnings, or console errors"
+                "Headless Chrome at 375x812 and 1440x900 exercised the expert-session implementation in the shared worktree through localized question submission, moderation, answer, immutable correction, private reporting, and archive preservation; the final archived page had one H1, no horizontal overflow, raw translation keys, unnamed controls, undersized primary targets, current-page console warnings, or console errors",
+                "php artisan test --coverage --compact tests/Feature/Forum/ExpertQuestionSessionWorkflowTest.php reported that no Xdebug or PCOV coverage driver is installed; behavioral gates remain passing and coverage is the only environmental measurement unavailable"
             ],
             "unresolved_risks": [],
             "final_result": "verified"
@@ -235273,7 +235281,8 @@
                 "expanded forum, expert, report, route, localization, factory, seeder, schema, and architecture regression slice passed 1,108 tests and 52,428 assertions",
                 "detached f1e2fcc package snapshot passed 1,554 serial tests and 54,317 assertions; Pint and Larastan passed; isolated fresh verification applied 96 migrations across 165 tables and preserved five users after repeated seeding",
                 "Composer strict validation and audit, npm audit, Vite 8.2 production build, and Laravel config, event, route, view, and icon cache compilation passed in the detached package snapshot",
-                "Headless Chrome at 375x812 and 1440x900 exercised the expert-session implementation in the shared worktree through localized question submission, moderation, answer, immutable correction, private reporting, and archive preservation; the final archived page had one H1, no horizontal overflow, raw translation keys, unnamed controls, undersized primary targets, current-page console warnings, or console errors"
+                "Headless Chrome at 375x812 and 1440x900 exercised the expert-session implementation in the shared worktree through localized question submission, moderation, answer, immutable correction, private reporting, and archive preservation; the final archived page had one H1, no horizontal overflow, raw translation keys, unnamed controls, undersized primary targets, current-page console warnings, or console errors",
+                "php artisan test --coverage --compact tests/Feature/Forum/ExpertQuestionSessionWorkflowTest.php reported that no Xdebug or PCOV coverage driver is installed; behavioral gates remain passing and coverage is the only environmental measurement unavailable"
             ],
             "unresolved_risks": [],
             "final_result": "verified"
@@ -235376,7 +235385,8 @@
                 "expanded forum, expert, report, route, localization, factory, seeder, schema, and architecture regression slice passed 1,108 tests and 52,428 assertions",
                 "detached f1e2fcc package snapshot passed 1,554 serial tests and 54,317 assertions; Pint and Larastan passed; isolated fresh verification applied 96 migrations across 165 tables and preserved five users after repeated seeding",
                 "Composer strict validation and audit, npm audit, Vite 8.2 production build, and Laravel config, event, route, view, and icon cache compilation passed in the detached package snapshot",
-                "Headless Chrome at 375x812 and 1440x900 exercised the expert-session implementation in the shared worktree through localized question submission, moderation, answer, immutable correction, private reporting, and archive preservation; the final archived page had one H1, no horizontal overflow, raw translation keys, unnamed controls, undersized primary targets, current-page console warnings, or console errors"
+                "Headless Chrome at 375x812 and 1440x900 exercised the expert-session implementation in the shared worktree through localized question submission, moderation, answer, immutable correction, private reporting, and archive preservation; the final archived page had one H1, no horizontal overflow, raw translation keys, unnamed controls, undersized primary targets, current-page console warnings, or console errors",
+                "php artisan test --coverage --compact tests/Feature/Forum/ExpertQuestionSessionWorkflowTest.php reported that no Xdebug or PCOV coverage driver is installed; behavioral gates remain passing and coverage is the only environmental measurement unavailable"
             ],
             "unresolved_risks": [],
             "final_result": "verified"
@@ -235479,7 +235489,8 @@
                 "expanded forum, expert, report, route, localization, factory, seeder, schema, and architecture regression slice passed 1,108 tests and 52,428 assertions",
                 "detached f1e2fcc package snapshot passed 1,554 serial tests and 54,317 assertions; Pint and Larastan passed; isolated fresh verification applied 96 migrations across 165 tables and preserved five users after repeated seeding",
                 "Composer strict validation and audit, npm audit, Vite 8.2 production build, and Laravel config, event, route, view, and icon cache compilation passed in the detached package snapshot",
-                "Headless Chrome at 375x812 and 1440x900 exercised the expert-session implementation in the shared worktree through localized question submission, moderation, answer, immutable correction, private reporting, and archive preservation; the final archived page had one H1, no horizontal overflow, raw translation keys, unnamed controls, undersized primary targets, current-page console warnings, or console errors"
+                "Headless Chrome at 375x812 and 1440x900 exercised the expert-session implementation in the shared worktree through localized question submission, moderation, answer, immutable correction, private reporting, and archive preservation; the final archived page had one H1, no horizontal overflow, raw translation keys, unnamed controls, undersized primary targets, current-page console warnings, or console errors",
+                "php artisan test --coverage --compact tests/Feature/Forum/ExpertQuestionSessionWorkflowTest.php reported that no Xdebug or PCOV coverage driver is installed; behavioral gates remain passing and coverage is the only environmental measurement unavailable"
             ],
             "unresolved_risks": [],
             "final_result": "verified"
@@ -235582,7 +235593,8 @@
                 "expanded forum, expert, report, route, localization, factory, seeder, schema, and architecture regression slice passed 1,108 tests and 52,428 assertions",
                 "detached f1e2fcc package snapshot passed 1,554 serial tests and 54,317 assertions; Pint and Larastan passed; isolated fresh verification applied 96 migrations across 165 tables and preserved five users after repeated seeding",
                 "Composer strict validation and audit, npm audit, Vite 8.2 production build, and Laravel config, event, route, view, and icon cache compilation passed in the detached package snapshot",
-                "Headless Chrome at 375x812 and 1440x900 exercised the expert-session implementation in the shared worktree through localized question submission, moderation, answer, immutable correction, private reporting, and archive preservation; the final archived page had one H1, no horizontal overflow, raw translation keys, unnamed controls, undersized primary targets, current-page console warnings, or console errors"
+                "Headless Chrome at 375x812 and 1440x900 exercised the expert-session implementation in the shared worktree through localized question submission, moderation, answer, immutable correction, private reporting, and archive preservation; the final archived page had one H1, no horizontal overflow, raw translation keys, unnamed controls, undersized primary targets, current-page console warnings, or console errors",
+                "php artisan test --coverage --compact tests/Feature/Forum/ExpertQuestionSessionWorkflowTest.php reported that no Xdebug or PCOV coverage driver is installed; behavioral gates remain passing and coverage is the only environmental measurement unavailable"
             ],
             "unresolved_risks": [],
             "final_result": "verified"
@@ -235685,7 +235697,8 @@
                 "expanded forum, expert, report, route, localization, factory, seeder, schema, and architecture regression slice passed 1,108 tests and 52,428 assertions",
                 "detached f1e2fcc package snapshot passed 1,554 serial tests and 54,317 assertions; Pint and Larastan passed; isolated fresh verification applied 96 migrations across 165 tables and preserved five users after repeated seeding",
                 "Composer strict validation and audit, npm audit, Vite 8.2 production build, and Laravel config, event, route, view, and icon cache compilation passed in the detached package snapshot",
-                "Headless Chrome at 375x812 and 1440x900 exercised the expert-session implementation in the shared worktree through localized question submission, moderation, answer, immutable correction, private reporting, and archive preservation; the final archived page had one H1, no horizontal overflow, raw translation keys, unnamed controls, undersized primary targets, current-page console warnings, or console errors"
+                "Headless Chrome at 375x812 and 1440x900 exercised the expert-session implementation in the shared worktree through localized question submission, moderation, answer, immutable correction, private reporting, and archive preservation; the final archived page had one H1, no horizontal overflow, raw translation keys, unnamed controls, undersized primary targets, current-page console warnings, or console errors",
+                "php artisan test --coverage --compact tests/Feature/Forum/ExpertQuestionSessionWorkflowTest.php reported that no Xdebug or PCOV coverage driver is installed; behavioral gates remain passing and coverage is the only environmental measurement unavailable"
             ],
             "unresolved_risks": [],
             "final_result": "verified"
@@ -235788,7 +235801,8 @@
                 "expanded forum, expert, report, route, localization, factory, seeder, schema, and architecture regression slice passed 1,108 tests and 52,428 assertions",
                 "detached f1e2fcc package snapshot passed 1,554 serial tests and 54,317 assertions; Pint and Larastan passed; isolated fresh verification applied 96 migrations across 165 tables and preserved five users after repeated seeding",
                 "Composer strict validation and audit, npm audit, Vite 8.2 production build, and Laravel config, event, route, view, and icon cache compilation passed in the detached package snapshot",
-                "Headless Chrome at 375x812 and 1440x900 exercised the expert-session implementation in the shared worktree through localized question submission, moderation, answer, immutable correction, private reporting, and archive preservation; the final archived page had one H1, no horizontal overflow, raw translation keys, unnamed controls, undersized primary targets, current-page console warnings, or console errors"
+                "Headless Chrome at 375x812 and 1440x900 exercised the expert-session implementation in the shared worktree through localized question submission, moderation, answer, immutable correction, private reporting, and archive preservation; the final archived page had one H1, no horizontal overflow, raw translation keys, unnamed controls, undersized primary targets, current-page console warnings, or console errors",
+                "php artisan test --coverage --compact tests/Feature/Forum/ExpertQuestionSessionWorkflowTest.php reported that no Xdebug or PCOV coverage driver is installed; behavioral gates remain passing and coverage is the only environmental measurement unavailable"
             ],
             "unresolved_risks": [],
             "final_result": "verified"
@@ -235891,7 +235905,8 @@
                 "expanded forum, expert, report, route, localization, factory, seeder, schema, and architecture regression slice passed 1,108 tests and 52,428 assertions",
                 "detached f1e2fcc package snapshot passed 1,554 serial tests and 54,317 assertions; Pint and Larastan passed; isolated fresh verification applied 96 migrations across 165 tables and preserved five users after repeated seeding",
                 "Composer strict validation and audit, npm audit, Vite 8.2 production build, and Laravel config, event, route, view, and icon cache compilation passed in the detached package snapshot",
-                "Headless Chrome at 375x812 and 1440x900 exercised the expert-session implementation in the shared worktree through localized question submission, moderation, answer, immutable correction, private reporting, and archive preservation; the final archived page had one H1, no horizontal overflow, raw translation keys, unnamed controls, undersized primary targets, current-page console warnings, or console errors"
+                "Headless Chrome at 375x812 and 1440x900 exercised the expert-session implementation in the shared worktree through localized question submission, moderation, answer, immutable correction, private reporting, and archive preservation; the final archived page had one H1, no horizontal overflow, raw translation keys, unnamed controls, undersized primary targets, current-page console warnings, or console errors",
+                "php artisan test --coverage --compact tests/Feature/Forum/ExpertQuestionSessionWorkflowTest.php reported that no Xdebug or PCOV coverage driver is installed; behavioral gates remain passing and coverage is the only environmental measurement unavailable"
             ],
             "unresolved_risks": [],
             "final_result": "verified"
@@ -235994,7 +236009,8 @@
                 "expanded forum, expert, report, route, localization, factory, seeder, schema, and architecture regression slice passed 1,108 tests and 52,428 assertions",
                 "detached f1e2fcc package snapshot passed 1,554 serial tests and 54,317 assertions; Pint and Larastan passed; isolated fresh verification applied 96 migrations across 165 tables and preserved five users after repeated seeding",
                 "Composer strict validation and audit, npm audit, Vite 8.2 production build, and Laravel config, event, route, view, and icon cache compilation passed in the detached package snapshot",
-                "Headless Chrome at 375x812 and 1440x900 exercised the expert-session implementation in the shared worktree through localized question submission, moderation, answer, immutable correction, private reporting, and archive preservation; the final archived page had one H1, no horizontal overflow, raw translation keys, unnamed controls, undersized primary targets, current-page console warnings, or console errors"
+                "Headless Chrome at 375x812 and 1440x900 exercised the expert-session implementation in the shared worktree through localized question submission, moderation, answer, immutable correction, private reporting, and archive preservation; the final archived page had one H1, no horizontal overflow, raw translation keys, unnamed controls, undersized primary targets, current-page console warnings, or console errors",
+                "php artisan test --coverage --compact tests/Feature/Forum/ExpertQuestionSessionWorkflowTest.php reported that no Xdebug or PCOV coverage driver is installed; behavioral gates remain passing and coverage is the only environmental measurement unavailable"
             ],
             "unresolved_risks": [],
             "final_result": "verified"
@@ -236097,7 +236113,8 @@
                 "expanded forum, expert, report, route, localization, factory, seeder, schema, and architecture regression slice passed 1,108 tests and 52,428 assertions",
                 "detached f1e2fcc package snapshot passed 1,554 serial tests and 54,317 assertions; Pint and Larastan passed; isolated fresh verification applied 96 migrations across 165 tables and preserved five users after repeated seeding",
                 "Composer strict validation and audit, npm audit, Vite 8.2 production build, and Laravel config, event, route, view, and icon cache compilation passed in the detached package snapshot",
-                "Headless Chrome at 375x812 and 1440x900 exercised the expert-session implementation in the shared worktree through localized question submission, moderation, answer, immutable correction, private reporting, and archive preservation; the final archived page had one H1, no horizontal overflow, raw translation keys, unnamed controls, undersized primary targets, current-page console warnings, or console errors"
+                "Headless Chrome at 375x812 and 1440x900 exercised the expert-session implementation in the shared worktree through localized question submission, moderation, answer, immutable correction, private reporting, and archive preservation; the final archived page had one H1, no horizontal overflow, raw translation keys, unnamed controls, undersized primary targets, current-page console warnings, or console errors",
+                "php artisan test --coverage --compact tests/Feature/Forum/ExpertQuestionSessionWorkflowTest.php reported that no Xdebug or PCOV coverage driver is installed; behavioral gates remain passing and coverage is the only environmental measurement unavailable"
             ],
             "unresolved_risks": [],
             "final_result": "verified"
@@ -236200,7 +236217,8 @@
                 "expanded forum, expert, report, route, localization, factory, seeder, schema, and architecture regression slice passed 1,108 tests and 52,428 assertions",
                 "detached f1e2fcc package snapshot passed 1,554 serial tests and 54,317 assertions; Pint and Larastan passed; isolated fresh verification applied 96 migrations across 165 tables and preserved five users after repeated seeding",
                 "Composer strict validation and audit, npm audit, Vite 8.2 production build, and Laravel config, event, route, view, and icon cache compilation passed in the detached package snapshot",
-                "Headless Chrome at 375x812 and 1440x900 exercised the expert-session implementation in the shared worktree through localized question submission, moderation, answer, immutable correction, private reporting, and archive preservation; the final archived page had one H1, no horizontal overflow, raw translation keys, unnamed controls, undersized primary targets, current-page console warnings, or console errors"
+                "Headless Chrome at 375x812 and 1440x900 exercised the expert-session implementation in the shared worktree through localized question submission, moderation, answer, immutable correction, private reporting, and archive preservation; the final archived page had one H1, no horizontal overflow, raw translation keys, unnamed controls, undersized primary targets, current-page console warnings, or console errors",
+                "php artisan test --coverage --compact tests/Feature/Forum/ExpertQuestionSessionWorkflowTest.php reported that no Xdebug or PCOV coverage driver is installed; behavioral gates remain passing and coverage is the only environmental measurement unavailable"
             ],
             "unresolved_risks": [],
             "final_result": "verified"

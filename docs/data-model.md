@@ -3,7 +3,7 @@
 ## Storage Baseline
 
 - 68 migrations created 71 SQLite tables at baseline; the current additive
-  schema has 95 migrations and 160 tables after identity, care-sync,
+  schema has 96 migrations and 165 tables after identity, care-sync,
   social-state, device-lifecycle, forum taxonomy, global animal taxonomy,
   reputation, moderation, credential verification, structured-community, and
   persistent-group work.
