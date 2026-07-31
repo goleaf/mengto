@@ -13,6 +13,8 @@ default and requires authenticated ownership or an explicit scoped grant.
 - Laravel session authentication.
 - Session regeneration after login.
 - Session invalidation and CSRF regeneration after logout.
+- Production forces `Secure`, `HttpOnly`, `SameSite=Lax`, and JSON session
+  serialization even when weaker cookie environment values are supplied.
 - Rate limits for login, registration, reset, verification, temporary links,
   uploads, integration callbacks, and mutation-heavy endpoints.
 - Production prohibition for demo identities and fixed actor fallbacks.
@@ -22,6 +24,8 @@ default and requires authenticated ownership or an explicit scoped grant.
 - Policies for model/resource actions.
 - Authenticated actor key derived server-side.
 - Query scoping before private model retrieval.
+- Mismatched nested private-resource identifiers fail with a non-disclosing
+  `404` before file access, counters, or audit side effects.
 - Direct Livewire action authorization.
 - Fresh password confirmation for precise device pages and remote commands.
 - Separate view, share, export, command, precise location, camera, and
@@ -85,6 +89,9 @@ default and requires authenticated ownership or an explicit scoped grant.
 - Generated storage names.
 - MIME/content/size/dimension validation.
 - Authorization on every download.
+- Private responses resolve the disk root, owning directory, and requested file
+  before streaming; traversal segments, foreign disks, cross-domain paths, and
+  symbolic-link escapes fail closed as `404`.
 - Compensation cleanup on partial failure.
 
 ### Integrations
@@ -116,7 +123,7 @@ private keys, payment credentials, or complete private records.
 | Mass assignment | Explicit fillable/field maps |
 | Token replay | Digest, expiry, revocation, atomic consumption |
 | Duplicate payment/device/care command | Idempotency key, unique constraint, lock |
-| Path traversal/private file leak | Configured disk, generated paths, authorization |
+| Path traversal/private file leak | Server identifiers, configured private disk, generated paths, policy authorization, canonical owning-directory containment |
 | SSRF | Scheme/host/IP/redirect/size/time validation |
 | Webhook forgery/replay | Signature and provider event uniqueness |
 | Cache privacy leak | Actor/role/locale scope and invalidation |
@@ -232,6 +239,20 @@ never project professional status. See `docs/mentorship.md`.
   reputation, streak loss, punitive ranking, or public negative score.
 
 See `docs/journals.md`, `docs/privacy.md`, and `docs/files.md`.
+
+## Public Image Processing
+
+- Public marketplace, lost/found case, sighting, and forum-topic photos pass
+  content, extension, size, and dimension validation before processing.
+- `StorePublicImage` auto-orients, bounds dimensions without upscaling,
+  re-encodes to WebP, and generates the storage name; client filenames never
+  become public paths.
+- The configured Laravel image driver is an operational dependency. Processing
+  and storage failures return a localized validation error without exposing
+  driver internals.
+- Videos and private medical, care, credential, and journal media retain their
+  separate storage and authorization controls.
+
 ## Event Security Controls
 
 - policies and active-account checks guard every event mutation;

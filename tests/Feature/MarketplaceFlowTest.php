@@ -235,7 +235,7 @@ test('structured filters and uploaded media are persisted without leaking drafts
         'availability' => 'low-stock',
         'brand' => 'Atlas',
         'model' => '40',
-        'photos' => [UploadedFile::fake()->image('carrier.webp', 1200, 800)],
+        'photos' => [UploadedFile::fake()->image('carrier.png', 3200, 2000)],
         'video' => UploadedFile::fake()->create('locks.mp4', 1024, 'video/mp4'),
     ]));
 
@@ -245,8 +245,16 @@ test('structured filters and uploaded media are persisted without leaking drafts
     expect($listing->gallery)->toHaveCount(1)
         ->and($listing->video_url)->not->toBeNull();
 
-    Storage::disk('public')->assertExists(str($listing->gallery[0])->after('/storage/')->toString());
+    $photoPath = str($listing->gallery[0])->after('/storage/')->toString();
+    $photoSize = getimagesizefromstring(Storage::disk('public')->get($photoPath));
+
+    Storage::disk('public')->assertExists($photoPath);
     Storage::disk('public')->assertExists(str($listing->video_url)->after('/storage/')->toString());
+    expect($photoPath)->toEndWith('.webp')
+        ->and($photoSize)->not->toBeFalse()
+        ->and($photoSize[0])->toBe(2560)
+        ->and($photoSize[1])->toBe(1600)
+        ->and($photoSize['mime'])->toBe('image/webp');
 
     Listing::factory()->create([
         'title' => 'Different condition listing hidden by filters',

@@ -9,9 +9,11 @@ and SCSS interface.
 
 Normalized domain records use dedicated Eloquent models. Social modules whose
 payloads remain catalog-shaped use encrypted, versioned `UserDomainState`
-records behind server-authoritative Actions. Browser sessions may preserve
-non-sensitive UI preferences, but are never an authorization, payment,
-confidential-storage, social-mutation, or provider-integration boundary.
+records behind server-authoritative Actions; shared publication-photo
+engagement uses normalized `PhotoAsset`, `PhotoReaction`, and `PhotoComment`
+records. Browser sessions may preserve non-sensitive UI preferences, but are
+never an authorization, payment, confidential-storage, social-mutation, or
+provider-integration boundary.
 
 ## Request Flow
 
@@ -70,7 +72,7 @@ attribution. No ranking, vote, or reaction path calls that conversion.
 | Medical | Eloquent + private files | Section-scoped grants and download Actions |
 | Care | Eloquent + private media | Journal policies, task/entry Actions, grants |
 | Devices | Eloquent | Command/read/event/lifecycle Actions, device policies, grants |
-| Social | Encrypted/versioned `user_domain_states` plus immutable catalog content | Authenticated Actions, ownership validation, optimistic versioning |
+| Social | Encrypted/versioned `user_domain_states`, immutable catalog content, relational photo engagement | Authenticated Actions, policies, catalogue resolution, constraints, optimistic versioning |
 | Places | Immutable catalog plus encrypted/versioned per-user state | Validated filters/actions, provider boundaries |
 
 ## Identity Compatibility Boundary
@@ -102,12 +104,28 @@ See `docs/decisions/0001-authenticated-actor-keys.md`.
 - Side effects execute after commit when their observation before commit would
   be unsafe.
 
+## File And Image Boundaries
+
+- Form Requests validate upload content, size, extension, and image dimensions
+  before an Action may persist a file.
+- `StorePublicImage` is the shared Laravel image-processing boundary for public
+  marketplace, lost/found, sighting, and forum-topic photos. It performs
+  orientation, bounded scaling, WebP encoding, and generated-name storage.
+- Private medical, care, credential, and forum-journal media remain on private
+  disks behind their existing policies and download Actions.
+- `PrivateFileResponse` is the shared response boundary for existing private
+  downloads and inline media. It accepts only the private local disk and a
+  server-derived owning directory, then verifies canonical root, directory,
+  regular-file, and symlink containment before creating the response.
+- Blade renders only prepared paths and URLs; it never reads, transforms, or
+  stores an image.
+
 ## Presentation Boundaries
 
 - Blade components render prepared data.
 - Class-based Livewire components own server-backed interaction.
 - Alpine is the Livewire-provided client-state layer; no second Alpine install.
-- Existing vanilla JavaScript enhances map, message, and browser-media
+- Existing vanilla JavaScript enhances map, message, publication-photo, and browser-media
   interactions and must initialize/teardown on Livewire navigation.
 - Tailwind owns utility tokens and responsive primitives.
 - The existing SCSS layer owns mature semantic component selectors until

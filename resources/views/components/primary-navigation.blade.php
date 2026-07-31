@@ -1,5 +1,9 @@
 @if ($variant === 'mobile')
-    <nav {{ $attributes->class(['mobile-dock', 'fixed inset-x-0 bottom-0 z-20 border-t border-paw-line/80 bg-paw-cream/95 px-4 pt-2 backdrop-blur sm:px-6 xl:hidden']) }} aria-label="{{ __('ui.mobile_preview_navigation_2e6900f8d4') }}">
+    <nav
+        data-navigation-variant="mobile"
+        {{ $attributes->class(['mobile-dock', 'fixed inset-x-0 bottom-0 z-20 border-t border-paw-line/80 bg-paw-cream/95 px-4 pt-2 backdrop-blur sm:px-6 xl:hidden']) }}
+        aria-label="{{ __('ui.mobile_preview_navigation_2e6900f8d4') }}"
+    >
         <div class="mobile-nav__rail">
             @forelse (array_slice($items, 0, 11) as $item)
                 <x-mobile-nav-item
@@ -15,8 +19,12 @@
         </div>
     </nav>
 @else
-    <nav {{ $attributes->class(['hidden items-center gap-1 xl:flex']) }} aria-label="{{ __('ui.primary_navigation_e1bfe7eccc') }}">
-        @forelse (array_slice($items, 0, 11) as $item)
+    <nav
+        data-navigation-variant="desktop"
+        {{ $attributes->class(['desktop-nav hidden items-center xl:flex']) }}
+        aria-label="{{ __('ui.primary_navigation_e1bfe7eccc') }}"
+    >
+        @forelse ($items as $item)
             <x-desktop-nav-item
                 :href="route($item['route'])"
                 :label="$item['label']"

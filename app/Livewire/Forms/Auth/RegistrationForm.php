@@ -18,10 +18,6 @@ final class RegistrationForm extends Form
 
     public string $password_confirmation = '';
 
-    public string $locale = 'en';
-
-    public string $timezone = 'UTC';
-
     /**
      * @return array<string, array<int, mixed>>
      */
@@ -42,21 +38,15 @@ final class RegistrationForm extends Form
                 'confirmed',
                 Password::min(12)->mixedCase()->numbers(),
             ],
-            'locale' => [
-                'required',
-                'string',
-                Rule::in(config('platform.supported_locales')),
-            ],
-            'timezone' => ['required', 'timezone:all'],
         ];
     }
 
     /**
-     * @return array{name: string, email: string, password: string, locale: string, timezone: string}
+     * @return array{name: string, email: string, password: string}
      */
     public function validatedData(): array
     {
-        /** @var array{name: string, email: string, password: string, locale: string, timezone: string} $validated */
+        /** @var array{name: string, email: string, password: string} $validated */
         $validated = $this->validate();
 
         return $validated;

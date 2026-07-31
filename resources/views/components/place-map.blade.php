@@ -43,9 +43,10 @@
             <button
                 type="button"
                 class="place-marker place-marker--{{ $marker['category_tone'] }} {{ ($selected['key'] ?? null) === $marker['key'] ? 'place-marker--selected' : '' }}"
-                style="--marker-x: {{ $marker['x'] }}%; --marker-y: {{ $marker['y'] }}%;"
                 data-place-marker="{{ $marker['key'] }}"
                 data-place-position="{{ $marker['position'] }}"
+                data-place-x="{{ $marker['x'] }}"
+                data-place-y="{{ $marker['y'] }}"
                 aria-label="{{ $marker['label'] }}"
                 aria-pressed="{{ ($selected['key'] ?? null) === $marker['key'] ? 'true' : 'false' }}"
             >

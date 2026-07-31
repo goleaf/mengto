@@ -8,41 +8,83 @@
         <title>{{ $title }} · {{ __('auth.brand') }}</title>
 
         @fonts
-        @vite(['resources/css/app.css'])
+        @vite(['resources/css/app.css', 'resources/scss/app.scss'])
         @livewireStyles
     </head>
-    <body class="min-h-screen bg-paw-cream text-paw-ink antialiased">
+    <body class="auth-body antialiased">
         <a
             href="#main-content"
-            class="sr-only focus:fixed focus:start-4 focus:top-4 focus:z-50 focus:not-sr-only focus:rounded-md focus:bg-paw-ink focus:px-4 focus:py-3 focus:text-sm focus:font-semibold focus:text-white focus:outline-none focus:ring-2 focus:ring-paw-leaf focus:ring-offset-2"
+            class="auth-skip-link sr-only focus:not-sr-only"
         >
             {{ __('auth.accessibility.skip_to_content') }}
         </a>
 
-        <main id="main-content" class="grid min-h-dvh place-items-center px-4 py-8 sm:px-6" tabindex="-1">
-            <div class="w-full max-w-md">
+        <main id="main-content" class="auth-shell" data-auth-shell tabindex="-1">
+            <aside class="auth-story" aria-label="{{ __('auth.shell.landmark') }}">
                 <a
                     href="{{ route('home') }}"
-                    class="mb-8 inline-flex items-center gap-3 text-xl font-semibold text-paw-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-paw-leaf focus-visible:ring-offset-4"
+                    class="auth-brand"
                     wire:navigate
                 >
-                    <span aria-hidden="true" class="grid size-10 place-items-center rounded-md bg-paw-leaf text-white">{{ __('ui.p_5c62e091b8') }}</span>
-                    <span>{{ __('auth.brand') }}</span>
+                    <span class="auth-brand__mark" aria-hidden="true">
+                        <x-lucide-paw-print />
+                    </span>
+                    <span class="auth-brand__name">{{ __('auth.brand') }}</span>
                 </a>
 
-                <section class="rounded-lg border border-paw-line bg-paw-paper p-6 shadow-sm sm:p-8">
-                    <p
+                <div class="auth-story__content">
+                    <p class="auth-story__eyebrow">{{ __('auth.shell.eyebrow') }}</p>
+                    <p class="auth-story__title">{{ __('auth.shell.title') }}</p>
+                    <p class="auth-story__description">{{ __('auth.shell.description') }}</p>
+
+                    <ul class="auth-story__benefits" aria-label="{{ __('auth.shell.benefits_label') }}">
+                        <li class="auth-benefit">
+                            <span class="auth-benefit__icon" aria-hidden="true"><x-lucide-shield-check /></span>
+                            <span>
+                                <strong>{{ __('auth.shell.privacy_title') }}</strong>
+                                <small>{{ __('auth.shell.privacy_description') }}</small>
+                            </span>
+                        </li>
+                        <li class="auth-benefit">
+                            <span class="auth-benefit__icon" aria-hidden="true"><x-lucide-heart-handshake /></span>
+                            <span>
+                                <strong>{{ __('auth.shell.care_title') }}</strong>
+                                <small>{{ __('auth.shell.care_description') }}</small>
+                            </span>
+                        </li>
+                        <li class="auth-benefit">
+                            <span class="auth-benefit__icon" aria-hidden="true"><x-lucide-map-pinned /></span>
+                            <span>
+                                <strong>{{ __('auth.shell.community_title') }}</strong>
+                                <small>{{ __('auth.shell.community_description') }}</small>
+                            </span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="auth-story__footer">
+                    <x-lucide-lock-keyhole aria-hidden="true" />
+                    <span>{{ __('auth.shell.footer') }}</span>
+                </div>
+
+                <x-lucide-paw-print class="auth-story__watermark" aria-hidden="true" />
+            </aside>
+
+            <section class="auth-workspace" aria-label="{{ __('auth.shell.form_landmark') }}">
+                <div class="auth-card">
+                    <x-auth-status
                         wire:offline
                         role="status"
                         aria-live="polite"
-                        class="mb-5 rounded-md border border-paw-coral bg-paw-cream px-4 py-3 text-sm font-medium"
+                        tone="danger"
+                        class="auth-card__offline"
                     >
                         {{ __('auth.connection.offline') }}
-                    </p>
+                    </x-auth-status>
 
                     {{ $slot }}
-                </section>
-            </div>
+                </div>
+            </section>
         </main>
 
         @livewireScripts

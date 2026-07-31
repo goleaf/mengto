@@ -53,14 +53,15 @@ class CreateReview
                 'status' => 'published',
             ]);
 
-            $reviews = Review::query()
-                ->published()
-                ->where('expert_profile_id', $profile->id);
+            $reviewSummary = ExpertProfile::query()
+                ->whereKey($profile->getKey())
+                ->withPublishedReviewSummary()
+                ->firstOrFail();
 
             $profile->update([
-                'review_count' => (clone $reviews)->count(),
-                'verified_review_count' => (clone $reviews)->where('is_verified_client', true)->count(),
-                'review_average' => round((float) (clone $reviews)->avg('rating'), 2),
+                'review_count' => (int) $reviewSummary->getAttribute('published_reviews_count'),
+                'verified_review_count' => (int) $reviewSummary->getAttribute('published_verified_reviews_count'),
+                'review_average' => round((float) $reviewSummary->getAttribute('published_review_average'), 2),
             ]);
 
             AuditLog::query()->create([

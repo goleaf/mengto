@@ -104,6 +104,19 @@ equivalents, and controls whether exact or generalized details are disclosed.
 Controllers pass complete view models to Blade. Blade does not query data or
 decide business transitions.
 
+`PlaceDirectory` owns the normalized URL state for mode, view, layer, sorting,
+selection, and filters. Its Blade view coordinates dedicated search-panel,
+catalog-control, map, result-list, place-card, and comparison components.
+The directory-specific responsive rules live in one SCSS module so the split
+workspace, touch targets, and bounded horizontal control rows cannot diverge
+between partials.
+
+The combined desktop view reserves a readable minimum width for results and
+keeps result cards vertical. Mobile and tablet stack the workspace in task
+order. Comparison renders as labeled definition cards rather than a wide data
+table, so its content remains readable without page-level horizontal
+scrolling.
+
 ### Actions
 
 The shared action endpoint validates place keys and action-specific payloads,
@@ -234,4 +247,8 @@ rate limits, failure states, source attribution, and privacy review.
   resolution, review, question, claim, report, and event creation.
 - Desktop, tablet, and mobile checks for overflow, image loading, map pixel
   content, console errors, keyboard focus, and responsive layout.
+- The directory responsive matrix covers exact CSS viewport widths of 320,
+  360, 375, 390, 430, 768, 1024, 1280, 1440, and 1728 pixels. Every width must
+  retain one page heading, all five directory regions, zero root horizontal
+  overflow, 44-pixel interactive targets, and a clean browser console.
 - No new PHP test files, following the explicit project constraint.

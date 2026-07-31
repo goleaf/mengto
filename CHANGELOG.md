@@ -2,6 +2,12 @@
 
 ## Unreleased - 2026-07-31
 
+### Security
+
+- Centralized private file responses behind canonical owning-directory checks
+  that reject traversal segments, foreign disks, cross-domain stored paths,
+  missing files, and symbolic-link escapes before streaming or audit changes.
+
 ### Forum And Animal Taxonomy
 
 - Preserved the combined forum/taxonomy specification with a deterministic
@@ -96,11 +102,23 @@
 - Added production authentication around the existing actor-key ownership
   model, class-based multi-file Livewire auth flows, active-account middleware,
   signed verification, reset, rate limiting, and policy enforcement.
+- Rebuilt every authentication form around one responsive Blade component
+  system with a distinctive split desktop composition, compact mobile flow,
+  localized account context, explicit field semantics, 44-pixel actions, and
+  shared offline/loading/validation states; language and time zone remain in
+  protected profile settings rather than registration.
 - Kept routes declarative, Blade passive, and persisted mutations in Actions or
   cohesive Services.
+- Integrated Laravel 13's first-party image pipeline for marketplace,
+  lost/found, sighting, and forum-topic photos with shared EXIF orientation,
+  bounded resizing, WebP encoding, generated names, and localized failures.
 
 ### Security And Data
 
+- Hardened the seven common web attack surfaces with fail-closed production
+  session cookies, privacy-safe nested document lookup, realistic hostile-file
+  validation, login/overposting regressions, and architecture guards against
+  raw SQL, raw Blade, unfiltered request payloads, and client-named uploads.
 - Removed the fixed prototype actor from protected operations and made the
   authenticated user's immutable actor key authoritative.
 - Closed medical, care, device, order, booking, and coordination data to guests
@@ -135,6 +153,10 @@
 - Normalized pet, group, neighbor, and event directories on one semantic
   result-grid contract with one mobile, two small-screen, and three
   wide-desktop columns plus matching responsive image sizes.
+- Added one responsive PhotoSwipe publication viewer with progressive
+  full-size-link fallback, localized zoom/swipe/keyboard controls, deep links,
+  focus restoration, and per-photo authenticated reactions and escaped
+  comments shared through indexed policy-authorized relational records.
 - Corrected narrow-screen booking overflow and verified representative
   320-1920 px viewport behavior.
 
@@ -148,7 +170,7 @@
 - Added an asserted temporary-SQLite fresh migration/seed verifier so
   destructive database checks cannot silently target the development file.
 - Expanded Pest from a baseline of 116 tests / 3,881 assertions to the current
-  checkpoint of 1,514 tests / 53,062 assertions.
+  checkpoint of 1,534 tests / 53,748 assertions.
 - Added auth, authorization, localization, schema, factory/seeder,
   architecture, and responsive regression coverage.
 
@@ -157,14 +179,14 @@
 - Established canonical requirements, architecture, domain/data/security,
   frontend, Livewire/Tailwind, accessibility, localization, testing, seeding,
   performance, deployment, operations, audit, ADR, and traceability documents.
-- Catalogued 163 active requirements with evidence-backed status and generated
+- Catalogued 165 active requirements with evidence-backed status and generated
   a per-model seeding matrix.
 - Documented deployment, forward-fix migration strategy, production seeding
   restrictions, provider boundaries, and the local-database audit incident.
 
 ### Verification
 
-- Full Pest suite checkpoint: 1,514 passed, 53,062 assertions in serial mode.
+- Full Pest suite checkpoint: 1,534 passed, 53,748 assertions in serial mode.
 - Larastan/PHPStan level 5: zero errors.
 - Composer strict validation and security audit: passed, zero advisories.
 - NPM high-severity audit: passed, zero vulnerabilities.

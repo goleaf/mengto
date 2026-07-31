@@ -18,10 +18,9 @@ final class ForumGroupFileDownloadController extends Controller
         ForumGroupFile $file,
         PrepareForumGroupFileDownload $download,
     ): StreamedResponse {
-        abort_unless($file->forum_group_id === $forumGroup->id, 404);
         $user = Auth::user();
         abort_unless($user instanceof User, 401);
 
-        return $download->handle($user, $file);
+        return $download->handle($user, $forumGroup, $file);
     }
 }

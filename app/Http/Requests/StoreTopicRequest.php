@@ -53,7 +53,19 @@ class StoreTopicRequest extends FormRequest
             'is_medical' => ['nullable', 'boolean'],
             'veterinary_status' => ['nullable', Rule::in(['seen', 'not-seen', 'scheduled', 'unavailable', 'not-medical'])],
             'photos' => ['nullable', 'array', 'max:4'],
-            'photos.*' => ['file', File::image()->types(['jpg', 'jpeg', 'png', 'webp'])->max('4mb')],
+            'photos.*' => [
+                'file',
+                File::image()
+                    ->types(['jpg', 'jpeg', 'png', 'webp'])
+                    ->max('4mb')
+                    ->dimensions(
+                        Rule::dimensions()
+                            ->minWidth(32)
+                            ->minHeight(32)
+                            ->maxWidth(12000)
+                            ->maxHeight(12000),
+                    ),
+            ],
             'photo_alt' => ['nullable', 'string', 'max:240'],
             'video' => ['nullable', 'file', File::types(['mp4', 'webm', 'mov'])->max('20mb')],
             'sensitive_media' => ['nullable', 'boolean'],

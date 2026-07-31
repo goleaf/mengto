@@ -203,6 +203,14 @@ PawCircle is flat by default. Depth comes from tonal layers and one-pixel border
 - The message-center `Walk plans` filter is derived from active stored plans, not keywords in conversation copy.
 - Empty planner states use real pet and neighbor photography with direct routes into the shared composer.
 
+### Place Discovery
+- The place directory composes dedicated search, catalog-control, map, result-list, place-card, and comparison components; its page-level component only coordinates those regions.
+- Mobile keeps search, emergency care, categories, filters, location, view controls, map, and results in a stable single-column order without page-level horizontal overflow.
+- Desktop uses a balanced map-and-results workspace. Result cards remain vertical inside the split view so names, evidence, and actions never collapse into narrow letter columns.
+- Category, catalog-mode, view, and layer rows may scroll within their own bounded control region; they never widen the page.
+- Place comparison uses responsive definition cards instead of a wide table, preserving all labels without requiring horizontal page scrolling.
+- Directory controls and map markers retain at least 44-pixel pointer targets at every supported viewport.
+
 ### Sharing and Voice Consent
 - Every share action opens one server-rendered Share Hub assembled from the shared context hero, channel row, recipient row, action, image, and detail primitives.
 - External channels receive a canonical PawCircle URL; internal sharing creates a normal direct message so the result remains visible and reversible.

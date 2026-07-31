@@ -12,11 +12,11 @@ class MedicalDocumentDownloadController extends Controller
 {
     public function __invoke(
         MedicalRecord $medicalRecord,
-        MedicalDocument $medicalDocument,
+        MedicalDocument $document,
         PrepareMedicalDocumentDownload $download,
     ): StreamedResponse {
         Gate::authorize('view', $medicalRecord);
 
-        return $download->forOwner($medicalRecord, $medicalDocument);
+        return $download->forOwner($medicalRecord, $document);
     }
 }

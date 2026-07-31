@@ -197,8 +197,10 @@ test('forum atomic requirements and evidence remain deterministic and traceable'
         });
 });
 
-test('application source avoids prohibited database and service locator calls', function () {
+test('application source avoids prohibited database mass assignment and service locator calls', function () {
     $prohibitedDatabaseCalls = '/\bDB::(?:select|statement|raw|unprepared)\s*\(|->(?:selectRaw|whereRaw|orWhereRaw|havingRaw|orderByRaw|groupByRaw)\s*\(/';
+    $unfilteredRequestPayloads = '/(?:\brequest\s*\(\s*\)|\$[A-Za-z_][A-Za-z0-9_]*request)\s*->\s*all\s*\(/i';
+    $unsafeUploadPaths = '/->move\s*\(|->storeAs\s*\([^;]*getClientOriginalName/s';
 
     foreach (sourceFiles(app_path()) as $file) {
         $contents = $file->getContents();
@@ -206,7 +208,15 @@ test('application source avoids prohibited database and service locator calls', 
         expect(
             preg_match($prohibitedDatabaseCalls, $contents),
             $file->getRelativePathname(),
-        )->toBe(0);
+        )->toBe(0)
+            ->and(
+                preg_match($unfilteredRequestPayloads, $contents),
+                $file->getRelativePathname(),
+            )->toBe(0)
+            ->and(
+                preg_match($unsafeUploadPaths, $contents),
+                $file->getRelativePathname(),
+            )->toBe(0);
     }
 
     foreach (sourceFiles(app_path('Http/Requests')) as $file) {

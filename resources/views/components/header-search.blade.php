@@ -1,6 +1,6 @@
 @props(['active' => false])
 
-<div class="hidden min-w-0 flex-1 md:block">
+<div {{ $attributes->class(['header-search hidden min-w-0 flex-1 md:block']) }}>
     <a
         href="{{ route('discover.index') }}"
         aria-label="{{ __('ui.search_brand_a6f8e15d35') }}"

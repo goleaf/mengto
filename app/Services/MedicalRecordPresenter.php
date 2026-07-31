@@ -620,7 +620,7 @@ class MedicalRecordPresenter
             'created_at' => $this->formatter->date($document->created_at),
             'download_url' => route('medical-records.documents.download', [
                 'medicalRecord' => $record,
-                'medicalDocument' => $document,
+                'document' => $document,
             ]),
         ];
     }

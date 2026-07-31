@@ -27,9 +27,14 @@ test('the server rendered place directory is searchable and paginated without br
         })
         ->assertSee('data-place-pagination', false)
         ->assertSee('page=2', false)
-        ->assertSee('Location not shared');
+        ->assertSee('Location not shared')
+        ->assertSee('role="list"', false)
+        ->assertSee('role="listitem"', false);
 
     expect(responseXPath($firstPage)->query('//*[@data-place-card]')->length)->toBe(6);
+    expect(responseXPath($firstPage)->query('//main//h1')->length)->toBe(1)
+        ->and(responseXPath($firstPage)->query('//*[@data-place-card]//h3')->length)->toBe(6)
+        ->and(responseXPath($firstPage)->query('//*[@data-place-pagination]')->length)->toBe(1);
 
     $secondPage = $this->get(route('places.index', [
         'view' => 'list',
@@ -44,6 +49,26 @@ test('the server rendered place directory is searchable and paginated without br
             && str_contains((string) $places['pagination']['previous_url'], 'sort=name'));
 
     expect(responseXPath($secondPage)->query('//*[@data-place-card]')->length)->toBe(6);
+});
+
+test('place directory renders reusable responsive regions without a comparison table', function () {
+    $response = $this->get(route('places.index'));
+    $xpath = responseXPath($response);
+
+    $response
+        ->assertOk()
+        ->assertSee('data-place-search-form', false)
+        ->assertSee('data-place-map', false)
+        ->assertSee('data-place-x=', false)
+        ->assertSee('data-place-y=', false)
+        ->assertSee('data-place-pagination', false)
+        ->assertDontSee('style="--marker-', false)
+        ->assertDontSee('<table', false);
+
+    expect($xpath->query('//section[contains(concat(" ", normalize-space(@class), " "), " place-search ")]')->length)->toBe(1)
+        ->and($xpath->query('//section[contains(concat(" ", normalize-space(@class), " "), " place-directory__controls ")]')->length)->toBe(1)
+        ->and($xpath->query('//section[contains(concat(" ", normalize-space(@class), " "), " place-results ")]')->length)->toBe(1)
+        ->and($xpath->query('//section[contains(concat(" ", normalize-space(@class), " "), " place-comparison ")]')->length)->toBe(1);
 });
 
 test('place filters are allow listed and deterministic', function () {

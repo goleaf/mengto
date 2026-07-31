@@ -37,7 +37,8 @@ For any `wire:navigate` page:
 
 ## JavaScript Boundaries
 
-`resources/js/forum.js`, `messaging-center.js`, and `places-map.js` may:
+`resources/js/forum.js`, `messaging-center.js`, `photo-viewer.js`, and
+`places-map.js` may:
 
 - manage local DOM state;
 - request browser media/geolocation only after explicit user action;
@@ -51,11 +52,52 @@ They may not:
 - embed secrets or private server data;
 - claim provider delivery or recording that does not exist.
 
+## Publication Photo Viewer
+
+`resources/views/components/post-media-gallery.blade.php` is the single
+full-size publication-photo entry point. It retains a normal full-size anchor
+as the no-JavaScript fallback and progressively enhances each bounded gallery
+with PhotoSwipe 5.4.4. Responsive `srcset` metadata, stable per-photo keys,
+localized controls, keyboard/touch navigation, zoom, URL deep links, modal
+semantics, and exact-trigger focus restoration are browser-owned presentation
+concerns.
+
+`FeedPresenter` prepares the public photo contract and batch-loads shared
+`PhotoAsset`, `PhotoReaction`, and `PhotoComment` data. The
+`PhotoInteractionController` delegates authenticated, active-member mutations
+to `PerformPhotoInteraction`; the Action resolves the photo key against the
+server catalogue before policy-authorized relational changes. A unique
+database constraint allows one reaction per member and photo. The
+`photo-social-panel` Blade component remains passive, renders the latest 40
+escaped comments with the full count, and posts ordinary CSRF-protected forms
+with duplicate-safe comment idempotency keys.
+
+At narrow widths the social panel is a scrollable bottom sheet below the
+reserved image area. At desktop widths it becomes a fixed 27-rem side panel.
+The viewer must keep at least 44-pixel controls and avoid image/panel overlap
+and horizontal page overflow from 320 through 1920 pixels.
+
 ## Interface States
 
 Every data surface defines applicable loading, empty, filtered-empty, success,
 recoverable error, fatal error, offline, unauthorized, disabled, pending, and
 completed states. Status is textual and not color-only.
+
+## Authentication Interface
+
+All guest and protected account-access pages use `components.auth-layout` and
+the shared flat `auth-*` field, header, status, submit, and flow-link
+components. The layout is mobile-first: a compact brand story precedes the
+form at narrow widths, while desktop uses a two-column story and form
+workspace. The form remains the first interactive task in logical keyboard
+order after the home link.
+
+Livewire owns only typed form and submission state. Shared Blade components
+own labels, autocomplete, help and validation associations, loading copy, and
+offline feedback. `resources/scss/_auth.scss` owns responsive composition,
+44-pixel targets, focus, reduced-motion-safe transitions, and forced-colors
+boundaries. See
+`docs/superpowers/specs/2026-07-31-auth-interface-redesign.md`.
 
 ## Peer Mentorship
 
@@ -77,6 +119,9 @@ localized Blade templates. See `docs/mentorship.md`.
 - keyboard and focus review;
 - no console/network errors on critical flows;
 - repeated Livewire navigation teardown check.
+- publication-photo viewer checks at 320, 375, 768, 1024, 1280, 1440, and
+  1920 pixels, including URL updates, next/previous, zoom, Escape, focus
+  return, disabled guest mutations, 44-pixel targets, and image/panel overlap.
 - mentorship desktop/mobile checks for overflow, labels, 44-pixel action
   targets, private-thread visibility, report controls, and a real Livewire
   message mutation.

@@ -33,6 +33,7 @@ use App\Policies\OrderPolicy;
 use App\Policies\PetProfilePolicy;
 use App\Policies\SearchCasePolicy;
 use App\Policies\SmartDevicePolicy;
+use App\Policies\UserPolicy;
 
 test('booking policy covers clients experts outsiders blocked users and destructive states', function () {
     [$owner, $other, $administrator, $blocked] = policyActors();
@@ -457,6 +458,19 @@ test('pet profile policy separates public visibility from owner mutations', func
     ])->toBe([
         true, true, false, true, true, false, true, false,
         true, true, false, false,
+    ]);
+});
+
+test('user policy limits profile preference updates to the active account owner', function () {
+    [$owner, $other, , $blocked] = policyActors();
+    $policy = app(UserPolicy::class);
+
+    expect([
+        $policy->update($owner, $owner),
+        $policy->update($other, $owner),
+        $policy->update($blocked, $blocked),
+    ])->toBe([
+        true, false, false,
     ]);
 });
 

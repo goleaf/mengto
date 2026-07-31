@@ -30,6 +30,7 @@ final class CreateSearchCase
         private readonly ForumActor $actor,
         private readonly SearchSafety $safety,
         private readonly FindSearchCaseDuplicates $duplicates,
+        private readonly StorePublicImage $storePublicImage,
     ) {}
 
     /** @param array<string, mixed> $data */
@@ -219,7 +220,7 @@ final class CreateSearchCase
         return collect($photos)
             ->filter(fn (mixed $photo): bool => $photo instanceof UploadedFile)
             ->map(fn (UploadedFile $photo): string => Storage::disk('public')->url(
-                $photo->store('lost-found/cases', 'public'),
+                $this->storePublicImage->handle($photo, 'lost-found/cases'),
             ))
             ->values()
             ->all();

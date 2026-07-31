@@ -23,6 +23,7 @@ class CreateListing
         private readonly ForumActor $actor,
         private readonly ListingSafety $safety,
         private readonly SynchronizeAdoptionCase $synchronizeAdoptionCase,
+        private readonly StorePublicImage $storePublicImage,
     ) {}
 
     /** @param array<string, mixed> $data */
@@ -130,7 +131,7 @@ class CreateListing
         return collect($photos)
             ->filter(fn (mixed $photo): bool => $photo instanceof UploadedFile)
             ->map(fn (UploadedFile $photo): string => Storage::disk('public')->url(
-                $photo->store('marketplace/listings', 'public'),
+                $this->storePublicImage->handle($photo, 'marketplace/listings'),
             ))
             ->values()
             ->all();

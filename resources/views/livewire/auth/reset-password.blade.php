@@ -1,38 +1,48 @@
-<div>
-    <header class="mb-6">
-        <h1 class="text-2xl font-semibold">{{ __('auth.password.reset_title') }}</h1>
-        <p class="mt-2 text-sm leading-6 text-paw-muted">{{ __('auth.password.reset_description') }}</p>
-    </header>
+<div data-auth-page="reset-password">
+    <x-auth-page-header
+        eyebrow="{{ __('auth.password.eyebrow') }}"
+        title="{{ __('auth.password.reset_title') }}"
+        description="{{ __('auth.password.reset_description') }}"
+    />
 
-    <form wire:submit="resetPassword" class="space-y-5">
-        <div>
-            <label for="reset-email" class="block text-sm font-medium">{{ __('auth.fields.email') }}</label>
-            <input id="reset-email" type="email" wire:model="form.email" autocomplete="email" required autofocus aria-describedby="reset-email-error" class="mt-2 block min-h-11 w-full rounded-md border border-paw-line bg-white px-3 py-2 text-base focus:border-paw-leaf focus:outline-none focus:ring-2 focus:ring-paw-leaf/25">
-            @error('form.email')
-                <p id="reset-email-error" role="alert" class="mt-2 text-sm text-paw-coral">{{ $message }}</p>
-            @enderror
-        </div>
+    <form wire:submit="resetPassword" class="auth-form">
+        <x-auth-field
+            id="reset-email"
+            label="{{ __('auth.fields.email') }}"
+            error="form.email"
+            type="email"
+            autocomplete="email"
+            wire:model="form.email"
+            autofocus
+        />
 
-        <div>
-            <label for="reset-password" class="block text-sm font-medium">{{ __('auth.fields.password') }}</label>
-            <input id="reset-password" type="password" wire:model="form.password" autocomplete="new-password" required aria-describedby="reset-password-error" class="mt-2 block min-h-11 w-full rounded-md border border-paw-line bg-white px-3 py-2 text-base focus:border-paw-leaf focus:outline-none focus:ring-2 focus:ring-paw-leaf/25">
-            @error('form.password')
-                <p id="reset-password-error" role="alert" class="mt-2 text-sm text-paw-coral">{{ $message }}</p>
-            @enderror
-        </div>
+        <x-auth-field
+            id="reset-password"
+            label="{{ __('auth.fields.password') }}"
+            error="form.password"
+            type="password"
+            autocomplete="new-password"
+            :help="__('auth.register.password_help')"
+            wire:model="form.password"
+        />
 
-        <div>
-            <label for="reset-password-confirmation" class="block text-sm font-medium">{{ __('auth.fields.password_confirmation') }}</label>
-            <input id="reset-password-confirmation" type="password" wire:model="form.password_confirmation" autocomplete="new-password" required class="mt-2 block min-h-11 w-full rounded-md border border-paw-line bg-white px-3 py-2 text-base focus:border-paw-leaf focus:outline-none focus:ring-2 focus:ring-paw-leaf/25">
-        </div>
+        <x-auth-field
+            id="reset-password-confirmation"
+            label="{{ __('auth.fields.password_confirmation') }}"
+            error="form.password_confirmation"
+            type="password"
+            autocomplete="new-password"
+            wire:model="form.password_confirmation"
+        />
 
-        <p wire:dirty role="status" class="text-sm font-medium text-paw-muted">
+        <p wire:dirty role="status" class="auth-form-state">
             {{ __('auth.form.unsaved') }}
         </p>
 
-        <button type="submit" wire:loading.attr="disabled" wire:target="resetPassword" class="inline-flex min-h-11 w-full items-center justify-center rounded-md bg-paw-leaf px-4 py-2 font-semibold text-white hover:bg-paw-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-paw-leaf focus-visible:ring-offset-2 disabled:cursor-wait disabled:opacity-60">
-            <span wire:loading.remove wire:target="resetPassword">{{ __('auth.password.reset_submit') }}</span>
-            <span wire:loading wire:target="resetPassword">{{ __('auth.password.resetting') }}</span>
-        </button>
+        <x-auth-submit
+            target="resetPassword"
+            label="{{ __('auth.password.reset_submit') }}"
+            loading-label="{{ __('auth.password.resetting') }}"
+        />
     </form>
 </div>

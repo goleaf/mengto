@@ -31,6 +31,7 @@ or grant records. They do not rely on an ambient fixed identity.
 | Care journal | No | Owner-selected capabilities | Selected sections/actions until expiry | No implicit family bypass |
 | Smart device | No | Owner-selected view/control | Selected fields/actions until expiry | No implicit camera/GPS bypass |
 | Exact GPS/camera/door | No | Explicit high-risk capability | Time-window capability | Step-up and audit required |
+| Public publication photo | View photo and shared engagement | Active member may react/comment | N/A | Safety moderation remains separate |
 | Persistent group | Discoverable identity only | Membership/content by visibility and role | Live invitation only | Explicit policy plus audit |
 | Group content/poll | No independent public grant | Active member; creator/manager writes by role | Visible voters/results only when configured | Explicit group policy; no anonymous-ballot identity UI |
 
@@ -50,6 +51,12 @@ role, wrong scope, inactive/blocked actor, missing relationship, and invalid
 state as applicable. The cross-policy contract is exercised by
 `tests/Feature/Auth/PolicyMatrixTest.php`; workflow tests cover route-level
 authorization and domain transitions.
+
+Photo interaction routes require authentication and active-account middleware.
+`PhotoInteractionRequest` allow-lists action data; `PerformPhotoInteraction`
+resolves the photo against the public server catalogue before
+`PhotoReactionPolicy` or `PhotoCommentPolicy` permits a relational mutation.
+The browser cannot create an engagement target by submitting an arbitrary key.
 
 Precise smart-device views, management, and command submission additionally
 require a fresh password confirmation. This step-up check supplements

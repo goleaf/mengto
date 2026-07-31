@@ -16,7 +16,7 @@
 | --- | --- | --- | --- | --- |
 | `#[Computed]` | Administration, guide, mentorship, and group derived data | Used by bounded registries and group/guide/mentorship projections | Derived collections are not serialized as mutable public state | Guide, mentorship, and group workflow tests |
 | `#[Locked]` | Password reset token | Used by `ResetPassword` | Prevents browser mutation; token still validated server-side | `tests/Feature/Auth/AuthenticationTest.php` |
-| Livewire form objects | Registration/login/reset/confirmation forms | Used | Central validation and field errors | `tests/Feature/Auth/AuthenticationTest.php` |
+| Livewire form objects | Registration/login/reset/confirmation/profile-preference forms | Used | Central validation and field errors | `tests/Feature/Auth/AuthenticationTest.php` |
 | `#[Url]` | Shareable feed/directory filters | Used for group search/visibility; later for other converted components | Keeps linkable state; never secrets; resets pagination | `GroupCoreWorkflowTest` |
 | `#[Session]` | Private UI preference | Not initially required | Avoid duplicating business storage | N/A reason recorded |
 | `#[Lazy]` | Below-fold expensive dashboard | Not until measured candidate exists | Must have stable placeholder | N/A |
@@ -30,8 +30,8 @@
 | Reactive/modelable props | Reusable animal selector | `#[Modelable]` used for one selected taxon ID | The child paginates/searches server-side and never serializes the taxonomy tree | taxonomy and guide Livewire tests |
 | Islands | Large independently updating page | Not until profiling identifies one | No islands in loops/conditions | N/A |
 | `wire:navigate` | Authentication navigation | Used after JS lifecycle audit | Normal links remain functional; title/focus reviewed | Connected Playwright repetition check |
-| `wire:loading` / `wire:target` | Every auth mutation | Used | Precise status and duplicate prevention | `tests/Feature/Auth/AuthenticationTest.php` |
-| `wire:dirty` | Registration and password reset | Used | Communicates unsaved state | `tests/Feature/Auth/AuthenticationTest.php` |
+| `wire:loading` / `wire:target` | Every auth and profile-preference mutation | Used | Precise status and duplicate prevention | `tests/Feature/Auth/AuthenticationTest.php` |
+| `wire:dirty` | Registration, password reset, and profile preferences | Used | Communicates unsaved state | `tests/Feature/Auth/AuthenticationTest.php` |
 | `wire:offline` | Authentication shell | Used | Do not claim save offline | `tests/Feature/Auth/AuthenticationTest.php` |
 | `wire:cloak` | Initially hidden interactive state | Use where flicker exists | CSS support required | Render test |
 | `wire:confirm` | Clear destructive action | Use when suitable | Localized; not authorization | Direct invocation test |
@@ -57,6 +57,15 @@
 Use `Livewire::test()` for mount authorization, initial state, form validation,
 locked/tampered IDs, direct action authorization, repeated submit, dispatched
 events, redirects, and rendered loading/dirty/offline states.
+
+## Profile Preferences
+
+`ProfileSettings` is a protected class-based component with a separate Blade
+template and `ProfilePreferencesForm`. Registration never serializes language
+or time-zone input. The settings component derives bounded locale and time-zone
+options server-side, validates both browser-controlled values, and delegates
+the current-user-only mutation to `UpdateProfilePreferences`. Saving the locale
+also updates the current session so the translated response is immediate.
 
 ## Collaborative Guide Editor
 

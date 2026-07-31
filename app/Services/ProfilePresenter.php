@@ -308,6 +308,7 @@ final class ProfilePresenter
         if ($audience === 'owner') {
             return [
                 $this->linkAction(__('messages.edit_profile_15c4aa1303'), 'pencil', route('compose', 'profile'), 'primary'),
+                $this->linkAction(__('auth.settings.action'), 'settings', route('profile.settings')),
                 $this->linkAction(
                     __('messages.privacy_54a57c3147'),
                     'shield-check',

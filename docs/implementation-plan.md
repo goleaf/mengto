@@ -31,7 +31,7 @@ Status: `verified`
   documents.
 - Preserved historical feature specifications and plans while making their
   prototype-only authority explicit.
-- Normalized 163 stable active requirement identifiers.
+- Normalized 165 stable active requirement identifiers.
 - Generated one traceability row per requirement and one factory row per model.
 
 Verification:
@@ -128,6 +128,13 @@ Status: `verified`
 - Completed the server-rendered place contract with validated deterministic
   pagination, preserved filter URLs, source/freshness/history coverage, and a
   guarded emergency clinic mode with direct call and route actions.
+- Replaced publication-photo new-tab enlargement with one progressively
+  enhanced PhotoSwipe viewer. Stable server-resolved photo keys now scope
+  shared policy-authorized reactions and escaped comments to each individual
+  photo through indexed relational records and a one-member/one-photo unique
+  constraint. The shared gallery component provides localized zoom,
+  keyboard/touch navigation, URL deep links, focus restoration, and responsive
+  bottom/side social panels.
 - Added durable `PetProfile` records and encrypted, versioned
   `UserDomainState` persistence so social mutations survive sessions without
   exposing browser-controlled authority.
@@ -145,6 +152,10 @@ Status: `verified` for implemented boundaries
 - Added architecture guards for Blade, Volt, environment reads, database
   shortcuts, route shape, model factories/fillable fields, localization, and
   debug leakage.
+- Adopted Laravel 13's first-party image component through one
+  `StorePublicImage` Action for every public photo-upload seam, with bounded
+  input dimensions, EXIF orientation, WebP output, generated names, localized
+  failures, and focused HTTP/action regressions.
 - Removed meaningless framework example tests.
 - Formatted all PHP and resolved Larastan level 5 findings without a baseline.
 

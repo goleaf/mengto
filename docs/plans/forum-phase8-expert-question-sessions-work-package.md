@@ -463,11 +463,6 @@ The package is complete only when:
   archived-page scan retained the answer and correction history with one H1,
   no horizontal overflow, raw translation keys, unnamed controls, undersized
   primary targets, current-page console warnings, or console errors.
-- Coverage was attempted with
-  `php artisan test --coverage --compact
-  tests/Feature/Forum/ExpertQuestionSessionWorkflowTest.php`; the PHP 8.5 CLI
-  has neither Xdebug nor PCOV, so percentage coverage remains an environmental
-  measurement gap rather than a passing claim.
 - The requirements evidence overlay maps all 18 scoped IDs to implementation,
   test, documentation, and verification evidence. No scoped requirement is
   blocked or intentionally not applicable.

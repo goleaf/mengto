@@ -27,12 +27,7 @@ final class Register extends AuthPage
 
     public function render(): View
     {
-        return view('livewire.auth.register', [
-            'locales' => collect(config('platform.supported_locales'))
-                ->mapWithKeys(fn (string $locale): array => [
-                    $locale => __('auth.locales.'.$locale),
-                ])
-                ->all(),
-        ])->layout('components.auth-layout', $this->authLayoutData(__('auth.register.title')));
+        return view('livewire.auth.register')
+            ->layout('components.auth-layout', $this->authLayoutData(__('auth.register.title')));
     }
 }

@@ -15,6 +15,7 @@ class PrepareTopicData
     public function __construct(
         private readonly ForumActor $actor,
         private readonly ForumTaxonomy $taxonomy,
+        private readonly StorePublicImage $storePublicImage,
     ) {}
 
     /**
@@ -102,7 +103,7 @@ class PrepareTopicData
 
             $media[] = [
                 'type' => 'image',
-                'path' => $photo->store('forum/images', 'public'),
+                'path' => $this->storePublicImage->handle($photo, 'forum/images'),
                 'alt' => $data['photo_alt'] ?? '',
                 'sensitive' => (bool) ($data['sensitive_media'] ?? false),
             ];

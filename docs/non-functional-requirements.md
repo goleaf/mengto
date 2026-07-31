@@ -13,7 +13,7 @@
 | SEC-WEB-001 | CSRF and Laravel 13 origin-aware request forgery protection remain enabled and tested. |
 | SEC-WEB-002 | User content is escaped by default; rich content requires an explicit tested sanitizer. |
 | SEC-WEB-003 | Redirects and server-fetched URLs are scheme/host validated and SSRF protections block loopback, private, link-local, metadata, rebinding, oversized, and unsafe redirect targets. |
-| SEC-UPLOAD-001 | Uploads validate size, MIME, real content, image dimensions where relevant, safe generated name, and private ownership. |
+| SEC-UPLOAD-001 | Uploads validate size, MIME, real content, image dimensions where relevant, and safe generated names; public photos are re-encoded through the configured framework image driver and private media retains scoped ownership. |
 | SEC-INTEGRATION-001 | External clients redact credentials, constrain time/size/retry, validate responses, and prevent accidental real calls in tests. |
 | SEC-AUDIT-001 | Role, access, share, export, payment, command, ownership, and safety-critical transitions retain actor, time, target, result, and safe context. |
 
@@ -36,7 +36,7 @@
 | PERF-QUERY-002 | No production list loads an unbounded table; pagination strategy matches ordering and scale. |
 | PERF-QUERY-003 | Important filtered/sorted query patterns have justified indexes and an explain-plan review when data scale warrants it. |
 | PERF-LIVEWIRE-001 | Public Livewire state contains only required scalars/small arrays; expensive independent sections use measured lazy/defer/island boundaries. |
-| PERF-ASSET-001 | Production JS/CSS builds are measured; first-party images use dimensions and size variants that avoid layout shift and oversized card downloads. |
+| PERF-ASSET-001 | Production JS/CSS builds are measured; first-party images use dimensions and size variants that avoid layout shift, while public uploads are bounded and optimized so camera originals are not served to cards or full-size viewers. |
 | PERF-CACHE-001 | Cache improves a measured stable operation and prevents stampede; cache is not used to conceal a bad query. |
 
 ## Accessibility And Responsive Design

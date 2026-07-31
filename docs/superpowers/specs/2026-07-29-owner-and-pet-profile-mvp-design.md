@@ -35,10 +35,16 @@ feed is expanded:
   actions.
 - Profile completion, verification cues, languages, interests, family/manager
   information, public facts, and privacy explanations.
+- A protected profile-settings page for the account interface language and
+  time zone, linked from the owner profile.
 - Responsive, image-forward layouts built entirely from shared Blade
   components.
 
-Registration, OAuth, email delivery, real uploads, document verification,
+Registration does not ask for language or time zone. New accounts receive
+server-owned defaults, and the account owner may change both preferences only
+after authentication.
+
+OAuth, email delivery, real uploads, document verification,
 moderation queues, medical storage, GPS history, ownership transfer, imports,
 QR generation, and permanent deletion require persistence and authenticated
 policies. They remain future production layers, not simulated security.
@@ -53,6 +59,9 @@ Canonical public routes:
 
 Existing `/profile/mia-carter` and `/pets/scout` URLs remain compatible through
 redirects. Created session-backed pet profiles retain their generated URLs.
+
+`/profile/settings` is authenticated, active-account-only, and stores language
+and time-zone preferences on the current user.
 
 The `tab` query selects a profile section. The `view` query selects one of:
 `owner`, `public`, `follower`, or `friend`. A Form Request validates both query
@@ -71,6 +80,10 @@ query state to the presenter.
 - Per-pet profile overrides.
 - Owner and pet visibility settings.
 - Independent social toggles and submitted reports.
+
+Account preferences do not use `PrototypeState`. `ProfileSettings` uses a
+Livewire form object and delegates the authorized update to
+`UpdateProfilePreferences`.
 
 The main owner and pet Blade views each contain one feature component. Feature
 components coordinate workflows; object components render typed profile data;
@@ -91,6 +104,7 @@ Tabs:
 
 Owner mode exposes edit and privacy controls. Other preview modes expose
 follow, friend-request, message, share, block, and report actions.
+Owner mode also links to protected profile settings.
 
 ## Pet Profile
 
@@ -135,6 +149,8 @@ The existing action endpoint gains narrowly scoped operations:
 - Submit a profile report with a reason and description.
 - Save owner privacy.
 - Save pet privacy.
+- Save the authenticated account's interface language and time zone through
+  the dedicated profile-preferences Action.
 
 All inputs pass through the existing Form Request. Actions write only to
 prototype session state and return named routes plus flash feedback.
@@ -151,9 +167,11 @@ prototype session state and return named routes plus flash feedback.
 
 ## Verification
 
-No PHP test files are created or changed. Verification consists of:
+Verification consists of:
 
 - PHP syntax checks and Pint.
+- Focused Pest coverage for registration payload reduction, settings
+  validation, persistence, route protection, and owner-only policy behavior.
 - Blade compilation and production asset build.
 - Route and component graph audits.
 - Playwright flows for owner/pet tabs, audience previews, independent follows,

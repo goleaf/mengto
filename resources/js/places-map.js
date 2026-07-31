@@ -52,6 +52,18 @@ const selectMarker = (map, marker, focus = false) => {
     }
 };
 
+const positionMarker = (marker) => {
+    const x = Number(marker.dataset.placeX);
+    const y = Number(marker.dataset.placeY);
+
+    if (!Number.isFinite(x) || !Number.isFinite(y) || x < 0 || x > 100 || y < 0 || y > 100) {
+        return;
+    }
+
+    marker.style.setProperty('--marker-x', `${x}%`);
+    marker.style.setProperty('--marker-y', `${y}%`);
+};
+
 const initializeMaps = () => {
     document.querySelectorAll('[data-place-map]').forEach((map) => {
         const markers = [...map.querySelectorAll('[data-place-marker]')];
@@ -60,6 +72,7 @@ const initializeMaps = () => {
         let zoom = 1;
 
         markers.forEach((marker, index) => {
+            positionMarker(marker);
             marker.addEventListener('click', () => selectMarker(map, marker));
             marker.addEventListener('keydown', (event) => {
                 const lastIndex = markers.length - 1;

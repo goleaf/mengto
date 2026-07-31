@@ -15,6 +15,7 @@ use App\Models\Sighting;
 use App\Services\QrCodeGenerator;
 use Database\Seeders\ForumModerationDefinitionSeeder;
 use Database\Seeders\SearchSeeder;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -27,7 +28,9 @@ test('a missing pet report stores only generalized public coordinates', function
         'slug' => 'scout',
     ]);
 
-    $this->post(route('lost-found.store'), searchCasePayload())
+    $this->post(route('lost-found.store'), searchCasePayload([
+        'photos' => [UploadedFile::fake()->image('scout.png', 3200, 2000)],
+    ]))
         ->assertRedirect();
 
     $searchCase = SearchCase::query()->firstOrFail();
@@ -41,8 +44,13 @@ test('a missing pet report stores only generalized public coordinates', function
         ->alerts_active->toBeTrue()
         ->and($searchCase->exact_location['latitude'])->toBe(54.683412)
         ->and($rawExactLocation)->not->toContain('54.683412')
+        ->and($searchCase->photos[0])->toEndWith('.webp')
         ->and(SearchAlert::query()->count())->toBe(1)
         ->and(AuditLog::query()->where('action', 'search-case.created')->count())->toBe(1);
+
+    Storage::disk('public')->assertExists(
+        str($searchCase->photos[0])->after('/storage/')->toString(),
+    );
 });
 
 test('public report never exposes exact location hidden marks or contact', function () {
@@ -90,6 +98,7 @@ test('one pet cannot have two active searches', function () {
 });
 
 test('sighting submissions are idempotent and retain actual observation time', function () {
+    Storage::fake('public');
     $searchCase = SearchCase::factory()->create([
         'owner_key' => 'another-owner',
         'coordinator_key' => 'another-owner',
@@ -98,10 +107,14 @@ test('sighting submissions are idempotent and retain actual observation time', f
     $observedAt = now()->subMinutes(42)->startOfSecond();
     $payload = sightingPayload($key, [
         'observed_at' => $observedAt->format('Y-m-d H:i:s'),
+        'photo' => UploadedFile::fake()->image('sighting.png', 3200, 2000),
     ]);
 
     $this->post(route('lost-found.sightings.store', $searchCase), $payload)->assertRedirect();
-    $this->post(route('lost-found.sightings.store', $searchCase), $payload)->assertRedirect();
+    $this->post(
+        route('lost-found.sightings.store', $searchCase),
+        sightingPayload($key, ['observed_at' => $observedAt->format('Y-m-d H:i:s')]),
+    )->assertRedirect();
 
     $sighting = Sighting::query()->firstOrFail();
 
@@ -109,8 +122,13 @@ test('sighting submissions are idempotent and retain actual observation time', f
         ->and($sighting->observed_at->equalTo($observedAt))->toBeTrue()
         ->and($sighting->submitted_at->greaterThan($sighting->observed_at))->toBeTrue()
         ->and($sighting->public_latitude)->toBe('54.684000')
+        ->and($sighting->photo_url)->toEndWith('.webp')
         ->and((string) $sighting->getRawOriginal('exact_location'))->not->toContain('54.683812')
         ->and($searchCase->refresh()->status)->toBe(SearchStatus::PossibleSighting);
+
+    Storage::disk('public')->assertExists(
+        str($sighting->photo_url)->after('/storage/')->toString(),
+    );
 });
 
 test('closed searches reject new sightings', function () {

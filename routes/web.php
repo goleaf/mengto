@@ -109,6 +109,7 @@ use App\Http\Controllers\PerformMessageActionController;
 use App\Http\Controllers\PetDirectoryPreviewController;
 use App\Http\Controllers\PetFriendCenterPreviewController;
 use App\Http\Controllers\PetProfilePreviewController;
+use App\Http\Controllers\PhotoInteractionController;
 use App\Http\Controllers\PlaceDetailPreviewController;
 use App\Http\Controllers\PlaceDirectoryPreviewController;
 use App\Http\Controllers\PostThreadPreviewController;
@@ -147,6 +148,7 @@ use App\Livewire\Auth\Login;
 use App\Livewire\Auth\Register;
 use App\Livewire\Auth\ResetPassword;
 use App\Livewire\Auth\VerifyEmail;
+use App\Livewire\ProfileSettings;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('web')
@@ -170,6 +172,12 @@ Route::middleware('web')
                     ->middleware(['signed', 'throttle:6,1'])
                     ->name('verification.verify');
                 Route::post('/logout', LogoutController::class)->name('logout');
+
+                Route::prefix('profile')
+                    ->name('profile.')
+                    ->group(function (): void {
+                        Route::get('/settings', ProfileSettings::class)->name('settings');
+                    });
 
                 Route::get('/circle', CirclePreviewController::class)->name('circle.index');
                 Route::get('/circle/connections', ConnectionCenterPreviewController::class)
@@ -222,6 +230,9 @@ Route::middleware('web')
                     ])
                     ->name('compose');
                 Route::post('/actions', PerformActionController::class)->name('actions.perform');
+                Route::post('/photos/actions', PhotoInteractionController::class)
+                    ->middleware('throttle:40,1')
+                    ->name('photos.interactions.store');
             });
 
         Route::get('/discover', DiscoverPreviewController::class)->name('discover.index');
@@ -525,9 +536,11 @@ Route::middleware(['web', 'auth', 'active', 'verified', ProtectMedicalResponse::
             ->middleware('throttle:12,1')
             ->name('documents.store');
         Route::get(
-            '/{medicalRecord}/documents/{medicalDocument}',
+            '/{medicalRecord}/documents/{document}',
             MedicalDocumentDownloadController::class,
-        )->name('documents.download');
+        )
+            ->scopeBindings()
+            ->name('documents.download');
         Route::post('/{medicalRecord}/access', MedicalAccessStoreController::class)
             ->middleware('throttle:12,1')
             ->name('access.store');

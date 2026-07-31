@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Enums\ExpertProfileStatus;
+use App\Enums\ReviewStatus;
 use App\Enums\VerificationStatus;
 use Database\Factories\ExpertProfileFactory;
 use Illuminate\Database\Eloquent\Builder;
@@ -58,6 +59,7 @@ use Illuminate\Support\Carbon;
  * @property string $public_name
  * @property int $publication_count
  * @property-read Collection<int, Publication> $publications
+ * @property-read Collection<int, Review> $publishedReviews
  * @property bool $qualification_verified
  * @property-read Collection<int, ExpertReport> $reports
  * @property string|null $response_time
@@ -206,6 +208,13 @@ class ExpertProfile extends Model
         return $this->hasMany(Review::class);
     }
 
+    /** @return HasMany<\App\Models\Review, $this>*/
+    public function publishedReviews(): HasMany
+    {
+        return $this->hasMany(Review::class)
+            ->where('status', ReviewStatus::Published->value);
+    }
+
     /** @return HasMany<\App\Models\ExpertEngagement, $this>*/
     public function engagements(): HasMany
     {
@@ -232,6 +241,18 @@ class ExpertProfile extends Model
     public function scopePublished(Builder $query): Builder
     {
         return $query->where('status', ExpertProfileStatus::Published->value);
+    }
+
+    public function scopeWithPublishedReviewSummary(Builder $query): Builder
+    {
+        return $query
+            ->select(['expert_profiles.id'])
+            ->withCount([
+                'publishedReviews as published_reviews_count',
+                'publishedReviews as published_verified_reviews_count' => fn (Builder $reviews): Builder => $reviews
+                    ->where('is_verified_client', true),
+            ])
+            ->withAvg('publishedReviews as published_review_average', 'rating');
     }
 
     public function scopeSearch(Builder $query, ?string $term): Builder

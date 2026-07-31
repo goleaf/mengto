@@ -1,7 +1,9 @@
 <?php
 
+use App\Actions\CreateReview;
 use App\Enums\BookingStatus;
 use App\Enums\ExpertProfileStatus;
+use App\Enums\ReviewStatus;
 use App\Models\AvailabilitySlot;
 use App\Models\Booking;
 use App\Models\Consultation;
@@ -10,6 +12,7 @@ use App\Models\ExpertProfile;
 use App\Models\Review;
 use App\Models\Service;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -115,6 +118,56 @@ test('only a completed service can produce one verified review', function () {
     expect(Review::query()->count())->toBe(1)
         ->and($expert->refresh()->verified_review_count)->toBe(1)
         ->and($expert->review_average)->toBe('5.00');
+});
+
+test('review summary aggregates use one query and include only published reviews', function () {
+    $expert = ExpertProfile::factory()->create();
+    $service = Service::factory()->create(['expert_profile_id' => $expert->id]);
+    $booking = Booking::factory()->completed()->create([
+        'expert_profile_id' => $expert->id,
+        'service_id' => $service->id,
+        'client_key' => 'mia-carter',
+    ]);
+
+    Review::factory()->create([
+        'expert_profile_id' => $expert->id,
+        'service_id' => $service->id,
+        'is_verified_client' => false,
+        'rating' => 3,
+        'status' => ReviewStatus::Published,
+    ]);
+    Review::factory()->create([
+        'expert_profile_id' => $expert->id,
+        'service_id' => $service->id,
+        'rating' => 1,
+        'status' => ReviewStatus::Hidden,
+    ]);
+
+    DB::flushQueryLog();
+    DB::enableQueryLog();
+
+    app(CreateReview::class)->handle($expert, [
+        'booking_id' => $booking->id,
+        'rating' => 5,
+        'communication_rating' => 5,
+        'clarity_rating' => 5,
+        'organization_rating' => 4,
+        'price_transparency_rating' => 5,
+        'body' => 'The professional explained the scope clearly and provided a useful next step without guarantees.',
+        'is_anonymous' => true,
+    ]);
+
+    $aggregateQueries = collect(DB::getQueryLog())
+        ->pluck('query')
+        ->filter(static fn (string $query): bool => str_contains($query, '"reviews"')
+            && (str_contains(strtolower($query), 'count(') || str_contains(strtolower($query), 'avg(')));
+
+    DB::disableQueryLog();
+
+    expect($aggregateQueries)->toHaveCount(1)
+        ->and($expert->refresh()->review_count)->toBe(2)
+        ->and($expert->verified_review_count)->toBe(1)
+        ->and($expert->review_average)->toBe('4.00');
 });
 
 test('specialist must confirm the written consultation summary before it becomes final', function () {

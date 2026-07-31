@@ -1,6 +1,6 @@
 @props(['owner', 'activeSection'])
 
-<div class="ml-auto flex items-center gap-2">
+<div {{ $attributes->class('header-actions') }}>
     <x-icon-link
         :href="route('circle.index')"
         label="{{ __('ui.my_circle_201c8528b5') }}"
@@ -37,5 +37,6 @@
             decorative
             :class="$activeSection === 'profile' ? 'ring-2 ring-paw-ink' : 'ring-2 ring-white'"
         />
+        <span class="header-profile__name">{{ $owner['name'] }}</span>
     </a>
 </div>

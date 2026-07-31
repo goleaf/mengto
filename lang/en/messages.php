@@ -3649,4 +3649,9 @@ return [
     'zoe_patel_330ba10552' => 'Zoe Patel',
     'zoe_patel_profile_portrait_5ff8e8ec00' => 'Zoe Patel profile portrait',
     'zone_coordinators_6dfa3e2741' => 'Zone coordinators',
+    'photo_unavailable' => 'This photo is unavailable.',
+    'photo_reaction_removed' => 'Your reaction was removed from this photo.',
+    'photo_reaction_updated' => 'Your reaction to this photo was updated.',
+    'photo_comment_added' => 'Your comment was added to this photo.',
+    'public_image_processing_failed' => 'The image could not be processed safely. Choose another JPG, PNG, or WebP file.',
 ];

@@ -14,6 +14,41 @@
     }
 }
 
+.site-header {
+    box-shadow: 0 1px 0 rgb(39 49 47 / 3%);
+
+    &__utility,
+    &__navigation-inner {
+        inline-size: 100%;
+        max-inline-size: 80rem;
+        margin-inline: auto;
+    }
+
+    &__utility {
+        display: flex;
+        min-inline-size: 0;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.75rem 1rem;
+    }
+
+    &__navigation {
+        display: none;
+    }
+
+    &__search {
+        max-inline-size: 42rem;
+    }
+}
+
+.header-actions {
+    display: flex;
+    flex: none;
+    align-items: center;
+    gap: 0.5rem;
+    margin-inline-start: auto;
+}
+
 .header-icon,
 .search-link,
 .desktop-nav__item {
@@ -23,6 +58,7 @@
 .header-icon,
 .brand-link,
 .search-link,
+.header-profile,
 .desktop-nav__item,
 .mobile-nav__item {
     @include focus-ring;
@@ -74,13 +110,24 @@
 }
 
 .desktop-nav {
+    inline-size: 100%;
+    min-inline-size: 0;
+    justify-content: space-between;
+    gap: 0.25rem;
+
     &__item {
-        display: block;
+        display: inline-flex;
+        min-block-size: $touch-target;
+        flex: 0 0 auto;
+        align-items: center;
+        justify-content: center;
         border-radius: $control-radius;
-        padding: 0.5rem 0.75rem;
+        padding-inline: 0.625rem;
         color: $muted;
         font-size: 0.875rem;
         font-weight: 600;
+        line-height: 1.25rem;
+        white-space: nowrap;
 
         &:hover {
             background: $white;
@@ -149,11 +196,27 @@
     inline-size: $touch-target;
     block-size: $touch-target;
     place-items: center;
+
+    &__name {
+        display: none;
+        min-inline-size: 0;
+        max-inline-size: 8rem;
+        overflow: hidden;
+        color: $ink;
+        font-size: 0.875rem;
+        font-weight: 600;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
 }
 
 @media (min-width: 40rem) {
     .header-icon--from-sm {
         display: grid;
+    }
+
+    .site-header__utility {
+        padding-inline: 1.5rem;
     }
 }
 
@@ -186,20 +249,57 @@
     }
 }
 
-@media (min-width: 64rem) {
-    .header-icon,
-    .search-link {
-        inline-size: 2.5rem;
-        block-size: 2.5rem;
+@media (min-width: 80rem) {
+    .site-header {
+        &__utility {
+            gap: 1rem;
+            padding: 0.625rem 2rem;
+        }
+
+        &__navigation {
+            display: block;
+            border-block-start: 1px solid $line;
+            background: rgb(255 255 255 / 48%);
+        }
+
+        &__navigation-inner {
+            padding-inline: 2rem;
+        }
     }
 
-    .search-link {
-        inline-size: 100%;
+    .header-search {
+        margin-inline-start: 0.5rem;
+    }
+
+    .header-profile {
+        display: inline-flex;
+        inline-size: auto;
+        min-inline-size: $touch-target;
+        gap: 0.625rem;
+        border: 1px solid $line;
+        border-radius: $control-radius;
+        background: $white;
+        padding-inline-end: 0.75rem;
+        box-shadow: $control-shadow;
+
+        &__name {
+            display: block;
+        }
+
+        &[aria-current='page'] {
+            border-color: $ink;
+        }
+    }
+
+    .app-main {
+        padding-block-end: 2rem;
     }
 }
 
-@media (min-width: 80rem) {
-    .app-main {
-        padding-block-end: 2rem;
+@media (forced-colors: active) {
+    .site-header,
+    .site-header__navigation,
+    .header-profile {
+        border-color: CanvasText;
     }
 }

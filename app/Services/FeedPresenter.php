@@ -11,6 +11,7 @@ final class FeedPresenter
     public function __construct(
         private readonly FeedCatalog $catalog,
         private readonly PrototypeState $state,
+        private readonly PhotoInteractionState $photoInteractions,
         private readonly ProfilePresenter $profiles,
         private readonly InteractionPresenter $interactions,
     ) {}
@@ -106,6 +107,26 @@ final class FeedPresenter
         foreach ($this->allPosts() as $post) {
             if ($post['key'] === $key && ! $post['blocked']) {
                 return $post;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @return array<string, mixed>|null
+     */
+    public function photo(string $key): ?array
+    {
+        foreach ($this->allPosts() as $post) {
+            if ($post['blocked']) {
+                continue;
+            }
+
+            foreach ($post['media'] as $media) {
+                if (($media['photo_key'] ?? '') === $key) {
+                    return $media;
+                }
             }
         }
 
@@ -269,6 +290,17 @@ final class FeedPresenter
             ...array_map(fn (array $post): array => $this->createdPost($post), $this->state->posts()),
             ...$this->catalog->posts(),
         ];
+        $photoKeys = [];
+
+        foreach ($posts as $post) {
+            foreach ($post['media'] ?? [] as $index => $item) {
+                if (($item['type'] ?? '') === 'image') {
+                    $photoKeys[] = (string) $post['key'].'-photo-'.($index + 1);
+                }
+            }
+        }
+
+        $this->photoInteractions->load($photoKeys);
 
         return array_map(fn (array $post): array => $this->decorate($post), $posts);
     }
@@ -354,22 +386,12 @@ final class FeedPresenter
 
         $reactionTotal = array_sum($reactionCounts);
         $replyTotal = (int) ($post['replies'] ?? 0) + count($this->state->comments($key));
-        $media = $post['media'] ?? [];
-        $firstMedia = $media[0] ?? null;
         $authorKey = Str::slug((string) ($post['handle'] ?? $post['author']));
         $supportiveOnly = ($post['urgent'] ?? false) || ($post['sensitive'] ?? false);
         $reactionOptions = $this->catalog->reactionOptions($supportiveOnly);
-        $reactionItems = [];
-
-        foreach ($reactionOptions as $value => $label) {
-            $reactionItems[] = [
-                'value' => $value,
-                'label' => $label,
-                'icon' => $this->reactionIcon($value),
-                'count' => (int) ($reactionCounts[$value] ?? 0),
-                'selected' => $selectedReaction === $value,
-            ];
-        }
+        $reactionItems = $this->reactionItems($reactionOptions, $reactionCounts, $selectedReaction);
+        $media = $this->decorateMedia($post['media'] ?? [], $post, $supportiveOnly);
+        $firstMedia = $media[0] ?? null;
 
         return [
             ...$post,
@@ -385,6 +407,7 @@ final class FeedPresenter
             'reaction_counts' => $reactionCounts,
             'reaction_total' => $reactionTotal,
             'reply_total' => $replyTotal,
+            'media' => $media,
             'saved' => $this->state->isActive('saved', $key),
             'subscribed' => $this->state->isActive('post-subscriptions', $key),
             'hidden' => $this->state->isActive('hidden-posts', $key),
@@ -417,6 +440,93 @@ final class FeedPresenter
             ],
             'pawed' => $selectedReaction !== null || $this->state->isActive('paws', $key),
         ];
+    }
+
+    /**
+     * @param  array<int, array<string, mixed>>  $media
+     * @param  array<string, mixed>  $post
+     * @return array<int, array<string, mixed>>
+     */
+    private function decorateMedia(array $media, array $post, bool $supportiveOnly): array
+    {
+        $decorated = [];
+
+        foreach ($media as $index => $item) {
+            if (($item['type'] ?? '') !== 'image') {
+                $decorated[] = $item;
+
+                continue;
+            }
+
+            $photoKey = (string) $post['key'].'-photo-'.($index + 1);
+            $selectedReaction = $this->photoInteractions->reaction($photoKey);
+            $reactionCounts = $item['reaction_counts'] ?? [];
+
+            foreach ($this->photoInteractions->reactionCounts($photoKey) as $reaction => $count) {
+                $reactionCounts[$reaction] = (int) ($reactionCounts[$reaction] ?? 0) + $count;
+            }
+
+            $reactionOptions = $this->catalog->reactionOptions($supportiveOnly);
+            $comments = $this->photoInteractions->comments($photoKey);
+
+            $decorated[] = [
+                ...$item,
+                'photo_key' => $photoKey,
+                'post_key' => (string) $post['key'],
+                'position' => $index + 1,
+                'viewer_srcset' => $item['image_small'].' 576w, '
+                    .$item['image_medium'].' 900w, '
+                    .$item['image'].' 1200w',
+                'author' => $post['author'],
+                'represented' => $post['represented'],
+                'avatar' => $post['avatar'],
+                'post_url' => route('posts.show', ['post' => $post['key']]),
+                'reaction_options' => $reactionOptions,
+                'reaction_items' => $this->reactionItems(
+                    $reactionOptions,
+                    $reactionCounts,
+                    $selectedReaction,
+                ),
+                'selected_reaction' => $selectedReaction,
+                'selected_reaction_label' => $selectedReaction === null
+                    ? null
+                    : $reactionOptions[$selectedReaction],
+                'reaction_total' => array_sum($reactionCounts),
+                'comments' => $comments,
+                'comment_count' => $this->photoInteractions->commentCount($photoKey),
+                'comment_idempotency_key' => Str::lower((string) Str::ulid()),
+            ];
+        }
+
+        return $decorated;
+    }
+
+    /**
+     * @param  array<string, string>  $options
+     * @param  array<string, int>  $counts
+     * @return array<int, array{
+     *     value: string,
+     *     label: string,
+     *     icon: string,
+     *     count: int,
+     *     selected: bool
+     * }>
+     */
+    private function reactionItems(array $options, array $counts, ?string $selected): array
+    {
+        $items = [];
+
+        foreach ($options as $value => $label) {
+            $items[] = [
+                'value' => $value,
+                'label' => $label,
+                'icon' => $this->reactionIcon($value),
+                'count' => (int) ($counts[$value] ?? 0),
+                'selected' => $selected === $value,
+            ];
+        }
+
+        return $items;
     }
 
     /**

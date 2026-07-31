@@ -8,13 +8,16 @@ use App\Models\CareEntry;
 use App\Models\CareJournal;
 use App\Models\CareMedia;
 use App\Services\ForumActor;
-use Illuminate\Support\Facades\Storage;
+use App\Services\PrivateFileResponse;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class PrepareCareMediaDownload
 {
-    public function __construct(private readonly ForumActor $actor) {}
+    public function __construct(
+        private readonly ForumActor $actor,
+        private readonly PrivateFileResponse $privateFiles,
+    ) {}
 
     public function forOwner(CareJournal $journal, CareMedia $media): StreamedResponse
     {
@@ -52,9 +55,13 @@ class PrepareCareMediaDownload
         string $actorKey,
         string $actorRole,
     ): StreamedResponse {
-        if (! Storage::disk($media->disk)->exists($media->path)) {
-            abort(404);
-        }
+        $response = $this->privateFiles->download(
+            disk: $media->disk,
+            path: $media->path,
+            allowedDirectory: 'care-journals/'.$media->care_journal_id,
+            downloadName: $media->original_name,
+            headers: ['Content-Type' => $media->mime_type],
+        );
 
         AuditLog::query()->create([
             'actor_key' => $actorKey,
@@ -69,11 +76,7 @@ class PrepareCareMediaDownload
             ],
         ]);
 
-        return Storage::disk($media->disk)->download(
-            $media->path,
-            $media->original_name,
-            ['Content-Type' => $media->mime_type],
-        );
+        return $response;
     }
 
     private function assertMediaBelongsToJournal(

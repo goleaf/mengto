@@ -3,7 +3,7 @@
 ## Storage Baseline
 
 - 68 migrations created 71 SQLite tables at baseline; the current additive
-  schema has 96 migrations and 165 tables after identity, care-sync,
+  schema has 96 migrations and 163 tables after identity, care-sync,
   social-state, device-lifecycle, forum taxonomy, global animal taxonomy,
   reputation, moderation, credential verification, structured-community, and
   persistent-group work.
@@ -17,7 +17,7 @@
 | Domain | Tables |
 | --- | --- |
 | Framework | `users`, password reset, sessions, cache/locks, jobs/batches/failed jobs |
-| Social identity/state | `pet_profiles`, encrypted/versioned `user_domain_states` |
+| Social identity/state | `pet_profiles`, encrypted/versioned `user_domain_states`, `photo_assets`, `photo_comments`, `photo_reactions` |
 | Forum | topics, answers, comments, votes, engagements, blocks, polymorphic reports, report events/evidence, categories/translations/aliases/redirects, topic definitions, reputation/trust/badges, confirmations, moderation cases/actions/appeals/recusals, notifications, persistent groups/memberships/invitations/audit events/taxon links, group activities/announcements/private files/polls/options/votes |
 | Animal taxonomy | versioned sources/imports/versions/issues, taxa, names, external identifiers, change history, domestic classifications, breed registries, community groups |
 | Knowledge | articles, append-only versions, corrections, normalized collaborators, append-only workflow events |
@@ -42,6 +42,9 @@ legacy key has a verified user mapping.
 - Composite unique constraints protect one care/medical record per owner and
   pet, one engagement per actor/target, one order/review per eligible source,
   and one idempotent external command/event.
+- Publication photos use a server-resolved stable key. A unique
+  `(photo_asset_id, user_id)` constraint permits one replaceable reaction per
+  member/photo, while `(user_id, idempotency_key)` prevents duplicate comments.
 - Check constraints are used where supported and portable; enums and
   validation remain the application contract.
 - Actor, owner, role, amount, currency, status, moderation, and audit fields are

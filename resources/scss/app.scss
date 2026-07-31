@@ -5,6 +5,7 @@
 @use 'detail';
 @use 'controls';
 @use 'forms';
+@use 'auth';
 @use 'profile';
 @use 'content';
 @use 'feed';
@@ -13,12 +14,14 @@
 @use 'pet-friends';
 @use 'groups';
 @use 'places';
+@use 'place-directory';
 @use 'marketplace';
 @use 'messaging';
 @use 'forum';
 @use 'walks';
 @use 'relationships';
 @use 'media';
+@use 'photo-viewer';
 @use 'medical';
 @use 'care';
 @use 'devices';

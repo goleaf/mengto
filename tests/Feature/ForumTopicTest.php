@@ -47,6 +47,7 @@ test('owner can publish a structured topic with safe media storage', function ()
         ->and($topic->media)->toHaveCount(1);
 
     Storage::disk('public')->assertExists($topic->media[0]['path']);
+    expect($topic->media[0]['path'])->toEndWith('.webp');
 });
 
 test('topic creation validates structure before persistence', function () {

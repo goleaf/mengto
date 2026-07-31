@@ -8,6 +8,7 @@ use App\Livewire\Auth\Login;
 use App\Livewire\Auth\Register;
 use App\Livewire\Auth\ResetPassword;
 use App\Livewire\Auth\VerifyEmail;
+use App\Livewire\ProfileSettings;
 use App\Models\User;
 use Illuminate\Auth\Notifications\ResetPassword as ResetPasswordNotification;
 use Illuminate\Auth\Notifications\VerifyEmail as VerifyEmailNotification;
@@ -27,6 +28,69 @@ test('guest can render localized authentication pages', function () {
         ->assertSee('Электронная почта')
         ->assertSee('wire:offline', false)
         ->assertSee(__('auth.connection.offline'));
+});
+
+test('guest account forms share the responsive accessible authentication shell', function () {
+    auth()->logout();
+
+    $pages = [
+        route('login') => 'login',
+        route('register') => 'register',
+        route('password.request') => 'forgot-password',
+        route('password.reset', ['token' => 'layout-token']) => 'reset-password',
+    ];
+
+    foreach ($pages as $url => $page) {
+        $response = $this->get($url)
+            ->assertOk()
+            ->assertSee('data-auth-shell', false)
+            ->assertSee('data-auth-page="'.$page.'"', false)
+            ->assertSee('class="auth-story"', false)
+            ->assertSee('class="auth-card"', false);
+
+        expect(substr_count((string) $response->getContent(), '<h1'))
+            ->toBe(1);
+    }
+});
+
+test('authenticated account forms share the responsive accessible authentication shell', function () {
+    $unverified = User::factory()->unverified()->create();
+    $this->actingAs($unverified);
+
+    $pages = [
+        route('verification.notice') => 'verify-email',
+        route('password.confirm') => 'confirm-password',
+    ];
+
+    foreach ($pages as $url => $page) {
+        $response = $this->get($url)
+            ->assertOk()
+            ->assertSee('data-auth-shell', false)
+            ->assertSee('data-auth-page="'.$page.'"', false)
+            ->assertSee('class="auth-story"', false)
+            ->assertSee('class="auth-card"', false);
+
+        expect(substr_count((string) $response->getContent(), '<h1'))
+            ->toBe(1);
+    }
+});
+
+test('authentication fields keep explicit labels and browser autocomplete contracts', function () {
+    auth()->logout();
+
+    $this->get(route('login'))
+        ->assertOk()
+        ->assertSee('for="login-email"', false)
+        ->assertSee('id="login-email"', false)
+        ->assertSee('autocomplete="email"', false)
+        ->assertSee('for="login-password"', false)
+        ->assertSee('autocomplete="current-password"', false);
+
+    $this->get(route('register'))
+        ->assertOk()
+        ->assertSee('autocomplete="name"', false)
+        ->assertSee('autocomplete="new-password"', false)
+        ->assertSee('register-password-feedback', false);
 });
 
 test('stateful authentication forms expose localized unsaved state feedback', function () {
@@ -161,14 +225,13 @@ test('login rejects invalid and blocked accounts with the same safe error', func
 test('registration creates a normalized verified-pending account', function () {
     Notification::fake();
     auth()->logout();
+    app()->setLocale('lt');
 
     Livewire::test(Register::class)
         ->set('form.name', '  Ona Petraitė  ')
         ->set('form.email', 'ONA@example.test')
         ->set('form.password', 'Secure-Paw-2026')
         ->set('form.password_confirmation', 'Secure-Paw-2026')
-        ->set('form.locale', 'lt')
-        ->set('form.timezone', 'Europe/Vilnius')
         ->call('register')
         ->assertHasNoErrors()
         ->assertRedirect(route('verification.notice'));
@@ -179,9 +242,10 @@ test('registration creates a normalized verified-pending account', function () {
         ->and($user->actor_key)->toStartWith('user-')
         ->and($user->email_verified_at)->toBeNull()
         ->and($user->locale)->toBe('lt')
-        ->and($user->timezone)->toBe('Europe/Vilnius');
+        ->and($user->timezone)->toBe('UTC');
 
     $this->assertAuthenticatedAs($user);
+    app()->setLocale('en');
 });
 
 test('registration validates every untrusted account field', function () {
@@ -192,18 +256,73 @@ test('registration validates every untrusted account field', function () {
         ->set('form.email', 'not-an-email')
         ->set('form.password', 'short')
         ->set('form.password_confirmation', 'different')
-        ->set('form.locale', 'unsupported')
-        ->set('form.timezone', 'not-a-timezone')
         ->call('register')
         ->assertHasErrors([
             'form.name',
             'form.email',
             'form.password',
-            'form.locale',
-            'form.timezone',
         ]);
 
     $this->assertGuest();
+});
+
+test('registration does not expose language or timezone controls', function () {
+    auth()->logout();
+
+    Livewire::test(Register::class)
+        ->assertDontSee('register-locale', false)
+        ->assertDontSee('register-timezone', false)
+        ->assertDontSee('form.locale', false)
+        ->assertDontSee('form.timezone', false);
+});
+
+test('active user can update language and timezone from profile settings', function () {
+    $savedMessage = trans('auth.settings.saved', locale: 'ru');
+
+    Livewire::test(ProfileSettings::class)
+        ->assertSet('form.locale', 'en')
+        ->assertSet('form.timezone', 'Europe/Vilnius')
+        ->assertSee('wire:target="save"', false)
+        ->assertSee('wire:offline', false)
+        ->set('form.locale', 'ru')
+        ->set('form.timezone', 'Europe/Riga')
+        ->call('save')
+        ->assertHasNoErrors()
+        ->assertSet('feedback', $savedMessage);
+
+    expect($this->authenticatedUser->fresh())
+        ->locale->toBe('ru')
+        ->timezone->toBe('Europe/Riga')
+        ->and(session('locale'))->toBe('ru');
+
+    app()->setLocale('en');
+});
+
+test('active user can render the full profile settings route', function () {
+    $this->get(route('profile.settings'))
+        ->assertSuccessful()
+        ->assertSee('data-section="profile-settings"', false)
+        ->assertSee('id="profile-settings-locale"', false)
+        ->assertSee('id="profile-settings-timezone"', false);
+});
+
+test('profile settings reject unsupported account preferences', function () {
+    Livewire::test(ProfileSettings::class)
+        ->set('form.locale', 'unsupported')
+        ->set('form.timezone', 'not-a-timezone')
+        ->call('save')
+        ->assertHasErrors(['form.locale', 'form.timezone']);
+
+    expect($this->authenticatedUser->fresh())
+        ->locale->toBe('en')
+        ->timezone->toBe('Europe/Vilnius');
+});
+
+test('profile settings route redirects guests to login', function () {
+    auth()->logout();
+
+    $this->get(route('profile.settings'))
+        ->assertRedirect(route('login'));
 });
 
 test('password reset request does not reveal whether an account exists', function () {

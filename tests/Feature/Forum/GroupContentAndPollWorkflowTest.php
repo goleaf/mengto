@@ -209,7 +209,7 @@ test('group files remain private and require membership at download time', funct
         ->get(route('forum.groups.files.download', [$group, $file]))
         ->assertForbidden();
 
-    expect(fn () => app(PrepareForumGroupFileDownload::class)->handle($outsider, $file))
+    expect(fn () => app(PrepareForumGroupFileDownload::class)->handle($outsider, $group, $file))
         ->toThrow(AuthorizationException::class);
 });
 

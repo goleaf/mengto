@@ -7,13 +7,15 @@ use App\Models\MedicalAccessGrant;
 use App\Models\MedicalDocument;
 use App\Models\MedicalRecord;
 use App\Services\ForumActor;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Validation\ValidationException;
+use App\Services\PrivateFileResponse;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class PrepareMedicalDocumentDownload
 {
-    public function __construct(private readonly ForumActor $actor) {}
+    public function __construct(
+        private readonly ForumActor $actor,
+        private readonly PrivateFileResponse $privateFiles,
+    ) {}
 
     public function forOwner(MedicalRecord $record, MedicalDocument $document): StreamedResponse
     {
@@ -44,9 +46,13 @@ class PrepareMedicalDocumentDownload
         string $actorKey,
         string $actorRole,
     ): StreamedResponse {
-        if (! Storage::disk('local')->exists($document->file_path)) {
-            abort(404);
-        }
+        $response = $this->privateFiles->download(
+            disk: 'local',
+            path: $document->file_path,
+            allowedDirectory: 'medical-records/'.$document->medical_record_id,
+            downloadName: $document->original_name,
+            headers: ['Content-Type' => $document->mime_type],
+        );
 
         $document->increment('download_count');
 
@@ -62,11 +68,7 @@ class PrepareMedicalDocumentDownload
             ],
         ]);
 
-        return Storage::disk('local')->download(
-            $document->file_path,
-            $document->original_name,
-            ['Content-Type' => $document->mime_type],
-        );
+        return $response;
     }
 
     private function assertDocumentBelongsToRecord(
@@ -74,9 +76,7 @@ class PrepareMedicalDocumentDownload
         MedicalDocument $document,
     ): void {
         if ($document->medical_record_id !== $record->id) {
-            throw ValidationException::withMessages([
-                'document' => __('messages.this_document_does_not_belong_to_the_selected_medical_re_f2729f2963'),
-            ]);
+            abort(404);
         }
     }
 }

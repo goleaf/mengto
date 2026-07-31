@@ -135,6 +135,13 @@ function evidenceFor(string $id): array
             'Deterministic volume fixtures',
             'Care/device/place/schema performance regressions',
         ],
+        'PRD-SOCIAL-008' => [
+            '`FeedPresenter`, `PhotoInteractionState`, `PerformPhotoInteraction`',
+            'Photo interaction migration, policies, `PhotoInteractionRequest`, server catalogue resolution',
+            '`post-media-gallery`, `photo-social-panel`, `photo-viewer.js`, localized PhotoSwipe controls',
+            'Bounded deterministic feed catalogue',
+            '`tests/Feature/PhotoViewerTest.php` and connected responsive browser review',
+        ],
         'LAR-21' => [
             'Direct Actions and framework authentication events',
             'Transactional domain mutations and idempotent notification records',
@@ -177,12 +184,33 @@ function evidenceFor(string $id): array
             'Schema fixtures',
             '`tests/Feature/Database/SchemaIntegrityTest.php`',
         ],
+        'PERF-ASSET-001' => [
+            '`StorePublicImage`, `config/images.php`, Vite production assets',
+            'Bounded Form Request dimensions and framework-generated public paths',
+            'Responsive galleries backed by optimized WebP uploads',
+            'N/A',
+            '`PublicImageProcessingTest`, marketplace, forum, and lost/found upload regressions',
+        ],
+        'SEC-UPLOAD-001' => [
+            '`StorePublicImage` and private-media Actions',
+            'Content, MIME, size, dimension, generated-name, disk, and policy boundaries',
+            'Localized upload validation errors',
+            'N/A',
+            '`PublicImageProcessingTest`, `SecurityAttackSurfaceTest`, and media workflow tests',
+        ],
         'SYS-LOG-001' => [
             '`app/Http/Middleware/AttachRequestContext.php`',
             '`config/platform.php`, exception response correlation',
             '`X-Request-ID` response header',
             'N/A',
             '`tests/Feature/ObservabilityTest.php`',
+        ],
+        'SYS-FRONTEND-003' => [
+            '`resources/js/photo-viewer.js`, PhotoSwipe 5.4.4',
+            'Progressive anchor fallback and server-prepared media contract',
+            '`post-media-gallery`, responsive `photo-viewer.scss`, localized control labels',
+            'Bounded deterministic feed catalogue',
+            '`tests/Feature/PhotoViewerTest.php` and connected responsive browser review',
         ],
     ];
 
@@ -321,6 +349,10 @@ function blockerFor(string $id): string
 
 function verificationFor(string $id): string
 {
+    if (in_array($id, ['PRD-SOCIAL-008', 'SYS-FRONTEND-003'], true)) {
+        return 'php artisan test --compact tests/Feature/PhotoViewerTest.php tests/Feature/ArchitectureComplianceTest.php && npm run build && connected Playwright viewport/keyboard review';
+    }
+
     if ($id === 'TEST-COVERAGE-001') {
         return 'php artisan test --coverage --min=90 --compact';
     }
@@ -333,7 +365,11 @@ function verificationFor(string $id): string
         return 'php artisan test --compact tests/Feature/Database && php scripts/verify-fresh-database.php';
     }
 
-    if ($id === 'SYS-TAILWIND-001' || $id === 'PERF-ASSET-001') {
+    if ($id === 'PERF-ASSET-001' || $id === 'SEC-UPLOAD-001') {
+        return 'php artisan test --compact tests/Feature/PublicImageProcessingTest.php tests/Feature/MarketplaceFlowTest.php tests/Feature/ForumTopicTest.php tests/Feature/LostFoundFlowTest.php tests/Feature/SecurityAttackSurfaceTest.php && npm audit --audit-level=high && npm run build';
+    }
+
+    if ($id === 'SYS-TAILWIND-001') {
         return 'npm audit --audit-level=high && npm run build';
     }
 

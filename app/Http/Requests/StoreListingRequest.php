@@ -78,7 +78,12 @@ class StoreListingRequest extends FormRequest
             'return_policy' => ['nullable', 'string', 'max:2000'],
             'cover_url' => ['nullable', 'url:http,https', 'max:2048'],
             'photos' => ['nullable', 'array', 'max:8'],
-            'photos.*' => ['image', 'mimes:jpg,jpeg,png,webp', 'max:8192'],
+            'photos.*' => [
+                'image',
+                'mimes:jpg,jpeg,png,webp',
+                'max:8192',
+                'dimensions:min_width=32,min_height=32,max_width=12000,max_height=12000',
+            ],
             'video' => ['nullable', 'file', 'mimes:mp4,mov,webm', 'max:30720'],
             'business_name' => [
                 'nullable',

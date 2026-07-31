@@ -44,6 +44,16 @@ Automated browser checks cover semantic names, focus visibility, page overflow,
 console errors, and critical interaction. Manual review covers keyboard order,
 screen-reader announcements, touch, zoom, reduced motion, and forced colors.
 
+The shared login, registration, password-recovery, password-confirmation, and
+email-verification interface was checked at 320x700, 375x812, 768x900,
+1024x768, 1440x900, and 1920x1080. The rendered
+pages had one `main`, one `h1`, no horizontal overflow, no unnamed buttons, no
+unlabelled visible fields, and no action links or buttons below the 44-pixel
+target contract. Russian registration fit a 1440x900 viewport without document
+overflow; shorter viewports retain normal page scrolling. A rejected Livewire
+login announced the localized safe error and restored focus to the email
+field. The current-page console contained no warnings or errors.
+
 The mentorship flow was checked at 1440x900 and 375x812 with one logical
 heading, no unnamed buttons, no unlabeled controls, no horizontal overflow,
 44-pixel primary controls, no raw translation keys, and no browser-console

@@ -44,6 +44,13 @@ test('the home preview links Scout to the pet profile', function () {
         ->toBe(1);
 });
 
+test('owner profile links authenticated users to profile settings', function () {
+    $this->get(route('profile.mia'))
+        ->assertSuccessful()
+        ->assertSee('href="'.route('profile.settings').'"', false)
+        ->assertSee(__('auth.settings.action'));
+});
+
 test('the Scout profile uses a consistent Border Collie photo set', function () {
     $response = $this->get(route('pets.scout', ['tab' => 'photos']));
 

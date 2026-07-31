@@ -1,31 +1,36 @@
-<div>
-    <header class="mb-6">
-        <h1 class="text-2xl font-semibold">{{ __('auth.password.forgot_title') }}</h1>
-        <p class="mt-2 text-sm leading-6 text-paw-muted">{{ __('auth.password.forgot_description') }}</p>
-    </header>
+<div data-auth-page="forgot-password">
+    <x-auth-page-header
+        eyebrow="{{ __('auth.password.eyebrow') }}"
+        title="{{ __('auth.password.forgot_title') }}"
+        description="{{ __('auth.password.forgot_description') }}"
+    />
 
     @if ($sent)
-        <p role="status" class="mb-5 rounded-md border border-paw-leaf bg-paw-mint px-4 py-3 text-sm">
+        <x-auth-status role="status" class="mb-5">
             {{ __('auth.password.link_sent') }}
-        </p>
+        </x-auth-status>
     @endif
 
-    <form wire:submit="sendResetLink" class="space-y-5">
-        <div>
-            <label for="forgot-email" class="block text-sm font-medium">{{ __('auth.fields.email') }}</label>
-            <input id="forgot-email" type="email" wire:model="email" autocomplete="email" required autofocus aria-describedby="forgot-email-error" class="mt-2 block min-h-11 w-full rounded-md border border-paw-line bg-white px-3 py-2 text-base focus:border-paw-leaf focus:outline-none focus:ring-2 focus:ring-paw-leaf/25">
-            @error('email')
-                <p id="forgot-email-error" role="alert" class="mt-2 text-sm text-paw-coral">{{ $message }}</p>
-            @enderror
-        </div>
+    <form wire:submit="sendResetLink" class="auth-form">
+        <x-auth-field
+            id="forgot-email"
+            label="{{ __('auth.fields.email') }}"
+            error="email"
+            type="email"
+            autocomplete="email"
+            wire:model="email"
+            autofocus
+        />
 
-        <button type="submit" wire:loading.attr="disabled" wire:target="sendResetLink" class="inline-flex min-h-11 w-full items-center justify-center rounded-md bg-paw-leaf px-4 py-2 font-semibold text-white hover:bg-paw-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-paw-leaf focus-visible:ring-offset-2 disabled:cursor-wait disabled:opacity-60">
-            <span wire:loading.remove wire:target="sendResetLink">{{ __('auth.password.send_link') }}</span>
-            <span wire:loading wire:target="sendResetLink">{{ __('auth.password.sending') }}</span>
-        </button>
+        <x-auth-submit
+            target="sendResetLink"
+            label="{{ __('auth.password.send_link') }}"
+            loading-label="{{ __('auth.password.sending') }}"
+        />
     </form>
 
-    <a href="{{ route('login') }}" wire:navigate class="mt-6 inline-flex text-sm font-semibold text-paw-leaf underline-offset-4 hover:underline">
-        {{ __('auth.password.back_to_login') }}
+    <a href="{{ route('login') }}" wire:navigate class="auth-back-link">
+        <x-lucide-arrow-left aria-hidden="true" />
+        <span>{{ __('auth.password.back_to_login') }}</span>
     </a>
 </div>

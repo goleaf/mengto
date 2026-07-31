@@ -20,6 +20,7 @@ class SubmitSighting
     public function __construct(
         private readonly ForumActor $actor,
         private readonly SearchSafety $safety,
+        private readonly StorePublicImage $storePublicImage,
     ) {}
 
     /** @param array<string, mixed> $data */
@@ -81,8 +82,8 @@ class SubmitSighting
                 'animal_condition' => $data['animal_condition'] ?? null,
                 'danger' => $data['danger'] ?? null,
                 'notes' => $data['notes'] ?? null,
-                'photo_url' => $this->store($data['photo'] ?? null, 'sightings/photos'),
-                'video_url' => $this->store($data['video'] ?? null, 'sightings/videos'),
+                'photo_url' => $this->storePhoto($data['photo'] ?? null),
+                'video_url' => $this->storeVideo($data['video'] ?? null),
                 'is_anonymous' => (bool) ($data['is_anonymous'] ?? false),
                 'exact_location_public' => false,
                 'risk_flags' => $assessment['flags'],
@@ -131,12 +132,25 @@ class SubmitSighting
         });
     }
 
-    private function store(mixed $file, string $directory): ?string
+    private function storePhoto(mixed $file): ?string
     {
         if (! $file instanceof UploadedFile) {
             return null;
         }
 
-        return Storage::disk('public')->url($file->store('lost-found/'.$directory, 'public'));
+        return Storage::disk('public')->url(
+            $this->storePublicImage->handle($file, 'lost-found/sightings/photos', 'photo'),
+        );
+    }
+
+    private function storeVideo(mixed $file): ?string
+    {
+        if (! $file instanceof UploadedFile) {
+            return null;
+        }
+
+        return Storage::disk('public')->url(
+            $file->store('lost-found/sightings/videos', 'public'),
+        );
     }
 }
