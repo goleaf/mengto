@@ -110,7 +110,10 @@
                 <p>{{ __('forum_expert_sessions.page.create_description') }}</p>
 
                 @if ($errors->any())
-                    <p class="form-errors" role="alert">{{ __('forum_expert_sessions.validation.summary') }}</p>
+                    <x-forum-error-summary
+                        :messages="$errors->getMessages()"
+                        :heading="__('forum_expert_sessions.validation.summary')"
+                    />
                 @endif
 
                 <div class="grid gap-4 md:grid-cols-2">

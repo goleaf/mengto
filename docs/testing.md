@@ -48,6 +48,7 @@ php artisan test --parallel
 php scripts/verify-fresh-database.php
 npm audit --audit-level=high
 npm run build
+BROWSER_BASE_URL=http://127.0.0.1:8000 npm run test:browser:a11y
 ```
 
 Parallel tests run only when database isolation is safe.
@@ -81,10 +82,9 @@ destructive command.
 ## Baseline And Current Checkpoint
 
 The modernization baseline was 116 passing tests and 3,881 assertions. The
-latest complete serial checkpoint reports 1,656 passing tests and 57,951
-assertions after integrating the topic-lifecycle package with current
-`origin/main`. This checkpoint is not a final coverage claim while
-requirements remain unimplemented.
+latest complete serial checkpoint reports 1,666 passing tests and 58,350
+assertions after the forum accessibility package. This checkpoint is not a
+final coverage claim while requirements remain unimplemented.
 
 Pest coverage cannot run in the current environment because PHP 8.5 has neither
 PCOV nor Xdebug. The expected failing command and its exact reason remain part
@@ -258,3 +258,35 @@ Package evidence:
 
 Coverage remains unavailable because PHP 8.5 has neither PCOV nor Xdebug.
 Exact commands are in the lifecycle work-package plan.
+
+## Forum Accessibility Verification
+
+`ForumAccessibilityTest` covers localized media-description and transcript
+requirements, WebVTT content validation, generated storage paths, escaped
+transcripts, caption tracks, legacy alternatives, compensation cleanup, and a
+single complete keyed error summary. `ResponsiveInterfaceTest` verifies
+critical contrast and focus/touch/reflow source contracts.
+`ArchitectureComplianceTest` enforces table captions/scoped headers, textual
+map alternatives, navigation-safe validation semantics, and the absence of
+custom dialog or drag-only forum behavior.
+
+Package evidence:
+
+- focused accessibility/architecture/responsive: 28 tests and 22,936
+  assertions;
+- expanded forum regression: 268 tests and 2,756 assertions;
+- localization: 7 tests and 27,453 assertions;
+- final serial repository suite: 1,666 tests and 58,350 assertions in 91.946
+  seconds;
+- full Larastan: zero errors;
+- full Pint, Composer strict validation/audit, npm audit, Vite build, and
+  config/event/route/view cache compilation: passed;
+- fresh isolated SQLite: 98 migrations, 172 tables, five users, 1,681
+  categories, and 13 topics; repeated `DatabaseSeeder`: passed;
+- `BROWSER_BASE_URL=http://127.0.0.1:8791 npm run test:browser:a11y`: passed
+  desktop, mobile, reflow, keyboard focus, invalid submit, admin table, touch
+  target, and console checks.
+
+The browser runner requires a locally reachable isolated application and a
+Chromium-compatible executable. It does not install or contact a second
+browser-test framework.

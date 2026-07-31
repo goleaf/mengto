@@ -14,13 +14,13 @@ claims. Query budgets are added to critical flows with deterministic fixtures.
 
 ## Latest Measured State
 
-- Full Pest suite: 1,656 tests and 57,951 assertions in 94.750 seconds on
-  Livewire 4.3.4 after integration with current `origin/main`.
+- Full Pest suite: 1,666 tests and 58,350 assertions in 91.946 seconds after
+  the forum accessibility package.
 - Vite 8.2 production build: passed.
 - Font CSS: 1.31 kB, 0.32 kB gzip.
 - Tailwind application CSS: 50.35 kB, 9.54 kB gzip.
-- Retained semantic SCSS CSS: 263.56 kB, 34.82 kB gzip.
-- Application JavaScript: 30.02 kB, 9.55 kB gzip.
+- Retained semantic SCSS CSS: 264.39 kB, 34.98 kB gzip.
+- Application JavaScript: 33.04 kB, 10.36 kB gzip.
 - PhotoSwipe JavaScript chunk: 58.82 kB, 17.06 kB gzip.
 - Application routes: 151 of 164 total.
 
@@ -113,4 +113,6 @@ models or relationship graphs. The browser check found no horizontal overflow
 at 375px. After integration with the current public-image implementation, the
 Vite 8.2 build contains 50.35 kB Tailwind CSS, 263.56 kB semantic CSS,
 30.02 kB application JavaScript, and a separate 58.82 kB PhotoSwipe chunk
-before gzip.
+before gzip. The accessibility adapter accounts for the current application
+JavaScript increase and performs one document observer plus idempotent
+initialization rather than one listener per form or Livewire component.

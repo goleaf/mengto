@@ -165,7 +165,7 @@ command environment. This incident remains recorded for transparency.
 | Explicit / enum-backed factory states | 145 / 862 |
 | Migrations / tables | 98 / 172 |
 | Application / total routes | 151 / 164 |
-| Full PHP suite | 1,656 passed, 57,951 assertions |
+| Full PHP suite | 1,666 passed, 58,350 assertions |
 
 Final production assets:
 
@@ -203,8 +203,8 @@ implementation for hundreds of components.
 The first-pass defects that could be repaired without selecting external
 hardware or a provider were implemented and regression-tested. The compliance
 matrix for the original modernization remains its historical evidence. The
-forum extension's authoritative matrix currently records 448 verified
-requirements and 6,836 planned or discovered requirements, with no blocked or
+forum extension's authoritative matrix currently records 472 verified
+requirements and 6,812 planned or discovered requirements, with no blocked or
 intentionally-not-applicable records.
 
 This modernization does not claim that physical hardware transport or

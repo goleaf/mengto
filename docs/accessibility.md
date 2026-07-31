@@ -123,3 +123,40 @@ at 375x812. The mobile document and lifecycle region had no horizontal
 overflow; the current navigation had no console warning or error. Redirect
 navigation also preserved the canonical destination. No lifecycle operation
 depends on hover, drag-and-drop, animation, or pointer-only input.
+
+## Forum Accessibility Package
+
+Source-section 71 (`forum.interface.0010` through `.0033`) is implemented as
+one cross-cutting forum contract:
+
+- one reusable, focusable, assertive error summary presents every validation
+  problem and links each keyed message to its native control with
+  `aria-invalid` and `aria-describedby`;
+- the adapter is idempotent across Livewire DOM updates and
+  `livewire:navigated`, and no business decision is made in JavaScript;
+- new topic images and videos require a meaningful localized description;
+  video also requires a bounded transcript and may include a
+  content-validated WebVTT caption track with a supported locale;
+- generated storage names, escaped presentation, compensation cleanup, and a
+  localized legacy-media fallback protect old and new records;
+- every forum data table has a caption and scoped column headers;
+- native pagination, disclosures, controls, upload inputs, and the existing
+  ordered text alternatives for maps remain the primary semantic interface;
+- no forum workflow uses a custom dialog or requires drag-and-drop;
+- forum controls use the 44-pixel target token, statuses retain text/icons,
+  and the critical muted-text pair is 4.91:1.
+
+`npm run test:browser:a11y` launches an isolated headless system Chrome through
+the DevTools protocol without adding a browser framework dependency. Against
+the seeded temporary database it verified 1440x900, 375x812, and 320-pixel
+reflow: one `main` and `h1`, no horizontal overflow, unnamed controls,
+duplicate IDs, missing image alternatives, invalid tables, undersized forum
+controls, or console errors. Keyboard Tab exposed the skip link and its focus
+ring. A real administrator Livewire login followed by an invalid topic submit
+focused the complete summary and associated the title field with its error.
+The authorized administration table exposed its caption and scoped headers.
+
+Screenshots and the JSON report are written to `BROWSER_OUTPUT_DIR` and remain
+untracked verification artifacts. Set `BROWSER_BASE_URL` to an isolated local
+server and `CHROME_BIN` only when Chrome is not in a detected platform path.
+The runner refuses non-loopback application URLs before using demo credentials.

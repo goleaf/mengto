@@ -48,6 +48,7 @@
                 </div>
                 <div class="overflow-x-auto rounded-md border border-paw-line bg-white">
                     <table class="w-full min-w-[44rem] text-start text-sm">
+                        <caption class="sr-only">{{ __('forum_accessibility.tables.categories') }}</caption>
                         <thead class="bg-paw-paper">
                             <tr>
                                 <th scope="col" class="px-3 py-2">{{ __('forum_admin.categories.name') }}</th>
@@ -137,6 +138,7 @@
             </div>
             <div class="overflow-x-auto rounded-md border border-paw-line bg-white">
                 <table class="w-full table-fixed text-start text-sm sm:table-auto">
+                    <caption class="sr-only">{{ __('forum_accessibility.tables.guides') }}</caption>
                     <thead class="bg-paw-paper">
                         <tr>
                             <th scope="col" class="px-3 py-2">{{ __('forum_admin.guides.title') }}</th>
@@ -186,6 +188,7 @@
             <h2 id="taxonomy-imports-heading" class="text-xl font-semibold">{{ __('forum_admin.taxonomy.heading') }}</h2>
             <div class="mt-3 overflow-x-auto rounded-md border border-paw-line bg-white">
                 <table class="w-full min-w-[42rem] text-sm">
+                    <caption class="sr-only">{{ __('forum_accessibility.tables.taxonomy_imports') }}</caption>
                     <thead class="bg-paw-paper">
                         <tr>
                             <th scope="col" class="px-3 py-2">{{ __('forum_admin.taxonomy.source') }}</th>
@@ -217,6 +220,7 @@
                 <h2 id="credential-queue-heading" class="text-xl font-semibold">{{ __('forum_admin.verification.heading') }}</h2>
                 <div class="mt-3 overflow-x-auto rounded-md border border-paw-line bg-white">
                     <table class="w-full min-w-[48rem] text-sm">
+                        <caption class="sr-only">{{ __('forum_accessibility.tables.professional_verifications') }}</caption>
                         <thead class="bg-paw-paper">
                             <tr>
                                 <th scope="col" class="px-3 py-2">{{ __('forum_admin.verification.professional') }}</th>

@@ -32,15 +32,10 @@
     @endif
 
     @if ($errors->any())
-        <div class="forum-errors" role="alert">
-            <strong>{{ __('forum_topic_lifecycle.validation.summary') }}</strong>
-            <ul>
-                @forelse ($errors->all() as $message)
-                    <li>{{ $message }}</li>
-                @empty
-                @endforelse
-            </ul>
-        </div>
+        <x-forum-error-summary
+            :messages="$errors->getMessages()"
+            :heading="__('forum_topic_lifecycle.validation.summary')"
+        />
     @endif
 
     @if ($this->abilities['reopen'] || $this->abilities['archive'] || $this->abilities['remove'] || $this->abilities['bump'])

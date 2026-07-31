@@ -57,7 +57,7 @@ as complete.
   immutable case events, protected idempotent contact relays, advisory
   duplicate detection, unified false-sighting/reward-scam reports, and
   privacy-safe archival that preserves the complete operational history.
-- Requirement evidence is a deterministic overlay. `448` atomic requirements
+- Requirement evidence is a deterministic overlay. `472` atomic requirements
   are verified with file/test evidence and none are currently marked
   in-progress.
 - Current repository checkpoint: expert-session plus architecture verification
@@ -157,6 +157,15 @@ as complete.
   Livewire 4.3.4. Fresh and repeated seeding, full Larastan, Pint, Vite,
   dependency audits, and real mobile/desktop browser checks also passed. All
   33 scoped IDs are verified.
+- The complete source-section 71 forum accessibility contract is implemented:
+  focusable linked validation summaries, semantic tables, meaningful media
+  descriptions, escaped video transcripts, optional content-validated WebVTT
+  captions, localized legacy alternatives, 44px controls, contrast/reflow
+  guards, textual map alternatives, and no drag-only path. Focused checks
+  passed 28 / 22,936; the full suite passed 1,666 / 58,350; fresh/repeat seed,
+  full Larastan/Pint, audits, Vite/cache compilation, and a real headless
+  Chrome desktop/mobile/320px/login/invalid-submit/admin flow passed. All 24
+  scoped IDs are verified.
 
 ## Phase Counts
 
@@ -180,15 +189,16 @@ as complete.
 
 ## Next Verified Pass
 
-1. Create and read the next work-package plan with all source-section 71
-   accessibility IDs before production changes.
-2. Inventory critical forum workflows against keyboard, focus, screen-reader,
-   zoom, reduced-motion, contrast, touch-target, map-alternative, table,
-   pagination, upload, and drag-and-drop requirements.
-3. Reuse native semantics and the existing design system; add ARIA only where
-   native HTML cannot express the required relationship or announcement.
-4. Add automated architecture/browser checks and manually verify representative
-   mobile and desktop workflows before marking an accessibility ID verified.
+1. Create and read the next work-package plan for source-section 72
+   multilingual behavior before production changes.
+2. Inventory all platform-controlled forum text, category/state/reason labels,
+   user-generated translation boundaries, scientific/common-name fallback,
+   and private-content authorization against the existing EN/LT/RU system.
+3. Preserve original user content and scientific names while adding stable
+   translated keys, source labels, correction paths, and fallback behavior
+   only where the source requirements demand them.
+4. Add locale, placeholder, pluralization, rendering, privacy, and browser
+   regressions before marking any translation ID verified.
 5. Update evidence, rerun the applicable full quality gates, and perform the
    next phase completeness audit.
 

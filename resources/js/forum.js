@@ -6,6 +6,13 @@ if (editor instanceof HTMLFormElement) {
     const category = editor.querySelector('[name="category"]');
     const similar = editor.querySelector('[data-similar-topics]');
     const endpoint = editor.dataset.similarEndpoint;
+    const photos = editor.querySelector('[data-forum-photos]');
+    const video = editor.querySelector('[data-forum-video]');
+    const mediaDescription = editor.querySelector('[data-forum-media-description]');
+    const videoTranscript = editor.querySelector('[data-forum-video-transcript]');
+    const captions = editor.querySelector('[data-forum-caption]');
+    const captionLocale = editor.querySelector('[data-forum-caption-locale]');
+    const language = editor.querySelector('[name="language"]');
     let debounce;
 
     const fields = () => Array.from(editor.elements).filter(
@@ -58,6 +65,37 @@ if (editor instanceof HTMLFormElement) {
             });
         });
     });
+
+    const syncMediaRequirements = () => {
+        const hasPhotos = photos instanceof HTMLInputElement && (photos.files?.length ?? 0) > 0;
+        const hasVideo = video instanceof HTMLInputElement && (video.files?.length ?? 0) > 0;
+        const hasCaptions = captions instanceof HTMLInputElement && (captions.files?.length ?? 0) > 0;
+
+        if (mediaDescription instanceof HTMLInputElement) {
+            mediaDescription.required = hasPhotos || hasVideo;
+        }
+
+        if (videoTranscript instanceof HTMLTextAreaElement) {
+            videoTranscript.required = hasVideo;
+        }
+
+        if (captionLocale instanceof HTMLSelectElement) {
+            captionLocale.required = hasCaptions;
+
+            if (
+                hasCaptions
+                && !captionLocale.value
+                && language instanceof HTMLSelectElement
+            ) {
+                captionLocale.value = language.value;
+            }
+        }
+    };
+
+    photos?.addEventListener('change', syncMediaRequirements);
+    video?.addEventListener('change', syncMediaRequirements);
+    captions?.addEventListener('change', syncMediaRequirements);
+    syncMediaRequirements();
 
     const findSimilar = () => {
         if (!(title instanceof HTMLInputElement) || !endpoint || title.value.trim().length < 20) {

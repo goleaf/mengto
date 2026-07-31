@@ -55,7 +55,10 @@
 
     <form wire:submit="save" class="forum-form knowledge-guide-editor">
         @if ($errors->any())
-            <p class="form-errors" role="alert">{{ __('knowledge.validation.summary') }}</p>
+            <x-forum-error-summary
+                :messages="$errors->getMessages()"
+                :heading="__('knowledge.validation.summary')"
+            />
         @endif
 
         <section aria-labelledby="knowledge-guide-content-heading">

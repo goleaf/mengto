@@ -123,6 +123,10 @@ Status: `verified`
 - Added explicit Tailwind source detection and design tokens while preserving
   the mature SCSS component layer.
 - Added visible focus, reduced-motion and forced-colors behavior.
+- Added forum-wide focusable validation summaries with field-linked errors,
+  semantic data-table captions, accessible media description/transcript/WebVTT
+  contracts, text map alternatives, 44-pixel controls, contrast assertions,
+  and a dependency-free Chrome desktop/mobile/reflow smoke runner.
 - Corrected 320 px booking overflow and verified representative viewport
   widths, one logical `h1`, auth focus behavior, and a clean browser console.
 - Completed the server-rendered place contract with validated deterministic

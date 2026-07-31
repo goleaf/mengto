@@ -15,14 +15,10 @@
         </header>
 
         @if ($errors->any())
-            <div class="forum-errors" role="alert">
-                <strong>{{ __('ui.please_review_the_form_a60324c25c') }}</strong>
-                <ul>
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
+            <x-forum-error-summary
+                :messages="$errors->getMessages()"
+                :heading="__('ui.please_review_the_form_a60324c25c')"
+            />
         @endif
 
         <div class="forum-thread-layout">
@@ -198,19 +194,42 @@
 
                         <label class="forum-form__field">
                             <span>{{ __('ui.photos_up_to_four_820ba622c8') }}</span>
-                            <input type="file" name="photos[]" accept="image/jpeg,image/png,image/webp" multiple>
+                            <input type="file" name="photos[]" accept="image/jpeg,image/png,image/webp" multiple data-forum-photos>
                             <small>{{ __('ui.gps_metadata_is_not_used_blur_faces_addresses_e2180697f1') }}</small>
                         </label>
 
                         <label class="forum-form__field">
                             <span>{{ __('ui.short_video_e8faa500e9') }}</span>
-                            <input type="file" name="video" accept="video/mp4,video/webm,video/quicktime">
+                            <input type="file" name="video" accept="video/mp4,video/webm,video/quicktime" data-forum-video>
                             <small>{{ __('ui.maximum_20_mb_video_does_not_replace_an_aa78b2d56c') }}</small>
                         </label>
 
                         <label class="forum-form__field forum-form__field--full">
-                            <span>{{ __('ui.media_description_2e22cefe8c') }}</span>
-                            <input name="photo_alt" value="{{ old('photo_alt') }}" maxlength="240" placeholder="{{ __('ui.scout_waits_several_metres_from_the_closed_lift_2f77b6d5cd') }}">
+                            <span>{{ __('forum_accessibility.media.description') }}</span>
+                            <input name="photo_alt" value="{{ old('photo_alt') }}" maxlength="240" placeholder="{{ __('ui.scout_waits_several_metres_from_the_closed_lift_2f77b6d5cd') }}" data-forum-media-description>
+                            <small>{{ __('forum_accessibility.media.description_help') }}</small>
+                        </label>
+
+                        <label class="forum-form__field forum-form__field--full">
+                            <span>{{ __('forum_accessibility.media.video_transcript') }}</span>
+                            <textarea name="video_transcript" maxlength="10000" data-forum-video-transcript>{{ old('video_transcript') }}</textarea>
+                            <small>{{ __('forum_accessibility.media.video_transcript_help') }}</small>
+                        </label>
+
+                        <label class="forum-form__field">
+                            <span>{{ __('forum_accessibility.media.caption_file') }}</span>
+                            <input type="file" name="video_captions" accept=".vtt,text/vtt" data-forum-caption>
+                            <small>{{ __('forum_accessibility.media.caption_file_help') }}</small>
+                        </label>
+
+                        <label class="forum-form__field">
+                            <span>{{ __('forum_accessibility.media.caption_locale') }}</span>
+                            <select name="video_caption_locale" data-forum-caption-locale>
+                                <option value="">{{ __('ui.choose_if_useful_5cd22283e6') }}</option>
+                                <option value="en" @selected(old('video_caption_locale') === 'en')>{{ __('ui.english_ba118bf7fc') }}</option>
+                                <option value="lt" @selected(old('video_caption_locale') === 'lt')>{{ __('ui.lithuanian_8625f6a206') }}</option>
+                                <option value="ru" @selected(old('video_caption_locale') === 'ru')>{{ __('ui.russian_5bcc40adf6') }}</option>
+                            </select>
                         </label>
                     </div>
 

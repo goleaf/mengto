@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Requests;
 
+use App\Rules\ValidWebVtt;
 use App\Services\ForumTaxonomy;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
@@ -66,9 +67,45 @@ class StoreTopicRequest extends FormRequest
                             ->maxHeight(12000),
                     ),
             ],
-            'photo_alt' => ['nullable', 'string', 'max:240'],
+            'photo_alt' => [
+                Rule::requiredIf($this->hasFile('photos') || $this->hasFile('video')),
+                'nullable',
+                'string',
+                'max:240',
+            ],
             'video' => ['nullable', 'file', File::types(['mp4', 'webm', 'mov'])->max('20mb')],
+            'video_transcript' => [
+                Rule::requiredIf($this->hasFile('video')),
+                'nullable',
+                'string',
+                'max:10000',
+            ],
+            'video_captions' => [
+                Rule::prohibitedIf(! $this->hasFile('video')),
+                'nullable',
+                'file',
+                File::types(['vtt'])->max('256kb'),
+                new ValidWebVtt,
+            ],
+            'video_caption_locale' => [
+                Rule::prohibitedIf(! $this->hasFile('video_captions')),
+                Rule::requiredIf($this->hasFile('video_captions')),
+                'nullable',
+                Rule::in(['en', 'lt', 'ru']),
+            ],
             'sensitive_media' => ['nullable', 'boolean'],
+        ];
+    }
+
+    /** @return array<string, string> */
+    public function messages(): array
+    {
+        return [
+            'photo_alt.required' => __('forum_accessibility.validation.media_description_required'),
+            'video_transcript.required' => __('forum_accessibility.validation.video_transcript_required'),
+            'video_captions.prohibited' => __('forum_accessibility.validation.caption_video_required'),
+            'video_caption_locale.required' => __('forum_accessibility.validation.caption_locale_required'),
+            'video_caption_locale.prohibited' => __('forum_accessibility.validation.caption_file_required'),
         ];
     }
 }

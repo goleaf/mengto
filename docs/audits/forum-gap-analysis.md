@@ -171,3 +171,20 @@ answers, groups, guides, journals, and taxonomy links remain intact. A
 class-based Livewire panel exposes only policy-safe bounded history and request
 data, and focused, full-suite, fresh-seed, static-analysis, build, and browser
 evidence is recorded in the completed package plan.
+
+## Resolved Forum Accessibility Gap
+
+Forum validation now has one reusable complete summary that receives focus and
+programmatically associates keyed errors with native controls across normal
+and Livewire rendering. Tables expose captions and scoped headers; pagination
+and map alternatives retain native semantics. New topic media requires
+meaningful descriptions, video requires an escaped visible transcript, and
+optional WebVTT captions are content validated and stored under generated
+names. Failed persistence can remove only new files, while historical media
+uses a localized read-time fallback without rewriting records.
+
+Critical color pairs, 44-pixel controls, reduced motion, forced colors,
+non-color status, and drag-only architecture are guarded in PHP tests.
+Dependency-free headless Chrome verified desktop, mobile, and 320-pixel
+reflow, keyboard skip focus, a real Livewire login, invalid-submit focus and
+error association, an authorized administration table, and a clean console.

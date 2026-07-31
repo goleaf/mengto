@@ -174,7 +174,10 @@
                 </div>
 
                 @if ($errors->any())
-                    <p role="alert" class="form-errors">{{ __('adoption.validation.summary') }}</p>
+                    <x-forum-error-summary
+                        :messages="$errors->getMessages()"
+                        :heading="__('adoption.validation.summary')"
+                    />
                 @endif
 
                 <div class="grid gap-4 md:grid-cols-2">

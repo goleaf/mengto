@@ -95,8 +95,14 @@
   update requests and proposals, controlled bumping, merge and redirect
   preservation, encrypted legal holds, production-safe backfill, and an
   authorized class-based Livewire management panel.
+- Completed the forum accessibility source contract with reusable focusable
+  error summaries and linked fields, semantic table captions, meaningful
+  image/video descriptions, required escaped video transcripts, optional
+  content-validated WebVTT captions, localized legacy-media fallbacks,
+  44-pixel controls, contrast/reflow guards, textual map alternatives, and a
+  repeatable dependency-free Chrome smoke runner.
 - Added an evidence overlay that prevents requirement verification without
-  concrete file or test evidence; 448 atomic requirements are currently
+  concrete file or test evidence; 472 atomic requirements are currently
   verified.
 
 ### Runtime And Architecture

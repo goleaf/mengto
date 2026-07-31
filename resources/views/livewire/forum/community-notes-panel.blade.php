@@ -228,7 +228,10 @@
             </div>
 
             @if ($errors->any())
-                <p class="form-errors" role="alert">{{ __('forum_review.validation.summary') }}</p>
+                <x-forum-error-summary
+                    :messages="$errors->getMessages()"
+                    :heading="__('forum_review.validation.summary')"
+                />
             @endif
 
             <label class="forum-form__field">

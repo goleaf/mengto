@@ -14,7 +14,10 @@
     @endif
 
     @if ($errors->any())
-        <p class="form-errors" role="alert">{{ __('forum_groups.validation.summary') }}</p>
+        <x-forum-error-summary
+            :messages="$errors->getMessages()"
+            :heading="__('forum_groups.validation.summary')"
+        />
     @endif
 
     <dl class="grid gap-3 border-y border-border-subtle py-4 sm:grid-cols-2 lg:grid-cols-4">

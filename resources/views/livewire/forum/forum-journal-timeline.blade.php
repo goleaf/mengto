@@ -86,7 +86,10 @@
             </summary>
             <form wire:submit="saveEntry" class="mt-4 grid gap-4" wire:dirty.class="border-status-warning">
                 @if ($errors->any())
-                    <p class="form-errors" role="alert">{{ __('forum_journals.validation.summary') }}</p>
+                    <x-forum-error-summary
+                        :messages="$errors->getMessages()"
+                        :heading="__('forum_journals.validation.summary')"
+                    />
                 @endif
                 <div class="grid gap-4 md:grid-cols-2">
                     <label class="forum-form__field">

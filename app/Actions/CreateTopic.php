@@ -10,6 +10,7 @@ use App\Services\ForumActor;
 use App\Services\ForumTopicLifecycle;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Throwable;
 
 final readonly class CreateTopic
 {
@@ -22,28 +23,36 @@ final readonly class CreateTopic
     /** @param array<string, mixed> $data */
     public function handle(array $data): ForumTopic
     {
-        return DB::transaction(function () use ($data): ForumTopic {
-            $topic = ForumTopic::query()->create([
-                ...$this->prepareTopicData->handle($data),
-                'slug' => Str::slug((string) $data['title']).'-'.Str::lower(Str::random(6)),
-                'structured_data' => [
-                    'animal_context' => $data['animal_context'] ?? 'taxa',
-                ],
-            ]);
-            $topic->taxa()->sync($this->taxonPivot($data));
-            $this->lifecycle->record(
-                topic: $topic,
-                type: ForumTopicLifecycleEventType::StateChanged,
-                actor: $this->actor->requireUser(),
-                reasonCode: $topic->status->canonical()->value === 'draft'
-                    ? 'author-created-draft'
-                    : 'author-published',
-                toStatus: $topic->status->canonical(),
-                idempotencyKey: "topic-created:{$topic->id}",
-            );
+        $prepared = $this->prepareTopicData->handle($data);
 
-            return $topic;
-        }, 3);
+        try {
+            return DB::transaction(function () use ($data, $prepared): ForumTopic {
+                $topic = ForumTopic::query()->create([
+                    ...$prepared->attributes,
+                    'slug' => Str::slug((string) $data['title']).'-'.Str::lower(Str::random(6)),
+                    'structured_data' => [
+                        'animal_context' => $data['animal_context'] ?? 'taxa',
+                    ],
+                ]);
+                $topic->taxa()->sync($this->taxonPivot($data));
+                $this->lifecycle->record(
+                    topic: $topic,
+                    type: ForumTopicLifecycleEventType::StateChanged,
+                    actor: $this->actor->requireUser(),
+                    reasonCode: $topic->status->canonical()->value === 'draft'
+                        ? 'author-created-draft'
+                        : 'author-published',
+                    toStatus: $topic->status->canonical(),
+                    idempotencyKey: "topic-created:{$topic->id}",
+                );
+
+                return $topic;
+            }, 3);
+        } catch (Throwable $exception) {
+            $this->prepareTopicData->discardNewMedia($prepared);
+
+            throw $exception;
+        }
     }
 
     /**

@@ -48,15 +48,35 @@
                     @forelse ($topic['media'] as $media)
                         <figure class="forum-thread__media">
                             @if ($media['sensitive'])
-                                <figcaption class="forum-safety">
+                                <div class="forum-safety">
                                     <x-lucide-eye-off aria-hidden="true" />
                                     {{ __('ui.sensitive_media_open_only_if_you_are_comfortable_6ce743c987') }}
-                                </figcaption>
+                                </div>
                             @endif
                             @if ($media['type'] === 'video')
-                                <video controls preload="metadata" aria-label="{{ $media['alt'] }}">
+                                <video
+                                    controls
+                                    preload="metadata"
+                                    aria-describedby="topic-media-description-{{ $loop->index }}"
+                                >
                                     <source src="{{ $media['url'] }}">
+                                    @if ($media['captions_url'])
+                                        <track
+                                            kind="captions"
+                                            src="{{ $media['captions_url'] }}"
+                                            srclang="{{ $media['caption_locale'] }}"
+                                            label="{{ __('forum_accessibility.media.captions_label', ['locale' => $media['caption_locale']]) }}"
+                                            default
+                                        >
+                                    @endif
                                 </video>
+                                <figcaption id="topic-media-description-{{ $loop->index }}" class="forum-thread__media-description">
+                                    <strong>{{ $media['alt'] }}</strong>
+                                    <details>
+                                        <summary>{{ __('forum_accessibility.media.transcript_label') }}</summary>
+                                        <p>{{ $media['transcript'] }}</p>
+                                    </details>
+                                </figcaption>
                             @else
                                 <img src="{{ $media['url'] }}" alt="{{ $media['alt'] }}" width="1400" height="800">
                             @endif
@@ -150,7 +170,7 @@
                             <h2>{{ __('ui.contribute_a_clear_next_step_3a72805f08') }}</h2>
                         </div>
                         @if ($errors->any())
-                            <div class="forum-errors" role="alert">{{ $errors->first() }}</div>
+                            <x-forum-error-summary :messages="$errors->getMessages()" />
                         @endif
                         <label class="forum-form__field">
                             <span>{{ __('ui.your_answer_d0e869b777') }}</span>

@@ -18,7 +18,10 @@
 
     <form wire:submit="saveProfile" class="forum-form">
         @if ($errors->any())
-            <p class="form-errors" role="alert">{{ __('forum_mentorship.validation.summary') }}</p>
+            <x-forum-error-summary
+                :messages="$errors->getMessages()"
+                :heading="__('forum_mentorship.validation.summary')"
+            />
         @endif
 
         <div class="grid gap-3 sm:grid-cols-2">

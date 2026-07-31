@@ -17,6 +17,7 @@
 
         <div class="relative overflow-x-auto border-y border-paw-line bg-white">
             <table class="w-full min-w-[54rem] text-sm">
+                <caption class="sr-only">{{ __('forum_accessibility.tables.reports') }}</caption>
                 <thead class="bg-paw-paper">
                     <tr>
                         <th scope="col" class="px-3 py-2 text-start">{{ __('forum_admin.moderation_operations.fields.subject') }}</th>
@@ -77,6 +78,7 @@
 
         <div class="relative overflow-x-auto border-y border-paw-line bg-white">
             <table class="w-full min-w-[58rem] text-sm">
+                <caption class="sr-only">{{ __('forum_accessibility.tables.moderation_cases') }}</caption>
                 <thead class="bg-paw-paper">
                     <tr>
                         <th scope="col" class="px-3 py-2 text-start">{{ __('forum_admin.moderation_operations.fields.case') }}</th>
@@ -325,6 +327,7 @@
 
         <div class="relative mt-3 overflow-x-auto border-y border-paw-line bg-white">
             <table class="w-full min-w-[52rem] text-sm">
+                <caption class="sr-only">{{ __('forum_accessibility.tables.appeals') }}</caption>
                 <thead class="bg-paw-paper">
                     <tr>
                         <th scope="col" class="px-3 py-2 text-start">{{ __('forum_admin.moderation_operations.fields.case') }}</th>

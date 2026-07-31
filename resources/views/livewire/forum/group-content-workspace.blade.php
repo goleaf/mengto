@@ -11,7 +11,10 @@
     @endif
 
     @if ($errors->any())
-        <p class="form-errors" role="alert">{{ __('forum_groups.validation.summary') }}</p>
+        <x-forum-error-summary
+            :messages="$errors->getMessages()"
+            :heading="__('forum_groups.validation.summary')"
+        />
     @endif
 
     <section class="grid gap-3" aria-labelledby="group-announcements-heading">

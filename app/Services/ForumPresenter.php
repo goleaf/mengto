@@ -9,6 +9,7 @@ use App\Models\ForumEngagement;
 use App\Models\ForumNotification;
 use App\Models\ForumTopic;
 use App\Models\KnowledgeArticle;
+use Illuminate\Config\Repository;
 use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Storage;
@@ -22,6 +23,7 @@ class ForumPresenter
         private readonly ForumActor $actor,
         private readonly LocaleFormatter $formatter,
         private readonly Gate $gate,
+        private readonly Repository $config,
     ) {}
 
     /**
@@ -333,16 +335,48 @@ class ForumPresenter
             'desired_answer_label' => $topic->desired_answer ? Str::headline($topic->desired_answer) : null,
             'comment_policy_label' => Str::headline($topic->comment_policy),
             'language' => Str::upper($topic->language),
-            'media' => collect($topic->media ?? [])->map(fn (array $media): array => [
-                ...$media,
-                'url' => Str::startsWith((string) $media['path'], ['http://', 'https://'])
-                    ? $media['path']
-                    : Storage::disk('public')->url((string) $media['path']),
-            ])->all(),
+            'media' => collect($topic->media ?? [])
+                ->map(fn (array $media): array => $this->presentMedia($media, $topic->language))
+                ->all(),
             'status_value' => $topic->status->value,
             'is_locked' => $topic->is_locked,
             'answers_count' => $topic->answers->count(),
             'comments_count' => $topic->answers->sum(fn ($answer): int => $answer->comments->count()),
+        ];
+    }
+
+    /**
+     * @param  array<string, mixed>  $media
+     * @return array<string, mixed>
+     */
+    private function presentMedia(array $media, string $topicLocale): array
+    {
+        $description = trim((string) ($media['alt'] ?? ''));
+        $description = $description !== ''
+            ? $description
+            : __('forum_accessibility.media.legacy_description');
+        $type = (string) ($media['type'] ?? 'image');
+        $captionPath = trim((string) ($media['caption_path'] ?? ''));
+        $captionLocale = (string) ($media['caption_locale'] ?? $topicLocale);
+
+        if (! in_array($captionLocale, ['en', 'lt', 'ru'], true)) {
+            $captionLocale = $this->config->string('app.fallback_locale');
+        }
+
+        return [
+            ...$media,
+            'type' => $type,
+            'alt' => $description,
+            'transcript' => $type === 'video'
+                ? (trim((string) ($media['transcript'] ?? '')) ?: $description)
+                : null,
+            'url' => Str::startsWith((string) $media['path'], ['http://', 'https://'])
+                ? $media['path']
+                : Storage::disk('public')->url((string) $media['path']),
+            'captions_url' => $captionPath !== ''
+                ? Storage::disk('public')->url($captionPath)
+                : null,
+            'caption_locale' => $captionLocale,
         ];
     }
 

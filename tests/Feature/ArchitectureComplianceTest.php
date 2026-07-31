@@ -124,6 +124,70 @@ test('javascript receives user facing copy from localized markup', function () {
     }
 });
 
+test('forum accessibility architecture uses semantic tables and avoids drag only controls', function () {
+    foreach (sourceFiles(resource_path('views/livewire/forum'), 'php') as $file) {
+        $contents = $file->getContents();
+
+        expect($contents, $file->getRelativePathname())
+            ->not->toMatch('/\bdraggable\s*=/i')
+            ->not->toContain('wire:sort')
+            ->not->toContain('x-sort')
+            ->not->toMatch('/\bon(?:drag|drop)[a-z]*\s*=/i');
+
+        if (str_contains($contents, '<table')) {
+            expect(substr_count($contents, '<caption'), $file->getRelativePathname())
+                ->toBe(substr_count($contents, '<table'))
+                ->and(substr_count($contents, 'scope="col"'), $file->getRelativePathname())
+                ->toBeGreaterThanOrEqual(substr_count($contents, '<table'));
+        }
+    }
+
+    foreach ([
+        resource_path('views/forum'),
+        resource_path('views/livewire/forum'),
+    ] as $path) {
+        foreach (sourceFiles($path, 'php') as $file) {
+            expect($file->getContents(), $file->getRelativePathname())
+                ->not->toMatch('/<(?!dialog\b)[a-z][^>]*\brole=["\']dialog["\']/i');
+        }
+    }
+});
+
+test('forum validation summaries and media adapters remain navigation safe', function () {
+    $component = File::get(resource_path('views/components/forum-error-summary.blade.php'));
+    $adapter = File::get(resource_path('js/forum-accessibility.js'));
+    $editor = File::get(resource_path('views/forum/editor.blade.php'));
+
+    expect($component)
+        ->toContain('data-forum-error-summary')
+        ->toContain('aria-live="assertive"')
+        ->toContain('tabindex="-1"')
+        ->toContain('data-error-field')
+        ->and($adapter)
+        ->toContain("document.addEventListener('livewire:navigated'")
+        ->toContain("control.setAttribute('aria-invalid', 'true')")
+        ->toContain("control.setAttribute('aria-describedby'")
+        ->toContain("control.removeAttribute('aria-invalid')")
+        ->toContain('MutationObserver')
+        ->and($editor)
+        ->toContain('data-forum-media-description')
+        ->toContain('data-forum-video-transcript')
+        ->toContain('data-forum-caption');
+});
+
+test('map components provide ordered textual alternatives', function () {
+    foreach ([
+        resource_path('views/components/place-map.blade.php'),
+        resource_path('views/components/search-map.blade.php'),
+    ] as $path) {
+        $contents = File::get($path);
+
+        expect($contents, $path)
+            ->toContain('<ol')
+            ->toContain('aria-label=');
+    }
+});
+
 test('compliance matrix contains every canonical requirement exactly once', function () {
     $canonicalSources = [
         'docs/product-requirements.md',
