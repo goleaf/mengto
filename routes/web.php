@@ -149,7 +149,12 @@ use App\Livewire\Auth\Login;
 use App\Livewire\Auth\Register;
 use App\Livewire\Auth\ResetPassword;
 use App\Livewire\Auth\VerifyEmail;
+use App\Livewire\Pets\CreatePetProfile;
+use App\Livewire\Pets\ManagePetProfile;
+use App\Livewire\Pets\PetProfileInvitations;
+use App\Livewire\Pets\PublicPetProfile;
 use App\Livewire\ProfileSettings;
+use App\Livewire\Social\RelationshipCenter;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('web')
@@ -180,11 +185,28 @@ Route::middleware('web')
                         Route::get('/settings', ProfileSettings::class)->name('settings');
                     });
 
+                Route::prefix('pets/manage')
+                    ->name('pets.manage.')
+                    ->group(function (): void {
+                        Route::get('/new', CreatePetProfile::class)
+                            ->middleware('throttle:30,1')
+                            ->name('create');
+                        Route::get('/invitations', PetProfileInvitations::class)
+                            ->name('invitations');
+                        Route::get('/{petProfile:profile_key}', ManagePetProfile::class)
+                            ->name('show');
+                    });
+
                 Route::get('/circle', CirclePreviewController::class)->name('circle.index');
                 Route::get('/circle/connections', ConnectionCenterPreviewController::class)
                     ->name('connections.index');
                 Route::get('/circle/pet-friends', PetFriendCenterPreviewController::class)
                     ->name('pet-friends.index');
+                Route::prefix('circle/social')
+                    ->name('social.')
+                    ->group(function (): void {
+                        Route::get('/', RelationshipCenter::class)->name('index');
+                    });
                 Route::get('/messages', MessageCenterPreviewController::class)->name('messages.index');
                 Route::get('/messages/{conversation}/details', ConversationDetailPreviewController::class)
                     ->whereIn('conversation', [
@@ -384,6 +406,12 @@ Route::middleware('web')
         Route::get('/neighbors', NeighborDirectoryPreviewController::class)->name('neighbors.index');
         Route::get('/neighbors/ari-jensen', NeighborProfilePreviewController::class)->name('neighbors.ari');
         Route::get('/pets', PetDirectoryPreviewController::class)->name('pets.index');
+        Route::prefix('pets/profile')
+            ->name('pets.')
+            ->group(function (): void {
+                Route::get('/{petProfile:profile_key}', PublicPetProfile::class)
+                    ->name('profile');
+            });
         Route::get('/@mia-carter/scout', PetProfilePreviewController::class)
             ->defaults('pet', 'scout')
             ->name('pets.scout');

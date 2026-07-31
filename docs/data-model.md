@@ -3,7 +3,7 @@
 ## Storage Baseline
 
 - 68 migrations created 71 SQLite tables at baseline; the current additive
-  schema has 99 migrations and 172 tables after identity, care-sync,
+  schema has 100 migrations and 177 tables after identity, care-sync,
   social-state, device-lifecycle, forum taxonomy, global animal taxonomy,
   reputation, moderation, credential verification, structured-community, and
   persistent-group work.
@@ -17,7 +17,7 @@
 | Domain | Tables |
 | --- | --- |
 | Framework | `users`, password reset, sessions, cache/locks, jobs/batches/failed jobs |
-| Social identity/state | `pet_profiles`, encrypted/versioned `user_domain_states`, `photo_assets`, `photo_comments`, `photo_reactions` |
+| Social identity/state | `pet_profiles`, pet managers/privacy/lifecycle events/slug aliases/versioned facts, encrypted/versioned `user_domain_states`, `photo_assets`, `photo_comments`, `photo_reactions` |
 | Forum | topics, answers, comments, votes, engagements, blocks, polymorphic reports, report events/evidence, categories/translations/aliases/redirects/lifecycle rules, topic definitions/lifecycle events/update requests/legal holds, reputation/trust/badges, confirmations, moderation cases/actions/appeals/recusals, notifications, persistent groups/memberships/invitations/audit events/taxon links, group activities/announcements/private files/polls/options/votes |
 | Animal taxonomy | versioned sources/imports/versions/issues, taxa, names, external identifiers, change history, domestic classifications, breed registries, community groups |
 | Knowledge | articles with translation provenance, append-only versions, corrections, normalized collaborators, append-only workflow events |
@@ -84,6 +84,12 @@ legacy key has a verified user mapping.
   optimistic review versions. Legal holds keep one active key per topic and
   encrypted private reasons. Every nullable actor foreign key has a leading
   index.
+- Pet profiles retain permanent `profile_key` identity and legacy owner/slug
+  compatibility. A unique creation key prevents replayed creates. Manager
+  memberships are unique per pet/user and indexed for current timed access.
+  One privacy row, append-only idempotent lifecycle events, retained slug
+  aliases, and one current versioned fact per pet/fact key preserve
+  authorization, privacy, provenance, and correction history.
 
 ## Query Rules
 
@@ -107,6 +113,9 @@ legacy key has a verified user mapping.
 6. Remove obsolete fields only in a later release with rollback evidence.
 
 Never run `migrate:fresh` on a non-isolated database.
+
+The pet-profile foundation migration and bounded backfill are documented in
+`docs/pet-profiles.md`.
 
 ## Data Retention
 
@@ -228,6 +237,25 @@ through a nullable `forum_event_id`.
 Exact location, online URL, emergency plan, attendee notes, invitation
 messages, and private review feedback use encrypted casts. See
 `docs/events.md` for lifecycle and recovery.
+
+## Social Relationship Tables
+
+- `social_actors`: one adapter per authoritative user, pet, expert, or group;
+  actor-key/type/status discovery paths are indexed.
+- `social_actor_settings`: one optimistic settings row per actor.
+- `social_relationship_requests`: directed proposal lifecycle with source and
+  target actors, real user attribution, expiry/cooldown, unique idempotency,
+  nullable unique active key, and bounded inbox/outbox indexes.
+- `social_relationships`: active or historical typed edge with direction,
+  source/target, real creator/acceptor, optional request/context, optimistic
+  version, expiry, unique idempotency, and nullable unique active key.
+- `social_relationship_events`: append-only request/relationship evidence with
+  actor snapshots, status transition, reason, timestamps, encrypted private
+  metadata, and globally unique idempotency key.
+
+Foreign keys preserve endpoint and actor attribution. The migration is
+additive and does not rewrite encrypted prototype social state. See
+`docs/social-relationships.md`.
 
 ## Expert Session Tables
 

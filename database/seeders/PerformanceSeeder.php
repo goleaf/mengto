@@ -49,7 +49,7 @@ final class PerformanceSeeder extends Seeder
                     'breed' => 'Deterministic fixture',
                     'birth_date' => now()->subYears(($sequence % 12) + 1)->toDateString(),
                     'visibility' => $sequence % 10 === 0 ? 'private' : 'public',
-                    'status' => $sequence % 25 === 0 ? 'inactive' : 'active',
+                    'status' => $sequence % 25 === 0 ? 'archived' : 'active',
                     'profile_data' => [
                         'fixture_sequence' => $sequence,
                         'purpose' => 'bounded pagination and visibility checks',

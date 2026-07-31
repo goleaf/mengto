@@ -25,9 +25,25 @@ if ($source === false) {
 
 preg_match('/<forum-source-primary>\n(.*)\n<\/forum-source-primary>/sU', $source, $primaryMatch);
 preg_match('/<forum-source-extension>\n(.*)\n<\/forum-source-extension>/sU', $source, $extensionMatch);
+preg_match('/<pet-profile-source-revision>\n(.*)\n<\/pet-profile-source-revision>/sU', $source, $petProfileMatch);
+preg_match('/<social-relationships-source-revision>\n(.*)\n<\/social-relationships-source-revision>/sU', $source, $socialRelationshipsMatch);
 preg_match('/Combined raw payload SHA-256: `([a-f0-9]{64})`/', $source, $checksumMatch);
+preg_match('/Revision raw payload SHA-256: `([a-f0-9]{64})`/', $source, $petProfileChecksumMatch);
+preg_match('/Master raw payload SHA-256: `([a-f0-9]{64})`/', $source, $masterChecksumMatch);
+preg_match('/Social revision raw payload SHA-256: `([a-f0-9]{64})`/', $source, $socialRelationshipsChecksumMatch);
+preg_match('/Current master raw payload SHA-256: `([a-f0-9]{64})`/', $source, $currentMasterChecksumMatch);
 
-if (! isset($primaryMatch[1], $extensionMatch[1], $checksumMatch[1])) {
+if (! isset(
+    $primaryMatch[1],
+    $extensionMatch[1],
+    $petProfileMatch[1],
+    $socialRelationshipsMatch[1],
+    $checksumMatch[1],
+    $petProfileChecksumMatch[1],
+    $masterChecksumMatch[1],
+    $socialRelationshipsChecksumMatch[1],
+    $currentMasterChecksumMatch[1],
+)) {
     fwrite(STDERR, "The preserved forum prompt markers or checksum are invalid.\n");
     exit(1);
 }
@@ -35,11 +51,24 @@ if (! isset($primaryMatch[1], $extensionMatch[1], $checksumMatch[1])) {
 $parts = [
     'primary' => $primaryMatch[1],
     'extension' => $extensionMatch[1],
+    'pet-profile-revision' => $petProfileMatch[1],
+    'social-relationships-revision' => $socialRelationshipsMatch[1],
 ];
-$payloadChecksum = hash('sha256', $parts['primary']."\n\n".$parts['extension']);
+$forumPayload = $parts['primary']."\n\n".$parts['extension'];
+$forumPayloadChecksum = hash('sha256', $forumPayload);
+$petProfilePayloadChecksum = hash('sha256', $parts['pet-profile-revision']);
+$petProfileMasterPayload = $forumPayload."\n\n".$parts['pet-profile-revision'];
+$petProfileMasterChecksum = hash('sha256', $petProfileMasterPayload);
+$socialRelationshipsPayloadChecksum = hash('sha256', $parts['social-relationships-revision']);
+$payloadChecksum = hash('sha256', $petProfileMasterPayload."\n\n".$parts['social-relationships-revision']);
 
-if (! hash_equals($checksumMatch[1], $payloadChecksum)) {
-    fwrite(STDERR, "The preserved forum prompt checksum does not match its payload.\n");
+if (! hash_equals($checksumMatch[1], $forumPayloadChecksum)
+    || ! hash_equals($petProfileChecksumMatch[1], $petProfilePayloadChecksum)
+    || ! hash_equals($masterChecksumMatch[1], $petProfileMasterChecksum)
+    || ! hash_equals($socialRelationshipsChecksumMatch[1], $socialRelationshipsPayloadChecksum)
+    || ! hash_equals($currentMasterChecksumMatch[1], $payloadChecksum)
+) {
+    fwrite(STDERR, "A preserved source-prompt checksum does not match its payload.\n");
     exit(1);
 }
 
@@ -62,9 +91,12 @@ $allowedStates = [
 ];
 
 foreach ($parts as $part => $contents) {
-    $section = $part === 'primary'
-        ? 'Original forum specification'
-        : 'Additive master extension';
+    $section = match ($part) {
+        'primary' => 'Original forum specification',
+        'extension' => 'Additive master extension',
+        'pet-profile-revision' => 'Pet profile and full lifecycle revision',
+        default => 'Social relationships and safe introductions revision',
+    };
     $sectionPath = [$section];
     $lines = preg_split('/\R/u', $contents) ?: [];
 
@@ -89,12 +121,12 @@ foreach ($parts as $part => $contents) {
             $verbatim = preg_replace('/^(?:[-*]|\d+\.)\s+/u', '', $line) ?? $line;
         }
 
-        $domain = domainForRequirement($sectionPath, $verbatim);
+        $domain = domainForRequirement($sectionPath, $verbatim, $part);
         $prefix = identifierPrefix($domain);
         $prefixCounters[$prefix] = ($prefixCounters[$prefix] ?? 0) + 1;
         $requirementId = sprintf('%s.%04d', $prefix, $prefixCounters[$prefix]);
         $sourceSection = implode(' > ', $sectionPath);
-        $phase = phaseForRequirement($domain, $sourceSection, $verbatim);
+        $phase = phaseForRequirement($domain, $sourceSection, $verbatim, $part);
 
         $requirements[] = [
             'requirement_id' => $requirementId,
@@ -153,6 +185,7 @@ $json = json_encode([
     'schema_version' => 1,
     'generated_at' => 'deterministic-from-source',
     'source_document' => 'docs/requirements/forum-source-prompt.md',
+    'source_parts' => array_keys($parts),
     'source_payload_sha256' => $payloadChecksum,
     'atomic_requirement_count' => count($requirements),
     'evidence_overlay' => 'docs/traceability/forum-requirement-evidence.json',
@@ -376,8 +409,16 @@ function applyEvidenceOverlay(
 }
 
 /** @param list<string> $sectionPath */
-function domainForRequirement(array $sectionPath, string $verbatim): string
+function domainForRequirement(array $sectionPath, string $verbatim, string $sourcePart): string
 {
+    if ($sourcePart === 'pet-profile-revision') {
+        return petDomainForRequirement($sectionPath, $verbatim);
+    }
+
+    if ($sourcePart === 'social-relationships-revision') {
+        return socialDomainForRequirement($sectionPath, $verbatim);
+    }
+
     $context = strtolower(implode(' ', $sectionPath).' '.$verbatim);
 
     return match (true) {
@@ -428,6 +469,82 @@ function domainForRequirement(array $sectionPath, string $verbatim): string
     };
 }
 
+/** @param list<string> $sectionPath */
+function socialDomainForRequirement(array $sectionPath, string $verbatim): string
+{
+    $context = strtolower(implode(' ', $sectionPath).' '.$verbatim);
+    preg_match_all('/(?:^|\s)(\d{1,3})\s*[—-]/u', $context, $sectionNumbers);
+    $sectionNumber = isset($sectionNumbers[1]) && $sectionNumbers[1] !== []
+        ? (int) end($sectionNumbers[1])
+        : null;
+
+    return match (true) {
+        $sectionNumber !== null && $sectionNumber >= 1 && $sectionNumber <= 15 => 'social-relationship',
+        $sectionNumber !== null && $sectionNumber >= 16 && $sectionNumber <= 35 => 'social-request',
+        $sectionNumber !== null && $sectionNumber >= 36 && $sectionNumber <= 45 => 'social-follow',
+        $sectionNumber !== null && $sectionNumber >= 46 && $sectionNumber <= 56 => 'social-pet-friendship',
+        $sectionNumber !== null && $sectionNumber >= 57 && $sectionNumber <= 70 => 'social-meetup',
+        $sectionNumber !== null && $sectionNumber >= 71 && $sectionNumber <= 89 => 'social-recommendation',
+        $sectionNumber !== null && $sectionNumber >= 90 && $sectionNumber <= 100 => 'social-search',
+        $sectionNumber !== null && $sectionNumber >= 101 && $sectionNumber <= 111 => 'social-messaging',
+        $sectionNumber !== null && $sectionNumber >= 112 && $sectionNumber <= 121 => 'social-safety',
+        $sectionNumber !== null && $sectionNumber >= 122 && $sectionNumber <= 132 => 'social-groups-events',
+        $sectionNumber !== null && $sectionNumber >= 133 && $sectionNumber <= 141 => 'social-privacy-notifications',
+        $sectionNumber !== null && $sectionNumber >= 142 && $sectionNumber <= 153 => 'social-moderation',
+        $sectionNumber !== null && $sectionNumber >= 154 && $sectionNumber <= 167 => 'social-data',
+        $sectionNumber !== null && $sectionNumber >= 168 && $sectionNumber <= 177 => 'social-interface',
+        $sectionNumber !== null && $sectionNumber >= 178 && $sectionNumber <= 180 => 'social-localization',
+        $sectionNumber !== null && $sectionNumber >= 181 && $sectionNumber <= 185 => 'social-quality',
+        $sectionNumber !== null && $sectionNumber >= 186 && $sectionNumber <= 190 => 'social-release',
+        $sectionNumber !== null && $sectionNumber >= 191 && $sectionNumber <= 208 => 'social-scenario',
+        str_contains($context, 'blokirov') || str_contains($context, 'bezopasn') => 'social-safety',
+        str_contains($context, 'rekomendac') || str_contains($context, 'poisk') => 'social-recommendation',
+        str_contains($context, 'perevod') || str_contains($context, 'mnogoiazy') => 'social-localization',
+        str_contains($context, 'audit') || str_contains($context, 'texnicesk') => 'social-data',
+        default => 'social-relationship',
+    };
+}
+
+/** @param list<string> $sectionPath */
+function petDomainForRequirement(array $sectionPath, string $verbatim): string
+{
+    $context = strtolower(implode(' ', $sectionPath).' '.$verbatim);
+    preg_match_all('/(?:^|\s)(\d{1,3})\s*[—-]/u', $context, $sectionNumbers);
+    $sectionNumber = isset($sectionNumbers[1]) && $sectionNumbers[1] !== []
+        ? (int) end($sectionNumbers[1])
+        : null;
+
+    return match (true) {
+        $sectionNumber !== null && $sectionNumber >= 10 && $sectionNumber <= 20 => 'pet-creation',
+        $sectionNumber !== null && $sectionNumber >= 21 && $sectionNumber <= 41 => 'pet-identity',
+        $sectionNumber !== null && $sectionNumber >= 42 && $sectionNumber <= 51 => 'pet-media',
+        $sectionNumber !== null && $sectionNumber >= 52 && $sectionNumber <= 67 => 'pet-behavior',
+        $sectionNumber !== null && $sectionNumber >= 68 && $sectionNumber <= 75 => 'pet-public-profile',
+        $sectionNumber !== null && $sectionNumber >= 76 && $sectionNumber <= 87 => 'pet-privacy',
+        $sectionNumber !== null && $sectionNumber >= 88 && $sectionNumber <= 106 => 'pet-ownership',
+        $sectionNumber !== null && $sectionNumber >= 107 && $sectionNumber <= 126 => 'pet-social',
+        $sectionNumber !== null && $sectionNumber >= 127 && $sectionNumber <= 142 => 'pet-integration',
+        $sectionNumber !== null && $sectionNumber >= 143 && $sectionNumber <= 147 => 'pet-lifecycle',
+        $sectionNumber !== null && $sectionNumber >= 148 && $sectionNumber <= 151 => 'pet-discovery',
+        $sectionNumber !== null && $sectionNumber >= 152 && $sectionNumber <= 155 => 'pet-localization',
+        $sectionNumber !== null && $sectionNumber >= 156 && $sectionNumber <= 165 => 'pet-interface',
+        $sectionNumber !== null && $sectionNumber >= 166 && $sectionNumber <= 174 => 'pet-lifecycle',
+        $sectionNumber !== null && $sectionNumber >= 175 && $sectionNumber <= 183 => 'pet-moderation',
+        $sectionNumber !== null && $sectionNumber >= 184 && $sectionNumber <= 198 => 'pet-data',
+        $sectionNumber !== null && $sectionNumber >= 199 && $sectionNumber <= 200 => 'pet-release',
+        $sectionNumber !== null && $sectionNumber >= 201 && $sectionNumber <= 205 => 'pet-quality',
+        $sectionNumber !== null && $sectionNumber >= 206 && $sectionNumber <= 219 => 'pet-scenario',
+        str_contains($context, 'privatnost') => 'pet-privacy',
+        str_contains($context, 'vladen') || str_contains($context, 'sovladel') => 'pet-ownership',
+        str_contains($context, 'media') || str_contains($context, 'fotograf') => 'pet-media',
+        str_contains($context, 'moderac') || str_contains($context, 'zhalob') => 'pet-moderation',
+        str_contains($context, 'dostupnost') || str_contains($context, 'mobiln') || str_contains($context, 'desktop') => 'pet-interface',
+        str_contains($context, 'perevod') || str_contains($context, 'mnogoiazy') => 'pet-localization',
+        str_contains($context, 'audit') || str_contains($context, 'texnicesk') => 'pet-data',
+        default => 'pet-profile',
+    };
+}
+
 function identifierPrefix(string $domain): string
 {
     return match ($domain) {
@@ -443,13 +560,83 @@ function identifierPrefix(string $domain): string
         'interface' => 'forum.interface',
         'persistence' => 'forum.data',
         'planning-and-documentation' => 'forum.plan',
+        'pet-profile' => 'pet.profile',
+        'pet-creation' => 'pet.creation',
+        'pet-identity' => 'pet.identity',
+        'pet-media' => 'pet.media',
+        'pet-behavior' => 'pet.behavior',
+        'pet-public-profile' => 'pet.public-profile',
+        'pet-privacy' => 'pet.privacy',
+        'pet-ownership' => 'pet.ownership',
+        'pet-social' => 'pet.social',
+        'pet-integration' => 'pet.integration',
+        'pet-lifecycle' => 'pet.lifecycle',
+        'pet-discovery' => 'pet.discovery',
+        'pet-localization' => 'pet.translation',
+        'pet-interface' => 'pet.interface',
+        'pet-moderation' => 'pet.moderation',
+        'pet-data' => 'pet.data',
+        'pet-release' => 'pet.release',
+        'pet-quality' => 'pet.quality',
+        'pet-scenario' => 'pet.scenario',
+        'social-relationship' => 'social.relationship',
+        'social-request' => 'social.request',
+        'social-follow' => 'social.follow',
+        'social-pet-friendship' => 'social.pet-friendship',
+        'social-meetup' => 'social.meetup',
+        'social-recommendation' => 'social.recommendation',
+        'social-search' => 'social.search',
+        'social-messaging' => 'social.messaging',
+        'social-safety' => 'social.safety',
+        'social-groups-events' => 'social.groups-events',
+        'social-privacy-notifications' => 'social.privacy-notifications',
+        'social-moderation' => 'social.moderation',
+        'social-data' => 'social.data',
+        'social-interface' => 'social.interface',
+        'social-localization' => 'social.translation',
+        'social-quality' => 'social.quality',
+        'social-release' => 'social.release',
+        'social-scenario' => 'social.scenario',
         default => 'forum.feature',
     };
 }
 
-function phaseForRequirement(string $domain, string $sourceSection, string $verbatim): int
-{
+function phaseForRequirement(
+    string $domain,
+    string $sourceSection,
+    string $verbatim,
+    string $sourcePart,
+): int {
     $context = strtolower($sourceSection.' '.$verbatim);
+
+    if ($sourcePart === 'pet-profile-revision') {
+        return match ($domain) {
+            'pet-profile', 'pet-release' => 17,
+            'pet-creation', 'pet-identity', 'pet-data' => 18,
+            'pet-ownership', 'pet-privacy' => 19,
+            'pet-media', 'pet-behavior', 'pet-social', 'pet-public-profile' => 20,
+            'pet-integration', 'pet-discovery' => 21,
+            'pet-lifecycle' => 22,
+            'pet-moderation' => 23,
+            'pet-localization', 'pet-interface' => 24,
+            'pet-quality', 'pet-scenario' => 25,
+            default => 16,
+        };
+    }
+
+    if ($sourcePart === 'social-relationships-revision') {
+        return match ($domain) {
+            'social-relationship', 'social-follow', 'social-data' => 27,
+            'social-request', 'social-safety', 'social-moderation' => 28,
+            'social-pet-friendship', 'social-meetup' => 29,
+            'social-recommendation', 'social-search' => 30,
+            'social-messaging', 'social-groups-events', 'social-privacy-notifications' => 31,
+            'social-interface', 'social-localization' => 32,
+            'social-release', 'social-quality' => 33,
+            'social-scenario' => 34,
+            default => 26,
+        };
+    }
 
     if (str_contains($context, 'phase 0') || str_contains($context, 'source preservation')) {
         return 0;
@@ -566,7 +753,16 @@ function priorityForRequirement(string $domain, string $verbatim): string
     $value = strtolower($verbatim);
 
     if (
-        in_array($domain, ['security-and-privacy', 'moderation'], true)
+        in_array($domain, [
+            'security-and-privacy',
+            'moderation',
+            'pet-privacy',
+            'pet-moderation',
+            'pet-ownership',
+            'social-safety',
+            'social-moderation',
+            'social-privacy-notifications',
+        ], true)
         || str_contains($value, 'must not')
         || str_contains($value, 'never')
         || str_contains($value, 'critical')
@@ -575,27 +771,85 @@ function priorityForRequirement(string $domain, string $verbatim): string
         return 'critical';
     }
 
-    return in_array($domain, ['persistence', 'animal-taxonomy', 'testing-and-traceability'], true)
+    return in_array($domain, [
+        'persistence',
+        'animal-taxonomy',
+        'testing-and-traceability',
+        'pet-data',
+        'pet-identity',
+        'pet-lifecycle',
+        'social-data',
+        'social-request',
+    ], true)
         ? 'high'
         : 'standard';
 }
 
 function impactFor(string $domain, string $impact): string
 {
-    $relevant = [
-        'database' => ['animal-taxonomy', 'moderation', 'reputation-and-trust', 'forum-category', 'persistence', 'forum-feature'],
-        'backend' => ['animal-taxonomy', 'moderation', 'reputation-and-trust', 'forum-category', 'search-and-discovery', 'persistence', 'forum-feature'],
-        'livewire' => ['interface', 'forum-category', 'search-and-discovery', 'moderation', 'animal-taxonomy', 'forum-feature'],
-        'interface' => ['interface', 'forum-category', 'search-and-discovery', 'moderation', 'animal-taxonomy', 'forum-feature'],
-        'authorization' => ['security-and-privacy', 'moderation', 'reputation-and-trust', 'animal-taxonomy', 'forum-feature'],
-        'privacy' => ['security-and-privacy', 'moderation', 'search-and-discovery', 'forum-feature'],
-        'security' => ['security-and-privacy', 'moderation', 'reputation-and-trust', 'interface', 'forum-feature'],
-        'moderation' => ['moderation', 'reputation-and-trust', 'forum-category', 'forum-feature'],
-        'cache' => ['animal-taxonomy', 'forum-category', 'search-and-discovery', 'reputation-and-trust'],
-        'migration' => ['animal-taxonomy', 'moderation', 'reputation-and-trust', 'forum-category', 'persistence', 'forum-feature'],
-        'seed' => ['animal-taxonomy', 'moderation', 'reputation-and-trust', 'forum-category', 'seeding'],
-        'factory' => ['animal-taxonomy', 'moderation', 'reputation-and-trust', 'forum-category', 'persistence', 'forum-feature'],
+    $socialDomains = [
+        'social-relationship',
+        'social-request',
+        'social-follow',
+        'social-pet-friendship',
+        'social-meetup',
+        'social-recommendation',
+        'social-search',
+        'social-messaging',
+        'social-safety',
+        'social-groups-events',
+        'social-privacy-notifications',
+        'social-moderation',
+        'social-data',
+        'social-interface',
+        'social-localization',
+        'social-quality',
+        'social-release',
+        'social-scenario',
     ];
+    $relevant = [
+        'database' => ['animal-taxonomy', 'moderation', 'reputation-and-trust', 'forum-category', 'persistence', 'forum-feature', 'pet-profile', 'pet-creation', 'pet-identity', 'pet-media', 'pet-behavior', 'pet-public-profile', 'pet-privacy', 'pet-ownership', 'pet-social', 'pet-integration', 'pet-lifecycle', 'pet-discovery', 'pet-moderation', 'pet-data', 'pet-release', 'pet-quality'],
+        'backend' => ['animal-taxonomy', 'moderation', 'reputation-and-trust', 'forum-category', 'search-and-discovery', 'persistence', 'forum-feature', 'pet-profile', 'pet-creation', 'pet-identity', 'pet-media', 'pet-behavior', 'pet-public-profile', 'pet-privacy', 'pet-ownership', 'pet-social', 'pet-integration', 'pet-lifecycle', 'pet-discovery', 'pet-localization', 'pet-interface', 'pet-moderation', 'pet-data', 'pet-release', 'pet-quality'],
+        'livewire' => ['interface', 'forum-category', 'search-and-discovery', 'moderation', 'animal-taxonomy', 'forum-feature', 'pet-creation', 'pet-identity', 'pet-media', 'pet-behavior', 'pet-public-profile', 'pet-privacy', 'pet-ownership', 'pet-social', 'pet-integration', 'pet-lifecycle', 'pet-discovery', 'pet-localization', 'pet-interface', 'pet-moderation', 'pet-release'],
+        'interface' => ['interface', 'forum-category', 'search-and-discovery', 'moderation', 'animal-taxonomy', 'forum-feature', 'pet-profile', 'pet-creation', 'pet-identity', 'pet-media', 'pet-behavior', 'pet-public-profile', 'pet-privacy', 'pet-ownership', 'pet-social', 'pet-integration', 'pet-lifecycle', 'pet-discovery', 'pet-localization', 'pet-interface', 'pet-moderation', 'pet-release', 'pet-quality'],
+        'authorization' => ['security-and-privacy', 'moderation', 'reputation-and-trust', 'animal-taxonomy', 'forum-feature', 'pet-creation', 'pet-identity', 'pet-media', 'pet-public-profile', 'pet-privacy', 'pet-ownership', 'pet-social', 'pet-integration', 'pet-lifecycle', 'pet-moderation', 'pet-data'],
+        'privacy' => ['security-and-privacy', 'moderation', 'search-and-discovery', 'forum-feature', 'pet-profile', 'pet-creation', 'pet-identity', 'pet-media', 'pet-behavior', 'pet-public-profile', 'pet-privacy', 'pet-ownership', 'pet-social', 'pet-integration', 'pet-lifecycle', 'pet-discovery', 'pet-localization', 'pet-interface', 'pet-moderation', 'pet-data', 'pet-quality'],
+        'security' => ['security-and-privacy', 'moderation', 'reputation-and-trust', 'interface', 'forum-feature', 'pet-profile', 'pet-creation', 'pet-identity', 'pet-media', 'pet-public-profile', 'pet-privacy', 'pet-ownership', 'pet-social', 'pet-integration', 'pet-lifecycle', 'pet-discovery', 'pet-interface', 'pet-moderation', 'pet-data', 'pet-release'],
+        'moderation' => ['moderation', 'reputation-and-trust', 'forum-category', 'forum-feature', 'pet-media', 'pet-behavior', 'pet-public-profile', 'pet-social', 'pet-lifecycle', 'pet-moderation'],
+        'cache' => ['animal-taxonomy', 'forum-category', 'search-and-discovery', 'reputation-and-trust', 'pet-public-profile', 'pet-privacy', 'pet-social', 'pet-integration', 'pet-lifecycle', 'pet-discovery', 'pet-localization', 'pet-data'],
+        'migration' => ['animal-taxonomy', 'moderation', 'reputation-and-trust', 'forum-category', 'persistence', 'forum-feature', 'pet-profile', 'pet-creation', 'pet-identity', 'pet-media', 'pet-behavior', 'pet-public-profile', 'pet-privacy', 'pet-ownership', 'pet-social', 'pet-integration', 'pet-lifecycle', 'pet-discovery', 'pet-moderation', 'pet-data', 'pet-release', 'pet-quality'],
+        'seed' => ['animal-taxonomy', 'moderation', 'reputation-and-trust', 'forum-category', 'seeding', 'pet-profile', 'pet-identity', 'pet-behavior', 'pet-privacy', 'pet-ownership', 'pet-lifecycle', 'pet-moderation'],
+        'factory' => ['animal-taxonomy', 'moderation', 'reputation-and-trust', 'forum-category', 'persistence', 'forum-feature', 'pet-profile', 'pet-creation', 'pet-identity', 'pet-media', 'pet-behavior', 'pet-public-profile', 'pet-privacy', 'pet-ownership', 'pet-social', 'pet-integration', 'pet-lifecycle', 'pet-discovery', 'pet-moderation', 'pet-data'],
+    ];
+
+    foreach (['database', 'backend', 'migration', 'factory'] as $key) {
+        $relevant[$key] = array_merge($relevant[$key], $socialDomains);
+    }
+
+    foreach (['livewire', 'interface'] as $key) {
+        $relevant[$key] = array_merge($relevant[$key], array_diff($socialDomains, ['social-data']));
+    }
+
+    foreach (['authorization', 'privacy', 'security', 'cache'] as $key) {
+        $relevant[$key] = array_merge($relevant[$key], array_diff($socialDomains, [
+            'social-localization',
+            'social-scenario',
+        ]));
+    }
+
+    $relevant['moderation'] = array_merge($relevant['moderation'], [
+        'social-request',
+        'social-messaging',
+        'social-safety',
+        'social-moderation',
+    ]);
+
+    $relevant['seed'] = array_merge($relevant['seed'], [
+        'social-relationship',
+        'social-follow',
+        'social-safety',
+        'social-release',
+    ]);
 
     return in_array($domain, $relevant[$impact] ?? [], true)
         ? 'Requires phase-specific analysis and evidence.'

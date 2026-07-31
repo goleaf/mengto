@@ -4,12 +4,16 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Casts\PetProfileStatusCast;
+use App\Enums\PetProfileStatus;
 use Database\Factories\PetProfileFactory;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 
@@ -24,11 +28,14 @@ use Illuminate\Support\Carbon;
  * @property string $profile_key
  * @property string $slug
  * @property string $species
- * @property string $status
+ * @property PetProfileStatus $status
  * @property Carbon|null $updated_at
  * @property-read User $user
  * @property int $user_id
  * @property string $visibility
+ * @property-read Collection<int, PetProfileLifecycleEvent> $lifecycleEvents
+ * @property-read Collection<int, PetProfileManager> $managers
+ * @property-read PetProfilePrivacySetting|null $privacySetting
  */
 final class PetProfile extends Model
 {
@@ -39,14 +46,33 @@ final class PetProfile extends Model
 
     protected $fillable = [
         'user_id',
+        'canonical_profile_id',
         'profile_key',
         'slug',
         'name',
         'species',
+        'taxon_id',
         'breed',
+        'domestic_classification_id',
         'birth_date',
+        'birth_date_precision',
+        'sex',
+        'reproductive_status',
         'visibility',
         'status',
+        'creation_key',
+        'creator_relationship',
+        'is_discoverable',
+        'allow_external_indexing',
+        'lock_version',
+        'state_entered_at',
+        'published_at',
+        'hidden_at',
+        'archived_at',
+        'memorialized_at',
+        'deletion_requested_at',
+        'deletion_scheduled_for',
+        'merged_at',
         'profile_data',
     ];
 
@@ -56,6 +82,18 @@ final class PetProfile extends Model
     {
         return [
             'birth_date' => 'immutable_date',
+            'status' => PetProfileStatusCast::class,
+            'is_discoverable' => 'boolean',
+            'allow_external_indexing' => 'boolean',
+            'lock_version' => 'integer',
+            'state_entered_at' => 'immutable_datetime',
+            'published_at' => 'immutable_datetime',
+            'hidden_at' => 'immutable_datetime',
+            'archived_at' => 'immutable_datetime',
+            'memorialized_at' => 'immutable_datetime',
+            'deletion_requested_at' => 'immutable_datetime',
+            'deletion_scheduled_for' => 'immutable_datetime',
+            'merged_at' => 'immutable_datetime',
             'profile_data' => 'encrypted:array',
         ];
     }
@@ -64,6 +102,60 @@ final class PetProfile extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    /** @return BelongsTo<PetProfile, $this> */
+    public function canonicalProfile(): BelongsTo
+    {
+        return $this->belongsTo(self::class, 'canonical_profile_id');
+    }
+
+    /** @return BelongsTo<Taxon, $this> */
+    public function taxon(): BelongsTo
+    {
+        return $this->belongsTo(Taxon::class);
+    }
+
+    /** @return BelongsTo<DomesticClassification, $this> */
+    public function domesticClassification(): BelongsTo
+    {
+        return $this->belongsTo(DomesticClassification::class);
+    }
+
+    /** @return HasMany<PetProfileManager, $this> */
+    public function managers(): HasMany
+    {
+        return $this->hasMany(PetProfileManager::class);
+    }
+
+    /** @return HasOne<PetProfilePrivacySetting, $this> */
+    public function privacySetting(): HasOne
+    {
+        return $this->hasOne(PetProfilePrivacySetting::class);
+    }
+
+    /** @return HasOne<SocialActor, $this> */
+    public function socialActor(): HasOne
+    {
+        return $this->hasOne(SocialActor::class);
+    }
+
+    /** @return HasMany<PetProfileLifecycleEvent, $this> */
+    public function lifecycleEvents(): HasMany
+    {
+        return $this->hasMany(PetProfileLifecycleEvent::class);
+    }
+
+    /** @return HasMany<PetProfileSlugAlias, $this> */
+    public function slugAliases(): HasMany
+    {
+        return $this->hasMany(PetProfileSlugAlias::class);
+    }
+
+    /** @return HasMany<PetProfileFact, $this> */
+    public function facts(): HasMany
+    {
+        return $this->hasMany(PetProfileFact::class);
     }
 
     /** @return HasMany<AdoptionCase, $this> */
@@ -81,13 +173,44 @@ final class PetProfile extends Model
     public function scopeVisibleTo(Builder $query, ?User $user): Builder
     {
         return $query
-            ->where('status', 'active')
             ->where(function (Builder $visibility) use ($user): void {
-                $visibility->where('visibility', 'public');
+                $visibility->where(function (Builder $public): void {
+                    $public
+                        ->whereIn('status', array_map(
+                            static fn (PetProfileStatus $status): string => $status->value,
+                            array_filter(
+                                PetProfileStatus::cases(),
+                                static fn (PetProfileStatus $status): bool => $status->isPubliclyEligible(),
+                            ),
+                        ))
+                        ->where('visibility', 'public')
+                        ->where('is_discoverable', true);
+                });
 
                 if ($user !== null) {
-                    $visibility->orWhere('user_id', $user->id);
+                    $visibility->orWhere(function (Builder $managed) use ($user): void {
+                        $this->applyManagedBy($managed, $user);
+                    });
                 }
             });
+    }
+
+    public function scopeManagedBy(Builder $query, User $user): Builder
+    {
+        return $this->applyManagedBy($query, $user);
+    }
+
+    private function applyManagedBy(Builder $query, User $user): Builder
+    {
+        $at = now();
+
+        return $query->where(function (Builder $managed) use ($at, $user): void {
+            $managed
+                ->where('user_id', $user->id)
+                ->orWhereHas('managers', function ($managers) use ($at, $user): void {
+                    $managers->where('user_id', $user->id);
+                    PetProfileManager::constrainActiveAt($managers, $at);
+                });
+        });
     }
 }

@@ -273,3 +273,41 @@ deleting registrations, reports, reviews, or history.
   than replacing administrator-owned category rules.
 
 See `docs/topic-lifecycle.md`.
+
+## Pet Profile Operations
+
+Deploy the additive pet migration before the application release. Back up the
+database and record counts for `pet_profiles` and all adjacent tables. Then
+run `php artisan pets:backfill-profile-foundation --chunk=500` and verify that
+every legacy pet has one current manager, privacy row, slug alias, and
+foundation event. Rerun the same command; all created counts must be zero.
+
+Smoke the private create screen, owner management, manager invitation and
+acceptance, privacy save, one allowed lifecycle transition, one forbidden
+direct request, and one public stable-key URL. Rebuild application caches only
+after backfill and clear the documented pet projection keys after any privacy
+incident.
+
+After production manager/fact/lifecycle writes exist, recovery is forward-only:
+retain pets, memberships, privacy, facts, aliases, events, and adjacent module
+FKs; revoke unsafe access, append corrected facts or lifecycle transitions,
+and deploy an additive fix. Do not truncate, detach the legacy owner, rewrite
+`profile_key`, or drop the foundation tables. See `docs/pet-profiles.md`.
+
+## Social Relationship Operations
+
+Deploy the additive social migration, record authoritative user/pet/expert/
+group counts, and run `social:backfill-actors --dry-run --chunk=500`. Run the
+write command twice and require stable actor/settings counts while legacy
+encrypted connection state remains unchanged.
+
+Smoke one public follow, one approval follow, one owner friendship, one pet
+friendship under current manager authority, one decline/cancel race, one block,
+one settings version conflict, and direct Livewire denial. Monitor duplicate
+key failures, expired pending requests, idempotency collisions, repeated
+declines, blocks, and backfill count drift. Do not treat actor-level blocking
+as account-wide protection.
+
+After production relationships exist, recover with forward Actions or an
+additive migration. Preserve requests and append-only events; never repair a
+graph by deleting evidence or promoting prototype state into consent.

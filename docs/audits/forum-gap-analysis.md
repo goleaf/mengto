@@ -11,7 +11,7 @@ and marketplace behaviour while introducing normalized shared domains.
 
 | Area | Existing state | Required state | Resolution |
 | --- | --- | --- | --- |
-| Requirements | Focused `docs/forum-scope.md` | Immutable combined source plus 7,284 atomic records | Preserved and generated in Gate 0 |
+| Requirements | Focused `docs/forum-scope.md` | Immutable master source plus 14,629 atomic records, including the dated pet and social revisions | Preserved and generated in Gate 0 |
 | Categories | 11 PHP-array categories; string topic fields | 44 stable top-level categories and complete seeded children | Normalize categories; retain legacy strings during expand phase |
 | Taxonomy | Pet species/breed strings | Versioned global scientific and domestic taxonomy | Separate reusable taxonomy module and local-snapshot importer |
 | Reputation | Answer helpful count only | Append-only scoped ledger, aggregates, reversals, trust, badges | Dedicated models/actions and database uniqueness |
@@ -203,3 +203,21 @@ version, and expose only public-safe attribution. The reusable taxonomy
 selector applies one tested verified current-locale, fallback-locale, exact
 scientific-name order without translating scientific source data or loading
 the full tree.
+
+## Resolved Pet Identity Foundation Gap
+
+The previous single-owner/free-state pet row now has an additive canonical
+identity and authorization foundation: permanent keys, typed lifecycle and
+visibility, timed manager memberships with explicit permissions, layered
+privacy, nullable shared-taxonomy links, retained aliases, append-only actor
+events, encrypted versioned critical facts, optimistic writes, deterministic
+cache invalidation, and a bounded idempotent legacy-owner backfill.
+
+Class-based Livewire create/manage/invitation/public surfaces use validated
+forms, locked identity, server policies, EN/LT/RU, and bounded presentation
+queries. Migration rollback/re-application, repeat seed/backfill, focused and
+full tests, static analysis, build/cache checks, and desktop/mobile/320px
+browser checks passed. This resolves 205 exact pet IDs only. Duplicate/claim,
+ownership transfer and proof, destructive lifecycle, media/social behavior,
+cross-domain integration, moderation, metrics, and advanced interfaces remain
+open in the pet gap analysis.

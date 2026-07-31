@@ -9,6 +9,13 @@
             <x-slot:actions>
                 <x-action-group>
                     <x-action-control
+                        :href="route('social.index')"
+                        label="{{ __('social_relationships.title') }}"
+                        icon="network"
+                        variant="primary"
+                        size="regular"
+                    />
+                    <x-action-control
                         :href="route('connections.index')"
                         label="{{ __('ui.connections_dc27311748') }}"
                         icon="users-round"
@@ -19,7 +26,7 @@
                         :href="route('pet-friends.index')"
                         label="{{ __('ui.pet_friends_8866f0adbb') }}"
                         icon="heart-handshake"
-                        variant="primary"
+                        variant="paper"
                         size="regular"
                     />
                 </x-action-group>

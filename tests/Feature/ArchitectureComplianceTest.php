@@ -235,6 +235,9 @@ test('compliance matrix contains every canonical requirement exactly once', func
 });
 
 test('forum atomic requirements and evidence remain deterministic and traceable', function () {
+    $preservation = Process::path(base_path())
+        ->timeout(30)
+        ->run([PHP_BINARY, 'scripts/preserve-forum-source-prompt.php', '--check']);
     $result = Process::path(base_path())
         ->timeout(30)
         ->run([PHP_BINARY, 'scripts/generate-forum-requirements.php', '--check']);
@@ -245,10 +248,35 @@ test('forum atomic requirements and evidence remain deterministic and traceable'
     );
     $requirements = collect($catalogue['requirements']);
 
-    expect($result->successful(), $result->errorOutput().$result->output())
+    expect(
+        $preservation->successful(),
+        $preservation->errorOutput().$preservation->output(),
+    )->toBeTrue()
+        ->and($result->successful(), $result->errorOutput().$result->output())
         ->toBeTrue()
-        ->and($requirements)->toHaveCount(7284)
-        ->and($requirements->pluck('requirement_id')->unique())->toHaveCount(7284);
+        ->and($catalogue['source_payload_sha256'])
+        ->toBe('ad88d55de0faf7d5fe62c97479be42f6539316a13eeae9d2bbfd8a6b3716c32d')
+        ->and($catalogue['source_parts'])
+        ->toBe([
+            'primary',
+            'extension',
+            'pet-profile-revision',
+            'social-relationships-revision',
+        ])
+        ->and($requirements)->toHaveCount(14629)
+        ->and($requirements->pluck('requirement_id')->unique())->toHaveCount(14629)
+        ->and($requirements->where('source_part', 'pet-profile-revision'))
+        ->toHaveCount(4135)
+        ->and($requirements->where('source_part', 'pet-profile-revision')
+            ->pluck('requirement_id')
+            ->filter(fn (string $id): bool => str_starts_with($id, 'pet.')))
+        ->toHaveCount(4135)
+        ->and($requirements->where('source_part', 'social-relationships-revision'))
+        ->toHaveCount(3210)
+        ->and($requirements->where('source_part', 'social-relationships-revision')
+            ->pluck('requirement_id')
+            ->filter(fn (string $id): bool => str_starts_with($id, 'social.')))
+        ->toHaveCount(3210);
 
     $requirements
         ->where('verification_status', 'verified')

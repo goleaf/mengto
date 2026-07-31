@@ -31,6 +31,7 @@ This index is the source-of-truth map for first-party documentation.
 | `docs/events.md` | Events, attendance, clubs, privacy, backfill, and recovery | Product + engineering | Canonical |
 | `docs/expert-question-sessions.md` | Verified-host question sessions, queue privacy, corrections, and recovery | Product + engineering | Canonical |
 | `docs/topic-lifecycle.md` | Topic states, retention, legal hold, redirects, seeding, and recovery | Product + engineering | Canonical |
+| `docs/pet-profiles.md` | Canonical pet identity, managers, privacy, lifecycle, backfill, and recovery | Product + engineering | Canonical |
 | `docs/tailwind.md` | Tailwind 4 rules and applicability matrix | Frontend | Canonical |
 | `docs/accessibility.md` | Accessibility acceptance criteria | Design + QA | Canonical |
 | `docs/localization.md` | Locale architecture and translation workflow | Product + frontend | Canonical |
@@ -58,7 +59,7 @@ domain contract under the canonical requirements above:
 | --- | --- | --- |
 | `docs/requirements/forum-source-prompt.md` | Immutable recovered source specification and checksum | Canonical immutable input |
 | `docs/requirements/forum-master-requirements.md` | Generated domain and state summary | Canonical generated |
-| `docs/requirements/forum-requirements.json` | All 7,284 atomic requirement records | Canonical machine-readable |
+| `docs/requirements/forum-requirements.json` | All 14,629 atomic requirement records | Canonical machine-readable |
 | `docs/traceability/forum-requirements-matrix.md` | Requirement-level implementation and verification evidence | Living generated evidence |
 | `docs/plans/forum-master-plan.md` | Dependency-aware implementation contract | Living canonical plan |
 | `docs/plans/forum-phase-requirement-index.md` | One primary phase for every atomic requirement | Canonical generated |
@@ -69,6 +70,23 @@ domain contract under the canonical requirements above:
 | `docs/decisions/forum-architecture-decisions.md` | Forum and taxonomy ADR summary | Canonical decisions |
 | `docs/decisions/forum-assumptions.md` | Repository-derived assumptions | Living decisions |
 | `docs/decisions/forum-conflicts.md` | Explicit conflict resolution | Living decisions |
+| `docs/plans/pet-profile-master-plan.md` | Phases 15-25 for the pet-profile revision | Living canonical plan |
+| `docs/plans/pet-profile-foundation-work-package.md` | Implemented pet identity and access foundation package | Living evidence |
+| `docs/plans/pet-profile-current-progress.md` | Pet gate status and next evidence | Living evidence |
+| `docs/audits/pet-profile-existing-system-audit.md` | Existing pet aggregate and integrations | Living evidence |
+| `docs/audits/pet-profile-gap-analysis.md` | Pet data, privacy, ownership, and lifecycle gaps | Living evidence |
+| `docs/decisions/pet-profile-architecture-decisions.md` | Pet aggregate architecture decisions | Canonical decisions |
+| `docs/decisions/pet-profile-assumptions.md` | Safe repository-derived pet assumptions | Living decisions |
+| `docs/decisions/pet-profile-conflicts.md` | Pet-revision conflict resolution | Living decisions |
+| `docs/plans/social-relationships-master-plan.md` | Phases 26-34 for the social revision | Living canonical plan |
+| `docs/plans/social-relationships-foundation-work-package.md` | First durable social-graph package and exact IDs | Living evidence |
+| `docs/plans/social-relationships-current-progress.md` | Social gate status and next evidence | Living evidence |
+| `docs/social-relationships.md` | Implemented canonical social graph and operational boundary | Canonical reference |
+| `docs/audits/social-relationships-existing-system-audit.md` | Existing social prototype and authority boundaries | Living evidence |
+| `docs/audits/social-relationships-gap-analysis.md` | Social graph, privacy, consent, and safety gaps | Living evidence |
+| `docs/decisions/social-relationships-architecture-decisions.md` | Social aggregate architecture decisions | Canonical decisions |
+| `docs/decisions/social-relationships-assumptions.md` | Safe repository-derived social assumptions | Living decisions |
+| `docs/decisions/social-relationships-conflicts.md` | Social-revision conflict resolution | Living decisions |
 
 Future forum work must read these documents after the global canonical
 requirements and before changing forum production code. Statuses are

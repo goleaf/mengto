@@ -82,9 +82,9 @@ destructive command.
 ## Baseline And Current Checkpoint
 
 The modernization baseline was 116 passing tests and 3,881 assertions. The
-latest complete serial checkpoint reports 1,684 passing tests and 64,597
-assertions after the forum multilingual-behavior package. This checkpoint is not a
-final coverage claim while requirements remain unimplemented.
+latest complete serial checkpoint reports 1,861 passing tests and 69,718
+assertions after the social-relationship foundation package. This checkpoint
+is not a final coverage claim while requirements remain unimplemented.
 
 Pest coverage cannot run in the current environment because PHP 8.5 has neither
 PCOV nor Xdebug. The expected failing command and its exact reason remain part
@@ -324,3 +324,56 @@ Package evidence:
 
 The coverage command was executed and returned
 `Code coverage driver not available. Did you install Xdebug or PCOV?`.
+
+## Pet Profile Foundation Verification
+
+`PetProfileFoundationTest` covers additive schema, enum and legacy-status
+casts, idempotent create/backfill, owner and adjacent-data preservation,
+manager invitation/acceptance/revocation/expiry, permission overrides, direct
+Livewire authorization, optimistic lifecycle transitions, immutable events,
+encrypted versioned facts, layered privacy, cache invalidation, stable URLs,
+bounded queries, and EN/LT/RU key/placeholder parity. `SocialPersistenceTest`
+keeps the historical `category/detail` update contract compatible while the
+new form uses explicit species and breed inputs.
+
+Package evidence:
+
+- foundation plus legacy compatibility: 21 tests and 1,603 assertions;
+- final serial repository suite: 1,748 tests and 68,172 assertions in 103.288
+  seconds;
+- isolated fresh SQLite: 100 migrations and 177 tables; repeat seed/backfill
+  preserved stable pet and foundation counts;
+- populated rollback/re-application retained every pet row;
+- Pint, Larastan level 5, Composer strict validation/audit, npm audit, Vite,
+  cache compilation, source preservation, and requirement generation passed;
+- browser audit passed create/manage/invitations/public pet pages on desktop,
+  mobile, and 320px with no accessibility, overflow, or console finding.
+
+Percentage coverage remains unavailable because the PHP 8.5 CLI has neither
+PCOV nor Xdebug. Exact commands and limits are in
+`docs/plans/pet-profile-foundation-work-package.md`.
+
+## Social Relationship Foundation Verification
+
+`SocialRelationshipFoundationTest` covers additive indexed schema, reversible
+rollback, bounded idempotent actor backfill, public and approval follows,
+independent reverse subscriptions, owner and pet friendship consent, durable
+friends/group/event eligibility, revoked pet-manager access, close-circle
+permission isolation, block effects, cancel/accept serialization, persistent
+expiry, optimistic privacy, hidden directed controls, bounded search and query
+count, direct Livewire authorization, immutable events, and EN/LT/RU parity.
+
+Package evidence:
+
+- focused social suite: 22 tests and 432 assertions;
+- expanded pet/social/architecture slice: 63 tests and 26,709 assertions;
+- schema/factory/social regression: 1,250 tests and 4,055 assertions;
+- final serial repository suite: 1,861 tests and 69,718 assertions in 90.930
+  seconds;
+- isolated migration/seed/backfill/rollback, Pint, Larastan, dependency audits,
+  Vite, cache compilation, deterministic specification checks, and responsive
+  English/Russian browser accessibility checks passed.
+
+Exactly 158 atomic social IDs carry this evidence. Account-wide safety,
+anti-abuse, recommendations, messages, meetings, notifications, minors, public
+graph projection, transfer, deletion, and memorial behavior remain open.

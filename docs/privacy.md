@@ -83,3 +83,35 @@ Removal, archive, merge, redirect, retention review, and restoration preserve
 content and moderation evidence without making private topics searchable or
 granting an administrator an ordinary private-content read bypass. Redirects
 occur only after destination authorization. See `docs/topic-lifecycle.md`.
+
+## Pet Profile Privacy
+
+New pet profiles default to private, non-discoverable, direct-link disabled,
+and external-indexing disabled. The broad profile audience caps every section
+audience. Discovery, link access, owner/manager labels, and location precision
+are independent explicit settings.
+
+Public pet projection is allowlisted. It excludes encrypted facts, evidence,
+exact location, contacts, medical/care/device data, documents, private manager
+metadata, and idempotency material. Manager expiry and revocation are checked
+at read and mutation time. A hidden, archived, merged, disputed, or deletion
+pending state cannot become public through a stale UI control.
+
+Privacy and lifecycle Actions update optimistic versions, append actor evidence,
+and invalidate the known public profile, canonical, directory, search, and
+recommendation keys. A setting that records external-indexing preference is not
+evidence that third-party search engines have already removed an old copy.
+See `docs/pet-profiles.md` for the exact implemented boundary.
+
+## Social Relationship Privacy
+
+Social directory queries are bounded and explicitly select public actor
+presentation fields. They exclude non-discoverable actors, blocked pairs,
+exact location, medical/care/device data, credentials, documents, ownership
+evidence, manager structure, and hidden group membership.
+
+The relationship center exposes requests, edges, and counts only to a user who
+can represent the selected actor. List-visibility preferences are stored, but
+no viewer-facing public friend/follower list is claimed in the foundation.
+Blocking is applied before request creation/acceptance and before directory or
+graph projection, then both endpoint cache namespaces are invalidated.

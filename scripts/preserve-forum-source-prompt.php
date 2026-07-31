@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 const FORUM_PRIMARY_PROMPT_TIMESTAMP = 1785397895;
 const FORUM_EXTENSION_PROMPT_TIMESTAMP = 1785445633;
+const PET_PROFILE_PROMPT_TIMESTAMP = 1785514046;
+const SOCIAL_RELATIONSHIPS_PROMPT_TIMESTAMP = 1785521058;
 
 $root = dirname(__DIR__);
 $target = $root.'/docs/requirements/forum-source-prompt.md';
@@ -32,14 +34,24 @@ while (($line = fgets($handle)) !== false) {
 
     $timestamp = (int) $entry['ts'];
 
-    if (in_array($timestamp, [FORUM_PRIMARY_PROMPT_TIMESTAMP, FORUM_EXTENSION_PROMPT_TIMESTAMP], true)) {
+    if (in_array($timestamp, [
+        FORUM_PRIMARY_PROMPT_TIMESTAMP,
+        FORUM_EXTENSION_PROMPT_TIMESTAMP,
+        PET_PROFILE_PROMPT_TIMESTAMP,
+        SOCIAL_RELATIONSHIPS_PROMPT_TIMESTAMP,
+    ], true)) {
         $prompts[$timestamp] = (string) $entry['text'];
     }
 }
 
 fclose($handle);
 
-foreach ([FORUM_PRIMARY_PROMPT_TIMESTAMP, FORUM_EXTENSION_PROMPT_TIMESTAMP] as $timestamp) {
+foreach ([
+    FORUM_PRIMARY_PROMPT_TIMESTAMP,
+    FORUM_EXTENSION_PROMPT_TIMESTAMP,
+    PET_PROFILE_PROMPT_TIMESTAMP,
+    SOCIAL_RELATIONSHIPS_PROMPT_TIMESTAMP,
+] as $timestamp) {
     if (! isset($prompts[$timestamp])) {
         fwrite(STDERR, "Required forum prompt entry {$timestamp} is missing.\n");
         exit(1);
@@ -48,8 +60,16 @@ foreach ([FORUM_PRIMARY_PROMPT_TIMESTAMP, FORUM_EXTENSION_PROMPT_TIMESTAMP] as $
 
 $primary = $prompts[FORUM_PRIMARY_PROMPT_TIMESTAMP];
 $extension = $prompts[FORUM_EXTENSION_PROMPT_TIMESTAMP];
-$payload = $primary."\n\n".$extension;
-$checksum = hash('sha256', $payload);
+$petProfile = $prompts[PET_PROFILE_PROMPT_TIMESTAMP];
+$socialRelationships = $prompts[SOCIAL_RELATIONSHIPS_PROMPT_TIMESTAMP];
+$forumPayload = $primary."\n\n".$extension;
+$forumChecksum = hash('sha256', $forumPayload);
+$petProfileChecksum = hash('sha256', $petProfile);
+$petProfileMasterPayload = $forumPayload."\n\n".$petProfile;
+$petProfileMasterChecksum = hash('sha256', $petProfileMasterPayload);
+$socialRelationshipsChecksum = hash('sha256', $socialRelationships);
+$masterPayload = $petProfileMasterPayload."\n\n".$socialRelationships;
+$masterChecksum = hash('sha256', $masterPayload);
 $document = <<<'MARKDOWN'
 # Forum Source Prompt
 
@@ -61,23 +81,51 @@ revisions; earlier source text must never be silently edited or removed.
 MARKDOWN;
 $document .= "\n- Primary source timestamp: `".FORUM_PRIMARY_PROMPT_TIMESTAMP."`\n";
 $document .= '- Additive extension timestamp: `'.FORUM_EXTENSION_PROMPT_TIMESTAMP."`\n";
-$document .= "- Combined raw payload SHA-256: `{$checksum}`\n";
+$document .= "- Combined raw payload SHA-256: `{$forumChecksum}`\n";
 $document .= "- Checksum payload: exact primary prompt, two LF characters, exact extension prompt\n\n";
 $document .= "## Source Part A: Original Forum Specification\n\n";
 $document .= "<forum-source-primary>\n{$primary}\n</forum-source-primary>\n\n";
 $document .= "## Source Part B: Additive Master Extension\n\n";
 $document .= "<forum-source-extension>\n{$extension}\n</forum-source-extension>\n";
+$legacyDocument = $document;
+$document .= "\n## Revision 2026-07-31: Pet Profile And Full Lifecycle\n\n";
+$document .= "This dated revision is additive. Parts A and B above remain unchanged and\n";
+$document .= "mandatory. The revision payload below is preserved verbatim from local Codex\n";
+$document .= "history and is part of the indivisible master specification.\n\n";
+$document .= '- Revision source timestamp: `'.PET_PROFILE_PROMPT_TIMESTAMP."`\n";
+$document .= "- Revision raw payload SHA-256: `{$petProfileChecksum}`\n";
+$document .= "- Master raw payload SHA-256: `{$petProfileMasterChecksum}`\n";
+$document .= "- Master checksum payload: Parts A and B checksum payload, two LF characters, exact revision payload\n\n";
+$document .= "<pet-profile-source-revision>\n{$petProfile}\n</pet-profile-source-revision>\n";
+$petProfileDocument = $document;
+$document .= "\n## Revision 2026-07-31: Social Relationships And Safe Introductions\n\n";
+$document .= "This dated revision is additive. Parts A and B and the pet-profile revision\n";
+$document .= "above remain unchanged and mandatory. The revision payload below is preserved\n";
+$document .= "verbatim from local Codex history and is part of the indivisible master\n";
+$document .= "specification.\n\n";
+$document .= '- Social revision source timestamp: `'.SOCIAL_RELATIONSHIPS_PROMPT_TIMESTAMP."`\n";
+$document .= "- Social revision raw payload SHA-256: `{$socialRelationshipsChecksum}`\n";
+$document .= "- Current master raw payload SHA-256: `{$masterChecksum}`\n";
+$document .= "- Current master checksum payload: prior master checksum payload, two LF characters, exact social revision payload\n\n";
+$document .= "<social-relationships-source-revision>\n{$socialRelationships}\n</social-relationships-source-revision>\n";
 
 if (is_file($target)) {
     $existing = file_get_contents($target);
 
     if ($existing === $document) {
-        fwrite(STDOUT, "Forum source prompt is unchanged ({$checksum}).\n");
+        fwrite(STDOUT, "Master source prompt is unchanged ({$masterChecksum}).\n");
         exit(0);
     }
 
-    fwrite(STDERR, "Refusing to overwrite the immutable forum source prompt.\n");
-    exit(1);
+    if ($existing !== $legacyDocument && $existing !== $petProfileDocument) {
+        fwrite(STDERR, "Refusing to replace or rewrite preserved source-prompt content.\n");
+        exit(1);
+    }
+
+    if ($checkOnly) {
+        fwrite(STDERR, "A dated source revision has not been appended yet.\n");
+        exit(1);
+    }
 }
 
 if ($checkOnly) {
@@ -97,4 +145,4 @@ if (file_put_contents($target, $document, LOCK_EX) === false) {
     exit(1);
 }
 
-fwrite(STDOUT, "Preserved forum source prompt ({$checksum}).\n");
+fwrite(STDOUT, "Preserved master source prompt ({$masterChecksum}).\n");

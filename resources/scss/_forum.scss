@@ -755,6 +755,21 @@
         min-height: 1rem;
     }
 
+    &__check {
+        display: grid;
+        grid-template-columns: $touch-target minmax(0, 1fr);
+        min-block-size: $touch-target;
+        align-items: center;
+        gap: 0.65rem;
+    }
+
+    &__check input[type='checkbox'] {
+        width: $touch-target;
+        min-height: $touch-target;
+        margin: 0;
+        padding: 0;
+    }
+
     &__actions {
         display: flex;
         justify-content: space-between;

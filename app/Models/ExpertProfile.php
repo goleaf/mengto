@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Carbon;
 
 /**
@@ -164,6 +165,12 @@ class ExpertProfile extends Model
     public function owner(): BelongsTo
     {
         return $this->belongsTo(User::class, 'owner_id');
+    }
+
+    /** @return HasOne<SocialActor, $this> */
+    public function socialActor(): HasOne
+    {
+        return $this->hasOne(SocialActor::class);
     }
 
     /** @return HasMany<\App\Models\Credential, $this>*/

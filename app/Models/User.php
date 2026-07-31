@@ -68,6 +68,12 @@ class User extends Authenticatable implements MustVerifyEmailContract
         return $this->hasMany(PetProfile::class);
     }
 
+    /** @return HasMany<PetProfileManager, $this> */
+    public function managedPetProfiles(): HasMany
+    {
+        return $this->hasMany(PetProfileManager::class);
+    }
+
     /** @return HasMany<SearchCase, $this> */
     public function searchCases(): HasMany
     {
@@ -90,6 +96,12 @@ class User extends Authenticatable implements MustVerifyEmailContract
     public function domainStates(): HasMany
     {
         return $this->hasMany(UserDomainState::class);
+    }
+
+    /** @return HasOne<SocialActor, $this> */
+    public function socialActor(): HasOne
+    {
+        return $this->hasOne(SocialActor::class);
     }
 
     /** @return HasMany<ExpertProfile, $this> */

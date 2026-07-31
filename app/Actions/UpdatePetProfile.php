@@ -7,6 +7,9 @@ namespace App\Actions;
 use App\Models\AuditLog;
 use App\Models\PetProfile;
 use App\Services\ForumActor;
+use App\Services\PetProfileAccess;
+use App\Services\PetProfileCache;
+use App\Services\PetProfileEventRecorder;
 use App\Services\PrototypeState;
 use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Support\Facades\DB;
@@ -18,6 +21,9 @@ final class UpdatePetProfile
         private readonly ForumActor $actor,
         private readonly Gate $gate,
         private readonly PrototypeState $state,
+        private readonly PetProfileAccess $access,
+        private readonly PetProfileEventRecorder $events,
+        private readonly PetProfileCache $cache,
     ) {}
 
     /** @param array<string, mixed> $data */
@@ -32,12 +38,19 @@ final class UpdatePetProfile
                 'slug',
                 'name',
                 'species',
+                'taxon_id',
                 'breed',
+                'domestic_classification_id',
+                'birth_date',
+                'birth_date_precision',
+                'sex',
+                'reproductive_status',
                 'visibility',
                 'status',
+                'lock_version',
                 'profile_data',
             ])
-            ->where('user_id', $user->id)
+            ->managedBy($user)
             ->where('slug', $slug)
             ->first();
 
@@ -48,37 +61,91 @@ final class UpdatePetProfile
         }
 
         $this->gate->authorize('update', $profile);
+        $eventIdempotencyKey = isset($data['idempotency_key'])
+            ? 'pet-update:'.hash('sha256', (string) $data['idempotency_key'])
+            : null;
 
-        return DB::transaction(function () use ($data, $profile, $slug): PetProfile {
-            $profileData = $profile->profile_data ?? [];
-            $profile->forceFill([
+        return DB::transaction(function () use ($data, $eventIdempotencyKey, $profile, $slug, $user): PetProfile {
+            if ($eventIdempotencyKey !== null && $profile->lifecycleEvents()
+                ->where('idempotency_key', $eventIdempotencyKey)
+                ->exists()) {
+                return PetProfile::query()->findOrFail($profile->id);
+            }
+
+            $locked = PetProfile::query()
+                ->lockForUpdate()
+                ->findOrFail($profile->id);
+            $expectedVersion = (int) ($data['lock_version'] ?? $locked->lock_version);
+
+            if ($locked->lock_version !== $expectedVersion) {
+                throw ValidationException::withMessages([
+                    'lock_version' => __('pet_profiles.validation.stale_profile'),
+                ]);
+            }
+
+            $profileData = $locked->profile_data ?? [];
+            $nextProfileData = [
+                ...$profileData,
+                'story' => (string) $data['body'],
+            ];
+
+            if (array_key_exists('detail', $data)) {
+                $nextProfileData['status'] = (string) $data['detail'];
+            }
+
+            $attributes = [
                 'name' => (string) $data['title'],
-                'breed' => ($data['category'] ?? null) ?: null,
-                'profile_data' => [
-                    ...$profileData,
-                    'story' => (string) $data['body'],
-                    'status' => (string) ($data['detail'] ?? ''),
-                ],
-            ])->save();
+                'breed' => ($data['breed'] ?? $data['category'] ?? null) ?: null,
+                'lock_version' => $locked->lock_version + 1,
+                'profile_data' => $nextProfileData,
+            ];
+
+            foreach ([
+                'species',
+                'taxon_id',
+                'domestic_classification_id',
+                'birth_date',
+                'birth_date_precision',
+                'sex',
+                'reproductive_status',
+            ] as $optionalField) {
+                if (array_key_exists($optionalField, $data)) {
+                    $attributes[$optionalField] = $data[$optionalField] ?: null;
+                }
+            }
+
+            $locked->forceFill($attributes)->save();
 
             // Keep pre-normalization profile snapshots readable during the compatibility window.
             $this->state->updatePet([
-                'name' => $profile->name,
+                'name' => $locked->name,
                 'story' => (string) $data['body'],
-                'status' => (string) ($data['detail'] ?? ''),
-                'breed' => $profile->breed ?? '',
+                'status' => (string) ($nextProfileData['status'] ?? ''),
+                'breed' => $locked->breed ?? '',
             ], $slug);
+
+            $manager = $this->access->membership($locked, $user);
+            $this->events->record(
+                profile: $locked,
+                actor: $user,
+                eventType: 'profile-updated',
+                reasonCode: 'profile-updated',
+                publicMetadata: ['fields' => ['name', 'breed', 'story']],
+                idempotencyKey: $eventIdempotencyKey,
+                manager: $manager,
+            );
 
             AuditLog::query()->create([
                 'actor_key' => $this->actor->key(),
-                'actor_role' => 'pet-profile-owner',
+                'actor_role' => $manager?->role->value ?? 'legacy-owner',
                 'action' => 'pet-profile.updated',
                 'target_type' => PetProfile::class,
-                'target_id' => (string) $profile->id,
-                'metadata' => ['profile_key' => $profile->profile_key],
+                'target_id' => (string) $locked->id,
+                'metadata' => ['profile_key' => $locked->profile_key],
             ]);
+            $this->cache->invalidate($locked);
 
-            return $profile->refresh();
+            return $locked->refresh();
         }, 3);
     }
 }

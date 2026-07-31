@@ -161,17 +161,17 @@ command environment. This incident remains recorded for transparency.
 | Vite | 8.2.0 |
 | Pest / PHPUnit | 4.7.5 / 12.5.30 |
 | Larastan / PHPStan | 3.10.0 / 2.2.7, level 5 |
-| First-party models / factory coverage | 157 / 157 models covered |
-| Explicit / enum-backed factory states | 145 / 862 |
-| Migrations / tables | 99 / 172 |
-| Application / total routes | 150 / 164 |
-| Full PHP suite | 1,684 passed, 64,597 assertions |
+| First-party models / factory coverage | 167 / 167 models covered |
+| Explicit / enum-backed factory states | 145 / 897 |
+| Migrations / tables | 101 / 182 |
+| Application / total routes | 156 / 170 |
+| Full PHP suite | 1,861 passed, 69,718 assertions |
 
 Final production assets:
 
 - font CSS: 1.31 kB / 0.32 kB gzip;
-- Tailwind application CSS: 50.35 kB / 9.54 kB gzip;
-- retained semantic SCSS CSS: 264.39 kB / 34.98 kB gzip;
+- Tailwind application CSS: 51.15 kB / 9.63 kB gzip;
+- retained semantic SCSS CSS: 264.61 kB / 35.00 kB gzip;
 - application JavaScript: 33.04 kB / 10.36 kB gzip;
 - PhotoSwipe JavaScript: 58.82 kB / 17.06 kB gzip.
 

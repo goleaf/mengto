@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * @property int $active_member_count
@@ -95,6 +96,12 @@ final class ForumGroup extends Model
     public function getRouteKeyName(): string
     {
         return 'stable_key';
+    }
+
+    /** @return HasOne<SocialActor, $this> */
+    public function socialActor(): HasOne
+    {
+        return $this->hasOne(SocialActor::class);
     }
 
     public function displayName(): string

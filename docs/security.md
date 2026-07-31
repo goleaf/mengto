@@ -240,6 +240,25 @@ never project professional status. See `docs/mentorship.md`.
 
 See `docs/journals.md`, `docs/privacy.md`, and `docs/files.md`.
 
+## Social Relationship Controls
+
+- The authenticated user is recorded for every action performed from another
+  profile; a pet or group cannot authenticate independently.
+- Policies authorize actor representation, request response/cancel, edge end,
+  and settings updates on the server and inside critical transactions.
+- Nullable unique active keys and operation-bound idempotency keys prevent
+  duplicate open requests/edges and unsafe replay.
+- Blocks are checked before contact and projection, terminate open pair state,
+  write immutable evidence, and invalidate both endpoint cache namespaces.
+- Friends-of-friends and shared-group eligibility are proven from canonical
+  rows. A forged context string cannot widen request policy.
+- Social events reject updates and deletes. Legacy encrypted prototype state
+  is retained but never interpreted as mutual consent.
+
+The implemented block is actor-level. Account-wide scope across all profiles,
+anti-stalking correlation, anti-fraud/rate limits, minors, messaging, and
+temporary location are explicit unresolved safety packages.
+
 ## Public Image Processing
 
 - Public marketplace, lost/found case, sighting, and forum-topic photos pass
@@ -300,3 +319,27 @@ See `docs/journals.md`, `docs/privacy.md`, and `docs/files.md`.
   administrator has no implicit read bypass to ordinary private topics.
 
 See `docs/topic-lifecycle.md`.
+
+## Pet Profile Controls
+
+- Pet profiles cannot authenticate or act independently; every mutation has an
+  authenticated human actor and server-side policy decision.
+- Manager roles do not prove ownership or credentials. Evidence status and
+  professional verification remain separate domains.
+- Timed manager access, explicit permission overrides, account state, profile
+  state, and revocation are evaluated on every protected request.
+- Critical permissions are separate from generic editing. Disputed, merged,
+  deletion-pending, and archived profiles lock manager changes and destructive
+  policy paths.
+- Create, manager invitation/acceptance/revocation, lifecycle, privacy, and
+  fact mutations use transactions, unique/idempotency keys where applicable,
+  and optimistic or row locking.
+- Critical fact values, source references, manager evidence metadata, and
+  private lifecycle metadata are encrypted and hidden from serialization.
+- Public projection is allowlisted and requires an eligible state, public
+  visibility, and discoverability.
+
+The current foundation intentionally does not automate ownership proof,
+duplicate merging, permanent deletion, professional verification, cruelty
+judgments, or legal/species conclusions. Those paths remain deny-by-default or
+administrator-only until their dedicated reviewed workflows exist.

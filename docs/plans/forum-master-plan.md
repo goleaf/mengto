@@ -4,7 +4,7 @@
 
 This plan implements the immutable source in
 `docs/requirements/forum-source-prompt.md`. The generated
-`docs/plans/forum-phase-requirement-index.md` assigns every one of the 7,284
+`docs/plans/forum-phase-requirement-index.md` assigns every one of the 14,629
 atomic requirement IDs to a primary phase; no identifier is represented by a
 generic “implement everything” checkbox.
 
@@ -242,3 +242,35 @@ security/localization/testing/seeding/deployment/operations documents,
 changelog, progress, matrix, and final audit. Inspect complete and staged
 diffs, secrets, generated artifacts, and unrelated files. Commit coherent
 slices with a temporary index and push only after observed successful gates.
+
+## Phases 15-25: Pet Profile Revision
+
+The additive pet-profile revision contributes 4,135 stable `pet.*`
+requirements without renumbering the original 7,284 IDs. Control phases 15-16
+cover preservation, audit, and domain design. Implementation phases 17-25
+cover the canonical aggregate, creation and identity facts, ownership and
+privacy, public/media/social behavior, integrations, lifecycle and memorial,
+moderation, localization/accessibility, and scenario verification.
+
+The complete requirement ranges, risks, compatibility strategy, acceptance
+gates, and evidence contract are maintained in
+`docs/plans/pet-profile-master-plan.md`. Pet work does not replace or defer the
+remaining forum/taxonomy phases; it reuses their taxonomy, moderation,
+adoption, lost/found, event, guide, search, cache, and translation boundaries.
+
+## Phases 26-34: Social Relationships Revision
+
+The additive social-relationships revision contributes 3,210 stable
+`social.*` requirements without renumbering the prior 11,419 IDs. The control
+phase preserves, audits, and designs the revision. Implementation phases 27-34
+cover relationship/follow foundations; requests, safety, and moderation; pet
+friendship and safe meetings; recommendations and search; messaging, groups,
+events, privacy, and notifications; interface/accessibility/localization;
+release quality; and ideal-scenario verification.
+
+The exact phase boundaries, invariants, migration strategy, and evidence
+contract are maintained in
+`docs/plans/social-relationships-master-plan.md`. Social relationships point
+to existing user, pet, expert, organization, group, event, moderation, and
+message aggregates. They never replace those identities or grant their
+administrative permissions.

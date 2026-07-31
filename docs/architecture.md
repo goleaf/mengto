@@ -295,3 +295,37 @@ service. `ForumTopicLifecycleProjection` computes stale, necropost, archive,
 retention, and bump state without writes. Physical deletion is not an ordinary
 topic operation, and legacy state values remain readable while new mutations
 write canonical values. See `docs/topic-lifecycle.md`.
+
+## Canonical Pet Profile Boundary
+
+`PetProfile` remains the one reusable animal aggregate for social, care,
+medical, device, search, adoption, event, marketplace, and future relations.
+No module may create an alternative species list or pet identity. The stable
+`profile_key` is the cross-interface URL identity; numeric FKs remain the
+database relationship boundary.
+
+`PetProfileManager` is the actor-to-pet authorization edge. Policies delegate
+to `PetProfileAccess`, and mutation Actions repeat server authorization before
+locking and writing. `PetProfilePrivacySetting` owns profile and section
+audiences. `PetProfileLifecycleEvent` and the ordinary `AuditLog` retain
+actor-attributed history. `PetProfileFact` is reserved for critical values
+that need provenance, verification, privacy, and replacement history.
+
+The Livewire components coordinate validated form objects and Actions. Blade
+views receive bounded arrays and do not query models or resolve services.
+Existing `user_id`, slug, string species/breed, and encrypted profile data are
+compatibility fields during expansion. See `docs/pet-profiles.md`.
+
+## Canonical Social Relationship Boundary
+
+`SocialActor` is a one-to-one internal adapter around an authoritative user,
+pet, expert, or group profile. It owns no credentials, biography, ownership,
+medical data, or independent identity. Requests, active typed relationships,
+per-actor settings, and append-only events are separate aggregates.
+
+Mutation Actions authorize the real authenticated user against the represented
+actor, re-read locked rows, enforce active/idempotency uniqueness, and
+invalidate both endpoint cache namespaces. Directed and symmetric edges share
+one model but use type-defined key semantics. Social trust never grants pet,
+professional, medical, device, adoption, marketplace, or location authority.
+See `docs/social-relationships.md`.

@@ -131,3 +131,39 @@ and preservation of answers, reactions, subscriptions, reports, and
 attachments. Do not run `ForumTopicLifecycleDemoSeeder` in production. After
 production lifecycle writes exist, retain the additive schema and recover with
 an audited forward transition or migration.
+
+## Pet Profile Foundation Migration
+
+`2026_07_31_001270_create_pet_profile_foundation.php` expands the existing pet
+aggregate and creates manager, privacy, lifecycle-event, slug-alias, and fact
+tables without deleting or remapping any pet or adjacent-domain record.
+
+1. Back up and record existing pet and integration counts.
+2. Run `php artisan migrate --force`.
+3. Run `php artisan pets:backfill-profile-foundation --chunk=500`.
+4. Rerun the backfill and require zero newly created manager/privacy/alias rows.
+5. Smoke create, manage, invitation, privacy, lifecycle, stable URL, and direct
+   authorization paths.
+6. Rebuild config, event, route, and view caches.
+
+Rollback was verified on an isolated populated SQLite database before release.
+After production writes use the new tables, keep the additive schema and use a
+reviewed forward fix; do not drop pet authorization or audit history.
+
+## Social Relationship Foundation Migration
+
+`2026_07_31_182248_create_social_relationship_foundation.php` adds actor,
+settings, request, relationship, and event tables without rewriting any
+authoritative profile or encrypted compatibility state.
+
+1. Back up and record user, pet, expert, group, and legacy social-state counts.
+2. Run `php artisan migrate --force`.
+3. Run `php artisan social:backfill-actors --dry-run --chunk=500`.
+4. Run the write backfill twice and require stable adapter/settings counts.
+5. Smoke the authenticated `/circle/social` workflow and one denied direct
+   request from an unauthorized user.
+6. Rebuild config, event, route, and view caches.
+
+Rollback is safe only before production social writes depend on these tables.
+After that point, retain relationship/event evidence and deploy a reviewed
+forward fix.

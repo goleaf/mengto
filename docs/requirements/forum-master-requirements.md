@@ -3,8 +3,8 @@
 This catalogue is generated from the immutable source prompt. It normalizes
 the implementation contract without replacing or shortening source text.
 
-- Source payload SHA-256: `6f8a7f987c336a2247755cae1c2fd66dea66d83cfbf038b5fe31aa848097d773`
-- Atomic requirements: `7284`
+- Source payload SHA-256: `ad88d55de0faf7d5fe62c97479be42f6539316a13eeae9d2bbfd8a6b3716c32d`
+- Atomic requirements: `14629`
 - Complete machine-readable catalogue: `docs/requirements/forum-requirements.json`
 - Complete traceability index: `docs/traceability/forum-requirements-matrix.md`
 
@@ -21,11 +21,48 @@ the implementation contract without replacing or shortening source text.
 | localization | 49 |
 | moderation | 469 |
 | persistence | 99 |
+| pet-behavior | 322 |
+| pet-creation | 186 |
+| pet-data | 308 |
+| pet-discovery | 82 |
+| pet-identity | 351 |
+| pet-integration | 286 |
+| pet-interface | 180 |
+| pet-lifecycle | 272 |
+| pet-localization | 63 |
+| pet-media | 182 |
+| pet-moderation | 192 |
+| pet-ownership | 393 |
+| pet-privacy | 221 |
+| pet-profile | 210 |
+| pet-public-profile | 160 |
+| pet-quality | 88 |
+| pet-release | 68 |
+| pet-scenario | 206 |
+| pet-social | 365 |
 | planning-and-documentation | 144 |
 | reputation-and-trust | 352 |
 | search-and-discovery | 147 |
 | security-and-privacy | 48 |
 | seeding | 37 |
+| social-data | 232 |
+| social-follow | 144 |
+| social-groups-events | 190 |
+| social-interface | 174 |
+| social-localization | 49 |
+| social-meetup | 236 |
+| social-messaging | 173 |
+| social-moderation | 210 |
+| social-pet-friendship | 172 |
+| social-privacy-notifications | 129 |
+| social-quality | 89 |
+| social-recommendation | 266 |
+| social-relationship | 285 |
+| social-release | 108 |
+| social-request | 294 |
+| social-safety | 168 |
+| social-scenario | 124 |
+| social-search | 167 |
 | testing-and-traceability | 152 |
 
 ## State Contract

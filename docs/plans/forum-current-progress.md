@@ -4,17 +4,24 @@ Last updated: 2026-07-31.
 
 ## Current Phase
 
-Phases 0–2 are complete. Additive schema, forum categories, animal taxonomy,
+Phases 0–2 are complete. The dated pet-profile and social-relationships
+revisions have passed source preservation, atomic extraction, and repository
+discovery. Additive schema, forum categories, animal taxonomy,
 reputation/confirmation, and moderation foundations have been implemented.
 Phase 8 structured-community work and Phase 10 Livewire administration are in
-progress. Verification remains incremental; no incomplete phase is described
-as complete.
+progress; pet phases 17-25 are planned and the first canonical identity/access
+foundation package is verified. Social phase 27 has an audited and selected
+foundation package but no verified production IDs yet. Verification remains
+incremental; no incomplete phase is described as complete.
 
 ## Completed Evidence
 
-- Combined source prompt preserved with SHA-256
-  `6f8a7f987c336a2247755cae1c2fd66dea66d83cfbf038b5fe31aa848097d773`.
-- 7,284 atomic requirements generated with full source coordinates.
+- Master source prompt plus dated pet-profile and social revisions preserved
+  with SHA-256
+  `ad88d55de0faf7d5fe62c97479be42f6539316a13eeae9d2bbfd8a6b3716c32d`.
+- 14,629 atomic requirements generated with full source coordinates; the
+  4,135 `pet.*` and 3,210 `social.*` records did not renumber the original
+  7,284 IDs or each other.
 - Every atomic requirement assigned to one primary phase.
 - Existing forum, policies, requests, migrations, adjacent domains,
   translations, seeds, factories, and focused tests inventoried.
@@ -57,9 +64,25 @@ as complete.
   immutable case events, protected idempotent contact relays, advisory
   duplicate detection, unified false-sighting/reward-scam reports, and
   privacy-safe archival that preserves the complete operational history.
-- Requirement evidence is a deterministic overlay. `513` atomic requirements
+- Requirement evidence is a deterministic overlay. `876` atomic requirements
   are verified with file/test evidence and none are currently marked
   in-progress.
+- The pet-profile foundation preserves the existing aggregate while adding
+  permanent identity, typed lifecycle, timed multi-manager permissions,
+  layered privacy, append-only events, versioned facts, stable URLs/QR,
+  idempotent backfill, and localized class-based Livewire workflows. Its
+  focused compatibility slice passed 21 tests and 1,603 assertions; the final
+  serial suite passed 1,748 tests and 68,172 assertions. Exactly 205 pet IDs
+  are verified; all remaining pet requirements stay open.
+- The social revision is preserved and atomized across 18 domains and phases
+  27-34. The canonical actor/request/relationship/audit foundation, bounded
+  backfill, policies, class-based Livewire relationship center, translations,
+  and profile-level controls are implemented. Exactly 158 social IDs are
+  verified after 22 focused tests, 63 expanded tests, the 1,861-test full
+  suite, isolated migration/seed/rollback, static analysis, build, cache, and
+  desktop/mobile/320px browser gates. Later social packages remain open.
+- Current complete serial repository checkpoint: 1,861 tests and 69,718
+  assertions in 90.930 seconds.
 - Current repository checkpoint: expert-session plus architecture verification
   passed 31 tests and 22,249 assertions. The detached `f1e2fcc` package
   snapshot passed full Pint and Larastan, 1,554 serial tests and 54,317
@@ -196,20 +219,36 @@ as complete.
 | 12 | 29 | fixed definitions implemented; demo graph pending |
 | 13 | 131 | planned |
 | 14 | 221 | planned |
+| 17 | 278 | canonical identity/status subset verified; remaining release boundary planned |
+| 18 | 845 | minimal creation and versioned-fact subset verified; duplicate/claim and identity depth planned |
+| 19 | 614 | manager/access and selected privacy subset verified; transfer/dispute/privacy depth planned |
+| 20 | 1,029 | stable public projection/URL/QR subset verified; media/social/behavior planned |
+| 21 | 368 | planned |
+| 22 | 272 | typed transition foundation verified; complete lifecycle/memorial effects planned |
+| 23 | 192 | planned |
+| 24 | 243 | foundation Livewire accessibility/localization subset verified; remaining interfaces planned |
+| 25 | 294 | foundation verification recorded; complete metrics/scenarios planned |
+| 27 | 661 | foundation package selected; implementation in progress |
+| 28 | 672 | planned |
+| 29 | 408 | planned |
+| 30 | 433 | planned |
+| 31 | 492 | planned |
+| 32 | 223 | planned |
+| 33 | 197 | planned |
+| 34 | 124 | planned |
 
 ## Next Verified Pass
 
-1. Create and read the next work-package plan for source-section 73 optional
-   artificial-intelligence assistance before production changes.
-2. Inventory whether any AI provider, feature flag, privacy contract, audit
-   boundary, or product requirement already exists; do not add a provider
-   merely to satisfy syntax.
-3. Map every source-section 73 ID to an implemented safeguarded workflow or a
-   precise evidence-backed applicability decision.
-4. Add privacy, authorization, transparency, fallback, and no-autonomous-
-   decision tests before changing any selected requirement status.
-5. Update evidence, rerun the applicable full quality gates, and perform the
-   next phase completeness audit.
+1. Implement the selected social actor, relationship, request, setting, and
+   append-only event schema without changing existing identity records.
+2. Preserve encrypted connection/pet-friend state and report ambiguous legacy
+   endpoints rather than manufacturing mutual consent.
+3. Add policy-checked, idempotent follow/friend/close-circle/block Actions and
+   the class-based Livewire relationship center.
+4. Add migration, race, replay, privacy, query, localization, accessibility,
+   and browser tests for the exact foundation intervals.
+5. Update only independently evidenced IDs, rerun full gates, then return to
+   the next open pet and social package selected from the generated index.
 
 ## Preservation Ledger
 

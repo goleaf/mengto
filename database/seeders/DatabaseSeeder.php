@@ -84,6 +84,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $this->call(SocialIdentitySeeder::class);
+        $this->call(PetProfileFoundationSeeder::class);
         $this->call(ForumEventBackfillSeeder::class);
         $this->call(ForumSeeder::class);
         $this->call(ForumTopicLifecycleBackfillSeeder::class);
@@ -106,6 +107,7 @@ class DatabaseSeeder extends Seeder
         $this->call(MedicalRecordSeeder::class);
         $this->call(CareJournalSeeder::class);
         $this->call(SmartDeviceSeeder::class);
+        $this->call(SocialActorFoundationSeeder::class);
     }
 
     /** @param array<string, mixed> $attributes */

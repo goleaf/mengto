@@ -179,6 +179,32 @@ const waitUntil = async (callback, message, timeout = 15_000) => {
     throw new Error(message);
 };
 
+const login = async (client, sessionId, email) => {
+    await navigate(client, sessionId, `${baseUrl}/login`);
+    await evaluate(client, sessionId, `((email) => {
+        const setValue = (selector, value) => {
+            const input = document.querySelector(selector);
+            const setter = Object.getOwnPropertyDescriptor(
+                HTMLInputElement.prototype,
+                'value',
+            ).set;
+            setter.call(input, value);
+            input.dispatchEvent(new Event('input', { bubbles: true }));
+            input.dispatchEvent(new Event('change', { bubbles: true }));
+            input.blur();
+        };
+
+        setValue('#login-email', email);
+        setValue('#login-password', 'password');
+        document.querySelector('form button[type="submit"]').click();
+        return true;
+    })(${JSON.stringify(email)})`);
+    await waitUntil(
+        async () => !(await evaluate(client, sessionId, 'location.pathname')).includes('/login'),
+        `Login did not complete for ${email}.`,
+    );
+};
+
 const pageAuditExpression = `(() => {
     const visible = (element) => {
         const style = getComputedStyle(element);
@@ -230,6 +256,21 @@ const assertPageAudit = (audit, label) => {
     assert(audit.invalidImageCount === 0, `${label}: an image lacks an alt attribute.`);
     assert(audit.skipTargetExists, `${label}: skip link target is missing.`);
 };
+
+const surfaceTouchTargetExpression = `(() => [...document.querySelectorAll(
+    '.forum-page button, .forum-page input:not([type="hidden"]), .forum-page select, '
+    + '.forum-page textarea, .forum-page .forum-button'
+)].filter((element) => {
+    const style = getComputedStyle(element);
+    const box = element.getBoundingClientRect();
+    return style.display !== 'none' && style.visibility !== 'hidden'
+        && box.width > 0 && box.height > 0;
+}).map((element) => ({
+    label: element.getAttribute('aria-label') || element.textContent.trim().slice(0, 60)
+        || element.getAttribute('name'),
+    width: Math.round(element.getBoundingClientRect().width),
+    height: Math.round(element.getBoundingClientRect().height),
+})).filter((target) => target.width < 44 || target.height < 44))()`;
 
 await mkdir(outputDirectory, { recursive: true });
 const profileDirectory = await mkdtemp(join(tmpdir(), 'mengto-chrome-'));
@@ -377,29 +418,152 @@ try {
         deviceScaleFactor: 1,
         mobile: false,
     }, sessionId);
-    await navigate(client, sessionId, `${baseUrl}/login`);
-    await evaluate(client, sessionId, `(() => {
-        const setValue = (selector, value) => {
-            const input = document.querySelector(selector);
-            const setter = Object.getOwnPropertyDescriptor(
-                HTMLInputElement.prototype,
-                'value',
-            ).set;
-            setter.call(input, value);
-            input.dispatchEvent(new Event('input', { bubbles: true }));
-            input.dispatchEvent(new Event('change', { bubbles: true }));
-            input.blur();
-        };
+    await login(client, sessionId, 'mia@example.test');
+    const petAudits = {};
 
-        setValue('#login-email', 'administrator@example.test');
-        setValue('#login-password', 'password');
-        document.querySelector('form button[type="submit"]').click();
-        return true;
-    })()`);
-    await waitUntil(
-        async () => !(await evaluate(client, sessionId, 'location.pathname')).includes('/login'),
-        'Administrator login did not complete.',
+    for (const [path, label] of [
+        ['/pets/profile/pet-scout', 'desktop public pet profile'],
+        ['/pets/manage/new', 'desktop pet creation'],
+        ['/pets/manage/invitations', 'desktop pet invitations'],
+        ['/pets/manage/pet-scout', 'desktop pet management'],
+    ]) {
+        await navigate(client, sessionId, `${baseUrl}${path}`);
+        const audit = await evaluate(client, sessionId, pageAuditExpression);
+        assertPageAudit(audit, label);
+        petAudits[label] = audit;
+    }
+
+    const petDesktopScreenshot = await client.send('Page.captureScreenshot', {
+        format: 'png',
+        captureBeyondViewport: true,
+    }, sessionId);
+    await writeFile(
+        join(outputDirectory, 'pet-profile-manage-desktop.png'),
+        Buffer.from(petDesktopScreenshot.data, 'base64'),
     );
+
+    await client.send('Emulation.setDeviceMetricsOverride', {
+        width: 375,
+        height: 812,
+        deviceScaleFactor: 1,
+        mobile: true,
+        screenWidth: 375,
+        screenHeight: 812,
+    }, sessionId);
+    for (const [path, label] of [
+        ['/pets/profile/pet-scout', 'mobile public pet profile'],
+        ['/pets/manage/new', 'mobile pet creation'],
+        ['/pets/manage/pet-scout', 'mobile pet management'],
+    ]) {
+        await navigate(client, sessionId, `${baseUrl}${path}`);
+        const audit = await evaluate(client, sessionId, pageAuditExpression);
+        const smallTouchTargets = await evaluate(client, sessionId, surfaceTouchTargetExpression);
+        assertPageAudit(audit, label);
+        assert(
+            smallTouchTargets.length === 0,
+            `${label}: controls below 44px ${JSON.stringify(smallTouchTargets)}.`,
+        );
+        petAudits[label] = { ...audit, smallTouchTargets };
+    }
+
+    const petMobileScreenshot = await client.send('Page.captureScreenshot', {
+        format: 'png',
+        captureBeyondViewport: true,
+    }, sessionId);
+    await writeFile(
+        join(outputDirectory, 'pet-profile-manage-mobile.png'),
+        Buffer.from(petMobileScreenshot.data, 'base64'),
+    );
+
+    await client.send('Emulation.setDeviceMetricsOverride', {
+        width: 320,
+        height: 900,
+        deviceScaleFactor: 1,
+        mobile: true,
+        screenWidth: 320,
+        screenHeight: 900,
+    }, sessionId);
+    await navigate(client, sessionId, `${baseUrl}/pets/manage/pet-scout`);
+    const petZoomAudit = await evaluate(client, sessionId, pageAuditExpression);
+    assertPageAudit(petZoomAudit, '320px pet management reflow');
+    petAudits['320px pet management reflow'] = petZoomAudit;
+
+    const socialAudits = {};
+    await client.send('Emulation.setDeviceMetricsOverride', {
+        width: 1440,
+        height: 900,
+        deviceScaleFactor: 1,
+        mobile: false,
+    }, sessionId);
+    await navigate(client, sessionId, `${baseUrl}/circle/social`);
+    const socialDesktopAudit = await evaluate(client, sessionId, pageAuditExpression);
+    assertPageAudit(socialDesktopAudit, 'desktop social relationships');
+    socialAudits['desktop social relationships'] = socialDesktopAudit;
+
+    const socialDesktopScreenshot = await client.send('Page.captureScreenshot', {
+        format: 'png',
+        captureBeyondViewport: true,
+    }, sessionId);
+    await writeFile(
+        join(outputDirectory, 'social-relationships-desktop.png'),
+        Buffer.from(socialDesktopScreenshot.data, 'base64'),
+    );
+
+    await client.send('Emulation.setDeviceMetricsOverride', {
+        width: 375,
+        height: 812,
+        deviceScaleFactor: 1,
+        mobile: true,
+        screenWidth: 375,
+        screenHeight: 812,
+    }, sessionId);
+    await navigate(client, sessionId, `${baseUrl}/circle/social`);
+    const socialMobileAudit = await evaluate(client, sessionId, pageAuditExpression);
+    const socialSmallTouchTargets = await evaluate(
+        client,
+        sessionId,
+        surfaceTouchTargetExpression,
+    );
+    assertPageAudit(socialMobileAudit, 'mobile social relationships');
+    assert(
+        socialSmallTouchTargets.length === 0,
+        `mobile social relationships: controls below 44px ${JSON.stringify(socialSmallTouchTargets)}.`,
+    );
+    socialAudits['mobile social relationships'] = {
+        ...socialMobileAudit,
+        smallTouchTargets: socialSmallTouchTargets,
+    };
+
+    const socialMobileScreenshot = await client.send('Page.captureScreenshot', {
+        format: 'png',
+        captureBeyondViewport: true,
+    }, sessionId);
+    await writeFile(
+        join(outputDirectory, 'social-relationships-mobile.png'),
+        Buffer.from(socialMobileScreenshot.data, 'base64'),
+    );
+
+    await client.send('Emulation.setDeviceMetricsOverride', {
+        width: 320,
+        height: 900,
+        deviceScaleFactor: 1,
+        mobile: true,
+        screenWidth: 320,
+        screenHeight: 900,
+    }, sessionId);
+    await navigate(client, sessionId, `${baseUrl}/circle/social`);
+    const socialZoomAudit = await evaluate(client, sessionId, pageAuditExpression);
+    assertPageAudit(socialZoomAudit, '320px social relationships reflow');
+    socialAudits['320px social relationships reflow'] = socialZoomAudit;
+
+    await client.send('Network.clearBrowserCookies', {}, sessionId);
+    await client.send('Emulation.setDeviceMetricsOverride', {
+        width: 1440,
+        height: 900,
+        deviceScaleFactor: 1,
+        mobile: false,
+    }, sessionId);
+    await login(client, sessionId, 'administrator@example.test');
 
     await navigate(client, sessionId, `${baseUrl}/profile/settings`);
     const profileSettingsAudit = await evaluate(client, sessionId, pageAuditExpression);
@@ -596,6 +760,24 @@ try {
         `Raw Russian translation keys are visible: ${russianBehavior.rawTranslationKeys.join(', ')}.`,
     );
 
+    await navigate(client, sessionId, `${baseUrl}/circle/social`);
+    const russianSocialAudit = await evaluate(client, sessionId, pageAuditExpression);
+    assertPageAudit(russianSocialAudit, 'Russian social relationships');
+    const russianSocialBehavior = await evaluate(client, sessionId, `(() => ({
+        documentLanguage: document.documentElement.lang,
+        rawTranslationKeys: document.body.innerText.match(
+            /\b(?:social_relationships)\.[a-z0-9_.-]+/gi,
+        ) ?? [],
+    }))()`);
+    assert(
+        russianSocialBehavior.documentLanguage === 'ru',
+        'The social relationships document language is not Russian.',
+    );
+    assert(
+        russianSocialBehavior.rawTranslationKeys.length === 0,
+        `Raw Russian social keys are visible: ${russianSocialBehavior.rawTranslationKeys.join(', ')}.`,
+    );
+
     await navigate(client, sessionId, `${baseUrl}/profile/settings`);
     await evaluate(client, sessionId, `((originalLocale) => {
         const locale = document.querySelector('#profile-settings-locale');
@@ -623,6 +805,8 @@ try {
         desktopAudit,
         mobileAudit,
         zoomAudit,
+        petAudits,
+        socialAudits,
         skipFocus,
         profileSettingsAudit,
         originalProfileLocale,
@@ -634,10 +818,16 @@ try {
         adminTables: tableAudit,
         russianForumAudit,
         russianBehavior,
+        russianSocialAudit,
+        russianSocialBehavior,
         consoleErrors,
         screenshots: [
             join(outputDirectory, 'forum-desktop.png'),
             join(outputDirectory, 'forum-mobile.png'),
+            join(outputDirectory, 'pet-profile-manage-desktop.png'),
+            join(outputDirectory, 'pet-profile-manage-mobile.png'),
+            join(outputDirectory, 'social-relationships-desktop.png'),
+            join(outputDirectory, 'social-relationships-mobile.png'),
             join(outputDirectory, 'knowledge-translation-mobile.png'),
         ],
     };

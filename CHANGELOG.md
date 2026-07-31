@@ -10,8 +10,20 @@
 
 ### Forum And Animal Taxonomy
 
-- Preserved the combined forum/taxonomy specification with a deterministic
-  SHA-256 and generated 7,284 source-linked atomic requirements.
+- Established the canonical pet-profile foundation with permanent identity,
+  taxonomy links, typed lifecycle, timed multi-manager roles and permissions,
+  layered privacy, append-only actor history, versioned encrypted facts,
+  idempotent legacy backfill, stable URLs/QR, and localized accessible
+  class-based Livewire create/manage/public workflows.
+- Established the canonical social-relationship foundation with typed actor
+  adapters, directed and symmetric edges, recipient-controlled consent,
+  idempotent request lifecycle, profile-level safety controls, immutable real
+  user audit, bounded backfill/search, and a localized accessible Livewire
+  relationship center.
+
+- Preserved the combined forum/taxonomy/pet/social specification with a
+  deterministic SHA-256 and generated 14,629 source-linked atomic
+  requirements.
 - Added a deterministic 44-root, 1,637-subcategory forum hierarchy with
   stable keys, translations, aliases, redirects, safe synchronization, topic
   backfill, and cache invalidation.
@@ -111,7 +123,7 @@
   isolated fresh-database verifier enter testing mode before application
   bootstrap.
 - Added an evidence overlay that prevents requirement verification without
-  concrete file or test evidence; 513 atomic requirements are currently
+  concrete file or test evidence; 876 atomic requirements are currently
   verified.
 
 ### Runtime And Architecture
@@ -158,6 +170,9 @@
 - Added durable pet profiles, encrypted/versioned per-user social state,
   care-sync metadata, device retention/safety metadata, lifecycle records, and
   grouped device-event provenance through additive migrations.
+- Added the canonical social-actor adapter, typed follow/friend/control graph,
+  consent request lifecycle, immutable real-user audit, bounded compatibility
+  backfill, and authenticated EN/LT/RU Livewire relationship center.
 - Preserved private file authorization, encrypted sensitive values,
   idempotency, source provenance, and audit behavior in critical workflows.
 - Prevented archived lost/found cases from appearing through directories,
