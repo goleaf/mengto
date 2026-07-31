@@ -12,10 +12,13 @@ use App\Data\ForumGroupMembershipRequestData;
 use App\Models\ForumGroup;
 use App\Models\ForumGroupInvitation;
 use App\Models\ForumReportReason;
+use App\Models\SocialActor;
 use App\Models\Taxon;
 use App\Models\TaxonVersion;
 use App\Models\User;
+use App\Services\CommunityMembershipActorEligibility;
 use App\Services\ForumReportReasonCatalog;
+use App\Services\SocialActorPresenter;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
@@ -35,6 +38,8 @@ final class GroupWorkspace extends Component
     #[Locked]
     public string $leaveToken;
 
+    public string $selectedActorKey = '';
+
     /** @var array<string, string> */
     public array $answers = [];
 
@@ -50,12 +55,28 @@ final class GroupWorkspace extends Component
 
     public string $feedback = '';
 
+    private CommunityMembershipActorEligibility $actorEligibility;
+
+    private SocialActorPresenter $actorPresenter;
+
+    public function boot(
+        CommunityMembershipActorEligibility $actorEligibility,
+        SocialActorPresenter $actorPresenter,
+    ): void {
+        $this->actorEligibility = $actorEligibility;
+        $this->actorPresenter = $actorPresenter;
+    }
+
     public function mount(int $groupId): void
     {
         $this->groupId = $groupId;
         $this->requestToken = $this->token('request');
         $this->leaveToken = $this->token('leave');
-        Gate::authorize('view', $this->groupModel());
+        $group = $this->groupModel();
+        Gate::authorize('view', $group);
+        $this->selectedActorKey = $this->actorEligibility
+            ->defaultFor($this->requireUser(), $group)
+            ->actor_key;
     }
 
     /** @return array<string, mixed> */
@@ -74,11 +95,13 @@ final class GroupWorkspace extends Component
                 'description',
                 'description_translation_key',
                 'rules',
+                'rules_version',
                 'visibility',
                 'status',
                 'default_locale',
                 'location_scope',
                 'membership_questions',
+                'allowed_actor_types',
                 'active_member_count',
                 'lock_version',
                 'closed_at',
@@ -93,8 +116,10 @@ final class GroupWorkspace extends Component
                         'id',
                         'forum_group_id',
                         'user_id',
+                        'social_actor_id',
                         'role',
                         'state',
+                        'accepted_rules_version',
                         'lock_version',
                     ])
                         ->where('user_id', $user->id);
@@ -116,7 +141,12 @@ final class GroupWorkspace extends Component
             ])
             ->findOrFail($this->groupId);
         Gate::authorize('view', $group);
-        $membership = $group->memberships->first();
+        $selectedActor = $this->actorEligibility->resolveFor(
+            $user,
+            $group,
+            $this->selectedActorKey,
+        );
+        $membership = $group->memberships->firstWhere('social_actor_id', $selectedActor->id);
         $invitation = $group->invitations->first();
         $owner = $group->getRelation('owner');
 
@@ -144,14 +174,38 @@ final class GroupWorkspace extends Component
             'membership_role' => $membership?->role->label(),
             'membership_role_key' => $membership?->role->value,
             'membership_lock_version' => $membership?->lock_version,
+            'membership_rules_version' => $membership?->accepted_rules_version,
+            'participating_as' => $this->actorPresenter->present($selectedActor),
             'invitation_id' => $invitation?->id,
             'invitation_role' => $invitation?->role->label(),
             'invitation_message' => $invitation?->message,
-            'can_request' => Gate::forUser($user)->allows('requestMembership', $group),
+            'can_request' => Gate::forUser($user)->allows(
+                'requestMembership',
+                [$group, $selectedActor],
+            ),
             'can_view_content' => Gate::forUser($user)->allows('viewMemberContent', $group),
             'can_report' => Gate::forUser($user)->allows('report', $group),
             'can_manage' => Gate::forUser($user)->allows('viewAudit', $group),
         ];
+    }
+
+    /** @return array<string, string> */
+    #[Computed]
+    public function actorOptions(): array
+    {
+        return $this->actorEligibility
+            ->availableTo($this->requireUser(), $this->groupModel())
+            ->mapWithKeys(function (SocialActor $actor): array {
+                $presented = $this->actorPresenter->present($actor);
+
+                return [
+                    $presented['key'] => __('forum_groups.labels.actor_option', [
+                        'name' => $presented['name'],
+                        'type' => $presented['type_label'],
+                    ]),
+                ];
+            })
+            ->all();
     }
 
     /** @return array{id: int, scientific_name: string, rank: string} */
@@ -196,6 +250,7 @@ final class GroupWorkspace extends Component
             new ForumGroupMembershipRequestData(
                 answers: $this->answers,
                 idempotencyKey: $this->requestToken,
+                socialActorKey: $this->selectedActorKey,
             ),
         );
         $this->feedback = $group->visibility->value === 'public'
@@ -214,7 +269,12 @@ final class GroupWorkspace extends Component
             ->where('forum_group_id', $this->groupId)
             ->where('invited_user_id', $this->requireUser()->id)
             ->findOrFail($invitationId);
-        $respond->handle($this->requireUser(), $invitation, $accept);
+        $respond->handle(
+            $this->requireUser(),
+            $invitation,
+            $accept,
+            $accept ? $this->selectedActor() : null,
+        );
         $this->feedback = $accept
             ? __('forum_groups.feedback.invitation_accepted')
             : __('forum_groups.feedback.invitation_declined');
@@ -224,7 +284,10 @@ final class GroupWorkspace extends Component
     public function leave(LeaveForumGroup $leave): void
     {
         $user = $this->requireUser();
-        $membership = $this->groupModel()->membershipFor($user);
+        $membership = $this->groupModel()->membershipForActor(
+            $user,
+            $this->selectedActor(),
+        );
         abort_unless($membership !== null, 404);
         $leave->handle(
             $user,
@@ -279,7 +342,40 @@ final class GroupWorkspace extends Component
 
     private function groupModel(): ForumGroup
     {
-        return ForumGroup::query()->findOrFail($this->groupId);
+        return ForumGroup::query()
+            ->select([
+                'id',
+                'owner_user_id',
+                'stable_key',
+                'creation_idempotency_key',
+                'is_system_managed',
+                'name',
+                'name_translation_key',
+                'description',
+                'description_translation_key',
+                'rules',
+                'rules_version',
+                'visibility',
+                'status',
+                'default_locale',
+                'location_scope',
+                'membership_questions',
+                'allowed_actor_types',
+                'active_member_count',
+                'lock_version',
+                'closed_at',
+                'archived_at',
+            ])
+            ->findOrFail($this->groupId);
+    }
+
+    private function selectedActor(): SocialActor
+    {
+        return $this->actorEligibility->resolveFor(
+            $this->requireUser(),
+            $this->groupModel(),
+            $this->selectedActorKey,
+        );
     }
 
     private function requireUser(): User

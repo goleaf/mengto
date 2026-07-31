@@ -255,7 +255,7 @@ test('forum atomic requirements and evidence remain deterministic and traceable'
         ->and($result->successful(), $result->errorOutput().$result->output())
         ->toBeTrue()
         ->and($catalogue['source_payload_sha256'])
-        ->toBe('e2bbf22bf9b8dd42f7b7e1d1ee691391879cb80e39146abfd47f46932425d049')
+        ->toBe('408fa2f6cd8d5189f05ebe3762df42a332221f8ee6a83ed366dbc4ec54d2ec8e')
         ->and($catalogue['source_parts'])
         ->toBe([
             'primary',
@@ -264,9 +264,10 @@ test('forum atomic requirements and evidence remain deterministic and traceable'
             'social-relationships-revision',
             'content-feed-revision',
             'communication-revision',
+            'community-revision',
         ])
-        ->and($requirements)->toHaveCount(22517)
-        ->and($requirements->pluck('requirement_id')->unique())->toHaveCount(22517)
+        ->and($requirements)->toHaveCount(26093)
+        ->and($requirements->pluck('requirement_id')->unique())->toHaveCount(26093)
         ->and($requirements->where('source_part', 'pet-profile-revision'))
         ->toHaveCount(4135)
         ->and($requirements->where('source_part', 'pet-profile-revision')
@@ -298,6 +299,16 @@ test('forum atomic requirements and evidence remain deterministic and traceable'
         ->and($requirements->where('source_part', 'communication-revision')
             ->filter(fn (array $requirement): bool => $requirement['implementation_phase'] < 46
                 || $requirement['implementation_phase'] > 54))
+        ->toBeEmpty()
+        ->and($requirements->where('source_part', 'community-revision'))
+        ->toHaveCount(3576)
+        ->and($requirements->where('source_part', 'community-revision')
+            ->pluck('requirement_id')
+            ->filter(fn (string $id): bool => str_starts_with($id, 'community.')))
+        ->toHaveCount(3576)
+        ->and($requirements->where('source_part', 'community-revision')
+            ->filter(fn (array $requirement): bool => $requirement['implementation_phase'] < 55
+                || $requirement['implementation_phase'] > 63))
         ->toBeEmpty();
 
     $requirements

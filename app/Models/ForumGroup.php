@@ -7,6 +7,7 @@ namespace App\Models;
 use App\Enums\ForumGroupMembershipState;
 use App\Enums\ForumGroupStatus;
 use App\Enums\ForumGroupVisibility;
+use App\Enums\SocialActorType;
 use Carbon\CarbonImmutable;
 use Database\Factories\ForumGroupFactory;
 use Illuminate\Database\Eloquent\Builder;
@@ -20,6 +21,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * @property int $active_member_count
+ * @property list<string>|null $allowed_actor_types
  * @property CarbonImmutable|null $archived_at
  * @property CarbonImmutable|null $closed_at
  * @property string $creation_idempotency_key
@@ -35,6 +37,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property string|null $name_translation_key
  * @property int|null $owner_user_id
  * @property list<string> $rules
+ * @property int $rules_version
  * @property string $stable_key
  * @property ForumGroupStatus $status
  * @property ForumGroupVisibility $visibility
@@ -60,11 +63,13 @@ final class ForumGroup extends Model
         'description',
         'description_translation_key',
         'rules',
+        'rules_version',
         'visibility',
         'status',
         'default_locale',
         'location_scope',
         'membership_questions',
+        'allowed_actor_types',
         'active_member_count',
         'lock_version',
         'closed_at',
@@ -75,6 +80,7 @@ final class ForumGroup extends Model
         'is_system_managed' => false,
         'status' => 'active',
         'active_member_count' => 1,
+        'rules_version' => 1,
         'lock_version' => 0,
     ];
 
@@ -83,9 +89,11 @@ final class ForumGroup extends Model
         return [
             'is_system_managed' => 'boolean',
             'rules' => 'array',
+            'rules_version' => 'integer',
             'visibility' => ForumGroupVisibility::class,
             'status' => ForumGroupStatus::class,
             'membership_questions' => 'array',
+            'allowed_actor_types' => 'array',
             'active_member_count' => 'integer',
             'lock_version' => 'integer',
             'closed_at' => 'immutable_datetime',
@@ -160,9 +168,42 @@ final class ForumGroup extends Model
 
     public function membershipFor(User $user): ?ForumGroupMembership
     {
+        return $this->membershipForActor($user);
+    }
+
+    public function membershipForActor(
+        User $user,
+        ?SocialActor $actor = null,
+    ): ?ForumGroupMembership {
         return $this->memberships()
             ->where('user_id', $user->id)
+            ->when(
+                $actor instanceof SocialActor,
+                fn (Builder $query): Builder => $query->where('social_actor_id', $actor->id),
+            )
+            ->orderBy('id')
             ->first();
+    }
+
+    /** @return list<string> */
+    public function allowedActorTypes(): array
+    {
+        $configured = $this->allowed_actor_types;
+
+        if (! is_array($configured) || $configured === []) {
+            return [
+                SocialActorType::User->value,
+                SocialActorType::Pet->value,
+                SocialActorType::Expert->value,
+            ];
+        }
+
+        return array_values(array_filter(
+            $configured,
+            static fn (mixed $type): bool => is_string($type)
+                && SocialActorType::tryFrom($type) instanceof SocialActorType
+                && $type !== SocialActorType::Group->value,
+        ));
     }
 
     /**

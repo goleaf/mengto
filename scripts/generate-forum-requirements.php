@@ -29,6 +29,7 @@ preg_match('/<pet-profile-source-revision>\n(.*)\n<\/pet-profile-source-revision
 preg_match('/<social-relationships-source-revision>\n(.*)\n<\/social-relationships-source-revision>/sU', $source, $socialRelationshipsMatch);
 preg_match('/<content-feed-source-revision>\n(.*)\n<\/content-feed-source-revision>/sU', $source, $contentFeedMatch);
 preg_match('/<communication-source-revision>\n(.*)\n<\/communication-source-revision>/sU', $source, $communicationMatch);
+preg_match('/<community-source-revision>\n(.*)\n<\/community-source-revision>/sU', $source, $communityMatch);
 preg_match('/Combined raw payload SHA-256: `([a-f0-9]{64})`/', $source, $checksumMatch);
 preg_match('/Revision raw payload SHA-256: `([a-f0-9]{64})`/', $source, $petProfileChecksumMatch);
 preg_match('/Master raw payload SHA-256: `([a-f0-9]{64})`/', $source, $masterChecksumMatch);
@@ -38,6 +39,8 @@ preg_match('/Content revision raw payload SHA-256: `([a-f0-9]{64})`/', $source, 
 preg_match('/Latest master raw payload SHA-256: `([a-f0-9]{64})`/', $source, $latestMasterChecksumMatch);
 preg_match('/Communication revision raw payload SHA-256: `([a-f0-9]{64})`/', $source, $communicationChecksumMatch);
 preg_match('/Complete master raw payload SHA-256: `([a-f0-9]{64})`/', $source, $completeMasterChecksumMatch);
+preg_match('/Community revision raw payload SHA-256: `([a-f0-9]{64})`/', $source, $communityChecksumMatch);
+preg_match('/Expanded master raw payload SHA-256: `([a-f0-9]{64})`/', $source, $expandedMasterChecksumMatch);
 
 if (! isset(
     $primaryMatch[1],
@@ -46,6 +49,7 @@ if (! isset(
     $socialRelationshipsMatch[1],
     $contentFeedMatch[1],
     $communicationMatch[1],
+    $communityMatch[1],
     $checksumMatch[1],
     $petProfileChecksumMatch[1],
     $masterChecksumMatch[1],
@@ -55,6 +59,8 @@ if (! isset(
     $latestMasterChecksumMatch[1],
     $communicationChecksumMatch[1],
     $completeMasterChecksumMatch[1],
+    $communityChecksumMatch[1],
+    $expandedMasterChecksumMatch[1],
 )) {
     fwrite(STDERR, "The preserved forum prompt markers or checksum are invalid.\n");
     exit(1);
@@ -67,6 +73,7 @@ $parts = [
     'social-relationships-revision' => $socialRelationshipsMatch[1],
     'content-feed-revision' => $contentFeedMatch[1],
     'communication-revision' => $communicationMatch[1],
+    'community-revision' => $communityMatch[1],
 ];
 $forumPayload = $parts['primary']."\n\n".$parts['extension'];
 $forumPayloadChecksum = hash('sha256', $forumPayload);
@@ -80,7 +87,10 @@ $contentFeedPayloadChecksum = hash('sha256', $parts['content-feed-revision']);
 $contentFeedMasterPayload = $socialRelationshipsMasterPayload."\n\n".$parts['content-feed-revision'];
 $contentFeedMasterChecksum = hash('sha256', $contentFeedMasterPayload);
 $communicationPayloadChecksum = hash('sha256', $parts['communication-revision']);
-$payloadChecksum = hash('sha256', $contentFeedMasterPayload."\n\n".$parts['communication-revision']);
+$communicationMasterPayload = $contentFeedMasterPayload."\n\n".$parts['communication-revision'];
+$communicationMasterChecksum = hash('sha256', $communicationMasterPayload);
+$communityPayloadChecksum = hash('sha256', $parts['community-revision']);
+$payloadChecksum = hash('sha256', $communicationMasterPayload."\n\n".$parts['community-revision']);
 
 if (! hash_equals($checksumMatch[1], $forumPayloadChecksum)
     || ! hash_equals($petProfileChecksumMatch[1], $petProfilePayloadChecksum)
@@ -90,7 +100,9 @@ if (! hash_equals($checksumMatch[1], $forumPayloadChecksum)
     || ! hash_equals($contentFeedChecksumMatch[1], $contentFeedPayloadChecksum)
     || ! hash_equals($latestMasterChecksumMatch[1], $contentFeedMasterChecksum)
     || ! hash_equals($communicationChecksumMatch[1], $communicationPayloadChecksum)
-    || ! hash_equals($completeMasterChecksumMatch[1], $payloadChecksum)
+    || ! hash_equals($completeMasterChecksumMatch[1], $communicationMasterChecksum)
+    || ! hash_equals($communityChecksumMatch[1], $communityPayloadChecksum)
+    || ! hash_equals($expandedMasterChecksumMatch[1], $payloadChecksum)
 ) {
     fwrite(STDERR, "A preserved source-prompt checksum does not match its payload.\n");
     exit(1);
@@ -121,7 +133,8 @@ foreach ($parts as $part => $contents) {
         'pet-profile-revision' => 'Pet profile and full lifecycle revision',
         'social-relationships-revision' => 'Social relationships and safe introductions revision',
         'content-feed-revision' => 'Content feed and distribution revision',
-        default => 'Safe communication revision',
+        'communication-revision' => 'Safe communication revision',
+        default => 'Communities and full lifecycle revision',
     };
     $sectionPath = [$section];
     $lines = preg_split('/\R/u', $contents) ?: [];
@@ -453,6 +466,10 @@ function domainForRequirement(array $sectionPath, string $verbatim, string $sour
         return communicationDomainForRequirement($sectionPath, $verbatim);
     }
 
+    if ($sourcePart === 'community-revision') {
+        return communityDomainForRequirement($sectionPath, $verbatim);
+    }
+
     $context = strtolower(implode(' ', $sectionPath).' '.$verbatim);
 
     return match (true) {
@@ -500,6 +517,42 @@ function domainForRequirement(array $sectionPath, string $verbatim, string $sour
         str_contains($context, 'audit'),
         str_contains($context, 'final report') => 'planning-and-documentation',
         default => 'forum-feature',
+    };
+}
+
+/** @param list<string> $sectionPath */
+function communityDomainForRequirement(array $sectionPath, string $verbatim): string
+{
+    $context = strtolower(implode(' ', $sectionPath).' '.$verbatim);
+    preg_match_all('/(?:^|\s)(\d{1,3})\s*[—-]/u', $context, $sectionNumbers);
+    $sectionNumber = isset($sectionNumbers[1]) && $sectionNumbers[1] !== []
+        ? (int) end($sectionNumbers[1])
+        : null;
+
+    return match (true) {
+        $sectionNumber !== null && $sectionNumber >= 1 && $sectionNumber <= 5 => 'community-foundation',
+        $sectionNumber !== null && $sectionNumber >= 6 && $sectionNumber <= 17 => 'community-types',
+        $sectionNumber !== null && $sectionNumber >= 18 && $sectionNumber <= 22 => 'community-structure',
+        $sectionNumber !== null && $sectionNumber >= 23 && $sectionNumber <= 38 => 'community-creation-privacy',
+        $sectionNumber !== null && $sectionNumber >= 39 && $sectionNumber <= 52 => 'community-membership',
+        $sectionNumber !== null && $sectionNumber >= 53 && $sectionNumber <= 69 => 'community-roles',
+        $sectionNumber !== null && $sectionNumber >= 70 && $sectionNumber <= 80 => 'community-governance',
+        $sectionNumber !== null && $sectionNumber >= 81 && $sectionNumber <= 92 => 'community-forum',
+        $sectionNumber !== null && $sectionNumber >= 93 && $sectionNumber <= 103 => 'community-knowledge',
+        $sectionNumber !== null && $sectionNumber >= 104 && $sectionNumber <= 123 => 'community-operations',
+        $sectionNumber !== null && $sectionNumber >= 124 && $sectionNumber <= 142 => 'community-safety-moderation',
+        $sectionNumber !== null && $sectionNumber >= 143 && $sectionNumber <= 157 => 'community-discovery-localization',
+        $sectionNumber !== null && $sectionNumber >= 158 && $sectionNumber <= 170 => 'community-interface-reputation',
+        $sectionNumber !== null && $sectionNumber >= 171 && $sectionNumber <= 192 => 'community-lifecycle-data',
+        $sectionNumber !== null && $sectionNumber >= 193 && $sectionNumber <= 203 => 'community-quality-release',
+        $sectionNumber !== null && $sectionNumber >= 204 && $sectionNumber <= 220 => 'community-scenario',
+        str_contains($context, 'moderac') || str_contains($context, 'bezopasn') || str_contains($context, 'zhalob') => 'community-safety-moderation',
+        str_contains($context, 'rol') || str_contains($context, 'prav') => 'community-roles',
+        str_contains($context, 'znan') || str_contains($context, 'faq') => 'community-knowledge',
+        str_contains($context, 'sobyt') || str_contains($context, 'volonter') => 'community-operations',
+        str_contains($context, 'poisk') || str_contains($context, 'perevod') => 'community-discovery-localization',
+        str_contains($context, 'audit') || str_contains($context, 'texnicesk') => 'community-lifecycle-data',
+        default => 'community-foundation',
     };
 }
 
@@ -745,6 +798,22 @@ function identifierPrefix(string $domain): string
         'communication-interface-data' => 'communication.interface-data',
         'communication-quality-release' => 'communication.quality-release',
         'communication-scenario' => 'communication.scenario',
+        'community-foundation' => 'community.foundation',
+        'community-types' => 'community.type',
+        'community-structure' => 'community.structure',
+        'community-creation-privacy' => 'community.creation-privacy',
+        'community-membership' => 'community.membership',
+        'community-roles' => 'community.role',
+        'community-governance' => 'community.governance',
+        'community-forum' => 'community.forum',
+        'community-knowledge' => 'community.knowledge',
+        'community-operations' => 'community.operations',
+        'community-safety-moderation' => 'community.safety-moderation',
+        'community-discovery-localization' => 'community.discovery-localization',
+        'community-interface-reputation' => 'community.interface-reputation',
+        'community-lifecycle-data' => 'community.lifecycle-data',
+        'community-quality-release' => 'community.quality-release',
+        'community-scenario' => 'community.scenario',
         default => 'forum.feature',
     };
 }
@@ -816,6 +885,21 @@ function phaseForRequirement(
             'communication-interface-data' => 53,
             'communication-quality-release', 'communication-scenario' => 54,
             default => 45,
+        };
+    }
+
+    if ($sourcePart === 'community-revision') {
+        return match ($domain) {
+            'community-foundation', 'community-types', 'community-structure' => 55,
+            'community-creation-privacy', 'community-membership', 'community-roles' => 56,
+            'community-governance', 'community-forum' => 57,
+            'community-knowledge' => 58,
+            'community-operations' => 59,
+            'community-safety-moderation' => 60,
+            'community-discovery-localization', 'community-interface-reputation' => 61,
+            'community-lifecycle-data' => 62,
+            'community-quality-release', 'community-scenario' => 63,
+            default => 55,
         };
     }
 
@@ -947,6 +1031,9 @@ function priorityForRequirement(string $domain, string $verbatim): string
             'communication-encryption',
             'communication-safety-ai',
             'communication-control',
+            'community-creation-privacy',
+            'community-roles',
+            'community-safety-moderation',
         ], true)
         || str_contains($value, 'must not')
         || str_contains($value, 'never')
@@ -970,6 +1057,10 @@ function priorityForRequirement(string $domain, string $verbatim): string
         'communication-foundation',
         'communication-data',
         'communication-interface-data',
+        'community-foundation',
+        'community-membership',
+        'community-governance',
+        'community-lifecycle-data',
     ], true)
         ? 'high'
         : 'standard';
@@ -1039,6 +1130,24 @@ function impactFor(string $domain, string $impact): string
         'communication-quality-release',
         'communication-scenario',
     ];
+    $communityDomains = [
+        'community-foundation',
+        'community-types',
+        'community-structure',
+        'community-creation-privacy',
+        'community-membership',
+        'community-roles',
+        'community-governance',
+        'community-forum',
+        'community-knowledge',
+        'community-operations',
+        'community-safety-moderation',
+        'community-discovery-localization',
+        'community-interface-reputation',
+        'community-lifecycle-data',
+        'community-quality-release',
+        'community-scenario',
+    ];
     $relevant = [
         'database' => ['animal-taxonomy', 'moderation', 'reputation-and-trust', 'forum-category', 'persistence', 'forum-feature', 'pet-profile', 'pet-creation', 'pet-identity', 'pet-media', 'pet-behavior', 'pet-public-profile', 'pet-privacy', 'pet-ownership', 'pet-social', 'pet-integration', 'pet-lifecycle', 'pet-discovery', 'pet-moderation', 'pet-data', 'pet-release', 'pet-quality'],
         'backend' => ['animal-taxonomy', 'moderation', 'reputation-and-trust', 'forum-category', 'search-and-discovery', 'persistence', 'forum-feature', 'pet-profile', 'pet-creation', 'pet-identity', 'pet-media', 'pet-behavior', 'pet-public-profile', 'pet-privacy', 'pet-ownership', 'pet-social', 'pet-integration', 'pet-lifecycle', 'pet-discovery', 'pet-localization', 'pet-interface', 'pet-moderation', 'pet-data', 'pet-release', 'pet-quality'],
@@ -1060,6 +1169,7 @@ function impactFor(string $domain, string $impact): string
             $socialDomains,
             $contentDomains,
             $communicationDomains,
+            $communityDomains,
         );
     }
 
@@ -1069,6 +1179,7 @@ function impactFor(string $domain, string $impact): string
             array_diff($socialDomains, ['social-data']),
             array_diff($contentDomains, ['content-data']),
             array_diff($communicationDomains, ['communication-data']),
+            array_diff($communityDomains, ['community-lifecycle-data']),
         );
     }
 
@@ -1078,6 +1189,7 @@ function impactFor(string $domain, string $impact): string
             array_diff($socialDomains, ['social-localization', 'social-scenario']),
             array_diff($contentDomains, ['content-localization-interface', 'content-scenario']),
             array_diff($communicationDomains, ['communication-scenario']),
+            array_diff($communityDomains, ['community-discovery-localization', 'community-scenario']),
         );
     }
 
@@ -1101,6 +1213,13 @@ function impactFor(string $domain, string $impact): string
         'communication-call',
         'communication-safety-ai',
         'communication-control',
+        'community-membership',
+        'community-roles',
+        'community-governance',
+        'community-forum',
+        'community-knowledge',
+        'community-operations',
+        'community-safety-moderation',
     ]);
 
     $relevant['seed'] = array_merge($relevant['seed'], [
@@ -1116,6 +1235,11 @@ function impactFor(string $domain, string $impact): string
         'communication-dialog',
         'communication-safety-ai',
         'communication-quality-release',
+        'community-foundation',
+        'community-types',
+        'community-membership',
+        'community-safety-moderation',
+        'community-quality-release',
     ]);
 
     return in_array($domain, $relevant[$impact] ?? [], true)

@@ -14,6 +14,7 @@ use App\Models\ForumGroup;
 use App\Models\ForumGroupMembership;
 use App\Models\User;
 use App\Services\ForumGroupAudit;
+use App\Services\SocialActorResolver;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -22,7 +23,10 @@ use Illuminate\Validation\Rule;
 
 final readonly class CreateForumGroup
 {
-    public function __construct(private ForumGroupAudit $audit) {}
+    public function __construct(
+        private ForumGroupAudit $audit,
+        private SocialActorResolver $actors,
+    ) {}
 
     public function handle(User $owner, CreateForumGroupData $data): ForumGroup
     {
@@ -77,6 +81,7 @@ final readonly class CreateForumGroup
                     'name' => trim($data->name),
                     'description' => trim($data->description),
                     'rules' => array_values(array_map('trim', $data->rules)),
+                    'rules_version' => 1,
                     'visibility' => $data->visibility,
                     'status' => ForumGroupStatus::Active,
                     'default_locale' => $data->defaultLocale,
@@ -85,6 +90,7 @@ final readonly class CreateForumGroup
                         'trim',
                         $data->membershipQuestions,
                     )),
+                    'allowed_actor_types' => ['user', 'pet', 'expert'],
                     'active_member_count' => 1,
                     'lock_version' => 0,
                 ],
@@ -98,15 +104,19 @@ final readonly class CreateForumGroup
                 return $this->loadPresentationRelations($group);
             }
 
+            $ownerActor = $this->actors->forUser($owner);
             ForumGroupMembership::query()->firstOrCreate(
                 [
                     'forum_group_id' => $group->id,
-                    'user_id' => $owner->id,
+                    'social_actor_id' => $ownerActor->id,
                 ],
                 [
+                    'user_id' => $owner->id,
                     'role' => ForumGroupRole::Owner,
                     'state' => ForumGroupMembershipState::Active,
                     'notification_level' => 'all',
+                    'accepted_rules_version' => $group->rules_version,
+                    'accepted_rules_at' => now(),
                     'joined_at' => now(),
                     'last_idempotency_key' => "group:{$group->id}:owner",
                 ],

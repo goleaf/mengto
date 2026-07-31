@@ -38563,3 +38563,6537 @@ glavn oe dostizenie etogo punkta zakliucaetsia v tom, cto kommunikacija ne budet
 
 sledujusc ij punkt — gruppy, kluby, lokalnye soobscestva, porodnye i tematiceskie obed ineniia, roli, pravila, moderacija, znaniia, sobytija i poln yj zivotn yj cikl soobscestva
 </communication-source-revision>
+
+## Source Part G: Communities And Full Lifecycle Revision
+
+- Source timestamp: `1785538113`
+- Community revision raw payload SHA-256: `0b427cd95a5edd327bcac15577c6f30fb363fec77602e9b529ea9ea44a037e1a`
+- Expanded master raw payload SHA-256: `408fa2f6cd8d5189f05ebe3762df42a332221f8ee6a83ed366dbc4ec54d2ec8e`
+- Checksum payload: prior complete master, two LF characters, exact community revision
+
+<community-source-revision>
+# punkt 6 — gruppy, kluby, lokalnye soobscestva, porodnye i tematiceskie obedinenija, roli, pravila, moderacija, baza znanij, sobytija i polnyj zivotnyj cikl soobscestva
+
+## 1 — glavnaja cel vsego punkta
+
+**cto eto dolzno delat**
+
+sistema soobscestv dolzna pozvoliat polzovateliam obediniatsia v gruppy po gorodu, rajonu, vidu zivotnogo, porode, interesu, problem e, professionalnoj oblasti, volonterstvu, adopcii, treningu, progulkam, puteshestvijam ili drugoj obschej celi
+
+**pocemu eto nuzno**
+
+lenta i lichnye druzia ne mogut zamenit strukturirovannoe mesto, gde bolshoe kolichestvo liudej moz et nakaplivat znanija, organizovyvat sobytija, pomogat drug drugu, obsuzhdat temy, rabotat nad zadacami i soxran iat vaznuju informaciju
+
+**kak eto dolzno rabotat po logike**
+
+kazdoe soobscestvo dolzno byt otdelnym upravljaemym obektom s celju, kategoriej, territoriej, jazykami, pravilami, roliami, pravami, uchastnikami, forumom, lentoj, chatami, sobytijami, fajlami, bazoj znanij, moderaciej i auditom
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev, buduscix xoziaev, volonterov, priutov, specialistov, organizatorov, mestnyx klubov, biznesov, semej i liudej, kotorye interesujutsia zivotnymi
+
+**kakoj rezultat dolzen byt dostignut**
+
+polzovatel naxodit ne prosto slucajnye posty, a dolgosrocnoe soobscestvo s pon iatnoj temoj, pravilami, ekspertami, sobytijami i bezopasnoj sredoj
+
+---
+
+# osnovnaja model soobscestva
+
+## 2 — soobscestvo ne dolzno byt obycnym gruppovym chatom
+
+**cto eto dolzno delat**
+
+soobscestvo dolzno obediniat neskolko raznyx instrumentov
+
+* profil gruppy
+* lentu publikacij
+* forum
+* tematiceskie razdely
+* chaty
+* bazu znanij
+* sobytija
+* fajly
+* oprosy
+* zadaci
+* spisok uchastnikov
+* moderaciju
+
+**pocemu eto nuzno**
+
+v obycnom chat e poleznaja informacija bystro uxodit vverx, povtoriaetsia i stanovitsia prakticeski nevozmoznoj dlia poiska
+
+**kak eto dolzno rabotat po logike**
+
+chat ispolzuetsia dlia bystrogo obseniia, forum dlia strukturirovannyx obsuzhdenij, baza znanij dlia proverennyx materialov, a lenta dlia obnovlenij i socialnogo kontenta
+
+**dlia kogo i dlia kakoj celi**
+
+dlia aktivnyx grupp, kotorye xotiat rabotat dolshe odnogo sobytija ili razgovora
+
+**kakoj rezultat dolzen byt dostignut**
+
+novyj uchastnik moz et najti poleznuju informaciju bez prokrutki tysiac staryx soobsenij
+
+---
+
+## 3 — soobscestvo kak otdelnyj obekt
+
+**cto eto dolzno delat**
+
+kazdoe soobscestvo dolzno imet
+
+* stabilnyj identifikator
+* nazvanie
+* unikalnuju ssylku
+* opisanie
+* avatar
+* oblozhku
+* kategoriju
+* region
+* jazyki
+* tip privatnosti
+* status
+* vladelcev
+* roli
+* pravila
+* datu sozdaniia
+* istoriju izmenenij
+
+**pocemu eto nuzno**
+
+esli gruppa budet prosto naborom postov ili chatom, budet trudno upravliat pravami, vladen iem, poiskom, arhivom i peredacej administrirovaniia
+
+**kak eto dolzno rabotat po logike**
+
+soobscestvo javliaetsia osnovnym konteinerom, a forum, chaty, sobytija, fajly i baza znanij priviazyvajutsia k nemu kak otdelnye moduli
+
+**dlia kogo i dlia kakoj celi**
+
+dlia razrabotki stabilnoj i rasshiriaemoj arhitektury
+
+**kakoj rezultat dolzen byt dostignut**
+
+novye funkcii dobavljajutsia k sushestvujuscemu soobscestvu bez sozdaniia nesovmestimoj alternativnoj gruppy
+
+---
+
+## 4 — odin polzovatel moz et sosto iat v soobscestve v raznyx kontekstax
+
+**cto eto dolzno delat**
+
+polzovatel dolzen moc vstupit
+
+* lichnym profilem
+* profilem pitomca
+* professionalnym profilem
+* profilem priuta
+* profilem organizacii
+
+**pocemu eto nuzno**
+
+odin celovek moz et byt xoziajinom sobaki, veterinarom i volonterom priuta, no eti roli ne dolzny smeshivatsia
+
+**kak eto dolzno rabotat po logike**
+
+pri vstup lenii vybiraetsia aktivnyj profil, a sistema xranit realnyj akkaunt, kotoryj upravliaet etim uchastiem
+
+**dlia kogo i dlia kakoj celi**
+
+dlia polzovatelej s neskolkimi pitomcami, professionalnymi i organizacionnymi roliami
+
+**kakoj rezultat dolzen byt dostignut**
+
+veterinar moz et pisat v professionalnoj gruppe kak specialist, a v mestnom klube kak oby cnyj xoziajin
+
+---
+
+## 5 — uchastie pitomca ne ravnjaetsia uchastiiu xoziajina
+
+**cto eto dolzno delat**
+
+profil pitomca moz et sosto iat v klub e, daze esli lichnyj profil xoziajina ne pokazyvaetsia v spiske uchastnikov
+
+**pocemu eto nuzno**
+
+porodnyj klub, gruppa treninga ili gruppa progulok moz et byt orientirovana imenno na profilej pitomcev
+
+**kak eto dolzno rabotat po logike**
+
+publicno pokaz yvaetsia pitomec, no platforma vsegda znaet realnogo upravliajuscego i ego prava
+
+**dlia kogo i dlia kakoj celi**
+
+dlia porodnyx klubov, treningovyx grupp, sporta i gruppovyx progulok
+
+**kakoj rezultat dolzen byt dostignut**
+
+socialnyj format ostajotsia orientirovannym na pitomcev, no ne stanovitsia anonimnym
+
+---
+
+# tipy soobscestv
+
+## 6 — lokalnoe soobscestvo
+
+**cto eto dolzno delat**
+
+gruppa moz et obediniat xoziaev
+
+* strany
+* goroda
+* rajona
+* naselennogo punkta
+* zhilogo kompleksa
+* konkretnogo parka
+* territorii vozle priuta
+* turisticeskogo regiona
+
+**pocemu eto nuzno**
+
+progulki, kliniki, poterjannye pitomcy, sobytija, mestnye opasnosti i uslugi silno zavisiat ot territorii
+
+**kak eto dolzno rabotat po logike**
+
+gruppa xranit obobschonn uju territoriju, no ne sobiraet i ne publik uet domashnie adres a uchastnikov
+
+**dlia kogo i dlia kakoj celi**
+
+dlia sosed ej, mestnyx xoziaev, priutov, volonterov i organizatorov
+
+**kakoj rezultat dolzen byt dostignut**
+
+polzovatel polucaet lokalnuju pomosc i informaciju bez raskrytiia tocnogo mesta prozhivaniia
+
+---
+
+## 7 — soobscestvo po vidu zivotnogo
+
+**cto eto dolzno delat**
+
+mozno sozda vat obedinenija dlia
+
+* sobak
+* koshek
+* ptic
+* reptilij
+* ryb
+* gryzunov
+* krolikov
+* loshadej
+* ekzoticeskix zivotnyx
+* konkretnogo podvida
+
+**pocemu eto nuzno**
+
+uxod, povedenie, pitani e, oborudovanie i specialisty ocen razlichajutsia mezhdu vidami
+
+**kak eto dolzno rabotat po logike**
+
+vybor vida podkliucaet podxodiasc ie razdely, tegi, pravila i spravocniki
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev, specialistov i liudej, planirujusc ix zavesti zivotnoe
+
+**kakoj rezultat dolzen byt dostignut**
+
+xoziajin popugaja ne ishchet polezn yj sovet sredi obsuzhdenij sobacix povodkov
+
+---
+
+## 8 — porodnyj klub
+
+**cto eto dolzno delat**
+
+soobscestvo moz et obediniat xoziaev i specialistov po konkretn oj porode ili gruppe porod
+
+**pocemu eto nuzno**
+
+u porod mogut byt svoi istorija, kluby, meroprijatiia, tipicnye voprosy uxoda i dokumenty
+
+**kak eto dolzno rabotat po logike**
+
+gruppa dolzna razdeliat
+
+* podtverzhdennuju porodu
+* predpolagaemuju porodu
+* metisov
+* interes k porode
+* professionaln uju rol
+
+ucastie ne dolzno obyazatelno trebovat rodoslovnuju, esli cel gruppy ne javliaetsia oficialnoj registraciej
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev, zavodcikov, trenerov, priutov i interesujusc ixsia porodoj
+
+**kakoj rezultat dolzen byt dostignut**
+
+klub ne diskriminiruet pitomcev bez dokumentov, no moz et imet otdelnye officialnye razdely s proverkoj
+
+---
+
+## 9 — tematiceskoe soobscestvo
+
+**cto eto dolzno delat**
+
+gruppa moz et byt posviaschena
+
+* zdorovju
+* pitaniiu
+* povedeniiu
+* treningu
+* uxodu
+* progulkam
+* puteshestvijam
+* adopcii
+* poisku poterjannyx
+* uslugam
+* snariazheniiu
+* fotografii
+* sportu
+* pozhilym pitomcam
+* zivotnym s osobymi potrebnostiami
+
+**pocemu eto nuzno**
+
+odin polzovatel moz et interesovatsia konkretnoj temoj nezavisimo ot vida ili goroda
+
+**kak eto dolzno rabotat po logike**
+
+soobscestvo vybiraet osnovnuju temu, dopolnitelnye podtemy i granicy dopustimogo kontenta
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev, novickov, specialistov i avt orov poleznyx materialov
+
+**kakoj rezultat dolzen byt dostignut**
+
+obsuzhdenija stanov iatsia glubokimi i sistemnymi, a ne rastvoriajutsia v obschej l ent e
+
+---
+
+## 10 — professionalnoe soobscestvo
+
+**cto eto dolzno delat**
+
+gruppa moz et obediniat
+
+* veterinarov
+* kinologov
+* grumerov
+* sitterov
+* reabilitologov
+* zootexnikov
+* fotografov
+* upravliajusc ix priutov
+* issledovatelej
+* organizatorov sobytij
+
+**pocemu eto nuzno**
+
+specialistam nuzhny obmen opytom, standarty raboty, professionalnye sobytija i zakrytye obsuzhdenija
+
+**kak eto dolzno rabotat po logike**
+
+professionalnaja gruppa moz et trebovat proverku kvalifikacii, no dolzna tocno pokaz yvat, cto imenno provereno
+
+**dlia kogo i dlia kakoj celi**
+
+dlia professionalov i organizacij
+
+**kakoj rezultat dolzen byt dostignut**
+
+professionalnye obsuzhdenija ne smeshivajutsia s oby cnymi sovetami neproverennyx polzovatelej
+
+---
+
+## 11 — gruppa podderzki
+
+**cto eto dolzno delat**
+
+gruppa moz et pomogat liudiam v temax
+
+* utrata pitomca
+* dlitelnoe lechenie
+* pozhiloj vozrast
+* slozhnaja adaptacija
+* povedenceskie trudnosti
+* uxod za zivotnym s invalidnostiu
+* emocionalnoe vygoranie volonterov
+* otkaz ot pitomca po krizisnoj prichine
+* vosstanovlenie posle propazhi
+
+**pocemu eto nuzno**
+
+chuvstvitelnye temy trebu jut bolee zakrytoj i uvazitelnoj sredy, chem publicnaia lenta
+
+**kak eto dolzno rabotat po logike**
+
+mozno vkliucit
+
+* zakryt yj spisok uchastnikov
+* psevdonim
+* zapret vneshnix repostov
+* odobrenie publikacij
+* specialn uju moderaciju
+* preduprezhdeniia o soderzhanii
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev, sem ej, volonterov i specialistov podderzki
+
+**kakoj rezultat dolzen byt dostignut**
+
+polzovatel moz et poluchit pomosc bez publicacii chuvstvitelnoj situacii na ves internet
+
+---
+
+## 12 — soobscestvo priuta ili spasatelnoj organizacii
+
+**cto eto dolzno delat**
+
+priut moz et imet officialn oe soobscestvo dlia
+
+* adopcii
+* volonterstva
+* otchetov
+* sbora pomosci
+* perederzhek
+* sobytij
+* novostej
+* poisk a
+* vnutrennej koordinacii
+
+**pocemu eto nuzno**
+
+priutu nuzno razdeliat publicn uju auditoriju, volonterov, sotrudnikov i kandidatov na adopciju
+
+**kak eto dolzno rabotat po logike**
+
+officialn aja stranica organizacii moz et imet neskolko podgrupp s raznymi pravami i privatnostiu
+
+**dlia kogo i dlia kakoj celi**
+
+dlia priutov, donorov, volonterov i buduscix xoziaev
+
+**kakoj rezultat dolzen byt dostignut**
+
+publicnye novosti ne smeshivajutsia s zakrytymi zadacami, dokumentami i vnutrennimi obsuzhdenijami
+
+---
+
+## 13 — volonterskoe soobscestvo
+
+**cto eto dolzno delat**
+
+gruppa dolzna pomogat raspredeliat
+
+* zadaci
+* smeny
+* transport
+* poisk
+* perederzki
+* fotografirovanie
+* sb or pomosci
+* uborku
+* sobytija
+* kommunikaciju s priutami
+
+**pocemu eto nuzno**
+
+svobodn yj chat ne pokazyvaet, kto vzial zadacu, kogda ona dolzna byt vypolnena i kakoi u nee status
+
+**kak eto dolzno rabotat po logike**
+
+chat dopolniaetsia doskoj zadac, kalendarem, roliami i otchetami
+
+**dlia kogo i dlia kakoj celi**
+
+dlia priutov, poiskovyx komand i mestnyx iniciativ
+
+**kakoj rezultat dolzen byt dostignut**
+
+dve komandy ne edut odnovremenno za odnim zivotnym, a vaznaia zadaca ne ostajotsia bez ispolnitelia
+
+---
+
+## 14 — vrem ennoe soobscestvo
+
+**cto eto dolzno delat**
+
+gruppa moz et sozda v atcia na srok dlia
+
+* odnogo sobytija
+* poiskovoj operacii
+* treningovogo kursa
+* konkursa
+* poezdki
+* perederzki
+* blagotvoritelnoj kampanii
+
+**pocemu eto nuzno**
+
+ne kazdoe obedinenie dolzno ostatcia aktivnym navsegda
+
+**kak eto dolzno rabotat po logike**
+
+pri sozdanii ukazyvajutsia data zaversheniia, pravila arhiva, eksport i cto proizojdet s chatami, fajlami i uchastnikami
+
+**dlia kogo i dlia kakoj celi**
+
+dlia organizatorov razovyx proektov
+
+**kakoj rezultat dolzen byt dostignut**
+
+posle zaversheniia proekta gruppa avtomaticeski perehodit v arhiv i ne prodolzaet sobirat novyx uchastnikov
+
+---
+
+## 15 — semejnoe ili privatnoe soobscestvo
+
+**cto eto dolzno delat**
+
+sem ja moz et sozdat zakryt oe prostranstvo dlia vseh pitomcev, zadac, fotografij, dokumentov i obseniia
+
+**pocemu eto nuzno**
+
+odin semejn yj chat ne podderzhivaet bazu znanij, kalendar, fajly i raznye temy po neskolkim pitomcam
+
+**kak eto dolzno rabotat po logike**
+
+dostup tolko po priglasheniju, spisok ne indeksiruetsia, a roli sviazany s realnymi pravami uxoda
+
+**dlia kogo i dlia kakoj celi**
+
+dlia sem ej, sovladelcev i postojannyx smotritelej
+
+**kakoj rezultat dolzen byt dostignut**
+
+vse semejnye materialy organizovany i ne pojavliajutsia v publicnom poiske
+
+---
+
+## 16 — officialnoe soobscestvo
+
+**cto eto dolzno delat**
+
+municipalitet, priut, klinika, klub ili drugaia organizacija moz et poluchit officialn yj status
+
+**pocemu eto nuzno**
+
+polzovatel dolzen otlicit realn uju organizaciju ot gruppy s poxozim nazvaniem
+
+**kak eto dolzno rabotat po logike**
+
+proverka dolzna otdelno pokaz yvat
+
+* lichnost predstavitelia
+* organizaciju
+* domen ili kontakt
+* registraciju
+* oblast otvetstvennosti
+* srok proverki
+
+**dlia kogo i dlia kakoj celi**
+
+dlia organizacij i polzovatelej, kotorym nuzhna proverenn a ia informacija
+
+**kakoj rezultat dolzen byt dostignut**
+
+moshennik ne moz et sozdat gruppu podderzhka priuta i poluchit to ze doverie, cto realn a ia organizacija
+
+---
+
+## 17 — kommerceskoe soobscestvo
+
+**cto eto dolzno delat**
+
+biznes moz et sozdat grup pu dlia klientov, obucheniia, podderzhki, sobytij ili produktov
+
+**pocemu eto nuzno**
+
+kommerceskaia gruppa moz et byt poleznoj, no ne dolzna maskirovatsia pod nezavisimoe soobscestvo
+
+**kak eto dolzno rabotat po logike**
+
+zametno pokazyvajutsia vladelec, biznes, reklamn yj status, sponsorstvo i pravila obrabotki dannyx
+
+**dlia kogo i dlia kakoj celi**
+
+dlia magazinov, klinik, trenerov, proizvoditelej i ix klientov
+
+**kakoj rezultat dolzen byt dostignut**
+
+uchastnik ponimaet, cto gruppa upravliaetsia biznesom i moz et prodvigat ego uslugi
+
+---
+
+# struktura soobscestva
+
+## 18 — osnovnoe soobscestvo i lokalnye otdeleniia
+
+**cto eto dolzno delat**
+
+bolsh oj klub moz et imet otdeleniia po
+
+* stranam
+* gorodam
+* rajonam
+* jazykam
+* vidam
+* napravlenijam
+* vozrastnym kategorijam
+
+**pocemu eto nuzno**
+
+odna globalnaia gruppa moz et byt slishkom bolsh oj i ne uchityvat lokalnye osobennosti
+
+**kak eto dolzno rabotat po logike**
+
+glavn oe soobscestvo ustanavlivaet bazovye pravil a, a otdelenie dobavliaet lokaln y e pravil a, sobytija i moderatorov
+
+**dlia kogo i dlia kakoj celi**
+
+dlia nacionalnyx klubov, setej priutov i mezhdunarodnyx organizacij
+
+**kakoj rezultat dolzen byt dostignut**
+
+lokalnye gruppy imejut samostojatelnost, no ostajutsia sviazany s edinym brendom i standartami
+
+---
+
+## 19 — podgruppy
+
+**cto eto dolzno delat**
+
+vnutri soobscestva mozno sozdat podgruppy
+
+* novicki
+* opytnye xoziajie
+* volontery
+* organizatory
+* regiony
+* konkret n yj vid
+* konkretn yj proekt
+* zakryt a ia rabocaia komanda
+
+**pocemu eto nuzno**
+
+ne vsem uchastnikam nuzny vse obsuzhdenija i fajly
+
+**kak eto dolzno rabotat po logike**
+
+uchastie v glavnom soobscestve ne obyazatelno daet avtomaticeskij dostup ko vsem zakrytym podgruppam
+
+**dlia kogo i dlia kakoj celi**
+
+dlia bolsh ix obedinenij s raznymi zadacami
+
+**kakoj rezultat dolzen byt dostignut**
+
+volontersk ie dokumenty ne pokaz yvajutsia vsem publicnym podpiscikam gruppy
+
+---
+
+## 20 — tematiceskie razdely
+
+**cto eto dolzno delat**
+
+soobscestvo moz et razdelit forum i lentu na osnovnye razdely
+
+* zdorovje
+* pitani e
+* povedenie
+* trening
+* ezhednevn yj uxod
+* progulki i mesta
+* puteshestvija i dokumenty
+* adopcija i priuty
+* poterjannye i najdennye
+* uslugi i snariazhenie
+* podderzka
+* novosti gruppy
+* sobytija
+* voprosy novickov
+
+**pocemu eto nuzno**
+
+bez struktury odin i tot ze vopros povtoriaetsia, a poleznye materialy teriajutsia
+
+**kak eto dolzno rabotat po logike**
+
+administrator moz et vkliucat, skryvat, pereimenovyvat i dopolniat razdely, no dolzen izbegat desiatkov pustyx kategorij
+
+**dlia kogo i dlia kakoj celi**
+
+dlia tematiceskix i lokalnyx grupp
+
+**kakoj rezultat dolzen byt dostignut**
+
+uchastnik srazu ponimaet, gde zadat vopros i gde iskat gotov yj otvet
+
+---
+
+## 21 — podrazdely i podtemy
+
+**cto eto dolzno delat**
+
+kazdyj osnovnoj razdel moz et imet detalnye podtemy
+
+naprimer zdorovje
+
+* profilaktika
+* vakcinacija
+* parazity
+* zuby
+* kozha
+* glaza
+* uxi
+* allergii
+* travmy
+* operacii
+* vosstanovlenie
+* pozhiloj vozrast
+* srocn y e priznaki
+* poisk kliniki
+* straxovka
+
+**pocemu eto nuzno**
+
+odna kategoriia zdorovje bystro stanovitsia slishkom obschej
+
+**kak eto dolzno rabotat po logike**
+
+podtemy dolzny sozda vatcia tolko pri dostatocnom kolichestve kontenta i imet otvetstvennogo kuratora
+
+**dlia kogo i dlia kakoj celi**
+
+dlia bolsh ix tematiceskix grupp
+
+**kakoj rezultat dolzen byt dostignut**
+
+material mozno najti po konkretnoj problem e bez prosmotra vsego razdela
+
+---
+
+## 22 — chaty i forum dolzny byt razdeleny
+
+**cto eto dolzno delat**
+
+soobscestvo moz et imet
+
+* obsch ij chat
+* tematiceskie chaty
+* forum
+* voprosy i otvety
+* officialnye obnavleniia
+* chat organizatorov
+
+**pocemu eto nuzno**
+
+bystr yj razgovor i dolgosrocn oe znanie imejut raznye potrebnosti
+
+**kak eto dolzno rabotat po logike**
+
+moderator moz et perenesti polezn uju diskussiju iz chat a v forum ili sozdat na ejo osnove material bazy znanij
+
+**dlia kogo i dlia kakoj celi**
+
+dlia soobscestv s aktivnoj kommunikaciej
+
+**kakoj rezultat dolzen byt dostignut**
+
+polezn yj otvet ne ischezaet navsegda posle neskolkix dnej chat a
+
+---
+
+# sozdanie soobscestva
+
+## 23 — kto moz et sozdat soobscestvo
+
+**cto eto dolzno delat**
+
+gruppu mogut sozda vat
+
+* oby cn yj polzovatel
+* proverenn yj specialist
+* priut
+* organizacija
+* biznes
+* administrator platformy
+* municipalnaja organizacija
+
+**pocemu eto nuzno**
+
+raznye tipy grupp imejut raznye risk i i trebovaniia
+
+**kak eto dolzno rabotat po logike**
+
+nov yj akkaunt moz et imet limit, a professionaln a ia, officialn a ia ili finansovaia gruppa moz et trebovat proverku
+
+**dlia kogo i dlia kakoj celi**
+
+dlia zascity ot massovogo sozdaniia falshiv yx grupp
+
+**kakoj rezultat dolzen byt dostignut**
+
+realn yj polzovatel moz et sozdat klub, no bot ne moz et sozdat tysiachi grupp dlia spama
+
+---
+
+## 24 — vybor celi pri sozdanii
+
+**cto eto dolzno delat**
+
+sozdatel dolzen ukazat osnovnuju cel
+
+* obsch enie
+* lokaln a ia koordinacija
+* professionaln yj obmen
+* volonterstvo
+* adopcija
+* podderzka
+* obuchenie
+* sobytija
+* klub
+* biznes podderzka
+* vrem enn yj proekt
+
+**pocemu eto nuzno**
+
+cel opredeliaet podxodiasc ie nast ro jki, pravila i moduli
+
+**kak eto dolzno rabotat po logike**
+
+sistema predlagaet shablon, no ne publik uet gruppu do proverki osnovnyx nast ro ek
+
+**dlia kogo i dlia kakoj celi**
+
+dlia sozdatelej grupp
+
+**kakoj rezultat dolzen byt dostignut**
+
+gruppa s pervogo dnja poluchaet podxodiasc uju strukturu, a ne pustoj chat bez pon iatnoj celi
+
+---
+
+## 25 — nazvanie
+
+**cto eto dolzno delat**
+
+gruppa dolzna imet pon iatn oe, ne vvodiasc ee v zabluzhdenie nazvanie
+
+**pocemu eto nuzno**
+
+nazvanie vliiaet na poisk, doverie i ponimanie celi
+
+**kak eto dolzno rabotat po logike**
+
+nelzia imit irovat officialn uju organizaciju, podderzhku, kliniku ili sushestvujusc ij klub bez prav
+
+**dlia kogo i dlia kakoj celi**
+
+dlia vseh sozdatelej
+
+**kakoj rezultat dolzen byt dostignut**
+
+polzovatel ne putajet neformaln uju grup pu s officialnym municipalnym ili professionalnym istochnikom
+
+---
+
+## 26 — unikalnaia ssylka
+
+**cto eto dolzno delat**
+
+soobscestvo dolzno imet stabiln yj publicn yj ili zakryt yj adres
+
+**pocemu eto nuzno**
+
+ssylka moz et byt na vizitke, plakate, qr kode, sajt e ili v post e
+
+**kak eto dolzno rabotat po logike**
+
+izmenenie nazvaniia ne dolzno lomat st ar y e ssylki, a st ar yj slug moz et vrem enno perenapravliat na nov yj
+
+**dlia kogo i dlia kakoj celi**
+
+dlia dolgosrocn yx klubov i organizacij
+
+**kakoj rezultat dolzen byt dostignut**
+
+st ar yj qr kod prodolzaet otkryvat praviln oe soobscestvo posle pereimenovaniia
+
+---
+
+## 27 — opisanie
+
+**cto eto dolzno delat**
+
+sozdatel dolzen kratko objasnit
+
+* komu podxodit gruppa
+* kakaja osnovn a ia tema
+* kakie jazyki
+* kakoi region
+* kakoi format obseniia
+* cto zapreshcheno
+* kto upravliaet
+
+**pocemu eto nuzno**
+
+polzovatel dolzen prinimat reshenie o vstup lenii do peredaci svoego profilia i dannyx
+
+**kak eto dolzno rabotat po logike**
+
+opisanie dostupno do vstup leniia, daze esli sam kontent zakryt
+
+**dlia kogo i dlia kakoj celi**
+
+dlia potencialnyx uchastnikov
+
+**kakoj rezultat dolzen byt dostignut**
+
+polzovatel ne vstupaet v gruppu, ne pon imaja ejo celi i pravil
+
+---
+
+## 28 — avatar i oblozhka
+
+**cto eto dolzno delat**
+
+soobscestvo moz et imet vizualn oe oformlenie
+
+**pocemu eto nuzno**
+
+eto pomogaet uznavaemosti i otdeleniiu grupp drug ot druga
+
+**kak eto dolzno rabotat po logike**
+
+media prohodit proverku na
+
+* cuzie logotipy
+* poddeln y e znachki
+* lichnye dannye
+* zhestokost
+* reklamn yj spam
+* vydacu za organizaciju
+
+**dlia kogo i dlia kakoj celi**
+
+dlia klubov, organizacij i neformalnyx grupp
+
+**kakoj rezultat dolzen byt dostignut**
+
+gruppa vygl iadit individualno, no ne imit iruet officialn yj brend bez razresheniia
+
+---
+
+## 29 — jazyk ili neskolko jazykov
+
+**cto eto dolzno delat**
+
+sozdatel vybiraet osnovnoj i dopolnitelnye jazyki
+
+**pocemu eto nuzno**
+
+mnogojazy cnaia gruppa trebuet perevodov, moderatorov i pon iatnyx pravil
+
+**kak eto dolzno rabotat po logike**
+
+mozno ustanovit
+
+* odin osnovnoj jazyk
+* neskolko ravnopravnyx
+* avtomaticeskij perevod
+* otdelnye jazykovye razdely
+* proverenn yx perevodcikov
+
+**dlia kogo i dlia kakoj celi**
+
+dlia mezhdunarodnyx i mestnyx mnogojazy cnyx grupp
+
+**kakoj rezultat dolzen byt dostignut**
+
+uchastnik ponimaet, na kakom jazyke mozno pisat i kak budut obrabatyvatsia perevody
+
+---
+
+## 30 — territorija i casovoj pojas
+
+**cto eto dolzno delat**
+
+lokaln a ia gruppa dolzna ukazat gorod, region ili druguju obobschonn uju territoriju i casovoj pojas
+
+**pocemu eto nuzno**
+
+sobytija, srocn y e preduprezhdeniia i aktivnost zavisiat ot mesta i vremeni
+
+**kak eto dolzno rabotat po logike**
+
+territorija gruppy ne oznachaet, cto vsex uchastnikov nuzno otslezhivat po gps
+
+**dlia kogo i dlia kakoj celi**
+
+dlia lokalnyx klubov i organizatorov
+
+**kakoj rezultat dolzen byt dostignut**
+
+sobytija pokaz yvajutsia v pravilnom vremeni, a uchastniki ne raskryvajut domashn ie adres a
+
+---
+
+## 31 — predprosmotr do zapuska
+
+**cto eto dolzno delat**
+
+sozdatel dolzen posmotret, kak gruppa vygl iadit dlia
+
+* gosta
+* uchastnika
+* moderatora
+* zakrytogo kandidata
+* zablokirovannogo polzovatelia
+
+**pocemu eto nuzno**
+
+kombinacija privatnosti, opisaniia, spiska uchastnikov i pravil moz et byt nepon iatnoj
+
+**kak eto dolzno rabotat po logike**
+
+predprosmotr ispolzuet realn y e prava, a ne tolko vizualn uju maketn uju versiju
+
+**dlia kogo i dlia kakoj celi**
+
+dlia sozdatelej i administratorov
+
+**kakoj rezultat dolzen byt dostignut**
+
+gruppa ne publik uet skrytyj spisok uchastnikov ili zakryt y e razdely iz-za oshibki nast ro ek
+
+---
+
+## 32 — cernovik gruppy
+
+**cto eto dolzno delat**
+
+nezavershenn oe soobscestvo dolzno soxraniatsia kak cernovik
+
+**pocemu eto nuzno**
+
+sozdateliu moz et potrebovatsia vremia dlia pravil, razdelov, moderatorov i oformleniia
+
+**kak eto dolzno rabotat po logike**
+
+cernovik ne pojavliaetsia v poisk e i ne prinimaet uchastnikov, poka vladelec ego ne zapustit
+
+**dlia kogo i dlia kakoj celi**
+
+dlia vseh sozdatelej
+
+**kakoj rezultat dolzen byt dostignut**
+
+polupustaia gruppa ne stanovitsia slucajno publicnoj
+
+---
+
+# privatnost soobscestva
+
+## 33 — publicnoe soobscestvo
+
+**cto eto dolzno delat**
+
+publicn a ia gruppa moz et pokaz yvat opisanie, posty, forum i sobytija vsem ili zaregistrirovannym polzovateliam
+
+**pocemu eto nuzno**
+
+nekotorye kluby i organizacii xotiat maksimalno otkrytoe rasprostranenie informacii
+
+**kak eto dolzno rabotat po logike**
+
+publicnost kontenta ne dolzna avtomaticeski delat publicnymi spisok uchastnikov, lichnye profilej ili zakryty e podrazdely
+
+**dlia kogo i dlia kakoj celi**
+
+dlia publicnyx klubov, priutov i obrazovatelnyx grupp
+
+**kakoj rezultat dolzen byt dostignut**
+
+materialy dostupny sire, no uchastniki soxraniajut individualn uju privatnost
+
+---
+
+## 34 — zakryt oe, no naxodimoe soobscestvo
+
+**cto eto dolzno delat**
+
+gruppu mozno najti v poisk e, no kontent dostup en tolko posle vstup leniia
+
+**pocemu eto nuzno**
+
+polzovateli dolzny znat, cto gruppa sushestvuet, no ejo obsuzhdenija mogut byt chuvstvitelnymi
+
+**kak eto dolzno rabotat po logike**
+
+do vstup leniia vidny tolko
+
+* nazvanie
+* opisanie
+* pravila
+* administrator y
+* primern oe kolichestvo uchastnikov
+* kategorija
+* process vstup leniia
+
+**dlia kogo i dlia kakoj celi**
+
+dlia grupp podderzki, professionalnyx i lokalnyx klubov
+
+**kakoj rezultat dolzen byt dostignut**
+
+polzovatel moz et podat zayavku, ne vidia lichnye istorii uchastnikov
+
+---
+
+## 35 — sekretn oe soobscestvo
+
+**cto eto dolzno delat**
+
+gruppa moz et byt polnostiu skryta iz poisk a i dostupna tolko po individualnomu priglasheniju
+
+**pocemu eto nuzno**
+
+semejn a ia, vnutrenniaia, adopcionn a ia ili professionaln a ia komanda ne dolzna raskryvat sam fakt svoego sushestvovaniia
+
+**kak eto dolzno rabotat po logike**
+
+ssylki imejut srok i ne dolzny raskryvat nazvanie ili uchastnikov postoronnemu
+
+**dlia kogo i dlia kakoj celi**
+
+dlia semej, vnutrennix komand, krizisnyx sluchaev i zakrytyx professionalnyx grupp
+
+**kakoj rezultat dolzen byt dostignut**
+
+postoronnij ne moz et najti grup pu po imeni uchastnika ili teme
+
+---
+
+## 36 — gruppa po priglasheniju
+
+**cto eto dolzno delat**
+
+vstup lenie vozmozhno tolko posle priglasheniia tekuscego upolnomochennogo uchastnika
+
+**pocemu eto nuzno**
+
+nekotorye kluby xotiat kontroliruem yj rost i lichn uju rekomendaciju
+
+**kak eto dolzno rabotat po logike**
+
+priglashenie pokaz yvaet, kto priglashaet, kakaja rol budet vydana i kakie pravil a nuzno prin iat
+
+**dlia kogo i dlia kakoj celi**
+
+dlia zakrytyx klubov i malyx doverennyx grupp
+
+**kakoj rezultat dolzen byt dostignut**
+
+neznakom yj polzovatel ne moz et samostojatelno vstupit bez podtverzhdennogo socialnogo konteksta
+
+---
+
+## 37 — skrytie spiska uchastnikov
+
+**cto eto dolzno delat**
+
+gruppa moz et pokaz yvat
+
+* vseh uchastnikov
+* tolko administratorov
+* tolko obsc ix znakom yx
+* tolko kolichestvo
+* nichego
+
+**pocemu eto nuzno**
+
+uchastie v gruppe zdorovja, adopcii, utraty ili professionalnoj pomosci moz et byt cuvstitelnym
+
+**kak eto dolzno rabotat po logike**
+
+skryt yj spisok ne dolzen raskryvatsia cerez api, poisk, upominaniia ili rekomendacii
+
+**dlia kogo i dlia kakoj celi**
+
+dlia chuvstvitelnyx grupp
+
+**kakoj rezultat dolzen byt dostignut**
+
+po uchastiiu nelzia dogadatsia o diagnoze, konflikte ili lichn oj situacii
+
+---
+
+## 38 — vneshniaia indeksacija
+
+**cto eto dolzno delat**
+
+publicn a ia gruppa moz et razresit ili zapretit indeksaciju vneshnimi poiskovymi sistemami
+
+**pocemu eto nuzno**
+
+publicnoe vnutri platformy i globaln oe v internet e imejut raznye posledstviia
+
+**kak eto dolzno rabotat po logike**
+
+zakryty e i sekretn y e gruppy nikogda ne dolzny popadat v publicn y e karty sajta i strukturirovannye dannye
+
+**dlia kogo i dlia kakoj celi**
+
+dlia vladelcev grupp i uchastnikov
+
+**kakoj rezultat dolzen byt dostignut**
+
+gruppa moz et byt otkrytoj dlia platformy, no ne obyazatelno dlia globalnogo poisk a
+
+---
+
+# vstup lenie i clenstvo
+
+## 39 — vybor profilia pri vstup lenii
+
+**cto eto dolzno delat**
+
+polzovatel dolzen vybrat, kakoi profil stanovitsia uchastnikom
+
+**pocemu eto nuzno**
+
+vstup lenie lichnym profilem i profilem pitomca imeet raznye socialnye posledstviia
+
+**kak eto dolzno rabotat po logike**
+
+gruppa opredeliaet dopustimye tipy profilej i pokaz yvaet, cto budet vidno drugim
+
+**dlia kogo i dlia kakoj celi**
+
+dlia profilej xoziaev, pitomcev, specialistov i organizacij
+
+**kakoj rezultat dolzen byt dostignut**
+
+polzovatel ne vstupaet slucajno kak klinika vmesto lichnogo profilia
+
+---
+
+## 40 — svobodnoe vstup lenie
+
+**cto eto dolzno delat**
+
+publicn a ia gruppa moz et razreshit vstup lenie odnoj knopkoj
+
+**pocemu eto nuzno**
+
+dlia obsch ix obrazovatelnyx i lokalnyx grupp slozhn a ia proverka moz et byt lishnej
+
+**kak eto dolzno rabotat po logike**
+
+pered vstup leniem polzovatel vidit i prinimaet pravil a
+
+**dlia kogo i dlia kakoj celi**
+
+dlia otkrytyx klubov i tematiceskix grupp
+
+**kakoj rezultat dolzen byt dostignut**
+
+vstup lenie prostoe, no ne proisxodit bez oznakomleniia s bazovymi pravilami
+
+---
+
+## 41 — zayavka na vstup lenie
+
+**cto eto dolzno delat**
+
+zakryt a ia gruppa moz et trebovat odobrenie administratora
+
+**pocemu eto nuzno**
+
+moderatoru moz et byt vazen kontekst, opyt, region ili realnaia sviaz s temoj
+
+**kak eto dolzno rabotat po logike**
+
+zayavka moz et soderzhat
+
+* profil
+* prichinu interesa
+* obsc ix uchastnikov
+* otvety na vstupitelnye voprosy
+* soglasie s pravilami
+* neobxodim uju proverku
+
+**dlia kogo i dlia kakoj celi**
+
+dlia professionalnyx, podderzhivajusc ix i zakrytyx grupp
+
+**kakoj rezultat dolzen byt dostignut**
+
+administrator prinimaet reshenie na osnove relevantnogo minimuma, a ne polnoj lichn oj istorii
+
+---
+
+## 42 — vstupitelnye voprosy
+
+**cto eto dolzno delat**
+
+gruppa moz et zadat korotkie voprosy
+
+naprimer
+
+* zachem vy vstupaete
+* kakoi u vas pitomec
+* kakoi gorod
+* soglasny li vy s pravilami
+* est li professionalnaia kvalifikacija
+* kak vy uznali o gruppe
+
+**pocemu eto nuzno**
+
+voprosy pomogajut otfiltrovat botov i ponimat interes uchastnika
+
+**kak eto dolzno rabotat po logike**
+
+nelzia bez osnovaniia zaprashivat pasport, domashnij adres, poln uju medkartocku ili politiceskie vzgliady
+
+**dlia kogo i dlia kakoj celi**
+
+dlia administratorov zakrytyx grupp
+
+**kakoj rezultat dolzen byt dostignut**
+
+gruppa polucaet nuzn yj kontekst bez lishnego sbora lichnyx dannyx
+
+---
+
+## 43 — proverka professionalnoj roli
+
+**cto eto dolzno delat**
+
+dlia zakrytogo professionalnogo razdela moz et potrebovatsia podtverzhdenie kvalifikacii
+
+**pocemu eto nuzno**
+
+oby cn yj polzovatel ne dolzen poluchat te ze prava, cto proverenn yj veterinar ili trener
+
+**kak eto dolzno rabotat po logike**
+
+proveriajutsia konkretnye dokumenty, region, srok i oblast kompetencii
+
+**dlia kogo i dlia kakoj celi**
+
+dlia professionalnyx soobscestv
+
+**kakoj rezultat dolzen byt dostignut**
+
+v zakrytom razdele realno prisutstvujut specialisty podtverzhdenn oj kategorii
+
+---
+
+## 44 — priglashenie konkretnogo polzovatelia
+
+**cto eto dolzno delat**
+
+administrator ili uchastnik s pravom moz et priglasit konkretn yj profil
+
+**pocemu eto nuzno**
+
+eto bezopasnee publicnoj bessrocn oj ssylki
+
+**kak eto dolzno rabotat po logike**
+
+priglashenie imeet
+
+* otpravitelia
+* grup pu
+* rol
+* srok
+* odnokratnost
+* vozmoznost otzyva
+* tekst pravil
+
+**dlia kogo i dlia kakoj celi**
+
+dlia malyx i zakrytyx grupp
+
+**kakoj rezultat dolzen byt dostignut**
+
+priglashenie nelzia peredat drugomu polzovateliu bez razresheniia
+
+---
+
+## 45 — ssylka priglasheniia
+
+**cto eto dolzno delat**
+
+gruppa moz et sozdat ssylku dlia kampanii, sobytija ili novyx uchastnikov
+
+**pocemu eto nuzno**
+
+individualnye priglasheniia ne vsegda udobny dlia bolshogo sobytija
+
+**kak eto dolzno rabotat po logike**
+
+ssylka dolzna imet
+
+* srok
+* limit
+* rol
+* odobrenie
+* priviazku k sobytiiu
+* istochnik
+* vozmoznost otzyva
+
+**dlia kogo i dlia kakoj celi**
+
+dlia organizatorov i administratorov
+
+**kakoj rezultat dolzen byt dostignut**
+
+st araia ssylka ne ostajotsia bessrocno otkrytoj dlia spamerov
+
+---
+
+## 46 — qr kod vstup leniia
+
+**cto eto dolzno delat**
+
+ssylku mozno pokazat kak qr na sobytii, v klinike, priute ili klub e
+
+**pocemu eto nuzno**
+
+eto udobno dlia fiziceskogo mesta, no kod moz et byt sfotografirovan i rasprostranen
+
+**kak eto dolzno rabotat po logike**
+
+qr moz et dejstvovat tolko vo vremia sobytija, trebovat odobrenie ili imet limit ispolzovanij
+
+**dlia kogo i dlia kakoj celi**
+
+dlia sobytij i fiziceskix organizacij
+
+**kakoj rezultat dolzen byt dostignut**
+
+kod udob en, no ne stanovitsia postojannym nekontroliruemym vhodom
+
+---
+
+## 47 — probn yj period uchastnika
+
+**cto eto dolzno delat**
+
+nov yj uchastnik moz et vrem enno imet ogranichennye prava
+
+**pocemu eto nuzno**
+
+eto pomogaet zascitit grup pu ot spama, massovyx ssylok i rejdov
+
+**kak eto dolzno rabotat po logike**
+
+v probnom statuse mozno
+
+* c itat
+* pisat s limitom
+* ne otpravljat fajly
+* ne sozda vat sobytija
+* ne priglashat drugih
+* publikovat posle odobreniia
+
+**dlia kogo i dlia kakoj celi**
+
+dlia bolsh ix i publicnyx grupp
+
+**kakoj rezultat dolzen byt dostignut**
+
+nov yj realn yj uchastnik postepenno poluchaet prava, a bot ne moz et srazu atakovat grup pu
+
+---
+
+## 48 — statusy clenstva
+
+**cto eto dolzno delat**
+
+uchastie dolzno imet status
+
+* priglashen
+* podal zayavku
+* ozhidaet
+* probn yj uchastnik
+* aktiven
+* vrem enno ogranichen
+* tolko ctenie
+* priostanovlen
+* vyshel
+* udal en administratorom
+* zablokirovan
+* prava iste kli
+
+**pocemu eto nuzno**
+
+odin flazok uchastnik ili ne uchastnik ne opis yvaet realn yj zivotn yj cikl
+
+**kak eto dolzno rabotat po logike**
+
+kazdyj status imeet dostupnye dejstviia, vidimost i put vosstanovleniia
+
+**dlia kogo i dlia kakoj celi**
+
+dlia uchastnikov, administratorov i moderacii
+
+**kakoj rezultat dolzen byt dostignut**
+
+sistema ponimaet, moz et li konkretn yj profil pisat, c itat, priglashat ili podavat apellaciju
+
+---
+
+## 49 — otkaz vo vstup lenii
+
+**cto eto dolzno delat**
+
+administrator moz et otklonit zayavku
+
+**pocemu eto nuzno**
+
+ne kazdyj kandidat sootvetstvuet celi, regionu ili professionalnym trebovaniiam gruppy
+
+**kak eto dolzno rabotat po logike**
+
+polzovatel polucaet nejtraln oe objasnenie, esli ono bezopasno i razresheno pravilami
+
+otkaz ne dolzen raskryvat lichn y e zametki moderatora
+
+**dlia kogo i dlia kakoj celi**
+
+dlia zakrytyx i professionalnyx grupp
+
+**kakoj rezultat dolzen byt dostignut**
+
+otkaz obrabatyvaetsia bez publicnogo unizheniia i bez bessrocnogo nakazaniia, esli net narusheniia
+
+---
+
+## 50 — ochered ili spisok ozhidaniia
+
+**cto eto dolzno delat**
+
+gruppa s ogranichennym razmerom moz et prinimat kandidatov v ochered
+
+**pocemu eto nuzno**
+
+kurs, podderzhivajusc a ia gruppa ili klub moz et imet ogranichennoe kolichestvo moderatorov i mest
+
+**kak eto dolzno rabotat po logike**
+
+polzovatel vidit status, primern yj princip poriadka i moz et udal it zayavku
+
+**dlia kogo i dlia kakoj celi**
+
+dlia malyx grupp i kursov
+
+**kakoj rezultat dolzen byt dostignut**
+
+gruppa ne prinimaet bolsh e uchastnikov, chem moz et bezopasno obsluzhit
+
+---
+
+## 51 — dobrovoln yj vyxod
+
+**cto eto dolzno delat**
+
+uchastnik moz et pokinut soobscestvo
+
+**pocemu eto nuzno**
+
+uchastie dolzno byt dobrovolnym i upravljaemym
+
+**kak eto dolzno rabotat po logike**
+
+pered vyxodom pokaz yvaetsia, cto proizojdet s
+
+* postami
+* kommentariiami
+* fajlami
+* zadacami
+* sobytijami
+* roliami
+* zakrytym kontentom
+* istoriej
+
+**dlia kogo i dlia kakoj celi**
+
+dlia vseh uchastnikov
+
+**kakoj rezultat dolzen byt dostignut**
+
+polzovatel osoznanno pokidaet grup pu i ne ostavljaet kriticeskuju zadacu bez peredaci
+
+---
+
+## 52 — udaleniie uchastnika administratorom
+
+**cto eto dolzno delat**
+
+administrator moz et prekratit clenstvo pri narushenii ili zavershenii roli
+
+**pocemu eto nuzno**
+
+gruppa dolzna zascischat sebia ot spama, ugroz i zloupotreblenija
+
+**kak eto dolzno rabotat po logike**
+
+nuzno vybrat
+
+* prichinu
+* srok
+* vozmoznost vozvrata
+* cto proizojdet s kontentom
+* nuzhna li platformennaia zhaloba
+* mozno li podat apellaciju
+
+**dlia kogo i dlia kakoj celi**
+
+dlia administratorov i moderacii
+
+**kakoj rezultat dolzen byt dostignut**
+
+udaleniie ne javliaetsia neobjasnimym i ne unictozhaet dokazatelstva narusheniia
+
+---
+
+# roli i prava
+
+## 53 — vladelec soobscestva
+
+**cto eto dolzno delat**
+
+vladelec dolzen upravliat kriticeskimi dejstviiami
+
+* peredacej vladen iia
+* udaleniem gruppy
+* naznacheniem sovladelcev
+* officialnoj proverkoj
+* finansami
+* bazovymi pravilami
+* eksportom
+* integracijami
+
+**pocemu eto nuzno**
+
+administrator povsednevnogo kontenta ne obyazatelno dolzen imet absolutn yj kontrol
+
+**kak eto dolzno rabotat po logike**
+
+vladelec dolzen imet usilenn uju zascitu akkaunta i rezervnogo upravliajuscego
+
+**dlia kogo i dlia kakoj celi**
+
+dlia dolgosrocnogo upravleniia gruppoj
+
+**kakoj rezultat dolzen byt dostignut**
+
+odin komprometirovann yj moderator ne moz et udal it soobscestvo ili peredat ego moshenniku
+
+---
+
+## 54 — sovladelec
+
+**cto eto dolzno delat**
+
+neskolko doverennyx liudej mogut razdeliat kriticeskoe upravlenie
+
+**pocemu eto nuzno**
+
+gruppa ne dolzna zaviset ot odnogo akkaunta i odnogo cheloveka
+
+**kak eto dolzno rabotat po logike**
+
+dlia nekotoryx dejstvij moz et trebovatsia podtverzhdenie odnogo, dvux ili vseh sovladelcev
+
+**dlia kogo i dlia kakoj celi**
+
+dlia klubov, organizacij i bolsh ix soobscestv
+
+**kakoj rezultat dolzen byt dostignut**
+
+bolezn, uvolnenie ili poteria dostup a odnogo vladelca ne blokiruet vse soobscestvo
+
+---
+
+## 55 — administrator
+
+**cto eto dolzno delat**
+
+administrator upravliaet
+
+* razdelami
+* roliami
+* uchastnikami
+* nast ro jkami
+* priglasheniiami
+* sobytijami
+* zakreplennymi materialami
+* processami
+
+**pocemu eto nuzno**
+
+vladelec ne dolzen vypolniat vse povsednevn y e operacii
+
+**kak eto dolzno rabotat po logike**
+
+prava administratora otdeliajutsia ot finansov, peredaci vladen iia i bezvozvratnogo udaleniia
+
+**dlia kogo i dlia kakoj celi**
+
+dlia bolsh ix grupp i komand
+
+**kakoj rezultat dolzen byt dostignut**
+
+upravlenie delegiruetsia bez vydaci absolutnogo kontrolia
+
+---
+
+## 56 — moderator
+
+**cto eto dolzno delat**
+
+moderator dolzen upravliat poriadkom
+
+* rassmatrivat zhaloby
+* skryvat kontent
+* ogranichivat uchastnikov
+* perenosit temy
+* zakryvat kommentarii
+* vkliucat medlenn yj rezhim
+* preduprezhdat
+
+**pocemu eto nuzno**
+
+administrativnoe upravlenie i moderacija soderzhaniia javliajutsia raznymi zadacami
+
+**kak eto dolzno rabotat po logike**
+
+moderator ne dolzen avtomaticeski videt finansy, lichnye dokumenty ili zakryty e podgruppy bez osnovaniia
+
+**dlia kogo i dlia kakoj celi**
+
+dlia publicnyx i aktivnyx grupp
+
+**kakoj rezultat dolzen byt dostignut**
+
+moderator moz et ostanovit vred, ne poluchaja lishnego dostup a k drugim dannym
+
+---
+
+## 57 — kurator kontenta
+
+**cto eto dolzno delat**
+
+kurator dolzen organizovyvat polezn y e materialy
+
+* zakreplyat
+* obed iniat dublikaty
+* dobavliat tegi
+* perenosit v bazu znanij
+* obnovliat ssylki
+* otmechat ustarevsh ee
+
+**pocemu eto nuzno**
+
+moderator sledit za pravilami, no ne obyazatelno upravliaet kachestvom znanij
+
+**kak eto dolzno rabotat po logike**
+
+kurator ne moz et redaktirovat avtorskoe mnenie bez pon iatnoj versii i atribucii
+
+**dlia kogo i dlia kakoj celi**
+
+dlia obrazovatelnyx i professionalnyx grupp
+
+**kakoj rezultat dolzen byt dostignut**
+
+baza znanij ostajotsia aktualnoj i strukturirovannoj
+
+---
+
+## 58 — proverenn yj ekspert
+
+**cto eto dolzno delat**
+
+specialist moz et poluchit rol dlia otvetov v svoej oblasti
+
+**pocemu eto nuzno**
+
+uchastnik dolzen otlicit professionaln yj otvet ot lichnogo opyta
+
+**kak eto dolzno rabotat po logike**
+
+rol dolzna pokaz yvat
+
+* cto provereno
+* oblast
+* region
+* srok
+* organizaciju
+* granicy kompetencii
+
+**dlia kogo i dlia kakoj celi**
+
+dlia veterinarov, kinologov, grumerov i drugix specialistov
+
+**kakoj rezultat dolzen byt dostignut**
+
+znachok ekspert ne oznachaet, cto polzovatel kompetenten vo vseh temax
+
+---
+
+## 59 — organizator sobytij
+
+**cto eto dolzno delat**
+
+rol dolzna razresat sozda vat, redaktirovat i koordinirivat sobytija
+
+**pocemu eto nuzno**
+
+organizatoru ne obyazatelno nuzny prava na moderaciju vsego foruma
+
+**kak eto dolzno rabotat po logike**
+
+on moz et upravliat registraciej, uchastnikami, chatom, proverkoj i otchetami tolko svoix sobytij
+
+**dlia kogo i dlia kakoj celi**
+
+dlia klubov, trenerov, priutov i volonterskix grupp
+
+**kakoj rezultat dolzen byt dostignut**
+
+sobytija mogut koordinirivat raznye liudi bez vydaci administrativnogo kontrolia nad vsej gruppoj
+
+---
+
+## 60 — koordinator volonterov
+
+**cto eto dolzno delat**
+
+rol dolzna upravliat
+
+* zadacami
+* smenami
+* navykami
+* transportom
+* otchetami
+* statusami
+* dostupnostiu
+
+**pocemu eto nuzno**
+
+volonterskaia rabota trebuet organizacii, no ne polnogo administrativnogo dostup a
+
+**kak eto dolzno rabotat po logike**
+
+koordinator vidit tolko neobxodimye dannye konkretnyx volonterskix processov
+
+**dlia kogo i dlia kakoj celi**
+
+dlia priutov i spasatelnyx organizacij
+
+**kakoj rezultat dolzen byt dostignut**
+
+zadaci raspredeliajutsia prozracno, a lichnye dannye volonterov ne otkryvajutsia vsem administratoram
+
+---
+
+## 61 — perevodcik
+
+**cto eto dolzno delat**
+
+rol moz et dobavliat i proveriat perevody pravil, statej, obnavlenij i sobytij
+
+**pocemu eto nuzno**
+
+mnogojazy cnaia gruppa trebuet otvetstvennyx liudej za vazn y e teksty
+
+**kak eto dolzno rabotat po logike**
+
+perevodcik ne moz et meniat original bez otdelnogo prava
+
+**dlia kogo i dlia kakoj celi**
+
+dlia mezhdunarodnyx i mnogojazy cnyx grupp
+
+**kakoj rezultat dolzen byt dostignut**
+
+perevody aktualny, proveriaemy i ne iskazha jut originaln y e pravil a
+
+---
+
+## 62 — oby cn yj uchastnik
+
+**cto eto dolzno delat**
+
+uchastnik moz et c itat, publikovat i vzaimodejstvovat v ramkax pravil
+
+**pocemu eto nuzno**
+
+bazovaia rol dolzna byt prostoj i bez lishnix prav
+
+**kak eto dolzno rabotat po logike**
+
+konkretnye vozmoznosti zavisiat ot razdela, statusa, vozrasta akkaunta i moderacionnyx ogranichenij
+
+**dlia kogo i dlia kakoj celi**
+
+dlia bolshinstva clenov gruppy
+
+**kakoj rezultat dolzen byt dostignut**
+
+uchastnik moz et polnocenno ucavstvovat, ne poluchaja administrativnogo dostup a
+
+---
+
+## 63 — nov yj ili probn yj uchastnik
+
+**cto eto dolzno delat**
+
+rol dolzna vrem enno ogranichit riskovye funkcii
+
+**pocemu eto nuzno**
+
+spamer ili bot c asto pyt a etsia nanesti vred srazu posle vstup leniia
+
+**kak eto dolzno rabotat po logike**
+
+nov yj uchastnik moz et
+
+* c itat
+* predstavitsia
+* zadat ogranichenn oe kolichestvo voprosov
+* ne otpravljat vneshnie ssylki
+* ne sozda vat oprosy
+* ne priglashat drugih
+
+**dlia kogo i dlia kakoj celi**
+
+dlia publicnyx i bolsh ix grupp
+
+**kakoj rezultat dolzen byt dostignut**
+
+normaln yj polzovatel postepenno poluchaet prava, a massov yj spam ostanavlivaetsia
+
+---
+
+## 64 — gost
+
+**cto eto dolzno delat**
+
+gost moz et vrem enno c itat ili ucavstvovat v opredelennom razdele ili sobytii
+
+**pocemu eto nuzno**
+
+specialist, dokladcik, fotograf ili partner ne obyazatelno dolzen stanovitsia postojannym uchastnikom
+
+**kak eto dolzno rabotat po logike**
+
+rol imeet srok, ogranichenn uju istoriju i ne moz et priglashat drugih bez prava
+
+**dlia kogo i dlia kakoj celi**
+
+dlia sobytij, konsultacij i vremennyx proektov
+
+**kakoj rezultat dolzen byt dostignut**
+
+posle zaversheniia zadaci gost avtomaticeski ter iaet dostup
+
+---
+
+## 65 — polzovatelskie roli
+
+**cto eto dolzno delat**
+
+gruppa moz et sozdat sobstvennye roli
+
+naprimer
+
+* poiskovaia komanda
+* voditel
+* fotograf
+* perederzka
+* donor koordinator
+* konsultant
+* veteran kluba
+
+**pocemu eto nuzno**
+
+standartnye roli ne pokryvajut vse realnye scenarii
+
+**kak eto dolzno rabotat po logike**
+
+custom rol sobiraetsia iz gotovyx prav i ne dolzna poluchat skryty e neobjasnennye vozmoznosti
+
+**dlia kogo i dlia kakoj celi**
+
+dlia specializirovannyx grupp
+
+**kakoj rezultat dolzen byt dostignut**
+
+gruppa moz et modelirovat svoi processy bez peredaci lishnix prav
+
+---
+
+## 66 — princip minimalno neobxodimyx prav
+
+**cto eto dolzno delat**
+
+kazdaia rol dolzna polucat tolko te prava, kotorye nuzny dlia ejo zadaci
+
+**pocemu eto nuzno**
+
+slishkom sirokie prava uvelichivajut posledstviia oshibki ili vzloma
+
+**kak eto dolzno rabotat po logike**
+
+prava vydajutsia na
+
+* konkretn yj razdel
+* konkretn yj tip kontenta
+* opredelenn yj srok
+* opredelenn uju podgruppu
+* konkret n yj proekt
+
+**dlia kogo i dlia kakoj celi**
+
+dlia vseh administrativnyx rolej
+
+**kakoj rezultat dolzen byt dostignut**
+
+organizator sobytija ne moz et c itat zakryt y e zhaloby ili udal iat vse soobscestvo
+
+---
+
+## 67 — vrem ennye roli
+
+**cto eto dolzno delat**
+
+rol moz et dejstvovat do konkretnoj daty ili zaversheniia sobytija
+
+**pocemu eto nuzno**
+
+dokladcik, moderator kampanii ili koordinator poisk a ne obyazatelno dolzen soxran iat prava navsegda
+
+**kak eto dolzno rabotat po logike**
+
+posle istecheniia prava avtomaticeski otzyvajutsia, sessii obnovliajutsia, a vladelec polucaet uvedomlenie
+
+**dlia kogo i dlia kakoj celi**
+
+dlia vremennyx proektov i sobytij
+
+**kakoj rezultat dolzen byt dostignut**
+
+st ar y e administrativnye prava ne nakaplivajutsia godami
+
+---
+
+## 68 — usilenn a ia zascita administratorov
+
+**cto eto dolzno delat**
+
+vladelcy, administratory i moderatory dolzny ispolzovat povyshenn y e mery bezopasnosti
+
+**pocemu eto nuzno**
+
+zahvat odnogo administrativnogo akkaunta moz et nanesti vred tysiacham uchastnikov
+
+**kak eto dolzno rabotat po logike**
+
+mozno trebovat
+
+* mfa
+* passkey
+* proverenn yj kontakt
+* povtorn uju proverku pered kriticeskim dejstviem
+* audit ustrojstv
+* rezervnye kody
+
+**dlia kogo i dlia kakoj celi**
+
+dlia upravliajusc ix soobscestvom
+
+**kakoj rezultat dolzen byt dostignut**
+
+ukradenn yj parol ne daet srazu udal it grup pu ili skacat vse dannye
+
+---
+
+## 69 — audit rolej
+
+**cto eto dolzno delat**
+
+sistema dolzna xranit
+
+* kto vydal rol
+* komu
+* kogda
+* na kakoi srok
+* kakie prava
+* kto izmenil
+* kto otzyval
+* po kakoi prichine
+
+**pocemu eto nuzno**
+
+pri spor e ili vzlome nuzno vosstanovit istoriju upravleniia
+
+**kak eto dolzno rabotat po logike**
+
+audit ne dolzen redaktirovatsia oby cnym administratorom
+
+**dlia kogo i dlia kakoj celi**
+
+dlia vladelcev i komandy bezopasnosti
+
+**kakoj rezultat dolzen byt dostignut**
+
+mozno ustanovit, kak problemn yj akkaunt poluchil pravo udal iat kontent ili videt dokumenty
+
+---
+
+# pravila i upravlenie
+
+## 70 — obyazatelnye pravila gruppy
+
+**cto eto dolzno delat**
+
+kazdoe aktivn oe soobscestvo dolzno imet poniatn yj nabor pravil
+
+**pocemu eto nuzno**
+
+bez pravil moderator i uchastnik ne znajut, cto dopustimo i pocemu kontent byl udal en
+
+**kak eto dolzno rabotat po logike**
+
+pravila dolzny byt dostupny do vstup leniia, vsegda naxoditsia v profile gruppy i imet stabilnye razdely
+
+**dlia kogo i dlia kakoj celi**
+
+dlia vseh uchastnikov i moderatorov
+
+**kakoj rezultat dolzen byt dostignut**
+
+moderacija opiraetsia na zaranee izvestnye normy, a ne na lichn oe nastroenie administratora
+
+---
+
+## 71 — osnovn yj kodeks povedeniia
+
+**cto eto dolzno delat**
+
+pravila dolzny zapreshchat
+
+* oskorbleniia
+* ugrozy
+* presledovanie
+* doxxing
+* diskriminaciju
+* seksualn yj kontent
+* zhestokost
+* moshennicestvo
+* spam
+* vydacu za drugogo
+* opasnye sovety
+* nelegaln uju torgovliu
+
+**pocemu eto nuzno**
+
+soobscestvo dolzno imet minimaln yj bazov yj uroven bezopasnosti
+
+**kak eto dolzno rabotat po logike**
+
+lokaln y e pravil a mogut byt stroze, no ne dolzny otmeniat bazovye pravil a platformy
+
+**dlia kogo i dlia kakoj celi**
+
+dlia vseh soobscestv
+
+**kakoj rezultat dolzen byt dostignut**
+
+gruppa ne moz et legalizovat travliu ili zhestokost svoim vnutrennim pravilom
+
+---
+
+## 72 — pravil a po medicinskim temam
+
+**cto eto dolzno delat**
+
+gruppa dolzna objasnit, kak obrabatyvajutsia
+
+* simptomy
+* diagnozy
+* lekarstva
+* dozy
+* srocn y e slucai
+* professionalnye otvety
+* lichn yj opyt
+
+**pocemu eto nuzno**
+
+opasn yj sovet v tematiceskoj gruppe moz et prichinit realn yj vred
+
+**kak eto dolzno rabotat po logike**
+
+nuzno razdeliat
+
+* lichn yj opyt
+* obsch uju informaciju
+* professionaln yj otvet
+* individualn oe naznachenie
+* srocn uju pomosc
+
+**dlia kogo i dlia kakoj celi**
+
+dlia grupp zdorovja, pitaniia i uxoda
+
+**kakoj rezultat dolzen byt dostignut**
+
+uchastnik ne prinimaet kommentarij neznakomca za individualn oe medicinskoe naznachenie
+
+---
+
+## 73 — pravil a reklamy
+
+**cto eto dolzno delat**
+
+gruppa dolzna tocno ukazat
+
+* razreshena li reklama
+* gde
+* komu
+* kak c asto
+* nuzhna li metka
+* razresheny li partnersk ie ssylki
+* est li otdeln yj katalog
+
+**pocemu eto nuzno**
+
+bez granic reklama bystro vytesniaet polezn yj kontent
+
+**kak eto dolzno rabotat po logike**
+
+skrytaia reklama i massovye lichnye soobsenija zapreshchajutsia, daze esli oby cn yj reklamn yj razdel razreshen
+
+**dlia kogo i dlia kakoj celi**
+
+dlia biznesov, specialistov i avt orov
+
+**kakoj rezultat dolzen byt dostignut**
+
+kommerceskij kontent naxoditsia v pon iatnom meste i ne maskiruetsia pod lichn uju rekomendaciju
+
+---
+
+## 74 — pravil a sbora sredstv
+
+**cto eto dolzno delat**
+
+gruppa dolzna ustanovit trebovaniia k blagotvoritelnym i lichnym sboram
+
+**pocemu eto nuzno**
+
+emocionalnye istorii mogut ispolzovatsia dlia moshennicestva
+
+**kak eto dolzno rabotat po logike**
+
+mozno trebovat
+
+* proverku lichnosti
+* sviaz s profilem pitomca
+* dokumenty
+* cel
+* summu
+* otchet
+* status
+* cto budet s ostatkom
+
+**dlia kogo i dlia kakoj celi**
+
+dlia priutov, donorov i xoziaev
+
+**kakoj rezultat dolzen byt dostignut**
+
+sbory stanov iatsia bolee prozracnymi, a falshiv y e kampanii ne polucajut doverie tolko iz-za fotografii
+
+---
+
+## 75 — pravil a adopcii
+
+**cto eto dolzno delat**
+
+gruppa dolzna ukazat, kak publikovat zivotnyx, zayavki, dokumenty i resheniia
+
+**pocemu eto nuzno**
+
+haotichnaja adopcija v kommentariiax povysaet risk moshennicestva i neotvetstvennoj peredaci
+
+**kak eto dolzno rabotat po logike**
+
+adopcionn yj post dolzen byt sviazan s realnym profilem i strukturirovannym processom
+
+**dlia kogo i dlia kakoj celi**
+
+dlia priutov, perederzhek i kandidatov
+
+**kakoj rezultat dolzen byt dostignut**
+
+zivotnoe ne peredajotsia pervomu kommentatoru bez proverki i dokumentov
+
+---
+
+## 76 — pravil a po poterjannym i najdennym
+
+**cto eto dolzno delat**
+
+gruppa dolzna opredelit format srocn yx objavlenij
+
+**pocemu eto nuzno**
+
+nepoln yj ili lozhn yj post moz et napravit volonterov ne v to mesto ili raskryt domashnij adres
+
+**kak eto dolzno rabotat po logike**
+
+obyazateln y e elementy mogut vkliucat
+
+* fotografiju
+* vremia
+* primern uju zonu
+* status
+* instrukciju
+* kontakt cerez platformu
+* ssylku na original poisk a
+
+**dlia kogo i dlia kakoj celi**
+
+dlia mestnyx grupp i poiskovyx komand
+
+**kakoj rezultat dolzen byt dostignut**
+
+srocn oe objavlenie polezno, proveriaemo i avtomaticeski obnovliaetsia posle vozvrata pitomca
+
+---
+
+## 77 — pravil a povedeniia na realnyx vstrechax
+
+**cto eto dolzno delat**
+
+klub dolzen ustanovit
+
+* povodki
+* vakcinacionnye trebovaniia
+* distanciju
+* vstrechu novyx pitomcev
+* ucastie detej
+* otvetstvennost xoziaev
+* zapret zhestokix metodov
+* incidenty
+* fotografirovanie
+
+**pocemu eto nuzno**
+
+onlajn pravila ne pokryvajut fiziceskuju bezopasnost sobytija
+
+**kak eto dolzno rabotat po logike**
+
+pravila priviazyvajutsia k konkretnomu tipu sobytija i mogut razlikatsia po mestu
+
+**dlia kogo i dlia kakoj celi**
+
+dlia gruppovyx progulok, treningov, vystavok i klubov
+
+**kakoj rezultat dolzen byt dostignut**
+
+uchastniki ponimajut usloviia do pribytiia, a ne uznajut o nix v moment konflikta
+
+---
+
+## 78 — versii pravil
+
+**cto eto dolzno delat**
+
+kazdoe izmenenie pravil dolzno imet versiju, datu i avtora
+
+**pocemu eto nuzno**
+
+nelzia nakazyvat polzovatelia po pravil u, kotoroe pojav ilos posle ego dejstviia
+
+**kak eto dolzno rabotat po logike**
+
+sushestvenn y e izmeneniia trebujut uvedomleniia i pri neobxodimosti povtornogo soglasiia
+
+**dlia kogo i dlia kakoj celi**
+
+dlia uchastnikov, moderatorov i apellacij
+
+**kakoj rezultat dolzen byt dostignut**
+
+mozhno ustanovit, kak a ia versija dejstvovala v konkret n yj moment
+
+---
+
+## 79 — lokaln y e pravil a
+
+**cto eto dolzno delat**
+
+otdelenie moz et dobavit pravil a, sviazannye s
+
+* mestnymi zakonami
+* parkami
+* povodkami
+* registraciej
+* puteshestvijami
+* opasnymi zonami
+* lokalnymi sluzhbami
+
+**pocemu eto nuzno**
+
+edin y e globalnye pravil a ne mogut uchityvat vse territorii
+
+**kak eto dolzno rabotat po logike**
+
+lokaln oe pravilo ne dolzno protivorechit bazovoj bezopasnosti platformy
+
+**dlia kogo i dlia kakoj celi**
+
+dlia mestnyx klubov i organizacij
+
+**kakoj rezultat dolzen byt dostignut**
+
+uchastniki polucajut realno primenim uju lokaln uju informaciju
+
+---
+
+## 80 — prin iatie pravil
+
+**cto eto dolzno delat**
+
+pered vstup leniem polzovatel dolzen podtverdit, cto oznakomilsia s pravilami
+
+**pocemu eto nuzno**
+
+pravila ne dolzny byt skrytym dokumentom, o kotorom uchastnik uznaet posle blokirovki
+
+**kak eto dolzno rabotat po logike**
+
+sistema xranit versiju, datu i profil, ot imeni kotorogo bylo prin iatie
+
+**dlia kogo i dlia kakoj celi**
+
+dlia vseh uchastnikov
+
+**kakoj rezultat dolzen byt dostignut**
+
+gruppa moz et dokazat, kakie pravil a byli pokazany, a uchastnik moz et prosmotret ix pozze
+
+---
+
+# forum i tematiceskie obsuzhdenija
+
+## 81 — tipy forumnoj temy
+
+**cto eto dolzno delat**
+
+forum dolzen podderzhivat
+
+* oby cn oe obsuzhdenie
+* vopros i otvety
+* instrukciju
+* officialn oe obnavlenie
+* opros
+* otchet
+* sobytie
+* prosbu o pomosci
+* adopciju
+* poterjannogo pitomca
+* bazu resursov
+* memorialn uju temu
+
+**pocemu eto nuzno**
+
+raznye obsuzhdenija trebu jut raznyx statusov, dejstvij i pravil
+
+**kak eto dolzno rabotat po logike**
+
+tip vy biraetsia pri sozdanii i podkliucaet podxodiasc ie polia
+
+**dlia kogo i dlia kakoj celi**
+
+dlia avt orov i moderatorov
+
+**kakoj rezultat dolzen byt dostignut**
+
+vopros moz et byt otmechen reshen n ym, a officialn oe obnavlenie ne smeshivaetsia s oby cnym mneniem
+
+---
+
+## 82 — sozdanie temy
+
+**cto eto dolzno delat**
+
+uchastnik moz et sozdat temu v dostupnom razdele
+
+**pocemu eto nuzno**
+
+forum dolzen sobirat obsuzhdenija po konkretnym voprosam, a ne v odn om obschem potoke
+
+**kak eto dolzno rabotat po logike**
+
+pered publicaciej sistema proveriaet
+
+* razdel
+* tip
+* nazvanie
+* dublikaty
+* pravila
+* ssylki
+* media
+* chuvstviteln yj kontekst
+
+**dlia kogo i dlia kakoj celi**
+
+dlia uchastnikov gruppy
+
+**kakoj rezultat dolzen byt dostignut**
+
+tema pojavliaetsia v pravilnom razdele i imeet dostatocn yj kontekst dlia poleznogo otveta
+
+---
+
+## 83 — zagolovok temy
+
+**cto eto dolzno delat**
+
+zagolovok dolzen kratko i tocn o opis yvat vopros ili temu
+
+**pocemu eto nuzno**
+
+zagolovki pomogite, srocn o i vopros slishkom obs ch ie dlia poiska
+
+**kak eto dolzno rabotat po logike**
+
+sistema moz et predlozhit bolee konkretn yj variant, no ne dolzna pridumyvat fakty
+
+**dlia kogo i dlia kakoj celi**
+
+dlia avt orov i zritelej
+
+**kakoj rezultat dolzen byt dostignut**
+
+polzovatel ponimaet soderzhanie do otkrytija temy
+
+---
+
+## 84 — proverka dublikatov
+
+**cto eto dolzno delat**
+
+pered sozdaniem sistema dolzna pokazat poxozie st ar y e temy
+
+**pocemu eto nuzno**
+
+odin i tot ze vopros moz et povtoriatsia desiatki raz
+
+**kak eto dolzno rabotat po logike**
+
+avtor moz et
+
+* otkryt sushestvujuscuju temu
+* utochnit, pocemu ego slucaj drugoj
+* sozdat nov uju
+* sozdat prodolzhenie
+
+**dlia kogo i dlia kakoj celi**
+
+dlia vseh avt orov
+
+**kakoj rezultat dolzen byt dostignut**
+
+znanija ne raskalyvajutsia na mnogo odinakov yx obsuzhdenij
+
+---
+
+## 85 — vopros i vybrann yj otvet
+
+**cto eto dolzno delat**
+
+avtor moz et otmetit odin ili neskolko otvetov kak polezn y e ili resha j u sc ie vopros
+
+**pocemu eto nuzno**
+
+novomu cit ateliu nuzno bystro najti itog diskussii
+
+**kak eto dolzno rabotat po logike**
+
+vybrann yj otvet ne avtomaticeski stanovitsia professionalno pravilnym
+
+proverenn yj ekspert n yj otvet pokazyvaetsia otdelno
+
+**dlia kogo i dlia kakoj celi**
+
+dlia avt orov voprosov i zritelej
+
+**kakoj rezultat dolzen byt dostignut**
+
+tema poluchaet pon iatn yj itog bez lozhnogo znachka officialnoj istiny
+
+---
+
+## 86 — status resheno
+
+**cto eto dolzno delat**
+
+vopros moz et poluchit status
+
+* otkryt
+* nuzhny detali
+* poluchen otvet
+* reshen
+* trebuet specialista
+* srocn yj slucaj
+* zakryt moderatorom
+* ustarel
+
+**pocemu eto nuzno**
+
+zritel dolzen ponimat, nuzhno li esio otvecat
+
+**kak eto dolzno rabotat po logike**
+
+avtor ili moderator meniaet status s auditom
+
+**dlia kogo i dlia kakoj celi**
+
+dlia forumov voprosov i otvetov
+
+**kakoj rezultat dolzen byt dostignut**
+
+otkryty e problem y ne ter iajutsia, a reshen n y e ne polucajut beskonechn y e povtory
+
+---
+
+## 87 — zakreplennye temy
+
+**cto eto dolzno delat**
+
+moderator moz et zakrepit
+
+* pravila
+* faq
+* srocn oe obnavlenie
+* kalendar
+* instrukciju
+* novosti
+* officialn yj kontakt
+
+**pocemu eto nuzno**
+
+vazn yj material ne dolzen uxodit vniz posle novyx tem
+
+**kak eto dolzno rabotat po logike**
+
+kolichestvo zakreplennyx tem ogranicheno, a ustarevsh ie avtomaticeski napominajut o proverke
+
+**dlia kogo i dlia kakoj celi**
+
+dlia moderatorov i vseh uchastnikov
+
+**kakoj rezultat dolzen byt dostignut**
+
+vverxu ostajotsia tolko realno vazn a ia i aktualn a ia informacija
+
+---
+
+## 88 — obedinenie tem
+
+**cto eto dolzno delat**
+
+moderator moz et obed init poxozie obsuzhdenija
+
+**pocemu eto nuzno**
+
+dublikaty raskalyvajut otvety i poisk
+
+**kak eto dolzno rabotat po logike**
+
+soxraniajutsia avt ory, daty, kommentarii i ssylki, a st ar y e adres a perenapravliajutsia
+
+**dlia kogo i dlia kakoj celi**
+
+dlia kuratorov i moderatorov
+
+**kakoj rezultat dolzen byt dostignut**
+
+polezn y e otvety sobirajutsia v odn oj pon iatnoj teme bez poteri avtorstva
+
+---
+
+## 89 — razdelenie temy
+
+**cto eto dolzno delat**
+
+moderator moz et vynesti off topic ili nov uju problem u v otdeln oe obsuzhdenie
+
+**pocemu eto nuzno**
+
+dlinn a ia tema moz et perejti k sovsem drugomu voprosu
+
+**kak eto dolzno rabotat po logike**
+
+perenesenn y e kommentarii soxr aniajut avt orov, vremia i ssylku na originaln yj kontekst
+
+**dlia kogo i dlia kakoj celi**
+
+dlia strukturirovannyx obsuzhdenij
+
+**kakoj rezultat dolzen byt dostignut**
+
+kazdaia tema ostajotsia po odnomu osnovnomu voprosu
+
+---
+
+## 90 — perenesenie temy
+
+**cto eto dolzno delat**
+
+tema moz et byt perenesena v praviln yj razdel ili podgruppu
+
+**pocemu eto nuzno**
+
+nov yj uchastnik moz et vybrat ne tu kategoriju
+
+**kak eto dolzno rabotat po logike**
+
+avtor polucaet nejtraln oe uvedomlenie, a tema soxr aniaet ssylku i podpiski
+
+**dlia kogo i dlia kakoj celi**
+
+dlia moderatorov i avt orov
+
+**kakoj rezultat dolzen byt dostignut**
+
+struktura ulucshaetsia bez nakazaniia avtora za oby cnuju oshibku
+
+---
+
+## 91 — zakrytie temy
+
+**cto eto dolzno delat**
+
+moderator ili avtor pri dopustimosti moz et ostanovit novye otvety
+
+**pocemu eto nuzno**
+
+vopros moz et byt reshen, ustaret, perejti v konflikt ili trebovat professionalnogo processa
+
+**kak eto dolzno rabotat po logike**
+
+tema ostajotsia cit aemoj s objasneniem prichiny zakrytiia
+
+**dlia kogo i dlia kakoj celi**
+
+dlia podderzki poriadka
+
+**kakoj rezultat dolzen byt dostignut**
+
+eskalacija ostanavlivaetsia, no polezn a ia istoria ne ischezaet
+
+---
+
+## 92 — anonimnaia ili psevdonimnaia tema
+
+**cto eto dolzno delat**
+
+v nekotoryx zakrytyx gruppax uchastnik moz et opublikovat chuvstviteln yj vopros bez publicnogo imeni
+
+**pocemu eto nuzno**
+
+temy utraty, finansovogo krizisa, otkaza ot pitomca ili vygoraniia mogut vyz yvat styd i travliu
+
+**kak eto dolzno rabotat po logike**
+
+realn yj avtor izvesten sisteme i moderatoram po osnovaniju, no skryt ot oby cnyx uchastnikov
+
+**dlia kogo i dlia kakoj celi**
+
+dlia grupp podderzki
+
+**kakoj rezultat dolzen byt dostignut**
+
+polzovatel polucaet pomosc bez publicnogo kleyma, no anonimnost ne ispolzuetsia dlia ugroz
+
+---
+
+# baza znanij
+
+## 93 — glavnaja cel bazy znanij
+
+**cto eto dolzno delat**
+
+soobscestvo dolzno sobirat luchsh ie proverennye materialy otdelno ot diskussij
+
+**pocemu eto nuzno**
+
+forum soderzit mneniia, povtory, ustarevsh ie otvety i protivorechija
+
+**kak eto dolzno rabotat po logike**
+
+material prohodit kuraciju, versii, ukazanie istochnikov, proverku specialistom i periodiceskoe obnovlenie
+
+**dlia kogo i dlia kakoj celi**
+
+dlia novickov, opytnyx xoziaev, volonterov i specialistov
+
+**kakoj rezultat dolzen byt dostignut**
+
+polzovatel naxodit aktualn uju strukturirovann uju instrukciju, a ne slucajn yj kommentarij piatiletnej davnosti
+
+---
+
+## 94 — tipy materialov bazy znanij
+
+**cto eto dolzno delat**
+
+baza moz et soderzhat
+
+* statji
+* instrukcii
+* faq
+* check listy
+* shablony
+* spravocniki
+* video
+* podkasty
+* lokalnye kontakty
+* kartocki mest
+* dokumenty
+* professionalnye rekomendacii
+* istoriju izmenenij
+
+**pocemu eto nuzno**
+
+raznye zadaci trebu jut raznogo formata
+
+**kak eto dolzno rabotat po logike**
+
+kazdyj material imeet avtora, redaktora, datu, istochniki, status proverki, jazyk i srok sledujuscej proverki
+
+**dlia kogo i dlia kakoj celi**
+
+dlia soobscestv s dolgosrocnym znaniem
+
+**kakoj rezultat dolzen byt dostignut**
+
+baza ne stanovitsia papkoj anonimnyx fajlov bez dat i avtorov
+
+---
+
+## 95 — material iz forumnoj temy
+
+**cto eto dolzno delat**
+
+polezn uju diskussiju mozno prevratit v strukturirovann uju statju ili faq
+
+**pocemu eto nuzno**
+
+vazh n yj otvet ne dolzen ostatcia skrytym v desiatkax kommentariev
+
+**kak eto dolzno rabotat po logike**
+
+kurator sozdaet cernovik, ukazyvaet originalnye istochniki i poluchaet soglasie avt orov tam, gde eto nuzno
+
+**dlia kogo i dlia kakoj celi**
+
+dlia kuratorov i ekspertov
+
+**kakoj rezultat dolzen byt dostignut**
+
+znanie perehodit iz razovogo obsuzhdeniia v postojann yj polezn yj material
+
+---
+
+## 96 — versii materiala
+
+**cto eto dolzno delat**
+
+statja dolzna xranit predydusc ie versii i opisanie izmenenij
+
+**pocemu eto nuzno**
+
+rekomendacii, zakon y, kontakty i professionalnye standarty mogut meniatsia
+
+**kak eto dolzno rabotat po logike**
+
+zritel vidit datu obnovleniia, a redaktor moz et sravnit versii
+
+**dlia kogo i dlia kakoj celi**
+
+dlia ekspertov i uchastnikov
+
+**kakoj rezultat dolzen byt dostignut**
+
+nelzia tixo zamenit vazn uju instrukciju bez istorii
+
+---
+
+## 97 — istochniki
+
+**cto eto dolzno delat**
+
+professionaln yj i fakticesk ij material dolzen ssyl a tsia na proveriaemye istochniki
+
+**pocemu eto nuzno**
+
+bez istochnikov lichn oe mnenie moz et vygl iadet kak officialn a ia rekomendacija
+
+**kak eto dolzno rabotat po logike**
+
+istochnik imeet nazvanie, avtora, datu, ssylku i status dostupnosti
+
+**dlia kogo i dlia kakoj celi**
+
+dlia obrazovatelnyx i professionalnyx grupp
+
+**kakoj rezultat dolzen byt dostignut**
+
+uchastnik moz et proverit osnovanie fakta
+
+---
+
+## 98 — status proverki materiala
+
+**cto eto dolzno delat**
+
+material moz et imet status
+
+* cernovik
+* redakcionn yj
+* prover en kuratorom
+* prover en specialistom
+* officialn yj
+* trebuet obnovleniia
+* ustarel
+* otzyvan
+* arhivirovan
+
+**pocemu eto nuzno**
+
+nalichie statji v baze ne oznachaet, cto ona aktualna i professionalno proverena
+
+**kak eto dolzno rabotat po logike**
+
+status zametno pokaz yvaetsia riadom s materialom
+
+**dlia kogo i dlia kakoj celi**
+
+dlia cit atelej i redaktorov
+
+**kakoj rezultat dolzen byt dostignut**
+
+polzovatel ponimaet urov en doverija i aktualnosti
+
+---
+
+## 99 — periodiceskaia proverka aktualnosti
+
+**cto eto dolzno delat**
+
+material dolzen imet datu sledujuscego peresmotra
+
+**pocemu eto nuzno**
+
+spisok klinik, pravila poezdok ili medicinsk ie rekomendacii mogut ustaret
+
+**kak eto dolzno rabotat po logike**
+
+kurator polucaet napominanie, a prosrocenn yj material moz et poluchit preduprezhdenie
+
+**dlia kogo i dlia kakoj celi**
+
+dlia vladelcev znanij i zritelej
+
+**kakoj rezultat dolzen byt dostignut**
+
+st araia informacija ne prodolzaet pokaz yvatsia kak bezuslovno aktualn a ia
+
+---
+
+## 100 — predlozhenie ispravleniia
+
+**cto eto dolzno delat**
+
+uchastnik moz et predlozhit oshibku, nov yj istochnik ili obnovlenie
+
+**pocemu eto nuzno**
+
+kurator ne moz et sam zam etit vse izmeneniia
+
+**kak eto dolzno rabotat po logike**
+
+predlozhenie sozdaet cernovik izmeneniia, a ne meniaet material srazu
+
+**dlia kogo i dlia kakoj celi**
+
+dlia soobscestva i redaktorov
+
+**kakoj rezultat dolzen byt dostignut**
+
+baza ulucshaetsia sovmestno, no ne stanovitsia nekontroliruemoj wiki
+
+---
+
+## 101 — faq
+
+**cto eto dolzno delat**
+
+gruppa moz et sobrat c asto zadavaemye voprosy
+
+**pocemu eto nuzno**
+
+novicki c asto povtoriajut odni i te ze temy
+
+**kak eto dolzno rabotat po logike**
+
+faq sviazyvaetsia s forumom i pokaz yvaet, kogda otvet byl obnovlen i kem prover en
+
+**dlia kogo i dlia kakoj celi**
+
+dlia novyx uchastnikov i moderatorov
+
+**kakoj rezultat dolzen byt dostignut**
+
+novick bystro polucaet bazov yj otvet, a forum ne zasoriaetsia povtorami
+
+---
+
+## 102 — check listy
+
+**cto eto dolzno delat**
+
+gruppa moz et sozda vat spiski
+
+* podgotovka k adopcii
+* poezdka
+* priem veterinara
+* perederzka
+* poisk pitomca
+* organizacija sobytija
+* perv yj den doma
+* srocn a ia aptechka
+
+**pocemu eto nuzno**
+
+strukturirovann yj spisok poleznee dlinnogo teksta pri prakticeskoj zadace
+
+**kak eto dolzno rabotat po logike**
+
+polzovatel moz et skopirovat check list v lichn yj plan i otmecat vypolnenie, ne meniaja original
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev, volonterov i organizatorov
+
+**kakoj rezultat dolzen byt dostignut**
+
+vazn y e shagi reze propuskajutsia
+
+---
+
+## 103 — shablony
+
+**cto eto dolzno delat**
+
+soobscestvo moz et predlagat shablony
+
+* objavlenie o propazhe
+* anketa adopcii
+* otchet sittera
+* plan sobytija
+* spisok voprosov veterinaru
+* opisanie pitomca
+* volonterskaia zadaca
+* incident report
+
+**pocemu eto nuzno**
+
+polzovatel ne vsegda znaet, kak uju informaciju nuzno sobrat
+
+**kak eto dolzno rabotat po logike**
+
+shablon sozdaet cernovik i nikogda ne pridumyvaet neizvestnye fakty
+
+**dlia kogo i dlia kakoj celi**
+
+dlia novickov i organizacij
+
+**kakoj rezultat dolzen byt dostignut**
+
+dokument ili post poluchaetsia polnym i strukturirovannym
+
+---
+
+# sobytija v soobscestve
+
+## 104 — sozdanie sobytija
+
+**cto eto dolzno delat**
+
+upolnomochenn yj organizator moz et sozdat
+
+* progulku
+* trening
+* lekciju
+* vebinar
+* adopcionn yj den
+* volonterskuju akc iju
+* vystavku
+* fotosessiju
+* poiskov uju operaciju
+* blagotvoriteln oe sobytie
+
+**pocemu eto nuzno**
+
+oby cn yj post ne podderzhivaet registraciju, limit, otmenu, chat i check in
+
+**kak eto dolzno rabotat po logike**
+
+sobytie imeet otdeln yj obekt, a gruppa poluchaet ego post, kalendar i chat
+
+**dlia kogo i dlia kakoj celi**
+
+dlia klubov, priutov, specialistov i lokalnyx grupp
+
+**kakoj rezultat dolzen byt dostignut**
+
+organizacija ne ter iaetsia v kommentariiax i lichnyx soobsenijax
+
+---
+
+## 105 — prava na sozdanie sobytija
+
+**cto eto dolzno delat**
+
+gruppa dolzna nastroit, kto moz et sozda vat sobytija
+
+**pocemu eto nuzno**
+
+liuboj uchastnik ne dolzen bez proverki predstavliat neofficialn uju vstrechu kak meroprijatie kluba
+
+**kak eto dolzno rabotat po logike**
+
+varianty
+
+* tolko administratory
+* organizatory
+* vse posle odobreniia
+* proverennye specialisty
+* oby cnye uchastniki dlia neformalnyx vstrech
+
+**dlia kogo i dlia kakoj celi**
+
+dlia zascity brenda i bezopasnosti uchastnikov
+
+**kakoj rezultat dolzen byt dostignut**
+
+officialn oe sobytie gruppy otlic a etsia ot lichnogo predlozheniia uchastnika
+
+---
+
+## 106 — trebovaniia k uchastnikam
+
+**cto eto dolzno delat**
+
+organizator moz et ukazat
+
+* vid pitomca
+* razmer
+* vozrast
+* vakcinacionn yj status
+* povodok
+* povedenceskie ogranicheniia
+* dokumenty
+* opyt
+* prisutstvie vzroslogo
+* maksimaln oe kolichestvo pitomcev
+
+**pocemu eto nuzno**
+
+ne vse sobytija bezopasny ili podxodiat vsem pitomcam
+
+**kak eto dolzno rabotat po logike**
+
+trebovaniia dolzny byt konkretnymi, proporcionalnymi i ne diskriminacionnymi bez prichiny
+
+**dlia kogo i dlia kakoj celi**
+
+dlia organizatorov i uchastnikov
+
+**kakoj rezultat dolzen byt dostignut**
+
+polzovatel ponimaet sovmestimost do registracii
+
+---
+
+## 107 — registracija konkretnogo pitomca
+
+**cto eto dolzno delat**
+
+xoziajin dolzen vybrat, kakoi imenno pitomec pridot
+
+**pocemu eto nuzno**
+
+u odnogo polzovatelia moz et byt neskolko zivotnyx s raznymi potrebnostiami
+
+**kak eto dolzno rabotat po logike**
+
+organizator polucaet tolko te polia profilia, kotorye neobxodimy dlia sobytija
+
+**dlia kogo i dlia kakoj celi**
+
+dlia gruppovyx progulok, treningov i vystavok
+
+**kakoj rezultat dolzen byt dostignut**
+
+organizator znaet realnyj sostav uchastnikov bez dostup a ko vsej medkartocke
+
+---
+
+## 108 — limit mest i ochered
+
+**cto eto dolzno delat**
+
+sobytie moz et imet ogranichennoe kolichestvo liudej i pitomcev
+
+**pocemu eto nuzno**
+
+perepolnenie moz et sozdat fiziceskij i povedencesk ij risk
+
+**kak eto dolzno rabotat po logike**
+
+posle zapolneniia mesta kandidaty popadajut v ochered i avtomaticeski polucajut predlozhenie pri otmene
+
+**dlia kogo i dlia kakoj celi**
+
+dlia malyx treningov, zakrytyx progulok i pomeschenij
+
+**kakoj rezultat dolzen byt dostignut**
+
+sobytie ne prinimaet bolsh e uchastnikov, chem bezopasno
+
+---
+
+## 109 — check in
+
+**cto eto dolzno delat**
+
+organizator moz et otmetit pribytie
+
+* vrucnuju
+* po qr
+* po kodu
+* cerez knopku ja na meste
+
+**pocemu eto nuzno**
+
+nuzno ponimat realn oe kolichestvo uchastnikov i ne zdat otsutstvujusc ix
+
+**kak eto dolzno rabotat po logike**
+
+check in ne dolzen avtomaticeski publikovat tocn uju lokaciju ili prisutstvie vsemu soobscestvu
+
+**dlia kogo i dlia kakoj celi**
+
+dlia organizatorov i uchastnikov
+
+**kakoj rezultat dolzen byt dostignut**
+
+organizator vidit aktualn yj sostav, a privatnost sobytija soxr aniaetsia
+
+---
+
+## 110 — bezopasnostn yj plan sobytija
+
+**cto eto dolzno delat**
+
+organizator dolzen moz et ukazat
+
+* ekstrenn yj kontakt
+* blizkuju kliniku
+* tochku sbora
+* plan pri konflikte
+* plan pri pob e ge
+* otvetstvenn yx
+* pravila fotografii
+* plan pri ploxoj pogode
+
+**pocemu eto nuzno**
+
+realn oe sobytie moz et stolknutsia s travmoj, pob e gom, konfliktom ili rezkoj smenoj uslovij
+
+**kak eto dolzno rabotat po logike**
+
+uchastniki vidat plan do sobytija, a organizatory polucajut strukturirovannye zadaci
+
+**dlia kogo i dlia kakoj celi**
+
+dlia gruppovyx fiziceskix meroprijatij
+
+**kakoj rezultat dolzen byt dostignut**
+
+v krizisnoj situacii organizatory ne nac inajut pridumyvat plan s nulia
+
+---
+
+## 111 — incident na sobytii
+
+**cto eto dolzno delat**
+
+organizator ili uchastnik moz et sozdat strukturirovann yj otchet
+
+**pocemu eto nuzno**
+
+publicn y e obvineniia v chat e ne dajut tocnogo konteksta
+
+**kak eto dolzno rabotat po logike**
+
+otchet moz et soderzhat
+
+* vremia
+* mesto
+* uchastnikov
+* posledovatelnost
+* travmy
+* fotografii
+* svidetelej
+* priniatye mery
+* nuzhna li dalnejsaia proverka
+
+**dlia kogo i dlia kakoj celi**
+
+dlia organizatorov, moderatorov i uchastnikov
+
+**kakoj rezultat dolzen byt dostignut**
+
+incident rassmatrivaetsia po faktam, a pitomec ne polucaet bessrocn oe publicn oe klejmo
+
+---
+
+## 112 — povtoriajusc iesia sobytija
+
+**cto eto dolzno delat**
+
+gruppa moz et sozdat reguliarnoe raspisanie
+
+**pocemu eto nuzno**
+
+ezhenedelnye progulki i treningi ne nuzno sozda vat zanovo
+
+**kak eto dolzno rabotat po logike**
+
+kazdaia konkretn a ia data imeet otdeln yj status, registraciju, otmenu i incidenty
+
+**dlia kogo i dlia kakoj celi**
+
+dlia stabilnyx klubov i kursov
+
+**kakoj rezultat dolzen byt dostignut**
+
+izmenenie odn oj vstrechi ne lom a et vse budusc ee raspisanie
+
+---
+
+## 113 — virtualn oe sobytie
+
+**cto eto dolzno delat**
+
+gruppa moz et provodit vebinar, voprosy ekspertu, onlajn kurs ili gruppov uju podderzku
+
+**pocemu eto nuzno**
+
+uchastniki mogut naxoditsia v raznyx gorodax i stranax
+
+**kak eto dolzno rabotat po logike**
+
+sobytie imeet ssylku, komnatu ozhidaniia, host a, subtitry, zapis po soglasi iu i pravila voprosov
+
+**dlia kogo i dlia kakoj celi**
+
+dlia professionalnyx i mezhdunarodnyx grupp
+
+**kakoj rezultat dolzen byt dostignut**
+
+uchastniki polucajut dostup k znanijam bez fiziceskoj poezdki
+
+---
+
+## 114 — fotografirovanie na sobytii
+
+**cto eto dolzno delat**
+
+uchastniki dolzny znat, budet li fotograf i kak ispolzujutsia media
+
+**pocemu eto nuzno**
+
+na fotografijax mogut byt liudi, deti, avtomobili i profilej pitomcev
+
+**kak eto dolzno rabotat po logike**
+
+mozno vybrat
+
+* soglasie na fotografii
+* zapret lica
+* tolko zakryt yj album
+* tolko pitomec
+* ne otmecat profil
+* udal it metku
+
+**dlia kogo i dlia kakoj celi**
+
+dlia organizatorov, fotografov i uchastnikov
+
+**kakoj rezultat dolzen byt dostignut**
+
+ucastie v sobytii ne oznachaet avtomaticeskoe soglasie na globaln uju publicaciju lica
+
+---
+
+# volonterskie zadaci
+
+## 115 — doska zadac
+
+**cto eto dolzno delat**
+
+soobscestvo moz et publikovat zadaci
+
+* transport
+* perederzka
+* fotografija
+* uborka
+* dostavka
+* poisk
+* perevod
+* dizajn
+* fundraising
+* administrirovanie
+* pomosc na sobytii
+
+**pocemu eto nuzno**
+
+prosba v chat e bystro ter iaetsia i ne pokaz yvaet status
+
+**kak eto dolzno rabotat po logike**
+
+zadaca imeet
+
+* opisanie
+* organizatora
+* srok
+* mesto
+* navyki
+* kolichestvo liudej
+* status
+* risk
+* otchet
+
+**dlia kogo i dlia kakoj celi**
+
+dlia priutov, klubov i spasatelnyx grupp
+
+**kakoj rezultat dolzen byt dostignut**
+
+vazn a ia rabota poluchaet otvetstvennogo ispolnitelia i kontrol zaversheniia
+
+---
+
+## 116 — navyki volontera
+
+**cto eto dolzno delat**
+
+uchastnik moz et dobrovolno ukazat
+
+* voditelsk ie prava
+* opyt s zivotnymi
+* fotografiju
+* perevod
+* medicinsk uju kvalifikaciju
+* transport
+* dostupnost
+* fiziceskie ogranicheniia
+
+**pocemu eto nuzno**
+
+zadaca dolzna naznachatsia podxodiascemu celoveku
+
+**kak eto dolzno rabotat po logike**
+
+navyk, ukazann yj samim polzovatelem, i professionalno proverenn a ia kvalifikacija dolzny razlichatsia
+
+**dlia kogo i dlia kakoj celi**
+
+dlia koordinatorov i volonterov
+
+**kakoj rezultat dolzen byt dostignut**
+
+slozhn a ia medicinskaia zadaca ne naznachaetsia celoveku tolko po ego samootsenke
+
+---
+
+## 117 — smeny
+
+**cto eto dolzno delat**
+
+gruppa moz et organizovyvat raspisanie volonterskix smen
+
+**pocemu eto nuzno**
+
+priut ili sobytie trebu jut pokrytiia konkret nogo vremeni
+
+**kak eto dolzno rabotat po logike**
+
+smena imeet
+
+* vremia
+* mesto
+* rol
+* limit
+* instruktaz
+* check in
+* otmenu
+* zamenu
+
+**dlia kogo i dlia kakoj celi**
+
+dlia priutov i organizatorov
+
+**kakoj rezultat dolzen byt dostignut**
+
+ne pojavliajutsia period y bez volonterov ili desiat liudej na odnoj i toj ze zadace
+
+---
+
+## 118 — podtverzhdenie vypolneniia
+
+**cto eto dolzno delat**
+
+posle zadaci volonter moz et otpravit otchet
+
+**pocemu eto nuzno**
+
+status vzial ne oznachaet, cto rabota vypolnena
+
+**kak eto dolzno rabotat po logike**
+
+otchet moz et soderzhat
+
+* rezultat
+* vremia
+* fotografiju
+* raskhody
+* problem y
+* sledujusc ie shagi
+
+**dlia kogo i dlia kakoj celi**
+
+dlia koordinatorov i organizacij
+
+**kakoj rezultat dolzen byt dostignut**
+
+zadaca imeet proveriaem yj itog, a nov yj uchastnik ponimaet sledujusc ee dejstvie
+
+---
+
+## 119 — bezopasnost volontera
+
+**cto eto dolzno delat**
+
+pered riskovoj zadacej polzovatel dolzen uvidet
+
+* uroven riska
+* nuzhen li opyt
+* nuzhna li ekipirovka
+* mozno li idti odnomu
+* kto koordinator
+* ekstrenn yj kontakt
+* cto zapreshcheno
+
+**pocemu eto nuzno**
+
+zelanie pomoch ne oznachaet podgotovlennost k lovle ispugannogo zivotnogo ili rabote s agressivnoj sredoj
+
+**kak eto dolzno rabotat po logike**
+
+vysokoriskovaia zadaca trebuet proverki i ne moz et byt prosto vzjata odnoj knopkoj novym uchastnikom
+
+**dlia kogo i dlia kakoj celi**
+
+dlia volonterov i koordinatorov
+
+**kakoj rezultat dolzen byt dostignut**
+
+platforma ne podtalkivaet neopytnogo cheloveka k opasnomu dejstviiu radi gejmifikacii
+
+---
+
+# finansy, sbory i sponsory
+
+## 120 — prozracn yj sb or
+
+**cto eto dolzno delat**
+
+soobscestvo moz et provodit proveriaem yj sb or na
+
+* lechenie
+* korm
+* remont
+* transport
+* sobytie
+* oborudovanie
+* spasateln uju operaciju
+
+**pocemu eto nuzno**
+
+obschaia prosba perevedite dengi ne daet pon iatnoj celi i otchetnosti
+
+**kak eto dolzno rabotat po logike**
+
+sb or imeet
+
+* organizatora
+* poluchatelia
+* cel
+* summu
+* srok
+* dokumenty
+* progress
+* otchet
+* status
+* ostatok
+
+**dlia kogo i dlia kakoj celi**
+
+dlia priutov, klubov, volonterov i donorov
+
+**kakoj rezultat dolzen byt dostignut**
+
+uchastnik vidit, komu, zachem i skolko on peredaet
+
+---
+
+## 121 — otchet po raskhodam
+
+**cto eto dolzno delat**
+
+posle sbora organizator dolzen pokazat, kak byli ispolzovany sredstva
+
+**pocemu eto nuzno**
+
+bez otcheta doverie snizhaetsia, a moshennicestvo trudno zam etit
+
+**kak eto dolzno rabotat po logike**
+
+mozno dobavit
+
+* scheta
+* kategorii
+* summu
+* ostatok
+* vozvrat
+* perenapravlenie
+* obiasnenie
+
+lichnye dannye v dokumentax skryvajutsia
+
+**dlia kogo i dlia kakoj celi**
+
+dlia donorov i organizatorov
+
+**kakoj rezultat dolzen byt dostignut**
+
+sb or ne zavershaetsia bez pon iatnogo finansovogo itoga
+
+---
+
+## 122 — sponsor gruppy
+
+**cto eto dolzno delat**
+
+biznes moz et podderzhivat soobscestvo finansovo ili materialno
+
+**pocemu eto nuzno**
+
+sponsorstvo moz et pomoch razvitiiu, no sozdaet konflikt interesov
+
+**kak eto dolzno rabotat po logike**
+
+zametno pokaz yvajutsia
+
+* sponsor
+* period
+* tip podderzki
+* vlijaet li na kontent
+* kakie dannye poluchaet
+* reklamn y e prava
+
+**dlia kogo i dlia kakoj celi**
+
+dlia klubov, biznesov i uchastnikov
+
+**kakoj rezultat dolzen byt dostignut**
+
+uchastnik ponimaet, pocemu konkretn yj brend pokaz yvaetsia v gruppe
+
+---
+
+## 123 — zapret skrytogo sponsorstva
+
+**cto eto dolzno delat**
+
+administrator, ekspert ili moderator dolzen raskryvat poluchenn uju vygodu, esli on rekomenduet tovar ili uslugu
+
+**pocemu eto nuzno**
+
+uchastniki mogut prinimat reklamu za nezavisim oe mnenie
+
+**kak eto dolzno rabotat po logike**
+
+metka partnerstva pokaz yvaetsia riadom s materialom, a ne v skrytom nizhnem tekste
+
+**dlia kogo i dlia kakoj celi**
+
+dlia ekspertov, avt orov i biznesov
+
+**kakoj rezultat dolzen byt dostignut**
+
+rekomendacija ocenivaetsia s pon imaniem finansovogo konteksta
+
+---
+
+# moderacija
+
+## 124 — mnogoetapn a ia moderacija
+
+**cto eto dolzno delat**
+
+soobscestvo dolzno ispolzovat
+
+* avtomaticeskie signal y
+* moderatorov gruppy
+* administratorov
+* zhaloby uchastnikov
+* platformenn uju moderaciju
+* specialn uju proverku vysokogo riska
+
+**pocemu eto nuzno**
+
+odin moderator ne moz et prosmotret vse, a avtomatika ne ponimaet ves kontekst
+
+**kak eto dolzno rabotat po logike**
+
+urovni dopolniajut drug druga, a seriozn y e resheniia imejut audit i apellaciju
+
+**dlia kogo i dlia kakoj celi**
+
+dlia vsego soobscestva
+
+**kakoj rezultat dolzen byt dostignut**
+
+opasn yj kontent bystro ogranichivaetsia, a dopustim yj ne udal iaetsia bez konteksta
+
+---
+
+## 125 — prichiny zhaloby
+
+**cto eto dolzno delat**
+
+uchastnik moz et vybrat
+
+* spam
+* reklama
+* moshennicestvo
+* zhestokost
+* opasn yj medicinskij sovet
+* doxxing
+* ugroza
+* presledovanie
+* diskriminacija
+* seksualn yj kontent
+* nelegaln a ia torgovlia
+* poddeln a ia adopcija
+* lozhn yj sb or
+* avtorskie prava
+* narushenie pravil gruppy
+* drugoe
+
+**pocemu eto nuzno**
+
+strukturirovann a ia zhaloba pomogaet vybrat praviln yj prioritet i komand u
+
+**kak eto dolzno rabotat po logike**
+
+zhaloba priviazyvaetsia k konkretnomu postu, kommentariiu, fajlu, sobytiiu ili uchastniku
+
+**dlia kogo i dlia kakoj celi**
+
+dlia zhalobscikov i moderatorov
+
+**kakoj rezultat dolzen byt dostignut**
+
+moderator vidit realn uju problem u, a ne tolko mne ne nravitsia
+
+---
+
+## 126 — vrem ennoe skrytie visokoriskovogo kontenta
+
+**cto eto dolzno delat**
+
+podozriteln yj material moz et byt vrem enno nedostup en do proverki
+
+**pocemu eto nuzno**
+
+adres, fishing ssylka, ugroza ili zhestokoe video mogut prichinit vred, poka idet rassmotrenie
+
+**kak eto dolzno rabotat po logike**
+
+vrem ennoe skrytie ne ravno okonchatelnomu nakazaniiu, a avtor polucaet status i vozmoznost dat kontekst
+
+**dlia kogo i dlia kakoj celi**
+
+dlia kontenta vysokogo riska
+
+**kakoj rezultat dolzen byt dostignut**
+
+potencialn yj vred ostanavlivaetsia bez avtomaticeskogo bezvozvratnogo udaleniia
+
+---
+
+## 127 — proporcionalnye dejstviia moderatora
+
+**cto eto dolzno delat**
+
+moderator moz et
+
+* predupredit
+* perenesti temu
+* skryt odin kommentarij
+* ubrat ssylku
+* vkliucit odobrenie
+* zamorozit obsuzhdenie
+* ogranichit uchastnika
+* udal it iz gruppy
+* peredat slucaj platforme
+
+**pocemu eto nuzno**
+
+odin problemn yj fragment ne vsegda trebuet blokirovki vsego akkaunta
+
+**kak eto dolzno rabotat po logike**
+
+dejstvie dolzno sootvetstvovat risku, imet prichinu, srok i audit
+
+**dlia kogo i dlia kakoj celi**
+
+dlia moderatorov i zatronutyx polzovatelej
+
+**kakoj rezultat dolzen byt dostignut**
+
+moderacija ostanavlivaet vred, ne unictozha ja lishn ij polezn yj kontent
+
+---
+
+## 128 — konflikt interesov moderatora
+
+**cto eto dolzno delat**
+
+moderator ne dolzen edinolichno rassmatrivat zhalobu, gde on sam, ego biznes ili blizkij drug javliajutsia storonoj konflikta
+
+**pocemu eto nuzno**
+
+eto moz et privesti k predvziatomu resheniiu
+
+**kak eto dolzno rabotat po logike**
+
+slucaj peredaetsia drugomu moderatoru, vladelcu ili platformenn oj komande
+
+**dlia kogo i dlia kakoj celi**
+
+dlia spravedlivosti moderacii
+
+**kakoj rezultat dolzen byt dostignut**
+
+lichn yj konflikt ne reshaetsia administrativnym pravom odn oj storony
+
+---
+
+## 129 — skrytie lichnosti zhalobscika
+
+**cto eto dolzno delat**
+
+narushitel ne dolzen avtomaticeski videt, kto otpravil zhalobu
+
+**pocemu eto nuzno**
+
+eto moz et vyzvat mest, presledovanie ili davlenie
+
+**kak eto dolzno rabotat po logike**
+
+moderator vidit neobxodim yj minimum, a narushitel polucaet pravil o i reshenie
+
+**dlia kogo i dlia kakoj celi**
+
+dlia zascity zhalobscikov
+
+**kakoj rezultat dolzen byt dostignut**
+
+uchastniki ne boiatsia soobscat o realnom vrede
+
+---
+
+## 130 — objasnenie moderacionnogo resheniia
+
+**cto eto dolzno delat**
+
+zatronut yj polzovatel dolzen polucit
+
+* cto bylo ogranicheno
+* kakoe pravil o
+* na kakoi srok
+* cto mozno ispravit
+* kak podat apellaciju
+* kakie prava ostajutsia
+
+**pocemu eto nuzno**
+
+nepon iatnoe nakazanie ne pomogaet izmenit povedenie i povysaet konflikt
+
+**kak eto dolzno rabotat po logike**
+
+lichnye dannye zhalobscika i zascischenn y e dokazatelstva ne raskryvajutsia
+
+**dlia kogo i dlia kakoj celi**
+
+dlia avt orov, uchastnikov i moderatorov
+
+**kakoj rezultat dolzen byt dostignut**
+
+polzovatel ponimaet granicy resheniia i moz et ego osparivat
+
+---
+
+## 131 — apellacija
+
+**cto eto dolzno delat**
+
+polzovatel moz et osparivat
+
+* udaleniie kontenta
+* ogranichenie
+* blokirovku
+* otkaz vo vstup lenii pri dopustimosti
+* otzyv roli
+* udaleniie iz gruppy
+* otkaz v professionalnoj proverke
+
+**pocemu eto nuzno**
+
+moderator ili avtomatika mogut oshibitsia
+
+**kak eto dolzno rabotat po logike**
+
+apellacija soderzhit objasnenie, kontekst, dokazatelstva i po vozmoznosti proveriaetsia drugim moderatorom
+
+**dlia kogo i dlia kakoj celi**
+
+dlia spravedlivogo processa
+
+**kakoj rezultat dolzen byt dostignut**
+
+oshibocn oe reshenie moz et byt ispravleno bez poteri akkaunta i istorii
+
+---
+
+## 132 — povtorn y e narusheniia
+
+**cto eto dolzno delat**
+
+sistema dolzna ucit yvat istoriju podtverzhdennyx narushenij
+
+**pocemu eto nuzno**
+
+odinakov oe dejstvie moz et byt slucajnoj oshibkoj ili sistematiceskim povedeniem
+
+**kak eto dolzno rabotat po logike**
+
+eskalacija moz et byt
+
+* preduprezhdenie
+* vrem enn yj limit
+* odobrenie publikacij
+* tolko ctenie
+* udaleniie iz gruppy
+* platformenn a ia proverka
+
+**dlia kogo i dlia kakoj celi**
+
+dlia moderatorov i bezopasnosti
+
+**kakoj rezultat dolzen byt dostignut**
+
+sistematicesk ij spamer ne polucaet beskonechn y e odinakov y e preduprezhdeniia bez posledstvij
+
+---
+
+## 133 — koordinir ovann a ia travlia
+
+**cto eto dolzno delat**
+
+platforma dolzna zam ec at massovye kommentarii, upominaniia, zhaloby i priglasheniia protiv odnogo uchastnika
+
+**pocemu eto nuzno**
+
+gruppa liudej moz et ispolzovat moderacionnye instrumenty dlia mesti
+
+**kak eto dolzno rabotat po logike**
+
+pri podozrenii mozno
+
+* obed init zhaloby
+* ogranichit novye upominaniia
+* skryt lichnye dannye
+* zamedlit kommentarii
+* proverit koordinaciju
+* vkliucit rezhim zascity
+
+**dlia kogo i dlia kakoj celi**
+
+dlia uchastnikov, avt orov i specialistov
+
+**kakoj rezultat dolzen byt dostignut**
+
+kolichestvo zhalob ne stanovitsia avtomaticeskim dokazatelstvom viny
+
+---
+
+## 134 — rejd na soobscestvo
+
+**cto eto dolzno delat**
+
+sistema dolzna vyiavliat massovoe vnezapn oe vstup lenie i spam
+
+**pocemu eto nuzno**
+
+publicn a ia ssylka moz et popast v vrazhdebn oe soobscestvo
+
+**kak eto dolzno rabotat po logike**
+
+avtomaticeski mozno
+
+* otzyvat ssylku
+* vkliucit odobrenie
+* zakryt media novym uchastnikam
+* vkliucit medlenn yj rezhim
+* priostanovit upominaniia
+* uvedomit moderatorov
+
+**dlia kogo i dlia kakoj celi**
+
+dlia publicnyx i polupublicnyx grupp
+
+**kakoj rezultat dolzen byt dostignut**
+
+normaln oe soobscestvo ne unictozhaetsia za neskolko minut massovoj atakoj
+
+---
+
+## 135 — obxod blokirovki
+
+**cto eto dolzno delat**
+
+sistema dolzna zam ec at, kogda udalenn yj uchastnik vozvrashchaetsia cerez nov yj akkaunt, profil pitomca ili organizaciju
+
+**pocemu eto nuzno**
+
+prostoe sozdanie novogo profilia ne dolzno obnul iat reshenie bezopasnosti
+
+**kak eto dolzno rabotat po logike**
+
+uchityvajutsia
+
+* upravliajusc ie akkaunty
+* proverennye kontakty
+* ustrojstva
+* odinakov y e soobsenija
+* povedencesk ie signal y
+* zhaloby
+
+vazn y e resheniia trebujut rucnogo konteksta
+
+**dlia kogo i dlia kakoj celi**
+
+dlia zascity grupp ot sistematiceskix narushitelej
+
+**kakoj rezultat dolzen byt dostignut**
+
+odin celovek ne moz et beskonecno vozvrashchatsia posle blokirovki odnoj knopkoj registracii
+
+---
+
+# specialnye risk i
+
+## 136 — opasn y e medicinsk ie sovety
+
+**cto eto dolzno delat**
+
+gruppa dolzna obnaruzhivat i ogranichivat rekomendacii
+
+* udvoit dozu
+* otmenit lekarstvo
+* dat toksicn yj produkt
+* ne obrashchatsia v kliniku pri srocn yx simptomax
+* samostojatelno provodit opasn uju proceduru
+
+**pocemu eto nuzno**
+
+takoi sovet moz et prichinit realn yj vred
+
+**kak eto dolzno rabotat po logike**
+
+opasn yj material moz et byt skryt, poluchit preduprezhdenie ili peredan specialnoj moderacii
+
+**dlia kogo i dlia kakoj celi**
+
+dlia grupp zdorovja, pitaniia i uxoda
+
+**kakoj rezultat dolzen byt dostignut**
+
+polzovatel ne prinimaet neproverenn uju instrukciju za bezopasn oe lechenie
+
+---
+
+## 137 — zhestokoe obrashenie
+
+**cto eto dolzno delat**
+
+soobscestvo ne dolzno prodvigat
+
+* udary
+* udushenie
+* zapugivanie
+* namerenn oe prichinenie boli
+* travliu zivotnyx
+* lishenie vody ili edy
+* opasn y e eksperimenty
+* organizaciju poedinkov
+
+**pocemu eto nuzno**
+
+shokirujusc ij kontent moz et poluchat mnogo reakcii i normalizovat vred
+
+**kak eto dolzno rabotat po logike**
+
+nuzno razdeliat dokazatelstvo dlia spaseniia, obrazovateln yj razbor i glorifikaciju zhestokosti
+
+**dlia kogo i dlia kakoj celi**
+
+dlia zascity zivotnyx i auditorii
+
+**kakoj rezultat dolzen byt dostignut**
+
+dokazatelstvo soxr aniaetsia dlia proverki, no zhestokost ne stanovitsia razvlekatelnym trendom
+
+---
+
+## 138 — nelegaln a ia torgovlia
+
+**cto eto dolzno delat**
+
+gruppa ne dolzna ispolzovatsia dlia prodazi
+
+* ukradennyx pitomcev
+* oxraniaemyx vidov
+* nelegalno vvezennyx zivotnyx
+* poddelnyx dokumentov
+* zivotnyx dlia zhestokogo ispolzovaniia
+
+**pocemu eto nuzno**
+
+forum i lichnye soobsenija mogut ispolzovatsia dlia obxoda marketplace pravil
+
+**kak eto dolzno rabotat po logike**
+
+podozriteln y e posty, slova, dokumenty i massovye predlozheniia otpravliajutsia na specialn uju proverku
+
+**dlia kogo i dlia kakoj celi**
+
+dlia zascity zivotnyx, prirody i polzovatelej
+
+**kakoj rezultat dolzen byt dostignut**
+
+soobscestvo ne stanovitsia zakrytym cernym rynkom
+
+---
+
+## 139 — moshenniceskie priuty i sbory
+
+**cto eto dolzno delat**
+
+platforma dolzna zascischat ot grupp, kotorye vydajut sebia za priut ili spasatelnuju organizaciju
+
+**pocemu eto nuzno**
+
+falshiv a ia gruppa moz et sobirat dengi i lichnye dokumenty kandidatov
+
+**kak eto dolzno rabotat po logike**
+
+officialn yj status trebuet proverki, a sbory vysokogo riska poluchajut dopolniteln yj kontrol
+
+**dlia kogo i dlia kakoj celi**
+
+dlia donorov, volonterov i kandidatov na adopciju
+
+**kakoj rezultat dolzen byt dostignut**
+
+krasivoe nazvanie i fotografii ne zameniajut proverku organizacii
+
+---
+
+## 140 — doxxing i publicacija lichnyx dannyx
+
+**cto eto dolzno delat**
+
+gruppa dolzna zascischat ot publicacii
+
+* adresov
+* telefonov
+* dokumentov
+* gps
+* plateznyx dannyx
+* rabocix grafikov
+* licenzionnyx nomerov
+* lichnyx chat ov
+
+**pocemu eto nuzno**
+
+gruppovoj konflikt moz et perejti v realn oe presledovanie
+
+**kak eto dolzno rabotat po logike**
+
+vysokoriskov yj material vrem enno skryvaetsia, a moderator moz et ubrat tolko lichnye dannye, soxraniv dopustim uju chast
+
+**dlia kogo i dlia kakoj celi**
+
+dlia zascity uchastnikov i tretix lic
+
+**kakoj rezultat dolzen byt dostignut**
+
+lichn y e dannye ne ostajutsia publicnymi do zaversheniia dlinn oj proverki
+
+---
+
+## 141 — zascita nesovershennoletnix
+
+**cto eto dolzno delat**
+
+gruppy s uchastiem detej dolzny imet usilenn y e pravila
+
+**pocemu eto nuzno**
+
+vzrosl y e mogut ispolzovat temu pitomcev dlia skrytogo kontakta, lokacii i vstrech
+
+**kak eto dolzno rabotat po logike**
+
+po umolcaniju
+
+* lichnye soobsenija ogranicheny
+* spisok detej skryt
+* lokacija nedostupna
+* vstrechi idut cerez vzroslogo
+* fotografii trebujut soglasiia
+* seksualn yj kontent nemedlenno eskaliruetsia
+
+**dlia kogo i dlia kakoj celi**
+
+dlia detej, podrostkov i semej
+
+**kakoj rezultat dolzen byt dostignut**
+
+soobscestvo ne sozdaet skryt yj kanal dlia nebezopasnogo kontakta so vzroslym
+
+---
+
+## 142 — gruppy po chuvstvitelnym temam
+
+**cto eto dolzno delat**
+
+gruppa utraty, lecheniia, vygoraniia ili krizisnoj peredaci pitomca dolzna imet specialn uju privatnost
+
+**pocemu eto nuzno**
+
+uchastie samo po sebe moz et raskryvat lichn uju situaciju
+
+**kak eto dolzno rabotat po logike**
+
+mozno skryt
+
+* spisok uchastnikov
+* upominaniia
+* poisk
+* reposty
+* vneshnju indeksaciju
+* avtomaticeskie rekomendacii
+
+**dlia kogo i dlia kakoj celi**
+
+dlia grupp podderzki
+
+**kakoj rezultat dolzen byt dostignut**
+
+polzovatel poluchaet pomosc bez publicnogo raskrytiia svoej situacii
+
+---
+
+# poisk i rekomendacii grupp
+
+## 143 — globaln yj poisk soobscestv
+
+**cto eto dolzno delat**
+
+polzovatel moz et iskat po
+
+* nazvaniiu
+* teme
+* vidu
+* porode
+* gorodu
+* jazyku
+* tipu
+* organizacii
+* sobytijam
+
+**pocemu eto nuzno**
+
+bez poisk a novomu polzovateliu trudno najti polezn yj klub
+
+**kak eto dolzno rabotat po logike**
+
+rezultaty podciniajutsia privatnosti i ne raskryvajut sekretn y e gruppy
+
+**dlia kogo i dlia kakoj celi**
+
+dlia vseh polzovatelej
+
+**kakoj rezultat dolzen byt dostignut**
+
+polzovatel naxodit relevantn oe soobscestvo po pon iatnym kriteriiam
+
+---
+
+## 144 — filtry
+
+**cto eto dolzno delat**
+
+poisk moz et filtrovat
+
+* publicnye
+* zakryty e
+* localnye
+* onlajn
+* professionalnye
+* besplatnye
+* officialnye
+* s sobytijami
+* dlia novickov
+* dlia konkretnogo vida
+* po jazyku
+
+**pocemu eto nuzno**
+
+odin spisok vseh grupp budet slishkom bolshim i slucajnym
+
+**kak eto dolzno rabotat po logike**
+
+filtry pokazyvajut tolko realno dostupn y e polzovateliu kategorii
+
+**dlia kogo i dlia kakoj celi**
+
+dlia celenapravlennogo poisk a
+
+**kakoj rezultat dolzen byt dostignut**
+
+polzovatel ne tratit vremia na gruppy, v kotorye on ne moz et ili ne xocet vstupat
+
+---
+
+## 145 — rekomendacii grupp
+
+**cto eto dolzno delat**
+
+platforma moz et predlagat soobscestva po
+
+* gorodu
+* vidu pitomca
+* interesam
+* jazyku
+* obsc im druzjam
+* sobytijam
+* podpis kam
+* professionalnoj roli
+
+**pocemu eto nuzno**
+
+novyj polzovatel moz et ne znat nazvanija podxodiasc ej gruppy
+
+**kak eto dolzno rabotat po logike**
+
+kazdaia rekomendacija imeet objasnenie, pocemu ona pokaz ana
+
+**dlia kogo i dlia kakoj celi**
+
+dlia novyx i aktivnyx polzovatelej
+
+**kakoj rezultat dolzen byt dostignut**
+
+gruppa rekomenduetsia po pon iatnoj prichine, a ne po skrytoj cuvstvitelnoj informacije
+
+---
+
+## 146 — ne ispolzovat cuvstiteln y e dannye dlia rekomendacij
+
+**cto eto dolzno delat**
+
+algoritm ne dolzen bez soglasiia ispolzovat
+
+* diagnoz
+* lekarstva
+* finansovye problem y
+* lichnye chat y
+* tocn uju lokaciju
+* status krizisnoj adopcii
+* nesovershennoletie
+
+**pocemu eto nuzno**
+
+po rekomendacii gruppy mozno kosvenno raskryt chuvstviteln uju situaciju
+
+**kak eto dolzno rabotat po logike**
+
+polzovatel moz et sam dobrovolno najti ili vstupit v grup pu, no diagnoz ne dolzen avtomaticeski delat ejo rekomendovann oj
+
+**dlia kogo i dlia kakoj celi**
+
+dlia zascity privatnosti
+
+**kakoj rezultat dolzen byt dostignut**
+
+po domashnej l ent e nelzia dogadatsia o bolezni pitomca ili lichnom krizise xoziajina
+
+---
+
+## 147 — objasnenie rekomendacii
+
+**cto eto dolzno delat**
+
+riadom s gruppoj dolzno byt napisano
+
+* v vashem gorode
+* dlia vashego vida
+* govorit na vashem jazyke
+* v nej sosto iat vashi druzia
+* vy byli na ejo sobytii
+* vy interesovalis temoj
+
+**pocemu eto nuzno**
+
+neobjasnim a ia rekomendacija moz et vyzvat oshchushchenie slezhki
+
+**kak eto dolzno rabotat po logike**
+
+objasnenie ne dolzno raskryvat chuvstviteln yj signal
+
+**dlia kogo i dlia kakoj celi**
+
+dlia polzovatelej rekomendacionnoj sistemy
+
+**kakoj rezultat dolzen byt dostignut**
+
+polzovatel ponimaet logiku i moz et ejo izmenit
+
+---
+
+## 148 — skryt rekomendaciju
+
+**cto eto dolzno delat**
+
+polzovatel moz et ubrat grup pu iz predlozhenij
+
+**pocemu eto nuzno**
+
+algoritmiceskoe sovpadenie moz et byt neumesnym ili emocionalno sloznym
+
+**kak eto dolzno rabotat po logike**
+
+mozno vybrat
+
+* ne interesno
+* ne pokaz yvat etu grup pu
+* ne pokaz yvat temu
+* ne ispolzovat lokaciju
+* uze uchastvoval
+* slishkom daleko
+
+**dlia kogo i dlia kakoj celi**
+
+dlia kontrolia personalizacii
+
+**kakoj rezultat dolzen byt dostignut**
+
+nezhelateln a ia gruppa ne vozvrashchaetsia postojanno
+
+---
+
+# uvedomlenija
+
+## 149 — kategorii uvedomlenij gruppy
+
+**cto eto dolzno delat**
+
+uchastnik moz et nastroit
+
+* officialnye obnavleniia
+* nov y e temy
+* otvety
+* upominaniia
+* sobytija
+* srocn y e lokalnye signal y
+* zadaci
+* oprosy
+* moderacionnye izmeneniia
+* bazu znanij
+* chat y
+
+**pocemu eto nuzno**
+
+aktivn a ia gruppa moz et sozda vat sotni signalov
+
+**kak eto dolzno rabotat po logike**
+
+kazdaia kategoriia imeet kanal, chastotu, zvuk i prioritet
+
+**dlia kogo i dlia kakoj celi**
+
+dlia vseh uchastnikov
+
+**kakoj rezultat dolzen byt dostignut**
+
+polzovatel ne propuskaet vazn oe i ne vyxodit iz gruppy iz-za shuma
+
+---
+
+## 150 — svodka
+
+**cto eto dolzno delat**
+
+vmesto otdelnyx push polzovatel moz et polucat ezhednevnuju ili ezhenedeln uju svodku
+
+**pocemu eto nuzno**
+
+ne vse obnavleniia trebu jut nemedlennogo vnimaniia
+
+**kak eto dolzno rabotat po logike**
+
+svodka moz et vkliucat
+
+* glavn y e temy
+* officialnye posty
+* blizk ie sobytija
+* neotvechenn y e voprosy
+* vazn y e zadaci
+* nov y e materialy
+
+**dlia kogo i dlia kakoj celi**
+
+dlia uchastnikov mnogix grupp
+
+**kakoj rezultat dolzen byt dostignut**
+
+polzovatel ostajotsia v kurse bez postojannogo prosmotra l ent y
+
+---
+
+## 151 — tixie casy
+
+**cto eto dolzno delat**
+
+oby cnye gruppovye signal y ne dolzny budit polzovatelia nochju
+
+**pocemu eto nuzno**
+
+soobscestvo moz et byt mezhdunarodnym i aktivnym kruglosutocno
+
+**kak eto dolzno rabotat po logike**
+
+iskliuceniia mogut byt
+
+* aktivn yj poisk pitomca
+* neposredstvennaia opasnost
+* srocn a ia smena sobytija
+* vazn a ia volonterskaia zadaca
+* bezopasnost akkaunta
+
+**dlia kogo i dlia kakoj celi**
+
+dlia vseh polzovatelej
+
+**kakoj rezultat dolzen byt dostignut**
+
+gruppa ne narushaet son, no realno srocn yj signal dostavliaetsia
+
+---
+
+## 152 — individualn y e nast ro jki razdelov
+
+**cto eto dolzno delat**
+
+uchastnik moz et podpisatsia tolko na konkretnye razdely
+
+**pocemu eto nuzno**
+
+v bolsh oj gruppe ne vse temy interesny kazdomu
+
+**kak eto dolzno rabotat po logike**
+
+naprimer polzovatel polucaet
+
+* poterjannye pitomcy
+* sobytija
+* pticy
+
+no ne polucaet marketplace i obsch ij chat
+
+**dlia kogo i dlia kakoj celi**
+
+dlia bolsh ix mnogo tematiceskix grupp
+
+**kakoj rezultat dolzen byt dostignut**
+
+uchastnik ostajotsia v gruppe, ne ton ia v nerelevantnom kontente
+
+---
+
+# mnogoiazy cnost
+
+## 153 — poln yj perevod interfejsa gruppy
+
+**cto eto dolzno delat**
+
+pravila, roli, statusy, knopki, forum, sobytija i moderacija dolzny rabotat na vseh podderzhivaemyx jazykax
+
+**pocemu eto nuzno**
+
+osobenno vazno, ctob polzovatel ponimal pravila, zhaloby i posledstviia dejstvij
+
+**kak eto dolzno rabotat po logike**
+
+vse sistemnye teksty ispolzujut edinuju sistemu perevodov bez zhostko vstavlennogo teksta
+
+**dlia kogo i dlia kakoj celi**
+
+dlia mezhdunarodnyx grupp i platformy
+
+**kakoj rezultat dolzen byt dostignut**
+
+polzovatel moz et polnocenno upravliat ucastiem na svoem jazyke
+
+---
+
+## 154 — perevod pravil
+
+**cto eto dolzno delat**
+
+kazdaia vazn a ia versija pravil dolzna imet proverenn y e perevody
+
+**pocemu eto nuzno**
+
+avtomaticeskaia oshibka v pravile moz et izmenit ego smysl
+
+**kak eto dolzno rabotat po logike**
+
+original ozna chaetsia, perevody imejut status, a posle izmeneniia originala st ar y e versii poluchajut metku ustareli
+
+**dlia kogo i dlia kakoj celi**
+
+dlia administratorov, perevodcikov i uchastnikov
+
+**kakoj rezultat dolzen byt dostignut**
+
+uchastnik ne nakazyvaetsia po neverno perevedennomu pravil u
+
+---
+
+## 155 — avtomaticeskij perevod publikacij
+
+**cto eto dolzno delat**
+
+uchastnik moz et perevesti post, temu ili kommentarij
+
+**pocemu eto nuzno**
+
+soobscestvo moz et obed iniat liudej raznyx jazykov
+
+**kak eto dolzno rabotat po logike**
+
+original vsegda dostup en, a perevod imeet metku avtomaticeskij
+
+**dlia kogo i dlia kakoj celi**
+
+dlia mnogojazy cnyx obsuzhdenij
+
+**kakoj rezultat dolzen byt dostignut**
+
+jazykovoj barer snizhaetsia bez poteri originala
+
+---
+
+## 156 — cto nelzia perevodit nekontroliruemo
+
+**cto eto dolzno delat**
+
+ne nado avtomaticeski meniat
+
+* imena
+* username
+* dozy
+* nazvaniia lekarstv
+* adres a
+* kody
+* mikrochipy
+* pravovye formulirovki
+* nazvaniia organizacij
+* komandy pitomca
+
+**pocemu eto nuzno**
+
+oshibka moz et stat opasnoj ili slomat identifikaciju
+
+**kak eto dolzno rabotat po logike**
+
+takie fragmenty pokaz yvajutsia v originale ili proverennom perevode
+
+**dlia kogo i dlia kakoj celi**
+
+dlia professionalnyx, srocn yx i officialnyx materialov
+
+**kakoj rezultat dolzen byt dostignut**
+
+perevod ne meniaet dozu, mesto sobytija ili identifikator
+
+---
+
+## 157 — otdelnye jazykovye razdely
+
+**cto eto dolzno delat**
+
+bolsh a ia gruppa moz et imet podrazdely po jazykam
+
+**pocemu eto nuzno**
+
+odin mnogojazy cn yj potok moz et byt slishkom slozhnym dlia cteniia
+
+**kak eto dolzno rabotat po logike**
+
+vazn y e officialnye obnavleniia rasprostraniajutsia vo vse jazykovye razdely v aktualnyx perevodax
+
+**dlia kogo i dlia kakoj celi**
+
+dlia nacionalnyx i mezhdunarodnyx soobscestv
+
+**kakoj rezultat dolzen byt dostignut**
+
+uchastnik c itaet na svoem jazyke, no ne propuskaet obsch ie vazn y e izmeneniia
+
+---
+
+# dostupnost
+
+## 158 — podderzka ekrannyx diktorov
+
+**cto eto dolzno delat**
+
+profil gruppy, forum, roli, sobytija, temy i zhaloby dolzny imet praviln uju semanticeskuju strukturu
+
+**pocemu eto nuzno**
+
+odin avatar i ikonki bez podpis i ne dajut pon iatnogo interfejsa nezriachemu polzovateliu
+
+**kak eto dolzno rabotat po logike**
+
+kazdyj element imeet zagolovok, status, kontekst i pon iatn oe nazvanie dejstviia
+
+**dlia kogo i dlia kakoj celi**
+
+dlia polzovatelej s narushenijami zreniia
+
+**kakoj rezultat dolzen byt dostignut**
+
+polzovatel moz et vstupit, c itat, publikovat, moderirovat i podat zhalobu bez vizualnoj pomosci
+
+---
+
+## 159 — upravlenie klaviaturoj
+
+**cto eto dolzno delat**
+
+bez myshi dolzny rabotat
+
+* navigacija po razdelam
+* poisk
+* sozdanie temy
+* otvet
+* filtr
+* zhaloba
+* moderacija
+* upravlenie roliami
+* registracija na sobytie
+
+**pocemu eto nuzno**
+
+eto neobxodimo dlia dostupnosti i bystroj desktop raboty
+
+**kak eto dolzno rabotat po logike**
+
+fokus dolzen byt stabilnym i ne prygat pri novyx postax
+
+**dlia kogo i dlia kakoj celi**
+
+dlia polzovatelej s motor nymi ogranichenijami
+
+**kakoj rezultat dolzen byt dostignut**
+
+ves zivotn yj cikl soobscestva dostup en bez myshi
+
+---
+
+## 160 — krupn yj tekst
+
+**cto eto dolzno delat**
+
+nazvaniia grupp, roli, pravila, temy i knopki dolzny korrektno masshtabirovatsia
+
+**pocemu eto nuzno**
+
+dlinn y e perevody i nazvaniia mogut obrezat vazn uju informaciju
+
+**kak eto dolzno rabotat po logike**
+
+tekst perenositsia, blok i rasshiri a i utsia, a kriticesk ie dejstviia ostajutsia dostupnymi
+
+**dlia kogo i dlia kakoj celi**
+
+dlia slabovid iasc ix i pozhilyx polzovatelej
+
+**kakoj rezultat dolzen byt dostignut**
+
+polzovatel ne prinimaet ne tu rol ili pravil o iz-za obrezannogo teksta
+
+---
+
+## 161 — ne tolko cvet
+
+**cto eto dolzno delat**
+
+statusy dolzny imet tekst i ikonku
+
+* publicn a ia
+* zakryt a ia
+* officialn a ia
+* ozhidaet
+* probn yj uchastnik
+* moderator
+* ogranichen
+* arhivirovana
+* srocn o
+
+**pocemu eto nuzno**
+
+cvet moz et byt nevid en ili nepon iaten
+
+**kak eto dolzno rabotat po logike**
+
+odin status odinakovo oznachaetsia vo vsex razdelax
+
+**dlia kogo i dlia kakoj celi**
+
+dlia dostupnosti
+
+**kakoj rezultat dolzen byt dostignut**
+
+vazn yj status pon iaten bez razliceniia cvetov
+
+---
+
+## 162 — umenshenn oe dvizhenie
+
+**cto eto dolzno delat**
+
+polzovatel moz et otkliucit
+
+* avtomaticeskuju prokrutku
+* animacii
+* mi ganie
+* dvizhusc iesia fon y
+* avtomaticeskie video
+
+**pocemu eto nuzno**
+
+takie effekty mogut vyz yvat diskomfort i mesh at cteniiu
+
+**kak eto dolzno rabotat po logike**
+
+platforma uvazaet sistemn uju nast ro jku umenshennogo dvizheniia
+
+**dlia kogo i dlia kakoj celi**
+
+dlia polzovatelej s vestibuliarnymi i kognitivnymi ogranichenijami
+
+**kakoj rezultat dolzen byt dostignut**
+
+soobscestvo polnostiu funkcionalno bez animacij
+
+---
+
+# mobilnaja i desktop rabota
+
+## 163 — mobiln yj glavn yj ekran gruppy
+
+**cto eto dolzno delat**
+
+na telefone dolzny byt bystro dostupny
+
+* nov y e temy
+* chat
+* sobytija
+* poisk
+* razdely
+* pravila
+* sozdanie posta
+* srocn oe
+* uvedomlenija
+
+**pocemu eto nuzno**
+
+bolshinstvo polzovatelej prosmatrivaet gruppu na telefone
+
+**kak eto dolzno rabotat po logike**
+
+samye vazn y e funkcii ne dolzny byt spriatany v glubokom meniu
+
+**dlia kogo i dlia kakoj celi**
+
+dlia mobilnyx uchastnikov
+
+**kakoj rezultat dolzen byt dostignut**
+
+polzovatel bystro naxodit nuzn yj razdel odnoj rukoj
+
+---
+
+## 164 — mobiln a ia moderacija
+
+**cto eto dolzno delat**
+
+moderator moz et s telefona
+
+* rassmotret zhalobu
+* skryt kontent
+* ogranichit uchastnika
+* otvetit avt oru
+* peredat slucaj
+* zakryt kommentarii
+* vkliucit medlenn yj rezhim
+
+**pocemu eto nuzno**
+
+opasn yj kontent moz et pojavitcia vne rabochego kompiutera
+
+**kak eto dolzno rabotat po logike**
+
+kriticeskie dejstviia trebujut podtverzhdeniia i pokaz yvajut masshtab posledstvij
+
+**dlia kogo i dlia kakoj celi**
+
+dlia moderatorov
+
+**kakoj rezultat dolzen byt dostignut**
+
+seriozn yj risk mozno ostanovit bystro bez slucajnogo massovogo udaleniia
+
+---
+
+## 165 — desktop panel administratora
+
+**cto eto dolzno delat**
+
+na kompiutere administrator dolzen videt
+
+* roli
+* zayavki
+* zhaloby
+* analitiku
+* razdely
+* pravila
+* sobytija
+* fajly
+* audit
+* finansy
+* integracii
+
+**pocemu eto nuzno**
+
+bolsh oe soobscestvo trudno upravliat tolko kartockami na telefone
+
+**kak eto dolzno rabotat po logike**
+
+panel pokaz yvaet tolko razdely, na kotorye u administratora est pravo
+
+**dlia kogo i dlia kakoj celi**
+
+dlia vladelcev, administratorov i moderatorov
+
+**kakoj rezultat dolzen byt dostignut**
+
+slozhn oe upravlenie ostajotsia preglednym i ne trebuet obschego superadmin dostup a
+
+---
+
+## 166 — rabota pri slabom internet e
+
+**cto eto dolzno delat**
+
+polzovatel dolzen moc
+
+* c itat nedavnie temy
+* soxraniat cernovik
+* st avit otvet v ochered
+* otkryvat pravila
+* videt sobytie
+* otmecat zadacu
+
+**pocemu eto nuzno**
+
+mestnye i volontersk ie gruppy mogut rabotat v derevne, lesu ili priute
+
+**kak eto dolzno rabotat po logike**
+
+interfejs jasno pokaz yvaet, cto esio ne sinxronizirovano
+
+**dlia kogo i dlia kakoj celi**
+
+dlia polzovatelej slaboj seti
+
+**kakoj rezultat dolzen byt dostignut**
+
+obryv interneta ne sozdaet dublikat y tem i ne ter iaet otchet volontera
+
+---
+
+# reputacija i priznanie
+
+## 167 — reputacija ne dolzna byt odnoj absolutnoj cifroj
+
+**cto eto dolzno delat**
+
+sistema ne dolzna sozdavat publicn yj rejting xoro shij polzovatel 98 procentov
+
+**pocemu eto nuzno**
+
+odin pokazatel uproshchaet slozhn oe povedenie, moz et diskriminirovat novickov i podtalkivat k nakrutke
+
+**kak eto dolzno rabotat po logike**
+
+luchshe pokaz yvat konkretn y e dostizeniia
+
+* proverenn yj ekspert
+* polezn yj avtor
+* organizator
+* volonter
+* moderator
+* mnogoletn yj uchastnik
+
+**dlia kogo i dlia kakoj celi**
+
+dlia vseh uchastnikov
+
+**kakoj rezultat dolzen byt dostignut**
+
+doverie stroitsia na pon iatnyx faktax, a ne na odnoj neprozracnoj cifre
+
+---
+
+## 168 — znachki vnutri soobscestva
+
+**cto eto dolzno delat**
+
+gruppa moz et vydavat znachki
+
+* osnovatel
+* moderator
+* ekspert
+* perevodcik
+* organizator
+* aktivn yj volonter
+* avtor bazy znanij
+* veteran
+* nov yj uchastnik
+
+**pocemu eto nuzno**
+
+znachki pomogajut ponimat rol i vklad
+
+**kak eto dolzno rabotat po logike**
+
+kazdyj znachok imeet usloviia, avtora vydaci, srok i vozmoznost otzyva
+
+**dlia kogo i dlia kakoj celi**
+
+dlia organizacii i priznaniia vklada
+
+**kakoj rezultat dolzen byt dostignut**
+
+znachok ne vydajot uchastnika za professional a, esli on poluchil tolko volonterskoe priznanie
+
+---
+
+## 169 — priznanie poleznogo vklada
+
+**cto eto dolzno delat**
+
+gruppa moz et otm ec at
+
+* polezn y e otvety
+* obnavlenie statji
+* pomosc novickam
+* organizaciju sobytija
+* volonterskuju rabotu
+* perevod
+* ispravlenie oshibki
+
+**pocemu eto nuzno**
+
+kachestvenn yj vklad dolzen byt zamet en, daze esli on ne sobiraet mnogo lajkov
+
+**kak eto dolzno rabotat po logike**
+
+priznanie ne dolzno podtalkivat k massovoj aktivnosti radi cifr
+
+**dlia kogo i dlia kakoj celi**
+
+dlia uchastnikov i organizatorov
+
+**kakoj rezultat dolzen byt dostignut**
+
+soobscestvo voznagrazhdaet realn uju polzu, a ne tolko populiarnost
+
+---
+
+## 170 — zascita ot gejmifikacii opasnogo povedeniia
+
+**cto eto dolzno delat**
+
+nelzia davat ochki za
+
+* kolichestvo diagnozov
+* massovye otvety
+* riskov y e poiskov y e dejstviia
+* privod novyx uchastnikov liuboj cenoj
+* kolichestvo zhalob
+* shokirujusc ij kontent
+
+**pocemu eto nuzno**
+
+polzovatel moz et nacat delat opasn y e ili nizkokachestvennye dejstviia radi nagrad
+
+**kak eto dolzno rabotat po logike**
+
+nagrada dolzna ucit yvat kachestvo, proverku i bezopasnost
+
+**dlia kogo i dlia kakoj celi**
+
+dlia produktovoj komandy i soobscestva
+
+**kakoj rezultat dolzen byt dostignut**
+
+gejmifikacija podderzhivaet pomosc, a ne sozdaet nov yj risk
+
+---
+
+# zivotn yj cikl soobscestva
+
+## 171 — statusy gruppy
+
+**cto eto dolzno delat**
+
+soobscestvo moz et imet status
+
+* cernovik
+* ozhidaet proverki
+* aktivno
+* vrem enno ogranicheno
+* priostanovleno
+* tolko ctenie
+* arhivirovano
+* obed iniaetsia
+* peredaetsia
+* udal iaetsia
+* udal eno
+
+**pocemu eto nuzno**
+
+odin flazok aktivno ne opis yvaet realnye sostojaniia
+
+**kak eto dolzno rabotat po logike**
+
+kazdyj status opredeliaet dostup, poisk, publikacii, uvedomlenija i administrativnye dejstviia
+
+**dlia kogo i dlia kakoj celi**
+
+dlia vladelcev, uchastnikov i platformy
+
+**kakoj rezultat dolzen byt dostignut**
+
+polzovatel ponimaet, pocemu nelzia pisat ili vstupit i cto budet dalse
+
+---
+
+## 172 — priostanovka
+
+**cto eto dolzno delat**
+
+vladelec moz et vrem enno zakryt nov y e publikacii i vstup lenija
+
+**pocemu eto nuzno**
+
+gruppa moz et perezhivat konflikt, smenu komandy, proverku ili sezonn yj pereryv
+
+**kak eto dolzno rabotat po logike**
+
+st ar yj kontent ostajotsia dostupnym po pravilam, a prichina i plan obnovleniia pokaz yvajutsia uchastnikam
+
+**dlia kogo i dlia kakoj celi**
+
+dlia vladelcev i uchastnikov
+
+**kakoj rezultat dolzen byt dostignut**
+
+gruppa moz et bezopasno ostanovit aktivnost bez neobratimogo udaleniia
+
+---
+
+## 173 — rezhim tolko ctenie
+
+**cto eto dolzno delat**
+
+vse ili chast uchastnikov mogut vrem enno tolko prosmatrivat kontent
+
+**pocemu eto nuzno**
+
+eto polezno pri konflikte, arhivirovanii, officialn yx obnavlenijax ili zavershenii proekta
+
+**kak eto dolzno rabotat po logike**
+
+nuzno ukazat, kto i pocemu ogranichen, a officialn y e roli mogut prodolzhat publikovat
+
+**dlia kogo i dlia kakoj celi**
+
+dlia administratorov i informacionnyx grupp
+
+**kakoj rezultat dolzen byt dostignut**
+
+vazn a ia informacija dostupna, no nov yj shum ili konflikt ostanovlen
+
+---
+
+## 174 — arhivirovanie
+
+**cto eto dolzno delat**
+
+zavershenn oe soobscestvo moz et perejti v arhiv
+
+**pocemu eto nuzno**
+
+st ar y e kursy, sobytija i proekty mogut soderzhat polezn uju istoriju, no ne dolzny prinimat nov yj kontent
+
+**kak eto dolzno rabotat po logike**
+
+arhiv moz et byt publicnym, tolko dlia byvsh ix uchastnikov ili polnostiu zakrytym
+
+**dlia kogo i dlia kakoj celi**
+
+dlia vremennyx i zavershennyx grupp
+
+**kakoj rezultat dolzen byt dostignut**
+
+znanija soxr aniajutsia bez lozhnogo vpechatleniia aktivnogo soobscestva
+
+---
+
+## 175 — obedinenie dvux grupp
+
+**cto eto dolzno delat**
+
+dva poxozix soobscestva mogut obed init uchastnikov, kontent, forum, roli i sobytija
+
+**pocemu eto nuzno**
+
+dublikaty raskalyvajut znanija i lokaln uju auditoriju
+
+**kak eto dolzno rabotat po logike**
+
+pered obed ineniem nuzno pokazat
+
+* glavn uju grup pu
+* konflikty nazvanij
+* roli
+* blokirovki
+* pravil a
+* privatnost
+* finansy
+* kontent
+* spiski uchastnikov
+
+**dlia kogo i dlia kakoj celi**
+
+dlia vladelcev i moderatorov
+
+**kakoj rezultat dolzen byt dostignut**
+
+obed inenie ne vozvrashchaet zablokirovann yx uchastnikov i ne otkryvaet zakryt yj kontent
+
+---
+
+## 176 — razdelenie gruppy
+
+**cto eto dolzno delat**
+
+bolsh oe soobscestvo moz et razdelitsia na dva ili neskolko samostojatelnyx
+
+**pocemu eto nuzno**
+
+regiony, jazyki ili celi mogut stat slishkom raznymi
+
+**kak eto dolzno rabotat po logike**
+
+uchastniki vy birajut, k kakomu novomu soobscestvu prisojedinitsia, a kontent perenosiatsia po pravilam i auditorii
+
+**dlia kogo i dlia kakoj celi**
+
+dlia rastusc ix soobscestv
+
+**kakoj rezultat dolzen byt dostignut**
+
+razdelenie ne dublir uet lichnye dannye i ne zapis yvaet uchastnikov v nov uju gruppu bez soglasiia
+
+---
+
+## 177 — peredaca vladen iia
+
+**cto eto dolzno delat**
+
+vladelec moz et peredat grup pu drugomu proverennomu administratoru ili organizacii
+
+**pocemu eto nuzno**
+
+sozdatel moz et pokinut proekt, organizaciju ili platformu
+
+**kak eto dolzno rabotat po logike**
+
+peredaca trebuet
+
+* mfa
+* soglasie poluchatelia
+* proverku roli
+* period otmeny
+* uvedomlenie sovladelcev
+* audit
+* obrabotku finansov
+
+**dlia kogo i dlia kakoj celi**
+
+dlia dolgosrocn yx klubov i organizacij
+
+**kakoj rezultat dolzen byt dostignut**
+
+gruppa ne peredajotsia slucajnomu akkauntu ili moshenniku
+
+---
+
+## 178 — rezervn yj upravliajusc ij
+
+**cto eto dolzno delat**
+
+vladelec moz et zaranie naznacit doverennogo naslednika ili rezervnogo administratora
+
+**pocemu eto nuzno**
+
+akkaunt vladelca moz et byt utracen, zablokirovan ili nedostup en
+
+**kak eto dolzno rabotat po logike**
+
+rezervn yj upravliajusc ij ne polucaet poln yj kontrol srazu, a aktiviruetsia po proverennomu processu
+
+**dlia kogo i dlia kakoj celi**
+
+dlia klubov, priutov i dolgosrocn yx soobscestv
+
+**kakoj rezultat dolzen byt dostignut**
+
+gruppa ne ostajotsia bez upravleniia iz-za odnogo nedostupnogo akkaunta
+
+---
+
+## 179 — neaktivn oe soobscestvo
+
+**cto eto dolzno delat**
+
+sistema dolzna zam ec at gruppy bez administratorov, postov i aktivnyx uchastnikov
+
+**pocemu eto nuzno**
+
+zabroshenn y e gruppy zasoriajut poisk i mogut soderzhat ustarevsh uju informaciju
+
+**kak eto dolzno rabotat po logike**
+
+pered arhivirovaniem platforma uvedomliaet vladelcev i predlagaet
+
+* obnovit
+* peredat
+* arhivirovat
+* obed init
+* udal it
+
+**dlia kogo i dlia kakoj celi**
+
+dlia vladelcev i poiskovoj sistemy
+
+**kakoj rezultat dolzen byt dostignut**
+
+poisk ne zapolniaetsia mertvymi gruppami bez aktualnogo moderatora
+
+---
+
+## 180 — udaleniie soobscestva
+
+**cto eto dolzno delat**
+
+vladelec moz et zapustit poln oe udaleniie pri nalichii prav
+
+**pocemu eto nuzno**
+
+gruppa moz et byt sozdan a po oshibke, narushat pravil a ili polnostiu zavershit rabotu
+
+**kak eto dolzno rabotat po logike**
+
+pered udaleniem nuzno obrabotat
+
+* uchastnikov
+* posty
+* forum
+* bazu znanij
+* sobytija
+* fajly
+* zadaci
+* finansy
+* zhaloby
+* officialn yj status
+* integracii
+* eksport
+
+**dlia kogo i dlia kakoj celi**
+
+dlia vladelcev i platformy
+
+**kakoj rezultat dolzen byt dostignut**
+
+gruppa ne ischezaet vmeste s chuzhimi materialami, aktivnymi sborami ili dokazatelstvami
+
+---
+
+## 181 — period otmeny udaleniia
+
+**cto eto dolzno delat**
+
+udaleniie moz et imet vrem ennoe okno dlia otmeny
+
+**pocemu eto nuzno**
+
+gruppu mogut udal it po oshibke ili posle zahvata akkaunta
+
+**kak eto dolzno rabotat po logike**
+
+vo vremia perioda gruppa skryta, kriticeskie dejstviia zablokirovany, a vosstanovlenie trebuet usilenn oj proverki
+
+**dlia kogo i dlia kakoj celi**
+
+dlia zascity mnogoletnix soobscestv
+
+**kakoj rezultat dolzen byt dostignut**
+
+odin vzlomannyj akkaunt ne unictozhaet mnogoletn uju bazu znanij nemedlenno
+
+---
+
+## 182 — eksport gruppy
+
+**cto eto dolzno delat**
+
+vladelec ili organizacija moz et poluchit strukturirovann uju kopiju razreshennyx dannyx
+
+**pocemu eto nuzno**
+
+soobscestvo moz et perenosit sistemu, arhivirovat istoriju ili vypolniat pravov uju obyazannost
+
+**kak eto dolzno rabotat po logike**
+
+eksport ne dolzen avtomaticeski vkliucat lichnye soobsenija, skryty e profilej i dokumenty uchastnikov bez osnovaniia
+
+**dlia kogo i dlia kakoj celi**
+
+dlia vladelcev, organizacij i uchastnikov
+
+**kakoj rezultat dolzen byt dostignut**
+
+organizacija polucaet svoi materialy bez massovoj utecki privatnosti uchastnikov
+
+---
+
+# tehniceskaia logika
+
+## 183 — model soobscestva
+
+**cto eto dolzno delat**
+
+osnovn a ia sushnost dolzna xranit
+
+* identifikator
+* tip
+* status
+* privatnost
+* region
+* jazyki
+* vladenie
+* pravila
+* nast ro jki
+* moduli
+* audit
+* vrem enn yj cikl
+
+**pocemu eto nuzno**
+
+gruppa ne dolzna byt tolko zapisju s nazvaniem i owner id
+
+**kak eto dolzno rabotat po logike**
+
+vse ostaln y e obekty priviazyvajutsia k stabilnomu identifikatoru soobscestva
+
+**dlia kogo i dlia kakoj celi**
+
+dlia stabilnoj arhitektury
+
+**kakoj rezultat dolzen byt dostignut**
+
+pereimenovanie ili peredaca ne lomajut posty, forum, sobytija i ssylki
+
+---
+
+## 184 — model clenstva
+
+**cto eto dolzno delat**
+
+kazdoe uchastie dolzno xranit
+
+* akkaunt
+* aktivn yj profil
+* grup pu
+* rol
+* status
+* datu vstup leniia
+* istochnik
+* srok
+* soglasie s pravilami
+* nast ro jki uvedomlenij
+* audit
+
+**pocemu eto nuzno**
+
+prostaja tablica user group ne podderzhit profilej pitomcev, professionalnye roli i vrem enn yj dostup
+
+**kak eto dolzno rabotat po logike**
+
+odin akkaunt moz et imet neskolko kontekstov, no kazdyj dolzen byt pon iatnym i ne dublir ovatsia
+
+**dlia kogo i dlia kakoj celi**
+
+dlia vseh tipov uchastnikov
+
+**kakoj rezultat dolzen byt dostignut**
+
+sistema tocno znaet, kto, ot imeni kogo i v kakoi roli ucavstvuet
+
+---
+
+## 185 — model rolej i prav
+
+**cto eto dolzno delat**
+
+rol dolzna byt naborom poniatnyx prav
+
+**pocemu eto nuzno**
+
+nazvanie moderator samo po sebe ne opis yvaet, cto emu dostupno
+
+**kak eto dolzno rabotat po logike**
+
+prava mogut otnositsia k
+
+* kontentu
+* uchastnikam
+* sobytijam
+* fajlam
+* zhalobam
+* finansam
+* baze znanij
+* integracijam
+* podgruppam
+
+**dlia kogo i dlia kakoj celi**
+
+dlia administratorov i bezopasnosti
+
+**kakoj rezultat dolzen byt dostignut**
+
+kazdoe dejstvie proveriaetsia po konkretnomu pravu, a ne po nazvaniiu roli
+
+---
+
+## 186 — servernaia proverka prav
+
+**cto eto dolzno delat**
+
+kazdaia publikacija, zhaloba, rol, fajl i administrativn oe dejstvie dolzny proveriatsia na servere
+
+**pocemu eto nuzno**
+
+skryt a ia knopka ne zasciscaet ot priamogo zaprosa ili starogo interfejsa
+
+**kak eto dolzno rabotat po logike**
+
+proveriajutsia
+
+* akkaunt
+* profil
+* clenstvo
+* rol
+* status
+* srok
+* blokirovka
+* razdel
+* status gruppy
+* professionaln a ia proverka
+
+**dlia kogo i dlia kakoj celi**
+
+dlia realn oj bezopasnosti
+
+**kakoj rezultat dolzen byt dostignut**
+
+otzyv roli nemedlenno blokiruet administrativn oe dejstvie
+
+---
+
+## 187 — idempotentnost
+
+**cto eto dolzno delat**
+
+povtorn oe nazhatie ne dolzno dva raza
+
+* sozdat grup pu
+* priniat uchastnika
+* vydat rol
+* sozdat temu
+* zaregistrirovat na sobytie
+* vzjat zadacu
+* udal it uchastnika
+* peredat vladenie
+
+**pocemu eto nuzno**
+
+medlenn yj internet i povtorn y e zaprosy mogut sozda vat dublikaty
+
+**kak eto dolzno rabotat po logike**
+
+kriticeskoe dejstvie poluchaet unikaln yj identifikator
+
+**dlia kogo i dlia kakoj celi**
+
+dlia stabilnosti sistemy
+
+**kakoj rezultat dolzen byt dostignut**
+
+odno dejstvie sozdajot odin predskazuemyj rezultat
+
+---
+
+## 188 — konkurentnye dejstviia administratorov
+
+**cto eto dolzno delat**
+
+sistema dolzna korrektno obrabotat, kogda dva administratora odnovremenno
+
+* odobr iajut zayavku
+* menjajut rol
+* perenosiat temu
+* redaktirujut pravil a
+* zakryvajut sobytie
+
+**pocemu eto nuzno**
+
+bez kontrolia mogut pojavitcia protivorechiv y e statusy
+
+**kak eto dolzno rabotat po logike**
+
+okonchateln oe dejstvie prohodit proverku aktualnoj versii, a vtoroj administrator vidit konflikt
+
+**dlia kogo i dlia kakoj celi**
+
+dlia administrativnyx komand
+
+**kakoj rezultat dolzen byt dostignut**
+
+uchastnik ne stanovitsia odnovremenno odobrennym i zablokirovannym
+
+---
+
+## 189 — poiskov yj indeks i privatnost
+
+**cto eto dolzno delat**
+
+poisk dolzen indeksirovat tolko razreshennye gruppy, razdely i materialy
+
+**pocemu eto nuzno**
+
+zakryt a ia tema moz et slucajno raskrytsia fragmentom teksta
+
+**kak eto dolzno rabotat po logike**
+
+indeks obnovliaetsia pri izmenenii privatnosti, statusa, clenstva, blokirovki i udaleniia
+
+**dlia kogo i dlia kakoj celi**
+
+dlia bezopasnogo poiska
+
+**kakoj rezultat dolzen byt dostignut**
+
+poisk ne stanovitsia obxodom pravil dostup a
+
+---
+
+## 190 — invalidacija kesa
+
+**cto eto dolzno delat**
+
+posle blokirovki, zakrytiia gruppy ili izmeneniia roli nuzno obnovit
+
+* profil gruppy
+* forum
+* chat
+* fajly
+* poisk
+* rekomendacii
+* media ssylki
+* lokaln yj kesh
+* spiski uchastnikov
+
+**pocemu eto nuzno**
+
+nov y e prava bespolezny, esli st araia kopija prodolzaet pokaz yvatsia
+
+**kak eto dolzno rabotat po logike**
+
+bezopasnostn y e izmeneniia imejut vysokij prioritet
+
+**dlia kogo i dlia kakoj celi**
+
+dlia zascity grupp i uchastnikov
+
+**kakoj rezultat dolzen byt dostignut**
+
+udalenn yj uchastnik bystro ter iaet dostup vo vseh tochkax vhod a
+
+---
+
+## 191 — audit kriticeskix dejstvij
+
+**cto eto dolzno delat**
+
+nuzno xranit
+
+* sozdanie gruppy
+* peredacu vladen iia
+* izmenenie pravil
+* vydacu rolej
+* udaleniie uchastnikov
+* finansovye izmeneniia
+* eksport
+* udaleniie
+* moderacionnye dejstviia
+* dostup podderzhki
+
+**pocemu eto nuzno**
+
+bez audita trudno rassledovat vzlom, spor ili zloupotreblenie moderatora
+
+**kak eto dolzno rabotat po logike**
+
+audit zascischen ot oby cnogo redaktirovanija i dostup en tolko po osnovaniju
+
+**dlia kogo i dlia kakoj celi**
+
+dlia vladelcev, platformy i apellacij
+
+**kakoj rezultat dolzen byt dostignut**
+
+mozno vosstanovit posledovatelnost kriticeskix izmenenij
+
+---
+
+## 192 — sroki xraneniia
+
+**cto eto dolzno delat**
+
+raznye dannye gruppy dolzny xranitsia razn oe vremia
+
+**pocemu eto nuzno**
+
+forum, finansov yj otchet, vrem enn yj chat i zhaloba imejut raznye potrebnosti
+
+**kak eto dolzno rabotat po logike**
+
+srok opredeliaetsia tipom, pravilami, zakonnoj neobxodimostiu i soglasiem
+
+**dlia kogo i dlia kakoj celi**
+
+dlia privatnosti i nadezhnosti
+
+**kakoj rezultat dolzen byt dostignut**
+
+lichnye i vrem ennye dannye ne xran iatsia bessrocno bez prichiny
+
+---
+
+# analitika i kachestvo
+
+## 193 — zdorovje soobscestva
+
+**cto eto dolzno delat**
+
+platforma moz et analizirovat agregirovanno
+
+* aktivnyx uchastnikov
+* nov y e temy
+* poluchenn y e otvety
+* povtorn y e vizity
+* sobytija
+* volontersk ie zadaci
+* obnovleniia bazy znanij
+* dolgosrocn oe ucastie
+
+**pocemu eto nuzno**
+
+bolsh oe kolichestvo postov ne obyazatelno oznachaet polezn oe soobscestvo
+
+**kak eto dolzno rabotat po logike**
+
+nuzno ocenivat realn uju polzu, raznoobrazie i bezopasnost, a ne tolko obem aktivnosti
+
+**dlia kogo i dlia kakoj celi**
+
+dlia administratorov i produktovoj komandy
+
+**kakoj rezultat dolzen byt dostignut**
+
+gruppa ulucshaet pomosc i znanija, a ne tolko povysaet kolichestvo uvedomlenij
+
+---
+
+## 194 — metrik i moderacii
+
+**cto eto dolzno delat**
+
+nuzno otslezhivat
+
+* vremia rassmotreniia
+* kolichestvo zhalob
+* kategorii
+* apellacii
+* vosstanovlenn yj kontent
+* povtorn y e narusheniia
+* konflikt interesov
+* nagruzku moderatorov
+
+**pocemu eto nuzno**
+
+nalichie moderatorov ne garantir uet spravedlivost i skorost
+
+**kak eto dolzno rabotat po logike**
+
+rezultaty ne dolzny ispolzovatsia dlia publicnogo st y da konkretnyx uchastnikov
+
+**dlia kogo i dlia kakoj celi**
+
+dlia vladelcev i komandy bezopasnosti
+
+**kakoj rezultat dolzen byt dostignut**
+
+moderacija stanovitsia bystree, posledovatelnee i menee predvziatoj
+
+---
+
+## 195 — metrik i privatnosti
+
+**cto eto dolzno delat**
+
+nuzno proveriat
+
+* utecki zakrytyx tem
+* vidimost spiska uchastnikov
+* dostup posle vyxoda
+* publicn y e ssylki na fajly
+* rekomendacii chuvstvitelnyx grupp
+* indexaciju
+* lokaciju sobytij
+* fotografii detej
+
+**pocemu eto nuzno**
+
+formaln a ia zakrytost ne garantir uet fakticheskuju zascitu
+
+**kak eto dolzno rabotat po logike**
+
+analitika ispolzuetsia dlia ispravleniia arhitektury, a ne reklamnogo profilirovaniia
+
+**dlia kogo i dlia kakoj celi**
+
+dlia komandy privatnosti
+
+**kakoj rezultat dolzen byt dostignut**
+
+zakryt y e soobscestva realno ostajutsia zakrytymi
+
+---
+
+## 196 — metrik i spama i rejdov
+
+**cto eto dolzno delat**
+
+platforma dolzna otslezhivat
+
+* massov y e vstup lenija
+* odinakov y e posty
+* massovye priglasheniia
+* ssylocn yj spam
+* falshiv y e akkaunty
+* koordinir ovannye zhaloby
+* obxod blokirovok
+
+**pocemu eto nuzno**
+
+spamer y postojanno meniajut sposob y ataki
+
+**kak eto dolzno rabotat po logike**
+
+odin signal ne stanovitsia avtomaticeskim dokazatelstvom, no kombinacija moz et vkliucit zascitu
+
+**dlia kogo i dlia kakoj celi**
+
+dlia anti fraud komandy
+
+**kakoj rezultat dolzen byt dostignut**
+
+massov yj vred ostanavlivaetsia do togo, kak unichtozhit normaln oe obsuzhdenie
+
+---
+
+## 197 — ne optimizirovat tolko pod rost
+
+**cto eto dolzno delat**
+
+platforma ne dolzna schitat luchshej grup pu tolko po kolichestvu uchastnikov
+
+**pocemu eto nuzno**
+
+malen k a ia zakryt a ia gruppa podderzki moz et byt poleznee millionnogo spama
+
+**kak eto dolzno rabotat po logike**
+
+kachestvo moz et uchityvat
+
+* bezopasnost
+* poluchenn uju pomosc
+* aktualn uju bazu znanij
+* zavershenn y e zadaci
+* spravedliv uju moderaciju
+* nizkij uroven spama
+
+**dlia kogo i dlia kakoj celi**
+
+dlia produktovoj komandy i administratorov
+
+**kakoj rezultat dolzen byt dostignut**
+
+platforma podderzhivaet zdorov y e soobscestva, a ne tolko samye bolsh ie
+
+---
+
+# minimalnaja versija dlia pervogo zapuska
+
+## 198 — obyazatelnye tipy grupp
+
+**cto eto dolzno delat**
+
+pervaja versija dolzna podderzhivat
+
+* publicn uju
+* zakryt uju
+* sekretn uju
+* lokaln uju
+* tematiceskuju
+* po vidu
+* professionaln uju
+* priutskuju
+* vrem ennuju
+
+**pocemu eto nuzno**
+
+eti tipy pokryvajut osnovnye socialnye, professionalnye i privatnye scenarii
+
+**kak eto dolzno rabotat po logike**
+
+vse tipy ispolzujut edinuju model clenstva, rolej, pravil i moderacii
+
+**dlia kogo i dlia kakoj celi**
+
+dlia vseh osnovnyx kategorij polzovatelej
+
+**kakoj rezultat dolzen byt dostignut**
+
+nov yj tip gruppy ne sozdaet otdeln uju nekontroliruem uju sistemu
+
+---
+
+## 199 — obyazatelnye roli
+
+**cto eto dolzno delat**
+
+pervaja versija dolzna imet
+
+* vladelca
+* sovladelca
+* administratora
+* moderatora
+* organizatora sobytij
+* eksperta
+* uchastnika
+* probnogo uchastnika
+* gosta
+
+**pocemu eto nuzno**
+
+eto minimaln yj nabor dlia realnogo raspredeleniia otvetstvennosti
+
+**kak eto dolzno rabotat po logike**
+
+kazdaia rol imeet konkretnye prava i audit
+
+**dlia kogo i dlia kakoj celi**
+
+dlia vseh soobscestv
+
+**kakoj rezultat dolzen byt dostignut**
+
+upravlenie ne trebuet peredaci odnogo obschego akkaunta ili parolia
+
+---
+
+## 200 — obyazatelnye moduli
+
+**cto eto dolzno delat**
+
+pervaja versija dolzna vkliucat
+
+* profil gruppy
+* pravil a
+* zayavki
+* roli
+* lentu
+* forum
+* tematiceskie razdely
+* chat
+* sobytija
+* fajly
+* bazov uju bazu znanij
+* zhaloby
+* audit
+
+**pocemu eto nuzno**
+
+bez etogo gruppa budet tolko bolshim chatom
+
+**kak eto dolzno rabotat po logike**
+
+moduli mogut vkliucatsia ili skryvatsia po tipu soobscestva
+
+**dlia kogo i dlia kakoj celi**
+
+dlia vseh sozdatelej
+
+**kakoj rezultat dolzen byt dostignut**
+
+gruppa moz et rabotat kak dolgosrocn oe organizovann oe prostranstvo
+
+---
+
+## 201 — obyazatelnye funkcii bezopasnosti
+
+**cto eto dolzno delat**
+
+pervaja versija dolzna imet
+
+* blokirovku
+* odobrenie vstup leniia
+* probn yj status
+* limit ssylok
+* anti spam
+* anti rejd
+* zhaloby
+* vrem ennoe skrytie
+* moderacionn yj audit
+* apellaciju
+* zascitu nesovershennoletnix
+* zascitu lichnyx dannyx
+
+**pocemu eto nuzno**
+
+bolsh a ia gruppa bez etogo bystro stanovitsia istochnikom spama, travli i moshennicestva
+
+**kak eto dolzno rabotat po logike**
+
+zascita primeniaetsia na servere i ucit yvaet realn y e akkaunty za profiljami pitomcev
+
+**dlia kogo i dlia kakoj celi**
+
+dlia vsego soobscestva
+
+**kakoj rezultat dolzen byt dostignut**
+
+moderatory mogut bystro ostanovit vred i zascitit uchastnikov
+
+---
+
+## 202 — obyazatelnye funkcii znanij
+
+**cto eto dolzno delat**
+
+pervaja versija dolzna podderzhivat
+
+* faq
+* statji
+* check listy
+* istochniki
+* status proverki
+* datu obnovleniia
+* kuratora
+* predlozhenie ispravleniia
+
+**pocemu eto nuzno**
+
+forum bez kuracii ne stanovitsia nadeznoj bazoj znanij
+
+**kak eto dolzno rabotat po logike**
+
+materialy otdeliajutsia ot oby cnyx mnenij i imejut pon iatn yj urov en doverija
+
+**dlia kogo i dlia kakoj celi**
+
+dlia novickov, ekspertov i kuratorov
+
+**kakoj rezultat dolzen byt dostignut**
+
+polzovatel bystro naxodit aktualn uju polezn uju informaciju
+
+---
+
+## 203 — cto dobavit posle stabilizacii
+
+**cto eto dolzno delat**
+
+na sledujusc ix etapax mozno dobavit
+
+* slozhn uju ierarhiju otdelenij
+* custom roli
+* professionalnye sovety
+* rasshirenn uju wiki
+* process redakcionnogo odobreniia
+* semanticeskij poisk
+* ai svodki
+* lokaln yj ai perevod
+* upravlenie sponsorstvom
+* rasshirenn y e finansovye otchety
+* federaciju mezhdu klubami
+* officialnye registry
+* doski proektov
+* publicn y e kanaly
+* bolsh ie konferencii
+* professionaln y e sertifikacionnye kursy
+
+**pocemu eto nuzno**
+
+eti funkcii slozhny i dolzny opiratsia na stabiln y e prava, privatnost i moderaciju
+
+**kak eto dolzno rabotat po logike**
+
+ni odna novaia funkcia ne dolzna obxodit bazov uju model clenstva, audit i zhaloby
+
+**dlia kogo i dlia kakoj celi**
+
+dlia dalnejshego rosta platformy
+
+**kakoj rezultat dolzen byt dostignut**
+
+soobscestva mogut vyrasti ot malen kogo kluba do mezhdunarodnoj organizacii bez polnoj peredelki osnovy
+
+---
+
+# idealnye scenarii
+
+## 204 — idealnyj scenarij lokalnogo kluba
+
+andrej naxodit grup pu xoziaev sobak v vilniuse
+
+do vstup leniia on vidit
+
+* gorod
+* jazyki
+* pravil a
+* blizk ie sobytija
+* administratorov
+* cto spisok uchastnikov skryt
+
+andrej vstupaet profilem baksa, prinimaet pravil a i poluchaet probn yj status
+
+posle neskolkix normalnyx dejstvij emu stanov iatsia dostupny publikacii bez predvaritelnogo odobreniia
+
+---
+
+## 205 — idealnyj scenarij porodnogo kluba
+
+xoziajin metisa interesuetsia klubom labradorov
+
+gruppa razreshaet vstup lenie xoziaevam podtverzhdennyx labradorov, predpolagaemyx metisov i interesujusc ixsia porodoj
+
+v profile uchastnika chestno pokaz yvaetsia
+
+`predpolagaemoe proisxozhdenie`
+
+on moz et c itat i obsuzhdat uxod, no ne moz et uchastvovat v officialnom razdele rodoslovnyx dokumentov bez proverki
+
+---
+
+## 206 — idealnyj scenarij gruppy zdorovja
+
+andrej vstupaet v zakryt uju grup pu podderzki xoziaev pozhilyx pitomcev
+
+spisok uchastnikov ne publicn yj, reposty vykliucheny, a nov y e posty mogut publikovatsia psevdonimno
+
+riadom s medicinskimi obsuzhdenijami pokaz yvaetsia, gde lichn yj opyt, a gde otvet proverennogo veterinara
+
+opasn yj sovet izmenit dozu lekarstva otpravliaetsia na proverku
+
+---
+
+## 207 — idealnyj scenarij priuta
+
+priut sozdaet officialn oe soobscestvo s razdelami
+
+* novosti
+* adopcija
+* volonterstvo
+* srocn y e potrebnosti
+* otchety
+* sobytija
+
+publicnye podpisciki vidat novosti i adopciju
+
+volontery po odobreniiu polucajut zakryt uju podgruppu s zadacami i smenami
+
+vnutrennie dokumenty i zametki nikogda ne pokaz yvajutsia publicnoj auditorii
+
+---
+
+## 208 — idealnyj scenarij volonterskoj zadaci
+
+priutu nuzno dostavit korm
+
+koordinator sozdaet zadacu s adresom sklada, vrem ennym oknom, vesom i trebovaniem avtomobilia
+
+videt tocn yj adres mogut tolko odobrennye kandidaty
+
+andrej beret zadacu, podtverzhdaet pribytie i posle vypolneniia dobavliaet otchet
+
+zadaca poluchaet status zavershena i ne prodolzaet pokaz yvatsia kak aktivn a ia
+
+---
+
+## 209 — idealnyj scenarij gruppovoj progulki
+
+organizator sozdaet progulku na desiat pitomcev
+
+v trebovaniiax ukazano
+
+* povodok
+* spokojnyj temp
+* net tesnogo kontakta v nacale
+* prisutstvie vzroslogo
+* mesto sbora
+* klinika riadom
+* plan pri dozhde
+
+posle zapolneniia mest ostaln y e kandidaty popadajut v ochered
+
+uchastniki polucajut vrem enn yj chat, kotoryj arhiviruetsia posle sobytija
+
+---
+
+## 210 — idealnyj scenarij incidenta
+
+na progulke proishodit konflikt mezhdu dvumia pitomcami
+
+vmesto publicnoj travli organizator sozdaet incident report
+
+* vremia
+* mesto
+* situacija
+* distancija
+* byly li travmy
+* svideteli
+* kakie mery priniaty
+
+moderator vrem enno ne rekomenduet etu paru dlia povtorn oj vstrechi, no ni odin pitomec ne polucaet publicn oe klejmo agressivn yj navsegda
+
+---
+
+## 211 — idealnyj scenarij rejd a
+
+publicn a ia ssylka lokalnoj gruppy rasprostraniaetsia v spam soobscestve
+
+za desiat minut pojavljaetsia mnogo novyx akkauntov i ssylok
+
+sistema
+
+* otzyvaet ssylku
+* perevodit nov yx uchastnikov v probn yj status
+* zapreschaet media i ssylki
+* vkliucaet odobrenie
+* uv edomliaet moderatorov
+* obed iniaet zhaloby
+
+oby cnye uchastniki prodolzajut bezopasno c itat gruppu
+
+---
+
+## 212 — idealnyj scenarij professionalnogo soobscestva
+
+veterinar podajot zayavku v zakrytuju professionalnuju grup pu
+
+ego lichnost, kvalifikacija, region i srok dokumenta proveriajutsia otdelno
+
+posle podtverzhdeniia on poluchaet rol veterinara v svoej oblasti
+
+eto ne daet emu avtomaticeski prava vydavat sebia za specialista po vsem vidam zivotnyx i vsem oblastiam mediciny
+
+---
+
+## 213 — idealnyj scenarij bazy znanij
+
+v forum e mnogo raz obsuzhdaetsia podgotovka k poezdke s pitomcem
+
+kurator sobiraet material v statju
+
+* check list
+* dokumenty
+* perenoska
+* bezopasnost
+* ssylki na officialnye istochniki
+* datu obnovleniia
+* regionalnye razlicija
+
+specialist proveriaet medicinsk uju chast, a perevodciki dobavliajut jazykovye versii
+
+---
+
+## 214 — idealnyj scenarij ustarevshej statji
+
+statja o pravilax vvoza pitomcev ne obnovlialas dva goda
+
+sistema avtomaticeski pom echaet ejo kak trebuet proverki i snizhaet ejo status v baze znanij
+
+kurator obnovliaet officialnye ssylki, dobavliaet nov uju datu i opis yvaet, cto izmenilos
+
+st araia versija ostajotsia v istorii, no ne pokaz yvaetsia kak aktualn a ia
+
+---
+
+## 215 — idealnyj scenarij mnogojazy cnoj gruppy
+
+lokalnoe soobscestvo rabotaet na litovskom, russkom, polskom i anglijskom
+
+pravila imejut proverenn y e perevody
+
+posty mogut avtomaticeski perevoditsia, no imena, adres a, dozy i nazvaniia lekarstv ostajutsia zascischennymi fragmentami
+
+officialn oe obnavlenie sobytija odnovremenno obnovliaetsia vo vseh jazykovyx versijax
+
+---
+
+## 216 — idealnyj scenarij nesovershennoletnego
+
+podrostok vstupaet v lokaln yj klub cerez semejn yj akkaunt
+
+ego profil ne pokaz yvaet tocn yj vozrast i lokaciju
+
+neznakom y e vzroslye ne mogut pisat emu napriamu ili priglashat na lichn uju vstrechu
+
+registracija na progulku napravliaetsia semejnomu upravliajuscemu
+
+---
+
+## 217 — idealnyj scenarij skrytogo sponsorstva
+
+proizvoditel korma oplachivaet rabotu administratora gruppy
+
+administrator publik uet rekomendaciju etogo korma bez metki
+
+uchastnik otpravliaet zhalobu
+
+moderator proveriaet finansov uju sviaz, dobavliaet metku partnerstva i trebuet obnovit pravil a raskrytiia sponsorstva
+
+pri povtornom skrytii administrator moz et poteriat reklamn y e prava
+
+---
+
+## 218 — idealnyj scenarij moshenniceskogo sbora
+
+nov yj akkaunt sozdaet grup pu spaseniia i sobiraet dengi na zivotnoe iz cuzix fotografij
+
+sistema naxodit sovpadenie media, otsutstvie proverenn oj organizacii i odinakov y e sbory v drugix gruppax
+
+sb or vrem enno skryvaetsia, platezhi priostanavlivajutsia, a realn yj avtor fotografii poluchaet kanal dlia zhaloby
+
+---
+
+## 219 — idealnyj scenarij smeny vladelca
+
+sozdatel kluba bolshe ne moz et upravliat soobscestvom
+
+on peredajot vladenie proverennomu sovladelcu
+
+peredaca trebuet mfa, podtverzhdeniia obeix storon i uvedomleniia ostalnyx sovladelcev
+
+roli, posty, forum i ssylki ne meniajutsia
+
+st ar yj vladelec ostajotsia oby cnym uchastnikom ili polnostiu vyxodit po svoemu resheniiu
+
+---
+
+## 220 — idealnyj scenarij arhivirovaniia
+
+vrem ennaia gruppa poisk a pitomca zavershaetsia posle ego vozvrata
+
+nov y e soobsenija zakryvajutsia
+
+karta i tocn y e koordinaty udal iajutsia po pravilam
+
+polezn yj otchet o poiske anonimniziruetsia i moz et byt perenesen v bazu znanij
+
+gruppa ostajotsia v arhive tolko dlia upolnomochennyx uchastnikov
+
+---
+
+# itogovyj rezultat punkta 6
+
+posle polnoj realizacii punkta 6 socialnaja set dolzna poluchit ne prosto funkciu sozdat grup pu, a polnocenn uju platformu dlia dolgosrocnogo soobscestva
+
+v rezultate polzovatel dolzen moc
+
+* sozda vat publicnye, zakryty e, sekretn y e, localnye, professionalnye i vrem ennye gruppy
+* vstupat lichnym profilem, profilem pitomca, specialista ili organizacii
+* ponimat realnogo upravliajuscego za kazdym profilem
+* sozda vat lokalnye otdeleniia, podgruppy, razdely i tematiceskie kanaly
+* razdeliat forum, chat, lentu, bazu znanij i officialnye obnavleniia
+* ustanavlivat territoriju bez sbora domashnix adresov
+* nast r aivat jazyk, perevody i casovoj pojas
+* vybirat publicnost i vidimost spiska uchastnikov
+* prinimat uchastnikov svobodno, po zayavke, priglasheniju, ssylke ili qr
+* ispolzovat probn yj status, ochered i vrem ennye roli
+* upravliat vladelcami, administratorami, moderatorami, ekspertami, kuratorami, organizatorami i volonterami
+* vydavat tolko minimalno neobxodimye prava
+* avtomaticeski otzyvat vrem ennye prava
+* zascischat administrativnye akkaunty s pomoschiu mfa
+* xranit audit vseh vaznyx izmenenij
+* publikovat pon iatnye i versionnye pravila
+* razdel iat lichn yj opyt, professionaln yj otvet i officialn uju informaciju
+* upravliat reklamoj, sponsorstvom, sb orami i adopciej
+* sozdavat strukturirovann yj forum s kategorijami, podtemami, tegami i statusami
+* obed iniat dublikaty i razdeliat slishkom sirokie obsuzhdenija
+* sozdavat anonimnye chuvstvitelnye temy bez anonimnosti pered moderatorom
+* prevrashchat luchsh ie diskussii v bazu znanij
+* xranit istochniki, versii, status proverki i datu sledujuscego obnovleniia
+* sozda vat faq, check listy i shablony
+* organizovyvat progulki, treningi, vebinary, adopcionnye dni i volontersk ie akcii
+* registrirovat konkretnogo pitomca na sobytie
+* upravliat limitom mest, ocheredju, check in i vrem ennym chatom
+* sozdavat bezopasnostn yj plan sobytija
+* dokumentirovat incidenty bez publicn oj travli
+* publikovat volontersk ie zadaci, smeny i otchety
+* proveriat navyki i ne otpravliat neopytnyx liudej na opasn y e zadaci
+* provodit prozracnye sbory i otchety po raskhodam
+* otmechat sponsorstvo i konflikty interesov
+* rassmatrivat zhaloby po mnogoetapnoj sisteme
+* skryvat visokoriskov yj kontent do proverki
+* zascischat zhalobscikov
+* peredavat konflikt moderatora drugomu proveriajuscemu
+* blokirovat rejd y, spam, obxod blokirovki i koordinir ovann uju travliu
+* zascischat ot doxxinga, moshennicestva, zhestokosti, opasnyx sovetov i nelegalnoj torgovli
+* vkliucat usilenn uju zascitu nesovershennoletnix
+* naxodit gruppy po teme, vidu, gorodu, jazyku i tipu
+* ponimat, pocemu gruppa rekomendovana
+* skryvat nezhelatelnye rekomendacii
+* nast r aivat uvedomlenija po razdelam i polucat svodku
+* polnocenno polzovatsia gruppoj s klaviaturoj, ekrannym diktorom i krupnym tekstom
+* rabotat pri slabom internet e
+* peredavat vladenie bez poteri istorii
+* priostanavlivat, arhivirovat, obed iniat, razdeliat, eksportirovat i udal iat soobscestvo po pon iatnym pravilam
+* soxran iat privatnost uchastnikov pri liubom izmenenii zivotnogo cikla gruppy
+
+glavn oe dostizenie etogo punkta zakliucaetsia v tom, cto kazdoe soobscestvo budet ne slucajnym chatom ili l ent oj postov, a upravljaemym prostranstvom s pon iatnoj celju, roliami, bezopasnostju, znanijami, sobytijami, otvetstvennostiu i dolgosrocn oj pam iatju
+
+sledujusc ij punkt — medkartocka pitomca, vakcinacii, analiz y, diagnozy, lekarstva, allergii, operacii, kliniki, dostup specialistov, ekstrenn a ia kartocka, dokumenty i poln a ia logika medicinskoj istorii
+</community-source-revision>

@@ -61,6 +61,21 @@
         </ul>
     </section>
 
+    <section class="forum-form" aria-labelledby="group-participation-profile-heading">
+        <h2 id="group-participation-profile-heading">{{ __('forum_groups.fields.participation_profile') }}</h2>
+        <label class="forum-form__field">
+            <span>{{ __('forum_groups.fields.participation_profile') }}</span>
+            <select wire:model.live="selectedActorKey">
+                @forelse ($this->actorOptions as $actorKey => $actorLabel)
+                    <option value="{{ $actorKey }}">{{ $actorLabel }}</option>
+                @empty
+                    <option value="">{{ __('forum_groups.empty.participation_profiles') }}</option>
+                @endforelse
+            </select>
+        </label>
+        <p>{{ __('forum_groups.notices.real_account_audit') }}</p>
+    </section>
+
     @if ($this->group['invitation_id'])
         <section class="forum-form" aria-labelledby="private-group-invitation-heading">
             <h2 id="private-group-invitation-heading">{{ __('forum_groups.page.invitations_heading') }}</h2>
@@ -117,7 +132,16 @@
     @elseif ($this->group['membership_state'])
         <section aria-labelledby="your-group-membership-heading">
             <h2 id="your-group-membership-heading">{{ __('forum_groups.labels.your_membership') }}</h2>
-            <p>{{ $this->group['membership_state'] }} · {{ $this->group['membership_role'] }}</p>
+            <p>
+                {{ $this->group['membership_state'] }} · {{ $this->group['membership_role'] }} ·
+                {{ __('forum_groups.labels.participating_as', [
+                    'name' => $this->group['participating_as']['name'],
+                    'type' => $this->group['participating_as']['type_label'],
+                ]) }}
+            </p>
+            @if ($this->group['membership_rules_version'])
+                <p>{{ __('forum_groups.labels.rules_version', ['version' => $this->group['membership_rules_version']]) }}</p>
+            @endif
             @if ($this->group['membership_state_key'] === 'active' && $this->group['membership_role_key'] !== 'owner')
                 <button
                     type="button"

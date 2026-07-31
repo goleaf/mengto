@@ -38,6 +38,7 @@ return [
         'language' => 'Pagrindinė kalba',
         'location_scope' => 'Bendros vietovės raktas',
         'membership_questions' => 'Narystės klausimai, po vieną eilutėje',
+        'participation_profile' => 'Dalyvauti kaip',
         'species_focus' => 'Rūšies arba taksono kryptis',
         'answers' => 'Atsakymai dėl narystės',
         'invite_email' => 'Nario el. paštas',
@@ -149,6 +150,9 @@ return [
         'reason_code' => 'Priežasties kodas: :code',
         'actor' => 'Veiksmą atliko: :name',
         'subject' => 'Paveiktas narys: :name',
+        'actor_option' => ':name · :type',
+        'participating_as' => 'Dalyvaujama kaip :name (:type)',
+        'rules_version' => 'Priimta taisyklių versija: :version',
     ],
     'notices' => [
         'privacy' => 'Privačios ir kataloge nerodomos grupės neįtraukiamos į neįgaliotus sąrašus, skaičius, srautus ar pasiūlymus.',
@@ -158,6 +162,7 @@ return [
         'archived' => 'Grupė archyvuota ir saugoma istorijai.',
         'management_limit' => 'Valdymo rodinyje pateikiama iki 100 narysčių, 50 kvietimų ir 50 naujausių audito įvykių.',
         'lifecycle_audit' => 'Uždarymui, pakartotiniam atidarymui ir archyvavimui būtina priežastis, o veiksmai įrašomi nekintamoje audito istorijoje.',
+        'real_account_audit' => 'Kiti nariai mato pasirinktą profilį. Platforma saugiai įrašo tikrą paskyrą, atsakingą už kiekvieną narystės veiksmą.',
     ],
     'empty' => [
         'groups_title' => 'Nė viena grupė neatitinka filtrų',
@@ -166,6 +171,7 @@ return [
         'pending_invitations' => 'Laukiančių grupės kvietimų nėra.',
         'members' => 'Nėra narysčių, kurias reikėtų peržiūrėti.',
         'events' => 'Moderavimo įvykių dar neužregistruota.',
+        'participation_profiles' => 'Šiai grupei nėra tinkamo profilio.',
     ],
     'validation' => [
         'answers_required' => 'Prieš pateikdami prašymą atsakykite į visus narystės klausimus.',

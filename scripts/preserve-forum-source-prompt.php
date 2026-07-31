@@ -8,6 +8,7 @@ const PET_PROFILE_PROMPT_TIMESTAMP = 1785514046;
 const SOCIAL_RELATIONSHIPS_PROMPT_TIMESTAMP = 1785521058;
 const CONTENT_FEED_PROMPT_TIMESTAMP = 1785527132;
 const COMMUNICATION_PROMPT_TIMESTAMP = 1785532239;
+const COMMUNITY_PROMPT_TIMESTAMP = 1785538113;
 
 $root = dirname(__DIR__);
 $target = $root.'/docs/requirements/forum-source-prompt.md';
@@ -43,6 +44,7 @@ while (($line = fgets($handle)) !== false) {
         SOCIAL_RELATIONSHIPS_PROMPT_TIMESTAMP,
         CONTENT_FEED_PROMPT_TIMESTAMP,
         COMMUNICATION_PROMPT_TIMESTAMP,
+        COMMUNITY_PROMPT_TIMESTAMP,
     ], true)) {
         $prompts[$timestamp] = (string) $entry['text'];
     }
@@ -57,6 +59,7 @@ foreach ([
     SOCIAL_RELATIONSHIPS_PROMPT_TIMESTAMP,
     CONTENT_FEED_PROMPT_TIMESTAMP,
     COMMUNICATION_PROMPT_TIMESTAMP,
+    COMMUNITY_PROMPT_TIMESTAMP,
 ] as $timestamp) {
     if (! isset($prompts[$timestamp])) {
         fwrite(STDERR, "Required forum prompt entry {$timestamp} is missing.\n");
@@ -70,6 +73,7 @@ $petProfile = $prompts[PET_PROFILE_PROMPT_TIMESTAMP];
 $socialRelationships = $prompts[SOCIAL_RELATIONSHIPS_PROMPT_TIMESTAMP];
 $contentFeed = $prompts[CONTENT_FEED_PROMPT_TIMESTAMP];
 $communication = $prompts[COMMUNICATION_PROMPT_TIMESTAMP];
+$community = $prompts[COMMUNITY_PROMPT_TIMESTAMP];
 $forumPayload = $primary."\n\n".$extension;
 $forumChecksum = hash('sha256', $forumPayload);
 $petProfileChecksum = hash('sha256', $petProfile);
@@ -84,6 +88,9 @@ $latestMasterChecksum = hash('sha256', $latestMasterPayload);
 $communicationChecksum = hash('sha256', $communication);
 $completeMasterPayload = $latestMasterPayload."\n\n".$communication;
 $completeMasterChecksum = hash('sha256', $completeMasterPayload);
+$communityChecksum = hash('sha256', $community);
+$expandedMasterPayload = $completeMasterPayload."\n\n".$community;
+$expandedMasterChecksum = hash('sha256', $expandedMasterPayload);
 $document = <<<'MARKDOWN'
 # Forum Source Prompt
 
@@ -139,12 +146,19 @@ $document .= "- Communication revision raw payload SHA-256: `{$communicationChec
 $document .= "- Complete master raw payload SHA-256: `{$completeMasterChecksum}`\n";
 $document .= "- Checksum payload: prior complete master, two LF characters, exact communication revision\n\n";
 $document .= "<communication-source-revision>\n{$communication}\n</communication-source-revision>\n";
+$communicationDocument = $document;
+$document .= "\n## Source Part G: Communities And Full Lifecycle Revision\n\n";
+$document .= '- Source timestamp: `'.COMMUNITY_PROMPT_TIMESTAMP."`\n";
+$document .= "- Community revision raw payload SHA-256: `{$communityChecksum}`\n";
+$document .= "- Expanded master raw payload SHA-256: `{$expandedMasterChecksum}`\n";
+$document .= "- Checksum payload: prior complete master, two LF characters, exact community revision\n\n";
+$document .= "<community-source-revision>\n{$community}\n</community-source-revision>\n";
 
 if (is_file($target)) {
     $existing = file_get_contents($target);
 
     if ($existing === $document) {
-        fwrite(STDOUT, "Master source prompt is unchanged ({$completeMasterChecksum}).\n");
+        fwrite(STDOUT, "Master source prompt is unchanged ({$expandedMasterChecksum}).\n");
         exit(0);
     }
 
@@ -152,6 +166,7 @@ if (is_file($target)) {
         && $existing !== $petProfileDocument
         && $existing !== $socialRelationshipsDocument
         && $existing !== $contentFeedDocument
+        && $existing !== $communicationDocument
     ) {
         fwrite(STDERR, "Refusing to replace or rewrite preserved source-prompt content.\n");
         exit(1);
@@ -180,4 +195,4 @@ if (file_put_contents($target, $document, LOCK_EX) === false) {
     exit(1);
 }
 
-fwrite(STDOUT, "Preserved master source prompt ({$completeMasterChecksum}).\n");
+fwrite(STDOUT, "Preserved master source prompt ({$expandedMasterChecksum}).\n");

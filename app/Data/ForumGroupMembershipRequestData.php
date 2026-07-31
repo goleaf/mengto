@@ -12,5 +12,6 @@ final readonly class ForumGroupMembershipRequestData
     public function __construct(
         public array $answers,
         public string $idempotencyKey,
+        public ?string $socialActorKey = null,
     ) {}
 }

@@ -29,6 +29,7 @@ use App\Models\ForumGroupMembership;
 use App\Models\ForumTopic;
 use App\Models\KnowledgeArticle;
 use App\Models\User;
+use App\Services\SocialActorResolver;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Seeder;
 use Illuminate\Http\UploadedFile;
@@ -45,6 +46,7 @@ final class ForumGroupDemoSeeder extends Seeder
         PublishForumGroupAnnouncement $publishAnnouncement,
         CreateForumPoll $createPoll,
         StoreForumGroupFile $storeFile,
+        SocialActorResolver $actors,
     ): void {
         $allowedEnvironments = config('platform.demo_seed_environments');
 
@@ -55,6 +57,7 @@ final class ForumGroupDemoSeeder extends Seeder
         $owner = User::query()->where('actor_key', 'demo-administrator')->firstOrFail();
         $member = User::query()->where('actor_key', 'mia-carter')->firstOrFail();
         $invitee = User::query()->where('actor_key', 'demo-lithuanian')->firstOrFail();
+        $ownerActor = $actors->forUser($owner);
         $groups = ForumGroup::query()
             ->where('is_system_managed', true)
             ->orderBy('id')
@@ -68,12 +71,15 @@ final class ForumGroupDemoSeeder extends Seeder
             ForumGroupMembership::query()->updateOrCreate(
                 [
                     'forum_group_id' => $group->id,
-                    'user_id' => $owner->id,
+                    'social_actor_id' => $ownerActor->id,
                 ],
                 [
+                    'user_id' => $owner->id,
                     'role' => ForumGroupRole::Owner,
                     'state' => ForumGroupMembershipState::Active,
                     'notification_level' => 'all',
+                    'accepted_rules_version' => $group->rules_version,
+                    'accepted_rules_at' => now(),
                     'joined_at' => now(),
                     'ended_at' => null,
                 ],

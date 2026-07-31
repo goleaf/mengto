@@ -9,6 +9,7 @@ use App\Enums\ForumGroupRole;
 use App\Models\ForumGroup;
 use App\Models\ForumGroupMembership;
 use App\Models\User;
+use App\Services\SocialActorResolver;
 use Illuminate\Support\Str;
 
 /**
@@ -21,10 +22,17 @@ final class ForumGroupMembershipFactory extends ApplicationFactory
         return [
             'forum_group_id' => ForumGroup::factory(),
             'user_id' => User::factory(),
+            'social_actor_id' => function (array $attributes): int {
+                $user = User::query()->findOrFail((int) $attributes['user_id']);
+
+                return app(SocialActorResolver::class)->forUser($user)->id;
+            },
             'role' => ForumGroupRole::Member,
             'state' => ForumGroupMembershipState::Active,
             'notification_level' => 'important',
             'answers' => [],
+            'accepted_rules_version' => 1,
+            'accepted_rules_at' => now(),
             'joined_at' => now(),
             'lock_version' => 0,
             'last_idempotency_key' => 'factory:membership:'.Str::uuid()->toString(),

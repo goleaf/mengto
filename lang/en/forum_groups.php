@@ -38,6 +38,7 @@ return [
         'language' => 'Primary language',
         'location_scope' => 'General location key',
         'membership_questions' => 'Membership questions, one per line',
+        'participation_profile' => 'Participate as',
         'species_focus' => 'Species or taxon focus',
         'answers' => 'Membership answers',
         'invite_email' => 'Member email',
@@ -149,6 +150,9 @@ return [
         'reason_code' => 'Reason code: :code',
         'actor' => 'Actor: :name',
         'subject' => 'Affected member: :name',
+        'actor_option' => ':name · :type',
+        'participating_as' => 'Participating as :name (:type)',
+        'rules_version' => 'Accepted rules version: :version',
     ],
     'notices' => [
         'privacy' => 'Private and unlisted groups are excluded from unauthorized directories, counts, feeds, and suggestions.',
@@ -158,6 +162,7 @@ return [
         'archived' => 'This group is archived and retained for history.',
         'management_limit' => 'The management view shows at most 100 memberships, 50 invitations, and 50 recent audit events.',
         'lifecycle_audit' => 'Closing, reopening, and archiving require a reason and are recorded in the immutable audit history.',
+        'real_account_audit' => 'Other members see the selected profile. The platform securely records the real account responsible for every membership action.',
     ],
     'empty' => [
         'groups_title' => 'No groups match these filters',
@@ -166,6 +171,7 @@ return [
         'pending_invitations' => 'There are no pending group invitations.',
         'members' => 'No memberships are available for review.',
         'events' => 'No moderation events have been recorded.',
+        'participation_profiles' => 'No eligible profile is available for this group.',
     ],
     'validation' => [
         'answers_required' => 'Answer every membership question before submitting the request.',

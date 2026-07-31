@@ -10,10 +10,16 @@ use App\Enums\ForumGroupStatus;
 use App\Enums\ForumGroupVisibility;
 use App\Models\ForumGroup;
 use App\Models\ForumGroupMembership;
+use App\Models\SocialActor;
 use App\Models\User;
+use App\Services\CommunityMembershipActorEligibility;
 
 final class ForumGroupPolicy
 {
+    public function __construct(
+        private readonly CommunityMembershipActorEligibility $actorEligibility,
+    ) {}
+
     public function viewAny(User $user): bool
     {
         return $user->isActive();
@@ -76,8 +82,11 @@ final class ForumGroupPolicy
             ], true);
     }
 
-    public function requestMembership(User $user, ForumGroup $group): bool
-    {
+    public function requestMembership(
+        User $user,
+        ForumGroup $group,
+        ?SocialActor $actor = null,
+    ): bool {
         if (! $user->isActive()
             || ! $user->hasVerifiedEmail()
             || $group->status !== ForumGroupStatus::Active
@@ -87,7 +96,13 @@ final class ForumGroupPolicy
             return false;
         }
 
-        $membership = $group->membershipFor($user);
+        if ($actor instanceof SocialActor
+            && ! $this->actorEligibility->allows($user, $group, $actor)
+        ) {
+            return false;
+        }
+
+        $membership = $group->membershipForActor($user, $actor);
 
         return $membership === null
             || ! in_array($membership->state, [

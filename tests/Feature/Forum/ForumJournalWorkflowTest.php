@@ -41,6 +41,7 @@ use App\Models\ForumJournalEntryVersion;
 use App\Models\ForumJournalMedia;
 use App\Models\ForumTopic;
 use App\Models\User;
+use App\Services\SocialActorResolver;
 use Carbon\CarbonImmutable;
 use Database\Seeders\ForumCategorySeeder;
 use Database\Seeders\ForumJournalBackfillSeeder;
@@ -124,16 +125,20 @@ function forumJournalForUser(
 function journalGroupMember(ForumGroup $group, ?User $user = null): User
 {
     $user ??= User::factory()->create();
+    $actor = app(SocialActorResolver::class)->forUser($user);
 
     ForumGroupMembership::query()->updateOrCreate(
         [
             'forum_group_id' => $group->id,
-            'user_id' => $user->id,
+            'social_actor_id' => $actor->id,
         ],
         [
+            'user_id' => $user->id,
             'role' => ForumGroupRole::Member,
             'state' => ForumGroupMembershipState::Active,
             'notification_level' => 'important',
+            'accepted_rules_version' => $group->rules_version,
+            'accepted_rules_at' => now(),
             'joined_at' => now(),
             'lock_version' => 0,
         ],

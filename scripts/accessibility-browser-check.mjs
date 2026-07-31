@@ -484,6 +484,49 @@ try {
         mobile: false,
     }, sessionId);
     await login(client, sessionId, 'mia@example.test');
+    const communityAudits = {};
+    await navigate(client, sessionId, `${baseUrl}/forum/groups/apartment-pets`);
+    const communityDesktopAudit = await evaluate(client, sessionId, pageAuditExpression);
+    assertPageAudit(communityDesktopAudit, 'desktop community workspace');
+    communityAudits['desktop community workspace'] = communityDesktopAudit;
+    const communityProfileBehavior = await evaluate(client, sessionId, `(() => {
+        const profileSelect = [...document.querySelectorAll('select')]
+            .find((element) => element.getAttribute('wire:model.live') === 'selectedActorKey');
+        const pageText = document.body.innerText;
+
+        return {
+            actorOptionCount: profileSelect?.options.length ?? 0,
+            hasRulesVersion: /Accepted rules version:\\s*\\d+/i.test(pageText),
+            hasAccountabilityNotice: pageText.includes('real account'),
+            rawTranslationKeys: pageText.match(/\\bforum_groups\\.[a-z0-9_.-]+/gi) ?? [],
+        };
+    })()`);
+    assert(
+        communityProfileBehavior.actorOptionCount >= 2,
+        'The community profile selector did not expose the personal and pet profiles.',
+    );
+    assert(
+        communityProfileBehavior.hasRulesVersion,
+        'The accepted community rules version is not visible.',
+    );
+    assert(
+        communityProfileBehavior.hasAccountabilityNotice,
+        'The community real-account accountability notice is missing.',
+    );
+    assert(
+        communityProfileBehavior.rawTranslationKeys.length === 0,
+        `Raw community keys are visible: ${communityProfileBehavior.rawTranslationKeys.join(', ')}.`,
+    );
+
+    const communityDesktopScreenshot = await client.send('Page.captureScreenshot', {
+        format: 'png',
+        captureBeyondViewport: true,
+    }, sessionId);
+    await writeFile(
+        join(outputDirectory, 'community-workspace-desktop.png'),
+        Buffer.from(communityDesktopScreenshot.data, 'base64'),
+    );
+
     const petAudits = {};
 
     for (const [path, label] of [
@@ -515,6 +558,25 @@ try {
         screenWidth: 375,
         screenHeight: 812,
     }, sessionId);
+    await navigate(client, sessionId, `${baseUrl}/forum/groups/apartment-pets`);
+    const communityMobileAudit = await evaluate(client, sessionId, pageAuditExpression);
+    assertPageAudit(communityMobileAudit, 'mobile community workspace');
+    communityAudits['mobile community workspace'] = communityMobileAudit;
+    const communityMobileTargets = await evaluate(client, sessionId, surfaceTouchTargetExpression);
+    assert(
+        communityMobileTargets.length === 0,
+        `Mobile community controls below 44px: ${JSON.stringify(communityMobileTargets)}.`,
+    );
+
+    const communityMobileScreenshot = await client.send('Page.captureScreenshot', {
+        format: 'png',
+        captureBeyondViewport: true,
+    }, sessionId);
+    await writeFile(
+        join(outputDirectory, 'community-workspace-mobile.png'),
+        Buffer.from(communityMobileScreenshot.data, 'base64'),
+    );
+
     for (const [path, label] of [
         ['/pets/profile/pet-scout', 'mobile public pet profile'],
         ['/pets/manage/new', 'mobile pet creation'],
@@ -861,6 +923,31 @@ try {
         `Raw Russian social keys are visible: ${russianSocialBehavior.rawTranslationKeys.join(', ')}.`,
     );
 
+    await navigate(client, sessionId, `${baseUrl}/forum/groups/apartment-pets`);
+    const russianCommunityAudit = await evaluate(client, sessionId, pageAuditExpression);
+    assertPageAudit(russianCommunityAudit, 'Russian community workspace');
+    const russianCommunityBehavior = await evaluate(client, sessionId, `(() => ({
+        documentLanguage: document.documentElement.lang,
+        actorOptionCount: [...document.querySelectorAll('select')]
+            .find((element) => element.getAttribute('wire:model.live') === 'selectedActorKey')
+            ?.options.length ?? 0,
+        rawTranslationKeys: document.body.innerText.match(
+            /\\b(?:forum_groups)\\.[a-z0-9_.-]+/gi,
+        ) ?? [],
+    }))()`);
+    assert(
+        russianCommunityBehavior.documentLanguage === 'ru',
+        'The community workspace document language is not Russian.',
+    );
+    assert(
+        russianCommunityBehavior.actorOptionCount >= 1,
+        'The Russian community profile selector is missing.',
+    );
+    assert(
+        russianCommunityBehavior.rawTranslationKeys.length === 0,
+        `Raw Russian community keys are visible: ${russianCommunityBehavior.rawTranslationKeys.join(', ')}.`,
+    );
+
     await navigate(client, sessionId, `${baseUrl}/profile/settings`);
     await evaluate(client, sessionId, `((originalLocale) => {
         const locale = document.querySelector('#profile-settings-locale');
@@ -891,6 +978,8 @@ try {
         contentAudits,
         petAudits,
         socialAudits,
+        communityAudits,
+        communityProfileBehavior,
         skipFocus,
         profileSettingsAudit,
         originalProfileLocale,
@@ -906,6 +995,8 @@ try {
         russianContentBehavior,
         russianSocialAudit,
         russianSocialBehavior,
+        russianCommunityAudit,
+        russianCommunityBehavior,
         consoleErrors,
         screenshots: [
             join(outputDirectory, 'forum-desktop.png'),
@@ -916,6 +1007,8 @@ try {
             join(outputDirectory, 'pet-profile-manage-mobile.png'),
             join(outputDirectory, 'social-relationships-desktop.png'),
             join(outputDirectory, 'social-relationships-mobile.png'),
+            join(outputDirectory, 'community-workspace-desktop.png'),
+            join(outputDirectory, 'community-workspace-mobile.png'),
             join(outputDirectory, 'knowledge-translation-mobile.png'),
         ],
     };

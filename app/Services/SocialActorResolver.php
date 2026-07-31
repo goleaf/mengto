@@ -14,6 +14,7 @@ use App\Models\PetProfileManager;
 use App\Models\SocialActor;
 use App\Models\SocialActorSetting;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Str;
 
@@ -60,26 +61,23 @@ final class SocialActorResolver
     /** @return Collection<int, SocialActor> */
     public function controlledBy(User $user): Collection
     {
-        $actorIds = [$this->forUser($user)->id];
+        $personalActor = $this->forUser($user);
 
         $pets = PetProfile::query()
             ->select(['id', 'user_id', 'profile_key', 'name', 'status'])
-            ->with(['managers' => fn ($query) => PetProfileManager::constrainActiveAt(
-                $query->getQuery()
-                    ->select([
-                        'id',
-                        'pet_profile_id',
-                        'user_id',
-                        'role',
-                        'status',
-                        'permission_overrides',
-                        'starts_at',
-                        'ends_at',
-                        'revoked_at',
-                    ])
-                    ->where('user_id', $user->id),
-                now(),
-            )])
+            ->with(['managers' => fn ($query) => $query
+                ->select([
+                    'id',
+                    'pet_profile_id',
+                    'user_id',
+                    'role',
+                    'status',
+                    'permission_overrides',
+                    'starts_at',
+                    'ends_at',
+                    'revoked_at',
+                ])
+                ->where('user_id', $user->id)])
             ->where(function ($query) use ($user): void {
                 $query
                     ->where('user_id', $user->id)
@@ -92,45 +90,119 @@ final class SocialActorResolver
             ->limit(100)
             ->get();
 
-        foreach ($pets as $pet) {
-            if ($this->petAccess->allows($pet, $user, PetProfilePermission::ManageSocial)) {
-                $actorIds[] = $this->forPet($pet)->id;
-            }
-        }
+        $petIds = $pets
+            ->filter(fn (PetProfile $pet): bool => $this->petAccess
+                ->allows($pet, $user, PetProfilePermission::ManageSocial))
+            ->modelKeys();
 
-        ExpertProfile::query()
+        $expertIds = ExpertProfile::query()
             ->select(['id', 'owner_id'])
             ->where('owner_id', $user->id)
             ->orderBy('id')
             ->limit(50)
-            ->get()
-            ->each(function (ExpertProfile $profile) use (&$actorIds): void {
-                $actorIds[] = $this->forExpert($profile)->id;
-            });
+            ->pluck('id')
+            ->map(static fn (mixed $id): int => (int) $id)
+            ->all();
 
-        ForumGroup::query()
+        $groupIds = ForumGroup::query()
             ->select(['id', 'owner_user_id'])
             ->where('owner_user_id', $user->id)
             ->orderBy('id')
             ->limit(50)
-            ->get()
-            ->each(function (ForumGroup $group) use (&$actorIds): void {
-                $actorIds[] = $this->forGroup($group)->id;
-            });
+            ->pluck('id')
+            ->map(static fn (mixed $id): int => (int) $id)
+            ->all();
 
-        return SocialActor::query()
+        $this->ensureActors(SocialActorType::Pet, 'pet_profile_id', $petIds);
+        $this->ensureActors(SocialActorType::Expert, 'expert_profile_id', $expertIds);
+        $this->ensureActors(SocialActorType::Group, 'forum_group_id', $groupIds);
+
+        $actors = SocialActor::query()
             ->directoryFields()
-            ->with([
-                'user:id,name,actor_key',
-                'petProfile:id,name,profile_key,user_id',
-                'expertProfile:id,public_name,owner_id,owner_key,slug',
-                'forumGroup:id,name,name_translation_key,owner_user_id,stable_key',
-                'settings',
-            ])
-            ->whereIn('id', array_values(array_unique($actorIds)))
+            ->where(function (Builder $query) use (
+                $expertIds,
+                $groupIds,
+                $personalActor,
+                $petIds,
+            ): void {
+                $query
+                    ->whereKey($personalActor->id)
+                    ->when(
+                        $petIds !== [],
+                        fn (Builder $actorQuery): Builder => $actorQuery
+                            ->orWhereIn('pet_profile_id', $petIds),
+                    )
+                    ->when(
+                        $expertIds !== [],
+                        fn (Builder $actorQuery): Builder => $actorQuery
+                            ->orWhereIn('expert_profile_id', $expertIds),
+                    )
+                    ->when(
+                        $groupIds !== [],
+                        fn (Builder $actorQuery): Builder => $actorQuery
+                            ->orWhereIn('forum_group_id', $groupIds),
+                    );
+            })
             ->orderBy('actor_type')
             ->orderBy('id')
             ->get();
+
+        $now = now();
+        SocialActorSetting::query()->insertOrIgnore(
+            $actors->map(static fn (SocialActor $actor): array => [
+                'social_actor_id' => $actor->id,
+                'created_at' => $now,
+                'updated_at' => $now,
+            ])->all(),
+        );
+
+        $actors->load([
+            'user:id,name,actor_key',
+            'petProfile:id,name,profile_key,user_id',
+            'expertProfile:id,public_name,owner_id,owner_key,slug',
+            'forumGroup:id,name,name_translation_key,owner_user_id,stable_key',
+            'settings',
+        ]);
+
+        return $actors;
+    }
+
+    /** @param list<int> $foreignIds */
+    private function ensureActors(
+        SocialActorType $type,
+        string $foreignKey,
+        array $foreignIds,
+    ): void {
+        if ($foreignIds === []) {
+            return;
+        }
+
+        $existingIds = SocialActor::query()
+            ->select(['id', $foreignKey])
+            ->whereIn($foreignKey, $foreignIds)
+            ->pluck($foreignKey)
+            ->map(static fn (mixed $id): int => (int) $id)
+            ->all();
+        $missingIds = array_values(array_diff($foreignIds, $existingIds));
+
+        if ($missingIds === []) {
+            return;
+        }
+
+        $now = now();
+        SocialActor::query()->insertOrIgnore(array_map(
+            static fn (int $foreignId): array => [
+                'actor_key' => (string) Str::uuid(),
+                'actor_type' => $type->value,
+                'status' => SocialActorStatus::Active->value,
+                $foreignKey => $foreignId,
+                'is_discoverable' => true,
+                'lock_version' => 1,
+                'created_at' => $now,
+                'updated_at' => $now,
+            ],
+            $missingIds,
+        ));
     }
 
     private function resolve(

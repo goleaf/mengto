@@ -35,6 +35,7 @@ use Illuminate\Support\Carbon;
  * @property-read PetProfile|null $petProfile
  * @property-read SocialActorSetting|null $settings
  * @property-read Collection<int, ContentPublication> $contentPublications
+ * @property-read Collection<int, ForumGroupMembership> $forumGroupMemberships
  * @property-read User|null $user
  */
 final class SocialActor extends Model
@@ -117,6 +118,12 @@ final class SocialActor extends Model
     public function contentPublications(): HasMany
     {
         return $this->hasMany(ContentPublication::class, 'publishing_actor_id');
+    }
+
+    /** @return HasMany<ForumGroupMembership, $this> */
+    public function forumGroupMemberships(): HasMany
+    {
+        return $this->hasMany(ForumGroupMembership::class);
     }
 
     /** @return HasMany<SocialRelationshipRequest, $this> */

@@ -11,6 +11,7 @@ use App\Enums\ForumGroupVisibility;
 use App\Models\ForumGroup;
 use App\Models\ForumGroupMembership;
 use App\Models\User;
+use App\Services\SocialActorResolver;
 use Illuminate\Support\Str;
 
 /**
@@ -30,11 +31,13 @@ final class ForumGroupFactory extends ApplicationFactory
             'name' => fake()->unique()->words(3, true),
             'description' => fake()->paragraph(),
             'rules' => [fake()->sentence(), fake()->sentence()],
+            'rules_version' => 1,
             'visibility' => ForumGroupVisibility::Public,
             'status' => ForumGroupStatus::Active,
             'default_locale' => 'en',
             'location_scope' => 'lt-vilnius',
             'membership_questions' => ['What would you like to contribute?'],
+            'allowed_actor_types' => ['user', 'pet', 'expert'],
             'active_member_count' => 1,
             'lock_version' => 0,
         ];
@@ -43,15 +46,20 @@ final class ForumGroupFactory extends ApplicationFactory
     public function configure(): static
     {
         return $this->afterCreating(function (ForumGroup $group): void {
+            $owner = User::query()->findOrFail($group->owner_user_id);
+            $ownerActor = app(SocialActorResolver::class)->forUser($owner);
             ForumGroupMembership::query()->firstOrCreate(
                 [
                     'forum_group_id' => $group->id,
-                    'user_id' => $group->owner_user_id,
+                    'social_actor_id' => $ownerActor->id,
                 ],
                 [
+                    'user_id' => $group->owner_user_id,
                     'role' => ForumGroupRole::Owner,
                     'state' => ForumGroupMembershipState::Active,
                     'notification_level' => 'all',
+                    'accepted_rules_version' => $group->rules_version,
+                    'accepted_rules_at' => now(),
                     'joined_at' => now(),
                     'lock_version' => 0,
                 ],

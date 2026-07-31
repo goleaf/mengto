@@ -108,7 +108,7 @@ test('group core schema uses constrained indexed relations', function () {
         ->and(Schema::hasIndex('forum_groups', 'forum_groups_discovery_idx'))->toBeTrue()
         ->and(Schema::hasIndex(
             'forum_group_memberships',
-            'forum_group_memberships_group_user_unique',
+            'forum_group_memberships_group_actor_unique',
         ))->toBeTrue()
         ->and(Schema::hasIndex(
             'forum_group_invitations',

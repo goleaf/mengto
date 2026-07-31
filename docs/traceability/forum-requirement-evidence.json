@@ -1,6 +1,6 @@
 {
     "schema_version": 1,
-    "source_payload_sha256": "e2bbf22bf9b8dd42f7b7e1d1ee691391879cb80e39146abfd47f46932425d049",
+    "source_payload_sha256": "408fa2f6cd8d5189f05ebe3762df42a332221f8ee6a83ed366dbc4ec54d2ec8e",
     "updates": [
         {
             "requirement_ids": [
@@ -2353,6 +2353,96 @@
                     "Event-participant and temporary-link audiences deliberately fail closed until credential verifiers are implemented",
                     "Media upload, derivative processing, malware scanning, metadata stripping, and signed private delivery remain open for phase 39",
                     "Specialized type behavior, lifecycle transitions beyond initial draft and published creation, translation versions, moderation, editor workflows, interactions, distribution, discovery, and analytics remain open in phases 37-44"
+                ],
+                "final_result": "verified"
+            }
+        },
+        {
+            "requirement_ids": [
+                "community.foundation.0065",
+                "community.foundation.0066",
+                "community.foundation.0067",
+                "community.foundation.0068",
+                "community.foundation.0072",
+                "community.foundation.0074",
+                "community.foundation.0081",
+                "community.foundation.0085",
+                "community.foundation.0089",
+                "community.membership.0003",
+                "community.membership.0005",
+                "community.membership.0007",
+                "community.membership.0011",
+                "community.governance.0175",
+                "community.governance.0179",
+                "community.lifecycle-data.0203",
+                "community.lifecycle-data.0204",
+                "community.lifecycle-data.0205",
+                "community.lifecycle-data.0206",
+                "community.lifecycle-data.0207",
+                "community.lifecycle-data.0208",
+                "community.lifecycle-data.0211",
+                "community.lifecycle-data.0212",
+                "community.lifecycle-data.0213",
+                "community.lifecycle-data.0215",
+                "community.lifecycle-data.0217",
+                "community.lifecycle-data.0221",
+                "community.lifecycle-data.0249",
+                "community.lifecycle-data.0250",
+                "community.lifecycle-data.0251",
+                "community.lifecycle-data.0253",
+                "community.lifecycle-data.0257",
+                "community.lifecycle-data.0267",
+                "community.lifecycle-data.0277",
+                "community.lifecycle-data.0281"
+            ],
+            "fields": {
+                "current_implementation_status": "verified",
+                "discovered_existing_files": [
+                    "app/Models/ForumGroup.php",
+                    "app/Models/ForumGroupMembership.php",
+                    "app/Models/SocialActor.php",
+                    "app/Services/SocialActorResolver.php",
+                    "app/Policies/ForumGroupPolicy.php",
+                    "app/Livewire/Forum/GroupWorkspace.php"
+                ],
+                "planned_files": [
+                    "database/migrations/2026_08_01_000200_add_profile_context_to_forum_group_memberships.php",
+                    "app/Services/CommunityMembershipActorEligibility.php",
+                    "app/Actions/RequestForumGroupMembership.php",
+                    "app/Actions/RespondToForumGroupInvitation.php",
+                    "resources/views/livewire/forum/group-workspace.blade.php",
+                    "lang/en/forum_groups.php",
+                    "lang/lt/forum_groups.php",
+                    "lang/ru/forum_groups.php"
+                ],
+                "test_identifiers": [
+                    "tests/Feature/Forum/CommunityProfileMembershipTest.php",
+                    "tests/Feature/ArchitectureComplianceTest.php",
+                    "scripts/accessibility-browser-check.mjs"
+                ],
+                "documentation_identifiers": [
+                    "docs/audits/community-existing-system-audit.md",
+                    "docs/decisions/community-architecture-decisions.md",
+                    "docs/plans/community-master-plan.md",
+                    "docs/plans/community-current-progress.md"
+                ],
+                "implementation_status": "implemented",
+                "verification_status": "verified",
+                "evidence": [
+                    "The additive migration keeps the accountable user and adds a required SocialActor participation profile, accepted rules version and timestamp, an actor-type allowlist, profile-scoped uniqueness, and query-supporting indexes while preserving legacy rows",
+                    "CommunityMembershipActorEligibility and ForumGroupPolicy reload and authorize the selected actor on the server, reject foreign, inactive, group, and community-disallowed actors, and keep the real user accountable for personal, pet, and expert participation",
+                    "RequestForumGroupMembership and RespondToForumGroupInvitation persist the account, selected actor, role, status, join timing, notification setting, accepted rules metadata, idempotency key, and append-only audit metadata in transactions",
+                    "A single account can hold distinct personal and pet memberships in the same community; the downgrade refuses to erase this multiplicity when the old account-only uniqueness cannot represent it",
+                    "SocialActorResolver bulk-provisions missing pet actors and settings and returns a bounded eager-loaded profile set; the 25-pet regression stays within twenty queries instead of adding per-pet actor and settings queries",
+                    "The Livewire workspace exposes only the selected actor UUID as public state, resolves authority again for each action, clearly shows the selected profile, accepted rules version, and real-account accountability notice, and provides EN, LT, and RU platform text",
+                    "CommunityProfileMembershipTest passed 8 tests and 38 assertions; the related social and content set passed 52 tests and 736 assertions; the final clean serial repository suite passed 2,015 tests and 72,245 assertions",
+                    "Larastan and Pint passed, isolated SQLite migrate:fresh --seed and default migrate and seed passed, Composer and npm audits reported no vulnerabilities, Vite built successfully, and Laravel configuration, event, route, view, and icon caches compiled",
+                    "Chrome verified the community workspace at 1440px and 375px and in Russian with one H1 and main, zero overflow, unnamed controls, duplicate IDs, invalid images, raw translation keys, undersized touch targets, or console errors; the English profile selector exposed three eligible profiles"
+                ],
+                "unresolved_risks": [
+                    "Organization and shelter participation profiles remain excluded until accountable delegation, revocation, and audit semantics are designed",
+                    "This slice records the accepted rules snapshot but does not yet implement immutable rule-version documents, renewed consent workflows, or verified translations",
+                    "Community hierarchy, custom and temporary roles, knowledge curation, volunteering, finance, lifecycle orchestration, anti-raid controls, discovery, and the remaining phase 55-63 scenarios are still open"
                 ],
                 "final_result": "verified"
             }

@@ -35,7 +35,7 @@ final class PetProfileAccess
         }
 
         return $profile->user_id === $user->id
-            && ! $profile->managers()->where('user_id', $user->id)->exists()
+            && ! $this->hasManagerRecord($profile, $user)
             && in_array($permission, PetManagerRole::PrimaryOwner->defaultPermissions(), true);
     }
 
@@ -49,6 +49,18 @@ final class PetProfileAccess
         return $profile->managers()
             ->where('user_id', $user->id)
             ->first();
+    }
+
+    private function hasManagerRecord(PetProfile $profile, User $user): bool
+    {
+        if ($profile->relationLoaded('managers')) {
+            return $profile->managers
+                ->contains(fn (PetProfileManager $manager): bool => $manager->user_id === $user->id);
+        }
+
+        return $profile->managers()
+            ->where('user_id', $user->id)
+            ->exists();
     }
 
     public function isCriticalStateLocked(PetProfile $profile): bool

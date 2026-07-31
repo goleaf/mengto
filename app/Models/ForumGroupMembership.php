@@ -14,6 +14,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * @property list<string>|array<string, string> $answers
+ * @property CarbonImmutable|null $accepted_rules_at
+ * @property int|null $accepted_rules_version
  * @property CarbonImmutable|null $ended_at
  * @property int $forum_group_id
  * @property int $id
@@ -27,9 +29,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int|null $reviewed_by_user_id
  * @property string|null $review_reason
  * @property ForumGroupRole $role
+ * @property int $social_actor_id
  * @property ForumGroupMembershipState $state
  * @property int $user_id
  * @property-read ForumGroup $group
+ * @property-read SocialActor $socialActor
  * @property-read User $user
  */
 final class ForumGroupMembership extends Model
@@ -40,10 +44,13 @@ final class ForumGroupMembership extends Model
     protected $fillable = [
         'forum_group_id',
         'user_id',
+        'social_actor_id',
         'role',
         'state',
         'notification_level',
         'answers',
+        'accepted_rules_version',
+        'accepted_rules_at',
         'reviewed_by_user_id',
         'review_reason',
         'restriction_reason',
@@ -67,6 +74,8 @@ final class ForumGroupMembership extends Model
             'role' => ForumGroupRole::class,
             'state' => ForumGroupMembershipState::class,
             'answers' => 'array',
+            'accepted_rules_version' => 'integer',
+            'accepted_rules_at' => 'immutable_datetime',
             'requested_at' => 'immutable_datetime',
             'reviewed_at' => 'immutable_datetime',
             'joined_at' => 'immutable_datetime',
@@ -90,6 +99,12 @@ final class ForumGroupMembership extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    /** @return BelongsTo<SocialActor, $this> */
+    public function socialActor(): BelongsTo
+    {
+        return $this->belongsTo(SocialActor::class);
     }
 
     /** @return BelongsTo<User, $this> */

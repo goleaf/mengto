@@ -3,8 +3,8 @@
 This catalogue is generated from the immutable source prompt. It normalizes
 the implementation contract without replacing or shortening source text.
 
-- Source payload SHA-256: `e2bbf22bf9b8dd42f7b7e1d1ee691391879cb80e39146abfd47f46932425d049`
-- Atomic requirements: `22517`
+- Source payload SHA-256: `408fa2f6cd8d5189f05ebe3762df42a332221f8ee6a83ed366dbc4ec54d2ec8e`
+- Atomic requirements: `26093`
 - Complete machine-readable catalogue: `docs/requirements/forum-requirements.json`
 - Complete traceability index: `docs/traceability/forum-requirements-matrix.md`
 
@@ -31,6 +31,22 @@ the implementation contract without replacing or shortening source text.
 | communication-scenario | 173 |
 | communication-sharing | 277 |
 | communication-workflow | 241 |
+| community-creation-privacy | 229 |
+| community-discovery-localization | 250 |
+| community-forum | 172 |
+| community-foundation | 138 |
+| community-governance | 183 |
+| community-interface-reputation | 227 |
+| community-knowledge | 164 |
+| community-lifecycle-data | 361 |
+| community-membership | 214 |
+| community-operations | 357 |
+| community-quality-release | 225 |
+| community-roles | 274 |
+| community-safety-moderation | 321 |
+| community-scenario | 126 |
+| community-structure | 106 |
+| community-types | 229 |
 | content-ai | 129 |
 | content-authoring | 280 |
 | content-comment | 188 |
