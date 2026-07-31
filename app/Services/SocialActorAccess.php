@@ -31,6 +31,29 @@ final class SocialActorAccess
         };
     }
 
+    public function canPublishAs(SocialActor $actor, User $user): bool
+    {
+        return $this->publishingRole($actor, $user) !== null;
+    }
+
+    public function publishingRole(SocialActor $actor, User $user): ?string
+    {
+        if ($actor->status !== SocialActorStatus::Active) {
+            return null;
+        }
+
+        return match ($actor->actor_type) {
+            SocialActorType::User => $actor->user_id === $user->id ? 'self' : null,
+            SocialActorType::Pet => $this->petPublishingRole($actor, $user),
+            SocialActorType::Expert => $this->expert($actor)?->owner_id === $user->id
+                ? 'expert-owner'
+                : null,
+            SocialActorType::Group => $this->group($actor)?->owner_user_id === $user->id
+                ? 'group-owner'
+                : null,
+        };
+    }
+
     public function canView(SocialActor $actor, ?User $user): bool
     {
         if ($user !== null && $this->canRepresent($actor, $user)) {
@@ -56,6 +79,20 @@ final class SocialActorAccess
 
         return $profile instanceof PetProfile
             && $this->petAccess->allows($profile, $user, PetProfilePermission::ManageSocial);
+    }
+
+    private function petPublishingRole(SocialActor $actor, User $user): ?string
+    {
+        $profile = $this->pet($actor);
+
+        if (! $profile instanceof PetProfile
+            || ! $this->petAccess->allows($profile, $user, PetProfilePermission::Publish)
+        ) {
+            return null;
+        }
+
+        return $this->petAccess->membership($profile, $user)?->role->value
+            ?? 'primary-owner';
     }
 
     private function canRepresentExpert(SocialActor $actor, User $user): bool

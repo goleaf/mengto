@@ -167,16 +167,23 @@ const navigate = async (client, sessionId, url) => {
 
 const waitUntil = async (callback, message, timeout = 15_000) => {
     const deadline = Date.now() + timeout;
+    let lastError;
 
     while (Date.now() < deadline) {
-        if (await callback()) {
-            return;
+        try {
+            if (await callback()) {
+                return;
+            }
+        } catch (error) {
+            lastError = error;
         }
 
         await delay(100);
     }
 
-    throw new Error(message);
+    const detail = lastError instanceof Error ? ` Last error: ${lastError.message}` : '';
+
+    throw new Error(`${message}${detail}`);
 };
 
 const login = async (client, sessionId, email) => {
@@ -294,6 +301,8 @@ const browser = spawn(chrome, [
 browser.stderr.on('data', (chunk) => chromeOutput.push(chunk.toString()));
 
 let client;
+let sessionId;
+let originalProfileLocale;
 
 try {
     const activePort = await waitForFile(join(profileDirectory, 'DevToolsActivePort'));
@@ -301,10 +310,10 @@ try {
     client = await CdpClient.connect(`ws://127.0.0.1:${port}${browserPath}`);
 
     const { targetId } = await client.send('Target.createTarget', { url: 'about:blank' });
-    const { sessionId } = await client.send('Target.attachToTarget', {
+    ({ sessionId } = await client.send('Target.attachToTarget', {
         targetId,
         flatten: true,
-    });
+    }));
     const consoleErrors = [];
 
     client.on('Runtime.exceptionThrown', ({ exceptionDetails }) => {
@@ -411,6 +420,62 @@ try {
     await navigate(client, sessionId, `${baseUrl}/forum`);
     const zoomAudit = await evaluate(client, sessionId, pageAuditExpression);
     assertPageAudit(zoomAudit, '320px reflow');
+
+    const contentAudits = {};
+    await client.send('Emulation.setDeviceMetricsOverride', {
+        width: 1440,
+        height: 900,
+        deviceScaleFactor: 1,
+        mobile: false,
+    }, sessionId);
+    await navigate(client, sessionId, `${baseUrl}/content`);
+    const contentDesktopAudit = await evaluate(client, sessionId, pageAuditExpression);
+    assertPageAudit(contentDesktopAudit, 'desktop content feed');
+    contentAudits['desktop content feed'] = contentDesktopAudit;
+
+    const contentDesktopScreenshot = await client.send('Page.captureScreenshot', {
+        format: 'png',
+        captureBeyondViewport: true,
+    }, sessionId);
+    await writeFile(
+        join(outputDirectory, 'content-feed-desktop.png'),
+        Buffer.from(contentDesktopScreenshot.data, 'base64'),
+    );
+
+    await client.send('Emulation.setDeviceMetricsOverride', {
+        width: 375,
+        height: 812,
+        deviceScaleFactor: 1,
+        mobile: true,
+        screenWidth: 375,
+        screenHeight: 812,
+    }, sessionId);
+    await navigate(client, sessionId, `${baseUrl}/content`);
+    const contentMobileAudit = await evaluate(client, sessionId, pageAuditExpression);
+    assertPageAudit(contentMobileAudit, 'mobile content feed');
+    contentAudits['mobile content feed'] = contentMobileAudit;
+
+    const contentMobileScreenshot = await client.send('Page.captureScreenshot', {
+        format: 'png',
+        captureBeyondViewport: true,
+    }, sessionId);
+    await writeFile(
+        join(outputDirectory, 'content-feed-mobile.png'),
+        Buffer.from(contentMobileScreenshot.data, 'base64'),
+    );
+
+    await client.send('Emulation.setDeviceMetricsOverride', {
+        width: 320,
+        height: 900,
+        deviceScaleFactor: 1,
+        mobile: true,
+        screenWidth: 320,
+        screenHeight: 900,
+    }, sessionId);
+    await navigate(client, sessionId, `${baseUrl}/content`);
+    const contentZoomAudit = await evaluate(client, sessionId, pageAuditExpression);
+    assertPageAudit(contentZoomAudit, '320px content feed reflow');
+    contentAudits['320px content feed reflow'] = contentZoomAudit;
 
     await client.send('Emulation.setDeviceMetricsOverride', {
         width: 1440,
@@ -568,7 +633,7 @@ try {
     await navigate(client, sessionId, `${baseUrl}/profile/settings`);
     const profileSettingsAudit = await evaluate(client, sessionId, pageAuditExpression);
     assertPageAudit(profileSettingsAudit, 'profile settings');
-    const originalProfileLocale = await evaluate(
+    originalProfileLocale = await evaluate(
         client,
         sessionId,
         `document.querySelector('#profile-settings-locale')?.value`,
@@ -760,6 +825,24 @@ try {
         `Raw Russian translation keys are visible: ${russianBehavior.rawTranslationKeys.join(', ')}.`,
     );
 
+    await navigate(client, sessionId, `${baseUrl}/content`);
+    const russianContentAudit = await evaluate(client, sessionId, pageAuditExpression);
+    assertPageAudit(russianContentAudit, 'Russian content feed');
+    const russianContentBehavior = await evaluate(client, sessionId, `(() => ({
+        documentLanguage: document.documentElement.lang,
+        rawTranslationKeys: document.body.innerText.match(
+            /\b(?:content)\.[a-z0-9_.-]+/gi,
+        ) ?? [],
+    }))()`);
+    assert(
+        russianContentBehavior.documentLanguage === 'ru',
+        'The content feed document language is not Russian.',
+    );
+    assert(
+        russianContentBehavior.rawTranslationKeys.length === 0,
+        `Raw Russian content keys are visible: ${russianContentBehavior.rawTranslationKeys.join(', ')}.`,
+    );
+
     await navigate(client, sessionId, `${baseUrl}/circle/social`);
     const russianSocialAudit = await evaluate(client, sessionId, pageAuditExpression);
     assertPageAudit(russianSocialAudit, 'Russian social relationships');
@@ -805,6 +888,7 @@ try {
         desktopAudit,
         mobileAudit,
         zoomAudit,
+        contentAudits,
         petAudits,
         socialAudits,
         skipFocus,
@@ -818,12 +902,16 @@ try {
         adminTables: tableAudit,
         russianForumAudit,
         russianBehavior,
+        russianContentAudit,
+        russianContentBehavior,
         russianSocialAudit,
         russianSocialBehavior,
         consoleErrors,
         screenshots: [
             join(outputDirectory, 'forum-desktop.png'),
             join(outputDirectory, 'forum-mobile.png'),
+            join(outputDirectory, 'content-feed-desktop.png'),
+            join(outputDirectory, 'content-feed-mobile.png'),
             join(outputDirectory, 'pet-profile-manage-desktop.png'),
             join(outputDirectory, 'pet-profile-manage-mobile.png'),
             join(outputDirectory, 'social-relationships-desktop.png'),
@@ -838,6 +926,39 @@ try {
     );
     console.log(JSON.stringify(report, null, 2));
 } finally {
+    if (client && sessionId && originalProfileLocale) {
+        try {
+            await navigate(client, sessionId, `${baseUrl}/profile/settings`);
+            const currentLocale = await evaluate(
+                client,
+                sessionId,
+                `document.querySelector('#profile-settings-locale')?.value`,
+            );
+
+            if (currentLocale !== originalProfileLocale) {
+                await evaluate(client, sessionId, `((localeValue) => {
+                    const locale = document.querySelector('#profile-settings-locale');
+                    locale.value = localeValue;
+                    locale.dispatchEvent(new Event('input', { bubbles: true }));
+                    locale.dispatchEvent(new Event('change', { bubbles: true }));
+                    locale.blur();
+                    document.querySelector('form button[type="submit"]').click();
+                    return true;
+                })(${JSON.stringify(originalProfileLocale)})`);
+                await waitUntil(
+                    async () => await evaluate(
+                        client,
+                        sessionId,
+                        `document.documentElement.lang === ${JSON.stringify(originalProfileLocale)}`,
+                    ),
+                    'The browser cleanup did not restore the original profile locale.',
+                );
+            }
+        } catch {
+            // Preserve the original audit result when best-effort cleanup cannot reconnect.
+        }
+    }
+
     client?.close();
     browser.kill('SIGTERM');
     await rm(profileDirectory, { recursive: true, force: true });

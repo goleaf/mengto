@@ -31,6 +31,8 @@ use App\Http\Controllers\CommentStoreController;
 use App\Http\Controllers\ComposerController;
 use App\Http\Controllers\ConnectionCenterPreviewController;
 use App\Http\Controllers\ConsultationController;
+use App\Http\Controllers\ContentFeedController;
+use App\Http\Controllers\ContentPublicationController;
 use App\Http\Controllers\ConversationDetailPreviewController;
 use App\Http\Controllers\CorrectionStoreController;
 use App\Http\Controllers\CreatedContentPreviewController;
@@ -160,6 +162,14 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('web')
     ->group(function (): void {
         Route::get('/', PreviewController::class)->name('home');
+
+        Route::prefix('content')
+            ->name('content.')
+            ->group(function (): void {
+                Route::get('/', ContentFeedController::class)->name('index');
+                Route::get('/{contentPublication:publication_key}', ContentPublicationController::class)
+                    ->name('show');
+            });
 
         Route::middleware('guest')
             ->group(function (): void {

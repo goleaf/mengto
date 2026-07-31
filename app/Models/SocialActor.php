@@ -8,6 +8,7 @@ use App\Enums\SocialActorStatus;
 use App\Enums\SocialActorType;
 use Database\Factories\SocialActorFactory;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -33,6 +34,7 @@ use Illuminate\Support\Carbon;
  * @property-read ForumGroup|null $forumGroup
  * @property-read PetProfile|null $petProfile
  * @property-read SocialActorSetting|null $settings
+ * @property-read Collection<int, ContentPublication> $contentPublications
  * @property-read User|null $user
  */
 final class SocialActor extends Model
@@ -109,6 +111,12 @@ final class SocialActor extends Model
     public function incomingRelationships(): HasMany
     {
         return $this->hasMany(SocialRelationship::class, 'target_actor_id');
+    }
+
+    /** @return HasMany<ContentPublication, $this> */
+    public function contentPublications(): HasMany
+    {
+        return $this->hasMany(ContentPublication::class, 'publishing_actor_id');
     }
 
     /** @return HasMany<SocialRelationshipRequest, $this> */

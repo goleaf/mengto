@@ -3,8 +3,8 @@
 This catalogue is generated from the immutable source prompt. It normalizes
 the implementation contract without replacing or shortening source text.
 
-- Source payload SHA-256: `af59796f91aaccd42cb5af1322082db79b25fb4248eb235cbeb049a645f5348f`
-- Atomic requirements: `18640`
+- Source payload SHA-256: `e2bbf22bf9b8dd42f7b7e1d1ee691391879cb80e39146abfd47f46932425d049`
+- Atomic requirements: `22517`
 - Complete machine-readable catalogue: `docs/requirements/forum-requirements.json`
 - Complete traceability index: `docs/traceability/forum-requirements-matrix.md`
 
@@ -15,6 +15,22 @@ the implementation contract without replacing or shortening source text.
 | Domain | Atomic requirements |
 | --- | ---: |
 | animal-taxonomy | 896 |
+| communication-call | 292 |
+| communication-contact | 218 |
+| communication-control | 255 |
+| communication-data | 118 |
+| communication-dialog | 164 |
+| communication-encryption | 196 |
+| communication-foundation | 203 |
+| communication-group | 416 |
+| communication-interface-data | 286 |
+| communication-media | 251 |
+| communication-message | 262 |
+| communication-quality-release | 238 |
+| communication-safety-ai | 287 |
+| communication-scenario | 173 |
+| communication-sharing | 277 |
+| communication-workflow | 241 |
 | content-ai | 129 |
 | content-authoring | 280 |
 | content-comment | 188 |
