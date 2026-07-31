@@ -153,7 +153,7 @@ as complete.
   relation, performs no scheduled write-on-read transition, and exposes a
   policy-scoped class-based Livewire panel. Focused tests passed 13 tests and
   133 assertions; after integration with the current `origin/main`, the full
-  serial suite passed 1,653 tests and 57,928 assertions in 99.119 seconds on
+  serial suite passed 1,656 tests and 57,951 assertions in 94.750 seconds on
   Livewire 4.3.4. Fresh and repeated seeding, full Larastan, Pint, Vite,
   dependency audits, and real mobile/desktop browser checks also passed. All
   33 scoped IDs are verified.

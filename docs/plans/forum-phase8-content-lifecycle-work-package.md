@@ -364,12 +364,13 @@ side.
 
 - The merged focused lifecycle/forum/architecture/security/image slice passed
   60 tests and 22,861 assertions.
-- The merged full serial suite passed 1,653 tests and 57,928 assertions in
-  99.119 seconds.
+- After the final responsive `origin/main` commit was included, the exact main
+  UI/lifecycle slice passed 91 tests and 23,079 assertions, and the full serial
+  suite passed 1,656 tests and 57,951 assertions in 94.750 seconds.
 - Full Larastan, Pint, Composer validation/audit, and NPM high-severity audit
   passed.
 - Fresh SQLite migration and complete seeding passed with 98 migrations and
   172 tables; the repeated safe seed preserved the user count at `5 -> 5`.
-- The merged Vite 8.2.0 build passed with 50.35 kB Tailwind CSS, 263.32 kB
+- The merged Vite 8.2.0 build passed with 50.35 kB Tailwind CSS, 263.56 kB
   semantic CSS, 30.02 kB application JavaScript, and a separate 58.82 kB
   PhotoSwipe chunk before gzip.

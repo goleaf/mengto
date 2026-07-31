@@ -81,7 +81,7 @@ destructive command.
 ## Baseline And Current Checkpoint
 
 The modernization baseline was 116 passing tests and 3,881 assertions. The
-latest complete serial checkpoint reports 1,653 passing tests and 57,928
+latest complete serial checkpoint reports 1,656 passing tests and 57,951
 assertions after integrating the topic-lifecycle package with current
 `origin/main`. This checkpoint is not a final coverage claim while
 requirements remain unimplemented.
@@ -249,7 +249,7 @@ Package evidence:
 - lifecycle suite: 13 tests and 133 assertions;
 - related forum, seeder, localization, and architecture slice: 1,155 tests and
   51,061 assertions;
-- final integrated serial checkpoint: 1,653 tests and 57,928 assertions;
+- final integrated serial checkpoint: 1,656 tests and 57,951 assertions;
 - Larastan: zero errors;
 - fresh database: 98 migrations, 172 tables, full seed passed;
 - repeated production-safe forum seed: passed;

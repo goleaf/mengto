@@ -165,13 +165,13 @@ command environment. This incident remains recorded for transparency.
 | Explicit / enum-backed factory states | 145 / 862 |
 | Migrations / tables | 98 / 172 |
 | Application / total routes | 151 / 164 |
-| Full PHP suite | 1,653 passed, 57,928 assertions |
+| Full PHP suite | 1,656 passed, 57,951 assertions |
 
 Final production assets:
 
 - font CSS: 1.31 kB / 0.32 kB gzip;
 - Tailwind application CSS: 50.35 kB / 9.54 kB gzip;
-- retained semantic SCSS CSS: 263.32 kB / 34.75 kB gzip;
+- retained semantic SCSS CSS: 263.56 kB / 34.82 kB gzip;
 - application JavaScript: 30.02 kB / 9.55 kB gzip;
 - PhotoSwipe JavaScript: 58.82 kB / 17.06 kB gzip.
 
