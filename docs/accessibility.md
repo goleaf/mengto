@@ -33,6 +33,8 @@ Target: WCAG 2.1 AA for critical workflows.
 7. Open/close message call preflight and stop media.
 8. Discover a mentor, review match reasons, send a private message, and open
    the report form with its truthfulness acknowledgement.
+9. Discover a group, inspect privacy/membership state, respond to an
+   invitation, and manage membership through keyboard-accessible controls.
 
 ## Automated And Manual Evidence
 
@@ -45,6 +47,12 @@ heading, no unnamed buttons, no unlabeled controls, no horizontal overflow,
 44-pixel primary controls, no raw translation keys, and no browser-console
 warnings or errors. A participant-only Livewire message was submitted through
 the rendered interface.
+
+The persistent group directory and private workspace were checked at 1440x900
+and 375x812. Both had one logical heading, no document overflow, unnamed
+buttons, unlabeled visible controls, controls below 44px, or console
+warnings/errors. Private management, owner membership, and pending invitation
+content remained inside the authorized view.
 
 Known tool limitations belong in `docs/known-limitations.md`; a missing tool
 does not waive semantic implementation or manual review.

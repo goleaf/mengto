@@ -2,8 +2,8 @@
 
 ## Baseline
 
-All 122 first-party Eloquent models now have a model factory and are guarded by
-an architecture test. The generated matrix records 674
+All 126 first-party Eloquent models now have a model factory and are guarded by
+an architecture test. The generated matrix records 723
 documented and enum-backed state cases; valid existence alone is not accepted
 without persistence tests.
 
@@ -41,6 +41,12 @@ mentorship Actions. It synchronizes one opted-in mentor profile, two
 independent scopes, one accepted private mentorship, and one message from each
 participant. Stable request/message idempotency keys prevent duplicates on
 rerun.
+`ForumGroupDefinitionSeeder` synchronizes six system-managed group definitions
+by stable key without replacing administrator-created groups or IDs.
+`ForumGroupDemoSeeder` is environment-gated and creates owner, member, private,
+unlisted, invitation, and request examples without production identities.
+Repeated runs preserve memberships and append-only evidence through stable
+keys and idempotent Actions.
 
 ## Production Safeguards
 
@@ -56,6 +62,8 @@ rerun.
   and runs only after the environment-gated demo users and forum graph exist.
 - Mentorship demo synchronization runs only in configured demo environments
   and never writes fake mentorships from production-safe definition seeders.
+- Group definitions update only system-managed metadata; group demo records
+  are prohibited outside local, demo, and testing environments.
 
 ## Coverage Matrix
 

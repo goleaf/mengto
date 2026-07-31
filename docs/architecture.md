@@ -193,3 +193,18 @@ reputation may establish community eligibility, while professional status is
 derived only from a separate current credential.
 
 See `docs/mentorship.md`.
+
+## Persistent Group Boundary
+
+`ForumGroup` is the authoritative group aggregate. Memberships, invitations,
+taxon focus, and append-only events are relational; the previous
+`UserDomainState` group payload remains a compatibility presentation boundary
+and cannot grant persistent membership or management authority.
+
+Dedicated Actions own creation, request/review, invitation response,
+restriction, role, ownership, and lifecycle transactions. `ForumGroupPolicy`
+owns every read and mutation decision. `GroupDirectory`, `GroupWorkspace`, and
+`GroupManagement` coordinate those boundaries with bounded eager-loaded
+projections and never serialize private group graphs into public state.
+
+See `docs/groups.md`.

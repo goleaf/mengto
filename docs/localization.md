@@ -20,6 +20,7 @@ Use Laravel language files under `lang/{locale}`. Current files are:
 - `places.php`
 - `presentation.php`
 - `ui.php`
+- domain catalogues including `forum_groups.php`
 
 `ui.php` contains mechanically extracted static interface text.
 `messages.php` contains complete action, HTTP, Livewire, and service messages.
@@ -43,6 +44,17 @@ small safe bootstrap payload.
    native-language review.
 
 Never ship the raw key as normal visible content.
+
+## Persistent Group Catalogue
+
+`lang/{en,lt,ru}/forum_groups.php` owns group visibility, status, role,
+membership/invitation state, field, action, feedback, event, validation,
+privacy, empty, loading, and management text. System group names and
+descriptions use stable translation keys. User-authored names, descriptions,
+rules, questions, and answers remain in their original locale.
+
+Scientific names are rendered from taxonomy source data and are not
+translated. The usual English fallback and placeholder-parity rules apply.
 
 ## Current Translation Quality
 

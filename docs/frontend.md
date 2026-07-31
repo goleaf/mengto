@@ -80,3 +80,15 @@ localized Blade templates. See `docs/mentorship.md`.
 - mentorship desktop/mobile checks for overflow, labels, 44-pixel action
   targets, private-thread visibility, report controls, and a real Livewire
   message mutation.
+
+## Persistent Groups
+
+`/forum/groups` is the persistent directory; `/forum/groups/{group}` is the
+authorized workspace and management host. Directory, workspace, and
+management are independent class-based Livewire components with normal links,
+native form controls, localized labels/errors, action-specific loading,
+offline feedback, bounded pagination, and empty/private/invited/member states.
+
+The static `/groups` route remains a clearly separate compatibility preview.
+It does not render or mutate relational membership authority. See
+`docs/groups.md`.

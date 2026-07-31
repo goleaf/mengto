@@ -14,14 +14,14 @@ claims. Query budgets are added to critical flows with deterministic fixtures.
 
 ## Final Measured State
 
-- Full Pest suite: 1,263 tests and 46,373 assertions in 58.845 seconds
+- Full Pest suite: 1,338 tests and 48,931 assertions in 65.790 seconds
   serially.
 - Vite 8.2 production build: passed.
 - Font CSS: 1.31 kB, 0.32 kB gzip.
-- Tailwind application CSS: 50.79 kB.
+- Tailwind application CSS: 51.14 kB.
 - Retained semantic SCSS CSS: 250.28 kB.
 - JavaScript: 12.31 kB.
-- Application routes: 154.
+- Application routes: 156.
 
 The Tailwind increase is attributable to localized authentication, responsive,
 offline, reduced-motion, and forced-colors states. The larger semantic SCSS
@@ -57,6 +57,11 @@ fixtures and are regression budgets, not production latency claims.
 `tests/Feature/Forum/MentorshipWorkflowTest.php` verifies that the composed
 mentorship page remains at or below 45 queries with multiple mentors, scopes,
 requests, and messages.
+`tests/Feature/Forum/GroupCoreWorkflowTest.php` verifies bounded group
+directory and management query counts with memberships, invitations, events,
+owners, and taxonomy focus present. Group discovery paginates, selects
+presentation columns, and eager loads constrained relations. The global
+taxonomy tree is never serialized into Livewire state.
 
 All previously uncovered foreign keys gained leading indexes. The deterministic
 performance seeder supports repeatable local growth tests; production latency

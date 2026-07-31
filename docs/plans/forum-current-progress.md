@@ -57,15 +57,13 @@ as complete.
   immutable case events, protected idempotent contact relays, advisory
   duplicate detection, unified false-sighting/reward-scam reports, and
   privacy-safe archival that preserves the complete operational history.
-- Requirement evidence is a deterministic overlay. `287` atomic requirements
+- Requirement evidence is a deterministic overlay. `319` atomic requirements
   are verified with file/test evidence and none are currently marked
   in-progress.
-- Current repository checkpoint: mentorship focused 29 / 117;
-  architecture/localization/schema/factory/mentorship 899 / 43,799; full Pest
-  1,263 / 46,373; full Pint passed; full Larastan 0 errors; fresh verifier
-  passed 91 migrations and 135 tables with stable
-  repeat-seed counts; the
-  Vite 8.2.0 production build passed.
+- Current repository checkpoint: group focused 22 / 1,208; full Pest
+  1,338 / 48,931; full Pint passed; full Larastan 0 errors; fresh verifier
+  passed 92 migrations and 140 tables with stable repeat-seed counts; the Vite
+  8.2.0 production build passed.
 - Playwright verified the lost/found editor at 375x812 and 1440x900 with one
   page heading, no main-content overflow, no workflow target below 44px, and
   no current-page console warning or error.
@@ -102,6 +100,14 @@ as complete.
   validation, and idempotent mentoring reputation/badges. Focused tests passed
   29 / 117; full Pest passed 1,263 / 46,373; Larastan, fresh/repeat seed, Vite,
   and mobile/desktop browser checks passed. All 47 scoped IDs are verified.
+- Persistent groups are implemented with four visibility states, six roles,
+  reviewed membership, expiring invitations, restriction/ban/leave,
+  ownership transfer, close/reopen/archive, append-only events, unified
+  reports, taxon focus, privacy-scoped discovery, deterministic definitions,
+  demo data, and class-based Livewire directory/workspace/management. Focused
+  tests passed 22 / 1,208; full Pest passed 1,338 / 48,931; fresh/repeat seed,
+  Larastan, Vite, and mobile/desktop browser checks passed. All 32 scoped IDs
+  are verified.
 
 ## Phase Counts
 
@@ -115,7 +121,7 @@ as complete.
 | 5 | 825 | core/import pipeline implemented; full external snapshot pending |
 | 6 | 347 | foundation, panels/notes, and mentorship verified; additional trust packages remain |
 | 7 | 463 | operations verified; duplicate grouping, transparency, and broad entity coverage remain |
-| 8 | 3,345 | adoption, lost/found, and collaborative-guide packages verified; remaining structured domains planned |
+| 8 | 3,345 | adoption, lost/found, collaborative guides, mentorship, and persistent-group core verified; remaining structured domains planned |
 | 9 | 93 | planned |
 | 10 | 67 | in progress |
 | 11 | 13 | topic category/taxonomy backfill implemented; reports pending |
@@ -125,12 +131,14 @@ as complete.
 
 ## Next Verified Pass
 
-1. Reuse existing lost/found, expert, marketplace, care-journal, knowledge,
-   pet, and social records as authoritative adjacent domains.
-2. Add only missing structured-community relations and workflows.
-3. Add policy, validation, factory, seed, and direct-action tests for each
-   completed work package.
-4. Extend privacy-first search and following without indexing restricted data.
+1. Read the next Phase 8 work-package plan and include explicit requirement
+   IDs before production changes.
+2. Implement group content links (`forum.feature.3134` through `.3139`) and
+   polls (`forum.feature.3143` through `.3160`) without overloading group core.
+3. Add policy, validation, concurrency, factory, seed, and direct-action tests
+   for that package.
+4. Extend privacy-first search and following only after subject visibility is
+   enforced before matching and counts.
 5. Update evidence, rerun migration/seed checks, and perform the next phase
    completeness audit.
 

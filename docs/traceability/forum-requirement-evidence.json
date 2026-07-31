@@ -718,6 +718,112 @@
                 "unresolved_risks": [],
                 "final_result": "verified"
             }
+        },
+        {
+            "requirement_ids": [
+                "forum.feature.3108",
+                "forum.feature.3109",
+                "forum.feature.3110",
+                "forum.feature.3111",
+                "forum.feature.3112",
+                "forum.feature.3113",
+                "forum.feature.3114",
+                "forum.feature.3115",
+                "forum.feature.3116",
+                "forum.feature.3117",
+                "forum.feature.3118",
+                "forum.feature.3119",
+                "forum.feature.3120",
+                "forum.feature.3121",
+                "forum.feature.3122",
+                "forum.feature.3123",
+                "forum.feature.3124",
+                "forum.feature.3125",
+                "forum.feature.3126",
+                "forum.feature.3127",
+                "forum.feature.3128",
+                "forum.feature.3129",
+                "forum.feature.3130",
+                "forum.feature.3131",
+                "forum.feature.3132",
+                "forum.feature.3133",
+                "forum.moderation.0323",
+                "forum.moderation.0324",
+                "forum.feature.3140",
+                "forum.feature.3141",
+                "forum.feature.3142",
+                "forum.search.0123"
+            ],
+            "fields": {
+                "current_implementation_status": "verified",
+                "discovered_existing_files": [
+                    "app/Services/GroupCatalog.php",
+                    "app/Services/GroupState.php",
+                    "app/Actions/PerformGroupAction.php",
+                    "resources/views/groups/show.blade.php"
+                ],
+                "planned_files": [
+                    "database/migrations/2026_07_31_001200_create_forum_group_core_tables.php",
+                    "app/Models/ForumGroup.php",
+                    "app/Models/ForumGroupMembership.php",
+                    "app/Models/ForumGroupInvitation.php",
+                    "app/Models/ForumGroupEvent.php",
+                    "app/Policies/ForumGroupPolicy.php",
+                    "app/Actions/CreateForumGroup.php",
+                    "app/Actions/RequestForumGroupMembership.php",
+                    "app/Actions/ReviewForumGroupMembership.php",
+                    "app/Actions/InviteForumGroupMember.php",
+                    "app/Actions/RespondToForumGroupInvitation.php",
+                    "app/Actions/RestrictForumGroupMember.php",
+                    "app/Actions/TransferForumGroupOwnership.php",
+                    "app/Actions/TransitionForumGroup.php",
+                    "app/Livewire/Forum/GroupDirectory.php",
+                    "app/Livewire/Forum/GroupWorkspace.php",
+                    "app/Livewire/Forum/GroupManagement.php",
+                    "database/seeders/ForumGroupDefinitionSeeder.php",
+                    "database/seeders/ForumGroupDemoSeeder.php"
+                ],
+                "test_identifiers": [
+                    "tests/Feature/Forum/GroupCoreWorkflowTest.php",
+                    "tests/Feature/ArchitectureComplianceTest.php",
+                    "tests/Feature/Database/SchemaIntegrityTest.php",
+                    "tests/Feature/Database/FactoryAndSeederTest.php",
+                    "tests/Feature/LocalizationTest.php"
+                ],
+                "documentation_identifiers": [
+                    "docs/plans/forum-phase8-group-core-work-package.md",
+                    "docs/groups.md",
+                    "docs/architecture.md",
+                    "docs/domain-model.md",
+                    "docs/data-model.md",
+                    "docs/authorization.md",
+                    "docs/security.md",
+                    "docs/frontend.md",
+                    "docs/livewire.md",
+                    "docs/accessibility.md",
+                    "docs/localization.md",
+                    "docs/seeding.md",
+                    "docs/testing.md",
+                    "docs/performance.md",
+                    "docs/operations.md"
+                ],
+                "implementation_status": "implemented",
+                "verification_status": "verified",
+                "evidence": [
+                    "database/migrations/2026_07_31_001200_create_forum_group_core_tables.php: additive group, membership, invitation, append-only event, and global-taxon relation schema with idempotency, optimistic locks, restrictive audit deletion, and bounded-query indexes",
+                    "CreateForumGroup, RequestForumGroupMembership, ReviewForumGroupMembership, InviteForumGroupMember, RespondToForumGroupInvitation, RevokeForumGroupInvitation, ChangeForumGroupMemberRole, RestrictForumGroupMember, LeaveForumGroup, TransferForumGroupOwnership, and TransitionForumGroup: authorized validated transactional lifecycle with row locking, idempotency, owner invariants, counters, and append-only evidence",
+                    "ForumGroupPolicy and ForumGroup::scopeDiscoverableTo: server-side role/content authorization and privacy-scoped public, request-to-join, private, unlisted, closed, and archived reads before rows and counts",
+                    "GroupDirectory, GroupWorkspace, GroupManagement and separate Blade views: class-based Livewire workflow with small untrusted state, URL filters, bounded eager-loaded projections, direct Action authorization, unified reports, loading/offline/error states, and localized accessible presentation",
+                    "ForumGroupDefinitionSeeder and ForumGroupDemoSeeder: stable production definitions plus environment-gated deterministic owner/member/invitation examples that passed repeated seeding",
+                    "tests/Feature/Forum/GroupCoreWorkflowTest.php: 22 tests and 1,208 assertions passed for visibility, roles, policy boundaries, membership, invitations, restriction, ownership, lifecycle, reporting, idempotency, privacy, factories, seeders, localization, Livewire, and query budgets",
+                    "php artisan test --compact: 1,338 tests and 48,931 assertions passed",
+                    "php scripts/verify-fresh-database.php: 92 migrations, 140 tables, fresh seed and repeated seed passed with stable user count 5",
+                    "vendor/bin/phpstan analyse --memory-limit=1G --no-progress: zero errors; Pint passed; Vite 8.2.0 production build passed",
+                    "Playwright at 375x812 and 1440x900: public discovery and authorized private management had one H1, no overflow, unnamed buttons, unlabeled controls, sub-44px controls, or console warnings/errors; an ordinary member received 403 for the private group"
+                ],
+                "unresolved_risks": [],
+                "final_result": "verified"
+            }
         }
     ]
 }

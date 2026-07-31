@@ -1,6 +1,6 @@
 # Phase 8 Work Package: Persistent Group Core
 
-Status: in progress
+Status: implemented and verified
 
 Last updated: 2026-07-31
 
@@ -382,6 +382,33 @@ visibility boundary, labels, keyboard operation, overflow, and console output.
 
 ## Completion Evidence
 
-This section remains intentionally empty until implementation and verification
-are observed. The package must not be marked verified from the existence of
-files alone.
+- `2026_07_31_001200_create_forum_group_core_tables.php` created the additive
+  relational schema with unique/idempotency constraints, optimistic versions,
+  restrictive audit deletion, and discovery/history indexes.
+- Four group models, six state/role enums, typed input DTOs, four factories,
+  `ForumGroupPolicy`, eleven dedicated Actions, and `ForumGroupAudit` implement
+  the authorized transactional domain.
+- `GroupDirectory`, `GroupWorkspace`, and `GroupManagement` provide the
+  class-based Livewire directory/detail/management boundary with separate
+  Blade views, bounded projections, URL filters, direct action authorization,
+  loading/offline/error states, and unified reports.
+- `ForumGroupDefinitionSeeder` and environment-gated `ForumGroupDemoSeeder`
+  passed fresh and repeated seeding without changing the stable user count.
+- EN/LT/RU `forum_groups.php` catalogues passed localization parity and render
+  coverage.
+- `GroupCoreWorkflowTest`: 22 tests and 1,208 assertions passed.
+- Full serial Pest: 1,338 tests and 48,931 assertions passed.
+- Fresh temporary SQLite: 92 migrations, 140 tables, repeated seed passed with
+  user count 5 before and after.
+- Pint passed; Larastan level 5 passed with zero errors.
+- Vite 8.2 production build passed.
+- Playwright verified public discovery and a private group at 375x812 and
+  1440x900: one page heading, no overflow, unnamed visible buttons, unlabeled
+  visible controls, controls below 44px, or console warnings/errors. Private
+  management, owner membership, and a pending invitation were visible to an
+  authorized administrator; a normal member received 403.
+- The immutable source and all 7,284 generated requirement records retained
+  checksum
+  `6f8a7f987c336a2247755cae1c2fd66dea66d83cfbf038b5fe31aa848097d773`.
+- All 32 scoped requirement IDs carry file/test/document evidence in
+  `docs/traceability/forum-requirement-evidence.json`.

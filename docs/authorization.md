@@ -31,6 +31,7 @@ or grant records. They do not rely on an ambient fixed identity.
 | Care journal | No | Owner-selected capabilities | Selected sections/actions until expiry | No implicit family bypass |
 | Smart device | No | Owner-selected view/control | Selected fields/actions until expiry | No implicit camera/GPS bypass |
 | Exact GPS/camera/door | No | Explicit high-risk capability | Time-window capability | Step-up and audit required |
+| Persistent group | Discoverable identity only | Membership/content by visibility and role | Live invitation only | Explicit policy plus audit |
 
 ## Required Policy Methods
 
@@ -124,3 +125,22 @@ See `docs/community-review.md`.
   Action layer.
 
 See `docs/mentorship.md`.
+
+## Persistent Groups
+
+- Active verified members may create groups.
+- Public and request-to-join groups are discoverable; unlisted groups require
+  a direct URL; private groups require owner, administrator, active
+  membership, or current invitation.
+- Member-only content requires active membership, ownership, or platform
+  administration.
+- Owners and group administrators update configuration. Owner transfer is
+  owner-only.
+- Owner, administrator, moderator, and steward capabilities are bounded by
+  `ForumGroupRole`; member management cannot remove or demote the owner.
+- Close/archive, invitation, membership review, restriction, reporting, and
+  audit viewing are independent policy abilities.
+- Every Livewire mutation reloads the group and related record and repeats
+  policy authorization inside the Action.
+
+See `docs/groups.md`.

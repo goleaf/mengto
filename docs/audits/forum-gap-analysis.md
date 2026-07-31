@@ -97,3 +97,13 @@ privacy test boundary. The implementation deliberately reuses global category,
 taxonomy, report, block, reputation, trust, badge, and credential systems.
 Private contact remains on-platform and mentorship never projects
 professional authority.
+
+## Resolved Persistent Group Core Gap
+
+The relational group core now covers visibility, six bounded roles, reviewed
+membership, expiring invitations, member restrictions, ownership transfer,
+lifecycle, append-only audit, unified reports, taxon focus, deterministic
+definitions, and class-based Livewire management. Private/unlisted
+discoverability is scoped before rows and counts. Group content links, polls,
+and other structured group-owned resources remain explicit later requirement
+packages and are not represented as complete by this core.

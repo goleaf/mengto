@@ -50,8 +50,13 @@
   private threads, block/report safety, optional immutable feedback,
   optimistic lifecycle transitions, independently validated reputation,
   repeatable demo data, and class-based localized Livewire interfaces.
+- Added persistent forum groups with public, request-to-join, private, and
+  unlisted visibility; six roles; reviewed membership; expiring invitations;
+  restriction, ownership, and lifecycle Actions; append-only events; unified
+  reports; taxonomy focus; deterministic definitions; and localized
+  class-based Livewire directory, workspace, and management interfaces.
 - Added an evidence overlay that prevents requirement verification without
-  concrete file or test evidence; 287 atomic requirements are currently
+  concrete file or test evidence; 319 atomic requirements are currently
   verified.
 
 ### Runtime And Architecture
@@ -104,7 +109,7 @@
 
 ### Factories, Seeders, And Tests
 
-- Added valid model factories for all 109 first-party Eloquent models and a
+- Added valid model factories for all 126 first-party Eloquent models and a
   complete automated factory/enum-state creation matrix.
 - Made full demo seeding repeatable and production-safe.
 - Added deterministic role/locale/privacy demo graphs and an opt-in
@@ -112,7 +117,7 @@
 - Added an asserted temporary-SQLite fresh migration/seed verifier so
   destructive database checks cannot silently target the development file.
 - Expanded Pest from a baseline of 116 tests / 3,881 assertions to the current
-  checkpoint of 963 tests / 42,451 assertions.
+  checkpoint of 1,338 tests / 48,931 assertions.
 - Added auth, authorization, localization, schema, factory/seeder,
   architecture, and responsive regression coverage.
 
@@ -128,7 +133,7 @@
 
 ### Verification
 
-- Full Pest suite checkpoint: 963 passed, 42,451 assertions in serial mode.
+- Full Pest suite checkpoint: 1,338 passed, 48,931 assertions in serial mode.
 - Larastan/PHPStan level 5: zero errors.
 - Composer strict validation and security audit: passed, zero advisories.
 - NPM high-severity audit: passed, zero vulnerabilities.

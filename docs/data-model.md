@@ -3,9 +3,10 @@
 ## Storage Baseline
 
 - 68 migrations created 71 SQLite tables at baseline; the current additive
-  schema has 88 migrations and 124 tables after identity, care-sync,
+  schema has 92 migrations and 140 tables after identity, care-sync,
   social-state, device-lifecycle, forum taxonomy, global animal taxonomy,
-  reputation, moderation, credential verification, and adoption work.
+  reputation, moderation, credential verification, structured-community, and
+  persistent-group work.
 - Tests use isolated in-memory or temporary SQLite.
 - Schema and Eloquent queries remain portable unless an ADR explicitly accepts
   a production-engine-specific optimization.
@@ -17,7 +18,7 @@
 | --- | --- |
 | Framework | `users`, password reset, sessions, cache/locks, jobs/batches/failed jobs |
 | Social identity/state | `pet_profiles`, encrypted/versioned `user_domain_states` |
-| Forum | topics, answers, comments, votes, engagements, blocks, polymorphic reports, report events/evidence, categories/translations/aliases/redirects, topic definitions, reputation/trust/badges, confirmations, moderation cases/actions/appeals/recusals, notifications |
+| Forum | topics, answers, comments, votes, engagements, blocks, polymorphic reports, report events/evidence, categories/translations/aliases/redirects, topic definitions, reputation/trust/badges, confirmations, moderation cases/actions/appeals/recusals, notifications, persistent groups/memberships/invitations/events/taxon links |
 | Animal taxonomy | versioned sources/imports/versions/issues, taxa, names, external identifiers, change history, domestic classifications, breed registries, community groups |
 | Knowledge | articles, append-only versions, corrections, normalized collaborators, append-only workflow events |
 | Experts | profiles, credentials, services, availability slots, bookings, document grants, consultations, publications, reviews, engagements, reports |
@@ -142,3 +143,21 @@ legacy forum rows.
 Messages, feedback, and events use restrictive parent foreign keys so direct
 deletion cannot erase an audit-bearing mentorship. All list and thread indexes
 begin with their filtering foreign key. See `docs/mentorship.md`.
+
+## Persistent Group Tables
+
+- `forum_groups`: stable identity, owner, system flag, localized metadata,
+  visibility/status, generalized location, bounded questions, counter, and
+  optimistic version.
+- `forum_group_memberships`: one group/user projection with role, state,
+  answers, review/restriction context, idempotency, and optimistic version.
+- `forum_group_invitations`: expiring invitation with pair-level open key and
+  command idempotency.
+- `forum_group_events`: append-only actor/subject audit evidence with optional
+  idempotency.
+- `forum_group_taxon`: unique relation to the reusable global taxonomy.
+
+Discovery, owner/status, location, membership state/role, invitation state and
+expiry, audit timeline, and reverse taxon paths have explicit compound
+indexes. Restrictive foreign keys prevent silent audit or membership loss.
+See `docs/groups.md`.

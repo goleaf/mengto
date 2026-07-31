@@ -118,6 +118,24 @@ private keys, payment credentials, or complete private records.
 | Cache privacy leak | Actor/role/locale scope and invalidation |
 | Covert camera/location access | Explicit time capability, step-up, view audit |
 | Lost-case exact location/contact leak | Rounded public coordinates, encrypted private fields, relay-only contact, fail-closed archive policy |
+| Private/unlisted group enumeration | One discoverability scope before rows/counts; direct view policy; invitation/member checks |
+
+## Persistent Group Security
+
+- Private and unlisted groups are excluded before pagination, totals, and
+  suggestions for unauthorized users.
+- Membership, role, ownership, invitation, and lifecycle writes use explicit
+  policies, validated DTOs, transactions, row locks, optimistic versions, and
+  database uniqueness.
+- Group location stores a generalized label only; exact household location is
+  not part of the group schema.
+- Invitations expire, are one-use, pair-limited, rate-limited, and auditable.
+- Owner removal and silent audit deletion fail closed.
+- Group reports enter the unified moderation boundary; reporter identity and
+  private evidence are not exposed to the group owner or reported user.
+- The static compatibility catalogue cannot grant persistent access.
+
+See `docs/groups.md`.
 | Draft guide or private editorial leak | Public-state scope, policy-protected editor/export, bounded public translation lookup, escaped body |
 | Fraudulent guide authority | Independent scoped community review, current credential-backed expert review, no popularity conversion |
 | Concurrent guide overwrite/history rewrite | Optimistic lock version, append-only snapshots/events, rollback as a new version |

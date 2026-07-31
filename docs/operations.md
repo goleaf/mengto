@@ -174,3 +174,23 @@ Do not delete a mentorship to resolve a dispute. Database restrictions prevent
 deletion once append-only evidence exists. The demo graph is local/demo/testing
 only and is synchronized by `MentorshipDemoSeeder`. See
 `docs/mentorship.md`.
+
+## Persistent Group Operations
+
+`/forum/groups` and `/forum/groups/{group}` are the supported persistent
+directory, membership, invitation, management, lifecycle, audit, and report
+surfaces. They require no queue, scheduler, cron, or external service.
+
+Recovery after production membership exists is forward-only:
+
+1. close the group to stop ordinary membership changes;
+2. preserve membership, invitation, and event rows;
+3. resolve role/ownership state through the authorized Actions;
+4. correct counters through a bounded aggregate reconciliation;
+5. process abuse through unified reports and moderation;
+6. deploy a reviewed forward migration for schema defects.
+
+Do not delete group events, use the compatibility catalogue as authority, or
+roll back the group tables after user activity without an export and reviewed
+forward plan. Production runs only `ForumGroupDefinitionSeeder`; demo graph
+creation remains environment-gated. See `docs/groups.md`.

@@ -14,10 +14,10 @@
 
 | Feature | Candidate | Decision | Performance / accessibility | Test evidence |
 | --- | --- | --- | --- | --- |
-| `#[Computed]` | Administration and guide derived data | Used by bounded admin registries and guide editor projections | Derived collections are not serialized as mutable public state | `tests/Feature/Forum/CollaborativeGuideWorkflowTest.php` |
+| `#[Computed]` | Administration, guide, mentorship, and group derived data | Used by bounded registries and group/guide/mentorship projections | Derived collections are not serialized as mutable public state | Guide, mentorship, and group workflow tests |
 | `#[Locked]` | Password reset token | Used by `ResetPassword` | Prevents browser mutation; token still validated server-side | `tests/Feature/Auth/AuthenticationTest.php` |
 | Livewire form objects | Registration/login/reset/confirmation forms | Used | Central validation and field errors | `tests/Feature/Auth/AuthenticationTest.php` |
-| `#[Url]` | Shareable feed/directory filters | Later per converted component | Keeps linkable state; never secrets | URL/reset tests |
+| `#[Url]` | Shareable feed/directory filters | Used for group search/visibility; later for other converted components | Keeps linkable state; never secrets; resets pagination | `GroupCoreWorkflowTest` |
 | `#[Session]` | Private UI preference | Not initially required | Avoid duplicating business storage | N/A reason recorded |
 | `#[Lazy]` | Below-fold expensive dashboard | Not until measured candidate exists | Must have stable placeholder | N/A |
 | `#[Defer]` | Non-critical first-view aggregate | Not until measured candidate exists | Accessible immediate-after-load state | N/A |
@@ -87,3 +87,16 @@ Tampered filter state returns an empty computed projection and fails explicit
 validation without causing a render exception. Mentorship, scope, message, and
 report IDs are always resolved and authorized again server-side. The first
 render has a tested budget of at most 45 queries. See `docs/mentorship.md`.
+
+## Persistent Group Components
+
+`GroupDirectory`, `GroupWorkspace`, and `GroupManagement` use separate Blade
+templates, typed scalar state, a `ForumGroupForm`, computed bounded
+projections, precise loading/offline targets, and direct Action invocation.
+Search and visibility use stable URL state. Group IDs and action arguments are
+treated as untrusted even when rendered by the server.
+
+Eager loads select only fields required by presentation; owner and taxonomy
+relations are read from loaded relation values so Blade cannot trigger lazy
+queries. The group package has a focused query-budget and direct-action
+authorization suite. See `docs/groups.md`.

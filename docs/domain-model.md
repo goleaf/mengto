@@ -189,3 +189,18 @@ Participants may communicate only while active, and either participant may
 end, block, report, or leave one optional feedback record. Completion does not
 create reputation until an uninvolved administrator validates interaction
 evidence, blocks, and open reports. See `docs/mentorship.md`.
+
+### Persistent Groups
+
+```text
+group: active -> closed -> active
+                \-> archived
+membership: pending -> active / rejected
+active -> left / removed / banned
+invitation: pending -> accepted / declined / revoked / expired
+```
+
+Visibility is public, request-to-join, private, or unlisted. Roles are owner,
+administrator, moderator, steward, member, or restricted member. Ownership
+transfer updates owner projections atomically; role/member management cannot
+remove the owner. Every mutation appends an event. See `docs/groups.md`.

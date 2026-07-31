@@ -51,12 +51,14 @@ External review boundaries, ordered by impact:
 
 ## Verification Evidence
 
-- serial Pest: 696 tests, 31,698 assertions, all passed;
-- parallel Pest: 696 tests, 31,698 assertions, all passed;
+- serial Pest: 1,338 tests, 48,931 assertions, all passed;
+- parallel Pest: not rerun for this checkpoint because the repository uses a
+  shared SQLite test boundary and serial evidence is authoritative;
 - Larastan/PHPStan level 5: zero errors;
 - Vite production build and Blade/config/route caches: passed;
 - Composer and NPM audits: no advisories/vulnerabilities;
-- temporary SQLite fresh migrate/seed and repeat seed: passed;
+- temporary SQLite fresh migrate/seed and repeat seed: passed with 92
+  migrations and 140 tables;
 - browser auth/private/mobile/desktop review: no final console errors or
   document overflow at audited widths.
 

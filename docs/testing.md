@@ -78,7 +78,7 @@ destructive command.
 ## Baseline And Current Checkpoint
 
 The modernization baseline was 116 passing tests and 3,881 assertions. The
-latest complete serial checkpoint reports 1,172 passing tests and 44,853
+latest complete serial checkpoint reports 1,338 passing tests and 48,931
 assertions. This checkpoint is not a final coverage claim while requirements
 remain unimplemented.
 
@@ -121,3 +121,25 @@ Current evidence:
 - Larastan: zero errors;
 - Playwright: desktop/mobile accessibility, privacy, overflow, report options,
   and real Livewire message submission passed.
+
+## Persistent Group Coverage
+
+`GroupCoreWorkflowTest` covers four visibility states, six roles, lifecycle
+and membership enums, creation, public join, reviewed join, private
+invitations, invitation expiry/revocation, rejection, leave/removal/ban, role
+change, owner protection and transfer, close/reopen/archive, unified reports,
+policy denial, idempotency, optimistic conflicts, private/unlisted discovery,
+factories, deterministic seeding, localization, Livewire, and query budgets.
+
+Current evidence:
+
+- focused: 22 tests, 1,208 assertions;
+- full serial: 1,338 tests, 48,931 assertions;
+- fresh database: 92 migrations, 140 tables, repeat seed passed;
+- Larastan: zero errors;
+- Playwright: private visibility, desktop/mobile overflow, labels, touch
+  targets, management evidence, and console output passed.
+
+The authentication rate-limit test freezes framework time so its strict
+localized 60-second assertion cannot fail merely because rendering crosses a
+wall-clock second.
