@@ -36,7 +36,7 @@
             wire:model="form.password"
         >
             <x-slot:action>
-                <a href="{{ route('password.request') }}" wire:navigate class="auth-text-link">
+                <a href="{{ route('password.request') }}" class="auth-text-link">
                     {{ __('auth.login.forgot_password') }}
                 </a>
             </x-slot:action>

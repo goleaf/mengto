@@ -29,7 +29,7 @@
         />
     </form>
 
-    <a href="{{ route('login') }}" wire:navigate class="auth-back-link">
+    <a href="{{ route('login') }}" class="auth-back-link">
         <x-lucide-arrow-left aria-hidden="true" />
         <span>{{ __('auth.password.back_to_login') }}</span>
     </a>

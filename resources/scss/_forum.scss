@@ -1,3 +1,5 @@
+@use 'tokens' as *;
+
 .forum-page {
     display: grid;
     gap: 1.25rem;
@@ -192,7 +194,7 @@
         display: flex;
         align-items: center;
         gap: 0.65rem;
-        min-height: 2.45rem;
+        min-block-size: $touch-target;
         padding: 0.5rem 0.65rem;
         border-radius: 6px;
         color: #55605b;
@@ -222,6 +224,7 @@
 
     a {
         display: inline-flex;
+        min-block-size: $touch-target;
         align-items: center;
         gap: 0.35rem;
         flex: 0 0 auto;

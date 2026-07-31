@@ -22,7 +22,7 @@ final class ConfirmPassword extends AuthPage
         $user = auth()->user();
 
         if (! $user instanceof User || ! $user->isActive()) {
-            $this->redirectRoute('login', navigate: true);
+            $this->redirectRoute('login');
 
             return;
         }
@@ -42,7 +42,7 @@ final class ConfirmPassword extends AuthPage
 
         Session::passwordConfirmed();
 
-        $this->redirectIntended(default: route('home'), navigate: true);
+        $this->redirectIntended(default: route('home'));
     }
 
     public function render(): View

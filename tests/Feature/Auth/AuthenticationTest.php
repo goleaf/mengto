@@ -53,6 +53,16 @@ test('guest account forms share the responsive accessible authentication shell',
     }
 });
 
+test('guest account links use full document navigation without duplicate asset preloads', function () {
+    auth()->logout();
+
+    foreach ([route('login'), route('register'), route('password.request')] as $url) {
+        $this->get($url)
+            ->assertOk()
+            ->assertDontSee('wire:navigate', false);
+    }
+});
+
 test('authenticated account forms share the responsive accessible authentication shell', function () {
     $unverified = User::factory()->unverified()->create();
     $this->actingAs($unverified);

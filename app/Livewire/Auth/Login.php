@@ -35,7 +35,7 @@ final class Login extends AuthPage
         Session::regenerate();
         Session::put('locale', $user->locale);
 
-        $this->redirectIntended(default: route('home'), navigate: true);
+        $this->redirectIntended(default: route('home'));
     }
 
     public function render(): View

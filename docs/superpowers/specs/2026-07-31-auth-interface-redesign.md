@@ -34,6 +34,9 @@ cards, excessive shadows, oversized radii, and decorative motion.
 
 Blade remains passive. Livewire forms continue to own browser state and the
 existing Actions continue to own authentication and registration mutations.
+Links between account-access pages and redirects after account mutations use
+ordinary full-document navigation to avoid duplicate Vite preload insertion;
+this does not weaken the server-authoritative Livewire mutation boundary.
 Language and time zone remain absent from registration and stay in protected
 profile settings.
 
@@ -62,5 +65,7 @@ profile settings.
   desktop;
 - a real rejected Livewire login confirmed localized feedback and returned
   focus to the email field;
+- a real registration-to-email-verification redirect completed as a full
+  document navigation without duplicate Vite preload warnings;
 - browser checks confirmed no registration language/time-zone controls and no
   current-page console warnings or errors.

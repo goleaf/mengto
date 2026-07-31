@@ -22,7 +22,7 @@ final class Register extends AuthPage
         Session::regenerate();
         Session::put('locale', $user->locale);
 
-        $this->redirectRoute('verification.notice', navigate: true);
+        $this->redirectRoute('verification.notice');
     }
 
     public function render(): View

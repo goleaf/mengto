@@ -107,6 +107,12 @@
   localized account context, explicit field semantics, 44-pixel actions, and
   shared offline/loading/validation states; language and time zone remain in
   protected profile settings rather than registration.
+- Kept account-access links and post-auth redirects on full-document
+  navigation so registration reaches email verification without duplicate
+  Vite preload warnings.
+- Standardized 44-pixel mobile search controls and clear-filter actions across
+  lost/found, marketplace, and expert directories, plus forum category and
+  filter links.
 - Kept routes declarative, Blade passive, and persisted mutations in Actions or
   cohesive Services.
 - Integrated Laravel 13's first-party image pipeline for marketplace,

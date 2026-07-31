@@ -16,7 +16,7 @@ final class VerifyEmail extends AuthPage
         $user = request()->user();
 
         if (! $user instanceof User || $user->hasVerifiedEmail()) {
-            $this->redirectRoute('home', navigate: true);
+            $this->redirectRoute('home');
 
             return;
         }

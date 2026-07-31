@@ -29,7 +29,7 @@
 | `#[On]` | Narrow parent/child event | Use only with explicit payload | Avoid global event bus | Receiver auth tests |
 | Reactive/modelable props | Reusable animal selector | `#[Modelable]` used for one selected taxon ID | The child paginates/searches server-side and never serializes the taxonomy tree | taxonomy and guide Livewire tests |
 | Islands | Large independently updating page | Not until profiling identifies one | No islands in loops/conditions | N/A |
-| `wire:navigate` | Authentication navigation | Used after JS lifecycle audit | Normal links remain functional; title/focus reviewed | Connected Playwright repetition check |
+| `wire:navigate` | Authentication navigation | Not used for account-access links or redirects | Full-document navigation prevents duplicate Vite preload insertion while forms remain Livewire-driven | `AuthenticationTest` plus connected registration-to-verification browser check |
 | `wire:loading` / `wire:target` | Every auth and profile-preference mutation | Used | Precise status and duplicate prevention | `tests/Feature/Auth/AuthenticationTest.php` |
 | `wire:dirty` | Registration, password reset, and profile preferences | Used | Communicates unsaved state | `tests/Feature/Auth/AuthenticationTest.php` |
 | `wire:offline` | Authentication shell | Used | Do not claim save offline | `tests/Feature/Auth/AuthenticationTest.php` |

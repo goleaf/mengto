@@ -125,7 +125,7 @@
                         <x-lucide-sliders-horizontal class="icon icon--sm" aria-hidden="true" />
                         <span>{{ __('ui.apply_31e392d1c0') }}</span>
                     </button>
-                    <a href="{{ route('experts.index') }}" class="action action--surface action--compact" title="{{ __('ui.clear_filters_7179ea0035') }}">
+                    <a href="{{ route('experts.index') }}" class="action action--surface action--icon" title="{{ __('ui.clear_filters_7179ea0035') }}">
                         <x-lucide-rotate-ccw class="icon icon--sm" aria-hidden="true" />
                         <span class="sr-only">{{ __('ui.clear_filters_7179ea0035') }}</span>
                     </a>

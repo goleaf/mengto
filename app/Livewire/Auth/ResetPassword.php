@@ -54,7 +54,7 @@ final class ResetPassword extends AuthPage
         }
 
         session()->flash('feedback', __('auth.password.reset_success'));
-        $this->redirectRoute('login', navigate: true);
+        $this->redirectRoute('login');
     }
 
     public function render(): View

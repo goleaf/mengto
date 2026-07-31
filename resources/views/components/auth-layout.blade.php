@@ -24,7 +24,6 @@
                 <a
                     href="{{ route('home') }}"
                     class="auth-brand"
-                    wire:navigate
                 >
                     <span class="auth-brand__mark" aria-hidden="true">
                         <x-lucide-paw-print />

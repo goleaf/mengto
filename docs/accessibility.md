@@ -52,7 +52,14 @@ unlabelled visible fields, and no action links or buttons below the 44-pixel
 target contract. Russian registration fit a 1440x900 viewport without document
 overflow; shorter viewports retain normal page scrolling. A rejected Livewire
 login announced the localized safe error and restored focus to the email
-field. The current-page console contained no warnings or errors.
+field. A connected registration-to-email-verification transition uses a full
+document navigation and leaves the destination console without duplicate Vite
+preload warnings. The current-page console contained no warnings or errors.
+
+The public forum and search directories for lost/found, marketplace, and
+experts were also checked at 320 pixels. Forum category/filter links and every
+visible search input, select, action, and square clear-filter control meet the
+44-pixel touch-target contract without horizontal page overflow.
 
 The mentorship flow was checked at 1440x900 and 375x812 with one logical
 heading, no unnamed buttons, no unlabeled controls, no horizontal overflow,
