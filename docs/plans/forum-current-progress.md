@@ -152,10 +152,11 @@ as complete.
   legal holds. The implementation preserves topic identity and every existing
   relation, performs no scheduled write-on-read transition, and exposes a
   policy-scoped class-based Livewire panel. Focused tests passed 13 tests and
-  133 assertions; the final isolated full suite passed 1,613 tests and 55,337
-  assertions in 94.727 seconds on Livewire 4.3.4. Fresh and
-  repeated seeding, full Larastan, Pint, Vite, cache compilation, and real
-  mobile/desktop browser checks also passed. All 33 scoped IDs are verified.
+  133 assertions; after integration with the current `origin/main`, the full
+  serial suite passed 1,653 tests and 57,928 assertions in 99.119 seconds on
+  Livewire 4.3.4. Fresh and repeated seeding, full Larastan, Pint, Vite,
+  dependency audits, and real mobile/desktop browser checks also passed. All
+  33 scoped IDs are verified.
 
 ## Phase Counts
 

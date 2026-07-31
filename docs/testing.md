@@ -81,9 +81,10 @@ destructive command.
 ## Baseline And Current Checkpoint
 
 The modernization baseline was 116 passing tests and 3,881 assertions. The
-latest complete serial checkpoint reports 1,613 passing tests and 55,337
-assertions before the final documentation-only pass. This checkpoint is not a
-final coverage claim while requirements remain unimplemented.
+latest complete serial checkpoint reports 1,653 passing tests and 57,928
+assertions after integrating the topic-lifecycle package with current
+`origin/main`. This checkpoint is not a final coverage claim while
+requirements remain unimplemented.
 
 Pest coverage cannot run in the current environment because PHP 8.5 has neither
 PCOV nor Xdebug. The expected failing command and its exact reason remain part
@@ -248,10 +249,9 @@ Package evidence:
 - lifecycle suite: 13 tests and 133 assertions;
 - related forum, seeder, localization, and architecture slice: 1,155 tests and
   51,061 assertions;
-- final serial checkpoint: 1,613 tests and 55,337
-  assertions;
+- final integrated serial checkpoint: 1,653 tests and 57,928 assertions;
 - Larastan: zero errors;
-- fresh database: 97 migrations, 169 tables, full seed passed;
+- fresh database: 98 migrations, 172 tables, full seed passed;
 - repeated production-safe forum seed: passed;
 - Playwright: public history, stale notice, permanent redirect, 375px
   overflow, and current-console checks passed.

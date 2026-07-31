@@ -1360,9 +1360,9 @@
                     "ForumTopicLifecycleBackfillSeeder and ForumTopicLifecycleDemoSeeder: chunked production-safe idempotent backfill that preserves administrator-owned category rules plus environment-gated deterministic lifecycle examples",
                     "tests/Feature/Forum/ForumTopicLifecycleTest.php: 13 tests and 133 assertions passed for schema, statuses, first publication time, locking, preservation, legal hold, update requests, bump, redirect, policy isolation, Livewire, backfill, and immutable history",
                     "forum, journal, moderation, seeder, localization, and architecture regression slice: 1,155 tests and 51,061 assertions passed",
-                    "final isolated serial checkpoint on Livewire 4.3.4: 1,613 tests and 55,337 assertions passed in 94.727 seconds; full Larastan and Pint passed",
-                    "isolated temporary SQLite verification: 97 migrations and 169 tables migrated and seeded; repeat ForumSystemSeeder passed without duplicate/conflict failure",
-                    "Vite 8.2.0 production build passed; first-party Blade contains no @php or @endphp",
+                    "final origin/main integration checkpoint on Livewire 4.3.4: 1,653 tests and 57,928 assertions passed in 99.119 seconds; full Larastan and Pint passed",
+                    "isolated temporary SQLite verification: 98 migrations and 172 tables migrated and seeded; repeat ForumSystemSeeder passed without duplicate/conflict failure",
+                    "Vite 8.2.0 production build passed with 50.35 kB Tailwind CSS, 263.32 kB semantic CSS, 30.02 kB application JavaScript, and a 58.82 kB PhotoSwipe chunk; first-party Blade contains no @php or @endphp",
                     "Playwright rendered public history and stale warnings, verified 375x812 without horizontal overflow, followed an old URL through the authorized permanent redirect, and found no current-navigation console warnings or errors"
                 ],
                 "unresolved_risks": [],

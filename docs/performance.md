@@ -14,15 +14,15 @@ claims. Query budgets are added to critical flows with deterministic fixtures.
 
 ## Latest Measured State
 
-- Full Pest suite: 1,613 tests and 55,337 assertions in 94.727 seconds on
-  Livewire 4.3.4
-  serially before the final documentation-only pass.
+- Full Pest suite: 1,653 tests and 57,928 assertions in 99.119 seconds on
+  Livewire 4.3.4 after integration with current `origin/main`.
 - Vite 8.2 production build: passed.
 - Font CSS: 1.31 kB, 0.32 kB gzip.
-- Tailwind application CSS: 51.14 kB.
-- Retained semantic SCSS CSS: 250.28 kB.
-- JavaScript: 12.31 kB.
-- Application routes: 157.
+- Tailwind application CSS: 50.35 kB, 9.54 kB gzip.
+- Retained semantic SCSS CSS: 263.32 kB, 34.75 kB gzip.
+- Application JavaScript: 30.02 kB, 9.55 kB gzip.
+- PhotoSwipe JavaScript chunk: 58.82 kB, 17.06 kB gzip.
+- Application routes: 151 of 164 total.
 
 The Tailwind increase is attributable to localized authentication, responsive,
 offline, reduced-motion, and forced-colors states. The larger semantic SCSS
@@ -110,5 +110,7 @@ patterns; every new foreign key has a leading index.
 
 The Livewire panel holds scalar/form state only and does not serialize topic
 models or relationship graphs. The browser check found no horizontal overflow
-at 375px. The Vite 8.2 build remained 51.52 kB Tailwind CSS, 225.89 kB
-semantic CSS, and 12.31 kB JavaScript before gzip.
+at 375px. After integration with the current public-image implementation, the
+Vite 8.2 build contains 50.35 kB Tailwind CSS, 263.32 kB semantic CSS,
+30.02 kB application JavaScript, and a separate 58.82 kB PhotoSwipe chunk
+before gzip.

@@ -150,29 +150,30 @@ command environment. This incident remains recorded for transparency.
 | Image API | Candidate only for a real image lifecycle |
 | JSON:API, vector search, AI, Reverb, Octane, Horizon, Telescope | Not applicable without current product/operations need |
 
-## Final Modernization State
+## Latest Observed Modernization State
 
 | Surface | Final observed state |
 | --- | ---: |
 | PHP | 8.5.8 |
 | Laravel | 13.23.0 |
-| Livewire | 4.3.3 |
+| Livewire | 4.3.4 |
 | Tailwind / Vite plugin | 4.3.3 |
 | Vite | 8.2.0 |
 | Pest / PHPUnit | 4.7.5 / 12.5.30 |
 | Larastan / PHPStan | 3.10.0 / 2.2.7, level 5 |
-| First-party models / factories | 66 / 66 model factories |
-| Explicit / enum-backed factory states | 23 / 412 |
-| Migrations / tables | 76 / 74 |
-| Application / total routes | 134 / 147 |
-| Full PHP suite | 696 passed, 31,698 assertions |
+| First-party models / factory coverage | 157 / 157 models covered |
+| Explicit / enum-backed factory states | 145 / 862 |
+| Migrations / tables | 98 / 172 |
+| Application / total routes | 151 / 164 |
+| Full PHP suite | 1,653 passed, 57,928 assertions |
 
 Final production assets:
 
 - font CSS: 1.31 kB / 0.32 kB gzip;
-- Tailwind application CSS: 46.92 kB / 9.07 kB gzip;
-- retained semantic SCSS CSS: 250.16 kB / 31.94 kB gzip;
-- JavaScript: 12.31 kB / 4.17 kB gzip.
+- Tailwind application CSS: 50.35 kB / 9.54 kB gzip;
+- retained semantic SCSS CSS: 263.32 kB / 34.75 kB gzip;
+- application JavaScript: 30.02 kB / 9.55 kB gzip;
+- PhotoSwipe JavaScript: 58.82 kB / 17.06 kB gzip.
 
 The Tailwind increase reflects the auth, responsive, forced-colors, and
 localization states added during modernization. The semantic SCSS bundle was
@@ -197,14 +198,17 @@ implementation for hundreds of components.
 | Large semantic SCSS asset | Measured and retained | final Vite asset report |
 | Default application identity | Resolved | `config/platform.php`, environment-safe defaults |
 
-## Final Audit Status
+## Current Audit Status
 
 The first-pass defects that could be repaired without selecting external
 hardware or a provider were implemented and regression-tested. The compliance
-matrix is the authoritative final status: 141 requirements are implemented and
-verified, 10 are blocked by external hardware/provider or coverage-driver
-availability, and 12 are not applicable to the current repository.
+matrix for the original modernization remains its historical evidence. The
+forum extension's authoritative matrix currently records 448 verified
+requirements and 6,836 planned or discovered requirements, with no blocked or
+intentionally-not-applicable records.
 
 This modernization does not claim that physical hardware transport or
-provider-side processing exists. Those exact external boundaries are recorded
-per requirement rather than hidden in a generic future-work list.
+provider-side processing exists, and it does not claim that the complete forum
+master specification is finished. Exact external boundaries and remaining
+forum work are recorded per requirement rather than hidden in a generic
+future-work list.

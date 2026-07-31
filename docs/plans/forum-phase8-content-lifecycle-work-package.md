@@ -354,3 +354,22 @@ The additive migration will:
   `docs/traceability/forum-requirement-evidence.json`.
 - No coverage percentage is claimed because the environment has no Xdebug or
   PCOV coverage driver.
+
+## Origin/Main Integration Evidence
+
+The package was rebased by cherry-pick onto `a9a64b6` after the remote added
+public-image processing and security work. Conflicting generated documentation
+was rebuilt from the combined evidence overlay rather than selecting either
+side.
+
+- The merged focused lifecycle/forum/architecture/security/image slice passed
+  60 tests and 22,861 assertions.
+- The merged full serial suite passed 1,653 tests and 57,928 assertions in
+  99.119 seconds.
+- Full Larastan, Pint, Composer validation/audit, and NPM high-severity audit
+  passed.
+- Fresh SQLite migration and complete seeding passed with 98 migrations and
+  172 tables; the repeated safe seed preserved the user count at `5 -> 5`.
+- The merged Vite 8.2.0 build passed with 50.35 kB Tailwind CSS, 263.32 kB
+  semantic CSS, 30.02 kB application JavaScript, and a separate 58.82 kB
+  PhotoSwipe chunk before gzip.
