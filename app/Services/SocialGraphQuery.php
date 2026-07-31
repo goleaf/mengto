@@ -25,7 +25,7 @@ final class SocialGraphQuery
             ->select([
                 'id', 'request_key', 'source_actor_id', 'target_actor_id',
                 'relationship_type', 'direction', 'status', 'created_by_user_id',
-                'context_type', 'context_key', 'sent_at', 'delivered_at',
+                'context_type', 'context_key', 'message', 'sent_at', 'delivered_at',
                 'expires_at', 'lock_version', 'created_at', 'updated_at',
             ])
             ->with($this->actorRelations('sourceActor'))

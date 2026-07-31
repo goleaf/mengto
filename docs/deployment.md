@@ -167,3 +167,24 @@ authoritative profile or encrypted compatibility state.
 Rollback is safe only before production social writes depend on these tables.
 After that point, retain relationship/event evidence and deploy a reviewed
 forward fix.
+
+## Social Relationship Safety Migration
+
+`2026_07_31_235900_add_social_request_safety.php` adds account blocks, request
+fingerprint/risk/repeat fields, account-block event attribution, and report
+idempotency. `2026_07_31_235910_add_social_account_block_foreign_key_indexes.php`
+adds the leading foreign-key indexes as a separately reversible schema concern.
+Neither migration converts an existing profile block into a broader account
+block because the historical intent is ambiguous.
+
+1. Deploy the foundation and complete actor backfill first.
+2. Run `php artisan migrate --force` and verify every new foreign key has a
+   leading index.
+3. Smoke recipient decline-and-prevent, report without block, report with
+   account block, directory exclusion, and unblock without restoration.
+4. Confirm request limits aggregate across two represented pet profiles.
+5. Rebuild application caches and run the desktop/mobile/320px social browser
+   audit.
+
+Rollback is limited to the pre-dependency window. Once account blocks or
+private reports exist, preserve their evidence and use a forward migration.

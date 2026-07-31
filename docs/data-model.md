@@ -245,13 +245,18 @@ messages, and private review feedback use encrypted casts. See
 - `social_actor_settings`: one optimistic settings row per actor.
 - `social_relationship_requests`: directed proposal lifecycle with source and
   target actors, real user attribution, expiry/cooldown, unique idempotency,
-  nullable unique active key, and bounded inbox/outbox indexes.
+  nullable unique active key, encrypted optional message, normalized message
+  fingerprint, risk signals, recipient stop-repeat decision, and bounded
+  inbox/outbox/account-window indexes.
+- `social_account_blocks`: directed real-account safety boundary with current
+  initiating actors, all-managed-profiles scope, nullable unique active key,
+  unique idempotency, optimistic version, and creator/revoker attribution.
 - `social_relationships`: active or historical typed edge with direction,
   source/target, real creator/acceptor, optional request/context, optimistic
   version, expiry, unique idempotency, and nullable unique active key.
-- `social_relationship_events`: append-only request/relationship evidence with
-  actor snapshots, status transition, reason, timestamps, encrypted private
-  metadata, and globally unique idempotency key.
+- `social_relationship_events`: append-only request/relationship/account-block
+  evidence with actor snapshots, status transition, reason, timestamps,
+  encrypted private metadata, and globally unique idempotency key.
 
 Foreign keys preserve endpoint and actor attribution. The migration is
 additive and does not rewrite encrypted prototype social state. See

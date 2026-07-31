@@ -19,6 +19,7 @@ use LogicException;
  * @property string $idempotency_key
  * @property SocialRelationshipType $relationship_type
  * @property int|null $represented_actor_id
+ * @property int|null $social_account_block_id
  * @property int|null $social_relationship_id
  * @property int|null $social_relationship_request_id
  * @property int $source_actor_id
@@ -32,6 +33,7 @@ final class SocialRelationshipEvent extends Model
     protected $fillable = [
         'social_relationship_id',
         'social_relationship_request_id',
+        'social_account_block_id',
         'source_actor_id',
         'target_actor_id',
         'represented_actor_id',
@@ -80,6 +82,12 @@ final class SocialRelationshipEvent extends Model
     public function request(): BelongsTo
     {
         return $this->belongsTo(SocialRelationshipRequest::class, 'social_relationship_request_id');
+    }
+
+    /** @return BelongsTo<SocialAccountBlock, $this> */
+    public function accountBlock(): BelongsTo
+    {
+        return $this->belongsTo(SocialAccountBlock::class, 'social_account_block_id');
     }
 
     /** @return BelongsTo<SocialActor, $this> */

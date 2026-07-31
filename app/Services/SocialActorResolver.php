@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use App\Enums\PetManagerStatus;
 use App\Enums\PetProfilePermission;
 use App\Enums\SocialActorStatus;
 use App\Enums\SocialActorType;
 use App\Models\ExpertProfile;
 use App\Models\ForumGroup;
 use App\Models\PetProfile;
+use App\Models\PetProfileManager;
 use App\Models\SocialActor;
 use App\Models\SocialActorSetting;
 use App\Models\User;
@@ -64,24 +64,29 @@ final class SocialActorResolver
 
         $pets = PetProfile::query()
             ->select(['id', 'user_id', 'profile_key', 'name', 'status'])
-            ->with(['managers' => fn ($query) => $query
-                ->select([
-                    'id',
-                    'pet_profile_id',
-                    'user_id',
-                    'role',
-                    'status',
-                    'permission_overrides',
-                    'starts_at',
-                    'ends_at',
-                ])
-                ->where('user_id', $user->id)])
+            ->with(['managers' => fn ($query) => PetProfileManager::constrainActiveAt(
+                $query->getQuery()
+                    ->select([
+                        'id',
+                        'pet_profile_id',
+                        'user_id',
+                        'role',
+                        'status',
+                        'permission_overrides',
+                        'starts_at',
+                        'ends_at',
+                        'revoked_at',
+                    ])
+                    ->where('user_id', $user->id),
+                now(),
+            )])
             ->where(function ($query) use ($user): void {
                 $query
                     ->where('user_id', $user->id)
-                    ->orWhereHas('managers', fn ($managerQuery) => $managerQuery
-                        ->where('user_id', $user->id)
-                        ->where('status', PetManagerStatus::Active->value));
+                    ->orWhereHas('managers', fn ($managerQuery) => PetProfileManager::constrainActiveAt(
+                        $managerQuery->where('user_id', $user->id),
+                        now(),
+                    ));
             })
             ->orderBy('id')
             ->limit(100)

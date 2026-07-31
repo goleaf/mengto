@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Enums\SocialRelationshipType;
+use App\Models\SocialAccountBlock;
 use App\Models\SocialActor;
 use App\Models\SocialRelationship;
 use App\Models\SocialRelationshipEvent;
@@ -32,6 +33,7 @@ final class SocialRelationshipEventRecorder
         ?string $reasonCode = null,
         ?SocialRelationship $relationship = null,
         ?SocialRelationshipRequest $request = null,
+        ?SocialAccountBlock $accountBlock = null,
         ?array $publicMetadata = null,
         ?array $privateMetadata = null,
     ): SocialRelationshipEvent {
@@ -40,6 +42,7 @@ final class SocialRelationshipEventRecorder
             [
                 'social_relationship_id' => $relationship?->id,
                 'social_relationship_request_id' => $request?->id,
+                'social_account_block_id' => $accountBlock?->id,
                 'source_actor_id' => $source->id,
                 'target_actor_id' => $target->id,
                 'represented_actor_id' => $representedActor->id,

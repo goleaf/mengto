@@ -18,6 +18,7 @@ use App\Services\SocialGraphCache;
 use App\Services\SocialIdempotencyGuard;
 use App\Services\SocialRelationshipEventRecorder;
 use App\Services\SocialRelationshipKey;
+use App\Services\SocialRequestAbuseGuard;
 use App\Services\SocialRequestEligibility;
 use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Support\Facades\DB;
@@ -33,6 +34,7 @@ final class SendSocialRelationshipRequest
         private readonly SocialRelationshipEventRecorder $events,
         private readonly SocialGraphCache $cache,
         private readonly SocialRequestEligibility $eligibility,
+        private readonly SocialRequestAbuseGuard $abuse,
         private readonly SocialIdempotencyGuard $idempotency,
     ) {}
 
@@ -95,11 +97,14 @@ final class SendSocialRelationshipRequest
 
             $this->gate->authorize('represent', $lockedSource);
 
-            if ($this->blocks->blockedBetween($lockedSource, $lockedTarget)) {
+            if ($this->blocks->blockedBetween($lockedSource, $lockedTarget)
+                || $this->blocks->blockedForContact($user, $lockedTarget)) {
                 throw ValidationException::withMessages([
                     'target' => __('social_relationships.validation.contact_unavailable'),
                 ]);
             }
+
+            $assessment = $this->abuse->assess($user, $lockedTarget, $type, $message);
 
             $settings = SocialActorSetting::query()->firstOrCreate([
                 'social_actor_id' => $lockedTarget->id,
@@ -120,21 +125,6 @@ final class SendSocialRelationshipRequest
                 return $open;
             }
 
-            $cooldown = SocialRelationshipRequest::query()
-                ->where('source_actor_id', $lockedSource->id)
-                ->where('target_actor_id', $lockedTarget->id)
-                ->where('relationship_type', $type->value)
-                ->whereNotNull('repeat_after')
-                ->where('repeat_after', '>', now())
-                ->latest('id')
-                ->first();
-
-            if ($cooldown instanceof SocialRelationshipRequest) {
-                throw ValidationException::withMessages([
-                    'target' => __('social_relationships.validation.request_cooldown'),
-                ]);
-            }
-
             $request = SocialRelationshipRequest::query()->create([
                 'request_key' => (string) Str::uuid(),
                 'source_actor_id' => $lockedSource->id,
@@ -147,7 +137,10 @@ final class SendSocialRelationshipRequest
                 'created_by_user_id' => $user->id,
                 'context_type' => $contextType,
                 'context_key' => $contextKey,
-                'message' => $message,
+                'message' => $assessment['message'],
+                'message_fingerprint' => $assessment['message_fingerprint'],
+                'risk_level' => $assessment['risk_level'],
+                'risk_signals' => $assessment['risk_signals'],
                 'lock_version' => 1,
                 'metadata' => $metadata,
                 'sent_at' => now(),

@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 namespace App\Livewire\Social;
 
+use App\Actions\BlockSocialAccount;
 use App\Actions\CancelSocialRelationshipRequest;
 use App\Actions\CreateSocialControl;
 use App\Actions\EndSocialRelationship;
 use App\Actions\FollowSocialActor;
+use App\Actions\ReportSocialRelationshipRequest;
 use App\Actions\RespondToSocialRelationshipRequest;
+use App\Actions\RevokeSocialAccountBlock;
 use App\Actions\SendSocialRelationshipRequest;
 use App\Actions\UpdateSocialActorSettings;
 use App\Enums\SocialActorType;
@@ -18,6 +21,9 @@ use App\Enums\SocialListVisibility;
 use App\Enums\SocialRelationshipType;
 use App\Enums\SocialRequestStatus;
 use App\Livewire\Forms\SocialActorSettingsForm;
+use App\Livewire\Forms\SocialRequestReportForm;
+use App\Models\ForumReportReason;
+use App\Models\SocialAccountBlock;
 use App\Models\SocialActor;
 use App\Models\SocialRelationship;
 use App\Models\SocialRelationshipRequest;
@@ -26,6 +32,7 @@ use App\Services\ProfilePresenter;
 use App\Services\SocialActorDirectory;
 use App\Services\SocialActorPresenter;
 use App\Services\SocialActorResolver;
+use App\Services\SocialBlockService;
 use App\Services\SocialGraphQuery;
 use Illuminate\Contracts\Auth\Factory as AuthFactory;
 use Illuminate\Contracts\View\View;
@@ -38,11 +45,15 @@ final class RelationshipCenter extends Component
 {
     public SocialActorSettingsForm $settingsForm;
 
+    public SocialRequestReportForm $reportForm;
+
     public string $selectedActorKey = '';
 
     public string $feedback = '';
 
     public string $actorSearch = '';
+
+    public string $requestMessage = '';
 
     private AuthFactory $auth;
 
@@ -68,6 +79,14 @@ final class RelationshipCenter extends Component
 
     private UpdateSocialActorSettings $updateSettings;
 
+    private BlockSocialAccount $blockAccount;
+
+    private RevokeSocialAccountBlock $revokeAccountBlock;
+
+    private ReportSocialRelationshipRequest $reportRequest;
+
+    private SocialBlockService $blocks;
+
     private ProfilePresenter $profiles;
 
     private ?SocialActor $resolvedActor = null;
@@ -85,6 +104,10 @@ final class RelationshipCenter extends Component
         EndSocialRelationship $end,
         CreateSocialControl $control,
         UpdateSocialActorSettings $updateSettings,
+        BlockSocialAccount $blockAccount,
+        RevokeSocialAccountBlock $revokeAccountBlock,
+        ReportSocialRelationshipRequest $reportRequest,
+        SocialBlockService $blocks,
         ProfilePresenter $profiles,
     ): void {
         $this->auth = $auth;
@@ -99,6 +122,10 @@ final class RelationshipCenter extends Component
         $this->end = $end;
         $this->control = $control;
         $this->updateSettings = $updateSettings;
+        $this->blockAccount = $blockAccount;
+        $this->revokeAccountBlock = $revokeAccountBlock;
+        $this->reportRequest = $reportRequest;
+        $this->blocks = $blocks;
         $this->profiles = $profiles;
     }
 
@@ -157,6 +184,7 @@ final class RelationshipCenter extends Component
                 'actor' => $this->presenter->present($request->sourceActor),
                 'type' => $request->relationship_type->label(),
                 'status' => $request->status->label(),
+                'message' => $request->message,
                 'sent_at' => $request->sent_at->toDateTimeString(),
             ])
             ->values()
@@ -238,6 +266,37 @@ final class RelationshipCenter extends Component
             ->all();
     }
 
+    /** @return list<array{key: string, name: string, blocked_at: string}> */
+    #[Computed]
+    public function accountBlocks(): array
+    {
+        return $this->blocks
+            ->outgoingAccountBlocks($this->requireUser())
+            ->map(static fn (SocialAccountBlock $block): array => [
+                'key' => $block->block_key,
+                'name' => $block->blockedUser->name,
+                'blocked_at' => $block->blocked_at->toDateTimeString(),
+            ])
+            ->all();
+    }
+
+    /** @return array<string, string> */
+    #[Computed]
+    public function reportReasons(): array
+    {
+        return ForumReportReason::query()
+            ->select(['stable_key', 'translation_key', 'position'])
+            ->whereIn('stable_key', SocialRequestReportForm::REASONS)
+            ->where('is_active', true)
+            ->orderBy('position')
+            ->limit(count(SocialRequestReportForm::REASONS))
+            ->get()
+            ->mapWithKeys(static fn (ForumReportReason $reason): array => [
+                $reason->stable_key => __($reason->translation_key),
+            ])
+            ->all();
+    }
+
     public function selectActor(string $actorKey): void
     {
         abort_unless(Str::isUuid($actorKey), 404);
@@ -247,6 +306,8 @@ final class RelationshipCenter extends Component
         $this->settingsForm->fillFrom($actor->settings()->firstOrFail());
         $this->feedback = '';
         $this->actorSearch = '';
+        $this->requestMessage = '';
+        $this->reportForm->clear();
         $this->resetGraphComputeds();
     }
 
@@ -284,7 +345,9 @@ final class RelationshipCenter extends Component
             $target,
             $type,
             'livewire:friendship:'.Str::uuid(),
+            $this->requestMessage,
         );
+        $this->requestMessage = '';
         $this->feedback = __('social_relationships.feedback.request_sent');
         $this->resetGraphComputeds();
     }
@@ -310,6 +373,84 @@ final class RelationshipCenter extends Component
             "livewire:decline:{$request->request_key}",
         );
         $this->feedback = __('social_relationships.feedback.declined');
+        $this->resetGraphComputeds();
+    }
+
+    public function declineAndPrevent(string $requestKey): void
+    {
+        $request = $this->request($requestKey);
+        $this->respond->handle(
+            $request,
+            SocialRequestStatus::Declined,
+            "livewire:decline-prevent:{$request->request_key}",
+            'recipient-prevented-repeats',
+            true,
+        );
+        $this->feedback = __('social_relationships.feedback.declined_and_prevented');
+        $this->resetGraphComputeds();
+    }
+
+    public function blockIncomingAccount(string $requestKey): void
+    {
+        $request = $this->request($requestKey)->loadMissing([
+            'createdBy',
+            'sourceActor',
+            'targetActor',
+        ]);
+        abort_unless($request->createdBy instanceof User, 404);
+
+        $this->blockAccount->handle(
+            source: $request->targetActor,
+            target: $request->sourceActor,
+            blockedUser: $request->createdBy,
+            idempotencyKey: "livewire:block-account:{$request->request_key}",
+            reasonCode: 'recipient-blocked-request',
+        );
+        $this->feedback = __('social_relationships.feedback.account_blocked');
+        $this->resetGraphComputeds();
+    }
+
+    public function startReport(string $requestKey): void
+    {
+        $request = $this->request($requestKey);
+        abort_unless($request->target_actor_id === $this->currentActor()->id, 403);
+        $this->reportForm->clear();
+        $this->reportForm->requestKey = $request->request_key;
+    }
+
+    public function cancelReport(): void
+    {
+        $this->reportForm->clear();
+    }
+
+    public function submitReport(): void
+    {
+        $this->reportForm->validate();
+        $request = $this->request($this->reportForm->requestKey);
+        $this->reportRequest->handle(
+            request: $request,
+            reasonKey: $this->reportForm->reason,
+            details: $this->reportForm->details === '' ? null : $this->reportForm->details,
+            truthfulnessConfirmed: $this->reportForm->truthfulnessConfirmed,
+            blockAccount: $this->reportForm->blockAccount,
+            idempotencyKey: "livewire:report-request:{$request->request_key}",
+        );
+        $this->reportForm->clear();
+        $this->feedback = __('social_relationships.feedback.report_submitted');
+        $this->resetGraphComputeds();
+    }
+
+    public function revokeBlock(string $blockKey): void
+    {
+        abort_unless(Str::isUuid($blockKey), 404);
+        $block = SocialAccountBlock::query()
+            ->where('block_key', $blockKey)
+            ->firstOrFail();
+        $this->revokeAccountBlock->handle(
+            $block,
+            "livewire:revoke-account-block:{$block->block_key}",
+        );
+        $this->feedback = __('social_relationships.feedback.account_unblocked');
         $this->resetGraphComputeds();
     }
 
@@ -446,6 +587,8 @@ final class RelationshipCenter extends Component
             $this->inbox,
             $this->outbox,
             $this->relationships,
+            $this->accountBlocks,
+            $this->reportReasons,
         );
     }
 }

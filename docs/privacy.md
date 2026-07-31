@@ -115,3 +115,8 @@ can represent the selected actor. List-visibility preferences are stored, but
 no viewer-facing public friend/follower list is claimed in the foundation.
 Blocking is applied before request creation/acceptance and before directory or
 graph projection, then both endpoint cache namespaces are invalidated.
+Profile-only controls and account-wide blocks have distinct scope. An account
+block resolves every current and future actor controlled by either real user,
+but never exposes an incoming block to the blocked account or revokes pet-care
+roles. Request context remains encrypted; private report prose and reporter
+identity are visible only through existing report authorization.

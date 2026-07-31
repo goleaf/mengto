@@ -5,9 +5,10 @@ Last updated: 2026-07-31
 ## Current Phase
 
 Phase 26 preservation, atomization, repository audit, gap analysis, and
-architecture decisions are complete. The first Phase 27/28 foundation package
-is implemented, release-verified, and represented by a conservative per-ID
-evidence overlay. Later social packages remain open.
+architecture decisions are complete. The Phase 27/28 foundation and the
+account-block/request-safety package are implemented, release-verified, and
+represented by conservative per-ID evidence overlays. Later social packages
+remain open.
 
 ## Completed Evidence
 
@@ -45,13 +46,30 @@ evidence overlay. Later social packages remain open.
 - Browser verification passed English desktop/mobile/320px and Russian social
   pages with zero overflow, unnamed-control, touch-target, raw-key, or console
   findings.
-- Exactly 158 independently proven `social.*` IDs are verified. The remaining
+- Account-wide blocks now cover all current and future user, pet, expert, and
+  group actors controlled by the blocked account while preserving pet-care
+  roles; unblock never restores ended contacts.
+- Request context is normalized, encrypted, bounded, screened for direct
+  contact details and repeated templates, and protected by real-account
+  rolling, new-account, and low-acceptance limits.
+- Recipients can decline, permanently stop repeats, block an account, and file
+  an idempotent private report from the Livewire request card. Critical actions
+  have confirmation and full actor-specific accessible names in EN/LT/RU.
+- Safety evidence: 8 focused tests and 65 assertions; combined social tests 30
+  and 593 assertions; architecture/factory/accessibility slice 1,292 tests and
+  29,221 assertions; final serial suite 1,872 tests and 70,764 assertions in
+  107.953 seconds.
+- Fresh verification passed 103 migrations, 183 tables, and repeat seed with
+  stable user counts. Composer/npm audits, Pint, Larastan, Vite, and Chrome
+  desktop/mobile/320px/Russian checks pass.
+- Exactly 222 independently proven `social.*` IDs are verified. The remaining
   social records keep their planned/discovered status.
 
 ## Open Work
 
-1. Keep account-wide blocking, anti-abuse, recommendations, messaging,
-   meetings/location, minors, notifications, transfer/deletion/memorial, and
-   public viewer-aware lists in their explicit later packages.
+1. Keep cross-account/device anti-stalking correlation, recommendations,
+   messaging, meetings/location, minors, notifications, moderation appeals,
+   transfer/deletion/memorial, and public viewer-aware lists in their explicit
+   later packages.
 2. Start the next package from an exact open-ID slice and retain the same
    migration, policy, browser, and evidence gates.

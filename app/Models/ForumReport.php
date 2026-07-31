@@ -56,6 +56,7 @@ class ForumReport extends Model
         'immediate_safety',
         'truthfulness_confirmed',
         'deduplication_key',
+        'idempotency_key',
         'metadata',
     ];
 

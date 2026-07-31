@@ -27,9 +27,14 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string $idempotency_key
  * @property int $lock_version
  * @property array<string, mixed>|null $metadata
+ * @property string|null $message
+ * @property string|null $message_fingerprint
+ * @property bool $prevent_repeats
  * @property CarbonImmutable|null $repeat_after
  * @property string $request_key
  * @property SocialRelationshipType $relationship_type
+ * @property string $risk_level
+ * @property list<string>|null $risk_signals
  * @property CarbonImmutable $sent_at
  * @property int $source_actor_id
  * @property SocialRequestStatus $status
@@ -56,6 +61,9 @@ final class SocialRelationshipRequest extends Model
         'context_type',
         'context_key',
         'message',
+        'message_fingerprint',
+        'risk_level',
+        'risk_signals',
         'reason_code',
         'lock_version',
         'metadata',
@@ -64,6 +72,7 @@ final class SocialRelationshipRequest extends Model
         'decided_at',
         'expires_at',
         'repeat_after',
+        'prevent_repeats',
     ];
 
     protected $hidden = ['message'];
@@ -76,6 +85,8 @@ final class SocialRelationshipRequest extends Model
             'status' => SocialRequestStatus::class,
             'message' => 'encrypted',
             'metadata' => 'array',
+            'risk_signals' => 'array',
+            'prevent_repeats' => 'boolean',
             'lock_version' => 'integer',
             'sent_at' => 'immutable_datetime',
             'delivered_at' => 'immutable_datetime',

@@ -37,6 +37,9 @@ final class SocialRelationshipRequestFactory extends ApplicationFactory
             'context_type' => null,
             'context_key' => null,
             'message' => null,
+            'message_fingerprint' => null,
+            'risk_level' => 'normal',
+            'risk_signals' => null,
             'reason_code' => null,
             'lock_version' => 1,
             'metadata' => null,
@@ -45,6 +48,7 @@ final class SocialRelationshipRequestFactory extends ApplicationFactory
             'decided_at' => null,
             'expires_at' => now()->addDays(30),
             'repeat_after' => null,
+            'prevent_repeats' => false,
         ];
     }
 

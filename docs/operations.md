@@ -303,10 +303,12 @@ encrypted connection state remains unchanged.
 
 Smoke one public follow, one approval follow, one owner friendship, one pet
 friendship under current manager authority, one decline/cancel race, one block,
-one settings version conflict, and direct Livewire denial. Monitor duplicate
-key failures, expired pending requests, idempotency collisions, repeated
-declines, blocks, and backfill count drift. Do not treat actor-level blocking
-as account-wide protection.
+one account-wide block, one request report, one settings version conflict, and
+direct Livewire denial. Monitor duplicate-key failures, expired pending
+requests, idempotency collisions, rolling account request volume, repeated
+message fingerprints, low acceptance after the minimum sample, reports,
+blocks, and backfill count drift. Keep profile-only and account-wide block
+metrics separate.
 
 After production relationships exist, recover with forward Actions or an
 additive migration. Preserve requests and append-only events; never repair a

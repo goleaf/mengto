@@ -20,6 +20,7 @@ final class SocialRelationshipEventFactory extends ApplicationFactory
         return [
             'social_relationship_id' => null,
             'social_relationship_request_id' => null,
+            'social_account_block_id' => null,
             'source_actor_id' => SocialActor::factory(),
             'target_actor_id' => SocialActor::factory(),
             'represented_actor_id' => null,

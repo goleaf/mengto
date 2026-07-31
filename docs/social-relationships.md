@@ -38,10 +38,25 @@ evidence, manager structure, and credentials. The current graph, request, and
 count views are manager-only. Stored list-visibility settings do not yet imply
 a complete public viewer-aware friend/follower projection.
 
-Block currently applies to one social actor pair. Account-wide blocking across
-every profile controlled by a user, anti-stalking correlation, recommendations,
-messaging requests, minors, safe meetings, temporary location, notifications,
-transfer/deletion orchestration, and memorial behavior remain later packages.
+Profile-only mute, restrict, and block remain available as narrow controls.
+Account blocking is a separate directed object: it closes current social
+requests and relationships, prevents contact through every current or future
+user, pet, expert, or group actor controlled by the account, and never revokes
+pet ownership or care permissions. Unblocking does not restore ended edges.
+
+Friendship context is normalized, encrypted, capped at 240 characters, and
+rejected before delivery when it contains links, phone numbers, email
+addresses, or a repeatedly broadcast template. Rolling hour/day limits, lower
+new or unverified account limits, and low-acceptance limits are evaluated by
+the real authenticated account rather than by the represented profile.
+
+Incoming request recipients can decline, permanently stop repeat requests,
+block the sender's account, or submit a structured private report with an
+optional block. Reports retain real reporter and request attribution without
+revealing the reporter to the reported account. Cross-account/device
+anti-stalking correlation, recommendations, messaging, minors, safe meetings,
+temporary location, notifications, transfer/deletion orchestration, and
+memorial behavior remain later packages.
 
 ## Migration And Backfill
 
@@ -72,7 +87,8 @@ URLs remain available as compatibility views and are not canonical writes.
 
 ## Verification
 
-Focused tests are in `tests/Feature/SocialRelationshipFoundationTest.php`.
+Focused tests are in `tests/Feature/SocialRelationshipFoundationTest.php` and
+`tests/Feature/SocialRelationshipSafetyTest.php`.
 The release gate also runs migration/seed/backfill repetition, full Pint,
 Larastan, the serial test suite, dependency audits, Vite build, cache
 compilation, source-preservation checks, requirement generation, and the

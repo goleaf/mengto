@@ -104,6 +104,18 @@ class User extends Authenticatable implements MustVerifyEmailContract
         return $this->hasOne(SocialActor::class);
     }
 
+    /** @return HasMany<SocialAccountBlock, $this> */
+    public function outgoingSocialAccountBlocks(): HasMany
+    {
+        return $this->hasMany(SocialAccountBlock::class, 'blocker_user_id');
+    }
+
+    /** @return HasMany<SocialAccountBlock, $this> */
+    public function incomingSocialAccountBlocks(): HasMany
+    {
+        return $this->hasMany(SocialAccountBlock::class, 'blocked_user_id');
+    }
+
     /** @return HasMany<ExpertProfile, $this> */
     public function expertProfiles(): HasMany
     {

@@ -18,6 +18,7 @@ final class SocialActorDirectory
     public function __construct(
         private readonly SocialActorAccess $access,
         private readonly SocialActorPresenter $presenter,
+        private readonly SocialBlockService $blocks,
     ) {}
 
     /**
@@ -42,7 +43,10 @@ final class SocialActorDirectory
             return [];
         }
 
-        $blockedActorIds = $this->blockedActorIds($source);
+        $blockedActorIds = array_values(array_unique([
+            ...$this->blockedActorIds($source),
+            ...$this->blocks->blockedActorIdsFor($user),
+        ]));
         $candidates = SocialActor::query()
             ->directoryFields()
             ->with([

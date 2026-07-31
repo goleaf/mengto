@@ -248,16 +248,24 @@ See `docs/journals.md`, `docs/privacy.md`, and `docs/files.md`.
   and settings updates on the server and inside critical transactions.
 - Nullable unique active keys and operation-bound idempotency keys prevent
   duplicate open requests/edges and unsafe replay.
-- Blocks are checked before contact and projection, terminate open pair state,
-  write immutable evidence, and invalidate both endpoint cache namespaces.
+- Profile blocks and account blocks are checked before contact and projection.
+  Account blocks terminate open state across all current managed actors, apply
+  dynamically to later pet/expert/group actors, write immutable real-user
+  evidence, and invalidate both account graph namespaces without revoking care
+  authority.
+- Request limits use the real authenticated account across represented actors.
+  Optional context is normalized, encrypted, length-bounded, and rejected for
+  links, contact details, or repeated broadcast templates before delivery.
+- Only the current recipient may file the structured request report. The
+  report is private and idempotent, retains encrypted evidence, permanently
+  stops the request, and can atomically block the sender account.
 - Friends-of-friends and shared-group eligibility are proven from canonical
   rows. A forged context string cannot widen request policy.
 - Social events reject updates and deletes. Legacy encrypted prototype state
   is retained but never interpreted as mutual consent.
 
-The implemented block is actor-level. Account-wide scope across all profiles,
-anti-stalking correlation, anti-fraud/rate limits, minors, messaging, and
-temporary location are explicit unresolved safety packages.
+Cross-account/device anti-stalking correlation, minors, messaging, temporary
+location, and moderation appeals remain explicit unresolved safety packages.
 
 ## Public Image Processing
 

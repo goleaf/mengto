@@ -36,6 +36,7 @@ final class RespondToSocialRelationshipRequest
         SocialRequestStatus $decision,
         string $idempotencyKey,
         ?string $reasonCode = null,
+        bool $preventRepeats = false,
     ): SocialRelationshipRequest {
         if (! in_array($decision, [
             SocialRequestStatus::Accepted,
@@ -55,6 +56,7 @@ final class RespondToSocialRelationshipRequest
             $decision,
             $idempotencyKey,
             $reasonCode,
+            $preventRepeats,
             $user,
         ): array {
             $locked = SocialRelationshipRequest::query()
@@ -117,7 +119,11 @@ final class RespondToSocialRelationshipRequest
             }
 
             if ($decision === SocialRequestStatus::Accepted
-                && $this->blocks->blockedBetween($locked->sourceActor, $locked->targetActor)) {
+                && ($this->blocks->blockedBetween($locked->sourceActor, $locked->targetActor)
+                    || $this->blocks->accountBlockedBetween(
+                        [$locked->created_by_user_id],
+                        [$user->id],
+                    ))) {
                 throw ValidationException::withMessages([
                     'request' => __('social_relationships.validation.contact_unavailable'),
                 ]);
@@ -126,7 +132,7 @@ final class RespondToSocialRelationshipRequest
             $relationship = $decision === SocialRequestStatus::Accepted
                 ? $this->activateRelationship($locked, $user->id)
                 : null;
-            $repeatAfter = $decision === SocialRequestStatus::Declined
+            $repeatAfter = $decision === SocialRequestStatus::Declined && ! $preventRepeats
                 ? now()->addDays((int) config('social_relationships.repeat_cooldown_days', 30))
                 : null;
 
@@ -138,6 +144,7 @@ final class RespondToSocialRelationshipRequest
                 'reason_code' => $reasonCode,
                 'decided_at' => now(),
                 'repeat_after' => $repeatAfter,
+                'prevent_repeats' => $preventRepeats,
                 'lock_version' => $locked->lock_version + 1,
             ])->save();
 

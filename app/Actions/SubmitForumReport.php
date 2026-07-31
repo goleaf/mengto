@@ -23,6 +23,7 @@ use App\Models\ForumTopic;
 use App\Models\Listing;
 use App\Models\SearchCase;
 use App\Models\Sighting;
+use App\Models\SocialRelationshipRequest;
 use App\Models\User;
 use App\Services\ForumGroupAudit;
 use App\Services\ForumReportReasonCatalog;
@@ -56,6 +57,7 @@ final readonly class SubmitForumReport
         string $contactPreference = 'platform',
         ?string $locationScope = null,
         array $metadata = [],
+        ?string $idempotencyKey = null,
     ): ForumReport {
         if (! $reporter->isActive()) {
             throw new AuthorizationException;
@@ -81,6 +83,7 @@ final readonly class SubmitForumReport
             ForumExpertSession::class,
             ForumExpertSessionQuestion::class,
             ForumExpertSessionAnswer::class,
+            SocialRelationshipRequest::class,
         ], true)) {
             throw ValidationException::withMessages([
                 'subject' => __('forum_moderation.validation.unsupported_subject'),
@@ -102,11 +105,34 @@ final readonly class SubmitForumReport
             $this->gate->forUser($reporter)->authorize('report', $subject);
         }
 
+        if ($subject instanceof SocialRelationshipRequest) {
+            $this->gate->forUser($reporter)->authorize('report', $subject);
+        }
+
         $canonicalReason = $this->reasons->canonicalKey($reasonKey);
         $reason = ForumReportReason::query()
             ->where('stable_key', $canonicalReason)
             ->where('is_active', true)
             ->firstOrFail();
+
+        if ($idempotencyKey !== null) {
+            $existing = ForumReport::query()
+                ->where('idempotency_key', $idempotencyKey)
+                ->first();
+
+            if ($existing instanceof ForumReport) {
+                if ($existing->reporter_id !== $reporter->id
+                    || $existing->subject_type !== $subject::class
+                    || $existing->subject_id !== (string) $subject->getKey()
+                    || $existing->reason !== $reason->stable_key) {
+                    throw ValidationException::withMessages([
+                        'idempotency_key' => __('social_relationships.validation.idempotency_conflict'),
+                    ]);
+                }
+
+                return $existing;
+            }
+        }
 
         if ($immediateSafety && ! $reason->allows_immediate_safety) {
             throw ValidationException::withMessages([
@@ -131,6 +157,7 @@ final readonly class SubmitForumReport
             $immediateSafety,
             $locationScope,
             $metadata,
+            $idempotencyKey,
             $reason,
             $reporter,
             $subject,
@@ -162,6 +189,7 @@ final readonly class SubmitForumReport
                 'immediate_safety' => $immediateSafety,
                 'truthfulness_confirmed' => true,
                 'deduplication_key' => $deduplicationKey,
+                'idempotency_key' => $idempotencyKey,
                 'metadata' => $metadata,
             ]);
 
@@ -252,6 +280,7 @@ final readonly class SubmitForumReport
             $subject instanceof ForumExpertSession => $subject->created_by_user_id,
             $subject instanceof ForumExpertSessionQuestion => $subject->author_user_id,
             $subject instanceof ForumExpertSessionAnswer => $subject->author_user_id,
+            $subject instanceof SocialRelationshipRequest => $subject->created_by_user_id,
             default => null,
         };
 

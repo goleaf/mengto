@@ -35,4 +35,13 @@ final class SocialRelationshipRequestPolicy
         return $user->isActive()
             && $this->access->canRepresent($request->sourceActor, $user);
     }
+
+    public function report(User $user, SocialRelationshipRequest $request): bool
+    {
+        $request->loadMissing('targetActor');
+
+        return $user->isActive()
+            && $request->status->isOpen()
+            && $this->access->canRepresent($request->targetActor, $user);
+    }
 }

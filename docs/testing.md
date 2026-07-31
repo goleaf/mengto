@@ -377,3 +377,32 @@ Package evidence:
 Exactly 158 atomic social IDs carry this evidence. Account-wide safety,
 anti-abuse, recommendations, messages, meetings, notifications, minors, public
 graph projection, transfer, deletion, and memorial behavior remain open.
+
+## Social Relationship Safety Verification
+
+`SocialRelationshipSafetyTest` covers reversible additive schema, real-account
+blocking across current/future user/pet/expert/group actors, preserved care
+roles, owner-only unblock without restoration, actor-switch-resistant rolling
+and low-acceptance limits, permanent recipient repeat prevention, encrypted
+normalized context, contact/detail and duplicate-template rejection, private
+idempotent reports with optional account block, direct policy denial, and the
+Livewire report flow with actor-specific accessible actions.
+
+Package evidence:
+
+- focused safety: 8 tests and 65 assertions;
+- combined social foundation/safety: 30 tests and 593 assertions;
+- architecture/schema/factory/accessibility slice: 1,292 tests and 29,221
+  assertions;
+- final serial repository suite: 1,872 tests and 70,764 assertions in 107.953
+  seconds;
+- isolated fresh SQLite: 103 migrations, 183 tables, repeated seed preserved
+  five users;
+- Composer/npm audits, Pint, Larastan, Vite, deterministic source generation,
+  and English/Russian desktop/mobile/320px Chrome checks passed.
+
+Exactly 64 additional atomic IDs carry this package evidence, bringing the
+verified social total to 222. Cross-account/device correlation, minors,
+messages/calls, meetings/location, recommendations, notifications, appeals,
+public graph projection, transfer, deletion, and memorial behavior remain
+open.

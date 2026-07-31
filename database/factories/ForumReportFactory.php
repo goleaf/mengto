@@ -41,6 +41,7 @@ class ForumReportFactory extends ApplicationFactory
             'immediate_safety' => false,
             'truthfulness_confirmed' => true,
             'deduplication_key' => hash('sha256', fake()->uuid()),
+            'idempotency_key' => null,
             'metadata' => [],
         ];
     }

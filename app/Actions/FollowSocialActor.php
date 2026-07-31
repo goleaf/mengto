@@ -102,7 +102,8 @@ final class FollowSocialActor
 
             $this->gate->authorize('represent', $lockedSource);
 
-            if ($this->blocks->blockedBetween($lockedSource, $lockedTarget)) {
+            if ($this->blocks->blockedBetween($lockedSource, $lockedTarget)
+                || $this->blocks->blockedForContact($user, $lockedTarget)) {
                 throw ValidationException::withMessages([
                     'target' => __('social_relationships.validation.contact_unavailable'),
                 ]);
