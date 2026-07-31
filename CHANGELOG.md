@@ -119,6 +119,9 @@
   `@php`, Volt, direct application calls in Blade, and unsafe environment reads.
 - Added explicit Tailwind source detection, shared design tokens, visible
   focus, reduced-motion and forced-colors support.
+- Normalized pet, group, neighbor, and event directories on one semantic
+  result-grid contract with one mobile, two small-screen, and three
+  wide-desktop columns plus matching responsive image sizes.
 - Corrected narrow-screen booking overflow and verified representative
   320-1920 px viewport behavior.
 

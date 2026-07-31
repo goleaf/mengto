@@ -42,6 +42,7 @@ test('the group directory renders a functional local community catalog', functio
         ->and($xpath->query('//article[@data-group-card]')->length)->toBe(6)
         ->and($xpath->query('//section[@data-section="group-directory"]/h2')->length)->toBe(1)
         ->and($xpath->query('//article[@data-group-card]//h3')->length)->toBe(6)
+        ->and($xpath->query('//section[@data-section="group-directory"]/*[@role="list" and contains(concat(" ", normalize-space(@class), " "), " sm:grid-cols-2 ") and contains(concat(" ", normalize-space(@class), " "), " xl:grid-cols-3 ") and not(contains(concat(" ", normalize-space(@class), " "), " xl:grid-cols-4 "))]')->length)->toBe(1)
         ->and($xpath->query('//article[@data-group-card]//img[@loading="eager" and @fetchpriority="high" and @srcset and @sizes]')->length)->toBe(1)
         ->and($xpath->query('//article[@data-group-card]//img[@loading="lazy" and @decoding="async" and @srcset and @sizes]')->length)->toBe(5)
         ->and($xpath->query('//article[@data-group-card]//a')->length)->toBeGreaterThan(0)

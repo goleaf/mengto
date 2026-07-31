@@ -4,7 +4,6 @@
     section="neighbor-directory"
     title-id="neighbor-directory-title"
     title="{{ __('ui.people_nearby_690d8bdc6b') }}"
-    :columns="4"
 >
     @forelse ($neighbors as $neighbor)
         <x-neighbor-card :neighbor="$neighbor" :eager="$loop->first" />
@@ -15,7 +14,7 @@
             role="listitem"
             description="{{ __('ui.try_a_broader_person_pet_or_neighborhood_4f267326cd') }}"
             :href="route('neighbors.index')"
-            class="sm:col-span-2 xl:col-span-4"
+            class="sm:col-span-2 xl:col-span-3"
         />
     @endforelse
 </x-result-grid>

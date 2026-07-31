@@ -80,6 +80,8 @@ preserve the active event tab or directory state.
 
 The directory supports:
 
+- the same shared one-, two-, and three-column result grid used by the pet and
+  group directories;
 - text search over title, organizer, place, city, category, and tags;
 - filters for recommended, walks, training, shows, online, free, and saved;
 - soonest, closest, name, and recommended sorting;

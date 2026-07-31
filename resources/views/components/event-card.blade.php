@@ -1,6 +1,6 @@
 @props(['event'])
 
-<article class="event-card">
+<article {{ $attributes->class(['event-card']) }}>
     <a
         href="{{ $event['primary_action']['href'] }}"
         class="event-card__media"

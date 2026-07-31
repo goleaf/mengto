@@ -47,6 +47,8 @@ The existing action endpoint receives explicit group actions. Every group target
 
 The directory keeps the existing page shell and adds:
 
+- the shared directory result grid with one mobile, two small-screen, and
+  three wide-desktop columns;
 - search by name, purpose, location, organizer, and tags;
 - filters for recommended, joined, local, breed, care, and official groups;
 - active, name, and membership sorting;

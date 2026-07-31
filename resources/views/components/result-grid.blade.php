@@ -2,7 +2,6 @@
     'section',
     'titleId',
     'title',
-    'columns' => 3,
 ])
 
 <section data-section="{{ $section }}" aria-labelledby="{{ $titleId }}">
@@ -10,11 +9,7 @@
 
     <div
         role="list"
-        {{ $attributes->class([
-            'grid gap-4 sm:grid-cols-2',
-            'xl:grid-cols-3' => $columns === 3,
-            'xl:grid-cols-4' => $columns === 4,
-        ]) }}
+        {{ $attributes->class(['grid gap-4 sm:grid-cols-2 xl:grid-cols-3']) }}
     >
         {{ $slot }}
     </div>

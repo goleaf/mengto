@@ -112,16 +112,23 @@
             </div>
         </x-content-panel>
     @else
-        <div class="event-grid">
+        <x-result-grid
+            section="event-directory-results"
+            title-id="event-directory-results-title"
+            title="{{ __('ui.upcoming_events_df9110b56f') }}"
+            class="event-grid"
+        >
             @forelse ($events['items'] as $event)
-                <x-event-card :event="$event" />
+                <x-event-card :event="$event" role="listitem" />
             @empty
                 <x-empty-state
                     icon="calendar-search"
                     title="{{ __('ui.no_events_match_these_filters_046aea06df') }}"
                     description="{{ __('ui.try_another_date_format_or_search_phrase_b1e8a95379') }}"
+                    role="listitem"
+                    class="sm:col-span-2 xl:col-span-3"
                 />
             @endforelse
-        </div>
+        </x-result-grid>
     @endif
 </div>

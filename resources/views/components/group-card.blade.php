@@ -7,7 +7,7 @@
             :alt="$group['image_alt']"
             :width="1200"
             :height="800"
-            sizes="(min-width: 1280px) 292px, (min-width: 640px) calc(50vw - 2rem), calc(100vw - 2rem)"
+            sizes="(min-width: 1280px) 390px, (min-width: 640px) calc(50vw - 2rem), calc(100vw - 2rem)"
             :eager="$eager"
         >
             <div class="group-card__badges">

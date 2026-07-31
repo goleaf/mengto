@@ -160,6 +160,9 @@ PawCircle is flat by default. Depth comes from tonal layers and one-pixel border
 - **Shadow Strategy:** compact shadow only, never ambient decoration.
 - **Border:** one-pixel soft divider.
 - **Internal Padding:** `16px` to `20px`, reduced only for dense toolbars.
+- **Directory Grid:** one shared result-grid component renders image-led cards
+  in one column on mobile, two from the small breakpoint, and three at wide
+  desktop widths.
 
 ### Inputs / Fields
 - **Style:** white surface, one-pixel divider, `6px` radius, minimum `44px` height.

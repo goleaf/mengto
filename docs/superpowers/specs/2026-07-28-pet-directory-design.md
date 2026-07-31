@@ -73,6 +73,8 @@ Each card has:
 
 The directory page lives at `resources/views/pet-social/pets/index.blade.php`.
 One reusable `pet-directory-card` anonymous component owns card presentation.
+The shared `result-grid` anonymous component owns the one-, two-, and
+three-column responsive directory layout used across comparable catalogs.
 The existing app shell receives an `activeSection` prop for navigation state.
 
 All collections use `@forelse`, all component props are explicit, and no Blade

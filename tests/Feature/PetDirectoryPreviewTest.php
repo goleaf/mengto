@@ -32,6 +32,7 @@ test('the pet directory renders as a functional discovery page', function () {
         ->and(trim((string) $xpath->query('//h1')->item(0)?->textContent))->toBe('Pets nearby')
         ->and($xpath->query('//article[@data-directory-pet]')->length)->toBe(6)
         ->and($xpath->query('//article[@data-directory-pet]//h2')->length)->toBe(6)
+        ->and($xpath->query('//section[@data-section="pet-directory"]/*[@role="list" and contains(concat(" ", normalize-space(@class), " "), " sm:grid-cols-2 ") and contains(concat(" ", normalize-space(@class), " "), " xl:grid-cols-3 ")]')->length)->toBe(1)
         ->and($xpath->query('//input[@id="directory-search" and not(@disabled)]')->length)->toBe(1)
         ->and($xpath->query('//button[normalize-space()="Follow" and not(@disabled)]')->length)->toBe(6)
         ->and($xpath->query('//form')->length)->toBeGreaterThan(0);
