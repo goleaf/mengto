@@ -816,10 +816,11 @@
                     "GroupDirectory, GroupWorkspace, GroupManagement and separate Blade views: class-based Livewire workflow with small untrusted state, URL filters, bounded eager-loaded projections, direct Action authorization, unified reports, loading/offline/error states, and localized accessible presentation",
                     "ForumGroupDefinitionSeeder and ForumGroupDemoSeeder: stable production definitions plus environment-gated deterministic owner/member/invitation examples that passed repeated seeding",
                     "tests/Feature/Forum/GroupCoreWorkflowTest.php: 22 tests and 1,208 assertions passed for visibility, roles, policy boundaries, membership, invitations, restriction, ownership, lifecycle, reporting, idempotency, privacy, factories, seeders, localization, Livewire, and query budgets",
+                    "group plus architecture/schema/factory/localization slice: 945 tests and 46,346 assertions passed",
                     "php artisan test --compact: 1,338 tests and 48,931 assertions passed",
                     "php scripts/verify-fresh-database.php: 92 migrations, 140 tables, fresh seed and repeated seed passed with stable user count 5",
                     "vendor/bin/phpstan analyse --memory-limit=1G --no-progress: zero errors; Pint passed; Vite 8.2.0 production build passed",
-                    "Playwright at 375x812 and 1440x900: public discovery and authorized private management had one H1, no overflow, unnamed buttons, unlabeled controls, sub-44px controls, or console warnings/errors; an ordinary member received 403 for the private group"
+                    "Playwright at 375x812 and 1440x900: public discovery and authorized private management had one H1, no overflow, zero unnamed buttons, zero unlabeled controls, zero sub-44px controls, and no console warnings/errors; an ordinary member received 403 for the private group"
                 ],
                 "unresolved_risks": [],
                 "final_result": "verified"

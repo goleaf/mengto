@@ -49,10 +49,10 @@ warnings or errors. A participant-only Livewire message was submitted through
 the rendered interface.
 
 The persistent group directory and private workspace were checked at 1440x900
-and 375x812. Both had one logical heading, no document overflow, unnamed
-buttons, unlabeled visible controls, controls below 44px, or console
-warnings/errors. Private management, owner membership, and pending invitation
-content remained inside the authorized view.
+and 375x812. Both had one logical heading, no document overflow, zero unnamed
+buttons, zero unlabeled visible controls, zero controls below 44px, and no
+console warnings/errors. Private management, owner membership, and pending
+invitation content remained inside the authorized view.
 
 Known tool limitations belong in `docs/known-limitations.md`; a missing tool
 does not waive semantic implementation or manual review.

@@ -138,9 +138,9 @@ Deleting append-only events is not a recovery procedure.
 - Fresh temporary SQLite verification: 92 migrations, 140 tables, repeated
   seed with stable user count 5.
 - Pint and Larastan: passed with zero Larastan errors.
-- Playwright at 375x812 and 1440x900: one `h1`, no document overflow,
-  unlabeled visible form controls, unnamed visible buttons, controls below
-  44px, or current-page console warnings/errors. Private group management,
+- Playwright at 375x812 and 1440x900: one `h1`, no document overflow, zero
+  unlabeled visible form controls, zero unnamed visible buttons, zero controls
+  below 44px, and no current-page console warnings/errors. Private group management,
   owner membership, and a pending invitation were visible only to an
   authorized administrator; an ordinary member received 403.
 

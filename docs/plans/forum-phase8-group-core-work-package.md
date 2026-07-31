@@ -397,14 +397,17 @@ visibility boundary, labels, keyboard operation, overflow, and console output.
 - EN/LT/RU `forum_groups.php` catalogues passed localization parity and render
   coverage.
 - `GroupCoreWorkflowTest`: 22 tests and 1,208 assertions passed.
+- Group plus architecture/schema/factory/localization slice: 945 tests and
+  46,346 assertions passed.
 - Full serial Pest: 1,338 tests and 48,931 assertions passed.
 - Fresh temporary SQLite: 92 migrations, 140 tables, repeated seed passed with
   user count 5 before and after.
 - Pint passed; Larastan level 5 passed with zero errors.
 - Vite 8.2 production build passed.
 - Playwright verified public discovery and a private group at 375x812 and
-  1440x900: one page heading, no overflow, unnamed visible buttons, unlabeled
-  visible controls, controls below 44px, or console warnings/errors. Private
+  1440x900: one page heading, no overflow, zero unnamed visible buttons, zero
+  unlabeled visible controls, zero controls below 44px, and no console
+  warnings/errors. Private
   management, owner membership, and a pending invitation were visible to an
   authorized administrator; a normal member received 403.
 - The immutable source and all 7,284 generated requirement records retained
