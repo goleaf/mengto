@@ -9,6 +9,7 @@ const SOCIAL_RELATIONSHIPS_PROMPT_TIMESTAMP = 1785521058;
 const CONTENT_FEED_PROMPT_TIMESTAMP = 1785527132;
 const COMMUNICATION_PROMPT_TIMESTAMP = 1785532239;
 const COMMUNITY_PROMPT_TIMESTAMP = 1785538113;
+const MEDICAL_RECORD_PROMPT_TIMESTAMP = 1785541918;
 
 $root = dirname(__DIR__);
 $target = $root.'/docs/requirements/forum-source-prompt.md';
@@ -45,6 +46,7 @@ while (($line = fgets($handle)) !== false) {
         CONTENT_FEED_PROMPT_TIMESTAMP,
         COMMUNICATION_PROMPT_TIMESTAMP,
         COMMUNITY_PROMPT_TIMESTAMP,
+        MEDICAL_RECORD_PROMPT_TIMESTAMP,
     ], true)) {
         $prompts[$timestamp] = (string) $entry['text'];
     }
@@ -60,6 +62,7 @@ foreach ([
     CONTENT_FEED_PROMPT_TIMESTAMP,
     COMMUNICATION_PROMPT_TIMESTAMP,
     COMMUNITY_PROMPT_TIMESTAMP,
+    MEDICAL_RECORD_PROMPT_TIMESTAMP,
 ] as $timestamp) {
     if (! isset($prompts[$timestamp])) {
         fwrite(STDERR, "Required forum prompt entry {$timestamp} is missing.\n");
@@ -74,6 +77,7 @@ $socialRelationships = $prompts[SOCIAL_RELATIONSHIPS_PROMPT_TIMESTAMP];
 $contentFeed = $prompts[CONTENT_FEED_PROMPT_TIMESTAMP];
 $communication = $prompts[COMMUNICATION_PROMPT_TIMESTAMP];
 $community = $prompts[COMMUNITY_PROMPT_TIMESTAMP];
+$medicalRecord = $prompts[MEDICAL_RECORD_PROMPT_TIMESTAMP];
 $forumPayload = $primary."\n\n".$extension;
 $forumChecksum = hash('sha256', $forumPayload);
 $petProfileChecksum = hash('sha256', $petProfile);
@@ -91,6 +95,9 @@ $completeMasterChecksum = hash('sha256', $completeMasterPayload);
 $communityChecksum = hash('sha256', $community);
 $expandedMasterPayload = $completeMasterPayload."\n\n".$community;
 $expandedMasterChecksum = hash('sha256', $expandedMasterPayload);
+$medicalRecordChecksum = hash('sha256', $medicalRecord);
+$medicalMasterPayload = $expandedMasterPayload."\n\n".$medicalRecord;
+$medicalMasterChecksum = hash('sha256', $medicalMasterPayload);
 $document = <<<'MARKDOWN'
 # Forum Source Prompt
 
@@ -153,12 +160,19 @@ $document .= "- Community revision raw payload SHA-256: `{$communityChecksum}`\n
 $document .= "- Expanded master raw payload SHA-256: `{$expandedMasterChecksum}`\n";
 $document .= "- Checksum payload: prior complete master, two LF characters, exact community revision\n\n";
 $document .= "<community-source-revision>\n{$community}\n</community-source-revision>\n";
+$communityDocument = $document;
+$document .= "\n## Source Part H: Medical Record And Full Clinical History Revision\n\n";
+$document .= '- Source timestamp: `'.MEDICAL_RECORD_PROMPT_TIMESTAMP."`\n";
+$document .= "- Medical revision raw payload SHA-256: `{$medicalRecordChecksum}`\n";
+$document .= "- Medical master raw payload SHA-256: `{$medicalMasterChecksum}`\n";
+$document .= "- Checksum payload: prior expanded master, two LF characters, exact medical revision\n\n";
+$document .= "<medical-record-source-revision>\n{$medicalRecord}\n</medical-record-source-revision>\n";
 
 if (is_file($target)) {
     $existing = file_get_contents($target);
 
     if ($existing === $document) {
-        fwrite(STDOUT, "Master source prompt is unchanged ({$expandedMasterChecksum}).\n");
+        fwrite(STDOUT, "Master source prompt is unchanged ({$medicalMasterChecksum}).\n");
         exit(0);
     }
 
@@ -167,6 +181,7 @@ if (is_file($target)) {
         && $existing !== $socialRelationshipsDocument
         && $existing !== $contentFeedDocument
         && $existing !== $communicationDocument
+        && $existing !== $communityDocument
     ) {
         fwrite(STDERR, "Refusing to replace or rewrite preserved source-prompt content.\n");
         exit(1);
@@ -195,4 +210,4 @@ if (file_put_contents($target, $document, LOCK_EX) === false) {
     exit(1);
 }
 
-fwrite(STDOUT, "Preserved master source prompt ({$expandedMasterChecksum}).\n");
+fwrite(STDOUT, "Preserved master source prompt ({$medicalMasterChecksum}).\n");

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Database\Factories;
 
 use App\Models\MedicalRecord;
+use App\Models\PetProfile;
 use Illuminate\Support\Str;
 
 /**
@@ -37,7 +38,9 @@ class MedicalRecordFactory extends ApplicationFactory
             'microchip_number' => '900'.fake()->numerify('############'),
             'microchip_checked_on' => now()->subMonths(2)->toDateString(),
             'blood_group' => null,
+            'allergy_knowledge_status' => 'known',
             'critical_allergies' => ['Chicken protein'],
+            'medication_knowledge_status' => 'none-known',
             'chronic_conditions' => [],
             'emergency_notes' => 'Use calm handling and call the primary clinic.',
             'primary_clinic_name' => 'Paws 24 Veterinary Center',
@@ -50,5 +53,18 @@ class MedicalRecordFactory extends ApplicationFactory
             'last_visit_at' => now()->subWeeks(3),
             'next_appointment_at' => now()->addWeeks(4),
         ];
+    }
+
+    public function forPetProfile(PetProfile $profile): static
+    {
+        return $this->state(fn (): array => [
+            'owner_id' => $profile->user_id,
+            'pet_profile_id' => $profile->id,
+            'owner_key' => $profile->user->actor_key,
+            'pet_profile_key' => $profile->slug,
+            'pet_name' => $profile->name,
+            'species' => $profile->species,
+            'breed' => $profile->breed,
+        ]);
     }
 }

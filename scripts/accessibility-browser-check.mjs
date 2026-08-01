@@ -527,6 +527,48 @@ try {
         Buffer.from(communityDesktopScreenshot.data, 'base64'),
     );
 
+    const medicalAudits = {};
+
+    for (const [path, label] of [
+        ['/medical-records', 'desktop medical record directory'],
+        ['/medical-records/new', 'desktop medical record creation'],
+        ['/medical-records/scout-health', 'desktop medical record detail'],
+        ['/medical-records/scout-health/manage', 'desktop medical record management'],
+        ['/medical-records/nori-health/emergency', 'desktop emergency medical card'],
+    ]) {
+        await navigate(client, sessionId, `${baseUrl}${path}`);
+        const audit = await evaluate(client, sessionId, pageAuditExpression);
+        assertPageAudit(audit, label);
+        medicalAudits[label] = audit;
+    }
+
+    const medicalBehavior = await evaluate(client, sessionId, `(() => {
+        const pageText = document.body.innerText;
+
+        return {
+            documentLanguage: document.documentElement.lang,
+            noneKnownVisible: pageText.includes('No known items in the available history'),
+            lastUpdatedVisible: pageText.includes('Last updated'),
+            rawTranslationKeys: pageText.match(/\\bmedical\\.[a-z0-9_.-]+/gi) ?? [],
+        };
+    })()`);
+    assert(medicalBehavior.documentLanguage === 'en', 'The medical card document language is not English.');
+    assert(medicalBehavior.noneKnownVisible, 'The explicit no-known-items medical status is missing.');
+    assert(medicalBehavior.lastUpdatedVisible, 'The emergency card freshness label is missing.');
+    assert(
+        medicalBehavior.rawTranslationKeys.length === 0,
+        `Raw medical translation keys are visible: ${medicalBehavior.rawTranslationKeys.join(', ')}.`,
+    );
+
+    const medicalDesktopScreenshot = await client.send('Page.captureScreenshot', {
+        format: 'png',
+        captureBeyondViewport: true,
+    }, sessionId);
+    await writeFile(
+        join(outputDirectory, 'medical-emergency-desktop.png'),
+        Buffer.from(medicalDesktopScreenshot.data, 'base64'),
+    );
+
     const petAudits = {};
 
     for (const [path, label] of [
@@ -578,6 +620,27 @@ try {
     );
 
     for (const [path, label] of [
+        ['/medical-records', 'mobile medical record directory'],
+        ['/medical-records/scout-health', 'mobile medical record detail'],
+        ['/medical-records/scout-health/manage', 'mobile medical record management'],
+        ['/medical-records/nori-health/emergency', 'mobile emergency medical card'],
+    ]) {
+        await navigate(client, sessionId, `${baseUrl}${path}`);
+        const audit = await evaluate(client, sessionId, pageAuditExpression);
+        assertPageAudit(audit, label);
+        medicalAudits[label] = audit;
+    }
+
+    const medicalMobileScreenshot = await client.send('Page.captureScreenshot', {
+        format: 'png',
+        captureBeyondViewport: true,
+    }, sessionId);
+    await writeFile(
+        join(outputDirectory, 'medical-emergency-mobile.png'),
+        Buffer.from(medicalMobileScreenshot.data, 'base64'),
+    );
+
+    for (const [path, label] of [
         ['/pets/profile/pet-scout', 'mobile public pet profile'],
         ['/pets/manage/new', 'mobile pet creation'],
         ['/pets/manage/pet-scout', 'mobile pet management'],
@@ -614,6 +677,11 @@ try {
     const petZoomAudit = await evaluate(client, sessionId, pageAuditExpression);
     assertPageAudit(petZoomAudit, '320px pet management reflow');
     petAudits['320px pet management reflow'] = petZoomAudit;
+
+    await navigate(client, sessionId, `${baseUrl}/medical-records/scout-health/manage`);
+    const medicalZoomAudit = await evaluate(client, sessionId, pageAuditExpression);
+    assertPageAudit(medicalZoomAudit, '320px medical record management reflow');
+    medicalAudits['320px medical record management reflow'] = medicalZoomAudit;
 
     const socialAudits = {};
     await client.send('Emulation.setDeviceMetricsOverride', {
@@ -977,6 +1045,8 @@ try {
         zoomAudit,
         contentAudits,
         petAudits,
+        medicalAudits,
+        medicalBehavior,
         socialAudits,
         communityAudits,
         communityProfileBehavior,
@@ -1005,6 +1075,8 @@ try {
             join(outputDirectory, 'content-feed-mobile.png'),
             join(outputDirectory, 'pet-profile-manage-desktop.png'),
             join(outputDirectory, 'pet-profile-manage-mobile.png'),
+            join(outputDirectory, 'medical-emergency-desktop.png'),
+            join(outputDirectory, 'medical-emergency-mobile.png'),
             join(outputDirectory, 'social-relationships-desktop.png'),
             join(outputDirectory, 'social-relationships-mobile.png'),
             join(outputDirectory, 'community-workspace-desktop.png'),

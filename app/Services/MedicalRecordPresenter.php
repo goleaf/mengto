@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Enums\MedicalEventType;
+use App\Enums\MedicalKnowledgeStatus;
 use App\Enums\MedicalReminderStatus;
 use App\Enums\MedicationDoseStatus;
 use App\Enums\MedicationStatus;
+use App\Enums\PetProfilePermission;
 use App\Enums\VaccinationStatus;
 use App\Models\AuditLog;
 use App\Models\MedicalAccessGrant;
@@ -17,6 +19,7 @@ use App\Models\MedicalRecord;
 use App\Models\MedicalReminder;
 use App\Models\Medication;
 use App\Models\MedicationDose;
+use App\Models\PetProfile;
 use App\Models\Vaccination;
 use App\Models\WeightEntry;
 use Illuminate\Database\Eloquent\Builder;
@@ -30,13 +33,23 @@ class MedicalRecordPresenter
         private readonly ForumActor $actor,
         private readonly QrCodeGenerator $qrCodes,
         private readonly LocaleFormatter $formatter,
+        private readonly PetProfileAccess $petAccess,
     ) {}
 
     /** @return array<string, mixed> */
     public function directory(): array
     {
+        $user = $this->actor->requireUser();
         $records = MedicalRecord::query()
-            ->forOwnerDirectory($this->actor->key())
+            ->select([
+                'id', 'owner_id', 'pet_profile_id', 'owner_key', 'slug',
+                'pet_profile_key', 'pet_name', 'species', 'breed', 'birth_date',
+                'birth_date_estimated', 'current_weight_grams', 'image_url',
+                'status', 'privacy', 'last_visit_at', 'next_appointment_at',
+                'updated_at',
+            ])
+            ->accessibleTo($user)
+            ->where('status', 'active')
             ->withCount([
                 'medications as active_medications_count' => fn (Builder $query): Builder => $query
                     ->where('status', MedicationStatus::Active->value),
@@ -62,25 +75,45 @@ class MedicalRecordPresenter
     /** @return array<string, mixed> */
     public function editor(): array
     {
-        $existing = MedicalRecord::query()
-            ->select(['id', 'owner_key', 'pet_profile_key'])
-            ->where('owner_key', $this->actor->key())
-            ->whereIn('pet_profile_key', ['scout', 'nori'])
-            ->pluck('pet_profile_key')
-            ->all();
+        $user = $this->actor->requireUser();
+        $profiles = PetProfile::query()
+            ->select([
+                'id', 'user_id', 'slug', 'name', 'species', 'status',
+            ])
+            ->with([
+                'managers' => fn ($managers) => $managers
+                    ->select([
+                        'id', 'pet_profile_id', 'user_id', 'role', 'status',
+                        'permission_overrides', 'starts_at', 'ends_at', 'revoked_at',
+                    ])
+                    ->where('user_id', $user->id),
+            ])
+            ->managedBy($user)
+            ->where('status', 'active')
+            ->whereDoesntHave('medicalRecord')
+            ->orderBy('name')
+            ->limit(50)
+            ->get();
 
-        $options = collect(['scout', 'nori'])
-            ->reject(fn (string $key): bool => in_array($key, $existing, true))
-            ->mapWithKeys(function (string $key): array {
-                $pet = $this->profiles->pet($key);
-
-                return $pet === null ? [] : [$key => $pet['name'].' · '.$pet['species']];
-            })
+        $options = $profiles
+            ->filter(fn (PetProfile $profile): bool => $this->petAccess->allows(
+                $profile,
+                $user,
+                PetProfilePermission::ManageMedical,
+            ))
+            ->mapWithKeys(fn (PetProfile $profile): array => [
+                $profile->slug => $profile->name.' · '.$profile->species,
+            ])
             ->all();
 
         return [
             ...$this->page(__('messages.create_a_private_health_record_78b6de7a5e'), 'health'),
             'pet_options' => $options,
+            'knowledge_status_options' => collect(MedicalKnowledgeStatus::cases())
+                ->mapWithKeys(fn (MedicalKnowledgeStatus $status): array => [
+                    $status->value => $status->label(),
+                ])
+                ->all(),
             'timezone' => 'Europe/Vilnius',
         ];
     }
@@ -400,7 +433,11 @@ class MedicalRecordPresenter
             'microchip_masked' => $record->maskedMicrochip(),
             'blood_group' => $record->blood_group,
             'critical_allergies' => $record->critical_allergies ?? [],
+            'allergy_knowledge_status' => $record->allergy_knowledge_status->value,
+            'allergy_knowledge_label' => $record->allergy_knowledge_status->label(),
             'chronic_conditions' => $record->chronic_conditions ?? [],
+            'medication_knowledge_status' => $record->medication_knowledge_status->value,
+            'medication_knowledge_label' => $record->medication_knowledge_status->label(),
             'emergency_notes' => $record->emergency_notes,
             'primary_clinic_name' => $record->primary_clinic_name,
             'primary_clinic_contact' => $record->primary_clinic_contact,
@@ -427,7 +464,11 @@ class MedicalRecordPresenter
             'current_weight' => $this->weightLabel($record->current_weight_grams, $record->species),
             'image_url' => $record->image_url,
             'critical_allergies' => $record->critical_allergies ?? [],
+            'allergy_knowledge_status' => $record->allergy_knowledge_status->value,
+            'allergy_knowledge_label' => $record->allergy_knowledge_status->label(),
             'chronic_conditions' => $record->chronic_conditions ?? [],
+            'medication_knowledge_status' => $record->medication_knowledge_status->value,
+            'medication_knowledge_label' => $record->medication_knowledge_status->label(),
             'emergency_notes' => $record->emergency_notes,
             'blood_group' => $record->blood_group,
             'microchip_status' => Str::headline($record->microchip_status),
@@ -452,7 +493,11 @@ class MedicalRecordPresenter
             $summary['microchip_status'] = Str::headline($record->microchip_status);
             $summary['microchip_masked'] = $record->maskedMicrochip();
             $summary['critical_allergies'] = $record->critical_allergies ?? [];
+            $summary['allergy_knowledge_status'] = $record->allergy_knowledge_status->value;
+            $summary['allergy_knowledge_label'] = $record->allergy_knowledge_status->label();
             $summary['chronic_conditions'] = $record->chronic_conditions ?? [];
+            $summary['medication_knowledge_status'] = $record->medication_knowledge_status->value;
+            $summary['medication_knowledge_label'] = $record->medication_knowledge_status->label();
             $summary['blood_group'] = $record->blood_group;
             $summary['primary_clinic_name'] = $record->primary_clinic_name;
         }

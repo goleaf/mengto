@@ -141,6 +141,26 @@
                     </div>
                     <div class="grid gap-4 md:grid-cols-2">
                         <label>
+                            {{ __('medical.fields.allergy_knowledge_status') }}
+                            <select name="allergy_knowledge_status" required>
+                                @forelse ($knowledge_status_options as $value => $label)
+                                    <option value="{{ $value }}" @selected(old('allergy_knowledge_status', 'unknown') === $value)>{{ $label }}</option>
+                                @empty
+                                    <option value="unknown">{{ __('medical.knowledge_statuses.unknown') }}</option>
+                                @endforelse
+                            </select>
+                        </label>
+                        <label>
+                            {{ __('medical.fields.medication_knowledge_status') }}
+                            <select name="medication_knowledge_status" required>
+                                @forelse ($knowledge_status_options as $value => $label)
+                                    <option value="{{ $value }}" @selected(old('medication_knowledge_status', 'unknown') === $value)>{{ $label }}</option>
+                                @empty
+                                    <option value="unknown">{{ __('medical.knowledge_statuses.unknown') }}</option>
+                                @endforelse
+                            </select>
+                        </label>
+                        <label>
                             {{ __('ui.allergies_or_dangerous_reactions_5eefd62ea1') }}
                             <textarea name="critical_allergies" rows="4" maxlength="2000" placeholder="{{ __('ui.one_item_per_line_a1a8b0c7a9') }}">{{ old('critical_allergies') }}</textarea>
                         </label>

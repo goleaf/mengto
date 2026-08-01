@@ -20,6 +20,7 @@
             <x-medical-critical-summary :record="[
                 ...$medical_record,
                 'critical_allergies' => $medical_record['critical_allergies'] ?? [],
+                'allergy_knowledge_label' => $medical_record['allergy_knowledge_label'] ?? __('medical.knowledge_statuses.unknown'),
                 'chronic_conditions' => $medical_record['chronic_conditions'] ?? [],
                 'emergency_notes' => $medical_record['emergency_notes'] ?? null,
                 'primary_clinic_name' => $medical_record['primary_clinic_name'] ?? null,
@@ -41,7 +42,7 @@
             </section>
         @endif
 
-        @if ($medications !== [])
+        @if (array_intersect(['medications', 'emergency'], $grant['sections']) !== [])
             <section class="medical-section" aria-labelledby="shared-medications-title">
                 <div class="medical-section__heading">
                     <h2 id="shared-medications-title" class="text-xl font-bold">{{ __('ui.active_medications_2a3bd50cbe') }}</h2>
@@ -57,6 +58,7 @@
                             <p class="mt-2 text-xs font-semibold text-paw-muted">{{ $medication['verification'] }}</p>
                         </article>
                     @empty
+                        <p class="text-sm text-paw-muted">{{ $medical_record['medication_knowledge_label'] ?? __('medical.knowledge_statuses.unknown') }}</p>
                     @endforelse
                 </div>
             </section>

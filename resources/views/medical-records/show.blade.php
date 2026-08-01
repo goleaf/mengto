@@ -119,7 +119,7 @@
                         @empty
                             <div class="medical-empty">
                                 <x-lucide-pill class="size-7" aria-hidden="true" />
-                                <p>{{ __('ui.no_medication_courses_recorded_d131d07a43') }}</p>
+                                <p>{{ $medical_record['medication_knowledge_label'] }}</p>
                             </div>
                         @endforelse
                     </div>

@@ -30,6 +30,7 @@ preg_match('/<social-relationships-source-revision>\n(.*)\n<\/social-relationshi
 preg_match('/<content-feed-source-revision>\n(.*)\n<\/content-feed-source-revision>/sU', $source, $contentFeedMatch);
 preg_match('/<communication-source-revision>\n(.*)\n<\/communication-source-revision>/sU', $source, $communicationMatch);
 preg_match('/<community-source-revision>\n(.*)\n<\/community-source-revision>/sU', $source, $communityMatch);
+preg_match('/<medical-record-source-revision>\n(.*)\n<\/medical-record-source-revision>/sU', $source, $medicalRecordMatch);
 preg_match('/Combined raw payload SHA-256: `([a-f0-9]{64})`/', $source, $checksumMatch);
 preg_match('/Revision raw payload SHA-256: `([a-f0-9]{64})`/', $source, $petProfileChecksumMatch);
 preg_match('/Master raw payload SHA-256: `([a-f0-9]{64})`/', $source, $masterChecksumMatch);
@@ -41,6 +42,8 @@ preg_match('/Communication revision raw payload SHA-256: `([a-f0-9]{64})`/', $so
 preg_match('/Complete master raw payload SHA-256: `([a-f0-9]{64})`/', $source, $completeMasterChecksumMatch);
 preg_match('/Community revision raw payload SHA-256: `([a-f0-9]{64})`/', $source, $communityChecksumMatch);
 preg_match('/Expanded master raw payload SHA-256: `([a-f0-9]{64})`/', $source, $expandedMasterChecksumMatch);
+preg_match('/Medical revision raw payload SHA-256: `([a-f0-9]{64})`/', $source, $medicalRecordChecksumMatch);
+preg_match('/Medical master raw payload SHA-256: `([a-f0-9]{64})`/', $source, $medicalMasterChecksumMatch);
 
 if (! isset(
     $primaryMatch[1],
@@ -50,6 +53,7 @@ if (! isset(
     $contentFeedMatch[1],
     $communicationMatch[1],
     $communityMatch[1],
+    $medicalRecordMatch[1],
     $checksumMatch[1],
     $petProfileChecksumMatch[1],
     $masterChecksumMatch[1],
@@ -61,6 +65,8 @@ if (! isset(
     $completeMasterChecksumMatch[1],
     $communityChecksumMatch[1],
     $expandedMasterChecksumMatch[1],
+    $medicalRecordChecksumMatch[1],
+    $medicalMasterChecksumMatch[1],
 )) {
     fwrite(STDERR, "The preserved forum prompt markers or checksum are invalid.\n");
     exit(1);
@@ -74,6 +80,7 @@ $parts = [
     'content-feed-revision' => $contentFeedMatch[1],
     'communication-revision' => $communicationMatch[1],
     'community-revision' => $communityMatch[1],
+    'medical-record-revision' => $medicalRecordMatch[1],
 ];
 $forumPayload = $parts['primary']."\n\n".$parts['extension'];
 $forumPayloadChecksum = hash('sha256', $forumPayload);
@@ -90,7 +97,10 @@ $communicationPayloadChecksum = hash('sha256', $parts['communication-revision'])
 $communicationMasterPayload = $contentFeedMasterPayload."\n\n".$parts['communication-revision'];
 $communicationMasterChecksum = hash('sha256', $communicationMasterPayload);
 $communityPayloadChecksum = hash('sha256', $parts['community-revision']);
-$payloadChecksum = hash('sha256', $communicationMasterPayload."\n\n".$parts['community-revision']);
+$communityMasterPayload = $communicationMasterPayload."\n\n".$parts['community-revision'];
+$communityMasterChecksum = hash('sha256', $communityMasterPayload);
+$medicalRecordPayloadChecksum = hash('sha256', $parts['medical-record-revision']);
+$payloadChecksum = hash('sha256', $communityMasterPayload."\n\n".$parts['medical-record-revision']);
 
 if (! hash_equals($checksumMatch[1], $forumPayloadChecksum)
     || ! hash_equals($petProfileChecksumMatch[1], $petProfilePayloadChecksum)
@@ -102,7 +112,9 @@ if (! hash_equals($checksumMatch[1], $forumPayloadChecksum)
     || ! hash_equals($communicationChecksumMatch[1], $communicationPayloadChecksum)
     || ! hash_equals($completeMasterChecksumMatch[1], $communicationMasterChecksum)
     || ! hash_equals($communityChecksumMatch[1], $communityPayloadChecksum)
-    || ! hash_equals($expandedMasterChecksumMatch[1], $payloadChecksum)
+    || ! hash_equals($expandedMasterChecksumMatch[1], $communityMasterChecksum)
+    || ! hash_equals($medicalRecordChecksumMatch[1], $medicalRecordPayloadChecksum)
+    || ! hash_equals($medicalMasterChecksumMatch[1], $payloadChecksum)
 ) {
     fwrite(STDERR, "A preserved source-prompt checksum does not match its payload.\n");
     exit(1);
@@ -134,7 +146,8 @@ foreach ($parts as $part => $contents) {
         'social-relationships-revision' => 'Social relationships and safe introductions revision',
         'content-feed-revision' => 'Content feed and distribution revision',
         'communication-revision' => 'Safe communication revision',
-        default => 'Communities and full lifecycle revision',
+        'community-revision' => 'Communities and full lifecycle revision',
+        default => 'Medical record and full clinical history revision',
     };
     $sectionPath = [$section];
     $lines = preg_split('/\R/u', $contents) ?: [];
@@ -470,6 +483,10 @@ function domainForRequirement(array $sectionPath, string $verbatim, string $sour
         return communityDomainForRequirement($sectionPath, $verbatim);
     }
 
+    if ($sourcePart === 'medical-record-revision') {
+        return medicalDomainForRequirement($sectionPath, $verbatim);
+    }
+
     $context = strtolower(implode(' ', $sectionPath).' '.$verbatim);
 
     return match (true) {
@@ -517,6 +534,36 @@ function domainForRequirement(array $sectionPath, string $verbatim, string $sour
         str_contains($context, 'audit'),
         str_contains($context, 'final report') => 'planning-and-documentation',
         default => 'forum-feature',
+    };
+}
+
+/** @param list<string> $sectionPath */
+function medicalDomainForRequirement(array $sectionPath, string $verbatim): string
+{
+    $context = strtolower(implode(' ', $sectionPath).' '.$verbatim);
+    preg_match_all('/(?:^|\s)(\d{1,3})\s*[—-]/u', $context, $sectionNumbers);
+    $sectionNumber = isset($sectionNumbers[1]) && $sectionNumbers[1] !== []
+        ? (int) end($sectionNumbers[1])
+        : null;
+
+    return match (true) {
+        $sectionNumber !== null && $sectionNumber >= 1 && $sectionNumber <= 15 => 'medical-foundation',
+        $sectionNumber !== null && $sectionNumber >= 16 && $sectionNumber <= 35 => 'medical-creation-identity',
+        $sectionNumber !== null && $sectionNumber >= 36 && $sectionNumber <= 60 => 'medical-access-consent',
+        $sectionNumber !== null && $sectionNumber >= 61 && $sectionNumber <= 75 => 'medical-clinical-case',
+        $sectionNumber !== null && $sectionNumber >= 76 && $sectionNumber <= 95 => 'medical-observation',
+        $sectionNumber !== null && $sectionNumber >= 96 && $sectionNumber <= 125 => 'medical-allergy-medication',
+        $sectionNumber !== null && $sectionNumber >= 126 && $sectionNumber <= 158 => 'medical-vaccination-lab',
+        $sectionNumber !== null && $sectionNumber >= 159 && $sectionNumber <= 188 => 'medical-procedure-care-plan',
+        $sectionNumber !== null && $sectionNumber >= 189 && $sectionNumber <= 220 => 'medical-emergency-provider-lifecycle',
+        $sectionNumber !== null && $sectionNumber >= 221 && $sectionNumber <= 249 => 'medical-security-data-ai',
+        $sectionNumber !== null && $sectionNumber >= 250 && $sectionNumber <= 270 => 'medical-interface-quality-release',
+        $sectionNumber !== null && $sectionNumber >= 271 && $sectionNumber <= 295 => 'medical-scenario',
+        str_contains($context, 'dostup') || str_contains($context, 'soglas') => 'medical-access-consent',
+        str_contains($context, 'allerg') || str_contains($context, 'lekarstv') => 'medical-allergy-medication',
+        str_contains($context, 'vakcin') || str_contains($context, 'laborator') => 'medical-vaccination-lab',
+        str_contains($context, 'audit') || str_contains($context, 'shifrovan') => 'medical-security-data-ai',
+        default => 'medical-foundation',
     };
 }
 
@@ -814,6 +861,18 @@ function identifierPrefix(string $domain): string
         'community-lifecycle-data' => 'community.lifecycle-data',
         'community-quality-release' => 'community.quality-release',
         'community-scenario' => 'community.scenario',
+        'medical-foundation' => 'medical.foundation',
+        'medical-creation-identity' => 'medical.creation-identity',
+        'medical-access-consent' => 'medical.access-consent',
+        'medical-clinical-case' => 'medical.clinical-case',
+        'medical-observation' => 'medical.observation',
+        'medical-allergy-medication' => 'medical.allergy-medication',
+        'medical-vaccination-lab' => 'medical.vaccination-lab',
+        'medical-procedure-care-plan' => 'medical.procedure-care-plan',
+        'medical-emergency-provider-lifecycle' => 'medical.emergency-provider-lifecycle',
+        'medical-security-data-ai' => 'medical.security-data-ai',
+        'medical-interface-quality-release' => 'medical.interface-quality-release',
+        'medical-scenario' => 'medical.scenario',
         default => 'forum.feature',
     };
 }
@@ -900,6 +959,22 @@ function phaseForRequirement(
             'community-lifecycle-data' => 62,
             'community-quality-release', 'community-scenario' => 63,
             default => 55,
+        };
+    }
+
+    if ($sourcePart === 'medical-record-revision') {
+        return match ($domain) {
+            'medical-foundation', 'medical-creation-identity' => 64,
+            'medical-access-consent' => 65,
+            'medical-clinical-case', 'medical-observation' => 66,
+            'medical-allergy-medication' => 67,
+            'medical-vaccination-lab' => 68,
+            'medical-procedure-care-plan' => 69,
+            'medical-emergency-provider-lifecycle' => 70,
+            'medical-security-data-ai' => 71,
+            'medical-interface-quality-release' => 72,
+            'medical-scenario' => 73,
+            default => 64,
         };
     }
 
@@ -1034,6 +1109,10 @@ function priorityForRequirement(string $domain, string $verbatim): string
             'community-creation-privacy',
             'community-roles',
             'community-safety-moderation',
+            'medical-access-consent',
+            'medical-allergy-medication',
+            'medical-emergency-provider-lifecycle',
+            'medical-security-data-ai',
         ], true)
         || str_contains($value, 'must not')
         || str_contains($value, 'never')
@@ -1061,6 +1140,10 @@ function priorityForRequirement(string $domain, string $verbatim): string
         'community-membership',
         'community-governance',
         'community-lifecycle-data',
+        'medical-foundation',
+        'medical-creation-identity',
+        'medical-clinical-case',
+        'medical-security-data-ai',
     ], true)
         ? 'high'
         : 'standard';
@@ -1148,6 +1231,20 @@ function impactFor(string $domain, string $impact): string
         'community-quality-release',
         'community-scenario',
     ];
+    $medicalDomains = [
+        'medical-foundation',
+        'medical-creation-identity',
+        'medical-access-consent',
+        'medical-clinical-case',
+        'medical-observation',
+        'medical-allergy-medication',
+        'medical-vaccination-lab',
+        'medical-procedure-care-plan',
+        'medical-emergency-provider-lifecycle',
+        'medical-security-data-ai',
+        'medical-interface-quality-release',
+        'medical-scenario',
+    ];
     $relevant = [
         'database' => ['animal-taxonomy', 'moderation', 'reputation-and-trust', 'forum-category', 'persistence', 'forum-feature', 'pet-profile', 'pet-creation', 'pet-identity', 'pet-media', 'pet-behavior', 'pet-public-profile', 'pet-privacy', 'pet-ownership', 'pet-social', 'pet-integration', 'pet-lifecycle', 'pet-discovery', 'pet-moderation', 'pet-data', 'pet-release', 'pet-quality'],
         'backend' => ['animal-taxonomy', 'moderation', 'reputation-and-trust', 'forum-category', 'search-and-discovery', 'persistence', 'forum-feature', 'pet-profile', 'pet-creation', 'pet-identity', 'pet-media', 'pet-behavior', 'pet-public-profile', 'pet-privacy', 'pet-ownership', 'pet-social', 'pet-integration', 'pet-lifecycle', 'pet-discovery', 'pet-localization', 'pet-interface', 'pet-moderation', 'pet-data', 'pet-release', 'pet-quality'],
@@ -1170,6 +1267,7 @@ function impactFor(string $domain, string $impact): string
             $contentDomains,
             $communicationDomains,
             $communityDomains,
+            $medicalDomains,
         );
     }
 
@@ -1180,6 +1278,7 @@ function impactFor(string $domain, string $impact): string
             array_diff($contentDomains, ['content-data']),
             array_diff($communicationDomains, ['communication-data']),
             array_diff($communityDomains, ['community-lifecycle-data']),
+            array_diff($medicalDomains, ['medical-security-data-ai']),
         );
     }
 
@@ -1190,6 +1289,7 @@ function impactFor(string $domain, string $impact): string
             array_diff($contentDomains, ['content-localization-interface', 'content-scenario']),
             array_diff($communicationDomains, ['communication-scenario']),
             array_diff($communityDomains, ['community-discovery-localization', 'community-scenario']),
+            array_diff($medicalDomains, ['medical-interface-quality-release', 'medical-scenario']),
         );
     }
 
@@ -1220,6 +1320,8 @@ function impactFor(string $domain, string $impact): string
         'community-knowledge',
         'community-operations',
         'community-safety-moderation',
+        'medical-access-consent',
+        'medical-security-data-ai',
     ]);
 
     $relevant['seed'] = array_merge($relevant['seed'], [
@@ -1240,6 +1342,9 @@ function impactFor(string $domain, string $impact): string
         'community-membership',
         'community-safety-moderation',
         'community-quality-release',
+        'medical-foundation',
+        'medical-creation-identity',
+        'medical-interface-quality-release',
     ]);
 
     return in_array($domain, $relevant[$impact] ?? [], true)

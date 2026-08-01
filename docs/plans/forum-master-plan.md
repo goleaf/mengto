@@ -4,7 +4,7 @@
 
 This plan implements the immutable source in
 `docs/requirements/forum-source-prompt.md`. The generated
-`docs/plans/forum-phase-requirement-index.md` assigns every one of the 18,640
+`docs/plans/forum-phase-requirement-index.md` assigns every one of the 29,960
 atomic requirement IDs to a primary phase; no identifier is represented by a
 generic “implement everything” checkbox.
 
@@ -291,3 +291,26 @@ are maintained in `docs/plans/content-feed-master-plan.md`. Canonical content
 links to existing forum, pet, social, group, event, lost/found, adoption,
 marketplace, knowledge, care, moderation, and media records. It does not copy
 their private or mutable business state into feed payloads.
+
+## Phases 45-54: Communication Revision
+
+The communication revision contributes 3,877 stable `communication.*`
+requirements. Its exact message, media, group communication, call, encryption,
+safety, interface, and release boundaries are maintained in
+`docs/plans/communication-master-plan.md`.
+
+## Phases 55-63: Community Revision
+
+The community revision contributes 3,576 stable `community.*` requirements.
+Its exact group identity, membership, governance, forum, knowledge, event,
+volunteer, finance, moderation, discovery, lifecycle, and release boundaries
+are maintained in `docs/plans/community-master-plan.md`.
+
+## Phases 64-73: Medical Record Revision
+
+The medical revision contributes 3,867 stable `medical.*` requirements. The
+first package links the existing medical aggregate to canonical pet identity,
+makes ownership transfer contract access, introduces explicit medical
+knowledge states, and preserves legacy rows. The full clinical, provider,
+consent, emergency, security, interoperability, interface, and scenario plan
+is maintained in `docs/plans/medical-record-master-plan.md`.

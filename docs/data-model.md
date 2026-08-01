@@ -3,7 +3,7 @@
 ## Storage Baseline
 
 - 68 migrations created 71 SQLite tables at baseline; the current additive
-  schema has 100 migrations and 177 tables after identity, care-sync,
+  schema has 111 migrations and 191 tables after identity, care-sync,
   social-state, device-lifecycle, forum taxonomy, global animal taxonomy,
   reputation, moderation, credential verification, structured-community, and
   persistent-group work.
@@ -25,7 +25,7 @@
 | Marketplace and adoption | listings, listing engagements, reservations, compatibility listing reports, orders, disputes, listing reviews, adoption cases, encrypted applications, append-only adoption events |
 | Lost/found | cases, sightings, sectors, tasks, volunteers, updates, alerts, reports, immutable case events, encrypted contact relays |
 | Care | journals, routines, tasks, entries, media, access grants |
-| Medical | records, events, vaccinations, weights, medications, doses, documents, reminders, access grants |
+| Medical | canonical pet-linked records, events, vaccinations, weights, medications, doses, documents, reminders, access grants |
 | Devices | devices, assignments, readings, events, commands, safe zones, automations, runs, access grants, lifecycle records |
 | Cross-domain | audit logs |
 
@@ -39,8 +39,10 @@ legacy key has a verified user mapping.
 ## Integrity Rules
 
 - Foreign keys protect child ownership where a relational parent exists.
-- Composite unique constraints protect one care/medical record per owner and
-  pet, one engagement per actor/target, one order/review per eligible source,
+- Composite unique constraints protect one care journal per owner and pet;
+  medical records use one nullable unique canonical pet foreign key while
+  legacy owner/pet keys remain compatible. Other constraints protect one
+  engagement per actor/target, one order/review per eligible source,
   and one idempotent external command/event.
 - Publication photos use a server-resolved stable key. A unique
   `(photo_asset_id, user_id)` constraint permits one replaceable reaction per
@@ -90,6 +92,10 @@ legacy key has a verified user mapping.
   One privacy row, append-only idempotent lifecycle events, retained slug
   aliases, and one current versioned fact per pet/fact key preserve
   authorization, privacy, provenance, and correction history.
+- New medical records reference one canonical pet profile. Historical owner
+  keys do not authorize a linked record after ownership transfer. Explicit
+  allergy and medication knowledge states prevent an empty encrypted array
+  from being interpreted as proof of absence.
 
 ## Query Rules
 

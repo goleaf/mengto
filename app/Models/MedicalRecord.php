@@ -4,11 +4,15 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Enums\MedicalKnowledgeStatus;
+use App\Enums\PetManagerRole;
+use App\Enums\PetProfilePermission;
 use Database\Factories\MedicalRecordFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
 
@@ -37,6 +41,7 @@ use Illuminate\Support\Carbon;
  * @property string $microchip_status
  * @property Carbon|null $next_appointment_at
  * @property int|null $owner_id
+ * @property int|null $pet_profile_id
  * @property string $owner_key
  * @property string $pet_name
  * @property string $pet_profile_key
@@ -53,6 +58,9 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $updated_at
  * @property-read Collection<int, Vaccination> $vaccinations
  * @property-read Collection<int, WeightEntry> $weightEntries
+ * @property-read PetProfile|null $petProfile
+ * @property MedicalKnowledgeStatus $allergy_knowledge_status
+ * @property MedicalKnowledgeStatus $medication_knowledge_status
  */
 class MedicalRecord extends Model
 {
@@ -60,22 +68,24 @@ class MedicalRecord extends Model
     use HasFactory;
 
     private const ROUTE_COLUMNS = [
-        'id', 'owner_id', 'owner_key', 'slug', 'pet_profile_key', 'pet_name',
+        'id', 'owner_id', 'pet_profile_id', 'owner_key', 'slug', 'pet_profile_key', 'pet_name',
         'species', 'breed', 'birth_date', 'birth_date_estimated', 'sex',
         'reproductive_status', 'current_weight_grams', 'image_url', 'status',
         'privacy', 'timezone', 'microchip_status', 'microchip_number',
-        'microchip_checked_on', 'blood_group', 'critical_allergies',
+        'microchip_checked_on', 'blood_group', 'allergy_knowledge_status', 'critical_allergies',
+        'medication_knowledge_status',
         'chronic_conditions', 'emergency_notes', 'primary_clinic_name',
         'primary_clinic_contact', 'emergency_contact', 'last_visit_at',
         'next_appointment_at', 'lock_version', 'created_at', 'updated_at',
     ];
 
     protected $fillable = [
-        'owner_id', 'owner_key', 'slug', 'pet_profile_key', 'pet_name',
+        'owner_id', 'pet_profile_id', 'owner_key', 'slug', 'pet_profile_key', 'pet_name',
         'species', 'breed', 'birth_date', 'birth_date_estimated', 'sex',
         'reproductive_status', 'current_weight_grams', 'image_url', 'status',
         'privacy', 'timezone', 'microchip_status', 'microchip_number',
-        'microchip_checked_on', 'blood_group', 'critical_allergies',
+        'microchip_checked_on', 'blood_group', 'allergy_knowledge_status', 'critical_allergies',
+        'medication_knowledge_status',
         'chronic_conditions', 'emergency_notes', 'primary_clinic_name',
         'primary_clinic_contact', 'emergency_contact', 'last_visit_at',
         'next_appointment_at', 'lock_version',
@@ -98,6 +108,8 @@ class MedicalRecord extends Model
         'reproductive_status' => 'unknown',
         'birth_date_estimated' => false,
         'lock_version' => 1,
+        'allergy_knowledge_status' => 'unknown',
+        'medication_knowledge_status' => 'unknown',
     ];
 
     protected function casts(): array
@@ -107,7 +119,9 @@ class MedicalRecord extends Model
             'birth_date_estimated' => 'boolean',
             'microchip_number' => 'encrypted',
             'microchip_checked_on' => 'date',
+            'allergy_knowledge_status' => MedicalKnowledgeStatus::class,
             'critical_allergies' => 'encrypted:array',
+            'medication_knowledge_status' => MedicalKnowledgeStatus::class,
             'chronic_conditions' => 'encrypted:array',
             'emergency_notes' => 'encrypted',
             'primary_clinic_contact' => 'encrypted',
@@ -176,6 +190,12 @@ class MedicalRecord extends Model
         return $this->hasMany(MedicalAccessGrant::class);
     }
 
+    /** @return BelongsTo<PetProfile, $this> */
+    public function petProfile(): BelongsTo
+    {
+        return $this->belongsTo(PetProfile::class);
+    }
+
     public function scopeForOwnerDirectory(Builder $query, string $ownerKey): Builder
     {
         return $query
@@ -189,9 +209,64 @@ class MedicalRecord extends Model
             ->where('status', 'active');
     }
 
+    public function scopeAccessibleTo(
+        Builder $query,
+        User $user,
+        PetProfilePermission $permission = PetProfilePermission::ViewMedical,
+    ): Builder {
+        $roles = collect(PetManagerRole::cases())
+            ->filter(fn (PetManagerRole $role): bool => in_array(
+                $permission,
+                $role->defaultPermissions(),
+                true,
+            ))
+            ->map(fn (PetManagerRole $role): string => $role->value)
+            ->all();
+
+        return $query->where(function (Builder $access) use ($permission, $roles, $user): void {
+            $access
+                ->where(function (Builder $legacy) use ($user): void {
+                    $legacy
+                        ->whereNull('pet_profile_id')
+                        ->where(function (Builder $legacyOwner) use ($user): void {
+                            $legacyOwner
+                                ->where('owner_id', $user->id)
+                                ->orWhere('owner_key', $user->actor_key);
+                        });
+                })
+                ->orWhereHas('petProfile', function (Builder $profile) use ($user): void {
+                    $profile->where('user_id', $user->id);
+                })
+                ->orWhereHas('petProfile.managers', function (Builder $managers) use ($permission, $roles, $user): void {
+                    $managers->where('user_id', $user->id);
+                    PetProfileManager::constrainActiveAt($managers, now());
+                    $managers->where(function (Builder $roleOrOverride) use ($permission, $roles): void {
+                        $roleOrOverride
+                            ->where(function (Builder $role) use ($permission, $roles): void {
+                                $role
+                                    ->whereIn('role', $roles)
+                                    ->where(function (Builder $notDenied) use ($permission): void {
+                                        $notDenied
+                                            ->whereNull('permission_overrides')
+                                            ->orWhereJsonDoesntContain(
+                                                'permission_overrides->deny',
+                                                $permission->value,
+                                            );
+                                    });
+                            })
+                            ->orWhereJsonContains(
+                                'permission_overrides->grant',
+                                $permission->value,
+                            );
+                    });
+                });
+        });
+    }
+
     public function isOwnedBy(string $actorKey): bool
     {
-        return hash_equals($this->owner_key, $actorKey);
+        return $this->pet_profile_id === null
+            && hash_equals($this->owner_key, $actorKey);
     }
 
     public function maskedMicrochip(): ?string

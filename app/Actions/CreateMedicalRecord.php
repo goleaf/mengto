@@ -2,10 +2,13 @@
 
 namespace App\Actions;
 
+use App\Enums\MedicalKnowledgeStatus;
+use App\Enums\PetProfilePermission;
 use App\Models\AuditLog;
 use App\Models\MedicalRecord;
+use App\Models\PetProfile;
 use App\Services\ForumActor;
-use App\Services\PetProfileCatalog;
+use App\Services\PetProfileAccess;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
@@ -14,24 +17,37 @@ class CreateMedicalRecord
 {
     public function __construct(
         private readonly ForumActor $actor,
-        private readonly PetProfileCatalog $pets,
+        private readonly PetProfileAccess $petAccess,
     ) {}
 
     /** @param array<string, mixed> $data */
     public function handle(array $data): MedicalRecord
     {
         return DB::transaction(function () use ($data): MedicalRecord {
-            $pet = $this->pets->find((string) $data['pet_profile_key']);
+            $user = $this->actor->requireUser();
+            $pet = PetProfile::query()
+                ->select([
+                    'id', 'user_id', 'profile_key', 'slug', 'name', 'species',
+                    'breed', 'birth_date', 'sex', 'reproductive_status',
+                    'status', 'profile_data',
+                ])
+                ->with('user:id,actor_key')
+                ->managedBy($user)
+                ->where('slug', (string) $data['pet_profile_key'])
+                ->first();
 
-            if ($pet === null) {
+            if ($pet === null || ! $this->petAccess->allows(
+                $pet,
+                $user,
+                PetProfilePermission::ManageMedical,
+            )) {
                 throw ValidationException::withMessages([
                     'pet_profile_key' => __('messages.choose_a_pet_profile_you_manage_de4a79e7f0'),
                 ]);
             }
 
             if (MedicalRecord::query()
-                ->where('owner_key', $this->actor->key())
-                ->where('pet_profile_key', $pet['slug'])
+                ->where('pet_profile_id', $pet->id)
                 ->exists()) {
                 throw ValidationException::withMessages([
                     'pet_profile_key' => __('messages.this_pet_already_has_a_medical_record_d4c3459ec6'),
@@ -39,18 +55,20 @@ class CreateMedicalRecord
             }
 
             $record = MedicalRecord::query()->create([
-                'owner_key' => $this->actor->key(),
-                'slug' => $this->uniqueSlug($pet['slug']),
-                'pet_profile_key' => $pet['slug'],
-                'pet_name' => $pet['name'],
-                'species' => Str::lower($pet['species']),
-                'breed' => $pet['breed'],
-                'birth_date' => $data['birth_date'] ?? null,
+                'owner_id' => $pet->user_id,
+                'pet_profile_id' => $pet->id,
+                'owner_key' => $pet->user->actor_key,
+                'slug' => $this->uniqueSlug($pet->slug),
+                'pet_profile_key' => $pet->slug,
+                'pet_name' => $pet->name,
+                'species' => Str::lower($pet->species),
+                'breed' => $pet->breed,
+                'birth_date' => $data['birth_date'] ?? $pet->birth_date,
                 'birth_date_estimated' => (bool) ($data['birth_date_estimated'] ?? false),
-                'sex' => $data['sex'] ?? null,
-                'reproductive_status' => $data['reproductive_status'],
+                'sex' => $data['sex'] ?? $pet->sex,
+                'reproductive_status' => $data['reproductive_status'] ?? $pet->reproductive_status,
                 'current_weight_grams' => $this->grams($data['weight'] ?? null, $data['weight_unit']),
-                'image_url' => $pet['profile_image'],
+                'image_url' => $pet->profile_data['profile_image'] ?? $pet->profile_data['avatar'] ?? null,
                 'status' => 'active',
                 'privacy' => 'private',
                 'timezone' => $data['timezone'],
@@ -58,7 +76,13 @@ class CreateMedicalRecord
                 'microchip_number' => $data['microchip_number'] ?? null,
                 'microchip_checked_on' => $data['microchip_checked_on'] ?? null,
                 'blood_group' => $data['blood_group'] ?? null,
+                'allergy_knowledge_status' => MedicalKnowledgeStatus::from(
+                    $data['allergy_knowledge_status'],
+                ),
                 'critical_allergies' => $this->lines($data['critical_allergies'] ?? null),
+                'medication_knowledge_status' => MedicalKnowledgeStatus::from(
+                    $data['medication_knowledge_status'],
+                ),
                 'chronic_conditions' => $this->lines($data['chronic_conditions'] ?? null),
                 'emergency_notes' => $data['emergency_notes'] ?? null,
                 'primary_clinic_name' => $data['primary_clinic_name'] ?? null,

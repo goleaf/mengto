@@ -27,8 +27,8 @@ No role is inferred from a hidden button or browser-provided identifier.
 
 - `User`: authenticated person, immutable actor key, locale, timezone, status,
   and administrative capability.
-- `PetProfile`: durable owner-scoped pet identity with independent visibility
-  and profile metadata.
+- `PetProfile`: durable pet identity with independent visibility, timed
+  multi-manager control, and profile metadata across ownership changes.
 - `UserDomainState`: encrypted, versioned per-user persistence for social
   feed, connection, friendship, group, event, message, and place mutations.
 
@@ -58,8 +58,11 @@ No role is inferred from a hidden button or browser-provided identifier.
 
 ### Medical
 
-- Medical record -> events, vaccinations, weight entries, medications, doses,
-  documents, reminders, access grants.
+- Pet profile -> one canonical medical record -> events, vaccinations, weight
+  entries, medications, doses, documents, reminders, access grants.
+- Historical owner keys remain compatibility metadata; current pet control and
+  explicit `view-medical` / `manage-medical` capabilities authorize linked
+  records.
 
 ### Care
 

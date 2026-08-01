@@ -17,7 +17,7 @@
             @forelse ($record['critical_allergies'] as $allergy)
                 <p>{{ $allergy }}</p>
             @empty
-                <p class="text-paw-muted">{{ __('ui.no_critical_allergy_recorded_7f5c568371') }}</p>
+                <p class="text-paw-muted">{{ $record['allergy_knowledge_label'] }}</p>
             @endforelse
         </div>
         <div>

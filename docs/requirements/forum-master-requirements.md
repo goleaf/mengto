@@ -3,8 +3,8 @@
 This catalogue is generated from the immutable source prompt. It normalizes
 the implementation contract without replacing or shortening source text.
 
-- Source payload SHA-256: `408fa2f6cd8d5189f05ebe3762df42a332221f8ee6a83ed366dbc4ec54d2ec8e`
-- Atomic requirements: `26093`
+- Source payload SHA-256: `9f52b2f90c8f1d0dc1c957f0207b6bd89c9a57eaf3359838e51b6c377e25458d`
+- Atomic requirements: `29960`
 - Complete machine-readable catalogue: `docs/requirements/forum-requirements.json`
 - Complete traceability index: `docs/traceability/forum-requirements-matrix.md`
 
@@ -73,6 +73,18 @@ the implementation contract without replacing or shortening source text.
 | forum-feature | 3354 |
 | interface | 76 |
 | localization | 49 |
+| medical-access-consent | 385 |
+| medical-allergy-medication | 378 |
+| medical-clinical-case | 230 |
+| medical-creation-identity | 261 |
+| medical-emergency-provider-lifecycle | 416 |
+| medical-foundation | 296 |
+| medical-interface-quality-release | 318 |
+| medical-observation | 244 |
+| medical-procedure-care-plan | 364 |
+| medical-scenario | 168 |
+| medical-security-data-ai | 394 |
+| medical-vaccination-lab | 413 |
 | moderation | 469 |
 | persistence | 99 |
 | pet-behavior | 322 |

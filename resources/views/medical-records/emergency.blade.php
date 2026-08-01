@@ -28,7 +28,7 @@
                     @forelse ($medical_record['critical_allergies'] as $allergy)
                         <p>{{ $allergy }}</p>
                     @empty
-                        <p>{{ __('ui.no_critical_allergy_recorded_7f5c568371') }}</p>
+                        <p>{{ $medical_record['allergy_knowledge_label'] }}</p>
                     @endforelse
                 </div>
             </div>
@@ -68,7 +68,7 @@
                         @endif
                     </article>
                 @empty
-                    <p class="text-sm text-paw-muted">{{ __('ui.no_active_medication_recorded_c37d3fe2b1') }}</p>
+                    <p class="text-sm text-paw-muted">{{ $medical_record['medication_knowledge_label'] }}</p>
                 @endforelse
             </div>
         </section>

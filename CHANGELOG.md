@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased - 2026-07-31
+## Unreleased - 2026-08-01
 
 ### Security
 
@@ -9,6 +9,12 @@
   missing files, and symbolic-link escapes before streaming or audit changes.
 
 ### Forum And Animal Taxonomy
+
+- Preserved and atomized the complete Point 7 medical-record revision into
+  3,867 requirements, linked medical records to canonical pet identity,
+  enforced one linked record per pet, contracted stale-owner access after
+  transfer, added explicit allergy/medication knowledge states, and retained
+  compatible encrypted legacy records, grants, documents, and audit history.
 
 - Established the canonical pet-profile foundation with permanent identity,
   taxonomy links, typed lifecycle, timed multi-manager roles and permissions,
@@ -21,10 +27,10 @@
   user audit, bounded backfill/search, and a localized accessible Livewire
   relationship center.
 
-- Preserved the combined forum/taxonomy/pet/social specification with a
-  deterministic SHA-256, added the complete content-feed and distribution
-  revision, and generated 18,640 source-linked atomic requirements without
-  renumbering the existing catalogue.
+- Preserved the combined forum, taxonomy, pet, social, content, communication,
+  community, and medical specification with a deterministic SHA-256 and
+  generated 29,960 source-linked atomic requirements without renumbering the
+  existing catalogue.
 - Audited the preview feed and persistent photo/forum boundaries, then defined
   the phased canonical publication, audience, media, distribution,
   moderation, integration, accessibility, and resilient-delivery architecture

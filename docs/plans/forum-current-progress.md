@@ -1,6 +1,6 @@
 # Forum Current Progress
 
-Last updated: 2026-07-31.
+Last updated: 2026-08-01.
 
 ## Current Phase
 
@@ -13,17 +13,23 @@ progress; pet phases 17-25 are planned and the first canonical identity/access
 foundation package is verified. The social phase 27 foundation is also
 verified, while later social packages remain open. Content phase 35 has now
 preserved, atomized, audited, and designed the feed revision; production
-content phases 36-44 remain open. Verification remains incremental; no
+content phases 36-44 remain open. Communication phases 45-54 and community
+phases 55-63 are registered, with the first profile-scoped community
+membership package verified. Medical phases 64-73 are registered and their
+first canonical patient-identity/access package is under verification.
+Verification remains incremental; no
 incomplete phase is described as complete.
 
 ## Completed Evidence
 
-- Master source prompt plus dated pet-profile, social, and content revisions preserved
+- Master source prompt plus dated pet-profile, social, content, communication,
+  community, and medical revisions preserved
   with SHA-256
-  `af59796f91aaccd42cb5af1322082db79b25fb4248eb235cbeb049a645f5348f`.
-- 18,640 atomic requirements generated with full source coordinates; the
-  4,135 `pet.*`, 3,210 `social.*`, and 4,011 `content.*` records did not
-  renumber the original 7,284 IDs or each other.
+  `9f52b2f90c8f1d0dc1c957f0207b6bd89c9a57eaf3359838e51b6c377e25458d`.
+- 29,960 atomic requirements generated with full source coordinates. The
+  4,135 `pet.*`, 3,210 `social.*`, 4,011 `content.*`, 3,877
+  `communication.*`, 3,576 `community.*`, and 3,867 `medical.*` records did
+  not renumber preceding IDs.
 - Every atomic requirement assigned to one primary phase.
 - Existing forum, policies, requests, migrations, adjacent domains,
   translations, seeds, factories, and focused tests inventoried.

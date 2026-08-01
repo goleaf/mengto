@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\MedicalKnowledgeStatus;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -17,7 +18,7 @@ class StoreMedicalRecordRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'pet_profile_key' => ['required', Rule::in(['scout', 'nori'])],
+            'pet_profile_key' => ['required', 'string', 'max:80'],
             'birth_date' => ['nullable', 'date', 'before_or_equal:today'],
             'birth_date_estimated' => ['nullable', 'boolean'],
             'sex' => ['nullable', Rule::in(['male', 'female', 'intersex', 'unknown'])],
@@ -35,7 +36,9 @@ class StoreMedicalRecordRequest extends FormRequest
             'microchip_number' => ['nullable', 'string', 'max:80'],
             'microchip_checked_on' => ['nullable', 'date', 'before_or_equal:today'],
             'blood_group' => ['nullable', 'string', 'max:60'],
+            'allergy_knowledge_status' => ['required', Rule::enum(MedicalKnowledgeStatus::class)],
             'critical_allergies' => ['nullable', 'string', 'max:2000'],
+            'medication_knowledge_status' => ['required', Rule::enum(MedicalKnowledgeStatus::class)],
             'chronic_conditions' => ['nullable', 'string', 'max:3000'],
             'emergency_notes' => ['nullable', 'string', 'max:3000'],
             'primary_clinic_name' => ['nullable', 'string', 'max:160'],

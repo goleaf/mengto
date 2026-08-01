@@ -45097,3 +45097,7699 @@ glavn oe dostizenie etogo punkta zakliucaetsia v tom, cto kazdoe soobscestvo bud
 
 sledujusc ij punkt — medkartocka pitomca, vakcinacii, analiz y, diagnozy, lekarstva, allergii, operacii, kliniki, dostup specialistov, ekstrenn a ia kartocka, dokumenty i poln a ia logika medicinskoj istorii
 </community-source-revision>
+
+## Source Part H: Medical Record And Full Clinical History Revision
+
+- Source timestamp: `1785541918`
+- Medical revision raw payload SHA-256: `b7a4cfe95042148e1fdaf41937d9c5afea9d65069e944d11af3f6205b69bc8a0`
+- Medical master raw payload SHA-256: `9f52b2f90c8f1d0dc1c957f0207b6bd89c9a57eaf3359838e51b6c377e25458d`
+- Checksum payload: prior expanded master, two LF characters, exact medical revision
+
+<medical-record-source-revision>
+# punkt 7 — medkartocka pitomca, vakcinacii, analizy, diagnozy, lekarstva, allergii, operacii, kliniki, dostup specialistov, ekstrennaja kartocka, dokumenty i polnaja logika medicinskoj istorii
+
+## 1 — glavnaja cel vsego punkta
+
+**cto eto dolzno delat**
+
+medkartocka dolzna stat edinym zascischennym istochnikom medicinskoj informacii o konkretnom pitomce na protyazhenii vsej ego zhizni
+
+ona dolzna objediniat
+
+* bazovye medicinskie dannye
+* posescenija klinik
+* diagnozy
+* simptomy
+* vakcinacii
+* allergii
+* lekarstva
+* analizy
+* izobrazheniia
+* operacii
+* procedury
+* stomatologiju
+* reabilitaciju
+* profilaktiku
+* dokumenty
+* plany lecheniia
+* ekstrennuju informaciju
+
+**pocemu eto nuzno**
+
+bez edinoj medicinskoj istorii informacija ostajotsia razdelena mezhdu bumazhnymi dokumentami, raznymi klinikami, chatami, fotografijami, zametkami xoziajina i pam iatju o tom, cto kogda-to govoril veterinar
+
+eto uvelichivaet risk povtornyx analizov, propuscennyx allergij, dvojnogo priema lekarstva, poteri vakcinacionnyx dokumentov i nevernogo ponimaniia predydusc ego lecheniia
+
+**kak eto dolzno rabotat po logike**
+
+vse medicinskie dannye priviazyvajutsia k odnomu stabilnomu profiliu realnogo pitomca
+
+kazdaia zapis dolzna imet istochnik, avtora, datu, status proverki, tekusc uju versiju, uroven privatnosti i sviaz s konkretnym sluchaem ili planom uxoda
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev, sovladelcev, semej, sitterov, priutov, perederzhek, veterinarov, laboratorij, reabilitologov, straxovyx organizacij i ekstrennyx specialistov
+
+**kakoj rezultat dolzen byt dostignut**
+
+upolnomochenn yj specialist poluchaet aktualn uju i pon iatn uju istoriju pitomca, a xoziajin kontroliruet, komu, zachem, na kakoi srok i kakaja chast dannyx dostupna
+
+---
+
+# bazovye principy medicinskoj sistemy
+
+## 2 — medkartocka ne ravnjaetsia publicnomu profiliu
+
+**cto eto dolzno delat**
+
+socialn yj profil pitomca i ego medkartocka dolzny byt raznymi moduljami s raznymi pravilami dostup a
+
+**pocemu eto nuzno**
+
+fotografii, bio i dostizeniia mogut byt publicnymi, no diagnozy, analizy, lekarstva, straxovka i dokumenty javliajutsia chuvstvitelnymi dannymi
+
+**kak eto dolzno rabotat po logike**
+
+publicn yj profil moz et pokaz yvat tolko dobrovolno vybrann yj obobschonn yj status, naprimer est osobye potrebnosti
+
+polnaja medkartocka ostajotsia zakrytoj i nikogda ne publik uetsia avtomaticeski
+
+**dlia kogo i dlia kakoj celi**
+
+dlia vseh xoziaev i pitomcev
+
+**kakoj rezultat dolzen byt dostignut**
+
+socialnaja aktivnost pitomca ne raskryvaet ego medicinskuju istoriju
+
+---
+
+## 3 — odin pitomec i odna osnovnaja medkartocka
+
+**cto eto dolzno delat**
+
+odnomu realnomu pitomcu dolzna sootvetstvovat odna kanoniceskaia medkartocka
+
+**pocemu eto nuzno**
+
+dve nesviazannye kartocki mogut soderzhat raznye allergii, raznye spiski lekarstv i protivorechivye vakcinacii
+
+**kak eto dolzno rabotat po logike**
+
+pri sozdanii ili importe sistema proveriaet vozmozhnye dublikaty po
+
+* mikrochipu
+* registracionnym dokumentam
+* kliniceskomu identifikatoru
+* xoziajinu
+* fotografijam
+* datam
+* vidu
+* imeni
+* istorii adopcii
+
+**dlia kogo i dlia kakoj celi**
+
+dlia klinik, priutov, xoziaev i laboratorij
+
+**kakoj rezultat dolzen byt dostignut**
+
+vazhnaia allergija ne ostajotsia v odnoj kartocke, poka drugaia ispolzuetsia v ekstrenn oj klinike
+
+---
+
+## 4 — medkartocka dolzna soxraniatsia pri smene xoziajina
+
+**cto eto dolzno delat**
+
+medicinskaia istoria dolzna sledovat za pitomcem pri adopcii, peredace ili smene postojannogo doma
+
+**pocemu eto nuzno**
+
+smena xoziajina ne obnul iaet bolezni, operacii, allergii, vakcinacii i rezultaty analizov
+
+**kak eto dolzno rabotat po logike**
+
+novomu xoziajinu peredajotsia medicinskaia informacija, otnosiasca i asia k pitomcu, no lichnye finansovye, kontaktnye i drugie dannye predyduscego xoziajina udaliajutsia ili skryvajutsia
+
+**dlia kogo i dlia kakoj celi**
+
+dlia priutov, perederzhek, predydusc ix i novyx xoziaev
+
+**kakoj rezultat dolzen byt dostignut**
+
+novyj xoziajin ne nac inaet lechenie i profilaktiku s pustoj kartocki
+
+---
+
+## 5 — kazdyj medicinskij fakt dolzen imet istochnik
+
+**cto eto dolzno delat**
+
+riadom s diagnozom, allergiej, vakcinaciej, vesom, lekarstvom ili rezultatom dolzno byt ukazano, otkuda informacija pojav ilas
+
+**pocemu eto nuzno**
+
+slova xoziajina, zakliuchenie veterinara, avtomaticeskij datchik i laboratorn yj rezultat imejut razn yj uroven doverija
+
+**kak eto dolzno rabotat po logike**
+
+istochnik moz et byt
+
+* veterinar
+* klinika
+* laboratorija
+* dokument
+* xoziajin
+* sitter
+* priut
+* medicinskoe ustrojstvo
+* import
+* avtomaticeskoe raspoznavanie
+* neizvestn yj istochnik
+
+**dlia kogo i dlia kakoj celi**
+
+dlia vseh uchastnikov medicinskogo processa
+
+**kakoj rezultat dolzen byt dostignut**
+
+specialist ponimaet, gde podtverzhdenn yj rezultat, a gde lichn oe nabludenie xoziajina
+
+---
+
+## 6 — nabludenie xoziajina ne ravnjaetsia diagnozu
+
+**cto eto dolzno delat**
+
+sistema dolzna razdeliat
+
+* simptom
+* nabludenie
+* podozrenie
+* predvariteln yj diagnoz
+* podtverzhdenn yj diagnoz
+* differencialn yj diagnoz
+* iskliuchenn oe sostojanie
+
+**pocemu eto nuzno**
+
+xoziajin moz et napisat, cto pitomec kashliaet, no eto ne oznachaet avtomaticeski konkretn uju bolezn
+
+**kak eto dolzno rabotat po logike**
+
+nabludenie xranitsia kak nabludenie i moz et byt sviazano s priemom, gde specialist pozze dobavit ocenk u ili diagnoz
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev i specialistov
+
+**kakoj rezultat dolzen byt dostignut**
+
+subjektivnoe opisanie ne prevrashch a etsia v medicinskij fakt bez professionalnoj proverki
+
+---
+
+## 7 — neizvestno ne ravnjaetsia otsutstvuet
+
+**cto eto dolzno delat**
+
+sistema dolzna razdeliat
+
+* allergij net po podtverzhdennym dannym
+* allergii neizvestny
+* informacija ne predostavlena
+* allergija podozrevaetsia
+* est podtverzhdennaja allergija
+
+**pocemu eto nuzno**
+
+pustoe pole moz et byt oshibocno pon iato kak otsutstvie problemy
+
+**kak eto dolzno rabotat po logike**
+
+dlia kriticeskix polej ispolzujutsia pon iatnye statusy, a ne tolko pustoe znachenie
+
+**dlia kogo i dlia kakoj celi**
+
+dlia ekstrennyx klinik, sitterov i novyx specialistov
+
+**kakoj rezultat dolzen byt dostignut**
+
+specialist ne prinimaet nepoln uju kartocku za dokazatelstvo otsutstviia allergij ili bolezni
+
+---
+
+## 8 — ne zastavliat zapolniat neizvestnye dannye
+
+**cto eto dolzno delat**
+
+forma dolzna razresat ukazat neizvestno, primerno ili trebuet utochneniia
+
+**pocemu eto nuzno**
+
+xoziajin priutskogo ili najdennogo zivotnogo moz et ne znat datu poslednej vakcinacii, operacii ili nachala simptoma
+
+**kak eto dolzno rabotat po logike**
+
+sistema xranit uroven tochnosti i predlagaet pozze dobavit dokument, no ne zastavljaet pridumyvat datu
+
+**dlia kogo i dlia kakoj celi**
+
+dlia priutov, novyx xoziaev i nashedsh ix zivotnoe
+
+**kakoj rezultat dolzen byt dostignut**
+
+kartocka soderzhit chestn uju nepoln uju informaciju vmesto ubeditelnoj vymyslenn oj
+
+---
+
+## 9 — princip minimalno neobxodimyx dannyx
+
+**cto eto dolzno delat**
+
+kazdyj poluchatel dolzen videt tolko te medicinskie dannye, kotorye realno nuzny dlia ego zadaci
+
+**pocemu eto nuzno**
+
+grumeru moz et byt nuzhna povedenceskaia instrukcija i informacija ob allergii na sredstvo, no ne vsi a istoria operacij i analizov
+
+**kak eto dolzno rabotat po logike**
+
+dostup vydajotsia po razdelam, srokam, celiam i roliam
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev, specialistov, sitterov i organizacij
+
+**kakoj rezultat dolzen byt dostignut**
+
+udobstvo obmena ne prevrashch a etsia v bessrochn oe raskrytie vsej medkartocki
+
+---
+
+## 10 — vremia kazdoj zapisi dolzno byt tocnym
+
+**cto eto dolzno delat**
+
+kazdaia zapis dolzna xranit
+
+* datu sobytija
+* vremia sobytija pri neobxodimosti
+* casovoj pojas
+* datu vneseniia
+* datu izmeneniia
+* avtora
+
+**pocemu eto nuzno**
+
+lekarstvo moglo byt dano v odn oj strane, a zapis vnesena pozze v drugom casovom pojase
+
+**kak eto dolzno rabotat po logike**
+
+vnutri xranitsia odnoznachn oe vremia, a interfejs pokaz yvaet lokaln uju zonu s vozmozhnostiu uvidet original
+
+**dlia kogo i dlia kakoj celi**
+
+dlia mezhdunarodnyx poezdok, klinik i semej
+
+**kakoj rezultat dolzen byt dostignut**
+
+dve dozy ne daju tcia slishkom blizko iz-za putanicy vo vremeni
+
+---
+
+## 11 — edinicy izmerenija dolzny byt strukturirovany
+
+**cto eto dolzno delat**
+
+ves, temperatura, doza, davlenie i laboratornye znacheniia dolzny xranitsia vmeste s edinicej
+
+**pocemu eto nuzno**
+
+chislo bez edinicy moz et byt opasn ym i nepon iatnym
+
+**kak eto dolzno rabotat po logike**
+
+sistema moz et pokaz yvat lokaln uju edinicu, no originaln oe znachenie i edinica ne izmeniajutsia
+
+**dlia kogo i dlia kakoj celi**
+
+dlia klinik, laboratorij, xoziaev i mezhdunarodnogo obmena
+
+**kakoj rezultat dolzen byt dostignut**
+
+doza, ves ili rezultat ne interpretirujutsia v drugoj sisteme edinic bez konteksta
+
+---
+
+## 12 — spravocniki dolzny uchityvat vid zivotnogo
+
+**cto eto dolzno delat**
+
+polia, normalnye diapazony i profilaktika dolzny zaviset ot vida, podvida i pri neobxodimosti vozrastnoj gruppy
+
+**pocemu eto nuzno**
+
+odin i tot ze pokazatel moz et imet razn oe znachenie dlia sobaki, koski, pticy, reptilii ili ryby
+
+**kak eto dolzno rabotat po logike**
+
+sistema ne dolzna primeniat sobac i e spravocniki ko vsem zivotnym
+
+**dlia kogo i dlia kakoj celi**
+
+dlia ekzoticeskix specialistov, klinik i xoziaev raznyx vidov
+
+**kakoj rezultat dolzen byt dostignut**
+
+platforma ne pokaz yvaet lozhn yj abnormaln yj status iz-za nepravilnogo vidovogo diapazona
+
+---
+
+## 13 — novaja zapis ne dolzna tixo perepisyvat staruju
+
+**cto eto dolzno delat**
+
+izmenenie diagnoza, allergii, vakcinacii ili lekarstva dolzno soxraniat predydusc uju versiju
+
+**pocemu eto nuzno**
+
+staraja informacija moz et byt vazhna dlia ponimaniia, pocemu ran she prinimalos opredelenn oe reshenie
+
+**kak eto dolzno rabotat po logike**
+
+novaia versija stanovitsia tekuscej, a predydusc a ia ostajotsia v istorii s prichinoj izmeneniia
+
+**dlia kogo i dlia kakoj celi**
+
+dlia specialistov, xoziaev, auditorov i apellacij
+
+**kakoj rezultat dolzen byt dostignut**
+
+mozno vosstanovit poln uju posledovatelnost medicinskix reshenij
+
+---
+
+## 14 — ispravlenie ne ravnjaetsia udaleni i u fakta
+
+**cto eto dolzno delat**
+
+oshibocn a ia zapis dolzna poluchit status ispravlena, otmenena ili vnesena po oshibke
+
+**pocemu eto nuzno**
+
+poln oe tixoe udaleniie moz et razrushit audit i skryt prichinu predydusc ego lecheniia
+
+**kak eto dolzno rabotat po logike**
+
+ispravlenn a ia zapis ne ispolzuetsia kak aktivn a ia, no ostajotsia dostupnoj upolnomochennym specialistam v istorii
+
+**dlia kogo i dlia kakoj celi**
+
+dlia klinik i xoziaev
+
+**kakoj rezultat dolzen byt dostignut**
+
+oshibka ispravlena, no istoria ne falsificiruetsia
+
+---
+
+## 15 — medicinskie dannye ne dolzny ispolzovatsia dlia skrytoj reklamy
+
+**cto eto dolzno delat**
+
+diagnozy, allergii, lekarstva i rezultaty analizov ne dolzny avtomaticeski stanovitsia signalami reklamy
+
+**pocemu eto nuzno**
+
+xoziajin ne dolzen polucat reklamu konkretnogo preparata ili straxovki tolko potomu, cto v medkartocke pojav ilas bolezn
+
+**kak eto dolzno rabotat po logike**
+
+medicinskaja sistema tehniceski otdeliaetsia ot reklamnoj personalizacii
+
+dobrovoln yj poisk tovara ili uslugi dolzen byt otdelnym dejstviem polzovatelia
+
+**dlia kogo i dlia kakoj celi**
+
+dlia zascity vseh xoziaev i pitomcev
+
+**kakoj rezultat dolzen byt dostignut**
+
+medkartocka ne prevrashch a etsia v profil dlia ekspluatacii bolezni v kommerceskix celiax
+
+---
+
+# sozdanie medkartocki
+
+## 16 — avtomaticeskoe sozdanie pri dobavlenii pitomca
+
+**cto eto dolzno delat**
+
+posle sozdaniia profilia pitomca sistema moz et sozdat pust uju zakryt uju medkartocku
+
+**pocemu eto nuzno**
+
+xoziajin ne dolzen povtorno sozda vat nov uju medicinskuju lichnost pitomca
+
+**kak eto dolzno rabotat po logike**
+
+kartocka poluchaet stabiln yj identifikator i sviaz s profilem, no ne stanovitsia publicnoj
+
+**dlia kogo i dlia kakoj celi**
+
+dlia vseh novyx profilej pitomcev
+
+**kakoj rezultat dolzen byt dostignut**
+
+medicinskij modul gotov k ispolzovaniiu bez dublir ovaniia osnovnyx dannyx
+
+---
+
+## 17 — minimaln yj medicinskij onboarding
+
+**cto eto dolzno delat**
+
+sistema moz et predlozhit dobavit
+
+* allergii
+* aktivnye lekarstva
+* vazhnye diagnozy
+* posledn iu vakcinaciju
+* osnovn uju kliniku
+* ekstrenn yj kontakt
+
+**pocemu eto nuzno**
+
+imenno eti dannye chashche vsego vazhny pri novom prieme ili srocn oj situacii
+
+**kak eto dolzno rabotat po logike**
+
+kazdyj shag mozno propustit ili ukazat neizvestno
+
+**dlia kogo i dlia kakoj celi**
+
+dlia novyx xoziaev i pitomcev bez cifrovoj istorii
+
+**kakoj rezultat dolzen byt dostignut**
+
+bazov a ia bezopasnaia kartocka sozda jotsia bez ogromnoj obyazatelnoj ankety
+
+---
+
+## 18 — cernovik medkartocki
+
+**cto eto dolzno delat**
+
+nezavershenn yj import ili rucn oe zapolnenie dolzny soxraniatsia kak cernovik
+
+**pocemu eto nuzno**
+
+xoziajin moz et ne imet vseh dokumentov srazu
+
+**kak eto dolzno rabotat po logike**
+
+cernovik ne ispolzuetsia dlia officialnyx spravok ili avtomaticeskix medicinskix vyvodov, poka polzovatel ego ne proverit
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev i klinik
+
+**kakoj rezultat dolzen byt dostignut**
+
+progress ne ter iaetsia, no neproverenn a ia informacija ne vydajotsia za gotov uju kartocku
+
+---
+
+## 19 — medkartocka, sozdannaia klinikoj
+
+**cto eto dolzno delat**
+
+klinika moz et sozdat zapis pitomca v ramkax priema, esli ego esio net v sisteme
+
+**pocemu eto nuzno**
+
+pitomec moz et popast v kliniku do registracii xoziajina v socialnoj seti
+
+**kak eto dolzno rabotat po logike**
+
+sozda jotsia vrem enno upravljaem a ia kartocka, a xoziajinu napravliaetsia bezopasn oe priglashenie podtverdit sviaz
+
+**dlia kogo i dlia kakoj celi**
+
+dlia klinik i novyx xoziaev
+
+**kakoj rezultat dolzen byt dostignut**
+
+kliniceskaia zapis ne ter iaetsia i pozze prisojediniaetsia k pravilnomu profilem pitomca
+
+---
+
+## 20 — kartocka priuta
+
+**cto eto dolzno delat**
+
+priut moz et sozdat medkartocku do poj av leniia postojannogo xoziajina
+
+**pocemu eto nuzno**
+
+priutskomu pitomcu uze nuzhny vakcinacii, osmotry, lechenie i dokumenty
+
+**kak eto dolzno rabotat po logike**
+
+kartocka upravliaetsia organizaciej, a sotrudniki poluchajut rolevye prava
+
+**dlia kogo i dlia kakoj celi**
+
+dlia priutov, perederzhek i budusc ix xoziaev
+
+**kakoj rezultat dolzen byt dostignut**
+
+adoptirovann yj pitomec poluchaet poln uju istoriju, a ne nov uju pust uju kartocku
+
+---
+
+## 21 — vrem ennaia kartocka najdennogo zivotnogo
+
+**cto eto dolzno delat**
+
+dlia najdennogo zivotnogo mozno sozdat vrem enn yj medicinskij profil
+
+**pocemu eto nuzno**
+
+do ustanovleniia xoziajina mogut potrebovatsia osmotry, analiz y, obrabotka rany ili karantin
+
+**kak eto dolzno rabotat po logike**
+
+kartocka imeet status lichnost ne podtverzhdena i ne daet nashedshe mu prava vladen iia
+
+**dlia kogo i dlia kakoj celi**
+
+dlia klinik, priutov, volonterov i nashedsh ix zivotnoe
+
+**kakoj rezultat dolzen byt dostignut**
+
+neobxodimaia pomosc dokumentiruetsia, a posle proverki kartocka obed iniaetsia s realnym profilem
+
+---
+
+## 22 — zagruzka bumazhnyx dokumentov
+
+**cto eto dolzno delat**
+
+xoziajin moz et fotografirovat ili skanirovat star y e spravki, pasporty, zakliuchenija i recepty
+
+**pocemu eto nuzno**
+
+mnogo medicinskoj istorii sushestvuet tolko na bumage
+
+**kak eto dolzno rabotat po logike**
+
+original xranitsia kak dokument, a strukturirovannye polia sozdaijutsia otdelno i trebujut proverki
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev, klinik i priutov
+
+**kakoj rezultat dolzen byt dostignut**
+
+staraja istoria stanovitsia dostupnoj, no raspoznann yj tekst ne vydajotsia za bezoshibocn yj fakt
+
+---
+
+## 23 — import cifrovyx fajlov
+
+**cto eto dolzno delat**
+
+sistema dolzna prinimat pdf, izobrazheniia, tablicy, laboratornye otchety i drugie podderzhivaemye dokumenty
+
+**pocemu eto nuzno**
+
+kliniki i laboratorii mogut otpravljat raznye formaty
+
+**kak eto dolzno rabotat po logike**
+
+fajl proveriaetsia na bezopasnost, poluchaet tip, istochnik, datu i sviaz s konkretnym priemom ili analizom
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev i professionalov
+
+**kakoj rezultat dolzen byt dostignut**
+
+dokument ne ostajotsia anonimnym vlozheniem bez konteksta
+
+---
+
+## 24 — rucn oe vnesenie staroj istorii
+
+**cto eto dolzno delat**
+
+xoziajin moz et vrucnuju dobavit staruju operaciju, vakcinu, allergiju ili diagnoz
+
+**pocemu eto nuzno**
+
+originaln yj dokument moz et byt utracen, no sam fakt vazhen dlia specialistov
+
+**kak eto dolzno rabotat po logike**
+
+zapis poluchaet status ukazano xoziajinom, primern uju datu i urov en uverennosti
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev s nepolnoj dokumentaciej
+
+**kakoj rezultat dolzen byt dostignut**
+
+vazhnaia informacija ne propadaet, no ne vydajotsia za podtverzhdennuju klinikoj
+
+---
+
+## 25 — avtomaticeskoe raspoznavanie tolko kak cernovik
+
+**cto eto dolzno delat**
+
+sistema moz et izvlech iz dokumenta daty, nazvaniia preparatov, analiz y i kliniku
+
+**pocemu eto nuzno**
+
+rucn oj perenos bolshogo otcheta zan imaet mnogo vremeni
+
+**kak eto dolzno rabotat po logike**
+
+raspoznannye dannye pokaz yvajutsia polzovateliu ili specialistu dlia podtverzhdeniia
+
+osobenno strogo proveriajutsia dozy, edinicy, daty, mikrochip i nazvaniia lekarstv
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev, klinik i laboratorij
+
+**kakoj rezultat dolzen byt dostignut**
+
+avtomatizacija uskor iaet vvod, no ne sozdaet opasn y e medicinskie fakty bez proverki
+
+---
+
+## 26 — proverka vozmozhnyx dublikatov
+
+**cto eto dolzno delat**
+
+pered sozdaniem novoj kartocki sistema dolzna predlozhit vozmozhnoe sovpadenie
+
+**pocemu eto nuzno**
+
+odin pitomec moz et byt zaregistrirovan xoziajinom, priutom i klinikoj otdelno
+
+**kak eto dolzno rabotat po logike**
+
+sistema pokaz yvaet bezopasn yj minimum i predlagaet zapros na sviaz ili rucn uju proverku
+
+**dlia kogo i dlia kakoj celi**
+
+dlia vseh sozdatelej kartocki
+
+**kakoj rezultat dolzen byt dostignut**
+
+dublirujusc a ia medkartocka ne sozdajotsia, esli sushestvujusc uju mozno bezopasno podtverdit
+
+---
+
+## 27 — obedinenie dublikatov
+
+**cto eto dolzno delat**
+
+dve podtverzhdennye kartocki odnogo pitomca mogut byt obed ineny
+
+**pocemu eto nuzno**
+
+v odnoj mogut byt vakciny, a v drugoj aktivnye lekarstva i allergii
+
+**kak eto dolzno rabotat po logike**
+
+pered obed ineniem sistema pokaz yvaet konflikty, dublikaty, istochniki, prava i dokumenty
+
+kriticeskie protivorechija ne razreshajutsia avtomaticeski
+
+**dlia kogo i dlia kakoj celi**
+
+dlia klinik, administratorov i xoziaev
+
+**kakoj rezultat dolzen byt dostignut**
+
+sozdajotsia odna poln a ia kartocka bez poteri istorii i bez tixogo vybora odn oj iz protivorechivyx versij
+
+---
+
+## 28 — identifikacija pitomca
+
+**cto eto dolzno delat**
+
+medkartocka dolzna xranit stabilnye identifikatory
+
+* vnutrennij identifikator
+* mikrochip
+* pasport
+* registracionn yj nomer
+* kliniceskie nomera
+* nomer priuta
+* tatu i rovku pri nalichii
+
+**pocemu eto nuzno**
+
+imia, xoziajin i vneshnost mogut meniatsia
+
+**kak eto dolzno rabotat po logike**
+
+kazdyj identifikator imeet tip, izdavsh uju organizaciju, region, status proverki i privatnost
+
+**dlia kogo i dlia kakoj celi**
+
+dlia klinik, priutov, puteshestvij i peredaci vladen iia
+
+**kakoj rezultat dolzen byt dostignut**
+
+medicinskaia istoria ostajotsia priviazann oj k pravilnomu zivotnomu posle pereimenovaniia ili adopcii
+
+---
+
+## 29 — poln yj mikrochip ne dolzen byt publicnym
+
+**cto eto dolzno delat**
+
+publicno mozno pokazat tolko status nalichija i proverki mikrochipa
+
+**pocemu eto nuzno**
+
+poln yj nomer moz et byt ispolzovan v moshennicestve ili spore o vladenii
+
+**kak eto dolzno rabotat po logike**
+
+nomer dostup en tolko xoziajinu, upolnomochennym specialistam i ekstrennym sluzhbam po osnovaniju
+
+**dlia kogo i dlia kakoj celi**
+
+dlia zascity pitomca i dokumentov
+
+**kakoj rezultat dolzen byt dostignut**
+
+drugie znajut, cto chip est, no ne mogut skopirovat ego identifikator iz socialnogo profilia
+
+---
+
+## 30 — izmenenie imeni ne sozdaet nov uju kartocku
+
+**cto eto dolzno delat**
+
+novoe imia pitomca dolzno obnovitsia v medkartocke bez poteri star yx imen
+
+**pocemu eto nuzno**
+
+priut, predydusc ij xoziajin i novaia sem ja mogut ispolzovat raznye imena
+
+**kak eto dolzno rabotat po logike**
+
+tekusc ee imia stanovitsia osnovnym, a star y e ostajutsia kak alternativnye dlia poiska i dokumentov
+
+**dlia kogo i dlia kakoj celi**
+
+dlia adoptirovannyx i pereimenovannyx pitomcev
+
+**kakoj rezultat dolzen byt dostignut**
+
+st ar yj laboratorn yj otchet po predyduscemu imeni vse ravno naxoditsia v pravilnoj kartocke
+
+---
+
+## 31 — smena biologiceskix dannyx trebuet proverki
+
+**cto eto dolzno delat**
+
+izmenenie vida, pola, daty rozhdeniia ili mikrochipa dolzno prohodit usilenn uju proverku
+
+**pocemu eto nuzno**
+
+takoe izmenenie moz et ukazyvat na oshibocn oe obed inenie dvux raznyx pitomcev
+
+**kak eto dolzno rabotat po logike**
+
+sistema zaprashivaet prichinu, istochnik i pri neobxodimosti dokument ili professionaln oe podtverzhdenie
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev, klinik i administratorov
+
+**kakoj rezultat dolzen byt dostignut**
+
+odin pitomec ne poluchaet chuz uju medkartocku iz-za slucajnogo izmeneniia osnovnogo polia
+
+---
+
+## 32 — status medkartocki
+
+**cto eto dolzno delat**
+
+kartocka moz et imet status
+
+* aktivn a ia
+* cernovik
+* lichnost ne podtverzhdena
+* sporn a ia
+* obed iniaetsia
+* peredaetsia
+* arhivirovana
+* memorialn a ia
+* udal iaetsia
+
+**pocemu eto nuzno**
+
+odin flazok aktivna ili net ne opis yvaet realn yj zivotn yj cikl
+
+**kak eto dolzno rabotat po logike**
+
+status vliiaet na redaktirovanie, obmen, nov y e zapisi, eksport i uvedomlenija
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev, klinik, priutov i platformy
+
+**kakoj rezultat dolzen byt dostignut**
+
+vse uchastniki ponimajut, mozno li sejchas ispolzovat i izmeniat kartocku
+
+---
+
+## 33 — medicinskaja svodka
+
+**cto eto dolzno delat**
+
+vverxu medkartocki dolzna byt kratkaia aktualn a ia svodka
+
+* aktivnye bolezni
+* allergii
+* tekusc ie lekarstva
+* posledn ij ves
+* vazhnye operacii
+* vakcinacionn yj status
+* osnovn a ia klinika
+* ekstrennye instrukcii
+
+**pocemu eto nuzno**
+
+specialistu ne vsegda nuzhno pervym delom c itat sotni zapisej
+
+**kak eto dolzno rabotat po logike**
+
+svodka formiruetsia iz tekusc ix podtverzhdennyx dannyx i pokaz yvaet datu aktualnosti
+
+**dlia kogo i dlia kakoj celi**
+
+dlia klinik, sitterov i xoziaev
+
+**kakoj rezultat dolzen byt dostignut**
+
+kriticeskaia informacija vidna srazu, no poln a ia istoria ostajotsia dostupnoj nizhe
+
+---
+
+## 34 — svodka ne dolzna byt avtomaticeskim diagnozom
+
+**cto eto dolzno delat**
+
+avtomaticesk oe obed inenie dannyx dolzno pokazyvat fakty, a ne stavit nov yj diagnoz
+
+**pocemu eto nuzno**
+
+algoritm moz et neverno interpret irovat neskolko simptomov i analizov
+
+**kak eto dolzno rabotat po logike**
+
+sistema moz et napisat est tri aktivnye nabludeniia i dva abnormalnyx rezultata, no ne moz et samostojatelno obiavliat konkretn uju bolezn
+
+**dlia kogo i dlia kakoj celi**
+
+dlia vseh polzovatelej svodki
+
+**kakoj rezultat dolzen byt dostignut**
+
+udobstvo ne prevrashch a etsia v lozhn oe kliniceskoe zakliuchenie
+
+---
+
+## 35 — vrem ennaia liniia medicinskoj istorii
+
+**cto eto dolzno delat**
+
+vse sobytija dolzny otobrazatsia v xronologii
+
+* priemy
+* diagnozy
+* vakciny
+* lekarstva
+* analiz y
+* operacii
+* izmereniia
+* dokumenty
+* izmeneniia planov
+
+**pocemu eto nuzno**
+
+specialistu vazhno videt posledovatelnost, a ne tolko otdelnye nesviazannye kartocki
+
+**kak eto dolzno rabotat po logike**
+
+xronologiju mozno filtrovat po tipu, sluchaiu, klinike, avt oru i periodu
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev i specialistov
+
+**kakoj rezultat dolzen byt dostignut**
+
+stanovitsia pon iatno, cto proizoshlo do, vo vremia i posle konkretnogo lecheniia
+
+---
+
+# vladenie, soglasie i dostup
+
+## 36 — osnovnoj xoziajin medkartocki
+
+**cto eto dolzno delat**
+
+osnovnoj podtverzhdenn yj xoziajin dolzen upravliat bazovymi pravami dostup a
+
+**pocemu eto nuzno**
+
+medkartocka soderzhit chuvstviteln uju informaciju i ne dolzna upravliatsia liubym podpiscikom profilia
+
+**kak eto dolzno rabotat po logike**
+
+xoziajin moz et
+
+* prosmatrivat
+* dobavliat lichnye nabludeniia
+* priglashat specialistov
+* vydavat vrem enn yj dostup
+* eksportirovat
+* zaprashivat ispravlenie
+* upravliat ekstrenn oj kartockoj
+
+**dlia kogo i dlia kakoj celi**
+
+dlia osnovnyx xoziaev
+
+**kakoj rezultat dolzen byt dostignut**
+
+kontrol nad medkartockoj prinadlezit podtverzhdennomu otvetstvennomu licu
+
+---
+
+## 37 — sovladelec
+
+**cto eto dolzno delat**
+
+sovladelec moz et poluchit poln yj ili ogranichenn yj dostup
+
+**pocemu eto nuzno**
+
+za pitomcem mogut ravnopravno uxazhivat neskolko liudej
+
+**kak eto dolzno rabotat po logike**
+
+dlia kazdogo sovladelca nast r aivajutsia prava
+
+* prosmotr
+* lekarstva
+* izmereniia
+* dokumenty
+* obmen s klinikoj
+* eksport
+* upravlenie drugimi dostupami
+
+**dlia kogo i dlia kakoj celi**
+
+dlia semej i sovmestnyx xoziaev
+
+**kakoj rezultat dolzen byt dostignut**
+
+oba xoziajina vidat vazhn uju informaciju, no kriticeskie prava ne obyazatelno vydajutsia avtomaticeski
+
+---
+
+## 38 — clen semji
+
+**cto eto dolzno delat**
+
+clen semji moz et videt i vypolniat tolko povsednevn y e medicinskie zadaci
+
+**pocemu eto nuzno**
+
+rebenku ili rodstvenniku moz et byt nuzhno otmetit priem lekarstva, no ne eksportirovat vsiu kartocku
+
+**kak eto dolzno rabotat po logike**
+
+rol moz et razreshat
+
+* videt raspisanie
+* otmecat vypolnenie
+* dobavliat nabludenie
+* videt ekstrennuju instrukciju
+
+no ne razreshat menjat diagnozy ili vydavat dostup klinike
+
+**dlia kogo i dlia kakoj celi**
+
+dlia semej s raznym urovnem otvetstvennosti
+
+**kakoj rezultat dolzen byt dostignut**
+
+sem ja uchastvuet v uxode bez lishnego administrativnogo dostup a
+
+---
+
+## 39 — vrem enn yj smotritel
+
+**cto eto dolzno delat**
+
+sitter ili perederzka moz et poluchit vrem enn yj dostup k prakticeskomu minimumu
+
+**pocemu eto nuzno**
+
+emu nuzhny lekarstva, allergii, ekstrennye kontakty i instrukcii, no ne vsi a istoria
+
+**kak eto dolzno rabotat po logike**
+
+dostup ogranichen
+
+* periodom
+* konkretnym pitomcem
+* zadacami
+* razdelami
+* zapretom eksporta
+* auditom prosmotra
+
+**dlia kogo i dlia kakoj celi**
+
+dlia sitterov, perederzhek i vremennyx pomoschnikov
+
+**kakoj rezultat dolzen byt dostignut**
+
+sitter moz et bezopasno uxazhivat za pitomcem, a posle uslugi ter iaet nov yj dostup
+
+---
+
+## 40 — priut kak upravliajusc ij medkartockoj
+
+**cto eto dolzno delat**
+
+organizacija moz et byt vrem ennym ili postojannym upravliajusc im do adopcii
+
+**pocemu eto nuzno**
+
+u priutskogo pitomca moz et ne byt individualnogo xoziajina
+
+**kak eto dolzno rabotat po logike**
+
+prava vydajutsia roliam organizacii
+
+* veterinar
+* koordinator
+* perederzka
+* administrator
+* volonter s ogranichennym dostupom
+
+**dlia kogo i dlia kakoj celi**
+
+dlia priutov i spasatelnyx organizacij
+
+**kakoj rezultat dolzen byt dostignut**
+
+medkartocka ne zavisit ot lichnogo akkaunta odnogo sotrudnika
+
+---
+
+## 41 — klinika ne stanovitsia vladelcem vsej kartocki
+
+**cto eto dolzno delat**
+
+klinika dolzna upravliat svoimi zapisjami i poluchennym dostupom, no ne prisvaivat poln yj kontrol nad medkartockoj
+
+**pocemu eto nuzno**
+
+pitomec moz et obrashchatsia v neskolko klinik
+
+**kak eto dolzno rabotat po logike**
+
+klinika moz et
+
+* dobavliat svoi priemy
+* ispravliat svoi zapisi
+* c itat razreshennye razdely
+* otpravljat dokumenty
+* zaprashivat dopolniteln yj dostup
+
+**dlia kogo i dlia kakoj celi**
+
+dlia klinik i xoziaev
+
+**kakoj rezultat dolzen byt dostignut**
+
+odna klinika ne moz et blokirovat xoziajinu dostup k istorii ili izmeniat zapisi drugoj kliniki
+
+---
+
+## 42 — individualn yj specialist
+
+**cto eto dolzno delat**
+
+konkretn yj veterinar ili drugoj specialist dolzen imet sobstvenn uju professionaln uju lichnost v sisteme
+
+**pocemu eto nuzno**
+
+nazvanie kliniki ne pokaz yvaet, kto imenno osmatrival pitomca i prini mal reshenie
+
+**kak eto dolzno rabotat po logike**
+
+kazdaia professionaln a ia zapis imeet avtora, rol, organizaciju i pri neobxodimosti status proverki kvalifikacii
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev, specialistov i klinik
+
+**kakoj rezultat dolzen byt dostignut**
+
+mozno ustanovit realnogo avtora diagnoza, recepta ili zakliucheniia
+
+---
+
+## 43 — roli sotrudnikov kliniki
+
+**cto eto dolzno delat**
+
+klinika dolzna razdeliat prava
+
+* veterinara
+* assistenta
+* administratora
+* laboranta
+* hirurga
+* reabilitologa
+* finansovogo sotrudnika
+* sistemnogo administratora
+
+**pocemu eto nuzno**
+
+registratoru moz et byt nuzhno sozdat zapis na priem, no ne izmeniat diagnoz ili recept
+
+**kak eto dolzno rabotat po logike**
+
+kazdaia rol poluchaet tolko minimalno neobxodimye prava
+
+**dlia kogo i dlia kakoj celi**
+
+dlia klinik i bezopasnosti
+
+**kakoj rezultat dolzen byt dostignut**
+
+vzlom ili oshibka odnogo sotrudnika imejut ogranichennye posledstviia
+
+---
+
+## 44 — laboratorn yj dostup
+
+**cto eto dolzno delat**
+
+laboratorija moz et poluchit zakaz i otpravit rezultat bez dostup a ko vsej medkartocke
+
+**pocemu eto nuzno**
+
+laboratorii nuzhny obrazec, vid, nekotoryj klinicesk ij kontekst i poluchatel rezultata, no ne vse lichnye dannye
+
+**kak eto dolzno rabotat po logike**
+
+dostup ogranichivaetsia konkretnym zakazom i zavershaetsia posle vydaci i vozmozhnyx ispravlenij rezultata
+
+**dlia kogo i dlia kakoj celi**
+
+dlia laboratorij i klinik
+
+**kakoj rezultat dolzen byt dostignut**
+
+laboratorn yj process rabotaet, ne otkryvaja lishn uju istoriju pitomca i sem ji
+
+---
+
+## 45 — apteka ili postavschik lekarstva
+
+**cto eto dolzno delat**
+
+apteka moz et poluchit tolko neobxodim uju informaciju o recepte ili zakaze
+
+**pocemu eto nuzno**
+
+prodavcu preparata ne nuzhna poln a ia medkartocka
+
+**kak eto dolzno rabotat po logike**
+
+peredajutsia
+
+* proverka recepta
+* naznachenie
+* forma
+* kolichestvo
+* srok
+* kontakt vydavshego specialista
+
+**dlia kogo i dlia kakoj celi**
+
+dlia aptek, klinik i xoziaev
+
+**kakoj rezultat dolzen byt dostignut**
+
+lekarstvo vydajotsia po pravilnomu naznacheniiu bez massovoj utecki medicinskix dannyx
+
+---
+
+## 46 — dostup straxovoj organizacii
+
+**cto eto dolzno delat**
+
+straxovaia dolzna poluchat tolko dokumenty, otnosiasc iesia k konkretnomu obrashcheniiu ili polis u
+
+**pocemu eto nuzno**
+
+poln a ia mnogoletn iaia kartocka moz et soderzhat informaciju, ne imejusc uju otnosheniia k sluchaiu
+
+**kak eto dolzno rabotat po logike**
+
+xoziajin vidit, cto zaprosheno, zachem, na kakoi srok i moz et vybrat konkretnye zapisi
+
+**dlia kogo i dlia kakoj celi**
+
+dlia straxovyx, xoziaev i klinik
+
+**kakoj rezultat dolzen byt dostignut**
+
+obrashchenie obrabatyvaetsia bez avtomaticeskogo bessrocnogo dostup a ko vsem diagnozam
+
+---
+
+## 47 — razdelenie prosmotra i redaktirovanija
+
+**cto eto dolzno delat**
+
+poluchatel moz et imet pravo prosmatra bez prava izmeniat dannye
+
+**pocemu eto nuzno**
+
+sitteru, organizatoru ili straxovoj moz et byt nuzhna informacija, no ne pravo sozda vat diagnozy
+
+**kak eto dolzno rabotat po logike**
+
+dlia kazdogo razdela dostup moz et byt
+
+* net dostup a
+* tolko prosmotr
+* dobavlenie
+* redaktirovanie svoix zapisej
+* podtverzhdenie
+* eksport
+* administrirovanie
+
+**dlia kogo i dlia kakoj celi**
+
+dlia vseh tipov dostup a
+
+**kakoj rezultat dolzen byt dostignut**
+
+prosmotr dokumenta ne daet pravo perepisat ego soderzhanie
+
+---
+
+## 48 — dostup po razdelam
+
+**cto eto dolzno delat**
+
+xoziajin moz et podelitsia tolko
+
+* allergijami
+* lekarstvami
+* vakcinacijami
+* konkretnym analizom
+* konkretnoj operaciej
+* ekstrenn oj kartockoj
+* documentami dlia poezdki
+
+**pocemu eto nuzno**
+
+v raznyx situacijax nuzhen razn yj minimum
+
+**kak eto dolzno rabotat po logike**
+
+interfejs pokaz yvaet poln yj spisok peredavaemyx razdelov do podtverzhdeniia
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev, specialistov, sitterov i organizatorov
+
+**kakoj rezultat dolzen byt dostignut**
+
+polzovatel ne peredaet vsiu kartocku, kogda nuzhen tolko vakcinacionn yj sertifikat
+
+---
+
+## 49 — vrem enn yj dostup
+
+**cto eto dolzno delat**
+
+dostup moz et avtomaticeski istekat
+
+**pocemu eto nuzno**
+
+klinike vtorogo mneniia ili sitteru dannye nuzhny tolko opredelenn oe vremia
+
+**kak eto dolzno rabotat po logike**
+
+xoziajin ukazyvaet
+
+* datu nacala
+* datu okonchaniia
+* razdely
+* prava
+* vozmoznost skachivaniia
+* vozmoznost prodleniia
+
+**dlia kogo i dlia kakoj celi**
+
+dlia vremennyx specialistov i pomoschnikov
+
+**kakoj rezultat dolzen byt dostignut**
+
+st ar yj poluchatel ne soxraniaet aktivn yj dostup posle zaversheniia uslugi
+
+---
+
+## 50 — odnorazovaia ssylka
+
+**cto eto dolzno delat**
+
+xoziajin moz et sozdat zascischenn uju ssylku na konkretn yj dokument ili svodku
+
+**pocemu eto nuzno**
+
+nov a ia klinika moz et ne byt zaregistrirovana v sisteme
+
+**kak eto dolzno rabotat po logike**
+
+ssylka moz et imet
+
+* srok
+* parol
+* limit prosmotrov
+* zapret skachivaniia
+* konkretn yj razdel
+* vozmoznost otzyva
+
+**dlia kogo i dlia kakoj celi**
+
+dlia vneshnix klinik i puteshestvij
+
+**kakoj rezultat dolzen byt dostignut**
+
+dokument mozno peredat bez publicnogo url i bez polnogo dostup a ko vsej kartocke
+
+---
+
+## 51 — qr kod dostup a
+
+**cto eto dolzno delat**
+
+xoziajin moz et sozdat qr dlia ekstrenn oj kartocki, kliniki ili poezdki
+
+**pocemu eto nuzno**
+
+v srocn oj situacii skanirovanie bystree poisk a dokumenta v telefone
+
+**kak eto dolzno rabotat po logike**
+
+qr dolzen otkryvat tolko zaranee vybrann yj minimum i moz et byt postojannym ili vrem ennym
+
+**dlia kogo i dlia kakoj celi**
+
+dlia klinik, nashedsh ix pitomca, sitterov i puteshestvennikov
+
+**kakoj rezultat dolzen byt dostignut**
+
+kriticeskaia informacija dostupna bystro, no poln a ia medkartocka ne raskryvaetsia liubomu skanirujuscemu
+
+---
+
+## 52 — otzyv dostup a
+
+**cto eto dolzno delat**
+
+xoziajin moz et nemedlenno otzyvat vydann yj dostup
+
+**pocemu eto nuzno**
+
+specialist, sitter ili organizacija mogut bolshe ne imet osnovaniia videt dannye
+
+**kak eto dolzno rabotat po logike**
+
+posle otzyva obnovliajutsia
+
+* sessii
+* ssylki
+* media url
+* poisk
+* lokaln yj kesh pri podderzhke
+* uvedomlenija
+* prava eksporta
+
+**dlia kogo i dlia kakoj celi**
+
+dlia zascity medicinskoj privatnosti
+
+**kakoj rezultat dolzen byt dostignut**
+
+otzyv dejstvuet fakticeski, a ne tolko skryvaet imia poluchatelia v nast ro jkah
+
+---
+
+## 53 — zhurnal prosmotrov
+
+**cto eto dolzno delat**
+
+xoziajin dolzen videt, kto, kogda, zachem i kakie razdely otkryval
+
+**pocemu eto nuzno**
+
+neobycnyj prosmotr moz et ukazyvat na oshibku, zloupotreblenie ili vzlom
+
+**kak eto dolzno rabotat po logike**
+
+zhurnal pokazyvaet organizaciju, predstavitelia, cel, tip dejstviia i rezultat
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev, klinik i komandy bezopasnosti
+
+**kakoj rezultat dolzen byt dostignut**
+
+medicinskij dostup ne ostajotsia nevidimym dlia vladelca dannyx
+
+---
+
+## 54 — soglasie na peredacu
+
+**cto eto dolzno delat**
+
+pered peredacej chuvstvitelnyx dannyx sistema dolzna pokazat, cto imenno budet otkryto
+
+**pocemu eto nuzno**
+
+knopka podelitsia medkartockoj slishkom obsch a ia
+
+**kak eto dolzno rabotat po logike**
+
+soglasie xranit
+
+* poluchatelia
+* cel
+* razdely
+* srok
+* prava
+* versiju uslovij
+* datu
+* sposob otzyva
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev i organizacij
+
+**kakoj rezultat dolzen byt dostignut**
+
+polzovatel moz et pozze tocno ustanovit, na cto on soglasilsia
+
+---
+
+## 55 — izmenenie uslovij trebuet novogo soglasiia
+
+**cto eto dolzno delat**
+
+poluchatel ne dolzen rasshiriat cel, srok ili obem dostup a bez novogo podtverzhdeniia
+
+**pocemu eto nuzno**
+
+dostup dlia odnogo analiza ne dolzen avtomaticeski prevrashchatsia v bessrocn oe ispolzovanie vsej kartocki
+
+**kak eto dolzno rabotat po logike**
+
+sushestvenn oe izmenenie sozdaet nov yj zapros soglasiia
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev, klinik, straxovyx i issledovatelej
+
+**kakoj rezultat dolzen byt dostignut**
+
+pervonachaln oe soglasie ne ispolzuetsia dlia beskonechnogo rasshireniia dostup a
+
+---
+
+## 56 — zakonnyj predstavitel nesovershennoletnego xoziajina
+
+**cto eto dolzno delat**
+
+esli za pitomca otvecaet nesovershennoletnij, kriticeskie prava dolzny prinadlezhat zakon nomu predstaviteliu
+
+**pocemu eto nuzno**
+
+peredaca medkartocki, straxovoj dokument ili reshenie ob operacii mogut trebu vat vzroslogo
+
+**kak eto dolzno rabotat po logike**
+
+nesovershennoletnij moz et dobavliat nabludeniia i vypolniat zadaci, no ne poluchaet vse juridiceskie prava avtomaticeski
+
+**dlia kogo i dlia kakoj celi**
+
+dlia semej i klinik
+
+**kakoj rezultat dolzen byt dostignut**
+
+rebenok moz et uchastvovat v uxode bez nesootvetstvujusc ej otvetstvennosti
+
+---
+
+## 57 — sporn oe vladenie
+
+**cto eto dolzno delat**
+
+pri konflikte mezhdu predpolagaemymi xoziaevami sistema dolzna zascitit kartocku ot neobratimyx izmenenij
+
+**pocemu eto nuzno**
+
+odna storona moz et popytatsia udal it dokumenty, izmenit mikrochip ili skryt diagnozy
+
+**kak eto dolzno rabotat po logike**
+
+v spornom rezhime blokirujutsia
+
+* peredaca
+* udaleniie
+* izmenenie identifikatorov
+* massov yj eksport
+* otzyv legitimnogo kliniceskogo dostup a bez proverki
+
+**dlia kogo i dlia kakoj celi**
+
+dlia zascity pitomca i dokazatelstv
+
+**kakoj rezultat dolzen byt dostignut**
+
+medicinskaia istoria ne stanovitsia instrumentom davleniia v lichnom konflikte
+
+---
+
+## 58 — ekstrenn yj dostup po principu break glass
+
+**cto eto dolzno delat**
+
+v kriticeskoj situacii upolnomochenn yj specialist moz et otkryt minimaln yj ekstrenn yj nabor bez oby cnogo processa soglasiia
+
+**pocemu eto nuzno**
+
+xoziajin moz et byt bez soznaniia, nedostup en ili ne imet telefona
+
+**kak eto dolzno rabotat po logike**
+
+specialist dolzen
+
+* ukazat prichinu
+* podtverdit lichnost i rol
+* poluchit tolko minimaln yj nabor
+* popast v audit
+* avtomaticeski uvedomit xoziajina
+* poteriat dostup posle sroka
+
+**dlia kogo i dlia kakoj celi**
+
+dlia ekstrennyx klinik i sluzhb
+
+**kakoj rezultat dolzen byt dostignut**
+
+allergii i aktivnye lekarstva dostupny pri realnoj ugroze, no mehanizm ne stanovitsia oby cnym obxodom privatnosti
+
+---
+
+## 59 — peredaca kartocki novomu xoziajinu
+
+**cto eto dolzno delat**
+
+pri adopcii novyj xoziajin dolzen poluchit nepreryvn uju medicinskuju istoriju
+
+**pocemu eto nuzno**
+
+potera star yx diagnozov, vakcin i operacij moz et prichinit vred
+
+**kak eto dolzno rabotat po logike**
+
+peredajutsia medicinskie fakty pitomca, a lichnye dannye predyduscego xoziajina skryvajutsia
+
+vrem ennye prava priuta i perederzki peresmatrivajutsia
+
+**dlia kogo i dlia kakoj celi**
+
+dlia adopcii i smeny doma
+
+**kakoj rezultat dolzen byt dostignut**
+
+novyj xoziajin srazu znaet aktivnye lekarstva, allergii, profilaktiku i sledujusc ie vizity
+
+---
+
+## 60 — prava predyduscego xoziajina posle peredaci
+
+**cto eto dolzno delat**
+
+st ar yj xoziajin dolzen avtomaticeski poteriat nov yj medicinskij dostup, esli novyj xoziajin ne razresil inoe
+
+**pocemu eto nuzno**
+
+posle peredaci on ne dolzen prodolzhat videt novye diagnozy, priemy i dokumenty
+
+**kak eto dolzno rabotat po logike**
+
+mozno soxranit tolko ogranichenn yj istoricesk ij ili socialn yj dostup po soglasi iu novogo xoziajina
+
+**dlia kogo i dlia kakoj celi**
+
+dlia predydusc ix i novyx xoziaev
+
+**kakoj rezultat dolzen byt dostignut**
+
+privatnost novoj sem ji i nepreryvnost istorii pitomca podderzhivajutsia odnovremenno
+
+---
+
+# priemy i kliniceskie sluchai
+
+## 61 — priem kak otdeln yj medicinskij obekt
+
+**cto eto dolzno delat**
+
+kazd oe posescenie, konsultacija ili gospitalizacija dolzny sozda vat otdeln yj sluchaj
+
+**pocemu eto nuzno**
+
+bez sluchaia diagnozy, analiz y, lekarstva i rekomendacii ne imejut pon iatnogo konteksta
+
+**kak eto dolzno rabotat po logike**
+
+priem imeet
+
+* tip
+* datu
+* prichinu
+* kliniku
+* specialistov
+* nabludeniia
+* osmotry
+* zakazy
+* diagnozy
+* plan
+* dokumenty
+* rezultat
+
+**dlia kogo i dlia kakoj celi**
+
+dlia klinik i xoziaev
+
+**kakoj rezultat dolzen byt dostignut**
+
+vse zapisi odnogo obrashcheniia sviazany mezhdu soboj
+
+---
+
+## 62 — tipy priema
+
+**cto eto dolzno delat**
+
+sistema dolzna razdeliat
+
+* planov yj priem
+* profilakticesk ij osмотр
+* vakcinaciju
+* ekstrenn yj priem
+* telekonsultaciju
+* vyzov na dom
+* stacionar
+* hirurgiju
+* stomatologiju
+* reabilitaciju
+* povtorn yj kontrol
+* laboratorn oe obrashchenie
+
+**pocemu eto nuzno**
+
+raznye tipy trebu jut raznyx polej, prioritetov i dokumentov
+
+**kak eto dolzno rabotat po logike**
+
+vybrann yj tip podkliucaet podxodiasc ij shablon, no ne skryvaet vozmoznost dobavit individualnye dannye
+
+**dlia kogo i dlia kakoj celi**
+
+dlia klinik i xoziaev
+
+**kakoj rezultat dolzen byt dostignut**
+
+ekstrenn yj sluchaj ne obrabatyvaetsia tak ze, kak oby cn a ia vakcinacija
+
+---
+
+## 63 — prichina obrashcheniia
+
+**cto eto dolzno delat**
+
+pered priemom xoziajin ili klinika dolzny ukazat osnovn uju prichinu
+
+**pocemu eto nuzno**
+
+specialistu nuzhen kratkij kontekst do polnogo osmotra
+
+**kak eto dolzno rabotat po logike**
+
+prichina xranitsia slovami xoziajina i ne zameniaetsia avtomaticeski kliniceskim diagnozom
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev, registratorov i specialistov
+
+**kakoj rezultat dolzen byt dostignut**
+
+iz kartocki pon iatno, s cem imenno xoziajin obr atilsia
+
+---
+
+## 64 — istoria tekuscego sluchaia
+
+**cto eto dolzno delat**
+
+specialist dolzen moc opisat
+
+* kogda nac alos
+* kak menialos
+* cto uxe probovali
+* kakie byli reakc ii
+* est li sviaz s edoj, travmoj ili sobytiem
+* cto uxudshaet ili ulucshaet sostojanie
+
+**pocemu eto nuzno**
+
+odin tekusc ij simptom ne pokaz yvaet ego razvitie
+
+**kak eto dolzno rabotat po logike**
+
+informacija moz et byt sobrana xoziajinom do priema i utochnena specialistom
+
+**dlia kogo i dlia kakoj celi**
+
+dlia kliniceskoj ocenki i dokumentirovaniia
+
+**kakoj rezultat dolzen byt dostignut**
+
+sluchaj imeet pon iatn uju vrem ennuju i prichinn uju istoriju
+
+---
+
+## 65 — fizicesk ij osмотр
+
+**cto eto dolzno delat**
+
+specialist dolzen strukturirovanno zafiksirovat osnovnye nablyudeniia pri osmot re
+
+**pocemu eto nuzno**
+
+svobodn a ia zametka moz et propustit vazh n yj parametr ili byt trudno sravnimoj s budusc im priemom
+
+**kak eto dolzno rabotat po logike**
+
+nabory polej zavisiat ot vida i tipa priema, no specialist moz et dobavit svobodn oe opisanie
+
+**dlia kogo i dlia kakoj celi**
+
+dlia veterinarov i klinik
+
+**kakoj rezultat dolzen byt dostignut**
+
+povtorn yj specialist moz et sravnit sostojanie mezhdu dvumia priemami
+
+---
+
+## 66 — ocenka i plan
+
+**cto eto dolzno delat**
+
+v konce priema specialist dolzen otdelno zafiksirovat
+
+* tekusc uju ocenk u
+* podozreniia
+* diagnozy
+* zakazy
+* lechenie
+* domashn ij uxod
+* srok kontro lia
+* kriterii ekstrennogo obrashcheniia
+
+**pocemu eto nuzno**
+
+xoziajinu nuzhen pon iatn yj itog, a ne tolko nabor razroz nennyx zapisej
+
+**kak eto dolzno rabotat po logike**
+
+plan imeet avtora, datu, versiju i sviazannye zadaci
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev, specialistov i sitterov
+
+**kakoj rezultat dolzen byt dostignut**
+
+posle priema pon iatno, cto sdelano i cto nuzhno delat dalse
+
+---
+
+## 67 — predvariteln yj i podtverzhdenn yj diagnoz
+
+**cto eto dolzno delat**
+
+diagnoz dolzen imet uroven uverennosti
+
+**pocemu eto nuzno**
+
+na pervom prieme specialist moz et imet tolko podozrenie
+
+**kak eto dolzno rabotat po logike**
+
+statusy mogut byt
+
+* podozrenie
+* differencialn yj
+* predvariteln yj
+* podtverzhdenn yj
+* iskliuchenn yj
+* peresmotrenn yj
+* oshibocn yj
+
+**dlia kogo i dlia kakoj celi**
+
+dlia specialistov i xoziaev
+
+**kakoj rezultat dolzen byt dostignut**
+
+predpolozhenie ne pokaz yvaetsia vo vseh razdelax kak okonchateln yj fakt
+
+---
+
+## 68 — spisok aktivnyx problem
+
+**cto eto dolzno delat**
+
+medkartocka dolzna imet otdeln yj spisok tekusc ix problem i diagnozov
+
+**pocemu eto nuzno**
+
+vazhn a ia hroniceskaia bolezn ne dolzna byt spriatana v starom prieme
+
+**kak eto dolzno rabotat po logike**
+
+kazdaia problema imeet status, datu nachala, serioznost, avtora i sviazannye priemy
+
+**dlia kogo i dlia kakoj celi**
+
+dlia vseh specialistov, rabotajusc ix s pitomcem
+
+**kakoj rezultat dolzen byt dostignut**
+
+aktivnye sostojaniia vidny v svodke i uchityvajutsia pri novom lechenii
+
+---
+
+## 69 — aktivn a ia, neaktivn a ia i razreshenn a ia problema
+
+**cto eto dolzno delat**
+
+problema dolzna imet tekusc ij status
+
+**pocemu eto nuzno**
+
+st araia infekcija i aktivn a ia hroniceskaia bolezn ne dolzny pokaz yvatsia odinakovo
+
+**kak eto dolzno rabotat po logike**
+
+status moz et byt
+
+* aktivn a ia
+* pod nabludeniem
+* stabilnaia
+* v remissii
+* razreshena
+* povtorn a ia
+* neaktualnaia
+* oshibocn a ia
+
+**dlia kogo i dlia kakoj celi**
+
+dlia specialistov i xoziaev
+
+**kakoj rezultat dolzen byt dostignut**
+
+kartocka pokaz yvaet tekusc uju kliniceskuju vazhnost kazdogo sostojaniia
+
+---
+
+## 70 — hroniceskoe sostojanie
+
+**cto eto dolzno delat**
+
+hroniceskaia problema dolzna imet dolgosrocn yj plan monitoringa
+
+**pocemu eto nuzno**
+
+odin priem ne opis yvaet mnogomesiachn oe ili mnogoletn oe upravlenie
+
+**kak eto dolzno rabotat po logike**
+
+k sostojaniiu priviazyvajutsia
+
+* lekarstva
+* analiz y
+* celi
+* simptomy
+* kontrolnye daty
+* specialisty
+* izmeneniia plana
+
+**dlia kogo i dlia kakoj celi**
+
+dlia pitomcev s dolgosrocnymi problemami
+
+**kakoj rezultat dolzen byt dostignut**
+
+hroniceskoe lechenie ne raspadaetsia na nesviazannye razovye priemy
+
+---
+
+## 71 — differencialn yj spisok
+
+**cto eto dolzno delat**
+
+specialist moz et ukazat neskolko vozmozhnyx prichin simptomov
+
+**pocemu eto nuzno**
+
+diagnoz ne vsegda ustanavlivaetsia srazu
+
+**kak eto dolzno rabotat po logike**
+
+kazdoe predpolozhenie imeet status, osnovanie, plan proverki i rezultat
+
+**dlia kogo i dlia kakoj celi**
+
+dlia specialistov i vtorogo mneniia
+
+**kakoj rezultat dolzen byt dostignut**
+
+vidno, pocemu zakazany konkretnye analiz y i kak menialas kliniceskaia ocenka
+
+---
+
+## 72 — povtorn oe pojav lenie problemy
+
+**cto eto dolzno delat**
+
+sistema dolzna sviazyvat nov yj epizod s predydusc im podobnym sostojaniem
+
+**pocemu eto nuzno**
+
+recidiv moz et byt vazhen dlia vybora sledujusc ego obsledovaniia
+
+**kak eto dolzno rabotat po logike**
+
+specialist moz et ukazat, cto eto prodolzhenie, recidiv ili nov a ia nezavisimaia problema
+
+**dlia kogo i dlia kakoj celi**
+
+dlia klinik i xoziaev
+
+**kakoj rezultat dolzen byt dostignut**
+
+povtorn a ia problema ne vygl iadit kak perv yj v istorii sluchaj
+
+---
+
+## 73 — serioznost sostojaniia
+
+**cto eto dolzno delat**
+
+diagnoz ili problema mogut imet urov en serioznosti ili kliniceskogo prioriteta
+
+**pocemu eto nuzno**
+
+ne vse aktivnye problem y odinakovo vazhny pri ekstrenn om prieme
+
+**kak eto dolzno rabotat po logike**
+
+ocenk u ustanavlivaet specialist, a sistema ne dolzna avtomaticeski stavit ee tolko po nazvaniiu diagnoza
+
+**dlia kogo i dlia kakoj celi**
+
+dlia klinik i ekstrennyx specialistov
+
+**kakoj rezultat dolzen byt dostignut**
+
+kriticeskoe sostojanie ne ter iaetsia sredi maloznachitelnyx star yx zapisej
+
+---
+
+## 74 — data nachala i okonchaniia
+
+**cto eto dolzno delat**
+
+problema dolzna xranit tocn uju ili primern uju datu nachala i pri neobxodimosti razresheniia
+
+**pocemu eto nuzno**
+
+dlitelnost simptoma ili bolezni moz et byt kliniceski vazhna
+
+**kak eto dolzno rabotat po logike**
+
+data imeet uroven tochnosti
+
+* tocn a ia
+* primern a ia
+* tolko mesiac
+* tolko god
+* neizvestno
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev i specialistov
+
+**kakoj rezultat dolzen byt dostignut**
+
+sistema ne vydajot uslovn uju datu za dokazann yj fakt
+
+---
+
+## 75 — sviaz s organom ili sistemoj
+
+**cto eto dolzno delat**
+
+problema moz et byt sviazana s oblastju tela ili funkcionalnoj sistemoj
+
+**pocemu eto nuzno**
+
+eto pomogaet poisk u, filtram, specialistam i sravneniiu istorii
+
+**kak eto dolzno rabotat po logike**
+
+spravocnik zavisit ot vida i ne zameniaet svobodn oe kliniceskoe opisanie
+
+**dlia kogo i dlia kakoj celi**
+
+dlia specialistov i analitiki
+
+**kakoj rezultat dolzen byt dostignut**
+
+vse dermatologiceskie ili ortopediceskie sluchai mozno bystro najti bez lozhnogo uproshcheniia diagnoza
+
+---
+
+# simptomy i nabludeniia
+
+## 76 — dnevnik simptomov
+
+**cto eto dolzno delat**
+
+xoziajin moz et reguliarno otmecat simptomy mezhdu priemami
+
+**pocemu eto nuzno**
+
+na prieme pitomec moz et ne proiavliat problem u, kotoraja pojavliaetsia doma
+
+**kak eto dolzno rabotat po logike**
+
+zapis moz et soderzhat
+
+* vremia
+* prodolzhitelnost
+* chastotu
+* serioznost po lichn oj shkale
+* video
+* foto
+* vozmozhn yj trigger
+* cto pomoglo
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev i specialistov
+
+**kakoj rezultat dolzen byt dostignut**
+
+veterinar poluchaet vrem ennuju kartinu, a ne tolko ustn oe vospominanie
+
+---
+
+## 77 — opisanie sobytiia bez diagnoza
+
+**cto eto dolzno delat**
+
+xoziajin dolzen opis yvat, cto imenno on videl
+
+**pocemu eto nuzno**
+
+slovo allergija, sudoroga ili bol moz et byt lichn oj interpretaciej
+
+**kak eto dolzno rabotat po logike**
+
+forma moz et zadat neytralnye voprosy
+
+* cto delal pitomec
+* skolko dlilos
+* kak dvigalsia
+* kak reagiroval
+* est li video
+* povtorialos li ran she
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev i telekonsultacij
+
+**kakoj rezultat dolzen byt dostignut**
+
+specialist poluchaet opisanie nabludeniia, ne zagryaznenn oe gotovym samodiagnozom
+
+---
+
+## 78 — srocn y e priznaki
+
+**cto eto dolzno delat**
+
+sistema moz et rasp oznat soobsenie o potencialno srocnom sostojanii i predlozhit nemedlenno sviazatsia s klinikoj
+
+**pocemu eto nuzno**
+
+xoziajin moz et zapolniat dnevnik vmesto poisk a srocn oj pomosci
+
+**kak eto dolzno rabotat po logike**
+
+platforma ne stavit diagnoz, no pokaz yvaet, cto opisann yj simptom moz et trebovat bystroj professionalnoj ocenki
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev v potencialno srocn oj situacii
+
+**kakoj rezultat dolzen byt dostignut**
+
+medkartocka ne zaderzhivaet obrashchenie za realnoj pomoschiu
+
+---
+
+## 79 — triage ne ravnjaetsia lecheniiu
+
+**cto eto dolzno delat**
+
+predvariteln a ia ocenka srochnosti dolzna tolko napravliat k podxodiascemu urovniu pomosci
+
+**pocemu eto nuzno**
+
+algoritm bez osmotra ne dolzen naznachat lechenie
+
+**kak eto dolzno rabotat po logike**
+
+vozmozhn y e rezultaty
+
+* srocn o sviazatsia s klinikoj
+* zapisatsia na blizhaish ij priem
+* prodolzhat nabludenie po instrukcii specialista
+* utochnit dannye
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev i telemedicinskix servisov
+
+**kakoj rezultat dolzen byt dostignut**
+
+polzovatel poluchaet pon iatn yj sledujusc ij shag bez avtomaticeskogo recepta
+
+---
+
+## 80 — ekstrenn a ia situacija ne dolzna zdat polnogo zapolneniia formy
+
+**cto eto dolzno delat**
+
+pri vysokom risk e sistema dolzna pokazat kontakt kliniki do zaversheniia dlinn oj ankety
+
+**pocemu eto nuzno**
+
+kazhdaia minuta moz et byt vazhna
+
+**kak eto dolzno rabotat po logike**
+
+minimaln yj nabor moz et byt otpravlen klinike, a ostaln oe zapolniaetsia pozze
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev v srocn oj situacii
+
+**kakoj rezultat dolzen byt dostignut**
+
+interfejs pomogaet obr atitsia za pomoschiu, a ne sozdaet burokraticeskuju zaderzhku
+
+---
+
+## 81 — bazov a ia liniia oby cnogo sostojaniia
+
+**cto eto dolzno delat**
+
+xoziajin moz et opisat oby cn yj appetit, aktivnost, son, dyhanie, povedenie i podvizhnost pitomca
+
+**pocemu eto nuzno**
+
+odn a i ta ze aktivnost moz et byt normoj dlia odnogo pitomca i rezkim izmeneniem dlia drugogo
+
+**kak eto dolzno rabotat po logike**
+
+bazov a ia liniia periodiceski obnovliaetsia i imeet datu
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev, sitterov i klinik
+
+**kakoj rezultat dolzen byt dostignut**
+
+izmenenie ocenivaetsia otnositelno oby cnogo sostojaniia konkretnogo pitomca
+
+---
+
+## 82 — appetit
+
+**cto eto dolzno delat**
+
+mozno otmecat izmenenie interesa k ede, obem i osobennosti priema pischi
+
+**pocemu eto nuzno**
+
+appetit moz et byt vazhnym pokazatelem sostojaniia, no odna otmetka bez konteksta malo polezna
+
+**kak eto dolzno rabotat po logike**
+
+zapis sviazyvaetsia s rationom, lekarstvami, simptomami i vremenem, no ne prevrashch a etsia avtomaticeski v diagnoz
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev i specialistov
+
+**kakoj rezultat dolzen byt dostignut**
+
+vidna dinamika, a ne tolko odin subjektivn yj kommentarij
+
+---
+
+## 83 — potreblenie vody
+
+**cto eto dolzno delat**
+
+xoziajin moz et otmecat primern oe ili izmerenn oe kolichestvo vody
+
+**pocemu eto nuzno**
+
+izmenenie moz et byt vazhno pri nekotoryx sostojaniiax i lekarstvax
+
+**kak eto dolzno rabotat po logike**
+
+sistema dolzna razdeliat tocn oe izmerenie, ocenk u i dannye umnoj poilki
+
+**dlia kogo i dlia kakoj celi**
+
+dlia domashnego monitoringa
+
+**kakoj rezultat dolzen byt dostignut**
+
+specialist ponimaet kachestvo i istochnik dannyx
+
+---
+
+## 84 — mocheispuskanie i stul
+
+**cto eto dolzno delat**
+
+dnevnik moz et xranit chastotu, vidimye izmeneniia, trudnosti i fotografii po zhelaniju
+
+**pocemu eto nuzno**
+
+xoziajin c asto ne moz et tocn o vspomnit dinamiku za neskolko dnej
+
+**kak eto dolzno rabotat po logike**
+
+chuvstviteln y e fotografii xran iatsia zakryto i ne popadajut v socialn uju galereju
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev i klinik
+
+**kakoj rezultat dolzen byt dostignut**
+
+vazhn a ia dinamika dostupna specialistu bez publicacii lichnogo kontenta
+
+---
+
+## 85 — son i aktivnost
+
+**cto eto dolzno delat**
+
+sistema moz et xranit rucn y e ili avtomaticeskie dannye o sne, podvizhnosti i otdyhe
+
+**pocemu eto nuzno**
+
+izmenenie rutin y moz et byt pervym zametnym signalom
+
+**kak eto dolzno rabotat po logike**
+
+dannye ustrojstva i subektivn a ia ocenka xran iatsia otdelno
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev, pozhilyx pitomcev i reabilitacii
+
+**kakoj rezultat dolzen byt dostignut**
+
+sistema pokaz yvaet trend bez lozhnogo obeschaniia postavit diagnoz po aktivnosti
+
+---
+
+## 86 — ocenka boli
+
+**cto eto dolzno delat**
+
+specialist ili xoziajin po odobrenn oj shkale moz et otmecat priznaki boli
+
+**pocemu eto nuzno**
+
+slovo bolno slishkom obsch ee i trudno sravnimoe vo vremeni
+
+**kak eto dolzno rabotat po logike**
+
+xranitsia nazvanie shkaly, kto ocenival, kontekst i rezultat
+
+**dlia kogo i dlia kakoj celi**
+
+dlia posleoperacionnogo uxoda, hroniceskix sostojanij i reabilitacii
+
+**kakoj rezultat dolzen byt dostignut**
+
+dinamika ocenivaetsia posledovatelno, no odna cifra ne zameniaet osмотр
+
+---
+
+## 87 — ves
+
+**cto eto dolzno delat**
+
+kazd oe izmerenie vesa dolzno xranit znachenie, edinicu, istochnik, datu i usloviia
+
+**pocemu eto nuzno**
+
+domashnie vesy i kliniceskie vesy mogut razlichatsia
+
+**kak eto dolzno rabotat po logike**
+
+trend pokaz yvaetsia s oznacheniem istochnika i ne smeshivaet kilogrammy s drugimi edinicami
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev, klinik i podbora lekarstvennoj formy specialistom
+
+**kakoj rezultat dolzen byt dostignut**
+
+ves ne kopiruetsia vrucnuju v raznye razdely i ne ustarevaet nezametno
+
+---
+
+## 88 — ocenka kondicii tela
+
+**cto eto dolzno delat**
+
+specialist moz et dobavit standartizirovann uju ocenk u fiziceskoj kondicii
+
+**pocemu eto nuzno**
+
+ves sam po sebe ne pokaz yvaet sootnoshenie tkanej i individualn yj tip tela
+
+**kak eto dolzno rabotat po logike**
+
+xranitsia ispolzovannaia shkala, rezultat, avtor i kommentarij
+
+**dlia kogo i dlia kakoj celi**
+
+dlia klinik, nutritionistov i xoziaev
+
+**kakoj rezultat dolzen byt dostignut**
+
+dinamika ocenivaetsia bolee polno, a ne tolko po odn oj cifre vesa
+
+---
+
+## 89 — temperatura
+
+**cto eto dolzno delat**
+
+izmerenie dolzno xranit sposob, edinicu i kto ego vypolnil
+
+**pocemu eto nuzno**
+
+raznye metody mogut davat razn uju tochnost
+
+**kak eto dolzno rabotat po logike**
+
+sistema ne dolzna sravnivat domashn juju primern uju ocenk u s kliniceskim izmereniem kak odinakovo kachestvennye dannye
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev i specialistov
+
+**kakoj rezultat dolzen byt dostignut**
+
+vidno ne tolko chislo, no i naskolko emu mozno doveriat
+
+---
+
+## 90 — puls i chastota dyhaniia
+
+**cto eto dolzno delat**
+
+mozno xranit izm ereniia s ukazaniem sostojaniia pitomca
+
+**pocemu eto nuzno**
+
+pokazatel vo sne, posle aktivnosti i v stress e imeet razn yj kontekst
+
+**kak eto dolzno rabotat po logike**
+
+riadom ukazyvaetsia uslovie, istochnik i kachestvo izmereniia
+
+**dlia kogo i dlia kakoj celi**
+
+dlia domashnego monitoringa i klinik
+
+**kakoj rezultat dolzen byt dostignut**
+
+grafik ne smeshivaet nesopostavimye izmereniia bez obiasneniia
+
+---
+
+## 91 — davlenie, saturacija i drugie specialnye pokazateli
+
+**cto eto dolzno delat**
+
+specializirovannye izmereniia dolzny podderzhivat oborudovanie, metod, edinicy i kachestvo signala
+
+**pocemu eto nuzno**
+
+chislo bez informacii o metode moz et byt neverno interpret iro v ano
+
+**kak eto dolzno rabotat po logike**
+
+spravocnik polej zavisit ot vida i kliniceskogo konteksta
+
+**dlia kogo i dlia kakoj celi**
+
+dlia klinik, stacionara i domashnego monitoringa po planu specialista
+
+**kakoj rezultat dolzen byt dostignut**
+
+specialist vidit poln yj kontekst izmereniia
+
+---
+
+## 92 — domashnie izmereniia
+
+**cto eto dolzno delat**
+
+xoziajin moz et dobavliat pokazateli, poluchennye doma
+
+**pocemu eto nuzno**
+
+nekotorye sostojaniia trebu jut monitoringa mezhdu priemami
+
+**kak eto dolzno rabotat po logike**
+
+domashn iaia zapis imeet otdeln uju metku i moz et byt podtverzhdena ili prokommentirovana specialistom
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev i dolgosrocnogo nabludeniia
+
+**kakoj rezultat dolzen byt dostignut**
+
+poleznye domashnie dannye dostupny, no ne putajutsia s kliniceskim izmereniem
+
+---
+
+## 93 — medicinskie ustrojstva
+
+**cto eto dolzno delat**
+
+podderzhivaem yj datchik ili pribor moz et avtomaticeski peredavat dannye
+
+**pocemu eto nuzno**
+
+rucn oj vvod moz et byt nepravilnym i zan imat mnogo vremeni
+
+**kak eto dolzno rabotat po logike**
+
+kazd oe ustrojstvo imeet vladelca, kalibrovku, status, vremia poslednej sviazi i urov en doverija
+
+**dlia kogo i dlia kakoj celi**
+
+dlia klinik, reabilitacii i domashnego monitoringa
+
+**kakoj rezultat dolzen byt dostignut**
+
+avtomaticesk ij potok ne vosprinimaetsia kak bezuslovno tocn yj bez informacii ob ustrojstve
+
+---
+
+## 94 — kachestvo dannyx
+
+**cto eto dolzno delat**
+
+kazd oe izmerenie moz et imet status kachestva
+
+* provereno
+* primerno
+* nepolno
+* vozmozhn a ia oshibka
+* signal nizkogo kachestva
+* treb uet povtora
+
+**pocemu eto nuzno**
+
+algoritm i specialist dolzny ponimat, kakie dannye mozno sravnivat
+
+**kak eto dolzno rabotat po logike**
+
+nizkokachestvenn yj pokazatel ne udal iaetsia tixo, no ne ispolzuetsia kak nad ezhn yj bez preduprezhdeniia
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev, klinik i analitiki
+
+**kakoj rezultat dolzen byt dostignut**
+
+slucajn a ia oshibka datchika ne stanovitsia osnovoj dlia ubeditelnogo vyvoda
+
+---
+
+## 95 — grafiki i trendy
+
+**cto eto dolzno delat**
+
+sistema moz et pokaz yvat dinamiku vesa, aktivnosti, laboratornyx pokazatelej i simptomov
+
+**pocemu eto nuzno**
+
+posledovatelnost c asto vazhnee odnogo znacheniia
+
+**kak eto dolzno rabotat po logike**
+
+grafik pokaz yvaet edinicy, istochniki, propuski, izmeneniia laboratorii i vazhnye sobytija
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev i specialistov
+
+**kakoj rezultat dolzen byt dostignut**
+
+trend pomogaet zam etit izmenenie, no ne vydajotsia za avtomaticesk ij diagnoz
+
+---
+
+# allergii i nepere nosimosti
+
+## 96 — otdeln yj spisok allergij
+
+**cto eto dolzno delat**
+
+allergii dolzny byt vidny v medicinskoj svodke i pri naznachenii lecheniia
+
+**pocemu eto nuzno**
+
+allergija ne dolzna ter iatsia v starom kommentarii k priemu
+
+**kak eto dolzno rabotat po logike**
+
+kazdaia allergija imeet veschestvo, tip, reakc iju, serioznost, status i istochnik
+
+**dlia kogo i dlia kakoj celi**
+
+dlia vseh specialistov i sitterov
+
+**kakoj rezultat dolzen byt dostignut**
+
+kriticeskaia allergija vidna do naznacheniia novogo preparata ili procedury
+
+---
+
+## 97 — tip allergena
+
+**cto eto dolzno delat**
+
+sistema dolzna razdeliat
+
+* lekarstvo
+* aktivn oe veschestvo
+* korm
+* ingredient
+* material
+* sredstvo uxoda
+* uk us
+* faktor sredy
+* neizvestn yj allergen
+
+**pocemu eto nuzno**
+
+raznye tipy trebu jut raznyx preduprezhdenij i de jstvij
+
+**kak eto dolzno rabotat po logike**
+
+allergen sviazyvaetsia so strukturirovannym spravocnikom i moz et imet svobodn oe utochnenie
+
+**dlia kogo i dlia kakoj celi**
+
+dlia klinik, grumerov, xoziaev i marketplace
+
+**kakoj rezultat dolzen byt dostignut**
+
+sistema moz et predupredit v pravilnom kontekste, ne sravnivaja nesviazannye veschestva
+
+---
+
+## 98 — opisanie reakc ii
+
+**cto eto dolzno delat**
+
+allergija dolzna xranit, cto imenno proishodilo
+
+**pocemu eto nuzno**
+
+slovo allergija bez reakc ii ne pokaz yvaet kliniceskuju vazhnost
+
+**kak eto dolzno rabotat po logike**
+
+opisanie moz et soderzhat simptom, vremia posle kontakta, prodolzhitelnost, potre bovavsh uju pomosc i dokumenty
+
+**dlia kogo i dlia kakoj celi**
+
+dlia specialistov i ekstrennyx sluzhb
+
+**kakoj rezultat dolzen byt dostignut**
+
+nov yj specialist ponimaet realn yj predydusc ij sluchaj, a ne tolko nazvanie allergena
+
+---
+
+## 99 — serioznost allergii
+
+**cto eto dolzno delat**
+
+allergija moz et imet professionaln uju ocenk u serioznosti
+
+**pocemu eto nuzno**
+
+legkaia nepere nosimost i opasn a ia sistemn a ia reakcija ne dolzny pokaz yvatsia odinakovo
+
+**kak eto dolzno rabotat po logike**
+
+ocenk u ustanavlivaet specialist ili ona pokaz yvaetsia kak neizvestnaia
+
+**dlia kogo i dlia kakoj celi**
+
+dlia klinik i ekstrennyx kartochek
+
+**kakoj rezultat dolzen byt dostignut**
+
+kriticeskie allergii poluchajut zametn yj prioritet
+
+---
+
+## 100 — podtverzhdenn a ia i podozrevaemaia allergija
+
+**cto eto dolzno delat**
+
+sistema dolzna pokaz yvat uroven uverennosti
+
+**pocemu eto nuzno**
+
+odin simptom posle edy ne obyazatelno podtverzhdaet allergiju
+
+**kak eto dolzno rabotat po logike**
+
+status moz et byt
+
+* podozrevaetsia
+* ukazana xoziajinom
+* podtverzhdena specialistom
+* podtverzhdena testom
+* iskliuchena
+* trebuet utochneniia
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev i specialistov
+
+**kakoj rezultat dolzen byt dostignut**
+
+podozrenie uchityvaetsia v bezopasnosti, no ne vydajotsia za bezuslovn yj fakt
+
+---
+
+## 101 — status allergij neizvesten
+
+**cto eto dolzno delat**
+
+kartocka dolzna zametno pokaz yvat, esli informacija ob allergijax otsutstvuet
+
+**pocemu eto nuzno**
+
+pustoj spisok moz et sozdat lozhn oe oshchushchenie bezopasnosti
+
+**kak eto dolzno rabotat po logike**
+
+xoziajin ili specialist moz et podtverdit allergii ne izvestny ili izvestnyx allergij net po dostupnoj istorii
+
+**dlia kogo i dlia kakoj celi**
+
+dlia ekstrennyx specialistov
+
+**kakoj rezultat dolzen byt dostignut**
+
+nepoln a ia kartocka ne maskiruetsia pod poln uju
+
+---
+
+## 102 — nepere nosimost otdelno ot allergii
+
+**cto eto dolzno delat**
+
+pischev a ia ili lekarstvenn a ia nepere nosimost dolzna byt otdeln oj kategoriej
+
+**pocemu eto nuzno**
+
+mehanizm i risk mogut otlichatsia, hotia prakticeskaia instrukcija vse ravno vazhna
+
+**kak eto dolzno rabotat po logike**
+
+nepere nosimost imeet produkt, reakc iju, istochnik i rekomendaciju specialista
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev, specialistov i sitterov
+
+**kakoj rezultat dolzen byt dostignut**
+
+kartocka ostajotsia medicinski tocn oj i prakticeski poleznoj
+
+---
+
+## 103 — avtomaticeskie preduprezhdeniia
+
+**cto eto dolzno delat**
+
+pri dobavlenii lekarstva, vakciny, procedury ili korma sistema moz et pokazat sovpadenie s allergiej
+
+**pocemu eto nuzno**
+
+specialist ili xoziajin mogut ne zam etit skryt yj ingredient ili star uju zapis
+
+**kak eto dolzno rabotat po logike**
+
+preduprezhdenie pokaz yvaet istochnik allergii i ne blokiruet professionaln oe reshenie bez vozmoznosti obosnovaniia
+
+**dlia kogo i dlia kakoj celi**
+
+dlia klinik, aptek i xoziaev
+
+**kakoj rezultat dolzen byt dostignut**
+
+potencialn yj konflikt zam ec a etsia do primeneniia, a ne posle reakc ii
+
+---
+
+## 104 — ispravlenie lozhn oj allergii
+
+**cto eto dolzno delat**
+
+specialist moz et otmetit, cto predydusc a ia allergija ne podtverdilas ili byla vnesena oshibocno
+
+**pocemu eto nuzno**
+
+lozhn a ia allergija moz et ogranichivat budusc ee lechenie
+
+**kak eto dolzno rabotat po logike**
+
+st araia zapis ostajotsia v istorii, no ne vyz yvaet aktivn y e preduprezhdeniia posle professionalnogo peresmotra
+
+**dlia kogo i dlia kakoj celi**
+
+dlia specialistov i xoziaev
+
+**kakoj rezultat dolzen byt dostignut**
+
+bezopasnost podderzhivaetsia bez bessrocnogo ispolzovaniia oshibocnogo fakta
+
+---
+
+## 105 — instrukcija dlia sittera
+
+**cto eto dolzno delat**
+
+iz spiska allergij mozno sozdat prost uju prakticeskuju kartocku
+
+**pocemu eto nuzno**
+
+sitteru ne nuzhny vse kliniceskie detali, no nuzhno znat, cego izbegat i cto delat pri reakc ii
+
+**kak eto dolzno rabotat po logike**
+
+kartocka pokaz yvaet tolko odobrenn yj xoziajinom i specialistom minimum
+
+**dlia kogo i dlia kakoj celi**
+
+dlia sitterov i perederzhek
+
+**kakoj rezultat dolzen byt dostignut**
+
+prakticeskaia bezopasnost dostupna bez raskrytiia vsej medkartocki
+
+---
+
+# lekarstva i dobavki
+
+## 106 — edin yj spisok aktivnyx lekarstv
+
+**cto eto dolzno delat**
+
+v svodke dolzen byt aktualn yj spisok vsego, cto pitomec prinimaet sejchas
+
+**pocemu eto nuzno**
+
+lekarstva mogut byt naznacheny raznymi klinikami i xranitsia v raznyx dokumentax
+
+**kak eto dolzno rabotat po logike**
+
+spisok formiruetsia iz aktivnyx naznachenij s datami, avtorami i statusom
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev, sitterov i specialistov
+
+**kakoj rezultat dolzen byt dostignut**
+
+nov yj veterinar vidit tekusc ie preparaty do naznacheniia novyx
+
+---
+
+## 107 — torgovoe nazvanie i aktivn oe veschestvo
+
+**cto eto dolzno delat**
+
+zapis dolzna xranit kak brend, tak i aktivn yj sostav pri dostupnosti
+
+**pocemu eto nuzno**
+
+odin sostav moz et prodavatsia pod raznymi nazvaniiami
+
+**kak eto dolzno rabotat po logike**
+
+spravocnik sviazyvaet produkty, no ne podmeniaet professionaln uju proverku sostava
+
+**dlia kogo i dlia kakoj celi**
+
+dlia klinik, aptek, xoziaev i puteshestvij
+
+**kakoj rezultat dolzen byt dostignut**
+
+dva preparata s odnim veschestvom reze ispolzujutsia odnovremenno po oshibke
+
+---
+
+## 108 — forma i koncentracija
+
+**cto eto dolzno delat**
+
+zapis dolzna xranit
+
+* tabletku
+* kapsulu
+* zhidkost
+* inekciju
+* maz
+* kapli
+* druguju formu
+* koncentraciju pri neobxodimosti
+
+**pocemu eto nuzno**
+
+odin i tot ze preparat moz et imet raznye formy i koncentracii
+
+**kak eto dolzno rabotat po logike**
+
+forma i koncentracija pokazyvajutsia riadom s dozoj i ne ter iajutsia pri perevode
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev, aptek i specialistov
+
+**kakoj rezultat dolzen byt dostignut**
+
+xoziajin ne prinimaet odnu formu za druguju tolko po poxozhemu nazvaniiu
+
+---
+
+## 109 — doza i edinica
+
+**cto eto dolzno delat**
+
+na znachenie dolzno xranit tocn oe znachenie, edinicu i pri neobxodimosti raschetn uju osnovu
+
+**pocemu eto nuzno**
+
+chislo bez edinicy ili konteksta opasno
+
+**kak eto dolzno rabotat po logike**
+
+doza vnositsia specialistom ili kak perenos iz dokumenta s obyazatelnoj proverkoj
+
+sistema ne dolzna samostojatelno menjat dozu po novomu vesu bez professionalnogo resheniia
+
+**dlia kogo i dlia kakoj celi**
+
+dlia specialistov, xoziaev i sitterov
+
+**kakoj rezultat dolzen byt dostignut**
+
+v raspisanii pokaz ana imenno naznachenn a ia doza, a ne avtomaticeski pridumann a ia
+
+---
+
+## 110 — sposob primeneniia
+
+**cto eto dolzno delat**
+
+zapis dolzna xranit, kak preparat dolzen byt primenen
+
+**pocemu eto nuzno**
+
+odin i tot ze preparat moz et ispolzovatsia raznymi sposobami
+
+**kak eto dolzno rabotat po logike**
+
+spravocnik podderzhivaet strukturirovann yj sposob i svobodn uju instrukciju specialista
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev, sitterov i klinik
+
+**kakoj rezultat dolzen byt dostignut**
+
+prakticeskaia instrukcija ne ter iaetsia pri avtomaticeskom raspisanii
+
+---
+
+## 111 — chastota i raspisanie
+
+**cto eto dolzno delat**
+
+na znachenie dolzno podderzhivat reguliarnoe, intervaln oe i individualn oe raspisanie
+
+**pocemu eto nuzno**
+
+ne vse preparaty prin imajutsia odin raz v den v odno i to ze vremia
+
+**kak eto dolzno rabotat po logike**
+
+raspisanie xranit originaln uju kliniceskuju instrukciju, casovoj pojas i dopustimye okna
+
+**dlia kogo i dlia kakoj celi**
+
+dlia semej, sitterov i xroniceskogo uxoda
+
+**kakoj rezultat dolzen byt dostignut**
+
+napominaniia sootvetstvujut realnomu naznacheniiu i ne meniajut ego smysl
+
+---
+
+## 112 — data nachala i okonchaniia
+
+**cto eto dolzno delat**
+
+lekarstvo dolzno imet status i period primeneniia
+
+**pocemu eto nuzno**
+
+st ar yj preparat ne dolzen pokaz yvatsia kak aktivn yj posle zaversheniia kursa
+
+**kak eto dolzno rabotat po logike**
+
+status moz et byt
+
+* zaplanirovano
+* aktivno
+* priostanovleno
+* zaversheno
+* otmeneno
+* zameneno
+* status neizvesten
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev i specialistov
+
+**kakoj rezultat dolzen byt dostignut**
+
+tekusc ij spisok ne zagryazn iaetsia star ymi naznacheniiami
+
+---
+
+## 113 — prichina naznacheniia
+
+**cto eto dolzno delat**
+
+lekarstvo dolzno byt sviazano s diagnozom, simptomom, proceduroj ili profilakticeskoj celju
+
+**pocemu eto nuzno**
+
+bez prichiny novomu specialistu trudno ponimat, zachem preparat prin im a etsia
+
+**kak eto dolzno rabotat po logike**
+
+odno naznachenie moz et byt sviazano s konkretnym sluchaem i planom lecheniia
+
+**dlia kogo i dlia kakoj celi**
+
+dlia specialistov i vtorogo mneniia
+
+**kakoj rezultat dolzen byt dostignut**
+
+pri peresmotre lecheniia vidna medicinskaia logika predydusc ego naznacheniia
+
+---
+
+## 114 — naznachivsh ij specialist
+
+**cto eto dolzno delat**
+
+riadom dolzny byt veterinar, klinika, data i pri neobxodimosti recept
+
+**pocemu eto nuzno**
+
+xoziajinu ili novomu specialistu moz et potrebovatsia utochnenie
+
+**kak eto dolzno rabotat po logike**
+
+professionaln yj avtor ne moz et byt zamenen nazvaniem sistemy ili akkaunta xoziajina
+
+**dlia kogo i dlia kakoj celi**
+
+dlia klinik, xoziaev i aptek
+
+**kakoj rezultat dolzen byt dostignut**
+
+pon iatno, kto neset professionaln uju otvetstvennost za naznachenie
+
+---
+
+## 115 — preparat po neobxodimosti
+
+**cto eto dolzno delat**
+
+na znachenie moz et imet status primeniat tolko pri konkretnyx uslovijax
+
+**pocemu eto nuzno**
+
+oby cn oe vrem enn oe napominanie ne podxodit dlia preparata po neobxodimosti
+
+**kak eto dolzno rabotat po logike**
+
+instrukcija dolzna soderzhat kriterii, ogranicheniia i maksimaln yj dopustim yj rezhim, zadann yj specialistom
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev i sitterov
+
+**kakoj rezultat dolzen byt dostignut**
+
+preparat ne pokaz yvaetsia kak obyazateln yj reguliar n yj priem
+
+---
+
+## 116 — zhurnal primeneniia
+
+**cto eto dolzno delat**
+
+kazdoe fakticeskoe primenenie mozno otmetit
+
+**pocemu eto nuzno**
+
+na znachenie i realn oe vypolnenie javliajutsia raznymi veschami
+
+**kak eto dolzno rabotat po logike**
+
+zapis xranit
+
+* kto dal
+* kogda
+* kak uju dozu
+* po kakomu naznacheniiu
+* est li kommentarij
+* byla li problema
+
+**dlia kogo i dlia kakoj celi**
+
+dlia semej, sitterov, priutov i stacionara
+
+**kakoj rezultat dolzen byt dostignut**
+
+vse otvetstvennye vidat, bylo li lekarstvo fakticeski dano
+
+---
+
+## 117 — zascita ot dvojnogo priema
+
+**cto eto dolzno delat**
+
+pered povtorn oj otmetkoj sistema dolzna pokazat posledn ee primenenie
+
+**pocemu eto nuzno**
+
+dva clena sem ji mogut ne znat o dejstvii drug druga
+
+**kak eto dolzno rabotat po logike**
+
+pri podozritelno blizkom povtore sistem a preduprezhdaet i prosit proverit fakt, no ne prinimaet klinicesk oe reshenie sama
+
+**dlia kogo i dlia kakoj celi**
+
+dlia semej, perederzhek i stacionara
+
+**kakoj rezultat dolzen byt dostignut**
+
+risk slucajnogo dvojnogo priema snizhaetsia
+
+---
+
+## 118 — propuscenn a ia ili opozdavshaia doza
+
+**cto eto dolzno delat**
+
+polzovatel moz et otmetit, cto priem propuschen, opozdal ili sostojalsia ne polnostiu
+
+**pocemu eto nuzno**
+
+lozhn a ia otmetka vypolneno iskazhaet kartinu lecheniia
+
+**kak eto dolzno rabotat po logike**
+
+sistema xranit fakt i predlagaet sledovat zaranee zadann oj specialistom instrukcii ili sviazatsia s klinikoj
+
+ona ne dolzna samostojatelno sovetovat kompensirujusc uju dozu
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev i sitterov
+
+**kakoj rezultat dolzen byt dostignut**
+
+specialist vidit realn uju priv erzhen nost planu bez opasnoj avtomaticeskoj korrekcii
+
+---
+
+## 119 — pobocn a ia reakcija
+
+**cto eto dolzno delat**
+
+xoziajin moz et dobavit simptom, vremia, foto ili video posle primeneniia preparata
+
+**pocemu eto nuzno**
+
+reakc iju vazhno sviazat s konkretnym lekarstvom i dozoj
+
+**kak eto dolzno rabotat po logike**
+
+pri potencialno srocnom opisanii sistema predlagaet nemedlenno sviazatsia s klinikoj
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev i specialistov
+
+**kakoj rezultat dolzen byt dostignut**
+
+reakcija dokumentiruetsia i ne ter iaetsia v oby cnom chat e
+
+---
+
+## 120 — lekarstvennye vzaimodejstviia
+
+**cto eto dolzno delat**
+
+sistema moz et pokaz yvat potencialn yj konflikt mezhdu aktivnymi naznacheniiami
+
+**pocemu eto nuzno**
+
+raznye specialisty mogut ne znat o preparatax drug druga
+
+**kak eto dolzno rabotat po logike**
+
+preduprezhdenie dolzno byt spravochnym, pokaz yvat osnovanie i trebovat professionalnogo resheniia
+
+**dlia kogo i dlia kakoj celi**
+
+dlia veterinarov i aptek
+
+**kakoj rezultat dolzen byt dostignut**
+
+potencialn yj risk zam ec a etsia, no algoritm ne otmeniaet lekarstvo samostojatelno
+
+---
+
+## 121 — soglasovanie spiska lekarstv
+
+**cto eto dolzno delat**
+
+na novom prieme specialist dolzen moc proverit, kakie preparaty fakticeski prin imajutsia
+
+**pocemu eto nuzno**
+
+v kartocke mogut ostatcia zavershenn y e, zamenenn y e ili fakticeski neispolzuemye naznacheniia
+
+**kak eto dolzno rabotat po logike**
+
+process sravnivaet
+
+* spisok kartocki
+* slova xoziajina
+* recepty
+* fakticeskie upakovki
+* poslednie otmetki
+
+**dlia kogo i dlia kakoj celi**
+
+dlia specialistov i xoziaev
+
+**kakoj rezultat dolzen byt dostignut**
+
+aktivn yj spisok otrazaet realn oe tekusc ee lechenie
+
+---
+
+## 122 — prichina zaversheniia preparata
+
+**cto eto dolzno delat**
+
+pri otmene ili zavershenii nuzno ukazat prichinu
+
+**pocemu eto nuzno**
+
+preparat mog zavershitsia po planu, ne pomoch, vyzvat reakc iju ili byt zamenen
+
+**kak eto dolzno rabotat po logike**
+
+prichina sviazyvaetsia s avt orom resheniia i sledujusc im planom
+
+**dlia kogo i dlia kakoj celi**
+
+dlia budusc ix specialistov
+
+**kakoj rezultat dolzen byt dostignut**
+
+st araia terapiia ne naznachaetsia povtorno bez ponimaniia, pocemu ejo prekratili
+
+---
+
+## 123 — zapas i povtorn oe poluchenie
+
+**cto eto dolzno delat**
+
+xoziajin moz et otmecat kolichestvo preparata, srok recepta i neobxodimost novoj vydaci
+
+**pocemu eto nuzno**
+
+hronicesk ij preparat ne dolzen neozhidanno zakonchitsia
+
+**kak eto dolzno rabotat po logike**
+
+napominanie osnovyvaetsia na zadannom raspisanii i fakticeskix otmetkax, no ne schitaetsia kliniceskim naznacheniem
+
+**dlia kogo i dlia kakoj celi**
+
+dlia hroniceskogo uxoda
+
+**kakoj rezultat dolzen byt dostignut**
+
+xoziajin zaranee vidit, cto nuzhno sviazatsia s klinikoj ili aptekoj
+
+---
+
+## 124 — srok godnosti i usloviia xraneniia
+
+**cto eto dolzno delat**
+
+mozno xranit srok godnosti, datu otkrytiia i instrukciju po xraneniiu
+
+**pocemu eto nuzno**
+
+otkryt yj ili prosrocenn yj preparat moz et byt neprimenim
+
+**kak eto dolzno rabotat po logike**
+
+sistema pokaz yvaet napominanie i ne udaliaet preparat avtomaticeski iz medkartocki
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev, priutov i klinik
+
+**kakoj rezultat dolzen byt dostignut**
+
+v raspisanii ne ispolzuetsia upakovka, kotoraja uze ne dolzna primeniatsia
+
+---
+
+## 125 — dobavki, vitaminy i netradicionnye sredstva
+
+**cto eto dolzno delat**
+
+xoziajin dolzen moc ukazat vse produkty, kotorye fakticeski poluchaet pitomec
+
+**pocemu eto nuzno**
+
+dobavka ili rastiteln oe sredstvo moz et vliiat na lechenie ili analiz y
+
+**kak eto dolzno rabotat po logike**
+
+takaja zapis imeet metku ukazano xoziajinom, sostav, proizvoditelia i prichinu ispolzovaniia
+
+**dlia kogo i dlia kakoj celi**
+
+dlia specialistov i xoziaev
+
+**kakoj rezultat dolzen byt dostignut**
+
+veterinar vidit poln uju fakticeskuju kartinu, a ne tolko recepturnye preparaty
+
+---
+
+# vakcinacii i profilaktika
+
+## 126 — otdeln yj registr vakcinacij
+
+**cto eto dolzno delat**
+
+vse vakciny dolzny byt strukturirovany otdelno ot oby cnyx procedur
+
+**pocemu eto nuzno**
+
+vakcinacionn yj status vazhen dlia poezdok, sobytij, priutov i klinik
+
+**kak eto dolzno rabotat po logike**
+
+kazdaia zapis imeet preparat, cel, datu, seriju, dozu, specialista, dokument i sledujusc ij srok
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev, klinik, priutov i organizatorov
+
+**kakoj rezultat dolzen byt dostignut**
+
+vakcinacionn a ia istoria dostupna kak proveriaem yj spisok, a ne tolko fotografija pasporta
+
+---
+
+## 127 — konkretnaia vakcina i cel
+
+**cto eto dolzno delat**
+
+zapis dolzna ukazyvat, protiv cego i kakoi produkt byl primenen
+
+**pocemu eto nuzno**
+
+obsch a ia otmetka privit nedostatochna dlia kliniki ili puteshestviia
+
+**kak eto dolzno rabotat po logike**
+
+odin preparat moz et pokryvat neskolko komponentov, kotorye xran iatsia strukturirovanno
+
+**dlia kogo i dlia kakoj celi**
+
+dlia specialistov i proverki dokumentov
+
+**kakoj rezultat dolzen byt dostignut**
+
+status po kazdomu trebovaniiu mozno opredelit bez rucnogo chteniia skana
+
+---
+
+## 128 — proizvoditel, serija i srok godnosti
+
+**cto eto dolzno delat**
+
+vakcinacionn a ia zapis dolzna xranit proizvoditelia, partiju i dostupnye identifikatory
+
+**pocemu eto nuzno**
+
+eto vazhno pri otzyve partii, proverke podlinnosti i razbore reakc ii
+
+**kak eto dolzno rabotat po logike**
+
+dannye mogut byt vneseny klinikoj, importirovany iz dokumenta ili podtverzhdeny fotografiej naklejki
+
+**dlia kogo i dlia kakoj celi**
+
+dlia klinik, regulatornyx proverok i xoziaev
+
+**kakoj rezultat dolzen byt dostignut**
+
+konkretn a ia partija moz et byt naidena pri neobxodimosti
+
+---
+
+## 129 — doza, sposob i mesto vvedeniia
+
+**cto eto dolzno delat**
+
+klinika moz et zafiksirovat professionalnye detali primeneniia
+
+**pocemu eto nuzno**
+
+eto moz et byt vazhno pri reakc ii ili povtorn oj vakcinacii
+
+**kak eto dolzno rabotat po logike**
+
+polia dostupny specialistu i ne obyazatelno pokaz yvajutsia v kratkom publicnom sertifikate
+
+**dlia kogo i dlia kakoj celi**
+
+dlia klinik i professionalnoj istorii
+
+**kakoj rezultat dolzen byt dostignut**
+
+poln a ia kliniceskaia zapis soxr aniaetsia, a xoziajin vidit pon iatn uju svodku
+
+---
+
+## 130 — pervichn a ia serija i revakcinacija
+
+**cto eto dolzno delat**
+
+sistema dolzna sviazyvat neskolko doz odnogo kursa
+
+**pocemu eto nuzno**
+
+odin komponent moz et trebovat neskolkix etapov
+
+**kak eto dolzno rabotat po logike**
+
+kartocka pokaz yvaet
+
+* kakoi etap vypolnen
+* cto zaplanirovano
+* cto propuscheno
+* cto pereneseno
+* kakoi specialist ustanovil plan
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev, priutov i klinik
+
+**kakoj rezultat dolzen byt dostignut**
+
+xoziajin ne prinimaet odnu dozu za zavershenn yj kurs bez podtverzhdeniia
+
+---
+
+## 131 — sledujusc a ia data ne dolzna vychisliatsia kak bezuslovn yj fakt
+
+**cto eto dolzno delat**
+
+sistema moz et predlozhit orientirovocn yj srok, no finaln uju datu dolzen podtverdit specialist ili pravilo dokumenta
+
+**pocemu eto nuzno**
+
+grafik moz et zaviset ot produkta, regiona, vozrasta, sostojaniia i celi
+
+**kak eto dolzno rabotat po logike**
+
+data imeet istochnik
+
+* naznachena veterinarom
+* ukazana v dokumente
+* rasschitana kak napominanie
+* trebuet utochneniia
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev i klinik
+
+**kakoj rezultat dolzen byt dostignut**
+
+napominanie ne vydajotsia za individualn oe medicinsk oe naznachenie
+
+---
+
+## 132 — reakcija na vakcinu
+
+**cto eto dolzno delat**
+
+posle vakcinacii mozno zafiksirovat nabludenie ili podtverzhdenn uju reakc iju
+
+**pocemu eto nuzno**
+
+eta informacija moz et byt vazhna dlia budusc ego plana
+
+**kak eto dolzno rabotat po logike**
+
+zapis sviazyvaetsia s konkretnoj vakcinoj, partij ej, vremenem i professionalnoj ocenkoj
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev i specialistov
+
+**kakoj rezultat dolzen byt dostignut**
+
+budusc ij veterinar vidit konkret n yj predydusc ij sluchaj, a ne obsch uju frazu ploxo perenosit vakciny
+
+---
+
+## 133 — medicinsk oe iskliuchenie
+
+**cto eto dolzno delat**
+
+specialist moz et dokumentirovat vrem enn oe ili postojann oe ogranichenie dlia konkretn oj vakciny
+
+**pocemu eto nuzno**
+
+otsutstvie vakciny ne vsegda oznachaet zabyvchivost ili otkaz xoziajina
+
+**kak eto dolzno rabotat po logike**
+
+iskliuchenie imeet prichinu, avtora, datu, srok i oblast primeneniia
+
+**dlia kogo i dlia kakoj celi**
+
+dlia klinik, sobytij i puteshestvij
+
+**kakoj rezultat dolzen byt dostignut**
+
+status pon iaten, no dokument ne ispolzuetsia bessrochno posle istecheniia
+
+---
+
+## 134 — vakcinacionn yj sertifikat
+
+**cto eto dolzno delat**
+
+iz podtverzhdennyx zapisej mozno sformirovat dokument dlia kliniki, sobytija ili poezdki
+
+**pocemu eto nuzno**
+
+xoziajin ne dolzen vrucnuju sobirat fotografii nakleek
+
+**kak eto dolzno rabotat po logike**
+
+sertifikat pokaz yvaet istochniki, podpis i status proverki, a ne prosto krasiv uju tablicu
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev, organizatorov i klinik
+
+**kakoj rezultat dolzen byt dostignut**
+
+poluchatel moz et proverit, kto i na osnovanii cego sformiroval dokument
+
+---
+
+## 135 — vakcinacionn yj status dlia sobytija
+
+**cto eto dolzno delat**
+
+organizator moz et poluchit tolko obobschonn yj podtverzhdenn yj status
+
+**pocemu eto nuzno**
+
+emu ne nuzhna poln a ia medkartocka i skany vseh dokumentov
+
+**kak eto dolzno rabotat po logike**
+
+xoziajin razreshaet pokaz
+
+* sootvetstvuet trebovaniiu
+* ne sootvetstvuet
+* trebuet proverki
+* est professionaln oe iskliuchenie
+
+**dlia kogo i dlia kakoj celi**
+
+dlia gruppovyx sobytij i klubov
+
+**kakoj rezultat dolzen byt dostignut**
+
+bezopasnost sobytija podderzhivaetsia s minimalnym raskrytiem dannyx
+
+---
+
+## 136 — dublikaty vakcinacij
+
+**cto eto dolzno delat**
+
+sistema dolzna zam ec at vozmozhno odin i tot ze fakt, importirovann yj iz pasporta i kliniki
+
+**pocemu eto nuzno**
+
+dvojn a ia zapis moz et sozdat lozhn oe kolichestvo doz
+
+**kak eto dolzno rabotat po logike**
+
+sravnivajutsia data, produkt, partija, klinika i dokument
+
+dublikat y obed injajutsia s soxraneniem vseh istochnikov
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev i klinik
+
+**kakoj rezultat dolzen byt dostignut**
+
+odin fakt pokaz yvaetsia odin raz, no s neskolkimi podtverzhdeniiami
+
+---
+
+## 137 — nepoln a ia vakcinacionn a ia istoria priuta
+
+**cto eto dolzno delat**
+
+priut moz et ukazat, cto predydusc ij status neizvesten, a novaia vakcina sdelana pri postuplenii
+
+**pocemu eto nuzno**
+
+nelzia avtomaticeski schitat, cto do priuta zivotnoe ne bylo vakcinirovano
+
+**kak eto dolzno rabotat po logike**
+
+nov y e fakty xran iatsia tocn o, a predydusc a ia istoria ostajotsia neizvestnoj
+
+**dlia kogo i dlia kakoj celi**
+
+dlia priutov i novyx xoziaev
+
+**kakoj rezultat dolzen byt dostignut**
+
+kartocka chestno otrazaet granicy dostupnoj informacii
+
+---
+
+## 138 — obsch ij profilakticesk ij plan
+
+**cto eto dolzno delat**
+
+medkartocka dolzna podderzhivat plan profilaktiki, ne ogranichenn yj vakcinami
+
+**pocemu eto nuzno**
+
+zdorovje vkliucaet profilakticeskie osmotry, zuby, parazitov, skriningi i drugie zadaci
+
+**kak eto dolzno rabotat po logike**
+
+plan sozda jotsia specialistom ili na osnove dokumenta i imeet individualnye sroki
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev i klinik
+
+**kakoj rezultat dolzen byt dostignut**
+
+profilaktika ne raspadaetsia na nesviazannye napominaniia
+
+---
+
+## 139 — profilaktika parazitov
+
+**cto eto dolzno delat**
+
+sistema moz et xranit preparat, period, cel i fakt primeneniia
+
+**pocemu eto nuzno**
+
+raznye sredstva i regiony mogut imet raznye plany
+
+**kak eto dolzno rabotat po logike**
+
+napominanie osnovyvaetsia na individualnom naznacheniiu, a ne na universalnom globalnom pravile
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev, priutov i specialistov
+
+**kakoj rezultat dolzen byt dostignut**
+
+xoziajin vidit svoi plan, ne prin imaja avtomaticeskuju podskazku za recept
+
+---
+
+## 140 — stomatologiceskaia profilaktika
+
+**cto eto dolzno delat**
+
+mozno xranit osmotry, domashn ij uxod, professionalnye procedury i sledujusc ij kontrol
+
+**pocemu eto nuzno**
+
+informacija o zubax c asto ter iaetsia mezhdu oby cnymi priemami
+
+**kak eto dolzno rabotat po logike**
+
+stomatologicesk ie zapisi sviazyvajutsia s otdeln oj kartoj zubov i foto
+
+**dlia kogo i dlia kakoj celi**
+
+dlia klinik i xoziaev
+
+**kakoj rezultat dolzen byt dostignut**
+
+vidna dolgosrocn a ia dinamika, a ne tolko fakt poslednej cistki
+
+---
+
+## 141 — profilakticeskie skriningi
+
+**cto eto dolzno delat**
+
+specialist moz et sozdat individualn yj plan kontrolnyx analizov i osmotrov
+
+**pocemu eto nuzno**
+
+potre bnost zavisit ot vida, vozrasta, istorii i sostojaniia
+
+**kak eto dolzno rabotat po logike**
+
+kazd a ia zadaca imeet prichinu, srok, status i rezultat
+
+**dlia kogo i dlia kakoj celi**
+
+dlia pozhilyx pitomcev i hroniceskogo monitoringa
+
+**kakoj rezultat dolzen byt dostignut**
+
+xoziajin ponimaet, pocemu nuzhen sledujusc ij kontrol, a ne tolko vidit push s datoj
+
+---
+
+# laboratornye issledovaniia
+
+## 142 — zakaz na analiz
+
+**cto eto dolzno delat**
+
+kazd oe laboratorn oe issledovanie dolzno nac inatsia s zakaza ili registracii fakta analiza
+
+**pocemu eto nuzno**
+
+rezultat bez prichiny, kliniki i obrazca trudno interpret irovat
+
+**kak eto dolzno rabotat po logike**
+
+zakaz xranit
+
+* cto issleduetsia
+* pocemu
+* kto zakazal
+* laboratoriju
+* prioritet
+* podgotovku
+* status
+
+**dlia kogo i dlia kakoj celi**
+
+dlia klinik i laboratorij
+
+**kakoj rezultat dolzen byt dostignut**
+
+rezultat sviazan s konkretnoj kliniceskoj zadachej
+
+---
+
+## 143 — tip obrazca
+
+**cto eto dolzno delat**
+
+analiz dolzen xranit tip materiala, mesto i sposob polucheniia pri neobxodimosti
+
+**pocemu eto nuzno**
+
+odin i tot ze test moz et imet razn yj smysl dlia raznyx obrazcov
+
+**kak eto dolzno rabotat po logike**
+
+polia zavisiat ot vida issledovaniia i dostupny specialistu
+
+**dlia kogo i dlia kakoj celi**
+
+dlia laboratorij i klinik
+
+**kakoj rezultat dolzen byt dostignut**
+
+poluchatel ne interpret iru et rezultat bez informacii o proishozhdenii obrazca
+
+---
+
+## 144 — data i usloviia sbora
+
+**cto eto dolzno delat**
+
+zapis dolzna xranit vremia sbora, podgotovku, sostojanie i vozmozhnye problem y obrazca
+
+**pocemu eto nuzno**
+
+rezultat moz et zaviset ot podgotovki ili kachestva materiala
+
+**kak eto dolzno rabotat po logike**
+
+laboratorija moz et otmetit nedostatochn yj, zagryaznenn yj, povrezhdenn yj ili drugoj problemn yj obrazec
+
+**dlia kogo i dlia kakoj celi**
+
+dlia specialistov
+
+**kakoj rezultat dolzen byt dostignut**
+
+podozriteln yj rezultat ne vosprinimaetsia otdelno ot kachestva obrazca
+
+---
+
+## 145 — status issledovaniia
+
+**cto eto dolzno delat**
+
+analiz moz et imet status
+
+* zakazan
+* material sobran
+* otpravlen
+* v rabote
+* predvariteln yj
+* finaln yj
+* ispravlenn yj
+* otmenen
+* obrazec neprigoden
+
+**pocemu eto nuzno**
+
+predvariteln yj rezultat ne dolzen pokazyvatsia kak finaln yj
+
+**kak eto dolzno rabotat po logike**
+
+kazd oe izmenenie statusa imeet vremia, avtora i prichinu
+
+**dlia kogo i dlia kakoj celi**
+
+dlia klinik, laboratorij i xoziaev
+
+**kakoj rezultat dolzen byt dostignut**
+
+polzovatel ponimaet, mozno li uze opiratsia na otchet
+
+---
+
+## 146 — znachenie i edinica
+
+**cto eto dolzno delat**
+
+kazdyj pokazatel dolzen xranit originaln oe znachenie i edinicu laboratorii
+
+**pocemu eto nuzno**
+
+avtomaticeskoe preobrazovanie bez originala moz et sozdat oshibku
+
+**kak eto dolzno rabotat po logike**
+
+interfejs moz et dopolnitelno pokaz yvat konvertirovann uju edinicu, no original ostajotsia osnovnym dokazatelstvom
+
+**dlia kogo i dlia kakoj celi**
+
+dlia laboratorij, klinik i mezhdunarodnogo obmena
+
+**kakoj rezultat dolzen byt dostignut**
+
+rezultat ne ter iaet smysl pri perenose mezhdu sistemami
+
+---
+
+## 147 — referentn yj diapazon
+
+**cto eto dolzno delat**
+
+riadom s rezultatom dolzen xranitsia diapazon, ukazann yj konkretnoj laboratoriej
+
+**pocemu eto nuzno**
+
+diapazony mogut zaviset ot metoda, vida, vozrasta i laboratorii
+
+**kak eto dolzno rabotat po logike**
+
+sistema ne dolzna zamen iat laboratorn yj diapazon odnim universalnym spravocnikom
+
+**dlia kogo i dlia kakoj celi**
+
+dlia specialistov i xoziaev
+
+**kakoj rezultat dolzen byt dostignut**
+
+abnormaln a ia metka sootvetstvuet realnomu otchetu, a ne proizvolnomu globalnomu porogu
+
+---
+
+## 148 — abnormaln yj flag
+
+**cto eto dolzno delat**
+
+laboratorija moz et ozna chit pokazatel kak nizkij, vysokij, kriticesk ij ili trebu jusc ij proverki
+
+**pocemu eto nuzno**
+
+xoziajinu trudno samostojatelno sravnivat sotni znachenij
+
+**kak eto dolzno rabotat po logike**
+
+flag pokaz yvaet istochnik i ne zameniaet interpretaciju veterinara
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev i klinik
+
+**kakoj rezultat dolzen byt dostignut**
+
+vazh n yj rezultat zamet en, no platforma ne stavit diagnoz po odn oj cifre
+
+---
+
+## 149 — kriticesk ij rezultat
+
+**cto eto dolzno delat**
+
+laboratorija moz et otmetit rezultat, trebujusc ij srocn oj professionalnoj reakc ii
+
+**pocemu eto nuzno**
+
+oby cn oe uvedomlenie moz et byt propu scheno ili otlozheno
+
+**kak eto dolzno rabotat po logike**
+
+sistema zapuskaet eskalaciju
+
+* specialistu
+* klinike
+* xoziajinu po pravilam
+* rezervnomu kontaktu pri neobxodimosti
+* s podtverzhdeniem polucheniia
+
+**dlia kogo i dlia kakoj celi**
+
+dlia laboratorij, klinik i xoziaev
+
+**kakoj rezultat dolzen byt dostignut**
+
+kriticesk a ia informacija ne ostajotsia neprochtennoj v oby cnom spiske rezultatov
+
+---
+
+## 150 — podtverzhdenie obrabotki kriticeskogo rezultata
+
+**cto eto dolzno delat**
+
+upolnomochenn yj specialist dolzen otmetit, cto rezultat prosmotren i kakoi sledujusc ij shag priniat
+
+**pocemu eto nuzno**
+
+status dostavleno ne oznachaet, cto kliniceskoe dejstvie proizoshlo
+
+**kak eto dolzno rabotat po logike**
+
+xranitsia
+
+* kto prosmotrel
+* kogda
+* komu soobscil
+* kakoi plan ustanovlen
+* nuzhna li dalnejsaia eskalacija
+
+**dlia kogo i dlia kakoj celi**
+
+dlia klinik i bezopasnosti
+
+**kakoj rezultat dolzen byt dostignut**
+
+kriticesk ij rezultat imeet proveriaem yj zavershenn yj process, a ne tolko push
+
+---
+
+## 151 — ispravlenn yj rezultat
+
+**cto eto dolzno delat**
+
+laboratorija moz et vypustit nov uju versiju otcheta
+
+**pocemu eto nuzno**
+
+v predydusc ej versii moz et byt tehniceskaia ili identifikacionnaia oshibka
+
+**kak eto dolzno rabotat po logike**
+
+novaia versija stanovitsia aktivnoj, a st araia pom echaetsia kak zamenena s prichinoj
+
+**dlia kogo i dlia kakoj celi**
+
+dlia laboratorij, klinik i xoziaev
+
+**kakoj rezultat dolzen byt dostignut**
+
+specialist ne ispolzuet st ar yj rezultat kak budto on vse esio dejstvuet
+
+---
+
+## 152 — otmenenn yj ili neprigodn yj analiz
+
+**cto eto dolzno delat**
+
+sistema dolzna pokaz yvat, cto rezultat ne byl poluchen ili ne moz et byt ispolzovan
+
+**pocemu eto nuzno**
+
+otsutstvie cifry ne dolzno vosprinimatsia kak normaln yj rezultat
+
+**kak eto dolzno rabotat po logike**
+
+ukazyvaetsia prichina i nuzhen li povtorn yj sb or
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev i klinik
+
+**kakoj rezultat dolzen byt dostignut**
+
+nevalidn oe issledovanie ne popadaet v grafiki kak polnocenn yj fakt
+
+---
+
+## 153 — grafiki laboratornyx pokazatelej
+
+**cto eto dolzno delat**
+
+odin i tot ze pokazatel mozno sravnivat vo vremeni
+
+**pocemu eto nuzno**
+
+dinamika moz et byt vazhnee odnogo abnormalnogo rezultata
+
+**kak eto dolzno rabotat po logike**
+
+grafik pokaz yvaet
+
+* laboratoriju
+* metod
+* edinicu
+* diapazon
+* lechenie
+* vazhnye sobytija
+
+**dlia kogo i dlia kakoj celi**
+
+dlia specialistov i xoziaev
+
+**kakoj rezultat dolzen byt dostignut**
+
+sravnenie ne skryvaet, cto metod ili laboratorija izmenilis
+
+---
+
+## 154 — interpretacija specialista
+
+**cto eto dolzno delat**
+
+veterinar moz et dobavit zakliuchenie k odn omu ili neskolkim rezultatam
+
+**pocemu eto nuzno**
+
+laboratorn yj flag sam po sebe ne objasniaet klinicesk ij smysl
+
+**kak eto dolzno rabotat po logike**
+
+interpretacija imeet avtora, datu, kontekst, sviaz s diagnozom i planom
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev i budusc ix specialistov
+
+**kakoj rezultat dolzen byt dostignut**
+
+pon iatno, kak rezultat byl ocen en v konkretnom sluchaiu
+
+---
+
+## 155 — domashnie testy
+
+**cto eto dolzno delat**
+
+xoziajin moz et dobavit rezultat testa, vypolnennogo doma
+
+**pocemu eto nuzno**
+
+nekotorye pokazateli mogut monitorirovatsia vne kliniki
+
+**kak eto dolzno rabotat po logike**
+
+zapis imeet metku domashn ij test, ustrojstvo, partiju pri nalichii i fotografiju rezultata
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev i specialistov
+
+**kakoj rezultat dolzen byt dostignut**
+
+rezultat dostup en v istorii, no ne putajetsia s podtverzhdennym laboratornym issledovaniem
+
+---
+
+## 156 — geneticeskie issledovaniia
+
+**cto eto dolzno delat**
+
+geneticesk ij otchet moz et xranitsia kak otdeln yj tip s ogranichennym dostupom
+
+**pocemu eto nuzno**
+
+geneticeskaia informacija moz et byt sloznoj, dolgosrocn oj i chuvstvitelnoj
+
+**kak eto dolzno rabotat po logike**
+
+sistema razdeli aet rezultat testa, interpretaciju i klinicesk ie resheniia
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev, zavodcikov i specialistov
+
+**kakoj rezultat dolzen byt dostignut**
+
+geneticesk ij variant ne pokaz yvaetsia kak neizbezh n yj diagnoz bez professionalnogo konteksta
+
+---
+
+## 157 — infekcionnye issledovaniia
+
+**cto eto dolzno delat**
+
+rezultat moz et imet specialn yj status, datu, metod, obrazec i regionaln yj kontekst
+
+**pocemu eto nuzno**
+
+takie rezultaty mogut vliiat na karantin, poezdki i gruppovye sobytija
+
+**kak eto dolzno rabotat po logike**
+
+dostup i uvedomlenija nast r aivajutsia po zakon n ym i kliniceskim pravilam, no ne publik uetsia v socialnoj l ent e
+
+**dlia kogo i dlia kakoj celi**
+
+dlia klinik, priutov i organizatorov
+
+**kakoj rezultat dolzen byt dostignut**
+
+neobxodimye mery koordinirujutsia bez publicnogo kleyma pitomca ili xoziajina
+
+---
+
+## 158 — citologija i patologija
+
+**cto eto dolzno delat**
+
+otchety po obrazcam tkanej i kletok dolzny byt sviazany s proceduroj, mestom i diagnozom
+
+**pocemu eto nuzno**
+
+otdeln yj pdf bez konteksta trudno interpret irovat pozze
+
+**kak eto dolzno rabotat po logike**
+
+xranitsia original, strukturirovann a ia svodka, specialist i eventualnye dopolneniia
+
+**dlia kogo i dlia kakoj celi**
+
+dlia hirurgov, patologov i xoziaev
+
+**kakoj rezultat dolzen byt dostignut**
+
+otchet ostajotsia sviazannym s konkretnym materialom i operaciej
+
+---
+
+# izobrazheniia i diagnostika
+
+## 159 — zakaz na vizualn oe issledovanie
+
+**cto eto dolzno delat**
+
+rentgen, uzi, tomografija i drugie issledovaniia dolzny imet zakaz i prichinu
+
+**pocemu eto nuzno**
+
+izobrazhenie bez kliniceskogo voprosa i oblasti malo polezno
+
+**kak eto dolzno rabotat po logike**
+
+zakaz xranit oblast, cel, prioritet, podgotovku i specialista
+
+**dlia kogo i dlia kakoj celi**
+
+dlia klinik i diagnosticeskix centrov
+
+**kakoj rezultat dolzen byt dostignut**
+
+pon iatno, cto imenno nuzhno bylo ocenit
+
+---
+
+## 160 — originalnye izobrazheniia
+
+**cto eto dolzno delat**
+
+medkartocka dolzna xranit ili bezopasno sviazyvat originalnye diagnosticeskie fajly
+
+**pocemu eto nuzno**
+
+skrinshot ili fotografija ekrana ter iaet kachestvo i tehniceskie dannye
+
+**kak eto dolzno rabotat po logike**
+
+original dostup en tolko upolnomochennym specialistam, a xoziajinu moz et pokaz yvatsia bezopasn yj prosmotr i eksport
+
+**dlia kogo i dlia kakoj celi**
+
+dlia diagnostov, vtorogo mneniia i xoziaev
+
+**kakoj rezultat dolzen byt dostignut**
+
+nov yj specialist moz et ocenit original, a ne tolko star yj tekstov yj otchet
+
+---
+
+## 161 — diagnosticeskoe zakliuchenie
+
+**cto eto dolzno delat**
+
+k issledovaniiu dolzen byt otdeln yj otchet specialista
+
+**pocemu eto nuzno**
+
+izobrazhenie i ego interpretacija javliajutsia raznymi medicinskimi obektami
+
+**kak eto dolzno rabotat po logike**
+
+zakliuchenie imeet avtora, datu, versiju, opisanie, vyvody i rekomendacii po dalnejshemu obsledovaniiu
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev i budusc ix specialistov
+
+**kakoj rezultat dolzen byt dostignut**
+
+mozno otdelno sravnit originaln yj snimok i professionaln uju interpretaciju
+
+---
+
+## 162 — sravnenie s predydusc imi issledovaniiami
+
+**cto eto dolzno delat**
+
+specialist moz et sviazat novoe issledovanie so star ymi i opisat dinamiku
+
+**pocemu eto nuzno**
+
+odin snimok moz et ne pokaz yvat, ulucshilos li sostojanie
+
+**kak eto dolzno rabotat po logike**
+
+sistema pokaz yvaet daty, metody i zakliuchenija riadom
+
+**dlia kogo i dlia kakoj celi**
+
+dlia monitoringa hroniceskix i posleoperacionnyx sostojanij
+
+**kakoj rezultat dolzen byt dostignut**
+
+dinamika ne ter iaetsia v nesviazannyx fajlax
+
+---
+
+## 163 — annotacii specialista
+
+**cto eto dolzno delat**
+
+upolnomochenn yj specialist moz et otmetit oblast ili dobavit kommentarij k izobrazheniiu
+
+**pocemu eto nuzno**
+
+tekstovoe opisanie ne vsegda dostatocno dlia vtorogo mneniia
+
+**kak eto dolzno rabotat po logike**
+
+annotacija imeet avtora, sloj, datu i ne izmeniaet originaln yj fajl
+
+**dlia kogo i dlia kakoj celi**
+
+dlia diagnostov i klinik
+
+**kakoj rezultat dolzen byt dostignut**
+
+original ostajotsia netronutym, a professionalnye zametki proveriaemy
+
+---
+
+## 164 — vtoroe mnenie
+
+**cto eto dolzno delat**
+
+xoziajin moz et vydat drugomu specialistu dostup k konkretnomu naboru izobrazhenij i dokumentov
+
+**pocemu eto nuzno**
+
+dlia vtorogo mneniia ne nuzhna vsia medkartocka
+
+**kak eto dolzno rabotat po logike**
+
+sozda jotsia vrem enn yj paket
+
+* izobrazheniia
+* originaln yj otchet
+* klinicesk ij vopros
+* sviazannye analiz y
+* srok
+* pravo na zakliuchenie
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev i vneshnix specialistov
+
+**kakoj rezultat dolzen byt dostignut**
+
+vtoroe mnenie poluchaet dostatocn yj kontekst bez lishnego dostup a
+
+---
+
+## 165 — bolsh ie fajly
+
+**cto eto dolzno delat**
+
+sistema dolzna podderzhivat bezopasn uju zagruzku, potokov yj prosmotr i prodolzhenie posle obryva
+
+**pocemu eto nuzno**
+
+diagnosticeskie issledovaniia mogut byt bolsh imi
+
+**kak eto dolzno rabotat po logike**
+
+fajl imeet status, kontrol c elostnosti, zascischenn yj dostup i srok xraneniia
+
+**dlia kogo i dlia kakoj celi**
+
+dlia klinik i xoziaev
+
+**kakoj rezultat dolzen byt dostignut**
+
+bolsh oe issledovanie ne ter iaetsia i ne publik uetsia kak oby cn oe socialn oe media
+
+---
+
+# procedury, operacii i stacionar
+
+## 166 — procedura kak otdeln yj obekt
+
+**cto eto dolzno delat**
+
+liubaia znachimaia procedura dolzna imet datu, cel, ispolnitelia, rezultat i sviazannye dokumenty
+
+**pocemu eto nuzno**
+
+prostaja zametka procedura vypolnena ne pokaz yvaet detalej i posledstvij
+
+**kak eto dolzno rabotat po logike**
+
+procedura sviazyvaetsia s priemom, diagnozom, lekarstvami, obrazcami i posledujusc im uxodom
+
+**dlia kogo i dlia kakoj celi**
+
+dlia klinik i xoziaev
+
+**kakoj rezultat dolzen byt dostignut**
+
+vsi a istoria procedury sobran a v odnom kontekste
+
+---
+
+## 167 — hirurgiceskaia operacija
+
+**cto eto dolzno delat**
+
+operacija dolzna xranit
+
+* pokazanie
+* plan
+* brigadu
+* datu
+* opisanie
+* rezultat
+* oslozhneniia
+* materialy
+* posleoperacionn yj plan
+
+**pocemu eto nuzno**
+
+eto odno iz samyx znachimyx sobytij v medkartocke
+
+**kak eto dolzno rabotat po logike**
+
+predoperacionnye i posleoperacionnye zapisi sviazyvajutsia s odnim hirurgiceskim sluchaem
+
+**dlia kogo i dlia kakoj celi**
+
+dlia hirurgov, klinik i xoziaev
+
+**kakoj rezultat dolzen byt dostignut**
+
+nov yj specialist vidit ne tolko fakt operacii, no i ejo kontekst i posledstviia
+
+---
+
+## 168 — predoperacionn a ia ocenka
+
+**cto eto dolzno delat**
+
+pered operaciej dolzny byt sobran y anamnez, analiz y, risk i, allergii i tekusc ie preparaty
+
+**pocemu eto nuzno**
+
+vazhnaia informacija ne dolzna proveriatsia po raznym ekranam neposredstvenno pered proceduroj
+
+**kak eto dolzno rabotat po logike**
+
+sistema sozdaet check list s podtverzhdeniem avtora kazdogo punkta
+
+**dlia kogo i dlia kakoj celi**
+
+dlia hirurgiceskoj komandy
+
+**kakoj rezultat dolzen byt dostignut**
+
+kriticeskie risk i proveren y i dokumentirovany do nacala operacii
+
+---
+
+## 169 — soglasie na proceduru
+
+**cto eto dolzno delat**
+
+xoziajin dolzen poluchit pon iatn oe opisanie procedury, riskov, alternativ i finansovogo plana tam, gde eto primenimo
+
+**pocemu eto nuzno**
+
+podpis bez ponimaniia soderzhanija ne javliaetsia kachestvennym soglasiem
+
+**kak eto dolzno rabotat po logike**
+
+sistema xranit dokument, versiju, jazyk, podtverzhdenie i predstavitelia kliniki
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev i klinik
+
+**kakoj rezultat dolzen byt dostignut**
+
+mozno ustanovit, na kak uju proceduru i usloviia bylo dano soglasie
+
+---
+
+## 170 — anesteziologiceskaia zapis
+
+**cto eto dolzno delat**
+
+anestezija dolzna dokumentirovatsia otdelno s planom, monitor ingom i isxodom
+
+**pocemu eto nuzno**
+
+budusc emu specialistu moz et byt vazhna predydusc a ia reakcija ili osobennost
+
+**kak eto dolzno rabotat po logike**
+
+xranitsia professionaln yj protokol, preparaty, vremia, pokazateli i oslozhneniia
+
+**dlia kogo i dlia kakoj celi**
+
+dlia klinik i budusc ix operacij
+
+**kakoj rezultat dolzen byt dostignut**
+
+predydusc ij anesteziologicesk ij opyt ne ter iaetsia v obschem tekste operacii
+
+---
+
+## 171 — monitoring vo vremia procedury
+
+**cto eto dolzno delat**
+
+pokazateli i vazhnye sobytija mogut xranitsia vo vrem enn oj posledovatelnosti
+
+**pocemu eto nuzno**
+
+odin itogov yj kommentarij ne pokaz yvaet, cto proishodilo v konkretn yj moment
+
+**kak eto dolzno rabotat po logike**
+
+dannye mogu t postupat vrucnuju ili ot ustrojstv s otmetkoj istochnika i kachestva
+
+**dlia kogo i dlia kakoj celi**
+
+dlia kliniceskoj komandy i audita
+
+**kakoj rezultat dolzen byt dostignut**
+
+protokol procedury poln yj, posledovateln yj i proveriaem yj
+
+---
+
+## 172 — implanty i medicinskie ustrojstva
+
+**cto eto dolzno delat**
+
+kartocka dolzna xranit tip, model, seriju, mesto, datu i proizvoditelia implantata
+
+**pocemu eto nuzno**
+
+eta informacija moz et byt vazhna pri budusc ix procedurax, otzyve partii ili vizualn oj diagnostike
+
+**kak eto dolzno rabotat po logike**
+
+implant ostajotsia aktivn ym obektom do udaleniia ili zameny
+
+**dlia kogo i dlia kakoj celi**
+
+dlia klinik, diagnostov i xoziaev
+
+**kakoj rezultat dolzen byt dostignut**
+
+specialist znaet, kakoe ustrojstvo ustanovleno i kakova ego istoria
+
+---
+
+## 173 — oslozhneniia
+
+**cto eto dolzno delat**
+
+vo vremia ili posle procedury mozno dobavit podtverzhdenn oe oslozhnenie
+
+**pocemu eto nuzno**
+
+budusc ij plan moz et zaviset ot predydusc ego nezelatelnogo sobytiia
+
+**kak eto dolzno rabotat po logike**
+
+oslozhnenie sviazyvaetsia s vrem enem, priniatymi merami i isxodom
+
+**dlia kogo i dlia kakoj celi**
+
+dlia specialistov i xoziaev
+
+**kakoj rezultat dolzen byt dostignut**
+
+seriozn oe sobytie ne ter iaetsia v posleoperacionnom kommentarii
+
+---
+
+## 174 — napravlenie materiala v laboratoriju
+
+**cto eto dolzno delat**
+
+udalenn a ia tkan ili drugoj material moz et byt sviazan s patologiceskim zakazom
+
+**pocemu eto nuzno**
+
+bez sviazi otchet moz et popast v kartocku bez ponimaniia ego proisxozhdeniia
+
+**kak eto dolzno rabotat po logike**
+
+operacija, obrazec, laboratorija i finaln yj otchet sostavliajut edin uju cepochku
+
+**dlia kogo i dlia kakoj celi**
+
+dlia hirurgov, patologov i xoziaev
+
+**kakoj rezultat dolzen byt dostignut**
+
+rezultat patologii avtomaticeski naxoditsia v kontekste konkretnoj operacii
+
+---
+
+## 175 — vypisn a ia instrukcija
+
+**cto eto dolzno delat**
+
+posle procedury xoziajin dolzen poluchit strukturirovann yj plan domashnego uxoda
+
+**pocemu eto nuzno**
+
+ustn y e instrukcii legko zabyt ili pon iat nepolno
+
+**kak eto dolzno rabotat po logike**
+
+instrukcija moz et vkliucat
+
+* lekarstva
+* hranenie
+* aktivnost
+* obrabotku
+* foto kontrol
+* kriterii srocnogo obrashcheniia
+* datu kontro lia
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev i sitterov
+
+**kakoj rezultat dolzen byt dostignut**
+
+domashn ij uxod prodolzaet klinicesk ij plan bez razryva
+
+---
+
+## 176 — posleoperacionnye fotografii
+
+**cto eto dolzno delat**
+
+xoziajin moz et zagruzhat fotografii mesta procedury po raspisaniiu ili pri izmenenii
+
+**pocemu eto nuzno**
+
+vizualn a ia dinamika moz et pomoch specialistu resit, nuzhen li ransh e kontrol
+
+**kak eto dolzno rabotat po logike**
+
+media xranitsia zakryto, imeet datu, rakurs i sviaz s operaciej
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev i hirurgov
+
+**kakoj rezultat dolzen byt dostignut**
+
+foto ne ter iajutsia v chat e i ne popadajut v publicn uju galereju
+
+---
+
+## 177 — stomatologiceskaia karta
+
+**cto eto dolzno delat**
+
+klinika moz et dokumentirovat sostojanie konkretnyx zubov, procedury i fotografii
+
+**pocemu eto nuzno**
+
+obsch a ia fraza zuby proveren y ne daet dolgosrocn oj istorii
+
+**kak eto dolzno rabotat po logike**
+
+ispolzuetsia podxodiasc a ia vidu schema s versijami i professionalnymi annotaciiami
+
+**dlia kogo i dlia kakoj celi**
+
+dlia stomatologov i xoziaev
+
+**kakoj rezultat dolzen byt dostignut**
+
+sledujusc ij specialist vidit, cto imenno bylo izmeneno ili udal eno
+
+---
+
+## 178 — reabilitacija
+
+**cto eto dolzno delat**
+
+posle travmy ili operacii moz et byt sozdan plan vosstanovleniia
+
+**pocemu eto nuzno**
+
+odna vypisn a ia instrukcija ne podderzhivaet mnogoetapn uju reabilitaciju
+
+**kak eto dolzno rabotat po logike**
+
+plan xranit celi, uprazhneniia, ogranicheniia, otvetstvennyx, video instrukcii, pokazateli i kontrolnye daty
+
+**dlia kogo i dlia kakoj celi**
+
+dlia reabilitologov, xoziaev i sitterov
+
+**kakoj rezultat dolzen byt dostignut**
+
+vosstanovlenie dokumentiruetsia po etapam i moz et korrektirovatsia specialistom
+
+---
+
+# plany uxoda i hroniceskie sostojaniia
+
+## 179 — medicinskij plan uxoda
+
+**cto eto dolzno delat**
+
+dlia sostojaniia ili perioda moz et byt sozdan edin yj plan dejstvij
+
+**pocemu eto nuzno**
+
+lekarstva, dieta, izmereniia, procedury i kontroli ne dolzny byt nesviazannymi napominaniiami
+
+**kak eto dolzno rabotat po logike**
+
+plan imeet cel, avtora, zadaci, sroki, ispolnitelej, kriterii uspexa i versii
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xroniceskogo lecheniia i posleoperacionnogo uxoda
+
+**kakoj rezultat dolzen byt dostignut**
+
+vse uchastniki rabotajut po odnomu aktualnomu planu
+
+---
+
+## 180 — celi plana
+
+**cto eto dolzno delat**
+
+specialist moz et opredelit konkretnye kliniceskie ili prakticeskie celi
+
+**pocemu eto nuzno**
+
+bez celi trudno ponimat, rabotaet li plan
+
+**kak eto dolzno rabotat po logike**
+
+cel moz et byt sviazana s simptomom, funkc i ej, laboratornym pokazatelem ili kachestvom zhizni
+
+**dlia kogo i dlia kakoj celi**
+
+dlia specialistov i xoziaev
+
+**kakoj rezultat dolzen byt dostignut**
+
+izmenenie plana osnovyvaetsia na rezultat ax, a ne tolko na proshedsh em vremeni
+
+---
+
+## 181 — zadaci i otvetstvennye
+
+**cto eto dolzno delat**
+
+kazdaia zadaca dolzna imet ispolnitelia
+
+**pocemu eto nuzno**
+
+v sem je moz et byt nepon iatno, kto dajot lekarstvo, meriaet ves ili edet v kliniku
+
+**kak eto dolzno rabotat po logike**
+
+zadacha imeet
+
+* ispolnitelia
+* rezervnogo ispolnitelia
+* srok
+* instrukciju
+* status
+* podtverzhdenie
+
+**dlia kogo i dlia kakoj celi**
+
+dlia semej, priutov i sitterov
+
+**kakoj rezultat dolzen byt dostignut**
+
+vazhn oe dejstvie ne ostajotsia bez otvetstvennogo
+
+---
+
+## 182 — izmenenie plana
+
+**cto eto dolzno delat**
+
+specialist moz et vypustit nov uju versiju plana
+
+**pocemu eto nuzno**
+
+sostojanie, analiz y ili reakc ii mogut izmenit lechenie
+
+**kak eto dolzno rabotat po logike**
+
+novaia versija pokaz yvaet, cto izmenilos, kto odobril i s kakogo momenta ona dejstvuet
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev, sitterov i klinik
+
+**kakoj rezultat dolzen byt dostignut**
+
+st araia instrukcija ne prodolzaet ispolzovatsia kak aktualn a ia
+
+---
+
+## 183 — multidisciplinarn yj plan
+
+**cto eto dolzno delat**
+
+neskolko specialistov mogut rabotat s odnim sostojaniem
+
+**pocemu eto nuzno**
+
+hirurg, reabilitolog, veterinar i nutritionist mogut naznachat sviazannye dejstviia
+
+**kak eto dolzno rabotat po logike**
+
+kazdyj specialist otvecaet za svoju chast, a protivorechiv y e instrukcii podsv ecivajutsia dlia soglasovaniia
+
+**dlia kogo i dlia kakoj celi**
+
+dlia slozhnyx kliniceskix sluchaev
+
+**kakoj rezultat dolzen byt dostignut**
+
+xoziajin ne poluchaet neskolko nesoglasovannyx planov bez objasneniia
+
+---
+
+## 184 — plan pitaniia
+
+**cto eto dolzno delat**
+
+specialist moz et sozdat strukturirovann yj plan rationa s celju, produktami, obemom i monitoringom
+
+**pocemu eto nuzno**
+
+obsch a ia fraza specialn a ia dieta nedostatochna dlia semej i sitterov
+
+**kak eto dolzno rabotat po logike**
+
+plan otdeliaetsia ot reklamy i pokaz yvaet professionalnogo avtora i prichinu
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev, nutritionistov i sitterov
+
+**kakoj rezultat dolzen byt dostignut**
+
+pitani e sviazano s medicinskoj celju i ne podmeniaetsia reklamnoj rekomendaciej
+
+---
+
+## 185 — plan aktivnosti i ogranichenij
+
+**cto eto dolzno delat**
+
+specialist moz et zadat dopustim uju aktivnost, ogranicheniia i etap y vozvrata
+
+**pocemu eto nuzno**
+
+slovo spokoj moz et byt pon iato po-raznomu
+
+**kak eto dolzno rabotat po logike**
+
+plan moz et soderzhat prodolzhitelnost, tip aktivnosti, zaprety, priznaki peregruzki i datu peresmotra
+
+**dlia kogo i dlia kakoj celi**
+
+dlia posleoperacionnogo uxoda, ortopedii i pozhilyx pitomcev
+
+**kakoj rezultat dolzen byt dostignut**
+
+sem ja i sitter vypolniajut odinakov y e pon iatnye instrukcii
+
+---
+
+## 186 — plan monitoringa hroniceskogo sostojaniia
+
+**cto eto dolzno delat**
+
+dlia hroniceskoj problemy specialist moz et zadat, cto, kak c asto i zachem otslezhivat
+
+**pocemu eto nuzno**
+
+bez plana xoziajin moz et sobirat mnogo slucajnyx dannyx ili propuskat vazhnye
+
+**kak eto dolzno rabotat po logike**
+
+plan ukazyvaet
+
+* simptom
+* izmerenie
+* laboratorn yj kontrol
+* chastotu
+* porog dlia sviazi s klinikoj
+* datu peresmotra
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev i hroniceskix pacientov
+
+**kakoj rezultat dolzen byt dostignut**
+
+monitoring stanovitsia celenapravlennym i ne zameniaet klinicesk ij kontrol
+
+---
+
+## 187 — palliativn yj plan
+
+**cto eto dolzno delat**
+
+dlia tyazhelogo ili neizlechimogo sostojaniia moz et byt sozdan plan komforta i podderzhki
+
+**pocemu eto nuzno**
+
+semej nuzhny pon iatnye celi, kontrol simptomov, kontakty i kriterii peresmotra
+
+**kak eto dolzno rabotat po logike**
+
+plan imeet usilenn uju privatnost, professionaln yx avt orov, zadachi, kontrol kachestva zhizni i ekstrennye instrukcii
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev i palliativnyx specialistov
+
+**kakoj rezultat dolzen byt dostignut**
+
+slozhn yj period koordiniruetsia uvazhitelno i bez haotichnyx protivorechivy x reshenij
+
+---
+
+## 188 — ocenka kachestva zhizni
+
+**cto eto dolzno delat**
+
+xoziajin i specialist mogut reguliarno otmecat funkcii, komfort i povsednevn y e izmeneniia po odobrenn oj metode
+
+**pocemu eto nuzno**
+
+v emocionalno slozhnom periode trudno ocenivat dinamiku tolko po pam iati
+
+**kak eto dolzno rabotat po logike**
+
+sistema pokaz yvaet trend, no ne prinimaet avtomaticeskogo resheniia o dalnejshem lechenii ili zavershenii zhizni
+
+**dlia kogo i dlia kakoj celi**
+
+dlia palliativnogo uxoda
+
+**kakoj rezultat dolzen byt dostignut**
+
+sem ja poluchaet strukturirovann uju osnovu dlia razgovora so specialistom, a ne avtomaticesk ij prikaz
+
+---
+
+# ekstrenn a ia kartocka
+
+## 189 — glavnaja cel ekstrenn oj kartocki
+
+**cto eto dolzno delat**
+
+ekstrenn a ia kartocka dolzna pokaz yvat kriticesk ij minimum za neskolko sekund
+
+**pocemu eto nuzno**
+
+v srocn oj situacii net vremeni c itat poln uju mnogoletn uju istoriju
+
+**kak eto dolzno rabotat po logike**
+
+kartocka otdelena ot polnoj medkartocki i obnovliaetsia iz aktivnyx podtverzhdennyx dannyx
+
+**dlia kogo i dlia kakoj celi**
+
+dlia ekstrennyx klinik, sitterov i nashedsh ix pitomca
+
+**kakoj rezultat dolzen byt dostignut**
+
+specialist srazu vidit informaciju, sposobn uju povliiat na pervye bezopasnye dejstviia
+
+---
+
+## 190 — sostav ekstrenn oj kartocki
+
+**cto eto dolzno delat**
+
+kartocka moz et vkliucat
+
+* fotografiju i identifikatory
+* vid i pol
+* vazhnye allergii
+* aktivnye lekarstva
+* kriticeskie diagnozy
+* nedavnie operacii
+* osobye instrukcii
+* osnovn uju kliniku
+* xoziajina
+* rezervnogo kontakta
+* datu aktualnosti
+
+**pocemu eto nuzno**
+
+slishkom malo dannyx bespolezno, a slishkom mnogo zamedliaet poisk vazhnogo
+
+**kak eto dolzno rabotat po logike**
+
+xoziajin i specialist mogut prosmotret, kak a ia informacija popala v kartocku
+
+**dlia kogo i dlia kakoj celi**
+
+dlia ekstrennyx specialistov
+
+**kakoj rezultat dolzen byt dostignut**
+
+kartocka kratkaia, aktualn a ia i proveriaemaia
+
+---
+
+## 191 — qr ekstrenn oj kartocki
+
+**cto eto dolzno delat**
+
+qr na adresnike, perenoske ili telefone moz et otkryvat ekstrenn uju kartocku
+
+**pocemu eto nuzno**
+
+xoziajin moz et byt nedostup en, a dokumenty ne byt riadom
+
+**kak eto dolzno rabotat po logike**
+
+qr ne pokaz yvaet poln yj adres, finansy, vse diagnozy ili poln uju istoriju
+
+**dlia kogo i dlia kakoj celi**
+
+dlia nashedsh ix pitomca, klinik i sitterov
+
+**kakoj rezultat dolzen byt dostignut**
+
+kriticeskaia informacija dostupna bez publicacii vsej medkartocki
+
+---
+
+## 192 — oflajn kopija ekstrenn oj kartocki
+
+**cto eto dolzno delat**
+
+xoziajin moz et soxranit zascischenn uju oflajn versiju na telefone
+
+**pocemu eto nuzno**
+
+v poezdke, lesu ili klinike moz et ne byt interneta
+
+**kak eto dolzno rabotat po logike**
+
+kopija imeet datu poslednego obnovleniia i zametn oe preduprezhdenie, esli ona ustarela
+
+**dlia kogo i dlia kakoj celi**
+
+dlia puteshestvennikov i ekstrennyx sluchaev
+
+**kakoj rezultat dolzen byt dostignut**
+
+osnovn a ia informacija dostupna bez seti, no polzovatel znaet ejo vozrast
+
+---
+
+## 193 — kontakt xoziajina bez publicacii nomera
+
+**cto eto dolzno delat**
+
+nashedsh ij ili klinika mogut sviazatsia s xoziajinom cerez platformu ili maskirovann yj kanal
+
+**pocemu eto nuzno**
+
+publicn yj telefon na qr moz et privesti k spamu i presledovaniiu
+
+**kak eto dolzno rabotat po logike**
+
+kanal moz et byt aktiv en tolko v ekstrenn om ili poiskovom rezhime
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev i svidetelej
+
+**kakoj rezultat dolzen byt dostignut**
+
+srocn a ia sviaz vozmozhna bez bessrocn oj publicacii lichnogo nomera
+
+---
+
+## 194 — ekstrenn yj dostup dolzen byt prozracnym
+
+**cto eto dolzno delat**
+
+xoziajin dolzen poluchit zapis, kto i kogda otkryval ekstrennuju kartocku
+
+**pocemu eto nuzno**
+
+publicn yj qr moz et skanir ovatsia ne tolko v realnoj ekstrenn oj situacii
+
+**kak eto dolzno rabotat po logike**
+
+zhurnal moz et pokaz yvat vremia, tip poluchatelia, pribliziteln yj kontekst i predpriniatye dejstviia
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev i bezopasnosti
+
+**kakoj rezultat dolzen byt dostignut**
+
+ekstrenn yj kanal ne stanovitsia nevidimym istochnikom dostup a
+
+---
+
+## 195 — ekstrenn a ia kartocka poterjannogo pitomca
+
+**cto eto dolzno delat**
+
+pri statuse poterialsia kartocka moz et vrem enno pokaz yvat dopolnitelnye instrukcii
+
+**pocemu eto nuzno**
+
+nashedshe mu vazhno znat, mozno li podxodit, est li lekarstvo po vremeni i kak sviazatsia
+
+**kak eto dolzno rabotat po logike**
+
+dobavljajutsia tolko vybrannye xoziajinom prakticeskie dannye bez polnoj istorii
+
+**dlia kogo i dlia kakoj celi**
+
+dlia poisk a i vozvrata pitomca
+
+**kakoj rezultat dolzen byt dostignut**
+
+nashedsh ij moz et pomoch bez slucajnogo raskrytiia chuvstvitelnoj medicinskoj informacii
+
+---
+
+# puteshestvija, dokumenty i mezhklinicesk ij obmen
+
+## 196 — veterinarn yj pasport i officialnye dokumenty
+
+**cto eto dolzno delat**
+
+medkartocka dolzna bezopasno xranit pasport, sertifikaty, razresheniia i spravki
+
+**pocemu eto nuzno**
+
+bumazhn yj dokument moz et byt utracen ili ostatsia doma
+
+**kak eto dolzno rabotat po logike**
+
+dokument imeet tip, nomer, izdavsh uju organizaciju, datu, srok, region i status proverki
+
+**dlia kogo i dlia kakoj celi**
+
+dlia puteshestvennikov, klinik i priutov
+
+**kakoj rezultat dolzen byt dostignut**
+
+xoziajin bystro naxodit aktualn yj dokument i ponimaet, dejstvuet li on
+
+---
+
+## 197 — srok dejstviia dokumenta
+
+**cto eto dolzno delat**
+
+dokument moz et imet datu nachala, okonchaniia i period, v techenie kotorogo nuzhno ego obnovit
+
+**pocemu eto nuzno**
+
+st araia spravka moz et vygl iadet pravilno, no bolshe ne prin imatsia
+
+**kak eto dolzno rabotat po logike**
+
+sistema pokaz yvaet status
+
+* dejstvuet
+* skoro istekaet
+* iste k
+* otmenen
+* zamenen
+* trebuet proverki
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev i organizacij
+
+**kakoj rezultat dolzen byt dostignut**
+
+polzovatel ne polagaetsia na ned ejstvujusc ij dokument
+
+---
+
+## 198 — dokument dlia poezdki
+
+**cto eto dolzno delat**
+
+xoziajin moz et sozdat paket dlia konkretnogo puteshestviia
+
+**pocemu eto nuzno**
+
+raznye napravleniia i daty mogut trebovat raznye dokumenty
+
+**kak eto dolzno rabotat po logike**
+
+paket moz et vkliucat
+
+* mikrochip status
+* vakciny
+* sertifikat
+* recepty
+* lekarstva
+* kontakt kliniki
+* kopii dokumentov
+* sroki
+
+sistema ne dolzna garantirovat juridiceskoe sootvetstvie bez aktualnoj professionalnoj proverki
+
+**dlia kogo i dlia kakoj celi**
+
+dlia puteshestvennikov
+
+**kakoj rezultat dolzen byt dostignut**
+
+vse nuzhn oe sobrano v odnom kontejnere s datami aktualnosti
+
+---
+
+## 199 — dokumenty s elektronnoj podpisju
+
+**cto eto dolzno delat**
+
+clinic esk ij dokument moz et imet proveriaem uju podpis ili pechat organizacii
+
+**pocemu eto nuzno**
+
+prostoj pdf mozno poddelat ili izmenit
+
+**kak eto dolzno rabotat po logike**
+
+sistema pokaz yvaet, prohodit li proverka c elostnosti i kto podpisal dokument
+
+**dlia kogo i dlia kakoj celi**
+
+dlia klinik, straxovyx, puteshestvij i sobytij
+
+**kakoj rezultat dolzen byt dostignut**
+
+poluchatel moz et otlicit proverenn yj original ot neproverenn oj kopii
+
+---
+
+## 200 — skrytie lichnyx dannyx v dokumente
+
+**cto eto dolzno delat**
+
+pered peredacej mozno zamazat
+
+* adres
+* telefon
+* lichn yj kod
+* finansovye dannye
+* podpis xoziajina
+* drugie nerelevantnye polia
+
+**pocemu eto nuzno**
+
+poluchateliu moz et byt nuzhna vakcina, no ne domashnij adres
+
+**kak eto dolzno rabotat po logike**
+
+original xranitsia zakryto, a poluchateliu sozda jotsia kontroliruem a ia kopija
+
+**dlia kogo i dlia kakoj celi**
+
+dlia sobytij, grumerov, otel ej i puteshestvij
+
+**kakoj rezultat dolzen byt dostignut**
+
+dokazatelstvo peredajotsia bez lishn ix lichnyx dannyx
+
+---
+
+# kliniki, specialisty i konsultacii
+
+## 201 — profil kliniki
+
+**cto eto dolzno delat**
+
+kazdaia organizacija dolzna imet proveriaem yj profil s filialami, kontaktami, specialistami i pravami
+
+**pocemu eto nuzno**
+
+odin i tot ze brend moz et imet neskolko adresov i raznye komandy
+
+**kak eto dolzno rabotat po logike**
+
+zapisi priviazyvajutsia k konkretnomu filialu i realnomu specialistu
+
+**dlia kogo i dlia kakoj celi**
+
+dlia klinik i xoziaev
+
+**kakoj rezultat dolzen byt dostignut**
+
+pon iatno, gde i kem byla okazana usluga
+
+---
+
+## 202 — proverka specialist a
+
+**cto eto dolzno delat**
+
+professionaln yj profil moz et pokaz yvat kvalifikaciju, region i oblast praktiki
+
+**pocemu eto nuzno**
+
+xoziajin dolzen otlicit podtverzhdennogo specialist a ot oby cnogo polzovatelia
+
+**kak eto dolzno rabotat po logike**
+
+status proverki imeet srok, istochnik i ne rasprostraniaetsia avtomaticeski na vse oblasti
+
+**dlia kogo i dlia kakoj celi**
+
+dlia specialistov i klientov
+
+**kakoj rezultat dolzen byt dostignut**
+
+znachok ne sozdaet lozhn oe vpechatlenie universalnoj kompetencii
+
+---
+
+## 203 — sovmestnoe podpisanie zapisi
+
+**cto eto dolzno delat**
+
+assist ent moz et podgotovit zapis, a otvetstvenn yj veterinar proverit i podpisat
+
+**pocemu eto nuzno**
+
+realn yj raboc ij process moz et vkliucat neskolko sotrudnikov
+
+**kak eto dolzno rabotat po logike**
+
+sistema xranit avtora cernovika, redaktora i finalnogo professionalnogo podpisanta
+
+**dlia kogo i dlia kakoj celi**
+
+dlia klinik i audita
+
+**kakoj rezultat dolzen byt dostignut**
+
+otvetstvennost ne pripisyvaetsia ne tomu sotrudniku
+
+---
+
+## 204 — napravlenie k drugomu specialistu
+
+**cto eto dolzno delat**
+
+veterinar moz et sozdat strukturirovann oe napravlenie
+
+**pocemu eto nuzno**
+
+novomu specialistu nuzhen klinicesk ij vopros i podxodiasc ij nabor dannyx
+
+**kak eto dolzno rabotat po logike**
+
+napravlenie moz et vkliucat
+
+* prichinu
+* srochnost
+* kratk uju istoriju
+* rezultaty
+* izobrazheniia
+* tekusc ie lekarstva
+* kontakt otpravitelia
+
+**dlia kogo i dlia kakoj celi**
+
+dlia specialistov i xoziaev
+
+**kakoj rezultat dolzen byt dostignut**
+
+vtoroj specialist ne nac inaet s nulia i ne poluchaet lishn uju kartocku
+
+---
+
+## 205 — telekonsultacija
+
+**cto eto dolzno delat**
+
+udalenn yj priem dolzen byt otdelnym tipom s video, dokumentami, ogranicheniiami i itogovym zakliucheniem
+
+**pocemu eto nuzno**
+
+oby cn yj videozvonok ne ravnjaetsia professionalnomu priemu
+
+**kak eto dolzno rabotat po logike**
+
+sistema pokaz yvaet
+
+* specialist a
+* region
+* format
+* granicy udalenn oj ocenki
+* neobxodimost fiziceskogo osmotra
+* dokumenty
+* itog
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev i udalennyx specialistov
+
+**kakoj rezultat dolzen byt dostignut**
+
+telekonsultacija dokumentirovana i ne sozdaet lozhn oe vpechatlenie, cto kamera zameniaet liuboj osмотр
+
+---
+
+## 206 — bezopasn a ia perepiska po sluchaiu
+
+**cto eto dolzno delat**
+
+xoziajin i klinika mogut obschatsia v kontekste konkretnogo priema ili plana
+
+**pocemu eto nuzno**
+
+oby cn yj socialn yj chat ne dolzen byt mestom dlia receptov, rezultatov i kliniceskix dokumentov
+
+**kak eto dolzno rabotat po logike**
+
+soobsenija, fajly i rekomendacii priviazyvajutsia k sluchaiu i imejut professionalnogo avtora
+
+**dlia kogo i dlia kakoj celi**
+
+dlia klinik i xoziaev
+
+**kakoj rezultat dolzen byt dostignut**
+
+kliniceskaia komunikacija ne ter iaetsia v lichn oj socialnoj perepiske
+
+---
+
+## 207 — zapis na priem i napominaniia
+
+**cto eto dolzno delat**
+
+medkartocka moz et byt sviazana s kalendarem priemov i kontrolnyx vizitov
+
+**pocemu eto nuzno**
+
+rekomendacija vernutsia cherez period dolzna prevrashch atcia v upravljaem uju zadacu
+
+**kak eto dolzno rabotat po logike**
+
+priem imeet kliniku, specialista, cel, podgotovku, status, otmenu i rezultaty
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev i klinik
+
+**kakoj rezultat dolzen byt dostignut**
+
+kontroln yj priem ne ostajotsia tolko strokoj v vypiske
+
+---
+
+## 208 — vydaca rezultatov xoziajinu
+
+**cto eto dolzno delat**
+
+klinika dolzna opredelit, kogda rezultat dostup en i nuzhna li predvariteln a ia professionaln a ia interpretacija
+
+**pocemu eto nuzno**
+
+nekotoryj rezultat moz et trebovat razgovora, a predvariteln yj ne dolzen vydavatsia za finaln yj
+
+**kak eto dolzno rabotat po logike**
+
+xoziajin vidit status i, pri neobxodimosti, soobsenie, cto specialist esio ne prosmotrel otchet
+
+**dlia kogo i dlia kakoj celi**
+
+dlia laboratorij, klinik i xoziaev
+
+**kakoj rezultat dolzen byt dostignut**
+
+polzovatel poluchaet dokument bez lozhnogo predstavleniia o ego kliniceskoj ocenke
+
+---
+
+## 209 — paket dlia vtorogo mneniia
+
+**cto eto dolzno delat**
+
+xoziajin moz et sozdat odin strukturirovann yj paket
+
+**pocemu eto nuzno**
+
+rucn oe otpravlenie desiatkov fajlov c asto propuskaet vazhn yj kontekst
+
+**kak eto dolzno rabotat po logike**
+
+paket vkliucaet
+
+* klinicesk ij vopros
+* svodku
+* aktivnye lekarstva
+* analiz y
+* izobrazheniia
+* operacii
+* originalnye otchety
+* srok dostup a
+
+**dlia kogo i dlia kakoj celi**
+
+dlia vneshnix specialistov
+
+**kakoj rezultat dolzen byt dostignut**
+
+vtoroe mnenie osnovyvaetsia na polnom relevantnom nabore, a ne na slucajnyx skrinshotax
+
+---
+
+# straxovka, scheta i finansov yj kontekst
+
+## 210 — finansy ne dolzny smeshivatsia s kliniceskimi faktami
+
+**cto eto dolzno delat**
+
+scheta, oplaty i straxovye dokumenty dolzny byt sviazany s priemom, no xranitsia otdelno ot diagnoza i plana
+
+**pocemu eto nuzno**
+
+finansov yj sotrudnik ne dolzen poluchat pravo redaktirovat klinicesk uju zapis
+
+**kak eto dolzno rabotat po logike**
+
+odin sluchaj moz et imet medicinsk uju i finansov uju chast s raznymi pravami
+
+**dlia kogo i dlia kakoj celi**
+
+dlia klinik, straxovyx i xoziaev
+
+**kakoj rezultat dolzen byt dostignut**
+
+stoimost i lechenie sviazany, no prava i otvetstvennost razdeleny
+
+---
+
+## 211 — predvariteln a ia smeta
+
+**cto eto dolzno delat**
+
+klinika moz et predostavit strukturirovann uju ocenk u stoimosti do procedury
+
+**pocemu eto nuzno**
+
+xoziajin dolzen ponimat plan i finansov yj diapazon
+
+**kak eto dolzno rabotat po logike**
+
+smeta pokaz yvaet, cto garantirovano, cto moz et izmenitsia i kakie dopolnitelnye resheniia trebujut soglasiia
+
+**dlia kogo i dlia kakoj celi**
+
+dlia klinik i xoziaev
+
+**kakoj rezultat dolzen byt dostignut**
+
+finansovoe soglasie ne maskiruetsia pod medicinsk oe soglasie i naoborot
+
+---
+
+## 212 — straxovoj sluchaj
+
+**cto eto dolzno delat**
+
+xoziajin moz et sviazat polis, priem, dokumenty i status obrashcheniia
+
+**pocemu eto nuzno**
+
+bez struktury odni i te ze dokumenty otpravljajutsia mnogo raz
+
+**kak eto dolzno rabotat po logike**
+
+straxovaja vidit tolko razreshenn yj paket, a xoziajin vidit, kto otkryval dokumenty
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev, klinik i straxovyx
+
+**kakoj rezultat dolzen byt dostignut**
+
+obrashchenie prozracno, a poln a ia kartocka ne peredajotsia avtomaticeski
+
+---
+
+# priuty, perederzhki i adopcija
+
+## 213 — pervichn yj osмотр pri postuplenii
+
+**cto eto dolzno delat**
+
+priut dolzen sozdat strukturirovann uju zapisi sostojaniia pri postuplenii
+
+**pocemu eto nuzno**
+
+eta tochka stanovitsia osnovoj dlia lecheniia, karantina i budusc ej adopcii
+
+**kak eto dolzno rabotat po logike**
+
+osмотр moz et vkliucat identifikaciju, ves, vidimye problem y, status chipa, foto i plan dalnejshej proverki
+
+**dlia kogo i dlia kakoj celi**
+
+dlia priutov i veterinarov
+
+**kakoj rezultat dolzen byt dostignut**
+
+pon iatno, v kakom sostojanii zivotnoe postupilo i cto bylo sdelano pozze
+
+---
+
+## 214 — karantinn yj status
+
+**cto eto dolzno delat**
+
+priut moz et dokumentirovat period, prichinu, testy, ograniceniia i zavershenie karantina
+
+**pocemu eto nuzno**
+
+odin flazok na karantine ne objasniaet usloviia i kriterii zaversheniia
+
+**kak eto dolzno rabotat po logike**
+
+status vliiaet na peremeschenie, sobytija, adopcionnye vstrechi i dostup volonterov
+
+**dlia kogo i dlia kakoj celi**
+
+dlia priutov, perederzhek i klinik
+
+**kakoj rezultat dolzen byt dostignut**
+
+zivotnoe ne peremeshchaetsia mezhdu gruppami bez proverki aktualnogo statusa
+
+---
+
+## 215 — medkartocka perederzhki
+
+**cto eto dolzno delat**
+
+perederzka moz et dobavliat domashnie nabludeniia, vypolnenie lekarstv i otchety
+
+**pocemu eto nuzno**
+
+zivotnoe moz et zh it daleko ot priuta, a klinicesk ij plan dolzen prodolzhatsia
+
+**kak eto dolzno rabotat po logike**
+
+perederzka ne moz et menjat diagnozy ili officialnye naznacheniia bez professionalnogo prava
+
+**dlia kogo i dlia kakoj celi**
+
+dlia priutov i fosterov
+
+**kakoj rezultat dolzen byt dostignut**
+
+ezhednevn yj uxod dokumentiruetsia, a medicinskaia otvetstvennost ostajotsia razdelennoj korrektno
+
+---
+
+## 216 — adopcionn a ia medicinskaia svodka
+
+**cto eto dolzno delat**
+
+pered peredacej novomu xoziajinu dolzen byt sformirovan pon iatn yj paket
+
+**pocemu eto nuzno**
+
+novoj sem je nuzhny ne tolko dokumenty, no i aktualn yj plan
+
+**kak eto dolzno rabotat po logike**
+
+paket moz et vkliucat
+
+* aktivnye diagnozy
+* allergii
+* lekarstva
+* vakciny
+* analiz y
+* operacii
+* osobye potrebnosti
+* sledujusc ie kontroli
+* kliniku
+* originalnye dokumenty
+
+**dlia kogo i dlia kakoj celi**
+
+dlia priutov i novyx xoziaev
+
+**kakoj rezultat dolzen byt dostignut**
+
+nov yj xoziajin s pervogo dnja ponimaet tekusc ij medicinsk ij plan
+
+---
+
+## 217 — vnutrennie zametki priuta
+
+**cto eto dolzno delat**
+
+organizacija dolzna razdeliat medicinskie fakty pitomca i vnutrennie raboc ie zametki
+
+**pocemu eto nuzno**
+
+vnutrennij kommentarij o process e, sotrudnike ili kandidate ne obyazatelno otnositsia k zdorovju pitomca
+
+**kak eto dolzno rabotat po logike**
+
+novomu xoziajinu peredajutsia relevantnye medicinskie dannye, no ne vnutrenniaia perepiska i lichnye dannye tretix lic
+
+**dlia kogo i dlia kakoj celi**
+
+dlia priutov, fosterov i kandidatov
+
+**kakoj rezultat dolzen byt dostignut**
+
+nepreryvnost lecheniia ne privodit k utecke chuzhix konfidencialnyx zametok
+
+---
+
+# zavershenie zhizni i memorialn yj rezhim
+
+## 218 — palliativn a ia i finaln a ia istoria
+
+**cto eto dolzno delat**
+
+medkartocka dolzna uvazhitelno dokumentirovat poslednij etap zhizni, ne prevrashcha ja ego v oby cn yj socialn yj kontent
+
+**pocemu eto nuzno**
+
+sem ja moz et xotet soxranit medicinsk uju istoriju, no ne poluchat posle utraty oby cnye napominaniia
+
+**kak eto dolzno rabotat po logike**
+
+posle podtverzhdennogo sobytiia zavershajutsia aktivnye lekarstva, vakcinacionnye napominaniia, sobytija i kommerceskie rekomendacii
+
+**dlia kogo i dlia kakoj celi**
+
+dlia sem ej i klinik
+
+**kakoj rezultat dolzen byt dostignut**
+
+sistema reagiruet uvazhitelno i ne prodolzaet obrashchatsia s pitomcem kak s aktivnym pacientom
+
+---
+
+## 219 — zapis o evtanazii ili estestvennoj smerti
+
+**cto eto dolzno delat**
+
+pri nalichii professionalnoj dokumentacii sobytie moz et byt zapisano s datoj, mestom, specialistom i podderzhkoj sem ji
+
+**pocemu eto nuzno**
+
+eto vazhn a ia chast medicinskoj istorii i memorialnogo perehoda
+
+**kak eto dolzno rabotat po logike**
+
+informacija imeet usilenn uju privatnost, ne publik uetsia avtomaticeski i ne pokaz yvaetsia v reklamnyx ili socialnyx blokax
+
+**dlia kogo i dlia kakoj celi**
+
+dlia sem ji i kliniki
+
+**kakoj rezultat dolzen byt dostignut**
+
+medicinsk ij cikl zavershaetsia korrektno, a dalnejs a ia publicnost ostajotsia resheniem xoziajina
+
+---
+
+## 220 — memorialn a ia medkartocka
+
+**cto eto dolzno delat**
+
+posle utraty medkartocka dolzna perejti v rezhim arhiva bez udaleniia istorii
+
+**pocemu eto nuzno**
+
+dannye mogut byt vazhny sem je, drugim rodstvennym pitomcam, straxovomu sluchaiu ili professionalnoj istorii
+
+**kak eto dolzno rabotat po logike**
+
+nov y e oby cny e zapisi zakryvajutsia, no eksport, prosmotr i professionaln yj audit ostajutsia dostupnymi upolnomochennym licam
+
+**dlia kogo i dlia kakoj celi**
+
+dlia sem ej, klinik i priutov
+
+**kakoj rezultat dolzen byt dostignut**
+
+istoria soxr aniaetsia bez boleznennyx i neumesnyx napominanij
+
+---
+
+# tehniceskaia, pravovaia i bezopasnostnaia osnova
+
+## 221 — medkartocka kak nabor sviazannyx obektov
+
+**cto eto dolzno delat**
+
+sistema ne dolzna xranit vsiu istoriju v odn om bolshom tekstovom pole
+
+**pocemu eto nuzno**
+
+diagnoz, analiz, lekarstvo, vakcina, dokument i priem imejut razn yj zivotn yj cikl
+
+**kak eto dolzno rabotat po logike**
+
+kazdyj tip javliaetsia otdelnym obektom so stabilnym identifikatorom, istochnikom, pravami i versijami
+
+**dlia kogo i dlia kakoj celi**
+
+dlia nadezhnoj arhitektury
+
+**kakoj rezultat dolzen byt dostignut**
+
+nov yj tip medicinskoj zapisi mozno dobavit bez razrusheniia sushestvujusc ej istorii
+
+---
+
+## 222 — neizmeniaemyj audit
+
+**cto eto dolzno delat**
+
+kriticeskie dejstviia dolzny xranitsia v zascischennom zhurnale
+
+**pocemu eto nuzno**
+
+pri spor e nuzhno znat, kto izmenil diagnoz, udal il allergiju ili vydal dostup
+
+**kak eto dolzno rabotat po logike**
+
+audit vkliucaet
+
+* avtora
+* rol
+* vremia
+* ustrojstvo
+* staroe i novoe znachenie
+* prichinu
+* podtverzhdenie
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev, klinik, apellacij i bezopasnosti
+
+**kakoj rezultat dolzen byt dostignut**
+
+kriticeskoe izmenenie ne moz et ischeznut bez sleda
+
+---
+
+## 223 — versii zapisej
+
+**cto eto dolzno delat**
+
+klinicesk a ia zapis dolzna podderzhivat dopolnenie i ispravlenie
+
+**pocemu eto nuzno**
+
+posle priema moz et prijti laboratorn yj rezultat ili byt zam ec ena oshibka
+
+**kak eto dolzno rabotat po logike**
+
+novaia versija ne meniaet proshloe, a dobavliaet pon iatn oe dopolnenie s avt orom i datoj
+
+**dlia kogo i dlia kakoj celi**
+
+dlia klinik i budusc ix specialistov
+
+**kakoj rezultat dolzen byt dostignut**
+
+medicinskaia istoria ostajotsia chestnoj i pon iatnoj
+
+---
+
+## 224 — idempotentnost
+
+**cto eto dolzno delat**
+
+povtorn oe nazhatie ne dolzno dva raza
+
+* sozdat priem
+* dobavit vakcinu
+* otpravit rezultat
+* otmetit dozu
+* vydat dostup
+* podpisat dokument
+
+**pocemu eto nuzno**
+
+slab yj internet i povtorn yj zapros mogut sozdat opasn y e dublikaty
+
+**kak eto dolzno rabotat po logike**
+
+kazdaia operacija poluchaet unikaln yj identifikator i moz et byt zavershena odin raz
+
+**dlia kogo i dlia kakoj celi**
+
+dlia vseh polzovatelej i integracij
+
+**kakoj rezultat dolzen byt dostignut**
+
+odna vakcina ili doza ne pojavliaetsia v kartocke neskolko raz iz-za seti
+
+---
+
+## 225 — odnovremenn oe redaktirovanie
+
+**cto eto dolzno delat**
+
+sistema dolzna obrabotat situaciju, kogda dva specialist a meniajut odnu zapis
+
+**pocemu eto nuzno**
+
+v klinike neskolko sotrudnikov mogut rabotat s odnim sluchaem
+
+**kak eto dolzno rabotat po logike**
+
+pri konflikte pokaz yvajutsia versii, a ne proishodit tixaja potera poslednego izmeneniia
+
+**dlia kogo i dlia kakoj celi**
+
+dlia klinik i organizacij
+
+**kakoj rezultat dolzen byt dostignut**
+
+odin specialist ne perepis yvaet nezametno aktualn uju zapis drugogo
+
+---
+
+## 226 — proverka c elostnosti dannyx
+
+**cto eto dolzno delat**
+
+sistema dolzna vyiavliat protivorechija
+
+* dve aktivnye nesovmestimye versii
+* diagnoz bez pitomca
+* rezultat bez zakaza
+* dozu bez edinicy
+* vakcinu bez daty
+* dokument bez istochnika
+* dublikat mikrochipa
+
+**pocemu eto nuzno**
+
+tehniceski validn a ia zapis moz et byt medicinski nepolnoj
+
+**kak eto dolzno rabotat po logike**
+
+kriticeskie oshibki blokirujut finalizaciju, a nekriticeskie sozdaijut zadacu na proverku
+
+**dlia kogo i dlia kakoj celi**
+
+dlia klinik, laboratorij i platformy
+
+**kakoj rezultat dolzen byt dostignut**
+
+v kartocku reze popadajut opasno nepolnye ili protivorechiv y e dannye
+
+---
+
+## 227 — zascischennye ssylki na fajly
+
+**cto eto dolzno delat**
+
+medicinskie dokumenty i izobrazheniia ne dolzny imet bessrocn yj publicn yj url
+
+**pocemu eto nuzno**
+
+skopirovann a ia ssylka mogla by obojti budusc ij otzyv dostup a
+
+**kak eto dolzno rabotat po logike**
+
+ispolzujutsia vrem ennye podpisannye ssylki ili proverka prav pri kazdom otkrytii
+
+**dlia kogo i dlia kakoj celi**
+
+dlia vseh medicinskix fajlov
+
+**kakoj rezultat dolzen byt dostignut**
+
+udalenn yj specialist ne moz et beskonecno otkryvat st ar yj dokument po priamomu adresu
+
+---
+
+## 228 — shifrovanie
+
+**cto eto dolzno delat**
+
+medicinskie dannye dolzny byt zashifrovany pri peredace i xranenii
+
+**pocemu eto nuzno**
+
+utecka seti, diska ili rezervnoj kopii ne dolzna srazu raskryvat vse kartocki
+
+**kak eto dolzno rabotat po logike**
+
+kliuci, dostup i rezervnye kopii upravliajutsia razdelno, a kriticeskie sekret y ne xran iatsia v otkrytom vide
+
+**dlia kogo i dlia kakoj celi**
+
+dlia vseh xoziaev, klinik i integracij
+
+**kakoj rezultat dolzen byt dostignut**
+
+tehnicesk a ia utecka imeet znachitelno mensh ie posledstviia
+
+---
+
+## 229 — usilenn a ia zascita akkauntov
+
+**cto eto dolzno delat**
+
+xoziajie i specialisty s kriticeskimi pravami dolzny ispolzovat mfa ili drugoj siln yj sposob proverki
+
+**pocemu eto nuzno**
+
+ukradenn yj parol moz et dat dostup k diagnozam, dokumentam i upravleniiu lekarstvami
+
+**kak eto dolzno rabotat po logike**
+
+kriticeskie dejstviia trebujut povtornogo podtverzhdeniia
+
+* eksport
+* peredaca vladen iia
+* massov yj dostup
+* udaleniie
+* izmenenie mikrochipa
+* otzyv kliniki
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev, klinik i administratorov
+
+**kakoj rezultat dolzen byt dostignut**
+
+odin ukradenn yj parol ne daet polnogo kontrolia nad medkartockoj
+
+---
+
+## 230 — sessii i ustrojstva
+
+**cto eto dolzno delat**
+
+polzovatel dolzen videt vse aktivnye ustrojstva i moz et ix otzyvat
+
+**pocemu eto nuzno**
+
+st ar yj telefon, kompiuter kliniki ili utrachenn yj planshet mogut soxranit dostup
+
+**kak eto dolzno rabotat po logike**
+
+posle otzyva zakryvajutsia sessii, obnovliajutsia kliuci i invalidiruetsia lokaln yj kesh pri podderzhke
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev i professionalov
+
+**kakoj rezultat dolzen byt dostignut**
+
+utrachenn oe ustrojstvo ne prodolzaet poluchat novye medicinskie dannye
+
+---
+
+## 231 — rezervnye kopii
+
+**cto eto dolzno delat**
+
+medkartocka dolzna imet zascischenn oe rezervnoe kopirovanie
+
+**pocemu eto nuzno**
+
+tehniceskaia avariia ne dolzna unictozhit mnogoletn uju istoriju
+
+**kak eto dolzno rabotat po logike**
+
+kopii zashifrovany, proveriajutsia na vosstanovlenie, imejut sroki i ne stanov iatsia bessrocnym obxodom udaleniia
+
+**dlia kogo i dlia kakoj celi**
+
+dlia nadezhnosti platformy i klinik
+
+**kakoj rezultat dolzen byt dostignut**
+
+dannye vosstanavlivajutsia posle avarii, no udaleniie po pravilam vse ravno vypolniaetsia
+
+---
+
+## 232 — sroki xraneniia
+
+**cto eto dolzno delat**
+
+raznye kategorii dannyx dolzny xranitsia stolko, skolko trebuet ih cel, soglasie i primenimye pravila
+
+**pocemu eto nuzno**
+
+vrem enn yj qr, klinicesk ij protokol, chat i finansov yj dokument ne obyazatelno imejut odin srok
+
+**kak eto dolzno rabotat po logike**
+
+politika xraneniia dolzna byt pon iatnoj, vers ionnoj i razlichat aktivn yj dostup, arhiv i dokazatelstva zhaloby
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev, klinik i platformy
+
+**kakoj rezultat dolzen byt dostignut**
+
+dannye ne udaliajutsia slucajno slishkom rano i ne xran iatsia beskonecno bez osnovaniia
+
+---
+
+## 233 — reagirovanie na utecku
+
+**cto eto dolzno delat**
+
+platforma dolzna imet process obnaruzheniia, ogranicheniia, rassledovaniia i uvedomleniia
+
+**pocemu eto nuzno**
+
+medicinskie dannye osobenno chuvstvitelny
+
+**kak eto dolzno rabotat po logike**
+
+pri incidente mozno
+
+* otzyvat sessii
+* menjat kliuci
+* blokirovat eksport
+* uvedomliat zatronutyx
+* pokaz yvat rekomenduemye dejstviia
+* soxran iat audit
+
+**dlia kogo i dlia kakoj celi**
+
+dlia vseh polzovatelej
+
+**kakoj rezultat dolzen byt dostignut**
+
+incident ne skryvaetsia i ne prodolzaetsia iz-za otsutstviia gotovogo plana
+
+---
+
+## 234 — obnaruzhenie neoby cnogo dostup a
+
+**cto eto dolzno delat**
+
+sistema dolzna zam ec at podozriteln y e prosmotry i eksporty
+
+**pocemu eto nuzno**
+
+sotrudnik ili vzlomann yj akkaunt moz et massovo otkryvat kartocki bez rabochej prichiny
+
+**kak eto dolzno rabotat po logike**
+
+signal y
+
+* mnogo nesviazannyx pacientov
+* neobychnoe vremia
+* novoe ustrojstvo
+* massov yj eksport
+* dostup posle uvolneniia
+* net aktivnogo sluchaia
+
+**dlia kogo i dlia kakoj celi**
+
+dlia klinik i komandy bezopasnosti
+
+**kakoj rezultat dolzen byt dostignut**
+
+vnutrennee zloupotreblenie zam ec a etsia do massovoj utecki
+
+---
+
+## 235 — ispolzovanie dlia issledovanij
+
+**cto eto dolzno delat**
+
+medicinskie dannye mogut ispolzovatsia dlia issledovanij tolko po pon iatnym pravilam i soglasi iu
+
+**pocemu eto nuzno**
+
+kliniceskaia istoria moz et imet nauchn uju cennost, no ne prinadlezhit issledovateliu avtomaticeski
+
+**kak eto dolzno rabotat po logike**
+
+polzovatel vidit
+
+* cel
+* organizaciju
+* nabor dannyx
+* srok
+* vozmoznost otkaza
+* sposob anonim izacii
+* budusc ee ispolzovanie
+
+**dlia kogo i dlia kakoj celi**
+
+dlia issledovatelej, klinik i xoziaev
+
+**kakoj rezultat dolzen byt dostignut**
+
+nauchn a ia polza ne dostigaetsia skrytym vtorichnym ispolzovaniem chuvstvitelnyx dannyx
+
+---
+
+## 236 — anonim izacija i risk povtorn oj identifikacii
+
+**cto eto dolzno delat**
+
+pered analitikoj ili issledovaniem nuzhno udal iat ili obobschat identifikatory
+
+**pocemu eto nuzno**
+
+redkij vid, gorod, data i diagnoz vmeste mogut vse ravno ukazyvat na konkretnogo pitomca i xoziajina
+
+**kak eto dolzno rabotat po logike**
+
+ocenivaetsia ne tolko otsutstvie imeni, no i kombinacija kosvennyx priznakov
+
+**dlia kogo i dlia kakoj celi**
+
+dlia issledovatelej i platformy
+
+**kakoj rezultat dolzen byt dostignut**
+
+obezlichenn yj nabor reze mozno sviazat obratno s konkretn oj sem jej
+
+---
+
+# import, eksport i sovmestimost
+
+## 237 — pon iatn yj eksport dlia xoziajina
+
+**cto eto dolzno delat**
+
+xoziajin moz et poluchit kartocku v cit aemom formate
+
+**pocemu eto nuzno**
+
+dannye ne dolzny byt zaperty v odn oj platforme
+
+**kak eto dolzno rabotat po logike**
+
+eksport moz et vkliucat
+
+* svodku
+* xronologiju
+* dokumenty
+* analiz y
+* lekarstva
+* vakciny
+* audit dostup a pri dopustimosti
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev i novyx klinik
+
+**kakoj rezultat dolzen byt dostignut**
+
+polzovatel moz et perenesti istoriju ili soxranit lichn yj arhiv
+
+---
+
+## 238 — strukturirovann yj eksport
+
+**cto eto dolzno delat**
+
+dannye dolzny byt dostupny v mashinno cit aemom vide dlia bezopasnogo perenosa
+
+**pocemu eto nuzno**
+
+odin bolsh oj pdf ne pozvoliaet drugoj sisteme obnovit aktivnye allergii i lekarstva bez rucnogo vvoda
+
+**kak eto dolzno rabotat po logike**
+
+eksport soxr aniaet identifikatory, istochniki, edinicy, daty, versii i sviazi
+
+**dlia kogo i dlia kakoj celi**
+
+dlia klinik, laboratorij i drugix medicinskix sistem
+
+**kakoj rezultat dolzen byt dostignut**
+
+perenos ne unictozhaet struktur u i kontekst medicinskix dannyx
+
+---
+
+## 239 — import s proverkoj konfliktov
+
+**cto eto dolzno delat**
+
+pered prin iatiem vneshnego nabora sistema dolzna pokazat nov y e, dublirujusc ie i konfliktujusc ie zapisi
+
+**pocemu eto nuzno**
+
+vneshniaia kartocka moz et soderzhat star yj ili drugoj variant allergii i lekarstv
+
+**kak eto dolzno rabotat po logike**
+
+kriticeskie konflikty reshaet upolnomochenn yj specialist ili xoziajin v ramkax svoix prav
+
+**dlia kogo i dlia kakoj celi**
+
+dlia klinik i xoziaev
+
+**kakoj rezultat dolzen byt dostignut**
+
+import ne perepis yvaet avtomaticeski bolee aktualn uju informaciju
+
+---
+
+## 240 — stabilnye identifikatory i spravocniki
+
+**cto eto dolzno delat**
+
+vidy, preparaty, vakciny, analiz y, diagnozy i dokumenty dolzny imet stabilnye vnutrennie kody
+
+**pocemu eto nuzno**
+
+tekstovye nazvaniia mogut razlikatsia po jazyku, klinike i opечатke
+
+**kak eto dolzno rabotat po logike**
+
+vnutrennij kod xranitsia otdelno ot otobrazhaemogo perevoda i originalnogo teksta
+
+**dlia kogo i dlia kakoj celi**
+
+dlia poisk a, perevodov, importov i integracij
+
+**kakoj rezultat dolzen byt dostignut**
+
+odin preparat ne stanovitsia desiatju raznymi obektami iz-za raznyx napis anij
+
+---
+
+## 241 — mnogoiazy cnost
+
+**cto eto dolzno delat**
+
+interfejs, statusy, napominaniia, soglasiia i ekstrenn a ia kartocka dolzny rabotat na vseh podderzhivaemyx jazykax
+
+**pocemu eto nuzno**
+
+medicinsk a ia oshibka moz et vozniknut iz-za nepon iatnogo teksta
+
+**kak eto dolzno rabotat po logike**
+
+sistemnye termin y imejut stabilnye kody, a originalnye kliniceskie zametki mogut perevoditsia s dostupnym originalom
+
+**dlia kogo i dlia kakoj celi**
+
+dlia mezhdunarodnyx xoziaev i klinik
+
+**kakoj rezultat dolzen byt dostignut**
+
+polzovatel ponimaet dejstviia i risk i na svoem jazyke
+
+---
+
+## 242 — zascischennye fragmenty pri perevode
+
+**cto eto dolzno delat**
+
+bez professionalnoj proverki nelzia avtomaticeski meniat
+
+* dozy
+* edinicy
+* nazvaniia preparatov
+* mikrochip
+* daty
+* laboratornye znacheniia
+* adres a klinik
+* kody dokumentov
+
+**pocemu eto nuzno**
+
+oshibka perevoda moz et stat opasnoj
+
+**kak eto dolzno rabotat po logike**
+
+takie fragmenty pokaz yvajutsia v originale ili v proverenn oj lokalizovann oj forme
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev, klinik i perevodcikov
+
+**kakoj rezultat dolzen byt dostignut**
+
+perevod ne meniaet klinicesk ij smysl i identifikatory
+
+---
+
+## 243 — poisk po medkartocke
+
+**cto eto dolzno delat**
+
+upolnomochenn yj polzovatel moz et iskat po diagnozu, lekarstvu, datam, klinike, dokumentu i tipu zapisi
+
+**pocemu eto nuzno**
+
+mnogoletn iaia kartocka moz et soderzhat tysiachi elementov
+
+**kak eto dolzno rabotat po logike**
+
+poisk podciniaetsia tekusc im prav am, blokirovkam i statusu zapisej
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev i specialistov
+
+**kakoj rezultat dolzen byt dostignut**
+
+vazhn yj star yj rezultat naxoditsia bez prokrutki vsej istorii
+
+---
+
+## 244 — poisk ne dolzen raskryvat zakryty e dannye
+
+**cto eto dolzno delat**
+
+fragment zakrytogo dokumenta ne dolzen pojavljatsia v podskazke polzovateliu bez prav
+
+**pocemu eto nuzno**
+
+poiskov yj indeks moz et stat obxodom privatnosti
+
+**kak eto dolzno rabotat po logike**
+
+indeks obnovliaetsia posle otzyva dostup a, peredaci, udaleniia i izmeneniia roli
+
+**dlia kogo i dlia kakoj celi**
+
+dlia zascity medicinskix dannyx
+
+**kakoj rezultat dolzen byt dostignut**
+
+polzovatel ne uznaet o diagnoze ili dokumente iz odn oj poiskovoj podskazki
+
+---
+
+# ai i avtomatizacija
+
+## 245 — ai izvlechenie dannyx
+
+**cto eto dolzno delat**
+
+ai moz et predlozhit strukturirovann yj cernovik iz dokumenta ili fotografii
+
+**pocemu eto nuzno**
+
+rucn oj vvod bolshogo otcheta zan imaet mnogo vremeni
+
+**kak eto dolzno rabotat po logike**
+
+kazd oe pole imeet ssylku na originaln yj fragment, urov en uverennosti i trebuet proverki
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev, klinik i priutov
+
+**kakoj rezultat dolzen byt dostignut**
+
+avtomatizacija uskor iaet rabotu, no ne sozdaet neproverenn yj medicinsk ij fakt
+
+---
+
+## 246 — ai svodka medkartocki
+
+**cto eto dolzno delat**
+
+ai moz et podgotovit kratk uju svodku dlia xoziajina ili specialista
+
+**pocemu eto nuzno**
+
+dlinn a ia kartocka moz et byt slozhnoj dlia bystrogo prosmotra
+
+**kak eto dolzno rabotat po logike**
+
+svodka dolzna ssylatsia na originalnye zapisi, pokaz yvat datu i ne vydavat nov yj diagnoz
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev, klinik i vtorogo mneniia
+
+**kakoj rezultat dolzen byt dostignut**
+
+polzovatel bystro orientiruetsia i moz et proverit kazdyj vyvod po istochniku
+
+---
+
+## 247 — ai poisk trendov
+
+**cto eto dolzno delat**
+
+algoritm moz et podsvetit izmenenie vesa, simptomov ili laboratornyx pokazatelej
+
+**pocemu eto nuzno**
+
+medlenn yj trend moz et byt trudno zam etit vrucnuju
+
+**kak eto dolzno rabotat po logike**
+
+signal dolzen pokaz yvat dannye, urov en uverennosti i predlagat obsudit so specialistom, a ne stavit diagnoz
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev i klinik
+
+**kakoj rezultat dolzen byt dostignut**
+
+vazhn oe izmenenie zam ec a etsia ran she, no klinicesk oe reshenie ostajotsia u specialista
+
+---
+
+## 248 — ai ne dolzen naznachat ili menjat lechenie
+
+**cto eto dolzno delat**
+
+ai ne dolzen samostojatelno
+
+* stavit okonchateln yj diagnoz
+* naz nachat preparat
+* menjat dozu
+* otmeniat lekarstvo
+* podtverzhdat allergiju
+* razreshat operaciju
+* vydavat officialn yj sertifikat
+
+**pocemu eto nuzno**
+
+kontekst moz et byt nepolnym, a posledstviia oshibki serioznymi
+
+**kak eto dolzno rabotat po logike**
+
+ai moz et strukturirovat voprosy, podsvetit propuski i podgotovit cernovik dlia professionalnoj proverki
+
+**dlia kogo i dlia kakoj celi**
+
+dlia vseh polzovatelej
+
+**kakoj rezultat dolzen byt dostignut**
+
+ai pomogaet rabote, no ne podmeniaet veterinara i soglasie xoziajina
+
+---
+
+## 249 — ai i privatnost
+
+**cto eto dolzno delat**
+
+polzovatel dolzen ponimat, kakie medicinskie dannye obrabatyvajutsia ai
+
+**pocemu eto nuzno**
+
+medkartocka soderzhit chuvstvitelnuju informaciju
+
+**kak eto dolzno rabotat po logike**
+
+nuzhno pokazat
+
+* cel obrabotki
+* nabor dannyx
+* gde obrabatyvaetsia
+* srok
+* ispolzuetsia li dlia obucheniia
+* kak otkliucit
+* kak udal it rezultat
+
+**dlia kogo i dlia kakoj celi**
+
+dlia vseh polzovatelej ai funkcii
+
+**kakoj rezultat dolzen byt dostignut**
+
+udobnaia funkcia ne peredaet medkartocku vneshnemu servisu skryto
+
+---
+
+# dostupnost i slab yj internet
+
+## 250 — ekrann yj diktor
+
+**cto eto dolzno delat**
+
+vse diagnozy, statusy, dokumenty, grafik i i dejstviia dolzny imet pon iatn uju semanticeskuju strukturu
+
+**pocemu eto nuzno**
+
+ikonka, cvet ili grafik bez teksta ne dajut dostupa nezriachemu polzovateliu
+
+**kak eto dolzno rabotat po logike**
+
+kazd a ia kartocka c itaetsia s nazvaniem, datoj, statusom, istochnikom i dostupnymi dejstviiami
+
+**dlia kogo i dlia kakoj celi**
+
+dlia polzovatelej s narusheniiami zreniia
+
+**kakoj rezultat dolzen byt dostignut**
+
+medkartocku mozno polnocenno ispolzovat bez vizualnogo interfejsa
+
+---
+
+## 251 — upravlenie klaviaturoj
+
+**cto eto dolzno delat**
+
+bez myshi dolzny rabotat
+
+* poisk
+* filtry
+* dobavlenie zapisi
+* prosmotr dokumenta
+* vydaca dostup a
+* otzyv
+* eksport
+* zhaloba
+* podtverzhdenie zadaci
+
+**pocemu eto nuzno**
+
+eto vazhno dlia dostupnosti i professionalnoj desktop raboty
+
+**kak eto dolzno rabotat po logike**
+
+fokus ne dolzen prygat pri novom rezultate ili uvedomlenii
+
+**dlia kogo i dlia kakoj celi**
+
+dlia polzovatelej s motornymi ogranicheniiami
+
+**kakoj rezultat dolzen byt dostignut**
+
+ves medicinsk ij cikl dostup en bez myshi
+
+---
+
+## 252 — ne tolko cvet
+
+**cto eto dolzno delat**
+
+statusy dolzny imet tekst i ikonku
+
+* aktivno
+* kriticesk ij
+* neizvestno
+* podtverzhdeno
+* podozrevaetsia
+* iste klo
+* otmeneno
+* trebuet proverki
+
+**pocemu eto nuzno**
+
+cvet moz et byt nevid en ili nepon iaten
+
+**kak eto dolzno rabotat po logike**
+
+odin status odinakovo naz yvaetsia vo vseh razdelax
+
+**dlia kogo i dlia kakoj celi**
+
+dlia dostupnosti i posledovatelnosti
+
+**kakoj rezultat dolzen byt dostignut**
+
+kriticeskaia informacija pon iatna bez razliceniia cvetov
+
+---
+
+## 253 — krupn yj tekst
+
+**cto eto dolzno delat**
+
+nazvaniia preparatov, dozy, daty, knopki i dokumenty dolzny korrektno masshtabirovatsia
+
+**pocemu eto nuzno**
+
+obrezann a ia edinica ili doza moz et sozdat opasn uju putanicy
+
+**kak eto dolzno rabotat po logike**
+
+tekst perenositsia, tablicy adaptirujutsia, a kriticeskie znachenija ne skryvajutsia za gorizontalnoj prokrutkoj
+
+**dlia kogo i dlia kakoj celi**
+
+dlia slabovid iasc ix i pozhilyx polzovatelej
+
+**kakoj rezultat dolzen byt dostignut**
+
+uvelichenie teksta ne privodit k potere medicinskogo smysla
+
+---
+
+## 254 — prostoj jazyk dlia xoziajina
+
+**cto eto dolzno delat**
+
+riadom s professionalnym terminom moz et byt pon iatn oe obiasnenie
+
+**pocemu eto nuzno**
+
+xoziajin ne obyazatelno imeet medicinsk oe obrazovanie
+
+**kak eto dolzno rabotat po logike**
+
+obiasnenie ne zameniaet originaln yj termin i ne uproshchaet ego do lozhnogo diagnoza
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev i semej
+
+**kakoj rezultat dolzen byt dostignut**
+
+polzovatel ponimaet osnovn oj smysl, no moz et pokazat specialistu originaln uju zapis
+
+---
+
+## 255 — rezhim slabogo interneta
+
+**cto eto dolzno delat**
+
+sistema dolzna bystro zagruzhat tekstov uju svodku i otkladyvat bolsh ie fajly
+
+**pocemu eto nuzno**
+
+v klinike ili poezdke moz et byt slab a ia sviaz
+
+**kak eto dolzno rabotat po logike**
+
+v perv uju ochered zagruzhajutsia
+
+* allergii
+* lekarstva
+* diagnozy
+* ekstrennye kontakty
+* poslednie priemy
+
+**dlia kogo i dlia kakoj celi**
+
+dlia mobilnyx polzovatelej
+
+**kakoj rezultat dolzen byt dostignut**
+
+kriticeskaia informacija dostupna ran she bolsh ix izobrazhenij i dokumentov
+
+---
+
+## 256 — oflajn cernovik nabludeniia
+
+**cto eto dolzno delat**
+
+xoziajin moz et zapisat simptom, izmerenie ili priem lekarstva bez interneta
+
+**pocemu eto nuzno**
+
+slab a ia sviaz ne dolzna privodit k potere vazhnogo vremeni ili fakta
+
+**kak eto dolzno rabotat po logike**
+
+cernovik imeet lokaln oe vremia, status ne sinxronizirovano i posle vozvrata seti prohodit proverku na dublikaty
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev, sitterov i volonterov
+
+**kakoj rezultat dolzen byt dostignut**
+
+zapis soxr aniaetsia odin raz i ne vydajotsia za dostupn uju klinike do sinxronizacii
+
+---
+
+# uvedomlenija
+
+## 257 — kategorii medicinskix uvedomlenij
+
+**cto eto dolzno delat**
+
+polzovatel moz et nastroit
+
+* lekarstva
+* priemy
+* vakcinacii
+* analiz y
+* kriticeskie rezultaty
+* documenty
+* dostup y
+* zadaci
+* kontrolnye daty
+* izmeneniia plana
+
+**pocemu eto nuzno**
+
+odin rezhim dlia vsego sozdaet shum ili privodit k polnomu otkliucheniiu
+
+**kak eto dolzno rabotat po logike**
+
+kazdaia kategoriia imeet prioritet, kanal, chastotu i otvetstvennyx poluchatelej
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev, semej i klinik
+
+**kakoj rezultat dolzen byt dostignut**
+
+vazhn yj signal ne ter iaetsia sredi oby cnyx napominanij
+
+---
+
+## 258 — kriticesk oe uvedomlenie
+
+**cto eto dolzno delat**
+
+kriticesk ij rezultat ili ugroza dolzny otpravliatsia po usilennomu kanalu s podtverzhdeniem
+
+**pocemu eto nuzno**
+
+oby cn yj push moz et byt skryt, zaglushen ili propu sch en
+
+**kak eto dolzno rabotat po logike**
+
+eskalacija moz et perehodit ot xoziajina k sovladelcu, klinike ili rezervnomu kontaktu po zaranee ustanovlennym pravilam
+
+**dlia kogo i dlia kakoj celi**
+
+dlia srocn yx kliniceskix situacij
+
+**kakoj rezultat dolzen byt dostignut**
+
+kriticeskaia informacija dostigaet otvetstvennogo cheloveka i poluchaet status obrabotki
+
+---
+
+## 259 — tixie casy
+
+**cto eto dolzno delat**
+
+oby cnye profilakticeskie i inform acionnye napominaniia ne dolzny budit nochju
+
+**pocemu eto nuzno**
+
+medkartocka ne dolzna sozda vat postojann yj stress
+
+**kak eto dolzno rabotat po logike**
+
+kriticeskie rezultaty, srocn y e simptomy i bezopasnost akkaunta mogut obhodit tixie casy po pon iatnym pravilam
+
+**dlia kogo i dlia kakoj celi**
+
+dlia vseh polzovatelej
+
+**kakoj rezultat dolzen byt dostignut**
+
+oby cn y e napominaniia uvazajut rezhim, a realn a ia ugroza ne otkladyvaetsia
+
+---
+
+## 260 — napominanie ne ravnjaetsia medicinskomu naznacheniiu
+
+**cto eto dolzno delat**
+
+kazd oe avtomaticesk oe napominanie dolzno pokaz yvat istochnik
+
+**pocemu eto nuzno**
+
+polzovatel moz et prin iat sistemn uju datu za individualn uju instrukciju veterinara
+
+**kak eto dolzno rabotat po logike**
+
+razdeli a j utsia
+
+* naznacheno specialistom
+* ukazano v dokumente
+* rasschitano sistemoj
+* soz dano xoziajinom
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev i klinik
+
+**kakoj rezultat dolzen byt dostignut**
+
+polzovatel ponimaet, pochemu pojav ilos napominanie i komu zadat vopros
+
+---
+
+# kachestvo, metrik i i kontrol sistemy
+
+## 261 — polnota bez prinuzhdeniia
+
+**cto eto dolzno delat**
+
+sistema moz et pokaz yvat, kakie kriticeskie razdely ne utochneny
+
+**pocemu eto nuzno**
+
+kartocka moz et vygl iadet polnoj, no ne imet allergij, aktivnyx lekarstv ili ekstrennogo kontakta
+
+**kak eto dolzno rabotat po logike**
+
+vmesto procenta zapolneniia pokaz yvajutsia konkretnye poleznye shagi
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev
+
+**kakoj rezultat dolzen byt dostignut**
+
+polzovatel ulucshaet bezopasnost kartocki bez sbora lishnix dannyx radi sto procentov
+
+---
+
+## 262 — aktualnost dannyx
+
+**cto eto dolzno delat**
+
+sistema dolzna zam ec at st ar y e aktivnye lekarstva, diagnozy bez kontro lia i prosrocennye dokumenty
+
+**pocemu eto nuzno**
+
+st araia informacija moz et byt opasnee otsutstvujusc ej
+
+**kak eto dolzno rabotat po logike**
+
+polzovatel poluchaet vopros vse esio aktualno, a professionaln a ia zapis ne izmeniaetsia avtomaticeski
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev i klinik
+
+**kakoj rezultat dolzen byt dostignut**
+
+svodka reze soderzhit zabyt y e mnogoletnie naznacheniia kak tekusc ie
+
+---
+
+## 263 — chastota dublikatov
+
+**cto eto dolzno delat**
+
+platforma dolzna otslezhivat dublirujusc iesia kartocki, vakciny, analiz y i dokumenty
+
+**pocemu eto nuzno**
+
+dublikaty iskazha jut istoriu i napominaniia
+
+**kak eto dolzno rabotat po logike**
+
+algoritm predlagaet sovpadenie, a kriticeskoe obed inenie prohodit proverku
+
+**dlia kogo i dlia kakoj celi**
+
+dlia klinik i platformy
+
+**kakoj rezultat dolzen byt dostignut**
+
+odin fakt xranitsia odin raz s neskolkimi istochnikami
+
+---
+
+## 264 — oshibki dostup a
+
+**cto eto dolzno delat**
+
+nuzhno izmeriat, skolko raz polzovateli poluchali ili soxraniali dostup posle otzyva, smeny roli ili peredaci
+
+**pocemu eto nuzno**
+
+formalnye nast ro jki ne garantirujut realn uju privatnost
+
+**kak eto dolzno rabotat po logike**
+
+testirujutsia servernye prava, kesh, media ssylki, poisk i lokalnye kopii
+
+**dlia kogo i dlia kakoj celi**
+
+dlia komandy bezopasnosti
+
+**kakoj rezultat dolzen byt dostignut**
+
+otzyv dostup a fakticeski zakryvaet vse osnovnye kanaly
+
+---
+
+## 265 — bezopasnost lekarstvennogo zhurnala
+
+**cto eto dolzno delat**
+
+platforma dolzna analizirovat dublikaty otmetok, konfliktujusc ie raspisaniia i nepon iatnye edinicy
+
+**pocemu eto nuzno**
+
+tehnicesk a ia oshibka moz et vliiat na realn yj uxod
+
+**kak eto dolzno rabotat po logike**
+
+signal otpravliaetsia xoziajinu ili klinike dlia proverki, no sistema ne meniaet naznachenie sama
+
+**dlia kogo i dlia kakoj celi**
+
+dlia semej, priutov i specialistov
+
+**kakoj rezultat dolzen byt dostignut**
+
+potencialn a ia oshibka zam ec a etsia do sledujuscego primeneniia
+
+---
+
+## 266 — vremia obrabotki kriticeskix rezultatov
+
+**cto eto dolzno delat**
+
+klinika dolzna videt, skolko kriticeskix rezultatov poluchili podtverzhdenn oe dejstvie
+
+**pocemu eto nuzno**
+
+dostavka bez reakc ii ne reshaet problem u
+
+**kak eto dolzno rabotat po logike**
+
+metrik a ocenivaet process, ne raskryvaja medicinskie dannye postoronnim
+
+**dlia kogo i dlia kakoj celi**
+
+dlia klinik i bezopasnosti
+
+**kakoj rezultat dolzen byt dostignut**
+
+kriticeskie sluchai reze ostajutsia bez otvetstvennogo
+
+---
+
+# minimalnaja versija dlia pervogo zapuska
+
+## 267 — obyazatelnye razdely pervoj versii
+
+**cto eto dolzno delat**
+
+pervaja stabiln a ia versija dolzna vkliucat
+
+* medicinsk uju svodku
+* priemy
+* aktivnye problem y
+* diagnozy
+* allergii
+* lekarstva
+* zhurnal primeneniia
+* vakcinacii
+* analiz y
+* procedury
+* dokumenty
+* ekstrenn uju kartocku
+* kliniki
+* dostup y
+* audit
+* eksport
+
+**pocemu eto nuzno**
+
+eto minimaln yj nabor dlia nepreryvnoj i bezopasnoj istorii
+
+**kak eto dolzno rabotat po logike**
+
+vse razdely ispolzujut odnu sistemu istochnikov, prav, versij i privatnosti
+
+**dlia kogo i dlia kakoj celi**
+
+dlia xoziaev, klinik i priutov
+
+**kakoj rezultat dolzen byt dostignut**
+
+medkartocka uze polezna dlia realnogo priema, ekstrenn oj situacii i peredaci pitomca
+
+---
+
+## 268 — obyazatelnye funkcii dostup a
+
+**cto eto dolzno delat**
+
+pervaja versija dolzna podderzhivat
+
+* osnovnogo xoziajina
+* sovladelca
+* vrem enn yj dostup
+* dostup kliniki
+* otdelnye razdely
+* tolko prosmotr
+* otzyv
+* zhurnal prosmotrov
+* qr ekstrenn oj kartocki
+* break glass s auditom
+
+**pocemu eto nuzno**
+
+medkartocka bez granularnogo dostup a libo bespolezna, libo slishkom otkryta
+
+**kak eto dolzno rabotat po logike**
+
+vse prava proveriajutsia na servere pri kazdom dejstvii
+
+**dlia kogo i dlia kakoj celi**
+
+dlia vseh vladelcev i poluchatelej
+
+**kakoj rezultat dolzen byt dostignut**
+
+dannye dostupny tem, komu oni nuzhny, i zakryty dlia ostalnyx
+
+---
+
+## 269 — obyazatelnye funkcii nadezhnosti
+
+**cto eto dolzno delat**
+
+nuzhny
+
+* cernoviki
+* avtosoxranenie
+* idempotentnost
+* proverka dublikatov
+* versii
+* audit
+* rezervnye kopii
+* eksport
+* proverka fajlov
+* zascischennye ssylki
+* obnovlenie kesa
+* oflajn ekstrenn a ia svodka
+
+**pocemu eto nuzno**
+
+medicinskie dannye ne dolzny ter iatsia, dublir ovatsia ili ostavatsia dostupnymi posle otzyva
+
+**kak eto dolzno rabotat po logike**
+
+tehniceskie statusy vidny polzovateliu i ne maskirujutsia pod uspeshn oe soxranenie
+
+**dlia kogo i dlia kakoj celi**
+
+dlia nadezhnosti platformy
+
+**kakoj rezultat dolzen byt dostignut**
+
+kartocka ostajotsia c elostnoj pri slabom internet e, oshibke ustrojstva i konkurentnyx dejstvii ax
+
+---
+
+## 270 — funkcii sledujusc ego etapa
+
+**cto eto dolzno delat**
+
+posle stabilizacii mozno dobavit
+
+* glubokie integracii klinik
+* laboratorn yj obmen
+* diagnosticesk ij prosmotr originalov
+* telemedicinu
+* professionalnye shablony
+* rasshirenn yj stacionar
+* interoperabiln y e formaty
+* umnye ustrojstva
+* issledovatelsk ie proekty
+* lokaln yj ai
+* mezhdunarodnye dokumenty
+* straxovye integracii
+* rasshirenn uju analitiku kachestva
+
+**pocemu eto nuzno**
+
+eti funkcii slozhny i dolzny opiratsia na praviln uju identifikaciju, prava, audit i bazov uju kliniceskuju model
+
+**kak eto dolzno rabotat po logike**
+
+ni odna integracija ne dolzna sozda vat obhod privatnosti ili alternativn uju medkartocku
+
+**dlia kogo i dlia kakoj celi**
+
+dlia dalnejshego razvitiia sistemy
+
+**kakoj rezultat dolzen byt dostignut**
+
+platforma moz et vyrasti iz lichn oj kartocki v polnocenn uju medicinskuju ekosistemu
+
+---
+
+# idealnye scenarii
+
+## 271 — idealnyj scenarij pervogo zapolneniia
+
+andrej sozdaet profil baksa
+
+sistema avtomaticeski sozdaet zakryt uju medkartocku i predlagaet ukazat
+
+* allergii
+* aktivnye lekarstva
+* posledn iu vakcinu
+* osnovn uju kliniku
+* ekstrenn yj kontakt
+
+andrej ne znaet tocn uju datu odn oj staroj vakciny i ukazyvaet primern yj god
+
+v rezultate kartocka chestno pokaz yvaet granicy tochnosti i ne pridumyvaet konkretn uju datu
+
+---
+
+## 272 — idealnyj scenarij planovogo priema
+
+andrej zapis yvaet baksa na osмотр
+
+do priema on dobavliaet prichinu obrashcheniia i video simptoma
+
+veterinar vidit aktivnye allergii, lekarstva i predydusc ie podobnye sluchai
+
+posle priema sozda jotsia strukturirovann yj plan s analizom, lekarstvom i kontrolnoj datoj
+
+andrej poluchaet pon iatn uju vypisku, a professionaln a ia zapis ostajotsia v medkartocke
+
+---
+
+## 273 — idealnyj scenarij dvux sovladelcev
+
+andrej i marius ravnopravno uxazhivajut za baksom
+
+oba vidat raspisanie lekarstva
+
+andrej otm ecaet, cto doza dana
+
+kogda marius otkryvaet zadacu, sistema pokaz yvaet posledn ee fakticeskoe primenenie i ne predlagaet povtorn o otmetit ego bez proverki
+
+v rezultate snizhaetsia risk dvojnogo priema
+
+---
+
+## 274 — idealnyj scenarij sittera
+
+andrej vyd a et sitteru dostup na tri dnja
+
+sitter vidit
+
+* aktivn y e lekarstva
+* allergii
+* ekstrenn yj kontakt
+* instrukciju
+* raspisanie
+
+on ne vidit st ar y e analiz y, straxovku, finansy i lichnye dokumenty
+
+posle zaversheniia uslugi dostup istekaet avtomaticeski
+
+---
+
+## 275 — idealnyj scenarij ekstrennogo priema
+
+baks popadaet v nov uju kliniku, a andrej vrem enno nedostup en
+
+klinika skaniruet ekstrenn yj qr i vidit allergiju, aktivn y e lekarstva, nedavnuju operaciju i rezervnogo xoziajina
+
+specialist zaprashivaet break glass dostup k poslednemu hirurgiceskomu otchetu
+
+dejstvie popadaet v audit, a andrej polucaet uvedomlenie
+
+---
+
+## 276 — idealnyj scenarij laboratornogo rezultata
+
+klinika zakazyvaet analiz
+
+laboratorija poluchaet tolko zakaz i neobxodim yj klinicesk ij minimum
+
+rezultat prihodit s originalnymi edinicami i laboratornym diapazonom
+
+odin pokazatel pom echen kak kriticesk ij
+
+sistema trebuet podtverzhdeniia, cto specialist prosmotrel ego i sviazalsia s xoziajinom
+
+---
+
+## 277 — idealnyj scenarij ispravlennogo analiza
+
+laboratorija zam ecaet oshibku v pervom otchete
+
+ona vypuskaet ispravlenn uju versiju
+
+st araia versija ostajotsia v istorii kak zamenena, a grafik i svodka ispolzujut nov yj rezultat
+
+veterinar i andrej polucajut pon iatn oe uvedomlenie, cto imenno izmenilos
+
+---
+
+## 278 — idealnyj scenarij operacii
+
+pered operaciej sistema sobiraet
+
+* allergii
+* aktivnye lekarstva
+* analiz y
+* predydusc uju anesteziologiceskuju reakc iju
+* soglasie
+* finansov uju smetu
+
+posle procedury k odnomu sluchaiu priviazyvajutsia protokol, anestezija, material laboratorii, vypiska, lekarstva i foto kontroli
+
+v rezultate vsi a istoria operacii naxoditsia v odn om kontekste
+
+---
+
+## 279 — idealnyj scenarij posleoperacionnogo uxoda
+
+andrej poluchaet plan
+
+* lekarstvo
+* ogranichenie aktivnosti
+* fotografiju shva raz v den
+* kontroln yj priem
+* priznaki dlia srocn oj sviazi
+
+zadači raspredeliajutsia mezhdu andreem i sovladelcem
+
+novaia versija plana avtomaticeski pom echaet star uju kak zamenenn uju
+
+---
+
+## 280 — idealnyj scenarij allergii
+
+v medkartocke ukazana podtverzhdenn a ia lekarstvenn a ia allergija
+
+nov a ia klinika pyt a etsia dobavit preparat s sovpadajusc im aktivnym veschestvom
+
+sistema pokaz yvaet zametn oe preduprezhdenie s opisaniem predydusc ej reakc ii
+
+veterinar moz et prosmotret istochnik i prin iat professionaln oe reshenie, no platforma ne skryvaet risk
+
+---
+
+## 281 — idealnyj scenarij nepolnoj istorii priuta
+
+luna postup a et v priut bez dokumentov
+
+priut ukazyvaet
+
+* vakcinacionn a ia istoria neizvestna
+* allergii neizvestny
+* mikrochip ne naiden pri pervoj proverke
+* novaia vakcinacija provedena segodnja
+* analiz y v rabote
+
+kartocka ne pokaz yvaet, cto ran she vakcin ne bylo
+
+---
+
+## 282 — idealnyj scenarij adopcii
+
+luna peredaetsia novomu xoziajinu
+
+nov yj xoziajin poluchaet
+
+* vakciny
+* aktivnoe lekarstvo
+* allergii
+* operaciju
+* laboratornye otchety
+* sledujusc ij priem
+* kontakt kliniki
+
+vnutrennie zametki priuta, lichnye dannye kandidatov i finansovye dokumenty ne peredajutsia
+
+---
+
+## 283 — idealnyj scenarij vtorogo mneniia
+
+andrej xocet pokazat sluchaj drugomu hirurgu
+
+on sozdaet paket s izobrazheniiami, otchetom, analiz ami, spiskom lekarstv i kliniceskim voprosom
+
+dostup dejstvuet sem dnej i razreshaet dobavit novoe zakliuchenie
+
+posle istecheniia specialist ne moz et otkryvat nov y e dannye baksa
+
+---
+
+## 284 — idealnyj scenarij puteshestviia
+
+pered poezdkoj andrej sozdaet paket
+
+* pasport
+* mikrochip status
+* vakcinacionn yj sertifikat
+* recepty
+* ekstrenn uju kartocku
+* kontakt kliniki
+
+sistema pokaz yvaet, cto odin dokument skoro istekaet, no ne garantir uet sootvetstvie trebovaniiam napravleniia bez proverki aktualnyx pravil
+
+---
+
+## 285 — idealnyj scenarij slabogo interneta
+
+v drugoj strane baks popadaet v kliniku bez stabilnogo interneta
+
+andrej otkryvaet oflajn ekstrenn uju kartocku s datoj poslednego obnovleniia
+
+klinika vidit allergii, aktivnye lekarstva i osnovn uju svodku
+
+bolsh ie izobrazheniia zagruzhajutsia pozze, kogda pojavliaetsia sviaz
+
+---
+
+## 286 — idealnyj scenarij oshibocnogo diagnoza
+
+v staroj kartocke est predvariteln yj diagnoz, kotoryj pozze ne podtverdilsia
+
+specialist meniaet ego status na iskliuchen i dodavliaet osnovanie
+
+st araia zapis ostajotsia v istorii, no ne pokaz yvaetsia v aktivnyx problem ax
+
+nov yj veterinar vidit, cto eto predpolozhenie uze proverialos
+
+---
+
+## 287 — idealnyj scenarij spornogo vladen iia
+
+dva cheloveka zayavliajut prava na odnogo pitomca
+
+sistema zamorazhivaet peredacu kartocki, izmenenie mikrochipa, udaleniie i massov yj eksport
+
+klinika prodolzaet dobavliat neobxodimye zapisi o tekuscem lechenii
+
+posle proverki dokumentov prava vydajutsia zakon nomu upravliajuscemu, a audit soxr aniaetsia
+
+---
+
+## 288 — idealnyj scenarij uvolneniia sotrudnika kliniki
+
+veterinarn yj assist ent pokidaet kliniku
+
+ego organizacionn a ia rol avtomaticeski otzyvaetsia
+
+st ar y e zapisi soxr aniajut ego realn oe avtorstvo, no nov yj dostup k kartockam zakryvaetsia
+
+sistema proveriaet, ne bylo li neobycnyx eksportov pered uvolneniem
+
+---
+
+## 289 — idealnyj scenarij podozritelnogo dostup a
+
+akkaunt sotrudnika nochju otkryvaet sotni nesviazannyx kartochek
+
+sistema ogranichivaet sessiju, trebuet povtorn uju proverku i uvedomliaet bezopasnost kliniki
+
+medicinskie zapisi ne udaliajutsia, a audit dostup a soxr aniaetsia dlia rassledovaniia
+
+---
+
+## 290 — idealnyj scenarij ai raspoznavaniia dokumenta
+
+andrej zagruzaet star uju vypisku
+
+ai predlagaet
+
+* datu
+* nazvanie kliniki
+* diagnoz
+* preparat
+* kontroln yj priem
+
+doza pom echena kak nizkaia uverennost
+
+andrej ne moz et prosto opublikovat ejo kak aktivn oe naznachenie bez proverki
+
+originaln yj dokument ostajotsia riadom s kazdym izvlechennym faktom
+
+---
+
+## 291 — idealnyj scenarij ai trenda
+
+sistema zam ecaet postepenn oe izmenenie vesa za neskolko mesiatsev
+
+ona pokaz yvaet grafik, istochniki izmerenij i predlagaet obsudit izmenenie s veterinarom
+
+ona ne stavit diagnoz, ne meniaet ration i ne sozdaet recept avtomaticeski
+
+---
+
+## 292 — idealnyj scenarij palliativnogo uxoda
+
+dlia pozhilogo baksa specialist sozdaet palliativn yj plan
+
+sem ja otm ecaet komfort, appetit, son, podvizhnost i vazhnye sobytija
+
+sistema pokaz yvaet trend i pomogaet podgotovit voprosy k sledujuscej konsultacii
+
+okonchatelnye resheniia prin imajutsia sem jej sovmestno so specialistom, a ne algoritmom
+
+---
+
+## 293 — idealnyj scenarij memorialnogo perehoda
+
+posle podtverzhdennoj utraty baksa
+
+* lekarstvennye napominaniia ostanavlivajutsia
+* vakcinacionnye daty zakryvajutsia
+* reklama korma ne pokaz yvaetsia
+* medkartocka arhiviruetsia
+* sem ja moz et eksportirovat istoriju
+* publicn yj profil moz et otdelno perejti v memorialn yj rezhim
+
+---
+
+## 294 — idealnyj scenarij udaleniia akkaunta xoziajina
+
+andrej zapuskaet udaleniie svoego akkaunta, no u baksa est sovladelec
+
+sistema predlagaet peredat osnovn oe upravlenie medkartockoj sovladelcu
+
+lichnye finansovye i kontaktnye dannye andreja udaliajutsia po pravilam
+
+medicinskaia istoria baksa ne unictozhaetsia
+
+---
+
+## 295 — idealnyj scenarij poddelnogo vakcinacionnogo dokumenta
+
+polzovatel zagruzaet izmenenn yj sertifikat dlia ucastiia v sobytii
+
+sistema ne moz et podtverdit podpis i nahodit protivorechie s kliniceskoj zapisju
+
+dokument poluchaet status trebuet proverki, a organizator vidit tolko, cto trebovanie poka ne podtverzhdeno
+
+lichn oe obvinenie ne publik uetsia, a sluchaj napravliaetsia na proverku
+
+---
+
+# itogovyj rezultat punkta 7
+
+posle polnoj realizacii punkta 7 medkartocka dolzna stat ne papkoj s fotografijami bumazhnyx spravok, a polnocennoj zascischenn oj medicinskoj sistemoj konkretnogo pitomca
+
+v rezultate platforma dolzna obespecit
+
+* odnu osnovn uju medkartocku na odnogo realnogo pitomca
+* nepreryvnost istorii pri smene imeni, kliniki, priuta i xoziajina
+* razdelenie publicnogo profilia i medicinskix dannyx
+* pon iatn uju medicinskuju svodku
+* vrem ennuju liniiu vsej istorii
+* razdelenie simptomov, nabludenij, podozrenij i podtverzhdennyx diagnozov
+* spisok aktivnyx i razreshennyx problem
+* hroniceskie plany
+* allergii s reakc ijami, serioznostiu i urovnem podtverzhdeniia
+* aktivn yj spisok lekarstv
+* dozy, edinicy, raspisanie i realn yj zhurnal primeneniia
+* zascitu ot dvojnogo priema dvumia smotriteliami
+* obrabotku propuscennyx doz bez opasnogo avtomaticeskogo soveta
+* dokumentirovanie pobocnyx reakc ij
+* soglasovanie lekarstv mezhdu klinikami
+* poln yj registr vakcinacij
+* partii, sertifikaty, reakc ii i medicinskie iskliucheniia
+* individualn yj profilakticesk ij plan
+* laboratornye zakazy, obrazcy, rezultaty, diapazony i ispravlennye versii
+* usilenn uju obrabotku kriticeskix rezultatov
+* grafiki i trendy bez avtomaticeskogo diagnoza
+* originalnye diagnosticeskie izobrazheniia
+* zakliuchenija, annotacii i paket dlia vtorogo mneniia
+* operacii, anesteziju, monitoring, implanty i oslozhneniia
+* vypiski, posleoperacionn yj uxod i reabilitaciju
+* stomatologiceskuju kartu
+* medicinskie plany s celjami, zadachami, ispolniteliami i versiiami
+* plan pitaniia, aktivnosti, hroniceskogo i palliativnogo uxoda
+* ekstrenn uju kartocku s qr i oflajn kopiej
+* break glass dostup s obyazatelnym auditom
+* pasporty, sertifikaty i dokumenty dlia poezdok
+* proveriaemye podpisi i sroki dejstviia
+* bezopasn oe zamazyvanie lichnyx dannyx
+* profilej klinik i konkretnyx specialistov
+* rolevye prava sotrudnikov
+* napravleniia, telekonsultacii i bezopasn uju kliniceskuju perepisku
+* straxovye pakety bez peredaci vsej kartocki
+* priutsk ij osмотр, karantin, perederzhku i adopcionn uju svodku
+* razdelenie medicinskix faktov i vnutrennix zametok organizacii
+* arhiv i memorialn yj rezhim posle utraty
+* granularn yj dostup po razdelam, srokam i celiam
+* odnorazovye ssylki, qr kody i nemedlenn yj otzyv
+* zhurnal vseh prosmotrov
+* soglasie s tocnym opisaniem obema i celi
+* zascitu pri spornom vladenii
+* shifrovanie, mfa, kontrol sessij i zascischennye fajly
+* rezervnye kopii i proveriaemoe vosstanovlenie
+* obnaruzhenie neoby cnogo dostup a i massovogo eksporta
+* upravljaem y e sroki xraneniia
+* strukturirovann yj import i eksport
+* stabilnye identifikatory, edinicy, vrem ennye zony i mnogoiazy cnost
+* dostupnost dlia ekrannyx diktorov, klaviatury i krupnogo teksta
+* rabotu pri slabom internete
+* ai tolko kak instrument izvlecheniia, svodki i poisk a trendov
+* zapret ai samostojatelno stavit diagnozy i menjat lechenie
+* pon iatnye metrik i kachestva, privatnosti i bezopasnosti
+
+glavn oe dostizhenie etogo punkta zakliuchaetsia v tom, cto xoziajinu bolshe ne nuzhno sobirat zdorovje pitomca iz pam iati, bumazhnyx spravok, chatov i raznyx klinik
+
+pri etom medkartocka ne stanovitsia publicnym profilem ili instrumentom reklamy, a ostajotsia zascischennym, proveriaemym i upravljaemym istochnikom medicinskoj pravdy o konkretnom pitomce
+
+sledujusc ij punkt — dnevnik ezhednevnogo uxoda, kormlenie, voda, son, tualet, progulki, aktivnost, ves, povedenie, lekarstva, zadaci sem ji, sitter y, umnye ustrojstva, rutin y, otchety i polnaja logika povsednevnogo nabludeniia
+</medical-record-source-revision>

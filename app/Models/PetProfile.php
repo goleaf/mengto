@@ -35,6 +35,7 @@ use Illuminate\Support\Carbon;
  * @property string $visibility
  * @property-read Collection<int, PetProfileLifecycleEvent> $lifecycleEvents
  * @property-read Collection<int, PetProfileManager> $managers
+ * @property-read MedicalRecord|null $medicalRecord
  * @property-read PetProfilePrivacySetting|null $privacySetting
  */
 final class PetProfile extends Model
@@ -138,6 +139,12 @@ final class PetProfile extends Model
     public function socialActor(): HasOne
     {
         return $this->hasOne(SocialActor::class);
+    }
+
+    /** @return HasOne<MedicalRecord, $this> */
+    public function medicalRecord(): HasOne
+    {
+        return $this->hasOne(MedicalRecord::class);
     }
 
     /** @return HasMany<PetProfileLifecycleEvent, $this> */

@@ -188,6 +188,7 @@ return [
         'manage-documents' => 'Valdyti dokumentus',
         'manage-managers' => 'Valdyti savininkus ir valdytojus',
         'manage-media' => 'Valdyti mediją',
+        'manage-medical' => 'Valdyti medicinos įrašą',
         'manage-social' => 'Valdyti socialinius ryšius',
         'manage-privacy' => 'Valdyti privatumą',
         'publish' => 'Skelbti augintinio vardu',

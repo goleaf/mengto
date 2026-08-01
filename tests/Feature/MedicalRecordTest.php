@@ -1,6 +1,8 @@
 <?php
 
+use App\Enums\MedicalKnowledgeStatus;
 use App\Enums\MedicationStatus;
+use App\Enums\PetManagerRole;
 use App\Models\AuditLog;
 use App\Models\MedicalAccessGrant;
 use App\Models\MedicalDocument;
@@ -8,6 +10,9 @@ use App\Models\MedicalEvent;
 use App\Models\MedicalRecord;
 use App\Models\Medication;
 use App\Models\MedicationDose;
+use App\Models\PetProfile;
+use App\Models\PetProfileManager;
+use App\Models\User;
 use App\Models\Vaccination;
 use App\Models\WeightEntry;
 use Database\Seeders\MedicalRecordSeeder;
@@ -17,6 +22,14 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 test('an owner can create one private medical record for a managed pet', function () {
+    $pet = PetProfile::factory()->for($this->authenticatedUser)->create([
+        'profile_key' => 'pet-scout',
+        'slug' => 'scout',
+        'name' => 'Scout',
+        'species' => 'dog',
+        'breed' => 'Border Collie mix',
+    ]);
+
     $this->post(route('medical-records.store'), medicalRecordPayload())
         ->assertRedirect();
 
@@ -24,6 +37,8 @@ test('an owner can create one private medical record for a managed pet', functio
 
     expect($record)
         ->owner_key->toBe('mia-carter')
+        ->owner_id->toBe($this->authenticatedUser->id)
+        ->pet_profile_id->toBe($pet->id)
         ->pet_profile_key->toBe('scout')
         ->privacy->toBe('private')
         ->current_weight_grams->toBe(18700)
@@ -36,6 +51,97 @@ test('an owner can create one private medical record for a managed pet', functio
         ->assertSessionHasErrors('pet_profile_key');
 
     expect(MedicalRecord::query()->where('pet_profile_key', 'scout')->count())->toBe(1);
+});
+
+test('a canonical medical record follows the pet when the primary owner changes', function () {
+    $pet = PetProfile::factory()->for($this->authenticatedUser)->create([
+        'slug' => 'transfer-pet',
+        'name' => 'Transfer Pet',
+    ]);
+    $record = MedicalRecord::factory()->forPetProfile($pet)->create();
+    $newOwner = User::factory()->create();
+
+    $pet->update(['user_id' => $newOwner->id]);
+
+    $this->get(route('medical-records.show', $record))->assertForbidden();
+    $this->get(route('medical-records.index'))->assertDontSee('Transfer Pet');
+
+    $this->actingAs($newOwner);
+
+    $this->get(route('medical-records.show', $record))
+        ->assertOk()
+        ->assertSee('Transfer Pet');
+    $this->get(route('medical-records.index'))
+        ->assertOk()
+        ->assertSee('Transfer Pet');
+
+    expect($record->refresh())
+        ->pet_profile_id->toBe($pet->id)
+        ->owner_id->toBe($this->authenticatedUser->id)
+        ->owner_key->toBe('mia-carter');
+});
+
+test('co-owners can manage medical data while view-only carers cannot', function () {
+    $pet = PetProfile::factory()->for($this->authenticatedUser)->create();
+    $record = MedicalRecord::factory()->forPetProfile($pet)->create();
+    $coOwner = User::factory()->create();
+    $foster = User::factory()->create();
+
+    PetProfileManager::factory()
+        ->for($pet, 'profile')
+        ->for($coOwner)
+        ->create([
+            'actor_key_snapshot' => $coOwner->actor_key,
+            'role' => PetManagerRole::CoOwner,
+        ]);
+    PetProfileManager::factory()
+        ->for($pet, 'profile')
+        ->for($foster)
+        ->create([
+            'actor_key_snapshot' => $foster->actor_key,
+            'role' => PetManagerRole::FosterCarer,
+        ]);
+
+    $this->actingAs($coOwner);
+    $this->get(route('medical-records.manage', $record))->assertOk();
+
+    $this->actingAs($foster);
+    $this->get(route('medical-records.show', $record))->assertOk();
+    $this->get(route('medical-records.manage', $record))->assertForbidden();
+});
+
+test('expired professional access cannot reveal a canonical medical record', function () {
+    $pet = PetProfile::factory()->for($this->authenticatedUser)->create();
+    $record = MedicalRecord::factory()->forPetProfile($pet)->create();
+    $specialist = User::factory()->create();
+
+    PetProfileManager::factory()
+        ->for($pet, 'profile')
+        ->for($specialist)
+        ->expired()
+        ->create([
+            'actor_key_snapshot' => $specialist->actor_key,
+            'role' => PetManagerRole::Specialist,
+        ]);
+
+    $this->actingAs($specialist);
+
+    $this->get(route('medical-records.show', $record))->assertForbidden();
+    $this->get(route('medical-records.index'))->assertDontSee($record->pet_name);
+});
+
+test('unknown and confirmed empty medical knowledge remain distinct', function () {
+    $record = MedicalRecord::factory()->create([
+        'owner_key' => 'mia-carter',
+        'allergy_knowledge_status' => MedicalKnowledgeStatus::Unknown,
+        'critical_allergies' => [],
+        'medication_knowledge_status' => MedicalKnowledgeStatus::NoneKnown,
+    ]);
+
+    $this->get(route('medical-records.emergency', $record))
+        ->assertOk()
+        ->assertSee(__('medical.knowledge_statuses.unknown'))
+        ->assertSee(__('medical.knowledge_statuses.none-known'));
 });
 
 test('sensitive medical values are encrypted and never shown to another owner', function () {
@@ -254,13 +360,17 @@ test('the medical record seeder is idempotent and creates a useful demo timeline
     $seeder->run();
 
     $scout = MedicalRecord::query()->where('slug', 'scout-health')->firstOrFail();
+    $nori = MedicalRecord::query()->where('slug', 'nori-health')->firstOrFail();
 
     expect(MedicalRecord::query()->where('owner_key', 'mia-carter')->count())->toBe(2)
         ->and($scout->events()->count())->toBe(3)
         ->and($scout->vaccinations()->count())->toBe(2)
         ->and($scout->weightEntries()->count())->toBe(4)
         ->and($scout->medications()->count())->toBe(1)
-        ->and($scout->reminders()->count())->toBe(2);
+        ->and($scout->reminders()->count())->toBe(2)
+        ->and($scout->allergy_knowledge_status)->toBe(MedicalKnowledgeStatus::Known)
+        ->and($nori->allergy_knowledge_status)->toBe(MedicalKnowledgeStatus::NoneKnown)
+        ->and($nori->medication_knowledge_status)->toBe(MedicalKnowledgeStatus::NoneKnown);
 });
 
 test('medical schema includes owner timeline schedule and access indexes', function () {
@@ -273,6 +383,8 @@ test('medical schema includes owner timeline schedule and access indexes', funct
     expect($recordIndexes)
         ->toContain('medical_records_owner_pet_unique')
         ->toContain('medical_records_owner_status_idx')
+        ->toContain('medical_records_pet_profile_unique')
+        ->toContain('medical_records_pet_status_idx')
         ->and($eventIndexes)->toContain('medical_events_record_occurred_idx')
         ->and($medicationIndexes)->toContain('medications_record_status_dose_idx')
         ->and($doseIndexes)
@@ -297,7 +409,9 @@ function medicalRecordPayload(array $overrides = []): array
         'microchip_number' => '981020001234567',
         'microchip_checked_on' => now()->subMonth()->toDateString(),
         'blood_group' => 'DEA 1 negative',
+        'allergy_knowledge_status' => 'known',
         'critical_allergies' => "Chicken protein\nBee stings",
+        'medication_knowledge_status' => 'none-known',
         'chronic_conditions' => 'Seasonal skin sensitivity',
         'emergency_notes' => 'Approach calmly and call the owner.',
         'primary_clinic_name' => 'Paws 24',

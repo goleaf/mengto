@@ -188,6 +188,7 @@ return [
         'manage-documents' => 'Manage documents',
         'manage-managers' => 'Manage owners and managers',
         'manage-media' => 'Manage media',
+        'manage-medical' => 'Manage medical record',
         'manage-social' => 'Manage social relationships',
         'manage-privacy' => 'Manage privacy',
         'publish' => 'Publish as pet',

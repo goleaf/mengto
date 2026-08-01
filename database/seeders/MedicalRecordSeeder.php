@@ -10,6 +10,7 @@ use App\Enums\MedicationDoseStatus;
 use App\Enums\MedicationStatus;
 use App\Enums\VaccinationStatus;
 use App\Models\MedicalRecord;
+use App\Models\PetProfile;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 
@@ -17,11 +18,41 @@ class MedicalRecordSeeder extends Seeder
 {
     public function run(): void
     {
-        if (MedicalRecord::query()->where('owner_key', 'mia-carter')->exists()) {
+        $profiles = PetProfile::query()
+            ->select(['id', 'user_id', 'slug'])
+            ->whereIn('slug', ['scout', 'nori'])
+            ->get()
+            ->keyBy('slug');
+        $scoutProfile = $profiles->get('scout');
+        $noriProfile = $profiles->get('nori');
+
+        $existingRecords = MedicalRecord::query()
+            ->select(['id', 'slug'])
+            ->where('owner_key', 'mia-carter')
+            ->whereIn('slug', ['scout-health', 'nori-health'])
+            ->get()
+            ->keyBy('slug');
+
+        if ($existingRecords->isNotEmpty()) {
+            $existingRecords->get('scout-health')?->update([
+                'owner_id' => $scoutProfile?->user_id,
+                'pet_profile_id' => $scoutProfile?->id,
+                'allergy_knowledge_status' => 'known',
+                'medication_knowledge_status' => 'known',
+            ]);
+            $existingRecords->get('nori-health')?->update([
+                'owner_id' => $noriProfile?->user_id,
+                'pet_profile_id' => $noriProfile?->id,
+                'allergy_knowledge_status' => 'none-known',
+                'medication_knowledge_status' => 'none-known',
+            ]);
+
             return;
         }
 
         $scout = MedicalRecord::query()->create([
+            'owner_id' => $scoutProfile?->user_id,
+            'pet_profile_id' => $scoutProfile?->id,
             'owner_key' => 'mia-carter',
             'slug' => 'scout-health',
             'pet_profile_key' => 'scout',
@@ -40,7 +71,9 @@ class MedicalRecordSeeder extends Seeder
             'microchip_number' => '981020001234567',
             'microchip_checked_on' => now()->subMonths(2)->toDateString(),
             'blood_group' => 'DEA 1 negative',
+            'allergy_knowledge_status' => 'known',
             'critical_allergies' => ['Severe reaction to chicken-based treats'],
+            'medication_knowledge_status' => 'known',
             'chronic_conditions' => ['Seasonal skin sensitivity'],
             'emergency_notes' => 'Approach calmly from the side. Scout may pull away when frightened.',
             'primary_clinic_name' => 'Paws 24 Veterinary Clinic',
@@ -232,6 +265,8 @@ class MedicalRecordSeeder extends Seeder
         ]);
 
         MedicalRecord::query()->create([
+            'owner_id' => $noriProfile?->user_id,
+            'pet_profile_id' => $noriProfile?->id,
             'owner_key' => 'mia-carter',
             'slug' => 'nori-health',
             'pet_profile_key' => 'nori',
@@ -250,7 +285,9 @@ class MedicalRecordSeeder extends Seeder
             'microchip_status' => 'registered',
             'microchip_number' => '981020007654321',
             'microchip_checked_on' => now()->subMonths(4)->toDateString(),
+            'allergy_knowledge_status' => 'none-known',
             'critical_allergies' => [],
+            'medication_knowledge_status' => 'none-known',
             'chronic_conditions' => [],
             'emergency_notes' => 'Indoor cat. Keep the carrier covered in noisy environments.',
             'primary_clinic_name' => 'Paws 24 Veterinary Clinic',

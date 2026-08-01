@@ -14,6 +14,7 @@ enum PetProfilePermission: string
     case ManageSocial = 'manage-social';
     case ManageCare = 'manage-care';
     case ViewMedical = 'view-medical';
+    case ManageMedical = 'manage-medical';
     case ManageDocuments = 'manage-documents';
     case ActivateLost = 'activate-lost';
     case ManageDevices = 'manage-devices';

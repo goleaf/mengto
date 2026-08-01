@@ -59,7 +59,7 @@ domain contract under the canonical requirements above:
 | --- | --- | --- |
 | `docs/requirements/forum-source-prompt.md` | Immutable recovered source specification and checksum | Canonical immutable input |
 | `docs/requirements/forum-master-requirements.md` | Generated domain and state summary | Canonical generated |
-| `docs/requirements/forum-requirements.json` | All 14,629 atomic requirement records | Canonical machine-readable |
+| `docs/requirements/forum-requirements.json` | All 29,960 atomic requirement records | Canonical machine-readable |
 | `docs/traceability/forum-requirements-matrix.md` | Requirement-level implementation and verification evidence | Living generated evidence |
 | `docs/plans/forum-master-plan.md` | Dependency-aware implementation contract | Living canonical plan |
 | `docs/plans/forum-phase-requirement-index.md` | One primary phase for every atomic requirement | Canonical generated |
@@ -87,6 +87,14 @@ domain contract under the canonical requirements above:
 | `docs/decisions/social-relationships-architecture-decisions.md` | Social aggregate architecture decisions | Canonical decisions |
 | `docs/decisions/social-relationships-assumptions.md` | Safe repository-derived social assumptions | Living decisions |
 | `docs/decisions/social-relationships-conflicts.md` | Social-revision conflict resolution | Living decisions |
+| `docs/plans/community-master-plan.md` | Phases 55-63 for the community revision | Living canonical plan |
+| `docs/plans/community-current-progress.md` | Community gate status and next evidence | Living evidence |
+| `docs/audits/community-existing-system-audit.md` | Existing community aggregate and module boundaries | Living evidence |
+| `docs/decisions/community-architecture-decisions.md` | Community aggregate architecture decisions | Canonical decisions |
+| `docs/plans/medical-record-master-plan.md` | Phases 64-73 for the medical-record revision | Living canonical plan |
+| `docs/plans/medical-record-current-progress.md` | Medical gate status and open boundary | Living evidence |
+| `docs/audits/medical-record-existing-system-audit.md` | Existing medical module and canonical identity gap | Living evidence |
+| `docs/decisions/medical-record-architecture-decisions.md` | Medical identity, access, and knowledge-state decisions | Canonical decisions |
 
 Future forum work must read these documents after the global canonical
 requirements and before changing forum production code. Statuses are
