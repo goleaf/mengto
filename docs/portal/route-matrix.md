@@ -1,8 +1,8 @@
 # Portal Route Matrix
 
 The executable source of truth is `routes/web.php`; `php artisan route:list
---json` reported 176 active routes on 2026-08-03. The canonical
-`php artisan route:list --except-vendor --json` audit reported 165 first-party
+--json` reported 177 active routes on 2026-08-03. The canonical
+`php artisan route:list --except-vendor --json` audit reported 166 first-party
 routes and excluded 11 package/runtime endpoints.
 
 ## Event Routes
@@ -19,15 +19,17 @@ their canonical event targets. Behaviour coverage remains mapped in
 | --- | --- | --- | --- | --- |
 | `discover.index` | GET | `/discover` | `DiscoverPreviewController` | validated, bounded, explainable recommendations |
 | `discover.preferences.store` | POST | `/discover/preferences` | `DiscoveryPreferenceController` | policy-scoped item/category hide or reset |
+| `members.show` | GET | `/members/{socialActor:actor_key}` | `MemberProfileController` | minimized policy- and block-scoped member destination |
 
-Both routes remain inside the authenticated application shell. The mutation
-is throttled, independently validated and authorized, and redirects to the
+Discovery routes remain inside the authenticated application shell; member
+detail is a public discoverable profile with independent policy and block
+checks. The mutation is throttled, independently validated and authorized, and redirects to the
 canonical GET state. See `docs/portal/discovery.md` for privacy and destination
 boundaries.
 
 ## Global Page Identity Classification
 
-The 112 first-party routes accepting `GET` are classified below. The executable
+The 113 first-party routes accepting `GET` are classified below. The executable
 one-route/one-class ledger is
 `tests/Support/page-identity-route-classification.php`; the route inventory test
 fails when a route is added, removed, duplicated, or left unclassified.
@@ -118,6 +120,7 @@ the decision column is the desired page-identity boundary.
 | `lost-found.poster` | `/lost-found/{searchCase}/poster` | `SearchPosterController` | `special-document-or-scoped-access` | retain isolated semantic document |
 | `marketplace.index` | `/marketplace` | `ListingDirectoryController` | `canonical-page` | retain `x-page-header` |
 | `marketplace.create` | `/marketplace/new` | `ListingCreateController` | `canonical-page` | retain `x-page-header` |
+| `members.show` | `/members/{socialActor:actor_key}` | `MemberProfileController` | `deliberate-detail-or-profile` | dynamic minimized member profile using canonical `x-page-header` |
 | `marketplace.show` | `/marketplace/{listing}` | `ListingController` | `deliberate-detail-or-profile` | retain token-compatible hero pending audit |
 | `marketplace.orders.show` | `/marketplace/{listing}/orders/{order}` | `OrderController` | `deliberate-detail-or-profile` | retain token-compatible hero pending audit |
 | `medical-access.show` | `/medical-access/{token}` | `MedicalSharedRecordController` | `special-document-or-scoped-access` | retain isolated semantic document |

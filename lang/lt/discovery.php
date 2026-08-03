@@ -5,7 +5,7 @@ return [
         'browser_title' => 'Atraskite | PawCircle',
         'eyebrow' => 'Daugiau nei jūsų srautas',
         'title' => 'Raskite tai, kas svarbu gyvenant su augintiniais',
-        'description' => 'Vienoje privatumą saugančioje vietoje atraskite artėjančias veiklas, naudingas vietas, patikimus specialistus, viešas bendruomenes ir augintinių profilius.',
+        'description' => 'Vienoje privatumą saugančioje vietoje atraskite veiklas, vietas, specialistus, bendruomenes, narius, augintinius ir jums matomus įrašus.',
         'result_count' => '{0} Rekomendacijų nėra|{1} :count rekomendacija|[2,9] :count rekomendacijos|[10,*] :count rekomendacijų',
     ],
     'directions' => [
@@ -37,11 +37,19 @@ return [
             'label' => 'Augintiniai',
             'description' => 'Vieši profiliai, kuriuos galima atrasti bendruomenėje.',
         ],
+        'owners' => [
+            'label' => 'Nariai',
+            'description' => 'Žmonės, pasirinkę viešą ir atrandamą portalo profilį.',
+        ],
+        'posts' => [
+            'label' => 'Įrašai',
+            'description' => 'Dabartinės publikacijos, prieinamos jūsų auditorijai.',
+        ],
     ],
     'search' => [
         'region_label' => 'Rekomendacijų paieška ir filtravimas',
         'label' => 'Ieškoti atradimuose',
-        'placeholder' => 'Ieškokite renginių, grupių, vietų, specialistų ar augintinių',
+        'placeholder' => 'Ieškokite renginių, grupių, vietų, specialistų, augintinių, narių ar įrašų',
         'category_label' => 'Atradimų kategorija',
     ],
     'actions' => [
@@ -63,6 +71,8 @@ return [
         'verified_specialist' => 'Paskelbtas specialistas su patikrinta kvalifikacija.',
         'published_specialist' => 'Kataloge pasiekiamas paskelbtas specialisto profilis.',
         'public_pet_profile' => 'Viešas ir atrandamas augintinio profilis ne iš jūsų namų ūkio.',
+        'discoverable_member' => 'Aktyvus narys, pasirinkęs atrandamą portalo profilį.',
+        'visible_post' => 'Dabartinis įrašas, prieinamas pagal jo auditorijos ir saugos taisykles.',
     ],
     'meta' => [
         'label' => 'Rekomendacijos informacija',
@@ -71,9 +81,14 @@ return [
         'accepting_clients' => 'Priima klientus',
         'profile_available' => 'Profilis pasiekiamas',
         'public_profile' => 'Viešas profilis',
+        'public_member_description' => 'Privatumą saugantis nario profilis, kuriame rodoma tik dabar vieša informacija.',
+        'member_since' => 'Narys nuo :date',
+        'untitled_post' => 'Įrašas be pavadinimo',
+        'post_without_excerpt' => 'Atidarykite įrašą ir perskaitykite prieinamą publikaciją.',
     ],
     'status' => [
         'qualification_verified' => 'Kvalifikacija patikrinta',
+        'public_member' => 'Viešas narys',
     ],
     'preferences' => [
         'hidden_count' => '{1} :count paslėptas pasirinkimas|[2,9] :count paslėpti pasirinkimai|[10,*] :count paslėptų pasirinkimų',
@@ -99,5 +114,7 @@ return [
         'place' => 'Vietos „:name“ vaizdas',
         'expert' => 'Specialisto „:name“ profilio nuotrauka',
         'pet' => 'Augintinio „:name“ profilio nuotrauka',
+        'owner' => 'Nario „:name“ profilio vaizdas',
+        'post' => 'Įrašo „:title“ viršelis',
     ],
 ];

@@ -363,7 +363,7 @@
     }
 
     .discovery-directions {
-        grid-template-columns: repeat(5, minmax(0, 1fr));
+        grid-template-columns: repeat(4, minmax(0, 1fr));
     }
 
     .discovery-direction {
@@ -381,6 +381,10 @@
 }
 
 @media (min-width: 80rem) {
+    .discovery-directions {
+        grid-template-columns: repeat(7, minmax(0, 1fr));
+    }
+
     .discovery-results-grid {
         grid-template-columns: repeat(3, minmax(0, 1fr));
     }

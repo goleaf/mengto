@@ -4,17 +4,23 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\Enums\ContentPublicationType;
 use App\Enums\DiscoveryCategory;
 use App\Enums\DiscoveryPreferenceScope;
 use App\Enums\ForumEventStatus;
 use App\Enums\ForumEventVisibility;
 use App\Enums\ForumGroupVisibility;
+use App\Enums\SocialActorStatus;
+use App\Enums\SocialActorType;
+use App\Enums\UserStatus;
+use App\Models\ContentPublication;
 use App\Models\DiscoveryPreference;
 use App\Models\ExpertProfile;
 use App\Models\ForumEvent;
 use App\Models\ForumGroup;
 use App\Models\PetProfile;
 use App\Models\Place;
+use App\Models\SocialActor;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -25,6 +31,7 @@ final readonly class DiscoveryCatalog
     public function __construct(
         private LocaleFormatter $formatter,
         private SocialBlockService $blocks,
+        private SocialAccountActorQuery $accountActors,
         private EventCatalog $eventMedia,
         private GroupCatalog $groupMedia,
         private PlaceCatalog $placeMedia,
@@ -39,7 +46,12 @@ final readonly class DiscoveryCatalog
             ->orderBy('id')
             ->get();
         $blockedUserIds = $this->blocks->blockedUserIdsFor($user);
-        $blockedActorIds = $this->blocks->blockedActorIdsFor($user, $blockedUserIds);
+        $viewerActorIds = $this->accountActors->controlledBy($user)->modelKeys();
+        $blockedActorIds = $this->blocks->blockedActorIdsFor(
+            $user,
+            $blockedUserIds,
+            $viewerActorIds,
+        );
         $hiddenCategories = $preferences
             ->where('scope', DiscoveryPreferenceScope::Category)
             ->map(static fn (DiscoveryPreference $preference): string => $preference->category->value)
@@ -68,6 +80,7 @@ final readonly class DiscoveryCatalog
                 hiddenKeys: $hiddenKeys,
                 blockedUserIds: $blockedUserIds,
                 blockedActorIds: $blockedActorIds,
+                viewerActorIds: $viewerActorIds,
                 limit: $limit,
             );
 
@@ -77,7 +90,7 @@ final readonly class DiscoveryCatalog
                     'title' => $category->label(),
                     'description' => $category->description(),
                     'icon' => $category->icon(),
-                    'directory_url' => route($category->directoryRoute()),
+                    'directory_url' => $this->directoryUrl($category, $query),
                     'items' => $items,
                 ];
             }
@@ -136,6 +149,7 @@ final readonly class DiscoveryCatalog
      * @param  list<string>  $hiddenKeys
      * @param  list<int>  $blockedUserIds
      * @param  list<int>  $blockedActorIds
+     * @param  list<int>  $viewerActorIds
      * @return list<array<string, mixed>>
      */
     private function items(
@@ -145,6 +159,7 @@ final readonly class DiscoveryCatalog
         array $hiddenKeys,
         array $blockedUserIds,
         array $blockedActorIds,
+        array $viewerActorIds,
         int $limit,
     ): array {
         return match ($category) {
@@ -160,6 +175,8 @@ final readonly class DiscoveryCatalog
             DiscoveryCategory::Places => $this->places($query, $hiddenKeys, $blockedUserIds, $limit),
             DiscoveryCategory::Experts => $this->experts($query, $hiddenKeys, $blockedUserIds, $blockedActorIds, $limit),
             DiscoveryCategory::Pets => $this->pets($user, $query, $hiddenKeys, $blockedUserIds, $blockedActorIds, $limit),
+            DiscoveryCategory::Owners => $this->owners($user, $query, $hiddenKeys, $blockedActorIds, $viewerActorIds, $limit),
+            DiscoveryCategory::Posts => $this->posts($user, $query, $hiddenKeys, $blockedActorIds, $viewerActorIds, $limit),
             DiscoveryCategory::All => [],
         };
     }
@@ -477,6 +494,142 @@ final readonly class DiscoveryCatalog
                 ];
             })
             ->all();
+    }
+
+    /**
+     * @param  list<string>  $hiddenKeys
+     * @param  list<int>  $blockedActorIds
+     * @param  list<int>  $viewerActorIds
+     * @return list<array<string, mixed>>
+     */
+    private function owners(
+        User $user,
+        string $query,
+        array $hiddenKeys,
+        array $blockedActorIds,
+        array $viewerActorIds,
+        int $limit,
+    ): array {
+        return SocialActor::query()
+            ->directoryFields()
+            ->where('is_discoverable', true)
+            ->when($blockedActorIds !== [], fn (Builder $actor): Builder => $actor->whereNotIn('id', $blockedActorIds))
+            ->where(function (Builder $recommendable): void {
+                $recommendable
+                    ->whereDoesntHave('settings')
+                    ->orWhereHas('settings', fn (Builder $settings): Builder => $settings->where('is_recommendable', true));
+            })
+            ->with('user:id,name,status,email_verified_at,created_at')
+            ->where('actor_type', SocialActorType::User->value)
+            ->where('status', SocialActorStatus::Active->value)
+            ->whereNot('user_id', $user->id)
+            ->when($viewerActorIds !== [], fn (Builder $builder): Builder => $builder->whereNotIn('id', $viewerActorIds))
+            ->whereHas('user', fn (Builder $member): Builder => $member
+                ->where('status', UserStatus::Active->value)
+                ->whereNotNull('email_verified_at'))
+            ->when($hiddenKeys !== [], fn (Builder $builder): Builder => $builder->whereNotIn('actor_key', $hiddenKeys))
+            ->when($query !== '', fn (Builder $builder): Builder => $builder->whereHas(
+                'user',
+                fn (Builder $member): Builder => $member->where('name', 'like', "%{$query}%"),
+            ))
+            ->orderByDesc('updated_at')
+            ->orderBy('id')
+            ->limit($limit)
+            ->get()
+            ->map(fn (SocialActor $actor): array => [
+                'key' => $actor->actor_key,
+                'category' => DiscoveryCategory::Owners->value,
+                'category_label' => DiscoveryCategory::Owners->label(),
+                'icon' => DiscoveryCategory::Owners->icon(),
+                'title' => $actor->user->name,
+                'description' => __('discovery.meta.public_member_description'),
+                'status' => __('discovery.status.public_member'),
+                'status_tone' => 'community',
+                'meta' => [
+                    ['icon' => 'user-round', 'label' => $actor->actor_type->label()],
+                    ['icon' => 'calendar-days', 'label' => __('discovery.meta.member_since', [
+                        'date' => $this->formatter->monthYear($actor->user->created_at),
+                    ])],
+                ],
+                'reason' => __('discovery.reasons.discoverable_member'),
+                'url' => route('members.show', $actor),
+                'image' => null,
+                'image_alt' => __('discovery.media.owner', ['name' => $actor->user->name]),
+            ])
+            ->all();
+    }
+
+    /**
+     * @param  list<string>  $hiddenKeys
+     * @param  list<int>  $blockedActorIds
+     * @param  list<int>  $viewerActorIds
+     * @return list<array<string, mixed>>
+     */
+    private function posts(
+        User $user,
+        string $query,
+        array $hiddenKeys,
+        array $blockedActorIds,
+        array $viewerActorIds,
+        int $limit,
+    ): array {
+        return ContentPublication::query()
+            ->feedFields()
+            ->visibleTo($user, $viewerActorIds, $blockedActorIds)
+            ->where('content_type', ContentPublicationType::Post->value)
+            ->whereHas('publishingActor', fn (Builder $actor): Builder => $this->recommendableActor($actor, $blockedActorIds))
+            ->when($viewerActorIds !== [], fn (Builder $builder): Builder => $builder->whereNotIn('publishing_actor_id', $viewerActorIds))
+            ->when($hiddenKeys !== [], fn (Builder $builder): Builder => $builder->whereNotIn('publication_key', $hiddenKeys))
+            ->when($query !== '', fn (Builder $builder): Builder => $builder->where(function (Builder $search) use ($query): void {
+                $like = "%{$query}%";
+                $search
+                    ->where('title', 'like', $like)
+                    ->orWhere('summary', 'like', $like)
+                    ->orWhere('body', 'like', $like);
+            }))
+            ->orderByDesc('published_at')
+            ->orderByDesc('id')
+            ->limit($limit)
+            ->get()
+            ->map(function (ContentPublication $publication): array {
+                $description = Str::of($publication->summary ?: $publication->body ?: '')
+                    ->squish()
+                    ->limit(180)
+                    ->toString();
+                $title = $publication->title ?: Str::of($description)->limit(72)->toString();
+
+                return [
+                    'key' => $publication->publication_key,
+                    'category' => DiscoveryCategory::Posts->value,
+                    'category_label' => DiscoveryCategory::Posts->label(),
+                    'icon' => DiscoveryCategory::Posts->icon(),
+                    'title' => $title ?: __('discovery.meta.untitled_post'),
+                    'description' => $description ?: __('discovery.meta.post_without_excerpt'),
+                    'status' => $publication->status->label(),
+                    'status_tone' => 'positive',
+                    'meta' => [
+                        ['icon' => 'newspaper', 'label' => $publication->content_type->label()],
+                        ['icon' => 'calendar-days', 'label' => (string) $this->formatter->dateTime($publication->published_at)],
+                    ],
+                    'reason' => __('discovery.reasons.visible_post'),
+                    'url' => route('content.show', $publication),
+                    'image' => null,
+                    'image_alt' => __('discovery.media.post', ['title' => $title]),
+                ];
+            })
+            ->all();
+    }
+
+    private function directoryUrl(DiscoveryCategory $category, string $query): string
+    {
+        if ($category === DiscoveryCategory::Owners) {
+            return route('discover.index', array_filter([
+                'category' => $category->value,
+                'q' => $query,
+            ], static fn (string $value): bool => $value !== ''));
+        }
+
+        return route($category->directoryRoute());
     }
 
     /** @param Builder<Model> $query */

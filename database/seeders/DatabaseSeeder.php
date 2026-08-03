@@ -112,6 +112,7 @@ class DatabaseSeeder extends Seeder
         $this->call(CareJournalSeeder::class);
         $this->call(SmartDeviceSeeder::class);
         $this->call(SocialActorFoundationSeeder::class);
+        $this->call(DiscoveryDemoSeeder::class);
     }
 
     /** @param array<string, mixed> $attributes */

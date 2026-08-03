@@ -63,14 +63,17 @@
 
 - Replaced the hard-coded `/discover` demo, fictional query, local pulse,
   trending topics, and weekend promotion with bounded database-backed events,
-  communities, places, specialists, and public pet recommendations.
+  communities, places, specialists, public pets, members, and post recommendations.
+- Added dynamic minimized member profiles with stable actor keys, public pet
+  links, audience-scoped posts, independent block checks, and no private account fields.
 - Added factual recommendation reasons, validated URL filters, canonical module
   deep links, user-owned hide/reset preferences, and account/actor block plus
   `is_recommendable` enforcement without exposing exact private locations.
 - Standardized discovery on shared page, status, media, action, notice, and
   empty-state components; added EN/LT/RU responsive layouts and a dedicated
   desktop/mobile browser gate.
-- Verified the release with a 2,635-test serial suite, fresh and repeat seeding,
+- Verified the release with a 2,657-test / 84,589-assertion serial suite, fresh
+  and repeat seeding,
   bounded query measurement, static analysis, formatting, dependency audits,
   production build, and desktop/mobile/long-Lithuanian browser checks.
 

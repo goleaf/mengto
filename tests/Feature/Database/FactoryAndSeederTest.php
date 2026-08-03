@@ -7,6 +7,7 @@ use App\Models\AdoptionApplication;
 use App\Models\AdoptionCase;
 use App\Models\AdoptionEvent;
 use App\Models\Booking;
+use App\Models\ContentPublication;
 use App\Models\Credential;
 use App\Models\ExpertProfile;
 use App\Models\ForumAnswer;
@@ -36,6 +37,7 @@ use App\Models\SmartDevice;
 use App\Models\User;
 use Database\Factories\ApplicationFactory;
 use Database\Seeders\DatabaseSeeder;
+use Database\Seeders\DiscoveryDemoSeeder;
 use Database\Seeders\PerformanceSeeder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Config;
@@ -223,6 +225,7 @@ test('database seeding is repeatable without changing stable entity counts', fun
         'guide_workflow_events' => KnowledgeWorkflowEvent::query()->count(),
         'adoption_events' => AdoptionEvent::query()->count(),
         'devices' => SmartDevice::query()->count(),
+        'content_publications' => ContentPublication::query()->count(),
     ];
 
     seed(DatabaseSeeder::class);
@@ -244,6 +247,7 @@ test('database seeding is repeatable without changing stable entity counts', fun
         'guide_workflow_events' => KnowledgeWorkflowEvent::query()->count(),
         'adoption_events' => AdoptionEvent::query()->count(),
         'devices' => SmartDevice::query()->count(),
+        'content_publications' => ContentPublication::query()->count(),
     ])->toBe($firstCounts)
         ->and(User::query()->where('actor_key', 'mia-carter')->count())->toBe(1)
         ->and(User::query()->where('email', 'mia@example.test')->count())->toBe(1)
@@ -251,6 +255,9 @@ test('database seeding is repeatable without changing stable entity counts', fun
         ->and(User::query()->where('locale', 'lt')->count())->toBe(1)
         ->and(User::query()->where('status', 'blocked')->count())->toBe(1)
         ->and(User::query()->whereNull('email_verified_at')->count())->toBe(1)
+        ->and(ContentPublication::query()
+            ->where('idempotency_key', 'discovery-demo-post-v1')
+            ->count())->toBe(1)
         ->and(KnowledgeArticle::query()
             ->whereNotNull('translation_group_key')
             ->whereNotNull('discussion_topic_id')
@@ -267,6 +274,13 @@ test('demo seeding refuses an environment not explicitly allowed', function () {
     Config::set('platform.demo_seed_environments', []);
 
     expect(fn () => seed(DatabaseSeeder::class))
+        ->toThrow(LogicException::class);
+});
+
+test('discovery demo seeding refuses an environment not explicitly allowed', function () {
+    Config::set('platform.demo_seed_environments', []);
+
+    expect(fn () => seed(DiscoveryDemoSeeder::class))
         ->toThrow(LogicException::class);
 });
 

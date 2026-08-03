@@ -83,6 +83,7 @@ return [
         'medical-records.show',
         'messages.details',
         'meetups.created',
+        'members.show',
         'neighbors.ari',
         'pets.created',
         'pets.nori',

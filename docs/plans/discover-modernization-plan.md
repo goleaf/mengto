@@ -68,7 +68,7 @@ the returned PHP array through `DirectoryFilter`, and rendered
 1. Scan a balanced set of current public options outside the feed.
 2. Narrow recommendations by a simple phrase or one domain.
 3. Understand why each resource is present.
-4. Open the authoritative event, group, place, specialist, or pet page.
+4. Open the authoritative event, group, place, specialist, pet, member, or post page.
 5. Hide an irrelevant item or category and reverse that decision.
 6. Trust that blocked identities and private locations are absent.
 
@@ -81,16 +81,15 @@ the returned PHP array through `DirectoryFilter`, and rendered
 - publicly discoverable places;
 - published specialists;
 - public discoverable pet profiles outside the viewer household;
+- active verified member actors outside the viewer account;
+- current posts visible through the canonical publication audience scope;
 - category/query URL state;
 - item/category preference controls;
 - named deep links and localized reasons.
 
 ### Deliberately excluded
 
-- ordinary member recommendations until a canonical public member route and
-  policy projection exist;
 - organization recommendations until a non-authority public directory exists;
-- posts, because the feed and global search own content chronology;
 - exact-distance claims without consented, current location context;
 - sponsored ranking, AI ranking, opaque scoring, and inferred sensitive data;
 - advanced filters and pagination already owned by module directories.
@@ -99,7 +98,7 @@ the returned PHP array through `DirectoryFilter`, and rendered
 
 | Requirement | Implementation | Evidence | Status |
 | --- | --- | --- | --- |
-| `PRD-SOCIAL-001` privacy-safe portal discovery | event/group/place/expert/pet slice in `DiscoveryCatalog`; owners/posts remain delegated | `DiscoverExperienceTest` | partially implemented |
+| `PRD-SOCIAL-001` privacy-safe portal discovery | seven category projections in `DiscoveryCatalog`, `members.show`, canonical `content.show` | `DiscoverExperienceTest` | verified |
 | Validated query/category state | `BrowseDiscoveryRequest`, `DiscoveryCategory` | search/filter test | verified |
 | Explainable recommendation | translated card reason | page/browser tests | verified |
 | Account and actor blocks | `SocialBlockService::blockedActorIdsFor()` | block bypass test | verified |
@@ -126,7 +125,8 @@ Status: complete.
 - Define page identifier, audience, entry/exit paths, categories, states,
   primary action, and anti-goals.
 - Select existing canonical module destinations.
-- Document why people and organizations are not guessed into the page.
+- Document why members use canonical actors and why organizations are not
+  guessed into the page.
 
 Status: complete.
 
@@ -189,7 +189,9 @@ and prepared for publication to `origin/main`.
 
 - [x] Purpose is understandable without instructional marketing copy.
 - [x] Recommendations come from current first-party database records.
-- [x] Five canonical discovery directions are available.
+- [x] Seven canonical discovery directions are available.
+- [x] Member results use active verified user actors and a policy-scoped dynamic destination.
+- [x] Post results reuse `ContentPublication::visibleTo()` and the canonical content route.
 - [x] All filters are allow-listed URL state.
 - [x] Every recommendation has a factual translated reason.
 - [x] Every card deep-links to an authoritative named route.
@@ -205,21 +207,20 @@ and prepared for publication to `origin/main`.
 - [x] 320px Lithuanian text has no horizontal overflow.
 - [x] Desktop/mobile media loads and has alt text.
 - [x] Browser console is clean.
-- [x] Final serial repository suite passes: 2,635 tests and 83,160 assertions.
+- [x] Final serial repository suite passes: 2,657 tests and 84,589 assertions.
 - [x] Attributable commit is published to `origin/main`.
 
 ## Final Verification Record
 
-- Discovery feature: 9 tests, 82 assertions.
+- Discovery feature: 12 tests, 121 assertions.
 - Linked-media discovery contract: 1 test, 5 assertions.
-- Integrated portal/architecture slice: 145 tests, 61,558 assertions.
-- Database factory/seeder contract: 1,701 tests, 5,044 assertions.
-- Complete database directory: 1,744 tests, 5,137 assertions.
-- Final serial repository suite: 2,635 tests, 83,160 assertions.
+- Integrated social/content/portal/architecture/seeding slice: 1,832 tests,
+  35,859 assertions.
+- Final serial repository suite: 2,657 tests, 84,589 assertions.
 - Fresh and repeat seed: 130 migrations, 215 tables, five users retained.
-- Query projection: 9 queries, 12 results, four non-empty sections in the
+- Query projection: 12 queries, 16 results, seven non-empty sections in the
   current seeded viewer context; growth remains constant by feature test.
-- PHPStan, scoped Pint, Composer validation/audit, npm audit, Vite production
+- Full PHPStan, full Pint, Composer audit, npm audit, Vite production
   build, and 1440/375/320px Chrome checks passed.
 
 ## Rollback And Data Safety

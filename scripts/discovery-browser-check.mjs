@@ -150,7 +150,11 @@ const evaluate = async (client, sessionId, expression) => {
     }, sessionId);
 
     if (result.exceptionDetails) {
-        throw new Error(result.exceptionDetails.text);
+        const description = result.exceptionDetails.exception?.description
+            ?? result.exceptionDetails.exception?.value
+            ?? result.exceptionDetails.text;
+
+        throw new Error(description);
     }
 
     return result.result.value;
@@ -182,8 +186,12 @@ const login = async (client, sessionId) => {
     await evaluate(client, sessionId, `(() => {
         const setValue = (selector, value) => {
             const input = document.querySelector(selector);
-            const setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set;
-            setter.call(input, value);
+
+            if (!(input instanceof HTMLInputElement)) {
+                throw new Error('Login input not found: ' + selector);
+            }
+
+            input.value = value;
             input.dispatchEvent(new Event('input', { bubbles: true }));
             input.dispatchEvent(new Event('change', { bubbles: true }));
             input.blur();
@@ -303,7 +311,7 @@ const assertAudit = (audit, label, mobile) => {
     assert(audit.duplicateIds.length === 0, `${label}: duplicate ids ${audit.duplicateIds.join(', ')}.`);
     assert(audit.invalidImageCount === 0, `${label}: ${audit.invalidImageCount} image(s) lack alt text.`);
     assert(audit.brokenImageCount === 0, `${label}: ${audit.brokenImageCount} image(s) failed to load.`);
-    assert(audit.directionCount === 5, `${label}: expected five discovery directions.`);
+    assert(audit.directionCount === 7, `${label}: expected seven discovery directions.`);
     assert(audit.sectionCount > 0, `${label}: discovery sections are missing.`);
     assert(audit.resultCount > 0, `${label}: seeded recommendations are missing.`);
     assert(audit.reasonCount === audit.resultCount, `${label}: every recommendation needs a reason.`);
@@ -422,6 +430,44 @@ try {
     if (await evaluate(client, sessionId, 'document.documentElement.lang') !== originalLocale) {
         await setLocale(client, sessionId, originalLocale);
     }
+
+    await setViewport(client, sessionId, 1440, 900, false);
+    await navigate(client, sessionId, `${baseUrl}/discover`);
+    const memberHref = await evaluate(
+        client,
+        sessionId,
+        `document.querySelector('[data-discover-result^="owners:"] a[href*="/members/"]')?.href ?? null`,
+    );
+    assert(memberHref, 'A discoverable member card did not expose its canonical destination.');
+    await navigate(client, sessionId, memberHref);
+    const memberAudit = await evaluate(client, sessionId, `(() => ({
+        url: location.href,
+        language: document.documentElement.lang,
+        h1Count: document.querySelectorAll('main h1').length,
+        mainCount: document.querySelectorAll('main').length,
+        overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+        postSectionCount: document.querySelectorAll('[data-section="member-posts"]').length,
+        petSectionCount: document.querySelectorAll('[data-section="member-public-pets"]').length,
+        rawTranslationKeys: document.body.innerText.match(/\\bmember_profiles\\.[a-z0-9_.-]+/gi) ?? [],
+        privateAccountLeak: document.body.innerText.includes('@example.test'),
+    }))()`);
+    assert(memberAudit.h1Count === 1, 'member-profile: expected one h1.');
+    assert(memberAudit.mainCount === 1, 'member-profile: expected one main.');
+    assert(memberAudit.overflow <= 1, `member-profile: horizontal overflow is ${memberAudit.overflow}px.`);
+    assert(memberAudit.postSectionCount === 1, 'member-profile: visible post section is missing.');
+    assert(memberAudit.petSectionCount === 1, 'member-profile: public pet section is missing.');
+    assert(memberAudit.rawTranslationKeys.length === 0, 'member-profile: raw translation keys are visible.');
+    assert(!memberAudit.privateAccountLeak, 'member-profile: private account data leaked.');
+    audits['member-profile'] = memberAudit;
+
+    const memberScreenshot = await client.send('Page.captureScreenshot', {
+        format: 'png',
+        captureBeyondViewport: true,
+    }, sessionId);
+    await writeFile(
+        join(outputDirectory, 'discover-member-profile.png'),
+        Buffer.from(memberScreenshot.data, 'base64'),
+    );
 
     assert(consoleErrors.length === 0, `Console errors: ${JSON.stringify(consoleErrors)}.`);
     const report = { baseUrl, outputDirectory, audits, consoleErrors };

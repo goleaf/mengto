@@ -51,6 +51,8 @@ final class SocialIdentitySeeder extends Seeder
                 'user_id' => $user->id,
                 'visibility' => 'public',
                 'status' => 'active',
+                'is_discoverable' => true,
+                'published_at' => '2026-07-31 12:00:00',
             ],
         );
     }

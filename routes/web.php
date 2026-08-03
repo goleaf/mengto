@@ -103,6 +103,7 @@ use App\Http\Controllers\MedicalSharedRecordController;
 use App\Http\Controllers\MedicationDoseStoreController;
 use App\Http\Controllers\MeetupDetailPreviewController;
 use App\Http\Controllers\MeetupDirectoryPreviewController;
+use App\Http\Controllers\MemberProfileController;
 use App\Http\Controllers\MemberProfilePreviewController;
 use App\Http\Controllers\MessageCenterPreviewController;
 use App\Http\Controllers\NeighborDirectoryPreviewController;
@@ -290,11 +291,18 @@ Route::middleware('web')
 
         Route::prefix('discover')
             ->name('discover.')
+            ->middleware(['auth', 'active', 'verified'])
             ->group(function (): void {
                 Route::get('/', DiscoverPreviewController::class)->name('index');
                 Route::post('/preferences', DiscoveryPreferenceController::class)
                     ->middleware('throttle:30,1')
                     ->name('preferences.store');
+            });
+        Route::prefix('members')
+            ->name('members.')
+            ->group(function (): void {
+                Route::get('/{socialActor:actor_key}', MemberProfileController::class)
+                    ->name('show');
             });
         Route::get('/groups', GroupDirectoryPreviewController::class)->name('groups.index');
         Route::get('/groups/apartment-pets-pdx', GroupDetailPreviewController::class)

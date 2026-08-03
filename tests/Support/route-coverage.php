@@ -23,6 +23,7 @@ return [
     'meetups.small_dog_social' => 'tests/Feature/MeetupDirectoryPreviewTest.php',
     'meetups.created' => 'tests/Feature/MeetupDirectoryPreviewTest.php',
     'meetups.show' => 'tests/Feature/MeetupDirectoryPreviewTest.php',
+    'members.show' => 'tests/Feature/DiscoverExperienceTest.php',
     'forum.topics.edit' => 'tests/Feature/ForumTopicTest.php',
     'forum.topics.update' => 'tests/Feature/ForumTopicTest.php',
     'forum.topics.destroy' => 'tests/Feature/ForumTopicTest.php',

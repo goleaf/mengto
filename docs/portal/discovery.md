@@ -6,7 +6,7 @@
 active member move from a broad need to a small, explainable set of public
 resources and then deep-links to the authoritative module. It is not global
 search, a second directory system, a social popularity chart, or a replacement
-for event, group, place, expert, or pet catalogues.
+for event, group, place, expert, pet, member, or content catalogues.
 
 The stable page identifier is `portal.discovery.index`. The page owner is the
 authenticated member. The required context is the member's locale, timezone,
@@ -20,8 +20,8 @@ category, and resetting hidden choices.
 The page has four ordered regions:
 
 1. Canonical `x-page-header` with the page purpose and bounded result count.
-2. Five need-based directions linking to events, communities, places,
-   specialists, and pets.
+2. Seven need-based directions linking to events, communities, places,
+   specialists, pets, members, and posts.
 3. A validated search and category toolbar.
 4. Grouped recommendation sections using one canonical card and one explicit
    recommendation reason per result.
@@ -30,11 +30,17 @@ The `all` view returns no more than three items per category. A selected
 category returns no more than twelve. Full catalogues remain responsible for
 pagination and advanced filters.
 
-People are intentionally absent because the repository has no canonical,
-policy-scoped public member-profile route. Organizations are intentionally
-absent because their current directory is an authority and membership surface,
-not a public recommendation directory. Neither omission may be filled with a
-guessed route or a static card.
+Member recommendations use user-backed `SocialActor` records and the stable
+`members.show` route. Post recommendations use the canonical publication
+visibility scope and `content.show`; discovery does not create another feed.
+Organizations remain absent because their current directory is an authority
+and membership surface, not a public recommendation directory.
+
+The member destination is an authenticated portal page. `RequirePortalAccess`
+redirects guests and unavailable accounts before binding, while the controller
+then applies `SocialActorPolicy`, the current block graph, and content-audience
+rules. "Public" below describes minimized field visibility, not anonymous
+access.
 
 ## Eligibility And Privacy
 
@@ -48,6 +54,8 @@ models and scopes:
 | Places | `Place` | `publiclyDiscoverable()` | `places.show` |
 | Specialists | `ExpertProfile` | published and recommendable | `experts.show` |
 | Pets | `PetProfile` | public, active, discoverable, outside viewer household | `pets.profile` |
+| Members | user `SocialActor` | active verified account, active discoverable actor, recommendable, outside viewer account | `members.show` |
+| Posts | `ContentPublication` | published now, `Post`, `visibleTo()` audience, recommendable actor, outside viewer actors | `content.show` |
 
 Both account-level and actor-level blocks are applied before a result is
 prepared. Existing social actors with `is_recommendable=false` are excluded.
@@ -65,9 +73,9 @@ routes reauthorize the resource independently.
 
 Every card contains a translated factual reason based only on source data,
 such as an upcoming public event in a broad region, a public community linked
-to a region, a public place with current regional information, a published
-specialist with verified qualifications, or a discoverable pet profile outside
-the viewer's household. There is no hidden score, AI decision, popularity
+to a region, a published specialist with verified qualifications, a
+discoverable profile outside the viewer's account, or a current post available
+to the viewer's audience. There is no hidden score, AI decision, popularity
 claim, false proximity, paid boost, or inferred sensitive characteristic.
 
 ## Routes And Mutation Boundary
@@ -76,6 +84,7 @@ claim, false proximity, paid boost, or inferred sensitive characteristic.
 | --- | --- | --- | --- |
 | GET | `discover.index` | Browse validated recommendations | active verified portal member |
 | POST | `discover.preferences.store` | Hide an item/category or reset choices | active member plus `DiscoveryPreferencePolicy` |
+| GET | `members.show` | Open a minimized member profile with visible pets/posts | `SocialActorPolicy`, active verified member identity, block graph |
 
 `BrowseDiscoveryRequest` allow-lists `q` and `category`. The query is a bounded
 80-character string and category is `DiscoveryCategory`. The preference
@@ -122,8 +131,9 @@ The canonical components are:
 Cards keep media and title on the same canonical destination. Status is text
 plus semantic tone. The recommendation reason is not color-only. The layout is
 one column on mobile, two columns from 640px, and three from 1280px. Direction
-cards become five columns from 1024px. Forced colors retain selected and reason
-boundaries; all actionable mobile targets are at least 44px.
+cards become four columns from 1024px and seven from 1280px. Forced colors
+retain selected and reason boundaries; all actionable mobile targets are at
+least 44px.
 
 ## Localization And Performance
 
@@ -133,9 +143,10 @@ times retain the event timezone. Browser verification includes the longer
 Lithuanian layout at 320px and restores the seeded account locale afterward.
 
 The all-category view performs a constant number of bounded queries: user
-preferences, block boundaries, and at most one result query per category.
-Adding catalogue rows does not add queries. No result relationship is lazily
-loaded in Blade, and no unbounded collection is exposed.
+preferences, controlled actors, block boundaries, one result query per domain,
+and one bounded member-name eager-load. Adding catalogue rows does not add
+queries. No result relationship is lazily loaded in Blade, and no unbounded
+collection is exposed.
 
 ## Verification
 
@@ -148,9 +159,7 @@ Primary executable evidence:
 - `npm run build`
 - `BROWSER_BASE_URL=http://127.0.0.1:8026 npm run test:browser:discover`
 
-The implementation verifies the event, group, place, expert, and pet slice of
-`PRD-SOCIAL-001`. Owner and post recommendations remain in the canonical
-neighbor/feed surfaces until policy-scoped recommendation projections and a
-stable public member destination exist. The complete full-suite and release-
-gate result belongs in the current delivery record, not in this stable
-architecture document.
+The implementation verifies the event, group, place, expert, pet, member, and
+post scope of `PRD-SOCIAL-001`. The complete full-suite and release-gate result
+belongs in the current delivery record, not in this stable architecture
+document.

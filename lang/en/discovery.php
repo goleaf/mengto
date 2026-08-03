@@ -5,7 +5,7 @@ return [
         'browser_title' => 'Discover | PawCircle',
         'eyebrow' => 'Beyond your feed',
         'title' => 'Find what matters for life with your pets',
-        'description' => 'Explore upcoming activities, useful places, trusted specialists, public communities, and pet profiles in one privacy-aware view.',
+        'description' => 'Explore activities, places, specialists, communities, members, pets, and visible posts in one privacy-aware view.',
         'result_count' => '{0} No recommendations|{1} :count recommendation|[2,*] :count recommendations',
     ],
     'directions' => [
@@ -37,11 +37,19 @@ return [
             'label' => 'Pets',
             'description' => 'Public profiles open to community discovery.',
         ],
+        'owners' => [
+            'label' => 'Members',
+            'description' => 'Discoverable people with public portal profiles.',
+        ],
+        'posts' => [
+            'label' => 'Posts',
+            'description' => 'Current publications available to your audience.',
+        ],
     ],
     'search' => [
         'region_label' => 'Search and filter discovery recommendations',
         'label' => 'Search Discover',
-        'placeholder' => 'Search events, groups, places, specialists, or pets',
+        'placeholder' => 'Search events, groups, places, specialists, pets, members, or posts',
         'category_label' => 'Discovery category',
     ],
     'actions' => [
@@ -63,6 +71,8 @@ return [
         'verified_specialist' => 'A published specialist with verified qualifications.',
         'published_specialist' => 'A published specialist profile available in the directory.',
         'public_pet_profile' => 'A public, discoverable pet profile outside your household.',
+        'discoverable_member' => 'An active member who chose to make their portal profile discoverable.',
+        'visible_post' => 'A current post available under its audience and safety rules.',
     ],
     'meta' => [
         'label' => 'Recommendation details',
@@ -71,9 +81,14 @@ return [
         'accepting_clients' => 'Accepting clients',
         'profile_available' => 'Profile available',
         'public_profile' => 'Public profile',
+        'public_member_description' => 'A privacy-aware member profile with only currently available public information.',
+        'member_since' => 'Member since :date',
+        'untitled_post' => 'Untitled post',
+        'post_without_excerpt' => 'Open the post to read the available publication.',
     ],
     'status' => [
         'qualification_verified' => 'Qualification verified',
+        'public_member' => 'Public member',
     ],
     'preferences' => [
         'hidden_count' => '{1} :count hidden preference|[2,*] :count hidden preferences',
@@ -99,5 +114,7 @@ return [
         'place' => 'View of :name',
         'expert' => 'Profile photo of :name',
         'pet' => 'Profile photo of :name',
+        'owner' => 'Profile image for :name',
+        'post' => 'Cover for :title',
     ],
 ];

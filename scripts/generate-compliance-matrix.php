@@ -129,9 +129,9 @@ function evidenceFor(string $id): array
 
     $specific = [
         'PRD-SOCIAL-001' => [
-            '`DiscoveryCatalog`, controlled category/preference enums and named module routes',
-            '`DiscoveryPreference` migration/model/policy, strict Form Requests, account and actor blocks',
-            'Canonical discovery Blade components, responsive SCSS, EN/LT/RU reasons and states',
+            '`DiscoveryCatalog`, `MemberProfileCatalog`, controlled category/preference enums and named module routes',
+            '`DiscoveryPreference` policy, `SocialActorPolicy`, `ContentPublication::visibleTo()`, account and actor blocks',
+            'Canonical discovery/member Blade composition, responsive SCSS, EN/LT/RU reasons and states',
             '`DiscoveryPreferenceFactory` plus existing integrated domain demo records',
             '`DiscoverExperienceTest`, linked-media discovery contract, and dedicated browser check',
         ],
@@ -330,7 +330,7 @@ function evidenceFor(string $id): array
 
 function statusFor(string $id): string
 {
-    if ($id === 'PRD-SOCIAL-001' || str_starts_with($id, 'PRD-PLACE-')) {
+    if (str_starts_with($id, 'PRD-PLACE-')) {
         return 'partially implemented';
     }
 
@@ -376,7 +376,6 @@ function statusFor(string $id): string
 function blockerFor(string $id): string
 {
     $reasons = [
-        'PRD-SOCIAL-001' => 'Events, groups, places, experts, and pets are verified; owner and post recommendations remain in their canonical neighbor/feed surfaces until policy-scoped recommendation projections exist.',
         'PRD-PLACE-001' => 'Server-rendered discovery and authority are verified, but `PlaceCatalog` loads at most 500 accessible records before PHP filtering, sorting, and pagination; completeness and indexed scale remain open under PLA-P04.',
         'PRD-PLACE-002' => 'Cross-account questions and one idempotent official answer are implemented and targeted-tested. Corrections, warnings, reviews, claims, and reports remain per-user, while question moderation, notification, rate-limit, and answer-version history remain open under PLA-P02 and PLA-P07 through PLA-P11.',
         'PRD-PLACE-003' => 'Call-first presentation and seeded examples are verified, but open/species eligibility is not yet calculated from canonical timezone-aware schedules, exceptions, and service capabilities for every clinic; PLA-P15 remains open.',

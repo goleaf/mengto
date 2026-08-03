@@ -12,6 +12,8 @@ enum DiscoveryCategory: string
     case Places = 'places';
     case Experts = 'experts';
     case Pets = 'pets';
+    case Owners = 'owners';
+    case Posts = 'posts';
 
     public function label(): string
     {
@@ -32,6 +34,8 @@ enum DiscoveryCategory: string
             self::Places => 'map-pin',
             self::Experts => 'stethoscope',
             self::Pets => 'paw-print',
+            self::Owners => 'user-round',
+            self::Posts => 'newspaper',
         };
     }
 
@@ -44,13 +48,23 @@ enum DiscoveryCategory: string
             self::Places => 'places.index',
             self::Experts => 'experts.index',
             self::Pets => 'pets.index',
+            self::Owners => 'discover.index',
+            self::Posts => 'content.index',
         };
     }
 
     /** @return list<self> */
     public static function recommendationCategories(): array
     {
-        return [self::Events, self::Groups, self::Places, self::Experts, self::Pets];
+        return [
+            self::Events,
+            self::Groups,
+            self::Places,
+            self::Experts,
+            self::Pets,
+            self::Owners,
+            self::Posts,
+        ];
     }
 
     /** @return list<string> */

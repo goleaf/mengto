@@ -1,6 +1,6 @@
 # Portal Module Registry
 
-Route audit on 2026-08-03 now finds 176 active routes, 165 first-party routes after
+Route audit on 2026-08-03 now finds 177 active routes, 166 first-party routes after
 excluding framework/Boost endpoints, and no removed routes in this delivery.
 The existing authenticated Blade/Livewire shell remains canonical.
 
@@ -17,7 +17,7 @@ The existing authenticated Blade/Livewire shell remains canonical.
 | Experts/forum/knowledge | corresponding named directories | expert and forum domains |
 | Groups/relationships/messages | corresponding named directories | forum groups and social/message services |
 | Organizations | `organizations.index`, `organizations.show` | `Organization`, current memberships, invitations, restrictions, audit |
-| Discovery | `discover.index`, `discover.preferences.store` | bounded `DiscoveryCatalog`, existing domain scopes, user-owned `DiscoveryPreference` |
+| Discovery | `discover.index`, `discover.preferences.store`, `members.show` | seven bounded `DiscoveryCatalog` projections, policy-scoped member detail, user-owned `DiscoveryPreference` |
 | Notifications/settings | notification/profile routes | existing notification and profile settings domains |
 
 No parallel user, pet, event, report, notification, or translation system was

@@ -618,8 +618,8 @@ Status: `release verified` on 2026-08-03; attributable publication prepared.
 - Replaced the static four-card discovery demonstration, fictional Richmond
   query, local pulse, trending topics, and weekend promotion with one bounded
   database-backed recommendation hub.
-- Reused current event, group, place, expert, pet, social-block, localization,
-  media, status, action, shell, and deep-link architecture.
+- Reused current event, group, place, expert, pet, user-actor, publication,
+  social-block, localization, media, status, action, shell, and deep-link architecture.
 - Added strict query/category validation, account and actor block filtering,
   `is_recommendable` filtering, public-only projections, and explicit omission
   of exact event/place locations.
@@ -628,13 +628,16 @@ Status: `release verified` on 2026-08-03; attributable publication prepared.
 - Added canonical discovery directions, toolbar, sections, cards, empty/hidden
   states, EN/LT/RU translations, constant-query tests, and a repeatable browser
   gate for 1440/375/320px including long Lithuanian content.
-- Targeted evidence passes 9 feature tests / 82 assertions and the linked-media
-  discovery contract. The final serial suite passes 2,635 tests / 83,160
+- Added active verified member recommendations, a stable policy- and
+  block-scoped `members.show` profile, and visible post recommendations through
+  `ContentPublication::visibleTo()` and the canonical content route.
+- Targeted evidence passes 12 feature tests / 121 assertions and the linked-media
+  discovery contract. The final serial suite passes 2,657 tests / 84,589
   assertions; fresh migration plus repeat seeding, Larastan, Pint, dependency
   audits, production Vite, and the three-viewport browser gate also pass with
   no overflow, broken media, private-location leak, unnamed control, raw key,
-  or console error. The all-category service projection is 9 bounded queries
-  for 12 recommendations in the current demo world.
+  or console error. The all-category service projection is 12 bounded queries
+  for 16 recommendations across all seven sections in the current demo world.
 
 The baseline audit, architecture decisions, complete delivery plan, and release
 evidence are in `docs/plans/discover-modernization-plan.md`; the stable page

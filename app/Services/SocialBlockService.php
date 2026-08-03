@@ -95,12 +95,16 @@ final class SocialBlockService
 
     /**
      * @param  list<int>|null  $blockedUserIds
+     * @param  list<int>|null  $ownActorIds
      * @return list<int>
      */
-    public function blockedActorIdsFor(User $user, ?array $blockedUserIds = null): array
-    {
+    public function blockedActorIdsFor(
+        User $user,
+        ?array $blockedUserIds = null,
+        ?array $ownActorIds = null,
+    ): array {
         $blockedUserIds ??= $this->blockedUserIdsFor($user);
-        $ownActorIds = $this->accountActors->controlledBy($user)->modelKeys();
+        $ownActorIds ??= $this->accountActors->controlledBy($user)->modelKeys();
         $relationshipActorIds = $ownActorIds === []
             ? []
             : SocialRelationship::query()
