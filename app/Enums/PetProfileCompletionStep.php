@@ -68,6 +68,19 @@ enum PetProfileCompletionStep: string
         };
     }
 
+    public function supportsAutosave(): bool
+    {
+        return in_array($this, [
+            self::Basics,
+            self::AgeAndSex,
+            self::BreedAndOrigin,
+            self::Appearance,
+            self::Character,
+            self::SocialPreferences,
+            self::Location,
+        ], true);
+    }
+
     public function next(): ?self
     {
         return self::cases()[$this->number()] ?? null;

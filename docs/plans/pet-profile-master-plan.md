@@ -67,7 +67,11 @@ replacement, removal, and recovery package;
 `pet.creation.0036-pet.creation.0058` is implemented by the focused
 twelve-step progressive completion workspace rather than being folded back
 into the first screen. Its final verified state remains conditional on the
-package gates recorded in the current-progress document.
+package gates recorded in the current-progress document. The subsequent
+`pet.creation.0071-pet.creation.0081` draft-autosave slice reuses the same
+partial-update Action with a locked, success-rotated request key and native
+change-triggered Livewire calls; its release gates and dedicated atomic
+traceability evidence are verified.
 
 ## Phase 19: Ownership And Privacy
 

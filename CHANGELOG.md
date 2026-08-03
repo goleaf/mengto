@@ -65,10 +65,17 @@
 
 ### Pet Profiles
 
+- Added idempotent change/blur autosave to the seven ordinary descriptive
+  profile steps while retaining explicit submission for photos, managers,
+  privacy, protected identifiers, and lifecycle transitions. Saving, unsaved,
+  validation, offline, and retry states remain server-authoritative and
+  accessible.
 - Replaced the `/pets` nearby-pet prototype with a policy-scoped personal
   workspace for owned and actively shared profiles, server-side search,
   filters, sorting and pagination, pending invitation review, protected media,
   real management/profile deep links, and EN/LT/RU responsive states.
+- Pinned `/pets` to the explicit server pagination view so an earlier Livewire
+  render cannot replace page links with client-only pagination controls.
 - Replaced the legacy all-at-once management screen behind the canonical
   `/compose/pet` creation journey with twelve URL-addressable, independently
   saved profile steps in the main content column.

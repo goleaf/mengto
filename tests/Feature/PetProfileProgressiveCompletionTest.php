@@ -180,6 +180,111 @@ it('keeps partial updates idempotent and rejects stale writes', function (): voi
     ))->toThrow(ValidationException::class);
 });
 
+it('autosaves the active descriptive step and restores it after reopening the workspace', function (): void {
+    $owner = User::factory()->create();
+    $profile = progressivePetProfile($owner, [
+        'name' => 'Luna',
+        'profile_data' => [],
+    ]);
+
+    $component = Livewire::actingAs($owner)
+        ->withQueryParams(['step' => PetProfileCompletionStep::Appearance->value])
+        ->test(ManagePetProfile::class, ['petProfile' => $profile])
+        ->assertSeeHtml('wire:change="autoSaveStep(\'appearance\')"')
+        ->assertSeeHtml('wire:target="autoSaveStep"');
+    $initialIdempotencyKey = $component->get('stepIdempotencyKey');
+
+    $component->set('form.appearanceSummary', 'Silver coat with a dark tail.')
+        ->set('form.identifyingMarks', 'Small white patch below the chin.')
+        ->call('autoSaveStep', PetProfileCompletionStep::Appearance->value)
+        ->assertHasNoErrors()
+        ->assertSet('feedback', __('pet_profiles.feedback.appearance_saved'));
+
+    $profile->refresh();
+
+    expect(data_get($profile->profile_data, 'appearance_summary'))
+        ->toBe('Silver coat with a dark tail.')
+        ->and(data_get($profile->profile_data, 'identifying_marks'))
+        ->toBe('Small white patch below the chin.')
+        ->and($component->get('stepIdempotencyKey'))->not->toBe($initialIdempotencyKey)
+        ->and(PetProfileLifecycleEvent::query()
+            ->where('pet_profile_id', $profile->id)
+            ->where('event_type', 'profile-step-updated')
+            ->count())->toBe(1);
+
+    $savedVersion = $profile->lock_version;
+    $component
+        ->call('saveAppearance')
+        ->assertHasNoErrors();
+
+    expect($profile->refresh()->lock_version)->toBe($savedVersion)
+        ->and(PetProfileLifecycleEvent::query()
+            ->where('pet_profile_id', $profile->id)
+            ->where('event_type', 'profile-step-updated')
+            ->count())->toBe(1);
+
+    Livewire::actingAs($owner)
+        ->withQueryParams(['step' => PetProfileCompletionStep::Appearance->value])
+        ->test(ManagePetProfile::class, ['petProfile' => $profile])
+        ->assertSet('form.appearanceSummary', 'Silver coat with a dark tail.')
+        ->assertSet('form.identifyingMarks', 'Small white patch below the chin.')
+        ->call('autoSaveStep', PetProfileCompletionStep::Character->value)
+        ->assertHasErrors(['step']);
+
+    expect(PetProfileLifecycleEvent::query()
+        ->where('pet_profile_id', $profile->id)
+        ->where('event_type', 'profile-step-updated')
+        ->count())->toBe(1);
+});
+
+it('keeps the autosave key stable when validation fails', function (): void {
+    $owner = User::factory()->create();
+    $profile = progressivePetProfile($owner, ['name' => 'Luna']);
+    $component = Livewire::actingAs($owner)
+        ->test(ManagePetProfile::class, ['petProfile' => $profile]);
+    $idempotencyKey = $component->get('stepIdempotencyKey');
+
+    $component
+        ->set('form.name', '')
+        ->call('autoSaveStep', PetProfileCompletionStep::Basics->value)
+        ->assertHasErrors(['form.name']);
+
+    expect($component->get('stepIdempotencyKey'))->toBe($idempotencyKey)
+        ->and($profile->refresh()->name)->toBe('Luna')
+        ->and(PetProfileLifecycleEvent::query()
+            ->where('pet_profile_id', $profile->id)
+            ->where('event_type', 'profile-step-updated')
+            ->doesntExist())->toBeTrue();
+});
+
+it('wires autosave only to the seven descriptive steps', function (
+    PetProfileCompletionStep $step,
+    bool $supportsAutosave,
+): void {
+    $owner = User::factory()->create();
+    $profile = progressivePetProfile($owner);
+    $component = Livewire::actingAs($owner)
+        ->withQueryParams(['step' => $step->value])
+        ->test(ManagePetProfile::class, ['petProfile' => $profile]);
+    $binding = 'wire:change="autoSaveStep(\''.$step->value.'\')"';
+
+    if ($supportsAutosave) {
+        $component
+            ->assertSeeHtml($binding)
+            ->assertSeeHtml('data-pet-autosave-status');
+
+        return;
+    }
+
+    $component
+        ->assertDontSeeHtml($binding)
+        ->call('autoSaveStep', $step->value)
+        ->assertHasErrors(['step']);
+})->with(array_map(
+    static fn (PetProfileCompletionStep $step): array => [$step, $step->supportsAutosave()],
+    PetProfileCompletionStep::cases(),
+));
+
 it('stores one private encrypted microchip record and enforces the critical permission', function (): void {
     $owner = User::factory()->create();
     $profile = progressivePetProfile($owner);

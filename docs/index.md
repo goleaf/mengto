@@ -46,6 +46,8 @@ This index is the source-of-truth map for first-party documentation.
 | `docs/operations.md` | Runtime checks and incident response | Operations | Canonical |
 | `docs/current-state-audit.md` | Modernization baseline and resolved findings | Engineering | Living evidence |
 | `docs/implementation-plan.md` | Dependency-aware modernization plan | Engineering | Living plan |
+| `docs/plans/pet-workspace-modernization-plan.md` | Authenticated `/pets` workspace decisions, data boundary, interface states, and release evidence | Product + engineering + QA | Implemented and verified |
+| `docs/plans/pet-profile-draft-autosave-work-package.md` | Safe descriptive-step autosave boundary, idempotency, accessibility, and release evidence | Product + engineering + QA | Implemented and verified with dedicated requirement evidence |
 | `docs/audits/groups-shared-card-ux-audit.md` | `/groups` media/copy defect, shared-card topology, component boundaries, accessibility matrix, risks, and stop conditions | Product + frontend + QA | Current audit |
 | `docs/audits/place-shared-card-classification.md` | Places shared-leaf adoption, map-aware shell boundary, dashboard decision, and acceptance contract | Product + frontend + QA | Current audit |
 | `docs/plans/shared-directory-card-system-plan.md` | Unlimited phased directory-card repair, migration, verification, governance, and recovery backlog | Product + frontend + QA | In progress |

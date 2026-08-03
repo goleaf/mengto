@@ -20,6 +20,9 @@ Last updated: 2026-08-03.
 - The progressive completion slice `pet.creation.0036-pet.creation.0058` is
   implemented, localized, documented, and verified; later pet requirements
   remain open.
+- The draft-autosave slice `pet.creation.0071-pet.creation.0081` is implemented
+  and verified with the canonical `/pets` workspace and dedicated requirement
+  evidence overlay.
 
 ## Current Work Package
 
@@ -126,6 +129,29 @@ pet, medical, care, device, search, adoption, event, report, and social data.
 - 205 exact pet requirement IDs are verified by the foundation evidence
   overlay; every other pet ID remains open.
 
+## Draft Autosave
+
+- Basics, age/sex, breed/origin, appearance, character, social preferences,
+  and broad location save after a committed native form change while retaining
+  their manual save actions.
+- A browser step must match the closed step enum and active workspace step.
+  The same form validation, managed-profile authorization, field allowlist,
+  optimistic lock, lifecycle evidence, audit, and cache invalidation apply to
+  automatic and manual requests.
+- One locked request key is reused until success and then rotated. Existing
+  replay handling prevents a lost-response retry from duplicating the accepted
+  lifecycle operation.
+- A reusable passive live region exposes saving and unsaved state. Temporary
+  photos are explicitly unsaved; sensitive and operational forms are not
+  silently persisted.
+- The focused progressive test passes 20 tests and 128 assertions, including
+  all-step wiring, validation-key stability, no-op replay, fresh-mount recovery,
+  and mismatched-step rejection. The current serial suite passes 2,685 tests
+  and 85,057 assertions; a connected browser change/reload check proves one
+  request, persistence, offline status, mobile reflow, and restoration of the
+  original seeded value. All eleven atomic requirement IDs are verified by
+  their dedicated evidence overlay.
+
 ## Next Package
 
 Plan and implement the next dependency-safe pet slice from
@@ -135,7 +161,9 @@ medical/care/device links, recommendations, analytics, and advanced privacy
 must not inherit verified status from this foundation.
 
 For creation specifically, the progressive completion flow
-(`pet.creation.0036-pet.creation.0058`) is the current verification package.
-The optional primary photo (`pet.creation.0025`) is implemented by the narrower
-media package; autosave/draft recovery, the remaining gallery, and full
-`pet.media.*` scope stay open until their own work packages are selected.
+(`pet.creation.0036-pet.creation.0058`) is verified. The optional primary photo
+(`pet.creation.0025`) is implemented by the narrower media package. Draft
+autosave (`pet.creation.0071-pet.creation.0081`) is release-verified and
+covered by its dedicated requirement evidence overlay. The remaining
+gallery and full `pet.media.*` scope stay open until their own work packages
+are selected.

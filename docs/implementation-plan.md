@@ -360,6 +360,30 @@ Status: `implemented and verified` on 2026-08-03 for
 Exact scope and open follow-up requirements are in
 `docs/plans/pet-profile-progressive-completion-work-package.md`.
 
+## Current Delivery: Pet Profile Draft Autosave
+
+Status: `implemented and verified` on 2026-08-03 for
+`pet.creation.0071-pet.creation.0081` with dedicated atomic evidence.
+
+- Added change/blur-driven saves to the seven ordinary descriptive steps while
+  retaining the manual submission path.
+- Rejected unknown and inactive step parameters before mutation and retained
+  the existing form validation, managed-profile policy, allowlist, row lock,
+  optimistic version, audit, lifecycle evidence, and cache invalidation.
+- Added a locked idempotency key that rotates only after a successful response,
+  plus one reusable accessible save-status component and explicit temporary
+  photo unsaved state.
+- The focused progressive suite passes 20 tests and 128 assertions, including
+  all-step wiring, persistence after a fresh mount, validation-key stability,
+  no-op replay, and mismatched-step non-mutation.
+- The integrated current tree passed full Pint, zero-error Larastan, the
+  2,685-test/85,057-assertion serial suite, production Vite build, cache smoke,
+  dependency audits, and authenticated EN/RU/LT browser verification including
+  a real autosave, reload, and value-restoration cycle.
+
+Exact scope, evidence, and non-goals are in
+`docs/plans/pet-profile-draft-autosave-work-package.md`.
+
 ## Current Delivery: Unified Icon System
 
 Status: `implemented and verified` on 2026-08-03.

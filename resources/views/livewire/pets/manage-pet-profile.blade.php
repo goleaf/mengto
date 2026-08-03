@@ -53,7 +53,7 @@
         </header>
 
         @if ($activeStep['value'] === 'basics')
-            <form wire:submit="saveBasics" class="forum-form mt-6">
+            <form wire:submit="saveBasics" wire:change="autoSaveStep('basics')" class="forum-form mt-6">
                 @if ($errors->any())
                     <x-forum-error-summary :messages="$errors->getMessages()" :heading="__('pet_profiles.validation.summary')" />
                 @endif
@@ -77,7 +77,7 @@
                         @error('form.species') <small id="managed-pet-species-error" role="alert">{{ $message }}</small> @enderror
                     </label>
                 </div>
-                <p class="text-sm text-paw-muted" wire:dirty wire:target="form.name,form.species">{{ __('pet_profiles.feedback.unsaved') }}</p>
+                <x-pet-profile-save-status :feedback="$feedback" />
                 <button type="submit" class="forum-button forum-button--primary min-h-11" wire:loading.attr="disabled" wire:target="saveBasics">
                     <x-ui-icon name="save" />
                     <span wire:loading.remove wire:target="saveBasics">{{ __('pet_profiles.actions.save_step') }}</span>
@@ -112,6 +112,11 @@
                             <small id="managed-pet-photo-alt-help">{{ __('pet_profiles.media.alt_help') }}</small>
                             @error('mediaForm.altText') <small id="managed-pet-photo-alt-error" role="alert">{{ $message }}</small> @enderror
                         </label>
+                        @if ($mediaForm->upload !== null)
+                            <p class="text-sm text-paw-muted" role="status" aria-live="polite">
+                                {{ __('pet_profiles.feedback.unsaved') }}
+                            </p>
+                        @endif
                         <div class="flex flex-wrap gap-2">
                             <button type="submit" class="forum-button forum-button--primary min-h-11" wire:loading.attr="disabled" wire:target="replacePrimaryPhoto,mediaForm.upload">
                                 <x-ui-icon name="image-plus" />
@@ -136,7 +141,7 @@
                 </div>
             </div>
         @elseif ($activeStep['value'] === 'age-sex')
-            <form wire:submit="saveAgeAndSex" class="forum-form mt-6">
+            <form wire:submit="saveAgeAndSex" wire:change="autoSaveStep('age-sex')" class="forum-form mt-6">
                 <div class="grid min-w-0 gap-4 md:grid-cols-2">
                     <label class="forum-form__field" for="managed-pet-birth-date">
                         <span>{{ __('pet_profiles.fields.birth_date') }}</span>
@@ -175,11 +180,11 @@
                         </select>
                     </label>
                 </div>
-                <p class="text-sm text-paw-muted" wire:dirty wire:target="form.birthDate,form.birthDatePrecision,form.sex,form.reproductiveStatus">{{ __('pet_profiles.feedback.unsaved') }}</p>
+                <x-pet-profile-save-status :feedback="$feedback" />
                 <button type="submit" class="forum-button forum-button--primary min-h-11" wire:loading.attr="disabled" wire:target="saveAgeAndSex"><x-ui-icon name="save" /><span wire:loading.remove wire:target="saveAgeAndSex">{{ __('pet_profiles.actions.save_step') }}</span><span wire:loading wire:target="saveAgeAndSex">{{ __('pet_profiles.actions.saving') }}</span></button>
             </form>
         @elseif ($activeStep['value'] === 'breed-origin')
-            <form wire:submit="saveBreedAndOrigin" class="forum-form mt-6">
+            <form wire:submit="saveBreedAndOrigin" wire:change="autoSaveStep('breed-origin')" class="forum-form mt-6">
                 <label class="forum-form__field" for="managed-pet-breed">
                     <span>{{ __('pet_profiles.fields.breed') }}</span>
                     <input id="managed-pet-breed" type="text" wire:model="form.breed" maxlength="120" aria-describedby="managed-pet-breed-help managed-pet-breed-error" @error('form.breed') aria-invalid="true" @enderror>
@@ -187,11 +192,11 @@
                     @error('form.breed') <small id="managed-pet-breed-error" role="alert">{{ $message }}</small> @enderror
                 </label>
                 <livewire:forum.animal-taxonomy-selector wire:model.live="form.taxonIds" input-name="taxon_id" :selection-limit="1" />
-                <p class="text-sm text-paw-muted" wire:dirty wire:target="form.breed,form.taxonIds">{{ __('pet_profiles.feedback.unsaved') }}</p>
+                <x-pet-profile-save-status :feedback="$feedback" />
                 <button type="submit" class="forum-button forum-button--primary min-h-11" wire:loading.attr="disabled" wire:target="saveBreedAndOrigin"><x-ui-icon name="save" /><span wire:loading.remove wire:target="saveBreedAndOrigin">{{ __('pet_profiles.actions.save_step') }}</span><span wire:loading wire:target="saveBreedAndOrigin">{{ __('pet_profiles.actions.saving') }}</span></button>
             </form>
         @elseif ($activeStep['value'] === 'appearance')
-            <form wire:submit="saveAppearance" class="forum-form mt-6">
+            <form wire:submit="saveAppearance" wire:change="autoSaveStep('appearance')" class="forum-form mt-6">
                 <div class="grid min-w-0 gap-4 md:grid-cols-2">
                     <label class="forum-form__field" for="managed-pet-appearance">
                         <span>{{ __('pet_profiles.fields.appearance_summary') }}</span>
@@ -206,11 +211,11 @@
                         @error('form.identifyingMarks') <small id="managed-pet-identifying-marks-error" role="alert">{{ $message }}</small> @enderror
                     </label>
                 </div>
-                <p class="text-sm text-paw-muted" wire:dirty wire:target="form.appearanceSummary,form.identifyingMarks">{{ __('pet_profiles.feedback.unsaved') }}</p>
+                <x-pet-profile-save-status :feedback="$feedback" />
                 <button type="submit" class="forum-button forum-button--primary min-h-11" wire:loading.attr="disabled" wire:target="saveAppearance"><x-ui-icon name="save" /><span wire:loading.remove wire:target="saveAppearance">{{ __('pet_profiles.actions.save_step') }}</span><span wire:loading wire:target="saveAppearance">{{ __('pet_profiles.actions.saving') }}</span></button>
             </form>
         @elseif ($activeStep['value'] === 'character')
-            <form wire:submit="saveCharacter" class="forum-form mt-6">
+            <form wire:submit="saveCharacter" wire:change="autoSaveStep('character')" class="forum-form mt-6">
                 <div class="grid min-w-0 gap-4 md:grid-cols-2">
                     <label class="forum-form__field" for="managed-pet-bio">
                         <span>{{ __('pet_profiles.fields.bio') }}</span>
@@ -225,11 +230,11 @@
                         @error('form.temperamentSummary') <small id="managed-pet-temperament-error" role="alert">{{ $message }}</small> @enderror
                     </label>
                 </div>
-                <p class="text-sm text-paw-muted" wire:dirty wire:target="form.bio,form.temperamentSummary">{{ __('pet_profiles.feedback.unsaved') }}</p>
+                <x-pet-profile-save-status :feedback="$feedback" />
                 <button type="submit" class="forum-button forum-button--primary min-h-11" wire:loading.attr="disabled" wire:target="saveCharacter"><x-ui-icon name="save" /><span wire:loading.remove wire:target="saveCharacter">{{ __('pet_profiles.actions.save_step') }}</span><span wire:loading wire:target="saveCharacter">{{ __('pet_profiles.actions.saving') }}</span></button>
             </form>
         @elseif ($activeStep['value'] === 'social-preferences')
-            <form wire:submit="saveSocialPreferences" class="forum-form mt-6">
+            <form wire:submit="saveSocialPreferences" wire:change="autoSaveStep('social-preferences')" class="forum-form mt-6">
                 <x-notice
                     icon="heart-handshake"
                     :title="__('pet_profiles.completion.social_notice_title')"
@@ -249,11 +254,11 @@
                         @error('form.meetingPreferences') <small id="managed-pet-meeting-preferences-error" role="alert">{{ $message }}</small> @enderror
                     </label>
                 </div>
-                <p class="text-sm text-paw-muted" wire:dirty wire:target="form.socialPreferences,form.meetingPreferences">{{ __('pet_profiles.feedback.unsaved') }}</p>
+                <x-pet-profile-save-status :feedback="$feedback" />
                 <button type="submit" class="forum-button forum-button--primary min-h-11" wire:loading.attr="disabled" wire:target="saveSocialPreferences"><x-ui-icon name="save" /><span wire:loading.remove wire:target="saveSocialPreferences">{{ __('pet_profiles.actions.save_step') }}</span><span wire:loading wire:target="saveSocialPreferences">{{ __('pet_profiles.actions.saving') }}</span></button>
             </form>
         @elseif ($activeStep['value'] === 'location')
-            <form wire:submit="saveLocation" class="forum-form mt-6">
+            <form wire:submit="saveLocation" wire:change="autoSaveStep('location')" class="forum-form mt-6">
                 <x-notice
                     icon="map-pin"
                     :title="__('pet_profiles.completion.location_notice_title')"
@@ -277,7 +282,7 @@
                         </select>
                     </label>
                 </div>
-                <p class="text-sm text-paw-muted" wire:dirty wire:target="form.locationLabel,form.locationPrecision">{{ __('pet_profiles.feedback.unsaved') }}</p>
+                <x-pet-profile-save-status :feedback="$feedback" />
                 <button type="submit" class="forum-button forum-button--primary min-h-11" wire:loading.attr="disabled" wire:target="saveLocation"><x-ui-icon name="save" /><span wire:loading.remove wire:target="saveLocation">{{ __('pet_profiles.actions.save_step') }}</span><span wire:loading wire:target="saveLocation">{{ __('pet_profiles.actions.saving') }}</span></button>
             </form>
         @elseif ($activeStep['value'] === 'owners')

@@ -101,6 +101,27 @@ table, profile percentage, migration, or backfill is introduced by this
 package. Exact scope is in
 `docs/plans/pet-profile-progressive-completion-work-package.md`.
 
+## Draft Autosave
+
+The seven ordinary descriptive forms use native change events to save the
+complete active step after a committed edit or blur. The class-based Livewire
+component rejects a browser-provided step unless it is both a known enum value
+and the active URL-backed step, then validates through the existing form
+object and delegates to `UpdatePetProfileStep`.
+
+A locked random idempotency key remains stable until the server accepts the
+save and rotates only after success. A transport retry therefore reaches the
+existing lifecycle-event replay boundary instead of recording a second
+accepted operation. The manual save button uses the same path and remains a
+keyboard and degraded-network fallback.
+
+The passive save-status component announces saving and unsaved state. File
+selection is explicitly unsaved until upload succeeds. Photos, managers,
+privacy, protected microchip data, and lifecycle transitions keep their
+explicit authorized submit operations; values are not copied into browser
+local storage. Exact scope and remaining release gates are in
+`docs/plans/pet-profile-draft-autosave-work-package.md`.
+
 ## Identity And Compatibility
 
 An account and a pet are separate aggregates. Every pet mutation runs as an

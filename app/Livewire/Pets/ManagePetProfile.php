@@ -38,6 +38,7 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Locked;
 use Livewire\Attributes\Url;
@@ -73,6 +74,9 @@ final class ManagePetProfile extends Component
 
     #[Locked]
     public string $mediaIdempotencyKey = '';
+
+    #[Locked]
+    public string $stepIdempotencyKey = '';
 
     private AuthFactory $auth;
 
@@ -156,6 +160,7 @@ final class ManagePetProfile extends Component
         $this->targetStatus = $profile->status->value;
         $this->feedback = (string) session('pet-profile-feedback', '');
         $this->mediaIdempotencyKey = (string) Str::uuid();
+        $this->stepIdempotencyKey = (string) Str::uuid();
     }
 
     /** @return list<array<string, mixed>> */
@@ -337,6 +342,34 @@ final class ManagePetProfile extends Component
             $this->form->locationData(),
             'location_saved',
         );
+    }
+
+    public function autoSaveStep(string $step): void
+    {
+        $requestedStep = PetProfileCompletionStep::tryFrom($step);
+
+        if ($requestedStep === null
+            || ! $requestedStep->supportsAutosave()
+            || $requestedStep !== $this->activeStep()) {
+            throw ValidationException::withMessages([
+                'step' => __('pet_profiles.validation.step'),
+            ]);
+        }
+
+        [$data, $feedbackKey] = match ($requestedStep) {
+            PetProfileCompletionStep::Basics => [$this->form->basicsData(), 'basics_saved'],
+            PetProfileCompletionStep::AgeAndSex => [$this->form->ageAndSexData(), 'age_sex_saved'],
+            PetProfileCompletionStep::BreedAndOrigin => [$this->form->breedAndOriginData(), 'breed_origin_saved'],
+            PetProfileCompletionStep::Appearance => [$this->form->appearanceData(), 'appearance_saved'],
+            PetProfileCompletionStep::Character => [$this->form->characterData(), 'character_saved'],
+            PetProfileCompletionStep::SocialPreferences => [$this->form->socialPreferencesData(), 'social_saved'],
+            PetProfileCompletionStep::Location => [$this->form->locationData(), 'location_saved'],
+            default => throw ValidationException::withMessages([
+                'step' => __('pet_profiles.validation.step'),
+            ]),
+        };
+
+        $this->saveProfileStep($requestedStep, $data, $feedbackKey);
     }
 
     public function saveDocuments(): void
@@ -671,10 +704,11 @@ final class ManagePetProfile extends Component
             step: $step,
             data: $data,
             expectedLockVersion: $profile->lock_version,
-            idempotencyKey: 'pet-profile-step:'.Str::uuid(),
+            idempotencyKey: 'pet-profile-step:'.$this->stepIdempotencyKey,
         );
         $this->form->fillFromProfile($updated);
         $this->feedback = __("pet_profiles.feedback.{$feedbackKey}");
+        $this->stepIdempotencyKey = (string) Str::uuid();
         $this->forgetComputed();
     }
 

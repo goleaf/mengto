@@ -109,7 +109,7 @@
 
                 @if ($pets->hasPages())
                     <nav class="mt-6" aria-label="{{ __('pet_workspace.pagination') }}">
-                        {{ $pets->links() }}
+                        {{ $pets->links('pagination::tailwind') }}
                     </nav>
                 @endif
             @endif

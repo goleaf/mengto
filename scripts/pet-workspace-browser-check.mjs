@@ -6,6 +6,8 @@ import { setTimeout as delay } from 'node:timers/promises';
 
 const baseUrl = (process.env.BROWSER_BASE_URL ?? 'http://127.0.0.1:8000').replace(/\/$/, '');
 const outputDirectory = process.env.BROWSER_OUTPUT_DIR ?? join(tmpdir(), 'mengto-pet-workspace-browser');
+const verifyAutosave = process.argv.includes('--autosave');
+const allowDataMutation = process.env.BROWSER_ALLOW_DATA_MUTATION === '1';
 const origin = new URL(baseUrl);
 const chromeCandidates = [
     process.env.CHROME_BIN,
@@ -16,6 +18,10 @@ const chromeCandidates = [
 
 if (!['localhost', '127.0.0.1', '::1'].includes(origin.hostname)) {
     throw new Error('The pet workspace browser check only runs against a loopback URL.');
+}
+
+if (verifyAutosave && ! allowDataMutation) {
+    throw new Error('--autosave requires BROWSER_ALLOW_DATA_MUTATION=1 and a disposable database.');
 }
 
 const assert = (condition, message) => {
@@ -129,7 +135,12 @@ const evaluate = async (client, sessionId, expression) => {
         awaitPromise: true,
         returnByValue: true,
     }, sessionId);
-    if (result.exceptionDetails) throw new Error(result.exceptionDetails.text);
+    if (result.exceptionDetails) {
+        throw new Error(
+            result.exceptionDetails.exception?.description
+                ?? result.exceptionDetails.text,
+        );
+    }
     return result.result.value;
 };
 
@@ -229,6 +240,7 @@ const browser = spawn(await chromeExecutable(), [
     '--disable-gpu', '--hide-scrollbars', '--no-first-run', '--remote-debugging-port=0',
     `--user-data-dir=${profileDirectory}`, 'about:blank',
 ], { stdio: ['ignore', 'ignore', 'pipe'] });
+const browserExited = new Promise((resolve) => browser.once('exit', resolve));
 
 let client;
 let sessionId;
@@ -240,9 +252,17 @@ try {
     const { targetId } = await client.send('Target.createTarget', { url: 'about:blank' });
     ({ sessionId } = await client.send('Target.attachToTarget', { targetId, flatten: true }));
     const consoleErrors = [];
+    const livewireRequests = [];
     client.on('Runtime.exceptionThrown', ({ exceptionDetails }) => consoleErrors.push(exceptionDetails.text), sessionId);
     client.on('Log.entryAdded', ({ entry }) => {
         if (entry.level === 'error') consoleErrors.push(entry.text);
+    }, sessionId);
+    client.on('Network.requestWillBeSent', ({ request }) => {
+        const path = new URL(request.url).pathname;
+
+        if (path.includes('/livewire-') && path.endsWith('/update')) {
+            livewireRequests.push(request.url);
+        }
     }, sessionId);
     await Promise.all([
         client.send('Page.enable', {}, sessionId), client.send('Runtime.enable', {}, sessionId),
@@ -287,8 +307,162 @@ try {
         await writeFile(join(outputDirectory, `pets-${viewport.label}.png`), Buffer.from(screenshot.data, 'base64'));
     }
 
+    let autosaveAudit = null;
+
+    if (verifyAutosave) {
+        await client.send('Emulation.setDeviceMetricsOverride', {
+            width: 1440, height: 900, deviceScaleFactor: 1,
+            mobile: false, screenWidth: 1440, screenHeight: 900,
+        }, sessionId);
+        await client.send('Emulation.setTouchEmulationEnabled', { enabled: false }, sessionId);
+        await setLocale(client, sessionId, 'en');
+        const autosaveUrl = `${baseUrl}/pets/manage/pet-scout?step=appearance`;
+        await navigate(client, sessionId, autosaveUrl);
+        const originalAppearance = await evaluate(
+            client,
+            sessionId,
+            'document.querySelector("#managed-pet-appearance")?.value',
+        );
+        const originalIdentifyingMarks = await evaluate(
+            client,
+            sessionId,
+            'document.querySelector("#managed-pet-identifying-marks")?.value',
+        );
+        const autosaveValue = `Browser autosave verification ${Date.now()}`;
+        const autosaveMarkup = await evaluate(client, sessionId, `(() => ({
+            formWired: [...document.querySelectorAll('form')]
+                .some((element) => element.getAttribute('wire:change') === "autoSaveStep('appearance')"),
+            statusRegion: [...document.querySelectorAll('[role="status"]')]
+                .some((element) => [...element.querySelectorAll('*')]
+                    .some((child) => child.getAttribute('wire:target') === 'autoSaveStep')),
+            offlineNotice: [...document.querySelectorAll('main *')]
+                .some((element) => element.hasAttribute('wire:offline')
+                    && element.textContent.includes('You are offline')),
+        }))()`);
+        assert(autosaveMarkup.formWired, 'The appearance form is not wired to autosave.');
+        assert(autosaveMarkup.statusRegion, 'The autosave status live region is missing.');
+        assert(autosaveMarkup.offlineNotice, 'The pet workspace offline notice is missing.');
+
+        const changeAppearance = async (value) => {
+            await evaluate(client, sessionId, `((nextValue) => {
+                const input = document.querySelector('#managed-pet-appearance');
+                const setter = Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, 'value').set;
+                setter.call(input, nextValue);
+                input.dispatchEvent(new Event('input', { bubbles: true }));
+                input.dispatchEvent(new Event('change', { bubbles: true }));
+                input.blur();
+            })(${JSON.stringify(value)})`);
+            await waitUntil(
+                async () => await evaluate(
+                    client,
+                    sessionId,
+                    `document.body.innerText.includes('Appearance details saved.')`,
+                ),
+                'The appearance autosave did not receive server confirmation.',
+            );
+        };
+
+        const requestsBeforeAutosave = livewireRequests.length;
+        await changeAppearance(autosaveValue);
+        const autosaveRequestCount = livewireRequests.length - requestsBeforeAutosave;
+        assert(autosaveRequestCount === 1, `Autosave emitted ${autosaveRequestCount} Livewire requests instead of one.`);
+        await navigate(client, sessionId, autosaveUrl);
+        const restoredAppearance = await evaluate(
+            client,
+            sessionId,
+            'document.querySelector("#managed-pet-appearance")?.value',
+        );
+        assert(restoredAppearance === autosaveValue, 'The autosaved appearance was not restored after reload.');
+
+        const offlineAudit = await evaluate(client, sessionId, `(() => {
+            window.dispatchEvent(new Event('offline'));
+            const input = document.querySelector('#managed-pet-identifying-marks');
+            const setter = Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, 'value').set;
+            setter.call(input, input.value + ' offline draft');
+            input.dispatchEvent(new Event('input', { bubbles: true }));
+            const visible = (element) => {
+                if (! element) return false;
+                const style = getComputedStyle(element);
+                const box = element.getBoundingClientRect();
+                return style.display !== 'none' && style.visibility !== 'hidden' && box.height > 0;
+            };
+            const notice = [...document.querySelectorAll('main *')]
+                .find((element) => element.hasAttribute('wire:offline') && visible(element));
+
+            return {
+                noticeVisible: Boolean(notice),
+                statusText: document.querySelector('[data-pet-autosave-status]')?.textContent.trim() ?? '',
+            };
+        })()`);
+        assert(offlineAudit.noticeVisible, 'The offline notice did not become visible.');
+        assert(offlineAudit.statusText.includes('unsaved changes'), 'The offline edit was not identified as unsaved.');
+
+        const requestsBeforeRestore = livewireRequests.length;
+        await evaluate(client, sessionId, `((appearance, identifyingMarks) => {
+            window.dispatchEvent(new Event('online'));
+            const setter = Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, 'value').set;
+            const appearanceInput = document.querySelector('#managed-pet-appearance');
+            const marksInput = document.querySelector('#managed-pet-identifying-marks');
+            setter.call(appearanceInput, appearance);
+            setter.call(marksInput, identifyingMarks);
+            appearanceInput.dispatchEvent(new Event('input', { bubbles: true }));
+            marksInput.dispatchEvent(new Event('input', { bubbles: true }));
+            marksInput.dispatchEvent(new Event('change', { bubbles: true }));
+        })(${JSON.stringify(originalAppearance)}, ${JSON.stringify(originalIdentifyingMarks)})`);
+        await waitUntil(
+            async () => livewireRequests.length > requestsBeforeRestore
+                && await evaluate(client, sessionId, `document.body.innerText.includes('Appearance details saved.')`),
+            'The browser check could not restore the original appearance values.',
+        );
+        await navigate(client, sessionId, autosaveUrl);
+        const cleanupValues = await evaluate(client, sessionId, `(() => ({
+            appearance: document.querySelector('#managed-pet-appearance')?.value,
+            identifyingMarks: document.querySelector('#managed-pet-identifying-marks')?.value,
+        }))()`);
+        assert(cleanupValues.appearance === originalAppearance, 'The browser check did not restore the original appearance.');
+        assert(cleanupValues.identifyingMarks === originalIdentifyingMarks, 'The browser check did not restore identifying marks.');
+
+        await client.send('Emulation.setDeviceMetricsOverride', {
+            width: 375, height: 812, deviceScaleFactor: 1,
+            mobile: true, screenWidth: 375, screenHeight: 812,
+        }, sessionId);
+        await client.send('Emulation.setTouchEmulationEnabled', { enabled: true }, sessionId);
+        await navigate(client, sessionId, autosaveUrl);
+        const mobileAutosave = await evaluate(client, sessionId, `(() => {
+            const status = document.querySelector('[data-pet-autosave-status]');
+            const form = document.querySelector('#managed-pet-appearance')?.closest('form');
+            const controls = [...(form?.querySelectorAll('textarea, button') ?? [])];
+
+            return {
+                h1Count: document.querySelectorAll('main h1').length,
+                statusCount: status ? 1 : 0,
+                overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+                smallTargets: controls.filter((element) => {
+                    const box = element.getBoundingClientRect();
+                    return box.width < 44 || box.height < 44;
+                }).length,
+            };
+        })()`);
+        assert(mobileAutosave.h1Count === 1, 'The mobile autosave page has an invalid heading hierarchy.');
+        assert(mobileAutosave.statusCount === 1, 'The mobile autosave status is missing.');
+        assert(mobileAutosave.overflow <= 1, `The mobile autosave page overflows by ${mobileAutosave.overflow}px.`);
+        assert(mobileAutosave.smallTargets === 0, 'The mobile autosave controls are smaller than 44px.');
+        const autosaveScreenshot = await client.send('Page.captureScreenshot', { format: 'png', captureBeyondViewport: true }, sessionId);
+        await writeFile(join(outputDirectory, 'pet-autosave-mobile.png'), Buffer.from(autosaveScreenshot.data, 'base64'));
+
+        autosaveAudit = {
+            ...autosaveMarkup,
+            autosaveRequestCount,
+            persistedAfterReload: restoredAppearance === autosaveValue,
+            offline: offlineAudit,
+            restoredOriginal: cleanupValues.appearance === originalAppearance
+                && cleanupValues.identifyingMarks === originalIdentifyingMarks,
+            mobile: mobileAutosave,
+        };
+    }
+
     assert(consoleErrors.length === 0, `Console errors: ${JSON.stringify(consoleErrors)}.`);
-    const report = { baseUrl, outputDirectory, audits, consoleErrors };
+    const report = { baseUrl, outputDirectory, audits, verifyAutosave, autosaveAudit, consoleErrors };
     await writeFile(join(outputDirectory, 'report.json'), `${JSON.stringify(report, null, 2)}\n`);
     process.stdout.write(`${JSON.stringify(report, null, 2)}\n`);
 } finally {
@@ -296,6 +470,16 @@ try {
         try { await setLocale(client, sessionId, originalLocale); } catch { /* Preserve the original failure. */ }
     }
     client?.close();
-    browser.kill('SIGTERM');
+    if (browser.exitCode === null && browser.signalCode === null) {
+        browser.kill('SIGTERM');
+    }
+
+    await Promise.race([browserExited, delay(5_000)]);
+
+    if (browser.exitCode === null && browser.signalCode === null) {
+        browser.kill('SIGKILL');
+        await browserExited;
+    }
+
     await rm(profileDirectory, { recursive: true, force: true });
 }

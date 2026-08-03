@@ -147,6 +147,9 @@ demo guard, and was executed twice without duplicate records.
   IDs, raw keys, private leaks, prototype names, Follow actions and console
   errors.
 - Production Vite build passed after correcting the shared select-icon inset.
-- Cache compilation and final diff checks are recorded during publication;
-  commit and push evidence belong in the delivery report because their
-  identifiers do not exist before publication.
+- The browser harness cleanup waits for Chrome exit (with a bounded kill
+  fallback), so the same successful audit now exits cleanly instead of racing
+  Chrome's code-cache writes with temporary-profile removal.
+- Config, route and view cache compilation passed. Final staged diff, commit,
+  and push evidence belong in the delivery report because their identifiers do
+  not exist before publication.

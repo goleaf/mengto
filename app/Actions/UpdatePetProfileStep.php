@@ -94,8 +94,14 @@ final class UpdatePetProfileStep
             }
 
             [$attributes, $fields] = $this->changes($locked, $step, $data);
-            $attributes['lock_version'] = $locked->lock_version + 1;
-            $locked->forceFill($attributes)->save();
+            $locked->forceFill($attributes);
+
+            if (! $locked->isDirty(array_keys($attributes))) {
+                return $locked->refresh();
+            }
+
+            $locked->lock_version++;
+            $locked->save();
 
             $profileData = $locked->profile_data ?? [];
             $this->state->updatePet([
@@ -138,15 +144,7 @@ final class UpdatePetProfileStep
 
     private function guardStep(PetProfileCompletionStep $step): void
     {
-        if (! in_array($step, [
-            PetProfileCompletionStep::Basics,
-            PetProfileCompletionStep::AgeAndSex,
-            PetProfileCompletionStep::BreedAndOrigin,
-            PetProfileCompletionStep::Appearance,
-            PetProfileCompletionStep::Character,
-            PetProfileCompletionStep::SocialPreferences,
-            PetProfileCompletionStep::Location,
-        ], true)) {
+        if (! $step->supportsAutosave()) {
             throw ValidationException::withMessages([
                 'step' => __('pet_profiles.validation.step'),
             ]);
