@@ -13,7 +13,7 @@
         />
 
         <section class="flex gap-3 border-l-4 border-red-500 bg-red-50 p-4 text-red-950" aria-label="{{ __('ui.emergency_warning_53a80da70c') }}">
-            <x-lucide-siren class="mt-0.5 size-5 shrink-0" aria-hidden="true" />
+            <x-ui-icon name="siren" size="lg" class="mt-0.5 shrink-0" />
             <div>
                 <h2 class="font-bold">{{ __('ui.do_not_use_planned_booking_for_an_emergency_788886198c') }}</h2>
                 <p class="mt-1 text-sm">{{ __('ui.breathing_difficulty_collapse_seizures_severe_bleeding_poisoning_inabili_dcd6f44e89') }}</p>
@@ -138,7 +138,7 @@
             <footer class="flex flex-wrap justify-end gap-2">
                 <x-action-control label="{{ __('ui.cancel_19766ed6cc') }}" icon="x" :href="route('experts.show', $expert['slug'])" />
                 <button type="submit" class="action action--primary action--comfortable" @disabled($services === [] || $slots === [])>
-                    <x-lucide-calendar-check class="icon icon--sm" aria-hidden="true" />
+                    <x-ui-icon name="calendar-check" size="sm" />
                     <span>{{ __('ui.submit_appointment_request_3efa0e4768') }}</span>
                 </button>
             </footer>

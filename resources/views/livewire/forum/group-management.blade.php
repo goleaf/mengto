@@ -26,7 +26,7 @@
         @if ($this->workspace['can_invite'])
             <details class="forum-form">
                 <summary class="forum-button min-h-11">
-                    <x-lucide-user-plus aria-hidden="true" />
+                    <x-ui-icon name="user-plus" />
                     {{ __('forum_groups.page.invite_heading') }}
                 </summary>
                 <form wire:submit="invite" class="mt-4 grid gap-4">
@@ -56,7 +56,7 @@
                         wire:loading.attr="disabled"
                         wire:target="invite"
                     >
-                        <x-lucide-send aria-hidden="true" />
+                        <x-ui-icon name="send" />
                         {{ __('forum_groups.actions.invite') }}
                     </button>
                 </form>
@@ -115,7 +115,7 @@
                                         wire:loading.attr="disabled"
                                         wire:target="review"
                                     >
-                                        <x-lucide-check aria-hidden="true" />
+                                        <x-ui-icon name="check" />
                                         {{ __('forum_groups.actions.approve') }}
                                     </button>
                                     <button
@@ -125,7 +125,7 @@
                                         wire:loading.attr="disabled"
                                         wire:target="review"
                                     >
-                                        <x-lucide-x aria-hidden="true" />
+                                        <x-ui-icon name="x" />
                                         {{ __('forum_groups.actions.reject') }}
                                     </button>
                                 </div>
@@ -159,7 +159,7 @@
                                         wire:loading.attr="disabled"
                                         wire:target="restrict"
                                     >
-                                        <x-lucide-user-minus aria-hidden="true" />
+                                        <x-ui-icon name="user-minus" />
                                         {{ __('forum_groups.actions.remove') }}
                                     </button>
                                     <button
@@ -170,7 +170,7 @@
                                         wire:loading.attr="disabled"
                                         wire:target="restrict"
                                     >
-                                        <x-lucide-ban aria-hidden="true" />
+                                        <x-ui-icon name="ban" />
                                         {{ __('forum_groups.actions.ban') }}
                                     </button>
                                 </div>
@@ -191,7 +191,7 @@
                                         wire:loading.attr="disabled"
                                         wire:target="transfer"
                                     >
-                                        <x-lucide-arrow-left-right aria-hidden="true" />
+                                        <x-ui-icon name="arrow-left-right" />
                                         {{ __('forum_groups.actions.transfer') }}
                                     </button>
                                 </form>
@@ -225,7 +225,7 @@
                             wire:loading.attr="disabled"
                             wire:target="revoke"
                         >
-                            <x-lucide-x aria-hidden="true" />
+                            <x-ui-icon name="x" />
                             {{ __('forum_groups.actions.revoke_invitation') }}
                         </button>
                     </article>
@@ -254,7 +254,7 @@
                             wire:loading.attr="disabled"
                             wire:target="transition"
                         >
-                            <x-lucide-lock aria-hidden="true" />
+                            <x-ui-icon name="lock" />
                             {{ __('forum_groups.actions.close') }}
                         </button>
                     @elseif ($this->workspace['can_close'] && $this->workspace['status_key'] === 'closed')
@@ -266,7 +266,7 @@
                             wire:loading.attr="disabled"
                             wire:target="transition"
                         >
-                            <x-lucide-lock-open aria-hidden="true" />
+                            <x-ui-icon name="lock-open" />
                             {{ __('forum_groups.actions.reopen') }}
                         </button>
                     @endif
@@ -279,7 +279,7 @@
                             wire:loading.attr="disabled"
                             wire:target="transition"
                         >
-                            <x-lucide-archive aria-hidden="true" />
+                            <x-ui-icon name="archive" />
                             {{ __('forum_groups.actions.archive') }}
                         </button>
                     @endif

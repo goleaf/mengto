@@ -28,7 +28,7 @@
         <div class="directory-toolbar__commands">
             <label for="{{ $section }}-sort" class="sr-only">{{ $sortLabel }}</label>
             <span class="select-wrap">
-                <x-lucide-arrow-up-down class="icon icon--sm" aria-hidden="true" />
+                <x-ui-icon name="arrow-up-down" size="sm" />
                 <select id="{{ $section }}-sort" name="sort" class="field field--select" onchange="this.form.submit()">
                     @foreach ($sortOptions as $value => $option)
                         <option value="{{ $value }}" @selected($activeSort === $value)>{{ $option }}</option>

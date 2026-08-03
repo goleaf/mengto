@@ -57,7 +57,7 @@
                         @forelse ($note['evidence'] as $evidence)
                             <li>
                                 <a href="{{ $evidence['url'] }}" rel="nofollow noopener noreferrer" target="_blank">
-                                    <x-lucide-external-link aria-hidden="true" class="icon icon--sm" />
+                                    <x-ui-icon name="external-link" size="sm" />
                                     {{ $evidence['label'] }}
                                 </a>
                             </li>
@@ -98,7 +98,7 @@
                             wire:loading.attr="disabled"
                             wire:target="respond"
                         >
-                            <x-lucide-message-square-reply aria-hidden="true" />
+                            <x-ui-icon name="message-square-reply" />
                             {{ __('forum_review.actions.respond') }}
                         </button>
                     </form>
@@ -127,7 +127,7 @@
                             wire:loading.attr="disabled"
                             wire:target="moderate"
                         >
-                            <x-lucide-shield-check aria-hidden="true" />
+                            <x-ui-icon name="shield-check" />
                             {{ __('forum_review.actions.moderate') }}
                         </button>
                     </form>
@@ -148,7 +148,7 @@
                                 wire:loading.attr="disabled"
                                 wire:target="appeal"
                             >
-                                <x-lucide-scale aria-hidden="true" />
+                                <x-ui-icon name="scale" />
                                 {{ __('forum_review.actions.submit_appeal') }}
                             </button>
                         </form>
@@ -210,7 +210,7 @@
                             wire:loading.attr="disabled"
                             wire:target="submitReview"
                         >
-                            <x-lucide-clipboard-check aria-hidden="true" />
+                            <x-ui-icon name="clipboard-check" />
                             {{ __('forum_review.actions.submit_review') }}
                         </button>
                     </form>
@@ -273,7 +273,7 @@
                 wire:loading.attr="disabled"
                 wire:target="propose"
             >
-                <x-lucide-notebook-tabs aria-hidden="true" />
+                <x-ui-icon name="notebook-tabs" />
                 <span wire:loading.remove wire:target="propose">{{ __('forum_review.actions.propose') }}</span>
                 <span wire:loading wire:target="propose">{{ __('forum_review.actions.proposing') }}</span>
             </button>

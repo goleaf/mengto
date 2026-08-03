@@ -23,7 +23,7 @@
                     ])
                 >
                     @if ($category['active'])
-                        <x-lucide-check class="icon icon--sm" aria-hidden="true" />
+                        <x-ui-icon name="check" size="sm" />
                     @endif
                     <span>{{ $category['label'] }}</span>
                 </a>

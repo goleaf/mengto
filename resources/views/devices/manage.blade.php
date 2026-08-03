@@ -3,7 +3,7 @@
         <header class="device-detail-header">
             <div>
                 <a href="{{ $device['show_url'] }}" class="inline-flex items-center gap-2 text-sm font-bold text-paw-leaf">
-                    <x-lucide-arrow-left class="size-4" aria-hidden="true" />
+                    <x-ui-icon name="arrow-left" size="sm" />
                     {{ $device['name'] }}
                 </a>
                 <p class="mt-5 text-sm font-bold uppercase text-paw-leaf">{{ __('ui.owner_controls_c468d0a8ad') }}</p>
@@ -14,7 +14,7 @@
 
         @if ($errors->any())
             <div class="device-form-errors" role="alert">
-                <x-lucide-circle-alert class="size-5" aria-hidden="true" />
+                <x-ui-icon name="circle-alert" size="lg" />
                 <div>
                     <strong>{{ __('ui.the_change_was_not_saved_5515ca43db') }}</strong>
                     <ul>
@@ -35,18 +35,18 @@
                     <h2 id="device-access-link-title">{{ __('ui.temporary_device_link_cf6a3b5be0') }}</h2>
                     <code>{{ session('device_access_url') }}</code>
                 </div>
-                <x-lucide-link class="size-6" aria-hidden="true" />
+                <x-ui-icon name="link" size="xl" />
             </section>
         @endif
 
         <nav class="device-anchor-nav" aria-label="{{ __('ui.device_management_1a7c41d58a') }}">
-            <a href="#retention"><x-lucide-history class="size-4" aria-hidden="true" /> {{ __('devices.retention.heading') }}</a>
-            <a href="#lifecycle"><x-lucide-wrench class="size-4" aria-hidden="true" /> {{ __('devices.lifecycle.heading') }}</a>
-            <a href="#automations"><x-lucide-workflow class="size-4" aria-hidden="true" /> {{ __('ui.automations_ad1fb9ec0c') }}</a>
-            <a href="#access"><x-lucide-key-round class="size-4" aria-hidden="true" /> {{ __('ui.access_ec5ba0abb7') }}</a>
-            <a href="#audit"><x-lucide-shield-check class="size-4" aria-hidden="true" /> {{ __('ui.audit_bb6aea2873') }}</a>
+            <a href="#retention"><x-ui-icon name="history" size="sm" /> {{ __('devices.retention.heading') }}</a>
+            <a href="#lifecycle"><x-ui-icon name="wrench" size="sm" /> {{ __('devices.lifecycle.heading') }}</a>
+            <a href="#automations"><x-ui-icon name="workflow" size="sm" /> {{ __('ui.automations_ad1fb9ec0c') }}</a>
+            <a href="#access"><x-ui-icon name="key-round" size="sm" /> {{ __('ui.access_ec5ba0abb7') }}</a>
+            <a href="#audit"><x-ui-icon name="shield-check" size="sm" /> {{ __('ui.audit_bb6aea2873') }}</a>
             @if ($device['type'] === 'gps-tracker')
-                <a href="#safe-zone"><x-lucide-map-pinned class="size-4" aria-hidden="true" /> {{ __('ui.safe_zone_2333d88d6a') }}</a>
+                <a href="#safe-zone"><x-ui-icon name="map-pinned" size="sm" /> {{ __('ui.safe_zone_2333d88d6a') }}</a>
             @endif
         </nav>
 
@@ -96,7 +96,7 @@
                             </label>
                         </div>
                         <button class="action" type="submit">
-                            <x-lucide-save class="icon" aria-hidden="true" />
+                            <x-ui-icon name="save" />
                             <span>{{ __('devices.retention.save') }}</span>
                         </button>
                     </form>
@@ -160,7 +160,7 @@
                             </label>
                         </div>
                         <button class="action" type="submit">
-                            <x-lucide-clipboard-check class="icon" aria-hidden="true" />
+                            <x-ui-icon name="clipboard-check" />
                             <span>{{ __('devices.lifecycle.record') }}</span>
                         </button>
                     </form>
@@ -256,7 +256,7 @@
                             <input type="checkbox" name="safety_acknowledged" value="1" required>
                             <span>{{ __('ui.i_reviewed_the_action_cooldown_fallback_and_understand_1bf9807d8c') }}</span>
                         </label>
-                        <button class="action action--primary" type="submit"><x-lucide-workflow class="icon" aria-hidden="true" /><span>{{ __('ui.save_guarded_rule_b5b05434db') }}</span></button>
+                        <button class="action action--primary" type="submit"><x-ui-icon name="workflow" /><span>{{ __('ui.save_guarded_rule_b5b05434db') }}</span></button>
                     </form>
                 </section>
 
@@ -272,12 +272,16 @@
                                         <h3>{{ $automation['name'] }}</h3>
                                         <x-status-badge :label="$automation['status_label']" :tone="$automation['status_tone']" />
                                     </div>
-                                    <p>{{ $automation['trigger'] }} → {{ $automation['action'] }}</p>
+                                    <p class="device-rule-list__flow">
+                                        <span>{{ $automation['trigger'] }}</span>
+                                        <x-ui-icon name="arrow-right" size="sm" />
+                                        <span>{{ $automation['action'] }}</span>
+                                    </p>
                                     <small>{{ $automation['condition'] }} · {{ $automation['max_runs'] }} · {{ $automation['cooldown'] }}</small>
                                 </div>
                                 <form method="POST" action="{{ route('devices.automations.test', [$device['slug'], $automation['id']]) }}">
                                     @csrf
-                                    <button class="action" type="submit"><x-lucide-flask-conical class="icon" aria-hidden="true" /><span>{{ __('ui.simulate_66154a0841') }}</span></button>
+                                    <button class="action" type="submit"><x-ui-icon name="flask-conical" /><span>{{ __('ui.simulate_66154a0841') }}</span></button>
                                 </form>
                             </article>
                         @empty
@@ -307,7 +311,7 @@
                                 <label class="device-check"><input type="checkbox" name="is_home" value="1"><span>{{ __('ui.home_privacy_zone_1ccca16d37') }}</span></label>
                                 <label class="device-check"><input type="checkbox" name="always_active" value="1"><span>{{ __('ui.always_active_8c559f48ea') }}</span></label>
                             </div>
-                            <button class="action" type="submit"><x-lucide-map-pinned class="icon" aria-hidden="true" /><span>{{ __('ui.save_private_zone_1aae110811') }}</span></button>
+                            <button class="action" type="submit"><x-ui-icon name="map-pinned" /><span>{{ __('ui.save_private_zone_1aae110811') }}</span></button>
                         </form>
                     </section>
                 @endif
@@ -356,7 +360,7 @@
                             <input type="checkbox" name="privacy_acknowledged" value="1" required>
                             <span>{{ __('ui.i_reviewed_every_permission_and_will_share_the_3ea90ac56b') }}</span>
                         </label>
-                        <button class="action action--primary" type="submit"><x-lucide-key-round class="icon" aria-hidden="true" /><span>{{ __('ui.create_link_e6b850cff6') }}</span></button>
+                        <button class="action action--primary" type="submit"><x-ui-icon name="key-round" /><span>{{ __('ui.create_link_e6b850cff6') }}</span></button>
                     </form>
                 </section>
 
@@ -374,7 +378,10 @@
                                     <form method="POST" action="{{ route('devices.access.revoke', [$device['slug'], $grant['id']]) }}">
                                         @csrf
                                         @method('DELETE')
-                                        <button class="device-text-button device-text-button--danger" type="submit">{{ __('ui.revoke_now_581e15bd3f') }}</button>
+                                        <button class="device-text-button device-text-button--danger" type="submit">
+                                            <x-ui-icon name="ban" size="sm" />
+                                            <span>{{ __('ui.revoke_now_581e15bd3f') }}</span>
+                                        </button>
                                     </form>
                                 @endif
                             </article>
@@ -389,7 +396,7 @@
                     <div class="device-compact-list">
                         @forelse ($automation_runs as $run)
                             <article>
-                                <x-lucide-flask-conical class="size-4" aria-hidden="true" />
+                                <x-ui-icon name="flask-conical" size="sm" />
                                 <div><h3>{{ $run['status'] }}</h3><p>{{ $run['result'] }}</p><small>{{ $run['started_at'] }}</small></div>
                             </article>
                         @empty

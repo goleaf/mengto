@@ -1,7 +1,7 @@
 @if ($resolvedReason)
     <div {{ $attributes->class(['recommendation-reason']) }}>
         <div class="recommendation-reason__copy">
-            <x-lucide-sparkles class="icon icon--sm" aria-hidden="true" />
+            <x-ui-icon name="sparkles" size="sm" />
             <div>
                 <p class="recommendation-reason__label">{{ __('ui.why_this_profile_11657790a4') }}</p>
                 <p>{{ $resolvedReason }}</p>

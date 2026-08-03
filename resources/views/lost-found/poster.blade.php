@@ -22,7 +22,7 @@
                             <img src="{{ $search_case['cover_url'] }}" alt="{{ $poster['image_alt'] }}" class="aspect-[4/3] w-full rounded-md object-cover">
                         @else
                             <div class="grid aspect-[4/3] place-items-center rounded-md bg-paw-mint">
-                                <x-dynamic-component :component="'lucide-'.$search_case['type_icon']" class="size-24 text-paw-leaf" aria-hidden="true" />
+                                <x-ui-icon size="hero" :name="$search_case['type_icon']" class="text-paw-leaf" />
                             </div>
                         @endif
                         <h1 class="mt-5 text-4xl font-black sm:text-5xl">{{ $search_case['pet_name'] }}</h1>
@@ -63,11 +63,11 @@
 
             <div class="poster-controls mt-5 flex flex-wrap justify-center gap-3">
                 <button type="button" data-print-page class="action action--primary">
-                    <x-lucide-printer class="icon" aria-hidden="true" />
+                    <x-ui-icon name="printer" />
                     <span>{{ __('lost_found.poster.print') }}</span>
                 </button>
                 <a href="{{ route('lost-found.show', $search_case['slug']) }}" class="action action--surface">
-                    <x-lucide-arrow-left class="icon" aria-hidden="true" />
+                    <x-ui-icon name="arrow-left" />
                     <span>{{ __('lost_found.poster.back') }}</span>
                 </a>
             </div>

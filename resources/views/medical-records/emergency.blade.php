@@ -14,7 +14,7 @@
             <div class="flex flex-wrap gap-2 print:hidden">
                 <x-action-control label="{{ __('ui.full_record_09f2fd2709') }}" icon="arrow-left" :href="route('medical-records.show', $medical_record['slug'])" />
                 <button type="button" class="action action--primary action--compact" data-print-page>
-                    <x-lucide-printer class="icon icon--sm" aria-hidden="true" />
+                    <x-ui-icon name="printer" size="sm" />
                     <span>{{ __('ui.print_df0fe79898') }}</span>
                 </button>
             </div>
@@ -22,7 +22,7 @@
 
         <section class="medical-emergency-grid" aria-label="{{ __('ui.emergency_details_f0f1454402') }}">
             <div class="medical-emergency-grid__critical">
-                <x-lucide-triangle-alert class="size-6" aria-hidden="true" />
+                <x-ui-icon name="triangle-alert" size="xl" />
                 <div>
                     <h2>{{ __('ui.allergies_and_dangerous_reactions_ff8db657b2') }}</h2>
                     @forelse ($medical_record['critical_allergies'] as $allergy)

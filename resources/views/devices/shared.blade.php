@@ -2,7 +2,7 @@
     <div class="mx-auto grid w-full max-w-5xl gap-7">
         <header class="device-shared-header">
             <div class="device-detail-header__identity">
-                <span><x-dynamic-component :component="'lucide-'.$device['icon']" class="size-8" aria-hidden="true" /></span>
+                <span><x-ui-icon size="2xl" :name="$device['icon']" /></span>
                 <div>
                     <div class="flex flex-wrap items-center gap-2">
                         <x-status-badge label="{{ __('ui.temporary_access_7059688673') }}" icon="key-round" tone="warning" />
@@ -15,7 +15,7 @@
         </header>
 
         <section class="device-access-scope">
-            <x-lucide-shield-check class="size-5" aria-hidden="true" />
+            <x-ui-icon name="shield-check" size="lg" />
             <div>
                 <strong>{{ __('ui.only_explicitly_granted_device_data_is_visible_63a51a9296') }}</strong>
                 <p>{{ __('ui.exact_home_coordinates_serial_number_raw_payloads_household_be68c0b5fb') }}</p>
@@ -23,10 +23,10 @@
         </section>
 
         <section class="device-status-strip" aria-label="{{ __('ui.shared_device_status_d293a96bbe') }}">
-            <div><span class="device-status-strip__icon"><x-lucide-radio class="size-5" aria-hidden="true" /></span><small>{{ __('ui.status_920e413c7d') }}</small><strong>{{ $device['status_label'] }}</strong></div>
-            <div><span class="device-status-strip__icon"><x-lucide-wifi class="size-5" aria-hidden="true" /></span><small>{{ __('ui.connection_639a40e82b') }}</small><strong>{{ $device['connection_label'] }}</strong></div>
-            <div><span class="device-status-strip__icon"><x-lucide-battery-medium class="size-5" aria-hidden="true" /></span><small>{{ __('ui.battery_dfcb7c1619') }}</small><strong>{{ $device['battery_label'] }}</strong></div>
-            <div><span class="device-status-strip__icon"><x-lucide-map-pin class="size-5" aria-hidden="true" /></span><small>{{ __('ui.shared_area_ede2cdd8af') }}</small><strong>{{ $device['location_label'] }}</strong></div>
+            <div><span class="device-status-strip__icon"><x-ui-icon name="radio" size="lg" /></span><small>{{ __('ui.status_920e413c7d') }}</small><strong>{{ $device['status_label'] }}</strong></div>
+            <div><span class="device-status-strip__icon"><x-ui-icon name="wifi" size="lg" /></span><small>{{ __('ui.connection_639a40e82b') }}</small><strong>{{ $device['connection_label'] }}</strong></div>
+            <div><span class="device-status-strip__icon"><x-ui-icon name="battery-medium" size="lg" /></span><small>{{ __('ui.battery_dfcb7c1619') }}</small><strong>{{ $device['battery_label'] }}</strong></div>
+            <div><span class="device-status-strip__icon"><x-ui-icon name="map-pin" size="lg" /></span><small>{{ __('ui.shared_area_ede2cdd8af') }}</small><strong>{{ $device['location_label'] }}</strong></div>
         </section>
 
         <section class="device-panel">

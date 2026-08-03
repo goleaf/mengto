@@ -1,7 +1,7 @@
 @props(['item'])
 
 <li {{ $attributes->class(['detail-hero__meta-item']) }}>
-    <x-dynamic-component :component="'lucide-'.$item['icon']" class="icon icon--sm" aria-hidden="true" />
+    <x-ui-icon size="sm" :name="$item['icon']" />
 
     @if (isset($item['datetime']))
         <time datetime="{{ $item['datetime'] }}" aria-label="{{ $item['aria_label'] ?? $item['label'] }}">

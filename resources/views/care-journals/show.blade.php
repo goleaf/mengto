@@ -5,11 +5,14 @@
                 @if ($care_journal['image_url'])
                     <img src="{{ $care_journal['image_url'] }}" alt="{{ $care_journal['pet_name'] }}">
                 @else
-                    <span><x-lucide-paw-print class="size-8" aria-hidden="true" /></span>
+                    <span><x-ui-icon name="paw-print" size="2xl" /></span>
                 @endif
                 <div>
                     <div class="flex flex-wrap items-center gap-2">
-                        <a href="{{ route('care-journals.index') }}" class="text-sm font-bold text-paw-leaf">{{ __('ui.care_journals_efcbb402a3') }}</a>
+                        <a href="{{ route('care-journals.index') }}" class="inline-flex items-center gap-1 text-sm font-bold text-paw-leaf">
+                            <x-ui-icon name="arrow-left" size="sm" />
+                            <span>{{ __('ui.care_journals_efcbb402a3') }}</span>
+                        </a>
                         <span class="text-paw-line">/</span>
                         <x-status-badge label="{{ __('ui.private_c63eb6720c') }}" icon="lock-keyhole" tone="surface" />
                     </div>
@@ -27,7 +30,7 @@
 
         @if ($errors->any())
             <div class="care-form-errors" role="alert">
-                <x-lucide-circle-alert class="size-5" aria-hidden="true" />
+                <x-ui-icon name="circle-alert" size="lg" />
                 <div>
                     <strong>{{ __('ui.the_care_action_was_not_saved_d0cfd1ce44') }}</strong>
                     <ul>
@@ -91,7 +94,10 @@
                             <p class="text-xs font-bold uppercase text-paw-leaf">{{ __('ui.household_handoff_ee017f0017') }}</p>
                             <h2 id="tasks-title" class="mt-1 text-xl font-bold">{{ __('ui.open_tasks_87cfa1a507') }}</h2>
                         </div>
-                        <a href="{{ $care_journal['manage_url'] }}#tasks" class="text-sm font-bold text-paw-leaf">{{ __('ui.manage_5a23444828') }}</a>
+                        <a href="{{ $care_journal['manage_url'] }}#tasks" class="inline-flex items-center gap-1 text-sm font-bold text-paw-leaf">
+                            <x-ui-icon name="settings-2" size="sm" />
+                            <span>{{ __('ui.manage_5a23444828') }}</span>
+                        </a>
                     </div>
                     <x-care-task-list :tasks="$tasks" :journal-slug="$care_journal['slug']" />
                 </section>
@@ -102,10 +108,13 @@
                             <p class="text-xs font-bold uppercase text-paw-leaf">{{ __('ui.single_source_of_truth_89951f4ad4') }}</p>
                             <h2 id="medication-source-title" class="mt-1 text-xl font-bold">{{ __('ui.medication_today_1e22b63cec') }}</h2>
                         </div>
-                        <a href="{{ $medical['record_url'] }}" class="text-sm font-bold text-paw-leaf">{{ __('ui.health_record_6ab2c69d2f') }}</a>
+                        <a href="{{ $medical['record_url'] }}" class="inline-flex items-center gap-1 text-sm font-bold text-paw-leaf">
+                            <x-ui-icon name="heart-pulse" size="sm" />
+                            <span>{{ __('ui.health_record_6ab2c69d2f') }}</span>
+                        </a>
                     </div>
                     <div class="care-source-notice">
-                        <x-lucide-pill class="size-5" aria-hidden="true" />
+                        <x-ui-icon name="pill" size="lg" />
                         <p>{{ __('ui.doses_are_recorded_in_the_medical_record_and_5a75aee169') }}</p>
                     </div>
                     <div class="care-compact-list">
@@ -138,7 +147,7 @@
                     <div class="care-compact-list">
                         @forelse ($routines as $routine)
                             <article>
-                                <span class="care-list-icon"><x-lucide-repeat-2 class="size-4" aria-hidden="true" /></span>
+                                <span class="care-list-icon"><x-ui-icon name="repeat-2" size="sm" /></span>
                                 <div>
                                     <h3 class="font-bold">{{ $routine['name'] }}</h3>
                                     <p class="mt-1 text-sm text-paw-muted">{{ $routine['period'] }} · {{ $routine['start_time'] ?: __('ui.flexible_time_0d0eb23930') }}</p>

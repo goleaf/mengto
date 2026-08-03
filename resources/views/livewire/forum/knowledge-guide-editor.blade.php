@@ -42,7 +42,7 @@
 
     @if ($this->translationSourceData !== null)
         <aside class="forum-safety" aria-labelledby="knowledge-translation-source-heading">
-            <x-lucide-languages aria-hidden="true" />
+            <x-ui-icon name="languages" />
             <div>
                 <strong id="knowledge-translation-source-heading">
                     {{ __('knowledge.translations.source_heading') }}
@@ -72,7 +72,7 @@
 
     @if ($this->articleData['is_locked'])
         <aside class="forum-safety" role="status">
-            <x-lucide-lock-keyhole aria-hidden="true" />
+            <x-ui-icon name="lock-keyhole" />
             <div>
                 <strong>{{ __('knowledge.editor.locked_title') }}</strong>
                 <span>{{ $this->articleData['lock_reason'] ?? __('knowledge.editor.locked_description') }}</span>
@@ -224,7 +224,7 @@
         </label>
 
         <button type="submit" wire:loading.attr="disabled" wire:target="save" class="forum-button forum-button--primary w-fit">
-            <x-lucide-save aria-hidden="true" />
+            <x-ui-icon name="save" />
             <span wire:loading.remove wire:target="save">
                 @if ($articleId !== null)
                     {{ __('knowledge.actions.save_revision') }}
@@ -278,7 +278,7 @@
                         </label>
 
                         <button type="submit" wire:loading.attr="disabled" wire:target="applyWorkflowTransition" class="forum-button forum-button--primary w-fit">
-                            <x-lucide-git-branch aria-hidden="true" />
+                            <x-ui-icon name="git-branch" />
                             <span wire:loading.remove wire:target="applyWorkflowTransition">{{ __('knowledge.actions.apply_transition') }}</span>
                             <span wire:loading wire:target="applyWorkflowTransition">{{ __('knowledge.actions.updating') }}</span>
                         </button>
@@ -294,7 +294,7 @@
                     @if ($this->articleData['is_locked'])
                         <p class="mt-3 text-paw-muted">{{ __('knowledge.lock.active') }}</p>
                         <button type="button" wire:click="setEditorialLock(false)" wire:loading.attr="disabled" wire:target="setEditorialLock" class="forum-button mt-4">
-                            <x-lucide-lock-open aria-hidden="true" />
+                            <x-ui-icon name="lock-open" />
                             {{ __('knowledge.actions.unlock') }}
                         </button>
                     @else
@@ -304,7 +304,7 @@
                             @error('editorialLockReason') <small role="alert">{{ $message }}</small> @enderror
                         </label>
                         <button type="button" wire:click="setEditorialLock(true)" wire:loading.attr="disabled" wire:target="setEditorialLock" class="forum-button mt-4">
-                            <x-lucide-lock-keyhole aria-hidden="true" />
+                            <x-ui-icon name="lock-keyhole" />
                             {{ __('knowledge.actions.lock') }}
                         </button>
                     @endif
@@ -331,7 +331,7 @@
                                 class="forum-button"
                                 aria-label="{{ __('knowledge.actions.remove_collaborator_named', ['name' => $collaborator['name']]) }}"
                             >
-                                <x-lucide-user-round-minus aria-hidden="true" />
+                                <x-ui-icon name="user-round-minus" />
                                 {{ __('knowledge.actions.remove') }}
                             </button>
                         </div>
@@ -358,7 +358,7 @@
                         @error('collaboratorRole') <small role="alert">{{ $message }}</small> @enderror
                     </label>
                     <button type="submit" wire:loading.attr="disabled" wire:target="addCollaborator" class="forum-button forum-button--primary">
-                        <x-lucide-user-round-plus aria-hidden="true" />
+                        <x-ui-icon name="user-round-plus" />
                         {{ __('knowledge.actions.add') }}
                     </button>
                 </form>
@@ -377,8 +377,9 @@
                                 </span>
                             </label>
                             @if ($correction['source_url'])
-                                <a href="{{ $correction['source_url'] }}" target="_blank" rel="noopener noreferrer" class="text-sm underline">
-                                    {{ __('knowledge.actions.open_correction_source') }}
+                                <a href="{{ $correction['source_url'] }}" target="_blank" rel="noopener noreferrer" class="inline-flex min-h-11 items-center gap-1 text-sm underline">
+                                    <x-ui-icon name="external-link" size="sm" />
+                                    <span>{{ __('knowledge.actions.open_correction_source') }}</span>
                                 </a>
                             @endif
                         </div>
@@ -404,7 +405,7 @@
                         </label>
                         @error('selectedCorrectionId') <p role="alert">{{ $message }}</p> @enderror
                         <button type="submit" wire:loading.attr="disabled" wire:target="reviewCorrection" class="forum-button forum-button--primary w-fit">
-                            <x-lucide-clipboard-check aria-hidden="true" />
+                            <x-ui-icon name="clipboard-check" />
                             {{ __('knowledge.actions.review_correction') }}
                         </button>
                     </form>
@@ -448,7 +449,7 @@
                         wire:target="rollback"
                         class="forum-button"
                     >
-                        <x-lucide-history aria-hidden="true" />
+                        <x-ui-icon name="history" />
                         {{ __('knowledge.actions.rollback') }}
                     </button>
                 </form>

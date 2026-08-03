@@ -2,7 +2,7 @@
     <div class="grid gap-6">
         <header class="flex flex-wrap items-center justify-between gap-3 border-b border-paw-line pb-5">
             <div>
-                <a href="{{ route('experts.show', $expert['slug']) }}" class="inline-flex items-center gap-2 text-sm font-bold text-paw-leaf"><x-lucide-arrow-left class="size-4" aria-hidden="true" />{{ $expert['name'] }}</a>
+                <a href="{{ route('experts.show', $expert['slug']) }}" class="inline-flex items-center gap-2 text-sm font-bold text-paw-leaf"><x-ui-icon name="arrow-left" size="sm" />{{ $expert['name'] }}</a>
                 <h1 class="mt-2 text-3xl font-bold">{{ __('ui.appointment_details_f938bdb863') }}</h1>
             </div>
             @if ($consultation && $booking['format'] === 'Video')

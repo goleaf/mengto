@@ -2,7 +2,7 @@
 
 <section class="messaging-professional" aria-label="{{ __('ui.professional_conversation_status_3f38e4c701') }}">
     <div>
-        <x-lucide-briefcase-medical class="icon" aria-hidden="true" />
+        <x-ui-icon name="briefcase-medical" />
         <span>
             <strong>{{ $professional['case'] }}</strong>
             <small>{{ $professional['status'] }} · {{ $professional['assigned'] }}</small>
@@ -12,5 +12,5 @@
         <span>{{ $professional['hours'] }}</span>
         <strong>{{ $professional['queue'] }}</strong>
     </div>
-    <p><x-lucide-triangle-alert class="icon icon--sm" aria-hidden="true" /> {{ $professional['urgent'] }}</p>
+    <p><x-ui-icon name="triangle-alert" size="sm" /> {{ $professional['urgent'] }}</p>
 </section>

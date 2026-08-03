@@ -1,20 +1,20 @@
 <x-app-shell :owner="$owner" :title="$page_title" :active-section="$active_section">
     <div class="mx-auto grid max-w-5xl gap-7">
         <a href="{{ $listing['url'] }}" class="inline-flex w-fit items-center gap-2 text-sm font-bold text-paw-leaf">
-            <x-lucide-arrow-left class="size-4" aria-hidden="true" />
+            <x-ui-icon name="arrow-left" size="sm" />
             {{ $listing['title'] }}
         </a>
 
         @if (session('feedback'))
             <div class="market-feedback" role="status">
-                <x-lucide-circle-check-big class="size-5 shrink-0" aria-hidden="true" />
+                <x-ui-icon name="circle-check-big" size="lg" class="shrink-0" />
                 {{ session('feedback') }}
             </div>
         @endif
 
         @if ($errors->any())
             <div class="form-errors" role="alert">
-                <x-lucide-circle-alert class="icon" aria-hidden="true" />
+                <x-ui-icon name="circle-alert" />
                 <span>{{ $errors->first() }}</span>
             </div>
         @endif
@@ -32,7 +32,7 @@
         </header>
 
         <section class="market-safety">
-            <x-lucide-lock-keyhole class="size-6 shrink-0" aria-hidden="true" />
+            <x-ui-icon name="lock-keyhole" size="xl" class="shrink-0" />
             <div>
                 <h2 class="font-bold">{{ __('ui.terms_captured_at_acceptance_baa049fd91') }}</h2>
                 <p class="mt-1 text-sm leading-6">{{ __('ui.this_page_uses_the_order_snapshot_later_edits_dc89366d76') }}</p>
@@ -54,7 +54,7 @@
                                 <img src="{{ data_get($order['item'], 'cover_url') }}" alt="{{ data_get($order['item'], 'title') }}" class="size-full object-cover">
                             @else
                                 <span class="grid size-full place-items-center text-paw-leaf" aria-hidden="true">
-                                    <x-lucide-package class="size-10" />
+                                    <x-ui-icon name="package" size="3xl" />
                                 </span>
                             @endif
                         </x-linked-media>
@@ -166,7 +166,7 @@
                             <textarea name="details" required minlength="20" maxlength="3000" rows="5" class="rounded-md border border-paw-line bg-white px-3 py-2.5"></textarea>
                         </label>
                         <button type="submit" class="action action--surface">
-                            <x-lucide-scale class="icon" aria-hidden="true" />
+                            <x-ui-icon name="scale" />
                             <span>{{ __('ui.open_dispute_ecda2ce6c5') }}</span>
                         </button>
                     </form>
@@ -202,7 +202,7 @@
                             <textarea name="body" required minlength="20" maxlength="2000" rows="5" class="rounded-md border border-paw-line bg-white px-3 py-2.5"></textarea>
                         </label>
                         <button type="submit" class="action action--primary">
-                            <x-lucide-star class="icon" aria-hidden="true" />
+                            <x-ui-icon name="star" />
                             <span>{{ __('ui.publish_review_f795632a1e') }}</span>
                         </button>
                     </form>

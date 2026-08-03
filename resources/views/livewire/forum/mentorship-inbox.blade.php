@@ -53,7 +53,7 @@
                                 wire:loading.attr="disabled"
                                 wire:target="respond"
                             >
-                                <x-lucide-check aria-hidden="true" />
+                                <x-ui-icon name="check" />
                                 {{ __('forum_mentorship.inbox.accept') }}
                             </button>
                             <button
@@ -63,7 +63,7 @@
                                 wire:loading.attr="disabled"
                                 wire:target="respond"
                             >
-                                <x-lucide-x aria-hidden="true" />
+                                <x-ui-icon name="x" />
                                 {{ __('forum_mentorship.inbox.decline') }}
                             </button>
                         </div>
@@ -103,7 +103,7 @@
                                     wire:loading.attr="disabled"
                                     wire:target="sendMessage"
                                 >
-                                    <x-lucide-send aria-hidden="true" />
+                                    <x-ui-icon name="send" />
                                     <span wire:loading.remove wire:target="sendMessage">{{ __('forum_mentorship.inbox.send_message') }}</span>
                                     <span wire:loading wire:target="sendMessage">{{ __('forum_mentorship.inbox.sending_message') }}</span>
                                 </button>
@@ -115,7 +115,7 @@
                 @if ($mentorship['can_end'])
                     <details>
                         <summary class="forum-button min-h-11">
-                            <x-lucide-circle-stop aria-hidden="true" />
+                            <x-ui-icon name="circle-stop" />
                             {{ __('forum_mentorship.inbox.end_heading') }}
                         </summary>
                         <form wire:submit="end({{ $mentorship['id'] }}, {{ $mentorship['lock_version'] }})" class="mt-3 grid gap-3">
@@ -139,7 +139,7 @@
                                 wire:loading.attr="disabled"
                                 wire:target="end"
                             >
-                                <x-lucide-circle-stop aria-hidden="true" />
+                                <x-ui-icon name="circle-stop" />
                                 {{ __('forum_mentorship.inbox.end') }}
                             </button>
                         </form>
@@ -162,7 +162,7 @@
                         wire:loading.attr="disabled"
                         wire:target="validateCompletion"
                     >
-                        <x-lucide-badge-check aria-hidden="true" />
+                        <x-ui-icon name="badge-check" />
                         {{ __('forum_mentorship.inbox.validate') }}
                     </button>
                 @endif
@@ -170,7 +170,7 @@
                 @if ($mentorship['can_feedback'])
                     <details>
                         <summary class="forum-button min-h-11">
-                            <x-lucide-message-square-heart aria-hidden="true" />
+                            <x-ui-icon name="message-square-heart" />
                             {{ __('forum_mentorship.inbox.feedback_heading') }}
                         </summary>
                         <form wire:submit="submitFeedback({{ $mentorship['id'] }})" class="mt-3 grid gap-3">
@@ -191,7 +191,7 @@
                                 <textarea wire:model="privateFeedbackNote" rows="2" maxlength="2000"></textarea>
                             </label>
                             <button type="submit" class="forum-button forum-button--primary min-h-11">
-                                <x-lucide-send aria-hidden="true" />
+                                <x-ui-icon name="send" />
                                 {{ __('forum_mentorship.inbox.submit_feedback') }}
                             </button>
                         </form>
@@ -201,7 +201,7 @@
                 @if ($mentorship['can_report'])
                     <details>
                         <summary class="forum-button min-h-11">
-                            <x-lucide-shield-alert aria-hidden="true" />
+                            <x-ui-icon name="shield-alert" />
                             {{ __('forum_mentorship.inbox.report_heading') }}
                         </summary>
                         <form wire:submit="report({{ $mentorship['id'] }})" class="mt-3 grid gap-3">
@@ -240,7 +240,7 @@
                                 wire:loading.attr="disabled"
                                 wire:target="report"
                             >
-                                <x-lucide-flag aria-hidden="true" />
+                                <x-ui-icon name="flag" />
                                 {{ __('forum_mentorship.inbox.report') }}
                             </button>
                         </form>

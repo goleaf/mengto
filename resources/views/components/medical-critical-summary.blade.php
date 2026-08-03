@@ -3,7 +3,7 @@
 <section {{ $attributes->class(['medical-critical']) }} aria-labelledby="critical-health-title">
     <div class="medical-critical__heading">
         <span class="medical-critical__icon">
-            <x-lucide-shield-alert class="size-5" aria-hidden="true" />
+            <x-ui-icon name="shield-alert" size="lg" />
         </span>
         <div>
             <p class="text-xs font-bold uppercase text-paw-coral">{{ __('ui.critical_summary_de4c3e1637') }}</p>

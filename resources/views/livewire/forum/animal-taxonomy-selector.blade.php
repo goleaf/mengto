@@ -12,7 +12,7 @@
                 </small>
             </span>
             <button type="button" wire:click="removeTaxon({{ $taxon['id'] }})" class="forum-button min-h-11 min-w-11" aria-label="{{ __('taxonomy.selector.remove', ['name' => $taxon['name']]) }}">
-                <x-lucide-x aria-hidden="true" />
+                <x-ui-icon name="x" />
             </button>
         </div>
     @empty
@@ -64,7 +64,7 @@
     @endif
 
     <button type="button" wire:click="markUnidentified" class="forum-button mt-3 min-h-11">
-        <x-lucide-circle-help aria-hidden="true" />
+        <x-ui-icon name="circle-help" />
         {{ __('taxonomy.selector.unidentified') }}
     </button>
 

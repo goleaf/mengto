@@ -10,16 +10,16 @@
                         <h2 id="consultation-room-heading" class="mt-4 text-xl font-bold">{{ __('ui.secure_consultation_room_87fd40abbb') }}</h2>
                         <p class="mt-2 max-w-lg text-sm text-white/70">{{ __('ui.camera_and_microphone_stay_off_until_you_enable_284f3bb385') }}</p>
                         <div class="mt-5 flex flex-wrap justify-center gap-2">
-                            <button type="button" class="grid size-11 place-items-center rounded-full border border-white/30 bg-white/10" title="{{ __('ui.toggle_microphone_542e869334') }}" aria-label="{{ __('ui.toggle_microphone_542e869334') }}"><x-lucide-mic class="size-5" /></button>
-                            <button type="button" class="grid size-11 place-items-center rounded-full border border-white/30 bg-white/10" title="{{ __('ui.toggle_camera_b50eae6645') }}" aria-label="{{ __('ui.toggle_camera_b50eae6645') }}"><x-lucide-video class="size-5" /></button>
-                            <button type="button" class="grid size-11 place-items-center rounded-full border border-white/30 bg-white/10" title="{{ __('ui.show_captions_6920ef3de8') }}" aria-label="{{ __('ui.show_captions_6920ef3de8') }}"><x-lucide-captions class="size-5" /></button>
-                            <button type="button" class="grid size-11 place-items-center rounded-full border border-white/30 bg-white/10" title="{{ __('ui.open_text_chat_29014a0710') }}" aria-label="{{ __('ui.open_text_chat_29014a0710') }}"><x-lucide-message-square class="size-5" /></button>
-                            <button type="button" class="grid size-11 place-items-center rounded-full bg-red-600" title="{{ __('ui.leave_consultation_1ccfcad5b1') }}" aria-label="{{ __('ui.leave_consultation_1ccfcad5b1') }}"><x-lucide-phone-off class="size-5" /></button>
+                            <button type="button" class="grid size-11 place-items-center rounded-full border border-white/30 bg-white/10" title="{{ __('ui.toggle_microphone_542e869334') }}" aria-label="{{ __('ui.toggle_microphone_542e869334') }}"><x-ui-icon name="mic" size="lg" /></button>
+                            <button type="button" class="grid size-11 place-items-center rounded-full border border-white/30 bg-white/10" title="{{ __('ui.toggle_camera_b50eae6645') }}" aria-label="{{ __('ui.toggle_camera_b50eae6645') }}"><x-ui-icon name="video" size="lg" /></button>
+                            <button type="button" class="grid size-11 place-items-center rounded-full border border-white/30 bg-white/10" title="{{ __('ui.show_captions_6920ef3de8') }}" aria-label="{{ __('ui.show_captions_6920ef3de8') }}"><x-ui-icon name="captions" size="lg" /></button>
+                            <button type="button" class="grid size-11 place-items-center rounded-full border border-white/30 bg-white/10" title="{{ __('ui.open_text_chat_29014a0710') }}" aria-label="{{ __('ui.open_text_chat_29014a0710') }}"><x-ui-icon name="message-square" size="lg" /></button>
+                            <button type="button" class="grid size-11 place-items-center rounded-full bg-red-600" title="{{ __('ui.leave_consultation_1ccfcad5b1') }}" aria-label="{{ __('ui.leave_consultation_1ccfcad5b1') }}"><x-ui-icon name="phone-off" size="lg" /></button>
                         </div>
                     </div>
                 </div>
                 <div class="flex flex-wrap items-center justify-between gap-3 border-t border-white/15 px-5 py-3 text-xs text-white/70">
-                    <span class="inline-flex items-center gap-2"><x-lucide-shield-check class="size-4" />{{ __('ui.access_is_limited_to_this_appointment_85a8568c05') }}</span>
+                    <span class="inline-flex items-center gap-2"><x-ui-icon name="shield-check" size="sm" />{{ __('ui.access_is_limited_to_this_appointment_85a8568c05') }}</span>
                     <span>{{ __('ui.connection_test_ready_recording_off_9ef43698f3') }}</span>
                 </div>
             </section>
@@ -78,7 +78,7 @@
                         <h3 class="font-bold">{{ __('ui.next_actions_f6eb776252') }}</h3>
                         <ol class="mt-2 grid gap-2">
                             @forelse ($consultation['action_plan'] as $item)
-                                <li class="flex gap-2"><x-lucide-circle-check class="mt-0.5 size-4 shrink-0 text-paw-leaf" aria-hidden="true" /><span>{{ $item }}</span></li>
+                                <li class="flex gap-2"><x-ui-icon name="circle-check" size="sm" class="mt-0.5 shrink-0 text-paw-leaf" /><span>{{ $item }}</span></li>
                             @empty
                                 <li>{{ __('ui.no_actions_listed_82f4a107bf') }}</li>
                             @endforelse
@@ -115,7 +115,7 @@
                 </fieldset>
                 <label class="grid gap-1 text-sm font-semibold">{{ __('ui.referral_or_in_person_follow_up_242191b36a') }}<textarea name="referral_summary" rows="3" class="rounded-md border border-paw-line bg-white px-3 py-2.5">{{ old('referral_summary') }}</textarea></label>
                 <label class="grid max-w-xs gap-1 text-sm font-semibold">{{ __('ui.follow_up_available_until_e514fbf633') }}<input type="date" name="follow_up_until" value="{{ old('follow_up_until') }}" class="rounded-md border border-paw-line bg-white px-3 py-2.5"></label>
-                <button type="submit" class="action action--primary action--compact w-fit"><x-lucide-badge-check class="icon icon--sm" aria-hidden="true" /><span>{{ __('ui.confirm_and_complete_32e970e39c') }}</span></button>
+                <button type="submit" class="action action--primary action--compact w-fit"><x-ui-icon name="badge-check" size="sm" /><span>{{ __('ui.confirm_and_complete_32e970e39c') }}</span></button>
             </form>
         @endif
     </div>
@@ -160,7 +160,10 @@
                                 @csrf
                                 <input type="hidden" name="action" value="revoke-document">
                                 <input type="hidden" name="document_grant_id" value="{{ $document['id'] }}">
-                                <button type="submit" class="text-xs font-bold text-red-700 underline">{{ __('ui.revoke_access_ab292ddb87') }}</button>
+                                <button type="submit" class="inline-flex min-h-11 items-center gap-1 text-xs font-bold text-red-700 underline">
+                                    <x-ui-icon name="shield-x" size="sm" />
+                                    <span>{{ __('ui.revoke_access_ab292ddb87') }}</span>
+                                </button>
                             </form>
                         @endunless
                     </article>
@@ -178,13 +181,13 @@
                         @csrf
                         <input type="hidden" name="action" value="request-reschedule">
                         <input type="hidden" name="reason" value="Client requested a different time.">
-                        <button type="submit" class="action action--surface action--compact w-full"><x-lucide-calendar-sync class="icon icon--sm" aria-hidden="true" /><span>{{ __('ui.request_reschedule_8fdeaddfce') }}</span></button>
+                        <button type="submit" class="action action--surface action--compact w-full"><x-ui-icon name="calendar-sync" size="sm" /><span>{{ __('ui.request_reschedule_8fdeaddfce') }}</span></button>
                     </form>
                     <form method="POST" action="{{ route('bookings.actions', $booking['reference']) }}">
                         @csrf
                         <input type="hidden" name="action" value="cancel">
                         <input type="hidden" name="reason" value="Cancelled from appointment page.">
-                        <button type="submit" class="action action--surface action--compact w-full text-red-700"><x-lucide-calendar-x class="icon icon--sm" aria-hidden="true" /><span>{{ __('ui.cancel_appointment_efd06e321f') }}</span></button>
+                        <button type="submit" class="action action--surface action--compact w-full text-red-700"><x-ui-icon name="calendar-x" size="sm" /><span>{{ __('ui.cancel_appointment_efd06e321f') }}</span></button>
                     </form>
                 </div>
             </section>

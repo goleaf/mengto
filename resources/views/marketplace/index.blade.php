@@ -21,7 +21,7 @@
                 ['label' => __('ui.cities_95697d1449'), 'value' => $stats['cities'], 'icon' => 'map-pin'],
             ] as $stat)
                 <div class="flex items-center gap-3 bg-white p-4">
-                    <x-dynamic-component :component="'lucide-'.$stat['icon']" class="size-5 shrink-0 text-paw-leaf" aria-hidden="true" />
+                    <x-ui-icon size="lg" :name="$stat['icon']" class="shrink-0 text-paw-leaf" />
                     <div>
                         <strong class="block text-xl">{{ $stat['value'] }}</strong>
                         <span class="text-xs text-paw-muted">{{ $stat['label'] }}</span>
@@ -37,7 +37,7 @@
                 <label class="grid gap-1 text-sm font-semibold">
                     {{ __('ui.search_49c266baaa') }}
                     <span class="flex items-center gap-2 rounded-md border border-paw-line bg-white px-3">
-                        <x-lucide-search class="size-4 text-paw-muted" aria-hidden="true" />
+                        <x-ui-icon name="search" size="sm" class="text-paw-muted" />
                         <input name="q" value="{{ $filters['q'] ?? '' }}" class="min-w-0 flex-1 border-0 bg-transparent py-2.5 outline-none" placeholder="{{ __('ui.item_service_city_or_category_2e46b38259') }}">
                     </span>
                 </label>
@@ -147,11 +147,11 @@
                 </label>
                 <div class="flex items-end gap-2">
                     <button type="submit" class="action action--primary action--compact flex-1">
-                        <x-lucide-sliders-horizontal class="icon icon--sm" aria-hidden="true" />
+                        <x-ui-icon name="sliders-horizontal" size="sm" />
                         <span>{{ __('ui.apply_31e392d1c0') }}</span>
                     </button>
                     <a href="{{ route('marketplace.index') }}" class="action action--surface action--icon" title="{{ __('ui.clear_filters_7179ea0035') }}">
-                        <x-lucide-rotate-ccw class="icon icon--sm" aria-hidden="true" />
+                        <x-ui-icon name="rotate-ccw" size="sm" />
                         <span class="sr-only">{{ __('ui.clear_filters_7179ea0035') }}</span>
                     </a>
                 </div>
@@ -165,7 +165,7 @@
                     <p class="mt-1 text-sm text-paw-muted">{{ __('ui.community_status_is_not_a_guarantee_inspect_items_4a9153ad08') }}</p>
                 </div>
                 <span class="inline-flex items-center gap-2 text-sm font-semibold text-paw-muted">
-                    <x-lucide-shield-check class="size-4 text-paw-leaf" aria-hidden="true" />
+                    <x-ui-icon name="shield-check" size="sm" class="text-paw-leaf" />
                     {{ __('ui.platform_only_contact_51f3af5138') }}
                 </span>
             </div>
@@ -175,7 +175,7 @@
                     <x-listing-card :listing="$listing" />
                 @empty
                     <div class="market-empty">
-                        <x-lucide-search-x class="size-8 text-paw-muted" aria-hidden="true" />
+                        <x-ui-icon name="search-x" size="2xl" class="text-paw-muted" />
                         <h3 class="mt-3 text-xl font-bold">{{ __('ui.no_exact_match_yet_85432de381') }}</h3>
                         <p class="mt-2 max-w-xl text-paw-muted">{{ __('ui.remove_one_filter_search_a_nearby_city_or_528eb60b39') }}</p>
                     </div>

@@ -2,10 +2,13 @@
     <div class="grid gap-7">
         <header class="device-detail-header">
             <div class="device-detail-header__identity">
-                <span><x-dynamic-component :component="'lucide-'.$device['icon']" class="size-8" aria-hidden="true" /></span>
+                <span><x-ui-icon :name="$device['icon']" size="2xl" /></span>
                 <div>
                     <div class="flex flex-wrap items-center gap-2">
-                        <a href="{{ route('devices.index') }}" class="text-sm font-bold text-paw-leaf">{{ __('ui.smart_devices_228fd3f770') }}</a>
+                        <a href="{{ route('devices.index') }}" class="inline-flex items-center gap-1 text-sm font-bold text-paw-leaf">
+                            <x-ui-icon name="arrow-left" size="sm" />
+                            <span>{{ __('ui.smart_devices_228fd3f770') }}</span>
+                        </a>
                         <span class="text-paw-line">/</span>
                         <x-status-badge label="{{ __('ui.private_c63eb6720c') }}" icon="lock-keyhole" tone="surface" />
                     </div>
@@ -21,7 +24,7 @@
 
         @if ($errors->any())
             <div class="device-form-errors" role="alert">
-                <x-lucide-circle-alert class="size-5" aria-hidden="true" />
+                <x-ui-icon name="circle-alert" size="lg" />
                 <div>
                     <strong>{{ __('ui.the_device_action_was_not_saved_a87ecd9fff') }}</strong>
                     <ul>
@@ -37,22 +40,22 @@
 
         <section class="device-status-strip" aria-label="{{ __('ui.current_device_status_31c25170b2') }}">
             <div>
-                <span class="device-status-strip__icon"><x-lucide-radio class="size-5" aria-hidden="true" /></span>
+                <span class="device-status-strip__icon"><x-ui-icon name="radio" size="lg" /></span>
                 <small>{{ __('ui.status_920e413c7d') }}</small>
                 <strong>{{ $device['status_label'] }}</strong>
             </div>
             <div>
-                <span class="device-status-strip__icon"><x-lucide-wifi class="size-5" aria-hidden="true" /></span>
+                <span class="device-status-strip__icon"><x-ui-icon name="wifi" size="lg" /></span>
                 <small>{{ __('ui.connection_639a40e82b') }}</small>
                 <strong>{{ $device['connection_label'] }}</strong>
             </div>
             <div>
-                <span class="device-status-strip__icon"><x-lucide-battery-medium class="size-5" aria-hidden="true" /></span>
+                <span class="device-status-strip__icon"><x-ui-icon name="battery-medium" size="lg" /></span>
                 <small>{{ __('ui.battery_dfcb7c1619') }}</small>
                 <strong>{{ $device['battery_label'] }}</strong>
             </div>
             <div>
-                <span class="device-status-strip__icon"><x-lucide-clock-3 class="size-5" aria-hidden="true" /></span>
+                <span class="device-status-strip__icon"><x-ui-icon name="clock-3" size="lg" /></span>
                 <small>{{ __('ui.last_signal_6f2cfbf3ce') }}</small>
                 <strong>{{ $device['last_seen'] }}</strong>
             </div>
@@ -72,8 +75,8 @@
                         <div class="device-location">
                             <div class="device-location__map" aria-label="{{ __('presentation.private_map_preview', ['location' => $device['location_label']]) }}">
                                 <span class="device-location__route"></span>
-                                <span class="device-location__marker"><x-lucide-paw-print class="size-5" aria-hidden="true" /></span>
-                                <span class="device-location__home"><x-lucide-house class="size-4" aria-hidden="true" /></span>
+                                <span class="device-location__marker"><x-ui-icon name="paw-print" size="lg" /></span>
+                                <span class="device-location__home"><x-ui-icon name="house" size="sm" /></span>
                             </div>
                             <dl>
                                 <div><dt>{{ __('ui.exact_point_bab90d06d4') }}</dt><dd>{{ $device['exact_location'] ?: __('ui.no_current_coordinates_d53a111f93') }}</dd></div>
@@ -115,7 +118,7 @@
                             <p>{{ __('ui.idempotent_command_2b03806393') }}</p>
                             <h2 id="device-control-title">{{ __('ui.device_control_1c3da27ae2') }}</h2>
                         </div>
-                        <x-lucide-shield-check class="size-5 text-paw-leaf" aria-hidden="true" />
+                        <x-ui-icon name="shield-check" size="lg" class="text-paw-leaf" />
                     </div>
                     <form method="POST" action="{{ route('devices.commands.store', $device['slug']) }}" class="device-form-compact">
                         @csrf
@@ -145,7 +148,7 @@
                             <span>{{ __('ui.confirm_high_impact_command_42b24522e4') }}</span>
                         </label>
                         <button class="action action--primary" type="submit">
-                            <x-lucide-send class="icon" aria-hidden="true" />
+                            <x-ui-icon name="send" />
                             <span>{{ __('ui.send_once_477fa53d9a') }}</span>
                         </button>
                     </form>
@@ -161,7 +164,7 @@
                     <div class="device-assignment-list">
                         @forelse ($assignments as $assignment)
                             <article>
-                                <span><x-lucide-paw-print class="size-4" aria-hidden="true" /></span>
+                                <span><x-ui-icon name="paw-print" size="sm" /></span>
                                 <div>
                                     <h3>{{ $assignment['pet_name'] }}</h3>
                                     <p>{{ $assignment['identification'] }} · {{ $assignment['confidence'] }}</p>
@@ -208,7 +211,7 @@
                         <div class="device-compact-list">
                             @forelse ($safe_zones as $zone)
                                 <article>
-                                    <x-lucide-map-pinned class="size-4" aria-hidden="true" />
+                                    <x-ui-icon name="map-pinned" size="sm" />
                                     <div>
                                         <h3>{{ $zone['name'] }}</h3>
                                         <p>{{ $zone['public_area_label'] }} · {{ $zone['radius'] ?: $zone['shape'] }}</p>
@@ -260,7 +263,7 @@
                             <label>{{ __('ui.unit_4e545960f1') }}<input name="unit" maxlength="40"></label>
                         </div>
                         <label>{{ __('ui.recorded_at_e4cea0827a') }}<input type="datetime-local" name="recorded_at" value="{{ $now_local }}" required></label>
-                        <button class="action" type="submit"><x-lucide-plus class="icon" aria-hidden="true" /><span>{{ __('ui.add_unverified_reading_3164d45d9b') }}</span></button>
+                        <button class="action" type="submit"><x-ui-icon name="plus" /><span>{{ __('ui.add_unverified_reading_3164d45d9b') }}</span></button>
                     </form>
                 </section>
             </aside>

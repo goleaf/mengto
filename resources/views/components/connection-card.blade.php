@@ -13,7 +13,7 @@
 
         @if ($item['context'])
             <p class="connection-card__context">
-                <x-lucide-info class="icon icon--sm" aria-hidden="true" />
+                <x-ui-icon name="info" size="sm" />
                 {{ $item['context'] }}
             </p>
         @endif
@@ -38,7 +38,7 @@
         @if ($item['secondary_actions'] !== [] || $item['notification_options'] !== [])
             <details class="connection-menu">
                 <summary aria-label="{{ __('presentation.more_settings_for', ['name' => $item['name']]) }}" title="{{ __('ui.more_settings_fb39125df6') }}">
-                    <x-lucide-ellipsis class="icon" aria-hidden="true" />
+                    <x-ui-icon name="ellipsis" />
                 </summary>
 
                 <div class="connection-menu__panel">
@@ -53,7 +53,7 @@
                                         class="connection-menu__option"
                                     >
                                         @if ($option['active'])
-                                            <x-lucide-check class="icon icon--sm" aria-hidden="true" />
+                                            <x-ui-icon name="check" size="sm" />
                                         @else
                                             <span class="connection-menu__option-space" aria-hidden="true"></span>
                                         @endif

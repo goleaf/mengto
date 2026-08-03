@@ -11,11 +11,11 @@
                 >
             @else
                 <div class="grid size-full place-items-center">
-                    <x-dynamic-component :component="'lucide-'.$searchCase['type_icon']" class="size-12 text-paw-leaf" aria-hidden="true" />
+                    <x-ui-icon size="4xl" :name="$searchCase['type_icon']" class="text-paw-leaf" />
                 </div>
             @endif
             <span class="absolute left-3 top-3 inline-flex items-center gap-1 rounded bg-white/95 px-2 py-1 text-xs font-bold shadow-sm">
-                <x-dynamic-component :component="'lucide-'.$searchCase['type_icon']" class="size-3.5" aria-hidden="true" />
+                <x-ui-icon size="sm" :name="$searchCase['type_icon']" />
                 {{ $searchCase['type_label'] }}
             </span>
         </div>
@@ -40,14 +40,14 @@
 
             <dl class="grid gap-2 border-t border-paw-line pt-3 text-sm">
                 <div class="flex items-start gap-2">
-                    <x-lucide-map-pin class="mt-0.5 size-4 shrink-0 text-paw-coral" aria-hidden="true" />
+                    <x-ui-icon name="map-pin" size="sm" class="mt-0.5 shrink-0 text-paw-coral" />
                     <div>
                         <dt class="sr-only">{{ __('ui.area_024dc204d7') }}</dt>
                         <dd class="font-semibold">{{ $searchCase['last_seen_area'] }}</dd>
                     </div>
                 </div>
                 <div class="flex items-center gap-2 text-paw-muted">
-                    <x-lucide-clock-3 class="size-4 shrink-0" aria-hidden="true" />
+                    <x-ui-icon name="clock-3" size="sm" class="shrink-0" />
                     <dt class="sr-only">{{ __('ui.last_seen_21fd79c7de') }}</dt>
                     <dd>{{ $searchCase['last_seen_label'] }}</dd>
                 </div>

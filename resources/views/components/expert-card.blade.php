@@ -55,7 +55,7 @@
         <ul class="grid gap-1 text-sm text-paw-muted" aria-label="{{ __('ui.why_this_profile_matches_8f43aa2b22') }}">
             @forelse ($expert['reasons'] as $reason)
                 <li class="flex items-center gap-2">
-                    <x-lucide-check class="size-4 text-paw-leaf" aria-hidden="true" />
+                    <x-ui-icon name="check" size="sm" class="text-paw-leaf" />
                     <span>{{ $reason }}</span>
                 </li>
             @empty

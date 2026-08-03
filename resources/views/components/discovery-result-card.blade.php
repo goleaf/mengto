@@ -19,7 +19,7 @@
             />
         @else
             <span class="discovery-result-card__placeholder">
-                <x-dynamic-component :component="'lucide-'.$item['icon']" class="icon" aria-hidden="true" />
+                <x-ui-icon :name="$item['icon']" />
             </span>
         @endif
     </x-linked-media>
@@ -40,14 +40,14 @@
         <ul class="discovery-result-card__meta" aria-label="{{ __('discovery.meta.label') }}">
             @foreach ($item['meta'] as $meta)
                 <li>
-                    <x-dynamic-component :component="'lucide-'.$meta['icon']" class="icon icon--sm" aria-hidden="true" />
+                    <x-ui-icon size="sm" :name="$meta['icon']" />
                     <span>{{ $meta['label'] }}</span>
                 </li>
             @endforeach
         </ul>
 
         <p class="discovery-result-card__reason">
-            <x-lucide-sparkles class="icon icon--sm" aria-hidden="true" />
+            <x-ui-icon name="sparkles" size="sm" />
             <span><strong>{{ __('discovery.reasons.label') }}</strong> {{ $item['reason'] }}</span>
         </p>
 

@@ -17,11 +17,7 @@
         <div class="summary-stat">
             <div class="summary-stat__label">
                 @if (isset($icons[$loop->index]))
-                    <x-dynamic-component
-                        :component="'lucide-'.$icons[$loop->index]"
-                        class="icon icon--sm"
-                        aria-hidden="true"
-                    />
+                    <x-ui-icon size="sm" :name="$icons[$loop->index]" />
                 @endif
                 <span>{{ $item['label'] }}</span>
             </div>

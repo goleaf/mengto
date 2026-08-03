@@ -9,7 +9,7 @@
                 >
             @else
                 <div class="grid h-full place-items-center" role="img" aria-label="{{ $pet['avatar_alt'] }}">
-                    <x-lucide-paw-print class="size-10" aria-hidden="true" />
+                    <x-ui-icon name="paw-print" size="3xl" />
                 </div>
             @endif
         </div>

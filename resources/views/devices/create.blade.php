@@ -14,7 +14,7 @@
 
         @if ($errors->any())
             <div class="device-form-errors" role="alert">
-                <x-lucide-circle-alert class="size-5" aria-hidden="true" />
+                <x-ui-icon name="circle-alert" size="lg" />
                 <div>
                     <strong>{{ __('ui.the_device_was_not_connected_2169b1d288') }}</strong>
                     <ul>
@@ -119,7 +119,7 @@
             </label>
 
             <button type="submit" class="action action--primary">
-                <x-lucide-link class="icon" aria-hidden="true" />
+                <x-ui-icon name="link" />
                 <span>{{ __('ui.connect_privately_363eb4f684') }}</span>
             </button>
         </form>

@@ -3,10 +3,7 @@
 <article class="knowledge-card">
     <div>
         <span class="forum-badge {{ $article['is_outdated'] ? 'forum-badge--danger' : '' }}">
-            <x-dynamic-component
-                :component="$article['is_outdated'] ? 'lucide-history' : 'lucide-book-open-check'"
-                aria-hidden="true"
-            />
+            <x-ui-icon :name="$article['is_outdated'] ? 'history' : 'book-open-check'" />
             {{ $article['type_label'] }}
         </span>
     </div>

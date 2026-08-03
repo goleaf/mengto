@@ -14,7 +14,7 @@
 
         @if ($errors->any())
             <div class="care-form-errors" role="alert">
-                <x-lucide-circle-alert class="size-5" aria-hidden="true" />
+                <x-ui-icon name="circle-alert" size="lg" />
                 <div>
                     <strong>{{ __('ui.the_journal_was_not_created_e807e191b5') }}</strong>
                     <ul>
@@ -58,7 +58,7 @@
             </label>
 
             <button type="submit" class="action action--primary" @disabled($pet_options === [])>
-                <x-lucide-lock-keyhole class="icon" aria-hidden="true" />
+                <x-ui-icon name="lock-keyhole" />
                 <span>{{ __('ui.create_private_journal_fae55507cb') }}</span>
             </button>
         </form>

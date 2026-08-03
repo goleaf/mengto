@@ -4,7 +4,7 @@
 
 <section class="compatibility" aria-label="{{ __('ui.owner_reviewed_compatibility_notes_f93c277a89') }}">
     <div class="compatibility__heading">
-        <x-lucide-sparkles class="icon icon--sm" aria-hidden="true" />
+        <x-ui-icon name="sparkles" size="sm" />
         <div>
             <h4>{{ __('ui.shared_routines_36e841cb6c') }}</h4>
             <p>{{ $compatibility['reason'] }}</p>
@@ -15,7 +15,7 @@
         <ul class="compatibility__list compatibility__list--shared">
             @forelse ($compatibility['shared'] as $point)
                 <li>
-                    <x-lucide-check class="icon icon--sm" aria-hidden="true" />
+                    <x-ui-icon name="check" size="sm" />
                     <span>{{ $point }}</span>
                 </li>
             @empty
@@ -26,7 +26,7 @@
     @if ($compatibility['cautions'] !== [])
         <div class="compatibility__cautions">
             <p>
-                <x-lucide-message-circle-warning class="icon icon--sm" aria-hidden="true" />
+                <x-ui-icon name="message-circle-warning" size="sm" />
                 {{ __('ui.discuss_before_meeting_e113b4e8b3') }}
             </p>
             <ul class="compatibility__list">

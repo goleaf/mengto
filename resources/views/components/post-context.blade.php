@@ -2,15 +2,15 @@
 
 <div class="post-context" aria-label="{{ __('ui.publication_context_f393183682') }}">
     <span>
-        <x-lucide-shapes class="icon icon--xs" aria-hidden="true" />
+        <x-ui-icon name="shapes" size="xs" />
         {{ $post['topic'] }}
     </span>
     <span>
-        <x-lucide-map-pin class="icon icon--xs" aria-hidden="true" />
+        <x-ui-icon name="map-pin" size="xs" />
         {{ $post['location'] }}
     </span>
     <span>
-        <x-lucide-message-square class="icon icon--xs" aria-hidden="true" />
+        <x-ui-icon name="message-square" size="xs" />
         {{ $post['comment_policy'] }}
     </span>
 </div>

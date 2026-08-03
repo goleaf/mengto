@@ -63,7 +63,7 @@
                     <div class="place-facility-grid">
                         @forelse ($content['facilities'] as $facility)
                             <div class="place-facility">
-                                <x-dynamic-component :component="'lucide-'.$facility['icon']" class="icon" aria-hidden="true" />
+                                <x-ui-icon :name="$facility['icon']" />
                                 <div>
                                     <strong>{{ $facility['label'] }}</strong>
                                     <span>{{ $facility['value'] }}</span>
@@ -80,7 +80,7 @@
 
                     @if ($checkIn)
                         <div class="place-check-in place-check-in--active">
-                            <x-lucide-map-pin-check class="icon" aria-hidden="true" />
+                            <x-ui-icon name="map-pin-check" />
                             <div>
                                 <strong>{{ __('ui.check_in_active_262ec12d90') }}</strong>
                                 <span>{{ __('presentation.visibility_ends_automatically', ['visibility' => $checkIn['visibility_label']]) }}</span>
@@ -220,7 +220,7 @@
                 </div>
                 @forelse ($content['nearby'] as $nearby)
                     <div>
-                        <x-dynamic-component :component="'lucide-'.$nearby['icon']" class="icon" aria-hidden="true" />
+                        <x-ui-icon :name="$nearby['icon']" />
                         <strong>{{ $nearby['title'] }}</strong>
                         <span>{{ $nearby['detail'] }}</span>
                     </div>
@@ -304,7 +304,7 @@
             <div class="place-rule-list">
                 @forelse ($content['rules'] as $rule)
                     <div>
-                        <x-dynamic-component :component="'lucide-'.$rule['icon']" class="icon" aria-hidden="true" />
+                        <x-ui-icon :name="$rule['icon']" />
                         <div>
                             <strong>{{ $rule['title'] }}</strong>
                             <span>{{ $rule['detail'] }}</span>
@@ -380,7 +380,7 @@
                                 <span>{{ $review['date'] }} · {{ $review['visited_with'] }}</span>
                             </div>
                             <span class="place-review__rating" aria-label="{{ __('presentation.rating_out_of_five', ['rating' => $review['rating']]) }}">
-                                <x-lucide-star class="icon icon--sm" aria-hidden="true" />
+                                <x-ui-icon name="star" size="sm" />
                                 {{ $review['rating'] }}
                             </span>
                         </header>
@@ -423,7 +423,7 @@
                             <strong>{{ $event['title'] }}</strong>
                             <small>{{ $event['category_label'] }} · {{ $event['place'] }} · {{ $event['status'] }}</small>
                         </div>
-                        <x-lucide-chevron-right class="icon" aria-hidden="true" />
+                        <x-ui-icon name="chevron-right" />
                     </a>
                 @empty
                     <x-empty-state
@@ -447,7 +447,7 @@
                 @forelse ($content['questions'] as $question)
                     <article>
                         <header>
-                            <x-lucide-circle-help class="icon" aria-hidden="true" />
+                            <x-ui-icon name="circle-help" />
                             <div>
                                 <strong>{{ $question['question'] }}</strong>
                                 <span>{{ $question['author'] }}</span>
@@ -455,7 +455,7 @@
                         </header>
                         @if ($question['answer'])
                             <div class="place-question__answer">
-                                <x-lucide-message-circle-check class="icon" aria-hidden="true" />
+                                <x-ui-icon name="message-circle-check" />
                                 <div>
                                     <p>{{ $question['answer'] }}</p>
                                     <small>{{ $question['answer_author'] }} · {{ $question['answered_at'] }}</small>
@@ -540,7 +540,7 @@
                 @forelse ($content['warnings'] as $warning)
                     <article class="place-warning place-warning--{{ $warning['status'] }}">
                         <header>
-                            <x-lucide-triangle-alert class="icon" aria-hidden="true" />
+                            <x-ui-icon name="triangle-alert" />
                             <div>
                                 <strong>{{ $warning['title'] }}</strong>
                                 <span>{{ __('presentation.status_confirmations', ['status' => $warning['status_label'], 'confirmations' => $warning['confirmations']]) }}</span>
@@ -587,7 +587,7 @@
             <div class="place-history">
                 @forelse ($content['history'] as $update)
                     <div>
-                        <x-dynamic-component :component="'lucide-'.$update['icon']" class="icon" aria-hidden="true" />
+                        <x-ui-icon :name="$update['icon']" />
                         <div>
                             <strong>{{ $update['title'] }}</strong>
                             <span>{{ $update['body'] }}</span>
@@ -659,7 +659,7 @@
 
     <footer class="place-dashboard__safety">
         <div>
-            <x-lucide-shield-alert class="icon" aria-hidden="true" />
+            <x-ui-icon name="shield-alert" />
             <p>
                 <strong>{{ __('ui.information_can_change_89fc12eba8') }}</strong>
                 {{ __('ui.check_current_rules_live_availability_and_urgent_intake_6299988a57') }}

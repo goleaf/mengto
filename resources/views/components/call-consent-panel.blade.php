@@ -8,7 +8,7 @@
     {{ $attributes->class(['panel', 'call-consent']) }}
 >
     <div class="call-consent__icon" aria-hidden="true">
-        <x-dynamic-component :component="'lucide-'.$call['icon']" class="icon" />
+        <x-ui-icon :name="$call['icon']" />
     </div>
 
     <div class="call-consent__copy">

@@ -31,7 +31,7 @@
             <label class="field-group" for="place-area">
                 <span class="field-group__label">{{ __('ui.area_024dc204d7') }}</span>
                 <span class="field-group__control">
-                    <x-lucide-map-pin class="icon icon--sm" aria-hidden="true" />
+                    <x-ui-icon name="map-pin" size="sm" />
                     <input id="place-area" name="area" type="text" value="{{ $filters['area'] }}" class="field" maxlength="120">
                 </span>
             </label>
@@ -39,7 +39,7 @@
             <label class="field-group" for="place-pet">
                 <span class="field-group__label">{{ __('ui.plan_for_0095cfdeee') }}</span>
                 <span class="field-group__control">
-                    <x-lucide-paw-print class="icon icon--sm" aria-hidden="true" />
+                    <x-ui-icon name="paw-print" size="sm" />
                     <select id="place-pet" name="pet" class="field field--select">
                         <option value="scout" @selected($filters['pet'] === 'scout')>{{ __('ui.scout_8a1db462be') }}</option>
                         <option value="nori" @selected($filters['pet'] === 'nori')>{{ __('ui.nori_a64203ba20') }}</option>
@@ -60,7 +60,7 @@
 
         @if ($places['parsed_query']['summary'])
             <p class="place-search__interpretation">
-                <x-lucide-sparkles class="icon icon--sm" aria-hidden="true" />
+                <x-ui-icon name="sparkles" size="sm" />
                 {{ $places['parsed_query']['summary'] }}
             </p>
         @endif
@@ -74,21 +74,7 @@
                     class="place-filter-chip {{ $filters['category'] === $value ? 'place-filter-chip--active' : '' }}"
                     aria-pressed="{{ $filters['category'] === $value ? 'true' : 'false' }}"
                 >
-                    <x-dynamic-component
-                        :component="'lucide-'.($value === 'all' ? 'layout-grid' : match ($value) {
-                            'park' => 'trees',
-                            'dog-park' => 'fence',
-                            'route' => 'route',
-                            'vet' => 'stethoscope',
-                            'emergency-vet' => 'siren',
-                            'pet-store' => 'shopping-bag',
-                            'grooming' => 'scissors',
-                            'shelter' => 'house-heart',
-                            'pet-cafe' => 'coffee',
-                        })"
-                        class="icon icon--sm"
-                        aria-hidden="true"
-                    />
+                    <x-ui-icon size="sm" :name="($value === 'all' ? 'layout-grid' : match ($value) { 'park' => 'trees', 'dog-park' => 'fence', 'route' => 'route', 'vet' => 'stethoscope', 'emergency-vet' => 'siren', 'pet-store' => 'shopping-bag', 'grooming' => 'scissors', 'shelter' => 'house-heart', 'pet-cafe' => 'coffee', })" />
                     <span>{{ $label }}</span>
                 </button>
             @empty
@@ -98,7 +84,7 @@
 
         <details class="place-search__filters" @if ($places['advanced_filters_active']) open @endif>
             <summary>
-                <x-lucide-sliders-horizontal class="icon icon--sm" aria-hidden="true" />
+                <x-ui-icon name="sliders-horizontal" size="sm" />
                 {{ __('ui.more_filters_b1ab49a6fe') }}
             </summary>
             <div class="place-search__filter-grid">
@@ -142,7 +128,7 @@
                 <label class="place-search__toggle">
                     <input type="checkbox" name="open_now" value="1" @checked($filters['open_now'])>
                     <span>
-                        <x-lucide-clock-3 class="icon icon--sm" aria-hidden="true" />
+                        <x-ui-icon name="clock-3" size="sm" />
                         {{ __('ui.open_now_14b67e6207') }}
                     </span>
                 </label>
@@ -181,7 +167,7 @@
             <input type="hidden" name="place_latitude" value="" data-place-latitude>
             <input type="hidden" name="place_longitude" value="" data-place-longitude>
             <button type="button" class="action action--surface action--compact" data-place-locate>
-                <x-lucide-locate-fixed class="icon icon--sm" aria-hidden="true" />
+                <x-ui-icon name="locate-fixed" size="sm" />
                 <span>{{ $places['location']['enabled'] ? __('ui.refresh_area_e3dd46c502') : __('ui.use_my_location_30cbc33ba1') }}</span>
             </button>
             <span class="place-location__status" data-place-location-status aria-live="polite"></span>

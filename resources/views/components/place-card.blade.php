@@ -23,7 +23,7 @@
             :eager="$eager"
         />
         <span class="place-card__category">
-            <x-dynamic-component :component="'lucide-'.$place['category_icon']" class="icon icon--sm" aria-hidden="true" />
+            <x-ui-icon size="sm" :name="$place['category_icon']" />
             {{ $place['category_label'] }}
         </span>
     </a>
@@ -45,28 +45,28 @@
 
         <div class="place-card__facts" aria-label="{{ __('ui.place_highlights_e9c48986d7') }}">
             <span>
-                <x-lucide-star class="icon icon--sm" aria-hidden="true" />
+                <x-ui-icon name="star" size="sm" />
                 {{ $place['rating_label'] }}
             </span>
             <span>
-                <x-lucide-paw-print class="icon icon--sm" aria-hidden="true" />
+                <x-ui-icon name="paw-print" size="sm" />
                 {{ $place['leash_policy'] }}
             </span>
             <span>
-                <x-lucide-users-round class="icon icon--sm" aria-hidden="true" />
+                <x-ui-icon name="users-round" size="sm" />
                 {{ $place['crowd_label'] }}
             </span>
         </div>
 
         @if ($place['warning_count'] > 0)
             <a href="{{ $place['detail_url'].'?tab=updates' }}" class="place-card__warning">
-                <x-lucide-triangle-alert class="icon icon--sm" aria-hidden="true" />
+                <x-ui-icon name="triangle-alert" size="sm" />
                 <span>{{ trans_choice('presentation.active_warnings', $place['warning_count'], ['count' => $place['warning_count']]) }}</span>
             </a>
         @endif
 
         <p class="place-card__reason">
-            <x-lucide-sparkles class="icon icon--sm" aria-hidden="true" />
+            <x-ui-icon name="sparkles" size="sm" />
             <span>{{ $place['recommendation_reason'] }}</span>
         </p>
 

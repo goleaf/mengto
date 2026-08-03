@@ -13,7 +13,7 @@
         @forelse ($events as $event)
             <li class="medical-timeline__item">
                 <span class="medical-timeline__icon {{ $event['is_critical'] ? 'medical-timeline__icon--critical' : '' }}">
-                    <x-dynamic-component :component="'lucide-'.$event['icon']" class="size-4" aria-hidden="true" />
+                    <x-ui-icon size="sm" :name="$event['icon']" />
                 </span>
                 <div class="min-w-0">
                     <div class="flex flex-wrap items-start justify-between gap-2">
@@ -29,7 +29,7 @@
                     <p class="mt-2 text-xs font-semibold text-paw-muted">{{ $event['source'] }} · {{ $event['source_name'] }}</p>
                     @if ($event['follow_up'])
                         <p class="mt-2 inline-flex items-center gap-1 text-xs font-bold text-paw-leaf">
-                            <x-lucide-calendar-clock class="size-3.5" aria-hidden="true" />
+                            <x-ui-icon name="calendar-clock" size="sm" />
                             {{ __('presentation.follow_up', ['value' => $event['follow_up']]) }}
                         </p>
                     @endif
@@ -37,7 +37,7 @@
             </li>
         @empty
             <li class="medical-empty">
-                <x-lucide-notebook-pen class="size-7" aria-hidden="true" />
+                <x-ui-icon name="notebook-pen" size="xl" />
                 <p>{{ __('ui.no_medical_events_have_been_recorded_aa044cc03b') }}</p>
             </li>
         @endforelse

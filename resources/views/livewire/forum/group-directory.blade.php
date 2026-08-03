@@ -56,7 +56,7 @@
                             @endif
                         </div>
                         <a class="forum-button min-h-11 self-center" href="{{ $invitation['group_url'] }}" wire:navigate>
-                            <x-lucide-arrow-up-right aria-hidden="true" />
+                            <x-ui-icon name="arrow-up-right" />
                             {{ __('forum_groups.actions.open') }}
                         </a>
                     </article>
@@ -104,7 +104,7 @@
                         <p>{{ __('forum_groups.labels.your_membership') }}: {{ $group['membership_state'] }}</p>
                     @endif
                     <a class="forum-button forum-button--primary min-h-11" href="{{ $group['url'] }}" wire:navigate>
-                        <x-lucide-arrow-up-right aria-hidden="true" />
+                        <x-ui-icon name="arrow-up-right" />
                         {{ __('forum_groups.actions.open') }}
                     </a>
                 </article>
@@ -120,7 +120,7 @@
 
     <details class="forum-form">
         <summary class="forum-button min-h-11">
-            <x-lucide-plus aria-hidden="true" />
+            <x-ui-icon name="plus" />
             {{ __('forum_groups.page.create_heading') }}
         </summary>
         <form wire:submit="create" class="mt-4 grid gap-4">
@@ -195,7 +195,7 @@
                 wire:loading.attr="disabled"
                 wire:target="create"
             >
-                <x-lucide-plus aria-hidden="true" />
+                <x-ui-icon name="plus" />
                 <span wire:loading.remove wire:target="create">{{ __('forum_groups.actions.create') }}</span>
                 <span wire:loading wire:target="create">{{ __('forum_groups.actions.creating') }}</span>
             </button>

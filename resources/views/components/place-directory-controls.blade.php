@@ -30,7 +30,7 @@
                     class="{{ $link['current'] ? 'is-active' : '' }}"
                     @if ($link['current']) aria-current="page" @endif
                 >
-                    <x-dynamic-component :component="'lucide-'.$link['icon']" class="icon icon--sm" aria-hidden="true" />
+                    <x-ui-icon size="sm" :name="$link['icon']" />
                     <span>{{ $link['label'] }}</span>
                 </a>
             @empty
@@ -53,7 +53,7 @@
                 @endforelse
             </select>
             <button type="submit" class="icon-button" aria-label="{{ __('ui.apply_sorting_323ef154f9') }}">
-                <x-lucide-arrow-up-down class="icon icon--sm" aria-hidden="true" />
+                <x-ui-icon name="arrow-up-down" size="sm" />
             </button>
         </form>
     </div>

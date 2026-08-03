@@ -23,7 +23,7 @@
             <header class="forum-topic-editor__guidance" data-forum-publishing-guidance>
                 <div class="forum-topic-editor__guidance-heading">
                     <span class="forum-topic-editor__guidance-icon" aria-hidden="true">
-                        <x-lucide-list-checks />
+                        <x-ui-icon name="list-checks" />
                     </span>
                     <div>
                         <p class="forum-topic-editor__eyebrow">{{ __('ui.before_publishing_8f20cb234f') }}</p>
@@ -32,11 +32,11 @@
                 </div>
 
                 <ul class="forum-topic-editor__guidance-list">
-                    <li><x-lucide-check aria-hidden="true" /><span>{{ __('ui.use_a_title_that_names_the_actual_situation_f8c9b435a8') }}</span></li>
-                    <li><x-lucide-check aria-hidden="true" /><span>{{ __('ui.separate_observation_personal_experience_and_professional_advice_bd56518ea8') }}</span></li>
-                    <li><x-lucide-check aria-hidden="true" /><span>{{ __('ui.attach_only_the_pet_details_needed_to_understand_48d873de27') }}</span></li>
-                    <li><x-lucide-check aria-hidden="true" /><span>{{ __('ui.use_city_or_district_instead_of_a_home_cdb8305a75') }}</span></li>
-                    <li><x-lucide-check aria-hidden="true" /><span>{{ __('ui.link_important_claims_to_a_current_primary_source_312d15e202') }}</span></li>
+                    <li><x-ui-icon name="check" /><span>{{ __('ui.use_a_title_that_names_the_actual_situation_f8c9b435a8') }}</span></li>
+                    <li><x-ui-icon name="check" /><span>{{ __('ui.separate_observation_personal_experience_and_professional_advice_bd56518ea8') }}</span></li>
+                    <li><x-ui-icon name="check" /><span>{{ __('ui.attach_only_the_pet_details_needed_to_understand_48d873de27') }}</span></li>
+                    <li><x-ui-icon name="check" /><span>{{ __('ui.use_city_or_district_instead_of_a_home_cdb8305a75') }}</span></li>
+                    <li><x-ui-icon name="check" /><span>{{ __('ui.link_important_claims_to_a_current_primary_source_312d15e202') }}</span></li>
                 </ul>
             </header>
 
@@ -256,7 +256,7 @@
                     </div>
 
                     <aside class="forum-safety" role="note">
-                        <x-lucide-shield-check aria-hidden="true" />
+                        <x-ui-icon name="shield-check" />
                         <div>
                             <strong>{{ __('ui.urgent_symptoms_belong_with_a_clinic_not_a_445f51cbf1') }}</strong>
                             <span>{{ __('ui.difficulty_breathing_loss_of_consciousness_seizures_major_bleeding_96adae8585') }}</span>
@@ -323,11 +323,11 @@
 
                 <div class="forum-form__actions forum-topic-editor__actions">
                     <button type="submit" name="intent" value="draft" class="forum-button">
-                        <x-lucide-file-clock aria-hidden="true" />
+                        <x-ui-icon name="file-clock" />
                         {{ __('ui.save_draft_3de100106d') }}
                     </button>
                     <button type="submit" name="intent" value="publish" class="forum-button forum-button--primary">
-                        <x-lucide-send aria-hidden="true" />
+                        <x-ui-icon name="send" />
                         {{ ($topic?->status->value ?? 'published') === 'draft' ? __('ui.publish_topic_54f6ce2e71') : ($topic !== null ? __('ui.save_changes_dd0ae7a5cb') : __('ui.publish_topic_54f6ce2e71')) }}
                     </button>
                 </div>

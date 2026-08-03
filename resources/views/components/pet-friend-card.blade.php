@@ -16,7 +16,7 @@
     @if ($item['relationship'])
         <div class="pet-friend-card__relationship">
             <span>
-                <x-lucide-shield-check class="icon icon--sm" aria-hidden="true" />
+                <x-ui-icon name="shield-check" size="sm" />
                 {{ $item['context'] }}
             </span>
             @if ($item['relationship']['intents'] !== [])
@@ -51,7 +51,7 @@
         @if ($item['secondary_actions'] !== [])
             <details class="friend-actions">
                 <summary aria-label="{{ __('presentation.more_friendship_actions', ['name' => $item['name']]) }}" title="{{ __('ui.more_actions_f8d46c2570') }}">
-                    <x-lucide-ellipsis class="icon" aria-hidden="true" />
+                    <x-ui-icon name="ellipsis" />
                 </summary>
                 <div class="friend-actions__panel">
                     @forelse ($item['secondary_actions'] as $action)

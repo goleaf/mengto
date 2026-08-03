@@ -8,7 +8,7 @@
     <div class="flex items-center justify-between gap-3">
         <h2 id="search-map-title" class="text-lg font-bold">{{ $title }}</h2>
         <span class="inline-flex items-center gap-1 text-xs font-semibold text-paw-muted">
-            <x-lucide-shield-check class="size-4 text-paw-leaf" aria-hidden="true" />
+            <x-ui-icon name="shield-check" size="sm" class="text-paw-leaf" />
             {{ __('ui.generalized_locations_f8a7558000') }}
         </span>
     </div>
@@ -25,7 +25,7 @@
                 style="left: {{ $marker['x'] ?? $marker['map_x'] }}%; top: {{ $marker['y'] ?? $marker['map_y'] }}%;"
                 aria-label="{{ $marker['label'] ?? $marker['pet_name'] }} · {{ $marker['area'] ?? $marker['last_seen_area'] }} · {{ $marker['time'] ?? $marker['last_seen_label'] }}"
             >
-                <x-lucide-map-pin class="size-4" aria-hidden="true" />
+                <x-ui-icon name="map-pin" size="sm" />
                 <span class="pointer-events-none absolute bottom-full left-1/2 mb-2 hidden w-44 -translate-x-1/2 rounded bg-paw-ink px-2 py-1.5 text-center text-xs text-white shadow-lg group-hover:block group-focus:block">
                     {{ $marker['label'] ?? $marker['pet_name'] }} · {{ $marker['area'] ?? $marker['last_seen_area'] }}
                 </span>
@@ -40,7 +40,7 @@
     <ol class="grid gap-2 sm:grid-cols-2" aria-label="{{ __('ui.map_points_in_text_form_591995251f') }}">
         @forelse ($markers as $marker)
             <li class="flex items-start gap-2 border-l-2 border-paw-coral pl-3 text-sm">
-                <x-lucide-map-pin class="mt-0.5 size-4 shrink-0 text-paw-coral" aria-hidden="true" />
+                <x-ui-icon name="map-pin" size="sm" class="mt-0.5 shrink-0 text-paw-coral" />
                 <span>
                     <strong>{{ $marker['label'] ?? $marker['pet_name'] }}</strong>
                     · {{ $marker['area'] ?? $marker['last_seen_area'] }}

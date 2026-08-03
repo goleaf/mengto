@@ -11,7 +11,7 @@
         <input type="hidden" name="filter" value="{{ $activeFilter }}">
         <label for="message-conversation-search">{{ __('ui.search_dialogs_45fd1f64fc') }}</label>
         <div>
-            <x-lucide-search class="icon icon--sm" aria-hidden="true" />
+            <x-ui-icon name="search" size="sm" />
             <input
                 id="message-conversation-search"
                 name="q"
@@ -21,7 +21,7 @@
                 maxlength="80"
             >
             <button type="submit" title="{{ __('ui.search_conversations_8abdf3b226') }}" aria-label="{{ __('ui.search_conversations_8abdf3b226') }}">
-                <x-lucide-arrow-right class="icon icon--sm" aria-hidden="true" />
+                <x-ui-icon name="arrow-right" size="sm" />
             </button>
         </div>
     </form>
@@ -54,13 +54,13 @@
                     <span class="messaging-conversation__status">
                         <span>{{ $conversation['type_label'] }}</span>
                         @if ($conversation['pinned'])
-                            <x-lucide-pin class="icon icon--xs" aria-label="{{ __('ui.pinned_f20c879465') }}" />
+                            <x-ui-icon name="pin" size="xs" label="{{ __('ui.pinned_f20c879465') }}" />
                         @endif
                         @if ($conversation['muted'])
-                            <x-lucide-bell-off class="icon icon--xs" aria-label="{{ __('ui.muted_2346f214ad') }}" />
+                            <x-ui-icon name="bell-off" size="xs" label="{{ __('ui.muted_2346f214ad') }}" />
                         @endif
                         @if ($conversation['blocked'])
-                            <x-lucide-ban class="icon icon--xs" aria-label="{{ __('ui.blocked_18f2a0947f') }}" />
+                            <x-ui-icon name="ban" size="xs" label="{{ __('ui.blocked_18f2a0947f') }}" />
                         @endif
                     </span>
                 </span>
@@ -73,7 +73,7 @@
             </a>
         @empty
             <div class="messaging-inbox__empty">
-                <x-lucide-inbox class="icon" aria-hidden="true" />
+                <x-ui-icon name="inbox" />
                 <strong>{{ __('ui.no_matching_dialogs_8fb154f1ae') }}</strong>
                 <span>{{ __('ui.change_a_folder_or_search_phrase_4faaa96f3c') }}</span>
             </div>

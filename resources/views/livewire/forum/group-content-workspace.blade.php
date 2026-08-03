@@ -105,7 +105,7 @@
             @forelse ($this->content['files'] as $file)
                 <li class="border-b border-border-subtle pb-3" wire:key="group-file-{{ $file['id'] }}">
                     <a class="forum-button min-h-11" href="{{ $file['url'] }}">
-                        <x-lucide-download aria-hidden="true" />
+                        <x-ui-icon name="download" />
                         {{ __('forum_polls.actions.download_file', ['name' => $file['name']]) }}
                     </a>
                     @if ($file['description'])
@@ -218,7 +218,7 @@
                             wire:loading.attr="disabled"
                             wire:target="castVote({{ $pollItem['id'] }})"
                         >
-                            <x-lucide-vote aria-hidden="true" />
+                            <x-ui-icon name="vote" />
                             {{ $pollItem['current_choices'] === []
                                 ? __('forum_polls.actions.vote')
                                 : __('forum_polls.actions.update_vote') }}
@@ -269,7 +269,7 @@
 
             <details class="forum-form">
                 <summary class="forum-button min-h-11">
-                    <x-lucide-link aria-hidden="true" />
+                    <x-ui-icon name="link" />
                     {{ __('forum_polls.actions.link_topic') }}
                 </summary>
                 <form wire:submit="linkTopic" class="mt-4 grid gap-3">
@@ -279,7 +279,7 @@
                         @error('association.topicSlug') <small role="alert">{{ $message }}</small> @enderror
                     </label>
                     <button class="forum-button forum-button--primary min-h-11" type="submit" wire:loading.attr="disabled" wire:target="linkTopic">
-                        <x-lucide-link aria-hidden="true" />
+                        <x-ui-icon name="link" />
                         {{ __('forum_polls.actions.link_topic') }}
                     </button>
                 </form>
@@ -287,7 +287,7 @@
 
             <details class="forum-form">
                 <summary class="forum-button min-h-11">
-                    <x-lucide-book-open aria-hidden="true" />
+                    <x-ui-icon name="book-open" />
                     {{ __('forum_polls.actions.link_guide') }}
                 </summary>
                 <form wire:submit="linkGuide" class="mt-4 grid gap-3">
@@ -297,7 +297,7 @@
                         @error('association.guideSlug') <small role="alert">{{ $message }}</small> @enderror
                     </label>
                     <button class="forum-button forum-button--primary min-h-11" type="submit" wire:loading.attr="disabled" wire:target="linkGuide">
-                        <x-lucide-book-open aria-hidden="true" />
+                        <x-ui-icon name="book-open" />
                         {{ __('forum_polls.actions.link_guide') }}
                     </button>
                 </form>
@@ -305,7 +305,7 @@
 
             <details class="forum-form">
                 <summary class="forum-button min-h-11">
-                    <x-lucide-calendar-plus aria-hidden="true" />
+                    <x-ui-icon name="calendar-plus" />
                     {{ __('forum_polls.actions.create_activity') }}
                 </summary>
                 <form wire:submit="createActivity" class="mt-4 grid gap-3 md:grid-cols-2">
@@ -358,7 +358,7 @@
                         <textarea wire:model="activity.participationNotes" rows="3" maxlength="3000"></textarea>
                     </label>
                     <button class="forum-button forum-button--primary min-h-11 md:col-span-2" type="submit" wire:loading.attr="disabled" wire:target="createActivity">
-                        <x-lucide-calendar-plus aria-hidden="true" />
+                        <x-ui-icon name="calendar-plus" />
                         {{ __('forum_polls.actions.create_activity') }}
                     </button>
                 </form>
@@ -367,7 +367,7 @@
             @if ($this->content['can_publish_announcement'])
                 <details class="forum-form">
                     <summary class="forum-button min-h-11">
-                        <x-lucide-megaphone aria-hidden="true" />
+                        <x-ui-icon name="megaphone" />
                         {{ __('forum_polls.actions.publish_announcement') }}
                     </summary>
                     <form wire:submit="publishAnnouncement" class="mt-4 grid gap-3">
@@ -384,7 +384,7 @@
                             <input type="datetime-local" wire:model="announcement.expiresAt">
                         </label>
                         <button class="forum-button forum-button--primary min-h-11" type="submit" wire:loading.attr="disabled" wire:target="publishAnnouncement">
-                            <x-lucide-megaphone aria-hidden="true" />
+                            <x-ui-icon name="megaphone" />
                             {{ __('forum_polls.actions.publish_announcement') }}
                         </button>
                     </form>
@@ -393,7 +393,7 @@
 
             <details class="forum-form">
                 <summary class="forum-button min-h-11">
-                    <x-lucide-vote aria-hidden="true" />
+                    <x-ui-icon name="vote" />
                     {{ __('forum_polls.actions.create_poll') }}
                 </summary>
                 <form wire:submit="createPoll" class="mt-4 grid gap-3 md:grid-cols-2">
@@ -453,7 +453,7 @@
                         {{ __('forum_polls.notices.poll_authority') }}
                     </p>
                     <button class="forum-button forum-button--primary min-h-11 md:col-span-2" type="submit" wire:loading.attr="disabled" wire:target="createPoll">
-                        <x-lucide-vote aria-hidden="true" />
+                        <x-ui-icon name="vote" />
                         {{ __('forum_polls.actions.create_poll') }}
                     </button>
                 </form>
@@ -461,7 +461,7 @@
 
             <details class="forum-form">
                 <summary class="forum-button min-h-11">
-                    <x-lucide-upload aria-hidden="true" />
+                    <x-ui-icon name="upload" />
                     {{ __('forum_polls.actions.upload_file') }}
                 </summary>
                 <form wire:submit="uploadFile" class="mt-4 grid gap-3">
@@ -480,7 +480,7 @@
                         <textarea wire:model="groupFileDescription" rows="3" maxlength="1000"></textarea>
                     </label>
                     <button class="forum-button forum-button--primary min-h-11" type="submit" wire:loading.attr="disabled" wire:target="groupFile,uploadFile">
-                        <x-lucide-upload aria-hidden="true" />
+                        <x-ui-icon name="upload" />
                         {{ __('forum_polls.actions.upload_file') }}
                     </button>
                 </form>

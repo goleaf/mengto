@@ -106,7 +106,7 @@
                             <dd class="inline-flex flex-wrap items-center gap-1">
                                 <span>{{ $event['organizer_name'] }}</span>
                                 @if ($event['organizer_verified'])
-                                    <x-lucide-badge-check class="size-4" aria-label="{{ __('forum_events.detail.verified_organizer') }}" />
+                                    <x-ui-icon name="badge-check" size="sm" label="{{ __('forum_events.detail.verified_organizer') }}" />
                                 @endif
                             </dd>
                         </div>
@@ -133,18 +133,18 @@
 
                     @if ($event['accessibility'])
                         <p class="inline-flex items-start gap-2 text-sm">
-                            <x-lucide-accessibility class="mt-0.5 size-4 shrink-0" aria-hidden="true" />
+                            <x-ui-icon name="accessibility" size="sm" class="mt-0.5 shrink-0" />
                             <span><strong>{{ $event['accessibility_status'] }}:</strong> {{ $event['accessibility'] }}</span>
                         </p>
                     @else
                         <p class="inline-flex items-start gap-2 text-sm">
-                            <x-lucide-accessibility class="mt-0.5 size-4 shrink-0" aria-hidden="true" />
+                            <x-ui-icon name="accessibility" size="sm" class="mt-0.5 shrink-0" />
                             <span>{{ $event['accessibility_status'] }}</span>
                         </p>
                     @endif
 
                     <a class="forum-button forum-button--primary min-h-11 justify-self-start" href="{{ $event['url'] }}" wire:navigate>
-                        <x-lucide-arrow-up-right aria-hidden="true" />
+                        <x-ui-icon name="arrow-up-right" />
                         {{ __('forum_events.actions.open') }}
                     </a>
                 </article>
@@ -162,7 +162,7 @@
     @if ($this->canCreate)
         <details class="forum-form">
             <summary class="forum-button min-h-11">
-                <x-lucide-calendar-plus aria-hidden="true" />
+                <x-ui-icon name="calendar-plus" />
                 {{ __('forum_events.page.create_heading') }}
             </summary>
             <form wire:submit="create" class="mt-4 grid gap-5" wire:dirty.class="border-status-warning">
@@ -414,7 +414,7 @@
                     wire:loading.attr="disabled"
                     wire:target="create"
                 >
-                    <x-lucide-calendar-plus aria-hidden="true" />
+                    <x-ui-icon name="calendar-plus" />
                     <span wire:loading.remove wire:target="create">{{ __('forum_events.actions.create') }}</span>
                     <span wire:loading wire:target="create">{{ __('forum_events.actions.creating') }}</span>
                 </button>

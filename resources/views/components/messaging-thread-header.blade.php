@@ -6,7 +6,7 @@
         class="messaging-thread-header__back"
         aria-label="{{ __('ui.back_to_conversations_d456fc7566') }}"
     >
-        <x-lucide-arrow-left class="icon" aria-hidden="true" />
+        <x-ui-icon name="arrow-left" />
     </a>
 
     <x-linked-media
@@ -22,7 +22,7 @@
         <span class="messaging-thread-header__title">
             <h2>{{ $conversation['name'] }}</h2>
             @if ($conversation['professional'])
-                <x-lucide-badge-check class="icon icon--sm" aria-label="{{ $conversation['verified'] }}" />
+                <x-ui-icon name="badge-check" size="sm" label="{{ $conversation['verified'] }}" />
             @endif
         </span>
         <p>{{ $conversation['handle'] }} · {{ $conversation['presence'] }}</p>
@@ -38,7 +38,7 @@
             <input type="hidden" name="recording_consent" value="no">
             <input type="hidden" name="return_filter" value="{{ $activeFilter }}">
             <button type="submit" class="messaging-icon-button" title="{{ __('ui.start_audio_call_preflight_4ce1256cff') }}" @disabled($conversation['blocked'])>
-                <x-lucide-phone class="icon icon--sm" aria-hidden="true" />
+                <x-ui-icon name="phone" size="sm" />
                 <span class="sr-only">{{ __('ui.audio_call_3501f9a7a9') }}</span>
             </button>
         </form>
@@ -51,7 +51,7 @@
             <input type="hidden" name="recording_consent" value="no">
             <input type="hidden" name="return_filter" value="{{ $activeFilter }}">
             <button type="submit" class="messaging-icon-button" title="{{ __('ui.start_video_call_preflight_2109eee0a3') }}" @disabled($conversation['blocked'])>
-                <x-lucide-video class="icon icon--sm" aria-hidden="true" />
+                <x-ui-icon name="video" size="sm" />
                 <span class="sr-only">{{ __('ui.video_call_7b79b4f672') }}</span>
             </button>
         </form>
@@ -61,14 +61,14 @@
             class="messaging-icon-button"
             title="{{ __('ui.conversation_details_28b55e1258') }}"
         >
-            <x-lucide-info class="icon icon--sm" aria-hidden="true" />
+            <x-ui-icon name="info" size="sm" />
             <span class="sr-only">{{ __('ui.conversation_details_28b55e1258') }}</span>
         </a>
     </div>
 </header>
 
 <div class="messaging-thread-context">
-    <x-lucide-paw-print class="icon icon--sm" aria-hidden="true" />
+    <x-ui-icon name="paw-print" size="sm" />
     <span>{{ __('presentation.context_pets', ['pets' => implode(', ', $conversation['pet_names'])]) }}</span>
     <strong>{{ $conversation['privacy'] }}</strong>
 </div>

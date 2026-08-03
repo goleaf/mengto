@@ -131,7 +131,7 @@
         .stat-grid__label {
             font-size: 0.625rem;
 
-            .icon {
+            .ui-icon {
                 display: none;
             }
         }
@@ -435,7 +435,7 @@
             .stat-grid__label {
                 font-size: 0.75rem;
 
-                .icon {
+                .ui-icon {
                     display: block;
                 }
             }
@@ -628,7 +628,7 @@
         background: $white;
         color: $leaf;
 
-        .icon,
+        .ui-icon,
         svg {
             inline-size: 1rem;
             block-size: 1rem;
@@ -680,7 +680,7 @@
         color: $leaf;
         box-shadow: $control-shadow;
 
-        .icon,
+        .ui-icon,
         svg {
             inline-size: 1.375rem;
             block-size: 1.375rem;
@@ -729,7 +729,7 @@
         padding-block-start: 1rem;
         color: $muted;
 
-        .icon,
+        .ui-icon,
         svg {
             inline-size: 1rem;
             block-size: 1rem;

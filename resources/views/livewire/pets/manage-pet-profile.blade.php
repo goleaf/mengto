@@ -28,11 +28,11 @@
     </section>
 
     <nav aria-label="{{ __('pet_profiles.manage.sections') }}" class="grid grid-cols-2 gap-2 border-b border-paw-line pb-4 sm:flex sm:flex-wrap">
-        <a class="forum-button min-h-11 min-w-0 w-full whitespace-normal text-center sm:w-auto" href="#pet-media"><x-lucide-image class="shrink-0" aria-hidden="true" />{{ __('pet_profiles.manage.media') }}</a>
-        <a class="forum-button min-h-11 min-w-0 w-full whitespace-normal text-center sm:w-auto" href="#pet-basics"><x-lucide-paw-print class="shrink-0" aria-hidden="true" />{{ __('pet_profiles.manage.basics') }}</a>
-        <a class="forum-button min-h-11 min-w-0 w-full whitespace-normal text-center sm:w-auto" href="#pet-privacy"><x-lucide-shield class="shrink-0" aria-hidden="true" />{{ __('pet_profiles.manage.privacy') }}</a>
-        <a class="forum-button min-h-11 min-w-0 w-full whitespace-normal text-center sm:w-auto" href="#pet-managers"><x-lucide-users class="shrink-0" aria-hidden="true" />{{ __('pet_profiles.manage.managers') }}</a>
-        <a class="forum-button min-h-11 min-w-0 w-full whitespace-normal text-center sm:w-auto" href="#pet-lifecycle"><x-lucide-history class="shrink-0" aria-hidden="true" />{{ __('pet_profiles.manage.lifecycle') }}</a>
+        <a class="forum-button min-h-11 min-w-0 w-full whitespace-normal text-center sm:w-auto" href="#pet-media"><x-ui-icon name="image" class="shrink-0" />{{ __('pet_profiles.manage.media') }}</a>
+        <a class="forum-button min-h-11 min-w-0 w-full whitespace-normal text-center sm:w-auto" href="#pet-basics"><x-ui-icon name="paw-print" class="shrink-0" />{{ __('pet_profiles.manage.basics') }}</a>
+        <a class="forum-button min-h-11 min-w-0 w-full whitespace-normal text-center sm:w-auto" href="#pet-privacy"><x-ui-icon name="shield" class="shrink-0" />{{ __('pet_profiles.manage.privacy') }}</a>
+        <a class="forum-button min-h-11 min-w-0 w-full whitespace-normal text-center sm:w-auto" href="#pet-managers"><x-ui-icon name="users" class="shrink-0" />{{ __('pet_profiles.manage.managers') }}</a>
+        <a class="forum-button min-h-11 min-w-0 w-full whitespace-normal text-center sm:w-auto" href="#pet-lifecycle"><x-ui-icon name="history" class="shrink-0" />{{ __('pet_profiles.manage.lifecycle') }}</a>
     </nav>
 
     <section id="pet-media" aria-labelledby="pet-media-heading" class="scroll-mt-4">
@@ -58,7 +58,7 @@
                         >
                     @else
                         <div class="grid h-full place-items-center" role="img" aria-label="{{ __('pet_profiles.public.avatar_alt', ['name' => $profile->name]) }}">
-                            <x-lucide-paw-print class="size-10" aria-hidden="true" />
+                            <x-ui-icon name="paw-print" size="3xl" />
                         </div>
                     @endif
                 </div>
@@ -100,13 +100,13 @@
                             wire:loading.attr="disabled"
                             wire:target="replacePrimaryPhoto,mediaForm.upload"
                         >
-                            <x-lucide-image-plus aria-hidden="true" />
+                            <x-ui-icon name="image-plus" />
                             <span wire:loading.remove wire:target="replacePrimaryPhoto">{{ __('pet_profiles.actions.save_photo') }}</span>
                             <span wire:loading wire:target="replacePrimaryPhoto">{{ __('pet_profiles.actions.saving') }}</span>
                         </button>
                         @if ($mediaForm->upload !== null)
                             <button type="button" class="forum-button min-h-11" wire:click="clearPhoto">
-                                <x-lucide-x aria-hidden="true" />
+                                <x-ui-icon name="x" />
                                 {{ __('pet_profiles.actions.clear_photo') }}
                             </button>
                         @endif
@@ -117,7 +117,7 @@
                                 wire:click="removePrimaryPhoto"
                                 wire:confirm="{{ __('pet_profiles.confirmations.remove_photo') }}"
                             >
-                                <x-lucide-trash-2 aria-hidden="true" />
+                                <x-ui-icon name="trash-2" />
                                 {{ __('pet_profiles.actions.remove_photo') }}
                             </button>
                         @endif
@@ -134,7 +134,7 @@
                         class="forum-button mt-3 min-h-11"
                         wire:click="restorePrimaryPhoto('{{ $recoverablePhoto['media_key'] }}')"
                     >
-                        <x-lucide-rotate-ccw aria-hidden="true" />
+                        <x-ui-icon name="rotate-ccw" />
                         {{ __('pet_profiles.actions.restore_photo') }}
                     </button>
                 </div>
@@ -208,7 +208,7 @@
             />
 
             <button type="submit" class="forum-button forum-button--primary min-h-11" wire:loading.attr="disabled" wire:target="saveBasics">
-                <x-lucide-save aria-hidden="true" />
+                <x-ui-icon name="save" />
                 <span wire:loading.remove wire:target="saveBasics">{{ __('pet_profiles.actions.save_basics') }}</span>
                 <span wire:loading wire:target="saveBasics">{{ __('pet_profiles.actions.saving') }}</span>
             </button>
@@ -327,7 +327,7 @@
             </div>
 
             <button type="submit" class="forum-button forum-button--primary min-h-11" wire:loading.attr="disabled" wire:target="savePrivacy">
-                <x-lucide-shield-check aria-hidden="true" />
+                <x-ui-icon name="shield-check" />
                 <span wire:loading.remove wire:target="savePrivacy">{{ __('pet_profiles.actions.save_privacy') }}</span>
                 <span wire:loading wire:target="savePrivacy">{{ __('pet_profiles.actions.saving') }}</span>
             </button>
@@ -354,7 +354,7 @@
                                 wire:click="revokeManager({{ $manager['id'] }})"
                                 wire:confirm="{{ __('pet_profiles.confirmations.revoke_manager') }}"
                             >
-                                <x-lucide-user-x aria-hidden="true" />
+                                <x-ui-icon name="user-x" />
                                 <span>{{ __('pet_profiles.actions.revoke') }}</span>
                             </button>
                         @endif
@@ -389,7 +389,7 @@
                 </label>
             </div>
             <button type="submit" class="forum-button forum-button--primary min-h-11" wire:loading.attr="disabled" wire:target="inviteManager">
-                <x-lucide-user-plus aria-hidden="true" />
+                <x-ui-icon name="user-plus" />
                 <span>{{ __('pet_profiles.actions.invite') }}</span>
             </button>
         </form>
@@ -421,7 +421,7 @@
                 wire:target="transitionStatus"
                 @disabled($targetStatus === $profile->status->value)
             >
-                <x-lucide-refresh-cw aria-hidden="true" />
+                <x-ui-icon name="refresh-cw" />
                 <span>{{ __('pet_profiles.actions.change_status') }}</span>
             </button>
         </form>

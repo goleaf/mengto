@@ -22,7 +22,7 @@
         <div>
             <h2>{{ $conversation['name'] }}</h2>
             <p>{{ $conversation['purpose'] }}</p>
-            <span><x-lucide-shield-check class="icon icon--sm" aria-hidden="true" /> {{ $conversation['privacy'] }}</span>
+            <span><x-ui-icon name="shield-check" size="sm" /> {{ $conversation['privacy'] }}</span>
         </div>
     </section>
 
@@ -31,7 +31,7 @@
         <input type="hidden" name="filter" value="{{ $activeFilter }}">
         <label for="message-history-search">{{ __('ui.search_this_dialog_ce86abd45e') }}</label>
         <div>
-            <x-lucide-search class="icon icon--sm" aria-hidden="true" />
+            <x-ui-icon name="search" size="sm" />
             <input id="message-history-search" type="search" name="message_q" value="{{ $messageQuery }}" placeholder="{{ __('ui.text_sender_transcript_0b449170d2') }}">
         </div>
     </form>
@@ -49,7 +49,7 @@
                 <input type="hidden" name="conversation" value="{{ $conversation['key'] }}">
                 <input type="hidden" name="return_filter" value="{{ $activeFilter }}">
                 <button type="submit">
-                    <x-dynamic-component :component="'lucide-'.$control['icon']" class="icon icon--sm" aria-hidden="true" />
+                    <x-ui-icon size="sm" :name="$control['icon']" />
                     <span>{{ $control['label'] }}</span>
                 </button>
             </form>
@@ -58,7 +58,7 @@
 
     @if ($professional)
         <section class="messaging-context__section">
-            <header><x-lucide-briefcase-medical class="icon icon--sm" /><h3>{{ __('ui.professional_case_422c23181c') }}</h3></header>
+            <header><x-ui-icon name="briefcase-medical" size="sm" /><h3>{{ __('ui.professional_case_422c23181c') }}</h3></header>
             <dl>
                 <div><dt>{{ __('ui.status_920e413c7d') }}</dt><dd>{{ $professional['status'] }}</dd></div>
                 <div><dt>{{ __('ui.assigned_8191888dd9') }}</dt><dd>{{ $professional['assigned'] }}</dd></div>
@@ -70,7 +70,7 @@
 
     @if ($poll)
         <section class="messaging-context__section">
-            <header><x-lucide-list-checks class="icon icon--sm" /><h3>{{ __('ui.group_poll_a5105be25a') }}</h3></header>
+            <header><x-ui-icon name="list-checks" size="sm" /><h3>{{ __('ui.group_poll_a5105be25a') }}</h3></header>
             <p>{{ $poll['question'] }}</p>
             <div class="messaging-poll">
                 @forelse ($poll['options'] as $option)
@@ -93,7 +93,7 @@
 
     @if ($tasks !== [])
         <section class="messaging-context__section">
-            <header><x-lucide-list-todo class="icon icon--sm" /><h3>{{ __('ui.shared_tasks_d8ed38476f') }}</h3></header>
+            <header><x-ui-icon name="list-todo" size="sm" /><h3>{{ __('ui.shared_tasks_d8ed38476f') }}</h3></header>
             <div class="messaging-tasks">
                 @forelse ($tasks as $task)
                     <form method="POST" action="{{ route('messages.actions') }}">
@@ -104,9 +104,9 @@
                         <input type="hidden" name="task_status" value="completed">
                         <button type="submit">
                             @if ($task['status'] === 'completed')
-                                <x-lucide-circle-check-big class="icon icon--sm" aria-label="{{ __('ui.completed_22a970d2e5') }}" />
+                                <x-ui-icon name="circle-check-big" size="sm" label="{{ __('ui.completed_22a970d2e5') }}" />
                             @else
-                                <x-lucide-circle class="icon icon--sm" aria-label="{{ $task['status_label'] }}" />
+                                <x-ui-icon name="circle" size="sm" label="{{ $task['status_label'] }}" />
                             @endif
                             <span><strong>{{ $task['label'] }}</strong><small>{{ $task['owner'] }} · {{ $task['status_label'] }}</small></span>
                         </button>
@@ -119,7 +119,7 @@
     @endif
 
     <details class="messaging-context__section" open>
-        <summary><x-lucide-users-round class="icon icon--sm" /><strong>{{ __('ui.members_1044a4c056') }}</strong><span>{{ $conversation['members'] }}</span></summary>
+        <summary><x-ui-icon name="users-round" size="sm" /><strong>{{ __('ui.members_1044a4c056') }}</strong><span>{{ $conversation['members'] }}</span></summary>
         <div class="messaging-members">
             @forelse ($members as $member)
                 <div>
@@ -133,11 +133,11 @@
     </details>
 
     <details class="messaging-context__section">
-        <summary><x-lucide-folders class="icon icon--sm" /><strong>{{ __('ui.shared_content_c42aceea28') }}</strong></summary>
+        <summary><x-ui-icon name="folders" size="sm" /><strong>{{ __('ui.shared_content_c42aceea28') }}</strong></summary>
         <div class="messaging-shared-grid">
             @forelse ($context['shared_cards'] as $card)
                 <button type="button">
-                    <x-dynamic-component :component="'lucide-'.$card['icon']" class="icon icon--sm" />
+                    <x-ui-icon size="sm" :name="$card['icon']" />
                     <span><strong>{{ $card['label'] }}</strong><small>{{ $card['value'] }}</small></span>
                 </button>
             @empty
@@ -147,11 +147,11 @@
     </details>
 
     <details class="messaging-context__section">
-        <summary><x-lucide-shield-alert class="icon icon--sm" /><strong>{{ __('ui.safety_and_privacy_87d672f087') }}</strong></summary>
+        <summary><x-ui-icon name="shield-alert" size="sm" /><strong>{{ __('ui.safety_and_privacy_87d672f087') }}</strong></summary>
         <div class="messaging-safety">
             @forelse ($context['safety'] as $item)
                 <div>
-                    <x-dynamic-component :component="'lucide-'.$item['icon']" class="icon icon--sm" />
+                    <x-ui-icon size="sm" :name="$item['icon']" />
                     <p><strong>{{ $item['title'] }}</strong><span>{{ $item['description'] }}</span></p>
                 </div>
             @empty
@@ -169,14 +169,14 @@
                     @csrf
                     <input type="hidden" name="action" value="{{ $safetyAction['action'] }}">
                     <input type="hidden" name="conversation" value="{{ $conversation['key'] }}">
-                    <button type="submit"><x-dynamic-component :component="'lucide-'.$safetyAction['icon']" class="icon icon--sm" /> {{ $safetyAction['label'] }}</button>
+                    <button type="submit"><x-ui-icon size="sm" :name="$safetyAction['icon']" /> {{ $safetyAction['label'] }}</button>
                 </form>
             @endforeach
         </div>
     </details>
 
     <details class="messaging-context__section messaging-context__section--boundary">
-        <summary><x-lucide-layers-3 class="icon icon--sm" /><strong>{{ __('ui.delivery_boundary_715f18a1dd') }}</strong></summary>
+        <summary><x-ui-icon name="layers-3" size="sm" /><strong>{{ __('ui.delivery_boundary_715f18a1dd') }}</strong></summary>
         <dl>
             @forelse ($coverage as $item)
                 <div><dt>{{ $item['label'] }}</dt><dd>{{ $item['value'] }}</dd></div>

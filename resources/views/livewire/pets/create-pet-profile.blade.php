@@ -67,7 +67,7 @@
                                 class="action action--paper action--regular"
                                 wire:click="clearPhoto"
                             >
-                                <x-lucide-x class="icon icon--sm" aria-hidden="true" />
+                                <x-ui-icon name="x" size="sm" />
                                 {{ __('pet_profiles.actions.clear_photo') }}
                             </button>
                         </div>
@@ -190,7 +190,7 @@
 
             <div class="pet-create__privacy" role="note">
                 <span class="pet-create__privacy-icon" aria-hidden="true">
-                    <x-lucide-lock-keyhole />
+                    <x-ui-icon name="lock-keyhole" />
                 </span>
                 <div>
                     <h3>{{ __('pet_profiles.create.privacy_title') }}</h3>
@@ -205,7 +205,8 @@
 
             <footer class="pet-create__actions">
                 <a href="{{ route('pets.index') }}" class="action action--paper action--regular">
-                    {{ __('pet_profiles.actions.cancel') }}
+                    <x-ui-icon name="x" size="sm" />
+                    <span>{{ __('pet_profiles.actions.cancel') }}</span>
                 </a>
                 <button
                     type="submit"
@@ -213,7 +214,7 @@
                     wire:loading.attr="disabled"
                     wire:target="create"
                 >
-                    <x-lucide-plus class="icon icon--sm" aria-hidden="true" />
+                    <x-ui-icon name="plus" size="sm" />
                     <span wire:loading.remove wire:target="create">{{ __('pet_profiles.actions.create_draft') }}</span>
                     <span wire:loading wire:target="create">{{ __('pet_profiles.actions.creating') }}</span>
                 </button>
@@ -222,7 +223,7 @@
 
         <aside class="panel pet-create__guide" aria-labelledby="pet-create-guide-heading">
             <span class="pet-create__guide-mark" aria-hidden="true">
-                <x-lucide-paw-print />
+                <x-ui-icon name="paw-print" />
             </span>
             <p class="pet-create__eyebrow">{{ __('pet_profiles.create.guide_eyebrow') }}</p>
             <h2 id="pet-create-guide-heading" class="pet-create__guide-title">
@@ -246,7 +247,7 @@
             </ol>
 
             <div class="pet-create__boundary">
-                <x-lucide-shield-check aria-hidden="true" />
+                <x-ui-icon name="shield-check" />
                 <p>{{ __('pet_profiles.create.identity_note') }}</p>
             </div>
         </aside>

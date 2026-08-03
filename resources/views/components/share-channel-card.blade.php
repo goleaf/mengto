@@ -2,7 +2,7 @@
 
 <article {{ $attributes->class(['share-channel']) }}>
     <span class="share-channel__icon" aria-hidden="true">
-        <x-dynamic-component :component="'lucide-'.$channel['icon']" class="icon" />
+        <x-ui-icon :name="$channel['icon']" />
     </span>
 
     <div class="share-channel__copy">

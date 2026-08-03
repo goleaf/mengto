@@ -26,7 +26,7 @@
                     class="auth-brand"
                 >
                     <span class="auth-brand__mark" aria-hidden="true">
-                        <x-lucide-paw-print />
+                        <x-ui-icon name="paw-print" />
                     </span>
                     <span class="auth-brand__name">{{ __('auth.brand') }}</span>
                 </a>
@@ -38,21 +38,21 @@
 
                     <ul class="auth-story__benefits" aria-label="{{ __('auth.shell.benefits_label') }}">
                         <li class="auth-benefit">
-                            <span class="auth-benefit__icon" aria-hidden="true"><x-lucide-shield-check /></span>
+                            <span class="auth-benefit__icon" aria-hidden="true"><x-ui-icon name="shield-check" /></span>
                             <span>
                                 <strong>{{ __('auth.shell.privacy_title') }}</strong>
                                 <small>{{ __('auth.shell.privacy_description') }}</small>
                             </span>
                         </li>
                         <li class="auth-benefit">
-                            <span class="auth-benefit__icon" aria-hidden="true"><x-lucide-heart-handshake /></span>
+                            <span class="auth-benefit__icon" aria-hidden="true"><x-ui-icon name="heart-handshake" /></span>
                             <span>
                                 <strong>{{ __('auth.shell.care_title') }}</strong>
                                 <small>{{ __('auth.shell.care_description') }}</small>
                             </span>
                         </li>
                         <li class="auth-benefit">
-                            <span class="auth-benefit__icon" aria-hidden="true"><x-lucide-map-pinned /></span>
+                            <span class="auth-benefit__icon" aria-hidden="true"><x-ui-icon name="map-pinned" /></span>
                             <span>
                                 <strong>{{ __('auth.shell.community_title') }}</strong>
                                 <small>{{ __('auth.shell.community_description') }}</small>
@@ -62,7 +62,7 @@
                 </div>
 
                 <div class="auth-story__footer">
-                    <x-lucide-lock-keyhole aria-hidden="true" />
+                    <x-ui-icon name="lock-keyhole" />
                     <span>{{ __('auth.shell.footer') }}</span>
                 </div>
 
@@ -85,7 +85,7 @@
                     </nav>
                 @endif
 
-                <x-lucide-paw-print class="auth-story__watermark" aria-hidden="true" />
+                <x-ui-icon name="paw-print" class="auth-story__watermark" />
             </aside>
 
             <section class="auth-workspace" aria-label="{{ __('auth.shell.form_landmark') }}">

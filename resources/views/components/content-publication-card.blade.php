@@ -13,7 +13,7 @@
         <div class="mt-3 flex flex-wrap gap-2 text-xs">
             <span class="rounded-md border border-paw-line px-2 py-1">{{ $publication['type_label'] }}</span>
             <span class="rounded-md border border-paw-line px-2 py-1">
-                <x-lucide-users class="mr-1 inline size-3" aria-hidden="true" />
+                <x-ui-icon name="users" size="xs" class="mr-1 inline" />
                 {{ $publication['audience_label'] }}
             </span>
         </div>
@@ -45,7 +45,7 @@
         @unless ($showFullBody)
             <a href="{{ $publication['url'] }}" class="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-paw-leaf hover:underline">
                 {{ __('content.feed.open_publication') }}
-                <x-lucide-arrow-right class="size-4" aria-hidden="true" />
+                <x-ui-icon name="arrow-right" size="sm" />
             </a>
         @endunless
     </div>

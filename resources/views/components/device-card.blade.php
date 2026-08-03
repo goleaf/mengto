@@ -2,7 +2,7 @@
 
 <article class="device-card">
     <a href="{{ $device['show_url'] }}" class="device-card__icon" aria-label="{{ __('presentation.open_device', ['name' => $device['name']]) }}">
-        <x-dynamic-component :component="'lucide-'.$device['icon']" class="size-7" aria-hidden="true" />
+        <x-ui-icon size="xl" :name="$device['icon']" />
     </a>
     <div class="device-card__body">
         <div class="device-card__heading">
@@ -18,7 +18,7 @@
         </div>
 
         <div class="device-card__pets" aria-label="{{ __('ui.assigned_pets_dd50d74ca4') }}">
-            <x-lucide-paw-print class="size-4" aria-hidden="true" />
+            <x-ui-icon name="paw-print" size="sm" />
             <span>{{ $device['pets'] === [] ? __('ui.shared_zone_pet_not_identified_0d7d91e867') : implode(' · ', $device['pets']) }}</span>
         </div>
 
@@ -43,7 +43,7 @@
 
         @if ($device['open_events_count'] > 0)
             <div class="device-card__alert">
-                <x-lucide-triangle-alert class="size-4" aria-hidden="true" />
+                <x-ui-icon name="triangle-alert" size="sm" />
                 <span>{{ $device['event_summary'] }}</span>
             </div>
         @endif

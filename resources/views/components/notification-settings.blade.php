@@ -14,7 +14,7 @@
                 <button type="submit" class="setting-option" aria-pressed="{{ $setting['enabled'] ? 'true' : 'false' }}">
                     <span class="setting-option__control" aria-hidden="true">
                         @if ($setting['enabled'])
-                            <x-lucide-check class="icon icon--xs" />
+                            <x-ui-icon name="check" size="xs" />
                         @endif
                     </span>
                     <span class="setting-option__content">

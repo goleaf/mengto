@@ -4,14 +4,14 @@
     <div class="forum-topic-card__meta">
         <span class="forum-badge {{ $topic['is_urgent'] ? 'forum-badge--danger' : '' }}">
             @if ($topic['is_urgent'])
-                <x-lucide-triangle-alert aria-hidden="true" />
+                <x-ui-icon name="triangle-alert" />
             @endif
             {{ $topic['status_label'] }}
         </span>
         <span>{{ $topic['type_label'] }}</span>
         <span>{{ $topic['category_label'] }}</span>
         @if ($topic['location'])
-            <span><x-lucide-map-pin aria-hidden="true" /> {{ $topic['location'] }}</span>
+            <span><x-ui-icon name="map-pin" /> {{ $topic['location'] }}</span>
         @endif
     </div>
 
@@ -32,15 +32,15 @@
     @endif
 
     <div class="forum-topic-card__facts" aria-label="{{ __('ui.topic_activity_e7e514dfe2') }}">
-        <span><x-lucide-message-square aria-hidden="true" /> {{ trans_choice('presentation.answers_count', $topic['answers_count'], ['count' => $topic['answers_count']]) }}</span>
-        <span><x-lucide-messages-square aria-hidden="true" /> {{ trans_choice('presentation.comments_count', $topic['comments_count'], ['count' => $topic['comments_count']]) }}</span>
-        <span><x-lucide-thumbs-up aria-hidden="true" /> {{ __('presentation.helpful_count', ['count' => $topic['helpful_score']]) }}</span>
-        <span><x-lucide-eye aria-hidden="true" /> {{ $topic['view_count'] }}</span>
+        <span><x-ui-icon name="message-square" /> {{ trans_choice('presentation.answers_count', $topic['answers_count'], ['count' => $topic['answers_count']]) }}</span>
+        <span><x-ui-icon name="messages-square" /> {{ trans_choice('presentation.comments_count', $topic['comments_count'], ['count' => $topic['comments_count']]) }}</span>
+        <span><x-ui-icon name="thumbs-up" /> {{ __('presentation.helpful_count', ['count' => $topic['helpful_score']]) }}</span>
+        <span><x-ui-icon name="eye" /> {{ $topic['view_count'] }}</span>
         @if ($topic['has_expert_answer'])
-            <span class="forum-badge"><x-lucide-badge-check aria-hidden="true" /> {{ __('ui.expert_reply_6da9cb7be8') }}</span>
+            <span class="forum-badge"><x-ui-icon name="badge-check" /> {{ __('ui.expert_reply_6da9cb7be8') }}</span>
         @endif
         @if ($topic['has_accepted_answer'])
-            <span class="forum-badge"><x-lucide-circle-check-big aria-hidden="true" /> {{ __('ui.accepted_a00fb0c507') }}</span>
+            <span class="forum-badge"><x-ui-icon name="circle-check-big" /> {{ __('ui.accepted_a00fb0c507') }}</span>
         @endif
     </div>
 
@@ -61,16 +61,13 @@
                 <input type="hidden" name="action" value="toggle-bookmark">
                 <input type="hidden" name="topic_id" value="{{ $topic['id'] }}">
                 <button type="submit" class="forum-button" aria-pressed="{{ $topic['bookmarked'] ? 'true' : 'false' }}">
-                    <x-dynamic-component
-                        :component="$topic['bookmarked'] ? 'lucide-bookmark-check' : 'lucide-bookmark'"
-                        aria-hidden="true"
-                    />
+                    <x-ui-icon :name="$topic['bookmarked'] ? 'bookmark-check' : 'bookmark'" />
                     {{ $topic['bookmarked'] ? __('ui.saved_b5c120b316') : __('ui.save_1509f561f2') }}
                 </button>
             </form>
             <a href="{{ route('forum.topics.show', $topic['slug']) }}" class="forum-button forum-button--primary">
                 {{ __('ui.open_ed077f3d81') }}
-                <x-lucide-arrow-right aria-hidden="true" />
+                <x-ui-icon name="arrow-right" />
             </a>
         </div>
     </footer>

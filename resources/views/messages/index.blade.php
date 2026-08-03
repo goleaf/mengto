@@ -15,11 +15,11 @@
         >
             <x-slot:meta>
                 <span class="page-header__metric">
-                    <x-lucide-mail class="icon icon--sm" aria-hidden="true" />
+                    <x-ui-icon name="mail" size="sm" />
                     {{ __('presentation.unread_count', ['count' => $summary['unread_count']]) }}
                 </span>
                 <span class="page-header__metric">
-                    <x-lucide-message-square-more class="icon icon--sm" aria-hidden="true" />
+                    <x-ui-icon name="message-square-more" size="sm" />
                     {{ trans_choice('presentation.requests_count', $summary['request_count'], ['count' => $summary['request_count']]) }}
                 </span>
             </x-slot:meta>
@@ -60,7 +60,7 @@
                     <x-messaging-request :conversation="$selected" />
                 @elseif ($selected['request_status'] === 'declined')
                     <section class="messaging-state messaging-state--quiet">
-                        <x-lucide-message-square-off class="icon" aria-hidden="true" />
+                        <x-ui-icon name="message-square-off" />
                         <div>
                             <h2>{{ __('ui.request_declined_1df48b2da0') }}</h2>
                             <p>{{ __('ui.the_sender_is_not_told_when_you_viewed_b9db847ee0') }}</p>
@@ -82,9 +82,12 @@
 
                     @if ($message_query !== '')
                         <div class="messaging-search-result" role="status">
-                            <x-lucide-search class="icon icon--sm" aria-hidden="true" />
+                            <x-ui-icon name="search" size="sm" />
                             <span>{{ __('presentation.search_results_context', ['count' => count($messages), 'query' => $message_query]) }}</span>
-                            <a href="{{ route('messages.index', ['conversation' => $selected['key'], 'filter' => $active_filter]) }}">{{ __('ui.clear_83b12c2216') }}</a>
+                            <a href="{{ route('messages.index', ['conversation' => $selected['key'], 'filter' => $active_filter]) }}" class="inline-flex items-center gap-1">
+                                <x-ui-icon name="rotate-ccw" size="xs" />
+                                <span>{{ __('ui.clear_83b12c2216') }}</span>
+                            </a>
                         </div>
                     @endif
 

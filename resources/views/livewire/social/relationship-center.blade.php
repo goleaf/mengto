@@ -45,7 +45,7 @@
             {{ __('social_relationships.fields.actor_search') }}
         </label>
         <div class="relative sm:max-w-xl">
-            <x-lucide-search class="pointer-events-none absolute start-3 top-3 size-5 text-paw-muted" aria-hidden="true" />
+            <x-ui-icon name="search" size="lg" class="pointer-events-none absolute start-3 top-3 text-paw-muted" />
             <input
                 id="social-actor-search"
                 type="search"
@@ -88,7 +88,7 @@
                                         wire:loading.attr="disabled"
                                         wire:target="followActor('{{ $actor['key'] }}')"
                                     >
-                                        <x-lucide-user-plus aria-hidden="true" />
+                                        <x-ui-icon name="user-plus" />
                                         <span>{{ __('social_relationships.actions.follow') }}</span>
                                     </button>
                                 @endif
@@ -100,7 +100,7 @@
                                         wire:loading.attr="disabled"
                                         wire:target="requestFriendship('{{ $actor['key'] }}')"
                                     >
-                                        <x-lucide-users aria-hidden="true" />
+                                        <x-ui-icon name="users" />
                                         <span>{{ __('social_relationships.actions.request_friendship') }}</span>
                                     </button>
                                 @endif
@@ -138,7 +138,7 @@
                             wire:target="accept('{{ $request['key'] }}')"
                             aria-label="{{ __('social_relationships.actions.accept_request', ['name' => $request['actor']['name']]) }}"
                         >
-                            <x-lucide-check aria-hidden="true" />
+                            <x-ui-icon name="check" />
                             <span>{{ __('social_relationships.actions.accept') }}</span>
                         </button>
                         <button
@@ -149,7 +149,7 @@
                             wire:target="decline('{{ $request['key'] }}')"
                             aria-label="{{ __('social_relationships.actions.decline_request', ['name' => $request['actor']['name']]) }}"
                         >
-                            <x-lucide-x aria-hidden="true" />
+                            <x-ui-icon name="x" />
                             <span>{{ __('social_relationships.actions.decline') }}</span>
                         </button>
                         <button
@@ -161,7 +161,7 @@
                             wire:target="declineAndPrevent('{{ $request['key'] }}')"
                             aria-label="{{ __('social_relationships.actions.prevent_request', ['name' => $request['actor']['name']]) }}"
                         >
-                            <x-lucide-user-x aria-hidden="true" />
+                            <x-ui-icon name="user-x" />
                             <span>{{ __('social_relationships.actions.decline_and_prevent') }}</span>
                         </button>
                         <button
@@ -173,7 +173,7 @@
                             wire:target="blockIncomingAccount('{{ $request['key'] }}')"
                             aria-label="{{ __('social_relationships.actions.block_account_named', ['name' => $request['actor']['name']]) }}"
                         >
-                            <x-lucide-ban aria-hidden="true" />
+                            <x-ui-icon name="ban" />
                             <span>{{ __('social_relationships.actions.block_account') }}</span>
                         </button>
                         <button
@@ -182,7 +182,7 @@
                             wire:click="startReport('{{ $request['key'] }}')"
                             aria-label="{{ __('social_relationships.actions.report_request', ['name' => $request['actor']['name']]) }}"
                         >
-                            <x-lucide-flag aria-hidden="true" />
+                            <x-ui-icon name="flag" />
                             <span>{{ __('social_relationships.actions.report') }}</span>
                         </button>
                     </div>
@@ -234,11 +234,11 @@
 
                         <div class="flex flex-wrap gap-2">
                             <button type="submit" class="forum-button forum-button--primary min-h-11" wire:loading.attr="disabled">
-                                <x-lucide-flag aria-hidden="true" />
+                                <x-ui-icon name="flag" />
                                 <span>{{ __('social_relationships.actions.submit_report') }}</span>
                             </button>
                             <button type="button" class="forum-button min-h-11" wire:click="cancelReport">
-                                <x-lucide-x aria-hidden="true" />
+                                <x-ui-icon name="x" />
                                 <span>{{ __('social_relationships.actions.cancel_report') }}</span>
                             </button>
                         </div>
@@ -267,7 +267,7 @@
                         wire:loading.attr="disabled"
                         wire:target="cancelRequest('{{ $request['key'] }}')"
                     >
-                        <x-lucide-x aria-hidden="true" />
+                        <x-ui-icon name="x" />
                         <span>{{ __('social_relationships.actions.cancel') }}</span>
                     </button>
                 </div>
@@ -296,7 +296,7 @@
                                 wire:click="applyControl('{{ $relationship['key'] }}', 'mute')"
                                 title="{{ __('social_relationships.actions.mute') }}"
                             >
-                                <x-lucide-eye-off aria-hidden="true" />
+                                <x-ui-icon name="eye-off" />
                                 <span>{{ __('social_relationships.actions.mute') }}</span>
                             </button>
                             <button
@@ -305,7 +305,7 @@
                                 wire:click="applyControl('{{ $relationship['key'] }}', 'restrict')"
                                 title="{{ __('social_relationships.actions.restrict') }}"
                             >
-                                <x-lucide-shield-alert aria-hidden="true" />
+                                <x-ui-icon name="shield-alert" />
                                 <span>{{ __('social_relationships.actions.restrict') }}</span>
                             </button>
                             <button
@@ -314,7 +314,7 @@
                                 wire:click="applyControl('{{ $relationship['key'] }}', 'block')"
                                 wire:confirm="{{ __('social_relationships.actions.block') }}?"
                             >
-                                <x-lucide-ban aria-hidden="true" />
+                                <x-ui-icon name="ban" />
                                 <span>{{ __('social_relationships.actions.block') }}</span>
                             </button>
                         @endif
@@ -324,7 +324,7 @@
                             wire:click="endRelationship('{{ $relationship['key'] }}')"
                             wire:confirm="{{ __('social_relationships.actions.end') }}?"
                         >
-                            <x-lucide-user-minus aria-hidden="true" />
+                            <x-ui-icon name="user-minus" />
                             <span>{{ __('social_relationships.actions.end') }}</span>
                         </button>
                     </div>
@@ -351,7 +351,7 @@
                         wire:click="revokeBlock('{{ $block['key'] }}')"
                         wire:confirm="{{ __('social_relationships.confirm.revoke_account_block') }}"
                     >
-                        <x-lucide-rotate-ccw aria-hidden="true" />
+                        <x-ui-icon name="rotate-ccw" />
                         <span>{{ __('social_relationships.actions.revoke_account_block') }}</span>
                     </button>
                 </div>
@@ -425,7 +425,7 @@
             </div>
 
             <button type="submit" class="forum-button forum-button--primary min-h-11 justify-self-start" wire:loading.attr="disabled">
-                <x-lucide-save aria-hidden="true" />
+                <x-ui-icon name="save" />
                 <span>{{ __('social_relationships.actions.save_settings') }}</span>
             </button>
         </form>

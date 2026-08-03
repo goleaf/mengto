@@ -8,7 +8,7 @@
 
 <div {{ $attributes->class('field-wrap') }}>
     <label for="{{ $id }}" class="sr-only">{{ $label }}</label>
-    <x-lucide-search class="icon icon--sm" aria-hidden="true" />
+    <x-ui-icon name="search" size="sm" />
     <input
         id="{{ $id }}"
         name="{{ $name }}"

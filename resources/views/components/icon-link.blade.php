@@ -14,5 +14,5 @@
     @if ($active) aria-current="page" @endif
     {{ $attributes->class('header-icon') }}
 >
-    <x-dynamic-component :component="'lucide-'.$icon" class="icon" aria-hidden="true" />
+    <x-ui-icon :name="$icon" />
 </a>

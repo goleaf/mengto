@@ -18,13 +18,13 @@
                     class="discovery-direction"
                 >
                     <span class="discovery-direction__icon" aria-hidden="true">
-                        <x-dynamic-component :component="'lucide-'.$category['icon']" class="icon" />
+                        <x-ui-icon :name="$category['icon']" />
                     </span>
                     <span class="min-w-0">
                         <span class="discovery-direction__title">{{ $category['label'] }}</span>
                         <span class="discovery-direction__description">{{ $category['description'] }}</span>
                     </span>
-                    <x-lucide-chevron-right class="discovery-direction__arrow icon icon--sm" aria-hidden="true" />
+                    <x-ui-icon name="chevron-right" size="sm" class="discovery-direction__arrow" />
                 </a>
             @endif
         @endforeach

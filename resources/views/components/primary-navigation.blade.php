@@ -28,6 +28,7 @@
             <x-desktop-nav-item
                 :href="route($item['route'])"
                 :label="$item['label']"
+                :icon="$item['icon']"
                 :name="$item['name']"
                 :active="$activeSection === $item['name']"
             />

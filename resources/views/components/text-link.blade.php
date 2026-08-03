@@ -6,7 +6,7 @@
     ]) }}
 >
     @if ($icon)
-        <x-dynamic-component :component="'lucide-'.$icon" class="icon icon--sm" aria-hidden="true" />
+        <x-ui-icon size="sm" :name="$icon" />
     @endif
     <span>{{ $slot }}</span>
 </a>

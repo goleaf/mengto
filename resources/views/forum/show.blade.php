@@ -14,7 +14,7 @@
                     </span>
                     <span class="forum-badge">{{ $topic['visibility_label'] }}</span>
                     @if ($topic['location'])
-                        <span class="forum-badge"><x-lucide-map-pin aria-hidden="true" /> {{ $topic['location'] }}</span>
+                        <span class="forum-badge"><x-ui-icon name="map-pin" /> {{ $topic['location'] }}</span>
                     @endif
                 </div>
             </x-slot:meta>
@@ -28,7 +28,7 @@
             <div class="forum-thread">
                 @if ($topic['is_medical'])
                     <aside class="forum-safety" role="note">
-                        <x-lucide-triangle-alert aria-hidden="true" />
+                        <x-ui-icon name="triangle-alert" />
                         <div>
                             <strong>{{ __('ui.the_forum_is_not_emergency_veterinary_care_69525c5755') }}</strong>
                             <span>{{ __('ui.if_breathing_consciousness_severe_bleeding_poisoning_trauma_or_17efdebe9e') }}</span>
@@ -51,7 +51,7 @@
                         <figure class="forum-thread__media">
                             @if ($media['sensitive'])
                                 <div class="forum-safety">
-                                    <x-lucide-eye-off aria-hidden="true" />
+                                    <x-ui-icon name="eye-off" />
                                     {{ __('ui.sensitive_media_open_only_if_you_are_comfortable_6ce743c987') }}
                                 </div>
                             @endif
@@ -95,11 +95,11 @@
                     </div>
 
                     <div class="forum-topic-card__facts">
-                        <span><x-lucide-message-square aria-hidden="true" /> {{ trans_choice('presentation.answers_count', $topic['answers_count'], ['count' => $topic['answers_count']]) }}</span>
-                        <span><x-lucide-messages-square aria-hidden="true" /> {{ trans_choice('presentation.comments_count', $topic['comments_count'], ['count' => $topic['comments_count']]) }}</span>
-                        <span><x-lucide-eye aria-hidden="true" /> {{ $topic['view_count'] }}</span>
+                        <span><x-ui-icon name="message-square" /> {{ trans_choice('presentation.answers_count', $topic['answers_count'], ['count' => $topic['answers_count']]) }}</span>
+                        <span><x-ui-icon name="messages-square" /> {{ trans_choice('presentation.comments_count', $topic['comments_count'], ['count' => $topic['comments_count']]) }}</span>
+                        <span><x-ui-icon name="eye" /> {{ $topic['view_count'] }}</span>
                         @if ($topic['pet_name'])
-                            <span><x-lucide-paw-print aria-hidden="true" /> {{ $topic['pet_name'] }} / {{ $topic['pet_species'] }} / {{ $topic['pet_age_label'] }}</span>
+                            <span><x-ui-icon name="paw-print" /> {{ $topic['pet_name'] }} / {{ $topic['pet_species'] }} / {{ $topic['pet_age_label'] }}</span>
                         @endif
                     </div>
 
@@ -109,14 +109,14 @@
                             <input type="hidden" name="action" value="toggle-bookmark">
                             <input type="hidden" name="topic_id" value="{{ $topic['id'] }}">
                             <button type="submit" class="forum-button" aria-pressed="{{ $engagement['is_bookmarked'] ? 'true' : 'false' }}">
-                                <x-lucide-bookmark aria-hidden="true" />
+                                <x-ui-icon name="bookmark" />
                                 {{ $engagement['is_bookmarked'] ? __('ui.saved_b5c120b316') : __('ui.save_1509f561f2') }}
                             </button>
                         </form>
 
                         @if ($can_manage)
                             <a href="{{ route('forum.topics.edit', $topic['slug']) }}" class="forum-button">
-                                <x-lucide-pencil aria-hidden="true" />
+                                <x-ui-icon name="pencil" />
                                 {{ __('ui.edit_464c4ffd01') }}
                             </a>
                             @if (in_array($topic['status_value'], ['solved', 'resolved'], true) && $topic['has_accepted_answer'])
@@ -125,7 +125,7 @@
                                     <input type="hidden" name="action" value="convert-to-knowledge">
                                     <input type="hidden" name="topic_id" value="{{ $topic['id'] }}">
                                     <button type="submit" class="forum-button">
-                                        <x-lucide-library-big aria-hidden="true" />
+                                        <x-ui-icon name="library-big" />
                                         {{ __('ui.create_knowledge_draft_2e84d856b3') }}
                                     </button>
                                 </form>
@@ -196,7 +196,7 @@
                             </label>
                         </div>
                         <button type="submit" class="forum-button forum-button--primary">
-                            <x-lucide-send aria-hidden="true" />
+                            <x-ui-icon name="send" />
                             {{ __('ui.publish_answer_a87ef6402e') }}
                         </button>
                     </form>
@@ -221,7 +221,7 @@
                             </select>
                         </label>
                         <button type="submit" class="forum-button">
-                            <x-lucide-bell-ring aria-hidden="true" />
+                            <x-ui-icon name="bell-ring" />
                             {{ __('ui.update_c1c1009d3f') }}
                         </button>
                     </form>
@@ -232,8 +232,11 @@
                     <div class="forum-mini-list">
                         @forelse ($similar_topics as $similar)
                             <a href="{{ route('forum.topics.show', $similar['slug']) }}">
-                                {{ $similar['title'] }}
-                                <small>{{ __('presentation.status_answers', ['status' => $similar['status_label'], 'answers' => $similar['answers_count']]) }}</small>
+                                <x-ui-icon name="message-circle-question" size="sm" />
+                                <span>
+                                    {{ $similar['title'] }}
+                                    <small>{{ __('presentation.status_answers', ['status' => $similar['status_label'], 'answers' => $similar['answers_count']]) }}</small>
+                                </span>
                             </a>
                         @empty
                             <p>{{ __('ui.no_close_matches_319d415e94') }}</p>
@@ -246,8 +249,11 @@
                     <div class="forum-mini-list">
                         @forelse ($related_articles as $article)
                             <a href="{{ route('knowledge.articles.show', $article['slug']) }}">
-                                {{ $article['title'] }}
-                                <small>{{ $article['reviewed_label'] }}</small>
+                                <x-ui-icon name="book-open-check" size="sm" />
+                                <span>
+                                    {{ $article['title'] }}
+                                    <small>{{ $article['reviewed_label'] }}</small>
+                                </span>
                             </a>
                         @empty
                             <p>{{ __('ui.no_reviewed_guide_in_this_category_yet_d43d89639b') }}</p>
@@ -258,7 +264,7 @@
                 <section class="forum-sidebar__section">
                     <details>
                         <summary class="forum-button">
-                            <x-lucide-shield-alert aria-hidden="true" />
+                            <x-ui-icon name="shield-alert" />
                             {{ __('ui.safety_actions_c582dd7800') }}
                         </summary>
                         <div class="forum-topic-list mt-2">
@@ -290,7 +296,7 @@
                                     <span>{{ __('forum_moderation.forms.block_user') }}</span>
                                 </label>
                                 <button type="submit" class="forum-button forum-button--danger">
-                                    <x-lucide-flag aria-hidden="true" />
+                                    <x-ui-icon name="flag" />
                                     {{ __('ui.report_topic_918ef4030a') }}
                                 </button>
                             </form>
@@ -300,7 +306,7 @@
                                     <input type="hidden" name="action" value="block-author">
                                     <input type="hidden" name="author_key" value="{{ $topic['author_key'] }}">
                                     <button type="submit" class="forum-button forum-button--danger">
-                                        <x-lucide-user-x aria-hidden="true" />
+                                        <x-ui-icon name="user-x" />
                                         {{ __('ui.block_author_0252bd42c3') }}
                                     </button>
                                 </form>

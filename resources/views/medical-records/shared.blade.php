@@ -31,13 +31,13 @@
         @if (isset($medical_record['current_weight']) || isset($medical_record['microchip_status']))
             <section class="medical-summary-grid" aria-label="{{ __('ui.shared_health_summary_f4e27528e2') }}">
                 @isset($medical_record['current_weight'])
-                    <div><x-lucide-scale class="size-5 text-paw-leaf" aria-hidden="true" /><span>{{ __('ui.current_weight_8a05fab730') }}</span><strong>{{ $medical_record['current_weight'] }}</strong></div>
+                    <div><x-ui-icon name="scale" size="lg" class="text-paw-leaf" /><span>{{ __('ui.current_weight_8a05fab730') }}</span><strong>{{ $medical_record['current_weight'] }}</strong></div>
                 @endisset
                 @isset($medical_record['microchip_status'])
-                    <div><x-lucide-scan-line class="size-5 text-paw-leaf" aria-hidden="true" /><span>{{ __('ui.microchip_230fe79bc1') }}</span><strong>{{ $medical_record['microchip_masked'] ?? $medical_record['microchip_status'] }}</strong></div>
+                    <div><x-ui-icon name="scan-line" size="lg" class="text-paw-leaf" /><span>{{ __('ui.microchip_230fe79bc1') }}</span><strong>{{ $medical_record['microchip_masked'] ?? $medical_record['microchip_status'] }}</strong></div>
                 @endisset
                 @isset($medical_record['blood_group'])
-                    <div><x-lucide-droplets class="size-5 text-paw-leaf" aria-hidden="true" /><span>{{ __('ui.blood_group_0cd279b3a6') }}</span><strong>{{ $medical_record['blood_group'] ?: __('ui.not_recorded_b37c7879f6') }}</strong></div>
+                    <div><x-ui-icon name="droplets" size="lg" class="text-paw-leaf" /><span>{{ __('ui.blood_group_0cd279b3a6') }}</span><strong>{{ $medical_record['blood_group'] ?: __('ui.not_recorded_b37c7879f6') }}</strong></div>
                 @endisset
             </section>
         @endif
@@ -130,7 +130,7 @@
         @endif
 
         <footer class="medical-privacy-strip">
-            <x-lucide-shield-check class="size-5" aria-hidden="true" />
+            <x-ui-icon name="shield-check" size="lg" />
             <div>
                 <strong>{{ __('ui.access_is_limited_to_the_sections_above_bdb4fa2910') }}</strong>
                 <span>{{ __('ui.the_owner_can_revoke_this_link_at_any_bf4eca8fd2') }}</span>

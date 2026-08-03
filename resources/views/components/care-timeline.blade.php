@@ -4,7 +4,7 @@
     @forelse ($entries as $entry)
         <article class="care-timeline__item">
             <span class="care-timeline__icon {{ $entry['is_unusual'] ? 'care-timeline__icon--attention' : '' }}">
-                <x-dynamic-component :component="'lucide-'.$entry['icon']" class="size-4" aria-hidden="true" />
+                <x-ui-icon size="sm" :name="$entry['icon']" />
             </span>
             <div class="care-timeline__content">
                 <div class="flex min-w-0 flex-wrap items-start justify-between gap-2">
@@ -62,7 +62,7 @@
                     <div class="care-media-list">
                         @forelse ($entry['media'] as $media)
                             <a href="{{ $media['download_url'] }}" class="care-media-link">
-                                <x-lucide-paperclip class="size-4" aria-hidden="true" />
+                                <x-ui-icon name="paperclip" size="sm" />
                                 <span>{{ $media['alt_text'] }}</span>
                                 <small>{{ $media['sensitivity_label'] }}</small>
                             </a>
@@ -75,7 +75,7 @@
         </article>
     @empty
         <div class="care-empty">
-            <x-lucide-notebook-tabs class="size-7" aria-hidden="true" />
+            <x-ui-icon name="notebook-tabs" size="xl" />
             <p>{{ __('ui.no_care_actions_have_been_recorded_for_this_4e87ea5361') }}</p>
         </div>
     @endforelse

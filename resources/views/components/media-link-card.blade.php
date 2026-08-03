@@ -18,6 +18,6 @@
     <span class="media-link__body">
         <span class="media-link__meta">{{ $item['meta'] }}</span>
         <span class="media-link__title">{{ $item['title'] }}</span>
-        <x-dynamic-component :component="'lucide-'.$item['icon']" class="media-link__icon icon" aria-hidden="true" />
+        <x-ui-icon :name="$item['icon']" class="media-link__icon" />
     </span>
 </a>

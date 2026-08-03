@@ -22,7 +22,7 @@
         <form method="GET" action="{{ route('forum.index') }}" class="forum-search" role="search">
             <label>
                 <span class="sr-only">{{ __('ui.search_forum_aae59cf0ad') }}</span>
-                <x-lucide-search aria-hidden="true" />
+                <x-ui-icon name="search" />
                 <input name="q" value="{{ $filters['q'] }}" placeholder="{{ __('ui.search_questions_pets_places_or_exact_phrases_5190090592') }}">
             </label>
             <select name="language" aria-label="{{ __('ui.topic_language_8d3b8b5b39') }}">
@@ -32,7 +32,7 @@
                 <option value="ru" @selected($filters['language'] === 'ru')>{{ __('ui.russian_5bcc40adf6') }}</option>
             </select>
             <button type="submit" class="forum-button forum-button--primary">
-                <x-lucide-search aria-hidden="true" />
+                <x-ui-icon name="search" />
                 {{ __('ui.search_49c266baaa') }}
             </button>
             <input type="hidden" name="category" value="{{ $filters['category'] }}">
@@ -43,7 +43,7 @@
         <section class="forum-stats" aria-label="{{ __('ui.forum_summary_b01b2e0a58') }}">
             @forelse ($stats as $stat)
                 <div class="forum-stats__item">
-                    <x-dynamic-component :component="'lucide-'.$stat['icon']" aria-hidden="true" />
+                    <x-ui-icon :name="$stat['icon']" />
                     <div>
                         <strong>{{ $stat['value'] }}</strong>
                         <span>{{ $stat['label'] }}</span>
@@ -94,7 +94,7 @@
                             <h2>{{ __('ui.no_matching_discussion_yet_1dee81e8c3') }}</h2>
                             <p>{{ __('ui.try_a_broader_phrase_or_start_a_focused_a511e7e0d2') }}</p>
                             <a href="{{ route('forum.topics.create') }}" class="forum-button forum-button--primary">
-                                <x-lucide-square-pen aria-hidden="true" />
+                                <x-ui-icon name="square-pen" />
                                 {{ __('ui.start_a_topic_c27175f4e0') }}
                             </a>
                         </div>
@@ -108,13 +108,19 @@
                 <section class="forum-sidebar__section">
                     <div class="forum-sidebar__title">
                         <span>{{ __('ui.knowledge_desk_518296addd') }}</span>
-                        <a href="{{ route('knowledge.index') }}">{{ __('ui.all_a52ace420f') }}</a>
+                        <a href="{{ route('knowledge.index') }}" class="inline-flex items-center gap-1">
+                            <span>{{ __('ui.all_a52ace420f') }}</span>
+                            <x-ui-icon name="arrow-right" size="xs" />
+                        </a>
                     </div>
                     <div class="forum-mini-list">
                         @forelse ($knowledge as $article)
                             <a href="{{ route('knowledge.articles.show', $article['slug']) }}">
-                                {{ $article['title'] }}
-                                <small>{{ __('presentation.publication_reviewed', ['type' => $article['type_label'], 'date' => $article['reviewed_label']]) }}</small>
+                                <x-ui-icon name="book-open-check" size="sm" />
+                                <span>
+                                    {{ $article['title'] }}
+                                    <small>{{ __('presentation.publication_reviewed', ['type' => $article['type_label'], 'date' => $article['reviewed_label']]) }}</small>
+                                </span>
                             </a>
                         @empty
                             <p>{{ __('ui.no_reviewed_guides_yet_3d9f862601') }}</p>
@@ -133,11 +139,14 @@
                                 <input type="hidden" name="action" value="mark-notification-read">
                                 <input type="hidden" name="notification_id" value="{{ $notification['id'] }}">
                                 <button type="submit">
-                                    {{ $notification['title'] }}
-                                    <small>{{ __('forum.notifications.summary', [
-                                        'date' => $notification['created_label'],
-                                        'state' => $notification['state_label'],
-                                    ]) }}</small>
+                                    <x-ui-icon name="bell-ring" size="sm" />
+                                    <span>
+                                        {{ $notification['title'] }}
+                                        <small>{{ __('forum.notifications.summary', [
+                                            'date' => $notification['created_label'],
+                                            'state' => $notification['state_label'],
+                                        ]) }}</small>
+                                    </span>
                                 </button>
                             </form>
                         @empty

@@ -3,7 +3,7 @@
         <header class="flex flex-col gap-4 border-b border-paw-line pb-6 sm:flex-row sm:items-end sm:justify-between">
             <div>
                 <a href="{{ route('medical-records.show', $medical_record['slug']) }}" class="inline-flex items-center gap-2 text-sm font-bold text-paw-leaf">
-                    <x-lucide-arrow-left class="size-4" aria-hidden="true" />
+                    <x-ui-icon name="arrow-left" size="sm" />
                     {{ __('presentation.pet_record', ['pet' => $medical_record['pet_name']]) }}
                 </a>
                 <p class="mt-5 text-sm font-bold uppercase text-paw-leaf">{{ __('ui.owner_workspace_cefa8e8061') }}</p>
@@ -14,7 +14,7 @@
 
         @if ($errors->any())
             <div class="medical-form-errors" role="alert">
-                <x-lucide-circle-alert class="size-5" aria-hidden="true" />
+                <x-ui-icon name="circle-alert" size="lg" />
                 <div>
                     <strong>{{ __('ui.the_entry_was_not_saved_ebecbcc913') }}</strong>
                     <ul>
@@ -35,17 +35,17 @@
                     <h2 id="new-access-link-title" class="mt-1 font-bold">{{ __('ui.temporary_access_link_f91c3757ef') }}</h2>
                     <p class="mt-2 break-all text-sm">{{ $medical_access_url }}</p>
                 </div>
-                <x-lucide-link class="size-6" aria-hidden="true" />
+                <x-ui-icon name="link" size="xl" />
             </section>
         @endif
 
         <nav class="medical-anchor-nav" aria-label="{{ __('ui.health_record_management_d150c7be4e') }}">
-            <a href="#events"><x-lucide-notebook-pen class="size-4" aria-hidden="true" /> {{ __('ui.event_4e1f49a9c8') }}</a>
-            <a href="#weight"><x-lucide-scale class="size-4" aria-hidden="true" /> {{ __('ui.weight_81d27ef6d5') }}</a>
-            <a href="#vaccinations"><x-lucide-syringe class="size-4" aria-hidden="true" /> {{ __('ui.vaccine_8c707f7772') }}</a>
-            <a href="#medications"><x-lucide-pill class="size-4" aria-hidden="true" /> {{ __('ui.medication_00c96546af') }}</a>
-            <a href="#documents"><x-lucide-file-heart class="size-4" aria-hidden="true" /> {{ __('ui.document_d6bd8c0aee') }}</a>
-            <a href="#access"><x-lucide-key-round class="size-4" aria-hidden="true" /> {{ __('ui.access_ec5ba0abb7') }}</a>
+            <a href="#events"><x-ui-icon name="notebook-pen" size="sm" /> {{ __('ui.event_4e1f49a9c8') }}</a>
+            <a href="#weight"><x-ui-icon name="scale" size="sm" /> {{ __('ui.weight_81d27ef6d5') }}</a>
+            <a href="#vaccinations"><x-ui-icon name="syringe" size="sm" /> {{ __('ui.vaccine_8c707f7772') }}</a>
+            <a href="#medications"><x-ui-icon name="pill" size="sm" /> {{ __('ui.medication_00c96546af') }}</a>
+            <a href="#documents"><x-ui-icon name="file-heart" size="sm" /> {{ __('ui.document_d6bd8c0aee') }}</a>
+            <a href="#access"><x-ui-icon name="key-round" size="sm" /> {{ __('ui.access_ec5ba0abb7') }}</a>
         </nav>
 
         <div class="medical-manage-grid">
@@ -132,7 +132,7 @@
                         </label>
                         <div class="flex justify-end">
                             <button class="action action--primary action--compact" type="submit">
-                                <x-lucide-plus class="icon icon--sm" aria-hidden="true" />
+                                <x-ui-icon name="plus" size="sm" />
                                 <span>{{ __('ui.add_event_57d208bc0d') }}</span>
                             </button>
                         </div>
@@ -187,7 +187,7 @@
                         </label>
                         <div class="flex justify-end">
                             <button class="action action--primary action--compact" type="submit">
-                                <x-lucide-scale class="icon icon--sm" aria-hidden="true" />
+                                <x-ui-icon name="scale" size="sm" />
                                 <span>{{ __('ui.save_weight_638c50fe24') }}</span>
                             </button>
                         </div>
@@ -263,7 +263,7 @@
                         </label>
                         <div class="flex justify-end">
                             <button class="action action--primary action--compact" type="submit">
-                                <x-lucide-syringe class="icon icon--sm" aria-hidden="true" />
+                                <x-ui-icon name="syringe" size="sm" />
                                 <span>{{ __('ui.add_vaccination_80ced041ed') }}</span>
                             </button>
                         </div>
@@ -381,7 +381,7 @@
                         </label>
                         <div class="flex justify-end">
                             <button class="action action--primary action--compact" type="submit">
-                                <x-lucide-pill class="icon icon--sm" aria-hidden="true" />
+                                <x-ui-icon name="pill" size="sm" />
                                 <span>{{ __('ui.add_medication_50f2705d69') }}</span>
                             </button>
                         </div>
@@ -438,7 +438,7 @@
                         </label>
                         <div class="flex justify-end">
                             <button class="action action--primary action--compact" type="submit">
-                                <x-lucide-bell-plus class="icon icon--sm" aria-hidden="true" />
+                                <x-ui-icon name="bell-plus" size="sm" />
                                 <span>{{ __('ui.schedule_f4830a1dae') }}</span>
                             </button>
                         </div>
@@ -493,7 +493,7 @@
                             <span>{{ __('ui.pdf_image_short_video_or_audio_up_to_30b8b25a60') }}</span>
                         </label>
                         <button class="action action--primary action--compact" type="submit">
-                            <x-lucide-upload class="icon icon--sm" aria-hidden="true" />
+                            <x-ui-icon name="upload" size="sm" />
                             <span>{{ __('ui.upload_privately_b34a128b67') }}</span>
                         </button>
                     </form>
@@ -564,7 +564,7 @@
                             <span>{{ __('ui.i_reviewed_the_selected_sections_and_expiry_720b3706bc') }}</span>
                         </label>
                         <button class="action action--primary action--compact" type="submit">
-                            <x-lucide-link class="icon icon--sm" aria-hidden="true" />
+                            <x-ui-icon name="link" size="sm" />
                             <span>{{ __('ui.create_access_link_281b440b33') }}</span>
                         </button>
                     </form>
@@ -589,7 +589,7 @@
                                             @csrf
                                             @method('DELETE')
                                             <button class="action action--surface action--compact" type="submit" title="{{ __('ui.revoke_access_ab292ddb87') }}">
-                                                <x-lucide-link-2-off class="icon icon--sm" aria-hidden="true" />
+                                                <x-ui-icon name="link-2-off" size="sm" />
                                                 <span class="sr-only">{{ __('presentation.revoke_access_for', ['name' => $grant['recipient_name']]) }}</span>
                                             </button>
                                         </form>

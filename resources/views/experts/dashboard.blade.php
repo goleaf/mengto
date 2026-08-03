@@ -66,7 +66,12 @@
                                             <td class="px-3 py-3">{{ $booking['client_name'] }}<span class="block text-paw-muted">{{ $booking['pet_name'] }} · {{ $booking['pet_species'] }}</span></td>
                                             <td class="px-3 py-3">{{ $booking['service'] }}<span class="block text-paw-muted">{{ $booking['format'] }}</span></td>
                                             <td class="px-3 py-3">{{ $booking['status'] }}<span class="block text-paw-muted">{{ $booking['payment_status'] }}</span></td>
-                                            <td class="px-3 py-3 text-right"><a href="{{ route('bookings.show', $booking['reference']) }}" class="font-bold text-paw-leaf">{{ __('ui.open_ed077f3d81') }}</a></td>
+                                            <td class="px-3 py-3 text-right">
+                                                <a href="{{ route('bookings.show', $booking['reference']) }}" class="inline-flex items-center gap-1 font-bold text-paw-leaf">
+                                                    <span>{{ __('ui.open_ed077f3d81') }}</span>
+                                                    <x-ui-icon name="arrow-up-right" size="sm" />
+                                                </a>
+                                            </td>
                                         </tr>
                                     @empty
                                         <tr><td colspan="5" class="px-3 py-6 text-center text-paw-muted">{{ __('ui.no_consultation_requests_yet_cbc6f79994') }}</td></tr>

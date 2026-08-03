@@ -23,7 +23,8 @@
         <form method="POST" action="{{ route('logout') }}">
             @csrf
             <button type="submit" class="auth-button auth-button--secondary">
-                {{ __('auth.logout') }}
+                <x-ui-icon name="log-out" size="sm" />
+                <span>{{ __('auth.logout') }}</span>
             </button>
         </form>
     </div>

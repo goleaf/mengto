@@ -34,7 +34,7 @@
             aria-label="{{ $item['date_accessible'] }}"
             class="promo-card__date"
         >
-            <x-lucide-calendar-days class="icon icon--sm" aria-hidden="true" />
+            <x-ui-icon name="calendar-days" size="sm" />
             <span>{{ $item['date'] }}</span>
         </time>
         <x-icon-text icon="map-pin" class="meta--strong mt-1">

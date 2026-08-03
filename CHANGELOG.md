@@ -16,6 +16,13 @@
   that reject traversal segments, foreign disks, cross-domain stored paths,
   missing files, and symbolic-link escapes before streaming or audit changes.
 
+### Interface System
+
+- Added one canonical Lucide icon primitive with bounded sizes, consistent
+  stroke/fill and ARIA behavior; migrated all direct/dynamic consumers and
+  legacy selectors; added icons to primary navigation and unambiguous actions;
+  and introduced a zero-debt downward-only audit.
+
 ### Events
 
 - Added the canonical organization tenant authority with current memberships,

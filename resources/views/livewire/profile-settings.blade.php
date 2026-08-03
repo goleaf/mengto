@@ -94,8 +94,9 @@
                         type="submit"
                         wire:loading.attr="disabled"
                         wire:target="save"
-                        class="inline-flex min-h-11 items-center justify-center rounded-md bg-paw-leaf px-5 py-2.5 font-semibold text-white hover:bg-paw-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-paw-leaf focus-visible:ring-offset-2 disabled:cursor-wait disabled:opacity-60"
+                        class="inline-flex min-h-11 items-center justify-center gap-2 rounded-md bg-paw-leaf px-5 py-2.5 font-semibold text-white hover:bg-paw-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-paw-leaf focus-visible:ring-offset-2 disabled:cursor-wait disabled:opacity-60"
                     >
+                        <x-ui-icon name="save" size="sm" />
                         <span wire:loading.remove wire:target="save">{{ __('auth.settings.save') }}</span>
                         <span wire:loading wire:target="save">{{ __('auth.settings.saving') }}</span>
                     </button>

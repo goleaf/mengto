@@ -3,7 +3,7 @@
         <header class="grid gap-5 border-b border-paw-line pb-6">
             <div class="flex flex-wrap items-center gap-2 text-sm">
                 <a href="{{ route('lost-found.index') }}" class="inline-flex items-center gap-2 font-semibold text-paw-leaf">
-                    <x-lucide-arrow-left class="size-4" aria-hidden="true" />
+                    <x-ui-icon name="arrow-left" size="sm" />
                     {{ __('ui.lost_found_217c655848') }}
                 </a>
                 <span class="text-paw-line">/</span>
@@ -14,7 +14,7 @@
                 <div class="max-w-4xl">
                     <div class="flex flex-wrap items-center gap-2">
                         <span class="inline-flex items-center gap-1 rounded bg-paw-mint px-2 py-1 text-xs font-bold text-paw-leaf">
-                            <x-dynamic-component :component="'lucide-'.$search_case['type_icon']" class="size-3.5" aria-hidden="true" />
+                            <x-ui-icon size="sm" :name="$search_case['type_icon']" />
                             {{ $search_case['type_label'] }}
                         </span>
                         <span class="rounded px-2 py-1 text-xs font-bold {{ $search_case['urgent'] ? 'bg-red-100 text-red-800' : 'bg-paw-sun/60 text-paw-ink' }}">
@@ -44,7 +44,7 @@
 
         @if (session('feedback'))
             <div class="flex items-start gap-3 rounded-md border border-paw-leaf/30 bg-paw-mint p-4 text-sm font-semibold text-paw-leaf" role="status">
-                <x-lucide-circle-check-big class="mt-0.5 size-5 shrink-0" aria-hidden="true" />
+                <x-ui-icon name="circle-check-big" size="lg" class="mt-0.5 shrink-0" />
                 {{ session('feedback') }}
             </div>
         @endif
@@ -52,7 +52,7 @@
         @if ($errors->any())
             <div class="rounded-md border border-red-300 bg-red-50 p-4 text-sm text-red-900" role="alert">
                 <div class="flex items-center gap-2 font-bold">
-                    <x-lucide-circle-alert class="size-5" aria-hidden="true" />
+                    <x-ui-icon name="circle-alert" size="lg" />
                     {{ __('ui.the_form_needs_attention_f30a979b23') }}
                 </div>
                 <ul class="mt-2 list-disc space-y-1 pl-5">
@@ -67,7 +67,7 @@
 
         @if ($search_case['urgent'])
             <section class="grid gap-4 rounded-md border-2 border-paw-coral bg-red-50 p-5 sm:grid-cols-[auto_1fr]" aria-labelledby="urgent-instruction-title">
-                <x-lucide-siren class="size-7 text-paw-coral" aria-hidden="true" />
+                <x-ui-icon name="siren" size="xl" class="text-paw-coral" />
                 <div>
                     <h2 id="urgent-instruction-title" class="text-lg font-bold">{{ __('presentation.search_instruction', ['pet' => $search_case['pet_name']]) }}</h2>
                     <p class="mt-1 leading-7 text-paw-muted">
@@ -86,7 +86,7 @@
                     <img src="{{ $search_case['cover_url'] }}" alt="{{ $search_case['pet_name'] }}, {{ strtolower($search_case['species_label']) }}, {{ $search_case['color'] }}" class="aspect-[4/3] size-full object-cover">
                 @else
                     <div class="grid aspect-[4/3] place-items-center">
-                        <x-dynamic-component :component="'lucide-'.$search_case['type_icon']" class="size-20 text-paw-leaf" aria-hidden="true" />
+                        <x-ui-icon size="display" :name="$search_case['type_icon']" class="text-paw-leaf" />
                     </div>
                 @endif
             </div>
@@ -128,14 +128,14 @@
 
                 @if ($search_case['health_notice'])
                     <div class="flex items-start gap-3 rounded-md border border-paw-coral/30 bg-red-50 p-4">
-                        <x-lucide-heart-pulse class="mt-0.5 size-5 shrink-0 text-paw-coral" aria-hidden="true" />
+                        <x-ui-icon name="heart-pulse" size="lg" class="mt-0.5 shrink-0 text-paw-coral" />
                         <p class="text-sm font-semibold">{{ $search_case['health_notice'] }}</p>
                     </div>
                 @endif
 
                 @if ($search_case['reward_offered'] && $search_case['reward_summary'])
                     <div class="flex items-start gap-3 rounded-md border border-paw-sun bg-paw-sun/20 p-4">
-                        <x-lucide-badge-dollar-sign class="mt-0.5 size-5 shrink-0" aria-hidden="true" />
+                        <x-ui-icon name="badge-dollar-sign" size="lg" class="mt-0.5 shrink-0" />
                         <div>
                             <h3 class="font-bold">{{ __('lost_found.interface.reward_available') }}</h3>
                             <p class="mt-1 text-sm leading-6 text-paw-muted">{{ $search_case['reward_summary'] }}</p>
@@ -183,7 +183,7 @@
                     <div class="flex items-center justify-between gap-3 border-b border-paw-line pb-3">
                         <dt class="text-paw-muted">{{ __('ui.contact_2b5c3d2672') }}</dt>
                         <dd class="inline-flex items-center gap-1 font-bold text-paw-leaf">
-                            <x-lucide-shield-check class="size-4" aria-hidden="true" />
+                            <x-ui-icon name="shield-check" size="sm" />
                             {{ __('ui.protected_b0ed263373') }}
                         </dd>
                     </div>
@@ -205,7 +205,7 @@
                         @forelse ($updates as $update)
                             <li class="grid grid-cols-[auto_1fr] gap-3 rounded-md border border-paw-line bg-white p-4">
                                 <span class="grid size-9 place-items-center rounded-full bg-paw-mint text-paw-leaf">
-                                    <x-lucide-radio-tower class="size-4" aria-hidden="true" />
+                                    <x-ui-icon name="radio-tower" size="sm" />
                                 </span>
                                 <div class="min-w-0">
                                     <div class="flex flex-wrap items-center justify-between gap-2">
@@ -217,7 +217,7 @@
                                     @endif
                                     @if ($update['public_area'])
                                         <p class="mt-2 inline-flex items-center gap-1 text-xs font-semibold">
-                                            <x-lucide-map-pin class="size-3.5 text-paw-coral" aria-hidden="true" />
+                                            <x-ui-icon name="map-pin" size="sm" class="text-paw-coral" />
                                             {{ $update['public_area'] }}
                                         </p>
                                     @endif
@@ -282,7 +282,7 @@
                                         <input type="hidden" name="action" value="claim-task">
                                         <input type="hidden" name="task_id" value="{{ $task['id'] }}">
                                         <button type="submit" class="action action--surface action--compact w-full">
-                                            <x-lucide-hand class="icon icon--sm" aria-hidden="true" />
+                                            <x-ui-icon name="hand" size="sm" />
                                             <span>{{ __('ui.claim_task_d8cd3eab86') }}</span>
                                         </button>
                                     </form>
@@ -300,7 +300,7 @@
                         @forelse ($organizations as $organization)
                             <article class="flex items-start gap-3 rounded-md border border-paw-line bg-white p-4">
                                 <span class="grid size-10 shrink-0 place-items-center rounded bg-paw-mint text-paw-leaf">
-                                    <x-dynamic-component :component="'lucide-'.$organization['icon']" class="size-5" aria-hidden="true" />
+                                    <x-ui-icon size="lg" :name="$organization['icon']" />
                                 </span>
                                 <div class="min-w-0">
                                     <h3 class="font-bold">{{ $organization['name'] }}</h3>
@@ -320,7 +320,7 @@
                     <details open class="rounded-md border border-paw-line bg-white">
                         <summary class="flex cursor-pointer list-none items-center gap-3 p-4 font-bold">
                             <span class="grid size-9 place-items-center rounded bg-paw-coral text-white">
-                                <x-lucide-eye class="size-5" aria-hidden="true" />
+                                <x-ui-icon name="eye" size="lg" />
                             </span>
                             {{ __('ui.i_saw_this_animal_04455ea2f2') }}
                         </summary>
@@ -394,7 +394,7 @@
                                 <span>{{ __('ui.i_am_in_a_safe_place_and_will_f13625e321') }}</span>
                             </label>
                             <button type="submit" class="action action--primary w-full">
-                                <x-lucide-map-pin-plus class="icon" aria-hidden="true" />
+                                <x-ui-icon name="map-pin-plus" />
                                 <span>{{ __('ui.send_sighting_2a5a7853e4') }}</span>
                             </button>
                         </form>
@@ -405,7 +405,7 @@
                     <details class="rounded-md border border-paw-line bg-white">
                         <summary class="flex cursor-pointer list-none items-center gap-3 p-4 font-bold">
                             <span class="grid size-9 place-items-center rounded bg-paw-mint text-paw-leaf">
-                                <x-lucide-hand-heart class="size-5" aria-hidden="true" />
+                                <x-ui-icon name="hand-heart" size="lg" />
                             </span>
                             {{ __('ui.join_the_search_18f74f5595') }}
                         </summary>
@@ -421,7 +421,7 @@
                                 <p class="text-sm text-paw-muted">{{ __('ui.no_volunteer_roles_are_open_0cf64811d5') }}</p>
                             @endforelse
                             <button type="submit" class="action action--surface w-full">
-                                <x-lucide-users-round class="icon" aria-hidden="true" />
+                                <x-ui-icon name="users-round" />
                                 <span>{{ __('ui.join_safely_4c462a11b2') }}</span>
                             </button>
                         </form>
@@ -432,7 +432,7 @@
                     <details class="rounded-md border border-paw-leaf/40 bg-white">
                         <summary class="flex cursor-pointer list-none items-center gap-3 p-4 font-bold">
                             <span class="grid size-9 place-items-center rounded bg-paw-mint text-paw-leaf">
-                                <x-lucide-shield-check class="size-5" aria-hidden="true" />
+                                <x-ui-icon name="shield-check" size="lg" />
                             </span>
                             {{ __('lost_found.interface.protected_contact_heading') }}
                         </summary>
@@ -455,7 +455,7 @@
                                 <textarea name="message" rows="4" class="rounded-md border border-paw-line px-3 py-2" required minlength="20" maxlength="2000">{{ old('message') }}</textarea>
                             </label>
                             <button type="submit" class="action action--primary w-full">
-                                <x-lucide-send class="icon" aria-hidden="true" />
+                                <x-ui-icon name="send" />
                                 <span>{{ __('lost_found.interface.send_protected_message') }}</span>
                             </button>
                         </form>
@@ -465,7 +465,7 @@
                 <details class="rounded-md border border-paw-line bg-white">
                     <summary class="flex cursor-pointer list-none items-center gap-3 p-4 font-bold">
                         <span class="grid size-9 place-items-center rounded bg-paw-sun/60">
-                            <x-lucide-flag class="size-5" aria-hidden="true" />
+                            <x-ui-icon name="flag" size="lg" />
                         </span>
                         {{ __('ui.report_a_concern_72b4b63a84') }}
                     </summary>
@@ -494,7 +494,7 @@
                             <span>{{ __('lost_found.interface.immediate_safety') }}</span>
                         </label>
                         <button type="submit" class="action action--surface w-full">
-                            <x-lucide-shield-alert class="icon" aria-hidden="true" />
+                            <x-ui-icon name="shield-alert" />
                             <span>{{ __('ui.send_to_moderation_912d5db239') }}</span>
                         </button>
                     </form>

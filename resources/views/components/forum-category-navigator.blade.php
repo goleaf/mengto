@@ -26,13 +26,13 @@
     <details class="forum-taxonomy__catalog" @if ($navigation['active_root'] === 'all') open @endif>
         <summary>
             <span class="forum-taxonomy__summary-copy">
-                <x-lucide-layout-grid aria-hidden="true" />
+                <x-ui-icon name="layout-grid" />
                 <span>
                     <strong>{{ __('forum.directory.choose_category') }}</strong>
                     <small>{{ __('forum.directory.category_total', ['count' => $navigation['total']]) }}</small>
                 </span>
             </span>
-            <x-lucide-chevron-down class="forum-taxonomy__chevron" aria-hidden="true" />
+            <x-ui-icon name="chevron-down" class="forum-taxonomy__chevron" />
         </summary>
 
         <nav
@@ -47,7 +47,7 @@
                 @if ($navigation['active_root'] === 'all') aria-current="page" @endif
             >
                 <span class="forum-taxonomy__root-icon">
-                    <x-lucide-messages-square aria-hidden="true" />
+                    <x-ui-icon name="messages-square" />
                 </span>
                 <span>
                     <strong>{{ __('ui.all_topics_29366ff597') }}</strong>
@@ -64,7 +64,7 @@
                     @if ($navigation['active_root'] === $key && $navigation['active_subcategory'] === null) aria-current="page" @endif
                 >
                     <span class="forum-taxonomy__root-icon">
-                        <x-dynamic-component :component="'lucide-'.$category['icon']" aria-hidden="true" />
+                        <x-ui-icon :name="$category['icon']" />
                     </span>
                     <strong>{{ $category['label'] }}</strong>
                 </a>
@@ -80,13 +80,13 @@
                 <a href="{{ route('forum.index', [...$filters, 'category' => 'all', 'page' => null]) }}">
                     {{ __('forum.directory.categories_title') }}
                 </a>
-                <x-lucide-chevron-right aria-hidden="true" />
+                <x-ui-icon name="chevron-right" />
                 <span aria-current="page">{{ $navigation['active_category']['label'] }}</span>
             </nav>
 
             <div class="forum-taxonomy__selection-header">
                 <span class="forum-taxonomy__selection-icon">
-                    <x-dynamic-component :component="'lucide-'.$navigation['active_category']['icon']" aria-hidden="true" />
+                    <x-ui-icon :name="$navigation['active_category']['icon']" />
                 </span>
                 <div>
                     <span class="forum-taxonomy__eyebrow">{{ __('forum.directory.active_category') }}</span>
@@ -103,7 +103,7 @@
                     role="note"
                     data-section="one-health-professional-boundary"
                 >
-                    <x-lucide-shield-alert aria-hidden="true" />
+                    <x-ui-icon name="shield-alert" />
                     <div>
                         <strong>{{ __('forum_categories.notice_title') }}</strong>
                         <span>{{ $navigation['active_category']['notice'] }}</span>
@@ -126,7 +126,7 @@
                     data-category-scope="{{ $navigation['active_root'] }}"
                     @if ($navigation['active_subcategory'] === null) aria-current="page" @endif
                 >
-                    <x-lucide-layers-3 aria-hidden="true" />
+                    <x-ui-icon name="layers-3" />
                     <span>{{ __('forum.directory.all_in_category', ['category' => $navigation['active_category']['label']]) }}</span>
                 </a>
 
@@ -136,7 +136,7 @@
                         data-category-child="{{ $subcategoryKey }}"
                         @if ($navigation['active_subcategory'] === $subcategoryKey) aria-current="page" @endif
                     >
-                        <x-lucide-message-circle aria-hidden="true" />
+                        <x-ui-icon name="message-circle" />
                         <span>{{ $subcategoryLabel }}</span>
                     </a>
                 @empty

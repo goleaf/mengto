@@ -15,7 +15,7 @@
         @if ($errors->any())
             <div class="rounded-md border border-red-300 bg-red-50 p-4 text-sm text-red-900" role="alert">
                 <div class="flex items-center gap-2 font-bold">
-                    <x-lucide-circle-alert class="size-5" aria-hidden="true" />
+                    <x-ui-icon name="circle-alert" size="lg" />
                     {{ __('ui.check_the_highlighted_fields_c350ab0d07') }}
                 </div>
                 <ul class="mt-2 list-disc space-y-1 pl-5">
@@ -286,9 +286,12 @@
                 </label>
 
                 <div class="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
-                    <a href="{{ route('lost-found.index') }}" class="action action--surface min-h-11 justify-center">{{ __('ui.cancel_19766ed6cc') }}</a>
+                    <a href="{{ route('lost-found.index') }}" class="action action--surface min-h-11 justify-center">
+                        <x-ui-icon name="x" />
+                        <span>{{ __('ui.cancel_19766ed6cc') }}</span>
+                    </a>
                     <button type="submit" class="action action--primary min-h-11 justify-center">
-                        <x-lucide-siren class="icon" aria-hidden="true" />
+                        <x-ui-icon name="siren" />
                         <span>{{ __('ui.publish_urgent_report_1de0655879') }}</span>
                     </button>
                 </div>

@@ -3,7 +3,7 @@
         <header class="care-report__header">
             <div>
                 <a href="{{ $care_journal['show_url'] }}" class="care-report__back">
-                    <x-lucide-arrow-left class="size-4" aria-hidden="true" />
+                    <x-ui-icon name="arrow-left" size="sm" />
                     {{ __('ui.return_to_journal_371119d3a9') }}
                 </a>
                 <p class="mt-5 text-sm font-bold uppercase text-paw-leaf">{{ __('ui.private_care_report_0322976bf9') }}</p>
@@ -11,13 +11,13 @@
                 <p class="mt-2 text-paw-muted">{{ $period }} · {{ $care_journal['timezone'] }}</p>
             </div>
             <button type="button" class="action action--primary" data-print-page>
-                <x-lucide-printer class="icon" aria-hidden="true" />
+                <x-ui-icon name="printer" />
                 <span>{{ __('ui.print_or_save_pdf_a41f904b40') }}</span>
             </button>
         </header>
 
         <section class="care-access-scope">
-            <x-lucide-info class="size-5" aria-hidden="true" />
+            <x-ui-icon name="info" size="lg" />
             <p>{{ $source_note }}</p>
         </section>
 

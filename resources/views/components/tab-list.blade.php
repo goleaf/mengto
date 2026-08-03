@@ -13,11 +13,7 @@
                 class="tabs__item"
             >
                 @if ($tab['icon'] ?? null)
-                    <x-dynamic-component
-                        :component="'lucide-'.$tab['icon']"
-                        class="icon icon--sm"
-                        aria-hidden="true"
-                    />
+                    <x-ui-icon size="sm" :name="$tab['icon']" />
                 @endif
                 <span>{{ $tab['label'] }}</span>
                 @if ($tab['count'] ?? null)

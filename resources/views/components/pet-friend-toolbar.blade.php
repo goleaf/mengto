@@ -10,7 +10,7 @@
         <label for="friend-search" class="friend-toolbar__search">
             <span>{{ __('ui.search_this_view_0c1a2bde8a') }}</span>
             <span class="friend-toolbar__search-control">
-                <x-lucide-search class="icon icon--sm" aria-hidden="true" />
+                <x-ui-icon name="search" size="sm" />
                 <input
                     id="friend-search"
                     type="search"

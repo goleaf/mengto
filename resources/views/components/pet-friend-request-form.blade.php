@@ -5,9 +5,9 @@
 
 <details class="friend-request">
     <summary class="friend-request__summary">
-        <x-lucide-user-plus class="icon icon--sm" aria-hidden="true" />
+        <x-ui-icon name="user-plus" size="sm" />
         <span>{{ __('ui.send_friend_request_a0383a957f') }}</span>
-        <x-lucide-chevron-down class="icon icon--sm friend-request__chevron" aria-hidden="true" />
+        <x-ui-icon name="chevron-down" size="sm" class="friend-request__chevron" />
     </summary>
 
     <form method="POST" action="{{ $endpoint }}" class="friend-request__form">

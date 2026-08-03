@@ -25,7 +25,7 @@
             <nav aria-label="{{ __('content.feed.pagination') }}" class="mt-6 flex items-center justify-between gap-3">
                 @if ($feed['previous_url'])
                     <a href="{{ $feed['previous_url'] }}" class="button button--secondary">
-                        <x-lucide-arrow-left class="size-4" aria-hidden="true" />
+                        <x-ui-icon name="arrow-left" size="sm" />
                         {{ __('content.feed.newer') }}
                     </a>
                 @else
@@ -35,7 +35,7 @@
                 @if ($feed['next_url'])
                     <a href="{{ $feed['next_url'] }}" class="button button--secondary">
                         {{ __('content.feed.older') }}
-                        <x-lucide-arrow-right class="size-4" aria-hidden="true" />
+                        <x-ui-icon name="arrow-right" size="sm" />
                     </a>
                 @endif
             </nav>

@@ -8,9 +8,9 @@
     <blockquote>{{ $conversation['preview'] }}</blockquote>
 
     <div class="messaging-request__context">
-        <span><x-lucide-paw-print class="icon icon--sm" aria-hidden="true" /> {{ __('ui.linked_pet_context_only_72358e44e9') }}</span>
-        <span><x-lucide-eye-off class="icon icon--sm" aria-hidden="true" /> {{ __('ui.read_status_hidden_118784a0e4') }}</span>
-        <span><x-lucide-paperclip class="icon icon--sm" aria-hidden="true" /> {{ __('ui.media_blocked_until_accepted_7506bc5901') }}</span>
+        <span><x-ui-icon name="paw-print" size="sm" /> {{ __('ui.linked_pet_context_only_72358e44e9') }}</span>
+        <span><x-ui-icon name="eye-off" size="sm" /> {{ __('ui.read_status_hidden_118784a0e4') }}</span>
+        <span><x-ui-icon name="paperclip" size="sm" /> {{ __('ui.media_blocked_until_accepted_7506bc5901') }}</span>
     </div>
 
     <div class="messaging-request__actions">
@@ -24,7 +24,7 @@
                 <input type="hidden" name="action" value="{{ $requestAction['action'] }}">
                 <input type="hidden" name="conversation" value="{{ $conversation['key'] }}">
                 <button type="submit" class="action {{ $requestAction['class'] }} action--regular">
-                    <x-dynamic-component :component="'lucide-'.$requestAction['icon']" class="icon icon--sm" aria-hidden="true" />
+                    <x-ui-icon size="sm" :name="$requestAction['icon']" />
                     <span>{{ $requestAction['label'] }}</span>
                 </button>
             </form>

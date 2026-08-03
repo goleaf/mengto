@@ -13,7 +13,7 @@
                 wire:click="invalidateCategoryCaches"
                 wire:loading.attr="disabled"
             >
-                <x-lucide-refresh-cw class="icon icon--sm" aria-hidden="true" />
+                <x-ui-icon name="refresh-cw" size="sm" />
                 <span wire:loading.remove wire:target="invalidateCategoryCaches">{{ __('forum_admin.actions.invalidate_cache') }}</span>
                 <span wire:loading wire:target="invalidateCategoryCaches">{{ __('forum_admin.actions.working') }}</span>
             </button>
@@ -28,19 +28,24 @@
 
     <nav class="forum-filter-tabs" aria-label="{{ __('forum_admin.tabs.label') }}">
         <button type="button" wire:click="$set('tab', 'categories')" @if ($tab === 'categories') aria-current="page" @endif>
-            {{ __('forum_admin.tabs.categories') }}
+            <x-ui-icon name="folder-tree" size="sm" />
+            <span>{{ __('forum_admin.tabs.categories') }}</span>
         </button>
         <button type="button" wire:click="$set('tab', 'guides')" @if ($tab === 'guides') aria-current="page" @endif>
-            {{ __('forum_admin.tabs.guides') }}
+            <x-ui-icon name="book-open" size="sm" />
+            <span>{{ __('forum_admin.tabs.guides') }}</span>
         </button>
         <button type="button" wire:click="$set('tab', 'taxonomy')" @if ($tab === 'taxonomy') aria-current="page" @endif>
-            {{ __('forum_admin.tabs.taxonomy') }}
+            <x-ui-icon name="tags" size="sm" />
+            <span>{{ __('forum_admin.tabs.taxonomy') }}</span>
         </button>
         <button type="button" wire:click="$set('tab', 'verification')" @if ($tab === 'verification') aria-current="page" @endif>
-            {{ __('forum_admin.tabs.verification') }}
+            <x-ui-icon name="badge-check" size="sm" />
+            <span>{{ __('forum_admin.tabs.verification') }}</span>
         </button>
         <button type="button" wire:click="$set('tab', 'moderation')" @if ($tab === 'moderation') aria-current="page" @endif>
-            {{ __('forum_admin.tabs.moderation') }}
+            <x-ui-icon name="shield-alert" size="sm" />
+            <span>{{ __('forum_admin.tabs.moderation') }}</span>
         </button>
     </nav>
 
@@ -75,7 +80,7 @@
                                     <td class="px-3 py-2">{{ $category['is_system_managed'] ? __('forum_admin.categories.system') : __('forum_admin.categories.administrator') }}</td>
                                     <td class="px-3 py-2 text-end">
                                         <button type="button" wire:click="selectCategory({{ $category['id'] }})" class="forum-button" aria-label="{{ __('forum_admin.actions.edit_named', ['name' => $category['name']]) }}">
-                                            <x-lucide-pencil aria-hidden="true" />
+                                            <x-ui-icon name="pencil" />
                                         </button>
                                     </td>
                                 </tr>
@@ -117,7 +122,7 @@
                             </select>
                         </label>
                         <button type="submit" wire:loading.attr="disabled" wire:target="saveCategory" class="forum-button forum-button--primary">
-                            <x-lucide-save aria-hidden="true" />
+                            <x-ui-icon name="save" />
                             {{ __('forum_admin.actions.save') }}
                         </button>
                     </form>
@@ -139,7 +144,7 @@
                         <input type="search" wire:model.live.debounce.300ms="search" placeholder="{{ __('forum_admin.guides.search') }}" class="min-h-11 rounded-md border border-paw-line bg-white px-3 py-2">
                     </label>
                     <a href="{{ route('knowledge.guides.create') }}" class="forum-button forum-button--primary">
-                        <x-lucide-file-plus-2 aria-hidden="true" />
+                        <x-ui-icon name="file-plus-2" />
                         {{ __('forum_admin.guides.create') }}
                     </a>
                 </div>
@@ -173,11 +178,11 @@
                                     <div class="flex justify-end gap-2">
                                         @if ($guide['public_url'] !== null)
                                             <a href="{{ $guide['public_url'] }}" class="forum-button" aria-label="{{ __('forum_admin.guides.open_named', ['name' => $guide['title']]) }}">
-                                                <x-lucide-external-link aria-hidden="true" />
+                                                <x-ui-icon name="external-link" />
                                             </a>
                                         @endif
                                         <a href="{{ $guide['edit_url'] }}" class="forum-button" aria-label="{{ __('forum_admin.actions.edit_named', ['name' => $guide['title']]) }}">
-                                            <x-lucide-pencil aria-hidden="true" />
+                                            <x-ui-icon name="pencil" />
                                         </a>
                                     </div>
                                 </td>
@@ -252,7 +257,7 @@
                                     <td class="px-3 py-2">{{ $credential['expires'] ?? __('forum_admin.verification.no_expiry') }}</td>
                                     <td class="px-3 py-2 text-end">
                                         <button type="button" wire:click="selectCredential({{ $credential['id'] }})" class="forum-button" aria-label="{{ __('forum_admin.verification.review_named', ['name' => $credential['professional']]) }}">
-                                            <x-lucide-shield-check aria-hidden="true" />
+                                            <x-ui-icon name="shield-check" />
                                         </button>
                                     </td>
                                 </tr>
@@ -286,7 +291,7 @@
                             @error('verificationInternalReason') <small role="alert">{{ $message }}</small> @enderror
                         </label>
                         <button type="submit" wire:loading.attr="disabled" wire:target="reviewCredential" class="forum-button forum-button--primary">
-                            <x-lucide-shield-check aria-hidden="true" />
+                            <x-ui-icon name="shield-check" />
                             <span wire:loading.remove wire:target="reviewCredential">{{ __('forum_admin.verification.apply') }}</span>
                             <span wire:loading wire:target="reviewCredential">{{ __('forum_admin.actions.working') }}</span>
                         </button>

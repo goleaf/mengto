@@ -12,7 +12,7 @@
         ['label' => __('ui.observations_f87558869b'), 'value' => $summary['unusual_count'], 'detail' => __('ui.marked_unusual_f533eb859d'), 'icon' => 'scan-heart'],
     ] as $item)
         <div>
-            <x-dynamic-component :component="'lucide-'.$item['icon']" class="size-5" aria-hidden="true" />
+            <x-ui-icon size="lg" :name="$item['icon']" />
             <span>{{ $item['label'] }}</span>
             <strong>{{ $item['value'] }}</strong>
             <small>{{ $item['detail'] }}</small>

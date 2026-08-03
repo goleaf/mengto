@@ -1,19 +1,19 @@
 <section class="grid gap-4" aria-labelledby="topic-lifecycle-heading">
     <div wire:offline class="forum-safety" role="status">
-        <x-lucide-wifi-off aria-hidden="true" />
+        <x-ui-icon name="wifi-off" />
         <span>{{ __('forum_topic_lifecycle.panel.offline') }}</span>
     </div>
 
     @if ($feedback !== '')
         <div class="forum-safety" role="status" aria-live="polite">
-            <x-lucide-circle-check aria-hidden="true" />
+            <x-ui-icon name="circle-check" />
             <span>{{ $feedback }}</span>
         </div>
     @endif
 
     @if ($this->lifecycle['is_stale'] || $this->lifecycle['shows_necropost_warning'])
         <aside class="forum-safety" role="note">
-            <x-lucide-history aria-hidden="true" />
+            <x-ui-icon name="history" />
             <div>
                 <strong id="topic-lifecycle-heading">
                     {{ $this->lifecycle['is_stale']
@@ -51,7 +51,7 @@
                     wire:loading.attr="disabled"
                     wire:target="changeState"
                 >
-                    <x-lucide-rotate-ccw aria-hidden="true" />
+                    <x-ui-icon name="rotate-ccw" />
                     {{ __('forum_topic_lifecycle.actions.reopen') }}
                 </button>
             @endif
@@ -67,7 +67,7 @@
                     wire:loading.attr="disabled"
                     wire:target="changeState"
                 >
-                    <x-lucide-circle-check-big aria-hidden="true" />
+                    <x-ui-icon name="circle-check-big" />
                     {{ __('forum_topic_lifecycle.actions.mark_solved') }}
                 </button>
             @endif
@@ -80,7 +80,7 @@
                     wire:loading.attr="disabled"
                     wire:target="bump"
                 >
-                    <x-lucide-arrow-up aria-hidden="true" />
+                    <x-ui-icon name="arrow-up" />
                     {{ __('forum_topic_lifecycle.actions.bump') }}
                 </button>
             @elseif ($this->abilities['bump'] && $this->lifecycle['next_bump_at'])
@@ -98,7 +98,7 @@
                     wire:target="changeState"
                     wire:confirm="{{ __('forum_topic_lifecycle.confirm.archive') }}"
                 >
-                    <x-lucide-archive aria-hidden="true" />
+                    <x-ui-icon name="archive" />
                     {{ __('forum_topic_lifecycle.actions.archive') }}
                 </button>
             @endif
@@ -111,7 +111,7 @@
                     wire:loading.attr="disabled"
                     wire:target="changeState"
                 >
-                    <x-lucide-archive-restore aria-hidden="true" />
+                    <x-ui-icon name="archive-restore" />
                     {{ __('forum_topic_lifecycle.actions.restore') }}
                 </button>
             @endif
@@ -125,7 +125,7 @@
                     wire:target="changeState"
                     wire:confirm="{{ __('forum_topic_lifecycle.confirm.remove') }}"
                 >
-                    <x-lucide-trash-2 aria-hidden="true" />
+                    <x-ui-icon name="trash-2" />
                     {{ __('forum_topic_lifecycle.actions.remove') }}
                 </button>
             @endif
@@ -135,7 +135,7 @@
     @if ($this->abilities['request_update'])
         <details class="forum-form">
             <summary class="forum-button min-h-11">
-                <x-lucide-file-pen-line aria-hidden="true" />
+                <x-ui-icon name="file-pen-line" />
                 {{ __('forum_topic_lifecycle.actions.request_update') }}
             </summary>
             <form wire:submit="requestUpdate" class="mt-4 grid gap-4">
@@ -166,7 +166,7 @@
                     wire:loading.attr="disabled"
                     wire:target="requestUpdate"
                 >
-                    <x-lucide-send aria-hidden="true" />
+                    <x-ui-icon name="send" />
                     <span wire:loading.remove wire:target="requestUpdate">{{ __('forum_topic_lifecycle.actions.submit_request') }}</span>
                     <span wire:loading wire:target="requestUpdate">{{ __('forum_topic_lifecycle.actions.submitting') }}</span>
                 </button>
@@ -177,7 +177,7 @@
     @if ($this->updateRequests !== [])
         <details class="forum-form">
             <summary class="forum-button min-h-11">
-                <x-lucide-list-checks aria-hidden="true" />
+                <x-ui-icon name="list-checks" />
                 {{ __('forum_topic_lifecycle.panel.update_requests') }}
             </summary>
             <div class="mt-4 grid gap-4">
@@ -216,7 +216,7 @@
                                     @error('form.reviewReason') <small role="alert">{{ $message }}</small> @enderror
                                 </label>
                                 <button type="submit" class="forum-button min-h-11 justify-self-start" wire:loading.attr="disabled" wire:target="reviewRequest">
-                                    <x-lucide-clipboard-check aria-hidden="true" />
+                                    <x-ui-icon name="clipboard-check" />
                                     {{ __('forum_topic_lifecycle.actions.review_request') }}
                                 </button>
                             </form>
@@ -231,7 +231,7 @@
     @if ($this->history !== [])
         <details class="forum-form">
             <summary class="forum-button min-h-11">
-                <x-lucide-history aria-hidden="true" />
+                <x-ui-icon name="history" />
                 {{ __('forum_topic_lifecycle.panel.history') }}
             </summary>
             <ol class="mt-4 grid gap-3">
@@ -255,7 +255,7 @@
     @if ($this->abilities['moderate'])
         <details class="forum-form">
             <summary class="forum-button min-h-11">
-                <x-lucide-shield-check aria-hidden="true" />
+                <x-ui-icon name="shield-check" />
                 {{ __('forum_topic_lifecycle.panel.moderation') }}
             </summary>
             <div class="mt-4 grid gap-4">
@@ -269,7 +269,7 @@
                     </select>
                 </label>
                 <button type="button" class="forum-button min-h-11 justify-self-start" wire:click="moderateState" wire:loading.attr="disabled" wire:target="moderateState">
-                    <x-lucide-refresh-cw aria-hidden="true" />
+                    <x-ui-icon name="refresh-cw" />
                     {{ __('forum_topic_lifecycle.actions.change_state') }}
                 </button>
 
@@ -282,11 +282,11 @@
                         </label>
                         <div class="forum-actions">
                             <button type="submit" class="forum-button min-h-11" wire:loading.attr="disabled" wire:target="redirectTopic">
-                                <x-lucide-corner-up-right aria-hidden="true" />
+                                <x-ui-icon name="corner-up-right" />
                                 {{ __('forum_topic_lifecycle.actions.redirect') }}
                             </button>
                             <button type="button" class="forum-button min-h-11" wire:click="redirectTopic('merged')" wire:loading.attr="disabled" wire:target="redirectTopic">
-                                <x-lucide-merge aria-hidden="true" />
+                                <x-ui-icon name="merge" />
                                 {{ __('forum_topic_lifecycle.actions.merge') }}
                             </button>
                         </div>
@@ -309,7 +309,7 @@
                                 <input wire:model="form.legalHoldReviewAt" type="datetime-local">
                             </label>
                             <button type="submit" class="forum-button min-h-11 justify-self-start" wire:loading.attr="disabled" wire:target="applyLegalHold">
-                                <x-lucide-lock-keyhole aria-hidden="true" />
+                                <x-ui-icon name="lock-keyhole" />
                                 {{ __('forum_topic_lifecycle.actions.apply_hold') }}
                             </button>
                         </form>
@@ -320,7 +320,7 @@
                                 <textarea wire:model="form.legalHoldReleaseReason" rows="4" minlength="20" maxlength="5000" required></textarea>
                             </label>
                             <button type="submit" class="forum-button min-h-11 justify-self-start" wire:loading.attr="disabled" wire:target="releaseLegalHold">
-                                <x-lucide-lock-keyhole-open aria-hidden="true" />
+                                <x-ui-icon name="lock-keyhole-open" />
                                 {{ __('forum_topic_lifecycle.actions.release_hold') }}
                             </button>
                         </form>

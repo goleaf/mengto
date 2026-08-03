@@ -12,7 +12,7 @@
         />
 
         <section class="medical-privacy-strip" aria-label="{{ __('ui.medical_privacy_status_a8a40a4bd3') }}">
-            <x-lucide-lock-keyhole class="size-5" aria-hidden="true" />
+            <x-ui-icon name="lock-keyhole" size="lg" />
             <div>
                 <strong>{{ __('ui.medical_data_is_private_by_default_2829377998') }}</strong>
                 <span>{{ __('ui.pet_followers_social_groups_marketplace_sellers_and_unrelated_62afc5fdb8') }}</span>
@@ -30,7 +30,7 @@
                     <x-medical-record-card :record="$record" />
                 @empty
                     <div class="medical-empty min-h-64 md:col-span-2 xl:col-span-3">
-                        <x-lucide-heart-pulse class="size-9" aria-hidden="true" />
+                        <x-ui-icon name="heart-pulse" size="3xl" />
                         <h2 class="text-xl font-bold">{{ __('ui.no_health_records_yet_8cc935a87c') }}</h2>
                         <x-action-control label="{{ __('ui.create_the_first_record_381606f2e5') }}" icon="plus" variant="primary" :href="route('medical-records.create')" />
                     </div>

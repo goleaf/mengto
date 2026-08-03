@@ -51,7 +51,7 @@
                         class="post-media__image"
                     />
                     <span class="photo-viewer-trigger__hint" aria-hidden="true">
-                        <x-lucide-expand class="icon icon--sm" />
+                        <x-ui-icon name="expand" size="sm" />
                     </span>
                 </a>
 

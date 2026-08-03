@@ -4,7 +4,7 @@
     <div class="discovery-section__header">
         <div class="discovery-section__identity">
             <span class="discovery-section__icon" aria-hidden="true">
-                <x-dynamic-component :component="'lucide-'.$section['icon']" class="icon" />
+                <x-ui-icon :name="$section['icon']" />
             </span>
             <div class="min-w-0">
                 <h2 id="discover-{{ $section['category'] }}-title" class="discovery-section__title">{{ $section['title'] }}</h2>

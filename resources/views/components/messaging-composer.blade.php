@@ -2,8 +2,8 @@
 
 <section class="messaging-composer" aria-label="{{ __('ui.write_a_message_143ec68982') }}">
     <div class="messaging-composer__reply" data-message-reply hidden>
-        <span><x-lucide-reply class="icon icon--sm" aria-hidden="true" /> {{ __('ui.replying_to_selected_message_0e2599f52e') }}</span>
-        <button type="button" data-message-reply-clear aria-label="{{ __('ui.cancel_reply_2355f73150') }}"><x-lucide-x class="icon icon--sm" /></button>
+        <span><x-ui-icon name="reply" size="sm" /> {{ __('ui.replying_to_selected_message_0e2599f52e') }}</span>
+        <button type="button" data-message-reply-clear aria-label="{{ __('ui.cancel_reply_2355f73150') }}"><x-ui-icon name="x" size="sm" /></button>
     </div>
 
     <form
@@ -39,7 +39,7 @@
                     aria-label="{{ __('presentation.send_item', ['item' => strtolower($tool['label'])]) }}"
                     aria-pressed="false"
                 >
-                    <x-dynamic-component :component="'lucide-'.$tool['icon']" class="icon icon--sm" aria-hidden="true" />
+                    <x-ui-icon size="sm" :name="$tool['icon']" />
                 </button>
             @endforeach
         </div>
@@ -65,18 +65,18 @@
             <div>
                 <label>
                     <input type="checkbox" name="silent" value="yes">
-                    <span><x-lucide-bell-off class="icon icon--sm" aria-hidden="true" /> {{ __('ui.send_quietly_fe08c8d89e') }}</span>
+                    <span><x-ui-icon name="bell-off" size="sm" /> {{ __('ui.send_quietly_fe08c8d89e') }}</span>
                 </label>
                 <span data-message-draft-status>{{ __('ui.draft_saved_on_this_device_3aa3ab0be8') }}</span>
             </div>
             <button type="submit" class="action action--primary action--regular">
-                <x-lucide-send class="icon icon--sm" aria-hidden="true" />
+                <x-ui-icon name="send" size="sm" />
                 <span>{{ __('ui.send_f6f4688ff2') }}</span>
             </button>
         </div>
 
         <details class="messaging-composer__schedule">
-            <summary><x-lucide-clock-3 class="icon icon--sm" aria-hidden="true" /> {{ __('ui.schedule_delivery_51ea1cb13f') }}</summary>
+            <summary><x-ui-icon name="clock-3" size="sm" /> {{ __('ui.schedule_delivery_51ea1cb13f') }}</summary>
             <label for="message-scheduled-{{ $conversation['key'] }}">
                 {{ __('ui.send_at_12e76f1262') }}
                 <input id="message-scheduled-{{ $conversation['key'] }}" type="datetime-local" name="scheduled_for">
@@ -86,7 +86,7 @@
     </form>
 
     <p class="messaging-composer__privacy">
-        <x-lucide-shield-check class="icon icon--sm" aria-hidden="true" />
+        <x-ui-icon name="shield-check" size="sm" />
         {{ __('ui.photo_gps_metadata_is_removed_by_default_files_275f4e697d') }}
     </p>
 </section>

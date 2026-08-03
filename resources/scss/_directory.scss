@@ -28,7 +28,7 @@
     display: inline-flex;
     min-inline-size: 0;
 
-    > .icon {
+    > .ui-icon {
         position: absolute;
         inset-block-start: 50%;
         inset-inline-start: 0.75rem;
@@ -226,7 +226,7 @@
         background: color-mix(in srgb, $mint 70%, $white);
         color: $leaf;
 
-        .icon {
+        .ui-icon {
             inline-size: 2.5rem;
             block-size: 2.5rem;
             stroke-width: 1.5;
@@ -307,7 +307,7 @@
         font-size: 0.75rem;
         line-height: 1.125rem;
 
-        .icon {
+        .ui-icon {
             color: $coral;
         }
 

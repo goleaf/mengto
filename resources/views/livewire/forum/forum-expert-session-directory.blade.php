@@ -85,7 +85,7 @@
                         </div>
                     </dl>
                     <a class="forum-button forum-button--primary min-h-11 justify-self-start" href="{{ $session['url'] }}" wire:navigate>
-                        <x-lucide-arrow-up-right aria-hidden="true" />
+                        <x-ui-icon name="arrow-up-right" />
                         {{ __('forum_expert_sessions.actions.open') }}
                     </a>
                 </article>
@@ -103,7 +103,7 @@
     @if ($this->canCreate)
         <details class="forum-form">
             <summary class="forum-button min-h-11">
-                <x-lucide-calendar-plus aria-hidden="true" />
+                <x-ui-icon name="calendar-plus" />
                 {{ __('forum_expert_sessions.page.create_heading') }}
             </summary>
             <form wire:submit="create" class="mt-4 grid gap-5" wire:dirty.class="border-status-warning">
@@ -183,7 +183,7 @@
                 </div>
 
                 <button class="forum-button forum-button--primary min-h-11 justify-self-start" type="submit" wire:loading.attr="disabled" wire:target="create">
-                    <x-lucide-calendar-plus aria-hidden="true" />
+                    <x-ui-icon name="calendar-plus" />
                     <span wire:loading.remove wire:target="create">{{ __('forum_expert_sessions.actions.create') }}</span>
                     <span wire:loading wire:target="create">{{ __('forum_expert_sessions.actions.creating') }}</span>
                 </button>

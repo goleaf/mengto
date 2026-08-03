@@ -70,7 +70,7 @@
                     @error('questionForm.body') <small role="alert">{{ $message }}</small> @enderror
                 </label>
                 <button class="forum-button forum-button--primary min-h-11 justify-self-start" type="submit" wire:loading.attr="disabled" wire:target="submitQuestion">
-                    <x-lucide-send aria-hidden="true" />
+                    <x-ui-icon name="send" />
                     <span wire:loading.remove wire:target="submitQuestion">{{ __('forum_expert_sessions.actions.submit_question') }}</span>
                     <span wire:loading wire:target="submitQuestion">{{ __('forum_expert_sessions.actions.submitting') }}</span>
                 </button>
@@ -109,25 +109,25 @@
                     <div class="flex flex-wrap gap-2">
                         @if ($question['can_withdraw'])
                             <button class="forum-button min-h-11" type="button" wire:click="withdrawQuestion({{ $question['id'] }})" wire:loading.attr="disabled" wire:target="withdrawQuestion">
-                                <x-lucide-undo-2 aria-hidden="true" />
+                                <x-ui-icon name="undo-2" />
                                 {{ __('forum_expert_sessions.actions.withdraw_question') }}
                             </button>
                         @endif
                         @if ($question['can_moderate'])
                             <button class="forum-button min-h-11" type="button" wire:click="prepareModeration({{ $question['id'] }})">
-                                <x-lucide-shield-check aria-hidden="true" />
+                                <x-ui-icon name="shield-check" />
                                 {{ __('forum_expert_sessions.actions.moderate') }}
                             </button>
                         @endif
                         @if ($question['can_answer'])
                             <button class="forum-button forum-button--primary min-h-11" type="button" wire:click="prepareAnswer({{ $question['id'] }})">
-                                <x-lucide-message-square-reply aria-hidden="true" />
+                                <x-ui-icon name="message-square-reply" />
                                 {{ __('forum_expert_sessions.actions.answer') }}
                             </button>
                         @endif
                         @if ($question['can_report'])
                             <button class="forum-button min-h-11" type="button" wire:click="prepareReport('question', {{ $question['id'] }})">
-                                <x-lucide-flag aria-hidden="true" />
+                                <x-ui-icon name="flag" />
                                 {{ __('forum_expert_sessions.actions.report_question') }}
                             </button>
                         @endif
@@ -153,7 +153,7 @@
                                 </label>
                             @endif
                             <button class="forum-button forum-button--primary min-h-11 justify-self-start" type="submit">
-                                <x-lucide-check aria-hidden="true" />
+                                <x-ui-icon name="check" />
                                 {{ __('forum_expert_sessions.actions.apply_decision') }}
                             </button>
                         </form>
@@ -173,7 +173,7 @@
                                 @error('answerForm.sourceUrls') <small role="alert">{{ $message }}</small> @enderror
                             </label>
                             <button class="forum-button forum-button--primary min-h-11 justify-self-start" type="submit">
-                                <x-lucide-send aria-hidden="true" />
+                                <x-ui-icon name="send" />
                                 {{ __('forum_expert_sessions.actions.publish_answer') }}
                             </button>
                         </form>
@@ -211,13 +211,13 @@
                             <div class="mt-3 flex flex-wrap gap-2">
                                 @if ($question['answer']['can_correct'])
                                     <button class="forum-button min-h-11" type="button" wire:click="prepareCorrection({{ $question['answer']['id'] }})">
-                                        <x-lucide-file-pen-line aria-hidden="true" />
+                                        <x-ui-icon name="file-pen-line" />
                                         {{ __('forum_expert_sessions.actions.correct_answer') }}
                                     </button>
                                 @endif
                                 @if ($question['answer']['can_report'])
                                     <button class="forum-button min-h-11" type="button" wire:click="prepareReport('answer', {{ $question['answer']['id'] }})">
-                                        <x-lucide-flag aria-hidden="true" />
+                                        <x-ui-icon name="flag" />
                                         {{ __('forum_expert_sessions.actions.report_answer') }}
                                     </button>
                                 @endif
@@ -239,7 +239,7 @@
                                         <textarea wire:model="correctionForm.reason" rows="3" minlength="5" maxlength="1000" required></textarea>
                                     </label>
                                     <button class="forum-button forum-button--primary min-h-11 justify-self-start" type="submit">
-                                        <x-lucide-save aria-hidden="true" />
+                                        <x-ui-icon name="save" />
                                         {{ __('forum_expert_sessions.actions.save_correction') }}
                                     </button>
                                 </form>
@@ -261,7 +261,7 @@
             <h2 id="expert-session-report-heading">{{ __('forum_expert_sessions.report.heading') }}</h2>
             <p>{{ __('forum_expert_sessions.report.selected_subject', ['subject' => __('forum_expert_sessions.report_subjects.'.$reportSubjectType)]) }}</p>
             <button class="forum-button min-h-11 justify-self-start" type="button" wire:click="prepareReport('session', null)">
-                <x-lucide-flag aria-hidden="true" />
+                <x-ui-icon name="flag" />
                 {{ __('forum_expert_sessions.actions.report_session') }}
             </button>
             <form wire:submit="report" class="mt-4 grid gap-4">
@@ -287,7 +287,7 @@
                     <span>{{ __('forum_expert_sessions.fields.truthfulness_confirmed') }}</span>
                 </label>
                 <button class="forum-button min-h-11 justify-self-start" type="submit" wire:loading.attr="disabled" wire:target="report">
-                    <x-lucide-flag aria-hidden="true" />
+                    <x-ui-icon name="flag" />
                     {{ __('forum_expert_sessions.actions.submit_report') }}
                 </button>
             </form>
@@ -299,7 +299,7 @@
             <h2 id="expert-session-archive-heading">{{ __('forum_expert_sessions.archive.heading') }}</h2>
             <p>{{ __('forum_expert_sessions.archive.description') }}</p>
             <button class="forum-button min-h-11 justify-self-start" type="button" wire:click="archive" wire:confirm="{{ __('forum_expert_sessions.archive.confirm') }}" wire:loading.attr="disabled" wire:target="archive">
-                <x-lucide-archive aria-hidden="true" />
+                <x-ui-icon name="archive" />
                 {{ __('forum_expert_sessions.actions.archive') }}
             </button>
         </section>

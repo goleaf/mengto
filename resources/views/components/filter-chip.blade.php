@@ -19,7 +19,7 @@
     ]) }}
 >
     @if ($icon || $active)
-        <x-dynamic-component :component="'lucide-'.($icon ?? 'check')" class="icon icon--sm" aria-hidden="true" />
+        <x-ui-icon size="sm" :name="($icon ?? 'check')" />
     @endif
     <span>{{ $label }}</span>
 </button>

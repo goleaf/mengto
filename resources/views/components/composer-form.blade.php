@@ -3,7 +3,7 @@
 <section class="panel form-panel" aria-labelledby="composer-title">
     @if ($errors->any())
         <div role="alert" class="form-errors">
-            <x-lucide-circle-alert class="icon icon--sm" aria-hidden="true" />
+            <x-ui-icon name="circle-alert" size="sm" />
             <p>{{ __('ui.please_review_the_highlighted_fields_9941c0ee3c') }}</p>
         </div>
     @endif

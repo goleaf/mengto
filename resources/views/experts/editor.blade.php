@@ -246,7 +246,7 @@
             <footer class="flex flex-wrap justify-end gap-2">
                 <x-action-control label="{{ __('ui.cancel_19766ed6cc') }}" icon="x" :href="$expert !== null ? route('experts.show', $expert) : route('experts.index')" />
                 <button type="submit" class="action action--primary action--comfortable">
-                    <x-lucide-save class="icon icon--sm" aria-hidden="true" />
+                    <x-ui-icon name="save" size="sm" />
                     <span>{{ $expert !== null ? __('ui.save_profile_0c8209e72e') : __('ui.create_profile_61d30d997d') }}</span>
                 </button>
             </footer>

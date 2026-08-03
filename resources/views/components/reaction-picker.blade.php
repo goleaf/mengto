@@ -6,7 +6,7 @@
         aria-label="{{ $post['selected_reaction_label'] ?? __('ui.react_01fad993ff') }}"
         title="{{ $post['selected_reaction_label'] ?? __('ui.react_01fad993ff') }}"
     >
-        <x-lucide-heart class="icon icon--sm" aria-hidden="true" />
+        <x-ui-icon name="heart" size="sm" />
         <span class="feed-action__label">{{ $post['selected_reaction_label'] ?? __('ui.react_01fad993ff') }}</span>
         <span class="feed-action__compact-label" aria-hidden="true">{{ $post['reaction_total'] }}</span>
     </summary>
@@ -22,11 +22,7 @@
                     @if ($reaction['selected']) aria-pressed="true" @endif
                     class="reaction-picker__option"
                 >
-                    <x-dynamic-component
-                        :component="'lucide-'.$reaction['icon']"
-                        class="icon icon--sm"
-                        aria-hidden="true"
-                    />
+                    <x-ui-icon size="sm" :name="$reaction['icon']" />
                     <span>{{ $reaction['label'] }}</span>
                     <small>{{ $reaction['count'] }}</small>
                 </button>

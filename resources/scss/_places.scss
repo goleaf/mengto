@@ -176,7 +176,7 @@
         min-inline-size: 0;
         align-items: center;
 
-        > .icon {
+        > .ui-icon {
             position: absolute;
             inset-inline-start: 0.75rem;
             z-index: 1;
@@ -799,7 +799,7 @@
             overflow-wrap: anywhere;
         }
 
-        .icon {
+        .ui-icon {
             flex: none;
             color: $leaf;
         }
@@ -831,7 +831,7 @@
         font-size: 0.75rem;
         line-height: 1.2rem;
 
-        .icon {
+        .ui-icon {
             flex: none;
             color: #8a642b;
         }
@@ -1019,7 +1019,7 @@
 
         @include focus-ring;
 
-        > .icon {
+        > .ui-icon {
             flex: none;
         }
 
@@ -1192,7 +1192,7 @@
     background: $paper;
     padding: 0.75rem;
 
-    > .icon {
+    > .ui-icon {
         flex: none;
         color: $leaf;
     }
@@ -1249,7 +1249,7 @@
     grid-template-columns: auto minmax(0, 1fr) auto;
     align-items: center;
 
-    > .icon {
+    > .ui-icon {
         color: $leaf;
     }
 
@@ -1446,7 +1446,7 @@
     border-block-end: 1px solid $line;
     padding-block: 0.625rem;
 
-    > .icon {
+    > .ui-icon {
         color: $leaf;
     }
 
@@ -1683,7 +1683,7 @@
     }
 
     > header {
-        .icon {
+        .ui-icon {
             color: $leaf;
         }
 
@@ -1722,7 +1722,7 @@
     background: $white;
     padding: 0.625rem;
 
-    > .icon {
+    > .ui-icon {
         color: $leaf;
     }
 
@@ -1758,7 +1758,7 @@
         gap: 0.625rem;
         align-items: start;
 
-        > .icon {
+        > .ui-icon {
             color: $coral;
         }
 
@@ -1886,7 +1886,7 @@
     > div:first-child {
         flex-wrap: nowrap;
 
-        .icon {
+        .ui-icon {
             flex: none;
             color: $coral;
         }
@@ -2218,7 +2218,7 @@
             grid-column: 1;
         }
 
-        > .icon {
+        > .ui-icon {
             grid-column: 2;
             grid-row: 1 / 3;
         }

@@ -676,6 +676,43 @@ Final evidence on 2026-08-03:
 Exact scope is in
 `docs/plans/forum-topic-editor-redesign-work-package.md`.
 
+## Icon System Verification
+
+`IconSystemContractTest` proves the canonical decorative/informative ARIA
+states, bounded size and stroke classes, shared-component delegation, and one
+icon per visible desktop/mobile primary-navigation destination. It also
+ratchets direct, dynamic, and legacy icon debt and rejects foreign systems,
+raw pictograms, missing installed Lucide names, and unapproved inline SVG.
+
+Current verified evidence on 2026-08-03:
+
+- RED: 4 tests failed because `x-ui-icon` did not exist, shared primitives
+  rendered Lucide directly, desktop navigation rendered zero icons, and
+  dynamic debt exceeded the intended ratchet;
+- the first full run exposed the nested anonymous-component naming violation;
+  the final flat `x-ui-icon` contract plus naming check passed 5 tests and 40
+  assertions;
+- source audit: 350 attributable Blade files, 828 canonical calls, zero direct
+  calls, zero dynamic-debt calls, zero legacy class attributes/selectors, zero foreign
+  systems, zero raw pictograms, zero missing installed names, and one
+  allowlisted chart SVG;
+- the 97-candidate baseline was manually reduced to 52 documented intentional
+  text/content exceptions;
+- production Vite build and complete Blade compilation passed after the final
+  semantic action wave;
+- full sequential regression: 2,639 tests and 83,214 assertions passed;
+- full Pint passed and Larastan analysed 1,385 files with no errors;
+- fresh migration, complete seed, and repeat seed passed;
+- Composer validation/audit, npm audit, configuration/route/view caches, and
+  the production Vite build passed;
+- the accessibility browser matrix produced 33 EN/LT/RU screenshots across
+  320–1920-pixel layouts with no overflow, unnamed controls, undersized audited
+  targets, raw translation keys, or console errors.
+
+Exact findings and the zero-debt plan are in
+`docs/audits/icon-system-deep-audit.md` and
+`docs/plans/icon-system-unlimited-plan.md`.
+
 ## Organization Authority Foundation
 
 `OrganizationAuthorityFoundationTest` covers idempotent creation, owner

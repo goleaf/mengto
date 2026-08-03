@@ -18,7 +18,7 @@
     @if ($center['last_dismissed'])
         <div class="friend-feedback" role="status">
             <span>
-                <x-lucide-eye-off class="icon icon--sm" aria-hidden="true" />
+                <x-ui-icon name="eye-off" size="sm" />
                 {{ __('presentation.hidden_from_recommendations', ['name' => $center['last_dismissed']['name']]) }}
             </span>
             <x-action-control
@@ -35,7 +35,7 @@
     @if ($center['last_blocked'])
         <div class="friend-feedback" role="status">
             <span>
-                <x-lucide-ban class="icon icon--sm" aria-hidden="true" />
+                <x-ui-icon name="ban" size="sm" />
                 {{ __('presentation.blocked_owner', ['name' => $center['last_blocked']['name']]) }}
             </span>
             <x-action-control
@@ -64,7 +64,7 @@
 
         <aside class="friend-safety" aria-labelledby="friend-safety-title">
             <span class="friend-safety__icon" aria-hidden="true">
-                <x-lucide-shield-check class="icon" aria-hidden="true" />
+                <x-ui-icon name="shield-check" />
             </span>
             <div>
                 <h2 id="friend-safety-title">{{ $center['safety_note']['title'] }}</h2>

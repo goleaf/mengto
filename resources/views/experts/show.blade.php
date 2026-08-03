@@ -1,7 +1,7 @@
 <x-app-shell :owner="$owner" :title="$page_title" :active-section="$active_section">
     <div class="grid gap-8">
         <a href="{{ route('experts.index') }}" class="inline-flex w-fit items-center gap-2 text-sm font-bold text-paw-leaf">
-            <x-lucide-arrow-left class="size-4" aria-hidden="true" />
+            <x-ui-icon name="arrow-left" size="sm" />
             {{ __('ui.expert_directory_868fdd0c8b') }}
         </a>
 
@@ -40,11 +40,11 @@
                 <form method="POST" action="{{ route('experts.actions', $expert['slug']) }}" class="grid grid-cols-2 gap-2">
                     @csrf
                     <button type="submit" name="action" value="toggle-save" class="action action--surface action--compact">
-                        <x-lucide-bookmark class="icon icon--sm" aria-hidden="true" />
+                        <x-ui-icon name="bookmark" size="sm" />
                         <span>{{ $engagement['is_saved'] ? __('ui.saved_b5c120b316') : __('ui.save_1509f561f2') }}</span>
                     </button>
                     <button type="submit" name="action" value="toggle-subscribe" class="action action--surface action--compact">
-                        <x-lucide-bell class="icon icon--sm" aria-hidden="true" />
+                        <x-ui-icon name="bell" size="sm" />
                         <span>{{ $engagement['is_subscribed'] ? __('ui.following_344b4271ca') : __('ui.follow_641d1ef657') }}</span>
                     </button>
                 </form>
@@ -58,7 +58,7 @@
 
         @unless ($expert['offers_emergency_care'])
             <section class="flex gap-3 border-l-4 border-red-500 bg-red-50 p-4 text-red-950" aria-label="{{ __('ui.emergency_boundary_da0a6b9193') }}">
-                <x-lucide-siren class="mt-0.5 size-5 shrink-0" aria-hidden="true" />
+                <x-ui-icon name="siren" size="lg" class="mt-0.5 shrink-0" />
                 <div>
                     <h2 class="font-bold">{{ __('ui.this_profile_is_not_an_emergency_service_09b9efaec1') }}</h2>
                     <p class="mt-1 text-sm">{{ __('ui.for_breathing_trouble_seizures_poisoning_severe_bleeding_collapse_c2f5dcf8c6') }}</p>
@@ -224,7 +224,7 @@
                                 <textarea name="body" required rows="4" class="rounded-md border border-paw-line bg-white px-3 py-2.5" placeholder="{{ __('ui.describe_the_service_communication_organization_and_price_transparency_353c05397d') }}"></textarea>
                             </label>
                             <label class="flex items-center gap-2 text-sm"><input type="checkbox" name="is_anonymous" value="1"> {{ __('ui.show_publicly_as_a_verified_client_f4d2ba88a4') }}</label>
-                            <button class="action action--primary action--compact w-fit" type="submit"><x-lucide-send class="icon icon--sm" aria-hidden="true" /><span>{{ __('ui.publish_review_f795632a1e') }}</span></button>
+                            <button class="action action--primary action--compact w-fit" type="submit"><x-ui-icon name="send" size="sm" /><span>{{ __('ui.publish_review_f795632a1e') }}</span></button>
                         </form>
                     @endif
                 </section>
@@ -290,7 +290,7 @@
                         </select>
                     </label>
                     <textarea name="details" required rows="3" class="rounded-md border border-paw-line bg-white px-3 py-2.5" placeholder="{{ __('ui.describe_the_specific_concern_d5db69c9b1') }}"></textarea>
-                    <button type="submit" class="action action--surface action--compact w-fit"><x-lucide-flag class="icon icon--sm" aria-hidden="true" /><span>{{ __('ui.send_report_a44d353113') }}</span></button>
+                    <button type="submit" class="action action--surface action--compact w-fit"><x-ui-icon name="flag" size="sm" /><span>{{ __('ui.send_report_a44d353113') }}</span></button>
                 </form>
             </aside>
         </div>

@@ -14,7 +14,7 @@
 
         @if ($errors->any())
             <div class="form-errors" role="alert">
-                <x-lucide-circle-alert class="icon" aria-hidden="true" />
+                <x-ui-icon name="circle-alert" />
                 <span>{{ $errors->first() }}</span>
             </div>
         @endif
@@ -371,7 +371,7 @@
             </section>
 
             <section class="market-safety">
-                <x-lucide-shield-check class="size-6 shrink-0" aria-hidden="true" />
+                <x-ui-icon name="shield-check" size="xl" class="shrink-0" />
                 <label class="flex gap-3 text-sm leading-6">
                     <input type="checkbox" name="safety_acknowledged" value="1" required @checked(old('safety_acknowledged')) class="mt-1 size-4 shrink-0 rounded border-paw-line text-paw-leaf">
                     <span>{{ __('ui.i_disclosed_known_defects_omitted_exact_private_addresses_13b6980af5') }}</span>
@@ -379,13 +379,16 @@
             </section>
 
             <div class="flex flex-col-reverse gap-2 border-t border-paw-line pt-5 sm:flex-row sm:justify-end">
-                <a href="{{ route('marketplace.index') }}" class="action action--surface">{{ __('ui.cancel_19766ed6cc') }}</a>
+                <a href="{{ route('marketplace.index') }}" class="action action--surface">
+                    <x-ui-icon name="x" />
+                    <span>{{ __('ui.cancel_19766ed6cc') }}</span>
+                </a>
                 <button type="submit" name="intent" value="draft" class="action action--surface">
-                    <x-lucide-file-pen-line class="icon" aria-hidden="true" />
+                    <x-ui-icon name="file-pen-line" />
                     <span>{{ __('ui.save_draft_3de100106d') }}</span>
                 </button>
                 <button type="submit" name="intent" value="publish" class="action action--primary">
-                    <x-lucide-send class="icon" aria-hidden="true" />
+                    <x-ui-icon name="send" />
                     <span>{{ __('ui.submit_listing_525f0ca85f') }}</span>
                 </button>
             </div>

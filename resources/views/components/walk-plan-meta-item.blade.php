@@ -1,7 +1,7 @@
 @props(['icon', 'label', 'value', 'datetime' => null])
 
 <div class="walk-meta__item">
-    <x-dynamic-component :component="'lucide-'.$icon" class="walk-meta__icon icon" aria-hidden="true" />
+    <x-ui-icon :name="$icon" class="walk-meta__icon" />
     <div class="walk-meta__content">
         <dt class="walk-meta__label">{{ $label }}</dt>
         <dd class="walk-meta__value">

@@ -69,7 +69,7 @@
                                 wire:target="closeCase"
                                 class="forum-button"
                             >
-                                <x-lucide-lock-keyhole aria-hidden="true" />
+                                <x-ui-icon name="lock-keyhole" />
                                 {{ __('adoption.actions.close_case') }}
                             </button>
                         @endif
@@ -123,7 +123,7 @@
                                 @error('targetStatus') <p role="alert" class="text-sm text-status-danger">{{ $message }}</p> @enderror
                                 @error('application') <p role="alert" class="text-sm text-status-danger">{{ $message }}</p> @enderror
                                 <button type="submit" wire:loading.attr="disabled" wire:target="updateApplicationStatus" class="forum-button forum-button--primary">
-                                    <x-lucide-git-branch aria-hidden="true" />
+                                    <x-ui-icon name="git-branch" />
                                     <span wire:loading.remove wire:target="updateApplicationStatus">{{ __('adoption.actions.update_status') }}</span>
                                     <span wire:loading wire:target="updateApplicationStatus">{{ __('adoption.actions.working') }}</span>
                                 </button>
@@ -147,7 +147,7 @@
                         </div>
                         @if (! in_array($application['status'], ['withdrawn', 'declined', 'closed', 'adopted'], true))
                             <button type="button" wire:click="selectApplication({{ $application['id'] }})" class="forum-button">
-                                <x-lucide-file-search aria-hidden="true" />
+                                <x-ui-icon name="file-search" />
                                 {{ __('adoption.actions.review_application') }}
                             </button>
                         @endif
@@ -160,7 +160,7 @@
                     <form wire:submit="updateApplicationStatus" class="mt-4">
                         <input type="hidden" wire:model="targetStatus" value="withdrawn">
                         <button type="submit" wire:loading.attr="disabled" wire:target="updateApplicationStatus" class="forum-button">
-                            <x-lucide-x-circle aria-hidden="true" />
+                            <x-ui-icon name="x-circle" />
                             {{ __('adoption.actions.withdraw') }}
                         </button>
                     </form>
@@ -252,7 +252,7 @@
                 </label>
 
                 <button type="submit" wire:loading.attr="disabled" wire:target="submit" class="forum-button forum-button--primary w-fit">
-                    <x-lucide-send aria-hidden="true" />
+                    <x-ui-icon name="send" />
                     <span wire:loading.remove wire:target="submit">{{ __('adoption.actions.submit') }}</span>
                     <span wire:loading wire:target="submit">{{ __('adoption.actions.submitting') }}</span>
                 </button>
@@ -260,7 +260,7 @@
         @elseif (! $isAuthenticated)
             <div class="mt-6">
                 <a href="{{ route('login') }}" class="forum-button forum-button--primary">
-                    <x-lucide-log-in aria-hidden="true" />
+                    <x-ui-icon name="log-in" />
                     {{ __('adoption.actions.sign_in') }}
                 </a>
             </div>

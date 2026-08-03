@@ -5,11 +5,14 @@
                 @if ($medical_record['image_url'])
                     <img src="{{ $medical_record['image_url'] }}" alt="{{ $medical_record['pet_name'] }}">
                 @else
-                    <span><x-lucide-paw-print class="size-8" aria-hidden="true" /></span>
+                    <span><x-ui-icon name="paw-print" size="2xl" /></span>
                 @endif
                 <div>
                     <div class="flex flex-wrap items-center gap-2">
-                        <a href="{{ route('medical-records.index') }}" class="text-sm font-bold text-paw-leaf">{{ __('ui.health_records_bd13778e4d') }}</a>
+                        <a href="{{ route('medical-records.index') }}" class="inline-flex items-center gap-1 text-sm font-bold text-paw-leaf">
+                            <x-ui-icon name="arrow-left" size="sm" />
+                            <span>{{ __('ui.health_records_bd13778e4d') }}</span>
+                        </a>
                         <span class="text-paw-line">/</span>
                         <x-status-badge :label="$medical_record['privacy']" icon="lock-keyhole" tone="surface" />
                     </div>
@@ -35,7 +38,7 @@
                 ['label' => __('ui.microchip_230fe79bc1'), 'value' => $medical_record['microchip_masked'] ?: $medical_record['microchip_status'], 'icon' => 'scan-line'],
             ] as $summary)
                 <div>
-                    <x-dynamic-component :component="'lucide-'.$summary['icon']" class="size-5 text-paw-leaf" aria-hidden="true" />
+                    <x-ui-icon :name="$summary['icon']" size="lg" class="text-paw-leaf" />
                     <span>{{ $summary['label'] }}</span>
                     <strong>{{ $summary['value'] }}</strong>
                 </div>
@@ -77,7 +80,7 @@
 
                                 @if ($medication['latest_dose'])
                                     <div class="medical-dose-state">
-                                        <x-lucide-user-round-check class="size-4" aria-hidden="true" />
+                                        <x-ui-icon name="user-round-check" size="sm" />
                                         <span>
                                             {{ __('presentation.administered_by', ['status' => $medication['latest_dose']['status'], 'name' => $medication['latest_dose']['administered_by'], 'date' => $medication['latest_dose']['scheduled_for']]) }}
                                         </span>
@@ -110,7 +113,7 @@
                                             <input name="dose_given" value="{{ $medication['dose'] }}" maxlength="120">
                                         </label>
                                         <button type="submit" class="action action--primary action--compact">
-                                            <x-lucide-check class="icon icon--sm" aria-hidden="true" />
+                                            <x-ui-icon name="check" size="sm" />
                                             <span>{{ __('ui.record_bfdd510698') }}</span>
                                         </button>
                                     </form>
@@ -118,7 +121,7 @@
                             </article>
                         @empty
                             <div class="medical-empty">
-                                <x-lucide-pill class="size-7" aria-hidden="true" />
+                                <x-ui-icon name="pill" size="xl" />
                                 <p>{{ $medical_record['medication_knowledge_label'] }}</p>
                             </div>
                         @endforelse
@@ -164,7 +167,7 @@
                     <div class="medical-compact-list">
                         @forelse ($reminders as $reminder)
                             <article class="flex gap-3">
-                                <span class="medical-list-icon"><x-lucide-bell-ring class="size-4" aria-hidden="true" /></span>
+                                <span class="medical-list-icon"><x-ui-icon name="bell-ring" size="sm" /></span>
                                 <div>
                                     <h3 class="font-bold">{{ $reminder['title'] }}</h3>
                                     <p class="mt-1 text-sm text-paw-muted">{{ $reminder['due_at'] }} · {{ $reminder['priority'] }}</p>
@@ -195,7 +198,10 @@
                             <p class="text-xs font-bold uppercase text-paw-leaf">{{ __('ui.least_access_9d3972d7e5') }}</p>
                             <h2 id="access-title" class="mt-1 text-xl font-bold">{{ __('ui.shared_access_e0277e0b5a') }}</h2>
                         </div>
-                        <a href="{{ $medical_record['manage_url'] }}#access" class="text-sm font-bold text-paw-leaf">{{ __('ui.manage_5a23444828') }}</a>
+                        <a href="{{ $medical_record['manage_url'] }}#access" class="inline-flex items-center gap-1 text-sm font-bold text-paw-leaf">
+                            <x-ui-icon name="settings-2" size="sm" />
+                            <span>{{ __('ui.manage_5a23444828') }}</span>
+                        </a>
                     </div>
                     <div class="medical-compact-list">
                         @forelse ($access_grants as $grant)

@@ -4,7 +4,7 @@
     @forelse ($tasks as $task)
         <article class="care-task {{ $task['is_overdue'] ? 'care-task--overdue' : '' }}">
             <span class="care-task__icon">
-                <x-dynamic-component :component="'lucide-'.$task['icon']" class="size-4" aria-hidden="true" />
+                <x-ui-icon size="sm" :name="$task['icon']" />
             </span>
             <div class="min-w-0">
                 <div class="flex flex-wrap items-start justify-between gap-2">
@@ -30,7 +30,7 @@
                         </select>
                         <input name="completion_note" maxlength="2000" placeholder="{{ __('ui.optional_outcome_note_89275bfde7') }}" aria-label="{{ __('ui.completion_note_2a5d64b27b') }}">
                         <button type="submit" class="action action--primary action--compact">
-                            <x-lucide-check class="icon icon--sm" aria-hidden="true" />
+                            <x-ui-icon name="check" size="sm" />
                             <span>{{ __('ui.record_bfdd510698') }}</span>
                         </button>
                     </form>
@@ -39,7 +39,7 @@
         </article>
     @empty
         <div class="care-empty">
-            <x-lucide-list-checks class="size-7" aria-hidden="true" />
+            <x-ui-icon name="list-checks" size="xl" />
             <p>{{ __('ui.no_open_tasks_unrecorded_care_is_not_assumed_7c5b27f384') }}</p>
         </div>
     @endforelse

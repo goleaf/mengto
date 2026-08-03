@@ -11,7 +11,7 @@
         <x-messaging-message :message="$message" :conversation="$conversation" />
     @empty
         <div class="messaging-messages__empty">
-            <x-lucide-message-circle-dashed class="icon" aria-hidden="true" />
+            <x-ui-icon name="message-circle-dashed" />
             <strong>{{ __('ui.no_matching_messages_bf3cda4412') }}</strong>
             <span>{{ __('ui.try_another_word_or_clear_message_search_a3215a2d1d') }}</span>
         </div>

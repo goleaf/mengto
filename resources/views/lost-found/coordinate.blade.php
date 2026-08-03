@@ -3,7 +3,7 @@
         <header class="flex flex-col gap-4 border-b border-paw-line pb-6 lg:flex-row lg:items-end lg:justify-between">
             <div>
                 <a href="{{ route('lost-found.show', $search_case['slug']) }}" class="inline-flex items-center gap-2 text-sm font-semibold text-paw-leaf">
-                    <x-lucide-arrow-left class="size-4" aria-hidden="true" />
+                    <x-ui-icon name="arrow-left" size="sm" />
                     {{ __('ui.public_report_bc3484d9da') }}
                 </a>
                 <p class="mt-5 text-sm font-bold uppercase text-paw-coral">{{ __('ui.private_coordination_workspace_3d6ad9a2d6') }}</p>
@@ -19,7 +19,7 @@
         @if ($errors->any())
             <div class="rounded-md border border-red-300 bg-red-50 p-4 text-sm text-red-900" role="alert">
                 <div class="flex items-center gap-2 font-bold">
-                    <x-lucide-circle-alert class="size-5" aria-hidden="true" />
+                    <x-ui-icon name="circle-alert" size="lg" />
                     {{ __('ui.action_could_not_be_completed_cef35dda32') }}
                 </div>
                 <ul class="mt-2 list-disc space-y-1 pl-5">
@@ -40,7 +40,7 @@
                 ['label' => __('ui.volunteers_6ec733ad33'), 'value' => count($volunteers), 'icon' => 'users-round'],
             ] as $stat)
                 <div class="flex items-center gap-3 bg-white p-4">
-                    <x-dynamic-component :component="'lucide-'.$stat['icon']" class="size-5 text-paw-leaf" aria-hidden="true" />
+                    <x-ui-icon size="lg" :name="$stat['icon']" class="text-paw-leaf" />
                     <div><strong class="block text-xl">{{ $stat['value'] }}</strong><span class="text-xs text-paw-muted">{{ $stat['label'] }}</span></div>
                 </div>
             @empty
@@ -79,7 +79,7 @@
                                     </dl>
                                     @if ($sighting['exact_location'])
                                         <p class="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-paw-coral">
-                                            <x-lucide-lock-keyhole class="size-3.5" aria-hidden="true" />
+                                            <x-ui-icon name="lock-keyhole" size="sm" />
                                             {{ __('presentation.exact_point', ['latitude' => $sighting['exact_location']['latitude'], 'longitude' => $sighting['exact_location']['longitude']]) }}
                                         </p>
                                     @endif
@@ -91,7 +91,7 @@
                                             <input type="hidden" name="action" value="confirm-sighting">
                                             <input type="hidden" name="sighting_id" value="{{ $sighting['id'] }}">
                                             <button type="submit" class="action action--primary action--compact w-full">
-                                                <x-lucide-map-pin-check class="icon icon--sm" aria-hidden="true" />
+                                                <x-ui-icon name="map-pin-check" size="sm" />
                                                 <span>{{ __('ui.confirm_eebdd24a77') }}</span>
                                             </button>
                                         </form>
@@ -100,7 +100,7 @@
                                             <input type="hidden" name="action" value="reject-sighting">
                                             <input type="hidden" name="sighting_id" value="{{ $sighting['id'] }}">
                                             <button type="submit" class="action action--surface action--compact w-full">
-                                                <x-lucide-x class="icon icon--sm" aria-hidden="true" />
+                                                <x-ui-icon name="x" size="sm" />
                                                 <span>{{ __('ui.reject_ab604a3607') }}</span>
                                             </button>
                                         </form>
@@ -159,7 +159,7 @@
                                         <input type="hidden" name="action" value="start-task">
                                         <input type="hidden" name="task_id" value="{{ $task['id'] }}">
                                         <button type="submit" class="action action--surface action--compact w-full">
-                                            <x-lucide-play class="icon icon--sm" aria-hidden="true" />
+                                            <x-ui-icon name="play" size="sm" />
                                             <span>{{ __('ui.start_task_643f02f48b') }}</span>
                                         </button>
                                     </form>
@@ -173,7 +173,7 @@
                                             <textarea name="task_result" rows="2" class="rounded-md border border-paw-line px-3 py-2" required maxlength="2000"></textarea>
                                         </label>
                                         <button type="submit" class="action action--primary action--compact w-full">
-                                            <x-lucide-check class="icon icon--sm" aria-hidden="true" />
+                                            <x-ui-icon name="check" size="sm" />
                                             <span>{{ __('ui.complete_143b270a32') }}</span>
                                         </button>
                                     </form>
@@ -265,7 +265,7 @@
             <aside class="grid content-start gap-5 xl:sticky xl:top-24 xl:self-start">
                 <section class="rounded-md border border-paw-line bg-white p-4">
                     <div class="flex items-center gap-2">
-                        <x-lucide-lock-keyhole class="size-5 text-paw-leaf" aria-hidden="true" />
+                        <x-ui-icon name="lock-keyhole" size="lg" class="text-paw-leaf" />
                         <h2 class="font-bold">{{ __('ui.private_case_details_b6312ab47a') }}</h2>
                     </div>
                     <dl class="mt-4 grid gap-3 text-sm">
@@ -278,7 +278,7 @@
 
                 <details open class="rounded-md border border-paw-line bg-white">
                     <summary class="flex cursor-pointer list-none items-center gap-2 p-4 font-bold">
-                        <x-lucide-radio-tower class="size-5 text-paw-coral" aria-hidden="true" />
+                        <x-ui-icon name="radio-tower" size="lg" class="text-paw-coral" />
                         {{ __('ui.publish_update_a74a0a4b0b') }}
                     </summary>
                     <form method="POST" action="{{ route('lost-found.actions', $search_case['slug']) }}" class="grid gap-3 border-t border-paw-line p-4">
@@ -287,13 +287,13 @@
                         <label class="grid gap-1 text-sm font-semibold">{{ __('ui.title_7e8cd2056d') }}<input name="update_title" class="rounded-md border border-paw-line px-3 py-2" required maxlength="160"></label>
                         <label class="grid gap-1 text-sm font-semibold">{{ __('ui.update_c1c1009d3f') }}<textarea name="update_body" rows="3" class="rounded-md border border-paw-line px-3 py-2" maxlength="2000"></textarea></label>
                         <label class="grid gap-1 text-sm font-semibold">{{ __('ui.public_area_911f5d1f74') }}<input name="update_area" class="rounded-md border border-paw-line px-3 py-2" maxlength="160"></label>
-                        <button type="submit" class="action action--primary w-full"><x-lucide-send class="icon" aria-hidden="true" /><span>{{ __('ui.publish_859390eb49') }}</span></button>
+                        <button type="submit" class="action action--primary w-full"><x-ui-icon name="send" /><span>{{ __('ui.publish_859390eb49') }}</span></button>
                     </form>
                 </details>
 
                 <details class="rounded-md border border-paw-line bg-white">
                     <summary class="flex cursor-pointer list-none items-center gap-2 p-4 font-bold">
-                        <x-lucide-grid-2x2-plus class="size-5 text-paw-leaf" aria-hidden="true" />
+                        <x-ui-icon name="grid-2x2-plus" size="lg" class="text-paw-leaf" />
                         {{ __('ui.add_sector_a323b9ef8c') }}
                     </summary>
                     <form method="POST" action="{{ route('lost-found.actions', $search_case['slug']) }}" class="grid gap-3 border-t border-paw-line p-4">
@@ -306,13 +306,13 @@
                         <label class="grid gap-1 text-sm font-semibold">{{ __('ui.priority_d60dbba079') }}<select name="sector_priority" class="rounded-md border border-paw-line px-3 py-2"><option value="1">{{ __('ui.high_c4ebc6d4a5') }}</option><option value="2" selected>{{ __('ui.normal_a7248eeb45') }}</option><option value="3">{{ __('ui.low_f793de205e') }}</option></select></label>
                         <label class="grid gap-1 text-sm font-semibold">{{ __('ui.safety_notes_7e092bf4ec') }}<textarea name="sector_risk_notes" rows="2" class="rounded-md border border-paw-line px-3 py-2" maxlength="1000"></textarea></label>
                         <label class="grid gap-1 text-sm font-semibold">{{ __('ui.access_notes_c982c65a00') }}<textarea name="sector_access_notes" rows="2" class="rounded-md border border-paw-line px-3 py-2" maxlength="1000"></textarea></label>
-                        <button type="submit" class="action action--surface w-full"><x-lucide-plus class="icon" aria-hidden="true" /><span>{{ __('ui.create_sector_363b857b12') }}</span></button>
+                        <button type="submit" class="action action--surface w-full"><x-ui-icon name="plus" /><span>{{ __('ui.create_sector_363b857b12') }}</span></button>
                     </form>
                 </details>
 
                 <details class="rounded-md border border-paw-line bg-white">
                     <summary class="flex cursor-pointer list-none items-center gap-2 p-4 font-bold">
-                        <x-lucide-list-plus class="size-5 text-paw-leaf" aria-hidden="true" />
+                        <x-ui-icon name="list-plus" size="lg" class="text-paw-leaf" />
                         {{ __('ui.add_task_ba423a4640') }}
                     </summary>
                     <form method="POST" action="{{ route('lost-found.actions', $search_case['slug']) }}" class="grid gap-3 border-t border-paw-line p-4">
@@ -323,13 +323,13 @@
                         <label class="grid gap-1 text-sm font-semibold">{{ __('ui.title_7e8cd2056d') }}<input name="task_title" class="rounded-md border border-paw-line px-3 py-2" required maxlength="140"></label>
                         <label class="grid gap-1 text-sm font-semibold">{{ __('ui.instructions_934652dce4') }}<textarea name="task_description" rows="3" class="rounded-md border border-paw-line px-3 py-2" required maxlength="2000"></textarea></label>
                         <label class="grid gap-1 text-sm font-semibold">{{ __('ui.safety_726d11bd5b') }}<select name="safety_level" class="rounded-md border border-paw-line px-3 py-2"><option value="standard">{{ __('ui.standard_ef6691545d') }}</option><option value="pair-required">{{ __('ui.pair_required_ddacefc0a2') }}</option><option value="specialist-only">{{ __('ui.specialist_only_83c6268f89') }}</option><option value="dangerous">{{ __('ui.dangerous_area_05d820efaf') }}</option></select></label>
-                        <button type="submit" class="action action--surface w-full"><x-lucide-plus class="icon" aria-hidden="true" /><span>{{ __('ui.create_task_6f541e1b25') }}</span></button>
+                        <button type="submit" class="action action--surface w-full"><x-ui-icon name="plus" /><span>{{ __('ui.create_task_6f541e1b25') }}</span></button>
                     </form>
                 </details>
 
                 <details class="rounded-md border border-paw-coral/40 bg-white">
                     <summary class="flex cursor-pointer list-none items-center gap-2 p-4 font-bold">
-                        <x-lucide-circle-dot-dashed class="size-5 text-paw-coral" aria-hidden="true" />
+                        <x-ui-icon name="circle-dot-dashed" size="lg" class="text-paw-coral" />
                         {{ __('ui.change_search_status_4fe634b8ba') }}
                     </summary>
                     <form method="POST" action="{{ route('lost-found.actions', $search_case['slug']) }}" class="grid gap-3 border-t border-paw-line p-4">
@@ -339,14 +339,14 @@
                         <label class="grid gap-1 text-sm font-semibold">{{ __('ui.status_920e413c7d') }}<select name="status" class="rounded-md border border-paw-line px-3 py-2">@forelse ($statuses as $value => $label)<option value="{{ $value }}" @selected($search_case['status'] === $value)>{{ $label }}</option>@empty<option disabled>{{ __('ui.no_statuses_b34efdc994') }}</option>@endforelse</select></label>
                         <label class="grid gap-1 text-sm font-semibold">{{ __('ui.public_note_12ccc50767') }}<textarea name="status_note" rows="3" class="rounded-md border border-paw-line px-3 py-2" maxlength="1500"></textarea></label>
                         <label class="flex min-h-11 items-center gap-3 text-xs"><input type="checkbox" name="return_confirmed" value="1"><span>{{ __('lost_found.interface.return_confirmation') }}</span></label>
-                        <button type="submit" class="action action--primary w-full"><x-lucide-refresh-cw class="icon" aria-hidden="true" /><span>{{ __('ui.update_status_1e6bf669df') }}</span></button>
+                        <button type="submit" class="action action--primary w-full"><x-ui-icon name="refresh-cw" /><span>{{ __('ui.update_status_1e6bf669df') }}</span></button>
                     </form>
                 </details>
 
                 @if ($search_case['can_archive'])
                     <details class="rounded-md border border-paw-line bg-white">
                         <summary class="flex min-h-11 cursor-pointer list-none items-center gap-2 p-4 font-bold">
-                            <x-lucide-archive class="size-5 text-paw-muted" aria-hidden="true" />
+                            <x-ui-icon name="archive" size="lg" class="text-paw-muted" />
                             {{ __('lost_found.interface.archive_case') }}
                         </summary>
                         <form method="POST" action="{{ route('lost-found.actions', $search_case['slug']) }}" class="grid gap-3 border-t border-paw-line p-4">
@@ -359,7 +359,7 @@
                                 <span>{{ __('lost_found.interface.archive_confirmation') }}</span>
                             </label>
                             <button type="submit" class="action action--surface min-h-11 w-full">
-                                <x-lucide-archive class="icon" aria-hidden="true" />
+                                <x-ui-icon name="archive" />
                                 <span>{{ __('lost_found.interface.archive_case') }}</span>
                             </button>
                         </form>

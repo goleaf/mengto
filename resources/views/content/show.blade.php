@@ -1,7 +1,7 @@
 <x-app-shell :owner="$owner" :title="$page_title" active-section="feed">
     <div class="mx-auto max-w-3xl">
         <a href="{{ route('content.index') }}" class="mb-4 inline-flex items-center gap-2 text-sm font-semibold text-paw-leaf hover:underline">
-            <x-lucide-arrow-left class="size-4" aria-hidden="true" />
+            <x-ui-icon name="arrow-left" size="sm" />
             {{ __('content.feed.back') }}
         </a>
 

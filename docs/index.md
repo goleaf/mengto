@@ -45,6 +45,8 @@ This index is the source-of-truth map for first-party documentation.
 | `docs/operations.md` | Runtime checks and incident response | Operations | Canonical |
 | `docs/current-state-audit.md` | Modernization baseline and resolved findings | Engineering | Living evidence |
 | `docs/implementation-plan.md` | Dependency-aware modernization plan | Engineering | Living plan |
+| `docs/audits/icon-system-deep-audit.md` | Measured Lucide, sizing, accessibility, SVG, pictogram, and action-candidate baseline | Product + frontend + QA | Current audit |
+| `docs/plans/icon-system-unlimited-plan.md` | Zero-debt icon-system migration waves, gates, ratchets, and stop conditions | Product + frontend + QA | In progress |
 | `docs/audits/portal-events-completion-gap-analysis.md` | Factual Point 12 and Point 13 implementation, evidence, dependency, and documentation gaps | Product + engineering + QA | Living evidence |
 | `docs/plans/portal-events-completion-master-plan.md` | Dependency-ordered completion packages, acceptance gates, and stop conditions for Point 12 and Point 13 | Product + engineering + QA + operations | Approved execution plan |
 | `docs/plans/portal-organization-authority-foundation-work-package.md` | First P02 tenant, membership, invitation, restriction, audit, event integration, and remaining-scope contract | Product + engineering + QA + security | Implemented, verified, and published foundation; P02 remains open |

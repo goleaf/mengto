@@ -5,7 +5,7 @@
         @if ($record['image_url'])
             <img src="{{ $record['image_url'] }}" alt="{{ $record['pet_name'] }} health record" loading="lazy">
         @else
-            <x-lucide-heart-pulse class="size-10" aria-hidden="true" />
+            <x-ui-icon name="heart-pulse" size="3xl" />
         @endif
     </a>
 
@@ -40,7 +40,7 @@
             <span class="text-paw-muted">{{ __('presentation.last_visit', ['date' => $record['last_visit']]) }}</span>
             <a href="{{ route('medical-records.show', $record['slug']) }}" class="inline-flex items-center gap-1 font-bold text-paw-leaf">
                 {{ __('ui.open_ed077f3d81') }}
-                <x-lucide-arrow-right class="size-4" aria-hidden="true" />
+                <x-ui-icon name="arrow-right" size="sm" />
             </a>
         </div>
     </div>

@@ -36,7 +36,7 @@
         <form method="GET" action="{{ route('knowledge.index') }}" class="forum-search">
             <label>
                 <span class="sr-only">{{ __('ui.search_knowledge_base_74e433bf7d') }}</span>
-                <x-lucide-search aria-hidden="true" />
+                <x-ui-icon name="search" />
                 <input name="q" value="{{ $filters['q'] }}" placeholder="{{ __('ui.search_guides_checklists_and_sources_b85c3ad05e') }}">
             </label>
             <select name="category" aria-label="{{ __('ui.knowledge_category_efc27adf3a') }}">
@@ -55,7 +55,7 @@
                 @endforelse
             </select>
             <button type="submit" class="forum-button forum-button--primary">
-                <x-lucide-search aria-hidden="true" />
+                <x-ui-icon name="search" />
                 {{ __('ui.search_49c266baaa') }}
             </button>
         </form>

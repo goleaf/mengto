@@ -71,7 +71,7 @@
                                         wire:loading.attr="disabled"
                                         wire:target="editSession"
                                     >
-                                        <x-lucide-pencil aria-hidden="true" />
+                                        <x-ui-icon name="pencil" />
                                         <span>{{ __('forum_events.actions.edit_session') }}</span>
                                     </button>
                                 @endif

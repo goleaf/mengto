@@ -13,7 +13,7 @@
 
         @if (session('feedback'))
             <div class="flex items-start gap-3 rounded-md border border-paw-leaf/30 bg-paw-mint p-4 text-sm font-semibold text-paw-leaf" role="status">
-                <x-lucide-circle-check-big class="mt-0.5 size-5 shrink-0" aria-hidden="true" />
+                <x-ui-icon name="circle-check-big" size="lg" class="mt-0.5 shrink-0" />
                 {{ session('feedback') }}
             </div>
         @endif
@@ -27,7 +27,7 @@
                 ['label' => __('ui.volunteers_6ec733ad33'), 'value' => $stats['volunteers'], 'icon' => 'users-round'],
             ] as $stat)
                 <div class="flex items-center gap-3 bg-white p-4">
-                    <x-dynamic-component :component="'lucide-'.$stat['icon']" class="size-5 shrink-0 text-paw-leaf" aria-hidden="true" />
+                    <x-ui-icon size="lg" :name="$stat['icon']" class="shrink-0 text-paw-leaf" />
                     <div>
                         <strong class="block text-xl">{{ $stat['value'] }}</strong>
                         <span class="text-xs text-paw-muted">{{ $stat['label'] }}</span>
@@ -43,7 +43,7 @@
                 <label class="grid gap-1 text-sm font-semibold">
                     {{ __('ui.search_49c266baaa') }}
                     <span class="flex items-center gap-2 rounded-md border border-paw-line bg-white px-3">
-                        <x-lucide-search class="size-4 text-paw-muted" aria-hidden="true" />
+                        <x-ui-icon name="search" size="sm" class="text-paw-muted" />
                         <input name="q" value="{{ $filters['q'] ?? '' }}" class="min-w-0 flex-1 border-0 bg-transparent py-2.5 outline-none" placeholder="{{ __('ui.name_color_area_or_code_e3a84ea921') }}">
                     </span>
                 </label>
@@ -99,11 +99,11 @@
                 </label>
                 <div class="flex items-end gap-2">
                     <button type="submit" class="action action--primary action--compact">
-                        <x-lucide-sliders-horizontal class="icon icon--sm" aria-hidden="true" />
+                        <x-ui-icon name="sliders-horizontal" size="sm" />
                         <span>{{ __('ui.apply_31e392d1c0') }}</span>
                     </button>
                     <a href="{{ route('lost-found.index') }}" class="action action--surface action--icon" title="{{ __('ui.clear_filters_7179ea0035') }}">
-                        <x-lucide-rotate-ccw class="icon icon--sm" aria-hidden="true" />
+                        <x-ui-icon name="rotate-ccw" size="sm" />
                         <span class="sr-only">{{ __('ui.clear_filters_7179ea0035') }}</span>
                     </a>
                 </div>
@@ -123,7 +123,7 @@
                     @empty
                         <div class="grid min-h-60 place-items-center rounded-md border border-dashed border-paw-line bg-white p-8 text-center md:col-span-2">
                             <div>
-                                <x-lucide-search-x class="mx-auto size-9 text-paw-muted" aria-hidden="true" />
+                                <x-ui-icon name="search-x" size="3xl" class="mx-auto text-paw-muted" />
                                 <h3 class="mt-3 font-bold">{{ __('ui.no_matching_reports_0867fe8beb') }}</h3>
                                 <p class="mt-1 text-sm text-paw-muted">{{ __('ui.try_a_wider_area_or_clear_one_of_c761fc97ac') }}</p>
                             </div>

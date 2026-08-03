@@ -30,7 +30,7 @@
 
         <details class="comment-reply">
             <summary>
-                <x-lucide-reply class="icon icon--sm" aria-hidden="true" />
+                <x-ui-icon name="reply" size="sm" />
                 {{ __('ui.reply_c253f451bd') }}
             </summary>
             <form method="POST" action="{{ route('actions.perform') }}" class="comment-reply__form">

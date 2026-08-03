@@ -91,7 +91,7 @@
                     wire:loading.attr="disabled"
                     wire:target="respondToInvitation"
                 >
-                    <x-lucide-check aria-hidden="true" />
+                    <x-ui-icon name="check" />
                     {{ __('forum_groups.actions.accept_invitation') }}
                 </button>
                 <button
@@ -101,7 +101,7 @@
                     wire:loading.attr="disabled"
                     wire:target="respondToInvitation"
                 >
-                    <x-lucide-x aria-hidden="true" />
+                    <x-ui-icon name="x" />
                     {{ __('forum_groups.actions.decline_invitation') }}
                 </button>
             </div>
@@ -122,7 +122,7 @@
                 wire:loading.attr="disabled"
                 wire:target="requestMembership"
             >
-                <x-lucide-user-plus aria-hidden="true" />
+                <x-ui-icon name="user-plus" />
                 <span wire:loading.remove wire:target="requestMembership">
                     {{ $this->group['visibility_key'] === 'public' ? __('forum_groups.actions.join') : __('forum_groups.actions.request') }}
                 </span>
@@ -151,7 +151,7 @@
                     wire:loading.attr="disabled"
                     wire:target="leave"
                 >
-                    <x-lucide-log-out aria-hidden="true" />
+                    <x-ui-icon name="log-out" />
                     {{ __('forum_groups.actions.leave') }}
                 </button>
             @endif
@@ -177,7 +177,7 @@
     @if ($this->group['can_report'])
         <details class="forum-form">
             <summary class="forum-button min-h-11">
-                <x-lucide-flag aria-hidden="true" />
+                <x-ui-icon name="flag" />
                 {{ __('forum_groups.actions.report') }}
             </summary>
             <form wire:submit="report" class="mt-4 grid gap-3">
@@ -208,7 +208,7 @@
                     <span>{{ __('forum_groups.actions.report_and_block') }}</span>
                 </label>
                 <button class="forum-button forum-button--danger min-h-11" type="submit" wire:loading.attr="disabled" wire:target="report">
-                    <x-lucide-flag aria-hidden="true" />
+                    <x-ui-icon name="flag" />
                     {{ __('forum_groups.actions.report') }}
                 </button>
             </form>

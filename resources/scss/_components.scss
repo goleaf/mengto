@@ -5,20 +5,62 @@
     overflow-wrap: anywhere;
 }
 
-.icon {
+.ui-icon {
     inline-size: 1.125rem;
     block-size: 1.125rem;
     flex: none;
+    fill: none;
+    stroke: currentcolor;
     stroke-width: 1.9;
+
+    &--xs {
+        inline-size: 0.75rem;
+        block-size: 0.75rem;
+    }
 
     &--sm {
         inline-size: 1rem;
         block-size: 1rem;
     }
 
-    &--xs {
-        inline-size: 0.75rem;
-        block-size: 0.75rem;
+    &--md {
+        inline-size: 1.125rem;
+        block-size: 1.125rem;
+    }
+
+    &--lg {
+        inline-size: 1.25rem;
+        block-size: 1.25rem;
+    }
+
+    &--xl {
+        inline-size: 1.5rem;
+        block-size: 1.5rem;
+    }
+
+    &--2xl {
+        inline-size: 2rem;
+        block-size: 2rem;
+    }
+
+    &--3xl {
+        inline-size: 2.5rem;
+        block-size: 2.5rem;
+    }
+
+    &--4xl {
+        inline-size: 3rem;
+        block-size: 3rem;
+    }
+
+    &--display {
+        inline-size: 5rem;
+        block-size: 5rem;
+    }
+
+    &--hero {
+        inline-size: 6rem;
+        block-size: 6rem;
     }
 }
 

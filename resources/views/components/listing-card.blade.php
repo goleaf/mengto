@@ -6,11 +6,11 @@
             <img src="{{ $listing['cover_url'] }}" alt="{{ $listing['title'] }}" loading="lazy">
         @else
             <span class="market-card__placeholder" aria-hidden="true">
-                <x-dynamic-component :component="'lucide-'.$listing['type_icon']" class="size-10" />
+                <x-ui-icon size="3xl" :name="$listing['type_icon']" />
             </span>
         @endif
         <span class="market-card__type">
-            <x-dynamic-component :component="'lucide-'.$listing['type_icon']" class="size-3.5" aria-hidden="true" />
+            <x-ui-icon size="sm" :name="$listing['type_icon']" />
             {{ $listing['type_label'] }}
         </span>
     </a>
@@ -44,11 +44,11 @@
 
         <dl class="market-card__facts">
             <div>
-                <dt><x-lucide-map-pin class="size-3.5" aria-hidden="true" /> {{ __('ui.location_15b61974b2') }}</dt>
+                <dt><x-ui-icon name="map-pin" size="sm" /> {{ __('ui.location_15b61974b2') }}</dt>
                 <dd>{{ $listing['location_label'] }}</dd>
             </div>
             <div>
-                <dt><x-lucide-package-check class="size-3.5" aria-hidden="true" /> {{ __('ui.availability_12f67f8539') }}</dt>
+                <dt><x-ui-icon name="package-check" size="sm" /> {{ __('ui.availability_12f67f8539') }}</dt>
                 <dd>{{ $listing['availability_label'] }} · {{ $listing['quantity'] }}</dd>
             </div>
         </dl>
@@ -58,7 +58,7 @@
                 <span class="flex items-center gap-1 truncate font-semibold text-paw-ink">
                     {{ $listing['business_name'] ?? $listing['owner_name'] }}
                     @if ($listing['seller_verified'])
-                        <x-lucide-badge-check class="size-3.5 shrink-0 text-paw-leaf" aria-label="{{ __('ui.verified_seller_8988c729d5') }}" />
+                        <x-ui-icon name="badge-check" size="sm" class="shrink-0 text-paw-leaf" label="{{ __('ui.verified_seller_8988c729d5') }}" />
                     @endif
                 </span>
                 <span>

@@ -58,7 +58,7 @@
                     wire:loading.attr="disabled"
                     wire:target="create"
                 >
-                    <x-lucide-plus aria-hidden="true" />
+                    <x-ui-icon name="plus" />
                     <span wire:loading.remove wire:target="create">{{ __('organizations.actions.create') }}</span>
                     <span wire:loading wire:target="create">{{ __('organizations.actions.creating') }}</span>
                 </button>
@@ -102,7 +102,7 @@
                     </dl>
 
                     <a class="forum-button min-h-11 justify-self-start" href="{{ $organization['url'] }}" wire:navigate>
-                        <x-lucide-settings aria-hidden="true" />
+                        <x-ui-icon name="settings" />
                         {{ __('organizations.actions.open_workspace') }}
                     </a>
                 </article>

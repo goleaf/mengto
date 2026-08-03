@@ -37,7 +37,8 @@
         >
             <x-slot:action>
                 <a href="{{ route('password.request') }}" class="auth-text-link">
-                    {{ __('auth.login.forgot_password') }}
+                    <x-ui-icon name="key-round" size="xs" />
+                    <span>{{ __('auth.login.forgot_password') }}</span>
                 </a>
             </x-slot:action>
         </x-auth-field>

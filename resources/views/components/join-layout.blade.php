@@ -35,17 +35,19 @@
             <div class="join-container join-header__inner">
                 <a href="{{ $canonicalUrl }}" class="join-brand" aria-label="{{ __('auth.brand') }}">
                     <span class="join-brand__mark" aria-hidden="true">
-                        <x-lucide-paw-print />
+                        <x-ui-icon name="paw-print" />
                     </span>
                     <span>{{ __('auth.brand') }}</span>
                 </a>
 
                 <nav class="join-header__actions" aria-label="{{ __('join.header.navigation_label') }}">
                     <a href="{{ $loginUrl }}" class="join-link-button">
-                        {{ __('join.header.sign_in') }}
+                        <x-ui-icon name="log-in" size="sm" />
+                        <span>{{ __('join.header.sign_in') }}</span>
                     </a>
                     <a href="{{ $registerUrl }}" class="join-button join-button--primary" data-join-primary>
-                        {{ __('join.header.create_profile') }}
+                        <x-ui-icon name="user-plus" size="sm" />
+                        <span>{{ __('join.header.create_profile') }}</span>
                     </a>
                 </nav>
             </div>

@@ -2,27 +2,30 @@
     <div class="forum-page">
         <nav class="forum-filter-tabs" aria-label="{{ __('ui.breadcrumb_2bd873d6c7') }}">
             <a href="{{ route('knowledge.index') }}">
-                <x-lucide-arrow-left aria-hidden="true" />
+                <x-ui-icon name="arrow-left" />
                 {{ __('ui.knowledge_base_f56819a30d') }}
             </a>
-            <a href="{{ route('forum.index', ['category' => $article['category']]) }}">{{ __('ui.related_forum_topics_7266208c18') }}</a>
+            <a href="{{ route('forum.index', ['category' => $article['category']]) }}">
+                <x-ui-icon name="message-circle-question" />
+                {{ __('ui.related_forum_topics_7266208c18') }}
+            </a>
             <a href="{{ route('knowledge.articles.print', $article['slug']) }}">
-                <x-lucide-printer aria-hidden="true" />
+                <x-ui-icon name="printer" />
                 {{ __('knowledge.actions.print') }}
             </a>
             <a href="{{ route('knowledge.articles.export', $article['slug']) }}">
-                <x-lucide-download aria-hidden="true" />
+                <x-ui-icon name="download" />
                 {{ __('knowledge.actions.export') }}
             </a>
             @if ($article['can_edit'])
                 <a href="{{ route('knowledge.guides.edit', $article['slug']) }}">
-                    <x-lucide-file-pen-line aria-hidden="true" />
+                    <x-ui-icon name="file-pen-line" />
                     {{ __('knowledge.actions.edit') }}
                 </a>
             @endif
             @if ($article['can_translate'])
                 <a href="{{ route('knowledge.guides.translations.create', $article['slug']) }}">
-                    <x-lucide-languages aria-hidden="true" />
+                    <x-ui-icon name="languages" />
                     {{ __('knowledge.actions.translate') }}
                 </a>
             @endif
@@ -33,10 +36,7 @@
                 <article class="knowledge-article">
                     <div class="forum-topic-card__meta">
                         <span class="forum-badge {{ $article['is_outdated'] ? 'forum-badge--danger' : '' }}">
-                            <x-dynamic-component
-                                :component="$article['is_outdated'] ? 'lucide-history' : 'lucide-book-open-check'"
-                                aria-hidden="true"
-                            />
+                            <x-ui-icon :name="$article['is_outdated'] ? 'history' : 'book-open-check'" />
                             {{ $article['status_label'] }}
                         </span>
                         <span>{{ $article['type_label'] }}</span>
@@ -49,7 +49,7 @@
 
                     @if ($article['is_outdated'])
                         <aside class="forum-safety">
-                            <x-lucide-history aria-hidden="true" />
+                            <x-ui-icon name="history" />
                             <div>
                                 <strong>{{ __('ui.this_material_may_be_outdated_87a18e480c') }}</strong>
                                 <span>{{ __('ui.check_the_listed_primary_sources_and_submit_a_7065642b8d') }}</span>
@@ -59,7 +59,7 @@
 
                     @if ($article['translation'] !== null)
                         <aside class="forum-safety" aria-labelledby="knowledge-translation-attribution-heading">
-                            <x-lucide-languages aria-hidden="true" />
+                            <x-ui-icon name="languages" />
                             <div>
                                 <strong id="knowledge-translation-attribution-heading">
                                     {{ $article['translation']['source_label'] }}
@@ -141,8 +141,11 @@
                         <div class="forum-mini-list">
                             @forelse ($article['sources'] as $source)
                                 <a href="{{ $source['url'] }}" target="_blank" rel="noopener noreferrer">
-                                    {{ $source['label'] }}
-                                    <small>{{ __('ui.open_primary_source_954956190f') }}</small>
+                                    <x-ui-icon name="external-link" size="sm" />
+                                    <span>
+                                        {{ $source['label'] }}
+                                        <small>{{ __('ui.open_primary_source_954956190f') }}</small>
+                                    </span>
                                 </a>
                             @empty
                                 <span>{{ __('ui.no_sources_listed_5a688e193a') }}</span>
@@ -156,8 +159,11 @@
                         <div class="forum-sidebar__title"><span>{{ __('ui.original_discussion_2ead0bc4f7') }}</span></div>
                         <div class="forum-mini-list">
                             <a href="{{ route('forum.topics.show', $article['source_topic']['slug']) }}">
-                                {{ $article['source_topic']['title'] }}
-                                <small>{{ __('ui.read_the_community_context_328f006e2d') }}</small>
+                                <x-ui-icon name="message-square" size="sm" />
+                                <span>
+                                    {{ $article['source_topic']['title'] }}
+                                    <small>{{ __('ui.read_the_community_context_328f006e2d') }}</small>
+                                </span>
                             </a>
                         </div>
                     </section>
@@ -168,8 +174,11 @@
                         <div class="forum-sidebar__title"><span>{{ __('knowledge.discussion.heading') }}</span></div>
                         <div class="forum-mini-list">
                             <a href="{{ route('forum.topics.show', $article['discussion_topic']['slug']) }}">
-                                {{ $article['discussion_topic']['title'] }}
-                                <small>{{ __('knowledge.discussion.open') }}</small>
+                                <x-ui-icon name="message-circle-question" size="sm" />
+                                <span>
+                                    {{ $article['discussion_topic']['title'] }}
+                                    <small>{{ __('knowledge.discussion.open') }}</small>
+                                </span>
                             </a>
                         </div>
                     </section>
@@ -180,8 +189,11 @@
                         <div class="forum-sidebar__title"><span>{{ __('knowledge.replacement.heading') }}</span></div>
                         <div class="forum-mini-list">
                             <a href="{{ route('knowledge.articles.show', $article['replacement']['slug']) }}">
-                                {{ $article['replacement']['title'] }}
-                                <small>{{ __('knowledge.replacement.open') }}</small>
+                                <x-ui-icon name="history" size="sm" />
+                                <span>
+                                    {{ $article['replacement']['title'] }}
+                                    <small>{{ __('knowledge.replacement.open') }}</small>
+                                </span>
                             </a>
                         </div>
                     </section>
@@ -193,8 +205,11 @@
                         <div class="forum-mini-list">
                             @foreach ($article['translations'] as $translation)
                                 <a href="{{ route('knowledge.articles.show', $translation['slug']) }}">
-                                    {{ $translation['title'] }}
-                                    <small>{{ $translation['language'] }}</small>
+                                    <x-ui-icon name="languages" size="sm" />
+                                    <span>
+                                        {{ $translation['title'] }}
+                                        <small>{{ $translation['language'] }}</small>
+                                    </span>
                                 </a>
                             @endforeach
                         </div>
@@ -204,7 +219,7 @@
                 <section class="forum-sidebar__section">
                     <details>
                         <summary class="forum-button">
-                            <x-lucide-file-pen-line aria-hidden="true" />
+                            <x-ui-icon name="file-pen-line" />
                             {{ __('ui.suggest_correction_c956d0ef71') }}
                         </summary>
                         <form method="POST" action="{{ route('knowledge.corrections.store', $article['slug']) }}" class="forum-form mt-2">
@@ -229,7 +244,7 @@
                                 <input type="url" name="source_url" maxlength="500">
                             </label>
                             <button type="submit" class="forum-button forum-button--primary">
-                                <x-lucide-send aria-hidden="true" />
+                                <x-ui-icon name="send" />
                                 {{ __('ui.send_correction_2ce2343147') }}
                             </button>
                         </form>
@@ -255,8 +270,11 @@
                     <div class="forum-mini-list">
                         @forelse ($related as $relatedArticle)
                             <a href="{{ route('knowledge.articles.show', $relatedArticle['slug']) }}">
-                                {{ $relatedArticle['title'] }}
-                                <small>{{ $relatedArticle['reviewed_label'] }}</small>
+                                <x-ui-icon name="book-open-check" size="sm" />
+                                <span>
+                                    {{ $relatedArticle['title'] }}
+                                    <small>{{ $relatedArticle['reviewed_label'] }}</small>
+                                </span>
                             </a>
                         @empty
                             <span>{{ __('ui.no_related_guides_d9e81b9fe7') }}</span>

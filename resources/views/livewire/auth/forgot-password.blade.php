@@ -30,7 +30,7 @@
     </form>
 
     <a href="{{ route('login') }}" class="auth-back-link">
-        <x-lucide-arrow-left aria-hidden="true" />
+        <x-ui-icon name="arrow-left" />
         <span>{{ __('auth.password.back_to_login') }}</span>
     </a>
 </div>

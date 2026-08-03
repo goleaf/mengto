@@ -87,7 +87,7 @@
             wire:loading.attr="disabled"
             wire:target="saveProfile"
         >
-            <x-lucide-save aria-hidden="true" />
+            <x-ui-icon name="save" />
             <span wire:loading.remove wire:target="saveProfile">{{ __('forum_mentorship.profile.save') }}</span>
             <span wire:loading wire:target="saveProfile">{{ __('forum_mentorship.profile.saving') }}</span>
         </button>
@@ -172,7 +172,7 @@
                 wire:loading.attr="disabled"
                 wire:target="saveScope"
             >
-                <x-lucide-plus aria-hidden="true" />
+                <x-ui-icon name="plus" />
                 <span wire:loading.remove wire:target="saveScope">{{ __('forum_mentorship.profile.save_scope') }}</span>
                 <span wire:loading wire:target="saveScope">{{ __('forum_mentorship.profile.saving_scope') }}</span>
             </button>

@@ -7,7 +7,7 @@
     @forelse ($items as $item)
         <article role="listitem" class="icon-list__item">
             <span class="icon-list__icon" aria-hidden="true">
-                <x-dynamic-component :component="'lucide-'.$item['icon']" class="icon" />
+                <x-ui-icon :name="$item['icon']" />
             </span>
             <div class="icon-list__content">
                 <h3 class="icon-list__title">{{ $item['title'] }}</h3>

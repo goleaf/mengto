@@ -19,13 +19,13 @@
         </div>
         <div class="place-map__controls" aria-label="{{ __('ui.map_controls_e463873f9f') }}">
             <button type="button" class="icon-button" data-place-zoom="in" aria-label="{{ __('ui.zoom_in_0e47f09a74') }}">
-                <x-lucide-plus class="icon icon--sm" aria-hidden="true" />
+                <x-ui-icon name="plus" size="sm" />
             </button>
             <button type="button" class="icon-button" data-place-zoom="out" aria-label="{{ __('ui.zoom_out_bc7b631a68') }}">
-                <x-lucide-minus class="icon icon--sm" aria-hidden="true" />
+                <x-ui-icon name="minus" size="sm" />
             </button>
             <button type="button" class="icon-button" data-place-fullscreen aria-label="{{ __('ui.toggle_fullscreen_map_55b5219245') }}" aria-pressed="false">
-                <x-lucide-maximize-2 class="icon icon--sm" aria-hidden="true" />
+                <x-ui-icon name="maximize-2" size="sm" />
             </button>
         </div>
     </header>
@@ -50,7 +50,7 @@
                 aria-label="{{ $marker['label'] }}"
                 aria-pressed="{{ ($selected['key'] ?? null) === $marker['key'] ? 'true' : 'false' }}"
             >
-                <x-dynamic-component :component="'lucide-'.$marker['category_icon']" class="icon icon--sm" aria-hidden="true" />
+                <x-ui-icon size="sm" :name="$marker['category_icon']" />
                 @if ($marker['warning_count'] > 0)
                     <span class="place-marker__warning" aria-label="{{ trans_choice('presentation.warning_count', $marker['warning_count'], ['count' => $marker['warning_count']]) }}">{{ $marker['warning_count'] }}</span>
                 @endif

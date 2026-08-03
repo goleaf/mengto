@@ -16,7 +16,7 @@
         <section class="grid grid-cols-2 gap-px overflow-hidden rounded-md border border-paw-line bg-paw-line lg:grid-cols-4" aria-label="{{ __('ui.expert_directory_summary_c16800d8b6') }}">
             @forelse ($stats as $stat)
                 <div class="flex items-center gap-3 bg-white p-4">
-                    <x-dynamic-component :component="'lucide-'.$stat['icon']" class="size-5 shrink-0 text-paw-leaf" aria-hidden="true" />
+                    <x-ui-icon size="lg" :name="$stat['icon']" class="shrink-0 text-paw-leaf" />
                     <div>
                         <strong class="block text-xl">{{ $stat['value'] }}</strong>
                         <span class="text-xs text-paw-muted">{{ $stat['label'] }}</span>
@@ -32,7 +32,7 @@
                 <label class="grid gap-1 text-sm font-semibold">
                     {{ __('ui.search_49c266baaa') }}
                     <span class="flex items-center gap-2 rounded-md border border-paw-line bg-white px-3">
-                        <x-lucide-search class="size-4 text-paw-muted" aria-hidden="true" />
+                        <x-ui-icon name="search" size="sm" class="text-paw-muted" />
                         <input name="q" value="{{ $filters['q'] ?? '' }}" class="min-w-0 flex-1 border-0 bg-transparent py-2.5 outline-none" placeholder="{{ __('ui.name_skill_city_or_approach_b76092e837') }}">
                     </span>
                 </label>
@@ -121,11 +121,11 @@
                 </label>
                 <div class="flex items-end gap-2">
                     <button type="submit" class="action action--primary action--compact flex-1">
-                        <x-lucide-sliders-horizontal class="icon icon--sm" aria-hidden="true" />
+                        <x-ui-icon name="sliders-horizontal" size="sm" />
                         <span>{{ __('ui.apply_31e392d1c0') }}</span>
                     </button>
                     <a href="{{ route('experts.index') }}" class="action action--surface action--icon" title="{{ __('ui.clear_filters_7179ea0035') }}">
-                        <x-lucide-rotate-ccw class="icon icon--sm" aria-hidden="true" />
+                        <x-ui-icon name="rotate-ccw" size="sm" />
                         <span class="sr-only">{{ __('ui.clear_filters_7179ea0035') }}</span>
                     </a>
                 </div>
@@ -144,7 +144,7 @@
                     <p class="mt-1 text-sm text-paw-muted">{{ __('ui.a_verification_badge_explains_what_was_checked_it_60a615c5a3') }}</p>
                 </div>
                 <a href="{{ url('/places?category=emergency-vet') }}" class="inline-flex items-center gap-2 text-sm font-bold text-red-700 underline decoration-red-300 underline-offset-4">
-                    <x-lucide-siren class="size-4" aria-hidden="true" />
+                    <x-ui-icon name="siren" size="sm" />
                     {{ __('ui.need_urgent_veterinary_help_6caf36da92') }}
                 </a>
             </div>

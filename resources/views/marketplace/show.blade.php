@@ -1,20 +1,20 @@
 <x-app-shell :owner="$owner" :title="$page_title" :active-section="$active_section">
     <div class="grid gap-7">
         <a href="{{ route('marketplace.index') }}" class="inline-flex w-fit items-center gap-2 text-sm font-bold text-paw-leaf">
-            <x-lucide-arrow-left class="size-4" aria-hidden="true" />
+            <x-ui-icon name="arrow-left" size="sm" />
             {{ __('ui.marketplace_c608981d8d') }}
         </a>
 
         @if (session('feedback'))
             <div class="market-feedback" role="status">
-                <x-lucide-circle-check-big class="size-5 shrink-0" aria-hidden="true" />
+                <x-ui-icon name="circle-check-big" size="lg" class="shrink-0" />
                 {{ session('feedback') }}
             </div>
         @endif
 
         @if ($errors->any())
             <div class="form-errors" role="alert">
-                <x-lucide-circle-alert class="icon" aria-hidden="true" />
+                <x-ui-icon name="circle-alert" />
                 <span>{{ $errors->first() }}</span>
             </div>
         @endif
@@ -25,7 +25,7 @@
                     <img src="{{ $listing['cover_url'] }}" alt="{{ $listing['title'] }}">
                 @else
                     <span class="market-card__placeholder" aria-hidden="true">
-                        <x-dynamic-component :component="'lucide-'.$listing['type_icon']" class="size-12" />
+                        <x-ui-icon size="4xl" :name="$listing['type_icon']" />
                     </span>
                 @endif
             </div>
@@ -44,13 +44,13 @@
                 <div class="mt-4 flex flex-wrap items-end gap-x-5 gap-y-2">
                     <strong class="text-3xl">{{ $listing['price_label'] }}</strong>
                     <span class="inline-flex items-center gap-1.5 text-sm text-paw-muted">
-                        <x-lucide-map-pin class="size-4" aria-hidden="true" />
+                        <x-ui-icon name="map-pin" size="sm" />
                         {{ $listing['location_label'] }}
                     </span>
                     <span class="text-sm font-semibold">{{ $listing['availability_label'] }} · {{ $listing['quantity'] }}</span>
                     @if ($review_summary['rating'])
                         <span class="inline-flex items-center gap-1 text-sm font-semibold">
-                            <x-lucide-star class="size-4 fill-current text-paw-leaf" aria-hidden="true" />
+                            <x-ui-icon name="star" size="sm" class="text-paw-leaf" />
                             {{ $review_summary['rating'] }} ({{ $review_summary['count'] }})
                         </span>
                     @endif
@@ -76,7 +76,7 @@
         </header>
 
         <section class="market-safety" aria-labelledby="safety-heading">
-            <x-lucide-shield-alert class="size-6 shrink-0" aria-hidden="true" />
+            <x-ui-icon name="shield-alert" size="xl" class="shrink-0" />
             <div>
                 <h2 id="safety-heading" class="font-bold">{{ __('ui.keep_the_exchange_inside_the_platform_3c7f3ca432') }}</h2>
                 <p class="mt-1 text-sm leading-6">{{ __('ui.use_the_order_status_as_proof_of_payment_ee37197aca') }}</p>
@@ -221,7 +221,7 @@
                                         @elseif ($reservation['status'] === 'accepted')
                                             @if ($reservation['order'])
                                                 <a href="{{ $reservation['order']['url'] }}" class="action action--surface">
-                                                    <x-lucide-receipt-text class="icon" aria-hidden="true" />
+                                                    <x-ui-icon name="receipt-text" />
                                                     <span>{{ $reservation['order']['reference'] }} · {{ $reservation['order']['payment_status'] }}</span>
                                                 </a>
                                             @endif
@@ -234,7 +234,7 @@
                                             />
                                         @elseif ($reservation['order'])
                                             <a href="{{ $reservation['order']['url'] }}" class="action action--surface">
-                                                <x-lucide-receipt-text class="icon" aria-hidden="true" />
+                                                <x-ui-icon name="receipt-text" />
                                                 <span>{{ __('presentation.open_reference', ['reference' => $reservation['order']['reference']]) }}</span>
                                             </a>
                                         @endif
@@ -297,7 +297,7 @@
                             <p class="flex items-center gap-1 font-bold">
                                 {{ $listing['business_name'] ?? $listing['owner_name'] }}
                                 @if ($listing['seller_verified'])
-                                    <x-lucide-badge-check class="size-4 text-paw-leaf" aria-label="{{ __('ui.verified_seller_8988c729d5') }}" />
+                                    <x-ui-icon name="badge-check" size="sm" class="text-paw-leaf" label="{{ __('ui.verified_seller_8988c729d5') }}" />
                                 @endif
                             </p>
                             <p class="text-sm text-paw-muted">{{ $listing['seller_type_label'] }}</p>
@@ -380,7 +380,7 @@
                             <span>{{ __('ui.i_will_share_only_the_data_required_for_f3a9838797') }}</span>
                         </label>
                         <button type="submit" class="action action--primary w-full">
-                            <x-lucide-send class="icon" aria-hidden="true" />
+                            <x-ui-icon name="send" />
                             <span>{{ $listing['request_label'] }}</span>
                         </button>
                     </form>
@@ -394,7 +394,7 @@
                         <p class="mt-3 text-sm leading-6">{{ $my_reservation['message'] }}</p>
                         @if ($my_reservation['order'])
                             <a href="{{ $my_reservation['order']['url'] }}" class="action action--primary mt-4 w-full">
-                                <x-lucide-receipt-text class="icon" aria-hidden="true" />
+                                <x-ui-icon name="receipt-text" />
                                 <span>{{ $my_reservation['order']['reference'] }}</span>
                             </a>
                         @endif
@@ -438,7 +438,7 @@
                         <span>{{ __('forum_moderation.forms.immediate_safety') }}</span>
                     </label>
                     <button type="submit" class="action action--surface action--compact w-fit">
-                        <x-lucide-flag class="icon icon--sm" aria-hidden="true" />
+                        <x-ui-icon name="flag" size="sm" />
                         <span>{{ __('ui.send_report_a44d353113') }}</span>
                     </button>
                 </form>

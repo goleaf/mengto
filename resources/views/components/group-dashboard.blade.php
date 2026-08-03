@@ -47,7 +47,7 @@
                 @forelse ($content['discussions'] as $discussion)
                     <article class="discussion-row">
                         <span class="discussion-row__icon">
-                            <x-dynamic-component :component="'lucide-'.$discussion['icon']" class="icon" aria-hidden="true" />
+                            <x-ui-icon :name="$discussion['icon']" />
                         </span>
                         <div>
                             <x-status-badge :label="$discussion['status']" tone="surface" />
@@ -110,14 +110,14 @@
                 @forelse ($content['resources'] as $resource)
                     <article class="resource-row">
                         <span class="resource-row__icon">
-                            <x-dynamic-component :component="'lucide-'.$resource['icon']" class="icon" aria-hidden="true" />
+                            <x-ui-icon :name="$resource['icon']" />
                         </span>
                         <div>
                             <h3>{{ $resource['title'] }}</h3>
                             <p>{{ $resource['description'] }}</p>
                             <span>{{ $resource['meta'] }}</span>
                         </div>
-                        <x-lucide-chevron-right class="icon icon--sm" aria-hidden="true" />
+                        <x-ui-icon name="chevron-right" size="sm" />
                     </article>
                 @empty
                     <p class="group-dashboard__empty">{{ __('ui.no_guides_or_resources_have_been_added_yet_08d7121d50') }}</p>

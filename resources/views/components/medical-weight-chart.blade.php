@@ -55,7 +55,7 @@
         </div>
     @else
         <div class="medical-empty">
-            <x-lucide-scale class="size-7" aria-hidden="true" />
+            <x-ui-icon name="scale" size="xl" />
             <p>{{ __('ui.no_weight_measurements_yet_fc6e57877b') }}</p>
         </div>
     @endif

@@ -14,7 +14,7 @@
 
         @if ($errors->any())
             <div class="medical-form-errors" role="alert">
-                <x-lucide-circle-alert class="size-5" aria-hidden="true" />
+                <x-ui-icon name="circle-alert" size="lg" />
                 <div>
                     <strong>{{ __('ui.check_the_medical_record_details_f8a00d6234') }}</strong>
                     <ul>
@@ -30,7 +30,7 @@
 
         @if ($pet_options === [])
             <section class="medical-empty min-h-64">
-                <x-lucide-shield-check class="size-9" aria-hidden="true" />
+                <x-ui-icon name="shield-check" size="3xl" />
                 <h2 class="text-xl font-bold">{{ __('ui.every_managed_pet_already_has_a_record_6e9fd78fcf') }}</h2>
                 <x-action-control label="{{ __('ui.open_health_records_80502ab69c') }}" icon="arrow-right" variant="primary" :href="route('medical-records.index')" />
             </section>
@@ -198,7 +198,7 @@
                         <span>{{ __('ui.i_understand_this_record_stays_private_until_i_0a278fba19') }}</span>
                     </label>
                     <button type="submit" class="action action--primary action--regular">
-                        <x-lucide-shield-plus class="icon" aria-hidden="true" />
+                        <x-ui-icon name="shield-plus" />
                         <span>{{ __('ui.create_private_record_6d280f9113') }}</span>
                     </button>
                 </section>

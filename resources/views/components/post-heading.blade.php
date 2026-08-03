@@ -23,7 +23,7 @@
                     {{ $post['author'] }}
                 @endif
                 @if ($post['verified'] ?? false)
-                    <x-lucide-badge-check class="icon icon--sm text-paw-teal" aria-label="{{ __('ui.verified_profile_445947549b') }}" />
+                    <x-ui-icon name="badge-check" size="sm" class="text-paw-teal" label="{{ __('ui.verified_profile_445947549b') }}" />
                 @endif
         @if ((int) $level === 3)
             </h3>
@@ -35,7 +35,7 @@
             {{ $post['handle'] ?? $post['pet'] }} ·
             <time datetime="{{ $post['datetime'] }}">{{ $post['time'] }}</time>
             @if ($post['audience'] ?? null)
-                · <x-lucide-users class="icon icon--xs" aria-hidden="true" />
+                · <x-ui-icon name="users" size="xs" />
                 <span>{{ $post['audience'] }}</span>
             @endif
         </p>

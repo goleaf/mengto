@@ -1,6 +1,7 @@
 @props([
     'href',
     'label',
+    'icon',
     'name',
     'active' => false,
 ])
@@ -11,5 +12,6 @@
     @if ($active) aria-current="page" @endif
     {{ $attributes->class('desktop-nav__item') }}
 >
-    {{ $label }}
+    <x-ui-icon :name="$icon" size="xs" />
+    <span>{{ $label }}</span>
 </a>

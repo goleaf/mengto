@@ -49,7 +49,7 @@
                                     wire:target="openReport({{ $report['id'] }})"
                                     class="forum-button"
                                 >
-                                    <x-lucide-folder-plus aria-hidden="true" />
+                                    <x-ui-icon name="folder-plus" />
                                     <span>{{ __('forum_admin.moderation_operations.actions.open_case') }}</span>
                                 </button>
                             </td>
@@ -110,7 +110,7 @@
                                     class="forum-button"
                                     aria-label="{{ __('forum_admin.moderation_operations.actions.review_named_case', ['case' => $case['number']]) }}"
                                 >
-                                    <x-lucide-search aria-hidden="true" />
+                                    <x-ui-icon name="search" />
                                 </button>
                             </td>
                         </tr>
@@ -149,7 +149,7 @@
                         @error('assigneeUserId') <small role="alert">{{ $message }}</small> @enderror
                     </label>
                     <button type="submit" wire:loading.attr="disabled" wire:target="assignCase" class="forum-button forum-button--primary">
-                        <x-lucide-user-check aria-hidden="true" />
+                        <x-ui-icon name="user-check" />
                         <span wire:loading.remove wire:target="assignCase">{{ __('forum_admin.moderation_operations.actions.assign') }}</span>
                         <span wire:loading wire:target="assignCase">{{ __('forum_admin.actions.working') }}</span>
                     </button>
@@ -282,7 +282,7 @@
                             wire:target="applyModerationAction"
                             class="forum-button forum-button--primary"
                         >
-                            <x-lucide-shield-check aria-hidden="true" />
+                            <x-ui-icon name="shield-check" />
                             <span wire:loading.remove wire:target="applyModerationAction">{{ __('forum_admin.moderation_operations.actions.record_action') }}</span>
                             <span wire:loading wire:target="applyModerationAction">{{ __('forum_admin.actions.working') }}</span>
                         </button>
@@ -310,7 +310,7 @@
                             @error('recusalPrivateNote') <small role="alert">{{ $message }}</small> @enderror
                         </label>
                         <button type="submit" wire:loading.attr="disabled" wire:target="recuseFromCase" class="forum-button">
-                            <x-lucide-user-x aria-hidden="true" />
+                            <x-ui-icon name="user-x" />
                             <span>{{ __('forum_admin.moderation_operations.actions.recuse') }}</span>
                         </button>
                     </form>
@@ -350,7 +350,7 @@
                             <td class="px-3 py-3">{{ $appeal['submitted'] }}</td>
                             <td class="px-3 py-3 text-end">
                                 <button type="button" wire:click="selectAppeal({{ $appeal['id'] }})" class="forum-button">
-                                    <x-lucide-scale aria-hidden="true" />
+                                    <x-ui-icon name="scale" />
                                     <span>{{ __('forum_admin.moderation_operations.appeals.review') }}</span>
                                 </button>
                             </td>
@@ -392,7 +392,7 @@
                     wire:target="reviewAppeal"
                     class="forum-button forum-button--primary"
                 >
-                    <x-lucide-scale aria-hidden="true" />
+                    <x-ui-icon name="scale" />
                     <span wire:loading.remove wire:target="reviewAppeal">{{ __('forum_admin.moderation_operations.appeals.record_decision') }}</span>
                     <span wire:loading wire:target="reviewAppeal">{{ __('forum_admin.actions.working') }}</span>
                 </button>

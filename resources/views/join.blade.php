@@ -17,15 +17,16 @@
                     <div class="join-hero__actions">
                         <a href="{{ $register_url }}" class="join-button join-button--primary" data-join-primary>
                             <span>{{ __('join.hero.primary_action') }}</span>
-                            <x-lucide-arrow-up-right aria-hidden="true" />
+                            <x-ui-icon name="arrow-up-right" />
                         </a>
                         <a href="#join-possibilities" class="join-button join-button--secondary">
-                            {{ __('join.hero.secondary_action') }}
+                            <x-ui-icon name="layout-grid" />
+                            <span>{{ __('join.hero.secondary_action') }}</span>
                         </a>
                     </div>
 
                     <p class="join-hero__note">
-                        <x-lucide-shield-check aria-hidden="true" />
+                        <x-ui-icon name="shield-check" />
                         <span>{{ __('join.hero.note') }}</span>
                     </p>
                 </div>
@@ -37,7 +38,7 @@
                     </div>
 
                     <article class="join-update join-update--profile">
-                        <span class="join-update__icon" aria-hidden="true"><x-lucide-paw-print /></span>
+                        <span class="join-update__icon" aria-hidden="true"><x-ui-icon name="paw-print" /></span>
                         <div>
                             <p>{{ __('join.preview.profile_label') }}</p>
                             <strong>{{ __('join.preview.profile_text') }}</strong>
@@ -45,7 +46,7 @@
                     </article>
 
                     <article class="join-update join-update--place">
-                        <span class="join-update__icon" aria-hidden="true"><x-lucide-map-pinned /></span>
+                        <span class="join-update__icon" aria-hidden="true"><x-ui-icon name="map-pinned" /></span>
                         <div>
                             <p>{{ __('join.preview.place_label') }}</p>
                             <strong>{{ __('join.preview.place_text') }}</strong>
@@ -53,7 +54,7 @@
                     </article>
 
                     <article class="join-update join-update--help">
-                        <span class="join-update__icon" aria-hidden="true"><x-lucide-siren /></span>
+                        <span class="join-update__icon" aria-hidden="true"><x-ui-icon name="siren" /></span>
                         <div>
                             <p>{{ __('join.preview.help_label') }}</p>
                             <strong>{{ __('join.preview.help_text') }}</strong>
@@ -75,7 +76,7 @@
                     @forelse ($outcomes as $outcome)
                         <article class="join-feature-card">
                             <span class="join-feature-card__icon" aria-hidden="true">
-                                <x-dynamic-component :component="'lucide-'.$outcome['icon']" />
+                                <x-ui-icon :name="$outcome['icon']" />
                             </span>
                             <h3>{{ $outcome['title'] }}</h3>
                             <p>{{ $outcome['description'] }}</p>
@@ -122,7 +123,7 @@
                     @forelse ($tools as $tool)
                         <article class="join-tool-card">
                             <span class="join-tool-card__icon" aria-hidden="true">
-                                <x-dynamic-component :component="'lucide-'.$tool['icon']" />
+                                <x-ui-icon :name="$tool['icon']" />
                             </span>
                             <div>
                                 <h3>{{ $tool['title'] }}</h3>
@@ -136,11 +137,12 @@
 
                 <div class="join-tools__actions">
                     <a href="{{ $explore_url }}" class="join-button join-button--secondary">
-                        {{ __('join.tools.browse_action') }}
+                        <x-ui-icon name="compass" />
+                        <span>{{ __('join.tools.browse_action') }}</span>
                     </a>
                     <a href="{{ $forum_url }}" class="join-text-link">
                         {{ __('join.tools.forum_action') }}
-                        <x-lucide-arrow-right aria-hidden="true" />
+                        <x-ui-icon name="arrow-right" />
                     </a>
                 </div>
             </div>
@@ -156,7 +158,7 @@
                     <ul class="join-check-list">
                         @forelse ($privacy_points as $privacyPoint)
                             <li>
-                                <x-lucide-check aria-hidden="true" />
+                                <x-ui-icon name="check" />
                                 <span>{{ $privacyPoint }}</span>
                             </li>
                         @empty
@@ -167,15 +169,15 @@
 
                 <div class="join-privacy-panel" aria-label="{{ __('join.privacy.panel_label') }}">
                     <div>
-                        <span><x-lucide-eye aria-hidden="true" />{{ __('join.privacy.public_label') }}</span>
+                        <span><x-ui-icon name="eye" />{{ __('join.privacy.public_label') }}</span>
                         <strong>{{ __('join.privacy.public_value') }}</strong>
                     </div>
                     <div>
-                        <span><x-lucide-lock-keyhole aria-hidden="true" />{{ __('join.privacy.private_label') }}</span>
+                        <span><x-ui-icon name="lock-keyhole" />{{ __('join.privacy.private_label') }}</span>
                         <strong>{{ __('join.privacy.private_value') }}</strong>
                     </div>
                     <div>
-                        <span><x-lucide-key-round aria-hidden="true" />{{ __('join.privacy.access_label') }}</span>
+                        <span><x-ui-icon name="key-round" />{{ __('join.privacy.access_label') }}</span>
                         <strong>{{ __('join.privacy.access_value') }}</strong>
                     </div>
                 </div>
@@ -194,7 +196,7 @@
                         <details>
                             <summary>
                                 <span>{{ $faq['question'] }}</span>
-                                <x-lucide-plus aria-hidden="true" />
+                                <x-ui-icon name="plus" />
                             </summary>
                             <p>{{ $faq['answer'] }}</p>
                         </details>
@@ -215,11 +217,14 @@
                 <div class="join-final__actions">
                     <a href="{{ $register_url }}" class="join-button join-button--light" data-join-primary>
                         {{ __('join.final.primary_action') }}
-                        <x-lucide-arrow-up-right aria-hidden="true" />
+                        <x-ui-icon name="arrow-up-right" />
                     </a>
                     <p>
                         {{ __('join.final.sign_in_prefix') }}
-                        <a href="{{ $login_url }}">{{ __('join.final.sign_in_action') }}</a>
+                        <a href="{{ $login_url }}" class="inline-flex items-center gap-1">
+                            <x-ui-icon name="log-in" size="xs" />
+                            <span>{{ __('join.final.sign_in_action') }}</span>
+                        </a>
                     </p>
                 </div>
             </div>
@@ -230,7 +235,7 @@
         <div class="join-container join-footer__inner">
             <div>
                 <a href="{{ $canonical_url }}" class="join-brand">
-                    <span class="join-brand__mark" aria-hidden="true"><x-lucide-paw-print /></span>
+                    <span class="join-brand__mark" aria-hidden="true"><x-ui-icon name="paw-print" /></span>
                     <span>{{ __('auth.brand') }}</span>
                 </a>
                 <p>{{ __('join.footer.tagline') }}</p>

@@ -8,12 +8,12 @@
     @if (isset($post['format']))
         @if ($post['urgent'])
             <div class="post-alert">
-                <x-lucide-siren class="icon icon--sm" aria-hidden="true" />
+                <x-ui-icon name="siren" size="sm" />
                 <span>{{ __('ui.active_local_alert_449aa801e6') }}</span>
             </div>
         @elseif ($post['verified'] && $post['format'] === 'expert')
             <div class="post-expert">
-                <x-lucide-badge-check class="icon icon--sm" aria-hidden="true" />
+                <x-ui-icon name="badge-check" size="sm" />
                 <span>{{ __('ui.verified_professional_context_78bb632383') }}</span>
             </div>
         @endif
@@ -53,7 +53,7 @@
 
         @if ($post['why'] && $post['status'] === 'published')
             <div class="post-why">
-                <x-lucide-sparkles class="icon icon--sm" aria-hidden="true" />
+                <x-ui-icon name="sparkles" size="sm" />
                 <span>{{ $post['why'] }}</span>
             </div>
         @endif

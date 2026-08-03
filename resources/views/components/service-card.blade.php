@@ -16,7 +16,7 @@
     @if ($service['includes'] !== [])
         <ul class="grid gap-1 text-sm text-paw-muted">
             @forelse ($service['includes'] as $item)
-                <li class="flex gap-2"><x-lucide-check class="mt-0.5 size-4 text-paw-leaf" aria-hidden="true" /> {{ $item }}</li>
+                <li class="flex gap-2"><x-ui-icon name="check" size="sm" class="mt-0.5 text-paw-leaf" /> {{ $item }}</li>
             @empty
                 <li>{{ __('ui.details_provided_during_booking_4101ac194a') }}</li>
             @endforelse

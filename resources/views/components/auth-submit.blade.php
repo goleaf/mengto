@@ -14,5 +14,5 @@
 >
     <span wire:loading.remove wire:target="{{ $target }}">{{ $label }}</span>
     <span wire:loading wire:target="{{ $target }}">{{ $loadingLabel }}</span>
-    <x-lucide-arrow-up-right class="auth-button__icon" wire:loading.remove wire:target="{{ $target }}" aria-hidden="true" />
+    <x-ui-icon name="arrow-up-right" wire:loading.remove wire:target="{{ $target }}" class="auth-button__icon" />
 </button>

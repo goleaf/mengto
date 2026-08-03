@@ -13,14 +13,14 @@
                 @if ($care_journal['image_url'])
                     <img src="{{ $care_journal['image_url'] }}" alt="{{ $care_journal['pet_name'] }}">
                 @else
-                    <x-lucide-paw-print class="size-6" aria-hidden="true" />
+                    <x-ui-icon name="paw-print" size="xl" />
                 @endif
             </div>
         </header>
 
         @if ($errors->any())
             <div class="care-form-errors" role="alert">
-                <x-lucide-circle-alert class="size-5" aria-hidden="true" />
+                <x-ui-icon name="circle-alert" size="lg" />
                 <div>
                     <strong>{{ __('ui.the_report_was_not_saved_5503500502') }}</strong>
                     <ul>
@@ -35,7 +35,7 @@
         @endif
 
         <section class="care-access-scope" aria-label="{{ __('ui.temporary_access_limits_2259af7d73') }}">
-            <x-lucide-shield-check class="size-5" aria-hidden="true" />
+            <x-ui-icon name="shield-check" size="lg" />
             <div>
                 <strong>{{ __('presentation.access_limited_to', ['sections' => implode(', ', $grant['sections'])]) }}</strong>
                 <p>

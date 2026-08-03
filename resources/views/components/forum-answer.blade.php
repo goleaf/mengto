@@ -22,11 +22,11 @@
         </div>
         <div class="forum-topic-card__tags">
             @if ($answer['is_accepted'])
-                <span class="forum-badge"><x-lucide-circle-check-big aria-hidden="true" /> {{ __('ui.accepted_answer_205ea1c1e2') }}</span>
+                <span class="forum-badge"><x-ui-icon name="circle-check-big" /> {{ __('ui.accepted_answer_205ea1c1e2') }}</span>
             @endif
             @if ($answer['is_verified_expert'])
                 <span class="forum-badge">
-                    <x-lucide-badge-check aria-hidden="true" />
+                    <x-ui-icon name="badge-check" />
                     {{ ($answer['expert_profile']['qualification_verified'] ?? false) ? __('ui.qualification_verified_bfd453f9ac') : $answer['expertise'] }}
                 </span>
                 @if ($answer['expert_profile'] && $answer['expert_profile']['profile_status'] !== 'Published')
@@ -38,7 +38,7 @@
                 <span class="forum-badge forum-badge--neutral">{{ $answer['experience_label'] }}</span>
             @endif
             @if ($answer['needs_source'])
-                <span class="forum-badge forum-badge--sun"><x-lucide-link aria-hidden="true" /> {{ __('ui.source_requested_dd87a1a3ea') }}</span>
+                <span class="forum-badge forum-badge--sun"><x-ui-icon name="link" /> {{ __('ui.source_requested_dd87a1a3ea') }}</span>
             @endif
         </div>
     </header>
@@ -81,7 +81,7 @@
                 <input type="hidden" name="answer_id" value="{{ $answer['id'] }}">
                 <input type="hidden" name="value" value="helpful">
                 <button type="submit" class="forum-button" aria-pressed="{{ $answer['voted'] === 'helpful' ? 'true' : 'false' }}">
-                    <x-lucide-thumbs-up aria-hidden="true" />
+                    <x-ui-icon name="thumbs-up" />
                     {{ __('presentation.helpful_count', ['count' => $answer['helpful_count']]) }}
                 </button>
             </form>
@@ -92,7 +92,7 @@
                     <input type="hidden" name="action" value="accept-answer">
                     <input type="hidden" name="answer_id" value="{{ $answer['id'] }}">
                     <button type="submit" class="forum-button">
-                        <x-lucide-circle-check-big aria-hidden="true" />
+                        <x-ui-icon name="circle-check-big" />
                         {{ __('ui.accept_89713b9c9c') }}
                     </button>
                 </form>
@@ -100,7 +100,7 @@
 
             <details>
                 <summary class="forum-button">
-                    <x-lucide-flag aria-hidden="true" />
+                    <x-ui-icon name="flag" />
                     {{ __('ui.report_b6ce788d97') }}
                 </summary>
                 <form method="POST" action="{{ route('forum.actions') }}" class="forum-form mt-2">
@@ -130,7 +130,7 @@
                         <span>{{ __('forum_moderation.forms.block_user') }}</span>
                     </label>
                     <button type="submit" class="forum-button forum-button--danger">
-                        <x-lucide-send aria-hidden="true" />
+                        <x-ui-icon name="send" />
                         {{ __('ui.send_report_a44d353113') }}
                     </button>
                 </form>
@@ -140,7 +140,7 @@
         @if (! $topic['is_locked'])
             <details>
                 <summary class="forum-button">
-                    <x-lucide-message-circle-plus aria-hidden="true" />
+                    <x-ui-icon name="message-circle-plus" />
                     {{ __('ui.comment_44f5e3fbec') }}
                 </summary>
                 <form method="POST" action="{{ route('forum.comments.store', $topic['slug']) }}" class="forum-form mt-2">
@@ -151,7 +151,7 @@
                         <textarea name="body" minlength="2" maxlength="1500" required></textarea>
                     </label>
                     <button type="submit" class="forum-button forum-button--primary">
-                        <x-lucide-send aria-hidden="true" />
+                        <x-ui-icon name="send" />
                         {{ __('ui.add_comment_c4d891e9a8') }}
                     </button>
                 </form>

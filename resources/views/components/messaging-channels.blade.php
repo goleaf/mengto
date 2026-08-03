@@ -7,7 +7,7 @@
             @if ($activeChannel === $channel['key']) aria-current="page" @endif
             @class(['messaging-channel', 'messaging-channel--active' => $activeChannel === $channel['key']])
         >
-            <x-dynamic-component :component="'lucide-'.$channel['icon']" class="icon icon--sm" aria-hidden="true" />
+            <x-ui-icon size="sm" :name="$channel['icon']" />
             <span>{{ $channel['label'] }}</span>
             @if ($channel['count'] > 0)
                 <small>{{ $channel['count'] }}</small>

@@ -121,13 +121,18 @@
         flex: 0 0 auto;
         align-items: center;
         justify-content: center;
+        gap: 0.375rem;
         border-radius: $control-radius;
-        padding-inline: 0.625rem;
+        padding-inline: 0.5rem;
         color: $muted;
         font-size: 0.875rem;
         font-weight: 600;
         line-height: 1.25rem;
         white-space: nowrap;
+
+        .ui-icon {
+            color: currentcolor;
+        }
 
         &:hover {
             background: $white;

@@ -15,7 +15,7 @@
     ]) }}
 >
     <span class="empty-state__icon" aria-hidden="true">
-        <x-dynamic-component :component="'lucide-'.$icon" class="icon" aria-hidden="true" />
+        <x-ui-icon :name="$icon" />
     </span>
     <h3 class="empty-state__title">{{ $title }}</h3>
 

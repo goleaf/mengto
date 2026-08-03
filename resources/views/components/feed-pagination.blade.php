@@ -13,7 +13,7 @@
         />
     @elseif ($feed['total'] > 0)
         <span class="feed-pagination__end">
-            <x-lucide-check class="icon icon--sm" aria-hidden="true" />
+            <x-ui-icon name="check" size="sm" />
             {{ __('ui.you_are_all_caught_up_fbfc240394') }}
         </span>
     @endif

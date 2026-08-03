@@ -3,7 +3,7 @@
         <header class="care-manage-header">
             <div>
                 <a href="{{ $care_journal['show_url'] }}" class="inline-flex items-center gap-2 text-sm font-bold text-paw-leaf">
-                    <x-lucide-arrow-left class="size-4" aria-hidden="true" />
+                    <x-ui-icon name="arrow-left" size="sm" />
                     {{ __('presentation.pet_journal', ['pet' => $care_journal['pet_name']]) }}
                 </a>
                 <p class="mt-5 text-sm font-bold uppercase text-paw-leaf">{{ __('ui.owner_workspace_cefa8e8061') }}</p>
@@ -14,7 +14,7 @@
 
         @if ($errors->any())
             <div class="care-form-errors" role="alert">
-                <x-lucide-circle-alert class="size-5" aria-hidden="true" />
+                <x-ui-icon name="circle-alert" size="lg" />
                 <div>
                     <strong>{{ __('ui.the_change_was_not_saved_5515ca43db') }}</strong>
                     <ul>
@@ -35,15 +35,15 @@
                     <h2 id="care-access-link-title" class="mt-1 font-bold">{{ __('ui.temporary_care_link_3673c20654') }}</h2>
                     <p class="mt-2 break-all text-sm">{{ $care_access_url }}</p>
                 </div>
-                <x-lucide-link class="size-6" aria-hidden="true" />
+                <x-ui-icon name="link" size="xl" />
             </section>
         @endif
 
         <nav class="care-anchor-nav" aria-label="{{ __('ui.care_journal_management_5e769cd112') }}">
-            <a href="#tasks"><x-lucide-list-checks class="size-4" aria-hidden="true" /> {{ __('ui.tasks_b3a60e61a5') }}</a>
-            <a href="#routines"><x-lucide-repeat-2 class="size-4" aria-hidden="true" /> {{ __('ui.routines_61b7bb44e2') }}</a>
-            <a href="#access"><x-lucide-key-round class="size-4" aria-hidden="true" /> {{ __('ui.access_ec5ba0abb7') }}</a>
-            <a href="#audit"><x-lucide-shield-check class="size-4" aria-hidden="true" /> {{ __('ui.audit_bb6aea2873') }}</a>
+            <a href="#tasks"><x-ui-icon name="list-checks" size="sm" /> {{ __('ui.tasks_b3a60e61a5') }}</a>
+            <a href="#routines"><x-ui-icon name="repeat-2" size="sm" /> {{ __('ui.routines_61b7bb44e2') }}</a>
+            <a href="#access"><x-ui-icon name="key-round" size="sm" /> {{ __('ui.access_ec5ba0abb7') }}</a>
+            <a href="#audit"><x-ui-icon name="shield-check" size="sm" /> {{ __('ui.audit_bb6aea2873') }}</a>
         </nav>
 
         <div class="care-manage-grid">
@@ -113,7 +113,7 @@
                             <input type="checkbox" name="requires_individual_confirmation" value="1">
                             <span>{{ __('ui.require_an_individual_confirmation_for_this_task_fde2e621db') }}</span>
                         </label>
-                        <button class="action action--primary" type="submit"><x-lucide-plus class="icon" aria-hidden="true" /><span>{{ __('ui.add_task_ba423a4640') }}</span></button>
+                        <button class="action action--primary" type="submit"><x-ui-icon name="plus" /><span>{{ __('ui.add_task_ba423a4640') }}</span></button>
                     </form>
                 </section>
 
@@ -159,7 +159,7 @@
                                 <textarea name="instructions" maxlength="3000"></textarea>
                             </label>
                         </div>
-                        <button class="action action--primary" type="submit"><x-lucide-repeat-2 class="icon" aria-hidden="true" /><span>{{ __('ui.save_routine_2eb6ea92d5') }}</span></button>
+                        <button class="action action--primary" type="submit"><x-ui-icon name="repeat-2" /><span>{{ __('ui.save_routine_2eb6ea92d5') }}</span></button>
                     </form>
                 </section>
             </div>
@@ -224,7 +224,7 @@
                             <label class="care-check"><input type="checkbox" name="allow_media" value="1"><span>{{ __('ui.may_add_media_0591ec1f5d') }}</span></label>
                             <label class="care-check"><input type="checkbox" name="privacy_acknowledged" value="1" required><span>{{ __('ui.i_reviewed_the_selected_access_c59f495ae2') }}</span></label>
                         </div>
-                        <button class="action action--primary" type="submit"><x-lucide-key-round class="icon" aria-hidden="true" /><span>{{ __('ui.create_link_e6b850cff6') }}</span></button>
+                        <button class="action action--primary" type="submit"><x-ui-icon name="key-round" /><span>{{ __('ui.create_link_e6b850cff6') }}</span></button>
                     </form>
 
                     <div class="care-access-list">
@@ -242,7 +242,7 @@
                                     <form method="POST" action="{{ route('care-journals.access.revoke', [$care_journal['slug'], $grant['id']]) }}">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="action action--compact"><x-lucide-link-2-off class="icon icon--sm" aria-hidden="true" /><span>{{ __('ui.revoke_87e6d00bbf') }}</span></button>
+                                        <button type="submit" class="action action--compact"><x-ui-icon name="link-2-off" size="sm" /><span>{{ __('ui.revoke_87e6d00bbf') }}</span></button>
                                     </form>
                                 @endif
                             </article>
@@ -262,7 +262,7 @@
                     <div class="care-audit-list">
                         @forelse ($audits as $audit)
                             <article>
-                                <x-lucide-shield-check class="size-4" aria-hidden="true" />
+                                <x-ui-icon name="shield-check" size="sm" />
                                 <div>
                                     <strong>{{ $audit['action'] }}</strong>
                                     <p>{{ $audit['actor'] }} · {{ $audit['time'] }}</p>

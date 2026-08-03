@@ -16,11 +16,11 @@
                 <x-status-badge :label="$this->event['status']" icon="circle-dot" />
             </div>
             <p class="mt-2 inline-flex flex-wrap items-center gap-2 text-sm text-paw-muted">
-                <x-lucide-user-round class="size-4 shrink-0" aria-hidden="true" />
+                <x-ui-icon name="user-round" size="sm" class="shrink-0" />
                 {{ __('forum_events.labels.organizer_by', ['name' => $this->event['organizer_name']]) }}
                 @if ($this->event['organizer_verified'])
                     <span class="inline-flex items-center gap-1 font-semibold">
-                        <x-lucide-badge-check class="size-4" aria-hidden="true" />
+                        <x-ui-icon name="badge-check" size="sm" />
                         {{ __('forum_events.detail.verified_organizer') }}
                     </span>
                 @endif
@@ -65,7 +65,7 @@
                     wire:loading.attr="disabled"
                     wire:target="respondToInvitation"
                 >
-                    <x-lucide-check aria-hidden="true" />
+                    <x-ui-icon name="check" />
                     {{ __('forum_events.actions.accept_invitation') }}
                 </button>
                 <button
@@ -75,7 +75,7 @@
                     wire:loading.attr="disabled"
                     wire:target="respondToInvitation"
                 >
-                    <x-lucide-x aria-hidden="true" />
+                    <x-ui-icon name="x" />
                     {{ __('forum_events.actions.decline_invitation') }}
                 </button>
             </div>
@@ -211,7 +211,7 @@
                     @endif
                     <article class="border-s-4 border-status-info ps-4">
                         <h3 class="inline-flex items-center gap-2 text-base">
-                            <x-lucide-accessibility class="size-4" aria-hidden="true" />
+                            <x-ui-icon name="accessibility" size="sm" />
                             {{ __('forum_events.detail.accessibility') }}
                         </h3>
                         <p><strong>{{ $this->event['accessibility_status'] }}</strong></p>
@@ -256,7 +256,7 @@
 
                     @if ($this->event['location_scope'])
                         <p class="inline-flex items-start gap-2">
-                            <x-lucide-map-pin class="mt-0.5 size-4 shrink-0" aria-hidden="true" />
+                            <x-ui-icon name="map-pin" size="sm" class="mt-0.5 shrink-0" />
                             <span>{{ $this->event['location_scope'] }}</span>
                         </p>
                     @endif
@@ -272,7 +272,7 @@
                                 target="_blank"
                                 rel="noopener noreferrer"
                             >
-                                <x-lucide-video aria-hidden="true" />
+                                <x-ui-icon name="video" />
                                 {{ __('forum_events.fields.online_url') }}
                             </a>
                         @endif
@@ -341,7 +341,7 @@
                             @error('messageForm.body') <small role="alert">{{ $message }}</small> @enderror
                         </label>
                         <button type="submit" class="forum-button forum-button--primary min-h-11 justify-self-start" wire:loading.attr="disabled" wire:target="sendMessage">
-                            <x-lucide-send aria-hidden="true" />
+                            <x-ui-icon name="send" />
                             {{ __('forum_events.actions.send_message') }}
                         </button>
                     </form>
@@ -383,7 +383,7 @@
                             @error('reviewForm.body') <small role="alert">{{ $message }}</small> @enderror
                         </label>
                         <button type="submit" class="forum-button forum-button--primary min-h-11 justify-self-start" wire:loading.attr="disabled" wire:target="submitReview">
-                            <x-lucide-star aria-hidden="true" />
+                            <x-ui-icon name="star" />
                             {{ __('forum_events.actions.submit_review') }}
                         </button>
                     </form>
@@ -423,7 +423,7 @@
                             wire:loading.attr="disabled"
                             wire:target="cancelRegistration"
                         >
-                            <x-lucide-calendar-x aria-hidden="true" />
+                            <x-ui-icon name="calendar-x" />
                             {{ __('forum_events.actions.cancel_registration') }}
                         </button>
                     @endif
@@ -501,7 +501,7 @@
                         <span>{{ __('forum_events.fields.requirements_accepted') }}</span>
                     </label>
                     <button type="submit" class="forum-button forum-button--primary min-h-11" wire:loading.attr="disabled" wire:target="register">
-                        <x-lucide-calendar-check aria-hidden="true" />
+                        <x-ui-icon name="calendar-check" />
                         <span wire:loading.remove wire:target="register">{{ __('forum_events.actions.register') }}</span>
                         <span wire:loading wire:target="register">{{ __('forum_events.actions.registering') }}</span>
                     </button>
@@ -517,7 +517,7 @@
                         </div>
                         @if ($editingSessionId)
                             <button type="button" class="forum-button min-h-11" wire:click="resetSessionEditor">
-                                <x-lucide-plus aria-hidden="true" />
+                                <x-ui-icon name="plus" />
                                 {{ __('forum_events.actions.new_session') }}
                             </button>
                         @endif
@@ -671,7 +671,7 @@
                         @error('sessionForm') <p class="border-s-4 border-status-danger ps-4" role="alert">{{ $message }}</p> @enderror
 
                         <button type="submit" class="forum-button forum-button--primary min-h-11 justify-self-start" wire:loading.attr="disabled" wire:target="saveSession">
-                            <x-lucide-calendar-plus aria-hidden="true" />
+                            <x-ui-icon name="calendar-plus" />
                             <span wire:loading.remove wire:target="saveSession">
                                 {{ $editingSessionId ? __('forum_events.actions.update_session') : __('forum_events.actions.create_session') }}
                             </span>
@@ -688,7 +688,7 @@
                     @if ($this->event['can_invite'])
                         <details>
                             <summary class="forum-button min-h-11">
-                                <x-lucide-user-round-plus aria-hidden="true" />
+                                <x-ui-icon name="user-round-plus" />
                                 {{ __('forum_events.actions.invite') }}
                             </summary>
                             <form wire:submit="invite" class="mt-3 grid gap-3">
@@ -701,7 +701,7 @@
                                     <input type="datetime-local" wire:model="invitationForm.expiresAt" required>
                                 </label>
                                 <button type="submit" class="forum-button forum-button--primary min-h-11" wire:loading.attr="disabled" wire:target="invite">
-                                    <x-lucide-send aria-hidden="true" />
+                                    <x-ui-icon name="send" />
                                     {{ __('forum_events.actions.invite') }}
                                 </button>
                             </form>
@@ -710,7 +710,7 @@
 
                     <details class="mt-3">
                         <summary class="forum-button min-h-11">
-                            <x-lucide-megaphone aria-hidden="true" />
+                            <x-ui-icon name="megaphone" />
                             {{ __('forum_events.actions.publish_update') }}
                         </summary>
                         <form wire:submit="publishUpdate" class="mt-3 grid gap-3">
@@ -741,7 +741,7 @@
                                 <textarea wire:model="updateForm.body" rows="4" minlength="10" maxlength="10000" required></textarea>
                             </label>
                             <button type="submit" class="forum-button forum-button--primary min-h-11" wire:loading.attr="disabled" wire:target="publishUpdate">
-                                <x-lucide-megaphone aria-hidden="true" />
+                                <x-ui-icon name="megaphone" />
                                 {{ __('forum_events.actions.publish_update') }}
                             </button>
                         </form>
@@ -750,7 +750,7 @@
                     @if ($this->event['status_key'] === 'scheduled')
                         <details class="mt-3">
                             <summary class="forum-button min-h-11">
-                                <x-lucide-calendar-clock aria-hidden="true" />
+                                <x-ui-icon name="calendar-clock" />
                                 {{ __('forum_events.actions.reschedule_event') }}
                             </summary>
                             <form wire:submit="reschedule" class="mt-3 grid gap-3">
@@ -771,7 +771,7 @@
                                     <textarea wire:model="rescheduleForm.explanation" rows="3" minlength="10" maxlength="5000" required></textarea>
                                 </label>
                                 <button type="submit" class="forum-button min-h-11" wire:loading.attr="disabled" wire:target="reschedule">
-                                    <x-lucide-calendar-clock aria-hidden="true" />
+                                    <x-ui-icon name="calendar-clock" />
                                     {{ __('forum_events.actions.reschedule_event') }}
                                 </button>
                             </form>
@@ -779,7 +779,7 @@
 
                         <details class="mt-3">
                             <summary class="forum-button forum-button--danger min-h-11">
-                                <x-lucide-calendar-x aria-hidden="true" />
+                                <x-ui-icon name="calendar-x" />
                                 {{ __('forum_events.actions.cancel_event') }}
                             </summary>
                             <form wire:submit="cancelEvent" class="mt-3 grid gap-3">
@@ -794,7 +794,7 @@
                                     wire:loading.attr="disabled"
                                     wire:target="cancelEvent"
                                 >
-                                    <x-lucide-calendar-x aria-hidden="true" />
+                                    <x-ui-icon name="calendar-x" />
                                     {{ __('forum_events.actions.cancel_event') }}
                                 </button>
                             </form>
@@ -831,21 +831,21 @@
                                 <div class="mt-2 flex flex-wrap gap-2">
                                     @if ($registration['status_key'] === 'pending')
                                         <button type="button" class="forum-button min-h-11" wire:click="reviewRegistration({{ $registration['id'] }}, true)">
-                                            <x-lucide-check aria-hidden="true" />
+                                            <x-ui-icon name="check" />
                                             {{ __('forum_events.actions.approve') }}
                                         </button>
                                         <button type="button" class="forum-button min-h-11" wire:click="reviewRegistration({{ $registration['id'] }}, false)">
-                                            <x-lucide-x aria-hidden="true" />
+                                            <x-ui-icon name="x" />
                                             {{ __('forum_events.actions.decline') }}
                                         </button>
                                     @elseif ($registration['status_key'] === 'confirmed')
                                         <button type="button" class="forum-button min-h-11" wire:click="checkIn({{ $registration['id'] }})">
-                                            <x-lucide-badge-check aria-hidden="true" />
+                                            <x-ui-icon name="badge-check" />
                                             {{ __('forum_events.actions.check_in') }}
                                         </button>
                                     @elseif ($registration['status_key'] === 'checked_in')
                                         <button type="button" class="forum-button min-h-11" wire:click="checkOut({{ $registration['id'] }})">
-                                            <x-lucide-log-out aria-hidden="true" />
+                                            <x-ui-icon name="log-out" />
                                             {{ __('forum_events.actions.check_out') }}
                                         </button>
                                     @endif
@@ -861,7 +861,7 @@
             @if ($this->event['can_report'])
                 <details class="forum-form">
                     <summary class="forum-button min-h-11">
-                        <x-lucide-flag aria-hidden="true" />
+                        <x-ui-icon name="flag" />
                         {{ __('forum_events.actions.report') }}
                     </summary>
                     <form wire:submit="report" class="mt-3 grid gap-3">
@@ -888,7 +888,7 @@
                             <span>{{ __('forum_moderation.forms.truthfulness') }}</span>
                         </label>
                         <button type="submit" class="forum-button min-h-11" wire:loading.attr="disabled" wire:target="report">
-                            <x-lucide-flag aria-hidden="true" />
+                            <x-ui-icon name="flag" />
                             {{ __('forum_events.actions.report') }}
                         </button>
                     </form>

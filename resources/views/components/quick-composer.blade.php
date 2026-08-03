@@ -7,25 +7,29 @@
             alt="Mia Carter"
             size="header"
         />
-        <a href="{{ $href }}" class="quick-composer__input">{{ __('ui.share_something_useful_with_your_circle_0ec157a607') }}</a>
+        <a href="{{ $href }}" class="quick-composer__input">
+            <x-ui-icon name="square-pen" size="sm" />
+            <span>{{ __('ui.share_something_useful_with_your_circle_0ec157a607') }}</span>
+        </a>
     </div>
 
     <div class="quick-composer__tools">
         <a href="{{ $href }}" class="quick-composer__tool">
-            <x-lucide-image class="icon icon--sm" aria-hidden="true" />
+            <x-ui-icon name="image" size="sm" />
             <span>{{ __('ui.photo_d84eebada9') }}</span>
         </a>
         <a href="{{ $href }}" class="quick-composer__tool">
-            <x-lucide-video class="icon icon--sm" aria-hidden="true" />
+            <x-ui-icon name="video" size="sm" />
             <span>{{ __('ui.video_d534be829e') }}</span>
         </a>
         <a href="{{ $href }}" class="quick-composer__tool">
-            <x-lucide-circle-help class="icon icon--sm" aria-hidden="true" />
+            <x-ui-icon name="circle-help" size="sm" />
             <span>{{ __('ui.question_289aff12b0') }}</span>
         </a>
         @if ((int) $draftCount > 0)
             <a href="{{ route('preview.feed', ['feed' => 'drafts']) }}" class="quick-composer__drafts">
-                {{ trans_choice('presentation.draft_count', (int) $draftCount, ['count' => $draftCount]) }}
+                <x-ui-icon name="file-clock" size="sm" />
+                <span>{{ trans_choice('presentation.draft_count', (int) $draftCount, ['count' => $draftCount]) }}</span>
             </a>
         @endif
     </div>

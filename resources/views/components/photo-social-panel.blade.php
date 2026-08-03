@@ -15,7 +15,7 @@
         </div>
 
         <a href="{{ $photo['post_url'] }}" class="photo-social__post-link">
-            <x-lucide-external-link class="icon icon--sm" aria-hidden="true" />
+            <x-ui-icon name="external-link" size="sm" />
             <span>{{ __('ui.photo_viewer_open_post') }}</span>
         </a>
     </header>
@@ -55,11 +55,7 @@
                             aria-pressed="{{ $reaction['selected'] ? 'true' : 'false' }}"
                             class="photo-social__reaction"
                         >
-                            <x-dynamic-component
-                                :component="'lucide-'.$reaction['icon']"
-                                class="icon icon--sm"
-                                aria-hidden="true"
-                            />
+                            <x-ui-icon size="sm" :name="$reaction['icon']" />
                             <span>{{ $reaction['label'] }}</span>
                             <small>{{ $reaction['count'] }}</small>
                         </button>
@@ -73,11 +69,7 @@
                         disabled
                         class="photo-social__reaction"
                     >
-                        <x-dynamic-component
-                            :component="'lucide-'.$reaction['icon']"
-                            class="icon icon--sm"
-                            aria-hidden="true"
-                        />
+                        <x-ui-icon size="sm" :name="$reaction['icon']" />
                         <span>{{ $reaction['label'] }}</span>
                         <small>{{ $reaction['count'] }}</small>
                     </button>
@@ -122,7 +114,7 @@
                 </article>
             @empty
                 <div class="photo-social__empty">
-                    <x-lucide-message-circle class="icon" aria-hidden="true" />
+                    <x-ui-icon name="message-circle" />
                     <p>{{ __('ui.photo_viewer_no_comments') }}</p>
                 </div>
             @endforelse
@@ -166,13 +158,13 @@
             @endif
 
             <button type="submit" class="photo-social__submit">
-                <x-lucide-send class="icon icon--sm" aria-hidden="true" />
+                <x-ui-icon name="send" size="sm" />
                 <span>{{ __('ui.photo_viewer_submit_comment') }}</span>
             </button>
         </form>
     @else
         <a href="{{ route('login') }}" class="photo-social__sign-in">
-            <x-lucide-log-in class="icon icon--sm" aria-hidden="true" />
+            <x-ui-icon name="log-in" size="sm" />
             <span>{{ __('ui.photo_viewer_sign_in') }}</span>
         </a>
     @endauth

@@ -68,7 +68,7 @@
     </div>
 
     <details class="care-form-details">
-        <summary><x-lucide-sliders-horizontal class="size-4" aria-hidden="true" /> {{ __('ui.structured_details_5a8ec19ecb') }}</summary>
+        <summary><x-ui-icon name="sliders-horizontal" size="sm" /> {{ __('ui.structured_details_5a8ec19ecb') }}</summary>
         <div class="care-form-grid">
             <label>
                 {{ __('ui.product_or_activity_cced0a8554') }}
@@ -210,7 +210,7 @@
     </div>
 
     <button type="submit" class="action action--primary">
-        <x-lucide-check class="icon" aria-hidden="true" />
+        <x-ui-icon name="check" />
         <span>{{ $submitLabel }}</span>
     </button>
 </form>

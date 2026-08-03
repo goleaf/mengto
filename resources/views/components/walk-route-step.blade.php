@@ -2,7 +2,7 @@
 
 <li class="walk-step">
     <span class="walk-step__icon">
-        <x-dynamic-component :component="'lucide-'.$step['icon']" class="icon icon--sm" aria-hidden="true" />
+        <x-ui-icon size="sm" :name="$step['icon']" />
     </span>
     <span class="walk-step__content">
         <span class="walk-step__label">{{ $step['label'] }}</span>

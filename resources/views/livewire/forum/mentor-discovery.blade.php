@@ -83,7 +83,7 @@
             wire:loading.attr="disabled"
             wire:target="refreshMatches"
         >
-            <x-lucide-search aria-hidden="true" />
+            <x-ui-icon name="search" />
             <span wire:loading.remove wire:target="refreshMatches">
                 {{ __('forum_mentorship.discovery.refresh') }}
             </span>
@@ -138,10 +138,10 @@
 
                     <p class="flex items-start gap-2 text-sm">
                         @if ($match['professionally_verified'])
-                            <x-lucide-badge-check aria-hidden="true" class="icon text-status-success" />
+                            <x-ui-icon name="badge-check" class="text-status-success" />
                             {{ __('forum_mentorship.discovery.professional_verified') }}
                         @else
-                            <x-lucide-users-round aria-hidden="true" class="icon" />
+                            <x-ui-icon name="users-round" />
                             {{ __('forum_mentorship.discovery.peer_only') }}
                         @endif
                     </p>
@@ -157,7 +157,7 @@
 
                     <details>
                         <summary class="forum-button min-h-11">
-                            <x-lucide-send aria-hidden="true" />
+                            <x-ui-icon name="send" />
                             {{ __('forum_mentorship.discovery.request_heading') }}
                         </summary>
                         <form wire:submit="request({{ $match['scope_id'] }})" class="mt-3 grid gap-3">
@@ -177,7 +177,7 @@
                                 wire:loading.attr="disabled"
                                 wire:target="request"
                             >
-                                <x-lucide-send aria-hidden="true" />
+                                <x-ui-icon name="send" />
                                 <span wire:loading.remove wire:target="request">
                                     {{ __('forum_mentorship.discovery.send_request') }}
                                 </span>

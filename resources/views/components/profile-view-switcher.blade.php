@@ -8,7 +8,7 @@
     {{ $attributes->class(['profile-preview']) }}
 >
     <div class="profile-preview__copy">
-        <x-lucide-eye class="icon" aria-hidden="true" />
+        <x-ui-icon name="eye" />
         <div>
             <h2 id="profile-preview-title" class="profile-preview__title">{{ __('ui.preview_visibility_16789b1616') }}</h2>
             <p class="profile-preview__description">

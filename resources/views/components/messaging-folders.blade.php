@@ -6,7 +6,7 @@
 
 <nav class="messaging-folders" aria-label="{{ __('ui.inbox_folders_16c4c4771a') }}">
     <div class="messaging-folders__heading">
-        <x-lucide-folder-open class="icon icon--sm" aria-hidden="true" />
+        <x-ui-icon name="folder-open" size="sm" />
         <strong>{{ __('ui.inbox_folders_16c4c4771a') }}</strong>
     </div>
 
@@ -17,7 +17,7 @@
                 @if ($activeFilter === $filter['key']) aria-current="page" @endif
                 @class(['messaging-filter', 'messaging-filter--active' => $activeFilter === $filter['key']])
             >
-                <x-dynamic-component :component="'lucide-'.$filter['icon']" class="icon icon--sm" aria-hidden="true" />
+                <x-ui-icon size="sm" :name="$filter['icon']" />
                 <span>{{ $filter['label'] }}</span>
             </a>
         @empty

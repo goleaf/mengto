@@ -39,7 +39,7 @@
                         wire:loading.attr="disabled"
                         wire:target="accept({{ $invitation['id'] }})"
                     >
-                        <x-lucide-check aria-hidden="true" />
+                        <x-ui-icon name="check" />
                         <span>{{ __('pet_profiles.actions.accept') }}</span>
                     </button>
                 </div>

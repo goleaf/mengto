@@ -25,7 +25,7 @@
                     <input type="hidden" name="conversation" value="{{ $conversation['key'] }}">
                     <input type="hidden" name="return_filter" value="{{ $activeFilter }}">
                     <button type="submit" class="messaging-icon-button" title="{{ __('ui.close_call_fa0a8b7210') }}">
-                        <x-lucide-x class="icon" aria-hidden="true" />
+                        <x-ui-icon name="x" />
                         <span class="sr-only">{{ __('ui.close_call_fa0a8b7210') }}</span>
                     </button>
                 </form>
@@ -39,21 +39,21 @@
                     <span data-call-device-status>{{ __('ui.camera_and_microphone_have_not_been_requested_b5b83b9afa') }}</span>
                 </div>
                 <span class="messaging-call-stage__recording">
-                    <x-lucide-circle-dot class="icon icon--sm" aria-hidden="true" />
+                    <x-ui-icon name="circle-dot" size="sm" />
                     {{ __('ui.recording_off_e03d424d1a') }}
                 </span>
             </div>
 
             <div class="messaging-call-stage__checks">
-                <button type="button" data-call-device="microphone"><x-lucide-mic class="icon icon--sm" /> {{ __('ui.test_microphone_4875bbe105') }}</button>
+                <button type="button" data-call-device="microphone"><x-ui-icon name="mic" size="sm" /> {{ __('ui.test_microphone_4875bbe105') }}</button>
                 @if ($call['type'] === 'video')
-                    <button type="button" data-call-device="camera"><x-lucide-camera class="icon icon--sm" /> {{ __('ui.preview_camera_aa714af315') }}</button>
+                    <button type="button" data-call-device="camera"><x-ui-icon name="camera" size="sm" /> {{ __('ui.preview_camera_aa714af315') }}</button>
                 @endif
-                <span><x-lucide-wifi class="icon icon--sm" /> {{ __('ui.browser_connection_check_0d0350149d') }}</span>
+                <span><x-ui-icon name="wifi" size="sm" /> {{ __('ui.browser_connection_check_0d0350149d') }}</span>
             </div>
 
             <div class="messaging-call-stage__notice">
-                <x-lucide-shield-check class="icon" aria-hidden="true" />
+                <x-ui-icon name="shield-check" />
                 <p><strong>{{ __('ui.consent_before_connection_903741cc3f') }}</strong><span>{{ $boundary['transport'] }} {{ $boundary['recording'] }}</span></p>
             </div>
 
@@ -71,7 +71,7 @@
                         <input type="hidden" name="call_control" value="{{ $control['control'] }}">
                         <input type="hidden" name="return_filter" value="{{ $activeFilter }}">
                         <button type="submit">
-                            <x-dynamic-component :component="'lucide-'.$control['icon']" class="icon" aria-hidden="true" />
+                            <x-ui-icon :name="$control['icon']" />
                             <span>{{ $control['label'] }}</span>
                         </button>
                     </form>
@@ -79,7 +79,7 @@
             </div>
 
             <footer>
-                <p><x-lucide-triangle-alert class="icon icon--sm" /> {{ $boundary['emergency'] }}</p>
+                <p><x-ui-icon name="triangle-alert" size="sm" /> {{ $boundary['emergency'] }}</p>
                 @if ($call['status'] === 'preflight')
                     <form method="POST" action="{{ route('messages.actions') }}">
                         @csrf
@@ -88,7 +88,7 @@
                         <input type="hidden" name="call_control" value="join">
                         <input type="hidden" name="return_filter" value="{{ $activeFilter }}">
                         <button type="submit" class="action action--primary action--regular">
-                            <x-lucide-phone-call class="icon icon--sm" />
+                            <x-ui-icon name="phone-call" size="sm" />
                             <span>{{ __('ui.join_prototype_session_a586902856') }}</span>
                         </button>
                     </form>
@@ -99,7 +99,7 @@
                         <input type="hidden" name="conversation" value="{{ $conversation['key'] }}">
                         <input type="hidden" name="return_filter" value="{{ $activeFilter }}">
                         <button type="submit" class="action action--danger action--regular">
-                            <x-lucide-phone-off class="icon icon--sm" />
+                            <x-ui-icon name="phone-off" size="sm" />
                             <span>{{ __('ui.end_call_2fe13d93a1') }}</span>
                         </button>
                     </form>

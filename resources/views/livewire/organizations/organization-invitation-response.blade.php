@@ -21,11 +21,11 @@
 
         <div class="mt-6 flex flex-wrap gap-3">
             <button class="forum-button forum-button--primary min-h-11" type="button" wire:click="respond(true)" wire:loading.attr="disabled" wire:target="respond">
-                <x-lucide-check aria-hidden="true" />
+                <x-ui-icon name="check" />
                 {{ __('organizations.actions.accept_invitation') }}
             </button>
             <button class="forum-button min-h-11" type="button" wire:click="respond(false)" wire:loading.attr="disabled" wire:target="respond">
-                <x-lucide-x aria-hidden="true" />
+                <x-ui-icon name="x" />
                 {{ __('organizations.actions.decline_invitation') }}
             </button>
         </div>

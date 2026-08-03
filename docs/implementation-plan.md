@@ -335,6 +335,31 @@ Status: `implemented and verified` on 2026-08-03
 Exact scope and evidence are in
 `docs/plans/forum-topic-editor-redesign-work-package.md`.
 
+## Current Delivery: Unified Icon System
+
+Status: `implemented and verified` on 2026-08-03.
+
+- Audited every first-party Blade template, direct/dynamic Lucide call, legacy
+  size class, inline SVG, raw pictogram, foreign icon system, and native
+  interactive candidate.
+- Added `x-ui-icon` as the single size, stroke, fill, color, and ARIA primitive
+  plus a downward-only executable audit.
+- Migrated all 698 direct calls across 146 files, reduced dynamic debt from 83
+  to zero, migrated 41 legacy SCSS selectors, removed all 310 legacy class
+  attributes, and removed the last raw pictogram.
+- Added prepared icons to all thirteen desktop primary-navigation destinations
+  while retaining visible labels and current-page semantics.
+- Added icons to 45 unambiguous actions; the remaining 52 candidates were
+  reviewed and recorded as intentional text/content controls. Static debt is
+  zero.
+- Passed 2,639 Pest tests / 83,214 assertions, full Pint, Larastan over 1,385
+  files, dependency audits, production build, cache compilation, fresh and
+  repeat seeding, and a 33-screenshot EN/LT/RU browser matrix from 320 through
+  1920 pixels without overflow or console errors.
+
+The factual baseline is `docs/audits/icon-system-deep-audit.md`; the unlimited
+execution ledger is `docs/plans/icon-system-unlimited-plan.md`.
+
 ## Current Delivery: Event Schedule Foundation
 
 Status: `implemented and verified` on 2026-08-03

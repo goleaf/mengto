@@ -675,6 +675,7 @@
         width: 100%;
         min-block-size: $touch-target;
         align-items: center;
+        gap: 0.5rem;
         padding: 0.65rem 0;
         border: 0;
         border-bottom: 1px solid #ece9df;
@@ -685,6 +686,10 @@
         line-height: 1.35;
         text-align: left;
         text-decoration: none;
+
+        > .ui-icon {
+            flex: none;
+        }
     }
 
     a:hover {

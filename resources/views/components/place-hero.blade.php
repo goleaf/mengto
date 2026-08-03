@@ -38,26 +38,26 @@
 
         <dl class="place-hero__meta">
             <div>
-                <dt><x-lucide-map-pin class="icon icon--sm" aria-hidden="true" /> {{ __('ui.address_56ef8f2095') }}</dt>
+                <dt><x-ui-icon name="map-pin" size="sm" /> {{ __('ui.address_56ef8f2095') }}</dt>
                 <dd>{{ $place['address'] }}</dd>
             </div>
             <div>
-                <dt><x-lucide-navigation class="icon icon--sm" aria-hidden="true" /> {{ __('ui.travel_d2b98fb537') }}</dt>
+                <dt><x-ui-icon name="navigation" size="sm" /> {{ __('ui.travel_d2b98fb537') }}</dt>
                 <dd>{{ $place['distance_label'] }} · {{ $place['travel_label'] }}</dd>
             </div>
             <div>
-                <dt><x-lucide-star class="icon icon--sm" aria-hidden="true" /> {{ __('ui.reviews_84cb7871b7') }}</dt>
+                <dt><x-ui-icon name="star" size="sm" /> {{ __('ui.reviews_84cb7871b7') }}</dt>
                 <dd>{{ $place['rating_label'] }}</dd>
             </div>
             <div>
-                <dt><x-lucide-badge-check class="icon icon--sm" aria-hidden="true" /> {{ __('ui.data_cec3a9b89b') }}</dt>
+                <dt><x-ui-icon name="badge-check" size="sm" /> {{ __('ui.data_cec3a9b89b') }}</dt>
                 <dd>{{ $place['verification']['label'] }} · {{ $place['data_freshness'] }}</dd>
             </div>
         </dl>
 
         @if ($place['warning_count'] > 0)
             <a href="{{ $place['detail_url'].'?tab=updates' }}" class="place-hero__warning">
-                <x-lucide-triangle-alert class="icon" aria-hidden="true" />
+                <x-ui-icon name="triangle-alert" />
                 <span>
                     <strong>{{ trans_choice('presentation.active_warnings', $place['warning_count'], ['count' => $place['warning_count']]) }}</strong>
                     {{ __('ui.review_current_conditions_before_travel_e420a9395b') }}

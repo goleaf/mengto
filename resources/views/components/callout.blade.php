@@ -6,7 +6,7 @@
 
 <div {{ $attributes->class(['callout']) }}>
     <span class="callout__icon" aria-hidden="true">
-        <x-dynamic-component :component="'lucide-'.$icon" class="icon" />
+        <x-ui-icon :name="$icon" />
     </span>
     <div class="callout__content">
         <h3 class="callout__title">{{ $title }}</h3>

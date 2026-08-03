@@ -1,6 +1,6 @@
 @props(['icon'])
 
 <span {{ $attributes->class(['meta']) }}>
-    <x-dynamic-component :component="'lucide-'.$icon" class="icon icon--sm" aria-hidden="true" />
+    <x-ui-icon size="sm" :name="$icon" />
     <span>{{ $slot }}</span>
 </span>

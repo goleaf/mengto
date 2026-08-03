@@ -63,7 +63,7 @@
                     </label>
                 </div>
                 <button class="forum-button forum-button--primary min-h-11 justify-self-start" type="submit" wire:loading.attr="disabled" wire:target="invite">
-                    <x-lucide-send aria-hidden="true" />
+                    <x-ui-icon name="send" />
                     {{ __('organizations.actions.invite') }}
                 </button>
             </form>
@@ -108,7 +108,7 @@
                                 wire:loading.attr="disabled"
                                 wire:target="removeMember"
                             >
-                                <x-lucide-user-minus aria-hidden="true" />
+                                <x-ui-icon name="user-minus" />
                                 {{ __('organizations.actions.remove_member') }}
                             </button>
                         </div>
@@ -141,7 +141,7 @@
                     <input id="organization-restriction-reason" type="text" wire:model="restrictionReason" maxlength="120" required>
                 </label>
                 <button class="forum-button min-h-11 justify-self-start" type="submit" wire:loading.attr="disabled" wire:target="restrict">
-                    <x-lucide-shield-alert aria-hidden="true" />
+                    <x-ui-icon name="shield-alert" />
                     {{ __('organizations.actions.apply_restriction') }}
                 </button>
             </form>
@@ -169,7 +169,7 @@
                     wire:loading.attr="disabled"
                     wire:target="suspend"
                 >
-                    <x-lucide-ban aria-hidden="true" />
+                    <x-ui-icon name="ban" />
                     {{ __('organizations.actions.suspend') }}
                 </button>
             </form>

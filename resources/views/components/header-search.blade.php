@@ -8,7 +8,7 @@
         @if ($active) aria-current="page" @endif
         class="search-link"
     >
-        <x-lucide-search class="icon icon--sm" aria-hidden="true" />
+        <x-ui-icon name="search" size="sm" />
         <span class="truncate">{{ __('ui.search_parks_pets_people_and_routines_ff59363dd9') }}</span>
     </a>
 </div>

@@ -40,11 +40,11 @@
 
         <div class="connection-identity__meta">
             <span>
-                <x-lucide-map-pin class="icon icon--sm" aria-hidden="true" />
+                <x-ui-icon name="map-pin" size="sm" />
                 {{ $item['location'] }}
             </span>
             <span>
-                <x-lucide-users-round class="icon icon--sm" aria-hidden="true" />
+                <x-ui-icon name="users-round" size="sm" />
                 {{ $item['followers'] }}
             </span>
         </div>

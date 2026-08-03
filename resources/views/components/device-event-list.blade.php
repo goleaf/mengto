@@ -4,11 +4,7 @@
     @forelse ($events as $event)
         <article class="device-event device-event--{{ $event['severity'] }}">
             <div class="device-event__icon">
-                <x-dynamic-component
-                    :component="$event['severity'] === 'routine' ? 'lucide-info' : 'lucide-triangle-alert'"
-                    class="size-5"
-                    aria-hidden="true"
-                />
+                <x-ui-icon :name="$event['severity'] === 'routine' ? 'info' : 'triangle-alert'" size="lg" />
             </div>
             <div class="device-event__body">
                 <div class="device-event__heading">
@@ -32,14 +28,20 @@
                         @unless ($event['is_acknowledged'])
                             <form method="POST" action="{{ $event['acknowledge_url'] }}">
                                 @csrf
-                                <button class="device-text-button" type="submit">{{ __('ui.mark_checked_e5aaa31d48') }}</button>
+                                <button class="device-text-button" type="submit">
+                                    <x-ui-icon name="circle-check" size="sm" />
+                                    <span>{{ __('ui.mark_checked_e5aaa31d48') }}</span>
+                                </button>
                             </form>
                         @endunless
                         @if ($event['can_add_care'])
                             <form method="POST" action="{{ $event['care_entry_url'] }}">
                                 @csrf
                                 <input type="hidden" name="confirmed" value="1">
-                                <button class="device-text-button" type="submit">{{ __('ui.add_to_care_journal_363d373726') }}</button>
+                                <button class="device-text-button" type="submit">
+                                    <x-ui-icon name="notebook-pen" size="sm" />
+                                    <span>{{ __('ui.add_to_care_journal_363d373726') }}</span>
+                                </button>
                             </form>
                         @endif
                     </div>
@@ -48,7 +50,7 @@
         </article>
     @empty
         <div class="device-empty">
-            <x-lucide-shield-check class="size-7" aria-hidden="true" />
+            <x-ui-icon name="shield-check" size="xl" />
             <div>
                 <h3>{{ __('ui.no_events_in_this_scope_8196b3adde') }}</h3>
                 <p>{{ __('ui.routine_telemetry_remains_separate_from_alerts_that_need_5685e619eb') }}</p>

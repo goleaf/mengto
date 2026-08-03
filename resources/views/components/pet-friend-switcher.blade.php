@@ -20,7 +20,7 @@
                 />
                 <span>{{ $pet['label'] }}</span>
                 @if ($pet['active'])
-                    <x-lucide-check class="icon icon--sm" aria-hidden="true" />
+                    <x-ui-icon name="check" size="sm" />
                 @endif
             </a>
         @empty

@@ -5,7 +5,7 @@
         @if ($journal['image_url'])
             <img src="{{ $journal['image_url'] }}" alt="{{ $journal['pet_name'] }}">
         @else
-            <x-lucide-paw-print class="size-8" aria-hidden="true" />
+            <x-ui-icon name="paw-print" size="2xl" />
         @endif
     </a>
     <div class="care-journal-card__body">
@@ -41,7 +41,7 @@
 
         @if ($journal['overdue_tasks_count'] || $journal['unusual_entries_count'])
             <div class="care-journal-card__attention">
-                <x-lucide-triangle-alert class="size-4" aria-hidden="true" />
+                <x-ui-icon name="triangle-alert" size="sm" />
                 <span>
                     {{ __('presentation.care_week_status', ['overdue' => $journal['overdue_tasks_count'], 'unusual' => $journal['unusual_entries_count']]) }}
                 </span>

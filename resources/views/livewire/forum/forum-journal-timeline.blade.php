@@ -81,7 +81,7 @@
     @if ($this->journalData['can_update'])
         <details class="forum-form" @if ($editingEntryId !== null || $errors->any()) open @endif>
             <summary class="forum-button min-h-11">
-                <x-lucide-plus aria-hidden="true" />
+                <x-ui-icon name="plus" />
                 {{ $editingEntryId === null ? __('forum_journals.actions.add_entry') : __('forum_journals.actions.edit_entry') }}
             </summary>
             <form wire:submit="saveEntry" class="mt-4 grid gap-4" wire:dirty.class="border-status-warning">
@@ -145,13 +145,13 @@
                         wire:loading.attr="disabled"
                         wire:target="saveEntry"
                     >
-                        <x-lucide-save aria-hidden="true" />
+                        <x-ui-icon name="save" />
                         <span wire:loading.remove wire:target="saveEntry">{{ __('forum_journals.actions.save_entry') }}</span>
                         <span wire:loading wire:target="saveEntry">{{ __('forum_journals.actions.saving') }}</span>
                     </button>
                     @if ($editingEntryId !== null)
                         <button type="button" class="forum-button min-h-11" wire:click="cancelEntryEdit">
-                            <x-lucide-x aria-hidden="true" />
+                            <x-ui-icon name="x" />
                             {{ __('forum_journals.actions.cancel') }}
                         </button>
                     @endif
@@ -180,7 +180,7 @@
                                 wire:click="editEntry({{ $entry['id'] }})"
                                 aria-label="{{ __('forum_journals.actions.edit_named_entry', ['title' => $entry['title']]) }}"
                             >
-                                <x-lucide-pencil aria-hidden="true" />
+                                <x-ui-icon name="pencil" />
                                 {{ __('forum_journals.actions.edit') }}
                             </button>
                         @endif
@@ -241,13 +241,13 @@
                     <div class="flex flex-wrap gap-2">
                         @if ($this->journalData['can_comment'])
                             <button type="button" class="forum-button min-h-11" wire:click="beginComment({{ $entry['id'] }})">
-                                <x-lucide-message-square-plus aria-hidden="true" />
+                                <x-ui-icon name="message-square-plus" />
                                 {{ __('forum_journals.actions.comment') }}
                             </button>
                         @endif
                         @if ($this->journalData['can_update'])
                             <button type="button" class="forum-button min-h-11" wire:click="beginMedia({{ $entry['id'] }})">
-                                <x-lucide-image-plus aria-hidden="true" />
+                                <x-ui-icon name="image-plus" />
                                 {{ __('forum_journals.actions.add_image') }}
                             </button>
                         @endif
@@ -266,7 +266,7 @@
                                 @error('commentForm.body') <small role="alert">{{ $message }}</small> @enderror
                             </label>
                             <button type="submit" class="forum-button forum-button--primary min-h-11 justify-self-start" wire:loading.attr="disabled" wire:target="saveComment">
-                                <x-lucide-send aria-hidden="true" />
+                                <x-ui-icon name="send" />
                                 <span wire:loading.remove wire:target="saveComment">{{ __('forum_journals.actions.publish_comment') }}</span>
                                 <span wire:loading wire:target="saveComment">{{ __('forum_journals.actions.saving') }}</span>
                             </button>
@@ -291,7 +291,7 @@
                                 @error('mediaForm.caption') <small role="alert">{{ $message }}</small> @enderror
                             </label>
                             <button type="submit" class="forum-button forum-button--primary min-h-11 justify-self-start" wire:loading.attr="disabled" wire:target="saveMedia,mediaForm.upload">
-                                <x-lucide-upload aria-hidden="true" />
+                                <x-ui-icon name="upload" />
                                 <span wire:loading.remove wire:target="saveMedia,mediaForm.upload">{{ __('forum_journals.actions.upload_image') }}</span>
                                 <span wire:loading wire:target="saveMedia,mediaForm.upload">{{ __('forum_journals.actions.uploading') }}</span>
                             </button>
@@ -311,7 +311,7 @@
     @if ($this->journalData['can_manage_collaborators'])
         <details class="forum-form">
             <summary class="forum-button min-h-11">
-                <x-lucide-users-round aria-hidden="true" />
+                <x-ui-icon name="users-round" />
                 {{ __('forum_journals.collaborators.heading') }}
             </summary>
             <div class="mt-4 grid gap-4">
@@ -330,7 +330,7 @@
                                 wire:confirm="{{ __('forum_journals.actions.revoke_collaborator_confirm') }}"
                                 aria-label="{{ __('forum_journals.actions.revoke_named_collaborator', ['name' => $collaborator['name']]) }}"
                             >
-                                <x-lucide-user-round-minus aria-hidden="true" />
+                                <x-ui-icon name="user-round-minus" />
                                 {{ __('forum_journals.actions.revoke') }}
                             </button>
                         </div>
@@ -355,7 +355,7 @@
                         </select>
                     </label>
                     <button type="submit" class="forum-button forum-button--primary min-h-11 self-end" wire:loading.attr="disabled" wire:target="grantCollaborator">
-                        <x-lucide-user-round-plus aria-hidden="true" />
+                        <x-ui-icon name="user-round-plus" />
                         {{ __('forum_journals.actions.grant') }}
                     </button>
                 </form>
@@ -366,7 +366,7 @@
     <div class="flex flex-wrap gap-2">
         @if ($this->journalData['can_export'])
             <a class="forum-button min-h-11" href="{{ $this->journalData['export_url'] }}">
-                <x-lucide-download aria-hidden="true" />
+                <x-ui-icon name="download" />
                 {{ __('forum_journals.actions.export') }}
             </a>
         @endif
@@ -379,7 +379,7 @@
                 wire:loading.attr="disabled"
                 wire:target="archive"
             >
-                <x-lucide-archive aria-hidden="true" />
+                <x-ui-icon name="archive" />
                 {{ __('forum_journals.actions.archive') }}
             </button>
         @endif

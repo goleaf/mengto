@@ -19,7 +19,7 @@
     @if ($connections['last_dismissed'])
         <div class="connection-undo" role="status">
             <div>
-                <x-lucide-eye-off class="icon icon--sm" aria-hidden="true" />
+                <x-ui-icon name="eye-off" size="sm" />
                 <p>{{ __('presentation.hidden_from_recommendations', ['name' => $connections['last_dismissed']['name']]) }}</p>
             </div>
             <x-action-control
@@ -36,7 +36,7 @@
     @if ($connections['last_blocked'])
         <div class="connection-undo" role="status">
             <div>
-                <x-lucide-ban class="icon icon--sm" aria-hidden="true" />
+                <x-ui-icon name="ban" size="sm" />
                 <p>{{ __('presentation.blocked_connection', ['name' => $connections['last_blocked']['name']]) }}</p>
             </div>
             <x-action-control

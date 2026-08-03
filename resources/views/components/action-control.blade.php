@@ -6,7 +6,7 @@
             {{ $attributes->class($classes) }}
         >
             @if ($resolvedIcon)
-                <x-dynamic-component :component="'lucide-'.$resolvedIcon" class="icon icon--sm" aria-hidden="true" />
+                <x-ui-icon size="sm" :name="$resolvedIcon" />
             @endif
             <span>{{ $resolvedLabel }}</span>
         </button>
@@ -14,7 +14,7 @@
 @elseif ($href)
     <a href="{{ $href }}" {{ $attributes->class($classes) }}>
         @if ($resolvedIcon)
-            <x-dynamic-component :component="'lucide-'.$resolvedIcon" class="icon icon--sm" aria-hidden="true" />
+            <x-ui-icon size="sm" :name="$resolvedIcon" />
         @endif
         <span>{{ $resolvedLabel }}</span>
     </a>
@@ -29,7 +29,7 @@
         {{ $attributes->class($classes) }}
     >
         @if ($resolvedIcon)
-            <x-dynamic-component :component="'lucide-'.$resolvedIcon" class="icon icon--sm" aria-hidden="true" />
+            <x-ui-icon size="sm" :name="$resolvedIcon" />
         @endif
         <span>{{ $resolvedLabel }}</span>
     </button>

@@ -2,6 +2,7 @@
 
 | Existing surface | Point 13 decision | Status |
 | --- | --- | --- |
+| direct/dynamic Lucide calls and arbitrary icon sizes | migrate through `x-ui-icon`, add icons to unambiguous actions, ratchet all legacy debt to zero | implemented and verified at zero debt with full release and browser gates |
 | reference directories (`/pets`, `/places`, `/groups`, `/neighbors`) | retain canonical `x-page-header` path and verify semantic hook | targeted-verified |
 | `/discover` static demo | replace hard-coded query/results/pulse/trending/weekend panels with the database-backed explainable recommendation hub | migrated and browser-verified |
 | legacy discover result components | remove `discover-query`, `discover-results`, and `discover-result`; compose canonical primitives through four discovery components | removed and targeted-verified |

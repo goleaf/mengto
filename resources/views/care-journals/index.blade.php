@@ -12,7 +12,7 @@
         />
 
         <section class="care-family-strip" aria-label="{{ __('ui.family_care_overview_b363d25aa9') }}">
-            <x-lucide-users-round class="size-5" aria-hidden="true" />
+            <x-ui-icon name="users-round" size="lg" />
             <div>
                 <strong>{{ __('ui.one_place_for_the_household_93084c6a2d') }}</strong>
                 <p>{{ __('ui.each_pet_keeps_a_separate_journal_missing_records_e8f178c96b') }}</p>
@@ -24,7 +24,7 @@
                 <x-care-journal-card :journal="$journal" />
             @empty
                 <div class="care-empty care-empty--wide">
-                    <x-lucide-notebook-tabs class="size-8" aria-hidden="true" />
+                    <x-ui-icon name="notebook-tabs" size="2xl" />
                     <h2 class="text-xl font-bold">{{ __('ui.no_private_care_journals_yet_6b892c7c93') }}</h2>
                     <p>{{ __('ui.create_one_for_a_pet_you_manage_then_17f20e662e') }}</p>
                     <x-action-control :href="route('care-journals.create')" label="{{ __('ui.create_first_journal_be6634cd47') }}" icon="plus" variant="primary" />

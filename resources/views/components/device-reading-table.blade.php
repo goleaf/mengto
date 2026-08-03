@@ -37,7 +37,10 @@
                                 <form method="POST" action="{{ route('devices.readings.medical-entry', [$device['slug'], $reading['id']]) }}">
                                     @csrf
                                     <input type="hidden" name="confirmed" value="1">
-                                    <button class="device-text-button" type="submit">{{ __('ui.add_to_health_799912bafc') }}</button>
+                                    <button class="device-text-button" type="submit">
+                                        <x-ui-icon name="heart-pulse" size="sm" />
+                                        <span>{{ __('ui.add_to_health_799912bafc') }}</span>
+                                    </button>
                                 </form>
                             @else
                                 <span class="device-table__done">{{ __('ui.reviewed_or_unassigned_cfea7afcef') }}</span>
