@@ -22,6 +22,11 @@ final class PlacePolicy
         return $user?->isActive() === true && $user->hasVerifiedEmail();
     }
 
+    public function askQuestion(?User $user, Place $place): bool
+    {
+        return $user?->hasVerifiedEmail() === true && $this->view($user, $place);
+    }
+
     public function view(?User $user, Place $place): bool
     {
         if ($user?->isActive() !== true || $place->status === PlaceStatus::Archived) {

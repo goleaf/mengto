@@ -128,6 +128,27 @@ function evidenceFor(string $id): array
     ];
 
     $specific = [
+        'PRD-PLACE-001' => [
+            '`Place`, `PlaceCatalog`, `PlacePresenter`, `PlaceState`, place Actions',
+            'Indexed place migrations, `PlacePolicy`, `BrowsePlacesRequest`, validated place actions',
+            'Place Blade/JS and `lang/*/places.php`',
+            '`PlaceAuthoritySeeder`, idempotent `PlaceDemoSeeder`',
+            '`tests/Feature/PlaceDirectoryTest.php`, `tests/Feature/Places/PlaceAuthorityFoundationTest.php`',
+        ],
+        'PRD-PLACE-002' => [
+            '`Place`, `PlaceQuestion`, `PlaceQuestionAnswer`, `PlacePublicProjection`, `PlacePresenter`, `PlaceQuestionPresenter`, `PlaceState`, place Actions',
+            'Exact-location grants/audits, relational questions and policy-authorized official answers, plus account-scoped compatibility state for other contribution types',
+            'Place Blade/JS and `lang/*/places.php`',
+            'Canonical place/venue/question/answer identities plus deterministic fixture overlays',
+            '`tests/Feature/PlaceDirectoryTest.php`, `tests/Feature/Places/PlaceAuthorityFoundationTest.php`, `tests/Feature/Places/PlaceQuestionWorkflowTest.php`',
+        ],
+        'PRD-PLACE-003' => [
+            '`PlaceCatalog`, `PlacePresenter`, `PlaceState`, place Actions',
+            'Policy-scoped Eloquent identity plus fixture-derived hours and capability presentation',
+            'Place Blade/JS and `lang/*/places.php`',
+            'Deterministic clinic fixtures',
+            '`tests/Feature/PlaceDirectoryTest.php`',
+        ],
         'LAR-18' => [
             '`app/Services/*Presenter.php`, bounded catalogues',
             'Query budgets and foreign-key index migration',
@@ -302,6 +323,10 @@ function evidenceFor(string $id): array
 
 function statusFor(string $id): string
 {
+    if (str_starts_with($id, 'PRD-PLACE-')) {
+        return 'partially implemented';
+    }
+
     $notApplicable = [
         'LAR-12',
         'LAR-13',
@@ -344,6 +369,9 @@ function statusFor(string $id): string
 function blockerFor(string $id): string
 {
     $reasons = [
+        'PRD-PLACE-001' => 'Server-rendered discovery and authority are verified, but `PlaceCatalog` loads at most 500 accessible records before PHP filtering, sorting, and pagination; completeness and indexed scale remain open under PLA-P04.',
+        'PRD-PLACE-002' => 'Cross-account questions and one idempotent official answer are implemented and targeted-tested. Corrections, warnings, reviews, claims, and reports remain per-user, while question moderation, notification, rate-limit, and answer-version history remain open under PLA-P02 and PLA-P07 through PLA-P11.',
+        'PRD-PLACE-003' => 'Call-first presentation and seeded examples are verified, but open/species eligibility is not yet calculated from canonical timezone-aware schedules, exceptions, and service capabilities for every clinic; PLA-P15 remains open.',
         'PRD-DEVICE-003' => 'Platform safe zones, retention, accuracy, freshness, battery, access, and lost-mode controls pass; live GPS transport requires selected hardware and provider credentials.',
         'PRD-DEVICE-004' => 'Platform command lifecycle, idempotency, feeder safeguards, and manual fallback pass; physical feeder execution requires a selected provider adapter.',
         'PRD-DEVICE-005' => 'Shared and unknown attribution, readings, events, and safety metadata pass; fountain and litter interlocks require selected physical hardware.',
@@ -377,6 +405,18 @@ function blockerFor(string $id): string
 
 function verificationFor(string $id): string
 {
+    if ($id === 'PRD-PLACE-001') {
+        return 'php artisan test --compact tests/Feature/PlaceDirectoryTest.php tests/Feature/Places/PlaceAuthorityFoundationTest.php';
+    }
+
+    if ($id === 'PRD-PLACE-002') {
+        return 'php artisan test --compact tests/Feature/PlaceDirectoryTest.php tests/Feature/Places/PlaceAuthorityFoundationTest.php tests/Feature/Places/PlaceQuestionWorkflowTest.php';
+    }
+
+    if ($id === 'PRD-PLACE-003') {
+        return 'php artisan test --compact tests/Feature/PlaceDirectoryTest.php';
+    }
+
     if (in_array($id, ['SEC-AUTH-004', 'SYS-AUTH-005'], true)) {
         return 'php artisan test --compact tests/Feature/Auth/PortalAccessBoundaryTest.php tests/Feature/Auth/PortalMediaAccessTest.php tests/Feature/Auth/AuthenticationTest.php tests/Feature/ArchitectureComplianceTest.php';
     }

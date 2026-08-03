@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use Illuminate\Support\Str;
 use InvalidArgumentException;
 
 final class ComposerCatalog
@@ -882,7 +883,10 @@ final class ComposerCatalog
             fields: [
                 $this->field('body', __('messages.question_289aff12b0'), 'textarea', '', __('messages.example_is_the_small_dog_gate_working_today_7e441f813f'), required: true),
             ],
-            payload: ['target' => $place['target']],
+            payload: [
+                'target' => $place['target'],
+                'place_idempotency_key' => (string) Str::uuid(),
+            ],
             cancelParameters: $place['route_parameters'],
         );
     }

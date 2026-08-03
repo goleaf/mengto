@@ -114,6 +114,15 @@ return [
         'unavailable' => 'This place is unavailable.',
         'venue_mismatch' => 'The selected venue does not belong to this active place.',
         'venue_requires_place' => 'Select a place before selecting its venue.',
+        'question_unavailable' => 'This question is unavailable.',
+        'question_already_answered' => 'This question already has an official answer.',
+        'question_idempotency_conflict' => 'This request key is already used by another place question.',
+        'answer_idempotency_conflict' => 'This request key is already used by another official answer.',
+    ],
+    'questions' => [
+        'sent' => 'Question sent to the place community.',
+        'answer_published' => 'Official answer published.',
+        'official_answer_by' => 'Official answer by :name',
     ],
     'pagination' => [
         'label' => 'Place result pages',

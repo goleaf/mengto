@@ -29,6 +29,11 @@
 
 ### Places
 
+- Replaced the twelve-fixture action target allow-list with bounded canonical
+  identifier validation and policy-scoped Eloquent resolution. Added shared,
+  actor-attributed place questions and one manager-authorized official answer
+  with database idempotency, cross-account presentation, EN/LT/RU feedback,
+  factories, and regression coverage.
 - Replaced the static-only place identity boundary with policy-scoped Eloquent
   places, canonical venues, reversible indexed schema, idempotent demo seeding,
   and dynamic detail URLs for newly submitted places.
@@ -61,6 +66,9 @@
   publishing checklist above the form, removed the detached right sidebar, and
   grouped every preserved field into clear context, response, and optional
   media sections with reviewed EN/LT/RU guidance.
+- Made `ForumTopicFactory` portable across fresh server installs by using the
+  factory's injected Faker generator instead of the optional global `fake()`
+  helper.
 - Verified all 49 Phase 4 One-Health category atoms from immutable source,
   including the exact 42-child hierarchy, and added the missing localized
   physician, veterinarian, public-health, and emergency-service boundary. The

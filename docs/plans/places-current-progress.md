@@ -3,9 +3,9 @@
 Updated: 2026-08-03
 Plan: `docs/plans/places-production-master-plan.md`
 Audit: `docs/audits/places-production-readiness-audit.md`
-Current package: `PLA-P00 — Truthful Baseline And Execution Control`
-Delivery status: planning and audit in progress; production completion work has
-not started under the new plan
+Current package: `PLA-P01 / PLA-P11 — Immediate Correctness And First Shared Workflow`
+Delivery status: implementation in progress; the dynamic target boundary and
+first relational question/answer slice are implemented and targeted-tested
 Last verified Places foundation commit: `f9254e2`
 
 ## Preserved Verified Baseline
@@ -23,8 +23,8 @@ workflows are production-complete.
 | --- | --- | --- |
 | Canonical place/venue authority | Verified foundation | Authority work package |
 | Complete server-rendered directory at scale | Open | Catalogue loads at most 500 records before in-memory filters/pagination |
-| Dynamic place actions | Blocked by known defect | Shared request allow-lists twelve fixture slugs |
-| Shared corrections/warnings/reviews/questions | Open | Stored per account in encrypted `places.state.v1` |
+| Dynamic place actions | Partial | Static twelve-slug validation is removed; dynamic save and inaccessible-place regressions pass, while the full action matrix remains open |
+| Shared corrections/warnings/reviews/questions | Partial | Questions/official answers are relational and cross-account; corrections, warnings, and reviews remain in encrypted `places.state.v1` |
 | Shared claims and moderation reports | Open | Stored per account; no receiving reviewer/moderation queue |
 | Canonical facts and schedules | Open | Rich content still primarily fixture/default-driven |
 | Creation and duplicate review | Partial | Canonical place persists; accepted fields, duplicate workflow, and idempotency contract remain incomplete |
@@ -35,16 +35,15 @@ workflows are production-complete.
 
 ## Highest-Risk Findings
 
-1. A newly persisted place can render but fails normal mutations because its
-   stable key is not in the static target allow-list.
-2. Shared-looking contributions are isolated to the submitting account and
-   cannot be managed across accounts.
-3. Non-anonymous review/question authorship is hard-coded to Mia Carter.
-4. Success messages claim community, verification, and moderation delivery
+1. Most shared-looking contribution types remain isolated to the submitting
+   account and cannot be managed across accounts.
+2. Non-anonymous review authorship is still hard-coded to Mia Carter; question
+   authorship now comes from the authenticated user.
+3. Success messages still claim community, verification, and moderation delivery
    that the current storage path does not provide.
-5. The directory silently excludes accessible records after its 500-row
+4. The directory silently excludes accessible records after its 500-row
    catalogue cap.
-6. Emergency ranking and most rich facts are not yet driven by canonical
+5. Emergency ranking and most rich facts are not yet driven by canonical
    schedules, capabilities, and provenance.
 
 ## Decisions Pending
@@ -63,14 +62,14 @@ tests for known defects.
 
 ## Next Exact Work
 
-1. Add red tests for dynamic place mutations and inaccessible targets.
-2. Add two-account red tests for question/answer, review visibility,
+1. Complete dynamic target tests for every remaining Places action and malformed
+   or stale identifiers.
+2. Add two-account red tests for review visibility,
    warning/report moderation visibility, and claim review.
-3. Replace static target validation with authorized canonical place resolution.
-4. Implement the first shared relational vertical slice for place
-   question/official answer.
-5. Use that proven pattern for reports, warnings, reviews, corrections, and
-   claims in dependency order.
+3. Add question moderation, manager notifications, rate limits, answer versions,
+   and correction history.
+4. Use the proven question/answer pattern for reports, warnings, reviews,
+   corrections, and claims in dependency order.
 
 ## Preservation Ledger
 
@@ -90,6 +89,10 @@ tests for known defects.
 | 2026-08-03 | Repository and canonical-document audit | Completed; 26 grouped readiness findings recorded |
 | 2026-08-03 | Unlimited completion ledger | Created with packages PLA-P00 through PLA-P22 and append-only task IDs |
 | 2026-08-03 | Current Places regression baseline | 33 tests passed with 293 assertions in 3.914 seconds |
+| 2026-08-03 | Affected Places suite | 43 tests passed with 353 assertions in 4.272 seconds |
+| 2026-08-03 | Full serial suite in shared tree | 2,627 passed with 83,133 assertions; 8 unrelated failures from concurrent untracked `DiscoveryPreferenceFactory` not extending `ApplicationFactory` |
+| 2026-08-03 | Exact isolated commit slice: Larastan and full Pest | Passed: zero Larastan errors; 2,604 tests and 82,240 assertions |
+| 2026-08-03 | Exact isolated commit slice: fresh migration, full seed, and repeat seed | Passed: 128 migrations, 213 tables, stable user count 5 |
 
-Implementation checks will be appended here when work begins. Planning
-documents alone are not implementation evidence.
+The remaining package checkboxes stay open until their specific runtime and
+quality gates are observed.

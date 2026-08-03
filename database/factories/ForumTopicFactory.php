@@ -23,20 +23,20 @@ class ForumTopicFactory extends ApplicationFactory
      */
     public function definition(): array
     {
-        $title = fake()->sentence(8);
+        $title = $this->faker->sentence(8);
 
         return [
-            'author_key' => fake()->unique()->userName(),
-            'author_name' => fake()->name(),
-            'author_initials' => fake()->lexify('??'),
+            'author_key' => $this->faker->unique()->userName(),
+            'author_name' => $this->faker->name(),
+            'author_initials' => $this->faker->lexify('??'),
             'author_role' => 'Pet owner',
             'slug' => Str::slug($title).'-'.Str::lower(Str::random(6)),
             'type' => ForumTopicType::Question,
             'title' => $title,
-            'body' => fake()->paragraphs(3, true),
-            'category' => fake()->randomElement(['health', 'behavior', 'travel', 'care']),
+            'body' => $this->faker->paragraphs(3, true),
+            'category' => $this->faker->randomElement(['health', 'behavior', 'travel', 'care']),
             'subcategory' => null,
-            'tags' => [fake()->word(), fake()->word()],
+            'tags' => [$this->faker->word(), $this->faker->word()],
             'pet_key' => 'scout',
             'pet_name' => 'Scout',
             'pet_species' => 'Dog',
@@ -52,7 +52,7 @@ class ForumTopicFactory extends ApplicationFactory
             'is_medical' => false,
             'is_locked' => false,
             'has_expert_answer' => false,
-            'view_count' => fake()->numberBetween(12, 900),
+            'view_count' => $this->faker->numberBetween(12, 900),
             'last_activity_at' => now(),
             'published_at' => now(),
             'state_entered_at' => now(),

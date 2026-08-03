@@ -61,6 +61,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property-read Collection<int, PlaceAccessGrant> $accessGrants
  * @property-read Collection<int, ForumEvent> $events
  * @property-read Collection<int, PlaceLocationVersion> $locationVersions
+ * @property-read Collection<int, PlaceQuestion> $questions
  * @property-read Organization|null $organization
  * @property-read User|null $owner
  * @property-read Venue|null $venue
@@ -195,6 +196,12 @@ final class Place extends Model
     public function locationVersions(): HasMany
     {
         return $this->hasMany(PlaceLocationVersion::class);
+    }
+
+    /** @return HasMany<PlaceQuestion, $this> */
+    public function questions(): HasMany
+    {
+        return $this->hasMany(PlaceQuestion::class);
     }
 
     /** @return HasMany<ForumEvent, $this> */

@@ -27,6 +27,7 @@
 | Care | journals, routines, tasks, entries, media, access grants |
 | Medical | canonical pet-linked records, events, vaccinations, weights, medications, doses, documents, reminders, access grants |
 | Devices | devices, assignments, readings, events, commands, safe zones, automations, runs, access grants, lifecycle records |
+| Places and venues | places, venues/areas, exact-location grants/audits/versions, shared questions and official answers |
 | Cross-domain | audit logs |
 
 ## Identity Strategy
@@ -306,12 +307,19 @@ messages, and private review feedback use encrypted casts. See
 - `place_access_grants` stores account-, purpose-, event-, and time-bound exact
   location permission; `place_access_audits` records each reveal.
 - `place_location_versions` preserves encrypted material location history.
+- `place_questions` stores one canonical actor-attributed, idempotent question
+  with a stable public key and explicit open/answered/hidden/closed status.
+- `place_question_answers` enforces one official answer per question and keeps
+  its manager author, stable key, idempotency key, body, and answer time.
 
 `forum_events` and `forum_event_occurrences` reference the canonical place and
 venue. `forum_event_rooms` may reference a venue area. Exact addresses are not
 copied into event snapshots or public projections. Compound indexes cover
 public catalogue, owner/organization access, grant windows, event linkage,
 venue capacity, audit history, and location versions.
+Question indexes cover place/status timelines and author history; unique
+constraints protect question and answer idempotency plus the one-answer
+boundary.
 
 ## Social Relationship Tables
 

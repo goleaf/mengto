@@ -461,12 +461,13 @@
                                     <small>{{ $question['answer_author'] }} · {{ $question['answered_at'] }}</small>
                                 </div>
                             </div>
-                        @elseif ($canManage)
+                        @elseif ($canManage && $question['answerable'])
                             <form method="POST" action="{{ route('actions.perform') }}">
                                 @csrf
                                 <input type="hidden" name="action" value="answer-place-question">
                                 <input type="hidden" name="target" value="{{ $place['key'] }}">
                                 <input type="hidden" name="place_question" value="{{ $question['key'] }}">
+                                <input type="hidden" name="place_idempotency_key" value="{{ $question['answer_idempotency_key'] }}">
                                 <input type="hidden" name="place_return_tab" value="questions">
                                 <label for="answer-{{ $question['key'] }}">{{ __('ui.official_answer_2b325f8b64') }}</label>
                                 <textarea id="answer-{{ $question['key'] }}" name="body" class="field field--textarea" maxlength="1200" required></textarea>

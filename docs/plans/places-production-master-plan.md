@@ -172,21 +172,21 @@ Dependencies: PLA-P00 decisions needed by each test
 Exit gate: known P0 defects have failing regression tests first, then pass
 without weakening validation or authorization
 
-- [ ] `PLA-01-001` Add a test proving a newly persisted accessible place can be
+- [x] `PLA-01-001` Add a test proving a newly persisted accessible place can be
   saved from its dynamic detail route.
 - [ ] `PLA-01-002` Add dynamic-place tests for follow, collection, visit,
   check-in, invitation, correction, warning, review, question, claim, and
   report submission.
 - [ ] `PLA-01-003` Add deny tests proving an inaccessible/private/archived
   dynamic place cannot be targeted by any action.
-- [ ] `PLA-01-004` Replace the twelve-slug request allow-list with bounded
+- [x] `PLA-01-004` Replace the twelve-slug request allow-list with bounded
   canonical identifier validation plus authorized server-side resolution.
-- [ ] `PLA-01-005` Ensure malformed, overlong, Unicode-confusable, and stale
+- [x] `PLA-01-005` Ensure malformed, overlong, Unicode-confusable, and stale
   target identifiers fail with localized validation without disclosing private
   existence.
 - [ ] `PLA-01-006` Add a two-account test proving a submitted review is not
   currently visible to another member; use it as the red relational contract.
-- [ ] `PLA-01-007` Add a member-to-manager question visibility/answer test.
+- [x] `PLA-01-007` Add a member-to-manager question visibility/answer test.
 - [ ] `PLA-01-008` Add a member-to-moderator warning/report visibility test.
 - [ ] `PLA-01-009` Add a claimant-to-reviewer claim visibility/decision test.
 - [ ] `PLA-01-010` Add tests proving displayed author identity comes from the
@@ -572,7 +572,7 @@ Dependencies: PLA-P02, PLA-P03, PLA-P05, PLA-P07
 Exit gate: questions reach the place community/manager, official answers are
 authorized and versioned, and reports reach protected moderation
 
-- [ ] `PLA-11-001` Replace account-local question arrays with shared relational
+- [x] `PLA-11-001` Replace account-local question arrays with shared relational
   questions.
 - [ ] `PLA-11-002` Derive the question author from canonical actor identity and
   apply block/restriction/rate-limit rules.
@@ -580,7 +580,7 @@ authorized and versioned, and reports reach protected moderation
   hidden, and removed states.
 - [ ] `PLA-11-004` Notify authorized managers of new questions after commit with
   a runtime-safe fallback.
-- [ ] `PLA-11-005` Authorize official answers through management scope, not a
+- [x] `PLA-11-005` Authorize official answers through management scope, not a
   presentation boolean.
 - [ ] `PLA-11-006` Enforce one current official answer with immutable versions,
   answer author, timestamp, and correction reason.
@@ -1049,3 +1049,11 @@ The first implementation slice is deliberately narrow:
 
 This slice proves the architectural pattern for warnings, reviews,
 corrections, claims, and reports while keeping the diff reviewable.
+
+Implementation checkpoint (2026-08-03): steps 2-4 are partially delivered.
+Dynamic save and inaccessible-target tests now exercise canonical resolution,
+and the first cross-account question/official-answer path is relational,
+policy-authorized, actor-attributed, and idempotent. The unchecked task IDs
+above remain open, including complete dynamic-action coverage, moderation,
+notifications, answer versioning, rate limits, and the remaining contribution
+types.

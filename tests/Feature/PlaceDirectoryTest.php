@@ -9,6 +9,7 @@ use App\Services\PlaceState;
 use Database\Seeders\PlaceDemoSeeder;
 use Illuminate\Database\Events\QueryExecuted;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 beforeEach(function () {
     $this->seed(PlaceDemoSeeder::class);
@@ -351,6 +352,7 @@ test('community place contributions survive redirects and appear on their detail
         'action' => 'create-place-question',
         'target' => $place,
         'body' => 'Is the west entrance open after maintenance?',
+        'place_idempotency_key' => (string) Str::uuid(),
     ])->assertRedirect(route('places.show', [
         'place' => $place,
         'tab' => 'questions',

@@ -114,6 +114,15 @@ return [
         'unavailable' => 'Ši vieta nepasiekiama.',
         'venue_mismatch' => 'Pasirinkta renginio vieta nepriklauso šiai aktyviai vietai.',
         'venue_requires_place' => 'Prieš pasirinkdami renginio vietą pasirinkite vietą.',
+        'question_unavailable' => 'Šis klausimas nepasiekiamas.',
+        'question_already_answered' => 'Į šį klausimą jau pateiktas oficialus atsakymas.',
+        'question_idempotency_conflict' => 'Šis užklausos raktas jau naudojamas kitam vietos klausimui.',
+        'answer_idempotency_conflict' => 'Šis užklausos raktas jau naudojamas kitam oficialiam atsakymui.',
+    ],
+    'questions' => [
+        'sent' => 'Klausimas išsiųstas vietos bendruomenei.',
+        'answer_published' => 'Oficialus atsakymas paskelbtas.',
+        'official_answer_by' => 'Oficialiai atsakė :name',
     ],
     'pagination' => [
         'label' => 'Vietu rezultatu puslapiai',

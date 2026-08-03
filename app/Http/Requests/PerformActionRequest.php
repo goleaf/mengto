@@ -183,7 +183,7 @@ class PerformActionRequest extends FormRequest
                 ], true) || in_array($action, $eventActions, true) || in_array($action, $placeTargetActions, true)),
                 'nullable',
                 'string',
-                'max:80',
+                in_array($action, $placeTargetActions, true) ? 'max:190' : 'max:80',
                 'regex:/^[a-z0-9-]+$/',
                 ...($action === 'send-message'
                     ? [Rule::in(['ari', 'lena', 'noah', 'priya'])]
@@ -265,22 +265,6 @@ class PerformActionRequest extends FormRequest
                         'missing-scout-search',
                         'baxter-birthday',
                         'travel-ready-webinar',
-                    ])]
-                    : []),
-                ...(in_array($action, $placeTargetActions, true)
-                    ? [Rule::in([
-                        'vingis-quiet-loop',
-                        'bernardine-evening-park',
-                        'pavilniai-calm-trail',
-                        'zverynas-small-dog-run',
-                        'naujininkai-secure-dog-field',
-                        'paws-24-veterinary-center',
-                        'night-paw-clinic',
-                        'green-paw-neighborhood-clinic',
-                        'quiet-whiskers-grooming',
-                        'old-town-pet-cafe',
-                        'city-pet-market',
-                        'vilnius-animal-aid',
                     ])]
                     : []),
             ],
@@ -706,6 +690,14 @@ class PerformActionRequest extends FormRequest
                 'string',
                 'max:100',
                 'regex:/^[a-z0-9-]+$/',
+            ],
+            'place_idempotency_key' => [
+                Rule::requiredIf(in_array($action, [
+                    'create-place-question',
+                    'answer-place-question',
+                ], true)),
+                'nullable',
+                'uuid',
             ],
             'place_address' => [
                 Rule::requiredIf($action === 'create-place'),

@@ -9,6 +9,7 @@ use App\Enums\PlaceAccessibilityStatus;
 use App\Enums\PlaceType;
 use App\Enums\PlaceVerificationStatus;
 use App\Enums\PlaceVisibility;
+use App\Models\Place;
 use App\Models\User;
 use App\Services\PlaceCatalog;
 use App\Services\PlaceState;
@@ -23,6 +24,9 @@ final class PerformPlaceAction
         private readonly PlaceCatalog $catalog,
         private readonly PlaceState $state,
         private readonly CreatePlace $createPlace,
+        private readonly ResolveAccessiblePlace $resolvePlace,
+        private readonly SubmitPlaceQuestion $submitQuestion,
+        private readonly AnswerPlaceQuestion $answerQuestion,
     ) {}
 
     /**
@@ -248,21 +252,22 @@ final class PerformPlaceAction
      */
     private function answerQuestion(array $data): array
     {
-        $place = $this->requirePlace($data);
-
-        if (! $place['owner_managed']) {
-            throw ValidationException::withMessages(['target' => __('messages.only_a_verified_place_manager_can_add_an_official_answer_906927afbe')]);
-        }
-
-        if (! $this->state->answerQuestion(
-            $place['key'],
+        $actor = $this->requireActor();
+        $place = $this->requireCanonicalPlace($actor, $data);
+        $this->answerQuestion->handle(
+            $actor,
+            $place,
             (string) $data['place_question'],
             $this->requiredText($data, 'body'),
-        )) {
-            throw ValidationException::withMessages(['place_question' => __('messages.this_question_is_unavailable_c7a448c053')]);
-        }
+            (string) $data['place_idempotency_key'],
+        );
 
-        return $this->placeResult($place, __('messages.official_answer_published_c243e535c0'), $data, 'questions');
+        return $this->placeResult(
+            ['key' => $place->stable_key, 'name' => $place->name],
+            __('places.questions.answer_published'),
+            $data,
+            'questions',
+        );
     }
 
     /**
@@ -410,12 +415,21 @@ final class PerformPlaceAction
      */
     private function createQuestion(array $data): array
     {
-        $place = $this->requirePlace($data);
-        $this->state->addQuestion($place['key'], [
-            'question' => $this->requiredText($data, 'body'),
-        ]);
+        $actor = $this->requireActor();
+        $place = $this->requireCanonicalPlace($actor, $data);
+        $this->submitQuestion->handle(
+            $actor,
+            $place,
+            $this->requiredText($data, 'body'),
+            (string) $data['place_idempotency_key'],
+        );
 
-        return $this->placeResult($place, __('messages.question_sent_to_the_place_community_e6b6dec133'), $data, 'questions');
+        return $this->placeResult(
+            ['key' => $place->stable_key, 'name' => $place->name],
+            __('places.questions.sent'),
+            $data,
+            'questions',
+        );
     }
 
     /**
@@ -470,6 +484,33 @@ final class PerformPlaceAction
         }
 
         return $place;
+    }
+
+    /**
+     * @param  array<string, mixed>  $data
+     */
+    private function requireCanonicalPlace(User $actor, array $data): Place
+    {
+        $place = $this->resolvePlace->handle($actor, (string) ($data['target'] ?? ''));
+
+        if ($place === null) {
+            throw ValidationException::withMessages([
+                'target' => __('places.validation.unavailable'),
+            ]);
+        }
+
+        return $place;
+    }
+
+    private function requireActor(): User
+    {
+        $actor = Auth::user();
+
+        if (! $actor instanceof User) {
+            throw new AuthorizationException;
+        }
+
+        return $actor;
     }
 
     /**

@@ -27,6 +27,14 @@ The authority package remains valid, verified foundation evidence. Product
 completion is reopened and must follow
 `docs/plans/places-production-master-plan.md`.
 
+Implementation update (2026-08-03): the static twelve-target request allow-list
+has been removed in favor of bounded identifiers plus accessible Eloquent
+resolution. Questions and one official answer now use relational,
+actor-attributed, idempotent records with manager policy enforcement and a
+two-account feature test. The original audit remains the baseline for all
+other open findings; no claim is made here for moderation, notification,
+version history, or the remaining contribution types.
+
 ## Audit Method
 
 The audit followed the repository reading order and compared the current code
@@ -356,7 +364,7 @@ changes deliberately.
 | Requirement | Audit status | Reason |
 | --- | --- | --- |
 | PRD-PLACE-001 | Partially implemented | Server-rendered discovery works, but the 500-row pre-load cap means the list is not complete at scale and query filters/pagination are in memory |
-| PRD-PLACE-002 | Partially implemented | Detail presentation exists, but community contributions and their history are account-local rather than shared durable records |
+| PRD-PLACE-002 | Partially implemented | Detail presentation and relational cross-account questions/official answers exist; other community contributions and moderation history remain account-local or incomplete |
 | PRD-PLACE-003 | Partially implemented | Call-first presentation exists, but open/species ranking is not backed by canonical schedule and service facts for all clinics |
 
 This reassessment does not invalidate the verified location/venue authority

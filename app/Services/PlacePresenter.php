@@ -14,6 +14,7 @@ final class PlacePresenter
     public function __construct(
         private readonly PlaceCatalog $catalog,
         private readonly PlaceContentCatalog $content,
+        private readonly PlaceQuestionPresenter $questions,
         private readonly PlaceState $state,
         private readonly ProfilePresenter $profiles,
         private readonly EventCatalog $events,
@@ -132,10 +133,17 @@ final class PlacePresenter
                 ...$content['reviews'],
             ],
         );
-        $content['questions'] = [
-            ...$this->state->questions($key),
-            ...$content['questions'],
-        ];
+        $fixtureQuestions = array_map(
+            static fn (array $question): array => [
+                ...$question,
+                'answerable' => false,
+                'answer_idempotency_key' => '',
+            ],
+            $content['questions'],
+        );
+        $content['questions'] = $tab === 'questions'
+            ? [...$this->questions->forPlace($place['key']), ...$fixtureQuestions]
+            : $fixtureQuestions;
         $content['events'] = $this->placeEvents($place['events']);
         $content['warnings'] = $this->presentWarnings(
             $this->state->warnings($key, $place['base_warnings']),
