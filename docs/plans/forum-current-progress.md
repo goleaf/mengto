@@ -7,7 +7,7 @@ Last updated: 2026-08-03.
 Source preservation, atomic extraction, repository discovery, and domain
 planning are documented for all ten source payloads, but their control IDs
 still require exact evidence before Phases 0-2 can be called verified. The
-combined catalogue has 1,181 verified IDs and 37,196 open IDs. Forum/taxonomy,
+combined catalogue has 1,279 verified IDs and 37,098 open IDs. Forum/taxonomy,
 pet, social, content, community, and medical foundations are implemented in
 independently evidenced slices. Communication, complete portal architecture,
 the expanded event lifecycle, and all remaining depth/release packages stay
@@ -68,7 +68,7 @@ as complete. The dependency-ordered remaining work is in
   immutable case events, protected idempotent contact relays, advisory
   duplicate detection, unified false-sighting/reward-scam reports, and
   privacy-safe archival that preserves the complete operational history.
-- Requirement evidence is a deterministic overlay. `1,181` atomic requirements
+- Requirement evidence is a deterministic overlay. `1,279` atomic requirements
   are verified with file/test evidence and none are currently marked
   in-progress.
 - The pet-profile foundation preserves the existing aggregate while adding
@@ -246,14 +246,28 @@ as complete. The dependency-ordered remaining work is in
   passes. The complete sequential suite passed 2,360 tests and 78,407
   assertions; full Pint/Larastan, dependency audits, Vite/cache, isolated
   migration/repeat seed, source preservation, and deterministic generation
-  passed. Only the remaining 13 Phase 3 IDs stay open.
+  passed.
+- The final Phase 3 package verifies the remaining 13 repository-wide
+  migration and audit IDs without adding speculative schema. Every one of the
+  118 migration files has typed reversible boundaries and no raw-SQL escape
+  hatch; an asserted temporary SQLite database applies 118 files, rolls back
+  to zero, reapplies all 118, creates 200 tables, and accepts the complete seed
+  twice with a stable 5-user count. The focused contract passed 2 tests and 11
+  assertions, the related persistence slice passed 1,611 tests and 4,795
+  assertions, and the complete suite passed 2,362 tests and 78,760 assertions.
+  Phase 3 now has 82 verified IDs and zero open IDs.
+- The event schedule foundation independently verifies 85 event-lifecycle IDs
+  for occurrence-scoped tracks, rooms, sessions, staff, authorization,
+  conflicts, private projections, responsive rendering, factories, seeding,
+  query/payload budgets, and browser behavior. The other 4,883 event IDs stay
+  open.
 
 ## Requirement Status Snapshot
 
 | Source stream | Requirements | Verified | Open |
 | --- | ---: | ---: | ---: |
 | Original forum source | 2,566 | 0 | 2,566 |
-| Forum extension and taxonomy | 4,718 | 582 | 4,136 |
+| Forum extension and taxonomy | 4,718 | 595 | 4,123 |
 | Pet-profile revision | 4,135 | 205 | 3,930 |
 | Social-relationships revision | 3,210 | 222 | 2,988 |
 | Content-feed revision | 4,011 | 58 | 3,953 |
@@ -261,8 +275,8 @@ as complete. The dependency-ordered remaining work is in
 | Community revision | 3,576 | 35 | 3,541 |
 | Medical-record revision | 3,867 | 79 | 3,788 |
 | Portal-architecture revision | 3,449 | 0 | 3,449 |
-| Event-lifecycle revision | 4,968 | 0 | 4,968 |
-| **Total** | **38,377** | **1,181** | **37,196** |
+| Event-lifecycle revision | 4,968 | 85 | 4,883 |
+| **Total** | **38,377** | **1,279** | **37,098** |
 
 The exact per-phase open counts and execution order are maintained in
 `docs/plans/forum-completion-plan.md`; the generated phase index remains the
@@ -270,12 +284,11 @@ authority for individual IDs.
 
 ## Next Verified Pass
 
-1. Select the repository-wide migration/final-audit package from the remaining
-   13 Phase 3 IDs without inheriting evidence from the verified schema slices.
-2. Continue the current Phase 75 event foundation: lifecycle migrations,
-   authorization, backfill idempotency, query budgets, factories, seeding,
-   localization, and compatibility tests. Do not promote the broad 4,968-ID
-   stream from one foundation slice.
+1. Select the next exact dependency-safe Phase 4 category-hierarchy or Phase 5
+   taxonomy reconciliation slice now that Phase 3 is closed.
+2. Continue Phase 75 from its 85 verified schedule IDs: attendee reservations,
+   waitlists, notifications, venue depth, and the remaining exact lifecycle
+   packages. Do not promote the other 4,883 IDs from one foundation slice.
 3. Reconcile the Phase 74 and Phase 75 sources into exact work packages,
    then update only independently evidenced IDs.
 4. Repeat the package protocol and its complete gates without a time, token,

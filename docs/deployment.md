@@ -152,6 +152,21 @@ Rebuild application caches normally. A database or cache failure must remain
 visible and fail the mutation; the immutable catalogue fallback is only for an
 existing but empty definition table during bootstrap.
 
+## Complete Migration Lifecycle Verification
+
+Before a release that changes schema, run both isolated controls:
+
+```bash
+php scripts/verify-fresh-database.php
+php scripts/verify-migration-cycle.php
+```
+
+The lifecycle verifier asserts a random canonical temporary path, applies
+every migration, rolls the complete ledger back to zero, reapplies every file,
+and repeats the production-safe seed. It always disconnects and deletes the
+temporary SQLite file. It does not replace package-specific populated-data,
+forward-fix, and retention review.
+
 ## Pet Profile Foundation Migration
 
 `2026_07_31_001270_create_pet_profile_foundation.php` expands the existing pet

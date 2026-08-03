@@ -221,6 +221,29 @@ repeat seed, immutable source preservation, and deterministic generation.
 The executable contract and stop conditions are maintained in
 `docs/plans/forum-topic-type-schema-runtime-work-package.md`.
 
+## Current Delivery: Complete Phase 3 Migration Verification
+
+Status: `implemented and verified` on 2026-08-03
+
+- Audit every first-party migration for typed `up()`/`down()` methods and raw
+  SQL escape hatches.
+- Apply all migration filenames to an asserted disposable SQLite database,
+  compare the ledger, roll every migration back, and reapply the exact set.
+- Run the complete production-safe seed twice after reapplication and require
+  stable identities.
+- Reuse schema-integrity, constraints, enums/casts, factories, populated
+  compatibility, and package rollback tests instead of adding a speculative
+  migration.
+- Passed the focused 2-test/11-assertion contract, the related
+  1,611-test/4,795-assertion persistence slice, and the complete sequential
+  2,362-test/78,760-assertion suite.
+- Passed full Pint/Larastan, dependency audits, production build, cache
+  compilation, fresh migration/repeat seed, complete rollback/reapply, source
+  preservation, and deterministic requirement generation.
+
+Exact scope, stop conditions, and final evidence are in
+`docs/plans/forum-phase3-migration-verification-work-package.md`.
+
 ## Current Delivery: Event Schedule Foundation
 
 Status: `implemented and verified` on 2026-08-03

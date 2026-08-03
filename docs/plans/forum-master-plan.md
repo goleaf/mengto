@@ -84,6 +84,12 @@ direct Action enforcement replace the remaining static/prototype assumptions.
 Its exact 20-ID scope and gate status are maintained in
 `docs/plans/forum-topic-type-schema-runtime-work-package.md`.
 
+Phase 3 is complete at 82 verified IDs. The final 13-ID package adds no
+speculative schema: it audits all migration sources and executes an isolated
+118-file apply, complete rollback, exact reapply, and repeat-seed lifecycle.
+Its scope and final evidence are maintained in
+`docs/plans/forum-phase3-migration-verification-work-package.md`.
+
 ## Phase 4: Forum Category Taxonomy
 
 **IDs:** all Phase 4 rows.

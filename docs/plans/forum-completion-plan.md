@@ -34,7 +34,7 @@ The deterministic catalogue snapshot on `main` contains:
 | Source stream | Requirements | Verified | Open |
 | --- | ---: | ---: | ---: |
 | Original forum source | 2,566 | 0 | 2,566 |
-| Forum extension and taxonomy | 4,718 | 582 | 4,136 |
+| Forum extension and taxonomy | 4,718 | 595 | 4,123 |
 | Pet-profile revision | 4,135 | 205 | 3,930 |
 | Social-relationships revision | 3,210 | 222 | 2,988 |
 | Content-feed revision | 4,011 | 58 | 3,953 |
@@ -42,10 +42,10 @@ The deterministic catalogue snapshot on `main` contains:
 | Community revision | 3,576 | 35 | 3,541 |
 | Medical-record revision | 3,867 | 79 | 3,788 |
 | Portal-architecture revision | 3,449 | 0 | 3,449 |
-| Event-lifecycle revision | 4,968 | 0 | 4,968 |
-| **Total** | **38,377** | **1,181** | **37,196** |
+| Event-lifecycle revision | 4,968 | 85 | 4,883 |
+| **Total** | **38,377** | **1,279** | **37,098** |
 
-All 37,196 open records are currently `discovered`; there are no records
+All 37,098 open records are currently `discovered`; there are no records
 marked `in-progress`, `blocked`, or `intentionally-not-applicable`. The source
 payload checksum is
 `cbb7d3a36f3750106c4751191ddd7d882d922ce0ae0e0b12aed318c809206ea1`.
@@ -119,11 +119,11 @@ database atom.
 
 ## Dependency-Ordered Completion Waves
 
-The ten waves below account for all 37,196 open IDs exactly.
+The ten waves below account for all 37,098 open IDs exactly.
 
 | Wave | Scope | Phases | Open IDs |
 | ---: | --- | --- | ---: |
-| 1 | Core forum, taxonomy, trust, and moderation foundations | 3-7 | 3,029 |
+| 1 | Core forum, taxonomy, trust, and moderation foundations | 3-7 | 3,016 |
 | 2 | Canonical pet profile | 17-25 | 3,930 |
 | 3 | Social relationships | 27-34 | 2,988 |
 | 4 | Content feed and distribution | 36-44 | 3,953 |
@@ -131,9 +131,9 @@ The ten waves below account for all 37,196 open IDs exactly.
 | 6 | Medical records | 64-73 | 3,788 |
 | 7 | Remaining original forum workflows and interface | 8-12 | 3,174 |
 | 8 | Canonical complete portal architecture | 74 | 3,449 |
-| 9 | Complete event lifecycle | 75 | 4,968 |
+| 9 | Complete event lifecycle | 75 | 4,883 |
 | 10 | Global control evidence, release verification, and publication | 0-2, 13-14 | 499 |
-|  | **Total** |  | **37,196** |
+|  | **Total** |  | **37,098** |
 
 ### Wave 0: Reconcile The Source Of Truth
 
@@ -156,7 +156,7 @@ Open inventory:
 
 | Phase | Remaining result | Open IDs |
 | ---: | --- | ---: |
-| 3 | Reconcile and finish additive schema, indexes, bindings, factories, policies, and compatibility backfills | 13 |
+| 3 | Additive schema, indexes, bindings, factories, policies, compatibility, and complete rollback/reapply verification | 0 |
 | 4 | Prove the complete 44-root/1,637-child category hierarchy, redirects, translations, cache invalidation, and preservation | 1,459 |
 | 5 | Complete global taxonomy snapshots, provenance, imports, changes, search, administration, rollback, and measured budgets | 821 |
 | 6 | Complete reputation, trust, badges, confirmations, conflicts, expiry, and anti-abuse behavior | 334 |
@@ -332,9 +332,7 @@ The final 499 open control/release IDs span Phases 0-2 and 13-14.
 
 ## Next Forum Work Package
 
-Finish verification and evidence for the implemented 20-ID topic-type schema
-runtime package. Then select the dependency-safe repository-wide migration and
-final-audit package from the 13 remaining Phase 3 IDs.
-Keep the verified database-correctness slice closed to its exact 21 IDs. In
-parallel, classify the current Phase 75 lifecycle foundation against exact
-`event.*` IDs without promoting the full 4,968-ID revision.
+Phase 3 is closed at 82 verified IDs after the final 13-ID migration lifecycle
+package. Select the next dependency-safe Phase 4 category-hierarchy or Phase 5
+taxonomy reconciliation slice. In parallel, continue Phase 75 from its 85
+verified schedule IDs without promoting the other 4,883 event requirements.

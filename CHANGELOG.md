@@ -33,6 +33,10 @@
 
 ### Forum And Animal Taxonomy
 
+- Added an isolated full migration lifecycle verifier that proves every one of
+  the 118 migration files applies, rolls back to an empty ledger, reapplies,
+  and accepts the complete seed twice. Added source guards for typed reversible
+  methods and forbidden raw SQL, closing the final 13 Phase 3 requirements.
 - Completed the executable topic-type schema boundary: one typed catalogue
   now owns versioned fields and capability metadata, a bounded shared cache
   invalidates on definition changes and synchronization, generic topic writes

@@ -511,6 +511,35 @@ with one and twenty linked reports; both execute the same number of database
 statements. Exact commands and final gate evidence are maintained in
 `docs/plans/forum-database-correctness-reconciliation-work-package.md`.
 
+## Complete Migration Lifecycle Verification
+
+`MigrationLifecycleVerificationTest` guards every first-party migration source
+for typed `up()`/`down()` boundaries and forbidden raw-SQL escape hatches. It
+then executes `scripts/verify-migration-cycle.php`, which creates an asserted
+temporary SQLite database, compares all filenames to the migration ledger,
+rolls back the complete ledger, reapplies it, and runs the production-safe seed
+twice before removing the database in `finally`.
+
+Final evidence on 2026-08-03:
+
+- focused lifecycle contract: 2 tests and 11 assertions;
+- direct lifecycle report: 118 files applied, 0 ledger rows after rollback,
+  118 files reapplied, 200 tables, and stable 5-user repeated seed;
+- migration lifecycle, schema integrity, factories/seeders, taxonomy,
+  database-correctness, and populated event rollback slice: 1,611 tests and
+  4,795 assertions;
+- complete sequential repository suite: 2,362 tests and 78,760 assertions;
+- full Pint and Larastan: passed with zero findings;
+- Composer strict validation/audit, npm audit, Vite production build, and
+  config/event/route/view cache compilation: passed;
+- fresh isolated migration and repeated seed: 118 migrations, 200 tables, and
+  a stable 5-user count;
+- immutable source preservation and deterministic 38,377-requirement
+  generation: passed.
+
+Exact scope and final-gate status are recorded in
+`docs/plans/forum-phase3-migration-verification-work-package.md`.
+
 ## Linked Media Navigation Verification
 
 `LinkedMediaNavigationContractTest` verifies the semantic linked/passive
