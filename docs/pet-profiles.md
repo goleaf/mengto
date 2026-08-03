@@ -127,6 +127,29 @@ the tab can discard an unconfirmed focused edit, while every server-confirmed
 value remains durable. Exact scope and remaining release gates are in
 `docs/plans/pet-profile-draft-autosave-work-package.md`.
 
+## Duplicate Review And Access Requests
+
+Before a new draft is persisted, the canonical create component checks a
+bounded set of profiles already visible to the authenticated account. It
+matches normalized name plus broad species and exposes only a safe card:
+name, localized species, approximate age, and an already policy-protected
+primary photo. Private profiles, facts, documents, location, contacts,
+manager data, storage paths, and checksums are excluded.
+
+An encrypted short-lived token binds the viewer, submitted identity, current
+candidate set, and expiry. The create Action verifies the token again; changing
+the form or candidate set requires a new review. The user must explicitly
+choose the different-animal path to continue creation when a match exists.
+
+The existing-profile path records a typed `PetProfileAccessRequest` with
+encrypted evidence and no immediate rights. The current manager reviews the
+requester, requested role, and evidence through a separate policy-protected
+Livewire component. Ordinary approval creates a manager invitation that the
+requester must still accept. Relationship correction can update only an
+existing non-critical role. Ownership-transfer requests are recorded but
+cannot be approved through the standard action. Exact scope is in
+`docs/plans/pet-profile-duplicate-access-work-package.md`.
+
 ## Identity And Compatibility
 
 An account and a pet are separate aggregates. Every pet mutation runs as an
@@ -178,7 +201,7 @@ and archived. `PetProfileLifecycle` validates transitions, locks the row,
 rejects stale versions, updates state timestamps, applies bounded discovery
 effects, records an immutable event, and invalidates known cache keys.
 
-This foundation does not claim the complete transfer, duplicate resolution,
+This foundation does not claim the complete transfer, duplicate merge,
 deletion cooling-off, memorial side-effect, adoption, lost/found, media
 gallery, post, friendship, device, medical, or recommendation workflows. Their
 requirement IDs remain open until their owning modules are connected and

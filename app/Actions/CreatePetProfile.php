@@ -17,6 +17,7 @@ use App\Models\PetProfilePrivacySetting;
 use App\Models\PetProfileSlugAlias;
 use App\Models\Taxon;
 use App\Services\ForumActor;
+use App\Services\PetProfileDuplicateReview;
 use App\Services\PetProfileEventRecorder;
 use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Database\QueryException;
@@ -30,6 +31,7 @@ final class CreatePetProfile
         private readonly ForumActor $actor,
         private readonly Gate $gate,
         private readonly PetProfileEventRecorder $events,
+        private readonly PetProfileDuplicateReview $duplicateReview,
     ) {}
 
     /** @param array<string, mixed> $data */
@@ -37,6 +39,9 @@ final class CreatePetProfile
     {
         $user = $this->actor->requireUser();
         $this->gate->authorize('create', PetProfile::class);
+        $name = trim((string) ($data['title'] ?? ''));
+        $species = (string) ($data['species'] ?? $data['category'] ?? 'unknown');
+
         $idempotencyKey = (string) ($data['idempotency_key'] ?? Str::uuid());
         $creationKey = hash('sha256', "pet-create|{$user->id}|{$idempotencyKey}");
         $existing = PetProfile::query()
@@ -51,6 +56,17 @@ final class CreatePetProfile
             }
 
             return $existing;
+        }
+
+        if (! $this->duplicateReview->hasCompletedReview(
+            $user,
+            $name,
+            $species,
+            (string) ($data['duplicate_review_token'] ?? ''),
+        )) {
+            throw ValidationException::withMessages([
+                'duplicate_review' => __('pet_profiles.validation.duplicate_review_required'),
+            ]);
         }
 
         $relationship = PetManagerRole::tryFrom(
@@ -74,6 +90,8 @@ final class CreatePetProfile
                 $visibility,
                 $taxon,
                 $classification,
+                $name,
+                $species,
             ): PetProfile {
                 $existing = PetProfile::query()
                     ->where('creation_key', $creationKey)
@@ -90,8 +108,8 @@ final class CreatePetProfile
                     'user_id' => $user->id,
                     'profile_key' => $profileKey,
                     'slug' => $this->uniqueSlug($user->id, (string) $data['title'], $profileKey),
-                    'name' => (string) $data['title'],
-                    'species' => (string) ($data['category'] ?? 'unknown'),
+                    'name' => $name,
+                    'species' => $species,
                     'taxon_id' => $taxon?->id,
                     'breed' => ($data['breed'] ?? $data['detail'] ?? null) ?: null,
                     'domestic_classification_id' => $classification?->id,

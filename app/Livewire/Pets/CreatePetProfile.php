@@ -6,11 +6,15 @@ namespace App\Livewire\Pets;
 
 use App\Actions\CreatePetProfile as CreatePetProfileAction;
 use App\Actions\StorePetPrimaryPhoto;
+use App\Actions\SubmitPetProfileAccessRequest;
 use App\Enums\PetManagerRole;
+use App\Enums\PetProfileAccessRequestType;
 use App\Enums\PetProfileVisibility;
+use App\Livewire\Forms\PetProfileAccessRequestForm;
 use App\Livewire\Forms\PetProfileCreateForm;
 use App\Livewire\Forms\PetProfileMediaForm;
 use App\Models\User;
+use App\Services\PetProfileDuplicateReview;
 use App\Services\ProfilePresenter;
 use Illuminate\Contracts\Auth\Factory as AuthFactory;
 use Illuminate\Contracts\View\View;
@@ -29,11 +33,24 @@ final class CreatePetProfile extends Component
 
     public PetProfileMediaForm $mediaForm;
 
+    public PetProfileAccessRequestForm $accessRequestForm;
+
     #[Locked]
     public string $idempotencyKey = '';
 
     #[Locked]
     public string $mediaIdempotencyKey = '';
+
+    #[Locked]
+    public string $accessRequestIdempotencyKey = '';
+
+    #[Locked]
+    public string $duplicateReviewToken = '';
+
+    #[Locked]
+    public string $selectedDuplicateProfileKey = '';
+
+    public string $accessRequestFeedback = '';
 
     private AuthFactory $auth;
 
@@ -41,17 +58,25 @@ final class CreatePetProfile extends Component
 
     private StorePetPrimaryPhoto $storePhoto;
 
+    private SubmitPetProfileAccessRequest $submitAccessRequest;
+
+    private PetProfileDuplicateReview $duplicateReview;
+
     private ProfilePresenter $profiles;
 
     public function boot(
         AuthFactory $auth,
         CreatePetProfileAction $createAction,
         StorePetPrimaryPhoto $storePhoto,
+        SubmitPetProfileAccessRequest $submitAccessRequest,
+        PetProfileDuplicateReview $duplicateReview,
         ProfilePresenter $profiles,
     ): void {
         $this->auth = $auth;
         $this->createAction = $createAction;
         $this->storePhoto = $storePhoto;
+        $this->submitAccessRequest = $submitAccessRequest;
+        $this->duplicateReview = $duplicateReview;
         $this->profiles = $profiles;
     }
 
@@ -60,6 +85,7 @@ final class CreatePetProfile extends Component
         $this->requireUser();
         $this->idempotencyKey = (string) Str::uuid();
         $this->mediaIdempotencyKey = (string) Str::uuid();
+        $this->accessRequestIdempotencyKey = (string) Str::uuid();
     }
 
     /** @return array<string, string> */
@@ -93,12 +119,144 @@ final class CreatePetProfile extends Component
             ])->all();
     }
 
+    /** @return array<string, string> */
+    #[Computed]
+    public function accessRequestTypes(): array
+    {
+        return collect(PetProfileAccessRequestType::cases())
+            ->mapWithKeys(static fn (PetProfileAccessRequestType $type): array => [
+                $type->value => $type->label(),
+            ])->all();
+    }
+
+    /** @return array<string, string> */
+    #[Computed]
+    public function correctionRoleOptions(): array
+    {
+        return collect(PetProfileAccessRequestForm::correctionRoles())
+            ->mapWithKeys(static fn (PetManagerRole $role): array => [
+                $role->value => $role->label(),
+            ])->all();
+    }
+
+    /** @return list<array<string, string|null>> */
+    #[Computed]
+    public function duplicateCandidates(): array
+    {
+        if ($this->duplicateReviewToken === '') {
+            return [];
+        }
+
+        return $this->duplicateReview->candidatesFromToken(
+            $this->requireUser(),
+            $this->form->name,
+            $this->form->species,
+            $this->duplicateReviewToken,
+        );
+    }
+
     public function create(): void
     {
-        $this->requireUser();
+        $user = $this->requireUser();
+        $creationData = $this->form->creationData($this->idempotencyKey);
+        $review = $this->duplicateReview->review(
+            $user,
+            $this->form->name,
+            $this->form->species,
+        );
+
+        if ($review['candidates'] !== []) {
+            $this->duplicateReviewToken = $review['token'];
+            $this->selectedDuplicateProfileKey = '';
+            $this->accessRequestFeedback = '';
+            unset($this->duplicateCandidates);
+
+            return;
+        }
+
+        $this->persistCreation($creationData);
+    }
+
+    public function confirmDifferentAnimal(): void
+    {
+        $user = $this->requireUser();
+        $creationData = $this->form->creationData($this->idempotencyKey);
+
+        if (! $this->duplicateReview->hasCompletedReview(
+            $user,
+            $this->form->name,
+            $this->form->species,
+            $this->duplicateReviewToken,
+        )) {
+            $this->addError(
+                'duplicate_review',
+                __('pet_profiles.validation.duplicate_review_required'),
+            );
+
+            return;
+        }
+
+        $this->persistCreation($creationData);
+    }
+
+    public function startAccessRequest(string $profileKey): void
+    {
+        $profile = $this->duplicateReview->candidateProfile(
+            $this->requireUser(),
+            $this->form->name,
+            $this->form->species,
+            $this->duplicateReviewToken,
+            $profileKey,
+        );
+        abort_unless($profile !== null, 404);
+        $this->selectedDuplicateProfileKey = $profile->profile_key;
+        $this->accessRequestFeedback = '';
+        $this->resetValidation([
+            'accessRequestForm.requestType',
+            'accessRequestForm.requestedRole',
+            'accessRequestForm.evidenceSummary',
+            'accessRequestForm.temporaryAccessEndsAt',
+        ]);
+    }
+
+    public function cancelAccessRequest(): void
+    {
+        $this->selectedDuplicateProfileKey = '';
+        $this->accessRequestForm->reset();
+        $this->resetValidation();
+    }
+
+    public function submitSelectedAccessRequest(): void
+    {
+        $user = $this->requireUser();
+        $profile = $this->duplicateReview->candidateProfile(
+            $user,
+            $this->form->name,
+            $this->form->species,
+            $this->duplicateReviewToken,
+            $this->selectedDuplicateProfileKey,
+        );
+        abort_unless($profile !== null, 404);
+        $data = $this->accessRequestForm->data();
+        $this->submitAccessRequest->handle(
+            $profile,
+            $data['request_type'],
+            $data['requested_role'],
+            $data['evidence_summary'],
+            $data['temporary_access_ends_at'],
+            $this->accessRequestIdempotencyKey,
+        );
+        $this->accessRequestFeedback = __('pet_profiles.feedback.access_request_submitted');
+        $this->selectedDuplicateProfileKey = '';
+        $this->accessRequestForm->reset();
+    }
+
+    /** @param array<string, string> $creationData */
+    private function persistCreation(array $creationData): void
+    {
         $media = $this->mediaForm->data();
         $profile = $this->createAction->handle(
-            $this->form->creationData($this->idempotencyKey),
+            $creationData + ['duplicate_review_token' => $this->duplicateReviewToken],
         );
 
         if ($media['upload'] instanceof TemporaryUploadedFile) {

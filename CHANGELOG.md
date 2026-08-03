@@ -65,6 +65,12 @@
 
 ### Pet Profiles
 
+- Added a bounded policy-visible duplicate review before pet creation, safe
+  possible-match cards, encrypted typed access requests, manager evidence
+  review, and invitation-based access activation. Generic review cannot
+  approve an ownership transfer, and private profiles or facts never enter the
+  candidate projection.
+
 - Added idempotent change/blur autosave to the seven ordinary descriptive
   profile steps while retaining explicit submission for photos, managers,
   privacy, protected identifiers, and lifecycle transitions. Saving, unsaved,

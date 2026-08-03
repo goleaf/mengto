@@ -77,6 +77,15 @@ step after `online`, and clears pending state only after a revision-matched
 server confirmation; private profile values are never queued in browser
 storage.
 
+The bounded, policy-visible duplicate review and encrypted access-request
+package for `pet.creation.0103-pet.creation.0137` is verified for 34 selected
+IDs. Ordinary approval creates the existing manager invitation and still
+requires requester acceptance; ownership transfer is recordable but cannot
+pass through the generic review action. The managing organization projection
+in `pet.creation.0115` remains open until a pet manager has an authoritative
+organization relationship. Exact boundaries and evidence are in
+`docs/plans/pet-profile-duplicate-access-work-package.md`.
+
 ## Phase 19: Ownership And Privacy
 
 **IDs:** `pet.ownership.0001-pet.ownership.0393` and

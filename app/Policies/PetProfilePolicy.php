@@ -29,6 +29,11 @@ final class PetProfilePolicy
         return $user->isActive();
     }
 
+    public function requestAccess(User $user, PetProfile $petProfile): bool
+    {
+        return $user->isActive() && $this->access->canView($petProfile, $user);
+    }
+
     public function update(User $user, PetProfile $petProfile): bool
     {
         return $user->isActive()

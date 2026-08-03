@@ -162,6 +162,7 @@ use App\Livewire\Organizations\OrganizationInvitationResponse;
 use App\Livewire\Organizations\OrganizationWorkspace;
 use App\Livewire\Pets\CreatePetProfile;
 use App\Livewire\Pets\ManagePetProfile;
+use App\Livewire\Pets\PetProfileAccessRequests;
 use App\Livewire\Pets\PetProfileInvitations;
 use App\Livewire\Pets\PublicPetProfile;
 use App\Livewire\ProfileSettings;
@@ -218,6 +219,8 @@ Route::middleware('web')
                             ->name('create');
                         Route::get('/invitations', PetProfileInvitations::class)
                             ->name('invitations');
+                        Route::get('/{petProfile:profile_key}/access-requests', PetProfileAccessRequests::class)
+                            ->name('access-requests');
                         Route::get('/{petProfile:profile_key}', ManagePetProfile::class)
                             ->name('show');
                     });

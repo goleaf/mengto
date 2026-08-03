@@ -74,6 +74,12 @@ class User extends Authenticatable implements MustVerifyEmailContract
         return $this->hasMany(PetProfileManager::class);
     }
 
+    /** @return HasMany<PetProfileAccessRequest, $this> */
+    public function petProfileAccessRequests(): HasMany
+    {
+        return $this->hasMany(PetProfileAccessRequest::class, 'requester_user_id');
+    }
+
     /** @return HasMany<SearchCase, $this> */
     public function searchCases(): HasMany
     {

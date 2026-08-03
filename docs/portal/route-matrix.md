@@ -145,6 +145,7 @@ the decision column is the desired page-identity boundary.
 | `organizations.show` | `/organizations/{organization:slug}` | `Organizations\OrganizationWorkspace` | `canonical-page` | retain `x-page-header` |
 | `pets.index` | `/pets` | `PetProfileWorkspaceController` | `canonical-page` | authenticated personal workspace; Eloquent search/filter/pagination and canonical `x-page-header` |
 | `pets.manage.invitations` | `/pets/manage/invitations` | `Pets\PetProfileInvitations` | `canonical-page` | retain `x-page-header` |
+| `pets.manage.access-requests` | `/pets/manage/{petProfile:profile_key}/access-requests` | `Pets\PetProfileAccessRequests` | `canonical-page` | retain `x-page-header` and policy-protected manager review |
 | `pets.manage.create` | `/pets/manage/new` | `Pets\CreatePetProfile` | `canonical-page` | retain `x-page-header` |
 | `pets.manage.show` | `/pets/manage/{petProfile:profile_key}` | `Pets\ManagePetProfile` | `canonical-page` | retain `x-page-header` |
 | `pets.media.show` | `/pets/profile/{petProfile:profile_key}/media/{petProfileMedia:media_key}` | `PetProfileMediaController` | `file-response` | no page identity |

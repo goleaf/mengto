@@ -7,6 +7,24 @@ This living plan records work that was actually performed. A pass is
 status remains authoritative in
 `docs/requirements/compliance-matrix.md`.
 
+## Current Delivery: Pet Duplicate Review And Access Requests
+
+Status: `implemented and verified` on 2026-08-03.
+
+- Pause canonical pet creation on bounded, policy-visible name/species matches
+  and expose only the safe identity/photo projection.
+- Bind the explicit different-animal decision to an encrypted expiring review
+  token that the creation Action verifies again.
+- Store typed access requests with encrypted evidence, unique active/replay
+  keys, reviewer attribution, and optimistic state.
+- Grant no immediate capability; ordinary approval creates the existing
+  invitation and requester acceptance activates it.
+- Keep ownership transfer outside generic approval and leave organization
+  attribution open until its relationship is authoritative.
+
+Exact scope, observed gates, and remaining non-goals are recorded in
+`docs/plans/pet-profile-duplicate-access-work-package.md`.
+
 ## Pass 1: Protect And Baseline
 
 Status: `verified`

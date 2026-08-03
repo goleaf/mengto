@@ -52,6 +52,7 @@ return [
         'pet-friends.index',
         'pets.index',
         'pets.manage.create',
+        'pets.manage.access-requests',
         'pets.manage.invitations',
         'pets.manage.show',
         'places.index',

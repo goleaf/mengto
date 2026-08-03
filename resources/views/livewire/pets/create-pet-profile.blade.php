@@ -188,6 +188,117 @@
                 </div>
             </div>
 
+            @if ($this->duplicateCandidates !== [])
+                <section class="mt-6 grid gap-4 border-t border-paw-line pt-6" aria-labelledby="pet-duplicate-review-heading">
+                    <header class="grid max-w-2xl gap-2">
+                        <p class="pet-create__eyebrow">{{ __('pet_profiles.duplicate_review.eyebrow') }}</p>
+                        <h3 id="pet-duplicate-review-heading" class="text-xl font-semibold">
+                            {{ __('pet_profiles.duplicate_review.title') }}
+                        </h3>
+                        <p class="text-sm leading-6 text-paw-muted">
+                            {{ __('pet_profiles.duplicate_review.description') }}
+                        </p>
+                    </header>
+
+                    <div class="grid gap-3 sm:grid-cols-2">
+                        @forelse ($this->duplicateCandidates as $candidate)
+                            <article class="grid min-w-0 gap-4 rounded-lg border border-paw-line bg-white p-4" wire:key="duplicate-candidate-{{ $candidate['profile_key'] }}">
+                                <div class="flex min-w-0 items-center gap-3">
+                                    <div class="grid size-20 shrink-0 place-items-center overflow-hidden rounded-lg bg-paw-canvas">
+                                        @if ($candidate['photo'] !== null)
+                                            <img class="size-full object-cover" src="{{ $candidate['photo'] }}" alt="{{ $candidate['photo_alt'] }}">
+                                        @else
+                                            <span role="img" aria-label="{{ $candidate['photo_alt'] }}"><x-ui-icon name="paw-print" size="lg" /></span>
+                                        @endif
+                                    </div>
+                                    <div class="min-w-0">
+                                        <h4 class="break-words font-semibold">{{ $candidate['name'] }}</h4>
+                                        <p class="text-sm text-paw-muted">{{ $candidate['species'] }}</p>
+                                        @if ($candidate['age'] !== null)
+                                            <p class="text-sm text-paw-muted">{{ $candidate['age'] }}</p>
+                                        @endif
+                                    </div>
+                                </div>
+                                <button
+                                    type="button"
+                                    class="forum-button forum-button--primary min-h-11 w-full"
+                                    wire:click="startAccessRequest('{{ $candidate['profile_key'] }}')"
+                                >
+                                    <x-ui-icon name="user-plus" />
+                                    <span>{{ __('pet_profiles.duplicate_review.this_is_my_pet') }}</span>
+                                </button>
+                            </article>
+                        @empty
+                            <p>{{ __('pet_profiles.duplicate_review.empty') }}</p>
+                        @endforelse
+                    </div>
+
+                    @if ($accessRequestFeedback !== '')
+                        <p class="border-s-4 border-status-success py-3 ps-4" role="status" aria-live="polite">
+                            {{ $accessRequestFeedback }}
+                        </p>
+                    @endif
+
+                    @if ($selectedDuplicateProfileKey !== '')
+                        <fieldset class="forum-form grid gap-4">
+                            <legend class="font-semibold">{{ __('pet_profiles.access_requests.form_title') }}</legend>
+                            <div class="grid gap-4 sm:grid-cols-2">
+                                <label class="forum-form__field" for="pet-access-request-type">
+                                    <span>{{ __('pet_profiles.access_requests.request_type') }}</span>
+                                    <select id="pet-access-request-type" wire:model.live="accessRequestForm.requestType">
+                                        @forelse ($this->accessRequestTypes as $value => $label)
+                                            <option wire:key="pet-access-type-{{ $value }}" value="{{ $value }}">{{ $label }}</option>
+                                        @empty
+                                            <option value="co-ownership">{{ __('pet_profiles.access_requests.types.co-ownership') }}</option>
+                                        @endforelse
+                                    </select>
+                                </label>
+
+                                @if ($accessRequestForm->requestType === 'relationship-correction')
+                                    <label class="forum-form__field" for="pet-access-request-role">
+                                        <span>{{ __('pet_profiles.access_requests.requested_role') }}</span>
+                                        <select id="pet-access-request-role" wire:model="accessRequestForm.requestedRole">
+                                            @forelse ($this->correctionRoleOptions as $value => $label)
+                                                <option wire:key="pet-access-role-{{ $value }}" value="{{ $value }}">{{ $label }}</option>
+                                            @empty
+                                                <option value="family-member">{{ __('pet_profiles.manager_roles.family-member') }}</option>
+                                            @endforelse
+                                        </select>
+                                    </label>
+                                @endif
+
+                                @if ($accessRequestForm->requestType === 'temporary-access')
+                                    <label class="forum-form__field" for="pet-access-request-ends">
+                                        <span>{{ __('pet_profiles.access_requests.temporary_ends_at') }}</span>
+                                        <input id="pet-access-request-ends" type="datetime-local" wire:model="accessRequestForm.temporaryAccessEndsAt" required>
+                                        @error('accessRequestForm.temporaryAccessEndsAt') <small role="alert">{{ $message }}</small> @enderror
+                                    </label>
+                                @endif
+
+                                <label class="forum-form__field sm:col-span-2" for="pet-access-request-evidence">
+                                    <span>{{ __('pet_profiles.access_requests.evidence') }}</span>
+                                    <textarea id="pet-access-request-evidence" wire:model="accessRequestForm.evidenceSummary" rows="5" minlength="20" maxlength="2000" required aria-describedby="pet-access-request-evidence-help pet-access-request-evidence-error"></textarea>
+                                    <small id="pet-access-request-evidence-help">{{ __('pet_profiles.access_requests.evidence_help') }}</small>
+                                    @error('accessRequestForm.evidenceSummary') <small id="pet-access-request-evidence-error" role="alert">{{ $message }}</small> @enderror
+                                </label>
+                            </div>
+                            @if ($accessRequestForm->requestType === 'ownership-transfer')
+                                <x-notice icon="shield-alert" :title="__('pet_profiles.access_requests.protected_title')" :description="__('pet_profiles.access_requests.protected_description')" />
+                            @endif
+                            <div class="flex flex-wrap justify-end gap-2">
+                                <button type="button" class="forum-button min-h-11" wire:click="cancelAccessRequest">
+                                    {{ __('pet_profiles.actions.cancel') }}
+                                </button>
+                                <button type="button" class="forum-button forum-button--primary min-h-11" wire:click="submitSelectedAccessRequest" wire:loading.attr="disabled" wire:target="submitSelectedAccessRequest">
+                                    <x-ui-icon name="send" />
+                                    <span>{{ __('pet_profiles.access_requests.submit') }}</span>
+                                </button>
+                            </div>
+                        </fieldset>
+                    @endif
+                </section>
+            @endif
+
             <div class="pet-create__privacy" role="note">
                 <span class="pet-create__privacy-icon" aria-hidden="true">
                     <x-ui-icon name="lock-keyhole" />
@@ -208,16 +319,29 @@
                     <x-ui-icon name="x" size="sm" />
                     <span>{{ __('pet_profiles.actions.cancel') }}</span>
                 </a>
-                <button
-                    type="submit"
-                    class="action action--primary action--regular"
-                    wire:loading.attr="disabled"
-                    wire:target="create"
-                >
-                    <x-ui-icon name="plus" size="sm" />
-                    <span wire:loading.remove wire:target="create">{{ __('pet_profiles.actions.create_draft') }}</span>
-                    <span wire:loading wire:target="create">{{ __('pet_profiles.actions.creating') }}</span>
-                </button>
+                @if ($this->duplicateCandidates !== [])
+                    <button
+                        type="button"
+                        class="action action--primary action--regular"
+                        wire:click="confirmDifferentAnimal"
+                        wire:loading.attr="disabled"
+                        wire:target="confirmDifferentAnimal"
+                    >
+                        <x-ui-icon name="plus" size="sm" />
+                        <span>{{ __('pet_profiles.duplicate_review.different_animal') }}</span>
+                    </button>
+                @else
+                    <button
+                        type="submit"
+                        class="action action--primary action--regular"
+                        wire:loading.attr="disabled"
+                        wire:target="create"
+                    >
+                        <x-ui-icon name="plus" size="sm" />
+                        <span wire:loading.remove wire:target="create">{{ __('pet_profiles.actions.create_draft') }}</span>
+                        <span wire:loading wire:target="create">{{ __('pet_profiles.actions.creating') }}</span>
+                    </button>
+                @endif
             </footer>
         </form>
 

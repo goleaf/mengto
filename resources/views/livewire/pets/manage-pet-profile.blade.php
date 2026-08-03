@@ -286,6 +286,16 @@
                 <button type="submit" class="forum-button forum-button--primary min-h-11" wire:loading.attr="disabled" wire:target="saveLocation"><x-ui-icon name="save" /><span wire:loading.remove wire:target="saveLocation">{{ __('pet_profiles.actions.save_step') }}</span><span wire:loading wire:target="saveLocation">{{ __('pet_profiles.actions.saving') }}</span></button>
             </form>
         @elseif ($activeStep['value'] === 'owners')
+            <div class="mt-6 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-paw-line bg-white p-4">
+                <div>
+                    <h3>{{ __('pet_profiles.access_requests.pending_title') }}</h3>
+                    <p class="mt-1 text-sm text-paw-muted">{{ __('pet_profiles.access_requests.manager_link_description') }}</p>
+                </div>
+                <a class="forum-button min-h-11" href="{{ route('pets.manage.access-requests', ['petProfile' => $profile->profile_key]) }}">
+                    <x-ui-icon name="users" />
+                    <span>{{ __('pet_profiles.access_requests.review_action') }}</span>
+                </a>
+            </div>
             <div class="mt-6 grid gap-3">
                 @forelse ($this->managers as $manager)
                     <article class="forum-form" wire:key="pet-manager-{{ $manager['id'] }}">

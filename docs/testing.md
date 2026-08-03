@@ -955,3 +955,35 @@ Verified package evidence on 2026-08-03:
 
 Exact scope is in
 `docs/plans/pet-profile-progressive-completion-work-package.md`.
+
+## Pet Duplicate Review And Access Request Verification
+
+`PetProfileDuplicateAccessRequestTest` covers policy-visible bounded identity
+matching, private-profile exclusion, encrypted expiring review tokens,
+explicit different-animal continuation, typed encrypted evidence, temporary
+access bounds, idempotent submission, fresh locked authorization, manager-only
+review, relationship correction, invitation acceptance, and protected
+ownership-transfer handling.
+
+Verified package evidence on 2026-08-03:
+
+- focused duplicate/access suite: 15 tests and 68 assertions;
+- related pet, architecture, localization, page-identity, and responsive
+  regression: 156 tests and 65,826 assertions;
+- final serial repository suite: 2,747 tests and 87,289 assertions in 162.853
+  seconds;
+- full Pint and Larastan, Composer validation/audit and platform requirements,
+  npm audit with zero vulnerabilities, Vite production build, and isolated
+  config/event/route/view cache compilation: passed;
+- isolated SQLite applied 132 migrations across 216 tables, rolled all 132
+  back, reapplied them, and retained five users across repeated seeding;
+- immutable forum source and deterministic 38,377-requirement checks passed;
+- disposable-database Chrome submitted the real Livewire access request and
+  rendered authorized manager evidence at desktop, 375px, and 320px with zero
+  overflow, private-candidate or credential leaks, raw keys, duplicate IDs,
+  undersized or unnamed controls, and console errors.
+
+The reusable browser command is
+`BROWSER_BASE_URL=http://127.0.0.1:PORT node scripts/pet-duplicate-access-browser-check.mjs`.
+It requires a disposable database containing the named public and private
+candidate fixtures documented by the work package.

@@ -23,6 +23,10 @@ Last updated: 2026-08-03.
 - The draft-autosave slice `pet.creation.0071-pet.creation.0081` is implemented
   and verified with the canonical `/pets` workspace and dedicated requirement
   evidence overlay.
+- The bounded duplicate-review and encrypted access-request slice
+  `pet.creation.0103-pet.creation.0137` is implemented and release-verified for
+  34 selected IDs. `pet.creation.0115` remains open because organization
+  attribution is not yet authoritative.
 
 ## Current Work Package
 
@@ -162,9 +166,13 @@ pet, medical, care, device, search, adoption, event, report, and social data.
 
 ## Next Package
 
+Select the next dependency-safe package. Do not treat safe candidate review as
+duplicate merge, proof verification, dispute resolution, organization
+attribution, or ownership transfer.
+
 Plan and implement the next dependency-safe pet slice from
-`docs/plans/pet-profile-master-plan.md`. Duplicate review, ownership proof and
-transfer, destructive lifecycle, media, social graph, lost/found, adoption,
+`docs/plans/pet-profile-master-plan.md`. Ownership proof and transfer,
+destructive lifecycle, media, social graph, lost/found, adoption,
 medical/care/device links, recommendations, analytics, and advanced privacy
 must not inherit verified status from this foundation.
 
