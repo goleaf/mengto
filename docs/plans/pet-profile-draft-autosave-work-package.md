@@ -121,7 +121,9 @@ harness requires both `--autosave` and
 disposable database because lifecycle and audit history intentionally remain
 immutable. The original autosave implementation was published directly from
 `main` to `origin/main` as commit `fc47895` (`feat: autosave pet profile
-drafts`); reconnect publication evidence is recorded after its scoped push.
+drafts`). Reconnect recovery was published as `8c9950d` (`feat: recover pet
+drafts after reconnect`), and the final complete current-tree evidence was
+published as `b629872` (`docs: record pet reconnect verification`).
 
 ## Explicit Non-Goals
 
