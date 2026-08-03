@@ -640,6 +640,155 @@ try {
         );
     }
 
+    const groupCardAudits = {};
+
+    for (const viewport of [
+        { label: '320px', width: 320, height: 900, mobile: true },
+        { label: '375px', width: 375, height: 812, mobile: true },
+        { label: '768px', width: 768, height: 1024, mobile: false },
+        { label: '1024px', width: 1024, height: 900, mobile: false },
+        { label: '1440px', width: 1440, height: 900, mobile: false },
+        { label: '1920px', width: 1920, height: 1080, mobile: false },
+    ]) {
+        await client.send('Emulation.setDeviceMetricsOverride', {
+            width: viewport.width,
+            height: viewport.height,
+            deviceScaleFactor: 1,
+            mobile: viewport.mobile,
+            screenWidth: viewport.width,
+            screenHeight: viewport.height,
+        }, sessionId);
+        const label = `${viewport.label} group directory cards`;
+        await navigate(client, sessionId, `${baseUrl}/groups`);
+        const audit = await evaluate(client, sessionId, pageAuditExpression);
+        assertPageAudit(audit, label);
+        const behavior = await evaluate(client, sessionId, `(() => {
+            const cards = [...document.querySelectorAll('[data-group-card][data-ui-card]')];
+            const layouts = cards.map((card) => {
+                const media = card.querySelector(':scope > [data-card-region="media"]');
+                const body = card.querySelector(':scope > [data-card-region="body"]');
+                const footer = body?.querySelector(':scope > [data-card-region="footer"]');
+                const image = media?.querySelector('img');
+                const cardBox = card.getBoundingClientRect();
+                const mediaBox = media?.getBoundingClientRect();
+                const bodyBox = body?.getBoundingClientRect();
+                const imageBox = image?.getBoundingClientRect();
+                const mediaStyle = media ? getComputedStyle(media) : null;
+                const bodyStyle = body ? getComputedStyle(body) : null;
+
+                return {
+                    cardTop: Math.round(cardBox.top),
+                    cardHeight: Math.round(cardBox.height),
+                    hasMedia: Boolean(media),
+                    hasBody: Boolean(body),
+                    hasFooter: Boolean(footer),
+                    hasHeading: Boolean(body?.querySelector('[data-card-heading]')),
+                    hasDescription: Boolean(body?.querySelector('[data-card-description]')),
+                    boundaryGap: mediaBox && bodyBox
+                        ? Math.round((bodyBox.top - mediaBox.bottom) * 100) / 100
+                        : null,
+                    separatorWidth: Number.parseFloat(mediaStyle?.borderBottomWidth ?? '0'),
+                    mediaOverflow: mediaStyle?.overflow,
+                    bodyBackground: bodyStyle?.backgroundColor,
+                    bodyPaddingTop: Number.parseFloat(bodyStyle?.paddingTop ?? '0'),
+                    imageEscapesMedia: Boolean(
+                        mediaBox && imageBox
+                        && (
+                            imageBox.left < mediaBox.left - 1
+                            || imageBox.right > mediaBox.right + 1
+                            || imageBox.top < mediaBox.top - 1
+                            || imageBox.bottom > mediaBox.bottom + 1
+                        )
+                    ),
+                };
+            });
+            const rows = Object.values(layouts.reduce((grouped, layout) => {
+                grouped[layout.cardTop] ??= [];
+                grouped[layout.cardTop].push(layout.cardHeight);
+
+                return grouped;
+            }, {}));
+
+            return {
+                cardCount: cards.length,
+                layouts,
+                rowHeightSpreads: rows.map((heights) => Math.max(...heights) - Math.min(...heights)),
+                rawTranslationKeys: document.body.innerText.match(/\\b(?:ui|presentation)\\.[a-z0-9_.-]+/gi) ?? [],
+            };
+        })()`);
+        assert(behavior.cardCount === 6, `${label}: expected six compatibility group cards.`);
+        assert(
+            behavior.layouts.every((layout) => layout.hasMedia && layout.hasBody && layout.hasFooter),
+            `${label}: shared media, body, or footer region is missing.`,
+        );
+        assert(
+            behavior.layouts.every((layout) => layout.hasHeading && layout.hasDescription),
+            `${label}: shared heading or description contract is missing.`,
+        );
+        assert(
+            behavior.layouts.every((layout) => Math.abs(layout.boundaryGap) <= 1),
+            `${label}: media and body overlap or separate unpredictably.`,
+        );
+        assert(
+            behavior.layouts.every((layout) => layout.separatorWidth >= 1),
+            `${label}: visible media/body separator is missing.`,
+        );
+        assert(
+            behavior.layouts.every(
+                (layout) => layout.mediaOverflow === 'hidden'
+                    && layout.bodyBackground !== 'rgba(0, 0, 0, 0)'
+                    && layout.bodyPaddingTop >= 16
+                    && ! layout.imageEscapesMedia,
+            ),
+            `${label}: shared card containment or body spacing is invalid.`,
+        );
+        assert(
+            behavior.rowHeightSpreads.every((spread) => spread <= 1),
+            `${label}: cards in the same grid row do not share a stable height.`,
+        );
+        assert(
+            behavior.rawTranslationKeys.length === 0,
+            `${label}: raw translation keys are visible: ${behavior.rawTranslationKeys.join(', ')}.`,
+        );
+        groupCardAudits[label] = { ...audit, ...behavior };
+
+        if (['375px', '1440px'].includes(viewport.label)) {
+            const loadedImageCount = await evaluate(client, sessionId, `(async () => {
+                const images = [...document.querySelectorAll('[data-group-card] [data-ui-card-media] img')];
+
+                for (const image of images) {
+                    image.scrollIntoView({ block: 'center' });
+                    await new Promise((resolve) => setTimeout(resolve, 100));
+                }
+
+                await Promise.all(images.map((image) => {
+                    if (image.complete) {
+                        return Promise.resolve();
+                    }
+
+                    return new Promise((resolve) => {
+                        image.addEventListener('load', resolve, { once: true });
+                        image.addEventListener('error', resolve, { once: true });
+                    });
+                }));
+                window.scrollTo(0, 0);
+                await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+
+                return images.filter((image) => image.complete && image.naturalWidth > 0).length;
+            })()`);
+            assert(loadedImageCount === 6, `${label}: expected all six card images to load before capture.`);
+            groupCardAudits[label].loadedImageCount = loadedImageCount;
+            const screenshotData = await client.send('Page.captureScreenshot', {
+                format: 'png',
+                captureBeyondViewport: true,
+            }, sessionId);
+            await writeFile(
+                join(outputDirectory, `group-directory-${viewport.mobile ? 'mobile' : 'desktop'}.png`),
+                Buffer.from(screenshotData.data, 'base64'),
+            );
+        }
+    }
+
     const eventAudits = {};
     await client.send('Emulation.setDeviceMetricsOverride', {
         width: 1440,
@@ -1658,6 +1807,7 @@ try {
         mobileAudit,
         zoomAudit,
         oneHealthAudits,
+        groupCardAudits,
         eventAudits,
         placeAudits,
         organizationAudits,
@@ -1698,6 +1848,8 @@ try {
             join(outputDirectory, 'forum-mobile.png'),
             join(outputDirectory, 'forum-one-health-desktop.png'),
             join(outputDirectory, 'forum-one-health-mobile.png'),
+            join(outputDirectory, 'group-directory-desktop.png'),
+            join(outputDirectory, 'group-directory-mobile.png'),
             join(outputDirectory, 'event-directory-desktop.png'),
             join(outputDirectory, 'event-directory-mobile.png'),
             join(outputDirectory, 'event-detail-desktop.png'),
@@ -1768,6 +1920,21 @@ try {
     }
 
     client?.close();
+    const browserExit = new Promise((resolve) => {
+        if (browser.exitCode !== null || browser.signalCode !== null) {
+            resolve();
+
+            return;
+        }
+
+        browser.once('exit', resolve);
+    });
     browser.kill('SIGTERM');
-    await rm(profileDirectory, { recursive: true, force: true });
+    await Promise.race([browserExit, delay(5_000)]);
+    await rm(profileDirectory, {
+        recursive: true,
+        force: true,
+        maxRetries: 5,
+        retryDelay: 100,
+    });
 }

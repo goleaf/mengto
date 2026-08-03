@@ -37,35 +37,21 @@
         <p class="group-card__topic">{{ $group['topic'] }}</p>
     @endif
 
-    <h3 class="group-card__title">
-        <x-optional-link
-            :href="$group['media_target']['url'] ?? null"
-        >
-            {{ $group['name'] }}
-        </x-optional-link>
-    </h3>
-    <p class="group-card__description">{{ $group['description'] }}</p>
+    <x-card-heading
+        :title="$group['name']"
+        :href="$group['media_target']['url'] ?? null"
+        spacing="compact"
+    />
+    <x-card-description>{{ $group['description'] }}</x-card-description>
 
     <x-tag-list :items="$group['tags']" empty="{{ __('ui.open_to_new_neighbors_7c8828df91') }}" reserve class="group-card__tags" />
 
-    <dl class="group-card__metrics">
-        <div class="min-w-0">
-            <dt>
-                <x-icon-text icon="users" class="text-xs">
-                    {{ __('ui.community_bb501d7877') }}
-                </x-icon-text>
-            </dt>
-            <dd class="mt-1 text-sm font-semibold text-paw-ink">{{ $group['members'] }}</dd>
-        </div>
-        <div class="min-w-0">
-            <dt>
-                <x-icon-text icon="activity" class="text-xs">
-                    {{ __('ui.activity_38da1505ca') }}
-                </x-icon-text>
-            </dt>
-            <dd class="mt-1 text-sm font-semibold text-paw-ink">{{ $group['activity'] }}</dd>
-        </div>
-    </dl>
+    <x-stat-grid
+        :items="$metrics"
+        :icons="['users', 'activity']"
+        label="{{ __('ui.group_summary_7192c8337e') }}"
+        variant="profile"
+    />
 
     @if ($group['next_event'] ?? null)
         <x-icon-text icon="calendar-clock" class="group-card__event">
@@ -73,38 +59,40 @@
         </x-icon-text>
     @endif
 
-    <div class="group-card__footer">
-        <div class="group-card__organizer">
-            <x-initials-avatar :initials="$group['organizer_initials']" />
-            <div>
-                <p>{{ __('presentation.group_led_by', ['organizer' => $group['organizer']]) }}</p>
-                <span>{{ $group['location'] ?? __('ui.community_organizer_8e4618300a') }}</span>
+    <x-slot:footer>
+        <div class="group-card__footer">
+            <div class="group-card__organizer">
+                <x-initials-avatar :initials="$group['organizer_initials']" />
+                <div>
+                    <p>{{ __('presentation.group_led_by', ['organizer' => $group['organizer']]) }}</p>
+                    <span>{{ $group['location'] ?? __('ui.community_organizer_8e4618300a') }}</span>
+                </div>
+            </div>
+
+            <div class="group-card__actions">
+                @if ($group['secondary_action'] ?? null)
+                    <x-action-control
+                        :label="$group['secondary_action']['label']"
+                        :icon="$group['secondary_action']['icon']"
+                        :endpoint="$group['secondary_action']['endpoint']"
+                        :payload="$group['secondary_action']['payload']"
+                        :variant="$group['secondary_action']['variant'] ?? 'quiet'"
+                        size="icon"
+                        :title="$group['secondary_action']['label']"
+                        :aria-label="$group['secondary_action']['label']"
+                    />
+                @endif
+                <x-action-control
+                    :label="$primary['label']"
+                    :icon="$primary['icon'] ?? null"
+                    :endpoint="$primary['endpoint'] ?? null"
+                    :payload="$primary['payload'] ?? []"
+                    :href="$primary['href'] ?? null"
+                    :variant="$primary['variant'] ?? 'paper'"
+                    :active="$primary['active'] ?? false"
+                    :pressed="$primary['pressed'] ?? null"
+                />
             </div>
         </div>
-
-        <div class="group-card__actions">
-            @if ($group['secondary_action'] ?? null)
-                <x-action-control
-                    :label="$group['secondary_action']['label']"
-                    :icon="$group['secondary_action']['icon']"
-                    :endpoint="$group['secondary_action']['endpoint']"
-                    :payload="$group['secondary_action']['payload']"
-                    :variant="$group['secondary_action']['variant'] ?? 'quiet'"
-                    size="icon"
-                    :title="$group['secondary_action']['label']"
-                    :aria-label="$group['secondary_action']['label']"
-                />
-            @endif
-            <x-action-control
-                :label="$primary['label']"
-                :icon="$primary['icon'] ?? null"
-                :endpoint="$primary['endpoint'] ?? null"
-                :payload="$primary['payload'] ?? []"
-                :href="$primary['href'] ?? null"
-                :variant="$primary['variant'] ?? 'paper'"
-                :active="$primary['active'] ?? false"
-                :pressed="$primary['pressed'] ?? null"
-            />
-        </div>
-    </div>
+    </x-slot:footer>
 </x-directory-card>

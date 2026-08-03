@@ -17,24 +17,19 @@
         </x-card-media>
     </x-slot:media>
 
-    <div class="flex items-start justify-between gap-4">
-        <div class="min-w-0">
-            <h2 class="text-lg font-semibold text-paw-ink">
-                <x-optional-link
-                    :href="$pet['media_target']['url'] ?? null"
-                >
-                    {{ $pet['name'] }}
-                </x-optional-link>
-            </h2>
-            <p class="mt-1 text-sm text-paw-muted">{{ $pet['breed'] }} · {{ $pet['age'] }}</p>
-        </div>
-    </div>
+    <x-card-heading
+        :title="$pet['name']"
+        :href="$pet['media_target']['url'] ?? null"
+        :level="2"
+        spacing="none"
+    />
+    <p class="mt-1 text-sm text-paw-muted">{{ $pet['breed'] }} · {{ $pet['age'] }}</p>
 
     <p class="mt-4 text-sm font-medium text-paw-coral">{{ $pet['status'] }}</p>
 
     <x-tag-list :items="$pet['traits']" empty="{{ __('ui.no_traits_shared_251b121ad1') }}" reserve class="mt-4" />
 
-    <div class="mt-5 border-t border-paw-line pt-4">
+    <x-slot:footer>
         <p class="text-sm font-semibold text-paw-ink">{{ __('presentation.with_owner', ['owner' => $pet['owner']]) }}</p>
         <x-icon-text icon="map-pin" class="mt-1">
             {{ __('presentation.neighborhood_location', ['neighborhood' => $pet['neighborhood']]) }}
@@ -64,5 +59,5 @@
                 class="ml-auto shrink-0"
             />
         </div>
-    </div>
+    </x-slot:footer>
 </x-directory-card>

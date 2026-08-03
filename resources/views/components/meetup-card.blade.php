@@ -26,35 +26,32 @@
             {{ $meetup['distance'] }}
         </x-icon-text>
     </div>
-    <h3 class="mt-2 break-words text-lg font-semibold text-paw-ink">
-        <x-optional-link
-            :href="$meetup['media_target']['url'] ?? null"
-        >
-            {{ $meetup['title'] }}
-        </x-optional-link>
-    </h3>
-    <p class="mt-2 text-sm leading-6 text-paw-muted">{{ $meetup['description'] }}</p>
+    <x-card-heading
+        :title="$meetup['title']"
+        :href="$meetup['media_target']['url'] ?? null"
+    />
+    <x-card-description>{{ $meetup['description'] }}</x-card-description>
 
     <x-tag-list :items="$meetup['tags']" empty="{{ __('ui.all_friendly_pets_welcome_1319984225') }}" reserve class="mt-4" />
 
-    <div class="mt-5 border-t border-paw-line pt-4">
+    <x-slot:footer>
         <x-icon-text icon="map-pin" class="meta--strong">
             {{ $meetup['place'] }}
         </x-icon-text>
         <p class="mt-1 text-xs text-paw-muted">{{ $meetup['neighborhood'] }}</p>
-    </div>
 
-    <x-initials-action-row
-        :initials="$meetup['host_initials']"
-        :title="__('ui.hosted_by_f772bf2712').' '.$meetup['host']"
-        :detail="$meetup['attendees']"
-        detail-icon="users"
-        action-label="{{ __('ui.rsvp_1dfe8a8e0c') }}"
-        action-icon="calendar-plus"
-        :action-endpoint="route('actions.perform')"
-        :action-payload="['action' => 'toggle-meetup', 'target' => $meetupKey, 'label' => $meetup['title']]"
-        :active="$rsvp"
-        active-label="{{ __('ui.going_7bd49cdc7d') }}"
-        active-icon="calendar-check"
-    />
+        <x-initials-action-row
+            :initials="$meetup['host_initials']"
+            :title="__('ui.hosted_by_f772bf2712').' '.$meetup['host']"
+            :detail="$meetup['attendees']"
+            detail-icon="users"
+            action-label="{{ __('ui.rsvp_1dfe8a8e0c') }}"
+            action-icon="calendar-plus"
+            :action-endpoint="route('actions.perform')"
+            :action-payload="['action' => 'toggle-meetup', 'target' => $meetupKey, 'label' => $meetup['title']]"
+            :active="$rsvp"
+            active-label="{{ __('ui.going_7bd49cdc7d') }}"
+            active-icon="calendar-check"
+        />
+    </x-slot:footer>
 </x-directory-card>

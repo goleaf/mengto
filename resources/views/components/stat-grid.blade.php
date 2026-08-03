@@ -15,6 +15,7 @@
         'stat-grid--'.$variant,
         'stat-grid--large' => $large,
         'stat-grid--muted' => $tone === 'muted',
+        'stat-grid--two' => count($items) === 2,
         'stat-grid--four' => count($items) === 4,
     ]) }}
 >

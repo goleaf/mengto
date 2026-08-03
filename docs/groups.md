@@ -7,6 +7,16 @@ management, audit, discovery, and reporting boundary. The earlier `/groups`
 preview remains a compatibility presentation route; authoritative persistent
 records live under `/forum/groups`.
 
+The compatibility preview composes the canonical public directory-card
+primitives for its media, body, heading, description, statistics, and footer.
+Those primitives own containment, spacing, responsive geometry, and accessible
+optional links; `x-group-card` owns only group-specific badges, recommendation,
+event, organizer, and action ordering. This visual composition does not make
+preview state authoritative and does not replace persistent group policies or
+Actions. The rationale and migration boundary are recorded in
+`docs/audits/groups-shared-card-ux-audit.md` and
+`docs/plans/shared-directory-card-system-plan.md`.
+
 The group-core package verifies `forum.feature.3108` through `forum.feature.3133`,
 `forum.moderation.0323`, `forum.moderation.0324`,
 `forum.feature.3140` through `forum.feature.3142`, and

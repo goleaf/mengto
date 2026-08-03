@@ -1,9 +1,6 @@
 @use 'tokens' as *;
 
 .group-card {
-    align-self: start;
-    block-size: auto;
-
     &__badges {
         position: absolute;
         inset-block-start: 0.75rem;
@@ -25,35 +22,8 @@
         line-height: 1rem;
     }
 
-    &__title {
-        margin-block-start: 0.375rem;
-        color: $ink;
-        font-size: 1.125rem;
-        font-weight: 600;
-        line-height: 1.5rem;
-        overflow-wrap: anywhere;
-    }
-
-    &__description {
-        min-block-size: 4.5rem;
-        margin-block-start: 0.5rem;
-        color: $muted;
-        font-size: 0.875rem;
-        line-height: 1.5rem;
-        text-wrap: pretty;
-    }
-
     &__tags {
         margin-block-start: 1rem;
-    }
-
-    &__metrics {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 0.75rem;
-        margin-block-start: 1.25rem;
-        border-block-start: 1px solid $line;
-        padding-block-start: 1rem;
     }
 
     &__event {
@@ -65,8 +35,6 @@
         display: grid;
         min-inline-size: 0;
         gap: 0.875rem;
-        margin-block-start: auto;
-        padding-block-start: 1.25rem;
     }
 
     &__organizer {

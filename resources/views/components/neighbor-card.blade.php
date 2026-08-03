@@ -25,15 +25,12 @@
         </x-icon-text>
     </div>
 
-    <h3 class="mt-2 break-words text-lg font-semibold text-paw-ink">
-        <x-optional-link
-            :href="$neighbor['media_target']['url'] ?? null"
-        >
-            {{ $neighbor['name'] }}
-        </x-optional-link>
-    </h3>
+    <x-card-heading
+        :title="$neighbor['name']"
+        :href="$neighbor['media_target']['url'] ?? null"
+    />
     <p class="mt-1 text-sm font-semibold text-paw-coral">{{ $neighbor['pet'] }}</p>
-    <p class="mt-3 text-sm leading-6 text-paw-muted">{{ $neighbor['status'] }}</p>
+    <x-card-description spacing="relaxed">{{ $neighbor['status'] }}</x-card-description>
 
     <x-tag-list
         :items="$neighbor['interests']"
@@ -42,23 +39,25 @@
         class="mt-4"
     />
 
-    <div class="mt-auto flex items-center gap-3 border-t border-paw-line pt-5">
-        <div class="flex -space-x-2" aria-hidden="true">
-            <span class="grid size-8 place-items-center rounded-full border-2 border-white bg-paw-sun text-xs font-semibold text-paw-ink">{{ __('ui.pc_21d017c40a') }}</span>
-            <span class="grid size-8 place-items-center rounded-full border-2 border-white bg-paw-mint text-xs font-semibold text-paw-leaf">+{{ $neighbor['mutual_count'] }}</span>
+    <x-slot:footer>
+        <div class="flex min-w-0 items-center gap-3">
+            <div class="flex -space-x-2" aria-hidden="true">
+                <span class="grid size-8 place-items-center rounded-full border-2 border-white bg-paw-sun text-xs font-semibold text-paw-ink">{{ __('ui.pc_21d017c40a') }}</span>
+                <span class="grid size-8 place-items-center rounded-full border-2 border-white bg-paw-mint text-xs font-semibold text-paw-leaf">+{{ $neighbor['mutual_count'] }}</span>
+            </div>
+            <p class="min-w-0 flex-1 text-xs font-semibold leading-4 text-paw-muted">{{ trans_choice('presentation.mutual_neighbors', $neighbor['mutual_count'], ['count' => $neighbor['mutual_count']]) }}</p>
+            <x-action-control
+                label="{{ __('ui.follow_641d1ef657') }}"
+                active-label="{{ __('ui.following_344b4271ca') }}"
+                icon="user-plus"
+                active-icon="user-check"
+                variant="paper"
+                :active="$followed"
+                :pressed="$followed"
+                :endpoint="route('actions.perform')"
+                :payload="['action' => 'toggle-follow', 'target' => $neighborKey, 'label' => $neighbor['name']]"
+                class="shrink-0"
+            />
         </div>
-        <p class="min-w-0 flex-1 text-xs font-semibold leading-4 text-paw-muted">{{ trans_choice('presentation.mutual_neighbors', $neighbor['mutual_count'], ['count' => $neighbor['mutual_count']]) }}</p>
-        <x-action-control
-            label="{{ __('ui.follow_641d1ef657') }}"
-            active-label="{{ __('ui.following_344b4271ca') }}"
-            icon="user-plus"
-            active-icon="user-check"
-            variant="paper"
-            :active="$followed"
-            :pressed="$followed"
-            :endpoint="route('actions.perform')"
-            :payload="['action' => 'toggle-follow', 'target' => $neighborKey, 'label' => $neighbor['name']]"
-            class="shrink-0"
-        />
-    </div>
+    </x-slot:footer>
 </x-directory-card>

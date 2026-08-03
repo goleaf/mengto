@@ -713,6 +713,49 @@ Exact findings and the zero-debt plan are in
 `docs/audits/icon-system-deep-audit.md` and
 `docs/plans/icon-system-unlimited-plan.md`.
 
+## Shared Directory Card Verification
+
+`GroupDirectoryPreviewTest` protects the direct media/body/footer regions,
+opaque body surface, visible separator, semantic linked and unlinked headings,
+and the four direct catalogue-card composition contracts. The existing pet,
+meetup, and linked-media suites protect sibling rendering and navigation.
+
+The authenticated browser runner audits all six `/groups` cards at 320, 375,
+768, 1024, 1440, and 1920 CSS pixels. It requires adjacent non-overlapping
+media/body geometry, a visible separator, contained images, an opaque padded
+body, shared headings/descriptions/footers, equal heights within each grid row,
+no horizontal overflow, no raw translation keys, and no console errors. It
+writes `group-directory-mobile.png` and `group-directory-desktop.png` to the
+configured browser output directory.
+
+Verified package evidence on 2026-08-03:
+
+- RED: the structural group-card and shared-heading contracts failed before
+  the primitives existed;
+- isolated staged-tree architecture/localization/directory slice: 143 tests
+  and 61,694 assertions;
+- isolated staged-tree full serial suite: 2,642 tests and 83,314 assertions;
+- Blade compilation, targeted Pint, PHP syntax, full Larastan across 1,385
+  files, and the production Vite build passed;
+- Chrome passed the six-width geometry assertions for six cards with a 0-pixel
+  region gap, 1-pixel separator, 20-pixel body padding, no escaped image, zero
+  same-row height spread, six of six images loaded before mobile and desktop
+  capture, zero raw translation keys, and zero console errors;
+- browser cleanup now waits for Chrome exit and uses bounded temporary-profile
+  removal retries;
+- fresh verification applied 130 migrations, created 215 tables, and retained
+  five users after the repeat seed;
+- Composer validation/audit, NPM audit, and config/event/route/view cache
+  generation passed; scoped publication remains pending.
+
+The concurrently dirty shared tree passed 2,651 of 2,654 tests. Its three
+failures came from uncommitted foreign icon/member/pet-profile work and are not
+present in the isolated staged tree.
+
+Exact findings and the continuing backlog are in
+`docs/audits/groups-shared-card-ux-audit.md` and
+`docs/plans/shared-directory-card-system-plan.md`.
+
 ## Organization Authority Foundation
 
 `OrganizationAuthorityFoundationTest` covers idempotent creation, owner

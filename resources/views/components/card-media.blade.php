@@ -16,7 +16,8 @@
     :href="$href"
     :label="$linkLabel"
     variant="card"
-    {{ $attributes->class(['relative']) }}
+    data-ui-card-media
+    {{ $attributes->class(['relative isolate block min-w-0 overflow-hidden bg-paw-paper']) }}
 >
     <x-responsive-image
         :src="$src"
@@ -28,9 +29,11 @@
         :sizes="$sizes"
         :eager="$eager"
         @class([
-            'w-full object-cover',
+            'block w-full object-cover',
             'aspect-[4/3]' => $ratio === 'portrait',
-            'aspect-[3/2]' => $ratio !== 'portrait',
+            'aspect-square' => $ratio === 'square',
+            'aspect-video' => $ratio === 'wide',
+            'aspect-[3/2]' => $ratio === 'landscape',
         ])
     />
 

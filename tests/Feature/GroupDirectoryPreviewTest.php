@@ -4,6 +4,14 @@ use App\Http\Controllers\GroupDirectoryPreviewController;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Route;
 
+function groupCardXPath(string $html): DOMXPath
+{
+    $document = new DOMDocument;
+    $document->loadHTML($html, LIBXML_NOERROR | LIBXML_NOWARNING);
+
+    return new DOMXPath($document);
+}
+
 test('the group directory renders a functional local community catalog', function () {
     $route = Route::getRoutes()->getByName('groups.index');
 
@@ -50,6 +58,76 @@ test('the group directory renders a functional local community catalog', functio
         ->and($xpath->query('//main//input[@id="group-search" and not(@disabled)]')->length)->toBe(1)
         ->and($xpath->query('//main//form')->length)->toBeGreaterThan(0)
         ->and($xpath->query('//header//nav[@aria-label="Preview navigation"]')->length)->toBe(0);
+});
+
+test('group cards use shared media body and footer regions without mixing image and copy', function () {
+    $response = $this->get(route('groups.index'));
+
+    $response->assertSuccessful();
+
+    $xpath = responseXPath($response);
+    $cards = $xpath->query('//article[@data-group-card and @data-ui-card]');
+
+    expect($cards->length)->toBe(6);
+
+    foreach ($cards as $card) {
+        $media = $xpath->query('./div[@data-card-region="media"]', $card)->item(0);
+        $body = $xpath->query('./div[@data-card-region="body"]', $card)->item(0);
+
+        expect($media)->not->toBeNull()
+            ->and($body)->not->toBeNull()
+            ->and($xpath->query('.//img', $media)->length)->toBe(1)
+            ->and($xpath->query('.//h3[@data-card-heading]', $body)->length)->toBe(1)
+            ->and($xpath->query('.//p[@data-card-description]', $body)->length)->toBe(1)
+            ->and($xpath->query('.//*[@data-card-region="footer"]', $body)->length)->toBe(1)
+            ->and(' '.$media?->attributes?->getNamedItem('class')?->nodeValue.' ')
+            ->toContain(' border-b ')
+            ->and(' '.$body?->attributes?->getNamedItem('class')?->nodeValue.' ')
+            ->toContain(' bg-white ');
+    }
+});
+
+test('the shared card heading keeps semantic levels and optional destinations explicit', function () {
+    $linked = Blade::render(
+        '<x-card-heading title="Community walks" href="https://mengto.test/groups/walks" />',
+    );
+    $unlinked = Blade::render(
+        '<x-card-heading title="Private draft" :href="null" :level="2" spacing="none" />',
+    );
+
+    $linkedXPath = groupCardXPath($linked);
+    $unlinkedXPath = groupCardXPath($unlinked);
+
+    expect($linkedXPath->query('//h3[@data-card-heading]/a[@href="https://mengto.test/groups/walks"]')->length)
+        ->toBe(1)
+        ->and($unlinkedXPath->query('//h2[@data-card-heading and normalize-space()="Private draft"]')->length)
+        ->toBe(1)
+        ->and($unlinkedXPath->query('//a')->length)
+        ->toBe(0);
+});
+
+test('direct catalogue card consumers stay composed from the shared card regions', function () {
+    $contracts = [
+        'group-card.blade.php' => true,
+        'meetup-card.blade.php' => true,
+        'neighbor-card.blade.php' => true,
+        'pet-directory-card.blade.php' => false,
+    ];
+
+    foreach ($contracts as $view => $usesDescription) {
+        $source = file_get_contents(resource_path('views/components/'.$view));
+
+        expect($source)
+            ->not->toBeFalse()
+            ->toContain('<x-directory-card')
+            ->toContain('<x-card-media')
+            ->toContain('<x-card-heading')
+            ->toContain('<x-slot:footer>');
+
+        if ($usesDescription) {
+            expect($source)->toContain('<x-card-description');
+        }
+    }
 });
 
 test('groups navigation is active in the catalog and linked from existing pages', function () {

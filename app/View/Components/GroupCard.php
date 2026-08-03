@@ -18,6 +18,11 @@ class GroupCard extends Component
     public array $primary;
 
     /**
+     * @var array<int, array{label: string, value: string}>
+     */
+    public array $metrics;
+
+    /**
      * @param  array<string, mixed>  $group
      */
     public function __construct(
@@ -37,6 +42,16 @@ class GroupCard extends Component
                 'label' => $group['name'],
             ],
             'active' => $this->joined,
+        ];
+        $this->metrics = [
+            [
+                'label' => __('ui.community_bb501d7877'),
+                'value' => $group['members'],
+            ],
+            [
+                'label' => __('ui.activity_38da1505ca'),
+                'value' => $group['activity'],
+            ],
         ];
     }
 

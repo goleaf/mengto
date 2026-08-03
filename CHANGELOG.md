@@ -18,6 +18,11 @@
 
 ### Interface System
 
+- Rebuilt the `/groups` compatibility cards on shared contained media, opaque
+  body, semantic heading/description, statistics, and bottom-footer primitives;
+  migrated the direct pet, neighbour, and meetup card family and added
+  six-width browser geometry regressions so future spacing and separation
+  changes have one maintenance boundary.
 - Added one canonical Lucide icon primitive with bounded sizes, consistent
   stroke/fill and ARIA behavior; migrated all direct/dynamic consumers and
   legacy selectors; added icons to primary navigation and unambiguous actions;
