@@ -102,6 +102,15 @@ requirements `pet.identity.0005` and `pet.identity.0011`, public/global alias
 discovery, merge, ownership, and taxonomy remain open. Exact evidence is in
 `docs/plans/pet-profile-name-identity-work-package.md`.
 
+The birth-precision package implements 17 selected
+`pet.identity.0160-pet.identity.0186` records with typed exact, estimated,
+month, year, age-estimate, unknown, and optional celebration-day states. One
+server normalizer serves every mutation path, and one calculator derives an
+advancing point or range for localized projection and conservative event
+eligibility. Life-stage, medical verification, breed/taxonomy provenance,
+ownership, and found-animal behavior remain open. Exact evidence is in
+`docs/plans/pet-profile-birth-precision-work-package.md`.
+
 ## Phase 19: Ownership And Privacy
 
 **IDs:** `pet.ownership.0001-pet.ownership.0393` and

@@ -188,6 +188,32 @@ introduced. Exact scope, query delta, remaining cross-domain consistency work,
 and release evidence are in
 `docs/plans/pet-profile-name-identity-work-package.md`.
 
+## Birth Precision And Derived Age
+
+The Age and sex step stores the certainty of a birth fact independently from
+its value. Supported modes are exact date, estimated date, month and year,
+year only, current age estimate, and unknown. An optional celebration month
+and day is a chosen annual date and is never treated as proof of birth.
+
+`PetBirthDetailsNormalizer` validates and canonicalizes every creation,
+generic-update, progressive-update, autosave, and manual-save payload. It
+rejects future and impossible values, retains only fields compatible with the
+selected mode, and records when an age estimate was observed. The browser
+cannot forge a precision/value combination that bypasses this server boundary.
+
+`PetProfileAgeCalculator` derives age at read time. Exact and estimated dates
+produce a point value; month-only and year-only values produce an uncertainty
+range; an age estimate advances from its observation time; unknown has no age
+projection. `PetProfileAgeLabel` applies the active locale without converting
+an estimate into an exact fact. Event eligibility uses the same range and
+requires its entire span to satisfy configured age limits.
+
+Existing profile reads select four additional nullable scalar columns but add
+no query. The new values are not filtered, sorted, or joined, so no index is
+required. Exact scope, release evidence, and remaining life-stage and
+verification work are in
+`docs/plans/pet-profile-birth-precision-work-package.md`.
+
 ## Identity And Compatibility
 
 An account and a pet are separate aggregates. Every pet mutation runs as an

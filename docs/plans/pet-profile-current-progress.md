@@ -34,14 +34,18 @@ Last updated: 2026-08-03.
   `pet.identity.0003-pet.identity.0040` requirements for current, typed
   alternative, historical, visibility-aware, and manager-searchable names. It
   is implemented, release-verified, and published.
+- The birth-precision and automatically advancing age slice verifies 17
+  selected `pet.identity.0160-pet.identity.0186` requirements. It is
+  implemented and release-verified with exact, estimated, month, year,
+  age-estimate, unknown, and optional celebration-day modes.
 
 ## Current Work Package
 
-The current package adds typed alternative and previous pet names without
-replacing the canonical profile identity. It preserves all existing pet,
-medical, care, device, search, adoption, event, report, and social links while
-adding per-name visibility, manager-authorized mutation, public projection,
-and policy-scoped manager-workspace search.
+The current package preserves honest birth precision and calculates age from
+the stored fact or observation instead of persisting a stale manual value. It
+preserves all existing pet and adjacent-domain links while adding typed modes,
+one server normalization boundary, range-aware event eligibility, localized
+public projection, and an optional explicitly unverified celebration day.
 
 ## Creation Interface Refinement
 
@@ -196,13 +200,35 @@ and policy-scoped manager-workspace search.
   package evidence. Cross-domain name consistency requirements
   `pet.identity.0005` and `pet.identity.0011` remain open.
 
+## Birth Precision And Derived Age
+
+- Exact date, estimated date, month/year, year only, current age estimate, and
+  unknown are distinct typed states. Optional celebration month/day is stored
+  separately and never presented as a verified birth date.
+- One server-side normalizer is reused by creation, generic update,
+  progressive update, autosave, and manual save. It rejects impossible/future
+  values and clears fields that do not belong to the selected mode.
+- One reusable calculator returns an age range at the current reference time.
+  Age estimates advance from their recorded timestamp; month/year facts keep
+  their uncertainty; unknown remains unknown.
+- Workspace, public profile, duplicate review, lost/found, and event
+  registration use the same prepared age semantics. An uncertain age satisfies
+  event limits only when its complete range is eligible.
+- Focused verification passed 15 tests and 83 assertions; the affected
+  regression passed 138 tests and 4,382 assertions. The isolated sequential
+  suite passed 2,831 tests and 90,267 assertions; static, dependency,
+  disposable database, build, cache, and connected Chrome gates also passed.
+- Exactly 17 selected `pet.identity.0160-pet.identity.0186` records carry this
+  package evidence. Section prompts, life-stage labels, medical verification,
+  breed provenance, ownership, and found-animal workflows remain open.
+
 ## Next Package
 
-Select the next dependency-safe birth-precision or breed-provenance package.
-Do not treat safe candidate review, possible species, or alternative-name
-history as duplicate merge, proof verification, taxonomy verification,
-lost/found coordination, dispute resolution, organization attribution,
-cross-domain rename propagation, or ownership transfer.
+Select the next dependency-safe breed-provenance or appearance-fact package.
+Do not treat safe candidate review, possible species, alternative-name
+history, or birth precision as duplicate merge, proof verification, taxonomy
+verification, lost/found coordination, dispute resolution, organization
+attribution, cross-domain rename propagation, or ownership transfer.
 
 Plan and implement the next dependency-safe pet slice from
 `docs/plans/pet-profile-master-plan.md`. Ownership proof and transfer,

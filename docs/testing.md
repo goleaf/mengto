@@ -1034,3 +1034,30 @@ Observed evidence on 2026-08-03:
 
 The reusable browser command is
 `BROWSER_BASE_URL=http://127.0.0.1:PORT BROWSER_ALLOW_DATA_MUTATION=1 node scripts/pet-workspace-browser-check.mjs --names`.
+
+## Pet Birth Precision Verification
+
+`PetProfileBirthPrecisionTest` covers all six precision modes, impossible and
+future input, normalized persistence, advancing age estimates, month/year
+ranges, localized labels, public celebration projection, direct Actions,
+Livewire save/reload, and migration rollback/reapplication.
+
+Observed evidence on 2026-08-03:
+
+- focused suite: 15 tests and 83 assertions;
+- affected pet, event, lost/found, duplicate, and workspace regression: 138
+  tests and 4,382 assertions;
+- complete pet-profile regression: 114 tests and 3,801 assertions;
+- isolated sequential suite: 2,831 tests and 90,267 assertions in 163.089
+  seconds;
+- full Pint and Larastan, Composer/platform/audit, npm audit, Vite build, and
+  config/event/route/view cache gates passed;
+- fresh disposable SQLite applied 135 migrations, retained 217 tables, five
+  users, and three pet profiles, and passed repeated complete seeding;
+- disposable Chrome changed the real Livewire precision, saved and reloaded an
+  advancing age estimate, verified its public projection, and audited desktop,
+  390px, and 320px layouts with zero accessibility, privacy, overflow,
+  raw-key, duplicate-ID, or console finding.
+
+The reusable browser command is
+`BROWSER_BASE_URL=http://127.0.0.1:PORT BROWSER_ALLOW_DATA_MUTATION=1 node scripts/pet-workspace-browser-check.mjs --birth`.
