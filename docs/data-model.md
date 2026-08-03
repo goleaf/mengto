@@ -133,6 +133,21 @@ Never run `migrate:fresh` on a non-isolated database.
 The pet-profile foundation migration and bounded backfill are documented in
 `docs/pet-profiles.md`.
 
+## Pet Breed Origin Relation
+
+`pet_profiles.breed_origin_type` is nullable so an unreviewed legacy breed is
+different from an explicit unknown or no-breed choice. The historical `breed`
+and `domestic_classification_id` columns remain compatibility projections.
+
+`pet_profile_breed_origins` stores at most four application-bounded ordered
+rows with a globally unique stable key, owning pet FK, optional active
+domestic-classification FK, display name, confidence, source, and optional
+mixed percentage. The `(pet_profile_id, position, id)` index supports bounded
+projection order; `(domestic_classification_id, pet_profile_id)` supports
+classification-to-profile lookup. The relation cascades with its pet, while a
+removed classification nulls only the optional taxonomy reference and retains
+the recorded name/provenance.
+
 ## Data Retention
 
 Retention is category-specific:

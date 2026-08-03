@@ -69,6 +69,10 @@
 
 ### Pet Profiles
 
+- Added normalized breed-origin profiles with one, mixed, possible-multiple,
+  no-breed, and unknown states; up to four entries now retain independent
+  confidence, provenance, and optional mixed percentages while legacy breed
+  strings remain compatible and photographs cannot upgrade trust.
 - Added typed species confidence for confirmed, possible, and unidentified
   animal groups. Possible cat/dog selections remain normalized for discovery
   while every public and manager-facing projection labels the guess honestly.

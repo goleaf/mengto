@@ -249,3 +249,22 @@ Confirm the existing encrypted casts can read `profile_data` and
 configuration, and logs or rendered HTML contain no identifier. Rollback is an
 application-code rollback; already stored versioned facts remain valid and
 must not be deleted.
+
+## Pet Breed Origin Migration
+
+`2026_08_04_000100_add_breed_origin_to_pet_profiles.php` adds one nullable
+profile type and the indexed normalized origin relation. It performs no
+ambiguous legacy backfill: existing breed strings remain readable and become
+owner-reported compatibility data only when the profile is edited.
+
+1. Back up and record pet-profile and domestic-classification counts.
+2. Run `php artisan migrate --force` and inspect the new FK/index shape.
+3. Smoke one legacy string, one explicit unknown profile, and one mixed profile
+   with two different source/confidence values.
+4. Confirm the public projection shows provenance without internal keys or
+   private documents and that a photo change does not change confidence.
+5. Rebuild config, event, route, and view caches.
+
+Rollback is safe only before normalized origin rows are relied upon. After
+production writes begin, retain the additive schema and deploy a reviewed
+forward fix; do not guess legacy strings into taxonomy classifications.

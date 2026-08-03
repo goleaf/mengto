@@ -1061,3 +1061,35 @@ Observed evidence on 2026-08-03:
 
 The reusable browser command is
 `BROWSER_BASE_URL=http://127.0.0.1:PORT BROWSER_ALLOW_DATA_MUTATION=1 node scripts/pet-workspace-browser-check.mjs --birth`.
+
+## Pet Breed Origin Verification
+
+`PetProfileBreedOriginTest` covers one and multiple origins, all overall
+states, confidence and source separation, optional percentage validation,
+active same-taxon classifications, legacy-client compatibility, foreign row
+keys, authorized Livewire editing, public trust projection, localization, and
+bounded query growth.
+
+Observed evidence on 2026-08-04:
+
+- focused suite: 7 tests and 55 assertions;
+- affected regression: 55 tests and 3,726 assertions;
+- complete pet-profile regression: 121 tests and 4,144 assertions;
+- complete sequential suite: 2,867 tests and 93,321 assertions in 199.794
+  seconds using a 1 GB runner limit for the existing high-resolution
+  lost/found image fixture;
+- full Pint, Larastan, Composer/platform/audit, npm audit, Vite build,
+  JavaScript syntax, and diff checks passed;
+- fresh disposable SQLite applied 136 migrations, retained 218 tables, five
+  users and three pet profiles across repeated seeding, and passed explicit
+  rollback/reapplication of the new migration;
+- config, event, route, and view caches compiled in an isolated namespace;
+- disposable Chrome selected mixed origin, explicitly added two entries,
+  saved and restored their distinct names, confidence, sources, and
+  percentages, and verified the public projection;
+- desktop, 390px, and 320px checks found no overflow, raw translation keys,
+  duplicate IDs, unnamed or undersized controls, privacy leaks, or console
+  errors.
+
+The reusable browser command is
+`BROWSER_BASE_URL=http://127.0.0.1:PORT BROWSER_ALLOW_DATA_MUTATION=1 node scripts/pet-workspace-browser-check.mjs --breed`.

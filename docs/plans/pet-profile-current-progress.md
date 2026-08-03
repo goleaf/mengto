@@ -1,6 +1,6 @@
 # Pet Profile Current Progress
 
-Last updated: 2026-08-03.
+Last updated: 2026-08-04.
 
 ## Current State
 
@@ -38,14 +38,18 @@ Last updated: 2026-08-03.
   selected `pet.identity.0160-pet.identity.0186` requirements. It is
   implemented, release-verified, and published with exact, estimated, month,
   year, age-estimate, unknown, and optional celebration-day modes.
+- The bounded breed-origin slice implements 35 selected
+  `pet.identity.0072-pet.identity.0122` requirements with normalized multiple
+  origins, explicit confidence and provenance, optional mixed percentages,
+  and legacy compatibility. It is release-verified and published.
 
 ## Current Work Package
 
-The current package preserves honest birth precision and calculates age from
-the stored fact or observation instead of persisting a stale manual value. It
-preserves all existing pet and adjacent-domain links while adding typed modes,
-one server normalization boundary, range-aware event eligibility, localized
-public projection, and an optional explicitly unverified celebration day.
+The current package preserves honest breed ancestry and provenance without
+forcing one breed or treating appearance as proof. It preserves all existing
+pet and adjacent-domain links while adding one normalized relation, a shared
+server boundary for all mutation paths, localized confidence/source controls,
+and an honest public projection.
 
 ## Creation Interface Refinement
 
@@ -222,9 +226,38 @@ public projection, and an optional explicitly unverified celebration day.
   package evidence. Section prompts, life-stage labels, medical verification,
   breed provenance, ownership, and found-animal workflows remain open.
 
+## Breed Origin And Provenance
+
+- Overall state distinguishes one breed, mixed origin, several possible
+  breeds, no breed, and unknown. Up to four ordered entries retain a canonical
+  classification when available or an owner-entered name when it is not.
+- Confidence and source are independent typed values. Optional percentages
+  are accepted only for mixed origin and may not total more than 100. A photo
+  cannot promote a reported or suspected origin to confirmed.
+- One normalizer serves creation, generic update, progressive update,
+  autosave, and manual save. One synchronizer requires the eager-loaded owned
+  relation and performs bounded delete/upsert operations without accepting a
+  foreign origin key.
+- The legacy breed column remains a compatibility snapshot. Unreviewed legacy
+  strings appear as owner-reported information and are never automatically
+  matched to an empty or future taxonomy catalogue.
+- The localized editor provides explicit add/remove controls, trust and
+  non-discrimination guidance, loading/dirty/offline behavior, manual save,
+  and a complete 320px keyboard/touch path. Public profiles receive prepared
+  rows with visible confidence and provenance only.
+- Focused verification passes 7 tests and 55 assertions; the affected
+  regression passes 55 tests and 3,726 assertions; and the complete
+  pet-profile regression passes 121 tests and 4,144 assertions. The isolated
+  sequential suite passes 2,867 tests and 93,321 assertions; static,
+  dependency, disposable database, repeated seed, build, cache, and connected
+  Chrome gates also pass.
+- Exactly 35 selected `pet.identity.0072-pet.identity.0122` records belong to
+  this package. Their release evidence is verified and implementation commit
+  `3b38e2e` is published on `origin/main`.
+
 ## Next Package
 
-Select the next dependency-safe breed-provenance or appearance-fact package.
+Select the next dependency-safe appearance-fact or life-stage package.
 Do not treat safe candidate review, possible species, alternative-name
 history, or birth precision as duplicate merge, proof verification, taxonomy
 verification, lost/found coordination, dispute resolution, organization

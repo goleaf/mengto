@@ -111,6 +111,16 @@ eligibility. Life-stage, medical verification, breed/taxonomy provenance,
 ownership, and found-animal behavior remain open. Exact evidence is in
 `docs/plans/pet-profile-birth-precision-work-package.md`.
 
+The breed-origin package implements 35 selected
+`pet.identity.0072-pet.identity.0122` records with an explicit overall type,
+up to four normalized origins, per-origin confidence and source, and optional
+mixed percentages. One server normalizer and one bounded synchronizer serve
+every mutation path while the original breed field remains a compatibility
+snapshot. Taxonomy verification/import, protected document evidence,
+breed-based discovery, behavior, health, ownership, and found-animal effects
+remain open. Exact evidence is in
+`docs/plans/pet-profile-breed-origin-work-package.md`.
+
 ## Phase 19: Ownership And Privacy
 
 **IDs:** `pet.ownership.0001-pet.ownership.0393` and

@@ -214,6 +214,29 @@ required. Exact scope, release evidence, and remaining life-stage and
 verification work are in
 `docs/plans/pet-profile-birth-precision-work-package.md`.
 
+## Breed Origin And Provenance
+
+The Breed or origin step stores the overall description separately from up to
+four named origins. One breed, mixed origin, several possible breeds, no
+breed, and unknown are distinct states. Each named origin keeps its own
+confirmed/documented, owner-reported, or suspected confidence; document,
+pedigree, shelter, veterinarian, genetic-test, owner-assumption, or unknown
+source; and an optional percentage for mixed ancestry.
+
+`PetBreedOriginNormalizer` validates the complete semantic payload once for
+creation, generic update, progressive update, autosave, and manual save.
+`PetBreedOriginSynchronizer` replaces the bounded normalized relation through
+one delete and one upsert without accepting a row key from another pet. The
+historical `pet_profiles.breed` value remains a compatibility snapshot rather
+than the authoritative structured record.
+
+Legacy breed strings remain owner-reported and are not guessed into the
+taxonomy catalogue. A photograph never changes confidence or source. Public
+profiles show the prepared confidence and provenance next to the breed value
+and explicitly avoid character, health, compatibility, or value conclusions.
+Exact scope, query delta, remaining evidence workflows, and release evidence
+are in `docs/plans/pet-profile-breed-origin-work-package.md`.
+
 ## Identity And Compatibility
 
 An account and a pet are separate aggregates. Every pet mutation runs as an

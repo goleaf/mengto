@@ -7,6 +7,27 @@ This living plan records work that was actually performed. A pass is
 status remains authoritative in
 `docs/requirements/compliance-matrix.md`.
 
+## Current Delivery: Pet Breed Origin And Provenance
+
+Status: `implemented, verified, and published` on 2026-08-04.
+
+- Preserve the legacy breed string as a bounded compatibility snapshot while
+  storing an explicit one, mixed, possible-multiple, no-breed, or unknown
+  overall state and up to four normalized origins.
+- Keep confidence, information source, and optional mixed percentage separate
+  from the breed value; a photograph cannot upgrade a reported or suspected
+  origin to confirmed.
+- Reuse one server normalizer and one owned-relation synchronizer across
+  creation, generic update, progressive update, autosave, and manual save.
+- Render localized trust/provenance controls and an honest public projection
+  without queries or business logic in Blade.
+- Keep taxonomy ingestion/verification, protected evidence documents,
+  breed-based discovery, behavior, health, ownership, and lost/found effects
+  outside this 35-requirement package.
+
+Exact scope and observed evidence are recorded in
+`docs/plans/pet-profile-breed-origin-work-package.md`.
+
 ## Current Delivery: Pet Name Identity
 
 Status: `implemented, verified, and published` on 2026-08-03.

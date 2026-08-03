@@ -359,6 +359,13 @@ views receive bounded arrays and do not query models or resolve services.
 Existing `user_id`, slug, string species/breed, and encrypted profile data are
 compatibility fields during expansion. See `docs/pet-profiles.md`.
 
+Breed ancestry is a bounded normalized child relation, not a replacement pet
+identity or a taxonomy authority. `PetBreedOriginNormalizer` owns semantic
+validation, `PetBreedOriginSynchronizer` owns the short relational write, and
+`PetBreedOriginPresenter` owns the public-safe projection. The legacy breed
+string is derived compatibility data. Confidence and source stay independent,
+and no media or appearance path may promote either value.
+
 ## Canonical Social Relationship Boundary
 
 `SocialActor` is a one-to-one internal adapter around an authoritative user,
