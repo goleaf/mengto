@@ -555,6 +555,7 @@ try {
         const pageIdentityAudits = {};
         const pageIdentityScreenshots = [];
         const englishIdentityCopy = new Map();
+        let englishNavigationCopy = null;
         let englishMedicalRecordCopy = null;
         let englishCareJournalCopy = null;
         let canonicalTitleFont = null;
@@ -717,8 +718,22 @@ try {
                             )
                         ),
                         rawTranslationKeys: document.body.innerText.match(
-                            /\\b(?:ui|messages|forum|pet_profiles|places)\\.[a-z0-9_.-]+/gi
+                            /\\b(?:ui|messages|forum|navigation|pet_profiles|places)\\.[a-z0-9_.-]+/gi
                         ) ?? [],
+                        navigationCopy: {
+                            desktopLabel: document.querySelector(
+                                'nav[data-navigation-variant="desktop"]'
+                            )?.getAttribute('aria-label') ?? null,
+                            desktopItems: [...document.querySelectorAll(
+                                'nav[data-navigation-variant="desktop"] a[data-nav-item] span'
+                            )].map((element) => element.textContent.trim()),
+                            mobileLabel: document.querySelector(
+                                'nav[data-navigation-variant="mobile"]'
+                            )?.getAttribute('aria-label') ?? null,
+                            mobileItems: [...document.querySelectorAll(
+                                'nav[data-navigation-variant="mobile"] a[data-nav-item] span'
+                            )].map((element) => element.textContent.trim()),
+                        },
                         medicalRecordCopy: {
                             privacyLabel: document.querySelector('.medical-privacy-strip')
                                 ?.getAttribute('aria-label') ?? null,
@@ -816,6 +831,33 @@ try {
                     assert(behavior.eyebrowText !== englishCopy.eyebrowText, `${label}: eyebrow was not localized.`);
                     assert(behavior.headingText !== englishCopy.headingText, `${label}: heading was not localized.`);
                     assert(behavior.descriptionText !== englishCopy.descriptionText, `${label}: description was not localized.`);
+                }
+
+                const navigationCopy = [
+                    behavior.navigationCopy.desktopLabel,
+                    ...behavior.navigationCopy.desktopItems,
+                    behavior.navigationCopy.mobileLabel,
+                    ...behavior.navigationCopy.mobileItems,
+                ];
+                assert(
+                    behavior.navigationCopy.desktopItems.length === 13
+                        && behavior.navigationCopy.mobileItems.length === 11
+                        && navigationCopy.every((value) => value?.length > 0),
+                    `${label}: the global navigation localization surface is incomplete ${JSON.stringify(behavior.navigationCopy)}.`,
+                );
+
+                if (viewport.locale === 'en') {
+                    englishNavigationCopy ??= navigationCopy;
+                    assert(
+                        navigationCopy.every((value, index) => value === englishNavigationCopy[index]),
+                        `${label}: English navigation changed across routes or viewports.`,
+                    );
+                } else {
+                    assert(englishNavigationCopy !== null, `${label}: English navigation baseline is missing.`);
+                    assert(
+                        navigationCopy.every((value, index) => value !== englishNavigationCopy[index]),
+                        `${label}: English global navigation fallback remains.`,
+                    );
                 }
 
                 if (route.path === '/medical-records') {

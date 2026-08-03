@@ -239,6 +239,24 @@ bottom and body top. The affected domain/localization run passed 26 tests with
 fresh migration, repeated seed (5 users, 14 places, 2 care journals, 216
 tables), 177-line route and cache smoke, and both forum-source checks passed.
 
+The global shell localization follow-up removes the English-only navigation
+that remained visible below every localized page identity. All thirteen
+desktop destinations, the eleven mobile-dock destinations, both navigation
+labels, and the unavailable state now come from one EN/LT/RU `navigation`
+contract prepared by the class-based Blade component. Existing canonical
+Lucide destination icons and routes are retained, and the change adds no
+query. The complete browser matrix compares all twenty-six navigation strings
+with the English baseline on every route and viewport: all 91 audits and 26
+screenshots passed with zero console errors, while the 375px Russian profile
+reported no horizontal overflow, clipped page region, sub-44px target, or
+English navigation fallback. The focused navigation/icon/page-identity run
+passed 57 tests with 750 assertions; the complete sequential suite passed
+2,768 tests with 87,713 assertions. Full Pint and Larastan passed with zero
+findings; Composer validation, audit, and platform requirements, NPM audit,
+production build, isolated migration plus repeated seed (133 migrations, 216
+tables, stable 5 users), 178-line route and cache smoke, and both forum-source
+checks also passed.
+
 ### 3.3 Next Execution Checkpoint
 
 1. Complete Package 0 by assigning the stable requirement ID and recording the
@@ -250,9 +268,10 @@ tables), 177-line route and cache smoke, and both forum-source checks passed.
    heroes and migrating accidental page headers; never mark a later wave
    complete from source intent or screenshots alone.
 4. Continue the non-header English fallback audit on the remaining priority
-   RU/LT pages; `/medical-records` and `/care-journals` are browser-verified,
-   while the other priority bodies remain open. Do not conflate body-copy
-   completion with the verified page-identity contract.
+   RU/LT pages; the global navigation, `/medical-records`, and
+   `/care-journals` are browser-verified, while the other priority bodies
+   remain open. Do not conflate body-copy completion with the verified
+   page-identity contract.
 
 ## 4. Scope
 
