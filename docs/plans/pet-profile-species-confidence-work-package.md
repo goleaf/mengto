@@ -2,7 +2,7 @@
 
 Last updated: 2026-08-03.
 
-Status: implemented and release-verified on the current tree; publication is pending.
+Status: implemented, release-verified, and published to `origin/main`.
 
 ## Scope
 
@@ -72,6 +72,8 @@ The existing indexed broad-species duplicate query remains unchanged.
   duplicate review, access request, and manager review with zero overflow,
   raw keys, duplicate IDs, undersized or unnamed controls, credential/private
   candidate leaks, or console errors at desktop, 375px, and 320px.
+- scoped implementation commit `90eab92` passed `git diff --cached --check`;
+  the observed push advanced `origin/main` from `128b8ae` to `90eab92`.
 
 ## Remaining Boundaries
 

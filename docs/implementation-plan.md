@@ -9,7 +9,7 @@ status remains authoritative in
 
 ## Current Delivery: Honest Species Confidence
 
-Status: `implemented and verified` on 2026-08-03; publication pending.
+Status: `implemented, verified, and published` on 2026-08-03.
 
 - Preserve the controlled broad species used by search and integrations.
 - Store confirmed, possible, or unidentified confidence separately.
