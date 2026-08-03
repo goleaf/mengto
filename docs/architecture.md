@@ -136,6 +136,14 @@ See `docs/decisions/0001-authenticated-actor-keys.md`.
 Local/default configuration uses SQLite plus database-backed cache, session,
 and queue. Tests use in-memory SQLite, array cache/session, and sync queue.
 
+`ForumTopicTypeSchemaCatalog` is the immutable source for system topic-type
+definitions. `ForumTopicTypeSchemaRegistry` projects active database rows into
+typed DTOs through one bounded, explicitly selected query and the versioned
+`forum:topic-type-schemas:v1` cache key. Model saves/deletes and system
+synchronization invalidate that key. An empty definition table uses the
+catalogue during bootstrap; once any definition row exists, an absent or
+inactive stable key fails closed. Blade never resolves this registry.
+
 User-visible critical care, medical, safety, and device commands must retain a
 safe synchronous or local fallback. Queue-backed operations are allowed only
 when deployment provides a worker and the job is idempotent, bounded, and

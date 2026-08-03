@@ -155,8 +155,12 @@ administrator-created non-system definitions.
 data uses `structured_data` plus `structured_data_version`; the schema does not
 grow one nullable column for every possible topic type. High-value domains use
 dedicated tables when ownership, privacy, lifecycle, or queryability requires
-normalization. Runtime enforcement for the remaining configurable capabilities
-is tracked separately and is not implied by this storage contract.
+normalization. Every generic topic create/update stores the resolved active
+definition version and stable type key. The typed runtime registry enforces
+location/species requirements, attachment classes, answer ratings,
+accepted-answer availability, and notification levels while retaining
+expiration, archival, contact, SEO, and lifecycle metadata in the versioned
+definition.
 
 ## Community Review Tables
 

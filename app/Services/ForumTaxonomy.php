@@ -8,7 +8,6 @@ use App\Enums\ForumSubscriptionLevel;
 use App\Enums\ForumTopicType;
 use App\Enums\ForumVisibility;
 use App\Models\ForumCategory;
-use App\Models\ForumTopicType as ForumTopicTypeModel;
 
 final readonly class ForumTaxonomy
 {
@@ -28,6 +27,7 @@ final readonly class ForumTaxonomy
 
     public function __construct(
         private ForumCategoryTree $categoryTree,
+        private ForumTopicTypeSchemaRegistry $topicTypeSchemas,
     ) {}
 
     /**
@@ -77,16 +77,18 @@ final readonly class ForumTaxonomy
 
     public function topicTypeId(string $type): ?int
     {
-        return ForumTopicTypeModel::query()
-            ->where('stable_key', $type)
-            ->where('is_active', true)
-            ->value('id');
+        return $this->topicTypeSchemas->definition($type)?->databaseId;
     }
 
     /** @return array<string, string> */
     public function typeOptions(): array
     {
+        $activeTypes = $this->topicTypeSchemas->definitions();
+
         return collect(ForumTopicType::cases())
+            ->filter(static fn (ForumTopicType $type): bool => isset(
+                $activeTypes[$type->value],
+            ))
             ->mapWithKeys(fn (ForumTopicType $type): array => [$type->value => $type->label()])
             ->all();
     }

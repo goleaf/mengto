@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace App\Providers;
 
 use App\Http\Middleware\RequirePortalAccess;
+use App\Models\ForumTopicType;
 use App\Models\User;
+use App\Observers\ForumTopicTypeObserver;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Routing\Events\RouteMatched;
@@ -30,6 +32,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        ForumTopicType::observe(ForumTopicTypeObserver::class);
+
         Livewire::addPersistentMiddleware(RequirePortalAccess::class);
 
         Route::matched(static function (RouteMatched $event): void {

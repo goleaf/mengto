@@ -200,6 +200,27 @@ created on `main`, and the observed push advanced `origin/main`.
 No blocked or not-applicable requirement may be described as implemented in
 the release report.
 
+## Current Delivery: Forum Topic-Type Schema Runtime
+
+Status: `verified` on 2026-08-03
+
+- Extract one typed catalogue for system field schemas and capability rules.
+- Resolve active definitions through one bounded, versioned cache with model
+  and synchronization invalidation.
+- Enforce location, species, attachment, answer-rating, accepted-answer, and
+  notification constraints at HTTP and direct Action boundaries.
+- Persist the resolved definition ID and schema version on generic topic
+  create/update while preserving existing structured data.
+- Promote only the exact 20 scoped Phase 3 IDs after the complete gate passes;
+  leave the 13 migration/final-audit IDs open.
+
+The complete gate passed 2,360 tests and 78,407 assertions, full Pint and
+Larastan, dependency audits, Vite/cache compilation, isolated migration and
+repeat seed, immutable source preservation, and deterministic generation.
+
+The executable contract and stop conditions are maintained in
+`docs/plans/forum-topic-type-schema-runtime-work-package.md`.
+
 ## Completed Delivery: Guest Join Page
 
 Status: `superseded` by the authenticated portal boundary on 2026-08-03

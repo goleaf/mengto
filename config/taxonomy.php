@@ -9,6 +9,7 @@ return [
     'lock_seconds' => 120,
     'max_stored_issues' => 10_000,
     'tree_cache_seconds' => 3600,
+    'topic_type_schema_cache_seconds' => 3600,
     'column_candidates' => [
         'source_record_id' => ['taxonID', 'id'],
         'parent_source_record_id' => ['parentNameUsageID', 'parentID'],

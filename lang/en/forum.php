@@ -61,6 +61,8 @@ return [
         'knowledge_draft_created' => 'Knowledge-base draft created for editorial review.',
     ],
     'validation' => [
+        'topic_type_unavailable' => 'Choose an active topic type.',
+        'accepted_answers_unavailable' => 'This topic type does not allow accepted answers.',
         'notification_level' => 'Choose a valid notification level.',
         'answer_rating' => 'Choose a valid answer rating.',
         'block_self' => 'You cannot block your own profile.',

@@ -475,6 +475,27 @@ Package evidence:
   users;
 - Pint and Larastan passed; Composer/npm audits and Vite build passed.
 
+## Forum Topic Type Schema Runtime
+
+`ForumTopicTypeSchemaRuntimeTest` verifies complete required/optional field
+metadata and validation descriptors, all capability groups, stable internal
+identity, immutable pre-seed fallback, one cold and zero warm definition
+queries, model/seeder cache invalidation, active-schema create/update version
+retention, location/species/media validation, and direct Action enforcement
+for ratings, accepted answers, and notification levels.
+
+Implementation-stage evidence on 2026-08-03:
+
+- focused runtime contract: 5 tests and 1,481 assertions;
+- related forum regression slice: 61 tests and 2,380 assertions;
+- attributable Larastan slice: zero errors;
+- architecture/localization slice: 27 tests and 57,522 assertions.
+
+Final package evidence: the complete sequential suite passed 2,360 tests and
+78,407 assertions in 132.854 seconds; full Pint and Larastan, dependency
+audits, Vite/cache compilation, isolated migration/repeat seed, source
+preservation, and deterministic requirement generation passed.
+
 ## Forum Database Correctness Reconciliation
 
 `ForumDatabaseCorrectnessTest` covers the selected Phase 3 transaction,

@@ -15,6 +15,7 @@ use App\Models\ForumTopicAcceptance;
 use App\Models\User;
 use App\Services\ForumActor;
 use App\Services\ForumTopicLifecycle;
+use App\Services\ForumTopicTypeSchemaRegistry;
 use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
@@ -27,6 +28,7 @@ final readonly class AcceptForumAnswer
         private RecordReputationEvent $recordReputation,
         private ReverseReputationEvent $reverseReputation,
         private ForumTopicLifecycle $lifecycle,
+        private ForumTopicTypeSchemaRegistry $topicTypeSchemas,
     ) {}
 
     public function handle(int $answerId): ForumTopic
@@ -40,6 +42,14 @@ final readonly class AcceptForumAnswer
                 ->lockForUpdate()
                 ->findOrFail($answer->topic_id);
             $this->gate->authorize('update', $topic);
+
+            if (! $this->topicTypeSchemas
+                ->definition($topic->type->value)
+                ?->allowsAcceptedAnswers) {
+                throw ValidationException::withMessages([
+                    'answer_id' => __('forum.validation.accepted_answers_unavailable'),
+                ]);
+            }
 
             if (
                 $answer->author_id === $actor->id

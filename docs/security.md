@@ -349,6 +349,20 @@ location, and moderation appeals remain explicit unresolved safety packages.
 
 See `docs/topic-lifecycle.md`.
 
+## Topic-Type Schema Controls
+
+- Stable non-translated keys and internal numeric IDs are authoritative;
+  translated labels and external identifiers cannot become relationship keys.
+- Requests resolve one active server-owned schema before validation. Required
+  location/species context and allowed image/video classes cannot be widened
+  by submitted browser state.
+- Generic topic Actions resolve the schema again, persist its current version,
+  and reject an inactive or missing database definition.
+- Answer-rating, accepted-answer, and notification mutations consult the same
+  active schema even when their Actions are invoked directly.
+- Cached definitions contain only shared public configuration, are bounded to
+  200 rows, and invalidate after model writes and system synchronization.
+
 ## Moderation Closure Integrity
 
 - Moderation closure requires policy authorization before and after a row

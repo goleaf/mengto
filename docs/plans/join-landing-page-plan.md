@@ -368,7 +368,7 @@ Stop and update the plan before implementation if:
 ## Relationship To The Completion Roadmap
 
 The combined forum/product catalogue currently contains 38,377 atomic
-requirements: 1,161 verified and 37,216 open. The join page is an immediate
+requirements: 1,181 verified and 37,196 open. The join page is an immediate
 product-entry package requested by the product owner. Its existence does not
 close any forum atom automatically.
 

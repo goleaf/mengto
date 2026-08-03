@@ -78,6 +78,12 @@ in bounded batches. Rollback drops only newly added empty relations/tables and
 never existing forum data. Add foreign/unique/composite indexes based on
 actual query paths. Validate direct access and race-sensitive uniqueness.
 
+The topic-type schema runtime slice uses the existing additive columns: a
+typed catalogue, bounded invalidating registry, dynamic HTTP validation, and
+direct Action enforcement replace the remaining static/prototype assumptions.
+Its exact 20-ID scope and gate status are maintained in
+`docs/plans/forum-topic-type-schema-runtime-work-package.md`.
+
 ## Phase 4: Forum Category Taxonomy
 
 **IDs:** all Phase 4 rows.

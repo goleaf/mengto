@@ -6,6 +6,7 @@ namespace App\Http\Requests;
 
 use App\Rules\ValidWebVtt;
 use App\Services\ForumTaxonomy;
+use App\Services\ForumTopicTypeSchemaRegistry;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -26,14 +27,28 @@ class StoreTopicRequest extends FormRequest
      *
      * @return array<string, ValidationRule|array<mixed>|string>
      */
-    public function rules(ForumTaxonomy $taxonomy): array
-    {
+    public function rules(
+        ForumTaxonomy $taxonomy,
+        ForumTopicTypeSchemaRegistry $schemas,
+    ): array {
+        $schema = $schemas->definition((string) $this->input('type'));
+        $requiresTaxon = $schema?->requiresSpecies() === true
+            && ! $this->filled('pet_key')
+            && $this->input('animal_context') !== 'unidentified';
+        $allowsImages = $schema?->allowsAttachment('image') ?? true;
+        $allowsVideo = $schema?->allowsAttachment('video') ?? true;
+
         return [
             'type' => ['required', Rule::in(array_keys($taxonomy->typeOptions()))],
             'category' => ['required', Rule::in($taxonomy->acceptedCategoryKeys())],
             'subcategory' => ['nullable', 'string', 'max:80'],
             'pet_key' => ['nullable', Rule::in(array_keys($taxonomy->petOptions()))],
-            'taxon_ids' => ['nullable', 'array', 'max:5'],
+            'taxon_ids' => [
+                Rule::requiredIf($requiresTaxon),
+                'nullable',
+                'array',
+                'max:5',
+            ],
             'taxon_ids.*' => [
                 'integer',
                 Rule::exists('taxa', 'id')->where('is_active', true),
@@ -45,7 +60,12 @@ class StoreTopicRequest extends FormRequest
             'tried' => ['nullable', 'string', 'max:2500'],
             'desired_answer' => ['nullable', Rule::in(array_keys($taxonomy->desiredAnswerOptions()))],
             'tags' => ['nullable', 'string', 'max:300'],
-            'location' => ['nullable', 'string', 'max:120'],
+            'location' => [
+                Rule::requiredIf($schema?->requiresLocation() === true),
+                'nullable',
+                'string',
+                'max:120',
+            ],
             'visibility' => ['required', Rule::in(array_keys($taxonomy->visibilityOptions()))],
             'comment_policy' => ['required', Rule::in(array_keys($taxonomy->commentPolicyOptions()))],
             'language' => ['required', Rule::in(['en', 'lt', 'ru'])],
@@ -53,7 +73,12 @@ class StoreTopicRequest extends FormRequest
             'is_urgent' => ['nullable', 'boolean'],
             'is_medical' => ['nullable', 'boolean'],
             'veterinary_status' => ['nullable', Rule::in(['seen', 'not-seen', 'scheduled', 'unavailable', 'not-medical'])],
-            'photos' => ['nullable', 'array', 'max:4'],
+            'photos' => [
+                Rule::prohibitedIf(! $allowsImages),
+                'nullable',
+                'array',
+                'max:4',
+            ],
             'photos.*' => [
                 'file',
                 File::image()
@@ -73,7 +98,12 @@ class StoreTopicRequest extends FormRequest
                 'string',
                 'max:240',
             ],
-            'video' => ['nullable', 'file', File::types(['mp4', 'webm', 'mov'])->max('20mb')],
+            'video' => [
+                Rule::prohibitedIf(! $allowsVideo),
+                'nullable',
+                'file',
+                File::types(['mp4', 'webm', 'mov'])->max('20mb'),
+            ],
             'video_transcript' => [
                 Rule::requiredIf($this->hasFile('video')),
                 'nullable',

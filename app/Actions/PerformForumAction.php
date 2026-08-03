@@ -17,6 +17,7 @@ use App\Models\ForumTopic;
 use App\Models\KnowledgeArticle;
 use App\Models\User;
 use App\Services\ForumActor;
+use App\Services\ForumTopicTypeSchemaRegistry;
 use App\Services\KnowledgeGuideHistory;
 use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Support\Facades\DB;
@@ -33,6 +34,7 @@ class PerformForumAction
         private readonly SubmitForumReport $submitForumReport,
         private readonly KnowledgeGuideHistory $knowledgeHistory,
         private readonly ChangeForumTopicState $changeTopicState,
+        private readonly ForumTopicTypeSchemaRegistry $topicTypeSchemas,
     ) {}
 
     /**
@@ -95,6 +97,14 @@ class PerformForumAction
         }
 
         $topic = $this->topic($topicId);
+
+        if (! $this->topicTypeSchemas
+            ->definition($topic->type->value)
+            ?->allowsNotificationLevel($level->value)) {
+            throw ValidationException::withMessages([
+                'value' => __('forum.validation.notification_level'),
+            ]);
+        }
 
         ForumEngagement::query()->updateOrCreate(
             ['topic_id' => $topic->id, 'user_key' => $this->actor->key()],
@@ -385,6 +395,7 @@ class PerformForumAction
                 'author_key',
                 'forum_group_id',
                 'slug',
+                'type',
                 'status',
                 'visibility',
             ])

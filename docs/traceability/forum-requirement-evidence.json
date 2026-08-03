@@ -2748,6 +2748,93 @@
                 ],
                 "final_result": "verified"
             }
+        },
+        {
+            "requirement_ids": [
+                "forum.data.0008",
+                "forum.data.0009",
+                "forum.data.0010",
+                "forum.data.0037",
+                "forum.data.0038",
+                "forum.data.0039",
+                "forum.data.0040",
+                "forum.data.0041",
+                "forum.data.0042",
+                "forum.data.0043",
+                "forum.data.0044",
+                "forum.data.0045",
+                "forum.data.0046",
+                "forum.data.0047",
+                "forum.data.0048",
+                "forum.data.0049",
+                "forum.data.0050",
+                "forum.data.0053",
+                "forum.data.0073",
+                "forum.data.0084"
+            ],
+            "fields": {
+                "current_implementation_status": "verified",
+                "discovered_existing_files": [
+                    "app/Enums/ForumTopicType.php",
+                    "app/Models/ForumTopic.php",
+                    "app/Models/ForumTopicType.php",
+                    "database/migrations/2026_07_31_000110_create_forum_topic_definition_tables.php",
+                    "database/seeders/ForumTopicTypeSeeder.php",
+                    "app/Actions/CreateTopic.php",
+                    "app/Actions/UpdateTopic.php",
+                    "app/Actions/RecordAnswerVote.php",
+                    "app/Actions/AcceptForumAnswer.php",
+                    "app/Actions/PerformForumAction.php"
+                ],
+                "planned_files": [
+                    "app/Data/ForumTopicTypeSchema.php",
+                    "app/Services/ForumTopicTypeSchemaCatalog.php",
+                    "app/Services/ForumTopicTypeSchemaRegistry.php",
+                    "app/Observers/ForumTopicTypeObserver.php",
+                    "app/Http/Requests/StoreTopicRequest.php",
+                    "tests/Feature/Forum/ForumTopicTypeSchemaRuntimeTest.php",
+                    "docs/plans/forum-topic-type-schema-runtime-work-package.md"
+                ],
+                "test_identifiers": [
+                    "tests/Feature/Forum/ForumTopicTypeSchemaRuntimeTest.php",
+                    "tests/Feature/Forum/ForumTopicTypeSchemaContractTest.php",
+                    "tests/Feature/ForumTopicTest.php",
+                    "tests/Feature/Forum/ForumAccessibilityTest.php",
+                    "tests/Feature/ArchitectureComplianceTest.php",
+                    "tests/Feature/LocalizationTest.php"
+                ],
+                "documentation_identifiers": [
+                    "docs/plans/forum-topic-type-schema-runtime-work-package.md",
+                    "docs/architecture.md",
+                    "docs/data-model.md",
+                    "docs/security.md",
+                    "docs/testing.md",
+                    "docs/deployment.md",
+                    "docs/plans/forum-current-progress.md",
+                    "docs/plans/forum-completion-plan.md"
+                ],
+                "implementation_status": "implemented",
+                "verification_status": "verified",
+                "evidence": [
+                    "ForumTopicTypeSchemaCatalog is the single typed source for every system topic type and defines required and optional fields, semantic validation metadata, expiration and archival behavior, location and species requirements, contact restrictions, allowed attachments and ratings, accepted-answer availability, SEO rules, and notification levels",
+                    "The normalized forum_topic_types table retains internal numeric primary keys and stable non-translated keys; translations remain display metadata, no external identifier is a primary or relationship key, and the existing indexed forum_topics relation stores versioned structured JSON",
+                    "ForumTopicTypeSchemaRegistry executes one explicitly selected query bounded to 200 definitions, caches only shared schema data under forum:topic-type-schemas:v1, uses the immutable catalogue only while the table is empty, excludes inactive definitions, and invalidates after model save/delete and seeder synchronization",
+                    "StoreTopicRequest resolves the active server-owned schema and enforces type-specific location, species, image, and video rules; PrepareTopicData resolves again at the Action boundary and create/update persist the active definition ID, stable key, and schema version",
+                    "RecordAnswerVote, AcceptForumAnswer, and PerformForumAction enforce the current type's allowed ratings, accepted-answer availability, and notification levels even when invoked directly, without trusting hidden controls or browser state",
+                    "ForumTopicTypeSeeder synchronizes system rows from the typed catalogue by stable key while preserving definition IDs, attached topic relations, administrator-created custom definitions, and existing topic structured data",
+                    "ForumTopicTypeSchemaRuntimeTest passed 5 tests and 1,481 assertions; the related forum regression slice passed 61 tests and 2,380 assertions; the architecture and localization slice passed 27 tests and 57,522 assertions",
+                    "The complete sequential repository suite passed 2,360 tests and 78,407 assertions in 132.854 seconds; full Pint and Larastan passed with zero findings",
+                    "Fresh isolated SQLite verification passed 118 migrations and 200 tables; repeated seeding preserved the user count at 5",
+                    "Composer strict validation and audit, npm audit, Vite 8.2.0 production build, and config/event/route/view cache compilation passed",
+                    "The immutable forum source check and deterministic 38,377-requirement generation passed for checksum cbb7d3a36f3750106c4751191ddd7d882d922ce0ae0e0b12aed318c809206ea1"
+                ],
+                "unresolved_risks": [
+                    "This evidence closes only the exact 20 topic-type schema IDs; the 13 repository-wide Phase 3 migration and final-audit IDs remain open",
+                    "The source-listed research-discussion discovery requirement remains assigned to its separate Phase 9 search package even though a compatible type definition exists",
+                    "Adding a new browser-selectable custom topic type still requires an explicit enum and product workflow decision; preserved administrator definitions are not exposed through the generic enum-cast topic form"
+                ],
+                "final_result": "verified"
+            }
         }
     ]
 }

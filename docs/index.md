@@ -49,6 +49,7 @@ This index is the source-of-truth map for first-party documentation.
 | `docs/plans/join-landing-page-plan.md` | Historical guest root joining experience superseded by the authenticated portal boundary | Product + engineering | Superseded |
 | `docs/plans/authenticated-portal-access-plan.md` | Exact account-entry allowlist, authenticated portal boundary, protected media, and release evidence | Product + engineering | Verified |
 | `docs/plans/global-linked-media-navigation-plan.md` | Global representative-image navigation contract, inventory, phased migration, and verification gates | Product + frontend + QA | Implemented and verified |
+| `docs/plans/forum-topic-type-schema-runtime-work-package.md` | Exact 20-ID topic-type schema runtime, cache, validation, Action, and release contract | Product + engineering + QA | Implemented and verified |
 | `docs/requirements/compliance-matrix.md` | Requirements-to-code-and-test mapping | QA | Living evidence |
 | `docs/code-review.md` | Final structured review findings | Engineering | Living evidence |
 | `docs/known-limitations.md` | External and environmental blockers only | Product + engineering | Living evidence |

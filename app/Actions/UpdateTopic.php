@@ -37,7 +37,7 @@ final readonly class UpdateTopic
                 );
                 $prepared['structured_data'] = [
                     ...($topic->structured_data ?? []),
-                    'animal_context' => $data['animal_context'] ?? 'taxa',
+                    ...($prepared['structured_data'] ?? []),
                 ];
                 $topic->update($prepared);
                 $topic->taxa()->sync(collect($data['taxon_ids'] ?? [])

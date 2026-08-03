@@ -61,6 +61,8 @@ return [
         'knowledge_draft_created' => 'Žinių bazės juodraštis sukurtas redakcinei peržiūrai.',
     ],
     'validation' => [
+        'topic_type_unavailable' => 'Pasirinkite aktyvų temos tipą.',
+        'accepted_answers_unavailable' => 'Šiam temos tipui priimti atsakymai negalimi.',
         'notification_level' => 'Pasirinkite tinkamą pranešimų lygį.',
         'answer_rating' => 'Pasirinkite tinkamą atsakymo įvertinimą.',
         'block_self' => 'Negalite užblokuoti savo profilio.',

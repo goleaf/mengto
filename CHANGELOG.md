@@ -18,6 +18,11 @@
 
 ### Forum And Animal Taxonomy
 
+- Completed the executable topic-type schema boundary: one typed catalogue
+  now owns versioned fields and capability metadata, a bounded shared cache
+  invalidates on definition changes and synchronization, generic topic writes
+  retain the resolved schema version, and location/species/media, rating,
+  accepted-answer, and notification rules fail closed at server boundaries.
 - Added database-enforced vote/reaction values, typed enum casts, and a
   policy-authorized versioned/idempotent moderation-case closure transaction;
   corrected competing single-answer acceptance to retain the current

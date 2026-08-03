@@ -8,6 +8,7 @@ use App\Data\PreparedTopicData;
 use App\Enums\ForumTopicStatus;
 use App\Services\ForumActor;
 use App\Services\ForumTaxonomy;
+use App\Services\ForumTopicTypeSchemaRegistry;
 use Illuminate\Filesystem\FilesystemManager;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Str;
@@ -19,6 +20,7 @@ class PrepareTopicData
     public function __construct(
         private readonly ForumActor $actor,
         private readonly ForumTaxonomy $taxonomy,
+        private readonly ForumTopicTypeSchemaRegistry $topicTypeSchemas,
         private readonly StorePublicImage $storePublicImage,
         private readonly FilesystemManager $filesystems,
     ) {}
@@ -32,8 +34,15 @@ class PrepareTopicData
         $identity = $this->actor->identity();
         $user = $this->actor->requireUser();
         $pet = $this->taxonomy->pets()[$data['pet_key'] ?? ''] ?? null;
+        $topicType = $this->topicTypeSchemas->definition((string) $data['type']);
         $body = trim((string) $data['body']);
         $category = $this->taxonomy->resolveCategoryKey((string) $data['category']);
+
+        if ($topicType === null) {
+            throw ValidationException::withMessages([
+                'type' => __('forum.validation.topic_type_unavailable'),
+            ]);
+        }
 
         if (filled($data['tried'] ?? null)) {
             $body .= "\n\nWhat I have already tried:\n".trim((string) $data['tried']);
@@ -56,7 +65,7 @@ class PrepareTopicData
             'author_initials' => $identity['initials'],
             'author_role' => $identity['role'],
             'type' => $data['type'],
-            'forum_topic_type_id' => $this->taxonomy->topicTypeId((string) $data['type']),
+            'forum_topic_type_id' => $topicType->databaseId,
             'title' => trim((string) $data['title']),
             'body' => $body,
             'category' => $category,
@@ -80,6 +89,11 @@ class PrepareTopicData
             'last_author_update_at' => now(),
             'state_entered_at' => now(),
             'published_at' => $status === ForumTopicStatus::Published ? now() : null,
+            'structured_data' => [
+                'topic_type_key' => $topicType->stableKey,
+                'animal_context' => $data['animal_context'] ?? 'taxa',
+            ],
+            'structured_data_version' => $topicType->schemaVersion,
         ], newMediaPaths: $storedMedia['paths']);
     }
 

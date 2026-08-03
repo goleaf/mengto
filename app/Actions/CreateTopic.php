@@ -30,9 +30,6 @@ final readonly class CreateTopic
                 $topic = ForumTopic::query()->create([
                     ...$prepared->attributes,
                     'slug' => Str::slug((string) $data['title']).'-'.Str::lower(Str::random(6)),
-                    'structured_data' => [
-                        'animal_context' => $data['animal_context'] ?? 'taxa',
-                    ],
                 ]);
                 $topic->taxa()->sync($this->taxonPivot($data));
                 $this->lifecycle->record(

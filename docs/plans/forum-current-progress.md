@@ -7,7 +7,7 @@ Last updated: 2026-08-03.
 Source preservation, atomic extraction, repository discovery, and domain
 planning are documented for all ten source payloads, but their control IDs
 still require exact evidence before Phases 0-2 can be called verified. The
-combined catalogue has 1,161 verified IDs and 37,216 open IDs. Forum/taxonomy,
+combined catalogue has 1,181 verified IDs and 37,196 open IDs. Forum/taxonomy,
 pet, social, content, community, and medical foundations are implemented in
 independently evidenced slices. Communication, complete portal architecture,
 the expanded event lifecycle, and all remaining depth/release packages stay
@@ -68,7 +68,7 @@ as complete. The dependency-ordered remaining work is in
   immutable case events, protected idempotent contact relays, advisory
   duplicate detection, unified false-sighting/reward-scam reports, and
   privacy-safe archival that preserves the complete operational history.
-- Requirement evidence is a deterministic overlay. `1,161` atomic requirements
+- Requirement evidence is a deterministic overlay. `1,181` atomic requirements
   are verified with file/test evidence and none are currently marked
   in-progress.
 - The pet-profile foundation preserves the existing aggregate while adding
@@ -237,13 +237,23 @@ as complete. The dependency-ordered remaining work is in
   assertions; fresh/repeat seed passed 117 migrations and 196 tables with a
   stable 5-user count; full Pint/Larastan, audits, Vite/cache, deterministic
   generation, and loopback EN/LT/RU browser gates passed.
+- The third Phase 3 slice verifies the exact 20-ID topic-type schema
+  runtime contract. One typed catalogue, bounded invalidating cache registry,
+  active-schema HTTP validation, version retention, and direct Action guards
+  now cover the selected capabilities. Its focused 5-test/1,481-assertion
+  contract, 61-test/2,380-assertion forum slice, and attributable Larastan pass
+  are green; the 27-test/57,522-assertion architecture/localization slice also
+  passes. The complete sequential suite passed 2,360 tests and 78,407
+  assertions; full Pint/Larastan, dependency audits, Vite/cache, isolated
+  migration/repeat seed, source preservation, and deterministic generation
+  passed. Only the remaining 13 Phase 3 IDs stay open.
 
 ## Requirement Status Snapshot
 
 | Source stream | Requirements | Verified | Open |
 | --- | ---: | ---: | ---: |
 | Original forum source | 2,566 | 0 | 2,566 |
-| Forum extension and taxonomy | 4,718 | 562 | 4,156 |
+| Forum extension and taxonomy | 4,718 | 582 | 4,136 |
 | Pet-profile revision | 4,135 | 205 | 3,930 |
 | Social-relationships revision | 3,210 | 222 | 2,988 |
 | Content-feed revision | 4,011 | 58 | 3,953 |
@@ -252,7 +262,7 @@ as complete. The dependency-ordered remaining work is in
 | Medical-record revision | 3,867 | 79 | 3,788 |
 | Portal-architecture revision | 3,449 | 0 | 3,449 |
 | Event-lifecycle revision | 4,968 | 0 | 4,968 |
-| **Total** | **38,377** | **1,161** | **37,216** |
+| **Total** | **38,377** | **1,181** | **37,196** |
 
 The exact per-phase open counts and execution order are maintained in
 `docs/plans/forum-completion-plan.md`; the generated phase index remains the
@@ -260,8 +270,8 @@ authority for individual IDs.
 
 ## Next Verified Pass
 
-1. Select the next exact dependency-safe slice from the 33 open Phase 3 IDs;
-   do not infer a global schema claim from the verified 21-ID package.
+1. Select the repository-wide migration/final-audit package from the remaining
+   13 Phase 3 IDs without inheriting evidence from the verified schema slices.
 2. Continue the current Phase 75 event foundation: lifecycle migrations,
    authorization, backfill idempotency, query budgets, factories, seeding,
    localization, and compatibility tests. Do not promote the broad 4,968-ID

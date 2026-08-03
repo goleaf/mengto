@@ -136,6 +136,22 @@ attachments. Do not run `ForumTopicLifecycleDemoSeeder` in production. After
 production lifecycle writes exist, retain the additive schema and recover with
 an audited forward transition or migration.
 
+## Topic-Type Schema Runtime Synchronization
+
+This runtime package adds no migration and no environment key. Deploy the code
+after the existing `forum_topic_types` and normalized `forum_topics` columns
+are present. When the release procedure includes reference synchronization,
+run the production-safe forum system seeder; it upserts system definitions by
+stable key, preserves numeric IDs and custom definitions, and invalidates the
+versioned schema cache.
+
+After deployment, verify one generic topic create/update retains the current
+schema version, an inactive type is rejected, and answer-rating,
+accepted-answer, and notification mutations obey the active configuration.
+Rebuild application caches normally. A database or cache failure must remain
+visible and fail the mutation; the immutable catalogue fallback is only for an
+existing but empty definition table during bootstrap.
+
 ## Pet Profile Foundation Migration
 
 `2026_07_31_001270_create_pet_profile_foundation.php` expands the existing pet

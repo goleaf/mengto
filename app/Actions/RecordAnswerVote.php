@@ -12,6 +12,7 @@ use App\Models\ForumTopic;
 use App\Models\ForumVote;
 use App\Models\User;
 use App\Services\ForumActor;
+use App\Services\ForumTopicTypeSchemaRegistry;
 use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
@@ -21,6 +22,7 @@ final readonly class RecordAnswerVote
     public function __construct(
         private ForumActor $actor,
         private Gate $gate,
+        private ForumTopicTypeSchemaRegistry $topicTypeSchemas,
         private RecordReputationEvent $recordReputation,
         private ReverseReputationEvent $reverseReputation,
     ) {}
@@ -43,6 +45,14 @@ final readonly class RecordAnswerVote
                 ->findOrFail($answerId);
             $topic = $answer->topic;
             $this->gate->authorize('view', $topic);
+
+            if (! $this->topicTypeSchemas
+                ->definition($topic->type->value)
+                ?->allowsReaction($voteValue->value)) {
+                throw ValidationException::withMessages([
+                    'value' => __('forum.validation.answer_rating'),
+                ]);
+            }
 
             if (
                 $answer->author_id === $actor->id
