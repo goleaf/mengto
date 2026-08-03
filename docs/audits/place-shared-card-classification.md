@@ -101,8 +101,8 @@ Local-media continuation evidence observed on an isolated attributable tree on
 
 - RED proof: both new local-media tests failed against the former Unsplash
   URLs;
-- place/media/authority slice: 48 tests and 1,177 assertions passed;
-- full serial Pest: 2,695 tests and 85,875 assertions passed;
+- place/media/authority slice: 48 tests and 1,179 assertions passed;
+- full serial Pest: 2,695 tests and 85,877 assertions passed;
 - full Pint, Larastan, production Vite build, Composer validation/audit, and npm
   audit passed with zero findings or advisories;
 - fresh SQLite database: 130 migrations and 215 tables; repeated complete seed

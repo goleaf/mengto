@@ -1034,7 +1034,7 @@ final class PlaceCatalog
                 'owner_managed' => true,
                 'emergency' => false,
                 ...$this->media->primary('grooming'),
-                'image_alt' => __('messages.calm_cat_resting_on_a_grooming_table_beside_soft_towels_30d5d57014'),
+                'image_alt' => __('messages.quiet_pet_grooming_workspace_with_clean_equipment_0f581fa9e5'),
                 'events' => [],
                 'base_warnings' => [],
             ],
