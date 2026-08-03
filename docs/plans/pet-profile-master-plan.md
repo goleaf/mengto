@@ -58,6 +58,14 @@ duplicate suggestions, claims, names/aliases, taxonomy/breed confidence,
 birth precision/derived age, appearance/measurements, critical fact
 provenance, conflict review, immutable audit, and consistent counters.
 
+The 2026-08-03 creation-interface refinement makes
+`/pets/manage/new` the single canonical entry point and limits the first save
+to name, broad species, relationship, and intended audience. Advanced facts
+remain in the profile workspace. `pet.creation.0025` (optional primary photo)
+stays open until the media package provides its private-file lifecycle;
+`pet.creation.0036-pet.creation.0058` remains the later progressive completion
+flow rather than being folded back into the first screen.
+
 ## Phase 19: Ownership And Privacy
 
 **IDs:** `pet.ownership.0001-pet.ownership.0393` and

@@ -54,6 +54,10 @@ class ComposerController extends Controller
             return to_route('meetups.index');
         }
 
+        if ($kind === 'pet') {
+            return to_route('pets.manage.create');
+        }
+
         $validated = $request->validated();
 
         abort_if($kind === 'report-profile' && ! isset($validated['target']), 404);

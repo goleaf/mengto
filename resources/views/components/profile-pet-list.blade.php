@@ -16,7 +16,7 @@
 >
     @if ($canManage)
         <x-slot:action>
-            <x-action-control :href="route('compose', 'pet')" label="{{ __('ui.add_pet_7065b90594') }}" icon="plus" />
+            <x-action-control :href="route('pets.manage.create')" label="{{ __('ui.add_pet_7065b90594') }}" icon="plus" />
         </x-slot:action>
     @endif
 

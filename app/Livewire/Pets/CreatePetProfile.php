@@ -7,7 +7,7 @@ namespace App\Livewire\Pets;
 use App\Actions\CreatePetProfile as CreatePetProfileAction;
 use App\Enums\PetManagerRole;
 use App\Enums\PetProfileVisibility;
-use App\Livewire\Forms\PetProfileForm;
+use App\Livewire\Forms\PetProfileCreateForm;
 use App\Models\User;
 use App\Services\ProfilePresenter;
 use Illuminate\Contracts\Auth\Factory as AuthFactory;
@@ -19,7 +19,7 @@ use Livewire\Component;
 
 final class CreatePetProfile extends Component
 {
-    public PetProfileForm $form;
+    public PetProfileCreateForm $form;
 
     #[Locked]
     public string $idempotencyKey = '';
@@ -61,19 +61,10 @@ final class CreatePetProfile extends Component
     #[Computed]
     public function relationshipOptions(): array
     {
-        return collect([
-            PetManagerRole::PrimaryOwner,
-            PetManagerRole::CoOwner,
-            PetManagerRole::FamilyMember,
-            PetManagerRole::Shelter,
-            PetManagerRole::Volunteer,
-            PetManagerRole::Finder,
-            PetManagerRole::FosterCarer,
-            PetManagerRole::Specialist,
-            PetManagerRole::Other,
-        ])->mapWithKeys(static fn (PetManagerRole $role): array => [
-            $role->value => $role->label(),
-        ])->all();
+        return collect(PetProfileCreateForm::relationshipRoles())
+            ->mapWithKeys(static fn (PetManagerRole $role): array => [
+                $role->value => $role->label(),
+            ])->all();
     }
 
     /** @return array<string, string> */

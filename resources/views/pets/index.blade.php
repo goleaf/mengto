@@ -6,7 +6,7 @@
     header-section="directory-header"
     action-label="{{ __('ui.add_pet_7065b90594') }}"
     action-icon="plus"
-    :action-href="route('compose', 'pet')"
+    :action-href="route('pets.manage.create')"
 >
     <x-slot:toolbar>
         <x-directory-toolbar

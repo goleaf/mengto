@@ -345,7 +345,6 @@ it('creates a pet through the livewire form and rejects direct unauthorized mana
         ->test(CreatePetProfileComponent::class)
         ->set('form.name', 'Luna')
         ->set('form.species', 'cat')
-        ->set('form.breed', 'Domestic shorthair')
         ->set('form.relationshipRole', PetManagerRole::PrimaryOwner->value)
         ->set('form.visibility', 'private')
         ->call('create')
@@ -356,7 +355,7 @@ it('creates a pet through the livewire form and rejects direct unauthorized mana
     expect($profile->status)->toBe(PetProfileStatus::Draft)
         ->and($profile->user_id)->toBe($owner->id)
         ->and($profile->species)->toBe('cat')
-        ->and($profile->breed)->toBe('Domestic shorthair');
+        ->and($profile->breed)->toBeNull();
 
     Livewire::actingAs($owner)
         ->test(ManagePetProfile::class, ['petProfile' => $profile])

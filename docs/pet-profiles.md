@@ -25,6 +25,28 @@ The foundation provides:
 - class-based Livewire create, manage, invitation, and public-profile
   interfaces in EN, LT, and RU.
 
+## Minimal Creation Experience
+
+`/pets/manage/new` is the only pet-creation interface. The historical
+`/compose/pet` URL remains compatible by redirecting to that canonical,
+policy-protected Livewire route, and every first-party Add pet action links to
+the canonical route directly.
+
+The first save asks only for a name or temporary name, broad animal group,
+the creator's current relationship to the animal, and intended profile
+audience. Those four browser-controlled values are validated by the dedicated
+`PetProfileCreateForm`; the action still creates one idempotent,
+non-discoverable private draft with a stable profile key, manager membership,
+privacy row, slug alias, and actor-attributed evidence.
+
+Breed, taxonomy, birth details, sex, reproductive status, biography, medical
+data, and care data belong to subsequent task-specific profile management.
+Primary photo upload remains a separate open media package because it needs a
+private-file ownership, authorization, transformation, deletion, and recovery
+boundary; the creation screen does not present a non-functional upload
+control. Selecting a relationship sets initial access but does not establish
+legal ownership or professional verification.
+
 ## Identity And Compatibility
 
 An account and a pet are separate aggregates. Every pet mutation runs as an

@@ -1,6 +1,6 @@
 # Pet Profile Current Progress
 
-Last updated: 2026-07-31.
+Last updated: 2026-08-03.
 
 ## Current State
 
@@ -25,6 +25,34 @@ manager memberships and critical permission boundary, layered privacy,
 immutable lifecycle/audit events, idempotent minimal creation, and an additive
 backfill from the current single-owner model. It must preserve all existing
 pet, medical, care, device, search, adoption, event, report, and social data.
+
+## Creation Interface Refinement
+
+- `/pets/manage/new` is now the only rendered creation flow;
+  `/compose/pet` redirects to it and first-party Add pet links target it
+  directly.
+- The first save contains only name, broad species, relationship, and intended
+  audience. A dedicated Livewire form object validates those four public
+  values and maps them to the existing idempotent creation action.
+- Taxonomy, breed, birth details, sex, reproductive status, and biography were
+  removed from the first screen and remain available through advanced profile
+  management.
+- The responsive Blade/SCSS surface now has linked help and error text,
+  44-pixel controls, loading/dirty/offline states, a mobile-safe action area,
+  explicit private-draft guidance, and EN/LT/RU parity.
+- Focused creation/foundation tests pass 18 tests and 1,677 assertions;
+  architecture/localization checks pass 28 tests and 59,795 assertions. Pint,
+  targeted Larastan, diff checks, and the Vite production build pass.
+- The final serial repository suite passed 2,586 tests and 81,835 assertions
+  in 175.725 seconds with isolated config, route, service, package, event, and
+  compiled-view cache paths. Two earlier shared-cache attempts were invalidated
+  by concurrent Vite/cache/database writes and are not presented as passing
+  evidence.
+- A focused dependency-free Chrome audit passed at 1440 by 900 and 375 by 812:
+  one H1/main/form, exactly four creation fields, no horizontal overflow,
+  unnamed or sub-44-pixel controls, raw translation keys, or console errors.
+  Desktop and mobile screenshots were visually reviewed after correcting the
+  submit icon size.
 
 ## Completion Evidence
 
@@ -51,3 +79,8 @@ Plan and implement the next dependency-safe pet slice from
 transfer, destructive lifecycle, media, social graph, lost/found, adoption,
 medical/care/device links, recommendations, analytics, and advanced privacy
 must not inherit verified status from this foundation.
+
+For creation specifically, the next dependency-safe package is the optional
+primary-photo lifecycle (`pet.creation.0025`) followed by the progressive
+completion flow (`pet.creation.0036-pet.creation.0058`). Neither is represented
+by a placeholder control on the minimal screen.

@@ -9,7 +9,7 @@
         <div class="flex items-center justify-between gap-3">
             <h3 class="text-xs font-semibold text-paw-leaf">{{ __('ui.your_pets_d1e438a50f') }}</h3>
             <x-action-control
-                :href="route('compose', 'pet')"
+                :href="route('pets.manage.create')"
                 label="{{ __('ui.add_9fd728c66c') }}"
                 icon="plus"
                 variant="quiet"

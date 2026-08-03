@@ -107,6 +107,10 @@
   layered privacy, append-only actor history, versioned encrypted facts,
   idempotent legacy backfill, stable URLs/QR, and localized accessible
   class-based Livewire create/manage/public workflows.
+- Replaced the legacy `/compose/pet` prototype with the canonical protected
+  pet-creation flow, reduced the first save to four validated essentials, and
+  added a responsive private-draft interface with direct Add pet links,
+  EN/LT/RU guidance, accessible controls, and progressive completion notes.
 - Established the canonical social-relationship foundation with typed actor
   adapters, directed and symmetric edges, recipient-controlled consent,
   idempotent request lifecycle, profile-level safety controls, immutable real
