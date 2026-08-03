@@ -18,6 +18,10 @@
 
 ### Interface System
 
+- Hardened shared card fallbacks for unsupported heading levels, spacing, and
+  media ratios; localized the group fallback action; exercised group cards with
+  long copy across EN/LT/RU and six viewports; and reused the typography leaves
+  in discovery and expert cards without forcing them into the directory shell.
 - Rebuilt the `/groups` compatibility cards on shared contained media, opaque
   body, semantic heading/description, statistics, and bottom-footer primitives;
   migrated the direct pet, neighbour, and meetup card family and added

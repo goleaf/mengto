@@ -758,6 +758,16 @@ Exact findings and the continuing backlog are in
 `docs/audits/groups-shared-card-ux-audit.md` and
 `docs/plans/shared-directory-card-system-plan.md`.
 
+Continuation wave 1 adds `SharedCardSystemContinuationTest` and extends
+`GroupDirectoryPreviewTest`. The focused group/discovery/expert/linked-media
+slice passed 50 tests and 631 assertions. Connected Chrome passed the six group
+viewports distributed across EN, LT, and RU, including long-copy clipping,
+membership-state, 44-pixel action, raw-key, overflow, image, and console
+assertions. LT and RU mobile screenshots were inspected. The clean attributable
+snapshot passed full Pint, Larastan, Vite, and 2,662 serial tests with 84,714
+assertions. The shared dirty tree's eight failures were isolated to the foreign
+uncommitted pet icon `lucide-clipboard-heart` and are absent from this snapshot.
+
 ## Organization Authority Foundation
 
 `OrganizationAuthorityFoundationTest` covers idempotent creation, owner

@@ -32,7 +32,9 @@ class GroupCard extends Component
         $this->groupKey = $group['key'] ?? Str::slug($group['name']);
         $this->joined = $group['joined'] ?? false;
         $this->primary = $group['primary_action'] ?? [
-            'label' => $this->joined ? 'Joined' : 'Join',
+            'label' => $this->joined
+                ? __('ui.joined_69318b0c6a')
+                : __('ui.join_fd30fe681b'),
             'icon' => $this->joined ? 'check' : 'user-plus',
             'variant' => 'paper',
             'endpoint' => route('actions.perform'),

@@ -3,7 +3,10 @@
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Str;
 
-test('group directory preserves localized long copy and every membership action state', function (string $locale) {
+test('group directory preserves localized long copy and every membership action state', function (
+    string $locale,
+    string $searchLabel,
+) {
     $this->authenticatedUser->forceFill(['locale' => $locale])->save();
 
     $response = $this->get(route('groups.index'));
@@ -11,6 +14,7 @@ test('group directory preserves localized long copy and every membership action 
     $response
         ->assertSuccessful()
         ->assertSee('lang="'.$locale.'"', false)
+        ->assertSee($searchLabel)
         ->assertDontSee('messages.', false)
         ->assertDontSee('presentation.', false)
         ->assertDontSee('ui.', false);
@@ -30,7 +34,11 @@ test('group directory preserves localized long copy and every membership action 
         ->and($xpath->query('//article[@data-group-card]//form[input[@name="action" and @value="cancel-group-request"]]/button[@aria-pressed="false"]')->length)->toBe(1)
         ->and($xpath->query('//article[@data-group-card]//form[input[@name="action" and @value="join-group"]]/button[@aria-pressed="false"]')->length)->toBe(3)
         ->and($xpath->query('//article[@data-group-card]//form[input[@name="action" and @value="dismiss-group-recommendation"]]/button[@aria-label]')->length)->toBe(6);
-})->with(['en', 'lt', 'ru']);
+})->with([
+    'English' => ['en', 'Search'],
+    'Lithuanian' => ['lt', 'Ieškoti'],
+    'Russian' => ['ru', 'Найти'],
+]);
 
 test('shared card primitives normalize unsupported presentation input and escape copy', function () {
     $title = '<script>alert("title")</script>';

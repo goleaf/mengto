@@ -226,9 +226,9 @@ observed on the attributable diff:
 
 Observed on the isolated attributable staged tree on 2026-08-03:
 
-- focused architecture/localization/directory slice: 143 tests and 61,694
+- focused architecture/localization/directory slice: 88 tests and 61,421
   assertions;
-- full serial Pest: 2,642 tests and 83,314 assertions;
+- full serial Pest: 2,645 tests and 83,332 assertions;
 - Larastan: 1,385 files with zero errors;
 - fresh database: 130 migrations, 215 tables, and stable user count 5 after a
   repeated seed;
@@ -244,3 +244,37 @@ The full shared working tree also ran 2,654 tests while other contributors had
 uncommitted work. It passed 2,651 and failed three unrelated naming/member-route
 tests. Exporting the attributable temporary index removed those foreign changes
 and produced the clean full result above.
+
+## Continuation Wave 1
+
+The first post-publication continuation keeps the shell boundary unchanged and
+closes the highest-value API and localization gaps:
+
+- unsupported heading levels normalize to semantic `h3` output;
+- unsupported media ratios normalize to the landscape contract;
+- title and description values remain escaped at the shared primitive boundary;
+- group fallback membership labels use the active locale catalogue;
+- the six browser widths are distributed across EN, LT, and RU, retain long
+  copy without clipping, and exercise joined, pending, unjoined, and secondary
+  actions with 44-pixel targets;
+- `discovery-result-card` adopts heading and description leaves and
+  `expert-card` adopts the heading leaf, while neither adopts the directory
+  shell because their content topology remains domain-specific.
+
+This wave changes no route, query, authorization, model, persistence, cache, or
+external-service path. Query delta remains `0`.
+
+Fresh continuation evidence on the attributable snapshot:
+
+- focused card/discovery/expert regression: 50 tests and 631 assertions;
+- full serial Pest: 2,662 tests and 84,714 assertions;
+- full Pint, Larastan, PHP/JavaScript syntax, and production Vite build passed;
+- forum source preservation, 38,377 generated requirements, localization, and
+  icon-system ratchets passed;
+- connected Chrome passed all EN/LT/RU group viewports with zero clipping,
+  undersized actions, raw keys, overflow, broken images, or console errors.
+
+The concurrently dirty tree passed 2,654 of 2,662 tests; all eight failures
+were caused by the separate uncommitted pet flow requesting unavailable dynamic
+component `lucide-clipboard-heart`. That foreign file set is absent from the
+attributable continuation snapshot.

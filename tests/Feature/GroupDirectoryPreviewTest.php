@@ -1,7 +1,9 @@
 <?php
 
 use App\Http\Controllers\GroupDirectoryPreviewController;
+use App\View\Components\GroupCard;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\Route;
 
 function groupCardXPath(string $html): DOMXPath
@@ -105,6 +107,31 @@ test('the shared card heading keeps semantic levels and optional destinations ex
         ->and($unlinkedXPath->query('//a')->length)
         ->toBe(0);
 });
+
+test('group card fallback actions use the active locale', function (string $locale) {
+    Lang::setLocale($locale);
+
+    $source = file_get_contents(app_path('View/Components/GroupCard.php'));
+
+    expect($source)
+        ->not->toBeFalse()
+        ->toContain("__('ui.joined_69318b0c6a')")
+        ->toContain("__('ui.join_fd30fe681b')")
+        ->not->toContain("? 'Joined' : 'Join'");
+
+    foreach ([false, true] as $joined) {
+        $component = new GroupCard([
+            'name' => 'Community walks',
+            'members' => '12 members',
+            'activity' => 'Weekly',
+            'joined' => $joined,
+        ]);
+
+        expect($component->primary['label'])->toBe(
+            __($joined ? 'ui.joined_69318b0c6a' : 'ui.join_fd30fe681b'),
+        );
+    }
+})->with(['en', 'lt', 'ru']);
 
 test('direct catalogue card consumers stay composed from the shared card regions', function () {
     $contracts = [

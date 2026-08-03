@@ -87,8 +87,8 @@ while domain-specific product meaning remains in small explicit components.
 - [x] Preserve privacy, official, recommendation, event, organizer, and action
   semantics.
 - [x] Preserve responsive image sources and accessible linked-media labels.
-- [ ] Verify live EN, LT, and RU rendering with long content.
-- [ ] Verify joined/unjoined and secondary-action states in a real browser.
+- [x] Verify live EN, LT, and RU rendering with long content.
+- [x] Verify joined/unjoined and secondary-action states in a real browser.
 
 ## P04 — Direct Directory-Family Migration
 
@@ -108,14 +108,14 @@ while domain-specific product meaning remains in small explicit components.
 - [ ] Add component-level documentation examples for each supported primitive.
 - [ ] Decide whether title props should remain text-only or support a safe slot;
   default to text-only until a real need exists.
-- [ ] Validate or normalize unknown heading levels without enabling arbitrary
+- [x] Validate or normalize unknown heading levels without enabling arbitrary
   HTML tags.
-- [ ] Validate or normalize unknown media ratios to landscape.
+- [x] Validate or normalize unknown media ratios to landscape.
 - [ ] Define whether cards without media use a separate component or an
   explicit placeholder slot.
 - [ ] Define a compact-card composition separately if two real consumers need
   it.
-- [ ] Keep all user values escaped and prohibit rich HTML in shared headings and
+- [x] Keep all user values escaped and prohibit rich HTML in shared headings and
   descriptions.
 - [ ] Add downward-only duplication metrics once the initial migration settles.
 
@@ -168,7 +168,7 @@ while domain-specific product meaning remains in small explicit components.
   padding/background, footer presence, and equal same-row height.
 - [x] Add desktop and mobile screenshots.
 - [x] Execute the browser matrix against the attributable implementation.
-- [ ] Exercise EN, LT, and RU with the longest realistic seeded strings.
+- [x] Exercise EN, LT, and RU with the longest realistic seeded strings.
 - [ ] Verify RTL geometry if an RTL locale enters supported scope.
 - [ ] Verify cards inside narrow side panels separately from directory grids.
 - [ ] Verify print output if directory printing becomes a requirement.
@@ -177,8 +177,8 @@ while domain-specific product meaning remains in small explicit components.
 
 ## P10 — Wider Card-Family Classification
 
-- [ ] Audit `discovery-result-card` for leaf-primitive reuse.
-- [ ] Audit `expert-card` for leaf-primitive reuse.
+- [x] Audit `discovery-result-card` for leaf-primitive reuse.
+- [x] Audit `expert-card` for leaf-primitive reuse.
 - [ ] Audit `place-card` and `place-dashboard` as one product family.
 - [ ] Audit `listing-card` against price and order-state requirements.
 - [ ] Audit `search-case-card` against urgency and location requirements.
@@ -193,7 +193,7 @@ while domain-specific product meaning remains in small explicit components.
 
 ## P11 — Progressive Migration Waves
 
-- [ ] Wave A: leaf typography reuse in structurally compatible public cards.
+- [x] Wave A: leaf typography reuse in structurally compatible public cards.
 - [ ] Wave B: media containment reuse in cards already using responsive images.
 - [ ] Wave C: footer composition in bounded public directory cards.
 - [ ] Wave D: consolidate duplicate profile-pet implementations if their
@@ -254,6 +254,24 @@ while domain-specific product meaning remains in small explicit components.
 Publication evidence: implementation commit
 `0da0c3c7181716bab5651599aa5028525412a2e2` advanced `origin/main` from
 `f23681ad0791da31a1fdd87bb5772cf62c075ff9` on 2026-08-03.
+
+## P15 — Continuation Wave 1
+
+- [x] Add EN/LT/RU long-copy and membership-state feature contracts.
+- [x] Add executable fallback and escaping contracts for shared primitives.
+- [x] Normalize unsupported media ratios to landscape.
+- [x] Localize the class-based group fallback action.
+- [x] Reuse shared typography leaves in discovery and expert cards only.
+- [x] Remove superseded discovery-only title and description CSS.
+- [x] Expand the authenticated browser matrix across EN/LT/RU and six widths.
+- [x] Verify no clipped copy, undersized action, raw key, overflow, or console
+  error in the connected browser.
+- [x] Inspect LT and RU mobile screenshots.
+- [x] Run focused PHP, localization, formatting, and production-build checks.
+- [x] Run full static analysis and the final serial repository suite.
+- [x] Inspect and publish the core attributable continuation diff on `main`
+  (`3b0a4e5`).
+- [ ] Publish the localized fallback and final evidence follow-up on `main`.
 
 ## Completion Rule
 

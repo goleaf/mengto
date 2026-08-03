@@ -1861,7 +1861,7 @@ return [
     'scout_s_gallery_e6c4bbb9a7' => 'Scout\'s gallery',
     'scout_waits_several_metres_from_the_closed_lift_2f77b6d5cd' => 'Scout waits several metres from the closed lift doors',
     'sealed_bbb8650627' => 'Sealed',
-    'search_49c266baaa' => 'Search',
+    'search_49c266baaa' => 'Найти',
     'search_activity_summary_b377289d94' => 'Search activity summary',
     'search_area_20653cdb60' => 'Search area',
     'search_brand_a6f8e15d35' => 'Search PawCircle',
