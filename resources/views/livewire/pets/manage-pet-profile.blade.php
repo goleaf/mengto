@@ -96,6 +96,78 @@
                     <span wire:loading wire:target="saveBasics">{{ __('pet_profiles.actions.saving') }}</span>
                 </button>
             </form>
+
+            <section class="mt-8 border-t border-paw-line pt-6" aria-labelledby="pet-alternative-names-heading">
+                <div class="max-w-3xl">
+                    <h3 id="pet-alternative-names-heading" class="text-xl font-semibold text-paw-ink">{{ __('pet_profiles.names.title') }}</h3>
+                    <p class="mt-2 leading-7 text-paw-muted">{{ __('pet_profiles.names.description') }}</p>
+                </div>
+
+                <form wire:submit="addAlternativeName" class="forum-form mt-5">
+                    <div class="grid min-w-0 gap-4 md:grid-cols-2">
+                        <label class="forum-form__field" for="managed-pet-alternative-name">
+                            <span>{{ __('pet_profiles.fields.alternative_name') }}</span>
+                            <input id="managed-pet-alternative-name" type="text" wire:model="nameForm.name" maxlength="120" required aria-describedby="managed-pet-alternative-name-help managed-pet-alternative-name-error" @error('nameForm.name') aria-invalid="true" @enderror>
+                            <small id="managed-pet-alternative-name-help">{{ __('pet_profiles.names.name_help') }}</small>
+                            @error('nameForm.name') <small id="managed-pet-alternative-name-error" role="alert">{{ $message }}</small> @enderror
+                        </label>
+                        <label class="forum-form__field" for="managed-pet-name-type">
+                            <span>{{ __('pet_profiles.fields.name_type') }}</span>
+                            <select id="managed-pet-name-type" wire:model.live="nameForm.type" aria-describedby="managed-pet-name-type-help managed-pet-name-type-error" @error('nameForm.type') aria-invalid="true" @enderror>
+                                @forelse ($this->nameTypeOptions as $value => $label)
+                                    <option wire:key="managed-pet-name-type-{{ $value }}" value="{{ $value }}">{{ $label }}</option>
+                                @empty
+                                    <option value="nickname">{{ __('pet_profiles.name_types.nickname') }}</option>
+                                @endforelse
+                            </select>
+                            <small id="managed-pet-name-type-help">{{ __('pet_profiles.names.type_help') }}</small>
+                            @error('nameForm.type') <small id="managed-pet-name-type-error" role="alert">{{ $message }}</small> @enderror
+                        </label>
+                        <label class="forum-form__field" for="managed-pet-name-visibility">
+                            <span>{{ __('pet_profiles.fields.name_visibility') }}</span>
+                            <select id="managed-pet-name-visibility" wire:model="nameForm.visibility" aria-describedby="managed-pet-name-visibility-help managed-pet-name-visibility-error" @error('nameForm.visibility') aria-invalid="true" @enderror>
+                                @forelse ($this->nameVisibilityOptions as $value => $label)
+                                    <option wire:key="managed-pet-name-visibility-{{ $value }}" value="{{ $value }}">{{ $label }}</option>
+                                @empty
+                                    <option value="private">{{ __('pet_profiles.name_visibility.private') }}</option>
+                                @endforelse
+                            </select>
+                            <small id="managed-pet-name-visibility-help">{{ __('pet_profiles.names.visibility_help') }}</small>
+                            @error('nameForm.visibility') <small id="managed-pet-name-visibility-error" role="alert">{{ $message }}</small> @enderror
+                        </label>
+                        @if ($nameForm->type === 'localized')
+                            <label class="forum-form__field" for="managed-pet-name-locale">
+                                <span>{{ __('pet_profiles.fields.name_locale') }}</span>
+                                <input id="managed-pet-name-locale" type="text" wire:model="nameForm.locale" maxlength="16" placeholder="{{ __('pet_profiles.names.locale_placeholder') }}" required aria-describedby="managed-pet-name-locale-help managed-pet-name-locale-error" @error('nameForm.locale') aria-invalid="true" @enderror>
+                                <small id="managed-pet-name-locale-help">{{ __('pet_profiles.names.locale_help') }}</small>
+                                @error('nameForm.locale') <small id="managed-pet-name-locale-error" role="alert">{{ $message }}</small> @enderror
+                            </label>
+                        @endif
+                    </div>
+                    <button type="submit" class="forum-button forum-button--primary min-h-11" wire:loading.attr="disabled" wire:target="addAlternativeName">
+                        <x-ui-icon name="plus" />
+                        <span wire:loading.remove wire:target="addAlternativeName">{{ __('pet_profiles.actions.add_name') }}</span>
+                        <span wire:loading wire:target="addAlternativeName">{{ __('pet_profiles.actions.saving') }}</span>
+                    </button>
+                </form>
+
+                <div class="mt-5 grid gap-3" aria-live="polite">
+                    @forelse ($this->alternativeNames as $alternativeName)
+                        <article wire:key="managed-pet-name-{{ $alternativeName['id'] }}" class="flex min-w-0 flex-col gap-3 rounded-2xl border border-paw-line bg-paw-canvas p-4 sm:flex-row sm:items-center sm:justify-between">
+                            <div class="min-w-0">
+                                <p class="break-words font-semibold text-paw-ink" @if ($alternativeName['locale'] !== null) lang="{{ $alternativeName['locale'] }}" @endif>{{ $alternativeName['name'] }}</p>
+                                <p class="mt-1 text-sm text-paw-muted">{{ $alternativeName['type'] }} · {{ $alternativeName['visibility'] }}</p>
+                            </div>
+                            <button type="button" class="forum-button min-h-11 shrink-0" wire:click="removeAlternativeName({{ $alternativeName['id'] }})" wire:confirm="{{ __('pet_profiles.confirmations.remove_name') }}">
+                                <x-ui-icon name="trash-2" />
+                                {{ __('pet_profiles.actions.remove_name') }}
+                            </button>
+                        </article>
+                    @empty
+                        <p class="rounded-2xl border border-dashed border-paw-line p-4 text-paw-muted">{{ __('pet_profiles.names.empty') }}</p>
+                    @endforelse
+                </div>
+            </section>
         @elseif ($activeStep['value'] === 'photos')
             <div class="mt-6 grid gap-5 lg:grid-cols-[14rem_minmax(0,1fr)] lg:items-start">
                 <div class="aspect-square overflow-hidden rounded-2xl border border-paw-line bg-paw-canvas">

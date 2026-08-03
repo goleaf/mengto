@@ -6,6 +6,7 @@ namespace App\Services;
 
 use App\Enums\PetManagerRole;
 use App\Enums\PetManagerStatus;
+use App\Enums\PetProfileNameVisibility;
 use App\Enums\PetProfileStatus;
 use App\Enums\PetProfileVisibility;
 use App\Enums\PetWorkspaceFilter;
@@ -24,6 +25,7 @@ final readonly class PetProfileWorkspace
         private LocaleFormatter $formatter,
         private PetProfileAgeLabel $ageLabels,
         private PetSpeciesLabel $speciesLabels,
+        private PetProfileNameNormalizer $nameNormalizer,
     ) {}
 
     /**
@@ -80,7 +82,7 @@ final readonly class PetProfileWorkspace
             ]);
 
         $this->applyFilter($profiles, $filter, $user);
-        $this->applySearch($profiles, $query);
+        $this->applySearch($profiles, $query, $user);
         $this->applySort($profiles, $sort);
 
         $pets = $profiles
@@ -148,18 +150,32 @@ final readonly class PetProfileWorkspace
         };
     }
 
-    private function applySearch(Builder $profiles, string $query): void
+    private function applySearch(Builder $profiles, string $query, User $user): void
     {
         if ($query === '') {
             return;
         }
 
-        $profiles->where(function (Builder $search) use ($query): void {
+        $profiles->where(function (Builder $search) use ($query, $user): void {
             $like = "%{$query}%";
+            $normalized = $this->nameNormalizer->normalize($query);
             $search
                 ->where('name', 'like', $like)
                 ->orWhere('species', 'like', $like)
-                ->orWhere('breed', 'like', $like);
+                ->orWhere('breed', 'like', $like)
+                ->orWhereHas('names', static function (Builder $names) use ($normalized, $user): void {
+                    $names
+                        ->where('is_searchable', true)
+                        ->where('normalized_name', 'like', $normalized.'%')
+                        ->where(static function (Builder $visibility) use ($user): void {
+                            $visibility
+                                ->whereIn('visibility', [
+                                    PetProfileNameVisibility::Managers->value,
+                                    PetProfileNameVisibility::Public->value,
+                                ])
+                                ->orWhere('recorded_by_user_id', $user->id);
+                        });
+                });
         });
     }
 

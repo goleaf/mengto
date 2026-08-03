@@ -44,6 +44,11 @@ final class PetProfilePolicy
             );
     }
 
+    public function manageNames(User $user, PetProfile $petProfile): bool
+    {
+        return $this->update($user, $petProfile);
+    }
+
     public function delete(User $user, PetProfile $petProfile): bool
     {
         return $user->isActive()

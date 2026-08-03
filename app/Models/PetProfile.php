@@ -37,6 +37,7 @@ use Illuminate\Support\Carbon;
  * @property string $visibility
  * @property-read Collection<int, PetProfileLifecycleEvent> $lifecycleEvents
  * @property-read Collection<int, PetProfileManager> $managers
+ * @property-read Collection<int, PetProfileName> $names
  * @property-read Collection<int, PetProfileAccessRequest> $accessRequests
  * @property-read PetProfileFact|null $currentMicrochipRecord
  * @property-read MedicalRecord|null $medicalRecord
@@ -163,6 +164,12 @@ final class PetProfile extends Model
     public function lifecycleEvents(): HasMany
     {
         return $this->hasMany(PetProfileLifecycleEvent::class);
+    }
+
+    /** @return HasMany<PetProfileName, $this> */
+    public function names(): HasMany
+    {
+        return $this->hasMany(PetProfileName::class);
     }
 
     /** @return HasMany<PetProfileSlugAlias, $this> */

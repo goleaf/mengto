@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace App\Livewire\Pets;
 
+use App\Actions\AddPetProfileName;
 use App\Actions\InvitePetProfileManager;
 use App\Actions\RecordPetProfileFact;
 use App\Actions\RemovePetPrimaryPhoto;
+use App\Actions\RemovePetProfileName;
 use App\Actions\RestorePetPrimaryPhoto;
 use App\Actions\RevokePetProfileManager;
 use App\Actions\StorePetPrimaryPhoto;
@@ -16,6 +18,8 @@ use App\Actions\UpdatePetProfileStep;
 use App\Enums\PetEvidenceStatus;
 use App\Enums\PetManagerRole;
 use App\Enums\PetProfileCompletionStep;
+use App\Enums\PetProfileNameType;
+use App\Enums\PetProfileNameVisibility;
 use App\Enums\PetProfileStatus;
 use App\Enums\PetProfileVisibility;
 use App\Enums\PetSpeciesConfidence;
@@ -23,6 +27,7 @@ use App\Livewire\Forms\PetManagerInvitationForm;
 use App\Livewire\Forms\PetProfileDocumentsForm;
 use App\Livewire\Forms\PetProfileForm;
 use App\Livewire\Forms\PetProfileMediaForm;
+use App\Livewire\Forms\PetProfileNameForm;
 use App\Livewire\Forms\PetProfilePrivacyForm;
 use App\Models\PetProfile;
 use App\Models\PetProfileLifecycleEvent;
@@ -60,6 +65,8 @@ final class ManagePetProfile extends Component
     public PetManagerInvitationForm $invitationForm;
 
     public PetProfileMediaForm $mediaForm;
+
+    public PetProfileNameForm $nameForm;
 
     #[Locked]
     public int $profileId = 0;
@@ -109,6 +116,10 @@ final class ManagePetProfile extends Component
 
     private PetProfileCompletionPresenter $completionPresenter;
 
+    private AddPetProfileName $addNameAction;
+
+    private RemovePetProfileName $removeNameAction;
+
     private ?PetProfile $loadedProfile = null;
 
     private ?bool $mayManageDocuments = null;
@@ -129,6 +140,8 @@ final class ManagePetProfile extends Component
         RestorePetPrimaryPhoto $restorePhoto,
         TransitionPetProfileStatus $transitionAction,
         QrCodeGenerator $qrCodes,
+        AddPetProfileName $addNameAction,
+        RemovePetProfileName $removeNameAction,
     ): void {
         $this->auth = $auth;
         $this->gate = $gate;
@@ -145,6 +158,8 @@ final class ManagePetProfile extends Component
         $this->restorePhoto = $restorePhoto;
         $this->transitionAction = $transitionAction;
         $this->qrCodes = $qrCodes;
+        $this->addNameAction = $addNameAction;
+        $this->removeNameAction = $removeNameAction;
     }
 
     public function mount(PetProfile $petProfile): void
@@ -214,6 +229,41 @@ final class ManagePetProfile extends Component
             ->mapWithKeys(static fn (PetSpeciesConfidence $confidence): array => [
                 $confidence->value => $confidence->label(),
             ])->all();
+    }
+
+    /** @return array<string, string> */
+    #[Computed]
+    public function nameTypeOptions(): array
+    {
+        return collect(PetProfileNameType::cases())
+            ->mapWithKeys(static fn (PetProfileNameType $type): array => [
+                $type->value => $type->label(),
+            ])->all();
+    }
+
+    /** @return array<string, string> */
+    #[Computed]
+    public function nameVisibilityOptions(): array
+    {
+        return collect(PetProfileNameVisibility::cases())
+            ->mapWithKeys(static fn (PetProfileNameVisibility $visibility): array => [
+                $visibility->value => $visibility->label(),
+            ])->all();
+    }
+
+    /** @return list<array{id: int, locale: string|null, name: string, type: string, visibility: string}> */
+    #[Computed]
+    public function alternativeNames(): array
+    {
+        return $this->profileModel()->names
+            ->map(static fn ($name): array => [
+                'id' => $name->id,
+                'name' => $name->name,
+                'type' => $name->type->label(),
+                'visibility' => $name->visibility->label(),
+                'locale' => $name->locale,
+            ])
+            ->all();
     }
 
     public function updatedFormSpecies(string $species): void
@@ -308,6 +358,21 @@ final class ManagePetProfile extends Component
             $this->form->basicsData(),
             'basics_saved',
         );
+    }
+
+    public function addAlternativeName(): void
+    {
+        $this->addNameAction->handle($this->profileModel(), $this->nameForm->data());
+        $this->nameForm->reset();
+        $this->feedback = __('pet_profiles.feedback.name_added');
+        $this->forgetComputed();
+    }
+
+    public function removeAlternativeName(int $nameId): void
+    {
+        $this->removeNameAction->handle($this->profileModel(), $nameId);
+        $this->feedback = __('pet_profiles.feedback.name_removed');
+        $this->forgetComputed();
     }
 
     public function saveAgeAndSex(): void
@@ -609,6 +674,28 @@ final class ManagePetProfile extends Component
         $step = $this->activeStep();
         $user = $this->requireUser();
         $relations = match ($step) {
+            PetProfileCompletionStep::Basics => [
+                'names' => fn ($query) => $query
+                    ->select([
+                        'id',
+                        'pet_profile_id',
+                        'name',
+                        'type',
+                        'visibility',
+                        'locale',
+                        'recorded_by_user_id',
+                        'recorded_at',
+                    ])
+                    ->where(function ($visibility) use ($user): void {
+                        $visibility
+                            ->whereIn('visibility', [
+                                PetProfileNameVisibility::Managers->value,
+                                PetProfileNameVisibility::Public->value,
+                            ])
+                            ->orWhere('recorded_by_user_id', $user->id);
+                    })
+                    ->oldest('recorded_at'),
+            ],
             PetProfileCompletionStep::Photos => [
                 'primaryMedia.asset',
                 'latestRecoverableMedia.asset',
@@ -824,6 +911,7 @@ final class ManagePetProfile extends Component
             $this->completionSteps,
             $this->managers,
             $this->history,
+            $this->alternativeNames,
             $this->statusOptions,
         );
     }

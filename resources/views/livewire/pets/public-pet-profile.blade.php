@@ -16,6 +16,16 @@
         <div class="min-w-0">
             <p class="text-sm font-semibold text-paw-muted">{{ $pet['species'] }}</p>
             <h1 class="break-words text-3xl font-semibold">{{ $pet['name'] }}</h1>
+            @if ($pet['alternative_names'] !== [])
+                <div class="mt-2 flex flex-wrap gap-2" aria-label="{{ __('pet_profiles.names.public_label') }}">
+                    @forelse ($pet['alternative_names'] as $alternativeName)
+                        <span wire:key="public-pet-name-{{ $alternativeName['id'] }}" class="rounded-full border border-paw-line px-3 py-1 text-sm text-paw-muted" @if ($alternativeName['locale'] !== null) lang="{{ $alternativeName['locale'] }}" @endif>
+                            {{ $alternativeName['name'] }} · {{ $alternativeName['type'] }}
+                        </span>
+                    @empty
+                    @endforelse
+                </div>
+            @endif
             <div class="mt-3 flex flex-wrap gap-2">
                 <x-status-badge :label="$pet['status']" icon="circle-check" />
                 @if ($pet['breed'] !== null)

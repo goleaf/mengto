@@ -8,6 +8,7 @@ use App\Enums\PetManagerRole;
 use App\Enums\PetProfileVisibility;
 use App\Enums\PetSpeciesConfidence;
 use App\Models\PetProfile;
+use App\Rules\ValidPetProfileName;
 use Illuminate\Validation\Rule;
 use Livewire\Form;
 
@@ -56,7 +57,7 @@ final class PetProfileForm extends Form
     protected function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'min:1', 'max:120'],
+            'name' => ['required', 'string', 'min:1', 'max:120', app(ValidPetProfileName::class)],
             'species' => [
                 'required',
                 Rule::in(config('pet_profiles.species_options', [])),
@@ -132,7 +133,7 @@ final class PetProfileForm extends Form
     public function basicsData(): array
     {
         $validated = $this->validate([
-            'name' => ['required', 'string', 'min:1', 'max:120'],
+            'name' => ['required', 'string', 'min:1', 'max:120', app(ValidPetProfileName::class)],
             'species' => [
                 'required',
                 Rule::in(config('pet_profiles.species_options', [])),

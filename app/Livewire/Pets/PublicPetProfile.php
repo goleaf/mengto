@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Livewire\Pets;
 
+use App\Enums\PetProfileNameVisibility;
 use App\Models\PetProfile;
 use App\Models\PetProfileManager;
 use App\Models\PetProfileMedia;
@@ -97,6 +98,17 @@ final class PublicPetProfile extends Component
                     ->activeAt(now())
                     ->with('user:id,name'),
                 'primaryMedia.asset',
+                'names' => fn ($query) => $query
+                    ->select([
+                        'id',
+                        'pet_profile_id',
+                        'name',
+                        'type',
+                        'locale',
+                        'recorded_at',
+                    ])
+                    ->where('visibility', PetProfileNameVisibility::Public->value)
+                    ->oldest('recorded_at'),
             ])
             ->findOrFail($this->profileId);
         $this->gate->authorize('view', $profile);
@@ -127,6 +139,14 @@ final class PublicPetProfile extends Component
         return [
             'profile_key' => $profile->profile_key,
             'name' => $profile->name,
+            'alternative_names' => $profile->names
+                ->map(static fn ($name): array => [
+                    'id' => $name->id,
+                    'name' => $name->name,
+                    'type' => $name->type->label(),
+                    'locale' => $name->locale,
+                ])
+                ->all(),
             'species' => $this->speciesLabels->for(
                 $profile->species,
                 $profile->species_confidence,

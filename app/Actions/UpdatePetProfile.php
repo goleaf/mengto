@@ -11,6 +11,7 @@ use App\Services\ForumActor;
 use App\Services\PetProfileAccess;
 use App\Services\PetProfileCache;
 use App\Services\PetProfileEventRecorder;
+use App\Services\PetProfileNameHistory;
 use App\Services\PrototypeState;
 use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Support\Facades\DB;
@@ -25,6 +26,7 @@ final class UpdatePetProfile
         private readonly PetProfileAccess $access,
         private readonly PetProfileEventRecorder $events,
         private readonly PetProfileCache $cache,
+        private readonly PetProfileNameHistory $nameHistory,
     ) {}
 
     /** @param array<string, mixed> $data */
@@ -123,7 +125,17 @@ final class UpdatePetProfile
                 $attributes['species_confidence'] ?? $locked->species_confidence,
             );
 
-            $locked->forceFill($attributes)->save();
+            $locked->forceFill($attributes);
+
+            if ($locked->isDirty('name')) {
+                $this->nameHistory->rememberPrevious(
+                    $locked,
+                    $user,
+                    (string) $locked->getOriginal('name'),
+                );
+            }
+
+            $locked->save();
 
             // Keep pre-normalization profile snapshots readable during the compatibility window.
             $this->state->updatePet([

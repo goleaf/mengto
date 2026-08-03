@@ -12,6 +12,7 @@ use App\Services\ForumActor;
 use App\Services\PetProfileAccess;
 use App\Services\PetProfileCache;
 use App\Services\PetProfileEventRecorder;
+use App\Services\PetProfileNameHistory;
 use App\Services\PrototypeState;
 use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Support\Facades\DB;
@@ -26,6 +27,7 @@ final class UpdatePetProfileStep
         private readonly PetProfileAccess $access,
         private readonly PetProfileEventRecorder $events,
         private readonly PetProfileCache $cache,
+        private readonly PetProfileNameHistory $nameHistory,
     ) {}
 
     /** @param array<string, mixed> $data */
@@ -100,6 +102,14 @@ final class UpdatePetProfileStep
 
             if (! $locked->isDirty(array_keys($attributes))) {
                 return $locked->refresh();
+            }
+
+            if ($locked->isDirty('name')) {
+                $this->nameHistory->rememberPrevious(
+                    $locked,
+                    $user,
+                    (string) $locked->getOriginal('name'),
+                );
             }
 
             $locked->lock_version++;
