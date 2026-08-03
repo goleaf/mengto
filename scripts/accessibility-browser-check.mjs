@@ -558,6 +558,7 @@ try {
         let englishNavigationCopy = null;
         let englishMedicalRecordCopy = null;
         let englishCareJournalCopy = null;
+        let englishLostFoundCopy = null;
         let canonicalTitleFont = null;
 
         const setProfileLocale = async (locale) => {
@@ -638,6 +639,11 @@ try {
                             && box.width > 0
                             && box.height > 0;
                     };
+                    const directText = (element) => [...(element?.childNodes ?? [])]
+                        .filter((node) => node.nodeType === Node.TEXT_NODE)
+                        .map((node) => node.textContent.trim())
+                        .filter(Boolean)
+                        .join(' ');
                     const smallTargets = header
                         ? [...header.querySelectorAll('a, button, input, select, textarea, [role="button"]')]
                             .filter(visible)
@@ -680,6 +686,13 @@ try {
                     const careCardBox = careCard?.getBoundingClientRect();
                     const careMediaBox = careMedia?.getBoundingClientRect();
                     const careBodyBox = careBody?.getBoundingClientRect();
+                    const lostFoundStats = document.querySelector('[data-lost-found-stats]');
+                    const lostFoundStatItems = [...document.querySelectorAll('[data-lost-found-stat]')];
+                    const lostFoundFilters = document.querySelector('form[role="search"]');
+                    const searchCaseCard = document.querySelector('[data-search-case-card]');
+                    const searchMap = document.querySelector('[data-search-map]');
+                    const lostFoundStatsBox = lostFoundStats?.getBoundingClientRect();
+                    const lostFoundLastStatBox = lostFoundStatItems.at(-1)?.getBoundingClientRect();
 
                     return {
                         documentLanguage: document.documentElement.lang,
@@ -801,6 +814,57 @@ try {
                                 mediaWidth: Math.round(careMediaBox.width),
                                 mediaBottom: Math.round(careMediaBox.bottom),
                                 bodyTop: Math.round(careBodyBox.top),
+                            }
+                            : null,
+                        lostFoundCopy: {
+                            statsLabel: lostFoundStats?.getAttribute('aria-label') ?? null,
+                            statsLabels: lostFoundStatItems.map(
+                                (item) => item.querySelector('div span')?.textContent.trim() ?? null,
+                            ),
+                            filterLabels: [...(lostFoundFilters?.querySelectorAll('label') ?? [])]
+                                .map(directText),
+                            filterDefaults: [...(lostFoundFilters?.querySelectorAll('select') ?? [])]
+                                .map((select) => select.selectedOptions[0]?.textContent.trim() ?? null),
+                            searchPlaceholder: lostFoundFilters?.querySelector('input[name="q"]')
+                                ?.getAttribute('placeholder') ?? null,
+                            applyLabel: lostFoundFilters?.querySelector('button[type="submit"] span')
+                                ?.textContent.trim() ?? null,
+                            clearLabel: lostFoundFilters?.querySelector('a[title]')
+                                ?.getAttribute('title') ?? null,
+                            resultsTitle: document.querySelector('#search-results-title')
+                                ?.textContent.trim() ?? null,
+                            resultsOrder: document.querySelector('[data-lost-found-results-order]')
+                                ?.textContent.trim() ?? null,
+                            cardType: searchCaseCard?.querySelector('[data-search-case-type]')
+                                ?.textContent.trim() ?? null,
+                            cardSpecies: searchCaseCard?.querySelector('[data-search-case-species]')
+                                ?.textContent.trim() ?? null,
+                            cardStatus: searchCaseCard?.querySelector('[data-search-case-status]')
+                                ?.textContent.trim() ?? null,
+                            cardCounts: [...(searchCaseCard?.querySelectorAll(
+                                '[data-search-case-counts] span'
+                            ) ?? [])].map((element) => element.textContent.trim()),
+                            areaLabel: searchCaseCard?.querySelector('[data-search-case-area-label]')
+                                ?.textContent.trim() ?? null,
+                            lastSeenLabel: searchCaseCard?.querySelector(
+                                '[data-search-case-last-seen-label]'
+                            )?.textContent.trim() ?? null,
+                            mapTitle: searchMap?.querySelector('#search-map-title')
+                                ?.textContent.trim() ?? null,
+                            mapPrivacy: searchMap?.querySelector('[data-search-map-privacy]')
+                                ?.textContent.trim() ?? null,
+                            mapListLabel: searchMap?.querySelector('ol')
+                                ?.getAttribute('aria-label') ?? null,
+                            guidanceTitle: document.querySelector('[data-lost-found-guidance-title]')
+                                ?.textContent.trim() ?? null,
+                            guidanceCopy: document.querySelector('[data-lost-found-guidance-copy]')
+                                ?.textContent.trim() ?? null,
+                        },
+                        lostFoundLayout: lostFoundStatsBox && lostFoundLastStatBox
+                            ? {
+                                itemCount: lostFoundStatItems.length,
+                                statsWidth: Math.round(lostFoundStatsBox.width),
+                                lastStatWidth: Math.round(lostFoundLastStatBox.width),
                             }
                             : null,
                     };
@@ -949,6 +1013,59 @@ try {
                             behavior.careJournalLayout.mediaBottom
                                 <= behavior.careJournalLayout.bodyTop + 1,
                             `${label}: care journal media and body are not stacked.`,
+                        );
+                    }
+                }
+
+                if (route.path === '/lost-found') {
+                    const lostFoundCopy = [
+                        behavior.lostFoundCopy.statsLabel,
+                        ...behavior.lostFoundCopy.statsLabels,
+                        ...behavior.lostFoundCopy.filterLabels,
+                        ...behavior.lostFoundCopy.filterDefaults,
+                        behavior.lostFoundCopy.searchPlaceholder,
+                        behavior.lostFoundCopy.applyLabel,
+                        behavior.lostFoundCopy.clearLabel,
+                        behavior.lostFoundCopy.resultsTitle,
+                        behavior.lostFoundCopy.resultsOrder,
+                        behavior.lostFoundCopy.cardType,
+                        behavior.lostFoundCopy.cardSpecies,
+                        behavior.lostFoundCopy.cardStatus,
+                        ...behavior.lostFoundCopy.cardCounts,
+                        behavior.lostFoundCopy.areaLabel,
+                        behavior.lostFoundCopy.lastSeenLabel,
+                        behavior.lostFoundCopy.mapTitle,
+                        behavior.lostFoundCopy.mapPrivacy,
+                        behavior.lostFoundCopy.mapListLabel,
+                        behavior.lostFoundCopy.guidanceTitle,
+                        behavior.lostFoundCopy.guidanceCopy,
+                    ];
+
+                    assert(
+                        lostFoundCopy.length === 34
+                            && lostFoundCopy.every((value) => value?.length > 0),
+                        `${label}: the lost-and-found localization surface is incomplete ${JSON.stringify(behavior.lostFoundCopy)}.`,
+                    );
+
+                    if (viewport.locale === 'en') {
+                        englishLostFoundCopy ??= lostFoundCopy;
+                    } else {
+                        assert(englishLostFoundCopy !== null, `${label}: English lost-and-found baseline is missing.`);
+                        assert(
+                            lostFoundCopy.every((value, index) => value !== englishLostFoundCopy[index]),
+                            `${label}: English lost-and-found body fallback remains.`,
+                        );
+                    }
+
+                    if (viewport.width <= 375) {
+                        assert(behavior.lostFoundLayout !== null, `${label}: search statistics geometry is missing.`);
+                        assert(behavior.lostFoundLayout.itemCount === 5, `${label}: search statistics item count changed.`);
+                        assert(
+                            Math.abs(
+                                behavior.lostFoundLayout.lastStatWidth
+                                - behavior.lostFoundLayout.statsWidth
+                            ) <= 2,
+                            `${label}: the final search statistic leaves an empty mobile grid cell.`,
                         );
                     }
                 }

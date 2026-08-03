@@ -18,7 +18,7 @@
             </div>
         @endif
 
-        <section class="grid grid-cols-2 gap-px overflow-hidden rounded-md border border-paw-line bg-paw-line md:grid-cols-5" aria-label="{{ __('ui.search_activity_summary_b377289d94') }}">
+        <section data-lost-found-stats class="grid grid-cols-2 gap-px overflow-hidden rounded-md border border-paw-line bg-paw-line md:grid-cols-5" aria-label="{{ __('ui.search_activity_summary_b377289d94') }}">
             @forelse ([
                 ['label' => __('ui.active_9234069589'), 'value' => $stats['active'], 'icon' => 'siren'],
                 ['label' => __('ui.missing_6be36ca49e'), 'value' => $stats['lost'], 'icon' => 'scan-search'],
@@ -26,7 +26,13 @@
                 ['label' => __('ui.sightings_4906ba1ea4'), 'value' => $stats['sightings'], 'icon' => 'map-pin-check'],
                 ['label' => __('ui.volunteers_6ec733ad33'), 'value' => $stats['volunteers'], 'icon' => 'users-round'],
             ] as $stat)
-                <div class="flex items-center gap-3 bg-white p-4">
+                <div
+                    data-lost-found-stat
+                    @class([
+                        'flex items-center gap-3 bg-white p-4',
+                        'col-span-2 md:col-span-1' => $loop->last,
+                    ])
+                >
                     <x-ui-icon size="lg" :name="$stat['icon']" class="shrink-0 text-paw-leaf" />
                     <div>
                         <strong class="block text-xl">{{ $stat['value'] }}</strong>
@@ -114,7 +120,7 @@
             <section aria-labelledby="search-results-title">
                 <div class="mb-4 flex items-center justify-between gap-3">
                     <h2 id="search-results-title" class="text-2xl font-bold">{{ __('ui.search_reports_70565872e3') }}</h2>
-                    <span class="text-sm text-paw-muted">{{ __('ui.newest_verified_activity_first_280c662fa5') }}</span>
+                    <span data-lost-found-results-order class="text-sm text-paw-muted">{{ __('ui.newest_verified_activity_first_280c662fa5') }}</span>
                 </div>
 
                 <div class="grid gap-4 md:grid-cols-2">
@@ -139,8 +145,8 @@
             <aside class="xl:sticky xl:top-24 xl:self-start">
                 <x-search-map :markers="$map_markers" title="{{ __('ui.visible_search_area_b5fd8ec109') }}" compact />
                 <div class="mt-5 border-t border-paw-line pt-5">
-                    <h2 class="font-bold">{{ __('ui.see_an_animal_d106478c0f') }}</h2>
-                    <p class="mt-2 text-sm leading-6 text-paw-muted">
+                    <h2 data-lost-found-guidance-title class="font-bold">{{ __('ui.see_an_animal_d106478c0f') }}</h2>
+                    <p data-lost-found-guidance-copy class="mt-2 text-sm leading-6 text-paw-muted">
                         {{ __('ui.open_the_matching_card_and_send_the_actual_5f3fd1d897') }}
                     </p>
                 </div>

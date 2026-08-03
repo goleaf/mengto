@@ -4,10 +4,10 @@
     'compact' => false,
 ])
 
-<section {{ $attributes->class('grid gap-3') }} aria-labelledby="search-map-title">
+<section data-search-map {{ $attributes->class('grid gap-3') }} aria-labelledby="search-map-title">
     <div class="flex items-center justify-between gap-3">
         <h2 id="search-map-title" class="text-lg font-bold">{{ $title }}</h2>
-        <span class="inline-flex items-center gap-1 text-xs font-semibold text-paw-muted">
+        <span data-search-map-privacy class="inline-flex items-center gap-1 text-xs font-semibold text-paw-muted">
             <x-ui-icon name="shield-check" size="sm" class="text-paw-leaf" />
             {{ __('ui.generalized_locations_f8a7558000') }}
         </span>

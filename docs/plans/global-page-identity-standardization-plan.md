@@ -257,6 +257,26 @@ production build, isolated migration plus repeated seed (133 migrations, 216
 tables, stable 5 users), 178-line route and cache smoke, and both forum-source
 checks also passed.
 
+The third non-header localization follow-up closes the `/lost-found`
+directory slice. Forty-two directory, filter, status, map, guidance, empty,
+and defensive UI values now have reviewed RU/LT translations; the unchanged
+Lithuanian `Vilnius` value is the correct proper noun rather than an English
+fallback. Lithuanian sighting and task counts retain their native diacritics.
+The mobile statistics grid now gives its fifth and final item a full-width
+row below 48rem instead of leaving a blank sixth cell. This is presentation
+only: the existing prepared directory data and query path are unchanged.
+The repeatable browser contract compares thirty-four lost-and-found system
+fields with the English baseline and measures the statistics geometry. All 91
+audits and 26 screenshots passed with zero console errors; at 375px the
+Russian statistics container was 344px wide and its final item was 342px wide,
+with zero overflow, clipped regions, or sub-44px targets. The affected
+directory/responsive/page-identity run passed 93 tests with 1,168 assertions;
+the complete sequential suite passed 2,792 tests with 88,411 assertions. Full
+Pint and Larastan passed with zero findings; Composer validation, audit, and
+platform requirements, NPM audit, production build, isolated migration plus
+repeated seed (134 migrations, 217 tables, stable 5 users), 184-line route and
+cache smoke, and both forum-source checks also passed.
+
 ### 3.3 Next Execution Checkpoint
 
 1. Complete Package 0 by assigning the stable requirement ID and recording the
@@ -269,9 +289,9 @@ checks also passed.
    complete from source intent or screenshots alone.
 4. Continue the non-header English fallback audit on the remaining priority
    RU/LT pages; the global navigation, `/medical-records`, and
-   `/care-journals` are browser-verified, while the other priority bodies
-   remain open. Do not conflate body-copy completion with the verified
-   page-identity contract.
+   `/care-journals`, and `/lost-found` are browser-verified, while the other
+   priority bodies remain open. Do not conflate body-copy completion with the
+   verified page-identity contract.
 
 ## 4. Scope
 
