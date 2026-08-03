@@ -605,16 +605,21 @@ directory queries, and private workspace projections.
 Observed evidence on 2026-08-03:
 
 - focused organization contract: 14 tests and 109 assertions;
-- organization/event/schema slice: 34 tests and 237 assertions;
+- organization plus event lifecycle/workflow: 39 tests and 702 assertions;
+- complete serial suite: 2,484 tests and 80,398 assertions in 163.378 seconds;
 - full Larastan: zero findings;
 - migration lifecycle: 121-to-0-to-121 files, 205 tables, and stable 5-user
   repeated seed;
 - Composer strict validation/audit, npm audit with zero vulnerabilities, Vite
   8.2.0 build, cache compilation, localization, and deterministic forum
   source/manifest/requirements checks: passed.
+- connected browser matrix: organization directory and workspace at 1440x900
+  and 375x812, with zero overflow, unnamed controls, raw organization keys,
+  private verification-evidence leaks, undersized mobile controls, or console
+  errors.
 
-The final full-suite/Pint rerun and scoped publication remain pending. Exact
-implemented and open P02 scope is recorded in
+Targeted Pint and the scoped publication diff check passed. Exact implemented
+and open P02 scope is recorded in
 `docs/plans/portal-organization-authority-foundation-work-package.md`.
 
 ## Linked Media Navigation Verification

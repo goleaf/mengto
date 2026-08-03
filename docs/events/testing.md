@@ -26,10 +26,11 @@ workspace data minimization, EN/LT/RU labels, factories, idempotent guarded
 seeding, and bounded directory queries.
 
 The repository browser audit covers the event directory, a recurring event,
-and the three-session conference schedule at 1440x900 and 375x812. It checks
-one `h1` and `main`, accessible control names, 44px mobile targets, horizontal
-overflow, raw translation keys, private-location disclosure, expected session
-count, and browser console errors. PNG files and the JSON report remain runtime
+the three-session conference schedule, and the organization directory and
+workspace at 1440x900 and 375x812. It checks one `h1` and `main`, accessible
+control names, 44px mobile targets, horizontal overflow, raw translation keys,
+private-location and verification-evidence disclosure, expected session count,
+and browser console errors. PNG files and the JSON report remain runtime
 artifacts outside the repository.
 
 ## Verification on 2026-08-03
@@ -52,9 +53,13 @@ artifacts outside the repository.
   vulnerabilities.
 
 The later organization-authority checkpoint passed 14 focused tests with 109
-assertions. Fresh and rollback/reapply verification covered 121 migrations and
-205 tables; initial and repeated seeding both exited `0`. The exact checkpoint
-is recorded in
+assertions and 39 organization/event lifecycle tests with 702 assertions.
+The final serial suite passed 2,484 tests with 80,398 assertions in 163.378
+seconds. Fresh and rollback/reapply verification covered 121 migrations and
+205 tables; initial and repeated seeding both exited `0`. Four organization
+browser audits passed with no overflow, unnamed controls, raw organization
+keys, private evidence leaks, undersized mobile controls, or console errors.
+The exact checkpoint is recorded in
 `docs/plans/portal-organization-authority-foundation-work-package.md`.
 
 Provider-backed event payments, tickets, refunds, QR/offline check-in,

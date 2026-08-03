@@ -25,7 +25,7 @@ The factual starting point is
 - 3,449 `portal.*` requirements: 0 verified, 3,449 planned/discovered.
 - 4,968 `event.*` requirements: 85 verified, 4,883 planned/discovered.
 - Existing event domain: 16 Eloquent models and 17 event tables.
-- Current complete checkpoint: 2,396 tests and 79,146 assertions.
+- Current complete checkpoint: 2,484 tests and 80,398 assertions.
 - Current supported locales: EN, LT, and RU.
 - Current branch workflow: direct, attributable packages on `main`.
 
