@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Enums\PhotoReactionType;
 use App\Models\PhotoAsset;
 use App\Models\PhotoComment;
 use App\Models\PhotoReaction;
@@ -61,7 +62,7 @@ test('reactions are stored independently for each photo', function () {
             ->whereBelongsTo($this->authenticatedUser)
             ->whereHas('photoAsset', fn ($query) => $query
                 ->where('key', 'scout-shaded-loop-photo-2'))
-            ->value('reaction'))->toBe('love');
+            ->value('reaction'))->toBe(PhotoReactionType::Love);
 
     $this->from(route('preview.feed'))->post(route('photos.interactions.store'), [
         'action' => 'set-reaction',

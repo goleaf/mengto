@@ -431,7 +431,9 @@ Package evidence:
 - Vite production build and config/event/route/view cache compilation: passed;
 - isolated fresh SQLite: 111 migrations, 191 tables, and repeat seed preserved
   five users;
-- immutable forum source and generated 29,960-requirement checks: passed;
+- immutable forum source and generated 29,960-requirement checks: passed at
+  that historical package checkpoint; the current 38,377-record catalogue
+  requires a fresh combined check before any new evidence claim;
 - dependency-free Chrome: EN/LT/RU at 320, 375, 768, 1024, 1440, and 1920
   pixels with one `h1`, zero horizontal overflow, visible skip-link focus,
   44-pixel scoped actions, no external images/member chrome, and no console
@@ -472,6 +474,21 @@ Package evidence:
 - fresh database: 111 migrations and 191 tables; repeated seed preserved 5
   users;
 - Pint and Larastan passed; Composer/npm audits and Vite build passed.
+
+## Forum Database Correctness Reconciliation
+
+`ForumDatabaseCorrectnessTest` covers the selected Phase 3 transaction,
+constraint, cast, timestamp, archival, locking, idempotency, and race atoms.
+It inspects exact FK/unique/compound indexes, bypasses model casts to prove
+database `CHECK` rejection, exercises duplicate vote/reaction writes, replaces
+a competing accepted answer, and verifies authorized/idempotent/stale case
+closure plus complete rollback after a post-update bounded-limit failure.
+
+The populated migration test runs `down()` and `up()` around representative
+vote, reaction, and moderation rows. A query-growth assertion compares closure
+with one and twenty linked reports; both execute the same number of database
+statements. Exact commands and final gate evidence are maintained in
+`docs/plans/forum-database-correctness-reconciliation-work-package.md`.
 
 ## Linked Media Navigation Verification
 

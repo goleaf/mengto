@@ -248,6 +248,27 @@ Status: `verified` on 2026-08-03
 The exhaustive execution and release plan is
 `docs/plans/authenticated-portal-access-plan.md`.
 
+## Current Delivery: Forum Database Correctness Reconciliation
+
+Status: `verified` on 2026-08-03
+
+- Added portable fixed-value constraints and backed enum casts for answer
+  votes and photo reactions.
+- Added moderation-case optimistic versioning and unique closure request keys.
+- Added one policy-authorized, row-locked, retry-bounded, idempotent close
+  Action with transactional bulk audit events and no new route or UI.
+- Corrected the canonical topic answer pointer during competing single-answer
+  acceptance.
+- Added direct database, rollback/reapply, authorization, replay, stale-write,
+  archival/cast, duplicate-attempt, and constant-query-growth tests.
+- Verified the complete combined gate: 2,303 tests and 76,179 assertions,
+  117 fresh migrations / 196 tables / stable repeat seed, full Pint/Larastan,
+  dependency audits, Vite/cache compilation, deterministic 38,377-record
+  generation, and EN/LT/RU loopback Chrome checks.
+
+Exact scope, evidence, remaining gates, and stop conditions are in
+`docs/plans/forum-database-correctness-reconciliation-work-package.md`.
+
 ## Current Delivery: Global Linked Media Navigation
 
 Status: `verified` on 2026-08-03

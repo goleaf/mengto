@@ -238,3 +238,16 @@ hidden controls, popularity, trust, and reputation are not authorization.
 - `#[Locked]` protects hydration identity only; it does not grant access.
 
 See `docs/topic-lifecycle.md`.
+
+## Moderation Case Closure
+
+- Only an administrator allowed to update the concrete moderation case may
+  close it.
+- `CloseForumModerationCase` authorizes both the caller-supplied model and the
+  current row after acquiring its lock.
+- An unresolved case cannot close. A stale optimistic version or a different
+  request against an already closed case fails without an audit write.
+- Replaying the original closure request key returns the existing closed case
+  and does not create a second report event.
+- The closure key is hidden from serialization and is never accepted as an
+  authority substitute.

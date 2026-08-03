@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Enums\ForumVoteValue;
 use Database\Factories\ForumVoteFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -18,7 +19,7 @@ use Illuminate\Support\Carbon;
  * @property string|null $reason
  * @property Carbon|null $updated_at
  * @property string $user_key
- * @property string $value
+ * @property ForumVoteValue $value
  */
 class ForumVote extends Model
 {
@@ -55,6 +56,9 @@ class ForumVote extends Model
 
     protected function casts(): array
     {
-        return ['effect_revision' => 'integer'];
+        return [
+            'effect_revision' => 'integer',
+            'value' => ForumVoteValue::class,
+        ];
     }
 }

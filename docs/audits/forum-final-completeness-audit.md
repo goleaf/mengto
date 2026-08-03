@@ -8,26 +8,26 @@ This is a living gate record. It is deliberately not a completion claim.
 | --- | --- | --- |
 | 0 Source preservation | verified | `forum-source-prompt.md`; preservation and generation `--check` commands |
 | 1 Discovery | in progress | `forum-existing-system-audit.md` |
-| 2 Atomic plan coverage | verified | 29,960 records in JSON and generated phase index |
+| 2 Atomic plan coverage | verified | 38,377 records in JSON and generated phase index |
 | 3 Implementation | not complete | production implementation has not yet reached all phases |
-| 4 Tests | not complete | the latest recorded medical package suite passed 2,027 tests and 72,581 assertions; package migration/seed, analysis, build, cache, and browser evidence passed, while open requirement suites remain |
+| 4 Tests | not complete | current combined checkpoint passed 2,303 tests and 76,179 assertions plus migration/seed, analysis, build, cache, and browser gates; open requirement suites remain |
 | 5 Documentation | in progress | initial canonical pass exists |
-| 6 Final traceability | not complete | deterministic evidence overlay records 1,112 verified IDs; 28,848 remain discovered |
+| 6 Final traceability | not complete | deterministic evidence overlay records 1,161 verified IDs; 37,216 remain discovered |
 
 ## Atomic Totals
 
 | Measure | Current value |
 | --- | ---: |
-| Source payloads | 8 |
-| Atomic requirements | 29,960 |
-| Assigned to a phase | 29,960 |
-| Verified | 1,112 |
+| Source payloads | 10 |
+| Atomic requirements | 38,377 |
+| Assigned to a phase | 38,377 |
+| Verified | 1,161 |
 | In progress | 0 |
-| Planned or discovered | 28,848 |
+| Planned or discovered | 37,216 |
 | Blocked | 0 |
 | Intentionally not applicable | 0 |
 
-Gate 0 itself and 1,112 implementation requirements are verified. All remaining
+Gate 0 itself and 1,161 implementation requirements are verified. All remaining
 statuses stay conservative until file-level and passing-check evidence is
 recorded in `forum-requirement-evidence.json`.
 

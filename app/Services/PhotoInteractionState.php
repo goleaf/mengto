@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\Enums\PhotoReactionType;
 use App\Models\PhotoAsset;
 use App\Models\PhotoComment;
 use App\Models\PhotoReaction;
@@ -14,18 +15,11 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 
 final class PhotoInteractionState
 {
     private const COMMENT_LIMIT = 40;
-
-    private const REACTIONS = [
-        'like',
-        'love',
-        'funny',
-        'support',
-        'useful',
-    ];
 
     /**
      * @var array<string, array{
@@ -99,7 +93,7 @@ final class PhotoInteractionState
         foreach ($assets as $asset) {
             $selected = $user === null
                 ? null
-                : $asset->reactions->first()?->reaction;
+                : $asset->reactions->first()?->reaction?->value;
             $comments = $asset->comments
                 ->reverse()
                 ->map(fn (PhotoComment $comment): array => $this->presentComment($comment, $user))
@@ -122,8 +116,17 @@ final class PhotoInteractionState
     {
         $user = $this->userOrFail();
         Gate::forUser($user)->authorize('create', PhotoReaction::class);
+        $reactionType = PhotoReactionType::tryFrom($reaction);
 
-        $selected = DB::transaction(function () use ($photo, $reaction, $user): ?string {
+        if (! $reactionType instanceof PhotoReactionType) {
+            throw ValidationException::withMessages([
+                'reaction' => __(
+                    'messages.choose_an_available_reaction_c8a1ac8cff',
+                ),
+            ]);
+        }
+
+        $selected = DB::transaction(function () use ($photo, $reactionType, $user): ?string {
             $asset = $this->asset($photo);
             $existing = PhotoReaction::query()
                 ->where('photo_asset_id', $asset->id)
@@ -131,7 +134,7 @@ final class PhotoInteractionState
                 ->lockForUpdate()
                 ->first();
 
-            if ($existing?->reaction === $reaction) {
+            if ($existing?->reaction === $reactionType) {
                 Gate::forUser($user)->authorize('delete', $existing);
                 $existing->delete();
 
@@ -140,9 +143,9 @@ final class PhotoInteractionState
 
             if ($existing !== null) {
                 Gate::forUser($user)->authorize('update', $existing);
-                $existing->update(['reaction' => $reaction]);
+                $existing->update(['reaction' => $reactionType]);
 
-                return $reaction;
+                return $reactionType->value;
             }
 
             $created = PhotoReaction::query()->createOrFirst(
@@ -150,15 +153,18 @@ final class PhotoInteractionState
                     'photo_asset_id' => $asset->id,
                     'user_id' => $user->id,
                 ],
-                ['reaction' => $reaction],
+                ['reaction' => $reactionType],
             );
 
-            if (! $created->wasRecentlyCreated && $created->reaction !== $reaction) {
+            if (
+                ! $created->wasRecentlyCreated
+                && $created->reaction !== $reactionType
+            ) {
                 Gate::forUser($user)->authorize('update', $created);
-                $created->update(['reaction' => $reaction]);
+                $created->update(['reaction' => $reactionType]);
             }
 
-            return $reaction;
+            return $reactionType->value;
         }, 3);
 
         unset($this->loaded[(string) $photo['photo_key']]);
@@ -241,7 +247,7 @@ final class PhotoInteractionState
     {
         $relations = [];
 
-        foreach (self::REACTIONS as $reaction) {
+        foreach (PhotoReactionType::values() as $reaction) {
             $relations['reactions as '.$reaction.'_reactions_count'] = static fn (Builder $query): Builder => $query
                 ->where('reaction', $reaction);
         }
@@ -256,7 +262,7 @@ final class PhotoInteractionState
     {
         $counts = [];
 
-        foreach (self::REACTIONS as $reaction) {
+        foreach (PhotoReactionType::values() as $reaction) {
             $counts[$reaction] = (int) $asset->getAttribute($reaction.'_reactions_count');
         }
 
@@ -316,7 +322,7 @@ final class PhotoInteractionState
     {
         return [
             'reaction' => null,
-            'reaction_counts' => array_fill_keys(self::REACTIONS, 0),
+            'reaction_counts' => array_fill_keys(PhotoReactionType::values(), 0),
             'comments' => [],
             'comment_count' => 0,
         ];

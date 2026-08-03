@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
+use App\Enums\ForumVoteValue;
 use App\Models\ForumAnswer;
 use App\Models\ForumVote;
 
@@ -22,7 +23,7 @@ class ForumVoteFactory extends ApplicationFactory
         return [
             'answer_id' => ForumAnswer::factory(),
             'user_key' => fake()->unique()->userName(),
-            'value' => 'helpful',
+            'value' => ForumVoteValue::Helpful,
             'reason' => null,
         ];
     }

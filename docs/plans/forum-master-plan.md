@@ -4,7 +4,7 @@
 
 This plan implements the immutable source in
 `docs/requirements/forum-source-prompt.md`. The generated
-`docs/plans/forum-phase-requirement-index.md` assigns every one of the 29,960
+`docs/plans/forum-phase-requirement-index.md` assigns every one of the 38,377
 atomic requirement IDs to a primary phase; no identifier is represented by a
 generic “implement everything” checkbox.
 

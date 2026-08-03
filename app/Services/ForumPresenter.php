@@ -198,7 +198,10 @@ class ForumPresenter
                     'is_highlighted' => $answer->is_highlighted,
                     'needs_source' => $answer->needs_source,
                     'helpful_count' => $answer->helpful_count,
-                    'voted' => $answer->votes->firstWhere('user_key', $this->actor->key())?->value,
+                    'voted' => $answer->votes
+                        ->firstWhere('user_key', $this->actor->key())
+                        ?->value
+                        ?->value,
                     'created_label' => $this->formatter->relative($answer->created_at),
                     'comments' => $answer->comments->map(fn ($comment): array => [
                         'id' => $comment->id,

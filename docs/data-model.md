@@ -72,6 +72,11 @@ legacy key has a verified user mapping.
   action, recusal, and appeal transitions run in bounded transactions under
   row locks, retain append-only report events, and never expose reporter
   identity or private operational notes through model serialization.
+- Vote and photo-reaction value columns have portable schema-level value
+  constraints mirrored by backed-enum casts. Moderation cases carry an
+  integer optimistic version and a nullable globally unique closure request
+  key; successful closure preserves linked reports and appends their audit
+  events without exposing that key.
 - Guide translation groups permit only one article per locale. Version numbers,
   collaborator roles, correction review lookup, workflow history, public state,
   and review dates have dedicated compound indexes. Optimistic `lock_version`

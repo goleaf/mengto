@@ -296,6 +296,18 @@ retention, and bump state without writes. Physical deletion is not an ordinary
 topic operation, and legacy state values remain readable while new mutations
 write canonical values. See `docs/topic-lifecycle.md`.
 
+## Forum Database Correctness Boundary
+
+The database owns durable foreign, unique, compound, and fixed-value
+constraints. Backed enums mirror fixed vote and reaction values in PHP.
+Race-sensitive vote, reaction, answer-acceptance, and moderation closure
+operations use short retry-bounded transactions and row locks.
+
+`CloseForumModerationCase` is the sole case-closure operation in this package.
+It combines policy authorization, expected-version validation, a unique
+idempotency key, one case update, and one bounded bulk append of report audit
+events. No controller, route, Livewire, or Blade layer duplicates that logic.
+
 ## Canonical Pet Profile Boundary
 
 `PetProfile` remains the one reusable animal aggregate for social, care,

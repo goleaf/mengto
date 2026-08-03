@@ -367,8 +367,8 @@ Stop and update the plan before implementation if:
 
 ## Relationship To The Completion Roadmap
 
-The combined forum/product catalogue currently contains 29,960 atomic
-requirements: 1,140 verified and 28,820 open. The join page is an immediate
+The combined forum/product catalogue currently contains 38,377 atomic
+requirements: 1,161 verified and 37,216 open. The join page is an immediate
 product-entry package requested by the product owner. Its existence does not
 close any forum atom automatically.
 
@@ -376,7 +376,7 @@ Execution order is now:
 
 1. maintain the verified JP-01 through JP-05 entry contract;
 2. execute the next exact Phase 3 database-correctness reconciliation package;
-3. continue the eight dependency-ordered completion waves in
+3. continue the ten dependency-ordered completion waves in
    `docs/plans/forum-completion-plan.md`;
 4. plan the consolidated settings package only after mapping exact open IDs
    across pet, social, content, communication, and global preference phases.

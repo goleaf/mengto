@@ -80,7 +80,9 @@ final readonly class AcceptForumAnswer
                 'is_highlighted' => true,
             ])->save();
             $topic->forceFill([
-                'accepted_answer_id' => $topic->accepted_answer_id ?? $answer->id,
+                'accepted_answer_id' => $allowsMultiple
+                    ? ($topic->accepted_answer_id ?? $answer->id)
+                    : $answer->id,
             ])->save();
 
             if ($topic->status->canonical() !== ForumTopicStatus::Solved) {

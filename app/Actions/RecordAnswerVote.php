@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Actions;
 
 use App\Data\ReputationEventData;
+use App\Enums\ForumVoteValue;
 use App\Models\ForumAnswer;
 use App\Models\ForumReputationDimension;
 use App\Models\ForumTopic;
@@ -17,15 +18,6 @@ use Illuminate\Validation\ValidationException;
 
 final readonly class RecordAnswerVote
 {
-    private const VALUES = [
-        'helpful',
-        'not-helpful',
-        'needs-source',
-        'outdated',
-        'dangerous',
-        'off-topic',
-    ];
-
     public function __construct(
         private ForumActor $actor,
         private Gate $gate,
@@ -35,13 +27,15 @@ final readonly class RecordAnswerVote
 
     public function handle(int $answerId, string $value, ?string $reason): ForumTopic
     {
-        if (! in_array($value, self::VALUES, true)) {
+        $voteValue = ForumVoteValue::tryFrom($value);
+
+        if (! $voteValue instanceof ForumVoteValue) {
             throw ValidationException::withMessages([
                 'value' => __('forum.validation.answer_rating'),
             ]);
         }
 
-        return DB::transaction(function () use ($answerId, $reason, $value): ForumTopic {
+        return DB::transaction(function () use ($answerId, $reason, $voteValue): ForumTopic {
             $actor = $this->actor->requireUser();
             $answer = ForumAnswer::query()
                 ->with('topic')
@@ -76,13 +70,16 @@ final readonly class RecordAnswerVote
 
             $previousValue = $vote->exists ? $vote->value : null;
 
-            if ($previousValue === $value) {
+            if ($previousValue === $voteValue) {
                 $vote->forceFill(['reason' => $reason])->save();
 
                 return $topic;
             }
 
-            if ($previousValue === 'helpful' && $vote->reputation_event_id !== null) {
+            if (
+                $previousValue === ForumVoteValue::Helpful
+                && $vote->reputation_event_id !== null
+            ) {
                 $event = $vote->reputationEvent()->first();
 
                 if ($event !== null) {
@@ -95,7 +92,7 @@ final readonly class RecordAnswerVote
             $recipient = $this->answerAuthor($answer);
 
             if (
-                $value === 'helpful'
+                $voteValue === ForumVoteValue::Helpful
                 && $recipient instanceof User
                 && ForumReputationDimension::query()
                     ->where('stable_key', 'helpfulness')
@@ -119,7 +116,7 @@ final readonly class RecordAnswerVote
 
             $vote->forceFill([
                 'user_id' => $actor->id,
-                'value' => $value,
+                'value' => $voteValue,
                 'reason' => $reason,
                 'effect_revision' => $revision,
                 'reputation_event_id' => $event?->id,
@@ -127,7 +124,7 @@ final readonly class RecordAnswerVote
             $answer->forceFill([
                 'helpful_count' => ForumVote::query()
                     ->where('answer_id', $answer->id)
-                    ->where('value', 'helpful')
+                    ->where('value', ForumVoteValue::Helpful->value)
                     ->count(),
             ])->save();
 

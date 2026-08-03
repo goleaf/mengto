@@ -18,6 +18,10 @@
 
 ### Forum And Animal Taxonomy
 
+- Added database-enforced vote/reaction values, typed enum casts, and a
+  policy-authorized versioned/idempotent moderation-case closure transaction;
+  corrected competing single-answer acceptance to retain the current
+  canonical answer.
 - Reconciled the configurable forum topic-type foundation against the source:
   26 source-listed stable types have active versioned definitions and EN/LT/RU
   translation contracts; repeated synchronization preserves IDs, attached

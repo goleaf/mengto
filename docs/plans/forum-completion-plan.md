@@ -9,7 +9,8 @@ Status: living canonical remaining-work roadmap
 This plan answers what remains before the combined forum specification can be
 called complete. The specification now includes the original forum and animal
 taxonomy work plus the pet-profile, social-relationship, content-feed,
-communication, community, and medical-record revisions.
+communication, community, medical-record, complete portal-architecture, and
+event-lifecycle revisions.
 
 This document does not replace the atomic catalogue or the domain master
 plans. Exact requirement IDs and source coordinates remain authoritative in
@@ -33,25 +34,27 @@ The deterministic catalogue snapshot on `main` contains:
 | Source stream | Requirements | Verified | Open |
 | --- | ---: | ---: | ---: |
 | Original forum source | 2,566 | 0 | 2,566 |
-| Forum extension and taxonomy | 4,718 | 541 | 4,177 |
+| Forum extension and taxonomy | 4,718 | 562 | 4,156 |
 | Pet-profile revision | 4,135 | 205 | 3,930 |
 | Social-relationships revision | 3,210 | 222 | 2,988 |
 | Content-feed revision | 4,011 | 58 | 3,953 |
 | Communication revision | 3,877 | 0 | 3,877 |
 | Community revision | 3,576 | 35 | 3,541 |
 | Medical-record revision | 3,867 | 79 | 3,788 |
-| **Total** | **29,960** | **1,140** | **28,820** |
+| Portal-architecture revision | 3,449 | 0 | 3,449 |
+| Event-lifecycle revision | 4,968 | 0 | 4,968 |
+| **Total** | **38,377** | **1,161** | **37,216** |
 
-All 28,820 open records are currently `discovered`; there are no records
+All 37,216 open records are currently `discovered`; there are no records
 marked `in-progress`, `blocked`, or `intentionally-not-applicable`. The source
 payload checksum is
-`9f52b2f90c8f1d0dc1c957f0207b6bd89c9a57eaf3359838e51b6c377e25458d`.
+`cbb7d3a36f3750106c4751191ddd7d882d922ce0ae0e0b12aed318c809206ea1`.
 
 ## Definition Of Complete
 
 The combined scope is complete only when all of the following are true:
 
-- every one of the 29,960 atomic IDs is independently `verified`, or has a
+- every one of the 38,377 atomic IDs is independently `verified`, or has a
   reviewed and evidenced `intentionally-not-applicable` decision;
 - no requirement remains discovered, planned, in progress, or blocked;
 - implementation, tests, documentation, generated matrix, progress report,
@@ -84,6 +87,20 @@ Every package must follow this order:
 6. Update evidence only for the exact independently proven IDs.
 7. Inspect the complete staged diff, commit, and push directly on `main`.
 
+## Unbounded Main-Only Execution Contract
+
+This roadmap has no artificial time, token, package-count, or sprint cutoff.
+Work remains directly on `main`; no branch or worktree is created. After each
+verified and attributable package is pushed, execution selects the next exact
+dependency-safe open-ID slice and repeats the protocol.
+
+The loop ends only when the generated catalogue has zero unresolved IDs and
+all final gates pass on one clean `main` commit. A real external dependency or
+missing product authority is recorded with evidence and surfaced to the owner;
+it is never converted into an optimistic completion claim. Independent dirty
+packages may coexist in the shared tree, but each package keeps a separate
+diff, verification record, temporary index, commit, and push.
+
 ## Completed Product Entry Package
 
 The product-owner-requested guest join page described in
@@ -96,24 +113,27 @@ existence alone. Any atomic evidence update still requires selecting the exact
 IDs and proving them through the normal work-package protocol.
 
 Its route, auth, localization, accessibility, query, build, browser, and
-full-suite gates passed. The first exact Phase 3 reconciliation package is
-also verified and Wave 1 continues with database correctness.
+full-suite gates passed. The exact Phase 3 database-correctness package is
+also verified for its 21 selected IDs; it does not promote any adjacent
+database atom.
 
 ## Dependency-Ordered Completion Waves
 
-The eight waves below account for all 28,820 open IDs exactly.
+The ten waves below account for all 37,216 open IDs exactly.
 
 | Wave | Scope | Phases | Open IDs |
 | ---: | --- | --- | ---: |
-| 1 | Core forum, taxonomy, trust, and moderation foundations | 3-7 | 3,070 |
+| 1 | Core forum, taxonomy, trust, and moderation foundations | 3-7 | 3,049 |
 | 2 | Canonical pet profile | 17-25 | 3,930 |
 | 3 | Social relationships | 27-34 | 2,988 |
 | 4 | Content feed and distribution | 36-44 | 3,953 |
 | 5 | Communication and community interlock | 46-63 | 7,418 |
 | 6 | Medical records | 64-73 | 3,788 |
 | 7 | Remaining original forum workflows and interface | 8-12 | 3,174 |
-| 8 | Global control evidence, release verification, and publication | 0-2, 13-14 | 499 |
-|  | **Total** |  | **28,820** |
+| 8 | Canonical complete portal architecture | 74 | 3,449 |
+| 9 | Complete event lifecycle | 75 | 4,968 |
+| 10 | Global control evidence, release verification, and publication | 0-2, 13-14 | 499 |
+|  | **Total** |  | **37,216** |
 
 ### Wave 0: Reconcile The Source Of Truth
 
@@ -125,7 +145,8 @@ Before production work resumes:
   evidence, and this plan;
 - identify stale claims that describe implemented code but lack atomic
   evidence;
-- create the first exact Phase 3-7 reconciliation work package.
+- select the next exact Phase 3 slice and classify the first exact Phase 74
+  and Phase 75 slices.
 
 Wave 0 changes no requirement status by itself.
 
@@ -135,7 +156,7 @@ Open inventory:
 
 | Phase | Remaining result | Open IDs |
 | ---: | --- | ---: |
-| 3 | Reconcile and finish additive schema, indexes, bindings, factories, policies, and compatibility backfills | 54 |
+| 3 | Reconcile and finish additive schema, indexes, bindings, factories, policies, and compatibility backfills | 33 |
 | 4 | Prove the complete 44-root/1,637-child category hierarchy, redirects, translations, cache invalidation, and preservation | 1,459 |
 | 5 | Complete global taxonomy snapshots, provenance, imports, changes, search, administration, rollback, and measured budgets | 821 |
 | 6 | Complete reputation, trust, badges, confirmations, conflicts, expiry, and anti-abuse behavior | 334 |
@@ -254,7 +275,39 @@ This wave follows the domain revisions so forum integration can reference the
 canonical pet, social, content, communication, community, and medical
 boundaries instead of creating duplicate truth.
 
-### Wave 8: Global Verification And Publication
+### Wave 8: Canonical Complete Portal Architecture
+
+Phase 74 contains 3,449 open `portal.*` IDs. Reconcile every current route,
+page, module, role, permission, workflow, shell, dashboard, settings surface,
+responsive component, localization boundary, and legacy entry point before
+changing structure. Existing authenticated entry and navigation work are
+foundations, not evidence for the complete stream.
+
+Execute exact packages for route/page/module inventories, canonical
+destinations and redirects, workspaces and capability-aware navigation,
+dashboard and settings consolidation, cross-module timelines and actions,
+shared UI migration, accessibility/localization/responsiveness, security and
+privacy, performance, documentation, and final cross-role workflows. Preserve
+direct URLs or provide reviewed redirects; never expose a module merely
+because its navigation link is hidden.
+
+### Wave 9: Complete Event Lifecycle
+
+Phase 75 contains 4,968 open `event.*` IDs. Start by reconciling the existing
+verified 27-ID event package and the current lifecycle extension against the
+new catalogue. Treat them as a compatibility foundation, not as proof of the
+entire revision.
+
+Execute dependency-safe packages for event identity/types, creation and
+approval, lifecycle/versioning, schedules/recurrence/venues, team roles,
+eligibility and multi-pet registration, capacity/waitlists, tickets/payments,
+check-in/out, communication/calendar, safety/incidents/weather, specialized
+event types, feedback/archive, integrations, Livewire/UI/localization,
+factories/seeding/backfill, performance, security, and final scenarios. Every
+private venue, ticket, pet, staff, incident, and attendee read remains
+server-authorized at access time.
+
+### Wave 10: Global Verification And Publication
 
 The final 499 open control/release IDs span Phases 0-2 and 13-14.
 
@@ -279,11 +332,7 @@ The final 499 open control/release IDs span Phases 0-2 and 13-14.
 
 ## Next Forum Work Package
 
-Create `docs/plans/forum-database-correctness-reconciliation-work-package.md`
-for exact IDs `forum.data.0006`, `forum.data.0007`, and
-`forum.data.0054` through `forum.data.0072`. It must compare every transaction,
-constraint, index, cast, timestamp, archival, locking, idempotency, and race
-atom with the live schema, application operations, and tests; distinguish
-global claims from table-specific evidence; and preserve all existing forum
-rows and relations. No production code should change until that package records
-the classification and acceptance criteria for all 21 IDs.
+Select the next dependency-safe package from the 33 remaining Phase 3 IDs.
+Keep the verified database-correctness slice closed to its exact 21 IDs. In
+parallel, classify the current Phase 75 lifecycle foundation against exact
+`event.*` IDs without promoting the full 4,968-ID revision.

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
+use App\Enums\PhotoReactionType;
 use App\Models\PhotoAsset;
 use App\Models\PhotoReaction;
 use App\Models\User;
@@ -21,7 +22,7 @@ final class PhotoReactionFactory extends ApplicationFactory
         return [
             'photo_asset_id' => PhotoAsset::factory(),
             'user_id' => User::factory(),
-            'reaction' => fake()->randomElement(['like', 'love', 'funny', 'support', 'useful']),
+            'reaction' => fake()->randomElement(PhotoReactionType::cases()),
         ];
     }
 }

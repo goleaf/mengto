@@ -5,25 +5,27 @@ Last updated: 2026-08-03.
 ## Current Phase
 
 Source preservation, atomic extraction, repository discovery, and domain
-planning are documented for all eight source payloads, but their control IDs
+planning are documented for all ten source payloads, but their control IDs
 still require exact evidence before Phases 0-2 can be called verified. The
-combined catalogue has 1,140 verified IDs and 28,820 open IDs. Forum/taxonomy,
+combined catalogue has 1,161 verified IDs and 37,216 open IDs. Forum/taxonomy,
 pet, social, content, community, and medical foundations are implemented in
-independently evidenced slices; communication production requirements and all
-remaining depth/release packages stay open. Verification remains incremental,
-and no incomplete phase is described as complete. The dependency-ordered
-remaining work is in `docs/plans/forum-completion-plan.md`.
+independently evidenced slices. Communication, complete portal architecture,
+the expanded event lifecycle, and all remaining depth/release packages stay
+open. Verification remains incremental, and no incomplete phase is described
+as complete. The dependency-ordered remaining work is in
+`docs/plans/forum-completion-plan.md`.
 
 ## Completed Evidence
 
 - Master source prompt plus dated pet-profile, social, content, communication,
-  community, and medical revisions preserved
+  community, medical, portal-architecture, and event-lifecycle revisions
+  preserved
   with SHA-256
-  `9f52b2f90c8f1d0dc1c957f0207b6bd89c9a57eaf3359838e51b6c377e25458d`.
-- 29,960 atomic requirements generated with full source coordinates. The
+  `cbb7d3a36f3750106c4751191ddd7d882d922ce0ae0e0b12aed318c809206ea1`.
+- 38,377 atomic requirements generated with full source coordinates. The
   4,135 `pet.*`, 3,210 `social.*`, 4,011 `content.*`, 3,877
-  `communication.*`, 3,576 `community.*`, and 3,867 `medical.*` records did
-  not renumber preceding IDs.
+  `communication.*`, 3,576 `community.*`, 3,867 `medical.*`, 3,449
+  `portal.*`, and 4,968 `event.*` records did not renumber preceding IDs.
 - Every atomic requirement assigned to one primary phase.
 - Existing forum, policies, requests, migrations, adjacent domains,
   translations, seeds, factories, and focused tests inventoried.
@@ -66,7 +68,7 @@ remaining work is in `docs/plans/forum-completion-plan.md`.
   immutable case events, protected idempotent contact relays, advisory
   duplicate detection, unified false-sighting/reward-scam reports, and
   privacy-safe archival that preserves the complete operational history.
-- Requirement evidence is a deterministic overlay. `1,140` atomic requirements
+- Requirement evidence is a deterministic overlay. `1,161` atomic requirements
   are verified with file/test evidence and none are currently marked
   in-progress.
 - The pet-profile foundation preserves the existing aggregate while adding
@@ -94,6 +96,12 @@ remaining work is in `docs/plans/forum-completion-plan.md`.
   Community profile-scoped membership verifies 35 IDs; 3,541 community IDs
   remain open. Canonical medical patient identity/access and explicit
   knowledge states verify 79 IDs; 3,788 medical IDs remain open.
+- The complete portal-architecture revision contains 3,449 open IDs in Phase
+  74. Existing authenticated entry and module shells are implementation
+  foundations only; no `portal.*` atom is verified yet.
+- The complete event-lifecycle revision contains 4,968 open IDs in Phase 75.
+  The durable event aggregate and the current lifecycle/occurrence/version
+  extension are foundations only; no `event.*` atom is verified yet.
 - Latest recorded complete serial repository checkpoint: 2,040 tests and
   73,559 assertions.
 - Current repository checkpoint: expert-session plus architecture verification
@@ -221,20 +229,30 @@ remaining work is in `docs/plans/forum-completion-plan.md`.
   passed 61 tests and 26,837 assertions; the full suite passed 2,040 tests and
   73,559 assertions. Exactly 28 scoped persistence IDs are verified while the
   unimplemented configurable capabilities remain open.
+- The second Phase 3 reconciliation slice verifies 21 exact database
+  correctness IDs. Portable vote/reaction constraints, enum casts,
+  moderation-case optimistic/idempotent closure, canonical accepted-answer
+  replacement, populated rollback/reapply, and constant closure query growth
+  are proven. The final combined suite passed 2,303 tests and 76,179
+  assertions; fresh/repeat seed passed 117 migrations and 196 tables with a
+  stable 5-user count; full Pint/Larastan, audits, Vite/cache, deterministic
+  generation, and loopback EN/LT/RU browser gates passed.
 
 ## Requirement Status Snapshot
 
 | Source stream | Requirements | Verified | Open |
 | --- | ---: | ---: | ---: |
 | Original forum source | 2,566 | 0 | 2,566 |
-| Forum extension and taxonomy | 4,718 | 541 | 4,177 |
+| Forum extension and taxonomy | 4,718 | 562 | 4,156 |
 | Pet-profile revision | 4,135 | 205 | 3,930 |
 | Social-relationships revision | 3,210 | 222 | 2,988 |
 | Content-feed revision | 4,011 | 58 | 3,953 |
 | Communication revision | 3,877 | 0 | 3,877 |
 | Community revision | 3,576 | 35 | 3,541 |
 | Medical-record revision | 3,867 | 79 | 3,788 |
-| **Total** | **29,960** | **1,140** | **28,820** |
+| Portal-architecture revision | 3,449 | 0 | 3,449 |
+| Event-lifecycle revision | 4,968 | 0 | 4,968 |
+| **Total** | **38,377** | **1,161** | **37,216** |
 
 The exact per-phase open counts and execution order are maintained in
 `docs/plans/forum-completion-plan.md`; the generated phase index remains the
@@ -242,16 +260,16 @@ authority for individual IDs.
 
 ## Next Verified Pass
 
-1. Create the next Phase 3 database-correctness reconciliation package for
-   exact IDs `forum.data.0006`, `forum.data.0007`, and
-   `forum.data.0054` through `forum.data.0072`.
-2. Classify transaction, foreign-key, uniqueness, index, cast, timestamp,
-   archival, locking, idempotency, and race-condition atoms against the live
-   migrations, Actions, and tests.
-3. Close integrity and preservation gaps first; do not mark a broad database
-   invariant verified from one unrelated table.
-4. Update only independently evidenced IDs and rerun the applicable package
-   gates before selecting the next slice.
+1. Select the next exact dependency-safe slice from the 33 open Phase 3 IDs;
+   do not infer a global schema claim from the verified 21-ID package.
+2. Continue the current Phase 75 event foundation: lifecycle migrations,
+   authorization, backfill idempotency, query budgets, factories, seeding,
+   localization, and compatibility tests. Do not promote the broad 4,968-ID
+   stream from one foundation slice.
+3. Reconcile the Phase 74 and Phase 75 sources into exact work packages,
+   then update only independently evidenced IDs.
+4. Repeat the package protocol and its complete gates without a time, token,
+   package-count, or branch cutoff until the generated open total is zero.
 
 ## Preservation Ledger
 

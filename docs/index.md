@@ -63,7 +63,7 @@ domain contract under the canonical requirements above:
 | --- | --- | --- |
 | `docs/requirements/forum-source-prompt.md` | Immutable recovered source specification and checksum | Canonical immutable input |
 | `docs/requirements/forum-master-requirements.md` | Generated domain and state summary | Canonical generated |
-| `docs/requirements/forum-requirements.json` | All 29,960 atomic requirement records | Canonical machine-readable |
+| `docs/requirements/forum-requirements.json` | All 38,377 atomic requirement records | Canonical machine-readable |
 | `docs/traceability/forum-requirements-matrix.md` | Requirement-level implementation and verification evidence | Living generated evidence |
 | `docs/plans/forum-master-plan.md` | Dependency-aware implementation contract | Living canonical plan |
 | `docs/plans/forum-completion-plan.md` | Exact remaining totals, dependency order, and final completion gates | Living canonical completion plan |

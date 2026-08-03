@@ -349,6 +349,18 @@ location, and moderation appeals remain explicit unresolved safety packages.
 
 See `docs/topic-lifecycle.md`.
 
+## Moderation Closure Integrity
+
+- Moderation closure requires policy authorization before and after a row
+  lock, a resolved case, the current optimistic version, and a bounded request
+  identifier.
+- The database uniquely constrains closure request identifiers. Same-request
+  replay is idempotent; stale competing closure produces no extra event.
+- Closure, version increment, and report audit events commit or roll back as
+  one transaction. Event insertion is bounded and constant-query.
+- Closure identifiers and internal moderation summaries remain hidden from
+  serialization and are not copied into audit metadata or logs.
+
 ## Pet Profile Controls
 
 - Pet profiles cannot authenticate or act independently; every mutation has an

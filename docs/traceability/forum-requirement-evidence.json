@@ -2737,7 +2737,7 @@
                     "ForumVoteValue and PhotoReactionType provide backed enum casts; raw invalid values and direct duplicate vote/reaction writes are rejected by SQLite constraints",
                     "CloseForumModerationCase authorizes before and after its row lock, checks the expected version, treats the same request key as an idempotent replay, rejects stale competing closure, and commits case state plus bounded report events atomically",
                     "AcceptForumAnswer keeps the canonical accepted_answer_id synchronized when a competing single-answer selection replaces the previous answer",
-                    "The focused database-correctness contract passed 12 tests and 74 assertions; the complete sequential repository suite passed 2,303 tests and 76,109 assertions",
+                    "The focused database-correctness contract passed 12 tests and 74 assertions; the complete sequential repository suite passed 2,303 tests and 76,179 assertions",
                     "Fresh isolated SQLite verification passed 117 migrations and 196 tables; repeated seeding preserved the user count at 5",
                     "Full Pint and Larastan passed with zero findings; Composer validation and audit, npm audit, Vite 8.2.0 production build, and config/event/route/view cache compilation passed",
                     "The immutable source check and deterministic 38,377-requirement generation passed for checksum cbb7d3a36f3750106c4751191ddd7d882d922ce0ae0e0b12aed318c809206ea1",

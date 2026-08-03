@@ -4,6 +4,13 @@ Status: verified
 
 Last updated: 2026-07-31
 
+Scope note added 2026-08-03: this verified package remains limited to the 27
+listed `forum.*` requirements from source section 68. The later complete
+event-lifecycle revision contains 4,968 separate `event.*` requirements in
+Phase 75, all currently `discovered`. The existing aggregate and the additive
+occurrence/version/team/registration-pet work are foundations for that new
+stream and must not inherit this package's verified status.
+
 ## Requirement Scope
 
 This package plans, implements, and verifies exactly these 27 atomic

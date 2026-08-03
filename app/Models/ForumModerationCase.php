@@ -11,6 +11,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/**
+ * @property string|null $closure_idempotency_key
+ * @property int $lock_version
+ */
 final class ForumModerationCase extends Model
 {
     /** @use HasFactory<ForumModerationCaseFactory> */
@@ -33,7 +37,12 @@ final class ForumModerationCase extends Model
         'metadata',
     ];
 
-    protected $hidden = ['internal_summary'];
+    protected $attributes = ['lock_version' => 0];
+
+    protected $hidden = [
+        'closure_idempotency_key',
+        'internal_summary',
+    ];
 
     protected function casts(): array
     {
@@ -41,6 +50,7 @@ final class ForumModerationCase extends Model
             'review_due_at' => 'immutable_datetime',
             'resolved_at' => 'immutable_datetime',
             'closed_at' => 'immutable_datetime',
+            'lock_version' => 'integer',
             'retention_until' => 'immutable_datetime',
             'metadata' => 'array',
         ];
