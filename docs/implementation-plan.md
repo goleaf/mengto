@@ -520,3 +520,28 @@ Status: `verified` on 2026-08-03
 
 The exhaustive scope, classifications, acceptance criteria, and gate evidence
 are recorded in `docs/plans/global-linked-media-navigation-plan.md`.
+
+## Current Delivery: Canonical Places And Venues
+
+Status: `verified` on 2026-08-03
+
+- Replaced the static place identity boundary with policy-scoped Eloquent
+  places, venue areas, exact-location grants and audits, and dynamic detail
+  routes for newly submitted places.
+- Retained the complete server-rendered directory, map alternative, emergency
+  clinic mode, EN/LT/RU content, and encrypted per-user saves, follows, visits,
+  private check-ins, corrections, warnings, reviews, and questions.
+- Added reversible indexed migrations, production Actions, privacy-safe public
+  projections, idempotent authority/catalog seeders, explicit factories, and
+  event-to-place/venue links.
+- Verified 13 directory tests with 140 assertions, 20 authority tests with 153
+  assertions, scoped Pint and Larastan, 126 fresh migrations across 211 tables,
+  repeated seed stability, dependency audits, Vite/cache compilation, and the
+  final serial suite of 2,583 tests with 81,806 assertions.
+- Verified authenticated desktop/mobile browser flows for `/places` and
+  `/places/vingis-quiet-loop` with no overflow, broken images, raw translation
+  keys, unnamed controls, console errors, or protected-address disclosure.
+
+The authority, privacy, lifecycle, schema, and acceptance decisions are
+recorded in
+`docs/plans/portal-place-location-venue-authority-work-package.md`.

@@ -2124,9 +2124,16 @@
     .place-card {
         grid-template-columns: minmax(9.5rem, 0.7fr) minmax(0, 1.3fr);
 
-        &__media,
+        &__media {
+            min-block-size: 11rem;
+        }
+
         &__media img {
-            min-block-size: 100%;
+            position: absolute;
+            inset: 0;
+            block-size: 100%;
+            min-block-size: 0;
+            aspect-ratio: auto;
         }
     }
 }
