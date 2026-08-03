@@ -22,11 +22,11 @@ class NeighborDirectoryPreviewController extends Controller
             $parameters['filter'] ?? null,
             $parameters['sort'] ?? 'closest',
             [
-                'dog-people' => ['dog', 'walk', 'training'],
-                'cat-people' => ['cat', 'foster'],
-                'foster-network' => ['foster', 'care', 'senior'],
+                'dog-people' => ['dog-people'],
+                'cat-people' => ['cat-people'],
+                'foster-network' => ['foster-network'],
             ],
-            ['name', 'category', 'neighborhood', 'pet', 'status', 'interests'],
+            ['name', 'category', 'neighborhood', 'pet', 'status', 'interests', 'search_tokens'],
         );
 
         return view('neighbors.index', [

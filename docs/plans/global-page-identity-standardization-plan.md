@@ -441,6 +441,33 @@ applied 135 migrations, retained 217 tables and five users across repeated
 seeding, and the 178-line route smoke, both forum-source checks, and both
 icon-system checks passed with the 845-call canonical icon ratchet intact.
 
+The ninth non-header localization follow-up closes the complete `/neighbors`
+directory surface. A dedicated 71-leaf EN/LT/RU neighbor contract owns the
+page identity, summary, filters, sorting, search, result and empty states,
+actions, and all four first-party directory fixtures. Ten proper person/place
+identities remain stable; every other Lithuanian and Russian leaf is reviewed
+localized copy. Filter membership now uses explicit locale-independent search
+tokens, while closest-first sorting uses a numeric distance projection rather
+than parsing localized display text. Each neighbor category also uses the
+canonical Lucide badge treatment instead of a text-only badge. Blade remains
+passive and the authenticated directory retains its bounded two-query render
+without a per-card query path.
+
+The repeatable page-identity browser contract compares 43 translated neighbor
+fields with the English baseline while excluding stable proper identities.
+All 91 route/viewport audits and 26 screenshots passed across 320-1920 pixels,
+RU/LT, reduced motion, forced colors, and effective 200% zoom, with zero
+overflow, raw translation keys, undersized header controls, or console errors.
+The focused neighbor contract passed 7 tests with 484 assertions; the affected
+authorization, directory, linked-media, and page-identity slice passed 123
+tests with 1,802 assertions; and the complete sequential suite passed 2,874
+tests with 94,123 assertions. Full Pint and Larastan passed with zero findings;
+Composer strict validation, locked audit, PHP 8.5 platform requirements, NPM
+audit, production Vite build, and isolated config/event/route/view cache
+compilation passed. Fresh disposable SQLite applied 136 migrations, retained
+218 tables and five users across repeated seeding; the 180-route smoke, both
+forum-source checks, and the 847-call canonical icon audit also passed.
+
 ### 3.3 Next Execution Checkpoint
 
 1. Complete Package 0 by assigning the stable requirement ID and recording the
@@ -454,11 +481,11 @@ icon-system checks passed with the 845-call canonical icon ratchet intact.
 4. Continue the non-header English fallback audit on the remaining priority
    RU/LT pages; the global navigation and utility header, `/medical-records`,
    `/care-journals`, `/lost-found`, `/marketplace`, `/experts`, and the
-   `/groups` directory are browser-verified. Group detail system chrome and
-   first-party fixture content are verified across all eight tabs, while
-   genuine future member-authored content and the other priority bodies remain
-   open. Do not conflate body-copy completion with the verified page-identity
-   contract.
+   `/groups` and `/neighbors` directories are browser-verified. Group detail
+   system chrome and first-party fixture content are verified across all eight
+   tabs, while genuine future member-authored content and the other priority
+   bodies remain open. Do not conflate body-copy completion with the verified
+   page-identity contract.
 
 ## 4. Scope
 

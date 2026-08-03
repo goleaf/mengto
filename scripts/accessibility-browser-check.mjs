@@ -562,6 +562,7 @@ try {
         let englishMarketplaceCopy = null;
         let englishExpertCopy = null;
         let englishGroupCopy = null;
+        let englishNeighborCopy = null;
         let canonicalTitleFont = null;
 
         const setProfileLocale = async (locale) => {
@@ -707,6 +708,11 @@ try {
                     const groupSummary = document.querySelector('[data-group-summary]');
                     const groupFilters = document.querySelector('[data-group-filters]');
                     const groupCard = document.querySelector('[data-group-card]');
+                    const neighborSummary = document.querySelector('[data-neighbor-summary]');
+                    const neighborFilters = document.querySelector('[data-neighbor-filters]');
+                    const neighborResults = document.querySelector('[data-neighbor-results]');
+                    const neighborCards = [...document.querySelectorAll('[data-neighbor-card]')];
+                    const neighborCard = neighborCards[0];
 
                     return {
                         documentLanguage: document.documentElement.lang,
@@ -745,7 +751,7 @@ try {
                             )
                         ),
                         rawTranslationKeys: document.body.innerText.match(
-                            /\\b(?:ui|messages|forum|navigation|pet_profiles|places|experts|groups)\\.[a-z0-9_.-]+/gi
+                            /\\b(?:ui|messages|forum|navigation|pet_profiles|places|experts|groups|neighbors)\\.[a-z0-9_.-]+/gi
                         ) ?? [],
                         navigationCopy: {
                             utility: {
@@ -1003,6 +1009,61 @@ try {
                                 .map((element) => element.textContent.trim()),
                             cardMetricLabels: [...(groupCard?.querySelectorAll('[data-group-card-metrics] dt span') ?? [])]
                                 .map((element) => element.textContent.trim()),
+                        },
+                        neighborCopy: {
+                            actionLabel: header?.querySelector('.page-header__actions .action span')
+                                ?.textContent.trim() ?? null,
+                            summaryLabel: neighborSummary?.getAttribute('aria-label') ?? null,
+                            summaryLabels: [...(neighborSummary?.querySelectorAll('.summary-stat__label span') ?? [])]
+                                .map((element) => element.textContent.trim()),
+                            summaryValues: [...(neighborSummary?.querySelectorAll('.summary-stat__value') ?? [])]
+                                .map((element) => element.textContent.trim()),
+                            summaryDetails: [...(neighborSummary?.querySelectorAll('.summary-stat__detail') ?? [])]
+                                .map((element) => element.textContent.trim()),
+                            toolbarLabel: neighborFilters?.getAttribute('aria-label') ?? null,
+                            filterGroupLabel: neighborFilters?.querySelector('[role="group"]')
+                                ?.getAttribute('aria-label') ?? null,
+                            filterLabels: [...(neighborFilters?.querySelectorAll('[role="group"] button') ?? [])]
+                                .map((element) => element.textContent.trim()),
+                            sortLabel: neighborFilters?.querySelector('label[for="neighbor-filters-sort"]')
+                                ?.textContent.trim() ?? null,
+                            sortOptions: [...(neighborFilters?.querySelectorAll('select[name="sort"] option') ?? [])]
+                                .map((element) => element.textContent.trim()),
+                            searchLabel: neighborFilters?.querySelector('label[for="neighbor-search"]')
+                                ?.textContent.trim() ?? null,
+                            searchPlaceholder: neighborFilters?.querySelector('input[name="q"]')
+                                ?.getAttribute('placeholder') ?? null,
+                            resultsTitle: neighborResults?.closest('section')?.querySelector('h2')
+                                ?.textContent.trim() ?? null,
+                            cardCategory: neighborCard?.querySelector('[data-neighbor-card-category] span:last-child')
+                                ?.textContent.trim() ?? null,
+                            cardDistance: neighborCard?.querySelector('[data-neighbor-card-distance] span:last-child')
+                                ?.textContent.trim() ?? null,
+                            cardPet: neighborCard?.querySelector('[data-neighbor-card-pet]')
+                                ?.textContent.trim() ?? null,
+                            cardStatus: neighborCard?.querySelector('[data-neighbor-card-status]')
+                                ?.textContent.trim() ?? null,
+                            cardTags: [...(neighborCard?.querySelectorAll('[data-neighbor-card-interests] .tag') ?? [])]
+                                .map((element) => element.textContent.trim()),
+                            cardFollowLabel: neighborCard?.querySelector('[data-neighbor-card-follow] span:last-child')
+                                ?.textContent.trim() ?? null,
+                            cardImageAlt: neighborCard?.querySelector('img')?.getAttribute('alt') ?? null,
+                            remainingCardCategories: neighborCards.slice(1).map(
+                                (card) => card.querySelector('[data-neighbor-card-category] span:last-child')
+                                    ?.textContent.trim() ?? null,
+                            ),
+                            remainingCardDistances: neighborCards.slice(1).map(
+                                (card) => card.querySelector('[data-neighbor-card-distance] span:last-child')
+                                    ?.textContent.trim() ?? null,
+                            ),
+                            remainingCardStatuses: neighborCards.slice(1).map(
+                                (card) => card.querySelector('[data-neighbor-card-status]')
+                                    ?.textContent.trim() ?? null,
+                            ),
+                            cardPets: neighborCards.map(
+                                (card) => card.querySelector('[data-neighbor-card-pet]')
+                                    ?.textContent.trim() ?? null,
+                            ),
                         },
                     };
                 })()`);
@@ -1323,6 +1384,51 @@ try {
                         assert(
                             groupCopy.every((value, index) => value !== englishGroupCopy[index]),
                             `${label}: English group body fallback remains. Current ${JSON.stringify(groupCopy)}; English ${JSON.stringify(englishGroupCopy)}.`,
+                        );
+                    }
+                }
+
+                if (route.path === '/neighbors') {
+                    const neighborCopy = [
+                        behavior.neighborCopy.actionLabel,
+                        behavior.neighborCopy.summaryLabel,
+                        ...behavior.neighborCopy.summaryLabels,
+                        ...behavior.neighborCopy.summaryValues,
+                        ...behavior.neighborCopy.summaryDetails.slice(1),
+                        behavior.neighborCopy.toolbarLabel,
+                        behavior.neighborCopy.filterGroupLabel,
+                        ...behavior.neighborCopy.filterLabels,
+                        behavior.neighborCopy.sortLabel,
+                        ...behavior.neighborCopy.sortOptions,
+                        behavior.neighborCopy.searchLabel,
+                        behavior.neighborCopy.searchPlaceholder,
+                        behavior.neighborCopy.resultsTitle,
+                        behavior.neighborCopy.cardCategory,
+                        behavior.neighborCopy.cardDistance,
+                        behavior.neighborCopy.cardPet,
+                        behavior.neighborCopy.cardStatus,
+                        ...behavior.neighborCopy.cardTags,
+                        behavior.neighborCopy.cardFollowLabel,
+                        behavior.neighborCopy.cardImageAlt,
+                        ...behavior.neighborCopy.remainingCardCategories,
+                        ...behavior.neighborCopy.remainingCardDistances,
+                        ...behavior.neighborCopy.remainingCardStatuses,
+                        ...behavior.neighborCopy.cardPets,
+                    ];
+
+                    assert(
+                        neighborCopy.length === 43
+                            && neighborCopy.every((value) => value?.length > 0),
+                        `${label}: the neighbor localization surface is incomplete ${JSON.stringify(behavior.neighborCopy)}.`,
+                    );
+
+                    if (viewport.locale === 'en') {
+                        englishNeighborCopy ??= neighborCopy;
+                    } else {
+                        assert(englishNeighborCopy !== null, `${label}: English neighbor baseline is missing.`);
+                        assert(
+                            neighborCopy.every((value, index) => value !== englishNeighborCopy[index]),
+                            `${label}: English neighbor body fallback remains. Current ${JSON.stringify(neighborCopy)}; English ${JSON.stringify(englishNeighborCopy)}.`,
                         );
                     }
                 }

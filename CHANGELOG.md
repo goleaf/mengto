@@ -18,6 +18,11 @@
 
 ### Interface System
 
+- Localized the complete `/neighbors` directory and four first-party fixtures
+  through a dedicated EN/LT/RU contract; made category filters and numeric
+  distance sorting independent of translated display text; added canonical
+  Lucide category badges; and extended the responsive browser localization
+  ratchet across all priority viewports and accessibility modes.
 - Added typed, visibility-aware pet alternative names and automatic previous-
   name history; the Basics workspace now manages aliases, the public profile
   exposes only public alternatives, and manager search resolves an accessible

@@ -54,8 +54,8 @@ class DirectoryFilter
                 (string) ($left['datetime'] ?? ''),
                 (string) ($right['datetime'] ?? ''),
             ),
-            'closest' => static fn (array $left, array $right): int => (float) ($left['distance'] ?? 999)
-                <=> (float) ($right['distance'] ?? 999),
+            'closest' => static fn (array $left, array $right): int => (float) ($left['distance_value'] ?? $left['distance'] ?? 999)
+                <=> (float) ($right['distance_value'] ?? $right['distance'] ?? 999),
             default => null,
         };
 
