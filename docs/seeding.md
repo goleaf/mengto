@@ -120,6 +120,11 @@ php scripts/verify-fresh-database.php
 The script creates and asserts a system temporary SQLite path before invoking
 `migrate:fresh --seed`, then repeats `db:seed` and compares stable counts.
 
+`DatabaseSeeder` deliberately uses model factories for its guarded demo graph,
+so `fakerphp/faker` is a runtime Composer dependency. This keeps explicitly
+allowed local, demo, and testing seed operations functional after
+`composer install --no-dev`; it does not permit demo seeding in production.
+
 ## Demo Accounts
 
 Documented demo identities use `*.example.test` addresses and an explicit

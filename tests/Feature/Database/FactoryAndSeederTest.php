@@ -151,6 +151,19 @@ dataset('enum factory states', static function (): array {
     return $states;
 });
 
+test('database seeding dependencies are installed without development packages', function () {
+    $composer = json_decode(
+        (string) file_get_contents(base_path('composer.json')),
+        true,
+        flags: JSON_THROW_ON_ERROR,
+    );
+
+    expect($composer['require'])
+        ->toHaveKey('fakerphp/faker')
+        ->and($composer['require-dev'])
+        ->not->toHaveKey('fakerphp/faker');
+});
+
 test('every first party model factory creates a persisted valid record', function (string $modelClass) {
     $model = $modelClass::factory()->create();
 
