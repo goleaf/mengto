@@ -2,8 +2,12 @@
 
 | Existing surface | Point 13 decision | Status |
 | --- | --- | --- |
-| `/meetups` catalogue directory | database-backed `ForumEventDirectory` in shared shell | migrated previously; extended |
-| `/meetups/{event}` detail | canonical `ForumEventWorkspace` | migrated previously; extended |
+| reference directories (`/pets`, `/places`, `/groups`, `/neighbors`, `/discover`) | retain canonical `x-page-header` path and verify semantic hook | targeted-verified |
+| private care directories (`/medical-records`, `/care-journals`) | canonical `x-page-header` with privacy context and authorized create action | migrated and targeted-verified |
+| operational directories (`/lost-found`, `/marketplace`, `/experts`) | canonical `x-page-header` with domain content below identity | migrated and targeted-verified |
+| `/messages` | canonical `x-page-header`; nine-folder toolbar remains above messaging shell | migrated and targeted-verified |
+| `/meetups` catalogue directory | database-backed `ForumEventDirectory` in shared shell; page identity still uses legacy `forum-header` | data/workflow migrated; page identity pending |
+| `/meetups/{event}` detail | canonical `ForumEventWorkspace`; page identity still uses legacy `forum-header` | data/workflow migrated; page identity pending classification |
 | `meetup-card` | compatibility presenter card, canonical route target | preserved |
 | nearby meetup list | compact contextual projection, canonical directory link | preserved |
 | group event card | group calendar projection linked to `ForumEvent` | preserved |

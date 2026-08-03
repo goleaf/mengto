@@ -1,18 +1,15 @@
 <x-app-shell :owner="$owner" :title="$page_title" :active-section="$active_section">
     <div class="grid gap-7">
-        <header class="care-directory-header">
-            <div>
-                <div class="flex items-center gap-2 text-sm font-bold text-paw-leaf">
-                    <x-lucide-lock-keyhole class="size-4" aria-hidden="true" />
-                    <span>{{ __('ui.private_family_workspace_521e77339e') }}</span>
-                </div>
-                <h1 class="mt-3 text-3xl font-bold sm:text-4xl">{{ __('ui.care_journals_efcbb402a3') }}</h1>
-                <p class="mt-2 max-w-3xl text-paw-muted">
-                    {{ __('ui.today_s_feeding_water_walks_rest_toilet_activity_dc1cdec032') }}
-                </p>
-            </div>
-            <x-action-control :href="route('care-journals.create')" label="{{ __('ui.create_journal_0be6b9b3a5') }}" icon="plus" variant="primary" size="regular" />
-        </header>
+        <x-page-header
+            eyebrow="{{ __('ui.private_family_workspace_521e77339e') }}"
+            title="{{ __('ui.care_journals_efcbb402a3') }}"
+            description="{{ __('ui.today_s_feeding_water_walks_rest_toilet_activity_dc1cdec032') }}"
+            heading-id="care-journals-heading"
+            action-label="{{ __('ui.create_journal_0be6b9b3a5') }}"
+            action-icon="plus"
+            :action-href="route('care-journals.create')"
+            data-section="care-journals-header"
+        />
 
         <section class="care-family-strip" aria-label="{{ __('ui.family_care_overview_b363d25aa9') }}">
             <x-lucide-users-round class="size-5" aria-hidden="true" />

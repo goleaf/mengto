@@ -50,6 +50,7 @@ This index is the source-of-truth map for first-party documentation.
 | `docs/plans/authenticated-portal-access-plan.md` | Exact account-entry allowlist, authenticated portal boundary, protected media, and release evidence | Product + engineering | Verified |
 | `docs/plans/global-linked-media-navigation-plan.md` | Global representative-image navigation contract, inventory, phased migration, and verification gates | Product + frontend + QA | Implemented and verified |
 | `docs/plans/forum-topic-type-schema-runtime-work-package.md` | Exact 20-ID topic-type schema runtime, cache, validation, Action, and release contract | Product + engineering + QA | Implemented and verified |
+| `docs/plans/global-page-identity-standardization-plan.md` | Global page-header, route-classification, forum navigation, meetup stability, and visual consistency execution plan | Product + frontend + QA | In progress; first safe slice targeted-verified |
 | `docs/requirements/compliance-matrix.md` | Requirements-to-code-and-test mapping | QA | Living evidence |
 | `docs/code-review.md` | Final structured review findings | Engineering | Living evidence |
 | `docs/known-limitations.md` | External and environmental blockers only | Product + engineering | Living evidence |

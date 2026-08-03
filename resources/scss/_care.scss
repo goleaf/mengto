@@ -1,6 +1,5 @@
 @use 'tokens' as *;
 
-.care-directory-header,
 .care-journal-header,
 .care-manage-header,
 .care-shared-header,
@@ -695,7 +694,6 @@
 }
 
 @media (max-width: 44rem) {
-    .care-directory-header,
     .care-journal-header,
     .care-manage-header,
     .care-shared-header,

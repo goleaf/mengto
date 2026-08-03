@@ -221,6 +221,30 @@ repeat seed, immutable source preservation, and deterministic generation.
 The executable contract and stop conditions are maintained in
 `docs/plans/forum-topic-type-schema-runtime-work-package.md`.
 
+## Current Delivery: Global Page Identity Standardization
+
+Status: `in progress`; first safe directory slice targeted-verified on
+2026-08-03
+
+The complete route classification, canonical `x-page-header` contract,
+thirteen priority regression routes, forum category/subcategory information
+architecture, meetup upgrade gate, global migration waves, and final quality
+gates are recorded in
+`docs/plans/global-page-identity-standardization-plan.md`.
+
+The first slice extended `x-page-header` with a stable accessible heading,
+metadata, and action regions. It migrated medical records, care journals,
+lost-and-found, marketplace, experts, and messages while retaining the
+existing reference-directory consumers. The nine message folders remain above
+the messaging shell, and the global linked-media navigation remains unchanged.
+
+Focused and full Pest, localization, Pint, Larastan, Vite, dependency audits,
+cache smoke, isolated migration/seed/idempotency, and authenticated responsive
+browser checks passed for this slice. The complete route classification,
+remaining shared-component fixtures, meetups and forum migrations, scoped
+publication, and final global audit remain open; this delivery is not globally
+complete.
+
 ## Completed Delivery: Guest Join Page
 
 Status: `superseded` by the authenticated portal boundary on 2026-08-03

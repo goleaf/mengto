@@ -2,8 +2,9 @@
 
 Plan date: 2026-08-03
 
-Status: proposed; repository, schema, and authenticated browser baseline audited;
-implementation has not started
+Status: implementation in progress; the shared component and first safe
+directory wave are verified, while meetup, forum, and global-route migration
+remain open as recorded below
 
 This plan is intentionally not time-boxed. Work advances only when the current
 package satisfies its acceptance, accessibility, data, and quality gates.
@@ -13,12 +14,18 @@ package satisfies its acceptance, accessibility, data, and quality gates.
 PawCircle does not currently have one dependable visual and semantic contract
 for the introductory block at the top of a portal page. The same hierarchy —
 context, page title, description, optional count, and actions — is rendered by
-four different implementations:
+four different implementations on the twelve named routes:
 
 1. the shared `x-page-header` component;
 2. duplicated Tailwind markup inside individual Blade views;
 3. the care-specific `.care-directory-header` pattern;
 4. the forum-specific `.forum-header` pattern with a separate serif scale.
+
+The global audit found a fifth page-identity family in `/messages`, additional
+inline `h1` implementations, and several valid detail/profile hero components.
+The solution therefore cannot be a blind source replacement. It must migrate
+directory identity, preserve deliberate detail semantics, and classify every
+first-party GET route.
 
 The result is visible drift in typeface, title size, line height, spacing,
 alignment, borders, action placement, responsive behaviour, and accessible
@@ -48,9 +55,10 @@ did not contain `forum_event_team_memberships`.
   normal, keyboard-accessible navigation.
 - `/meetups` remains renderable after a fresh installation and after a real
   incremental upgrade.
-- The first implementation covers the twelve named routes, then continues
-  through a complete portal inventory so the same drift cannot remain on less
-  visible pages.
+- The first implementation covers the twelve newly named routes plus the
+  previously repaired `/messages` regression surface, then continues through a
+  complete portal inventory so the same drift cannot remain on less visible
+  pages.
 
 ## 3. Audited Baseline
 
@@ -84,6 +92,86 @@ topic detail, event and group workspaces, journals, mentorship, expert
 sessions, administration, and community notes. Those screens belong to the
 global inventory wave even when they are not part of the first twelve routes.
 
+### 3.1 Repository-Wide Gap Audit
+
+The expanded static and route audit on 2026-08-03 found:
+
+- 344 first-party Blade templates;
+- 108 first-party routes that accept `GET` after vendor routes are excluded;
+- 62 Blade templates containing an `h1`;
+- 13 templates using `x-page-header`;
+- 17 templates using `.forum-header`;
+- one template using `.care-directory-header`;
+- one template using `.messaging-page__header`;
+- additional inline directory, create/edit, detail, profile, print, poster,
+  emergency, and shared-access headings;
+- existing purposeful hero components: `x-detail-page`, `x-detail-identity`,
+  `x-context-hero`, `x-profile-identity`, `x-place-hero`, and `x-group-hero`;
+- `x-section-heading` renders an `h1` for the feed and composer even though its
+  normal role is section-level identity, so those uses require classification.
+
+The counts are baseline evidence, not permanent target assertions. The target
+is one canonical directory/page-introduction family plus a small documented
+set of token-compatible detail, profile, authentication, print, and scoped
+access exceptions.
+
+The audit also found documentation drift:
+
+- `docs/design-system.md` describes page/header hierarchy as already shared;
+- `docs/ui-component-inventory.md` identifies `x-page-header` as the event page
+  identity;
+- `docs/ui-migration-matrix.md` describes the event directory as migrated;
+- the current event directory and workspace still render `.forum-header`.
+- `docs/portal/route-matrix.md` records only event routes rather than the full
+  first-party GET classification required by this plan.
+
+Documentation may describe a target state only when it is labelled as a
+target. It must not be treated as implementation evidence while the rendered
+Blade disagrees.
+
+### 3.2 Completion Ledger
+
+| Area | Current status | Evidence still required |
+| --- | --- | --- |
+| Repository, route, schema, and twelve-page browser baseline | Complete | Refresh immediately before implementation if `main` changes |
+| Global linked-media navigation | Implemented and verified in its own plan | Preserve its links and accessibility during header migration |
+| Message folder placement (`All` through `Archive`) | Implemented and tested | Keep the nine-folder toolbar above the messaging shell |
+| Plan registration and current-versus-target documentation | Complete | Reconcile again whenever implementation changes the rendered state |
+| `/messages` canonical page identity | Implemented and targeted-verified | Preserve one canonical header, nine folders above the messaging shell, and zero horizontal overflow |
+| Package 0 requirements and red contracts | Partial | The shared/route/order contracts now cover eleven safe routes; requirement ID, complete route classification ledger, allowlists, and remaining routes are open |
+| Package 1 current `/meetups` schema/runtime | Partial | Current table, migration, explicit projection, and route work; fresh plus incremental mismatch proof remains |
+| Package 2 shared component | Partial, implementation verified for the first wave | Heading ID, metadata/actions slots, compatibility, wrapping, and semantic tests are complete; the full locale/zoom/forced-colors fixture matrix remains open |
+| Package 3 reference directories | Partial | `/pets`, `/places`, `/groups`, `/neighbors`, `/discover`, and `/messages` are targeted-verified; the remaining listed routes and golden matrix are open |
+| Package 4 private care directories | Implemented and targeted-verified | Retain authorization/privacy regression coverage in the final full gate |
+| Package 5 operational directories | Implemented and targeted-verified | Retain domain and responsive regression coverage in the final full gate |
+| Packages 6 through 8 | Not started | Event, forum, and complete first-party route migration remain open |
+| Packages 9 and 10 | Partial | Retired care/messages directory selectors and reconciled living UI documents; forum/global cleanup and full documentation remain open |
+| Package 11 release verification | Partial | Focused and full Pest, Pint, Larastan, localization, Vite, dependency audits, cache smoke, isolated migrate/seed/idempotency, diff, and representative browser checks passed; scoped commit, push, and final global follow-up audit remain open |
+
+The first implementation slice is covered by
+`PageIdentityStandardizationTest` plus the existing module, responsive, media,
+and messaging suites. The isolated targeted run passed 105 tests and 1,029
+assertions. Authenticated browser checks at 375 px and 1440 px confirmed one
+canonical header, one `h1`, no horizontal overflow, 44 px mobile actions, and
+the required message-folder order. The final complete isolated Pest run passed
+2,362 tests and 78,760 assertions. This is evidence for the first slice
+and repository state at that point only, not for the remaining global
+migration.
+
+### 3.3 Next Execution Checkpoint
+
+1. Publish the verified first safe slice without including concurrent event or
+   forum work from the shared tree.
+2. Complete Package 0 by writing the 108-route classification ledger, stable
+   requirement ID, allowlists, and remaining red contracts.
+3. Close the remaining incremental `/meetups` proof in Package 1 before
+   touching its presentation in Package 6. Disjoint non-event page work may
+   proceed while this gate is open.
+4. Complete the remaining Package 2 locale, zoom, forced-colors, and slot-state
+   fixtures, then finish the unmigrated Package 3 routes.
+5. Continue through event, forum, and global-route waves; never mark a later
+   wave complete from source intent or screenshots alone.
+
 ## 4. Scope
 
 ### 4.1 Required first wave
@@ -101,10 +189,15 @@ global inventory wave even when they are not part of the first twelve routes.
 - `/neighbors`
 - `/discover`
 
+The previously reported `/messages` surface is a required regression route.
+Its nine folder controls and linked conversation media are already repaired,
+but its bespoke page identity still needs migration to the canonical contract.
+
 ### 4.2 Required global continuation
 
-Inventory every authenticated first-party GET page and classify its opening
-region into one of these contracts:
+Inventory every first-party GET route, including authenticated, guest,
+temporary-access, compatibility, and non-HTML responses. Classify its output
+before deciding whether a page header applies:
 
 1. **Directory or index:** use the canonical `x-page-header`.
 2. **Create or edit workflow:** use the same page-identity typography and
@@ -115,9 +208,32 @@ region into one of these contracts:
 4. **Authentication:** retain `x-auth-page-header` as a documented exception.
 5. **Full-screen modal, media viewer, or focused tool:** no page header when a
    semantic page introduction would be redundant.
+6. **Special document or scoped access:** print, poster, emergency, export,
+   download, and token-scoped pages use a separate documented contract and do
+   not inherit portal chrome blindly.
+7. **Redirect or file response:** record as a non-page exception; never add
+   presentation markup.
 
 Every exception must be recorded with its route, component, reason, and owner.
 “It already looks different” is not a valid exception.
+
+The known route families that must appear explicitly in the matrix are:
+
+- primary directories: content/feed, pets, medical records, care journals,
+  devices, places, lost-and-found, marketplace, experts, forum, knowledge,
+  groups, meetups, messages, relationships, discovery, notifications, and
+  walks;
+- create/edit/manage workflows for pets, medical records, care journals,
+  devices, lost-and-found cases, listings, experts, topics, and knowledge
+  guides;
+- detail/workspace routes for profiles, pets, records, journals, devices,
+  places, cases, listings, orders, experts, consultations, groups, events,
+  forum topics, journals, mentorship, expert sessions, and publications;
+- guest/authentication routes: home/join, login, registration, password, email
+  verification, and confirmation;
+- scoped/special responses: medical, care, and device access tokens; private
+  documents/media; forum files/media/exports; knowledge export/print;
+  lost-pet poster/emergency output; and compatibility redirects.
 
 ### 4.3 Explicit non-goals of the header package
 
@@ -131,6 +247,22 @@ Every exception must be recorded with its route, component, reason, and owner.
 - It does not edit an already-used historical migration to repair an upgrade.
 - It does not make an unavailable page or action discoverable merely for
   visual consistency.
+
+### 4.4 Cross-Plan Boundaries
+
+- `docs/plans/global-linked-media-navigation-plan.md` is implemented and
+  remains authoritative for image/avatar/placeholder navigation. Header work
+  must not remove, duplicate, or retarget those links.
+- The messaging folder toolbar and conversation-only inbox scrolling were
+  implemented before this plan. The canonical header moves only page identity
+  and summary actions; it does not return folders to the left inbox column.
+- The desktop application header is governed by its own design specification.
+  This plan changes content-page identity below the application shell, not the
+  global brand/account navigation.
+- Existing detail/profile heroes remain valid candidates when their semantics
+  require media, status, ownership, or operational commands. They must consume
+  the shared typography, spacing, focus, and action tokens instead of being
+  replaced blindly by a directory header.
 
 ## 5. Canonical Shared Component Contract
 
@@ -152,6 +284,11 @@ The component remains presentational. It receives strings, URLs, scalar state,
 and prepared action data. It does not access models, policies, facades,
 services, routes by guessed identifiers, or the database.
 
+The header is the first identity region inside the main content column. It
+spans that column before page-local sidebars, category navigation, filters, or
+result grids. No department, folder, filter, or local-navigation block may
+split the title/description region into a competing left column.
+
 ### 5.2 Proposed API
 
 Keep the existing public API compatible during migration, then converge on:
@@ -168,27 +305,71 @@ The current `count` and single-action props remain as a temporary compatibility
 layer. After all consumers have moved to slots, remove compatibility only in a
 separate, test-backed cleanup commit.
 
+Back links and breadcrumbs use their own shared navigation component before
+the page identity when the route depth requires them. They are not encoded as
+an eyebrow and do not change the heading hierarchy.
+
 ### 5.3 Visual token contract
 
-Use the existing `/pets` family as the starting reference and verify the final
-values visually:
+Use the existing `/pets` family as the locked directory reference:
 
 - one application sans-serif family; no directory-specific Georgia override;
-- mobile-first title scale around 24 px, increasing to 30 px on wider screens;
-- title line height around 1.2 and weight 600;
-- eyebrow at the existing compact uppercase scale;
-- description at the existing readable body scale with a maximum measure near
-  70 characters;
+- title at `1.5rem`, increasing to `1.875rem` from the existing `40rem`
+  breakpoint, with line-height `1.2` and weight 600;
+- eyebrow at `0.75rem`, weight 600, uppercase, using the canonical leaf token;
+- description at `0.875rem` with `1.5rem` line-height and a maximum measure of
+  `70ch`;
+- content width capped by the existing `42rem` measure;
 - a single border, padding, content gap, and desktop alignment contract;
 - actions that wrap below or beside the copy without clipping;
 - minimum 44 px interactive targets;
 - visible focus, forced-colors support, and reduced-motion compatibility;
 - no hover-only meaning and no horizontal page overflow.
+- identical main-content gutters and alignment with the page body;
+- stable block height during Livewire loading, filtering, and pagination;
+- a localized browser document title consistent with the visible `h1` while
+  retaining the PawCircle product suffix.
 
 Tokens belong in the existing CSS-first Tailwind/theme and SCSS component
 layer. Page views must not restate the title scale with one-off utility lists.
 
-### 5.4 Content policy
+### 5.4 Layout Wireframe
+
+Desktop:
+
+```text
+EYEBROW                                      META / ACTIONS
+PAGE TITLE
+One concise localized description
+---------------------------------------------------------
+LOCAL NAVIGATION / FILTERS / CATEGORY NAVIGATION
+PAGE CONTENT OR PAGE-LOCAL SIDEBAR + RESULTS
+```
+
+Mobile:
+
+```text
+EYEBROW
+PAGE TITLE
+One concise localized description
+META
+PRIMARY ACTION
+SECONDARY ACTIONS (wrapped)
+--------------------------------
+LOCAL NAVIGATION / FILTERS
+PAGE CONTENT
+```
+
+Negative rules:
+
+- no serif title variant for a directory;
+- no title card floating beside a page-local sidebar;
+- no folder/category/filter row before the page identity;
+- no fixed-width action group that can force overflow;
+- no sticky page identity unless a separately measured requirement adds it;
+- no layout shift when result counts or Livewire loading text change.
+
+### 5.5 Content Policy
 
 - Eyebrow states the context, not a promotional slogan.
 - Title names the current page in plain language.
@@ -231,7 +412,9 @@ blocking gate in the current one is unresolved.
 ### Package 0 — Requirements, inventory, and red contracts
 
 1. Assign a stable product requirement ID for canonical page identity.
-2. Record the twelve-route baseline and the global classification matrix.
+2. Record the twelve-route baseline, the `/messages` regression surface, and
+   all 108 current first-party GET routes by expanding
+   `docs/portal/route-matrix.md` into the global classification matrix.
 3. Add a focused architecture/feature contract that finds every eligible page
    and detects duplicate general-purpose header families.
 4. Add route-level assertions for one `h1`, the canonical header hook, escaped
@@ -240,11 +423,17 @@ blocking gate in the current one is unresolved.
    breakpoints before changing CSS.
 6. Record representative query counts so the component migration cannot hide a
    query regression.
+7. Add an explicit allowlist for redirects, downloads, exports, print/poster,
+   token-scoped, auth, and deliberate detail/profile hero routes.
+8. Correct current-versus-target wording in design-system, component inventory,
+   and UI migration documents before using them as evidence.
 
 Acceptance:
 
 - every named route has an owner, current template/component, desired
   component, and test target;
+- every first-party GET route is classified as rendered page, deliberate hero,
+  special document/scoped access, file response, or redirect;
 - new contract tests fail for the known divergent implementations and pass for
   the current canonical pages;
 - no production markup has changed yet.
@@ -281,6 +470,10 @@ Acceptance:
 4. Add component rendering tests for no action, count only, one action,
    multiple actions, long translations, and escaped content.
 5. Add browser fixtures for narrow viewport, 200% zoom, and forced colors.
+6. Align the header with the same max-width and inline gutters as its page
+   body, before any local sidebar or toolbar.
+7. Keep the header stable across Livewire loading/filtering updates and align
+   the localized document title with the visible title.
 
 Acceptance:
 
@@ -297,16 +490,24 @@ Apply and verify the canonical contract on:
 - `/places`;
 - `/groups`;
 - `/neighbors`;
-- `/discover`.
+- `/discover`;
+- `/notifications`;
+- `/walks`;
+- `/circle`, `/circle/connections`, and `/circle/pet-friends`;
+- `/messages`, while preserving its repaired folder toolbar and inbox layout.
 
-Most of these already use `x-page-header` directly or through
-`x-directory-page`. This package removes local overrides, normalizes content
-and action placement, and establishes the golden browser snapshots.
+Most of these use `x-page-header` directly or through `x-directory-page`.
+`/messages` is the deliberate regression target that still uses its own header.
+This package removes local overrides, normalizes content and action placement,
+and establishes the golden browser snapshots.
 
 Acceptance:
 
-- all five pages share the same computed font family, size, line height,
+- the five named reference directories share the same computed font family,
+  size, line height,
   padding, and border behaviour at the same breakpoint;
+- the additional existing shared-header routes and `/messages` match the same
+  contract without moving folders back into the inbox sidebar;
 - page-specific filters, maps, counts, and actions begin below or inside their
   documented slots without layout shifts.
 
@@ -412,6 +613,7 @@ Use route inventory plus Blade/Livewire searches to migrate every remaining
 eligible first-party page. The known starting list includes:
 
 - forum topic detail and editor;
+- content feed, publication detail, share context, and composer;
 - knowledge directory and guide editor;
 - forum groups and group workspaces;
 - forum events and event workspaces;
@@ -420,16 +622,31 @@ eligible first-party page. The known starting list includes:
 - community notes and forum administration;
 - connections, pet friends, circle, notifications, walks, profiles, and
   settings;
+- content/feed, messages, devices, medical/care create/manage/detail screens,
+  lost-and-found coordination/poster screens, marketplace create/order
+  screens, and all expert create/edit/booking/consultation/workspace screens;
 - create/manage pet flows and other authenticated directories discovered by
   route inspection.
 
+The route matrix also records, without wrapping them in portal identity:
+
+- private media/document/download endpoints;
+- export responses and print-only documents;
+- token-scoped medical, care, and device access;
+- redirects and compatibility endpoints;
+- poster/emergency layouts whose task-specific hierarchy is intentionally
+  different.
+
 Do not blindly replace a detail/workspace hero. First classify it, then either
 use `x-page-header` or a documented token-compatible detail/workspace variant.
+Page-level `x-section-heading level="1"` consumers move to a page-identity or
+documented focused-workflow contract; `x-section-heading` remains the canonical
+section-level `h2` primitive.
 
 Acceptance:
 
-- every authenticated first-party GET route is present in the migration
-  matrix;
+- every first-party GET route is present in the migration matrix, including
+  authenticated, guest, scoped-access, special-response, and redirect routes;
 - every eligible directory uses `x-page-header`;
 - every exception is deliberate, documented, and covered by a structural
   test;
@@ -449,6 +666,8 @@ Acceptance:
 5. Delete duplicated inline header utility sequences.
 6. Retain detail typography only where the global classification explicitly
    permits it.
+7. Remove undocumented page-level `x-section-heading level="1"` usage while
+   preserving normal section-level headings.
 
 Acceptance:
 
@@ -468,6 +687,10 @@ Acceptance:
    pass.
 5. Keep forum requirement/evidence generation and immutable-source checks in
    the same change whenever forum requirements or evidence are touched.
+6. Reconcile the inaccurate current-state claims in `docs/design-system.md`,
+   `docs/ui-component-inventory.md`, and `docs/ui-migration-matrix.md` with the
+   rendered implementation.
+7. Register this plan in `docs/index.md` and the living implementation plan.
 
 Acceptance:
 
@@ -547,7 +770,10 @@ tokens independently rather than becoming a prerequisite for portal pages.
 ### 11.1 Focused automated coverage
 
 - `PageHeaderComponentTest` for slots, escaping, semantic order, and variants;
-- a portal page-header contract test covering the twelve named routes;
+- a portal page-header contract test covering the twelve named routes plus
+  `/messages`;
+- a route-classification contract covering every current first-party GET route
+  and failing when an unclassified route is added;
 - medical record and care journal feature/authorization tests;
 - pet, place, lost-and-found, marketplace, expert, group, neighbor, and
   discover feature tests;
@@ -560,14 +786,20 @@ tokens independently rather than becoming a prerequisite for portal pages.
 - forum category seed tests preserving 44 roots and 1,637 children;
 - architecture tests preventing new duplicate header families and forbidden
   Blade logic.
+- messaging interface regressions proving all nine folders remain before the
+  messaging shell and only conversations scroll in the inbox.
 
 ### 11.2 Browser matrix
 
-For every named route, test at 320, 375, 768, 1024, 1440, and 1920 px:
+For every named route plus `/messages`, test at 320, 375, 768, 1024, 1440, and
+1920 px:
 
 - HTTP/application success with no exception page;
 - exactly one page `h1`;
+- a localized document title consistent with that `h1`;
 - canonical header hook and computed typography;
+- header alignment with the main content column before local navigation and
+  sidebars;
 - no horizontal page overflow;
 - no overlap, clipping, or detached actions;
 - complete keyboard route and visible focus;
@@ -583,6 +815,8 @@ Additional browser flows:
 - meetup search/filter/pagination and event opening;
 - forum root selection, child selection, direct URL restoration, back/forward
   navigation, empty result, and invalid child handling.
+- message folder selection across all nine folders, conversation search, and
+  narrow-screen transition without returning the folder toolbar to the inbox.
 
 ### 11.3 Final repository gates
 
@@ -620,6 +854,8 @@ Stop the current package and report the blocker when any of these occurs:
   migration, seed, or test gate fails;
 - an attributable edit overlaps unrelated uncommitted user/agent work and
   cannot be isolated safely;
+- a current design/component/migration document claims a page is standardized
+  while the rendered template still uses a legacy family;
 - the proposed component API requires a broad breaking change without a
   compatibility wave.
 
@@ -647,8 +883,10 @@ diff, and never commit or revert unrelated work.
 The plan is complete only when:
 
 - all twelve named routes use the canonical page-identity contract;
-- every authenticated GET route has been classified and every eligible route
-  has been migrated;
+- `/messages` uses the canonical page identity while retaining its repaired
+  folder and inbox behaviour;
+- every first-party GET route has been classified and every eligible rendered
+  page has been migrated;
 - the portal has one general-purpose page-header family;
 - `/meetups` passes fresh-install and incremental-upgrade schema/query tests;
 - `/forum` visibly exposes all root categories and only the active root's
@@ -657,6 +895,9 @@ The plan is complete only when:
 - authorization, privacy, localization, responsive behaviour, keyboard access,
   focus, touch, zoom, forced colors, and no-overflow checks pass;
 - obsolete markup and CSS are removed;
+- special documents, scoped access, downloads, exports, redirects, auth pages,
+  and deliberate detail/profile heroes remain documented rather than being
+  forced into the directory component;
 - requirements, design documentation, migration matrix, compliance evidence,
   testing notes, and changelog match the implementation;
 - every applicable quality gate was actually executed and observed green;

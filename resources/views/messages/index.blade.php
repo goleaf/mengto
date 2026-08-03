@@ -4,22 +4,36 @@
         data-messaging-center
         @if ($thread_first) data-selected-conversation="{{ $selected['key'] }}" @endif
     >
-        <header class="messaging-page__header">
-            <div class="messaging-page__heading">
-                <p>{{ $summary['eyebrow'] }}</p>
-                <h1>{{ $summary['title'] }}</h1>
-                <span>{{ $summary['description'] }}</span>
-            </div>
+        <x-page-header
+            :eyebrow="$summary['eyebrow']"
+            :title="$summary['title']"
+            :description="$summary['description']"
+            heading-id="messages-heading"
+            meta-label="{{ __('ui.inbox_summary_4323d5eb2a') }}"
+            data-section="messages-header"
+            class="page-header--messaging"
+        >
+            <x-slot:meta>
+                <span class="page-header__metric">
+                    <x-lucide-mail class="icon icon--sm" aria-hidden="true" />
+                    {{ __('presentation.unread_count', ['count' => $summary['unread_count']]) }}
+                </span>
+                <span class="page-header__metric">
+                    <x-lucide-message-square-more class="icon icon--sm" aria-hidden="true" />
+                    {{ trans_choice('presentation.requests_count', $summary['request_count'], ['count' => $summary['request_count']]) }}
+                </span>
+            </x-slot:meta>
 
-            <div class="messaging-page__summary" aria-label="{{ __('ui.inbox_summary_4323d5eb2a') }}">
-                <span><x-lucide-mail class="icon icon--sm" aria-hidden="true" /> {{ __('presentation.unread_count', ['count' => $summary['unread_count']]) }}</span>
-                <span><x-lucide-message-square-more class="icon icon--sm" aria-hidden="true" /> {{ trans_choice('presentation.requests_count', $summary['request_count'], ['count' => $summary['request_count']]) }}</span>
-                <a href="{{ route('compose', 'message') }}" class="action action--primary action--regular">
-                    <x-lucide-square-pen class="icon icon--sm" aria-hidden="true" />
-                    <span>{{ __('ui.new_message_78f5975a5d') }}</span>
-                </a>
-            </div>
-        </header>
+            <x-slot:actions>
+                <x-action-control
+                    :href="route('compose', 'message')"
+                    label="{{ __('ui.new_message_78f5975a5d') }}"
+                    icon="square-pen"
+                    variant="primary"
+                    size="regular"
+                />
+            </x-slot:actions>
+        </x-page-header>
 
         <x-messaging-folders
             :filters="$filters"

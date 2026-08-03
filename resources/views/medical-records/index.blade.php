@@ -1,15 +1,15 @@
 <x-app-shell :owner="$owner" :title="$page_title" :active-section="$active_section">
     <div class="grid gap-7">
-        <header class="flex flex-col gap-4 border-b border-paw-line pb-6 sm:flex-row sm:items-end sm:justify-between">
-            <div>
-                <p class="text-sm font-bold uppercase text-paw-leaf">{{ __('ui.private_care_workspace_12776f8bcf') }}</p>
-                <h1 class="mt-2 text-3xl font-bold sm:text-4xl">{{ __('ui.pet_health_records_911c3e19be') }}</h1>
-                <p class="mt-3 max-w-3xl leading-7 text-paw-muted">
-                    {{ __('ui.vaccinations_medication_schedules_measurements_visits_and_original_docum_72518c6620') }}
-                </p>
-            </div>
-            <x-action-control label="{{ __('ui.new_health_record_376edfa614') }}" icon="plus" variant="primary" :href="route('medical-records.create')" />
-        </header>
+        <x-page-header
+            eyebrow="{{ __('ui.private_care_workspace_12776f8bcf') }}"
+            title="{{ __('ui.pet_health_records_911c3e19be') }}"
+            description="{{ __('ui.vaccinations_medication_schedules_measurements_visits_and_original_docum_72518c6620') }}"
+            heading-id="medical-records-heading"
+            action-label="{{ __('ui.new_health_record_376edfa614') }}"
+            action-icon="plus"
+            :action-href="route('medical-records.create')"
+            data-section="medical-records-header"
+        />
 
         <section class="medical-privacy-strip" aria-label="{{ __('ui.medical_privacy_status_a8a40a4bd3') }}">
             <x-lucide-lock-keyhole class="size-5" aria-hidden="true" />

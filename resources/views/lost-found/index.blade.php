@@ -1,15 +1,15 @@
 <x-app-shell :owner="$owner" :title="$page_title" :active-section="$active_section">
     <div class="grid gap-6">
-        <header class="flex flex-col gap-4 border-b border-paw-line pb-6 sm:flex-row sm:items-end sm:justify-between">
-            <div class="max-w-3xl">
-                <p class="text-sm font-bold uppercase text-paw-coral">{{ __('ui.lost_found_217c655848') }}</p>
-                <h1 class="mt-2 text-3xl font-bold sm:text-4xl">{{ __('ui.active_local_searches_a0b657fac3') }}</h1>
-                <p class="mt-3 max-w-2xl leading-7 text-paw-muted">
-                    {{ __('ui.report_a_sighting_join_a_coordinated_task_or_e5e0bbe8c2') }}
-                </p>
-            </div>
-            <x-action-control label="{{ __('ui.report_an_animal_6188a5d89e') }}" icon="siren" variant="primary" :href="route('lost-found.create')" />
-        </header>
+        <x-page-header
+            eyebrow="{{ __('ui.lost_found_217c655848') }}"
+            title="{{ __('ui.active_local_searches_a0b657fac3') }}"
+            description="{{ __('ui.report_a_sighting_join_a_coordinated_task_or_e5e0bbe8c2') }}"
+            heading-id="lost-found-heading"
+            action-label="{{ __('ui.report_an_animal_6188a5d89e') }}"
+            action-icon="siren"
+            :action-href="route('lost-found.create')"
+            data-section="lost-found-header"
+        />
 
         @if (session('feedback'))
             <div class="flex items-start gap-3 rounded-md border border-paw-leaf/30 bg-paw-mint p-4 text-sm font-semibold text-paw-leaf" role="status">

@@ -1,15 +1,15 @@
 <x-app-shell :owner="$owner" :title="$page_title" :active-section="$active_section">
     <div class="grid gap-6">
-        <header class="flex flex-col gap-4 border-b border-paw-line pb-6 sm:flex-row sm:items-end sm:justify-between">
-            <div class="max-w-3xl">
-                <p class="text-sm font-bold uppercase text-paw-leaf">{{ __('ui.community_marketplace_1525148f3c') }}</p>
-                <h1 class="mt-2 text-3xl font-bold sm:text-4xl">{{ __('ui.useful_things_and_trusted_pet_services_0b2d0b997a') }}</h1>
-                <p class="mt-3 max-w-2xl leading-7 text-paw-muted">
-                    {{ __('ui.buy_exchange_rehome_or_book_without_exposing_your_a7174cb664') }}
-                </p>
-            </div>
-            <x-action-control label="{{ __('ui.create_listing_815d30caa6') }}" icon="badge-plus" variant="primary" :href="route('marketplace.create')" />
-        </header>
+        <x-page-header
+            eyebrow="{{ __('ui.community_marketplace_1525148f3c') }}"
+            title="{{ __('ui.useful_things_and_trusted_pet_services_0b2d0b997a') }}"
+            description="{{ __('ui.buy_exchange_rehome_or_book_without_exposing_your_a7174cb664') }}"
+            heading-id="marketplace-heading"
+            action-label="{{ __('ui.create_listing_815d30caa6') }}"
+            action-icon="badge-plus"
+            :action-href="route('marketplace.create')"
+            data-section="marketplace-header"
+        />
 
         <section class="grid grid-cols-2 gap-px overflow-hidden rounded-md border border-paw-line bg-paw-line md:grid-cols-3 xl:grid-cols-6" aria-label="{{ __('ui.marketplace_summary_f9ecef7b29') }}">
             @forelse ([

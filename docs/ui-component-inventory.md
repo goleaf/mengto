@@ -4,7 +4,9 @@
 | --- | --- | --- |
 | Application shell | `x-app-shell`, `x-main-sidebar-layout`, `x-livewire-app-layout` | directory and detail shells |
 | Primary navigation | `x-primary-navigation`, desktop/mobile nav items | one meetups entry |
-| Page identity | `x-page-header`, `x-detail-page`, `x-detail-identity` | title, back link, current status |
+| Page identity | `x-page-header`, `x-detail-page`, `x-detail-identity` | `x-page-header` is the target; event directory/workspace still use legacy `forum-header` |
+| Legacy page identity | `.forum-header` and unclassified duplicated utility markup | measured migration inventory; care-directory and messaging-directory variants are retired, and no new consumers are allowed |
+| Section identity | `x-section-heading` | canonical for `h2`; existing feed/composer `h1` uses require page-route classification |
 | Status | `x-status-badge`, `x-notice`, `x-callout` | event/registration/pet state |
 | Forms | `x-form-field`, `x-forum-error-summary`, action form/group/control | builder and registration mutations |
 | Collections | `x-directory-page`, toolbar, result grid, empty state, pagination | event discovery |

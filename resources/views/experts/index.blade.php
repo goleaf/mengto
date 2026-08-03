@@ -1,18 +1,17 @@
 <x-app-shell :owner="$owner" :title="$page_title" :active-section="$active_section">
     <div class="grid gap-6">
-        <header class="flex flex-col gap-4 border-b border-paw-line pb-6 sm:flex-row sm:items-end sm:justify-between">
-            <div class="max-w-3xl">
-                <p class="text-sm font-bold uppercase text-paw-leaf">{{ __('ui.verified_professional_community_f3f93b61ff') }}</p>
-                <h1 class="mt-2 text-3xl font-bold sm:text-4xl">{{ __('ui.find_the_right_specialist_for_this_pet_21bb34d7d0') }}</h1>
-                <p class="mt-3 max-w-2xl leading-7 text-paw-muted">
-                    {{ __('ui.compare_scope_species_independently_checked_credentials_availability_lan_8ad672b4c3') }}
-                </p>
-            </div>
-            <div class="flex flex-wrap gap-2">
+        <x-page-header
+            eyebrow="{{ __('ui.verified_professional_community_f3f93b61ff') }}"
+            title="{{ __('ui.find_the_right_specialist_for_this_pet_21bb34d7d0') }}"
+            description="{{ __('ui.compare_scope_species_independently_checked_credentials_availability_lan_8ad672b4c3') }}"
+            heading-id="experts-heading"
+            data-section="experts-header"
+        >
+            <x-slot:actions>
                 <x-action-control label="{{ __('ui.professional_workspace_eb8eb6dde6') }}" icon="briefcase-business" :href="route('experts.dashboard')" />
-                <x-action-control label="{{ __('ui.create_professional_profile_30276b75d3') }}" icon="badge-plus" variant="primary" :href="route('experts.create')" />
-            </div>
-        </header>
+                <x-action-control label="{{ __('ui.create_professional_profile_30276b75d3') }}" icon="badge-plus" variant="primary" size="regular" :href="route('experts.create')" />
+            </x-slot:actions>
+        </x-page-header>
 
         <section class="grid grid-cols-2 gap-px overflow-hidden rounded-md border border-paw-line bg-paw-line lg:grid-cols-4" aria-label="{{ __('ui.expert_directory_summary_c16800d8b6') }}">
             @forelse ($stats as $stat)
