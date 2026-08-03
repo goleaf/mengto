@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services;
 
 use App\Enums\ListingType;
@@ -18,56 +20,56 @@ class ListingTaxonomy
     /** @return array<string, string> */
     public function categories(): array
     {
-        return [
-            'food' => 'Food & treats',
-            'walking-gear' => 'Walking gear',
-            'carriers-travel' => 'Carriers & travel',
-            'beds-home' => 'Beds & home',
-            'feeding' => 'Feeding',
-            'grooming-care' => 'Grooming & care',
-            'training-enrichment' => 'Training & enrichment',
-            'hygiene' => 'Hygiene',
-            'clothing' => 'Clothing',
-            'electronics' => 'GPS & smart devices',
-            'aquariums' => 'Aquariums',
-            'terrariums' => 'Terrariums',
-            'rehabilitation' => 'Rehabilitation equipment',
-            'professional-service' => 'Professional services',
-            'pet-service' => 'Everyday pet services',
-            'shelter-supplies' => 'Shelter supplies',
-            'adoption' => 'Adoption',
-            'other' => 'Other',
-        ];
+        return $this->labels('categories', [
+            'food',
+            'walking-gear',
+            'carriers-travel',
+            'beds-home',
+            'feeding',
+            'grooming-care',
+            'training-enrichment',
+            'hygiene',
+            'clothing',
+            'electronics',
+            'aquariums',
+            'terrariums',
+            'rehabilitation',
+            'professional-service',
+            'pet-service',
+            'shelter-supplies',
+            'adoption',
+            'other',
+        ]);
     }
 
     /** @return array<string, string> */
     public function species(): array
     {
-        return [
-            'dog' => 'Dogs',
-            'cat' => 'Cats',
-            'bird' => 'Birds',
-            'rabbit' => 'Rabbits',
-            'rodent' => 'Rodents',
-            'reptile' => 'Reptiles',
-            'horse' => 'Horses',
-            'fish' => 'Fish',
-            'amphibian' => 'Amphibians',
-            'other' => 'Other pets',
-        ];
+        return $this->labels('species', [
+            'dog',
+            'cat',
+            'bird',
+            'rabbit',
+            'rodent',
+            'reptile',
+            'horse',
+            'fish',
+            'amphibian',
+            'other',
+        ]);
     }
 
     /** @return array<string, string> */
     public function conditions(): array
     {
-        return [
-            'new' => 'New',
-            'like-new' => 'Like new',
-            'good' => 'Good',
-            'fair' => 'Fair',
-            'repair' => 'Needs repair',
-            'not-applicable' => 'Not applicable',
-        ];
+        return $this->labels('conditions', [
+            'new',
+            'like-new',
+            'good',
+            'fair',
+            'repair',
+            'not-applicable',
+        ]);
     }
 
     /** @return array<string, string> */
@@ -81,108 +83,121 @@ class ListingTaxonomy
     /** @return array<string, string> */
     public function availabilityOptions(): array
     {
-        return [
-            'in-stock' => 'In stock',
-            'low-stock' => 'Low stock',
-            'made-to-order' => 'Made to order',
-            'preorder' => 'Preorder',
-            'available-for-rent' => 'Available for rent',
-        ];
+        return $this->labels('availability', [
+            'in-stock',
+            'low-stock',
+            'made-to-order',
+            'preorder',
+            'available-for-rent',
+        ]);
     }
 
     /** @return array<string, string> */
     public function ageGroups(): array
     {
-        return [
-            'young' => 'Young pet',
-            'adult' => 'Adult pet',
-            'senior' => 'Senior pet',
-            'all' => 'Any age',
-            'not-applicable' => 'Not applicable',
-        ];
+        return $this->labels('age_groups', [
+            'young',
+            'adult',
+            'senior',
+            'all',
+            'not-applicable',
+        ]);
     }
 
     /** @return array<string, string> */
     public function hygieneStatuses(): array
     {
-        return [
-            'new-sealed' => 'New and sealed',
-            'cleaned' => 'Cleaned',
-            'washed' => 'Washed',
-            'steam-cleaned' => 'Steam cleaned',
-            'needs-cleaning' => 'Needs additional cleaning',
-            'not-applicable' => 'Not applicable',
-        ];
+        return $this->labels('hygiene_statuses', [
+            'new-sealed',
+            'cleaned',
+            'washed',
+            'steam-cleaned',
+            'needs-cleaning',
+            'not-applicable',
+        ]);
     }
 
     /** @return array<string, string> */
     public function deliveryOptions(): array
     {
-        return [
-            'meetup' => 'Safe public meetup',
-            'pickup' => 'Pickup after confirmation',
-            'shipping' => 'Shipping',
-            'online' => 'Online delivery',
-            'courier' => 'Courier delivery',
-            'parcel-locker' => 'Parcel locker',
-            'shelter-delivery' => 'Deliver to shelter',
-        ];
+        return $this->labels('delivery', [
+            'meetup',
+            'pickup',
+            'shipping',
+            'online',
+            'courier',
+            'parcel-locker',
+            'shelter-delivery',
+        ]);
     }
 
     /** @return array<string, string> */
     public function priceFilters(): array
     {
-        return [
-            'any' => 'Any price',
-            'free' => 'Free',
-            'under-25' => 'Under €25',
-            'under-100' => 'Under €100',
-        ];
+        return $this->labels('price_filters', [
+            'any',
+            'free',
+            'under-25',
+            'under-100',
+        ]);
     }
 
     /** @return array<string, string> */
     public function sortOptions(): array
     {
-        return [
-            'newest' => 'Newest',
-            'price-low' => 'Lowest price',
-            'price-high' => 'Highest price',
-            'popular' => 'Most viewed',
-            'verified' => 'Verified sellers first',
-        ];
+        return $this->labels('sort_options', [
+            'newest',
+            'price-low',
+            'price-high',
+            'popular',
+            'verified',
+        ]);
     }
 
     /** @return array<string, string> */
     public function disputeReasons(): array
     {
-        return [
-            'not-delivered' => 'Item was not delivered',
-            'not-as-described' => 'Not as described',
-            'counterfeit' => 'Suspected counterfeit',
-            'damaged' => 'Arrived damaged',
-            'incomplete' => 'Incomplete set',
-            'service-not-provided' => 'Service was not provided',
-            'rental-not-provided' => 'Rental was not provided',
-            'duplicate-charge' => 'Duplicate charge',
-            'refund-missing' => 'Refund is missing',
-            'fraud' => 'Suspected fraud',
-            'dangerous-product' => 'Dangerous product or unsafe instructions',
-            'animal-welfare' => 'Animal welfare concern',
-        ];
+        return $this->labels('dispute_reasons', [
+            'not-delivered',
+            'not-as-described',
+            'counterfeit',
+            'damaged',
+            'incomplete',
+            'service-not-provided',
+            'rental-not-provided',
+            'duplicate-charge',
+            'refund-missing',
+            'fraud',
+            'dangerous-product',
+            'animal-welfare',
+        ]);
     }
 
     /** @return array<string, string> */
     public function reportReasons(): array
     {
-        return [
-            'fraud' => 'Suspected fraud',
-            'illegal-sale' => 'Illegal animal sale',
-            'animal-welfare' => 'Animal welfare risk',
-            'counterfeit' => 'Counterfeit item',
-            'misleading' => 'Misleading information',
-            'personal-data' => 'Personal data exposed',
-            'duplicate' => 'Duplicate listing',
-            'other' => 'Other concern',
-        ];
+        return $this->labels('report_reasons', [
+            'fraud',
+            'illegal-sale',
+            'animal-welfare',
+            'counterfeit',
+            'misleading',
+            'personal-data',
+            'duplicate',
+            'other',
+        ]);
+    }
+
+    /**
+     * @param  list<string>  $keys
+     * @return array<string, string>
+     */
+    private function labels(string $group, array $keys): array
+    {
+        return collect($keys)
+            ->mapWithKeys(fn (string $key): array => [
+                $key => (string) __("marketplace.{$group}.{$key}"),
+            ])
+            ->all();
     }
 }

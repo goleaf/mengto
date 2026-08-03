@@ -11,7 +11,7 @@
             data-section="marketplace-header"
         />
 
-        <section class="grid grid-cols-2 gap-px overflow-hidden rounded-md border border-paw-line bg-paw-line md:grid-cols-3 xl:grid-cols-6" aria-label="{{ __('ui.marketplace_summary_f9ecef7b29') }}">
+        <section data-marketplace-stats class="grid grid-cols-2 gap-px overflow-hidden rounded-md border border-paw-line bg-paw-line md:grid-cols-3 xl:grid-cols-6" aria-label="{{ __('ui.marketplace_summary_f9ecef7b29') }}">
             @forelse ([
                 ['label' => __('ui.available_e674447337'), 'value' => $stats['available'], 'icon' => 'store'],
                 ['label' => __('ui.for_adoption_0435a17996'), 'value' => $stats['adoption'], 'icon' => 'heart-handshake'],
@@ -20,7 +20,7 @@
                 ['label' => __('ui.shelter_needs_939002282f'), 'value' => $stats['shelter'], 'icon' => 'hand-heart'],
                 ['label' => __('ui.cities_95697d1449'), 'value' => $stats['cities'], 'icon' => 'map-pin'],
             ] as $stat)
-                <div class="flex items-center gap-3 bg-white p-4">
+                <div data-marketplace-stat class="flex items-center gap-3 bg-white p-4">
                     <x-ui-icon size="lg" :name="$stat['icon']" class="shrink-0 text-paw-leaf" />
                     <div>
                         <strong class="block text-xl">{{ $stat['value'] }}</strong>
@@ -32,7 +32,7 @@
             @endforelse
         </section>
 
-        <form method="GET" action="{{ route('marketplace.index') }}" class="grid gap-4 border-y border-paw-line py-5" role="search">
+        <form data-marketplace-filters method="GET" action="{{ route('marketplace.index') }}" class="grid gap-4 border-y border-paw-line py-5" role="search">
             <div class="grid gap-3 lg:grid-cols-[minmax(16rem,2fr)_repeat(3,minmax(10rem,1fr))]">
                 <label class="grid gap-1 text-sm font-semibold">
                     {{ __('ui.search_49c266baaa') }}
@@ -161,10 +161,10 @@
         <section aria-labelledby="listings-heading">
             <div class="mb-4 flex flex-wrap items-end justify-between gap-3">
                 <div>
-                    <h2 id="listings-heading" class="text-xl font-bold">{{ __('ui.available_now_2a4729fa76') }}</h2>
-                    <p class="mt-1 text-sm text-paw-muted">{{ __('ui.community_status_is_not_a_guarantee_inspect_items_4a9153ad08') }}</p>
+                    <h2 data-marketplace-results-title id="listings-heading" class="text-xl font-bold">{{ __('ui.available_now_2a4729fa76') }}</h2>
+                    <p data-marketplace-results-description class="mt-1 text-sm text-paw-muted">{{ __('ui.community_status_is_not_a_guarantee_inspect_items_4a9153ad08') }}</p>
                 </div>
-                <span class="inline-flex items-center gap-2 text-sm font-semibold text-paw-muted">
+                <span data-marketplace-results-privacy class="inline-flex items-center gap-2 text-sm font-semibold text-paw-muted">
                     <x-ui-icon name="shield-check" size="sm" class="text-paw-leaf" />
                     {{ __('ui.platform_only_contact_51f3af5138') }}
                 </span>

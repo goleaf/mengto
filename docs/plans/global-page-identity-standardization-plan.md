@@ -277,6 +277,31 @@ platform requirements, NPM audit, production build, isolated migration plus
 repeated seed (134 migrations, 217 tables, stable 5 users), 184-line route and
 cache smoke, and both forum-source checks also passed.
 
+The fourth non-header localization follow-up closes the `/marketplace`
+directory system-copy slice and removes a shared source of English fallback
+from the wider marketplace workflow. Forty-five previously English RU/LT UI
+values are now reviewed translations, while the complete fifty-five-key
+directory surface remains contract-tested. A dedicated EN/LT/RU marketplace
+domain supplies 105 listing type, request, category, species, condition,
+seller, availability, age, hygiene, delivery, price, sorting, dispute, and
+report labels. `ListingTaxonomy`, `ListingType`, and `SellerType` resolve this
+contract without changing stored enum/filter values or adding a query, so the
+same labels also reach create, detail, reservation, order, and moderation
+flows. User-authored and demo listing titles/descriptions remain attributable
+content and are deliberately not machine-translated.
+
+The browser contract compares forty-one marketplace system fields with the
+English baseline, including six statistics, eleven filter labels, nine
+default options, result guidance, and card taxonomy/actions. All 91 audits and
+26 screenshots passed with zero console errors; the 375px Russian profile had
+zero overflow, clipped regions, or sub-44px targets. The affected marketplace,
+responsive, card, and page-identity run passed 84 tests with 1,368 assertions;
+the complete sequential suite passed 2,800 tests with 89,166 assertions. Full
+Pint and Larastan passed with zero findings; Composer validation, audit, and
+platform requirements, NPM audit, production build, isolated migration plus
+repeated seed (134 migrations, 217 tables, stable 5 users), 184-line route and
+cache smoke, and both forum-source checks also passed.
+
 ### 3.3 Next Execution Checkpoint
 
 1. Complete Package 0 by assigning the stable requirement ID and recording the
@@ -289,9 +314,9 @@ cache smoke, and both forum-source checks also passed.
    complete from source intent or screenshots alone.
 4. Continue the non-header English fallback audit on the remaining priority
    RU/LT pages; the global navigation, `/medical-records`, and
-   `/care-journals`, and `/lost-found` are browser-verified, while the other
-   priority bodies remain open. Do not conflate body-copy completion with the
-   verified page-identity contract.
+   `/care-journals`, `/lost-found`, and `/marketplace` are browser-verified,
+   while the other priority bodies remain open. Do not conflate body-copy
+   completion with the verified page-identity contract.
 
 ## 4. Scope
 

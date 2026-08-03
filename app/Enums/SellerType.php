@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Enums;
 
 enum SellerType: string
@@ -12,13 +14,7 @@ enum SellerType: string
 
     public function label(): string
     {
-        return match ($this) {
-            self::PrivateSeller => 'Private seller',
-            self::Business => 'Business seller',
-            self::Specialist => 'Verified specialist',
-            self::Shelter => 'Shelter or charity',
-            self::OfficialBrand => 'Official brand',
-        };
+        return (string) __("marketplace.seller_types.{$this->value}");
     }
 
     public function requiresVerification(): bool

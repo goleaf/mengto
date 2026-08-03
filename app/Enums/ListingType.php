@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Enums;
 
 enum ListingType: string
@@ -14,15 +16,7 @@ enum ListingType: string
 
     public function label(): string
     {
-        return match ($this) {
-            self::Sale => 'For sale',
-            self::Service => 'Pet service',
-            self::Rental => 'For rent',
-            self::Adoption => 'Adoption',
-            self::Exchange => 'Exchange',
-            self::Free => 'Free handover',
-            self::ShelterNeed => 'Shelter need',
-        };
+        return (string) __("marketplace.listing_types.{$this->value}");
     }
 
     public function icon(): string
@@ -40,15 +34,7 @@ enum ListingType: string
 
     public function requestLabel(): string
     {
-        return match ($this) {
-            self::Sale => 'Request to buy',
-            self::Service => 'Request service',
-            self::Rental => 'Request rental',
-            self::Adoption => 'Apply to adopt',
-            self::Exchange => 'Propose exchange',
-            self::Free => 'Request handover',
-            self::ShelterNeed => 'Offer help',
-        };
+        return (string) __("marketplace.request_labels.{$this->value}");
     }
 
     public function requestKind(): string

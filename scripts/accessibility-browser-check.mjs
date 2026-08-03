@@ -559,6 +559,7 @@ try {
         let englishMedicalRecordCopy = null;
         let englishCareJournalCopy = null;
         let englishLostFoundCopy = null;
+        let englishMarketplaceCopy = null;
         let canonicalTitleFont = null;
 
         const setProfileLocale = async (locale) => {
@@ -693,6 +694,10 @@ try {
                     const searchMap = document.querySelector('[data-search-map]');
                     const lostFoundStatsBox = lostFoundStats?.getBoundingClientRect();
                     const lostFoundLastStatBox = lostFoundStatItems.at(-1)?.getBoundingClientRect();
+                    const marketplaceStats = document.querySelector('[data-marketplace-stats]');
+                    const marketplaceStatItems = [...document.querySelectorAll('[data-marketplace-stat]')];
+                    const marketplaceFilters = document.querySelector('[data-marketplace-filters]');
+                    const listingCard = document.querySelector('[data-listing-card]');
 
                     return {
                         documentLanguage: document.documentElement.lang,
@@ -867,6 +872,47 @@ try {
                                 lastStatWidth: Math.round(lostFoundLastStatBox.width),
                             }
                             : null,
+                        marketplaceCopy: {
+                            statsLabel: marketplaceStats?.getAttribute('aria-label') ?? null,
+                            statsLabels: marketplaceStatItems.map(
+                                (item) => item.querySelector('div span')?.textContent.trim() ?? null,
+                            ),
+                            filterLabels: [...(marketplaceFilters?.querySelectorAll('label') ?? [])]
+                                .map(directText),
+                            filterDefaults: [...(marketplaceFilters?.querySelectorAll('select') ?? [])]
+                                .map((select) => select.selectedOptions[0]?.textContent.trim() ?? null),
+                            searchPlaceholder: marketplaceFilters?.querySelector('input[name="q"]')
+                                ?.getAttribute('placeholder') ?? null,
+                            applyLabel: marketplaceFilters?.querySelector('button[type="submit"] span')
+                                ?.textContent.trim() ?? null,
+                            clearLabel: marketplaceFilters?.querySelector('a[title]')
+                                ?.getAttribute('title') ?? null,
+                            resultsTitle: document.querySelector('[data-marketplace-results-title]')
+                                ?.textContent.trim() ?? null,
+                            resultsDescription: document.querySelector(
+                                '[data-marketplace-results-description]'
+                            )?.textContent.trim() ?? null,
+                            resultsPrivacy: document.querySelector('[data-marketplace-results-privacy]')
+                                ?.textContent.trim() ?? null,
+                            cardType: listingCard?.querySelector('[data-listing-type]')
+                                ?.textContent.trim() ?? null,
+                            cardCategory: listingCard?.querySelector('[data-listing-category]')
+                                ?.textContent.trim() ?? null,
+                            cardSpecies: listingCard?.querySelector('[data-listing-species]')
+                                ?.textContent.trim() ?? null,
+                            cardLocationLabel: listingCard?.querySelector('[data-listing-location-label]')
+                                ?.textContent.trim() ?? null,
+                            cardAvailabilityLabel: listingCard?.querySelector(
+                                '[data-listing-availability-label]'
+                            )?.textContent.trim() ?? null,
+                            cardSellerType: directText(
+                                listingCard?.querySelector('[data-listing-seller-type]')
+                            ),
+                            cardSaveLabel: listingCard?.querySelector('[data-listing-save] span')
+                                ?.textContent.trim() ?? null,
+                            cardViewLabel: listingCard?.querySelector('[data-listing-view] span')
+                                ?.textContent.trim() ?? null,
+                        },
                     };
                 })()`);
                 const expectedTitleSize = viewport.width >= 640 ? 30 : 24;
@@ -1066,6 +1112,45 @@ try {
                                 - behavior.lostFoundLayout.statsWidth
                             ) <= 2,
                             `${label}: the final search statistic leaves an empty mobile grid cell.`,
+                        );
+                    }
+                }
+
+                if (route.path === '/marketplace') {
+                    const marketplaceCopy = [
+                        behavior.marketplaceCopy.statsLabel,
+                        ...behavior.marketplaceCopy.statsLabels,
+                        ...behavior.marketplaceCopy.filterLabels,
+                        ...behavior.marketplaceCopy.filterDefaults,
+                        behavior.marketplaceCopy.searchPlaceholder,
+                        behavior.marketplaceCopy.applyLabel,
+                        behavior.marketplaceCopy.clearLabel,
+                        behavior.marketplaceCopy.resultsTitle,
+                        behavior.marketplaceCopy.resultsDescription,
+                        behavior.marketplaceCopy.resultsPrivacy,
+                        behavior.marketplaceCopy.cardType,
+                        behavior.marketplaceCopy.cardCategory,
+                        behavior.marketplaceCopy.cardSpecies,
+                        behavior.marketplaceCopy.cardLocationLabel,
+                        behavior.marketplaceCopy.cardAvailabilityLabel,
+                        behavior.marketplaceCopy.cardSellerType,
+                        behavior.marketplaceCopy.cardSaveLabel,
+                        behavior.marketplaceCopy.cardViewLabel,
+                    ];
+
+                    assert(
+                        marketplaceCopy.length === 41
+                            && marketplaceCopy.every((value) => value?.length > 0),
+                        `${label}: the marketplace localization surface is incomplete ${JSON.stringify(behavior.marketplaceCopy)}.`,
+                    );
+
+                    if (viewport.locale === 'en') {
+                        englishMarketplaceCopy ??= marketplaceCopy;
+                    } else {
+                        assert(englishMarketplaceCopy !== null, `${label}: English marketplace baseline is missing.`);
+                        assert(
+                            marketplaceCopy.every((value, index) => value !== englishMarketplaceCopy[index]),
+                            `${label}: English marketplace body fallback remains.`,
                         );
                     }
                 }
