@@ -57,6 +57,10 @@
 
 ### Forum And Animal Taxonomy
 
+- Redesigned `/forum/ask` as one responsive authoring surface, moved the full
+  publishing checklist above the form, removed the detached right sidebar, and
+  grouped every preserved field into clear context, response, and optional
+  media sections with reviewed EN/LT/RU guidance.
 - Verified all 49 Phase 4 One-Health category atoms from immutable source,
   including the exact 42-child hierarchy, and added the missing localized
   physician, veterinarian, public-health, and emergency-service boundary. The

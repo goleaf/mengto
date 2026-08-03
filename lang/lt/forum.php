@@ -16,6 +16,15 @@ return [
         'subcategory_total' => 'Subkategorijos · :count',
         'all_in_category' => 'Visos diskusijos kategorijoje „:category“',
     ],
+    'editor' => [
+        'guidance_description' => 'Penki trumpi patikrinimai padės išlaikyti temą aiškią, saugią ir lengviau atsakomą.',
+        'context_title' => 'Klausimas ir kontekstas',
+        'context_description' => 'Pradėkite nuo temos, gyvūno ir konkrečios situacijos, kurią bendruomenė turi suprasti.',
+        'response_title' => 'Atsakymai ir matomumas',
+        'response_description' => 'Nurodykite, kokio atsakymo reikia, kas gali dalyvauti ir ar yra sveikatos ar skubos aplinkybių.',
+        'media_title' => 'Medija ir prieinamumas',
+        'media_description' => 'Pridėkite tik naudingą mediją ir ją aprašykite, kad diskusiją galėtų sekti visi.',
+    ],
     'visibility' => [
         'public' => 'Vieša',
         'members' => 'Registruoti nariai',

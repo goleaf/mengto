@@ -1386,6 +1386,111 @@ try {
     })`);
     assert(Object.values(editorMedia).every(Boolean), 'Accessible media authoring controls are incomplete.');
 
+    const editorLayoutExpression = `(() => {
+        const shell = document.querySelector('[data-forum-editor-shell]');
+        const guidance = document.querySelector('[data-forum-publishing-guidance]');
+        const form = document.querySelector('[data-forum-editor]');
+        const sections = [...document.querySelectorAll('[data-forum-editor-section]')];
+        const shellWidth = shell?.getBoundingClientRect().width ?? 0;
+        const formWidth = form?.getBoundingClientRect().width ?? 0;
+        const touchTargets = [...(shell?.querySelectorAll(
+            'button, input:not([type="hidden"]):not([type="checkbox"]):not([type="radio"]), '
+            + 'select, textarea, .forum-form__checks label',
+        ) ?? [])].filter((element) => {
+            const style = getComputedStyle(element);
+            const box = element.getBoundingClientRect();
+
+            return style.display !== 'none' && style.visibility !== 'hidden'
+                && box.width > 0 && box.height > 0;
+        });
+
+        return {
+            shellCount: document.querySelectorAll('[data-forum-editor-shell]').length,
+            guidanceBeforeForm: guidance?.nextElementSibling === form,
+            guidanceItems: guidance?.querySelectorAll('ul > li').length ?? 0,
+            sidebarCount: document.querySelectorAll('.forum-sidebar').length,
+            sectionKeys: sections.map((section) => section.dataset.forumEditorSection),
+            shellWidth,
+            formWidth,
+            guidanceColumns: guidance
+                ? getComputedStyle(guidance).gridTemplateColumns.split(' ').length
+                : 0,
+            smallTargets: touchTargets.map((element) => ({
+                label: element.getAttribute('aria-label')
+                    || element.textContent.trim().slice(0, 60)
+                    || element.getAttribute('name'),
+                width: Math.round(element.getBoundingClientRect().width),
+                height: Math.round(element.getBoundingClientRect().height),
+            })).filter((target) => target.width < 44 || target.height < 44),
+            rawTranslationKeys: document.body.innerText.match(/\\bforum\\.editor\\.[a-z0-9_.-]+/gi) ?? [],
+        };
+    })()`;
+    const editorLayout = await evaluate(client, sessionId, editorLayoutExpression);
+    assert(editorLayout.shellCount === 1, 'Topic editor does not render one unified shell.');
+    assert(editorLayout.guidanceBeforeForm, 'Publishing guidance is not immediately above the topic form.');
+    assert(editorLayout.guidanceItems === 5, 'Publishing guidance is incomplete.');
+    assert(editorLayout.sidebarCount === 0, 'The legacy topic-editor sidebar is still rendered.');
+    assert(
+        JSON.stringify(editorLayout.sectionKeys) === JSON.stringify(['context', 'response', 'media']),
+        'Topic editor sections are incomplete or out of order.',
+    );
+    assert(
+        editorLayout.formWidth >= editorLayout.shellWidth - 2,
+        'Topic form does not occupy the unified editor shell.',
+    );
+    assert(
+        editorLayout.smallTargets.length === 0,
+        `Topic editor has undersized targets: ${JSON.stringify(editorLayout.smallTargets)}.`,
+    );
+    assert(editorLayout.rawTranslationKeys.length === 0, 'Topic editor exposes raw translation keys.');
+    const editorDesktopScreenshot = await client.send('Page.captureScreenshot', {
+        format: 'png',
+        captureBeyondViewport: true,
+    }, sessionId);
+    await writeFile(
+        join(outputDirectory, 'forum-topic-editor-desktop.png'),
+        Buffer.from(editorDesktopScreenshot.data, 'base64'),
+    );
+
+    await client.send('Emulation.setDeviceMetricsOverride', {
+        width: 375,
+        height: 812,
+        deviceScaleFactor: 1,
+        mobile: true,
+        screenWidth: 375,
+        screenHeight: 812,
+    }, sessionId);
+    await navigate(client, sessionId, `${baseUrl}/forum/ask`);
+    const editorMobileAudit = await evaluate(client, sessionId, pageAuditExpression);
+    assertPageAudit(editorMobileAudit, 'mobile topic editor');
+    const editorMobileLayout = await evaluate(client, sessionId, editorLayoutExpression);
+    assert(editorMobileLayout.guidanceBeforeForm, 'Mobile publishing guidance is not above the form.');
+    assert(editorMobileLayout.guidanceColumns === 1, 'Mobile publishing guidance does not reflow to one column.');
+    assert(
+        editorMobileLayout.formWidth >= editorMobileLayout.shellWidth - 2,
+        'Mobile topic form does not occupy the unified editor shell.',
+    );
+    assert(
+        editorMobileLayout.smallTargets.length === 0,
+        `Mobile topic editor has undersized targets: ${JSON.stringify(editorMobileLayout.smallTargets)}.`,
+    );
+    const editorMobileScreenshot = await client.send('Page.captureScreenshot', {
+        format: 'png',
+        captureBeyondViewport: true,
+    }, sessionId);
+    await writeFile(
+        join(outputDirectory, 'forum-topic-editor-mobile.png'),
+        Buffer.from(editorMobileScreenshot.data, 'base64'),
+    );
+
+    await client.send('Emulation.setDeviceMetricsOverride', {
+        width: 1440,
+        height: 900,
+        deviceScaleFactor: 1,
+        mobile: false,
+    }, sessionId);
+    await navigate(client, sessionId, `${baseUrl}/forum/ask`);
+
     const reloaded = client.once('Page.loadEventFired', sessionId);
     await evaluate(client, sessionId, `(() => {
         const form = document.querySelector('[data-forum-editor]');
@@ -1570,6 +1675,11 @@ try {
         translationEditorAudit,
         translationBehavior,
         translationMobileAudit,
+        editorAudit,
+        editorMedia,
+        editorLayout,
+        editorMobileAudit,
+        editorMobileLayout,
         validationAudit,
         adminTables: tableAudit,
         russianForumAudit,
@@ -1613,6 +1723,8 @@ try {
             join(outputDirectory, 'community-workspace-desktop.png'),
             join(outputDirectory, 'community-workspace-mobile.png'),
             join(outputDirectory, 'knowledge-translation-mobile.png'),
+            join(outputDirectory, 'forum-topic-editor-desktop.png'),
+            join(outputDirectory, 'forum-topic-editor-mobile.png'),
         ],
     };
 

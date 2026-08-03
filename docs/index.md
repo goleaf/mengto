@@ -61,6 +61,7 @@ This index is the source-of-truth map for first-party documentation.
 | `docs/plans/forum-phase4-special-needs-category-work-package.md` | Exact 63-ID category-22 source, translation-trust, locale-cache, and synchronization contract | Product + engineering + QA | Implemented and verified |
 | `docs/plans/forum-phase4-wildlife-coexistence-category-work-package.md` | Exact 59-ID category-23 source, manifest, persistence, and Phase 7 exclusion contract | Product + engineering + QA | Implemented and verified |
 | `docs/plans/forum-phase4-one-health-category-work-package.md` | Exact 49-ID category-24 source, hierarchy, localized professional boundary, cache, and browser contract | Product + engineering + QA | Implemented and verified |
+| `docs/plans/forum-topic-editor-redesign-work-package.md` | Unified forum topic editor, preserved authoring contract, responsive layout, and release evidence | Product + frontend + QA | Implemented and verified |
 | `docs/plans/global-page-identity-standardization-plan.md` | Global page-header, route-classification, forum navigation, meetup stability, and visual consistency execution plan | Product + frontend + QA | In progress; first safe slice targeted-verified |
 | `docs/requirements/compliance-matrix.md` | Requirements-to-code-and-test mapping | QA | Living evidence |
 | `docs/code-review.md` | Final structured review findings | Engineering | Living evidence |

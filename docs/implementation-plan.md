@@ -316,6 +316,25 @@ Status: `implemented and verified` on 2026-08-03
 Exact scope and evidence are in
 `docs/plans/forum-phase4-one-health-category-work-package.md`.
 
+## Current Delivery: Unified Forum Topic Editor
+
+Status: `implemented and verified` on 2026-08-03
+
+- Replaced the detached right sidebar on `/forum/ask` with one coherent editor
+  shell whose complete five-item publishing guidance precedes the form.
+- Reorganized the unchanged authoring controls into three labelled context,
+  response, and optional-media sections without changing authorization,
+  validation, persistence, taxonomy interaction, or query count.
+- Added reviewed EN/LT/RU presentation copy and responsive desktop/mobile
+  styling with semantic headings, visible control states, and 44-pixel mobile
+  targets.
+- Passed the focused 2-test/33-assertion contract, complete isolated
+  2,588-test/82,043-assertion suite, full Pint/Larastan, dependency audits,
+  production Vite build, compiled views, and desktop/mobile Chrome audit.
+
+Exact scope and evidence are in
+`docs/plans/forum-topic-editor-redesign-work-package.md`.
+
 ## Current Delivery: Event Schedule Foundation
 
 Status: `implemented and verified` on 2026-08-03

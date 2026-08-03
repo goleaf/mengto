@@ -19,21 +19,53 @@
             />
         @endif
 
-        <div class="forum-thread-layout">
-            <div>
-                <form
-                    method="POST"
-                    action="{{ $topic !== null ? route('forum.topics.update', $topic) : route('forum.topics.store') }}"
-                    enctype="multipart/form-data"
-                    class="forum-form"
-                    data-forum-editor
-                    data-draft-key="{{ $topic !== null ? 'topic-'.$topic->id : 'new' }}"
-                    data-similar-endpoint="{{ route('forum.topics.similar') }}"
+        <section class="forum-topic-editor" data-forum-editor-shell>
+            <header class="forum-topic-editor__guidance" data-forum-publishing-guidance>
+                <div class="forum-topic-editor__guidance-heading">
+                    <span class="forum-topic-editor__guidance-icon" aria-hidden="true">
+                        <x-lucide-list-checks />
+                    </span>
+                    <div>
+                        <p class="forum-topic-editor__eyebrow">{{ __('ui.before_publishing_8f20cb234f') }}</p>
+                        <p class="forum-topic-editor__guidance-description">{{ __('forum.editor.guidance_description') }}</p>
+                    </div>
+                </div>
+
+                <ul class="forum-topic-editor__guidance-list">
+                    <li><x-lucide-check aria-hidden="true" /><span>{{ __('ui.use_a_title_that_names_the_actual_situation_f8c9b435a8') }}</span></li>
+                    <li><x-lucide-check aria-hidden="true" /><span>{{ __('ui.separate_observation_personal_experience_and_professional_advice_bd56518ea8') }}</span></li>
+                    <li><x-lucide-check aria-hidden="true" /><span>{{ __('ui.attach_only_the_pet_details_needed_to_understand_48d873de27') }}</span></li>
+                    <li><x-lucide-check aria-hidden="true" /><span>{{ __('ui.use_city_or_district_instead_of_a_home_cdb8305a75') }}</span></li>
+                    <li><x-lucide-check aria-hidden="true" /><span>{{ __('ui.link_important_claims_to_a_current_primary_source_312d15e202') }}</span></li>
+                </ul>
+            </header>
+
+            <form
+                method="POST"
+                action="{{ $topic !== null ? route('forum.topics.update', $topic) : route('forum.topics.store') }}"
+                enctype="multipart/form-data"
+                class="forum-form forum-topic-editor__form"
+                data-forum-editor
+                data-draft-key="{{ $topic !== null ? 'topic-'.$topic->id : 'new' }}"
+                data-similar-endpoint="{{ route('forum.topics.similar') }}"
+            >
+                @csrf
+                @if ($topic !== null)
+                    @method('PUT')
+                @endif
+
+                <section
+                    class="forum-topic-editor__section"
+                    aria-labelledby="forum-editor-context-heading"
+                    data-forum-editor-section="context"
                 >
-                    @csrf
-                    @if ($topic !== null)
-                        @method('PUT')
-                    @endif
+                    <header class="forum-topic-editor__section-heading">
+                        <span aria-hidden="true">01</span>
+                        <div>
+                            <h2 id="forum-editor-context-heading">{{ __('forum.editor.context_title') }}</h2>
+                            <p>{{ __('forum.editor.context_description') }}</p>
+                        </div>
+                    </header>
 
                     <div class="forum-form__grid">
                         <label class="forum-form__field">
@@ -120,6 +152,23 @@
                             <span>{{ __('ui.what_have_you_already_tried_aa7bc64b67') }}</span>
                             <textarea name="tried" maxlength="2500">{{ old('tried') }}</textarea>
                         </label>
+                    </div>
+                </section>
+
+                <section
+                    class="forum-topic-editor__section"
+                    aria-labelledby="forum-editor-response-heading"
+                    data-forum-editor-section="response"
+                >
+                    <header class="forum-topic-editor__section-heading">
+                        <span aria-hidden="true">02</span>
+                        <div>
+                            <h2 id="forum-editor-response-heading">{{ __('forum.editor.response_title') }}</h2>
+                            <p>{{ __('forum.editor.response_description') }}</p>
+                        </div>
+                    </header>
+
+                    <div class="forum-form__grid">
 
                         <label class="forum-form__field">
                             <span>{{ __('ui.preferred_answer_81ea6030d8') }}</span>
@@ -189,6 +238,46 @@
                                 <option value="unavailable">{{ __('ui.unable_to_reach_a_clinic_c1e6c6d11d') }}</option>
                             </select>
                         </label>
+                    </div>
+
+                    <div class="forum-form__checks">
+                        <label>
+                            <input type="checkbox" name="is_medical" value="1" @checked(old('is_medical', $topic?->is_medical ?? false))>
+                            {{ __('ui.health_or_medical_context_2507d5510a') }}
+                        </label>
+                        <label>
+                            <input type="checkbox" name="is_urgent" value="1" @checked(old('is_urgent', $topic?->is_urgent ?? false))>
+                            {{ __('ui.time_sensitive_context_904c837c13') }}
+                        </label>
+                        <label>
+                            <input type="checkbox" name="sensitive_media" value="1" @checked(old('sensitive_media'))>
+                            {{ __('ui.media_needs_a_content_warning_8dc9ce3c6b') }}
+                        </label>
+                    </div>
+
+                    <aside class="forum-safety" role="note">
+                        <x-lucide-shield-check aria-hidden="true" />
+                        <div>
+                            <strong>{{ __('ui.urgent_symptoms_belong_with_a_clinic_not_a_445f51cbf1') }}</strong>
+                            <span>{{ __('ui.difficulty_breathing_loss_of_consciousness_seizures_major_bleeding_96adae8585') }}</span>
+                        </div>
+                    </aside>
+                </section>
+
+                <section
+                    class="forum-topic-editor__section"
+                    aria-labelledby="forum-editor-media-heading"
+                    data-forum-editor-section="media"
+                >
+                    <header class="forum-topic-editor__section-heading">
+                        <span aria-hidden="true">03</span>
+                        <div>
+                            <h2 id="forum-editor-media-heading">{{ __('forum.editor.media_title') }}</h2>
+                            <p>{{ __('forum.editor.media_description') }}</p>
+                        </div>
+                    </header>
+
+                    <div class="forum-form__grid">
 
                         <label class="forum-form__field">
                             <span>{{ __('ui.photos_up_to_four_820ba622c8') }}</span>
@@ -230,55 +319,19 @@
                             </select>
                         </label>
                     </div>
-
-                    <div class="forum-form__checks">
-                        <label>
-                            <input type="checkbox" name="is_medical" value="1" @checked(old('is_medical', $topic?->is_medical ?? false))>
-                            {{ __('ui.health_or_medical_context_2507d5510a') }}
-                        </label>
-                        <label>
-                            <input type="checkbox" name="is_urgent" value="1" @checked(old('is_urgent', $topic?->is_urgent ?? false))>
-                            {{ __('ui.time_sensitive_context_904c837c13') }}
-                        </label>
-                        <label>
-                            <input type="checkbox" name="sensitive_media" value="1" @checked(old('sensitive_media'))>
-                            {{ __('ui.media_needs_a_content_warning_8dc9ce3c6b') }}
-                        </label>
-                    </div>
-
-                    <aside class="forum-safety">
-                        <x-lucide-shield-check aria-hidden="true" />
-                        <div>
-                            <strong>{{ __('ui.urgent_symptoms_belong_with_a_clinic_not_a_445f51cbf1') }}</strong>
-                            <span>{{ __('ui.difficulty_breathing_loss_of_consciousness_seizures_major_bleeding_96adae8585') }}</span>
-                        </div>
-                    </aside>
-
-                    <div class="forum-form__actions">
-                        <button type="submit" name="intent" value="draft" class="forum-button">
-                            <x-lucide-file-clock aria-hidden="true" />
-                            {{ __('ui.save_draft_3de100106d') }}
-                        </button>
-                        <button type="submit" name="intent" value="publish" class="forum-button forum-button--primary">
-                            <x-lucide-send aria-hidden="true" />
-                            {{ ($topic?->status->value ?? 'published') === 'draft' ? __('ui.publish_topic_54f6ce2e71') : ($topic !== null ? __('ui.save_changes_dd0ae7a5cb') : __('ui.publish_topic_54f6ce2e71')) }}
-                        </button>
-                    </div>
-                </form>
-            </div>
-
-            <aside class="forum-sidebar">
-                <section class="forum-sidebar__section">
-                    <div class="forum-sidebar__title"><span>{{ __('ui.before_publishing_8f20cb234f') }}</span></div>
-                    <div class="forum-mini-list">
-                        <span>{{ __('ui.use_a_title_that_names_the_actual_situation_f8c9b435a8') }}</span>
-                        <span>{{ __('ui.separate_observation_personal_experience_and_professional_advice_bd56518ea8') }}</span>
-                        <span>{{ __('ui.attach_only_the_pet_details_needed_to_understand_48d873de27') }}</span>
-                        <span>{{ __('ui.use_city_or_district_instead_of_a_home_cdb8305a75') }}</span>
-                        <span>{{ __('ui.link_important_claims_to_a_current_primary_source_312d15e202') }}</span>
-                    </div>
                 </section>
-            </aside>
-        </div>
+
+                <div class="forum-form__actions forum-topic-editor__actions">
+                    <button type="submit" name="intent" value="draft" class="forum-button">
+                        <x-lucide-file-clock aria-hidden="true" />
+                        {{ __('ui.save_draft_3de100106d') }}
+                    </button>
+                    <button type="submit" name="intent" value="publish" class="forum-button forum-button--primary">
+                        <x-lucide-send aria-hidden="true" />
+                        {{ ($topic?->status->value ?? 'published') === 'draft' ? __('ui.publish_topic_54f6ce2e71') : ($topic !== null ? __('ui.save_changes_dd0ae7a5cb') : __('ui.publish_topic_54f6ce2e71')) }}
+                    </button>
+                </div>
+            </form>
+        </section>
     </div>
 </x-app-shell>

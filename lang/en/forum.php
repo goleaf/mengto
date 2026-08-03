@@ -16,6 +16,15 @@ return [
         'subcategory_total' => 'Subcategories · :count',
         'all_in_category' => 'All discussions in :category',
     ],
+    'editor' => [
+        'guidance_description' => 'Five quick checks keep your topic focused, safe, and easier to answer.',
+        'context_title' => 'Question and context',
+        'context_description' => 'Start with the topic, animal, and concrete situation the community needs to understand.',
+        'response_title' => 'Answers and visibility',
+        'response_description' => 'Set the reply you need, who can take part, and any health or urgency context.',
+        'media_title' => 'Media and accessibility',
+        'media_description' => 'Add only useful media and describe it so everyone can follow the discussion.',
+    ],
     'visibility' => [
         'public' => 'Public',
         'members' => 'Registered members',

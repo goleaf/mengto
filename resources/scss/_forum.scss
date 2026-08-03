@@ -920,6 +920,153 @@
     }
 }
 
+.forum-topic-editor {
+    overflow: clip;
+    border: 1px solid #d8d5ca;
+    border-radius: 8px;
+    background: #fff;
+    box-shadow: 0 1px 2px rgb(39 49 47 / 8%);
+
+    &__guidance {
+        display: grid;
+        grid-template-columns: minmax(15rem, 0.55fr) minmax(0, 1fr);
+        gap: 1.25rem;
+        align-items: start;
+        padding: 1.15rem 1.25rem;
+        border-bottom: 1px solid #dedbd0;
+        background: #fbfaf6;
+    }
+
+    &__guidance-heading {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.75rem;
+        min-width: 0;
+    }
+
+    &__guidance-icon {
+        display: grid;
+        width: 2.5rem;
+        height: 2.5rem;
+        flex: 0 0 auto;
+        place-items: center;
+        border: 1px solid #c8ddd5;
+        border-radius: 6px;
+        background: #e2f3eb;
+        color: #185b48;
+
+        svg {
+            width: 1.15rem;
+            height: 1.15rem;
+        }
+    }
+
+    &__eyebrow {
+        color: #24745d;
+        font-size: 0.7rem;
+        font-weight: 850;
+        letter-spacing: 0.04em;
+        line-height: 1.4;
+        text-transform: uppercase;
+    }
+
+    &__guidance-description {
+        max-width: 26rem;
+        margin-top: 0.25rem;
+        color: #59635f;
+        font-size: 0.78rem;
+        line-height: 1.5;
+    }
+
+    &__guidance-list {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.55rem 1rem;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+
+        li {
+            display: grid;
+            grid-template-columns: 1.15rem minmax(0, 1fr);
+            gap: 0.45rem;
+            align-items: start;
+            color: #414b47;
+            font-size: 0.76rem;
+            line-height: 1.45;
+        }
+
+        li:last-child {
+            grid-column: 1 / -1;
+        }
+
+        svg {
+            width: 1rem;
+            height: 1rem;
+            margin-top: 0.05rem;
+            color: #24745d;
+        }
+    }
+
+    &__form.forum-form {
+        gap: 0;
+        padding: 0;
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+    }
+
+    &__section {
+        display: grid;
+        gap: 1rem;
+        padding: 1.4rem 1.25rem;
+    }
+
+    &__section + &__section {
+        border-top: 1px solid #ece9df;
+    }
+
+    &__section-heading {
+        display: grid;
+        grid-template-columns: 2.5rem minmax(0, 1fr);
+        gap: 0.75rem;
+        align-items: start;
+
+        > span {
+            display: grid;
+            width: 2.5rem;
+            height: 2.5rem;
+            place-items: center;
+            border: 1px solid #dedbd0;
+            border-radius: 6px;
+            background: #fbfaf6;
+            color: #24745d;
+            font-size: 0.7rem;
+            font-weight: 850;
+        }
+
+        h2 {
+            color: #27312f;
+            font-size: 1rem;
+            font-weight: 750;
+            line-height: 1.35;
+        }
+
+        p {
+            max-width: 50rem;
+            margin-top: 0.2rem;
+            color: #66706b;
+            font-size: 0.75rem;
+            line-height: 1.5;
+        }
+    }
+
+    &__actions.forum-form__actions {
+        padding: 1rem 1.25rem;
+        background: #fbfaf6;
+    }
+}
+
 .forum-form {
     display: grid;
     gap: 1rem;
@@ -1234,6 +1381,28 @@
     .forum-taxonomy__roots,
     .forum-taxonomy__subcategories {
         grid-template-columns: minmax(0, 1fr);
+    }
+
+    .forum-topic-editor__guidance {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 0.9rem;
+        padding: 1rem;
+    }
+
+    .forum-topic-editor__guidance-list {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .forum-topic-editor__guidance-list li:last-child {
+        grid-column: auto;
+    }
+
+    .forum-topic-editor__section {
+        padding: 1.15rem 1rem;
+    }
+
+    .forum-topic-editor__actions.forum-form__actions {
+        padding: 1rem;
     }
 
     .forum-form__actions {

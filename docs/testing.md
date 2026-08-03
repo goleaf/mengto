@@ -648,6 +648,34 @@ Final evidence on 2026-08-03:
 Exact scope is in
 `docs/plans/forum-phase4-one-health-category-work-package.md`.
 
+## Forum Topic Editor Redesign Verification
+
+`ForumTopicEditorLayoutTest` protects the `/forum/ask` authoring contract. It
+requires one shared editor shell, the five-item publishing checklist directly
+before the form, no detached sidebar, three ordered semantic sections, all 23
+named authoring fields, the taxonomy selector, and both draft and publish
+intents.
+
+Final evidence on 2026-08-03:
+
+- RED: the structural contract failed because the unified shell did not exist;
+- focused contract: 2 tests and 33 assertions;
+- related forum, accessibility, page-identity, responsive, localization, and
+  architecture slice: 86 of 87 tests passed; the remaining failure is an
+  unrelated shared-worktree pet-media route-classification change;
+- isolated `main` plus only this package: 2,588 tests and 82,043 assertions;
+- query delta: 0 production statements because no route, controller, Eloquent,
+  Livewire, policy, validation, or persistence code changed;
+- full Pint and Larastan, Composer strict validation/audit, npm audit, Vite
+  production build, and compiled Blade views: passed;
+- isolated Chrome at 1440x900 and 375x812: one unified shell, guidance before
+  the form, five checklist items, no sidebar, three sections, and no overflow,
+  raw keys, unnamed controls, undersized mobile targets, invalid media,
+  duplicate IDs, or console errors.
+
+Exact scope is in
+`docs/plans/forum-topic-editor-redesign-work-package.md`.
+
 ## Organization Authority Foundation
 
 `OrganizationAuthorityFoundationTest` covers idempotent creation, owner
