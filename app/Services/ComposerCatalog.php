@@ -74,7 +74,7 @@ final class ComposerCatalog
             action: $editing ? 'update-post' : 'create-post',
             submitLabel: $editing ? __('messages.save_changes_dd0ae7a5cb') : __('messages.publish_859390eb49'),
             submitIcon: $editing ? 'check' : 'send',
-            cancelRoute: 'home',
+            cancelRoute: 'preview.feed',
             activeSection: 'feed',
             fields: [
                 $this->field(

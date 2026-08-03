@@ -200,21 +200,22 @@ created on `main`, and the observed push advanced `origin/main`.
 No blocked or not-applicable requirement may be described as implemented in
 the release report.
 
-## Next Planned Delivery: Guest Join Page
+## Completed Delivery: Guest Join Page
 
-Status: `planned`
+Status: `verified`
 
-- Replace the guest root prototype feed with the localized, privacy-aware
+- Replaced the guest root prototype feed with the localized, privacy-aware
   joining experience specified in `docs/plans/join-landing-page-plan.md`.
-- Preserve the stable `home` route name; send active verified members to the
+- Preserved the stable `home` route name; active verified members enter the
   canonical content feed and active unverified members to email verification.
-- Use one primary account-creation action, passive Blade, first-party product
+- Used one primary account-creation action, passive Blade, first-party product
   presentation, current design tokens, and no guest database query.
-- Remove fictional member identity and private member navigation from the
+- Removed fictional member identity and private member navigation from the
   guest document.
-- Verify route state, auth continuity, EN/LT/RU, metadata, accessibility,
-  responsive browser behavior, Pint, Larastan, full Pest, and the production
-  Vite build before marking this delivery verified.
+- Verified route state, auth continuity, EN/LT/RU, metadata, accessibility,
+  320-1920 pixel browser behavior, Pint, Larastan, 2,037 serial Pest tests,
+  and the production Vite build. The still-tested prototype feed was retained
+  behind the authenticated `preview.feed` route instead of being deleted.
 
 The market and settings rationale is recorded in
 `docs/audits/pet-social-network-benchmark.md`. A consolidated settings center

@@ -24,7 +24,7 @@
             <span>{{ __('ui.question_289aff12b0') }}</span>
         </a>
         @if ((int) $draftCount > 0)
-            <a href="{{ route('home', ['feed' => 'drafts']) }}" class="quick-composer__drafts">
+            <a href="{{ route('preview.feed', ['feed' => 'drafts']) }}" class="quick-composer__drafts">
                 {{ trans_choice('presentation.draft_count', (int) $draftCount, ['count' => $draftCount]) }}
             </a>
         @endif

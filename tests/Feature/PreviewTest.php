@@ -2,10 +2,10 @@
 
 use Illuminate\Support\Facades\Route;
 
-test('the home feed renders as a functional app shell', function () {
-    expect(Route::has('home'))->toBeTrue();
+test('the member feed preview renders as a functional app shell', function () {
+    expect(Route::has('preview.feed'))->toBeTrue();
 
-    $response = $this->get(route('home'));
+    $response = $this->get(route('preview.feed'));
 
     $response
         ->assertSuccessful()
@@ -30,4 +30,11 @@ test('the home feed renders as a functional app shell', function () {
         ->and($xpath->query('//*[@data-header-utility]//*[@data-header-link="discover"]')->length)->toBe(1)
         ->and($xpath->query('//*[@data-header-utility]//*[@data-header-link="profile"]')->length)->toBe(1)
         ->and($xpath->query('//a[@data-nav-item="feed" and @aria-current="page"]')->length)->toBe(2);
+});
+
+test('the member feed preview is not exposed to guests', function () {
+    auth()->logout();
+
+    $this->get(route('preview.feed'))
+        ->assertRedirect(route('login'));
 });

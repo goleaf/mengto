@@ -72,6 +72,8 @@ use App\Http\Controllers\ForumJournalMediaController;
 use App\Http\Controllers\ForumMentorshipController;
 use App\Http\Controllers\GroupDetailPreviewController;
 use App\Http\Controllers\GroupDirectoryPreviewController;
+use App\Http\Controllers\GuestLocaleController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\KnowledgeController;
 use App\Http\Controllers\KnowledgeGuideCreateController;
 use App\Http\Controllers\KnowledgeGuideEditController;
@@ -161,7 +163,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('web')
     ->group(function (): void {
-        Route::get('/', PreviewController::class)->name('home');
+        Route::get('/', HomeController::class)->name('home');
 
         Route::prefix('content')
             ->name('content.')
@@ -177,6 +179,12 @@ Route::middleware('web')
                 Route::get('/register', Register::class)->name('register');
                 Route::get('/forgot-password', ForgotPassword::class)->name('password.request');
                 Route::get('/reset-password/{token}', ResetPassword::class)->name('password.reset');
+
+                Route::prefix('locale')
+                    ->name('locale.')
+                    ->group(function (): void {
+                        Route::post('/', GuestLocaleController::class)->name('update');
+                    });
             });
 
         Route::middleware(['auth', 'active'])
@@ -266,6 +274,12 @@ Route::middleware('web')
                 Route::post('/photos/actions', PhotoInteractionController::class)
                     ->middleware('throttle:40,1')
                     ->name('photos.interactions.store');
+
+                Route::prefix('preview')
+                    ->name('preview.')
+                    ->group(function (): void {
+                        Route::get('/feed', PreviewController::class)->name('feed');
+                    });
             });
 
         Route::get('/discover', DiscoverPreviewController::class)->name('discover.index');

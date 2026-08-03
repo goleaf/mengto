@@ -51,7 +51,7 @@ final class ConnectionPresenter
                 'last_blocked' => $this->lastBlocked($tab, $type, $sort),
                 'endpoint' => route('actions.perform'),
                 'browse_url' => route('connections.index'),
-                'feed_url' => route('home', [
+                'feed_url' => route('preview.feed', [
                     'feed' => 'following',
                     'sort' => 'latest',
                 ]),

@@ -15,7 +15,7 @@ use Illuminate\Support\Str;
 test('feed photos expose one responsive viewer and social panel per image', function () {
     expect(Route::has('photos.interactions.store'))->toBeTrue();
 
-    $response = $this->get(route('home'));
+    $response = $this->get(route('preview.feed'));
 
     $response->assertSuccessful();
 
@@ -45,12 +45,12 @@ test('photo viewer keeps progressive and Livewire navigation lifecycle hooks', f
 });
 
 test('reactions are stored independently for each photo', function () {
-    $this->from(route('home'))->post(route('photos.interactions.store'), [
+    $this->from(route('preview.feed'))->post(route('photos.interactions.store'), [
         'action' => 'set-reaction',
         'photo' => 'scout-shaded-loop-photo-2',
         'reaction' => 'love',
     ])
-        ->assertRedirect(route('home'))
+        ->assertRedirect(route('preview.feed'))
         ->assertSessionHas('feedback');
 
     $state = app(PhotoInteractionState::class);
@@ -63,7 +63,7 @@ test('reactions are stored independently for each photo', function () {
                 ->where('key', 'scout-shaded-loop-photo-2'))
             ->value('reaction'))->toBe('love');
 
-    $this->from(route('home'))->post(route('photos.interactions.store'), [
+    $this->from(route('preview.feed'))->post(route('photos.interactions.store'), [
         'action' => 'set-reaction',
         'photo' => 'scout-shaded-loop-photo-2',
         'reaction' => 'love',
@@ -102,22 +102,22 @@ test('comments are shared, escaped, and stored for only the selected photo', fun
         'idempotency_key' => $commentKey,
     ];
 
-    $this->from(route('home'))->post(route('photos.interactions.store'), $commentPayload)
-        ->assertRedirect(route('home'))
+    $this->from(route('preview.feed'))->post(route('photos.interactions.store'), $commentPayload)
+        ->assertRedirect(route('preview.feed'))
         ->assertSessionHas('feedback');
-    $this->from(route('home'))->post(route('photos.interactions.store'), $commentPayload)
-        ->assertRedirect(route('home'));
+    $this->from(route('preview.feed'))->post(route('photos.interactions.store'), $commentPayload)
+        ->assertRedirect(route('preview.feed'));
 
     $otherUser = User::factory()->create(['name' => 'Alex Rivera']);
     $this->actingAs($otherUser)
-        ->from(route('home'))
+        ->from(route('preview.feed'))
         ->post(route('photos.interactions.store'), [
             'action' => 'create-comment',
             'photo' => 'scout-shaded-loop-photo-3',
             'body' => 'The light in this one is wonderful.',
             'idempotency_key' => Str::lower((string) Str::ulid()),
         ])
-        ->assertRedirect(route('home'));
+        ->assertRedirect(route('preview.feed'));
 
     $this->actingAs($this->authenticatedUser);
     $state = app(PhotoInteractionState::class);
@@ -130,7 +130,7 @@ test('comments are shared, escaped, and stored for only the selected photo', fun
         ->and(PhotoComment::query()->count())->toBe(2)
         ->and($state->comments('scout-shaded-loop-photo-2'))->toBe([]);
 
-    $this->get(route('home'))
+    $this->get(route('preview.feed'))
         ->assertSuccessful()
         ->assertSee('&lt;script&gt;alert(&quot;no&quot;)&lt;/script&gt; Calm ending to the walk.', false)
         ->assertSee('The light in this one is wonderful.')
@@ -168,12 +168,12 @@ test('photo interaction presentation uses a bounded query count', function () {
 });
 
 test('photo interaction rejects unknown photos and guests', function () {
-    $this->from(route('home'))->post(route('photos.interactions.store'), [
+    $this->from(route('preview.feed'))->post(route('photos.interactions.store'), [
         'action' => 'set-reaction',
         'photo' => 'unknown-photo-1',
         'reaction' => 'like',
     ])
-        ->assertRedirect(route('home'))
+        ->assertRedirect(route('preview.feed'))
         ->assertSessionHasErrors('photo');
 
     Auth::logout();

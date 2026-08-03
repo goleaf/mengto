@@ -8,6 +8,7 @@ use Illuminate\Support\Str;
 
 test('application responses expose a server generated request identifier', function () {
     $suppliedRequestId = 'untrusted-client-value';
+    auth()->logout();
 
     $response = $this
         ->withHeader('X-Request-ID', $suppliedRequestId)

@@ -13,7 +13,7 @@
                 <x-action-control
                     label="{{ __('ui.back_to_feed_34c445f7d7') }}"
                     icon="arrow-left"
-                    :href="$post['return_url'] ?? route('home')"
+                    :href="$post['return_url'] ?? route('preview.feed')"
                     variant="paper"
                 />
             </x-slot:actions>

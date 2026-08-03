@@ -32,8 +32,8 @@ test('the Scout profile renders as a functional pet page', function () {
         ->and($xpath->query('//main//button[not(@disabled)]')->length)->toBeGreaterThan(0);
 });
 
-test('the home preview links Scout to the pet profile', function () {
-    $response = $this->get(route('home'));
+test('the feed preview links Scout to the pet profile', function () {
+    $response = $this->get(route('preview.feed'));
 
     $response
         ->assertSuccessful()

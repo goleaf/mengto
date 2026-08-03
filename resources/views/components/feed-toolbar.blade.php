@@ -3,7 +3,7 @@
 <div class="feed-toolbar">
     <x-tab-list :tabs="$feed['modes']" label="{{ __('ui.choose_feed_08ed5140c2') }}" />
 
-    <form method="GET" action="{{ route('home') }}" class="feed-filters">
+    <form method="GET" action="{{ route('preview.feed') }}" class="feed-filters">
         <input type="hidden" name="feed" value="{{ $feed['mode'] }}">
 
         <label class="compact-select">

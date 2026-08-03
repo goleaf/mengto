@@ -54,7 +54,7 @@ test('meetups navigation is active on the schedule and linked from existing page
     $meetupsUrl = route('meetups.index');
 
     $meetupsResponse = $this->get($meetupsUrl);
-    $feedResponse = $this->get(route('home'));
+    $feedResponse = $this->get(route('preview.feed'));
     $petsResponse = $this->get(route('pets.index'));
     $profileResponse = $this->get(route('pets.scout'));
 

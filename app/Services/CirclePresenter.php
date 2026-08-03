@@ -113,7 +113,7 @@ final class CirclePresenter
                 emptyIcon: 'bookmark',
                 emptyTitle: __('messages.no_saved_moments_yet_8638ac0095'),
                 emptyDescription: __('messages.save_useful_routines_local_recommendations_and_pet_updat_ae5e33da81'),
-                actionRoute: 'home',
+                actionRoute: 'preview.feed',
                 actionLabel: __('messages.browse_the_feed_deef0dc0b4'),
                 actionIcon: 'newspaper',
             ),
@@ -219,7 +219,7 @@ final class CirclePresenter
                 'title' => __('presentation.pet_moments', ['pet' => $posts[0]['pet']]),
                 'meta' => __('messages.neighborhood_feed_3f7d71b76a'),
                 ...array_intersect_key($posts[0], array_flip(['image', 'image_small', 'image_medium', 'image_alt'])),
-                'route' => 'home',
+                'route' => 'preview.feed',
                 'icon' => 'bookmark',
             ],
             [

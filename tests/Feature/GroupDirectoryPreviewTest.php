@@ -56,7 +56,7 @@ test('groups navigation is active in the catalog and linked from existing pages'
     $groupsUrl = route('groups.index');
 
     $groupsResponse = $this->get($groupsUrl);
-    $feedResponse = $this->get(route('home'));
+    $feedResponse = $this->get(route('preview.feed'));
     $petsResponse = $this->get(route('pets.index'));
     $profileResponse = $this->get(route('pets.scout'));
     $meetupsResponse = $this->get(route('meetups.index'));

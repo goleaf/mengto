@@ -9,7 +9,7 @@ class PrimaryNavigation extends Component
 {
     /** @var array<int, array<string, string>> */
     public array $items = [
-        ['route' => 'home', 'label' => 'Feed', 'mobile_label' => 'Feed', 'icon' => 'house', 'name' => 'feed'],
+        ['route' => 'preview.feed', 'label' => 'Feed', 'mobile_label' => 'Feed', 'icon' => 'house', 'name' => 'feed'],
         ['route' => 'pets.index', 'label' => 'Pets', 'mobile_label' => 'Pets', 'icon' => 'paw-print', 'name' => 'pets'],
         ['route' => 'medical-records.index', 'label' => 'Health', 'mobile_label' => 'Health', 'icon' => 'heart-pulse', 'name' => 'health'],
         ['route' => 'care-journals.index', 'label' => 'Care', 'mobile_label' => 'Care', 'icon' => 'notebook-tabs', 'name' => 'care'],

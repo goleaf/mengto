@@ -40,7 +40,7 @@ test('the pet directory renders as a functional discovery page', function () {
 
 test('the directory and existing pages expose working Feed and Pets navigation', function () {
     $directoryUrl = route('pets.index');
-    $feedUrl = route('home');
+    $feedUrl = route('preview.feed');
     $profileUrl = route('pets.scout');
 
     $directoryResponse = $this->get($directoryUrl);

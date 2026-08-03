@@ -338,6 +338,138 @@ try {
         mobile: false,
     }, sessionId);
 
+    const joinAudits = {};
+    const joinViewports = [
+        { label: 'English 320px join page', locale: 'en', width: 320, height: 900, mobile: true },
+        { label: 'Russian 375px join page', locale: 'ru', width: 375, height: 812, mobile: true },
+        { label: 'Lithuanian 768px join page', locale: 'lt', width: 768, height: 1024, mobile: false },
+        { label: 'Russian 1024px join page', locale: 'ru', width: 1024, height: 900, mobile: false },
+        { label: 'English 1440px join page', locale: 'en', width: 1440, height: 900, mobile: false },
+        { label: 'English 1920px join page', locale: 'en', width: 1920, height: 1080, mobile: false },
+    ];
+
+    await navigate(client, sessionId, `${baseUrl}/`);
+
+    for (const viewport of joinViewports) {
+        const currentLocale = await evaluate(client, sessionId, 'document.documentElement.lang');
+
+        if (currentLocale !== viewport.locale) {
+            const loaded = client.once('Page.loadEventFired', sessionId);
+            await evaluate(
+                client,
+                sessionId,
+                `document.querySelector('button[name="locale"][value="${viewport.locale}"]').click(); true`,
+            );
+            await loaded;
+            await delay(350);
+        }
+
+        await client.send('Emulation.setDeviceMetricsOverride', {
+            width: viewport.width,
+            height: viewport.height,
+            deviceScaleFactor: 1,
+            mobile: viewport.mobile,
+            screenWidth: viewport.width,
+            screenHeight: viewport.height,
+        }, sessionId);
+        await navigate(client, sessionId, `${baseUrl}/`);
+
+        const audit = await evaluate(client, sessionId, pageAuditExpression);
+        assertPageAudit(audit, viewport.label);
+
+        const behavior = await evaluate(client, sessionId, `(() => {
+            const visible = (element) => {
+                const style = getComputedStyle(element);
+                const box = element.getBoundingClientRect();
+
+                return style.display !== 'none' && style.visibility !== 'hidden'
+                    && box.width > 0 && box.height > 0;
+            };
+            const targets = [...document.querySelectorAll(
+                '.join-button, .join-link-button, .join-text-link, .join-footer nav a, .join-footer button'
+            )].filter(visible).map((element) => ({
+                label: element.textContent.trim().slice(0, 60),
+                width: Math.round(element.getBoundingClientRect().width),
+                height: Math.round(element.getBoundingClientRect().height),
+            })).filter((target) => target.width < 44 || target.height < 44);
+
+            return {
+                documentLanguage: document.documentElement.lang,
+                joinPageCount: document.querySelectorAll('[data-join-page]').length,
+                primaryActionCount: document.querySelectorAll('[data-join-primary]').length,
+                memberHeaderCount: document.querySelectorAll('[data-site-header]').length,
+                externalImageCount: [...document.images]
+                    .filter((image) => new URL(image.currentSrc || image.src).origin !== location.origin).length,
+                smallTargets: targets,
+            };
+        })()`);
+        assert(
+            behavior.documentLanguage === viewport.locale,
+            `${viewport.label}: expected ${viewport.locale}, found ${behavior.documentLanguage}.`,
+        );
+        assert(behavior.joinPageCount === 1, `${viewport.label}: join page marker is missing.`);
+        assert(behavior.primaryActionCount >= 2, `${viewport.label}: repeated primary action is missing.`);
+        assert(behavior.memberHeaderCount === 0, `${viewport.label}: member header leaked into guest page.`);
+        assert(behavior.externalImageCount === 0, `${viewport.label}: external image dependency found.`);
+        assert(
+            behavior.smallTargets.length === 0,
+            `${viewport.label}: controls below 44px ${JSON.stringify(behavior.smallTargets)}.`,
+        );
+
+        joinAudits[viewport.label] = { ...audit, ...behavior };
+
+        if (viewport.width === 320) {
+            const joinMobileScreenshot = await client.send('Page.captureScreenshot', {
+                format: 'png',
+                captureBeyondViewport: true,
+            }, sessionId);
+            await writeFile(
+                join(outputDirectory, 'join-page-mobile.png'),
+                Buffer.from(joinMobileScreenshot.data, 'base64'),
+            );
+        }
+    }
+
+    await client.send('Emulation.setDeviceMetricsOverride', {
+        width: 1440,
+        height: 900,
+        deviceScaleFactor: 1,
+        mobile: false,
+        screenWidth: 1440,
+        screenHeight: 900,
+    }, sessionId);
+    await navigate(client, sessionId, `${baseUrl}/`);
+    await evaluate(client, sessionId, 'document.body.focus(); true');
+    await client.send('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Tab', code: 'Tab' }, sessionId);
+    await client.send('Input.dispatchKeyEvent', { type: 'keyUp', key: 'Tab', code: 'Tab' }, sessionId);
+    const joinSkipFocus = await evaluate(client, sessionId, `(() => {
+        const element = document.activeElement;
+        const style = getComputedStyle(element);
+
+        return {
+            isSkipLink: element?.matches('a[href="#main-content"]') ?? false,
+            outlineStyle: style.outlineStyle,
+            outlineWidth: style.outlineWidth,
+            boxShadow: style.boxShadow,
+        };
+    })()`);
+    assert(joinSkipFocus.isSkipLink, 'Join page keyboard navigation did not focus the skip link first.');
+    assert(
+        (joinSkipFocus.outlineStyle !== 'none' && joinSkipFocus.outlineWidth !== '0px')
+            || joinSkipFocus.boxShadow !== 'none',
+        'Join page skip link focus is not visible.',
+    );
+    await evaluate(client, sessionId, 'document.activeElement.blur(); true');
+
+    const joinDesktopScreenshot = await client.send('Page.captureScreenshot', {
+        format: 'png',
+        captureBeyondViewport: true,
+    }, sessionId);
+    await writeFile(
+        join(outputDirectory, 'join-page-desktop.png'),
+        Buffer.from(joinDesktopScreenshot.data, 'base64'),
+    );
+
     await navigate(client, sessionId, `${baseUrl}/forum`);
     const desktopAudit = await evaluate(client, sessionId, pageAuditExpression);
     assertPageAudit(desktopAudit, 'desktop forum');
@@ -1040,6 +1172,8 @@ try {
     const report = {
         baseUrl,
         checkedAt: new Date().toISOString(),
+        joinAudits,
+        joinSkipFocus,
         desktopAudit,
         mobileAudit,
         zoomAudit,
@@ -1069,6 +1203,8 @@ try {
         russianCommunityBehavior,
         consoleErrors,
         screenshots: [
+            join(outputDirectory, 'join-page-desktop.png'),
+            join(outputDirectory, 'join-page-mobile.png'),
             join(outputDirectory, 'forum-desktop.png'),
             join(outputDirectory, 'forum-mobile.png'),
             join(outputDirectory, 'content-feed-desktop.png'),

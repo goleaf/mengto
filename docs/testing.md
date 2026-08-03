@@ -407,3 +407,27 @@ verified social total to 222. Cross-account/device correlation, minors,
 messages/calls, meetings/location, recommendations, notifications, appeals,
 public graph projection, transfer, deletion, and memorial behavior remain
 open.
+
+## Guest Join Page Verification
+
+`JoinLandingPageTest` covers the zero-query guest response, passive localized
+markup, metadata, named account links, route ownership, verified/unverified and
+inactive account destinations, EN/LT/RU content, and validated guest language
+switching. Existing prototype-feed and photo behavior remains covered through
+the authenticated `preview.feed` compatibility route.
+
+Package evidence:
+
+- focused join/auth/architecture slice: 60 tests and 26,885 assertions;
+- final serial repository suite: 2,037 tests and 73,073 assertions in 108.887
+  seconds;
+- Pint and Larastan level 5: passed with zero errors;
+- Composer strict validation/audit and npm audit: zero advisories;
+- Vite production build and config/event/route/view cache compilation: passed;
+- isolated fresh SQLite: 111 migrations, 191 tables, and repeat seed preserved
+  five users;
+- immutable forum source and generated 29,960-requirement checks: passed;
+- dependency-free Chrome: EN/LT/RU at 320, 375, 768, 1024, 1440, and 1920
+  pixels with one `h1`, zero horizontal overflow, visible skip-link focus,
+  44-pixel scoped actions, no external images/member chrome, and no console
+  errors.

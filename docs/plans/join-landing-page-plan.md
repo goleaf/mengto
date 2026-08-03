@@ -2,8 +2,7 @@
 
 Plan date: 2026-08-03
 
-Status: planned, approved product direction; production implementation not yet
-started
+Status: implemented and verified on 2026-08-03
 
 ## Goal
 
@@ -20,7 +19,7 @@ The plan uses the dated findings in
 `docs/audits/pet-social-network-benchmark.md` and the current product,
 security, privacy, localization, accessibility, and interface contracts.
 
-## Current State
+## Previous State
 
 - `routes/web.php` maps the named `home` route at `/` to
   `PreviewController`.
@@ -33,6 +32,25 @@ security, privacy, localization, accessibility, and interface contracts.
 - `/content` already owns the canonical persisted content feed.
 - Guest login, registration, password recovery, email verification, active
   account enforcement, locale selection, and timezone settings already exist.
+
+## Delivery Result
+
+- `/` retains the stable `home` name and now uses `HomeController` plus a
+  typed `HomeDestinationResolver` for guest, verified, unverified, and
+  unavailable-account outcomes.
+- Guests receive the passive `join.blade.php` noticeboard experience with a
+  dedicated layout, canonical/Open Graph metadata, one account-creation goal,
+  ordinary login navigation, and no application database query.
+- Complete EN/LT/RU catalogues and a validated guest session-language action
+  make the page selectable and usable before account creation.
+- The old prototype feed still has active presentation and interaction test
+  consumers, so it was not deleted. It moved to the authenticated,
+  active-account-only `preview.feed` route and no longer leaks fictional
+  member chrome into the guest root response.
+- Browser automation now covers the join page at 320, 375, 768, 1024, 1440,
+  and 1920 pixels across EN/LT/RU, including one `h1`, skip-link focus,
+  44-pixel controls, overflow, external images, member-shell leakage, and
+  console errors.
 
 ## Product Decision
 
@@ -303,14 +321,28 @@ Browser acceptance:
 
 ## Query Delta
 
-| Path | Before | Target after |
+| Path | Before | Measured after |
 | --- | --- | --- |
-| Guest `/` | Builds the prototype feed presentation and complete app shell | Zero application DB queries; localized static join presentation |
-| Verified member `/` | Builds the prototype feed presentation | One redirect to `content.index`; feed queries remain owned and budgeted there |
+| Guest `/` | Built the prototype feed presentation and complete app shell | Zero application DB queries; localized static join presentation |
+| Verified member `/` | Built the prototype feed presentation | One redirect to `content.index`; feed queries remain owned and budgeted there |
 | Registration and verification | Existing Livewire/auth flow | No additional query or field introduced by the landing page |
 
-The implementation report must record measured counts. This table is a target,
-not a passed performance claim.
+The zero-query guest result is enforced by `JoinLandingPageTest`; browser and
+full-suite evidence is recorded below.
+
+## Verification Evidence
+
+- focused join/auth/architecture slice: 60 tests, 26,885 assertions;
+- full serial Pest: 2,037 tests, 73,073 assertions in 108.887 seconds;
+- Pint and Larastan level 5: passed with zero errors;
+- Composer strict validation/audit and npm audit: zero advisories;
+- production Vite build and config/event/route/view cache compilation: passed;
+- isolated fresh SQLite: 111 migrations, 191 tables, and repeat seed preserved
+  five users;
+- immutable forum source and all 29,960 generated atomic requirements: passed;
+- dependency-free Chrome audit: passed EN/LT/RU at all six planned widths with
+  zero overflow, unnamed controls, undersized scoped actions, invalid images,
+  duplicate IDs, external images, member-shell leakage, or console errors.
 
 ## Risks And Stop Conditions
 
@@ -336,7 +368,7 @@ close any forum atom automatically.
 
 Execution order is now:
 
-1. deliver JP-01 through JP-05;
+1. maintain the verified JP-01 through JP-05 entry contract;
 2. select and execute the first exact Phase 3-7 forum reconciliation package;
 3. continue the eight dependency-ordered completion waves in
    `docs/plans/forum-completion-plan.md`;

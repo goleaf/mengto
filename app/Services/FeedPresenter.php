@@ -64,7 +64,7 @@ final class FeedPresenter
                 'total' => count($posts),
                 'showing' => count($visiblePosts),
                 'next_url' => $visibleCount < count($posts)
-                    ? route('home', [
+                    ? route('preview.feed', [
                         'feed' => $mode,
                         'sort' => $sort,
                         'type' => $type,
@@ -72,7 +72,7 @@ final class FeedPresenter
                         'page' => $page + 1,
                     ])
                     : null,
-                'new_posts_url' => route('home', [
+                'new_posts_url' => route('preview.feed', [
                     'feed' => $mode,
                     'sort' => 'latest',
                     'type' => $type,
@@ -418,7 +418,7 @@ final class FeedPresenter
             'can_manage' => ($post['created_by_current'] ?? false) && $this->state->post($key) !== null,
             'anchor' => 'post-'.$key,
             'thread_url' => route('posts.show', ['post' => $key]),
-            'return_url' => route('home').'#post-'.$key,
+            'return_url' => route('preview.feed').'#post-'.$key,
             'share_url' => route('share.show', ['target' => $key]),
             'edit_url' => ($post['created_by_current'] ?? false)
                 ? route('compose', ['kind' => 'post-edit', 'post' => $key])
@@ -540,7 +540,7 @@ final class FeedPresenter
         foreach ($this->catalog->modes() as $key => $mode) {
             $options[] = [
                 ...$mode,
-                'href' => route('home', [
+                'href' => route('preview.feed', [
                     'feed' => $key,
                     'sort' => $query['sort'],
                     'type' => $query['type'],

@@ -592,7 +592,7 @@ final class FeedCatalog
             'label' => $label,
             'caption' => $label,
             'image' => 'https://images.unsplash.com/'.$image.'?auto=format&fit=crop&crop=faces&w=240&h=240&q=80',
-            'route' => $route ?? 'home',
+            'route' => $route ?? 'preview.feed',
             'mine' => $mine,
             'unseen' => ! $mine,
         ];
