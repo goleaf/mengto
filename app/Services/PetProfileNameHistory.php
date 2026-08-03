@@ -23,11 +23,26 @@ final readonly class PetProfileNameHistory
             ->first();
 
         if ($existing instanceof PetProfileName) {
-            if ($existing->trashed()) {
+            $wasRemoved = $existing->trashed();
+
+            if ($wasRemoved) {
                 $existing->restore();
             }
 
-            return $existing;
+            $existing->forceFill([
+                'name' => trim($name),
+                'type' => PetProfileNameType::Previous,
+                'visibility' => $wasRemoved
+                    ? PetProfileNameVisibility::Private
+                    : $existing->visibility,
+                'is_searchable' => true,
+                'recorded_by_user_id' => $wasRemoved
+                    ? $actor->id
+                    : ($existing->recorded_by_user_id ?? $actor->id),
+                'recorded_at' => now(),
+            ])->save();
+
+            return $existing->refresh();
         }
 
         return $profile->names()->create([

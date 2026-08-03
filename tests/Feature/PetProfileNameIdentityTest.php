@@ -158,6 +158,36 @@ it('keeps repeated additions idempotent and restores a removed name', function (
         ->and(PetProfileName::withTrashed()->count())->toBe(1);
 });
 
+it('reclassifies an explicit alternative as previous while retaining its chosen visibility', function (): void {
+    $owner = User::factory()->create();
+    $profile = petNameIdentityProfile($owner, ['name' => 'Luna']);
+    actingAs($owner);
+
+    $moon = app(AddPetProfileName::class)->handle($profile, [
+        'name' => 'Moon',
+        'type' => PetProfileNameType::Nickname->value,
+        'visibility' => PetProfileNameVisibility::Public->value,
+        'locale' => null,
+    ]);
+    $moon->forceFill(['recorded_by_user_id' => null])->save();
+
+    Livewire::actingAs($owner)
+        ->test(ManagePetProfile::class, ['petProfile' => $profile])
+        ->set('form.name', 'Moon')
+        ->set('form.species', $profile->species)
+        ->call('saveBasics')
+        ->set('form.name', 'Nova')
+        ->call('saveBasics')
+        ->assertHasNoErrors();
+
+    $moon->refresh();
+
+    expect($moon->type)->toBe(PetProfileNameType::Previous)
+        ->and($moon->visibility)->toBe(PetProfileNameVisibility::Public)
+        ->and($moon->is_searchable)->toBeTrue()
+        ->and($moon->recorded_by_user_id)->toBe($owner->id);
+});
+
 it('never exposes private or manager-only names on the public pet profile', function (): void {
     $owner = User::factory()->create();
     $profile = petNameIdentityProfile($owner, [
