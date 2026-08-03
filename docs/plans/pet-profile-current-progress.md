@@ -36,8 +36,8 @@ Last updated: 2026-08-03.
   is implemented, release-verified, and published.
 - The birth-precision and automatically advancing age slice verifies 17
   selected `pet.identity.0160-pet.identity.0186` requirements. It is
-  implemented and release-verified with exact, estimated, month, year,
-  age-estimate, unknown, and optional celebration-day modes.
+  implemented, release-verified, and published with exact, estimated, month,
+  year, age-estimate, unknown, and optional celebration-day modes.
 
 ## Current Work Package
 

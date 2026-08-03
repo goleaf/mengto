@@ -2,7 +2,7 @@
 
 Date: 2026-08-03
 
-Status: implemented and release-verified; publication pending.
+Status: implemented, release-verified, and published to `origin/main`.
 
 ## Requirement Boundary
 
@@ -99,8 +99,9 @@ Observed on PHP 8.5.8, Laravel 13, Livewire 4.3.4, Pest 4.7.5, and SQLite:
   390px, and 320px with zero overflow, raw keys, duplicate IDs, undersized or
   unnamed controls, privacy leaks, or console errors.
 
-The implementation commit is `8c97ede`. It passed staged diff inspection and
-all isolated release gates above.
+The implementation commit is `8c97ede`, and the generated requirement-evidence
+commit is `8ad4e40`. Both passed staged diff inspection and were published when
+the observed push advanced `origin/main` from `0f79ced` to `8ad4e40`.
 
 ## Remaining Boundaries
 
