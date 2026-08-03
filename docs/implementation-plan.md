@@ -382,8 +382,9 @@ Status: `implemented and verified` on 2026-08-03 for
   six bounded client-revision acknowledgement cases, no-op replay, and
   mismatched-step non-mutation.
 - The integrated current tree passed full Pint, zero-error Larastan, the
-  isolated 2,692-test/85,091-assertion serial suite, production Vite build,
-  cache smoke,
+  isolated 2,692-test/85,091-assertion reconnect suite, the final complete
+  2,695-test/85,875-assertion current-tree suite, production Vite build, cache
+  smoke,
   dependency audits, and authenticated EN/RU/LT browser verification including
   a real failed network request, one automatic reconnect retry, reload, and
   value-restoration cycle.

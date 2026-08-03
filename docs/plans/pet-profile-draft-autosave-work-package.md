@@ -109,7 +109,8 @@ changes authorization, validation, persistence, or idempotency decisions.
 
 The isolated reconnect slice passed 2,692 serial tests with 85,091 assertions.
 The progressive-to-workspace order regression passed 37 tests with 233
-assertions.
+assertions. The final complete current-tree serial suite passed 2,695 tests
+with 85,875 assertions.
 The connected browser gate additionally changed the appearance form through a
 real DOM change, observed the autosave and offline status contracts, forced one
 `ERR_INTERNET_DISCONNECTED` request failure, restored that edit with exactly
