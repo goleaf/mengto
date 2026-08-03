@@ -537,7 +537,7 @@ Status: `verified` on 2026-08-03
 - Verified 13 directory tests with 140 assertions, 20 authority tests with 153
   assertions, scoped Pint and Larastan, 126 fresh migrations across 211 tables,
   repeated seed stability, dependency audits, Vite/cache compilation, and the
-  final serial suite of 2,583 tests with 81,806 assertions.
+  final serial suite of 2,579 tests with 81,626 assertions.
 - Verified authenticated desktop/mobile browser flows for `/places` and
   `/places/vingis-quiet-loop` with no overflow, broken images, raw translation
   keys, unnamed controls, console errors, or protected-address disclosure.
