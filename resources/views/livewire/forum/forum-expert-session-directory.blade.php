@@ -1,11 +1,11 @@
 <section class="grid gap-6" aria-labelledby="expert-session-directory-heading">
-    <header class="forum-header">
-        <div class="forum-header__copy">
-            <p class="forum-header__eyebrow">{{ __('forum_expert_sessions.page.eyebrow') }}</p>
-            <h1 id="expert-session-directory-heading">{{ __('forum_expert_sessions.page.heading') }}</h1>
-            <p>{{ __('forum_expert_sessions.page.description') }}</p>
-        </div>
-    </header>
+    <x-page-header
+        :eyebrow="__('forum_expert_sessions.page.eyebrow')"
+        :title="__('forum_expert_sessions.page.heading')"
+        :description="__('forum_expert_sessions.page.description')"
+        heading-id="expert-session-directory-heading"
+        data-section="forum-expert-session-directory-header"
+    />
 
     @if ($feedback !== '')
         <p class="border-s-4 border-status-success py-3 ps-4" role="status" aria-live="polite">

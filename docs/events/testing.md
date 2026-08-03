@@ -17,6 +17,14 @@ additive lifecycle migrations roll back and reapply around populated legacy
 event and registration rows. The schedule test independently rolls back and
 reapplies the sixth Point 13 schedule migration.
 
+`OrganizationAuthorityFoundationTest` covers tenant creation, signed
+single-use invitation response, token-state privacy, removal and historical
+attribution, specialist role separation, independent suspension capabilities,
+wrong-tenant and former-staff event access, emergency safety access,
+organization event creation, invitation, registration and check-in boundaries,
+workspace data minimization, EN/LT/RU labels, factories, idempotent guarded
+seeding, and bounded directory queries.
+
 The repository browser audit covers the event directory, a recurring event,
 and the three-session conference schedule at 1440x900 and 375x812. It checks
 one `h1` and `main`, accessible control names, 44px mobile targets, horizontal
@@ -42,6 +50,12 @@ artifacts outside the repository.
   `composer validate --strict`, Composer/NPM audits, and `npm run build`:
   passed; Larastan reported zero errors and both audits reported zero known
   vulnerabilities.
+
+The later organization-authority checkpoint passed 14 focused tests with 109
+assertions. Fresh and rollback/reapply verification covered 121 migrations and
+205 tables; initial and repeated seeding both exited `0`. The exact checkpoint
+is recorded in
+`docs/plans/portal-organization-authority-foundation-work-package.md`.
 
 Provider-backed event payments, tickets, refunds, QR/offline check-in,
 session reservations/waitlists, competition scoring, vendors, volunteers,

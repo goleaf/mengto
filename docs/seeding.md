@@ -2,7 +2,7 @@
 
 ## Baseline
 
-All 154 first-party Eloquent models now have a model factory and are guarded by
+All 159 first-party Eloquent models now have a model factory and are guarded by
 an architecture test. The generated matrix records explicit helpers and
 enum-backed state cases; valid existence alone is not accepted without
 persistence tests.
@@ -56,6 +56,12 @@ topic identity and marks missing/invalid subtype metadata for review.
 production Actions to create representative types, entries, metrics,
 milestones, setbacks, collaborators, and comments without duplicating records
 on rerun.
+`OrganizationAuthoritySeeder` is environment-gated and reuses production
+Actions to create one verified rescue, one community with a pending
+account-bound invitation, and one suspended venue. Stable organization,
+invitation, restriction, and audit request identities keep repeat execution
+at three organizations, four memberships, one invitation, nine restrictions,
+and six audit events.
 
 ## Production Safeguards
 
@@ -77,6 +83,9 @@ on rerun.
   the production-safe definition seeder.
 - Journal backfill never infers a type from prose, and journal demo content is
   prohibited in production.
+- Organization demo identities must already exist in an explicitly allowed
+  environment; organization ownership is never inferred from display text,
+  email domains, event creators, or marketplace activity.
 
 ## Coverage Matrix
 

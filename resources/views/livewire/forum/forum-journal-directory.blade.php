@@ -1,11 +1,11 @@
 <section class="grid gap-6" aria-labelledby="forum-journal-directory-heading">
-    <header class="forum-header">
-        <div class="forum-header__copy">
-            <p class="forum-header__eyebrow">{{ __('forum_journals.page.eyebrow') }}</p>
-            <h1 id="forum-journal-directory-heading">{{ __('forum_journals.page.heading') }}</h1>
-            <p>{{ __('forum_journals.page.description') }}</p>
-        </div>
-    </header>
+    <x-page-header
+        :eyebrow="__('forum_journals.page.eyebrow')"
+        :title="__('forum_journals.page.heading')"
+        :description="__('forum_journals.page.description')"
+        heading-id="forum-journal-directory-heading"
+        data-section="forum-journal-directory-header"
+    />
 
     <aside class="border-s-4 border-status-info py-3 ps-4" role="note">
         <p>{{ __('forum_journals.notices.community_journal') }}</p>

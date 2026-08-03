@@ -1,13 +1,16 @@
 <x-app-shell :owner="$owner" :title="$page_title" :active-section="$active_section">
     <div class="mx-auto grid max-w-5xl gap-6">
-        <header class="border-b border-paw-line pb-6">
-            <a href="{{ route('medical-records.index') }}" class="inline-flex items-center gap-2 text-sm font-semibold text-paw-leaf">
-                <x-lucide-arrow-left class="size-4" aria-hidden="true" />
-                {{ __('ui.health_records_bd13778e4d') }}
-            </a>
-            <p class="mt-5 text-sm font-bold uppercase text-paw-leaf">{{ __('ui.private_from_the_first_save_297f934e26') }}</p>
-            <h1 class="mt-2 text-3xl font-bold sm:text-4xl">{{ __('ui.create_a_medical_record_bff5a73bf2') }}</h1>
-        </header>
+        <x-page-header
+            :eyebrow="__('ui.private_from_the_first_save_297f934e26')"
+            :title="__('ui.create_a_medical_record_bff5a73bf2')"
+            :description="__('ui.health_records_bd13778e4d')"
+            heading-id="create-medical-record-heading"
+            :action-label="__('ui.health_records_bd13778e4d')"
+            action-icon="arrow-left"
+            :action-href="route('medical-records.index')"
+            action-variant="paper"
+            data-section="medical-record-create-header"
+        />
 
         @if ($errors->any())
             <div class="medical-form-errors" role="alert">

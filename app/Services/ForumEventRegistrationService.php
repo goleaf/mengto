@@ -389,7 +389,7 @@ final readonly class ForumEventRegistrationService
         string $method,
     ): ForumEventRegistration {
         $event = $registration->event;
-        $this->gate->forUser($actor)->authorize('manageRegistrations', $event);
+        $this->gate->forUser($actor)->authorize('checkIn', $event);
         Validator::make(
             ['method' => $method],
             ['method' => ['required', Rule::in(['manual'])]],
@@ -462,7 +462,7 @@ final readonly class ForumEventRegistrationService
         ForumEventRegistration $registration,
     ): ForumEventRegistration {
         $event = $registration->event;
-        $this->gate->forUser($actor)->authorize('manageRegistrations', $event);
+        $this->gate->forUser($actor)->authorize('checkIn', $event);
 
         return DB::transaction(function () use ($actor, $event, $registration): ForumEventRegistration {
             $locked = ForumEventRegistration::query()

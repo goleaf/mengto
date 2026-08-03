@@ -53,23 +53,6 @@
     display: inline;
 }
 
-.feed-header {
-    display: flex;
-    min-inline-size: 0;
-    flex-wrap: wrap;
-    align-items: flex-end;
-    justify-content: space-between;
-    gap: 1rem;
-
-    &__description {
-        max-inline-size: 42rem;
-        margin-block-start: 0.5rem;
-        color: $muted;
-        font-size: 0.875rem;
-        line-height: 1.5rem;
-    }
-}
-
 .story-rail {
     margin-block-start: 1rem;
     border-block: 1px solid $line;

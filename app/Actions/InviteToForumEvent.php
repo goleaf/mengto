@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Actions;
 
 use App\Enums\ForumEventInvitationStatus;
+use App\Enums\OrganizationMembershipStatus;
 use App\Models\ForumEvent;
 use App\Models\ForumEventInvitation;
 use App\Models\User;
@@ -46,6 +47,20 @@ final readonly class InviteToForumEvent
         if (! $recipient->isActive() || $recipient->id === $actor->id) {
             throw ValidationException::withMessages([
                 'invitationForm.recipient' => __('forum_events.validation.invitation_recipient'),
+            ]);
+        }
+        if ($event->responsible_organization_id !== null
+            && ! $event->responsibleOrganization
+                ->memberships()
+                ->where('user_id', $recipient->id)
+                ->where('status', OrganizationMembershipStatus::Active->value)
+                ->where(function ($expiry): void {
+                    $expiry->whereNull('expires_at')->orWhere('expires_at', '>', now());
+                })
+                ->exists()
+        ) {
+            throw ValidationException::withMessages([
+                'invitationForm.recipient' => __('forum_events.validation.organization_membership_required'),
             ]);
         }
 

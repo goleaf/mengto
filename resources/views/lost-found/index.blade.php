@@ -1,11 +1,11 @@
 <x-app-shell :owner="$owner" :title="$page_title" :active-section="$active_section">
     <div class="grid gap-6">
         <x-page-header
-            eyebrow="{{ __('ui.lost_found_217c655848') }}"
-            title="{{ __('ui.active_local_searches_a0b657fac3') }}"
-            description="{{ __('ui.report_a_sighting_join_a_coordinated_task_or_e5e0bbe8c2') }}"
+            :eyebrow="__('ui.lost_found_217c655848')"
+            :title="__('ui.active_local_searches_a0b657fac3')"
+            :description="__('ui.report_a_sighting_join_a_coordinated_task_or_e5e0bbe8c2')"
             heading-id="lost-found-heading"
-            action-label="{{ __('ui.report_an_animal_6188a5d89e') }}"
+            :action-label="__('ui.report_an_animal_6188a5d89e')"
             action-icon="siren"
             :action-href="route('lost-found.create')"
             data-section="lost-found-header"

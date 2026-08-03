@@ -1,18 +1,16 @@
 <x-app-shell :owner="$owner" :title="$page_title" :active-section="$active_section">
     <div class="forum-page">
-        <header class="forum-header">
-            <div class="forum-header__copy">
-                <p class="forum-header__eyebrow">{{ $topic !== null ? __('ui.update_discussion_ef5f7b09b7') : __('ui.new_forum_topic_ea6af1ec44') }}</p>
-                <h1>{{ $topic !== null ? __('ui.keep_the_context_current_b10461f439') : __('ui.make_the_question_useful_later_76244c4d57') }}</h1>
-                <p>{{ __('ui.a_precise_title_relevant_pet_context_and_what_e3cf1f9d19') }}</p>
-            </div>
-            <div class="forum-header__actions">
-                <a href="{{ $topic !== null ? route('forum.topics.show', $topic) : route('forum.index') }}" class="forum-button">
-                    <x-lucide-x aria-hidden="true" />
-                    {{ __('ui.cancel_19766ed6cc') }}
-                </a>
-            </div>
-        </header>
+        <x-page-header
+            :eyebrow="$topic !== null ? __('ui.update_discussion_ef5f7b09b7') : __('ui.new_forum_topic_ea6af1ec44')"
+            :title="$topic !== null ? __('ui.keep_the_context_current_b10461f439') : __('ui.make_the_question_useful_later_76244c4d57')"
+            :description="__('ui.a_precise_title_relevant_pet_context_and_what_e3cf1f9d19')"
+            heading-id="forum-topic-editor-heading"
+            :action-label="__('ui.cancel_19766ed6cc')"
+            action-icon="x"
+            :action-href="$topic !== null ? route('forum.topics.show', $topic) : route('forum.index')"
+            action-variant="paper"
+            data-section="forum-topic-editor-header"
+        />
 
         @if ($errors->any())
             <x-forum-error-summary

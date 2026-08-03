@@ -37,6 +37,16 @@ test('mobile search and forum controls use the shared touch target token', funct
         ->toBeGreaterThan(0);
 });
 
+test('shared actions and filters retain the touch target at desktop widths', function () {
+    $controlStyles = file_get_contents(resource_path('scss/_controls.scss'));
+
+    expect($controlStyles)->toBeString()
+        ->and($controlStyles)->toContain('&--regular {', '&--compact {', '&--micro {')
+        ->and(substr_count((string) $controlStyles, 'min-block-size: $touch-target;'))
+        ->toBeGreaterThanOrEqual(8)
+        ->and($controlStyles)->not->toMatch('/min-block-size:\s*[12](?:\.\d+)?rem;/');
+});
+
 test('forum accessibility styles preserve touch, focus, reflow, and contrast contracts', function () {
     $forumStyles = file_get_contents(resource_path('scss/_forum.scss'));
     $applicationStyles = file_get_contents(resource_path('css/app.css'));

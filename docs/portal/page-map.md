@@ -15,3 +15,9 @@ access details, check-in, and check-out according to policy.
 
 No orphan Point 13 page was added. Existing catalogue/created-content URLs are
 compatibility entries into the same shell, not a second event application.
+
+Organizations use `OrganizationDirectory`, `OrganizationWorkspace`, and
+`OrganizationInvitationResponse` under the existing authenticated shell. The
+directory supports bounded discovery and creation; the workspace exposes only
+current membership and role-appropriate controls; the signed invitation page
+is account-bound and keeps its raw token out of Livewire state.

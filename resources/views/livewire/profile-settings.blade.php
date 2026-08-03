@@ -1,10 +1,10 @@
 <x-page-stack data-section="profile-settings">
     <x-page-header
-        eyebrow="{{ __('auth.settings.eyebrow') }}"
-        title="{{ __('auth.settings.title') }}"
-        description="{{ __('auth.settings.description') }}"
+        :eyebrow="__('auth.settings.eyebrow')"
+        :title="__('auth.settings.title')"
+        :description="__('auth.settings.description')"
         heading-id="profile-settings-heading"
-        action-label="{{ __('auth.settings.back') }}"
+        :action-label="__('auth.settings.back')"
         action-icon="arrow-left"
         :action-href="route('profile.mia')"
     />

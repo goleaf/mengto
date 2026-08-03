@@ -138,15 +138,17 @@ Blade disagrees.
 | Message folder placement (`All` through `Archive`) | Implemented and tested | Keep the nine-folder toolbar above the messaging shell |
 | Plan registration and current-versus-target documentation | Complete | Reconcile again whenever implementation changes the rendered state |
 | `/messages` canonical page identity | Implemented and targeted-verified | Preserve one canonical header, nine folders above the messaging shell, and zero horizontal overflow |
-| Package 0 requirements and red contracts | Partial | All 108 first-party GET routes now have an executable one-class ledger and canonical routes have structural contracts; the stable requirement ID, query baselines, and remaining migration-route red contracts are open |
-| Package 1 current `/meetups` schema/runtime | Partial | Current table, migration, explicit projection, and route work; fresh plus incremental mismatch proof remains |
+| Package 0 requirements and red contracts | Partial | All 111 current first-party GET routes now have an executable one-class ledger and canonical routes have structural contracts; the stable requirement ID and broader query baselines remain open |
+| Package 1 current `/meetups` schema/runtime | Implemented and verified | Fresh migration, complete migration lifecycle, explicit projection, team-membership schema, `/meetups`, and event-workspace runtime checks pass |
 | Package 2 shared component | Partial, implementation verified for current consumers | Explicit page-specific heading IDs, empty/count/single/multiple action states, escaped long content, metadata/actions slots, compatibility, wrapping, and semantic tests are complete; the full locale/zoom/forced-colors fixture matrix remains open |
 | Package 3 reference directories | Implemented and structurally verified | All listed routes consume the shared component and are covered by the source/route contract; the complete golden browser matrix remains a Package 11 gate |
 | Package 4 private care directories | Implemented and targeted-verified | Retain authorization/privacy regression coverage in the final full gate |
 | Package 5 operational directories | Implemented and targeted-verified | Retain domain and responsive regression coverage in the final full gate |
-| Packages 6 through 8 | Not started | Event, forum, and complete first-party route migration remain open |
-| Packages 9 and 10 | Partial | Retired care/messages directory selectors and reconciled living UI documents; forum/global cleanup and full documentation remain open |
-| Package 11 release verification | Partial | Focused and full Pest, Pint, Larastan, localization, Vite, dependency audits, cache smoke, isolated migrate/seed/idempotency, diff, and representative browser checks passed; scoped commit, push, and final global follow-up audit remain open |
+| Package 6 event directory and workspace | Implemented and targeted-verified | Directory and database-backed event workspaces use the canonical identity; lifecycle, privacy, migration-cycle, and browser runtime gates pass |
+| Package 7 forum | Implemented and targeted-verified | Forum routes use the canonical identity; all 44 roots remain visible and only the active root exposes its validated, indexed, server-filterable direct children |
+| Package 8 global migration | Implemented and structurally verified | All former migration candidates use the canonical contract or a documented deliberate detail hero; the classified detail/workspace exception audit remains open |
+| Packages 9 and 10 | Partial | Retired care/messages/device-directory selectors and reconciled living UI documents; forum/global cleanup and full documentation remain open |
+| Package 11 release verification | Partial | Focused and full Pest, Pint, Larastan, localization, Vite, dependency audits, cache smoke, isolated migrate/seed/idempotency, forum-source, diff, and representative authenticated browser checks passed; scoped commit, push, and final global follow-up audit remain open |
 
 The first implementation slice is covered by
 `PageIdentityStandardizationTest` plus the existing module, responsive, media,
@@ -155,25 +157,30 @@ assertions. Authenticated browser checks at 375 px and 1440 px confirmed one
 canonical header, one `h1`, no horizontal overflow, 44 px mobile actions, and
 the required message-folder order. After the route-ledger and explicit heading
 ID package, the complete isolated Pest run passed 2,384 tests and 78,892
-assertions. In the shared checkout, both `APP_CONFIG_CACHE` and `DB_DATABASE`
+assertions. After the workflow, forum, event, touch-target, and subcategory
+waves, the affected-domain run passed 275 tests and 3,488 assertions and the
+complete isolated run passed 2,484 tests and 80,398 assertions. Authenticated
+browser checks covered 16 route families at 375 px plus forum and event
+workspaces at desktop, including active-child state, 44-pixel actions, zero
+horizontal overflow, and zero console or SQL errors. SQLite `EXPLAIN QUERY
+PLAN` selects `forum_topics_subcategory_status_activity_idx` for the legacy
+subcategory branch. In the shared checkout, both `APP_CONFIG_CACHE` and `DB_DATABASE`
 must be isolated so a concurrent cache build cannot redirect a nominal
 `:memory:` run to `database/database.sqlite`. This is evidence for the current
-implemented slices only, not for the remaining global migration.
+implemented slices only, not for the remaining exception audit.
 
 ### 3.3 Next Execution Checkpoint
 
-1. Publish the verified first safe slice without including concurrent event or
-   forum work from the shared tree.
-2. Complete Package 0 by assigning the stable requirement ID, recording query
-   baselines, and adding red contracts for the remaining migration candidates;
-   keep the executable 108-route ledger synchronized.
-3. Close the remaining incremental `/meetups` proof in Package 1 before
-   touching its presentation in Package 6. Disjoint non-event page work may
-   proceed while this gate is open.
-4. Complete the remaining Package 2 locale, zoom, and forced-colors fixtures,
+1. Complete Package 0 by assigning the stable requirement ID and recording the
+   remaining representative query baselines; keep the executable 111-route
+   ledger synchronized.
+2. Retain the verified incremental `/meetups` and event lifecycle checks as
+   release gates for Package 6.
+3. Complete the remaining Package 2 zoom and forced-colors fixtures,
    then capture the complete Package 3 golden browser matrix.
-5. Continue through event, forum, and global-route waves; never mark a later
-   wave complete from source intent or screenshots alone.
+4. Audit every classified detail/workspace exception, retaining purposeful
+   heroes and migrating accidental page headers; never mark a later wave
+   complete from source intent or screenshots alone.
 
 ## 4. Scope
 

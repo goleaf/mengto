@@ -15,8 +15,10 @@ use App\Enums\ForumEventReviewStatus;
 use App\Enums\ForumEventStatus;
 use App\Enums\ForumEventType;
 use App\Enums\ForumEventVisibility;
+use App\Enums\OrganizationRestrictionCapability;
 use App\Livewire\Forms\ForumEventForm;
 use App\Models\ForumEvent;
+use App\Models\Organization;
 use App\Models\Taxon;
 use App\Models\TaxonVersion;
 use App\Models\User;
@@ -229,15 +231,42 @@ final class ForumEventDirectory extends Component
     #[Computed]
     public function visibilityOptions(): array
     {
-        return collect([
+        $visibilities = [
             ForumEventVisibility::Public,
             ForumEventVisibility::Unlisted,
             ForumEventVisibility::Members,
             ForumEventVisibility::Invitation,
             ForumEventVisibility::Private,
-        ])->mapWithKeys(static fn (ForumEventVisibility $visibility): array => [
+        ];
+
+        if ($this->organizationOptions() !== []) {
+            $visibilities[] = ForumEventVisibility::Organization;
+        }
+
+        return collect($visibilities)->mapWithKeys(static fn (ForumEventVisibility $visibility): array => [
             $visibility->value => $visibility->label(),
         ])->all();
+    }
+
+    /** @return array<int, string> */
+    #[Computed]
+    public function organizationOptions(): array
+    {
+        $user = Auth::user();
+
+        if (! $user instanceof User) {
+            return [];
+        }
+
+        return Organization::query()
+            ->select(['id', 'name'])
+            ->eventOrganizableBy($user)
+            ->allowingCapability(OrganizationRestrictionCapability::CreateEvents)
+            ->orderBy('name')
+            ->orderBy('id')
+            ->limit(100)
+            ->pluck('name', 'id')
+            ->all();
     }
 
     /** @return array<string, string> */

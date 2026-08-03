@@ -1,11 +1,11 @@
 <x-app-shell :owner="$owner" :title="$page_title" :active-section="$active_section">
     <div class="grid gap-7">
         <x-page-header
-            eyebrow="{{ __('ui.private_family_workspace_521e77339e') }}"
-            title="{{ __('ui.care_journals_efcbb402a3') }}"
-            description="{{ __('ui.today_s_feeding_water_walks_rest_toilet_activity_dc1cdec032') }}"
+            :eyebrow="__('ui.private_family_workspace_521e77339e')"
+            :title="__('ui.care_journals_efcbb402a3')"
+            :description="__('ui.today_s_feeding_water_walks_rest_toilet_activity_dc1cdec032')"
             heading-id="care-journals-heading"
-            action-label="{{ __('ui.create_journal_0be6b9b3a5') }}"
+            :action-label="__('ui.create_journal_0be6b9b3a5')"
             action-icon="plus"
             :action-href="route('care-journals.create')"
             data-section="care-journals-header"

@@ -84,6 +84,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $this->call(SocialIdentitySeeder::class);
+        $this->call(OrganizationAuthoritySeeder::class);
         $this->call(PetProfileFoundationSeeder::class);
         $this->call(ForumEventBackfillSeeder::class);
         $this->call(ForumSeeder::class);

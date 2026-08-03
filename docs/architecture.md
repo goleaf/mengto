@@ -65,6 +65,7 @@ attribution. No ranking, vote, or reaction path calls that conversion.
 | Module | Persistence | Primary application boundary |
 | --- | --- | --- |
 | Identity | `users`, `pet_profiles`, sessions, password reset | Auth controllers/Livewire, policies, `ForumActor` |
+| Organizations | Eloquent tenant, membership, invitation, restriction, audit | Tenant scopes, Policies, Actions, class-based Livewire |
 | Forum and knowledge | Eloquent | Form Requests, class-based Livewire, use-case Actions, policies, presenters |
 | Experts | Eloquent | Profile/booking Actions and participant policies |
 | Marketplace | Eloquent | Locked state transitions and order Actions |
@@ -262,6 +263,23 @@ child data is queried. The two class-based Livewire components coordinate
 small scalar/form state and bounded computed presentation arrays.
 
 See `docs/journals.md`.
+
+## Organization Authority Boundary
+
+`Organization` is the canonical tenant identity. Memberships provide current
+role projections; invitations provide account-bound entry; restrictions
+disable independent capabilities; audit events retain append-only actor and
+subject evidence. No display string, email domain, event creator, or
+marketplace record is allowed to infer organization ownership.
+
+Class-based Livewire components expose only locked numeric identity, forms,
+feedback, and prepared bounded projections. Tenant queries scope before
+presentation. Actions authorize before and after locks where applicable and
+own idempotent transactions. `ForumEvent.responsibleOrganization` consumes
+this authority without moving event ownership into the organization model.
+
+Selected-organization context and organization locations remain open P02
+boundaries and must not be simulated with browser state.
 
 ## Event And Club Boundary
 

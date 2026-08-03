@@ -1,12 +1,15 @@
 <article class="grid gap-6" aria-labelledby="expert-session-heading">
-    <header class="forum-header">
-        <div class="forum-header__copy">
-            <p class="forum-header__eyebrow">{{ __('forum_expert_sessions.page.session_eyebrow') }}</p>
-            <h1 id="expert-session-heading">{{ $this->session['title'] }}</h1>
-            <p>{{ $this->session['summary'] }}</p>
-        </div>
-        <x-status-badge :label="$this->session['phase']" icon="messages-square" />
-    </header>
+    <x-page-header
+        :eyebrow="__('forum_expert_sessions.page.session_eyebrow')"
+        :title="$this->session['title']"
+        :description="$this->session['summary']"
+        heading-id="expert-session-heading"
+        data-section="forum-expert-session-workspace-header"
+    >
+        <x-slot:meta>
+            <x-status-badge :label="$this->session['phase']" icon="messages-square" />
+        </x-slot:meta>
+    </x-page-header>
 
     @if ($feedback !== '')
         <p class="border-s-4 border-status-success py-3 ps-4" role="status" aria-live="polite">

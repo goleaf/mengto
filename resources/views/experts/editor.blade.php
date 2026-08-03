@@ -1,15 +1,16 @@
 <x-app-shell :owner="$owner" :title="$page_title" :active-section="$active_section">
     <div class="mx-auto grid max-w-5xl gap-6">
-        <header class="border-b border-paw-line pb-6">
-            <a href="{{ $expert !== null ? route('experts.show', $expert) : route('experts.index') }}" class="inline-flex items-center gap-2 text-sm font-bold text-paw-leaf">
-                <x-lucide-arrow-left class="size-4" aria-hidden="true" />
-                {{ $expert !== null ? __('ui.back_to_profile_d5647f3659') : __('ui.expert_directory_868fdd0c8b') }}
-            </a>
-            <h1 class="mt-4 text-3xl font-bold">{{ $expert !== null ? __('ui.edit_professional_profile_9016d6cd8b') : __('ui.create_a_professional_profile_e3e6352e7a') }}</h1>
-            <p class="mt-2 max-w-3xl leading-7 text-paw-muted">
-                {{ __('ui.describe_only_the_work_you_are_qualified_to_3b5dee409b') }}
-            </p>
-        </header>
+        <x-page-header
+            :eyebrow="__('ui.verified_professional_community_f3f93b61ff')"
+            :title="$expert !== null ? __('ui.edit_professional_profile_9016d6cd8b') : __('ui.create_a_professional_profile_e3e6352e7a')"
+            :description="__('ui.describe_only_the_work_you_are_qualified_to_3b5dee409b')"
+            heading-id="expert-editor-heading"
+            :action-label="$expert !== null ? __('ui.back_to_profile_d5647f3659') : __('ui.expert_directory_868fdd0c8b')"
+            action-icon="arrow-left"
+            :action-href="$expert !== null ? route('experts.show', $expert) : route('experts.index')"
+            action-variant="paper"
+            data-section="expert-editor-header"
+        />
 
         @if ($errors->any())
             <section class="rounded-md border border-red-300 bg-red-50 p-4 text-red-950" role="alert">

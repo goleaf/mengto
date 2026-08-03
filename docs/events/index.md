@@ -63,15 +63,17 @@ accepted invitations, owner, administrator, or active event-team membership.
 
 The repository does not yet contain verified provider-backed event payment,
 ticket, refund, receipt, donation, checkout reservation, QR/offline scanning,
-tracks/sessions, competition scoring, vendor/booth, sponsor, volunteer-shift,
+competition scoring, vendor/booth, sponsor, volunteer-shift,
 event incident, weather-plan, certificate, or event-feedback aggregates.
 Positive event prices remain metadata and registration refuses to simulate a
 charge. Existing generic booking/payment-like UI is not promoted to an event
 payment implementation.
 
-There is no canonical organization tenant model. Organization-only visibility
-currently means an active authorized event-team scope; cross-organization
-tenant isolation cannot be claimed until that portal aggregate exists.
+Tracks, rooms, sessions, and scoped session staff are implemented under event
+occurrences. A canonical organization tenant now provides current role-scoped
+membership, suspension restrictions, audit, and organization-only visibility.
+The global active-organization switcher and persisted place/venue authority
+remain separate portal packages.
 
 ## Evidence
 
@@ -82,6 +84,8 @@ tenant isolation cannot be claimed until that portal aggregate exists.
 - Factories: `ForumEvent*Factory` and `ForumEventRegistrationPetFactory`
 - Seeders: `ForumEventLifecycleBackfillSeeder`, `ForumEventDemoSeeder`
 - UI: `ForumEventDirectory`, `ForumEventWorkspace`, and their Blade views
+- Organization authority:
+  `tests/Feature/Organizations/OrganizationAuthorityFoundationTest.php`
 - Localization: `lang/{en,lt,ru}/forum_events.php`
 - Browser contract: event directory and recurring-event detail checks in
   `scripts/accessibility-browser-check.mjs`

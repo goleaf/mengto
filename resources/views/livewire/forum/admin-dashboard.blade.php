@@ -1,16 +1,24 @@
 <div class="forum-page">
-    <header class="forum-header">
-        <div class="forum-header__copy">
-            <p class="forum-header__eyebrow">{{ __('forum_admin.eyebrow') }}</p>
-            <h1>{{ __('forum_admin.title') }}</h1>
-            <p>{{ __('forum_admin.summary') }}</p>
-        </div>
-        <button type="button" wire:click="invalidateCategoryCaches" wire:loading.attr="disabled" class="forum-button">
-            <x-lucide-refresh-cw aria-hidden="true" />
-            <span wire:loading.remove wire:target="invalidateCategoryCaches">{{ __('forum_admin.actions.invalidate_cache') }}</span>
-            <span wire:loading wire:target="invalidateCategoryCaches">{{ __('forum_admin.actions.working') }}</span>
-        </button>
-    </header>
+    <x-page-header
+        :eyebrow="__('forum_admin.eyebrow')"
+        :title="__('forum_admin.title')"
+        :description="__('forum_admin.summary')"
+        heading-id="forum-admin-heading"
+        data-section="forum-admin-header"
+    >
+        <x-slot:actions>
+            <button
+                type="button"
+                class="action action--paper action--regular"
+                wire:click="invalidateCategoryCaches"
+                wire:loading.attr="disabled"
+            >
+                <x-lucide-refresh-cw class="icon icon--sm" aria-hidden="true" />
+                <span wire:loading.remove wire:target="invalidateCategoryCaches">{{ __('forum_admin.actions.invalidate_cache') }}</span>
+                <span wire:loading wire:target="invalidateCategoryCaches">{{ __('forum_admin.actions.working') }}</span>
+            </button>
+        </x-slot:actions>
+    </x-page-header>
 
     @if (session('feedback'))
         <p role="status" aria-live="polite" class="mb-4 rounded-md border border-status-success bg-paw-paper px-4 py-3">

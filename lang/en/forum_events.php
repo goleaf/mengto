@@ -278,6 +278,7 @@ return [
         'summary' => 'Event description',
         'type' => 'Event type',
         'visibility' => 'Visibility',
+        'responsible_organization' => 'Responsible organization',
         'format' => 'Format',
         'pet_participation_mode' => 'Pet participation',
         'accessibility_status' => 'Accessibility status',
@@ -449,6 +450,8 @@ return [
         'session_updated' => 'Session schedule updated.',
     ],
     'validation' => [
+        'organization_visibility' => 'Organization-only events require a responsible organization.',
+        'organization_membership_required' => 'This event invitation requires active membership in the responsible organization.',
         'summary' => 'Review the highlighted event fields.',
         'idempotency_conflict' => 'This request identifier already belongs to another event operation.',
         'taxa' => 'Choose only active animal groups.',

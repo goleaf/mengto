@@ -222,35 +222,3 @@
         display: inline-flex;
     }
 }
-
-@media (min-width: 64rem) {
-    .text-link--inline {
-        min-inline-size: 2rem;
-        min-block-size: 2rem;
-    }
-
-    .action {
-        &--regular,
-        &--toolbar {
-            min-block-size: 2.5rem;
-        }
-
-        &--compact {
-            min-block-size: 2.25rem;
-        }
-
-        &--micro {
-            min-block-size: 1.75rem;
-        }
-    }
-
-    .filter-chip {
-        &--compact {
-            min-block-size: 2.25rem;
-        }
-
-        &--toolbar {
-            min-block-size: 2.5rem;
-        }
-    }
-}

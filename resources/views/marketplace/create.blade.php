@@ -1,15 +1,16 @@
 <x-app-shell :owner="$owner" :title="$page_title" :active-section="$active_section">
     <div class="mx-auto grid max-w-5xl gap-6">
-        <a href="{{ route('marketplace.index') }}" class="inline-flex w-fit items-center gap-2 text-sm font-bold text-paw-leaf">
-            <x-lucide-arrow-left class="size-4" aria-hidden="true" />
-            {{ __('ui.marketplace_c608981d8d') }}
-        </a>
-
-        <header class="border-b border-paw-line pb-6">
-            <p class="text-sm font-bold uppercase text-paw-leaf">{{ __('ui.new_marketplace_listing_e6c98b5c48') }}</p>
-            <h1 class="mt-2 text-3xl font-bold sm:text-4xl">{{ __('ui.create_a_structured_offer_1feacd39c7') }}</h1>
-            <p class="mt-3 max-w-2xl leading-7 text-paw-muted">{{ __('ui.disclose_measurements_defects_availability_handover_terms_and_the_ece5ea6b60') }}</p>
-        </header>
+        <x-page-header
+            :eyebrow="__('ui.new_marketplace_listing_e6c98b5c48')"
+            :title="__('ui.create_a_structured_offer_1feacd39c7')"
+            :description="__('ui.disclose_measurements_defects_availability_handover_terms_and_the_ece5ea6b60')"
+            heading-id="create-marketplace-listing-heading"
+            :action-label="__('ui.marketplace_c608981d8d')"
+            action-icon="arrow-left"
+            :action-href="route('marketplace.index')"
+            action-variant="paper"
+            data-section="marketplace-create-header"
+        />
 
         @if ($errors->any())
             <div class="form-errors" role="alert">

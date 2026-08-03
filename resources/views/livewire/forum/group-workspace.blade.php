@@ -1,11 +1,11 @@
 <section class="grid gap-6" aria-labelledby="persistent-group-heading">
-    <header class="forum-header">
-        <div class="forum-header__copy">
-            <p class="forum-header__eyebrow">{{ $this->group['visibility'] }} · {{ $this->group['status'] }}</p>
-            <h1 id="persistent-group-heading">{{ $this->group['name'] }}</h1>
-            <p>{{ $this->group['description'] }}</p>
-        </div>
-    </header>
+    <x-page-header
+        :eyebrow="$this->group['visibility'].' · '.$this->group['status']"
+        :title="$this->group['name']"
+        :description="$this->group['description']"
+        heading-id="persistent-group-heading"
+        data-section="forum-group-workspace-header"
+    />
 
     @if ($feedback !== '')
         <p class="border-s-4 border-status-success py-3 ps-4" role="status" aria-live="polite">

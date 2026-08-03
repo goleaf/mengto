@@ -593,6 +593,30 @@ The package changes no route, Blade, schema, or browser interaction, so a
 browser-only gate is not applicable. Exact scope is in
 `docs/plans/forum-phase4-special-needs-category-work-package.md`.
 
+## Organization Authority Foundation
+
+`OrganizationAuthorityFoundationTest` covers idempotent creation, owner
+membership, account-bound signed invitations, encrypted temporary token
+state, single use, removal, role separation, suspension and individual
+restrictions, event integration, route/Livewire tenant isolation, EN/LT/RU,
+factory helpers, guarded repeat seeding, event-builder scoping, bounded
+directory queries, and private workspace projections.
+
+Observed evidence on 2026-08-03:
+
+- focused organization contract: 14 tests and 109 assertions;
+- organization/event/schema slice: 34 tests and 237 assertions;
+- full Larastan: zero findings;
+- migration lifecycle: 121-to-0-to-121 files, 205 tables, and stable 5-user
+  repeated seed;
+- Composer strict validation/audit, npm audit with zero vulnerabilities, Vite
+  8.2.0 build, cache compilation, localization, and deterministic forum
+  source/manifest/requirements checks: passed.
+
+The final full-suite/Pint rerun and scoped publication remain pending. Exact
+implemented and open P02 scope is recorded in
+`docs/plans/portal-organization-authority-foundation-work-package.md`.
+
 ## Linked Media Navigation Verification
 
 `LinkedMediaNavigationContractTest` verifies the semantic linked/passive

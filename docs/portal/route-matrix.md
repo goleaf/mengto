@@ -1,8 +1,8 @@
 # Portal Route Matrix
 
 The executable source of truth is `routes/web.php`; `php artisan route:list
---json` reported 173 active routes on 2026-08-03. The canonical
-`php artisan route:list --except-vendor --json` audit reported 162 first-party
+--json` reported 176 active routes on 2026-08-03. The canonical
+`php artisan route:list --except-vendor --json` audit reported 165 first-party
 routes and excluded 11 package/runtime endpoints.
 
 ## Event Routes
@@ -15,7 +15,7 @@ their canonical event targets. Behaviour coverage remains mapped in
 
 ## Global Page Identity Classification
 
-The 108 first-party routes accepting `GET` are classified below. The executable
+The 111 first-party routes accepting `GET` are classified below. The executable
 one-route/one-class ledger is
 `tests/Support/page-identity-route-classification.php`; the route inventory test
 fails when a route is added, removed, duplicated, or left unclassified.
@@ -41,12 +41,12 @@ the decision column is the desired page-identity boundary.
 | `profile.mia` | `/@mia-carter` | `MemberProfilePreviewController` | `deliberate-detail-or-profile` | retain token-compatible hero pending audit |
 | `pets.nori` | `/@mia-carter/nori` | `PetProfilePreviewController` | `deliberate-detail-or-profile` | retain token-compatible hero pending audit |
 | `pets.scout` | `/@mia-carter/scout` | `PetProfilePreviewController` | `deliberate-detail-or-profile` | retain token-compatible hero pending audit |
-| `admin.forum.index` | `/admin/forum` | `ForumAdministrationController` | `migration-candidate` | migrate to `x-page-header` |
+| `admin.forum.index` | `/admin/forum` | `ForumAdministrationController` | `canonical-page` | retain `x-page-header` |
 | `bookings.show` | `/bookings/{booking}` | `BookingController` | `deliberate-detail-or-profile` | retain token-compatible hero pending audit |
 | `care-access.show` | `/care-access/{token}` | `CareSharedJournalController` | `special-document-or-scoped-access` | retain isolated semantic document |
 | `care-access.media.download` | `/care-access/{token}/media/{careMedia}` | `CareSharedMediaDownloadController` | `file-response` | no page identity |
 | `care-journals.index` | `/care-journals` | `CareJournalDirectoryController` | `canonical-page` | retain `x-page-header` |
-| `care-journals.create` | `/care-journals/new` | `CareJournalCreateController` | `migration-candidate` | migrate to `x-page-header` |
+| `care-journals.create` | `/care-journals/new` | `CareJournalCreateController` | `canonical-page` | retain `x-page-header` |
 | `care-journals.show` | `/care-journals/{careJournal}` | `CareJournalController` | `deliberate-detail-or-profile` | retain token-compatible hero pending audit |
 | `care-journals.manage` | `/care-journals/{careJournal}/manage` | `CareJournalManageController` | `deliberate-detail-or-profile` | retain token-compatible hero pending audit |
 | `care-journals.media.download` | `/care-journals/{careJournal}/media/{careMedia}` | `CareMediaDownloadController` | `file-response` | no page identity |
@@ -55,76 +55,79 @@ the decision column is the desired page-identity boundary.
 | `connections.index` | `/circle/connections` | `ConnectionCenterPreviewController` | `canonical-page` | retain `x-page-header` |
 | `pet-friends.index` | `/circle/pet-friends` | `PetFriendCenterPreviewController` | `canonical-page` | retain `x-page-header` |
 | `social.index` | `/circle/social` | `Social\RelationshipCenter` | `canonical-page` | retain `x-page-header` |
-| `compose` | `/compose/{kind}` | `ComposerController` | `migration-candidate` | migrate to `x-page-header` |
+| `compose` | `/compose/{kind}` | `ComposerController` | `canonical-page` | retain `x-page-header` |
 | `password.confirm` | `/confirm-password` | `Auth\ConfirmPassword` | `authentication-shell` | retain auth shell |
 | `consultations.show` | `/consultations/{consultation}` | `ConsultationController` | `deliberate-detail-or-profile` | retain token-compatible hero pending audit |
-| `content.index` | `/content` | `ContentFeedController` | `migration-candidate` | migrate to `x-page-header` |
+| `content.index` | `/content` | `ContentFeedController` | `canonical-page` | retain `x-page-header` |
 | `content.show` | `/content/{contentPublication:publication_key}` | `ContentPublicationController` | `deliberate-detail-or-profile` | retain token-compatible hero pending audit |
 | `device-access.show` | `/device-access/{token}` | `DeviceSharedDashboardController` | `special-document-or-scoped-access` | retain isolated semantic document |
-| `devices.index` | `/devices` | `SmartDeviceDirectoryController` | `migration-candidate` | migrate to `x-page-header` |
-| `devices.create` | `/devices/new` | `SmartDeviceCreateController` | `migration-candidate` | migrate to `x-page-header` |
+| `devices.index` | `/devices` | `SmartDeviceDirectoryController` | `canonical-page` | retain `x-page-header` |
+| `devices.create` | `/devices/new` | `SmartDeviceCreateController` | `canonical-page` | retain `x-page-header` |
 | `devices.show` | `/devices/{smartDevice}` | `SmartDeviceController` | `deliberate-detail-or-profile` | retain token-compatible hero pending audit |
 | `devices.manage` | `/devices/{smartDevice}/manage` | `SmartDeviceManageController` | `deliberate-detail-or-profile` | retain token-compatible hero pending audit |
 | `discover.index` | `/discover` | `DiscoverPreviewController` | `canonical-page` | retain `x-page-header` |
 | `experts.index` | `/experts` | `ExpertDirectoryController` | `canonical-page` | retain `x-page-header` |
-| `experts.create` | `/experts/new` | `ExpertProfileCreateController` | `migration-candidate` | migrate to `x-page-header` |
-| `experts.dashboard` | `/experts/workspace` | `ExpertDashboardController` | `migration-candidate` | migrate to `x-page-header` |
+| `experts.create` | `/experts/new` | `ExpertProfileCreateController` | `canonical-page` | retain `x-page-header` |
+| `experts.dashboard` | `/experts/workspace` | `ExpertDashboardController` | `canonical-page` | retain `x-page-header` |
 | `experts.show` | `/experts/{expertProfile}` | `ExpertProfileController` | `deliberate-detail-or-profile` | retain token-compatible hero pending audit |
-| `experts.bookings.create` | `/experts/{expertProfile}/book` | `BookingCreateController` | `migration-candidate` | migrate to `x-page-header` |
-| `experts.edit` | `/experts/{expertProfile}/edit` | `ExpertProfileEditController` | `migration-candidate` | migrate to `x-page-header` |
+| `experts.bookings.create` | `/experts/{expertProfile}/book` | `BookingCreateController` | `canonical-page` | retain `x-page-header` |
+| `experts.edit` | `/experts/{expertProfile}/edit` | `ExpertProfileEditController` | `canonical-page` | retain `x-page-header` |
 | `password.request` | `/forgot-password` | `Auth\ForgotPassword` | `authentication-shell` | retain auth shell |
-| `forum.index` | `/forum` | `ForumController` | `migration-candidate` | migrate to `x-page-header` |
-| `forum.topics.create` | `/forum/ask` | `TopicCreateController` | `migration-candidate` | migrate to `x-page-header` |
-| `forum.expert-sessions.index` | `/forum/expert-sessions` | `ForumExpertSessionDirectoryController` | `migration-candidate` | migrate to `x-page-header` |
-| `forum.expert-sessions.show` | `/forum/expert-sessions/{forumExpertSession:stable_key}` | `ForumExpertSessionShowController` | `migration-candidate` | migrate to `x-page-header` |
-| `forum.groups.index` | `/forum/groups` | `ForumGroupDirectoryController` | `migration-candidate` | migrate to `x-page-header` |
-| `forum.groups.show` | `/forum/groups/{forumGroup:stable_key}` | `ForumGroupShowController` | `migration-candidate` | migrate to `x-page-header` |
+| `forum.index` | `/forum` | `ForumController` | `canonical-page` | retain `x-page-header` |
+| `forum.topics.create` | `/forum/ask` | `TopicCreateController` | `canonical-page` | retain `x-page-header` |
+| `forum.expert-sessions.index` | `/forum/expert-sessions` | `ForumExpertSessionDirectoryController` | `canonical-page` | retain `x-page-header` |
+| `forum.expert-sessions.show` | `/forum/expert-sessions/{forumExpertSession:stable_key}` | `ForumExpertSessionShowController` | `canonical-page` | retain `x-page-header` |
+| `forum.groups.index` | `/forum/groups` | `ForumGroupDirectoryController` | `canonical-page` | retain `x-page-header` |
+| `forum.groups.show` | `/forum/groups/{forumGroup:stable_key}` | `ForumGroupShowController` | `canonical-page` | retain `x-page-header` |
 | `forum.groups.files.download` | `/forum/groups/{forumGroup:stable_key}/files/{file:stable_key}` | `ForumGroupFileDownloadController` | `file-response` | no page identity |
-| `forum.journals.index` | `/forum/journals` | `ForumJournalDirectoryController` | `migration-candidate` | migrate to `x-page-header` |
+| `forum.journals.index` | `/forum/journals` | `ForumJournalDirectoryController` | `canonical-page` | retain `x-page-header` |
 | `forum.journals.export` | `/forum/journals/{forumJournal:stable_key}/export` | `ForumJournalExportController` | `file-response` | no page identity |
 | `forum.journals.media.show` | `/forum/journals/{forumJournal:stable_key}/media/{forumJournalMedia:stable_key}` | `ForumJournalMediaController` | `file-response` | no page identity |
-| `forum.mentorship.index` | `/forum/mentorship` | `ForumMentorshipController` | `migration-candidate` | migrate to `x-page-header` |
+| `forum.mentorship.index` | `/forum/mentorship` | `ForumMentorshipController` | `canonical-page` | retain `x-page-header` |
 | `forum.topics.similar` | `/forum/similar` | `SimilarTopicController` | `structured-response` | no page identity |
-| `forum.topics.show` | `/forum/topics/{forumTopic}` | `TopicController` | `migration-candidate` | migrate to `x-page-header` |
-| `forum.topics.edit` | `/forum/topics/{forumTopic}/edit` | `TopicEditController` | `migration-candidate` | migrate to `x-page-header` |
+| `forum.topics.show` | `/forum/topics/{forumTopic}` | `TopicController` | `canonical-page` | retain `x-page-header` |
+| `forum.topics.edit` | `/forum/topics/{forumTopic}/edit` | `TopicEditController` | `canonical-page` | retain `x-page-header` |
 | `groups.index` | `/groups` | `GroupDirectoryPreviewController` | `canonical-page` | retain `x-page-header` |
 | `groups.apartment_pets` | `/groups/apartment-pets-pdx` | `GroupDetailPreviewController` | `deliberate-detail-or-profile` | retain token-compatible hero pending audit |
 | `groups.show` | `/groups/{group}` | `GroupDetailPreviewController` | `deliberate-detail-or-profile` | retain token-compatible hero pending audit |
 | `groups.created` | `/groups/{item}` | `CreatedContentPreviewController` | `deliberate-detail-or-profile` | retain token-compatible hero pending audit |
-| `knowledge.index` | `/knowledge` | `KnowledgeController` | `migration-candidate` | migrate to `x-page-header` |
-| `knowledge.guides.create` | `/knowledge/guides/new` | `KnowledgeGuideCreateController` | `migration-candidate` | migrate to `x-page-header` |
+| `knowledge.index` | `/knowledge` | `KnowledgeController` | `canonical-page` | retain `x-page-header` |
+| `knowledge.guides.create` | `/knowledge/guides/new` | `KnowledgeGuideCreateController` | `canonical-page` | retain `x-page-header` |
 | `knowledge.articles.show` | `/knowledge/{knowledgeArticle}` | `ArticleController` | `deliberate-detail-or-profile` | retain token-compatible hero pending audit |
-| `knowledge.guides.edit` | `/knowledge/{knowledgeArticle}/edit` | `KnowledgeGuideEditController` | `migration-candidate` | migrate to `x-page-header` |
+| `knowledge.guides.edit` | `/knowledge/{knowledgeArticle}/edit` | `KnowledgeGuideEditController` | `canonical-page` | retain `x-page-header` |
 | `knowledge.articles.export` | `/knowledge/{knowledgeArticle}/export` | `KnowledgeGuideExportController` | `file-response` | no page identity |
 | `knowledge.articles.print` | `/knowledge/{knowledgeArticle}/print` | `KnowledgeGuidePrintController` | `special-document-or-scoped-access` | retain isolated semantic document |
-| `knowledge.guides.translations.create` | `/knowledge/{knowledgeArticle}/translations/new` | `KnowledgeGuideTranslationCreateController` | `migration-candidate` | migrate to `x-page-header` |
+| `knowledge.guides.translations.create` | `/knowledge/{knowledgeArticle}/translations/new` | `KnowledgeGuideTranslationCreateController` | `canonical-page` | retain `x-page-header` |
 | `login` | `/login` | `Auth\Login` | `authentication-shell` | retain auth shell |
 | `lost-found.index` | `/lost-found` | `SearchDirectoryController` | `canonical-page` | retain `x-page-header` |
-| `lost-found.create` | `/lost-found/new` | `SearchCaseCreateController` | `migration-candidate` | migrate to `x-page-header` |
+| `lost-found.create` | `/lost-found/new` | `SearchCaseCreateController` | `canonical-page` | retain `x-page-header` |
 | `lost-found.show` | `/lost-found/{searchCase}` | `SearchCaseController` | `deliberate-detail-or-profile` | retain token-compatible hero pending audit |
 | `lost-found.coordinate` | `/lost-found/{searchCase}/coordinate` | `SearchCoordinationController` | `deliberate-detail-or-profile` | retain token-compatible hero pending audit |
 | `lost-found.poster` | `/lost-found/{searchCase}/poster` | `SearchPosterController` | `special-document-or-scoped-access` | retain isolated semantic document |
 | `marketplace.index` | `/marketplace` | `ListingDirectoryController` | `canonical-page` | retain `x-page-header` |
-| `marketplace.create` | `/marketplace/new` | `ListingCreateController` | `migration-candidate` | migrate to `x-page-header` |
+| `marketplace.create` | `/marketplace/new` | `ListingCreateController` | `canonical-page` | retain `x-page-header` |
 | `marketplace.show` | `/marketplace/{listing}` | `ListingController` | `deliberate-detail-or-profile` | retain token-compatible hero pending audit |
 | `marketplace.orders.show` | `/marketplace/{listing}/orders/{order}` | `OrderController` | `deliberate-detail-or-profile` | retain token-compatible hero pending audit |
 | `medical-access.show` | `/medical-access/{token}` | `MedicalSharedRecordController` | `special-document-or-scoped-access` | retain isolated semantic document |
 | `medical-access.documents.download` | `/medical-access/{token}/documents/{medicalDocument}` | `MedicalSharedDocumentDownloadController` | `file-response` | no page identity |
 | `medical-records.index` | `/medical-records` | `MedicalRecordDirectoryController` | `canonical-page` | retain `x-page-header` |
-| `medical-records.create` | `/medical-records/new` | `MedicalRecordCreateController` | `migration-candidate` | migrate to `x-page-header` |
+| `medical-records.create` | `/medical-records/new` | `MedicalRecordCreateController` | `canonical-page` | retain `x-page-header` |
 | `medical-records.show` | `/medical-records/{medicalRecord}` | `MedicalRecordController` | `deliberate-detail-or-profile` | retain token-compatible hero pending audit |
 | `medical-records.documents.download` | `/medical-records/{medicalRecord}/documents/{document}` | `MedicalDocumentDownloadController` | `file-response` | no page identity |
 | `medical-records.emergency` | `/medical-records/{medicalRecord}/emergency` | `MedicalEmergencyCardController` | `special-document-or-scoped-access` | retain isolated semantic document |
 | `medical-records.manage` | `/medical-records/{medicalRecord}/manage` | `MedicalRecordManageController` | `deliberate-detail-or-profile` | retain token-compatible hero pending audit |
-| `meetups.index` | `/meetups` | `MeetupDirectoryPreviewController` | `migration-candidate` | migrate to `x-page-header` |
-| `meetups.small_dog_social` | `/meetups/small-dog-social` | `MeetupDetailPreviewController` | `migration-candidate` | migrate to `x-page-header` |
-| `meetups.show` | `/meetups/{event}` | `MeetupDetailPreviewController` | `migration-candidate` | migrate to `x-page-header` |
-| `meetups.created` | `/meetups/{item}` | `CreatedContentPreviewController` | `migration-candidate` | migrate to `x-page-header` |
+| `meetups.index` | `/meetups` | `MeetupDirectoryPreviewController` | `canonical-page` | retain `x-page-header` |
+| `meetups.small_dog_social` | `/meetups/small-dog-social` | `MeetupDetailPreviewController` | `canonical-page` | retain `x-page-header` |
+| `meetups.show` | `/meetups/{event}` | `MeetupDetailPreviewController` | `canonical-page` | retain `x-page-header` |
+| `meetups.created` | `/meetups/{item}` | `CreatedContentPreviewController` | `deliberate-detail-or-profile` | retain token-compatible hero pending audit |
 | `messages.index` | `/messages` | `MessageCenterPreviewController` | `canonical-page` | retain `x-page-header` |
 | `messages.details` | `/messages/{conversation}/details` | `ConversationDetailPreviewController` | `deliberate-detail-or-profile` | retain token-compatible hero pending audit |
 | `neighbors.index` | `/neighbors` | `NeighborDirectoryPreviewController` | `canonical-page` | retain `x-page-header` |
 | `neighbors.ari` | `/neighbors/ari-jensen` | `NeighborProfilePreviewController` | `deliberate-detail-or-profile` | retain token-compatible hero pending audit |
 | `notifications.index` | `/notifications` | `NotificationCenterPreviewController` | `canonical-page` | retain `x-page-header` |
+| `organizations.index` | `/organizations` | `Organizations\OrganizationDirectory` | `canonical-page` | retain `x-page-header` |
+| `organizations.invitations.respond` | `/organizations/invitations/{organizationInvitation:stable_key}/respond` | `Organizations\OrganizationInvitationResponse` | `canonical-page` | retain `x-page-header` |
+| `organizations.show` | `/organizations/{organization:slug}` | `Organizations\OrganizationWorkspace` | `canonical-page` | retain `x-page-header` |
 | `pets.index` | `/pets` | `PetDirectoryPreviewController` | `canonical-page` | retain `x-page-header` |
 | `pets.manage.invitations` | `/pets/manage/invitations` | `Pets\PetProfileInvitations` | `canonical-page` | retain `x-page-header` |
 | `pets.manage.create` | `/pets/manage/new` | `Pets\CreatePetProfile` | `canonical-page` | retain `x-page-header` |
@@ -136,7 +139,7 @@ the decision column is the desired page-identity boundary.
 | `places.show` | `/places/{place}` | `PlaceDetailPreviewController` | `deliberate-detail-or-profile` | retain token-compatible hero pending audit |
 | `portal-media.show` | `/portal-media/{path}` | `PortalMediaController` | `file-response` | no page identity |
 | `posts.show` | `/posts/{post}` | `PostThreadPreviewController` | `canonical-page` | retain `x-page-header` |
-| `preview.feed` | `/preview/feed` | `PreviewController` | `migration-candidate` | migrate to `x-page-header` |
+| `preview.feed` | `/preview/feed` | `PreviewController` | `canonical-page` | retain `x-page-header` |
 | `profile.mia.legacy` | `/profile/mia-carter` | `RedirectController` | `redirect` | no page identity |
 | `profile.settings` | `/profile/settings` | `ProfileSettings` | `canonical-page` | retain `x-page-header` |
 | `register` | `/register` | `Auth\Register` | `authentication-shell` | retain auth shell |

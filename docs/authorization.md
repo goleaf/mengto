@@ -187,6 +187,26 @@ See `docs/groups.md`.
   verifies parent consistency, and authorizes again.
 
 See `docs/journals.md`.
+## Organization Abilities
+
+`OrganizationPolicy` separates tenant viewing, membership administration,
+event organization, finance, safety, marketplace, shelter, restriction, and
+read-only audit abilities. A current active membership is required unless a
+deliberate platform-administrator path applies. Specialist roles do not imply
+one another.
+
+All organization routes require an active verified account. The directory is
+query-scoped with `accessibleTo()` before models reach presentation. Workspace
+and invitation components reload and authorize on hydration; every mutation
+authorizes again inside its Action and transaction. Former members and wrong-
+organization actors fail closed.
+
+Organization-bound event visibility requires current membership. Event
+creation/invitation/registration/check-in/publication paths independently
+consult the responsible organization's current capability restrictions.
+Assigned safety/welfare/medical staff retain only the explicit emergency
+participant-data override; a restricted owner does not.
+
 ## Event Abilities
 
 `ForumEventPolicy` controls listing, viewing, creation, updates, cancellation,

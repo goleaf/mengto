@@ -9,6 +9,7 @@ use App\Enums\ForumEventRegistrationStatus;
 use App\Enums\ForumEventStatus;
 use App\Enums\ForumEventTeamRole;
 use App\Enums\ForumEventVisibility;
+use App\Enums\OrganizationRestrictionCapability;
 use App\Models\ForumEvent;
 use App\Models\User;
 
@@ -36,10 +37,7 @@ final class ForumEventPolicy
             ForumEventVisibility::Unlisted => true,
             ForumEventVisibility::Members => $user?->isActive() === true,
             ForumEventVisibility::Organization => $user?->isActive() === true
-                && $event->teamMemberships()
-                    ->active()
-                    ->where('user_id', $user->id)
-                    ->exists(),
+                && $event->responsibleOrganization?->membershipFor($user) !== null,
             ForumEventVisibility::Group => $user?->isActive() === true
                 && $event->group()
                     ->where(function ($groups) use ($user): void {
@@ -97,23 +95,40 @@ final class ForumEventPolicy
             && $user->hasVerifiedEmail()
             && $this->view($user, $event)
             && ! $event->isOrganizer($user)
+            && $this->organizationAllows(
+                $event,
+                OrganizationRestrictionCapability::AcceptRegistrations,
+            )
             && $event->status->acceptsRegistration()
             && $event->starts_at->isFuture();
     }
 
     public function manageRegistrations(?User $user, ForumEvent $event): bool
     {
-        return $user?->isActive() === true
-            && ($user->isAdministrator() || $this->hasTeamRole($user, $event, [
-                ForumEventTeamRole::Owner,
-                ForumEventTeamRole::Administrator,
-                ForumEventTeamRole::PrimaryOrganizer,
-                ForumEventTeamRole::CoOrganizer,
-                ForumEventTeamRole::RegistrationManager,
-                ForumEventTeamRole::CheckInOperator,
-                ForumEventTeamRole::SafetyLead,
-                ForumEventTeamRole::WelfareOfficer,
-            ]));
+        if ($user?->isActive() !== true) {
+            return false;
+        }
+
+        $isEmergencyStaff = $this->hasAssignedTeamRole($user, $event, [
+            ForumEventTeamRole::SafetyLead,
+            ForumEventTeamRole::WelfareOfficer,
+            ForumEventTeamRole::MedicalContact,
+        ]);
+
+        return ($user->isAdministrator() || $this->hasTeamRole($user, $event, [
+            ForumEventTeamRole::Owner,
+            ForumEventTeamRole::Administrator,
+            ForumEventTeamRole::PrimaryOrganizer,
+            ForumEventTeamRole::CoOrganizer,
+            ForumEventTeamRole::RegistrationManager,
+            ForumEventTeamRole::CheckInOperator,
+            ForumEventTeamRole::SafetyLead,
+            ForumEventTeamRole::WelfareOfficer,
+        ]))
+            && ($isEmergencyStaff || $this->organizationAllows(
+                $event,
+                OrganizationRestrictionCapability::AccessParticipantData,
+            ));
     }
 
     public function manageTeam(?User $user, ForumEvent $event): bool
@@ -157,7 +172,12 @@ final class ForumEventPolicy
         ForumEvent $event,
         ForumEventStatus $next,
     ): bool {
-        if ($this->update($user, $event)) {
+        if ($this->update($user, $event)
+            && ($next !== ForumEventStatus::Published || $this->organizationAllows(
+                $event,
+                OrganizationRestrictionCapability::PublishEvents,
+            ))
+        ) {
             return true;
         }
 
@@ -172,7 +192,20 @@ final class ForumEventPolicy
     public function invite(?User $user, ForumEvent $event): bool
     {
         return $this->update($user, $event)
-            && $event->status === ForumEventStatus::Scheduled;
+            && $event->status === ForumEventStatus::Scheduled
+            && $this->organizationAllows(
+                $event,
+                OrganizationRestrictionCapability::CreateInvitations,
+            );
+    }
+
+    public function checkIn(?User $user, ForumEvent $event): bool
+    {
+        return $this->manageRegistrations($user, $event)
+            && $this->organizationAllows(
+                $event,
+                OrganizationRestrictionCapability::RunCheckIn,
+            );
     }
 
     public function respondToInvitation(?User $user, ForumEvent $event): bool
@@ -253,6 +286,10 @@ final class ForumEventPolicy
     /** @param list<ForumEventTeamRole> $roles */
     private function hasTeamRole(User $user, ForumEvent $event, array $roles): bool
     {
+        if (! $this->hasOrganizationMembership($user, $event)) {
+            return false;
+        }
+
         if ($event->isOwner($user) || $event->isOrganizer($user)) {
             return true;
         }
@@ -275,5 +312,36 @@ final class ForumEventPolicy
             ForumEventTeamRole::PrimaryOrganizer,
             ForumEventTeamRole::CoOrganizer,
         ]);
+    }
+
+    /** @param list<ForumEventTeamRole> $roles */
+    private function hasAssignedTeamRole(User $user, ForumEvent $event, array $roles): bool
+    {
+        if (! $this->hasOrganizationMembership($user, $event)) {
+            return false;
+        }
+
+        return $event->teamMemberships()
+            ->active()
+            ->where('user_id', $user->id)
+            ->whereIn('role', array_map(
+                static fn (ForumEventTeamRole $role): string => $role->value,
+                $roles,
+            ))
+            ->exists();
+    }
+
+    private function organizationAllows(
+        ForumEvent $event,
+        OrganizationRestrictionCapability $capability,
+    ): bool {
+        return $event->responsibleOrganization === null
+            || $event->responsibleOrganization->allows($capability);
+    }
+
+    private function hasOrganizationMembership(User $user, ForumEvent $event): bool
+    {
+        return $event->responsibleOrganization === null
+            || $event->responsibleOrganization->membershipFor($user) !== null;
     }
 }

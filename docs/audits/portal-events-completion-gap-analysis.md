@@ -38,6 +38,16 @@ routes, navigation, settings, discovery, or notification UI. It means the
 existing behavior has not yet been reconciled against and promoted through
 the Point 12 evidence overlay.
 
+## Post-Audit Progress
+
+The dated baseline above remains historical. The organization authority
+foundation was subsequently implemented on 2026-08-03: five organization
+models/tables, current role-scoped membership, signed account-bound
+invitations, eight independent restrictions, audit, three organization routes,
+class-based Livewire workspaces, and responsible-organization event linkage.
+The implementation and fresh verification are recorded in
+`docs/plans/portal-organization-authority-foundation-work-package.md`.
+
 ## Existing Portal Foundation
 
 The repository already has one authenticated Blade/Livewire shell, a
@@ -49,8 +59,9 @@ is migrating directories to the canonical page header.
 
 The following Point 12 foundations are still absent or unproved:
 
-1. No canonical organization aggregate, organization membership, tenant
-   policy, suspension state, or organization context switcher exists.
+1. Organization identity, membership, tenant Policies, role separation,
+   suspension, audit, and event responsibility now exist. The active global
+   organization context switcher remains open P05 scope.
 2. No canonical selected-pet context exists across modules and quick actions.
 3. No global search provider registry, privacy-scoped result contract, saved
    search, recommendation explanation, or sponsored-result model exists.

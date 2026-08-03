@@ -1,15 +1,15 @@
 <x-app-shell :owner="$owner" :title="$page_title" :active-section="$active_section">
     <div class="grid gap-6">
         <x-page-header
-            eyebrow="{{ __('ui.verified_professional_community_f3f93b61ff') }}"
-            title="{{ __('ui.find_the_right_specialist_for_this_pet_21bb34d7d0') }}"
-            description="{{ __('ui.compare_scope_species_independently_checked_credentials_availability_lan_8ad672b4c3') }}"
+            :eyebrow="__('ui.verified_professional_community_f3f93b61ff')"
+            :title="__('ui.find_the_right_specialist_for_this_pet_21bb34d7d0')"
+            :description="__('ui.compare_scope_species_independently_checked_credentials_availability_lan_8ad672b4c3')"
             heading-id="experts-heading"
             data-section="experts-header"
         >
             <x-slot:actions>
-                <x-action-control label="{{ __('ui.professional_workspace_eb8eb6dde6') }}" icon="briefcase-business" :href="route('experts.dashboard')" />
-                <x-action-control label="{{ __('ui.create_professional_profile_30276b75d3') }}" icon="badge-plus" variant="primary" size="regular" :href="route('experts.create')" />
+                <x-action-control :label="__('ui.professional_workspace_eb8eb6dde6')" icon="briefcase-business" :href="route('experts.dashboard')" />
+                <x-action-control :label="__('ui.create_professional_profile_30276b75d3')" icon="badge-plus" variant="primary" size="regular" :href="route('experts.create')" />
             </x-slot:actions>
         </x-page-header>
 

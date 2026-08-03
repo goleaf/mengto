@@ -1,11 +1,11 @@
 <section class="grid gap-6" aria-labelledby="forum-event-directory-heading" data-section="event-directory">
-    <header class="forum-header">
-        <div class="forum-header__copy">
-            <p class="forum-header__eyebrow">{{ __('forum_events.page.eyebrow') }}</p>
-            <h1 id="forum-event-directory-heading">{{ __('forum_events.page.heading') }}</h1>
-            <p>{{ __('forum_events.page.description') }}</p>
-        </div>
-    </header>
+    <x-page-header
+        :eyebrow="__('forum_events.page.eyebrow')"
+        :title="__('forum_events.page.heading')"
+        :description="__('forum_events.page.description')"
+        heading-id="forum-event-directory-heading"
+        data-section="forum-event-directory-header"
+    />
 
     @if ($feedback !== '')
         <p class="border-s-4 border-status-success py-3 ps-4" role="status" aria-live="polite">
@@ -197,13 +197,26 @@
                     </label>
                     <label class="forum-form__field">
                         <span>{{ __('forum_events.fields.visibility') }}</span>
-                        <select wire:model="form.visibility" required>
+                        <select wire:model.live="form.visibility" required>
                             @forelse ($this->visibilityOptions as $value => $label)
                                 <option value="{{ $value }}">{{ $label }}</option>
                             @empty
                             @endforelse
                         </select>
                     </label>
+                    @if ($form->visibility === 'organization')
+                        <label class="forum-form__field md:col-span-2">
+                            <span>{{ __('forum_events.fields.responsible_organization') }}</span>
+                            <select wire:model="form.responsibleOrganizationId" required>
+                                <option value="">{{ __('forum_events.fields.responsible_organization') }}</option>
+                                @forelse ($this->organizationOptions as $value => $label)
+                                    <option value="{{ $value }}">{{ $label }}</option>
+                                @empty
+                                @endforelse
+                            </select>
+                            @error('form.responsibleOrganizationId') <small role="alert">{{ $message }}</small> @enderror
+                        </label>
+                    @endif
                     <label class="forum-form__field">
                         <span>{{ __('forum_events.fields.format') }}</span>
                         <select wire:model.live="form.format" required>
@@ -246,6 +259,7 @@
                         <span>{{ __('forum_events.fields.timezone') }}</span>
                         <input type="text" wire:model="form.timezone" maxlength="64" required>
                         @error('form.timezone') <small role="alert">{{ $message }}</small> @enderror
+                    </label>
                     <label class="forum-form__field">
                         <span>{{ __('forum_events.fields.capacity') }}</span>
                         <input type="number" wire:model="form.capacity" min="1" max="100000">

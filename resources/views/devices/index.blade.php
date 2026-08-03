@@ -1,18 +1,15 @@
 <x-app-shell :owner="$owner" :title="$page_title" :active-section="$active_section">
     <div class="grid gap-7">
-        <header class="device-directory-header">
-            <div>
-                <div class="flex items-center gap-2 text-sm font-bold text-paw-leaf">
-                    <x-lucide-lock-keyhole class="size-4" aria-hidden="true" />
-                    <span>{{ __('ui.private_device_center_a5f6e6b34b') }}</span>
-                </div>
-                <h1 class="mt-3 text-3xl font-bold sm:text-4xl">{{ __('ui.smart_devices_228fd3f770') }}</h1>
-                <p class="mt-2 max-w-3xl text-paw-muted">
-                    {{ __('ui.location_feeding_water_rest_home_conditions_and_device_837fed39ce') }}
-                </p>
-            </div>
-            <x-action-control :href="route('devices.create')" label="{{ __('ui.connect_device_25367e4d86') }}" icon="plus" variant="primary" size="regular" />
-        </header>
+        <x-page-header
+            :eyebrow="__('ui.private_device_center_a5f6e6b34b')"
+            :title="__('ui.smart_devices_228fd3f770')"
+            :description="__('ui.location_feeding_water_rest_home_conditions_and_device_837fed39ce')"
+            heading-id="devices-heading"
+            :action-label="__('ui.connect_device_25367e4d86')"
+            action-icon="plus"
+            :action-href="route('devices.create')"
+            data-section="devices-header"
+        />
 
         <section class="device-summary" aria-label="{{ __('ui.device_overview_c51d73ad18') }}">
             <div><x-lucide-radio class="size-5" aria-hidden="true" /><span>{{ __('ui.devices_4ba5121d4d') }}</span><strong>{{ $summary['total'] }}</strong></div>

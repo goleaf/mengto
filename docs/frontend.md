@@ -121,6 +121,19 @@ transitions; mutations themselves remain server-authoritative Livewire
 operations. See
 `docs/superpowers/specs/2026-07-31-auth-interface-redesign.md`.
 
+## Organization Workspaces
+
+`/organizations` and `/organizations/{organization}` use the canonical page
+header, bounded content panels, native forms, localized feedback, visible
+focus, stable database-backed keys, and mobile-first grids. The invitation
+response is an account-bound canonical page reached by an ordinary signed
+link; accepting or declining remains a server-authoritative mutation.
+
+Blade receives only prepared presentation values. Member emails and internal
+restriction reasons are absent rather than visually hidden when the current
+actor lacks management authority. Organization browser coverage remains an
+open P02 release gate and is not implied by server-render tests.
+
 ## Peer Mentorship
 
 `/forum/mentorship` composes three class-based Livewire components for

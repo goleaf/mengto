@@ -37,6 +37,8 @@ class ForumPresenter
         $activeFilter = (string) ($filters['filter'] ?? 'all');
         $sort = (string) ($filters['sort'] ?? 'active');
         $language = (string) ($filters['language'] ?? 'all');
+        $categories = $this->taxonomy->categories();
+        $categorySelection = $this->taxonomy->browseSelection($category, $categories);
 
         $topicsQuery = ForumTopic::query()
             ->forDirectory()
@@ -96,7 +98,9 @@ class ForumPresenter
             ],
             'filter_options' => $this->taxonomy->filterOptions(),
             'sort_options' => $this->taxonomy->sortOptions(),
-            'categories' => $this->taxonomy->categories(),
+            'categories' => $categories,
+            'active_category_root' => $categorySelection['root'],
+            'active_subcategory' => $categorySelection['subcategory'],
             'stats' => $this->stats(),
             'knowledge' => KnowledgeArticle::query()
                 ->forLibrary()

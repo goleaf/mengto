@@ -17,6 +17,7 @@ use App\Models\ForumEventRoom;
 use App\Models\ForumEventSession;
 use App\Models\ForumEventTrack;
 use App\Models\ForumGroup;
+use App\Models\Organization;
 use App\Models\Taxon;
 use App\Models\User;
 use Illuminate\Support\Str;
@@ -34,6 +35,7 @@ final class ForumEventFactory extends ApplicationFactory
         return [
             'organizer_user_id' => User::factory(),
             'owner_user_id' => fn (array $attributes): int => (int) $attributes['organizer_user_id'],
+            'responsible_organization_id' => null,
             'organizer_key' => fn (array $attributes): string => User::query()
                 ->findOrFail($attributes['organizer_user_id'])
                 ->actor_key,
@@ -325,6 +327,13 @@ final class ForumEventFactory extends ApplicationFactory
             'organizer_key' => $user->actor_key,
             'organizer_name' => $user->name,
         ]);
+    }
+
+    public function forOrganization(?Organization $organization = null): static
+    {
+        $responsible = $organization ?? Organization::factory()->create();
+
+        return $this->for($responsible, 'responsibleOrganization');
     }
 
     public function withTaxon(?Taxon $taxon = null): static

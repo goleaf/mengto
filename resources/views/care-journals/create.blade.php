@@ -1,14 +1,16 @@
 <x-app-shell :owner="$owner" :title="$page_title" :active-section="$active_section">
     <div class="mx-auto grid w-full max-w-4xl gap-7">
-        <header class="border-b border-paw-line pb-6">
-            <a href="{{ route('care-journals.index') }}" class="inline-flex items-center gap-2 text-sm font-bold text-paw-leaf">
-                <x-lucide-arrow-left class="size-4" aria-hidden="true" />
-                {{ __('ui.care_journals_efcbb402a3') }}
-            </a>
-            <p class="mt-5 text-sm font-bold uppercase text-paw-leaf">{{ __('ui.private_by_default_f52e06762e') }}</p>
-            <h1 class="mt-2 text-3xl font-bold sm:text-4xl">{{ __('ui.create_a_care_journal_593ab2e50b') }}</h1>
-            <p class="mt-2 max-w-2xl text-paw-muted">{{ __('ui.choose_one_managed_pet_daily_records_stay_separate_b10f58329f') }}</p>
-        </header>
+        <x-page-header
+            :eyebrow="__('ui.private_by_default_f52e06762e')"
+            :title="__('ui.create_a_care_journal_593ab2e50b')"
+            :description="__('ui.choose_one_managed_pet_daily_records_stay_separate_b10f58329f')"
+            heading-id="create-care-journal-heading"
+            :action-label="__('ui.care_journals_efcbb402a3')"
+            action-icon="arrow-left"
+            :action-href="route('care-journals.index')"
+            action-variant="paper"
+            data-section="care-journal-create-header"
+        />
 
         @if ($errors->any())
             <div class="care-form-errors" role="alert">

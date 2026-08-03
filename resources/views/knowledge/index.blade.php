@@ -1,28 +1,37 @@
 <x-app-shell :owner="$owner" :title="$page_title" :active-section="$active_section">
     <div class="forum-page">
-        <header class="forum-header">
-            <div class="forum-header__copy">
-                <p class="forum-header__eyebrow">{{ __('ui.reviewed_library_11f886e1e8') }}</p>
-                <h1>{{ __('ui.knowledge_with_a_revision_date_70ac500514') }}</h1>
-                <p>{{ __('ui.editorial_guides_checklists_and_faq_material_shaped_from_6e4fb5641d') }}</p>
-            </div>
-            <div class="forum-header__actions">
-                <a href="{{ route('forum.index') }}" class="forum-button">
-                    <x-lucide-messages-square aria-hidden="true" />
-                    {{ __('ui.forum_4da7bd42ab') }}
-                </a>
-                <a href="{{ route('forum.topics.create') }}" class="forum-button forum-button--primary">
-                    <x-lucide-circle-help aria-hidden="true" />
-                    {{ __('ui.ask_a_question_3a533d7ef8') }}
-                </a>
+        <x-page-header
+            :eyebrow="__('ui.reviewed_library_11f886e1e8')"
+            :title="__('ui.knowledge_with_a_revision_date_70ac500514')"
+            :description="__('ui.editorial_guides_checklists_and_faq_material_shaped_from_6e4fb5641d')"
+            heading-id="knowledge-directory-heading"
+            data-section="knowledge-directory-header"
+        >
+            <x-slot:actions>
+                <x-action-control
+                    :label="__('ui.forum_4da7bd42ab')"
+                    icon="messages-square"
+                    :href="route('forum.index')"
+                    variant="paper"
+                    size="regular"
+                />
+                <x-action-control
+                    :label="__('ui.ask_a_question_3a533d7ef8')"
+                    icon="circle-help"
+                    :href="route('forum.topics.create')"
+                    variant="paper"
+                    size="regular"
+                />
                 @if ($can_create)
-                    <a href="{{ route('knowledge.guides.create') }}" class="forum-button forum-button--primary">
-                        <x-lucide-file-plus-2 aria-hidden="true" />
-                        {{ __('knowledge.actions.create_guide') }}
-                    </a>
+                    <x-action-control
+                        :label="__('knowledge.actions.create_guide')"
+                        icon="file-plus-2"
+                        :href="route('knowledge.guides.create')"
+                        size="regular"
+                    />
                 @endif
-            </div>
-        </header>
+            </x-slot:actions>
+        </x-page-header>
 
         <form method="GET" action="{{ route('knowledge.index') }}" class="forum-search">
             <label>

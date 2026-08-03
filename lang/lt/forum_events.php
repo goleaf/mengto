@@ -268,6 +268,7 @@ return [
         'summary' => 'Renginio aprašymas',
         'type' => 'Renginio tipas',
         'visibility' => 'Matomumas',
+        'responsible_organization' => 'Atsakinga organizacija',
         'format' => 'Formatas',
         'pet_participation_mode' => 'Gyvūnų dalyvavimas',
         'accessibility_status' => 'Prieinamumo būsena',
@@ -439,6 +440,8 @@ return [
         'session_updated' => 'Sesijos tvarkaraštis atnaujintas.',
     ],
     'validation' => [
+        'organization_visibility' => 'Tik organizacijai skirtam renginiui būtina atsakinga organizacija.',
+        'organization_membership_required' => 'Šiam kvietimui būtina aktyvi narystė atsakingoje organizacijoje.',
         'summary' => 'Patikrinkite pažymėtus renginio laukus.',
         'idempotency_conflict' => 'Šis užklausos identifikatorius jau priklauso kitai renginio operacijai.',
         'taxa' => 'Rinkitės tik aktyvias gyvūnų grupes.',

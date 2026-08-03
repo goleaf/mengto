@@ -1,31 +1,34 @@
 <div class="forum-page" aria-labelledby="knowledge-guide-editor-heading">
-    <header class="forum-header">
-        <div class="forum-header__copy">
-            <p class="forum-header__eyebrow">{{ __('knowledge.editor.eyebrow') }}</p>
-            <h1 id="knowledge-guide-editor-heading">
-                @if ($articleId !== null)
-                    {{ __('knowledge.editor.edit_title') }}
-                @elseif ($this->translationSourceData !== null)
-                    {{ __('knowledge.editor.translate_title') }}
-                @else
-                    {{ __('knowledge.editor.create_title') }}
-                @endif
-            </h1>
-            <p>{{ __('knowledge.editor.description') }}</p>
-        </div>
-        <div class="forum-header__actions">
-            <a href="{{ route('knowledge.index') }}" class="forum-button">
-                <x-lucide-arrow-left aria-hidden="true" />
-                {{ __('knowledge.actions.library') }}
-            </a>
+    <x-page-header
+        :eyebrow="__('knowledge.editor.eyebrow')"
+        :title="$articleId !== null
+            ? __('knowledge.editor.edit_title')
+            : ($this->translationSourceData !== null
+                ? __('knowledge.editor.translate_title')
+                : __('knowledge.editor.create_title'))"
+        :description="__('knowledge.editor.description')"
+        heading-id="knowledge-guide-editor-heading"
+        data-section="knowledge-guide-editor-header"
+    >
+        <x-slot:actions>
+            <x-action-control
+                :label="__('knowledge.actions.library')"
+                icon="arrow-left"
+                :href="route('knowledge.index')"
+                variant="paper"
+                size="regular"
+            />
             @if ($this->articleData['slug'] !== null && in_array($this->articleData['status'], ['published', 'outdated'], true))
-                <a href="{{ route('knowledge.articles.show', $this->articleData['slug']) }}" class="forum-button">
-                    <x-lucide-external-link aria-hidden="true" />
-                    {{ __('knowledge.actions.view_public') }}
-                </a>
+                <x-action-control
+                    :label="__('knowledge.actions.view_public')"
+                    icon="external-link"
+                    :href="route('knowledge.articles.show', $this->articleData['slug'])"
+                    variant="paper"
+                    size="regular"
+                />
             @endif
-        </div>
-    </header>
+        </x-slot:actions>
+    </x-page-header>
 
     @if ($feedback !== '')
         <p class="border-s-4 border-status-success py-3 ps-4" role="status" aria-live="polite">

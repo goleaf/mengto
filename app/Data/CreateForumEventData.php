@@ -51,5 +51,6 @@ final readonly class CreateForumEventData
         public string $idempotencyKey,
         public ForumEventPetParticipation $petParticipationMode = ForumEventPetParticipation::Optional,
         public ForumEventAccessibilityStatus $accessibilityStatus = ForumEventAccessibilityStatus::NotAssessed,
+        public ?int $responsibleOrganizationId = null,
     ) {}
 }

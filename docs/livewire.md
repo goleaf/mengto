@@ -153,6 +153,22 @@ Pending queue rows are policy-filtered before rendering. Credential evidence,
 models, service instances, and protected moderation data never enter public
 component state. See `docs/expert-question-sessions.md`.
 
+## Organization Components
+
+`OrganizationDirectory`, `OrganizationWorkspace`, and
+`OrganizationInvitationResponse` are class-based components with separate
+Blade templates and form objects. Public state contains bounded form values,
+feedback, idempotency values, and locked numeric identity only. The raw
+invitation token is never a public property; signed-route verification is
+account-bound and only an encrypted temporary session value survives until
+the single response mutation.
+
+Directory and workspace data are tenant-scoped, explicitly selected,
+paginated/capped, eager loaded, and converted to prepared arrays before
+Blade. Every mutation delegates to an Action that reloads and authorizes its
+subject. Ordinary members receive neither email nor internal restriction
+reason projections.
+
 ## Topic Lifecycle Panel
 
 `ForumTopicLifecyclePanel` is a normal class-based component with a separate

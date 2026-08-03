@@ -6,7 +6,7 @@
             :description="$summary['description']"
             heading-id="connections-heading"
             :count="$summary['count']"
-            action-label="{{ __('ui.discover_profiles_d97a3b3e4c') }}"
+            :action-label="__('ui.discover_profiles_d97a3b3e4c')"
             action-icon="search"
             :action-href="route('discover.index')"
             class="page-header--connections"

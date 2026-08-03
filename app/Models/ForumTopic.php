@@ -430,6 +430,17 @@ class ForumTopic extends Model
             return $query;
         }
 
+        if (str_contains($category, '/')) {
+            return $query->where(function (Builder $subcategoryQuery) use ($category): void {
+                $subcategoryQuery
+                    ->where('subcategory', $category)
+                    ->orWhereHas(
+                        'normalizedCategory',
+                        fn (Builder $normalized): Builder => $normalized->where('slug', $category),
+                    );
+            });
+        }
+
         return $query->where(function (Builder $categoryQuery) use ($category): void {
             $categoryQuery
                 ->where('category', $category)

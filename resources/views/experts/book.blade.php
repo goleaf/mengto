@@ -1,13 +1,16 @@
 <x-app-shell :owner="$owner" :title="$page_title" :active-section="$active_section">
     <div class="mx-auto grid w-full min-w-0 max-w-5xl gap-6">
-        <header class="border-b border-paw-line pb-6">
-            <a href="{{ route('experts.show', $expert['slug']) }}" class="inline-flex items-center gap-2 text-sm font-bold text-paw-leaf">
-                <x-lucide-arrow-left class="size-4" aria-hidden="true" />
-                {{ $expert['name'] }}
-            </a>
-            <h1 class="mt-4 text-3xl font-bold">{{ __('ui.request_a_consultation_a2e571a10d') }}</h1>
-            <p class="mt-2 text-paw-muted">{{ $expert['type'] }} · {{ $expert['city'] }} · {{ implode(', ', $expert['formats']) }}</p>
-        </header>
+        <x-page-header
+            :eyebrow="$expert['name']"
+            :title="__('ui.request_a_consultation_a2e571a10d')"
+            :description="$expert['type'].' · '.$expert['city'].' · '.implode(', ', $expert['formats'])"
+            heading-id="expert-booking-heading"
+            :action-label="__('ui.back_to_profile_d5647f3659')"
+            action-icon="arrow-left"
+            :action-href="route('experts.show', $expert['slug'])"
+            action-variant="paper"
+            data-section="expert-booking-header"
+        />
 
         <section class="flex gap-3 border-l-4 border-red-500 bg-red-50 p-4 text-red-950" aria-label="{{ __('ui.emergency_warning_53a80da70c') }}">
             <x-lucide-siren class="mt-0.5 size-5 shrink-0" aria-hidden="true" />

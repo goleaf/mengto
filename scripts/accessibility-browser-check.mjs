@@ -668,6 +668,111 @@ try {
         );
     }
 
+    const organizationAudits = {};
+    await client.send('Emulation.setDeviceMetricsOverride', {
+        width: 1440,
+        height: 900,
+        deviceScaleFactor: 1,
+        mobile: false,
+        screenWidth: 1440,
+        screenHeight: 900,
+    }, sessionId);
+
+    for (const [path, label, screenshot, marker] of [
+        [
+            '/organizations',
+            'desktop organization directory',
+            'organization-directory-desktop.png',
+            'organization-directory',
+        ],
+        [
+            '/organizations/vilnius-animal-welfare-network',
+            'desktop organization workspace',
+            'organization-workspace-desktop.png',
+            'organization-workspace',
+        ],
+    ]) {
+        await navigate(client, sessionId, `${baseUrl}${path}`);
+        const audit = await evaluate(client, sessionId, pageAuditExpression);
+        assertPageAudit(audit, label);
+        const behavior = await evaluate(client, sessionId, `((sectionMarker) => ({
+            organizationSurfaceCount: document.querySelectorAll('[data-section="' + sectionMarker + '"]').length,
+            rawTranslationKeys: document.body.innerText.match(/\\borganizations\\.[a-z0-9_.-]+/gi) ?? [],
+            privateDataLeak: document.body.innerText.includes('demo-independent-registry'),
+        }))(${JSON.stringify(marker)})`);
+        assert(
+            behavior.organizationSurfaceCount === 1,
+            `${label}: canonical organization surface marker is missing.`,
+        );
+        assert(
+            behavior.rawTranslationKeys.length === 0,
+            `${label}: raw organization keys are visible: ${behavior.rawTranslationKeys.join(', ')}.`,
+        );
+        assert(! behavior.privateDataLeak, `${label}: private organization evidence leaked.`);
+        organizationAudits[label] = { ...audit, ...behavior };
+
+        const screenshotData = await client.send('Page.captureScreenshot', {
+            format: 'png',
+            captureBeyondViewport: true,
+        }, sessionId);
+        await writeFile(
+            join(outputDirectory, screenshot),
+            Buffer.from(screenshotData.data, 'base64'),
+        );
+    }
+
+    await client.send('Emulation.setDeviceMetricsOverride', {
+        width: 375,
+        height: 812,
+        deviceScaleFactor: 1,
+        mobile: true,
+        screenWidth: 375,
+        screenHeight: 812,
+    }, sessionId);
+
+    for (const [path, label, screenshot, marker] of [
+        [
+            '/organizations',
+            'mobile organization directory',
+            'organization-directory-mobile.png',
+            'organization-directory',
+        ],
+        [
+            '/organizations/vilnius-animal-welfare-network',
+            'mobile organization workspace',
+            'organization-workspace-mobile.png',
+            'organization-workspace',
+        ],
+    ]) {
+        await navigate(client, sessionId, `${baseUrl}${path}`);
+        const audit = await evaluate(client, sessionId, pageAuditExpression);
+        assertPageAudit(audit, label);
+        const smallTargets = await evaluate(client, sessionId, surfaceTouchTargetExpression);
+        assert(smallTargets.length === 0, `${label}: controls below 44px ${JSON.stringify(smallTargets)}.`);
+        const behavior = await evaluate(client, sessionId, `((sectionMarker) => ({
+            organizationSurfaceCount: document.querySelectorAll('[data-section="' + sectionMarker + '"]').length,
+            rawTranslationKeys: document.body.innerText.match(/\\borganizations\\.[a-z0-9_.-]+/gi) ?? [],
+        }))(${JSON.stringify(marker)})`);
+        assert(
+            behavior.organizationSurfaceCount === 1,
+            `${label}: canonical organization surface marker is missing.`,
+        );
+        assert(
+            behavior.rawTranslationKeys.length === 0,
+            `${label}: raw organization keys are visible: ${behavior.rawTranslationKeys.join(', ')}.`,
+        );
+        organizationAudits[label] = { ...audit, ...behavior, smallTargets };
+
+        const screenshotData = await client.send('Page.captureScreenshot', {
+            format: 'png',
+            captureBeyondViewport: true,
+        }, sessionId);
+        await writeFile(
+            join(outputDirectory, screenshot),
+            Buffer.from(screenshotData.data, 'base64'),
+        );
+    }
+
     const contentAudits = {};
     await client.send('Emulation.setDeviceMetricsOverride', {
         width: 1440,
@@ -1292,6 +1397,7 @@ try {
         mobileAudit,
         zoomAudit,
         eventAudits,
+        organizationAudits,
         contentAudits,
         petAudits,
         medicalAudits,
@@ -1328,6 +1434,10 @@ try {
             join(outputDirectory, 'event-detail-mobile.png'),
             join(outputDirectory, 'event-schedule-desktop.png'),
             join(outputDirectory, 'event-schedule-mobile.png'),
+            join(outputDirectory, 'organization-directory-desktop.png'),
+            join(outputDirectory, 'organization-directory-mobile.png'),
+            join(outputDirectory, 'organization-workspace-desktop.png'),
+            join(outputDirectory, 'organization-workspace-mobile.png'),
             join(outputDirectory, 'content-feed-desktop.png'),
             join(outputDirectory, 'content-feed-mobile.png'),
             join(outputDirectory, 'pet-profile-manage-desktop.png'),

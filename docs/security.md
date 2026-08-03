@@ -301,6 +301,24 @@ location, and moderation appeals remain explicit unresolved safety packages.
 - Videos and private medical, care, credential, and journal media retain their
   separate storage and authorization controls.
 
+## Organization Security Controls
+
+- organization pages are behind the authenticated, active, verified portal
+  boundary and tenant Policies still run afterward;
+- membership removal revokes current tenant and organization-event access but
+  preserves historical attribution and append-only audit evidence;
+- invitation tokens are random, purpose/account bound, expiring, signed,
+  single-use, and stored as hashes in organization records;
+- the token is not a public Livewire property or snapshot value; the response
+  flow retains only an encrypted temporary session value and deletes it after
+  use;
+- ordinary members do not receive member email or internal restriction-reason
+  projections;
+- request identities, token hashes, private audit metadata, and restriction
+  internals are hidden from model serialization;
+- suspension and capability restrictions are locked/idempotent server
+  operations, not disabled-button state.
+
 ## Event Security Controls
 
 - policies and active-account checks guard every event mutation;

@@ -10,6 +10,7 @@
 | Marketplace/booking/payment | Existing modules remain separate; no fake event payment |
 | Shelter/adoption | Adoption day type exists; durable application workflow remains authoritative |
 | Notification | Existing `ForumNotification` is reused for supported event notices |
+| Organization | Create tenant, invite an account, accept or decline, assign a scoped role, restrict or suspend operations, and use an authorized tenant in the event builder |
 | Event lifecycle | Create, version, occurrence, schedule tracks/rooms/sessions, register, review, attendance, cancel/archive foundation |
 
 Deep links always use named routes and stable event keys. Protected exact

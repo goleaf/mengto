@@ -28,7 +28,7 @@ class BrowseForumRequest extends FormRequest
     {
         return [
             'q' => ['nullable', 'string', 'max:160'],
-            'category' => ['nullable', Rule::in(['all', ...$taxonomy->acceptedCategoryKeys()])],
+            'category' => ['nullable', Rule::in(['all', ...$taxonomy->acceptedBrowseCategoryKeys()])],
             'filter' => ['nullable', Rule::in(array_keys($taxonomy->filterOptions()))],
             'sort' => ['nullable', Rule::in(array_keys($taxonomy->sortOptions()))],
             'language' => ['nullable', Rule::in(['all', 'en', 'lt', 'ru'])],

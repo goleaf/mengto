@@ -8,6 +8,8 @@
 | `/messages` | canonical `x-page-header`; nine-folder toolbar remains above messaging shell | migrated and targeted-verified |
 | `/meetups` catalogue directory | database-backed `ForumEventDirectory` in shared shell; page identity still uses legacy `forum-header` | data/workflow migrated; page identity pending |
 | `/meetups/{event}` detail | canonical `ForumEventWorkspace`; page identity still uses legacy `forum-header` | data/workflow migrated; page identity pending classification |
+| `/organizations` and organization workspace | class-based Livewire tenant authority in the shared shell and canonical page-header/panel patterns | added and targeted-verified |
+| event responsible organization | role- and capability-scoped select inside the existing event builder | added and targeted-verified |
 | `meetup-card` | compatibility presenter card, canonical route target | preserved |
 | nearby meetup list | compact contextual projection, canonical directory link | preserved |
 | group event card | group calendar projection linked to `ForumEvent` | preserved |

@@ -13,11 +13,14 @@ use App\Enums\ForumEventRegistrationPolicy;
 use App\Enums\ForumEventStatus;
 use App\Enums\ForumEventType;
 use App\Enums\ForumEventVisibility;
+use App\Enums\OrganizationRestrictionCapability;
 use App\Models\ForumEvent;
 use App\Models\ForumGroup;
+use App\Models\Organization;
 use App\Models\Taxon;
 use App\Models\User;
 use App\Services\ForumEventAudit;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -55,9 +58,20 @@ final readonly class CreateForumEvent
         $group = $data->groupId === null
             ? null
             : ForumGroup::query()->findOrFail($data->groupId);
+        $organization = $data->responsibleOrganizationId === null
+            ? null
+            : Organization::query()->findOrFail($data->responsibleOrganizationId);
 
         if ($group !== null) {
             $this->gate->forUser($actor)->authorize('createContent', $group);
+        }
+
+        if ($organization !== null) {
+            $this->gate->forUser($actor)->authorize('organizeEvents', $organization);
+
+            if (! $organization->allows(OrganizationRestrictionCapability::CreateEvents)) {
+                throw new AuthorizationException;
+            }
         }
 
         $taxa = Taxon::query()
@@ -72,10 +86,11 @@ final readonly class CreateForumEvent
             ]);
         }
 
-        return DB::transaction(function () use ($actor, $data, $group, $taxa): ForumEvent {
+        return DB::transaction(function () use ($actor, $data, $group, $organization, $taxa): ForumEvent {
             $event = ForumEvent::query()->create([
                 'organizer_user_id' => $actor->id,
                 'owner_user_id' => $actor->id,
+                'responsible_organization_id' => $organization?->id,
                 'organizer_key' => $actor->actor_key,
                 'organizer_name' => $actor->name,
                 'forum_group_id' => $group?->id,
@@ -133,6 +148,7 @@ final readonly class CreateForumEvent
                 toStatus: ForumEventStatus::Scheduled->value,
                 metadata: [
                     'group_id' => $group?->id,
+                    'responsible_organization_id' => $organization?->id,
                     'taxon_ids' => $taxa->pluck('id')->all(),
                 ],
                 idempotencyKey: 'event:create:'.$data->idempotencyKey,
@@ -176,6 +192,7 @@ final readonly class CreateForumEvent
             'taxon_ids' => $data->taxonIds,
             'locale' => $data->locale,
             'idempotency_key' => $data->idempotencyKey,
+            'responsible_organization_id' => $data->responsibleOrganizationId,
         ], [
             'title' => ['required', 'string', 'min:4', 'max:180'],
             'summary' => ['required', 'string', 'min:10', 'max:10000'],
@@ -250,11 +267,24 @@ final readonly class CreateForumEvent
                 Rule::in(config('platform.supported_locales', ['en'])),
             ],
             'idempotency_key' => ['required', 'string', 'min:16', 'max:190'],
+            'responsible_organization_id' => [
+                'nullable',
+                'integer',
+                'exists:organizations,id',
+            ],
         ])->validate();
 
         if ($data->visibility === ForumEventVisibility::Group && $data->groupId === null) {
             throw ValidationException::withMessages([
                 'eventForm.groupId' => __('forum_events.validation.group_visibility'),
+            ]);
+        }
+
+        if ($data->visibility === ForumEventVisibility::Organization
+            && $data->responsibleOrganizationId === null
+        ) {
+            throw ValidationException::withMessages([
+                'eventForm.responsibleOrganizationId' => __('forum_events.validation.organization_visibility'),
             ]);
         }
     }

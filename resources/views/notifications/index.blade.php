@@ -6,7 +6,7 @@
             :description="$summary['description']"
             heading-id="notifications-heading"
             :count="$summary['count']"
-            action-label="{{ __('ui.mark_all_read_3bc62a9e6a') }}"
+            :action-label="__('ui.mark_all_read_3bc62a9e6a')"
             action-icon="check-check"
             :action-endpoint="route('actions.perform')"
             :action-payload="['action' => 'mark-all-read', 'target' => 'notifications', 'label' => __('ui.notifications_788011833a')]"

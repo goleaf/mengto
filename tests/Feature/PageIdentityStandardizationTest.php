@@ -2,6 +2,10 @@
 
 declare(strict_types=1);
 
+use App\Models\ExpertProfile;
+use App\Models\ForumEvent;
+use App\Models\KnowledgeArticle;
+use App\Models\User;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\File;
@@ -117,6 +121,24 @@ test('every shared page header caller declares a stable page-specific heading id
     expect($violations)->toBe([]);
 });
 
+test('shared page header semantic props use bound values without double escaping', function () {
+    $violations = [];
+
+    foreach (File::allFiles(resource_path('views')) as $view) {
+        $source = $view->getContents();
+
+        preg_match_all('/<x-page-header\b[^>]*>/s', $source, $headerTags);
+
+        foreach ($headerTags[0] as $headerTag) {
+            if (preg_match('/(?:eyebrow|title|description|action-label|meta-label)="\{\{/', $headerTag) === 1) {
+                $violations[] = $view->getRelativePathname();
+            }
+        }
+    }
+
+    expect($violations)->toBe([]);
+});
+
 test('every first party get route has exactly one page identity classification', function () {
     $classifications = require base_path('tests/Support/page-identity-route-classification.php');
     $documentedRoutes = array_merge(...array_values($classifications));
@@ -138,11 +160,28 @@ test('every first party get route has exactly one page identity classification',
     $sortedDocumentedRoutes = $documentedRoutes;
     sort($sortedDocumentedRoutes);
     preg_match_all(
-        '/^\| `([^`]+)` \| `\/[^`]*` \|/m',
+        '/^\| `([^`]+)` \| `\/[^`]*` \| `[^`]+` \| `([^`]+)` \|/m',
         File::get(base_path('docs/portal/route-matrix.md')),
         $matrixMatches,
+        PREG_SET_ORDER,
     );
-    $matrixRoutes = $matrixMatches[1];
+    $matrixClassifications = [];
+
+    foreach ($matrixMatches as $matrixMatch) {
+        $matrixClassifications[$matrixMatch[1]] = $matrixMatch[2];
+    }
+
+    $expectedClassifications = [];
+
+    foreach ($classifications as $classification => $routeNames) {
+        foreach ($routeNames as $routeName) {
+            $expectedClassifications[$routeName] = $classification;
+        }
+    }
+
+    ksort($matrixClassifications);
+    ksort($expectedClassifications);
+    $matrixRoutes = array_keys($matrixClassifications);
     sort($matrixRoutes);
 
     expect(array_keys($classifications))
@@ -161,10 +200,12 @@ test('every first party get route has exactly one page identity classification',
         ->and($sortedDocumentedRoutes)
         ->toBe($getRoutes)
         ->and($matrixRoutes)
-        ->toBe($getRoutes);
+        ->toBe($getRoutes)
+        ->and($matrixClassifications)
+        ->toBe($expectedClassifications);
 });
 
-test('priority portal directories render the canonical page identity', function (string $routeName) {
+test('classified canonical portal pages render the canonical page identity', function (string $routeName) {
     $response = $this->get(route($routeName))->assertOk();
     $xpath = responseXPath($response);
     $header = $xpath->query('//main//header[@data-page-identity="canonical"]')->item(0);
@@ -185,20 +226,105 @@ test('priority portal directories render the canonical page identity', function 
 })->with([
     'pets' => 'pets.index',
     'medical records' => 'medical-records.index',
+    'create medical record' => 'medical-records.create',
     'care journals' => 'care-journals.index',
+    'create care journal' => 'care-journals.create',
+    'devices' => 'devices.index',
+    'connect device' => 'devices.create',
     'places' => 'places.index',
     'lost and found' => 'lost-found.index',
+    'create lost and found report' => 'lost-found.create',
     'marketplace' => 'marketplace.index',
+    'create marketplace listing' => 'marketplace.create',
     'experts' => 'experts.index',
+    'create expert profile' => 'experts.create',
+    'expert workspace' => 'experts.dashboard',
     'groups' => 'groups.index',
     'neighbors' => 'neighbors.index',
     'discover' => 'discover.index',
     'notifications' => 'notifications.index',
     'walks' => 'walks.index',
     'circle' => 'circle.index',
+    'content feed' => 'content.index',
     'connections' => 'connections.index',
     'pet friends' => 'pet-friends.index',
     'messages' => 'messages.index',
+    'knowledge' => 'knowledge.index',
+    'social feed' => 'preview.feed',
+    'meetups' => 'meetups.index',
+]);
+
+test('parameterized expert workflows render the canonical page identity', function (string $routeName) {
+    $expert = ExpertProfile::factory()->create([
+        'owner_key' => $this->authenticatedUser->actor_key,
+    ]);
+    $response = $this->get(route($routeName, $expert))->assertOk();
+    $xpath = responseXPath($response);
+    $header = $xpath->query('//main//header[@data-page-identity="canonical"]')->item(0);
+    $heading = $xpath->query('//main//header[@data-page-identity="canonical"]//h1')->item(0);
+
+    expect($xpath->query('//main//header[@data-page-identity="canonical"]')->length, $routeName)
+        ->toBe(1)
+        ->and($xpath->query('//main//h1')->length, $routeName)
+        ->toBe(1)
+        ->and($heading?->attributes?->getNamedItem('id')?->nodeValue, $routeName)
+        ->not->toBeNull()
+        ->and($header?->attributes?->getNamedItem('aria-labelledby')?->nodeValue, $routeName)
+        ->toBe($heading?->attributes?->getNamedItem('id')?->nodeValue);
+})->with([
+    'edit expert profile' => 'experts.edit',
+    'book expert' => 'experts.bookings.create',
+]);
+
+test('the composer renders its prepared form identity through the canonical header', function () {
+    $response = $this->get(route('compose', ['kind' => 'post']))->assertOk();
+    $xpath = responseXPath($response);
+
+    expect($xpath->query('//main//header[@data-page-identity="canonical"]')->length)
+        ->toBe(1)
+        ->and($xpath->query('//main//h1[@id="composer-title"]')->length)
+        ->toBe(1)
+        ->and($xpath->query('//main//section[@aria-labelledby="composer-title"]')->length)
+        ->toBe(1);
+});
+
+test('authorized knowledge editor modes render one canonical page identity', function (string $routeName) {
+    $administrator = User::factory()->administrator()->create();
+    $article = KnowledgeArticle::factory()->create();
+    $response = $this->actingAs($administrator)
+        ->get(route($routeName, $article))
+        ->assertOk();
+    $xpath = responseXPath($response);
+
+    expect($xpath->query('//main//header[@data-page-identity="canonical"]')->length, $routeName)
+        ->toBe(1)
+        ->and($xpath->query('//main//h1[@id="knowledge-guide-editor-heading"]')->length, $routeName)
+        ->toBe(1)
+        ->and($xpath->query('//main//header[contains(concat(" ", normalize-space(@class), " "), " forum-header ")]')->length, $routeName)
+        ->toBe(0);
+})->with([
+    'create knowledge guide' => 'knowledge.guides.create',
+    'edit knowledge guide' => 'knowledge.guides.edit',
+    'translate knowledge guide' => 'knowledge.guides.translations.create',
+]);
+
+test('event workspaces render the canonical page identity', function (string $routeName) {
+    $event = ForumEvent::factory()->create([
+        'stable_key' => 'small-dog-social',
+        'title' => 'Small dog social',
+    ]);
+    $response = $this->get(route($routeName, $event))->assertOk();
+    $xpath = responseXPath($response);
+
+    expect($xpath->query('//main//header[@data-page-identity="canonical"]')->length, $routeName)
+        ->toBe(1)
+        ->and($xpath->query('//main//h1')->length, $routeName)
+        ->toBe(1)
+        ->and($xpath->query('//main//header[contains(concat(" ", normalize-space(@class), " "), " forum-header ")]')->length, $routeName)
+        ->toBe(0);
+})->with([
+    'event detail' => 'meetups.show',
+    'legacy small dog event detail' => 'meetups.small_dog_social',
 ]);
 
 test('the message folder toolbar remains between page identity and the messaging shell', function () {

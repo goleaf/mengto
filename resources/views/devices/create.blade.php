@@ -1,14 +1,16 @@
 <x-app-shell :owner="$owner" :title="$page_title" :active-section="$active_section">
     <div class="mx-auto grid w-full max-w-4xl gap-7">
-        <header class="border-b border-paw-line pb-6">
-            <a href="{{ route('devices.index') }}" class="inline-flex items-center gap-2 text-sm font-bold text-paw-leaf">
-                <x-lucide-arrow-left class="size-4" aria-hidden="true" />
-                {{ __('ui.smart_devices_228fd3f770') }}
-            </a>
-            <p class="mt-5 text-sm font-bold uppercase text-paw-leaf">{{ __('ui.ownership_first_9c51bc8cc9') }}</p>
-            <h1 class="mt-2 text-3xl font-bold sm:text-4xl">{{ __('ui.connect_a_device_0b4a51f394') }}</h1>
-            <p class="mt-2 max-w-2xl text-paw-muted">{{ __('ui.create_a_private_inventory_record_assign_the_correct_aa8293bef0') }}</p>
-        </header>
+        <x-page-header
+            :eyebrow="__('ui.ownership_first_9c51bc8cc9')"
+            :title="__('ui.connect_a_device_0b4a51f394')"
+            :description="__('ui.create_a_private_inventory_record_assign_the_correct_aa8293bef0')"
+            heading-id="connect-device-heading"
+            :action-label="__('ui.smart_devices_228fd3f770')"
+            action-icon="arrow-left"
+            :action-href="route('devices.index')"
+            action-variant="paper"
+            data-section="device-create-header"
+        />
 
         @if ($errors->any())
             <div class="device-form-errors" role="alert">

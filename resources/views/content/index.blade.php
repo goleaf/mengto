@@ -1,9 +1,13 @@
 <x-app-shell :owner="$owner" :title="$page_title" active-section="feed">
     <div class="mx-auto max-w-3xl">
-        <header class="mb-5 border-b border-paw-line pb-4">
-            <h1 class="text-2xl font-bold text-paw-ink">{{ __('content.feed.heading') }}</h1>
-            <p class="mt-2 text-sm leading-6 text-paw-muted">{{ __('content.feed.chronological_label') }}</p>
-        </header>
+        <x-page-header
+            :eyebrow="__('content.feed.page_title')"
+            :title="__('content.feed.heading')"
+            :description="__('content.feed.chronological_label')"
+            heading-id="content-feed-heading"
+            data-section="content-feed-header"
+            class="mb-5"
+        />
 
         <div role="feed" aria-label="{{ __('content.feed.heading') }}" class="space-y-4">
             @forelse ($feed['items'] as $publication)

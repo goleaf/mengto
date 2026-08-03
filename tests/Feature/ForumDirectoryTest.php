@@ -47,6 +47,49 @@ test('forum directory filters searchable public topics and keeps private topics 
         ->assertDontSee('public travel checklist');
 });
 
+test('forum directory exposes only the active root subcategories and filters by the selected child', function () {
+    $selected = ForumTopic::factory()->create([
+        'title' => 'Preventive care schedule for a newly adopted dog',
+        'category' => 'health',
+        'subcategory' => 'health/preventive-care',
+    ]);
+    $sibling = ForumTopic::factory()->create([
+        'title' => 'Preparing for a routine veterinary visit',
+        'category' => 'health',
+        'subcategory' => 'health/veterinary-visits',
+    ]);
+    ForumTopic::factory()->create([
+        'title' => 'Daily feeding portions for an adult cat',
+        'category' => 'nutrition',
+        'subcategory' => 'nutrition/daily-feeding',
+    ]);
+
+    $rootResponse = $this->get(route('forum.index', ['category' => 'health']))->assertOk();
+    $rootXPath = responseXPath($rootResponse);
+
+    expect($rootXPath->query('//nav[@data-forum-category-tree]//*[@data-subcategory-list="health"]')->length)
+        ->toBe(1)
+        ->and($rootXPath->query('//nav[@data-forum-category-tree]//*[@data-subcategory-list="nutrition"]')->length)
+        ->toBe(0);
+    $rootResponse
+        ->assertSee($selected->title)
+        ->assertSee($sibling->title);
+
+    $childResponse = $this->get(route('forum.index', [
+        'category' => 'health/preventive-care',
+    ]))->assertOk();
+    $childXPath = responseXPath($childResponse);
+
+    expect($childXPath->query('//a[@data-category-root="health" and not(@aria-current)]')->length)
+        ->toBe(1)
+        ->and($childXPath->query('//a[@data-category-child="health/preventive-care" and @aria-current="page"]')->length)
+        ->toBe(1);
+    $childResponse
+        ->assertSee($selected->title)
+        ->assertDontSee($sibling->title)
+        ->assertDontSee('Daily feeding portions for an adult cat');
+});
+
 test('blocked authors disappear from the directory without exposing the block', function () {
     ForumTopic::factory()->create([
         'author_key' => 'blocked-author',

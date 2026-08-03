@@ -206,6 +206,24 @@ class User extends Authenticatable implements MustVerifyEmailContract
         return $this->hasMany(ForumGroupInvitation::class, 'invited_user_id');
     }
 
+    /** @return HasMany<Organization, $this> */
+    public function ownedOrganizations(): HasMany
+    {
+        return $this->hasMany(Organization::class, 'owner_user_id');
+    }
+
+    /** @return HasMany<OrganizationMembership, $this> */
+    public function organizationMemberships(): HasMany
+    {
+        return $this->hasMany(OrganizationMembership::class);
+    }
+
+    /** @return HasMany<OrganizationInvitation, $this> */
+    public function organizationInvitations(): HasMany
+    {
+        return $this->hasMany(OrganizationInvitation::class, 'invited_user_id');
+    }
+
     /** @return HasMany<ForumEvent, $this> */
     public function organizedForumEvents(): HasMany
     {

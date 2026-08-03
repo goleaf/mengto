@@ -325,10 +325,29 @@ portal contexts/search/calendar/dashboard infrastructure before completing
 event builder, eligibility, registration, capacity, payment, check-in, safety,
 specialized event domains, UI migration, seeding, verification, and release.
 
+## Current Delivery: P02 Organization Authority Foundation
+
+Status: `implementation complete; final publication pending` on 2026-08-03
+
+The first P02 slice adds the canonical organization tenant, nine independent
+membership roles, account-bound expiring invitations, operational
+restrictions, suspension, append-only audit, guarded demo seeds, localized
+class-based Livewire workspaces, and responsible-organization event authority.
+Wrong/former tenant access fails in queries and Policies, ordinary members do
+not receive email or restriction reasons, and invitation tokens remain hashed
+in records and absent from public Livewire state.
+
+This does not close P02. Organization locations, selected context switching,
+verification review/renewal, notification delivery and revocation, downstream
+finance/marketplace/shelter operations, authoritative backfill, browser proof,
+and exact portal/event evidence remain open. Scope and current gate evidence
+are in
+`docs/plans/portal-organization-authority-foundation-work-package.md`.
+
 ## Current Delivery: Global Page Identity Standardization
 
-Status: `in progress`; first safe directory slice targeted-verified on
-2026-08-03
+Status: `in progress`; directory, workflow, event, and forum presentation waves
+verified on 2026-08-03
 
 The complete route classification, canonical `x-page-header` contract,
 thirteen priority regression routes, forum category/subcategory information
@@ -342,13 +361,46 @@ lost-and-found, marketplace, experts, and messages while retaining the
 existing reference-directory consumers. The nine message folders remain above
 the messaging shell, and the global linked-media navigation remains unchanged.
 
-Focused and full Pest, localization, Pint, Larastan, Vite, dependency audits,
-cache smoke, isolated migration/seed/idempotency, and authenticated responsive
-browser checks passed for this slice. The 108-route classification ledger and
-all current shared-header caller IDs are now executable contracts. The stable
-requirement ID, remaining migration red contracts and shared-component browser
-fixtures, meetups and forum migrations, scoped publication, and final global
-audit remain open; this delivery is not globally complete.
+The next Package 8 wave migrated the medical-record, care-journal,
+lost-and-found, marketplace, and expert create/edit/booking flows, the device
+directory and connect flow, and both professional-workspace states. Their ten
+route-ledger entries now enforce the canonical page identity, and the retired
+device directory selector was removed.
+
+The same wave then standardized the canonical database content feed, social
+preview feed, all prepared composer modes, the knowledge directory, and all
+three knowledge editor modes. This retires page-level feed headings and
+knowledge uses of the generic forum header without changing their filters,
+forms, authorization, or Livewire state.
+
+The event directory and database-backed event workspace now share the same
+page identity while preserving the event image, status, organizer context,
+privacy policy, lifecycle, and registration controls. Created prototype event
+details remain classified under the deliberate detail-hero contract.
+
+The forum directory, topic editor/detail, persistent groups, journals,
+mentorship, expert sessions, and administration now use the canonical header.
+The directory also exposes all roots while rendering only the active root's
+direct children; child selection is validated and filtered server-side through
+an indexed Eloquent scope.
+
+Shared actions and filter chips now retain the 44-pixel touch target at desktop
+as well as mobile widths. The Blade localization audit also understands bound
+component props, preventing already-localized values from being rewritten and
+double escaped.
+
+The complete isolated Pest run passed 2,484 tests and 80,398 assertions. The
+275-test affected-domain run passed 3,488 assertions; Pint, Larastan,
+localization, Vite, dependency audits, cache smoke, migration lifecycle,
+isolated migration/seed/idempotency, forum-source preservation, and diff checks
+also passed. Authenticated browser checks covered 16 route families at 375 px,
+the forum at 1,440 px, a selected subcategory, `/meetups`, and an event
+workspace with one canonical header, one `h1`, no horizontal page overflow,
+44-pixel actions, no console errors, and no SQL error. The live classification
+ledger covers all 111 current first-party GET routes. The stable requirement
+ID, remaining locale/zoom/forced-colors fixtures, deliberate detail/workspace
+exception audit, scoped publication, and final global audit remain open; this
+delivery is not globally complete.
 
 ## Completed Delivery: Guest Join Page
 

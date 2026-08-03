@@ -151,6 +151,12 @@ component existence.
 
 ### P02 - Canonical Organization Tenant
 
+Progress: the organization authority foundation is implemented and verified in
+`docs/plans/portal-organization-authority-foundation-work-package.md`. Active
+organization selection remains P05; persisted places/organization locations
+remain P03; downstream payment, marketplace, shelter, and competition Actions
+must consume the role and restriction contract when those domains are added.
+
 Scope:
 
 - Introduce or adapt Organization, membership, role, invitation, location,

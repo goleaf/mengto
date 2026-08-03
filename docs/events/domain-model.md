@@ -4,6 +4,12 @@
 type, status, timezone, public region, encrypted access details, pet rules,
 capacity, price metadata, cancellation, and optimistic version.
 
+`Organization` is the optional responsible tenant. It owns current/expiring
+memberships, account-bound invitations, verification state, independent
+operational restrictions, and append-only audit events. It does not replace
+the event owner, organizer, event-team membership, payment recipient, venue,
+group, or professional profile.
+
 `ForumEventSeries` owns recurrence defaults. `ForumEventOccurrence` owns one
 scheduled truth. `ForumEventVersion` preserves accepted snapshots.
 `ForumEventTeamMembership` grants one scoped event role.

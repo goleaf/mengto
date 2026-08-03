@@ -47,6 +47,7 @@ This index is the source-of-truth map for first-party documentation.
 | `docs/implementation-plan.md` | Dependency-aware modernization plan | Engineering | Living plan |
 | `docs/audits/portal-events-completion-gap-analysis.md` | Factual Point 12 and Point 13 implementation, evidence, dependency, and documentation gaps | Product + engineering + QA | Living evidence |
 | `docs/plans/portal-events-completion-master-plan.md` | Dependency-ordered completion packages, acceptance gates, and stop conditions for Point 12 and Point 13 | Product + engineering + QA + operations | Approved execution plan |
+| `docs/plans/portal-organization-authority-foundation-work-package.md` | First P02 tenant, membership, invitation, restriction, audit, event integration, and remaining-scope contract | Product + engineering + QA + security | Implementation complete; final publication pending |
 | `docs/audits/pet-social-network-benchmark.md` | Official-source pet-network product, onboarding, settings, privacy, and safety benchmark | Product | Dated research evidence |
 | `docs/plans/join-landing-page-plan.md` | Historical guest root joining experience superseded by the authenticated portal boundary | Product + engineering | Superseded |
 | `docs/plans/authenticated-portal-access-plan.md` | Exact account-entry allowlist, authenticated portal boundary, protected media, and release evidence | Product + engineering | Verified |

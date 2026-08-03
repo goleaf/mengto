@@ -318,7 +318,7 @@ foreach ($files as $file) {
             throw new RuntimeException("Unable to localize expressions in {$path}");
         }
 
-        $attributePattern = '/\b('.implode('|', array_map(
+        $attributePattern = '/(?<![A-Za-z0-9_:-])('.implode('|', array_map(
             static fn (string $name): string => preg_quote($name, '/'),
             $attributeNames,
         )).')="([^"]*)"/u';

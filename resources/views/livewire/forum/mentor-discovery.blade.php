@@ -1,11 +1,11 @@
 <section class="grid gap-5" aria-labelledby="mentorship-page-heading">
-    <header class="forum-header">
-        <div class="forum-header__copy">
-            <p class="forum-header__eyebrow">{{ __('forum_mentorship.page.eyebrow') }}</p>
-            <h1 id="mentorship-page-heading">{{ __('forum_mentorship.page.heading') }}</h1>
-            <p>{{ __('forum_mentorship.page.description') }}</p>
-        </div>
-    </header>
+    <x-page-header
+        :eyebrow="__('forum_mentorship.page.eyebrow')"
+        :title="__('forum_mentorship.page.heading')"
+        :description="__('forum_mentorship.page.description')"
+        heading-id="mentorship-page-heading"
+        data-section="forum-mentorship-header"
+    />
 
     <aside class="border-s-4 border-status-warning py-3 ps-4" aria-labelledby="mentorship-safety-heading">
         <h2 id="mentorship-safety-heading" class="text-base font-semibold">

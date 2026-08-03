@@ -55,6 +55,51 @@ final readonly class ForumTaxonomy
         ]));
     }
 
+    /** @return list<string> */
+    public function acceptedBrowseCategoryKeys(): array
+    {
+        $categories = $this->categories();
+        $subcategoryKeys = [];
+
+        foreach ($categories as $category) {
+            $subcategoryKeys = [
+                ...$subcategoryKeys,
+                ...array_keys($category['subcategories']),
+            ];
+        }
+
+        return array_values(array_unique([
+            ...array_keys($categories),
+            ...array_keys(self::LEGACY_CATEGORY_SLUGS),
+            ...$subcategoryKeys,
+        ]));
+    }
+
+    /**
+     * @param  array<string, array{label: string, icon: string, subcategories: array<string, string>}>  $categories
+     * @return array{root: string, subcategory: string|null}
+     */
+    public function browseSelection(string $category, array $categories): array
+    {
+        if ($category === 'all') {
+            return ['root' => 'all', 'subcategory' => null];
+        }
+
+        $resolvedCategory = $this->resolveCategoryKey($category);
+
+        if (isset($categories[$resolvedCategory])) {
+            return ['root' => $resolvedCategory, 'subcategory' => null];
+        }
+
+        foreach ($categories as $root => $definition) {
+            if (isset($definition['subcategories'][$category])) {
+                return ['root' => $root, 'subcategory' => $category];
+            }
+        }
+
+        return ['root' => 'all', 'subcategory' => null];
+    }
+
     public function resolveCategoryKey(string $category): string
     {
         return self::LEGACY_CATEGORY_SLUGS[$category] ?? $category;

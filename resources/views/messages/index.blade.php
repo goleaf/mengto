@@ -9,7 +9,7 @@
             :title="$summary['title']"
             :description="$summary['description']"
             heading-id="messages-heading"
-            meta-label="{{ __('ui.inbox_summary_4323d5eb2a') }}"
+            :meta-label="__('ui.inbox_summary_4323d5eb2a')"
             data-section="messages-header"
             class="page-header--messaging"
         >

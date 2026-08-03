@@ -13,6 +13,7 @@
 | Event schedule | `x-event-schedule` | responsive day agenda, status, track, room, public staff and manager edit action |
 | Event compatibility cards | `x-meetup-card`, `x-nearby-meetup-list`, `x-group-event-card` | catalogue/feed/group projections only |
 | Live event surface | event directory/workspace Blade | canonical database-backed event data |
+| Organization authority | organization directory/workspace/invitation Livewire views | shared shell, page header, panel, status, form, and action components |
 | Feedback/loading/offline | flash feedback, targeted `wire:loading`, offline notices | every mutation surface |
 
 The three compatibility card components have different host contexts and are

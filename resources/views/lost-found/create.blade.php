@@ -1,16 +1,16 @@
 <x-app-shell :owner="$owner" :title="$page_title" :active-section="$active_section">
     <div class="mx-auto grid max-w-5xl gap-6">
-        <header class="border-b border-paw-line pb-6">
-            <a href="{{ route('lost-found.index') }}" class="inline-flex min-h-11 items-center gap-2 py-3 text-sm font-semibold text-paw-leaf">
-                <x-lucide-arrow-left class="size-4" aria-hidden="true" />
-                {{ __('ui.lost_found_217c655848') }}
-            </a>
-            <p class="mt-5 text-sm font-bold uppercase text-paw-coral">{{ __('ui.urgent_report_ef840f5338') }}</p>
-            <h1 class="mt-2 text-3xl font-bold sm:text-4xl">{{ __('ui.report_a_missing_or_found_animal_d04bc18c2b') }}</h1>
-            <p class="mt-3 max-w-3xl leading-7 text-paw-muted">
-                {{ __('ui.publish_the_essential_location_and_identification_details_now_c357444423') }}
-            </p>
-        </header>
+        <x-page-header
+            :eyebrow="__('ui.urgent_report_ef840f5338')"
+            :title="__('ui.report_a_missing_or_found_animal_d04bc18c2b')"
+            :description="__('ui.publish_the_essential_location_and_identification_details_now_c357444423')"
+            heading-id="create-lost-found-report-heading"
+            :action-label="__('ui.lost_found_217c655848')"
+            action-icon="arrow-left"
+            :action-href="route('lost-found.index')"
+            action-variant="paper"
+            data-section="lost-found-create-header"
+        />
 
         @if ($errors->any())
             <div class="rounded-md border border-red-300 bg-red-50 p-4 text-sm text-red-900" role="alert">

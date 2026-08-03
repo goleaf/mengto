@@ -1,27 +1,21 @@
 <section class="grid gap-6" aria-labelledby="forum-event-heading" data-section="event-workspace">
-    <a class="forum-button min-h-11 justify-self-start" href="{{ route('meetups.index') }}" wire:navigate>
-        <x-lucide-arrow-left aria-hidden="true" />
-        {{ __('forum_events.detail.back') }}
-    </a>
-
-    <header class="forum-header overflow-hidden">
-        @if ($this->event['image'])
-            <img
-                src="{{ $this->event['image'] }}"
-                alt="{{ $this->event['image_alt'] }}"
-                class="aspect-[16/7] w-full object-cover"
-                width="1440"
-                height="630"
-            >
-        @endif
-        <div class="forum-header__copy">
+    <x-page-header
+        :eyebrow="__('forum_events.page.eyebrow')"
+        :title="$this->event['title']"
+        :description="$this->event['summary']"
+        heading-id="forum-event-heading"
+        :action-label="__('forum_events.detail.back')"
+        action-icon="arrow-left"
+        :action-href="route('meetups.index')"
+        action-variant="paper"
+        data-section="forum-event-workspace-header"
+    >
+        <x-slot:meta>
             <div class="flex flex-wrap gap-2">
                 <x-status-badge :label="$this->event['type']" icon="calendar-days" />
                 <x-status-badge :label="$this->event['status']" icon="circle-dot" />
             </div>
-            <h1 id="forum-event-heading">{{ $this->event['title'] }}</h1>
-            <p>{{ $this->event['summary'] }}</p>
-            <p class="inline-flex flex-wrap items-center gap-2">
+            <p class="mt-2 inline-flex flex-wrap items-center gap-2 text-sm text-paw-muted">
                 <x-lucide-user-round class="size-4 shrink-0" aria-hidden="true" />
                 {{ __('forum_events.labels.organizer_by', ['name' => $this->event['organizer_name']]) }}
                 @if ($this->event['organizer_verified'])
@@ -31,8 +25,18 @@
                     </span>
                 @endif
             </p>
-        </div>
-    </header>
+        </x-slot:meta>
+    </x-page-header>
+
+    @if ($this->event['image'])
+        <img
+            src="{{ $this->event['image'] }}"
+            alt="{{ $this->event['image_alt'] }}"
+            class="aspect-[16/7] w-full rounded-md border border-paw-line object-cover"
+            width="1440"
+            height="630"
+        >
+    @endif
 
     @if ($feedback !== '')
         <p class="border-s-4 border-status-success py-3 ps-4" role="status" aria-live="polite">

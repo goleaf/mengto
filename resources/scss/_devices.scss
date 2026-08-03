@@ -1,6 +1,5 @@
 @use 'tokens' as *;
 
-.device-directory-header,
 .device-detail-header,
 .device-shared-header {
     display: flex;
@@ -924,7 +923,6 @@
 }
 
 @media (max-width: 48rem) {
-    .device-directory-header,
     .device-detail-header,
     .device-shared-header {
         align-items: stretch;

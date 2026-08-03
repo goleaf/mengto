@@ -154,6 +154,9 @@ use App\Livewire\Auth\Login;
 use App\Livewire\Auth\Register;
 use App\Livewire\Auth\ResetPassword;
 use App\Livewire\Auth\VerifyEmail;
+use App\Livewire\Organizations\OrganizationDirectory;
+use App\Livewire\Organizations\OrganizationInvitationResponse;
+use App\Livewire\Organizations\OrganizationWorkspace;
 use App\Livewire\Pets\CreatePetProfile;
 use App\Livewire\Pets\ManagePetProfile;
 use App\Livewire\Pets\PetProfileInvitations;
@@ -456,6 +459,20 @@ Route::middleware('web')
         Route::get('/share/{target}', SharePreviewController::class)
             ->where('target', '[A-Za-z0-9-]+')
             ->name('share.show');
+    });
+
+Route::middleware(['web', 'auth', 'active', 'verified'])
+    ->prefix('organizations')
+    ->name('organizations.')
+    ->group(function (): void {
+        Route::get('/', OrganizationDirectory::class)->name('index');
+        Route::get(
+            '/invitations/{organizationInvitation:stable_key}/respond',
+            OrganizationInvitationResponse::class,
+        )
+            ->middleware(['signed', 'throttle:20,1'])
+            ->name('invitations.respond');
+        Route::get('/{organization:slug}', OrganizationWorkspace::class)->name('show');
     });
 
 Route::middleware(['web', 'auth', 'active', 'verified'])

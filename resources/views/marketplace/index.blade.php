@@ -1,11 +1,11 @@
 <x-app-shell :owner="$owner" :title="$page_title" :active-section="$active_section">
     <div class="grid gap-6">
         <x-page-header
-            eyebrow="{{ __('ui.community_marketplace_1525148f3c') }}"
-            title="{{ __('ui.useful_things_and_trusted_pet_services_0b2d0b997a') }}"
-            description="{{ __('ui.buy_exchange_rehome_or_book_without_exposing_your_a7174cb664') }}"
+            :eyebrow="__('ui.community_marketplace_1525148f3c')"
+            :title="__('ui.useful_things_and_trusted_pet_services_0b2d0b997a')"
+            :description="__('ui.buy_exchange_rehome_or_book_without_exposing_your_a7174cb664')"
             heading-id="marketplace-heading"
-            action-label="{{ __('ui.create_listing_815d30caa6') }}"
+            :action-label="__('ui.create_listing_815d30caa6')"
             action-icon="badge-plus"
             :action-href="route('marketplace.create')"
             data-section="marketplace-header"

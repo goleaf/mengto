@@ -12,7 +12,10 @@ use App\Enums\ForumEventPhotoConsent;
 use App\Enums\ForumEventRegistrationPolicy;
 use App\Enums\ForumEventType;
 use App\Enums\ForumEventVisibility;
+use App\Models\User;
+use App\Rules\EventOrganizableOrganization;
 use Carbon\CarbonImmutable;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use Livewire\Form;
 
@@ -81,6 +84,8 @@ final class ForumEventForm extends Form
 
     public string $idempotencyKey = '';
 
+    public ?int $responsibleOrganizationId = null;
+
     /** @return array<string, list<mixed>> */
     protected function rules(): array
     {
@@ -94,6 +99,7 @@ final class ForumEventForm extends Form
                     ForumEventVisibility::Public->value,
                     ForumEventVisibility::Unlisted->value,
                     ForumEventVisibility::Members->value,
+                    ForumEventVisibility::Organization->value,
                     ForumEventVisibility::Invitation->value,
                     ForumEventVisibility::Private->value,
                 ]),
@@ -171,6 +177,14 @@ final class ForumEventForm extends Form
                 Rule::in(config('platform.supported_locales', ['en'])),
             ],
             'idempotencyKey' => ['required', 'string', 'min:16', 'max:190'],
+            'responsibleOrganizationId' => [
+                Rule::requiredIf($this->visibility === ForumEventVisibility::Organization->value),
+                'nullable',
+                'integer',
+                new EventOrganizableOrganization(
+                    Auth::user() instanceof User ? Auth::user() : null,
+                ),
+            ],
         ];
     }
 
@@ -194,6 +208,7 @@ final class ForumEventForm extends Form
             'onlineUrl' => __('forum_events.fields.online_url'),
             'animalWelfareRules' => __('forum_events.fields.animal_welfare_rules'),
             'emergencyContactPlan' => __('forum_events.fields.emergency_contact_plan'),
+            'responsibleOrganizationId' => __('forum_events.fields.responsible_organization'),
         ];
     }
 
@@ -247,6 +262,9 @@ final class ForumEventForm extends Form
             accessibilityStatus: ForumEventAccessibilityStatus::from(
                 (string) $validated['accessibilityStatus'],
             ),
+            responsibleOrganizationId: isset($validated['responsibleOrganizationId'])
+                ? (int) $validated['responsibleOrganizationId']
+                : null,
         );
     }
 

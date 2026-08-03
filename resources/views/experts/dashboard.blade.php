@@ -1,26 +1,31 @@
 <x-app-shell :owner="$owner" :title="$page_title" :active-section="$active_section">
     @if ($expert === null)
-        <section class="mx-auto max-w-2xl py-16 text-center">
-            <x-lucide-briefcase-business class="mx-auto size-12 text-paw-leaf" aria-hidden="true" />
-            <h1 class="mt-5 text-3xl font-bold">{{ __('ui.create_your_professional_workspace_c025183333') }}</h1>
-            <p class="mt-3 leading-7 text-paw-muted">{{ __('ui.publish_a_precise_scope_submit_credentials_privately_offer_3099c3a8b0') }}</p>
-            <div class="mt-6 flex justify-center">
-                <x-action-control label="{{ __('ui.create_professional_profile_30276b75d3') }}" icon="badge-plus" variant="primary" :href="route('experts.create')" />
-            </div>
-        </section>
+        <div class="grid w-full min-w-0 gap-7">
+            <x-page-header
+                :eyebrow="__('ui.professional_workspace_eb8eb6dde6')"
+                :title="__('ui.create_your_professional_workspace_c025183333')"
+                :description="__('ui.publish_a_precise_scope_submit_credentials_privately_offer_3099c3a8b0')"
+                heading-id="expert-workspace-heading"
+                :action-label="__('ui.create_professional_profile_30276b75d3')"
+                action-icon="badge-plus"
+                :action-href="route('experts.create')"
+                data-section="expert-workspace-header"
+            />
+        </div>
     @else
         <div class="grid w-full min-w-0 gap-7">
-            <header class="flex min-w-0 flex-col gap-4 border-b border-paw-line pb-6 sm:flex-row sm:items-end sm:justify-between">
-                <div class="min-w-0">
-                    <p class="text-sm font-bold uppercase text-paw-leaf">{{ __('ui.professional_workspace_eb8eb6dde6') }}</p>
-                    <h1 class="mt-2 text-3xl font-bold">{{ $expert['name'] }}</h1>
-                    <p class="mt-2 text-paw-muted">{{ $expert['type'] }} · {{ $expert['profile_status'] }} · {{ $expert['verification'] }}</p>
-                </div>
-                <div class="flex flex-wrap gap-2">
-                    <x-action-control label="{{ __('ui.view_public_profile_9acb2dbb15') }}" icon="external-link" :href="route('experts.show', $expert['slug'])" />
-                    <x-action-control label="{{ __('ui.edit_profile_15c4aa1303') }}" icon="pencil" variant="primary" :href="route('experts.edit', $expert['slug'])" />
-                </div>
-            </header>
+            <x-page-header
+                :eyebrow="__('ui.professional_workspace_eb8eb6dde6')"
+                :title="$expert['name']"
+                :description="$expert['type'].' · '.$expert['profile_status'].' · '.$expert['verification']"
+                heading-id="expert-workspace-heading"
+                data-section="expert-workspace-header"
+            >
+                <x-slot:actions>
+                    <x-action-control :label="__('ui.view_public_profile_9acb2dbb15')" icon="external-link" :href="route('experts.show', $expert['slug'])" />
+                    <x-action-control :label="__('ui.edit_profile_15c4aa1303')" icon="pencil" variant="primary" :href="route('experts.edit', $expert['slug'])" />
+                </x-slot:actions>
+            </x-page-header>
 
             <section class="grid min-w-0 grid-cols-2 gap-px overflow-hidden rounded-md border border-paw-line bg-paw-line lg:grid-cols-4" aria-label="{{ __('ui.workspace_metrics_729c6cbd06') }}">
                 @forelse ($metrics as $metric)

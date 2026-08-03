@@ -18,6 +18,15 @@
 
 ### Events
 
+- Added the canonical organization tenant authority with current memberships,
+  signed account-bound invitations, independent event, finance, safety,
+  marketplace, shelter, and audit roles, eight operational restrictions,
+  immutable attribution, localized Livewire workspaces, guarded demo data, and
+  organization-only event creation, visibility, registration,
+  participant-data, invitation, and check-in boundaries.
+- Kept organization invitation tokens out of public Livewire state and
+  minimized member email and internal restriction projections by policy.
+
 - Added occurrence-scoped event tracks, physical/online rooms, sessions, and
   public/private staff assignments with controlled status/type/reservation
   enums, encrypted private room and conflict data, independent capacities,

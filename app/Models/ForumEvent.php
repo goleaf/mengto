@@ -54,6 +54,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string $organizer_name
  * @property int|null $organizer_user_id
  * @property int|null $owner_user_id
+ * @property int|null $responsible_organization_id
  * @property string|null $online_url
  * @property ForumEventPhotoConsent $photo_consent_mode
  * @property ForumEventPetParticipation $pet_participation_mode
@@ -76,6 +77,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property-read Collection<int, ForumEventMessage> $messages
  * @property-read User|null $organizer
  * @property-read User|null $owner
+ * @property-read Organization|null $responsibleOrganization
  * @property-read Collection<int, ForumEventOccurrence> $occurrences
  * @property-read Collection<int, ForumEventRegistration> $registrations
  * @property-read Collection<int, ForumEventReview> $reviews
@@ -96,6 +98,7 @@ final class ForumEvent extends Model
     protected $fillable = [
         'organizer_user_id',
         'owner_user_id',
+        'responsible_organization_id',
         'organizer_key',
         'organizer_name',
         'forum_group_id',
@@ -220,6 +223,12 @@ final class ForumEvent extends Model
         return $this->belongsTo(User::class, 'owner_user_id');
     }
 
+    /** @return BelongsTo<Organization, $this> */
+    public function responsibleOrganization(): BelongsTo
+    {
+        return $this->belongsTo(Organization::class, 'responsible_organization_id');
+    }
+
     /** @return BelongsTo<ForumGroup, $this> */
     public function group(): BelongsTo
     {
@@ -342,9 +351,25 @@ final class ForumEvent extends Model
 
             $visibility
                 ->orWhere('visibility', ForumEventVisibility::Members->value)
-                ->orWhere('organizer_user_id', $user->id)
-                ->orWhere('owner_user_id', $user->id)
-                ->orWhereHas('activeTeamMemberships', function (Builder $memberships) use ($user): void {
+                ->orWhere(function (Builder $managed) use ($user): void {
+                    $managed
+                        ->where(function (Builder $authority) use ($user): void {
+                            $authority
+                                ->where('organizer_user_id', $user->id)
+                                ->orWhere('owner_user_id', $user->id)
+                                ->orWhereHas('activeTeamMemberships', function (Builder $memberships) use ($user): void {
+                                    $memberships->where('user_id', $user->id);
+                                });
+                        })
+                        ->where(function (Builder $tenant) use ($user): void {
+                            $tenant
+                                ->whereNull('responsible_organization_id')
+                                ->orWhereHas('responsibleOrganization.activeMemberships', function (Builder $memberships) use ($user): void {
+                                    $memberships->where('user_id', $user->id);
+                                });
+                        });
+                })
+                ->orWhereHas('responsibleOrganization.activeMemberships', function (Builder $memberships) use ($user): void {
                     $memberships->where('user_id', $user->id);
                 })
                 ->orWhere(function (Builder $groups) use ($user): void {

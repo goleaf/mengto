@@ -250,6 +250,27 @@ automatic legacy classification. See `docs/polls.md`.
 All schema changes are additive, use foreign keys and bounded-query indexes,
 and avoid raw SQL, triggers, destructive legacy classification, or a
 cross-domain transaction with external I/O. See `docs/journals.md`.
+## Organization Authority Tables
+
+- `organizations`: stable key, slug, creation idempotency, owner, localized
+  defaults, lifecycle, verification, suspension, and optimistic version.
+- `organization_memberships`: unique organization/user role projection with
+  invitation/removal attribution, expiry, and optimistic version.
+- `organization_invitations`: stable identity, unique request and token hash,
+  account/role binding, expiry, response, and revocation attribution.
+- `organization_restrictions`: one independently timed capability restriction
+  per idempotent operation with apply/revoke attribution.
+- `organization_audit_events`: append-only actor/subject, event, reason,
+  translation-key, encrypted metadata, and optional unique request evidence.
+- `forum_events.responsible_organization_id`: nullable restrictive foreign key
+  preserving legacy event ownership while enabling a real tenant authority.
+
+Unique constraints protect stable/request/token/membership identities.
+Compound indexes cover tenant membership, invitation state/expiry,
+restriction capability windows, audit timelines, and organization event
+discovery. Every foreign key has a leading index. The migrations are additive
+and contain no ownership inference or destructive backfill.
+
 ## Event Tables
 
 The additive event schema consists of `forum_events`,

@@ -1227,6 +1227,7 @@ final class ForumEventWorkspace extends Component
                 'id',
                 'owner_user_id',
                 'organizer_user_id',
+                'responsible_organization_id',
                 'organizer_key',
                 'organizer_name',
                 'forum_group_id',

@@ -1,16 +1,6 @@
 @props(['form'])
 
 <section class="panel form-panel" aria-labelledby="composer-title">
-    <x-section-heading
-        :eyebrow="$form['eyebrow']"
-        :title="$form['title']"
-        title-id="composer-title"
-        size="directory"
-        :level="1"
-    />
-
-    <p class="form-panel__description">{{ $form['description'] }}</p>
-
     @if ($errors->any())
         <div role="alert" class="form-errors">
             <x-lucide-circle-alert class="icon icon--sm" aria-hidden="true" />

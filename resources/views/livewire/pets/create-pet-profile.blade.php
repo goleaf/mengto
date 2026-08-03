@@ -1,10 +1,10 @@
 <x-page-stack data-section="pet-profile-create">
     <x-page-header
-        eyebrow="{{ __('pet_profiles.create.eyebrow') }}"
-        title="{{ __('pet_profiles.create.title') }}"
-        description="{{ __('pet_profiles.create.description') }}"
+        :eyebrow="__('pet_profiles.create.eyebrow')"
+        :title="__('pet_profiles.create.title')"
+        :description="__('pet_profiles.create.description')"
         heading-id="create-pet-profile-heading"
-        action-label="{{ __('pet_profiles.actions.back_to_pets') }}"
+        :action-label="__('pet_profiles.actions.back_to_pets')"
         action-icon="arrow-left"
         :action-href="route('pets.index')"
     />

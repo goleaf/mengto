@@ -1,12 +1,28 @@
 <x-app-shell :owner="$owner" :title="$page_title" :active-section="$active_section">
     <div class="forum-page">
-        <nav class="forum-filter-tabs" aria-label="{{ __('ui.breadcrumb_2bd873d6c7') }}">
-            <a href="{{ route('forum.index') }}">
-                <x-lucide-arrow-left aria-hidden="true" />
-                {{ __('ui.forum_4da7bd42ab') }}
-            </a>
-            <a href="{{ route('knowledge.index') }}">{{ __('ui.knowledge_base_f56819a30d') }}</a>
-        </nav>
+        <x-page-header
+            :eyebrow="$topic['type_label'].' · '.$topic['category_label']"
+            :title="$topic['title']"
+            :description="$topic['author_name'].' · '.$topic['activity_label']"
+            heading-id="forum-topic-heading"
+            data-section="forum-topic-header"
+        >
+            <x-slot:meta>
+                <div class="flex flex-wrap gap-2">
+                    <span class="forum-badge {{ $topic['is_urgent'] ? 'forum-badge--danger' : '' }}">
+                        {{ $topic['status_label'] }}
+                    </span>
+                    <span class="forum-badge">{{ $topic['visibility_label'] }}</span>
+                    @if ($topic['location'])
+                        <span class="forum-badge"><x-lucide-map-pin aria-hidden="true" /> {{ $topic['location'] }}</span>
+                    @endif
+                </div>
+            </x-slot:meta>
+            <x-slot:actions>
+                <x-action-control :label="__('ui.forum_4da7bd42ab')" icon="arrow-left" :href="route('forum.index')" variant="paper" size="regular" />
+                <x-action-control :label="__('ui.knowledge_base_f56819a30d')" icon="library" :href="route('knowledge.index')" variant="paper" size="regular" />
+            </x-slot:actions>
+        </x-page-header>
 
         <div class="forum-thread-layout">
             <div class="forum-thread">
@@ -21,20 +37,6 @@
                 @endif
 
                 <article class="forum-thread__header">
-                    <div class="forum-topic-card__meta">
-                        <span class="forum-badge {{ $topic['is_urgent'] ? 'forum-badge--danger' : '' }}">
-                            {{ $topic['status_label'] }}
-                        </span>
-                        <span>{{ $topic['type_label'] }}</span>
-                        <span>{{ $topic['category_label'] }}</span>
-                        <span>{{ $topic['visibility_label'] }}</span>
-                        @if ($topic['location'])
-                            <span><x-lucide-map-pin aria-hidden="true" /> {{ $topic['location'] }}</span>
-                        @endif
-                    </div>
-
-                    <h1 class="forum-thread__title">{{ $topic['title'] }}</h1>
-
                     <div class="forum-topic-card__author">
                         <span class="forum-topic-card__avatar" aria-hidden="true">{{ $topic['author_initials'] }}</span>
                         <span>

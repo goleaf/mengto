@@ -72,6 +72,13 @@ presentation fields. `ForumJournalTimeline` caps entries and chart points,
 loads comments/measurements/media/collaborators in bounded projections, and
 never serializes the full taxonomy or private storage data. Metrics are
 aggregated from normalized selected columns; no query runs in Blade.
+`OrganizationDirectory` scopes before pagination, selects presentation
+columns, and computes active membership counts in the organization query. The
+unused owner eager load was removed, reducing the directory data path from
+three statements to two. Its executable budget keeps twelve organizations to
+at most one statement above a single organization. Organization workspaces
+cap memberships at 100 and active restrictions at 50 and load private
+projections only for authorized managers.
 
 All previously uncovered foreign keys gained leading indexes. The deterministic
 performance seeder supports repeatable local growth tests; production latency

@@ -215,6 +215,20 @@
     }
 }
 
+.forum-subcategories {
+    display: grid;
+    gap: 0.1rem;
+    margin: 0.1rem 0 0.45rem 1rem;
+    border-inline-start: 1px solid #dedbd0;
+    padding-inline-start: 0.35rem;
+
+    a {
+        min-block-size: $touch-target;
+        padding-inline-start: 0.8rem;
+        font-size: 0.78rem;
+    }
+}
+
 .forum-filter-tabs {
     display: flex;
     gap: 0.45rem;
@@ -983,6 +997,15 @@
         flex: 0 0 auto;
         border: 1px solid #dedbd0;
         background: #fbfaf6;
+    }
+
+    .forum-subcategories {
+        display: flex;
+        flex: 0 0 auto;
+        gap: 0.35rem;
+        margin: 0;
+        border: 0;
+        padding: 0;
     }
 
     .forum-form__actions {

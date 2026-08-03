@@ -1,40 +1,23 @@
 <x-app-shell :owner="$owner" :title="$page_title" :active-section="$active_section">
     <div class="forum-page">
-        <header class="forum-header">
-            <div class="forum-header__copy">
-                <p class="forum-header__eyebrow">{{ __('ui.community_knowledge_31eb615b90') }}</p>
-                <h1>{{ __('ui.ask_well_find_what_lasts_3c2fdf9b45') }}</h1>
-                <p>{{ __('ui.questions_field_notes_expert_context_and_practical_guides_5f0c917aa8') }}</p>
-            </div>
-            <div class="forum-header__actions">
-                <a href="{{ route('knowledge.index') }}" class="forum-button">
-                    <x-lucide-library aria-hidden="true" />
-                    {{ __('ui.knowledge_dcb3e1c00e') }}
-                </a>
-                <a href="{{ route('forum.expert-sessions.index') }}" class="forum-button">
-                    <x-lucide-circle-help aria-hidden="true" />
-                    {{ __('forum_expert_sessions.navigation.label') }}
-                </a>
+        <x-page-header
+            :eyebrow="__('ui.community_knowledge_31eb615b90')"
+            :title="__('ui.ask_well_find_what_lasts_3c2fdf9b45')"
+            :description="__('ui.questions_field_notes_expert_context_and_practical_guides_5f0c917aa8')"
+            heading-id="forum-directory-heading"
+            data-section="forum-directory-header"
+        >
+            <x-slot:actions>
+                <x-action-control :label="__('ui.knowledge_dcb3e1c00e')" icon="library" :href="route('knowledge.index')" variant="paper" size="regular" />
+                <x-action-control :label="__('forum_expert_sessions.navigation.label')" icon="circle-help" :href="route('forum.expert-sessions.index')" variant="paper" size="regular" />
                 @auth
-                    <a href="{{ route('forum.journals.index') }}" class="forum-button">
-                        <x-lucide-notebook-tabs aria-hidden="true" />
-                        {{ __('forum_journals.navigation.label') }}
-                    </a>
-                    <a href="{{ route('forum.groups.index') }}" class="forum-button">
-                        <x-lucide-users aria-hidden="true" />
-                        {{ __('forum_groups.navigation.label') }}
-                    </a>
-                    <a href="{{ route('forum.mentorship.index') }}" class="forum-button">
-                        <x-lucide-users-round aria-hidden="true" />
-                        {{ __('forum_mentorship.navigation.label') }}
-                    </a>
+                    <x-action-control :label="__('forum_journals.navigation.label')" icon="notebook-tabs" :href="route('forum.journals.index')" variant="paper" size="regular" />
+                    <x-action-control :label="__('forum_groups.navigation.label')" icon="users" :href="route('forum.groups.index')" variant="paper" size="regular" />
+                    <x-action-control :label="__('forum_mentorship.navigation.label')" icon="users-round" :href="route('forum.mentorship.index')" variant="paper" size="regular" />
                 @endauth
-                <a href="{{ route('forum.topics.create') }}" class="forum-button forum-button--primary">
-                    <x-lucide-square-pen aria-hidden="true" />
-                    {{ __('ui.ask_a_question_3a533d7ef8') }}
-                </a>
-            </div>
-        </header>
+                <x-action-control :label="__('ui.ask_a_question_3a533d7ef8')" icon="square-pen" :href="route('forum.topics.create')" variant="primary" size="regular" />
+            </x-slot:actions>
+        </x-page-header>
 
         <form method="GET" action="{{ route('forum.index') }}" class="forum-search" role="search">
             <label>
@@ -80,7 +63,7 @@
                             <span class="forum-badge forum-badge--sun">{{ trans_choice('presentation.draft_count', $draft_count, ['count' => $draft_count]) }}</span>
                         @endif
                     </div>
-                    <nav class="forum-categories">
+                    <nav class="forum-categories" data-forum-category-tree>
                         <a
                             href="{{ route('forum.index', [...$filters, 'category' => 'all', 'page' => null]) }}"
                             @if ($filters['category'] === 'all') aria-current="page" @endif
@@ -91,11 +74,29 @@
                         @forelse ($categories as $key => $category)
                             <a
                                 href="{{ route('forum.index', [...$filters, 'category' => $key, 'page' => null]) }}"
-                                @if ($filters['category'] === $key) aria-current="page" @endif
+                                data-category-root="{{ $key }}"
+                                @if ($active_category_root === $key && $active_subcategory === null) aria-current="page" @endif
                             >
                                 <x-dynamic-component :component="'lucide-'.$category['icon']" aria-hidden="true" />
                                 {{ $category['label'] }}
                             </a>
+                            @if ($active_category_root === $key)
+                                <ul class="forum-subcategories" data-subcategory-list="{{ $key }}">
+                                    @forelse ($category['subcategories'] as $subcategoryKey => $subcategoryLabel)
+                                        <li>
+                                            <a
+                                                href="{{ route('forum.index', [...$filters, 'category' => $subcategoryKey, 'page' => null]) }}"
+                                                data-category-child="{{ $subcategoryKey }}"
+                                                @if ($active_subcategory === $subcategoryKey) aria-current="page" @endif
+                                            >
+                                                {{ $subcategoryLabel }}
+                                            </a>
+                                        </li>
+                                    @empty
+                                        <li class="text-sm text-paw-muted">{{ __('ui.no_subcategories_9f1010c1a3') }}</li>
+                                    @endforelse
+                                </ul>
+                            @endif
                         @empty
                             <span>{{ __('ui.no_categories_available_a557500f61') }}</span>
                         @endforelse

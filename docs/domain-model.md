@@ -239,6 +239,28 @@ preserves every child and audit record while disabling mutation.
 The neutral `general` type is a review-required fallback for explicit legacy
 journal topics. All required named types remain typed and localized. See
 `docs/journals.md`.
+## Organization Authority
+
+- `Organization` owns stable tenant identity, public presentation, owner
+  attribution, type, lifecycle, verification metadata, suspension, and an
+  optimistic version.
+- `OrganizationMembership` owns one user role/status projection per
+  organization. Removal and expiry revoke current access without erasing the
+  relationship or attributed history.
+- `OrganizationInvitation` is account-bound, expiring, signed, single-use,
+  and stores only the token hash.
+- `OrganizationRestriction` independently disables one operational
+  capability for an interval; suspension installs the complete bounded
+  operational restriction set.
+- `OrganizationAuditEvent` is append-only actor/subject evidence with a
+  purpose-specific idempotency key.
+- `ForumEvent.responsibleOrganization` links event authority to a real tenant
+  without replacing the event owner or organizer attribution.
+
+This foundation does not yet introduce organization locations, a selected
+organization context, verification review cases, or finance/marketplace/
+shelter aggregates. Those remain separate P02 packages.
+
 ## Events And Clubs
 
 - `ForumEvent` owns event identity, organizer snapshot, schedule, visibility,
