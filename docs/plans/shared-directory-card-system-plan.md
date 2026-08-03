@@ -296,7 +296,10 @@ evidence follow-up `24d8dd8` both advanced `origin/main` normally on
   1440 pixels in authenticated Chrome.
 - [x] Inspect group and marketplace mobile/desktop screenshots.
 - [x] Run the final full static, test, seed, cache, dependency, and diff gates.
-- [ ] Publish the isolated attributable slice to `origin/main`.
+- [x] Publish the isolated attributable slice to `origin/main`.
+
+Shared action-row publication evidence: core commit `78bf942` advanced
+`origin/main` normally on 2026-08-03.
 
 ## Completion Rule
 
