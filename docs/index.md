@@ -91,6 +91,7 @@ domain contract under the canonical requirements above:
 | `docs/decisions/forum-conflicts.md` | Explicit conflict resolution | Living decisions |
 | `docs/plans/pet-profile-master-plan.md` | Phases 15-25 for the pet-profile revision | Living canonical plan |
 | `docs/plans/pet-profile-foundation-work-package.md` | Implemented pet identity and access foundation package | Living evidence |
+| `docs/plans/pet-profile-primary-photo-work-package.md` | Optional primary-photo processing, private delivery, replacement, removal, and recovery package | Living evidence |
 | `docs/plans/pet-profile-current-progress.md` | Pet gate status and next evidence | Living evidence |
 | `docs/audits/pet-profile-existing-system-audit.md` | Existing pet aggregate and integrations | Living evidence |
 | `docs/audits/pet-profile-gap-analysis.md` | Pet data, privacy, ownership, and lifecycle gaps | Living evidence |

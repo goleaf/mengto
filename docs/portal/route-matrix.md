@@ -15,7 +15,7 @@ their canonical event targets. Behaviour coverage remains mapped in
 
 ## Global Page Identity Classification
 
-The 111 first-party routes accepting `GET` are classified below. The executable
+The 112 first-party routes accepting `GET` are classified below. The executable
 one-route/one-class ledger is
 `tests/Support/page-identity-route-classification.php`; the route inventory test
 fails when a route is added, removed, duplicated, or left unclassified.
@@ -132,6 +132,7 @@ the decision column is the desired page-identity boundary.
 | `pets.manage.invitations` | `/pets/manage/invitations` | `Pets\PetProfileInvitations` | `canonical-page` | retain `x-page-header` |
 | `pets.manage.create` | `/pets/manage/new` | `Pets\CreatePetProfile` | `canonical-page` | retain `x-page-header` |
 | `pets.manage.show` | `/pets/manage/{petProfile:profile_key}` | `Pets\ManagePetProfile` | `canonical-page` | retain `x-page-header` |
+| `pets.media.show` | `/pets/profile/{petProfile:profile_key}/media/{petProfileMedia:media_key}` | `PetProfileMediaController` | `file-response` | no page identity |
 | `pets.profile` | `/pets/profile/{petProfile:profile_key}` | `Pets\PublicPetProfile` | `deliberate-detail-or-profile` | retain token-compatible hero pending audit |
 | `pets.scout.legacy` | `/pets/scout` | `RedirectController` | `redirect` | no page identity |
 | `pets.created` | `/pets/{item}` | `CreatedContentPreviewController` | `deliberate-detail-or-profile` | retain token-compatible hero pending audit |

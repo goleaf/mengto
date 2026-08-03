@@ -11,4 +11,12 @@ return [
         'format' => 'webp',
         'quality' => 82,
     ],
+
+    'pet_profile_uploads' => [
+        'max_width' => 2560,
+        'max_height' => 2560,
+        'format' => 'webp',
+        'quality' => 82,
+        'recovery_days' => 30,
+    ],
 ];

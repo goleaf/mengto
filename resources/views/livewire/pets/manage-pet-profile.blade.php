@@ -28,13 +28,121 @@
     </section>
 
     <nav aria-label="{{ __('pet_profiles.manage.sections') }}" class="grid grid-cols-2 gap-2 border-b border-paw-line pb-4 sm:flex sm:flex-wrap">
+        <a class="forum-button min-h-11 min-w-0 w-full whitespace-normal text-center sm:w-auto" href="#pet-media"><x-lucide-image class="shrink-0" aria-hidden="true" />{{ __('pet_profiles.manage.media') }}</a>
         <a class="forum-button min-h-11 min-w-0 w-full whitespace-normal text-center sm:w-auto" href="#pet-basics"><x-lucide-paw-print class="shrink-0" aria-hidden="true" />{{ __('pet_profiles.manage.basics') }}</a>
         <a class="forum-button min-h-11 min-w-0 w-full whitespace-normal text-center sm:w-auto" href="#pet-privacy"><x-lucide-shield class="shrink-0" aria-hidden="true" />{{ __('pet_profiles.manage.privacy') }}</a>
         <a class="forum-button min-h-11 min-w-0 w-full whitespace-normal text-center sm:w-auto" href="#pet-managers"><x-lucide-users class="shrink-0" aria-hidden="true" />{{ __('pet_profiles.manage.managers') }}</a>
         <a class="forum-button min-h-11 min-w-0 w-full whitespace-normal text-center sm:w-auto" href="#pet-lifecycle"><x-lucide-history class="shrink-0" aria-hidden="true" />{{ __('pet_profiles.manage.lifecycle') }}</a>
     </nav>
 
-    <section id="pet-basics" aria-labelledby="pet-basics-heading" class="scroll-mt-4">
+    <section id="pet-media" aria-labelledby="pet-media-heading" class="scroll-mt-4">
+        <div class="grid gap-5 lg:grid-cols-[14rem_minmax(0,1fr)] lg:items-start">
+            <div>
+                <h2 id="pet-media-heading">{{ __('pet_profiles.manage.media') }}</h2>
+                <p class="mt-2 text-sm leading-6 text-paw-muted">{{ __('pet_profiles.media.manage_description') }}</p>
+            </div>
+
+            <div class="grid gap-4 sm:grid-cols-[10rem_minmax(0,1fr)] sm:items-start">
+                <div class="aspect-square overflow-hidden rounded-lg border border-paw-line bg-paw-canvas">
+                    @if ($mediaForm->upload !== null)
+                        <img
+                            src="{{ $mediaForm->upload->temporaryUrl() }}"
+                            alt="{{ __('pet_profiles.media.selected_preview') }}"
+                            class="h-full w-full object-cover"
+                        >
+                    @elseif ($primaryPhoto !== null)
+                        <img
+                            src="{{ $primaryPhoto['url'] }}"
+                            alt="{{ $primaryPhoto['alt_text'] }}"
+                            class="h-full w-full object-cover"
+                        >
+                    @else
+                        <div class="grid h-full place-items-center" role="img" aria-label="{{ __('pet_profiles.public.avatar_alt', ['name' => $profile->name]) }}">
+                            <x-lucide-paw-print class="size-10" aria-hidden="true" />
+                        </div>
+                    @endif
+                </div>
+
+                <form wire:submit="replacePrimaryPhoto" class="forum-form">
+                    <label class="forum-form__field" for="managed-pet-photo">
+                        <span>{{ $primaryPhoto === null ? __('pet_profiles.media.choose_photo') : __('pet_profiles.media.choose_replacement') }}</span>
+                        <input
+                            id="managed-pet-photo"
+                            type="file"
+                            wire:model="mediaForm.upload"
+                            accept="image/jpeg,image/png,image/webp"
+                            aria-describedby="managed-pet-photo-help managed-pet-photo-error"
+                            @error('mediaForm.upload') aria-invalid="true" @enderror
+                        >
+                        <small id="managed-pet-photo-help">{{ __('pet_profiles.media.upload_help') }}</small>
+                        @error('mediaForm.upload') <small id="managed-pet-photo-error" role="alert">{{ $message }}</small> @enderror
+                        <small wire:loading wire:target="mediaForm.upload">{{ __('pet_profiles.media.uploading') }}</small>
+                    </label>
+
+                    <label class="forum-form__field" for="managed-pet-photo-alt">
+                        <span>{{ __('pet_profiles.fields.photo_alt_text') }}</span>
+                        <input
+                            id="managed-pet-photo-alt"
+                            type="text"
+                            wire:model="mediaForm.altText"
+                            maxlength="500"
+                            aria-describedby="managed-pet-photo-alt-help managed-pet-photo-alt-error"
+                            @error('mediaForm.altText') aria-invalid="true" @enderror
+                        >
+                        <small id="managed-pet-photo-alt-help">{{ __('pet_profiles.media.alt_help') }}</small>
+                        @error('mediaForm.altText') <small id="managed-pet-photo-alt-error" role="alert">{{ $message }}</small> @enderror
+                    </label>
+
+                    <div class="flex flex-wrap gap-2">
+                        <button
+                            type="submit"
+                            class="forum-button forum-button--primary min-h-11"
+                            wire:loading.attr="disabled"
+                            wire:target="replacePrimaryPhoto,mediaForm.upload"
+                        >
+                            <x-lucide-image-plus aria-hidden="true" />
+                            <span wire:loading.remove wire:target="replacePrimaryPhoto">{{ __('pet_profiles.actions.save_photo') }}</span>
+                            <span wire:loading wire:target="replacePrimaryPhoto">{{ __('pet_profiles.actions.saving') }}</span>
+                        </button>
+                        @if ($mediaForm->upload !== null)
+                            <button type="button" class="forum-button min-h-11" wire:click="clearPhoto">
+                                <x-lucide-x aria-hidden="true" />
+                                {{ __('pet_profiles.actions.clear_photo') }}
+                            </button>
+                        @endif
+                        @if ($primaryPhoto !== null)
+                            <button
+                                type="button"
+                                class="forum-button min-h-11"
+                                wire:click="removePrimaryPhoto"
+                                wire:confirm="{{ __('pet_profiles.confirmations.remove_photo') }}"
+                            >
+                                <x-lucide-trash-2 aria-hidden="true" />
+                                {{ __('pet_profiles.actions.remove_photo') }}
+                            </button>
+                        @endif
+                    </div>
+                </form>
+            </div>
+
+            @if ($primaryPhoto === null && $recoverablePhoto !== null)
+                <div class="rounded-lg border border-paw-line bg-paw-canvas p-4 lg:col-start-2">
+                    <h3 class="font-semibold">{{ __('pet_profiles.media.recovery_title') }}</h3>
+                    <p class="mt-1 text-sm leading-6 text-paw-muted">{{ __('pet_profiles.media.recovery_description') }}</p>
+                    <button
+                        type="button"
+                        class="forum-button mt-3 min-h-11"
+                        wire:click="restorePrimaryPhoto('{{ $recoverablePhoto['media_key'] }}')"
+                    >
+                        <x-lucide-rotate-ccw aria-hidden="true" />
+                        {{ __('pet_profiles.actions.restore_photo') }}
+                    </button>
+                </div>
+            @endif
+        </div>
+    </section>
+
+    <section id="pet-basics" aria-labelledby="pet-basics-heading" class="scroll-mt-4 border-t border-paw-line pt-6">
         <h2 id="pet-basics-heading">{{ __('pet_profiles.manage.basics') }}</h2>
         <form wire:submit="saveBasics" class="forum-form mt-4">
             @if ($errors->any())

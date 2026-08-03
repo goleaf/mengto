@@ -740,7 +740,7 @@ The complete suite total and scoped publication evidence are maintained in
 component contract, exact media/title destination equality for pets, groups,
 neighbors, meetups, discovery, profiles, experts, bookings, messages, and
 marketplace orders, and source guards against nested interactive content. Its
-fixture classifies all 73 first-party media-bearing Blade templates, including
+fixture classifies all 74 first-party media-bearing Blade templates, including
 viewer, current-page, action, decorative, protected-download, composite, and
 passive exclusions.
 
@@ -761,3 +761,35 @@ Observed package evidence on 2026-08-03:
 The final serial repository suite passed 2,303 tests and 76,111 assertions in
 131.130 seconds. An earlier concurrent final-class loader conflict disappeared
 before this final rerun and is not recorded as an active blocker.
+
+## Pet Primary Photo Verification
+
+`PetProfileMediaLifecycleTest` protects the optional create upload, generated
+private path, image normalization and WebP output, valid factory defaults,
+single-current placement, authorization, idempotent replacement, logical
+removal, 30-day recovery, restoration, and canonically contained response.
+The create and management Livewire flows, public-profile projection, private
+HTML boundary, route classification, and foreign-key indexes are covered by
+the related feature and architecture tests.
+
+Observed package evidence on 2026-08-03:
+
+- focused media/create/foundation slice: 27 tests and 1,948 assertions;
+- media plus schema, linked-media, and page-identity regression: 72 tests and
+  620 assertions;
+- architecture, localization, private-file, security, and portal boundary:
+  85 tests and 60,963 assertions;
+- isolated fresh and repeated seed: 130 migrations, 215 tables, stable
+  five-user identity count, and both exits `0`;
+- targeted Pint and Larastan, Composer strict validation/audit, npm audit, and
+  the Vite production build passed;
+- the connected Chrome matrix passed desktop/mobile pet create, management,
+  and public-profile surfaces with no overflow, unnamed controls, missing
+  image alternatives, undersized mobile targets, duplicate IDs, or console
+  errors; management screenshots were reviewed at 1440x900 and 375x812;
+- the first serial full-suite run exposed three package integration gaps and a
+  concurrent Discover factory defect; after correction, the final isolated
+  serial suite passed 2,635 tests and 83,160 assertions in 177.476 seconds.
+
+Exact scope and the open wider media boundary are recorded in
+`docs/plans/pet-profile-primary-photo-work-package.md`.

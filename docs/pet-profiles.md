@@ -33,19 +33,37 @@ policy-protected Livewire route, and every first-party Add pet action links to
 the canonical route directly.
 
 The first save asks only for a name or temporary name, broad animal group,
-the creator's current relationship to the animal, and intended profile
-audience. Those four browser-controlled values are validated by the dedicated
-`PetProfileCreateForm`; the action still creates one idempotent,
+the creator's current relationship to the animal, intended profile audience,
+and an optional primary photo with an accessible description. The identity
+values are validated by `PetProfileCreateForm`, while `PetProfileMediaForm`
+validates the optional image; the action still creates one idempotent,
 non-discoverable private draft with a stable profile key, manager membership,
 privacy row, slug alias, and actor-attributed evidence.
 
 Breed, taxonomy, birth details, sex, reproductive status, biography, medical
 data, and care data belong to subsequent task-specific profile management.
-Primary photo upload remains a separate open media package because it needs a
-private-file ownership, authorization, transformation, deletion, and recovery
-boundary; the creation screen does not present a non-functional upload
-control. Selecting a relationship sets initial access but does not establish
-legal ownership or professional verification.
+The photo uses the canonical content media asset, a pet-specific placement,
+generated private storage, image orientation/scaling/WebP processing, the
+existing `manage-media` permission, and a policy-protected nested media route.
+Replacement and logical removal retain a 30-day recoverable placement; no
+browser state or rendered HTML receives the storage path or checksum. Selecting
+a relationship sets initial access but does not establish legal ownership,
+copyright, or professional verification.
+
+## Primary Photo Lifecycle
+
+One nullable unique current key enforces a single active primary photo per pet.
+Upload replay is idempotent, and replacement preserves the prior placement as
+superseded. Removal is reversible for 30 days. Restore repeats authorization,
+can supersede a newer photo, and records immutable lifecycle and ordinary audit
+evidence without recording file paths.
+
+The current photo follows the profile view policy. Historical recoverable
+photos require `manage-media`. File delivery is limited to the authenticated
+portal, the private `local` disk, and the server-derived owning directory, with
+canonical containment before streaming. Full galleries, pet/media tags,
+moderation, attribution/licensing workflows, and permanent retention cleanup
+remain Phase 20 work.
 
 ## Identity And Compatibility
 
@@ -99,9 +117,10 @@ rejects stale versions, updates state timestamps, applies bounded discovery
 effects, records an immutable event, and invalidates known cache keys.
 
 This foundation does not claim the complete transfer, duplicate resolution,
-deletion cooling-off, memorial side-effect, adoption, lost/found, media, post,
-friendship, device, medical, or recommendation workflows. Their requirement
-IDs remain open until their owning modules are connected and verified.
+deletion cooling-off, memorial side-effect, adoption, lost/found, media
+gallery, post, friendship, device, medical, or recommendation workflows. Their
+requirement IDs remain open until their owning modules are connected and
+verified.
 
 ## Data Migration
 
@@ -150,3 +169,5 @@ semantic landmarks, names, touch targets, overflow, and console errors.
 The implementation plan and exact execution evidence are in
 `docs/plans/pet-profile-foundation-work-package.md`; requirement-level status
 is generated from `docs/traceability/forum-requirement-evidence.json`.
+The optional primary-photo boundary and its narrower verification are in
+`docs/plans/pet-profile-primary-photo-work-package.md`.

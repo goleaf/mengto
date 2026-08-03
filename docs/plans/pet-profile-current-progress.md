@@ -54,6 +54,28 @@ pet, medical, care, device, search, adoption, event, report, and social data.
   Desktop and mobile screenshots were visually reviewed after correcting the
   submit icon size.
 
+## Optional Primary Photo
+
+- `pet.creation.0025` now has a real optional create control instead of a
+  placeholder. Photo-free creation remains valid; selecting a photo requires a
+  short accessible description.
+- The shared `content_media_assets` object is linked through the additive
+  `pet_profile_media` placement table. Uploads use generated names on private
+  `local` storage and are oriented, scaled, stripped through re-encoding, and
+  stored as WebP.
+- The `manage-media` policy protects upload, replacement, removal, restoration,
+  and historical recovery. The nested response route repeats profile/media
+  scoping and canonical owning-directory containment; paths and checksums never
+  enter rendered HTML.
+- Replacement/removal retains a 30-day recovery window. Permanent asset
+  erasure remains open until shared-reference retention is implemented.
+- Focused media/create/foundation tests pass 27 tests and 1,948 assertions;
+  the 72-test integration regression, targeted Larastan, isolated fresh and
+  repeated seed, Vite build, and connected Chrome matrix also pass. The first
+  full serial run exposed and drove correction of three package gaps and a
+  concurrent Discover factory defect. The final isolated serial suite then
+  passed 2,635 tests and 83,160 assertions; full Pint and Larastan also pass.
+
 ## Completion Evidence
 
 - Additive migration produced 100 migrations and 177 tables on isolated fresh
@@ -80,7 +102,7 @@ transfer, destructive lifecycle, media, social graph, lost/found, adoption,
 medical/care/device links, recommendations, analytics, and advanced privacy
 must not inherit verified status from this foundation.
 
-For creation specifically, the next dependency-safe package is the optional
-primary-photo lifecycle (`pet.creation.0025`) followed by the progressive
-completion flow (`pet.creation.0036-pet.creation.0058`). Neither is represented
-by a placeholder control on the minimal screen.
+For creation specifically, the next dependency-safe package is the progressive
+completion flow (`pet.creation.0036-pet.creation.0058`). The optional primary
+photo (`pet.creation.0025`) is implemented by the narrower media work package;
+the remaining gallery and full `pet.media.*` scope stays open.

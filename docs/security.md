@@ -113,6 +113,11 @@ requires authenticated ownership or an explicit scoped grant.
   before streaming; traversal segments, foreign disks, cross-domain paths, and
   symbolic-link escapes fail closed as `404`.
 - Compensation cleanup on partial failure.
+- Pet primary photos use content-derived image validation, generated private
+  names, orientation/scaling/WebP re-encoding, profile/placement policy checks,
+  canonical owner-directory containment, idempotent writes, and logical
+  removal with a bounded recovery window. Paths and checksums are audit- and
+  presentation-private.
 
 ### Integrations
 

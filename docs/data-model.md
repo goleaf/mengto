@@ -17,7 +17,7 @@
 | Domain | Tables |
 | --- | --- |
 | Framework | `users`, password reset, sessions, cache/locks, jobs/batches/failed jobs |
-| Social identity/state | `pet_profiles`, pet managers/privacy/lifecycle events/slug aliases/versioned facts, encrypted/versioned `user_domain_states`, `photo_assets`, `photo_comments`, `photo_reactions` |
+| Social identity/state | `pet_profiles`, pet managers/privacy/lifecycle events/slug aliases/versioned facts/primary-media placements, encrypted/versioned `user_domain_states`, `photo_assets`, `photo_comments`, `photo_reactions` |
 | Forum | topics, answers, comments, votes, engagements, blocks, polymorphic reports, report events/evidence, categories/translations/aliases/redirects/lifecycle rules, topic definitions/lifecycle events/update requests/legal holds, reputation/trust/badges, confirmations, moderation cases/actions/appeals/recusals, notifications, persistent groups/memberships/invitations/audit events/taxon links, group activities/announcements/private files/polls/options/votes |
 | Animal taxonomy | versioned sources/imports/versions/issues, taxa, names, external identifiers, change history, domestic classifications, breed registries, community groups |
 | Knowledge | articles with translation provenance, append-only versions, corrections, normalized collaborators, append-only workflow events |
@@ -97,6 +97,10 @@ legacy key has a verified user mapping.
   One privacy row, append-only idempotent lifecycle events, retained slug
   aliases, and one current versioned fact per pet/fact key preserve
   authorization, privacy, provenance, and correction history.
+- Pet primary media links the shared `content_media_assets` object through
+  `pet_profile_media`. Unique upload and nullable current keys enforce replay
+  safety and one active primary placement; indexed status/recovery timestamps
+  preserve replacement, logical removal, and bounded restoration history.
 - New medical records reference one canonical pet profile. Historical owner
   keys do not authorize a linked record after ownership transfer. Explicit
   allergy and medication knowledge states prevent an empty encrypted array

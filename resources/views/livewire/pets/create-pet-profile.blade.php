@@ -53,6 +53,68 @@
                     </p>
                 </div>
 
+                <fieldset class="pet-create__photo pet-create__field--wide">
+                    <legend>{{ __('pet_profiles.fields.primary_photo') }}</legend>
+
+                    @if ($mediaForm->upload !== null)
+                        <div class="pet-create__photo-preview">
+                            <img
+                                src="{{ $mediaForm->upload->temporaryUrl() }}"
+                                alt="{{ __('pet_profiles.media.selected_preview') }}"
+                            >
+                            <button
+                                type="button"
+                                class="action action--paper action--regular"
+                                wire:click="clearPhoto"
+                            >
+                                <x-lucide-x class="icon icon--sm" aria-hidden="true" />
+                                {{ __('pet_profiles.actions.clear_photo') }}
+                            </button>
+                        </div>
+                    @endif
+
+                    <div class="pet-create__field">
+                        <label for="pet-profile-photo">{{ __('pet_profiles.media.choose_photo') }}</label>
+                        <input
+                            id="pet-profile-photo"
+                            class="field"
+                            type="file"
+                            wire:model="mediaForm.upload"
+                            accept="image/jpeg,image/png,image/webp"
+                            aria-describedby="pet-profile-photo-help pet-profile-photo-error"
+                            @error('mediaForm.upload') aria-invalid="true" @enderror
+                        >
+                        <p id="pet-profile-photo-help" class="pet-create__help">
+                            {{ __('pet_profiles.media.upload_help') }}
+                        </p>
+                        <p id="pet-profile-photo-error" class="pet-create__error" aria-live="polite">
+                            @error('mediaForm.upload') {{ $message }} @enderror
+                        </p>
+                        <p class="pet-create__help" wire:loading wire:target="mediaForm.upload">
+                            {{ __('pet_profiles.media.uploading') }}
+                        </p>
+                    </div>
+
+                    <div class="pet-create__field">
+                        <label for="pet-profile-photo-alt">{{ __('pet_profiles.fields.photo_alt_text') }}</label>
+                        <input
+                            id="pet-profile-photo-alt"
+                            class="field"
+                            type="text"
+                            wire:model="mediaForm.altText"
+                            maxlength="500"
+                            aria-describedby="pet-profile-photo-alt-help pet-profile-photo-alt-error"
+                            @error('mediaForm.altText') aria-invalid="true" @enderror
+                        >
+                        <p id="pet-profile-photo-alt-help" class="pet-create__help">
+                            {{ __('pet_profiles.media.alt_help') }}
+                        </p>
+                        <p id="pet-profile-photo-alt-error" class="pet-create__error" aria-live="polite">
+                            @error('mediaForm.altText') {{ $message }} @enderror
+                        </p>
+                    </div>
+                </fieldset>
+
                 <div class="pet-create__field">
                     <label for="pet-profile-species">{{ __('pet_profiles.fields.species') }}</label>
                     <select

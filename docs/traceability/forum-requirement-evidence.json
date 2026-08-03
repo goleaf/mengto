@@ -1858,6 +1858,75 @@
         },
         {
             "requirement_ids": [
+                "pet.creation.0025"
+            ],
+            "fields": {
+                "current_implementation_status": "verified",
+                "discovered_existing_files": [
+                    "app/Models/PetProfile.php",
+                    "app/Models/ContentMediaAsset.php",
+                    "app/Policies/PetProfilePolicy.php",
+                    "app/Services/PrivateFileResponse.php",
+                    "app/Livewire/Pets/CreatePetProfile.php",
+                    "app/Livewire/Pets/ManagePetProfile.php",
+                    "app/Livewire/Pets/PublicPetProfile.php"
+                ],
+                "planned_files": [
+                    "database/migrations/2026_08_03_150100_create_pet_profile_media_table.php",
+                    "app/Models/PetProfileMedia.php",
+                    "app/Actions/StorePrivateImage.php",
+                    "app/Actions/StorePetPrimaryPhoto.php",
+                    "app/Actions/RemovePetPrimaryPhoto.php",
+                    "app/Actions/RestorePetPrimaryPhoto.php",
+                    "app/Actions/PreparePetProfileMediaResponse.php",
+                    "app/Livewire/Forms/PetProfileMediaForm.php",
+                    "resources/views/livewire/pets/create-pet-profile.blade.php",
+                    "resources/views/livewire/pets/manage-pet-profile.blade.php"
+                ],
+                "test_identifiers": [
+                    "tests/Feature/PetProfileMediaLifecycleTest.php",
+                    "tests/Feature/PetProfileCreateExperienceTest.php",
+                    "tests/Feature/PetProfileFoundationTest.php",
+                    "tests/Feature/Database/SchemaIntegrityTest.php",
+                    "tests/Feature/LinkedMediaNavigationContractTest.php",
+                    "tests/Feature/PageIdentityStandardizationTest.php",
+                    "tests/Feature/ArchitectureComplianceTest.php",
+                    "tests/Feature/LocalizationTest.php",
+                    "tests/Feature/PrivateFilePathTraversalTest.php",
+                    "scripts/accessibility-browser-check.mjs"
+                ],
+                "documentation_identifiers": [
+                    "docs/pet-profiles.md",
+                    "docs/plans/pet-profile-primary-photo-work-package.md",
+                    "docs/plans/pet-profile-current-progress.md",
+                    "docs/plans/pet-profile-master-plan.md",
+                    "docs/architecture.md",
+                    "docs/authorization.md",
+                    "docs/data-model.md",
+                    "docs/privacy.md",
+                    "docs/security.md",
+                    "docs/testing.md"
+                ],
+                "implementation_status": "implemented",
+                "verification_status": "verified",
+                "evidence": [
+                    "CreatePetProfile and PetProfileMediaForm keep the primary photo optional, require an accessible description only when selected, and preserve the canonical photo-free private-draft path",
+                    "StorePrivateImage and StorePetPrimaryPhoto validate decoded image content, orient and bound dimensions, re-encode WebP without location metadata, generate a private path, persist the canonical content asset and one-current pet placement, and compensate failed writes",
+                    "PetProfilePolicy manageMedia plus store, remove, and restore Actions repeat current authorization, lock the profile and placement, enforce idempotency, retain a 30-day logical recovery window, and record path-free lifecycle and audit evidence",
+                    "PetProfileMediaController and PreparePetProfileMediaResponse scope the nested placement to its pet, follow the pet view policy for current media, restrict historical media to manage-media recovery, and delegate canonical owner-directory containment to PrivateFileResponse",
+                    "PetProfileMediaLifecycleTest, create/foundation regression, schema/navigation/page-identity regression, and architecture/localization/private-file/security boundaries passed their affected slices",
+                    "isolated fresh and repeated seed applied 130 migrations across 215 tables with five users before and after; targeted Pint and Larastan, Composer strict validation/audit, npm audit, and Vite production build passed",
+                    "connected headless Chrome passed pet create, management, and public-profile surfaces at desktop and mobile with zero overflow, unnamed controls, missing image alternatives, undersized mobile targets, duplicate IDs, or console errors",
+                    "the first full serial repository run exposed three package integration gaps and a concurrent Discover factory defect; after correction, the final isolated serial suite passed 2,635 tests and 83,160 assertions in 177.476 seconds, with full Pint and Larastan also passing"
+                ],
+                "unresolved_risks": [
+                    "Full galleries, pet-media tagging, consent, moderation, attribution, export, and permanent shared-asset retention or erasure remain in the wider pet.media package and are not covered by this requirement overlay"
+                ],
+                "final_result": "verified"
+            }
+        },
+        {
+            "requirement_ids": [
                 "social.relationship.0031",
                 "social.relationship.0035",
                 "social.relationship.0038",

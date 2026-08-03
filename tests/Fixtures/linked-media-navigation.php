@@ -68,6 +68,7 @@ return [
     'resources/views/forum/show.blade.php' => ['viewer'],
     'resources/views/livewire/forum/forum-event-workspace.blade.php' => ['current-page', 'action'],
     'resources/views/livewire/forum/forum-journal-timeline.blade.php' => ['viewer', 'action'],
+    'resources/views/livewire/pets/create-pet-profile.blade.php' => ['action'],
     'resources/views/livewire/pets/manage-pet-profile.blade.php' => ['action'],
     'resources/views/livewire/pets/public-pet-profile.blade.php' => ['current-page'],
     'resources/views/lost-found/poster.blade.php' => ['decorative', 'action'],

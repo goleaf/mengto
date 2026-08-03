@@ -120,6 +120,10 @@
   pet-creation flow, reduced the first save to four validated essentials, and
   added a responsive private-draft interface with direct Add pet links,
   EN/LT/RU guidance, accessible controls, and progressive completion notes.
+- Added an optional processed primary photo to first pet-profile save, backed
+  by canonical private media assets, a single-current placement constraint,
+  `manage-media` authorization, idempotent replacement, 30-day logical removal
+  and restoration, and a canonically contained policy-protected media route.
 - Established the canonical social-relationship foundation with typed actor
   adapters, directed and symmetric edges, recipient-controlled consent,
   idempotent request lifecycle, profile-level safety controls, immutable real

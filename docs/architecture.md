@@ -118,6 +118,11 @@ See `docs/decisions/0001-authenticated-actor-keys.md`.
   downloads and inline media. It accepts only the private local disk and a
   server-derived owning directory, then verifies canonical root, directory,
   regular-file, and symlink containment before creating the response.
+- Pet primary photos reuse `ContentMediaAsset` and add only a pet-specific
+  placement. `StorePrivateImage` normalizes orientation, bounds dimensions,
+  re-encodes to WebP, and writes a generated name to `local`;
+  `PreparePetProfileMediaResponse` repeats pet/placement policy and owning-
+  directory checks before delegating to `PrivateFileResponse`.
 - Blade renders only prepared paths and URLs; it never reads, transforms, or
   stores an image.
 

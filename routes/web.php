@@ -113,6 +113,7 @@ use App\Http\Controllers\PerformActionController;
 use App\Http\Controllers\PerformMessageActionController;
 use App\Http\Controllers\PetDirectoryPreviewController;
 use App\Http\Controllers\PetFriendCenterPreviewController;
+use App\Http\Controllers\PetProfileMediaController;
 use App\Http\Controllers\PetProfilePreviewController;
 use App\Http\Controllers\PhotoInteractionController;
 use App\Http\Controllers\PlaceDetailPreviewController;
@@ -424,6 +425,12 @@ Route::middleware('web')
         Route::prefix('pets/profile')
             ->name('pets.')
             ->group(function (): void {
+                Route::get(
+                    '/{petProfile:profile_key}/media/{petProfileMedia:media_key}',
+                    PetProfileMediaController::class,
+                )
+                    ->middleware('throttle:600,1')
+                    ->name('media.show');
                 Route::get('/{petProfile:profile_key}', PublicPetProfile::class)
                     ->name('profile');
             });

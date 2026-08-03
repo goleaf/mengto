@@ -35,6 +35,7 @@ or grant records. They do not rely on an ambient fixed identity.
 | Smart device | No | Owner-selected view/control | Selected fields/actions until expiry | No implicit camera/GPS bypass |
 | Exact GPS/camera/door | No | Explicit high-risk capability | Time-window capability | Step-up and audit required |
 | Public publication photo | View photo and shared engagement | Active member may react/comment | N/A | Safety moderation remains separate |
+| Pet primary photo | Current photo follows pet view policy | `manage-media` upload/replace/remove/restore | Historical photo only during authorized recovery | Explicit policy plus audit |
 | Persistent group | Discoverable identity only | Membership/content by visibility and role | Live invitation only | Explicit policy plus audit |
 | Group content/poll | No independent public grant | Active member; creator/manager writes by role | Visible voters/results only when configured | Explicit group policy; no anonymous-ballot identity UI |
 

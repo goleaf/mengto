@@ -118,6 +118,7 @@ return [
         'knowledge.articles.export',
         'medical-access.documents.download',
         'medical-records.documents.download',
+        'pets.media.show',
         'portal-media.show',
     ],
     'structured-response' => [

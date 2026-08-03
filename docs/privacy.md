@@ -103,6 +103,12 @@ metadata, and idempotency material. Manager expiry and revocation are checked
 at read and mutation time. A hidden, archived, merged, disputed, or deletion
 pending state cannot become public through a stale UI control.
 
+The current primary photo is a private-disk asset projected through the same
+pet view policy; `public` still means an eligible authenticated portal member.
+Recoverable removed or superseded photos require the current `manage-media`
+capability. Storage paths, checksums, original bytes, and upload idempotency
+keys are excluded from HTML and public Livewire state.
+
 Privacy and lifecycle Actions update optimistic versions, append actor evidence,
 and invalidate the known public profile, canonical, directory, search, and
 recommendation keys. A setting that records external-indexing preference is not

@@ -305,7 +305,7 @@ test('every media-bearing Blade template has an explicit navigation classificati
     ];
 
     expect($classifiedTemplates)->toBe($templates)
-        ->and($templates)->toHaveCount(73);
+        ->and($templates)->toHaveCount(74);
 
     foreach ($inventory as $classifications) {
         expect($classifications)->not->toBeEmpty();

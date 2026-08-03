@@ -92,6 +92,16 @@ final class PetProfilePolicy
             );
     }
 
+    public function manageMedia(User $user, PetProfile $petProfile): bool
+    {
+        return $user->isActive()
+            && $this->access->allows(
+                $petProfile,
+                $user,
+                PetProfilePermission::ManageMedia,
+            );
+    }
+
     public function recordFact(
         User $user,
         PetProfile $petProfile,

@@ -6,6 +6,7 @@ namespace App\Livewire\Pets;
 
 use App\Models\PetProfile;
 use App\Models\PetProfileManager;
+use App\Models\PetProfileMedia;
 use App\Services\PetSpeciesLabel;
 use App\Services\ProfilePresenter;
 use Illuminate\Contracts\Auth\Access\Gate;
@@ -89,6 +90,7 @@ final class PublicPetProfile extends Component
                     ])
                     ->activeAt(now())
                     ->with('user:id,name'),
+                'primaryMedia.asset',
             ])
             ->findOrFail($this->profileId);
         $this->gate->authorize('view', $profile);
@@ -108,6 +110,14 @@ final class PublicPetProfile extends Component
                 : $owner?->user?->name;
         }
 
+        $primaryMedia = $profile->primaryMedia;
+        $primaryAvatar = $primaryMedia instanceof PetProfileMedia
+            ? route('pets.media.show', [
+                'petProfile' => $profile->profile_key,
+                'petProfileMedia' => $primaryMedia->media_key,
+            ])
+            : null;
+
         return [
             'profile_key' => $profile->profile_key,
             'name' => $profile->name,
@@ -121,8 +131,9 @@ final class PublicPetProfile extends Component
             'location' => $settings?->public_location_precision === 'hidden'
                 ? null
                 : data_get($profileData, 'location'),
-            'avatar' => data_get($profileData, 'avatar'),
-            'avatar_alt' => __('pet_profiles.public.avatar_alt', ['name' => $profile->name]),
+            'avatar' => $primaryAvatar ?? data_get($profileData, 'avatar'),
+            'avatar_alt' => $primaryMedia?->asset->alt_text
+                ?? __('pet_profiles.public.avatar_alt', ['name' => $profile->name]),
         ];
     }
 

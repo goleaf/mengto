@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 final class ContentMediaAsset extends Model
 {
@@ -65,5 +66,11 @@ final class ContentMediaAsset extends Model
             ContentPublication::class,
             'content_publication_media',
         )->withPivot(['position', 'is_cover', 'caption'])->withTimestamps();
+    }
+
+    /** @return HasMany<PetProfileMedia, $this> */
+    public function petProfileMedia(): HasMany
+    {
+        return $this->hasMany(PetProfileMedia::class);
     }
 }

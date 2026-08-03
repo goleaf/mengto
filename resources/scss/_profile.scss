@@ -542,6 +542,38 @@
         }
     }
 
+    &__photo {
+        display: grid;
+        min-inline-size: 0;
+        gap: 1rem;
+        border: 1px solid $line;
+        border-radius: $control-radius;
+        padding: 1rem;
+
+        > legend {
+            padding-inline: 0.375rem;
+            color: $ink;
+            font-size: 0.8125rem;
+            font-weight: 600;
+            line-height: 1.25rem;
+        }
+    }
+
+    &__photo-preview {
+        display: flex;
+        min-inline-size: 0;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.875rem;
+
+        img {
+            inline-size: 7rem;
+            block-size: 7rem;
+            border-radius: $control-radius;
+            object-fit: cover;
+        }
+    }
+
     &__help,
     &__error {
         font-size: 0.75rem;

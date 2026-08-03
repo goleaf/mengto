@@ -5,7 +5,10 @@ declare(strict_types=1);
 namespace App\Livewire\Pets;
 
 use App\Actions\InvitePetProfileManager;
+use App\Actions\RemovePetPrimaryPhoto;
+use App\Actions\RestorePetPrimaryPhoto;
 use App\Actions\RevokePetProfileManager;
+use App\Actions\StorePetPrimaryPhoto;
 use App\Actions\TransitionPetProfileStatus;
 use App\Actions\UpdatePetProfile;
 use App\Actions\UpdatePetProfilePrivacy;
@@ -14,10 +17,12 @@ use App\Enums\PetProfileStatus;
 use App\Enums\PetProfileVisibility;
 use App\Livewire\Forms\PetManagerInvitationForm;
 use App\Livewire\Forms\PetProfileForm;
+use App\Livewire\Forms\PetProfileMediaForm;
 use App\Livewire\Forms\PetProfilePrivacyForm;
 use App\Models\PetProfile;
 use App\Models\PetProfileLifecycleEvent;
 use App\Models\PetProfileManager;
+use App\Models\PetProfileMedia;
 use App\Models\User;
 use App\Services\PetProfileLifecycle;
 use App\Services\ProfilePresenter;
@@ -31,14 +36,20 @@ use Illuminate\Validation\Rule;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Locked;
 use Livewire\Component;
+use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
+use Livewire\WithFileUploads;
 
 final class ManagePetProfile extends Component
 {
+    use WithFileUploads;
+
     public PetProfileForm $form;
 
     public PetProfilePrivacyForm $privacyForm;
 
     public PetManagerInvitationForm $invitationForm;
+
+    public PetProfileMediaForm $mediaForm;
 
     #[Locked]
     public int $profileId = 0;
@@ -48,6 +59,9 @@ final class ManagePetProfile extends Component
     public string $statusReason = '';
 
     public string $feedback = '';
+
+    #[Locked]
+    public string $mediaIdempotencyKey = '';
 
     private AuthFactory $auth;
 
@@ -65,6 +79,12 @@ final class ManagePetProfile extends Component
 
     private RevokePetProfileManager $revokeAction;
 
+    private StorePetPrimaryPhoto $storePhoto;
+
+    private RemovePetPrimaryPhoto $removePhoto;
+
+    private RestorePetPrimaryPhoto $restorePhoto;
+
     private TransitionPetProfileStatus $transitionAction;
 
     private QrCodeGenerator $qrCodes;
@@ -78,6 +98,9 @@ final class ManagePetProfile extends Component
         UpdatePetProfilePrivacy $privacyAction,
         InvitePetProfileManager $inviteAction,
         RevokePetProfileManager $revokeAction,
+        StorePetPrimaryPhoto $storePhoto,
+        RemovePetPrimaryPhoto $removePhoto,
+        RestorePetPrimaryPhoto $restorePhoto,
         TransitionPetProfileStatus $transitionAction,
         QrCodeGenerator $qrCodes,
     ): void {
@@ -89,6 +112,9 @@ final class ManagePetProfile extends Component
         $this->privacyAction = $privacyAction;
         $this->inviteAction = $inviteAction;
         $this->revokeAction = $revokeAction;
+        $this->storePhoto = $storePhoto;
+        $this->removePhoto = $removePhoto;
+        $this->restorePhoto = $restorePhoto;
         $this->transitionAction = $transitionAction;
         $this->qrCodes = $qrCodes;
     }
@@ -105,6 +131,7 @@ final class ManagePetProfile extends Component
         $this->privacyForm->fillFromProfile($profile);
         $this->targetStatus = $profile->status->value;
         $this->feedback = (string) session('pet-profile-feedback', '');
+        $this->mediaIdempotencyKey = (string) Str::uuid();
     }
 
     /** @return array<string, string> */
@@ -206,6 +233,59 @@ final class ManagePetProfile extends Component
         $this->forgetComputed();
     }
 
+    public function replacePrimaryPhoto(): void
+    {
+        $profile = $this->profileModel();
+        $this->gate->authorize('manageMedia', $profile);
+        $media = $this->mediaForm->data(true);
+        $upload = $media['upload'];
+
+        if (! $upload instanceof TemporaryUploadedFile) {
+            return;
+        }
+
+        $this->storePhoto->handle(
+            $profile,
+            $upload,
+            $media['alt_text'],
+            $this->mediaIdempotencyKey,
+        );
+        $this->mediaForm->reset();
+        $this->mediaIdempotencyKey = (string) Str::uuid();
+        $this->feedback = __('pet_profiles.feedback.photo_saved');
+        $this->forgetComputed();
+    }
+
+    public function clearPhoto(): void
+    {
+        $this->mediaForm->reset();
+        $this->resetValidation(['mediaForm.upload', 'mediaForm.altText']);
+    }
+
+    public function removePrimaryPhoto(): void
+    {
+        $profile = $this->profileModel();
+        $this->removePhoto->handle($profile, 'pet-photo-remove:'.Str::uuid());
+        $this->feedback = __('pet_profiles.feedback.photo_removed');
+        $this->forgetComputed();
+    }
+
+    public function restorePrimaryPhoto(string $mediaKey): void
+    {
+        $profile = $this->profileModel();
+        $this->gate->authorize('manageMedia', $profile);
+        $media = $profile->media()
+            ->where('media_key', $mediaKey)
+            ->firstOrFail();
+        $this->restorePhoto->handle(
+            $profile,
+            $media,
+            'pet-photo-restore:'.Str::uuid(),
+        );
+        $this->feedback = __('pet_profiles.feedback.photo_restored');
+        $this->forgetComputed();
+    }
+
     public function savePrivacy(): void
     {
         $profile = $this->profileModel();
@@ -286,6 +366,14 @@ final class ManagePetProfile extends Component
 
         return view('livewire.pets.manage-pet-profile', [
             'profile' => $profile,
+            'primaryPhoto' => $this->photoPresentation(
+                $profile->primaryMedia,
+                $profile->profile_key,
+            ),
+            'recoverablePhoto' => $this->photoPresentation(
+                $profile->latestRecoverableMedia,
+                $profile->profile_key,
+            ),
             'qrCode' => $this->qrCodes->dataUri(route('pets.profile', [
                 'petProfile' => $profile->profile_key,
             ])),
@@ -324,6 +412,8 @@ final class ManagePetProfile extends Component
             ])
             ->with([
                 'privacySetting',
+                'primaryMedia.asset',
+                'latestRecoverableMedia.asset',
                 'managers' => fn ($query) => $query
                     ->select([
                         'id',
@@ -361,6 +451,26 @@ final class ManagePetProfile extends Component
         abort_unless($user instanceof User && $user->isActive(), 403);
 
         return $user;
+    }
+
+    /** @return array{alt_text: string, media_key: string, url: string}|null */
+    private function photoPresentation(
+        ?PetProfileMedia $media,
+        string $profileKey,
+    ): ?array {
+        if (! $media instanceof PetProfileMedia) {
+            return null;
+        }
+
+        return [
+            'alt_text' => $media->asset->alt_text
+                ?? __('pet_profiles.public.avatar_alt', ['name' => $this->form->name]),
+            'media_key' => $media->media_key,
+            'url' => route('pets.media.show', [
+                'petProfile' => $profileKey,
+                'petProfileMedia' => $media->media_key,
+            ]),
+        ];
     }
 
     private function forgetComputed(): void

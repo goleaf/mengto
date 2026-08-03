@@ -165,6 +165,41 @@ final class PetProfile extends Model
         return $this->hasMany(PetProfileFact::class);
     }
 
+    /** @return HasMany<PetProfileMedia, $this> */
+    public function media(): HasMany
+    {
+        return $this->petProfileMedia();
+    }
+
+    /**
+     * Relation name used by Laravel's scoped nested route binding.
+     *
+     * @return HasMany<PetProfileMedia, $this>
+     */
+    public function petProfileMedia(): HasMany
+    {
+        return $this->hasMany(PetProfileMedia::class);
+    }
+
+    /** @return HasOne<PetProfileMedia, $this> */
+    public function primaryMedia(): HasOne
+    {
+        return $this->hasOne(PetProfileMedia::class)
+            ->where('role', 'primary')
+            ->where('status', 'active')
+            ->whereNotNull('current_key');
+    }
+
+    /** @return HasOne<PetProfileMedia, $this> */
+    public function latestRecoverableMedia(): HasOne
+    {
+        return $this->hasOne(PetProfileMedia::class)
+            ->where('role', 'primary')
+            ->whereIn('status', ['superseded', 'removed'])
+            ->where('recoverable_until', '>', now())
+            ->latestOfMany();
+    }
+
     /** @return HasMany<AdoptionCase, $this> */
     public function adoptionCases(): HasMany
     {
