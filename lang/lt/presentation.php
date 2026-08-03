@@ -32,6 +32,7 @@ return [
     'group_led_by' => 'Vadovas: :organizer',
     'last_updated_confirm_treatment' => 'Atnaujinta :date. Dabartini gydyma patvirtinkite su atsakingu veterinaru.',
     'last_visit' => 'Paskutinis vizitas: :date',
+    'medical_record_image_alt' => 'Sveikatos įrašas: :pet',
     'lives_with' => 'Gyvena su :owner',
     'message_as' => 'Rasyti :name kaip :sender',
     'message_recipient' => 'Zinute: :name',

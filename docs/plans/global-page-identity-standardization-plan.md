@@ -199,6 +199,29 @@ pushed directly to `origin/main`; local `HEAD`, the local remote-tracking ref,
 and `git ls-remote origin refs/heads/main` all resolved to
 `f237f2fdf01e231e17af9934f6a97f70c88a2359` after publication.
 
+The first non-header localization follow-up closes the `/medical-records`
+directory slice. Its privacy strip, section heading, populated-card labels,
+empty state, action label, and image alternative text now use reviewed RU/LT
+copy instead of English fallback values. The medical card also switches from
+the desktop split layout to a full-width 16:9 media region above the body below
+44rem, preventing long Russian and Lithuanian labels from collapsing into
+letter-by-letter columns. The repeatable browser contract now compares eleven
+medical copy and accessibility fields with the English baseline and verifies
+the stacked 320/375px geometry. The isolated 13-route matrix passed all 91
+audits, produced 26 screenshots, and reported zero console errors; observed
+mobile card/media widths were 288/286px at 320px and 343/341px at 375px, with
+the body starting exactly where the media ended. This closes only the medical
+directory body-copy slice, not the remaining priority-page fallback audit.
+
+After `main` advanced independently to `faca4c1d`, the exact medical package
+was rebuilt and reverified from that commit rather than relying on the earlier
+snapshot. The affected slice passed 109 tests with 62,838 assertions and the
+complete sequential suite passed 2,748 tests with 87,294 assertions. Full Pint
+and Larastan passed with zero findings; Composer validation, audit, and platform
+requirements, NPM audit and production build, fresh migration plus repeated
+seed (5 users, 14 places, 2 medical records, 216 tables), 177-line route and
+config/view cache smoke, and both forum-source checks also passed.
+
 ### 3.3 Next Execution Checkpoint
 
 1. Complete Package 0 by assigning the stable requirement ID and recording the
@@ -209,9 +232,10 @@ and `git ls-remote origin refs/heads/main` all resolved to
 3. Audit every classified detail/workspace exception, retaining purposeful
    heroes and migrating accidental page headers; never mark a later wave
    complete from source intent or screenshots alone.
-4. Audit and translate the remaining non-header English fallback values on
-   the priority RU/LT pages without conflating that work with the verified
-   page-identity contract.
+4. Continue the non-header English fallback audit on the remaining priority
+   RU/LT pages; `/medical-records` is browser-verified, while care journals and
+   the other priority bodies remain open. Do not conflate body-copy completion
+   with the verified page-identity contract.
 
 ## 4. Scope
 

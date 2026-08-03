@@ -3,14 +3,14 @@
 <article {{ $attributes->class(['medical-record-card']) }}>
     <a href="{{ route('medical-records.show', $record['slug']) }}" class="medical-record-card__media">
         @if ($record['image_url'])
-            <img src="{{ $record['image_url'] }}" alt="{{ $record['pet_name'] }} health record" loading="lazy">
+            <img src="{{ $record['image_url'] }}" alt="{{ __('presentation.medical_record_image_alt', ['pet' => $record['pet_name']]) }}" loading="lazy">
         @else
             <x-ui-icon name="heart-pulse" size="3xl" />
         @endif
     </a>
 
     <div class="medical-record-card__body">
-        <div class="flex items-start justify-between gap-3">
+        <div class="flex flex-wrap items-start justify-between gap-3">
             <div>
                 <p class="text-xs font-bold uppercase text-paw-leaf">{{ __('ui.private_health_record_f1b39f16e5') }}</p>
                 <h2 class="mt-1 text-xl font-bold">

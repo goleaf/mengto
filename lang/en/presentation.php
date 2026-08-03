@@ -32,6 +32,7 @@ return [
     'group_led_by' => 'Led by :organizer',
     'last_updated_confirm_treatment' => 'Last updated :date. Confirm current treatment with the responsible veterinarian.',
     'last_visit' => 'Last visit: :date',
+    'medical_record_image_alt' => 'Health record: :pet',
     'lives_with' => 'Lives with :owner',
     'message_as' => 'Message :name as :sender',
     'message_recipient' => 'Message :name',

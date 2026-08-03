@@ -555,6 +555,7 @@ try {
         const pageIdentityAudits = {};
         const pageIdentityScreenshots = [];
         const englishIdentityCopy = new Map();
+        let englishMedicalRecordCopy = null;
         let canonicalTitleFont = null;
 
         const setProfileLocale = async (locale) => {
@@ -665,6 +666,12 @@ try {
                     const borderColorBefore = focusBefore?.borderColor ?? null;
                     firstAction?.focus();
                     const focusStyle = firstAction ? getComputedStyle(firstAction) : null;
+                    const medicalCard = document.querySelector('.medical-record-card');
+                    const medicalMedia = medicalCard?.querySelector('.medical-record-card__media');
+                    const medicalBody = medicalCard?.querySelector('.medical-record-card__body');
+                    const medicalCardBox = medicalCard?.getBoundingClientRect();
+                    const medicalMediaBox = medicalMedia?.getBoundingClientRect();
+                    const medicalBodyBox = medicalBody?.getBoundingClientRect();
 
                     return {
                         documentLanguage: document.documentElement.lang,
@@ -705,6 +712,36 @@ try {
                         rawTranslationKeys: document.body.innerText.match(
                             /\\b(?:ui|messages|forum|pet_profiles|places)\\.[a-z0-9_.-]+/gi
                         ) ?? [],
+                        medicalRecordCopy: {
+                            privacyLabel: document.querySelector('.medical-privacy-strip')
+                                ?.getAttribute('aria-label') ?? null,
+                            privacyTitle: document.querySelector('.medical-privacy-strip strong')
+                                ?.textContent.trim() ?? null,
+                            privacyDescription: document.querySelector('.medical-privacy-strip span')
+                                ?.textContent.trim() ?? null,
+                            sectionTitle: document.querySelector('#health-record-list-title')
+                                ?.textContent.trim() ?? null,
+                            cardEyebrow: document.querySelector('.medical-record-card__body > div p')
+                                ?.textContent.trim() ?? null,
+                            cardBadge: document.querySelector('.medical-record-card .status-badge span:last-child')
+                                ?.textContent.trim() ?? null,
+                            statLabels: [...(
+                                document.querySelector('.medical-record-card')
+                                    ?.querySelectorAll('.medical-record-card__stats dt') ?? []
+                            )]
+                                .map((element) => element.textContent.trim()),
+                            actionLabel: document.querySelector('.medical-record-card__body > div:last-child a')
+                                ?.textContent.trim() ?? null,
+                            imageAlt: document.querySelector('.medical-record-card img')?.alt ?? null,
+                        },
+                        medicalRecordLayout: medicalCardBox && medicalMediaBox && medicalBodyBox
+                            ? {
+                                cardWidth: Math.round(medicalCardBox.width),
+                                mediaWidth: Math.round(medicalMediaBox.width),
+                                mediaBottom: Math.round(medicalMediaBox.bottom),
+                                bodyTop: Math.round(medicalBodyBox.top),
+                            }
+                            : null,
                     };
                 })()`);
                 const expectedTitleSize = viewport.width >= 640 ? 30 : 24;
@@ -733,6 +770,51 @@ try {
                     assert(behavior.eyebrowText !== englishCopy.eyebrowText, `${label}: eyebrow was not localized.`);
                     assert(behavior.headingText !== englishCopy.headingText, `${label}: heading was not localized.`);
                     assert(behavior.descriptionText !== englishCopy.descriptionText, `${label}: description was not localized.`);
+                }
+
+                if (route.path === '/medical-records') {
+                    const medicalCopy = [
+                        behavior.medicalRecordCopy.privacyLabel,
+                        behavior.medicalRecordCopy.privacyTitle,
+                        behavior.medicalRecordCopy.privacyDescription,
+                        behavior.medicalRecordCopy.sectionTitle,
+                        behavior.medicalRecordCopy.cardEyebrow,
+                        behavior.medicalRecordCopy.cardBadge,
+                        ...behavior.medicalRecordCopy.statLabels,
+                        behavior.medicalRecordCopy.actionLabel,
+                        behavior.medicalRecordCopy.imageAlt,
+                    ];
+
+                    assert(
+                        medicalCopy.length === 11 && medicalCopy.every((value) => value?.length > 0),
+                        `${label}: the medical record localization surface is incomplete ${JSON.stringify(behavior.medicalRecordCopy)}.`,
+                    );
+
+                    if (viewport.locale === 'en') {
+                        englishMedicalRecordCopy ??= medicalCopy;
+                    } else {
+                        assert(englishMedicalRecordCopy !== null, `${label}: English medical copy baseline is missing.`);
+                        assert(
+                            medicalCopy.every((value, index) => value !== englishMedicalRecordCopy[index]),
+                            `${label}: English medical body fallback remains.`,
+                        );
+                    }
+
+                    if (viewport.width <= 375) {
+                        assert(behavior.medicalRecordLayout !== null, `${label}: medical card geometry is missing.`);
+                        assert(
+                            Math.abs(
+                                behavior.medicalRecordLayout.mediaWidth
+                                - behavior.medicalRecordLayout.cardWidth
+                            ) <= 2,
+                            `${label}: medical card media is not full width.`,
+                        );
+                        assert(
+                            behavior.medicalRecordLayout.mediaBottom
+                                <= behavior.medicalRecordLayout.bodyTop + 1,
+                            `${label}: medical card media and body are not stacked.`,
+                        );
+                    }
                 }
 
                 assert(behavior.documentLanguage === viewport.locale, `${label}: wrong document language.`);

@@ -32,6 +32,7 @@ return [
     'group_led_by' => 'Организатор: :organizer',
     'last_updated_confirm_treatment' => 'Обновлено :date. Подтвердите текущее лечение у ответственного ветеринара.',
     'last_visit' => 'Последний визит: :date',
+    'medical_record_image_alt' => 'Медицинская запись: :pet',
     'lives_with' => 'Живет с :owner',
     'message_as' => 'Написать пользователю :name от имени :sender',
     'message_recipient' => 'Сообщение для :name',

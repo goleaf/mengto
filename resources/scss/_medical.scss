@@ -591,7 +591,12 @@
     }
 
     .medical-record-card {
-        grid-template-columns: 6.5rem minmax(0, 1fr);
+        grid-template-columns: minmax(0, 1fr);
+
+        &__media {
+            min-block-size: 0;
+            aspect-ratio: 16 / 9;
+        }
     }
 
     .medical-critical__grid,
