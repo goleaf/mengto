@@ -95,4 +95,8 @@ return [
         'local-communities' => 'Vietai ir kalbai pritaikytos bendruomenės nedubliuojant visų pasaulinio forumo temų.',
         'animal-history-culture' => 'Mokomoji ir kritinė diskusija apie gyvūnų vaidmenį istorijoje, kultūroje, medijose, mene ir visuomenėje.',
     ],
+    'notice_title' => 'Profesionalios ir skubios pagalbos ribos',
+    'notices' => [
+        'one-health-human-safety' => 'Šios diskusijos nepakeičia gydytojo, veterinarijos gydytojo, visuomenės sveikatos institucijos ar skubiosios pagalbos tarnybos.',
+    ],
 ];

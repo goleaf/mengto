@@ -13,7 +13,7 @@ use Illuminate\Support\Str;
 
 final readonly class ForumCategoryTree
 {
-    public const CACHE_KEY_PREFIX = 'forum:category-tree:v2:locale:';
+    public const CACHE_KEY_PREFIX = 'forum:category-tree:v3:locale:';
 
     public function __construct(
         private ForumCategoryCatalog $catalog,
@@ -21,7 +21,7 @@ final readonly class ForumCategoryTree
     ) {}
 
     /**
-     * @return array<string, array{label: string, description: string|null, icon: string, subcategories: array<string, string>}>
+     * @return array<string, array{label: string, description: string|null, notice: string|null, icon: string, subcategories: array<string, string>}>
      */
     public function forLocale(string $locale): array
     {
@@ -87,7 +87,7 @@ final readonly class ForumCategoryTree
     }
 
     /**
-     * @return array<string, array{label: string, description: string|null, icon: string, subcategories: array<string, string>}>
+     * @return array<string, array{label: string, description: string|null, notice: string|null, icon: string, subcategories: array<string, string>}>
      */
     private function databaseTree(string $locale): array
     {
@@ -152,6 +152,7 @@ final readonly class ForumCategoryTree
                     $locale,
                     $fallbackLocale,
                 ),
+                'notice' => $this->categoryNotice($locale, $root->slug),
                 'icon' => $root->icon ?? 'messages-square',
                 'subcategories' => $subcategories,
             ];
@@ -161,7 +162,7 @@ final readonly class ForumCategoryTree
     }
 
     /**
-     * @return array<string, array{label: string, description: string|null, icon: string, subcategories: array<string, string>}>
+     * @return array<string, array{label: string, description: string|null, notice: string|null, icon: string, subcategories: array<string, string>}>
      */
     private function manifestFallback(string $locale): array
     {
@@ -179,6 +180,7 @@ final readonly class ForumCategoryTree
                     $category['slug'],
                     $category['purpose'],
                 ),
+                'notice' => $this->categoryNotice($locale, $category['slug']),
                 'icon' => $category['icon'],
                 'subcategories' => collect($category['subcategories'])
                     ->mapWithKeys(fn (array $subcategory): array => [
@@ -257,6 +259,16 @@ final readonly class ForumCategoryTree
         $translated = trans($translationKey, locale: $locale);
 
         return $translated === $translationKey ? $fallback : $translated;
+    }
+
+    private function categoryNotice(string $locale, string $slug): ?string
+    {
+        $translationKey = 'forum_categories.notices.'.str_replace('/', '.', $slug);
+        $translated = trans($translationKey, locale: $locale);
+
+        return is_string($translated) && $translated !== $translationKey
+            ? $translated
+            : null;
     }
 
     private function displayName(string $name): string

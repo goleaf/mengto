@@ -7,7 +7,7 @@ Last updated: 2026-08-03.
 Source preservation, atomic extraction, repository discovery, and domain
 planning are documented for all ten source payloads, but their control IDs
 still require exact evidence before Phases 0-2 can be called verified. The
-combined catalogue has 1,465 verified IDs and 36,912 open IDs. Forum/taxonomy,
+combined catalogue has 1,514 verified IDs and 36,863 open IDs. Forum/taxonomy,
 pet, social, content, community, and medical foundations are implemented in
 independently evidenced slices. Communication, complete portal architecture,
 the expanded event lifecycle, and all remaining depth/release packages stay
@@ -74,7 +74,7 @@ as complete. The dependency-ordered remaining work is in
   immutable case events, protected idempotent contact relays, advisory
   duplicate detection, unified false-sighting/reward-scam reports, and
   privacy-safe archival that preserves the complete operational history.
-- Requirement evidence is a deterministic overlay. `1,465` atomic requirements
+- Requirement evidence is a deterministic overlay. `1,514` atomic requirements
   are verified with file/test evidence and none are currently marked
   in-progress.
 - The pet-profile foundation preserves the existing aggregate while adding
@@ -301,13 +301,23 @@ as complete. The dependency-ordered remaining work is in
   slice passed 31 tests and 36,368 assertions, and the complete suite passed
   2,484 tests and 80,398 assertions. Phase 4 now has 190 verified and 1,273
   open; production query count is unchanged.
+- The fourth Phase 4 slice verifies exactly 49 category-24 atoms. It pins the
+  One-Health root and all 42 ordered labels through synchronized stable keys,
+  slugs, positions, and reviewed EN/LT/RU root rows. It also closes the actual
+  presentation gap by rendering the localized physician, veterinarian,
+  public-health, and emergency-service boundary only in the selected category.
+  The cache payload is versioned and the production query delta remains zero.
+  The focused contract passed 3 tests and 21 assertions, the related slice
+  passed 47 tests and 36,632 assertions, and the complete suite passed 2,586
+  tests and 81,835 assertions. Desktop/mobile Chrome passed. Phase 4 now has
+  239 verified and 1,224 open.
 
 ## Requirement Status Snapshot
 
 | Source stream | Requirements | Verified | Open |
 | --- | ---: | ---: | ---: |
 | Original forum source | 2,566 | 0 | 2,566 |
-| Forum extension and taxonomy | 4,718 | 781 | 3,937 |
+| Forum extension and taxonomy | 4,718 | 830 | 3,888 |
 | Pet-profile revision | 4,135 | 205 | 3,930 |
 | Social-relationships revision | 3,210 | 222 | 2,988 |
 | Content-feed revision | 4,011 | 58 | 3,953 |
@@ -316,7 +326,7 @@ as complete. The dependency-ordered remaining work is in
 | Medical-record revision | 3,867 | 79 | 3,788 |
 | Portal-architecture revision | 3,449 | 0 | 3,449 |
 | Event-lifecycle revision | 4,968 | 85 | 4,883 |
-| **Total** | **38,377** | **1,465** | **36,912** |
+| **Total** | **38,377** | **1,514** | **36,863** |
 
 The exact per-phase open counts and execution order are maintained in
 `docs/plans/forum-completion-plan.md`; the generated phase index remains the
@@ -324,7 +334,7 @@ authority for individual IDs.
 
 ## Next Verified Pass
 
-1. Continue Phase 4 with the exact category-24 source section while preserving
+1. Continue Phase 4 with the exact category-25 source section while preserving
    any cross-domain atoms assigned to later phases as open.
 2. Continue Phase 75 from its 85 verified schedule IDs: attendee reservations,
    waitlists, notifications, venue depth, and the remaining exact lifecycle

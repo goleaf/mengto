@@ -580,6 +580,66 @@ try {
     const zoomAudit = await evaluate(client, sessionId, pageAuditExpression);
     assertPageAudit(zoomAudit, '320px reflow');
 
+    const oneHealthAudits = {};
+
+    for (const viewport of [
+        { label: 'desktop', width: 1440, height: 900, mobile: false },
+        { label: 'mobile', width: 375, height: 812, mobile: true },
+    ]) {
+        await client.send('Emulation.setDeviceMetricsOverride', {
+            width: viewport.width,
+            height: viewport.height,
+            deviceScaleFactor: 1,
+            mobile: viewport.mobile,
+            screenWidth: viewport.width,
+            screenHeight: viewport.height,
+        }, sessionId);
+        const label = `${viewport.label} one-health category`;
+        await navigate(
+            client,
+            sessionId,
+            `${baseUrl}/forum?category=one-health-human-safety`,
+        );
+        const audit = await evaluate(client, sessionId, pageAuditExpression);
+        assertPageAudit(audit, label);
+        const behavior = await evaluate(client, sessionId, `(() => ({
+            boundaryCount: document.querySelectorAll(
+                '[data-section="one-health-professional-boundary"][role="note"]'
+            ).length,
+            subcategoryCount: document.querySelectorAll(
+                '[data-category-child^="one-health-human-safety/"]'
+            ).length,
+            professionalBoundaryVisible: document.body.innerText.includes(
+                'These discussions do not replace a physician, veterinarian, public-health authority, or emergency service.'
+            ),
+            rawTranslationKeys: document.body.innerText.match(/\\bforum_categories\\.[a-z0-9_.-]+/gi) ?? [],
+        }))()`);
+        assert(behavior.boundaryCount === 1, `${label}: professional boundary is missing or duplicated.`);
+        assert(behavior.subcategoryCount === 42, `${label}: expected 42 source subcategories.`);
+        assert(behavior.professionalBoundaryVisible, `${label}: localized professional boundary is not visible.`);
+        assert(
+            behavior.rawTranslationKeys.length === 0,
+            `${label}: raw category keys are visible: ${behavior.rawTranslationKeys.join(', ')}.`,
+        );
+        const smallTargets = viewport.mobile
+            ? await evaluate(client, sessionId, surfaceTouchTargetExpression)
+            : [];
+        assert(
+            smallTargets.length === 0,
+            `${label}: controls below 44px ${JSON.stringify(smallTargets)}.`,
+        );
+        oneHealthAudits[label] = { ...audit, ...behavior, smallTargets };
+
+        const screenshotData = await client.send('Page.captureScreenshot', {
+            format: 'png',
+            captureBeyondViewport: true,
+        }, sessionId);
+        await writeFile(
+            join(outputDirectory, `forum-one-health-${viewport.label}.png`),
+            Buffer.from(screenshotData.data, 'base64'),
+        );
+    }
+
     const eventAudits = {};
     await client.send('Emulation.setDeviceMetricsOverride', {
         width: 1440,
@@ -1492,6 +1552,7 @@ try {
         desktopAudit,
         mobileAudit,
         zoomAudit,
+        oneHealthAudits,
         eventAudits,
         placeAudits,
         organizationAudits,
@@ -1525,6 +1586,8 @@ try {
             join(outputDirectory, 'account-entry-mobile.png'),
             join(outputDirectory, 'forum-desktop.png'),
             join(outputDirectory, 'forum-mobile.png'),
+            join(outputDirectory, 'forum-one-health-desktop.png'),
+            join(outputDirectory, 'forum-one-health-mobile.png'),
             join(outputDirectory, 'event-directory-desktop.png'),
             join(outputDirectory, 'event-directory-mobile.png'),
             join(outputDirectory, 'event-detail-desktop.png'),

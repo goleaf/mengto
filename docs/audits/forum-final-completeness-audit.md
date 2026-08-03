@@ -10,9 +10,9 @@ This is a living gate record. It is deliberately not a completion claim.
 | 1 Discovery | in progress | `forum-existing-system-audit.md` |
 | 2 Atomic plan coverage | verified | 38,377 records in JSON and generated phase index |
 | 3 Implementation | not complete | production implementation has not yet reached all phases |
-| 4 Tests | not complete | current combined checkpoint passed 2,484 tests and 80,398 assertions plus migration/seed, analysis, build, and cache gates; open requirement suites remain |
+| 4 Tests | not complete | current combined checkpoint passed 2,586 tests and 81,835 assertions plus migration/seed, analysis, build, cache, and browser gates; open requirement suites remain |
 | 5 Documentation | in progress | initial canonical pass exists |
-| 6 Final traceability | not complete | deterministic evidence overlay records 1,465 verified IDs; 36,912 remain discovered |
+| 6 Final traceability | not complete | deterministic evidence overlay records 1,514 verified IDs; 36,863 remain discovered |
 
 ## Atomic Totals
 
@@ -21,13 +21,13 @@ This is a living gate record. It is deliberately not a completion claim.
 | Source payloads | 10 |
 | Atomic requirements | 38,377 |
 | Assigned to a phase | 38,377 |
-| Verified | 1,465 |
+| Verified | 1,514 |
 | In progress | 0 |
-| Planned or discovered | 36,912 |
+| Planned or discovered | 36,863 |
 | Blocked | 0 |
 | Intentionally not applicable | 0 |
 
-Gate 0 itself and 1,465 implementation requirements are verified. All remaining
+Gate 0 itself and 1,514 implementation requirements are verified. All remaining
 statuses stay conservative until file-level and passing-check evidence is
 recorded in `forum-requirement-evidence.json`.
 

@@ -97,6 +97,20 @@
                 </div>
             </div>
 
+            @if ($navigation['active_category']['notice'])
+                <aside
+                    class="forum-safety"
+                    role="note"
+                    data-section="one-health-professional-boundary"
+                >
+                    <x-lucide-shield-alert aria-hidden="true" />
+                    <div>
+                        <strong>{{ __('forum_categories.notice_title') }}</strong>
+                        <span>{{ $navigation['active_category']['notice'] }}</span>
+                    </div>
+                </aside>
+            @endif
+
             <div class="forum-taxonomy__subcategories-header">
                 <h4>{{ __('forum.directory.subcategories') }}</h4>
                 <span>{{ __('forum.directory.subcategory_total', ['count' => $navigation['active_subcategory_total']]) }}</span>

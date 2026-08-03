@@ -616,6 +616,38 @@ The package changes no route, Blade, schema, cache, or browser interaction, so
 browser-only and migration-content gates are not applicable. Exact scope is in
 `docs/plans/forum-phase4-wildlife-coexistence-category-work-package.md`.
 
+## Phase 4 One-Health Category And Professional Boundary
+
+`ForumOneHealthCategoryTest` pins the exact category-24 number, stable key,
+slug, source name, purpose, and all 42 ordered source labels. It proves the
+persisted child keys/slugs/positions and reviewed EN/LT/RU root rows, then
+checks the localized physician, veterinarian, public-health, and emergency
+service boundary appears only while the One-Health category is selected. The
+category-tree cache moved from v2 to v3 so an old cached shape cannot omit the
+new optional notice field.
+
+Final evidence on 2026-08-03:
+
+- RED: the source and synchronized hierarchy passed, while the notice contract
+  failed on an undefined `notice` field;
+- focused contract: 3 tests and 21 assertions;
+- related category, multilingual/cache, localization, and schema slice: 47
+  tests and 36,632 assertions;
+- directory, architecture, responsive, and localization slice: 39 tests and
+  59,906 assertions;
+- query delta: 0 production statements; the notice is localized while the
+  existing tree payload is built and cached;
+- complete sequential suite: 2,586 tests and 81,835 assertions;
+- full Pint/Larastan, Composer/npm audits, Vite, Laravel cache compilation,
+  fresh/repeat seed, rollback/reapply, and manifest/source/requirements
+  generation: passed;
+- isolated desktop/mobile Chrome: one boundary, 42 subcategories, and no
+  overflow, raw keys, unnamed controls, undersized mobile controls, invalid
+  images, duplicate IDs, or console errors.
+
+Exact scope is in
+`docs/plans/forum-phase4-one-health-category-work-package.md`.
+
 ## Organization Authority Foundation
 
 `OrganizationAuthorityFoundationTest` covers idempotent creation, owner

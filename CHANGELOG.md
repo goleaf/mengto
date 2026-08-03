@@ -57,6 +57,11 @@
 
 ### Forum And Animal Taxonomy
 
+- Verified all 49 Phase 4 One-Health category atoms from immutable source,
+  including the exact 42-child hierarchy, and added the missing localized
+  physician, veterinarian, public-health, and emergency-service boundary. The
+  versioned category-tree cache carries the notice with zero additional
+  database queries, and desktop/mobile Chrome confirms the selected category.
 - Moved the complete forum category navigator out of the narrow left sidebar
   and into the main discussion column. The selected root now presents its
   localized purpose and every direct subcategory in a responsive, keyboard-

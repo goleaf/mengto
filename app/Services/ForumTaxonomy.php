@@ -31,7 +31,7 @@ final readonly class ForumTaxonomy
     ) {}
 
     /**
-     * @return array<string, array{label: string, description: string|null, icon: string, subcategories: array<string, string>}>
+     * @return array<string, array{label: string, description: string|null, notice: string|null, icon: string, subcategories: array<string, string>}>
      */
     public function categories(): array
     {
@@ -76,7 +76,7 @@ final readonly class ForumTaxonomy
     }
 
     /**
-     * @param  array<string, array{label: string, description: string|null, icon: string, subcategories: array<string, string>}>  $categories
+     * @param  array<string, array{label: string, description: string|null, notice: string|null, icon: string, subcategories: array<string, string>}>  $categories
      * @return array{root: string, subcategory: string|null}
      */
     public function browseSelection(string $category, array $categories): array

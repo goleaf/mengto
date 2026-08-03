@@ -95,4 +95,8 @@ return [
         'local-communities' => 'Location-aware and language-aware communities without duplicating every global forum topic.',
         'animal-history-culture' => 'Educational and critical discussion of animals in history, culture, media, art, and society.',
     ],
+    'notice_title' => 'Professional and emergency-care boundary',
+    'notices' => [
+        'one-health-human-safety' => 'These discussions do not replace a physician, veterinarian, public-health authority, or emergency service.',
+    ],
 ];

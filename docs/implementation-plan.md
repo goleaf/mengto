@@ -297,6 +297,25 @@ Status: `implemented and verified` on 2026-08-03
 Exact scope, exclusions, and evidence are in
 `docs/plans/forum-phase4-wildlife-coexistence-category-work-package.md`.
 
+## Current Delivery: Phase 4 One-Health Category
+
+Status: `implemented and verified` on 2026-08-03
+
+- Prove the complete category-24 source-to-manifest-to-database hierarchy,
+  including its exact root metadata and all 42 ordered source labels.
+- Add the missing localized boundary explaining that One-Health discussions do
+  not replace a physician, veterinarian, public-health authority, or emergency
+  service; render it only for the selected root or child category.
+- Version the localized category-tree cache payload without adding a database
+  statement, route, schema, model, Policy, or parallel taxonomy.
+- Passed the focused 3-test/21-assertion contract, related
+  47-test/36,632-assertion slice, complete sequential
+  2,586-test/81,835-assertion suite, desktop/mobile Chrome audit, and every
+  applicable release gate.
+
+Exact scope and evidence are in
+`docs/plans/forum-phase4-one-health-category-work-package.md`.
+
 ## Current Delivery: Event Schedule Foundation
 
 Status: `implemented and verified` on 2026-08-03
