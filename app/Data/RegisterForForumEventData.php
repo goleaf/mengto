@@ -9,6 +9,7 @@ use App\Enums\ForumEventPhotoConsent;
 
 final readonly class RegisterForForumEventData
 {
+    /** @param list<int> $petProfileIds */
     public function __construct(
         public ForumEventFormat $attendanceFormat,
         public int $guestCount,
@@ -17,5 +18,7 @@ final readonly class RegisterForForumEventData
         public ForumEventPhotoConsent $photoConsent,
         public bool $requirementsAccepted,
         public string $idempotencyKey,
+        public array $petProfileIds = [],
+        public ?int $occurrenceId = null,
     ) {}
 }

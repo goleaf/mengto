@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace App\Livewire\Forum;
 
 use App\Actions\CreateForumEvent;
+use App\Enums\ForumEventAccessibilityStatus;
 use App\Enums\ForumEventFormat;
+use App\Enums\ForumEventPetParticipation;
 use App\Enums\ForumEventPhotoConsent;
 use App\Enums\ForumEventRegistrationPolicy;
 use App\Enums\ForumEventRegistrationStatus;
@@ -98,6 +100,7 @@ final class ForumEventDirectory extends Component
             ->visibleTo($user instanceof User ? $user : null)
             ->select([
                 'id',
+                'owner_user_id',
                 'organizer_user_id',
                 'organizer_name',
                 'stable_key',
@@ -115,7 +118,10 @@ final class ForumEventDirectory extends Component
                 'registration_policy',
                 'waitlist_enabled',
                 'location_scope',
+                'pet_participation_mode',
+                'accessibility_status',
                 'accessibility_information',
+                'current_version_number',
                 'cost_minor',
                 'currency',
                 'forum_group_id',
@@ -175,7 +181,10 @@ final class ForumEventDirectory extends Component
             'all' => $query->orderBy('starts_at'),
             default => $query
                 ->where('ends_at', '>=', now())
-                ->where('status', ForumEventStatus::Scheduled->value)
+                ->whereIn('status', collect(ForumEventStatus::cases())
+                    ->filter(static fn (ForumEventStatus $status): bool => $status->isDiscoverable())
+                    ->map(static fn (ForumEventStatus $status): string => $status->value)
+                    ->all())
                 ->orderBy('starts_at'),
         };
 
@@ -222,7 +231,9 @@ final class ForumEventDirectory extends Component
     {
         return collect([
             ForumEventVisibility::Public,
+            ForumEventVisibility::Unlisted,
             ForumEventVisibility::Members,
+            ForumEventVisibility::Invitation,
             ForumEventVisibility::Private,
         ])->mapWithKeys(static fn (ForumEventVisibility $visibility): array => [
             $visibility->value => $visibility->label(),
@@ -247,6 +258,28 @@ final class ForumEventDirectory extends Component
         return collect(ForumEventPhotoConsent::cases())
             ->mapWithKeys(static fn (ForumEventPhotoConsent $consent): array => [
                 $consent->value => $consent->label(),
+            ])
+            ->all();
+    }
+
+    /** @return array<string, string> */
+    #[Computed]
+    public function petParticipationOptions(): array
+    {
+        return collect(ForumEventPetParticipation::cases())
+            ->mapWithKeys(static fn (ForumEventPetParticipation $mode): array => [
+                $mode->value => $mode->label(),
+            ])
+            ->all();
+    }
+
+    /** @return array<string, string> */
+    #[Computed]
+    public function accessibilityStatusOptions(): array
+    {
+        return collect(ForumEventAccessibilityStatus::cases())
+            ->mapWithKeys(static fn (ForumEventAccessibilityStatus $status): array => [
+                $status->value => $status->label(),
             ])
             ->all();
     }
@@ -385,7 +418,10 @@ final class ForumEventDirectory extends Component
             'starts_at' => $this->formatter->dateTime($event->starts_at, $event->timezone),
             'ends_at' => $this->formatter->dateTime($event->ends_at, $event->timezone),
             'location' => $event->location_scope ?? __('forum_events.defaults.online_location'),
+            'pet_participation' => $event->pet_participation_mode->label(),
+            'accessibility_status' => $event->accessibility_status->label(),
             'accessibility' => $event->accessibility_information,
+            'version' => $event->current_version_number,
             'organizer_name' => $event->organizer_name,
             'organizer_verified' => $event->organizer_user_id !== null
                 && isset($verifiedIds[$event->organizer_user_id]),

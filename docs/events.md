@@ -1,5 +1,11 @@
 # Events, Attendance, And Clubs
 
+> Point 13 status and the canonical detailed documentation now live in
+> `docs/events/index.md`. This historical Phase 8 document remains valid for
+> the original durable meetup workflow; where it differs, the Point 13
+> lifecycle, occurrence, version, team, and multi-pet boundaries take
+> precedence.
+
 ## Purpose And Boundary
 
 `ForumEvent` is the authoritative platform event aggregate. It owns the
@@ -33,6 +39,11 @@ An event has a stable route key and:
   consent, welfare, emergency, cost, currency, and refund fields;
 - optional global-taxonomy and group links;
 - an optimistic `lock_version`, cancellation fields, and archival timestamp.
+
+Point 13 extends that aggregate with a separate authoritative owner, pet and
+accessibility status enums, explicit lifecycle dates, an event version,
+recurring series and concrete occurrences, scoped team roles, occurrence-aware
+registrations, accepted snapshots, and one eligibility row per selected pet.
 
 Money is stored in integer minor units. A positive price and refund policy may
 be published, but registration rejects paid checkout until a verified payment
@@ -76,6 +87,10 @@ Guest count consumes capacity. Pet selection is limited to a profile owned by
 the registrant and is checked against configured age bounds. Requirements
 acceptance is explicit. Vaccination text is an event condition, not a health
 credential, and no private medical document is collected.
+
+The current registration flow also supports several active pet profiles that
+the participant owns or co-manages. Missing or manually reported medical and
+eligibility data remains pending review and cannot silently pass check-in.
 
 ## Invitations, Updates, And Messages
 

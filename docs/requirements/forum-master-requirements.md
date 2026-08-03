@@ -3,8 +3,8 @@
 This catalogue is generated from the immutable source prompt. It normalizes
 the implementation contract without replacing or shortening source text.
 
-- Source payload SHA-256: `9f52b2f90c8f1d0dc1c957f0207b6bd89c9a57eaf3359838e51b6c377e25458d`
-- Atomic requirements: `29960`
+- Source payload SHA-256: `cbb7d3a36f3750106c4751191ddd7d882d922ce0ae0e0b12aed318c809206ea1`
+- Atomic requirements: `38377`
 - Complete machine-readable catalogue: `docs/requirements/forum-requirements.json`
 - Complete traceability index: `docs/traceability/forum-requirements-matrix.md`
 
@@ -69,6 +69,45 @@ the implementation contract without replacing or shortening source text.
 | content-sharing | 116 |
 | content-stories | 102 |
 | content-types | 304 |
+| event-authorization | 67 |
+| event-capacity-waitlist | 78 |
+| event-check-in | 81 |
+| event-communication | 68 |
+| event-competition | 158 |
+| event-conference | 64 |
+| event-creation | 119 |
+| event-data | 146 |
+| event-discovery-seo | 67 |
+| event-documentation | 83 |
+| event-eligibility | 104 |
+| event-exhibition | 48 |
+| event-factory | 115 |
+| event-feedback-archive | 74 |
+| event-foundation | 902 |
+| event-group-walk | 96 |
+| event-integration | 51 |
+| event-interface | 226 |
+| event-lifecycle | 126 |
+| event-livewire | 130 |
+| event-localization | 62 |
+| event-media-privacy | 93 |
+| event-notification-calendar | 52 |
+| event-organization | 103 |
+| event-performance | 74 |
+| event-quality-release | 120 |
+| event-registration | 160 |
+| event-safety-incident | 150 |
+| event-schedule-recurrence | 94 |
+| event-seeding | 82 |
+| event-testing | 339 |
+| event-ticket-payment | 153 |
+| event-training | 70 |
+| event-type | 240 |
+| event-validation | 64 |
+| event-vendor-sponsor | 59 |
+| event-venue | 114 |
+| event-volunteer | 65 |
+| event-weather-cancellation | 71 |
 | forum-category | 1461 |
 | forum-feature | 3354 |
 | interface | 76 |
@@ -107,6 +146,17 @@ the implementation contract without replacing or shortening source text.
 | pet-scenario | 206 |
 | pet-social | 365 |
 | planning-and-documentation | 144 |
+| portal-dashboard-workspace | 292 |
+| portal-documentation | 86 |
+| portal-foundation | 1302 |
+| portal-interface-quality | 329 |
+| portal-navigation | 236 |
+| portal-notification-calendar | 211 |
+| portal-quality-release | 172 |
+| portal-route-and-page-registry | 216 |
+| portal-search-discovery | 335 |
+| portal-security-privacy | 91 |
+| portal-workflow-integration | 179 |
 | reputation-and-trust | 352 |
 | search-and-discovery | 147 |
 | security-and-privacy | 48 |

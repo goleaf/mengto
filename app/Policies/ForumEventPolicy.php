@@ -7,6 +7,7 @@ namespace App\Policies;
 use App\Enums\ForumEventInvitationStatus;
 use App\Enums\ForumEventRegistrationStatus;
 use App\Enums\ForumEventStatus;
+use App\Enums\ForumEventTeamRole;
 use App\Enums\ForumEventVisibility;
 use App\Models\ForumEvent;
 use App\Models\User;
@@ -21,7 +22,7 @@ final class ForumEventPolicy
     public function view(?User $user, ForumEvent $event): bool
     {
         if ($user?->isAdministrator() === true
-            || ($user !== null && $event->isOrganizer($user))
+            || ($user !== null && $this->canManage($user, $event))
         ) {
             return true;
         }
@@ -31,8 +32,14 @@ final class ForumEventPolicy
         }
 
         return match ($event->visibility) {
-            ForumEventVisibility::Public => true,
+            ForumEventVisibility::Public,
+            ForumEventVisibility::Unlisted => true,
             ForumEventVisibility::Members => $user?->isActive() === true,
+            ForumEventVisibility::Organization => $user?->isActive() === true
+                && $event->teamMemberships()
+                    ->active()
+                    ->where('user_id', $user->id)
+                    ->exists(),
             ForumEventVisibility::Group => $user?->isActive() === true
                 && $event->group()
                     ->where(function ($groups) use ($user): void {
@@ -45,7 +52,8 @@ final class ForumEventPolicy
                             });
                     })
                     ->exists(),
-            ForumEventVisibility::Private => $user?->isActive() === true
+            ForumEventVisibility::Private,
+            ForumEventVisibility::Invitation => $user?->isActive() === true
                 && $event->invitations()
                     ->where('invited_user_id', $user->id)
                     ->where('status', ForumEventInvitationStatus::Accepted->value)
@@ -62,14 +70,25 @@ final class ForumEventPolicy
     public function update(?User $user, ForumEvent $event): bool
     {
         return $user?->isActive() === true
-            && ($user->isAdministrator() || $event->isOrganizer($user))
+            && ($user->isAdministrator() || $this->canManage($user, $event))
             && $event->status !== ForumEventStatus::Archived;
     }
 
     public function viewAccessDetails(?User $user, ForumEvent $event): bool
     {
         return $user?->isActive() === true
-            && $event->canDiscloseAccessTo($user);
+            && ($event->canDiscloseAccessTo($user)
+                || $this->hasTeamRole($user, $event, [
+                    ForumEventTeamRole::Owner,
+                    ForumEventTeamRole::Administrator,
+                    ForumEventTeamRole::PrimaryOrganizer,
+                    ForumEventTeamRole::CoOrganizer,
+                    ForumEventTeamRole::CheckInOperator,
+                    ForumEventTeamRole::SafetyLead,
+                    ForumEventTeamRole::WelfareOfficer,
+                    ForumEventTeamRole::MedicalContact,
+                    ForumEventTeamRole::RouteLeader,
+                ]));
     }
 
     public function register(?User $user, ForumEvent $event): bool
@@ -84,7 +103,45 @@ final class ForumEventPolicy
 
     public function manageRegistrations(?User $user, ForumEvent $event): bool
     {
-        return $this->update($user, $event);
+        return $user?->isActive() === true
+            && ($user->isAdministrator() || $this->hasTeamRole($user, $event, [
+                ForumEventTeamRole::Owner,
+                ForumEventTeamRole::Administrator,
+                ForumEventTeamRole::PrimaryOrganizer,
+                ForumEventTeamRole::CoOrganizer,
+                ForumEventTeamRole::RegistrationManager,
+                ForumEventTeamRole::CheckInOperator,
+                ForumEventTeamRole::SafetyLead,
+                ForumEventTeamRole::WelfareOfficer,
+            ]));
+    }
+
+    public function manageTeam(?User $user, ForumEvent $event): bool
+    {
+        return $user?->isActive() === true
+            && ($user->isAdministrator()
+                || $event->isOwner($user)
+                || $this->hasTeamRole($user, $event, [
+                    ForumEventTeamRole::Owner,
+                    ForumEventTeamRole::Administrator,
+                ]));
+    }
+
+    public function transition(
+        ?User $user,
+        ForumEvent $event,
+        ForumEventStatus $next,
+    ): bool {
+        if ($this->update($user, $event)) {
+            return true;
+        }
+
+        return $next === ForumEventStatus::SafetySuspended
+            && $user?->isActive() === true
+            && $this->hasTeamRole($user, $event, [
+                ForumEventTeamRole::SafetyLead,
+                ForumEventTeamRole::WelfareOfficer,
+            ]);
     }
 
     public function invite(?User $user, ForumEvent $event): bool
@@ -123,6 +180,8 @@ final class ForumEventPolicy
             [
                 ForumEventRegistrationStatus::Confirmed,
                 ForumEventRegistrationStatus::CheckedIn,
+                ForumEventRegistrationStatus::PartiallyCheckedIn,
+                ForumEventRegistrationStatus::Attended,
             ],
             true,
         );
@@ -139,6 +198,8 @@ final class ForumEventPolicy
             [
                 ForumEventRegistrationStatus::Confirmed,
                 ForumEventRegistrationStatus::CheckedIn,
+                ForumEventRegistrationStatus::PartiallyCheckedIn,
+                ForumEventRegistrationStatus::Attended,
             ],
             true,
         );
@@ -162,5 +223,32 @@ final class ForumEventPolicy
     public function forceDelete(?User $user, ForumEvent $event): bool
     {
         return false;
+    }
+
+    /** @param list<ForumEventTeamRole> $roles */
+    private function hasTeamRole(User $user, ForumEvent $event, array $roles): bool
+    {
+        if ($event->isOwner($user) || $event->isOrganizer($user)) {
+            return true;
+        }
+
+        return $event->teamMemberships()
+            ->active()
+            ->where('user_id', $user->id)
+            ->whereIn('role', array_map(
+                static fn (ForumEventTeamRole $role): string => $role->value,
+                $roles,
+            ))
+            ->exists();
+    }
+
+    private function canManage(User $user, ForumEvent $event): bool
+    {
+        return $this->hasTeamRole($user, $event, [
+            ForumEventTeamRole::Owner,
+            ForumEventTeamRole::Administrator,
+            ForumEventTeamRole::PrimaryOrganizer,
+            ForumEventTeamRole::CoOrganizer,
+        ]);
     }
 }

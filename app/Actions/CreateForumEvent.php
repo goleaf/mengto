@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace App\Actions;
 
 use App\Data\CreateForumEventData;
+use App\Enums\ForumEventAccessibilityStatus;
 use App\Enums\ForumEventFormat;
+use App\Enums\ForumEventPetParticipation;
 use App\Enums\ForumEventPhotoConsent;
 use App\Enums\ForumEventRegistrationPolicy;
 use App\Enums\ForumEventStatus;
@@ -28,6 +30,7 @@ final readonly class CreateForumEvent
     public function __construct(
         private Gate $gate,
         private ForumEventAudit $audit,
+        private InitializeForumEventLifecycle $initializeLifecycle,
     ) {}
 
     public function handle(User $actor, CreateForumEventData $data): ForumEvent
@@ -72,6 +75,7 @@ final readonly class CreateForumEvent
         return DB::transaction(function () use ($actor, $data, $group, $taxa): ForumEvent {
             $event = ForumEvent::query()->create([
                 'organizer_user_id' => $actor->id,
+                'owner_user_id' => $actor->id,
                 'organizer_key' => $actor->actor_key,
                 'organizer_name' => $actor->name,
                 'forum_group_id' => $group?->id,
@@ -83,6 +87,7 @@ final readonly class CreateForumEvent
                 'type' => $data->type,
                 'visibility' => $data->visibility,
                 'format' => $data->format,
+                'pet_participation_mode' => $data->petParticipationMode,
                 'status' => ForumEventStatus::Scheduled,
                 'locale' => $data->locale,
                 'starts_at' => $data->startsAt,
@@ -100,6 +105,7 @@ final readonly class CreateForumEvent
                 'minimum_animal_age_months' => $data->minimumAnimalAgeMonths,
                 'maximum_animal_age_months' => $data->maximumAnimalAgeMonths,
                 'accessibility_information' => $data->accessibilityInformation,
+                'accessibility_status' => $data->accessibilityStatus,
                 'cost_minor' => $data->costMinor,
                 'currency' => Str::upper($data->currency),
                 'refund_policy' => $data->refundPolicy,
@@ -115,6 +121,8 @@ final readonly class CreateForumEvent
                     ],
                 )->all());
             }
+
+            $this->initializeLifecycle->handle($event, $actor, 'event-created');
 
             $this->audit->record(
                 event: $event,
@@ -142,6 +150,7 @@ final readonly class CreateForumEvent
             'type' => $data->type->value,
             'visibility' => $data->visibility->value,
             'format' => $data->format->value,
+            'pet_participation_mode' => $data->petParticipationMode->value,
             'starts_at' => $data->startsAt->toAtomString(),
             'ends_at' => $data->endsAt->toAtomString(),
             'timezone' => $data->timezone,
@@ -156,6 +165,7 @@ final readonly class CreateForumEvent
             'minimum_animal_age_months' => $data->minimumAnimalAgeMonths,
             'maximum_animal_age_months' => $data->maximumAnimalAgeMonths,
             'accessibility_information' => $data->accessibilityInformation,
+            'accessibility_status' => $data->accessibilityStatus->value,
             'cost_minor' => $data->costMinor,
             'currency' => Str::upper($data->currency),
             'refund_policy' => $data->refundPolicy,
@@ -172,6 +182,10 @@ final readonly class CreateForumEvent
             'type' => ['required', Rule::enum(ForumEventType::class)],
             'visibility' => ['required', Rule::enum(ForumEventVisibility::class)],
             'format' => ['required', Rule::enum(ForumEventFormat::class)],
+            'pet_participation_mode' => [
+                'required',
+                Rule::enum(ForumEventPetParticipation::class),
+            ],
             'starts_at' => ['required', 'date', 'after:now'],
             'ends_at' => ['required', 'date', 'after:starts_at'],
             'timezone' => ['required', 'timezone:all'],
@@ -210,6 +224,10 @@ final readonly class CreateForumEvent
                 'gte:minimum_animal_age_months',
             ],
             'accessibility_information' => ['nullable', 'string', 'max:5000'],
+            'accessibility_status' => [
+                'required',
+                Rule::enum(ForumEventAccessibilityStatus::class),
+            ],
             'cost_minor' => ['required', 'integer', 'min:0', 'max:100000000'],
             'currency' => ['required', 'string', 'size:3', 'regex:/^[A-Z]{3}$/'],
             'refund_policy' => [

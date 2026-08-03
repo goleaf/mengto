@@ -22,7 +22,7 @@
             <h1 id="forum-event-heading">{{ $this->event['title'] }}</h1>
             <p>{{ $this->event['summary'] }}</p>
             <p class="inline-flex flex-wrap items-center gap-2">
-                <x-lucide-user-round aria-hidden="true" />
+                <x-lucide-user-round class="size-4 shrink-0" aria-hidden="true" />
                 {{ __('forum_events.labels.organizer_by', ['name' => $this->event['organizer_name']]) }}
                 @if ($this->event['organizer_verified'])
                     <span class="inline-flex items-center gap-1 font-semibold">
@@ -114,6 +114,14 @@
                         <dd>{{ $this->event['visibility'] }}</dd>
                     </div>
                     <div>
+                        <dt class="font-semibold">{{ __('forum_events.fields.pet_participation_mode') }}</dt>
+                        <dd>{{ $this->event['pet_participation'] }}</dd>
+                    </div>
+                    <div>
+                        <dt class="font-semibold">{{ __('forum_events.fields.event_version') }}</dt>
+                        <dd>{{ $this->event['current_version_number'] }}</dd>
+                    </div>
+                    <div>
                         <dt class="font-semibold">{{ __('forum_events.fields.registration_policy') }}</dt>
                         <dd>{{ $this->event['registration_policy'] }}</dd>
                     </div>
@@ -197,15 +205,16 @@
                             @endif
                         </article>
                     @endif
-                    @if ($this->event['accessibility_information'])
-                        <article class="border-s-4 border-status-info ps-4">
-                            <h3 class="inline-flex items-center gap-2 text-base">
-                                <x-lucide-accessibility class="size-4" aria-hidden="true" />
-                                {{ __('forum_events.detail.accessibility') }}
-                            </h3>
+                    <article class="border-s-4 border-status-info ps-4">
+                        <h3 class="inline-flex items-center gap-2 text-base">
+                            <x-lucide-accessibility class="size-4" aria-hidden="true" />
+                            {{ __('forum_events.detail.accessibility') }}
+                        </h3>
+                        <p><strong>{{ $this->event['accessibility_status'] }}</strong></p>
+                        @if ($this->event['accessibility_information'])
                             <p class="whitespace-pre-line">{{ $this->event['accessibility_information'] }}</p>
-                        </article>
-                    @endif
+                        @endif
+                    </article>
                     <article class="border-s-4 border-status-success ps-4">
                         <h3 class="text-base">{{ __('forum_events.detail.welfare') }}</h3>
                         <p class="whitespace-pre-line">{{ $this->event['animal_welfare_rules'] }}</p>
@@ -216,6 +225,25 @@
             <section aria-labelledby="event-access-heading">
                 <h2 id="event-access-heading">{{ __('forum_events.detail.schedule') }}</h2>
                 <div class="mt-4 border-y border-paw-line py-4">
+                    @if ($this->occurrences !== [])
+                        <ol class="mb-4 grid gap-3" aria-label="{{ __('forum_events.detail.occurrences') }}">
+                            @forelse ($this->occurrences as $occurrence)
+                                <li class="border-s-4 border-paw-line ps-4" wire:key="event-occurrence-{{ $occurrence['id'] }}">
+                                    <div class="flex flex-wrap items-center justify-between gap-2">
+                                        <strong>{{ $occurrence['starts_at'] }}</strong>
+                                        <x-status-badge :label="$occurrence['status']" icon="calendar-clock" />
+                                    </div>
+                                    <p>{{ $occurrence['format'] }} · {{ $occurrence['location'] }}</p>
+                                    <p class="text-sm">{{ __('forum_events.labels.occurrence_ends', ['date' => $occurrence['ends_at'], 'timezone' => $occurrence['timezone']]) }}</p>
+                                    @if ($occurrence['is_override'])
+                                        <p class="text-sm">{{ __('forum_events.labels.occurrence_override') }}</p>
+                                    @endif
+                                </li>
+                            @empty
+                            @endforelse
+                        </ol>
+                    @endif
+
                     @if ($this->event['location_scope'])
                         <p class="inline-flex items-start gap-2">
                             <x-lucide-map-pin class="mt-0.5 size-4 shrink-0" aria-hidden="true" />
@@ -359,6 +387,20 @@
                     <h2 id="event-registration-heading" class="text-lg">{{ __('forum_events.actions.register') }}</h2>
                     <p><strong>{{ $this->currentRegistration['status'] }}</strong></p>
                     <p>{{ $this->currentRegistration['attendance_format'] }}</p>
+                    @if ($this->currentRegistration['occurrence'])
+                        <p>{{ __('forum_events.labels.registered_occurrence', ['date' => $this->currentRegistration['occurrence']]) }}</p>
+                    @endif
+                    @if ($this->currentRegistration['event_version'])
+                        <p class="text-sm">{{ __('forum_events.labels.accepted_version', ['version' => $this->currentRegistration['event_version']]) }}</p>
+                    @endif
+                    @if ($this->currentRegistration['pets'] !== [])
+                        <ul class="grid gap-1 text-sm" aria-label="{{ __('forum_events.fields.pet_profiles') }}">
+                            @forelse ($this->currentRegistration['pets'] as $pet)
+                                <li>{{ $pet['name'] }} · {{ $pet['species'] }} · {{ $pet['eligibility'] }}</li>
+                            @empty
+                            @endforelse
+                        </ul>
+                    @endif
                     @if ($this->currentRegistration['waitlist_position'])
                         <p>{{ __('forum_events.labels.waitlist_position', ['position' => $this->currentRegistration['waitlist_position']]) }}</p>
                     @endif
@@ -391,17 +433,42 @@
                             @endforelse
                         </select>
                     </label>
-                    <label class="forum-form__field">
-                        <span>{{ __('forum_events.fields.pet_profile') }}</span>
-                        <select wire:model="registrationForm.petProfileId">
-                            <option value="">{{ __('forum_events.empty.pets') }}</option>
-                            @forelse ($this->petOptions as $value => $label)
-                                <option value="{{ $value }}">{{ $label }}</option>
-                            @empty
-                            @endforelse
-                        </select>
-                        @error('registrationForm.petProfileId') <small role="alert">{{ $message }}</small> @enderror
-                    </label>
+                    @if ($this->occurrences !== [])
+                        <label class="forum-form__field">
+                            <span>{{ __('forum_events.fields.occurrence') }}</span>
+                            <select wire:model="registrationForm.occurrenceId" required>
+                                @forelse ($this->occurrences as $occurrence)
+                                    <option value="{{ $occurrence['id'] }}">{{ $occurrence['starts_at'] }} · {{ $occurrence['status'] }}</option>
+                                @empty
+                                @endforelse
+                            </select>
+                            @error('registrationForm.occurrenceId') <small role="alert">{{ $message }}</small> @enderror
+                        </label>
+                    @endif
+                    @if ($this->event['accepts_general_pets'])
+                        <fieldset class="forum-form__field">
+                            <legend>{{ __('forum_events.fields.pet_profiles') }}</legend>
+                            <div class="grid gap-2">
+                                @forelse ($this->petOptions as $value => $label)
+                                    <label class="inline-flex min-h-11 items-center gap-3">
+                                        <input type="checkbox" wire:model="registrationForm.petProfileIds" value="{{ $value }}">
+                                        <span>{{ $label }}</span>
+                                    </label>
+                                @empty
+                                    <p>{{ __('forum_events.empty.pets') }}</p>
+                                @endforelse
+                            </div>
+                            @if ($this->event['requires_pet'])
+                                <p class="text-sm">{{ __('forum_events.notices.pet_required') }}</p>
+                            @endif
+                            @error('registrationForm.petProfileIds') <small role="alert">{{ $message }}</small> @enderror
+                            @error('registrationForm.petProfileIds.*') <small role="alert">{{ $message }}</small> @enderror
+                        </fieldset>
+                    @else
+                        <p class="border-s-4 border-status-info ps-4" role="note">
+                            {{ $this->event['pet_participation'] }}
+                        </p>
+                    @endif
                     <label class="forum-form__field">
                         <span>{{ __('forum_events.fields.guest_count') }}</span>
                         <input type="number" wire:model="registrationForm.guestCount" min="0" max="10" required>
@@ -562,7 +629,20 @@
                                 <strong>{{ $registration['user_name'] }}</strong>
                                 <p class="break-all text-sm">{{ $registration['user_email'] }}</p>
                                 <p class="text-sm">{{ $registration['status'] }} · {{ $registration['attendance_format'] }}</p>
-                                @if ($registration['pet_name'])
+                                @if ($registration['occurrence'])
+                                    <p class="text-sm">{{ __('forum_events.labels.registered_occurrence', ['date' => $registration['occurrence']]) }}</p>
+                                @endif
+                                @if ($registration['event_version'])
+                                    <p class="text-sm">{{ __('forum_events.labels.accepted_version', ['version' => $registration['event_version']]) }}</p>
+                                @endif
+                                @if ($registration['pets'] !== [])
+                                    <ul class="grid gap-1 text-sm" aria-label="{{ __('forum_events.fields.pet_profiles') }}">
+                                        @forelse ($registration['pets'] as $pet)
+                                            <li>{{ $pet['name'] }} · {{ $pet['species'] }} · {{ $pet['eligibility'] }}</li>
+                                        @empty
+                                        @endforelse
+                                    </ul>
+                                @elseif ($registration['pet_name'])
                                     <p class="text-sm">{{ $registration['pet_name'] }}</p>
                                 @endif
                                 <div class="mt-2 flex flex-wrap gap-2">
@@ -579,6 +659,11 @@
                                         <button type="button" class="forum-button min-h-11" wire:click="checkIn({{ $registration['id'] }})">
                                             <x-lucide-badge-check aria-hidden="true" />
                                             {{ __('forum_events.actions.check_in') }}
+                                        </button>
+                                    @elseif ($registration['status_key'] === 'checked_in')
+                                        <button type="button" class="forum-button min-h-11" wire:click="checkOut({{ $registration['id'] }})">
+                                            <x-lucide-log-out aria-hidden="true" />
+                                            {{ __('forum_events.actions.check_out') }}
                                         </button>
                                     @endif
                                 </div>

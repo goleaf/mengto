@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace App\Livewire\Forms;
 
 use App\Data\CreateForumEventData;
+use App\Enums\ForumEventAccessibilityStatus;
 use App\Enums\ForumEventFormat;
+use App\Enums\ForumEventPetParticipation;
 use App\Enums\ForumEventPhotoConsent;
 use App\Enums\ForumEventRegistrationPolicy;
 use App\Enums\ForumEventType;
@@ -25,6 +27,8 @@ final class ForumEventForm extends Form
     public string $visibility = 'public';
 
     public string $format = 'physical';
+
+    public string $petParticipationMode = 'optional';
 
     public string $startsAt = '';
 
@@ -56,6 +60,8 @@ final class ForumEventForm extends Form
 
     public string $accessibilityInformation = '';
 
+    public string $accessibilityStatus = 'not_assessed';
+
     public int $costMinor = 0;
 
     public string $currency = 'EUR';
@@ -86,11 +92,17 @@ final class ForumEventForm extends Form
                 'required',
                 Rule::in([
                     ForumEventVisibility::Public->value,
+                    ForumEventVisibility::Unlisted->value,
                     ForumEventVisibility::Members->value,
+                    ForumEventVisibility::Invitation->value,
                     ForumEventVisibility::Private->value,
                 ]),
             ],
             'format' => ['required', Rule::enum(ForumEventFormat::class)],
+            'petParticipationMode' => [
+                'required',
+                Rule::enum(ForumEventPetParticipation::class),
+            ],
             'startsAt' => ['required', 'date', 'after:now'],
             'endsAt' => ['required', 'date', 'after:startsAt'],
             'timezone' => ['required', 'timezone:all'],
@@ -130,6 +142,10 @@ final class ForumEventForm extends Form
                 'gte:minimumAnimalAgeMonths',
             ],
             'accessibilityInformation' => ['nullable', 'string', 'max:5000'],
+            'accessibilityStatus' => [
+                'required',
+                Rule::enum(ForumEventAccessibilityStatus::class),
+            ],
             'costMinor' => ['required', 'integer', 'min:0', 'max:100000000'],
             'currency' => ['required', 'string', 'size:3', 'regex:/^[A-Za-z]{3}$/'],
             'refundPolicy' => [
@@ -167,6 +183,7 @@ final class ForumEventForm extends Form
             'type' => __('forum_events.fields.type'),
             'visibility' => __('forum_events.fields.visibility'),
             'format' => __('forum_events.fields.format'),
+            'petParticipationMode' => __('forum_events.fields.pet_participation_mode'),
             'startsAt' => __('forum_events.fields.starts_at'),
             'endsAt' => __('forum_events.fields.ends_at'),
             'timezone' => __('forum_events.fields.timezone'),
@@ -224,6 +241,12 @@ final class ForumEventForm extends Form
             taxonIds: array_values(array_map('intval', $validated['taxonIds'])),
             locale: (string) $validated['locale'],
             idempotencyKey: (string) $validated['idempotencyKey'],
+            petParticipationMode: ForumEventPetParticipation::from(
+                (string) $validated['petParticipationMode'],
+            ),
+            accessibilityStatus: ForumEventAccessibilityStatus::from(
+                (string) $validated['accessibilityStatus'],
+            ),
         );
     }
 

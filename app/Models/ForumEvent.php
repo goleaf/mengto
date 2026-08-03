@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Enums\ForumEventAccessibilityStatus;
 use App\Enums\ForumEventFormat;
 use App\Enums\ForumEventInvitationStatus;
+use App\Enums\ForumEventPetParticipation;
 use App\Enums\ForumEventPhotoConsent;
 use App\Enums\ForumEventRegistrationPolicy;
 use App\Enums\ForumEventRegistrationStatus;
@@ -24,6 +26,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * @property string|null $accessibility_information
+ * @property ForumEventAccessibilityStatus $accessibility_status
  * @property string $animal_welfare_rules
  * @property string|null $attendance_requirements
  * @property int|null $capacity
@@ -50,8 +53,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string $organizer_key
  * @property string $organizer_name
  * @property int|null $organizer_user_id
+ * @property int|null $owner_user_id
  * @property string|null $online_url
  * @property ForumEventPhotoConsent $photo_consent_mode
+ * @property ForumEventPetParticipation $pet_participation_mode
  * @property ForumEventRegistrationPolicy $registration_policy
  * @property string|null $refund_policy
  * @property CarbonImmutable $starts_at
@@ -70,10 +75,15 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property-read Collection<int, ForumEventInvitation> $invitations
  * @property-read Collection<int, ForumEventMessage> $messages
  * @property-read User|null $organizer
+ * @property-read User|null $owner
+ * @property-read Collection<int, ForumEventOccurrence> $occurrences
  * @property-read Collection<int, ForumEventRegistration> $registrations
  * @property-read Collection<int, ForumEventReview> $reviews
  * @property-read Collection<int, Taxon> $taxa
  * @property-read Collection<int, ForumEventUpdate> $updates
+ * @property-read Collection<int, ForumEventVersion> $versions
+ * @property-read Collection<int, ForumEventTeamMembership> $teamMemberships
+ * @property-read Collection<int, ForumEventTeamMembership> $activeTeamMemberships
  */
 final class ForumEvent extends Model
 {
@@ -82,6 +92,7 @@ final class ForumEvent extends Model
 
     protected $fillable = [
         'organizer_user_id',
+        'owner_user_id',
         'organizer_key',
         'organizer_name',
         'forum_group_id',
@@ -94,6 +105,7 @@ final class ForumEvent extends Model
         'type',
         'visibility',
         'format',
+        'pet_participation_mode',
         'status',
         'locale',
         'starts_at',
@@ -111,6 +123,7 @@ final class ForumEvent extends Model
         'minimum_animal_age_months',
         'maximum_animal_age_months',
         'accessibility_information',
+        'accessibility_status',
         'cost_minor',
         'currency',
         'refund_policy',
@@ -118,6 +131,11 @@ final class ForumEvent extends Model
         'animal_welfare_rules',
         'emergency_contact_plan',
         'lock_version',
+        'current_version_number',
+        'registration_opens_at',
+        'registration_closes_at',
+        'published_at',
+        'safety_suspended_at',
         'cancelled_by_user_id',
         'cancelled_at',
         'cancellation_reason_code',
@@ -137,12 +155,15 @@ final class ForumEvent extends Model
         'is_system_managed' => false,
         'status' => 'scheduled',
         'visibility' => 'public',
+        'pet_participation_mode' => 'optional',
+        'accessibility_status' => 'not_assessed',
         'registration_policy' => 'open',
         'waitlist_enabled' => true,
         'cost_minor' => 0,
         'currency' => 'EUR',
         'photo_consent_mode' => 'ask_first',
         'lock_version' => 0,
+        'current_version_number' => 1,
     ];
 
     protected function casts(): array
@@ -152,6 +173,7 @@ final class ForumEvent extends Model
             'type' => ForumEventType::class,
             'visibility' => ForumEventVisibility::class,
             'format' => ForumEventFormat::class,
+            'pet_participation_mode' => ForumEventPetParticipation::class,
             'status' => ForumEventStatus::class,
             'starts_at' => 'immutable_datetime',
             'ends_at' => 'immutable_datetime',
@@ -164,8 +186,14 @@ final class ForumEvent extends Model
             'maximum_animal_age_months' => 'integer',
             'cost_minor' => 'integer',
             'photo_consent_mode' => ForumEventPhotoConsent::class,
+            'accessibility_status' => ForumEventAccessibilityStatus::class,
             'emergency_contact_plan' => 'encrypted',
             'lock_version' => 'integer',
+            'current_version_number' => 'integer',
+            'registration_opens_at' => 'immutable_datetime',
+            'registration_closes_at' => 'immutable_datetime',
+            'published_at' => 'immutable_datetime',
+            'safety_suspended_at' => 'immutable_datetime',
             'cancelled_at' => 'immutable_datetime',
             'archived_at' => 'immutable_datetime',
             'metadata' => 'array',
@@ -181,6 +209,12 @@ final class ForumEvent extends Model
     public function organizer(): BelongsTo
     {
         return $this->belongsTo(User::class, 'organizer_user_id');
+    }
+
+    /** @return BelongsTo<User, $this> */
+    public function owner(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'owner_user_id');
     }
 
     /** @return BelongsTo<ForumGroup, $this> */
@@ -239,6 +273,33 @@ final class ForumEvent extends Model
         return $this->hasMany(ForumEventHistory::class);
     }
 
+    /** @return HasMany<ForumEventOccurrence, $this> */
+    public function occurrences(): HasMany
+    {
+        return $this->hasMany(ForumEventOccurrence::class);
+    }
+
+    /** @return HasMany<ForumEventVersion, $this> */
+    public function versions(): HasMany
+    {
+        return $this->hasMany(ForumEventVersion::class);
+    }
+
+    /** @return HasMany<ForumEventTeamMembership, $this> */
+    public function teamMemberships(): HasMany
+    {
+        return $this->hasMany(ForumEventTeamMembership::class);
+    }
+
+    /** @return HasMany<ForumEventTeamMembership, $this> */
+    public function activeTeamMemberships(): HasMany
+    {
+        $memberships = $this->teamMemberships();
+        $memberships->getQuery()->active();
+
+        return $memberships;
+    }
+
     /**
      * @param  Builder<ForumEvent>  $query
      * @return Builder<ForumEvent>
@@ -261,6 +322,10 @@ final class ForumEvent extends Model
             $visibility
                 ->orWhere('visibility', ForumEventVisibility::Members->value)
                 ->orWhere('organizer_user_id', $user->id)
+                ->orWhere('owner_user_id', $user->id)
+                ->orWhereHas('activeTeamMemberships', function (Builder $memberships) use ($user): void {
+                    $memberships->where('user_id', $user->id);
+                })
                 ->orWhere(function (Builder $groups) use ($user): void {
                     $groups
                         ->where('visibility', ForumEventVisibility::Group->value)
@@ -276,7 +341,10 @@ final class ForumEvent extends Model
                 })
                 ->orWhere(function (Builder $private) use ($user): void {
                     $private
-                        ->where('visibility', ForumEventVisibility::Private->value)
+                        ->whereIn('visibility', [
+                            ForumEventVisibility::Private->value,
+                            ForumEventVisibility::Invitation->value,
+                        ])
                         ->whereHas('invitations', function (Builder $invitations) use ($user): void {
                             $invitations
                                 ->where('invited_user_id', $user->id)
@@ -291,6 +359,11 @@ final class ForumEvent extends Model
     {
         return $this->organizer_user_id === $user->id
             || hash_equals($this->organizer_key, $user->actor_key);
+    }
+
+    public function isOwner(User $user): bool
+    {
+        return ($this->getAttributes()['owner_user_id'] ?? null) === $user->id;
     }
 
     public function hasEnded(): bool
@@ -321,6 +394,8 @@ final class ForumEvent extends Model
             [
                 ForumEventRegistrationStatus::Confirmed,
                 ForumEventRegistrationStatus::CheckedIn,
+                ForumEventRegistrationStatus::PartiallyCheckedIn,
+                ForumEventRegistrationStatus::Attended,
             ],
             true,
         );

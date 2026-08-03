@@ -90,6 +90,10 @@
                             <dd>{{ $event['format'] }}</dd>
                         </div>
                         <div>
+                            <dt class="font-semibold">{{ __('forum_events.fields.pet_participation_mode') }}</dt>
+                            <dd>{{ $event['pet_participation'] }}</dd>
+                        </div>
+                        <div>
                             <dt class="font-semibold">{{ __('forum_events.fields.location_scope') }}</dt>
                             <dd>{{ $event['location'] }}</dd>
                         </div>
@@ -130,7 +134,12 @@
                     @if ($event['accessibility'])
                         <p class="inline-flex items-start gap-2 text-sm">
                             <x-lucide-accessibility class="mt-0.5 size-4 shrink-0" aria-hidden="true" />
-                            <span>{{ $event['accessibility'] }}</span>
+                            <span><strong>{{ $event['accessibility_status'] }}:</strong> {{ $event['accessibility'] }}</span>
+                        </p>
+                    @else
+                        <p class="inline-flex items-start gap-2 text-sm">
+                            <x-lucide-accessibility class="mt-0.5 size-4 shrink-0" aria-hidden="true" />
+                            <span>{{ $event['accessibility_status'] }}</span>
                         </p>
                     @endif
 
@@ -214,6 +223,16 @@
                         </select>
                     </label>
                     <label class="forum-form__field">
+                        <span>{{ __('forum_events.fields.pet_participation_mode') }}</span>
+                        <select wire:model="form.petParticipationMode" required>
+                            @forelse ($this->petParticipationOptions as $value => $label)
+                                <option value="{{ $value }}">{{ $label }}</option>
+                            @empty
+                            @endforelse
+                        </select>
+                        @error('form.petParticipationMode') <small role="alert">{{ $message }}</small> @enderror
+                    </label>
+                    <label class="forum-form__field">
                         <span>{{ __('forum_events.fields.starts_at') }}</span>
                         <input type="datetime-local" wire:model="form.startsAt" required>
                         @error('form.startsAt') <small role="alert">{{ $message }}</small> @enderror
@@ -227,7 +246,6 @@
                         <span>{{ __('forum_events.fields.timezone') }}</span>
                         <input type="text" wire:model="form.timezone" maxlength="64" required>
                         @error('form.timezone') <small role="alert">{{ $message }}</small> @enderror
-                    </label>
                     <label class="forum-form__field">
                         <span>{{ __('forum_events.fields.capacity') }}</span>
                         <input type="number" wire:model="form.capacity" min="1" max="100000">
@@ -315,10 +333,22 @@
                     </label>
                 </div>
 
-                <label class="forum-form__field">
-                    <span>{{ __('forum_events.fields.accessibility_information') }}</span>
-                    <textarea wire:model="form.accessibilityInformation" rows="3" maxlength="5000"></textarea>
-                </label>
+                <div class="grid gap-4 md:grid-cols-2">
+                    <label class="forum-form__field">
+                        <span>{{ __('forum_events.fields.accessibility_status') }}</span>
+                        <select wire:model="form.accessibilityStatus" required>
+                            @forelse ($this->accessibilityStatusOptions as $value => $label)
+                                <option value="{{ $value }}">{{ $label }}</option>
+                            @empty
+                            @endforelse
+                        </select>
+                        @error('form.accessibilityStatus') <small role="alert">{{ $message }}</small> @enderror
+                    </label>
+                    <label class="forum-form__field">
+                        <span>{{ __('forum_events.fields.accessibility_information') }}</span>
+                        <textarea wire:model="form.accessibilityInformation" rows="3" maxlength="5000"></textarea>
+                    </label>
+                </div>
                 <label class="forum-form__field">
                     <span>{{ __('forum_events.fields.animal_welfare_rules') }}</span>
                     <textarea wire:model="form.animalWelfareRules" rows="4" minlength="10" maxlength="10000" required></textarea>

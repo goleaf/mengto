@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
+use App\Actions\InitializeForumEventLifecycle;
 use App\Enums\ForumEventFormat;
+use App\Enums\ForumEventPetParticipation;
 use App\Enums\ForumEventPhotoConsent;
 use App\Enums\ForumEventRegistrationPolicy;
 use App\Enums\ForumEventStatus;
@@ -28,6 +30,7 @@ final class ForumEventFactory extends ApplicationFactory
 
         return [
             'organizer_user_id' => User::factory(),
+            'owner_user_id' => fn (array $attributes): int => (int) $attributes['organizer_user_id'],
             'organizer_key' => fn (array $attributes): string => User::query()
                 ->findOrFail($attributes['organizer_user_id'])
                 ->actor_key,
@@ -44,6 +47,7 @@ final class ForumEventFactory extends ApplicationFactory
             'type' => ForumEventType::Walk,
             'visibility' => ForumEventVisibility::Public,
             'format' => ForumEventFormat::Physical,
+            'pet_participation_mode' => ForumEventPetParticipation::Optional,
             'status' => ForumEventStatus::Scheduled,
             'locale' => 'en',
             'starts_at' => $startsAt,
@@ -61,6 +65,7 @@ final class ForumEventFactory extends ApplicationFactory
             'minimum_animal_age_months' => null,
             'maximum_animal_age_months' => null,
             'accessibility_information' => fake()->sentence(),
+            'accessibility_status' => 'not_assessed',
             'cost_minor' => 0,
             'currency' => 'EUR',
             'refund_policy' => null,
@@ -68,6 +73,7 @@ final class ForumEventFactory extends ApplicationFactory
             'animal_welfare_rules' => fake()->paragraph(),
             'emergency_contact_plan' => fake()->paragraph(),
             'lock_version' => 0,
+            'current_version_number' => 1,
             'cancelled_by_user_id' => null,
             'cancelled_at' => null,
             'cancellation_reason_code' => null,
@@ -109,6 +115,20 @@ final class ForumEventFactory extends ApplicationFactory
         ]);
     }
 
+    public function unlisted(): static
+    {
+        return $this->state(fn (): array => [
+            'visibility' => ForumEventVisibility::Unlisted,
+        ]);
+    }
+
+    public function organizationOnly(): static
+    {
+        return $this->state(fn (): array => [
+            'visibility' => ForumEventVisibility::Organization,
+        ]);
+    }
+
     public function paid(int $minor = 2500): static
     {
         return $this->state(fn (): array => [
@@ -147,6 +167,163 @@ final class ForumEventFactory extends ApplicationFactory
         ]);
     }
 
+    public function draft(): static
+    {
+        return $this->withStatus(ForumEventStatus::Draft);
+    }
+
+    public function incomplete(): static
+    {
+        return $this->withStatus(ForumEventStatus::Incomplete);
+    }
+
+    public function awaitingApproval(): static
+    {
+        return $this->withStatus(ForumEventStatus::AwaitingSafetyReview);
+    }
+
+    public function published(): static
+    {
+        return $this->state(fn (): array => [
+            'status' => ForumEventStatus::Published,
+            'published_at' => now(),
+        ]);
+    }
+
+    public function registrationOpen(): static
+    {
+        return $this->withStatus(ForumEventStatus::RegistrationOpen);
+    }
+
+    public function registrationPaused(): static
+    {
+        return $this->withStatus(ForumEventStatus::RegistrationPaused);
+    }
+
+    public function full(): static
+    {
+        return $this->withStatus(ForumEventStatus::Full);
+    }
+
+    public function waitlistOnly(): static
+    {
+        return $this->withStatus(ForumEventStatus::WaitlistOnly);
+    }
+
+    public function postponed(): static
+    {
+        return $this->withStatus(ForumEventStatus::Postponed);
+    }
+
+    public function live(): static
+    {
+        return $this->withStatus(ForumEventStatus::Live);
+    }
+
+    public function archived(): static
+    {
+        return $this->state(fn (): array => [
+            'status' => ForumEventStatus::Archived,
+            'archived_at' => now(),
+        ]);
+    }
+
+    public function safetySuspended(): static
+    {
+        return $this->state(fn (): array => [
+            'status' => ForumEventStatus::SafetySuspended,
+            'safety_suspended_at' => now(),
+        ]);
+    }
+
+    public function socialMeetup(): static
+    {
+        return $this->withType(ForumEventType::SocialMeetup);
+    }
+
+    public function groupWalk(): static
+    {
+        return $this->withType(ForumEventType::GroupWalk);
+    }
+
+    public function trainingSession(): static
+    {
+        return $this->withType(ForumEventType::TrainingSession);
+    }
+
+    public function workshop(): static
+    {
+        return $this->withType(ForumEventType::Workshop);
+    }
+
+    public function conference(): static
+    {
+        return $this->withType(ForumEventType::Conference);
+    }
+
+    public function webinar(): static
+    {
+        return $this->online()->withType(ForumEventType::Webinar);
+    }
+
+    public function exhibition(): static
+    {
+        return $this->withType(ForumEventType::Exhibition);
+    }
+
+    public function competition(): static
+    {
+        return $this->withType(ForumEventType::Competition);
+    }
+
+    public function adoptionDay(): static
+    {
+        return $this->withType(ForumEventType::AdoptionDay);
+    }
+
+    public function shelterOpenDay(): static
+    {
+        return $this->withType(ForumEventType::ShelterOpenDay);
+    }
+
+    public function fundraiser(): static
+    {
+        return $this->withType(ForumEventType::Fundraiser);
+    }
+
+    public function volunteerShift(): static
+    {
+        return $this->withType(ForumEventType::VolunteerShift);
+    }
+
+    public function marketplaceFair(): static
+    {
+        return $this->withType(ForumEventType::MarketplaceFair);
+    }
+
+    public function organizationMeeting(): static
+    {
+        return $this->organizationOnly()->withType(ForumEventType::OrganizationMeeting);
+    }
+
+    public function withLifecycle(): static
+    {
+        return $this->afterCreating(static function (ForumEvent $event): void {
+            app(InitializeForumEventLifecycle::class)->handle($event, $event->organizer);
+        });
+    }
+
+    public function forOrganizer(?User $organizer = null): static
+    {
+        $user = $organizer ?? User::factory()->create();
+
+        return $this->for($user, 'organizer')->state(fn (): array => [
+            'owner_user_id' => $user->id,
+            'organizer_key' => $user->actor_key,
+            'organizer_name' => $user->name,
+        ]);
+    }
+
     public function withTaxon(?Taxon $taxon = null): static
     {
         return $this->afterCreating(function (ForumEvent $event) use ($taxon): void {
@@ -155,5 +332,15 @@ final class ForumEventFactory extends ApplicationFactory
                 $selected->id => ['is_primary' => true],
             ]);
         });
+    }
+
+    private function withStatus(ForumEventStatus $status): static
+    {
+        return $this->state(fn (): array => ['status' => $status]);
+    }
+
+    private function withType(ForumEventType $type): static
+    {
+        return $this->state(fn (): array => ['type' => $type]);
     }
 }

@@ -10,6 +10,8 @@ const CONTENT_FEED_PROMPT_TIMESTAMP = 1785527132;
 const COMMUNICATION_PROMPT_TIMESTAMP = 1785532239;
 const COMMUNITY_PROMPT_TIMESTAMP = 1785538113;
 const MEDICAL_RECORD_PROMPT_TIMESTAMP = 1785541918;
+const PORTAL_ARCHITECTURE_PROMPT_TIMESTAMP = 1785545025;
+const EVENT_LIFECYCLE_PROMPT_TIMESTAMP = 1785545026;
 
 $root = dirname(__DIR__);
 $target = $root.'/docs/requirements/forum-source-prompt.md';
@@ -47,6 +49,8 @@ while (($line = fgets($handle)) !== false) {
         COMMUNICATION_PROMPT_TIMESTAMP,
         COMMUNITY_PROMPT_TIMESTAMP,
         MEDICAL_RECORD_PROMPT_TIMESTAMP,
+        PORTAL_ARCHITECTURE_PROMPT_TIMESTAMP,
+        EVENT_LIFECYCLE_PROMPT_TIMESTAMP,
     ], true)) {
         $prompts[$timestamp] = (string) $entry['text'];
     }
@@ -63,6 +67,8 @@ foreach ([
     COMMUNICATION_PROMPT_TIMESTAMP,
     COMMUNITY_PROMPT_TIMESTAMP,
     MEDICAL_RECORD_PROMPT_TIMESTAMP,
+    PORTAL_ARCHITECTURE_PROMPT_TIMESTAMP,
+    EVENT_LIFECYCLE_PROMPT_TIMESTAMP,
 ] as $timestamp) {
     if (! isset($prompts[$timestamp])) {
         fwrite(STDERR, "Required forum prompt entry {$timestamp} is missing.\n");
@@ -78,6 +84,8 @@ $contentFeed = $prompts[CONTENT_FEED_PROMPT_TIMESTAMP];
 $communication = $prompts[COMMUNICATION_PROMPT_TIMESTAMP];
 $community = $prompts[COMMUNITY_PROMPT_TIMESTAMP];
 $medicalRecord = $prompts[MEDICAL_RECORD_PROMPT_TIMESTAMP];
+$portalArchitecture = $prompts[PORTAL_ARCHITECTURE_PROMPT_TIMESTAMP];
+$eventLifecycle = $prompts[EVENT_LIFECYCLE_PROMPT_TIMESTAMP];
 $forumPayload = $primary."\n\n".$extension;
 $forumChecksum = hash('sha256', $forumPayload);
 $petProfileChecksum = hash('sha256', $petProfile);
@@ -98,6 +106,12 @@ $expandedMasterChecksum = hash('sha256', $expandedMasterPayload);
 $medicalRecordChecksum = hash('sha256', $medicalRecord);
 $medicalMasterPayload = $expandedMasterPayload."\n\n".$medicalRecord;
 $medicalMasterChecksum = hash('sha256', $medicalMasterPayload);
+$portalArchitectureChecksum = hash('sha256', $portalArchitecture);
+$portalMasterPayload = $medicalMasterPayload."\n\n".$portalArchitecture;
+$portalMasterChecksum = hash('sha256', $portalMasterPayload);
+$eventLifecycleChecksum = hash('sha256', $eventLifecycle);
+$eventMasterPayload = $portalMasterPayload."\n\n".$eventLifecycle;
+$eventMasterChecksum = hash('sha256', $eventMasterPayload);
 $document = <<<'MARKDOWN'
 # Forum Source Prompt
 
@@ -167,12 +181,26 @@ $document .= "- Medical revision raw payload SHA-256: `{$medicalRecordChecksum}`
 $document .= "- Medical master raw payload SHA-256: `{$medicalMasterChecksum}`\n";
 $document .= "- Checksum payload: prior expanded master, two LF characters, exact medical revision\n\n";
 $document .= "<medical-record-source-revision>\n{$medicalRecord}\n</medical-record-source-revision>\n";
+$medicalRecordDocument = $document;
+$document .= "\n## Source Part I: Canonical Portal Architecture Revision\n\n";
+$document .= '- Source timestamp: `'.PORTAL_ARCHITECTURE_PROMPT_TIMESTAMP."`\n";
+$document .= "- Portal revision raw payload SHA-256: `{$portalArchitectureChecksum}`\n";
+$document .= "- Portal master raw payload SHA-256: `{$portalMasterChecksum}`\n";
+$document .= "- Checksum payload: prior medical master, two LF characters, exact portal revision\n\n";
+$document .= "<portal-architecture-source-revision>\n{$portalArchitecture}\n</portal-architecture-source-revision>\n";
+$portalArchitectureDocument = $document;
+$document .= "\n## Source Part J: Events And Complete Lifecycle Revision\n\n";
+$document .= '- Source timestamp: `'.EVENT_LIFECYCLE_PROMPT_TIMESTAMP."`\n";
+$document .= "- Event revision raw payload SHA-256: `{$eventLifecycleChecksum}`\n";
+$document .= "- Event master raw payload SHA-256: `{$eventMasterChecksum}`\n";
+$document .= "- Checksum payload: prior portal master, two LF characters, exact event revision\n\n";
+$document .= "<event-lifecycle-source-revision>\n{$eventLifecycle}\n</event-lifecycle-source-revision>\n";
 
 if (is_file($target)) {
     $existing = file_get_contents($target);
 
     if ($existing === $document) {
-        fwrite(STDOUT, "Master source prompt is unchanged ({$medicalMasterChecksum}).\n");
+        fwrite(STDOUT, "Master source prompt is unchanged ({$eventMasterChecksum}).\n");
         exit(0);
     }
 
@@ -182,13 +210,15 @@ if (is_file($target)) {
         && $existing !== $contentFeedDocument
         && $existing !== $communicationDocument
         && $existing !== $communityDocument
+        && $existing !== $medicalRecordDocument
+        && $existing !== $portalArchitectureDocument
     ) {
         fwrite(STDERR, "Refusing to replace or rewrite preserved source-prompt content.\n");
         exit(1);
     }
 
     if ($checkOnly) {
-        fwrite(STDERR, "A dated source revision has not been appended yet.\n");
+        fwrite(STDERR, "One or more dated source revisions have not been appended yet.\n");
         exit(1);
     }
 }
@@ -210,4 +240,4 @@ if (file_put_contents($target, $document, LOCK_EX) === false) {
     exit(1);
 }
 
-fwrite(STDOUT, "Preserved master source prompt ({$medicalMasterChecksum}).\n");
+fwrite(STDOUT, "Preserved master source prompt ({$eventMasterChecksum}).\n");

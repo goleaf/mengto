@@ -30,7 +30,9 @@ use App\Livewire\Forms\ForumEventUpdateForm;
 use App\Models\ForumEvent;
 use App\Models\ForumEventInvitation;
 use App\Models\ForumEventMessage;
+use App\Models\ForumEventOccurrence;
 use App\Models\ForumEventRegistration;
+use App\Models\ForumEventRegistrationPet;
 use App\Models\ForumEventReview;
 use App\Models\ForumEventUpdate;
 use App\Models\ForumReportReason;
@@ -112,16 +114,10 @@ final class ForumEventWorkspace extends Component
         $authorizedUser = $user instanceof User ? $user : null;
         $canViewAccess = Gate::forUser($authorizedUser)->allows('viewAccessDetails', $event);
         $confirmedCount = (int) $event->registrations()
-            ->whereIn('status', [
-                ForumEventRegistrationStatus::Confirmed->value,
-                ForumEventRegistrationStatus::CheckedIn->value,
-            ])
+            ->whereIn('status', $this->seatConsumingStatuses())
             ->count();
         $confirmedGuests = (int) $event->registrations()
-            ->whereIn('status', [
-                ForumEventRegistrationStatus::Confirmed->value,
-                ForumEventRegistrationStatus::CheckedIn->value,
-            ])
+            ->whereIn('status', $this->seatConsumingStatuses())
             ->sum('guest_count');
         $legacyAttendees = (int) data_get($event->metadata, 'legacy_base_attendees', 0);
         $waitlistCount = (int) $event->registrations()
@@ -140,6 +136,12 @@ final class ForumEventWorkspace extends Component
             'status' => $event->status->label(),
             'status_key' => $event->status->value,
             'visibility' => $event->visibility->label(),
+            'pet_participation' => $event->pet_participation_mode->label(),
+            'pet_participation_key' => $event->pet_participation_mode->value,
+            'accepts_general_pets' => $event->pet_participation_mode->acceptsGeneralPets(),
+            'requires_pet' => $event->pet_participation_mode->value === 'required',
+            'accessibility_status' => $event->accessibility_status->label(),
+            'current_version_number' => $event->current_version_number,
             'starts_at' => $this->formatter->dateTime($event->starts_at, $event->timezone),
             'ends_at' => $this->formatter->dateTime($event->ends_at, $event->timezone),
             'starts_at_iso' => $event->starts_at->toAtomString(),
@@ -202,6 +204,53 @@ final class ForumEventWorkspace extends Component
         ];
     }
 
+    /** @return list<array<string, mixed>> */
+    #[Computed]
+    public function occurrences(): array
+    {
+        Gate::authorize('view', $this->eventModel());
+
+        return ForumEventOccurrence::query()
+            ->select([
+                'id',
+                'forum_event_id',
+                'stable_key',
+                'status',
+                'starts_at',
+                'ends_at',
+                'timezone',
+                'format',
+                'capacity',
+                'location_scope',
+                'is_override',
+            ])
+            ->where('forum_event_id', $this->eventId)
+            ->orderBy('starts_at')
+            ->orderBy('id')
+            ->limit(50)
+            ->get()
+            ->map(fn (ForumEventOccurrence $occurrence): array => [
+                'id' => $occurrence->id,
+                'status' => $occurrence->status->label(),
+                'status_key' => $occurrence->status->value,
+                'starts_at' => $this->formatter->dateTime(
+                    $occurrence->starts_at,
+                    $occurrence->timezone,
+                ),
+                'ends_at' => $this->formatter->dateTime(
+                    $occurrence->ends_at,
+                    $occurrence->timezone,
+                ),
+                'timezone' => $occurrence->timezone,
+                'format' => $occurrence->format->label(),
+                'capacity' => $occurrence->capacity,
+                'location' => $occurrence->location_scope
+                    ?? __('forum_events.defaults.online_location'),
+                'is_override' => $occurrence->is_override,
+            ])
+            ->all();
+    }
+
     /** @return array<string, mixed>|null */
     #[Computed]
     public function currentRegistration(): ?array
@@ -216,6 +265,8 @@ final class ForumEventWorkspace extends Component
             ->select([
                 'id',
                 'forum_event_id',
+                'forum_event_occurrence_id',
+                'forum_event_version_id',
                 'user_id',
                 'pet_profile_id',
                 'status',
@@ -225,8 +276,15 @@ final class ForumEventWorkspace extends Component
                 'requirements_accepted',
                 'waitlist_position',
                 'checked_in_at',
+                'checked_out_at',
                 'cancelled_at',
                 'lock_version',
+            ])
+            ->with([
+                'occurrence:id,forum_event_id,starts_at,timezone',
+                'version:id,forum_event_id,version_number',
+                'registrationPets:id,forum_event_registration_id,pet_profile_id,eligibility_status',
+                'registrationPets.petProfile:id,name,species',
             ])
             ->where('forum_event_id', $this->eventId)
             ->where('user_id', $user->id)
@@ -244,6 +302,20 @@ final class ForumEventWorkspace extends Component
             'guest_count' => $registration->guest_count,
             'photo_consent' => $registration->photo_consent->label(),
             'waitlist_position' => $registration->waitlist_position,
+            'occurrence' => $registration->occurrence === null
+                ? null
+                : $this->formatter->dateTime(
+                    $registration->occurrence->starts_at,
+                    $registration->occurrence->timezone,
+                ),
+            'event_version' => $registration->version?->version_number,
+            'pets' => $registration->registrationPets
+                ->map(static fn (ForumEventRegistrationPet $registrationPet): array => [
+                    'name' => $registrationPet->petProfile->name,
+                    'species' => $registrationPet->petProfile->species,
+                    'eligibility' => $registrationPet->eligibility_status->label(),
+                ])
+                ->all(),
             'can_cancel' => Gate::forUser($user)->allows('cancelRegistration', $registration),
         ];
     }
@@ -436,6 +508,8 @@ final class ForumEventWorkspace extends Component
             ->select([
                 'id',
                 'forum_event_id',
+                'forum_event_occurrence_id',
+                'forum_event_version_id',
                 'user_id',
                 'pet_profile_id',
                 'status',
@@ -444,11 +518,16 @@ final class ForumEventWorkspace extends Component
                 'photo_consent',
                 'waitlist_position',
                 'checked_in_at',
+                'checked_out_at',
                 'lock_version',
             ])
             ->with([
                 'user:id,name,email',
                 'petProfile:id,user_id,name,species',
+                'occurrence:id,forum_event_id,starts_at,timezone',
+                'version:id,forum_event_id,version_number',
+                'registrationPets:id,forum_event_registration_id,pet_profile_id,eligibility_status',
+                'registrationPets.petProfile:id,name,species',
             ])
             ->where('forum_event_id', $event->id)
             ->orderBy('status')
@@ -456,17 +535,31 @@ final class ForumEventWorkspace extends Component
             ->orderBy('id')
             ->limit(500)
             ->get()
-            ->map(static fn (ForumEventRegistration $registration): array => [
+            ->map(fn (ForumEventRegistration $registration): array => [
                 'id' => $registration->id,
                 'user_name' => $registration->user->name,
                 'user_email' => $registration->user->email,
                 'pet_name' => $registration->petProfile?->name,
+                'pets' => $registration->registrationPets
+                    ->map(static fn (ForumEventRegistrationPet $registrationPet): array => [
+                        'name' => $registrationPet->petProfile->name,
+                        'species' => $registrationPet->petProfile->species,
+                        'eligibility' => $registrationPet->eligibility_status->label(),
+                    ])
+                    ->all(),
                 'status' => $registration->status->label(),
                 'status_key' => $registration->status->value,
                 'attendance_format' => $registration->attendance_format->label(),
                 'guest_count' => $registration->guest_count,
                 'photo_consent' => $registration->photo_consent->label(),
                 'waitlist_position' => $registration->waitlist_position,
+                'occurrence' => $registration->occurrence === null
+                    ? null
+                    : $this->formatter->dateTime(
+                        $registration->occurrence->starts_at,
+                        $registration->occurrence->timezone,
+                    ),
+                'event_version' => $registration->version?->version_number,
             ])
             ->all();
     }
@@ -483,7 +576,7 @@ final class ForumEventWorkspace extends Component
 
         return PetProfile::query()
             ->select(['id', 'user_id', 'name', 'species'])
-            ->where('user_id', $user->id)
+            ->managedBy($user)
             ->where('status', 'active')
             ->orderBy('name')
             ->limit(50)
@@ -668,6 +761,18 @@ final class ForumEventWorkspace extends Component
         $this->refreshComputed();
     }
 
+    public function checkOut(
+        int $registrationId,
+        ForumEventRegistrationService $registrations,
+    ): void {
+        $registration = ForumEventRegistration::query()
+            ->where('forum_event_id', $this->eventId)
+            ->findOrFail($registrationId);
+        $registrations->checkOut($this->requireUser(), $registration);
+        $this->feedback = __('forum_events.feedback.checked_out');
+        $this->refreshComputed();
+    }
+
     public function publishUpdate(PublishForumEventUpdate $publish): void
     {
         $data = $this->updateForm->data();
@@ -790,6 +895,7 @@ final class ForumEventWorkspace extends Component
         $this->resolvedEvent ??= ForumEvent::query()
             ->select([
                 'id',
+                'owner_user_id',
                 'organizer_user_id',
                 'organizer_key',
                 'organizer_name',
@@ -809,6 +915,13 @@ final class ForumEventWorkspace extends Component
                 'capacity',
                 'registration_policy',
                 'waitlist_enabled',
+                'pet_participation_mode',
+                'accessibility_status',
+                'current_version_number',
+                'registration_opens_at',
+                'registration_closes_at',
+                'published_at',
+                'safety_suspended_at',
                 'location_scope',
                 'exact_location',
                 'online_url',
@@ -874,6 +987,11 @@ final class ForumEventWorkspace extends Component
         $this->registrationForm->attendanceFormat = $event->format === ForumEventFormat::Online
             ? ForumEventFormat::Online->value
             : ForumEventFormat::Physical->value;
+        $this->registrationForm->occurrenceId = ForumEventOccurrence::query()
+            ->where('forum_event_id', $event->id)
+            ->where('starts_at', '>=', now())
+            ->orderBy('starts_at')
+            ->value('id');
         $this->registrationForm->idempotencyKey = (string) str()->uuid();
     }
 
@@ -926,6 +1044,7 @@ final class ForumEventWorkspace extends Component
         $this->resolvedEvent = null;
         unset(
             $this->event,
+            $this->occurrences,
             $this->currentRegistration,
             $this->currentInvitation,
             $this->updates,
@@ -941,5 +1060,14 @@ final class ForumEventWorkspace extends Component
         abort_unless($user instanceof User, 401);
 
         return $user;
+    }
+
+    /** @return list<string> */
+    private function seatConsumingStatuses(): array
+    {
+        return collect(ForumEventRegistrationStatus::cases())
+            ->filter(static fn (ForumEventRegistrationStatus $status): bool => $status->consumesSeat())
+            ->map(static fn (ForumEventRegistrationStatus $status): string => $status->value)
+            ->all();
     }
 }

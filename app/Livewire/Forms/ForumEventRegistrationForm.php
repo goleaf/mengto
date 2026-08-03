@@ -16,7 +16,10 @@ final class ForumEventRegistrationForm extends Form
 
     public int $guestCount = 0;
 
-    public ?int $petProfileId = null;
+    public ?int $occurrenceId = null;
+
+    /** @var list<int> */
+    public array $petProfileIds = [];
 
     public string $requirementsNote = '';
 
@@ -32,7 +35,9 @@ final class ForumEventRegistrationForm extends Form
         return [
             'attendanceFormat' => ['required', Rule::enum(ForumEventFormat::class)],
             'guestCount' => ['required', 'integer', 'min:0', 'max:10'],
-            'petProfileId' => ['nullable', 'integer'],
+            'occurrenceId' => ['nullable', 'integer'],
+            'petProfileIds' => ['array', 'max:5'],
+            'petProfileIds.*' => ['integer', 'distinct'],
             'requirementsNote' => ['nullable', 'string', 'max:3000'],
             'photoConsent' => ['required', Rule::enum(ForumEventPhotoConsent::class)],
             'requirementsAccepted' => ['accepted'],
@@ -47,15 +52,20 @@ final class ForumEventRegistrationForm extends Form
         return new RegisterForForumEventData(
             attendanceFormat: ForumEventFormat::from((string) $validated['attendanceFormat']),
             guestCount: (int) $validated['guestCount'],
-            petProfileId: isset($validated['petProfileId'])
-                ? (int) $validated['petProfileId']
-                : null,
+            petProfileId: null,
             requirementsNote: filled($validated['requirementsNote'] ?? null)
                 ? trim((string) $validated['requirementsNote'])
                 : null,
             photoConsent: ForumEventPhotoConsent::from((string) $validated['photoConsent']),
             requirementsAccepted: (bool) $validated['requirementsAccepted'],
             idempotencyKey: (string) $validated['idempotencyKey'],
+            petProfileIds: array_values(array_map(
+                static fn (mixed $id): int => (int) $id,
+                $validated['petProfileIds'] ?? [],
+            )),
+            occurrenceId: isset($validated['occurrenceId'])
+                ? (int) $validated['occurrenceId']
+                : null,
         );
     }
 }

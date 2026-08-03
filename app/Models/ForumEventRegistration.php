@@ -9,30 +9,45 @@ use App\Enums\ForumEventPhotoConsent;
 use App\Enums\ForumEventRegistrationStatus;
 use Carbon\CarbonImmutable;
 use Database\Factories\ForumEventRegistrationFactory;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * @property ForumEventFormat $attendance_format
+ * @property array<string, mixed>|null $accepted_snapshot
+ * @property string|null $accepted_snapshot_checksum
  * @property CarbonImmutable|null $cancelled_at
  * @property string|null $cancellation_reason_code
  * @property string|null $check_in_method
  * @property CarbonImmutable|null $checked_in_at
+ * @property CarbonImmutable|null $checked_out_at
+ * @property CarbonImmutable|null $confirmed_at
  * @property int $forum_event_id
+ * @property int|null $forum_event_occurrence_id
+ * @property int|null $forum_event_version_id
  * @property int $guest_count
  * @property int $id
  * @property string $idempotency_key
  * @property int $lock_version
+ * @property string|null $locale
  * @property int|null $pet_profile_id
  * @property ForumEventPhotoConsent $photo_consent
  * @property string|null $requirements_note
  * @property bool $requirements_accepted
  * @property string $stable_key
  * @property ForumEventRegistrationStatus $status
+ * @property CarbonImmutable|null $submitted_at
+ * @property string|null $timezone
  * @property int $user_id
  * @property int|null $waitlist_position
  * @property-read ForumEvent $event
+ * @property-read ForumEventOccurrence|null $occurrence
+ * @property-read ForumEventVersion|null $version
+ * @property-read Collection<int, PetProfile> $pets
  * @property-read PetProfile|null $petProfile
  * @property-read User $user
  */
@@ -43,6 +58,8 @@ final class ForumEventRegistration extends Model
 
     protected $fillable = [
         'forum_event_id',
+        'forum_event_occurrence_id',
+        'forum_event_version_id',
         'user_id',
         'pet_profile_id',
         'stable_key',
@@ -59,11 +76,19 @@ final class ForumEventRegistration extends Model
         'cancelled_at',
         'cancellation_reason_code',
         'lock_version',
+        'accepted_snapshot',
+        'accepted_snapshot_checksum',
+        'locale',
+        'timezone',
+        'submitted_at',
+        'confirmed_at',
+        'checked_out_at',
     ];
 
     protected $hidden = [
         'idempotency_key',
         'requirements_note',
+        'accepted_snapshot',
     ];
 
     protected $attributes = [
@@ -86,6 +111,10 @@ final class ForumEventRegistration extends Model
             'checked_in_at' => 'immutable_datetime',
             'cancelled_at' => 'immutable_datetime',
             'lock_version' => 'integer',
+            'accepted_snapshot' => 'encrypted:array',
+            'submitted_at' => 'immutable_datetime',
+            'confirmed_at' => 'immutable_datetime',
+            'checked_out_at' => 'immutable_datetime',
         ];
     }
 
@@ -93,6 +122,18 @@ final class ForumEventRegistration extends Model
     public function event(): BelongsTo
     {
         return $this->belongsTo(ForumEvent::class, 'forum_event_id');
+    }
+
+    /** @return BelongsTo<ForumEventOccurrence, $this> */
+    public function occurrence(): BelongsTo
+    {
+        return $this->belongsTo(ForumEventOccurrence::class, 'forum_event_occurrence_id');
+    }
+
+    /** @return BelongsTo<ForumEventVersion, $this> */
+    public function version(): BelongsTo
+    {
+        return $this->belongsTo(ForumEventVersion::class, 'forum_event_version_id');
     }
 
     /** @return BelongsTo<User, $this> */
@@ -105,5 +146,26 @@ final class ForumEventRegistration extends Model
     public function petProfile(): BelongsTo
     {
         return $this->belongsTo(PetProfile::class);
+    }
+
+    /** @return BelongsToMany<PetProfile, $this> */
+    public function pets(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            PetProfile::class,
+            'forum_event_registration_pets',
+        )->withPivot([
+            'eligibility_status',
+            'verification_source',
+            'conditions',
+            'checked_in_at',
+            'checked_out_at',
+        ])->withTimestamps();
+    }
+
+    /** @return HasMany<ForumEventRegistrationPet, $this> */
+    public function registrationPets(): HasMany
+    {
+        return $this->hasMany(ForumEventRegistrationPet::class);
     }
 }

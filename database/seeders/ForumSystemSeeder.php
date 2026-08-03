@@ -23,6 +23,7 @@ final class ForumSystemSeeder extends Seeder
             ForumGroupDefinitionSeeder::class,
             ForumJournalBackfillSeeder::class,
             ForumEventBackfillSeeder::class,
+            ForumEventLifecycleBackfillSeeder::class,
             ForumExpertSessionBackfillSeeder::class,
         ]);
     }

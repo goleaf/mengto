@@ -98,6 +98,7 @@ class DatabaseSeeder extends Seeder
         $this->call(ExpertSeeder::class);
         $this->call(ForumExpertSessionDemoSeeder::class);
         $this->call(ForumEventDemoSeeder::class);
+        $this->call(ForumEventLifecycleBackfillSeeder::class);
         $this->call(ListingSeeder::class);
         $this->call(AdoptionCaseSeeder::class);
         $this->call(AdoptionDemoSeeder::class);

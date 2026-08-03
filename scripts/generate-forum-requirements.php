@@ -31,6 +31,8 @@ preg_match('/<content-feed-source-revision>\n(.*)\n<\/content-feed-source-revisi
 preg_match('/<communication-source-revision>\n(.*)\n<\/communication-source-revision>/sU', $source, $communicationMatch);
 preg_match('/<community-source-revision>\n(.*)\n<\/community-source-revision>/sU', $source, $communityMatch);
 preg_match('/<medical-record-source-revision>\n(.*)\n<\/medical-record-source-revision>/sU', $source, $medicalRecordMatch);
+preg_match('/<portal-architecture-source-revision>\n(.*)\n<\/portal-architecture-source-revision>/sU', $source, $portalArchitectureMatch);
+preg_match('/<event-lifecycle-source-revision>\n(.*)\n<\/event-lifecycle-source-revision>/sU', $source, $eventLifecycleMatch);
 preg_match('/Combined raw payload SHA-256: `([a-f0-9]{64})`/', $source, $checksumMatch);
 preg_match('/Revision raw payload SHA-256: `([a-f0-9]{64})`/', $source, $petProfileChecksumMatch);
 preg_match('/Master raw payload SHA-256: `([a-f0-9]{64})`/', $source, $masterChecksumMatch);
@@ -44,6 +46,10 @@ preg_match('/Community revision raw payload SHA-256: `([a-f0-9]{64})`/', $source
 preg_match('/Expanded master raw payload SHA-256: `([a-f0-9]{64})`/', $source, $expandedMasterChecksumMatch);
 preg_match('/Medical revision raw payload SHA-256: `([a-f0-9]{64})`/', $source, $medicalRecordChecksumMatch);
 preg_match('/Medical master raw payload SHA-256: `([a-f0-9]{64})`/', $source, $medicalMasterChecksumMatch);
+preg_match('/Portal revision raw payload SHA-256: `([a-f0-9]{64})`/', $source, $portalArchitectureChecksumMatch);
+preg_match('/Portal master raw payload SHA-256: `([a-f0-9]{64})`/', $source, $portalMasterChecksumMatch);
+preg_match('/Event revision raw payload SHA-256: `([a-f0-9]{64})`/', $source, $eventLifecycleChecksumMatch);
+preg_match('/Event master raw payload SHA-256: `([a-f0-9]{64})`/', $source, $eventMasterChecksumMatch);
 
 if (! isset(
     $primaryMatch[1],
@@ -54,6 +60,8 @@ if (! isset(
     $communicationMatch[1],
     $communityMatch[1],
     $medicalRecordMatch[1],
+    $portalArchitectureMatch[1],
+    $eventLifecycleMatch[1],
     $checksumMatch[1],
     $petProfileChecksumMatch[1],
     $masterChecksumMatch[1],
@@ -67,6 +75,10 @@ if (! isset(
     $expandedMasterChecksumMatch[1],
     $medicalRecordChecksumMatch[1],
     $medicalMasterChecksumMatch[1],
+    $portalArchitectureChecksumMatch[1],
+    $portalMasterChecksumMatch[1],
+    $eventLifecycleChecksumMatch[1],
+    $eventMasterChecksumMatch[1],
 )) {
     fwrite(STDERR, "The preserved forum prompt markers or checksum are invalid.\n");
     exit(1);
@@ -81,6 +93,8 @@ $parts = [
     'communication-revision' => $communicationMatch[1],
     'community-revision' => $communityMatch[1],
     'medical-record-revision' => $medicalRecordMatch[1],
+    'portal-architecture-revision' => $portalArchitectureMatch[1],
+    'event-lifecycle-revision' => $eventLifecycleMatch[1],
 ];
 $forumPayload = $parts['primary']."\n\n".$parts['extension'];
 $forumPayloadChecksum = hash('sha256', $forumPayload);
@@ -100,7 +114,13 @@ $communityPayloadChecksum = hash('sha256', $parts['community-revision']);
 $communityMasterPayload = $communicationMasterPayload."\n\n".$parts['community-revision'];
 $communityMasterChecksum = hash('sha256', $communityMasterPayload);
 $medicalRecordPayloadChecksum = hash('sha256', $parts['medical-record-revision']);
-$payloadChecksum = hash('sha256', $communityMasterPayload."\n\n".$parts['medical-record-revision']);
+$medicalRecordMasterPayload = $communityMasterPayload."\n\n".$parts['medical-record-revision'];
+$medicalRecordMasterChecksum = hash('sha256', $medicalRecordMasterPayload);
+$portalArchitecturePayloadChecksum = hash('sha256', $parts['portal-architecture-revision']);
+$portalArchitectureMasterPayload = $medicalRecordMasterPayload."\n\n".$parts['portal-architecture-revision'];
+$portalArchitectureMasterChecksum = hash('sha256', $portalArchitectureMasterPayload);
+$eventLifecyclePayloadChecksum = hash('sha256', $parts['event-lifecycle-revision']);
+$payloadChecksum = hash('sha256', $portalArchitectureMasterPayload."\n\n".$parts['event-lifecycle-revision']);
 
 if (! hash_equals($checksumMatch[1], $forumPayloadChecksum)
     || ! hash_equals($petProfileChecksumMatch[1], $petProfilePayloadChecksum)
@@ -114,7 +134,11 @@ if (! hash_equals($checksumMatch[1], $forumPayloadChecksum)
     || ! hash_equals($communityChecksumMatch[1], $communityPayloadChecksum)
     || ! hash_equals($expandedMasterChecksumMatch[1], $communityMasterChecksum)
     || ! hash_equals($medicalRecordChecksumMatch[1], $medicalRecordPayloadChecksum)
-    || ! hash_equals($medicalMasterChecksumMatch[1], $payloadChecksum)
+    || ! hash_equals($medicalMasterChecksumMatch[1], $medicalRecordMasterChecksum)
+    || ! hash_equals($portalArchitectureChecksumMatch[1], $portalArchitecturePayloadChecksum)
+    || ! hash_equals($portalMasterChecksumMatch[1], $portalArchitectureMasterChecksum)
+    || ! hash_equals($eventLifecycleChecksumMatch[1], $eventLifecyclePayloadChecksum)
+    || ! hash_equals($eventMasterChecksumMatch[1], $payloadChecksum)
 ) {
     fwrite(STDERR, "A preserved source-prompt checksum does not match its payload.\n");
     exit(1);
@@ -147,7 +171,9 @@ foreach ($parts as $part => $contents) {
         'content-feed-revision' => 'Content feed and distribution revision',
         'communication-revision' => 'Safe communication revision',
         'community-revision' => 'Communities and full lifecycle revision',
-        default => 'Medical record and full clinical history revision',
+        'medical-record-revision' => 'Medical record and full clinical history revision',
+        'portal-architecture-revision' => 'Canonical portal architecture revision',
+        default => 'Events and complete lifecycle revision',
     };
     $sectionPath = [$section];
     $lines = preg_split('/\R/u', $contents) ?: [];
@@ -487,6 +513,14 @@ function domainForRequirement(array $sectionPath, string $verbatim, string $sour
         return medicalDomainForRequirement($sectionPath, $verbatim);
     }
 
+    if ($sourcePart === 'portal-architecture-revision') {
+        return portalDomainForRequirement($sectionPath, $verbatim);
+    }
+
+    if ($sourcePart === 'event-lifecycle-revision') {
+        return eventDomainForRequirement($sectionPath, $verbatim);
+    }
+
     $context = strtolower(implode(' ', $sectionPath).' '.$verbatim);
 
     return match (true) {
@@ -534,6 +568,86 @@ function domainForRequirement(array $sectionPath, string $verbatim, string $sour
         str_contains($context, 'audit'),
         str_contains($context, 'final report') => 'planning-and-documentation',
         default => 'forum-feature',
+    };
+}
+
+/** @param list<string> $sectionPath */
+function portalDomainForRequirement(array $sectionPath, string $verbatim): string
+{
+    $context = strtolower(implode(' ', $sectionPath).' '.$verbatim);
+
+    return match (true) {
+        str_contains($context, 'route'), str_contains($context, 'page map'),
+        str_contains($context, 'module registry') => 'portal-route-and-page-registry',
+        str_contains($context, 'navigation'), str_contains($context, 'breadcrumb'),
+        str_contains($context, 'switcher') => 'portal-navigation',
+        str_contains($context, 'dashboard'), str_contains($context, 'workspace'),
+        str_contains($context, 'widget') => 'portal-dashboard-workspace',
+        str_contains($context, 'search'), str_contains($context, 'discovery'),
+        str_contains($context, 'feed') => 'portal-search-discovery',
+        str_contains($context, 'notification'), str_contains($context, 'calendar'),
+        str_contains($context, 'messaging') => 'portal-notification-calendar',
+        str_contains($context, 'authorization'), str_contains($context, 'permission'),
+        str_contains($context, 'privacy'), str_contains($context, 'security') => 'portal-security-privacy',
+        str_contains($context, 'ui'), str_contains($context, 'interface'),
+        str_contains($context, 'accessibility'), str_contains($context, 'localization'),
+        str_contains($context, 'responsive') => 'portal-interface-quality',
+        str_contains($context, 'workflow'), str_contains($context, 'integration') => 'portal-workflow-integration',
+        str_contains($context, 'test'), str_contains($context, 'factory'),
+        str_contains($context, 'seed'), str_contains($context, 'verification') => 'portal-quality-release',
+        str_contains($context, 'document'), str_contains($context, 'matrix'),
+        str_contains($context, 'report') => 'portal-documentation',
+        default => 'portal-foundation',
+    };
+}
+
+/** @param list<string> $sectionPath */
+function eventDomainForRequirement(array $sectionPath, string $verbatim): string
+{
+    $context = strtolower(implode(' ', $sectionPath).' '.$verbatim);
+
+    return match (true) {
+        str_contains($context, 'event-type-') => 'event-type',
+        str_contains($context, 'event-life-') => 'event-lifecycle',
+        str_contains($context, 'event-org-') => 'event-organization',
+        str_contains($context, 'event-create-') => 'event-creation',
+        str_contains($context, 'event-time-') => 'event-schedule-recurrence',
+        str_contains($context, 'venue-') => 'event-venue',
+        str_contains($context, 'eligibility-') => 'event-eligibility',
+        str_contains($context, 'registration-') => 'event-registration',
+        str_contains($context, 'capacity-') => 'event-capacity-waitlist',
+        str_contains($context, 'ticket-') => 'event-ticket-payment',
+        str_contains($context, 'walk-') => 'event-group-walk',
+        str_contains($context, 'training-') => 'event-training',
+        str_contains($context, 'exhibition-') => 'event-exhibition',
+        str_contains($context, 'competition-') => 'event-competition',
+        str_contains($context, 'conference-') => 'event-conference',
+        str_contains($context, 'vendor-'), str_contains($context, 'sponsor-') => 'event-vendor-sponsor',
+        str_contains($context, 'volunteer-') => 'event-volunteer',
+        str_contains($context, 'communication-') => 'event-communication',
+        str_contains($context, 'checkin-') => 'event-check-in',
+        str_contains($context, 'weather-'), str_contains($context, 'cancel-') => 'event-weather-cancellation',
+        str_contains($context, 'safety-') => 'event-safety-incident',
+        str_contains($context, 'media-'), str_contains($context, 'privacy-') => 'event-media-privacy',
+        str_contains($context, 'feedback-') => 'event-feedback-archive',
+        str_contains($context, 'event-notify-') => 'event-notification-calendar',
+        str_contains($context, 'event-discovery-'), str_contains($context, 'event-feed-'),
+        str_contains($context, 'event-seo-') => 'event-discovery-seo',
+        str_contains($context, 'integration-') => 'event-integration',
+        str_contains($context, 'event-data-') => 'event-data',
+        str_contains($context, 'event-auth-') => 'event-authorization',
+        str_contains($context, 'event-validation-') => 'event-validation',
+        str_contains($context, 'event-livewire-') => 'event-livewire',
+        str_contains($context, 'event-ui-') => 'event-interface',
+        str_contains($context, 'event-i18n-') => 'event-localization',
+        str_contains($context, 'event-factory-') => 'event-factory',
+        str_contains($context, 'event-seed-') => 'event-seeding',
+        str_contains($context, 'event-test-') => 'event-testing',
+        str_contains($context, 'event-perf-') => 'event-performance',
+        str_contains($context, 'event-docs-') => 'event-documentation',
+        str_contains($context, 'implementation pass'), str_contains($context, 'definition of done'),
+        str_contains($context, 'final-report') => 'event-quality-release',
+        default => 'event-foundation',
     };
 }
 
@@ -873,7 +987,8 @@ function identifierPrefix(string $domain): string
         'medical-security-data-ai' => 'medical.security-data-ai',
         'medical-interface-quality-release' => 'medical.interface-quality-release',
         'medical-scenario' => 'medical.scenario',
-        default => 'forum.feature',
+        'forum-feature' => 'forum.feature',
+        default => str_replace('-', '.', $domain),
     };
 }
 
@@ -976,6 +1091,14 @@ function phaseForRequirement(
             'medical-scenario' => 73,
             default => 64,
         };
+    }
+
+    if ($sourcePart === 'portal-architecture-revision') {
+        return 74;
+    }
+
+    if ($sourcePart === 'event-lifecycle-revision') {
+        return 75;
     }
 
     if (str_contains($context, 'phase 0') || str_contains($context, 'source preservation')) {

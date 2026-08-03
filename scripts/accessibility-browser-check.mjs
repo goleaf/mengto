@@ -565,6 +565,86 @@ try {
     const zoomAudit = await evaluate(client, sessionId, pageAuditExpression);
     assertPageAudit(zoomAudit, '320px reflow');
 
+    const eventAudits = {};
+    await client.send('Emulation.setDeviceMetricsOverride', {
+        width: 1440,
+        height: 900,
+        deviceScaleFactor: 1,
+        mobile: false,
+        screenWidth: 1440,
+        screenHeight: 900,
+    }, sessionId);
+
+    for (const [path, label, screenshot] of [
+        ['/meetups', 'desktop event directory', 'event-directory-desktop.png'],
+        [
+            '/meetups/demo-point13-weekly-group-walk',
+            'desktop recurring event detail',
+            'event-detail-desktop.png',
+        ],
+    ]) {
+        await navigate(client, sessionId, `${baseUrl}${path}`);
+        const audit = await evaluate(client, sessionId, pageAuditExpression);
+        assertPageAudit(audit, label);
+        const behavior = await evaluate(client, sessionId, `(() => ({
+            eventSurfaceCount: document.querySelectorAll('[data-section="event-directory"], [data-section="event-workspace"]').length,
+            rawTranslationKeys: document.body.innerText.match(/\\bforum_events\\.[a-z0-9_.-]+/gi) ?? [],
+            privateLocationLeak: document.body.innerText.includes('Approved participant meeting point'),
+        }))()`);
+        assert(behavior.eventSurfaceCount === 1, `${label}: canonical event surface marker is missing.`);
+        assert(
+            behavior.rawTranslationKeys.length === 0,
+            `${label}: raw event keys are visible: ${behavior.rawTranslationKeys.join(', ')}.`,
+        );
+        if (path === '/meetups') {
+            assert(! behavior.privateLocationLeak, `${label}: an exact private location leaked into the directory.`);
+        }
+        eventAudits[label] = { ...audit, ...behavior };
+
+        const screenshotData = await client.send('Page.captureScreenshot', {
+            format: 'png',
+            captureBeyondViewport: true,
+        }, sessionId);
+        await writeFile(
+            join(outputDirectory, screenshot),
+            Buffer.from(screenshotData.data, 'base64'),
+        );
+    }
+
+    await client.send('Emulation.setDeviceMetricsOverride', {
+        width: 375,
+        height: 812,
+        deviceScaleFactor: 1,
+        mobile: true,
+        screenWidth: 375,
+        screenHeight: 812,
+    }, sessionId);
+
+    for (const [path, label, screenshot] of [
+        ['/meetups', 'mobile event directory', 'event-directory-mobile.png'],
+        [
+            '/meetups/demo-point13-weekly-group-walk',
+            'mobile recurring event detail',
+            'event-detail-mobile.png',
+        ],
+    ]) {
+        await navigate(client, sessionId, `${baseUrl}${path}`);
+        const audit = await evaluate(client, sessionId, pageAuditExpression);
+        assertPageAudit(audit, label);
+        const smallTargets = await evaluate(client, sessionId, surfaceTouchTargetExpression);
+        assert(smallTargets.length === 0, `${label}: controls below 44px ${JSON.stringify(smallTargets)}.`);
+        eventAudits[label] = { ...audit, smallTargets };
+
+        const screenshotData = await client.send('Page.captureScreenshot', {
+            format: 'png',
+            captureBeyondViewport: true,
+        }, sessionId);
+        await writeFile(
+            join(outputDirectory, screenshot),
+            Buffer.from(screenshotData.data, 'base64'),
+        );
+    }
+
     const contentAudits = {};
     await client.send('Emulation.setDeviceMetricsOverride', {
         width: 1440,
@@ -1188,6 +1268,7 @@ try {
         desktopAudit,
         mobileAudit,
         zoomAudit,
+        eventAudits,
         contentAudits,
         petAudits,
         medicalAudits,
@@ -1218,6 +1299,10 @@ try {
             join(outputDirectory, 'account-entry-mobile.png'),
             join(outputDirectory, 'forum-desktop.png'),
             join(outputDirectory, 'forum-mobile.png'),
+            join(outputDirectory, 'event-directory-desktop.png'),
+            join(outputDirectory, 'event-directory-mobile.png'),
+            join(outputDirectory, 'event-detail-desktop.png'),
+            join(outputDirectory, 'event-detail-mobile.png'),
             join(outputDirectory, 'content-feed-desktop.png'),
             join(outputDirectory, 'content-feed-mobile.png'),
             join(outputDirectory, 'pet-profile-manage-desktop.png'),

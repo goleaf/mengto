@@ -1,6 +1,6 @@
 {
     "schema_version": 1,
-    "source_payload_sha256": "9f52b2f90c8f1d0dc1c957f0207b6bd89c9a57eaf3359838e51b6c377e25458d",
+    "source_payload_sha256": "cbb7d3a36f3750106c4751191ddd7d882d922ce0ae0e0b12aed318c809206ea1",
     "updates": [
         {
             "requirement_ids": [
@@ -2668,6 +2668,83 @@
                 "unresolved_risks": [
                     "The research-discussion atom is assigned to Phase 9 and remains open even though its compatibility definition is seeded",
                     "Category restrictions, permissions, complete per-type validation, archival, contact restrictions, attachment rules, SEO, privacy, and notification capability atoms remain open and are not inferred from this storage evidence"
+                ],
+                "final_result": "verified"
+            }
+        },
+        {
+            "requirement_ids": [
+                "forum.data.0006",
+                "forum.data.0007",
+                "forum.data.0054",
+                "forum.data.0055",
+                "forum.data.0056",
+                "forum.data.0057",
+                "forum.data.0058",
+                "forum.data.0059",
+                "forum.data.0060",
+                "forum.data.0061",
+                "forum.data.0062",
+                "forum.data.0063",
+                "forum.data.0064",
+                "forum.data.0065",
+                "forum.data.0066",
+                "forum.data.0067",
+                "forum.data.0068",
+                "forum.data.0069",
+                "forum.data.0070",
+                "forum.data.0071",
+                "forum.data.0072"
+            ],
+            "fields": {
+                "current_implementation_status": "verified",
+                "discovered_existing_files": [
+                    "app/Actions/AcceptForumAnswer.php",
+                    "app/Actions/RecordAnswerVote.php",
+                    "app/Models/ForumModerationCase.php",
+                    "app/Models/ForumVote.php",
+                    "app/Models/PhotoReaction.php",
+                    "app/Services/PhotoInteractionState.php"
+                ],
+                "planned_files": [
+                    "app/Actions/CloseForumModerationCase.php",
+                    "app/Enums/ForumVoteValue.php",
+                    "app/Enums/PhotoReactionType.php",
+                    "database/migrations/2026_08_03_120000_reconcile_forum_database_correctness.php",
+                    "tests/Feature/Forum/ForumDatabaseCorrectnessTest.php",
+                    "docs/plans/forum-database-correctness-reconciliation-work-package.md"
+                ],
+                "test_identifiers": [
+                    "tests/Feature/Forum/ForumDatabaseCorrectnessTest.php",
+                    "tests/Feature/PhotoViewerTest.php",
+                    "tests/Feature/Forum/ForumReputationTest.php",
+                    "tests/Feature/Forum/ForumTopicLifecycleTest.php",
+                    "tests/Feature/Forum/ForumModerationTest.php",
+                    "tests/Feature/Forum/AdoptionWorkflowTest.php"
+                ],
+                "documentation_identifiers": [
+                    "docs/plans/forum-database-correctness-reconciliation-work-package.md",
+                    "docs/architecture.md",
+                    "docs/authorization.md",
+                    "docs/data-model.md",
+                    "docs/security.md",
+                    "docs/testing.md"
+                ],
+                "implementation_status": "implemented",
+                "verification_status": "verified",
+                "evidence": [
+                    "The additive Schema Builder migration preserves populated vote, reaction, and moderation rows while adding portable fixed-value constraints, optimistic case versioning, a unique nullable closure request key, and query-driven indexes",
+                    "ForumVoteValue and PhotoReactionType provide backed enum casts; raw invalid values and direct duplicate vote/reaction writes are rejected by SQLite constraints",
+                    "CloseForumModerationCase authorizes before and after its row lock, checks the expected version, treats the same request key as an idempotent replay, rejects stale competing closure, and commits case state plus bounded report events atomically",
+                    "AcceptForumAnswer keeps the canonical accepted_answer_id synchronized when a competing single-answer selection replaces the previous answer",
+                    "The focused database-correctness contract passed 12 tests and 74 assertions; the complete sequential repository suite passed 2,303 tests and 76,109 assertions",
+                    "Fresh isolated SQLite verification passed 117 migrations and 196 tables; repeated seeding preserved the user count at 5",
+                    "Full Pint and Larastan passed with zero findings; Composer validation and audit, npm audit, Vite 8.2.0 production build, and config/event/route/view cache compilation passed",
+                    "The immutable source check and deterministic 38,377-requirement generation passed for checksum cbb7d3a36f3750106c4751191ddd7d882d922ce0ae0e0b12aed318c809206ea1",
+                    "The loopback Chrome gate passed EN/LT/RU account entry and authenticated forum, content, pet, medical, social, community, settings, translation, and administration surfaces from 320px through 1920px with no overflow, unnamed controls, invalid images, duplicate IDs, raw keys, or console errors"
+                ],
+                "unresolved_risks": [
+                    "This evidence closes only the selected 21 database-correctness atoms; it does not promote unrelated tables, concurrency workflows, portal requirements, or the 4,968-event Point 13 revision"
                 ],
                 "final_result": "verified"
             }

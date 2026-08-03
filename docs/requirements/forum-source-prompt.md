@@ -52793,3 +52793,11761 @@ pri etom medkartocka ne stanovitsia publicnym profilem ili instrumentom reklamy,
 
 sledujusc ij punkt — dnevnik ezhednevnogo uxoda, kormlenie, voda, son, tualet, progulki, aktivnost, ves, povedenie, lekarstva, zadaci sem ji, sitter y, umnye ustrojstva, rutin y, otchety i polnaja logika povsednevnogo nabludeniia
 </medical-record-source-revision>
+
+## Source Part I: Canonical Portal Architecture Revision
+
+- Source timestamp: `1785545025`
+- Portal revision raw payload SHA-256: `7396854e590af535e2015abada3267a989e3c3a43b180d39cb6f16a83d5587fb`
+- Portal master raw payload SHA-256: `cb1b107cf92a76bdaaddd95e8bfcb1b3505cf24d1de69b0b2e5ff3e3be95dff4`
+- Checksum payload: prior medical master, two LF characters, exact portal revision
+
+<portal-architecture-source-revision>
+# continuation of the complete modernization master prompt — point 12
+
+# complete portal functionality, information architecture, page map, route map, public website, authenticated application, role-based workspaces, dashboards, navigation, global search, discovery, feeds, calendars, settings, shared ui and ux, cross-module workflows, and complete repository-wide interface standardization
+
+the complete modernization master instruction and every previously supplied point-specific continuation are incorporated into this task verbatim and remain fully binding
+
+this point does not replace, summarize, weaken, or override any earlier requirement
+
+this point defines the canonical functionality and structure of the entire portal
+
+all modules implemented before this point and all modules implemented after this point must integrate into the portal architecture defined here
+
+this is not a documentation-only information-architecture exercise
+
+this is not a route-listing exercise
+
+this is not a visual redesign mockup
+
+this is not a collection of recommendations
+
+you must inspect the existing repository, discover the actual routes, pages, components, modules, layouts, roles, permissions, workflows, and documentation, normalize them into one coherent portal architecture, and then immediately implement the required changes throughout the existing application
+
+do not create a second portal shell beside the existing application
+
+do not create disconnected demonstration pages
+
+do not leave existing inconsistent pages unchanged merely because they were implemented before this prompt
+
+when older functionality conflicts with the canonical portal architecture, shared design system, accessibility rules, localization architecture, security boundaries, or final requirements, safely modernize it
+
+reuse the maximum possible amount of high-quality existing first-party code, layouts, components, translations, tests, factories, seeders, routes, policies, actions, and documentation
+
+when an existing shared component is close to the required solution, improve it and migrate all valid consumers
+
+create a new shared component only when no current component can satisfy the semantic requirement cleanly
+
+do not ask routine clarification questions
+
+resolve ambiguity by inspecting repository evidence and selecting the safest, most maintainable, accessible, localized, backward-compatible, and user-oriented interpretation
+
+continue through analysis, canonical documentation, implementation planning, route and page modernization, shared-component modernization, code changes, factories, seeders, php tests, browser verification, final documentation synchronization, diff review, commit, and push according to repository rules
+
+
+# 0. primary mission of point 12
+
+transform all existing modules into one coherent portal with:
+
+- one public website
+- one authenticated application shell
+- one canonical navigation system
+- one canonical page and route registry
+- one canonical design system
+- one canonical shared-component library
+- one global search and discovery architecture
+- one role-aware dashboard architecture
+- one notification centre
+- one calendar and schedule overview
+- one settings architecture
+- one contextual action architecture
+- one consistent mobile experience
+- one consistent desktop experience
+- one authorization model
+- one localization model
+- one accessibility standard
+- one cross-module deep-link model
+- one page-state model
+- one documentation source of truth
+
+the portal must provide a coherent entry point and complete user journey across all existing and future modules, including where present:
+
+- registration
+- authentication
+- email verification
+- onboarding
+- user profiles
+- household profiles
+- pet profiles
+- co-ownership
+- privacy
+- social relationships
+- following
+- friendship
+- blocking
+- muting
+- posts
+- media
+- comments
+- reactions
+- hashtags
+- mentions
+- feeds
+- discovery
+- groups
+- communities
+- private messaging
+- notifications
+- daily care
+- feeding
+- water
+- sleep
+- activity
+- walking
+- toileting
+- behaviour
+- medication tasks
+- medical records
+- appointments
+- vaccination records
+- documents
+- gps tracking
+- safe zones
+- lost-and-found
+- search coordination
+- marketplace
+- products
+- services
+- bookings
+- payments
+- orders
+- delivery
+- returns
+- disputes
+- shelters
+- animal intake
+- foster care
+- adoption
+- applications
+- home checks
+- trial placements
+- post-adoption support
+- events
+- calendars
+- specialists
+- organizations
+- moderation
+- reports
+- safety incidents
+- support
+- administration
+- platform settings
+
+the portal must not feel like a collection of unrelated applications
+
+the same entity, role, permission, status, translation, action, and interface pattern must behave consistently across modules
+
+
+# 1. fundamental portal principles
+
+
+## portal-core-001 — one portal, not multiple disconnected applications
+
+requirement:
+
+- all first-party modules must belong to one documented portal architecture
+- public pages, authenticated pages, organization pages, professional pages, moderation pages, and administration pages may use different shells where semantically required, but they must share the same design language, tokens, components, localization system, accessibility requirements, and navigation principles
+- do not create a visually or technically isolated sub-application for one feature
+
+acceptance:
+
+- every active route belongs to a documented module and page type
+- every active module has a discoverable entry point
+- no major feature is accessible only through a hidden direct url
+- no duplicated independent user, animal, organization, notification, messaging, payment, document, media, or translation system exists
+
+
+## portal-core-002 — every page must have a defined purpose
+
+every first-party page must define:
+
+- stable page identifier
+- route name
+- url
+- module
+- page purpose
+- primary audience
+- required authentication
+- required permissions
+- active context
+- canonical layout
+- page title
+- breadcrumbs
+- primary action
+- secondary actions
+- data source
+- loading state
+- empty state
+- filtered-empty state
+- recoverable error state
+- fatal error state
+- offline state
+- unauthorized state
+- archived or unavailable state
+- mobile behaviour
+- desktop behaviour
+- localization behaviour
+- accessibility behaviour
+- seo behaviour when public
+- test coverage
+
+
+## portal-core-003 — no orphan pages
+
+a page is orphaned when:
+
+- it has no valid navigation path
+- it is reachable only through a manually entered url without a documented reason
+- it is not linked from the entity or workflow it belongs to
+- it has no defined owner module
+- its route has no tests
+- it duplicates another page
+- it represents an obsolete workflow
+
+for every orphan page:
+
+- connect it to the correct workflow
+- merge it into the canonical page
+- redirect it safely
+- archive it
+- remove it only after verifying that no valid consumer remains
+
+
+## portal-core-004 — route names are stable application contracts
+
+use stable route names for:
+
+- navigation
+- redirects
+- notifications
+- emails
+- deep links
+- breadcrumbs
+- tests
+- api links
+- documentation
+
+do not build internal links through duplicated hardcoded url strings
+
+when changing a public or historically used url:
+
+- preserve a safe redirect where appropriate
+- preserve query parameters only when safe
+- prevent open redirects
+- update sitemap and canonical metadata
+- update notification and email links
+- update tests
+- document the migration
+
+
+## portal-core-005 — navigation visibility is not authorization
+
+hiding a navigation item does not protect a route or action
+
+every protected:
+
+- page
+- livewire mount
+- livewire mutation
+- download
+- upload
+- api endpoint
+- export
+- context switch
+- command-palette action
+- quick action
+- notification deep link
+
+must authorize on the server
+
+
+## portal-core-006 — context must remain explicit
+
+the portal may have active context such as:
+
+- current user
+- selected household
+- selected pet
+- active organization
+- active professional workspace
+- active seller workspace
+- active shelter location
+- active moderation queue
+- active language
+- active time zone
+
+the interface must clearly show the active context before a mutation
+
+do not allow a hidden stale pet or organization selection to cause an action on the wrong entity
+
+
+## portal-core-007 — context switching must never grant access
+
+a browser-supplied pet id, household id, organization id, seller id, location id, or workspace id must be treated as untrusted
+
+the server must verify:
+
+- membership
+- ownership
+- assigned role
+- current status
+- block status
+- tenant scope
+- resource state
+- action permission
+
+
+## portal-core-008 — public and private portal boundaries must remain clear
+
+public pages may expose only intentionally public data
+
+private pages may include:
+
+- daily-care records
+- exact location
+- medical records
+- household data
+- applications
+- payments
+- orders
+- private messages
+- organization notes
+- moderation data
+- internal documents
+- security incidents
+
+private information must not leak through:
+
+- search suggestions
+- public api resources
+- html metadata
+- structured data
+- image metadata
+- browser caches
+- notification previews
+- shared components
+- public counters
+- sitemap
+- social previews
+- error messages
+
+
+## portal-core-009 — no duplicate sources of truth
+
+do not create a second independent source for:
+
+- current pet identity
+- current ownership
+- current organization membership
+- current notification state
+- current unread count
+- current payment state
+- current booking state
+- current adoption state
+- current care task state
+- current route title
+- current translation
+- current design token
+- current permission
+
+shared views must read the authoritative domain source
+
+
+## portal-core-010 — every data-driven interface has complete states
+
+every page, panel, widget, list, card collection, table, calendar, search result, and timeline must support:
+
+- initial loading
+- action loading
+- success
+- empty
+- filtered empty
+- partial data
+- stale data
+- recoverable error
+- fatal error
+- offline
+- unauthorized
+- unavailable
+- archived
+- blocked
+- suspended
+- deleted resource
+- maintenance
+- pending verification
+- completed
+
+
+## portal-core-011 — no dark patterns
+
+do not use:
+
+- false urgency
+- false scarcity
+- preselected paid options
+- hidden unsubscribe
+- hidden account deletion
+- misleading disabled buttons
+- visual pressure to reveal private information
+- deceptive notification permissions
+- forced public posting
+- forced contact synchronization
+- confusing consent
+- hidden role changes
+- hidden workspace switching
+- countdowns without a real deadline
+- artificial engagement pressure
+
+
+## portal-core-012 — personalization must be explainable and controllable
+
+when the portal personalizes:
+
+- dashboard widgets
+- feed ranking
+- discovery
+- search suggestions
+- local results
+- notifications
+- quick actions
+
+provide an understandable reason where useful
+
+allow the user to:
+
+- hide a recommendation
+- reset relevant preferences
+- change the selected pet
+- change the selected organization
+- disable optional personalization
+- review notification categories
+- remove saved searches
+- clear recent items
+
+
+## portal-core-013 — portal analytics must not become surveillance
+
+measure product and workflow quality without building unnecessary individual behavioural profiles
+
+do not use:
+
+- medical records
+- exact location
+- private messages
+- adoption rejection reasons
+- household information
+- security incidents
+
+for unrelated advertising or engagement optimization
+
+
+## portal-core-014 — mobile is a primary interface
+
+the smallest supported viewport must receive a complete usable workflow
+
+do not treat mobile as a reduced read-only version
+
+all critical actions must remain available through an accessible mobile pattern
+
+
+## portal-core-015 — accessibility is part of the page contract
+
+a page is not complete merely because it is visually correct
+
+critical workflows must support:
+
+- keyboard
+- screen reader
+- touch
+- zoom
+- large text
+- reduced motion
+- high contrast
+- forced colours where practical
+- translated text expansion
+- clear focus
+- logical heading structure
+
+
+## portal-core-016 — localization is part of the architecture
+
+every active page, navigation item, dashboard widget, search type, notification category, page state, error, form, and accessibility label must use the existing localization system
+
+do not create english-only internal interface fragments
+
+
+## portal-core-017 — old pages are included in the modernization
+
+point 12 applies to every existing page discovered during the repository audit
+
+do not modernize only the newly created portal shell
+
+when an older page uses:
+
+- a duplicate layout
+- a duplicate page header
+- a duplicate card
+- a duplicate form pattern
+- a duplicate status badge
+- a duplicate modal
+- a duplicate table
+- a duplicate filter bar
+- a duplicate empty state
+- a duplicate loading state
+- a duplicate mobile action pattern
+
+migrate it to the canonical shared solution
+
+
+## portal-core-018 — design consistency does not mean identical information density
+
+public marketing pages, private dashboards, review queues, maps, chats, and settings have different semantic needs
+
+use the same design system and interaction principles without forcing every page into one card grid
+
+
+## portal-core-019 — portal functionality must survive partial module unavailability
+
+when one external integration or optional module fails:
+
+- the whole application shell must still load where safe
+- navigation must not break
+- unrelated modules must remain usable
+- the unavailable feature must show a scoped error
+- retry must not duplicate mutations
+- stale data must be identified
+
+
+## portal-core-020 — no completion claim without end-to-end journeys
+
+the portal is complete only when representative users can move from entry to final result without:
+
+- dead ends
+- undocumented direct urls
+- missing back paths
+- inconsistent context
+- inaccessible actions
+- broken deep links
+- unlocalized states
+- unauthorized data exposure
+
+
+# 2. canonical module registry
+
+
+## portal-module-001 — create a canonical module inventory
+
+inspect all first-party routes, pages, livewire components, controllers, models, policies, translations, tests, and documentation
+
+create or update a canonical module registry containing:
+
+- stable module key
+- translated module name
+- purpose
+- owning domain
+- public availability
+- authenticated availability
+- organization availability
+- administrator availability
+- primary routes
+- navigation group
+- icon identifier
+- required capabilities
+- selected pet requirement
+- selected organization requirement
+- global-search participation
+- notification categories
+- calendar categories
+- dashboard widgets
+- quick actions
+- page documentation
+- test location
+- implementation status
+
+
+## portal-module-002 — expected modules
+
+inspect and normalize modules equivalent to the following where they exist or are required:
+
+- home
+- authentication
+- onboarding
+- account
+- households
+- user profiles
+- pet profiles
+- social graph
+- posts
+- comments
+- reactions
+- media
+- feeds
+- groups
+- communities
+- messaging
+- notifications
+- care diary
+- medical records
+- appointments
+- medications
+- documents
+- location
+- lost and found
+- search operations
+- marketplace
+- seller workspace
+- orders
+- services
+- bookings
+- payments
+- shelters
+- foster care
+- adoption
+- events
+- calendars
+- specialists
+- organizations
+- support
+- reports
+- moderation
+- safety
+- administration
+- settings
+
+
+## portal-module-003 — do not create database records for static module metadata without need
+
+prefer configuration, enums, or typed registries for stable application modules
+
+use database storage only when a module must be dynamically enabled, configured, localized, licensed, or tenant-controlled at runtime
+
+do not create unnecessary generic module-manager tables
+
+
+## portal-module-004 — feature availability
+
+when a feature is unavailable because of:
+
+- role
+- organization plan
+- incomplete onboarding
+- unverified account
+- suspended account
+- region
+- disabled module
+- missing pet
+- missing organization
+- external outage
+
+show the correct state
+
+do not show an unexplained broken link
+
+
+# 3. repository-wide page and route map
+
+
+## portal-route-001 — inventory every route
+
+inspect:
+
+- web routes
+- api routes
+- livewire full-page routes
+- authentication routes
+- signed routes
+- download routes
+- webhook routes
+- admin routes
+- organization routes
+- support routes
+- fallback routes
+- localized routes
+
+for every route, record:
+
+- method
+- uri
+- route name
+- controller or livewire component
+- middleware
+- authentication
+- policy or gate
+- rate limit
+- signed-url requirement
+- module
+- page identifier
+- public or private
+- canonical or legacy
+- replacement route
+- tests
+
+
+## portal-route-002 — route matrix
+
+create or update:
+
+- docs/portal/route-matrix.md
+
+the route matrix must include:
+
+- route name
+- page id
+- user roles
+- resource scope
+- selected context
+- primary action
+- navigation source
+- deep-link sources
+- authorization location
+- validation location
+- localization
+- seo
+- mobile verification
+- test files
+- current status
+
+
+## portal-route-003 — detect duplicate routes
+
+identify:
+
+- two routes rendering the same function
+- legacy controller and livewire versions
+- public and private routes with unsafe overlap
+- singular and plural pages with no semantic difference
+- duplicated settings pages
+- duplicated profile pages
+- old admin routes
+- inconsistent localized routes
+
+merge or redirect safely
+
+
+## portal-route-004 — route-cache compatibility
+
+ensure route definitions remain cacheable where the repository requires route caching
+
+do not use route closures containing business logic
+
+
+## portal-route-005 — unavailable resources
+
+use appropriate behaviour:
+
+- 401 for unauthenticated api access
+- 403 for forbidden access
+- 404 when revealing resource existence would be unsafe
+- 409 for domain conflict
+- 410 for intentionally removed public content where appropriate
+- accessible user-facing unavailable page for archived or removed public resources
+
+
+## portal-route-006 — deep-link safety
+
+a deep link from:
+
+- email
+- push notification
+- chat
+- search
+- calendar
+- qr
+- report
+- admin queue
+
+must:
+
+- authenticate when required
+- preserve only safe intended return paths
+- reauthorize the resource
+- handle revoked access
+- handle deleted resources
+- handle changed status
+- show the correct alternative action
+
+
+# 4. canonical page registry
+
+
+## portal-page-001 — page documentation
+
+create or update:
+
+- docs/portal/page-map.md
+- docs/portal/page-contracts.md
+
+for every active page, record:
+
+- page id
+- route
+- module
+- purpose
+- entity
+- layout
+- audience
+- required context
+- primary action
+- secondary actions
+- shared components
+- breadcrumbs
+- search integration
+- notification integration
+- calendar integration
+- loading state
+- empty state
+- error state
+- mobile layout
+- accessibility notes
+- localization notes
+- seo notes
+- test coverage
+
+
+## portal-page-002 — canonical page types
+
+define reusable page patterns for:
+
+- public landing page
+- public directory
+- public detail page
+- authenticated dashboard
+- entity overview
+- index and filter page
+- responsive management table
+- review queue
+- split list-and-detail page
+- form page
+- multi-step wizard
+- settings page
+- timeline page
+- calendar page
+- map page
+- inbox page
+- chat thread
+- document page
+- report page
+- moderation queue
+- administration page
+- error and unavailable page
+
+
+## portal-page-003 — each page has one primary responsibility
+
+do not combine unrelated workflows into one enormous page merely to reduce route count
+
+do not create many tiny pages that interrupt a simple workflow
+
+use:
+
+- sections
+- tabs
+- islands
+- drawers
+- modals
+- nested routes
+
+only where their semantics and accessibility are correct
+
+
+## portal-page-004 — stable entity links
+
+every important entity must have one canonical detail route where applicable:
+
+- user
+- pet
+- organization
+- group
+- post
+- event
+- product
+- service
+- order
+- booking
+- shelter animal
+- adoption application
+- lost-animal case
+- care record
+- medical case
+- document
+- report
+
+secondary pages should link back to the canonical entity
+
+
+# 5. application shells and layouts
+
+
+## portal-layout-001 — canonical layout inventory
+
+inspect and normalize:
+
+- public layout
+- guest authentication layout
+- authenticated user layout
+- organization workspace layout
+- seller or professional workspace layout
+- moderation layout
+- administration layout
+- focused wizard layout
+- print layout
+- document layout
+
+
+## portal-layout-002 — shared design language
+
+all layouts must use:
+
+- common design tokens
+- common typography
+- common spacing
+- common focus styles
+- common status colours
+- common form controls
+- common notification patterns
+- common page states
+- common localization architecture
+- common accessibility rules
+
+do not create an isolated colour palette or component family for one module
+
+
+## portal-layout-003 — authenticated application shell
+
+the authenticated shell should support, where appropriate:
+
+- desktop sidebar
+- mobile header
+- mobile bottom navigation
+- global header
+- breadcrumbs
+- command palette
+- global search
+- active-pet switcher
+- active-organization switcher
+- notification centre
+- message centre
+- quick actions
+- user menu
+- context status
+- offline status
+- application announcements
+
+
+## portal-layout-004 — public shell
+
+the public shell should support:
+
+- brand navigation
+- public search
+- language selector
+- sign-in and registration
+- public directories
+- safety and help
+- footer navigation
+- legal pages
+- accessible mobile menu
+- public status announcements
+
+
+## portal-layout-005 — organization shell
+
+the organization workspace must clearly show:
+
+- active organization
+- active location where relevant
+- user role
+- organization navigation
+- urgent tasks
+- workspace switcher
+- return to personal portal
+
+do not visually hide whether an action is personal or organizational
+
+
+## portal-layout-006 — administration and moderation shells
+
+administration and moderation may have specialized navigation, but must:
+
+- preserve the shared design system
+- show elevated-access status
+- show active scope
+- prevent accidental personal-context actions
+- provide audited exit or return
+- distinguish ordinary actions from privileged actions
+
+
+## portal-layout-007 — no nested duplicated navigation
+
+do not render:
+
+- two independent sidebars
+- two page headers
+- repeated breadcrumbs
+- duplicated mobile menus
+- duplicated notification buttons
+
+because an inner module copied the outer shell
+
+
+# 6. public portal functionality
+
+
+## public-001 — public home page
+
+the public home page must explain the portal and provide safe entry points to relevant public areas
+
+possible sections include:
+
+- introduction
+- public social activity
+- featured pet stories
+- verified organizations
+- shelters and adoption
+- lost and found
+- upcoming events
+- public groups
+- specialists
+- marketplace
+- educational or safety content
+- registration call to action
+
+sections must come from actual repository modules and must not be empty decorative placeholders
+
+
+## public-002 — public directories
+
+provide canonical public directories where the product requirements allow them:
+
+- users
+- pets
+- posts
+- groups
+- organizations
+- shelters
+- adoptable animals
+- lost and found
+- events
+- specialists
+- services
+- products
+
+each directory must respect:
+
+- privacy
+- block relationships
+- moderation
+- region
+- locale
+- current status
+- archive status
+- search-engine rules
+
+
+## public-003 — public profile boundaries
+
+a public user or pet profile must not expose:
+
+- private care data
+- exact location
+- home address
+- private medical records
+- private ownership documents
+- private applications
+- private messages
+- hidden relationships
+- blocked users
+- internal organization notes
+
+
+## public-004 — public content freshness
+
+public cards and metadata must show the current valid state
+
+examples:
+
+- adopted animal no longer accepts applications
+- completed event no longer shows registration as open
+- sold product no longer shows in stock
+- resolved lost case no longer asks for search help
+- suspended organization does not appear verified and active
+
+
+## public-005 — public trust indicators
+
+where appropriate, clearly distinguish:
+
+- verified organization
+- verified professional
+- official brand
+- private individual
+- unverified profile
+- sponsored content
+- community-contributed information
+- professional information
+- user opinion
+
+
+## public-006 — public seo
+
+for indexable pages:
+
+- prepare localized titles
+- prepare localized descriptions
+- canonicalize urls
+- define robots behaviour
+- provide safe social metadata
+- provide structured data only when correct
+- exclude private fields
+- exclude exact foster or home locations
+- avoid indexing internal filters without intent
+
+
+# 7. authenticated personal home and dashboard
+
+
+## dashboard-001 — one canonical dashboard framework
+
+do not create unrelated dashboard implementations for every role
+
+create a shared dashboard framework with controlled widget types and role-aware data providers
+
+
+## dashboard-002 — dashboard priority
+
+the dashboard must prioritize real tasks and safety over engagement
+
+possible priority order:
+
+1. emergency or safety incident
+2. urgent medical or medication task
+3. lost-pet or location alert
+4. overdue care task
+5. time-sensitive appointment or booking
+6. active adoption or foster action
+7. new message requiring response
+8. order or service update
+9. upcoming event
+10. social discovery
+
+
+## dashboard-003 — owner dashboard
+
+where applicable, include:
+
+- selected pet summary
+- today care tasks
+- medication tasks
+- appointments
+- recent health or behaviour observations
+- active location status
+- messages
+- notifications
+- upcoming bookings
+- orders
+- events
+- social feed preview
+- quick actions
+
+
+## dashboard-004 — co-owner dashboard
+
+include shared-pet context and show:
+
+- completed tasks
+- unassigned tasks
+- current responsible person
+- shared appointments
+- recent important changes
+- permission limitations
+- conflict or access state
+
+
+## dashboard-005 — foster dashboard
+
+include:
+
+- current foster animals
+- care tasks
+- medication
+- appointments
+- check-ins
+- supplies
+- expenses
+- incidents
+- placement end
+- organization contacts
+
+
+## dashboard-006 — volunteer dashboard
+
+include only relevant:
+
+- assigned tasks
+- active search operations
+- event shifts
+- shelter tasks
+- transport
+- training requirements
+- safety notices
+- availability
+
+
+## dashboard-007 — specialist dashboard
+
+include:
+
+- bookings
+- schedule
+- client messages
+- required forms
+- reports due
+- payments
+- incidents
+- availability
+- professional verification status
+
+
+## dashboard-008 — seller dashboard
+
+include:
+
+- orders
+- listings
+- stock alerts
+- messages
+- returns
+- disputes
+- payouts
+- product-safety notices
+- verification status
+
+
+## dashboard-009 — shelter or organization dashboard
+
+include:
+
+- capacity
+- urgent animal-care tasks
+- new intake
+- active holds
+- foster placements
+- adoption applications
+- home checks
+- meetings
+- trial placements
+- returns
+- transport
+- safety incidents
+- staff workload
+
+
+## dashboard-010 — moderator dashboard
+
+include:
+
+- assigned moderation queues
+- urgent safety reports
+- suspected fraud
+- content reports
+- marketplace reports
+- organization verification
+- appeals
+- workload
+- service health relevant to moderation
+
+
+## dashboard-011 — administrator dashboard
+
+include system-level:
+
+- service health
+- security incidents
+- failed integrations
+- failed payments
+- failed operations
+- queue or web-batch state
+- moderation overview
+- organization risk
+- storage
+- dependency or deployment health where available
+
+do not expose unnecessary personal data in aggregate administration widgets
+
+
+## dashboard-012 — widget customization
+
+allow users to:
+
+- reorder appropriate widgets
+- hide optional widgets
+- restore defaults
+- choose selected-pet behaviour
+- choose compact or comfortable density where supported
+
+do not allow users to hide mandatory urgent safety alerts
+
+
+## dashboard-013 — widget contract
+
+every widget must define:
+
+- stable widget key
+- title translation key
+- data provider
+- authorization
+- context requirements
+- loading state
+- empty state
+- error state
+- refresh behaviour
+- cache scope
+- mobile size
+- desktop size
+- test coverage
+
+
+## dashboard-014 — no query explosion
+
+do not render every possible widget and hide it later
+
+load only authorized, visible, and relevant widgets
+
+use lazy, defer, isolation, or islands only when measured and semantically correct
+
+
+# 8. primary navigation
+
+
+## nav-001 — canonical navigation registry
+
+create a typed or configuration-based navigation registry containing:
+
+- stable key
+- translation key
+- route
+- route matching rule
+- icon
+- navigation group
+- order
+- capability
+- selected-context requirement
+- badge provider
+- mobile availability
+- public availability
+- workspace
+- feature availability
+
+
+## nav-002 — primary personal navigation
+
+the exact items must be derived from repository requirements, but may include:
+
+- home
+- feed
+- pets
+- groups
+- messages
+- notifications
+- care
+- health
+- calendar
+- explore
+- marketplace
+- events
+- organizations
+- more
+
+
+## nav-003 — mobile bottom navigation
+
+use a small stable set of primary destinations
+
+do not place every module in the bottom bar
+
+requirements:
+
+- accessible names
+- current-state indication
+- text labels
+- touch targets
+- badge semantics
+- safe-area support
+- keyboard compatibility where applicable
+- no colour-only state
+
+
+## nav-004 — desktop sidebar
+
+support:
+
+- primary navigation
+- collapsible mode where useful
+- current state
+- keyboard navigation
+- long translated labels
+- workspace sections
+- organization context
+- safe badge counts
+- responsive transition
+
+
+## nav-005 — header
+
+the header may contain:
+
+- mobile menu
+- global search
+- pet switcher
+- organization switcher
+- quick actions
+- messages
+- notifications
+- help
+- profile menu
+
+do not overload the header with duplicate actions already permanently visible nearby
+
+
+## nav-006 — breadcrumbs
+
+breadcrumbs must:
+
+- reflect the logical information architecture
+- use stable route metadata
+- remain concise
+- support translated labels
+- be keyboard accessible
+- avoid exposing hidden entity names
+- not replace the page heading
+
+
+## nav-007 — current navigation state
+
+current-state detection must work for:
+
+- detail routes
+- nested pages
+- create and edit pages
+- localized routes
+- query-string filters
+- legacy redirects
+
+do not implement current state through fragile string comparisons duplicated across blade files
+
+
+## nav-008 — badges
+
+navigation badges may show:
+
+- unread messages
+- unread notifications
+- overdue tasks
+- urgent incidents
+- assigned review count
+
+badge counts must:
+
+- respect authorization
+- use bounded display such as 99+
+- have accessible text
+- avoid expensive unbounded queries
+- update consistently
+- not leak private counts across tenants
+
+
+## nav-009 — revoked navigation access
+
+when a user loses access while a page is open:
+
+- the next request must fail safely
+- navigation must update
+- persisted client state must not retain protected data
+- the user must receive an understandable localized message
+
+
+# 9. active pet, household, and organization context
+
+
+## context-001 — selected pet
+
+when a user manages several pets, provide a canonical selected-pet mechanism for contextual pages and quick actions
+
+the switcher must show:
+
+- pet image
+- name
+- species
+- current relationship
+- active or archived status
+- relevant urgent indicator
+
+
+## context-002 — context-free pages
+
+global pages such as:
+
+- feed
+- messages
+- notifications
+- account settings
+- general search
+
+must not require a selected pet unless the action itself needs one
+
+
+## context-003 — pet-required action
+
+when an action requires a pet and none is selected:
+
+- explain why
+- allow selection
+- allow creating a pet when authorized
+- preserve the intended action
+- do not silently select an unrelated pet
+
+
+## context-004 — active organization
+
+users belonging to several organizations must be able to switch safely
+
+show:
+
+- organization
+- location where relevant
+- current role
+- verification state
+- suspension state
+
+
+## context-005 — context persistence
+
+persist preferences through the existing suitable mechanism
+
+do not use permanent business storage for temporary navigation state without need
+
+do not place sensitive context in a public url
+
+
+## context-006 — context and deep links
+
+a deep link may specify a resource, but must not silently change the user's active organization or pet in a way that enables later mistakes
+
+show the context transition clearly
+
+
+## context-007 — archived or transferred pet
+
+when a selected pet is archived, transferred, deceased, returned, or no longer accessible:
+
+- invalidate the selection
+- show the correct historical state
+- prevent new unauthorized actions
+- provide an appropriate replacement context
+
+
+# 10. global search
+
+
+## search-001 — one global search entry
+
+provide one canonical global search available from the application shell and, where appropriate, the public shell
+
+
+## search-002 — searchable entity types
+
+search may include, according to permissions:
+
+- users
+- pets
+- posts
+- comments where intended
+- groups
+- organizations
+- shelters
+- adoptable animals
+- lost-and-found cases
+- events
+- specialists
+- services
+- products
+- orders for the owner
+- bookings for the participant
+- messages only through a separately protected search mode
+- documents only through a separately protected search mode
+- help content
+
+
+## search-003 — permission-aware providers
+
+each searchable type must define:
+
+- query scope
+- authorization
+- privacy
+- block and mute handling
+- tenant scope
+- searchable fields
+- result serializer
+- result route
+- indexing invalidation
+- deletion behaviour
+- tests
+
+
+## search-004 — search must not leak hidden resources
+
+do not reveal a hidden resource through:
+
+- suggestion text
+- result counts
+- highlighted snippets
+- avatar
+- cached result
+- recent search
+- typo correction
+- related result
+- api metadata
+
+
+## search-005 — search interface
+
+support:
+
+- query
+- type filter
+- relevant module filters
+- safe region filter
+- sort
+- recent searches
+- saved searches where useful
+- empty state
+- filtered-empty state
+- spelling suggestion
+- loading
+- retry
+- keyboard navigation
+
+
+## search-006 — url state
+
+use stable safe query parameters for shareable public or private searches
+
+do not place:
+
+- private message text
+- medical query
+- applicant identity
+- exact address
+- security investigation terms
+
+in a shareable url without a documented reason
+
+
+## search-007 — search technology
+
+inspect existing repository search infrastructure
+
+prefer the simplest architecture that satisfies:
+
+- scale
+- language support
+- permission scope
+- typo tolerance
+- indexing
+- deployment constraints
+
+do not install an external search server merely to demonstrate technology
+
+
+## search-008 — database search
+
+when database search is sufficient:
+
+- use indexed columns
+- use full-text capability where supported and appropriate
+- preserve database-engine compatibility required by the project
+- avoid leading-wildcard scans on large datasets
+- paginate
+- measure queries
+
+
+## search-009 — result grouping
+
+global results may be grouped by entity type with:
+
+- top relevant results
+- result count
+- view-all action
+- current filters
+- accessible headings
+
+
+## search-010 — recent items
+
+recently viewed entities may be shown when useful
+
+do not store sensitive recent items longer than needed
+
+allow the user to clear history
+
+
+## search-011 — command palette separation
+
+search for entities and search for commands may share one interface but must remain semantically distinct
+
+do not execute a destructive command merely because its text matched a search query
+
+
+# 11. discovery and recommendations
+
+
+## discover-001 — discovery areas
+
+discovery may include:
+
+- people
+- pets
+- groups
+- organizations
+- events
+- specialists
+- services
+- products
+- adoption profiles
+- educational content
+- local communities
+
+
+## discover-002 — explain why an item is shown
+
+examples:
+
+- followed by people you follow
+- in your selected region
+- relevant to the selected pet species
+- upcoming nearby event
+- member of your organization
+- recently updated adoption profile
+- sponsored placement
+
+
+## discover-003 — privacy boundaries
+
+discovery must respect:
+
+- private profiles
+- follow-request requirements
+- blocks
+- mutes
+- organization confidentiality
+- foster-location privacy
+- applicant privacy
+- exact location restrictions
+
+
+## discover-004 — local discovery
+
+local discovery must:
+
+- use user-approved region or approximate location
+- avoid exposing exact home location
+- support manual region selection
+- explain location use
+- allow disabling location-based discovery
+
+
+## discover-005 — diversity and fair exposure
+
+do not rank only by existing popularity
+
+where appropriate, give fair exposure to:
+
+- new groups
+- new verified specialists
+- long-stay adoptable animals
+- senior animals
+- accessibility-relevant events
+- smaller local organizations
+- less-active but relevant content
+
+
+## discover-006 — sponsored results
+
+sponsored items must:
+
+- be labelled
+- satisfy the user's filters
+- pass safety and moderation
+- not override blocks
+- not use private medical data without explicit permitted action
+- not appear as an independent professional recommendation
+
+
+## discover-007 — user control
+
+allow the user to:
+
+- hide an item
+- hide a category
+- hide a seller or organization
+- report an item
+- explain irrelevance
+- reset recommendations
+
+
+# 12. social feed integration
+
+
+## feed-001 — canonical feed page
+
+when a social feed exists, define one canonical feed page with controlled tabs or filters such as:
+
+- following
+- discover
+- groups
+- local
+- saved
+- organization activity where permitted
+
+
+## feed-002 — feed item contract
+
+each item must define:
+
+- entity type
+- author
+- visibility
+- context
+- timestamp
+- content
+- media
+- actions
+- moderation state
+- block handling
+- route
+- analytics boundary
+
+
+## feed-003 — no duplicate feed implementations
+
+do not maintain separate incompatible feeds for:
+
+- home
+- pet profile
+- groups
+- organizations
+
+reuse a shared feed-item component and shared query or presentation architecture while preserving the correct scope
+
+
+## feed-004 — feed pagination
+
+use bounded pagination or accessible incremental loading
+
+provide:
+
+- loading state
+- end state
+- retry
+- keyboard-accessible load-more alternative
+- stable keys
+- duplicate prevention
+- restored position where appropriate
+
+
+## feed-005 — urgent content
+
+lost-pet alerts, safety notices, and emergency organization announcements must use explicit verified states and regional relevance
+
+do not allow ordinary users to create unverified emergency banners that appear as official alerts
+
+
+## feed-006 — advertisement separation
+
+advertising must be visually and semantically distinct from user posts
+
+
+## feed-007 — last-read and new-content behaviour
+
+when implemented, preserve:
+
+- stable ordering
+- no duplicate items
+- accessible new-content announcement
+- explicit refresh
+- no unexpected jump while reading
+
+
+# 13. global quick actions
+
+
+## quick-001 — quick-action registry
+
+create a canonical registry for actions such as:
+
+- create post
+- add pet
+- log feeding
+- log water
+- start walk
+- record observation
+- add medical document
+- create appointment
+- report pet lost
+- report found animal
+- create event
+- create group
+- list marketplace item
+- book service
+- open adoption application
+- register as foster
+- create organization task
+- report content
+
+
+## quick-002 — contextual availability
+
+a quick action must appear only when:
+
+- the module exists
+- the user is authorized
+- the required pet or organization exists
+- the entity is in a compatible state
+- the account is not suspended
+- the action is available in the region
+
+
+## quick-003 — no hidden business logic in the action menu
+
+the action menu chooses a route or invokes a clearly authorized livewire action
+
+it must not contain client-side business decisions
+
+
+## quick-004 — pet confirmation
+
+before a pet-specific mutation, clearly show the selected pet
+
+for high-risk actions such as medication or lost-pet activation, require explicit confirmation of the pet
+
+
+## quick-005 — keyboard and mobile access
+
+quick actions must work through:
+
+- keyboard command palette
+- desktop button
+- mobile action button or menu
+- screen reader
+
+
+# 14. command palette
+
+
+## command-001 — command categories
+
+the command palette may provide:
+
+- navigate
+- search
+- create
+- switch pet
+- switch organization
+- open recent
+- perform safe interface command
+
+
+## command-002 — destructive commands
+
+do not directly execute destructive or high-risk actions from a text match
+
+open the appropriate confirmation or workflow instead
+
+
+## command-003 — authorization
+
+command availability must be server-derived or verified before execution
+
+do not trust a stale client command registry
+
+
+## command-004 — accessible interaction
+
+support:
+
+- keyboard opening
+- focus trapping
+- arrow navigation
+- typeahead
+- result grouping
+- escape
+- focus restoration
+- screen-reader result counts
+
+
+# 15. notification centre
+
+
+## notify-portal-001 — one notification centre
+
+integrate all module notifications into one canonical centre
+
+do not create separate unrelated notification pages for care, marketplace, adoption, and organizations
+
+
+## notify-portal-002 — notification categories
+
+support controlled categories such as:
+
+- social
+- messages
+- care
+- medical
+- location
+- lost and found
+- marketplace
+- services
+- payments
+- organizations
+- foster
+- adoption
+- events
+- moderation
+- security
+- system
+
+
+## notify-portal-003 — notification item contract
+
+each notification must define:
+
+- stable type
+- recipient
+- actor where safe
+- related entity
+- title key
+- body key
+- safe preview data
+- created time
+- read time
+- archive time
+- priority
+- deep link
+- fallback route
+- delivery channels
+- deduplication key
+- localization
+
+
+## notify-portal-004 — sensitive previews
+
+lock-screen, email-subject, and push previews must not expose:
+
+- exact location
+- diagnosis
+- private application reason
+- household address
+- payment credential
+- private message content when disabled
+- child information
+- protected foster location
+- security-investigation detail
+
+
+## notify-portal-005 — deep links
+
+when opening a notification:
+
+- authorize the destination
+- mark read only through a safe operation
+- handle deleted or inaccessible entities
+- show an alternative route when possible
+
+
+## notify-portal-006 — grouping
+
+group repeated:
+
+- reactions
+- comments
+- task reminders
+- status updates
+- order scans
+- application activity
+
+without hiding a critical individual incident
+
+
+## notify-portal-007 — notification preferences
+
+provide per-category and per-channel preferences
+
+critical security notifications may remain mandatory with transparent explanation
+
+
+## notify-portal-008 — unread counts
+
+unread counts must:
+
+- be scoped to the user and workspace
+- update consistently
+- avoid double counting grouped items
+- have query and cache tests
+
+
+# 16. messaging entry and contextual communication
+
+
+## message-portal-001 — one inbox entry
+
+reuse the existing messaging domain
+
+provide a canonical inbox for:
+
+- personal conversations
+- group conversations
+- organization conversations
+- marketplace order conversations
+- service booking conversations
+- shelter and adoption conversations
+- support conversations
+
+
+## message-portal-002 — context cards
+
+a contextual thread may show a safe summary of:
+
+- order
+- booking
+- adoption application
+- foster placement
+- event
+- group
+- support case
+
+do not duplicate the authoritative record inside the message thread
+
+
+## message-portal-003 — blocked users
+
+blocking must apply consistently across:
+
+- new messages
+- thread access
+- mentions
+- shared groups where policy permits limited visibility
+- marketplace communication
+- adoption communication
+- notification previews
+
+
+## message-portal-004 — expired business conversations
+
+after a service, temporary access, or application ends:
+
+- preserve required history
+- restrict new messages according to policy
+- remove private address or access data
+- keep official support channels available when necessary
+
+
+## message-portal-005 — attachments
+
+attachments must use the shared secure media and file system with:
+
+- authorization
+- validation
+- virus or content checks where available
+- expiring links
+- retention
+- moderation
+
+
+# 17. unified calendar and schedule
+
+
+## calendar-001 — one personal calendar overview
+
+aggregate authorized events from:
+
+- care tasks
+- medication
+- medical appointments
+- walks or sitter visits
+- service bookings
+- marketplace pickup
+- deliveries where useful
+- social events
+- organization shifts
+- foster check-ins
+- adoption meetings
+- home checks
+- trial-placement dates
+- document deadlines
+
+
+## calendar-002 — source-of-truth preservation
+
+the portal calendar is an aggregated view
+
+it must not create an unsynchronized duplicate appointment or task record
+
+
+## calendar-003 — calendar item contract
+
+each item must define:
+
+- source module
+- source id
+- title
+- start
+- end
+- time zone
+- all-day state
+- status
+- participant
+- pet
+- organization
+- location visibility
+- colour or icon token
+- action
+- permission
+
+
+## calendar-004 — filters
+
+support filters for:
+
+- selected pet
+- organization
+- source module
+- status
+- responsible person
+- date range
+
+
+## calendar-005 — time zones
+
+show the event time in the relevant location and the user's local time where necessary
+
+do not silently reinterpret the original appointment time
+
+
+## calendar-006 — accessible alternative
+
+provide an agenda or list view fully usable without a visual grid or drag-and-drop
+
+
+## calendar-007 — external calendar integration
+
+when supported:
+
+- require explicit consent
+- limit data fields
+- protect private details
+- support revocation
+- avoid duplicate imports
+- document one-way or two-way sync
+
+
+# 18. settings architecture
+
+
+## settings-001 — one canonical settings area
+
+create or normalize settings sections for:
+
+- account
+- authentication
+- password
+- passkeys
+- mfa
+- recovery
+- sessions
+- personal profile
+- household
+- pet profiles
+- privacy
+- blocks and mutes
+- notification preferences
+- email preferences
+- push preferences
+- language
+- time zone
+- measurement units
+- theme
+- accessibility
+- organizations
+- professional profile
+- seller profile
+- addresses
+- payment methods
+- subscriptions
+- data export
+- account deletion
+
+
+## settings-002 — stable settings navigation
+
+use one canonical settings shell
+
+do not create independent profile, security, privacy, and notification layouts with unrelated navigation
+
+
+## settings-003 — sensitive changes
+
+require reauthentication or mfa where appropriate for:
+
+- email change
+- phone change
+- password change
+- mfa removal
+- passkey removal
+- payment-method change
+- payout-account change
+- organization ownership transfer
+- account deletion
+- mass export
+
+
+## settings-004 — preference scope
+
+distinguish:
+
+- personal preference
+- household preference
+- selected-pet preference
+- organization preference
+- device-local preference
+- session-only preference
+
+
+## settings-005 — accessibility preferences
+
+where useful, allow:
+
+- larger interface density
+- reduced motion
+- increased contrast
+- persistent text labels
+- simplified navigation
+- preferred date format
+- preferred measurement units
+
+do not override operating-system accessibility settings in a harmful way
+
+
+## settings-006 — data export
+
+export must:
+
+- identify included modules
+- identify excluded third-party data
+- exclude unrelated organization or other-user data
+- use secure generation
+- use expiring downloads
+- be audited
+- support web-safe resumable processing when queues are unavailable
+
+
+## settings-007 — account deletion
+
+the workflow must explain:
+
+- what is deleted
+- what is anonymized
+- what is retained
+- active obligations
+- organization ownership
+- pet ownership
+- marketplace orders
+- adoption history
+- medical records
+- legal records
+- safety investigations
+- recovery period where applicable
+
+
+# 19. help, support, and safety centre
+
+
+## support-001 — canonical help entry
+
+provide one help and safety area containing:
+
+- searchable help
+- account support
+- privacy support
+- security support
+- report content
+- report user
+- report organization
+- report marketplace issue
+- report animal-welfare concern
+- report lost or found pet
+- accessibility support
+- contact support
+- active support cases
+
+
+## support-002 — contextual help
+
+important pages may link to help relevant to the current workflow
+
+do not duplicate help text in every blade file
+
+
+## support-003 — emergency boundaries
+
+the portal must not falsely claim to be an emergency medical or public-safety service
+
+provide clear instructions to contact appropriate local professional services when necessary
+
+
+## support-004 — support case context
+
+a support case may reference:
+
+- account
+- route
+- entity
+- order
+- booking
+- adoption application
+- organization
+- report
+- incident
+
+include only necessary contextual data
+
+
+## support-005 — official support identity
+
+official support conversations must have a verifiable identity
+
+support must never request:
+
+- password
+- complete mfa code
+- complete payment card
+- private key
+- complete magic-link token
+
+
+# 20. role-aware workspaces
+
+
+## workspace-001 — workspaces are capability contexts
+
+support workspaces such as:
+
+- personal
+- household
+- organization
+- shelter
+- foster
+- professional
+- seller
+- moderator
+- administrator
+
+do not create a duplicate account for each workspace
+
+
+## workspace-002 — visible active workspace
+
+the shell must clearly show:
+
+- current workspace
+- current organization
+- current location where relevant
+- current role
+- privileged status
+
+
+## workspace-003 — workspace switching
+
+switching must:
+
+- verify membership
+- clear stale page filters where necessary
+- clear authorization-sensitive persisted components
+- update navigation
+- update notification counts
+- update dashboard
+- preserve unrelated personal preferences
+
+
+## workspace-004 — cross-workspace data boundaries
+
+organization members must not see:
+
+- another organization's private data
+- personal orders
+- private medical records outside assignment
+- private messages unrelated to the workspace
+- applicant data without case access
+
+
+## workspace-005 — workspace landing pages
+
+each workspace may have a tailored landing dashboard but must use the shared dashboard and layout architecture
+
+
+# 21. moderation and administration portal integration
+
+
+## moderation-001 — canonical queue system
+
+moderation queues may include:
+
+- content
+- profiles
+- groups
+- marketplace
+- organizations
+- professionals
+- adoption
+- animal welfare
+- harassment
+- fraud
+- appeals
+
+use shared queue, assignment, status, evidence, and decision components
+
+
+## moderation-002 — no universal invisible access
+
+moderators and administrators must see only the data required for the active case unless a documented privileged role requires more
+
+
+## moderation-003 — break-glass access
+
+when exceptional emergency access exists:
+
+- require reason
+- require strong authentication
+- limit duration
+- audit every view
+- notify appropriate security personnel
+- prevent casual use
+
+
+## moderation-004 — impersonation
+
+if administrative impersonation exists:
+
+- show a persistent banner
+- record start and end
+- restrict high-risk financial and security actions
+- require a reason
+- provide immediate exit
+- test account switching and persisted state
+
+
+## moderation-005 — shared design
+
+moderation and administration pages must use canonical:
+
+- queues
+- filters
+- status badges
+- evidence panels
+- timelines
+- decision dialogs
+- error states
+- audit views
+
+do not maintain a separate low-quality legacy admin theme
+
+
+# 22. cross-module workflows
+
+
+## workflow-001 — workflow registry
+
+create or update:
+
+- docs/portal/workflows.md
+
+for every critical user journey, record:
+
+- actors
+- starting page
+- prerequisites
+- pages
+- actions
+- domain operations
+- permissions
+- state transitions
+- notifications
+- failure paths
+- final result
+- tests
+
+
+## workflow-002 — registration to active portal user
+
+the journey must cover:
+
+- registration
+- email verification
+- authentication
+- optional mfa
+- onboarding
+- locale
+- privacy
+- first profile
+- first pet or alternative path
+- home dashboard
+
+
+## workflow-003 — create and manage a pet
+
+cover:
+
+- create
+- identity
+- media
+- ownership
+- co-owner invitation
+- privacy
+- care setup
+- medical setup
+- public profile
+- archival or transfer
+
+
+## workflow-004 — social workflow
+
+cover:
+
+- discover user or pet
+- follow or request
+- block and mute boundaries
+- view feed
+- create post
+- comments
+- reactions
+- notifications
+- report
+
+
+## workflow-005 — daily-care workflow
+
+cover:
+
+- select pet
+- view today
+- complete task
+- assign task
+- record observation
+- see dashboard update
+- notify co-owner
+- review history
+
+
+## workflow-006 — medical workflow
+
+cover:
+
+- create or receive appointment
+- view preparation
+- receive medication task
+- complete task
+- record observation
+- upload document
+- share report with authorized professional
+
+
+## workflow-007 — lost-pet workflow
+
+cover:
+
+- report lost
+- activate location mode
+- create public profile
+- notify local community
+- receive sighting
+- coordinate search
+- mark safely recovered
+- revoke temporary access
+
+
+## workflow-008 — marketplace purchase workflow
+
+cover:
+
+- search
+- compare
+- select pet
+- compatibility warning
+- cart
+- checkout
+- payment
+- shipment
+- delivery
+- review
+- return or dispute
+
+
+## workflow-009 — professional service workflow
+
+cover:
+
+- discover specialist
+- check availability
+- select pet
+- complete questionnaire
+- book
+- pay
+- communicate
+- check in
+- receive report
+- review
+- incident or dispute
+
+
+## workflow-010 — shelter and adoption workflow
+
+cover:
+
+- discover animal
+- view disclosure
+- application
+- co-applicant
+- review
+- reference
+- home check
+- meeting
+- reservation
+- trial
+- agreement
+- handover
+- adopter onboarding
+- follow-up
+- return when necessary
+
+
+## workflow-011 — event workflow
+
+cover:
+
+- discover event
+- eligibility
+- register pet and participant
+- payment where applicable
+- calendar
+- reminders
+- check in
+- event communication
+- result or follow-up
+
+
+## workflow-012 — organization workflow
+
+cover:
+
+- create or join organization
+- verification
+- staff invitation
+- workspace switch
+- role-specific dashboard
+- tasks
+- reports
+- member removal
+- closure or transfer
+
+
+## workflow-013 — notification-to-action workflow
+
+every actionable notification must take the user to:
+
+- the exact relevant page
+- the correct workspace
+- the correct resource
+- the correct action or status
+
+without exposing unauthorized information
+
+
+## workflow-014 — no workflow dead end
+
+every intermediate page must provide:
+
+- next action
+- back or cancel path
+- save state where necessary
+- help
+- safe failure behaviour
+
+
+# 23. canonical shared ui and ux component system
+
+
+## design-portal-001 — complete component audit
+
+inspect all existing:
+
+- blade components
+- livewire components
+- flux components
+- layouts
+- partials
+- css utilities
+- tailwind patterns
+- javascript widgets
+- alpine components
+
+create or update:
+
+- docs/ui-component-inventory.md
+- docs/ui-migration-matrix.md
+
+
+## design-portal-002 — mandatory reuse order
+
+for every interface requirement:
+
+1. inspect the existing canonical shared component
+2. inspect a suitable flux component when flux is intentionally installed
+3. improve the existing component when appropriate
+4. migrate all duplicate consumers
+5. create a new shared component only when necessary
+6. document the new component
+7. test it
+8. remove obsolete duplicates
+
+
+## design-portal-003 — canonical components
+
+create or normalize components equivalent to:
+
+- application shell
+- public shell
+- workspace shell
+- admin shell
+- page header
+- section header
+- breadcrumbs
+- action toolbar
+- mobile action bar
+- context switcher
+- pet switcher
+- organization switcher
+- card
+- statistic card
+- information panel
+- disclosure panel
+- callout
+- alert
+- status badge
+- priority badge
+- avatar
+- pet avatar
+- organization logo
+- tabs
+- segmented control
+- accordion
+- filter bar
+- search input
+- sort menu
+- responsive table
+- responsive record list
+- description list
+- pagination
+- page-state container
+- empty state
+- filtered-empty state
+- loading state
+- skeleton
+- error state
+- offline state
+- unauthorized state
+- modal
+- drawer
+- popover
+- dropdown
+- tooltip
+- confirmation dialog
+- destructive confirmation
+- emergency confirmation
+- field wrapper
+- validation error
+- checkbox
+- radio group
+- switch
+- select
+- autocomplete
+- date picker
+- time picker
+- file upload
+- image upload
+- media gallery
+- timeline
+- stepper
+- wizard progress
+- checklist
+- calendar item
+- notification item
+- message-thread item
+- command-palette result
+- quick-action item
+- search-result item
+- dashboard widget shell
+- permission-denied panel
+- private-data indicator
+
+
+## design-portal-004 — controlled variants
+
+components must expose semantic variants such as:
+
+- neutral
+- information
+- success
+- warning
+- danger
+- urgent
+- pending
+- archived
+- disabled
+- private
+- verified
+- unverified
+
+do not allow every consumer to pass arbitrary classes that recreate a new design
+
+
+## design-portal-005 — canonical page header
+
+the page header must support:
+
+- title
+- description
+- breadcrumbs
+- entity identity
+- status
+- privacy indicator
+- primary action
+- secondary actions
+- mobile action behaviour
+- long translated text
+
+
+## design-portal-006 — canonical form architecture
+
+all forms must use consistent:
+
+- label
+- description
+- required indicator
+- input
+- validation
+- help
+- loading
+- disabled
+- success
+- destructive warning
+- character count where useful
+
+
+## design-portal-007 — canonical status component
+
+all modules must map domain states to controlled semantic status variants
+
+do not independently hardcode colours in care, marketplace, adoption, events, and admin pages
+
+
+## design-portal-008 — canonical table and list behaviour
+
+management tables must support:
+
+- captions or accessible context
+- headers
+- sorting
+- filters
+- pagination
+- row actions
+- bulk actions where justified
+- loading
+- empty
+- filtered empty
+- mobile structured list alternative
+- long content
+- translated labels
+- keyboard access
+
+
+## design-portal-009 — canonical timeline
+
+use one timeline architecture for:
+
+- order events
+- application events
+- care events
+- medical events
+- moderation events
+- organization events
+- security events
+
+variants may change content, but not recreate the complete markup
+
+
+## design-portal-010 — canonical wizard
+
+multi-step workflows must use one wizard pattern supporting:
+
+- accessible progress
+- completed steps
+- current step
+- optional steps
+- validation
+- save and resume
+- back
+- cancel
+- mobile layout
+- error summary
+- final review
+
+
+## design-portal-011 — shared state components
+
+loading, empty, filtered-empty, offline, unavailable, and error states must use canonical shared components
+
+do not create page-specific decorative empty states with inconsistent actions
+
+
+## design-portal-012 — design tokens
+
+normalize tokens for:
+
+- brand
+- neutral
+- text
+- muted text
+- background
+- surface
+- elevated surface
+- border
+- focus
+- success
+- warning
+- danger
+- information
+- urgent
+- private
+- verified
+- spacing
+- radius
+- shadow
+- typography
+- breakpoints
+- z-index
+- transitions
+
+
+## design-portal-013 — eliminate repeated arbitrary values
+
+when the same arbitrary tailwind value appears more than once:
+
+- promote it to a token
+- create a controlled utility
+- use the canonical component
+
+do not preserve accidental design divergence
+
+
+## design-portal-014 — remove obsolete components
+
+after migration:
+
+- verify all consumers
+- remove duplicate files
+- remove duplicate css
+- remove dead translation keys where safe
+- remove dead javascript
+- update documentation
+- update tests
+
+
+# 24. responsive behaviour
+
+
+## responsive-001 — representative viewports
+
+verify every critical page at:
+
+- small mobile
+- large mobile
+- tablet portrait
+- tablet landscape
+- small laptop
+- desktop
+- wide desktop
+
+
+## responsive-002 — no horizontal page overflow
+
+fix overflow caused by:
+
+- tables
+- code
+- urls
+- translated text
+- media
+- action groups
+- tab lists
+- calendars
+- filters
+- charts
+- modal content
+
+
+## responsive-003 — mobile information priority
+
+on small screens, show first:
+
+- entity identity
+- current status
+- urgent warning
+- primary action
+- selected context
+- critical next task
+
+
+## responsive-004 — mobile management pages
+
+responsive tables may become structured record cards, but must preserve:
+
+- labels
+- values
+- status
+- actions
+- selection
+- sorting context
+- pagination
+
+
+## responsive-005 — mobile forms
+
+forms must:
+
+- use appropriate input types
+- provide large touch targets
+- avoid two-column layouts when cramped
+- preserve help text
+- show validation near fields and in an error summary where appropriate
+- keep final actions visible without covering content
+
+
+## responsive-006 — container queries
+
+use container queries for reusable components whose behaviour depends on the containing panel rather than the whole viewport
+
+
+## responsive-007 — hover independence
+
+no critical information or action may depend only on hover
+
+
+# 25. accessibility requirements
+
+
+## access-001 — landmarks
+
+use correct:
+
+- header
+- navigation
+- main
+- aside
+- footer
+- search
+- form
+- section
+
+landmarks
+
+
+## access-002 — skip links
+
+provide a skip-to-main-content mechanism and other skip links where complex layouts justify them
+
+
+## access-003 — page headings
+
+every page must have one logical primary heading
+
+do not use visual text without heading semantics
+
+
+## access-004 — focus after navigation
+
+after livewire navigation or full-page change:
+
+- update title
+- move focus appropriately
+- announce the page
+- avoid trapping focus in removed content
+
+
+## access-005 — focus in dialogs
+
+modals, drawers, command palette, and mobile navigation must:
+
+- move focus inside
+- trap focus where appropriate
+- support escape
+- restore focus
+- announce title and description
+
+
+## access-006 — icon buttons
+
+every icon-only action must have an accessible name
+
+tooltips do not replace accessible names
+
+
+## access-007 — status announcements
+
+announce important asynchronous states such as:
+
+- saved
+- failed
+- loaded
+- filter result count
+- offline
+- restored connection
+- payment result
+- booking result
+
+
+## access-008 — drag-and-drop alternatives
+
+when using sorting or reordering, provide keyboard-accessible controls
+
+
+## access-009 — infinite lists
+
+when incremental loading exists:
+
+- provide an explicit load-more control
+- announce additions
+- preserve focus
+- avoid unexpected scrolling
+
+
+## access-010 — reduced motion
+
+respect reduced-motion settings for:
+
+- page transitions
+- drawers
+- skeletons
+- loading animations
+- notifications
+- carousels
+- view transitions
+
+
+## access-011 — forced colours
+
+critical controls and statuses must remain understandable in forced-colours mode where practical
+
+
+## access-012 — zoom and text expansion
+
+critical workflows must remain usable at large browser zoom and with long translations
+
+
+# 26. localization requirements
+
+
+## i18n-portal-001 — preserve existing localization architecture
+
+inspect and reuse:
+
+- locale middleware
+- locale routes
+- language files
+- json translations
+- fallback
+- user preference
+- session preference
+- javascript translations
+
+
+## i18n-portal-002 — navigation translation
+
+translate:
+
+- module names
+- navigation groups
+- page titles
+- breadcrumbs
+- command palette
+- quick actions
+- settings sections
+- page states
+
+
+## i18n-portal-003 — localized routing
+
+preserve the repository's canonical localized-url strategy
+
+do not introduce a second parallel locale-route architecture
+
+
+## i18n-portal-004 — language switching
+
+switching language must:
+
+- preserve the current safe page where possible
+- preserve authorized resource context
+- preserve safe filters
+- avoid copying secret query data
+- update html language and direction
+
+
+## i18n-portal-005 — direction support
+
+where supported locales require right-to-left behaviour:
+
+- use logical properties
+- verify navigation
+- verify icons with directional meaning
+- verify breadcrumbs
+- verify tables
+- verify timelines
+- verify drawers
+- verify forms
+
+
+## i18n-portal-006 — formatting
+
+use locale-aware formatting for:
+
+- dates
+- times
+- relative time
+- numbers
+- percentages
+- currencies
+- measurements
+- lists
+
+
+## i18n-portal-007 — no raw-key leakage
+
+create automated checks and tests for critical pages in every supported locale
+
+
+# 27. livewire portal architecture
+
+
+## livewire-portal-001 — normal class-based components only
+
+use normal livewire php classes with separate blade templates
+
+do not use volt
+
+
+## livewire-portal-002 — full-page livewire components
+
+use full-page components where server-backed interactivity and page state justify them
+
+do not convert static public pages into livewire without benefit
+
+
+## livewire-portal-003 — minimal public state
+
+do not store complete:
+
+- navigation registries
+- module registries
+- eloquent collections
+- organization graphs
+- permission graphs
+- search result sets
+- dashboard data
+
+in mutable public properties
+
+
+## livewire-portal-004 — url state
+
+use url state for shareable safe:
+
+- search
+- filters
+- sorting
+- tabs
+- pagination
+- date range
+
+do not use it for:
+
+- private message query
+- medical query
+- internal applicant data
+- security case filters containing sensitive identifiers
+
+
+## livewire-portal-005 — session state
+
+use session-backed state where appropriate for:
+
+- selected safe interface preference
+- active dashboard view
+- private filter preference
+- density
+- last selected safe workspace
+
+do not use session state as permanent domain storage
+
+
+## livewire-portal-006 — lazy and deferred widgets
+
+use lazy or deferred loading for secondary dashboard widgets only when:
+
+- first-render content remains useful
+- placeholder dimensions are stable
+- the widget authorizes independently
+- the request count remains reasonable
+
+
+## livewire-portal-007 — isolated widgets
+
+use isolation when a slow independent widget would otherwise block unrelated updates
+
+test shared context and race behaviour
+
+
+## livewire-portal-008 — islands
+
+use islands for large independently updating page regions only when measured
+
+candidate interfaces may include:
+
+- dashboard widgets
+- animal case panels
+- search facets
+- notification list
+- analytics panels
+
+do not create islands merely to fragment markup
+
+
+## livewire-portal-009 — wire navigate
+
+when used:
+
+- preserve normal link behaviour
+- update titles
+- handle focus
+- handle scroll
+- tear down javascript integrations
+- clear stale authorization-sensitive state
+- prevent duplicate listeners
+
+
+## livewire-portal-010 — persistent elements
+
+persist only elements whose real client state should survive navigation
+
+do not persist:
+
+- authorization-sensitive menus
+- private entity panels
+- stale notification data
+- active organization data across account switch
+
+without explicit safe synchronization
+
+
+## livewire-portal-011 — command palette
+
+the command-palette component must:
+
+- use server-authorized actions
+- debounce search appropriately
+- avoid large snapshots
+- handle keyboard access
+- prevent stale command execution
+
+
+## livewire-portal-012 — dashboard widgets
+
+each widget must authorize itself and use scoped queries
+
+do not rely only on the parent dashboard authorization
+
+
+## livewire-portal-013 — offline behaviour
+
+show a canonical offline indicator
+
+prevent unsafe mutations while offline
+
+do not show saved until the server confirms the operation
+
+
+# 28. security requirements
+
+
+## security-portal-001 — navigation data scope
+
+navigation and badge queries must not expose another:
+
+- user
+- household
+- organization
+- tenant
+- locale
+- role
+
+through incorrect cache keys
+
+
+## security-portal-002 — selected-context tampering
+
+test tampering with:
+
+- selected pet
+- selected organization
+- selected location
+- dashboard widget
+- saved filter
+- notification target
+- command action
+
+
+## security-portal-003 — search leakage
+
+test:
+
+- private profiles
+- blocked profiles
+- private groups
+- private pets
+- exact foster locations
+- private adoption applications
+- private messages
+- private documents
+- deleted entities
+- cross-tenant entities
+
+
+## security-portal-004 — notification leakage
+
+a user must not infer a private action through:
+
+- notification count
+- notification actor name
+- deep-link title
+- email subject
+- push preview
+
+
+## security-portal-005 — cache invalidation
+
+after:
+
+- block
+- membership removal
+- organization suspension
+- role removal
+- privacy change
+- pet transfer
+- application closure
+- marketplace suspension
+
+invalidate affected:
+
+- navigation
+- dashboard
+- search
+- recent items
+- notification views
+- page fragments
+
+
+## security-portal-006 — open redirects
+
+validate every intended return path used by:
+
+- login
+- locale switch
+- notification deep link
+- support
+- checkout
+- onboarding
+- account verification
+
+
+## security-portal-007 — account switching
+
+after logout, account switch, impersonation exit, or organization removal:
+
+- clear sensitive livewire state
+- clear sensitive persisted dom
+- clear user-scoped caches
+- invalidate sessions where required
+
+
+## security-portal-008 — privileged page indicators
+
+moderation, administration, impersonation, and break-glass pages must visibly show elevated context
+
+
+# 29. seo and public metadata
+
+
+## seo-portal-001 — canonical metadata service
+
+centralize preparation of:
+
+- title
+- description
+- canonical url
+- robots
+- open graph
+- social image
+- structured data
+- alternate locale links
+
+do not generate business or privacy decisions in blade
+
+
+## seo-portal-002 — private pages
+
+private and authenticated pages must not be indexable
+
+
+## seo-portal-003 — filtered directories
+
+define which filter combinations are:
+
+- canonical
+- noindex
+- indexable
+- parameter-normalized
+
+
+## seo-portal-004 — removed resources
+
+update:
+
+- canonical status
+- social previews
+- sitemap
+- internal links
+- archive behaviour
+
+when a public entity is removed, adopted, resolved, sold, cancelled, or transferred
+
+
+# 30. performance requirements
+
+
+## perf-portal-001 — baseline measurements
+
+measure important pages such as:
+
+- public home
+- authenticated dashboard
+- feed
+- global search
+- pet profile
+- care today
+- medical overview
+- notification centre
+- calendar
+- marketplace directory
+- adoption directory
+- organization dashboard
+- moderation queue
+
+
+## perf-portal-002 — query budgets
+
+create query-count assertions where reliable for critical pages
+
+fix n+1 queries rather than merely raising budgets
+
+
+## perf-portal-003 — navigation performance
+
+navigation metadata must not execute dozens of separate count queries on every request
+
+use:
+
+- aggregated queries
+- scoped counters
+- safe cache
+- deferred non-critical counts
+
+
+## perf-portal-004 — dashboard performance
+
+load critical widgets first
+
+defer secondary widgets only when appropriate
+
+do not issue one request for every tiny statistic without justification
+
+
+## perf-portal-005 — search performance
+
+paginate results
+
+index query fields
+
+avoid loading complete entity graphs
+
+prepare result data explicitly
+
+
+## perf-portal-006 — livewire payload
+
+measure:
+
+- snapshot size
+- public property count
+- repeated serialized data
+- request count
+- hydration time
+
+reduce unnecessary state
+
+
+## perf-portal-007 — frontend assets
+
+measure:
+
+- css size
+- javascript size
+- image sizes
+- unused legacy css
+- duplicated libraries
+- duplicated alpine installations
+- third-party widget cost
+
+
+## perf-portal-008 — cache ownership
+
+define cache keys for:
+
+- public navigation
+- module registry
+- safe public directories
+- localized page metadata
+- dashboard summaries where safe
+- notification counts
+- search facets
+
+include:
+
+- user scope
+- organization scope
+- locale
+- role
+- version
+- invalidation
+
+
+# 31. data-model requirements
+
+inspect existing models and introduce new persistence only when required
+
+
+## data-portal-001 — user interface preferences
+
+when permanent user preferences are needed, support a typed structure for:
+
+- dashboard layout
+- widget visibility
+- interface density
+- selected default pet
+- selected default organization
+- navigation preference
+- calendar preference
+- accessibility preference
+
+do not store arbitrary uncontrolled json without validation and versioning
+
+
+## data-portal-002 — saved views
+
+when management pages support saved filters, store:
+
+- owner
+- workspace
+- page key
+- filter schema version
+- safe filter values
+- name
+- default state
+- visibility
+- created time
+
+validate every saved filter before applying it
+
+
+## data-portal-003 — portal announcements
+
+if system announcements exist, support:
+
+- audience
+- locale
+- priority
+- start
+- end
+- dismissibility
+- acknowledgement
+- safe content
+- link
+
+
+## data-portal-004 — recent items
+
+when recent items are persisted:
+
+- limit quantity
+- restrict sensitive entity types
+- remove inaccessible resources
+- allow clearing
+- define retention
+
+
+## data-portal-005 — static registries
+
+prefer typed configuration or enums for:
+
+- module metadata
+- navigation definitions
+- page types
+- widget types
+- notification categories
+
+unless runtime management is an explicit requirement
+
+
+# 32. factories and factory states
+
+
+## factory-portal-001 — integrated portal graphs
+
+use existing module factories to create realistic integrated graphs
+
+do not duplicate module-specific factory logic in one giant portal factory
+
+
+## factory-portal-002 — required user states
+
+create meaningful states for:
+
+- new unverified user
+- verified user without pet
+- owner with one pet
+- owner with several pets
+- co-owner
+- household member
+- foster caregiver
+- volunteer
+- specialist
+- seller
+- organization staff
+- moderator
+- administrator
+- suspended user
+- blocked relationship
+- deleted or archived profile
+
+
+## factory-portal-003 — context states
+
+create states for:
+
+- selected pet available
+- selected pet archived
+- selected pet transferred
+- selected organization active
+- organization suspended
+- organization membership expired
+- multiple organizations
+- limited role
+
+
+## factory-portal-004 — portal content states
+
+create representative:
+
+- public profiles
+- private profiles
+- posts
+- groups
+- messages
+- notifications
+- care tasks
+- medical appointments
+- location alerts
+- marketplace orders
+- service bookings
+- adoption applications
+- events
+- support cases
+
+
+## factory-portal-005 — page-state data
+
+create data for:
+
+- populated page
+- empty page
+- filtered empty
+- archived resource
+- unavailable resource
+- suspended resource
+- blocked resource
+- partial integration failure
+- stale data
+- high-volume list
+
+
+# 33. demo and development seeding
+
+
+## seed-portal-001 — integrated demo world
+
+create deterministic demo data representing one coherent portal world rather than unrelated random records
+
+
+## seed-portal-002 — minimum demo accounts
+
+include environment-gated accounts for:
+
+- ordinary owner
+- multi-pet owner
+- co-owner
+- foster caregiver
+- volunteer
+- specialist
+- seller
+- shelter coordinator
+- organization administrator
+- moderator
+- administrator
+
+
+## seed-portal-003 — representative dashboard states
+
+seed:
+
+- owner with urgent care task
+- owner with no urgent tasks
+- foster with active placement
+- volunteer with search task
+- specialist with booking
+- seller with return
+- shelter with adoption queue
+- moderator with report queue
+
+
+## seed-portal-004 — public portal data
+
+seed:
+
+- public profiles
+- private profiles not visible publicly
+- active groups
+- public posts
+- verified organizations
+- upcoming events
+- marketplace products
+- services
+- adoptable animals
+- active lost case
+- resolved lost case
+
+
+## seed-portal-005 — search data
+
+seed:
+
+- exact matches
+- typo-friendly names
+- unicode names
+- translated names
+- blocked resources
+- private resources
+- archived resources
+- cross-organization resources
+
+
+## seed-portal-006 — localization data
+
+include:
+
+- every supported locale
+- long translated strings
+- right-to-left content where supported
+- unicode
+- long names
+- missing optional data
+
+
+## seed-portal-007 — production safeguards
+
+portal demo seeders must never run accidentally in production
+
+
+# 34. php test requirements
+
+
+## test-portal-001 — route coverage
+
+test every first-party route for:
+
+- expected guest behaviour
+- expected authenticated behaviour
+- allowed role
+- denied role
+- wrong organization
+- wrong owner
+- wrong tenant
+- suspended user
+- blocked user
+- archived resource
+- deleted resource
+
+
+## test-portal-002 — page rendering
+
+render every canonical page type with:
+
+- normal data
+- empty data
+- long translated content
+- missing optional data
+- mobile-relevant markup
+- unauthorized state
+
+
+## test-portal-003 — navigation
+
+test:
+
+- personal navigation
+- mobile navigation
+- organization navigation
+- seller navigation
+- moderator navigation
+- administrator navigation
+- current-state detection
+- hidden unauthorized item
+- direct unauthorized route
+- badge counts
+- cache invalidation
+- membership removal
+
+
+## test-portal-004 — pet switcher
+
+test:
+
+- one pet
+- several pets
+- unauthorized pet
+- archived pet
+- transferred pet
+- stale selected id
+- pet-required quick action
+- wrong pet action prevention
+
+
+## test-portal-005 — organization switcher
+
+test:
+
+- one organization
+- several organizations
+- wrong organization
+- removed membership
+- suspended organization
+- role-specific navigation
+- stale workspace
+
+
+## test-portal-006 — dashboards
+
+test every role dashboard for:
+
+- widget authorization
+- widget visibility
+- urgent priority
+- empty state
+- optional widget hiding
+- default restoration
+- query count
+- cache scope
+- lazy or deferred behaviour where used
+
+
+## test-portal-007 — global search
+
+test:
+
+- every indexed entity type
+- exact match
+- partial match
+- typo behaviour where implemented
+- type filter
+- pagination
+- private resource exclusion
+- block exclusion
+- wrong tenant exclusion
+- archived resource
+- deleted resource
+- cache invalidation
+- localized search
+- result deep link
+
+
+## test-portal-008 — discovery
+
+test:
+
+- explanation
+- region
+- privacy
+- block
+- mute
+- sponsored label
+- user hide action
+- recommendation reset
+- no diagnosis-based hidden advertising
+
+
+## test-portal-009 — feed integration
+
+test:
+
+- following
+- groups
+- local
+- discover
+- blocks
+- privacy
+- pagination
+- duplicate prevention
+- deleted content
+- report action
+- advertisement label
+
+
+## test-portal-010 — command palette
+
+test:
+
+- keyboard markup
+- navigation command
+- search command
+- pet switch
+- organization switch
+- unauthorized command
+- stale command
+- destructive command confirmation
+
+
+## test-portal-011 — quick actions
+
+test:
+
+- available action
+- unavailable action
+- no pet
+- wrong pet
+- wrong organization
+- suspended account
+- repeated mutation
+- high-risk confirmation
+
+
+## test-portal-012 — notification centre
+
+test:
+
+- categories
+- read
+- unread
+- archive
+- grouping
+- deep link
+- revoked destination
+- safe preview
+- preferences
+- critical mandatory notification
+- unread count
+
+
+## test-portal-013 — calendar
+
+test:
+
+- aggregation
+- source authorization
+- selected pet
+- organization filter
+- time zones
+- list view
+- deleted source
+- private location
+
+
+## test-portal-014 — settings
+
+test:
+
+- each section
+- authorization
+- mfa requirement
+- preference persistence
+- locale
+- time zone
+- units
+- accessibility
+- export
+- deletion restrictions
+
+
+## test-portal-015 — cross-module workflows
+
+create end-to-end feature tests for every workflow listed in the workflow registry
+
+
+## test-portal-016 — localization
+
+render critical pages in every supported locale
+
+test:
+
+- navigation
+- dashboard
+- search
+- settings
+- notifications
+- page states
+- validation
+- dates
+- currency
+- measurement
+- fallback
+- placeholder parity
+
+
+## test-portal-017 — accessibility architecture
+
+create automated checks where practical for:
+
+- one page heading
+- icon-button labels
+- form labels
+- dialog labels
+- table headers
+- skip link
+- no colour-only status
+- reduced-motion classes
+- accessible loading text
+
+
+## test-portal-018 — browser tests
+
+where browser tooling exists, test:
+
+- guest public navigation
+- registration to dashboard
+- pet switching
+- organization switching
+- mobile bottom navigation
+- global search
+- command palette
+- notification deep link
+- dashboard customization
+- settings
+- repeated wire navigate
+- focus restoration
+- no duplicated javascript listeners
+- responsive tables
+- no horizontal overflow
+- reduced motion
+
+
+## test-portal-019 — architecture tests
+
+add checks for:
+
+- no volt
+- no @php
+- no @endphp
+- no direct model calls in blade
+- no direct database calls in blade
+- no env outside config
+- no unsafe dynamic tailwind classes
+- no duplicate canonical page-header implementation
+- no duplicate canonical status component
+- no hardcoded first-party navigation text
+- no public exact-location serialization
+- no raw private models in search results
+- no route without a documented module where reliable
+
+
+## test-portal-020 — performance tests
+
+test or measure:
+
+- dashboard query count
+- navigation query count
+- search query count
+- notification count query
+- calendar aggregation
+- livewire snapshot size where practical
+- pagination
+- no unbounded collections
+
+
+# 35. canonical portal documentation
+
+create or update, without duplicating current canonical documents:
+
+- docs/portal/index.md
+- docs/portal/functional-specification.md
+- docs/portal/module-registry.md
+- docs/portal/page-map.md
+- docs/portal/page-contracts.md
+- docs/portal/route-matrix.md
+- docs/portal/information-architecture.md
+- docs/portal/navigation.md
+- docs/portal/layouts.md
+- docs/portal/dashboards.md
+- docs/portal/workspaces.md
+- docs/portal/context-switching.md
+- docs/portal/global-search.md
+- docs/portal/discovery.md
+- docs/portal/feed.md
+- docs/portal/quick-actions.md
+- docs/portal/command-palette.md
+- docs/portal/notifications.md
+- docs/portal/calendar.md
+- docs/portal/settings.md
+- docs/portal/page-states.md
+- docs/portal/workflows.md
+- docs/portal/security.md
+- docs/portal/performance.md
+- docs/portal/testing.md
+- docs/portal/seeding.md
+- docs/design-system.md
+- docs/ui-component-inventory.md
+- docs/ui-patterns.md
+- docs/ui-migration-matrix.md
+- docs/responsive-design.md
+- docs/accessibility.md
+- docs/localization.md
+- docs/livewire.md
+- docs/tailwind.md
+
+update:
+
+- root AGENTS.md
+- nested AGENTS.md where necessary
+- README.md
+- CHANGELOG.md
+- architecture documentation
+- requirements
+- compliance matrix
+- implementation plan
+- known limitations
+- deployment documentation
+
+
+# 36. implementation passes
+
+
+## pass 1 — full repository discovery
+
+- read all agents instructions
+- read every first-party markdown file
+- inspect git state
+- inspect all routes
+- inspect all page components
+- inspect all layouts
+- inspect all shared components
+- inspect all role and permission systems
+- inspect all modules
+- inspect all translations
+- inspect all tests
+- capture the baseline
+
+
+## pass 2 — route, page, module, and design inventories
+
+- create the route inventory
+- create the page inventory
+- create the module registry
+- create the component inventory
+- identify orphan pages
+- identify duplicate pages
+- identify duplicate components
+- identify missing navigation
+- identify inconsistent states
+- identify localization gaps
+- identify accessibility gaps
+- identify security gaps
+
+
+## pass 3 — canonical requirements and documentation
+
+- assign stable requirement ids
+- update portal functional requirements
+- update architecture
+- create route matrix
+- create page map
+- create workflow map
+- update compliance matrix
+- create implementation plan
+- create ui migration matrix
+
+
+## pass 4 — design-system foundation
+
+- normalize design tokens
+- normalize layouts
+- normalize page headers
+- normalize section headers
+- normalize status components
+- normalize form components
+- normalize table and list components
+- normalize state components
+- normalize dialogs and drawers
+- normalize timeline
+- normalize wizard
+- normalize dashboard widget shell
+
+
+## pass 5 — application shells and navigation
+
+- public shell
+- guest shell
+- personal application shell
+- organization shell
+- moderation shell
+- administration shell
+- desktop sidebar
+- mobile navigation
+- header
+- breadcrumbs
+- switchers
+- badges
+
+
+## pass 6 — route and page consolidation
+
+- merge duplicate routes
+- migrate legacy pages
+- create safe redirects
+- remove orphaned pages
+- update links
+- update notifications
+- update tests
+- update documentation
+
+
+## pass 7 — public portal
+
+- public home
+- public directories
+- public profiles
+- public search
+- public safety and help
+- seo
+- localized metadata
+
+
+## pass 8 — authenticated dashboard and workspaces
+
+- dashboard registry
+- role widgets
+- pet context
+- organization context
+- workspace switching
+- dashboard preferences
+- urgent task priority
+
+
+## pass 9 — global search and discovery
+
+- provider registry
+- permission scopes
+- result components
+- filters
+- saved searches
+- recent items
+- recommendation explanations
+- privacy controls
+
+
+## pass 10 — feed, command palette, and quick actions
+
+- canonical feed
+- feed item reuse
+- command registry
+- quick actions
+- keyboard behaviour
+- mobile behaviour
+- action authorization
+
+
+## pass 11 — notifications, messages, and calendar
+
+- notification centre
+- unread counts
+- contextual inbox entry
+- calendar aggregation
+- deep links
+- preference integration
+
+
+## pass 12 — settings, support, moderation, and administration
+
+- canonical settings
+- security settings
+- data export
+- account deletion
+- support centre
+- moderation queues
+- administration navigation
+- privileged-access indicators
+
+
+## pass 13 — cross-module workflows
+
+- implement every workflow registry journey
+- remove dead ends
+- add missing links
+- preserve context
+- add safe fallback states
+- add tests
+
+
+## pass 14 — repository-wide ui migration
+
+- migrate every remaining page in the ui migration matrix
+- remove duplicate components
+- remove duplicate css
+- remove obsolete javascript
+- verify all consumers
+- update design documentation
+
+
+## pass 15 — factories, seeders, and integrated demo data
+
+- complete factories
+- complete states
+- build coherent portal seed graphs
+- verify fresh database
+- verify idempotent reference seeders
+- verify all role dashboards
+
+
+## pass 16 — security, accessibility, localization, and performance
+
+- authorization review
+- search-leak review
+- cache-scope review
+- accessibility review
+- keyboard review
+- responsive review
+- every-locale review
+- query review
+- livewire-payload review
+- frontend-asset review
+
+
+## pass 17 — complete verification
+
+run every applicable quality gate from the master prompt
+
+fix all discovered regressions
+
+
+## pass 18 — final documentation synchronization
+
+- re-read every first-party markdown file
+- update factual implementation paths
+- update requirement status
+- update route and page maps
+- update ui component inventory
+- update ui migration matrix
+- update changelog
+- update deployment documentation
+- inspect final diff
+- commit and push according to repository rules
+
+
+# 37. point 12 definition of done
+
+point 12 is complete only when:
+
+- every active first-party module appears in the canonical module registry
+- every active page appears in the page map
+- every active route appears in the route matrix
+- every critical workflow appears in the workflow registry
+- every major feature has a discoverable entry point
+- no major orphan page remains
+- duplicate routes are merged or safely redirected
+- old unsupported pages are removed or archived safely
+- the public portal is coherent
+- the authenticated portal is coherent
+- personal and organization contexts are visually clear
+- active-pet switching is safe
+- active-organization switching is safe
+- navigation is capability-aware
+- navigation is not used as authorization
+- mobile navigation is complete and accessible
+- desktop navigation is complete and accessible
+- breadcrumbs are consistent
+- global search respects privacy, blocks, roles, and tenants
+- discovery is explainable and controllable
+- feed implementations use shared components
+- dashboard implementations use a shared widget framework
+- role dashboards show relevant information
+- urgent welfare and safety tasks have priority
+- the command palette is authorized and accessible
+- quick actions confirm the active pet or organization
+- one canonical notification centre exists
+- notification deep links reauthorize resources
+- one calendar overview aggregates authorized sources
+- one settings architecture exists
+- one support and safety entry exists
+- organization, professional, seller, moderator, and administrator workspaces use the same design system
+- all cross-module workflows have no dead ends
+- all pages have loading, empty, error, offline, unauthorized, and unavailable states
+- all existing pages use canonical shared components where a shared component is appropriate
+- all duplicate page headers are removed
+- all duplicate status badges are removed
+- all duplicate form-field patterns are removed
+- all duplicate table and responsive-list patterns are removed
+- all duplicate modal and drawer patterns are removed
+- all duplicate empty and loading states are removed
+- design tokens are canonical
+- repeated arbitrary tailwind values are removed or justified
+- no unsafe dynamic tailwind classes remain
+- all supported locales remain functional
+- long translated text is verified
+- right-to-left layout is verified where supported
+- mobile layouts are verified
+- desktop layouts are verified
+- keyboard access is verified
+- screen-reader names are verified
+- focus behaviour is verified
+- reduced motion is verified
+- forced colours are reviewed for critical controls
+- no private data leaks through search, navigation, metadata, notifications, caches, or deep links
+- every protected route and livewire mutation has authorization tests
+- factories cover integrated portal states
+- seeders create a coherent demo portal
+- fresh migration passes
+- fresh migration plus seeding passes
+- reference seeders are idempotent
+- full php tests pass
+- static analysis passes
+- formatting passes
+- architecture tests pass
+- production frontend build passes
+- browser tests pass where applicable
+- no critical browser console errors remain
+- query regressions are resolved
+- livewire payload regressions are resolved
+- final documentation matches the implemented application
+- the compliance matrix contains factual statuses
+- the ui component inventory is complete
+- the ui migration matrix is complete
+- no placeholder, disconnected prototype, unfinished todo, or documentation-only implementation remains
+
+
+# 38. required point 12 final-report additions
+
+in addition to the complete final report required by the master prompt, include:
+
+
+## 38.1 portal inventory
+
+report:
+
+- total first-party routes audited
+- total active routes
+- total legacy routes redirected
+- total routes removed
+- total pages audited
+- total orphan pages discovered
+- total orphan pages resolved
+- total modules documented
+- total workflows documented
+
+
+## 38.2 layouts and navigation
+
+report:
+
+- layouts preserved
+- layouts improved
+- layouts merged
+- sidebars consolidated
+- headers consolidated
+- mobile-navigation implementation
+- breadcrumb implementation
+- pet-switcher implementation
+- organization-switcher implementation
+- permission and authorization changes
+
+
+## 38.3 public portal
+
+report:
+
+- public pages created or modernized
+- public directories
+- public search
+- seo changes
+- privacy protections
+- localized metadata
+
+
+## 38.4 dashboards and workspaces
+
+report:
+
+- dashboard framework
+- widget count
+- role dashboards
+- workspace types
+- user customization
+- urgent-priority logic
+- query and payload measurements
+
+
+## 38.5 search and discovery
+
+report:
+
+- searchable entity types
+- provider architecture
+- privacy scopes
+- block and tenant protections
+- search performance
+- saved searches
+- recommendation explanations
+- sponsored-result handling
+
+
+## 38.6 notifications, messaging, and calendar
+
+report:
+
+- notification categories
+- deep-link handling
+- unread-count implementation
+- inbox integration
+- contextual conversations
+- calendar sources
+- time-zone handling
+
+
+## 38.7 design standardization
+
+report:
+
+- interface patterns audited
+- shared components preserved
+- shared components improved
+- shared components created
+- duplicate components removed
+- existing pages migrated
+- design tokens added or changed
+- repeated arbitrary values removed
+- obsolete css removed
+- obsolete javascript removed
+- responsive defects fixed
+- accessibility defects fixed
+- localization-layout defects fixed
+- dark-mode defects fixed where applicable
+- right-to-left defects fixed where applicable
+- component inventory location
+- ui migration matrix location
+
+
+## 38.8 cross-module workflows
+
+report the verification result for:
+
+- registration and onboarding
+- pet creation
+- social workflow
+- care workflow
+- medical workflow
+- lost-pet workflow
+- marketplace workflow
+- service-booking workflow
+- shelter and adoption workflow
+- event workflow
+- organization workflow
+- notification deep links
+
+
+## 38.9 tests
+
+report:
+
+- route tests
+- page tests
+- navigation tests
+- context-switch tests
+- dashboard tests
+- search tests
+- discovery tests
+- feed tests
+- command-palette tests
+- notification tests
+- calendar tests
+- settings tests
+- localization tests
+- accessibility tests
+- architecture tests
+- browser tests
+- query-count tests
+- exact commands
+- exact totals
+- exact results
+
+
+begin implementation now
+
+first read the root and nested agents instructions and every first-party markdown file
+
+then inspect the complete repository, including every route, page, layout, livewire component, blade component, flux component, tailwind pattern, role, policy, module, translation, test, factory, and seeder
+
+protect existing changes
+
+capture the factual baseline
+
+create the canonical module registry
+
+create the complete route matrix
+
+create the complete page map
+
+create the workflow registry
+
+create the ui component inventory
+
+create the ui migration matrix
+
+rewrite the canonical requirements and implementation plan
+
+then immediately continue implementing the entire portal architecture in the existing codebase
+
+do not return after analysis
+
+do not return after route discovery
+
+do not return after documentation
+
+do not return after planning
+
+do not leave old inconsistent pages unchanged
+
+do not create a separate prototype portal
+
+continue through shared-component modernization, route consolidation, navigation, dashboards, global search, discovery, feed integration, command palette, quick actions, notifications, calendar, settings, workspaces, cross-module workflows, responsive design, accessibility, localization, security, performance, factories, seeders, php tests, browser verification, final documentation synchronization, diff review, commit, and push according to repository rules
+</portal-architecture-source-revision>
+
+## Source Part J: Events And Complete Lifecycle Revision
+
+- Source timestamp: `1785545026`
+- Event revision raw payload SHA-256: `4f50cc5f41f0fb4b519dd9811e0f0e6ab1df5b2bdb5f8f7870825a0a4c27a8de`
+- Event master raw payload SHA-256: `cbb7d3a36f3750106c4751191ddd7d882d922ce0ae0e0b12aed318c809206ea1`
+- Checksum payload: prior portal master, two LF characters, exact event revision
+
+<event-lifecycle-source-revision>
+# continuation of the complete modernization master prompt — point 13
+
+# events, meetups, group walks, training sessions, workshops, exhibitions, conferences, webinars, competitions, volunteer shifts, registrations, tickets, schedules, venues, organizers, participants, pets, check-in, safety, incidents, results, feedback, and the complete event lifecycle
+
+the complete modernization master instruction and every previously supplied point-specific continuation are incorporated into this task verbatim and remain fully binding
+
+this point does not replace, summarize, weaken, or override any earlier requirement
+
+all repository-wide requirements remain mandatory, including:
+
+- php 8.5
+- laravel 13
+- the latest stable compatible livewire 4 release
+- the latest stable compatible tailwind css 4 release
+- normal class-based livewire components
+- no livewire volt
+- no @php or @endphp in first-party blade templates
+- no database, model, service, action, facade, or container calls from blade
+- reuse of the existing localization architecture
+- preservation of all supported locales
+- complete authorization
+- complete validation
+- complete factories
+- meaningful factory states
+- complete seeders
+- comprehensive php tests
+- static analysis
+- accessibility
+- responsive behaviour
+- security
+- performance
+- repository-wide shared ui and ux standardization
+- maximum reuse of existing first-party shared components
+- migration of older inconsistent pages to canonical shared components
+- final documentation synchronization
+- final diff review
+- commit and push according to repository rules
+
+this is not a documentation-only task
+
+this is not a route-only task
+
+this is not a mockup task
+
+this is not a prototype
+
+this is not an isolated events application
+
+you must inspect the complete existing repository and integrate the event system into the canonical portal architecture defined by point 12
+
+reuse existing:
+
+- users
+- households
+- pets
+- organizations
+- specialists
+- locations
+- maps
+- payments
+- orders
+- bookings
+- calendars
+- messages
+- notifications
+- documents
+- media
+- groups
+- communities
+- marketplace
+- shelter
+- foster
+- adoption
+- lost-and-found
+- moderation
+- reports
+- safety incidents
+- translations
+- shared components
+- layouts
+- policies
+- actions
+- factories
+- seeders
+- tests
+
+do not create a second parallel implementation when a valid existing domain object or service already exists
+
+when an existing implementation is incomplete, inconsistent, insecure, inaccessible, unlocalized, or architecturally obsolete, improve it and migrate its consumers
+
+do not leave existing event pages unchanged merely because they were created before this prompt
+
+do not ask routine clarification questions
+
+resolve ambiguities by inspecting repository evidence and selecting the safest, most maintainable, accessible, localized, animal-welfare-oriented, and backward-compatible interpretation
+
+continue through:
+
+1. repository analysis
+2. documentation normalization
+3. requirements creation
+4. compliance-matrix update
+5. implementation planning
+6. shared-component modernization
+7. database implementation
+8. domain implementation
+9. livewire implementation
+10. ui and ux implementation
+11. factories
+12. factory states
+13. seeders
+14. php tests
+15. browser verification
+16. security review
+17. accessibility review
+18. localization review
+19. performance review
+20. final documentation synchronization
+21. final diff review
+22. commit
+23. push according to repository rules
+
+
+# 0. primary mission of point 13
+
+implement one complete event-management system for the entire portal
+
+the system must support:
+
+- public events
+- private events
+- unlisted events
+- organization-only events
+- group-only events
+- invitation-only events
+- free events
+- paid events
+- one-time events
+- recurring events
+- multi-day events
+- in-person events
+- online events
+- hybrid events
+- social meetups
+- group walks
+- educational workshops
+- training sessions
+- seminars
+- conferences
+- webinars
+- exhibitions
+- shows
+- competitions
+- adoption days
+- shelter open days
+- fundraising events
+- volunteer shifts
+- organization meetings
+- marketplace fairs
+- specialist consultations
+- pet-friendly community events
+- emergency coordination meetings
+- controlled animal introductions
+- event series
+- sessions and tracks
+- participant registration
+- pet registration
+- teams
+- ticket types
+- payments
+- refunds
+- discounts
+- donations separated from ticket fees
+- capacity management
+- waiting lists
+- invitations
+- check-in
+- check-out
+- attendance
+- qr tickets
+- manual check-in
+- offline check-in
+- event announcements
+- participant communication
+- safety plans
+- weather plans
+- incidents
+- medical escalation
+- lost-pet escalation
+- results
+- rankings
+- certificates
+- feedback
+- event reports
+- cancellation
+- postponement
+- rescheduling
+- archiving
+
+the event system must integrate with the portal and must not feel like an unrelated external ticketing application
+
+
+# 1. fundamental event principles
+
+
+## event-core-001 — animal welfare has priority over attendance and revenue
+
+requirement:
+
+- do not approve or continue an event when the event creates an unreasonable risk to animals
+- do not prioritize ticket revenue over temperature, crowd, noise, species, health, rest, hydration, transport, or handling concerns
+- allow authorized safety staff to pause or stop an activity
+- do not punish a participant for leaving early to protect an animal
+
+acceptance:
+
+- every animal-participation event has an explicit welfare and safety model
+- welfare concerns can block registration or an activity with a documented reason
+- event completion analytics do not treat an early welfare-related departure as ordinary participant failure
+
+
+## event-core-002 — an event is not automatically suitable for every pet
+
+requirement:
+
+each event must distinguish:
+
+- humans only
+- pets optional
+- pets required
+- selected species only
+- selected size or age categories
+- animals participating directly
+- animals attending only as visitors
+- service or assistance animals handled according to applicable requirements
+- no general animal attendance because the environment is unsuitable
+
+acceptance:
+
+- the event page clearly shows whether animals may attend
+- registration validates the correct participant type
+- pet restrictions are not hidden until check-in
+
+
+## event-core-003 — unknown does not mean eligible or safe
+
+requirement:
+
+important eligibility fields must support:
+
+- confirmed
+- reported by participant
+- verified by organization
+- verified by professional
+- unknown
+- not assessed
+- expired
+- not applicable
+- disputed
+- requires manual review
+
+acceptance:
+
+- missing vaccination, health, behaviour, identity, qualification, or document data is never silently interpreted as confirmed
+
+
+## event-core-004 — observation is not diagnosis
+
+requirement:
+
+- organizers may record factual observations and incidents
+- organizers must not convert observations into unsupported medical diagnoses
+- ai must not diagnose an animal from media, movement, event behaviour, or registration answers
+- medical conclusions must come through the authorized medical workflow
+
+acceptance:
+
+- event incident records preserve the observer, time, context, and source
+- medical records remain in the existing medical module
+
+
+## event-core-005 — no harmful or exploitative event activities
+
+the platform must reject or suspend events whose primary activity includes:
+
+- deliberate pain
+- deliberate fear
+- forced exhaustion
+- unsafe restraint
+- dangerous temperature exposure
+- harmful weight or endurance demands
+- forced contact between incompatible animals
+- uncontrolled fighting
+- illegal animal trade
+- sale of live animals through ordinary marketplace mechanics
+- unlawful wildlife activity
+- harmful substances
+- betting on animal injury or suffering
+- other activities prohibited by current platform safety requirements
+
+adoption events must use the adoption module and must not become ordinary live-animal sales
+
+
+## event-core-006 — no gambling or betting on animal results
+
+requirement:
+
+- do not implement wagers on race, show, competition, health, behaviour, or animal performance
+- prizes may be supported when lawful and safe, but betting must not be introduced as an event feature
+
+acceptance:
+
+- payment models do not contain betting stakes or gambling payouts
+
+
+## event-core-007 — exact private locations are restricted
+
+requirement:
+
+events may take place at:
+
+- public venues
+- organization locations
+- private homes
+- foster locations
+- private training spaces
+- temporary meeting locations
+
+exact private locations must not be publicly indexed or exposed before authorization
+
+acceptance:
+
+- public pages may show an approximate region
+- exact private location is revealed only to approved participants at the correct time
+- exact location does not leak through metadata, maps, search, api resources, notifications, files, or media
+
+
+## event-core-008 — registration is not approval when review is required
+
+requirement:
+
+clearly distinguish:
+
+- interest recorded
+- registration requested
+- registration pending review
+- documents required
+- approved
+- waitlisted
+- ticket reserved
+- paid
+- fully confirmed
+- checked in
+- attended
+- completed
+
+acceptance:
+
+- a participant never receives a confirmed ticket merely because a form was submitted
+
+
+## event-core-009 — payment does not override eligibility
+
+requirement:
+
+- a successful payment must not force approval when an animal or participant fails a safety requirement
+- where payment occurs before final approval, refund and hold rules must be explicit
+- payment amount must not improve competition eligibility, judging, speaking selection, adoption access, or safety decisions
+
+acceptance:
+
+- eligibility and payment remain separate state machines
+
+
+## event-core-010 — no artificial urgency
+
+do not use:
+
+- false remaining-seat counts
+- false countdowns
+- false ticket scarcity
+- resettable timers
+- false registration deadlines
+- false waitlist pressure
+- misleading popularity labels
+
+real limits and deadlines must be based on actual capacity and configured dates
+
+
+## event-core-011 — no silent event changes
+
+material changes must notify affected participants
+
+material changes include:
+
+- date
+- time
+- time zone
+- venue
+- exact meeting point
+- event type
+- online versus in-person format
+- organizer
+- activity
+- eligibility
+- ticket price
+- cancellation terms
+- pet requirements
+- safety rules
+- schedule
+- speaker
+- judge
+- competition rules
+- recording policy
+
+every registration must retain the version accepted by the participant
+
+
+## event-core-012 — the current event status must be authoritative
+
+event cards, search, notifications, calendars, tickets, emails, qr pages, and social shares must display the same current status
+
+examples:
+
+- cancelled
+- postponed
+- registration closed
+- full
+- waitlist open
+- live
+- completed
+- suspended
+- moved online
+
+stale pages must not continue accepting registration
+
+
+## event-core-013 — attendee lists are private by default
+
+do not publish the complete participant or pet list without explicit purpose and consent
+
+organizers may publish controlled information such as:
+
+- public speakers
+- judges
+- approved vendors
+- organizing team
+- competition entries when the rules require public entries
+- participants who explicitly opted into a public attendee list
+
+private registration data must remain private
+
+
+## event-core-014 — no hidden recording
+
+requirement:
+
+- disclose photography, video, audio, livestream, and recording policies before registration
+- allow appropriate consent or opt-out handling
+- provide specific handling for minors and protected participants
+- do not use general portal terms as the only disclosure for event recording
+
+acceptance:
+
+- media consent is versioned and linked to the registration
+- restricted media areas and participant preferences can be communicated to authorized event staff
+
+
+## event-core-015 — accessibility information must be factual
+
+the organizer must distinguish:
+
+- confirmed accessible
+- partially accessible
+- accessibility information supplied by venue
+- accommodation available on request
+- not assessed
+- inaccessible for a documented reason
+
+do not use a generic accessible badge without explaining the supported conditions
+
+
+## event-core-016 — recurring events require instance-level truth
+
+an event series and one specific occurrence are different objects
+
+a change to one occurrence must not silently rewrite every past or future occurrence
+
+support:
+
+- series defaults
+- instance overrides
+- skipped occurrences
+- moved occurrences
+- cancelled occurrences
+- additional occurrences
+- instance-specific registration
+- series-wide registration only when intentional
+
+
+## event-core-017 — no duplicate independent event records
+
+detect possible duplicates based on:
+
+- organizer
+- title
+- time
+- venue
+- series
+- imported external identifier
+- group
+- organization
+- related booking
+
+do not merge automatically when two legitimate events happen at the same location and time
+
+
+## event-core-018 — event ownership and organization responsibility are separate
+
+represent separately:
+
+- event creator
+- event owner
+- responsible organization
+- primary organizer
+- co-organizer
+- venue
+- host
+- ticket payment recipient
+- safety lead
+- check-in lead
+- competition director
+- speaker
+- trainer
+- judge
+
+one account must not receive every permission merely because it created the initial draft
+
+
+## event-core-019 — cancellation must not erase history
+
+a cancelled event must preserve:
+
+- registrations
+- accepted terms
+- payments
+- refunds
+- announcements
+- schedule
+- reason
+- organizer
+- audit
+- incidents
+- feedback where appropriate
+
+do not delete the event to hide the cancellation
+
+
+## event-core-020 — no final ai decisions
+
+ai may:
+
+- suggest duplicate events
+- summarize feedback
+- suggest schedule conflicts
+- detect missing fields
+- suggest translation drafts
+- identify possible safety-review needs
+- summarize incident records
+
+ai must not:
+
+- approve animal eligibility
+- reject a participant
+- decide a competition winner
+- issue a medical conclusion
+- decide an incident fault
+- cancel an event automatically without an authorized rule and human review
+- create an invisible participant risk score
+
+
+# 2. event types
+
+
+## event-type-001 — controlled event-type registry
+
+create a canonical typed registry or enum for supported event types
+
+each type must define:
+
+- stable key
+- translated name
+- translated description
+- category
+- permitted organizer types
+- participant model
+- pet-participation model
+- required fields
+- optional fields
+- eligibility template
+- safety template
+- scheduling model
+- ticketing support
+- session support
+- competition support
+- online support
+- recurrence support
+- public-directory support
+- default design icon
+- default status mapping
+- factory state
+- seeder scenario
+- tests
+
+
+## event-type-002 — social meetup
+
+support informal community meetings with:
+
+- host
+- participants
+- optional pets
+- meeting point
+- capacity
+- basic rules
+- communication
+- check-in
+- cancellation
+- privacy
+
+
+## event-type-003 — group walk
+
+support:
+
+- route
+- distance
+- expected duration
+- surface
+- terrain
+- pace
+- difficulty
+- leash rules
+- group leaders
+- rest points
+- water points
+- weather rules
+- emergency exit points
+- participant and pet eligibility
+- start and finish check-in
+
+
+## event-type-004 — training session
+
+support:
+
+- trainer
+- training method
+- class level
+- prerequisites
+- maximum animals
+- observer-only participants
+- required equipment
+- prohibited equipment
+- lesson plan
+- homework or resources
+- controlled animal interactions
+- welfare stop rules
+
+
+## event-type-005 — workshop or seminar
+
+support:
+
+- instructor
+- learning goals
+- materials
+- participant level
+- practical or theoretical format
+- animals required or optional
+- capacity
+- sessions
+- certificates where justified
+
+
+## event-type-006 — conference
+
+support:
+
+- tracks
+- sessions
+- speakers
+- moderators
+- rooms
+- livestreams
+- sponsor disclosures
+- professional materials
+- attendee networking controls
+- recordings
+- captions
+- certificates only when verified
+
+
+## event-type-007 — webinar or online event
+
+support:
+
+- platform
+- access link
+- access time
+- time zone
+- moderators
+- participant chat
+- question submission
+- recording
+- caption or transcript status
+- link revocation
+- attendance evidence where required
+
+
+## event-type-008 — hybrid event
+
+support separate:
+
+- in-person capacity
+- online capacity
+- ticket type
+- check-in method
+- schedule access
+- venue information
+- livestream access
+- recording consent
+- refund consequences when format changes
+
+
+## event-type-009 — exhibition or show
+
+support:
+
+- exhibitors
+- display areas
+- booth assignments
+- animal display rules
+- rest requirements
+- noise and temperature requirements
+- visitor access
+- judging where applicable
+- vendor separation
+- adoption-module integration when adoptable animals are present
+
+
+## event-type-010 — competition
+
+support:
+
+- competition
+- categories
+- divisions
+- eligibility
+- entries
+- teams
+- judges
+- scoring
+- disqualification
+- welfare withdrawal
+- results
+- appeals
+- prizes
+- certificates
+- anti-cheating
+- conflict of interest
+
+
+## event-type-011 — adoption day
+
+support:
+
+- verified shelter or rescue organization
+- adoptable-animal profiles
+- meeting registration
+- application integration
+- controlled handover rules
+- no impulse sale
+- no bidding
+- no ordinary marketplace purchase flow
+- private foster-location protection
+
+
+## event-type-012 — shelter open day
+
+support:
+
+- visitor registration
+- capacity
+- public and restricted areas
+- volunteer schedule
+- donation separation
+- media consent
+- animal rest areas
+- no unauthorized animal contact
+
+
+## event-type-013 — fundraising event
+
+support:
+
+- beneficiary organization
+- stated purpose
+- ticket fee
+- donation separation
+- sponsor disclosure
+- payment recipient
+- financial reporting where required
+- no influence on adoption or competition decisions
+
+
+## event-type-014 — volunteer shift
+
+support:
+
+- organization
+- location
+- role
+- capacity
+- required training
+- age requirements
+- check-in
+- check-out
+- safety equipment
+- assigned tasks
+- incident reporting
+
+
+## event-type-015 — organization meeting
+
+support:
+
+- organization-only visibility
+- role requirements
+- agenda
+- documents
+- attendance
+- decisions where applicable
+- minutes
+- private location
+- no public indexing
+
+
+## event-type-016 — marketplace fair
+
+support:
+
+- verified sellers
+- vendor booths
+- prohibited product enforcement
+- payment rules
+- organizer responsibility
+- participant tickets
+- product-safety incidents
+- sponsor disclosure
+- no sale of live animals through ordinary marketplace mechanics
+
+
+## event-type-017 — controlled animal introduction
+
+support:
+
+- animals
+- responsible handlers
+- professional supervisor where required
+- neutral or approved location
+- barriers
+- distance
+- equipment
+- start and stop rules
+- observations
+- incident escalation
+- no public spectator access unless appropriate
+
+
+## event-type-018 — custom event type
+
+allow an authorized organizer to select a custom event only through a controlled base template
+
+a custom type must still define:
+
+- participant model
+- pet attendance
+- location
+- safety
+- capacity
+- privacy
+- cancellation
+- communication
+- check-in
+- moderation category
+
+
+# 3. event lifecycle
+
+
+## event-life-001 — event states
+
+use controlled enums and explicit transitions
+
+support states equivalent to:
+
+- draft
+- incomplete
+- awaiting organizer verification
+- awaiting organization approval
+- awaiting venue confirmation
+- awaiting safety review
+- scheduled
+- published
+- registration scheduled
+- registration open
+- registration paused
+- registration closed
+- full
+- waitlist only
+- postponed
+- moved
+- format changed
+- cancelled
+- safety suspended
+- live
+- completed
+- results pending
+- archived
+- rejected
+- deleted through the approved retention workflow
+
+
+## event-life-002 — draft
+
+a draft:
+
+- is visible only to authorized organizers
+- may be incomplete
+- does not appear in public search
+- does not accept registration
+- may be duplicated as a template
+- has an owner
+- has a last editor
+- has a saved version
+
+
+## event-life-003 — publication readiness
+
+before publication validate:
+
+- organizer identity
+- organization authority
+- event type
+- title
+- description
+- date and time
+- time zone
+- venue or online format
+- capacity
+- participant rules
+- pet rules
+- safety information
+- cancellation policy
+- ticket information
+- privacy
+- media policy
+- accessibility information
+- required documents
+- contact channel
+
+
+## event-life-004 — publication approval
+
+risk-sensitive events may require:
+
+- organization approval
+- venue approval
+- safety review
+- professional qualification review
+- competition-rule review
+- marketplace-vendor review
+- shelter verification
+
+approval must record:
+
+- reviewer
+- version
+- date
+- decision
+- reason
+- expiry where applicable
+
+
+## event-life-005 — registration scheduling
+
+allow registration to:
+
+- open immediately
+- open at a configured time
+- close at a configured time
+- close when capacity is reached
+- continue as a waitlist
+- pause manually
+- pause automatically after a safety hold
+
+
+## event-life-006 — live state
+
+the event can enter live state through:
+
+- configured start
+- authorized manual activation
+- first check-in where policy permits
+
+live state may enable:
+
+- check-in
+- attendee announcements
+- incident dashboard
+- live schedule
+- session attendance
+- scoring
+- result entry
+
+
+## event-life-007 — completion
+
+completion requires the event to finish active operational tasks such as:
+
+- open incident triage
+- incomplete competition scoring
+- unresolved check-in conflict
+- missing required staff report
+- pending participant safety status
+
+the event may be marked physically finished while administrative completion remains pending
+
+
+## event-life-008 — archive
+
+archived events remain available according to permission and retention rules for:
+
+- tickets
+- receipts
+- results
+- certificates
+- attendance
+- incidents
+- organizer reports
+- participant history
+- public result pages where appropriate
+
+
+## event-life-009 — event correction
+
+material historical facts must not be silently rewritten after completion
+
+corrections must preserve:
+
+- original value
+- corrected value
+- author
+- reason
+- time
+- affected participants
+- notification requirement
+
+
+# 4. organizers and event teams
+
+
+## event-org-001 — organizer types
+
+support organizers such as:
+
+- verified organization
+- shelter
+- rescue organization
+- professional
+- verified trainer
+- verified venue
+- community group
+- ordinary user for low-risk community meetups
+- platform administrator for official events
+
+high-risk event types must require a suitable verified organizer
+
+
+## event-org-002 — event ownership
+
+every event must have:
+
+- one authoritative owner
+- at least one active primary organizer
+- optional co-organizers
+- a responsible organization where applicable
+
+ownership transfer must be audited and must not silently change payment or participant-data access
+
+
+## event-org-003 — event roles
+
+support scoped roles such as:
+
+- event owner
+- event administrator
+- primary organizer
+- co-organizer
+- schedule manager
+- registration manager
+- ticket manager
+- payment reviewer
+- check-in operator
+- safety lead
+- welfare officer
+- medical contact
+- route leader
+- trainer
+- speaker
+- session moderator
+- judge
+- scorekeeper
+- vendor coordinator
+- volunteer coordinator
+- media coordinator
+- read-only auditor
+
+
+## event-org-004 — role permissions
+
+each role must explicitly define access to:
+
+- event editing
+- publication
+- participant data
+- pet data
+- health requirement status
+- exact location
+- payments
+- refunds
+- check-in
+- incidents
+- private messages
+- documents
+- scoring
+- results
+- exports
+- staff management
+
+
+## event-org-005 — invitation
+
+event-team invitations must:
+
+- be signed
+- expire
+- identify event and role
+- be single-use
+- require the correct account
+- respect organization membership
+- be revocable
+- be audited
+
+
+## event-org-006 — staff removal
+
+removing a team member must revoke:
+
+- new participant access
+- exact locations
+- private attendee data
+- payment access
+- check-in access
+- scoring access
+- incident access
+- event-team chat access
+- active sessions where required
+
+historical authored records must remain attributable
+
+
+## event-org-007 — conflict of interest
+
+require disclosure and reassignment where appropriate for:
+
+- judge evaluating their own animal
+- judge evaluating a household member
+- scorekeeper with direct competition interest
+- organizer processing their own refund
+- reviewer approving their own vendor application
+- moderator reviewing their own event
+- prize decision affecting a connected participant
+
+
+## event-org-008 — organizer suspension
+
+support independent restrictions for:
+
+- creating events
+- publishing
+- accepting registration
+- accepting payment
+- accessing participant data
+- running check-in
+- entering results
+- creating new organizer invitations
+
+active participant safety information must remain available to an appropriate emergency team
+
+
+# 5. event creation and editing
+
+
+## event-create-001 — canonical event builder
+
+implement one shared event-builder architecture with controlled type-specific sections
+
+the builder must support:
+
+- basic information
+- format
+- date and time
+- recurrence
+- location
+- schedule
+- participants
+- pets
+- eligibility
+- capacity
+- tickets
+- payments
+- waitlist
+- safety
+- weather
+- accessibility
+- media
+- privacy
+- organizers
+- communication
+- publication review
+
+
+## event-create-002 — save and resume
+
+the builder must:
+
+- save drafts idempotently
+- show save state
+- preserve validation errors
+- identify missing sections
+- work on mobile
+- avoid duplicate events from repeated submission
+- preserve locale
+- preserve organizer context
+
+
+## event-create-003 — event title
+
+the title must:
+
+- describe the event
+- avoid misleading official claims
+- avoid false emergency language
+- avoid unsupported medical claims
+- avoid spam
+- avoid invisible unicode abuse
+- support all portal locales
+
+
+## event-create-004 — event description
+
+support structured sections instead of one uncontrolled text field
+
+possible sections:
+
+- overview
+- goals
+- audience
+- activities
+- pet participation
+- requirements
+- what to bring
+- safety
+- accessibility
+- schedule
+- cancellation
+- organizer information
+
+
+## event-create-005 — rich content
+
+rich content must:
+
+- pass sanitization
+- block scripts
+- block unsafe embeds
+- block hidden tracking
+- preserve accessible headings
+- preserve links safely
+- support translation
+- prevent dangerous instructions
+
+
+## event-create-006 — event media
+
+support:
+
+- cover image
+- gallery
+- video
+- venue map
+- speaker media
+- sponsor logos
+- schedule files
+- safety diagrams
+
+media must use the canonical secure media system and must not expose private metadata
+
+
+## event-create-007 — preview
+
+organizers must be able to preview:
+
+- public page
+- authenticated page
+- mobile card
+- desktop card
+- social preview
+- registration page
+- ticket summary
+- notification summary
+- every supported locale where translations exist
+
+
+## event-create-008 — version history
+
+preserve versions for:
+
+- publication
+- participant acceptance
+- ticket purchase
+- competition rule acceptance
+- media consent
+- cancellation policy
+- safety rules
+
+
+## event-create-009 — duplication
+
+an organizer may duplicate an event as a new draft
+
+do not copy:
+
+- participant registrations
+- tickets
+- payments
+- check-ins
+- incidents
+- results
+- private messages
+- expired access links
+
+review dates, location, price, and policies before publication
+
+
+## event-create-010 — templates
+
+organizations may maintain controlled templates for repeated event types
+
+templates must be:
+
+- versioned
+- organization-scoped
+- localized
+- permission-controlled
+- safe to update without rewriting existing events
+
+
+# 6. date, time, recurrence, and schedule
+
+
+## event-time-001 — time-zone strategy
+
+every event must define its authoritative time zone
+
+show:
+
+- venue-local time
+- user-local time where different
+- explicit time-zone label
+- daylight-saving effects
+
+
+## event-time-002 — date validation
+
+validate:
+
+- end after start
+- registration dates
+- cancellation deadline
+- ticket-sale deadline
+- check-in window
+- session times
+- recurrence
+- result deadline
+- refund deadline
+
+
+## event-time-003 — all-day and multi-day events
+
+support:
+
+- all-day events
+- overnight events
+- multi-day conferences
+- multi-day exhibitions
+- daily opening hours
+- overnight animal-care responsibility
+- per-day tickets
+- full-event tickets
+
+
+## event-time-004 — recurring series
+
+support recurrence rules such as:
+
+- daily
+- weekly
+- selected weekdays
+- monthly
+- custom interval
+- fixed occurrence list
+
+do not rely on a recurrence string without validating actual generated instances
+
+
+## event-time-005 — instance overrides
+
+one occurrence may override:
+
+- date
+- time
+- venue
+- capacity
+- price
+- trainer
+- route
+- schedule
+- cancellation
+- format
+
+preserve the series default and instance-specific version
+
+
+## event-time-006 — schedule
+
+support:
+
+- tracks
+- sessions
+- breaks
+- registration period
+- check-in period
+- doors open
+- pet rest periods
+- welfare checks
+- meals
+- competition categories
+- award ceremony
+- networking
+- vendor hours
+
+
+## event-time-007 — session conflicts
+
+detect conflicts for:
+
+- rooms
+- speakers
+- judges
+- trainers
+- staff
+- animals
+- equipment
+- participant-selected sessions
+
+allow authorized override with an explanation where the conflict is not real
+
+
+## event-time-008 — session capacity
+
+sessions may have separate capacity from the main event
+
+support:
+
+- automatic inclusion
+- optional reservation
+- required reservation
+- session waitlist
+- accessibility allocation
+- staff allocation
+
+
+## event-time-009 — schedule changes
+
+notify affected participants when:
+
+- selected session changes
+- room changes
+- speaker changes
+- session is cancelled
+- schedule moves
+- format changes
+
+do not notify unrelated attendees when the change has no effect on them unless it is a general announcement
+
+
+# 7. venue and location
+
+
+## venue-001 — canonical venue entity
+
+reuse the existing place and location architecture
+
+a venue may contain:
+
+- public name
+- organization
+- address
+- coordinates
+- region
+- public-transport information
+- parking
+- accessibility
+- indoor or outdoor status
+- rooms
+- zones
+- maximum capacity
+- pet rules
+- species rules
+- noise limits
+- temperature control
+- water access
+- shade
+- rest area
+- toileting area
+- waste disposal
+- emergency exits
+- evacuation point
+- staff contact
+- public or private visibility
+
+
+## venue-002 — venue verification
+
+distinguish:
+
+- organizer-provided
+- venue-confirmed
+- organization-confirmed
+- platform-verified
+- not assessed
+- information expired
+
+
+## venue-003 — private venue
+
+for a private home, foster location, or restricted organization location:
+
+- show only an approximate public region
+- reveal the exact location after approval where required
+- use expiring access
+- audit exact-location views
+- prevent public indexing
+- remove exact location after access expires
+
+
+## venue-004 — meeting point
+
+large events and walks may have:
+
+- public venue address
+- exact meeting point
+- check-in desk
+- entrance
+- parking entrance
+- route start
+- emergency meeting point
+
+provide accessible textual directions, not only a map marker
+
+
+## venue-005 — venue areas
+
+support areas such as:
+
+- registration
+- main hall
+- training room
+- competition area
+- quiet area
+- animal rest area
+- quarantine or isolation area
+- medical area
+- vendor area
+- staff-only area
+- child-safe area
+- restricted media area
+
+
+## venue-006 — venue capacity
+
+capacity may differ by:
+
+- people
+- animals
+- species
+- room
+- session
+- team
+- vehicle
+- accessibility accommodation
+- staff-to-participant ratio
+
+
+## venue-007 — route-based events
+
+group walks and outdoor events must support:
+
+- route geometry
+- approximate public route
+- private operational route
+- distance
+- elevation where available
+- terrain
+- road crossings
+- surface
+- lighting
+- rest points
+- water
+- exit points
+- emergency access
+- accessibility information
+
+
+## venue-008 — location changes
+
+a material venue change must:
+
+- preserve old value
+- record reason
+- notify affected participants
+- provide a refund or cancellation path where required
+- invalidate old private-location access
+- update calendar and tickets
+
+
+## venue-009 — offline location access
+
+authorized event staff may need an offline-safe package containing:
+
+- venue map
+- meeting point
+- schedule
+- emergency contacts
+- safety plan
+- participant check-in list with minimized data
+- route
+- evacuation point
+
+do not include unnecessary private applicant or medical data
+
+
+# 8. eligibility and requirements
+
+
+## eligibility-001 — requirement registry
+
+support requirements such as:
+
+- human minimum age
+- adult supervision
+- participant role
+- organization membership
+- invitation
+- professional qualification
+- animal species
+- animal minimum or maximum age
+- animal size category
+- health status
+- vaccination status
+- parasite-control status
+- behaviour review
+- equipment
+- training prerequisite
+- previous session completion
+- signed waiver
+- signed media consent
+- payment
+- ticket
+- geographic restriction
+
+
+## eligibility-002 — hard and soft requirements
+
+distinguish:
+
+hard requirement:
+
+- blocks confirmation
+- has a documented reason
+- has an authoritative source
+- can support an exception only through an explicit process
+
+recommendation:
+
+- informs the participant
+- does not silently block registration
+- may require acknowledgement
+
+
+## eligibility-003 — requirement source
+
+every requirement must identify whether it comes from:
+
+- law or authority
+- venue
+- organization
+- event safety plan
+- professional organizer
+- competition rules
+- insurance requirement
+- platform safety rule
+
+
+## eligibility-004 — health information minimization
+
+prefer a verified status such as:
+
+- meets requirement
+- does not meet requirement
+- expired
+- pending verification
+- exception approved
+
+do not expose the complete medical record to ordinary event organizers
+
+
+## eligibility-005 — vaccination or medical status
+
+when required:
+
+- define the exact requirement
+- define accepted evidence
+- define validity period
+- define responsible reviewer
+- define exception handling
+- define privacy
+- define retention
+
+do not request unrelated medical history
+
+
+## eligibility-006 — behaviour and handling requirements
+
+use factual conditions such as:
+
+- requires controlled distance
+- requires separate entrance
+- requires individual session
+- not suitable for free-contact group
+- handler must remain responsible
+- professional introduction required
+- behaviour status not assessed
+
+avoid unsupported stigmatizing labels
+
+
+## eligibility-007 — equipment requirements
+
+support:
+
+- leash
+- harness
+- carrier
+- secure enclosure
+- water
+- waste bags
+- weather protection
+- identification
+- safety equipment
+- species-specific equipment
+
+prohibited equipment must align with platform welfare rules
+
+
+## eligibility-008 — exception
+
+an eligibility exception must contain:
+
+- requirement
+- applicant
+- animal
+- reason
+- reviewer
+- conditions
+- expiry
+- audit
+
+do not use a generic bypass permission
+
+
+## eligibility-009 — changed eligibility
+
+when a requirement changes after registration:
+
+- identify affected registrations
+- notify participants
+- provide time to comply
+- provide cancellation or refund rules
+- avoid retroactive hidden rejection
+
+
+# 9. participant and pet registration
+
+
+## registration-001 — registration types
+
+support:
+
+- individual participant
+- household
+- participant with one pet
+- participant with several pets
+- team
+- organization delegation
+- volunteer
+- exhibitor
+- vendor
+- speaker
+- trainer
+- judge
+- observer
+- online attendee
+- waiting-list registration
+
+
+## registration-002 — registration lifecycle
+
+support controlled states such as:
+
+- draft
+- submitted
+- incomplete
+- pending review
+- documents required
+- payment required
+- payment pending
+- approved
+- approved with conditions
+- waitlisted
+- reserved
+- confirmed
+- checked in
+- partially checked in
+- attended
+- no-show
+- withdrawn
+- cancelled by organizer
+- rejected
+- expired
+- refunded
+- suspended for safety review
+
+
+## registration-003 — registration snapshot
+
+preserve:
+
+- event version
+- participant
+- pets
+- selected ticket
+- selected sessions
+- accepted rules
+- accepted cancellation policy
+- media consent
+- answers
+- documents
+- price
+- currency
+- submission time
+- locale
+- time zone
+
+
+## registration-004 — participant identity
+
+collect only necessary:
+
+- account
+- responsible adult
+- participant name
+- contact
+- emergency contact where justified
+- age confirmation
+- accessibility request
+- ticket holder
+- attendee identity when different
+
+
+## registration-005 — minors
+
+for minors:
+
+- require the appropriate adult or guardian workflow
+- avoid unnecessary school, exact schedule, or public identity data
+- restrict public attendee lists
+- apply recording consent rules
+- define check-in and release responsibility
+
+
+## registration-006 — pet selection
+
+reuse existing pet profiles
+
+the participant must select an authorized pet
+
+the server must verify:
+
+- ownership or approved relationship
+- current access
+- active status
+- species
+- current eligibility
+- block or safety state
+
+
+## registration-007 — guest pet
+
+when allowed, permit a limited guest-pet record with:
+
+- responsible person
+- species
+- name
+- required safety fields
+- temporary identifier
+- event-only retention
+
+do not create a full public pet profile automatically
+
+
+## registration-008 — several pets
+
+one participant may register several pets only when:
+
+- event rules allow it
+- capacity allows it
+- the participant can safely manage them
+- required handlers are registered
+- each pet passes eligibility separately
+
+
+## registration-009 — registration form
+
+use structured event-specific questions
+
+do not allow arbitrary organizer questions without:
+
+- purpose
+- data type
+- required status
+- privacy level
+- retention
+- validation
+- localization
+
+
+## registration-010 — duplicate registration
+
+prevent accidental duplicates based on:
+
+- event occurrence
+- participant
+- pet
+- ticket
+- team
+- registration role
+
+provide an edit or add-participant workflow instead of creating duplicates
+
+
+## registration-011 — registration editing
+
+allow edits according to event state and policy
+
+material changes may require:
+
+- renewed eligibility check
+- price recalculation
+- renewed consent
+- organizer review
+- waitlist recalculation
+
+
+## registration-012 — withdrawal
+
+a participant may withdraw according to policy
+
+withdrawal must:
+
+- release capacity
+- update sessions
+- update pet capacity
+- update team
+- trigger waitlist
+- process refund rules
+- preserve history
+- stop unnecessary reminders
+
+
+## registration-013 — organizer rejection
+
+a rejection must include:
+
+- internal reason
+- participant-safe explanation
+- reviewer
+- evidence or requirement
+- refund
+- appeal or correction path where offered
+
+do not publicly identify rejected participants
+
+
+## registration-014 — transfer
+
+a ticket or registration may be transferable only when configured
+
+transfer must:
+
+- verify the new attendee
+- repeat eligibility
+- repeat required consent
+- update ticket
+- update payment responsibility where applicable
+- preserve audit
+
+do not allow simple screenshot transfer of a personalized qr ticket
+
+
+# 10. capacity, reservation, and waiting lists
+
+
+## capacity-001 — separate capacities
+
+track independently:
+
+- human participants
+- animals
+- species
+- ticket type
+- session
+- competition category
+- team
+- vendor
+- volunteer
+- parking
+- accessibility allocation
+- room
+- route group
+
+
+## capacity-002 — capacity ownership
+
+identify whether capacity comes from:
+
+- venue
+- organizer
+- safety plan
+- insurance
+- staff ratio
+- legal restriction
+- equipment
+- animal welfare
+
+
+## capacity-003 — atomic reservation
+
+protect the final places transactionally
+
+two participants must not receive one remaining place simultaneously
+
+
+## capacity-004 — checkout reservation
+
+paid registration may reserve capacity for a short configured period during checkout
+
+the reservation must:
+
+- expire
+- release automatically
+- be idempotent
+- not block capacity indefinitely
+- show a real timer based on server truth
+
+
+## capacity-005 — waiting list
+
+a waiting list must define:
+
+- scope
+- ordering
+- priority rules
+- fairness rules
+- expiry
+- offer duration
+- required revalidation
+- payment timing
+- notification
+
+
+## capacity-006 — no false guarantee
+
+waitlist position does not guarantee admission
+
+show whether order is:
+
+- chronological
+- category-based
+- eligibility-based
+- accessibility-allocation-based
+- manually reviewed under a documented rule
+
+
+## capacity-007 — waitlist offer
+
+an offer must:
+
+- identify the event
+- identify the participants and pets
+- expire
+- preserve price or explain price changes
+- repeat material acceptance
+- prevent another simultaneous acceptance
+
+
+## capacity-008 — capacity increase
+
+increasing capacity may require:
+
+- venue approval
+- safety approval
+- additional staff
+- additional equipment
+- updated welfare plan
+- notification
+
+
+## capacity-009 — capacity reduction
+
+when capacity is reduced:
+
+- do not silently cancel arbitrary participants
+- apply the documented policy
+- preserve accessibility requirements
+- provide refunds
+- notify affected participants
+- record the decision
+
+
+# 11. tickets, pricing, and payments
+
+
+## ticket-001 — ticket types
+
+support:
+
+- free registration
+- standard ticket
+- pet ticket
+- observer ticket
+- online ticket
+- in-person ticket
+- day ticket
+- full-event ticket
+- family or household ticket
+- team ticket
+- session ticket
+- exhibitor ticket
+- vendor ticket
+- volunteer ticket
+- invitation ticket
+- complimentary ticket
+
+
+## ticket-002 — ticket definition
+
+each ticket type must define:
+
+- name
+- audience
+- price
+- currency
+- taxes
+- fees
+- included participants
+- included pets
+- included sessions
+- capacity
+- sale start
+- sale end
+- transfer policy
+- refund policy
+- eligibility
+- public visibility
+
+
+## ticket-003 — full price
+
+show before payment:
+
+- base price
+- tax
+- platform fee
+- organizer fee
+- ticket fee
+- selected sessions
+- optional items
+- donation
+- discount
+- final total
+
+do not hide charges until the final payment action
+
+
+## ticket-004 — free events
+
+free events must still support:
+
+- capacity
+- confirmation
+- waitlist
+- check-in
+- cancellation
+- no-show
+- participant communication
+
+free does not mean unstructured
+
+
+## ticket-005 — donation separation
+
+a donation must:
+
+- be optional unless clearly defined as a separate required fundraising contribution under applicable rules
+- not be preselected deceptively
+- not influence eligibility
+- not influence competition results
+- not influence adoption access
+- identify beneficiary
+- have a receipt where applicable
+
+
+## ticket-006 — discounts
+
+support controlled discounts such as:
+
+- early registration
+- organization member
+- volunteer
+- household
+- group
+- accessibility companion where appropriate
+- promotional code
+- scholarship or fee waiver
+
+the discount must not use irrelevant sensitive characteristics
+
+
+## ticket-007 — price changes
+
+new prices apply according to the documented policy
+
+do not silently increase the price of an existing reserved or paid registration
+
+
+## ticket-008 — payment
+
+reuse the existing payment architecture
+
+payment must be:
+
+- provider-verified
+- idempotent
+- currency-checked
+- amount-checked
+- connected to the registration
+- connected to the ticket
+- auditable
+
+
+## ticket-009 — payout
+
+identify:
+
+- payment recipient
+- organizer
+- platform fee
+- tax
+- refund liability
+- event cancellation reserve
+- payout timing
+
+do not immediately release all funds when cancellation or dispute risk requires a provider-supported hold
+
+
+## ticket-010 — refund
+
+support:
+
+- participant cancellation
+- organizer cancellation
+- postponement
+- material venue change
+- format change
+- safety rejection
+- duplicate payment
+- event interruption
+- partial completion
+- session cancellation
+
+
+## ticket-011 — refund status
+
+distinguish:
+
+- requested
+- under review
+- approved
+- sent to provider
+- processing
+- completed
+- partially completed
+- rejected
+- failed
+- reversed
+
+
+## ticket-012 — cancellation policy
+
+the participant must accept a versioned cancellation policy
+
+do not let the organizer worsen the policy after payment
+
+
+## ticket-013 — invoice and receipt
+
+generate appropriate documents containing:
+
+- organizer
+- participant
+- ticket
+- event
+- amount
+- currency
+- tax
+- payment
+- date
+- refund
+- stable identifier
+
+
+## ticket-014 — off-platform payment
+
+detect and moderate requests for:
+
+- personal transfers
+- unrelated payment links
+- gift cards
+- cryptocurrency
+- cash deposit before approval
+- login credentials
+- mfa codes
+- payment to an unrelated account
+
+
+# 12. group walks and outdoor meetups
+
+
+## walk-001 — walk plan
+
+a group walk must define:
+
+- route
+- start
+- finish
+- distance
+- expected duration
+- pace
+- difficulty
+- surface
+- elevation where relevant
+- road crossings
+- rest points
+- water
+- weather limits
+- leader
+- maximum participants
+- maximum animals
+- leash rules
+- equipment
+- emergency plan
+
+
+## walk-002 — route privacy
+
+a public route may be approximate before registration
+
+exact route details may be restricted when the event begins at a private or sensitive location
+
+
+## walk-003 — route groups
+
+large walks may be divided into:
+
+- pace groups
+- size groups
+- species groups
+- accessibility groups
+- controlled-distance groups
+- beginner groups
+
+each group must have:
+
+- leader
+- capacity
+- start time
+- communication
+- emergency contact
+
+
+## walk-004 — weather
+
+define conditions for:
+
+- heat
+- cold
+- rain
+- ice
+- storm
+- poor air quality
+- darkness
+- unsafe terrain
+
+the organizer must be able to:
+
+- shorten
+- reroute
+- postpone
+- move
+- cancel
+- change pet participation
+
+
+## walk-005 — check-in and check-out
+
+record:
+
+- participant
+- pet
+- route group
+- start check-in
+- finish check-out
+- early departure
+- safety reason
+- missing participant
+- missing pet escalation
+
+
+## walk-006 — lost pet
+
+an animal missing during the event must create an immediate integration with:
+
+- event safety incident
+- location module
+- lost-and-found module
+- organizer communication
+- participant emergency contact
+- route map
+- check-in record
+
+
+## walk-007 — animal interactions
+
+do not require free contact
+
+support:
+
+- distance requirements
+- no-contact participation
+- separate start time
+- separate route group
+- individual handler responsibility
+- professional supervision
+
+
+## walk-008 — accessibility
+
+show:
+
+- path width
+- surface
+- slope
+- stairs
+- rest points
+- seating
+- accessible toilets
+- transport
+- shortened route option
+- support-person rules
+
+
+# 13. training sessions and workshops
+
+
+## training-001 — trainer profile
+
+reuse the professional profile system
+
+show:
+
+- identity verification
+- organization
+- relevant qualification
+- qualification source
+- validity
+- species
+- methods
+- experience
+- languages
+- accessibility
+- reviews
+- limits
+
+
+## training-002 — method disclosure
+
+the trainer must describe:
+
+- teaching approach
+- equipment
+- handling
+- reinforcement
+- group interaction
+- prerequisites
+- situations not accepted
+- stop criteria
+
+the platform must reject methods that violate welfare requirements
+
+
+## training-003 — class levels
+
+support:
+
+- introductory
+- beginner
+- intermediate
+- advanced
+- assessment required
+- private session
+- observer only
+
+
+## training-004 — prerequisites
+
+a prerequisite may include:
+
+- previous session
+- age
+- basic skill
+- equipment
+- controlled introduction
+- health status
+- trainer approval
+
+a prerequisite must not be inferred from an unsupported automated score
+
+
+## training-005 — lesson plan
+
+support:
+
+- goals
+- exercises
+- breaks
+- animal rest
+- maximum repetition
+- participant materials
+- homework
+- follow-up resources
+
+
+## training-006 — individual adaptation
+
+the trainer may define an adaptation without exposing private medical or behavioural details to other participants
+
+
+## training-007 — unsafe activity stop
+
+the trainer, safety lead, handler, or welfare officer must be able to stop participation without waiting for event completion
+
+
+## training-008 — completion
+
+completion may produce:
+
+- attendance record
+- trainer notes
+- participant notes
+- resources
+- homework
+- next-level eligibility
+- certificate where justified
+
+attendance alone must not falsely certify professional competence
+
+
+# 14. exhibitions and shows
+
+
+## exhibition-001 — exhibitor registration
+
+support:
+
+- exhibitor
+- organization
+- animals
+- display type
+- booth or area
+- equipment
+- schedule
+- welfare plan
+- documents
+- check-in
+
+
+## exhibition-002 — display environment
+
+define:
+
+- space
+- enclosure
+- ventilation
+- temperature
+- noise
+- lighting
+- rest
+- water
+- public distance
+- handling
+- maximum display duration
+- restricted contact
+
+
+## exhibition-003 — public interaction
+
+organizers must define:
+
+- touch allowed
+- no touch
+- handler permission required
+- scheduled interaction
+- barriers
+- hygiene
+- hand-washing
+- child supervision
+
+
+## exhibition-004 — adoption profiles
+
+when adoptable animals are present:
+
+- use adoption profiles
+- preserve application process
+- prevent impulse handover
+- preserve foster-location privacy
+- prevent marketplace purchase semantics
+
+
+## exhibition-005 — vendor separation
+
+an exhibitor, sponsor, vendor, speaker, and competition participant are different roles
+
+do not grant seller permissions merely because an exhibitor has a booth
+
+
+## exhibition-006 — animal removal
+
+authorized welfare staff may remove an animal from public display without cancelling the entire event
+
+
+# 15. competitions, judging, scoring, and results
+
+
+## competition-001 — competition entity
+
+a competition must define:
+
+- event
+- organizer
+- rules
+- categories
+- divisions
+- eligibility
+- entries
+- judges
+- scoring system
+- tie rule
+- disqualification rule
+- welfare rule
+- appeal rule
+- prizes
+- result visibility
+
+
+## competition-002 — versioned rules
+
+participants must accept the exact competition-rule version used for the event
+
+material changes after registration require notification and renewed acceptance where appropriate
+
+
+## competition-003 — categories and divisions
+
+support categories based on legitimate event criteria such as:
+
+- age
+- size
+- experience
+- skill level
+- team type
+- species
+- event discipline
+
+do not create harmful or discriminatory divisions
+
+
+## competition-004 — entry
+
+a competition entry may represent:
+
+- one participant
+- one animal
+- participant and animal pair
+- team
+- organization
+- several animals where rules allow it
+
+the entry must preserve eligibility and registration
+
+
+## competition-005 — judges
+
+judges must have:
+
+- verified identity
+- role
+- assigned categories
+- conflict-of-interest disclosure
+- access limited to required entries
+- scoring window
+- audit
+
+
+## competition-006 — scoring system
+
+the scoring model must define:
+
+- criteria
+- scale
+- required judges
+- dropped scores where applicable
+- calculation
+- precision
+- tie handling
+- disqualification
+- missing score
+- correction
+- finalization
+
+
+## competition-007 — no float money or uncontrolled float score assumptions
+
+use an appropriate precise numeric representation
+
+document:
+
+- scale
+- rounding
+- aggregation
+- tie comparison
+
+
+## competition-008 — independent score entry
+
+one judge must not overwrite another judge's score
+
+every score must record:
+
+- judge
+- entry
+- criterion
+- value
+- time
+- version
+- comment where required
+
+
+## competition-009 — score correction
+
+before finalization, an authorized correction must preserve:
+
+- original score
+- corrected score
+- judge or authorized official
+- reason
+- time
+- effect on results
+
+
+## competition-010 — result finalization
+
+finalization must:
+
+- verify required scores
+- verify disqualifications
+- verify welfare withdrawals
+- calculate results deterministically
+- prevent concurrent finalization
+- create a result version
+- lock ordinary edits
+
+
+## competition-011 — disqualification
+
+a disqualification must have:
+
+- rule
+- evidence
+- official
+- time
+- participant-safe explanation
+- appeal availability
+- payment or prize effect
+
+do not publicly expose sensitive incident details unnecessarily
+
+
+## competition-012 — welfare withdrawal
+
+a handler may withdraw an animal for welfare without receiving a punitive public label
+
+competition results may show a neutral withdrawn status
+
+
+## competition-013 — appeals
+
+an appeal must support:
+
+- category
+- rule
+- evidence
+- deadline
+- reviewer without conflict
+- decision
+- result-version effect
+- participant notification
+
+
+## competition-014 — results
+
+public results may show:
+
+- category
+- entry display name
+- result
+- rank
+- score summary
+- organization
+- verified final status
+
+do not expose private participant contact, address, health, or incident data
+
+
+## competition-015 — prizes
+
+prizes must define:
+
+- source
+- sponsor
+- eligibility
+- tax or reporting information where applicable
+- delivery
+- acceptance
+- unclaimed handling
+
+sponsors must not influence judging unless they are transparently serving as authorized judges under the rules
+
+
+## competition-016 — certificates
+
+certificates must be:
+
+- versioned
+- linked to final results
+- securely downloadable
+- revocable or correctable through an audited process
+- localized where supported
+
+
+## competition-017 — anti-cheating
+
+detect and review:
+
+- duplicate entries
+- identity substitution
+- pet substitution
+- falsified eligibility
+- judge collusion
+- score manipulation
+- unauthorized result edits
+- document forgery
+- linked-account abuse
+
+do not automatically accuse a participant based on one weak signal
+
+
+# 16. conferences, speakers, and online sessions
+
+
+## conference-001 — speaker profile
+
+support:
+
+- name
+- organization
+- biography
+- verified professional status
+- session
+- language
+- accessibility
+- conflicts
+- sponsor relationship
+- public contact policy
+
+
+## conference-002 — speaker invitation
+
+speaker invitations must:
+
+- expire
+- identify session
+- identify role
+- define recording policy
+- define materials
+- define deadline
+- preserve acceptance
+
+
+## conference-003 — materials
+
+support:
+
+- slides
+- handouts
+- references
+- downloads
+- recordings
+- transcripts
+- captions
+- post-event resources
+
+files must use secure access and rights management
+
+
+## conference-004 — professional claims
+
+do not show continuing-education credits, certification, or official accreditation without verified evidence
+
+
+## conference-005 — sponsor disclosure
+
+a sponsored session must be labelled
+
+commercial claims must not appear as independent professional guidance
+
+
+## conference-006 — questions and chat
+
+support:
+
+- moderated questions
+- anonymous question option where safe
+- rate limits
+- report
+- block
+- slow mode
+- staff-only moderation
+- transcript policy
+
+
+## conference-007 — online access
+
+links must:
+
+- be participant-scoped where possible
+- expire
+- be revocable
+- not appear in public page source
+- support session-level access
+- be audited where justified
+
+
+## conference-008 — recording
+
+define:
+
+- whether recording occurs
+- what is recorded
+- who can access it
+- how long it is retained
+- whether participant video or audio is included
+- how consent works
+- whether captions or transcripts are provided
+
+
+# 17. vendors, sponsors, and marketplace integration
+
+
+## vendor-001 — vendor application
+
+support:
+
+- seller or organization
+- event
+- product categories
+- booth requirements
+- documents
+- insurance where required
+- payment
+- staff
+- equipment
+- electrical needs
+- safety
+- approval
+
+
+## vendor-002 — seller verification
+
+reuse marketplace verification
+
+do not create a weaker event-only seller identity
+
+
+## vendor-003 — prohibited goods
+
+event vendors must remain subject to all marketplace prohibited-product requirements
+
+do not allow prohibited goods merely because the transaction occurs physically
+
+
+## vendor-004 — booth assignment
+
+support:
+
+- area
+- size
+- table
+- electricity
+- setup window
+- teardown window
+- staff limit
+- accessibility
+- safety inspection
+
+
+## vendor-005 — vendor payments
+
+separate:
+
+- booth fee
+- ticket
+- deposit
+- product sales
+- donation
+- sponsor payment
+
+do not mix these into one unexplained payment
+
+
+## sponsor-001 — sponsor entity
+
+support:
+
+- sponsor
+- organization
+- contribution
+- public display
+- logo
+- sessions
+- prizes
+- disclosure
+- contract
+- restrictions
+
+
+## sponsor-002 — sponsor influence
+
+a sponsor must not:
+
+- receive private attendee data without consent
+- influence adoption decisions
+- influence safety decisions
+- alter competition scoring secretly
+- appear as a professional recommendation without disclosure
+
+
+# 18. volunteers and staff shifts
+
+
+## volunteer-001 — volunteer roles
+
+support roles such as:
+
+- setup
+- check-in
+- route leader
+- route assistant
+- animal welfare
+- information desk
+- accessibility support
+- speaker support
+- vendor support
+- cleanup
+- transport
+- medical support where qualified
+- incident support
+
+
+## volunteer-002 — qualification
+
+a role may require:
+
+- verified identity
+- organization membership
+- training
+- age
+- professional qualification
+- previous experience
+- equipment
+- background check only where justified and lawful
+
+
+## volunteer-003 — shift
+
+a shift must contain:
+
+- role
+- start
+- end
+- location
+- supervisor
+- capacity
+- break
+- instructions
+- check-in
+- check-out
+- incident access
+
+
+## volunteer-004 — shift assignment
+
+support:
+
+- request
+- approval
+- assignment
+- waitlist
+- transfer
+- cancellation
+- no-show
+- completion
+
+
+## volunteer-005 — volunteer privacy
+
+ordinary participants must not see:
+
+- volunteer personal contact
+- home address
+- private schedule
+- safety notes
+- qualification documents
+
+
+## volunteer-006 — volunteer safety
+
+provide:
+
+- briefing
+- emergency contacts
+- check-in
+- check-out
+- incident action
+- partner requirement where appropriate
+- rest and break plan
+- safe refusal
+
+
+# 19. event communication
+
+
+## communication-001 — event conversation types
+
+support controlled communication such as:
+
+- organizer announcement
+- participant question
+- registration-specific conversation
+- ticket-support conversation
+- volunteer chat
+- staff chat
+- session chat
+- competition-official chat
+- emergency broadcast
+
+
+## communication-002 — no ordinary social thread as the only official channel
+
+official material changes must create event announcements and notifications, not only a comment in a social post
+
+
+## communication-003 — announcements
+
+an announcement must define:
+
+- event
+- occurrence
+- audience
+- title
+- body
+- priority
+- channels
+- locale
+- created by
+- delivery
+- acknowledgement where required
+
+
+## communication-004 — audience
+
+support audiences such as:
+
+- all registered
+- confirmed
+- waitlisted
+- checked in
+- online attendees
+- in-person attendees
+- selected ticket type
+- selected session
+- selected route group
+- volunteers
+- vendors
+- speakers
+- judges
+- staff
+
+
+## communication-005 — notification privacy
+
+do not place:
+
+- private location
+- health status
+- eligibility rejection reason
+- child information
+- private phone
+- ticket secret
+- full qr payload
+
+in unsafe notification previews
+
+
+## communication-006 — anti-spam
+
+organizers must not use event registration as permanent marketing consent
+
+optional future marketing requires separate consent
+
+
+## communication-007 — participant-to-participant contact
+
+participants must not automatically receive the complete attendee contact list
+
+support optional:
+
+- networking profile
+- direct-message request
+- group chat
+- public participant list with consent
+
+
+## communication-008 — emergency broadcast
+
+an emergency announcement may bypass ordinary quiet hours
+
+it must:
+
+- have an authorized sender
+- have a reason
+- identify affected audience
+- avoid panic language
+- provide an action
+- be audited
+
+
+# 20. check-in, attendance, and access control
+
+
+## checkin-001 — check-in methods
+
+support:
+
+- qr ticket
+- manual search
+- participant code
+- ticket code
+- organization badge
+- volunteer list
+- offline list
+- self-check-in only when suitable
+- pet identity confirmation
+
+
+## checkin-002 — secure qr ticket
+
+the qr payload must:
+
+- avoid raw personal data
+- use a signed or tokenized identifier
+- expire or be event-scoped
+- prevent simple replay where required
+- support revocation
+- be checked on the server when online
+
+
+## checkin-003 — personalized ticket
+
+where identity matters, a screenshot alone must not be sufficient to transfer the ticket
+
+check:
+
+- ticket
+- attendee
+- registration state
+- transfer state
+- cancellation
+- duplicate check-in
+- pet registration
+
+
+## checkin-004 — pet check-in
+
+when animals attend, check-in may verify:
+
+- pet identity
+- responsible handler
+- eligibility status
+- required equipment
+- current safety condition
+- registration
+- route or competition assignment
+
+do not expose complete medical records to ordinary check-in staff
+
+
+## checkin-005 — offline check-in
+
+offline check-in must:
+
+- download only minimized authorized data
+- encrypt local storage where practical
+- record device and operator
+- prevent unlimited reuse
+- synchronize idempotently
+- resolve conflicts
+- delete local event data after the approved period
+
+
+## checkin-006 — duplicate check-in
+
+the system must show:
+
+- previous check-in
+- time
+- operator
+- entrance
+- ticket
+- approved re-entry status
+
+do not silently create a second attendance record
+
+
+## checkin-007 — check-out
+
+support check-out for:
+
+- group walks
+- volunteer shifts
+- private venues
+- animal handover
+- equipment return
+- multi-session attendance
+
+
+## checkin-008 — no-show
+
+a no-show must not automatically produce a public negative mark
+
+it may affect:
+
+- event-specific waitlist policy
+- repeated reservation review
+- refund policy
+- organizer analytics
+
+according to disclosed rules
+
+
+## checkin-009 — attendance correction
+
+corrections must preserve:
+
+- original status
+- corrected status
+- operator
+- reason
+- time
+- effect on certificate or result
+
+
+# 21. weather, postponement, cancellation, and interruption
+
+
+## weather-001 — weather plan
+
+outdoor or temperature-sensitive events must define:
+
+- heat threshold
+- cold threshold
+- rain
+- ice
+- storm
+- wind
+- air-quality concern
+- shade
+- water
+- route alternatives
+- cancellation decision authority
+
+
+## weather-002 — weather source
+
+show whether weather information comes from:
+
+- official provider
+- organizer observation
+- venue
+- professional safety lead
+- participant report
+
+a forecast is not a guarantee
+
+
+## weather-003 — weather decision
+
+support:
+
+- continue
+- shorten
+- move indoors
+- change route
+- remove animal participation
+- postpone
+- cancel
+- suspend temporarily
+
+
+## cancel-001 — cancellation
+
+cancellation must record:
+
+- reason category
+- internal detail
+- public explanation
+- decision maker
+- date
+- affected occurrences
+- refund policy
+- participant notification
+- ticket state
+- venue state
+- vendor state
+- volunteer state
+
+
+## cancel-002 — postponement
+
+postponement must:
+
+- preserve original date
+- propose or set new date
+- let participants accept or withdraw
+- recalculate eligibility
+- preserve or refund tickets according to policy
+- update calendar
+- update private-location links
+
+
+## cancel-003 — format change
+
+moving between in-person, online, and hybrid formats must be treated as a material change
+
+participants must see:
+
+- new format
+- new access
+- ticket difference
+- refund option where applicable
+- pet-participation effect
+
+
+## cancel-004 — partial interruption
+
+an event interrupted after starting may require:
+
+- evacuation
+- attendance preservation
+- partial refund
+- result cancellation
+- rescheduling
+- incident report
+- participant support
+
+
+# 22. safety and incident management
+
+
+## safety-001 — safety plan
+
+animal-participation events must have a safety plan proportionate to risk
+
+the plan may contain:
+
+- responsible safety lead
+- welfare officer
+- medical contact
+- veterinary contact where relevant
+- emergency services information
+- evacuation
+- lost-animal process
+- injury process
+- conflict process
+- weather process
+- child safety
+- crowd control
+- restricted zones
+- communication
+- incident documentation
+
+
+## safety-002 — risk assessment
+
+assess:
+
+- species
+- participant count
+- animal count
+- environment
+- weather
+- noise
+- traffic
+- water
+- terrain
+- indoor ventilation
+- food
+- animal contact
+- children
+- equipment
+- transport
+- online privacy
+- payment risk
+
+
+## safety-003 — safety review
+
+risk-sensitive events may require an authorized reviewer before publication
+
+the review must preserve:
+
+- reviewer
+- plan version
+- concerns
+- required changes
+- approval
+- expiry
+
+
+## safety-004 — incident types
+
+support:
+
+- human injury
+- animal injury
+- illness
+- escape
+- missing animal
+- animal conflict
+- bite or scratch
+- property damage
+- equipment failure
+- heat concern
+- cold concern
+- weather
+- crowd issue
+- harassment
+- child-safety issue
+- accessibility failure
+- payment fraud
+- ticket fraud
+- privacy breach
+- recording violation
+- prohibited product
+- organizer absence
+- venue issue
+
+
+## safety-005 — incident record
+
+an incident must contain:
+
+- event
+- occurrence
+- session or location
+- time
+- reporter
+- involved participants
+- involved animals
+- factual description
+- immediate action
+- media
+- witnesses
+- current status
+- responsible reviewer
+- medical escalation
+- location escalation
+- moderation escalation
+- follow-up
+
+
+## safety-006 — factual language
+
+do not assign blame in the initial incident record
+
+preserve:
+
+- observed fact
+- participant statement
+- organizer statement
+- professional assessment
+- unknown
+
+
+## safety-007 — urgent incident
+
+an urgent incident may trigger:
+
+- event pause
+- emergency announcement
+- medical workflow
+- lost-pet workflow
+- security workflow
+- organizer escalation
+- check-in reconciliation
+
+
+## safety-008 — lost animal during event
+
+immediately connect:
+
+- pet profile
+- handler
+- last confirmed location
+- check-in
+- route
+- event staff
+- local search
+- lost-and-found case
+- temporary location access
+
+
+## safety-009 — medical escalation
+
+the event system must not provide an unsupported diagnosis
+
+it may:
+
+- show the emergency profile
+- contact the authorized person
+- contact the designated professional
+- record first response
+- open the medical incident workflow
+
+
+## safety-010 — event suspension
+
+authorized safety or moderation staff may suspend:
+
+- registration
+- check-in
+- selected session
+- competition category
+- pet participation
+- vendor booth
+- complete event
+
+suspension must not destroy data
+
+
+## safety-011 — participant removal
+
+removing a participant must have:
+
+- authorized role
+- reason
+- safety or rule basis
+- ticket consequence
+- refund consequence
+- access revocation
+- appeal where applicable
+
+do not publicly shame the removed participant
+
+
+## safety-012 — emergency contacts
+
+collect only when justified and protect them from public or ordinary participant access
+
+
+# 23. media, recording, privacy, and minors
+
+
+## media-001 — media policy
+
+every event must define:
+
+- organizer photography
+- professional photography
+- participant photography
+- livestream
+- audio
+- recording
+- public gallery
+- sponsor media
+- retention
+- opt-out process
+
+
+## media-002 — consent states
+
+support:
+
+- consented
+- declined
+- guardian consented
+- restricted use
+- organizer-only documentation
+- unknown
+- expired
+- withdrawn where applicable
+
+
+## media-003 — visible preference
+
+authorized event media staff may need a safe indicator that a participant should not be photographed
+
+do not publicly expose the reason
+
+
+## media-004 — minors
+
+media involving minors requires the correct guardian and event process
+
+do not show child identity in public event pages without explicit lawful consent
+
+
+## media-005 — private event media
+
+media from invitation-only or organization-only events must not become public through an ordinary gallery action
+
+
+## media-006 — event gallery
+
+the event gallery must support:
+
+- moderation
+- consent
+- alt text
+- captions
+- report
+- removal request
+- private and public visibility
+- source
+- uploader
+- event status
+
+
+## privacy-001 — participant-data minimization
+
+collect only information needed for:
+
+- registration
+- eligibility
+- safety
+- payment
+- attendance
+- certification
+- legal or operational requirements
+
+
+## privacy-002 — exact address
+
+private participant, foster, volunteer, staff, or organizer addresses must not appear in public event data
+
+
+## privacy-003 — attendee export
+
+exports must:
+
+- require authorization
+- identify purpose
+- minimize fields
+- exclude health detail by default
+- exclude full emergency contacts
+- use secure downloads
+- be audited
+- expire
+
+
+## privacy-004 — retention
+
+define retention separately for:
+
+- event draft
+- registration
+- ticket
+- payment
+- attendance
+- health-requirement proof
+- media consent
+- incident
+- score
+- result
+- volunteer shift
+- private location
+- online access logs
+
+
+## privacy-005 — former staff
+
+former organizers and volunteers must lose future participant and private-location access
+
+
+## privacy-006 — blocked users
+
+blocking and safety restrictions must apply to:
+
+- invitations
+- participant discovery
+- direct messages
+- public attendee lists
+- team assignment
+- event chat
+- shared private location
+- ticket transfer
+
+
+# 24. feedback and post-event lifecycle
+
+
+## feedback-001 — participant feedback
+
+support separate feedback for:
+
+- event
+- organizer
+- venue
+- trainer
+- speaker
+- session
+- accessibility
+- safety
+- ticket process
+
+do not force a public review
+
+
+## feedback-002 — verified attendance
+
+public reviews should identify whether the reviewer:
+
+- registered
+- checked in
+- attended online
+- was a vendor
+- was a volunteer
+- was a speaker
+
+without exposing private attendance details
+
+
+## feedback-003 — anonymous internal feedback
+
+allow private feedback where appropriate, especially for:
+
+- safety
+- harassment
+- accessibility
+- staff conduct
+- welfare concerns
+
+
+## feedback-004 — review moderation
+
+apply the existing review and moderation architecture
+
+protect against:
+
+- review bombing
+- organizer retaliation
+- doxxing
+- irrelevant personal attacks
+- fabricated attendance
+- incentive without disclosure
+
+
+## feedback-005 — organizer report
+
+the organizer may create a final report containing:
+
+- attendance
+- no-show
+- tickets
+- refunds
+- schedule
+- safety
+- incidents
+- welfare observations
+- accessibility issues
+- vendor summary
+- volunteer summary
+- results
+- recommendations
+
+
+## feedback-006 — follow-up
+
+support:
+
+- resources
+- certificates
+- results
+- photographs
+- next event
+- support contact
+- lost property
+- unresolved incident
+- refund update
+
+
+## feedback-007 — lost property
+
+support a privacy-safe lost-property workflow without publishing personal contact information
+
+
+## feedback-008 — event archive
+
+archived pages may show:
+
+- final status
+- date
+- organizer
+- public summary
+- public media
+- public results
+- future series link
+
+they must not accept new registration
+
+
+# 25. notifications and calendar integration
+
+
+## event-notify-001 — notification categories
+
+support notifications for:
+
+- invitation
+- registration received
+- registration approved
+- registration rejected
+- information requested
+- payment required
+- payment completed
+- waitlist
+- waitlist offer
+- ticket
+- schedule change
+- venue change
+- format change
+- reminder
+- check-in
+- cancellation
+- postponement
+- refund
+- safety announcement
+- incident follow-up
+- result
+- certificate
+- feedback
+
+
+## event-notify-002 — reminder schedule
+
+allow controlled reminders such as:
+
+- registration incomplete
+- document expiry
+- payment deadline
+- event approaching
+- check-in opening
+- required equipment
+- weather update
+- session approaching
+- volunteer shift
+- trial access link
+
+avoid notification storms
+
+
+## event-notify-003 — calendar
+
+confirmed registrations may appear in the canonical portal calendar
+
+the calendar item must preserve:
+
+- event
+- occurrence
+- session
+- ticket
+- selected pets
+- time zone
+- location visibility
+- status
+- cancellation
+
+
+## event-notify-004 — external calendar
+
+where supported, external-calendar exports must minimize private data and provide revocation or updated status where the integration allows it
+
+
+# 26. search, discovery, feed, and seo integration
+
+
+## event-discovery-001 — event directory
+
+provide one canonical event directory with filters such as:
+
+- event type
+- date
+- location
+- online
+- in-person
+- hybrid
+- species
+- pet attendance
+- free or paid
+- accessibility
+- organization
+- group
+- availability
+- skill level
+- language
+
+
+## event-discovery-002 — privacy
+
+private and unlisted events must not leak through:
+
+- result counts
+- suggestions
+- map markers
+- organizer profile
+- calendar
+- feed
+- sitemap
+- social preview
+
+
+## event-discovery-003 — explain recommendation
+
+examples:
+
+- organized by a group you joined
+- in your selected region
+- relevant to the selected pet species
+- followed organization
+- similar to an event you saved
+- sponsored event
+
+
+## event-discovery-004 — fair exposure
+
+do not rank only by ticket sales or popularity
+
+allow fair exposure to:
+
+- small local organizations
+- accessibility-focused events
+- shelter events
+- educational events
+- free community events
+- newly verified organizers
+
+
+## event-feed-001 — feed cards
+
+event feed items must reuse the canonical event-card and feed-item components
+
+do not create a separate incompatible event card for every feed
+
+
+## event-seo-001 — public metadata
+
+public events may use localized:
+
+- title
+- description
+- canonical url
+- social image
+- structured data where valid
+- venue region
+- organizer
+- date
+- status
+
+exclude private location, attendee data, ticket secret, and internal eligibility information
+
+
+## event-seo-002 — state changes
+
+update public metadata when an event is:
+
+- full
+- registration closed
+- postponed
+- cancelled
+- completed
+- moved online
+
+
+# 27. integration with existing portal modules
+
+
+## integration-001 — users and households
+
+reuse existing users and household relationships
+
+do not create event-only accounts
+
+
+## integration-002 — pets
+
+reuse existing pet profiles, ownership, co-ownership, privacy, archive, transfer, and block rules
+
+
+## integration-003 — organizations
+
+reuse organization membership, verification, roles, locations, and suspension
+
+
+## integration-004 — groups and communities
+
+a group may host an event
+
+group visibility must control event visibility appropriately
+
+
+## integration-005 — messaging
+
+reuse the canonical messaging system for event conversations
+
+
+## integration-006 — notifications
+
+reuse the canonical notification centre and preferences
+
+
+## integration-007 — calendar
+
+reuse the canonical aggregated calendar
+
+
+## integration-008 — payments
+
+reuse the canonical payment, refund, receipt, audit, and anti-fraud infrastructure
+
+
+## integration-009 — marketplace
+
+vendors and physical event sales remain subject to marketplace safety and prohibited-product rules
+
+
+## integration-010 — specialists
+
+trainers, speakers, judges, and professionals reuse the professional profile and verification system
+
+
+## integration-011 — shelters and adoption
+
+adoption events must connect to shelter animals, applications, meetings, and privacy requirements
+
+
+## integration-012 — foster care
+
+foster locations and animals must remain private according to foster rules
+
+
+## integration-013 — medical records
+
+reuse verified status and minimal disclosure
+
+do not copy full medical records into event registration
+
+
+## integration-014 — care diary
+
+an event may create or suggest care-related tasks such as:
+
+- preparation
+- medication reminder
+- water
+- food
+- rest
+- post-event observation
+
+the care module remains the source of truth
+
+
+## integration-015 — location and lost-and-found
+
+outdoor and animal events must connect to:
+
+- meeting point
+- route
+- temporary location sharing
+- lost-pet incident
+- search coordination
+
+
+## integration-016 — documents
+
+reuse secure documents, templates, signatures, and downloads
+
+
+## integration-017 — media
+
+reuse the canonical upload, processing, privacy, moderation, and gallery system
+
+
+## integration-018 — moderation
+
+reuse reports, investigations, appeals, and safety cases
+
+
+# 28. required data model
+
+
+## event-data-001 — reuse before creation
+
+inspect all current event, booking, calendar, payment, location, group, organization, session, and ticket models before adding new models
+
+do not duplicate equivalent entities
+
+
+## event-data-002 — expected domain entities
+
+create or adapt models equivalent to the following only when required:
+
+- event
+- event type
+- event series
+- event occurrence
+- event version
+- event organizer
+- event team membership
+- venue
+- venue area
+- event schedule
+- event track
+- event session
+- session speaker
+- event requirement
+- event eligibility decision
+- event registration
+- registration participant
+- registration pet
+- registration answer
+- registration document
+- ticket type
+- ticket reservation
+- ticket
+- event payment
+- event refund
+- event capacity
+- waitlist entry
+- event invitation
+- event announcement
+- event conversation
+- event check-in
+- event check-out
+- attendance record
+- volunteer role
+- volunteer shift
+- volunteer assignment
+- vendor application
+- vendor booth
+- sponsor
+- sponsor placement
+- event media consent
+- event media item
+- safety plan
+- weather plan
+- event incident
+- incident participant
+- incident animal
+- group-walk route
+- route group
+- training class
+- competition
+- competition category
+- competition entry
+- competition judge
+- score criterion
+- competition score
+- competition result
+- competition appeal
+- event feedback
+- event certificate
+- event audit event
+
+
+## event-data-003 — state machines
+
+define explicit state machines for:
+
+- event
+- occurrence
+- registration
+- eligibility review
+- ticket
+- payment
+- refund
+- waitlist
+- invitation
+- check-in
+- volunteer assignment
+- vendor application
+- incident
+- competition
+- entry
+- score finalization
+- appeal
+- certificate
+
+
+## event-data-004 — constraints
+
+add appropriate constraints for:
+
+- one authoritative event owner
+- one active occurrence identifier
+- unique registration scope
+- unique active ticket
+- one active check-in per ticket
+- one judge score per entry and criterion where required
+- valid time ordering
+- positive capacity
+- non-negative money
+- valid currencies
+- one active waitlist offer
+- one active role assignment where applicable
+
+
+## event-data-005 — concurrency
+
+use transactions, locks, or equivalent safe mechanisms for:
+
+- final place reservation
+- waitlist acceptance
+- ticket purchase
+- ticket transfer
+- check-in
+- session reservation
+- competition finalization
+- result correction
+- event cancellation
+- refund initiation
+
+
+## event-data-006 — money
+
+store ticket prices, fees, donations, deposits, refunds, vendor fees, and prizes using integer minor units or another correct documented representation
+
+never use float or double
+
+
+## event-data-007 — time
+
+store unambiguous timestamps and preserve event time zone
+
+
+## event-data-008 — soft deletion and retention
+
+do not physically delete historically material:
+
+- paid registrations
+- tickets
+- attendance
+- results
+- incidents
+- payments
+- refunds
+- signed rules
+- safety plans
+- media consent
+
+use archive and retention policies
+
+
+## event-data-009 — indexes
+
+review real query patterns for:
+
+- event directory
+- organizer dashboard
+- date range
+- region
+- event type
+- occurrence
+- registration status
+- participant
+- pet
+- ticket
+- waitlist
+- check-in
+- session
+- competition result
+
+
+# 29. authorization requirements
+
+
+## event-auth-001 — policies
+
+create or update policies for:
+
+- event viewing
+- event creation
+- event editing
+- event publication
+- event cancellation
+- event deletion or archival
+- team management
+- exact-location viewing
+- participant-data viewing
+- registration review
+- eligibility decision
+- payment viewing
+- refund approval
+- announcement sending
+- ticket scanning
+- check-in correction
+- safety-plan viewing
+- incident viewing
+- incident editing
+- volunteer management
+- vendor management
+- sponsor management
+- schedule editing
+- session management
+- competition management
+- judging
+- score correction
+- result finalization
+- appeal review
+- export
+- audit viewing
+
+
+## event-auth-002 — required test actors
+
+test:
+
+- public visitor
+- registered participant
+- unregistered user
+- event creator
+- event owner
+- co-organizer
+- check-in operator
+- safety lead
+- trainer
+- speaker
+- judge
+- vendor
+- volunteer
+- organization administrator
+- wrong organization
+- suspended organizer
+- blocked participant
+- removed staff member
+- moderator without active case
+- administrator
+- former participant
+- former organizer
+
+
+## event-auth-003 — direct action invocation
+
+every livewire mutation must authorize independently
+
+do not rely on hidden buttons or disabled controls
+
+
+## event-auth-004 — tenant boundaries
+
+an organization organizer must not access:
+
+- another organization's private registrations
+- private venue
+- payments
+- incidents
+- volunteers
+- results before publication
+
+
+# 30. validation requirements
+
+
+## event-validation-001 — validate all untrusted input
+
+validate:
+
+- event type
+- organizer
+- organization
+- venue
+- coordinates
+- date
+- time
+- time zone
+- recurrence
+- capacity
+- species
+- pet
+- participant
+- ticket
+- money
+- currency
+- payment
+- session
+- route
+- requirement
+- eligibility
+- document
+- media
+- check-in
+- score
+- result
+- refund
+- cancellation
+- incident
+
+
+## event-validation-002 — state-aware validation
+
+validation must consider current state
+
+examples:
+
+- a completed event cannot open registration
+- a cancelled occurrence cannot check in a participant
+- a finalized competition cannot accept ordinary score edits
+- a full event cannot confirm another participant without capacity
+- a private event cannot expose a public address accidentally
+
+
+## event-validation-003 — dynamic question schema
+
+organizer-created questions must use a controlled schema with:
+
+- key
+- type
+- label translations
+- options
+- validation
+- required status
+- privacy
+- purpose
+- retention
+
+do not execute organizer-supplied code or validation expressions
+
+
+## event-validation-004 — files
+
+validate:
+
+- type
+- content
+- size
+- dimensions
+- document ownership
+- expiry
+- private visibility
+- malicious content
+
+
+## event-validation-005 — urls
+
+validate online links, livestream links, venue links, and external resources
+
+block unsafe schemes and apply ssrf rules when the server fetches a url
+
+
+# 31. livewire requirements
+
+
+## event-livewire-001 — class-based components
+
+use normal class-based livewire components with separate blade files
+
+do not use volt
+
+
+## event-livewire-002 — event builder
+
+the event builder must:
+
+- use a livewire form object
+- save drafts idempotently
+- validate per step
+- validate final publication
+- preserve context
+- use locked identifiers
+- authorize every mutation
+- show save state
+- show offline state
+- prevent duplicate publication
+- use the canonical wizard
+
+
+## event-livewire-003 — event directory
+
+the directory must:
+
+- use safe url state
+- support filters
+- support pagination
+- reset pagination correctly
+- use computed data
+- avoid complete unbounded collections
+- preserve public privacy
+- render localized state
+
+
+## event-livewire-004 — event detail
+
+large pages may separate:
+
+- overview
+- schedule
+- tickets
+- venue
+- requirements
+- organizers
+- participants where allowed
+- competition
+- results
+- media
+- feedback
+
+use islands, lazy, defer, or isolation only when measured and semantically correct
+
+
+## event-livewire-005 — registration wizard
+
+the registration wizard must:
+
+- select participant
+- select pets
+- select ticket
+- select sessions
+- show eligibility
+- collect answers
+- collect documents
+- show price
+- show accepted rules
+- prevent duplicate submission
+- support save and resume where appropriate
+- support payment return
+- show final confirmation
+
+
+## event-livewire-006 — organizer dashboard
+
+support:
+
+- event status
+- occurrences
+- registrations
+- capacity
+- payments
+- refunds
+- waitlist
+- schedule
+- staff
+- vendors
+- volunteers
+- announcements
+- safety
+- incidents
+- check-in
+- results
+- feedback
+
+
+## event-livewire-007 — check-in
+
+the check-in component must:
+
+- support scanner input
+- support manual search
+- use minimal public state
+- prevent duplicate check-in
+- show exact action loading
+- work on mobile
+- support offline strategy where implemented
+- provide accessible manual fallback
+
+
+## event-livewire-008 — schedule builder
+
+support:
+
+- sessions
+- rooms
+- speakers
+- judges
+- conflict detection
+- keyboard-accessible reordering
+- transactional updates
+- stable keys
+
+wire:sort may be used only with server authorization and a keyboard alternative
+
+
+## event-livewire-009 — scoring
+
+the scoring interface must:
+
+- show assigned entries only
+- use locked entry and category identifiers
+- validate criteria
+- save idempotently
+- prevent another judge overwrite
+- show draft and submitted state
+- support correction through the authorized workflow
+
+
+## event-livewire-010 — announcements
+
+use targeted sending with:
+
+- preview
+- audience count
+- privacy-safe content
+- duplicate prevention
+- exact loading state
+- delivery result
+
+
+## event-livewire-011 — navigation lifecycle
+
+if wire:navigate is used:
+
+- tear down qr scanners
+- tear down maps
+- tear down calendars
+- tear down charts
+- tear down livestream clients
+- tear down observers
+- remove event listeners
+- restore focus
+- clear stale private state
+
+
+## event-livewire-012 — offline state
+
+do not claim:
+
+- registration completed
+- payment completed
+- check-in completed
+- score submitted
+- incident saved
+
+until the server confirms it
+
+
+# 32. mandatory ui and ux implementation
+
+
+## event-ui-001 — maximum reuse
+
+before creating any event interface:
+
+1. inspect the canonical components created or modernized by points 11 and 12
+2. inspect current flux usage
+3. inspect blade components
+4. inspect livewire components
+5. inspect design tokens
+6. inspect existing event pages
+7. reuse or improve the closest canonical component
+8. migrate older duplicates
+9. create a new shared component only when necessary
+
+
+## event-ui-002 — event directory
+
+use canonical:
+
+- page shell
+- page header
+- search
+- filters
+- sort
+- event cards
+- map or list switch where useful
+- pagination
+- empty state
+- filtered-empty state
+- loading state
+- error state
+
+
+## event-ui-003 — event card
+
+the canonical event card must support:
+
+- cover image
+- title
+- event type
+- date
+- time zone where needed
+- region or online
+- organizer
+- verified status
+- pet-participation status
+- price
+- availability
+- accessibility summary
+- event status
+- clear action
+
+do not include private venue or participant data
+
+
+## event-ui-004 — event detail page
+
+use canonical:
+
+- page header
+- status callout
+- cover media
+- primary registration action
+- schedule
+- venue
+- organizer card
+- requirements
+- pet-participation panel
+- accessibility panel
+- safety panel
+- ticket panel
+- cancellation policy
+- share action
+- report action
+- related events
+
+
+## event-ui-005 — registration wizard
+
+reuse the canonical wizard, form fields, validation summary, progress, file upload, review, payment summary, success state, and mobile action patterns
+
+
+## event-ui-006 — ticket display
+
+use a canonical ticket component showing:
+
+- event
+- occurrence
+- participant
+- pets
+- ticket type
+- status
+- qr
+- check-in window
+- venue access
+- transfer
+- cancellation
+- support
+
+do not display a raw token
+
+
+## event-ui-007 — schedule
+
+create or reuse one canonical responsive schedule component supporting:
+
+- agenda view
+- track view
+- room view
+- day view
+- selected sessions
+- accessible list fallback
+- current session
+- cancelled session
+- moved session
+
+
+## event-ui-008 — organizer dashboard
+
+reuse the canonical dashboard widget architecture
+
+do not create a separate visual theme
+
+
+## event-ui-009 — registration queue
+
+use the canonical responsive table or list with:
+
+- participant
+- pets
+- ticket
+- status
+- eligibility
+- payment
+- documents
+- check-in
+- assignment
+- actions
+
+
+## event-ui-010 — waitlist
+
+show:
+
+- status
+- scope
+- position semantics
+- expiry
+- offer
+- action
+- no false guarantee
+
+
+## event-ui-011 — check-in interface
+
+optimize for mobile and tablet
+
+include:
+
+- scanner
+- manual search
+- participant identity
+- pet identity
+- ticket status
+- eligibility status
+- duplicate warning
+- check-in action
+- check-out action
+- incident action
+- offline indicator
+
+
+## event-ui-012 — route and group-walk interface
+
+include:
+
+- route summary
+- difficulty
+- distance
+- surface
+- weather
+- group
+- leader
+- meeting point
+- check-in
+- safety
+- accessible text alternative
+
+
+## event-ui-013 — competition interface
+
+use shared components for:
+
+- categories
+- entries
+- judge assignments
+- score form
+- score summary
+- result table
+- disqualification
+- appeal
+- certificate
+
+
+## event-ui-014 — incident interface
+
+the incident action must remain visible to authorized staff
+
+use a calm, factual, structured form
+
+separate:
+
+- urgent action
+- factual record
+- private safety detail
+- participant communication
+- follow-up
+
+
+## event-ui-015 — cancellation interface
+
+clearly show:
+
+- affected occurrences
+- reason
+- participant count
+- refund effect
+- notification
+- vendor effect
+- volunteer effect
+- confirmation
+
+do not place cancellation next to ordinary save without protection
+
+
+## event-ui-016 — page states
+
+all event pages and panels must use canonical:
+
+- loading
+- empty
+- filtered empty
+- error
+- offline
+- unavailable
+- private
+- cancelled
+- postponed
+- full
+- waitlist
+- completed
+- archived
+
+
+## event-ui-017 — status consistency
+
+all event, registration, ticket, payment, waitlist, check-in, session, competition, and incident statuses must use the canonical status component and controlled semantic variants
+
+
+## event-ui-018 — mobile behaviour
+
+on small screens:
+
+- keep event identity and status visible
+- keep date and location understandable
+- show one clear primary action
+- use the canonical mobile action bar where useful
+- avoid horizontal overflow
+- convert tables into structured lists
+- preserve full schedule access
+- preserve check-in access
+- preserve incident access
+- keep dialogs within viewport
+
+
+## event-ui-019 — accessibility
+
+verify:
+
+- heading hierarchy
+- keyboard registration
+- keyboard schedule
+- keyboard check-in fallback
+- modal focus
+- drawer focus
+- screen-reader status
+- ticket qr alternative text
+- no colour-only availability
+- reduced motion
+- large text
+- forced colours
+- translated text expansion
+
+
+## event-ui-020 — migrate old pages
+
+inspect all previously implemented:
+
+- event cards
+- calendar pages
+- booking forms
+- ticket pages
+- meeting pages
+- organization schedules
+- volunteer pages
+- competition pages
+- check-in pages
+
+migrate inconsistent implementations to the canonical shared system
+
+
+# 33. localization requirements
+
+
+## event-i18n-001 — all supported locales
+
+update every supported locale for:
+
+- event types
+- event statuses
+- registration statuses
+- ticket statuses
+- schedule
+- venue
+- requirements
+- group walks
+- training
+- conferences
+- exhibitions
+- competitions
+- volunteers
+- vendors
+- sponsors
+- check-in
+- incidents
+- cancellations
+- refunds
+- results
+- certificates
+- feedback
+- validation
+- notifications
+- emails
+- accessibility labels
+- seo
+
+
+## event-i18n-002 — time and date
+
+use locale-aware:
+
+- dates
+- times
+- time zones
+- relative time
+- recurrence descriptions
+- durations
+- deadlines
+
+
+## event-i18n-003 — currency and measurements
+
+format:
+
+- ticket price
+- refund
+- donation
+- distance
+- elevation
+- temperature
+- weight
+- route duration
+
+using user and event context
+
+
+## event-i18n-004 — long translations
+
+verify cards, tables, filters, schedule, check-in, ticket, and mobile action bars with long translations
+
+
+## event-i18n-005 — right-to-left
+
+where supported, verify:
+
+- schedule
+- timeline
+- breadcrumbs
+- route details
+- ticket
+- check-in
+- competition results
+- filters
+- drawers
+
+
+# 34. factories and factory states
+
+
+## event-factory-001 — factory coverage
+
+create or complete factories for every affected first-party eloquent model
+
+document only genuine exemptions
+
+
+## event-factory-002 — event states
+
+create meaningful states for:
+
+- draft
+- incomplete
+- awaiting approval
+- scheduled
+- published
+- registration open
+- registration paused
+- full
+- waitlist only
+- postponed
+- cancelled
+- live
+- completed
+- archived
+- safety suspended
+
+
+## event-factory-003 — event formats
+
+create states for:
+
+- in person
+- online
+- hybrid
+- public
+- private
+- unlisted
+- organization only
+- group only
+- invitation only
+- recurring
+- multi-day
+
+
+## event-factory-004 — event types
+
+create states for:
+
+- meetup
+- group walk
+- training
+- workshop
+- conference
+- webinar
+- exhibition
+- competition
+- adoption day
+- shelter open day
+- fundraiser
+- volunteer shift
+- marketplace fair
+- organization meeting
+
+
+## event-factory-005 — registrations
+
+create states for:
+
+- draft
+- submitted
+- incomplete
+- pending review
+- documents required
+- approved
+- conditionally approved
+- waitlisted
+- confirmed
+- checked in
+- attended
+- no-show
+- withdrawn
+- rejected
+- refunded
+
+
+## event-factory-006 — tickets and payments
+
+create states for:
+
+- free
+- paid
+- reserved
+- payment pending
+- paid
+- cancelled
+- transferred
+- checked in
+- refunded
+- partially refunded
+- payment failed
+
+
+## event-factory-007 — incidents
+
+create states for:
+
+- low priority
+- urgent
+- medical escalation
+- lost pet
+- weather
+- privacy
+- harassment
+- resolved
+- under review
+
+
+## event-factory-008 — competitions
+
+create states for:
+
+- registration open
+- entries confirmed
+- scoring
+- results pending
+- finalized
+- appealed
+- corrected
+- cancelled
+
+
+## event-factory-009 — relationship helpers
+
+provide explicit helpers such as:
+
+- forOrganizer
+- forOrganization
+- atVenue
+- withOccurrence
+- withSchedule
+- withTicketTypes
+- withRegistration
+- withPet
+- withWaitlist
+- withVolunteerShift
+- withCompetition
+- withIncident
+
+avoid hidden creation of very large graphs
+
+
+# 35. complete demo and development seeding
+
+
+## event-seed-001 — coherent event demo world
+
+seed realistic integrated scenarios using existing portal accounts, pets, groups, organizations, shelters, professionals, sellers, locations, payments, and notifications
+
+
+## event-seed-002 — required scenarios
+
+seed at least:
+
+1. public community meetup
+2. private invitation-only meetup
+3. group-only event
+4. organization-only meeting
+5. group walk with route
+6. accessible short group walk
+7. advanced outdoor walk
+8. group walk affected by weather
+9. beginner training session
+10. advanced training session
+11. private professional training
+12. educational workshop
+13. multi-track conference
+14. online webinar
+15. hybrid conference
+16. exhibition
+17. competition with categories
+18. competition with finalized results
+19. competition with appeal
+20. adoption day
+21. shelter open day
+22. fundraiser
+23. volunteer shift
+24. marketplace fair
+25. recurring weekly event
+26. multi-day event
+27. registration not yet open
+28. registration open
+29. nearly full event
+30. full event
+31. waitlist-only event
+32. active waitlist offer
+33. paid registration
+34. free registration
+35. failed payment
+36. partially refunded ticket
+37. transferred ticket
+38. cancelled event
+39. postponed event
+40. moved venue
+41. moved online
+42. live event
+43. completed event
+44. event with urgent incident
+45. lost-pet incident
+46. private-location event
+47. multilingual event
+48. long translated event content
+49. high-volume registration queue
+50. high-volume check-in
+51. several sessions with conflicts
+52. speaker and judge conflict of interest
+53. event with accessibility accommodation
+54. event with media opt-out
+55. suspended organizer
+56. wrong-organization staff member
+57. removed event staff member
+58. blocked participant
+59. several pets in one registration
+60. competition score concurrency scenario
+
+
+## event-seed-003 — demo accounts
+
+include environment-gated accounts for:
+
+- ordinary participant
+- multi-pet participant
+- event organizer
+- organization organizer
+- trainer
+- speaker
+- judge
+- check-in operator
+- safety lead
+- volunteer
+- vendor
+- shelter coordinator
+- moderator
+- administrator
+
+
+## event-seed-004 — production safety
+
+demo event seeders must never run accidentally in production
+
+
+# 36. comprehensive php tests
+
+
+## event-test-001 — route tests
+
+test every event route for:
+
+- guest
+- authenticated participant
+- organizer
+- wrong organizer
+- correct organization
+- wrong organization
+- suspended organizer
+- blocked participant
+- private event
+- unlisted event
+- archived event
+- cancelled event
+- deleted resource
+
+
+## event-test-002 — lifecycle tests
+
+test every valid and invalid event transition
+
+
+## event-test-003 — creation tests
+
+test:
+
+- draft
+- autosave
+- missing fields
+- publication readiness
+- approval
+- preview
+- duplication
+- template
+- version history
+
+
+## event-test-004 — date and recurrence tests
+
+test:
+
+- time zone
+- daylight-saving boundary
+- multi-day
+- recurrence
+- occurrence override
+- skipped occurrence
+- cancelled occurrence
+- invalid ordering
+
+
+## event-test-005 — venue tests
+
+test:
+
+- public venue
+- private venue
+- approximate location
+- exact-location authorization
+- venue capacity
+- venue change
+- route
+- offline package
+
+
+## event-test-006 — eligibility tests
+
+test:
+
+- hard requirement
+- recommendation
+- missing status
+- expired document
+- exception
+- wrong species
+- wrong pet
+- archived pet
+- transferred pet
+- unsupported medical disclosure
+
+
+## event-test-007 — registration tests
+
+test:
+
+- participant registration
+- household registration
+- several pets
+- guest pet
+- duplicate registration
+- edit
+- withdrawal
+- rejection
+- conditional approval
+- transfer
+- registration snapshot
+
+
+## event-test-008 — capacity and concurrency tests
+
+test:
+
+- human capacity
+- animal capacity
+- session capacity
+- ticket capacity
+- atomic final place
+- expired checkout reservation
+- waitlist
+- waitlist offer
+- simultaneous acceptance
+- capacity reduction
+
+
+## event-test-009 — ticket and payment tests
+
+test:
+
+- free ticket
+- paid ticket
+- taxes
+- fees
+- donation separation
+- discount
+- idempotent payment
+- invalid signature
+- amount mismatch
+- currency mismatch
+- duplicate payment
+- transfer
+- cancellation
+- full refund
+- partial refund
+- failed refund
+- receipt
+
+
+## event-test-010 — schedule tests
+
+test:
+
+- track
+- session
+- speaker
+- room
+- conflict
+- session reservation
+- session waitlist
+- schedule change
+- cancellation
+- localized schedule
+
+
+## event-test-011 — group-walk tests
+
+test:
+
+- route
+- route group
+- difficulty
+- leader
+- weather decision
+- check-in
+- check-out
+- early departure
+- lost-pet escalation
+- private route
+
+
+## event-test-012 — training tests
+
+test:
+
+- trainer qualification
+- method disclosure
+- prerequisite
+- prohibited equipment
+- class level
+- completion
+- no false professional certification
+
+
+## event-test-013 — exhibition tests
+
+test:
+
+- exhibitor
+- booth
+- animal display rules
+- public interaction
+- welfare removal
+- adoption integration
+- vendor separation
+
+
+## event-test-014 — competition tests
+
+test:
+
+- categories
+- entries
+- eligibility
+- judges
+- conflict of interest
+- score entry
+- duplicate score prevention
+- correction
+- finalization
+- tie
+- disqualification
+- welfare withdrawal
+- result
+- appeal
+- certificate
+- concurrency
+
+
+## event-test-015 — conference and online tests
+
+test:
+
+- speaker invitation
+- session
+- sponsor disclosure
+- online access
+- expired link
+- recording consent
+- moderated questions
+- caption status
+- time zone
+
+
+## event-test-016 — vendor and sponsor tests
+
+test:
+
+- vendor application
+- seller verification
+- prohibited product
+- booth assignment
+- vendor fee
+- sponsor disclosure
+- sponsor data access restriction
+
+
+## event-test-017 — volunteer tests
+
+test:
+
+- role
+- qualification
+- shift
+- assignment
+- check-in
+- check-out
+- cancellation
+- no-show
+- incident
+- private data
+
+
+## event-test-018 — communication tests
+
+test:
+
+- targeted announcement
+- audience
+- grouping
+- safe preview
+- emergency notification
+- no marketing consent inference
+- private event chat
+
+
+## event-test-019 — check-in tests
+
+test:
+
+- qr
+- invalid token
+- expired token
+- revoked ticket
+- manual search
+- duplicate check-in
+- re-entry
+- pet check-in
+- offline synchronization
+- attendance correction
+
+
+## event-test-020 — cancellation tests
+
+test:
+
+- full cancellation
+- occurrence cancellation
+- postponement
+- venue change
+- format change
+- partial interruption
+- refund consequences
+- notifications
+- calendar updates
+
+
+## event-test-021 — incident tests
+
+test:
+
+- creation
+- urgent escalation
+- factual-source separation
+- medical escalation
+- lost-pet escalation
+- privacy
+- participant removal
+- event suspension
+- resolution
+
+
+## event-test-022 — media and privacy tests
+
+test:
+
+- recording consent
+- decline
+- guardian consent
+- private gallery
+- exact-location redaction
+- attendee-list privacy
+- export
+- former staff access
+- blocked-user bypass
+
+
+## event-test-023 — feedback tests
+
+test:
+
+- verified attendance
+- private feedback
+- public review
+- review moderation
+- organizer report
+- post-event resources
+- archive
+
+
+## event-test-024 — localization tests
+
+render critical workflows in every supported locale:
+
+- directory
+- event page
+- registration
+- ticket
+- schedule
+- check-in
+- cancellation
+- refund
+- competition result
+- notification
+- validation
+- date
+- time zone
+- currency
+- distance
+- temperature
+
+
+## event-test-025 — accessibility tests
+
+create automated checks where practical for:
+
+- page heading
+- labels
+- stepper semantics
+- schedule headings
+- table headers
+- status text
+- qr alternative
+- icon-button labels
+- dialog names
+- error-summary focus
+- reduced motion
+- keyboard alternatives
+
+
+## event-test-026 — browser tests
+
+where browser tooling exists, test:
+
+- event discovery
+- event registration
+- pet selection
+- ticket checkout
+- waitlist
+- ticket display
+- mobile ticket
+- check-in
+- organizer dashboard
+- schedule editing
+- announcement
+- cancellation
+- competition scoring
+- result publication
+- repeated wire:navigate
+- focus restoration
+- no duplicate listeners
+- responsive layouts
+- no horizontal overflow
+
+
+## event-test-027 — architecture tests
+
+add checks for:
+
+- no volt
+- no @php
+- no @endphp
+- no model calls in event blade files
+- no database calls in event blade files
+- no hardcoded user-facing event text where reliable
+- no unsafe dynamic tailwind classes
+- no duplicate canonical event card
+- no duplicate canonical ticket component
+- no public private-location serialization
+- no raw registration models in public api
+- no float money
+- no unverified score finalization
+
+
+## event-test-028 — performance tests
+
+test or measure:
+
+- event directory query count
+- event detail query count
+- organizer dashboard query count
+- registration queue query count
+- check-in query count
+- schedule query count
+- competition result query count
+- livewire snapshot size
+- pagination
+- no unbounded registrations
+
+
+# 37. performance and caching
+
+
+## event-perf-001 — critical pages
+
+measure:
+
+- public event directory
+- event detail
+- registration wizard
+- ticket page
+- organizer dashboard
+- registration queue
+- schedule
+- check-in
+- volunteer dashboard
+- competition scoring
+- result page
+
+
+## event-perf-002 — prevent n+1
+
+prevent n+1 for:
+
+- organizer
+- organization
+- venue
+- occurrences
+- ticket types
+- sessions
+- speakers
+- registrations
+- pets
+- check-ins
+- competition entries
+- scores
+- results
+
+
+## event-perf-003 — public caching
+
+cache only appropriately stable and public data such as:
+
+- public event cards
+- public directory facets
+- public schedule
+- public results
+- localized metadata
+
+include:
+
+- event version
+- locale
+- region
+- privacy
+- status
+- invalidation
+
+
+## event-perf-004 — private caching
+
+do not share cached:
+
+- registrations
+- private tickets
+- participant data
+- exact venue
+- eligibility
+- incidents
+- scores before publication
+- private messages
+
+across users or organizations
+
+
+## event-perf-005 — invalidation
+
+invalidate affected data after:
+
+- publication
+- event update
+- registration state
+- capacity
+- ticket sale
+- waitlist
+- cancellation
+- venue change
+- privacy change
+- organizer suspension
+- result finalization
+
+
+## event-perf-006 — check-in scale
+
+high-volume check-in must:
+
+- use indexed lookup
+- avoid loading all registration relationships
+- support pagination or direct lookup
+- minimize response payload
+- handle duplicate scans quickly
+- remain idempotent
+
+
+# 38. canonical documentation
+
+
+## event-docs-001 — documentation files
+
+create or update, without duplicating canonical documents:
+
+- docs/events/index.md
+- docs/events/functional-specification.md
+- docs/events/requirements.md
+- docs/events/domain-model.md
+- docs/events/state-machines.md
+- docs/events/event-types.md
+- docs/events/organizers.md
+- docs/events/venues.md
+- docs/events/eligibility.md
+- docs/events/registration.md
+- docs/events/tickets.md
+- docs/events/payments.md
+- docs/events/schedules.md
+- docs/events/recurrence.md
+- docs/events/group-walks.md
+- docs/events/training.md
+- docs/events/exhibitions.md
+- docs/events/competitions.md
+- docs/events/conferences.md
+- docs/events/volunteers.md
+- docs/events/vendors-and-sponsors.md
+- docs/events/check-in.md
+- docs/events/safety.md
+- docs/events/incidents.md
+- docs/events/media-and-privacy.md
+- docs/events/accessibility.md
+- docs/events/localization.md
+- docs/events/performance.md
+- docs/events/testing.md
+- docs/events/seeding.md
+
+
+## event-docs-002 — update global documentation
+
+update:
+
+- AGENTS.md
+- README.md
+- CHANGELOG.md
+- docs/requirements.md
+- docs/product-requirements.md
+- docs/system-requirements.md
+- docs/architecture.md
+- docs/domain-model.md
+- docs/data-model.md
+- docs/security.md
+- docs/authorization.md
+- docs/frontend.md
+- docs/livewire.md
+- docs/tailwind.md
+- docs/design-system.md
+- docs/ui-component-inventory.md
+- docs/ui-migration-matrix.md
+- docs/accessibility.md
+- docs/localization.md
+- docs/testing.md
+- docs/seeding.md
+- docs/performance.md
+- docs/implementation-plan.md
+- docs/compliance-matrix.md
+- docs/portal/module-registry.md
+- docs/portal/page-map.md
+- docs/portal/route-matrix.md
+- docs/portal/navigation.md
+- docs/portal/dashboards.md
+- docs/portal/calendar.md
+- docs/portal/workflows.md
+
+
+## event-docs-003 — requirement mapping
+
+map every active event requirement to:
+
+- implementation file
+- migration
+- model
+- enum
+- policy
+- validation
+- action
+- livewire component
+- blade component
+- shared ui component
+- translation
+- factory
+- seeder
+- php test
+- browser test
+- verification command
+- final status
+
+
+# 39. implementation passes
+
+
+## pass 1 — full discovery
+
+- read root and nested agents instructions
+- read every first-party markdown file
+- inspect git state
+- inspect existing event routes
+- inspect existing calendar routes
+- inspect existing booking and payment code
+- inspect groups
+- inspect organizations
+- inspect locations
+- inspect maps
+- inspect pets
+- inspect medical status
+- inspect messaging
+- inspect notifications
+- inspect shared ui
+- inspect flux
+- inspect tailwind
+- inspect tests
+- inspect factories
+- inspect seeders
+- capture baseline
+
+
+## pass 2 — event audit and requirements
+
+- inventory existing event functionality
+- identify duplicate pages
+- identify duplicate models
+- identify duplicate calendar logic
+- identify duplicate ticket logic
+- identify security gaps
+- identify accessibility gaps
+- identify localization gaps
+- assign stable requirement ids
+- update compliance matrix
+- update implementation plan
+
+
+## pass 3 — shared ui and ux foundation
+
+- canonical event card
+- canonical event header
+- canonical schedule
+- canonical ticket
+- canonical registration wizard
+- canonical check-in
+- canonical status mapping
+- canonical incident form
+- canonical result table
+- migrate older event pages
+
+
+## pass 4 — database and domain foundation
+
+- safe migrations
+- enums
+- models
+- relationships
+- constraints
+- indexes
+- actions
+- policies
+- audit
+- state machines
+- factories
+
+
+## pass 5 — event creation and publication
+
+- builder
+- templates
+- versions
+- approval
+- preview
+- publication
+- directory
+- detail page
+
+
+## pass 6 — venue, schedule, and recurrence
+
+- venues
+- private-location rules
+- routes
+- series
+- occurrences
+- tracks
+- sessions
+- conflict detection
+- calendar integration
+
+
+## pass 7 — eligibility and registration
+
+- participant types
+- pet selection
+- requirements
+- documents
+- review
+- approval
+- rejection
+- registration snapshot
+
+
+## pass 8 — capacity, tickets, and payments
+
+- capacities
+- reservation
+- waitlist
+- ticket types
+- checkout
+- payment
+- refund
+- transfer
+- receipts
+
+
+## pass 9 — group walks, training, and exhibitions
+
+- route groups
+- weather plan
+- training levels
+- professional verification
+- exhibition areas
+- welfare controls
+
+
+## pass 10 — conferences and online events
+
+- speakers
+- sessions
+- online access
+- recording
+- captions
+- questions
+- sponsor disclosure
+
+
+## pass 11 — competitions
+
+- categories
+- entries
+- judges
+- scoring
+- conflicts
+- finalization
+- results
+- appeals
+- certificates
+
+
+## pass 12 — volunteers, vendors, and sponsors
+
+- volunteer roles
+- shifts
+- assignments
+- vendor applications
+- booths
+- sponsor disclosures
+- payments
+
+
+## pass 13 — communication and check-in
+
+- announcements
+- audience targeting
+- ticket display
+- qr
+- manual check-in
+- offline check-in
+- check-out
+- attendance
+
+
+## pass 14 — safety, incidents, and cancellation
+
+- safety plan
+- weather
+- incidents
+- medical escalation
+- lost-pet escalation
+- suspension
+- cancellation
+- postponement
+- interruption
+
+
+## pass 15 — feedback and archive
+
+- feedback
+- reviews
+- organizer report
+- resources
+- results
+- certificates
+- public archive
+
+
+## pass 16 — repository-wide design migration
+
+- inspect every event-related page in the ui migration matrix
+- migrate remaining duplicates
+- migrate old calendar interfaces
+- migrate old booking interfaces
+- remove obsolete components
+- remove obsolete css
+- remove obsolete javascript
+- update design documentation
+
+
+## pass 17 — factories and seeders
+
+- complete model factories
+- complete states
+- complete reference seeders
+- create coherent event demo world
+- verify production safeguards
+
+
+## pass 18 — comprehensive tests
+
+- unit tests
+- feature tests
+- policy tests
+- livewire tests
+- architecture tests
+- concurrency tests
+- localization tests
+- accessibility tests
+- browser tests
+- performance tests
+
+
+## pass 19 — complete verification
+
+run every applicable quality gate from the master prompt
+
+fix all discovered regressions
+
+
+## pass 20 — final synchronization
+
+- re-read every first-party markdown file
+- update factual implementation paths
+- update requirements
+- update compliance matrix
+- update implementation plan
+- update component inventory
+- update ui migration matrix
+- update changelog
+- update deployment documentation
+- inspect complete diff
+- commit
+- push according to repository rules
+
+
+# 40. feature-specific definition of done
+
+point 13 is complete only when:
+
+- one canonical event domain exists
+- event types use a controlled registry
+- public, private, unlisted, group, organization, and invitation-only visibility work
+- in-person, online, and hybrid formats work
+- one-time, recurring, and multi-day events work
+- series and occurrences are separated correctly
+- event ownership, organization responsibility, and team roles are separated
+- event creation uses the canonical wizard
+- event drafts save idempotently
+- publication readiness is validated
+- risk-sensitive publication approval works
+- event versions are preserved
+- material changes notify participants
+- public event pages show the current authoritative status
+- exact private locations are protected
+- venue areas and capacities work
+- route-based events work
+- weather plans work
+- participant eligibility works
+- pet eligibility works
+- health information is minimized
+- behaviour requirements use factual language
+- eligibility exceptions are audited
+- registration supports people, households, pets, teams, volunteers, vendors, speakers, judges, and online attendees where applicable
+- registration snapshots preserve accepted terms
+- duplicate registrations are prevented
+- atomic capacity reservation works
+- waiting lists work
+- waitlist offers are concurrency-safe
+- free and paid tickets work
+- ticket prices are transparent
+- donations are separate
+- payment is idempotent
+- refunds work
+- ticket transfers repeat eligibility
+- schedules, sessions, rooms, and tracks work
+- time zones are correct
+- session conflicts are detected
+- group walks support route, pace, difficulty, weather, check-in, check-out, and lost-pet escalation
+- training events verify trainers and disclose methods
+- harmful training methods are not permitted
+- exhibitions support welfare rules and restricted public interaction
+- adoption days integrate with the adoption module
+- conferences support speakers, online access, recording, captions, and sponsor disclosure
+- competitions support categories, entries, judges, scoring, result finalization, appeals, and certificates
+- competition conflicts of interest are controlled
+- no gambling or betting functionality exists
+- vendors remain subject to marketplace safety
+- sponsors cannot access attendee data without appropriate consent
+- volunteer shifts work
+- event announcements and targeted audiences work
+- event chat reuses the canonical messaging system
+- check-in supports qr and manual fallback
+- duplicate check-in is prevented
+- offline check-in is safe and idempotent where implemented
+- attendance corrections are audited
+- safety plans work
+- incidents work
+- urgent escalation works
+- lost-pet integration works
+- cancellation works
+- postponement works
+- format changes work
+- partial event interruption works
+- media consent works
+- minors receive appropriate privacy
+- participant lists are private by default
+- former event staff lose access
+- feedback works
+- verified-attendance reviews work
+- event reports work
+- completed events archive safely
+- event search respects privacy
+- event discovery is explainable
+- public metadata remains current
+- event notifications use the canonical notification centre
+- confirmed events appear in the canonical calendar
+- all event pages use canonical shared components
+- all older event-related inconsistent pages are migrated
+- no duplicate event card remains
+- no duplicate ticket component remains
+- no duplicate schedule component remains
+- no duplicate check-in pattern remains
+- all event statuses use canonical status variants
+- all supported locales work
+- long translated content works
+- right-to-left layout works where supported
+- mobile registration works
+- mobile ticket works
+- mobile check-in works
+- keyboard access works
+- screen-reader access works
+- reduced motion works
+- forced colours are reviewed
+- every protected action has positive and negative policy tests
+- all relevant models have factories or documented exemptions
+- meaningful factory states exist
+- complete demo event scenarios exist
+- seeders are production-safe
+- fresh migration passes
+- fresh migration plus seeding passes
+- fixed seeders are idempotent
+- php tests pass
+- architecture tests pass
+- concurrency tests pass
+- static analysis passes
+- formatting passes
+- production frontend build passes
+- browser tests pass where applicable
+- no critical browser console errors remain
+- query regressions are resolved
+- livewire payload regressions are resolved
+- final documentation matches actual implementation
+- compliance matrix contains factual statuses
+- no placeholder, disconnected prototype, temporary stub, or unfinished todo remains
+
+
+# 41. required point 13 final-report additions
+
+in addition to the complete final report required by the master prompt, include:
+
+
+## 41.1 event architecture
+
+report:
+
+- existing event implementations discovered
+- event implementations merged
+- event models reused
+- new models created
+- duplicate models removed
+- event state machines
+- event type registry
+- event ownership model
+
+
+## 41.2 event lifecycle
+
+report:
+
+- creation
+- draft saving
+- publication
+- approval
+- versioning
+- registration opening
+- live state
+- completion
+- cancellation
+- archive
+
+
+## 41.3 venues, schedules, and recurrence
+
+report:
+
+- venues
+- private-location protection
+- routes
+- event series
+- occurrences
+- tracks
+- sessions
+- room conflicts
+- time-zone handling
+
+
+## 41.4 registration and eligibility
+
+report:
+
+- participant types
+- pet registration
+- requirement types
+- eligibility review
+- health-status minimization
+- duplicate-registration handling
+- registration snapshot
+- rejection and exception workflows
+
+
+## 41.5 tickets and payments
+
+report:
+
+- ticket types
+- free registration
+- paid registration
+- capacity reservations
+- waitlists
+- payment provider
+- idempotency
+- refunds
+- ticket transfer
+- receipts
+- donation separation
+
+
+## 41.6 group walks and training
+
+report:
+
+- route support
+- route groups
+- weather plans
+- check-in and check-out
+- lost-pet integration
+- trainer verification
+- training-method controls
+- welfare controls
+
+
+## 41.7 exhibitions and conferences
+
+report:
+
+- exhibitor workflow
+- animal display controls
+- vendor separation
+- speakers
+- sessions
+- online access
+- recording
+- captions
+- sponsor disclosure
+
+
+## 41.8 competitions
+
+report:
+
+- categories
+- entries
+- judges
+- conflict handling
+- scoring
+- correction
+- finalization
+- results
+- appeals
+- prizes
+- certificates
+- anti-cheating
+
+
+## 41.9 volunteers, vendors, and sponsors
+
+report:
+
+- volunteer roles
+- shifts
+- assignments
+- vendor applications
+- booths
+- vendor payments
+- sponsor disclosures
+- private-data restrictions
+
+
+## 41.10 check-in and attendance
+
+report:
+
+- qr tickets
+- manual check-in
+- pet check-in
+- offline check-in
+- duplicate prevention
+- check-out
+- attendance correction
+- no-show handling
+
+
+## 41.11 safety and incidents
+
+report:
+
+- safety plans
+- risk assessments
+- weather rules
+- incident types
+- urgent escalation
+- medical integration
+- lost-pet integration
+- participant removal
+- event suspension
+
+
+## 41.12 ui and design standardization
+
+report:
+
+- event-related interface patterns audited
+- shared components reused
+- shared components improved
+- new shared components created
+- duplicate event components removed
+- older event pages migrated
+- calendar pages migrated
+- booking pages migrated
+- design tokens changed
+- responsive defects fixed
+- accessibility defects fixed
+- localization-layout defects fixed
+- component inventory location
+- ui migration matrix location
+
+
+## 41.13 factories and seeders
+
+report:
+
+- affected model count
+- factory count
+- factory-state count
+- event demo scenarios
+- seed execution result
+- idempotency result
+- production safeguards
+
+
+## 41.14 tests
+
+report:
+
+- route tests
+- lifecycle tests
+- creation tests
+- recurrence tests
+- venue tests
+- eligibility tests
+- registration tests
+- capacity tests
+- payment tests
+- schedule tests
+- group-walk tests
+- training tests
+- exhibition tests
+- conference tests
+- competition tests
+- vendor tests
+- volunteer tests
+- communication tests
+- check-in tests
+- cancellation tests
+- incident tests
+- privacy tests
+- localization tests
+- accessibility tests
+- architecture tests
+- concurrency tests
+- browser tests
+- performance tests
+- exact commands
+- exact totals
+- exact results
+
+
+begin implementation now
+
+first read the root and nested agents instructions and every first-party markdown file
+
+then inspect the complete repository, including:
+
+- existing events
+- meetings
+- calendars
+- appointments
+- bookings
+- tickets
+- payments
+- refunds
+- locations
+- maps
+- routes
+- groups
+- organizations
+- professionals
+- shelters
+- foster care
+- adoption
+- marketplace
+- users
+- households
+- pets
+- medical records
+- care records
+- messages
+- notifications
+- files
+- media
+- moderation
+- safety
+- livewire components
+- blade components
+- flux components
+- tailwind patterns
+- factories
+- seeders
+- tests
+- documentation
+
+protect existing changes
+
+capture the factual baseline
+
+create the event requirements
+
+update the compliance matrix
+
+update the portal module registry
+
+update the route matrix
+
+update the page map
+
+update the workflow registry
+
+update the ui component inventory
+
+update the ui migration matrix
+
+create the implementation plan
+
+then immediately continue implementing the complete event system
+
+do not return after analysis
+
+do not return after documentation
+
+do not return after planning
+
+do not leave old inconsistent event, booking, ticket, calendar, or check-in pages unchanged
+
+do not create a disconnected prototype
+
+continue through domain implementation, database migrations, authorization, validation, livewire interfaces, shared ui and ux standardization, payments, tickets, schedules, competitions, safety, factories, seeders, php tests, browser tests, security review, accessibility review, localization review, performance review, final documentation synchronization, diff review, commit, and push according to repository rules
+</event-lifecycle-source-revision>

@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Data;
 
+use App\Enums\ForumEventAccessibilityStatus;
 use App\Enums\ForumEventFormat;
+use App\Enums\ForumEventPetParticipation;
 use App\Enums\ForumEventPhotoConsent;
 use App\Enums\ForumEventRegistrationPolicy;
 use App\Enums\ForumEventType;
@@ -47,5 +49,7 @@ final readonly class CreateForumEventData
         public array $taxonIds,
         public string $locale,
         public string $idempotencyKey,
+        public ForumEventPetParticipation $petParticipationMode = ForumEventPetParticipation::Optional,
+        public ForumEventAccessibilityStatus $accessibilityStatus = ForumEventAccessibilityStatus::NotAssessed,
     ) {}
 }

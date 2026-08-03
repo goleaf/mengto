@@ -255,7 +255,7 @@ test('forum atomic requirements and evidence remain deterministic and traceable'
         ->and($result->successful(), $result->errorOutput().$result->output())
         ->toBeTrue()
         ->and($catalogue['source_payload_sha256'])
-        ->toBe('9f52b2f90c8f1d0dc1c957f0207b6bd89c9a57eaf3359838e51b6c377e25458d')
+        ->toBe('cbb7d3a36f3750106c4751191ddd7d882d922ce0ae0e0b12aed318c809206ea1')
         ->and($catalogue['source_parts'])
         ->toBe([
             'primary',
@@ -266,9 +266,11 @@ test('forum atomic requirements and evidence remain deterministic and traceable'
             'communication-revision',
             'community-revision',
             'medical-record-revision',
+            'portal-architecture-revision',
+            'event-lifecycle-revision',
         ])
-        ->and($requirements)->toHaveCount(29960)
-        ->and($requirements->pluck('requirement_id')->unique())->toHaveCount(29960)
+        ->and($requirements)->toHaveCount(38377)
+        ->and($requirements->pluck('requirement_id')->unique())->toHaveCount(38377)
         ->and($requirements->where('source_part', 'pet-profile-revision'))
         ->toHaveCount(4135)
         ->and($requirements->where('source_part', 'pet-profile-revision')
@@ -320,6 +322,24 @@ test('forum atomic requirements and evidence remain deterministic and traceable'
         ->and($requirements->where('source_part', 'medical-record-revision')
             ->filter(fn (array $requirement): bool => $requirement['implementation_phase'] < 64
                 || $requirement['implementation_phase'] > 73))
+        ->toBeEmpty()
+        ->and($requirements->where('source_part', 'portal-architecture-revision'))
+        ->toHaveCount(3449)
+        ->and($requirements->where('source_part', 'portal-architecture-revision')
+            ->pluck('requirement_id')
+            ->filter(fn (string $id): bool => str_starts_with($id, 'portal.')))
+        ->toHaveCount(3449)
+        ->and($requirements->where('source_part', 'portal-architecture-revision')
+            ->filter(fn (array $requirement): bool => $requirement['implementation_phase'] !== 74))
+        ->toBeEmpty()
+        ->and($requirements->where('source_part', 'event-lifecycle-revision'))
+        ->toHaveCount(4968)
+        ->and($requirements->where('source_part', 'event-lifecycle-revision')
+            ->pluck('requirement_id')
+            ->filter(fn (string $id): bool => str_starts_with($id, 'event.')))
+        ->toHaveCount(4968)
+        ->and($requirements->where('source_part', 'event-lifecycle-revision')
+            ->filter(fn (array $requirement): bool => $requirement['implementation_phase'] !== 75))
         ->toBeEmpty();
 
     $requirements
