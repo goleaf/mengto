@@ -279,6 +279,24 @@ Status: `implemented and verified` on 2026-08-03
 Exact scope, exclusions, and evidence are in
 `docs/plans/forum-phase4-special-needs-category-work-package.md`.
 
+## Current Delivery: Phase 4 Wildlife-Coexistence Category
+
+Status: `implemented and verified` on 2026-08-03
+
+- Prove the complete category-23 source-to-manifest-to-database hierarchy,
+  including its exact root metadata and all 55 ordered source labels.
+- Prove exact synchronized root/child stable keys, slugs, positions, and
+  reviewed EN/LT/RU root rows without changing production behavior.
+- Retain the wildlife-crime and roadkill reporting labels in the immutable
+  source list while keeping their `forum.moderation.0010/.0011` requirements
+  open in Phase 7.
+- Passed the focused 2-test/12-assertion contract, related
+  31-test/36,368-assertion slice, and complete sequential
+  2,484-test/80,398-assertion suite plus every applicable release gate.
+
+Exact scope, exclusions, and evidence are in
+`docs/plans/forum-phase4-wildlife-coexistence-category-work-package.md`.
+
 ## Current Delivery: Event Schedule Foundation
 
 Status: `implemented and verified` on 2026-08-03
@@ -327,7 +345,7 @@ specialized event domains, UI migration, seeding, verification, and release.
 
 ## Current Delivery: P02 Organization Authority Foundation
 
-Status: `implementation complete; final publication pending` on 2026-08-03
+Status: `implemented, verified, and published foundation` on 2026-08-03
 
 The first P02 slice adds the canonical organization tenant, nine independent
 membership roles, account-bound expiring invitations, operational
@@ -339,9 +357,8 @@ in records and absent from public Livewire state.
 
 This does not close P02. Organization locations, selected context switching,
 verification review/renewal, notification delivery and revocation, downstream
-finance/marketplace/shelter operations, authoritative backfill, browser proof,
-and exact portal/event evidence remain open. Scope and current gate evidence
-are in
+finance/marketplace/shelter operations, authoritative backfill, and exact
+portal/event evidence remain open. Scope and current gate evidence are in
 `docs/plans/portal-organization-authority-foundation-work-package.md`.
 
 ## Current Delivery: Global Page Identity Standardization

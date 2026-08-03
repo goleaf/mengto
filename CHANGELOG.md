@@ -42,6 +42,11 @@
 
 ### Forum And Animal Taxonomy
 
+- Verified all 59 Phase 4 wildlife/coexistence category atoms from immutable
+  source through synchronized keys, slugs, positions, and reviewed EN/LT/RU
+  root rows while retaining, but not promoting, the two Phase 7 reporting
+  atoms. Production schema, routes, presentation, cache, and query count are
+  unchanged.
 - Verified the complete special-needs/accessibility category hierarchy and
   hardened category localization so only reviewed target/fallback values can
   replace immutable source text; seed and administrative invalidation retain
@@ -297,6 +302,10 @@
 
 ### Factories, Seeders, And Tests
 
+- Kept Faker in production Composer installs because the environment-guarded
+  `DatabaseSeeder` invokes model factories; fresh demo/test servers installed
+  with `--no-dev` can now run `migrate:fresh --seed` without an undefined
+  `fake()` helper.
 - Added valid model factories for all 138 first-party Eloquent models and a
   complete automated factory/enum-state creation matrix.
 - Made full demo seeding repeatable and production-safe.

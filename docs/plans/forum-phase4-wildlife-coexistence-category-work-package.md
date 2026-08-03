@@ -2,7 +2,7 @@
 
 Date: 2026-08-03
 
-Status: implementation complete; final verification pending
+Status: implemented and verified
 
 ## Exact Scope
 
@@ -54,22 +54,22 @@ Stop without evidence if either Phase 7 ID is promoted, source labels change,
 the hierarchy requires a behavior not represented by these Phase 4 atoms, or
 an unrelated dirty-tree file enters the commit.
 
-## Implementation Checkpoint
+## Final Evidence
 
 - Exact scope classification complete: 59 Phase 4 atoms selected and two
   Phase 7 reporting atoms explicitly excluded.
 - Focused contract: 2 tests and 12 assertions passed.
-- Related category, multilingual, localization, and schema slice: 48 tests and
-  36,063 assertions passed.
-- The page-identity double-escaping regression was corrected and its focused
-  expert-session route test passed 1 test and 9 assertions.
-- The next full Pest run reached 2,410 passing tests and 79,459 assertions,
-  but the gate remains red because the parallel uncommitted organization
-  package has six missing-factory errors, six missing leading indexes, and one
-  localization architecture failure. The package does not claim that run.
-- Full Larastan, Composer strict validation/audit, npm audit, Vite 8.2.0 build,
-  and deterministic manifest/source/requirements checks passed.
-- Full Pint is pending because a parallel uncommitted organization test still
-  needs its own formatting; targeted Pint for this package passed.
-- Evidence promotion, database/cache gates, final full-suite rerun, commit, and
-  push remain pending a stable shared worktree.
+- Related category, multilingual, localization, and schema slice: 31 tests and
+  36,368 assertions passed.
+- Complete sequential repository suite: 2,484 tests and 80,398 assertions.
+- Full Pint and Larastan passed with zero findings.
+- Fresh isolated SQLite verification applied 121 migrations and created 205
+  tables with a stable 5-user repeated seed; the complete lifecycle applied
+  121, rolled back to zero, and reapplied all 121 migrations.
+- Composer strict validation/audit, npm audit with zero vulnerabilities, Vite
+  8.2.0 production build, Laravel cache compilation, localization scan, and
+  deterministic manifest/source/38,377-requirement checks passed.
+- The evidence overlay promotes exactly `forum.category.0129` through
+  `forum.category.0187`. `forum.moderation.0010/.0011` remain open in Phase 7.
+- Production code is unchanged, so the query delta is zero. Browser-only and
+  migration-content gates are not applicable to this characterization slice.

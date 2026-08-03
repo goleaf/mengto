@@ -78,14 +78,14 @@ configured demo environments and is idempotent under repeated complete seeding.
 - organization authority: 14 tests, 109 assertions;
 - organization plus event lifecycle/workflow: 39 tests, 702 assertions;
 - complete serial suite: 2,484 tests, 80,398 assertions in 163.378 seconds;
-- targeted production-code Larastan: zero errors;
+- full Larastan: zero errors;
 - fresh database: 121 migrations, 205 tables, seed and repeat seed exit `0`;
 - complete migration cycle: 121 applied, zero remaining after rollback, 121
   reapplied, seed and repeat seed exit `0`.
 
 Composer strict validation and audit, npm audit with zero vulnerabilities,
 Vite 8.2.0 production build, Laravel cache compilation, localization scan,
-targeted Pint, deterministic forum source, manifest, and requirements checks
+full Pint, deterministic forum source, manifest, and requirements checks
 also pass. The browser matrix covers the organization directory and workspace
 at 1440x900 and 375x812 with zero overflow, unnamed controls, raw translation
 keys, private verification-evidence leaks, undersized mobile controls, or

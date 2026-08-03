@@ -593,6 +593,29 @@ The package changes no route, Blade, schema, or browser interaction, so a
 browser-only gate is not applicable. Exact scope is in
 `docs/plans/forum-phase4-special-needs-category-work-package.md`.
 
+## Phase 4 Wildlife-Coexistence Category
+
+`ForumWildlifeCoexistenceCategoryTest` pins the exact category-23 number,
+stable key, slug, source name, purpose, and all 55 ordered source labels. It
+then runs the production synchronizer and proves exact persisted root/child
+stable keys, slugs, positions, and reviewed EN/LT/RU root rows. The two source
+labels assigned to `forum.moderation.0010/.0011` stay present but unpromoted.
+
+Final evidence on 2026-08-03:
+
+- focused contract: 2 tests and 12 assertions;
+- related category, multilingual, localization, and schema slice: 31 tests and
+  36,368 assertions;
+- query delta: 0 production statements because production code is unchanged;
+- complete sequential suite: 2,484 tests and 80,398 assertions;
+- full Pint/Larastan, Composer/npm audits, Vite, Laravel cache compilation,
+  fresh/repeat seed, rollback/reapply, and manifest/source/requirements
+  generation: passed.
+
+The package changes no route, Blade, schema, cache, or browser interaction, so
+browser-only and migration-content gates are not applicable. Exact scope is in
+`docs/plans/forum-phase4-wildlife-coexistence-category-work-package.md`.
+
 ## Organization Authority Foundation
 
 `OrganizationAuthorityFoundationTest` covers idempotent creation, owner

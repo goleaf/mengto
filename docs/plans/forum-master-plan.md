@@ -94,14 +94,16 @@ Its scope and final evidence are maintained in
 
 **IDs:** all Phase 4 rows.
 
-The first two verified Phase 4 slices cover exactly category 21's 64 atoms and
-category 22 plus three translation/cache atoms, for 131 verified IDs total.
+The first three verified Phase 4 slices cover exactly category 21's 64 atoms,
+category 22 plus three translation/cache atoms, and category 23's 59 atoms,
+for 190 verified IDs total.
 Runtime manifest validation fails closed for structural/source drift, warm
 locale trees execute zero database queries, and unreviewed locale values can
 no longer override reviewed fallback text. The remaining category roots and
 technical taxonomy requirements stay open; exact evidence is maintained in
-`docs/plans/forum-phase4-before-ownership-category-work-package.md` and
-`docs/plans/forum-phase4-special-needs-category-work-package.md`.
+`docs/plans/forum-phase4-before-ownership-category-work-package.md`,
+`docs/plans/forum-phase4-special-needs-category-work-package.md`, and
+`docs/plans/forum-phase4-wildlife-coexistence-category-work-package.md`.
 
 **Result:** 44 stable root keys, every recovered required child, translations,
 rules, aliases, redirects, related categories, deterministic ordering,
