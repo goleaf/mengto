@@ -19,11 +19,11 @@
         <div class="flex items-start justify-between gap-3">
             <div class="min-w-0">
                 <p class="text-xs font-bold uppercase text-paw-leaf">{{ $listing['category_label'] }}</p>
-                <h2 class="mt-1 text-lg font-bold leading-6">
-                    <a href="{{ route('marketplace.show', $listing['slug']) }}" class="hover:text-paw-leaf focus:outline-none focus:ring-2 focus:ring-paw-leaf">
-                        {{ $listing['title'] }}
-                    </a>
-                </h2>
+                <x-card-heading
+                    :title="$listing['title']"
+                    :href="route('marketplace.show', $listing['slug'])"
+                    spacing="compact"
+                />
             </div>
             <strong class="shrink-0 text-lg">{{ $listing['price_label'] }}</strong>
         </div>
@@ -32,7 +32,7 @@
             <p class="text-sm font-semibold text-paw-muted">{{ $listing['brand_model'] }}</p>
         @endif
 
-        <p class="market-card__excerpt">{{ $listing['excerpt'] }}</p>
+        <x-card-description spacing="none" class="min-h-12">{{ $listing['excerpt'] }}</x-card-description>
 
         <div class="flex flex-wrap gap-2" aria-label="{{ __('ui.suitable_pets_f64e6eef51') }}">
             @forelse (array_slice($listing['species_labels'], 0, 3) as $species)
@@ -54,7 +54,7 @@
         </dl>
 
         <footer class="market-card__footer">
-            <div class="min-w-0 text-xs text-paw-muted">
+            <div class="min-w-0 flex-1 basis-40 text-xs text-paw-muted">
                 <span class="flex items-center gap-1 truncate font-semibold text-paw-ink">
                     {{ $listing['business_name'] ?? $listing['owner_name'] }}
                     @if ($listing['seller_verified'])
@@ -68,7 +68,7 @@
                     @endif
                 </span>
             </div>
-            <div class="flex shrink-0 gap-2">
+            <x-card-action-row fill class="flex-1 basis-48 justify-end">
                 <x-action-control
                     :label="$listing['is_saved'] ? __('ui.saved_b5c120b316') : __('ui.save_1509f561f2')"
                     :active-label="$listing['is_saved'] ? __('ui.saved_b5c120b316') : null"
@@ -80,7 +80,7 @@
                     :payload="['action' => 'toggle-save']"
                 />
                 <x-action-control label="{{ __('ui.view_dcc839a401') }}" icon="arrow-right" variant="primary" :href="route('marketplace.show', $listing['slug'])" />
-            </div>
+            </x-card-action-row>
         </footer>
     </div>
 </article>

@@ -69,7 +69,7 @@
                 </div>
             </div>
 
-            <div class="group-card__actions">
+            <x-card-action-row fill class="group-card__actions">
                 @if ($group['secondary_action'] ?? null)
                     <x-action-control
                         :label="$group['secondary_action']['label']"
@@ -92,7 +92,7 @@
                     :active="$primary['active'] ?? false"
                     :pressed="$primary['pressed'] ?? null"
                 />
-            </div>
+            </x-card-action-row>
         </div>
     </x-slot:footer>
 </x-directory-card>

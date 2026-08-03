@@ -171,6 +171,22 @@
     @include focus-ring;
 }
 
+.card-action-row {
+    display: flex;
+    min-inline-size: 0;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+
+    &--fill {
+        > .action:not(.action--icon),
+        > .contents > .action:not(.action--icon) {
+            min-inline-size: 8rem;
+            flex: 1 1 8rem;
+        }
+    }
+}
+
 .filter-chip {
     gap: 0.375rem;
     background: $white;

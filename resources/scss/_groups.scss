@@ -62,16 +62,6 @@
         }
     }
 
-    &__actions {
-        display: flex;
-        min-inline-size: 0;
-        gap: 0.5rem;
-
-        .action:not(.action--icon) {
-            min-inline-size: 0;
-            flex: 1;
-        }
-    }
 }
 
 .group-hero {

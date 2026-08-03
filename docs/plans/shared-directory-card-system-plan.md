@@ -123,10 +123,10 @@ while domain-specific product meaning remains in small explicit components.
 
 - [ ] Inventory card footers containing primary and secondary actions.
 - [ ] Classify navigation, toggle, destructive, and form-submit semantics.
-- [ ] Ensure no nested interactive elements are introduced by media/title links.
+- [x] Ensure no nested interactive elements are introduced by media/title links.
 - [ ] Verify shared controls expose current pressed/active state.
 - [ ] Verify loading and repeated-submit behaviour for server-backed actions.
-- [ ] Standardize action-row wrapping at 320 pixels without shrinking touch
+- [x] Standardize action-row wrapping at 320 pixels without shrinking touch
   targets below 44 pixels.
 - [ ] Define when an entire card may be linked; default to explicit media/title
   links to avoid nested controls.
@@ -180,7 +180,7 @@ while domain-specific product meaning remains in small explicit components.
 - [x] Audit `discovery-result-card` for leaf-primitive reuse.
 - [x] Audit `expert-card` for leaf-primitive reuse.
 - [ ] Audit `place-card` and `place-dashboard` as one product family.
-- [ ] Audit `listing-card` against price and order-state requirements.
+- [x] Audit `listing-card` against price and order-state requirements.
 - [ ] Audit `search-case-card` against urgency and location requirements.
 - [ ] Audit `profile-pet-card` and `profile-card-pet` for duplication.
 - [ ] Audit `feed-card` and `group-post-card` without adopting the directory
@@ -277,6 +277,26 @@ Publication evidence: implementation commit
 Continuation publication evidence: core commit `3b0a4e5` and localized
 evidence follow-up `24d8dd8` both advanced `origin/main` normally on
 2026-08-03.
+
+## P16 — Shared Action Row And Marketplace Leaves
+
+- [x] Prove Groups and Marketplace have the same bounded wrap and touch-target
+  layout requirement without claiming a shared domain shell.
+- [x] Add the anonymous `x-card-action-row` component with mergeable attributes
+  and an explicit fill mode.
+- [x] Move the group membership controls to the shared row while retaining the
+  established browser hook and all group semantics.
+- [x] Move marketplace save/detail controls to the shared row.
+- [x] Reuse shared heading and description leaves in listing cards with `h3`
+  semantics under the marketplace results heading.
+- [x] Remove the superseded group action and marketplace excerpt CSS rules.
+- [x] Add RED/GREEN feature contracts for both consumers and destination
+  synchronization.
+- [x] Verify Groups at six widths across EN/LT/RU and Marketplace at 320 and
+  1440 pixels in authenticated Chrome.
+- [x] Inspect group and marketplace mobile/desktop screenshots.
+- [x] Run the final full static, test, seed, cache, dependency, and diff gates.
+- [ ] Publish the isolated attributable slice to `origin/main`.
 
 ## Completion Rule
 
