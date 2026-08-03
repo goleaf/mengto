@@ -582,6 +582,11 @@ try {
             'desktop recurring event detail',
             'event-detail-desktop.png',
         ],
+        [
+            '/meetups/demo-point13-care-conference',
+            'desktop conference schedule',
+            'event-schedule-desktop.png',
+        ],
     ]) {
         await navigate(client, sessionId, `${baseUrl}${path}`);
         const audit = await evaluate(client, sessionId, pageAuditExpression);
@@ -590,6 +595,7 @@ try {
             eventSurfaceCount: document.querySelectorAll('[data-section="event-directory"], [data-section="event-workspace"]').length,
             rawTranslationKeys: document.body.innerText.match(/\\bforum_events\\.[a-z0-9_.-]+/gi) ?? [],
             privateLocationLeak: document.body.innerText.includes('Approved participant meeting point'),
+            scheduleSessionCount: document.querySelectorAll('.event-schedule article').length,
         }))()`);
         assert(behavior.eventSurfaceCount === 1, `${label}: canonical event surface marker is missing.`);
         assert(
@@ -598,6 +604,10 @@ try {
         );
         if (path === '/meetups') {
             assert(! behavior.privateLocationLeak, `${label}: an exact private location leaked into the directory.`);
+        }
+        if (path.includes('care-conference')) {
+            assert(behavior.scheduleSessionCount === 3, `${label}: expected three seeded sessions.`);
+            assert(! behavior.privateLocationLeak, `${label}: an exact private location leaked into the schedule.`);
         }
         eventAudits[label] = { ...audit, ...behavior };
 
@@ -627,12 +637,25 @@ try {
             'mobile recurring event detail',
             'event-detail-mobile.png',
         ],
+        [
+            '/meetups/demo-point13-care-conference',
+            'mobile conference schedule',
+            'event-schedule-mobile.png',
+        ],
     ]) {
         await navigate(client, sessionId, `${baseUrl}${path}`);
         const audit = await evaluate(client, sessionId, pageAuditExpression);
         assertPageAudit(audit, label);
         const smallTargets = await evaluate(client, sessionId, surfaceTouchTargetExpression);
         assert(smallTargets.length === 0, `${label}: controls below 44px ${JSON.stringify(smallTargets)}.`);
+        if (path.includes('care-conference')) {
+            const scheduleSessionCount = await evaluate(
+                client,
+                sessionId,
+                "document.querySelectorAll('.event-schedule article').length",
+            );
+            assert(scheduleSessionCount === 3, `${label}: expected three seeded sessions.`);
+        }
         eventAudits[label] = { ...audit, smallTargets };
 
         const screenshotData = await client.send('Page.captureScreenshot', {
@@ -1303,6 +1326,8 @@ try {
             join(outputDirectory, 'event-directory-mobile.png'),
             join(outputDirectory, 'event-detail-desktop.png'),
             join(outputDirectory, 'event-detail-mobile.png'),
+            join(outputDirectory, 'event-schedule-desktop.png'),
+            join(outputDirectory, 'event-schedule-mobile.png'),
             join(outputDirectory, 'content-feed-desktop.png'),
             join(outputDirectory, 'content-feed-mobile.png'),
             join(outputDirectory, 'pet-profile-manage-desktop.png'),

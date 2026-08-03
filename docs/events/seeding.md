@@ -4,7 +4,10 @@
 `ForumEventDemoSeeder` exits outside local/demo/testing and creates one stable
 scenario per canonical Point 13 event type, varied visibility/format/status,
 team roles, a weekly series with occurrences, and integrated legacy workflow
-records. Repeated runs use stable keys and preserve row counts.
+records. The conference scenario adds two tracks, two rooms, three sessions,
+an animal-rest period, public speaker assignments, accessibility directions,
+and independent room capacities. Repeated runs use stable keys and preserve
+row counts.
 
 The seeder does not fabricate provider payments, tickets, scores, incidents,
 volunteer assignments, or organization tenants. Those scenarios remain absent

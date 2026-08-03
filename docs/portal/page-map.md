@@ -9,7 +9,8 @@ management pages, and authorized shared/download views.
 Events use `ForumEventDirectory` inside `meetups/index.blade.php` and
 `ForumEventWorkspace` inside `meetups/show.blade.php`. The directory provides
 search/filter/pagination/create; detail provides status, occurrences,
-registration, organizer queue, updates, invitations, messages, review, report,
+registration, organizer queue, occurrence-scoped responsive schedule,
+schedule-manager editor, updates, invitations, messages, review, report,
 access details, check-in, and check-out according to policy.
 
 No orphan Point 13 page was added. Existing catalogue/created-content URLs are

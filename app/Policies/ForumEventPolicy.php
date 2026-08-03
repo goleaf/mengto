@@ -127,6 +127,31 @@ final class ForumEventPolicy
                 ]));
     }
 
+    public function manageSchedule(?User $user, ForumEvent $event): bool
+    {
+        return $user?->isActive() === true
+            && $event->status !== ForumEventStatus::Archived
+            && ($user->isAdministrator() || $this->hasTeamRole($user, $event, [
+                ForumEventTeamRole::Owner,
+                ForumEventTeamRole::Administrator,
+                ForumEventTeamRole::PrimaryOrganizer,
+                ForumEventTeamRole::CoOrganizer,
+                ForumEventTeamRole::ScheduleManager,
+            ]));
+    }
+
+    public function overrideScheduleConflict(?User $user, ForumEvent $event): bool
+    {
+        return $user?->isActive() === true
+            && ($user->isAdministrator()
+                || $event->isOwner($user)
+                || $this->hasTeamRole($user, $event, [
+                    ForumEventTeamRole::Owner,
+                    ForumEventTeamRole::Administrator,
+                    ForumEventTeamRole::PrimaryOrganizer,
+                ]));
+    }
+
     public function transition(
         ?User $user,
         ForumEvent $event,

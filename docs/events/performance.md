@@ -10,8 +10,14 @@ fell from 125 queries before filtering to one query after filtering, with zero
 event, registration, or pet-link changes. `EventLifecycleQueryBudgetTest`
 enforces a maximum of two queries for a complete six-event fixture.
 
-Final Livewire-payload and browser latency measurements remain pending. The
-browser layout audit does verify zero horizontal overflow for the event
-directory and recurring-event detail at desktop and mobile viewports. Public
-caches never include exact venue, registration, eligibility, or private
+`EventScheduleWorkflowTest` renders 30 sessions with a shared track, room, and
+speaker in exactly five schedule queries. The measured locale-aware projection
+was 17,654 bytes and the regression ceiling is 20,000 bytes. The query count
+does not grow with sessions. The workspace caps schedule reads at 500 rows and
+eager-loads every displayed relation with explicit columns.
+
+The browser layout audit verifies zero horizontal overflow for the event
+directory, recurring-event detail, and three-session conference schedule at
+desktop and mobile viewports. End-to-end latency measurement remains pending.
+Public caches never include exact venue, registration, eligibility, or private
 message data.

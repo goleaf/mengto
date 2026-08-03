@@ -17,8 +17,10 @@
 | event status rendering | shared `status-badge` and translated enum labels | standardized |
 | multi-pet registration | semantic checkbox fieldset and error summary | migrated |
 | occurrence selection | bounded responsive select/list in workspace | added |
+| event schedule | canonical `x-event-schedule` backed by occurrence-scoped tracks, rooms, sessions and server conflict checks | added |
 | manual check-in/out | shared action patterns and server-confirmed state | improved |
 
-No obsolete CSS or JavaScript was added. QR scanner, schedule builder, ticket,
-competition, incident, vendor, and volunteer components do not exist and are
-not represented as migrated.
+No new obsolete CSS or JavaScript was added by the event package; the
+pre-existing `forum-header` family remains scheduled for migration. QR scanner,
+participant session-reservation, ticket, competition, incident, vendor, and
+volunteer components do not exist and are not represented as migrated.

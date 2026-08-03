@@ -84,6 +84,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property-read Collection<int, ForumEventVersion> $versions
  * @property-read Collection<int, ForumEventTeamMembership> $teamMemberships
  * @property-read Collection<int, ForumEventTeamMembership> $activeTeamMemberships
+ * @property-read Collection<int, ForumEventTrack> $tracks
+ * @property-read Collection<int, ForumEventRoom> $rooms
+ * @property-read Collection<int, ForumEventSession> $sessions
  */
 final class ForumEvent extends Model
 {
@@ -298,6 +301,24 @@ final class ForumEvent extends Model
         $memberships->getQuery()->active();
 
         return $memberships;
+    }
+
+    /** @return HasMany<ForumEventTrack, $this> */
+    public function tracks(): HasMany
+    {
+        return $this->hasMany(ForumEventTrack::class);
+    }
+
+    /** @return HasMany<ForumEventRoom, $this> */
+    public function rooms(): HasMany
+    {
+        return $this->hasMany(ForumEventRoom::class);
+    }
+
+    /** @return HasMany<ForumEventSession, $this> */
+    public function sessions(): HasMany
+    {
+        return $this->hasMany(ForumEventSession::class);
     }
 
     /**

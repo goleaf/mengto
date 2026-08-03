@@ -22,8 +22,12 @@ use App\Models\ForumEvent;
 use App\Models\ForumEventOccurrence;
 use App\Models\ForumEventRegistration;
 use App\Models\ForumEventRegistrationPet;
+use App\Models\ForumEventRoom;
 use App\Models\ForumEventSeries;
+use App\Models\ForumEventSession;
+use App\Models\ForumEventSessionStaff;
 use App\Models\ForumEventTeamMembership;
+use App\Models\ForumEventTrack;
 use App\Models\ForumEventVersion;
 use App\Models\PetProfile;
 use App\Models\User;
@@ -308,7 +312,11 @@ test('canonical event demo scenarios are production guarded and idempotent', fun
         ->and(ForumEventSeries::query()->count())->toBe(1)
         ->and(ForumEventOccurrence::query()->count())->toBe(18)
         ->and(ForumEventVersion::query()->count())->toBe(16)
-        ->and(ForumEventTeamMembership::query()->count())->toBe(32);
+        ->and(ForumEventTeamMembership::query()->count())->toBe(32)
+        ->and(ForumEventTrack::query()->count())->toBe(2)
+        ->and(ForumEventRoom::query()->count())->toBe(2)
+        ->and(ForumEventSession::query()->count())->toBe(3)
+        ->and(ForumEventSessionStaff::query()->count())->toBe(2);
 
     $walk = ForumEvent::query()
         ->where('stable_key', 'demo-point13-weekly-group-walk')

@@ -6,39 +6,44 @@ privacy, and localization workflow. `EventLifecycleFoundationTest` adds owner
 and team boundaries, lifecycle transitions, occurrence/version snapshots,
 multi-pet eligibility, private/unlisted access, idempotent backfill, enum
 translation parity, factory states, and production-safe demo seeding.
+`EventScheduleWorkflowTest` covers reversible schema, policy boundaries,
+idempotent session creation, encrypted room data, occurrence/timezone/capacity
+validation, room/track/staff conflicts, audited overrides, private staff and
+draft visibility, Livewire create/edit, translations, and factories.
 `EventLifecycleQueryBudgetTest` fixes the idempotent six-event backfill budget
 at no more than two statements. `EventLifecycleMigrationTest` runs outside the
 normal `RefreshDatabase` transaction so SQLite can prove that the five
-additive Point 13 migrations roll back and reapply around populated legacy
-event and registration rows.
+additive lifecycle migrations roll back and reapply around populated legacy
+event and registration rows. The schedule test independently rolls back and
+reapplies the sixth Point 13 schedule migration.
 
-The repository browser audit now covers the event directory and a recurring
-event detail at 1440x900 and 375x812. It checks one `h1` and `main`, accessible
-control names, 44px mobile targets, horizontal overflow, raw translation keys,
-directory-level private-location disclosure, and browser console errors. The
-resulting PNG files and JSON report are runtime artifacts outside the
-repository.
+The repository browser audit covers the event directory, a recurring event,
+and the three-session conference schedule at 1440x900 and 375x812. It checks
+one `h1` and `main`, accessible control names, 44px mobile targets, horizontal
+overflow, raw translation keys, private-location disclosure, expected session
+count, and browser console errors. PNG files and the JSON report remain runtime
+artifacts outside the repository.
 
 ## Verification on 2026-08-03
 
-- `php artisan config:clear --no-interaction && php artisan test --compact`:
-  2,303 tests passed with 76,179 assertions.
-- `php artisan test --compact tests/Feature/Forum/EventLifecycleFoundationTest.php`:
-  7 tests passed with 464 assertions.
-- event workflow, lifecycle, query-budget, route-preview, and architecture
-  selection: 49 tests passed with 27,753 assertions.
-- `php artisan test --compact tests/Unit/EventLifecycleMigrationTest.php`:
-  1 test passed with 17 assertions.
-- isolated SQLite `php artisan migrate:fresh --seed --force --no-interaction`:
-  all migrations and seeders completed successfully.
+- `composer test`: 2,362 tests passed with 78,760 assertions.
+- schedule workflow: 7 tests passed with 131 assertions; the 30-session
+  projection used five queries and 17,654 bytes.
+- event workflow, lifecycle, query-budget, route-preview, lifecycle migration,
+  and schedule selection: 37 tests passed with 781 assertions.
+- architecture: 20 tests passed with 27,685 assertions; localization: 7 tests
+  passed with 30,162 assertions; factory/seeder inventory: 1,557 tests passed
+  with 4,613 assertions; schema integrity: 2 tests passed with 3 assertions.
+- `php scripts/verify-fresh-database.php`: 118 migrations and 200 tables;
+  complete seed and repeat seed both exited `0` and preserved five users.
 - `BROWSER_BASE_URL=http://127.0.0.1:8013 npm run test:browser:a11y`:
-  passed with four event viewport audits and zero console errors.
-- `vendor/bin/pint --test`, `vendor/bin/phpstan analyse --no-progress`,
+  passed with six event viewport audits and zero console errors.
+- targeted Pint, `vendor/bin/phpstan analyse --no-progress --memory-limit=1G`,
   `composer validate --strict`, Composer/NPM audits, and `npm run build`:
   passed; Larastan reported zero errors and both audits reported zero known
   vulnerabilities.
 
 Provider-backed event payments, tickets, refunds, QR/offline check-in,
-tracks/sessions, competition scoring, vendors, volunteers, incidents, and the
-other advanced aggregates cannot be reported as tested because their durable
-implementations do not exist.
+session reservations/waitlists, competition scoring, vendors, volunteers,
+incidents, and the other advanced aggregates cannot be reported as tested
+because their durable implementations do not exist.

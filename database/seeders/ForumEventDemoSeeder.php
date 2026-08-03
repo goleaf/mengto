@@ -14,6 +14,10 @@ use App\Enums\ForumEventRecurrenceFrequency;
 use App\Enums\ForumEventRegistrationPolicy;
 use App\Enums\ForumEventRegistrationStatus;
 use App\Enums\ForumEventReviewStatus;
+use App\Enums\ForumEventSessionReservationPolicy;
+use App\Enums\ForumEventSessionRole;
+use App\Enums\ForumEventSessionStatus;
+use App\Enums\ForumEventSessionType;
 use App\Enums\ForumEventStatus;
 use App\Enums\ForumEventTeamMembershipStatus;
 use App\Enums\ForumEventTeamRole;
@@ -26,8 +30,12 @@ use App\Models\ForumEventInvitation;
 use App\Models\ForumEventOccurrence;
 use App\Models\ForumEventRegistration;
 use App\Models\ForumEventReview;
+use App\Models\ForumEventRoom;
 use App\Models\ForumEventSeries;
+use App\Models\ForumEventSession;
+use App\Models\ForumEventSessionStaff;
 use App\Models\ForumEventTeamMembership;
+use App\Models\ForumEventTrack;
 use App\Models\ForumEventUpdate;
 use App\Models\User;
 use Illuminate\Database\Seeder;
@@ -299,6 +307,140 @@ final class ForumEventDemoSeeder extends Seeder
                     'is_override' => false,
                 ],
             );
+        }
+
+        $this->seedConferenceSchedule($organizer, $teamMember);
+    }
+
+    private function seedConferenceSchedule(User $organizer, ?User $speaker): void
+    {
+        $conference = ForumEvent::query()
+            ->where('stable_key', 'demo-point13-care-conference')
+            ->firstOrFail();
+        $occurrence = $conference->occurrences()->orderBy('starts_at')->firstOrFail();
+        $careTrack = ForumEventTrack::query()->updateOrCreate(
+            ['stable_key' => 'demo-point13-conference-care-track'],
+            [
+                'forum_event_id' => $conference->id,
+                'name' => 'Care practice',
+                'description' => 'Evidence-aware care sessions for households and professionals.',
+                'position' => 10,
+                'is_public' => true,
+            ],
+        );
+        $communityTrack = ForumEventTrack::query()->updateOrCreate(
+            ['stable_key' => 'demo-point13-conference-community-track'],
+            [
+                'forum_event_id' => $conference->id,
+                'name' => 'Community operations',
+                'description' => 'Accessible community and organization workflows.',
+                'position' => 20,
+                'is_public' => true,
+            ],
+        );
+        $mainRoom = ForumEventRoom::query()->updateOrCreate(
+            ['stable_key' => 'demo-point13-conference-main-room'],
+            [
+                'forum_event_id' => $conference->id,
+                'name' => 'Main hall',
+                'public_directions' => 'Level one, beside the step-free central entrance.',
+                'exact_directions' => 'Use the staff-marked accessible entrance after check-in.',
+                'capacity' => 120,
+                'accessibility_information' => 'Step-free entrance, hearing loop, and reserved seating.',
+                'is_online' => false,
+                'is_private' => false,
+                'position' => 10,
+            ],
+        );
+        $workshopRoom = ForumEventRoom::query()->updateOrCreate(
+            ['stable_key' => 'demo-point13-conference-workshop-room'],
+            [
+                'forum_event_id' => $conference->id,
+                'name' => 'Quiet workshop room',
+                'public_directions' => 'Level one, beyond the quiet rest area.',
+                'exact_directions' => 'Ask the accessibility desk for the low-stimulation route.',
+                'capacity' => 32,
+                'accessibility_information' => 'Low-stimulation lighting and step-free access.',
+                'is_online' => false,
+                'is_private' => false,
+                'position' => 20,
+            ],
+        );
+        $sessions = [
+            [
+                'key' => 'opening-keynote',
+                'track_id' => $careTrack->id,
+                'room_id' => $mainRoom->id,
+                'title' => 'Welfare-first care decisions',
+                'summary' => 'How to preserve uncertainty, professional boundaries, and animal choice.',
+                'type' => ForumEventSessionType::Session,
+                'starts_at' => $occurrence->starts_at->addMinutes(30),
+                'ends_at' => $occurrence->starts_at->addMinutes(90),
+                'capacity' => 120,
+                'position' => 10,
+            ],
+            [
+                'key' => 'animal-rest',
+                'track_id' => $careTrack->id,
+                'room_id' => $mainRoom->id,
+                'title' => 'Animal rest and room reset',
+                'summary' => 'A protected pause for water, quiet, and welfare checks.',
+                'type' => ForumEventSessionType::AnimalRest,
+                'starts_at' => $occurrence->starts_at->addMinutes(90),
+                'ends_at' => $occurrence->starts_at->addMinutes(120),
+                'capacity' => 120,
+                'position' => 20,
+            ],
+            [
+                'key' => 'accessible-communities',
+                'track_id' => $communityTrack->id,
+                'room_id' => $workshopRoom->id,
+                'title' => 'Accessible community event operations',
+                'summary' => 'Practical registration, privacy, and calm check-in patterns.',
+                'type' => ForumEventSessionType::Session,
+                'starts_at' => $occurrence->starts_at->addMinutes(90),
+                'ends_at' => $occurrence->starts_at->addMinutes(150),
+                'capacity' => 32,
+                'position' => 30,
+            ],
+        ];
+
+        foreach ($sessions as $sessionData) {
+            $session = ForumEventSession::query()->updateOrCreate(
+                ['stable_key' => 'demo-point13-session-'.$sessionData['key']],
+                [
+                    'forum_event_id' => $conference->id,
+                    'forum_event_occurrence_id' => $occurrence->id,
+                    'forum_event_track_id' => $sessionData['track_id'],
+                    'forum_event_room_id' => $sessionData['room_id'],
+                    'created_by_user_id' => $organizer->id,
+                    'updated_by_user_id' => $organizer->id,
+                    'idempotency_key' => 'demo:event:session:'.$sessionData['key'],
+                    'title' => $sessionData['title'],
+                    'summary' => $sessionData['summary'],
+                    'type' => $sessionData['type'],
+                    'status' => ForumEventSessionStatus::Scheduled,
+                    'starts_at' => $sessionData['starts_at'],
+                    'ends_at' => $sessionData['ends_at'],
+                    'timezone' => $occurrence->timezone,
+                    'capacity' => $sessionData['capacity'],
+                    'reservation_policy' => ForumEventSessionReservationPolicy::Optional,
+                    'is_required' => $sessionData['type'] === ForumEventSessionType::AnimalRest,
+                    'position' => $sessionData['position'],
+                    'lock_version' => 0,
+                ],
+            );
+
+            if ($speaker !== null && $sessionData['type'] === ForumEventSessionType::Session) {
+                ForumEventSessionStaff::query()->updateOrCreate(
+                    [
+                        'forum_event_session_id' => $session->id,
+                        'user_id' => $speaker->id,
+                        'role' => ForumEventSessionRole::Speaker->value,
+                    ],
+                    ['is_public' => true],
+                );
+            }
         }
     }
 }

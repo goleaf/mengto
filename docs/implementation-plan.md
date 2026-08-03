@@ -221,6 +221,31 @@ repeat seed, immutable source preservation, and deterministic generation.
 The executable contract and stop conditions are maintained in
 `docs/plans/forum-topic-type-schema-runtime-work-package.md`.
 
+## Current Delivery: Event Schedule Foundation
+
+Status: `implemented and verified` on 2026-08-03
+
+- Added occurrence-scoped tracks, rooms, sessions, and staff assignments with
+  reversible schema, indexes, encrypted private data, enum state, factories,
+  and repeat-safe demo records.
+- Added one row-locked, idempotent schedule Action with policy checks,
+  occurrence/timezone/capacity validation, room/track/staff overlap detection,
+  and owner-level audited override.
+- Added one responsive shared schedule component and a class-based Livewire
+  create/edit surface in the existing event workspace. Public viewers do not
+  receive drafts or private staff assignments.
+- Added direct Action, policy, schema, encryption, conflict, Livewire,
+  localization, factory, and seeder tests in
+  `EventScheduleWorkflowTest` and `EventLifecycleFoundationTest`.
+- Passed 2,362 sequential PHP tests with 78,760 assertions, full
+  Pint/Larastan, isolated fresh migration plus repeat seed, production build
+  and audits, and six event desktop/mobile browser audits with zero console
+  errors.
+
+Session attendee reservations/waitlists, schedule-change notifications,
+venue entities beyond event-scoped rooms, and keyboard reordering remain open
+and are not claimed by this delivery.
+
 ## Current Delivery: Global Page Identity Standardization
 
 Status: `in progress`; first safe directory slice targeted-verified on

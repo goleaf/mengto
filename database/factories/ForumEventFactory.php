@@ -13,6 +13,9 @@ use App\Enums\ForumEventStatus;
 use App\Enums\ForumEventType;
 use App\Enums\ForumEventVisibility;
 use App\Models\ForumEvent;
+use App\Models\ForumEventRoom;
+use App\Models\ForumEventSession;
+use App\Models\ForumEventTrack;
 use App\Models\ForumGroup;
 use App\Models\Taxon;
 use App\Models\User;
@@ -330,6 +333,27 @@ final class ForumEventFactory extends ApplicationFactory
             $selected = $taxon ?? Taxon::factory()->create();
             $event->taxa()->sync([
                 $selected->id => ['is_primary' => true],
+            ]);
+        });
+    }
+
+    public function withSchedule(): static
+    {
+        return $this->withLifecycle()->afterCreating(static function (ForumEvent $event): void {
+            $occurrence = $event->occurrences()->orderBy('starts_at')->firstOrFail();
+            $track = ForumEventTrack::factory()->for($event, 'event')->create();
+            $room = ForumEventRoom::factory()->for($event, 'event')->create([
+                'capacity' => $event->capacity,
+            ]);
+            ForumEventSession::factory()->for($event, 'event')->create([
+                'forum_event_occurrence_id' => $occurrence->id,
+                'forum_event_track_id' => $track->id,
+                'forum_event_room_id' => $room->id,
+                'created_by_user_id' => $event->organizer_user_id,
+                'starts_at' => $occurrence->starts_at,
+                'ends_at' => $occurrence->starts_at->addHour(),
+                'timezone' => $occurrence->timezone,
+                'capacity' => $event->capacity,
             ]);
         });
     }

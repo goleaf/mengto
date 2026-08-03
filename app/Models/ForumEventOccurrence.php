@@ -8,6 +8,7 @@ use App\Enums\ForumEventFormat;
 use App\Enums\ForumEventStatus;
 use Carbon\CarbonImmutable;
 use Database\Factories\ForumEventOccurrenceFactory;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -31,6 +32,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property ForumEventStatus $status
  * @property string $stable_key
  * @property string $timezone
+ * @property-read Collection<int, ForumEventSession> $sessions
  */
 final class ForumEventOccurrence extends Model
 {
@@ -95,5 +97,11 @@ final class ForumEventOccurrence extends Model
     public function registrations(): HasMany
     {
         return $this->hasMany(ForumEventRegistration::class);
+    }
+
+    /** @return HasMany<ForumEventSession, $this> */
+    public function sessions(): HasMany
+    {
+        return $this->hasMany(ForumEventSession::class);
     }
 }

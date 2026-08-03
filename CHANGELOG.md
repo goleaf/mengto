@@ -16,6 +16,21 @@
   that reject traversal segments, foreign disks, cross-domain stored paths,
   missing files, and symbolic-link escapes before streaming or audit changes.
 
+### Events
+
+- Added occurrence-scoped event tracks, physical/online rooms, sessions, and
+  public/private staff assignments with controlled status/type/reservation
+  enums, encrypted private room and conflict data, independent capacities,
+  and explicit model factories.
+- Added one policy-authorized transaction for idempotent schedule creation and
+  editing. It locks event resources, validates occurrence/timezone/capacity and
+  event-team scope, rejects room/track/staff overlaps, and permits only an
+  owner-level documented audit override.
+- Added the canonical responsive event schedule and class-based Livewire
+  manager inside the existing event workspace, with EN/LT/RU labels, hidden
+  drafts/private staff for ordinary viewers, and an idempotent multi-track
+  conference demo scenario.
+
 ### Forum And Animal Taxonomy
 
 - Completed the executable topic-type schema boundary: one typed catalogue

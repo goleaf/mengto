@@ -14,6 +14,10 @@ For events, `ForumEventDirectory` and `ForumEventWorkspace` reuse existing
 `action-group`, and shared button/panel classes. Their page identity still uses
 the legacy `forum-header` family and is planned to migrate to `page-header`.
 Status is always textual; private access data never enters a generic card.
+The event workspace uses one passive `x-event-schedule` agenda for mobile and
+desktop; its data is prepared and authorized by the class-based Livewire
+component, and its manager controls reuse the established form/button/status
+patterns.
 
 New component abstractions are added only when at least two real consumers need
 the same semantics. Point 13 did not create an isolated event visual theme.

@@ -244,6 +244,12 @@
                         </ol>
                     @endif
 
+                    <x-event-schedule
+                        class="mb-5"
+                        :days="$this->schedule"
+                        :can-manage="$this->event['can_manage_schedule']"
+                    />
+
                     @if ($this->event['location_scope'])
                         <p class="inline-flex items-start gap-2">
                             <x-lucide-map-pin class="mt-0.5 size-4 shrink-0" aria-hidden="true" />
@@ -496,6 +502,179 @@
                         <span wire:loading wire:target="register">{{ __('forum_events.actions.registering') }}</span>
                     </button>
                 </form>
+            @endif
+
+            @if ($this->event['can_manage_schedule'])
+                <section class="forum-form" aria-labelledby="event-schedule-management-heading">
+                    <div class="flex flex-wrap items-center justify-between gap-3">
+                        <div>
+                            <h2 id="event-schedule-management-heading" class="text-lg">{{ __('forum_events.schedule.manage_heading') }}</h2>
+                            <p>{{ __('forum_events.schedule.manage_description') }}</p>
+                        </div>
+                        @if ($editingSessionId)
+                            <button type="button" class="forum-button min-h-11" wire:click="resetSessionEditor">
+                                <x-lucide-plus aria-hidden="true" />
+                                {{ __('forum_events.actions.new_session') }}
+                            </button>
+                        @endif
+                    </div>
+
+                    <form wire:submit="saveSession" class="mt-4 grid gap-4">
+                        <div class="grid gap-4 md:grid-cols-2">
+                            <label class="forum-form__field">
+                                <span>{{ __('forum_events.fields.session_occurrence') }}</span>
+                                <select wire:model="sessionForm.occurrenceId" required>
+                                    @forelse ($this->scheduleOccurrenceOptions as $value => $label)
+                                        <option value="{{ $value }}">{{ $label }}</option>
+                                    @empty
+                                    @endforelse
+                                </select>
+                                @error('sessionForm.occurrenceId') <small role="alert">{{ $message }}</small> @enderror
+                            </label>
+                            <label class="forum-form__field">
+                                <span>{{ __('forum_events.fields.session_title') }}</span>
+                                <input type="text" wire:model="sessionForm.title" minlength="3" maxlength="180" required>
+                                @error('sessionForm.title') <small role="alert">{{ $message }}</small> @enderror
+                            </label>
+                            <label class="forum-form__field">
+                                <span>{{ __('forum_events.fields.session_type') }}</span>
+                                <select wire:model="sessionForm.type" required>
+                                    @forelse ($this->sessionTypeOptions as $value => $label)
+                                        <option value="{{ $value }}">{{ $label }}</option>
+                                    @empty
+                                    @endforelse
+                                </select>
+                                @error('sessionForm.type') <small role="alert">{{ $message }}</small> @enderror
+                            </label>
+                            <label class="forum-form__field">
+                                <span>{{ __('forum_events.fields.session_status') }}</span>
+                                <select wire:model="sessionForm.status" required>
+                                    @forelse ($this->sessionStatusOptions as $value => $label)
+                                        <option value="{{ $value }}">{{ $label }}</option>
+                                    @empty
+                                    @endforelse
+                                </select>
+                                @error('sessionForm.status') <small role="alert">{{ $message }}</small> @enderror
+                            </label>
+                            <label class="forum-form__field">
+                                <span>{{ __('forum_events.fields.starts_at') }}</span>
+                                <input type="datetime-local" wire:model="sessionForm.startsAt" required>
+                                @error('sessionForm.startsAt') <small role="alert">{{ $message }}</small> @enderror
+                            </label>
+                            <label class="forum-form__field">
+                                <span>{{ __('forum_events.fields.ends_at') }}</span>
+                                <input type="datetime-local" wire:model="sessionForm.endsAt" required>
+                                @error('sessionForm.endsAt') <small role="alert">{{ $message }}</small> @enderror
+                            </label>
+                            <label class="forum-form__field">
+                                <span>{{ __('forum_events.fields.timezone') }}</span>
+                                <input type="text" wire:model="sessionForm.timezone" maxlength="64" required>
+                                @error('sessionForm.timezone') <small role="alert">{{ $message }}</small> @enderror
+                            </label>
+                            <label class="forum-form__field">
+                                <span>{{ __('forum_events.fields.capacity') }}</span>
+                                <input type="number" wire:model="sessionForm.capacity" min="1" max="100000">
+                                @error('sessionForm.capacity') <small role="alert">{{ $message }}</small> @enderror
+                            </label>
+                            <label class="forum-form__field">
+                                <span>{{ __('forum_events.fields.session_track') }}</span>
+                                <select wire:model="sessionForm.trackId">
+                                    <option value="">{{ __('forum_events.schedule.no_track') }}</option>
+                                    @forelse ($this->scheduleTrackOptions as $value => $label)
+                                        <option value="{{ $value }}">{{ $label }}</option>
+                                    @empty
+                                    @endforelse
+                                </select>
+                                @error('sessionForm.trackId') <small role="alert">{{ $message }}</small> @enderror
+                            </label>
+                            <label class="forum-form__field">
+                                <span>{{ __('forum_events.fields.session_room') }}</span>
+                                <select wire:model="sessionForm.roomId">
+                                    <option value="">{{ __('forum_events.schedule.no_room') }}</option>
+                                    @forelse ($this->scheduleRoomOptions as $value => $label)
+                                        <option value="{{ $value }}">{{ $label }}</option>
+                                    @empty
+                                    @endforelse
+                                </select>
+                                @error('sessionForm.roomId') <small role="alert">{{ $message }}</small> @enderror
+                            </label>
+                            <label class="forum-form__field">
+                                <span>{{ __('forum_events.fields.session_reservation_policy') }}</span>
+                                <select wire:model="sessionForm.reservationPolicy" required>
+                                    @forelse ($this->sessionReservationPolicyOptions as $value => $label)
+                                        <option value="{{ $value }}">{{ $label }}</option>
+                                    @empty
+                                    @endforelse
+                                </select>
+                                @error('sessionForm.reservationPolicy') <small role="alert">{{ $message }}</small> @enderror
+                            </label>
+                            <label class="forum-form__field">
+                                <span>{{ __('forum_events.fields.session_position') }}</span>
+                                <input type="number" wire:model="sessionForm.position" min="0" max="65535" required>
+                                @error('sessionForm.position') <small role="alert">{{ $message }}</small> @enderror
+                            </label>
+                            <label class="forum-form__field">
+                                <span>{{ __('forum_events.fields.session_staff') }}</span>
+                                <select wire:model="sessionForm.staffUserId">
+                                    <option value="">{{ __('forum_events.schedule.no_staff') }}</option>
+                                    @forelse ($this->scheduleStaffOptions as $value => $label)
+                                        <option value="{{ $value }}">{{ $label }}</option>
+                                    @empty
+                                    @endforelse
+                                </select>
+                                @error('sessionForm.staffUserId') <small role="alert">{{ $message }}</small> @enderror
+                            </label>
+                            <label class="forum-form__field">
+                                <span>{{ __('forum_events.fields.session_staff_role') }}</span>
+                                <select wire:model="sessionForm.staffRole" required>
+                                    @forelse ($this->sessionRoleOptions as $value => $label)
+                                        <option value="{{ $value }}">{{ $label }}</option>
+                                    @empty
+                                    @endforelse
+                                </select>
+                                @error('sessionForm.staffRole') <small role="alert">{{ $message }}</small> @enderror
+                            </label>
+                        </div>
+
+                        <label class="forum-form__field">
+                            <span>{{ __('forum_events.fields.session_summary') }}</span>
+                            <textarea wire:model="sessionForm.summary" rows="3" maxlength="5000"></textarea>
+                            @error('sessionForm.summary') <small role="alert">{{ $message }}</small> @enderror
+                        </label>
+
+                        <div class="grid gap-3 sm:grid-cols-2">
+                            <label class="inline-flex min-h-11 items-start gap-3">
+                                <input class="mt-1" type="checkbox" wire:model="sessionForm.isRequired">
+                                <span>{{ __('forum_events.fields.session_required') }}</span>
+                                @error('sessionForm.isRequired') <small role="alert">{{ $message }}</small> @enderror
+                            </label>
+                            <label class="inline-flex min-h-11 items-start gap-3">
+                                <input class="mt-1" type="checkbox" wire:model="sessionForm.staffIsPublic">
+                                <span>{{ __('forum_events.fields.session_staff_public') }}</span>
+                                @error('sessionForm.staffIsPublic') <small role="alert">{{ $message }}</small> @enderror
+                            </label>
+                        </div>
+
+                        @if ($this->event['can_override_schedule_conflict'])
+                            <label class="forum-form__field">
+                                <span>{{ __('forum_events.fields.session_conflict_override') }}</span>
+                                <textarea wire:model="sessionForm.conflictOverrideReason" rows="3" minlength="20" maxlength="2000"></textarea>
+                                <small>{{ __('forum_events.schedule.override_help') }}</small>
+                            </label>
+                        @endif
+
+                        @error('sessionForm.conflictOverrideReason') <p class="border-s-4 border-status-danger ps-4" role="alert">{{ $message }}</p> @enderror
+                        @error('sessionForm') <p class="border-s-4 border-status-danger ps-4" role="alert">{{ $message }}</p> @enderror
+
+                        <button type="submit" class="forum-button forum-button--primary min-h-11 justify-self-start" wire:loading.attr="disabled" wire:target="saveSession">
+                            <x-lucide-calendar-plus aria-hidden="true" />
+                            <span wire:loading.remove wire:target="saveSession">
+                                {{ $editingSessionId ? __('forum_events.actions.update_session') : __('forum_events.actions.create_session') }}
+                            </span>
+                            <span wire:loading wire:target="saveSession">{{ __('forum_events.actions.saving_session') }}</span>
+                        </button>
+                    </form>
+                </section>
             @endif
 
             @if ($this->event['can_update'])

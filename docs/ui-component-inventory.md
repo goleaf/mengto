@@ -10,6 +10,7 @@
 | Status | `x-status-badge`, `x-notice`, `x-callout` | event/registration/pet state |
 | Forms | `x-form-field`, `x-forum-error-summary`, action form/group/control | builder and registration mutations |
 | Collections | `x-directory-page`, toolbar, result grid, empty state, pagination | event discovery |
+| Event schedule | `x-event-schedule` | responsive day agenda, status, track, room, public staff and manager edit action |
 | Event compatibility cards | `x-meetup-card`, `x-nearby-meetup-list`, `x-group-event-card` | catalogue/feed/group projections only |
 | Live event surface | event directory/workspace Blade | canonical database-backed event data |
 | Feedback/loading/offline | flash feedback, targeted `wire:loading`, offline notices | every mutation surface |

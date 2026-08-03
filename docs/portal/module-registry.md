@@ -10,7 +10,7 @@ The existing authenticated Blade/Livewire shell remains canonical.
 | Pets/household access | `pets.index`, `pets.manage.*` | `PetProfile` and manager relationships |
 | Health | `medical-records.index` | canonical medical record |
 | Care | `care-journals.index` | care journal/task domain |
-| Events | `meetups.index` | `ForumEvent` |
+| Events | `meetups.index` | `ForumEvent`, occurrences, tracks, rooms, sessions |
 | Places/devices/lost-and-found | corresponding named directories | existing place, device, search-case domains |
 | Marketplace/bookings/orders | `marketplace.index` | listing, booking, order domains |
 | Experts/forum/knowledge | corresponding named directories | expert and forum domains |

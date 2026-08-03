@@ -9,6 +9,7 @@ use App\Actions\InviteToForumEvent;
 use App\Actions\PublishForumEventUpdate;
 use App\Actions\RescheduleForumEvent;
 use App\Actions\RespondToForumEventInvitation;
+use App\Actions\SaveForumEventSession;
 use App\Actions\SendForumEventMessage;
 use App\Actions\SubmitForumEventReport;
 use App\Actions\SubmitForumEventReview;
@@ -18,6 +19,10 @@ use App\Enums\ForumEventMessageAudience;
 use App\Enums\ForumEventPhotoConsent;
 use App\Enums\ForumEventRegistrationStatus;
 use App\Enums\ForumEventReviewStatus;
+use App\Enums\ForumEventSessionReservationPolicy;
+use App\Enums\ForumEventSessionRole;
+use App\Enums\ForumEventSessionStatus;
+use App\Enums\ForumEventSessionType;
 use App\Enums\ForumEventUpdateAudience;
 use App\Enums\ForumEventUpdateType;
 use App\Livewire\Forms\ForumEventInvitationForm;
@@ -26,6 +31,7 @@ use App\Livewire\Forms\ForumEventRegistrationForm;
 use App\Livewire\Forms\ForumEventReportForm;
 use App\Livewire\Forms\ForumEventRescheduleForm;
 use App\Livewire\Forms\ForumEventReviewForm;
+use App\Livewire\Forms\ForumEventSessionForm;
 use App\Livewire\Forms\ForumEventUpdateForm;
 use App\Models\ForumEvent;
 use App\Models\ForumEventInvitation;
@@ -34,6 +40,11 @@ use App\Models\ForumEventOccurrence;
 use App\Models\ForumEventRegistration;
 use App\Models\ForumEventRegistrationPet;
 use App\Models\ForumEventReview;
+use App\Models\ForumEventRoom;
+use App\Models\ForumEventSession;
+use App\Models\ForumEventSessionStaff;
+use App\Models\ForumEventTeamMembership;
+use App\Models\ForumEventTrack;
 use App\Models\ForumEventUpdate;
 use App\Models\ForumReportReason;
 use App\Models\PetProfile;
@@ -45,6 +56,7 @@ use App\Services\ForumEventRegistrationService;
 use App\Services\ForumReportReasonCatalog;
 use App\Services\LocaleFormatter;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Livewire\Attributes\Computed;
@@ -69,6 +81,11 @@ final class ForumEventWorkspace extends Component
     public ForumEventRescheduleForm $rescheduleForm;
 
     public ForumEventReportForm $reportForm;
+
+    public ForumEventSessionForm $sessionForm;
+
+    #[Locked]
+    public ?int $editingSessionId = null;
 
     public string $cancellationReasonCode = 'organizer-cancelled';
 
@@ -201,6 +218,10 @@ final class ForumEventWorkspace extends Component
             'can_report' => Gate::forUser($authorizedUser)->allows('report', $event),
             'can_manage_registrations' => Gate::forUser($authorizedUser)
                 ->allows('manageRegistrations', $event),
+            'can_manage_schedule' => Gate::forUser($authorizedUser)
+                ->allows('manageSchedule', $event),
+            'can_override_schedule_conflict' => Gate::forUser($authorizedUser)
+                ->allows('overrideScheduleConflict', $event),
         ];
     }
 
@@ -247,6 +268,243 @@ final class ForumEventWorkspace extends Component
                 'location' => $occurrence->location_scope
                     ?? __('forum_events.defaults.online_location'),
                 'is_override' => $occurrence->is_override,
+            ])
+            ->all();
+    }
+
+    /** @return list<array{key: string, date_iso: string, date: string, sessions: list<array<string, mixed>>}> */
+    #[Computed]
+    public function schedule(): array
+    {
+        $event = $this->eventModel();
+        Gate::authorize('view', $event);
+        $canManage = Gate::allows('manageSchedule', $event);
+
+        return ForumEventSession::query()
+            ->select([
+                'id',
+                'forum_event_id',
+                'forum_event_occurrence_id',
+                'forum_event_track_id',
+                'forum_event_room_id',
+                'title',
+                'summary',
+                'type',
+                'status',
+                'starts_at',
+                'ends_at',
+                'timezone',
+                'capacity',
+                'reservation_policy',
+                'is_required',
+                'position',
+            ])
+            ->with([
+                'track:id,forum_event_id,name',
+                'room:id,forum_event_id,name,public_directions,capacity,is_private',
+                'staffAssignments' => function (Relation $relation) use ($canManage): void {
+                    $assignments = $relation->getQuery()->select([
+                        'id',
+                        'forum_event_session_id',
+                        'user_id',
+                        'role',
+                        'is_public',
+                    ]);
+
+                    if (! $canManage) {
+                        $assignments->where('is_public', true);
+                    }
+                },
+                'staffAssignments.user:id,name',
+            ])
+            ->where('forum_event_id', $event->id)
+            ->when(
+                ! $canManage,
+                fn (Builder $sessions): Builder => $sessions->where(
+                    'status',
+                    '!=',
+                    ForumEventSessionStatus::Draft->value,
+                ),
+            )
+            ->orderBy('starts_at')
+            ->orderBy('position')
+            ->orderBy('id')
+            ->limit(500)
+            ->get()
+            ->groupBy(fn (ForumEventSession $session): string => $session->starts_at
+                ->setTimezone($session->timezone)
+                ->toDateString())
+            ->map(function ($sessions, string $date): array {
+                /** @var ForumEventSession $first */
+                $first = $sessions->first();
+
+                return [
+                    'key' => str_replace('-', '', $date),
+                    'date_iso' => $date,
+                    'date' => (string) $this->formatter->weekdayMonthDay(
+                        $first->starts_at,
+                        $first->timezone,
+                    ),
+                    'sessions' => $sessions
+                        ->map(fn (ForumEventSession $session): array => [
+                            'id' => $session->id,
+                            'title' => $session->title,
+                            'summary' => $session->summary,
+                            'type' => $session->type->label(),
+                            'status' => $session->status->label(),
+                            'status_key' => $session->status->value,
+                            'starts_at' => $this->formatter->time(
+                                $session->starts_at,
+                                $session->timezone,
+                            ),
+                            'ends_at' => $this->formatter->time(
+                                $session->ends_at,
+                                $session->timezone,
+                            ),
+                            'starts_at_iso' => $session->starts_at->toAtomString(),
+                            'ends_at_iso' => $session->ends_at->toAtomString(),
+                            'timezone' => $session->timezone,
+                            'track' => $session->track?->name,
+                            'room' => $session->room?->name,
+                            'room_directions' => $session->room?->public_directions,
+                            'capacity' => $session->capacity,
+                            'reservation_policy' => $session->reservation_policy->label(),
+                            'is_required' => $session->is_required,
+                            'staff' => $session->staffAssignments
+                                ->map(static fn (ForumEventSessionStaff $staff): array => [
+                                    'name' => $staff->user->name,
+                                    'role' => $staff->role->label(),
+                                ])
+                                ->all(),
+                        ])
+                        ->all(),
+                ];
+            })
+            ->values()
+            ->all();
+    }
+
+    /** @return array<int, string> */
+    #[Computed]
+    public function scheduleOccurrenceOptions(): array
+    {
+        if (! Gate::allows('manageSchedule', $this->eventModel())) {
+            return [];
+        }
+
+        return ForumEventOccurrence::query()
+            ->select(['id', 'forum_event_id', 'starts_at', 'timezone'])
+            ->where('forum_event_id', $this->eventId)
+            ->orderBy('starts_at')
+            ->limit(50)
+            ->get()
+            ->mapWithKeys(fn (ForumEventOccurrence $occurrence): array => [
+                $occurrence->id => (string) $this->formatter->dateTime(
+                    $occurrence->starts_at,
+                    $occurrence->timezone,
+                ),
+            ])
+            ->all();
+    }
+
+    /** @return array<int, string> */
+    #[Computed]
+    public function scheduleTrackOptions(): array
+    {
+        if (! Gate::allows('manageSchedule', $this->eventModel())) {
+            return [];
+        }
+
+        return ForumEventTrack::query()
+            ->select(['id', 'forum_event_id', 'name', 'position'])
+            ->where('forum_event_id', $this->eventId)
+            ->orderBy('position')
+            ->orderBy('id')
+            ->limit(100)
+            ->pluck('name', 'id')
+            ->all();
+    }
+
+    /** @return array<int, string> */
+    #[Computed]
+    public function scheduleRoomOptions(): array
+    {
+        if (! Gate::allows('manageSchedule', $this->eventModel())) {
+            return [];
+        }
+
+        return ForumEventRoom::query()
+            ->select(['id', 'forum_event_id', 'name', 'position'])
+            ->where('forum_event_id', $this->eventId)
+            ->orderBy('position')
+            ->orderBy('id')
+            ->limit(100)
+            ->pluck('name', 'id')
+            ->all();
+    }
+
+    /** @return array<int, string> */
+    #[Computed]
+    public function scheduleStaffOptions(): array
+    {
+        if (! Gate::allows('manageSchedule', $this->eventModel())) {
+            return [];
+        }
+
+        return ForumEventTeamMembership::query()
+            ->select(['id', 'forum_event_id', 'user_id', 'status', 'starts_at', 'ends_at'])
+            ->active()
+            ->with('user:id,name')
+            ->where('forum_event_id', $this->eventId)
+            ->orderBy('id')
+            ->limit(100)
+            ->get()
+            ->mapWithKeys(static fn (ForumEventTeamMembership $membership): array => [
+                $membership->user_id => $membership->user->name,
+            ])
+            ->all();
+    }
+
+    /** @return array<string, string> */
+    #[Computed]
+    public function sessionTypeOptions(): array
+    {
+        return collect(ForumEventSessionType::cases())
+            ->mapWithKeys(static fn (ForumEventSessionType $type): array => [
+                $type->value => $type->label(),
+            ])
+            ->all();
+    }
+
+    /** @return array<string, string> */
+    #[Computed]
+    public function sessionStatusOptions(): array
+    {
+        return collect(ForumEventSessionStatus::cases())
+            ->mapWithKeys(static fn (ForumEventSessionStatus $status): array => [
+                $status->value => $status->label(),
+            ])
+            ->all();
+    }
+
+    /** @return array<string, string> */
+    #[Computed]
+    public function sessionReservationPolicyOptions(): array
+    {
+        return collect(ForumEventSessionReservationPolicy::cases())
+            ->mapWithKeys(static fn (ForumEventSessionReservationPolicy $policy): array => [
+                $policy->value => $policy->label(),
+            ])
+            ->all();
+    }
+
+    /** @return array<string, string> */
+    #[Computed]
+    public function sessionRoleOptions(): array
+    {
+        return collect(ForumEventSessionRole::cases())
+            ->mapWithKeys(static fn (ForumEventSessionRole $role): array => [
+                $role->value => $role->label(),
             ])
             ->all();
     }
@@ -882,6 +1140,78 @@ final class ForumEventWorkspace extends Component
         $this->refreshComputed();
     }
 
+    public function saveSession(SaveForumEventSession $save): void
+    {
+        $event = $this->eventModel();
+        Gate::authorize('manageSchedule', $event);
+        $session = $this->editingSessionId === null
+            ? null
+            : ForumEventSession::query()
+                ->where('forum_event_id', $event->id)
+                ->findOrFail($this->editingSessionId);
+        $wasEditing = $session !== null;
+
+        $save->handle(
+            $this->requireUser(),
+            $event,
+            $this->sessionForm->data(),
+            $session,
+        );
+        $this->feedback = $wasEditing
+            ? __('forum_events.feedback.session_updated')
+            : __('forum_events.feedback.session_created');
+        $this->resetSessionEditorState();
+        $this->refreshComputed();
+    }
+
+    public function editSession(int $sessionId): void
+    {
+        $event = $this->eventModel();
+        Gate::authorize('manageSchedule', $event);
+        $session = ForumEventSession::query()
+            ->with('staffAssignments:id,forum_event_session_id,user_id,role,is_public')
+            ->where('forum_event_id', $event->id)
+            ->findOrFail($sessionId);
+        $staff = $session->staffAssignments->first();
+
+        $this->editingSessionId = $session->id;
+        $this->sessionForm->occurrenceId = $session->forum_event_occurrence_id;
+        $this->sessionForm->trackId = $session->forum_event_track_id;
+        $this->sessionForm->roomId = $session->forum_event_room_id;
+        $this->sessionForm->title = $session->title;
+        $this->sessionForm->summary = $session->summary ?? '';
+        $this->sessionForm->type = $session->type->value;
+        $this->sessionForm->status = $session->status->value;
+        $this->sessionForm->startsAt = $session->starts_at
+            ->setTimezone($session->timezone)
+            ->format('Y-m-d\TH:i');
+        $this->sessionForm->endsAt = $session->ends_at
+            ->setTimezone($session->timezone)
+            ->format('Y-m-d\TH:i');
+        $this->sessionForm->timezone = $session->timezone;
+        $this->sessionForm->capacity = $session->capacity;
+        $this->sessionForm->reservationPolicy = $session->reservation_policy->value;
+        $this->sessionForm->isRequired = $session->is_required;
+        $this->sessionForm->position = $session->position;
+        if ($staff === null) {
+            $this->sessionForm->staffUserId = null;
+            $this->sessionForm->staffRole = ForumEventSessionRole::Speaker->value;
+            $this->sessionForm->staffIsPublic = true;
+        } else {
+            $this->sessionForm->staffUserId = $staff->user_id;
+            $this->sessionForm->staffRole = $staff->role->value;
+            $this->sessionForm->staffIsPublic = $staff->is_public;
+        }
+        $this->sessionForm->conflictOverrideReason = '';
+        $this->sessionForm->idempotencyKey = (string) str()->uuid();
+    }
+
+    public function resetSessionEditor(): void
+    {
+        Gate::authorize('manageSchedule', $this->eventModel());
+        $this->resetSessionEditorState();
+    }
+
     public function render()
     {
         return view('livewire.forum.forum-event-workspace');
@@ -978,6 +1308,7 @@ final class ForumEventWorkspace extends Component
         $this->initializeMessageForm();
         $this->initializeReviewForm();
         $this->initializeRescheduleForm();
+        $this->initializeSessionForm();
         $this->cancellationIdempotencyKey = (string) str()->uuid();
     }
 
@@ -1039,12 +1370,61 @@ final class ForumEventWorkspace extends Component
         $this->rescheduleForm->idempotencyKey = (string) str()->uuid();
     }
 
+    private function initializeSessionForm(): void
+    {
+        $event = $this->eventModel();
+        $occurrence = ForumEventOccurrence::query()
+            ->select([
+                'id',
+                'forum_event_id',
+                'starts_at',
+                'ends_at',
+                'timezone',
+                'capacity',
+            ])
+            ->where('forum_event_id', $event->id)
+            ->orderBy('starts_at')
+            ->first();
+
+        if ($occurrence === null) {
+            $this->sessionForm->occurrenceId = null;
+            $this->sessionForm->timezone = $event->timezone;
+            $this->sessionForm->capacity = null;
+        } else {
+            $this->sessionForm->occurrenceId = $occurrence->id;
+            $this->sessionForm->timezone = $occurrence->timezone;
+            $this->sessionForm->capacity = $occurrence->capacity;
+            $endsAt = $occurrence->starts_at->addHour();
+
+            if ($endsAt->gt($occurrence->ends_at)) {
+                $endsAt = $occurrence->ends_at;
+            }
+
+            $this->sessionForm->startsAt = $occurrence->starts_at
+                ->setTimezone($occurrence->timezone)
+                ->format('Y-m-d\TH:i');
+            $this->sessionForm->endsAt = $endsAt
+                ->setTimezone($occurrence->timezone)
+                ->format('Y-m-d\TH:i');
+        }
+
+        $this->sessionForm->idempotencyKey = (string) str()->uuid();
+    }
+
+    private function resetSessionEditorState(): void
+    {
+        $this->editingSessionId = null;
+        $this->sessionForm->reset();
+        $this->initializeSessionForm();
+    }
+
     private function refreshComputed(): void
     {
         $this->resolvedEvent = null;
         unset(
             $this->event,
             $this->occurrences,
+            $this->schedule,
             $this->currentRegistration,
             $this->currentInvitation,
             $this->updates,
