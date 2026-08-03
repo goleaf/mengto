@@ -6,6 +6,7 @@ namespace App\Livewire\Forms;
 
 use App\Enums\PetManagerRole;
 use App\Enums\PetProfileVisibility;
+use App\Enums\PetSpeciesConfidence;
 use Illuminate\Validation\Rule;
 use Livewire\Form;
 
@@ -14,6 +15,8 @@ final class PetProfileCreateForm extends Form
     public string $name = '';
 
     public string $species = 'unknown';
+
+    public string $speciesConfidence = 'unidentified';
 
     public string $relationshipRole = 'primary-owner';
 
@@ -44,6 +47,7 @@ final class PetProfileCreateForm extends Form
                 'required',
                 Rule::in(config('pet_profiles.species_options', [])),
             ],
+            'speciesConfidence' => ['required', Rule::enum(PetSpeciesConfidence::class)],
             'relationshipRole' => [
                 'required',
                 Rule::in(array_map(
@@ -59,11 +63,17 @@ final class PetProfileCreateForm extends Form
     public function creationData(string $idempotencyKey): array
     {
         $validated = $this->validate();
+        $species = (string) $validated['species'];
+        $confidence = PetSpeciesConfidence::normalize(
+            $species,
+            (string) $validated['speciesConfidence'],
+        );
 
         return [
             'title' => trim((string) $validated['name']),
-            'category' => (string) $validated['species'],
-            'species' => (string) $validated['species'],
+            'category' => $species,
+            'species' => $species,
+            'species_confidence' => $confidence->value,
             'relationship_role' => (string) $validated['relationshipRole'],
             'visibility' => (string) $validated['visibility'],
             'idempotency_key' => $idempotencyKey,

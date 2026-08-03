@@ -106,6 +106,7 @@ final readonly class PetProfileDuplicateReview
                 'profile_key',
                 'name',
                 'species',
+                'species_confidence',
                 'birth_date',
                 'birth_date_precision',
                 'visibility',
@@ -154,7 +155,10 @@ final readonly class PetProfileDuplicateReview
                 return [
                     'profile_key' => $profile->profile_key,
                     'name' => $profile->name,
-                    'species' => $this->speciesLabels->for($profile->species),
+                    'species' => $this->speciesLabels->for(
+                        $profile->species,
+                        $profile->species_confidence,
+                    ),
                     'age' => $this->ageLabels->for($profile),
                     'photo' => $media instanceof PetProfileMedia
                         ? route('pets.media.show', [

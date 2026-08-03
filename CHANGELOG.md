@@ -65,6 +65,9 @@
 
 ### Pet Profiles
 
+- Added typed species confidence for confirmed, possible, and unidentified
+  animal groups. Possible cat/dog selections remain normalized for discovery
+  while every public and manager-facing projection labels the guess honestly.
 - Added a bounded policy-visible duplicate review before pet creation, safe
   possible-match cards, encrypted typed access requests, manager evidence
   review, and invitation-based access activation. Generic review cannot

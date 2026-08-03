@@ -7,6 +7,22 @@ This living plan records work that was actually performed. A pass is
 status remains authoritative in
 `docs/requirements/compliance-matrix.md`.
 
+## Current Delivery: Honest Species Confidence
+
+Status: `implemented and verified` on 2026-08-03; publication pending.
+
+- Preserve the controlled broad species used by search and integrations.
+- Store confirmed, possible, or unidentified confidence separately.
+- Allow possible identification only for cat and dog and normalize every
+  browser-controlled combination again in the Action.
+- Render possible species honestly in every selected public, workspace,
+  invitation, and duplicate projection.
+- Keep adoption, found-animal coordination, ownership, and taxonomy
+  verification outside this package.
+
+Exact scope and observed evidence are recorded in
+`docs/plans/pet-profile-species-confidence-work-package.md`.
+
 ## Current Delivery: Pet Duplicate Review And Access Requests
 
 Status: `implemented, verified, and published` on 2026-08-03.

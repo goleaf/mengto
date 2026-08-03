@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Actions;
 
+use App\Enums\PetSpeciesConfidence;
 use App\Models\AuditLog;
 use App\Models\PetProfile;
 use App\Services\ForumActor;
@@ -38,6 +39,7 @@ final class UpdatePetProfile
                 'slug',
                 'name',
                 'species',
+                'species_confidence',
                 'taxon_id',
                 'breed',
                 'domestic_classification_id',
@@ -102,6 +104,7 @@ final class UpdatePetProfile
 
             foreach ([
                 'species',
+                'species_confidence',
                 'taxon_id',
                 'domestic_classification_id',
                 'birth_date',
@@ -113,6 +116,12 @@ final class UpdatePetProfile
                     $attributes[$optionalField] = $data[$optionalField] ?: null;
                 }
             }
+
+            $nextSpecies = (string) ($attributes['species'] ?? $locked->species);
+            $attributes['species_confidence'] = PetSpeciesConfidence::normalize(
+                $nextSpecies,
+                $attributes['species_confidence'] ?? $locked->species_confidence,
+            );
 
             $locked->forceFill($attributes)->save();
 

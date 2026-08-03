@@ -987,3 +987,24 @@ The reusable browser command is
 `BROWSER_BASE_URL=http://127.0.0.1:PORT node scripts/pet-duplicate-access-browser-check.mjs`.
 It requires a disposable database containing the named public and private
 candidate fixtures documented by the work package.
+
+## Pet Species Confidence Verification
+
+`PetProfileSpeciesConfidenceTest` covers possible cat/dog creation,
+unidentified storage, incompatible browser normalization, authorized
+correction, honest public/workspace labels, and conditional control choices.
+
+Observed evidence on 2026-08-03:
+
+- focused suite: 6 tests and 38 assertions;
+- related pet, architecture, localization, page-identity, responsive, and
+  schema regression: 164 tests and 65,953 assertions;
+- migration/factory/seeder verification: 1,735 tests and 5,150 assertions;
+- final serial suite: 2,757 tests and 87,427 assertions in 161.849 seconds;
+- full Pint, Larastan, Composer/platform/audit, npm audit, Vite build, and
+  config/event/route/view cache gates passed;
+- fresh disposable SQLite applied 133 migrations and retained 216 tables;
+- disposable Chrome exercised the real possible-dog selection, duplicate
+  review, access request, and manager review at desktop, 375px, and 320px with
+  zero overflow, raw keys, duplicate IDs, undersized or unnamed controls,
+  private/credential leaks, or console errors.

@@ -10,6 +10,8 @@ const outputDirectory = process.env.BROWSER_OUTPUT_DIR
     ?? join(tmpdir(), 'mengto-pet-duplicate-access-browser');
 const candidateKey = process.env.BROWSER_PET_PROFILE_KEY ?? 'pet-browser-duplicate';
 const privateCandidateKey = process.env.BROWSER_PRIVATE_PET_PROFILE_KEY ?? 'pet-browser-private';
+const memberPassword = process.env.BROWSER_MEMBER_PASSWORD ?? 'password';
+const managerPassword = process.env.BROWSER_MANAGER_PASSWORD ?? 'password';
 const chromeCandidates = [
     process.env.CHROME_BIN,
     '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
@@ -164,9 +166,9 @@ const waitUntil = async (callback, message, timeout = 15_000) => {
     throw new Error(message);
 };
 
-const login = async (client, sessionId, email) => {
+const login = async (client, sessionId, email, password) => {
     await navigate(client, sessionId, `${baseUrl}/login`);
-    await evaluate(client, sessionId, `((email) => {
+    await evaluate(client, sessionId, `((email, password) => {
         const setValue = (selector, value) => {
             const input = document.querySelector(selector);
             const setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set;
@@ -175,9 +177,12 @@ const login = async (client, sessionId, email) => {
             input.dispatchEvent(new Event('change', { bubbles: true }));
         };
         setValue('#login-email', email);
-        setValue('#login-password', 'password');
+        setValue('#login-password', password);
+    })(${JSON.stringify(email)}, ${JSON.stringify(password)})`);
+    await delay(300);
+    await evaluate(client, sessionId, `(() => {
         document.querySelector('[data-auth-page="login"] .auth-button--primary').click();
-    })(${JSON.stringify(email)})`);
+    })()`);
     await waitUntil(
         async () => ! (await evaluate(client, sessionId, 'location.pathname')).includes('/login'),
         `Login did not complete for ${email}.`,
@@ -295,7 +300,7 @@ try {
     }, sessionId);
 
     await setViewport(client, sessionId, 1440, 900, false);
-    await login(client, sessionId, 'mia@example.test');
+    await login(client, sessionId, 'mia@example.test', memberPassword);
     await navigate(client, sessionId, `${baseUrl}/pets/manage/new`);
     await evaluate(client, sessionId, `(() => {
         const setValue = (selector, value, prototype) => {
@@ -309,6 +314,46 @@ try {
         setValue('#pet-profile-species', 'dog', HTMLSelectElement.prototype);
         setValue('#pet-profile-relationship', 'primary-owner', HTMLSelectElement.prototype);
         setValue('#pet-profile-visibility', 'private', HTMLSelectElement.prototype);
+    })()`);
+    await waitUntil(
+        async () => await evaluate(client, sessionId, `(() => {
+            const input = document.querySelector('#pet-profile-species-confidence');
+
+            return input && [...input.options].some((option) => option.value === 'possible');
+        })()`),
+        'Possible dog identification did not become available.',
+    );
+    const confidenceBehavior = await evaluate(client, sessionId, `(() => {
+        const setValue = (selector, value, prototype) => {
+            const field = document.querySelector(selector);
+            const fieldSetter = Object.getOwnPropertyDescriptor(prototype, 'value').set;
+            fieldSetter.call(field, value);
+            field.dispatchEvent(new Event('input', { bubbles: true }));
+            field.dispatchEvent(new Event('change', { bubbles: true }));
+        };
+        const input = document.querySelector('#pet-profile-species-confidence');
+        const values = [...input.options].map((option) => option.value);
+        const setter = Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, 'value').set;
+        setValue('#pet-profile-name', 'Browser Match', HTMLInputElement.prototype);
+        setValue('#pet-profile-relationship', 'primary-owner', HTMLSelectElement.prototype);
+        setValue('#pet-profile-visibility', 'private', HTMLSelectElement.prototype);
+        setter.call(input, 'possible');
+        input.dispatchEvent(new Event('input', { bubbles: true }));
+        input.dispatchEvent(new Event('change', { bubbles: true }));
+
+        return {
+            controlCount: document.querySelectorAll('#pet-profile-species-confidence').length,
+            values,
+            described: input.getAttribute('aria-describedby')
+                === 'pet-profile-species-confidence-help pet-profile-species-confidence-error',
+        };
+    })()`);
+    assert(confidenceBehavior.controlCount === 1, 'The species confidence control is missing.');
+    assert(confidenceBehavior.values.includes('confirmed'), 'Confirmed species choice is missing.');
+    assert(confidenceBehavior.values.includes('possible'), 'Possible species choice is missing.');
+    assert(confidenceBehavior.described, 'Species confidence help and errors are not associated.');
+    await delay(300);
+    await evaluate(client, sessionId, `(() => {
         document.querySelector('[data-section="pet-profile-create"] form').requestSubmit();
     })()`);
     await waitUntil(
@@ -318,8 +363,8 @@ try {
     const duplicateBehavior = await evaluate(client, sessionId, `(() => ({
         candidateCount: document.querySelectorAll('[wire\\\\:key^="duplicate-candidate-"]').length,
         candidateVisible: document.body.innerText.includes('Browser Match'),
-        thisIsMyPetVisible: document.body.innerText.includes('This is my pet'),
-        differentAnimalVisible: document.body.innerText.includes('This is a different animal'),
+        thisIsMyPetVisible: Boolean(document.querySelector('button[wire\\\\:click^="startAccessRequest"]')),
+        differentAnimalVisible: Boolean(document.querySelector('button[wire\\\\:click="confirmDifferentAnimal"]')),
         privateCandidateLeaked: document.documentElement.innerHTML.includes(${JSON.stringify(privateCandidateKey)}),
         credentialLeak: /administrator@example\\.test|password/i.test(document.querySelector('#pet-duplicate-review-heading').parentElement.parentElement.innerText),
     }))()`);
@@ -345,8 +390,7 @@ try {
     );
 
     await evaluate(client, sessionId, `(() => {
-        [...document.querySelectorAll('button')]
-            .find((button) => button.textContent.includes('This is my pet')).click();
+        document.querySelector('button[wire\\\\:click^="startAccessRequest"]').click();
     })()`);
     await waitUntil(
         async () => await evaluate(client, sessionId, 'Boolean(document.querySelector("#pet-access-request-evidence"))'),
@@ -358,16 +402,30 @@ try {
         setter.call(input, 'I share daily care and can provide the registration privately.');
         input.dispatchEvent(new Event('input', { bubbles: true }));
         input.dispatchEvent(new Event('change', { bubbles: true }));
-        [...document.querySelectorAll('button')]
-            .find((button) => button.textContent.includes('Send access request')).click();
     })()`);
+    await delay(300);
     await waitUntil(
-        async () => await evaluate(
-            client,
-            sessionId,
-            "document.body.innerText.includes('Your access request was sent for private review.')",
-        ),
-        'The browser access request was not submitted.',
+        async () => await evaluate(client, sessionId, `(() => {
+            const button = document.querySelector('button[wire\\\\:click="submitSelectedAccessRequest"]');
+
+            return Boolean(button && ! button.disabled);
+        })()`),
+        'The access request action did not become available.',
+    );
+    await evaluate(client, sessionId, `(() => {
+        document.querySelector('button[wire\\\\:click="submitSelectedAccessRequest"]').click();
+    })()`);
+    await delay(1_000);
+    const requestOutcome = await evaluate(client, sessionId, `(() => ({
+        submitted: document.body.innerText.includes('Your access request was sent for private review.'),
+        errors: [...document.querySelectorAll('[role="alert"]')]
+            .map((element) => element.textContent.trim())
+            .filter(Boolean),
+        evidenceValue: document.querySelector('#pet-access-request-evidence')?.value ?? null,
+    }))()`);
+    assert(
+        requestOutcome.submitted,
+        `The browser access request was not submitted: ${JSON.stringify(requestOutcome)}.`,
     );
 
     await setViewport(client, sessionId, 375, 812, true);
@@ -388,7 +446,7 @@ try {
 
     await client.send('Network.clearBrowserCookies', {}, sessionId);
     await setViewport(client, sessionId, 1440, 900, false);
-    await login(client, sessionId, 'administrator@example.test');
+    await login(client, sessionId, 'administrator@example.test', managerPassword);
     await navigate(client, sessionId, `${baseUrl}/pets/manage/${candidateKey}/access-requests`);
     const managerBehavior = await evaluate(client, sessionId, `(() => ({
         requestCount: document.querySelectorAll('[wire\\\\:key^="pet-access-review-"]').length,

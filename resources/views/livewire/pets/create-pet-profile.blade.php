@@ -120,7 +120,7 @@
                     <select
                         id="pet-profile-species"
                         class="field"
-                        wire:model="form.species"
+                        wire:model.live="form.species"
                         required
                         aria-describedby="pet-profile-species-help pet-profile-species-error"
                         @error('form.species') aria-invalid="true" @enderror
@@ -136,6 +136,30 @@
                     </p>
                     <p id="pet-profile-species-error" class="pet-create__error" aria-live="polite">
                         @error('form.species') {{ $message }} @enderror
+                    </p>
+                </div>
+
+                <div class="pet-create__field">
+                    <label for="pet-profile-species-confidence">{{ __('pet_profiles.fields.species_confidence') }}</label>
+                    <select
+                        id="pet-profile-species-confidence"
+                        class="field"
+                        wire:model="form.speciesConfidence"
+                        required
+                        aria-describedby="pet-profile-species-confidence-help pet-profile-species-confidence-error"
+                        @error('form.speciesConfidence') aria-invalid="true" @enderror
+                    >
+                        @forelse ($this->speciesConfidenceOptions as $value => $label)
+                            <option wire:key="pet-species-confidence-{{ $value }}" value="{{ $value }}">{{ $label }}</option>
+                        @empty
+                            <option value="unidentified">{{ __('pet_profiles.species_confidence.unidentified') }}</option>
+                        @endforelse
+                    </select>
+                    <p id="pet-profile-species-confidence-help" class="pet-create__help">
+                        {{ __('pet_profiles.create.species_confidence_help') }}
+                    </p>
+                    <p id="pet-profile-species-confidence-error" class="pet-create__error" aria-live="polite">
+                        @error('form.speciesConfidence') {{ $message }} @enderror
                     </p>
                 </div>
 

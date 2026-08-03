@@ -67,6 +67,7 @@ final class PublicPetProfile extends Component
                 'profile_key',
                 'name',
                 'species',
+                'species_confidence',
                 'taxon_id',
                 'breed',
                 'birth_date',
@@ -126,7 +127,10 @@ final class PublicPetProfile extends Component
         return [
             'profile_key' => $profile->profile_key,
             'name' => $profile->name,
-            'species' => $this->speciesLabels->for($profile->species),
+            'species' => $this->speciesLabels->for(
+                $profile->species,
+                $profile->species_confidence,
+            ),
             'scientific_name' => $profile->taxon?->activeVersion?->scientific_name,
             'breed' => $profile->breed,
             'age' => $this->ageLabels->for($profile),

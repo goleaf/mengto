@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Actions;
 
 use App\Enums\PetProfileCompletionStep;
+use App\Enums\PetSpeciesConfidence;
 use App\Models\AuditLog;
 use App\Models\PetProfile;
 use App\Services\ForumActor;
@@ -44,6 +45,7 @@ final class UpdatePetProfileStep
                 'slug',
                 'name',
                 'species',
+                'species_confidence',
                 'taxon_id',
                 'breed',
                 'domestic_classification_id',
@@ -166,7 +168,11 @@ final class UpdatePetProfileStep
             PetProfileCompletionStep::Basics => [[
                 'name' => trim((string) $data['name']),
                 'species' => (string) $data['species'],
-            ], ['name', 'species']],
+                'species_confidence' => PetSpeciesConfidence::normalize(
+                    (string) $data['species'],
+                    $data['species_confidence'] ?? null,
+                ),
+            ], ['name', 'species', 'species_confidence']],
             PetProfileCompletionStep::AgeAndSex => [[
                 'birth_date' => $this->nullableString($data['birth_date'] ?? null),
                 'birth_date_precision' => (string) $data['birth_date_precision'],

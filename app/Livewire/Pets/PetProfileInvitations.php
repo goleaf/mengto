@@ -62,7 +62,7 @@ final class PetProfileInvitations extends Component
             ->where('user_id', $this->requireUser()->id)
             ->where('status', PetManagerStatus::Invited)
             ->with([
-                'profile:id,profile_key,name,species,status',
+                'profile:id,profile_key,name,species,species_confidence,status',
                 'inviter:id,name',
             ])
             ->orderByDesc('id')
@@ -71,7 +71,10 @@ final class PetProfileInvitations extends Component
             ->map(fn (PetProfileManager $invitation): array => [
                 'id' => $invitation->id,
                 'pet_name' => $invitation->profile->name,
-                'species' => $this->speciesLabels->for($invitation->profile->species),
+                'species' => $this->speciesLabels->for(
+                    $invitation->profile->species,
+                    $invitation->profile->species_confidence,
+                ),
                 'role' => $invitation->role->label(),
                 'inviter' => $invitation->inviter instanceof User
                     ? $invitation->inviter->name

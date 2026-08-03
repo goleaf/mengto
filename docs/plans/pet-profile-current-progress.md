@@ -27,6 +27,9 @@ Last updated: 2026-08-03.
   `pet.creation.0103-pet.creation.0137` is implemented, release-verified, and
   published for 34 selected IDs. `pet.creation.0115` remains open because
   organization attribution is not yet authoritative.
+- The honest incomplete-species slice `pet.creation.0170-pet.creation.0186` is
+  implemented and release-verified. Possible cat/dog is stored separately from
+  the normalized broad species; publication is pending.
 
 ## Current Work Package
 
@@ -166,9 +169,11 @@ pet, medical, care, device, search, adoption, event, report, and social data.
 
 ## Next Package
 
-Select the next dependency-safe package. Do not treat safe candidate review as
-duplicate merge, proof verification, dispute resolution, organization
-attribution, or ownership transfer.
+Publish the release-verified species-confidence package, then select the next
+dependency-safe package. Do not treat safe candidate review or possible species
+as duplicate merge, proof verification, taxonomy verification, lost/found
+coordination, dispute resolution, organization attribution, or ownership
+transfer.
 
 Plan and implement the next dependency-safe pet slice from
 `docs/plans/pet-profile-master-plan.md`. Ownership proof and transfer,

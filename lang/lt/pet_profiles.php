@@ -112,6 +112,7 @@ return [
             'name' => 'Nurodykite vardą, kuriuo gyvūnas dabar vadinamas.',
             'social_preferences' => 'Aprašykite pastebėtą komfortą šalia žmonių ar gyvūnų nežadėdami rezultato.',
             'species' => 'Pakanka bendros grupės; jei abejojate, pasirinkite nežinomą rūšį.',
+            'species_confidence' => 'Jei tai tik spėjimas, katę ar šunį pažymėkite kaip galimą, o ne patvirtintą rūšį.',
             'temperament' => 'Aprašykite pastebėtus įpročius, jautrumą ir tinkamą susipažinimo būdą.',
         ],
         'steps' => [
@@ -147,6 +148,7 @@ return [
         'privacy_title' => 'Kol kas nerodoma paieškoje',
         'relationship_help' => 'Pasirinkite vaidmenį, geriausiai apibūdinantį dabartinę jūsų atsakomybę už gyvūną.',
         'species_help' => 'Jei nesate tikri, pasirinkite „Rūšis nenustatyta“.',
+        'species_confidence_help' => 'Galima katė ar galimas šuo lieka aiškiai nepatvirtinti, kol duomenis patikslina valdytojas arba specialistas.',
         'title' => 'Pridėti augintinį',
         'visibility_help' => 'Tai numatoma auditorija po peržiūros; naujas profilis vis tiek pradedamas kaip paieškoje nerodomas juodraštis.',
     ],
@@ -244,6 +246,7 @@ return [
         'sex' => 'Lytis',
         'social_preferences' => 'Socialiniai pomėgiai',
         'species' => 'Gyvūnų grupė',
+        'species_confidence' => 'Rūšies nustatymo tikrumas',
         'status' => 'Gyvavimo ciklo būsena',
         'temperament_summary' => 'Pastebėtas temperamentas',
         'identifying_marks' => 'Atpažinimo žymės',
@@ -434,6 +437,12 @@ return [
         'reptile' => 'Roplys',
         'rodent' => 'Graužikas arba smulkus žinduolis',
         'unknown' => 'Rūšis nenustatyta',
+    ],
+    'species_confidence' => [
+        'confirmed' => 'Nustatyta',
+        'possible' => 'Galimas nustatymas',
+        'possible_label' => 'Galimai: :species',
+        'unidentified' => 'Nenustatyta',
     ],
     'statuses' => [
         'active' => 'Aktyvus augintinis',

@@ -6,6 +6,7 @@ namespace App\Livewire\Forms;
 
 use App\Enums\PetManagerRole;
 use App\Enums\PetProfileVisibility;
+use App\Enums\PetSpeciesConfidence;
 use App\Models\PetProfile;
 use Illuminate\Validation\Rule;
 use Livewire\Form;
@@ -15,6 +16,8 @@ final class PetProfileForm extends Form
     public string $name = '';
 
     public string $species = 'unknown';
+
+    public string $speciesConfidence = 'unidentified';
 
     /** @var list<int> */
     public array $taxonIds = [];
@@ -58,6 +61,7 @@ final class PetProfileForm extends Form
                 'required',
                 Rule::in(config('pet_profiles.species_options', [])),
             ],
+            'speciesConfidence' => ['required', Rule::enum(PetSpeciesConfidence::class)],
             'taxonIds' => ['array', 'max:1'],
             'taxonIds.*' => [
                 'integer',
@@ -124,7 +128,7 @@ final class PetProfileForm extends Form
         ];
     }
 
-    /** @return array{name: string, species: string} */
+    /** @return array{name: string, species: string, species_confidence: string} */
     public function basicsData(): array
     {
         $validated = $this->validate([
@@ -133,11 +137,17 @@ final class PetProfileForm extends Form
                 'required',
                 Rule::in(config('pet_profiles.species_options', [])),
             ],
+            'speciesConfidence' => ['required', Rule::enum(PetSpeciesConfidence::class)],
         ]);
+        $species = (string) $validated['species'];
 
         return [
             'name' => trim((string) $validated['name']),
-            'species' => (string) $validated['species'],
+            'species' => $species,
+            'species_confidence' => PetSpeciesConfidence::normalize(
+                $species,
+                (string) $validated['speciesConfidence'],
+            )->value,
         ];
     }
 
@@ -262,6 +272,7 @@ final class PetProfileForm extends Form
         $profileData = $profile->profile_data ?? [];
         $this->name = $profile->name;
         $this->species = $profile->species;
+        $this->speciesConfidence = $profile->species_confidence->value;
         $this->taxonIds = $profile->taxon_id === null ? [] : [$profile->taxon_id];
         $this->breed = $profile->breed ?? '';
         $this->birthDate = $profile->birth_date?->format('Y-m-d') ?? '';
@@ -288,10 +299,16 @@ final class PetProfileForm extends Form
      */
     private function actionData(array $validated): array
     {
+        $species = (string) $validated['species'];
+
         return [
             'title' => trim((string) $validated['name']),
-            'category' => (string) $validated['species'],
-            'species' => (string) $validated['species'],
+            'category' => $species,
+            'species' => $species,
+            'species_confidence' => PetSpeciesConfidence::normalize(
+                $species,
+                (string) $validated['speciesConfidence'],
+            )->value,
             'taxon_id' => $validated['taxonIds'][0] ?? null,
             'breed' => trim((string) ($validated['breed'] ?? '')),
             'body' => trim((string) ($validated['bio'] ?? '')),

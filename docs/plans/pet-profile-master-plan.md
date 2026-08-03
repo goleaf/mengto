@@ -86,6 +86,14 @@ in `pet.creation.0115` remains open until a pet manager has an authoritative
 organization relationship. Exact boundaries and evidence are in
 `docs/plans/pet-profile-duplicate-access-work-package.md`.
 
+The honest incomplete-species package completes
+`pet.creation.0170-pet.creation.0186` with a typed confidence value separate
+from the normalized broad species. Possible cat/dog remains explicitly
+unconfirmed in public and manager projections, while unknown stays unknown.
+It does not claim found-animal coordination, taxonomy verification, adoption,
+or ownership transfer. Evidence is in
+`docs/plans/pet-profile-species-confidence-work-package.md`.
+
 ## Phase 19: Ownership And Privacy
 
 **IDs:** `pet.ownership.0001-pet.ownership.0393` and

@@ -76,6 +76,18 @@
                         <small id="managed-pet-species-help">{{ __('pet_profiles.completion.help.species') }}</small>
                         @error('form.species') <small id="managed-pet-species-error" role="alert">{{ $message }}</small> @enderror
                     </label>
+                    <label class="forum-form__field" for="managed-pet-species-confidence">
+                        <span>{{ __('pet_profiles.fields.species_confidence') }}</span>
+                        <select id="managed-pet-species-confidence" wire:model="form.speciesConfidence" aria-describedby="managed-pet-species-confidence-help managed-pet-species-confidence-error" @error('form.speciesConfidence') aria-invalid="true" @enderror>
+                            @forelse ($this->speciesConfidenceOptions as $value => $label)
+                                <option wire:key="managed-pet-species-confidence-{{ $value }}" value="{{ $value }}">{{ $label }}</option>
+                            @empty
+                                <option value="unidentified">{{ __('pet_profiles.species_confidence.unidentified') }}</option>
+                            @endforelse
+                        </select>
+                        <small id="managed-pet-species-confidence-help">{{ __('pet_profiles.completion.help.species_confidence') }}</small>
+                        @error('form.speciesConfidence') <small id="managed-pet-species-confidence-error" role="alert">{{ $message }}</small> @enderror
+                    </label>
                 </div>
                 <x-pet-profile-save-status :feedback="$feedback" />
                 <button type="submit" class="forum-button forum-button--primary min-h-11" wire:loading.attr="disabled" wire:target="saveBasics">

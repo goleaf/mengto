@@ -9,6 +9,7 @@ use App\Enums\PetManagerRole;
 use App\Enums\PetManagerStatus;
 use App\Enums\PetProfileStatus;
 use App\Enums\PetProfileVisibility;
+use App\Enums\PetSpeciesConfidence;
 use App\Models\AuditLog;
 use App\Models\DomesticClassification;
 use App\Models\PetProfile;
@@ -41,6 +42,10 @@ final class CreatePetProfile
         $this->gate->authorize('create', PetProfile::class);
         $name = trim((string) ($data['title'] ?? ''));
         $species = (string) ($data['species'] ?? $data['category'] ?? 'unknown');
+        $speciesConfidence = PetSpeciesConfidence::normalize(
+            $species,
+            $data['species_confidence'] ?? null,
+        );
 
         $idempotencyKey = (string) ($data['idempotency_key'] ?? Str::uuid());
         $creationKey = hash('sha256', "pet-create|{$user->id}|{$idempotencyKey}");
@@ -92,6 +97,7 @@ final class CreatePetProfile
                 $classification,
                 $name,
                 $species,
+                $speciesConfidence,
             ): PetProfile {
                 $existing = PetProfile::query()
                     ->where('creation_key', $creationKey)
@@ -110,6 +116,7 @@ final class CreatePetProfile
                     'slug' => $this->uniqueSlug($user->id, (string) $data['title'], $profileKey),
                     'name' => $name,
                     'species' => $species,
+                    'species_confidence' => $speciesConfidence,
                     'taxon_id' => $taxon?->id,
                     'breed' => ($data['breed'] ?? $data['detail'] ?? null) ?: null,
                     'domestic_classification_id' => $classification?->id,
@@ -171,6 +178,7 @@ final class CreatePetProfile
                     publicMetadata: [
                         'relationship' => $relationship->value,
                         'species' => $profile->species,
+                        'species_confidence' => $profile->species_confidence->value,
                     ],
                     idempotencyKey: "pet-create:{$creationKey}",
                     manager: $manager,
@@ -185,6 +193,7 @@ final class CreatePetProfile
                     'metadata' => [
                         'profile_key' => $profile->profile_key,
                         'species' => $profile->species,
+                        'species_confidence' => $profile->species_confidence->value,
                         'visibility' => $profile->visibility,
                         'status' => $profile->status->value,
                     ],

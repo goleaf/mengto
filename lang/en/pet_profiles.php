@@ -112,6 +112,7 @@ return [
             'name' => 'Use the name people currently use for this animal.',
             'social_preferences' => 'Describe observed comfort around people or other animals without promising an outcome.',
             'species' => 'A broad group is enough; choose unknown when you are not certain.',
+            'species_confidence' => 'Mark cat or dog as possible when it is an observation, not a confirmed identification.',
             'temperament' => 'Describe observed routines, sensitivities, and ways to make introductions easier.',
         ],
         'steps' => [
@@ -147,6 +148,7 @@ return [
         'privacy_title' => 'Not discoverable yet',
         'relationship_help' => 'Choose the role that best describes your current responsibility for this animal.',
         'species_help' => 'Choose “Species not identified” when you are not certain.',
+        'species_confidence_help' => 'Possible cat and possible dog stay clearly labelled as unconfirmed until a manager or specialist corrects them.',
         'title' => 'Add a pet',
         'visibility_help' => 'This is the intended audience after review; the new profile still starts as a non-discoverable draft.',
     ],
@@ -244,6 +246,7 @@ return [
         'sex' => 'Sex',
         'social_preferences' => 'Social preferences',
         'species' => 'Animal group',
+        'species_confidence' => 'Identification certainty',
         'status' => 'Lifecycle status',
         'temperament_summary' => 'Observed temperament',
         'identifying_marks' => 'Identifying marks',
@@ -434,6 +437,12 @@ return [
         'reptile' => 'Reptile',
         'rodent' => 'Rodent or small mammal',
         'unknown' => 'Species not identified',
+    ],
+    'species_confidence' => [
+        'confirmed' => 'Identified',
+        'possible' => 'Possible identification',
+        'possible_label' => 'Possibly: :species',
+        'unidentified' => 'Not identified',
     ],
     'statuses' => [
         'active' => 'Active companion',

@@ -3838,6 +3838,78 @@
                 ],
                 "final_result": "verified"
             }
+        },
+        {
+            "requirement_ids": [
+                "pet.creation.0170",
+                "pet.creation.0171",
+                "pet.creation.0172",
+                "pet.creation.0174",
+                "pet.creation.0175",
+                "pet.creation.0178",
+                "pet.creation.0179",
+                "pet.creation.0180",
+                "pet.creation.0183",
+                "pet.creation.0184",
+                "pet.creation.0185",
+                "pet.creation.0186"
+            ],
+            "fields": {
+                "current_implementation_status": "verified",
+                "discovered_existing_files": [
+                    "app/Models/PetProfile.php",
+                    "app/Actions/CreatePetProfile.php",
+                    "app/Actions/UpdatePetProfileStep.php",
+                    "app/Livewire/Pets/CreatePetProfile.php",
+                    "app/Livewire/Pets/ManagePetProfile.php",
+                    "app/Services/PetSpeciesLabel.php"
+                ],
+                "planned_files": [
+                    "database/migrations/2026_08_03_161000_add_species_confidence_to_pet_profiles.php",
+                    "app/Enums/PetSpeciesConfidence.php",
+                    "tests/Feature/PetProfileSpeciesConfidenceTest.php",
+                    "docs/plans/pet-profile-species-confidence-work-package.md"
+                ],
+                "test_identifiers": [
+                    "tests/Feature/PetProfileSpeciesConfidenceTest.php",
+                    "tests/Feature/PetProfileCreateExperienceTest.php",
+                    "tests/Feature/PetProfileFoundationTest.php",
+                    "tests/Feature/PetProfileProgressiveCompletionTest.php",
+                    "tests/Feature/PetProfileWorkspaceTest.php",
+                    "tests/Feature/ArchitectureComplianceTest.php",
+                    "tests/Feature/LocalizationTest.php",
+                    "tests/Feature/ResponsiveInterfaceTest.php",
+                    "tests/Feature/Database/SchemaIntegrityTest.php",
+                    "scripts/pet-duplicate-access-browser-check.mjs"
+                ],
+                "documentation_identifiers": [
+                    "docs/plans/pet-profile-species-confidence-work-package.md",
+                    "docs/plans/pet-profile-current-progress.md",
+                    "docs/plans/pet-profile-master-plan.md",
+                    "docs/pet-profiles.md",
+                    "docs/testing.md"
+                ],
+                "implementation_status": "implemented",
+                "verification_status": "verified",
+                "evidence": [
+                    "The additive pet migration stores species confidence separately from the controlled broad species, defaults identified legacy rows to confirmed, and marks existing unknown rows unidentified through one bounded Eloquent update without replacing pet identity",
+                    "PetSpeciesConfidence accepts confirmed, possible, and unidentified states; server normalization allows possible only for cat or dog, forces unknown to unidentified, and converts incompatible browser combinations to confirmed",
+                    "CreatePetProfile, UpdatePetProfile, and UpdatePetProfileStep normalize confidence at the Action boundary; authorized correction retains the stable profile key and records the changed basics field",
+                    "The canonical create and progressive basics forms expose only meaningful EN, LT, and RU confidence choices with linked help and errors",
+                    "PetSpeciesLabel and explicit select lists render possible cat or dog honestly in workspace, public profile, invitation, and duplicate-card projections while downstream domains retain the normalized broad species",
+                    "PetProfileSpeciesConfidenceTest passed 6 tests and 38 assertions; the related pet, architecture, localization, page-identity, responsive, and schema regression passed 164 tests and 65,953 assertions",
+                    "Migration, factory, and seeder verification passed 1,735 tests and 5,150 assertions; fresh disposable SQLite applied 133 migrations and retained 216 tables",
+                    "The complete sequential repository suite passed 2,757 tests and 87,427 assertions in 161.849 seconds; full Pint and Larastan passed with zero findings",
+                    "Composer strict validation and audit, PHP 8.5 platform requirements, npm audit with zero vulnerabilities, Vite 8.2.0 production build, and config, event, route, and view cache compilation passed",
+                    "Disposable-database Chrome exercised the possible-dog control, duplicate review, access submission, and manager evidence review at desktop, 375px, and 320px with zero overflow, raw keys, duplicate IDs, undersized or unnamed controls, private-candidate or credential leaks, and console errors"
+                ],
+                "unresolved_risks": [
+                    "Species confidence does not verify taxonomy, breed, sex, age, ownership, or professional status",
+                    "Adoption transfer pet.creation.0138-pet.creation.0156 remains dependent on the protected ownership workflow",
+                    "Temporary found-animal creation pet.creation.0157-pet.creation.0169 remains dependent on the lost/found aggregate"
+                ],
+                "final_result": "verified"
+            }
         }
     ]
 }

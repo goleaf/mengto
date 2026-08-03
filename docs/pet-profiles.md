@@ -150,6 +150,21 @@ existing non-critical role. Ownership-transfer requests are recorded but
 cannot be approved through the standard action. Exact scope is in
 `docs/plans/pet-profile-duplicate-access-work-package.md`.
 
+## Species Confidence
+
+The canonical pet keeps a controlled broad `species` for discovery and domain
+links while `species_confidence` records whether that value is confirmed,
+possible, or unidentified. Possible is accepted only for cat or dog; unknown
+always becomes unidentified, and incompatible browser input is normalized at
+the Action boundary.
+
+Create and progressive basics forms expose only meaningful localized choices.
+Workspace, public profile, invitations, and duplicate cards use
+`PetSpeciesLabel` so a possible cat or dog is never displayed as a confirmed
+fact. Existing managers with update permission can correct the value without
+creating a new profile or changing its stable key. The exact package is in
+`docs/plans/pet-profile-species-confidence-work-package.md`.
+
 ## Identity And Compatibility
 
 An account and a pet are separate aggregates. Every pet mutation runs as an

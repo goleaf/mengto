@@ -10,6 +10,7 @@ use App\Actions\SubmitPetProfileAccessRequest;
 use App\Enums\PetManagerRole;
 use App\Enums\PetProfileAccessRequestType;
 use App\Enums\PetProfileVisibility;
+use App\Enums\PetSpeciesConfidence;
 use App\Livewire\Forms\PetProfileAccessRequestForm;
 use App\Livewire\Forms\PetProfileCreateForm;
 use App\Livewire\Forms\PetProfileMediaForm;
@@ -97,6 +98,27 @@ final class CreatePetProfile extends Component
                 $species => __("pet_profiles.species.{$species}"),
             ])
             ->all();
+    }
+
+    /** @return array<string, string> */
+    #[Computed]
+    public function speciesConfidenceOptions(): array
+    {
+        return collect(PetSpeciesConfidence::optionsFor($this->form->species))
+            ->mapWithKeys(static fn (PetSpeciesConfidence $confidence): array => [
+                $confidence->value => $confidence->label(),
+            ])->all();
+    }
+
+    public function updatedFormSpecies(string $species): void
+    {
+        $this->form->speciesConfidence = PetSpeciesConfidence::normalize(
+            $species,
+            $this->form->speciesConfidence,
+        )->value;
+        $this->duplicateReviewToken = '';
+        $this->selectedDuplicateProfileKey = '';
+        unset($this->speciesConfidenceOptions, $this->duplicateCandidates);
     }
 
     /** @return array<string, string> */

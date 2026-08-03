@@ -18,6 +18,7 @@ use App\Enums\PetManagerRole;
 use App\Enums\PetProfileCompletionStep;
 use App\Enums\PetProfileStatus;
 use App\Enums\PetProfileVisibility;
+use App\Enums\PetSpeciesConfidence;
 use App\Livewire\Forms\PetManagerInvitationForm;
 use App\Livewire\Forms\PetProfileDocumentsForm;
 use App\Livewire\Forms\PetProfileForm;
@@ -203,6 +204,25 @@ final class ManagePetProfile extends Component
             ->mapWithKeys(static fn (string $species): array => [
                 $species => __("pet_profiles.species.{$species}"),
             ])->all();
+    }
+
+    /** @return array<string, string> */
+    #[Computed]
+    public function speciesConfidenceOptions(): array
+    {
+        return collect(PetSpeciesConfidence::optionsFor($this->form->species))
+            ->mapWithKeys(static fn (PetSpeciesConfidence $confidence): array => [
+                $confidence->value => $confidence->label(),
+            ])->all();
+    }
+
+    public function updatedFormSpecies(string $species): void
+    {
+        $this->form->speciesConfidence = PetSpeciesConfidence::normalize(
+            $species,
+            $this->form->speciesConfidence,
+        )->value;
+        unset($this->speciesConfidenceOptions);
     }
 
     /** @return array<string, string> */
@@ -648,6 +668,7 @@ final class ManagePetProfile extends Component
                 'slug',
                 'name',
                 'species',
+                'species_confidence',
                 'taxon_id',
                 'breed',
                 'domestic_classification_id',

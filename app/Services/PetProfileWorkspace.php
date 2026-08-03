@@ -45,6 +45,7 @@ final readonly class PetProfileWorkspace
                 'profile_key',
                 'name',
                 'species',
+                'species_confidence',
                 'breed',
                 'birth_date',
                 'birth_date_precision',
@@ -186,7 +187,7 @@ final readonly class PetProfileWorkspace
         $primaryUrl = $managementUrl ?? $profileUrl;
         $media = $profile->primaryMedia;
         $details = array_values(array_filter([
-            $this->speciesLabels->for($profile->species),
+            $this->speciesLabels->for($profile->species, $profile->species_confidence),
             $profile->breed,
             $this->ageLabels->for($profile),
         ]));
@@ -195,7 +196,10 @@ final readonly class PetProfileWorkspace
             'context' => 'workspace',
             'key' => $profile->profile_key,
             'name' => $profile->name,
-            'species' => $this->speciesLabels->for($profile->species),
+            'species' => $this->speciesLabels->for(
+                $profile->species,
+                $profile->species_confidence,
+            ),
             'breed' => $profile->breed,
             'age' => $this->ageLabels->for($profile),
             'status' => $profile->status->label(),

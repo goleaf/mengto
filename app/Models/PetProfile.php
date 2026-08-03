@@ -6,6 +6,7 @@ namespace App\Models;
 
 use App\Casts\PetProfileStatusCast;
 use App\Enums\PetProfileStatus;
+use App\Enums\PetSpeciesConfidence;
 use Database\Factories\PetProfileFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -28,6 +29,7 @@ use Illuminate\Support\Carbon;
  * @property string $profile_key
  * @property string $slug
  * @property string $species
+ * @property PetSpeciesConfidence $species_confidence
  * @property PetProfileStatus $status
  * @property Carbon|null $updated_at
  * @property-read User $user
@@ -54,6 +56,7 @@ final class PetProfile extends Model
         'slug',
         'name',
         'species',
+        'species_confidence',
         'taxon_id',
         'breed',
         'domestic_classification_id',
@@ -85,6 +88,7 @@ final class PetProfile extends Model
     {
         return [
             'birth_date' => 'immutable_date',
+            'species_confidence' => PetSpeciesConfidence::class,
             'status' => PetProfileStatusCast::class,
             'is_discoverable' => 'boolean',
             'allow_external_indexing' => 'boolean',
