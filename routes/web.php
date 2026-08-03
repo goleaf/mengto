@@ -113,10 +113,10 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OrderDisputeController;
 use App\Http\Controllers\PerformActionController;
 use App\Http\Controllers\PerformMessageActionController;
-use App\Http\Controllers\PetDirectoryPreviewController;
 use App\Http\Controllers\PetFriendCenterPreviewController;
 use App\Http\Controllers\PetProfileMediaController;
 use App\Http\Controllers\PetProfilePreviewController;
+use App\Http\Controllers\PetProfileWorkspaceController;
 use App\Http\Controllers\PhotoInteractionController;
 use App\Http\Controllers\PlaceDetailPreviewController;
 use App\Http\Controllers\PlaceDirectoryPreviewController;
@@ -437,7 +437,7 @@ Route::middleware('web')
             });
         Route::get('/neighbors', NeighborDirectoryPreviewController::class)->name('neighbors.index');
         Route::get('/neighbors/ari-jensen', NeighborProfilePreviewController::class)->name('neighbors.ari');
-        Route::get('/pets', PetDirectoryPreviewController::class)->name('pets.index');
+        Route::get('/pets', PetProfileWorkspaceController::class)->name('pets.index');
         Route::prefix('pets/profile')
             ->name('pets.')
             ->group(function (): void {

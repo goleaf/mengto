@@ -12,6 +12,7 @@
 | Forms | `x-form-field`, `x-forum-error-summary`, action form/group/control | builder and registration mutations |
 | Collections | `x-directory-page`, toolbar, result grid, empty state, pagination | event discovery |
 | Directory result cards | `x-directory-card`, `x-card-media`, `x-card-heading`, `x-card-description`, optional named footer | shared structural contract for group, pet, neighbour, and meetup compatibility cards; domain ordering remains local |
+| Pet workspace cards | workspace mode of `x-pet-directory-card` over the canonical directory-card regions | protected primary media or linked fallback, status and visibility badges, role/discovery facts, and policy-derived manage/view actions |
 | Discovery directions | `x-discovery-category-nav` plus canonical section heading | seven module entry paths |
 | Discovery filtering | `x-discovery-toolbar`, `x-search-field`, filter chips | validated query/category and preference reset |
 | Discovery recommendations | `x-discovery-section`, `x-discovery-result-card` | bounded cards with status, media, reason, deep link, hide action |

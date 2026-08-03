@@ -42,11 +42,52 @@ final class PetProfileFactory extends ApplicationFactory
 
     public function privateProfile(): static
     {
-        return $this->state(fn (): array => ['visibility' => 'private']);
+        return $this->state(fn (): array => [
+            'visibility' => 'private',
+            'is_discoverable' => false,
+            'allow_external_indexing' => false,
+        ]);
+    }
+
+    public function draft(): static
+    {
+        return $this->state(fn (): array => [
+            'status' => PetProfileStatus::Draft,
+            'published_at' => null,
+            'is_discoverable' => false,
+        ]);
+    }
+
+    public function discoverable(): static
+    {
+        return $this->state(fn (): array => [
+            'visibility' => 'public',
+            'status' => PetProfileStatus::Active,
+            'published_at' => now(),
+            'is_discoverable' => true,
+        ]);
+    }
+
+    public function archived(): static
+    {
+        return $this->state(fn (): array => [
+            'status' => PetProfileStatus::Archived,
+            'archived_at' => now(),
+            'is_discoverable' => false,
+        ]);
+    }
+
+    public function lost(): static
+    {
+        return $this->state(fn (): array => [
+            'status' => PetProfileStatus::Lost,
+            'visibility' => 'public',
+            'is_discoverable' => true,
+        ]);
     }
 
     public function inactive(): static
     {
-        return $this->state(fn (): array => ['status' => PetProfileStatus::Archived]);
+        return $this->archived();
     }
 }

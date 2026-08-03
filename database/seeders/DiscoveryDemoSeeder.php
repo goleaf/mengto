@@ -9,7 +9,11 @@ use App\Data\CreateContentPublicationData;
 use App\Enums\ContentAudienceType;
 use App\Enums\ContentPublicationStatus;
 use App\Enums\ContentPublicationType;
+use App\Enums\PetEvidenceStatus;
+use App\Enums\PetManagerRole;
+use App\Enums\PetManagerStatus;
 use App\Models\PetProfile;
+use App\Models\PetProfileManager;
 use App\Models\User;
 use App\Services\SocialActorResolver;
 use Illuminate\Database\Seeder;
@@ -31,6 +35,10 @@ final class DiscoveryDemoSeeder extends Seeder
             ->select(['id', 'actor_key', 'name', 'status'])
             ->where('actor_key', 'demo-lithuanian')
             ->firstOrFail();
+        $mia = User::query()
+            ->select(['id', 'actor_key', 'name', 'status'])
+            ->where('actor_key', 'mia-carter')
+            ->firstOrFail();
         $actor = $actors->forUser($member);
         $actor->forceFill(['is_discoverable' => true])->saveQuietly();
         $actor->settings()->update(['is_recommendable' => true]);
@@ -42,6 +50,8 @@ final class DiscoveryDemoSeeder extends Seeder
                 'name' => 'Meta',
                 'species' => 'Dog',
                 'breed' => 'Mixed breed',
+                'birth_date' => '2021-05-12',
+                'birth_date_precision' => 'exact',
                 'visibility' => 'public',
                 'status' => 'active',
                 'is_discoverable' => true,
@@ -51,6 +61,27 @@ final class DiscoveryDemoSeeder extends Seeder
         $petActor = $actors->forPet($pet);
         $petActor->forceFill(['is_discoverable' => true])->saveQuietly();
         $petActor->settings()->update(['is_recommendable' => true]);
+
+        PetProfileManager::query()->updateOrCreate(
+            [
+                'pet_profile_id' => $pet->id,
+                'user_id' => $mia->id,
+            ],
+            [
+                'actor_key_snapshot' => $mia->actor_key,
+                'role' => PetManagerRole::Caregiver,
+                'status' => PetManagerStatus::Invited,
+                'permission_overrides' => null,
+                'evidence_status' => PetEvidenceStatus::Unverified,
+                'starts_at' => now(),
+                'ends_at' => now()->addDays(14),
+                'accepted_at' => null,
+                'revoked_at' => null,
+                'invited_by_user_id' => $member->id,
+                'lock_version' => 1,
+                'metadata' => ['scenario' => 'pet-workspace-shared-access'],
+            ],
+        );
 
         $createPublication->handle(
             $member,

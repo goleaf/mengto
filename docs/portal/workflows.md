@@ -1,9 +1,9 @@
 # Portal Workflow Registry
 
-| Workflow | Current event integration |
+| Workflow | Current integration |
 | --- | --- |
 | Registration/onboarding | Reuses authenticated active verified users |
-| Pet creation/management | Registration selects only managed active pet profiles |
+| Pet creation/management | `/pets` lists only owned or actively managed profiles, separates pending invitations from active access, links creation and per-profile management, and sends cross-user discovery to `/discover?category=pets`; event registration selects only managed active profiles |
 | Social/group | Group visibility and membership constrain event access |
 | Care/medical | Medical data is minimized; no diagnosis copied into events |
 | Lost pet | Generic report/emergency data exists; automatic case escalation is open |

@@ -667,3 +667,25 @@ Status: `release verified` on 2026-08-03; attributable publication prepared.
 The baseline audit, architecture decisions, complete delivery plan, and release
 evidence are in `docs/plans/discover-modernization-plan.md`; the stable page
 contract is `docs/portal/discovery.md`.
+
+## Current Delivery: Canonical Pet Workspace
+
+Status: `implemented and release verified` on 2026-08-03.
+
+- Replace `/pets` static nearby-pet fixtures and session-only Follow controls
+  with one policy-aware Eloquent workspace for owned and actively shared
+  `PetProfile` records.
+- Keep cross-user pet recommendations under `/discover?category=pets`, expose
+  pending manager invitations separately, and reuse canonical creation,
+  profile, care, health, media, status, action, and pagination contracts.
+- Validate query/filter/sort URL state, paginate at twelve, eagerly load the
+  current manager and primary protected media, and keep query growth constant.
+- Provide purpose-specific empty/filtered-empty states and full EN/LT/RU copy.
+- Verify desktop and mobile behavior through the repeatable loopback Chrome
+  gate in `scripts/pet-workspace-browser-check.mjs`.
+- Release evidence includes the 2,670-test/84,934-assertion serial suite,
+  zero-error Larastan, dependency audits, production Vite build, isolated fresh
+  migration/seed and repeat-seed checks, and the three-viewport browser gate.
+
+The baseline, decisions, implementation passes, security boundaries, and gate
+evidence are recorded in `docs/plans/pet-workspace-modernization-plan.md`.

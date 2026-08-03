@@ -23,6 +23,8 @@ final class SocialIdentitySeeder extends Seeder
             'name' => 'Scout',
             'species' => 'Dog',
             'breed' => 'Border Collie mix',
+            'birth_date' => '2022-04-18',
+            'birth_date_precision' => 'exact',
             'profile_data' => [
                 'age' => '4 years',
                 'status' => 'Available for park walks',
@@ -34,6 +36,8 @@ final class SocialIdentitySeeder extends Seeder
             'name' => 'Nori',
             'species' => 'Cat',
             'breed' => 'Domestic Shorthair',
+            'birth_date' => '2020-09-01',
+            'birth_date_precision' => 'month',
             'profile_data' => [
                 'age' => '6 years',
                 'status' => 'Indoor enrichment friend',

@@ -12,6 +12,8 @@ class PetDirectoryCard extends Component
 
     public bool $followed;
 
+    public bool $workspace;
+
     /**
      * @param  array<string, mixed>  $pet
      */
@@ -21,6 +23,7 @@ class PetDirectoryCard extends Component
     ) {
         $this->petKey = $pet['key'] ?? Str::slug($pet['name']);
         $this->followed = $pet['followed'] ?? false;
+        $this->workspace = ($pet['context'] ?? null) === 'workspace';
     }
 
     public function render(): View

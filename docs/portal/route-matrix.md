@@ -143,7 +143,7 @@ the decision column is the desired page-identity boundary.
 | `organizations.index` | `/organizations` | `Organizations\OrganizationDirectory` | `canonical-page` | retain `x-page-header` |
 | `organizations.invitations.respond` | `/organizations/invitations/{organizationInvitation:stable_key}/respond` | `Organizations\OrganizationInvitationResponse` | `canonical-page` | retain `x-page-header` |
 | `organizations.show` | `/organizations/{organization:slug}` | `Organizations\OrganizationWorkspace` | `canonical-page` | retain `x-page-header` |
-| `pets.index` | `/pets` | `PetDirectoryPreviewController` | `canonical-page` | retain `x-page-header` |
+| `pets.index` | `/pets` | `PetProfileWorkspaceController` | `canonical-page` | authenticated personal workspace; Eloquent search/filter/pagination and canonical `x-page-header` |
 | `pets.manage.invitations` | `/pets/manage/invitations` | `Pets\PetProfileInvitations` | `canonical-page` | retain `x-page-header` |
 | `pets.manage.create` | `/pets/manage/new` | `Pets\CreatePetProfile` | `canonical-page` | retain `x-page-header` |
 | `pets.manage.show` | `/pets/manage/{petProfile:profile_key}` | `Pets\ManagePetProfile` | `canonical-page` | retain `x-page-header` |

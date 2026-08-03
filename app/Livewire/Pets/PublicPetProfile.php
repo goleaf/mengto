@@ -7,6 +7,7 @@ namespace App\Livewire\Pets;
 use App\Models\PetProfile;
 use App\Models\PetProfileManager;
 use App\Models\PetProfileMedia;
+use App\Services\PetProfileAgeLabel;
 use App\Services\PetSpeciesLabel;
 use App\Services\ProfilePresenter;
 use Illuminate\Contracts\Auth\Access\Gate;
@@ -26,13 +27,17 @@ final class PublicPetProfile extends Component
 
     private PetSpeciesLabel $speciesLabels;
 
+    private PetProfileAgeLabel $ageLabels;
+
     public function boot(
         Gate $gate,
         ProfilePresenter $profiles,
+        PetProfileAgeLabel $ageLabels,
         PetSpeciesLabel $speciesLabels,
     ): void {
         $this->gate = $gate;
         $this->profiles = $profiles;
+        $this->ageLabels = $ageLabels;
         $this->speciesLabels = $speciesLabels;
     }
 
@@ -124,7 +129,7 @@ final class PublicPetProfile extends Component
             'species' => $this->speciesLabels->for($profile->species),
             'scientific_name' => $profile->taxon?->activeVersion?->scientific_name,
             'breed' => $profile->breed,
-            'age' => $this->ageLabel($profile),
+            'age' => $this->ageLabels->for($profile),
             'status' => $profile->status->label(),
             'bio' => (string) ($profileData['story'] ?? ''),
             'owner' => $ownerLabel,
@@ -147,19 +152,5 @@ final class PublicPetProfile extends Component
                 'title' => $pet['name'],
                 'activeSection' => 'pets',
             ]);
-    }
-
-    private function ageLabel(PetProfile $profile): ?string
-    {
-        if ($profile->birth_date === null) {
-            return null;
-        }
-
-        $years = $profile->birth_date->diffInYears(now());
-        $prefix = $profile->birth_date_precision === 'exact'
-            ? ''
-            : __('pet_profiles.public.approximately').' ';
-
-        return $prefix.trans_choice('pet_profiles.public.age_years', $years, ['count' => $years]);
     }
 }

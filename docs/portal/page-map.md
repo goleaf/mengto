@@ -20,6 +20,14 @@ is restricted by the authenticated portal boundary and shows only a minimal
 public identity, public pet profiles, and publications that pass the current
 viewer's canonical content-audience rules.
 
+Pets use `pets.index` as the authenticated personal workspace, not a second
+discovery directory. `PetProfileWorkspaceController` lists only profiles owned
+by the current account or shared through a currently active manager record.
+Search, ownership/shared/draft/discoverable filters, sorting, pagination,
+invitation review, creation, management, public-profile, care, health, and
+cross-module pet discovery links all resolve through named routes. Cross-user
+pet recommendations remain exclusively under `discover.index?category=pets`.
+
 Events use `ForumEventDirectory` inside `meetups/index.blade.php` and
 `ForumEventWorkspace` inside `meetups/show.blade.php`. The directory provides
 search/filter/pagination/create; detail provides status, occurrences,

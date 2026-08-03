@@ -128,6 +128,13 @@ function evidenceFor(string $id): array
     ];
 
     $specific = [
+        'PRD-IDENTITY-003' => [
+            '`PetProfile`, `PetProfileWorkspace`, social actor services',
+            '`PetProfilePolicy`, active manager scope, `BrowsePetProfilesRequest`',
+            'Canonical `/pets` workspace and `lang/*/pet_workspace.php`',
+            '`PetProfileFactory` states, `SocialIdentitySeeder`, `DiscoveryDemoSeeder`',
+            '`PetProfileWorkspaceTest`, pet profile policy and lifecycle tests',
+        ],
         'PRD-SOCIAL-001' => [
             '`DiscoveryCatalog`, `MemberProfileCatalog`, controlled category/preference enums and named module routes',
             '`DiscoveryPreference` policy, `SocialActorPolicy`, `ContentPublication::visibleTo()`, account and actor blocks',
@@ -412,6 +419,10 @@ function blockerFor(string $id): string
 
 function verificationFor(string $id): string
 {
+    if ($id === 'PRD-IDENTITY-003') {
+        return 'php artisan test --compact tests/Feature/PetProfileWorkspaceTest.php tests/Feature/PetProfileFoundationTest.php && BROWSER_BASE_URL=http://127.0.0.1:8028 node scripts/pet-workspace-browser-check.mjs';
+    }
+
     if ($id === 'PRD-SOCIAL-001') {
         return 'php artisan test --compact tests/Feature/DiscoverExperienceTest.php && npm run build && BROWSER_BASE_URL=http://127.0.0.1:8026 npm run test:browser:discover';
     }

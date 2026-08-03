@@ -50,7 +50,7 @@ final class PreviewService
             ]), null, 'key')),
             pets: $this->interactions->pets([
                 ...$this->created->pets(),
-                ...$this->directoryPets(),
+                ...$this->circlePets(),
             ]),
             neighbors: $this->interactions->neighbors($this->directoryNeighbors()),
             groups: $this->interactions->groups([
@@ -159,51 +159,6 @@ final class PreviewService
             'owner' => $this->owner(),
             'pet' => $this->scout(),
             'recentMoments' => $this->interactions->posts($this->scoutMoments()),
-        ];
-    }
-
-    /**
-     * @return array{
-     *     owner: array{name: string, location: string, avatar: string, summary: string},
-     *     summary: array{eyebrow: string, title: string, description: string, count: string},
-     *     filters: list<array{value: string, label: string}>,
-     *     directoryPets: array<int, array{
-     *         name: string,
-     *         species: string,
-     *         breed: string,
-     *         age: string,
-     *         owner: string,
-     *         neighborhood: string,
-     *         status: string,
-     *         image: string,
-     *         image_small: string,
-     *         image_medium: string,
-     *         image_alt: string,
-     *         traits: array<int, string>,
-     *         profile_route: string|null
-     *     }>
-     * }
-     */
-    public function petDirectoryData(): array
-    {
-        return [
-            'owner' => $this->owner(),
-            'summary' => [
-                'eyebrow' => __('messages.portland_neighbors_c6674bf8c7'),
-                'title' => __('messages.pets_nearby_2aabcbf06a'),
-                'description' => __('messages.meet_companions_whose_routines_favorite_places_and_peopl_fa17a96a66'),
-                'count' => __('messages.6_companions_across_5_neighborhoods_51593f7ae9'),
-            ],
-            'filters' => $this->filterOptions([
-                'all-pets' => __('messages.all_pets_46c6bd796e'),
-                'dogs' => __('messages.dogs_246b0deffb'),
-                'cats' => __('messages.cats_ec05d70c6f'),
-                'small-pets' => __('messages.small_pets_30fac1c938'),
-            ]),
-            'directoryPets' => $this->interactions->pets([
-                ...$this->created->pets(),
-                ...$this->directoryPets(),
-            ]),
         ];
     }
 
@@ -1153,7 +1108,7 @@ final class PreviewService
             'owner' => $this->miaOwner(),
             'pets' => array_slice($this->interactions->pets([
                 ...$this->created->pets(),
-                ...$this->directoryPets(),
+                ...$this->circlePets(),
             ]), 0, 4),
             'recentMoments' => $this->interactions->posts($this->scoutMoments()),
             'availability' => [
@@ -1390,7 +1345,7 @@ final class PreviewService
      *     profile_route: string|null
      * }>
      */
-    private function directoryPets(): array
+    private function circlePets(): array
     {
         return [
             [

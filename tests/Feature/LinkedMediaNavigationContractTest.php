@@ -4,6 +4,7 @@ use App\Models\ExpertProfile;
 use App\Models\ForumEvent;
 use App\Models\Listing;
 use App\Models\Order;
+use App\Models\PetProfile;
 use App\Models\Reservation;
 use App\Models\User;
 use App\Services\PreviewService;
@@ -48,6 +49,10 @@ test('linked media renders a semantic anchor and a passive null state', function
 });
 
 test('pet directory media uses the same profile destination as the pet name', function () {
+    foreach (['Scout', 'Nori'] as $name) {
+        PetProfile::factory()->for($this->authenticatedUser)->create(['name' => $name]);
+    }
+
     $response = $this->get(route('pets.index'));
 
     $response->assertSuccessful();
@@ -55,7 +60,7 @@ test('pet directory media uses the same profile destination as the pet name', fu
     $xpath = responseXPath($response);
 
     foreach (['Scout', 'Nori'] as $name) {
-        $card = $xpath->query('//article[@data-directory-pet][.//h2[normalize-space()="'.$name.'"]]')->item(0);
+        $card = $xpath->query('//article[@data-pet-workspace-profile][.//h2[normalize-space()="'.$name.'"]]')->item(0);
 
         expect($card)->not->toBeNull();
 
@@ -67,16 +72,8 @@ test('pet directory media uses the same profile destination as the pet name', fu
             ->and($mediaLink?->attributes?->getNamedItem('href')?->nodeValue)
             ->toBe($titleLink?->attributes?->getNamedItem('href')?->nodeValue)
             ->and($mediaLink?->attributes?->getNamedItem('aria-label')?->nodeValue)
-            ->toBe(__('presentation.open_profile', ['name' => $name]));
+            ->toBe(__('pet_workspace.open_workspace', ['name' => $name]));
     }
-
-    $passiveCard = $xpath->query('//article[@data-directory-pet][.//h2[normalize-space()="Maple"]]')->item(0);
-
-    expect($passiveCard)->not->toBeNull()
-        ->and($xpath->query('.//a[@data-linked-media]', $passiveCard)->length)
-        ->toBe(0)
-        ->and($xpath->query('.//*[@data-linked-media="passive"]', $passiveCard)->length)
-        ->toBe(1);
 });
 
 test('directory cards keep media and title destinations synchronized', function (string $routeName, string $cardSelector) {

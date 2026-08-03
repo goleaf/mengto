@@ -7,7 +7,7 @@ The existing authenticated Blade/Livewire shell remains canonical.
 | Module | Primary entry | Canonical aggregate or service |
 | --- | --- | --- |
 | Feed/content | `preview.feed`, `content.index` | content publication/feed services |
-| Pets/household access | `pets.index`, `pets.manage.*` | `PetProfile` and manager relationships |
+| Pets/household access | `pets.index`, `pets.manage.*` | `PetProfileWorkspace` over policy-scoped `PetProfile` and active manager relationships |
 | Health | `medical-records.index` | canonical medical record |
 | Care | `care-journals.index` | care journal/task domain |
 | Events | `meetups.index` | `ForumEvent`, occurrences, tracks, rooms, sessions |
