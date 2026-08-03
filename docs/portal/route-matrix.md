@@ -1,8 +1,9 @@
 # Portal Route Matrix
 
 The executable source of truth is `routes/web.php`; `php artisan route:list
---json` is the verification command. On 2026-08-03 it reported 173 active
-routes, of which 171 are first-party under the current audit filter.
+--json` reported 173 active routes on 2026-08-03. The canonical
+`php artisan route:list --except-vendor --json` audit reported 162 first-party
+routes and excluded 11 package/runtime endpoints.
 
 ## Event Routes
 

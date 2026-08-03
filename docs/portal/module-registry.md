@@ -1,6 +1,6 @@
 # Portal Module Registry
 
-Route audit on 2026-08-03 found 173 active routes, 171 first-party routes after
+Route audit on 2026-08-03 found 173 active routes, 162 first-party routes after
 excluding framework/Boost endpoints, and no removed routes in this delivery.
 The existing authenticated Blade/Livewire shell remains canonical.
 
