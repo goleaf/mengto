@@ -262,6 +262,23 @@ Status: `implemented and verified` on 2026-08-03
 Exact scope, exclusions, and evidence are in
 `docs/plans/forum-phase4-before-ownership-category-work-package.md`.
 
+## Current Delivery: Phase 4 Special-Needs Category
+
+Status: `implemented and verified` on 2026-08-03
+
+- Prove the complete category-22 source-to-manifest-to-database hierarchy,
+  including 54 exact ordered children and all system-category locale rows.
+- Require reviewed target/fallback translations in the category tree and root
+  selector so unfinished translations cannot replace trusted source text.
+- Preserve the existing locale cache/invalidation contract with zero added
+  queries and zero warm-tree database statements.
+- Passed the focused 4-test/17-assertion contract, related
+  46-test/36,051-assertion slice, and complete sequential
+  2,396-test/79,143-assertion suite plus every applicable release gate.
+
+Exact scope, exclusions, and evidence are in
+`docs/plans/forum-phase4-special-needs-category-work-package.md`.
+
 ## Current Delivery: Event Schedule Foundation
 
 Status: `implemented and verified` on 2026-08-03

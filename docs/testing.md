@@ -566,6 +566,33 @@ The package changes no route, Blade, or browser interaction, so a browser-only
 gate is not applicable. Exact scope is in
 `docs/plans/forum-phase4-before-ownership-category-work-package.md`.
 
+## Phase 4 Special-Needs Category And Translation Trust
+
+`ForumSpecialNeedsCategoryTest` proves the exact category-22 metadata and all
+54 ordered source subcategories, exact synchronized keys/slugs/positions and
+three root locale rows, rejection of unreviewed target-locale values in both
+the full tree and root selector, and adoption after human review. The existing
+multilingual contract proves all-system-category locale completeness and
+seed-synchronization invalidation.
+
+Final evidence on 2026-08-03:
+
+- RED: an unreviewed Lithuanian child name replaced the reviewed English
+  fallback;
+- focused contract: 4 tests and 17 assertions;
+- related category, multilingual/cache, localization, and schema slice: 46
+  tests and 36,051 assertions;
+- query delta: 0 additional statements; the review flag uses the existing
+  eager-loaded projections and warm locale-tree reads remain at 0;
+- complete sequential suite: 2,396 tests and 79,143 assertions;
+- full Pint/Larastan, Composer/npm audits, Vite, Laravel cache compilation,
+  fresh/repeat seed, rollback/reapply, and manifest/source/requirements
+  generation: passed.
+
+The package changes no route, Blade, schema, or browser interaction, so a
+browser-only gate is not applicable. Exact scope is in
+`docs/plans/forum-phase4-special-needs-category-work-package.md`.
+
 ## Linked Media Navigation Verification
 
 `LinkedMediaNavigationContractTest` verifies the semantic linked/passive

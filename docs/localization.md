@@ -56,9 +56,11 @@ resolve in `en`, `lt`, and `ru`.
 
 The 44 system root categories have reviewed names and descriptions in all
 three locales. Subcategories retain their immutable source names until a
-reviewed locale-specific value exists; they have no source description, so an
-empty description is intentional rather than a missing translation. Category
-tree caches are locale-scoped as
+reviewed locale-specific value exists; the category tree and root selector
+ignore unreviewed target-locale values, prefer a reviewed configured fallback,
+and finally use the immutable server fallback. Subcategories have no source
+description, so an empty description is intentional rather than a missing
+translation. Category tree caches are locale-scoped as
 `forum:category-tree:v1:locale:{locale}` and synchronization invalidates every
 supported locale.
 

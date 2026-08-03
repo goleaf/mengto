@@ -33,6 +33,10 @@
 
 ### Forum And Animal Taxonomy
 
+- Verified the complete special-needs/accessibility category hierarchy and
+  hardened category localization so only reviewed target/fallback values can
+  replace immutable source text; seed and administrative invalidation retain
+  locale-isolated zero-query warm caches.
 - Hardened the source-derived forum category catalogue against checksum,
   version, count, format, hierarchy, and duplicate-key/slug corruption; the
   first exact Phase 4 category slice now proves the complete before-ownership

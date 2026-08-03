@@ -54,6 +54,7 @@ This index is the source-of-truth map for first-party documentation.
 | `docs/plans/forum-topic-type-schema-runtime-work-package.md` | Exact 20-ID topic-type schema runtime, cache, validation, Action, and release contract | Product + engineering + QA | Implemented and verified |
 | `docs/plans/forum-phase3-migration-verification-work-package.md` | Final 13-ID Phase 3 migration, rollback, compatibility, and release-verification contract | Engineering + QA + operations | Implemented and verified |
 | `docs/plans/forum-phase4-before-ownership-category-work-package.md` | Exact 64-ID category-21 source, manifest, persistence, and cache-integrity contract | Product + engineering + QA | Implemented and verified |
+| `docs/plans/forum-phase4-special-needs-category-work-package.md` | Exact 63-ID category-22 source, translation-trust, locale-cache, and synchronization contract | Product + engineering + QA | Implemented and verified |
 | `docs/plans/global-page-identity-standardization-plan.md` | Global page-header, route-classification, forum navigation, meetup stability, and visual consistency execution plan | Product + frontend + QA | In progress; first safe slice targeted-verified |
 | `docs/requirements/compliance-matrix.md` | Requirements-to-code-and-test mapping | QA | Living evidence |
 | `docs/code-review.md` | Final structured review findings | Engineering | Living evidence |

@@ -25,7 +25,9 @@ until deployment confirms it. Memcached is not introduced.
 
 The forum category tree uses `forum:category-tree:v1:locale:{locale}` with the
 configured taxonomy TTL. The value contains only shared localized category
-presentation data. Category synchronization and administrator category changes
+presentation data selected from reviewed target/fallback translations or the
+immutable server fallback; unreviewed values never enter the rendered cache
+payload. Category synchronization and administrator category changes
 invalidate every supported locale key. Schema/existence probes run only on a
 cache miss, so a warm read executes zero database statements; an empty or
 not-yet-migrated database uses the validated immutable manifest fallback.

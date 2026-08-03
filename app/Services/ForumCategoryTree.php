@@ -58,7 +58,13 @@ final readonly class ForumCategoryTree
             ->ordered()
             ->with([
                 'translations' => fn ($query) => $query
-                    ->select(['id', 'forum_category_id', 'locale', 'name'])
+                    ->select([
+                        'id',
+                        'forum_category_id',
+                        'locale',
+                        'name',
+                        'is_reviewed',
+                    ])
                     ->whereIn('locale', array_values(array_unique([
                         $locale,
                         $fallbackLocale,
@@ -91,7 +97,13 @@ final readonly class ForumCategoryTree
             ->ordered()
             ->with([
                 'translations' => fn ($query) => $query
-                    ->select(['id', 'forum_category_id', 'locale', 'name'])
+                    ->select([
+                        'id',
+                        'forum_category_id',
+                        'locale',
+                        'name',
+                        'is_reviewed',
+                    ])
                     ->whereIn('locale', $locales),
                 'children' => fn ($query) => $query
                     ->select(['id', 'parent_id', 'slug', 'position'])
@@ -99,7 +111,13 @@ final readonly class ForumCategoryTree
                     ->ordered()
                     ->with([
                         'translations' => fn ($translationQuery) => $translationQuery
-                            ->select(['id', 'forum_category_id', 'locale', 'name'])
+                            ->select([
+                                'id',
+                                'forum_category_id',
+                                'locale',
+                                'name',
+                                'is_reviewed',
+                            ])
                             ->whereIn('locale', $locales),
                     ]),
             ])
@@ -168,13 +186,19 @@ final readonly class ForumCategoryTree
         string $fallbackLocale,
         string $fallback,
     ): string {
-        $localized = $translations->firstWhere('locale', $locale);
+        $localized = $translations->first(
+            fn (ForumCategoryTranslation $translation): bool => $translation->locale === $locale
+                && $translation->is_reviewed,
+        );
 
         if ($localized instanceof ForumCategoryTranslation) {
             return $localized->name;
         }
 
-        $fallbackTranslation = $translations->firstWhere('locale', $fallbackLocale);
+        $fallbackTranslation = $translations->first(
+            fn (ForumCategoryTranslation $translation): bool => $translation->locale === $fallbackLocale
+                && $translation->is_reviewed,
+        );
 
         return $fallbackTranslation instanceof ForumCategoryTranslation
             ? $fallbackTranslation->name
