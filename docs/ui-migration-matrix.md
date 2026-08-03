@@ -4,7 +4,7 @@
 | --- | --- | --- |
 | direct/dynamic Lucide calls and arbitrary icon sizes | migrate through `x-ui-icon`, add icons to unambiguous actions, ratchet all legacy debt to zero | implemented and verified at zero debt with full release and browser gates |
 | reference directories (`/pets`, `/places`, `/groups`, `/neighbors`) | retain canonical `x-page-header` path and verify semantic hook | targeted-verified |
-| direct compatibility directory cards (`group`, `pet`, `neighbor`, `meetup`) | compose shared media/body/footer, heading, description, and compatible statistic primitives while retaining domain content locally | migrated and isolated staged-tree verified; publication pending |
+| direct compatibility directory cards (`group`, `pet`, `neighbor`, `meetup`) | compose shared media/body/footer, heading, description, and compatible statistic primitives while retaining domain content locally | migrated, isolated staged-tree verified, and published |
 | `/discover` static demo | replace hard-coded query/results/pulse/trending/weekend panels with the database-backed explainable recommendation hub | migrated and browser-verified |
 | legacy discover result components | remove `discover-query`, `discover-results`, and `discover-result`; compose canonical primitives through four discovery components | removed and targeted-verified |
 | private care directories (`/medical-records`, `/care-journals`) | canonical `x-page-header` with privacy context and authorized create action | migrated and targeted-verified |

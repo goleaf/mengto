@@ -2,9 +2,9 @@
 
 Date: 2026-08-03
 
-Status: active, with the `/groups` repair and first directory-family migration
-implemented and verified in an isolated staged-tree snapshot; publication and
-the explicitly open future migration waves are pending.
+Status: active. The `/groups` repair and first directory-family migration are
+implemented, verified in an isolated staged-tree snapshot, and published to
+`origin/main`; the explicitly open future migration waves remain pending.
 
 This plan has no artificial task-count limit. New tasks belong here only when
 they preserve the audit decisions in
@@ -243,13 +243,17 @@ while domain-specific product meaning remains in small explicit components.
 - [x] Confirm query delta remains zero.
 - [x] Confirm no secret, debug output, prototype marker, or unrelated file is
   staged.
-- [ ] Commit the coherent implementation, tests, and documentation on `main`.
-- [ ] Push normally to `origin/main`; never force-push.
-- [ ] Record commit ID and observed push result.
+- [x] Commit the coherent implementation, tests, and documentation on `main`.
+- [x] Push normally to `origin/main`; never force-push.
+- [x] Record commit ID and observed push result.
 - [ ] If a regression is discovered, prefer a narrow forward fix; revert only
   the attributable commit when forward repair is unsafe.
 - [ ] Monitor the canonical `/forum/groups` surface for unintended shared-style
   effects even though it does not consume this compatibility card.
+
+Publication evidence: implementation commit
+`0da0c3c7181716bab5651599aa5028525412a2e2` advanced `origin/main` from
+`f23681ad0791da31a1fdd87bb5772cf62c075ff9` on 2026-08-03.
 
 ## Completion Rule
 

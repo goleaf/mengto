@@ -746,7 +746,8 @@ Verified package evidence on 2026-08-03:
 - fresh verification applied 130 migrations, created 215 tables, and retained
   five users after the repeat seed;
 - Composer validation/audit, NPM audit, and config/event/route/view cache
-  generation passed; scoped publication remains pending.
+  generation passed; implementation commit `0da0c3c` was published to
+  `origin/main`.
 
 The concurrently dirty shared tree passed 2,651 of 2,654 tests. Its three
 failures came from uncommitted foreign icon/member/pet-profile work and are not
