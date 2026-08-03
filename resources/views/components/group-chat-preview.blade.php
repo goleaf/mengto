@@ -2,10 +2,10 @@
 
 <x-content-panel
     section="group-chat"
-    eyebrow="{{ __('ui.member_chat_1a3ace7995') }}"
-    title="{{ __('ui.planning_channel_deae8b6ad5') }}"
+    eyebrow="{{ __('groups.detail.chat.eyebrow') }}"
+    title="{{ __('groups.detail.chat.title') }}"
 >
-    <div class="chat-preview" role="log" aria-label="{{ __('ui.recent_group_messages_4c2bce3e4a') }}">
+    <div class="chat-preview" role="log" aria-label="{{ __('groups.detail.chat.recent_label') }}">
         @forelse ($messages as $message)
             <article class="chat-preview__message">
                 <x-initials-avatar
@@ -19,12 +19,12 @@
                 </div>
             </article>
         @empty
-            <p class="group-dashboard__empty">{{ __('ui.no_recent_messages_are_available_a23afc204b') }}</p>
+            <p class="group-dashboard__empty">{{ __('groups.detail.chat.empty') }}</p>
         @endforelse
     </div>
 
     <x-action-control
-        label="{{ __('ui.open_chat_0600175af8') }}"
+        label="{{ __('groups.detail.chat.open') }}"
         icon="message-circle"
         variant="paper"
         class="section-body"

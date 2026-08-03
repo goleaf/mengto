@@ -2,7 +2,7 @@
 
 <x-content-panel
     section="group-poll"
-    eyebrow="{{ __('ui.member_poll_4e676c585f') }}"
+    eyebrow="{{ __('groups.detail.poll.eyebrow') }}"
     :title="$poll['question']"
 >
     <p class="poll__description">{{ $poll['description'] }}</p>
@@ -18,7 +18,7 @@
                     {{ __('presentation.votes_of_total', ['votes' => $option['votes'], 'total' => $poll['total']]) }}
                 </progress>
                 <x-action-control
-                    :label="$option['active'] ? __('ui.selected_57fd7a0cf3') : __('ui.vote_cd5588db6f')"
+                    :label="$option['active'] ? __('groups.detail.poll.selected') : __('groups.detail.poll.vote')"
                     :icon="$option['active'] ? 'check' : 'circle'"
                     :endpoint="$membership === 'joined' ? route('actions.perform') : null"
                     :payload="$option['payload']"
@@ -30,7 +30,7 @@
                 />
             </div>
         @empty
-            <p role="listitem" class="group-dashboard__empty">{{ __('ui.no_poll_options_are_available_yet_589d1d168f') }}</p>
+            <p role="listitem" class="group-dashboard__empty">{{ __('groups.detail.poll.empty') }}</p>
         @endforelse
     </div>
 </x-content-panel>

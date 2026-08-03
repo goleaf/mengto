@@ -100,7 +100,7 @@ final class GroupPresenter
             'active_section' => 'groups',
             'group' => [
                 ...$group,
-                'privacy_label' => $group['privacy'] === 'closed' ? __('messages.closed_group_e1f1a48f09') : __('messages.public_group_b99668e88a'),
+                'privacy_label' => $group['privacy'] === 'closed' ? __('groups.detail.privacy.closed') : __('groups.detail.privacy.public'),
                 'privacy_icon' => $group['privacy'] === 'closed' ? 'lock-keyhole' : 'globe-2',
                 'members' => trans_choice('presentation.members_count', $group['member_count'], [
                     'count' => $this->compactNumber($group['member_count']),
@@ -115,13 +115,13 @@ final class GroupPresenter
                 'membership_label' => $this->membershipLabel($membership),
                 'primary_action' => $this->membershipAction($group, $tab),
                 'share_action' => [
-                    'label' => __('messages.share_29887a5ff9'),
+                    'label' => __('groups.detail.actions.share'),
                     'icon' => 'send',
                     'variant' => 'paper',
                     'href' => route('share.show', ['target' => $key]),
                 ],
                 'report_action' => [
-                    'label' => __('messages.report_group_daa5c248b2'),
+                    'label' => __('groups.detail.actions.report'),
                     'icon' => 'flag',
                     'variant' => 'quiet',
                     'href' => route('compose', [
@@ -130,14 +130,14 @@ final class GroupPresenter
                     ]),
                 ],
                 'stats' => [
-                    ['label' => __('messages.members_1044a4c056'), 'value' => $this->compactNumber($group['member_count']), 'detail' => __('messages.people_in_the_community_90c6b042ed')],
-                    ['label' => __('messages.pets_7dc1cd7eaf'), 'value' => $this->compactNumber($group['pet_count']), 'detail' => __('messages.owner_managed_profiles_ec265b1755')],
-                    ['label' => __('messages.this_week_8c4eef5ab2'), 'value' => (string) $group['posts_week'], 'detail' => __('messages.new_posts_297e9b6fbf')],
-                    ['label' => __('messages.since_98af1ed618'), 'value' => $group['started'], 'detail' => __('messages.community_history_d83fb270c3')],
+                    ['label' => __('groups.detail.stats.members.label'), 'value' => $this->compactNumber($group['member_count']), 'detail' => __('groups.detail.stats.members.detail')],
+                    ['label' => __('groups.detail.stats.pets.label'), 'value' => $this->compactNumber($group['pet_count']), 'detail' => __('groups.detail.stats.pets.detail')],
+                    ['label' => __('groups.detail.stats.week.label'), 'value' => (string) $group['posts_week'], 'detail' => __('groups.detail.stats.week.detail')],
+                    ['label' => __('groups.detail.stats.since.label'), 'value' => $group['started'], 'detail' => __('groups.detail.stats.since.detail')],
                 ],
                 'meta' => [
                     ['icon' => 'map-pin', 'label' => $group['location']],
-                    ['icon' => $group['privacy'] === 'closed' ? 'lock-keyhole' : 'globe-2', 'label' => $group['privacy'] === 'closed' ? __('messages.closed_group_e1f1a48f09') : __('messages.public_group_b99668e88a')],
+                    ['icon' => $group['privacy'] === 'closed' ? 'lock-keyhole' : 'globe-2', 'label' => $group['privacy'] === 'closed' ? __('groups.detail.privacy.closed') : __('groups.detail.privacy.public')],
                     ['icon' => 'languages', 'label' => $group['language']],
                 ],
             ],
@@ -153,10 +153,10 @@ final class GroupPresenter
             ],
             'access_gate' => [
                 'icon' => 'lock-keyhole',
-                'title' => $membership === 'pending' ? __('messages.your_request_is_waiting_for_review_e7ad75e893') : __('messages.join_to_see_member_content_f278c69ce0'),
+                'title' => $membership === 'pending' ? __('groups.detail.access.pending_title') : __('groups.detail.access.join_title'),
                 'description' => $membership === 'pending'
-                    ? __('messages.moderators_can_review_your_profile_and_application_group_764a880f8f')
-                    : __('messages.the_group_is_discoverable_while_posts_members_files_chat_db8bccc335'),
+                    ? __('groups.detail.access.pending_description')
+                    : __('groups.detail.access.join_description'),
                 'action' => $this->membershipAction($group, $tab),
             ],
         ];
@@ -388,12 +388,12 @@ final class GroupPresenter
         $options = [];
 
         foreach ([
-            'all' => __('messages.all_activity_29ebb2ef2d'),
-            'important' => __('messages.important_only_c2c4224926'),
-            'events' => __('messages.events_8d14f6e72d'),
-            'mentions' => __('messages.mentions_and_replies_d2cae6302b'),
-            'digest' => __('messages.weekly_digest_b134b14f1c'),
-            'off' => __('messages.off_ca7981b46e'),
+            'all' => __('groups.detail.notifications.all'),
+            'important' => __('groups.detail.notifications.important'),
+            'events' => __('groups.detail.notifications.events'),
+            'mentions' => __('groups.detail.notifications.mentions'),
+            'digest' => __('groups.detail.notifications.digest'),
+            'off' => __('groups.detail.notifications.off'),
         ] as $value => $label) {
             $options[] = [
                 'label' => $label,
@@ -542,23 +542,23 @@ final class GroupPresenter
     private function tabOptions(): array
     {
         return [
-            'overview' => ['label' => __('messages.overview_d4b1ea5708'), 'icon' => 'layout-dashboard'],
-            'posts' => ['label' => __('messages.posts_a80811cf68'), 'icon' => 'newspaper'],
-            'discussions' => ['label' => __('messages.discussions_60157cfcfe'), 'icon' => 'messages-square'],
-            'events' => ['label' => __('messages.events_8d14f6e72d'), 'icon' => 'calendar-days'],
-            'members' => ['label' => __('messages.members_1044a4c056'), 'icon' => 'users'],
-            'pets' => ['label' => __('messages.pets_7dc1cd7eaf'), 'icon' => 'paw-print'],
-            'resources' => ['label' => __('messages.resources_e89b30aa1d'), 'icon' => 'library'],
-            'rules' => ['label' => __('messages.rules_4228aeb07c'), 'icon' => 'scroll-text'],
+            'overview' => ['label' => __('groups.detail.tabs.overview'), 'icon' => 'layout-dashboard'],
+            'posts' => ['label' => __('groups.detail.tabs.posts'), 'icon' => 'newspaper'],
+            'discussions' => ['label' => __('groups.detail.tabs.discussions'), 'icon' => 'messages-square'],
+            'events' => ['label' => __('groups.detail.tabs.events'), 'icon' => 'calendar-days'],
+            'members' => ['label' => __('groups.detail.tabs.members'), 'icon' => 'users'],
+            'pets' => ['label' => __('groups.detail.tabs.pets'), 'icon' => 'paw-print'],
+            'resources' => ['label' => __('groups.detail.tabs.resources'), 'icon' => 'library'],
+            'rules' => ['label' => __('groups.detail.tabs.rules'), 'icon' => 'scroll-text'],
         ];
     }
 
     private function membershipLabel(?string $membership): string
     {
         return match ($membership) {
-            'joined' => __('messages.member_7c968fb71f'),
-            'pending' => __('messages.request_pending_bc26ab4d4b'),
-            default => __('messages.not_a_member_1099a75b03'),
+            'joined' => __('groups.detail.membership.member'),
+            'pending' => __('groups.detail.membership.pending'),
+            default => __('groups.detail.membership.none'),
         };
     }
 

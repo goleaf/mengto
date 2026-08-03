@@ -382,6 +382,35 @@ requirements, NPM audit, production build, isolated migration plus repeated
 seed (135 migrations, 217 tables, stable 5 users and 10 expert profiles),
 178-line route and cache smoke, and both forum-source checks also passed.
 
+The seventh non-header localization follow-up closes the system-chrome slice
+for `/groups/{group}` across the overview and all seven secondary tabs. The
+EN/LT/RU group domain now owns 87 hero, privacy, action, statistic, access,
+tab, section, chat, poll, event, post, membership, and notification labels.
+`GroupPresenter` and the group Blade components receive prepared labels and do
+not query or translate stored values in the view. The same visual audit found
+that the hero's `paper` status-badge tone had no style implementation; the
+shared tone now has an opaque token-backed surface, ink contrast, border, and
+shadow instead of rendering dark text directly over the cover image.
+
+The repeatable groups-only browser contract compares 39 detail fields with the
+English baseline at six detail viewports in addition to the six directory
+viewports. It observed one hero, one dashboard, three actions, eight tabs,
+zero horizontal overflow, zero sub-44px targets, zero raw translation keys,
+and zero console errors; six evidence screenshots were written. The focused
+detail contract passed 4 tests with 392 assertions, and the complete isolated
+sequential suite passed 2,840 tests with 92,099 assertions. Demonstration and
+attributable post, event, poll, chat, rule, resource, member, and pet content in
+`GroupContentCatalog` remains open for the next evidence-backed package and is
+not represented as completed by this system-chrome checkpoint.
+
+Full Pint and Larastan passed with zero findings; Composer strict validation,
+locked audit, PHP 8.5 platform requirements, NPM audit, Vite production build,
+and config, event, route, and view cache compilation passed. Fresh disposable
+SQLite applied 135 migrations, retained 217 tables and five users across
+repeated seeding, and the 178-line route smoke, both forum-source checks, and
+both icon-system checks passed. The icon audit observed 845 canonical calls,
+no foreign or legacy icon path, and no ratchet violation.
+
 ### 3.3 Next Execution Checkpoint
 
 1. Complete Package 0 by assigning the stable requirement ID and recording the
@@ -395,9 +424,10 @@ seed (135 migrations, 217 tables, stable 5 users and 10 expert profiles),
 4. Continue the non-header English fallback audit on the remaining priority
    RU/LT pages; the global navigation and utility header, `/medical-records`,
    `/care-journals`, `/lost-found`, `/marketplace`, `/experts`, and the
-   `/groups` directory are browser-verified, while the other priority bodies
-   and group detail flows remain open. Do not conflate body-copy completion
-   with the verified page-identity contract.
+   `/groups` directory are browser-verified. Group detail system chrome is
+   verified across all eight tabs, while its demonstration and attributable
+   tab content and the other priority bodies remain open. Do not conflate
+   body-copy completion with the verified page-identity contract.
 
 ## 4. Scope
 

@@ -125,6 +125,13 @@
         box-shadow: $control-shadow;
     }
 
+    &--paper {
+        border: 1px solid $line;
+        background: $paper;
+        color: $ink;
+        box-shadow: $control-shadow;
+    }
+
     &--mint {
         background: $mint;
         color: $leaf;

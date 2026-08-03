@@ -8,7 +8,7 @@
             <span>{{ $post['role'] }}</span>
         </div>
         <x-status-badge
-            :label="$post['expert'] ? __('ui.verified_expert_d54a49e52d') : $post['format']"
+            :label="$post['expert'] ? __('groups.detail.post.verified_expert') : $post['format']"
             :icon="$post['expert'] ? 'badge-check' : null"
             :tone="$post['expert'] ? 'mint' : 'surface'"
         />
@@ -18,7 +18,7 @@
     <div class="community-post__body">
         <h3>{{ $post['title'] }}</h3>
         <p>{{ $post['body'] }}</p>
-        <x-tag-list :items="$post['tags']" empty="{{ __('ui.no_labels_5e93673729') }}" />
+        <x-tag-list :items="$post['tags']" empty="{{ __('groups.detail.post.no_labels') }}" />
     </div>
 
     @if ($post['image'])
@@ -32,7 +32,7 @@
         />
     @endif
 
-    <footer class="community-post__footer" aria-label="{{ __('ui.publication_activity_636bb525ac') }}">
+    <footer class="community-post__footer" aria-label="{{ __('groups.detail.post.activity_label') }}">
         <x-icon-text icon="heart">{{ trans_choice('presentation.reactions_count', $post['stats']['reactions'], ['count' => $post['stats']['reactions']]) }}</x-icon-text>
         <x-icon-text icon="message-circle">{{ trans_choice('presentation.comments_count', $post['stats']['comments'], ['count' => $post['stats']['comments']]) }}</x-icon-text>
         <x-icon-text icon="bookmark">{{ trans_choice('presentation.saves_count', $post['stats']['saves'], ['count' => $post['stats']['saves']]) }}</x-icon-text>

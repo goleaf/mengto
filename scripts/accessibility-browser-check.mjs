@@ -1546,6 +1546,8 @@ try {
     }
 
     const groupCardAudits = {};
+    const groupDetailAudits = {};
+    let englishGroupDetailCopy = null;
     await navigate(client, sessionId, `${baseUrl}/profile/settings`);
     const originalGroupLocale = await evaluate(
         client,
@@ -1770,6 +1772,120 @@ try {
                     Buffer.from(screenshotData.data, 'base64'),
                 );
             }
+
+            const detailLabel = `${viewport.locale} ${viewport.label} group detail`;
+            await navigate(client, sessionId, `${baseUrl}/groups/trail-tails`);
+            const detailAudit = await evaluate(client, sessionId, pageAuditExpression);
+            assertPageAudit(detailAudit, detailLabel);
+            const detailBehavior = await evaluate(client, sessionId, `(() => {
+                const hero = document.querySelector('[data-group-detail-hero]');
+                const dashboard = document.querySelector('[data-group-detail-dashboard]');
+                const panelCopy = (section) => {
+                    const panel = document.querySelector('[data-section="' + section + '"]');
+
+                    return [
+                        panel?.querySelector('.section-heading__eyebrow')?.textContent.trim() ?? null,
+                        panel?.querySelector('.section-heading__title, .panel-heading__title')?.textContent.trim() ?? null,
+                    ];
+                };
+                const actionLabels = [...(hero?.querySelectorAll('.group-hero__commands a, .group-hero__commands button') ?? [])]
+                    .map((element) => element.getAttribute('aria-label') || element.textContent.trim());
+                const tabLabels = [...document.querySelectorAll('.group-tabs .tabs__item > span:not(.tabs__count)')]
+                    .map((element) => element.textContent.trim());
+                const principles = panelCopy('group-principles');
+                const overviewPosts = [
+                    document.querySelector('#overview-posts-title')
+                        ?.closest('.section-heading')?.querySelector('.section-heading__eyebrow')?.textContent.trim() ?? null,
+                    document.querySelector('#overview-posts-title')?.textContent.trim() ?? null,
+                ];
+                const overviewEvents = panelCopy('overview-events');
+                const poll = document.querySelector('[data-section="group-poll"]');
+                const chat = document.querySelector('[data-section="group-chat"]');
+                const notifications = document.querySelector('[data-section="group-notifications"]');
+                const groupDetailCopy = [
+                    document.querySelector('[data-group-detail-back]')?.textContent.trim() ?? null,
+                    hero?.querySelector('.group-hero__meta')?.getAttribute('aria-label') ?? null,
+                    hero?.querySelector('.group-hero__summary')?.getAttribute('aria-label') ?? null,
+                    hero?.querySelector('.group-hero__badges .status-badge:nth-child(2) span:last-child')?.textContent.trim() ?? null,
+                    ...actionLabels,
+                    ...tabLabels,
+                    hero?.querySelector('.group-hero__eyebrow')?.textContent.trim() ?? null,
+                    hero?.querySelector('.group-hero__description')?.textContent.trim() ?? null,
+                    hero?.querySelector('.group-hero__image')?.getAttribute('alt') ?? null,
+                    ...principles,
+                    ...overviewPosts,
+                    ...overviewEvents,
+                    poll?.querySelector('.section-heading__eyebrow')?.textContent.trim() ?? null,
+                    chat?.querySelector('.section-heading__eyebrow')?.textContent.trim() ?? null,
+                    chat?.querySelector('.section-heading__title')?.textContent.trim() ?? null,
+                    chat?.querySelector('.chat-preview')?.getAttribute('aria-label') ?? null,
+                    chat?.querySelector('.action span')?.textContent.trim() ?? null,
+                    document.querySelector('[data-section="group-team"] .panel-heading__title')?.textContent.trim() ?? null,
+                    notifications?.querySelector('.panel-heading__title')?.textContent.trim() ?? null,
+                    notifications?.querySelector('.panel-heading__meta')?.textContent.trim() ?? null,
+                    notifications?.querySelector('.notification-options')?.getAttribute('aria-label') ?? null,
+                    ...[...(notifications?.querySelectorAll('.notification-options .action span') ?? [])]
+                        .map((element) => element.textContent.trim()),
+                ];
+
+                return {
+                    documentLanguage: document.documentElement.lang,
+                    heroCount: document.querySelectorAll('[data-group-detail-hero]').length,
+                    dashboardCount: document.querySelectorAll('[data-group-detail-dashboard]').length,
+                    actionCount: actionLabels.length,
+                    tabCount: tabLabels.length,
+                    groupDetailCopy,
+                    rawTranslationKeys: document.body.innerText.match(/\b(?:messages|ui|groups)\.[a-z0-9_.-]+/gi) ?? [],
+                };
+            })()`);
+            assert(detailBehavior.documentLanguage === viewport.locale, `${detailLabel}: wrong locale.`);
+            assert(detailBehavior.heroCount === 1, `${detailLabel}: detail hero is missing or duplicated.`);
+            assert(detailBehavior.dashboardCount === 1, `${detailLabel}: detail dashboard is missing or duplicated.`);
+            assert(detailBehavior.actionCount === 3, `${detailLabel}: expected three hero actions.`);
+            assert(detailBehavior.tabCount === 8, `${detailLabel}: expected eight detail tabs.`);
+            assert(
+                detailBehavior.groupDetailCopy.length === 39
+                    && detailBehavior.groupDetailCopy.every((value) => value?.length > 0),
+                `${detailLabel}: group detail localization surface is incomplete ${JSON.stringify(detailBehavior.groupDetailCopy)}.`,
+            );
+
+            if (viewport.locale === 'en') {
+                englishGroupDetailCopy ??= detailBehavior.groupDetailCopy;
+                assert(
+                    detailBehavior.groupDetailCopy.every((value, index) => value === englishGroupDetailCopy[index]),
+                    `${detailLabel}: English group detail chrome changed across viewports.`,
+                );
+            } else {
+                assert(englishGroupDetailCopy !== null, `${detailLabel}: English detail baseline is missing.`);
+                assert(
+                    detailBehavior.groupDetailCopy.every((value, index) => value !== englishGroupDetailCopy[index]),
+                    `${detailLabel}: English group detail chrome fallback remains.`,
+                );
+            }
+
+            assert(
+                detailBehavior.rawTranslationKeys.length === 0,
+                `${detailLabel}: raw translation keys are visible: ${detailBehavior.rawTranslationKeys.join(', ')}.`,
+            );
+            const detailSmallTargets = viewport.mobile
+                ? await evaluate(client, sessionId, surfaceTouchTargetExpression)
+                : [];
+            assert(
+                detailSmallTargets.length === 0,
+                `${detailLabel}: controls below 44px ${JSON.stringify(detailSmallTargets)}.`,
+            );
+            groupDetailAudits[detailLabel] = { ...detailAudit, ...detailBehavior, smallTargets: detailSmallTargets };
+
+            if (viewport.screenshot) {
+                const screenshotData = await client.send('Page.captureScreenshot', {
+                    format: 'png',
+                    captureBeyondViewport: true,
+                }, sessionId);
+                await writeFile(
+                    join(outputDirectory, viewport.screenshot.replace('group-directory', 'group-detail')),
+                    Buffer.from(screenshotData.data, 'base64'),
+                );
+            }
         }
     } finally {
         await setProfileLocale(client, sessionId, originalGroupLocale);
@@ -1783,11 +1899,15 @@ try {
             baseUrl,
             checkedAt: new Date().toISOString(),
             groupCardAudits,
+            groupDetailAudits,
             consoleErrors,
             screenshots: [
                 join(outputDirectory, 'group-directory-desktop.png'),
                 join(outputDirectory, 'group-directory-mobile.png'),
                 join(outputDirectory, 'group-directory-lt-mobile.png'),
+                join(outputDirectory, 'group-detail-desktop.png'),
+                join(outputDirectory, 'group-detail-mobile.png'),
+                join(outputDirectory, 'group-detail-lt-mobile.png'),
             ],
         };
 

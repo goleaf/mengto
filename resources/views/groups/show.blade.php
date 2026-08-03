@@ -8,8 +8,9 @@
             :href="route('groups.index')"
             icon="arrow-left"
             variant="back"
+            data-group-detail-back
         >
-            {{ __('ui.back_to_groups_033bcce2e9') }}
+            {{ __('groups.detail.back_to_groups') }}
         </x-text-link>
 
         <x-group-hero :group="$group" />
