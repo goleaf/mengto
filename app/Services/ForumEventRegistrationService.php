@@ -35,6 +35,7 @@ final readonly class ForumEventRegistrationService
         private ForumEventNotifier $notifier,
         private InitializeForumEventLifecycle $initializeLifecycle,
         private ForumEventLifecycleSnapshot $snapshots,
+        private PetProfileAgeCalculator $petAges,
     ) {}
 
     public function register(
@@ -650,7 +651,15 @@ final readonly class ForumEventRegistrationService
         }
 
         $pets = PetProfile::query()
-            ->select(['id', 'user_id', 'taxon_id', 'birth_date'])
+            ->select([
+                'id',
+                'user_id',
+                'taxon_id',
+                'birth_date',
+                'birth_date_precision',
+                'estimated_age_months',
+                'estimated_age_recorded_at',
+            ])
             ->managedBy($actor)
             ->whereIn('id', $petProfileIds)
             ->get();
@@ -672,8 +681,8 @@ final readonly class ForumEventRegistrationService
                 ]);
             }
 
-            $ageMonths = $pet->birth_date?->diffInMonths($event->starts_at);
-            if ($ageMonths === null
+            $ageRange = $this->petAges->monthsRange($pet, $event->starts_at);
+            if ($ageRange === null
                 && ($event->minimum_animal_age_months !== null
                     || $event->maximum_animal_age_months !== null)
             ) {
@@ -682,18 +691,18 @@ final readonly class ForumEventRegistrationService
                 ]);
             }
 
-            if ($ageMonths !== null
+            if ($ageRange !== null
                 && $event->minimum_animal_age_months !== null
-                && $ageMonths < $event->minimum_animal_age_months
+                && $ageRange['minimum'] < $event->minimum_animal_age_months
             ) {
                 throw ValidationException::withMessages([
                     'registrationForm.petProfileIds' => __('forum_events.validation.pet_too_young'),
                 ]);
             }
 
-            if ($ageMonths !== null
+            if ($ageRange !== null
                 && $event->maximum_animal_age_months !== null
-                && $ageMonths > $event->maximum_animal_age_months
+                && $ageRange['maximum'] > $event->maximum_animal_age_months
             ) {
                 throw ValidationException::withMessages([
                     'registrationForm.petProfileIds' => __('forum_events.validation.pet_too_old'),

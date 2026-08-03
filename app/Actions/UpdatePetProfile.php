@@ -8,6 +8,7 @@ use App\Enums\PetSpeciesConfidence;
 use App\Models\AuditLog;
 use App\Models\PetProfile;
 use App\Services\ForumActor;
+use App\Services\PetBirthDetailsNormalizer;
 use App\Services\PetProfileAccess;
 use App\Services\PetProfileCache;
 use App\Services\PetProfileEventRecorder;
@@ -27,6 +28,7 @@ final class UpdatePetProfile
         private readonly PetProfileEventRecorder $events,
         private readonly PetProfileCache $cache,
         private readonly PetProfileNameHistory $nameHistory,
+        private readonly PetBirthDetailsNormalizer $birthDetails,
     ) {}
 
     /** @param array<string, mixed> $data */
@@ -47,6 +49,10 @@ final class UpdatePetProfile
                 'domestic_classification_id',
                 'birth_date',
                 'birth_date_precision',
+                'estimated_age_months',
+                'estimated_age_recorded_at',
+                'birthday_celebration_month',
+                'birthday_celebration_day',
                 'sex',
                 'reproductive_status',
                 'visibility',
@@ -109,8 +115,6 @@ final class UpdatePetProfile
                 'species_confidence',
                 'taxon_id',
                 'domestic_classification_id',
-                'birth_date',
-                'birth_date_precision',
                 'sex',
                 'reproductive_status',
             ] as $optionalField) {
@@ -124,6 +128,13 @@ final class UpdatePetProfile
                 $nextSpecies,
                 $attributes['species_confidence'] ?? $locked->species_confidence,
             );
+
+            if ($this->hasBirthDetails($data)) {
+                $attributes = [
+                    ...$attributes,
+                    ...$this->birthDetails->normalize($data, $locked),
+                ];
+            }
 
             $locked->forceFill($attributes);
 
@@ -168,5 +179,27 @@ final class UpdatePetProfile
 
             return $locked->refresh();
         }, 3);
+    }
+
+    /** @param array<string, mixed> $data */
+    private function hasBirthDetails(array $data): bool
+    {
+        foreach ([
+            'birth_date',
+            'birth_date_precision',
+            'birth_month',
+            'birth_year',
+            'estimated_age_years',
+            'estimated_age_month_remainder',
+            'estimated_age_months',
+            'birthday_celebration_month',
+            'birthday_celebration_day',
+        ] as $field) {
+            if (array_key_exists($field, $data)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

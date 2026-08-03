@@ -9,6 +9,7 @@ use App\Enums\PetSpeciesConfidence;
 use App\Models\AuditLog;
 use App\Models\PetProfile;
 use App\Services\ForumActor;
+use App\Services\PetBirthDetailsNormalizer;
 use App\Services\PetProfileAccess;
 use App\Services\PetProfileCache;
 use App\Services\PetProfileEventRecorder;
@@ -28,6 +29,7 @@ final class UpdatePetProfileStep
         private readonly PetProfileEventRecorder $events,
         private readonly PetProfileCache $cache,
         private readonly PetProfileNameHistory $nameHistory,
+        private readonly PetBirthDetailsNormalizer $birthDetails,
     ) {}
 
     /** @param array<string, mixed> $data */
@@ -53,6 +55,10 @@ final class UpdatePetProfileStep
                 'domestic_classification_id',
                 'birth_date',
                 'birth_date_precision',
+                'estimated_age_months',
+                'estimated_age_recorded_at',
+                'birthday_celebration_month',
+                'birthday_celebration_day',
                 'sex',
                 'reproductive_status',
                 'visibility',
@@ -184,11 +190,19 @@ final class UpdatePetProfileStep
                 ),
             ], ['name', 'species', 'species_confidence']],
             PetProfileCompletionStep::AgeAndSex => [[
-                'birth_date' => $this->nullableString($data['birth_date'] ?? null),
-                'birth_date_precision' => (string) $data['birth_date_precision'],
+                ...$this->birthDetails->normalize($data, $profile),
                 'sex' => (string) $data['sex'],
                 'reproductive_status' => (string) $data['reproductive_status'],
-            ], ['birth_date', 'birth_date_precision', 'sex', 'reproductive_status']],
+            ], [
+                'birth_date',
+                'birth_date_precision',
+                'estimated_age_months',
+                'estimated_age_recorded_at',
+                'birthday_celebration_month',
+                'birthday_celebration_day',
+                'sex',
+                'reproductive_status',
+            ]],
             PetProfileCompletionStep::BreedAndOrigin => [[
                 'taxon_id' => isset($data['taxon_id']) ? (int) $data['taxon_id'] : null,
                 'breed' => $this->nullableString($data['breed'] ?? null),

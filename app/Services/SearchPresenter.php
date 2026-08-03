@@ -35,6 +35,7 @@ class SearchPresenter
         private readonly PlaceCatalog $places,
         private readonly QrCodeGenerator $qrCodes,
         private readonly LocaleFormatter $formatter,
+        private readonly PetProfileAgeLabel $petAgeLabels,
         private readonly Gate $gate,
         private readonly PortalMediaUrl $mediaUrl,
     ) {}
@@ -111,6 +112,11 @@ class SearchPresenter
                 'species',
                 'breed',
                 'birth_date',
+                'birth_date_precision',
+                'estimated_age_months',
+                'estimated_age_recorded_at',
+                'birthday_celebration_month',
+                'birthday_celebration_day',
                 'status',
             ])
             ->where('user_id', $user->id)
@@ -148,11 +154,7 @@ class SearchPresenter
                 ? [
                     'name' => $selectedPet->name,
                     'breed' => $selectedPet->breed,
-                    'age' => $selectedPet->birth_date === null
-                        ? null
-                        : __('lost_found.interface.pet_age_years', [
-                            'count' => $selectedPet->birth_date->age,
-                        ]),
+                    'age' => $this->petAgeLabels->for($selectedPet),
                 ]
                 : null,
             'default_species' => $defaultSpecies,

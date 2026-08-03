@@ -15,6 +15,7 @@ use App\Actions\StorePetPrimaryPhoto;
 use App\Actions\TransitionPetProfileStatus;
 use App\Actions\UpdatePetProfilePrivacy;
 use App\Actions\UpdatePetProfileStep;
+use App\Enums\PetBirthDatePrecision;
 use App\Enums\PetEvidenceStatus;
 use App\Enums\PetManagerRole;
 use App\Enums\PetProfileCompletionStep;
@@ -34,6 +35,8 @@ use App\Models\PetProfileLifecycleEvent;
 use App\Models\PetProfileManager;
 use App\Models\PetProfileMedia;
 use App\Models\User;
+use App\Services\PetBirthDetailsNormalizer;
+use App\Services\PetProfileAgeLabel;
 use App\Services\PetProfileCompletionPresenter;
 use App\Services\PetProfileLifecycle;
 use App\Services\ProfilePresenter;
@@ -116,6 +119,10 @@ final class ManagePetProfile extends Component
 
     private PetProfileCompletionPresenter $completionPresenter;
 
+    private PetBirthDetailsNormalizer $birthDetails;
+
+    private PetProfileAgeLabel $ageLabels;
+
     private AddPetProfileName $addNameAction;
 
     private RemovePetProfileName $removeNameAction;
@@ -130,6 +137,8 @@ final class ManagePetProfile extends Component
         ProfilePresenter $profiles,
         PetProfileLifecycle $lifecycle,
         PetProfileCompletionPresenter $completionPresenter,
+        PetBirthDetailsNormalizer $birthDetails,
+        PetProfileAgeLabel $ageLabels,
         UpdatePetProfileStep $updateStepAction,
         RecordPetProfileFact $recordFactAction,
         UpdatePetProfilePrivacy $privacyAction,
@@ -148,6 +157,8 @@ final class ManagePetProfile extends Component
         $this->profiles = $profiles;
         $this->lifecycle = $lifecycle;
         $this->completionPresenter = $completionPresenter;
+        $this->birthDetails = $birthDetails;
+        $this->ageLabels = $ageLabels;
         $this->updateStepAction = $updateStepAction;
         $this->recordFactAction = $recordFactAction;
         $this->privacyAction = $privacyAction;
@@ -228,6 +239,16 @@ final class ManagePetProfile extends Component
         return collect(PetSpeciesConfidence::optionsFor($this->form->species))
             ->mapWithKeys(static fn (PetSpeciesConfidence $confidence): array => [
                 $confidence->value => $confidence->label(),
+            ])->all();
+    }
+
+    /** @return array<string, string> */
+    #[Computed]
+    public function birthPrecisionOptions(): array
+    {
+        return collect(PetBirthDatePrecision::cases())
+            ->mapWithKeys(static fn (PetBirthDatePrecision $precision): array => [
+                $precision->value => $precision->label(),
             ])->all();
     }
 
@@ -377,9 +398,11 @@ final class ManagePetProfile extends Component
 
     public function saveAgeAndSex(): void
     {
+        $profile = $this->profileModel();
+
         $this->saveProfileStep(
             PetProfileCompletionStep::AgeAndSex,
-            $this->form->ageAndSexData(),
+            $this->form->ageAndSexData($this->birthDetails, $profile),
             'age_sex_saved',
         );
     }
@@ -443,7 +466,10 @@ final class ManagePetProfile extends Component
 
         [$data, $feedbackKey] = match ($requestedStep) {
             PetProfileCompletionStep::Basics => [$this->form->basicsData(), 'basics_saved'],
-            PetProfileCompletionStep::AgeAndSex => [$this->form->ageAndSexData(), 'age_sex_saved'],
+            PetProfileCompletionStep::AgeAndSex => [
+                $this->form->ageAndSexData($this->birthDetails, $this->profileModel()),
+                'age_sex_saved',
+            ],
             PetProfileCompletionStep::BreedAndOrigin => [$this->form->breedAndOriginData(), 'breed_origin_saved'],
             PetProfileCompletionStep::Appearance => [$this->form->appearanceData(), 'appearance_saved'],
             PetProfileCompletionStep::Character => [$this->form->characterData(), 'character_saved'],
@@ -633,6 +659,11 @@ final class ManagePetProfile extends Component
             'profileUrl' => $profileUrl,
             'currentStatusLabel' => $profile->status->label(),
             'today' => now()->toDateString(),
+            'currentMonth' => now()->format('Y-m'),
+            'currentYear' => now()->year,
+            'minimumBirthYear' => now()->year - PetBirthDetailsNormalizer::MAX_AGE_YEARS,
+            'maximumAgeYears' => PetBirthDetailsNormalizer::MAX_AGE_YEARS,
+            'currentAgeLabel' => $this->ageLabels->for($profile),
             'managerMinimumEnd' => now()->addMinute()->format('Y-m-d\TH:i'),
             'activeStep' => [
                 'value' => $activeStep->value,
@@ -761,6 +792,10 @@ final class ManagePetProfile extends Component
                 'domestic_classification_id',
                 'birth_date',
                 'birth_date_precision',
+                'estimated_age_months',
+                'estimated_age_recorded_at',
+                'birthday_celebration_month',
+                'birthday_celebration_day',
                 'sex',
                 'reproductive_status',
                 'visibility',

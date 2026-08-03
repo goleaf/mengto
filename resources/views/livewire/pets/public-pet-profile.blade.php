@@ -58,6 +58,12 @@
                     <dd>{{ $pet['age'] }}</dd>
                 </div>
             @endif
+            @if ($pet['celebration_day'] !== null)
+                <div>
+                    <dt class="text-sm text-paw-muted">{{ __('pet_profiles.fields.celebration_day') }}</dt>
+                    <dd>{{ $pet['celebration_day'] }}</dd>
+                </div>
+            @endif
             @if ($pet['owner'] !== null)
                 <div>
                     <dt class="text-sm text-paw-muted">{{ __('pet_profiles.fields.manager') }}</dt>

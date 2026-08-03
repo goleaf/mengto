@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
+use App\Enums\PetBirthDatePrecision;
 use App\Enums\PetProfileStatus;
 use App\Enums\PetSpeciesConfidence;
 use App\Models\PetProfile;
@@ -31,7 +32,11 @@ final class PetProfileFactory extends ApplicationFactory
             'birth_date' => now()->subYears(fake()->numberBetween(1, 12))->toDateString(),
             'visibility' => 'public',
             'status' => PetProfileStatus::Active,
-            'birth_date_precision' => 'exact',
+            'birth_date_precision' => PetBirthDatePrecision::Exact,
+            'estimated_age_months' => null,
+            'estimated_age_recorded_at' => null,
+            'birthday_celebration_month' => null,
+            'birthday_celebration_day' => null,
             'sex' => 'unknown',
             'reproductive_status' => 'unknown',
             'is_discoverable' => true,

@@ -226,23 +226,84 @@
             </div>
         @elseif ($activeStep['value'] === 'age-sex')
             <form wire:submit="saveAgeAndSex" wire:change="autoSaveStep('age-sex', $event.currentTarget.dataset.petProfileAutosaveRevision)" class="forum-form mt-6" data-pet-profile-autosave-step="age-sex">
+                @if ($errors->any())
+                    <x-forum-error-summary :messages="$errors->getMessages()" :heading="__('pet_profiles.validation.summary')" />
+                @endif
                 <div class="grid min-w-0 gap-4 md:grid-cols-2">
-                    <label class="forum-form__field" for="managed-pet-birth-date">
-                        <span>{{ __('pet_profiles.fields.birth_date') }}</span>
-                        <input id="managed-pet-birth-date" type="date" wire:model="form.birthDate" max="{{ $today }}" aria-describedby="managed-pet-birth-date-help managed-pet-birth-date-error" @error('form.birthDate') aria-invalid="true" @enderror>
-                        <small id="managed-pet-birth-date-help">{{ __('pet_profiles.completion.help.birth_date') }}</small>
-                        @error('form.birthDate') <small id="managed-pet-birth-date-error" role="alert">{{ $message }}</small> @enderror
-                    </label>
-                    <label class="forum-form__field" for="managed-pet-birth-precision">
+                    <label class="forum-form__field md:col-span-2" for="managed-pet-birth-precision">
                         <span>{{ __('pet_profiles.fields.birth_precision') }}</span>
-                        <select id="managed-pet-birth-precision" wire:model="form.birthDatePrecision">
-                            @forelse (['exact', 'estimated', 'month', 'year', 'age-estimate', 'unknown'] as $value)
-                                <option wire:key="managed-birth-precision-{{ $value }}" value="{{ $value }}">{{ __('pet_profiles.birth_precision.'.$value) }}</option>
+                        <select id="managed-pet-birth-precision" wire:model.live="form.birthDatePrecision" x-on:change.stop aria-describedby="managed-pet-birth-precision-help managed-pet-birth-precision-error" @error('form.birthDatePrecision') aria-invalid="true" @enderror>
+                            @forelse ($this->birthPrecisionOptions as $value => $label)
+                                <option wire:key="managed-birth-precision-{{ $value }}" value="{{ $value }}">{{ $label }}</option>
                             @empty
                                 <option value="unknown">{{ __('pet_profiles.birth_precision.unknown') }}</option>
                             @endforelse
                         </select>
+                        <small id="managed-pet-birth-precision-help">{{ __('pet_profiles.completion.help.birth_precision') }}</small>
+                        @error('form.birthDatePrecision') <small id="managed-pet-birth-precision-error" role="alert">{{ $message }}</small> @enderror
                     </label>
+
+                    @if ($form->birthDatePrecision === 'exact' || $form->birthDatePrecision === 'estimated')
+                        <label class="forum-form__field md:col-span-2" for="managed-pet-birth-date">
+                            <span>{{ $form->birthDatePrecision === 'exact' ? __('pet_profiles.fields.birth_date') : __('pet_profiles.fields.estimated_birth_date') }}</span>
+                            <input id="managed-pet-birth-date" type="date" wire:model="form.birthDate" max="{{ $today }}" required aria-describedby="managed-pet-birth-date-help managed-pet-birth-date-error" @error('form.birthDate') aria-invalid="true" @enderror>
+                            <small id="managed-pet-birth-date-help">{{ __('pet_profiles.completion.help.birth_date') }}</small>
+                            @error('form.birthDate') <small id="managed-pet-birth-date-error" role="alert">{{ $message }}</small> @enderror
+                        </label>
+                    @elseif ($form->birthDatePrecision === 'month')
+                        <label class="forum-form__field md:col-span-2" for="managed-pet-birth-month">
+                            <span>{{ __('pet_profiles.fields.birth_month') }}</span>
+                            <input id="managed-pet-birth-month" type="month" wire:model="form.birthMonth" max="{{ $currentMonth }}" required aria-describedby="managed-pet-birth-month-help managed-pet-birth-month-error" @error('form.birthMonth') aria-invalid="true" @enderror>
+                            <small id="managed-pet-birth-month-help">{{ __('pet_profiles.completion.help.birth_month') }}</small>
+                            @error('form.birthMonth') <small id="managed-pet-birth-month-error" role="alert">{{ $message }}</small> @enderror
+                        </label>
+                    @elseif ($form->birthDatePrecision === 'year')
+                        <label class="forum-form__field md:col-span-2" for="managed-pet-birth-year">
+                            <span>{{ __('pet_profiles.fields.birth_year') }}</span>
+                            <input id="managed-pet-birth-year" type="number" wire:model="form.birthYear" min="{{ $minimumBirthYear }}" max="{{ $currentYear }}" inputmode="numeric" required aria-describedby="managed-pet-birth-year-help managed-pet-birth-year-error" @error('form.birthYear') aria-invalid="true" @enderror>
+                            <small id="managed-pet-birth-year-help">{{ __('pet_profiles.completion.help.birth_year') }}</small>
+                            @error('form.birthYear') <small id="managed-pet-birth-year-error" role="alert">{{ $message }}</small> @enderror
+                        </label>
+                    @elseif ($form->birthDatePrecision === 'age-estimate')
+                        <label class="forum-form__field" for="managed-pet-estimated-age-years">
+                            <span>{{ __('pet_profiles.fields.estimated_age_years') }}</span>
+                            <input id="managed-pet-estimated-age-years" type="number" wire:model="form.estimatedAgeYears" min="0" max="{{ $maximumAgeYears }}" inputmode="numeric" required aria-describedby="managed-pet-estimated-age-help managed-pet-estimated-age-years-error" @error('form.estimatedAgeYears') aria-invalid="true" @enderror>
+                            <small id="managed-pet-estimated-age-help">{{ __('pet_profiles.completion.help.estimated_age') }}</small>
+                            @error('form.estimatedAgeYears') <small id="managed-pet-estimated-age-years-error" role="alert">{{ $message }}</small> @enderror
+                        </label>
+                        <label class="forum-form__field" for="managed-pet-estimated-age-months">
+                            <span>{{ __('pet_profiles.fields.estimated_age_months') }}</span>
+                            <input id="managed-pet-estimated-age-months" type="number" wire:model="form.estimatedAgeMonths" min="0" max="11" inputmode="numeric" required aria-describedby="managed-pet-estimated-age-help managed-pet-estimated-age-months-error" @error('form.estimatedAgeMonths') aria-invalid="true" @enderror>
+                            @error('form.estimatedAgeMonths') <small id="managed-pet-estimated-age-months-error" role="alert">{{ $message }}</small> @enderror
+                        </label>
+                    @else
+                        <p class="md:col-span-2 rounded-2xl border border-paw-line bg-paw-canvas p-4 text-sm leading-6 text-paw-muted">
+                            {{ __('pet_profiles.completion.help.age_unknown') }}
+                        </p>
+                    @endif
+
+                    @if ($form->birthDatePrecision !== 'exact')
+                        <fieldset class="md:col-span-2 grid min-w-0 gap-4 rounded-2xl border border-paw-line p-4 md:grid-cols-2">
+                            <legend class="px-2 font-semibold">{{ __('pet_profiles.fields.celebration_day') }}</legend>
+                            <p class="md:col-span-2 text-sm leading-6 text-paw-muted">{{ __('pet_profiles.completion.help.celebration_day') }}</p>
+                            <label class="forum-form__field" for="managed-pet-celebration-month">
+                                <span>{{ __('pet_profiles.fields.celebration_month') }}</span>
+                                <input id="managed-pet-celebration-month" type="number" wire:model="form.celebrationMonth" x-on:change.stop min="1" max="12" inputmode="numeric" aria-describedby="managed-pet-celebration-month-error" @error('form.celebrationMonth') aria-invalid="true" @enderror>
+                                @error('form.celebrationMonth') <small id="managed-pet-celebration-month-error" role="alert">{{ $message }}</small> @enderror
+                            </label>
+                            <label class="forum-form__field" for="managed-pet-celebration-day">
+                                <span>{{ __('pet_profiles.fields.celebration_day_of_month') }}</span>
+                                <input id="managed-pet-celebration-day" type="number" wire:model="form.celebrationDay" x-on:change.stop min="1" max="31" inputmode="numeric" aria-describedby="managed-pet-celebration-day-error" @error('form.celebrationDay') aria-invalid="true" @enderror>
+                                @error('form.celebrationDay') <small id="managed-pet-celebration-day-error" role="alert">{{ $message }}</small> @enderror
+                            </label>
+                        </fieldset>
+                    @endif
+
+                    @if ($currentAgeLabel !== null)
+                        <p class="md:col-span-2 text-sm text-paw-muted" role="status">
+                            {{ __('pet_profiles.completion.current_age', ['age' => $currentAgeLabel]) }}
+                        </p>
+                    @endif
                     <label class="forum-form__field" for="managed-pet-sex">
                         <span>{{ __('pet_profiles.fields.sex') }}</span>
                         <select id="managed-pet-sex" wire:model="form.sex">

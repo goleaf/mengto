@@ -18,6 +18,7 @@ use App\Models\PetProfilePrivacySetting;
 use App\Models\PetProfileSlugAlias;
 use App\Models\Taxon;
 use App\Services\ForumActor;
+use App\Services\PetBirthDetailsNormalizer;
 use App\Services\PetProfileDuplicateReview;
 use App\Services\PetProfileEventRecorder;
 use Illuminate\Contracts\Auth\Access\Gate;
@@ -33,6 +34,7 @@ final class CreatePetProfile
         private readonly Gate $gate,
         private readonly PetProfileEventRecorder $events,
         private readonly PetProfileDuplicateReview $duplicateReview,
+        private readonly PetBirthDetailsNormalizer $birthDetails,
     ) {}
 
     /** @param array<string, mixed> $data */
@@ -85,6 +87,7 @@ final class CreatePetProfile
             $data['domestic_classification_id'] ?? null,
             $taxon,
         );
+        $birthDetails = $this->birthDetails->normalize($data);
 
         try {
             return DB::transaction(function () use (
@@ -98,6 +101,7 @@ final class CreatePetProfile
                 $name,
                 $species,
                 $speciesConfidence,
+                $birthDetails,
             ): PetProfile {
                 $existing = PetProfile::query()
                     ->where('creation_key', $creationKey)
@@ -120,8 +124,7 @@ final class CreatePetProfile
                     'taxon_id' => $taxon?->id,
                     'breed' => ($data['breed'] ?? $data['detail'] ?? null) ?: null,
                     'domestic_classification_id' => $classification?->id,
-                    'birth_date' => ($data['birth_date'] ?? null) ?: null,
-                    'birth_date_precision' => (string) ($data['birth_date_precision'] ?? 'unknown'),
+                    ...$birthDetails,
                     'sex' => (string) ($data['sex'] ?? 'unknown'),
                     'reproductive_status' => (string) ($data['reproductive_status'] ?? 'unknown'),
                     'visibility' => $visibility->value,

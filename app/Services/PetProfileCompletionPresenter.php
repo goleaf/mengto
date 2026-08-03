@@ -59,6 +59,8 @@ final class PetProfileCompletionPresenter
             PetProfileCompletionStep::Basics => trim($profile->name) !== '',
             PetProfileCompletionStep::Photos => $this->existsAttribute($profile, 'primary_media_exists'),
             PetProfileCompletionStep::AgeAndSex => $profile->birth_date !== null
+                || $profile->estimated_age_months !== null
+                || $profile->birthday_celebration_month !== null
                 || $profile->sex !== 'unknown'
                 || $profile->reproductive_status !== 'unknown',
             PetProfileCompletionStep::BreedAndOrigin => $profile->taxon_id !== null

@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Casts\PetProfileStatusCast;
+use App\Enums\PetBirthDatePrecision;
 use App\Enums\PetProfileStatus;
 use App\Enums\PetSpeciesConfidence;
+use Carbon\CarbonImmutable;
 use Database\Factories\PetProfileFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -19,7 +21,12 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 
 /**
- * @property Carbon|null $birth_date
+ * @property CarbonImmutable|null $birth_date
+ * @property PetBirthDatePrecision $birth_date_precision
+ * @property int|null $estimated_age_months
+ * @property CarbonImmutable|null $estimated_age_recorded_at
+ * @property int|null $birthday_celebration_month
+ * @property int|null $birthday_celebration_day
  * @property string|null $breed
  * @property Carbon|null $created_at
  * @property Carbon|null $deleted_at
@@ -63,6 +70,10 @@ final class PetProfile extends Model
         'domestic_classification_id',
         'birth_date',
         'birth_date_precision',
+        'estimated_age_months',
+        'estimated_age_recorded_at',
+        'birthday_celebration_month',
+        'birthday_celebration_day',
         'sex',
         'reproductive_status',
         'visibility',
@@ -89,6 +100,11 @@ final class PetProfile extends Model
     {
         return [
             'birth_date' => 'immutable_date',
+            'birth_date_precision' => PetBirthDatePrecision::class,
+            'estimated_age_months' => 'integer',
+            'estimated_age_recorded_at' => 'immutable_datetime',
+            'birthday_celebration_month' => 'integer',
+            'birthday_celebration_day' => 'integer',
             'species_confidence' => PetSpeciesConfidence::class,
             'status' => PetProfileStatusCast::class,
             'is_discoverable' => 'boolean',

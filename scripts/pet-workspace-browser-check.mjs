@@ -7,6 +7,7 @@ import { setTimeout as delay } from 'node:timers/promises';
 const baseUrl = (process.env.BROWSER_BASE_URL ?? 'http://127.0.0.1:8000').replace(/\/$/, '');
 const outputDirectory = process.env.BROWSER_OUTPUT_DIR ?? join(tmpdir(), 'mengto-pet-workspace-browser');
 const verifyAutosave = process.argv.includes('--autosave');
+const verifyBirth = process.argv.includes('--birth');
 const verifyNames = process.argv.includes('--names');
 const allowDataMutation = process.env.BROWSER_ALLOW_DATA_MUTATION === '1';
 const origin = new URL(baseUrl);
@@ -21,8 +22,8 @@ if (!['localhost', '127.0.0.1', '::1'].includes(origin.hostname)) {
     throw new Error('The pet workspace browser check only runs against a loopback URL.');
 }
 
-if ((verifyAutosave || verifyNames) && ! allowDataMutation) {
-    throw new Error('--autosave and --names require BROWSER_ALLOW_DATA_MUTATION=1 and a disposable database.');
+if ((verifyAutosave || verifyBirth || verifyNames) && ! allowDataMutation) {
+    throw new Error('--autosave, --birth, and --names require BROWSER_ALLOW_DATA_MUTATION=1 and a disposable database.');
 }
 
 const assert = (condition, message) => {
@@ -317,7 +318,152 @@ try {
     }
 
     let autosaveAudit = null;
+    let birthAudit = null;
     let nameAudit = null;
+
+    if (verifyBirth) {
+        await client.send('Emulation.setDeviceMetricsOverride', {
+            width: 1440, height: 900, deviceScaleFactor: 1,
+            mobile: false, screenWidth: 1440, screenHeight: 900,
+        }, sessionId);
+        await client.send('Emulation.setTouchEmulationEnabled', { enabled: false }, sessionId);
+        await setLocale(client, sessionId, 'en');
+        const manageUrl = `${baseUrl}/pets/manage/pet-scout?step=age-sex`;
+        await navigate(client, sessionId, manageUrl);
+        const initial = await evaluate(client, sessionId, `(() => ({
+            pathname: location.pathname + location.search,
+            heading: document.querySelector('main h1')?.textContent.trim() ?? null,
+            precisionOptions: document.querySelectorAll('#managed-pet-birth-precision option').length,
+            dateVisible: Boolean(document.querySelector('#managed-pet-birth-date')),
+            yearVisible: Boolean(document.querySelector('#managed-pet-birth-year')),
+        }))()`);
+        assert(initial.precisionOptions === 6, `The birth precision selector does not expose all six modes: ${JSON.stringify(initial)}.`);
+        assert(initial.dateVisible && ! initial.yearVisible, 'The exact-date mode shows the wrong conditional controls.');
+
+        const requestsBeforeMode = livewireRequests.length;
+        await evaluate(client, sessionId, `(() => {
+            const precision = document.querySelector('#managed-pet-birth-precision');
+            const setter = Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, 'value').set;
+            setter.call(precision, 'age-estimate');
+            precision.dispatchEvent(new Event('change', { bubbles: true }));
+        })()`);
+        await waitUntil(
+            async () => await evaluate(client, sessionId, `Boolean(
+                document.querySelector('#managed-pet-estimated-age-years')
+                && document.querySelector('#managed-pet-estimated-age-months')
+            )`),
+            'The estimated-age controls did not appear after changing precision.',
+        );
+        assert(livewireRequests.length - requestsBeforeMode === 1, 'Changing birth precision emitted an unexpected number of Livewire requests.');
+
+        const requestsBeforeSave = livewireRequests.length;
+        await evaluate(client, sessionId, `(() => {
+            const setValue = (selector, value) => {
+                const input = document.querySelector(selector);
+                const setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set;
+                setter.call(input, value);
+                input.dispatchEvent(new Event('input', { bubbles: true }));
+            };
+            setValue('#managed-pet-estimated-age-years', '3');
+            setValue('#managed-pet-estimated-age-months', '4');
+            setValue('#managed-pet-celebration-month', '8');
+            setValue('#managed-pet-celebration-day', '3');
+            document.querySelector('#managed-pet-estimated-age-years').closest('form').requestSubmit();
+        })()`);
+        await waitUntil(
+            async () => await evaluate(client, sessionId, `document.body.innerText.includes('Age and sex details saved.')`),
+            'The estimated age was not saved through Livewire.',
+        );
+        assert(livewireRequests.length - requestsBeforeSave >= 1, 'Saving birth details did not reach Livewire.');
+
+        await navigate(client, sessionId, manageUrl);
+        const restored = await evaluate(client, sessionId, `(() => ({
+            precision: document.querySelector('#managed-pet-birth-precision')?.value,
+            years: document.querySelector('#managed-pet-estimated-age-years')?.value,
+            months: document.querySelector('#managed-pet-estimated-age-months')?.value,
+            celebrationMonth: document.querySelector('#managed-pet-celebration-month')?.value,
+            celebrationDay: document.querySelector('#managed-pet-celebration-day')?.value,
+            currentAge: [...document.querySelectorAll('main [role="status"]')]
+                .some((element) => element.textContent.includes('Approximately')),
+        }))()`);
+        assert(restored.precision === 'age-estimate', 'The estimated-age precision was not restored.');
+        assert(restored.years === '3' && restored.months === '4', 'The estimated age was not restored.');
+        assert(restored.celebrationMonth === '8' && restored.celebrationDay === '3', 'The celebration day was not restored.');
+        assert(restored.currentAge, 'The automatically calculated approximate age is missing.');
+
+        await navigate(client, sessionId, `${baseUrl}/pets/profile/pet-scout`);
+        const publicProjection = await evaluate(client, sessionId, `(() => ({
+            approximate: document.body.innerText.includes('Approximately'),
+            celebration: document.body.innerText.includes('Celebration day')
+                && document.body.innerText.includes('Aug 3'),
+            rawKeys: document.body.innerText.match(/\\bpet_profiles\\.[a-z0-9_.-]+/gi) ?? [],
+            overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+        }))()`);
+        assert(publicProjection.approximate, 'The public profile does not identify the age as approximate.');
+        assert(publicProjection.celebration, 'The public profile does not show the separate celebration day.');
+        assert(publicProjection.rawKeys.length === 0, 'The public birth projection exposes translation keys.');
+        assert(publicProjection.overflow <= 1, `The public birth projection overflows by ${publicProjection.overflow}px.`);
+
+        const responsive = {};
+        for (const viewport of [
+            { label: 'desktop', width: 1440, height: 900, mobile: false },
+            { label: 'mobile', width: 375, height: 812, mobile: true },
+            { label: 'mobile-320', width: 320, height: 900, mobile: true },
+        ]) {
+            await client.send('Emulation.setDeviceMetricsOverride', {
+                width: viewport.width, height: viewport.height, deviceScaleFactor: 1,
+                mobile: viewport.mobile, screenWidth: viewport.width, screenHeight: viewport.height,
+            }, sessionId);
+            await client.send('Emulation.setTouchEmulationEnabled', { enabled: viewport.mobile }, sessionId);
+            await navigate(client, sessionId, manageUrl);
+            const audit = await evaluate(client, sessionId, `(() => {
+                const form = document.querySelector('[data-pet-profile-autosave-step="age-sex"]');
+                const visible = (element) => {
+                    const style = getComputedStyle(element);
+                    const box = element.getBoundingClientRect();
+                    return style.display !== 'none' && style.visibility !== 'hidden'
+                        && box.width > 0 && box.height > 0;
+                };
+                const controls = [...(form?.querySelectorAll('button, input, select') ?? [])].filter(visible);
+                const ids = [...document.querySelectorAll('[id]')].map((element) => element.id).filter(Boolean);
+
+                return {
+                    h1Count: document.querySelectorAll('main h1').length,
+                    formCount: form ? 1 : 0,
+                    precision: document.querySelector('#managed-pet-birth-precision')?.value,
+                    estimateControls: document.querySelectorAll('#managed-pet-estimated-age-years, #managed-pet-estimated-age-months').length,
+                    dateControls: document.querySelectorAll('#managed-pet-birth-date, #managed-pet-birth-month, #managed-pet-birth-year').length,
+                    overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+                    unnamed: controls.filter((element) => !(
+                        element.getAttribute('aria-label') || element.getAttribute('aria-labelledby')
+                        || element.labels?.length || element.textContent.trim() || element.title
+                    )).length,
+                    smallTargets: controls.filter((element) => {
+                        const box = element.getBoundingClientRect();
+                        return box.width < 44 || box.height < 44;
+                    }).length,
+                    duplicateIds: [...new Set(ids.filter((id, index) => ids.indexOf(id) !== index))],
+                };
+            })()`);
+            assert(audit.h1Count === 1 && audit.formCount === 1, `${viewport.label}: invalid birth workspace landmarks.`);
+            assert(audit.precision === 'age-estimate' && audit.estimateControls === 2, `${viewport.label}: estimated-age controls are missing.`);
+            assert(audit.dateControls === 0, `${viewport.label}: inactive date controls remain visible.`);
+            assert(audit.overflow <= 1, `${viewport.label}: birth workspace overflows by ${audit.overflow}px.`);
+            assert(audit.unnamed === 0, `${viewport.label}: unnamed birth controls remain.`);
+            assert(audit.duplicateIds.length === 0, `${viewport.label}: duplicate IDs remain.`);
+            if (viewport.mobile) assert(audit.smallTargets === 0, `${viewport.label}: birth controls below 44px remain.`);
+            responsive[viewport.label] = audit;
+            const screenshot = await client.send('Page.captureScreenshot', { format: 'png', captureBeyondViewport: true }, sessionId);
+            await writeFile(join(outputDirectory, `pet-birth-${viewport.label}.png`), Buffer.from(screenshot.data, 'base64'));
+        }
+
+        birthAudit = {
+            initial,
+            restored,
+            publicProjection,
+            responsive,
+        };
+    }
 
     if (verifyNames) {
         await client.send('Emulation.setDeviceMetricsOverride', {
@@ -674,6 +820,8 @@ try {
         audits,
         verifyAutosave,
         autosaveAudit,
+        verifyBirth,
+        birthAudit,
         verifyNames,
         nameAudit,
         consoleErrors,
