@@ -6,6 +6,7 @@ import { setTimeout as delay } from 'node:timers/promises';
 
 const baseUrl = (process.env.BROWSER_BASE_URL ?? 'http://127.0.0.1:8000').replace(/\/$/, '');
 const browserOrigin = new URL(baseUrl);
+const groupsOnly = process.argv.includes('--groups-only');
 const outputDirectory = process.env.BROWSER_OUTPUT_DIR
     ?? join(tmpdir(), 'mengto-accessibility-browser');
 const chromeCandidates = [
@@ -212,6 +213,37 @@ const login = async (client, sessionId, email) => {
     );
 };
 
+const setProfileLocale = async (client, sessionId, locale) => {
+    await navigate(client, sessionId, `${baseUrl}/profile/settings`);
+    const currentLocale = await evaluate(
+        client,
+        sessionId,
+        `document.querySelector('#profile-settings-locale')?.value`,
+    );
+
+    if (currentLocale === locale) {
+        return;
+    }
+
+    await evaluate(client, sessionId, `((localeValue) => {
+        const input = document.querySelector('#profile-settings-locale');
+        input.value = localeValue;
+        input.dispatchEvent(new Event('input', { bubbles: true }));
+        input.dispatchEvent(new Event('change', { bubbles: true }));
+        input.blur();
+        document.querySelector('form button[type="submit"]').click();
+        return true;
+    })(${JSON.stringify(locale)})`);
+    await waitUntil(
+        async () => await evaluate(
+            client,
+            sessionId,
+            `document.documentElement.lang === ${JSON.stringify(locale)}`,
+        ),
+        `Profile locale did not change to ${locale}.`,
+    );
+};
+
 const pageAuditExpression = `(() => {
     const visible = (element) => {
         const style = getComputedStyle(element);
@@ -353,6 +385,7 @@ try {
         mobile: false,
     }, sessionId);
 
+    auditRun: {
     const accountEntryAudits = {};
     const accountEntryViewports = [
         { label: 'English 320px account entry', locale: 'en', width: 320, height: 900, mobile: true },
@@ -641,152 +674,258 @@ try {
     }
 
     const groupCardAudits = {};
+    await navigate(client, sessionId, `${baseUrl}/profile/settings`);
+    const originalGroupLocale = await evaluate(
+        client,
+        sessionId,
+        `document.querySelector('#profile-settings-locale')?.value`,
+    );
+    const groupViewports = [
+        {
+            locale: 'en', label: '1440px', width: 1440, height: 900, mobile: false,
+            screenshot: 'group-directory-desktop.png',
+        },
+        { locale: 'en', label: '1920px', width: 1920, height: 1080, mobile: false },
+        {
+            locale: 'lt', label: '320px', width: 320, height: 900, mobile: true,
+            screenshot: 'group-directory-lt-mobile.png',
+        },
+        { locale: 'lt', label: '768px', width: 768, height: 1024, mobile: false },
+        {
+            locale: 'ru', label: '375px', width: 375, height: 812, mobile: true,
+            screenshot: 'group-directory-mobile.png',
+        },
+        { locale: 'ru', label: '1024px', width: 1024, height: 900, mobile: false },
+    ];
 
-    for (const viewport of [
-        { label: '320px', width: 320, height: 900, mobile: true },
-        { label: '375px', width: 375, height: 812, mobile: true },
-        { label: '768px', width: 768, height: 1024, mobile: false },
-        { label: '1024px', width: 1024, height: 900, mobile: false },
-        { label: '1440px', width: 1440, height: 900, mobile: false },
-        { label: '1920px', width: 1920, height: 1080, mobile: false },
-    ]) {
-        await client.send('Emulation.setDeviceMetricsOverride', {
-            width: viewport.width,
-            height: viewport.height,
-            deviceScaleFactor: 1,
-            mobile: viewport.mobile,
-            screenWidth: viewport.width,
-            screenHeight: viewport.height,
-        }, sessionId);
-        const label = `${viewport.label} group directory cards`;
-        await navigate(client, sessionId, `${baseUrl}/groups`);
-        const audit = await evaluate(client, sessionId, pageAuditExpression);
-        assertPageAudit(audit, label);
-        const behavior = await evaluate(client, sessionId, `(() => {
-            const cards = [...document.querySelectorAll('[data-group-card][data-ui-card]')];
-            const layouts = cards.map((card) => {
-                const media = card.querySelector(':scope > [data-card-region="media"]');
-                const body = card.querySelector(':scope > [data-card-region="body"]');
-                const footer = body?.querySelector(':scope > [data-card-region="footer"]');
-                const image = media?.querySelector('img');
-                const cardBox = card.getBoundingClientRect();
-                const mediaBox = media?.getBoundingClientRect();
-                const bodyBox = body?.getBoundingClientRect();
-                const imageBox = image?.getBoundingClientRect();
-                const mediaStyle = media ? getComputedStyle(media) : null;
-                const bodyStyle = body ? getComputedStyle(body) : null;
+    try {
+        for (const viewport of groupViewports) {
+            await setProfileLocale(client, sessionId, viewport.locale);
+            await client.send('Emulation.setDeviceMetricsOverride', {
+                width: viewport.width,
+                height: viewport.height,
+                deviceScaleFactor: 1,
+                mobile: viewport.mobile,
+                screenWidth: viewport.width,
+                screenHeight: viewport.height,
+            }, sessionId);
+            const label = `${viewport.locale} ${viewport.label} group directory cards`;
+            await navigate(client, sessionId, `${baseUrl}/groups`);
+            const audit = await evaluate(client, sessionId, pageAuditExpression);
+            assertPageAudit(audit, label);
+            const behavior = await evaluate(client, sessionId, `(() => {
+                const cards = [...document.querySelectorAll('[data-group-card][data-ui-card]')];
+                const layouts = cards.map((card) => {
+                    const media = card.querySelector(':scope > [data-card-region="media"]');
+                    const body = card.querySelector(':scope > [data-card-region="body"]');
+                    const footer = body?.querySelector(':scope > [data-card-region="footer"]');
+                    const image = media?.querySelector('img');
+                    const heading = body?.querySelector('[data-card-heading]');
+                    const description = body?.querySelector('[data-card-description]');
+                    const cardBox = card.getBoundingClientRect();
+                    const mediaBox = media?.getBoundingClientRect();
+                    const bodyBox = body?.getBoundingClientRect();
+                    const imageBox = image?.getBoundingClientRect();
+                    const mediaStyle = media ? getComputedStyle(media) : null;
+                    const bodyStyle = body ? getComputedStyle(body) : null;
+
+                    return {
+                        cardTop: Math.round(cardBox.top),
+                        cardHeight: Math.round(cardBox.height),
+                        hasMedia: Boolean(media),
+                        hasBody: Boolean(body),
+                        hasFooter: Boolean(footer),
+                        hasHeading: Boolean(heading),
+                        hasDescription: Boolean(description),
+                        descriptionLength: description?.textContent.trim().length ?? 0,
+                        copyClipped: [heading, description].filter(Boolean).some(
+                            (element) => element.scrollHeight > element.clientHeight + 1
+                                || element.scrollWidth > element.clientWidth + 1,
+                        ),
+                        boundaryGap: mediaBox && bodyBox
+                            ? Math.round((bodyBox.top - mediaBox.bottom) * 100) / 100
+                            : null,
+                        separatorWidth: Number.parseFloat(mediaStyle?.borderBottomWidth ?? '0'),
+                        mediaOverflow: mediaStyle?.overflow,
+                        bodyBackground: bodyStyle?.backgroundColor,
+                        bodyPaddingTop: Number.parseFloat(bodyStyle?.paddingTop ?? '0'),
+                        imageEscapesMedia: Boolean(
+                            mediaBox && imageBox
+                            && (
+                                imageBox.left < mediaBox.left - 1
+                                || imageBox.right > mediaBox.right + 1
+                                || imageBox.top < mediaBox.top - 1
+                                || imageBox.bottom > mediaBox.bottom + 1
+                            )
+                        ),
+                    };
+                });
+                const rows = Object.values(layouts.reduce((grouped, layout) => {
+                    grouped[layout.cardTop] ??= [];
+                    grouped[layout.cardTop].push(layout.cardHeight);
+
+                    return grouped;
+                }, {}));
+                const actionCount = (name, pressed) => document.querySelectorAll(
+                    '[data-group-card] form:has(input[name="action"][value="' + name + '"]) '
+                        + 'button[aria-pressed="' + pressed + '"]',
+                ).length;
+                const visibleActionTargets = [...document.querySelectorAll(
+                    '[data-group-card] .group-card__actions button, '
+                        + '[data-group-card] .group-card__actions a',
+                )].filter((element) => {
+                    const style = getComputedStyle(element);
+                    const box = element.getBoundingClientRect();
+
+                    return style.display !== 'none' && style.visibility !== 'hidden'
+                        && box.width > 0 && box.height > 0;
+                });
 
                 return {
-                    cardTop: Math.round(cardBox.top),
-                    cardHeight: Math.round(cardBox.height),
-                    hasMedia: Boolean(media),
-                    hasBody: Boolean(body),
-                    hasFooter: Boolean(footer),
-                    hasHeading: Boolean(body?.querySelector('[data-card-heading]')),
-                    hasDescription: Boolean(body?.querySelector('[data-card-description]')),
-                    boundaryGap: mediaBox && bodyBox
-                        ? Math.round((bodyBox.top - mediaBox.bottom) * 100) / 100
-                        : null,
-                    separatorWidth: Number.parseFloat(mediaStyle?.borderBottomWidth ?? '0'),
-                    mediaOverflow: mediaStyle?.overflow,
-                    bodyBackground: bodyStyle?.backgroundColor,
-                    bodyPaddingTop: Number.parseFloat(bodyStyle?.paddingTop ?? '0'),
-                    imageEscapesMedia: Boolean(
-                        mediaBox && imageBox
-                        && (
-                            imageBox.left < mediaBox.left - 1
-                            || imageBox.right > mediaBox.right + 1
-                            || imageBox.top < mediaBox.top - 1
-                            || imageBox.bottom > mediaBox.bottom + 1
-                        )
-                    ),
+                    documentLanguage: document.documentElement.lang,
+                    cardCount: cards.length,
+                    layouts,
+                    maximumDescriptionLength: Math.max(...layouts.map(({ descriptionLength }) => descriptionLength)),
+                    rowHeightSpreads: rows.map((heights) => Math.max(...heights) - Math.min(...heights)),
+                    membershipActions: {
+                        joined: actionCount('leave-group', 'true'),
+                        pending: actionCount('cancel-group-request', 'false'),
+                        unjoined: actionCount('join-group', 'false'),
+                    },
+                    secondaryActionCount: document.querySelectorAll(
+                        '[data-group-card] form:has(input[name="action"][value="dismiss-group-recommendation"]) '
+                            + 'button[aria-label]',
+                    ).length,
+                    smallActionTargets: visibleActionTargets.map((element) => ({
+                        label: element.getAttribute('aria-label') || element.textContent.trim().slice(0, 60),
+                        width: Math.round(element.getBoundingClientRect().width),
+                        height: Math.round(element.getBoundingClientRect().height),
+                    })).filter((target) => target.width < 44 || target.height < 44),
+                    rawTranslationKeys: document.body.innerText.match(/\\b(?:messages|ui|presentation)\\.[a-z0-9_.-]+/gi) ?? [],
                 };
-            });
-            const rows = Object.values(layouts.reduce((grouped, layout) => {
-                grouped[layout.cardTop] ??= [];
-                grouped[layout.cardTop].push(layout.cardHeight);
+            })()`);
+            assert(
+                behavior.documentLanguage === viewport.locale,
+                `${label}: expected ${viewport.locale}, found ${behavior.documentLanguage}.`,
+            );
+            assert(behavior.cardCount === 6, `${label}: expected six compatibility group cards.`);
+            assert(
+                behavior.layouts.every((layout) => layout.hasMedia && layout.hasBody && layout.hasFooter),
+                `${label}: shared media, body, or footer region is missing.`,
+            );
+            assert(
+                behavior.layouts.every(
+                    (layout) => layout.hasHeading && layout.hasDescription && ! layout.copyClipped,
+                ),
+                `${label}: shared copy is missing or clipped.`,
+            );
+            assert(
+                behavior.maximumDescriptionLength >= 100,
+                `${label}: the long-content fixture is unexpectedly short.`,
+            );
+            assert(
+                behavior.layouts.every((layout) => Math.abs(layout.boundaryGap) <= 1),
+                `${label}: media and body overlap or separate unpredictably.`,
+            );
+            assert(
+                behavior.layouts.every((layout) => layout.separatorWidth >= 1),
+                `${label}: visible media/body separator is missing.`,
+            );
+            assert(
+                behavior.layouts.every(
+                    (layout) => layout.mediaOverflow === 'hidden'
+                        && layout.bodyBackground !== 'rgba(0, 0, 0, 0)'
+                        && layout.bodyPaddingTop >= 16
+                        && ! layout.imageEscapesMedia,
+                ),
+                `${label}: shared card containment or body spacing is invalid.`,
+            );
+            assert(
+                behavior.rowHeightSpreads.every((spread) => spread <= 1),
+                `${label}: cards in the same grid row do not share a stable height.`,
+            );
+            assert(
+                JSON.stringify(behavior.membershipActions)
+                    === JSON.stringify({ joined: 2, pending: 1, unjoined: 3 }),
+                `${label}: membership action states are incomplete ${JSON.stringify(behavior.membershipActions)}.`,
+            );
+            assert(
+                behavior.secondaryActionCount === 6,
+                `${label}: expected six accessible secondary recommendation actions.`,
+            );
+            assert(
+                behavior.smallActionTargets.length === 0,
+                `${label}: controls below 44px ${JSON.stringify(behavior.smallActionTargets)}.`,
+            );
+            assert(
+                behavior.rawTranslationKeys.length === 0,
+                `${label}: raw translation keys are visible: ${behavior.rawTranslationKeys.join(', ')}.`,
+            );
+            groupCardAudits[label] = { ...audit, ...behavior };
 
-                return grouped;
-            }, {}));
+            if (viewport.screenshot) {
+                const loadedImageCount = await evaluate(client, sessionId, `(async () => {
+                    const images = [...document.querySelectorAll('[data-group-card] [data-ui-card-media] img')];
 
-            return {
-                cardCount: cards.length,
-                layouts,
-                rowHeightSpreads: rows.map((heights) => Math.max(...heights) - Math.min(...heights)),
-                rawTranslationKeys: document.body.innerText.match(/\\b(?:ui|presentation)\\.[a-z0-9_.-]+/gi) ?? [],
-            };
-        })()`);
-        assert(behavior.cardCount === 6, `${label}: expected six compatibility group cards.`);
-        assert(
-            behavior.layouts.every((layout) => layout.hasMedia && layout.hasBody && layout.hasFooter),
-            `${label}: shared media, body, or footer region is missing.`,
-        );
-        assert(
-            behavior.layouts.every((layout) => layout.hasHeading && layout.hasDescription),
-            `${label}: shared heading or description contract is missing.`,
-        );
-        assert(
-            behavior.layouts.every((layout) => Math.abs(layout.boundaryGap) <= 1),
-            `${label}: media and body overlap or separate unpredictably.`,
-        );
-        assert(
-            behavior.layouts.every((layout) => layout.separatorWidth >= 1),
-            `${label}: visible media/body separator is missing.`,
-        );
-        assert(
-            behavior.layouts.every(
-                (layout) => layout.mediaOverflow === 'hidden'
-                    && layout.bodyBackground !== 'rgba(0, 0, 0, 0)'
-                    && layout.bodyPaddingTop >= 16
-                    && ! layout.imageEscapesMedia,
-            ),
-            `${label}: shared card containment or body spacing is invalid.`,
-        );
-        assert(
-            behavior.rowHeightSpreads.every((spread) => spread <= 1),
-            `${label}: cards in the same grid row do not share a stable height.`,
-        );
-        assert(
-            behavior.rawTranslationKeys.length === 0,
-            `${label}: raw translation keys are visible: ${behavior.rawTranslationKeys.join(', ')}.`,
-        );
-        groupCardAudits[label] = { ...audit, ...behavior };
-
-        if (['375px', '1440px'].includes(viewport.label)) {
-            const loadedImageCount = await evaluate(client, sessionId, `(async () => {
-                const images = [...document.querySelectorAll('[data-group-card] [data-ui-card-media] img')];
-
-                for (const image of images) {
-                    image.scrollIntoView({ block: 'center' });
-                    await new Promise((resolve) => setTimeout(resolve, 100));
-                }
-
-                await Promise.all(images.map((image) => {
-                    if (image.complete) {
-                        return Promise.resolve();
+                    for (const image of images) {
+                        image.scrollIntoView({ block: 'center' });
+                        await new Promise((resolve) => setTimeout(resolve, 100));
                     }
 
-                    return new Promise((resolve) => {
-                        image.addEventListener('load', resolve, { once: true });
-                        image.addEventListener('error', resolve, { once: true });
-                    });
-                }));
-                window.scrollTo(0, 0);
-                await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+                    await Promise.all(images.map((image) => {
+                        if (image.complete) {
+                            return Promise.resolve();
+                        }
 
-                return images.filter((image) => image.complete && image.naturalWidth > 0).length;
-            })()`);
-            assert(loadedImageCount === 6, `${label}: expected all six card images to load before capture.`);
-            groupCardAudits[label].loadedImageCount = loadedImageCount;
-            const screenshotData = await client.send('Page.captureScreenshot', {
-                format: 'png',
-                captureBeyondViewport: true,
-            }, sessionId);
-            await writeFile(
-                join(outputDirectory, `group-directory-${viewport.mobile ? 'mobile' : 'desktop'}.png`),
-                Buffer.from(screenshotData.data, 'base64'),
-            );
+                        return new Promise((resolve) => {
+                            image.addEventListener('load', resolve, { once: true });
+                            image.addEventListener('error', resolve, { once: true });
+                        });
+                    }));
+                    window.scrollTo(0, 0);
+                    await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+
+                    return images.filter((image) => image.complete && image.naturalWidth > 0).length;
+                })()`);
+                assert(loadedImageCount === 6, `${label}: expected all six card images to load before capture.`);
+                groupCardAudits[label].loadedImageCount = loadedImageCount;
+                const screenshotData = await client.send('Page.captureScreenshot', {
+                    format: 'png',
+                    captureBeyondViewport: true,
+                }, sessionId);
+                await writeFile(
+                    join(outputDirectory, viewport.screenshot),
+                    Buffer.from(screenshotData.data, 'base64'),
+                );
+            }
         }
+    } finally {
+        await setProfileLocale(client, sessionId, originalGroupLocale);
+    }
+
+    if (groupsOnly) {
+        assert(consoleErrors.length === 0, `Browser console errors: ${consoleErrors.join(' | ')}`);
+
+        const report = {
+            scope: 'groups',
+            baseUrl,
+            checkedAt: new Date().toISOString(),
+            groupCardAudits,
+            consoleErrors,
+            screenshots: [
+                join(outputDirectory, 'group-directory-desktop.png'),
+                join(outputDirectory, 'group-directory-mobile.png'),
+                join(outputDirectory, 'group-directory-lt-mobile.png'),
+            ],
+        };
+
+        await writeFile(
+            join(outputDirectory, 'group-directory-report.json'),
+            `${JSON.stringify(report, null, 2)}\n`,
+        );
+        console.log(JSON.stringify(report, null, 2));
+
+        break auditRun;
     }
 
     const eventAudits = {};
@@ -1850,6 +1989,7 @@ try {
             join(outputDirectory, 'forum-one-health-mobile.png'),
             join(outputDirectory, 'group-directory-desktop.png'),
             join(outputDirectory, 'group-directory-mobile.png'),
+            join(outputDirectory, 'group-directory-lt-mobile.png'),
             join(outputDirectory, 'event-directory-desktop.png'),
             join(outputDirectory, 'event-directory-mobile.png'),
             join(outputDirectory, 'event-detail-desktop.png'),
@@ -1885,6 +2025,7 @@ try {
         `${JSON.stringify(report, null, 2)}\n`,
     );
     console.log(JSON.stringify(report, null, 2));
+    }
 } finally {
     if (client && sessionId && originalProfileLocale) {
         try {

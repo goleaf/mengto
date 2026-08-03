@@ -24,11 +24,12 @@
 
         <div class="min-w-0 flex-1">
             <div class="flex flex-wrap items-center gap-2">
-                <h2 class="text-lg font-bold leading-tight">
-                    <a href="{{ $expert['profile_url'] }}" class="hover:text-paw-leaf focus:outline-none focus:ring-2 focus:ring-paw-leaf">
-                        {{ $expert['name'] }}
-                    </a>
-                </h2>
+                <x-card-heading
+                    :title="$expert['name']"
+                    :href="$expert['profile_url']"
+                    :level="2"
+                    spacing="none"
+                />
                 @if ($expert['qualification_verified'])
                     <x-status-badge label="{{ __('ui.qualification_verified_bfd453f9ac') }}" icon="badge-check" tone="success" />
                 @else

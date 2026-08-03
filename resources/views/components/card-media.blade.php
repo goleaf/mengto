@@ -33,7 +33,7 @@
             'aspect-[4/3]' => $ratio === 'portrait',
             'aspect-square' => $ratio === 'square',
             'aspect-video' => $ratio === 'wide',
-            'aspect-[3/2]' => $ratio === 'landscape',
+            'aspect-[3/2]' => $ratio !== 'portrait' && $ratio !== 'square' && $ratio !== 'wide',
         ])
     />
 

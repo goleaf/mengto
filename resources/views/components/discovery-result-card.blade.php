@@ -31,10 +31,12 @@
         </div>
 
         <div class="min-w-0">
-            <h3 class="discovery-result-card__title">
-                <x-text-link :href="$item['url']">{{ $item['title'] }}</x-text-link>
-            </h3>
-            <p class="discovery-result-card__description">{{ $item['description'] }}</p>
+            <x-card-heading
+                :title="$item['title']"
+                :href="$item['url']"
+                spacing="none"
+            />
+            <x-card-description spacing="compact">{{ $item['description'] }}</x-card-description>
         </div>
 
         <ul class="discovery-result-card__meta" aria-label="{{ __('discovery.meta.label') }}">

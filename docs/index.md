@@ -21,6 +21,7 @@ This index is the source-of-truth map for first-party documentation.
 | `docs/privacy.md` | Data classes, visibility boundaries, and retention | Security | Canonical |
 | `docs/files.md` | File ownership, validation, storage, and download rules | Security + operations | Canonical |
 | `docs/frontend.md` | Blade, Livewire, JavaScript, and navigation boundaries | Frontend | Canonical |
+| `docs/components/shared-card-primitives.md` | Shared directory-card shell, leaf APIs, composition boundaries, and verification | Frontend + QA | Current component contract |
 | `docs/livewire.md` | Livewire 4 rules and applicability matrix | Frontend | Canonical |
 | `docs/journals.md` | Forum journal lifecycle, privacy, media, backfill, and recovery | Product + engineering | Canonical |
 | `docs/guides.md` | Collaborative guide workflow, review, editing, and recovery | Product + engineering | Canonical |
