@@ -139,6 +139,138 @@ test('shared page header semantic props use bound values without double escaping
     expect($violations)->toBe([]);
 });
 
+test('the repeatable page identity browser matrix covers every priority surface and accessibility mode', function () {
+    $source = File::get(base_path('scripts/accessibility-browser-check.mjs'));
+    $package = File::get(base_path('package.json'));
+
+    preg_match_all(
+        "/\\{ path: '([^']+)', slug: '[^']+', label: '[^']+' \\}/",
+        $source,
+        $routeMatches,
+    );
+
+    expect($routeMatches[1])
+        ->toBe([
+            '/pets',
+            '/medical-records',
+            '/care-journals',
+            '/meetups',
+            '/places',
+            '/lost-found',
+            '/marketplace',
+            '/experts',
+            '/forum',
+            '/groups',
+            '/neighbors',
+            '/discover',
+            '/messages',
+        ])
+        ->and($source)
+        ->toContain(
+            "const pageIdentityOnly = process.argv.includes('--page-identity-only')",
+            "{ label: '320-en', locale: 'en', width: 320",
+            "{ label: '375-ru', locale: 'ru', width: 375",
+            "{ label: '768-lt', locale: 'lt', width: 768",
+            "{ label: '1024-ru-forced-colors', locale: 'ru', width: 1024",
+            "{ label: '1280-en-200-percent', locale: 'en', width: 640, height: 450, screenWidth: 1280, screenHeight: 900, zoom: 2",
+            "{ label: '1440-en', locale: 'en', width: 1440",
+            "{ label: '1920-lt', locale: 'lt', width: 1920",
+            'const englishIdentityCopy = new Map()',
+            'deviceScaleFactor: viewport.zoom ?? 1',
+            'document title was not localized',
+            'heading was not localized',
+            "{ name: 'prefers-reduced-motion', value: 'reduce' }",
+            "{ name: 'forced-colors', value: viewport.forcedColors ? 'active' : 'none' }",
+            "join(outputDirectory, 'page-identity-report.json')",
+        )
+        ->and($package)
+        ->toContain('"test:browser:page-identity": "node scripts/accessibility-browser-check.mjs --page-identity-only"');
+});
+
+test('priority page identity copy is translated instead of falling back to English', function () {
+    $contracts = [
+        'ui' => [
+            'active_local_searches_a0b657fac3',
+            'ask_well_find_what_lasts_3c2fdf9b45',
+            'buy_exchange_rehome_or_book_without_exposing_your_a7174cb664',
+            'care_journals_efcbb402a3',
+            'community_knowledge_31eb615b90',
+            'community_marketplace_1525148f3c',
+            'compare_scope_species_independently_checked_credentials_availability_lan_8ad672b4c3',
+            'create_journal_0be6b9b3a5',
+            'create_listing_815d30caa6',
+            'create_professional_profile_30276b75d3',
+            'find_the_right_specialist_for_this_pet_21bb34d7d0',
+            'groups_brand_2cc8a218be',
+            'lost_found_217c655848',
+            'messages_and_calls_brand_d76656782d',
+            'neighbors_brand_de44b47ada',
+            'new_health_record_376edfa614',
+            'new_message_78f5975a5d',
+            'pet_health_records_911c3e19be',
+            'private_care_workspace_12776f8bcf',
+            'private_family_workspace_521e77339e',
+            'professional_workspace_eb8eb6dde6',
+            'questions_field_notes_expert_context_and_practical_guides_5f0c917aa8',
+            'report_a_sighting_join_a_coordinated_task_or_e5e0bbe8c2',
+            'report_an_animal_6188a5d89e',
+            'today_s_feeding_water_walks_rest_toilet_activity_dc1cdec032',
+            'useful_things_and_trusted_pet_services_0b2d0b997a',
+            'vaccinations_medication_schedules_measurements_visits_and_original_docum_72518c6620',
+            'verified_professional_community_f3f93b61ff',
+        ],
+        'messages' => [
+            'communities_with_a_purpose_b2d3a5a7b6',
+            'compare_parks_dog_runs_routes_clinics_services_shelters__f8d00ec18d',
+            'expert_community_b9f71bc7cd',
+            'explore_local_breed_care_adoption_and_interest_groups_wi_219f9d1209',
+            'find_nearby_owners_who_share_your_routes_routines_and_ap_662718d443',
+            'find_your_people_and_build_something_useful_b7d93d9c88',
+            'groups_pawcircle_2cc8a218be',
+            'lost_found_217c655848',
+            'map_and_place_catalog_e874309a26',
+            'marketplace_c608981d8d',
+            'meet_the_people_behind_the_pets_a0afb859f3',
+            'messages_and_calls_2bda9155c7',
+            'pet_health_records_911c3e19be',
+            'places_map_pawcircle_3cab208400',
+            'plan_the_next_place_with_your_pet_47805e2905',
+            'portland_neighbors_c6674bf8c7',
+            'private_care_journals_f718a9186c',
+            'private_communication_b3ecd460d1',
+            'talk_to_pet_people_family_specialists_groups_and_event_o_7a75ff5b8e',
+        ],
+    ];
+
+    foreach ($contracts as $catalog => $keys) {
+        $english = require lang_path("en/{$catalog}.php");
+
+        expect($english)->toHaveKeys($keys);
+
+        foreach (['lt', 'ru'] as $locale) {
+            $translated = require lang_path("{$locale}/{$catalog}.php");
+
+            expect($translated)->toHaveKeys($keys);
+
+            foreach ($keys as $key) {
+                expect($translated[$key])
+                    ->not->toBe($english[$key])
+                    ->not->toBe('');
+            }
+        }
+    }
+});
+
+test('the shared control focus ring remains visible in forced colors', function () {
+    expect(File::get(resource_path('scss/_tokens.scss')))->toContain(
+        '@mixin focus-ring',
+        'outline: 2px solid transparent;',
+        '@media (forced-colors: active)',
+        'outline-color: Highlight;',
+        'box-shadow: none;',
+    );
+});
+
 test('every first party get route has exactly one page identity classification', function () {
     $classifications = require base_path('tests/Support/page-identity-route-classification.php');
     $documentedRoutes = array_merge(...array_values($classifications));

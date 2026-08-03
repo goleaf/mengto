@@ -8,6 +8,7 @@ const baseUrl = (process.env.BROWSER_BASE_URL ?? 'http://127.0.0.1:8000').replac
 const browserOrigin = new URL(baseUrl);
 const groupsOnly = process.argv.includes('--groups-only');
 const placesOnly = process.argv.includes('--places-only');
+const pageIdentityOnly = process.argv.includes('--page-identity-only');
 const outputDirectory = process.env.BROWSER_OUTPUT_DIR
     ?? join(tmpdir(), 'mengto-accessibility-browser');
 const chromeCandidates = [
@@ -525,6 +526,284 @@ try {
     );
 
     await login(client, sessionId, 'mia@example.test');
+
+    if (pageIdentityOnly) {
+        const pageIdentityRoutes = [
+            { path: '/pets', slug: 'pets', label: 'pets' },
+            { path: '/medical-records', slug: 'medical-records', label: 'medical records' },
+            { path: '/care-journals', slug: 'care-journals', label: 'care journals' },
+            { path: '/meetups', slug: 'meetups', label: 'meetups' },
+            { path: '/places', slug: 'places', label: 'places' },
+            { path: '/lost-found', slug: 'lost-found', label: 'lost and found' },
+            { path: '/marketplace', slug: 'marketplace', label: 'marketplace' },
+            { path: '/experts', slug: 'experts', label: 'experts' },
+            { path: '/forum', slug: 'forum', label: 'forum' },
+            { path: '/groups', slug: 'groups', label: 'groups' },
+            { path: '/neighbors', slug: 'neighbors', label: 'neighbors' },
+            { path: '/discover', slug: 'discover', label: 'discover' },
+            { path: '/messages', slug: 'messages', label: 'messages' },
+        ];
+        const pageIdentityViewports = [
+            { label: '320-en', locale: 'en', width: 320, height: 900, mobile: true },
+            { label: '375-ru', locale: 'ru', width: 375, height: 812, mobile: true },
+            { label: '768-lt', locale: 'lt', width: 768, height: 1024, mobile: false },
+            { label: '1024-ru-forced-colors', locale: 'ru', width: 1024, height: 900, mobile: false, forcedColors: true },
+            { label: '1280-en-200-percent', locale: 'en', width: 640, height: 450, screenWidth: 1280, screenHeight: 900, zoom: 2, mobile: false },
+            { label: '1440-en', locale: 'en', width: 1440, height: 900, mobile: false },
+            { label: '1920-lt', locale: 'lt', width: 1920, height: 1080, mobile: false },
+        ];
+        const pageIdentityAudits = {};
+        const pageIdentityScreenshots = [];
+        const englishIdentityCopy = new Map();
+        let canonicalTitleFont = null;
+
+        const setProfileLocale = async (locale) => {
+            await navigate(client, sessionId, `${baseUrl}/profile/settings`);
+            const currentLocale = await evaluate(client, sessionId, 'document.documentElement.lang');
+
+            if (currentLocale === locale) {
+                return;
+            }
+
+            await evaluate(client, sessionId, `((locale) => {
+                const select = document.querySelector('#profile-settings-locale');
+                select.value = locale;
+                select.dispatchEvent(new Event('input', { bubbles: true }));
+                select.dispatchEvent(new Event('change', { bubbles: true }));
+                select.blur();
+                document.querySelector('form button[type="submit"]').click();
+
+                return true;
+            })(${JSON.stringify(locale)})`);
+            await waitUntil(
+                async () => await evaluate(
+                    client,
+                    sessionId,
+                    `document.documentElement.lang === ${JSON.stringify(locale)}`,
+                ),
+                `The page-identity matrix did not switch to ${locale}.`,
+            );
+        };
+
+        await navigate(client, sessionId, `${baseUrl}/profile/settings`);
+        originalProfileLocale = await evaluate(
+            client,
+            sessionId,
+            "document.querySelector('#profile-settings-locale').value",
+        );
+
+        for (const viewport of pageIdentityViewports) {
+            await setProfileLocale(viewport.locale);
+            await client.send('Emulation.setDeviceMetricsOverride', {
+                width: viewport.width,
+                height: viewport.height,
+                deviceScaleFactor: viewport.zoom ?? 1,
+                mobile: viewport.mobile,
+                screenWidth: viewport.screenWidth ?? viewport.width,
+                screenHeight: viewport.screenHeight ?? viewport.height,
+            }, sessionId);
+            await client.send('Emulation.setTouchEmulationEnabled', {
+                enabled: viewport.mobile,
+                maxTouchPoints: viewport.mobile ? 5 : 1,
+            }, sessionId);
+            await client.send('Emulation.setEmulatedMedia', {
+                features: [
+                    { name: 'prefers-reduced-motion', value: 'reduce' },
+                    { name: 'forced-colors', value: viewport.forcedColors ? 'active' : 'none' },
+                ],
+            }, sessionId);
+
+            for (const route of pageIdentityRoutes) {
+                const label = `${viewport.label} ${route.label}`;
+                await navigate(client, sessionId, `${baseUrl}${route.path}`);
+                const pageAudit = await evaluate(client, sessionId, pageAuditExpression);
+                assertPageAudit(pageAudit, label);
+                const behavior = await evaluate(client, sessionId, `(() => {
+                    const header = document.querySelector('main [data-page-identity="canonical"]');
+                    const heading = header?.querySelector('h1');
+                    const copy = header?.querySelector('.page-header__copy');
+                    const description = header?.querySelector('.page-header__description');
+                    const aside = header?.querySelector('.page-header__aside');
+                    const actions = header?.querySelector('.page-header__actions');
+                    const style = heading ? getComputedStyle(heading) : null;
+                    const visible = (element) => {
+                        const elementStyle = getComputedStyle(element);
+                        const box = element.getBoundingClientRect();
+
+                        return elementStyle.display !== 'none'
+                            && elementStyle.visibility !== 'hidden'
+                            && box.width > 0
+                            && box.height > 0;
+                    };
+                    const smallTargets = header
+                        ? [...header.querySelectorAll('a, button, input, select, textarea, [role="button"]')]
+                            .filter(visible)
+                            .map((element) => ({
+                                label: element.getAttribute('aria-label')
+                                    || element.textContent.trim().slice(0, 60)
+                                    || element.getAttribute('name'),
+                                width: Math.round(element.getBoundingClientRect().width),
+                                height: Math.round(element.getBoundingClientRect().height),
+                            }))
+                            .filter((target) => target.width < 44 || target.height < 44)
+                        : [];
+                    const clippedRegions = [header, copy, heading, description, aside, actions]
+                        .filter(Boolean)
+                        .filter((element) => element.scrollWidth > element.clientWidth + 1)
+                        .map((element) => element.className || element.tagName);
+                    const copyBox = copy?.getBoundingClientRect();
+                    const actionsBox = actions?.getBoundingClientRect();
+                    const actionsOverlapCopy = Boolean(
+                        copyBox && actionsBox
+                        && copyBox.left < actionsBox.right - 1
+                        && copyBox.right > actionsBox.left + 1
+                        && copyBox.top < actionsBox.bottom - 1
+                        && copyBox.bottom > actionsBox.top + 1
+                    );
+                    const firstAction = header?.querySelector('a, button');
+                    const focusBefore = firstAction ? getComputedStyle(firstAction) : null;
+                    const borderColorBefore = focusBefore?.borderColor ?? null;
+                    firstAction?.focus();
+                    const focusStyle = firstAction ? getComputedStyle(firstAction) : null;
+
+                    return {
+                        documentLanguage: document.documentElement.lang,
+                        documentTitle: document.title,
+                        headerCount: document.querySelectorAll('main [data-page-identity="canonical"]').length,
+                        h1Count: document.querySelectorAll('main h1').length,
+                        legacyHeaderCount: document.querySelectorAll(
+                            'main .forum-header, main .care-directory-header, main .messaging-page__header'
+                        ).length,
+                        headingId: heading?.id ?? null,
+                        labelledBy: header?.getAttribute('aria-labelledby') ?? null,
+                        eyebrowText: header?.querySelector('.page-header__eyebrow')?.textContent.trim() ?? null,
+                        headingText: heading?.textContent.trim() ?? null,
+                        descriptionText: description?.textContent.trim() ?? null,
+                        titleFontFamily: style?.fontFamily ?? null,
+                        titleFontSize: Number.parseFloat(style?.fontSize ?? '0'),
+                        titleFontWeight: style?.fontWeight ?? null,
+                        titleLineHeight: Number.parseFloat(style?.lineHeight ?? '0'),
+                        clippedRegions,
+                        actionsOverlapCopy,
+                        smallTargets,
+                        reducedMotion: matchMedia('(prefers-reduced-motion: reduce)').matches,
+                        forcedColors: matchMedia('(forced-colors: active)').matches,
+                        devicePixelRatio: window.devicePixelRatio,
+                        innerWidth: window.innerWidth,
+                        screenWidth: window.screen.width,
+                        focusVisible: ! firstAction || Boolean(
+                            focusStyle
+                            && (
+                                (
+                                    focusStyle.outlineStyle !== 'none'
+                                    && Number.parseFloat(focusStyle.outlineWidth) > 0
+                                )
+                                || focusStyle.boxShadow !== 'none'
+                                || focusStyle.borderColor !== borderColorBefore
+                            )
+                        ),
+                        rawTranslationKeys: document.body.innerText.match(
+                            /\\b(?:ui|messages|forum|pet_profiles|places)\\.[a-z0-9_.-]+/gi
+                        ) ?? [],
+                    };
+                })()`);
+                const expectedTitleSize = viewport.width >= 640 ? 30 : 24;
+                const expectedLineHeight = expectedTitleSize * 1.2;
+
+                canonicalTitleFont ??= behavior.titleFontFamily;
+                const englishCopy = englishIdentityCopy.get(route.path);
+
+                if (viewport.locale === 'en') {
+                    if (englishCopy === undefined) {
+                        englishIdentityCopy.set(route.path, {
+                            documentTitle: behavior.documentTitle,
+                            eyebrowText: behavior.eyebrowText,
+                            headingText: behavior.headingText,
+                            descriptionText: behavior.descriptionText,
+                        });
+                    } else {
+                        assert(behavior.documentTitle === englishCopy.documentTitle, `${label}: English document title changed across viewports.`);
+                        assert(behavior.eyebrowText === englishCopy.eyebrowText, `${label}: English eyebrow changed across viewports.`);
+                        assert(behavior.headingText === englishCopy.headingText, `${label}: English heading changed across viewports.`);
+                        assert(behavior.descriptionText === englishCopy.descriptionText, `${label}: English description changed across viewports.`);
+                    }
+                } else {
+                    assert(englishCopy !== undefined, `${label}: English identity baseline is missing.`);
+                    assert(behavior.documentTitle !== englishCopy.documentTitle, `${label}: document title was not localized.`);
+                    assert(behavior.eyebrowText !== englishCopy.eyebrowText, `${label}: eyebrow was not localized.`);
+                    assert(behavior.headingText !== englishCopy.headingText, `${label}: heading was not localized.`);
+                    assert(behavior.descriptionText !== englishCopy.descriptionText, `${label}: description was not localized.`);
+                }
+
+                assert(behavior.documentLanguage === viewport.locale, `${label}: wrong document language.`);
+                assert(behavior.headerCount === 1, `${label}: expected one canonical page header.`);
+                assert(behavior.h1Count === 1, `${label}: expected one main h1.`);
+                assert(behavior.legacyHeaderCount === 0, `${label}: legacy header family remains.`);
+                assert(behavior.headingId !== null, `${label}: heading id is missing.`);
+                assert(behavior.labelledBy === behavior.headingId, `${label}: aria-labelledby is not synchronized.`);
+                assert(behavior.headingText?.length > 0, `${label}: heading text is empty.`);
+                assert(behavior.documentTitle.length > 0, `${label}: document title is empty.`);
+                assert(behavior.titleFontFamily === canonicalTitleFont, `${label}: title font family drifted.`);
+                assert(
+                    Math.abs(behavior.titleFontSize - expectedTitleSize) <= 0.2,
+                    `${label}: title size is ${behavior.titleFontSize}px; expected ${expectedTitleSize}px.`,
+                );
+                assert(
+                    Math.abs(behavior.titleLineHeight - expectedLineHeight) <= 0.3,
+                    `${label}: line height is ${behavior.titleLineHeight}px; expected ${expectedLineHeight}px.`,
+                );
+                assert(behavior.titleFontWeight === '600', `${label}: title weight is ${behavior.titleFontWeight}.`);
+                assert(behavior.clippedRegions.length === 0, `${label}: clipped header regions ${JSON.stringify(behavior.clippedRegions)}.`);
+                assert(! behavior.actionsOverlapCopy, `${label}: header actions overlap copy.`);
+                assert(behavior.smallTargets.length === 0, `${label}: header controls below 44px ${JSON.stringify(behavior.smallTargets)}.`);
+                assert(behavior.reducedMotion, `${label}: reduced-motion emulation is inactive.`);
+                assert(behavior.forcedColors === Boolean(viewport.forcedColors), `${label}: forced-colors state is wrong.`);
+                assert(behavior.devicePixelRatio === (viewport.zoom ?? 1), `${label}: 200% zoom emulation is inactive.`);
+                assert(behavior.innerWidth === viewport.width, `${label}: effective viewport width is wrong.`);
+                assert(behavior.screenWidth === (viewport.screenWidth ?? viewport.width), `${label}: physical screen width is wrong.`);
+                assert(behavior.focusVisible, `${label}: focused header action has no visible focus treatment.`);
+                assert(behavior.rawTranslationKeys.length === 0, `${label}: raw translation keys ${behavior.rawTranslationKeys.join(', ')}.`);
+
+                pageIdentityAudits[label] = { ...pageAudit, ...behavior };
+
+                if ([375, 1440].includes(viewport.width)) {
+                    const screenshotPath = join(
+                        outputDirectory,
+                        `page-identity-${route.slug}-${viewport.width}.png`,
+                    );
+                    const screenshotData = await client.send('Page.captureScreenshot', {
+                        format: 'png',
+                        captureBeyondViewport: true,
+                    }, sessionId);
+                    await writeFile(screenshotPath, Buffer.from(screenshotData.data, 'base64'));
+                    pageIdentityScreenshots.push(screenshotPath);
+                }
+            }
+        }
+
+        await setProfileLocale(originalProfileLocale);
+        assert(consoleErrors.length === 0, `Browser console errors: ${consoleErrors.join(' | ')}`);
+
+        const report = {
+            scope: 'page-identity',
+            baseUrl,
+            checkedAt: new Date().toISOString(),
+            routes: pageIdentityRoutes,
+            viewports: pageIdentityViewports,
+            audits: pageIdentityAudits,
+            consoleErrors,
+            screenshots: pageIdentityScreenshots,
+        };
+
+        await writeFile(
+            join(outputDirectory, 'page-identity-report.json'),
+            `${JSON.stringify(report, null, 2)}\n`,
+        );
+        console.log(JSON.stringify(report, null, 2));
+
+        break auditRun;
+    }
+
     await navigate(client, sessionId, `${baseUrl}/forum`);
     const desktopAudit = await evaluate(client, sessionId, pageAuditExpression);
     assertPageAudit(desktopAudit, 'desktop forum');

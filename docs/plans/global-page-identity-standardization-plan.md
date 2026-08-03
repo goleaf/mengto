@@ -2,9 +2,10 @@
 
 Plan date: 2026-08-03
 
-Status: implementation in progress; the shared component and first safe
-directory wave are verified, while meetup, forum, and global-route migration
-remain open as recorded below
+Status: implementation in progress; the shared component, priority directory
+wave, localized identity copy, and complete priority browser matrix are
+verified, while the stable requirement/query baselines and classified
+detail/workspace exception audit remain open as recorded below
 
 This plan is intentionally not time-boxed. Work advances only when the current
 package satisfies its acceptance, accessibility, data, and quality gates.
@@ -140,15 +141,15 @@ Blade disagrees.
 | `/messages` canonical page identity | Implemented and targeted-verified | Preserve one canonical header, nine folders above the messaging shell, and zero horizontal overflow |
 | Package 0 requirements and red contracts | Partial | All 111 current first-party GET routes now have an executable one-class ledger and canonical routes have structural contracts; the stable requirement ID and broader query baselines remain open |
 | Package 1 current `/meetups` schema/runtime | Implemented and verified | Fresh migration, complete migration lifecycle, explicit projection, team-membership schema, `/meetups`, and event-workspace runtime checks pass |
-| Package 2 shared component | Partial, implementation verified for current consumers | Explicit page-specific heading IDs, empty/count/single/multiple action states, escaped long content, metadata/actions slots, compatibility, wrapping, and semantic tests are complete; the full locale/zoom/forced-colors fixture matrix remains open |
-| Package 3 reference directories | Implemented and structurally verified | All listed routes consume the shared component and are covered by the source/route contract; the complete golden browser matrix remains a Package 11 gate |
+| Package 2 shared component | Implemented and browser-verified for current consumers | Explicit page-specific heading IDs, empty/count/single/multiple action states, escaped long content, metadata/actions slots, compatibility, wrapping, semantic tests, localized identity copy, 200% zoom, reduced-motion, and forced-colors focus checks pass |
+| Package 3 reference directories | Implemented and browser-verified | All listed routes consume the shared component and pass the complete priority golden matrix at seven responsive/accessibility profiles |
 | Package 4 private care directories | Implemented and targeted-verified | Retain authorization/privacy regression coverage in the final full gate |
 | Package 5 operational directories | Implemented and targeted-verified | Retain domain and responsive regression coverage in the final full gate |
 | Package 6 event directory and workspace | Implemented and targeted-verified | Directory and database-backed event workspaces use the canonical identity; lifecycle, privacy, migration-cycle, and browser runtime gates pass |
 | Package 7 forum | Implemented and targeted-verified | Forum routes use the canonical identity; all 44 roots remain visible and only the active root exposes its validated, indexed, server-filterable direct children |
 | Package 8 global migration | Implemented and structurally verified | All former migration candidates use the canonical contract or a documented deliberate detail hero; the classified detail/workspace exception audit remains open |
 | Packages 9 and 10 | Partial | Retired care/messages/device-directory selectors and reconciled living UI documents; forum/global cleanup and full documentation remain open |
-| Package 11 release verification | Partial | Focused and full Pest, Pint, Larastan, localization, Vite, dependency audits, cache smoke, isolated migrate/seed/idempotency, forum-source, diff, and representative authenticated browser checks passed; scoped commit, push, and final global follow-up audit remain open |
+| Package 11 release verification | Partial | The dedicated 13-route browser matrix, focused and full Pest, Pint, Larastan, dependency audits, Vite build, isolated migration/seed/idempotency, cache smoke, and forum-source checks pass; scoped commit/push and final global follow-up audit remain open for this package |
 
 The first implementation slice is covered by
 `PageIdentityStandardizationTest` plus the existing module, responsive, media,
@@ -169,6 +170,30 @@ must be isolated so a concurrent cache build cannot redirect a nominal
 `:memory:` run to `database/database.sqlite`. This is evidence for the current
 implemented slices only, not for the remaining exception audit.
 
+The refreshed authenticated browser matrix on 2026-08-03 passed 91 audits:
+13 priority routes across 320, 375, 768, 1024 forced-colors, 1280 at an
+effective 200% zoom, 1440, and 1920 profiles. It produced 26 golden
+screenshots and recorded zero horizontal overflow, clipped header regions,
+sub-44-pixel header targets, legacy header families, missing focus treatments,
+or console errors. All 52 non-English audits proved that the document title,
+eyebrow, heading, and description differ from the English baseline; the
+matrix covered `en`, `lt`, and `ru`. Manual review confirmed the localized
+identity blocks and also exposed older English fallback values below the
+header on some pages. That body-copy debt is outside the identity component
+contract and remains an explicit localization follow-up rather than a passed
+whole-page translation claim.
+
+The same isolated package then passed 46 focused Pest tests with 610
+assertions, the combined page-identity/architecture/localization slice with 73
+tests and 62,134 assertions, and the complete sequential suite with 2,701
+tests and 86,271 assertions. Full Pint and Larastan passed with zero findings;
+Composer validation/audit/platform requirements, NPM audit, production Vite
+build, fresh migration and complete seed, repeat seed (5 users, 14 places, 215
+tables), route/config/view cache smoke, and both forum-source checks also
+passed. These counts are release evidence for the staged package based on
+`284f3ed`, not evidence that the remaining global exception/localization audit
+is complete.
+
 ### 3.3 Next Execution Checkpoint
 
 1. Complete Package 0 by assigning the stable requirement ID and recording the
@@ -176,11 +201,12 @@ implemented slices only, not for the remaining exception audit.
    ledger synchronized.
 2. Retain the verified incremental `/meetups` and event lifecycle checks as
    release gates for Package 6.
-3. Complete the remaining Package 2 zoom and forced-colors fixtures,
-   then capture the complete Package 3 golden browser matrix.
-4. Audit every classified detail/workspace exception, retaining purposeful
+3. Audit every classified detail/workspace exception, retaining purposeful
    heroes and migrating accidental page headers; never mark a later wave
    complete from source intent or screenshots alone.
+4. Audit and translate the remaining non-header English fallback values on
+   the priority RU/LT pages without conflating that work with the verified
+   page-identity contract.
 
 ## 4. Scope
 
@@ -728,6 +754,14 @@ Acceptance:
 11. Re-run the route/header inventory after cleanup; any remaining unexplained
     variant reopens the plan.
 
+Repeatable priority matrix command:
+
+```bash
+BROWSER_BASE_URL=http://127.0.0.1:8898 \
+BROWSER_OUTPUT_DIR=/tmp/mengto-page-identity-browser \
+npm run test:browser:page-identity
+```
+
 ## 8. Query Delta Contract
 
 The header itself must add zero queries on every page.
@@ -827,6 +861,11 @@ Additional browser flows:
   navigation, empty result, and invalid child handling.
 - message folder selection across all nine folders, conversation search, and
   narrow-screen transition without returning the folder toolbar to the inbox.
+
+Observed priority-matrix evidence on 2026-08-03: 91 audits, 26 screenshots,
+52 non-English identity audits, 13 forced-colors audits, 13 200%-zoom audits,
+and zero overflow, clipping, undersized header targets, legacy headers, focus
+failures, raw translation keys, or console errors.
 
 ### 11.3 Final repository gates
 
