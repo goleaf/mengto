@@ -84,6 +84,21 @@ Every package must follow this order:
 6. Update evidence only for the exact independently proven IDs.
 7. Inspect the complete staged diff, commit, and push directly on `main`.
 
+## Immediate Product Entry Package
+
+Before the next forum reconciliation slice, deliver the product-owner-requested
+guest join page described in `docs/plans/join-landing-page-plan.md`.
+
+This package changes the public entry surface and preserves the existing
+registration, verification, member feed, privacy, and localization contracts.
+It does not change any of the totals below and does not verify a forum atom by
+existence alone. Any atomic evidence update still requires selecting the exact
+IDs and proving them through the normal work-package protocol.
+
+After the join package passes its route, auth, localization, accessibility,
+query, build, browser, and full-suite gates, resume Wave 0 with the first exact
+Phase 3-7 reconciliation package.
+
 ## Dependency-Ordered Completion Waves
 
 The eight waves below account for all 28,848 open IDs exactly.
@@ -262,10 +277,11 @@ The final 499 open control/release IDs span Phases 0-2 and 13-14.
 7. Declare completion only when the generated totals contain zero unresolved
    IDs and the clean `main` commit is pushed and observed on `origin/main`.
 
-## Immediate Next Work Package
+## Next Forum Work Package
 
 Create `docs/plans/forum-core-foundation-reconciliation-work-package.md` for
-the first exact slice of open Phase 3-7 IDs. It must:
+the first exact slice of open Phase 3-7 IDs after the guest join package. It
+must:
 
 - compare each selected atom with the live schema, implementation, and tests;
 - separate missing behavior from missing evidence;

@@ -45,6 +45,8 @@ This index is the source-of-truth map for first-party documentation.
 | `docs/operations.md` | Runtime checks and incident response | Operations | Canonical |
 | `docs/current-state-audit.md` | Modernization baseline and resolved findings | Engineering | Living evidence |
 | `docs/implementation-plan.md` | Dependency-aware modernization plan | Engineering | Living plan |
+| `docs/audits/pet-social-network-benchmark.md` | Official-source pet-network product, onboarding, settings, privacy, and safety benchmark | Product | Dated research evidence |
+| `docs/plans/join-landing-page-plan.md` | Guest root joining experience, route contract, delivery packages, and verification gates | Product + engineering | Planned |
 | `docs/requirements/compliance-matrix.md` | Requirements-to-code-and-test mapping | QA | Living evidence |
 | `docs/code-review.md` | Final structured review findings | Engineering | Living evidence |
 | `docs/known-limitations.md` | External and environmental blockers only | Product + engineering | Living evidence |

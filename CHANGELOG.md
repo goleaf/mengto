@@ -139,6 +139,11 @@
 
 ### Runtime And Architecture
 
+- Researched current pet-community onboarding, discovery, settings, privacy,
+  alert, and safety patterns from official product sources; planned a
+  guest-only join experience at `/`, member routing to the canonical content
+  feed, and a later consolidated settings package without claiming unfinished
+  requirements as complete.
 - Added one dependency-ordered completion roadmap for all 29,960 combined
   forum/product requirements and synchronized the final audit to 1,112
   verified and 28,848 open atomic records.
