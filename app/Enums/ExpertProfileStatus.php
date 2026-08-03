@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Enums;
 
 enum ExpertProfileStatus: string
@@ -12,12 +14,6 @@ enum ExpertProfileStatus: string
 
     public function label(): string
     {
-        return match ($this) {
-            self::Draft => 'Draft',
-            self::Pending => 'Verification pending',
-            self::Published => 'Published',
-            self::Paused => 'Temporarily unavailable',
-            self::Suspended => 'Restricted',
-        };
+        return __("experts.profile_statuses.{$this->value}");
     }
 }

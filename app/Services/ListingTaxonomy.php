@@ -36,6 +36,7 @@ class ListingTaxonomy
             'rehabilitation',
             'professional-service',
             'pet-service',
+            'pet-sitting',
             'shelter-supplies',
             'adoption',
             'other',

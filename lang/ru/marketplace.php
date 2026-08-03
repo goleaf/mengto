@@ -37,6 +37,7 @@ return [
         'rehabilitation' => 'Реабилитационное оборудование',
         'professional-service' => 'Профессиональные услуги',
         'pet-service' => 'Повседневные услуги для животных',
+        'pet-sitting' => 'Передержка и присмотр',
         'shelter-supplies' => 'Товары для приютов',
         'adoption' => 'Пристройство',
         'other' => 'Другое',

@@ -282,6 +282,7 @@ class ExpertPresenter
                 ->open()
                 ->orderBy('starts_at'),
         ]);
+        $species = $this->taxonomy->species();
 
         return [
             'owner' => $this->profiles->owner(),
@@ -291,9 +292,9 @@ class ExpertPresenter
             'services' => $profile->services->map(fn (Service $service): array => $this->service($service))->all(),
             'slots' => $profile->availabilitySlots->map(fn (AvailabilitySlot $slot): array => $this->slot($slot))->all(),
             'pets' => collect($this->taxonomy->petData())
-                ->map(fn (array $pet): array => [
+                ->map(static fn (array $pet): array => [
                     ...$pet,
-                    'species_label' => Str::headline($pet['species']),
+                    'species_label' => $species[$pet['species']] ?? Str::headline($pet['species']),
                 ])
                 ->all(),
             'idempotency_key' => (string) Str::uuid(),
@@ -503,20 +504,28 @@ class ExpertPresenter
     private function card(ExpertProfile $profile, array $filters = []): array
     {
         $profileUrl = route('experts.show', $profile->slug);
+        $species = $this->taxonomy->species();
+        $specializations = $this->taxonomy->specializations();
+        $languages = $this->taxonomy->languages();
         $reasons = collect([
             filled($filters['species'] ?? null)
-                ? __('presentation.works_with', ['species' => Str::headline((string) $filters['species'])])
+                ? __('presentation.works_with', [
+                    'species' => $species[(string) $filters['species']] ?? Str::headline((string) $filters['species']),
+                ])
                 : null,
             filled($filters['specialization'] ?? null)
                 ? __('presentation.specializes_in', [
-                    'specialization' => Str::headline((string) $filters['specialization']),
+                    'specialization' => $specializations[(string) $filters['specialization']]
+                        ?? Str::headline((string) $filters['specialization']),
                 ])
                 : null,
             filled($filters['city'] ?? null)
                 ? __('presentation.available_in', ['city' => $profile->city])
                 : null,
             filled($filters['language'] ?? null)
-                ? __('presentation.consults_in', ['language' => $filters['language']])
+                ? __('presentation.consults_in', [
+                    'language' => $languages[(string) $filters['language']] ?? (string) $filters['language'],
+                ])
                 : null,
             $profile->qualification_verified ? __('messages.qualification_verified_bfd453f9ac') : null,
         ])->filter()->take(3)->values()->all();
@@ -534,9 +543,9 @@ class ExpertPresenter
             'type' => $this->taxonomy->types()[$profile->primary_type] ?? Str::headline($profile->primary_type),
             'headline' => $profile->headline,
             'city' => $profile->city.', '.$profile->country,
-            'specializations' => collect($profile->specializations)->map(fn (string $value): string => $this->taxonomy->specializations()[$value] ?? Str::headline($value))->all(),
-            'species' => collect($profile->species)->map(fn (string $value): string => $this->taxonomy->species()[$value] ?? Str::headline($value))->all(),
-            'languages' => $profile->languages,
+            'specializations' => collect($profile->specializations)->map(fn (string $value): string => $specializations[$value] ?? Str::headline($value))->all(),
+            'species' => collect($profile->species)->map(fn (string $value): string => $species[$value] ?? Str::headline($value))->all(),
+            'languages' => collect($profile->languages)->map(fn (string $value): string => $languages[$value] ?? $value)->all(),
             'formats' => collect($profile->formats)->map(fn (string $value): string => $this->taxonomy->formats()[$value] ?? Str::headline($value))->all(),
             'verification' => $profile->verification_status->label(),
             'qualification_verified' => $profile->qualification_verified,

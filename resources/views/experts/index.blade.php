@@ -13,9 +13,9 @@
             </x-slot:actions>
         </x-page-header>
 
-        <section class="grid grid-cols-2 gap-px overflow-hidden rounded-md border border-paw-line bg-paw-line lg:grid-cols-4" aria-label="{{ __('ui.expert_directory_summary_c16800d8b6') }}">
+        <section data-expert-stats class="grid grid-cols-2 gap-px overflow-hidden rounded-md border border-paw-line bg-paw-line lg:grid-cols-4" aria-label="{{ __('ui.expert_directory_summary_c16800d8b6') }}">
             @forelse ($stats as $stat)
-                <div class="flex items-center gap-3 bg-white p-4">
+                <div data-expert-stat class="flex items-center gap-3 bg-white p-4">
                     <x-ui-icon size="lg" :name="$stat['icon']" class="shrink-0 text-paw-leaf" />
                     <div>
                         <strong class="block text-xl">{{ $stat['value'] }}</strong>
@@ -27,7 +27,7 @@
             @endforelse
         </section>
 
-        <form method="GET" action="{{ route('experts.index') }}" class="grid gap-4 border-y border-paw-line py-5" role="search">
+        <form data-expert-filters method="GET" action="{{ route('experts.index') }}" class="grid gap-4 border-y border-paw-line py-5" role="search">
             <div class="grid gap-3 lg:grid-cols-[minmax(16rem,2fr)_repeat(3,minmax(10rem,1fr))]">
                 <label class="grid gap-1 text-sm font-semibold">
                     {{ __('ui.search_49c266baaa') }}
@@ -140,10 +140,10 @@
         <section aria-labelledby="directory-heading">
             <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
                 <div>
-                    <h2 id="directory-heading" class="text-xl font-bold">{{ __('ui.matching_professionals_90981c4569') }}</h2>
-                    <p class="mt-1 text-sm text-paw-muted">{{ __('ui.a_verification_badge_explains_what_was_checked_it_60a615c5a3') }}</p>
+                    <h2 id="directory-heading" data-expert-results-title class="text-xl font-bold">{{ __('ui.matching_professionals_90981c4569') }}</h2>
+                    <p data-expert-results-description class="mt-1 text-sm text-paw-muted">{{ __('ui.a_verification_badge_explains_what_was_checked_it_60a615c5a3') }}</p>
                 </div>
-                <a href="{{ url('/places?category=emergency-vet') }}" class="inline-flex items-center gap-2 text-sm font-bold text-red-700 underline decoration-red-300 underline-offset-4">
+                <a data-expert-urgent href="{{ url('/places?category=emergency-vet') }}" class="inline-flex items-center gap-2 text-sm font-bold text-red-700 underline decoration-red-300 underline-offset-4">
                     <x-ui-icon name="siren" size="sm" />
                     {{ __('ui.need_urgent_veterinary_help_6caf36da92') }}
                 </a>

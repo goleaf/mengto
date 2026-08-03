@@ -140,7 +140,7 @@ test('the marketplace has a complete shared localization contract', function ():
 
     $english = Arr::dot(require lang_path('en/marketplace.php'));
 
-    expect($english)->toHaveCount(105);
+    expect($english)->toHaveCount(106);
 
     foreach (['lt', 'ru'] as $locale) {
         $localized = Arr::dot(require lang_path("{$locale}/marketplace.php"));
@@ -173,6 +173,7 @@ test('the shared marketplace services resolve labels from the active locale', fu
         ->and(ListingType::Adoption->requestLabel())->toBe(trans('marketplace.request_labels.adoption'))
         ->and(SellerType::PrivateSeller->label())->toBe(trans('marketplace.seller_types.private'))
         ->and($taxonomy->categories()['walking-gear'])->toBe(trans('marketplace.categories.walking-gear'))
+        ->and($taxonomy->categories()['pet-sitting'])->toBe(trans('marketplace.categories.pet-sitting'))
         ->and($taxonomy->disputeReasons()['not-delivered'])->toBe(trans('marketplace.dispute_reasons.not-delivered'));
 })->with(['lt', 'ru']);
 

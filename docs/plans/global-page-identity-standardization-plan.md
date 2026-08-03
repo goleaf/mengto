@@ -282,7 +282,7 @@ directory system-copy slice and removes a shared source of English fallback
 from the wider marketplace workflow. Forty-five previously English RU/LT UI
 values are now reviewed translations, while the complete fifty-five-key
 directory surface remains contract-tested. A dedicated EN/LT/RU marketplace
-domain supplies 105 listing type, request, category, species, condition,
+domain supplies 106 listing type, request, category, species, condition,
 seller, availability, age, hygiene, delivery, price, sorting, dispute, and
 report labels. `ListingTaxonomy`, `ListingType`, and `SellerType` resolve this
 contract without changing stored enum/filter values or adding a query, so the
@@ -302,6 +302,41 @@ platform requirements, NPM audit, production build, isolated migration plus
 repeated seed (134 migrations, 217 tables, stable 5 users), 184-line route and
 cache smoke, and both forum-source checks also passed.
 
+The fifth non-header localization follow-up closes the `/experts` directory
+system-copy slice and removes the same taxonomy fallback from the wider expert
+workflow. Thirty-eight previously English RU/LT interface values and five
+statistics labels now have reviewed translations. A dedicated EN/LT/RU expert
+domain supplies 80 specialist type, species, specialization, consultation
+format, language, availability, sorting, example-pet, and profile-status
+labels. `ExpertTaxonomy` and `ExpertProfileStatus` resolve that contract while
+preserving stored filter and enum values. Matching explanations, card
+languages, and booking-pet species reuse the prepared localized maps. The
+directory remains bounded at exactly six queries with both one and sixteen
+published profiles, so the localization change adds no query and no N+1 path.
+User-authored and demo professional names, headlines, biographies, service
+descriptions, and credentials remain attributable content and are not
+machine-translated.
+
+The repeatable browser contract compares thirty-seven expert system fields
+with the English baseline, including five statistics strings, ten filter
+labels, seven default options, result guidance, card taxonomy/facts, and card
+actions. The audit also corrected its stale unauthenticated entry URL from `/`
+to the allowed `/login` route, retaining the global private-portal boundary.
+It exposed and closed one earlier marketplace taxonomy gap: the seeded
+`pet-sitting` code now belongs to the shared 106-label marketplace contract
+instead of falling back to `Pet Sitting`. All 91 browser audits and 26
+screenshots then passed with zero console errors; the 375px Russian expert
+directory had zero overflow, clipped regions, raw translation keys, or
+sub-44px header targets.
+
+The affected expert, marketplace, responsive, card, linked-media, and
+page-identity run passed 100 tests with 1,910 assertions; the complete
+sequential suite passed 2,810 tests with 89,895 assertions. Full Pint and
+Larastan passed with zero findings; Composer validation, audit, and platform
+requirements, NPM audit, production build, isolated migration plus repeated
+seed (134 migrations, 217 tables, stable 5 users and 10 expert profiles),
+184-line route and cache smoke, and both forum-source checks also passed.
+
 ### 3.3 Next Execution Checkpoint
 
 1. Complete Package 0 by assigning the stable requirement ID and recording the
@@ -314,9 +349,9 @@ cache smoke, and both forum-source checks also passed.
    complete from source intent or screenshots alone.
 4. Continue the non-header English fallback audit on the remaining priority
    RU/LT pages; the global navigation, `/medical-records`, and
-   `/care-journals`, `/lost-found`, and `/marketplace` are browser-verified,
-   while the other priority bodies remain open. Do not conflate body-copy
-   completion with the verified page-identity contract.
+   `/care-journals`, `/lost-found`, `/marketplace`, and `/experts` are
+   browser-verified, while the other priority bodies remain open. Do not
+   conflate body-copy completion with the verified page-identity contract.
 
 ## 4. Scope
 

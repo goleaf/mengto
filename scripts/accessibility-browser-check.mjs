@@ -398,7 +398,7 @@ try {
         { label: 'English 1920px account entry', locale: 'en', width: 1920, height: 1080, mobile: false },
     ];
 
-    await navigate(client, sessionId, `${baseUrl}/`);
+    await navigate(client, sessionId, `${baseUrl}/login`);
 
     for (const viewport of accountEntryViewports) {
         const currentLocale = await evaluate(client, sessionId, 'document.documentElement.lang');
@@ -422,7 +422,7 @@ try {
             screenWidth: viewport.width,
             screenHeight: viewport.height,
         }, sessionId);
-        await navigate(client, sessionId, `${baseUrl}/`);
+        await navigate(client, sessionId, `${baseUrl}/login`);
 
         const audit = await evaluate(client, sessionId, pageAuditExpression);
         assertPageAudit(audit, viewport.label);
@@ -560,6 +560,7 @@ try {
         let englishCareJournalCopy = null;
         let englishLostFoundCopy = null;
         let englishMarketplaceCopy = null;
+        let englishExpertCopy = null;
         let canonicalTitleFont = null;
 
         const setProfileLocale = async (locale) => {
@@ -698,6 +699,10 @@ try {
                     const marketplaceStatItems = [...document.querySelectorAll('[data-marketplace-stat]')];
                     const marketplaceFilters = document.querySelector('[data-marketplace-filters]');
                     const listingCard = document.querySelector('[data-listing-card]');
+                    const expertStats = document.querySelector('[data-expert-stats]');
+                    const expertStatItems = [...document.querySelectorAll('[data-expert-stat]')];
+                    const expertFilters = document.querySelector('[data-expert-filters]');
+                    const expertCard = document.querySelector('[data-expert-card]');
 
                     return {
                         documentLanguage: document.documentElement.lang,
@@ -736,7 +741,7 @@ try {
                             )
                         ),
                         rawTranslationKeys: document.body.innerText.match(
-                            /\\b(?:ui|messages|forum|navigation|pet_profiles|places)\\.[a-z0-9_.-]+/gi
+                            /\\b(?:ui|messages|forum|navigation|pet_profiles|places|experts)\\.[a-z0-9_.-]+/gi
                         ) ?? [],
                         navigationCopy: {
                             desktopLabel: document.querySelector(
@@ -911,6 +916,41 @@ try {
                             cardSaveLabel: listingCard?.querySelector('[data-listing-save] span')
                                 ?.textContent.trim() ?? null,
                             cardViewLabel: listingCard?.querySelector('[data-listing-view] span')
+                                ?.textContent.trim() ?? null,
+                        },
+                        expertCopy: {
+                            statsLabel: expertStats?.getAttribute('aria-label') ?? null,
+                            statsLabels: expertStatItems.map(
+                                (item) => item.querySelector('div span')?.textContent.trim() ?? null,
+                            ),
+                            filterLabels: [...(expertFilters?.querySelectorAll('label') ?? [])]
+                                .map(directText),
+                            filterDefaults: [...(expertFilters?.querySelectorAll('select') ?? [])]
+                                .map((select) => select.selectedOptions[0]?.textContent.trim() ?? null),
+                            searchPlaceholder: expertFilters?.querySelector('input[name="q"]')
+                                ?.getAttribute('placeholder') ?? null,
+                            applyLabel: expertFilters?.querySelector('button[type="submit"] span')
+                                ?.textContent.trim() ?? null,
+                            clearLabel: expertFilters?.querySelector('a[title]')
+                                ?.getAttribute('title') ?? null,
+                            resultsTitle: document.querySelector('[data-expert-results-title]')
+                                ?.textContent.trim() ?? null,
+                            resultsDescription: document.querySelector('[data-expert-results-description]')
+                                ?.textContent.trim() ?? null,
+                            urgentLabel: document.querySelector('[data-expert-urgent]')
+                                ?.textContent.trim() ?? null,
+                            cardBadge: expertCard?.querySelector('[data-expert-card-badge] span:last-child')
+                                ?.textContent.trim() ?? null,
+                            cardType: expertCard?.querySelector('[data-expert-card-type]')
+                                ?.textContent.trim() ?? null,
+                            cardSpecializations: expertCard?.querySelector('[data-expert-card-specializations]')
+                                ?.textContent.trim() ?? null,
+                            cardFactLabels: [...(expertCard?.querySelectorAll(
+                                '[data-expert-card-facts] dt'
+                            ) ?? [])].map((element) => element.textContent.trim()),
+                            cardViewLabel: expertCard?.querySelector('[data-expert-card-view] span')
+                                ?.textContent.trim() ?? null,
+                            cardBookLabel: expertCard?.querySelector('[data-expert-card-book] span')
                                 ?.textContent.trim() ?? null,
                         },
                     };
@@ -1150,7 +1190,44 @@ try {
                         assert(englishMarketplaceCopy !== null, `${label}: English marketplace baseline is missing.`);
                         assert(
                             marketplaceCopy.every((value, index) => value !== englishMarketplaceCopy[index]),
-                            `${label}: English marketplace body fallback remains.`,
+                            `${label}: English marketplace body fallback remains. Current ${JSON.stringify(marketplaceCopy)}; English ${JSON.stringify(englishMarketplaceCopy)}.`,
+                        );
+                    }
+                }
+
+                if (route.path === '/experts') {
+                    const expertCopy = [
+                        behavior.expertCopy.statsLabel,
+                        ...behavior.expertCopy.statsLabels,
+                        ...behavior.expertCopy.filterLabels,
+                        ...behavior.expertCopy.filterDefaults,
+                        behavior.expertCopy.searchPlaceholder,
+                        behavior.expertCopy.applyLabel,
+                        behavior.expertCopy.clearLabel,
+                        behavior.expertCopy.resultsTitle,
+                        behavior.expertCopy.resultsDescription,
+                        behavior.expertCopy.urgentLabel,
+                        behavior.expertCopy.cardBadge,
+                        behavior.expertCopy.cardType,
+                        behavior.expertCopy.cardSpecializations,
+                        ...behavior.expertCopy.cardFactLabels,
+                        behavior.expertCopy.cardViewLabel,
+                        behavior.expertCopy.cardBookLabel,
+                    ];
+
+                    assert(
+                        expertCopy.length === 37
+                            && expertCopy.every((value) => value?.length > 0),
+                        `${label}: the expert localization surface is incomplete ${JSON.stringify(behavior.expertCopy)}.`,
+                    );
+
+                    if (viewport.locale === 'en') {
+                        englishExpertCopy ??= expertCopy;
+                    } else {
+                        assert(englishExpertCopy !== null, `${label}: English expert baseline is missing.`);
+                        assert(
+                            expertCopy.every((value, index) => value !== englishExpertCopy[index]),
+                            `${label}: English expert body fallback remains. Current ${JSON.stringify(expertCopy)}; English ${JSON.stringify(englishExpertCopy)}.`,
                         );
                     }
                 }

@@ -37,6 +37,7 @@ return [
         'rehabilitation' => 'Rehabilitation equipment',
         'professional-service' => 'Professional services',
         'pet-service' => 'Everyday pet services',
+        'pet-sitting' => 'Pet sitting',
         'shelter-supplies' => 'Shelter supplies',
         'adoption' => 'Adoption',
         'other' => 'Other',

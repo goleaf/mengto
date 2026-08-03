@@ -1,6 +1,6 @@
 @props(['expert'])
 
-<article class="grid min-h-full gap-4 rounded-md border border-paw-line bg-white p-5 shadow-sm">
+<article data-expert-card class="grid min-h-full gap-4 rounded-md border border-paw-line bg-white p-5 shadow-sm">
     <header class="flex items-start gap-4">
         <x-linked-media
             :href="$expert['media_target']['url']"
@@ -31,19 +31,19 @@
                     spacing="none"
                 />
                 @if ($expert['qualification_verified'])
-                    <x-status-badge label="{{ __('ui.qualification_verified_bfd453f9ac') }}" icon="badge-check" tone="success" />
+                    <x-status-badge data-expert-card-badge label="{{ __('ui.qualification_verified_bfd453f9ac') }}" icon="badge-check" tone="success" />
                 @else
-                    <x-status-badge label="{{ $expert['verification'] }}" icon="circle-help" />
+                    <x-status-badge data-expert-card-badge label="{{ $expert['verification'] }}" icon="circle-help" />
                 @endif
             </div>
-            <p class="mt-1 text-sm font-semibold text-paw-leaf">{{ $expert['type'] }}</p>
+            <p data-expert-card-type class="mt-1 text-sm font-semibold text-paw-leaf">{{ $expert['type'] }}</p>
             <p class="mt-1 text-sm text-paw-muted">{{ $expert['city'] }}</p>
         </div>
     </header>
 
     <div>
         <p class="font-semibold">{{ $expert['headline'] }}</p>
-        <div class="mt-3 flex flex-wrap gap-2" aria-label="{{ __('ui.specializations_b2561b50e1') }}">
+        <div data-expert-card-specializations class="mt-3 flex flex-wrap gap-2" aria-label="{{ __('ui.specializations_b2561b50e1') }}">
             @forelse (array_slice($expert['specializations'], 0, 3) as $specialization)
                 <span class="rounded border border-paw-line bg-paw-paper px-2 py-1 text-xs font-semibold">{{ $specialization }}</span>
             @empty
@@ -65,7 +65,7 @@
         </ul>
     @endif
 
-    <dl class="grid grid-cols-2 gap-3 border-y border-paw-line py-3 text-sm">
+    <dl data-expert-card-facts class="grid grid-cols-2 gap-3 border-y border-paw-line py-3 text-sm">
         <div>
             <dt class="text-paw-muted">{{ __('ui.next_time_651c943284') }}</dt>
             <dd class="mt-1 font-semibold">{{ $expert['next_available'] ?? __('ui.by_request_6abaa6de2b') }}</dd>
@@ -90,6 +90,7 @@
 
     <footer class="mt-auto flex flex-wrap gap-2">
         <x-action-control
+            data-expert-card-view
             label="{{ __('ui.view_profile_d4788f256f') }}"
             icon="arrow-right"
             variant="primary"
@@ -97,6 +98,7 @@
         />
         @if ($expert['accepts_new_clients'])
             <x-action-control
+                data-expert-card-book
                 label="{{ __('ui.book_909cb81127') }}"
                 icon="calendar-plus"
                 :href="route('experts.bookings.create', $expert['slug'])"

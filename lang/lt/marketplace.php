@@ -37,6 +37,7 @@ return [
         'rehabilitation' => 'Reabilitacijos įranga',
         'professional-service' => 'Profesionalios paslaugos',
         'pet-service' => 'Kasdienės gyvūnų paslaugos',
+        'pet-sitting' => 'Augintinių priežiūra',
         'shelter-supplies' => 'Prieglaudų reikmenys',
         'adoption' => 'Globa',
         'other' => 'Kita',
