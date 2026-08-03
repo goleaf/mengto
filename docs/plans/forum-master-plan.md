@@ -8,6 +8,10 @@ This plan implements the immutable source in
 atomic requirement IDs to a primary phase; no identifier is represented by a
 generic “implement everything” checkbox.
 
+The current verified/open totals, dependency-ordered remaining waves, and
+final completion gates are maintained in
+`docs/plans/forum-completion-plan.md`.
+
 Before every phase:
 
 1. read the source prompt, master requirements, matrix, progress, and

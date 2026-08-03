@@ -1,24 +1,18 @@
 # Forum Current Progress
 
-Last updated: 2026-08-01.
+Last updated: 2026-08-03.
 
 ## Current Phase
 
-Phases 0–2 are complete. The dated pet-profile and social-relationships
-revisions have passed source preservation, atomic extraction, and repository
-discovery. Additive schema, forum categories, animal taxonomy,
-reputation/confirmation, and moderation foundations have been implemented.
-Phase 8 structured-community work and Phase 10 Livewire administration are in
-progress; pet phases 17-25 are planned and the first canonical identity/access
-foundation package is verified. The social phase 27 foundation is also
-verified, while later social packages remain open. Content phase 35 has now
-preserved, atomized, audited, and designed the feed revision; production
-content phases 36-44 remain open. Communication phases 45-54 and community
-phases 55-63 are registered, with the first profile-scoped community
-membership package verified. Medical phases 64-73 are registered and their
-first canonical patient-identity/access package is under verification.
-Verification remains incremental; no
-incomplete phase is described as complete.
+Source preservation, atomic extraction, repository discovery, and domain
+planning are documented for all eight source payloads, but their control IDs
+still require exact evidence before Phases 0-2 can be called verified. The
+combined catalogue has 1,112 verified IDs and 28,848 open IDs. Forum/taxonomy,
+pet, social, content, community, and medical foundations are implemented in
+independently evidenced slices; communication production requirements and all
+remaining depth/release packages stay open. Verification remains incremental,
+and no incomplete phase is described as complete. The dependency-ordered
+remaining work is in `docs/plans/forum-completion-plan.md`.
 
 ## Completed Evidence
 
@@ -72,7 +66,7 @@ incomplete phase is described as complete.
   immutable case events, protected idempotent contact relays, advisory
   duplicate detection, unified false-sighting/reward-scam reports, and
   privacy-safe archival that preserves the complete operational history.
-- Requirement evidence is a deterministic overlay. `876` atomic requirements
+- Requirement evidence is a deterministic overlay. `1,112` atomic requirements
   are verified with file/test evidence and none are currently marked
   in-progress.
 - The pet-profile foundation preserves the existing aggregate while adding
@@ -85,19 +79,23 @@ incomplete phase is described as complete.
 - The social revision is preserved and atomized across 18 domains and phases
   27-34. The canonical actor/request/relationship/audit foundation, bounded
   backfill, policies, class-based Livewire relationship center, translations,
-  and profile-level controls are implemented. Exactly 158 social IDs are
-  verified after 22 focused tests, 63 expanded tests, the 1,861-test full
-  suite, isolated migration/seed/rollback, static analysis, build, cache, and
+  and profile-level controls are implemented. Exactly 222 social IDs are
+  verified after the foundation and account-safety packages passed focused,
+  full-suite, migration/seed/rollback, static-analysis, build, cache, and
   desktop/mobile/320px browser gates. Later social packages remain open.
 - The content revision is preserved and atomized across 22 domains and phases
   36-44. Its existing-system audit distinguishes durable domain content from
   private prototype state, and its ADRs define canonical publication,
   read-time audience, original-preserving distribution, independent media,
   authoritative typed links, unified moderation, and workerless processing
-  boundaries. All 4,011 content IDs remain open until production behavior is
-  implemented and evidenced.
-- Current complete serial repository checkpoint: 1,861 tests and 69,718
-  assertions in 90.930 seconds.
+  boundaries. The first canonical publication package verifies 58 content
+  IDs; 3,953 content IDs remain open.
+- Communication has 3,877 open IDs and no production atom is yet verified.
+  Community profile-scoped membership verifies 35 IDs; 3,541 community IDs
+  remain open. Canonical medical patient identity/access and explicit
+  knowledge states verify 79 IDs; 3,788 medical IDs remain open.
+- Latest recorded complete serial repository checkpoint: 2,027 tests and
+  72,581 assertions.
 - Current repository checkpoint: expert-session plus architecture verification
   passed 31 tests and 22,249 assertions. The detached `f1e2fcc` package
   snapshot passed full Pint and Larastan, 1,554 serial tests and 54,317
@@ -215,55 +213,34 @@ incomplete phase is described as complete.
   tables; Pint, Larastan, audits, Vite/cache compilation, and reproducible
   EN/LT/RU headless-Chrome checks passed. All 41 scoped IDs are verified.
 
-## Phase Counts
+## Requirement Status Snapshot
 
-| Phase | Atomic requirements | Status |
-| ---: | ---: | --- |
-| 0 | 10 | verified |
-| 1 | 186 | documented; final reread pending |
-| 2 | 9 | documented |
-| 3 | 82 | implemented; full-suite verification pending |
-| 4 | 1,463 | implemented for recovered hierarchy; final traceability pending |
-| 5 | 825 | core/import pipeline implemented; full external snapshot pending |
-| 6 | 347 | foundation, panels/notes, and mentorship verified; additional trust packages remain |
-| 7 | 463 | operations verified; duplicate grouping, transparency, and broad entity coverage remain |
-| 8 | 3,345 | adoption, lost/found, collaborative guides, mentorship, persistent groups, group content, polls, journals, events, expert question sessions, and topic lifecycle verified; remaining structured domains planned |
-| 9 | 93 | planned |
-| 10 | 67 | accessibility and multilingual behavior verified; remaining interface packages in progress |
-| 11 | 13 | topic category/taxonomy backfill implemented; reports pending |
-| 12 | 29 | fixed definitions implemented; demo graph pending |
-| 13 | 131 | planned |
-| 14 | 221 | planned |
-| 17 | 278 | canonical identity/status subset verified; remaining release boundary planned |
-| 18 | 845 | minimal creation and versioned-fact subset verified; duplicate/claim and identity depth planned |
-| 19 | 614 | manager/access and selected privacy subset verified; transfer/dispute/privacy depth planned |
-| 20 | 1,029 | stable public projection/URL/QR subset verified; media/social/behavior planned |
-| 21 | 368 | planned |
-| 22 | 272 | typed transition foundation verified; complete lifecycle/memorial effects planned |
-| 23 | 192 | planned |
-| 24 | 243 | foundation Livewire accessibility/localization subset verified; remaining interfaces planned |
-| 25 | 294 | foundation verification recorded; complete metrics/scenarios planned |
-| 27 | 661 | foundation package selected; implementation in progress |
-| 28 | 672 | planned |
-| 29 | 408 | planned |
-| 30 | 433 | planned |
-| 31 | 492 | planned |
-| 32 | 223 | planned |
-| 33 | 197 | planned |
-| 34 | 124 | planned |
+| Source stream | Requirements | Verified | Open |
+| --- | ---: | ---: | ---: |
+| Original forum source | 2,566 | 0 | 2,566 |
+| Forum extension and taxonomy | 4,718 | 513 | 4,205 |
+| Pet-profile revision | 4,135 | 205 | 3,930 |
+| Social-relationships revision | 3,210 | 222 | 2,988 |
+| Content-feed revision | 4,011 | 58 | 3,953 |
+| Communication revision | 3,877 | 0 | 3,877 |
+| Community revision | 3,576 | 35 | 3,541 |
+| Medical-record revision | 3,867 | 79 | 3,788 |
+| **Total** | **29,960** | **1,112** | **28,848** |
+
+The exact per-phase open counts and execution order are maintained in
+`docs/plans/forum-completion-plan.md`; the generated phase index remains the
+authority for individual IDs.
 
 ## Next Verified Pass
 
-1. Implement the selected social actor, relationship, request, setting, and
-   append-only event schema without changing existing identity records.
-2. Preserve encrypted connection/pet-friend state and report ambiguous legacy
-   endpoints rather than manufacturing mutual consent.
-3. Add policy-checked, idempotent follow/friend/close-circle/block Actions and
-   the class-based Livewire relationship center.
-4. Add migration, race, replay, privacy, query, localization, accessibility,
-   and browser tests for the exact foundation intervals.
-5. Update only independently evidenced IDs, rerun full gates, then return to
-   the next open pet and social package selected from the generated index.
+1. Create the Phase 3-7 core-foundation reconciliation work package named in
+   `docs/plans/forum-completion-plan.md`.
+2. Select exact open IDs and classify each as missing behavior, missing
+   evidence, or a real external blocker.
+3. Close authorization, privacy, integrity, and preservation gaps first while
+   retaining the existing category/taxonomy foundations.
+4. Update only independently evidenced IDs and rerun the applicable package
+   gates before selecting the next slice.
 
 ## Preservation Ledger
 

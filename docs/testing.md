@@ -82,9 +82,10 @@ destructive command.
 ## Baseline And Current Checkpoint
 
 The modernization baseline was 116 passing tests and 3,881 assertions. The
-latest complete serial checkpoint reports 1,861 passing tests and 69,718
-assertions after the social-relationship foundation package. This checkpoint
-is not a final coverage claim while requirements remain unimplemented.
+latest recorded complete serial checkpoint reports 2,027 passing tests and
+72,581 assertions in 115.528 seconds after the canonical medical
+patient-identity/access package. This checkpoint is not a final coverage claim
+while requirements remain unimplemented.
 
 Pest coverage cannot run in the current environment because PHP 8.5 has neither
 PCOV nor Xdebug. The expected failing command and its exact reason remain part

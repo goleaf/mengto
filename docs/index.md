@@ -62,6 +62,7 @@ domain contract under the canonical requirements above:
 | `docs/requirements/forum-requirements.json` | All 29,960 atomic requirement records | Canonical machine-readable |
 | `docs/traceability/forum-requirements-matrix.md` | Requirement-level implementation and verification evidence | Living generated evidence |
 | `docs/plans/forum-master-plan.md` | Dependency-aware implementation contract | Living canonical plan |
+| `docs/plans/forum-completion-plan.md` | Exact remaining totals, dependency order, and final completion gates | Living canonical completion plan |
 | `docs/plans/forum-phase-requirement-index.md` | One primary phase for every atomic requirement | Canonical generated |
 | `docs/plans/forum-current-progress.md` | Current phase, checks, and preservation ledger | Living evidence |
 | `docs/audits/forum-existing-system-audit.md` | Forum baseline and discovered architecture | Living evidence |

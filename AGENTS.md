@@ -35,6 +35,7 @@ state, and private domain boundaries must remain consistent.
     `docs/requirements/forum-master-requirements.md`,
     `docs/traceability/forum-requirements-matrix.md`,
     `docs/plans/forum-master-plan.md`,
+    `docs/plans/forum-completion-plan.md`,
     `docs/plans/forum-phase-requirement-index.md`,
     `docs/plans/forum-current-progress.md`, the applicable canonical forum
     feature document such as `docs/mentorship.md`, and the forum

@@ -8,26 +8,26 @@ This is a living gate record. It is deliberately not a completion claim.
 | --- | --- | --- |
 | 0 Source preservation | verified | `forum-source-prompt.md`; preservation and generation `--check` commands |
 | 1 Discovery | in progress | `forum-existing-system-audit.md` |
-| 2 Atomic plan coverage | verified | 14,629 records in JSON and generated phase index |
+| 2 Atomic plan coverage | verified | 29,960 records in JSON and generated phase index |
 | 3 Implementation | not complete | production implementation has not yet reached all phases |
-| 4 Tests | not complete | the social foundation passed 22 focused tests and 432 assertions, 63 expanded tests and 26,709 assertions, and a final repository suite of 1,861 tests and 69,718 assertions; package migration/seed, analysis, build, cache, and browser evidence passed, while unimplemented requirement suites remain |
+| 4 Tests | not complete | the latest recorded medical package suite passed 2,027 tests and 72,581 assertions; package migration/seed, analysis, build, cache, and browser evidence passed, while open requirement suites remain |
 | 5 Documentation | in progress | initial canonical pass exists |
-| 6 Final traceability | not complete | deterministic evidence overlay records verified and in-progress slices; most records remain planned/discovered |
+| 6 Final traceability | not complete | deterministic evidence overlay records 1,112 verified IDs; 28,848 remain discovered |
 
 ## Atomic Totals
 
 | Measure | Current value |
 | --- | ---: |
-| Source payloads | 3 |
-| Atomic requirements | 14,629 |
-| Assigned to a phase | 14,629 |
-| Verified | 876 |
+| Source payloads | 8 |
+| Atomic requirements | 29,960 |
+| Assigned to a phase | 29,960 |
+| Verified | 1,112 |
 | In progress | 0 |
-| Planned or discovered | 13,753 |
+| Planned or discovered | 28,848 |
 | Blocked | 0 |
 | Intentionally not applicable | 0 |
 
-Gate 0 itself and 876 implementation requirements are verified. All remaining
+Gate 0 itself and 1,112 implementation requirements are verified. All remaining
 statuses stay conservative until file-level and passing-check evidence is
 recorded in `forum-requirement-evidence.json`.
 
@@ -43,4 +43,5 @@ Before this file may declare completion:
 5. inspect placeholders, TODOs, hardcoded platform text, forbidden Blade code,
    destructive data operations, and unstable identifiers;
 6. record exact totals and evidence;
-7. keep every unresolved item as `blocked`, never as verified.
+7. keep every unresolved item planned/discovered, or use `blocked` only for a
+   proven external dependency; never mark it verified.

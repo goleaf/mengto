@@ -14,8 +14,8 @@ claims. Query budgets are added to critical flows with deterministic fixtures.
 
 ## Latest Measured State
 
-- Full Pest suite: 1,861 tests and 69,718 assertions in 90.930 seconds after
-  the social-relationship foundation package.
+- Latest recorded full Pest suite: 2,027 tests and 72,581 assertions in
+  115.528 seconds after the canonical medical patient-identity/access package.
 - Vite 8.2 production build: passed.
 - Font CSS: 1.31 kB, 0.32 kB gzip.
 - Tailwind application CSS: 51.15 kB, 9.63 kB gzip.
