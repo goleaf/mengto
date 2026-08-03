@@ -25,13 +25,23 @@ organization event creation, invitation, registration and check-in boundaries,
 workspace data minimization, EN/LT/RU labels, factories, idempotent guarded
 seeding, and bounded directory queries.
 
+`PlaceAuthorityFoundationTest` covers reversible indexed schema, encrypted
+exact fields and versions, public projection, account/purpose/expiry grant
+boundaries, audited reveal, grant revocation after a move, former organization
+staff, unlisted candidate isolation, confirmed-registration enforcement for
+attendance grants, event place/venue linkage, Livewire state minimization,
+factories, and guarded repeat seeding. `PlaceDirectoryTest`
+proves the server-rendered directory and dynamic detail route consume the same
+persisted authority without exposing private or archived records.
+
 The repository browser audit covers the event directory, a recurring event,
-the three-session conference schedule, and the organization directory and
-workspace at 1440x900 and 375x812. It checks one `h1` and `main`, accessible
-control names, 44px mobile targets, horizontal overflow, raw translation keys,
-private-location and verification-evidence disclosure, expected session count,
-and browser console errors. PNG files and the JSON report remain runtime
-artifacts outside the repository.
+the three-session conference schedule, the canonical place directory/detail,
+and the organization directory and workspace at 1440x900 and 375x812. It
+checks one `h1` and `main`, accessible control names, 44px mobile targets,
+horizontal overflow, raw translation keys, private-location and
+verification-evidence disclosure, persisted place cards, expected session
+count, and browser console errors. PNG files and the JSON report remain
+runtime artifacts outside the repository.
 
 ## Verification on 2026-08-03
 
@@ -61,6 +71,16 @@ browser audits passed with no overflow, unnamed controls, raw organization
 keys, private evidence leaks, undersized mobile controls, or console errors.
 The exact checkpoint is recorded in
 `docs/plans/portal-organization-authority-foundation-work-package.md`.
+
+The place-authority checkpoint passed 20 focused tests with 153 assertions,
+the full serial suite passed 2,579 tests with 81,626 assertions, and isolated
+fresh/repeat seeding covered 126 migrations and 211 tables with stable entity
+counts. Four place browser audits passed with no overflow, unnamed controls,
+raw place keys, private exact-location leaks, undersized mobile controls, or
+console errors. The first run found a 16x16 `open_now` checkbox target; the
+control was corrected to 44px before the complete browser rerun passed. The
+exact checkpoint is recorded in
+`docs/plans/portal-place-location-venue-authority-work-package.md`.
 
 Provider-backed event payments, tickets, refunds, QR/offline check-in,
 session reservations/waitlists, competition scoring, vendors, volunteers,

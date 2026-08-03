@@ -54,6 +54,8 @@ final readonly class InitializeForumEventLifecycle
                 ['stable_key' => $locked->stable_key.'-occurrence-1'],
                 [
                     'forum_event_id' => $locked->id,
+                    'place_id' => $locked->place_id,
+                    'venue_id' => $locked->venue_id,
                     'status' => $locked->status,
                     'starts_at' => $locked->starts_at,
                     'ends_at' => $locked->ends_at,

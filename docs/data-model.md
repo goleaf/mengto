@@ -290,6 +290,25 @@ Exact location, online URL, emergency plan, attendee notes, invitation
 messages, and private review feedback use encrypted casts. See
 `docs/events.md` for lifecycle and recovery.
 
+## Place And Venue Authority Tables
+
+- `places` owns one stable place identity, owner or responsible organization,
+  lifecycle, visibility, locale, public region/contact facts, encrypted exact
+  location, factual verification/accessibility states, and optimistic version.
+- `venues` provides the event-operational capacity, timezone, confirmation,
+  species allocation, and encrypted staff contact/rules for one place.
+- `venue_areas` defines typed rooms and zones with separate human, animal,
+  species, accessibility, and private-instruction boundaries.
+- `place_access_grants` stores account-, purpose-, event-, and time-bound exact
+  location permission; `place_access_audits` records each reveal.
+- `place_location_versions` preserves encrypted material location history.
+
+`forum_events` and `forum_event_occurrences` reference the canonical place and
+venue. `forum_event_rooms` may reference a venue area. Exact addresses are not
+copied into event snapshots or public projections. Compound indexes cover
+public catalogue, owner/organization access, grant windows, event linkage,
+venue capacity, audit history, and location versions.
+
 ## Social Relationship Tables
 
 - `social_actors`: one adapter per authoritative user, pet, expert, or group;

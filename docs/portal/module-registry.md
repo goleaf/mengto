@@ -11,7 +11,8 @@ The existing authenticated Blade/Livewire shell remains canonical.
 | Health | `medical-records.index` | canonical medical record |
 | Care | `care-journals.index` | care journal/task domain |
 | Events | `meetups.index` | `ForumEvent`, occurrences, tracks, rooms, sessions |
-| Places/devices/lost-and-found | corresponding named directories | existing place, device, search-case domains |
+| Places | `places.index` | persisted `Place`, optional `Venue`, typed `VenueArea`, public projection, private access grants |
+| Devices/lost-and-found | corresponding named directories | device telemetry and search-case coordinates remain domain-owned |
 | Marketplace/bookings/orders | `marketplace.index` | listing, booking, order domains |
 | Experts/forum/knowledge | corresponding named directories | expert and forum domains |
 | Groups/relationships/messages | corresponding named directories | forum groups and social/message services |

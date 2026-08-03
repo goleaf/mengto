@@ -200,8 +200,10 @@ facts and should not be rewritten unless the corresponding gate is rerun.
 
 1. Build the canonical organization and membership aggregate before claiming
    organization-only visibility or cross-tenant event administration.
-2. Reconcile static place presentation with a canonical persisted place/venue
-   boundary before introducing event-only venue duplicates.
+2. The P03 package now reconciles static place presentation with one persisted
+   place/venue/area authority and event foreign keys. Route geometry, offline
+   operational packages, and event-change notification delivery remain open;
+   no event-only venue duplicate should be introduced.
 3. Keep payment eligibility separate from registration eligibility. Introduce
    the internal ledger and provider contract first; enable paid checkout only
    after one provider is selected, signed, audited, and configured.

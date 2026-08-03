@@ -45,8 +45,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property-read Collection<int, OrganizationInvitation> $invitations
  * @property-read Collection<int, OrganizationMembership> $memberships
  * @property-read User $owner
+ * @property-read Collection<int, Place> $places
  * @property-read Collection<int, OrganizationRestriction> $activeRestrictions
  * @property-read Collection<int, OrganizationRestriction> $restrictions
+ * @property-read Collection<int, Venue> $venues
  */
 final class Organization extends Model
 {
@@ -167,6 +169,18 @@ final class Organization extends Model
     public function events(): HasMany
     {
         return $this->hasMany(ForumEvent::class, 'responsible_organization_id');
+    }
+
+    /** @return HasMany<Place, $this> */
+    public function places(): HasMany
+    {
+        return $this->hasMany(Place::class);
+    }
+
+    /** @return HasMany<Venue, $this> */
+    public function venues(): HasMany
+    {
+        return $this->hasMany(Venue::class);
     }
 
     /**

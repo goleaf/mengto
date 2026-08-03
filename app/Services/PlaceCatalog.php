@@ -1,15 +1,34 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services;
+
+use App\Enums\PlaceAccessibilityStatus;
+use App\Enums\PlaceType;
+use App\Enums\PlaceVerificationStatus;
+use App\Models\Place;
+use App\Models\User;
+use Illuminate\Contracts\Auth\Factory as AuthFactory;
+use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Support\Str;
 
 final class PlaceCatalog
 {
+    /** @var array<string, Place>|null */
+    private ?array $canonicalPlaces = null;
+
+    public function __construct(
+        private readonly LocaleFormatter $formatter,
+        private readonly AuthFactory $auth,
+    ) {}
+
     /**
      * @return array<int, array<string, mixed>>
      */
     public function all(): array
     {
-        return array_values($this->records());
+        return array_values($this->withCanonicalAuthority($this->records()));
     }
 
     /**
@@ -17,7 +36,23 @@ final class PlaceCatalog
      */
     public function find(string $key): ?array
     {
-        return $this->records()[$key] ?? null;
+        $records = $this->withCanonicalAuthority($this->records());
+
+        if (isset($records[$key])) {
+            return $records[$key];
+        }
+
+        return collect($records)->firstWhere('slug', $key);
+    }
+
+    /**
+     * Stable localized fixtures used by the environment-gated demo seeder.
+     *
+     * @return array<string, array<string, mixed>>
+     */
+    public function demoRecords(): array
+    {
+        return $this->records();
     }
 
     /**
@@ -87,6 +122,242 @@ final class PlaceCatalog
             'shelter' => 'house-heart',
             'pet-cafe' => 'coffee',
         ];
+    }
+
+    /**
+     * @param  array<string, array<string, mixed>>  $records
+     * @return array<string, array<string, mixed>>
+     */
+    private function withCanonicalAuthority(array $records): array
+    {
+        $authoritative = [];
+        $user = $this->user();
+
+        foreach ($this->canonicalPlaces() as $stableKey => $place) {
+            $record = $records[$stableKey] ?? $this->defaultRecord($place);
+            $record['city'] = $place->public_region;
+            $record['general_location'] = $place->public_region;
+            $record['address'] = $place->public_address ?? $place->public_region;
+            $record['name'] = $place->name;
+            $record['summary'] = $place->summary ?? $record['summary'];
+            $record['primary_category'] = $place->catalog_category
+                ?? $this->categoryForType($place->type);
+            $record['categories'] = array_values(array_unique([
+                $record['primary_category'],
+                ...($record['categories'] ?? []),
+            ]));
+            $record['category_label'] = $this->categoryOptions()[$record['primary_category']]
+                ?? $place->type->label();
+            $record['category_icon'] = $this->iconOptions()[$record['primary_category']] ?? 'map-pin';
+            $record['phone'] = $place->public_phone;
+            $record['website'] = $place->public_website;
+            $record['email'] = $place->public_email;
+            $record['latitude'] = $place->public_latitude === null
+                ? $record['latitude']
+                : (float) $place->public_latitude;
+            $record['longitude'] = $place->public_longitude === null
+                ? $record['longitude']
+                : (float) $place->public_longitude;
+            $record['accepted_species'] = $place->species_rules === null
+                || $place->species_rules === []
+                    ? $record['accepted_species']
+                    : array_values($place->species_rules);
+            $record['wheelchair_access'] = $place->accessibility_status
+                === PlaceAccessibilityStatus::Confirmed;
+            $record['owner_managed'] = $user !== null && $place->isManagedBy($user);
+            $record['slug'] = $place->slug;
+            $record['verification'] = [
+                'label' => $place->verification_status->label(),
+                'scope' => __('places.presentation.public_information_scope'),
+                'updated_at' => $place->updated_at->toDateString(),
+                'tone' => match ($place->verification_status) {
+                    PlaceVerificationStatus::Verified => 'verified',
+                    PlaceVerificationStatus::OrganizerProvided,
+                    PlaceVerificationStatus::VenueConfirmed,
+                    PlaceVerificationStatus::OrganizationConfirmed => 'community',
+                    default => 'neutral',
+                },
+            ];
+            $record['data_freshness'] = __('places.presentation.information_current', [
+                'date' => $this->formatter->date($place->updated_at),
+            ]);
+            $authoritative[$stableKey] = $record;
+        }
+
+        return $authoritative;
+    }
+
+    /**
+     * @return array<string, Place>
+     */
+    private function canonicalPlaces(): array
+    {
+        if ($this->canonicalPlaces !== null) {
+            return $this->canonicalPlaces;
+        }
+
+        $user = $this->user();
+        $query = Place::query()
+            ->select([
+                'id',
+                'owner_user_id',
+                'organization_id',
+                'stable_key',
+                'slug',
+                'name',
+                'summary',
+                'type',
+                'catalog_category',
+                'visibility',
+                'status',
+                'public_region',
+                'public_address',
+                'public_phone',
+                'public_website',
+                'public_email',
+                'public_latitude',
+                'public_longitude',
+                'is_indoor',
+                'verification_status',
+                'accessibility_status',
+                'accessibility_facts',
+                'parking_information',
+                'pet_rules',
+                'species_rules',
+                'archived_at',
+                'updated_at',
+            ])
+            ->with([
+                'organization:id',
+                'organization.memberships' => static function (Relation $memberships) use ($user): void {
+                    $memberships
+                        ->select([
+                            'id',
+                            'organization_id',
+                            'user_id',
+                            'role',
+                            'status',
+                            'expires_at',
+                            'removed_at',
+                        ])
+                        ->where('user_id', $user?->id);
+                },
+            ])
+            ->limit(500)
+            ->orderBy('id');
+
+        if ($user === null) {
+            $query->publiclyDiscoverable();
+        } else {
+            $query->accessibleTo($user);
+        }
+
+        $this->canonicalPlaces = $query
+            ->get()
+            ->keyBy('stable_key')
+            ->all();
+
+        return $this->canonicalPlaces;
+    }
+
+    /** @return array<string, mixed> */
+    private function defaultRecord(Place $place): array
+    {
+        $category = $place->catalog_category ?? $this->categoryForType($place->type);
+        $image = 'https://images.unsplash.com/photo-1450778869180-41d0601e046e?auto=format&fit=crop&w=1600&h=1000&q=82';
+        $rules = filled($place->pet_rules)
+            ? [trim((string) $place->pet_rules)]
+            : [__('places.presentation.rules_pending')];
+        $species = $place->species_rules === null || $place->species_rules === []
+            ? ['dog', 'cat']
+            : array_values($place->species_rules);
+
+        return [
+            'key' => $place->stable_key,
+            'slug' => $place->slug,
+            'name' => $place->name,
+            'short_name' => $place->name,
+            'primary_category' => $category,
+            'categories' => [$category],
+            'category_label' => $this->categoryOptions()[$category] ?? $place->type->label(),
+            'category_icon' => $this->iconOptions()[$category] ?? 'map-pin',
+            'summary' => $place->summary ?? __('places.presentation.summary_pending'),
+            'city' => $place->public_region,
+            'neighborhood' => $place->public_region,
+            'address' => $place->public_address ?? $place->public_region,
+            'general_location' => $place->public_region,
+            'latitude' => (float) ($place->public_latitude ?? 54.6872),
+            'longitude' => (float) ($place->public_longitude ?? 25.2797),
+            'map_x' => 50,
+            'map_y' => 50,
+            'coordinate_accuracy' => $place->public_latitude === null
+                ? __('places.presentation.manual_public_location')
+                : __('places.presentation.public_coordinates'),
+            'distance_km' => 0.0,
+            'travel_minutes' => 0,
+            'open_state' => 'unknown',
+            'open_label' => __('places.presentation.hours_unconfirmed'),
+            'closes_at' => null,
+            'hours_summary' => __('places.presentation.hours_unconfirmed'),
+            'special_hours' => __('places.presentation.call_before_travel'),
+            'phone' => $place->public_phone,
+            'website' => $place->public_website,
+            'email' => $place->public_email,
+            'accepted_species' => $species,
+            'accepted_sizes' => ['very-small', 'small', 'medium', 'large', 'very-large'],
+            'leash_policy' => $rules[0],
+            'fenced' => false,
+            'water' => false,
+            'lighting' => false,
+            'quiet_zone' => false,
+            'parking' => filled($place->parking_information),
+            'wheelchair_access' => $place->accessibility_status === PlaceAccessibilityStatus::Confirmed,
+            'price_level' => 'free',
+            'crowd_level' => 'unknown',
+            'crowd_label' => __('places.presentation.crowd_unknown'),
+            'noise_level' => __('places.presentation.not_assessed'),
+            'rules' => $rules,
+            'features' => array_values($place->accessibility_facts ?? []),
+            'accessibility' => array_values($place->accessibility_facts ?? []),
+            'safety' => [__('places.presentation.conditions_unconfirmed')],
+            'services' => [],
+            'pricing' => [],
+            'rating' => 0.0,
+            'review_count' => 0,
+            'verified_review_count' => 0,
+            'verification' => [],
+            'data_freshness' => '',
+            'recommendation_reason' => __('places.presentation.community_submission_reason'),
+            'sponsored' => false,
+            'allow_events' => true,
+            'owner_managed' => false,
+            'emergency' => $category === 'emergency-vet',
+            'image' => $image,
+            'image_small' => Str::replace(['w=1600', 'h=1000'], ['w=720', 'h=540'], $image),
+            'image_medium' => Str::replace(['w=1600', 'h=1000'], ['w=1200', 'h=750'], $image),
+            'image_alt' => __('places.presentation.default_image_alt', ['name' => $place->name]),
+            'route' => null,
+            'events' => [],
+            'base_warnings' => [],
+        ];
+    }
+
+    private function categoryForType(PlaceType $type): string
+    {
+        return match ($type) {
+            PlaceType::Park => 'park',
+            PlaceType::WalkingRoute => 'route',
+            PlaceType::VeterinaryClinic => 'vet',
+            PlaceType::Shelter => 'shelter',
+            default => 'park',
+        };
+    }
+
+    private function user(): ?User
+    {
+        $user = $this->auth->guard()->user();
+
+        return $user instanceof User ? $user : null;
     }
 
     /**
@@ -165,9 +436,9 @@ final class PlaceCatalog
                 'allow_events' => true,
                 'owner_managed' => false,
                 'emergency' => false,
-                'image' => 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1600&h=1000&q=85',
-                'image_small' => 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=720&h=540&q=80',
-                'image_medium' => 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&h=750&q=82',
+                'image' => 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=1600&h=1000&q=85',
+                'image_small' => 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=720&h=540&q=80',
+                'image_medium' => 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=1200&h=750&q=82',
                 'image_alt' => __('messages.broad_shaded_path_through_a_green_city_park_daf9d8d412'),
                 'route' => [
                     'distance' => __('messages.4_6_km_a3c02c501c'),

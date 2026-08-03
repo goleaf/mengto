@@ -31,6 +31,26 @@ enum OrganizationRole: string
         return in_array($this, [self::Owner, self::Administrator, self::EventManager], true);
     }
 
+    public function canManagePlaces(): bool
+    {
+        return in_array($this, [
+            self::Owner,
+            self::Administrator,
+            self::EventManager,
+            self::SafetyLead,
+            self::ShelterCoordinator,
+        ], true);
+    }
+
+    /** @return list<string> */
+    public static function placeManagerValues(): array
+    {
+        return array_values(array_map(
+            static fn (self $role): string => $role->value,
+            array_filter(self::cases(), static fn (self $role): bool => $role->canManagePlaces()),
+        ));
+    }
+
     public function canManageFinance(): bool
     {
         return in_array($this, [self::Owner, self::Administrator, self::FinanceManager], true);

@@ -135,8 +135,8 @@ the decision column is the desired page-identity boundary.
 | `pets.profile` | `/pets/profile/{petProfile:profile_key}` | `Pets\PublicPetProfile` | `deliberate-detail-or-profile` | retain token-compatible hero pending audit |
 | `pets.scout.legacy` | `/pets/scout` | `RedirectController` | `redirect` | no page identity |
 | `pets.created` | `/pets/{item}` | `CreatedContentPreviewController` | `deliberate-detail-or-profile` | retain token-compatible hero pending audit |
-| `places.index` | `/places` | `PlaceDirectoryPreviewController` | `canonical-page` | retain `x-page-header` |
-| `places.show` | `/places/{place}` | `PlaceDetailPreviewController` | `deliberate-detail-or-profile` | retain token-compatible hero pending audit |
+| `places.index` | `/places` | `PlaceDirectoryPreviewController` | `canonical-page` | retain `x-page-header`; policy-scoped persisted catalogue |
+| `places.show` | `/places/{place}` | `PlaceDetailPreviewController` | `deliberate-detail-or-profile` | stable dynamic slug; public-safe projection only |
 | `portal-media.show` | `/portal-media/{path}` | `PortalMediaController` | `file-response` | no page identity |
 | `posts.show` | `/posts/{post}` | `PostThreadPreviewController` | `canonical-page` | retain `x-page-header` |
 | `preview.feed` | `/preview/feed` | `PreviewController` | `canonical-page` | retain `x-page-header` |

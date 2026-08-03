@@ -74,7 +74,7 @@ attribution. No ranking, vote, or reaction path calls that conversion.
 | Care | Eloquent + private media | Journal policies, task/entry Actions, grants |
 | Devices | Eloquent | Command/read/event/lifecycle Actions, device policies, grants |
 | Social | Encrypted/versioned `user_domain_states`, immutable catalog content, relational photo engagement | Authenticated Actions, policies, catalogue resolution, constraints, optimistic versioning |
-| Places | Immutable catalog plus encrypted/versioned per-user state | Validated filters/actions, provider boundaries |
+| Places | Eloquent place/venue authority plus encrypted/versioned per-user interaction state | Policy-scoped catalog, validated filters/actions, privacy-safe projections, provider boundaries |
 
 ## Identity Compatibility Boundary
 

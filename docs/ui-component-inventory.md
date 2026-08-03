@@ -14,6 +14,7 @@
 | Event compatibility cards | `x-meetup-card`, `x-nearby-meetup-list`, `x-group-event-card` | catalogue/feed/group projections only |
 | Live event surface | event directory/workspace Blade | canonical database-backed event data |
 | Organization authority | organization directory/workspace/invitation Livewire views | shared shell, page header, panel, status, form, and action components |
+| Place authority | existing place directory/detail, `x-form-field`, canonical status labels | persisted public projection and event place/venue selection without exact-location state |
 | Feedback/loading/offline | flash feedback, targeted `wire:loading`, offline notices | every mutation surface |
 
 The three compatibility card components have different host contexts and are

@@ -23,6 +23,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property int $position
  * @property string|null $public_directions
  * @property string $stable_key
+ * @property int|null $venue_area_id
+ * @property-read VenueArea|null $venueArea
  */
 final class ForumEventRoom extends Model
 {
@@ -31,6 +33,7 @@ final class ForumEventRoom extends Model
 
     protected $fillable = [
         'forum_event_id',
+        'venue_area_id',
         'stable_key',
         'name',
         'public_directions',
@@ -67,6 +70,12 @@ final class ForumEventRoom extends Model
     public function event(): BelongsTo
     {
         return $this->belongsTo(ForumEvent::class, 'forum_event_id');
+    }
+
+    /** @return BelongsTo<VenueArea, $this> */
+    public function venueArea(): BelongsTo
+    {
+        return $this->belongsTo(VenueArea::class);
     }
 
     /** @return HasMany<ForumEventSession, $this> */

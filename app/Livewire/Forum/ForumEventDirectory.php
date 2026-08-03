@@ -16,12 +16,15 @@ use App\Enums\ForumEventStatus;
 use App\Enums\ForumEventType;
 use App\Enums\ForumEventVisibility;
 use App\Enums\OrganizationRestrictionCapability;
+use App\Enums\VenueStatus;
 use App\Livewire\Forms\ForumEventForm;
 use App\Models\ForumEvent;
 use App\Models\Organization;
+use App\Models\Place;
 use App\Models\Taxon;
 use App\Models\TaxonVersion;
 use App\Models\User;
+use App\Models\Venue;
 use App\Services\ForumEventOrganizerVerification;
 use App\Services\LocaleFormatter;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -90,6 +93,12 @@ final class ForumEventDirectory extends Component
     public function updatedPeriod(): void
     {
         $this->resetPage();
+    }
+
+    public function updatedFormPlaceId(): void
+    {
+        $this->form->venueId = null;
+        $this->form->locationScope = '';
     }
 
     /** @return LengthAwarePaginator<int, array<string, mixed>> */
@@ -266,6 +275,68 @@ final class ForumEventDirectory extends Component
             ->orderBy('id')
             ->limit(100)
             ->pluck('name', 'id')
+            ->all();
+    }
+
+    /** @return array<int, string> */
+    #[Computed]
+    public function placeOptions(): array
+    {
+        $user = Auth::user();
+
+        if (! $user instanceof User) {
+            return [];
+        }
+
+        return Place::query()
+            ->usableForEventsBy($user)
+            ->select(['id', 'name', 'public_region'])
+            ->orderBy('name')
+            ->orderBy('id')
+            ->limit(100)
+            ->get()
+            ->mapWithKeys(static fn (Place $place): array => [
+                $place->id => __('places.presentation.place_option', [
+                    'name' => $place->name,
+                    'region' => $place->public_region,
+                ]),
+            ])
+            ->all();
+    }
+
+    /** @return array<int, string> */
+    #[Computed]
+    public function venueOptions(): array
+    {
+        $user = Auth::user();
+
+        if (! $user instanceof User || $this->form->placeId === null) {
+            return [];
+        }
+
+        $placeExists = Place::query()
+            ->usableForEventsBy($user)
+            ->whereKey($this->form->placeId)
+            ->exists();
+
+        if (! $placeExists) {
+            return [];
+        }
+
+        return Venue::query()
+            ->select(['id', 'place_id', 'timezone', 'human_capacity', 'animal_capacity'])
+            ->where('place_id', $this->form->placeId)
+            ->where('status', VenueStatus::Active->value)
+            ->orderBy('id')
+            ->limit(10)
+            ->get()
+            ->mapWithKeys(static fn (Venue $venue): array => [
+                $venue->id => __('places.presentation.venue_option', [
+                    'timezone' => $venue->timezone,
+                    'people' => $venue->human_capacity ?? __('places.presentation.capacity_unknown'),
+                    'animals' => $venue->animal_capacity ?? __('places.presentation.capacity_unknown'),
+                ]),
+            ])
             ->all();
     }
 

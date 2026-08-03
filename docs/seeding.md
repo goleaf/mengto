@@ -62,6 +62,11 @@ account-bound invitation, and one suspended venue. Stable organization,
 invitation, restriction, and audit request identities keep repeat execution
 at three organizations, four memberships, one invitation, nine restrictions,
 and six audit events.
+`PlaceAuthoritySeeder` first creates the public, organization, and protected
+place/venue examples through production Actions. `PlaceDemoSeeder` then
+synchronizes the twelve localized directory fixtures by stable key without
+replacing IDs or user-created places. Repeated seeding preserves the canonical
+creation idempotency keys used by event/location authority workflows.
 
 ## Production Safeguards
 
@@ -86,6 +91,8 @@ and six audit events.
 - Organization demo identities must already exist in an explicitly allowed
   environment; organization ownership is never inferred from display text,
   email domains, event creators, or marketplace activity.
+- Place demo synchronization never publishes protected exact coordinates and
+  never recreates an intentionally deleted user-created place.
 
 ## Coverage Matrix
 

@@ -27,6 +27,8 @@ final class ForumEventLifecycleSnapshot
             'ends_at' => $event->ends_at->toAtomString(),
             'timezone' => $event->timezone,
             'registration_policy' => $event->registration_policy->value,
+            'place_id' => $event->place_id,
+            'venue_id' => $event->venue_id,
             'location_scope' => $event->location_scope,
             'exact_location' => $event->exact_location,
             'online_url' => $event->online_url,

@@ -14,11 +14,15 @@ use App\Enums\ForumEventStatus;
 use App\Enums\ForumEventType;
 use App\Enums\ForumEventVisibility;
 use App\Enums\OrganizationRestrictionCapability;
+use App\Enums\PlaceStatus;
+use App\Enums\VenueStatus;
 use App\Models\ForumEvent;
 use App\Models\ForumGroup;
 use App\Models\Organization;
+use App\Models\Place;
 use App\Models\Taxon;
 use App\Models\User;
+use App\Models\Venue;
 use App\Services\ForumEventAudit;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\Auth\Access\Gate;
@@ -61,6 +65,12 @@ final readonly class CreateForumEvent
         $organization = $data->responsibleOrganizationId === null
             ? null
             : Organization::query()->findOrFail($data->responsibleOrganizationId);
+        $place = $data->placeId === null
+            ? null
+            : Place::query()->findOrFail($data->placeId);
+        $venue = $data->venueId === null
+            ? null
+            : Venue::query()->findOrFail($data->venueId);
 
         if ($group !== null) {
             $this->gate->forUser($actor)->authorize('createContent', $group);
@@ -72,6 +82,26 @@ final readonly class CreateForumEvent
             if (! $organization->allows(OrganizationRestrictionCapability::CreateEvents)) {
                 throw new AuthorizationException;
             }
+        }
+
+        if ($place !== null) {
+            $this->gate->forUser($actor)->authorize('useForEvent', $place);
+
+            if ($place->status !== PlaceStatus::Active || $place->archived_at !== null) {
+                throw ValidationException::withMessages([
+                    'eventForm.placeId' => __('places.validation.unavailable'),
+                ]);
+            }
+        }
+
+        if ($venue !== null && (
+            $place === null
+            || $venue->place_id !== $place->id
+            || $venue->status !== VenueStatus::Active
+        )) {
+            throw ValidationException::withMessages([
+                'eventForm.venueId' => __('places.validation.venue_mismatch'),
+            ]);
         }
 
         $taxa = Taxon::query()
@@ -86,11 +116,40 @@ final readonly class CreateForumEvent
             ]);
         }
 
-        return DB::transaction(function () use ($actor, $data, $group, $organization, $taxa): ForumEvent {
+        return DB::transaction(function () use ($actor, $data, $group, $organization, $place, $taxa, $venue): ForumEvent {
+            $lockedPlace = $place === null
+                ? null
+                : Place::query()->lockForUpdate()->findOrFail($place->id);
+            $lockedVenue = $venue === null
+                ? null
+                : Venue::query()->lockForUpdate()->findOrFail($venue->id);
+
+            if ($lockedPlace !== null) {
+                $this->gate->forUser($actor)->authorize('useForEvent', $lockedPlace);
+
+                if ($lockedPlace->status !== PlaceStatus::Active || $lockedPlace->archived_at !== null) {
+                    throw ValidationException::withMessages([
+                        'eventForm.placeId' => __('places.validation.unavailable'),
+                    ]);
+                }
+            }
+
+            if ($lockedVenue !== null && (
+                $lockedPlace === null
+                || $lockedVenue->place_id !== $lockedPlace->id
+                || $lockedVenue->status !== VenueStatus::Active
+            )) {
+                throw ValidationException::withMessages([
+                    'eventForm.venueId' => __('places.validation.venue_mismatch'),
+                ]);
+            }
+
             $event = ForumEvent::query()->create([
                 'organizer_user_id' => $actor->id,
                 'owner_user_id' => $actor->id,
                 'responsible_organization_id' => $organization?->id,
+                'place_id' => $lockedPlace?->id,
+                'venue_id' => $lockedVenue?->id,
                 'organizer_key' => $actor->actor_key,
                 'organizer_name' => $actor->name,
                 'forum_group_id' => $group?->id,
@@ -111,8 +170,8 @@ final readonly class CreateForumEvent
                 'capacity' => $data->capacity,
                 'registration_policy' => $data->registrationPolicy,
                 'waitlist_enabled' => $data->waitlistEnabled,
-                'location_scope' => $data->locationScope,
-                'exact_location' => $data->exactLocation,
+                'location_scope' => $lockedPlace->public_region ?? $data->locationScope,
+                'exact_location' => $lockedPlace === null ? $data->exactLocation : null,
                 'online_url' => $data->onlineUrl,
                 'attendance_requirements' => $data->attendanceRequirements,
                 'vaccination_requirements' => $data->vaccinationRequirements,
@@ -149,6 +208,8 @@ final readonly class CreateForumEvent
                 metadata: [
                     'group_id' => $group?->id,
                     'responsible_organization_id' => $organization?->id,
+                    'place_id' => $lockedPlace?->id,
+                    'venue_id' => $lockedVenue?->id,
                     'taxon_ids' => $taxa->pluck('id')->all(),
                 ],
                 idempotencyKey: 'event:create:'.$data->idempotencyKey,
@@ -193,6 +254,8 @@ final readonly class CreateForumEvent
             'locale' => $data->locale,
             'idempotency_key' => $data->idempotencyKey,
             'responsible_organization_id' => $data->responsibleOrganizationId,
+            'place_id' => $data->placeId,
+            'venue_id' => $data->venueId,
         ], [
             'title' => ['required', 'string', 'min:4', 'max:180'],
             'summary' => ['required', 'string', 'min:10', 'max:10000'],
@@ -212,12 +275,19 @@ final readonly class CreateForumEvent
                 Rule::enum(ForumEventRegistrationPolicy::class),
             ],
             'location_scope' => [
-                Rule::requiredIf($data->format !== ForumEventFormat::Online),
+                Rule::requiredIf(
+                    $data->format !== ForumEventFormat::Online && $data->placeId === null,
+                ),
                 'nullable',
                 'string',
                 'max:190',
             ],
-            'exact_location' => ['nullable', 'string', 'max:2000'],
+            'exact_location' => [
+                Rule::prohibitedIf($data->placeId !== null),
+                'nullable',
+                'string',
+                'max:2000',
+            ],
             'online_url' => [
                 Rule::requiredIf($data->format !== ForumEventFormat::Physical),
                 'nullable',
@@ -272,7 +342,25 @@ final readonly class CreateForumEvent
                 'integer',
                 'exists:organizations,id',
             ],
+            'place_id' => [
+                Rule::prohibitedIf($data->format === ForumEventFormat::Online),
+                'nullable',
+                'integer',
+                'exists:places,id',
+            ],
+            'venue_id' => [
+                Rule::prohibitedIf($data->format === ForumEventFormat::Online),
+                'nullable',
+                'integer',
+                'exists:venues,id',
+            ],
         ])->validate();
+
+        if ($data->venueId !== null && $data->placeId === null) {
+            throw ValidationException::withMessages([
+                'eventForm.venueId' => __('places.validation.venue_requires_place'),
+            ]);
+        }
 
         if ($data->visibility === ForumEventVisibility::Group && $data->groupId === null) {
             throw ValidationException::withMessages([

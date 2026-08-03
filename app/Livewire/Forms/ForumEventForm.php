@@ -47,7 +47,9 @@ final class ForumEventForm extends Form
 
     public string $locationScope = '';
 
-    public string $exactLocation = '';
+    public ?int $placeId = null;
+
+    public ?int $venueId = null;
 
     public string $onlineUrl = '';
 
@@ -119,12 +121,25 @@ final class ForumEventForm extends Form
             ],
             'waitlistEnabled' => ['boolean'],
             'locationScope' => [
-                Rule::requiredIf($this->format !== ForumEventFormat::Online->value),
+                Rule::requiredIf(
+                    $this->format !== ForumEventFormat::Online->value && $this->placeId === null,
+                ),
                 'nullable',
                 'string',
                 'max:190',
             ],
-            'exactLocation' => ['nullable', 'string', 'max:2000'],
+            'placeId' => [
+                Rule::prohibitedIf($this->format === ForumEventFormat::Online->value),
+                'nullable',
+                'integer',
+                'exists:places,id',
+            ],
+            'venueId' => [
+                Rule::prohibitedIf($this->format === ForumEventFormat::Online->value),
+                'nullable',
+                'integer',
+                'exists:venues,id',
+            ],
             'onlineUrl' => [
                 Rule::requiredIf($this->format !== ForumEventFormat::Physical->value),
                 'nullable',
@@ -204,7 +219,8 @@ final class ForumEventForm extends Form
             'capacity' => __('forum_events.fields.capacity'),
             'registrationPolicy' => __('forum_events.fields.registration_policy'),
             'locationScope' => __('forum_events.fields.location_scope'),
-            'exactLocation' => __('forum_events.fields.exact_location'),
+            'placeId' => __('places.fields.place'),
+            'venueId' => __('places.fields.venue'),
             'onlineUrl' => __('forum_events.fields.online_url'),
             'animalWelfareRules' => __('forum_events.fields.animal_welfare_rules'),
             'emergencyContactPlan' => __('forum_events.fields.emergency_contact_plan'),
@@ -232,7 +248,7 @@ final class ForumEventForm extends Form
             ),
             waitlistEnabled: (bool) $validated['waitlistEnabled'],
             locationScope: $this->optionalString($validated, 'locationScope'),
-            exactLocation: $this->optionalString($validated, 'exactLocation'),
+            exactLocation: null,
             onlineUrl: $this->optionalString($validated, 'onlineUrl'),
             attendanceRequirements: $this->optionalString($validated, 'attendanceRequirements'),
             vaccinationRequirements: $this->optionalString($validated, 'vaccinationRequirements'),
@@ -265,6 +281,8 @@ final class ForumEventForm extends Form
             responsibleOrganizationId: isset($validated['responsibleOrganizationId'])
                 ? (int) $validated['responsibleOrganizationId']
                 : null,
+            placeId: isset($validated['placeId']) ? (int) $validated['placeId'] : null,
+            venueId: isset($validated['venueId']) ? (int) $validated['venueId'] : null,
         );
     }
 

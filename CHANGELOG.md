@@ -27,6 +27,18 @@
 - Kept organization invitation tokens out of public Livewire state and
   minimized member email and internal restriction projections by policy.
 
+### Places
+
+- Replaced the static-only place identity boundary with policy-scoped Eloquent
+  places, canonical venues, reversible indexed schema, idempotent demo seeding,
+  and dynamic detail URLs for newly submitted places.
+- Preserved the full server-rendered search, map alternative, emergency clinic
+  mode, EN/LT/RU presentation, and encrypted account-level place state while
+  making new submissions immediately searchable to their authorized author.
+- Added end-to-end action coverage for saves, follows, visits, expiring private
+  check-ins, corrections with evidence, temporary warnings, reviews, and
+  questions; removed visible prototype wording from operational place tabs.
+
 - Added occurrence-scoped event tracks, physical/online rooms, sessions, and
   public/private staff assignments with controlled status/type/reservation
   enums, encrypted private room and conflict data, independent capacities,

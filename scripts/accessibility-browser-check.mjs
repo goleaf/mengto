@@ -279,6 +279,21 @@ const surfaceTouchTargetExpression = `(() => [...document.querySelectorAll(
     height: Math.round(element.getBoundingClientRect().height),
 })).filter((target) => target.width < 44 || target.height < 44))()`;
 
+const placeTouchTargetExpression = `(() => [...document.querySelectorAll(
+    'main button, main input:not([type="hidden"]), main select, main textarea, '
+    + 'main a.action, main .icon-button, main [role="button"]'
+)].filter((element) => {
+    const style = getComputedStyle(element);
+    const box = element.getBoundingClientRect();
+    return style.display !== 'none' && style.visibility !== 'hidden'
+        && box.width > 0 && box.height > 0;
+}).map((element) => ({
+    label: element.getAttribute('aria-label') || element.textContent.trim().slice(0, 60)
+        || element.getAttribute('name'),
+    width: Math.round(element.getBoundingClientRect().width),
+    height: Math.round(element.getBoundingClientRect().height),
+})).filter((target) => target.width < 44 || target.height < 44))()`;
+
 await mkdir(outputDirectory, { recursive: true });
 const profileDirectory = await mkdtemp(join(tmpdir(), 'mengto-chrome-'));
 const chrome = await chromeExecutable();
@@ -666,6 +681,69 @@ try {
             join(outputDirectory, screenshot),
             Buffer.from(screenshotData.data, 'base64'),
         );
+    }
+
+    const placeAudits = {};
+
+    for (const viewport of [
+        { label: 'desktop', width: 1440, height: 900, mobile: false },
+        { label: 'mobile', width: 375, height: 812, mobile: true },
+    ]) {
+        await client.send('Emulation.setDeviceMetricsOverride', {
+            width: viewport.width,
+            height: viewport.height,
+            deviceScaleFactor: 1,
+            mobile: viewport.mobile,
+            screenWidth: viewport.width,
+            screenHeight: viewport.height,
+        }, sessionId);
+
+        for (const [path, surface, screenshot] of [
+            ['/places', 'place directory', `place-directory-${viewport.label}.png`],
+            [
+                '/places/vingis-quiet-loop',
+                'place detail',
+                `place-detail-${viewport.label}.png`,
+            ],
+        ]) {
+            const label = `${viewport.label} ${surface}`;
+            await navigate(client, sessionId, `${baseUrl}${path}`);
+            const audit = await evaluate(client, sessionId, pageAuditExpression);
+            assertPageAudit(audit, label);
+            const behavior = await evaluate(client, sessionId, `(() => ({
+                surfaceCount: document.querySelectorAll('[data-section="places-summary"], .place-dashboard').length,
+                placeCardCount: document.querySelectorAll('[data-place-card]').length,
+                rawTranslationKeys: document.body.innerText.match(/\\bplaces\\.[a-z0-9_.-]+/gi) ?? [],
+                privateLocationLeak: document.body.innerText.includes('Protected foster entrance'),
+            }))()`);
+            assert(behavior.surfaceCount === 1, `${label}: canonical place surface marker is missing.`);
+            assert(
+                behavior.rawTranslationKeys.length === 0,
+                `${label}: raw place keys are visible: ${behavior.rawTranslationKeys.join(', ')}.`,
+            );
+            assert(! behavior.privateLocationLeak, `${label}: a protected exact location leaked.`);
+            if (path === '/places') {
+                assert(behavior.placeCardCount > 0, `${label}: no persisted place cards were rendered.`);
+            }
+
+            const smallTargets = viewport.mobile
+                ? await evaluate(client, sessionId, placeTouchTargetExpression)
+                : [];
+            assert(
+                smallTargets.length === 0,
+                `${label}: controls below 44px ${JSON.stringify(smallTargets)}.`,
+            );
+            placeAudits[label] = { ...audit, ...behavior, smallTargets };
+
+            const screenshotData = await client.send('Page.captureScreenshot', {
+                format: 'png',
+                captureBeyondViewport: true,
+            }, sessionId);
+            await writeFile(
+                join(outputDirectory, screenshot),
+                Buffer.from(screenshotData.data, 'base64'),
+            );
+        }
     }
 
     const organizationAudits = {};
@@ -1397,6 +1475,7 @@ try {
         mobileAudit,
         zoomAudit,
         eventAudits,
+        placeAudits,
         organizationAudits,
         contentAudits,
         petAudits,
@@ -1434,6 +1513,10 @@ try {
             join(outputDirectory, 'event-detail-mobile.png'),
             join(outputDirectory, 'event-schedule-desktop.png'),
             join(outputDirectory, 'event-schedule-mobile.png'),
+            join(outputDirectory, 'place-directory-desktop.png'),
+            join(outputDirectory, 'place-directory-mobile.png'),
+            join(outputDirectory, 'place-detail-desktop.png'),
+            join(outputDirectory, 'place-detail-mobile.png'),
             join(outputDirectory, 'organization-directory-desktop.png'),
             join(outputDirectory, 'organization-directory-mobile.png'),
             join(outputDirectory, 'organization-workspace-desktop.png'),

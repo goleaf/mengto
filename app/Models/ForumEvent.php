@@ -54,7 +54,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string $organizer_name
  * @property int|null $organizer_user_id
  * @property int|null $owner_user_id
+ * @property int|null $place_id
  * @property int|null $responsible_organization_id
+ * @property int|null $venue_id
  * @property string|null $online_url
  * @property ForumEventPhotoConsent $photo_consent_mode
  * @property ForumEventPetParticipation $pet_participation_mode
@@ -77,7 +79,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property-read Collection<int, ForumEventMessage> $messages
  * @property-read User|null $organizer
  * @property-read User|null $owner
+ * @property-read Place|null $place
  * @property-read Organization|null $responsibleOrganization
+ * @property-read Venue|null $venue
  * @property-read Collection<int, ForumEventOccurrence> $occurrences
  * @property-read Collection<int, ForumEventRegistration> $registrations
  * @property-read Collection<int, ForumEventReview> $reviews
@@ -99,6 +103,8 @@ final class ForumEvent extends Model
         'organizer_user_id',
         'owner_user_id',
         'responsible_organization_id',
+        'place_id',
+        'venue_id',
         'organizer_key',
         'organizer_name',
         'forum_group_id',
@@ -227,6 +233,18 @@ final class ForumEvent extends Model
     public function responsibleOrganization(): BelongsTo
     {
         return $this->belongsTo(Organization::class, 'responsible_organization_id');
+    }
+
+    /** @return BelongsTo<Place, $this> */
+    public function place(): BelongsTo
+    {
+        return $this->belongsTo(Place::class);
+    }
+
+    /** @return BelongsTo<Venue, $this> */
+    public function venue(): BelongsTo
+    {
+        return $this->belongsTo(Venue::class);
     }
 
     /** @return BelongsTo<ForumGroup, $this> */

@@ -318,20 +318,7 @@ Route::middleware('web')
             ->name('meetups.show');
         Route::get('/places', PlaceDirectoryPreviewController::class)->name('places.index');
         Route::get('/places/{place}', PlaceDetailPreviewController::class)
-            ->whereIn('place', [
-                'vingis-quiet-loop',
-                'bernardine-evening-park',
-                'pavilniai-calm-trail',
-                'zverynas-small-dog-run',
-                'naujininkai-secure-dog-field',
-                'paws-24-veterinary-center',
-                'night-paw-clinic',
-                'green-paw-neighborhood-clinic',
-                'quiet-whiskers-grooming',
-                'old-town-pet-cafe',
-                'city-pet-market',
-                'vilnius-animal-aid',
-            ])
+            ->where('place', '[a-z0-9-]+')
             ->name('places.show');
         Route::prefix('forum')
             ->name('forum.')

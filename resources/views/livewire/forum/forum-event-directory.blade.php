@@ -267,15 +267,37 @@
                     </label>
                     @if ($form->format !== 'online')
                         <label class="forum-form__field">
-                            <span>{{ __('forum_events.fields.location_scope') }}</span>
-                            <input type="text" wire:model="form.locationScope" maxlength="190" required>
-                            @error('form.locationScope') <small role="alert">{{ $message }}</small> @enderror
+                            <span>{{ __('places.fields.place') }}</span>
+                            <select wire:model.live="form.placeId">
+                                <option value="">{{ __('places.builder.manual_public_location') }}</option>
+                                @forelse ($this->placeOptions as $value => $label)
+                                    <option value="{{ $value }}">{{ $label }}</option>
+                                @empty
+                                @endforelse
+                            </select>
+                            @error('form.placeId') <small role="alert">{{ $message }}</small> @enderror
                         </label>
-                        <label class="forum-form__field">
-                            <span>{{ __('forum_events.fields.exact_location') }}</span>
-                            <textarea wire:model="form.exactLocation" rows="2" maxlength="2000"></textarea>
-                            @error('form.exactLocation') <small role="alert">{{ $message }}</small> @enderror
-                        </label>
+                        @if ($form->placeId)
+                            @if ($this->venueOptions !== [])
+                                <label class="forum-form__field">
+                                    <span>{{ __('places.fields.venue') }}</span>
+                                    <select wire:model="form.venueId">
+                                        <option value="">{{ __('places.builder.no_venue_area') }}</option>
+                                        @forelse ($this->venueOptions as $value => $label)
+                                            <option value="{{ $value }}">{{ $label }}</option>
+                                        @empty
+                                        @endforelse
+                                    </select>
+                                    @error('form.venueId') <small role="alert">{{ $message }}</small> @enderror
+                                </label>
+                            @endif
+                        @else
+                            <label class="forum-form__field">
+                                <span>{{ __('forum_events.fields.location_scope') }}</span>
+                                <input type="text" wire:model="form.locationScope" maxlength="190" required>
+                                @error('form.locationScope') <small role="alert">{{ $message }}</small> @enderror
+                            </label>
+                        @endif
                     @endif
                     @if ($form->format !== 'physical')
                         <label class="forum-form__field md:col-span-2">

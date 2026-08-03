@@ -146,8 +146,28 @@
     }
 
     .place-search__toggle {
+        display: flex;
+        gap: 0.625rem;
+        align-items: center;
         min-block-size: 2.75rem;
         align-self: end;
+        cursor: pointer;
+    }
+
+    .place-search__toggle input {
+        inline-size: $touch-target;
+        min-inline-size: $touch-target;
+        block-size: $touch-target;
+        min-block-size: $touch-target;
+        margin: 0;
+        accent-color: $leaf;
+        cursor: pointer;
+    }
+
+    .place-search__toggle span {
+        display: inline-flex;
+        gap: 0.45rem;
+        align-items: center;
     }
 
     .place-search__filter-actions {

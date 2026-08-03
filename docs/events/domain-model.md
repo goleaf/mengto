@@ -10,6 +10,13 @@ operational restrictions, and append-only audit events. It does not replace
 the event owner, organizer, event-team membership, payment recipient, venue,
 group, or professional profile.
 
+`Place` is the canonical location identity. It separates safe public facts
+from encrypted exact location and owns account-bound access grants, reveal
+audits, and material location versions. One optional `Venue` supplies
+operational timezone and independent people/animal capacities; typed
+`VenueArea` records may back event rooms. Events and occurrences reference
+these records without copying exact addresses.
+
 `ForumEventSeries` owns recurrence defaults. `ForumEventOccurrence` owns one
 scheduled truth. `ForumEventVersion` preserves accepted snapshots.
 `ForumEventTeamMembership` grants one scoped event role.

@@ -18,8 +18,10 @@ use App\Models\ForumEventSession;
 use App\Models\ForumEventTrack;
 use App\Models\ForumGroup;
 use App\Models\Organization;
+use App\Models\Place;
 use App\Models\Taxon;
 use App\Models\User;
+use App\Models\Venue;
 use Illuminate\Support\Str;
 
 /**
@@ -36,6 +38,8 @@ final class ForumEventFactory extends ApplicationFactory
             'organizer_user_id' => User::factory(),
             'owner_user_id' => fn (array $attributes): int => (int) $attributes['organizer_user_id'],
             'responsible_organization_id' => null,
+            'place_id' => null,
+            'venue_id' => null,
             'organizer_key' => fn (array $attributes): string => User::query()
                 ->findOrFail($attributes['organizer_user_id'])
                 ->actor_key,
@@ -334,6 +338,30 @@ final class ForumEventFactory extends ApplicationFactory
         $responsible = $organization ?? Organization::factory()->create();
 
         return $this->for($responsible, 'responsibleOrganization');
+    }
+
+    public function forPlace(?Place $place = null): static
+    {
+        $canonicalPlace = $place ?? Place::factory()->create();
+
+        return $this->for($canonicalPlace)->state(fn (): array => [
+            'location_scope' => $canonicalPlace->public_region,
+            'exact_location' => null,
+        ]);
+    }
+
+    public function atVenue(?Venue $venue = null): static
+    {
+        $canonicalVenue = $venue ?? Venue::factory()->create();
+        $canonicalVenue->loadMissing('place');
+
+        return $this
+            ->for($canonicalVenue->place, 'place')
+            ->for($canonicalVenue, 'venue')
+            ->state(fn (): array => [
+                'location_scope' => $canonicalVenue->place->public_region,
+                'exact_location' => null,
+            ]);
     }
 
     public function withTaxon(?Taxon $taxon = null): static

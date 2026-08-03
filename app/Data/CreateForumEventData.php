@@ -52,5 +52,7 @@ final readonly class CreateForumEventData
         public ForumEventPetParticipation $petParticipationMode = ForumEventPetParticipation::Optional,
         public ForumEventAccessibilityStatus $accessibilityStatus = ForumEventAccessibilityStatus::NotAssessed,
         public ?int $responsibleOrganizationId = null,
+        public ?int $placeId = null,
+        public ?int $venueId = null,
     ) {}
 }

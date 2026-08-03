@@ -21,3 +21,10 @@ Organizations use `OrganizationDirectory`, `OrganizationWorkspace`, and
 directory supports bounded discovery and creation; the workspace exposes only
 current membership and role-appropriate controls; the signed invitation page
 is account-bound and keeps its raw token out of Livewire state.
+
+Places retain the existing `places.index` and `places.show` presentation. The
+directory and stable dynamic detail slug read policy-scoped persisted records;
+private, archived, and foreign unlisted records cannot enter that path. The
+existing add-place composer creates an owner-visible unlisted review candidate.
+Event creation selects an authorized canonical place and optional venue while
+exact access remains a separate audited server action.

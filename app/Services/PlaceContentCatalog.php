@@ -220,7 +220,7 @@ final class PlaceContentCatalog
                     'role' => $place['primary_category'] === 'emergency-vet' ? __('messages.emergency_and_avian_clinician_77a61b49ee') : __('messages.general_veterinary_clinician_e13b4469a8'),
                     'experience' => __('messages.demo_profile_on_site_availability_varies_638bf81450'),
                     'languages' => __('messages.lithuanian_english_d98e4181a8'),
-                    'verification' => __('messages.prototype_qualification_label_not_a_real_listing_d98bb8af81'),
+                    'verification' => __('places.presentation.professional_information_unverified'),
                 ],
             ],
             default => [],
@@ -368,7 +368,7 @@ final class PlaceContentCatalog
             return [
                 'summary' => __('messages.indoor_or_service_location_b8281df895'),
                 'temperature' => __('messages.weather_is_not_part_of_this_place_record_0e08759175'),
-                'advisory' => __('messages.external_live_weather_is_not_connected_in_this_prototype_57873656d8'),
+                'advisory' => __('places.presentation.live_weather_unavailable'),
                 'source' => __('messages.integration_boundary_5d4679d0c3'),
             ];
         }

@@ -2,8 +2,17 @@
 
 declare(strict_types=1);
 
+use App\Models\Place;
+use App\Models\UserDomainState;
 use App\Services\PlacePresenter;
 use App\Services\PlaceState;
+use Database\Seeders\PlaceDemoSeeder;
+use Illuminate\Database\Events\QueryExecuted;
+use Illuminate\Support\Facades\DB;
+
+beforeEach(function () {
+    $this->seed(PlaceDemoSeeder::class);
+});
 
 test('the server rendered place directory is searchable and paginated without browser location', function () {
     $firstPage = $this->get(route('places.index', [
@@ -120,11 +129,14 @@ test('place details expose provenance freshness services safety and community re
         ->assertSee('Verified scope')
         ->assertSee('Important changes require evidence and review');
 
-    foreach (['services', 'rules', 'reviews', 'questions', 'updates'] as $tab) {
+    foreach (['overview', 'services', 'rules', 'specialists', 'reviews', 'questions', 'updates'] as $tab) {
         $this->get(route('places.show', [
             'place' => 'paws-24-veterinary-center',
             'tab' => $tab,
-        ]))->assertOk();
+        ]))
+            ->assertOk()
+            ->assertDontSee('prototype', false)
+            ->assertDontSee('Prototype', false);
     }
 });
 
@@ -188,4 +200,197 @@ test('emergency veterinary mode requires open species capable clinics and gives 
 
 test('unknown place details return not found', function () {
     $this->get('/places/unknown-place')->assertNotFound();
+});
+
+test('place demo catalog is database backed and repeatable', function () {
+    expect(Place::query()->publiclyDiscoverable()->count())->toBe(12);
+
+    $this->seed(PlaceDemoSeeder::class);
+
+    expect(Place::query()->publiclyDiscoverable()->count())->toBe(12);
+
+    Place::query()
+        ->where('stable_key', 'vingis-quiet-loop')
+        ->firstOrFail()
+        ->delete();
+
+    $this->get(route('places.index', ['q' => 'Vingis Park']))
+        ->assertOk()
+        ->assertViewHas('places', fn (array $places): bool => $places['pagination']['total'] === 0)
+        ->assertDontSee('Vingis Park quiet loop');
+});
+
+test('a submitted place is immediately searchable and has a durable detail page', function () {
+    $this->post(route('actions.perform'), [
+        'action' => 'create-place',
+        'title' => 'Riverside safety park',
+        'body' => 'A public park with water and a clearly marked quiet walking loop.',
+        'category' => 'park',
+        'city' => 'Vilnius Riverside',
+        'place_address' => 'Public entrance, River Street 10',
+        'rules' => 'Leashes are required beside the cycle path.',
+        'place_relationship' => 'visitor',
+    ])->assertRedirect(route('places.index', [
+        'mode' => 'browse',
+        'q' => 'Riverside safety park',
+    ]));
+
+    $place = Place::query()
+        ->where('name', 'Riverside safety park')
+        ->sole();
+
+    $this->get(route('places.index', [
+        'view' => 'list',
+        'q' => 'Riverside safety park',
+    ]))
+        ->assertOk()
+        ->assertViewHas('places', fn (array $places): bool => array_column($places['items'], 'key') === [
+            $place->stable_key,
+        ])
+        ->assertSee('Riverside safety park');
+
+    $this->get(route('places.show', ['place' => $place->stable_key]))
+        ->assertOk()
+        ->assertSee('Riverside safety park')
+        ->assertSee('Vilnius Riverside')
+        ->assertSee('Leashes are required beside the cycle path.');
+});
+
+test('private and archived places never enter the public directory', function () {
+    Place::factory()->private()->create(['name' => 'Hidden foster handoff']);
+    Place::factory()->archived()->create(['name' => 'Closed training field']);
+
+    $this->get(route('places.index', ['view' => 'list']))
+        ->assertOk()
+        ->assertViewHas('places', fn (array $places): bool => $places['pagination']['total'] === 12)
+        ->assertDontSee('Hidden foster handoff')
+        ->assertDontSee('Closed training field');
+});
+
+test('place visit controls persist and render through the shared action boundary', function () {
+    $place = 'vingis-quiet-loop';
+
+    foreach ([
+        ['action' => 'toggle-place-save', 'target' => $place],
+        ['action' => 'toggle-place-follow', 'target' => $place],
+        ['action' => 'mark-place-visited', 'target' => $place, 'place_pet' => 'scout'],
+        [
+            'action' => 'check-in-place',
+            'target' => $place,
+            'place_pet' => 'scout',
+            'place_visibility' => 'private',
+        ],
+    ] as $payload) {
+        $this->post(route('actions.perform'), $payload)
+            ->assertRedirect(route('places.show', [
+                'place' => $place,
+                'tab' => 'overview',
+            ]));
+    }
+
+    expect(UserDomainState::query()
+        ->whereBelongsTo($this->authenticatedUser)
+        ->where('namespace', 'places.state.v1')
+        ->exists())->toBeTrue();
+
+    $this->get(route('places.show', ['place' => $place]))
+        ->assertOk()
+        ->assertViewHas('place', fn (array $presented): bool => $presented['saved'] === true
+            && $presented['followed'] === true
+            && $presented['visited'] === true)
+        ->assertViewHas('check_in', fn (?array $checkIn): bool => $checkIn !== null
+            && $checkIn['pet'] === 'scout'
+            && $checkIn['visibility'] === 'private')
+        ->assertSee('Check-in active')
+        ->assertSee('Visit saved');
+});
+
+test('community place contributions survive redirects and appear on their detail tabs', function () {
+    $place = 'vingis-quiet-loop';
+
+    $this->post(route('actions.perform'), [
+        'action' => 'create-place-correction',
+        'target' => $place,
+        'place_field' => 'hours',
+        'place_current_value' => 'Open all day',
+        'body' => 'The west gate closes during maintenance.',
+        'place_evidence' => 'Dated notice photographed at the west gate.',
+        'place_source' => 'personal-visit',
+        'place_visit_date' => '2026-08-02',
+    ])->assertRedirect(route('places.show', [
+        'place' => $place,
+        'tab' => 'corrections',
+    ]));
+
+    $this->post(route('actions.perform'), [
+        'action' => 'create-place-warning',
+        'target' => $place,
+        'title' => 'West gate maintenance',
+        'category' => 'road-closure',
+        'body' => 'Use the eastern public entrance until repairs finish.',
+        'place_zone' => 'West gate',
+    ])->assertRedirect(route('places.show', [
+        'place' => $place,
+        'tab' => 'updates',
+    ]));
+
+    $this->post(route('actions.perform'), [
+        'action' => 'create-place-review',
+        'target' => $place,
+        'place_rating' => 5,
+        'place_pet' => 'scout',
+        'place_review_criterion' => 'safety',
+        'place_anonymous' => 'no',
+        'body' => 'The quiet loop was clearly marked and easy to leave early.',
+    ])->assertRedirect(route('places.show', [
+        'place' => $place,
+        'tab' => 'reviews',
+    ]));
+
+    $this->post(route('actions.perform'), [
+        'action' => 'create-place-question',
+        'target' => $place,
+        'body' => 'Is the west entrance open after maintenance?',
+    ])->assertRedirect(route('places.show', [
+        'place' => $place,
+        'tab' => 'questions',
+    ]));
+
+    $this->get(route('places.show', ['place' => $place, 'tab' => 'corrections']))
+        ->assertOk()
+        ->assertSee('The west gate closes during maintenance.')
+        ->assertSee('Dated notice photographed at the west gate.');
+
+    $this->get(route('places.show', ['place' => $place, 'tab' => 'updates']))
+        ->assertOk()
+        ->assertSee('West gate maintenance')
+        ->assertSee('Use the eastern public entrance until repairs finish.');
+
+    $this->get(route('places.show', ['place' => $place, 'tab' => 'reviews']))
+        ->assertOk()
+        ->assertSee('The quiet loop was clearly marked and easy to leave early.');
+
+    $this->get(route('places.show', ['place' => $place, 'tab' => 'questions']))
+        ->assertOk()
+        ->assertSee('Is the west entrance open after maintenance?');
+});
+
+test('place directory query count stays constant as the catalog grows', function () {
+    $queries = [];
+    DB::listen(static function (QueryExecuted $query) use (&$queries): void {
+        $queries[] = $query->sql;
+    });
+
+    $this->get(route('places.index', ['view' => 'list']))->assertOk();
+    $baseline = count($queries);
+
+    Place::factory()
+        ->count(30)
+        ->public()
+        ->create();
+    $queries = [];
+
+    $this->get(route('places.index', ['view' => 'list']))->assertOk();
+
+    expect(count($queries))->toBeLessThanOrEqual($baseline + 1);
 });

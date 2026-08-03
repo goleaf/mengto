@@ -182,6 +182,13 @@ domain, event creator, or marketplace activity.
 
 ### P03 - Canonical Place, Location, And Venue Authority
 
+Progress: the persisted authority foundation is implemented and targeted-
+verified in
+`docs/plans/portal-place-location-venue-authority-work-package.md`. The existing
+directory/detail now use policy-scoped persisted places and stable dynamic
+slugs. Final metadata/page classification, route geometry, offline operational
+packages, and event-change notification delivery remain downstream packages.
+
 Scope:
 
 - Audit static place presentation, group locations, booking locations, search

@@ -183,6 +183,20 @@ fresh-confirmation timestamp, and returns only to the intended same-origin
 route. Direct command submission without a fresh confirmation has no side
 effect.
 
+## Place And Venue Controls
+
+Public place projection selects only active public facts. Exact address,
+coordinates, private instructions, access metadata, and operational venue data
+use encrypted or hidden attributes and never enter public directory records.
+Unlisted review candidates remain visible and event-usable only to their owner,
+an authorized organization manager, or a purpose-bound grantee.
+
+Exact location access is account-bound, purpose-bound, expiring, revocable,
+and checked again after locking the place row. Every successful reveal appends
+an audit record. A material move stores the former encrypted facts and revokes
+all active grants, including grants whose access window has not started. Event
+rows retain only the canonical IDs and public region.
+
 ## Incident Response
 
 1. Preserve safe audit and request identifiers.

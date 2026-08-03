@@ -207,6 +207,20 @@ consult the responsible organization's current capability restrictions.
 Assigned safety/welfare/medical staff retain only the explicit emergency
 participant-data override; a restricted owner does not.
 
+## Place And Venue Abilities
+
+`PlacePolicy` separates public/detail viewing, creation, management, event use,
+access administration, and exact-location reveal. Owners and current
+organization roles with `canManagePlaces()` may manage a place. Ordinary
+organization members may view organization-visible records but cannot update,
+grant access, or use them for an event. Former members fail closed at use time.
+
+An active public place may be used for an event. Unlisted, organization, and
+private places additionally require current management authority or an active
+`event_operations` grant. Exact reveal accepts any active purpose-specific
+exact-location grant, reauthorizes inside the Action transaction, and records
+the account, grant, event context, channel, and purpose in the audit timeline.
+
 ## Event Abilities
 
 `ForumEventPolicy` controls listing, viewing, creation, updates, cancellation,

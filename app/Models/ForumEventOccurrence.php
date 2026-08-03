@@ -28,11 +28,15 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string|null $location_scope
  * @property array<string, mixed>|null $metadata
  * @property string|null $online_url
+ * @property int|null $place_id
  * @property CarbonImmutable $starts_at
  * @property ForumEventStatus $status
  * @property string $stable_key
  * @property string $timezone
+ * @property int|null $venue_id
  * @property-read Collection<int, ForumEventSession> $sessions
+ * @property-read Place|null $place
+ * @property-read Venue|null $venue
  */
 final class ForumEventOccurrence extends Model
 {
@@ -42,6 +46,8 @@ final class ForumEventOccurrence extends Model
     protected $fillable = [
         'forum_event_id',
         'forum_event_series_id',
+        'place_id',
+        'venue_id',
         'stable_key',
         'status',
         'starts_at',
@@ -91,6 +97,18 @@ final class ForumEventOccurrence extends Model
     public function series(): BelongsTo
     {
         return $this->belongsTo(ForumEventSeries::class, 'forum_event_series_id');
+    }
+
+    /** @return BelongsTo<Place, $this> */
+    public function place(): BelongsTo
+    {
+        return $this->belongsTo(Place::class);
+    }
+
+    /** @return BelongsTo<Venue, $this> */
+    public function venue(): BelongsTo
+    {
+        return $this->belongsTo(Venue::class);
     }
 
     /** @return HasMany<ForumEventRegistration, $this> */

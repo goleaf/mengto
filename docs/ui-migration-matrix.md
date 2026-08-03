@@ -10,6 +10,9 @@
 | `/meetups/{event}` detail | canonical `ForumEventWorkspace`; page identity still uses legacy `forum-header` | data/workflow migrated; page identity pending classification |
 | `/organizations` and organization workspace | class-based Livewire tenant authority in the shared shell and canonical page-header/panel patterns | added and targeted-verified |
 | event responsible organization | role- and capability-scoped select inside the existing event builder | added and targeted-verified |
+| `/places` and `/places/{place}` | existing responsive directory/detail consume policy-scoped persisted places and stable dynamic slugs | data authority migrated; visual shell preserved |
+| add-place composer | persist an owner-scoped unlisted review candidate through `CreatePlace` | migrated and targeted-verified |
+| event place/venue fields | bounded policy-scoped selects carry IDs and public region only | added and targeted-verified |
 | `meetup-card` | compatibility presenter card, canonical route target | preserved |
 | nearby meetup list | compact contextual projection, canonical directory link | preserved |
 | group event card | group calendar projection linked to `ForumEvent` | preserved |
