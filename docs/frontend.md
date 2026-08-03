@@ -212,3 +212,20 @@ questions are removed by server policy before rendering. Normal links remain
 functional without `wire:navigate`; no workflow requires hover,
 drag-and-drop, or client-owned business state. See
 `docs/expert-question-sessions.md`.
+
+## Progressive Pet Profile Interface
+
+The authenticated pet workspace keeps all twelve completion destinations in
+the main content column and uses ordinary `?step=` links. Only one section body
+is present at a time, the selected link uses `aria-current="step"`, and every
+step provides its purpose, saved/optional text state, mutation-free skip, and
+44-pixel actions. It has no left subnavigation, numeric disclosure score,
+hover-only control, or exact-location input. On narrow screens the ordered
+navigator becomes one contained horizontal scroll-snap row so the active form
+does not start below twelve vertically stacked cards; tablet and desktop keep
+the complete two/three-column grid without page-level overflow.
+
+The separate forms preserve linked labels, help and error text, targeted
+loading, dirty feedback, offline status, keyboard focus, and responsive grid
+collapse. The preview step retains the stable profile link, QR alternative,
+policy-filtered public route, lifecycle form, and bounded audit table.

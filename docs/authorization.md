@@ -286,3 +286,22 @@ See `docs/topic-lifecycle.md`.
   and does not create a second report event.
 - The closure key is hidden from serialization and is never accepted as an
   authority substitute.
+
+## Progressive Pet Profile Completion
+
+- Opening the management component requires `PetProfilePolicy::update` for the
+  current authenticated individual; a locked profile ID is only a hydration
+  guard.
+- Every descriptive-step mutation delegates to `UpdatePetProfileStep`, which
+  reloads the profile through `managedBy`, repeats `update` authorization, and
+  checks the locked current row before writing.
+- Photo, owner/manager, privacy, and lifecycle steps retain their more specific
+  existing policy abilities and Actions.
+- The documents step delegates to `RecordPetProfileFact` with
+  `microchip-record`. Both detailed loading and mutation require
+  `change-microchip`; generic `edit-basics` does not reveal or modify the
+  protected record. A manager who may edit other profile sections but lacks
+  this critical permission receives a localized non-editable explanation
+  instead of protected inputs or a mutation control.
+- A normal `?step=` link and the mutation-free skip operation have no authority
+  effect.

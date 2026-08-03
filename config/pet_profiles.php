@@ -28,6 +28,7 @@ return [
         'reproductive-status',
         'microchip-status',
         'microchip-identifier',
+        'microchip-record',
         'registration-identifier',
         'identifying-mark',
         'body-measurement',

@@ -65,6 +65,42 @@ canonical containment before streaming. Full galleries, pet/media tags,
 moderation, attribution/licensing workflows, and permanent retention cleanup
 remain Phase 20 work.
 
+## Progressive Completion Workspace
+
+After minimal creation, `/pets/manage/{petProfile}` exposes the twelve source
+ordered steps through the URL-backed `step` query value. The navigator remains
+in the central content column, renders only one active body, uses ordinary
+links, and treats an invalid browser value as `basics`. Every step explains why
+its values are requested. Skipping only navigates; it does not write a
+completion flag or reduce a disclosure-based score.
+
+Basics, age/sex, breed/origin, appearance, character, social preferences, and
+broad location save independently through `UpdatePetProfileStep`. The Action
+reloads the managed profile, authorizes the authenticated user, maps only the
+step allowlist, locks and checks `lock_version`, records one idempotent
+lifecycle event and audit entry, and invalidates the profile cache. Ordinary
+descriptions remain in encrypted `profile_data`; broad location never accepts
+an exact address or coordinates. Existing photo, manager, privacy, preview,
+and lifecycle Actions remain the only mutation paths for their steps.
+
+The documents step records one versioned encrypted `microchip-record` fact
+containing status, an optional identifier, and document-readiness state. It is
+private, hidden from serialization and public projection, and guarded by the
+separate `change-microchip` permission. Roles without that permission receive
+neither the value nor its completion signal. Actual document files remain in
+the dedicated medical/document boundary. An existing identifier is never
+pre-filled into the resting Livewire snapshot; an authorized editor may leave
+the replacement input blank to retain the encrypted server-side value.
+
+Navigation state is derived from already saved values. Relationship existence
+uses bounded subqueries, and only the active step eager loads its detailed
+relations. The mobile navigator is a contained ordered scroll-snap row, while
+larger screens retain the complete grid, so the active form stays near the
+current viewport without introducing page-level overflow. No completion
+table, profile percentage, migration, or backfill is introduced by this
+package. Exact scope is in
+`docs/plans/pet-profile-progressive-completion-work-package.md`.
+
 ## Identity And Compatibility
 
 An account and a pet are separate aggregates. Every pet mutation runs as an

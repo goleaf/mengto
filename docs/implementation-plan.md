@@ -335,6 +335,31 @@ Status: `implemented and verified` on 2026-08-03
 Exact scope and evidence are in
 `docs/plans/forum-topic-editor-redesign-work-package.md`.
 
+## Current Delivery: Progressive Pet Profile Completion
+
+Status: `implemented and verified` on 2026-08-03 for
+`pet.creation.0036-pet.creation.0058` only.
+
+- Preserved `/compose/pet` as a compatibility redirect to the canonical
+  minimal private-draft creation screen and moved the subsequent workflow into
+  twelve ordered URL-backed steps.
+- Added one central responsive navigator, only one active body, independent
+  step saves, mutation-free skipping, purpose explanations, and text-based
+  saved/optional state without a disclosure score.
+- Added allowlisted optimistic partial updates, active-step relationship
+  loading, one reusable current-manager policy projection, and bounded
+  navigation existence queries.
+- Stored microchip readiness and an optional identifier as one private,
+  encrypted, versioned fact guarded by `change-microchip`; unauthorized roles
+  receive no value, completion signal, form field, or mutation control.
+- Verified EN/LT/RU parity, responsive desktop/mobile/320px rendering,
+  keyboard/focus/console contracts, 130-migration fresh/rollback/reapply and
+  repeat seed, dependency/static/build/cache gates, and the final serial suite
+  of 2,657 tests and 84,589 assertions.
+
+Exact scope and open follow-up requirements are in
+`docs/plans/pet-profile-progressive-completion-work-package.md`.
+
 ## Current Delivery: Unified Icon System
 
 Status: `implemented and verified` on 2026-08-03.

@@ -435,3 +435,19 @@ The current foundation intentionally does not automate ownership proof,
 duplicate merging, permanent deletion, professional verification, cruelty
 judgments, or legal/species conclusions. Those paths remain deny-by-default or
 administrator-only until their dedicated reviewed workflows exist.
+
+## Progressive Pet Profile Controls
+
+- The progressive `step` query value is untrusted and normalizes to a known
+  enum case. Navigation or skipping never grants authority or mutates data.
+- Partial profile writes reload the managed row, repeat policy authorization,
+  lock it, check the optimistic version, and explicitly map only the selected
+  step fields.
+- Coarse location accepts no address or coordinates. Social preference text is
+  never treated as a medical or safety conclusion.
+- `microchip-record` existence and value are loaded only for a user with the
+  critical microchip permission. The encrypted fact value, source, and history
+  stay out of public projection, serialization, logs, lifecycle metadata, and
+  resting Livewire snapshots; an existing identifier is merged server-side
+  when the authorized replacement input is left blank. The editable documents
+  form is not rendered for a role without that permission.

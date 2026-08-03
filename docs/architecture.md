@@ -372,3 +372,15 @@ invalidate both endpoint cache namespaces. Directed and symmetric edges share
 one model but use type-defined key semantics. Social trust never grants pet,
 professional, medical, device, adoption, marketplace, or location authority.
 See `docs/social-relationships.md`.
+
+## Progressive Pet Profile Completion Boundary
+
+The progressive completion workspace adds no second aggregate or completion
+table. `PetProfileCompletionStep` supplies stable presentation keys,
+`PetProfileCompletionPresenter` derives non-scoring navigation state from the
+selected profile row and bounded existence attributes, and
+`UpdatePetProfileStep` owns the allowlisted partial transaction. Detailed
+media, manager, privacy, fact, and lifecycle relations are loaded only for the
+active URL-backed step. `microchip-record` remains a versioned encrypted
+`PetProfileFact` behind the critical microchip permission rather than becoming
+ordinary public profile data.

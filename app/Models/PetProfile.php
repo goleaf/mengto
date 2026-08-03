@@ -35,6 +35,7 @@ use Illuminate\Support\Carbon;
  * @property string $visibility
  * @property-read Collection<int, PetProfileLifecycleEvent> $lifecycleEvents
  * @property-read Collection<int, PetProfileManager> $managers
+ * @property-read PetProfileFact|null $currentMicrochipRecord
  * @property-read MedicalRecord|null $medicalRecord
  * @property-read PetProfilePrivacySetting|null $privacySetting
  */
@@ -163,6 +164,15 @@ final class PetProfile extends Model
     public function facts(): HasMany
     {
         return $this->hasMany(PetProfileFact::class);
+    }
+
+    /** @return HasOne<PetProfileFact, $this> */
+    public function currentMicrochipRecord(): HasOne
+    {
+        return $this->hasOne(PetProfileFact::class)
+            ->where('fact_key', 'microchip-record')
+            ->where('is_current', true)
+            ->whereNotNull('current_key');
     }
 
     /** @return HasMany<PetProfileMedia, $this> */

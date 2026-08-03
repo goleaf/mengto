@@ -1927,6 +1927,98 @@
         },
         {
             "requirement_ids": [
+                "pet.creation.0036",
+                "pet.creation.0037",
+                "pet.creation.0038",
+                "pet.creation.0039",
+                "pet.creation.0040",
+                "pet.creation.0041",
+                "pet.creation.0042",
+                "pet.creation.0043",
+                "pet.creation.0044",
+                "pet.creation.0045",
+                "pet.creation.0046",
+                "pet.creation.0047",
+                "pet.creation.0048",
+                "pet.creation.0049",
+                "pet.creation.0050",
+                "pet.creation.0051",
+                "pet.creation.0052",
+                "pet.creation.0053",
+                "pet.creation.0054",
+                "pet.creation.0055",
+                "pet.creation.0056",
+                "pet.creation.0057",
+                "pet.creation.0058"
+            ],
+            "fields": {
+                "current_implementation_status": "verified",
+                "discovered_existing_files": [
+                    "app/Livewire/Pets/ManagePetProfile.php",
+                    "app/Livewire/Forms/PetProfileForm.php",
+                    "app/Actions/UpdatePetProfile.php",
+                    "app/Actions/RecordPetProfileFact.php",
+                    "app/Models/PetProfile.php",
+                    "app/Models/PetProfileFact.php",
+                    "app/Policies/PetProfilePolicy.php",
+                    "resources/views/livewire/pets/manage-pet-profile.blade.php"
+                ],
+                "planned_files": [
+                    "app/Enums/PetProfileCompletionStep.php",
+                    "app/Services/PetProfileCompletionPresenter.php",
+                    "app/Actions/UpdatePetProfileStep.php",
+                    "app/Livewire/Forms/PetProfileDocumentsForm.php",
+                    "resources/views/components/pet-profile-step-navigation.blade.php",
+                    "lang/en/pet_profiles.php",
+                    "lang/lt/pet_profiles.php",
+                    "lang/ru/pet_profiles.php"
+                ],
+                "test_identifiers": [
+                    "tests/Feature/PetProfileCreateExperienceTest.php",
+                    "tests/Feature/PetProfileProgressiveCompletionTest.php",
+                    "tests/Feature/PetProfileFoundationTest.php",
+                    "tests/Feature/PetProfileMediaLifecycleTest.php",
+                    "tests/Feature/LocalizationTest.php",
+                    "tests/Feature/ArchitectureComplianceTest.php",
+                    "tests/Feature/ResponsiveInterfaceTest.php",
+                    "scripts/accessibility-browser-check.mjs"
+                ],
+                "documentation_identifiers": [
+                    "docs/pet-profiles.md",
+                    "docs/plans/pet-profile-progressive-completion-work-package.md",
+                    "docs/plans/pet-profile-current-progress.md",
+                    "docs/plans/pet-profile-master-plan.md",
+                    "docs/architecture.md",
+                    "docs/security.md",
+                    "docs/authorization.md",
+                    "docs/frontend.md",
+                    "docs/livewire.md",
+                    "docs/testing.md",
+                    "docs/deployment.md"
+                ],
+                "implementation_status": "implemented",
+                "verification_status": "verified",
+                "evidence": [
+                    "PetProfileCompletionStep and the central Blade navigator preserve the exact twelve-step source order with normal URL links, one active body, invalid-step normalization, explicit explanations, optional text states, and mutation-free skipping without a disclosure score",
+                    "UpdatePetProfileStep independently persists the basics, age and sex, breed and origin, appearance, character, social preference, and coarse-location allowlists with managed-profile scoping, repeated authorization, row and optimistic locking, idempotent lifecycle evidence, ordinary audit, compatibility update, and cache invalidation",
+                    "Existing authorized media, manager, privacy, lifecycle, stable-link, QR, and public-preview operations remain composed into their respective steps instead of being duplicated",
+                    "PetProfileCompletionPresenter derives navigation state from selected profile fields and bounded relationship-existence subqueries while ManagePetProfile eager loads detailed relations only for the active step",
+                    "PetProfileDocumentsForm and RecordPetProfileFact store one private encrypted versioned microchip-record, clear contradictory identifiers, retain replacement history, hide existence and value from roles without change-microchip, and leave actual files to the dedicated document domain",
+                    "PetProfileProgressiveCompletionTest passed 6 tests and 71 assertions; the combined canonical create and legacy redirect, pet foundation, media, and progressive regression passed 33 tests and 2,601 assertions",
+                    "the final pet plus architecture, localization, responsive, and page-identity checkpoint passed 107 tests and 64,205 assertions against regenerated evidence",
+                    "the final serial repository suite passed 2,657 tests and 84,589 assertions in 166.963 seconds; full Pint and Larastan, Composer strict validation/audit, npm audit with zero vulnerabilities, and the production Vite build passed",
+                    "isolated SQLite applied 130 migrations across 215 tables, rolled back and reapplied all 130 migrations, and retained five users across repeat seeding; isolated config/event/route/view caches compiled successfully",
+                    "the immutable source checksum and deterministic 38,377-requirement generation checks passed",
+                    "connected Chrome passed pet creation, management, public profile, and 320px reflow with zero page overflow, unnamed controls, missing image alternatives, undersized mobile targets, duplicate IDs, raw translation keys, or console errors; the final mobile screenshot was visually inspected after the contained scroll-row correction"
+                ],
+                "unresolved_risks": [
+                    "Autosave and draft recovery, document upload, ownership proof or transfer, exact-location grants, complete gallery, and every pet requirement outside pet.creation.0036 through pet.creation.0058 remain open"
+                ],
+                "final_result": "verified"
+            }
+        },
+        {
+            "requirement_ids": [
                 "social.relationship.0031",
                 "social.relationship.0035",
                 "social.relationship.0038",

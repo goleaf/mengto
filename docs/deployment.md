@@ -97,6 +97,18 @@ Prefer forward fixes after an additive migration. Rolling application code
 back is safe only while the schema remains backward compatible. Never restore
 old code that cannot understand new mandatory data. Restore database backup
 only through an approved incident process.
+
+## Progressive Pet Profile Release
+
+The `pet.creation.0036-pet.creation.0058` workspace adds no migration, backfill,
+queue dependency, public file route, environment value, or destructive data
+rewrite. Deploy it with the normal release sequence. Smoke `/compose/pet` to
+the canonical creation redirect, create a private draft, open multiple
+`?step=` destinations, verify a mutation-free skip, save one descriptive step,
+and confirm a role without `change-microchip` receives no protected form or
+completion signal. Rollback is application-code-only while the existing
+profile/fact schema remains available; facts written by the release stay valid
+for the previous model contract.
 ## Event Migration And Backfill
 
 `2026_07_31_001230_create_forum_event_tables.php` adds event tables,
@@ -223,3 +235,17 @@ block because the historical intent is ambiguous.
 
 Rollback is limited to the pre-dependency window. Once account blocks or
 private reports exist, preserve their evidence and use a forward migration.
+
+## Pet Progressive Completion Deployment
+
+The twelve-step completion package adds no migration, table, backfill, queue,
+cache store, environment key, or public-file route. Deploy the application
+code and translations together, then rebuild config, event, route, and view
+caches. Smoke at least basics, photos, privacy, protected documents, preview,
+an invalid `?step=` value, and a denied microchip write by a non-critical role.
+
+Confirm the existing encrypted casts can read `profile_data` and
+`pet_profile_facts.value`, the `microchip-record` key is present in cached
+configuration, and logs or rendered HTML contain no identifier. Rollback is an
+application-code rollback; already stored versioned facts remain valid and
+must not be deleted.

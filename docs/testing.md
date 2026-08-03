@@ -717,8 +717,9 @@ Exact findings and the zero-debt plan are in
 
 `GroupDirectoryPreviewTest` protects the direct media/body/footer regions,
 opaque body surface, visible separator, semantic linked and unlinked headings,
-and the four direct catalogue-card composition contracts. The existing pet,
-meetup, and linked-media suites protect sibling rendering and navigation.
+localized fallback actions, and the four direct catalogue-card composition
+contracts. The existing pet, meetup, and linked-media suites protect sibling
+rendering and navigation.
 
 The authenticated browser runner audits all six `/groups` cards at 320, 375,
 768, 1024, 1440, and 1920 CSS pixels. It requires adjacent non-overlapping
@@ -730,11 +731,11 @@ configured browser output directory.
 
 Verified package evidence on 2026-08-03:
 
-- RED: the structural group-card and shared-heading contracts failed before
-  the primitives existed;
-- isolated staged-tree architecture/localization/directory slice: 143 tests
-  and 61,694 assertions;
-- isolated staged-tree full serial suite: 2,642 tests and 83,314 assertions;
+- RED: the structural group-card, shared-heading, and fallback-localization
+  contracts failed before their implementations existed;
+- isolated staged-tree architecture/localization/directory slice: 88 tests
+  and 61,421 assertions;
+- isolated staged-tree full serial suite: 2,645 tests and 83,332 assertions;
 - Blade compilation, targeted Pint, PHP syntax, full Larastan across 1,385
   files, and the production Vite build passed;
 - Chrome passed the six-width geometry assertions for six cards with a 0-pixel
@@ -874,3 +875,36 @@ Observed package evidence on 2026-08-03:
 
 Exact scope and the open wider media boundary are recorded in
 `docs/plans/pet-profile-primary-photo-work-package.md`.
+
+## Pet Progressive Completion Verification
+
+`PetProfileProgressiveCompletionTest` covers the twelve URL-backed central
+steps, one active body, invalid-step normalization, mutation-free skipping,
+independent descriptive saves, preservation of other sections, optimistic
+stale-write rejection, idempotent replay, encrypted microchip replacement,
+identifier clearing, critical-permission denial, and bounded query growth.
+
+Verified package evidence on 2026-08-03:
+
+- RED: six tests failed on the missing enum, Action, component methods, and
+  protected record flow;
+- focused progressive suite: 6 tests and 71 assertions passed;
+- canonical create/legacy redirect, pet foundation, media, and progressive
+  regression: 33 tests and 2,601 assertions passed;
+- pet plus architecture/localization/responsive/page-identity checkpoint: 107
+  tests and 64,205 assertions passed against final generated evidence;
+- final serial repository suite: 2,657 tests and 84,589 assertions passed in
+  166.963 seconds;
+- full Pint and Larastan, Composer strict validation/audit, npm audit with zero
+  vulnerabilities, and the Vite production build passed;
+- isolated SQLite applied 130 migrations across 215 tables, rolled all 130
+  back, reapplied them, and retained five users across repeat seeding;
+- isolated config/event/route/view cache compilation and the immutable source
+  checksum plus 38,377-requirement generation checks passed;
+- connected Chrome passed desktop, mobile, and 320px pet create/manage/public
+  flows with zero page overflow, unnamed controls, missing alternatives,
+  undersized mobile targets, duplicate IDs, raw keys, or console errors; the
+  final mobile screenshot was inspected after the contained scroll-row fix.
+
+Exact scope is in
+`docs/plans/pet-profile-progressive-completion-work-package.md`.

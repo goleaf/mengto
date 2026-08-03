@@ -17,6 +17,9 @@ Last updated: 2026-08-03.
 - The canonical identity/access foundation is implemented, migrated,
   translated, tested, documented, and verified. This is not completion of the
   full 4,135-requirement pet-profile revision.
+- The progressive completion slice `pet.creation.0036-pet.creation.0058` is
+  implemented, localized, documented, and verified; later pet requirements
+  remain open.
 
 ## Current Work Package
 
@@ -76,6 +79,35 @@ pet, medical, care, device, search, adoption, event, report, and social data.
   concurrent Discover factory defect. The final isolated serial suite then
   passed 2,635 tests and 83,160 assertions; full Pint and Larastan also pass.
 
+## Progressive Completion Workspace
+
+- `pet.creation.0036-pet.creation.0058` now maps to twelve centrally rendered,
+  URL-backed steps in the exact source order. Only the active body renders;
+  every step has an explanation, ordinary link, independent save, and a
+  mutation-free skip path.
+- `UpdatePetProfileStep` explicitly allowlists seven descriptive sections,
+  reauthorizes the managed profile, checks an optimistic version under a row
+  lock, keeps replay idempotent, updates compatibility state, records immutable
+  lifecycle/audit evidence, and invalidates the profile cache.
+- The existing photo, manager, privacy, stable preview, and lifecycle Actions
+  are composed into their respective steps instead of being duplicated.
+- Appearance, character, social preferences, and coarse location stay in the
+  existing encrypted profile data. The UI rejects exact-location collection
+  by design and presents social notes as observations rather than diagnoses or
+  compatibility guarantees.
+- The protected documents step stores a versioned encrypted
+  `microchip-record`; `change-microchip` authorization controls both detailed
+  loading and mutation, while actual files remain outside this package.
+- Navigation status is derived from saved values and bounded existence
+  subqueries. No completion table, migration, backfill, percentage score, or
+  new public projection was added.
+- The focused progressive suite passes 6 tests and 71 assertions; the combined
+  canonical create/legacy redirect, pet foundation, media, and progressive
+  regression passes 33 tests and 2,601 assertions. The final serial repository
+  suite passes 2,657 tests and 84,589 assertions; static, dependency, isolated
+  database/cache, source-generation, build, and connected responsive browser
+  gates also pass. The 23 selected requirement IDs are verified.
+
 ## Completion Evidence
 
 - Additive migration produced 100 migrations and 177 tables on isolated fresh
@@ -102,7 +134,8 @@ transfer, destructive lifecycle, media, social graph, lost/found, adoption,
 medical/care/device links, recommendations, analytics, and advanced privacy
 must not inherit verified status from this foundation.
 
-For creation specifically, the next dependency-safe package is the progressive
-completion flow (`pet.creation.0036-pet.creation.0058`). The optional primary
-photo (`pet.creation.0025`) is implemented by the narrower media work package;
-the remaining gallery and full `pet.media.*` scope stays open.
+For creation specifically, the progressive completion flow
+(`pet.creation.0036-pet.creation.0058`) is the current verification package.
+The optional primary photo (`pet.creation.0025`) is implemented by the narrower
+media package; autosave/draft recovery, the remaining gallery, and full
+`pet.media.*` scope stay open until their own work packages are selected.

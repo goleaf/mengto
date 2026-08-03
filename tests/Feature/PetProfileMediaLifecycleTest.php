@@ -288,8 +288,9 @@ it('exposes the complete photo workflow in the authenticated management workspac
     ]);
 
     Livewire::actingAs($owner)
+        ->withQueryParams(['step' => 'photos'])
         ->test(ManagePetProfile::class, ['petProfile' => $profile])
-        ->assertSeeHtml('id="pet-media"')
+        ->assertSeeHtml('id="pet-step-photos"')
         ->set(
             'mediaForm.upload',
             UploadedFile::fake()->image('workspace-photo.jpg', 640, 480),
@@ -302,6 +303,7 @@ it('exposes the complete photo workflow in the authenticated management workspac
     $media = PetProfileMedia::query()->sole();
 
     Livewire::actingAs($owner)
+        ->withQueryParams(['step' => 'photos'])
         ->test(ManagePetProfile::class, ['petProfile' => $profile->refresh()])
         ->assertSee(route('pets.media.show', [
             'petProfile' => $profile->profile_key,
@@ -312,6 +314,7 @@ it('exposes the complete photo workflow in the authenticated management workspac
         ->assertSee(__('pet_profiles.feedback.photo_removed'));
 
     Livewire::actingAs($owner)
+        ->withQueryParams(['step' => 'photos'])
         ->test(ManagePetProfile::class, ['petProfile' => $profile->refresh()])
         ->assertSee(__('pet_profiles.media.recovery_title'))
         ->call('restorePrimaryPhoto', $media->media_key)

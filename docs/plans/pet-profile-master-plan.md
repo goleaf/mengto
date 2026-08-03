@@ -64,8 +64,10 @@ to name, broad species, relationship, and intended audience. Advanced facts
 remain in the profile workspace. `pet.creation.0025` (optional primary photo)
 is implemented by the focused private-file placement, processing,
 replacement, removal, and recovery package;
-`pet.creation.0036-pet.creation.0058` remains the later progressive completion
-flow rather than being folded back into the first screen.
+`pet.creation.0036-pet.creation.0058` is implemented by the focused
+twelve-step progressive completion workspace rather than being folded back
+into the first screen. Its final verified state remains conditional on the
+package gates recorded in the current-progress document.
 
 ## Phase 19: Ownership And Privacy
 

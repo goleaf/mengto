@@ -114,6 +114,7 @@ final class PetProfilePolicy
         $permission = in_array($factKey, [
             'microchip-status',
             'microchip-identifier',
+            'microchip-record',
             'registration-identifier',
         ], true)
             ? PetProfilePermission::ChangeMicrochip

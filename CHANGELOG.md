@@ -59,6 +59,18 @@
   confirmed-registration access checks, responsive card-height regression
   gates, and a corrected park-specific Vingis cover image.
 
+### Pet Profiles
+
+- Replaced the legacy all-at-once management screen behind the canonical
+  `/compose/pet` creation journey with twelve URL-addressable, independently
+  saved profile steps in the main content column.
+- Added a responsive central navigator, mutation-free skipping, honest
+  saved/optional states without a disclosure score, step explanations, and a
+  contained mobile scroll-snap row that keeps the active form nearby.
+- Added allowlisted optimistic partial updates and one private encrypted,
+  versioned microchip record; roles without the critical permission receive no
+  value, completion signal, editable field, or mutation control.
+
 ### Discovery
 
 - Replaced the hard-coded `/discover` demo, fictional query, local pulse,

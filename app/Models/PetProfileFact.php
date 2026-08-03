@@ -10,7 +10,15 @@ use Database\Factories\PetProfileFactFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
+/**
+ * @property string $fact_key
+ * @property bool $is_current
+ * @property Carbon|null $retired_at
+ * @property array<string, mixed> $value
+ * @property PetProfileVisibility $visibility
+ */
 final class PetProfileFact extends Model
 {
     /** @use HasFactory<PetProfileFactFactory> */

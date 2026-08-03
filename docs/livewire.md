@@ -182,3 +182,20 @@ Public state never contains models, query builders, relationship graphs,
 private legal-hold reasons, or moderator evidence. Precise loading targets,
 offline feedback, native confirmations, and stable database keys cover every
 mutation. See `docs/topic-lifecycle.md`.
+
+## Pet Profile Completion Component
+
+`ManagePetProfile` keeps one locked numeric profile ID, a normalized
+`#[Url(history: true)]` step string, bounded form values, upload state, status
+input, and feedback. The request-scoped private profile memo prevents repeated
+component lookups without serializing a model. A step change clears validation
+and reloads only the detailed relationship needed by that destination. One
+filtered current-manager projection is reused by profile and protected-fact
+policy checks during the request.
+
+`PetProfileForm` validates each descriptive section independently;
+`PetProfileDocumentsForm` validates the protected microchip readiness record.
+Every mutation delegates to its Action and resets the request memo/computed
+presentations afterward. Tests cover direct invalid URL state, mutation-free
+skip, independent fields, replay, stale versions, protected fact denial, and
+query stability as unrelated history grows.

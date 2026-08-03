@@ -5,17 +5,21 @@ declare(strict_types=1);
 namespace App\Livewire\Pets;
 
 use App\Actions\InvitePetProfileManager;
+use App\Actions\RecordPetProfileFact;
 use App\Actions\RemovePetPrimaryPhoto;
 use App\Actions\RestorePetPrimaryPhoto;
 use App\Actions\RevokePetProfileManager;
 use App\Actions\StorePetPrimaryPhoto;
 use App\Actions\TransitionPetProfileStatus;
-use App\Actions\UpdatePetProfile;
 use App\Actions\UpdatePetProfilePrivacy;
+use App\Actions\UpdatePetProfileStep;
+use App\Enums\PetEvidenceStatus;
 use App\Enums\PetManagerRole;
+use App\Enums\PetProfileCompletionStep;
 use App\Enums\PetProfileStatus;
 use App\Enums\PetProfileVisibility;
 use App\Livewire\Forms\PetManagerInvitationForm;
+use App\Livewire\Forms\PetProfileDocumentsForm;
 use App\Livewire\Forms\PetProfileForm;
 use App\Livewire\Forms\PetProfileMediaForm;
 use App\Livewire\Forms\PetProfilePrivacyForm;
@@ -24,6 +28,7 @@ use App\Models\PetProfileLifecycleEvent;
 use App\Models\PetProfileManager;
 use App\Models\PetProfileMedia;
 use App\Models\User;
+use App\Services\PetProfileCompletionPresenter;
 use App\Services\PetProfileLifecycle;
 use App\Services\ProfilePresenter;
 use App\Services\QrCodeGenerator;
@@ -35,6 +40,7 @@ use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Locked;
+use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use Livewire\WithFileUploads;
@@ -47,12 +53,17 @@ final class ManagePetProfile extends Component
 
     public PetProfilePrivacyForm $privacyForm;
 
+    public PetProfileDocumentsForm $documentsForm;
+
     public PetManagerInvitationForm $invitationForm;
 
     public PetProfileMediaForm $mediaForm;
 
     #[Locked]
     public int $profileId = 0;
+
+    #[Url(except: 'basics', history: true)]
+    public string $step = 'basics';
 
     public string $targetStatus = '';
 
@@ -71,7 +82,9 @@ final class ManagePetProfile extends Component
 
     private PetProfileLifecycle $lifecycle;
 
-    private UpdatePetProfile $updateAction;
+    private UpdatePetProfileStep $updateStepAction;
+
+    private RecordPetProfileFact $recordFactAction;
 
     private UpdatePetProfilePrivacy $privacyAction;
 
@@ -89,12 +102,20 @@ final class ManagePetProfile extends Component
 
     private QrCodeGenerator $qrCodes;
 
+    private PetProfileCompletionPresenter $completionPresenter;
+
+    private ?PetProfile $loadedProfile = null;
+
+    private ?bool $mayManageDocuments = null;
+
     public function boot(
         AuthFactory $auth,
         Gate $gate,
         ProfilePresenter $profiles,
         PetProfileLifecycle $lifecycle,
-        UpdatePetProfile $updateAction,
+        PetProfileCompletionPresenter $completionPresenter,
+        UpdatePetProfileStep $updateStepAction,
+        RecordPetProfileFact $recordFactAction,
         UpdatePetProfilePrivacy $privacyAction,
         InvitePetProfileManager $inviteAction,
         RevokePetProfileManager $revokeAction,
@@ -108,7 +129,9 @@ final class ManagePetProfile extends Component
         $this->gate = $gate;
         $this->profiles = $profiles;
         $this->lifecycle = $lifecycle;
-        $this->updateAction = $updateAction;
+        $this->completionPresenter = $completionPresenter;
+        $this->updateStepAction = $updateStepAction;
+        $this->recordFactAction = $recordFactAction;
         $this->privacyAction = $privacyAction;
         $this->inviteAction = $inviteAction;
         $this->revokeAction = $revokeAction;
@@ -121,6 +144,7 @@ final class ManagePetProfile extends Component
 
     public function mount(PetProfile $petProfile): void
     {
+        $this->step = PetProfileCompletionStep::fromRequest($this->step)->value;
         $profileForAuthorization = PetProfile::query()
             ->select(['id', 'user_id', 'status'])
             ->findOrFail($petProfile->id);
@@ -128,10 +152,42 @@ final class ManagePetProfile extends Component
         $this->profileId = $profileForAuthorization->id;
         $profile = $this->profileModel();
         $this->form->fillFromProfile($profile);
-        $this->privacyForm->fillFromProfile($profile);
+        $this->fillActiveStepForms($profile);
         $this->targetStatus = $profile->status->value;
         $this->feedback = (string) session('pet-profile-feedback', '');
         $this->mediaIdempotencyKey = (string) Str::uuid();
+    }
+
+    /** @return list<array<string, mixed>> */
+    #[Computed]
+    public function completionSteps(): array
+    {
+        $profile = $this->profileModel();
+
+        return array_map(
+            static fn (array $step): array => [
+                ...$step,
+                'href' => route('pets.manage.show', [
+                    'petProfile' => $profile->profile_key,
+                    'step' => $step['value'],
+                ]),
+            ],
+            $this->completionPresenter->present($profile, $this->activeStep()),
+        );
+    }
+
+    public function goToStep(string $step): void
+    {
+        $this->step = PetProfileCompletionStep::fromRequest($step)->value;
+        $this->feedback = '';
+        $this->resetValidation();
+        $this->forgetComputed();
+        $this->fillActiveStepForms($this->profileModel());
+    }
+
+    public function updatedStep(string $step): void
+    {
+        $this->goToStep($step);
     }
 
     /** @return array<string, string> */
@@ -222,15 +278,97 @@ final class ManagePetProfile extends Component
 
     public function saveBasics(): void
     {
-        $profile = $this->profileModel();
-        $this->gate->authorize('update', $profile);
-        $updated = $this->updateAction->handle(
-            $profile->slug,
-            $this->form->updateData($profile->lock_version, (string) Str::uuid()),
+        $this->saveProfileStep(
+            PetProfileCompletionStep::Basics,
+            $this->form->basicsData(),
+            'basics_saved',
         );
-        $this->form->fillFromProfile($updated);
-        $this->feedback = __('pet_profiles.feedback.basics_saved');
+    }
+
+    public function saveAgeAndSex(): void
+    {
+        $this->saveProfileStep(
+            PetProfileCompletionStep::AgeAndSex,
+            $this->form->ageAndSexData(),
+            'age_sex_saved',
+        );
+    }
+
+    public function saveBreedAndOrigin(): void
+    {
+        $this->saveProfileStep(
+            PetProfileCompletionStep::BreedAndOrigin,
+            $this->form->breedAndOriginData(),
+            'breed_origin_saved',
+        );
+    }
+
+    public function saveAppearance(): void
+    {
+        $this->saveProfileStep(
+            PetProfileCompletionStep::Appearance,
+            $this->form->appearanceData(),
+            'appearance_saved',
+        );
+    }
+
+    public function saveCharacter(): void
+    {
+        $this->saveProfileStep(
+            PetProfileCompletionStep::Character,
+            $this->form->characterData(),
+            'character_saved',
+        );
+    }
+
+    public function saveSocialPreferences(): void
+    {
+        $this->saveProfileStep(
+            PetProfileCompletionStep::SocialPreferences,
+            $this->form->socialPreferencesData(),
+            'social_saved',
+        );
+    }
+
+    public function saveLocation(): void
+    {
+        $this->saveProfileStep(
+            PetProfileCompletionStep::Location,
+            $this->form->locationData(),
+            'location_saved',
+        );
+    }
+
+    public function saveDocuments(): void
+    {
+        $profile = $this->profileModel();
+        $existingIdentifier = $this->currentMicrochipIdentifier($profile);
+        $value = $this->documentsForm->data(
+            $this->documentsForm->microchipStatus === 'chipped'
+                && $existingIdentifier === null,
+        );
+
+        if ($value['status'] === 'chipped'
+            && $value['identifier'] === null
+            && $existingIdentifier !== null) {
+            $value['identifier'] = $existingIdentifier;
+        }
+        $this->recordFactAction->handle(
+            profile: $profile,
+            factKey: 'microchip-record',
+            value: $value,
+            precision: $value['identifier'] === null ? 'unknown' : 'exact',
+            sourceType: 'owner',
+            sourceReference: null,
+            verificationStatus: PetEvidenceStatus::Unverified,
+            visibility: PetProfileVisibility::Private,
+            expectedLockVersion: $profile->lock_version,
+            idempotencyKey: 'pet-documents:'.Str::uuid(),
+            metadata: ['workspace_step' => PetProfileCompletionStep::Documents->value],
+        );
+        $this->feedback = __('pet_profiles.feedback.documents_saved');
         $this->forgetComputed();
+        $this->fillActiveStepForms($this->profileModel());
     }
 
     public function replacePrimaryPhoto(): void
@@ -363,20 +501,39 @@ final class ManagePetProfile extends Component
     public function render(): View
     {
         $profile = $this->profileModel();
+        $activeStep = $this->activeStep();
+        $nextStep = $activeStep->next();
+        $profileUrl = route('pets.profile', ['petProfile' => $profile->profile_key]);
 
         return view('livewire.pets.manage-pet-profile', [
             'profile' => $profile,
-            'primaryPhoto' => $this->photoPresentation(
-                $profile->primaryMedia,
-                $profile->profile_key,
-            ),
-            'recoverablePhoto' => $this->photoPresentation(
-                $profile->latestRecoverableMedia,
-                $profile->profile_key,
-            ),
-            'qrCode' => $this->qrCodes->dataUri(route('pets.profile', [
-                'petProfile' => $profile->profile_key,
-            ])),
+            'profileUrl' => $profileUrl,
+            'currentStatusLabel' => $profile->status->label(),
+            'today' => now()->toDateString(),
+            'managerMinimumEnd' => now()->addMinute()->format('Y-m-d\TH:i'),
+            'activeStep' => [
+                'value' => $activeStep->value,
+                'number' => $activeStep->number(),
+                'label' => $activeStep->label(),
+                'description' => $activeStep->description(),
+                'why' => $activeStep->why(),
+                'next_href' => $nextStep === null ? null : route('pets.manage.show', [
+                    'petProfile' => $profile->profile_key,
+                    'step' => $nextStep->value,
+                ]),
+            ],
+            'primaryPhoto' => $activeStep === PetProfileCompletionStep::Photos
+                ? $this->photoPresentation($profile->primaryMedia, $profile->profile_key)
+                : null,
+            'recoverablePhoto' => $activeStep === PetProfileCompletionStep::Photos
+                ? $this->photoPresentation($profile->latestRecoverableMedia, $profile->profile_key)
+                : null,
+            'qrCode' => $activeStep === PetProfileCompletionStep::Preview
+                ? $this->qrCodes->dataUri($profileUrl)
+                : null,
+            'hasMicrochipIdentifier' => $activeStep === PetProfileCompletionStep::Documents
+                && $this->currentMicrochipIdentifier($profile) !== null,
+            'canManageDocuments' => $this->canManageDocuments($profile),
         ])
             ->layout('components.livewire-app-layout', [
                 'owner' => $this->profiles->owner(),
@@ -387,6 +544,64 @@ final class ManagePetProfile extends Component
 
     private function profileModel(): PetProfile
     {
+        if ($this->loadedProfile instanceof PetProfile) {
+            return $this->loadedProfile;
+        }
+
+        $step = $this->activeStep();
+        $user = $this->requireUser();
+        $relations = match ($step) {
+            PetProfileCompletionStep::Photos => [
+                'primaryMedia.asset',
+                'latestRecoverableMedia.asset',
+            ],
+            PetProfileCompletionStep::Owners => [
+                'managers' => fn ($query) => $query
+                    ->select([
+                        'id',
+                        'pet_profile_id',
+                        'user_id',
+                        'role',
+                        'status',
+                        'permission_overrides',
+                        'starts_at',
+                        'ends_at',
+                        'revoked_at',
+                    ])
+                    ->with('user:id,name'),
+            ],
+            PetProfileCompletionStep::Privacy => ['privacySetting'],
+            PetProfileCompletionStep::Preview => [
+                'lifecycleEvents' => fn ($query) => $query
+                    ->select([
+                        'id',
+                        'pet_profile_id',
+                        'actor_key_snapshot',
+                        'event_type',
+                        'occurred_at',
+                    ])
+                    ->latest('occurred_at')
+                    ->limit(20),
+            ],
+            default => [],
+        };
+
+        if ($step !== PetProfileCompletionStep::Owners) {
+            $relations['managers'] = fn ($query) => $query
+                ->select([
+                    'id',
+                    'pet_profile_id',
+                    'user_id',
+                    'role',
+                    'status',
+                    'permission_overrides',
+                    'starts_at',
+                    'ends_at',
+                    'revoked_at',
+                ])
+                ->where('user_id', $user->id);
+        }
+
         $profile = PetProfile::query()
             ->select([
                 'id',
@@ -410,38 +625,94 @@ final class ManagePetProfile extends Component
                 'lock_version',
                 'profile_data',
             ])
-            ->with([
+            ->withExists([
+                'primaryMedia',
+                'managers',
                 'privacySetting',
-                'primaryMedia.asset',
-                'latestRecoverableMedia.asset',
-                'managers' => fn ($query) => $query
-                    ->select([
-                        'id',
-                        'pet_profile_id',
-                        'user_id',
-                        'role',
-                        'status',
-                        'permission_overrides',
-                        'starts_at',
-                        'ends_at',
-                        'revoked_at',
-                    ])
-                    ->with('user:id,name'),
-                'lifecycleEvents' => fn ($query) => $query
-                    ->select([
-                        'id',
-                        'pet_profile_id',
-                        'actor_key_snapshot',
-                        'event_type',
-                        'occurred_at',
-                    ])
-                    ->latest('occurred_at')
-                    ->limit(20),
             ])
+            ->with($relations)
             ->findOrFail($this->profileId);
-        $this->gate->authorize('update', $profile);
+        $this->gate->forUser($user)->authorize('update', $profile);
 
-        return $profile;
+        if ($this->canManageDocuments($profile)) {
+            $profile->loadExists('currentMicrochipRecord');
+
+            if ($step === PetProfileCompletionStep::Documents) {
+                $profile->load(['currentMicrochipRecord' => fn ($query) => $query->select([
+                    'id',
+                    'pet_profile_id',
+                    'fact_key',
+                    'value',
+                    'precision',
+                    'verification_status',
+                    'visibility',
+                    'is_current',
+                    'current_key',
+                    'recorded_at',
+                ])]);
+            }
+        } else {
+            $profile->setAttribute('current_microchip_record_exists', false);
+            $profile->setRelation('currentMicrochipRecord', null);
+        }
+
+        return $this->loadedProfile = $profile;
+    }
+
+    /** @param array<string, mixed> $data */
+    private function saveProfileStep(
+        PetProfileCompletionStep $step,
+        array $data,
+        string $feedbackKey,
+    ): void {
+        $profile = $this->profileModel();
+        $updated = $this->updateStepAction->handle(
+            profile: $profile,
+            step: $step,
+            data: $data,
+            expectedLockVersion: $profile->lock_version,
+            idempotencyKey: 'pet-profile-step:'.Str::uuid(),
+        );
+        $this->form->fillFromProfile($updated);
+        $this->feedback = __("pet_profiles.feedback.{$feedbackKey}");
+        $this->forgetComputed();
+    }
+
+    private function fillActiveStepForms(PetProfile $profile): void
+    {
+        if ($this->activeStep() === PetProfileCompletionStep::Privacy
+            && $profile->relationLoaded('privacySetting')) {
+            $this->privacyForm->fillFromProfile($profile);
+        }
+
+        if ($this->activeStep() === PetProfileCompletionStep::Documents
+            && $profile->relationLoaded('currentMicrochipRecord')) {
+            $this->documentsForm->fillFromFact($profile->currentMicrochipRecord);
+        }
+    }
+
+    private function activeStep(): PetProfileCompletionStep
+    {
+        return PetProfileCompletionStep::fromRequest($this->step);
+    }
+
+    private function currentMicrochipIdentifier(PetProfile $profile): ?string
+    {
+        if (! $profile->relationLoaded('currentMicrochipRecord')) {
+            return null;
+        }
+
+        $fact = $profile->currentMicrochipRecord;
+
+        if ($fact === null) {
+            return null;
+        }
+
+        $identifier = $fact->value['identifier'] ?? null;
+
+        return is_string($identifier) && trim($identifier) !== ''
+            ? $identifier
+            : null;
     }
 
     private function requireUser(): User
@@ -475,6 +746,20 @@ final class ManagePetProfile extends Component
 
     private function forgetComputed(): void
     {
-        unset($this->managers, $this->history, $this->statusOptions);
+        $this->loadedProfile = null;
+        $this->mayManageDocuments = null;
+        unset(
+            $this->completionSteps,
+            $this->managers,
+            $this->history,
+            $this->statusOptions,
+        );
+    }
+
+    private function canManageDocuments(PetProfile $profile): bool
+    {
+        return $this->mayManageDocuments ??= $this->gate
+            ->forUser($this->requireUser())
+            ->allows('recordFact', [$profile, 'microchip-record']);
     }
 }
