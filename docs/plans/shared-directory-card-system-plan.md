@@ -271,7 +271,12 @@ Publication evidence: implementation commit
 - [x] Run full static analysis and the final serial repository suite.
 - [x] Inspect and publish the core attributable continuation diff on `main`
   (`3b0a4e5`).
-- [ ] Publish the localized fallback and final evidence follow-up on `main`.
+- [x] Publish the localized fallback and final evidence follow-up on `main`
+  (`24d8dd8`).
+
+Continuation publication evidence: core commit `3b0a4e5` and localized
+evidence follow-up `24d8dd8` both advanced `origin/main` normally on
+2026-08-03.
 
 ## Completion Rule
 
