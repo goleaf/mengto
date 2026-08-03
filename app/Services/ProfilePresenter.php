@@ -18,12 +18,18 @@ final class ProfilePresenter
      */
     public function owner(): array
     {
+        $profileUrl = route('profile.mia');
         $owner = [
             'name' => __('messages.mia_carter_0e5b29cc3b'),
             'handle' => '@mia-carter',
             'location' => __('messages.richmond_portland_or_fdcefc3192'),
             'avatar' => 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&crop=faces&w=320&h=320&q=80',
             'summary' => __('messages.weekend_trail_walker_foster_volunteer_and_keeper_of_two__afe0498ca0'),
+            'profile_url' => $profileUrl,
+            'media_target' => [
+                'url' => $profileUrl,
+                'label' => __('presentation.open_profile', ['name' => __('messages.mia_carter_0e5b29cc3b')]),
+            ],
         ];
 
         return [

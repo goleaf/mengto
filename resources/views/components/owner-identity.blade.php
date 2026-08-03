@@ -2,8 +2,8 @@
     'owner',
     'avatarSize' => 'regular',
     'variant' => 'default',
-    'routeName' => null,
-    'routeParameters' => [],
+    'href' => null,
+    'linkLabel' => null,
 ])
 
 <div {{ $attributes->class([
@@ -11,17 +11,23 @@
     'items-center gap-3' => $variant === 'default',
     'items-start gap-4' => $variant === 'profile',
 ]) }}>
-    <x-avatar
-        :src="$owner['avatar']"
-        :alt="$owner['name']"
-        :size="$avatarSize"
-    />
+    <x-linked-media
+        :href="$href"
+        :label="$linkLabel"
+        variant="avatar"
+        class="shrink-0"
+    >
+        <x-avatar
+            :src="$owner['avatar']"
+            :alt="$owner['name']"
+            :size="$avatarSize"
+        />
+    </x-linked-media>
 
     <div class="min-w-0">
         <h2 class="text-base font-semibold text-paw-ink">
             <x-optional-link
-                :route-name="$routeName"
-                :route-parameters="$routeParameters"
+                :href="$href"
             >
                 {{ $owner['name'] }}
             </x-optional-link>

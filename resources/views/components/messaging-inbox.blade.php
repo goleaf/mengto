@@ -1,6 +1,5 @@
 @props([
     'conversations',
-    'filters',
     'activeFilter',
     'query',
     'selected',
@@ -26,21 +25,6 @@
             </button>
         </div>
     </form>
-
-    <nav class="messaging-inbox__filters" aria-label="{{ __('ui.inbox_folders_16c4c4771a') }}">
-        @forelse ($filters as $filter)
-            <a
-                href="{{ route('messages.index', array_filter(['filter' => $filter['key'], 'q' => $query])) }}"
-                @if ($activeFilter === $filter['key']) aria-current="page" @endif
-                @class(['messaging-filter', 'messaging-filter--active' => $activeFilter === $filter['key']])
-            >
-                <x-dynamic-component :component="'lucide-'.$filter['icon']" class="icon icon--sm" aria-hidden="true" />
-                <span>{{ $filter['label'] }}</span>
-            </a>
-        @empty
-            <span class="messaging-filter">{{ __('ui.folders_unavailable_c1856009a2') }}</span>
-        @endforelse
-    </nav>
 
     <div class="messaging-inbox__meta">
         <strong>{{ __('presentation.shown_count', ['count' => count($conversations)]) }}</strong>

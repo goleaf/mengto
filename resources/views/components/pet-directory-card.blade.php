@@ -10,6 +10,8 @@
             sizes="(min-width: 1280px) 390px, (min-width: 640px) calc(50vw - 2rem), calc(100vw - 2rem)"
             :eager="$eager"
             ratio="portrait"
+            :href="$pet['media_target']['url'] ?? null"
+            :link-label="$pet['media_target']['label'] ?? null"
         >
             <x-pet-badge :type="$pet['species']" class="absolute right-3 top-3" />
         </x-card-media>
@@ -19,8 +21,7 @@
         <div class="min-w-0">
             <h2 class="text-lg font-semibold text-paw-ink">
                 <x-optional-link
-                    :route-name="$pet['profile_route'] ?? null"
-                    :route-parameters="$pet['profile_parameters'] ?? []"
+                    :href="$pet['media_target']['url'] ?? null"
                 >
                     {{ $pet['name'] }}
                 </x-optional-link>
@@ -42,8 +43,7 @@
         <div class="mt-4 flex flex-wrap items-center gap-3">
             @if ($pet['profile_route'] ?? null)
                 <x-text-link
-                    :route-name="$pet['profile_route']"
-                    :route-parameters="$pet['profile_parameters'] ?? []"
+                    :href="$pet['media_target']['url']"
                     icon="eye"
                     variant="action"
                 >

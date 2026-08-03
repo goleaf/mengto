@@ -9,7 +9,14 @@
         <x-lucide-arrow-left class="icon" aria-hidden="true" />
     </a>
 
-    <img src="{{ $conversation['avatar'] }}" alt="{{ $conversation['avatar_alt'] }}" width="48" height="48">
+    <x-linked-media
+        :href="$conversation['media_target']['url']"
+        :label="$conversation['media_target']['label']"
+        variant="avatar"
+        class="shrink-0"
+    >
+        <img src="{{ $conversation['avatar'] }}" alt="{{ $conversation['avatar_alt'] }}" width="48" height="48">
+    </x-linked-media>
 
     <div class="messaging-thread-header__identity">
         <span class="messaging-thread-header__title">
@@ -50,7 +57,7 @@
         </form>
 
         <a
-            href="{{ route('messages.details', ['conversation' => $conversation['key']]) }}"
+            href="{{ $conversation['details_url'] }}"
             class="messaging-icon-button"
             title="{{ __('ui.conversation_details_28b55e1258') }}"
         >

@@ -173,11 +173,16 @@ final class GroupPresenter
         string $sort,
     ): array {
         $membership = $this->state->membership($group['key']);
+        $detailUrl = route('groups.show', ['group' => $group['key']]);
 
         return [
             ...$group,
             'detail_route' => 'groups.show',
             'detail_parameters' => ['group' => $group['key']],
+            'media_target' => [
+                'url' => $detailUrl,
+                'label' => __('presentation.open_group', ['name' => $group['name']]),
+            ],
             'privacy_label' => $group['privacy'] === 'closed' ? __('messages.closed_c21ead0614') : __('messages.public_591935b15b'),
             'privacy_icon' => $group['privacy'] === 'closed' ? 'lock-keyhole' : 'globe-2',
             'members' => trans_choice('presentation.members_count', $group['member_count'], [
@@ -217,24 +222,32 @@ final class GroupPresenter
         }
 
         return array_values(array_filter(
-            array_map(static fn (array $group): array => [
-                ...$group,
-                'privacy' => $group['privacy'] ?? 'public',
-                'privacy_label' => Str::headline($group['privacy'] ?? 'public'),
-                'privacy_icon' => ($group['privacy'] ?? 'public') === 'closed' ? 'lock-keyhole' : 'globe-2',
-                'official' => false,
-                'membership' => 'joined',
-                'joined' => true,
-                'recommendation_reason' => __('messages.created_by_you_39467b6ea2'),
-                'next_event' => null,
-                'primary_action' => [
-                    'label' => __('messages.open_group_83ffa7c96e'),
-                    'icon' => 'arrow-up-right',
-                    'variant' => 'paper',
-                    'href' => route($group['detail_route'], $group['detail_parameters']),
-                ],
-                'secondary_action' => null,
-            ], $this->created->groups()),
+            array_map(static function (array $group): array {
+                $detailUrl = route($group['detail_route'], $group['detail_parameters']);
+
+                return [
+                    ...$group,
+                    'privacy' => $group['privacy'] ?? 'public',
+                    'privacy_label' => Str::headline($group['privacy'] ?? 'public'),
+                    'privacy_icon' => ($group['privacy'] ?? 'public') === 'closed' ? 'lock-keyhole' : 'globe-2',
+                    'official' => false,
+                    'membership' => 'joined',
+                    'joined' => true,
+                    'recommendation_reason' => __('messages.created_by_you_39467b6ea2'),
+                    'next_event' => null,
+                    'media_target' => [
+                        'url' => $detailUrl,
+                        'label' => __('presentation.open_group', ['name' => $group['name']]),
+                    ],
+                    'primary_action' => [
+                        'label' => __('messages.open_group_83ffa7c96e'),
+                        'icon' => 'arrow-up-right',
+                        'variant' => 'paper',
+                        'href' => $detailUrl,
+                    ],
+                    'secondary_action' => null,
+                ];
+            }, $this->created->groups()),
             static function (array $group) use ($query): bool {
                 if ($query === '') {
                     return true;

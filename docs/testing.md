@@ -472,3 +472,31 @@ Package evidence:
 - fresh database: 111 migrations and 191 tables; repeated seed preserved 5
   users;
 - Pint and Larastan passed; Composer/npm audits and Vite build passed.
+
+## Linked Media Navigation Verification
+
+`LinkedMediaNavigationContractTest` verifies the semantic linked/passive
+component contract, exact media/title destination equality for pets, groups,
+neighbors, meetups, discovery, profiles, experts, bookings, messages, and
+marketplace orders, and source guards against nested interactive content. Its
+fixture classifies all 73 first-party media-bearing Blade templates, including
+viewer, current-page, action, decorative, protected-download, composite, and
+passive exclusions.
+
+Observed package evidence on 2026-08-03:
+
+- focused contract: 19 tests and 279 assertions;
+- affected feature/architecture slice: 67 tests and 27,626 assertions;
+- full Pint, targeted Larastan, full Larastan, Composer validation/audit, npm
+  audit, Vite build, cache compilation, isolated fresh SQLite migration and
+  repeated seed: passed;
+- connected browser matrix: four representative routes at six widths from 320
+  through 1920 pixels, with no overflow, unnamed media links, nested
+  interactive descendants, or console warnings/errors; pointer and keyboard
+  navigation reached the canonical pet profile;
+- query delta: zero new queries; presenters derive URLs from existing prepared
+  projections and Blade performs no lookup.
+
+The final serial repository suite passed 2,303 tests and 76,111 assertions in
+131.130 seconds. An earlier concurrent final-class loader conflict disappeared
+before this final rerun and is not recorded as an active blocker.

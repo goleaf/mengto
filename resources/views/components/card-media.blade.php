@@ -8,9 +8,16 @@
     'sizes',
     'eager' => false,
     'ratio' => 'landscape',
+    'href' => null,
+    'linkLabel' => null,
 ])
 
-<div {{ $attributes->class(['relative']) }}>
+<x-linked-media
+    :href="$href"
+    :label="$linkLabel"
+    variant="card"
+    {{ $attributes->class(['relative']) }}
+>
     <x-responsive-image
         :src="$src"
         :small="$small"
@@ -28,4 +35,4 @@
     />
 
     {{ $slot }}
-</div>
+</x-linked-media>

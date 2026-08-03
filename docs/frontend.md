@@ -77,6 +77,23 @@ reserved image area. At desktop widths it becomes a fixed 27-rem side panel.
 The viewer must keep at least 44-pixel controls and avoid image/panel overlap
 and horizontal page overflow from 320 through 1920 pixels.
 
+## Linked Representative Media
+
+`x-responsive-image` remains a passive image primitive. `x-linked-media`
+adds a normal semantic anchor only when a presenter supplies an explicit
+optional `media_target` containing the already authorized canonical URL and a
+localized accessible label. `x-card-media` delegates only this presentation
+boundary and never discovers routes, models, or permissions in Blade.
+
+Representative photographs, avatars, covers, and placeholders on migrated
+pet, group, neighbor, meetup, discovery, expert, booking, messaging, profile,
+and marketplace surfaces use the exact same URL as the adjacent title or
+details affordance. A missing target renders a passive container instead of a
+fake link. Galleries and photo viewers, current-page heroes, QR codes, maps,
+video and call previews, upload controls, private downloads, and media inside
+another interactive control preserve their existing semantics. Source guards
+reject nested interactive descendants inside the linked media primitive.
+
 ## Interface States
 
 Every data surface defines applicable loading, empty, filtered-empty, success,

@@ -220,6 +220,15 @@
 
 ### Frontend And Localization
 
+- Made eligible representative photographs, avatars, covers, and placeholders
+  navigate to the same server-authorized internal destination as their titles
+  across pets, groups, neighbors, meetups, discovery, profiles, experts,
+  bookings, messages, and marketplace orders. Added an exhaustive 73-template
+  classification while preserving gallery, viewer, current-page, QR, map,
+  video, upload, action, and private-download semantics.
+- Moved messaging folders out of the narrow inbox into a full-width responsive
+  grid where every option stays visible without horizontal scrolling, retains
+  a 44-pixel touch target, and leaves desktop scrolling to conversations only.
 - Added one Laravel localization architecture for `en`, `lt`, and `ru` with
   validated persisted locale selection and English fallback.
 - Extracted 2,340 Blade literals plus complete action, HTTP, Livewire, and
@@ -267,6 +276,11 @@
 
 ### Verification
 
+- Linked-media contract and affected regression slice passed 19 tests / 279
+  assertions and 67 tests / 27,626 assertions respectively; the 24-case
+  connected viewport matrix had no overflow, unnamed media links, nested
+  interactive descendants, or console warnings/errors. The final serial Pest
+  suite passed 2,303 tests and 76,111 assertions.
 - Full Pest suite checkpoint: 1,534 passed, 53,748 assertions in serial mode.
 - Larastan/PHPStan level 5: zero errors.
 - Composer strict validation and security audit: passed, zero advisories.

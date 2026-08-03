@@ -5,7 +5,8 @@
 
     <x-owner-identity
         :owner="$owner"
-        route-name="profile.mia"
+        :href="$owner['media_target']['url'] ?? null"
+        :link-label="$owner['media_target']['label'] ?? null"
         class="mt-4"
     />
 

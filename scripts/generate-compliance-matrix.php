@@ -142,6 +142,13 @@ function evidenceFor(string $id): array
             'Bounded deterministic feed catalogue',
             '`tests/Feature/PhotoViewerTest.php` and connected responsive browser review',
         ],
+        'PRD-SOCIAL-009' => [
+            'Presenter `media_target` projections and `linked-media` / `card-media` components',
+            'Existing portal visibility and authorization boundaries; no client route inference',
+            'EN/LT/RU labels, focus-safe SCSS, migrated Blade surfaces',
+            'Existing deterministic catalogues and factories',
+            '`LinkedMediaNavigationContractTest` and affected feature tests',
+        ],
         'SEC-AUTH-004' => [
             '`RequirePortalAccess`, `PortalMediaResponse`, filesystem configuration',
             'Middleware priority, active/verified account state, canonical media containment',
@@ -155,6 +162,13 @@ function evidenceFor(string $id): array
             'Localized auth shell; no anonymous product presentation',
             'User and media fixtures',
             '`PortalAccessBoundaryTest`, `PortalMediaAccessTest`, full serial suite',
+        ],
+        'UI-NAV-001' => [
+            'Presenter projections and `linked-media` component',
+            'Existing route authorization and optional target contract',
+            'Semantic anchors, localized names, focus, reduced-motion and forced-colors styles',
+            'Existing demo states',
+            '`LinkedMediaNavigationContractTest` and connected browser review',
         ],
         'LAR-21' => [
             'Direct Actions and framework authentication events',
@@ -369,6 +383,10 @@ function verificationFor(string $id): string
 
     if (in_array($id, ['PRD-SOCIAL-008', 'SYS-FRONTEND-003'], true)) {
         return 'php artisan test --compact tests/Feature/PhotoViewerTest.php tests/Feature/ArchitectureComplianceTest.php && npm run build && connected Playwright viewport/keyboard review';
+    }
+
+    if (in_array($id, ['PRD-SOCIAL-009', 'UI-NAV-001'], true)) {
+        return 'php artisan test --compact tests/Feature/LinkedMediaNavigationContractTest.php && vendor/bin/phpstan analyse --no-progress && npm run build && connected Playwright viewport/keyboard review';
     }
 
     if ($id === 'TEST-COVERAGE-001') {

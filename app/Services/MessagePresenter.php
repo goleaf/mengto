@@ -40,6 +40,7 @@ final class MessagePresenter
         $requestStatus = $this->state->requestStatuses()[$selectedKey] ?? 'accepted';
         $conversationState = $this->state->conversation($selectedKey);
         $call = $this->state->call($selectedKey);
+        $detailsUrl = route('messages.details', ['conversation' => $selectedKey]);
 
         return [
             'owner' => $this->profiles->owner(),
@@ -76,6 +77,11 @@ final class MessagePresenter
                 'blocked' => (bool) ($conversationState['blocked'] ?? false),
                 'restricted' => (bool) ($conversationState['restricted'] ?? false),
                 'notification_level' => (string) ($conversationState['notification_level'] ?? 'all'),
+                'details_url' => $detailsUrl,
+                'media_target' => [
+                    'url' => $detailsUrl,
+                    'label' => __('presentation.open_conversation', ['name' => $selected['name']]),
+                ],
             ],
             'messages' => $messages,
             'channels' => $this->catalog->channels()[$selectedKey] ?? [],

@@ -2,23 +2,30 @@
 
 <article class="grid min-h-full gap-4 rounded-md border border-paw-line bg-white p-5 shadow-sm">
     <header class="flex items-start gap-4">
-        @if ($expert['avatar_url'])
-            <img
-                src="{{ $expert['avatar_url'] }}"
-                alt=""
-                class="size-16 shrink-0 rounded-full object-cover"
-                loading="lazy"
-            >
-        @else
-            <span class="grid size-16 shrink-0 place-items-center rounded-full bg-paw-mint text-lg font-bold text-paw-leaf" aria-hidden="true">
-                {{ $expert['initials'] }}
-            </span>
-        @endif
+        <x-linked-media
+            :href="$expert['media_target']['url']"
+            :label="$expert['media_target']['label']"
+            variant="avatar"
+            class="shrink-0"
+        >
+            @if ($expert['avatar_url'])
+                <img
+                    src="{{ $expert['avatar_url'] }}"
+                    alt=""
+                    class="size-16 rounded-full object-cover"
+                    loading="lazy"
+                >
+            @else
+                <span class="grid size-16 place-items-center rounded-full bg-paw-mint text-lg font-bold text-paw-leaf" aria-hidden="true">
+                    {{ $expert['initials'] }}
+                </span>
+            @endif
+        </x-linked-media>
 
         <div class="min-w-0 flex-1">
             <div class="flex flex-wrap items-center gap-2">
                 <h2 class="text-lg font-bold leading-tight">
-                    <a href="{{ route('experts.show', $expert['slug']) }}" class="hover:text-paw-leaf focus:outline-none focus:ring-2 focus:ring-paw-leaf">
+                    <a href="{{ $expert['profile_url'] }}" class="hover:text-paw-leaf focus:outline-none focus:ring-2 focus:ring-paw-leaf">
                         {{ $expert['name'] }}
                     </a>
                 </h2>
@@ -85,7 +92,7 @@
             label="{{ __('ui.view_profile_d4788f256f') }}"
             icon="arrow-right"
             variant="primary"
-            :href="route('experts.show', $expert['slug'])"
+            :href="$expert['profile_url']"
         />
         @if ($expert['accepts_new_clients'])
             <x-action-control

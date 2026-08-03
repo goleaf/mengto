@@ -124,13 +124,20 @@
         <section aria-labelledby="professional-heading">
             <h2 id="professional-heading" class="text-lg font-bold">{{ __('ui.professional_19c73a5cdf') }}</h2>
             <div class="mt-3 flex items-center gap-3">
-                @if ($expert['avatar_url'])
-                    <img src="{{ $expert['avatar_url'] }}" alt="" class="size-12 rounded-full object-cover">
-                @else
-                    <span class="grid size-12 place-items-center rounded-full bg-paw-mint font-bold text-paw-leaf">{{ $expert['initials'] }}</span>
-                @endif
+                <x-linked-media
+                    :href="$expert['media_target']['url']"
+                    :label="$expert['media_target']['label']"
+                    variant="avatar"
+                    class="shrink-0"
+                >
+                    @if ($expert['avatar_url'])
+                        <img src="{{ $expert['avatar_url'] }}" alt="" class="size-12 rounded-full object-cover">
+                    @else
+                        <span class="grid size-12 place-items-center rounded-full bg-paw-mint font-bold text-paw-leaf" aria-hidden="true">{{ $expert['initials'] }}</span>
+                    @endif
+                </x-linked-media>
                 <div>
-                    <a href="{{ route('experts.show', $expert['slug']) }}" class="font-bold hover:text-paw-leaf">{{ $expert['name'] }}</a>
+                    <a href="{{ $expert['profile_url'] }}" class="font-bold hover:text-paw-leaf">{{ $expert['name'] }}</a>
                     <p class="text-sm text-paw-muted">{{ $expert['type'] }}</p>
                 </div>
             </div>

@@ -181,6 +181,7 @@ final class CreatedContentPresenter
         return $profiles->map(static function (PetProfile $profile): array {
             $profileData = $profile->profile_data ?? [];
             $key = $profile->profile_key;
+            $profileUrl = route('pets.created', ['item' => $key]);
 
             return [
                 'key' => $key,
@@ -200,6 +201,10 @@ final class CreatedContentPresenter
                     : [__('messages.new_to_pawcircle')],
                 'profile_route' => 'pets.created',
                 'profile_parameters' => ['item' => $key],
+                'media_target' => [
+                    'url' => $profileUrl,
+                    'label' => __('presentation.open_profile', ['name' => $profile->name]),
+                ],
             ];
         })->all();
     }

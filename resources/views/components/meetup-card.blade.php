@@ -9,6 +9,8 @@
             :height="800"
             sizes="(min-width: 1280px) 390px, (min-width: 640px) calc(50vw - 2rem), calc(100vw - 2rem)"
             :eager="$eager"
+            :href="$meetup['media_target']['url'] ?? null"
+            :link-label="$meetup['media_target']['label'] ?? null"
         >
             <x-status-badge :label="$meetup['category']" class="absolute left-3 top-3" />
             <time datetime="{{ $meetup['datetime'] }}" aria-label="{{ $meetup['date_accessible'] }}" data-meetup-date class="absolute right-3 top-3 grid min-w-12 place-items-center rounded-md border border-white/70 bg-paw-ink px-2 py-1.5 text-center text-white shadow-sm">
@@ -26,8 +28,7 @@
     </div>
     <h3 class="mt-2 break-words text-lg font-semibold text-paw-ink">
         <x-optional-link
-            :route-name="$meetup['detail_route'] ?? null"
-            :route-parameters="$meetup['detail_parameters'] ?? []"
+            :href="$meetup['media_target']['url'] ?? null"
         >
             {{ $meetup['title'] }}
         </x-optional-link>

@@ -502,6 +502,7 @@ class ExpertPresenter
     /** @param array<string, mixed> $filters */
     private function card(ExpertProfile $profile, array $filters = []): array
     {
+        $profileUrl = route('experts.show', $profile->slug);
         $reasons = collect([
             filled($filters['species'] ?? null)
                 ? __('presentation.works_with', ['species' => Str::headline((string) $filters['species'])])
@@ -523,6 +524,11 @@ class ExpertPresenter
         return [
             'slug' => $profile->slug,
             'name' => $profile->public_name,
+            'profile_url' => $profileUrl,
+            'media_target' => [
+                'url' => $profileUrl,
+                'label' => __('presentation.open_profile', ['name' => $profile->public_name]),
+            ],
             'initials' => collect(explode(' ', $profile->public_name))->take(2)->map(fn (string $part): string => Str::upper(Str::substr($part, 0, 1)))->join(''),
             'avatar_url' => $profile->avatar_url,
             'type' => $this->taxonomy->types()[$profile->primary_type] ?? Str::headline($profile->primary_type),

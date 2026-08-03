@@ -21,6 +21,8 @@ Target: WCAG 2.1 AA for critical workflows.
 - 200% zoom remains usable.
 - Reduced-motion and forced-colors preferences preserve function.
 - Drag-and-drop has a keyboard alternative.
+- Linked representative media has a localized accessible name, visible focus,
+  and the exact same destination as its adjacent resource link.
 
 ## Critical Review Flows
 
@@ -37,6 +39,9 @@ Target: WCAG 2.1 AA for critical workflows.
    invitation, and manage membership through keyboard-accessible controls.
 10. Create a journal, add a dated entry and measurements, review a textual
     progress table, comment, export, and archive without drag-only controls.
+11. Open a representative pet, group, expert, message participant, or listing
+    through either its image/placeholder or adjacent title and reach the same
+    authorized destination.
 
 ## Automated And Manual Evidence
 
@@ -83,6 +88,25 @@ success status without a full-page reload.
 
 Known tool limitations belong in `docs/known-limitations.md`; a missing tool
 does not waive semantic implementation or manual review.
+
+## Linked Representative Media
+
+Linked media uses an ordinary anchor with a localized `aria-label`; it does
+not emulate navigation with JavaScript. The adjacent text link remains
+available so the interface does not force a visual-media interaction. Both
+affordances share the presenter's canonical URL, and a missing or unauthorized
+target renders passively. Focus uses the shared visible ring in normal and
+forced-colors modes, hover motion is disabled when reduced motion is
+requested, and the component cannot wrap buttons, links, inputs, or other
+interactive descendants.
+
+Connected browser evidence covered `/pets`, `/groups`, `/discover`, and
+`/messages?conversation=ari` at 320, 375, 768, 1024, 1440, and 1920 pixel
+widths. All 24 route/viewport combinations had zero horizontal overflow, zero
+unnamed linked-media controls, zero nested interactive descendants, and zero
+console warnings or errors. Pointer and Enter-key activation of Scout's image
+reached the same canonical profile URL as the title, and mobile focus exposed
+the localized accessible name and visible focus ring.
 
 The forum journal UI uses one existing topic heading, sequential section
 headings, explicit labels/descriptions, field-linked errors, polite status

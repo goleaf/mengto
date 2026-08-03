@@ -69,6 +69,7 @@ class OrderPresenter
             (string) ($item['brand'] ?? ''),
             (string) ($item['model'] ?? ''),
         ]));
+        $listingUrl = route('marketplace.show', $listing);
 
         return [
             'owner' => $this->profiles->owner(),
@@ -77,6 +78,11 @@ class OrderPresenter
             'listing' => [
                 'slug' => $listing->slug,
                 'title' => $listing->title,
+                'url' => $listingUrl,
+                'media_target' => [
+                    'url' => $listingUrl,
+                    'label' => __('presentation.view_listing', ['title' => $listing->title]),
+                ],
             ],
             'order' => [
                 'reference' => $order->reference,

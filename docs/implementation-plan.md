@@ -247,3 +247,27 @@ Status: `verified` on 2026-08-03
 
 The exhaustive execution and release plan is
 `docs/plans/authenticated-portal-access-plan.md`.
+
+## Current Delivery: Global Linked Media Navigation
+
+Status: `verified` on 2026-08-03
+
+- Added one passive Blade primitive that links representative media only from
+  an explicit server-prepared canonical target and remains passive when the
+  target is absent.
+- Migrated eligible pet, group, neighbor, meetup, discovery, profile, expert,
+  booking, messaging, and marketplace projections without adding queries or
+  guessing routes.
+- Preserved viewer, gallery, current-page, QR, map, video, upload, action, and
+  private-download semantics through an exhaustive 73-template inventory.
+- Added EN/LT/RU accessible labels, visible focus, reduced-motion and
+  forced-colors behavior, exact-destination tests, nested-interactive source
+  guards, and responsive browser checks.
+- Passed the 19-test contract, 67-test affected slice, Pint, Larastan,
+  dependency audits, Vite build, cache smoke checks, fresh isolated migration,
+  repeat seed, and 24-route/viewport browser matrix.
+- The final serial repository suite passed 2,303 tests and 76,111 assertions in
+  131.130 seconds after an earlier concurrent loader conflict disappeared.
+
+The exhaustive scope, classifications, acceptance criteria, and gate evidence
+are recorded in `docs/plans/global-linked-media-navigation-plan.md`.

@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
 
 final class InteractionPresenter
@@ -46,12 +47,20 @@ final class InteractionPresenter
             $profile = $key === 'scout'
                 ? array_intersect_key($this->state->pet(), $pet)
                 : [];
-
-            return [
+            $presentedPet = [
                 ...$pet,
                 ...array_filter($profile, static fn (string $value): bool => $value !== ''),
+            ];
+
+            return [
+                ...$presentedPet,
                 'key' => $key,
                 'followed' => $this->state->isActive('follows', $key),
+                'media_target' => $this->routeTarget(
+                    $presentedPet['profile_route'] ?? null,
+                    (array) ($presentedPet['profile_parameters'] ?? []),
+                    __('presentation.open_profile', ['name' => $presentedPet['name']]),
+                ),
             ];
         }, $pets);
     }
@@ -69,6 +78,11 @@ final class InteractionPresenter
                 ...$meetup,
                 'key' => $key,
                 'rsvp' => $this->state->isActive('meetups', $key),
+                'media_target' => $this->routeTarget(
+                    $meetup['detail_route'] ?? null,
+                    (array) ($meetup['detail_parameters'] ?? []),
+                    __('presentation.open_event', ['title' => $meetup['title']]),
+                ),
             ];
         }, $meetups);
     }
@@ -86,6 +100,11 @@ final class InteractionPresenter
                 ...$group,
                 'key' => $key,
                 'joined' => $this->state->isActive('groups', $key),
+                'media_target' => $this->routeTarget(
+                    $group['detail_route'] ?? null,
+                    (array) ($group['detail_parameters'] ?? []),
+                    __('presentation.open_group', ['name' => $group['name']]),
+                ),
             ];
         }, $groups);
     }
@@ -103,7 +122,28 @@ final class InteractionPresenter
                 ...$neighbor,
                 'key' => $key,
                 'followed' => $this->state->isActive('follows', $key),
+                'media_target' => $this->routeTarget(
+                    $neighbor['profile_route'] ?? null,
+                    (array) ($neighbor['profile_parameters'] ?? []),
+                    __('presentation.open_profile', ['name' => $neighbor['name']]),
+                ),
             ];
         }, $neighbors);
+    }
+
+    /**
+     * @param  array<string, mixed>  $parameters
+     * @return array{url: string, label: string}|null
+     */
+    private function routeTarget(mixed $routeName, array $parameters, string $label): ?array
+    {
+        if (! is_string($routeName) || ! Route::has($routeName)) {
+            return null;
+        }
+
+        return [
+            'url' => route($routeName, $parameters),
+            'label' => $label,
+        ];
     }
 }

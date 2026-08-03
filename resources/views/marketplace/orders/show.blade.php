@@ -1,6 +1,6 @@
 <x-app-shell :owner="$owner" :title="$page_title" :active-section="$active_section">
     <div class="mx-auto grid max-w-5xl gap-7">
-        <a href="{{ route('marketplace.show', $listing['slug']) }}" class="inline-flex w-fit items-center gap-2 text-sm font-bold text-paw-leaf">
+        <a href="{{ $listing['url'] }}" class="inline-flex w-fit items-center gap-2 text-sm font-bold text-paw-leaf">
             <x-lucide-arrow-left class="size-4" aria-hidden="true" />
             {{ $listing['title'] }}
         </a>
@@ -44,7 +44,12 @@
                 <section aria-labelledby="item-heading">
                     <h2 id="item-heading" class="text-2xl font-bold">{{ __('ui.order_item_758d9570c2') }}</h2>
                     <div class="mt-4 grid gap-5 sm:grid-cols-[10rem_minmax(0,1fr)]">
-                        <div class="aspect-square overflow-hidden rounded-md bg-paw-paper">
+                        <x-linked-media
+                            :href="$listing['media_target']['url']"
+                            :label="$listing['media_target']['label']"
+                            variant="thumbnail"
+                            class="aspect-square overflow-hidden rounded-md bg-paw-paper"
+                        >
                             @if (data_get($order['item'], 'cover_url'))
                                 <img src="{{ data_get($order['item'], 'cover_url') }}" alt="{{ data_get($order['item'], 'title') }}" class="size-full object-cover">
                             @else
@@ -52,9 +57,13 @@
                                     <x-lucide-package class="size-10" />
                                 </span>
                             @endif
-                        </div>
+                        </x-linked-media>
                         <div>
-                            <h3 class="text-xl font-bold">{{ data_get($order['item'], 'title') }}</h3>
+                            <h3 class="text-xl font-bold">
+                                <a href="{{ $listing['url'] }}" class="hover:text-paw-leaf focus:outline-none focus:ring-2 focus:ring-paw-leaf">
+                                    {{ data_get($order['item'], 'title') }}
+                                </a>
+                            </h3>
                             <p class="mt-2 leading-6 text-paw-muted">{{ data_get($order['item'], 'description') }}</p>
                             <dl class="market-attributes mt-4">
                                 <div><dt>{{ __('ui.brand_and_model_ed264a49a9') }}</dt><dd>{{ $order['item_brand_model'] }}</dd></div>

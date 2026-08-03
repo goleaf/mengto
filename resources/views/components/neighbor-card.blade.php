@@ -9,6 +9,8 @@
             :height="800"
             sizes="(min-width: 1280px) 390px, (min-width: 640px) calc(50vw - 2rem), calc(100vw - 2rem)"
             :eager="$eager"
+            :href="$neighbor['media_target']['url'] ?? null"
+            :link-label="$neighbor['media_target']['label'] ?? null"
         >
             <x-status-badge :label="$neighbor['category']" class="absolute left-3 top-3" />
         </x-card-media>
@@ -25,8 +27,7 @@
 
     <h3 class="mt-2 break-words text-lg font-semibold text-paw-ink">
         <x-optional-link
-            :route-name="$neighbor['profile_route'] ?? null"
-            :route-parameters="$neighbor['profile_parameters'] ?? []"
+            :href="$neighbor['media_target']['url'] ?? null"
         >
             {{ $neighbor['name'] }}
         </x-optional-link>

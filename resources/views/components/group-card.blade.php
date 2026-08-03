@@ -9,6 +9,8 @@
             :height="800"
             sizes="(min-width: 1280px) 390px, (min-width: 640px) calc(50vw - 2rem), calc(100vw - 2rem)"
             :eager="$eager"
+            :href="$group['media_target']['url'] ?? null"
+            :link-label="$group['media_target']['label'] ?? null"
         >
             <div class="group-card__badges">
                 <x-status-badge :label="$group['category']" />
@@ -37,8 +39,7 @@
 
     <h3 class="group-card__title">
         <x-optional-link
-            :route-name="$group['detail_route'] ?? null"
-            :route-parameters="$group['detail_parameters'] ?? []"
+            :href="$group['media_target']['url'] ?? null"
         >
             {{ $group['name'] }}
         </x-optional-link>

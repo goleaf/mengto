@@ -94,6 +94,8 @@ final class PetProfileCatalog
      */
     public function card(array $pet): array
     {
+        $profileUrl = route($pet['route']);
+
         return [
             'key' => $pet['slug'],
             'name' => $pet['name'],
@@ -110,6 +112,10 @@ final class PetProfileCatalog
             'traits' => $pet['traits'],
             'profile_route' => $pet['route'],
             'profile_parameters' => [],
+            'media_target' => [
+                'url' => $profileUrl,
+                'label' => __('presentation.open_profile', ['name' => $pet['name']]),
+            ],
         ];
     }
 

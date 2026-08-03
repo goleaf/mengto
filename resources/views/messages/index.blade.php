@@ -21,10 +21,15 @@
             </div>
         </header>
 
+        <x-messaging-folders
+            :filters="$filters"
+            :active-filter="$active_filter"
+            :query="$query"
+        />
+
         <div class="messaging-shell">
             <x-messaging-inbox
                 :conversations="$conversations"
-                :filters="$filters"
                 :active-filter="$active_filter"
                 :query="$query"
                 :selected="$selected"

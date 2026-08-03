@@ -1166,6 +1166,8 @@ final class PreviewService
                     'image_medium' => $pets[__('messages.scout_8a1db462be')]['image_medium'],
                     'image_alt' => $pets[__('messages.scout_8a1db462be')]['image_alt'],
                     'route' => $pets[__('messages.scout_8a1db462be')]['profile_route'],
+                    'url' => route($pets[__('messages.scout_8a1db462be')]['profile_route']),
+                    'media_label' => __('presentation.open_profile', ['name' => $pets[__('messages.scout_8a1db462be')]['name']]),
                     'tags' => $pets[__('messages.scout_8a1db462be')]['traits'],
                 ],
                 [
@@ -1183,6 +1185,8 @@ final class PreviewService
                     'image_medium' => $neighbors['ari']['image_medium'],
                     'image_alt' => $neighbors['ari']['image_alt'],
                     'route' => $neighbors['ari']['profile_route'],
+                    'url' => route($neighbors['ari']['profile_route']),
+                    'media_label' => __('presentation.open_profile', ['name' => $neighbors['ari']['name']]),
                     'tags' => $neighbors['ari']['interests'],
                 ],
                 [
@@ -1196,6 +1200,8 @@ final class PreviewService
                     'image_medium' => $meetups['senior-stroll']['image_medium'],
                     'image_alt' => $meetups['senior-stroll']['image_alt'],
                     'route' => 'meetups.index',
+                    'url' => route('meetups.index'),
+                    'media_label' => __('presentation.open_event', ['title' => $meetups['senior-stroll']['title']]),
                     'tags' => $meetups['senior-stroll']['tags'],
                 ],
                 [
@@ -1209,6 +1215,8 @@ final class PreviewService
                     'image_medium' => $groups['trail-tails']['image_medium'],
                     'image_alt' => $groups['trail-tails']['image_alt'],
                     'route' => 'groups.index',
+                    'url' => route('groups.index'),
+                    'media_label' => __('presentation.open_group', ['name' => $groups['trail-tails']['name']]),
                     'tags' => $groups['trail-tails']['tags'],
                 ],
             ],

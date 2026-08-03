@@ -12,7 +12,13 @@
 
 <aside class="messaging-context" aria-label="{{ __('ui.conversation_information_df634b408e') }}">
     <section class="messaging-context__identity">
-        <img src="{{ $conversation['avatar'] }}" alt="" width="64" height="64">
+        <x-linked-media
+            :href="$conversation['media_target']['url']"
+            :label="$conversation['media_target']['label']"
+            variant="avatar"
+        >
+            <img src="{{ $conversation['avatar'] }}" alt="" width="64" height="64">
+        </x-linked-media>
         <div>
             <h2>{{ $conversation['name'] }}</h2>
             <p>{{ $conversation['purpose'] }}</p>

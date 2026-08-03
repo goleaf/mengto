@@ -1,17 +1,24 @@
 @props(['result', 'eager' => false])
 
 <article role="listitem" data-discover-result class="panel panel--clip grid sm:grid-cols-[11rem_minmax(0,1fr)]">
-    <x-responsive-image
-        :src="$result['image']"
-        :small="$result['image_small'] ?? null"
-        :medium="$result['image_medium'] ?? null"
-        :alt="$result['image_alt']"
-        :width="1200"
-        :height="800"
-        sizes="(min-width: 640px) 176px, calc(100vw - 2rem)"
-        :eager="$eager"
-        class="aspect-[16/9] w-full object-cover sm:aspect-auto sm:h-full"
-    />
+    <x-linked-media
+        :href="$result['url']"
+        :label="$result['media_label']"
+        variant="thumbnail"
+        class="min-h-full"
+    >
+        <x-responsive-image
+            :src="$result['image']"
+            :small="$result['image_small'] ?? null"
+            :medium="$result['image_medium'] ?? null"
+            :alt="$result['image_alt']"
+            :width="1200"
+            :height="800"
+            sizes="(min-width: 640px) 176px, calc(100vw - 2rem)"
+            :eager="$eager"
+            class="aspect-[16/9] w-full object-cover sm:aspect-auto sm:h-full"
+        />
+    </x-linked-media>
 
     <div class="min-w-0 p-4 sm:p-5">
         <div class="flex items-center justify-between gap-3">
@@ -20,7 +27,7 @@
         </div>
 
         <h3 class="mt-2 break-words text-lg font-semibold text-paw-ink">
-            <x-text-link :href="route($result['route'])">
+            <x-text-link :href="$result['url']">
                 {{ $result['title'] }}
             </x-text-link>
         </h3>

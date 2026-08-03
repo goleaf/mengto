@@ -49,6 +49,7 @@
 | UI-A11Y-003 | Status is conveyed with text/icon in addition to color and announced where asynchronous. |
 | UI-A11Y-004 | Images have useful alt text or empty decorative alt; maps/charts have table or textual equivalents. |
 | UI-A11Y-005 | Motion respects reduced-motion, critical controls remain usable in forced colors, and text/background contrast meets WCAG 2.1 AA. |
+| UI-NAV-001 | Representative images and placeholders use the exact same server-authorized internal destination as the adjacent resource title or details link; unavailable targets stay passive and no nested interactive content is introduced. |
 | UI-RESPONSIVE-001 | No horizontal page overflow occurs at 320, 375, 768, 1024, 1440, or wide desktop widths. |
 | UI-RESPONSIVE-002 | Controls have adequate touch targets, translated text can expand, and no mobile workflow depends on hover. |
 | UI-STATE-001 | Data-driven surfaces define initial/action loading, empty, filtered empty, success, recoverable/fatal error, offline, unauthorized, disabled, pending, and completed states as applicable. |
