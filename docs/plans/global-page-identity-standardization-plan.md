@@ -257,6 +257,25 @@ production build, isolated migration plus repeated seed (133 migrations, 216
 tables, stable 5 users), 178-line route and cache smoke, and both forum-source
 checks also passed.
 
+The second global-shell localization follow-up closes the seven utility labels
+that still fell back to English above the already-localized destination rows.
+The brand home link, discovery search name and prompt, circle, notifications,
+messages, and owner-profile label now share the same EN/LT/RU `navigation`
+contract. Existing routes, active states, canonical Lucide icons, keyboard
+path, and prepared owner data remain unchanged, so this presentation change
+adds no query. The browser matrix now compares all thirty-three global-shell
+strings with the English baseline on every route and viewport. All 91 audits
+and 26 screenshots passed with zero console errors, overflow, clipped regions,
+raw translation keys, or undersized header targets. The focused navigation
+contract passed 5 tests with 123 assertions; the affected navigation,
+localization, responsive, architecture, and page-identity run passed 84 tests
+with 64,442 assertions; the complete sequential suite passed 2,836 tests with
+91,276 assertions. Full Pint and Larastan passed with zero findings; Composer
+validation, audit, and platform requirements, NPM audit, production build,
+isolated migration plus repeated seed (135 migrations, 217 tables, stable 5
+users and 10 expert profiles), 178-line route and cache smoke, and both
+forum-source checks also passed.
+
 The third non-header localization follow-up closes the `/lost-found`
 directory slice. Forty-two directory, filter, status, map, guidance, empty,
 and defensive UI values now have reviewed RU/LT translations; the unchanged
@@ -374,11 +393,11 @@ seed (135 migrations, 217 tables, stable 5 users and 10 expert profiles),
    heroes and migrating accidental page headers; never mark a later wave
    complete from source intent or screenshots alone.
 4. Continue the non-header English fallback audit on the remaining priority
-   RU/LT pages; the global navigation, `/medical-records`, `/care-journals`,
-   `/lost-found`, `/marketplace`, `/experts`, and the `/groups` directory are
-   browser-verified, while the other priority bodies and group detail flows
-   remain open. Do not conflate body-copy completion with the verified
-   page-identity contract.
+   RU/LT pages; the global navigation and utility header, `/medical-records`,
+   `/care-journals`, `/lost-found`, `/marketplace`, `/experts`, and the
+   `/groups` directory are browser-verified, while the other priority bodies
+   and group detail flows remain open. Do not conflate body-copy completion
+   with the verified page-identity contract.
 
 ## 4. Scope
 

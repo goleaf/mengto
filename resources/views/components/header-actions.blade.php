@@ -3,7 +3,7 @@
 <div {{ $attributes->class('header-actions') }}>
     <x-icon-link
         :href="route('circle.index')"
-        label="{{ __('ui.my_circle_201c8528b5') }}"
+        label="{{ __('navigation.utility.circle') }}"
         icon="bookmark"
         name="circle"
         :active="$activeSection === 'circle'"
@@ -11,22 +11,22 @@
     />
     <x-icon-link
         :href="route('notifications.index')"
-        label="{{ __('ui.notifications_788011833a') }}"
+        label="{{ __('navigation.utility.notifications') }}"
         icon="bell"
         name="notifications"
         :active="$activeSection === 'notifications'"
     />
     <x-icon-link
         :href="route('messages.index')"
-        label="{{ __('ui.messages_04d7b48339') }}"
+        label="{{ __('navigation.utility.messages') }}"
         icon="mail"
         name="messages"
         :active="$activeSection === 'messages'"
     />
     <a
         href="{{ route('profile.mia') }}"
-        aria-label="{{ __('presentation.profile_for', ['name' => $owner['name']]) }}"
-        title="{{ __('presentation.profile_for', ['name' => $owner['name']]) }}"
+        aria-label="{{ __('navigation.utility.profile_for', ['name' => $owner['name']]) }}"
+        title="{{ __('navigation.utility.profile_for', ['name' => $owner['name']]) }}"
         data-header-link="profile"
         @if ($activeSection === 'profile') aria-current="page" @endif
         class="header-profile rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-paw-leaf focus-visible:ring-offset-2"

@@ -748,6 +748,17 @@ try {
                             /\\b(?:ui|messages|forum|navigation|pet_profiles|places|experts|groups)\\.[a-z0-9_.-]+/gi
                         ) ?? [],
                         navigationCopy: {
+                            utility: {
+                                brandHomeLabel: document.querySelector('.brand-link')
+                                    ?.getAttribute('aria-label') ?? null,
+                                searchLabel: document.querySelector('[data-header-link="discover"]')
+                                    ?.getAttribute('aria-label') ?? null,
+                                searchPlaceholder: document.querySelector('[data-header-link="discover"] span')
+                                    ?.textContent.trim() ?? null,
+                                actionLabels: ['circle', 'notifications', 'messages', 'profile']
+                                    .map((name) => document.querySelector('[data-header-link="' + name + '"]')
+                                        ?.getAttribute('aria-label') ?? null),
+                            },
                             desktopLabel: document.querySelector(
                                 'nav[data-navigation-variant="desktop"]'
                             )?.getAttribute('aria-label') ?? null,
@@ -1024,13 +1035,18 @@ try {
                 }
 
                 const navigationCopy = [
+                    behavior.navigationCopy.utility.brandHomeLabel,
+                    behavior.navigationCopy.utility.searchLabel,
+                    behavior.navigationCopy.utility.searchPlaceholder,
+                    ...behavior.navigationCopy.utility.actionLabels,
                     behavior.navigationCopy.desktopLabel,
                     ...behavior.navigationCopy.desktopItems,
                     behavior.navigationCopy.mobileLabel,
                     ...behavior.navigationCopy.mobileItems,
                 ];
                 assert(
-                    behavior.navigationCopy.desktopItems.length === 13
+                    behavior.navigationCopy.utility.actionLabels.length === 4
+                        && behavior.navigationCopy.desktopItems.length === 13
                         && behavior.navigationCopy.mobileItems.length === 11
                         && navigationCopy.every((value) => value?.length > 0),
                     `${label}: the global navigation localization surface is incomplete ${JSON.stringify(behavior.navigationCopy)}.`,

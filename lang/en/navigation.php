@@ -6,6 +6,15 @@ return [
     'primary_label' => 'Primary navigation',
     'mobile_label' => 'Mobile navigation',
     'unavailable' => 'Navigation unavailable.',
+    'utility' => [
+        'brand_home' => 'PawCircle home',
+        'search_label' => 'Search PawCircle',
+        'search_placeholder' => 'Search parks, pets, people, and routines',
+        'circle' => 'My circle',
+        'notifications' => 'Notifications',
+        'messages' => 'Messages',
+        'profile_for' => ':name profile',
+    ],
     'items' => [
         'feed' => ['label' => 'Feed', 'mobile_label' => 'Feed'],
         'pets' => ['label' => 'Pets', 'mobile_label' => 'Pets'],

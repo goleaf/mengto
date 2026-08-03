@@ -6,6 +6,15 @@ return [
     'primary_label' => 'Pagrindinė navigacija',
     'mobile_label' => 'Mobilioji navigacija',
     'unavailable' => 'Navigacija nepasiekiama.',
+    'utility' => [
+        'brand_home' => 'PawCircle pradžia',
+        'search_label' => 'Ieškoti PawCircle',
+        'search_placeholder' => 'Ieškoti parkų, augintinių, žmonių ir kasdienės veiklos',
+        'circle' => 'Mano ratas',
+        'notifications' => 'Pranešimai',
+        'messages' => 'Žinutės',
+        'profile_for' => ':name profilis',
+    ],
     'items' => [
         'feed' => ['label' => 'Srautas', 'mobile_label' => 'Srautas'],
         'pets' => ['label' => 'Augintiniai', 'mobile_label' => 'Augint.'],

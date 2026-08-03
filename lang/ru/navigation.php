@@ -6,6 +6,15 @@ return [
     'primary_label' => 'Основная навигация',
     'mobile_label' => 'Мобильная навигация',
     'unavailable' => 'Навигация недоступна.',
+    'utility' => [
+        'brand_home' => 'Главная PawCircle',
+        'search_label' => 'Поиск в PawCircle',
+        'search_placeholder' => 'Поиск парков, питомцев, людей и повседневных дел',
+        'circle' => 'Мой круг',
+        'notifications' => 'Уведомления',
+        'messages' => 'Сообщения',
+        'profile_for' => 'Профиль :name',
+    ],
     'items' => [
         'feed' => ['label' => 'Лента', 'mobile_label' => 'Лента'],
         'pets' => ['label' => 'Питомцы', 'mobile_label' => 'Питомцы'],

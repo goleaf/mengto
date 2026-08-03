@@ -1,7 +1,7 @@
 <a
     href="{{ route('home') }}"
     {{ $attributes->class(['brand-link']) }}
-    aria-label="{{ __('ui.brand_home_f8825288c3') }}"
+    aria-label="{{ __('navigation.utility.brand_home') }}"
 >
     <span class="grid size-10 shrink-0 place-items-center rounded-lg bg-paw-ink text-sm font-bold text-white">{{ __('ui.pc_21d017c40a') }}</span>
     <span class="brand-link__name truncate text-lg font-semibold tracking-normal">{{ __('ui.brand_4962881186') }}</span>
