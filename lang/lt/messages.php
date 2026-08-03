@@ -551,7 +551,7 @@ return [
     'breed_community_83d88aef24' => 'Breed community',
     'breed_d1ac8a8093' => 'Breed',
     'breed_interest_is_enough_to_join_637cc369e4' => 'Breed interest is enough to join',
-    'breed_not_recorded_ebcac0c0af' => 'Breed not recorded',
+    'breed_not_recorded_ebcac0c0af' => 'Veislė nenurodyta',
     'breed_or_companion_type_3643e58a92' => 'Breed or companion type',
     'breed_or_type_fe0b9a5ca2' => 'Breed or type',
     'bright_veterinary_waiting_and_consultation_area_3969d2817c' => 'Bright veterinary waiting and consultation area',

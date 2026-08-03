@@ -29,6 +29,7 @@ class CareJournalPresenter
         private readonly ProfilePresenter $profiles,
         private readonly ForumActor $actor,
         private readonly LocaleFormatter $formatter,
+        private readonly PetSpeciesLabel $speciesLabels,
     ) {}
 
     /** @return array<string, mixed> */
@@ -332,7 +333,7 @@ class CareJournalPresenter
             'slug' => $journal->slug,
             'pet_profile_key' => $journal->pet_profile_key,
             'pet_name' => $journal->pet_name,
-            'species' => Str::headline($journal->species),
+            'species' => $this->speciesLabels->for($journal->species),
             'breed' => $journal->breed ?: __('messages.breed_not_recorded_ebcac0c0af'),
             'image_url' => $journal->image_url,
             'privacy' => Str::headline($journal->privacy),

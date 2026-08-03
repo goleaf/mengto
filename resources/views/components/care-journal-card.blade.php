@@ -9,7 +9,7 @@
         @endif
     </a>
     <div class="care-journal-card__body">
-        <div class="flex min-w-0 items-start justify-between gap-3">
+        <div class="flex min-w-0 flex-wrap items-start justify-between gap-3">
             <div class="min-w-0">
                 <p class="text-xs font-bold uppercase text-paw-leaf">{{ $journal['species'] }}</p>
                 <h2 class="mt-1 text-xl font-bold">

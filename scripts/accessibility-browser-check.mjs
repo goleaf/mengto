@@ -556,6 +556,7 @@ try {
         const pageIdentityScreenshots = [];
         const englishIdentityCopy = new Map();
         let englishMedicalRecordCopy = null;
+        let englishCareJournalCopy = null;
         let canonicalTitleFont = null;
 
         const setProfileLocale = async (locale) => {
@@ -672,6 +673,12 @@ try {
                     const medicalCardBox = medicalCard?.getBoundingClientRect();
                     const medicalMediaBox = medicalMedia?.getBoundingClientRect();
                     const medicalBodyBox = medicalBody?.getBoundingClientRect();
+                    const careCard = document.querySelector('.care-journal-card');
+                    const careMedia = careCard?.querySelector('.care-journal-card__media');
+                    const careBody = careCard?.querySelector('.care-journal-card__body');
+                    const careCardBox = careCard?.getBoundingClientRect();
+                    const careMediaBox = careMedia?.getBoundingClientRect();
+                    const careBodyBox = careBody?.getBoundingClientRect();
 
                     return {
                         documentLanguage: document.documentElement.lang,
@@ -740,6 +747,45 @@ try {
                                 mediaWidth: Math.round(medicalMediaBox.width),
                                 mediaBottom: Math.round(medicalMediaBox.bottom),
                                 bodyTop: Math.round(medicalBodyBox.top),
+                            }
+                            : null,
+                        careJournalCopy: {
+                            familyLabel: document.querySelector('.care-family-strip')
+                                ?.getAttribute('aria-label') ?? null,
+                            familyTitle: document.querySelector('.care-family-strip strong')
+                                ?.textContent.trim() ?? null,
+                            familyDescription: document.querySelector('.care-family-strip p')
+                                ?.textContent.trim() ?? null,
+                            directoryLabel: document.querySelector('.care-directory-grid')
+                                ?.getAttribute('aria-label') ?? null,
+                            species: document.querySelector('.care-journal-card__body > div p')
+                                ?.textContent.trim() ?? null,
+                            cardBadge: document.querySelector('.care-journal-card .status-badge span:last-child')
+                                ?.textContent.trim() ?? null,
+                            statLabels: [...(
+                                document.querySelector('.care-journal-card')
+                                    ?.querySelectorAll('.care-journal-card__stats dt') ?? []
+                            )]
+                                .map((element) => element.textContent.trim()),
+                            statValues: [...(
+                                document.querySelector('.care-journal-card')
+                                    ?.querySelectorAll('.care-journal-card__stats dd') ?? []
+                            )]
+                                .map((element) => element.textContent.trim()),
+                            actionLabels: [...(
+                                document.querySelector('.care-journal-card')
+                                    ?.querySelectorAll('.care-journal-card__body > div:last-child .action') ?? []
+                            )]
+                                .map((element) => element.textContent.trim()),
+                            mediaLabel: document.querySelector('.care-journal-card__media')
+                                ?.getAttribute('aria-label') ?? null,
+                        },
+                        careJournalLayout: careCardBox && careMediaBox && careBodyBox
+                            ? {
+                                cardWidth: Math.round(careCardBox.width),
+                                mediaWidth: Math.round(careMediaBox.width),
+                                mediaBottom: Math.round(careMediaBox.bottom),
+                                bodyTop: Math.round(careBodyBox.top),
                             }
                             : null,
                     };
@@ -813,6 +859,54 @@ try {
                             behavior.medicalRecordLayout.mediaBottom
                                 <= behavior.medicalRecordLayout.bodyTop + 1,
                             `${label}: medical card media and body are not stacked.`,
+                        );
+                    }
+                }
+
+                if (route.path === '/care-journals') {
+                    const careCopy = [
+                        behavior.careJournalCopy.familyLabel,
+                        behavior.careJournalCopy.familyTitle,
+                        behavior.careJournalCopy.familyDescription,
+                        behavior.careJournalCopy.directoryLabel,
+                        behavior.careJournalCopy.species,
+                        behavior.careJournalCopy.cardBadge,
+                        ...behavior.careJournalCopy.statLabels,
+                        behavior.careJournalCopy.statValues[0],
+                        behavior.careJournalCopy.statValues[2],
+                        behavior.careJournalCopy.statValues[3],
+                        ...behavior.careJournalCopy.actionLabels,
+                        behavior.careJournalCopy.mediaLabel,
+                    ];
+
+                    assert(
+                        careCopy.length === 16 && careCopy.every((value) => value?.length > 0),
+                        `${label}: the care journal localization surface is incomplete ${JSON.stringify(behavior.careJournalCopy)}.`,
+                    );
+
+                    if (viewport.locale === 'en') {
+                        englishCareJournalCopy ??= careCopy;
+                    } else {
+                        assert(englishCareJournalCopy !== null, `${label}: English care copy baseline is missing.`);
+                        assert(
+                            careCopy.every((value, index) => value !== englishCareJournalCopy[index]),
+                            `${label}: English care body fallback remains.`,
+                        );
+                    }
+
+                    if (viewport.width <= 375) {
+                        assert(behavior.careJournalLayout !== null, `${label}: care journal card geometry is missing.`);
+                        assert(
+                            Math.abs(
+                                behavior.careJournalLayout.mediaWidth
+                                - behavior.careJournalLayout.cardWidth
+                            ) <= 2,
+                            `${label}: care journal media is not full width.`,
+                        );
+                        assert(
+                            behavior.careJournalLayout.mediaBottom
+                                <= behavior.careJournalLayout.bodyTop + 1,
+                            `${label}: care journal media and body are not stacked.`,
                         );
                     }
                 }

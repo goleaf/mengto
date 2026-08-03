@@ -222,6 +222,23 @@ requirements, NPM audit and production build, fresh migration plus repeated
 seed (5 users, 14 places, 2 medical records, 216 tables), 177-line route and
 config/view cache smoke, and both forum-source checks also passed.
 
+The second non-header localization follow-up closes the `/care-journals`
+directory slice. Its family notice, directory label, populated and empty card
+states, actions, missing-value and missing-breed fallbacks, relative values,
+and accessible media label now use reviewed RU/LT copy. Species labels are
+prepared by the shared `PetSpeciesLabel` service instead of `Str::headline()`;
+this changes presentation without adding a query. Below 44rem the card now
+uses the same full-width 16:9 media-above-body contract as medical records,
+with wrapping identity controls for long translations. The browser matrix
+compares sixteen care copy/value fields with the English baseline and verifies
+the stacked geometry: all 91 audits and 26 screenshots passed with zero console
+errors, and the 375px card/media widths were 343/341px with coincident media
+bottom and body top. The affected domain/localization run passed 26 tests with
+32,114 assertions; the complete sequential suite passed 2,754 tests with
+87,377 assertions. Full Pint, Larastan, dependency audits, production build,
+fresh migration, repeated seed (5 users, 14 places, 2 care journals, 216
+tables), 177-line route and cache smoke, and both forum-source checks passed.
+
 ### 3.3 Next Execution Checkpoint
 
 1. Complete Package 0 by assigning the stable requirement ID and recording the
@@ -233,9 +250,9 @@ config/view cache smoke, and both forum-source checks also passed.
    heroes and migrating accidental page headers; never mark a later wave
    complete from source intent or screenshots alone.
 4. Continue the non-header English fallback audit on the remaining priority
-   RU/LT pages; `/medical-records` is browser-verified, while care journals and
-   the other priority bodies remain open. Do not conflate body-copy completion
-   with the verified page-identity contract.
+   RU/LT pages; `/medical-records` and `/care-journals` are browser-verified,
+   while the other priority bodies remain open. Do not conflate body-copy
+   completion with the verified page-identity contract.
 
 ## 4. Scope
 
