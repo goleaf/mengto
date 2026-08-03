@@ -540,6 +540,32 @@ Final evidence on 2026-08-03:
 Exact scope and final-gate status are recorded in
 `docs/plans/forum-phase3-migration-verification-work-package.md`.
 
+## Phase 4 Before-Ownership Category
+
+`ForumBeforeOwnershipCategoryTest` rejects corrupt schema/checksum/count,
+sequence, duplicate-key/slug, hierarchy, and empty-name manifests. It proves
+the exact category-21 source metadata and all 60 source labels, exact persisted
+child keys/slugs/positions, reviewed root translations, and the localized tree
+query budget.
+
+Final evidence on 2026-08-03:
+
+- RED: corrupt aggregate metadata was accepted and a warm cache read executed
+  2 database statements;
+- focused contract: 13 tests and 38 assertions;
+- related category, multilingual/cache, schema, and taxonomy-factory slice:
+  72 tests and 5,949 assertions;
+- query delta: warm locale tree 2 statements before and 0 after; cold loading
+  remains at or below 6;
+- complete sequential suite: 2,384 tests and 78,891 assertions;
+- full Pint/Larastan, Composer/npm audits, Vite, Laravel cache compilation,
+  fresh/repeat seed, rollback/reapply, manifest/source/requirements generation:
+  passed.
+
+The package changes no route, Blade, or browser interaction, so a browser-only
+gate is not applicable. Exact scope is in
+`docs/plans/forum-phase4-before-ownership-category-work-package.md`.
+
 ## Linked Media Navigation Verification
 
 `LinkedMediaNavigationContractTest` verifies the semantic linked/passive

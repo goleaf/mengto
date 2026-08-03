@@ -244,6 +244,24 @@ Status: `implemented and verified` on 2026-08-03
 Exact scope, stop conditions, and final evidence are in
 `docs/plans/forum-phase3-migration-verification-work-package.md`.
 
+## Current Delivery: Phase 4 Before-Ownership Category
+
+Status: `implemented and verified` on 2026-08-03
+
+- Validate the complete source-derived category manifest before runtime use:
+  checksum, schema version, exact totals, root sequence, required fields,
+  stable-key/slug formats, hierarchy prefixes, and global uniqueness.
+- Prove exact source-to-manifest-to-database metadata and ordering for category
+  21 while leaving its two Phase 5 taxonomy labels unpromoted.
+- Move database readiness checks into the locale-tree cache miss, reducing a
+  warm localized read from 2 database queries to 0.
+- Passed the focused 13-test/38-assertion contract, related
+  72-test/5,949-assertion slice, and complete sequential
+  2,384-test/78,891-assertion suite plus every applicable release gate.
+
+Exact scope, exclusions, and evidence are in
+`docs/plans/forum-phase4-before-ownership-category-work-package.md`.
+
 ## Current Delivery: Event Schedule Foundation
 
 Status: `implemented and verified` on 2026-08-03

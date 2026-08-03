@@ -94,6 +94,13 @@ Its scope and final evidence are maintained in
 
 **IDs:** all Phase 4 rows.
 
+The first verified Phase 4 slice covers exactly category 21's 64
+`forum.category.*` atoms. Runtime manifest validation now fails closed for
+structural/source drift and warm locale trees execute zero database queries.
+The remaining category roots and technical taxonomy requirements stay open;
+exact evidence is maintained in
+`docs/plans/forum-phase4-before-ownership-category-work-package.md`.
+
 **Result:** 44 stable root keys, every recovered required child, translations,
 rules, aliases, redirects, related categories, deterministic ordering,
 system/admin ownership, synchronizer, cache invalidation, and topic backfill.

@@ -24,17 +24,19 @@ final readonly class ForumCategoryTree
     {
         $locale = $this->supportedLocale($locale);
 
-        if (
-            ! Schema::hasTable('forum_categories')
-            || ! ForumCategory::query()->active()->roots()->exists()
-        ) {
-            return $this->manifestFallback($locale);
-        }
-
         return $this->cache->remember(
             "forum:category-tree:v1:locale:{$locale}",
             now()->addSeconds((int) config('taxonomy.tree_cache_seconds')),
-            fn (): array => $this->databaseTree($locale),
+            function () use ($locale): array {
+                if (
+                    ! Schema::hasTable('forum_categories')
+                    || ! ForumCategory::query()->active()->roots()->exists()
+                ) {
+                    return $this->manifestFallback($locale);
+                }
+
+                return $this->databaseTree($locale);
+            },
         );
     }
 

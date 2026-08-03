@@ -33,6 +33,10 @@
 
 ### Forum And Animal Taxonomy
 
+- Hardened the source-derived forum category catalogue against checksum,
+  version, count, format, hierarchy, and duplicate-key/slug corruption; the
+  first exact Phase 4 category slice now proves the complete before-ownership
+  hierarchy. Warm localized tree reads dropped from 2 database queries to 0.
 - Added an isolated full migration lifecycle verifier that proves every one of
   the 118 migration files applies, rolls back to an empty ledger, reapplies,
   and accepts the complete seed twice. Added source guards for typed reversible
