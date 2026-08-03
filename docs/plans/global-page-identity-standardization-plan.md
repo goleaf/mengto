@@ -468,6 +468,32 @@ compilation passed. Fresh disposable SQLite applied 136 migrations, retained
 218 tables and five users across repeated seeding; the 180-route smoke, both
 forum-source checks, and the 847-call canonical icon audit also passed.
 
+The tenth non-header localization follow-up closes the `/messages` system
+directory and inbox slice. A dedicated 32-leaf EN/LT/RU messaging contract now
+owns the nine folder labels, folder and inbox accessibility names, search and
+empty states, eight system conversation-type labels, and six relative dates.
+Stable filter/type codes remain locale-independent. Genuine member-authored
+names and message bodies remain attributable content and are deliberately not
+translated. `MessagePresenter` and `MessageCatalog` prepare the localized
+values before Blade rendering, so this presentation change adds no query and
+does not introduce a per-conversation query path.
+
+The mobile folder grid now stacks each canonical Lucide icon above a centered,
+wrapping label instead of truncating long Russian text. The repeatable browser
+contract compares all 32 messaging fields with the English baseline and checks
+folder clipping and 44-pixel targets. All 91 route/viewport audits and 26
+screenshots passed with zero clipped folder labels, undersized messaging
+controls, raw translation keys, or console errors. The focused messaging
+contract passed 6 tests with 291 assertions; the affected authorization,
+interface, linked-media, and page-identity slice passed 102 tests with 1,399
+assertions; and the complete sequential shared-checkout suite passed 2,903
+tests with 94,998 assertions. Full Pint and Larastan passed with zero findings;
+Composer strict validation, locked audit, PHP 8.5 platform requirements, NPM
+audit, production Vite build, and isolated config/event/route/view cache
+compilation passed. Fresh disposable SQLite applied 137 migrations, retained
+218 tables and five users across repeated seeding; the 180-route smoke, both
+forum-source checks, and the 847-call canonical icon audit also passed.
+
 ### 3.3 Next Execution Checkpoint
 
 1. Complete Package 0 by assigning the stable requirement ID and recording the
@@ -481,10 +507,11 @@ forum-source checks, and the 847-call canonical icon audit also passed.
 4. Continue the non-header English fallback audit on the remaining priority
    RU/LT pages; the global navigation and utility header, `/medical-records`,
    `/care-journals`, `/lost-found`, `/marketplace`, `/experts`, and the
-   `/groups` and `/neighbors` directories are browser-verified. Group detail
-   system chrome and first-party fixture content are verified across all eight
-   tabs, while genuine future member-authored content and the other priority
-   bodies remain open. Do not conflate body-copy completion with the verified
+   `/groups`, `/neighbors`, and `/messages` system directories are
+   browser-verified. Group detail system chrome and first-party fixture content
+   are verified across all eight tabs, while genuine future member-authored
+   content, deeper message-thread system copy, and the other priority bodies
+   remain open. Do not conflate body-copy completion with the verified
    page-identity contract.
 
 ## 4. Scope

@@ -18,6 +18,11 @@
 
 ### Interface System
 
+- Localized the `/messages` system directory surface through a dedicated
+  32-leaf EN/LT/RU contract for folders, search, empty states, conversation
+  types, and relative dates; preserved member-authored names and message bodies
+  verbatim; and replaced clipped mobile folder labels with canonical Lucide
+  icons above wrapping, 44-pixel-safe labels.
 - Localized the complete `/neighbors` directory and four first-party fixtures
   through a dedicated EN/LT/RU contract; made category filters and numeric
   distance sorting independent of translated display text; added canonical

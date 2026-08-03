@@ -6,10 +6,10 @@
     'summary',
 ])
 
-<aside class="messaging-inbox" aria-label="{{ __('ui.message_inbox_168d0cd2fe') }}">
+<aside class="messaging-inbox" aria-label="{{ __('messaging.inbox.label') }}" data-messaging-inbox>
     <form method="GET" action="{{ route('messages.index') }}" class="messaging-inbox__search">
         <input type="hidden" name="filter" value="{{ $activeFilter }}">
-        <label for="message-conversation-search">{{ __('ui.search_dialogs_45fd1f64fc') }}</label>
+        <label for="message-conversation-search">{{ __('messaging.inbox.search_label') }}</label>
         <div>
             <x-ui-icon name="search" size="sm" />
             <input
@@ -17,21 +17,21 @@
                 name="q"
                 value="{{ $query }}"
                 type="search"
-                placeholder="{{ __('ui.person_pet_group_case_74b3675b57') }}"
+                placeholder="{{ __('messaging.inbox.search_placeholder') }}"
                 maxlength="80"
             >
-            <button type="submit" title="{{ __('ui.search_conversations_8abdf3b226') }}" aria-label="{{ __('ui.search_conversations_8abdf3b226') }}">
+            <button type="submit" title="{{ __('messaging.inbox.search_action') }}" aria-label="{{ __('messaging.inbox.search_action') }}">
                 <x-ui-icon name="arrow-right" size="sm" />
             </button>
         </div>
     </form>
 
-    <div class="messaging-inbox__meta">
+    <div class="messaging-inbox__meta" data-messaging-inbox-meta>
         <strong>{{ __('presentation.shown_count', ['count' => count($conversations)]) }}</strong>
         <span>{{ $summary['count'] }}</span>
     </div>
 
-    <nav class="messaging-inbox__list" aria-label="{{ __('ui.conversations_1d432f5869') }}">
+    <nav class="messaging-inbox__list" aria-label="{{ __('messaging.inbox.conversations_label') }}">
         @forelse ($conversations as $conversation)
             <a
                 href="{{ route('messages.index', ['conversation' => $conversation['key'], 'filter' => $activeFilter, 'q' => $query]) }}"
@@ -47,12 +47,12 @@
                 <span class="messaging-conversation__copy">
                     <span class="messaging-conversation__title">
                         <strong>{{ $conversation['name'] }}</strong>
-                        <time datetime="{{ $conversation['datetime'] }}">{{ $conversation['time'] }}</time>
+                        <time datetime="{{ $conversation['datetime'] }}" data-messaging-conversation-time>{{ $conversation['time'] }}</time>
                     </span>
                     <span class="messaging-conversation__pet">{{ $conversation['pet'] }}</span>
                     <span class="messaging-conversation__preview">{{ $conversation['preview'] }}</span>
                     <span class="messaging-conversation__status">
-                        <span>{{ $conversation['type_label'] }}</span>
+                        <span data-messaging-conversation-type>{{ $conversation['type_label'] }}</span>
                         @if ($conversation['pinned'])
                             <x-ui-icon name="pin" size="xs" label="{{ __('ui.pinned_f20c879465') }}" />
                         @endif
@@ -74,8 +74,8 @@
         @empty
             <div class="messaging-inbox__empty">
                 <x-ui-icon name="inbox" />
-                <strong>{{ __('ui.no_matching_dialogs_8fb154f1ae') }}</strong>
-                <span>{{ __('ui.change_a_folder_or_search_phrase_4faaa96f3c') }}</span>
+                <strong>{{ __('messaging.inbox.empty_title') }}</strong>
+                <span>{{ __('messaging.inbox.empty_description') }}</span>
             </div>
         @endforelse
     </nav>

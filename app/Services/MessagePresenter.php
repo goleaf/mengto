@@ -142,7 +142,7 @@ final class MessagePresenter
                 'selected' => $conversation['key'] === $selectedKey,
                 'unread' => $unread,
                 'request_status' => $requestStatus,
-                'type_label' => Str::headline((string) $conversation['type']),
+                'type_label' => $this->conversationTypeLabel((string) $conversation['type']),
                 'archived' => (bool) ($state['archived'] ?? false),
                 'pinned' => (bool) ($state['pinned'] ?? false),
                 'muted' => (bool) ($state['muted'] ?? false),
@@ -228,16 +228,31 @@ final class MessagePresenter
     private function filters(): array
     {
         return [
-            ['key' => 'all', 'label' => __('messages.all_a52ace420f'), 'icon' => 'inbox'],
-            ['key' => 'unread', 'label' => __('messages.unread_1b9f384c14'), 'icon' => 'mail'],
-            ['key' => 'friends', 'label' => __('messages.friends_bd104d1b98'), 'icon' => 'user-round'],
-            ['key' => 'groups', 'label' => __('messages.groups_39bbb719fa'), 'icon' => 'users-round'],
-            ['key' => 'events', 'label' => __('messages.events_8d14f6e72d'), 'icon' => 'calendar-days'],
-            ['key' => 'specialists', 'label' => __('messages.specialists_fc75c064bb'), 'icon' => 'badge-check'],
-            ['key' => 'family', 'label' => __('messages.family_bd2d677b2e'), 'icon' => 'house'],
-            ['key' => 'requests', 'label' => __('messages.requests_ada27592c9'), 'icon' => 'message-square-more'],
-            ['key' => 'archived', 'label' => __('messages.archive_66f4804ee2'), 'icon' => 'archive'],
+            ['key' => 'all', 'label' => __('messaging.folders.items.all'), 'icon' => 'inbox'],
+            ['key' => 'unread', 'label' => __('messaging.folders.items.unread'), 'icon' => 'mail'],
+            ['key' => 'friends', 'label' => __('messaging.folders.items.friends'), 'icon' => 'user-round'],
+            ['key' => 'groups', 'label' => __('messaging.folders.items.groups'), 'icon' => 'users-round'],
+            ['key' => 'events', 'label' => __('messaging.folders.items.events'), 'icon' => 'calendar-days'],
+            ['key' => 'specialists', 'label' => __('messaging.folders.items.specialists'), 'icon' => 'badge-check'],
+            ['key' => 'family', 'label' => __('messaging.folders.items.family'), 'icon' => 'house'],
+            ['key' => 'requests', 'label' => __('messaging.folders.items.requests'), 'icon' => 'message-square-more'],
+            ['key' => 'archived', 'label' => __('messaging.folders.items.archived'), 'icon' => 'archive'],
         ];
+    }
+
+    private function conversationTypeLabel(string $type): string
+    {
+        return match ($type) {
+            'personal' => __('messaging.types.personal'),
+            'family' => __('messaging.types.family'),
+            'event' => __('messaging.types.event'),
+            'professional' => __('messaging.types.professional'),
+            'organization' => __('messaging.types.organization'),
+            'search' => __('messaging.types.search'),
+            'group' => __('messaging.types.group'),
+            'request' => __('messaging.types.request'),
+            default => throw new \UnexpectedValueException("Unsupported conversation type [{$type}]."),
+        };
     }
 
     /**

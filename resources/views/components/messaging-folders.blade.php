@@ -4,10 +4,10 @@
     'query',
 ])
 
-<nav class="messaging-folders" aria-label="{{ __('ui.inbox_folders_16c4c4771a') }}">
+<nav class="messaging-folders" aria-label="{{ __('messaging.folders.label') }}" data-messaging-folders>
     <div class="messaging-folders__heading">
         <x-ui-icon name="folder-open" size="sm" />
-        <strong>{{ __('ui.inbox_folders_16c4c4771a') }}</strong>
+        <strong>{{ __('messaging.folders.label') }}</strong>
     </div>
 
     <div class="messaging-folders__list">
@@ -21,7 +21,7 @@
                 <span>{{ $filter['label'] }}</span>
             </a>
         @empty
-            <span class="messaging-filter">{{ __('ui.folders_unavailable_c1856009a2') }}</span>
+            <span class="messaging-filter">{{ __('messaging.folders.unavailable') }}</span>
         @endforelse
     </div>
 </nav>

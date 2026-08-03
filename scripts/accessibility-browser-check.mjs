@@ -563,6 +563,7 @@ try {
         let englishExpertCopy = null;
         let englishGroupCopy = null;
         let englishNeighborCopy = null;
+        let englishMessagingCopy = null;
         let canonicalTitleFont = null;
 
         const setProfileLocale = async (locale) => {
@@ -713,6 +714,8 @@ try {
                     const neighborResults = document.querySelector('[data-neighbor-results]');
                     const neighborCards = [...document.querySelectorAll('[data-neighbor-card]')];
                     const neighborCard = neighborCards[0];
+                    const messagingFolders = document.querySelector('[data-messaging-folders]');
+                    const messagingInbox = document.querySelector('[data-messaging-inbox]');
 
                     return {
                         documentLanguage: document.documentElement.lang,
@@ -751,7 +754,7 @@ try {
                             )
                         ),
                         rawTranslationKeys: document.body.innerText.match(
-                            /\\b(?:ui|messages|forum|navigation|pet_profiles|places|experts|groups|neighbors)\\.[a-z0-9_.-]+/gi
+                            /\\b(?:ui|messages|forum|navigation|pet_profiles|places|experts|groups|neighbors|messaging)\\.[a-z0-9_.-]+/gi
                         ) ?? [],
                         navigationCopy: {
                             utility: {
@@ -1064,6 +1067,52 @@ try {
                                 (card) => card.querySelector('[data-neighbor-card-pet]')
                                     ?.textContent.trim() ?? null,
                             ),
+                        },
+                        messagingCopy: {
+                            actionLabel: header?.querySelector('.page-header__actions .action span')
+                                ?.textContent.trim() ?? null,
+                            foldersLabel: messagingFolders?.getAttribute('aria-label') ?? null,
+                            folderLabels: [...(messagingFolders?.querySelectorAll('.messaging-filter > span') ?? [])]
+                                .map((element) => element.textContent.trim()),
+                            inboxLabel: messagingInbox?.getAttribute('aria-label') ?? null,
+                            searchLabel: messagingInbox?.querySelector('label[for="message-conversation-search"]')
+                                ?.textContent.trim() ?? null,
+                            searchPlaceholder: messagingInbox?.querySelector('#message-conversation-search')
+                                ?.getAttribute('placeholder') ?? null,
+                            searchAction: messagingInbox?.querySelector('.messaging-inbox__search button')
+                                ?.getAttribute('aria-label') ?? null,
+                            conversationsLabel: messagingInbox?.querySelector('.messaging-inbox__list')
+                                ?.getAttribute('aria-label') ?? null,
+                            shownCount: messagingInbox?.querySelector('[data-messaging-inbox-meta] strong')
+                                ?.textContent.trim() ?? null,
+                            summary: messagingInbox?.querySelector('[data-messaging-inbox-meta] span')
+                                ?.textContent.trim() ?? null,
+                            conversationTypes: [...(messagingInbox?.querySelectorAll(
+                                '[data-messaging-conversation-type]'
+                            ) ?? [])].map((element) => element.textContent.trim()),
+                            relativeTimes: [...(messagingInbox?.querySelectorAll(
+                                '[data-messaging-conversation-time]'
+                            ) ?? [])].slice(2).map((element) => element.textContent.trim()),
+                        },
+                        messagingLayout: {
+                            clippedFolderLabels: [...(messagingFolders?.querySelectorAll(
+                                '.messaging-filter > span'
+                            ) ?? [])].filter(
+                                (element) => element.scrollWidth > element.clientWidth + 1
+                                    || element.scrollHeight > element.clientHeight + 1,
+                            ).map((element) => element.textContent.trim()),
+                            smallTargets: [...[
+                                ...(messagingFolders?.querySelectorAll('a') ?? []),
+                                ...(messagingInbox?.querySelectorAll(
+                                    'input:not([type="hidden"]), button'
+                                ) ?? []),
+                            ]].filter(visible).map((element) => ({
+                                label: element.getAttribute('aria-label')
+                                    || element.textContent.trim()
+                                    || element.getAttribute('placeholder'),
+                                width: Math.round(element.getBoundingClientRect().width),
+                                height: Math.round(element.getBoundingClientRect().height),
+                            })).filter((target) => target.width < 44 || target.height < 44),
                         },
                     };
                 })()`);
@@ -1429,6 +1478,47 @@ try {
                         assert(
                             neighborCopy.every((value, index) => value !== englishNeighborCopy[index]),
                             `${label}: English neighbor body fallback remains. Current ${JSON.stringify(neighborCopy)}; English ${JSON.stringify(englishNeighborCopy)}.`,
+                        );
+                    }
+                }
+
+                if (route.path === '/messages') {
+                    const messagingCopy = [
+                        behavior.messagingCopy.actionLabel,
+                        behavior.messagingCopy.foldersLabel,
+                        ...behavior.messagingCopy.folderLabels,
+                        behavior.messagingCopy.inboxLabel,
+                        behavior.messagingCopy.searchLabel,
+                        behavior.messagingCopy.searchPlaceholder,
+                        behavior.messagingCopy.searchAction,
+                        behavior.messagingCopy.conversationsLabel,
+                        behavior.messagingCopy.shownCount,
+                        behavior.messagingCopy.summary,
+                        ...behavior.messagingCopy.conversationTypes,
+                        ...behavior.messagingCopy.relativeTimes,
+                    ];
+
+                    assert(
+                        messagingCopy.length === 32
+                            && messagingCopy.every((value) => value?.length > 0),
+                        `${label}: the messaging localization surface is incomplete ${JSON.stringify(behavior.messagingCopy)}.`,
+                    );
+                    assert(
+                        behavior.messagingLayout.clippedFolderLabels.length === 0,
+                        `${label}: messaging folder labels are clipped ${JSON.stringify(behavior.messagingLayout.clippedFolderLabels)}.`,
+                    );
+                    assert(
+                        behavior.messagingLayout.smallTargets.length === 0,
+                        `${label}: messaging controls below 44px ${JSON.stringify(behavior.messagingLayout.smallTargets)}.`,
+                    );
+
+                    if (viewport.locale === 'en') {
+                        englishMessagingCopy ??= messagingCopy;
+                    } else {
+                        assert(englishMessagingCopy !== null, `${label}: English messaging baseline is missing.`);
+                        assert(
+                            messagingCopy.every((value, index) => value !== englishMessagingCopy[index]),
+                            `${label}: English messaging system fallback remains. Current ${JSON.stringify(messagingCopy)}; English ${JSON.stringify(englishMessagingCopy)}.`,
                         );
                     }
                 }
