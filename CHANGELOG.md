@@ -70,6 +70,10 @@
   privacy, protected identifiers, and lifecycle transitions. Saving, unsaved,
   validation, offline, and retry states remain server-authoritative and
   accessible.
+- Added revision-aware, page-memory reconnect recovery: a failed descriptive
+  save remains pending, retries once when connectivity returns, and clears
+  only after the server acknowledges the same edit revision, without copying
+  private profile values into persistent browser storage.
 - Replaced the `/pets` nearby-pet prototype with a policy-scoped personal
   workspace for owned and actively shared profiles, server-side search,
   filters, sorting and pagination, pending invitation review, protected media,

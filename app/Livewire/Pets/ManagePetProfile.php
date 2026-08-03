@@ -344,7 +344,7 @@ final class ManagePetProfile extends Component
         );
     }
 
-    public function autoSaveStep(string $step): void
+    public function autoSaveStep(string $step, mixed $clientRevision = null): void
     {
         $requestedStep = PetProfileCompletionStep::tryFrom($step);
 
@@ -370,6 +370,11 @@ final class ManagePetProfile extends Component
         };
 
         $this->saveProfileStep($requestedStep, $data, $feedbackKey);
+        $this->dispatch(
+            'pet-profile-autosave-completed',
+            step: $requestedStep->value,
+            revision: $this->confirmedClientRevision($clientRevision),
+        );
     }
 
     public function saveDocuments(): void
@@ -728,6 +733,18 @@ final class ManagePetProfile extends Component
     private function activeStep(): PetProfileCompletionStep
     {
         return PetProfileCompletionStep::fromRequest($this->step);
+    }
+
+    private function confirmedClientRevision(mixed $clientRevision): ?string
+    {
+        if (! is_string($clientRevision)
+            || $clientRevision === '0'
+            || Str::length($clientRevision) > 10
+            || ! ctype_digit($clientRevision)) {
+            return null;
+        }
+
+        return $clientRevision;
     }
 
     private function currentMicrochipIdentifier(PetProfile $profile): ?string

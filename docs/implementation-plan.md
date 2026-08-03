@@ -373,13 +373,20 @@ Status: `implemented and verified` on 2026-08-03 for
 - Added a locked idempotency key that rotates only after a successful response,
   plus one reusable accessible save-status component and explicit temporary
   photo unsaved state.
-- The focused progressive suite passes 20 tests and 128 assertions, including
+- Added page-memory reconnect recovery: a numeric form revision marks pending
+  input, `online` retries the same ordinary Livewire action once, and only a
+  matching server confirmation clears that revision. No profile value is
+  stored in browser persistence.
+- The focused progressive suite passes 27 tests and 159 assertions, including
   all-step wiring, persistence after a fresh mount, validation-key stability,
-  no-op replay, and mismatched-step non-mutation.
+  six bounded client-revision acknowledgement cases, no-op replay, and
+  mismatched-step non-mutation.
 - The integrated current tree passed full Pint, zero-error Larastan, the
-  2,685-test/85,057-assertion serial suite, production Vite build, cache smoke,
+  isolated 2,692-test/85,091-assertion serial suite, production Vite build,
+  cache smoke,
   dependency audits, and authenticated EN/RU/LT browser verification including
-  a real autosave, reload, and value-restoration cycle.
+  a real failed network request, one automatic reconnect retry, reload, and
+  value-restoration cycle.
 
 Exact scope, evidence, and non-goals are in
 `docs/plans/pet-profile-draft-autosave-work-package.md`.

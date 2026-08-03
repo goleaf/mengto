@@ -779,8 +779,8 @@ mismatched-step rejection while sensitive operations retain explicit submits.
 
 Observed release evidence on 2026-08-03:
 
-- focused progressive/workspace order slice: 30 tests and 202 assertions;
-- final current serial suite: 2,685 tests and 85,057 assertions;
+- focused progressive/workspace order slice: 37 tests and 233 assertions;
+- final isolated reconnect slice: 2,692 tests and 85,091 assertions;
 - targeted and full Pint plus Larastan: passed with zero findings;
 - Composer strict validation/audit and npm audit: passed with zero known
   vulnerabilities;
@@ -794,6 +794,10 @@ Observed release evidence on 2026-08-03:
   restoration of the displayed seeded values on a freshly migrated disposable
   SQLite database. The mutating mode requires `--autosave` together with
   `BROWSER_ALLOW_DATA_MUTATION=1` and must never target a shared database;
+- Chrome network emulation forced exactly one failed offline Livewire request;
+  the in-page revision remained pending, reconnect emitted exactly one retry,
+  reload proved server persistence, and no private draft value was written to
+  persistent browser storage;
 - browser cleanup waits for Chrome exit before removing its temporary profile,
   eliminating the reproduced `ENOTEMPTY` post-audit race.
 

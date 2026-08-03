@@ -144,13 +144,20 @@ pet, medical, care, device, search, adoption, event, report, and social data.
 - A reusable passive live region exposes saving and unsaved state. Temporary
   photos are explicitly unsaved; sensitive and operational forms are not
   silently persisted.
-- The focused progressive test passes 20 tests and 128 assertions, including
-  all-step wiring, validation-key stability, no-op replay, fresh-mount recovery,
-  and mismatched-step rejection. The current serial suite passes 2,685 tests
-  and 85,057 assertions; a connected browser change/reload check proves one
-  request, persistence, offline status, mobile reflow, and restoration of the
-  original seeded value. All eleven atomic requirement IDs are verified by
-  their dedicated evidence overlay.
+- A small first-party adapter keeps only a numeric pending revision in the
+  authenticated page. Returning connectivity retries one pending descriptive
+  form through the same action; a revision-matched server event prevents an
+  older response from clearing newer input. No profile value enters browser
+  storage.
+- The focused progressive test passes 27 tests and 159 assertions, including
+  all-step wiring, validation-key stability, six bounded client-revision
+  acknowledgement cases, no-op replay, fresh-mount recovery, and mismatched
+  step rejection. The isolated serial suite passes 2,692 tests and 85,091
+  assertions; a connected disposable-database browser check proves one
+  ordinary save request, one intentionally failed offline request, one
+  automatic reconnect retry, persistence after reload, mobile reflow, and
+  restoration of the original seeded value. All eleven atomic requirement IDs
+  remain verified by their dedicated evidence overlay.
 
 ## Next Package
 

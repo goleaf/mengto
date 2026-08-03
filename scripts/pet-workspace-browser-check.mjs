@@ -253,15 +253,23 @@ try {
     ({ sessionId } = await client.send('Target.attachToTarget', { targetId, flatten: true }));
     const consoleErrors = [];
     const livewireRequests = [];
+    const livewireRequestIds = new Set();
+    const failedLivewireRequests = [];
     client.on('Runtime.exceptionThrown', ({ exceptionDetails }) => consoleErrors.push(exceptionDetails.text), sessionId);
     client.on('Log.entryAdded', ({ entry }) => {
         if (entry.level === 'error') consoleErrors.push(entry.text);
     }, sessionId);
-    client.on('Network.requestWillBeSent', ({ request }) => {
+    client.on('Network.requestWillBeSent', ({ request, requestId }) => {
         const path = new URL(request.url).pathname;
 
         if (path.includes('/livewire-') && path.endsWith('/update')) {
             livewireRequests.push(request.url);
+            livewireRequestIds.add(requestId);
+        }
+    }, sessionId);
+    client.on('Network.loadingFailed', ({ errorText, requestId }) => {
+        if (livewireRequestIds.has(requestId)) {
+            failedLivewireRequests.push({ errorText, requestId });
         }
     }, sessionId);
     await Promise.all([
@@ -331,7 +339,8 @@ try {
         const autosaveValue = `Browser autosave verification ${Date.now()}`;
         const autosaveMarkup = await evaluate(client, sessionId, `(() => ({
             formWired: [...document.querySelectorAll('form')]
-                .some((element) => element.getAttribute('wire:change') === "autoSaveStep('appearance')"),
+                .some((element) => element.getAttribute('wire:change')
+                    === "autoSaveStep('appearance', $event.currentTarget.dataset.petProfileAutosaveRevision)"),
             statusRegion: [...document.querySelectorAll('[role="status"]')]
                 .some((element) => [...element.querySelectorAll('*')]
                     .some((child) => child.getAttribute('wire:target') === 'autoSaveStep')),
@@ -374,12 +383,27 @@ try {
         );
         assert(restoredAppearance === autosaveValue, 'The autosaved appearance was not restored after reload.');
 
-        const offlineAudit = await evaluate(client, sessionId, `(() => {
+        const offlineIdentifyingMarks = [
+            originalIdentifyingMarks,
+            `Browser reconnect verification ${Date.now()}`,
+        ].filter(Boolean).join(' ');
+        const requestsBeforeOfflineEdit = livewireRequests.length;
+        const failuresBeforeOfflineEdit = failedLivewireRequests.length;
+        const errorsBeforeOfflineEdit = consoleErrors.length;
+        await client.send('Network.emulateNetworkConditions', {
+            offline: true,
+            latency: 0,
+            downloadThroughput: -1,
+            uploadThroughput: -1,
+        }, sessionId);
+        const offlineAudit = await evaluate(client, sessionId, `((offlineValue) => {
             window.dispatchEvent(new Event('offline'));
             const input = document.querySelector('#managed-pet-identifying-marks');
             const setter = Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, 'value').set;
-            setter.call(input, input.value + ' offline draft');
+            setter.call(input, offlineValue);
             input.dispatchEvent(new Event('input', { bubbles: true }));
+            input.dispatchEvent(new Event('change', { bubbles: true }));
+            const form = input.closest('form');
             const visible = (element) => {
                 if (! element) return false;
                 const style = getComputedStyle(element);
@@ -392,14 +416,65 @@ try {
             return {
                 noticeVisible: Boolean(notice),
                 statusText: document.querySelector('[data-pet-autosave-status]')?.textContent.trim() ?? '',
+                pending: form?.hasAttribute('data-pet-profile-autosave-pending') ?? false,
             };
-        })()`);
+        })(${JSON.stringify(offlineIdentifyingMarks)})`);
         assert(offlineAudit.noticeVisible, 'The offline notice did not become visible.');
         assert(offlineAudit.statusText.includes('unsaved changes'), 'The offline edit was not identified as unsaved.');
+        assert(offlineAudit.pending, 'The offline edit was not marked for reconnect recovery.');
+        await waitUntil(
+            async () => failedLivewireRequests.length > failuresBeforeOfflineEdit,
+            'The offline autosave request did not fail at the network boundary.',
+        );
+        const offlineConsoleErrors = consoleErrors
+            .slice(errorsBeforeOfflineEdit)
+            .filter((error) => error.includes('net::ERR_INTERNET_DISCONNECTED'));
+        assert(offlineConsoleErrors.length > 0, 'Chrome did not report the intentional offline network failure.');
+        consoleErrors.splice(
+            errorsBeforeOfflineEdit,
+            consoleErrors.length - errorsBeforeOfflineEdit,
+            ...consoleErrors
+                .slice(errorsBeforeOfflineEdit)
+                .filter((error) => !error.includes('net::ERR_INTERNET_DISCONNECTED')),
+        );
+        assert(
+            livewireRequests.length - requestsBeforeOfflineEdit === 1,
+            'The offline edit did not make exactly one failed Livewire attempt.',
+        );
+
+        const requestsBeforeReconnect = livewireRequests.length;
+        await client.send('Network.emulateNetworkConditions', {
+            offline: false,
+            latency: 0,
+            downloadThroughput: -1,
+            uploadThroughput: -1,
+        }, sessionId);
+        await evaluate(client, sessionId, `(() => {
+            window.dispatchEvent(new Event('online'));
+        })()`);
+        await waitUntil(
+            async () => livewireRequests.length > requestsBeforeReconnect
+                && await evaluate(
+                    client,
+                    sessionId,
+                    `!document.querySelector('form[data-pet-profile-autosave-step="appearance"]')
+                        ?.hasAttribute('data-pet-profile-autosave-pending')`,
+                ),
+            'The pending pet draft was not saved after reconnect.',
+        );
+        const reconnectRequestCount = livewireRequests.length - requestsBeforeReconnect;
+        assert(reconnectRequestCount === 1, `Reconnect recovery emitted ${reconnectRequestCount} Livewire requests instead of one.`);
+
+        await navigate(client, sessionId, autosaveUrl);
+        const recoveredAfterReconnect = await evaluate(
+            client,
+            sessionId,
+            'document.querySelector("#managed-pet-identifying-marks")?.value',
+        );
+        assert(recoveredAfterReconnect === offlineIdentifyingMarks, 'The reconnect draft was not restored from the server.');
 
         const requestsBeforeRestore = livewireRequests.length;
         await evaluate(client, sessionId, `((appearance, identifyingMarks) => {
-            window.dispatchEvent(new Event('online'));
             const setter = Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, 'value').set;
             const appearanceInput = document.querySelector('#managed-pet-appearance');
             const marksInput = document.querySelector('#managed-pet-identifying-marks');
@@ -411,7 +486,12 @@ try {
         })(${JSON.stringify(originalAppearance)}, ${JSON.stringify(originalIdentifyingMarks)})`);
         await waitUntil(
             async () => livewireRequests.length > requestsBeforeRestore
-                && await evaluate(client, sessionId, `document.body.innerText.includes('Appearance details saved.')`),
+                && await evaluate(
+                    client,
+                    sessionId,
+                    `!document.querySelector('form[data-pet-profile-autosave-step="appearance"]')
+                        ?.hasAttribute('data-pet-profile-autosave-pending')`,
+                ),
             'The browser check could not restore the original appearance values.',
         );
         await navigate(client, sessionId, autosaveUrl);
@@ -454,7 +534,13 @@ try {
             ...autosaveMarkup,
             autosaveRequestCount,
             persistedAfterReload: restoredAppearance === autosaveValue,
-            offline: offlineAudit,
+            offline: {
+                ...offlineAudit,
+                intentionalConsoleErrorCount: offlineConsoleErrors.length,
+                failedRequestCount: failedLivewireRequests.length - failuresBeforeOfflineEdit,
+                reconnectRequestCount,
+                recoveredAfterReconnect: recoveredAfterReconnect === offlineIdentifyingMarks,
+            },
             restoredOriginal: cleanupValues.appearance === originalAppearance
                 && cleanupValues.identifyingMarks === originalIdentifyingMarks,
             mobile: mobileAutosave,

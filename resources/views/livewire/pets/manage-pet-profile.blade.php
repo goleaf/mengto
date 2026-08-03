@@ -53,7 +53,7 @@
         </header>
 
         @if ($activeStep['value'] === 'basics')
-            <form wire:submit="saveBasics" wire:change="autoSaveStep('basics')" class="forum-form mt-6">
+            <form wire:submit="saveBasics" wire:change="autoSaveStep('basics', $event.currentTarget.dataset.petProfileAutosaveRevision)" class="forum-form mt-6" data-pet-profile-autosave-step="basics">
                 @if ($errors->any())
                     <x-forum-error-summary :messages="$errors->getMessages()" :heading="__('pet_profiles.validation.summary')" />
                 @endif
@@ -141,7 +141,7 @@
                 </div>
             </div>
         @elseif ($activeStep['value'] === 'age-sex')
-            <form wire:submit="saveAgeAndSex" wire:change="autoSaveStep('age-sex')" class="forum-form mt-6">
+            <form wire:submit="saveAgeAndSex" wire:change="autoSaveStep('age-sex', $event.currentTarget.dataset.petProfileAutosaveRevision)" class="forum-form mt-6" data-pet-profile-autosave-step="age-sex">
                 <div class="grid min-w-0 gap-4 md:grid-cols-2">
                     <label class="forum-form__field" for="managed-pet-birth-date">
                         <span>{{ __('pet_profiles.fields.birth_date') }}</span>
@@ -184,7 +184,7 @@
                 <button type="submit" class="forum-button forum-button--primary min-h-11" wire:loading.attr="disabled" wire:target="saveAgeAndSex"><x-ui-icon name="save" /><span wire:loading.remove wire:target="saveAgeAndSex">{{ __('pet_profiles.actions.save_step') }}</span><span wire:loading wire:target="saveAgeAndSex">{{ __('pet_profiles.actions.saving') }}</span></button>
             </form>
         @elseif ($activeStep['value'] === 'breed-origin')
-            <form wire:submit="saveBreedAndOrigin" wire:change="autoSaveStep('breed-origin')" class="forum-form mt-6">
+            <form wire:submit="saveBreedAndOrigin" wire:change="autoSaveStep('breed-origin', $event.currentTarget.dataset.petProfileAutosaveRevision)" class="forum-form mt-6" data-pet-profile-autosave-step="breed-origin">
                 <label class="forum-form__field" for="managed-pet-breed">
                     <span>{{ __('pet_profiles.fields.breed') }}</span>
                     <input id="managed-pet-breed" type="text" wire:model="form.breed" maxlength="120" aria-describedby="managed-pet-breed-help managed-pet-breed-error" @error('form.breed') aria-invalid="true" @enderror>
@@ -196,7 +196,7 @@
                 <button type="submit" class="forum-button forum-button--primary min-h-11" wire:loading.attr="disabled" wire:target="saveBreedAndOrigin"><x-ui-icon name="save" /><span wire:loading.remove wire:target="saveBreedAndOrigin">{{ __('pet_profiles.actions.save_step') }}</span><span wire:loading wire:target="saveBreedAndOrigin">{{ __('pet_profiles.actions.saving') }}</span></button>
             </form>
         @elseif ($activeStep['value'] === 'appearance')
-            <form wire:submit="saveAppearance" wire:change="autoSaveStep('appearance')" class="forum-form mt-6">
+            <form wire:submit="saveAppearance" wire:change="autoSaveStep('appearance', $event.currentTarget.dataset.petProfileAutosaveRevision)" class="forum-form mt-6" data-pet-profile-autosave-step="appearance">
                 <div class="grid min-w-0 gap-4 md:grid-cols-2">
                     <label class="forum-form__field" for="managed-pet-appearance">
                         <span>{{ __('pet_profiles.fields.appearance_summary') }}</span>
@@ -215,7 +215,7 @@
                 <button type="submit" class="forum-button forum-button--primary min-h-11" wire:loading.attr="disabled" wire:target="saveAppearance"><x-ui-icon name="save" /><span wire:loading.remove wire:target="saveAppearance">{{ __('pet_profiles.actions.save_step') }}</span><span wire:loading wire:target="saveAppearance">{{ __('pet_profiles.actions.saving') }}</span></button>
             </form>
         @elseif ($activeStep['value'] === 'character')
-            <form wire:submit="saveCharacter" wire:change="autoSaveStep('character')" class="forum-form mt-6">
+            <form wire:submit="saveCharacter" wire:change="autoSaveStep('character', $event.currentTarget.dataset.petProfileAutosaveRevision)" class="forum-form mt-6" data-pet-profile-autosave-step="character">
                 <div class="grid min-w-0 gap-4 md:grid-cols-2">
                     <label class="forum-form__field" for="managed-pet-bio">
                         <span>{{ __('pet_profiles.fields.bio') }}</span>
@@ -234,7 +234,7 @@
                 <button type="submit" class="forum-button forum-button--primary min-h-11" wire:loading.attr="disabled" wire:target="saveCharacter"><x-ui-icon name="save" /><span wire:loading.remove wire:target="saveCharacter">{{ __('pet_profiles.actions.save_step') }}</span><span wire:loading wire:target="saveCharacter">{{ __('pet_profiles.actions.saving') }}</span></button>
             </form>
         @elseif ($activeStep['value'] === 'social-preferences')
-            <form wire:submit="saveSocialPreferences" wire:change="autoSaveStep('social-preferences')" class="forum-form mt-6">
+            <form wire:submit="saveSocialPreferences" wire:change="autoSaveStep('social-preferences', $event.currentTarget.dataset.petProfileAutosaveRevision)" class="forum-form mt-6" data-pet-profile-autosave-step="social-preferences">
                 <x-notice
                     icon="heart-handshake"
                     :title="__('pet_profiles.completion.social_notice_title')"
@@ -258,7 +258,7 @@
                 <button type="submit" class="forum-button forum-button--primary min-h-11" wire:loading.attr="disabled" wire:target="saveSocialPreferences"><x-ui-icon name="save" /><span wire:loading.remove wire:target="saveSocialPreferences">{{ __('pet_profiles.actions.save_step') }}</span><span wire:loading wire:target="saveSocialPreferences">{{ __('pet_profiles.actions.saving') }}</span></button>
             </form>
         @elseif ($activeStep['value'] === 'location')
-            <form wire:submit="saveLocation" wire:change="autoSaveStep('location')" class="forum-form mt-6">
+            <form wire:submit="saveLocation" wire:change="autoSaveStep('location', $event.currentTarget.dataset.petProfileAutosaveRevision)" class="forum-form mt-6" data-pet-profile-autosave-step="location">
                 <x-notice
                     icon="map-pin"
                     :title="__('pet_profiles.completion.location_notice_title')"

@@ -119,7 +119,12 @@ The passive save-status component announces saving and unsaved state. File
 selection is explicitly unsaved until upload succeeds. Photos, managers,
 privacy, protected microchip data, and lifecycle transitions keep their
 explicit authorized submit operations; values are not copied into browser
-local storage. Exact scope and remaining release gates are in
+local storage. A first-party reconnect adapter retains only the active form's
+numeric revision in page memory. It repeats one pending ordinary Livewire save
+after `online` and clears pending state only when the server confirms the same
+revision, so a delayed response cannot hide newer unsaved input. Terminating
+the tab can discard an unconfirmed focused edit, while every server-confirmed
+value remains durable. Exact scope and remaining release gates are in
 `docs/plans/pet-profile-draft-autosave-work-package.md`.
 
 ## Identity And Compatibility

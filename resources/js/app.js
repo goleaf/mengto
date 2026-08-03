@@ -1,4 +1,5 @@
 import './care-offline-sync';
+import './pet-profile-autosave-recovery';
 import './places-map';
 import './messaging-center';
 import './photo-viewer';

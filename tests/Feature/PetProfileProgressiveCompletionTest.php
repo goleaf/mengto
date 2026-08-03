@@ -190,14 +190,20 @@ it('autosaves the active descriptive step and restores it after reopening the wo
     $component = Livewire::actingAs($owner)
         ->withQueryParams(['step' => PetProfileCompletionStep::Appearance->value])
         ->test(ManagePetProfile::class, ['petProfile' => $profile])
-        ->assertSeeHtml('wire:change="autoSaveStep(\'appearance\')"')
+        ->assertSeeHtml('wire:change="autoSaveStep(\'appearance\', $event.currentTarget.dataset.petProfileAutosaveRevision)"')
+        ->assertSeeHtml('data-pet-profile-autosave-step="appearance"')
         ->assertSeeHtml('wire:target="autoSaveStep"');
     $initialIdempotencyKey = $component->get('stepIdempotencyKey');
 
     $component->set('form.appearanceSummary', 'Silver coat with a dark tail.')
         ->set('form.identifyingMarks', 'Small white patch below the chin.')
-        ->call('autoSaveStep', PetProfileCompletionStep::Appearance->value)
+        ->call('autoSaveStep', PetProfileCompletionStep::Appearance->value, '7')
         ->assertHasNoErrors()
+        ->assertDispatched(
+            'pet-profile-autosave-completed',
+            step: PetProfileCompletionStep::Appearance->value,
+            revision: '7',
+        )
         ->assertSet('feedback', __('pet_profiles.feedback.appearance_saved'));
 
     $profile->refresh();
@@ -211,6 +217,15 @@ it('autosaves the active descriptive step and restores it after reopening the wo
             ->where('pet_profile_id', $profile->id)
             ->where('event_type', 'profile-step-updated')
             ->count())->toBe(1);
+
+    $component
+        ->call('autoSaveStep', PetProfileCompletionStep::Appearance->value, ['untrusted'])
+        ->assertHasNoErrors()
+        ->assertDispatched(
+            'pet-profile-autosave-completed',
+            step: PetProfileCompletionStep::Appearance->value,
+            revision: null,
+        );
 
     $savedVersion = $profile->lock_version;
     $component
@@ -247,7 +262,8 @@ it('keeps the autosave key stable when validation fails', function (): void {
     $component
         ->set('form.name', '')
         ->call('autoSaveStep', PetProfileCompletionStep::Basics->value)
-        ->assertHasErrors(['form.name']);
+        ->assertHasErrors(['form.name'])
+        ->assertNotDispatched('pet-profile-autosave-completed');
 
     expect($component->get('stepIdempotencyKey'))->toBe($idempotencyKey)
         ->and($profile->refresh()->name)->toBe('Luna')
@@ -256,6 +272,33 @@ it('keeps the autosave key stable when validation fails', function (): void {
             ->where('event_type', 'profile-step-updated')
             ->doesntExist())->toBeTrue();
 });
+
+it('only acknowledges a bounded numeric client revision after autosave', function (
+    ?string $clientRevision,
+    ?string $expectedRevision,
+): void {
+    $owner = User::factory()->create();
+    $profile = progressivePetProfile($owner, ['profile_data' => []]);
+
+    Livewire::actingAs($owner)
+        ->withQueryParams(['step' => PetProfileCompletionStep::Appearance->value])
+        ->test(ManagePetProfile::class, ['petProfile' => $profile])
+        ->set('form.appearanceSummary', 'Revision acknowledgement boundary.')
+        ->call('autoSaveStep', PetProfileCompletionStep::Appearance->value, $clientRevision)
+        ->assertHasNoErrors()
+        ->assertDispatched(
+            'pet-profile-autosave-completed',
+            step: PetProfileCompletionStep::Appearance->value,
+            revision: $expectedRevision,
+        );
+})->with([
+    'valid revision' => ['42', '42'],
+    'zero revision' => ['0', null],
+    'negative revision' => ['-1', null],
+    'non-numeric revision' => ['revision', null],
+    'oversized revision' => ['12345678901', null],
+    'absent revision' => [null, null],
+]);
 
 it('wires autosave only to the seven descriptive steps', function (
     PetProfileCompletionStep $step,
@@ -266,11 +309,12 @@ it('wires autosave only to the seven descriptive steps', function (
     $component = Livewire::actingAs($owner)
         ->withQueryParams(['step' => $step->value])
         ->test(ManagePetProfile::class, ['petProfile' => $profile]);
-    $binding = 'wire:change="autoSaveStep(\''.$step->value.'\')"';
+    $binding = 'wire:change="autoSaveStep(\''.$step->value.'\', $event.currentTarget.dataset.petProfileAutosaveRevision)"';
 
     if ($supportsAutosave) {
         $component
             ->assertSeeHtml($binding)
+            ->assertSeeHtml('data-pet-profile-autosave-step="'.$step->value.'"')
             ->assertSeeHtml('data-pet-autosave-status');
 
         return;
@@ -284,6 +328,20 @@ it('wires autosave only to the seven descriptive steps', function (
     static fn (PetProfileCompletionStep $step): array => [$step, $step->supportsAutosave()],
     PetProfileCompletionStep::cases(),
 ));
+
+it('keeps reconnect recovery in page memory instead of browser storage', function (): void {
+    $adapter = file_get_contents(resource_path('js/pet-profile-autosave-recovery.js'));
+    $entrypoint = file_get_contents(resource_path('js/app.js'));
+
+    expect($adapter)
+        ->toContain("window.addEventListener('online', retryPendingForms)")
+        ->toContain("window.addEventListener('pet-profile-autosave-completed', clearCompletedStep)")
+        ->toContain("form.dispatchEvent(new Event('change', { bubbles: true }))")
+        ->not->toContain('localStorage')
+        ->not->toContain('sessionStorage')
+        ->not->toContain('indexedDB')
+        ->and($entrypoint)->toContain("import './pet-profile-autosave-recovery';");
+});
 
 it('stores one private encrypted microchip record and enforces the critical permission', function (): void {
     $owner = User::factory()->create();

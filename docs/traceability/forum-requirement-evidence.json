@@ -2040,7 +2040,8 @@
                     "app/Models/PetProfile.php",
                     "app/Models/PetProfileLifecycleEvent.php",
                     "app/Policies/PetProfilePolicy.php",
-                    "resources/views/livewire/pets/manage-pet-profile.blade.php"
+                    "resources/views/livewire/pets/manage-pet-profile.blade.php",
+                    "resources/js/pet-profile-autosave-recovery.js"
                 ],
                 "planned_files": [
                     "resources/views/components/pet-profile-save-status.blade.php",
@@ -2072,14 +2073,15 @@
                     "ManagePetProfile rejects unknown or inactive browser step values, validates through the existing form object, and delegates to the policy-authorized UpdatePetProfileStep allowlist instead of mapping or persisting in Blade",
                     "A locked request key remains stable until success and then rotates; the existing lifecycle replay boundary, row lock, optimistic lock version, explicit field mapping, audit, and cache invalidation prevent duplicate accepted operations and stale overwrites",
                     "The reusable polite atomic status region distinguishes saving, unsaved, validation-error, and confirmed states; the global offline notice remains visible and no private profile or location values are copied into browser local storage",
-                    "PetProfileProgressiveCompletionTest passed 20 tests and 128 assertions, including save wiring for all twelve steps, persistence after a fresh mount, request-key stability on validation failure, success rotation, no-op replay, one lifecycle event, and inactive-step rejection without mutation",
-                    "The focused progressive plus workspace order regression passed 30 tests and 202 assertions after the server Blade paginator was pinned to pagination::tailwind; the complete current serial suite passed 2,685 tests and 85,057 assertions in 165.116 seconds",
+                    "The reconnect adapter retains only a numeric form revision in page memory, retries one pending descriptive form after online, and clears pending state only after a revision-matched Livewire server event; delayed responses therefore cannot hide newer input and no profile value enters persistent browser storage",
+                    "PetProfileProgressiveCompletionTest passed 27 tests and 159 assertions, including save wiring for all twelve steps, persistence after a fresh mount, request-key stability on validation failure, success rotation, six bounded client-revision acknowledgement cases, no-op replay, one lifecycle event, and inactive-step rejection without mutation",
+                    "The focused progressive plus workspace order regression passed 37 tests and 233 assertions after the server Blade paginator was pinned to pagination::tailwind; the exact reconnect slice passed 2,692 serial tests and 85,091 assertions",
                     "Full Pint, Larastan, Composer strict validation and audit, npm audit with zero vulnerabilities, Blade compilation, and the production Vite build passed",
                     "Connected loopback Chrome passed EN desktop, RU mobile, and LT 320px pet-workspace audits with no overflow, unnamed controls, undersized mobile targets, duplicate IDs, private leaks, raw translation keys, or console errors",
-                    "The same browser gate ran against a freshly migrated disposable SQLite database, changed the appearance form through a real DOM change, observed the accessible autosave and offline contracts, reloaded to prove server persistence, and restored the original displayed value successfully; the harness requires an explicit data-mutation acknowledgement because immutable audit history is intentionally retained"
+                    "The same browser gate ran against a freshly migrated disposable SQLite database, changed the appearance form through a real DOM change, forced one real ERR_INTERNET_DISCONNECTED Livewire failure, retained the pending form revision, emitted exactly one reconnect request, reloaded the server-confirmed value, and restored the original displayed value successfully without an unexpected console error; the harness requires an explicit data-mutation acknowledgement because immutable audit history is intentionally retained"
                 ],
                 "unresolved_risks": [
-                    "Offline local persistence is intentionally excluded because this package does not place private profile data on a shared device; an interrupted request remains visibly unsaved until the authenticated server confirms a retry",
+                    "Offline local persistence is intentionally excluded because this package does not place private profile data on a shared device; reconnect recovery works while the authenticated page remains open, while never-confirmed characters do not survive fully closing the tab",
                     "Background photo upload, full gallery recovery, ownership proof or transfer, and the remaining pet requirements stay outside this autosave slice"
                 ],
                 "final_result": "verified"

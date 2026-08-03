@@ -71,7 +71,11 @@ package gates recorded in the current-progress document. The subsequent
 `pet.creation.0071-pet.creation.0081` draft-autosave slice reuses the same
 partial-update Action with a locked, success-rotated request key and native
 change-triggered Livewire calls; its release gates and dedicated atomic
-traceability evidence are verified.
+traceability evidence are verified. Its reconnect extension retains only a
+numeric form revision in page memory, automatically retries a pending active
+step after `online`, and clears pending state only after a revision-matched
+server confirmation; private profile values are never queued in browser
+storage.
 
 ## Phase 19: Ownership And Privacy
 
