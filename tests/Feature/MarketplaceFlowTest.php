@@ -245,11 +245,11 @@ test('structured filters and uploaded media are persisted without leaking drafts
     expect($listing->gallery)->toHaveCount(1)
         ->and($listing->video_url)->not->toBeNull();
 
-    $photoPath = str($listing->gallery[0])->after('/storage/')->toString();
+    $photoPath = portalMediaPath($listing->gallery[0]);
     $photoSize = getimagesizefromstring(Storage::disk('public')->get($photoPath));
 
     Storage::disk('public')->assertExists($photoPath);
-    Storage::disk('public')->assertExists(str($listing->video_url)->after('/storage/')->toString());
+    Storage::disk('public')->assertExists(portalMediaPath((string) $listing->video_url));
     expect($photoPath)->toEndWith('.webp')
         ->and($photoSize)->not->toBeFalse()
         ->and($photoSize[0])->toBe(2560)

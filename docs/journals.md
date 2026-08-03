@@ -59,8 +59,8 @@ new mutations.
 
 Visibility has one source: `forum_topics.visibility`.
 
-- public journals are discoverable to guests;
-- member journals require an active authenticated account;
+- public journals are discoverable to active verified portal members;
+- member journals require an active verified authenticated account;
 - group journals require current group access;
 - expert journals require current independently verified professional
   evidence;

@@ -2,14 +2,25 @@
 
 ## Security Model
 
-PawCircle contains public social data and highly sensitive medical, care,
-location, camera, household, and device data. Sensitive data is closed by
-default and requires authenticated ownership or an explicit scoped grant.
+PawCircle is a closed authenticated portal containing member-visible social
+data and highly sensitive medical, care, location, camera, household, and
+device data. No product data is anonymous. Sensitive data additionally
+requires authenticated ownership or an explicit scoped grant.
 
 ## Implemented And Required Controls
 
 ### Identity And Session
 
+- `RequirePortalAccess` is the outer boundary for every first-party web route.
+  It runs after session startup and before route-model binding, returns `401`
+  to anonymous JSON requests, and redirects anonymous HTML requests to login
+  without resolving product identifiers.
+- The complete anonymous application allowlist is login, registration,
+  password request/reset, and localized account entry. Livewire update is
+  transport-only for those pages; upload and preview endpoints remain closed.
+- Active unverified accounts may use verification, password confirmation, and
+  logout only. Inactive accounts are logged out and their session is
+  invalidated.
 - Laravel session authentication.
 - Session regeneration after login.
 - Session invalidation and CSRF regeneration after logout.
@@ -65,6 +76,8 @@ default and requires authenticated ownership or an explicit scoped grant.
 
 ### Tokens
 
+- A temporary token is a secondary scoped credential and never substitutes
+  for an authenticated active verified account.
 - Cryptographically random raw token returned once.
 - SHA-256 or stronger digest persisted.
 - Purpose, owner, scope, expiry, revocation, use, and audit metadata.
@@ -86,6 +99,13 @@ default and requires authenticated ownership or an explicit scoped grant.
 ### Files
 
 - Private disks for medical/care/device evidence.
+- Laravel direct local-disk serving and public storage-link generation are
+  disabled. Forum topic, lost/found, sighting, and marketplace media are
+  streamed only by the authenticated `portal-media.show` route.
+- Portal media permits only configured product directories and bounded image,
+  video, and caption types. Canonical root/directory containment rejects
+  traversal, foreign domains, missing files, unsupported active content, and
+  symbolic-link escape.
 - Generated storage names.
 - MIME/content/size/dimension validation.
 - Authorization on every download.
@@ -123,7 +143,7 @@ private keys, payment credentials, or complete private records.
 | Mass assignment | Explicit fillable/field maps |
 | Token replay | Digest, expiry, revocation, atomic consumption |
 | Duplicate payment/device/care command | Idempotency key, unique constraint, lock |
-| Path traversal/private file leak | Server identifiers, configured private disk, generated paths, policy authorization, canonical owning-directory containment |
+| Path traversal/private file leak | No storage symlink/direct disk route; server identifiers, authenticated media route, configured disks, generated paths, policy authorization, canonical directory containment |
 | SSRF | Scheme/host/IP/redirect/size/time validation |
 | Webhook forgery/replay | Signature and provider event uniqueness |
 | Cache privacy leak | Actor/role/locale scope and invalidation |
@@ -222,7 +242,8 @@ never project professional status. See `docs/mentorship.md`.
 
 ## Forum Journal Controls
 
-- Topic visibility is the sole privacy source; public discovery excludes
+- Topic visibility is the inner privacy source after portal authentication;
+  portal-visible discovery excludes
   member, expert, link-only, group, and private journals before rows/counts.
 - Public Livewire state contains locked scalar IDs and bounded form values,
   never models, relationship graphs, paths, credentials, or care records.

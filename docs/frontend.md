@@ -85,7 +85,9 @@ completed states. Status is textual and not color-only.
 
 ## Authentication Interface
 
-All guest and protected account-access pages use `components.auth-layout` and
+Anonymous visitors are redirected to account entry before product route-model
+binding. `/` is a protected portal destination, not a marketing or discovery
+page. All guest and protected account-access pages use `components.auth-layout` and
 the shared flat `auth-*` field, header, status, submit, and flow-link
 components. The layout is mobile-first: a compact brand story precedes the
 form at narrow widths, while desktop uses a two-column story and form

@@ -12,7 +12,6 @@ use App\Models\KnowledgeArticle;
 use Illuminate\Config\Repository;
 use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class ForumPresenter
@@ -24,6 +23,7 @@ class ForumPresenter
         private readonly LocaleFormatter $formatter,
         private readonly Gate $gate,
         private readonly Repository $config,
+        private readonly PortalMediaUrl $mediaUrl,
     ) {}
 
     /**
@@ -372,9 +372,9 @@ class ForumPresenter
                 : null,
             'url' => Str::startsWith((string) $media['path'], ['http://', 'https://'])
                 ? $media['path']
-                : Storage::disk('public')->url((string) $media['path']),
+                : $this->mediaUrl->for((string) $media['path']),
             'captions_url' => $captionPath !== ''
-                ? Storage::disk('public')->url($captionPath)
+                ? $this->mediaUrl->for($captionPath)
                 : null,
             'caption_locale' => $captionLocale,
         ];

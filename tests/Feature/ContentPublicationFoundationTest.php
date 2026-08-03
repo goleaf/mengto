@@ -320,7 +320,7 @@ it('requires explicit publish permission for a managed pet profile', function ()
     ))->toThrow(AuthorizationException::class);
 });
 
-it('enforces guest registered selected and excluded audiences on direct urls', function (): void {
+it('requires portal access before enforcing registered selected and excluded audiences', function (): void {
     $author = User::factory()->create();
     $authorActor = contentActorFor($author);
     $viewerActor = contentActorFor($this->authenticatedUser);
@@ -340,9 +340,9 @@ it('enforces guest registered selected and excluded audiences on direct urls', f
     );
 
     Auth::logout();
-    $this->get(route('content.show', $public))->assertSuccessful();
-    $this->get(route('content.show', $registered))->assertForbidden();
-    $this->get(route('content.show', $selected))->assertForbidden();
+    $this->get(route('content.show', $public))->assertRedirect(route('login'));
+    $this->get(route('content.show', $registered))->assertRedirect(route('login'));
+    $this->get(route('content.show', $selected))->assertRedirect(route('login'));
 
     $this->actingAs($this->authenticatedUser);
     $this->get(route('content.show', $registered))->assertSuccessful();

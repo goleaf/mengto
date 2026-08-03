@@ -142,6 +142,20 @@ function evidenceFor(string $id): array
             'Bounded deterministic feed catalogue',
             '`tests/Feature/PhotoViewerTest.php` and connected responsive browser review',
         ],
+        'SEC-AUTH-004' => [
+            '`RequirePortalAccess`, `PortalMediaResponse`, filesystem configuration',
+            'Middleware priority, active/verified account state, canonical media containment',
+            'Localized account entry and non-disclosing redirects/errors',
+            'User and file security fixtures',
+            '`PortalAccessBoundaryTest`, `PortalMediaAccessTest`, auth and architecture regressions',
+        ],
+        'SYS-AUTH-005' => [
+            '`RequirePortalAccess`, persistent Livewire middleware, authenticated media route',
+            'Exact guest allowlist, pre-binding denial, route policies and token boundaries',
+            'Localized auth shell; no anonymous product presentation',
+            'User and media fixtures',
+            '`PortalAccessBoundaryTest`, `PortalMediaAccessTest`, full serial suite',
+        ],
         'LAR-21' => [
             'Direct Actions and framework authentication events',
             'Transactional domain mutations and idempotent notification records',
@@ -349,6 +363,10 @@ function blockerFor(string $id): string
 
 function verificationFor(string $id): string
 {
+    if (in_array($id, ['SEC-AUTH-004', 'SYS-AUTH-005'], true)) {
+        return 'php artisan test --compact tests/Feature/Auth/PortalAccessBoundaryTest.php tests/Feature/Auth/PortalMediaAccessTest.php tests/Feature/Auth/AuthenticationTest.php tests/Feature/ArchitectureComplianceTest.php';
+    }
+
     if (in_array($id, ['PRD-SOCIAL-008', 'SYS-FRONTEND-003'], true)) {
         return 'php artisan test --compact tests/Feature/PhotoViewerTest.php tests/Feature/ArchitectureComplianceTest.php && npm run build && connected Playwright viewport/keyboard review';
     }

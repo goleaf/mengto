@@ -36,6 +36,7 @@ class SearchPresenter
         private readonly QrCodeGenerator $qrCodes,
         private readonly LocaleFormatter $formatter,
         private readonly Gate $gate,
+        private readonly PortalMediaUrl $mediaUrl,
     ) {}
 
     /**
@@ -517,7 +518,9 @@ class SearchPresenter
             'domestic_classification' => $searchCase->relationLoaded('domesticClassification')
                 ? $searchCase->domesticClassification?->canonical_name
                 : null,
-            'photos' => $searchCase->photos ?? [],
+            'photos' => collect($searchCase->photos ?? [])
+                ->map(fn (string $path): string => $this->mediaUrl->for($path))
+                ->all(),
             'reported_label' => $this->formatter->dateTime($searchCase->reported_at),
             'returned_label' => $this->formatter->dateTime($searchCase->returned_at),
             'closure_reason' => $searchCase->closure_reason,
@@ -560,8 +563,12 @@ class SearchPresenter
             'animal_condition' => $sighting->animal_condition,
             'danger' => $sighting->danger,
             'notes' => $sighting->notes,
-            'photo_url' => $sighting->photo_url,
-            'video_url' => $sighting->video_url,
+            'photo_url' => filled($sighting->photo_url)
+                ? $this->mediaUrl->for((string) $sighting->photo_url)
+                : null,
+            'video_url' => filled($sighting->video_url)
+                ? $this->mediaUrl->for((string) $sighting->video_url)
+                : null,
             'map_x' => $this->mapPosition($sighting->public_longitude, $sighting->id, 37),
             'map_y' => $this->mapPosition($sighting->public_latitude, $sighting->id, 49),
         ];

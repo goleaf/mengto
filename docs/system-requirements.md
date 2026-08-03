@@ -18,6 +18,7 @@
 | SYS-AUTH-002 | Policies authorize every protected model action and every Livewire mutation. | Member/admin/temporary grantee | Owner and privilege paths pass; non-owner, wrong scope, blocked, and wrong-state paths deny. |
 | SYS-AUTH-003 | Sensitive list queries are ownership/grant scoped before retrieval. | Medical/care/device/order/booking/search | A foreign identifier cannot reveal record existence or fields. |
 | SYS-AUTH-004 | High-risk exports, precise GPS, cameras, door controls, ownership transfer, and account security support step-up verification. | Account owner | Fresh confirmation permits; missing/expired confirmation denies without side effect. |
+| SYS-AUTH-005 | Every first-party product page, mutation, token share, Livewire upload/preview, and product-media response requires an active authenticated account with a verified email. | Anonymous visitor, member; all portal resources | Anonymous HTML redirects and JSON returns 401 before model binding or persistence; inactive/unverified accounts fail closed; account entry, static assets, and minimal health remain available. |
 
 ## Data, Files, And Integrations
 
@@ -39,7 +40,7 @@
 | SYS-LIVEWIRE-003 | Components expose precise loading, dirty, validation, success, empty, and offline feedback where relevant. | Keyboard/touch/screen-reader users | State changes are perceivable and action-specific without blocking unrelated UI. |
 | SYS-FRONTEND-001 | Blade remains a passive escaped presentation layer with no direct data or service access. | Every Blade render | Architecture check rejects forbidden directives/calls. |
 | SYS-FRONTEND-002 | Custom JavaScript is progressive enhancement with explicit initialization/teardown across Livewire navigation. | Map, messaging, browser media | Repeated navigation creates no duplicate listeners, timers, tracks, or console errors. |
-| SYS-FRONTEND-003 | Full-size publication media uses one progressively enhanced responsive viewer with localized modal semantics, zoom, swipe, keyboard navigation, URL-addressable items, and exact-trigger focus restoration. | Visitor/member; public publication media | With JavaScript disabled the original image link remains usable; at 320-1920 px the active image and social panel do not overlap or create page overflow. |
+| SYS-FRONTEND-003 | Full-size publication media uses one progressively enhanced responsive viewer with localized modal semantics, zoom, swipe, keyboard navigation, URL-addressable items, and exact-trigger focus restoration. | Active verified member; portal-visible publication media | With JavaScript disabled the authenticated original image link remains usable; at 320-1920 px the active image and social panel do not overlap or create page overflow. |
 | SYS-TAILWIND-001 | Tailwind 4 uses the Vite plugin, CSS-first source detection, and `@theme` tokens. | All interfaces | Production build contains used classes and no unsafe dynamic class construction. |
 
 ## Runtime And Operations

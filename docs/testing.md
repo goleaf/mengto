@@ -82,8 +82,8 @@ destructive command.
 ## Baseline And Current Checkpoint
 
 The modernization baseline was 116 passing tests and 3,881 assertions. The
-latest recorded complete serial checkpoint reports 2,040 passing tests and
-73,559 assertions after the first Phase 3 topic-type reconciliation package.
+latest recorded complete serial checkpoint reports 2,092 passing tests and
+73,983 assertions after the authenticated portal boundary package.
 This checkpoint is not a final coverage claim while requirements remain
 unimplemented.
 
@@ -410,11 +410,16 @@ open.
 
 ## Guest Join Page Verification
 
-`JoinLandingPageTest` covers the zero-query guest response, passive localized
-markup, metadata, named account links, route ownership, verified/unverified and
-inactive account destinations, EN/LT/RU content, and validated guest language
-switching. Existing prototype-feed and photo behavior remains covered through
-the authenticated `preview.feed` compatibility route.
+This section records the now-superseded public join delivery. The authenticated
+portal package below is the current contract.
+
+The historical package covered a passive localized join document. The current
+`JoinLandingPageTest` instead proves that guest `/` stores its intended URL and
+redirects with zero application queries, that verified/unverified/inactive
+destinations remain correct, and that EN/LT/RU account entry plus validated
+guest language switching still work. Existing prototype-feed and photo
+behavior remains covered through the authenticated `preview.feed`
+compatibility route.
 
 Package evidence:
 
@@ -431,6 +436,24 @@ Package evidence:
   pixels with one `h1`, zero horizontal overflow, visible skip-link focus,
   44-pixel scoped actions, no external images/member chrome, and no console
   errors.
+
+## Authenticated Portal Boundary Coverage
+
+`PortalAccessBoundaryTest` and `PortalMediaAccessTest` cover the exact account
+entry allowlist; zero-query guest denial before route-model binding; HTML and
+JSON behavior; inactive and unverified accounts; every inherited web route;
+Livewire upload/preview denial; disabled local serving/storage links; intended
+login redirects; authenticated media types; legacy media URL conversion;
+missing, traversal, absolute, cross-domain, unsupported, and symbolic-link
+escape paths. Existing authorization, token-share, forum, lost/found,
+marketplace, auth, and architecture suites remain unchanged defense in depth.
+
+Current evidence:
+
+- focused portal boundary: 52 tests and 303 assertions;
+- media-domain regression: 39 tests and 309 assertions;
+- architecture: 20 tests and 26,727 assertions;
+- full serial: 2,092 tests and 73,983 assertions in 111.749 seconds.
 
 ## Forum Topic Type Schema Reconciliation
 

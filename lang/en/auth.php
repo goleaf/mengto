@@ -6,6 +6,8 @@ return [
     'brand' => 'PawCircle',
     'guest' => 'Guest',
     'logout' => 'Sign out',
+    'unauthenticated' => 'Authentication is required.',
+    'language_selector' => 'Account entry language',
     'shell' => [
         'landmark' => 'About PawCircle',
         'form_landmark' => 'Account access',

@@ -7,13 +7,14 @@
 | SEC-AUTH-001 | Login, registration, reset, verification, temporary links, uploads, search, imports, and integration endpoints have purpose-appropriate rate limits. |
 | SEC-AUTH-002 | Password, reset, magic, and access tokens are never logged; recoverable tokens are stored only as secure digests and expire. |
 | SEC-AUTH-003 | Production demo accounts and fixed prototype identities are impossible; local/demo identities are environment-gated. |
+| SEC-AUTH-004 | The exact anonymous allowlist is enforced centrally before route-model binding; product HTML, JSON, mutations, token shares, Livewire uploads/previews, and product media cannot bypass it. |
 | SEC-DATA-001 | Medical, care, device, exact location, camera, private contact, and audit data are closed by default. |
 | SEC-DATA-002 | Mass assignment cannot alter actor, owner, role, permission, balance, payment, or moderation fields accidentally. |
 | SEC-DATA-003 | Caches, sessions, exports, and temporary links cannot leak data across users, roles, scopes, locales, or revoked grants. |
 | SEC-WEB-001 | CSRF and Laravel 13 origin-aware request forgery protection remain enabled and tested. |
 | SEC-WEB-002 | User content is escaped by default; rich content requires an explicit tested sanitizer. |
 | SEC-WEB-003 | Redirects and server-fetched URLs are scheme/host validated and SSRF protections block loopback, private, link-local, metadata, rebinding, oversized, and unsafe redirect targets. |
-| SEC-UPLOAD-001 | Uploads validate size, MIME, real content, image dimensions where relevant, and safe generated names; public photos are re-encoded through the configured framework image driver and private media retains scoped ownership. |
+| SEC-UPLOAD-001 | Uploads validate size, MIME, real content, image dimensions where relevant, and safe generated names; portal-visible photos are re-encoded through the configured framework image driver, served only through authenticated contained responses, and private media retains scoped ownership. |
 | SEC-INTEGRATION-001 | External clients redact credentials, constrain time/size/retry, validate responses, and prevent accidental real calls in tests. |
 | SEC-AUDIT-001 | Role, access, share, export, payment, command, ownership, and safety-critical transitions retain actor, time, target, result, and safe context. |
 

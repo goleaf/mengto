@@ -2,7 +2,13 @@
 
 Plan date: 2026-08-03
 
-Status: implemented and verified on 2026-08-03
+Status: superseded on 2026-08-03 by the authenticated portal access decision
+
+The implementation history below is retained as evidence. The public join
+page is no longer reachable: `/` and every product route now require an active
+authenticated verified account. Anonymous visitors use the localized login,
+registration, and password-recovery pages only. The current contract is
+`docs/plans/authenticated-portal-access-plan.md`.
 
 ## Goal
 

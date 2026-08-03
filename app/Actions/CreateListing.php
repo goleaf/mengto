@@ -12,9 +12,9 @@ use App\Models\AuditLog;
 use App\Models\Listing;
 use App\Services\ForumActor;
 use App\Services\ListingSafety;
+use App\Services\PortalMediaUrl;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class CreateListing
@@ -24,6 +24,7 @@ class CreateListing
         private readonly ListingSafety $safety,
         private readonly SynchronizeAdoptionCase $synchronizeAdoptionCase,
         private readonly StorePublicImage $storePublicImage,
+        private readonly PortalMediaUrl $mediaUrl,
     ) {}
 
     /** @param array<string, mixed> $data */
@@ -130,7 +131,7 @@ class CreateListing
     {
         return collect($photos)
             ->filter(fn (mixed $photo): bool => $photo instanceof UploadedFile)
-            ->map(fn (UploadedFile $photo): string => Storage::disk('public')->url(
+            ->map(fn (UploadedFile $photo): string => $this->mediaUrl->for(
                 $this->storePublicImage->handle($photo, 'marketplace/listings'),
             ))
             ->values()
@@ -143,7 +144,7 @@ class CreateListing
             return null;
         }
 
-        return Storage::disk('public')->url($video->store('marketplace/listing-videos', 'public'));
+        return $this->mediaUrl->for($video->store('marketplace/listing-videos', 'public'));
     }
 
     /** @param array<string, mixed> $data */

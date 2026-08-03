@@ -192,7 +192,7 @@ test('pet creation persists a private owner profile and renders only for its own
     auth()->logout();
 
     $this->get(route('pets.created', ['item' => $profile->profile_key]))
-        ->assertNotFound();
+        ->assertRedirect(route('login'));
 });
 
 test('pet profile and privacy updates authorize the owner and persist durable data', function () {

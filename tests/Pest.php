@@ -60,6 +60,17 @@ function responseXPath(TestResponse $response): DOMXPath
     return new DOMXPath($document);
 }
 
+function portalMediaPath(string $url): string
+{
+    $path = parse_url($url, PHP_URL_PATH);
+
+    if (! is_string($path) || ! str_starts_with($path, '/portal-media/')) {
+        throw new InvalidArgumentException('The URL is not a portal media URL.');
+    }
+
+    return substr($path, strlen('/portal-media/'));
+}
+
 function expertBookingPayload(
     Service $service,
     AvailabilitySlot $slot,

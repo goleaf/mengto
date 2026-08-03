@@ -202,7 +202,7 @@ the release report.
 
 ## Completed Delivery: Guest Join Page
 
-Status: `verified`
+Status: `superseded` by the authenticated portal boundary on 2026-08-03
 
 - Replaced the guest root prototype feed with the localized, privacy-aware
   joining experience specified in `docs/plans/join-landing-page-plan.md`.
@@ -221,3 +221,29 @@ The market and settings rationale is recorded in
 `docs/audits/pet-social-network-benchmark.md`. A consolidated settings center
 is a separate future work package and must be mapped to exact open requirement
 IDs before implementation.
+
+## Current Delivery: Authenticated Portal Boundary
+
+Status: `verified` on 2026-08-03
+
+- Added one central session-aware boundary before route-model binding and made
+  it persistent across Livewire updates.
+- Reduced anonymous access to localized login, registration, and password
+  recovery; JSON product requests return `401` without product data.
+- Restricted product access to active verified accounts while retaining
+  route-specific policies, grants, throttles, and step-up checks.
+- Revoked anonymous medical/care/device token-share access as an outer route
+  boundary without weakening token expiry, scope, revocation, or audit rules.
+- Disabled direct local storage serving and public storage-link generation.
+  Product uploads render through a canonically contained authenticated media
+  route with bounded content types.
+- Verified 2,092 serial Pest tests and 73,983 assertions, including guest
+  zero-query denial, route ordering, Livewire upload/preview denial, token
+  shares, traversal, unsupported content, and symbolic-link escape.
+- Verified the complete non-test release gate: dependency audits, production
+  build, fresh migration and repeated seed, cache smoke checks, generated
+  requirement checks, and authenticated browser flows with the EN/LT/RU
+  account-entry shell at 320-1920 pixels and no console errors.
+
+The exhaustive execution and release plan is
+`docs/plans/authenticated-portal-access-plan.md`.

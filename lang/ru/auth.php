@@ -6,6 +6,8 @@ return [
     'brand' => 'PawCircle',
     'guest' => 'Гость',
     'logout' => 'Выйти',
+    'unauthenticated' => 'Необходимо войти в систему.',
+    'language_selector' => 'Язык доступа к учётной записи',
     'shell' => [
         'landmark' => 'О PawCircle',
         'form_landmark' => 'Доступ к учётной записи',

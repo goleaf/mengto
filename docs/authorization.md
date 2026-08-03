@@ -9,20 +9,23 @@
 - Browser actor, owner, user, tenant, role, and permission identifiers are
   untrusted.
 - Sensitive query scoping happens before serialization or presentation.
+- Portal authentication is an outer boundary: every product route, mutation,
+  token share, Livewire upload/preview, and product-media response requires an
+  active authenticated account. Product policy checks still apply afterward.
 
 ## Actor Resolution
 
 `ForumActor` is the compatibility adapter between authenticated `User` records
-and existing string actor keys. It may expose a non-privileged guest identity
-for public presentation, but a guest key can never create, mutate, manage,
-share, export, or control a protected resource.
+and existing string actor keys. Legacy guest identity support does not grant
+route access and cannot create, read, mutate, manage, share, export, or control
+a product resource.
 
 Policies inspect the passed `User` and compare `User::actor_key` to ownership
 or grant records. They do not rely on an ambient fixed identity.
 
 ## Capability Matrix
 
-| Resource | Public view | Owner/member | Scoped recipient | Administrator |
+| Resource | Portal member view | Owner/member | Scoped recipient | Administrator |
 | --- | --- | --- | --- | --- |
 | Published forum/knowledge | Yes | Create/engage/manage own | N/A | Moderate with audit |
 | Expert/listing public profile | Yes | Manage own / participant transitions | Booking participant only | Moderate with audit |
@@ -78,7 +81,8 @@ optimistic vote version are server decisions.
 
 ## Collaborative Guide Authorization
 
-- Public users view only `published` and `outdated` guides.
+- Active portal members view only `published` and `outdated` guides unless a
+  stronger policy grant applies.
 - Active members may propose corrections against visible guides.
 - Guide creation, content edits, collaboration changes, correction decisions,
   rollback, locks, publication, archival, and replacement are policy methods,
@@ -94,7 +98,7 @@ optimistic vote version are server decisions.
 A grant defines:
 
 - owner and resource;
-- recipient identity or anonymous token purpose;
+- authenticated recipient identity and token purpose;
 - visible sections/fields;
 - permitted commands/actions;
 - start and expiry;
@@ -170,9 +174,9 @@ See `docs/groups.md`.
 ## Forum Journals
 
 - Active authenticated users may create journals.
-- Public journals are guest-readable. Member, expert, group, link-only, and
-  private states apply explicit topic/journal policy rules before data
-  selection.
+- Portal-visible journals are readable by active verified members. Expert,
+  group, link-only, and private states apply explicit topic/journal policy
+  rules before data selection.
 - Owners manage collaborators and archive journals.
 - Active editors may create/edit entries, upload media, comment, and export.
 - Active viewers may read and comment but cannot mutate entries, media, access,
@@ -200,8 +204,8 @@ current credential evidence and cannot be granted by event reputation.
 
 ## Verified Expert Sessions
 
-- Any guest may view a published, non-archived session and approved public
-  queue content.
+- Any active verified portal member may view a published, non-archived session
+  and approved portal-visible queue content.
 - Only an active verified member may submit a question during the timestamp-
   derived question window.
 - Pending questions are limited to their author, a currently qualified host,

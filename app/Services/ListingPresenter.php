@@ -24,6 +24,7 @@ class ListingPresenter
         private readonly ForumActor $actor,
         private readonly ListingTaxonomy $taxonomy,
         private readonly LocaleFormatter $formatter,
+        private readonly PortalMediaUrl $mediaUrl,
     ) {}
 
     /**
@@ -332,8 +333,12 @@ class ListingPresenter
             'delivery_options' => $listing->delivery_options,
             'meetup_notes' => $listing->meetup_notes,
             'return_policy' => $listing->return_policy,
-            'gallery' => $listing->gallery ?? [],
-            'video_url' => $listing->video_url,
+            'gallery' => collect($listing->gallery ?? [])
+                ->map(fn (string $path): string => $this->mediaUrl->for($path))
+                ->all(),
+            'video_url' => filled($listing->video_url)
+                ? $this->mediaUrl->for((string) $listing->video_url)
+                : null,
             'status' => $listing->status->value,
             'status_label' => $listing->status->label(),
             'safety_status' => Str::headline($listing->safety_status),

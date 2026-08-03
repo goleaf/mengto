@@ -9,10 +9,10 @@ use App\Models\SearchCase;
 use App\Models\SearchUpdate;
 use App\Models\Sighting;
 use App\Services\ForumActor;
+use App\Services\PortalMediaUrl;
 use App\Services\SearchSafety;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 
 class SubmitSighting
@@ -21,6 +21,7 @@ class SubmitSighting
         private readonly ForumActor $actor,
         private readonly SearchSafety $safety,
         private readonly StorePublicImage $storePublicImage,
+        private readonly PortalMediaUrl $mediaUrl,
     ) {}
 
     /** @param array<string, mixed> $data */
@@ -138,7 +139,7 @@ class SubmitSighting
             return null;
         }
 
-        return Storage::disk('public')->url(
+        return $this->mediaUrl->for(
             $this->storePublicImage->handle($file, 'lost-found/sightings/photos', 'photo'),
         );
     }
@@ -149,7 +150,7 @@ class SubmitSighting
             return null;
         }
 
-        return Storage::disk('public')->url(
+        return $this->mediaUrl->for(
             $file->store('lost-found/sightings/videos', 'public'),
         );
     }

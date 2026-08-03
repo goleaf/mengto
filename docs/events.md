@@ -40,8 +40,9 @@ integration exists. The application never records a synthetic charge.
 
 ## Visibility And Protected Access
 
-Public events are guest-visible. Member events require an active account.
-Group events require current group access. Private events require a current,
+Every event requires an active authenticated account with a verified email.
+Within that portal boundary, public events are visible to members, group
+events require current group access, and private events require a current,
 accepted, unexpired invitation. Administrators retain audited operational
 access.
 

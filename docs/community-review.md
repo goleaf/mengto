@@ -94,10 +94,11 @@ on the forum topic page. Its topic identity is locked. Every action parameter
 is treated as untrusted, reloaded server-side, and authorized again inside the
 domain action.
 
-Guests see only published, revised, or revalidation-due notes. Proposers,
-subject authors, assigned reviewers, and administrators receive only their
-authorized pending projections. Queries are bounded and the panel relation is
-eager loaded.
+Active verified portal members see only published, revised, or
+revalidation-due notes unless a narrower topic visibility rule applies.
+Proposers, subject authors, assigned reviewers, and administrators receive
+only their authorized pending projections. Queries are bounded and the panel
+relation is eager loaded.
 
 The interface provides semantic headings, escaped user content, source links
 with safe external-link attributes, field-associated errors, precise loading

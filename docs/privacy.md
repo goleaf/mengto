@@ -7,9 +7,15 @@ queries, counts, snippets, files, exports, and Livewire presentation data are
 returned. Hidden controls, client-owned IDs, route secrecy, cache keys, or
 `#[Locked]` properties are not authorization.
 
+Portal authentication precedes every product privacy decision. In this
+document, `public` means visible to an eligible active verified PawCircle
+member; it never means anonymously accessible on the internet. Account entry,
+static framework assets, and minimal health output contain no product data.
+
 ## Data Classes
 
-- Public: explicitly published forum, profile, guide, and directory fields.
+- Portal-visible: explicitly published forum, profile, guide, and directory
+  fields available only after portal authentication.
 - Member-scoped: content intended only for active authenticated users.
 - Relationship-scoped: owner, participant, selected collaborator, current
   group member, or current temporary grant data.

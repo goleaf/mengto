@@ -6,6 +6,8 @@ return [
     'brand' => 'PawCircle',
     'guest' => 'Svečias',
     'logout' => 'Atsijungti',
+    'unauthenticated' => 'Būtina prisijungti.',
+    'language_selector' => 'Paskyros prieigos kalba',
     'shell' => [
         'landmark' => 'Apie PawCircle',
         'form_landmark' => 'Paskyros prieiga',

@@ -17,10 +17,10 @@ use App\Models\SearchUpdate;
 use App\Models\Taxon;
 use App\Services\FindSearchCaseDuplicates;
 use App\Services\ForumActor;
+use App\Services\PortalMediaUrl;
 use App\Services\SearchSafety;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
@@ -31,6 +31,7 @@ final class CreateSearchCase
         private readonly SearchSafety $safety,
         private readonly FindSearchCaseDuplicates $duplicates,
         private readonly StorePublicImage $storePublicImage,
+        private readonly PortalMediaUrl $mediaUrl,
     ) {}
 
     /** @param array<string, mixed> $data */
@@ -219,7 +220,7 @@ final class CreateSearchCase
     {
         return collect($photos)
             ->filter(fn (mixed $photo): bool => $photo instanceof UploadedFile)
-            ->map(fn (UploadedFile $photo): string => Storage::disk('public')->url(
+            ->map(fn (UploadedFile $photo): string => $this->mediaUrl->for(
                 $this->storePublicImage->handle($photo, 'lost-found/cases'),
             ))
             ->values()

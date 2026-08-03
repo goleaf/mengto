@@ -10,7 +10,7 @@ PawCircle is for pet owners who want useful, low-pressure connections with nearb
 
 ## Product Purpose
 
-PawCircle brings neighborhood pet discovery, practical care context, post conversations, walk planning, meetups, groups, personal collections, notifications, and direct messages into one calm social workspace. Success means a person can understand who and what is nearby, take a clear next action, and return later without losing context.
+PawCircle brings neighborhood pet discovery, practical care context, post conversations, walk planning, meetups, groups, personal collections, notifications, and direct messages into one calm private workspace. Product pages, records, profiles, directories, shares, actions, and media require an active authenticated account with a verified email. Anonymous visitors may use only sign-in, registration, password recovery, localized account entry, static assets, and the minimal health endpoint. Success means a member can understand who and what is nearby, take a clear next action, and return later without losing context.
 
 ## Brand Personality
 
@@ -31,7 +31,7 @@ Calm, neighborly, practical. The product should feel welcoming without becoming 
 - Preserve context through URLs, visible state, and plain feedback.
 - Keep saved moments, followed neighbors, joined groups, and meetup plans together in one personal circle.
 - Keep walk timing, meeting points, pace, status, and related neighbor messages in one visible workflow.
-- Let people share public moments, communities, meetups, and profiles through one predictable hub or a normal direct message.
+- Let members share portal-visible moments, communities, meetups, and profiles through one predictable hub or a normal direct message.
 - Require an explicit, reversible request before voice calling and keep messaging available throughout.
 - Prefer small composable primitives over page-specific markup.
 - Organize interface construction by capability (`ui`, `layout`, `object`, `feature`) so visual building blocks can be reused outside one branded screen.
@@ -48,7 +48,7 @@ its own canonical URL, follow target, profile statistics, visibility settings,
 and content context.
 
 Profile visibility is understandable and previewable. Owners can inspect what a
-public visitor, follower, friend, or manager sees without exposing exact
+portal member, follower, friend, or manager sees without exposing exact
 addresses, private contact details, medical records, GPS history, microchip
 data, or verification documents.
 

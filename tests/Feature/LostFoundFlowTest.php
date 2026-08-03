@@ -49,7 +49,7 @@ test('a missing pet report stores only generalized public coordinates', function
         ->and(AuditLog::query()->where('action', 'search-case.created')->count())->toBe(1);
 
     Storage::disk('public')->assertExists(
-        str($searchCase->photos[0])->after('/storage/')->toString(),
+        portalMediaPath($searchCase->photos[0]),
     );
 });
 
@@ -127,7 +127,7 @@ test('sighting submissions are idempotent and retain actual observation time', f
         ->and($searchCase->refresh()->status)->toBe(SearchStatus::PossibleSighting);
 
     Storage::disk('public')->assertExists(
-        str($sighting->photo_url)->after('/storage/')->toString(),
+        portalMediaPath((string) $sighting->photo_url),
     );
 });
 

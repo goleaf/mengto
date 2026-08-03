@@ -66,6 +66,25 @@
                     <span>{{ __('auth.shell.footer') }}</span>
                 </div>
 
+                @if ($supportedLocales !== [])
+                    <nav class="auth-locale" aria-label="{{ __('auth.language_selector') }}">
+                        @forelse ($supportedLocales as $locale => $label)
+                            <form method="POST" action="{{ route('locale.update') }}">
+                                @csrf
+                                <button
+                                    type="submit"
+                                    name="locale"
+                                    value="{{ $locale }}"
+                                    @if ($activeLocale === $locale) aria-current="true" @endif
+                                >
+                                    {{ $label }}
+                                </button>
+                            </form>
+                        @empty
+                        @endforelse
+                    </nav>
+                @endif
+
                 <x-lucide-paw-print class="auth-story__watermark" aria-hidden="true" />
             </aside>
 

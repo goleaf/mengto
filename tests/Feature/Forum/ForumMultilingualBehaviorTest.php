@@ -200,6 +200,11 @@ test('forum notifications are rendered in the recipient locale', function () {
         ->not->toBe(trans('messages.new_answer_added', locale: 'en'))
         ->and($notification->body)
         ->toContain($answerer->name);
+
+    $this->actingAs($recipient)
+        ->get(route('forum.index'))
+        ->assertSuccessful()
+        ->assertSee($notification->title);
 });
 
 test('a human guide translation preserves the original and records source provenance', function () {

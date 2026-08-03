@@ -78,9 +78,13 @@ for care, medical, search, and device safety.
 
 ## Files
 
-Private disks must not map to unrestricted public URLs. A public storage link
-is created only for deliberately public assets. Verify file permissions,
-temporary URL behaviour, retention, and partial-upload cleanup.
+Private disks and product-media disks must not map to unrestricted public
+URLs. Do not run `php artisan storage:link`; `config/filesystems.php` has no
+public link contract. Remove any legacy `public/storage` link during rollout
+before enabling traffic. Verify that `storage.local` routes are absent and
+that forum, marketplace, lost/found, and sighting media load only through the
+authenticated `portal-media.show` route. Verify file permissions, token
+behaviour, retention, traversal/symlink rejection, and partial-upload cleanup.
 
 Public marketplace, lost/found, sighting, and forum-topic images are processed
 synchronously through `StorePublicImage`: orient, scale down to the configured

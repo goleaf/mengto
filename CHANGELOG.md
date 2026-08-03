@@ -4,6 +4,14 @@
 
 ### Security
 
+- Converted PawCircle into a closed authenticated portal: anonymous product
+  pages, mutations, token shares, Livewire uploads/previews, and product media
+  now fail before route-model binding. Active verified accounts retain normal
+  policy-scoped access; inactive and unverified sessions fail closed.
+- Disabled direct local storage serving and public storage-link generation;
+  forum topic, lost/found, sighting, and marketplace media now stream through
+  an authenticated, MIME-bounded, canonically contained route with traversal
+  and symlink-escape regressions.
 - Centralized private file responses behind canonical owning-directory checks
   that reject traversal segments, foreign disks, cross-domain stored paths,
   missing files, and symbolic-link escapes before streaming or audit changes.

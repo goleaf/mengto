@@ -12,7 +12,7 @@ test('application responses expose a server generated request identifier', funct
 
     $response = $this
         ->withHeader('X-Request-ID', $suppliedRequestId)
-        ->get(route('home'))
+        ->get(route('login'))
         ->assertOk()
         ->assertHeader('X-Request-ID');
 

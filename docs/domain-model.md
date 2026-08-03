@@ -4,7 +4,7 @@
 
 | Role | Capabilities |
 | --- | --- |
-| Visitor | View public profiles, discovery, published content, public places, and privacy-safe lost/found information |
+| Visitor | Register, sign in, recover an account, and select the account-entry locale; no product data is available before authentication |
 | Member | Maintain account, create permitted content, engage, report, and manage owned resources |
 | Pet owner | Manage pet identity, medical record, care journal, devices, and grants |
 | Co-owner / family | Receive per-pet and per-section capabilities from the owner |
@@ -17,7 +17,7 @@
 | Marketplace buyer / seller | Manage participant-side reservations and orders |
 | Search coordinator / volunteer | Coordinate assigned lost/found work without public private data |
 | Platform administrator / moderator | Apply explicit audited platform capabilities, never an implicit data bypass |
-| Temporary link recipient | Access only hashed-token scope until expiry/revocation |
+| Authenticated temporary link recipient | Access only hashed-token scope until expiry/revocation |
 
 No role is inferred from a hidden button or browser-provided identifier.
 

@@ -117,6 +117,7 @@ use App\Http\Controllers\PetProfilePreviewController;
 use App\Http\Controllers\PhotoInteractionController;
 use App\Http\Controllers\PlaceDetailPreviewController;
 use App\Http\Controllers\PlaceDirectoryPreviewController;
+use App\Http\Controllers\PortalMediaController;
 use App\Http\Controllers\PostThreadPreviewController;
 use App\Http\Controllers\PreviewController;
 use App\Http\Controllers\ReviewStoreController;
@@ -455,6 +456,16 @@ Route::middleware('web')
         Route::get('/share/{target}', SharePreviewController::class)
             ->where('target', '[A-Za-z0-9-]+')
             ->name('share.show');
+    });
+
+Route::middleware(['web', 'auth', 'active', 'verified'])
+    ->prefix('portal-media')
+    ->name('portal-media.')
+    ->group(function (): void {
+        Route::get('/{path}', PortalMediaController::class)
+            ->where('path', '.*')
+            ->middleware('throttle:600,1')
+            ->name('show');
     });
 
 Route::middleware('web')

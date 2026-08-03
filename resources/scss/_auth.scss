@@ -121,6 +121,44 @@
     display: none;
 }
 
+.auth-locale {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    position: relative;
+    z-index: 1;
+}
+
+.auth-locale form {
+    margin: 0;
+}
+
+.auth-locale button {
+    align-items: center;
+    background: transparent;
+    border: 1px solid rgb(255 255 255 / 0.42);
+    border-radius: 999px;
+    color: inherit;
+    cursor: pointer;
+    display: inline-flex;
+    font: inherit;
+    font-size: 0.875rem;
+    justify-content: center;
+    min-height: 2.75rem;
+    padding: 0.625rem 0.875rem;
+}
+
+.auth-locale button[aria-current='true'] {
+    background: rgb(255 255 255 / 0.16);
+    border-color: currentColor;
+    font-weight: 700;
+}
+
+.auth-locale button:focus-visible {
+    outline: 3px solid currentColor;
+    outline-offset: 3px;
+}
+
 .auth-story__watermark {
     position: absolute;
     inset-block-end: -4.5rem;

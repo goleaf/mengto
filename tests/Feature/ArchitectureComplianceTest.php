@@ -512,7 +512,7 @@ test('every first party route has an explicit php test reference', function () {
 test('responses include baseline browser security headers', function () {
     auth()->logout();
 
-    $this->get(route('home'))
+    $this->get(route('login'))
         ->assertOk()
         ->assertHeader('X-Content-Type-Options', 'nosniff')
         ->assertHeader('X-Frame-Options', 'SAMEORIGIN')

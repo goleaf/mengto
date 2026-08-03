@@ -173,7 +173,7 @@
                                 <input type="hidden" name="action" value="mark-notification-read">
                                 <input type="hidden" name="notification_id" value="{{ $notification['id'] }}">
                                 <button type="submit">
-                                    {{ $notification->title }}
+                                    {{ $notification['title'] }}
                                     <small>{{ __('forum.notifications.summary', [
                                         'date' => $notification['created_label'],
                                         'state' => $notification['state_label'],

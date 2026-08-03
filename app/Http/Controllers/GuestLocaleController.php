@@ -13,6 +13,6 @@ final class GuestLocaleController extends Controller
     {
         $request->session()->put('locale', $request->validated('locale'));
 
-        return redirect()->route('home');
+        return redirect()->route('login');
     }
 }
