@@ -13,11 +13,12 @@
     data-place-card="{{ $place['key'] }}"
 >
     <x-card-media
-        :src="$place['image_medium']"
+        :src="$place['image']"
         :small="$place['image_small']"
+        :medium="$place['image_medium']"
         :alt="$place['image_alt']"
-        :width="720"
-        :height="540"
+        :width="1200"
+        :height="900"
         sizes="(min-width: 1024px) 420px, (min-width: 640px) 50vw, 100vw"
         :eager="$eager"
         ratio="portrait"

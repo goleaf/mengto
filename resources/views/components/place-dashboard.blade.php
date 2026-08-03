@@ -240,15 +240,15 @@
             <div class="place-gallery">
                 @forelse ($content['gallery'] as $photo)
                     <figure>
-                        <img
-                            src="{{ $photo['image_small'] }}"
-                            srcset="{{ $photo['image_small'] }} 720w, {{ $photo['image_medium'] }} 1200w, {{ $photo['image'] }} 1600w"
+                        <x-responsive-image
+                            :src="$photo['image']"
+                            :small="$photo['image_small']"
+                            :medium="$photo['image_medium']"
                             sizes="(max-width: 767px) 100vw, 50vw"
-                            alt="{{ $photo['alt'] }}"
-                            width="720"
-                            height="540"
-                            loading="lazy"
-                        >
+                            :alt="$photo['alt']"
+                            :width="1200"
+                            :height="900"
+                        />
                         <figcaption>
                             <strong>{{ $photo['label'] }}</strong>
                             <span>{{ $photo['date'] }} · {{ $photo['source'] }}</span>

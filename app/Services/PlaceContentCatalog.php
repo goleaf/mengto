@@ -6,6 +6,10 @@ use Illuminate\Support\Str;
 
 final class PlaceContentCatalog
 {
+    public function __construct(
+        private readonly PlaceMediaCatalog $media,
+    ) {}
+
     /**
      * @param  array<string, mixed>  $place
      * @return array<string, mixed>
@@ -39,30 +43,25 @@ final class PlaceContentCatalog
     private function gallery(array $place): array
     {
         $category = (string) $place['primary_category'];
+        $gallery = $this->media->gallery($category);
 
         return [
             [
-                'image' => (string) $place['image'],
-                'image_small' => (string) $place['image_small'],
-                'image_medium' => (string) $place['image_medium'],
+                ...$gallery[0],
                 'alt' => (string) $place['image_alt'],
                 'label' => in_array($category, ['park', 'dog-park', 'route'], true) ? __('messages.current_conditions_8e4f7d71d2') : __('messages.official_overview_4e52f8942d'),
                 'date' => __('messages.july_2026_012fc02ad4'),
                 'source' => $place['owner_managed'] ? __('messages.place_profile_2354022ce8') : __('messages.brand.community'),
             ],
             [
-                'image' => $this->secondaryImage($category),
-                'image_small' => $this->secondaryImage($category, 720, 540),
-                'image_medium' => $this->secondaryImage($category, 1200, 750),
+                ...$gallery[1],
                 'alt' => $this->secondaryAlt($category),
                 'label' => in_array($category, ['park', 'dog-park', 'route'], true) ? __('messages.entrance_and_surface_3737b5b86f') : __('messages.arrival_and_access_ee16555f9f'),
                 'date' => __('messages.june_2026_ee00ffb56d'),
                 'source' => __('messages.verified_visitor_f4b89fc97c'),
             ],
             [
-                'image' => $this->tertiaryImage($category),
-                'image_small' => $this->tertiaryImage($category, 720, 540),
-                'image_medium' => $this->tertiaryImage($category, 1200, 750),
+                ...$gallery[2],
                 'alt' => $this->tertiaryAlt($category),
                 'label' => in_array($category, ['park', 'dog-park', 'route'], true) ? __('messages.facilities_89f957ebb1') : __('messages.service_area_72aa13fe85'),
                 'date' => __('messages.may_2026_4f7d169525'),
@@ -453,36 +452,6 @@ final class PlaceContentCatalog
             'shelter' => __('messages.yes_timed_appointments_protect_animals_and_visitors_52ffd61cc0'),
             default => __('messages.calling_first_is_recommended_when_live_availability_is_n_f9648af378'),
         };
-    }
-
-    private function secondaryImage(string $category, int $width = 1600, int $height = 1000): string
-    {
-        $id = match ($category) {
-            'park', 'route' => '1501854140801-50d01698950b',
-            'dog-park' => '1530281700549-e82e7bf110d6',
-            'vet', 'emergency-vet' => '1559190394-df5a28aab5c5',
-            'grooming' => '1518791841217-8f162f1e1131',
-            'pet-cafe' => '1554118811-1e0d58224f24',
-            'shelter' => '1548767797-d8c844163c4c',
-            default => '1586671267731-da2cf3ceeb80',
-        };
-
-        return "https://images.unsplash.com/photo-{$id}?auto=format&fit=crop&w={$width}&h={$height}&q=82";
-    }
-
-    private function tertiaryImage(string $category, int $width = 1600, int $height = 1000): string
-    {
-        $id = match ($category) {
-            'park', 'route' => '1472396961693-142e6e269027',
-            'dog-park' => '1561037404-61cd46aa615b',
-            'vet', 'emergency-vet' => '1517849845537-4d257902454a',
-            'grooming' => '1533738363-b7f9aef128ce',
-            'pet-cafe' => '1495474472287-4d71bcdd2085',
-            'shelter' => '1592754862816-1a21a4ea2281',
-            default => '1556228578-8c89e6adf883',
-        };
-
-        return "https://images.unsplash.com/photo-{$id}?auto=format&fit=crop&w={$width}&h={$height}&q=82";
     }
 
     private function secondaryAlt(string $category): string

@@ -2,14 +2,16 @@
 
 <section class="place-hero">
     <div class="place-hero__media">
-        <img
-            src="{{ $place['image_medium'] }}"
-            srcset="{{ $place['image_small'] }} 720w, {{ $place['image_medium'] }} 1200w, {{ $place['image'] }} 1600w"
+        <x-responsive-image
+            :src="$place['image']"
+            :small="$place['image_small']"
+            :medium="$place['image_medium']"
             sizes="(max-width: 900px) 100vw, 58vw"
-            alt="{{ $place['image_alt'] }}"
-            width="1200"
-            height="750"
-        >
+            :alt="$place['image_alt']"
+            :width="1200"
+            :height="900"
+            :eager="true"
+        />
         <div class="place-hero__badges">
             <x-status-badge
                 :label="$place['category_label']"

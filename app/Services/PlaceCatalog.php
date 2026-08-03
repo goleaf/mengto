@@ -11,7 +11,6 @@ use App\Models\Place;
 use App\Models\User;
 use Illuminate\Contracts\Auth\Factory as AuthFactory;
 use Illuminate\Database\Eloquent\Relations\Relation;
-use Illuminate\Support\Str;
 
 final class PlaceCatalog
 {
@@ -21,6 +20,7 @@ final class PlaceCatalog
     public function __construct(
         private readonly LocaleFormatter $formatter,
         private readonly AuthFactory $auth,
+        private readonly PlaceMediaCatalog $media,
     ) {}
 
     /**
@@ -264,7 +264,6 @@ final class PlaceCatalog
     private function defaultRecord(Place $place): array
     {
         $category = $place->catalog_category ?? $this->categoryForType($place->type);
-        $image = 'https://images.unsplash.com/photo-1450778869180-41d0601e046e?auto=format&fit=crop&w=1600&h=1000&q=82';
         $rules = filled($place->pet_rules)
             ? [trim((string) $place->pet_rules)]
             : [__('places.presentation.rules_pending')];
@@ -332,9 +331,7 @@ final class PlaceCatalog
             'allow_events' => true,
             'owner_managed' => false,
             'emergency' => $category === 'emergency-vet',
-            'image' => $image,
-            'image_small' => Str::replace(['w=1600', 'h=1000'], ['w=720', 'h=540'], $image),
-            'image_medium' => Str::replace(['w=1600', 'h=1000'], ['w=1200', 'h=750'], $image),
+            ...$this->media->primary($category),
             'image_alt' => __('places.presentation.default_image_alt', ['name' => $place->name]),
             'route' => null,
             'events' => [],
@@ -436,9 +433,7 @@ final class PlaceCatalog
                 'allow_events' => true,
                 'owner_managed' => false,
                 'emergency' => false,
-                'image' => 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=1600&h=1000&q=85',
-                'image_small' => 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=720&h=540&q=80',
-                'image_medium' => 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=1200&h=750&q=82',
+                ...$this->media->primary('park'),
                 'image_alt' => __('messages.broad_shaded_path_through_a_green_city_park_daf9d8d412'),
                 'route' => [
                     'distance' => __('messages.4_6_km_a3c02c501c'),
@@ -519,9 +514,7 @@ final class PlaceCatalog
                 'allow_events' => false,
                 'owner_managed' => false,
                 'emergency' => false,
-                'image' => 'https://images.unsplash.com/photo-1497250681960-ef046c08a56e?auto=format&fit=crop&w=1600&h=1000&q=85',
-                'image_small' => 'https://images.unsplash.com/photo-1497250681960-ef046c08a56e?auto=format&fit=crop&w=720&h=540&q=80',
-                'image_medium' => 'https://images.unsplash.com/photo-1497250681960-ef046c08a56e?auto=format&fit=crop&w=1200&h=750&q=82',
+                ...$this->media->primary('park'),
                 'image_alt' => __('messages.formal_city_garden_with_broad_paved_walking_paths_7d5fbc0e77'),
                 'events' => [],
                 'base_warnings' => [],
@@ -592,9 +585,7 @@ final class PlaceCatalog
                 'allow_events' => true,
                 'owner_managed' => false,
                 'emergency' => false,
-                'image' => 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=1600&h=1000&q=85',
-                'image_small' => 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=720&h=540&q=80',
-                'image_medium' => 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=1200&h=750&q=82',
+                ...$this->media->primary('park'),
                 'image_alt' => __('messages.quiet_forest_path_beneath_tall_green_trees_fa0622955d'),
                 'route' => [
                     'distance' => __('messages.5_2_km_0ee56d850a'),
@@ -687,9 +678,7 @@ final class PlaceCatalog
                 'allow_events' => true,
                 'owner_managed' => false,
                 'emergency' => false,
-                'image' => 'https://images.unsplash.com/photo-1558788353-f76d92427f16?auto=format&fit=crop&w=1600&h=1000&q=85',
-                'image_small' => 'https://images.unsplash.com/photo-1558788353-f76d92427f16?auto=format&fit=crop&w=720&h=540&q=80',
-                'image_medium' => 'https://images.unsplash.com/photo-1558788353-f76d92427f16?auto=format&fit=crop&w=1200&h=750&q=82',
+                ...$this->media->primary('dog-park'),
                 'image_alt' => __('messages.small_dog_standing_on_grass_inside_a_fenced_exercise_are_c376723f9d'),
                 'events' => [],
                 'base_warnings' => [
@@ -772,9 +761,7 @@ final class PlaceCatalog
                 'allow_events' => true,
                 'owner_managed' => false,
                 'emergency' => false,
-                'image' => 'https://images.unsplash.com/photo-1544568100-847a948585b9?auto=format&fit=crop&w=1600&h=1000&q=85',
-                'image_small' => 'https://images.unsplash.com/photo-1544568100-847a948585b9?auto=format&fit=crop&w=720&h=540&q=80',
-                'image_medium' => 'https://images.unsplash.com/photo-1544568100-847a948585b9?auto=format&fit=crop&w=1200&h=750&q=82',
+                ...$this->media->primary('dog-park'),
                 'image_alt' => __('messages.dogs_standing_in_a_spacious_grassy_fenced_field_21549f867a'),
                 'events' => ['small-dog-social'],
                 'base_warnings' => [],
@@ -845,9 +832,7 @@ final class PlaceCatalog
                 'allow_events' => false,
                 'owner_managed' => true,
                 'emergency' => true,
-                'image' => 'https://images.unsplash.com/photo-1628009368231-7bb7cfcb0def?auto=format&fit=crop&w=1600&h=1000&q=85',
-                'image_small' => 'https://images.unsplash.com/photo-1628009368231-7bb7cfcb0def?auto=format&fit=crop&w=720&h=540&q=80',
-                'image_medium' => 'https://images.unsplash.com/photo-1628009368231-7bb7cfcb0def?auto=format&fit=crop&w=1200&h=750&q=82',
+                ...$this->media->primary('emergency-vet'),
                 'image_alt' => __('messages.veterinary_clinician_examining_a_dog_in_a_bright_treatme_65f5e83045'),
                 'events' => ['travel-ready-webinar'],
                 'base_warnings' => [],
@@ -914,9 +899,7 @@ final class PlaceCatalog
                 'allow_events' => false,
                 'owner_managed' => true,
                 'emergency' => true,
-                'image' => 'https://images.unsplash.com/photo-1576201836106-db1758fd1c97?auto=format&fit=crop&w=1600&h=1000&q=85',
-                'image_small' => 'https://images.unsplash.com/photo-1576201836106-db1758fd1c97?auto=format&fit=crop&w=720&h=540&q=80',
-                'image_medium' => 'https://images.unsplash.com/photo-1576201836106-db1758fd1c97?auto=format&fit=crop&w=1200&h=750&q=82',
+                ...$this->media->primary('emergency-vet'),
                 'image_alt' => __('messages.dog_waiting_calmly_in_a_veterinary_reception_area_6a569c19d3'),
                 'events' => [],
                 'base_warnings' => [],
@@ -983,9 +966,7 @@ final class PlaceCatalog
                 'allow_events' => true,
                 'owner_managed' => true,
                 'emergency' => false,
-                'image' => 'https://images.unsplash.com/photo-1581888227599-779811939961?auto=format&fit=crop&w=1600&h=1000&q=85',
-                'image_small' => 'https://images.unsplash.com/photo-1581888227599-779811939961?auto=format&fit=crop&w=720&h=540&q=80',
-                'image_medium' => 'https://images.unsplash.com/photo-1581888227599-779811939961?auto=format&fit=crop&w=1200&h=750&q=82',
+                ...$this->media->primary('vet'),
                 'image_alt' => __('messages.veterinary_professional_listening_to_a_dog_with_a_stetho_999be2beff'),
                 'events' => ['travel-ready-webinar'],
                 'base_warnings' => [],
@@ -1052,9 +1033,7 @@ final class PlaceCatalog
                 'allow_events' => false,
                 'owner_managed' => true,
                 'emergency' => false,
-                'image' => 'https://images.unsplash.com/photo-1516734212186-a967f81ad0d7?auto=format&fit=crop&w=1600&h=1000&q=85',
-                'image_small' => 'https://images.unsplash.com/photo-1516734212186-a967f81ad0d7?auto=format&fit=crop&w=720&h=540&q=80',
-                'image_medium' => 'https://images.unsplash.com/photo-1516734212186-a967f81ad0d7?auto=format&fit=crop&w=1200&h=750&q=82',
+                ...$this->media->primary('grooming'),
                 'image_alt' => __('messages.calm_cat_resting_on_a_grooming_table_beside_soft_towels_30d5d57014'),
                 'events' => [],
                 'base_warnings' => [],
@@ -1121,9 +1100,7 @@ final class PlaceCatalog
                 'allow_events' => true,
                 'owner_managed' => true,
                 'emergency' => false,
-                'image' => 'https://images.unsplash.com/photo-1521017432531-fbd92d768814?auto=format&fit=crop&w=1600&h=1000&q=85',
-                'image_small' => 'https://images.unsplash.com/photo-1521017432531-fbd92d768814?auto=format&fit=crop&w=720&h=540&q=80',
-                'image_medium' => 'https://images.unsplash.com/photo-1521017432531-fbd92d768814?auto=format&fit=crop&w=1200&h=750&q=82',
+                ...$this->media->primary('pet-cafe'),
                 'image_alt' => __('messages.quiet_cafe_terrace_with_tables_beneath_a_covered_courtya_0e53635e17'),
                 'events' => [],
                 'base_warnings' => [],
@@ -1190,9 +1167,7 @@ final class PlaceCatalog
                 'allow_events' => true,
                 'owner_managed' => true,
                 'emergency' => false,
-                'image' => 'https://images.unsplash.com/photo-1601758228041-f3b2795255f1?auto=format&fit=crop&w=1600&h=1000&q=85',
-                'image_small' => 'https://images.unsplash.com/photo-1601758228041-f3b2795255f1?auto=format&fit=crop&w=720&h=540&q=80',
-                'image_medium' => 'https://images.unsplash.com/photo-1601758228041-f3b2795255f1?auto=format&fit=crop&w=1200&h=750&q=82',
+                ...$this->media->primary('pet-store'),
                 'image_alt' => __('messages.pet_care_products_arranged_on_bright_retail_shelving_c11356cac0'),
                 'events' => [],
                 'base_warnings' => [],
@@ -1259,9 +1234,7 @@ final class PlaceCatalog
                 'allow_events' => true,
                 'owner_managed' => true,
                 'emergency' => false,
-                'image' => 'https://images.unsplash.com/photo-1601758174114-e711c0cbaa69?auto=format&fit=crop&w=1600&h=1000&q=85',
-                'image_small' => 'https://images.unsplash.com/photo-1601758174114-e711c0cbaa69?auto=format&fit=crop&w=720&h=540&q=80',
-                'image_medium' => 'https://images.unsplash.com/photo-1601758174114-e711c0cbaa69?auto=format&fit=crop&w=1200&h=750&q=82',
+                ...$this->media->primary('shelter'),
                 'image_alt' => __('messages.volunteer_sitting_calmly_with_a_shelter_dog_outdoors_7baa9c21f4'),
                 'events' => ['shelter-open-house'],
                 'base_warnings' => [],
