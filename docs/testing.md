@@ -82,10 +82,10 @@ destructive command.
 ## Baseline And Current Checkpoint
 
 The modernization baseline was 116 passing tests and 3,881 assertions. The
-latest recorded complete serial checkpoint reports 2,027 passing tests and
-72,581 assertions in 115.528 seconds after the canonical medical
-patient-identity/access package. This checkpoint is not a final coverage claim
-while requirements remain unimplemented.
+latest recorded complete serial checkpoint reports 2,040 passing tests and
+73,559 assertions after the first Phase 3 topic-type reconciliation package.
+This checkpoint is not a final coverage claim while requirements remain
+unimplemented.
 
 Pest coverage cannot run in the current environment because PHP 8.5 has neither
 PCOV nor Xdebug. The expected failing command and its exact reason remain part
@@ -431,3 +431,21 @@ Package evidence:
   pixels with one `h1`, zero horizontal overflow, visible skip-link focus,
   44-pixel scoped actions, no external images/member chrome, and no console
   errors.
+
+## Forum Topic Type Schema Reconciliation
+
+`ForumTopicTypeSchemaContractTest` verifies every source-listed stable type,
+active versioned definitions, EN/LT/RU translation contracts, typed JSON
+casts, normalized foreign-key/index storage, absence of per-type columns, and
+idempotent synchronization that preserves IDs, topic relations, structured
+data, and custom definitions.
+
+Package evidence:
+
+- focused contract: 3 tests and 486 assertions;
+- related seed, factory, and architecture slice: 61 tests and 26,837
+  assertions;
+- full sequential suite: 2,040 tests and 73,559 assertions;
+- fresh database: 111 migrations and 191 tables; repeated seed preserved 5
+  users;
+- Pint and Larastan passed; Composer/npm audits and Vite build passed.

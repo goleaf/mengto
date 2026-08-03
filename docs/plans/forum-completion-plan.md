@@ -33,16 +33,16 @@ The deterministic catalogue snapshot on `main` contains:
 | Source stream | Requirements | Verified | Open |
 | --- | ---: | ---: | ---: |
 | Original forum source | 2,566 | 0 | 2,566 |
-| Forum extension and taxonomy | 4,718 | 513 | 4,205 |
+| Forum extension and taxonomy | 4,718 | 541 | 4,177 |
 | Pet-profile revision | 4,135 | 205 | 3,930 |
 | Social-relationships revision | 3,210 | 222 | 2,988 |
 | Content-feed revision | 4,011 | 58 | 3,953 |
 | Communication revision | 3,877 | 0 | 3,877 |
 | Community revision | 3,576 | 35 | 3,541 |
 | Medical-record revision | 3,867 | 79 | 3,788 |
-| **Total** | **29,960** | **1,112** | **28,848** |
+| **Total** | **29,960** | **1,140** | **28,820** |
 
-All 28,848 open records are currently `discovered`; there are no records
+All 28,820 open records are currently `discovered`; there are no records
 marked `in-progress`, `blocked`, or `intentionally-not-applicable`. The source
 payload checksum is
 `9f52b2f90c8f1d0dc1c957f0207b6bd89c9a57eaf3359838e51b6c377e25458d`.
@@ -84,10 +84,10 @@ Every package must follow this order:
 6. Update evidence only for the exact independently proven IDs.
 7. Inspect the complete staged diff, commit, and push directly on `main`.
 
-## Immediate Product Entry Package
+## Completed Product Entry Package
 
-Before the next forum reconciliation slice, deliver the product-owner-requested
-guest join page described in `docs/plans/join-landing-page-plan.md`.
+The product-owner-requested guest join page described in
+`docs/plans/join-landing-page-plan.md` is delivered and verified.
 
 This package changes the public entry surface and preserves the existing
 registration, verification, member feed, privacy, and localization contracts.
@@ -95,17 +95,17 @@ It does not change any of the totals below and does not verify a forum atom by
 existence alone. Any atomic evidence update still requires selecting the exact
 IDs and proving them through the normal work-package protocol.
 
-After the join package passes its route, auth, localization, accessibility,
-query, build, browser, and full-suite gates, resume Wave 0 with the first exact
-Phase 3-7 reconciliation package.
+Its route, auth, localization, accessibility, query, build, browser, and
+full-suite gates passed. The first exact Phase 3 reconciliation package is
+also verified and Wave 1 continues with database correctness.
 
 ## Dependency-Ordered Completion Waves
 
-The eight waves below account for all 28,848 open IDs exactly.
+The eight waves below account for all 28,820 open IDs exactly.
 
 | Wave | Scope | Phases | Open IDs |
 | ---: | --- | --- | ---: |
-| 1 | Core forum, taxonomy, trust, and moderation foundations | 3-7 | 3,098 |
+| 1 | Core forum, taxonomy, trust, and moderation foundations | 3-7 | 3,070 |
 | 2 | Canonical pet profile | 17-25 | 3,930 |
 | 3 | Social relationships | 27-34 | 2,988 |
 | 4 | Content feed and distribution | 36-44 | 3,953 |
@@ -113,7 +113,7 @@ The eight waves below account for all 28,848 open IDs exactly.
 | 6 | Medical records | 64-73 | 3,788 |
 | 7 | Remaining original forum workflows and interface | 8-12 | 3,174 |
 | 8 | Global control evidence, release verification, and publication | 0-2, 13-14 | 499 |
-|  | **Total** |  | **28,848** |
+|  | **Total** |  | **28,820** |
 
 ### Wave 0: Reconcile The Source Of Truth
 
@@ -135,7 +135,7 @@ Open inventory:
 
 | Phase | Remaining result | Open IDs |
 | ---: | --- | ---: |
-| 3 | Reconcile and finish additive schema, indexes, bindings, factories, policies, and compatibility backfills | 82 |
+| 3 | Reconcile and finish additive schema, indexes, bindings, factories, policies, and compatibility backfills | 54 |
 | 4 | Prove the complete 44-root/1,637-child category hierarchy, redirects, translations, cache invalidation, and preservation | 1,459 |
 | 5 | Complete global taxonomy snapshots, provenance, imports, changes, search, administration, rollback, and measured budgets | 821 |
 | 6 | Complete reputation, trust, badges, confirmations, conflicts, expiry, and anti-abuse behavior | 334 |
@@ -279,15 +279,11 @@ The final 499 open control/release IDs span Phases 0-2 and 13-14.
 
 ## Next Forum Work Package
 
-Create `docs/plans/forum-core-foundation-reconciliation-work-package.md` for
-the first exact slice of open Phase 3-7 IDs after the guest join package. It
-must:
-
-- compare each selected atom with the live schema, implementation, and tests;
-- separate missing behavior from missing evidence;
-- prioritize authorization, privacy, integrity, and preservation gaps;
-- avoid rebuilding the category/taxonomy foundations already present;
-- finish with exact evidence updates and the applicable package gates.
-
-No production code should change until that work package names its exact IDs
-and acceptance criteria.
+Create `docs/plans/forum-database-correctness-reconciliation-work-package.md`
+for exact IDs `forum.data.0006`, `forum.data.0007`, and
+`forum.data.0054` through `forum.data.0072`. It must compare every transaction,
+constraint, index, cast, timestamp, archival, locking, idempotency, and race
+atom with the live schema, application operations, and tests; distinguish
+global claims from table-specific evidence; and preserve all existing forum
+rows and relations. No production code should change until that package records
+the classification and acceptance criteria for all 21 IDs.

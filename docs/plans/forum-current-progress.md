@@ -7,7 +7,7 @@ Last updated: 2026-08-03.
 Source preservation, atomic extraction, repository discovery, and domain
 planning are documented for all eight source payloads, but their control IDs
 still require exact evidence before Phases 0-2 can be called verified. The
-combined catalogue has 1,112 verified IDs and 28,848 open IDs. Forum/taxonomy,
+combined catalogue has 1,140 verified IDs and 28,820 open IDs. Forum/taxonomy,
 pet, social, content, community, and medical foundations are implemented in
 independently evidenced slices; communication production requirements and all
 remaining depth/release packages stay open. Verification remains incremental,
@@ -66,7 +66,7 @@ remaining work is in `docs/plans/forum-completion-plan.md`.
   immutable case events, protected idempotent contact relays, advisory
   duplicate detection, unified false-sighting/reward-scam reports, and
   privacy-safe archival that preserves the complete operational history.
-- Requirement evidence is a deterministic overlay. `1,112` atomic requirements
+- Requirement evidence is a deterministic overlay. `1,140` atomic requirements
   are verified with file/test evidence and none are currently marked
   in-progress.
 - The pet-profile foundation preserves the existing aggregate while adding
@@ -94,8 +94,8 @@ remaining work is in `docs/plans/forum-completion-plan.md`.
   Community profile-scoped membership verifies 35 IDs; 3,541 community IDs
   remain open. Canonical medical patient identity/access and explicit
   knowledge states verify 79 IDs; 3,788 medical IDs remain open.
-- Latest recorded complete serial repository checkpoint: 2,027 tests and
-  72,581 assertions.
+- Latest recorded complete serial repository checkpoint: 2,040 tests and
+  73,559 assertions.
 - Current repository checkpoint: expert-session plus architecture verification
   passed 31 tests and 22,249 assertions. The detached `f1e2fcc` package
   snapshot passed full Pint and Larastan, 1,554 serial tests and 54,317
@@ -212,20 +212,29 @@ remaining work is in `docs/plans/forum-completion-plan.md`.
   and 64,597 assertions. Fresh/repeat seed passed across 99 migrations and 172
   tables; Pint, Larastan, audits, Vite/cache compilation, and reproducible
   EN/LT/RU headless-Chrome checks passed. All 41 scoped IDs are verified.
+- The first Phase 3 reconciliation slice proves the normalized configurable
+  topic-type foundation without rebuilding it. All source-listed type keys
+  have active versioned definitions, EN/LT/RU translation contracts, stable
+  internal identity, idempotent synchronization, preserved custom rows and
+  topic relations, and versioned structured JSON instead of per-type columns.
+  The focused contract passed 3 tests and 486 assertions; the related slice
+  passed 61 tests and 26,837 assertions; the full suite passed 2,040 tests and
+  73,559 assertions. Exactly 28 scoped persistence IDs are verified while the
+  unimplemented configurable capabilities remain open.
 
 ## Requirement Status Snapshot
 
 | Source stream | Requirements | Verified | Open |
 | --- | ---: | ---: | ---: |
 | Original forum source | 2,566 | 0 | 2,566 |
-| Forum extension and taxonomy | 4,718 | 513 | 4,205 |
+| Forum extension and taxonomy | 4,718 | 541 | 4,177 |
 | Pet-profile revision | 4,135 | 205 | 3,930 |
 | Social-relationships revision | 3,210 | 222 | 2,988 |
 | Content-feed revision | 4,011 | 58 | 3,953 |
 | Communication revision | 3,877 | 0 | 3,877 |
 | Community revision | 3,576 | 35 | 3,541 |
 | Medical-record revision | 3,867 | 79 | 3,788 |
-| **Total** | **29,960** | **1,112** | **28,848** |
+| **Total** | **29,960** | **1,140** | **28,820** |
 
 The exact per-phase open counts and execution order are maintained in
 `docs/plans/forum-completion-plan.md`; the generated phase index remains the
@@ -233,12 +242,14 @@ authority for individual IDs.
 
 ## Next Verified Pass
 
-1. Create the Phase 3-7 core-foundation reconciliation work package named in
-   `docs/plans/forum-completion-plan.md`.
-2. Select exact open IDs and classify each as missing behavior, missing
-   evidence, or a real external blocker.
-3. Close authorization, privacy, integrity, and preservation gaps first while
-   retaining the existing category/taxonomy foundations.
+1. Create the next Phase 3 database-correctness reconciliation package for
+   exact IDs `forum.data.0006`, `forum.data.0007`, and
+   `forum.data.0054` through `forum.data.0072`.
+2. Classify transaction, foreign-key, uniqueness, index, cast, timestamp,
+   archival, locking, idempotency, and race-condition atoms against the live
+   migrations, Actions, and tests.
+3. Close integrity and preservation gaps first; do not mark a broad database
+   invariant verified from one unrelated table.
 4. Update only independently evidenced IDs and rerun the applicable package
    gates before selecting the next slice.
 

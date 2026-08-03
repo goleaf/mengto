@@ -137,6 +137,22 @@ Retention is category-specific:
 
 The application must not infer absence of an activity from missing device data.
 
+## Forum Topic Type Definitions
+
+`forum_topic_types` stores configurable definitions under internal IDs and
+unique stable keys. System definitions carry EN/LT/RU translation keys, a
+positive schema version, a JSON field schema, JSON configuration, moderation
+level, and bounded lifecycle capabilities. Repeated synchronization updates
+system metadata by stable key without replacing IDs, attached topics, or
+administrator-created non-system definitions.
+
+`forum_topics.forum_topic_type_id` is the normalized relation. Type-specific
+data uses `structured_data` plus `structured_data_version`; the schema does not
+grow one nullable column for every possible topic type. High-value domains use
+dedicated tables when ownership, privacy, lifecycle, or queryability requires
+normalization. Runtime enforcement for the remaining configurable capabilities
+is tracked separately and is not implied by this storage contract.
+
 ## Community Review Tables
 
 `forum_review_panels` and `forum_review_assignments` store bounded low-risk

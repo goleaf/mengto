@@ -10,6 +10,13 @@
 
 ### Forum And Animal Taxonomy
 
+- Reconciled the configurable forum topic-type foundation against the source:
+  26 source-listed stable types have active versioned definitions and EN/LT/RU
+  translation contracts; repeated synchronization preserves IDs, attached
+  topics, structured JSON, and custom definitions. Added an executable schema
+  contract and exact evidence for 28 Phase 3 persistence requirements without
+  claiming the still-open runtime capability atoms.
+
 - Preserved and atomized the complete Point 7 medical-record revision into
   3,867 requirements, linked medical records to canonical pet identity,
   enforced one linked record per pet, contracted stale-owner access after
@@ -134,7 +141,7 @@
   isolated fresh-database verifier enter testing mode before application
   bootstrap.
 - Added an evidence overlay that prevents requirement verification without
-  concrete file or test evidence; 876 atomic requirements are currently
+  concrete file or test evidence; 1,140 atomic requirements are currently
   verified.
 
 ### Runtime And Architecture
@@ -147,8 +154,8 @@
   The old fictional member feed is no longer guest-visible and remains only
   as an authenticated compatibility preview while its tested consumers exist.
 - Added one dependency-ordered completion roadmap for all 29,960 combined
-  forum/product requirements and synchronized the final audit to 1,112
-  verified and 28,848 open atomic records.
+  forum/product requirements and synchronized the final audit to 1,140
+  verified and 28,820 open atomic records.
 - Raised the runtime contract to PHP `>=8.5.0 <8.6.0`, Laravel `^13.0`,
   Livewire `^4.3.4`, Tailwind/Vite plugin `^4.3.3`, and Vite `^8.2.0`.
 - Updated the Laravel Boost Livewire skill while keeping canonical repository
