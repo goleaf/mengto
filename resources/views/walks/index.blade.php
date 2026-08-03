@@ -4,6 +4,7 @@
             :eyebrow="$summary['eyebrow']"
             :title="$summary['title']"
             :description="$summary['description']"
+            heading-id="walks-heading"
             :count="$summary['count']"
         >
             <x-slot:actions>

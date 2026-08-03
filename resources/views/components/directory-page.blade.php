@@ -15,6 +15,7 @@
             :eyebrow="$summary['eyebrow']"
             :title="$summary['title']"
             :description="$summary['description']"
+            heading-id="{{ $headerSection }}-heading"
             :count="$summary['count']"
             :action-label="$actionLabel"
             :action-icon="$actionIcon"

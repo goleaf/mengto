@@ -4,6 +4,7 @@
             :eyebrow="$summary['eyebrow']"
             :title="$summary['title']"
             :description="$summary['description']"
+            heading-id="pet-friends-heading"
             :count="$summary['count']"
             action-label="{{ __('ui.open_pet_profile_c2c2f89833') }}"
             action-icon="circle-user-round"

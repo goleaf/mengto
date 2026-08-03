@@ -4,6 +4,7 @@
             :eyebrow="$summary['eyebrow']"
             :title="$summary['title']"
             :description="$summary['description']"
+            heading-id="connections-heading"
             :count="$summary['count']"
             action-label="{{ __('ui.discover_profiles_d97a3b3e4c') }}"
             action-icon="search"

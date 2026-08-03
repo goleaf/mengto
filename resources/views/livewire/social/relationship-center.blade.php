@@ -3,6 +3,7 @@
         eyebrow="{{ __('social_relationships.eyebrow') }}"
         title="{{ __('social_relationships.title') }}"
         description="{{ __('social_relationships.description') }}"
+        heading-id="relationship-center-heading"
         action-label="{{ __('social_relationships.actions.back_to_circle') }}"
         action-icon="arrow-left"
         :action-href="route('circle.index')"

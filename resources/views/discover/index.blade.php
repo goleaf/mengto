@@ -4,6 +4,7 @@
             :eyebrow="$summary['eyebrow']"
             :title="$summary['title']"
             :description="$summary['description']"
+            heading-id="discover-heading"
             :count="$summary['count']"
             data-section="discover-header"
         />

@@ -4,6 +4,7 @@
             :eyebrow="$summary['eyebrow']"
             :title="$summary['title']"
             :description="$summary['description']"
+            heading-id="notifications-heading"
             :count="$summary['count']"
             action-label="{{ __('ui.mark_all_read_3bc62a9e6a') }}"
             action-icon="check-check"

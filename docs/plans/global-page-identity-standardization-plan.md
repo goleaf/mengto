@@ -138,10 +138,10 @@ Blade disagrees.
 | Message folder placement (`All` through `Archive`) | Implemented and tested | Keep the nine-folder toolbar above the messaging shell |
 | Plan registration and current-versus-target documentation | Complete | Reconcile again whenever implementation changes the rendered state |
 | `/messages` canonical page identity | Implemented and targeted-verified | Preserve one canonical header, nine folders above the messaging shell, and zero horizontal overflow |
-| Package 0 requirements and red contracts | Partial | The shared/route/order contracts now cover eleven safe routes; requirement ID, complete route classification ledger, allowlists, and remaining routes are open |
+| Package 0 requirements and red contracts | Partial | All 108 first-party GET routes now have an executable one-class ledger and canonical routes have structural contracts; the stable requirement ID, query baselines, and remaining migration-route red contracts are open |
 | Package 1 current `/meetups` schema/runtime | Partial | Current table, migration, explicit projection, and route work; fresh plus incremental mismatch proof remains |
-| Package 2 shared component | Partial, implementation verified for the first wave | Heading ID, metadata/actions slots, compatibility, wrapping, and semantic tests are complete; the full locale/zoom/forced-colors fixture matrix remains open |
-| Package 3 reference directories | Partial | `/pets`, `/places`, `/groups`, `/neighbors`, `/discover`, and `/messages` are targeted-verified; the remaining listed routes and golden matrix are open |
+| Package 2 shared component | Partial, implementation verified for current consumers | Explicit page-specific heading IDs, empty/count/single/multiple action states, escaped long content, metadata/actions slots, compatibility, wrapping, and semantic tests are complete; the full locale/zoom/forced-colors fixture matrix remains open |
+| Package 3 reference directories | Implemented and structurally verified | All listed routes consume the shared component and are covered by the source/route contract; the complete golden browser matrix remains a Package 11 gate |
 | Package 4 private care directories | Implemented and targeted-verified | Retain authorization/privacy regression coverage in the final full gate |
 | Package 5 operational directories | Implemented and targeted-verified | Retain domain and responsive regression coverage in the final full gate |
 | Packages 6 through 8 | Not started | Event, forum, and complete first-party route migration remain open |
@@ -153,22 +153,25 @@ The first implementation slice is covered by
 and messaging suites. The isolated targeted run passed 105 tests and 1,029
 assertions. Authenticated browser checks at 375 px and 1440 px confirmed one
 canonical header, one `h1`, no horizontal overflow, 44 px mobile actions, and
-the required message-folder order. The final complete isolated Pest run passed
-2,362 tests and 78,760 assertions. This is evidence for the first slice
-and repository state at that point only, not for the remaining global
-migration.
+the required message-folder order. After the route-ledger and explicit heading
+ID package, the complete isolated Pest run passed 2,384 tests and 78,892
+assertions. In the shared checkout, both `APP_CONFIG_CACHE` and `DB_DATABASE`
+must be isolated so a concurrent cache build cannot redirect a nominal
+`:memory:` run to `database/database.sqlite`. This is evidence for the current
+implemented slices only, not for the remaining global migration.
 
 ### 3.3 Next Execution Checkpoint
 
 1. Publish the verified first safe slice without including concurrent event or
    forum work from the shared tree.
-2. Complete Package 0 by writing the 108-route classification ledger, stable
-   requirement ID, allowlists, and remaining red contracts.
+2. Complete Package 0 by assigning the stable requirement ID, recording query
+   baselines, and adding red contracts for the remaining migration candidates;
+   keep the executable 108-route ledger synchronized.
 3. Close the remaining incremental `/meetups` proof in Package 1 before
    touching its presentation in Package 6. Disjoint non-event page work may
    proceed while this gate is open.
-4. Complete the remaining Package 2 locale, zoom, forced-colors, and slot-state
-   fixtures, then finish the unmigrated Package 3 routes.
+4. Complete the remaining Package 2 locale, zoom, and forced-colors fixtures,
+   then capture the complete Package 3 golden browser matrix.
 5. Continue through event, forum, and global-route waves; never mark a later
    wave complete from source intent or screenshots alone.
 

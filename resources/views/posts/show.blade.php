@@ -8,6 +8,7 @@
             eyebrow="{{ __('ui.neighborhood_conversation_6eaef6c1b4') }}"
             :title="__('presentation.pet_moment_title', ['pet' => $post['pet']])"
             description="{{ __('ui.follow_the_local_context_add_a_thoughtful_reply_1f8cd21f51') }}"
+            heading-id="post-thread-heading"
         >
             <x-slot:actions>
                 <x-action-control

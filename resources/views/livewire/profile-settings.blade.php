@@ -3,6 +3,7 @@
         eyebrow="{{ __('auth.settings.eyebrow') }}"
         title="{{ __('auth.settings.title') }}"
         description="{{ __('auth.settings.description') }}"
+        heading-id="profile-settings-heading"
         action-label="{{ __('auth.settings.back') }}"
         action-icon="arrow-left"
         :action-href="route('profile.mia')"

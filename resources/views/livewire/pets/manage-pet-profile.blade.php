@@ -3,6 +3,7 @@
         eyebrow="{{ __('pet_profiles.manage.eyebrow') }}"
         title="{{ __('pet_profiles.manage.title', ['name' => $profile->name]) }}"
         description="{{ __('pet_profiles.manage.description') }}"
+        heading-id="manage-pet-profile-heading"
         action-label="{{ __('pet_profiles.actions.view_profile') }}"
         action-icon="external-link"
         :action-href="route('pets.profile', ['petProfile' => $profile->profile_key])"
