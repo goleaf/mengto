@@ -7,6 +7,7 @@ import { setTimeout as delay } from 'node:timers/promises';
 const baseUrl = (process.env.BROWSER_BASE_URL ?? 'http://127.0.0.1:8000').replace(/\/$/, '');
 const browserOrigin = new URL(baseUrl);
 const groupsOnly = process.argv.includes('--groups-only');
+const placesOnly = process.argv.includes('--places-only');
 const outputDirectory = process.env.BROWSER_OUTPUT_DIR
     ?? join(tmpdir(), 'mengto-accessibility-browser');
 const chromeCandidates = [
@@ -1056,24 +1057,99 @@ try {
         ]) {
             const label = `${viewport.label} ${surface}`;
             await navigate(client, sessionId, `${baseUrl}${path}`);
+            let loadedPlaceImageCount = null;
+
+            if (path === '/places') {
+                loadedPlaceImageCount = await evaluate(client, sessionId, `(async () => {
+                    const images = [...document.querySelectorAll('[data-place-card] [data-ui-card-media] img')];
+
+                    for (const image of images) {
+                        image.scrollIntoView({ block: 'center' });
+                        await new Promise((resolve) => setTimeout(resolve, 100));
+                    }
+
+                    await Promise.all(images.map((image) => {
+                        if (image.complete) {
+                            return Promise.resolve();
+                        }
+
+                        return new Promise((resolve) => {
+                            image.addEventListener('load', resolve, { once: true });
+                            image.addEventListener('error', resolve, { once: true });
+                        });
+                    }));
+                    window.scrollTo(0, 0);
+                    await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+
+                    return images.filter((image) => image.complete && image.naturalWidth > 0).length;
+                })()`);
+                assert(loadedPlaceImageCount === 6, `${label}: expected all six place images to load.`);
+            }
+
             const audit = await evaluate(client, sessionId, pageAuditExpression);
             assertPageAudit(audit, label);
-            const behavior = await evaluate(client, sessionId, `(() => ({
-                surfaceCount: document.querySelectorAll('[data-section="places-summary"], .place-dashboard').length,
-                placeCardCount: document.querySelectorAll('[data-place-card]').length,
-                cardLayouts: [...document.querySelectorAll('[data-place-card]')].map((card) => {
-                    const media = card.querySelector('.place-card__media');
+            const behavior = await evaluate(client, sessionId, `(() => {
+                const cards = [...document.querySelectorAll('[data-place-card]')];
+                const cardLayouts = cards.map((card) => {
+                    const media = card.querySelector('[data-ui-card-media]');
                     const body = card.querySelector('.place-card__body');
+                    const heading = card.querySelector('[data-card-heading]');
+                    const description = card.querySelector('[data-card-description]');
+                    const image = media?.querySelector('img');
+                    const mediaBox = media?.getBoundingClientRect();
+                    const imageBox = image?.getBoundingClientRect();
+                    const mediaLink = media instanceof HTMLAnchorElement ? media : null;
+                    const headingLink = heading?.querySelector('a');
 
                     return {
                         cardHeight: Math.round(card.getBoundingClientRect().height),
-                        mediaHeight: Math.round(media?.getBoundingClientRect().height ?? 0),
+                        mediaHeight: Math.round(mediaBox?.height ?? 0),
                         bodyHeight: Math.round(body?.getBoundingClientRect().height ?? 0),
+                        hasSharedMedia: Boolean(media),
+                        hasSharedHeading: Boolean(heading),
+                        hasSharedDescription: Boolean(description),
+                        copyClipped: [heading, description].filter(Boolean).some(
+                            (element) => element.scrollHeight > element.clientHeight + 1
+                                || element.scrollWidth > element.clientWidth + 1,
+                        ),
+                        destinationsMatch: Boolean(
+                            mediaLink && headingLink && mediaLink.href === headingLink.href,
+                        ),
+                        imageEscapesMedia: Boolean(
+                            mediaBox && imageBox
+                            && (
+                                imageBox.left < mediaBox.left - 1
+                                || imageBox.right > mediaBox.right + 1
+                                || imageBox.top < mediaBox.top - 1
+                                || imageBox.bottom > mediaBox.bottom + 1
+                            )
+                        ),
                     };
-                }),
-                rawTranslationKeys: document.body.innerText.match(/\\bplaces\\.[a-z0-9_.-]+/gi) ?? [],
-                privateLocationLeak: document.body.innerText.includes('Protected foster entrance'),
-            }))()`);
+                });
+                const firstCard = cards[0];
+                const firstKey = firstCard?.dataset.placeCard;
+                const firstMarker = firstKey
+                    ? document.querySelector('[data-place-marker="' + CSS.escape(firstKey) + '"]')
+                    : null;
+                firstMarker?.click();
+                const selectedHeading = firstCard?.querySelector('[data-card-heading]');
+                const selectedHeadingLink = selectedHeading?.querySelector('a');
+                const selection = document.querySelector('[data-place-selection]');
+
+                return {
+                    surfaceCount: document.querySelectorAll('[data-section="places-summary"], .place-dashboard').length,
+                    placeCardCount: cards.length,
+                    cardLayouts,
+                    mapSelectionSynced: ! firstCard || Boolean(
+                        selection?.querySelector('strong')?.textContent.trim()
+                            === selectedHeading?.textContent.trim()
+                        && selection?.querySelector('[data-place-selection-link]')?.href
+                            === selectedHeadingLink?.href,
+                    ),
+                    rawTranslationKeys: document.body.innerText.match(/\\bplaces\\.[a-z0-9_.-]+/gi) ?? [],
+                    privateLocationLeak: document.body.innerText.includes('Protected foster entrance'),
+                };
+            })()`);
             assert(behavior.surfaceCount === 1, `${label}: canonical place surface marker is missing.`);
             assert(
                 behavior.rawTranslationKeys.length === 0,
@@ -1082,6 +1158,18 @@ try {
             assert(! behavior.privateLocationLeak, `${label}: a protected exact location leaked.`);
             if (path === '/places') {
                 assert(behavior.placeCardCount > 0, `${label}: no persisted place cards were rendered.`);
+                assert(
+                    behavior.cardLayouts.every(
+                        (card) => card.hasSharedMedia
+                            && card.hasSharedHeading
+                            && card.hasSharedDescription
+                            && card.destinationsMatch
+                            && ! card.copyClipped
+                            && ! card.imageEscapesMedia,
+                    ),
+                    `${label}: shared place-card composition or containment is invalid.`,
+                );
+                assert(behavior.mapSelectionSynced, `${label}: marker selection did not update from shared heading hooks.`);
                 const maximumCardHeight = Math.max(
                     ...behavior.cardLayouts.map(({ cardHeight }) => cardHeight),
                 );
@@ -1099,7 +1187,7 @@ try {
                 smallTargets.length === 0,
                 `${label}: controls below 44px ${JSON.stringify(smallTargets)}.`,
             );
-            placeAudits[label] = { ...audit, ...behavior, smallTargets };
+            placeAudits[label] = { ...audit, ...behavior, smallTargets, loadedPlaceImageCount };
 
             const screenshotData = await client.send('Page.captureScreenshot', {
                 format: 'png',
@@ -1110,6 +1198,32 @@ try {
                 Buffer.from(screenshotData.data, 'base64'),
             );
         }
+    }
+
+    if (placesOnly) {
+        assert(consoleErrors.length === 0, `Browser console errors: ${consoleErrors.join(' | ')}`);
+
+        const report = {
+            scope: 'places',
+            baseUrl,
+            checkedAt: new Date().toISOString(),
+            placeAudits,
+            consoleErrors,
+            screenshots: [
+                join(outputDirectory, 'place-directory-desktop.png'),
+                join(outputDirectory, 'place-directory-mobile.png'),
+                join(outputDirectory, 'place-detail-desktop.png'),
+                join(outputDirectory, 'place-detail-mobile.png'),
+            ],
+        };
+
+        await writeFile(
+            join(outputDirectory, 'place-card-report.json'),
+            `${JSON.stringify(report, null, 2)}\n`,
+        );
+        console.log(JSON.stringify(report, null, 2));
+
+        break auditRun;
     }
 
     const organizationAudits = {};

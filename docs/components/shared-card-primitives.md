@@ -85,7 +85,9 @@ Cards may reuse heading, description, or media leaves without adopting the
 directory shell. This is the correct path when a domain card has a different
 topology. `discovery-result-card` reuses the shared heading and description;
 `expert-card` reuses the shared heading while retaining qualification, status,
-statistics, and actions in its domain component.
+statistics, and actions in its domain component. `place-card` reuses media,
+heading, and description leaves while retaining its list/split-map shell and
+Places-specific facts and actions.
 
 Do not create a compact-card composition until two real consumers require the
 same compact topology. This prevents speculative flags and keeps shared changes
@@ -93,15 +95,20 @@ predictable.
 
 ## Verification
 
-The server contract is covered by
-`tests/Feature/SharedCardSystemContinuationTest.php`. The authenticated browser
-matrix runs with:
+The server contracts are covered by
+`tests/Feature/SharedCardSystemContinuationTest.php` and
+`tests/Feature/PlaceSharedCardCompositionTest.php`. The authenticated browser
+matrices run with:
 
 ```shell
 npm run test:browser:groups
+npm run test:browser:places
 ```
 
-It verifies EN, LT, and RU at 320, 375, 768, 1024, 1440, and 1920 pixels,
+The Groups command verifies EN, LT, and RU at 320, 375, 768, 1024, 1440, and 1920 pixels,
 including long-copy visibility, media containment, equal same-row heights,
 membership states, 44-pixel action targets, translation-key leakage,
-horizontal overflow, loaded images, and browser-console errors.
+horizontal overflow, loaded images, and browser-console errors. The Places
+command verifies directory and detail geometry at desktop and mobile widths,
+including shared leaves, synchronized map selection, image containment, touch
+targets, private-location isolation, and browser-console errors.

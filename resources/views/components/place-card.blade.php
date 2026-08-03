@@ -12,26 +12,33 @@
     ]) }}
     data-place-card="{{ $place['key'] }}"
 >
-    <a href="{{ $place['detail_url'] }}" class="place-card__media" aria-label="{{ __('presentation.open_place', ['name' => $place['name']]) }}">
-        <x-responsive-image
-            :src="$place['image_medium']"
-            :small="$place['image_small']"
-            :alt="$place['image_alt']"
-            width="720"
-            height="540"
-            sizes="(min-width: 1024px) 420px, (min-width: 640px) 50vw, 100vw"
-            :eager="$eager"
-        />
+    <x-card-media
+        :src="$place['image_medium']"
+        :small="$place['image_small']"
+        :alt="$place['image_alt']"
+        :width="720"
+        :height="540"
+        sizes="(min-width: 1024px) 420px, (min-width: 640px) 50vw, 100vw"
+        :eager="$eager"
+        ratio="portrait"
+        :href="$place['detail_url']"
+        :link-label="__('presentation.open_place', ['name' => $place['name']])"
+        class="place-card__media"
+    >
         <span class="place-card__category">
             <x-ui-icon size="sm" :name="$place['category_icon']" />
             {{ $place['category_label'] }}
         </span>
-    </a>
+    </x-card-media>
 
     <div class="place-card__body">
         <div class="place-card__heading">
             <div>
-                <h3><a href="{{ $place['detail_url'] }}" class="place-card__title">{{ $place['name'] }}</a></h3>
+                <x-card-heading
+                    :title="$place['name']"
+                    :href="$place['detail_url']"
+                    spacing="none"
+                />
                 <p class="place-card__location">{{ $place['neighborhood'] }} · {{ $place['distance_label'] }} · {{ $place['travel_label'] }}</p>
             </div>
             <x-status-badge
@@ -41,7 +48,7 @@
             />
         </div>
 
-        <p class="place-card__summary">{{ $place['summary'] }}</p>
+        <x-card-description spacing="none">{{ $place['summary'] }}</x-card-description>
 
         <div class="place-card__facts" aria-label="{{ __('ui.place_highlights_e9c48986d7') }}">
             <span>

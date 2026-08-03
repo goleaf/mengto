@@ -751,23 +751,7 @@
         }
     }
 
-    &__title {
-        display: inline;
-        color: $ink;
-        font-size: 1rem;
-        font-weight: 675;
-        line-height: 1.35rem;
-        overflow-wrap: anywhere;
-
-        @include focus-ring;
-
-        &:hover {
-            color: $leaf;
-        }
-    }
-
     &__location,
-    &__summary,
     &__reason {
         color: $muted;
         overflow-wrap: anywhere;
@@ -776,11 +760,6 @@
     &__location {
         margin-block-start: 0.25rem;
         font-size: 0.75rem;
-    }
-
-    &__summary {
-        font-size: 0.8125rem;
-        line-height: 1.35rem;
     }
 
     &__facts {

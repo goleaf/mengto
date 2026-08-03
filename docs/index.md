@@ -47,6 +47,7 @@ This index is the source-of-truth map for first-party documentation.
 | `docs/current-state-audit.md` | Modernization baseline and resolved findings | Engineering | Living evidence |
 | `docs/implementation-plan.md` | Dependency-aware modernization plan | Engineering | Living plan |
 | `docs/audits/groups-shared-card-ux-audit.md` | `/groups` media/copy defect, shared-card topology, component boundaries, accessibility matrix, risks, and stop conditions | Product + frontend + QA | Current audit |
+| `docs/audits/place-shared-card-classification.md` | Places shared-leaf adoption, map-aware shell boundary, dashboard decision, and acceptance contract | Product + frontend + QA | Current audit |
 | `docs/plans/shared-directory-card-system-plan.md` | Unlimited phased directory-card repair, migration, verification, governance, and recovery backlog | Product + frontend + QA | In progress |
 | `docs/audits/icon-system-deep-audit.md` | Measured Lucide, sizing, accessibility, SVG, pictogram, and action-candidate baseline | Product + frontend + QA | Current audit |
 | `docs/plans/icon-system-unlimited-plan.md` | Zero-debt icon-system migration waves, gates, ratchets, and stop conditions | Product + frontend + QA | In progress |

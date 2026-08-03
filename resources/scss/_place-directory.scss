@@ -425,15 +425,6 @@
         gap: 0.625rem;
     }
 
-    .place-card__heading h3 {
-        margin: 0;
-    }
-
-    .place-card__title {
-        font-size: clamp(1rem, 2vw, 1.18rem);
-        line-height: 1.25;
-    }
-
     .place-card__facts {
         display: grid;
         grid-template-columns: minmax(0, 1fr);

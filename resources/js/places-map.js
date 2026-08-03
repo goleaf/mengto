@@ -29,13 +29,14 @@ const selectMarker = (map, marker, focus = false) => {
     map.dataset.selectedPlace = key ?? '';
 
     if (card && selection) {
-        const title = card.querySelector('.place-card__title');
+        const heading = card.querySelector('[data-card-heading]');
+        const title = heading?.querySelector('a');
         const location = card.querySelector('.place-card__location');
         const selectedTitle = selection.querySelector('strong');
         const selectedMeta = selection.querySelector('span');
 
-        if (selectedTitle && title) {
-            selectedTitle.textContent = title.textContent;
+        if (selectedTitle && heading) {
+            selectedTitle.textContent = heading.textContent;
         }
 
         if (selectedMeta && location) {
