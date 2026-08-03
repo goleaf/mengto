@@ -24,9 +24,9 @@ Last updated: 2026-08-03.
   and verified with the canonical `/pets` workspace and dedicated requirement
   evidence overlay.
 - The bounded duplicate-review and encrypted access-request slice
-  `pet.creation.0103-pet.creation.0137` is implemented and release-verified for
-  34 selected IDs. `pet.creation.0115` remains open because organization
-  attribution is not yet authoritative.
+  `pet.creation.0103-pet.creation.0137` is implemented, release-verified, and
+  published for 34 selected IDs. `pet.creation.0115` remains open because
+  organization attribution is not yet authoritative.
 
 ## Current Work Package
 

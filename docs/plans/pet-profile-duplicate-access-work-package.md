@@ -2,7 +2,7 @@
 
 Last updated: 2026-08-03.
 
-Status: implemented and release-verified on the current tree; publication is pending.
+Status: implemented, release-verified, and published to `origin/main`.
 
 ## Scope
 
@@ -120,7 +120,7 @@ requester/status/time indexes.
 - [x] config/event/route/view cache smoke checks;
 - [x] connected desktop/mobile/320px browser review;
 - [x] final sequential Pest suite;
-- [ ] scoped diff, temporary-index commit, push, and publication evidence.
+- [x] scoped diff, temporary-index commit, push, and publication evidence.
 
 Observed release evidence on 2026-08-03:
 
@@ -140,7 +140,10 @@ Observed release evidence on 2026-08-03:
 - disposable-database Chrome: one safe public candidate, no private-candidate
   or credential leak, real Livewire access submission, authorized manager
   evidence review, zero page overflow, raw keys, duplicate IDs, undersized or
-  unnamed controls, and console errors at desktop, 375px, and 320px.
+  unnamed controls, and console errors at desktop, 375px, and 320px;
+- scoped implementation commit `d4753404cf2ce7d94050ec8b5467de6636d1482f`
+  passed `git diff --cached --check`; the observed push advanced `origin/main`
+  from `3622b71623cd161e4ec1a110fa6c78b2f0ebcbc8` to that commit.
 
 Requirement evidence marks only the 34 selected atomic IDs verified.
 `pet.creation.0115` and all wider duplicate, merge, organization, proof,

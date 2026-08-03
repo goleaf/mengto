@@ -9,7 +9,7 @@ status remains authoritative in
 
 ## Current Delivery: Pet Duplicate Review And Access Requests
 
-Status: `implemented and verified` on 2026-08-03.
+Status: `implemented, verified, and published` on 2026-08-03.
 
 - Pause canonical pet creation on bounded, policy-visible name/species matches
   and expose only the safe identity/photo projection.
