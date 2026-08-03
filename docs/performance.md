@@ -79,6 +79,15 @@ three statements to two. Its executable budget keeps twelve organizations to
 at most one statement above a single organization. Organization workspaces
 cap memberships at 100 and active restrictions at 50 and load private
 projections only for authorized managers.
+`PlaceCatalog` scopes persisted place authority before presentation, selects
+only public columns, constrains organization memberships to the current
+account, and reuses one request-local keyed projection for list and detail
+lookups. `PlaceAuthorityFoundationTest` caps the catalogue at four statements
+for one accessible place and permits at most one additional statement when
+the fixture grows to twelve; `PlaceDirectoryTest` independently holds the
+rendered directory to the one-place baseline plus one statement after adding
+30 records. Exact address, coordinates, private instructions, grants, and
+audits are absent from both selected columns and shared caches.
 
 All previously uncovered foreign keys gained leading indexes. The deterministic
 performance seeder supports repeatable local growth tests; production latency

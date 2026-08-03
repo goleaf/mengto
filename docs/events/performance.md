@@ -21,3 +21,11 @@ directory, recurring-event detail, and three-session conference schedule at
 desktop and mobile viewports. End-to-end latency measurement remains pending.
 Public caches never include exact venue, registration, eligibility, or private
 message data.
+
+Canonical event place selection uses one bounded `usableForEventsBy` query and
+one venue query after selection. The shared place catalogue remains at or below
+four statements for one accessible place and grows by no more than one
+statement at twelve records. Its projection never selects exact location
+fields. The connected browser gate also bounds canonical place-card height to
+480 pixels at 1440px and 720 pixels at 375px so a responsive media regression
+cannot silently inflate the event/place discovery surface.

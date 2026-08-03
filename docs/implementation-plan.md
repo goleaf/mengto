@@ -541,6 +541,8 @@ Status: `verified` on 2026-08-03
 - Verified authenticated desktop/mobile browser flows for `/places` and
   `/places/vingis-quiet-loop` with no overflow, broken images, raw translation
   keys, unnamed controls, console errors, or protected-address disclosure.
+  The browser gate also caps place-card height at 480px on desktop and 720px on
+  mobile; the final measured ranges were 384-473px and 614-654px respectively.
 
 The authority, privacy, lifecycle, schema, and acceptance decisions are
 recorded in

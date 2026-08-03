@@ -645,6 +645,35 @@ Targeted Pint and the scoped publication diff check passed. Exact implemented
 and open P02 scope is recorded in
 `docs/plans/portal-organization-authority-foundation-work-package.md`.
 
+## Canonical Place And Venue Authority
+
+`PlaceAuthorityFoundationTest` covers encrypted exact fields, public
+projection, organization and grant authority, confirmed-registration access,
+audited reveal, location-version history, grant revocation, canonical event
+links, bounded queries, factories, and repeat-safe seeding. `PlaceDirectoryTest`
+proves the existing server-rendered directory and stable detail route consume
+the same persisted authority while private and archived records remain absent.
+
+Observed package evidence on 2026-08-03:
+
+- focused place authority: 20 tests and 153 assertions;
+- place directory plus event lifecycle/workflow regression: 58 tests and 886
+  assertions;
+- factory/seeder inventory with place coverage: 1,682 tests and 4,987
+  assertions;
+- isolated fresh/repeat seed: 126 migrations, 211 tables, stable five-user
+  identity count, and both exits `0`;
+- full Pint, Larastan, Composer validation/audit, npm audit, Vite build, and
+  Laravel cache smoke checks: passed with zero reported errors or known
+  dependency vulnerabilities;
+- browser matrix: desktop/mobile place directory and detail passed with zero
+  overflow, unnamed controls, raw place keys, protected-location leaks,
+  undersized mobile controls, or console errors. Desktop place cards measured
+  384-473px and mobile cards 614-654px against enforced 480/720px ceilings.
+
+The complete suite total and scoped publication evidence are maintained in
+`docs/plans/portal-place-location-venue-authority-work-package.md`.
+
 ## Linked Media Navigation Verification
 
 `LinkedMediaNavigationContractTest` verifies the semantic linked/passive

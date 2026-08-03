@@ -38,6 +38,9 @@
 - Added end-to-end action coverage for saves, follows, visits, expiring private
   check-ins, corrections with evidence, temporary warnings, reviews, and
   questions; removed visible prototype wording from operational place tabs.
+- Added encrypted exact-location grants and reveal audits, event/venue linkage,
+  confirmed-registration access checks, responsive card-height regression
+  gates, and a corrected park-specific Vingis cover image.
 
 - Added occurrence-scoped event tracks, physical/online rooms, sessions, and
   public/private staff assignments with controlled status/type/reservation

@@ -104,7 +104,12 @@ twelve public directory fixtures by stable key without replacing IDs.
 - isolated browser audit: desktop and mobile place directory/detail surfaces
   passed with one `h1` and `main`, zero overflow, zero unnamed controls, zero
   raw place translation keys, zero private-location leaks, zero undersized
-  mobile controls, and zero console errors;
+  mobile controls, and zero console errors; responsive card heights measured
+  384-473px on desktop and 614-654px on mobile against enforced 480/720px
+  ceilings;
+- the Vingis route now uses a relevant forest-path asset rather than a
+  mismatched landscape image, and split-view media fills a compact stable
+  column without changing the mobile card contract;
 - no raw SQL, Blade query, Volt component, exact-address Livewire property, or
   private catalogue overlay was introduced.
 

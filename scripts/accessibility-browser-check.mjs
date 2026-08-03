@@ -713,6 +713,16 @@ try {
             const behavior = await evaluate(client, sessionId, `(() => ({
                 surfaceCount: document.querySelectorAll('[data-section="places-summary"], .place-dashboard').length,
                 placeCardCount: document.querySelectorAll('[data-place-card]').length,
+                cardLayouts: [...document.querySelectorAll('[data-place-card]')].map((card) => {
+                    const media = card.querySelector('.place-card__media');
+                    const body = card.querySelector('.place-card__body');
+
+                    return {
+                        cardHeight: Math.round(card.getBoundingClientRect().height),
+                        mediaHeight: Math.round(media?.getBoundingClientRect().height ?? 0),
+                        bodyHeight: Math.round(body?.getBoundingClientRect().height ?? 0),
+                    };
+                }),
                 rawTranslationKeys: document.body.innerText.match(/\\bplaces\\.[a-z0-9_.-]+/gi) ?? [],
                 privateLocationLeak: document.body.innerText.includes('Protected foster entrance'),
             }))()`);
@@ -724,6 +734,14 @@ try {
             assert(! behavior.privateLocationLeak, `${label}: a protected exact location leaked.`);
             if (path === '/places') {
                 assert(behavior.placeCardCount > 0, `${label}: no persisted place cards were rendered.`);
+                const maximumCardHeight = Math.max(
+                    ...behavior.cardLayouts.map(({ cardHeight }) => cardHeight),
+                );
+                const allowedCardHeight = viewport.mobile ? 720 : 480;
+                assert(
+                    maximumCardHeight <= allowedCardHeight,
+                    `${label}: a card is ${maximumCardHeight}px tall; expected at most ${allowedCardHeight}px.`,
+                );
             }
 
             const smallTargets = viewport.mobile

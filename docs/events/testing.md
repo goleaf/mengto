@@ -77,8 +77,10 @@ the full serial suite passed 2,579 tests with 81,626 assertions, and isolated
 fresh/repeat seeding covered 126 migrations and 211 tables with stable entity
 counts. Four place browser audits passed with no overflow, unnamed controls,
 raw place keys, private exact-location leaks, undersized mobile controls, or
-console errors. The first run found a 16x16 `open_now` checkbox target; the
-control was corrected to 44px before the complete browser rerun passed. The
+console errors. Place-card height is now measured and bounded at 480px for the
+desktop split view and 720px for mobile; observed ranges were 384-473px and
+614-654px. The first run found a 16x16 `open_now` checkbox target; the control
+was corrected to 44px before the complete browser rerun passed. The
 exact checkpoint is recorded in
 `docs/plans/portal-place-location-venue-authority-work-package.md`.
 

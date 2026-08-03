@@ -663,6 +663,23 @@
             grid-template-columns: minmax(0, 1fr);
         }
 
+        .place-directory__workspace--split .place-card {
+            grid-template-columns: 10rem minmax(0, 1fr);
+        }
+
+        .place-directory__workspace--split .place-card__media {
+            position: relative;
+            min-block-size: 11rem;
+            aspect-ratio: auto;
+        }
+
+        .place-directory__workspace--split .place-card__media img {
+            position: absolute;
+            inset: 0;
+            min-block-size: 0;
+            aspect-ratio: auto;
+        }
+
         .place-directory__workspace--list .place-results__list {
             grid-template-columns: repeat(3, minmax(0, 1fr));
         }
