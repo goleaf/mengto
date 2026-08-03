@@ -133,6 +133,10 @@ return [
         'poll' => ['eyebrow' => 'Опрос участников', 'selected' => 'Выбрано', 'vote' => 'Голосовать', 'empty' => 'Вариантов опроса пока нет.'],
         'event' => ['view' => 'Открыть событие'],
         'post' => ['verified_expert' => 'Проверенный эксперт', 'no_labels' => 'Нет меток.', 'activity_label' => 'Активность публикации'],
+        'content' => [
+            'month_aug' => 'Авг.',
+            'tags' => ['event' => 'событие', 'local' => 'местное'],
+        ],
     ],
     'catalog' => [
         'apartment_pets' => [

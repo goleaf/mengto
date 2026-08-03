@@ -130,7 +130,7 @@ final class GroupContentCatalog
                 'datetime' => '2026-07-27T11:10:00-07:00',
                 'title' => $group['next_event'],
                 'body' => __('messages.the_event_page_now_includes_accessibility_arrival_and_we_e0a499b14f'),
-                'tags' => ['event', 'local'],
+                'tags' => [__('groups.detail.content.tags.event'), __('groups.detail.content.tags.local')],
                 'stats' => ['reactions' => 37, 'comments' => 8, 'saves' => 21],
                 'image' => null,
                 'image_alt' => null,
@@ -179,7 +179,7 @@ final class GroupContentCatalog
         return [
             [
                 'key' => $group['key'].'-next',
-                'month' => 'AUG',
+                'month' => __('groups.detail.content.month_aug'),
                 'day' => '02',
                 'datetime' => '2026-08-02T09:30:00-07:00',
                 'title' => $group['next_event'],
@@ -192,7 +192,7 @@ final class GroupContentCatalog
             ],
             [
                 'key' => $group['key'].'-qa',
-                'month' => 'AUG',
+                'month' => __('groups.detail.content.month_aug'),
                 'day' => '08',
                 'datetime' => '2026-08-08T18:00:00-07:00',
                 'title' => __('messages.member_q_a_and_monthly_planning_eedd381804'),

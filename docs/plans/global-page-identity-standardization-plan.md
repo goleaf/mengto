@@ -411,6 +411,36 @@ repeated seeding, and the 178-line route smoke, both forum-source checks, and
 both icon-system checks passed. The icon audit observed 845 canonical calls,
 no foreign or legacy icon path, and no ratchet violation.
 
+The eighth non-header localization follow-up closes the first-party fixture
+content rendered by `GroupContentCatalog` on all eight group-detail tabs. The
+catalog contains 122 calls to 119 unique fixture keys. All 109 translatable
+values now have reviewed Lithuanian and Russian copy; ten proper names for
+people and pets remain stable identities. The hardcoded August abbreviation
+and the visible `event` and `local` tags also moved into the EN/LT/RU group
+contract. This localization applies only to deterministic first-party demo
+fixtures and does not translate genuine member-authored database content.
+
+The HTTP contract renders overview, posts, discussions, events, members,
+pets, resources, and rules in both non-English locales and passed 8 tests with
+941 assertions together with the prior detail-chrome ratchet. Real Chrome
+added 24 tab audits at representative EN desktop, LT 320px, and RU 375px
+viewports to the six directory and six detail audits. Every tab retained its
+active state, meaningful content length, complete page audit, 44px mobile
+targets, and localized body; all runs had zero overflow, raw translation keys,
+or console errors. The six existing screenshot artifacts now show localized
+fixture narratives, roles, dates, event metadata, poll options, chat messages,
+resources, and rules while preserving identity names.
+
+The affected group, localization, responsive, shared-card, page-identity, and
+forum-group run passed 132 tests with 37,365 assertions; the complete isolated
+sequential suite passed 2,844 tests with 92,663 assertions. Full Pint and
+Larastan passed with zero findings; Composer strict validation, locked audit,
+PHP 8.5 platform requirements, NPM audit, Vite production build, and config,
+event, route, and view cache compilation passed. Fresh disposable SQLite
+applied 135 migrations, retained 217 tables and five users across repeated
+seeding, and the 178-line route smoke, both forum-source checks, and both
+icon-system checks passed with the 845-call canonical icon ratchet intact.
+
 ### 3.3 Next Execution Checkpoint
 
 1. Complete Package 0 by assigning the stable requirement ID and recording the
@@ -424,10 +454,11 @@ no foreign or legacy icon path, and no ratchet violation.
 4. Continue the non-header English fallback audit on the remaining priority
    RU/LT pages; the global navigation and utility header, `/medical-records`,
    `/care-journals`, `/lost-found`, `/marketplace`, `/experts`, and the
-   `/groups` directory are browser-verified. Group detail system chrome is
-   verified across all eight tabs, while its demonstration and attributable
-   tab content and the other priority bodies remain open. Do not conflate
-   body-copy completion with the verified page-identity contract.
+   `/groups` directory are browser-verified. Group detail system chrome and
+   first-party fixture content are verified across all eight tabs, while
+   genuine future member-authored content and the other priority bodies remain
+   open. Do not conflate body-copy completion with the verified page-identity
+   contract.
 
 ## 4. Scope
 

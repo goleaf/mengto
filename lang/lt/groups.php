@@ -133,6 +133,10 @@ return [
         'poll' => ['eyebrow' => 'Narių apklausa', 'selected' => 'Pasirinkta', 'vote' => 'Balsuoti', 'empty' => 'Apklausos variantų dar nėra.'],
         'event' => ['view' => 'Peržiūrėti renginį'],
         'post' => ['verified_expert' => 'Patvirtintas ekspertas', 'no_labels' => 'Žymų nėra.', 'activity_label' => 'Publikacijos veikla'],
+        'content' => [
+            'month_aug' => 'Rgp.',
+            'tags' => ['event' => 'renginys', 'local' => 'vietinis'],
+        ],
     ],
     'catalog' => [
         'apartment_pets' => [

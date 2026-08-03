@@ -1547,7 +1547,9 @@ try {
 
     const groupCardAudits = {};
     const groupDetailAudits = {};
+    const groupTabAudits = {};
     let englishGroupDetailCopy = null;
+    const englishGroupTabCopy = {};
     await navigate(client, sessionId, `${baseUrl}/profile/settings`);
     const originalGroupLocale = await evaluate(
         client,
@@ -1886,6 +1888,69 @@ try {
                     Buffer.from(screenshotData.data, 'base64'),
                 );
             }
+
+            if (viewport.screenshot) {
+                const tabViewportLabel = viewport.locale + ' ' + viewport.label + ' group tabs';
+                groupTabAudits[tabViewportLabel] = {};
+
+                for (const tab of ['overview', 'posts', 'discussions', 'events', 'members', 'pets', 'resources', 'rules']) {
+                    await navigate(client, sessionId, baseUrl + '/groups/trail-tails?tab=' + tab);
+                    const tabAudit = await evaluate(client, sessionId, pageAuditExpression);
+                    const tabLabel = tabViewportLabel + ' ' + tab;
+                    assertPageAudit(tabAudit, tabLabel);
+                    const tabBehavior = await evaluate(client, sessionId, String.raw`(() => {
+                        const dashboard = document.querySelector('[data-group-detail-dashboard]');
+                        const activeTab = document.querySelector(
+                            '.group-tabs .tabs__item[aria-current="page"] > span:not(.tabs__count)',
+                        );
+
+                        return {
+                            documentLanguage: document.documentElement.lang,
+                            activeTab: activeTab?.textContent.trim() ?? null,
+                            dashboardText: dashboard?.innerText.replace(/\s+/g, ' ').trim() ?? null,
+                            rawTranslationKeys: dashboard?.innerText.match(
+                                /\b(?:messages|ui|groups)\.[a-z0-9_.-]+/gi,
+                            ) ?? [],
+                        };
+                    })()`);
+                    assert(tabBehavior.documentLanguage === viewport.locale, tabLabel + ': wrong locale.');
+                    assert(tabBehavior.activeTab?.length > 0, tabLabel + ': active tab is missing.');
+                    assert(
+                        tabBehavior.dashboardText?.length >= 100,
+                        tabLabel + ': localized group content is unexpectedly short.',
+                    );
+                    assert(
+                        tabBehavior.rawTranslationKeys.length === 0,
+                        tabLabel + ': raw translation keys are visible: ' + tabBehavior.rawTranslationKeys.join(', ') + '.',
+                    );
+
+                    if (viewport.locale === 'en') {
+                        englishGroupTabCopy[tab] = tabBehavior.dashboardText;
+                    } else {
+                        assert(
+                            englishGroupTabCopy[tab]?.length > 0,
+                            tabLabel + ': English group tab baseline is missing.',
+                        );
+                        assert(
+                            tabBehavior.dashboardText !== englishGroupTabCopy[tab],
+                            tabLabel + ': English group tab content fallback remains.',
+                        );
+                    }
+
+                    const tabSmallTargets = viewport.mobile
+                        ? await evaluate(client, sessionId, surfaceTouchTargetExpression)
+                        : [];
+                    assert(
+                        tabSmallTargets.length === 0,
+                        tabLabel + ': controls below 44px ' + JSON.stringify(tabSmallTargets) + '.',
+                    );
+                    groupTabAudits[tabViewportLabel][tab] = {
+                        ...tabAudit,
+                        ...tabBehavior,
+                        smallTargets: tabSmallTargets,
+                    };
+                }
+            }
         }
     } finally {
         await setProfileLocale(client, sessionId, originalGroupLocale);
@@ -1900,6 +1965,7 @@ try {
             checkedAt: new Date().toISOString(),
             groupCardAudits,
             groupDetailAudits,
+            groupTabAudits,
             consoleErrors,
             screenshots: [
                 join(outputDirectory, 'group-directory-desktop.png'),

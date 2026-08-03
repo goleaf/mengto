@@ -133,6 +133,10 @@ return [
         'poll' => ['eyebrow' => 'Member poll', 'selected' => 'Selected', 'vote' => 'Vote', 'empty' => 'No poll options are available yet.'],
         'event' => ['view' => 'View event'],
         'post' => ['verified_expert' => 'Verified expert', 'no_labels' => 'No labels.', 'activity_label' => 'Publication activity'],
+        'content' => [
+            'month_aug' => 'Aug',
+            'tags' => ['event' => 'event', 'local' => 'local'],
+        ],
     ],
     'catalog' => [
         'apartment_pets' => [
