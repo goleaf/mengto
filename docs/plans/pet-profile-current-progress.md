@@ -30,14 +30,18 @@ Last updated: 2026-08-03.
 - The honest incomplete-species slice `pet.creation.0170-pet.creation.0186` is
   implemented, release-verified, and published. Possible cat/dog is stored
   separately from the normalized broad species.
+- The bounded pet-name identity slice verifies 20 selected
+  `pet.identity.0003-pet.identity.0040` requirements for current, typed
+  alternative, historical, visibility-aware, and manager-searchable names. It
+  is implemented and release-verified; publication is pending.
 
 ## Current Work Package
 
-The completed package establishes the canonical pet identity, typed lifecycle,
-manager memberships and critical permission boundary, layered privacy,
-immutable lifecycle/audit events, idempotent minimal creation, and an additive
-backfill from the current single-owner model. It must preserve all existing
-pet, medical, care, device, search, adoption, event, report, and social data.
+The current package adds typed alternative and previous pet names without
+replacing the canonical profile identity. It preserves all existing pet,
+medical, care, device, search, adoption, event, report, and social links while
+adding per-name visibility, manager-authorized mutation, public projection,
+and policy-scoped manager-workspace search.
 
 ## Creation Interface Refinement
 
@@ -167,12 +171,38 @@ pet, medical, care, device, search, adoption, event, report, and social data.
   restoration of the original seeded value. All eleven atomic requirement IDs
   remain verified by their dedicated evidence overlay.
 
+## Pet Name Identity
+
+- `pet_profiles.name` remains the current canonical name. Successful renames
+  retain the former value as a typed previous name without changing the stable
+  profile key, canonical URL, slug aliases, or adjacent-domain links. New
+  history is private; an active existing alias retains its selected visibility.
+- Alternative names support nickname, previous, shelter, official, localized,
+  and responds-to purposes, normalized uniqueness, optional locale, recorder
+  attribution, searchability, soft deletion, and private, manager, or public
+  visibility.
+- Add/remove Actions reload, authorize, and lock the managed pet; maintain
+  optimistic versioning; record lifecycle and audit evidence; and invalidate
+  cache. A private entry remains removable only by its recorder.
+- The localized Basics workspace exposes the bounded editor and history. The
+  public profile receives only public alternatives. The existing policy-scoped
+  workspace query can resolve a viewer-visible alternative through one indexed
+  correlated predicate without an extra round trip.
+- Focused verification passed 9 tests and 61 assertions; the related regression
+  passed 139 tests and 66,717 assertions. The final sequential suite passed
+  2,801 tests and 89,231 assertions; static, dependency, disposable database,
+  source-generation, build, cache, and connected Chrome gates also passed.
+- Exactly 20 selected `pet.identity.0003-pet.identity.0040` records carry the
+  package evidence. Cross-domain name consistency requirements
+  `pet.identity.0005` and `pet.identity.0011` remain open.
+
 ## Next Package
 
-Select the next dependency-safe package. Do not treat safe candidate review or
-possible species as duplicate merge, proof verification, taxonomy verification,
-lost/found coordination, dispute resolution, organization attribution, or
-ownership transfer.
+Select the next dependency-safe birth-precision or breed-provenance package.
+Do not treat safe candidate review, possible species, or alternative-name
+history as duplicate merge, proof verification, taxonomy verification,
+lost/found coordination, dispute resolution, organization attribution,
+cross-domain rename propagation, or ownership transfer.
 
 Plan and implement the next dependency-safe pet slice from
 `docs/plans/pet-profile-master-plan.md`. Ownership proof and transfer,

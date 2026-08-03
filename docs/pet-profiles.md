@@ -165,6 +165,29 @@ fact. Existing managers with update permission can correct the value without
 creating a new profile or changing its stable key. The exact package is in
 `docs/plans/pet-profile-species-confidence-work-package.md`.
 
+## Current And Alternative Names
+
+`pet_profiles.name` is the current canonical name. A successful manager rename
+keeps the former value as a previous name without changing the stable profile
+key, canonical route, slug aliases, media, care, medical, device, social, or
+audit relationships. A new history entry is private; an existing active
+alternative retains its deliberately selected visibility when it becomes a
+previous name.
+
+The additive `pet_profile_names` relation supports nickname, previous, shelter,
+official, localized, and responds-to purposes. Every entry has normalized
+uniqueness within the pet, recorder attribution, optional locale, a searchable
+flag, and private, manager, or public visibility. Private entries are visible
+and searchable only to their recorder; manager entries require current manager
+access; only public entries reach the public profile.
+
+The Basics workspace is the authorized mutation and history surface. Pet
+workspace search can resolve an accessible old or alternative name but still
+returns the current canonical profile card. No public/global alias discovery is
+introduced. Exact scope, query delta, remaining cross-domain consistency work,
+and release evidence are in
+`docs/plans/pet-profile-name-identity-work-package.md`.
+
 ## Identity And Compatibility
 
 An account and a pet are separate aggregates. Every pet mutation runs as an

@@ -18,6 +18,10 @@
 
 ### Interface System
 
+- Added typed, visibility-aware pet alternative names and automatic previous-
+  name history; the Basics workspace now manages aliases, the public profile
+  exposes only public alternatives, and manager search resolves an accessible
+  old name without changing the pet's stable identity or adjacent links.
 - Hardened shared card fallbacks for unsupported heading levels, spacing, and
   media ratios; localized the group fallback action; exercised group cards with
   long copy across EN/LT/RU and six viewports; and reused the typography leaves

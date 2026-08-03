@@ -94,6 +94,14 @@ It does not claim found-animal coordination, taxonomy verification, adoption,
 or ownership transfer. Evidence is in
 `docs/plans/pet-profile-species-confidence-work-package.md`.
 
+The pet-name identity package implements the current-name, typed alternative,
+rename-history, per-name visibility, and manager-workspace search boundary for
+20 selected `pet.identity.0003-pet.identity.0040` records. It preserves the
+stable profile identity and all adjacent links. Cross-domain name propagation
+requirements `pet.identity.0005` and `pet.identity.0011`, public/global alias
+discovery, merge, ownership, and taxonomy remain open. Exact evidence is in
+`docs/plans/pet-profile-name-identity-work-package.md`.
+
 ## Phase 19: Ownership And Privacy
 
 **IDs:** `pet.ownership.0001-pet.ownership.0393` and

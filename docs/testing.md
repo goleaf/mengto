@@ -1008,3 +1008,29 @@ Observed evidence on 2026-08-03:
   review, access request, and manager review at desktop, 375px, and 320px with
   zero overflow, raw keys, duplicate IDs, undersized or unnamed controls,
   private/credential leaks, or console errors.
+
+## Pet Name Identity Verification
+
+`PetProfileNameIdentityTest` covers Unicode-aware validation, reserved and spam
+rejection, all supported name purposes, normalized uniqueness, manager and
+recorder authorization, automatic previous-name history, stable profile
+identity, privacy projections, old-name manager search, direct Livewire
+mutation, and EN/LT/RU parity.
+
+Observed evidence on 2026-08-03:
+
+- focused suite: 9 tests and 61 assertions;
+- related pet, architecture, localization, page-identity, responsive, and
+  schema regression: 139 tests and 66,717 assertions;
+- final sequential suite: 2,801 tests and 89,231 assertions in 162.266 seconds;
+- full Pint and Larastan, Composer/platform/audit, npm audit, Vite build, and
+  config/event/route/view cache gates passed;
+- fresh disposable SQLite applied 134 migrations, retained 217 tables and five
+  users, and passed repeated seeding;
+- disposable Chrome added a real alternative name, verified its public
+  projection, and resolved the current profile by that name in the manager
+  workspace at desktop, 375px, and 320px with zero accessibility, privacy,
+  overflow, raw-key, duplicate-ID, or console finding.
+
+The reusable browser command is
+`BROWSER_BASE_URL=http://127.0.0.1:PORT BROWSER_ALLOW_DATA_MUTATION=1 node scripts/pet-workspace-browser-check.mjs --names`.

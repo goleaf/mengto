@@ -7,7 +7,25 @@ This living plan records work that was actually performed. A pass is
 status remains authoritative in
 `docs/requirements/compliance-matrix.md`.
 
-## Current Delivery: Honest Species Confidence
+## Current Delivery: Pet Name Identity
+
+Status: `implemented and release-verified; publication pending` on 2026-08-03.
+
+- Keep `pet_profiles.name` as the current canonical name and preserve all stable
+  identity and adjacent-domain links during rename.
+- Store typed nickname, previous, shelter, official, localized, and responds-to
+  alternatives with normalized uniqueness, attribution, locale, and explicit
+  visibility.
+- Preserve the old current name automatically after a successful rename.
+- Search only viewer-visible alternatives inside the existing policy-scoped pet
+  workspace and expose only public alternatives on the public profile.
+- Keep cross-domain name propagation, global/public alias discovery, merge,
+  ownership, and taxonomy verification outside this package.
+
+Exact scope and observed evidence are recorded in
+`docs/plans/pet-profile-name-identity-work-package.md`.
+
+## Previous Delivery: Honest Species Confidence
 
 Status: `implemented, verified, and published` on 2026-08-03.
 

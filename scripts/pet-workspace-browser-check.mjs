@@ -7,6 +7,7 @@ import { setTimeout as delay } from 'node:timers/promises';
 const baseUrl = (process.env.BROWSER_BASE_URL ?? 'http://127.0.0.1:8000').replace(/\/$/, '');
 const outputDirectory = process.env.BROWSER_OUTPUT_DIR ?? join(tmpdir(), 'mengto-pet-workspace-browser');
 const verifyAutosave = process.argv.includes('--autosave');
+const verifyNames = process.argv.includes('--names');
 const allowDataMutation = process.env.BROWSER_ALLOW_DATA_MUTATION === '1';
 const origin = new URL(baseUrl);
 const chromeCandidates = [
@@ -20,8 +21,8 @@ if (!['localhost', '127.0.0.1', '::1'].includes(origin.hostname)) {
     throw new Error('The pet workspace browser check only runs against a loopback URL.');
 }
 
-if (verifyAutosave && ! allowDataMutation) {
-    throw new Error('--autosave requires BROWSER_ALLOW_DATA_MUTATION=1 and a disposable database.');
+if ((verifyAutosave || verifyNames) && ! allowDataMutation) {
+    throw new Error('--autosave and --names require BROWSER_ALLOW_DATA_MUTATION=1 and a disposable database.');
 }
 
 const assert = (condition, message) => {
@@ -316,6 +317,125 @@ try {
     }
 
     let autosaveAudit = null;
+    let nameAudit = null;
+
+    if (verifyNames) {
+        await client.send('Emulation.setDeviceMetricsOverride', {
+            width: 1440, height: 900, deviceScaleFactor: 1,
+            mobile: false, screenWidth: 1440, screenHeight: 900,
+        }, sessionId);
+        await client.send('Emulation.setTouchEmulationEnabled', { enabled: false }, sessionId);
+        await setLocale(client, sessionId, 'en');
+        const nameValue = `Browser Moon ${Date.now()}`;
+        const manageUrl = `${baseUrl}/pets/manage/pet-scout?step=basics`;
+        await navigate(client, sessionId, manageUrl);
+        const requestsBeforeName = livewireRequests.length;
+        const nameForm = await evaluate(client, sessionId, `((nameValue) => {
+            const name = document.querySelector('#managed-pet-alternative-name');
+            const type = document.querySelector('#managed-pet-name-type');
+            const visibility = document.querySelector('#managed-pet-name-visibility');
+            const textSetter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set;
+            const selectSetter = Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, 'value').set;
+            textSetter.call(name, nameValue);
+            name.dispatchEvent(new Event('input', { bubbles: true }));
+            selectSetter.call(type, 'nickname');
+            type.dispatchEvent(new Event('change', { bubbles: true }));
+            selectSetter.call(visibility, 'public');
+            visibility.dispatchEvent(new Event('change', { bubbles: true }));
+            name.closest('form').requestSubmit();
+
+            return {
+                formCount: [...document.querySelectorAll('form')]
+                    .filter((form) => form.getAttribute('wire:submit') === 'addAlternativeName').length,
+                currentName: document.querySelector('#managed-pet-name')?.value ?? null,
+            };
+        })(${JSON.stringify(nameValue)})`);
+        await waitUntil(
+            async () => await evaluate(client, sessionId, `document.body.innerText.includes(${JSON.stringify(nameValue)})
+                && document.body.innerText.includes('Alternative name added.')`),
+            'The alternative pet name was not saved through Livewire.',
+        );
+        const nameRequestCount = livewireRequests.length - requestsBeforeName;
+        assert(nameForm.formCount === 1, 'The alternative-name form is missing or duplicated.');
+        assert(nameRequestCount >= 1, 'Adding an alternative name did not reach Livewire.');
+
+        await navigate(client, sessionId, `${baseUrl}/pets/profile/pet-scout`);
+        const publicProjection = await evaluate(client, sessionId, `(() => ({
+            visible: document.body.innerText.includes(${JSON.stringify(nameValue)}),
+            overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+            rawKeys: document.body.innerText.match(/\\bpet_profiles\\.[a-z0-9_.-]+/gi) ?? [],
+        }))()`);
+        assert(publicProjection.visible, 'The explicitly public alternative name is absent from the public profile.');
+        assert(publicProjection.overflow <= 1, `The public pet name projection overflows by ${publicProjection.overflow}px.`);
+        assert(publicProjection.rawKeys.length === 0, 'The public pet name projection exposes translation keys.');
+
+        await navigate(client, sessionId, `${baseUrl}/pets?q=${encodeURIComponent(nameValue)}`);
+        const searchProjection = await evaluate(client, sessionId, `(() => ({
+            scoutVisible: document.body.innerText.includes('Scout'),
+            resultCards: document.querySelectorAll('[data-pet-workspace-profile]').length,
+        }))()`);
+        assert(searchProjection.scoutVisible && searchProjection.resultCards === 1, 'Alternative-name search did not return the canonical current profile.');
+
+        const responsive = {};
+        for (const viewport of [
+            { label: 'desktop', width: 1440, height: 900, mobile: false },
+            { label: 'mobile', width: 375, height: 812, mobile: true },
+            { label: 'mobile-320', width: 320, height: 900, mobile: true },
+        ]) {
+            await client.send('Emulation.setDeviceMetricsOverride', {
+                width: viewport.width, height: viewport.height, deviceScaleFactor: 1,
+                mobile: viewport.mobile, screenWidth: viewport.width, screenHeight: viewport.height,
+            }, sessionId);
+            await client.send('Emulation.setTouchEmulationEnabled', { enabled: viewport.mobile }, sessionId);
+            await navigate(client, sessionId, manageUrl);
+            const audit = await evaluate(client, sessionId, `(() => {
+                const scope = document.querySelector('[data-section="pet-profile-management"]');
+                const visible = (element) => {
+                    const style = getComputedStyle(element);
+                    const box = element.getBoundingClientRect();
+                    return style.display !== 'none' && style.visibility !== 'hidden'
+                        && box.width > 0 && box.height > 0;
+                };
+                const controls = [...(scope?.querySelectorAll('a, button, input, select, textarea') ?? [])]
+                    .filter(visible);
+                const ids = [...document.querySelectorAll('[id]')].map((element) => element.id).filter(Boolean);
+
+                return {
+                    h1Count: document.querySelectorAll('main h1').length,
+                    formCount: [...document.querySelectorAll('form')]
+                        .filter((form) => form.getAttribute('wire:submit') === 'addAlternativeName').length,
+                    nameVisible: document.body.innerText.includes(${JSON.stringify(nameValue)}),
+                    overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+                    unnamed: controls.filter((element) => !(
+                        element.getAttribute('aria-label') || element.getAttribute('aria-labelledby')
+                        || element.labels?.length || element.textContent.trim() || element.title
+                    )).length,
+                    smallTargets: controls.filter((element) => {
+                        const box = element.getBoundingClientRect();
+                        return box.width < 44 || box.height < 44;
+                    }).length,
+                    duplicateIds: [...new Set(ids.filter((id, index) => ids.indexOf(id) !== index))],
+                };
+            })()`);
+            assert(audit.h1Count === 1, `${viewport.label}: invalid pet-name heading hierarchy.`);
+            assert(audit.formCount === 1 && audit.nameVisible, `${viewport.label}: pet-name controls or saved name are missing.`);
+            assert(audit.overflow <= 1, `${viewport.label}: pet-name workspace overflows by ${audit.overflow}px.`);
+            assert(audit.unnamed === 0, `${viewport.label}: unnamed pet-name controls remain.`);
+            assert(audit.duplicateIds.length === 0, `${viewport.label}: duplicate IDs remain.`);
+            if (viewport.mobile) assert(audit.smallTargets === 0, `${viewport.label}: pet-name controls below 44px remain.`);
+            responsive[viewport.label] = audit;
+            const screenshot = await client.send('Page.captureScreenshot', { format: 'png', captureBeyondViewport: true }, sessionId);
+            await writeFile(join(outputDirectory, `pet-names-${viewport.label}.png`), Buffer.from(screenshot.data, 'base64'));
+        }
+
+        nameAudit = {
+            value: nameValue,
+            nameRequestCount,
+            publicProjection,
+            searchProjection,
+            responsive,
+        };
+    }
 
     if (verifyAutosave) {
         await client.send('Emulation.setDeviceMetricsOverride', {
@@ -548,7 +668,16 @@ try {
     }
 
     assert(consoleErrors.length === 0, `Console errors: ${JSON.stringify(consoleErrors)}.`);
-    const report = { baseUrl, outputDirectory, audits, verifyAutosave, autosaveAudit, consoleErrors };
+    const report = {
+        baseUrl,
+        outputDirectory,
+        audits,
+        verifyAutosave,
+        autosaveAudit,
+        verifyNames,
+        nameAudit,
+        consoleErrors,
+    };
     await writeFile(join(outputDirectory, 'report.json'), `${JSON.stringify(report, null, 2)}\n`);
     process.stdout.write(`${JSON.stringify(report, null, 2)}\n`);
 } finally {
