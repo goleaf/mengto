@@ -561,6 +561,7 @@ try {
         let englishLostFoundCopy = null;
         let englishMarketplaceCopy = null;
         let englishExpertCopy = null;
+        let englishGroupCopy = null;
         let canonicalTitleFont = null;
 
         const setProfileLocale = async (locale) => {
@@ -703,6 +704,9 @@ try {
                     const expertStatItems = [...document.querySelectorAll('[data-expert-stat]')];
                     const expertFilters = document.querySelector('[data-expert-filters]');
                     const expertCard = document.querySelector('[data-expert-card]');
+                    const groupSummary = document.querySelector('[data-group-summary]');
+                    const groupFilters = document.querySelector('[data-group-filters]');
+                    const groupCard = document.querySelector('[data-group-card]');
 
                     return {
                         documentLanguage: document.documentElement.lang,
@@ -741,7 +745,7 @@ try {
                             )
                         ),
                         rawTranslationKeys: document.body.innerText.match(
-                            /\\b(?:ui|messages|forum|navigation|pet_profiles|places|experts)\\.[a-z0-9_.-]+/gi
+                            /\\b(?:ui|messages|forum|navigation|pet_profiles|places|experts|groups)\\.[a-z0-9_.-]+/gi
                         ) ?? [],
                         navigationCopy: {
                             desktopLabel: document.querySelector(
@@ -952,6 +956,42 @@ try {
                                 ?.textContent.trim() ?? null,
                             cardBookLabel: expertCard?.querySelector('[data-expert-card-book] span')
                                 ?.textContent.trim() ?? null,
+                        },
+                        groupCopy: {
+                            summaryLabel: groupSummary?.getAttribute('aria-label') ?? null,
+                            summaryLabels: [...(groupSummary?.querySelectorAll('.summary-stat__label span') ?? [])]
+                                .map((element) => element.textContent.trim()),
+                            summaryDetails: [...(groupSummary?.querySelectorAll('.summary-stat__detail') ?? [])]
+                                .map((element) => element.textContent.trim()),
+                            toolbarLabel: groupFilters?.getAttribute('aria-label') ?? null,
+                            filterGroupLabel: groupFilters?.querySelector('[role="group"]')
+                                ?.getAttribute('aria-label') ?? null,
+                            filterLabels: [...(groupFilters?.querySelectorAll('[role="group"] button') ?? [])]
+                                .map((element) => element.textContent.trim()),
+                            sortLabel: groupFilters?.querySelector('label[for="group-filters-sort"]')
+                                ?.textContent.trim() ?? null,
+                            sortOptions: [...(groupFilters?.querySelectorAll('select[name="sort"] option') ?? [])]
+                                .map((element) => element.textContent.trim()),
+                            searchLabel: groupFilters?.querySelector('label[for="group-search"]')
+                                ?.textContent.trim() ?? null,
+                            searchPlaceholder: groupFilters?.querySelector('input[name="q"]')
+                                ?.getAttribute('placeholder') ?? null,
+                            resultsTitle: document.querySelector('[data-group-results-title]')
+                                ?.getAttribute('data-group-results-title') ?? null,
+                            cardCategory: groupCard?.querySelector('[data-group-card-category] span:last-child')
+                                ?.textContent.trim() ?? null,
+                            cardPrivacy: groupCard?.querySelector('[data-group-card-privacy] span:last-child')
+                                ?.textContent.trim() ?? null,
+                            cardReasonLabel: groupCard?.querySelector('[data-group-card-reason] .recommendation-reason__label')
+                                ?.textContent.trim() ?? null,
+                            cardReason: groupCard?.querySelector('[data-group-card-reason] .recommendation-reason__copy p:last-child')
+                                ?.textContent.trim() ?? null,
+                            cardDescription: groupCard?.querySelector('[data-group-card-description]')
+                                ?.textContent.trim() ?? null,
+                            cardTags: [...(groupCard?.querySelectorAll('[data-group-card-tags] .tag') ?? [])]
+                                .map((element) => element.textContent.trim()),
+                            cardMetricLabels: [...(groupCard?.querySelectorAll('[data-group-card-metrics] dt span') ?? [])]
+                                .map((element) => element.textContent.trim()),
                         },
                     };
                 })()`);
@@ -1228,6 +1268,45 @@ try {
                         assert(
                             expertCopy.every((value, index) => value !== englishExpertCopy[index]),
                             `${label}: English expert body fallback remains. Current ${JSON.stringify(expertCopy)}; English ${JSON.stringify(englishExpertCopy)}.`,
+                        );
+                    }
+                }
+
+                if (route.path === '/groups') {
+                    const groupCopy = [
+                        behavior.groupCopy.summaryLabel,
+                        ...behavior.groupCopy.summaryLabels,
+                        ...behavior.groupCopy.summaryDetails,
+                        behavior.groupCopy.toolbarLabel,
+                        behavior.groupCopy.filterGroupLabel,
+                        ...behavior.groupCopy.filterLabels,
+                        behavior.groupCopy.sortLabel,
+                        ...behavior.groupCopy.sortOptions,
+                        behavior.groupCopy.searchLabel,
+                        behavior.groupCopy.searchPlaceholder,
+                        behavior.groupCopy.resultsTitle,
+                        behavior.groupCopy.cardCategory,
+                        behavior.groupCopy.cardPrivacy,
+                        behavior.groupCopy.cardReasonLabel,
+                        behavior.groupCopy.cardReason,
+                        behavior.groupCopy.cardDescription,
+                        ...behavior.groupCopy.cardTags,
+                        ...behavior.groupCopy.cardMetricLabels,
+                    ];
+
+                    assert(
+                        groupCopy.length === 32
+                            && groupCopy.every((value) => value?.length > 0),
+                        `${label}: the group localization surface is incomplete ${JSON.stringify(behavior.groupCopy)}.`,
+                    );
+
+                    if (viewport.locale === 'en') {
+                        englishGroupCopy ??= groupCopy;
+                    } else {
+                        assert(englishGroupCopy !== null, `${label}: English group baseline is missing.`);
+                        assert(
+                            groupCopy.every((value, index) => value !== englishGroupCopy[index]),
+                            `${label}: English group body fallback remains. Current ${JSON.stringify(groupCopy)}; English ${JSON.stringify(englishGroupCopy)}.`,
                         );
                     }
                 }

@@ -33,8 +33,8 @@ class GroupCard extends Component
         $this->joined = $group['joined'] ?? false;
         $this->primary = $group['primary_action'] ?? [
             'label' => $this->joined
-                ? __('ui.joined_69318b0c6a')
-                : __('ui.join_fd30fe681b'),
+                ? __('groups.directory.actions.joined')
+                : __('groups.directory.actions.join_group'),
             'icon' => $this->joined ? 'check' : 'user-plus',
             'variant' => 'paper',
             'endpoint' => route('actions.perform'),
@@ -47,11 +47,11 @@ class GroupCard extends Component
         ];
         $this->metrics = [
             [
-                'label' => __('ui.community_bb501d7877'),
+                'label' => __('groups.directory.card.members'),
                 'value' => $group['members'],
             ],
             [
-                'label' => __('ui.activity_38da1505ca'),
+                'label' => __('groups.directory.card.activity'),
                 'value' => $group['activity'],
             ],
         ];

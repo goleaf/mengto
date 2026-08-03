@@ -115,8 +115,8 @@ test('group card fallback actions use the active locale', function (string $loca
 
     expect($source)
         ->not->toBeFalse()
-        ->toContain("__('ui.joined_69318b0c6a')")
-        ->toContain("__('ui.join_fd30fe681b')")
+        ->toContain("__('groups.directory.actions.joined')")
+        ->toContain("__('groups.directory.actions.join_group')")
         ->not->toContain("? 'Joined' : 'Join'");
 
     foreach ([false, true] as $joined) {
@@ -128,7 +128,7 @@ test('group card fallback actions use the active locale', function (string $loca
         ]);
 
         expect($component->primary['label'])->toBe(
-            __($joined ? 'ui.joined_69318b0c6a' : 'ui.join_fd30fe681b'),
+            __($joined ? 'groups.directory.actions.joined' : 'groups.directory.actions.join_group'),
         );
     }
 })->with(['en', 'lt', 'ru']);

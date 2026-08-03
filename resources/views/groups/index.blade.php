@@ -1,19 +1,20 @@
 <x-directory-page
     :owner="$owner"
-    title="{{ __('ui.groups_brand_2cc8a218be') }}"
+    title="{{ __('groups.directory.page_title') }}"
     active-section="groups"
     :summary="$summary"
     header-section="group-header"
-    action-label="{{ __('ui.create_group_35be9c541d') }}"
+    action-label="{{ __('groups.directory.create_group') }}"
     action-icon="users-round"
     :action-href="route('compose', 'group')"
 >
     <x-slot:summary-strip>
         <x-summary-strip
             :items="$summary['highlights']"
-            label="{{ __('ui.community_summary_2014a7ddb6') }}"
+            label="{{ __('groups.directory.summary_label') }}"
             :icons="['users', 'activity', 'map-pin']"
-            empty="{{ __('ui.community_summary_unavailable_2b08b30afc') }}"
+            empty="{{ __('groups.directory.summary_unavailable') }}"
+            data-group-summary
             data-section="group-summary"
         />
     </x-slot:summary-strip>
@@ -23,7 +24,7 @@
             <x-notice
                 section="group-recommendation-feedback"
                 icon="eye-off"
-                title="{{ __('ui.recommendation_hidden_28d507ab00') }}"
+                title="{{ __('groups.directory.recommendation_hidden') }}"
                 :description="$groups['last_dismissed']['message']"
                 class="mb-5"
             >
@@ -41,17 +42,18 @@
 
         <x-directory-toolbar
             :filters="$groups['filters']"
-            label="{{ __('ui.group_filters_6abd03f6d9') }}"
-            filters-label="{{ __('ui.group_category_filters_2e1d2c99cc') }}"
-            sort-label="{{ __('ui.sort_groups_f511b3d2dc') }}"
+            label="{{ __('groups.directory.filters_label') }}"
+            filters-label="{{ __('groups.directory.filter_categories_label') }}"
+            sort-label="{{ __('groups.directory.sort_label') }}"
             section="group-filters"
             search-id="group-search"
-            search-label="{{ __('ui.search_groups_6b6482a28b') }}"
-            search-placeholder="{{ __('ui.name_topic_city_or_organizer_0ed7b1b6f6') }}"
+            search-label="{{ __('groups.directory.search_label') }}"
+            search-placeholder="{{ __('groups.directory.search_placeholder') }}"
             :query="$groups['query']"
             :active-filter="$groups['filter']"
             :active-sort="$groups['sort']"
             :sort-options="$groups['sort_options']"
+            data-group-filters
             class="group-toolbar"
         />
     </x-slot:toolbar>

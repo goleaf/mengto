@@ -337,6 +337,32 @@ requirements, NPM audit, production build, isolated migration plus repeated
 seed (134 migrations, 217 tables, stable 5 users and 10 expert profiles),
 184-line route and cache smoke, and both forum-source checks also passed.
 
+The sixth non-header localization follow-up closes the `/groups` directory
+system-copy slice. A dedicated EN/LT/RU group domain now owns the summary,
+filters, sorting, privacy guidance, empty state, card facts, actions, and all
+six curated group fixtures. Proper group and organizer names remain stable
+identities, while categories, locations, languages, topics, descriptions,
+roles, image alternatives, tags, recommendation reasons, requirements, and
+event summaries are localized explicitly. The shared recommendation label is
+also corrected for Lithuanian and Russian connection cards. `GroupCatalog`,
+`GroupPresenter`, and the shared group card resolve prepared translation maps
+without changing stored filter values, adding a query, or creating an N+1
+path. Detail-page and user-authored group content remain outside this
+directory slice and stay open for their own evidence-backed audit.
+
+The browser contract compares thirty-two group system fields with the English
+baseline, including the summary, filters, sorting, search, results heading,
+card taxonomy, recommendation, description, tags, and metrics. All 91 browser
+audits and 26 screenshots passed with zero console errors; the 375px Russian
+group directory had zero overflow, clipped regions, raw translation keys, or
+sub-44px targets. The affected group, responsive, card, linked-media, and
+page-identity run passed 87 tests with 1,559 assertions; the complete
+sequential suite passed 2,836 tests with 91,212 assertions. Full Pint and
+Larastan passed with zero findings; Composer validation, audit, and platform
+requirements, NPM audit, production build, isolated migration plus repeated
+seed (135 migrations, 217 tables, stable 5 users and 10 expert profiles),
+178-line route and cache smoke, and both forum-source checks also passed.
+
 ### 3.3 Next Execution Checkpoint
 
 1. Complete Package 0 by assigning the stable requirement ID and recording the
@@ -348,10 +374,11 @@ seed (134 migrations, 217 tables, stable 5 users and 10 expert profiles),
    heroes and migrating accidental page headers; never mark a later wave
    complete from source intent or screenshots alone.
 4. Continue the non-header English fallback audit on the remaining priority
-   RU/LT pages; the global navigation, `/medical-records`, and
-   `/care-journals`, `/lost-found`, `/marketplace`, and `/experts` are
-   browser-verified, while the other priority bodies remain open. Do not
-   conflate body-copy completion with the verified page-identity contract.
+   RU/LT pages; the global navigation, `/medical-records`, `/care-journals`,
+   `/lost-found`, `/marketplace`, `/experts`, and the `/groups` directory are
+   browser-verified, while the other priority bodies and group detail flows
+   remain open. Do not conflate body-copy completion with the verified
+   page-identity contract.
 
 ## 4. Scope
 

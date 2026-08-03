@@ -50,17 +50,17 @@ final class GroupPresenter
 
         return [
             'owner' => $this->profiles->owner(),
-            'page_title' => __('messages.groups_pawcircle_2cc8a218be'),
+            'page_title' => __('groups.directory.page_title'),
             'active_section' => 'groups',
             'summary' => [
-                'eyebrow' => __('messages.communities_with_a_purpose_b2d3a5a7b6'),
-                'title' => __('messages.find_your_people_and_build_something_useful_b7d93d9c88'),
-                'description' => __('messages.explore_local_breed_care_adoption_and_interest_groups_wi_219f9d1209'),
+                'eyebrow' => __('groups.directory.eyebrow'),
+                'title' => __('groups.directory.title'),
+                'description' => __('groups.directory.description'),
                 'count' => trans_choice('presentation.groups_count', count($groups), ['count' => count($groups)]),
                 'highlights' => [
-                    ['label' => __('messages.your_groups_62375359a1'), 'value' => (string) $joinedCount, 'detail' => __('messages.joined_communities_571c20b623')],
-                    ['label' => __('messages.nearby_a994cd47d4'), 'value' => '5', 'detail' => __('messages.portland_communities_48a16a45e9')],
-                    ['label' => __('messages.this_week_8c4eef5ab2'), 'value' => '563', 'detail' => __('messages.posts_across_groups_d5c791547f')],
+                    ['label' => __('groups.directory.your_groups'), 'value' => (string) $joinedCount, 'detail' => __('groups.directory.joined_communities')],
+                    ['label' => __('groups.directory.nearby'), 'value' => '5', 'detail' => __('groups.directory.portland_communities')],
+                    ['label' => __('groups.directory.this_week'), 'value' => '563', 'detail' => __('groups.directory.posts_across_groups')],
                 ],
             ],
             'groups' => [
@@ -183,7 +183,7 @@ final class GroupPresenter
                 'url' => $detailUrl,
                 'label' => __('presentation.open_group', ['name' => $group['name']]),
             ],
-            'privacy_label' => $group['privacy'] === 'closed' ? __('messages.closed_c21ead0614') : __('messages.public_591935b15b'),
+            'privacy_label' => $group['privacy'] === 'closed' ? __('groups.directory.privacy.closed') : __('groups.directory.privacy.public'),
             'privacy_icon' => $group['privacy'] === 'closed' ? 'lock-keyhole' : 'globe-2',
             'members' => trans_choice('presentation.members_count', $group['member_count'], [
                 'count' => $this->compactNumber($group['member_count']),
@@ -202,7 +202,7 @@ final class GroupPresenter
                 ? $this->directoryAction(
                     'dismiss-group-recommendation',
                     $group['key'],
-                    __('messages.hide_suggestion_c8973fe5a9'),
+                    __('groups.directory.actions.hide_suggestion'),
                     'x',
                     $query,
                     $filter,
@@ -228,19 +228,21 @@ final class GroupPresenter
                 return [
                     ...$group,
                     'privacy' => $group['privacy'] ?? 'public',
-                    'privacy_label' => Str::headline($group['privacy'] ?? 'public'),
+                    'privacy_label' => ($group['privacy'] ?? 'public') === 'closed'
+                        ? __('groups.directory.privacy.closed')
+                        : __('groups.directory.privacy.public'),
                     'privacy_icon' => ($group['privacy'] ?? 'public') === 'closed' ? 'lock-keyhole' : 'globe-2',
                     'official' => false,
                     'membership' => 'joined',
                     'joined' => true,
-                    'recommendation_reason' => __('messages.created_by_you_39467b6ea2'),
+                    'recommendation_reason' => __('groups.directory.actions.created_by_you'),
                     'next_event' => null,
                     'media_target' => [
                         'url' => $detailUrl,
                         'label' => __('presentation.open_group', ['name' => $group['name']]),
                     ],
                     'primary_action' => [
-                        'label' => __('messages.open_group_83ffa7c96e'),
+                        'label' => __('groups.directory.actions.open_group'),
                         'icon' => 'arrow-up-right',
                         'variant' => 'paper',
                         'href' => $detailUrl,
@@ -323,9 +325,9 @@ final class GroupPresenter
     {
         $membership = $this->state->membership($group['key']);
         $action = match ($membership) {
-            'joined' => ['leave-group', __('messages.joined_69318b0c6a'), 'check', 'paper'],
-            'pending' => ['cancel-group-request', __('messages.cancel_request_5619668359'), 'x', 'paper'],
-            default => ['join-group', $group['privacy'] === 'closed' ? __('messages.request_to_join_dc80ecbe94') : __('messages.join_group_48a2587a6c'), 'user-plus', 'primary'],
+            'joined' => ['leave-group', __('groups.directory.actions.joined'), 'check', 'paper'],
+            'pending' => ['cancel-group-request', __('groups.directory.actions.cancel_request'), 'x', 'paper'],
+            default => ['join-group', $group['privacy'] === 'closed' ? __('groups.directory.actions.request_to_join') : __('groups.directory.actions.join_group'), 'user-plus', 'primary'],
         };
 
         return [
@@ -455,7 +457,7 @@ final class GroupPresenter
             'action' => $this->directoryAction(
                 'undo-group-recommendation',
                 $target,
-                __('messages.undo_a8283ade31'),
+                __('groups.directory.actions.undo'),
                 'undo-2',
                 $query,
                 $filter,
@@ -497,12 +499,12 @@ final class GroupPresenter
     private function filterOptions(): array
     {
         return [
-            'recommended' => __('messages.recommended_d70604e843'),
-            'joined' => __('messages.joined_69318b0c6a'),
-            'local' => __('messages.local_8c31e6e722'),
-            'breed' => __('messages.breed_d1ac8a8093'),
-            'care' => __('messages.care_4262074d6c'),
-            'official' => __('ui.official_c409c66f71'),
+            'recommended' => __('groups.directory.filters.recommended'),
+            'joined' => __('groups.directory.filters.joined'),
+            'local' => __('groups.directory.filters.local'),
+            'breed' => __('groups.directory.filters.breed'),
+            'care' => __('groups.directory.filters.care'),
+            'official' => __('groups.directory.filters.official'),
         ];
     }
 
@@ -512,9 +514,9 @@ final class GroupPresenter
     private function sortOptions(): array
     {
         return [
-            'active' => __('messages.most_active_202997c941'),
-            'members' => __('messages.most_members_3d586b1705'),
-            'name' => __('messages.name_dcd1d5223f'),
+            'active' => __('groups.directory.sort.active'),
+            'members' => __('groups.directory.sort.members'),
+            'name' => __('groups.directory.sort.name'),
         ];
     }
 

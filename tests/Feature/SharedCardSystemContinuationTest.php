@@ -14,10 +14,10 @@ test('group directory preserves localized long copy and every membership action 
     $response
         ->assertSuccessful()
         ->assertSee('lang="'.$locale.'"', false)
-        ->assertSee($searchLabel)
-        ->assertDontSee('messages.', false)
-        ->assertDontSee('presentation.', false)
-        ->assertDontSee('ui.', false);
+        ->assertSee($searchLabel);
+
+    expect($response->getContent())
+        ->not->toMatch('/\b(?:messages|presentation|ui)\.[a-z0-9_]+/');
 
     $xpath = responseXPath($response);
     $descriptions = $xpath->query('//article[@data-group-card]//*[@data-card-description]');

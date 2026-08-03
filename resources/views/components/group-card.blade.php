@@ -13,16 +13,17 @@
             :link-label="$group['media_target']['label'] ?? null"
         >
             <div class="group-card__badges">
-                <x-status-badge :label="$group['category']" />
+                <x-status-badge data-group-card-category :label="$group['category']" />
                 @if ($group['privacy_label'] ?? null)
                     <x-status-badge
+                        data-group-card-privacy
                         :label="$group['privacy_label']"
                         :icon="$group['privacy_icon'] ?? null"
                         tone="paper"
                     />
                 @endif
                 @if ($group['official'] ?? false)
-                    <x-status-badge label="{{ __('ui.official_c409c66f71') }}" icon="badge-check" tone="mint" />
+                    <x-status-badge data-group-card-official label="{{ __('groups.directory.card.official') }}" icon="badge-check" tone="mint" />
                 @endif
             </div>
         </x-card-media>
@@ -30,6 +31,7 @@
 
     @if ($group['recommendation_reason'] ?? null)
         <x-recommendation-reason
+            data-group-card-reason
             :reason="$group['recommendation_reason']"
             class="group-card__reason"
         />
@@ -42,26 +44,27 @@
         :href="$group['media_target']['url'] ?? null"
         spacing="compact"
     />
-    <x-card-description>{{ $group['description'] }}</x-card-description>
+    <x-card-description data-group-card-description>{{ $group['description'] }}</x-card-description>
 
-    <x-tag-list :items="$group['tags']" empty="{{ __('ui.open_to_new_neighbors_7c8828df91') }}" reserve class="group-card__tags" />
+    <x-tag-list data-group-card-tags :items="$group['tags']" empty="{{ __('groups.directory.card.open_to_new_neighbors') }}" reserve class="group-card__tags" />
 
     <x-stat-grid
+        data-group-card-metrics
         :items="$metrics"
         :icons="['users', 'activity']"
-        label="{{ __('ui.group_summary_7192c8337e') }}"
+        label="{{ __('groups.directory.card.summary') }}"
         variant="profile"
     />
 
     @if ($group['next_event'] ?? null)
-        <x-icon-text icon="calendar-clock" class="group-card__event">
+        <x-icon-text data-group-card-event icon="calendar-clock" class="group-card__event">
             {{ $group['next_event'] }}
         </x-icon-text>
     @endif
 
     <x-slot:footer>
         <div class="group-card__footer">
-            <div class="group-card__organizer">
+            <div data-group-card-organizer class="group-card__organizer">
                 <x-initials-avatar :initials="$group['organizer_initials']" />
                 <div>
                     <p>{{ __('presentation.group_led_by', ['organizer' => $group['organizer']]) }}</p>
@@ -83,6 +86,7 @@
                     />
                 @endif
                 <x-action-control
+                    data-group-card-primary-action
                     :label="$primary['label']"
                     :icon="$primary['icon'] ?? null"
                     :endpoint="$primary['endpoint'] ?? null"

@@ -2300,7 +2300,7 @@ return [
     'where_you_may_have_met_05f56e939e' => 'Where you may have met',
     'who_can_reply_caea4961a3' => 'Who can reply?',
     'why_this_animal_cee191dfe7' => 'Why this animal',
-    'why_this_profile_11657790a4' => 'Why this profile',
+    'why_this_profile_11657790a4' => 'Kodėl tai rekomenduojama',
     'why_this_profile_matches_8f43aa2b22' => 'Kodėl šis profilis tinka',
     'width_cm_2e8f7f3953' => 'Width, cm',
     'wish_3ab8a88114' => 'Wish',
