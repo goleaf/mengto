@@ -149,7 +149,7 @@ Blade disagrees.
 | Package 7 forum | Implemented and targeted-verified | Forum routes use the canonical identity; all 44 roots remain visible and only the active root exposes its validated, indexed, server-filterable direct children |
 | Package 8 global migration | Implemented and structurally verified | All former migration candidates use the canonical contract or a documented deliberate detail hero; the classified detail/workspace exception audit remains open |
 | Packages 9 and 10 | Partial | Retired care/messages/device-directory selectors and reconciled living UI documents; forum/global cleanup and full documentation remain open |
-| Package 11 release verification | Partial | The dedicated 13-route browser matrix, focused and full Pest, Pint, Larastan, dependency audits, Vite build, isolated migration/seed/idempotency, cache smoke, and forum-source checks pass; scoped commit/push and final global follow-up audit remain open for this package |
+| Package 11 release verification | Partial | The dedicated 13-route browser matrix, focused and full Pest, Pint, Larastan, dependency audits, Vite build, isolated migration/seed/idempotency, cache smoke, forum-source checks, and scoped publication as `f237f2f` pass; only the final global follow-up audit remains open |
 
 The first implementation slice is covered by
 `PageIdentityStandardizationTest` plus the existing module, responsive, media,
@@ -193,6 +193,11 @@ tables), route/config/view cache smoke, and both forum-source checks also
 passed. These counts are release evidence for the staged package based on
 `284f3ed`, not evidence that the remaining global exception/localization audit
 is complete.
+
+The attributable implementation and evidence were committed as `f237f2f` and
+pushed directly to `origin/main`; local `HEAD`, the local remote-tracking ref,
+and `git ls-remote origin refs/heads/main` all resolved to
+`f237f2fdf01e231e17af9934f6a97f70c88a2359` after publication.
 
 ### 3.3 Next Execution Checkpoint
 
