@@ -52,6 +52,9 @@ This index is the source-of-truth map for first-party documentation.
 | `docs/plans/join-landing-page-plan.md` | Historical guest root joining experience superseded by the authenticated portal boundary | Product + engineering | Superseded |
 | `docs/plans/authenticated-portal-access-plan.md` | Exact account-entry allowlist, authenticated portal boundary, protected media, and release evidence | Product + engineering | Verified |
 | `docs/plans/global-linked-media-navigation-plan.md` | Global representative-image navigation contract, inventory, phased migration, and verification gates | Product + frontend + QA | Implemented and verified |
+| `docs/audits/places-production-readiness-audit.md` | Factual Places authority, persistence, workflow, privacy, query, accessibility, and operations gap analysis | Product + engineering + QA + security | Living evidence |
+| `docs/plans/places-production-master-plan.md` | Unlimited dependency-ordered Places completion task ledger, gates, stop conditions, and post-MVP boundary | Product + engineering + QA + operations | Approved execution plan |
+| `docs/plans/places-current-progress.md` | Places package status, preserved authority baseline, blockers, decisions, and next exact slice | Product + engineering + QA | Living evidence |
 | `docs/plans/forum-topic-type-schema-runtime-work-package.md` | Exact 20-ID topic-type schema runtime, cache, validation, Action, and release contract | Product + engineering + QA | Implemented and verified |
 | `docs/plans/forum-phase3-migration-verification-work-package.md` | Final 13-ID Phase 3 migration, rollback, compatibility, and release-verification contract | Engineering + QA + operations | Implemented and verified |
 | `docs/plans/forum-phase4-before-ownership-category-work-package.md` | Exact 64-ID category-21 source, manifest, persistence, and cache-integrity contract | Product + engineering + QA | Implemented and verified |
