@@ -33,7 +33,7 @@ Last updated: 2026-08-03.
 - The bounded pet-name identity slice verifies 20 selected
   `pet.identity.0003-pet.identity.0040` requirements for current, typed
   alternative, historical, visibility-aware, and manager-searchable names. It
-  is implemented and release-verified; publication is pending.
+  is implemented, release-verified, and published.
 
 ## Current Work Package
 

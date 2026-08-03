@@ -2,7 +2,7 @@
 
 Date: 2026-08-03
 
-Status: implemented and release-verified; publication pending.
+Status: implemented, release-verified, and published.
 
 ## Requirement Boundary
 
@@ -121,8 +121,8 @@ Observed on PHP 8.5.8, Laravel 13.23.0, Livewire 4.3.4, Pest 4.7.5, and SQLite:
   private-name leaks, or console errors.
 
 The implementation commits are `7d68280` and the history-edge correction
-`9a9eaf8`. Publication evidence will be recorded after the attributable commits
-reach `origin/main`.
+`9a9eaf8`; the release evidence commit is `eccfbb4`. All three are published on
+`origin/main`.
 
 ## Remaining Boundaries
 

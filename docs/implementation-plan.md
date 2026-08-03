@@ -9,7 +9,7 @@ status remains authoritative in
 
 ## Current Delivery: Pet Name Identity
 
-Status: `implemented and release-verified; publication pending` on 2026-08-03.
+Status: `implemented, verified, and published` on 2026-08-03.
 
 - Keep `pet_profiles.name` as the current canonical name and preserve all stable
   identity and adjacent-domain links during rename.
