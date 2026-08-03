@@ -10,6 +10,7 @@ use App\Models\ForumCategoryAlias;
 use App\Models\ForumCategoryRedirect;
 use App\Models\ForumCategoryTranslation;
 use App\Services\ForumCategoryCatalog;
+use App\Services\ForumCategoryTree;
 use App\Services\ForumTaxonomy;
 use Carbon\CarbonImmutable;
 use Illuminate\Contracts\Cache\Repository as CacheRepository;
@@ -196,7 +197,7 @@ final class SynchronizeForumCategories
         }, 3);
 
         foreach (self::LOCALES as $locale) {
-            $this->cache->forget("forum:category-tree:v1:locale:{$locale}");
+            $this->cache->forget(ForumCategoryTree::CACHE_KEY_PREFIX.$locale);
         }
 
         return $result;

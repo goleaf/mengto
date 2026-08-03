@@ -401,6 +401,15 @@ The directory also exposes all roots while rendering only the active root's
 direct children; child selection is validated and filtered server-side through
 an indexed Eloquent scope.
 
+The category tree is now a dedicated anonymous Blade component in the main
+discussion column instead of a narrow left sidebar. Its progressive root
+catalogue, selected-category purpose, breadcrumbs, and complete child grid
+retain the existing query-string contract and zero-query warm tree cache. The
+desktop directory keeps only the contextual knowledge/update rail; tablet and
+mobile layouts move that rail below the topic stream without horizontal page
+overflow. Display labels use Unicode-safe sentence capitalization while the
+source manifest, stable keys, aliases, and slugs remain unchanged.
+
 Shared actions and filter chips now retain the 44-pixel touch target at desktop
 as well as mobile widths. The Blade localization audit also understands bound
 component props, preventing already-localized values from being rewritten and

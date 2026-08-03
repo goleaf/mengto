@@ -55,76 +55,35 @@
         </section>
 
         <div class="forum-layout">
-            <aside class="forum-sidebar" aria-label="{{ __('ui.forum_categories_053db2cf7c') }}">
-                <section class="forum-sidebar__section">
-                    <div class="forum-sidebar__title">
-                        <span>{{ __('ui.categories_b8b1d894c6') }}</span>
-                        @if ($draft_count > 0)
-                            <span class="forum-badge forum-badge--sun">{{ trans_choice('presentation.draft_count', $draft_count, ['count' => $draft_count]) }}</span>
-                        @endif
-                    </div>
-                    <nav class="forum-categories" data-forum-category-tree>
-                        <a
-                            href="{{ route('forum.index', [...$filters, 'category' => 'all', 'page' => null]) }}"
-                            @if ($filters['category'] === 'all') aria-current="page" @endif
-                        >
-                            <x-lucide-layout-grid aria-hidden="true" />
-                            {{ __('ui.all_topics_29366ff597') }}
-                        </a>
-                        @forelse ($categories as $key => $category)
+            <div class="forum-directory-main" data-forum-directory-main>
+                <x-forum-category-navigator
+                    :navigation="$category_navigation"
+                    :filters="$filters"
+                    :draft-count="$draft_count"
+                />
+
+                <div class="forum-directory-controls">
+                    <nav class="forum-filter-tabs" aria-label="{{ __('ui.topic_filters_9250e8d56b') }}">
+                        @forelse ($filter_options as $key => $label)
                             <a
-                                href="{{ route('forum.index', [...$filters, 'category' => $key, 'page' => null]) }}"
-                                data-category-root="{{ $key }}"
-                                @if ($active_category_root === $key && $active_subcategory === null) aria-current="page" @endif
-                            >
-                                <x-dynamic-component :component="'lucide-'.$category['icon']" aria-hidden="true" />
-                                {{ $category['label'] }}
-                            </a>
-                            @if ($active_category_root === $key)
-                                <ul class="forum-subcategories" data-subcategory-list="{{ $key }}">
-                                    @forelse ($category['subcategories'] as $subcategoryKey => $subcategoryLabel)
-                                        <li>
-                                            <a
-                                                href="{{ route('forum.index', [...$filters, 'category' => $subcategoryKey, 'page' => null]) }}"
-                                                data-category-child="{{ $subcategoryKey }}"
-                                                @if ($active_subcategory === $subcategoryKey) aria-current="page" @endif
-                                            >
-                                                {{ $subcategoryLabel }}
-                                            </a>
-                                        </li>
-                                    @empty
-                                        <li class="text-sm text-paw-muted">{{ __('ui.no_subcategories_9f1010c1a3') }}</li>
-                                    @endforelse
-                                </ul>
-                            @endif
+                                href="{{ route('forum.index', [...$filters, 'filter' => $key, 'page' => null]) }}"
+                                @if ($filters['filter'] === $key) aria-current="page" @endif
+                            >{{ $label }}</a>
                         @empty
-                            <span>{{ __('ui.no_categories_available_a557500f61') }}</span>
+                            <span>{{ __('ui.no_filters_available_dc23b63725') }}</span>
                         @endforelse
                     </nav>
-                </section>
-            </aside>
 
-            <div>
-                <nav class="forum-filter-tabs" aria-label="{{ __('ui.topic_filters_9250e8d56b') }}">
-                    @forelse ($filter_options as $key => $label)
-                        <a
-                            href="{{ route('forum.index', [...$filters, 'filter' => $key, 'page' => null]) }}"
-                            @if ($filters['filter'] === $key) aria-current="page" @endif
-                        >{{ $label }}</a>
-                    @empty
-                        <span>{{ __('ui.no_filters_available_dc23b63725') }}</span>
-                    @endforelse
-                </nav>
-
-                <div class="forum-filter-tabs" aria-label="{{ __('ui.topic_sorting_199040afbe') }}">
-                    @forelse ($sort_options as $key => $label)
-                        <a
-                            href="{{ route('forum.index', [...$filters, 'sort' => $key, 'page' => null]) }}"
-                            @if ($filters['sort'] === $key) aria-current="page" @endif
-                        >{{ $label }}</a>
-                    @empty
-                        <span>{{ __('ui.no_sort_options_available_0b2341d59b') }}</span>
-                    @endforelse
+                    <div class="forum-filter-tabs" aria-label="{{ __('ui.topic_sorting_199040afbe') }}">
+                        @forelse ($sort_options as $key => $label)
+                            <a
+                                href="{{ route('forum.index', [...$filters, 'sort' => $key, 'page' => null]) }}"
+                                @if ($filters['sort'] === $key) aria-current="page" @endif
+                            >{{ $label }}</a>
+                        @empty
+                            <span>{{ __('ui.no_sort_options_available_0b2341d59b') }}</span>
+                        @endforelse
+                    </div>
                 </div>
 
                 <section class="forum-topic-list" aria-label="{{ __('ui.forum_topics_dfec5e5f89') }}">

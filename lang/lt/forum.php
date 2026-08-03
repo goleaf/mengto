@@ -3,6 +3,19 @@
 declare(strict_types=1);
 
 return [
+    'directory' => [
+        'browse_eyebrow' => 'Naršyti pagal temą',
+        'categories_title' => 'Forumo kategorijos',
+        'categories_description' => 'Pasirinkite kategoriją, tada susiaurinkite diskusijas pasirinkdami tikslesnę subkategoriją.',
+        'choose_category' => 'Pasirinkti arba pakeisti kategoriją',
+        'category_total' => 'Kategorijos · :count',
+        'all_topics_description' => 'Visų kategorijų klausimai ir diskusijos.',
+        'category_path' => 'Forumo kategorijos kelias',
+        'active_category' => 'Pasirinkta kategorija',
+        'subcategories' => 'Subkategorijos',
+        'subcategory_total' => 'Subkategorijos · :count',
+        'all_in_category' => 'Visos diskusijos kategorijoje „:category“',
+    ],
     'visibility' => [
         'public' => 'Vieša',
         'members' => 'Registruoti nariai',

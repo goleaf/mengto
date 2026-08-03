@@ -34,6 +34,12 @@ as complete. The dependency-ordered remaining work is in
 - Fifteen additive migrations preserve all legacy forum, credential, listing,
   pet, and marketplace records.
 - Deterministic forum manifest contains 44 roots and 1,637 children.
+- Forum category browsing now lives in the central discussion column: all 44
+  roots remain available through an accessible progressive catalogue, the
+  active root exposes its localized purpose and every direct child, and the
+  former left category sidebar is absent. Source-derived child labels use
+  readable sentence capitalization without changing the immutable manifest or
+  stable URLs.
 - Forum category synchronization, aliases, redirects, topic backfill, cache
   invalidation, and admin-created category preservation are covered.
 - Versioned, checksummed, chunked, resumable taxonomy import supports analysis,
@@ -113,6 +119,14 @@ as complete. The dependency-ordered remaining work is in
 - Playwright verified the lost/found editor at 375x812 and 1440x900 with one
   page heading, no main-content overflow, no workflow target below 44px, and
   no current-page console warning or error.
+- The central forum-category navigation slice passed 73 affected tests and
+  65,696 assertions, scoped Pint and Larastan, the Vite production build,
+  source/requirement preservation checks, and authenticated 375x812 plus
+  1440x900 browser checks with 44-pixel visible targets, keyboard-operable
+  disclosure, no page overflow, and no console warning or error. The attempted
+  full 2,571-test repository run had 2,558 passes, one failure, and twelve
+  errors confined to concurrent unfinished Places files; the scoped forum
+  evidence remains green, but this slice does not claim a green global suite.
 - Playwright verified the Lithuanian adoption workflow at 375px and 1440px:
   localized fallback copy, one page heading, no horizontal overflow, no
   unnamed visible buttons, and no current-page console warnings or errors.

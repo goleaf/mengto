@@ -13,6 +13,7 @@ use App\Models\ForumCategoryTranslation;
 use App\Models\KnowledgeArticle;
 use App\Models\TaxonImport;
 use App\Models\User;
+use App\Services\ForumCategoryTree;
 use App\Services\LocaleFormatter;
 use Illuminate\Contracts\Cache\Repository as CacheRepository;
 use Illuminate\Contracts\View\View;
@@ -357,7 +358,7 @@ final class AdminDashboard extends Component
         $locales = config('platform.supported_locales', ['en']);
 
         foreach ($locales as $locale) {
-            $this->cache->forget("forum:category-tree:v1:locale:{$locale}");
+            $this->cache->forget(ForumCategoryTree::CACHE_KEY_PREFIX.$locale);
         }
 
         session()->flash('feedback', __('forum_admin.feedback.cache_invalidated'));

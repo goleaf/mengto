@@ -61,7 +61,7 @@ ignore unreviewed target-locale values, prefer a reviewed configured fallback,
 and finally use the immutable server fallback. Subcategories have no source
 description, so an empty description is intentional rather than a missing
 translation. Category tree caches are locale-scoped as
-`forum:category-tree:v1:locale:{locale}` and synchronization invalidates every
+`forum:category-tree:v2:locale:{locale}` and synchronization invalidates every
 supported locale.
 
 Forum notifications are materialized in the recipient's validated locale.

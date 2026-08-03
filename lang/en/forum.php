@@ -3,6 +3,19 @@
 declare(strict_types=1);
 
 return [
+    'directory' => [
+        'browse_eyebrow' => 'Browse by topic',
+        'categories_title' => 'Forum categories',
+        'categories_description' => 'Choose a category, then narrow the discussion with a focused subcategory.',
+        'choose_category' => 'Choose or change category',
+        'category_total' => 'Categories · :count',
+        'all_topics_description' => 'Questions and discussions from every category.',
+        'category_path' => 'Forum category path',
+        'active_category' => 'Selected category',
+        'subcategories' => 'Subcategories',
+        'subcategory_total' => 'Subcategories · :count',
+        'all_in_category' => 'All discussions in :category',
+    ],
     'visibility' => [
         'public' => 'Public',
         'members' => 'Registered members',

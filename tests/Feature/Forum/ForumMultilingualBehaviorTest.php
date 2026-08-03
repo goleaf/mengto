@@ -24,6 +24,7 @@ use App\Models\KnowledgeArticle;
 use App\Models\Taxon;
 use App\Models\TaxonName;
 use App\Models\User;
+use App\Services\ForumCategoryTree;
 use App\Services\LocalizedTaxonName;
 use Database\Seeders\ForumSystemSeeder;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -165,13 +166,13 @@ test('every system category has a locale row and deterministic fallback content'
 
 test('category synchronization invalidates every locale-scoped tree cache', function () {
     foreach (config('platform.supported_locales', ['en']) as $locale) {
-        Cache::put("forum:category-tree:v1:locale:{$locale}", ['stale' => true], 600);
+        Cache::put(ForumCategoryTree::CACHE_KEY_PREFIX.$locale, ['stale' => true], 600);
     }
 
     $this->seed(ForumSystemSeeder::class);
 
     foreach (config('platform.supported_locales', ['en']) as $locale) {
-        expect(Cache::has("forum:category-tree:v1:locale:{$locale}"))->toBeFalse();
+        expect(Cache::has(ForumCategoryTree::CACHE_KEY_PREFIX.$locale))->toBeFalse();
     }
 });
 

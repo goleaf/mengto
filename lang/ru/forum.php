@@ -3,6 +3,19 @@
 declare(strict_types=1);
 
 return [
+    'directory' => [
+        'browse_eyebrow' => 'Навигация по темам',
+        'categories_title' => 'Категории форума',
+        'categories_description' => 'Выберите категорию, затем уточните выдачу с помощью подходящей подкатегории.',
+        'choose_category' => 'Выбрать или сменить категорию',
+        'category_total' => 'Категории · :count',
+        'all_topics_description' => 'Вопросы и обсуждения из всех категорий.',
+        'category_path' => 'Путь по категориям форума',
+        'active_category' => 'Выбранная категория',
+        'subcategories' => 'Подкатегории',
+        'subcategory_total' => 'Подкатегории · :count',
+        'all_in_category' => 'Все обсуждения в разделе «:category»',
+    ],
     'visibility' => [
         'public' => 'Публично',
         'members' => 'Зарегистрированные участники',

@@ -42,6 +42,12 @@
 
 ### Forum And Animal Taxonomy
 
+- Moved the complete forum category navigator out of the narrow left sidebar
+  and into the main discussion column. The selected root now presents its
+  localized purpose and every direct subcategory in a responsive, keyboard-
+  complete grid while preserving search, language, filter, sort, pagination,
+  aliases, and stable category URLs. Source-derived subcategory labels receive
+  sentence capitalization without rewriting the immutable taxonomy manifest.
 - Verified all 59 Phase 4 wildlife/coexistence category atoms from immutable
   source through synchronized keys, slugs, positions, and reviewed EN/LT/RU
   root rows while retaining, but not promoting, the two Phase 7 reporting

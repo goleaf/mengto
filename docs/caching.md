@@ -23,7 +23,7 @@ Local default uses the database cache store. Tests use the array store.
 Redis is available in the local PHP runtime but is not a production dependency
 until deployment confirms it. Memcached is not introduced.
 
-The forum category tree uses `forum:category-tree:v1:locale:{locale}` with the
+The forum category tree uses `forum:category-tree:v2:locale:{locale}` with the
 configured taxonomy TTL. The value contains only shared localized category
 presentation data selected from reviewed target/fallback translations or the
 immutable server fallback; unreviewed values never enter the rendered cache

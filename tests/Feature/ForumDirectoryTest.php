@@ -47,7 +47,7 @@ test('forum directory filters searchable public topics and keeps private topics 
         ->assertDontSee('public travel checklist');
 });
 
-test('forum directory exposes only the active root subcategories and filters by the selected child', function () {
+test('forum directory keeps category navigation in the main content and filters by the selected child', function () {
     $selected = ForumTopic::factory()->create([
         'title' => 'Preventive care schedule for a newly adopted dog',
         'category' => 'health',
@@ -67,9 +67,15 @@ test('forum directory exposes only the active root subcategories and filters by 
     $rootResponse = $this->get(route('forum.index', ['category' => 'health']))->assertOk();
     $rootXPath = responseXPath($rootResponse);
 
-    expect($rootXPath->query('//nav[@data-forum-category-tree]//*[@data-subcategory-list="health"]')->length)
+    expect($rootXPath->query('//aside//nav[@data-forum-category-tree]')->length)
+        ->toBe(0)
+        ->and($rootXPath->query('//*[@data-forum-directory-main]//*[@data-forum-category-navigator]')->length)
         ->toBe(1)
-        ->and($rootXPath->query('//nav[@data-forum-category-tree]//*[@data-subcategory-list="nutrition"]')->length)
+        ->and($rootXPath->query('//*[@data-forum-category-navigator]//*[@data-category-root]')->length)
+        ->toBe(44)
+        ->and($rootXPath->query('//*[@data-forum-category-navigator]//*[@data-subcategory-list="health"]')->length)
+        ->toBe(1)
+        ->and($rootXPath->query('//*[@data-forum-category-navigator]//*[@data-subcategory-list="nutrition"]')->length)
         ->toBe(0);
     $rootResponse
         ->assertSee($selected->title)
@@ -80,14 +86,26 @@ test('forum directory exposes only the active root subcategories and filters by 
     ]))->assertOk();
     $childXPath = responseXPath($childResponse);
 
-    expect($childXPath->query('//a[@data-category-root="health" and not(@aria-current)]')->length)
+    expect($childXPath->query('//*[@data-forum-category-navigator]//a[@data-category-root="health" and @data-active-root="true"]')->length)
         ->toBe(1)
-        ->and($childXPath->query('//a[@data-category-child="health/preventive-care" and @aria-current="page"]')->length)
+        ->and($childXPath->query('//*[@data-forum-category-navigator]//a[@data-category-child="health/preventive-care" and @aria-current="page"]')->length)
         ->toBe(1);
     $childResponse
         ->assertSee($selected->title)
         ->assertDontSee($sibling->title)
         ->assertDontSee('Daily feeding portions for an adult cat');
+});
+
+test('forum directory presents subcategory names with readable sentence capitalization', function () {
+    $response = $this->get(route('forum.index', [
+        'category' => 'training-education',
+    ]))->assertOk();
+
+    $response
+        ->assertSee('Training foundations')
+        ->assertSee('Positive reinforcement')
+        ->assertDontSee('>training foundations<', escape: false)
+        ->assertDontSee('>positive reinforcement<', escape: false);
 });
 
 test('blocked authors disappear from the directory without exposing the block', function () {

@@ -9,23 +9,26 @@ use App\Models\ForumCategoryTranslation;
 use Illuminate\Contracts\Cache\Repository as CacheRepository;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Str;
 
 final readonly class ForumCategoryTree
 {
+    public const CACHE_KEY_PREFIX = 'forum:category-tree:v2:locale:';
+
     public function __construct(
         private ForumCategoryCatalog $catalog,
         private CacheRepository $cache,
     ) {}
 
     /**
-     * @return array<string, array{label: string, icon: string, subcategories: array<string, string>}>
+     * @return array<string, array{label: string, description: string|null, icon: string, subcategories: array<string, string>}>
      */
     public function forLocale(string $locale): array
     {
         $locale = $this->supportedLocale($locale);
 
         return $this->cache->remember(
-            "forum:category-tree:v1:locale:{$locale}",
+            self::CACHE_KEY_PREFIX.$locale,
             now()->addSeconds((int) config('taxonomy.tree_cache_seconds')),
             function () use ($locale): array {
                 if (
@@ -73,18 +76,18 @@ final readonly class ForumCategoryTree
             ->limit(44)
             ->get()
             ->mapWithKeys(fn (ForumCategory $category): array => [
-                $category->id => $this->translatedName(
+                $category->id => $this->displayName($this->translatedName(
                     $category->translations,
                     $locale,
                     $fallbackLocale,
                     $category->stable_key,
-                ),
+                )),
             ])
             ->all();
     }
 
     /**
-     * @return array<string, array{label: string, icon: string, subcategories: array<string, string>}>
+     * @return array<string, array{label: string, description: string|null, icon: string, subcategories: array<string, string>}>
      */
     private function databaseTree(string $locale): array
     {
@@ -102,6 +105,7 @@ final readonly class ForumCategoryTree
                         'forum_category_id',
                         'locale',
                         'name',
+                        'description',
                         'is_reviewed',
                     ])
                     ->whereIn('locale', $locales),
@@ -128,20 +132,25 @@ final readonly class ForumCategoryTree
             $subcategories = [];
 
             foreach ($root->children as $child) {
-                $subcategories[$child->slug] = $this->translatedName(
+                $subcategories[$child->slug] = $this->displayName($this->translatedName(
                     $child->translations,
                     $locale,
                     $fallbackLocale,
                     $child->slug,
-                );
+                ));
             }
 
             $tree[$root->slug] = [
-                'label' => $this->translatedName(
+                'label' => $this->displayName($this->translatedName(
                     $root->translations,
                     $locale,
                     $fallbackLocale,
                     $root->slug,
+                )),
+                'description' => $this->translatedDescription(
+                    $root->translations,
+                    $locale,
+                    $fallbackLocale,
                 ),
                 'icon' => $root->icon ?? 'messages-square',
                 'subcategories' => $subcategories,
@@ -152,7 +161,7 @@ final readonly class ForumCategoryTree
     }
 
     /**
-     * @return array<string, array{label: string, icon: string, subcategories: array<string, string>}>
+     * @return array<string, array{label: string, description: string|null, icon: string, subcategories: array<string, string>}>
      */
     private function manifestFallback(string $locale): array
     {
@@ -162,13 +171,18 @@ final readonly class ForumCategoryTree
             $translationKey = 'forum_categories.roots.'.str_replace('/', '.', $category['slug']);
             $translated = trans($translationKey, locale: $locale);
             $tree[$category['slug']] = [
-                'label' => $translated === $translationKey
+                'label' => $this->displayName($translated === $translationKey
                     ? $category['name']
-                    : $translated,
+                    : $translated),
+                'description' => $this->manifestDescription(
+                    $locale,
+                    $category['slug'],
+                    $category['purpose'],
+                ),
                 'icon' => $category['icon'],
                 'subcategories' => collect($category['subcategories'])
-                    ->mapWithKeys(static fn (array $subcategory): array => [
-                        $subcategory['slug'] => $subcategory['name'],
+                    ->mapWithKeys(fn (array $subcategory): array => [
+                        $subcategory['slug'] => $this->displayName($subcategory['name']),
                     ])
                     ->all(),
             ];
@@ -203,6 +217,51 @@ final readonly class ForumCategoryTree
         return $fallbackTranslation instanceof ForumCategoryTranslation
             ? $fallbackTranslation->name
             : $fallback;
+    }
+
+    /**
+     * @param  Collection<int, ForumCategoryTranslation>  $translations
+     */
+    private function translatedDescription(
+        Collection $translations,
+        string $locale,
+        string $fallbackLocale,
+    ): ?string {
+        $localized = $translations->first(
+            fn (ForumCategoryTranslation $translation): bool => $translation->locale === $locale
+                && $translation->is_reviewed
+                && filled($translation->description),
+        );
+
+        if ($localized instanceof ForumCategoryTranslation) {
+            return $localized->description;
+        }
+
+        $fallbackTranslation = $translations->first(
+            fn (ForumCategoryTranslation $translation): bool => $translation->locale === $fallbackLocale
+                && $translation->is_reviewed
+                && filled($translation->description),
+        );
+
+        return $fallbackTranslation instanceof ForumCategoryTranslation
+            ? $fallbackTranslation->description
+            : null;
+    }
+
+    private function manifestDescription(
+        string $locale,
+        string $slug,
+        string $fallback,
+    ): string {
+        $translationKey = 'forum_categories.descriptions.'.str_replace('/', '.', $slug);
+        $translated = trans($translationKey, locale: $locale);
+
+        return $translated === $translationKey ? $fallback : $translated;
+    }
+
+    private function displayName(string $name): string
+    {
+        return Str::ucfirst(Str::squish($name));
     }
 
     private function supportedLocale(string $locale): string

@@ -98,9 +98,16 @@ class ForumPresenter
             ],
             'filter_options' => $this->taxonomy->filterOptions(),
             'sort_options' => $this->taxonomy->sortOptions(),
-            'categories' => $categories,
-            'active_category_root' => $categorySelection['root'],
-            'active_subcategory' => $categorySelection['subcategory'],
+            'category_navigation' => [
+                'items' => $categories,
+                'total' => count($categories),
+                'active_root' => $categorySelection['root'],
+                'active_subcategory' => $categorySelection['subcategory'],
+                'active_category' => $categories[$categorySelection['root']] ?? null,
+                'active_subcategory_total' => isset($categories[$categorySelection['root']])
+                    ? count($categories[$categorySelection['root']]['subcategories'])
+                    : 0,
+            ],
             'stats' => $this->stats(),
             'knowledge' => KnowledgeArticle::query()
                 ->forLibrary()

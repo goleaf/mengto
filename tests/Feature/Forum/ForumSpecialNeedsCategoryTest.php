@@ -148,19 +148,19 @@ test('the locale tree never renders an unreviewed category translation', functio
         'name' => 'NEPATIKRINTAS VERTIMAS',
         'is_reviewed' => false,
     ]);
-    Cache::forget('forum:category-tree:v1:locale:lt');
+    Cache::forget(ForumCategoryTree::CACHE_KEY_PREFIX.'lt');
 
     $unreviewedTree = app(ForumCategoryTree::class)->forLocale('lt');
 
     expect($unreviewedTree['special-needs-accessibility']['subcategories'][$child->slug])
-        ->toBe('mobility limitations')
+        ->toBe('Mobility limitations')
         ->not->toBe('NEPATIKRINTAS VERTIMAS');
 
     $translation->update([
         'name' => 'Judėjimo apribojimai',
         'is_reviewed' => true,
     ]);
-    Cache::forget('forum:category-tree:v1:locale:lt');
+    Cache::forget(ForumCategoryTree::CACHE_KEY_PREFIX.'lt');
 
     $reviewedTree = app(ForumCategoryTree::class)->forLocale('lt');
 
