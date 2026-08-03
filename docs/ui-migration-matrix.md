@@ -4,7 +4,7 @@
 | --- | --- | --- |
 | direct/dynamic Lucide calls and arbitrary icon sizes | migrate through `x-ui-icon`, add icons to unambiguous actions, ratchet all legacy debt to zero | implemented and verified at zero debt with full release and browser gates |
 | reference directories (`/pets`, `/places`, `/groups`, `/neighbors`) | retain canonical `x-page-header` path and verify semantic hook | targeted-verified |
-| `/pets` static nearby-pet prototype | replace six fixture cards, session-only Follow actions, and PHP-array filters with the owned/shared `PetProfileWorkspace`, validated Eloquent filters, invitation state, real profile links, and canonical empty states | migrated and EN/LT/RU browser-verified at 1440/375/320px |
+| `/pets` static nearby-pet prototype | replace six fixture cards, session-only Follow actions, and PHP-array filters with the owned/shared `PetProfileWorkspace`, validated Eloquent filters, invitation state, real profile links, and canonical empty states | migrated and release-verified across EN/LT/RU at 1440/375/320px |
 | direct compatibility directory cards (`group`, `pet`, `neighbor`, `meetup`) | compose shared media/body/footer, heading, description, and compatible statistic primitives while retaining domain content locally | migrated, isolated staged-tree verified, and published |
 | `/discover` static demo | replace hard-coded query/results/pulse/trending/weekend panels with the database-backed explainable recommendation hub | migrated and browser-verified |
 | discovery member destination | replace guessed/static owner links with `members.show`, a policy-scoped minimized profile composed from canonical profile/content primitives | added and targeted-verified |

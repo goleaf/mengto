@@ -768,6 +768,39 @@ snapshot passed full Pint, Larastan, Vite, and 2,662 serial tests with 84,714
 assertions. The shared dirty tree's eight failures were isolated to the foreign
 uncommitted pet icon `lucide-clipboard-heart` and are absent from this snapshot.
 
+## Canonical Pet Workspace And Draft Autosave
+
+`PetProfileWorkspaceTest` verifies the authenticated controller boundary,
+owned/active-manager isolation, validated database search/filter/sort,
+pagination, distinct empty states, invitation separation, EN/LT/RU output,
+inactive-account rejection, and bounded query growth. The progressive profile
+suite verifies idempotent descriptive-step autosave, reload persistence, and
+mismatched-step rejection while sensitive operations retain explicit submits.
+
+Observed release evidence on 2026-08-03:
+
+- focused progressive/workspace order slice: 30 tests and 202 assertions;
+- final current serial suite: 2,685 tests and 85,057 assertions;
+- targeted and full Pint plus Larastan: passed with zero findings;
+- Composer strict validation/audit and npm audit: passed with zero known
+  vulnerabilities;
+- fresh SQLite migration/seed: 130 migration files, 215 tables and five users;
+  the repeat seed retained the same counts;
+- config, route and view cache compilation plus production Vite build: passed;
+- connected Chrome: EN 1440, RU 375 and LT 320 passed with no overflow,
+  undersized mobile controls, duplicate IDs, raw keys, private leaks, prototype
+  actions, or console errors; the autosave check observed one Livewire request,
+  reload persistence, visible offline/unsaved state, mobile reflow, and full
+  restoration of the displayed seeded values on a freshly migrated disposable
+  SQLite database. The mutating mode requires `--autosave` together with
+  `BROWSER_ALLOW_DATA_MUTATION=1` and must never target a shared database;
+- browser cleanup waits for Chrome exit before removing its temporary profile,
+  eliminating the reproduced `ENOTEMPTY` post-audit race.
+
+Exact scope and continuing pet backlog are in
+`docs/plans/pet-workspace-modernization-plan.md` and
+`docs/plans/pet-profile-current-progress.md`.
+
 ## Organization Authority Foundation
 
 `OrganizationAuthorityFoundationTest` covers idempotent creation, owner

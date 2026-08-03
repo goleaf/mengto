@@ -99,8 +99,9 @@ to prove server persistence, restored the original displayed value, and
 reported no console errors. The harness requires both `--autosave` and
 `BROWSER_ALLOW_DATA_MUTATION=1`; that combination is valid only with a
 disposable database because lifecycle and audit history intentionally remain
-immutable. Attributable commit and push evidence is recorded after
-publication.
+immutable. The attributable implementation was published directly from
+`main` to `origin/main` as commit `fc47895` (`feat: autosave pet profile
+drafts`).
 
 ## Explicit Non-Goals
 
