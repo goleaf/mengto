@@ -8,6 +8,7 @@ use App\Enums\PetProfileNameVisibility;
 use App\Models\PetProfile;
 use App\Models\PetProfileManager;
 use App\Models\PetProfileMedia;
+use App\Services\PetBreedOriginPresenter;
 use App\Services\PetProfileAgeLabel;
 use App\Services\PetSpeciesLabel;
 use App\Services\ProfilePresenter;
@@ -30,15 +31,19 @@ final class PublicPetProfile extends Component
 
     private PetProfileAgeLabel $ageLabels;
 
+    private PetBreedOriginPresenter $breedOrigins;
+
     public function boot(
         Gate $gate,
         ProfilePresenter $profiles,
         PetProfileAgeLabel $ageLabels,
+        PetBreedOriginPresenter $breedOrigins,
         PetSpeciesLabel $speciesLabels,
     ): void {
         $this->gate = $gate;
         $this->profiles = $profiles;
         $this->ageLabels = $ageLabels;
+        $this->breedOrigins = $breedOrigins;
         $this->speciesLabels = $speciesLabels;
     }
 
@@ -71,6 +76,7 @@ final class PublicPetProfile extends Component
                 'species_confidence',
                 'taxon_id',
                 'breed',
+                'breed_origin_type',
                 'birth_date',
                 'birth_date_precision',
                 'estimated_age_months',
@@ -102,6 +108,16 @@ final class PublicPetProfile extends Component
                     ->activeAt(now())
                     ->with('user:id,name'),
                 'primaryMedia.asset',
+                'breedOrigins' => fn ($query) => $query->select([
+                    'id',
+                    'origin_key',
+                    'pet_profile_id',
+                    'breed_name',
+                    'confidence',
+                    'source',
+                    'approximate_share_percent',
+                    'position',
+                ]),
                 'names' => fn ($query) => $query
                     ->select([
                         'id',
@@ -156,7 +172,7 @@ final class PublicPetProfile extends Component
                 $profile->species_confidence,
             ),
             'scientific_name' => $profile->taxon?->activeVersion?->scientific_name,
-            'breed' => $profile->breed,
+            'breed_origin' => $this->breedOrigins->for($profile),
             'age' => $this->ageLabels->for($profile),
             'celebration_day' => $this->ageLabels->celebrationFor($profile),
             'status' => $profile->status->label(),

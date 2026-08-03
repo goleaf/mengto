@@ -4,11 +4,16 @@ declare(strict_types=1);
 
 namespace App\Actions;
 
+use App\Enums\PetBreedConfidence;
+use App\Enums\PetBreedOriginType;
+use App\Enums\PetBreedSource;
 use App\Enums\PetSpeciesConfidence;
 use App\Models\AuditLog;
 use App\Models\PetProfile;
 use App\Services\ForumActor;
 use App\Services\PetBirthDetailsNormalizer;
+use App\Services\PetBreedOriginNormalizer;
+use App\Services\PetBreedOriginSynchronizer;
 use App\Services\PetProfileAccess;
 use App\Services\PetProfileCache;
 use App\Services\PetProfileEventRecorder;
@@ -29,6 +34,8 @@ final class UpdatePetProfile
         private readonly PetProfileCache $cache,
         private readonly PetProfileNameHistory $nameHistory,
         private readonly PetBirthDetailsNormalizer $birthDetails,
+        private readonly PetBreedOriginNormalizer $breedOrigins,
+        private readonly PetBreedOriginSynchronizer $breedOriginSynchronizer,
     ) {}
 
     /** @param array<string, mixed> $data */
@@ -47,6 +54,7 @@ final class UpdatePetProfile
                 'taxon_id',
                 'breed',
                 'domestic_classification_id',
+                'breed_origin_type',
                 'birth_date',
                 'birth_date_precision',
                 'estimated_age_months',
@@ -103,12 +111,53 @@ final class UpdatePetProfile
                 $nextProfileData['status'] = (string) $data['detail'];
             }
 
+            $incomingBreed = trim((string) ($data['breed'] ?? $data['category'] ?? ''));
+            $normalizedBreedOrigins = null;
+
+            if ($incomingBreed !== (string) $locked->breed
+                || $locked->breed_origin_type === null) {
+                $locked->load(['breedOrigins' => fn ($query) => $query->select([
+                    'id',
+                    'origin_key',
+                    'pet_profile_id',
+                    'domestic_classification_id',
+                    'breed_name',
+                    'confidence',
+                    'source',
+                    'approximate_share_percent',
+                    'position',
+                ])]);
+                $normalizedBreedOrigins = $this->breedOrigins->normalize([
+                    'taxon_id' => $data['taxon_id'] ?? $locked->taxon_id,
+                    'breed_origin_type' => $incomingBreed === ''
+                        ? PetBreedOriginType::Unknown->value
+                        : PetBreedOriginType::Single->value,
+                    'breed_origins' => $incomingBreed === '' ? [] : [[
+                        'origin_key' => null,
+                        'domestic_classification_id' => null,
+                        'name' => $incomingBreed,
+                        'confidence' => PetBreedConfidence::OwnerReported->value,
+                        'source' => PetBreedSource::OwnerAssumption->value,
+                        'approximate_share_percent' => null,
+                    ]],
+                ], $locked);
+            }
+
             $attributes = [
                 'name' => (string) $data['title'],
-                'breed' => ($data['breed'] ?? $data['category'] ?? null) ?: null,
+                'breed' => $normalizedBreedOrigins['legacy_snapshot'] ?? ($incomingBreed === '' ? null : $incomingBreed),
                 'lock_version' => $locked->lock_version + 1,
                 'profile_data' => $nextProfileData,
             ];
+
+            if ($normalizedBreedOrigins !== null) {
+                $attributes = [
+                    ...$attributes,
+                    'taxon_id' => $normalizedBreedOrigins['taxon_id'],
+                    'domestic_classification_id' => $normalizedBreedOrigins['domestic_classification_id'],
+                    'breed_origin_type' => $normalizedBreedOrigins['type'],
+                ];
+            }
 
             foreach ([
                 'species',
@@ -147,6 +196,17 @@ final class UpdatePetProfile
             }
 
             $locked->save();
+
+            if ($normalizedBreedOrigins !== null
+                && $this->breedOriginSynchronizer->differs(
+                    $locked,
+                    $normalizedBreedOrigins['origins'],
+                )) {
+                $this->breedOriginSynchronizer->sync(
+                    $locked,
+                    $normalizedBreedOrigins['origins'],
+                );
+            }
 
             // Keep pre-normalization profile snapshots readable during the compatibility window.
             $this->state->updatePet([

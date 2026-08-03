@@ -28,8 +28,8 @@
             @endif
             <div class="mt-3 flex flex-wrap gap-2">
                 <x-status-badge :label="$pet['status']" icon="circle-check" />
-                @if ($pet['breed'] !== null)
-                    <x-status-badge :label="$pet['breed']" icon="dna" />
+                @if ($pet['breed_origin'] !== null)
+                    <x-status-badge :label="$pet['breed_origin']['summary']" icon="dna" />
                 @endif
             </div>
         </div>
@@ -46,6 +46,26 @@
         </section>
 
         <dl class="grid gap-3 border-s border-paw-line ps-5">
+            @if ($pet['breed_origin'] !== null)
+                <div>
+                    <dt class="text-sm text-paw-muted">{{ __('pet_profiles.breed_origin.type_label') }}</dt>
+                    <dd>{{ $pet['breed_origin']['type'] }}</dd>
+                    @if ($pet['breed_origin']['origins'] !== [])
+                        <ul class="mt-2 grid gap-2" aria-label="{{ __('pet_profiles.breed_origin.entries_label') }}">
+                            @forelse ($pet['breed_origin']['origins'] as $origin)
+                                <li wire:key="public-pet-breed-origin-{{ $origin['key'] }}" class="rounded-xl border border-paw-line px-3 py-2">
+                                    <p class="font-semibold">{{ $origin['name'] }}</p>
+                                    <p class="text-sm text-paw-muted">
+                                        {{ $origin['confidence'] }} · {{ $origin['source'] }}@if ($origin['share'] !== null) · {{ $origin['share'] }}@endif
+                                    </p>
+                                </li>
+                            @empty
+                            @endforelse
+                        </ul>
+                    @endif
+                    <p class="mt-2 text-sm text-paw-muted">{{ $pet['breed_origin']['notice'] }}</p>
+                </div>
+            @endif
             @if ($pet['scientific_name'] !== null)
                 <div>
                     <dt class="text-sm text-paw-muted">{{ __('pet_profiles.fields.scientific_name') }}</dt>

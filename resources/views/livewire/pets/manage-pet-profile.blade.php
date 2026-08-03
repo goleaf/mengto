@@ -330,13 +330,58 @@
             </form>
         @elseif ($activeStep['value'] === 'breed-origin')
             <form wire:submit="saveBreedAndOrigin" wire:change="autoSaveStep('breed-origin', $event.currentTarget.dataset.petProfileAutosaveRevision)" class="forum-form mt-6" data-pet-profile-autosave-step="breed-origin">
-                <label class="forum-form__field" for="managed-pet-breed">
-                    <span>{{ __('pet_profiles.fields.breed') }}</span>
-                    <input id="managed-pet-breed" type="text" wire:model="form.breed" maxlength="120" aria-describedby="managed-pet-breed-help managed-pet-breed-error" @error('form.breed') aria-invalid="true" @enderror>
-                    <small id="managed-pet-breed-help">{{ __('pet_profiles.completion.help.breed') }}</small>
-                    @error('form.breed') <small id="managed-pet-breed-error" role="alert">{{ $message }}</small> @enderror
-                </label>
                 <livewire:forum.animal-taxonomy-selector wire:model.live="form.taxonIds" input-name="taxon_id" :selection-limit="1" />
+
+                <x-callout
+                    :title="__('pet_profiles.breed_origin.trust_title')"
+                    :description="__('pet_profiles.breed_origin.trust_notice')"
+                    icon="shield-check"
+                />
+
+                <label class="forum-form__field" for="managed-pet-breed-origin-type">
+                    <span>{{ __('pet_profiles.breed_origin.type_label') }}</span>
+                    <select
+                        id="managed-pet-breed-origin-type"
+                        wire:model.live="form.breedOriginType"
+                        aria-describedby="managed-pet-breed-origin-type-help managed-pet-breed-origin-type-error"
+                        @error('form.breedOriginType') aria-invalid="true" @enderror
+                    >
+                        @forelse ($this->breedOriginTypeOptions as $value => $label)
+                            <option wire:key="breed-origin-type-{{ $value }}" value="{{ $value }}">{{ $label }}</option>
+                        @empty
+                            <option value="unknown">{{ __('pet_profiles.breed_origin.types.unknown') }}</option>
+                        @endforelse
+                    </select>
+                    <small id="managed-pet-breed-origin-type-help">{{ __('pet_profiles.breed_origin.type_help') }}</small>
+                    @error('form.breedOriginType') <small id="managed-pet-breed-origin-type-error" role="alert">{{ $message }}</small> @enderror
+                </label>
+
+                @if (in_array($form->breedOriginType, ['single', 'mixed', 'possible-multiple'], true))
+                    <div class="grid gap-4" aria-label="{{ __('pet_profiles.breed_origin.entries_label') }}">
+                        @forelse ($form->breedOrigins as $index => $origin)
+                            <x-pet-breed-origin-fields
+                                :origin="$origin"
+                                :index="$index"
+                                :classification-options="$this->breedClassificationOptions"
+                                :confidence-options="$this->breedConfidenceOptions"
+                                :source-options="$this->breedSourceOptions"
+                                :show-share="$form->breedOriginType === 'mixed'"
+                            />
+                        @empty
+                            <p class="text-sm text-paw-muted">{{ __('pet_profiles.breed_origin.unknown_mixed_help') }}</p>
+                        @endforelse
+                    </div>
+
+                    @if (count($form->breedOrigins) < 4)
+                        <button type="button" class="forum-button min-h-11" wire:click="addBreedOrigin" wire:loading.attr="disabled" wire:target="addBreedOrigin">
+                            <x-ui-icon name="plus" />
+                            <span>{{ __('pet_profiles.breed_origin.add_entry') }}</span>
+                        </button>
+                    @endif
+                @endif
+
+                @error('breed_origins') <small role="alert">{{ $message }}</small> @enderror
+                @error('form.breedOrigins') <small role="alert">{{ $message }}</small> @enderror
                 <x-pet-profile-save-status :feedback="$feedback" />
                 <button type="submit" class="forum-button forum-button--primary min-h-11" wire:loading.attr="disabled" wire:target="saveBreedAndOrigin"><x-ui-icon name="save" /><span wire:loading.remove wire:target="saveBreedAndOrigin">{{ __('pet_profiles.actions.save_step') }}</span><span wire:loading wire:target="saveBreedAndOrigin">{{ __('pet_profiles.actions.saving') }}</span></button>
             </form>

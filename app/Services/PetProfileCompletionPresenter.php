@@ -64,7 +64,8 @@ final class PetProfileCompletionPresenter
                 || $profile->sex !== 'unknown'
                 || $profile->reproductive_status !== 'unknown',
             PetProfileCompletionStep::BreedAndOrigin => $profile->taxon_id !== null
-                || trim((string) $profile->breed) !== '',
+                || trim((string) $profile->breed) !== ''
+                || $profile->breed_origin_type !== null,
             PetProfileCompletionStep::Appearance => $this->hasText($data, 'appearance_summary')
                 || $this->hasText($data, 'identifying_marks'),
             PetProfileCompletionStep::Character => $this->hasText($data, 'story')

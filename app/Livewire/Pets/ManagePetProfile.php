@@ -16,6 +16,9 @@ use App\Actions\TransitionPetProfileStatus;
 use App\Actions\UpdatePetProfilePrivacy;
 use App\Actions\UpdatePetProfileStep;
 use App\Enums\PetBirthDatePrecision;
+use App\Enums\PetBreedConfidence;
+use App\Enums\PetBreedOriginType;
+use App\Enums\PetBreedSource;
 use App\Enums\PetEvidenceStatus;
 use App\Enums\PetManagerRole;
 use App\Enums\PetProfileCompletionStep;
@@ -30,6 +33,7 @@ use App\Livewire\Forms\PetProfileForm;
 use App\Livewire\Forms\PetProfileMediaForm;
 use App\Livewire\Forms\PetProfileNameForm;
 use App\Livewire\Forms\PetProfilePrivacyForm;
+use App\Models\DomesticClassification;
 use App\Models\PetProfile;
 use App\Models\PetProfileLifecycleEvent;
 use App\Models\PetProfileManager;
@@ -294,6 +298,83 @@ final class ManagePetProfile extends Component
             $this->form->speciesConfidence,
         )->value;
         unset($this->speciesConfidenceOptions);
+    }
+
+    public function updatedFormBreedOriginType(string $type): void
+    {
+        $originType = PetBreedOriginType::tryFrom($type);
+
+        if (! $originType instanceof PetBreedOriginType) {
+            return;
+        }
+
+        if (! $originType->acceptsEntries()) {
+            $this->form->breedOrigins = [];
+            $this->form->breed = '';
+
+            return;
+        }
+    }
+
+    public function addBreedOrigin(): void
+    {
+        $this->form->addBreedOrigin();
+    }
+
+    public function removeBreedOrigin(int $index): void
+    {
+        $this->form->removeBreedOrigin($index);
+    }
+
+    /** @return array<string, string> */
+    #[Computed]
+    public function breedOriginTypeOptions(): array
+    {
+        return collect(PetBreedOriginType::cases())
+            ->mapWithKeys(static fn (PetBreedOriginType $type): array => [
+                $type->value => $type->label(),
+            ])->all();
+    }
+
+    /** @return array<string, string> */
+    #[Computed]
+    public function breedConfidenceOptions(): array
+    {
+        return collect(PetBreedConfidence::cases())
+            ->mapWithKeys(static fn (PetBreedConfidence $confidence): array => [
+                $confidence->value => $confidence->label(),
+            ])->all();
+    }
+
+    /** @return array<string, string> */
+    #[Computed]
+    public function breedSourceOptions(): array
+    {
+        return collect(PetBreedSource::cases())
+            ->mapWithKeys(static fn (PetBreedSource $source): array => [
+                $source->value => $source->label(),
+            ])->all();
+    }
+
+    /** @return array<int, string> */
+    #[Computed]
+    public function breedClassificationOptions(): array
+    {
+        $taxonId = $this->form->taxonIds[0] ?? null;
+
+        if (! is_int($taxonId)) {
+            return [];
+        }
+
+        return DomesticClassification::query()
+            ->select(['id', 'taxon_id', 'canonical_name'])
+            ->where('taxon_id', $taxonId)
+            ->where('classification_type', 'breed')
+            ->where('is_active', true)
+            ->orderBy('canonical_name')
+            ->limit(200)
+            ->pluck('canonical_name', 'id')
+            ->all();
     }
 
     /** @return array<string, string> */
@@ -731,6 +812,19 @@ final class ManagePetProfile extends Component
                 'primaryMedia.asset',
                 'latestRecoverableMedia.asset',
             ],
+            PetProfileCompletionStep::BreedAndOrigin => [
+                'breedOrigins' => fn ($query) => $query->select([
+                    'id',
+                    'origin_key',
+                    'pet_profile_id',
+                    'domestic_classification_id',
+                    'breed_name',
+                    'confidence',
+                    'source',
+                    'approximate_share_percent',
+                    'position',
+                ]),
+            ],
             PetProfileCompletionStep::Owners => [
                 'managers' => fn ($query) => $query
                     ->select([
@@ -790,6 +884,7 @@ final class ManagePetProfile extends Component
                 'taxon_id',
                 'breed',
                 'domestic_classification_id',
+                'breed_origin_type',
                 'birth_date',
                 'birth_date_precision',
                 'estimated_age_months',

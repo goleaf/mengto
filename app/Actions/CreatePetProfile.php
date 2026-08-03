@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace App\Actions;
 
+use App\Enums\PetBreedConfidence;
+use App\Enums\PetBreedOriginType;
+use App\Enums\PetBreedSource;
 use App\Enums\PetEvidenceStatus;
 use App\Enums\PetManagerRole;
 use App\Enums\PetManagerStatus;
@@ -19,6 +22,8 @@ use App\Models\PetProfileSlugAlias;
 use App\Models\Taxon;
 use App\Services\ForumActor;
 use App\Services\PetBirthDetailsNormalizer;
+use App\Services\PetBreedOriginNormalizer;
+use App\Services\PetBreedOriginSynchronizer;
 use App\Services\PetProfileDuplicateReview;
 use App\Services\PetProfileEventRecorder;
 use Illuminate\Contracts\Auth\Access\Gate;
@@ -35,6 +40,8 @@ final class CreatePetProfile
         private readonly PetProfileEventRecorder $events,
         private readonly PetProfileDuplicateReview $duplicateReview,
         private readonly PetBirthDetailsNormalizer $birthDetails,
+        private readonly PetBreedOriginNormalizer $breedOrigins,
+        private readonly PetBreedOriginSynchronizer $breedOriginSynchronizer,
     ) {}
 
     /** @param array<string, mixed> $data */
@@ -88,6 +95,7 @@ final class CreatePetProfile
             $taxon,
         );
         $birthDetails = $this->birthDetails->normalize($data);
+        $reportedBreed = trim((string) ($data['breed'] ?? $data['detail'] ?? ''));
 
         try {
             return DB::transaction(function () use (
@@ -102,6 +110,7 @@ final class CreatePetProfile
                 $species,
                 $speciesConfidence,
                 $birthDetails,
+                $reportedBreed,
             ): PetProfile {
                 $existing = PetProfile::query()
                     ->where('creation_key', $creationKey)
@@ -122,7 +131,7 @@ final class CreatePetProfile
                     'species' => $species,
                     'species_confidence' => $speciesConfidence,
                     'taxon_id' => $taxon?->id,
-                    'breed' => ($data['breed'] ?? $data['detail'] ?? null) ?: null,
+                    'breed' => $reportedBreed === '' ? null : $reportedBreed,
                     'domestic_classification_id' => $classification?->id,
                     ...$birthDetails,
                     'sex' => (string) ($data['sex'] ?? 'unknown'),
@@ -140,6 +149,34 @@ final class CreatePetProfile
                         'status' => $story,
                     ],
                 ]);
+
+                if ($reportedBreed !== '' || $classification instanceof DomesticClassification) {
+                    $profile->setRelation('breedOrigins', collect());
+                    $normalizedBreedOrigins = $this->breedOrigins->normalize([
+                        'taxon_id' => $taxon?->id,
+                        'breed_origin_type' => PetBreedOriginType::Single->value,
+                        'breed_origins' => [[
+                            'origin_key' => null,
+                            'domestic_classification_id' => $classification?->id,
+                            'name' => $reportedBreed,
+                            'confidence' => PetBreedConfidence::OwnerReported->value,
+                            'source' => $classification instanceof DomesticClassification
+                                ? PetBreedSource::Unknown->value
+                                : PetBreedSource::OwnerAssumption->value,
+                            'approximate_share_percent' => null,
+                        ]],
+                    ], $profile);
+                    $profile->forceFill([
+                        'taxon_id' => $normalizedBreedOrigins['taxon_id'],
+                        'breed' => $normalizedBreedOrigins['legacy_snapshot'],
+                        'domestic_classification_id' => $normalizedBreedOrigins['domestic_classification_id'],
+                        'breed_origin_type' => $normalizedBreedOrigins['type'],
+                    ])->save();
+                    $this->breedOriginSynchronizer->sync(
+                        $profile,
+                        $normalizedBreedOrigins['origins'],
+                    );
+                }
                 $manager = PetProfileManager::query()->create([
                     'pet_profile_id' => $profile->id,
                     'user_id' => $user->id,

@@ -29,6 +29,7 @@ final class PetProfileFactory extends ApplicationFactory
             'species' => fake()->randomElement(['dog', 'cat', 'rabbit', 'bird']),
             'species_confidence' => PetSpeciesConfidence::Confirmed,
             'breed' => fake()->words(2, true),
+            'breed_origin_type' => null,
             'birth_date' => now()->subYears(fake()->numberBetween(1, 12))->toDateString(),
             'visibility' => 'public',
             'status' => PetProfileStatus::Active,

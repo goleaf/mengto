@@ -6,6 +6,7 @@ namespace App\Models;
 
 use App\Casts\PetProfileStatusCast;
 use App\Enums\PetBirthDatePrecision;
+use App\Enums\PetBreedOriginType;
 use App\Enums\PetProfileStatus;
 use App\Enums\PetSpeciesConfidence;
 use Carbon\CarbonImmutable;
@@ -28,6 +29,7 @@ use Illuminate\Support\Carbon;
  * @property int|null $birthday_celebration_month
  * @property int|null $birthday_celebration_day
  * @property string|null $breed
+ * @property PetBreedOriginType|null $breed_origin_type
  * @property Carbon|null $created_at
  * @property Carbon|null $deleted_at
  * @property int $id
@@ -45,6 +47,7 @@ use Illuminate\Support\Carbon;
  * @property-read Collection<int, PetProfileLifecycleEvent> $lifecycleEvents
  * @property-read Collection<int, PetProfileManager> $managers
  * @property-read Collection<int, PetProfileName> $names
+ * @property-read Collection<int, PetProfileBreedOrigin> $breedOrigins
  * @property-read Collection<int, PetProfileAccessRequest> $accessRequests
  * @property-read PetProfileFact|null $currentMicrochipRecord
  * @property-read MedicalRecord|null $medicalRecord
@@ -68,6 +71,7 @@ final class PetProfile extends Model
         'taxon_id',
         'breed',
         'domestic_classification_id',
+        'breed_origin_type',
         'birth_date',
         'birth_date_precision',
         'estimated_age_months',
@@ -100,6 +104,7 @@ final class PetProfile extends Model
     {
         return [
             'birth_date' => 'immutable_date',
+            'breed_origin_type' => PetBreedOriginType::class,
             'birth_date_precision' => PetBirthDatePrecision::class,
             'estimated_age_months' => 'integer',
             'estimated_age_recorded_at' => 'immutable_datetime',
@@ -144,6 +149,14 @@ final class PetProfile extends Model
     public function domesticClassification(): BelongsTo
     {
         return $this->belongsTo(DomesticClassification::class);
+    }
+
+    /** @return HasMany<PetProfileBreedOrigin, $this> */
+    public function breedOrigins(): HasMany
+    {
+        return $this->hasMany(PetProfileBreedOrigin::class)
+            ->orderBy('position')
+            ->orderBy('id');
     }
 
     /** @return HasMany<PetProfileManager, $this> */

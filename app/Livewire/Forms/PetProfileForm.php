@@ -5,12 +5,17 @@ declare(strict_types=1);
 namespace App\Livewire\Forms;
 
 use App\Enums\PetBirthDatePrecision;
+use App\Enums\PetBreedConfidence;
+use App\Enums\PetBreedOriginType;
+use App\Enums\PetBreedSource;
 use App\Enums\PetManagerRole;
 use App\Enums\PetProfileVisibility;
 use App\Enums\PetSpeciesConfidence;
 use App\Models\PetProfile;
+use App\Models\PetProfileBreedOrigin;
 use App\Rules\ValidPetProfileName;
 use App\Services\PetBirthDetailsNormalizer;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Livewire\Form;
 
@@ -26,6 +31,20 @@ final class PetProfileForm extends Form
     public array $taxonIds = [];
 
     public string $breed = '';
+
+    public string $breedOriginType = 'unknown';
+
+    /**
+     * @var list<array{
+     *     originKey: string,
+     *     classificationId: string,
+     *     name: string,
+     *     confidence: string,
+     *     source: string,
+     *     approximateShare: string
+     * }>
+     */
+    public array $breedOrigins = [];
 
     public string $birthDate = '';
 
@@ -210,7 +229,7 @@ final class PetProfileForm extends Form
         ];
     }
 
-    /** @return array{taxon_id: int|null, breed: string} */
+    /** @return array<string, mixed> */
     public function breedAndOriginData(): array
     {
         $validated = $this->validate([
@@ -219,15 +238,78 @@ final class PetProfileForm extends Form
                 'integer',
                 Rule::exists('taxa', 'id')->where('is_active', true),
             ],
+            'breedOriginType' => ['required', Rule::enum(PetBreedOriginType::class)],
             'breed' => ['nullable', 'string', 'max:120'],
+            'breedOrigins' => ['array', 'max:4'],
+            'breedOrigins.*.originKey' => ['nullable', 'string', 'max:26'],
+            'breedOrigins.*.classificationId' => [
+                'nullable',
+                'integer',
+                Rule::exists('domestic_classifications', 'id')
+                    ->where('classification_type', 'breed')
+                    ->where('is_active', true),
+            ],
+            'breedOrigins.*.name' => ['nullable', 'string', 'max:220'],
+            'breedOrigins.*.confidence' => ['required', Rule::enum(PetBreedConfidence::class)],
+            'breedOrigins.*.source' => ['required', Rule::enum(PetBreedSource::class)],
+            'breedOrigins.*.approximateShare' => ['nullable', 'integer', 'between:1,100'],
         ]);
+
+        $origins = array_map(static fn (array $origin): array => [
+            'origin_key' => $origin['originKey'] ?? null,
+            'domestic_classification_id' => filled($origin['classificationId'] ?? null)
+                ? (int) $origin['classificationId']
+                : null,
+            'name' => trim((string) ($origin['name'] ?? '')),
+            'confidence' => (string) ($origin['confidence'] ?? ''),
+            'source' => (string) ($origin['source'] ?? ''),
+            'approximate_share_percent' => filled($origin['approximateShare'] ?? null)
+                ? (int) $origin['approximateShare']
+                : null,
+        ], array_values($validated['breedOrigins'] ?? []));
+        $originType = (string) $validated['breedOriginType'];
+        $legacyBreed = trim((string) ($validated['breed'] ?? ''));
+
+        if ($origins === []
+            && $originType === PetBreedOriginType::Unknown->value
+            && $legacyBreed !== '') {
+            $originType = PetBreedOriginType::Single->value;
+            $origins[] = [
+                'origin_key' => null,
+                'domestic_classification_id' => null,
+                'name' => $legacyBreed,
+                'confidence' => PetBreedConfidence::OwnerReported->value,
+                'source' => PetBreedSource::OwnerAssumption->value,
+                'approximate_share_percent' => null,
+            ];
+        }
 
         return [
             'taxon_id' => isset($validated['taxonIds'][0])
                 ? (int) $validated['taxonIds'][0]
                 : null,
-            'breed' => trim((string) ($validated['breed'] ?? '')),
+            'breed_origin_type' => $originType,
+            'breed_origins' => $origins,
         ];
+    }
+
+    public function addBreedOrigin(): void
+    {
+        if (count($this->breedOrigins) >= 4) {
+            return;
+        }
+
+        $this->breedOrigins[] = $this->blankBreedOrigin();
+    }
+
+    public function removeBreedOrigin(int $index): void
+    {
+        if (! array_key_exists($index, $this->breedOrigins)) {
+            return;
+        }
+
+        unset($this->breedOrigins[$index]);
+        $this->breedOrigins = array_values($this->breedOrigins);
     }
 
     /** @return array{appearance_summary: string, identifying_marks: string} */
@@ -297,6 +379,10 @@ final class PetProfileForm extends Form
         $this->speciesConfidence = $profile->species_confidence->value;
         $this->taxonIds = $profile->taxon_id === null ? [] : [$profile->taxon_id];
         $this->breed = $profile->breed ?? '';
+
+        if ($profile->relationLoaded('breedOrigins')) {
+            $this->fillBreedOrigins($profile);
+        }
         $this->birthDate = '';
         $this->birthMonth = '';
         $this->birthYear = '';
@@ -384,6 +470,58 @@ final class PetProfileForm extends Form
 
         $this->estimatedAgeYears = (string) intdiv($months, 12);
         $this->estimatedAgeMonths = (string) ($months % 12);
+    }
+
+    private function fillBreedOrigins(PetProfile $profile): void
+    {
+        $originType = $profile->breed_origin_type;
+        $this->breedOriginType = $originType instanceof PetBreedOriginType
+            ? $originType->value
+            : ($profile->breed === null ? 'unknown' : 'single');
+        $this->breedOrigins = $profile->breedOrigins
+            ->map(static fn (PetProfileBreedOrigin $origin): array => [
+                'originKey' => $origin->origin_key,
+                'classificationId' => $origin->domestic_classification_id === null
+                    ? ''
+                    : (string) $origin->domestic_classification_id,
+                'name' => $origin->breed_name,
+                'confidence' => $origin->confidence->value,
+                'source' => $origin->source->value,
+                'approximateShare' => $origin->approximate_share_percent === null
+                    ? ''
+                    : (string) $origin->approximate_share_percent,
+            ])
+            ->values()
+            ->all();
+
+        if ($this->breedOrigins === [] && $profile->breed !== null) {
+            $this->breedOrigins[] = [
+                ...$this->blankBreedOrigin(),
+                'name' => $profile->breed,
+            ];
+        }
+    }
+
+    /**
+     * @return array{
+     *     originKey: string,
+     *     classificationId: string,
+     *     name: string,
+     *     confidence: string,
+     *     source: string,
+     *     approximateShare: string
+     * }
+     */
+    private function blankBreedOrigin(): array
+    {
+        return [
+            'originKey' => Str::lower((string) Str::ulid()),
+            'classificationId' => '',
+            'name' => '',
+            'confidence' => PetBreedConfidence::OwnerReported->value,
+            'source' => PetBreedSource::Unknown->value,
+            'approximateShare' => '',
+        ];
     }
 
     /** @return array<string, list<mixed>> */

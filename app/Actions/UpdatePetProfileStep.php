@@ -10,6 +10,8 @@ use App\Models\AuditLog;
 use App\Models\PetProfile;
 use App\Services\ForumActor;
 use App\Services\PetBirthDetailsNormalizer;
+use App\Services\PetBreedOriginNormalizer;
+use App\Services\PetBreedOriginSynchronizer;
 use App\Services\PetProfileAccess;
 use App\Services\PetProfileCache;
 use App\Services\PetProfileEventRecorder;
@@ -21,6 +23,33 @@ use Illuminate\Validation\ValidationException;
 
 final class UpdatePetProfileStep
 {
+    /** @var list<string> */
+    private const PROFILE_COLUMNS = [
+        'id',
+        'user_id',
+        'profile_key',
+        'slug',
+        'name',
+        'species',
+        'species_confidence',
+        'taxon_id',
+        'breed',
+        'domestic_classification_id',
+        'breed_origin_type',
+        'birth_date',
+        'birth_date_precision',
+        'estimated_age_months',
+        'estimated_age_recorded_at',
+        'birthday_celebration_month',
+        'birthday_celebration_day',
+        'sex',
+        'reproductive_status',
+        'visibility',
+        'status',
+        'lock_version',
+        'profile_data',
+    ];
+
     public function __construct(
         private readonly ForumActor $actor,
         private readonly Gate $gate,
@@ -30,6 +59,8 @@ final class UpdatePetProfileStep
         private readonly PetProfileCache $cache,
         private readonly PetProfileNameHistory $nameHistory,
         private readonly PetBirthDetailsNormalizer $birthDetails,
+        private readonly PetBreedOriginNormalizer $breedOrigins,
+        private readonly PetBreedOriginSynchronizer $breedOriginSynchronizer,
     ) {}
 
     /** @param array<string, mixed> $data */
@@ -42,30 +73,7 @@ final class UpdatePetProfileStep
     ): PetProfile {
         $user = $this->actor->requireUser();
         $target = PetProfile::query()
-            ->select([
-                'id',
-                'user_id',
-                'profile_key',
-                'slug',
-                'name',
-                'species',
-                'species_confidence',
-                'taxon_id',
-                'breed',
-                'domestic_classification_id',
-                'birth_date',
-                'birth_date_precision',
-                'estimated_age_months',
-                'estimated_age_recorded_at',
-                'birthday_celebration_month',
-                'birthday_celebration_day',
-                'sex',
-                'reproductive_status',
-                'visibility',
-                'status',
-                'lock_version',
-                'profile_data',
-            ])
+            ->select(self::PROFILE_COLUMNS)
             ->managedBy($user)
             ->find($profile->id);
 
@@ -94,6 +102,7 @@ final class UpdatePetProfileStep
             }
 
             $locked = PetProfile::query()
+                ->select(self::PROFILE_COLUMNS)
                 ->lockForUpdate()
                 ->findOrFail($target->id);
 
@@ -103,10 +112,37 @@ final class UpdatePetProfileStep
                 ]);
             }
 
-            [$attributes, $fields] = $this->changes($locked, $step, $data);
-            $locked->forceFill($attributes);
+            $normalizedBreedOrigins = null;
 
-            if (! $locked->isDirty(array_keys($attributes))) {
+            if ($step === PetProfileCompletionStep::BreedAndOrigin) {
+                $locked->load(['breedOrigins' => fn ($query) => $query->select([
+                    'id',
+                    'origin_key',
+                    'pet_profile_id',
+                    'domestic_classification_id',
+                    'breed_name',
+                    'confidence',
+                    'source',
+                    'approximate_share_percent',
+                    'position',
+                ])]);
+                $normalizedBreedOrigins = $this->breedOrigins->normalize($data, $locked);
+            }
+
+            [$attributes, $fields] = $this->changes(
+                $locked,
+                $step,
+                $data,
+                $normalizedBreedOrigins,
+            );
+            $locked->forceFill($attributes);
+            $breedOriginsChanged = $normalizedBreedOrigins !== null
+                && $this->breedOriginSynchronizer->differs(
+                    $locked,
+                    $normalizedBreedOrigins['origins'],
+                );
+
+            if (! $locked->isDirty(array_keys($attributes)) && ! $breedOriginsChanged) {
                 return $locked->refresh();
             }
 
@@ -120,6 +156,13 @@ final class UpdatePetProfileStep
 
             $locked->lock_version++;
             $locked->save();
+
+            if ($normalizedBreedOrigins !== null && $breedOriginsChanged) {
+                $this->breedOriginSynchronizer->sync(
+                    $locked,
+                    $normalizedBreedOrigins['origins'],
+                );
+            }
 
             $profileData = $locked->profile_data ?? [];
             $this->state->updatePet([
@@ -171,12 +214,14 @@ final class UpdatePetProfileStep
 
     /**
      * @param  array<string, mixed>  $data
+     * @param  array<string, mixed>|null  $normalizedBreedOrigins
      * @return array{0: array<string, mixed>, 1: list<string>}
      */
     private function changes(
         PetProfile $profile,
         PetProfileCompletionStep $step,
         array $data,
+        ?array $normalizedBreedOrigins,
     ): array {
         $profileData = $profile->profile_data ?? [];
 
@@ -204,9 +249,17 @@ final class UpdatePetProfileStep
                 'reproductive_status',
             ]],
             PetProfileCompletionStep::BreedAndOrigin => [[
-                'taxon_id' => isset($data['taxon_id']) ? (int) $data['taxon_id'] : null,
-                'breed' => $this->nullableString($data['breed'] ?? null),
-            ], ['taxon_id', 'breed']],
+                'taxon_id' => $normalizedBreedOrigins['taxon_id'] ?? null,
+                'breed' => $normalizedBreedOrigins['legacy_snapshot'] ?? null,
+                'domestic_classification_id' => $normalizedBreedOrigins['domestic_classification_id'] ?? null,
+                'breed_origin_type' => $normalizedBreedOrigins['type'] ?? null,
+            ], [
+                'taxon_id',
+                'breed',
+                'domestic_classification_id',
+                'breed_origin_type',
+                'breed_origins',
+            ]],
             PetProfileCompletionStep::Appearance => [[
                 'profile_data' => [
                     ...$profileData,
@@ -239,12 +292,5 @@ final class UpdatePetProfileStep
                 'step' => __('pet_profiles.validation.step'),
             ]),
         };
-    }
-
-    private function nullableString(mixed $value): ?string
-    {
-        $normalized = trim(is_string($value) ? $value : '');
-
-        return $normalized === '' ? null : $normalized;
     }
 }

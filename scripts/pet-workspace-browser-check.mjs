@@ -8,6 +8,7 @@ const baseUrl = (process.env.BROWSER_BASE_URL ?? 'http://127.0.0.1:8000').replac
 const outputDirectory = process.env.BROWSER_OUTPUT_DIR ?? join(tmpdir(), 'mengto-pet-workspace-browser');
 const verifyAutosave = process.argv.includes('--autosave');
 const verifyBirth = process.argv.includes('--birth');
+const verifyBreed = process.argv.includes('--breed');
 const verifyNames = process.argv.includes('--names');
 const allowDataMutation = process.env.BROWSER_ALLOW_DATA_MUTATION === '1';
 const origin = new URL(baseUrl);
@@ -22,8 +23,8 @@ if (!['localhost', '127.0.0.1', '::1'].includes(origin.hostname)) {
     throw new Error('The pet workspace browser check only runs against a loopback URL.');
 }
 
-if ((verifyAutosave || verifyBirth || verifyNames) && ! allowDataMutation) {
-    throw new Error('--autosave, --birth, and --names require BROWSER_ALLOW_DATA_MUTATION=1 and a disposable database.');
+if ((verifyAutosave || verifyBirth || verifyBreed || verifyNames) && ! allowDataMutation) {
+    throw new Error('--autosave, --birth, --breed, and --names require BROWSER_ALLOW_DATA_MUTATION=1 and a disposable database.');
 }
 
 const assert = (condition, message) => {
@@ -319,6 +320,7 @@ try {
 
     let autosaveAudit = null;
     let birthAudit = null;
+    let breedAudit = null;
     let nameAudit = null;
 
     if (verifyBirth) {
@@ -583,6 +585,209 @@ try {
         };
     }
 
+    if (verifyBreed) {
+        await client.send('Emulation.setDeviceMetricsOverride', {
+            width: 1440, height: 900, deviceScaleFactor: 1,
+            mobile: false, screenWidth: 1440, screenHeight: 900,
+        }, sessionId);
+        await client.send('Emulation.setTouchEmulationEnabled', { enabled: false }, sessionId);
+        await setLocale(client, sessionId, 'en');
+        const manageUrl = `${baseUrl}/pets/manage/pet-scout?step=breed-origin`;
+        const waitForBreedEntryCount = async (expectedCount, message) => {
+            try {
+                await waitUntil(
+                    async () => await evaluate(
+                        client,
+                        sessionId,
+                        `document.querySelectorAll('input[id^="managed-pet-breed-name-"]').length === ${expectedCount}`,
+                    ),
+                    message,
+                );
+            } catch {
+                const diagnostic = await evaluate(client, sessionId, `(() => {
+                    const addButton = [...document.querySelectorAll('button')]
+                        .find((button) => button.getAttribute('wire:click') === 'addBreedOrigin');
+
+                    return {
+                        location: location.pathname + location.search,
+                        entryCount: document.querySelectorAll('input[id^="managed-pet-breed-name-"]').length,
+                        entries: [...document.querySelectorAll('input[id^="managed-pet-breed-name-"]')]
+                            .map((input) => ({ id: input.id, value: input.value })),
+                        type: document.querySelector('#managed-pet-breed-origin-type')?.value ?? null,
+                        addButtonPresent: Boolean(addButton),
+                        addButtonDisabled: addButton?.disabled ?? null,
+                        alerts: [...document.querySelectorAll('[role="alert"]')]
+                            .map((alert) => alert.textContent.trim())
+                            .filter(Boolean),
+                    };
+                })()`);
+
+                throw new Error(`${message} ${JSON.stringify(diagnostic)}`);
+            }
+        };
+        await navigate(client, sessionId, manageUrl);
+        const initial = await evaluate(client, sessionId, `(() => ({
+            location: location.pathname + location.search,
+            heading: document.querySelector('main h1')?.textContent.trim() ?? null,
+            body: document.querySelector('main')?.innerText.slice(0, 500) ?? null,
+            formCount: document.querySelectorAll('[data-pet-profile-autosave-step="breed-origin"]').length,
+            typeOptions: document.querySelectorAll('#managed-pet-breed-origin-type option').length,
+            trustNotice: document.body.innerText.includes('A photograph never changes'),
+            entryCount: document.querySelectorAll('input[id^="managed-pet-breed-name-"]').length,
+        }))()`);
+        assert(initial.formCount === 1 && initial.typeOptions === 5, `The breed editor is incomplete: ${JSON.stringify(initial)}.`);
+        assert(initial.trustNotice, 'The breed confidence and photo warning is missing.');
+
+        const selectBreedOriginType = async (value) => await evaluate(client, sessionId, `((nextValue) => {
+            const type = document.querySelector('#managed-pet-breed-origin-type');
+            const setter = Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, 'value').set;
+            setter.call(type, nextValue);
+            type.dispatchEvent(new Event('change', { bubbles: true }));
+        })(${JSON.stringify(value)})`);
+        await selectBreedOriginType('unknown');
+        await waitUntil(
+            async () => await evaluate(client, sessionId, `document.querySelector('#managed-pet-breed-origin-type')?.value === 'unknown'
+                && document.querySelectorAll('input[id^="managed-pet-breed-name-"]').length === 0`),
+            'The breed editor did not reset to an explicit unknown state.',
+        );
+        await delay(300);
+        await selectBreedOriginType('mixed');
+        await waitUntil(
+            async () => await evaluate(client, sessionId, `document.querySelector('#managed-pet-breed-origin-type')?.value === 'mixed'
+                && Boolean([...document.querySelectorAll('button')].find((button) => button.getAttribute('wire:click') === 'addBreedOrigin'))`),
+            'The mixed-origin controls did not appear.',
+        );
+        await delay(1_000);
+        await navigate(client, sessionId, manageUrl);
+        const emptyMixedState = await evaluate(client, sessionId, `(() => ({
+            type: document.querySelector('#managed-pet-breed-origin-type')?.value ?? null,
+            entryCount: document.querySelectorAll('input[id^="managed-pet-breed-name-"]').length,
+        }))()`);
+        assert(
+            emptyMixedState.type === 'mixed' && emptyMixedState.entryCount === 0,
+            `The empty mixed-origin state was not restored cleanly: ${JSON.stringify(emptyMixedState)}.`,
+        );
+        await evaluate(client, sessionId, `[...document.querySelectorAll('button')]
+            .find((button) => button.getAttribute('wire:click') === 'addBreedOrigin').click()`);
+        await waitForBreedEntryCount(1, 'The first mixed-origin entry did not appear.');
+        await evaluate(client, sessionId, `[...document.querySelectorAll('button')].find((button) => button.getAttribute('wire:click') === 'addBreedOrigin').click()`);
+        await waitForBreedEntryCount(2, 'The second mixed-origin entry did not appear.');
+
+        const requestsBeforeSave = livewireRequests.length;
+        await evaluate(client, sessionId, `(() => {
+            const inputs = [...document.querySelectorAll('input[id^="managed-pet-breed-name-"]')];
+            const confidences = [...document.querySelectorAll('[id^="managed-pet-breed-confidence-"]')];
+            const sources = [...document.querySelectorAll('[id^="managed-pet-breed-source-"]')];
+            const shares = [...document.querySelectorAll('input[id^="managed-pet-breed-share-"]')];
+            const inputSetter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set;
+            const selectSetter = Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, 'value').set;
+            const setInput = (element, value) => {
+                inputSetter.call(element, value);
+                element.dispatchEvent(new Event('input', { bubbles: true }));
+                element.dispatchEvent(new Event('change', { bubbles: true }));
+            };
+            const setSelect = (element, value) => {
+                selectSetter.call(element, value);
+                element.dispatchEvent(new Event('change', { bubbles: true }));
+            };
+            setInput(inputs[0], 'Border Collie');
+            setInput(inputs[1], 'Labrador Retriever');
+            setSelect(confidences[0], 'confirmed');
+            setSelect(confidences[1], 'owner-reported');
+            setSelect(sources[0], 'genetic-test');
+            setSelect(sources[1], 'owner-assumption');
+            setInput(shares[0], '60');
+            setInput(shares[1], '40');
+        })()`);
+        await delay(1_000);
+        await evaluate(client, sessionId, `document.querySelector('[data-pet-profile-autosave-step="breed-origin"]').requestSubmit()`);
+        await waitUntil(
+            async () => await evaluate(client, sessionId, `document.body.innerText.includes('Breed and origin details saved.')`),
+            'The mixed breed origin was not saved through Livewire.',
+        );
+        assert(livewireRequests.length - requestsBeforeSave >= 1, 'Saving breed origin did not reach Livewire.');
+
+        await navigate(client, sessionId, manageUrl);
+        const restored = await evaluate(client, sessionId, `(() => ({
+            type: document.querySelector('#managed-pet-breed-origin-type')?.value,
+            names: [...document.querySelectorAll('input[id^="managed-pet-breed-name-"]')].map((input) => input.value),
+            sources: [...document.querySelectorAll('[id^="managed-pet-breed-source-"]')].map((input) => input.value),
+            shares: [...document.querySelectorAll('input[id^="managed-pet-breed-share-"]')].map((input) => input.value),
+        }))()`);
+        assert(restored.type === 'mixed', 'The mixed origin type was not restored.');
+        assert(JSON.stringify(restored.names) === JSON.stringify(['Border Collie', 'Labrador Retriever']), 'The mixed breed names were not restored.');
+        assert(JSON.stringify(restored.sources) === JSON.stringify(['genetic-test', 'owner-assumption']), 'The separate breed sources were not restored.');
+        assert(JSON.stringify(restored.shares) === JSON.stringify(['60', '40']), 'The optional breed shares were not restored.');
+
+        await navigate(client, sessionId, `${baseUrl}/pets/profile/pet-scout`);
+        const publicProjection = await evaluate(client, sessionId, `(() => ({
+            namesVisible: document.body.innerText.includes('Border Collie')
+                && document.body.innerText.includes('Labrador Retriever'),
+            confidenceVisible: document.body.innerText.includes('Confirmed or documented')
+                && document.body.innerText.includes('Owner-reported'),
+            sourcesVisible: document.body.innerText.includes('Genetic test')
+                && document.body.innerText.includes('Owner assumption'),
+            noticeVisible: document.body.innerText.includes('does not predict character, health, or compatibility'),
+            rawKeys: document.body.innerText.match(/\\bpet_profiles\\.[a-z0-9_.-]+/gi) ?? [],
+            overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+        }))()`);
+        assert(publicProjection.namesVisible && publicProjection.confidenceVisible, 'The public breed confidence projection is incomplete.');
+        assert(publicProjection.sourcesVisible && publicProjection.noticeVisible, 'The public breed source or non-discrimination notice is missing.');
+        assert(publicProjection.rawKeys.length === 0, 'The public breed projection exposes translation keys.');
+        assert(publicProjection.overflow <= 1, `The public breed projection overflows by ${publicProjection.overflow}px.`);
+
+        const responsive = {};
+        for (const viewport of [
+            { label: 'desktop', width: 1440, height: 900, mobile: false },
+            { label: 'mobile-390', width: 390, height: 844, mobile: true },
+            { label: 'mobile-320', width: 320, height: 900, mobile: true },
+        ]) {
+            await client.send('Emulation.setDeviceMetricsOverride', {
+                width: viewport.width, height: viewport.height, deviceScaleFactor: 1,
+                mobile: viewport.mobile, screenWidth: viewport.width, screenHeight: viewport.height,
+            }, sessionId);
+            await client.send('Emulation.setTouchEmulationEnabled', { enabled: viewport.mobile }, sessionId);
+            await navigate(client, sessionId, manageUrl);
+            const audit = await evaluate(client, sessionId, `(() => {
+                const form = document.querySelector('[data-pet-profile-autosave-step="breed-origin"]');
+                const visible = (element) => {
+                    const style = getComputedStyle(element);
+                    const box = element.getBoundingClientRect();
+                    return style.display !== 'none' && style.visibility !== 'hidden'
+                        && box.width > 0 && box.height > 0;
+                };
+                const controls = [...(form?.querySelectorAll('button, input, select') ?? [])].filter(visible);
+                const ids = [...document.querySelectorAll('[id]')].map((element) => element.id).filter(Boolean);
+                return {
+                    h1Count: document.querySelectorAll('main h1').length,
+                    formCount: form ? 1 : 0,
+                    entryCount: document.querySelectorAll('input[id^="managed-pet-breed-name-"]').length,
+                    overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+                    rawKeys: document.body.innerText.match(/\\bpet_profiles\\.[a-z0-9_.-]+/gi) ?? [],
+                    unnamed: controls.filter((element) => !(
+                        element.getAttribute('aria-label') || element.getAttribute('aria-labelledby')
+                        || element.labels?.length || element.textContent.trim() || element.title
+                    )).length,
+                    smallTargets: controls.filter((element) => {
+                        const box = element.getBoundingClientRect();
+                        return box.width < 44 || box.height < 44;
+                    }).length,
+                    duplicateIds: [...new Set(ids.filter((id, index) => ids.indexOf(id) !== index))],
+                };
+            })()`);
+            assert(audit.h1Count === 1 && audit.formCount === 1 && audit.entryCount === 2, `${viewport.label}: invalid breed workspace structure.`);
+            assert(audit.overflow <= 1, `${viewport.label}: breed workspace overflows by ${audit.overflow}px.`);
+            assert(audit.rawKeys.length === 0 && audit.unnamed === 0, `${viewport.label}: breed workspace exposes raw keys or unnamed controls.`);
+            assert(audit.duplicateIds.length === 0, `${viewport.label}: duplicate breed control IDs remain.`);
+            if (viewport.mobile) assert(audit.smallTargets === 0, `${viewport.label}: breed controls below 44px remain.`);
+            responsive[viewport.label] = audit;
+            const screenshot = await client.send('Page.captureScreenshot', { format: 'png', captureBeyondViewport: true }, sessionId);
+            await writeFile(join(outputDirectory, `pet-breed-${viewport.label}.png`), Buffer.from(screenshot.data, 'base64'));
+        }
+
+        breedAudit = { initial, restored, publicProjection, responsive };
+    }
+
     if (verifyAutosave) {
         await client.send('Emulation.setDeviceMetricsOverride', {
             width: 1440, height: 900, deviceScaleFactor: 1,
@@ -822,6 +1027,8 @@ try {
         autosaveAudit,
         verifyBirth,
         birthAudit,
+        verifyBreed,
+        breedAudit,
         verifyNames,
         nameAudit,
         consoleErrors,

@@ -63,6 +63,12 @@ final class DomesticClassification extends Model
         return $this->hasMany(self::class, 'parent_id');
     }
 
+    /** @return HasMany<PetProfileBreedOrigin, $this> */
+    public function petProfileBreedOrigins(): HasMany
+    {
+        return $this->hasMany(PetProfileBreedOrigin::class);
+    }
+
     /** @return HasMany<AdoptionCase, $this> */
     public function adoptionCases(): HasMany
     {
