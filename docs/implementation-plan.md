@@ -287,6 +287,27 @@ Session attendee reservations/waitlists, schedule-change notifications,
 venue entities beyond event-scoped rooms, and keyboard reordering remain open
 and are not claimed by this delivery.
 
+## Current Planning: Portal And Events Completion
+
+Status: `execution-ready` on 2026-08-03; implementation packages pending
+
+The live audit found 3,449 `portal.*` requirements still without Point 12
+evidence and 4,883 of 4,968 `event.*` requirements still planned/discovered.
+The current code is not empty: it has one authenticated shell, 162 first-party
+routes, the canonical event aggregate, lifecycle/occurrence foundations,
+multi-pet registration, manual attendance, and occurrence-scoped schedules.
+The gap is therefore a combination of missing advanced domains and existing
+portal behavior that has not yet been reconciled against atomic requirements.
+
+The factual audit is
+`docs/audits/portal-events-completion-gap-analysis.md`. The unbounded,
+dependency-ordered implementation contract is
+`docs/plans/portal-events-completion-master-plan.md`. Its 36 packages begin
+with evidence reconciliation, organization and location authority, then add
+portal contexts/search/calendar/dashboard infrastructure before completing
+event builder, eligibility, registration, capacity, payment, check-in, safety,
+specialized event domains, UI migration, seeding, verification, and release.
+
 ## Current Delivery: Global Page Identity Standardization
 
 Status: `in progress`; first safe directory slice targeted-verified on
