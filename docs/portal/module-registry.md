@@ -17,7 +17,8 @@ The existing authenticated Blade/Livewire shell remains canonical.
 | Experts/forum/knowledge | corresponding named directories | expert and forum domains |
 | Groups/relationships/messages | corresponding named directories | forum groups and social/message services |
 | Organizations | `organizations.index`, `organizations.show` | `Organization`, current memberships, invitations, restrictions, audit |
-| Discovery/notifications/settings | `discover.index`, notification/profile routes | existing presenter/settings domains |
+| Discovery | `discover.index`, `discover.preferences.store` | bounded `DiscoveryCatalog`, existing domain scopes, user-owned `DiscoveryPreference` |
+| Notifications/settings | notification/profile routes | existing notification and profile settings domains |
 
 No parallel user, pet, event, report, notification, or translation system was
 introduced by Point 13. The organization tenant aggregate is shared with

@@ -6,6 +6,15 @@ marketplace, experts, forum, groups, neighbors, and discovery. Supporting
 surfaces cover relationships, messages, notifications, profile settings,
 management pages, and authorized shared/download views.
 
+Discovery uses the stable page identifier `portal.discovery.index` at
+`discover.index`. It is the authenticated recommendation hub, not global
+search or a duplicate directory. A validated query and category select a
+bounded, explainable projection of current public events, communities, places,
+specialists, and pet profiles. Cards deep-link to each canonical module;
+private/unlisted records, exact locations, blocked identities, and profiles
+that disabled recommendations are excluded before presentation. The complete
+page contract is `docs/portal/discovery.md`.
+
 Events use `ForumEventDirectory` inside `meetups/index.blade.php` and
 `ForumEventWorkspace` inside `meetups/show.blade.php`. The directory provides
 search/filter/pagination/create; detail provides status, occurrences,

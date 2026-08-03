@@ -13,6 +13,18 @@ guarded by the route middleware and resource policy; compatibility flows keep
 their canonical event targets. Behaviour coverage remains mapped in
 `tests/Support/route-coverage.php`.
 
+## Discovery Routes
+
+| Name | Method | URI | Runtime owner | Purpose |
+| --- | --- | --- | --- | --- |
+| `discover.index` | GET | `/discover` | `DiscoverPreviewController` | validated, bounded, explainable recommendations |
+| `discover.preferences.store` | POST | `/discover/preferences` | `DiscoveryPreferenceController` | policy-scoped item/category hide or reset |
+
+Both routes remain inside the authenticated application shell. The mutation
+is throttled, independently validated and authorized, and redirects to the
+canonical GET state. See `docs/portal/discovery.md` for privacy and destination
+boundaries.
+
 ## Global Page Identity Classification
 
 The 112 first-party routes accepting `GET` are classified below. The executable
@@ -65,7 +77,7 @@ the decision column is the desired page-identity boundary.
 | `devices.create` | `/devices/new` | `SmartDeviceCreateController` | `canonical-page` | retain `x-page-header` |
 | `devices.show` | `/devices/{smartDevice}` | `SmartDeviceController` | `deliberate-detail-or-profile` | retain token-compatible hero pending audit |
 | `devices.manage` | `/devices/{smartDevice}/manage` | `SmartDeviceManageController` | `deliberate-detail-or-profile` | retain token-compatible hero pending audit |
-| `discover.index` | `/discover` | `DiscoverPreviewController` | `canonical-page` | retain `x-page-header` |
+| `discover.index` | `/discover` | `DiscoverPreviewController` | `canonical-page` | database-backed recommendation hub using `x-page-header` |
 | `experts.index` | `/experts` | `ExpertDirectoryController` | `canonical-page` | retain `x-page-header` |
 | `experts.create` | `/experts/new` | `ExpertProfileCreateController` | `canonical-page` | retain `x-page-header` |
 | `experts.dashboard` | `/experts/workspace` | `ExpertDashboardController` | `canonical-page` | retain `x-page-header` |

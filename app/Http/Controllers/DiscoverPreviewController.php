@@ -1,39 +1,32 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
-use App\Http\Requests\BrowseRequest;
-use App\Services\DirectoryFilter;
-use App\Services\PreviewService;
+use App\Enums\DiscoveryCategory;
+use App\Http\Requests\BrowseDiscoveryRequest;
+use App\Models\User;
+use App\Services\DiscoveryCatalog;
+use App\Services\ProfilePresenter;
 use Illuminate\Contracts\View\View;
 
-class DiscoverPreviewController extends Controller
+final class DiscoverPreviewController extends Controller
 {
     public function __invoke(
-        BrowseRequest $request,
-        PreviewService $preview,
-        DirectoryFilter $filter,
+        BrowseDiscoveryRequest $request,
+        DiscoveryCatalog $discovery,
+        ProfilePresenter $profiles,
     ): View {
-        $data = $preview->discoverData();
         $parameters = $request->validated();
-        $data['results'] = $filter->apply(
-            $data['results'],
-            $parameters['q'] ?? null,
-            $parameters['filter'] ?? null,
-            null,
-            [
-                'pets' => ['pet'],
-                'people' => ['neighbor'],
-                'meetups' => ['meetup'],
-                'groups' => ['group'],
-            ],
-            ['kind', 'title', 'meta', 'description', 'detail', 'tags'],
-        );
+        $user = $request->user();
+        abort_unless($user instanceof User, 401);
+        $category = DiscoveryCategory::from($parameters['category'] ?? 'all');
+        $query = trim((string) ($parameters['q'] ?? ''));
 
         return view('discover.index', [
-            ...$data,
-            'directoryQuery' => $parameters['q'] ?? '',
-            'activeFilter' => $parameters['filter'] ?? 'top-matches',
+            'owner' => $profiles->owner(),
+            ...$discovery->browse($user, $query, $category),
         ]);
     }
 }

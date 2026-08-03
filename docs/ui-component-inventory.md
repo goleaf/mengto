@@ -10,6 +10,9 @@
 | Status | `x-status-badge`, `x-notice`, `x-callout` | event/registration/pet state |
 | Forms | `x-form-field`, `x-forum-error-summary`, action form/group/control | builder and registration mutations |
 | Collections | `x-directory-page`, toolbar, result grid, empty state, pagination | event discovery |
+| Discovery directions | `x-discovery-category-nav` plus canonical section heading | five module entry paths |
+| Discovery filtering | `x-discovery-toolbar`, `x-search-field`, filter chips | validated query/category and preference reset |
+| Discovery recommendations | `x-discovery-section`, `x-discovery-result-card` | bounded cards with status, media, reason, deep link, hide action |
 | Event schedule | `x-event-schedule` | responsive day agenda, status, track, room, public staff and manager edit action |
 | Event compatibility cards | `x-meetup-card`, `x-nearby-meetup-list`, `x-group-event-card` | catalogue/feed/group projections only |
 | Live event surface | event directory/workspace Blade | canonical database-backed event data |
@@ -20,3 +23,7 @@
 The three compatibility card components have different host contexts and are
 not removed by this package. They must continue to deep-link to canonical
 event routes and must not query, expose private venue data, or invent status.
+
+The discovery card is the only card for the cross-module recommendation hub.
+It composes existing status, linked-media, responsive-image, action, and icon
+components and is not a replacement for full module directory cards.

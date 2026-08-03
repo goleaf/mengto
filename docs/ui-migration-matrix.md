@@ -2,7 +2,9 @@
 
 | Existing surface | Point 13 decision | Status |
 | --- | --- | --- |
-| reference directories (`/pets`, `/places`, `/groups`, `/neighbors`, `/discover`) | retain canonical `x-page-header` path and verify semantic hook | targeted-verified |
+| reference directories (`/pets`, `/places`, `/groups`, `/neighbors`) | retain canonical `x-page-header` path and verify semantic hook | targeted-verified |
+| `/discover` static demo | replace hard-coded query/results/pulse/trending/weekend panels with the database-backed explainable recommendation hub | migrated and browser-verified |
+| legacy discover result components | remove `discover-query`, `discover-results`, and `discover-result`; compose canonical primitives through four discovery components | removed and targeted-verified |
 | private care directories (`/medical-records`, `/care-journals`) | canonical `x-page-header` with privacy context and authorized create action | migrated and targeted-verified |
 | operational directories (`/lost-found`, `/marketplace`, `/experts`) | canonical `x-page-header` with domain content below identity | migrated and targeted-verified |
 | `/messages` | canonical `x-page-header`; nine-folder toolbar remains above messaging shell | migrated and targeted-verified |

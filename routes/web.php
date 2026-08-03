@@ -50,6 +50,7 @@ use App\Http\Controllers\DeviceRetentionUpdateController;
 use App\Http\Controllers\DeviceSafeZoneStoreController;
 use App\Http\Controllers\DeviceSharedDashboardController;
 use App\Http\Controllers\DiscoverPreviewController;
+use App\Http\Controllers\DiscoveryPreferenceController;
 use App\Http\Controllers\ExpertActionController;
 use App\Http\Controllers\ExpertDashboardController;
 use App\Http\Controllers\ExpertDirectoryController;
@@ -287,7 +288,14 @@ Route::middleware('web')
                     });
             });
 
-        Route::get('/discover', DiscoverPreviewController::class)->name('discover.index');
+        Route::prefix('discover')
+            ->name('discover.')
+            ->group(function (): void {
+                Route::get('/', DiscoverPreviewController::class)->name('index');
+                Route::post('/preferences', DiscoveryPreferenceController::class)
+                    ->middleware('throttle:30,1')
+                    ->name('preferences.store');
+            });
         Route::get('/groups', GroupDirectoryPreviewController::class)->name('groups.index');
         Route::get('/groups/apartment-pets-pdx', GroupDetailPreviewController::class)
             ->defaults('group', 'apartment-pets')

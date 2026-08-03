@@ -72,9 +72,9 @@ final class SocialBlockService
     }
 
     /** @return list<int> */
-    public function blockedActorIdsFor(User $user): array
+    public function blockedUserIdsFor(User $user): array
     {
-        $blockedUserIds = SocialAccountBlock::query()
+        return SocialAccountBlock::query()
             ->select(['id', 'blocker_user_id', 'blocked_user_id'])
             ->active()
             ->where(function ($query) use ($user): void {
@@ -91,17 +91,48 @@ final class SocialBlockService
             ->unique()
             ->values()
             ->all();
+    }
 
-        if ($blockedUserIds === []) {
-            return [];
-        }
-
+    /**
+     * @param  list<int>|null  $blockedUserIds
+     * @return list<int>
+     */
+    public function blockedActorIdsFor(User $user, ?array $blockedUserIds = null): array
+    {
+        $blockedUserIds ??= $this->blockedUserIdsFor($user);
         $ownActorIds = $this->accountActors->controlledBy($user)->modelKeys();
+        $relationshipActorIds = $ownActorIds === []
+            ? []
+            : SocialRelationship::query()
+                ->select(['id', 'source_actor_id', 'target_actor_id'])
+                ->active()
+                ->where('relationship_type', SocialRelationshipType::Block->value)
+                ->where(function ($relationships) use ($ownActorIds): void {
+                    $relationships
+                        ->whereIn('source_actor_id', $ownActorIds)
+                        ->orWhereIn('target_actor_id', $ownActorIds);
+                })
+                ->orderBy('id')
+                ->limit((int) config('social_relationships.relationship_limit', 1000))
+                ->get()
+                ->flatMap(static fn (SocialRelationship $relationship): array => [
+                    $relationship->source_actor_id,
+                    $relationship->target_actor_id,
+                ])
+                ->reject(static fn (int $actorId): bool => in_array($actorId, $ownActorIds, true))
+                ->values()
+                ->all();
 
-        return $this->accountActors
-            ->controlledByUserIds($blockedUserIds)
-            ->filter(static fn (SocialActor $actor): bool => ! in_array($actor->id, $ownActorIds, true))
-            ->map(static fn (SocialActor $actor): int => $actor->id)
+        $accountActorIds = $blockedUserIds === []
+            ? []
+            : $this->accountActors
+                ->controlledByUserIds($blockedUserIds)
+                ->modelKeys();
+
+        return collect([...$relationshipActorIds, ...$accountActorIds])
+            ->map(static fn (mixed $actorId): int => (int) $actorId)
+            ->reject(static fn (int $actorId): bool => in_array($actorId, $ownActorIds, true))
+            ->unique()
             ->values()
             ->all();
     }

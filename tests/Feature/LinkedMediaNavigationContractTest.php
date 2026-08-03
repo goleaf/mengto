@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\ExpertProfile;
+use App\Models\ForumEvent;
 use App\Models\Listing;
 use App\Models\Order;
 use App\Models\Reservation;
@@ -129,6 +130,8 @@ test('meetup card media uses the same destination as its title', function () {
 });
 
 test('discover result media uses the same destination as its title', function () {
+    ForumEvent::factory()->create(['title' => 'Linked discovery event']);
+
     $response = $this->get(route('discover.index'));
 
     $response->assertSuccessful();
@@ -136,7 +139,7 @@ test('discover result media uses the same destination as its title', function ()
     $xpath = responseXPath($response);
     $cards = $xpath->query('//article[@data-discover-result]');
 
-    expect($cards->length)->toBe(4);
+    expect($cards->length)->toBe(1);
 
     foreach ($cards as $card) {
         $mediaLink = $xpath->query('.//a[@data-linked-media="linked"]', $card)->item(0);

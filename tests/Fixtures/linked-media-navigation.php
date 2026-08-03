@@ -15,7 +15,7 @@ return [
     'resources/views/components/context-hero.blade.php' => ['current-page'],
     'resources/views/components/conversation-item.blade.php' => ['linked'],
     'resources/views/components/detail-hero.blade.php' => ['current-page'],
-    'resources/views/components/discover-result.blade.php' => ['linked'],
+    'resources/views/components/discovery-result-card.blade.php' => ['linked'],
     'resources/views/components/expert-card.blade.php' => ['linked'],
     'resources/views/components/feed-card.blade.php' => ['composite'],
     'resources/views/components/group-card.blade.php' => ['linked'],

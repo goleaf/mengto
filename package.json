@@ -5,6 +5,7 @@
     "scripts": {
         "build": "vite build",
         "test:browser:a11y": "node scripts/accessibility-browser-check.mjs",
+        "test:browser:discover": "node scripts/discovery-browser-check.mjs",
         "dev": "vite",
         "skill-compass:check": "node .claude/skill-compass/install.js --check",
         "skill-compass:test": "node .claude/skill-compass/compass.js --self-test"
