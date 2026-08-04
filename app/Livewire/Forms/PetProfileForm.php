@@ -13,6 +13,8 @@ use App\Enums\PetBreedSource;
 use App\Enums\PetCoatLength;
 use App\Enums\PetCoatTexture;
 use App\Enums\PetFeatherType;
+use App\Enums\PetIdentifyingMarkType;
+use App\Enums\PetIdentifyingMarkVisibility;
 use App\Enums\PetLifeStage;
 use App\Enums\PetManagerRole;
 use App\Enums\PetManeType;
@@ -22,6 +24,7 @@ use App\Enums\PetSpeciesConfidence;
 use App\Enums\PetUndercoatType;
 use App\Models\PetProfile;
 use App\Models\PetProfileBreedOrigin;
+use App\Models\PetProfileIdentifyingMark;
 use App\Rules\ValidPetProfileName;
 use App\Services\PetBirthDetailsNormalizer;
 use Illuminate\Support\Str;
@@ -86,6 +89,17 @@ final class PetProfileForm extends Form
     public string $appearanceSummary = '';
 
     public string $identifyingMarks = '';
+
+    /**
+     * @var list<array{
+     *     id: int|null,
+     *     formKey: string,
+     *     type: string,
+     *     description: string,
+     *     visibility: string
+     * }>
+     */
+    public array $identifyingMarkItems = [];
 
     public string $appearancePrimaryColor = '';
 
@@ -168,6 +182,7 @@ final class PetProfileForm extends Form
             'bio' => ['nullable', 'string', 'max:3000'],
             'appearanceSummary' => ['nullable', 'string', 'max:1500'],
             'identifyingMarks' => ['nullable', 'string', 'max:1500'],
+            ...$this->identifyingMarkRules(),
             ...$this->appearanceRules(),
             'temperamentSummary' => ['nullable', 'string', 'max:1500'],
             'socialPreferences' => ['nullable', 'string', 'max:1500'],
@@ -368,6 +383,7 @@ final class PetProfileForm extends Form
             'appearanceSummary' => ['nullable', 'string', 'max:1500'],
             'identifyingMarks' => ['nullable', 'string', 'max:1500'],
             ...$this->appearanceRules(),
+            ...$this->identifyingMarkRules(),
         ]);
 
         return [
@@ -388,7 +404,32 @@ final class PetProfileForm extends Form
             'seasonal_shedding' => (string) ($validated['bodyCoveringSeasonalShedding'] ?? ''),
             'appearance_summary' => trim((string) ($validated['appearanceSummary'] ?? '')),
             'identifying_marks' => trim((string) ($validated['identifyingMarks'] ?? '')),
+            'identifying_marks_items' => array_map(static fn (array $mark): array => [
+                'id' => filled($mark['id'] ?? null) ? (int) $mark['id'] : null,
+                'type' => (string) ($mark['type'] ?? ''),
+                'description' => trim((string) ($mark['description'] ?? '')),
+                'visibility' => (string) ($mark['visibility'] ?? ''),
+            ], array_values($validated['identifyingMarkItems'] ?? [])),
         ];
+    }
+
+    public function addIdentifyingMark(): void
+    {
+        if (count($this->identifyingMarkItems) >= 12) {
+            return;
+        }
+
+        $this->identifyingMarkItems[] = $this->blankIdentifyingMark();
+    }
+
+    public function removeIdentifyingMark(int $index): void
+    {
+        if (! array_key_exists($index, $this->identifyingMarkItems)) {
+            return;
+        }
+
+        unset($this->identifyingMarkItems[$index]);
+        $this->identifyingMarkItems = array_values($this->identifyingMarkItems);
     }
 
     /** @return array{story: string, temperament_summary: string} */
@@ -479,6 +520,19 @@ final class PetProfileForm extends Form
         $this->bio = (string) ($profileData['story'] ?? '');
         $this->appearanceSummary = (string) ($profileData['appearance_summary'] ?? '');
         $this->identifyingMarks = (string) ($profileData['identifying_marks'] ?? '');
+
+        if ($profile->relationLoaded('activeIdentifyingMarks')) {
+            $this->identifyingMarkItems = $profile->activeIdentifyingMarks
+                ->map(static fn (PetProfileIdentifyingMark $mark): array => [
+                    'id' => $mark->id,
+                    'formKey' => $mark->mark_key,
+                    'type' => $mark->type->value,
+                    'description' => $mark->description,
+                    'visibility' => $mark->visibility->value,
+                ])
+                ->values()
+                ->all();
+        }
         $appearance = is_array($profileData['appearance'] ?? null)
             ? $profileData['appearance']
             : [];
@@ -577,6 +631,22 @@ final class PetProfileForm extends Form
         ];
     }
 
+    /** @return array<string, list<mixed>> */
+    private function identifyingMarkRules(): array
+    {
+        return [
+            'identifyingMarkItems' => ['array', 'max:12'],
+            'identifyingMarkItems.*.id' => ['nullable', 'integer', 'min:1'],
+            'identifyingMarkItems.*.formKey' => ['required', 'string', 'size:26'],
+            'identifyingMarkItems.*.type' => ['required', Rule::enum(PetIdentifyingMarkType::class)],
+            'identifyingMarkItems.*.description' => ['required', 'string', 'max:500'],
+            'identifyingMarkItems.*.visibility' => [
+                'required',
+                Rule::enum(PetIdentifyingMarkVisibility::class),
+            ],
+        ];
+    }
+
     /** @return list<string> */
     private function stringList(mixed $values): array
     {
@@ -669,6 +739,26 @@ final class PetProfileForm extends Form
             'confidence' => PetBreedConfidence::OwnerReported->value,
             'source' => PetBreedSource::Unknown->value,
             'approximateShare' => '',
+        ];
+    }
+
+    /**
+     * @return array{
+     *     id: null,
+     *     formKey: string,
+     *     type: string,
+     *     description: string,
+     *     visibility: string
+     * }
+     */
+    private function blankIdentifyingMark(): array
+    {
+        return [
+            'id' => null,
+            'formKey' => Str::lower((string) Str::ulid()),
+            'type' => PetIdentifyingMarkType::Scar->value,
+            'description' => '',
+            'visibility' => PetIdentifyingMarkVisibility::Verification->value,
         ];
     }
 

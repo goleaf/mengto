@@ -25,6 +25,8 @@ use App\Enums\PetCoatLength;
 use App\Enums\PetCoatTexture;
 use App\Enums\PetEvidenceStatus;
 use App\Enums\PetFeatherType;
+use App\Enums\PetIdentifyingMarkType;
+use App\Enums\PetIdentifyingMarkVisibility;
 use App\Enums\PetLifeStage;
 use App\Enums\PetManagerRole;
 use App\Enums\PetManeType;
@@ -427,6 +429,30 @@ final class ManagePetProfile extends Component
     public function seasonalSheddingOptions(): array
     {
         return $this->enumOptions(PetSeasonalShedding::cases());
+    }
+
+    /** @return array<string, string> */
+    #[Computed]
+    public function identifyingMarkTypeOptions(): array
+    {
+        return $this->enumOptions(PetIdentifyingMarkType::cases());
+    }
+
+    /** @return array<string, string> */
+    #[Computed]
+    public function identifyingMarkVisibilityOptions(): array
+    {
+        return $this->enumOptions(PetIdentifyingMarkVisibility::cases());
+    }
+
+    public function addIdentifyingMark(): void
+    {
+        $this->form->addIdentifyingMark();
+    }
+
+    public function removeIdentifyingMark(int $index): void
+    {
+        $this->form->removeIdentifyingMark($index);
     }
 
     public function addBreedOrigin(): void
@@ -940,6 +966,22 @@ final class ManagePetProfile extends Component
                     'position',
                 ]),
             ],
+            PetProfileCompletionStep::Appearance => [
+                'activeIdentifyingMarks' => fn ($query) => $query->select([
+                    'id',
+                    'mark_key',
+                    'pet_profile_id',
+                    'type',
+                    'description',
+                    'visibility',
+                    'position',
+                    'created_by_user_id',
+                    'updated_by_user_id',
+                    'retired_at',
+                    'created_at',
+                    'updated_at',
+                ]),
+            ],
             PetProfileCompletionStep::Owners => [
                 'managers' => fn ($query) => $query
                     ->select([
@@ -1020,6 +1062,7 @@ final class ManagePetProfile extends Component
                 'profile_data',
             ])
             ->withExists([
+                'activeIdentifyingMarks',
                 'primaryMedia',
                 'managers',
                 'privacySetting',
@@ -1081,6 +1124,23 @@ final class ManagePetProfile extends Component
             expectedLockVersion: $profile->lock_version,
             idempotencyKey: 'pet-profile-step:'.$this->stepIdempotencyKey,
         );
+
+        if ($step === PetProfileCompletionStep::Appearance) {
+            $updated->load(['activeIdentifyingMarks' => fn ($query) => $query->select([
+                'id',
+                'mark_key',
+                'pet_profile_id',
+                'type',
+                'description',
+                'visibility',
+                'position',
+                'created_by_user_id',
+                'updated_by_user_id',
+                'retired_at',
+                'created_at',
+                'updated_at',
+            ])]);
+        }
         $this->form->fillFromProfile($updated);
         $this->feedback = __("pet_profiles.feedback.{$feedbackKey}");
         $this->stepIdempotencyKey = (string) Str::uuid();
@@ -1174,6 +1234,8 @@ final class ManagePetProfile extends Component
             $this->managers,
             $this->history,
             $this->alternativeNames,
+            $this->identifyingMarkTypeOptions,
+            $this->identifyingMarkVisibilityOptions,
             $this->statusOptions,
         );
     }

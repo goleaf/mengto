@@ -629,13 +629,84 @@
                         <small id="managed-pet-appearance-help">{{ __('pet_profiles.completion.help.appearance') }}</small>
                         @error('form.appearanceSummary') <small id="managed-pet-appearance-error" role="alert">{{ $message }}</small> @enderror
                     </label>
+                </div>
+
+                <section id="managed-pet-identifying-marks-list" class="grid min-w-0 gap-4 rounded-2xl border border-paw-line bg-paw-canvas p-4 sm:p-5" aria-labelledby="managed-pet-identifying-marks-heading">
+                    <div class="grid gap-2 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-start">
+                        <div>
+                            <h3 id="managed-pet-identifying-marks-heading" class="text-lg font-semibold text-paw-ink">{{ __('pet_profiles.identifying_marks.title') }}</h3>
+                            <p class="mt-1 text-sm leading-6 text-paw-muted">{{ __('pet_profiles.identifying_marks.description') }}</p>
+                        </div>
+                        <button type="button" class="forum-button forum-button--secondary min-h-11" wire:click="addIdentifyingMark" wire:loading.attr="disabled" wire:target="addIdentifyingMark">
+                            <x-ui-icon name="plus" />
+                            <span>{{ __('pet_profiles.identifying_marks.add') }}</span>
+                        </button>
+                    </div>
+
+                    <x-notice
+                        icon="shield-check"
+                        :title="__('pet_profiles.identifying_marks.privacy_title')"
+                        :description="__('pet_profiles.identifying_marks.privacy_description')"
+                    />
+
+                    <div class="grid min-w-0 gap-4">
+                        @forelse ($form->identifyingMarkItems as $index => $mark)
+                            <fieldset wire:key="managed-pet-identifying-mark-{{ $mark['formKey'] }}" class="grid min-w-0 gap-4 rounded-2xl border border-paw-line bg-paw-surface p-4">
+                                <legend class="px-1 font-semibold text-paw-ink">{{ __('pet_profiles.identifying_marks.entry', ['number' => $loop->iteration]) }}</legend>
+                                <div class="grid min-w-0 gap-4 md:grid-cols-2">
+                                    <label class="forum-form__field" for="managed-pet-identifying-mark-type-{{ $index }}">
+                                        <span>{{ __('pet_profiles.identifying_marks.type_label') }}</span>
+                                        <select id="managed-pet-identifying-mark-type-{{ $index }}" wire:model="form.identifyingMarkItems.{{ $index }}.type" aria-describedby="managed-pet-identifying-mark-type-help-{{ $index }} managed-pet-identifying-mark-type-error-{{ $index }}" @error("form.identifyingMarkItems.{$index}.type") aria-invalid="true" @enderror>
+                                            @forelse ($this->identifyingMarkTypeOptions as $value => $label)
+                                                <option value="{{ $value }}">{{ $label }}</option>
+                                            @empty
+                                            @endforelse
+                                        </select>
+                                        <small id="managed-pet-identifying-mark-type-help-{{ $index }}">{{ __('pet_profiles.identifying_marks.type_help') }}</small>
+                                        @error("form.identifyingMarkItems.{$index}.type") <small id="managed-pet-identifying-mark-type-error-{{ $index }}" role="alert">{{ $message }}</small> @enderror
+                                    </label>
+
+                                    <label class="forum-form__field" for="managed-pet-identifying-mark-visibility-{{ $index }}">
+                                        <span>{{ __('pet_profiles.identifying_marks.visibility_label') }}</span>
+                                        <select id="managed-pet-identifying-mark-visibility-{{ $index }}" wire:model="form.identifyingMarkItems.{{ $index }}.visibility" aria-describedby="managed-pet-identifying-mark-visibility-help-{{ $index }} managed-pet-identifying-mark-visibility-error-{{ $index }}" @error("form.identifyingMarkItems.{$index}.visibility") aria-invalid="true" @enderror>
+                                            @forelse ($this->identifyingMarkVisibilityOptions as $value => $label)
+                                                <option value="{{ $value }}">{{ $label }}</option>
+                                            @empty
+                                            @endforelse
+                                        </select>
+                                        <small id="managed-pet-identifying-mark-visibility-help-{{ $index }}">{{ __('pet_profiles.identifying_marks.visibility_help') }}</small>
+                                        @error("form.identifyingMarkItems.{$index}.visibility") <small id="managed-pet-identifying-mark-visibility-error-{{ $index }}" role="alert">{{ $message }}</small> @enderror
+                                    </label>
+
+                                    <label class="forum-form__field md:col-span-2" for="managed-pet-identifying-mark-description-{{ $index }}">
+                                        <span>{{ __('pet_profiles.identifying_marks.description_label') }}</span>
+                                        <textarea id="managed-pet-identifying-mark-description-{{ $index }}" wire:model="form.identifyingMarkItems.{{ $index }}.description" rows="3" maxlength="500" aria-describedby="managed-pet-identifying-mark-description-help-{{ $index }} managed-pet-identifying-mark-description-error-{{ $index }}" @error("form.identifyingMarkItems.{$index}.description") aria-invalid="true" @enderror></textarea>
+                                        <small id="managed-pet-identifying-mark-description-help-{{ $index }}">{{ __('pet_profiles.identifying_marks.description_help') }}</small>
+                                        @error("form.identifyingMarkItems.{$index}.description") <small id="managed-pet-identifying-mark-description-error-{{ $index }}" role="alert">{{ $message }}</small> @enderror
+                                    </label>
+                                </div>
+                                <div>
+                                    <button type="button" class="forum-button forum-button--ghost min-h-11" wire:click="removeIdentifyingMark({{ $index }})" wire:loading.attr="disabled" wire:target="removeIdentifyingMark({{ $index }})">
+                                        <x-ui-icon name="trash-2" />
+                                        <span>{{ __('pet_profiles.identifying_marks.remove') }}</span>
+                                    </button>
+                                </div>
+                            </fieldset>
+                        @empty
+                            <div class="rounded-2xl border border-dashed border-paw-line p-5 text-sm leading-6 text-paw-muted">
+                                {{ __('pet_profiles.identifying_marks.empty') }}
+                            </div>
+                        @endforelse
+                    </div>
+                    @error('form.identifyingMarkItems') <small role="alert">{{ $message }}</small> @enderror
+
                     <label class="forum-form__field" for="managed-pet-identifying-marks">
-                        <span>{{ __('pet_profiles.fields.identifying_marks') }}</span>
-                        <textarea id="managed-pet-identifying-marks" wire:model="form.identifyingMarks" rows="5" maxlength="1500" aria-describedby="managed-pet-identifying-marks-help managed-pet-identifying-marks-error" @error('form.identifyingMarks') aria-invalid="true" @enderror></textarea>
-                        <small id="managed-pet-identifying-marks-help">{{ __('pet_profiles.appearance.identifying_marks_private_help') }}</small>
+                        <span>{{ __('pet_profiles.identifying_marks.legacy_label') }}</span>
+                        <textarea id="managed-pet-identifying-marks" wire:model="form.identifyingMarks" rows="4" maxlength="1500" aria-describedby="managed-pet-identifying-marks-help managed-pet-identifying-marks-error" @error('form.identifyingMarks') aria-invalid="true" @enderror></textarea>
+                        <small id="managed-pet-identifying-marks-help">{{ __('pet_profiles.identifying_marks.legacy_help') }}</small>
                         @error('form.identifyingMarks') <small id="managed-pet-identifying-marks-error" role="alert">{{ $message }}</small> @enderror
                     </label>
-                </div>
+                </section>
                 <x-pet-profile-save-status :feedback="$feedback" />
                 <button type="submit" class="forum-button forum-button--primary min-h-11" wire:loading.attr="disabled" wire:target="saveAppearance"><x-ui-icon name="save" /><span wire:loading.remove wire:target="saveAppearance">{{ __('pet_profiles.actions.save_step') }}</span><span wire:loading wire:target="saveAppearance">{{ __('pet_profiles.actions.saving') }}</span></button>
             </form>

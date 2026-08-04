@@ -52,6 +52,8 @@ use Illuminate\Support\Carbon;
  * @property-read Collection<int, PetProfileManager> $managers
  * @property-read Collection<int, PetProfileName> $names
  * @property-read Collection<int, PetProfileBreedOrigin> $breedOrigins
+ * @property-read Collection<int, PetProfileIdentifyingMark> $identifyingMarks
+ * @property-read Collection<int, PetProfileIdentifyingMark> $activeIdentifyingMarks
  * @property-read Collection<int, PetProfileAccessRequest> $accessRequests
  * @property-read PetProfileFact|null $currentMicrochipRecord
  * @property-read MedicalRecord|null $medicalRecord
@@ -167,6 +169,20 @@ final class PetProfile extends Model
         return $this->hasMany(PetProfileBreedOrigin::class)
             ->orderBy('position')
             ->orderBy('id');
+    }
+
+    /** @return HasMany<PetProfileIdentifyingMark, $this> */
+    public function identifyingMarks(): HasMany
+    {
+        return $this->hasMany(PetProfileIdentifyingMark::class)
+            ->orderBy('position')
+            ->orderBy('id');
+    }
+
+    /** @return HasMany<PetProfileIdentifyingMark, $this> */
+    public function activeIdentifyingMarks(): HasMany
+    {
+        return $this->identifyingMarks()->active();
     }
 
     /** @return HasMany<PetProfileManager, $this> */

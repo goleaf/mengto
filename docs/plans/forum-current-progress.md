@@ -1,13 +1,13 @@
 # Forum Current Progress
 
-Last updated: 2026-08-03.
+Last updated: 2026-08-04.
 
 ## Current Phase
 
 Source preservation, atomic extraction, repository discovery, and domain
 planning are documented for all ten source payloads, but their control IDs
 still require exact evidence before Phases 0-2 can be called verified. The
-combined catalogue has 1,632 verified IDs and 36,745 open IDs. Forum/taxonomy,
+combined catalogue has 1,718 verified IDs and 36,659 open IDs. Forum/taxonomy,
 pet, social, content, community, and medical foundations are implemented in
 independently evidenced slices. Communication, complete portal architecture,
 the expanded event lifecycle, and all remaining depth/release packages stay
@@ -74,7 +74,7 @@ as complete. The dependency-ordered remaining work is in
   immutable case events, protected idempotent contact relays, advisory
   duplicate detection, unified false-sighting/reward-scam reports, and
   privacy-safe archival that preserves the complete operational history.
-- Requirement evidence is a deterministic overlay. `1,667` atomic requirements
+- Requirement evidence is a deterministic overlay. `1,718` atomic requirements
   are verified with file/test evidence and none are currently marked
   in-progress.
 - The pet-profile foundation preserves the existing aggregate while adding
@@ -83,11 +83,11 @@ as complete. The dependency-ordered remaining work is in
   idempotent backfill, and localized class-based Livewire workflows. Its
   focused compatibility slice passed 21 tests and 1,603 assertions; the final
   serial suite passed 1,748 tests and 68,172 assertions. Across the foundation
-  and independently evidenced focused packages, exactly 358 pet IDs are
-  verified; all remaining pet requirements stay open. The latest breed-origin
-  slice preserves one, mixed, possible-multiple, no-breed, and unknown states
-  with separate confidence and provenance, and passed an isolated
-  2,867-test repository suite.
+  and independently evidenced focused packages, exactly 409 pet IDs are
+  verified; all remaining pet requirements stay open. The latest structured
+  identifying-mark slice preserves encrypted private verification evidence,
+  exposes only deliberately public rows, and passed an exact isolated
+  2,998-test repository suite.
 - The social revision is preserved and atomized across 18 domains and phases
   27-34. The canonical actor/request/relationship/audit foundation, bounded
   backfill, policies, class-based Livewire relationship center, translations,

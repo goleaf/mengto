@@ -108,6 +108,11 @@
 
 ### Pet Profiles
 
+- Added structured identifying marks with ten controlled feature types,
+  encrypted per-row descriptions, reversible retirement, and explicit public
+  or private-verification visibility. Public profiles load only active public
+  rows; friend, clinic, and active-search audiences remain unavailable until
+  their authoritative access boundaries are implemented.
 - Added a species-neutral structured appearance catalogue with primary and
   additional colors, spots/stripes/gradient patterns, and optional feather,
   scale, and seasonal clarification; public profiles now render a localized

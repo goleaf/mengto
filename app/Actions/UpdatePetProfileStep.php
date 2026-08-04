@@ -14,6 +14,8 @@ use App\Services\PetBirthDetailsNormalizer;
 use App\Services\PetBodyCoveringNormalizer;
 use App\Services\PetBreedOriginNormalizer;
 use App\Services\PetBreedOriginSynchronizer;
+use App\Services\PetIdentifyingMarkNormalizer;
+use App\Services\PetIdentifyingMarkSynchronizer;
 use App\Services\PetLifeStageOverrideNormalizer;
 use App\Services\PetProfileAccess;
 use App\Services\PetProfileCache;
@@ -66,6 +68,8 @@ final class UpdatePetProfileStep
         private readonly PetProfileNameHistory $nameHistory,
         private readonly PetAppearanceNormalizer $appearance,
         private readonly PetBodyCoveringNormalizer $bodyCovering,
+        private readonly PetIdentifyingMarkNormalizer $identifyingMarks,
+        private readonly PetIdentifyingMarkSynchronizer $identifyingMarkSynchronizer,
         private readonly PetLifeStageOverrideNormalizer $lifeStageOverrides,
         private readonly PetBirthDetailsNormalizer $birthDetails,
         private readonly PetBreedOriginNormalizer $breedOrigins,
@@ -122,6 +126,7 @@ final class UpdatePetProfileStep
             }
 
             $normalizedBreedOrigins = null;
+            $normalizedIdentifyingMarks = null;
 
             if ($step === PetProfileCompletionStep::BreedAndOrigin) {
                 $locked->load(['breedOrigins' => fn ($query) => $query->select([
@@ -138,6 +143,25 @@ final class UpdatePetProfileStep
                 $normalizedBreedOrigins = $this->breedOrigins->normalize($data, $locked);
             }
 
+            if ($step === PetProfileCompletionStep::Appearance
+                && array_key_exists('identifying_marks_items', $data)) {
+                $locked->load(['activeIdentifyingMarks' => fn ($query) => $query->select([
+                    'id',
+                    'mark_key',
+                    'pet_profile_id',
+                    'type',
+                    'description',
+                    'visibility',
+                    'position',
+                    'created_by_user_id',
+                    'updated_by_user_id',
+                    'retired_at',
+                    'created_at',
+                    'updated_at',
+                ])]);
+                $normalizedIdentifyingMarks = $this->identifyingMarks->normalize($data, $locked);
+            }
+
             [$attributes, $fields] = $this->changes(
                 $locked,
                 $step,
@@ -151,8 +175,15 @@ final class UpdatePetProfileStep
                     $locked,
                     $normalizedBreedOrigins['origins'],
                 );
+            $identifyingMarksChanged = $normalizedIdentifyingMarks !== null
+                && $this->identifyingMarkSynchronizer->differs(
+                    $locked,
+                    $normalizedIdentifyingMarks,
+                );
 
-            if (! $locked->isDirty(array_keys($attributes)) && ! $breedOriginsChanged) {
+            if (! $locked->isDirty(array_keys($attributes))
+                && ! $breedOriginsChanged
+                && ! $identifyingMarksChanged) {
                 return $locked->refresh();
             }
 
@@ -171,6 +202,14 @@ final class UpdatePetProfileStep
                 $this->breedOriginSynchronizer->sync(
                     $locked,
                     $normalizedBreedOrigins['origins'],
+                );
+            }
+
+            if ($normalizedIdentifyingMarks !== null && $identifyingMarksChanged) {
+                $this->identifyingMarkSynchronizer->sync(
+                    $locked,
+                    $normalizedIdentifyingMarks,
+                    $user->id,
                 );
             }
 

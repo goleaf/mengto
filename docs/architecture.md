@@ -386,6 +386,16 @@ Species-aware body-covering facts share that encrypted compatibility boundary.
 The manager-only skin observation is intentionally absent from that presenter;
 it is descriptive profile state rather than a diagnosis or medical record.
 
+Identifying marks are a bounded normalized child relation because each item
+needs its own stable key, encrypted description, order, lifecycle, actor, and
+audience. `PetIdentifyingMarkNormalizer` owns the server validation boundary,
+`PetIdentifyingMarkSynchronizer` owns the short scoped retirement/upsert, and
+`PetIdentifyingMarkPresenter` owns the public-safe projection. The public read
+is scoped to active public rows before hydration and filtered again by the
+presenter. Private-verification rows remain manager-only; friend, clinic, and
+active-search audiences are not offered until those authoritative consumers
+exist.
+
 ## Canonical Social Relationship Boundary
 
 `SocialActor` is a one-to-one internal adapter around an authoritative user,

@@ -150,6 +150,14 @@ or finder consumption `pet.identity.0243` remain open. Exact boundaries and
 evidence are in
 `docs/plans/pet-profile-body-covering-work-package.md`.
 
+The structured identifying-mark package implements 17 selected records within
+`pet.identity.0246-pet.identity.0269`. It stores at most twelve ordered rows
+with controlled visible-feature types, encrypted descriptions, actor history,
+reversible retirement, and public or private-verification visibility. Friend,
+clinic, and active-search consumers remain open under `pet.identity.0262`,
+`pet.identity.0264`, and `pet.identity.0265`. Exact boundaries and evidence
+are in `docs/plans/pet-profile-identifying-marks-work-package.md`.
+
 ## Phase 19: Ownership And Privacy
 
 **IDs:** `pet.ownership.0001-pet.ownership.0393` and

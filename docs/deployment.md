@@ -297,3 +297,23 @@ direct enum and boolean payloads fail, values survive reload, and the public
 projection excludes the private skin observation. Rollback is an application-
 code rollback; stored schema-versioned data remains encrypted and is ignored
 safely by older compatibility readers.
+
+## Pet Identifying Marks Migration
+
+`2026_08_04_024152_create_pet_profile_identifying_marks_table.php` adds the
+normalized encrypted identifying-mark relation and its manager, public, and
+actor indexes. It does not guess structured rows from the historical private
+free-text value, create public data, or require a queue, cache store,
+environment key, or public-file route.
+
+1. Back up and record pet-profile counts, then run
+   `php artisan migrate --force` and inspect the foreign keys and indexes.
+2. Smoke an empty profile, one public mark, one private-verification mark,
+   reorder, removal/retirement, invalid direct input, and reload restoration.
+3. Confirm the public route receives only the active public row and rendered
+   HTML contains neither private descriptions nor encrypted database values.
+4. Rebuild config, event, route, and view caches.
+
+Rollback is safe only before production writes depend on this relation. After
+that point retain the encrypted proof and use a reviewed forward migration;
+do not destroy retired evidence or copy it into the legacy free-text field.

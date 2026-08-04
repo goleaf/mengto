@@ -1154,6 +1154,37 @@ Observed package evidence on 2026-08-04:
 The reusable browser command is
 `BROWSER_BASE_URL=http://127.0.0.1:PORT BROWSER_ALLOW_DATA_MUTATION=1 node scripts/pet-workspace-browser-check.mjs --covering`.
 
+## Pet Structured Identifying Marks Verification
+
+`PetProfileIdentifyingMarkTest` covers the normalized schema and indexes,
+encrypted storage, controlled types and visibility, bounded item and text
+counts, cross-pet and retired-key rejection, authorization, optimistic replay,
+no-op behavior, retirement, EN/LT/RU restoration, legacy compatibility,
+completion detection, public/private projection, and zero-query presentation.
+
+Observed package evidence on 2026-08-04:
+
+- focused suite: 17 tests and 94 assertions;
+- marks, appearance, body-covering, and completion regression: 85 tests and
+  465 assertions;
+- complete pet-profile regression: 196 tests and 5,687 assertions;
+- architecture, localization, page-identity, responsive, and focused package
+  slice: 94 tests and 67,847 assertions;
+- exact isolated complete sequential repository suite: 2,998 tests and
+  102,330 assertions in 181.707 seconds with a 1 GB PHP limit;
+- full Pint and Larastan, Composer strict validation, locked audit, PHP
+  platform requirements, npm audit, JavaScript syntax, Vite 8.2 build,
+  disposable migration and repeated seed, cache compilation, immutable source,
+  and deterministic requirement generation passed;
+- connected Chrome added, saved, and restored a public ear feature and private
+  verification tattoo through Livewire, exposed only the public value, and
+  passed desktop, 390px, and 320px geometry, labels, touch targets, raw-key,
+  duplicate-ID, privacy, and console checks; screenshots were visually
+  reviewed.
+
+The reusable browser command is
+`BROWSER_BASE_URL=http://127.0.0.1:PORT BROWSER_ALLOW_DATA_MUTATION=1 node scripts/pet-workspace-browser-check.mjs --marks`.
+
 ## Messaging Context And Feedback Verification
 
 `MessageCenterLocalizationTest` guards exact EN/LT/RU key parity, all eight

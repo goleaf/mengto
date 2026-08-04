@@ -11,6 +11,7 @@ use App\Models\PetProfileMedia;
 use App\Services\PetAppearancePresenter;
 use App\Services\PetBodyCoveringPresenter;
 use App\Services\PetBreedOriginPresenter;
+use App\Services\PetIdentifyingMarkPresenter;
 use App\Services\PetLifeStagePresenter;
 use App\Services\PetProfileAgeLabel;
 use App\Services\PetSpeciesLabel;
@@ -40,6 +41,8 @@ final class PublicPetProfile extends Component
 
     private PetBodyCoveringPresenter $bodyCovering;
 
+    private PetIdentifyingMarkPresenter $identifyingMarks;
+
     private PetLifeStagePresenter $lifeStages;
 
     public function boot(
@@ -49,6 +52,7 @@ final class PublicPetProfile extends Component
         PetBreedOriginPresenter $breedOrigins,
         PetAppearancePresenter $appearance,
         PetBodyCoveringPresenter $bodyCovering,
+        PetIdentifyingMarkPresenter $identifyingMarks,
         PetLifeStagePresenter $lifeStages,
         PetSpeciesLabel $speciesLabels,
     ): void {
@@ -58,6 +62,7 @@ final class PublicPetProfile extends Component
         $this->breedOrigins = $breedOrigins;
         $this->appearance = $appearance;
         $this->bodyCovering = $bodyCovering;
+        $this->identifyingMarks = $identifyingMarks;
         $this->lifeStages = $lifeStages;
         $this->speciesLabels = $speciesLabels;
     }
@@ -136,6 +141,17 @@ final class PublicPetProfile extends Component
                     'approximate_share_percent',
                     'position',
                 ]),
+                'activeIdentifyingMarks' => fn ($query) => $query
+                    ->select([
+                        'id',
+                        'mark_key',
+                        'pet_profile_id',
+                        'type',
+                        'description',
+                        'visibility',
+                        'position',
+                    ])
+                    ->where('visibility', 'public'),
                 'names' => fn ($query) => $query
                     ->select([
                         'id',
@@ -196,6 +212,7 @@ final class PublicPetProfile extends Component
             'life_stage' => $this->lifeStages->for($profile),
             'appearance' => $this->appearance->for($profile),
             'body_covering' => $this->bodyCovering->for($profile),
+            'identifying_marks' => $this->identifyingMarks->publicFor($profile),
             'status' => $profile->status->label(),
             'bio' => (string) ($profileData['story'] ?? ''),
             'owner' => $ownerLabel,

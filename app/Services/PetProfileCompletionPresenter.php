@@ -68,6 +68,7 @@ final class PetProfileCompletionPresenter
                 || $profile->breed_origin_type !== null,
             PetProfileCompletionStep::Appearance => $this->hasText($data, 'appearance_summary')
                 || $this->hasText($data, 'identifying_marks')
+                || $this->existsAttribute($profile, 'active_identifying_marks_exists')
                 || $this->hasStructuredAppearance($data)
                 || $this->hasStructuredBodyCovering($data),
             PetProfileCompletionStep::Character => $this->hasText($data, 'story')

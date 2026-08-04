@@ -191,6 +191,22 @@ the skin observation. These display facts are not filtered, joined, or ordered
 in this package, so no new column, migration, backfill, index, or query is
 required. Removing all meaningful values removes only the nested object.
 
+## Pet Identifying Mark Relation
+
+`pet_profile_identifying_marks` stores at most twelve ordered active rows for
+one pet profile. Every row has a globally unique stable key, a controlled mark
+type, an encrypted bounded description, public or private-verification
+visibility, author/updater attribution, and nullable retirement time. A
+retired row remains owned by the same pet and is never reactivated through a
+browser-supplied key.
+
+`(pet_profile_id, retired_at, position, id)` supports the authorized manager
+projection. `(pet_profile_id, visibility, retired_at, position, id)` supports
+the bounded public projection. Actor foreign keys have explicit indexes and
+become null if the account is deleted; the pet foreign key cascades so the
+child rows cannot outlive their aggregate. Descriptions use the framework's
+encrypted model cast and are never filter, sort, or join operands.
+
 ## Data Retention
 
 Retention is category-specific:

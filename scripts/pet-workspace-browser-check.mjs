@@ -11,6 +11,7 @@ const verifyBirth = process.argv.includes('--birth');
 const verifyBreed = process.argv.includes('--breed');
 const verifyAppearance = process.argv.includes('--appearance');
 const verifyCovering = process.argv.includes('--covering');
+const verifyMarks = process.argv.includes('--marks');
 const verifyNames = process.argv.includes('--names');
 const allowDataMutation = process.env.BROWSER_ALLOW_DATA_MUTATION === '1';
 const origin = new URL(baseUrl);
@@ -25,8 +26,8 @@ if (!['localhost', '127.0.0.1', '::1'].includes(origin.hostname)) {
     throw new Error('The pet workspace browser check only runs against a loopback URL.');
 }
 
-if ((verifyAutosave || verifyBirth || verifyBreed || verifyAppearance || verifyCovering || verifyNames) && ! allowDataMutation) {
-    throw new Error('--autosave, --birth, --breed, --appearance, --covering, and --names require BROWSER_ALLOW_DATA_MUTATION=1 and a disposable database.');
+if ((verifyAutosave || verifyBirth || verifyBreed || verifyAppearance || verifyCovering || verifyMarks || verifyNames) && ! allowDataMutation) {
+    throw new Error('--autosave, --birth, --breed, --appearance, --covering, --marks, and --names require BROWSER_ALLOW_DATA_MUTATION=1 and a disposable database.');
 }
 
 const assert = (condition, message) => {
@@ -167,18 +168,20 @@ const waitUntil = async (callback, message, timeout = 15_000) => {
 
 const login = async (client, sessionId) => {
     await navigate(client, sessionId, `${baseUrl}/login`);
-    await evaluate(client, sessionId, `(() => {
+    const credentialFieldsReady = await evaluate(client, sessionId, `(() => {
         const setValue = (selector, value) => {
             const input = document.querySelector(selector);
-            const setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set;
-            setter.call(input, value);
+            if (!(input instanceof HTMLInputElement)) return false;
+            input.value = value;
             input.dispatchEvent(new Event('input', { bubbles: true }));
             input.dispatchEvent(new Event('change', { bubbles: true }));
+            return true;
         };
-        setValue('#login-email', 'mia@example.test');
-        setValue('#login-password', 'password');
-        document.querySelector('[data-auth-page="login"] .auth-button--primary').click();
+        return setValue('#login-email', 'mia@example.test')
+            && setValue('#login-password', 'password');
     })()`);
+    assert(credentialFieldsReady, 'Login credential controls were not ready.');
+    await evaluate(client, sessionId, `document.querySelector('[data-auth-page="login"] .auth-button--primary')?.click()`);
     await waitUntil(
         async () => !(await evaluate(client, sessionId, 'location.pathname')).includes('/login'),
         'Login did not complete.',
@@ -325,6 +328,7 @@ try {
     let breedAudit = null;
     let appearanceAudit = null;
     let coveringAudit = null;
+    let identifyingMarkAudit = null;
     let nameAudit = null;
 
     if (verifyBirth) {
@@ -1092,6 +1096,152 @@ try {
         coveringAudit = { initial, restored, publicProjection, responsive };
     }
 
+    if (verifyMarks) {
+        await client.send('Emulation.setDeviceMetricsOverride', {
+            width: 1440, height: 900, deviceScaleFactor: 1,
+            mobile: false, screenWidth: 1440, screenHeight: 900,
+        }, sessionId);
+        await client.send('Emulation.setTouchEmulationEnabled', { enabled: false }, sessionId);
+        await setLocale(client, sessionId, 'en');
+        const manageUrl = `${baseUrl}/pets/manage/pet-scout?step=appearance`;
+        await navigate(client, sessionId, manageUrl);
+        const initial = await evaluate(client, sessionId, `(() => ({
+            sectionCount: document.querySelectorAll('#managed-pet-identifying-marks-list').length,
+            entryCount: document.querySelectorAll('textarea[id^="managed-pet-identifying-mark-description-"]').length,
+            privacyNotice: document.body.innerText.includes('Keep one proof detail private'),
+            addButton: [...document.querySelectorAll('#managed-pet-identifying-marks-list button')]
+                .some((button) => button.textContent.includes('Add identifying mark')),
+        }))()`);
+        assert(
+            initial.sectionCount === 1 && initial.entryCount === 0
+                && initial.privacyNotice && initial.addButton,
+            `The identifying-mark editor is incomplete: ${JSON.stringify(initial)}.`,
+        );
+
+        for (const index of [0, 1]) {
+            await evaluate(client, sessionId, `(() => {
+                [...document.querySelectorAll('#managed-pet-identifying-marks-list button')]
+                    .find((button) => button.textContent.includes('Add identifying mark'))?.click();
+            })()`);
+            await waitUntil(
+                async () => await evaluate(client, sessionId, `Boolean(document.querySelector('#managed-pet-identifying-mark-description-${index}'))`),
+                `Identifying-mark editor ${index + 1} did not appear.`,
+            );
+        }
+
+        const publicMark = `Browser public ear feature ${Date.now()}`;
+        const verificationMark = `Browser private verification tattoo ${Date.now()}`;
+        const requestsBeforeSave = livewireRequests.length;
+        await evaluate(client, sessionId, `((values) => {
+            const setSelect = (selector, value) => {
+                const input = document.querySelector(selector);
+                const setter = Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, 'value').set;
+                setter.call(input, value);
+                input.dispatchEvent(new Event('change', { bubbles: true }));
+            };
+            const setText = (selector, value) => {
+                const input = document.querySelector(selector);
+                const setter = Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, 'value').set;
+                setter.call(input, value);
+                input.dispatchEvent(new Event('input', { bubbles: true }));
+            };
+            setSelect('#managed-pet-identifying-mark-type-0', 'ear-feature');
+            setSelect('#managed-pet-identifying-mark-visibility-0', 'public');
+            setText('#managed-pet-identifying-mark-description-0', values.publicMark);
+            setSelect('#managed-pet-identifying-mark-type-1', 'tattoo');
+            setSelect('#managed-pet-identifying-mark-visibility-1', 'verification');
+            setText('#managed-pet-identifying-mark-description-1', values.verificationMark);
+            document.querySelector('[data-pet-profile-autosave-step="appearance"]').requestSubmit();
+        })(${JSON.stringify({ publicMark, verificationMark })})`);
+        await waitUntil(
+            async () => await evaluate(client, sessionId, `document.body.innerText.includes('Appearance details saved.')`),
+            'The identifying marks were not saved through Livewire.',
+        );
+        assert(livewireRequests.length - requestsBeforeSave >= 1, 'Saving identifying marks did not reach Livewire.');
+
+        await navigate(client, sessionId, manageUrl);
+        const restored = await evaluate(client, sessionId, `(() => ({
+            types: [...document.querySelectorAll('select[id^="managed-pet-identifying-mark-type-"]')].map((input) => input.value),
+            visibilities: [...document.querySelectorAll('select[id^="managed-pet-identifying-mark-visibility-"]')].map((input) => input.value),
+            descriptions: [...document.querySelectorAll('textarea[id^="managed-pet-identifying-mark-description-"]')].map((input) => input.value),
+        }))()`);
+        assert(
+            JSON.stringify(restored.types) === JSON.stringify(['ear-feature', 'tattoo'])
+                && JSON.stringify(restored.visibilities) === JSON.stringify(['public', 'verification']),
+            'The identifying-mark types or visibility values were not restored.',
+        );
+        assert(
+            JSON.stringify(restored.descriptions) === JSON.stringify([publicMark, verificationMark]),
+            'The encrypted identifying-mark descriptions were not restored.',
+        );
+
+        await navigate(client, sessionId, `${baseUrl}/pets/profile/pet-scout`);
+        const publicProjection = await evaluate(client, sessionId, `((values) => ({
+            titleVisible: document.body.innerText.includes('Public identifying marks'),
+            publicMarkVisible: document.body.innerText.includes(values.publicMark),
+            verificationMarkVisible: document.body.innerText.includes(values.verificationMark),
+            privacyNoticeVisible: document.body.innerText.includes('Private verification evidence is withheld.'),
+            rawKeys: document.body.innerText.match(/\bpet_profiles\.[a-z0-9_.-]+/gi) ?? [],
+            overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+        }))(${JSON.stringify({ publicMark, verificationMark })})`);
+        assert(publicProjection.titleVisible && publicProjection.publicMarkVisible, 'The public identifying-mark projection is incomplete.');
+        assert(! publicProjection.verificationMarkVisible, 'Private verification evidence leaked into the public profile.');
+        assert(publicProjection.privacyNoticeVisible, 'The public identifying-mark privacy notice is missing.');
+        assert(publicProjection.rawKeys.length === 0, 'The public identifying-mark projection exposes translation keys.');
+        assert(publicProjection.overflow <= 1, `The public identifying-mark projection overflows by ${publicProjection.overflow}px.`);
+
+        const responsive = {};
+        for (const viewport of [
+            { label: 'desktop', width: 1440, height: 900, mobile: false },
+            { label: 'mobile-390', width: 390, height: 844, mobile: true },
+            { label: 'mobile-320', width: 320, height: 900, mobile: true },
+        ]) {
+            await client.send('Emulation.setDeviceMetricsOverride', {
+                width: viewport.width, height: viewport.height, deviceScaleFactor: 1,
+                mobile: viewport.mobile, screenWidth: viewport.width, screenHeight: viewport.height,
+            }, sessionId);
+            await client.send('Emulation.setTouchEmulationEnabled', { enabled: viewport.mobile }, sessionId);
+            await navigate(client, sessionId, manageUrl);
+            const audit = await evaluate(client, sessionId, `(() => {
+                const section = document.querySelector('#managed-pet-identifying-marks-list');
+                const visible = (element) => {
+                    const style = getComputedStyle(element);
+                    const box = element.getBoundingClientRect();
+                    return style.display !== 'none' && style.visibility !== 'hidden'
+                        && box.width > 0 && box.height > 0;
+                };
+                const controls = [...(section?.querySelectorAll('button, input, select, textarea') ?? [])].filter(visible);
+                const ids = [...document.querySelectorAll('[id]')].map((element) => element.id).filter(Boolean);
+                return {
+                    h1Count: document.querySelectorAll('main h1').length,
+                    sectionCount: section ? 1 : 0,
+                    entryCount: document.querySelectorAll('textarea[id^="managed-pet-identifying-mark-description-"]').length,
+                    overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+                    rawKeys: document.body.innerText.match(/\bpet_profiles\.[a-z0-9_.-]+/gi) ?? [],
+                    unnamed: controls.filter((element) => !(
+                        element.getAttribute('aria-label') || element.getAttribute('aria-labelledby')
+                        || element.labels?.length || element.textContent.trim() || element.title
+                    )).length,
+                    smallTargets: controls.filter((element) => {
+                        const box = element.getBoundingClientRect();
+                        return box.width < 44 || box.height < 44;
+                    }).length,
+                    duplicateIds: [...new Set(ids.filter((id, index) => ids.indexOf(id) !== index))],
+                };
+            })()`);
+            assert(audit.h1Count === 1 && audit.sectionCount === 1 && audit.entryCount === 2, `${viewport.label}: invalid identifying-mark workspace structure.`);
+            assert(audit.overflow <= 1, `${viewport.label}: identifying-mark workspace overflows by ${audit.overflow}px.`);
+            assert(audit.rawKeys.length === 0 && audit.unnamed === 0, `${viewport.label}: identifying-mark workspace exposes raw keys or unnamed controls.`);
+            assert(audit.duplicateIds.length === 0, `${viewport.label}: duplicate identifying-mark control IDs remain.`);
+            if (viewport.mobile) assert(audit.smallTargets === 0, `${viewport.label}: identifying-mark controls below 44px remain.`);
+            responsive[viewport.label] = audit;
+            const screenshot = await client.send('Page.captureScreenshot', { format: 'png', captureBeyondViewport: true }, sessionId);
+            await writeFile(join(outputDirectory, `pet-identifying-marks-${viewport.label}.png`), Buffer.from(screenshot.data, 'base64'));
+        }
+
+        identifyingMarkAudit = { initial, restored, publicProjection, responsive };
+    }
+
     if (verifyAutosave) {
         await client.send('Emulation.setDeviceMetricsOverride', {
             width: 1440, height: 900, deviceScaleFactor: 1,
@@ -1337,6 +1487,8 @@ try {
         appearanceAudit,
         verifyCovering,
         coveringAudit,
+        verifyMarks,
+        identifyingMarkAudit,
         verifyNames,
         nameAudit,
         consoleErrors,

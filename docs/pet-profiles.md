@@ -272,6 +272,27 @@ mark modelling, measurements, taxonomy verification, and medical records
 remain separate boundaries. Exact scope is in
 `docs/plans/pet-profile-body-covering-work-package.md`.
 
+## Structured Identifying Marks
+
+The Appearance step stores up to twelve identifying marks as normalized child
+rows. Each row has a stable key, one of ten controlled visible feature types,
+an encrypted bounded description, deterministic order, actor attribution, and
+a nullable retirement time. Removing an entry retires rather than physically
+deletes it. The historical encrypted free-text value remains private and
+readable without being guessed into the new structure.
+
+Only public and private-verification visibility are currently offered because
+both are enforced through the complete path. The public profile eager loads
+only active public rows and `PetIdentifyingMarkPresenter` repeats the audience
+filter before Blade. Private verification evidence stays in the authorized
+manager workspace and never enters public HTML. Friends, clinic, and active
+search access remain open integrations rather than misleading choices.
+
+The normalizer rejects forged type, visibility, description, duplicate, and
+cross-pet row values. The synchronizer performs one scoped retirement update
+and one bulk upsert with no query inside its bounded item loop. Exact scope is
+in `docs/plans/pet-profile-identifying-marks-work-package.md`.
+
 ## Breed Origin And Provenance
 
 The Breed or origin step stores the overall description separately from up to

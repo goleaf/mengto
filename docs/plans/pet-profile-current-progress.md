@@ -59,14 +59,39 @@ Last updated: 2026-08-04.
   scale, skin, mane, and seasonal-shedding fields on the existing encrypted
   payload. Implementation, full release verification, and exact 11-ID evidence
   are complete.
+- The structured identifying-mark slice implements 17 selected requirements
+  within `pet.identity.0246-pet.identity.0269` with controlled mark types,
+  encrypted descriptions, actor history, reversible retirement, and public or
+  private-verification visibility. Release verification and exact 17-ID
+  evidence are complete; friends, clinic, and active-search audiences remain
+  open.
 
 ## Current Work Package
 
-The current package adds species-aware body-covering facts to the established
-Appearance step without changing stable identity or adding a query. One shared
-server schema selects relevant controls, one normalizer protects every
-mutation path, and one presenter prepares a localized public projection while
-keeping the skin observation private.
+The current package adds structured identifying marks to the established
+Appearance step without changing stable pet identity. One shared server
+normalizer protects the mutation boundary, one synchronizer owns bounded
+relational writes, and one presenter prepares only the public-safe projection.
+
+## Structured Identifying Marks
+
+- Ten controlled feature types cover scars, spots, ear and paw features,
+  different eye colors, shortened tails, tattoos, unusual patterns, visible
+  structural differences, and visible effects of old injuries.
+- Each row carries its own stable key, encrypted description, deterministic
+  order, actor attribution, visibility, and retirement time. The existing
+  encrypted free-text value remains private compatibility data.
+- The public query eager loads only active public rows and the presenter
+  repeats that audience filter. Private-verification rows remain available
+  only in the authorized manager workspace.
+- Focused tests passed 17 tests and 94 assertions; complete pet-profile
+  regression passed 196 tests and 5,687 assertions; the exact isolated
+  sequential repository suite passed 2,998 tests and 102,330 assertions in
+  181.707 seconds. Full static, dependency, disposable database, repeat seed,
+  build, cache, source/generation, and connected Chrome gates passed.
+- Exactly 17 IDs are selected. Friend access `pet.identity.0262`, clinic
+  access `pet.identity.0264`, and active-search access `pet.identity.0265`
+  remain open and are not exposed as interface choices.
 
 ## Species-Aware Body Covering
 
@@ -348,8 +373,8 @@ keeping the skin observation private.
 ## Next Package
 
 Choose the next dependency-safe appearance fact without inheriting status for
-search, recommendations, care guidance, specialist consumption, private marks,
-or measurements from the verified species-aware body-covering package.
+friend, clinic, active-search, documentary, dispute, measurement, or media
+consumers from the verified structured identifying-mark package.
 Do not treat safe candidate review, possible species, alternative-name
 history, or birth precision as duplicate merge, proof verification, taxonomy
 verification, lost/found coordination, dispute resolution, organization

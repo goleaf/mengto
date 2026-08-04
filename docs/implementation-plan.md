@@ -7,7 +7,26 @@ This living plan records work that was actually performed. A pass is
 status remains authoritative in
 `docs/requirements/compliance-matrix.md`.
 
-## Current Delivery: Species-Aware Pet Body Covering
+## Current Delivery: Structured Pet Identifying Marks
+
+Status: `implemented and release-verified` on 2026-08-04.
+
+- Store up to twelve ordered identifying marks as normalized child rows with
+  stable keys, controlled types, encrypted descriptions, actor attribution,
+  visibility, and reversible retirement.
+- Reuse one server normalizer and one synchronizer through the existing
+  authorized Appearance Action while preserving optimistic locking,
+  idempotency, audit, cache invalidation, and omission compatibility.
+- Offer only public and private-verification visibility until friend, clinic,
+  and active-search consumers have authoritative access checks.
+- Render an accessible EN/LT/RU manager editor and eager-load only active
+  public rows for the public profile, with a second presenter-side filter.
+- Preserve the legacy encrypted free-text value as private compatibility data.
+
+Exact scope and observed evidence belong in
+`docs/plans/pet-profile-identifying-marks-work-package.md`.
+
+## Previous Delivery: Species-Aware Pet Body Covering
 
 Status: `implemented and release-verified` on 2026-08-04.
 

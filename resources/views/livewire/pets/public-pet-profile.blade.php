@@ -120,6 +120,22 @@
                     </dl>
                 </div>
             @endif
+
+            @if ($pet['identifying_marks'] !== [])
+                <div class="mt-6 rounded-2xl border border-paw-line bg-paw-canvas p-4" aria-labelledby="pet-profile-identifying-marks-heading">
+                    <h3 id="pet-profile-identifying-marks-heading" class="text-lg font-semibold text-paw-ink">{{ __('pet_profiles.identifying_marks.public_title') }}</h3>
+                    <p class="mt-1 text-sm leading-6 text-paw-muted">{{ __('pet_profiles.identifying_marks.public_notice') }}</p>
+                    <ul class="mt-4 grid min-w-0 gap-3 sm:grid-cols-2">
+                        @forelse ($pet['identifying_marks'] as $mark)
+                            <li wire:key="public-pet-identifying-mark-{{ $mark['key'] }}" class="rounded-xl border border-paw-line bg-paw-surface p-3">
+                                <p class="text-sm font-semibold text-paw-ink">{{ $mark['type'] }}</p>
+                                <p class="mt-1 whitespace-pre-line break-words text-sm leading-6 text-paw-muted">{{ $mark['description'] }}</p>
+                            </li>
+                        @empty
+                        @endforelse
+                    </ul>
+                </div>
+            @endif
         </section>
 
         <dl class="grid gap-3 border-s border-paw-line ps-5">
