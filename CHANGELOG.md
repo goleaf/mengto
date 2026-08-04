@@ -117,6 +117,11 @@
 
 ### Pet Profiles
 
+- Added a nullable controlled general-size category to the Appearance step,
+  with no inferred default, direct Action validation, EN/LT/RU editor and
+  public explanation, query-free presentation, and a composite profile index
+  reserved for future consumer-owned filtering. Actual measurements, weight
+  privacy, and compatibility decisions remain separate work.
 - Added structured identifying marks with ten controlled feature types,
   encrypted per-row descriptions, reversible retirement, and explicit public
   or private-verification visibility. Public profiles load only active public

@@ -20,6 +20,7 @@ use App\Enums\PetManagerRole;
 use App\Enums\PetManeType;
 use App\Enums\PetProfileVisibility;
 use App\Enums\PetSeasonalShedding;
+use App\Enums\PetSizeCategory;
 use App\Enums\PetSpeciesConfidence;
 use App\Enums\PetUndercoatType;
 use App\Models\PetProfile;
@@ -87,6 +88,8 @@ final class PetProfileForm extends Form
     public string $bio = '';
 
     public string $appearanceSummary = '';
+
+    public string $sizeCategory = '';
 
     public string $identifyingMarks = '';
 
@@ -181,6 +184,7 @@ final class PetProfileForm extends Form
             'visibility' => ['required', Rule::enum(PetProfileVisibility::class)],
             'bio' => ['nullable', 'string', 'max:3000'],
             'appearanceSummary' => ['nullable', 'string', 'max:1500'],
+            'sizeCategory' => ['nullable', Rule::enum(PetSizeCategory::class)],
             'identifyingMarks' => ['nullable', 'string', 'max:1500'],
             ...$this->identifyingMarkRules(),
             ...$this->appearanceRules(),
@@ -381,12 +385,14 @@ final class PetProfileForm extends Form
     {
         $validated = $this->validate([
             'appearanceSummary' => ['nullable', 'string', 'max:1500'],
+            'sizeCategory' => ['nullable', Rule::enum(PetSizeCategory::class)],
             'identifyingMarks' => ['nullable', 'string', 'max:1500'],
             ...$this->appearanceRules(),
             ...$this->identifyingMarkRules(),
         ]);
 
         return [
+            'size_category' => (string) ($validated['sizeCategory'] ?? ''),
             'primary_color' => (string) ($validated['appearancePrimaryColor'] ?? ''),
             'additional_colors' => array_values($validated['appearanceAdditionalColors'] ?? []),
             'patterns' => array_values($validated['appearancePatterns'] ?? []),
@@ -518,6 +524,9 @@ final class PetProfileForm extends Form
         $this->relationshipRole = $profile->creator_relationship ?? 'primary-owner';
         $this->visibility = $profile->visibility;
         $this->bio = (string) ($profileData['story'] ?? '');
+        $this->sizeCategory = is_string($profile->getRawOriginal('size_category'))
+            ? $profile->size_category->value
+            : '';
         $this->appearanceSummary = (string) ($profileData['appearance_summary'] ?? '');
         $this->identifyingMarks = (string) ($profileData['identifying_marks'] ?? '');
 

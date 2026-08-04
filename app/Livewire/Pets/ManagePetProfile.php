@@ -36,6 +36,7 @@ use App\Enums\PetProfileNameVisibility;
 use App\Enums\PetProfileStatus;
 use App\Enums\PetProfileVisibility;
 use App\Enums\PetSeasonalShedding;
+use App\Enums\PetSizeCategory;
 use App\Enums\PetSpeciesConfidence;
 use App\Enums\PetUndercoatType;
 use App\Livewire\Forms\PetManagerInvitationForm;
@@ -387,6 +388,13 @@ final class ManagePetProfile extends Component
             ->mapWithKeys(static fn (PetAppearancePattern $pattern): array => [
                 $pattern->value => $pattern->label(),
             ])->all();
+    }
+
+    /** @return array<string, string> */
+    #[Computed]
+    public function sizeCategoryOptions(): array
+    {
+        return $this->enumOptions(PetSizeCategory::cases());
     }
 
     /** @return array<string, string> */
@@ -1042,6 +1050,7 @@ final class ManagePetProfile extends Component
                 'breed',
                 'domestic_classification_id',
                 'breed_origin_type',
+                'size_category',
                 'birth_date',
                 'birth_date_precision',
                 'estimated_age_months',
@@ -1234,6 +1243,7 @@ final class ManagePetProfile extends Component
             $this->managers,
             $this->history,
             $this->alternativeNames,
+            $this->sizeCategoryOptions,
             $this->identifyingMarkTypeOptions,
             $this->identifyingMarkVisibilityOptions,
             $this->statusOptions,

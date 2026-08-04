@@ -408,6 +408,14 @@ presenter. Private-verification rows remain manager-only; friend, clinic, and
 active-search audiences are not offered until those authoritative consumers
 exist.
 
+The general pet size is one nullable enum-backed scalar on the canonical
+profile. `PetSizeCategoryNormalizer` owns untrusted mutation input and
+`PetSizeCategoryPresenter` owns the localized public-safe projection. Null is
+unrecorded, and no domain derives the category from species, breed, media,
+weight, or legacy text. The composite size/status/id index is an enabling
+profile primitive only; compatibility decisions remain owned by their future
+place, product, service, event, transport, or search consumers.
+
 ## Canonical Social Relationship Boundary
 
 `SocialActor` is a one-to-one internal adapter around an authoritative user,

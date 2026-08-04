@@ -6,6 +6,7 @@ namespace Database\Factories;
 
 use App\Enums\PetBirthDatePrecision;
 use App\Enums\PetProfileStatus;
+use App\Enums\PetSizeCategory;
 use App\Enums\PetSpeciesConfidence;
 use App\Models\PetProfile;
 use App\Models\User;
@@ -30,6 +31,7 @@ final class PetProfileFactory extends ApplicationFactory
             'species_confidence' => PetSpeciesConfidence::Confirmed,
             'breed' => fake()->words(2, true),
             'breed_origin_type' => null,
+            'size_category' => null,
             'birth_date' => now()->subYears(fake()->numberBetween(1, 12))->toDateString(),
             'visibility' => 'public',
             'status' => PetProfileStatus::Active,
@@ -57,6 +59,13 @@ final class PetProfileFactory extends ApplicationFactory
             'visibility' => 'private',
             'is_discoverable' => false,
             'allow_external_indexing' => false,
+        ]);
+    }
+
+    public function withSize(PetSizeCategory $category): static
+    {
+        return $this->state(fn (): array => [
+            'size_category' => $category,
         ]);
     }
 

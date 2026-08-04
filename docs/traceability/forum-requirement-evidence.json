@@ -4536,6 +4536,88 @@
                 ],
                 "final_result": "verified"
             }
+        },
+        {
+            "requirement_ids": [
+                "pet.identity.0272",
+                "pet.identity.0273",
+                "pet.identity.0274",
+                "pet.identity.0275",
+                "pet.identity.0276",
+                "pet.identity.0277",
+                "pet.identity.0278",
+                "pet.identity.0279",
+                "pet.identity.0283"
+            ],
+            "fields": {
+                "current_implementation_status": "verified",
+                "discovered_existing_files": [
+                    "app/Actions/UpdatePetProfileStep.php",
+                    "app/Livewire/Forms/PetProfileForm.php",
+                    "app/Livewire/Pets/ManagePetProfile.php",
+                    "app/Livewire/Pets/PublicPetProfile.php",
+                    "app/Models/PetProfile.php",
+                    "app/Services/PetProfileCompletionPresenter.php",
+                    "database/factories/PetProfileFactory.php",
+                    "resources/views/livewire/pets/manage-pet-profile.blade.php",
+                    "resources/views/livewire/pets/public-pet-profile.blade.php",
+                    "scripts/pet-workspace-browser-check.mjs"
+                ],
+                "planned_files": [
+                    "app/Enums/PetSizeCategory.php",
+                    "app/Services/PetSizeCategoryNormalizer.php",
+                    "app/Services/PetSizeCategoryPresenter.php",
+                    "database/migrations/2026_08_04_034056_add_size_category_to_pet_profiles_table.php",
+                    "tests/Feature/PetProfileSizeCategoryTest.php",
+                    "docs/plans/pet-profile-size-category-work-package.md"
+                ],
+                "test_identifiers": [
+                    "tests/Feature/PetProfileSizeCategoryTest.php",
+                    "tests/Feature/PetProfileAppearanceTest.php",
+                    "tests/Feature/PetProfileBodyCoveringTest.php",
+                    "tests/Feature/PetProfileIdentifyingMarkTest.php",
+                    "tests/Feature/PetProfileProgressiveCompletionTest.php",
+                    "tests/Feature/ArchitectureComplianceTest.php",
+                    "tests/Feature/LocalizationTest.php",
+                    "tests/Feature/PageIdentityStandardizationTest.php",
+                    "tests/Feature/ResponsiveInterfaceTest.php",
+                    "scripts/pet-workspace-browser-check.mjs"
+                ],
+                "documentation_identifiers": [
+                    "docs/plans/pet-profile-size-category-work-package.md",
+                    "docs/plans/pet-profile-current-progress.md",
+                    "docs/plans/pet-profile-master-plan.md",
+                    "docs/pet-profiles.md",
+                    "docs/architecture.md",
+                    "docs/data-model.md",
+                    "docs/deployment.md",
+                    "docs/implementation-plan.md",
+                    "docs/testing.md",
+                    "docs/index.md",
+                    "CHANGELOG.md"
+                ],
+                "implementation_status": "implemented",
+                "verification_status": "verified",
+                "evidence": [
+                    "PetSizeCategory defines the seven requested stable values with matching EN, LT, and RU labels and explanations; null remains an honest unrecorded state",
+                    "The additive nullable size_category column uses an explicit enum cast and the composite pet_profiles_size_status_idx index; no existing row is backfilled or inferred from species, breed, media, weight, or legacy text",
+                    "PetSizeCategoryNormalizer is the direct Action boundary and rejects unknown, array, and boolean input while allowing explicit clearing; the authorized Appearance transaction retains locking, replay idempotency, lifecycle and ordinary audit, cache invalidation, no-op, and omitted-input compatibility",
+                    "The class-based Livewire Appearance editor provides one native labelled select with help, error, measurement-boundary, save, autosave, loading, dirty, offline, keyboard, focus, and 44-pixel behavior in EN, LT, and RU",
+                    "Manager, Action, completion, and public reads add one scalar column and zero round trips; PetSizeCategoryPresenter performs zero queries and Blade receives only prepared localized values",
+                    "PetProfileSizeCategoryTest passed 22 tests and 85 assertions; the size, appearance, body-covering, identifying-mark, and progressive-completion regression passed 107 tests and 550 assertions; the complete pet-profile regression passed 218 tests and 5,910 assertions",
+                    "The architecture, localization, page-identity, responsive, and focused package slice passed 99 tests and 68,534 assertions; the exact isolated sequential repository tree passed 3,045 tests and 103,962 assertions in 173.604 seconds with a 1 GB PHP limit",
+                    "Full Pint and Larastan passed without findings; Composer strict validation and locked audit, PHP 8.5 platform requirements, npm audit with zero vulnerabilities, JavaScript syntax, the Vite 8.2 production build, and config, event, route, and view cache compilation passed",
+                    "Fresh disposable SQLite applied 139 migrations and retained 219 tables, five users, and three pet profiles through repeated complete seeding; rollback removed only the new column and index, retained all three pets, and reapplication restored both structures",
+                    "Connected disposable-database Chrome saved and restored the individual-measurements category through Livewire, verified its public explanation, and found no overflow, raw keys, duplicate IDs, undersized selector, or console errors at 1440px, 390px, and 320px; final screenshots were visually reviewed"
+                ],
+                "unresolved_risks": [
+                    "Requirements pet.identity.0281, pet.identity.0285, and pet.identity.0287 remain open because transport, marketplace, event, place, service, product, carrier, and search consumers need their own constraints and authorization",
+                    "Actual measurements pet.identity.0288-pet.identity.0308 remain separate dated facts with species-specific units and provenance",
+                    "Public, household, and clinical weight privacy pet.identity.0309-pet.identity.0324 remains separate and is not inferred from the general category",
+                    "The individual option signals that separate measurements are required; it does not contain a measurement or compatibility result"
+                ],
+                "final_result": "verified"
+            }
         }
     ]
 }

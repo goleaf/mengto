@@ -21,6 +21,7 @@ use App\Services\PetProfileAccess;
 use App\Services\PetProfileCache;
 use App\Services\PetProfileEventRecorder;
 use App\Services\PetProfileNameHistory;
+use App\Services\PetSizeCategoryNormalizer;
 use App\Services\PrototypeState;
 use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Support\Facades\DB;
@@ -41,6 +42,7 @@ final class UpdatePetProfileStep
         'breed',
         'domestic_classification_id',
         'breed_origin_type',
+        'size_category',
         'birth_date',
         'birth_date_precision',
         'estimated_age_months',
@@ -66,6 +68,7 @@ final class UpdatePetProfileStep
         private readonly PetProfileEventRecorder $events,
         private readonly PetProfileCache $cache,
         private readonly PetProfileNameHistory $nameHistory,
+        private readonly PetSizeCategoryNormalizer $sizeCategories,
         private readonly PetAppearanceNormalizer $appearance,
         private readonly PetBodyCoveringNormalizer $bodyCovering,
         private readonly PetIdentifyingMarkNormalizer $identifyingMarks,
@@ -322,31 +325,11 @@ final class UpdatePetProfileStep
                 'breed_origin_type',
                 'breed_origins',
             ]],
-            PetProfileCompletionStep::Appearance => [[
-                'profile_data' => $this->bodyCovering->apply(
-                    $data,
-                    $profile->species,
-                    $this->appearance->apply($data, $profileData),
-                ),
-            ], [
-                'primary_color',
-                'additional_colors',
-                'patterns',
-                'color_details',
-                'feather_color_details',
-                'scale_color_details',
-                'seasonal_color_changes',
-                'coat_length',
-                'coat_texture',
-                'undercoat',
-                'hairless',
-                'feather_type',
-                'skin_condition',
-                'mane_type',
-                'seasonal_shedding',
-                'appearance_summary',
-                'identifying_marks',
-            ]],
+            PetProfileCompletionStep::Appearance => $this->appearanceChanges(
+                $profile,
+                $data,
+                $profileData,
+            ),
             PetProfileCompletionStep::Character => [[
                 'profile_data' => [
                     ...$profileData,
@@ -372,5 +355,52 @@ final class UpdatePetProfileStep
                 'step' => __('pet_profiles.validation.step'),
             ]),
         };
+    }
+
+    /**
+     * @param  array<string, mixed>  $data
+     * @param  array<string, mixed>  $profileData
+     * @return array{0: array<string, mixed>, 1: list<string>}
+     */
+    private function appearanceChanges(
+        PetProfile $profile,
+        array $data,
+        array $profileData,
+    ): array {
+        $attributes = [
+            'profile_data' => $this->bodyCovering->apply(
+                $data,
+                $profile->species,
+                $this->appearance->apply($data, $profileData),
+            ),
+        ];
+        $fields = [
+            'primary_color',
+            'additional_colors',
+            'patterns',
+            'color_details',
+            'feather_color_details',
+            'scale_color_details',
+            'seasonal_color_changes',
+            'coat_length',
+            'coat_texture',
+            'undercoat',
+            'hairless',
+            'feather_type',
+            'skin_condition',
+            'mane_type',
+            'seasonal_shedding',
+            'appearance_summary',
+            'identifying_marks',
+        ];
+
+        if (array_key_exists('size_category', $data)) {
+            $attributes['size_category'] = $this->sizeCategories->normalize(
+                $data['size_category'],
+            );
+            array_unshift($fields, 'size_category');
+        }
+
+        return [$attributes, $fields];
     }
 }

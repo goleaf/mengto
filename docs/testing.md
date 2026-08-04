@@ -1185,6 +1185,38 @@ Observed package evidence on 2026-08-04:
 The reusable browser command is
 `BROWSER_BASE_URL=http://127.0.0.1:PORT BROWSER_ALLOW_DATA_MUTATION=1 node scripts/pet-workspace-browser-check.mjs --marks`.
 
+## Pet General Size Category Verification
+
+`PetProfileSizeCategoryTest` covers the nullable column and composite index,
+all seven localized enum values, cast persistence and clearing, forged direct
+Action input, authorization, omission, no-op and replay idempotency, EN/LT/RU
+Livewire restoration, strict real-route projection, completion detection, and
+query-free public presentation.
+
+The connected browser gate uses a disposable database, changes the native
+size select through a real DOM event, waits for a Livewire request, reloads the
+stored value, verifies the public explanation and measurement boundary, and
+audits desktop, 390px, and 320px layouts for overflow, raw keys, duplicate IDs,
+44-pixel selector size, and console errors.
+
+Observed package evidence on 2026-08-04:
+
+- focused suite: 22 tests and 85 assertions;
+- size, appearance, body-covering, identifying-mark, and completion regression:
+  107 tests and 550 assertions;
+- complete pet-profile regression: 218 tests and 5,910 assertions;
+- architecture, localization, page-identity, responsive, and package slice:
+  99 tests and 68,534 assertions;
+- exact isolated complete sequential suite: 3,045 tests and 103,962 assertions
+  in 173.604 seconds with a 1 GB PHP limit;
+- full Pint, Larastan, Composer strict validation/audit/platform, npm audit,
+  Vite 8.2 build, JavaScript syntax, cache compilation, fresh migration,
+  repeat seed, rollback/reapply, source preservation, deterministic generation,
+  and connected-browser checks passed; the screenshots were visually reviewed.
+
+The reusable browser command is
+`BROWSER_BASE_URL=http://127.0.0.1:PORT BROWSER_ALLOW_DATA_MUTATION=1 node scripts/pet-workspace-browser-check.mjs --size`.
+
 ## Messaging Context And Feedback Verification
 
 `MessageCenterLocalizationTest` guards exact EN/LT/RU key parity, all eight

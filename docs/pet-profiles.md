@@ -293,6 +293,23 @@ cross-pet row values. The synchronizer performs one scoped retirement update
 and one bulk upsert with no query inside its bounded item loop. Exact scope is
 in `docs/plans/pet-profile-identifying-marks-work-package.md`.
 
+## General Size Category
+
+The Appearance step stores one optional `PetSizeCategory` on the canonical
+profile. Very small, small, medium, large, very large, individual measurements
+needed, and not applicable are distinct controlled values. Null remains an
+honest unrecorded state; existing profiles are not backfilled and the system
+does not infer size from species, breed, photographs, weight, or free text.
+
+`PetSizeCategoryNormalizer` protects the direct Action boundary and
+`PetSizeCategoryPresenter` prepares a localized query-free public scalar. The
+editor and public profile explain that the category is broad manager-reported
+context, not a measurement or medical fact. `(size_category, status, id)` is
+available for a future bounded profile filter, but no transport, marketplace,
+event, place, service, product, carrier, or search consumer is claimed here.
+Exact scope is in
+`docs/plans/pet-profile-size-category-work-package.md`.
+
 ## Breed Origin And Provenance
 
 The Breed or origin step stores the overall description separately from up to

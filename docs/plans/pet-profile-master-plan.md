@@ -158,6 +158,16 @@ clinic, and active-search consumers remain open under `pet.identity.0262`,
 `pet.identity.0264`, and `pet.identity.0265`. Exact boundaries and evidence
 are in `docs/plans/pet-profile-identifying-marks-work-package.md`.
 
+The general-size package implements nine selected records within
+`pet.identity.0272-pet.identity.0283`. It stores one nullable controlled
+category on the canonical profile, never backfills or infers a value, and
+keeps actual measurements and weight privacy separate. The profile-side
+composite index is ready for a future bounded size/status filter, but
+transport, marketplace, event, place, service, product, carrier, and search
+consumers remain open under `pet.identity.0281`, `pet.identity.0285`, and
+`pet.identity.0287`. Exact boundaries and evidence are in
+`docs/plans/pet-profile-size-category-work-package.md`.
+
 ## Phase 19: Ownership And Privacy
 
 **IDs:** `pet.ownership.0001-pet.ownership.0393` and

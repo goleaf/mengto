@@ -14,6 +14,7 @@ use App\Services\PetBreedOriginPresenter;
 use App\Services\PetIdentifyingMarkPresenter;
 use App\Services\PetLifeStagePresenter;
 use App\Services\PetProfileAgeLabel;
+use App\Services\PetSizeCategoryPresenter;
 use App\Services\PetSpeciesLabel;
 use App\Services\ProfilePresenter;
 use Illuminate\Contracts\Auth\Access\Gate;
@@ -45,6 +46,8 @@ final class PublicPetProfile extends Component
 
     private PetLifeStagePresenter $lifeStages;
 
+    private PetSizeCategoryPresenter $sizeCategories;
+
     public function boot(
         Gate $gate,
         ProfilePresenter $profiles,
@@ -54,6 +57,7 @@ final class PublicPetProfile extends Component
         PetBodyCoveringPresenter $bodyCovering,
         PetIdentifyingMarkPresenter $identifyingMarks,
         PetLifeStagePresenter $lifeStages,
+        PetSizeCategoryPresenter $sizeCategories,
         PetSpeciesLabel $speciesLabels,
     ): void {
         $this->gate = $gate;
@@ -64,6 +68,7 @@ final class PublicPetProfile extends Component
         $this->bodyCovering = $bodyCovering;
         $this->identifyingMarks = $identifyingMarks;
         $this->lifeStages = $lifeStages;
+        $this->sizeCategories = $sizeCategories;
         $this->speciesLabels = $speciesLabels;
     }
 
@@ -97,6 +102,7 @@ final class PublicPetProfile extends Component
                 'taxon_id',
                 'breed',
                 'breed_origin_type',
+                'size_category',
                 'birth_date',
                 'birth_date_precision',
                 'estimated_age_months',
@@ -210,6 +216,7 @@ final class PublicPetProfile extends Component
             'age' => $this->ageLabels->for($profile),
             'celebration_day' => $this->ageLabels->celebrationFor($profile),
             'life_stage' => $this->lifeStages->for($profile),
+            'size' => $this->sizeCategories->for($profile),
             'appearance' => $this->appearance->for($profile),
             'body_covering' => $this->bodyCovering->for($profile),
             'identifying_marks' => $this->identifyingMarks->publicFor($profile),

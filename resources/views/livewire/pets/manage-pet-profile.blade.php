@@ -408,6 +408,31 @@
                     icon="palette"
                 />
 
+                <section class="grid min-w-0 gap-4 rounded-2xl border border-paw-line bg-paw-canvas p-4 sm:p-5" aria-labelledby="managed-pet-size-heading">
+                    <div>
+                        <h3 id="managed-pet-size-heading" class="text-lg font-semibold text-paw-ink">{{ __('pet_profiles.size.title') }}</h3>
+                        <p class="mt-1 text-sm leading-6 text-paw-muted">{{ __('pet_profiles.size.description') }}</p>
+                    </div>
+                    <label class="forum-form__field" for="managed-pet-size-category">
+                        <span>{{ __('pet_profiles.size.label') }}</span>
+                        <select
+                            id="managed-pet-size-category"
+                            wire:model="form.sizeCategory"
+                            aria-describedby="managed-pet-size-category-help managed-pet-size-category-error"
+                            @error('form.sizeCategory') aria-invalid="true" @enderror
+                        >
+                            <option value="">{{ __('pet_profiles.size.not_recorded') }}</option>
+                            @forelse ($this->sizeCategoryOptions as $value => $label)
+                                <option wire:key="managed-pet-size-category-{{ $value }}" value="{{ $value }}">{{ $label }}</option>
+                            @empty
+                            @endforelse
+                        </select>
+                        <small id="managed-pet-size-category-help">{{ __('pet_profiles.size.help') }}</small>
+                        @error('form.sizeCategory') <small id="managed-pet-size-category-error" role="alert">{{ $message }}</small> @enderror
+                    </label>
+                    <p class="text-sm leading-6 text-paw-muted">{{ __('pet_profiles.size.measurement_notice') }}</p>
+                </section>
+
                 <section class="grid min-w-0 gap-4 rounded-2xl border border-paw-line bg-paw-canvas p-4" aria-labelledby="managed-pet-body-covering-heading">
                     <div>
                         <h3 id="managed-pet-body-covering-heading" class="text-lg font-semibold text-paw-ink">{{ __('pet_profiles.body_covering.title') }}</h3>

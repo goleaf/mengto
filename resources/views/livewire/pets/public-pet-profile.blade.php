@@ -44,6 +44,20 @@
                 <p class="mt-3 text-paw-muted">{{ __('pet_profiles.public.no_bio') }}</p>
             @endif
 
+            @if ($pet['size'] !== null)
+                <div class="mt-6 rounded-2xl border border-paw-line bg-paw-canvas p-4" aria-labelledby="pet-profile-size-heading">
+                    <h3 id="pet-profile-size-heading" class="text-lg font-semibold text-paw-ink">{{ __('pet_profiles.size.public_title') }}</h3>
+                    <dl class="mt-3">
+                        <div>
+                            <dt class="text-sm text-paw-muted">{{ __('pet_profiles.size.label') }}</dt>
+                            <dd class="font-semibold text-paw-ink">{{ $pet['size']['label'] }}</dd>
+                        </div>
+                    </dl>
+                    <p class="mt-2 text-sm leading-6 text-paw-muted">{{ $pet['size']['description'] }}</p>
+                    <p class="mt-2 text-sm leading-6 text-paw-muted">{{ __('pet_profiles.size.public_notice') }}</p>
+                </div>
+            @endif
+
             @if ($pet['appearance'] !== null)
                 <div class="mt-6 rounded-2xl border border-paw-line bg-paw-canvas p-4" aria-labelledby="pet-profile-appearance-heading">
                     <h3 id="pet-profile-appearance-heading" class="text-lg font-semibold text-paw-ink">{{ __('pet_profiles.appearance.public_title') }}</h3>

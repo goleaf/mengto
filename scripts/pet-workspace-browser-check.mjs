@@ -10,6 +10,7 @@ const verifyAutosave = process.argv.includes('--autosave');
 const verifyBirth = process.argv.includes('--birth');
 const verifyBreed = process.argv.includes('--breed');
 const verifyAppearance = process.argv.includes('--appearance');
+const verifySize = process.argv.includes('--size');
 const verifyCovering = process.argv.includes('--covering');
 const verifyMarks = process.argv.includes('--marks');
 const verifyNames = process.argv.includes('--names');
@@ -26,8 +27,8 @@ if (!['localhost', '127.0.0.1', '::1'].includes(origin.hostname)) {
     throw new Error('The pet workspace browser check only runs against a loopback URL.');
 }
 
-if ((verifyAutosave || verifyBirth || verifyBreed || verifyAppearance || verifyCovering || verifyMarks || verifyNames) && ! allowDataMutation) {
-    throw new Error('--autosave, --birth, --breed, --appearance, --covering, --marks, and --names require BROWSER_ALLOW_DATA_MUTATION=1 and a disposable database.');
+if ((verifyAutosave || verifyBirth || verifyBreed || verifyAppearance || verifySize || verifyCovering || verifyMarks || verifyNames) && ! allowDataMutation) {
+    throw new Error('--autosave, --birth, --breed, --appearance, --size, --covering, --marks, and --names require BROWSER_ALLOW_DATA_MUTATION=1 and a disposable database.');
 }
 
 const assert = (condition, message) => {
@@ -327,6 +328,7 @@ try {
     let birthAudit = null;
     let breedAudit = null;
     let appearanceAudit = null;
+    let sizeAudit = null;
     let coveringAudit = null;
     let identifyingMarkAudit = null;
     let nameAudit = null;
@@ -951,6 +953,121 @@ try {
         appearanceAudit = { initial, restored, publicProjection, responsive };
     }
 
+    if (verifySize) {
+        await client.send('Emulation.setDeviceMetricsOverride', {
+            width: 1440, height: 900, deviceScaleFactor: 1,
+            mobile: false, screenWidth: 1440, screenHeight: 900,
+        }, sessionId);
+        await client.send('Emulation.setTouchEmulationEnabled', { enabled: false }, sessionId);
+        await setLocale(client, sessionId, 'en');
+        const manageUrl = `${baseUrl}/pets/manage/pet-scout?step=appearance`;
+        await navigate(client, sessionId, manageUrl);
+        const initial = await evaluate(client, sessionId, `(() => ({
+            headingCount: document.querySelectorAll('#managed-pet-size-heading').length,
+            selectCount: document.querySelectorAll('#managed-pet-size-category').length,
+            optionCount: document.querySelectorAll('#managed-pet-size-category option').length,
+            guidanceVisible: document.body.innerText.includes('This category does not replace actual measurements.'),
+        }))()`);
+        assert(
+            initial.headingCount === 1 && initial.selectCount === 1 && initial.optionCount === 8,
+            `The general size editor is incomplete: ${JSON.stringify(initial)}.`,
+        );
+        assert(initial.guidanceVisible, 'The size and measurement boundary guidance is missing.');
+
+        const requestsBeforeSave = livewireRequests.length;
+        await evaluate(client, sessionId, `(() => {
+            const select = document.querySelector('#managed-pet-size-category');
+            const setter = Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, 'value').set;
+            setter.call(select, 'individual');
+            select.dispatchEvent(new Event('change', { bubbles: true }));
+        })()`);
+        await waitUntil(
+            async () => await evaluate(client, sessionId, `document.body.innerText.includes('Appearance details saved.')`),
+            'The size category was not saved through Livewire.',
+        );
+        assert(livewireRequests.length - requestsBeforeSave >= 1, 'Saving the size category did not reach Livewire.');
+
+        await navigate(client, sessionId, manageUrl);
+        const restored = await evaluate(
+            client,
+            sessionId,
+            `document.querySelector('#managed-pet-size-category')?.value ?? null`,
+        );
+        assert(restored === 'individual', 'The size category was not restored after reload.');
+
+        await navigate(client, sessionId, `${baseUrl}/pets/profile/pet-scout`);
+        const publicProjection = await evaluate(client, sessionId, `(() => ({
+            titleVisible: document.body.innerText.includes('General size'),
+            valueVisible: document.body.innerText.includes('Individual measurements needed'),
+            explanationVisible: document.body.innerText.includes('A broad category is not useful enough'),
+            noticeVisible: document.body.innerText.includes('not a verified measurement or medical fact'),
+            rawKeys: document.body.innerText.match(/\bpet_profiles\.[a-z0-9_.-]+/gi) ?? [],
+            overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+        }))()`);
+        assert(
+            publicProjection.titleVisible
+                && publicProjection.valueVisible
+                && publicProjection.explanationVisible
+                && publicProjection.noticeVisible,
+            'The public size projection is incomplete.',
+        );
+        assert(publicProjection.rawKeys.length === 0, 'The public size projection exposes translation keys.');
+        assert(publicProjection.overflow <= 1, `The public size projection overflows by ${publicProjection.overflow}px.`);
+
+        const responsive = {};
+        for (const viewport of [
+            { label: 'desktop', width: 1440, height: 900, mobile: false },
+            { label: 'mobile-390', width: 390, height: 844, mobile: true },
+            { label: 'mobile-320', width: 320, height: 900, mobile: true },
+        ]) {
+            await client.send('Emulation.setDeviceMetricsOverride', {
+                width: viewport.width, height: viewport.height, deviceScaleFactor: 1,
+                mobile: viewport.mobile, screenWidth: viewport.width, screenHeight: viewport.height,
+            }, sessionId);
+            await client.send('Emulation.setTouchEmulationEnabled', { enabled: viewport.mobile }, sessionId);
+            await navigate(client, sessionId, manageUrl);
+            const audit = await evaluate(client, sessionId, `(() => {
+                const form = document.querySelector('[data-pet-profile-autosave-step="appearance"]');
+                const size = document.querySelector('#managed-pet-size-category');
+                const ids = [...document.querySelectorAll('[id]')].map((element) => element.id).filter(Boolean);
+                const box = size?.getBoundingClientRect();
+
+                return {
+                    h1Count: document.querySelectorAll('main h1').length,
+                    formCount: form ? 1 : 0,
+                    sizeCount: size ? 1 : 0,
+                    sizeValue: size?.value ?? null,
+                    sizeTargetWidth: box?.width ?? 0,
+                    sizeTargetHeight: box?.height ?? 0,
+                    overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+                    rawKeys: document.body.innerText.match(/\bpet_profiles\.[a-z0-9_.-]+/gi) ?? [],
+                    duplicateIds: [...new Set(ids.filter((id, index) => ids.indexOf(id) !== index))],
+                };
+            })()`);
+            assert(
+                audit.h1Count === 1
+                    && audit.formCount === 1
+                    && audit.sizeCount === 1
+                    && audit.sizeValue === 'individual',
+                `${viewport.label}: invalid size workspace structure.`,
+            );
+            assert(audit.overflow <= 1, `${viewport.label}: size workspace overflows by ${audit.overflow}px.`);
+            assert(audit.rawKeys.length === 0, `${viewport.label}: size workspace exposes translation keys.`);
+            assert(audit.duplicateIds.length === 0, `${viewport.label}: duplicate size control IDs remain.`);
+            if (viewport.mobile) {
+                assert(
+                    audit.sizeTargetWidth >= 44 && audit.sizeTargetHeight >= 44,
+                    `${viewport.label}: size selector is below 44px.`,
+                );
+            }
+            responsive[viewport.label] = audit;
+            const screenshot = await client.send('Page.captureScreenshot', { format: 'png', captureBeyondViewport: true }, sessionId);
+            await writeFile(join(outputDirectory, `pet-size-${viewport.label}.png`), Buffer.from(screenshot.data, 'base64'));
+        }
+
+        sizeAudit = { initial, restored, publicProjection, responsive };
+    }
+
     if (verifyCovering) {
         await client.send('Emulation.setDeviceMetricsOverride', {
             width: 1440, height: 900, deviceScaleFactor: 1,
@@ -1485,6 +1602,8 @@ try {
         breedAudit,
         verifyAppearance,
         appearanceAudit,
+        verifySize,
+        sizeAudit,
         verifyCovering,
         coveringAudit,
         verifyMarks,

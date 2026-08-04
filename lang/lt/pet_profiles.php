@@ -122,6 +122,46 @@ return [
             'stripes' => 'Juostos',
         ],
     ],
+    'size' => [
+        'title' => 'Bendroji dydžio kategorija',
+        'description' => 'Nurodykite apytikslę valdytojo pasirinktą kategoriją, tinkamą skirtingoms gyvūnų grupėms ir nereikalaujančią spėti svorio ar matmenų.',
+        'label' => 'Dydžio kategorija',
+        'help' => 'Pasirinkite artimiausią pastovią kategoriją. Jei nesate tikri, palikite nenurodytą.',
+        'measurement_notice' => 'Ši kategorija nepakeičia tikrųjų matmenų. Svoris ir rūšiai būdingi matmenys saugomi atskiruose įrašuose su data.',
+        'not_recorded' => 'Nenurodyta',
+        'public_title' => 'Bendrasis dydis',
+        'public_notice' => 'Tai apytikslė profilio valdytojo nurodyta kategorija, o ne patvirtintas matmuo ar medicininis faktas.',
+        'options' => [
+            'very-small' => [
+                'label' => 'Labai mažas',
+                'description' => 'Tarp mažiausių atitinkamos gyvūnų grupės įprasto dydžio atstovų.',
+            ],
+            'small' => [
+                'label' => 'Mažas',
+                'description' => 'Mažesnis už atitinkamos gyvūnų grupės įprasto dydžio vidurį.',
+            ],
+            'medium' => [
+                'label' => 'Vidutinis',
+                'description' => 'Artimas atitinkamos gyvūnų grupės įprasto dydžio viduriui.',
+            ],
+            'large' => [
+                'label' => 'Didelis',
+                'description' => 'Didesnis už atitinkamos gyvūnų grupės įprasto dydžio vidurį.',
+            ],
+            'very-large' => [
+                'label' => 'Labai didelis',
+                'description' => 'Tarp didžiausių atitinkamos gyvūnų grupės įprasto dydžio atstovų.',
+            ],
+            'individual' => [
+                'label' => 'Reikia individualių matmenų',
+                'description' => 'Bendros kategorijos nepakanka; žiūrėkite atskirai įrašytus gyvūno matmenis.',
+            ],
+            'not-applicable' => [
+                'label' => 'Šiai rūšiai netaikoma',
+                'description' => 'Bendra dydžio skalė prasmingai neapibūdina šios gyvūnų grupės.',
+            ],
+        ],
+    ],
     'body_covering' => [
         'title' => 'Kailis, plunksnos, žvynai arba oda',
         'description' => 'Rodomi laukai atitinka gyvūno grupę. Pasirinkite pastovius matomus požymius, o diagnozes ir gydymą rašykite medicinos įrašuose.',
@@ -778,6 +818,7 @@ return [
         'appearance_primary_duplicate' => 'Pagrindinė spalva negali būti ir papildoma spalva.',
         'appearance_selection' => 'Pasirinkite tik palaikomas spalvas ir raštus neviršydami limito.',
         'appearance_text' => 'Įveskite tinkamo ilgio išvaizdos patikslinimą.',
+        'size_category' => 'Pasirinkite palaikomą dydžio kategoriją arba palikite nenurodytą.',
         'body_covering_hairless' => 'Pasirinkite tinkamą kailio nebuvimo reikšmę.',
         'body_covering_hairless_conflict' => 'Kai gyvūnas nurodytas be kailio, kailio ilgis, tekstūra ir pavilnė turi būti tušti.',
         'body_covering_selection' => 'Pasirinkite palaikomą kūno dangos reikšmę.',

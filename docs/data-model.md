@@ -207,6 +207,18 @@ become null if the account is deleted; the pet foreign key cascades so the
 child rows cannot outlive their aggregate. Descriptions use the framework's
 encrypted model cast and are never filter, sort, or join operands.
 
+## Pet General Size Category
+
+`pet_profiles.size_category` is a nullable 32-character controlled scalar.
+Null means unrecorded and existing rows are not backfilled. The model casts a
+recorded value to `PetSizeCategory`; application writes pass through the
+normalizer so unsupported values do not reach persistence.
+
+`(size_category, status, id)` supports a future bounded active-profile filter
+and deterministic keyset continuation. The selected package adds no consumer
+query and no weight or measurement columns. Actual measurements and their
+history, provenance, units, and privacy remain separate data-model work.
+
 ## Data Retention
 
 Retention is category-specific:

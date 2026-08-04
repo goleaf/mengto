@@ -9,6 +9,7 @@ use App\Enums\PetBirthDatePrecision;
 use App\Enums\PetBreedOriginType;
 use App\Enums\PetLifeStage;
 use App\Enums\PetProfileStatus;
+use App\Enums\PetSizeCategory;
 use App\Enums\PetSpeciesConfidence;
 use Carbon\CarbonImmutable;
 use Database\Factories\PetProfileFactory;
@@ -42,6 +43,7 @@ use Illuminate\Support\Carbon;
  * @property string $profile_key
  * @property string $slug
  * @property string $species
+ * @property PetSizeCategory|null $size_category
  * @property PetSpeciesConfidence $species_confidence
  * @property PetProfileStatus $status
  * @property Carbon|null $updated_at
@@ -78,6 +80,7 @@ final class PetProfile extends Model
         'breed',
         'domestic_classification_id',
         'breed_origin_type',
+        'size_category',
         'birth_date',
         'birth_date_precision',
         'estimated_age_months',
@@ -114,6 +117,7 @@ final class PetProfile extends Model
         return [
             'birth_date' => 'immutable_date',
             'breed_origin_type' => PetBreedOriginType::class,
+            'size_category' => PetSizeCategory::class,
             'birth_date_precision' => PetBirthDatePrecision::class,
             'estimated_age_months' => 'integer',
             'estimated_age_recorded_at' => 'immutable_datetime',

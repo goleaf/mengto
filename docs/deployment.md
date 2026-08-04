@@ -317,3 +317,23 @@ environment key, or public-file route.
 Rollback is safe only before production writes depend on this relation. After
 that point retain the encrypted proof and use a reviewed forward migration;
 do not destroy retired evidence or copy it into the legacy free-text field.
+
+## Pet General Size Category Migration
+
+`2026_08_04_034056_add_size_category_to_pet_profiles_table.php` adds one
+nullable controlled scalar and `(size_category, status, id)` index. It does
+not backfill, infer, or publish a value and adds no queue, cache store,
+environment key, or public-file route.
+
+1. Back up and record pet-profile counts, then run
+   `php artisan migrate --force` and inspect the column and composite index.
+2. Confirm existing rows remain null and a manager can save, clear, and reload
+   each controlled value while forged direct input fails.
+3. Confirm the public profile labels a recorded value as broad manager-provided
+   context and exposes neither measurement nor medical claims.
+4. Rebuild config, event, route, and view caches.
+
+Rollback drops only the new index and nullable column and is safe before a
+deployed consumer depends on recorded categories. After production values are
+used, retain them and deploy a reviewed forward fix rather than silently
+discarding user-supplied facts.

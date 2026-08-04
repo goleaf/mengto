@@ -57,6 +57,7 @@ final class UpdatePetProfile
                 'breed',
                 'domestic_classification_id',
                 'breed_origin_type',
+                'size_category',
                 'birth_date',
                 'birth_date_precision',
                 'estimated_age_months',

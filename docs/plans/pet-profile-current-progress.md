@@ -65,13 +65,41 @@ Last updated: 2026-08-04.
   private-verification visibility. Release verification and exact 17-ID
   evidence are complete; friends, clinic, and active-search audiences remain
   open.
+- The general-size slice implements nine selected requirements within
+  `pet.identity.0272-pet.identity.0283` with one nullable controlled category,
+  explicit no-inference semantics, a profile-side future-filter index, and a
+  localized query-free public projection. Actual measurements, weight
+  privacy, and every cross-domain compatibility consumer remain open. Release
+  verification and exact nine-ID evidence are complete.
 
 ## Current Work Package
 
-The current package adds structured identifying marks to the established
-Appearance step without changing stable pet identity. One shared server
-normalizer protects the mutation boundary, one synchronizer owns bounded
-relational writes, and one presenter prepares only the public-safe projection.
+The current package adds one general size category to the established
+Appearance step without changing stable pet identity or guessing a value. One
+shared server normalizer protects the mutation boundary, the canonical profile
+owns the scalar and its future-filter index, and one presenter prepares only a
+localized public-safe projection.
+
+## General Size Category
+
+- Seven controlled values represent very small through very large, individual
+  measurements needed, or not applicable to the species. Null remains an
+  honest unrecorded state and existing profiles are not backfilled.
+- The category is separate from weight, clinical observations, and actual
+  species-specific measurements. It adds no compatibility outcome or
+  marketplace, place, event, service, transport, product, carrier, or search
+  consumer.
+- Manager and public reads add one scalar column and no query; the presenter
+  and enum option map are query-free. `(size_category, status, id)` is the
+  explicit future-filter primitive.
+- Focused verification passed 22 tests and 85 assertions; the complete
+  pet-profile regression passed 218 tests and 5,910 assertions; the exact
+  isolated sequential suite passed 3,045 tests and 103,962 assertions in
+  173.604 seconds. Full static, dependency, disposable database, repeat seed,
+  build, cache, source-generation, and connected Chrome gates passed.
+- Exactly nine IDs are selected. Consumer requirements
+  `pet.identity.0281`, `pet.identity.0285`, and `pet.identity.0287` remain
+  discovered rather than verified.
 
 ## Structured Identifying Marks
 
@@ -372,9 +400,10 @@ relational writes, and one presenter prepares only the public-safe projection.
 
 ## Next Package
 
-Choose the next dependency-safe appearance fact without inheriting status for
-friend, clinic, active-search, documentary, dispute, measurement, or media
-consumers from the verified structured identifying-mark package.
+Choose the next dependency-safe appearance or identity fact without inheriting
+status for transport, marketplace, event, place, service, product, carrier,
+search, measurement, weight-privacy, or medical consumers from the verified
+general-size package.
 Do not treat safe candidate review, possible species, alternative-name
 history, or birth precision as duplicate merge, proof verification, taxonomy
 verification, lost/found coordination, dispute resolution, organization

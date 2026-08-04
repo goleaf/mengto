@@ -122,6 +122,46 @@ return [
             'stripes' => 'Stripes',
         ],
     ],
+    'size' => [
+        'title' => 'General size category',
+        'description' => 'Record a broad, manager-reported category that works across animal groups without guessing a weight or measurement.',
+        'label' => 'Size category',
+        'help' => 'Choose the closest stable category. Leave it unrecorded when you are not sure.',
+        'measurement_notice' => 'This category does not replace actual measurements. Weight and species-specific dimensions belong to their own dated records.',
+        'not_recorded' => 'Not recorded',
+        'public_title' => 'General size',
+        'public_notice' => 'This is a broad manager-provided category, not a verified measurement or medical fact.',
+        'options' => [
+            'very-small' => [
+                'label' => 'Very small',
+                'description' => 'At the smallest end of the relevant animal group’s usual range.',
+            ],
+            'small' => [
+                'label' => 'Small',
+                'description' => 'Smaller than the middle of the relevant animal group’s usual range.',
+            ],
+            'medium' => [
+                'label' => 'Medium',
+                'description' => 'Near the middle of the relevant animal group’s usual range.',
+            ],
+            'large' => [
+                'label' => 'Large',
+                'description' => 'Larger than the middle of the relevant animal group’s usual range.',
+            ],
+            'very-large' => [
+                'label' => 'Very large',
+                'description' => 'At the largest end of the relevant animal group’s usual range.',
+            ],
+            'individual' => [
+                'label' => 'Individual measurements needed',
+                'description' => 'A broad category is not useful enough; consult the animal’s separate measurements.',
+            ],
+            'not-applicable' => [
+                'label' => 'Not applicable to this species',
+                'description' => 'This shared size scale does not meaningfully describe this animal group.',
+            ],
+        ],
+    ],
     'body_covering' => [
         'title' => 'Coat, feathers, scales, or skin',
         'description' => 'The available fields match the animal group. Choose stable visible traits; use medical records for diagnoses or treatment.',
@@ -778,6 +818,7 @@ return [
         'appearance_primary_duplicate' => 'The primary color cannot also be an additional color.',
         'appearance_selection' => 'Choose only supported colors and patterns within the allowed limit.',
         'appearance_text' => 'Enter a valid appearance clarification within the supported length.',
+        'size_category' => 'Choose a supported size category or leave it unrecorded.',
         'body_covering_hairless' => 'Choose a valid coat-absence value.',
         'body_covering_hairless_conflict' => 'Coat length, texture, and undercoat must be empty when the animal is recorded without a coat.',
         'body_covering_selection' => 'Choose a supported body-covering value.',

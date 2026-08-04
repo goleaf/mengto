@@ -7,7 +7,27 @@ This living plan records work that was actually performed. A pass is
 status remains authoritative in
 `docs/requirements/compliance-matrix.md`.
 
-## Current Delivery: Structured Pet Identifying Marks
+## Current Delivery: General Pet Size Category
+
+Status: `implemented and release-verified` on 2026-08-04.
+
+- Store one nullable controlled category on the canonical pet profile without
+  inferring a default from species, breed, image, weight, or legacy text.
+- Reuse one server normalizer through the existing authorized Appearance
+  Action while preserving optimistic locking, idempotency, audit, cache
+  invalidation, no-op behavior, and omitted-input compatibility.
+- Render an accessible EN/LT/RU editor and query-free public projection that
+  explicitly distinguishes the category from measurements and medical facts.
+- Add the profile-side `(size_category, status, id)` index without pretending
+  a marketplace, place, event, service, carrier, product, or search consumer
+  has been delivered.
+- Keep exact measurements and public, household, or clinical weight privacy
+  outside this nine-requirement package.
+
+Exact scope and observed evidence belong in
+`docs/plans/pet-profile-size-category-work-package.md`.
+
+## Previous Delivery: Structured Pet Identifying Marks
 
 Status: `implemented and release-verified` on 2026-08-04.
 
