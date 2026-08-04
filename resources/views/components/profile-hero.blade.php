@@ -3,7 +3,9 @@
     'section',
     'badges' => [],
     'summaryLabel' => __('ui.profile_summary_b5913ff585'),
+    'summaryEmpty' => __('ui.profile_summary_unavailable_4509769cdd'),
     'summaryIcons' => [],
+    'actionsLabel' => null,
 ])
 
 <section
@@ -30,12 +32,12 @@
             <x-profile-identity
                 :profile="$profile"
                 :eyebrow="$profile['role']"
-                :avatar-alt="$profile['name']"
+                :avatar-alt="$profile['avatar_alt'] ?? $profile['name']"
             />
 
             <x-action-list
                 :actions="$profile['actions']"
-                :label="__('presentation.profile_actions', ['name' => $profile['name']])"
+                :label="$actionsLabel ?? __('presentation.profile_actions', ['name' => $profile['name']])"
             />
         </div>
 
@@ -53,7 +55,7 @@
             :items="$profile['stats']"
             :label="$summaryLabel"
             :icons="$summaryIcons"
-            empty="{{ __('ui.profile_summary_unavailable_4509769cdd') }}"
+            :empty="$summaryEmpty"
         />
     </div>
 </section>

@@ -18,6 +18,11 @@
 
 ### Interface System
 
+- Extended the dedicated `/neighbors` EN/LT/RU contract from 71 to 160 leaves
+  for the complete Ari neighbor profile; extracted its presentation from the
+  broad preview service into a zero-query presenter, moved the walk action out
+  of Blade, and added canonical Lucide section, pet-metadata, routine, and
+  community icons with responsive browser coverage.
 - Added a dedicated 42-leaf EN/LT/RU contract for `/share/{target}`; stable
   target and channel codes now drive localized page, delivery, recipient,
   detail, privacy, subject, and message copy, while every share action retains

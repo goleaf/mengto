@@ -138,7 +138,7 @@ the decision column is the desired page-identity boundary.
 | `messages.index` | `/messages` | `MessageCenterPreviewController` | `canonical-page` | retain `x-page-header` |
 | `messages.details` | `/messages/{conversation}/details` | `ConversationDetailPreviewController` | `deliberate-detail-or-profile` | retain token-compatible hero pending audit |
 | `neighbors.index` | `/neighbors` | `NeighborDirectoryPreviewController` | `canonical-page` | retain `x-page-header` |
-| `neighbors.ari` | `/neighbors/ari-jensen` | `NeighborProfilePreviewController` | `deliberate-detail-or-profile` | retain token-compatible hero pending audit |
+| `neighbors.ari` | `/neighbors/ari-jensen` | `NeighborProfilePreviewController` | `deliberate-detail-or-profile` | verified profile-led hero, dedicated EN/LT/RU presenter, passive Blade, canonical icons, and responsive browser ratchet |
 | `notifications.index` | `/notifications` | `NotificationCenterPreviewController` | `canonical-page` | retain `x-page-header` |
 | `organizations.index` | `/organizations` | `Organizations\OrganizationDirectory` | `canonical-page` | retain `x-page-header` |
 | `organizations.invitations.respond` | `/organizations/invitations/{organizationInvitation:stable_key}/respond` | `Organizations\OrganizationInvitationResponse` | `canonical-page` | retain `x-page-header` |

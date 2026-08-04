@@ -705,6 +705,40 @@ retains 219 tables and five users across repeated seeding, and the 180-route
 smoke, both forum-source checks, deterministic 38,377-requirement generation,
 PHP localizer, and 854-call canonical icon audit also pass.
 
+The seventeenth non-header localization follow-up audits the deliberate
+`/neighbors/ari-jensen` profile. Eighty-nine profile leaves extend the existing
+neighbors domain from 71 to 160 exact-parity EN/LT/RU values and own the page,
+hero, section, action, identity, statistics, interests, pet, mutual-neighbor,
+community, and moment surface. `NeighborProfilePresenter` extracts the
+projection from the broad `PreviewService`, prepares follow, message, and walk
+actions outside Blade, and adds zero Eloquent queries. Existing authenticated
+state reads, interaction state, routes, media destinations, and mutation
+authorization remain unchanged.
+
+The profile retains its intentional profile-led hero and gains canonical
+Lucide icons for section headings, metadata, the three routine facts, and both
+communities. The focused contract passes 7 tests and 403 assertions; the
+combined neighbor directory/profile contract passes 14 tests and 887
+assertions; and the affected authorization, preview, responsive, page-identity,
+linked-media, and shared-component slice passes 136 tests and 2,210 assertions.
+The browser matrix retains 91 primary audits, seven video-call flows, seven
+message-details flows, and seven share flows, and adds seven real neighbor
+profile flows across 320-1920 pixels, EN/RU/LT, forced colors, reduced motion,
+and effective 200% zoom. All 57 audited profile values, targeted icon maps,
+44-pixel controls, clipping, horizontal overflow, raw keys, and console output
+pass; 34 screenshots, including RU 375px and EN 1440px profile captures, were
+visually reviewed.
+
+The complete sequential shared-checkout suite passes 3,016 tests and 103,577
+assertions in 180.402 seconds. Full Pint and Larastan report zero findings;
+Composer strict validation, locked audit, PHP 8.5 platform requirements, NPM
+audit, production Vite build, JavaScript syntax, and isolated
+config/event/route/view cache compilation pass. Fresh disposable SQLite
+applies, fully rolls back, reapplies, and seeds all 138 migrations, retains
+219 tables and five users across repeated seeding, and the 180-route smoke,
+both forum-source checks, deterministic 38,377-requirement generation, PHP
+localizer, and 859-call canonical icon audit also pass.
+
 ### 3.3 Next Execution Checkpoint
 
 1. Complete Package 0 by assigning the stable requirement ID and recording the
@@ -724,8 +758,9 @@ PHP localizer, and 854-call canonical icon audit also pass.
    thread, composer, per-message action chrome, conversation metadata, context
    rail, and action-result feedback are verified across default, request,
    professional, channel, poll, task, declined, and empty-message states.
-   The active call stage, real message details route, and share detail hub are
-   now browser-verified; genuine future member-authored content, coherent
+   The active call stage, real message details route, share detail hub, and Ari
+   neighbor profile are now browser-verified; genuine future member-authored
+   content, coherent
    removal of the unused
    historical details presenter/template chain, and the other priority bodies
    remain open. Do not conflate body-copy completion with the verified

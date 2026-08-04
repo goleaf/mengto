@@ -140,6 +140,13 @@ See `docs/decisions/0001-authenticated-actor-keys.md`.
   current-locale target taxonomy, delivery channels, prepared recipient
   actions, link metadata, and privacy copy. The presenter performs no Eloquent
   query; Blade renders the prepared projection and canonical icon names.
+- The deliberate Ari neighbor profile keeps its profile-led hero while
+  `NeighborProfilePresenter` owns the complete current-locale identity,
+  statistics, action payloads, pet routine, mutual-neighbor, community, and
+  section projection. The presenter performs no Eloquent query; the existing
+  authenticated state and interaction services remain the only upstream data
+  boundaries, and profile Blade components render prepared copy and canonical
+  icon names without resolving routes or mutations.
 - Class-based Livewire components own server-backed interaction.
 - Alpine is the Livewire-provided client-state layer; no second Alpine install.
 - Existing vanilla JavaScript enhances map, message, publication-photo, and browser-media

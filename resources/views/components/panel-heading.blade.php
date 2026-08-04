@@ -1,6 +1,7 @@
 @props([
     'title' => null,
     'meta' => null,
+    'icon' => null,
 ])
 
 <div {{ $attributes->class(['panel-heading']) }}>
@@ -8,7 +9,14 @@
         @isset($heading)
             {{ $heading }}
         @elseif ($title)
-            <h2 class="panel-heading__title">{{ $title }}</h2>
+            <h2 @class(['panel-heading__title', 'panel-heading__title--with-icon' => $icon])>
+                @if ($icon)
+                    <x-ui-icon size="sm" :name="$icon" />
+                    <span>{{ $title }}</span>
+                @else
+                    {{ $title }}
+                @endif
+            </h2>
         @endif
     </div>
 

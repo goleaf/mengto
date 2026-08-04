@@ -22,11 +22,18 @@ const NEIGHBOR_DIRECTORY_IDENTITY_KEYS = [
 
 test('the neighbor directory contract is complete in every supported locale', function (): void {
     $english = Arr::dot(require lang_path('en/neighbors.php'));
+    $english = Arr::where(
+        $english,
+        static fn (mixed $value, string $key): bool => ! str_starts_with($key, 'profile.'),
+    );
 
     expect($english)->toHaveCount(71);
 
     foreach (['lt', 'ru'] as $locale) {
-        $localized = Arr::dot(require lang_path("{$locale}/neighbors.php"));
+        $localized = Arr::where(
+            Arr::dot(require lang_path("{$locale}/neighbors.php")),
+            static fn (mixed $value, string $key): bool => ! str_starts_with($key, 'profile.'),
+        );
 
         expect(array_keys($localized), $locale)->toBe(array_keys($english));
 

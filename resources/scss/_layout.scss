@@ -30,6 +30,22 @@
         line-height: 1.2;
         overflow-wrap: anywhere;
         text-wrap: balance;
+
+        &--with-icon {
+            display: flex;
+            min-inline-size: 0;
+            align-items: center;
+            gap: 0.625rem;
+
+            > svg {
+                flex: none;
+                color: $leaf;
+            }
+
+            > span {
+                min-inline-size: 0;
+            }
+        }
     }
 
     &__description {

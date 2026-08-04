@@ -563,6 +563,7 @@ try {
         let englishExpertCopy = null;
         let englishGroupCopy = null;
         let englishNeighborCopy = null;
+        let englishNeighborProfileCopy = null;
         let englishMessagingCopy = null;
         let englishCallStageCopy = null;
         let englishMessageDetailsCopy = null;
@@ -2330,6 +2331,229 @@ try {
                     await writeFile(screenshotPath, Buffer.from(screenshotData.data, 'base64'));
                     pageIdentityScreenshots.push(screenshotPath);
                 }
+            }
+
+            const neighborProfileLabel = `${viewport.label} neighbor profile`;
+            await navigate(client, sessionId, `${baseUrl}/neighbors/ari-jensen`);
+            const neighborProfilePageAudit = await evaluate(client, sessionId, pageAuditExpression);
+            assertPageAudit(neighborProfilePageAudit, neighborProfileLabel);
+            const neighborProfileAudit = await evaluate(client, sessionId, `(() => {
+                const page = document.querySelector('[data-neighbor-profile]');
+                const hero = page?.querySelector('[data-neighbor-profile-hero]');
+                const summary = hero?.querySelector('.stat-grid');
+                const about = page?.querySelector('[data-section="about-neighbor"]');
+                const pet = page?.querySelector('[data-neighbor-profile-pet]');
+                const interests = page?.querySelector('[data-section="neighbor-interests"]');
+                const mutuals = page?.querySelector('[data-neighbor-profile-mutuals]');
+                const communities = page?.querySelector('[data-neighbor-profile-communities]');
+                const moments = page?.querySelector('[data-neighbor-profile-moments]');
+                const visible = (element) => {
+                    const style = getComputedStyle(element);
+                    const box = element.getBoundingClientRect();
+
+                    return style.display !== 'none' && style.visibility !== 'hidden'
+                        && box.width > 0 && box.height > 0;
+                };
+                const targets = [...(page?.querySelectorAll(
+                    'a, button, input:not([type="hidden"]), select, textarea, [role="button"]'
+                ) ?? [])].filter(visible).map((element) => ({
+                    label: element.getAttribute('aria-label')
+                        || element.textContent.trim().slice(0, 80)
+                        || element.getAttribute('name'),
+                    width: Math.round(element.getBoundingClientRect().width),
+                    height: Math.round(element.getBoundingClientRect().height),
+                })).filter((target) => target.width < 44 || target.height < 44);
+                const clippedRegions = [
+                    page,
+                    hero,
+                    hero?.querySelector('.profile-hero__body'),
+                    about,
+                    pet,
+                    interests,
+                    mutuals,
+                    communities,
+                    moments,
+                    ...page?.querySelectorAll('.panel-heading, .section-heading, [data-neighbor-profile-routine] > div') ?? [],
+                ].filter(Boolean).filter(
+                    (element) => element.scrollWidth > element.clientWidth + 1,
+                ).map((element) => element.className || element.dataset.section || element.tagName);
+
+                return {
+                    path: location.pathname,
+                    pageVisible: page ? visible(page) : false,
+                    copy: {
+                        documentTitle: document.title,
+                        back: page?.querySelector(':scope > .text-link span')?.textContent.trim() ?? null,
+                        summaryLabel: summary?.getAttribute('aria-label') ?? null,
+                        summaryLabels: [...(summary?.querySelectorAll('.stat-grid__label span') ?? [])]
+                            .map((element) => element.textContent.trim()),
+                        summaryDetails: [...(summary?.querySelectorAll('.stat-grid__detail') ?? [])]
+                            .map((element) => element.textContent.trim()),
+                        status: hero?.querySelector('.profile-hero__signals .status-badge span')
+                            ?.textContent.trim() ?? null,
+                        avatarAlt: hero?.querySelector('.profile-hero__avatar')?.getAttribute('alt') ?? null,
+                        coverAlt: hero?.querySelector('[data-profile-cover]')?.getAttribute('alt') ?? null,
+                        actions: [...(hero?.querySelectorAll('.profile-hero__identity-row .action span') ?? [])]
+                            .map((element) => element.textContent.trim()),
+                        aboutEyebrow: about?.querySelector('.section-heading__eyebrow')?.textContent.trim() ?? null,
+                        aboutTitle: about?.querySelector('.section-heading__title')?.textContent.trim() ?? null,
+                        bio: about?.querySelector('.section-copy')?.textContent.trim() ?? null,
+                        petOwner: pet?.querySelector('[data-neighbor-profile-pet-owner]')?.textContent.trim() ?? null,
+                        petMeta: [...(pet?.querySelectorAll('[data-neighbor-profile-pet-meta] .meta span') ?? [])]
+                            .map((element) => element.textContent.trim()),
+                        petStatus: pet?.querySelector('[data-neighbor-profile-pet-status]')?.textContent.trim() ?? null,
+                        petAction: pet?.querySelector('.action span')?.textContent.trim() ?? null,
+                        traits: [...(pet?.querySelectorAll('[data-neighbor-profile-pet-traits] .tag') ?? [])]
+                            .map((element) => element.textContent.trim()),
+                        routineLabels: [...(pet?.querySelectorAll('[data-neighbor-profile-routine] dt span') ?? [])]
+                            .map((element) => element.textContent.trim()),
+                        routineValues: [...(pet?.querySelectorAll('[data-neighbor-profile-routine] dd') ?? [])]
+                            .map((element) => element.textContent.trim()),
+                        interestsTitle: interests?.querySelector('.panel-heading__title')?.textContent.trim() ?? null,
+                        interests: [...(interests?.querySelectorAll('.tag') ?? [])]
+                            .map((element) => element.textContent.trim()),
+                        mutualsTitle: mutuals?.querySelector('.panel-heading__title')?.textContent.trim() ?? null,
+                        mutualsCount: mutuals?.querySelector('.panel-heading__meta')?.textContent.trim() ?? null,
+                        mutualContexts: [...(mutuals?.querySelectorAll('[role="listitem"] p') ?? [])]
+                            .map((element) => element.textContent.trim()),
+                        communitiesTitle: communities?.querySelector('.panel-heading__title')?.textContent.trim() ?? null,
+                        communityTopics: [...(communities?.querySelectorAll('.content-list__detail') ?? [])]
+                            .map((element) => element.textContent.trim()),
+                        communityMembers: [...(communities?.querySelectorAll('.content-list__meta span') ?? [])]
+                            .map((element) => element.textContent.trim()),
+                        momentsEyebrow: moments?.querySelector('.section-heading__eyebrow')?.textContent.trim() ?? null,
+                        momentsTitle: moments?.querySelector('.section-heading__title')?.textContent.trim() ?? null,
+                        momentTimes: [...(moments?.querySelectorAll('[data-neighbor-profile-moment] time') ?? [])]
+                            .map((element) => element.textContent.trim()),
+                        momentBodies: [...(moments?.querySelectorAll('[data-neighbor-profile-moment] > div > p.mt-4') ?? [])]
+                            .map((element) => element.textContent.trim()),
+                        momentTags: [...(moments?.querySelectorAll('[data-neighbor-profile-moment] .tag') ?? [])]
+                            .map((element) => element.textContent.trim()),
+                    },
+                    petMetaIcons: [...(pet?.querySelectorAll('[data-neighbor-profile-pet-meta] [data-ui-icon]') ?? [])]
+                        .map((element) => element.getAttribute('data-ui-icon')),
+                    routineIcons: [...(pet?.querySelectorAll('[data-neighbor-profile-routine] [data-ui-icon]') ?? [])]
+                        .map((element) => element.getAttribute('data-ui-icon')),
+                    sectionIcons: [
+                        about?.querySelector('.section-heading__title [data-ui-icon]')?.getAttribute('data-ui-icon'),
+                        moments?.querySelector('.section-heading__title [data-ui-icon]')?.getAttribute('data-ui-icon'),
+                    ],
+                    panelIcons: [interests, mutuals, communities].map(
+                        (panel) => panel?.querySelector('.panel-heading__title [data-ui-icon]')
+                            ?.getAttribute('data-ui-icon'),
+                    ),
+                    communityIcons: [...(communities?.querySelectorAll('.content-list [data-ui-icon]') ?? [])]
+                        .map((element) => element.getAttribute('data-ui-icon')),
+                    smallTargets: targets,
+                    clippedRegions,
+                    overflow: document.documentElement.scrollWidth
+                        - document.documentElement.clientWidth,
+                    rawTranslationKeys: document.body.innerText.match(
+                        /\bneighbors\.profile\.[a-z0-9_.-]+/gi
+                    ) ?? [],
+                };
+            })()`);
+            const neighborProfileCopy = [
+                neighborProfileAudit.copy.documentTitle,
+                neighborProfileAudit.copy.back,
+                neighborProfileAudit.copy.summaryLabel,
+                ...neighborProfileAudit.copy.summaryLabels,
+                ...neighborProfileAudit.copy.summaryDetails,
+                neighborProfileAudit.copy.status,
+                neighborProfileAudit.copy.avatarAlt,
+                neighborProfileAudit.copy.coverAlt,
+                ...neighborProfileAudit.copy.actions,
+                neighborProfileAudit.copy.aboutEyebrow,
+                neighborProfileAudit.copy.aboutTitle,
+                neighborProfileAudit.copy.bio,
+                neighborProfileAudit.copy.petOwner,
+                ...neighborProfileAudit.copy.petMeta,
+                neighborProfileAudit.copy.petStatus,
+                neighborProfileAudit.copy.petAction,
+                ...neighborProfileAudit.copy.traits,
+                ...neighborProfileAudit.copy.routineLabels,
+                ...neighborProfileAudit.copy.routineValues,
+                neighborProfileAudit.copy.interestsTitle,
+                ...neighborProfileAudit.copy.interests,
+                neighborProfileAudit.copy.mutualsTitle,
+                neighborProfileAudit.copy.mutualsCount,
+                ...neighborProfileAudit.copy.mutualContexts,
+                neighborProfileAudit.copy.communitiesTitle,
+                ...neighborProfileAudit.copy.communityTopics,
+                ...neighborProfileAudit.copy.communityMembers,
+                neighborProfileAudit.copy.momentsEyebrow,
+                neighborProfileAudit.copy.momentsTitle,
+                ...neighborProfileAudit.copy.momentTimes,
+                ...neighborProfileAudit.copy.momentBodies,
+                ...neighborProfileAudit.copy.momentTags,
+            ];
+
+            assert(neighborProfileAudit.path === '/neighbors/ari-jensen', `${neighborProfileLabel}: neighbor profile route path drifted.`);
+            assert(neighborProfileAudit.pageVisible, `${neighborProfileLabel}: neighbor profile is hidden.`);
+            assert(
+                neighborProfileCopy.length === 57
+                    && neighborProfileCopy.every((value) => value?.length > 0),
+                `${neighborProfileLabel}: neighbor profile localization surface is incomplete ${JSON.stringify(neighborProfileAudit.copy)}.`,
+            );
+            assert(
+                JSON.stringify(neighborProfileAudit.petMetaIcons) === JSON.stringify(['paw-print', 'calendar-days']),
+                `${neighborProfileLabel}: pet metadata icons drifted ${JSON.stringify(neighborProfileAudit.petMetaIcons)}.`,
+            );
+            assert(
+                JSON.stringify(neighborProfileAudit.routineIcons) === JSON.stringify(['route', 'sunrise', 'coffee']),
+                `${neighborProfileLabel}: routine icons drifted ${JSON.stringify(neighborProfileAudit.routineIcons)}.`,
+            );
+            assert(
+                JSON.stringify(neighborProfileAudit.sectionIcons) === JSON.stringify(['user-round', 'images']),
+                `${neighborProfileLabel}: section icons drifted ${JSON.stringify(neighborProfileAudit.sectionIcons)}.`,
+            );
+            assert(
+                JSON.stringify(neighborProfileAudit.panelIcons) === JSON.stringify(['sparkles', 'users', 'users-round']),
+                `${neighborProfileLabel}: panel icons drifted ${JSON.stringify(neighborProfileAudit.panelIcons)}.`,
+            );
+            assert(
+                JSON.stringify(neighborProfileAudit.communityIcons)
+                    === JSON.stringify(['building-2', 'users', 'trees', 'users']),
+                `${neighborProfileLabel}: community icons drifted ${JSON.stringify(neighborProfileAudit.communityIcons)}.`,
+            );
+            assert(neighborProfileAudit.smallTargets.length === 0, `${neighborProfileLabel}: controls below 44px ${JSON.stringify(neighborProfileAudit.smallTargets)}.`);
+            assert(neighborProfileAudit.clippedRegions.length === 0, `${neighborProfileLabel}: profile content is clipped ${JSON.stringify(neighborProfileAudit.clippedRegions)}.`);
+            assert(neighborProfileAudit.overflow <= 1, `${neighborProfileLabel}: profile overflows horizontally.`);
+            assert(neighborProfileAudit.rawTranslationKeys.length === 0, `${neighborProfileLabel}: raw profile translation keys remain.`);
+
+            if (viewport.locale === 'en') {
+                englishNeighborProfileCopy ??= neighborProfileCopy;
+                assert(
+                    neighborProfileCopy.every((value, index) => value === englishNeighborProfileCopy[index]),
+                    `${neighborProfileLabel}: English neighbor profile copy changed across viewports.`,
+                );
+            } else {
+                assert(englishNeighborProfileCopy !== null, `${neighborProfileLabel}: English profile baseline is missing.`);
+                assert(
+                    neighborProfileCopy.every((value, index) => value !== englishNeighborProfileCopy[index]),
+                    `${neighborProfileLabel}: English neighbor profile body fallback remains. Current ${JSON.stringify(neighborProfileCopy)}; English ${JSON.stringify(englishNeighborProfileCopy)}.`,
+                );
+            }
+
+            pageIdentityAudits[neighborProfileLabel] = {
+                ...neighborProfilePageAudit,
+                ...neighborProfileAudit,
+            };
+
+            if ([375, 1440].includes(viewport.width)) {
+                const neighborProfileScreenshotPath = join(
+                    outputDirectory,
+                    `page-identity-neighbor-profile-${viewport.width}.png`,
+                );
+                const neighborProfileScreenshotData = await client.send('Page.captureScreenshot', {
+                    format: 'png',
+                    captureBeyondViewport: true,
+                }, sessionId);
+                await writeFile(
+                    neighborProfileScreenshotPath,
+                    Buffer.from(neighborProfileScreenshotData.data, 'base64'),
+                );
+                pageIdentityScreenshots.push(neighborProfileScreenshotPath);
             }
 
             const shareLabel = `${viewport.label} share`;

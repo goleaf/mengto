@@ -101,6 +101,22 @@
         font-weight: 600;
         line-height: 1.25rem;
         overflow-wrap: anywhere;
+
+        &--with-icon {
+            display: flex;
+            min-inline-size: 0;
+            align-items: center;
+            gap: 0.5rem;
+
+            > svg {
+                flex: none;
+                color: $leaf;
+            }
+
+            > span {
+                min-inline-size: 0;
+            }
+        }
     }
 
     &__aside {

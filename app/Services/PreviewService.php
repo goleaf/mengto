@@ -24,6 +24,7 @@ final class PreviewService
         private readonly EventCatalog $events,
         private readonly PlaceCatalog $places,
         private readonly PlacePresenter $placePresenter,
+        private readonly NeighborProfilePresenter $neighborProfile,
     ) {}
 
     /**
@@ -502,130 +503,15 @@ final class PreviewService
     }
 
     /**
-     * @return array{
-     *     owner: array{name: string, location: string, avatar: string, summary: string},
-     *     neighbor: array{
-     *         name: string,
-     *         category: string,
-     *         location: string,
-     *         distance: string,
-     *         member_since: string,
-     *         status: string,
-     *         bio: string,
-     *         avatar: string,
-     *         avatar_alt: string,
-     *         cover_image: string,
-     *         cover_image_small: string,
-     *         cover_image_medium: string,
-     *         cover_image_alt: string,
-     *         mutual_count: int,
-     *         stats: array<int, array{label: string, value: string, detail: string}>,
-     *         interests: array<int, string>
-     *     },
-     *     pet: array{
-     *         name: string,
-     *         owner_name: string,
-     *         breed: string,
-     *         age: string,
-     *         status: string,
-     *         image: string,
-     *         image_small: string,
-     *         image_medium: string,
-     *         image_alt: string,
-     *         traits: array<int, string>,
-     *         routine: array<int, array{label: string, value: string}>
-     *     },
-     *     mutualNeighbors: array<int, array{name: string, initials: string, context: string, tone: string}>,
-     *     communities: array<int, array{name: string, topic: string, members: string}>,
-     *     recentMoments: array<int, array{author: string, pet: string, time: string, datetime: string, body: string, image: string, image_small: string, image_medium: string, image_alt: string, tags: array<int, string>, stats: array{paws: string, replies: string}}>
-     * }
+     * @return array<string, mixed>
      */
     public function ariNeighborProfileData(): array
     {
-        $mutualNeighbors = [
-            ['name' => __('messages.mia_carter_0e5b29cc3b'), 'initials' => 'MC', 'context' => __('messages.richmond_walks_d578ccde2c'), 'tone' => 'sun'],
-            ['name' => __('messages.jamie_cho_5f313c129b'), 'initials' => 'JC', 'context' => __('messages.apartment_pets_pdx_6488f4db06'), 'tone' => 'mint'],
-            ['name' => __('messages.noah_patel_147a9793ed'), 'initials' => 'NP', 'context' => __('messages.trail_tails_8c13c56b9f'), 'tone' => 'paper'],
-            ['name' => __('messages.lena_brooks_ca42e74116'), 'initials' => 'LB', 'context' => __('messages.foster_network_pdx_790a8f59dc'), 'tone' => 'mint'],
-        ];
-
-        $mutualCount = count($mutualNeighbors);
-
-        return [
-            'owner' => $this->owner(),
-            'neighbor' => [
-                'key' => 'ari',
-                'name' => __('messages.ari_jensen_6c670df410'),
-                'handle' => '@ari-jensen',
-                'role' => __('messages.dog_walks_b35dc82b9b'),
-                'category' => __('messages.dog_walks_b35dc82b9b'),
-                'location' => __('messages.pearl_district_portland_or_d015b48fc9'),
-                'distance' => __('messages.0_8_mi_away_bf413142dd'),
-                'member_since' => __('messages.member_since_2024_8cd8fa63cc'),
-                'status' => __('messages.open_to_calm_cafe_walks_788a58087c'),
-                'bio' => __('messages.ari_and_mochi_keep_a_steady_loop_between_quiet_pearl_dis_4f47d8892d'),
-                'avatar' => 'https://images.unsplash.com/photo-1753685723016-78c233daa8a2?auto=format&fit=crop&crop=faces&w=480&h=480&q=85',
-                'avatar_alt' => __('messages.ari_relaxing_with_mochi_in_a_neighborhood_park_2e4ba2f4ec'),
-                'cover_image' => 'https://images.unsplash.com/photo-1748835600580-8a57c3f168af?auto=format&fit=crop&w=1600&h=720&q=85',
-                'cover_image_small' => 'https://images.unsplash.com/photo-1748835600580-8a57c3f168af?auto=format&fit=crop&w=720&h=480&q=80',
-                'cover_image_medium' => 'https://images.unsplash.com/photo-1748835600580-8a57c3f168af?auto=format&fit=crop&w=1200&h=600&q=82',
-                'cover_image_alt' => __('messages.two_shiba_inu_dogs_ready_for_a_neighborhood_walk_8c7d1d6fcf'),
-                'mutual_count' => $mutualCount,
-                'stats' => [
-                    ['label' => __('messages.pet_8f0d1b30eb'), 'value' => __('messages.mochi_95114c81f3'), 'detail' => __('messages.shiba_mix_384146dcff')],
-                    ['label' => __('messages.mutuals_12966208be'), 'value' => (string) $mutualCount, 'detail' => __('messages.nearby_neighbors_4a38cc9f05')],
-                    ['label' => __('messages.home_3a78695388'), 'value' => __('messages.pearl_72bc556112'), 'detail' => __('messages.0_8_mi_away_bf413142dd')],
-                ],
-                'interests' => [__('messages.city_walks_a347b642ed'), 'training', __('messages.quiet_patios_c21699cb94'), __('messages.urban_routines_fa90da9faf')],
-                'followed' => $this->state->isActive('follows', 'ari'),
-                'actions' => [
-                    [
-                        'label' => __('messages.follow_641d1ef657'),
-                        'icon' => 'user-plus',
-                        'endpoint' => route('actions.perform'),
-                        'payload' => [
-                            'action' => 'toggle-follow',
-                            'target' => 'ari',
-                            'label' => __('messages.ari_jensen_6c670df410'),
-                        ],
-                        'variant' => 'primary',
-                        'active' => $this->state->isActive('follows', 'ari'),
-                        'active_label' => __('messages.following_344b4271ca'),
-                        'active_icon' => 'user-check',
-                        'pressed' => $this->state->isActive('follows', 'ari'),
-                    ],
-                    [
-                        'label' => __('messages.message_2f77668a9d'),
-                        'icon' => 'message-circle',
-                        'href' => route('messages.index'),
-                        'variant' => 'paper',
-                    ],
-                ],
-            ],
-            'pet' => [
-                'name' => __('messages.mochi_95114c81f3'),
-                'owner_name' => __('messages.ari_f6302850cc'),
-                'breed' => __('messages.shiba_mix_384146dcff'),
-                'age' => __('messages.3_years_50a85bc562'),
-                'status' => __('messages.calm_in_familiar_places_and_happiest_with_patient_introd_c8734f8394'),
-                'image' => 'https://images.unsplash.com/photo-1765193091032-da4cc0f568e8?auto=format&fit=crop&w=1200&h=900&q=85',
-                'image_small' => 'https://images.unsplash.com/photo-1765193091032-da4cc0f568e8?auto=format&fit=crop&w=576&h=432&q=80',
-                'image_medium' => 'https://images.unsplash.com/photo-1765193091032-da4cc0f568e8?auto=format&fit=crop&w=900&h=675&q=82',
-                'image_alt' => __('messages.mochi_sitting_with_another_shiba_at_a_neighborhood_cafe_9815d90e67'),
-                'traits' => [__('messages.patient_hellos_1903154287'), __('messages.city_confident_536e6c784f'), __('messages.treat_motivated_b026bf09d8')],
-                'routine' => [
-                    ['label' => __('messages.favorite_route_03964e230e'), 'value' => __('messages.nw_11th_to_fields_park_4ab904aab3')],
-                    ['label' => __('messages.best_time_9bbcba7bd0'), 'value' => __('messages.early_morning_be2fe9ea30')],
-                    ['label' => __('messages.cafe_rule_736a9bb5d1'), 'value' => __('messages.patio_first_table_second_4d97aca203')],
-                ],
-            ],
-            'mutualNeighbors' => $mutualNeighbors,
-            'communities' => [
-                ['name' => __('messages.apartment_pets_pdx_6488f4db06'), 'topic' => __('messages.small_space_routines_31ea3a8e79'), 'members' => __('messages.2_4k_members_ef94699d39')],
-                ['name' => __('messages.trail_tails_8c13c56b9f'), 'topic' => __('messages.weekend_city_loops_d83b794e49'), 'members' => __('messages.8_1k_members_bd48b96dc1')],
-            ],
-            'recentMoments' => $this->interactions->posts($this->ariMoments()),
-        ];
+        return $this->neighborProfile->present(
+            owner: $this->owner(),
+            recentMoments: $this->interactions->posts($this->ariMoments()),
+            followed: $this->state->isActive('follows', 'ari'),
+        );
     }
 
     /**
@@ -1800,16 +1686,19 @@ final class PreviewService
         return [
             $this->ariFirstMoment(),
             [
-                'author' => __('messages.ari_jensen_6c670df410'),
-                'pet' => __('messages.mochi_95114c81f3'),
-                'time' => __('messages.3_days_ago_46463ba858'),
+                'author' => __('neighbors.profile.moments.second.author'),
+                'pet' => __('neighbors.profile.moments.second.pet'),
+                'time' => __('neighbors.profile.moments.second.time'),
                 'datetime' => '2026-07-26T09:00:00-07:00',
-                'body' => __('messages.tried_the_quiet_corner_at_our_neighborhood_cafe_before_t_f3a1225faf'),
+                'body' => __('neighbors.profile.moments.second.body'),
                 'image' => 'https://images.unsplash.com/photo-1765193091032-da4cc0f568e8?auto=format&fit=crop&w=1200&h=900&q=85',
                 'image_small' => 'https://images.unsplash.com/photo-1765193091032-da4cc0f568e8?auto=format&fit=crop&w=576&h=432&q=80',
                 'image_medium' => 'https://images.unsplash.com/photo-1765193091032-da4cc0f568e8?auto=format&fit=crop&w=900&h=675&q=82',
-                'image_alt' => __('messages.mochi_sitting_with_another_shiba_at_a_neighborhood_cafe_9815d90e67'),
-                'tags' => [__('messages.cafe_routine_d41b2c0433'), __('messages.calm_introductions_f2d9031186')],
+                'image_alt' => __('neighbors.profile.moments.second.image_alt'),
+                'tags' => [
+                    __('neighbors.profile.moments.second.first_tag'),
+                    __('neighbors.profile.moments.second.second_tag'),
+                ],
                 'stats' => ['paws' => '96', 'replies' => '18'],
             ],
         ];
@@ -1821,16 +1710,19 @@ final class PreviewService
     private function ariFirstMoment(): array
     {
         return [
-            'author' => __('messages.ari_jensen_6c670df410'),
-            'pet' => __('messages.mochi_95114c81f3'),
-            'time' => __('messages.18_min_ago_54f545e4a9'),
+            'author' => __('neighbors.profile.moments.first.author'),
+            'pet' => __('neighbors.profile.moments.first.pet'),
+            'time' => __('neighbors.profile.moments.first.time'),
             'datetime' => '2026-07-29T09:42:00-07:00',
-            'body' => __('messages.mochi_finally_made_it_through_the_whole_cafe_patio_witho_af598f06a5'),
+            'body' => __('neighbors.profile.moments.first.body'),
             'image' => 'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?auto=format&fit=crop&w=1200&h=900&q=80',
             'image_small' => 'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?auto=format&fit=crop&w=576&h=432&q=78',
             'image_medium' => 'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?auto=format&fit=crop&w=900&h=675&q=80',
-            'image_alt' => __('messages.mochi_walking_beside_another_dog_on_a_tree_lined_path_3b678123d4'),
-            'tags' => ['training', __('messages.city_walks_a347b642ed')],
+            'image_alt' => __('neighbors.profile.moments.first.image_alt'),
+            'tags' => [
+                __('neighbors.profile.moments.first.first_tag'),
+                __('neighbors.profile.moments.first.second_tag'),
+            ],
             'stats' => ['paws' => '128', 'replies' => '24'],
         ];
     }

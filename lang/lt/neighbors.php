@@ -114,4 +114,153 @@ return [
             ],
         ],
     ],
+    'profile' => [
+        'page' => [
+            'title' => 'Ari Jensen | „PawCircle“',
+            'back' => 'Grįžti prie kaimynų',
+            'actions_label' => 'Veiksmai su :name profiliu',
+        ],
+        'hero' => [
+            'summary_label' => 'Kaimyno profilio santrauka',
+            'summary_unavailable' => 'Kaimyno profilio santrauka šiuo metu nepasiekiama.',
+        ],
+        'sections' => [
+            'about' => [
+                'eyebrow' => 'Rajono kasdienybė',
+                'title' => 'Apie Ari',
+            ],
+            'interests' => [
+                'title' => 'Bendri pomėgiai',
+                'empty' => 'Bendrų pomėgių dar nėra.',
+            ],
+            'mutual_neighbors' => [
+                'title' => 'Bendri kaimynai',
+                'count' => '{0} Bendrų kaimynų nėra|{1} :count bendras kaimynas|[2,9] :count bendri kaimynai|[10,*] :count bendrų kaimynų',
+                'empty' => 'Bendrų kaimynų dar nėra.',
+            ],
+            'communities' => [
+                'title' => 'Bendruomenės',
+                'empty' => 'Dar neprisijungta prie nė vienos bendruomenės.',
+            ],
+            'moments' => [
+                'eyebrow' => 'Ari ir Mochi akimirkos',
+                'title' => 'Naujausios akimirkos',
+                'empty' => 'Akimirkų dar nepasidalyta.',
+            ],
+        ],
+        'actions' => [
+            'follow' => 'Sekti',
+            'following' => 'Sekama',
+            'message' => 'Rašyti žinutę',
+            'plan_walk' => 'Planuoti pasivaikščiojimą',
+        ],
+        'identity' => [
+            'name' => 'Ari Jensen',
+            'handle' => '@ari-jensen',
+            'category' => 'Pasivaikščiojimai su šunimis',
+            'location' => 'Pearl District, Portlandas, Oregonas',
+            'neighborhood' => 'Pearl rajonas',
+            'distance' => 'už 0,8 myl.',
+            'member_since' => 'Narys nuo 2024 m.',
+            'status' => 'Kviečia į ramius pasivaikščiojimus prie kavinių',
+            'bio' => 'Ari ir Mochi nuolat vaikšto ramiomis Pearl District gatvėmis, pavėsinguose parkuose ir kantriai pratinasi prie kavinių. Jie mielai dalijasi neskubriomis miesto rutinomis su netoliese gyvenančiais augintinių šeimininkais.',
+            'avatar_alt' => 'Ari su Mochi ilsisi rajono parke',
+            'cover_image_alt' => 'Du pasivaikščioti pasiruošę šiba inu šunys',
+        ],
+        'stats' => [
+            'pet' => [
+                'label' => 'Augintinis',
+                'detail' => 'Šibos mišrūnas',
+            ],
+            'mutuals' => [
+                'label' => 'Bendri ryšiai',
+                'detail' => 'Netoliese gyvenantys kaimynai',
+            ],
+            'home' => [
+                'label' => 'Namai',
+                'value' => 'Pearl rajonas',
+                'detail' => 'už 0,8 myl.',
+            ],
+        ],
+        'interests' => [
+            'city_walks' => 'Miesto pasivaikščiojimai',
+            'training' => 'Dresūra',
+            'quiet_patios' => 'Ramios terasos',
+            'urban_routines' => 'Miesto rutina',
+        ],
+        'pet' => [
+            'name' => 'Mochi',
+            'owner_name' => 'Ari',
+            'breed' => 'Šibos mišrūnas',
+            'age' => '3 metai',
+            'status' => 'Ramiai jaučiasi pažįstamose vietose ir geriausiai atsipalaiduoja, kai pažintys vyksta kantriai.',
+            'image_alt' => 'Mochi sėdi su kitu šiba šunimi rajono kavinėje',
+            'lives_with' => 'Gyvena su :owner',
+            'traits_empty' => 'Rutinos ypatybės šiuo metu nepasiekiamos.',
+            'routine_empty' => 'Rutinos informacijos dar nėra.',
+            'traits' => [
+                'patient_hellos' => 'Kantrios pažintys',
+                'city_confident' => 'Drąsus mieste',
+                'treat_motivated' => 'Motyvuoja skanėstai',
+            ],
+            'routine' => [
+                'route_label' => 'Mėgstamas maršrutas',
+                'route_value' => 'NW 11th–Fields Park',
+                'time_label' => 'Geriausias laikas',
+                'time_value' => 'Ankstyvas rytas',
+                'cafe_label' => 'Kavinės taisyklė',
+                'cafe_value' => 'Pirmiausia terasa, tada staliukas',
+            ],
+        ],
+        'mutual_neighbors' => [
+            'mia' => [
+                'name' => 'Mia Carter',
+                'context' => 'Pasivaikščiojimai Richmond rajone',
+            ],
+            'jamie' => [
+                'name' => 'Jamie Cho',
+                'context' => '„Apartment Pets PDX“ bendruomenė',
+            ],
+            'noah' => [
+                'name' => 'Noah Patel',
+                'context' => '„Trail Tails“ bendruomenė',
+            ],
+            'lena' => [
+                'name' => 'Lena Brooks',
+                'context' => '„Foster Network PDX“ bendruomenė',
+            ],
+        ],
+        'communities' => [
+            'apartment_pets' => [
+                'name' => 'Apartment Pets PDX',
+                'topic' => 'Mažų erdvių rutina',
+                'members' => '2,4 tūkst. narių',
+            ],
+            'trail_tails' => [
+                'name' => 'Trail Tails',
+                'topic' => 'Savaitgalio maršrutai mieste',
+                'members' => '8,1 tūkst. narių',
+            ],
+        ],
+        'moments' => [
+            'first' => [
+                'author' => 'Ari Jensen',
+                'pet' => 'Mochi',
+                'time' => 'prieš 18 min.',
+                'body' => 'Mochi pagaliau perėjo visą kavinės terasą neskubėdamas pasisveikinti. Padėjo ramūs kampeliai ir kišenė skanėstų.',
+                'image_alt' => 'Mochi eina šalia kito šuns medžiais apsodintu taku',
+                'first_tag' => 'Dresūra',
+                'second_tag' => 'Miesto pasivaikščiojimai',
+            ],
+            'second' => [
+                'author' => 'Ari Jensen',
+                'pet' => 'Mochi',
+                'time' => 'prieš 3 dienas',
+                'body' => 'Išbandėme ramų kampelį rajono kavinėje prieš rytinį lankytojų antplūdį. Lėtai apėjęs terasą Mochi patogiai įsitaisė.',
+                'image_alt' => 'Mochi sėdi su kitu šiba šunimi rajono kavinėje',
+                'first_tag' => 'Kavinės rutina',
+                'second_tag' => 'Ramios pažintys',
+            ],
+        ],
+    ],
 ];

@@ -663,6 +663,14 @@ five stable target families and three stable delivery channels, prepares
 recipient actions and canonical icon names, and leaves destination, access,
 and mutation boundaries unchanged. The measured presenter query delta is zero.
 
+The following deliberate-profile audit closes `/neighbors/ari-jensen`. The
+neighbors domain grows from 71 to 160 exact-parity leaves, and
+`NeighborProfilePresenter` now prepares the profile copy, statistics,
+follow/message/walk action payloads, pet routine, mutuals, communities, and
+canonical icon names. The profile-led hero remains intentional, all existing
+destinations and authenticated mutation boundaries remain unchanged, and the
+presenter query delta is zero.
+
 The next Package 8 wave migrated the medical-record, care-journal,
 lost-and-found, marketplace, and expert create/edit/booking flows, the device
 directory and connect flow, and both professional-workspace states. Their ten

@@ -4,6 +4,7 @@
     'title',
     'titleId' => null,
     'columns' => 1,
+    'icon' => null,
 ])
 
 <section
@@ -16,6 +17,7 @@
             :eyebrow="$eyebrow"
             :title="$title"
             :title-id="$titleId"
+            :icon="$icon"
         />
 
         @isset($action)

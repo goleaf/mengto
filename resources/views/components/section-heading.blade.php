@@ -5,6 +5,7 @@
     'size' => 'regular',
     'tone' => 'leaf',
     'level' => 2,
+    'icon' => null,
 ])
 
 <div {{ $attributes->class('section-heading') }}>
@@ -22,9 +23,15 @@
                 'section-heading__title--compact' => $size === 'compact',
                 'section-heading__title--directory' => $size === 'directory',
                 'section-heading__title--feed' => $size === 'feed',
+                'section-heading__title--with-icon' => $icon,
             ])
         >
-            {{ $title }}
+            @if ($icon)
+                <x-ui-icon size="md" :name="$icon" />
+                <span>{{ $title }}</span>
+            @else
+                {{ $title }}
+            @endif
         </h1>
     @else
         <h2
@@ -34,9 +41,15 @@
                 'section-heading__title--compact' => $size === 'compact',
                 'section-heading__title--directory' => $size === 'directory',
                 'section-heading__title--feed' => $size === 'feed',
+                'section-heading__title--with-icon' => $icon,
             ])
         >
-            {{ $title }}
+            @if ($icon)
+                <x-ui-icon size="md" :name="$icon" />
+                <span>{{ $title }}</span>
+            @else
+                {{ $title }}
+            @endif
         </h2>
     @endif
 </div>

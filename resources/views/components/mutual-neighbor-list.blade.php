@@ -1,9 +1,11 @@
-@props(['neighbors', 'count'])
+@props(['neighbors', 'copy'])
 
 <x-content-panel
     section="mutual-neighbors"
-    title="{{ __('ui.mutual_neighbors_a225ce44b1') }}"
-    :meta="__('presentation.total_count', ['count' => $count])"
+    :title="$copy['title']"
+    :meta="$copy['count']"
+    :icon="$copy['icon']"
+    data-neighbor-profile-mutuals
 >
     <div role="list" class="section-body">
         @forelse ($neighbors as $neighbor)
@@ -20,7 +22,7 @@
                 </div>
             </div>
         @empty
-            <p role="listitem" class="text-sm text-paw-muted">{{ __('ui.no_mutual_neighbors_yet_f67047c219') }}</p>
+            <p role="listitem" class="text-sm text-paw-muted">{{ $copy['empty'] }}</p>
         @endforelse
     </div>
 </x-content-panel>

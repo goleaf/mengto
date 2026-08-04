@@ -1214,6 +1214,41 @@ Observed package evidence on 2026-08-04:
 The reusable browser command is
 `BROWSER_BASE_URL=http://127.0.0.1:PORT npm run test:browser:page-identity`.
 
+## Neighbor Profile Localization And Icon Verification
+
+`NeighborProfileLocalizationTest` guards exact EN/LT/RU key parity, the
+dedicated zero-query presenter, prepared follow/message/walk actions, passive
+Blade boundaries, all localized profile fixtures, stable semantic hooks, and
+the canonical pet-metadata and routine icon maps. The directory contract keeps
+its independent 71-leaf ratchet while sharing the same `neighbors` domain.
+
+Observed package evidence on 2026-08-04:
+
+- focused profile suite: 7 tests and 403 assertions;
+- combined neighbor directory/profile suite: 14 tests and 887 assertions;
+- affected authorization, preview, responsive, page-identity, linked-media,
+  and shared-component slice: 136 tests and 2,210 assertions;
+- complete sequential shared-checkout suite: 3,016 tests and 103,577
+  assertions in 180.402 seconds with a 1 GB PHP limit;
+- the page-identity browser matrix passed 91 primary audits, seven call flows,
+  seven message-details flows, seven neighbor-profile flows, seven share flows,
+  and 34 screenshots across 320-1920 pixels, EN/RU/LT, forced colors, reduced
+  motion, and effective 200% zoom;
+- all 57 audited profile values, targeted section/pet/routine/community icon
+  maps, 44-pixel targets, clipping, overflow, raw-key, and console checks
+  passed; RU 375px and EN 1440px screenshots were visually reviewed;
+- full Pint and Larastan, Composer strict validation, locked audit, PHP
+  platform requirements, npm audit, JavaScript syntax, Vite 8.2 production
+  build, and isolated config/event/route/view cache compilation passed;
+- fresh disposable SQLite applied, fully rolled back, reapplied, and seeded all
+  138 migrations, retained 219 tables and five users across repeated seeding,
+  and the 180-route smoke, both forum-source checks, deterministic
+  38,377-requirement generation, PHP localizer, and 859-call canonical icon
+  audit passed.
+
+The reusable browser command is
+`BROWSER_BASE_URL=http://127.0.0.1:PORT npm run test:browser:page-identity`.
+
 ## Messaging Call Stage And Details Verification
 
 `MessageCenterLocalizationTest` now also covers stable call-state persistence,
