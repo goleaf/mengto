@@ -7,7 +7,27 @@ This living plan records work that was actually performed. A pass is
 status remains authoritative in
 `docs/requirements/compliance-matrix.md`.
 
-## Current Delivery: Pet Appearance Color
+## Current Delivery: Species-Aware Pet Body Covering
+
+Status: `implemented and release-verified` on 2026-08-04.
+
+- Select coat, feather, scale, skin, mane, and shedding controls from the
+  existing broad species without trusting browser-submitted applicability.
+- Reuse one server normalizer across progressive and durable compatibility
+  mutation paths while retaining authorization, optimistic locking,
+  idempotency, audit, and cache invalidation.
+- Store the schema-versioned object in the existing encrypted profile payload,
+  reuse structured scale-color clarification, and add no migration or query.
+- Render EN/LT/RU workspace and public projections while keeping the bounded
+  skin observation manager-only.
+- Keep search, recommendations, care, groomer/shelter/finder consumption,
+  private marks, measurements, identity media, and medical facts outside this
+  11-requirement package.
+
+Exact scope and observed evidence belong in
+`docs/plans/pet-profile-body-covering-work-package.md`.
+
+## Previous Delivery: Pet Appearance Color
 
 Status: `implemented, release-verified, and published` on 2026-08-04.
 

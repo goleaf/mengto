@@ -9,6 +9,7 @@ use App\Models\PetProfile;
 use App\Models\PetProfileManager;
 use App\Models\PetProfileMedia;
 use App\Services\PetAppearancePresenter;
+use App\Services\PetBodyCoveringPresenter;
 use App\Services\PetBreedOriginPresenter;
 use App\Services\PetLifeStagePresenter;
 use App\Services\PetProfileAgeLabel;
@@ -37,6 +38,8 @@ final class PublicPetProfile extends Component
 
     private PetAppearancePresenter $appearance;
 
+    private PetBodyCoveringPresenter $bodyCovering;
+
     private PetLifeStagePresenter $lifeStages;
 
     public function boot(
@@ -45,6 +48,7 @@ final class PublicPetProfile extends Component
         PetProfileAgeLabel $ageLabels,
         PetBreedOriginPresenter $breedOrigins,
         PetAppearancePresenter $appearance,
+        PetBodyCoveringPresenter $bodyCovering,
         PetLifeStagePresenter $lifeStages,
         PetSpeciesLabel $speciesLabels,
     ): void {
@@ -53,6 +57,7 @@ final class PublicPetProfile extends Component
         $this->ageLabels = $ageLabels;
         $this->breedOrigins = $breedOrigins;
         $this->appearance = $appearance;
+        $this->bodyCovering = $bodyCovering;
         $this->lifeStages = $lifeStages;
         $this->speciesLabels = $speciesLabels;
     }
@@ -190,6 +195,7 @@ final class PublicPetProfile extends Component
             'celebration_day' => $this->ageLabels->celebrationFor($profile),
             'life_stage' => $this->lifeStages->for($profile),
             'appearance' => $this->appearance->for($profile),
+            'body_covering' => $this->bodyCovering->for($profile),
             'status' => $profile->status->label(),
             'bio' => (string) ($profileData['story'] ?? ''),
             'owner' => $ownerLabel,

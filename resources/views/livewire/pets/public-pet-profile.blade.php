@@ -94,6 +94,32 @@
                     </dl>
                 </div>
             @endif
+
+            @if ($pet['body_covering'] !== null)
+                <div class="mt-6 rounded-2xl border border-paw-line bg-paw-canvas p-4" aria-labelledby="pet-profile-body-covering-heading">
+                    <h3 id="pet-profile-body-covering-heading" class="text-lg font-semibold text-paw-ink">{{ __('pet_profiles.body_covering.public_title') }}</h3>
+                    <p class="mt-1 text-sm text-paw-muted">{{ __('pet_profiles.body_covering.public_notice') }}</p>
+                    <dl class="mt-4 grid min-w-0 gap-3 sm:grid-cols-2">
+                        @forelse ([
+                            'coat_length',
+                            'coat_texture',
+                            'undercoat',
+                            'hairless',
+                            'feather_type',
+                            'mane_type',
+                            'seasonal_shedding',
+                        ] as $field)
+                            @if ($pet['body_covering'][$field] !== null)
+                                <div>
+                                    <dt class="text-sm text-paw-muted">{{ __('pet_profiles.body_covering.public_fields.'.$field) }}</dt>
+                                    <dd class="break-words">{{ $pet['body_covering'][$field] }}</dd>
+                                </div>
+                            @endif
+                        @empty
+                        @endforelse
+                    </dl>
+                </div>
+            @endif
         </section>
 
         <dl class="grid gap-3 border-s border-paw-line ps-5">

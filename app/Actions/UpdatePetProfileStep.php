@@ -11,6 +11,7 @@ use App\Models\PetProfile;
 use App\Services\ForumActor;
 use App\Services\PetAppearanceNormalizer;
 use App\Services\PetBirthDetailsNormalizer;
+use App\Services\PetBodyCoveringNormalizer;
 use App\Services\PetBreedOriginNormalizer;
 use App\Services\PetBreedOriginSynchronizer;
 use App\Services\PetLifeStageOverrideNormalizer;
@@ -64,6 +65,7 @@ final class UpdatePetProfileStep
         private readonly PetProfileCache $cache,
         private readonly PetProfileNameHistory $nameHistory,
         private readonly PetAppearanceNormalizer $appearance,
+        private readonly PetBodyCoveringNormalizer $bodyCovering,
         private readonly PetLifeStageOverrideNormalizer $lifeStageOverrides,
         private readonly PetBirthDetailsNormalizer $birthDetails,
         private readonly PetBreedOriginNormalizer $breedOrigins,
@@ -282,7 +284,11 @@ final class UpdatePetProfileStep
                 'breed_origins',
             ]],
             PetProfileCompletionStep::Appearance => [[
-                'profile_data' => $this->appearance->apply($data, $profileData),
+                'profile_data' => $this->bodyCovering->apply(
+                    $data,
+                    $profile->species,
+                    $this->appearance->apply($data, $profileData),
+                ),
             ], [
                 'primary_color',
                 'additional_colors',
@@ -291,6 +297,14 @@ final class UpdatePetProfileStep
                 'feather_color_details',
                 'scale_color_details',
                 'seasonal_color_changes',
+                'coat_length',
+                'coat_texture',
+                'undercoat',
+                'hairless',
+                'feather_type',
+                'skin_condition',
+                'mane_type',
+                'seasonal_shedding',
                 'appearance_summary',
                 'identifying_marks',
             ]],

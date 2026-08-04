@@ -176,6 +176,21 @@ or database query. The historical `appearance_summary` and private
 `identifying_marks` keys remain separate compatibility values. Empty structured
 data removes only the nested object.
 
+## Pet Species-Aware Body Covering Payload
+
+Species-aware body-covering data is stored under
+`pet_profiles.profile_data.body_covering` in the same existing encrypted text
+cast. Schema version 1 contains nullable controlled coat length and texture,
+undercoat, feather type, mane type, and seasonal shedding; one hairless
+boolean; and a bounded manager-only skin observation. Scale coloring remains
+in the adjacent structured appearance object to avoid duplicate facts.
+
+The server derives field applicability from the stored broad species and
+prunes irrelevant input before persistence. Public presentation never receives
+the skin observation. These display facts are not filtered, joined, or ordered
+in this package, so no new column, migration, backfill, index, or query is
+required. Removing all meaningful values removes only the nested object.
+
 ## Data Retention
 
 Retention is category-specific:

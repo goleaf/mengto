@@ -140,6 +140,16 @@ query or migration. Automatic lost/found description generation
 remain open. Exact boundaries and evidence are in
 `docs/plans/pet-profile-appearance-color-work-package.md`.
 
+The species-aware body-covering package implements 11 selected records within
+`pet.identity.0226-pet.identity.0237`. It stores controlled coat, feather,
+mane, hairless, and seasonal-shedding descriptions plus a private bounded skin
+observation in the existing encrypted payload, while reptiles and fish reuse
+the structured scale-color clarification. Search/recommendation consumption
+`pet.identity.0239`, care guidance `pet.identity.0241`, and groomer, shelter,
+or finder consumption `pet.identity.0243` remain open. Exact boundaries and
+evidence are in
+`docs/plans/pet-profile-body-covering-work-package.md`.
+
 ## Phase 19: Ownership And Privacy
 
 **IDs:** `pet.ownership.0001-pet.ownership.0393` and

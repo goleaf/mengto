@@ -21,15 +21,21 @@ use App\Enums\PetBirthDatePrecision;
 use App\Enums\PetBreedConfidence;
 use App\Enums\PetBreedOriginType;
 use App\Enums\PetBreedSource;
+use App\Enums\PetCoatLength;
+use App\Enums\PetCoatTexture;
 use App\Enums\PetEvidenceStatus;
+use App\Enums\PetFeatherType;
 use App\Enums\PetLifeStage;
 use App\Enums\PetManagerRole;
+use App\Enums\PetManeType;
 use App\Enums\PetProfileCompletionStep;
 use App\Enums\PetProfileNameType;
 use App\Enums\PetProfileNameVisibility;
 use App\Enums\PetProfileStatus;
 use App\Enums\PetProfileVisibility;
+use App\Enums\PetSeasonalShedding;
 use App\Enums\PetSpeciesConfidence;
+use App\Enums\PetUndercoatType;
 use App\Livewire\Forms\PetManagerInvitationForm;
 use App\Livewire\Forms\PetProfileDocumentsForm;
 use App\Livewire\Forms\PetProfileForm;
@@ -43,6 +49,7 @@ use App\Models\PetProfileManager;
 use App\Models\PetProfileMedia;
 use App\Models\User;
 use App\Services\PetBirthDetailsNormalizer;
+use App\Services\PetBodyCoveringSchema;
 use App\Services\PetLifeStagePresenter;
 use App\Services\PetProfileAgeLabel;
 use App\Services\PetProfileCompletionPresenter;
@@ -129,6 +136,8 @@ final class ManagePetProfile extends Component
 
     private PetBirthDetailsNormalizer $birthDetails;
 
+    private PetBodyCoveringSchema $bodyCoveringSchema;
+
     private PetProfileAgeLabel $ageLabels;
 
     private PetLifeStagePresenter $lifeStages;
@@ -148,6 +157,7 @@ final class ManagePetProfile extends Component
         PetProfileLifecycle $lifecycle,
         PetProfileCompletionPresenter $completionPresenter,
         PetBirthDetailsNormalizer $birthDetails,
+        PetBodyCoveringSchema $bodyCoveringSchema,
         PetProfileAgeLabel $ageLabels,
         PetLifeStagePresenter $lifeStages,
         UpdatePetProfileStep $updateStepAction,
@@ -169,6 +179,7 @@ final class ManagePetProfile extends Component
         $this->lifecycle = $lifecycle;
         $this->completionPresenter = $completionPresenter;
         $this->birthDetails = $birthDetails;
+        $this->bodyCoveringSchema = $bodyCoveringSchema;
         $this->ageLabels = $ageLabels;
         $this->lifeStages = $lifeStages;
         $this->updateStepAction = $updateStepAction;
@@ -345,6 +356,17 @@ final class ManagePetProfile extends Component
         ));
     }
 
+    public function updatedFormBodyCoveringHairless(bool $hairless): void
+    {
+        if (! $hairless) {
+            return;
+        }
+
+        $this->form->bodyCoveringCoatLength = '';
+        $this->form->bodyCoveringCoatTexture = '';
+        $this->form->bodyCoveringUndercoat = '';
+    }
+
     /** @return array<string, string> */
     #[Computed]
     public function appearanceColorOptions(): array
@@ -363,6 +385,48 @@ final class ManagePetProfile extends Component
             ->mapWithKeys(static fn (PetAppearancePattern $pattern): array => [
                 $pattern->value => $pattern->label(),
             ])->all();
+    }
+
+    /** @return array<string, string> */
+    #[Computed]
+    public function coatLengthOptions(): array
+    {
+        return $this->enumOptions(PetCoatLength::cases());
+    }
+
+    /** @return array<string, string> */
+    #[Computed]
+    public function coatTextureOptions(): array
+    {
+        return $this->enumOptions(PetCoatTexture::cases());
+    }
+
+    /** @return array<string, string> */
+    #[Computed]
+    public function undercoatOptions(): array
+    {
+        return $this->enumOptions(PetUndercoatType::cases());
+    }
+
+    /** @return array<string, string> */
+    #[Computed]
+    public function featherTypeOptions(): array
+    {
+        return $this->enumOptions(PetFeatherType::cases());
+    }
+
+    /** @return array<string, string> */
+    #[Computed]
+    public function maneTypeOptions(): array
+    {
+        return $this->enumOptions(PetManeType::cases());
+    }
+
+    /** @return array<string, string> */
+    #[Computed]
+    public function seasonalSheddingOptions(): array
+    {
+        return $this->enumOptions(PetSeasonalShedding::cases());
     }
 
     public function addBreedOrigin(): void
@@ -793,6 +857,7 @@ final class ManagePetProfile extends Component
             'currentYear' => now()->year,
             'minimumBirthYear' => now()->year - PetBirthDetailsNormalizer::MAX_AGE_YEARS,
             'maximumAgeYears' => PetBirthDetailsNormalizer::MAX_AGE_YEARS,
+            'bodyCoveringFields' => $this->bodyCoveringSchema->for($profile->species),
             'currentAgeLabel' => $this->ageLabels->for($profile),
             'currentLifeStage' => $this->lifeStages->for($profile),
             'managerMinimumEnd' => now()->addMinute()->format('Y-m-d\TH:i'),
@@ -986,6 +1051,20 @@ final class ManagePetProfile extends Component
         }
 
         return $this->loadedProfile = $profile;
+    }
+
+    /**
+     * @param  list<\BackedEnum>  $cases
+     * @return array<string, string>
+     */
+    private function enumOptions(array $cases): array
+    {
+        return collect($cases)
+            ->mapWithKeys(static fn (\BackedEnum $case): array => [
+                (string) $case->value => method_exists($case, 'label')
+                    ? $case->label()
+                    : (string) $case->value,
+            ])->all();
     }
 
     /** @param array<string, mixed> $data */

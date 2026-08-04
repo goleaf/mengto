@@ -48,6 +48,7 @@ This index is the source-of-truth map for first-party documentation.
 | `docs/implementation-plan.md` | Dependency-aware modernization plan | Engineering | Living plan |
 | `docs/plans/pet-workspace-modernization-plan.md` | Authenticated `/pets` workspace decisions, data boundary, interface states, and release evidence | Product + engineering + QA | Implemented and verified |
 | `docs/plans/pet-profile-draft-autosave-work-package.md` | Safe descriptive-step autosave, reconnect recovery, idempotency, accessibility, and release evidence | Product + engineering + QA | Implemented and verified with dedicated requirement evidence |
+| `docs/plans/pet-profile-body-covering-work-package.md` | Species-aware coat, feather, scale, skin, mane, shedding, privacy, and release boundary | Product + engineering + QA | Implemented and release-verified with exact requirement evidence |
 | `docs/audits/groups-shared-card-ux-audit.md` | `/groups` media/copy defect, shared-card topology, component boundaries, accessibility matrix, risks, and stop conditions | Product + frontend + QA | Current audit |
 | `docs/audits/place-shared-card-classification.md` | Places shared-leaf adoption, map-aware shell boundary, dashboard decision, and acceptance contract | Product + frontend + QA | Current audit |
 | `docs/plans/shared-directory-card-system-plan.md` | Unlimited phased directory-card repair, migration, verification, governance, and recovery backlog | Product + frontend + QA | In progress |
@@ -101,6 +102,7 @@ domain contract under the canonical requirements above:
 | `docs/plans/pet-profile-foundation-work-package.md` | Implemented pet identity and access foundation package | Living evidence |
 | `docs/plans/pet-profile-primary-photo-work-package.md` | Optional primary-photo processing, private delivery, replacement, removal, and recovery package | Living evidence |
 | `docs/plans/pet-profile-name-identity-work-package.md` | Current, typed alternative, historical pet names, privacy, search, and release evidence | Living evidence |
+| `docs/plans/pet-profile-body-covering-work-package.md` | Species-aware appearance facts, manager-only skin observation, and exact requirement evidence | Living evidence |
 | `docs/plans/pet-profile-current-progress.md` | Pet gate status and next evidence | Living evidence |
 | `docs/audits/pet-profile-existing-system-audit.md` | Existing pet aggregate and integrations | Living evidence |
 | `docs/audits/pet-profile-gap-analysis.md` | Pet data, privacy, ownership, and lifecycle gaps | Living evidence |

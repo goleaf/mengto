@@ -68,7 +68,8 @@ final class PetProfileCompletionPresenter
                 || $profile->breed_origin_type !== null,
             PetProfileCompletionStep::Appearance => $this->hasText($data, 'appearance_summary')
                 || $this->hasText($data, 'identifying_marks')
-                || $this->hasStructuredAppearance($data),
+                || $this->hasStructuredAppearance($data)
+                || $this->hasStructuredBodyCovering($data),
             PetProfileCompletionStep::Character => $this->hasText($data, 'story')
                 || $this->hasText($data, 'temperament_summary'),
             PetProfileCompletionStep::SocialPreferences => $this->hasText($data, 'social_preferences')
@@ -119,6 +120,37 @@ final class PetProfileCompletionPresenter
             'seasonal_color_changes',
         ] as $key) {
             if (is_string($appearance[$key] ?? null) && trim($appearance[$key]) !== '') {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /** @param array<string, mixed> $data */
+    private function hasStructuredBodyCovering(array $data): bool
+    {
+        $bodyCovering = $data['body_covering'] ?? null;
+
+        if (! is_array($bodyCovering)) {
+            return false;
+        }
+
+        if (($bodyCovering['hairless'] ?? null) === true) {
+            return true;
+        }
+
+        foreach ([
+            'coat_length',
+            'coat_texture',
+            'undercoat',
+            'feather_type',
+            'skin_condition',
+            'mane_type',
+            'seasonal_shedding',
+        ] as $key) {
+            if (is_string($bodyCovering[$key] ?? null)
+                && trim($bodyCovering[$key]) !== '') {
                 return true;
             }
         }

@@ -373,6 +373,13 @@ rules for every mutation path; `PetAppearancePresenter` owns the localized
 public-safe scalar projection. Blade never interprets stored enum values, and
 identifying marks are intentionally excluded from the public projection.
 
+Species-aware body-covering facts share that encrypted compatibility boundary.
+`PetBodyCoveringSchema` maps server-owned broad species to relevant controls,
+`PetBodyCoveringNormalizer` validates and prunes every mutation payload, and
+`PetBodyCoveringPresenter` owns the localized public-safe scalar projection.
+The manager-only skin observation is intentionally absent from that presenter;
+it is descriptive profile state rather than a diagnosis or medical record.
+
 ## Canonical Social Relationship Boundary
 
 `SocialActor` is a one-to-one internal adapter around an authoritative user,

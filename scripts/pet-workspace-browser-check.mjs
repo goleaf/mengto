@@ -10,6 +10,7 @@ const verifyAutosave = process.argv.includes('--autosave');
 const verifyBirth = process.argv.includes('--birth');
 const verifyBreed = process.argv.includes('--breed');
 const verifyAppearance = process.argv.includes('--appearance');
+const verifyCovering = process.argv.includes('--covering');
 const verifyNames = process.argv.includes('--names');
 const allowDataMutation = process.env.BROWSER_ALLOW_DATA_MUTATION === '1';
 const origin = new URL(baseUrl);
@@ -24,8 +25,8 @@ if (!['localhost', '127.0.0.1', '::1'].includes(origin.hostname)) {
     throw new Error('The pet workspace browser check only runs against a loopback URL.');
 }
 
-if ((verifyAutosave || verifyBirth || verifyBreed || verifyAppearance || verifyNames) && ! allowDataMutation) {
-    throw new Error('--autosave, --birth, --breed, --appearance, and --names require BROWSER_ALLOW_DATA_MUTATION=1 and a disposable database.');
+if ((verifyAutosave || verifyBirth || verifyBreed || verifyAppearance || verifyCovering || verifyNames) && ! allowDataMutation) {
+    throw new Error('--autosave, --birth, --breed, --appearance, --covering, and --names require BROWSER_ALLOW_DATA_MUTATION=1 and a disposable database.');
 }
 
 const assert = (condition, message) => {
@@ -323,6 +324,7 @@ try {
     let birthAudit = null;
     let breedAudit = null;
     let appearanceAudit = null;
+    let coveringAudit = null;
     let nameAudit = null;
 
     if (verifyBirth) {
@@ -945,6 +947,151 @@ try {
         appearanceAudit = { initial, restored, publicProjection, responsive };
     }
 
+    if (verifyCovering) {
+        await client.send('Emulation.setDeviceMetricsOverride', {
+            width: 1440, height: 900, deviceScaleFactor: 1,
+            mobile: false, screenWidth: 1440, screenHeight: 900,
+        }, sessionId);
+        await client.send('Emulation.setTouchEmulationEnabled', { enabled: false }, sessionId);
+        await setLocale(client, sessionId, 'en');
+        const manageUrl = `${baseUrl}/pets/manage/pet-scout?step=appearance`;
+        await navigate(client, sessionId, manageUrl);
+        const initial = await evaluate(client, sessionId, `(() => ({
+            titleVisible: Boolean(document.querySelector('#managed-pet-body-covering-heading')),
+            title: document.querySelector('#managed-pet-body-covering-heading')?.textContent.trim() ?? null,
+            language: document.documentElement.lang,
+            url: location.href,
+            appearanceForm: Boolean(document.querySelector('[data-pet-profile-autosave-step="appearance"]')),
+            primaryColor: Boolean(document.querySelector('#managed-pet-primary-color')),
+            pageTitle: document.title,
+            coatLength: Boolean(document.querySelector('#managed-pet-coat-length')),
+            coatTexture: Boolean(document.querySelector('#managed-pet-coat-texture')),
+            undercoat: Boolean(document.querySelector('#managed-pet-undercoat')),
+            hairless: Boolean(document.querySelector('#managed-pet-hairless')),
+            skin: Boolean(document.querySelector('#managed-pet-skin-condition')),
+            shedding: Boolean(document.querySelector('#managed-pet-seasonal-shedding')),
+            feather: Boolean(document.querySelector('#managed-pet-feather-type')),
+            scale: Boolean(document.querySelector('#managed-pet-scale-color-details')),
+            mane: Boolean(document.querySelector('#managed-pet-mane-type')),
+        }))()`);
+        assert(initial.titleVisible, `The species-aware body-covering guidance is missing: ${JSON.stringify(initial)}.`);
+        assert(
+            initial.coatLength && initial.coatTexture && initial.undercoat
+                && initial.hairless && initial.skin && initial.shedding,
+            `The dog body-covering controls are incomplete: ${JSON.stringify(initial)}.`,
+        );
+        assert(!initial.feather && !initial.scale && !initial.mane, 'The dog editor exposes irrelevant species fields.');
+
+        const privateSkin = `Browser-private-skin-${Date.now()}`;
+        const requestsBeforeSave = livewireRequests.length;
+        await evaluate(client, sessionId, `((skinNote) => {
+            const setSelect = (selector, value) => {
+                const input = document.querySelector(selector);
+                const setter = Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, 'value').set;
+                setter.call(input, value);
+                input.dispatchEvent(new Event('change', { bubbles: true }));
+            };
+            const skin = document.querySelector('#managed-pet-skin-condition');
+            const textareaSetter = Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, 'value').set;
+            setSelect('#managed-pet-coat-length', 'short');
+            setSelect('#managed-pet-coat-texture', 'wavy');
+            setSelect('#managed-pet-undercoat', 'dense');
+            setSelect('#managed-pet-seasonal-shedding', 'heavy');
+            textareaSetter.call(skin, skinNote);
+            skin.dispatchEvent(new Event('input', { bubbles: true }));
+        })(${JSON.stringify(privateSkin)})`);
+        await evaluate(client, sessionId, `document.querySelector('[data-pet-profile-autosave-step="appearance"]').requestSubmit()`);
+        await waitUntil(
+            async () => await evaluate(client, sessionId, `document.body.innerText.includes('Appearance details saved.')`),
+            'The body-covering description was not saved through Livewire.',
+        );
+        assert(livewireRequests.length - requestsBeforeSave >= 1, 'Saving body-covering details did not reach Livewire.');
+
+        await navigate(client, sessionId, manageUrl);
+        const restored = await evaluate(client, sessionId, `(() => ({
+            coatLength: document.querySelector('#managed-pet-coat-length')?.value ?? null,
+            coatTexture: document.querySelector('#managed-pet-coat-texture')?.value ?? null,
+            undercoat: document.querySelector('#managed-pet-undercoat')?.value ?? null,
+            shedding: document.querySelector('#managed-pet-seasonal-shedding')?.value ?? null,
+            skin: document.querySelector('#managed-pet-skin-condition')?.value ?? null,
+        }))()`);
+        assert(restored.coatLength === 'short' && restored.coatTexture === 'wavy', 'The coat description was not restored.');
+        assert(restored.undercoat === 'dense' && restored.shedding === 'heavy', 'The undercoat or shedding state was not restored.');
+        assert(restored.skin === privateSkin, 'The private skin observation was not restored for the manager.');
+
+        await navigate(client, sessionId, `${baseUrl}/pets/profile/pet-scout`);
+        const publicProjection = await evaluate(client, sessionId, `((privateSkin) => ({
+            titleVisible: document.body.innerText.includes('Coat and body covering'),
+            valuesVisible: document.body.innerText.includes('Short')
+                && document.body.innerText.includes('Wavy')
+                && document.body.innerText.includes('Dense')
+                && document.body.innerText.includes('Heavy'),
+            privateSkinVisible: document.body.innerText.includes(privateSkin),
+            privacyNoticeVisible: document.body.innerText.includes('Private skin observations and medical findings are not shown here.'),
+            rawKeys: document.body.innerText.match(/\bpet_profiles\.[a-z0-9_.-]+/gi) ?? [],
+            overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+        }))(${JSON.stringify(privateSkin)})`);
+        assert(publicProjection.titleVisible && publicProjection.valuesVisible, 'The public body-covering projection is incomplete.');
+        assert(!publicProjection.privateSkinVisible, 'The manager-only skin observation leaked into the public profile.');
+        assert(publicProjection.privacyNoticeVisible, 'The public body-covering privacy notice is missing.');
+        assert(publicProjection.rawKeys.length === 0, 'The public body-covering projection exposes translation keys.');
+        assert(publicProjection.overflow <= 1, `The public body-covering projection overflows by ${publicProjection.overflow}px.`);
+
+        const responsive = {};
+        for (const viewport of [
+            { label: 'desktop', width: 1440, height: 900, mobile: false },
+            { label: 'mobile-390', width: 390, height: 844, mobile: true },
+            { label: 'mobile-320', width: 320, height: 900, mobile: true },
+        ]) {
+            await client.send('Emulation.setDeviceMetricsOverride', {
+                width: viewport.width, height: viewport.height, deviceScaleFactor: 1,
+                mobile: viewport.mobile, screenWidth: viewport.width, screenHeight: viewport.height,
+            }, sessionId);
+            await client.send('Emulation.setTouchEmulationEnabled', { enabled: viewport.mobile }, sessionId);
+            await navigate(client, sessionId, manageUrl);
+            const audit = await evaluate(client, sessionId, `(() => {
+                const form = document.querySelector('[data-pet-profile-autosave-step="appearance"]');
+                const visible = (element) => {
+                    const style = getComputedStyle(element);
+                    const box = element.getBoundingClientRect();
+                    return style.display !== 'none' && style.visibility !== 'hidden'
+                        && box.width > 0 && box.height > 0;
+                };
+                const controls = [...(form?.querySelectorAll('button, input, select, textarea') ?? [])].filter(visible);
+                const ids = [...document.querySelectorAll('[id]')].map((element) => element.id).filter(Boolean);
+                return {
+                    h1Count: document.querySelectorAll('main h1').length,
+                    formCount: form ? 1 : 0,
+                    coveringHeadingCount: document.querySelectorAll('#managed-pet-body-covering-heading').length,
+                    overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+                    rawKeys: document.body.innerText.match(/\bpet_profiles\.[a-z0-9_.-]+/gi) ?? [],
+                    unnamed: controls.filter((element) => !(
+                        element.getAttribute('aria-label') || element.getAttribute('aria-labelledby')
+                        || element.labels?.length || element.textContent.trim() || element.title
+                    )).length,
+                    smallTargets: controls.filter((element) => {
+                        const target = ['checkbox', 'radio'].includes(element.type)
+                            ? element.closest('label') ?? element
+                            : element;
+                        const box = target.getBoundingClientRect();
+                        return box.width < 44 || box.height < 44;
+                    }).length,
+                    duplicateIds: [...new Set(ids.filter((id, index) => ids.indexOf(id) !== index))],
+                };
+            })()`);
+            assert(audit.h1Count === 1 && audit.formCount === 1 && audit.coveringHeadingCount === 1, `${viewport.label}: invalid body-covering workspace structure.`);
+            assert(audit.overflow <= 1, `${viewport.label}: body-covering workspace overflows by ${audit.overflow}px.`);
+            assert(audit.rawKeys.length === 0 && audit.unnamed === 0, `${viewport.label}: body-covering workspace exposes raw keys or unnamed controls.`);
+            assert(audit.duplicateIds.length === 0, `${viewport.label}: duplicate body-covering control IDs remain.`);
+            if (viewport.mobile) assert(audit.smallTargets === 0, `${viewport.label}: body-covering controls below 44px remain.`);
+            responsive[viewport.label] = audit;
+            const screenshot = await client.send('Page.captureScreenshot', { format: 'png', captureBeyondViewport: true }, sessionId);
+            await writeFile(join(outputDirectory, `pet-body-covering-${viewport.label}.png`), Buffer.from(screenshot.data, 'base64'));
+        }
+
+        coveringAudit = { initial, restored, publicProjection, responsive };
+    }
+
     if (verifyAutosave) {
         await client.send('Emulation.setDeviceMetricsOverride', {
             width: 1440, height: 900, deviceScaleFactor: 1,
@@ -1188,6 +1335,8 @@ try {
         breedAudit,
         verifyAppearance,
         appearanceAudit,
+        verifyCovering,
+        coveringAudit,
         verifyNames,
         nameAudit,
         consoleErrors,

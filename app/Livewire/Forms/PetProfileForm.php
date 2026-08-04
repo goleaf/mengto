@@ -10,10 +10,16 @@ use App\Enums\PetBirthDatePrecision;
 use App\Enums\PetBreedConfidence;
 use App\Enums\PetBreedOriginType;
 use App\Enums\PetBreedSource;
+use App\Enums\PetCoatLength;
+use App\Enums\PetCoatTexture;
+use App\Enums\PetFeatherType;
 use App\Enums\PetLifeStage;
 use App\Enums\PetManagerRole;
+use App\Enums\PetManeType;
 use App\Enums\PetProfileVisibility;
+use App\Enums\PetSeasonalShedding;
 use App\Enums\PetSpeciesConfidence;
+use App\Enums\PetUndercoatType;
 use App\Models\PetProfile;
 use App\Models\PetProfileBreedOrigin;
 use App\Rules\ValidPetProfileName;
@@ -96,6 +102,22 @@ final class PetProfileForm extends Form
     public string $appearanceScaleColorDetails = '';
 
     public string $appearanceSeasonalColorChanges = '';
+
+    public string $bodyCoveringCoatLength = '';
+
+    public string $bodyCoveringCoatTexture = '';
+
+    public string $bodyCoveringUndercoat = '';
+
+    public bool $bodyCoveringHairless = false;
+
+    public string $bodyCoveringFeatherType = '';
+
+    public string $bodyCoveringSkinCondition = '';
+
+    public string $bodyCoveringManeType = '';
+
+    public string $bodyCoveringSeasonalShedding = '';
 
     public string $temperamentSummary = '';
 
@@ -356,6 +378,14 @@ final class PetProfileForm extends Form
             'feather_color_details' => trim((string) ($validated['appearanceFeatherColorDetails'] ?? '')),
             'scale_color_details' => trim((string) ($validated['appearanceScaleColorDetails'] ?? '')),
             'seasonal_color_changes' => trim((string) ($validated['appearanceSeasonalColorChanges'] ?? '')),
+            'coat_length' => (string) ($validated['bodyCoveringCoatLength'] ?? ''),
+            'coat_texture' => (string) ($validated['bodyCoveringCoatTexture'] ?? ''),
+            'undercoat' => (string) ($validated['bodyCoveringUndercoat'] ?? ''),
+            'hairless' => (bool) ($validated['bodyCoveringHairless'] ?? false),
+            'feather_type' => (string) ($validated['bodyCoveringFeatherType'] ?? ''),
+            'skin_condition' => trim((string) ($validated['bodyCoveringSkinCondition'] ?? '')),
+            'mane_type' => (string) ($validated['bodyCoveringManeType'] ?? ''),
+            'seasonal_shedding' => (string) ($validated['bodyCoveringSeasonalShedding'] ?? ''),
             'appearance_summary' => trim((string) ($validated['appearanceSummary'] ?? '')),
             'identifying_marks' => trim((string) ($validated['identifyingMarks'] ?? '')),
         ];
@@ -461,6 +491,20 @@ final class PetProfileForm extends Form
         $this->appearanceFeatherColorDetails = $this->profileText($appearance, 'feather_color_details');
         $this->appearanceScaleColorDetails = $this->profileText($appearance, 'scale_color_details');
         $this->appearanceSeasonalColorChanges = $this->profileText($appearance, 'seasonal_color_changes');
+        $bodyCovering = is_array($profileData['body_covering'] ?? null)
+            ? $profileData['body_covering']
+            : [];
+        $this->bodyCoveringCoatLength = $this->profileText($bodyCovering, 'coat_length');
+        $this->bodyCoveringCoatTexture = $this->profileText($bodyCovering, 'coat_texture');
+        $this->bodyCoveringUndercoat = $this->profileText($bodyCovering, 'undercoat');
+        $this->bodyCoveringHairless = ($bodyCovering['hairless'] ?? null) === true;
+        $this->bodyCoveringFeatherType = $this->profileText($bodyCovering, 'feather_type');
+        $this->bodyCoveringSkinCondition = $this->profileText($bodyCovering, 'skin_condition');
+        $this->bodyCoveringManeType = $this->profileText($bodyCovering, 'mane_type');
+        $this->bodyCoveringSeasonalShedding = $this->profileText(
+            $bodyCovering,
+            'seasonal_shedding',
+        );
         $this->temperamentSummary = (string) ($profileData['temperament_summary'] ?? '');
         $this->socialPreferences = (string) ($profileData['social_preferences'] ?? '');
         $this->meetingPreferences = (string) ($profileData['meeting_preferences'] ?? '');
@@ -519,6 +563,17 @@ final class PetProfileForm extends Form
             'appearanceFeatherColorDetails' => ['nullable', 'string', 'max:1000'],
             'appearanceScaleColorDetails' => ['nullable', 'string', 'max:1000'],
             'appearanceSeasonalColorChanges' => ['nullable', 'string', 'max:1000'],
+            'bodyCoveringCoatLength' => ['nullable', Rule::enum(PetCoatLength::class)],
+            'bodyCoveringCoatTexture' => ['nullable', Rule::enum(PetCoatTexture::class)],
+            'bodyCoveringUndercoat' => ['nullable', Rule::enum(PetUndercoatType::class)],
+            'bodyCoveringHairless' => ['boolean'],
+            'bodyCoveringFeatherType' => ['nullable', Rule::enum(PetFeatherType::class)],
+            'bodyCoveringSkinCondition' => ['nullable', 'string', 'max:1000'],
+            'bodyCoveringManeType' => ['nullable', Rule::enum(PetManeType::class)],
+            'bodyCoveringSeasonalShedding' => [
+                'nullable',
+                Rule::enum(PetSeasonalShedding::class),
+            ],
         ];
     }
 

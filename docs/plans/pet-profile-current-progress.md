@@ -54,14 +54,41 @@ Last updated: 2026-08-04.
   payload. Final release gates and exact 12-ID requirement evidence passed;
   implementation commit `61efa6f` is published on `origin/main`. Automatic
   lost/found description `pet.identity.0223` remains open.
+- The species-aware body-covering slice implements 11 selected requirements
+  within `pet.identity.0226-pet.identity.0237` with relevant coat, feather,
+  scale, skin, mane, and seasonal-shedding fields on the existing encrypted
+  payload. Implementation, full release verification, and exact 11-ID evidence
+  are complete.
 
 ## Current Work Package
 
-The current package replaces prototype-only appearance free text with a
-species-neutral structured color description while preserving the encrypted
-legacy summary. One shared server boundary protects every mutation path and
-one presenter prepares a localized public projection without exposing private
-identifying marks or adding a database query.
+The current package adds species-aware body-covering facts to the established
+Appearance step without changing stable identity or adding a query. One shared
+server schema selects relevant controls, one normalizer protects every
+mutation path, and one presenter prepares a localized public projection while
+keeping the skin observation private.
+
+## Species-Aware Body Covering
+
+- Coat length and texture, undercoat, hairlessness, feather type, mane type,
+  seasonal shedding, scale coloring, and skin observation appear only where
+  the broad species schema marks them relevant.
+- `PetBodyCoveringNormalizer` rejects forged values, non-boolean hairlessness,
+  overlong text, and hairless/coat contradictions, then prunes fields that do
+  not apply to the stored species.
+- The schema-versioned object shares the encrypted `profile_data` boundary
+  with structured appearance color. Skin observation is manager-only and is
+  never copied into `PetBodyCoveringPresenter` public output.
+- The focused package passed 26 tests and 104 assertions, the complete
+  pet-profile regression passed 179 tests and 5,377 assertions, and the final
+  exact committed-tree sequential repository suite passed 2,960 tests and
+  98,960 assertions in 195.350 seconds. Connected Chrome
+  saves and restores the real Livewire form and verifies the localized public
+  projection and skin privacy at 1440px, 390px, and 320px with no overflow,
+  raw keys, duplicate IDs, unnamed or undersized controls, or console errors.
+- Exactly 11 IDs are selected. Search/recommendation consumption
+  `pet.identity.0239`, care guidance `pet.identity.0241`, and groomer, shelter,
+  or finder consumption `pet.identity.0243` remain open.
 
 ## Appearance Color
 
@@ -320,9 +347,9 @@ identifying marks or adding a database query.
 
 ## Next Package
 
-Complete and publish the selected appearance-color package, then choose the
-next dependency-safe appearance fact without inheriting status for automatic
-lost/found descriptions, coat structure, private marks, or measurements.
+Choose the next dependency-safe appearance fact without inheriting status for
+search, recommendations, care guidance, specialist consumption, private marks,
+or measurements from the verified species-aware body-covering package.
 Do not treat safe candidate review, possible species, alternative-name
 history, or birth precision as duplicate merge, proof verification, taxonomy
 verification, lost/found coordination, dispute resolution, organization

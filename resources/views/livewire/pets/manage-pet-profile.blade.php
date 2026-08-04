@@ -408,6 +408,130 @@
                     icon="palette"
                 />
 
+                <section class="grid min-w-0 gap-4 rounded-2xl border border-paw-line bg-paw-canvas p-4" aria-labelledby="managed-pet-body-covering-heading">
+                    <div>
+                        <h3 id="managed-pet-body-covering-heading" class="text-lg font-semibold text-paw-ink">{{ __('pet_profiles.body_covering.title') }}</h3>
+                        <p class="mt-1 text-sm leading-6 text-paw-muted">{{ __('pet_profiles.body_covering.description') }}</p>
+                    </div>
+
+                    <div class="grid min-w-0 gap-4 md:grid-cols-2">
+                        @if ($bodyCoveringFields['coat'])
+                            <label class="forum-form__choice min-w-0 rounded-xl border border-paw-line bg-paw-surface px-3 py-2 md:col-span-2" for="managed-pet-hairless">
+                                <input id="managed-pet-hairless" type="checkbox" wire:model.live.boolean="form.bodyCoveringHairless" aria-describedby="managed-pet-hairless-help managed-pet-hairless-error">
+                                <span class="min-w-0">
+                                    <span class="block font-semibold text-paw-ink">{{ __('pet_profiles.body_covering.hairless') }}</span>
+                                    <small id="managed-pet-hairless-help" class="block text-paw-muted">{{ __('pet_profiles.body_covering.hairless_help') }}</small>
+                                </span>
+                            </label>
+                            @error('form.bodyCoveringHairless') <small id="managed-pet-hairless-error" class="md:col-span-2" role="alert">{{ $message }}</small> @enderror
+
+                            @if (! $form->bodyCoveringHairless)
+                                <div wire:key="managed-pet-coat-fields-coated" class="grid min-w-0 gap-4 md:col-span-2 md:grid-cols-3">
+                                    <label class="forum-form__field" for="managed-pet-coat-length">
+                                        <span>{{ __('pet_profiles.body_covering.coat_length') }}</span>
+                                        <select id="managed-pet-coat-length" wire:model="form.bodyCoveringCoatLength" aria-describedby="managed-pet-coat-length-help managed-pet-coat-length-error" @error('form.bodyCoveringCoatLength') aria-invalid="true" @enderror>
+                                            <option value="">{{ __('pet_profiles.body_covering.not_recorded') }}</option>
+                                            @forelse ($this->coatLengthOptions as $value => $label)
+                                                <option wire:key="managed-pet-coat-length-{{ $value }}" value="{{ $value }}">{{ $label }}</option>
+                                            @empty
+                                            @endforelse
+                                        </select>
+                                        <small id="managed-pet-coat-length-help">{{ __('pet_profiles.body_covering.coat_length_help') }}</small>
+                                        @error('form.bodyCoveringCoatLength') <small id="managed-pet-coat-length-error" role="alert">{{ $message }}</small> @enderror
+                                    </label>
+                                    <label class="forum-form__field" for="managed-pet-coat-texture">
+                                        <span>{{ __('pet_profiles.body_covering.coat_texture') }}</span>
+                                        <select id="managed-pet-coat-texture" wire:model="form.bodyCoveringCoatTexture" aria-describedby="managed-pet-coat-texture-help managed-pet-coat-texture-error" @error('form.bodyCoveringCoatTexture') aria-invalid="true" @enderror>
+                                            <option value="">{{ __('pet_profiles.body_covering.not_recorded') }}</option>
+                                            @forelse ($this->coatTextureOptions as $value => $label)
+                                                <option wire:key="managed-pet-coat-texture-{{ $value }}" value="{{ $value }}">{{ $label }}</option>
+                                            @empty
+                                            @endforelse
+                                        </select>
+                                        <small id="managed-pet-coat-texture-help">{{ __('pet_profiles.body_covering.coat_texture_help') }}</small>
+                                        @error('form.bodyCoveringCoatTexture') <small id="managed-pet-coat-texture-error" role="alert">{{ $message }}</small> @enderror
+                                    </label>
+                                    <label class="forum-form__field" for="managed-pet-undercoat">
+                                        <span>{{ __('pet_profiles.body_covering.undercoat') }}</span>
+                                        <select id="managed-pet-undercoat" wire:model="form.bodyCoveringUndercoat" aria-describedby="managed-pet-undercoat-help managed-pet-undercoat-error" @error('form.bodyCoveringUndercoat') aria-invalid="true" @enderror>
+                                            <option value="">{{ __('pet_profiles.body_covering.not_recorded') }}</option>
+                                            @forelse ($this->undercoatOptions as $value => $label)
+                                                <option wire:key="managed-pet-undercoat-{{ $value }}" value="{{ $value }}">{{ $label }}</option>
+                                            @empty
+                                            @endforelse
+                                        </select>
+                                        <small id="managed-pet-undercoat-help">{{ __('pet_profiles.body_covering.undercoat_help') }}</small>
+                                        @error('form.bodyCoveringUndercoat') <small id="managed-pet-undercoat-error" role="alert">{{ $message }}</small> @enderror
+                                    </label>
+                                </div>
+                            @endif
+                        @endif
+
+                        @if ($bodyCoveringFields['feathers'])
+                            <label class="forum-form__field" for="managed-pet-feather-type">
+                                <span>{{ __('pet_profiles.body_covering.feather_type') }}</span>
+                                <select id="managed-pet-feather-type" wire:model="form.bodyCoveringFeatherType" aria-describedby="managed-pet-feather-type-help managed-pet-feather-type-error" @error('form.bodyCoveringFeatherType') aria-invalid="true" @enderror>
+                                    <option value="">{{ __('pet_profiles.body_covering.not_recorded') }}</option>
+                                    @forelse ($this->featherTypeOptions as $value => $label)
+                                        <option wire:key="managed-pet-feather-type-{{ $value }}" value="{{ $value }}">{{ $label }}</option>
+                                    @empty
+                                    @endforelse
+                                </select>
+                                <small id="managed-pet-feather-type-help">{{ __('pet_profiles.body_covering.feather_type_help') }}</small>
+                                @error('form.bodyCoveringFeatherType') <small id="managed-pet-feather-type-error" role="alert">{{ $message }}</small> @enderror
+                            </label>
+                        @endif
+
+                        @if ($bodyCoveringFields['scales'])
+                            <label class="forum-form__field" for="managed-pet-scale-color-details">
+                                <span>{{ __('pet_profiles.appearance.scale_color_details') }}</span>
+                                <textarea id="managed-pet-scale-color-details" wire:model="form.appearanceScaleColorDetails" rows="4" maxlength="1000" aria-describedby="managed-pet-scale-color-details-help managed-pet-scale-color-details-error" @error('form.appearanceScaleColorDetails') aria-invalid="true" @enderror></textarea>
+                                <small id="managed-pet-scale-color-details-help">{{ __('pet_profiles.appearance.scale_color_details_help') }}</small>
+                                @error('form.appearanceScaleColorDetails') <small id="managed-pet-scale-color-details-error" role="alert">{{ $message }}</small> @enderror
+                            </label>
+                        @endif
+
+                        @if ($bodyCoveringFields['mane'])
+                            <label class="forum-form__field" for="managed-pet-mane-type">
+                                <span>{{ __('pet_profiles.body_covering.mane_type') }}</span>
+                                <select id="managed-pet-mane-type" wire:model="form.bodyCoveringManeType" aria-describedby="managed-pet-mane-type-help managed-pet-mane-type-error" @error('form.bodyCoveringManeType') aria-invalid="true" @enderror>
+                                    <option value="">{{ __('pet_profiles.body_covering.not_recorded') }}</option>
+                                    @forelse ($this->maneTypeOptions as $value => $label)
+                                        <option wire:key="managed-pet-mane-type-{{ $value }}" value="{{ $value }}">{{ $label }}</option>
+                                    @empty
+                                    @endforelse
+                                </select>
+                                <small id="managed-pet-mane-type-help">{{ __('pet_profiles.body_covering.mane_type_help') }}</small>
+                                @error('form.bodyCoveringManeType') <small id="managed-pet-mane-type-error" role="alert">{{ $message }}</small> @enderror
+                            </label>
+                        @endif
+
+                        @if ($bodyCoveringFields['shedding'])
+                            <label class="forum-form__field" for="managed-pet-seasonal-shedding">
+                                <span>{{ __('pet_profiles.body_covering.seasonal_shedding') }}</span>
+                                <select id="managed-pet-seasonal-shedding" wire:model="form.bodyCoveringSeasonalShedding" aria-describedby="managed-pet-seasonal-shedding-help managed-pet-seasonal-shedding-error" @error('form.bodyCoveringSeasonalShedding') aria-invalid="true" @enderror>
+                                    <option value="">{{ __('pet_profiles.body_covering.not_recorded') }}</option>
+                                    @forelse ($this->seasonalSheddingOptions as $value => $label)
+                                        <option wire:key="managed-pet-seasonal-shedding-{{ $value }}" value="{{ $value }}">{{ $label }}</option>
+                                    @empty
+                                    @endforelse
+                                </select>
+                                <small id="managed-pet-seasonal-shedding-help">{{ __('pet_profiles.body_covering.seasonal_shedding_help') }}</small>
+                                @error('form.bodyCoveringSeasonalShedding') <small id="managed-pet-seasonal-shedding-error" role="alert">{{ $message }}</small> @enderror
+                            </label>
+                        @endif
+
+                        @if ($bodyCoveringFields['skin'])
+                            <label class="forum-form__field md:col-span-2" for="managed-pet-skin-condition">
+                                <span>{{ __('pet_profiles.body_covering.skin_condition') }}</span>
+                                <textarea id="managed-pet-skin-condition" wire:model="form.bodyCoveringSkinCondition" rows="4" maxlength="1000" aria-describedby="managed-pet-skin-condition-help managed-pet-skin-condition-error" @error('form.bodyCoveringSkinCondition') aria-invalid="true" @enderror></textarea>
+                                <small id="managed-pet-skin-condition-help">{{ __('pet_profiles.body_covering.skin_condition_help') }}</small>
+                                @error('form.bodyCoveringSkinCondition') <small id="managed-pet-skin-condition-error" role="alert">{{ $message }}</small> @enderror
+                            </label>
+                        @endif
+                    </div>
+                </section>
+
                 <label class="forum-form__field" for="managed-pet-primary-color">
                     <span>{{ __('pet_profiles.appearance.primary_color') }}</span>
                     <select
@@ -485,18 +609,14 @@
                         <small id="managed-pet-color-details-help">{{ __('pet_profiles.appearance.color_details_help') }}</small>
                         @error('form.appearanceColorDetails') <small id="managed-pet-color-details-error" role="alert">{{ $message }}</small> @enderror
                     </label>
-                    <label class="forum-form__field" for="managed-pet-feather-color-details">
-                        <span>{{ __('pet_profiles.appearance.feather_color_details') }}</span>
-                        <textarea id="managed-pet-feather-color-details" wire:model="form.appearanceFeatherColorDetails" rows="4" maxlength="1000" aria-describedby="managed-pet-feather-color-details-help managed-pet-feather-color-details-error" @error('form.appearanceFeatherColorDetails') aria-invalid="true" @enderror></textarea>
-                        <small id="managed-pet-feather-color-details-help">{{ __('pet_profiles.appearance.feather_color_details_help') }}</small>
-                        @error('form.appearanceFeatherColorDetails') <small id="managed-pet-feather-color-details-error" role="alert">{{ $message }}</small> @enderror
-                    </label>
-                    <label class="forum-form__field" for="managed-pet-scale-color-details">
-                        <span>{{ __('pet_profiles.appearance.scale_color_details') }}</span>
-                        <textarea id="managed-pet-scale-color-details" wire:model="form.appearanceScaleColorDetails" rows="4" maxlength="1000" aria-describedby="managed-pet-scale-color-details-help managed-pet-scale-color-details-error" @error('form.appearanceScaleColorDetails') aria-invalid="true" @enderror></textarea>
-                        <small id="managed-pet-scale-color-details-help">{{ __('pet_profiles.appearance.scale_color_details_help') }}</small>
-                        @error('form.appearanceScaleColorDetails') <small id="managed-pet-scale-color-details-error" role="alert">{{ $message }}</small> @enderror
-                    </label>
+                    @if ($bodyCoveringFields['feathers'])
+                        <label class="forum-form__field" for="managed-pet-feather-color-details">
+                            <span>{{ __('pet_profiles.appearance.feather_color_details') }}</span>
+                            <textarea id="managed-pet-feather-color-details" wire:model="form.appearanceFeatherColorDetails" rows="4" maxlength="1000" aria-describedby="managed-pet-feather-color-details-help managed-pet-feather-color-details-error" @error('form.appearanceFeatherColorDetails') aria-invalid="true" @enderror></textarea>
+                            <small id="managed-pet-feather-color-details-help">{{ __('pet_profiles.appearance.feather_color_details_help') }}</small>
+                            @error('form.appearanceFeatherColorDetails') <small id="managed-pet-feather-color-details-error" role="alert">{{ $message }}</small> @enderror
+                        </label>
+                    @endif
                     <label class="forum-form__field md:col-span-2" for="managed-pet-seasonal-color-changes">
                         <span>{{ __('pet_profiles.appearance.seasonal_color_changes') }}</span>
                         <textarea id="managed-pet-seasonal-color-changes" wire:model="form.appearanceSeasonalColorChanges" rows="3" maxlength="1000" aria-describedby="managed-pet-seasonal-color-changes-help managed-pet-seasonal-color-changes-error" @error('form.appearanceSeasonalColorChanges') aria-invalid="true" @enderror></textarea>

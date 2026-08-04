@@ -283,3 +283,17 @@ marks remain absent from public HTML and the encrypted `profile_data` cast can
 read both legacy and schema-versioned payloads. Rollback is an application-code
 rollback; already stored schema-versioned data is preserved and ignored safely
 by older compatibility readers.
+
+## Pet Species-Aware Body Covering Deployment
+
+The body-covering package adds no migration, table, index, backfill, queue,
+cache store, environment key, or public-file route. Deploy the application code
+and EN, LT, and RU catalogues together, then rebuild config, event, route, and
+view caches.
+
+Smoke at least one coat-bearing, bird, reptile or fish, and horse profile.
+Confirm irrelevant fields stay absent, hairlessness clears coat facts, invalid
+direct enum and boolean payloads fail, values survive reload, and the public
+projection excludes the private skin observation. Rollback is an application-
+code rollback; stored schema-versioned data remains encrypted and is ignored
+safely by older compatibility readers.

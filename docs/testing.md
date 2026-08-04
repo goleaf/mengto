@@ -1123,3 +1123,33 @@ Observed evidence on 2026-08-04:
 
 The reusable browser command is
 `BROWSER_BASE_URL=http://127.0.0.1:PORT BROWSER_ALLOW_DATA_MUTATION=1 node scripts/pet-workspace-browser-check.mjs --appearance`.
+
+## Pet Species-Aware Body Covering Verification
+
+`PetProfileBodyCoveringTest` covers encrypted structured persistence, adjacent
+appearance compatibility, forged direct Action values, species pruning,
+hairless contradictions, authorization, replay idempotency, strict real-route
+rendering, EN/LT/RU restoration, public projection, private skin isolation,
+malformed legacy input, completion detection, and zero-query presentation.
+
+Observed package evidence on 2026-08-04:
+
+- focused suite: 26 tests and 104 assertions;
+- body-covering, appearance, and progressive-completion regression: 68 tests
+  and 371 assertions;
+- complete pet-profile regression: 179 tests and 5,377 assertions;
+- architecture, localization, page-identity, responsive, and focused package
+  slice: 103 tests and 67,659 assertions;
+- exact committed-tree complete sequential repository suite: 2,960 tests and
+  98,960 assertions in 195.350 seconds with a 1 GB PHP limit;
+- disposable Chrome saved and restored coat, undercoat, shedding, and private
+  skin data through Livewire and verified the privacy-safe public projection;
+- desktop, 390px, and 320px geometry, labels, touch targets, raw-key,
+  duplicate-ID, privacy, and console checks passed;
+- full Pint and Larastan, Composer strict validation, locked audit, PHP platform
+  requirements, npm audit, JavaScript syntax, isolated Vite build, disposable
+  migration and repeated seed, cache compilation, immutable source,
+  deterministic traceability generation, and scoped staged-diff checks passed.
+
+The reusable browser command is
+`BROWSER_BASE_URL=http://127.0.0.1:PORT BROWSER_ALLOW_DATA_MUTATION=1 node scripts/pet-workspace-browser-check.mjs --covering`.

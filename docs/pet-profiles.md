@@ -250,6 +250,28 @@ coat/mark structure, measurements, identity media, and search consumption stay
 open. Exact scope is in
 `docs/plans/pet-profile-appearance-color-work-package.md`.
 
+## Species-Aware Body Covering
+
+The Appearance step derives relevant controls from the existing broad species.
+Mammals can describe coat length, texture, undercoat, or hairlessness; birds
+can describe feather type; fish and reptiles reuse scale-color clarification;
+horses can describe mane type; and relevant species can describe seasonal
+shedding. A bounded skin observation is available to managers for every broad
+species but remains private and is not a medical fact.
+
+`PetBodyCoveringNormalizer` validates controlled values for both Livewire and
+direct Action calls, rejects hairless/coat contradictions, and prunes fields
+that do not apply to the stored species. The schema-versioned object stays in
+the existing encrypted `profile_data` payload, alongside rather than in place
+of structured color and legacy appearance text.
+
+`PetBodyCoveringPresenter` prepares only localized public scalar values and
+performs no query. Blade never receives the private skin observation. Search,
+recommendations, care guidance, groomer/shelter/finder consumption, private
+mark modelling, measurements, taxonomy verification, and medical records
+remain separate boundaries. Exact scope is in
+`docs/plans/pet-profile-body-covering-work-package.md`.
+
 ## Breed Origin And Provenance
 
 The Breed or origin step stores the overall description separately from up to
