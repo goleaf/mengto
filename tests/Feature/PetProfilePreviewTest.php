@@ -48,7 +48,7 @@ test('owner profile links authenticated users to profile settings', function () 
     $this->get(route('profile.mia'))
         ->assertSuccessful()
         ->assertSee('href="'.route('profile.settings').'"', false)
-        ->assertSee(__('auth.settings.action'));
+        ->assertSee(__('member_profiles.owner.actions.settings'));
 });
 
 test('the Scout profile uses a consistent Border Collie photo set', function () {

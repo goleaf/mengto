@@ -147,6 +147,12 @@ See `docs/decisions/0001-authenticated-actor-keys.md`.
   authenticated state and interaction services remain the only upstream data
   boundaries, and profile Blade components render prepared copy and canonical
   icon names without resolving routes or mutations.
+- The deliberate Mia owner profile keeps its profile-led hero while
+  `ProfilePresenter` prepares the localized identity, stable tab and audience
+  codes, privacy summary, actions, section copy, and canonical icon names.
+  Data-heavy pet and moment projections are loaded only for tabs that render
+  them; Blade remains passive and the existing authenticated route and action
+  boundaries remain authoritative.
 - Class-based Livewire components own server-backed interaction.
 - Alpine is the Livewire-provided client-state layer; no second Alpine install.
 - Existing vanilla JavaScript enhances map, message, publication-photo, and browser-media

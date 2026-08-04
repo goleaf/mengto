@@ -5,6 +5,8 @@
     'section' => 'profile-pets',
     'canManage' => false,
     'emptyTitle' => __('ui.no_pets_added_yet_5728267e77'),
+    'icon' => null,
+    'addAction' => null,
 ])
 
 <x-collection-section
@@ -13,10 +15,16 @@
     :title="$title"
     :title-id="$section.'-title'"
     :columns="2"
+    :icon="$icon"
+    {{ $attributes }}
 >
     @if ($canManage)
         <x-slot:action>
-            <x-action-control :href="route('pets.manage.create')" label="{{ __('ui.add_pet_7065b90594') }}" icon="plus" />
+            <x-action-control
+                :href="$addAction['href'] ?? route('pets.manage.create')"
+                :label="$addAction['label'] ?? __('ui.add_pet_7065b90594')"
+                :icon="$addAction['icon'] ?? 'plus'"
+            />
         </x-slot:action>
     @endif
 

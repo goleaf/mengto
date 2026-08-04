@@ -27,6 +27,29 @@ Status: `implemented and release-verified` on 2026-08-04.
 Exact scope and observed evidence belong in
 `docs/plans/pet-profile-size-category-work-package.md`.
 
+## Active Interface Continuation: Owner Profile
+
+Status: `implemented and release-verified` on 2026-08-04.
+
+- Keep `/@mia-carter` as a deliberate authenticated profile hero while moving
+  its complete first-party and system surface into one 131-leaf EN/LT/RU
+  contract.
+- Keep tab and audience state locale-independent, prepare all routes, actions,
+  privacy values, copy, and icon names in the presenter, and leave Blade as a
+  passive renderer.
+- Add one canonical Lucide icon language to the hero, tabs, audience preview,
+  overview sections, badges, and safety controls.
+- Skip pet and moment queries for tabs that do not render those collections;
+  the `about/friend` projection now issues one state query and no pet-profile
+  query instead of seven total queries.
+- Retain 44-pixel targets, keyboard focus, reduced motion, forced-colors
+  usability, EN/LT/RU parity, and zero horizontal overflow from 320 to 1920
+  pixels.
+- Preserve this browser ratchet while continuing through the remaining
+  deliberate detail/workspace profiles; exact-tree Pint, Larastan, 3,055-test
+  Pest, dependency, migration, seed, cache, source-preservation, route, icon,
+  and diff gates passed before publication.
+
 ## Previous Delivery: Structured Pet Identifying Marks
 
 Status: `implemented and release-verified` on 2026-08-04.

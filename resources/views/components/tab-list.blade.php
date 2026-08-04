@@ -1,6 +1,7 @@
 @props([
     'tabs',
     'label',
+    'codeName' => 'tab',
 ])
 
 <nav aria-label="{{ $label }}" {{ $attributes->class(['tabs']) }}>
@@ -10,6 +11,11 @@
                 href="{{ $tab['href'] }}"
                 role="listitem"
                 @if ($tab['active']) aria-current="page" @endif
+                @if (($tab['code'] ?? null) && $codeName === 'audience')
+                    data-profile-audience="{{ $tab['code'] }}"
+                @elseif ($tab['code'] ?? null)
+                    data-profile-tab="{{ $tab['code'] }}"
+                @endif
                 class="tabs__item"
             >
                 @if ($tab['icon'] ?? null)

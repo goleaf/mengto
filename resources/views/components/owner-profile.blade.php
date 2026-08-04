@@ -5,23 +5,33 @@
     :title="$profile['page_title']"
     :active-section="$profile['active_section']"
 >
-    <x-page-stack data-section="owner-profile">
+    <x-page-stack
+        data-section="owner-profile"
+        data-owner-profile
+        data-owner-profile-tab="{{ $profile['active_tab'] }}"
+        data-owner-profile-audience="{{ $profile['audience'] }}"
+    >
         <x-profile-hero
             :profile="$profile['identity']"
             :badges="$profile['badges']"
             section="owner-profile-hero"
-            summary-label="{{ __('ui.owner_profile_summary_6ca384ad6a') }}"
+            :summary-label="$profile['copy']['hero']['summary_label']"
+            :summary-empty="$profile['copy']['hero']['summary_unavailable']"
             :summary-icons="['paw-print', 'users', 'user-round-check', 'images']"
+            :actions-label="$profile['copy']['hero']['actions_label']"
+            data-owner-profile-hero
         />
 
         <x-tab-list
             :tabs="$profile['tabs']"
-            label="{{ __('ui.owner_profile_sections_a02fb9e1e6') }}"
+            :label="$profile['copy']['tabs']['label']"
         />
 
         <x-profile-view-switcher
             :options="$profile['audience_options']"
             :audience="$profile['audience']"
+            :copy="$profile['copy']['preview']"
+            data-owner-profile-preview
         />
 
         @switch($profile['active_tab'])
@@ -30,15 +40,18 @@
                     <x-notice
                         section="owner-pets-private"
                         icon="lock-keyhole"
-                        title="{{ __('ui.pet_profiles_are_private_a2b7104fd0') }}"
-                        description="{{ __('ui.mia_shares_this_list_only_with_the_audience_466e8eeeae') }}"
+                        :title="$profile['copy']['restrictions']['pets']['title']"
+                        :description="$profile['copy']['restrictions']['pets']['tab_description']"
                     />
                 @else
                     <x-profile-pet-list
                         :pets="$profile['pets']"
-                        eyebrow="{{ __('ui.separate_social_profiles_ab5cfb68f8') }}"
-                        title="{{ __('ui.mia_s_pets_4ba9532eb0') }}"
+                        :eyebrow="$profile['copy']['sections']['pets']['tab_eyebrow']"
+                        :title="$profile['copy']['sections']['pets']['tab_title']"
+                        :empty-title="$profile['copy']['sections']['pets']['empty']"
                         :can-manage="$profile['audience'] === 'owner'"
+                        :add-action="$profile['copy']['sections']['pets']['add_action']"
+                        :icon="$profile['copy']['sections']['pets']['icon']"
                     />
                 @endif
                 @break
@@ -48,14 +61,16 @@
                     <x-notice
                         section="owner-posts-private"
                         icon="lock-keyhole"
-                        title="{{ __('ui.posts_are_limited_f801cbd804') }}"
-                        description="{{ __('ui.follow_or_connect_with_mia_to_see_the_1c4176d85e') }}"
+                        :title="$profile['copy']['restrictions']['posts']['title']"
+                        :description="$profile['copy']['restrictions']['posts']['tab_description']"
                     />
                 @else
                     <x-recent-moments
                         :posts="$profile['moments']"
-                        eyebrow="{{ __('ui.published_by_mia_9c4c9d21f9') }}"
-                        title="{{ __('ui.owner_posts_8986a90a06') }}"
+                        :eyebrow="$profile['copy']['sections']['posts']['tab_eyebrow']"
+                        :title="$profile['copy']['sections']['posts']['tab_title']"
+                        :empty-title="$profile['copy']['sections']['posts']['empty']"
+                        :icon="$profile['copy']['sections']['posts']['icon']"
                         section="owner-posts"
                     />
                 @endif
@@ -67,8 +82,9 @@
                         <x-page-stack gap="content">
                             <x-content-panel
                                 section="owner-about-details"
-                                eyebrow="{{ __('ui.public_identity_284303e3ab') }}"
-                                title="{{ __('ui.profile_details_73949bb1bd') }}"
+                                :eyebrow="$profile['copy']['sections']['details']['eyebrow']"
+                                :title="$profile['copy']['sections']['details']['title']"
+                                :icon="$profile['copy']['sections']['details']['icon']"
                             >
                                 <x-definition-list
                                     :items="$profile['details']"
@@ -79,8 +95,9 @@
 
                             <x-content-panel
                                 section="owner-interests"
-                                eyebrow="{{ __('ui.common_ground_c295bed5fb') }}"
-                                title="{{ __('ui.interests_756aaea140') }}"
+                                :eyebrow="$profile['copy']['sections']['interests']['eyebrow']"
+                                :title="$profile['copy']['sections']['interests']['title']"
+                                :icon="$profile['copy']['sections']['interests']['icon']"
                             >
                                 <x-tag-list
                                     :items="$profile['interests']"
@@ -94,8 +111,9 @@
                     <x-slot:sidebar>
                         <x-content-panel
                             section="owner-languages"
-                            eyebrow="{{ __('ui.conversation_ccca181757') }}"
-                            title="{{ __('ui.languages_318655cea4') }}"
+                            :eyebrow="$profile['copy']['sections']['languages']['eyebrow']"
+                            :title="$profile['copy']['sections']['languages']['title']"
+                            :icon="$profile['copy']['sections']['languages']['icon']"
                             size="compact"
                         >
                             <x-icon-list
@@ -106,8 +124,9 @@
 
                         <x-content-panel
                             section="owner-privacy-summary"
-                            eyebrow="{{ __('ui.audience_controls_5b3f1cd201') }}"
-                            title="{{ __('ui.privacy_summary_3c83b0e331') }}"
+                            :eyebrow="$profile['copy']['sections']['privacy']['eyebrow']"
+                            :title="$profile['copy']['sections']['privacy']['title']"
+                            :icon="$profile['copy']['sections']['privacy']['icon']"
                             size="compact"
                         >
                             <x-definition-list
@@ -117,19 +136,24 @@
                             />
                         </x-content-panel>
 
-                        <x-profile-safety-actions :actions="$profile['safety_actions']" />
+                        <x-profile-safety-actions
+                            :actions="$profile['safety_actions']"
+                            :copy="$profile['copy']['sections']['safety']"
+                        />
                     </x-slot:sidebar>
                 </x-main-sidebar-layout>
                 @break
 
             @default
-                <x-main-sidebar-layout>
+                <x-main-sidebar-layout data-owner-profile-overview>
                     <x-slot:main>
                         <x-page-stack gap="content">
                             <x-content-panel
                                 section="about-owner"
-                                eyebrow="{{ __('ui.around_the_neighborhood_db1c68dbb1') }}"
-                                title="{{ __('ui.about_mia_45de98db9b') }}"
+                                :eyebrow="$profile['copy']['sections']['about']['eyebrow']"
+                                :title="$profile['copy']['sections']['about']['title']"
+                                :icon="$profile['copy']['sections']['about']['icon']"
+                                data-owner-profile-section-icon
                             >
                                 <x-section-copy :text="$profile['identity']['bio']" />
                             </x-content-panel>
@@ -138,15 +162,19 @@
                                 <x-notice
                                     section="owner-pets-private"
                                     icon="lock-keyhole"
-                                    title="{{ __('ui.pet_profiles_are_private_a2b7104fd0') }}"
-                                    description="{{ __('ui.this_audience_cannot_see_mia_s_pet_list_e106bf7e2b') }}"
+                                    :title="$profile['copy']['restrictions']['pets']['title']"
+                                    :description="$profile['copy']['restrictions']['pets']['overview_description']"
                                 />
                             @else
                                 <x-profile-pet-list
                                     :pets="$profile['pets']"
-                                    eyebrow="{{ __('ui.at_home_with_mia_ccd49f05ec') }}"
-                                    title="{{ __('ui.scout_nori_and_family_da531492d5') }}"
+                                    :eyebrow="$profile['copy']['sections']['pets']['eyebrow']"
+                                    :title="$profile['copy']['sections']['pets']['title']"
+                                    :empty-title="$profile['copy']['sections']['pets']['empty']"
                                     :can-manage="$profile['audience'] === 'owner'"
+                                    :add-action="$profile['copy']['sections']['pets']['add_action']"
+                                    :icon="$profile['copy']['sections']['pets']['icon']"
+                                    data-owner-profile-section-icon
                                 />
                             @endif
 
@@ -154,14 +182,18 @@
                                 <x-notice
                                     section="owner-posts-private"
                                     icon="lock-keyhole"
-                                    title="{{ __('ui.owner_posts_are_limited_b0f790305b') }}"
-                                    description="{{ __('ui.mia_shares_these_moments_with_a_closer_audience_a6180e10ed') }}"
+                                    :title="$profile['copy']['restrictions']['posts']['overview_title']"
+                                    :description="$profile['copy']['restrictions']['posts']['overview_description']"
                                 />
                             @else
                                 <x-recent-moments
                                     :posts="$profile['moments']"
-                                    eyebrow="{{ __('ui.from_mia_f791282978') }}"
+                                    :eyebrow="$profile['copy']['sections']['posts']['eyebrow']"
+                                    :title="$profile['copy']['sections']['posts']['title']"
+                                    :empty-title="$profile['copy']['sections']['posts']['empty']"
+                                    :icon="$profile['copy']['sections']['posts']['icon']"
                                     section="owner-moments"
+                                    data-owner-profile-section-icon
                                 />
                             @endif
                         </x-page-stack>
@@ -170,10 +202,12 @@
                     <x-slot:sidebar>
                         <x-content-panel
                             section="owner-profile-completion"
-                            eyebrow="{{ __('ui.profile_basics_0145f57561') }}"
-                            title="{{ __('ui.profile_readiness_e75c4c7ee1') }}"
+                            :eyebrow="$profile['copy']['sections']['completion']['eyebrow']"
+                            :title="$profile['copy']['sections']['completion']['title']"
+                            :icon="$profile['copy']['sections']['completion']['icon']"
                             size="compact"
                             tone="coral"
+                            data-owner-profile-section-icon
                         >
                             <x-progress-meter
                                 :value="$profile['completion']['value']"
@@ -185,9 +219,11 @@
 
                         <x-content-panel
                             section="owner-profile-badges"
-                            eyebrow="{{ __('ui.trust_signals_a02028d200') }}"
-                            title="{{ __('ui.badges_185d8ef0ae') }}"
+                            :eyebrow="$profile['copy']['sections']['badges']['eyebrow']"
+                            :title="$profile['copy']['sections']['badges']['title']"
+                            :icon="$profile['copy']['sections']['badges']['icon']"
                             size="compact"
+                            data-owner-profile-section-icon
                         >
                             <x-profile-badge-list
                                 :badges="$profile['badges']"
@@ -197,10 +233,12 @@
 
                         <x-content-panel
                             section="owner-availability"
-                            eyebrow="{{ __('ui.walk_profile_3ccfc4f87c') }}"
-                            title="{{ __('ui.availability_12f67f8539') }}"
+                            :eyebrow="$profile['copy']['sections']['availability']['eyebrow']"
+                            :title="$profile['copy']['sections']['availability']['title']"
+                            :icon="$profile['copy']['sections']['availability']['icon']"
                             size="compact"
                             tone="coral"
+                            data-owner-profile-section-icon
                         >
                             <x-definition-list
                                 :items="$profile['availability']"
@@ -209,7 +247,10 @@
                             />
                         </x-content-panel>
 
-                        <x-profile-safety-actions :actions="$profile['safety_actions']" />
+                        <x-profile-safety-actions
+                            :actions="$profile['safety_actions']"
+                            :copy="$profile['copy']['sections']['safety']"
+                        />
                     </x-slot:sidebar>
                 </x-main-sidebar-layout>
         @endswitch

@@ -1,6 +1,7 @@
 @props([
     'options',
     'audience',
+    'copy' => [],
 ])
 
 <section
@@ -10,16 +11,19 @@
     <div class="profile-preview__copy">
         <x-ui-icon name="eye" />
         <div>
-            <h2 id="profile-preview-title" class="profile-preview__title">{{ __('ui.preview_visibility_16789b1616') }}</h2>
+            <h2 id="profile-preview-title" class="profile-preview__title">
+                {{ $copy['title'] ?? __('ui.preview_visibility_16789b1616') }}
+            </h2>
             <p class="profile-preview__description">
-                {{ __('presentation.viewer_scope', ['audience' => $audience === 'owner' ? __('presentation.profile_owner') : $audience]) }}
+                {{ $copy['description'] ?? __('presentation.viewer_scope', ['audience' => $audience === 'owner' ? __('presentation.profile_owner') : $audience]) }}
             </p>
         </div>
     </div>
 
     <x-tab-list
         :tabs="$options"
-        label="{{ __('ui.preview_profile_as_c6a49fb6eb') }}"
+        :label="$copy['label'] ?? __('ui.preview_profile_as_c6a49fb6eb')"
+        code-name="audience"
         class="tabs--audience"
     />
 </section>

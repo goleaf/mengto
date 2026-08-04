@@ -239,7 +239,7 @@
         }
 
         .tabs__item {
-            min-block-size: 2.5rem;
+            min-block-size: $touch-target;
             padding-inline: 0.75rem;
             font-size: 0.75rem;
 

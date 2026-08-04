@@ -1281,6 +1281,41 @@ Observed package evidence on 2026-08-04:
 The reusable browser command is
 `BROWSER_BASE_URL=http://127.0.0.1:PORT npm run test:browser:page-identity`.
 
+## Owner Profile Localization And Icon Verification
+
+`OwnerProfileLocalizationTest` guards exact 131-leaf EN/LT/RU parity, stable
+tab and audience codes, prepared presentation and action data, passive Blade
+boundaries, the six overview section icons, and tab-aware query isolation.
+
+Observed package evidence on 2026-08-04:
+
+- exact-tree focused suite: 10 tests and 1,090 assertions;
+- affected profile, preview, responsive, page-identity, linked-media, and
+  authentication-boundary slice: 128 tests and 2,368 assertions;
+- the page-identity browser matrix passed 91 primary audits plus seven each of
+  call-stage, message-details, share, neighbor-profile, and owner-profile
+  flows across 320-1920 pixels, EN/RU/LT, forced colors, reduced motion, and
+  effective 200% zoom;
+- all 54 owner-profile values, stable codes, hero, summary, tab, audience,
+  section, and badge icon maps, visible focus, 44-pixel targets, clipping,
+  overflow, raw-key, and console checks passed;
+- the first browser run exposed 42-pixel audience controls at 320 pixels; the
+  repeated production-build run passed after restoring the canonical
+  44-pixel minimum and produced 36 screenshots;
+- exact-tree complete sequential suite: 3,055 tests and 105,425 assertions in
+  176.605 seconds with a 1 GB PHP limit;
+- exact-tree full Pint and Larastan, Composer strict validation, locked audit,
+  PHP 8.5 platform requirements, npm audit, JavaScript syntax, Vite 8.2 build,
+  config/event/route/view cache compilation, 179-route and 173-first-party
+  route smoke, both forum-source checks, deterministic 38,377-requirement
+  generation, PHP localizer, and 859-call canonical icon audit passed;
+- disposable SQLite applied all 139 migrations, fully rolled them back,
+  reapplied them, retained 219 tables and five users, and passed repeated
+  complete seeding.
+
+The reusable browser command is
+`BROWSER_BASE_URL=http://127.0.0.1:PORT npm run test:browser:page-identity`.
+
 ## Messaging Call Stage And Details Verification
 
 `MessageCenterLocalizationTest` now also covers stable call-state persistence,

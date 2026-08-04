@@ -20,15 +20,16 @@ final class ProfilePresenter
     {
         $profileUrl = route('profile.mia');
         $owner = [
-            'name' => __('messages.mia_carter_0e5b29cc3b'),
-            'handle' => '@mia-carter',
-            'location' => __('messages.richmond_portland_or_fdcefc3192'),
+            'name' => __('member_profiles.owner.identity.name'),
+            'handle' => __('member_profiles.owner.identity.handle'),
+            'location' => __('member_profiles.owner.identity.location'),
             'avatar' => 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&crop=faces&w=320&h=320&q=80',
-            'summary' => __('messages.weekend_trail_walker_foster_volunteer_and_keeper_of_two__afe0498ca0'),
+            'avatar_alt' => __('member_profiles.owner.identity.avatar_alt'),
+            'summary' => __('member_profiles.owner.identity.summary'),
             'profile_url' => $profileUrl,
             'media_target' => [
                 'url' => $profileUrl,
-                'label' => __('presentation.open_profile', ['name' => __('messages.mia_carter_0e5b29cc3b')]),
+                'label' => __('member_profiles.owner.identity.media_label'),
             ],
         ];
 
@@ -46,14 +47,14 @@ final class ProfilePresenter
         $owner = [
             ...$this->owner(),
             'slug' => 'mia-carter',
-            'role' => __('messages.pet_parent_and_foster_volunteer_ebca8cdaa7'),
-            'member_since' => __('messages.member_since_2024_8cd8fa63cc'),
-            'status' => __('messages.open_to_weekend_walks_a7331aa83e'),
-            'bio' => __('messages.mia_plans_low_pressure_neighborhood_walks_shares_foster__5c7ca41df1'),
+            'role' => __('member_profiles.owner.identity.role'),
+            'member_since' => __('member_profiles.owner.identity.member_since'),
+            'status' => __('member_profiles.owner.identity.status'),
+            'bio' => __('member_profiles.owner.identity.bio'),
             'cover_image' => 'https://images.unsplash.com/photo-1624361239583-7ba5ffb376f5?auto=format&fit=crop&w=1600&h=760&q=85',
             'cover_image_small' => 'https://images.unsplash.com/photo-1624361239583-7ba5ffb376f5?auto=format&fit=crop&w=720&h=480&q=80',
             'cover_image_medium' => 'https://images.unsplash.com/photo-1624361239583-7ba5ffb376f5?auto=format&fit=crop&w=1200&h=600&q=82',
-            'cover_image_alt' => __('messages.scout_lying_in_grass_behind_a_tennis_ball_e7cfee5e55'),
+            'cover_image_alt' => __('member_profiles.owner.identity.cover_image_alt'),
         ];
 
         return [
@@ -91,75 +92,84 @@ final class ProfilePresenter
         $petsVisible = $this->visibility->allows($privacy['pets'], $audience);
         $postsVisible = $this->visibility->allows($privacy['posts'], $audience);
         $locationVisible = $this->visibility->allows($privacy['location'], $audience);
+        $petsRequired = in_array($tab, ['overview', 'pets'], true);
+        $momentsRequired = in_array($tab, ['overview', 'posts'], true);
 
-        $identity['location'] = $locationVisible ? $identity['location'] : __('messages.location_kept_private_867cdae4a7');
+        $identity['location'] = $locationVisible
+            ? $identity['location']
+            : __('member_profiles.owner.identity.private_location');
         $identity['actions'] = $this->ownerActions($audience);
         $identity['stats'] = [
-            ['label' => __('messages.pets_7dc1cd7eaf'), 'value' => '2', 'detail' => __('messages.separate_profiles_3fe5ddf3c7')],
-            ['label' => __('messages.followers_a145ab342a'), 'value' => '2.4k', 'detail' => __('messages.owner_audience_2690d497ed')],
-            ['label' => __('messages.following_344b4271ca'), 'value' => '186', 'detail' => __('messages.people_and_pets_a74d68d13d')],
-            ['label' => __('messages.posts_a80811cf68'), 'value' => '42', 'detail' => __('messages.from_mia_86b3491ce2')],
+            ['label' => __('member_profiles.owner.stats.pets.label'), 'value' => '2', 'detail' => __('member_profiles.owner.stats.pets.detail')],
+            ['label' => __('member_profiles.owner.stats.followers.label'), 'value' => '2.4k', 'detail' => __('member_profiles.owner.stats.followers.detail')],
+            ['label' => __('member_profiles.owner.stats.following.label'), 'value' => '186', 'detail' => __('member_profiles.owner.stats.following.detail')],
+            ['label' => __('member_profiles.owner.stats.posts.label'), 'value' => '42', 'detail' => __('member_profiles.owner.stats.posts.detail')],
         ];
 
         return [
             'kind' => 'owner',
             'owner' => $this->owner(),
             'identity' => $identity,
-            'page_title' => __('presentation.brand_title', [
-                'title' => __('presentation.identity_with_handle', [
-                    'name' => $identity['name'],
-                    'handle' => $identity['handle'],
-                ]),
+            'page_title' => __('member_profiles.owner.page.title', [
+                'name' => $identity['name'],
+                'handle' => $identity['handle'],
             ]),
             'active_section' => 'profile',
             'audience' => $audience,
-            'audience_options' => $this->audienceOptions(
+            'audience_options' => $this->ownerAudienceOptions(
                 routeName: 'profile.mia',
                 tab: $tab,
                 audience: $audience,
             ),
             'tabs' => $this->ownerTabs($tab, $audience),
             'active_tab' => $tab,
-            'pets' => $petsVisible ? $this->pets() : [],
+            'pets' => $petsVisible && $petsRequired ? $this->pets() : [],
             'pets_restricted' => ! $petsVisible,
-            'moments' => $postsVisible ? $this->ownerMoments() : [],
+            'moments' => $postsVisible && $momentsRequired ? $this->ownerMoments() : [],
             'posts_restricted' => ! $postsVisible,
             'availability' => [
-                ['label' => __('messages.best_time_9bbcba7bd0'), 'value' => __('messages.weekend_mornings_7f491ceb6f')],
-                ['label' => __('messages.usual_pace_cb92b55a8a'), 'value' => __('messages.easy_to_moderate_4a32157874')],
-                ['label' => __('messages.home_base_3c3cbe73c2'), 'value' => $locationVisible ? __('messages.richmond_portland_45cfbdb042') : __('messages.private_c63eb6720c')],
+                ['label' => __('member_profiles.owner.availability.time_label'), 'value' => __('member_profiles.owner.availability.time_value')],
+                ['label' => __('member_profiles.owner.availability.pace_label'), 'value' => __('member_profiles.owner.availability.pace_value')],
+                ['label' => __('member_profiles.owner.availability.home_label'), 'value' => $locationVisible ? __('member_profiles.owner.availability.home_value') : __('member_profiles.owner.availability.private_value')],
             ],
-            'interests' => [__('messages.trail_walks_e65914f579'), __('messages.foster_care_12c77089f0'), __('messages.cat_enrichment_064d3c0748'), __('messages.quiet_parks_42c6d28887'), __('messages.positive_training_265845eade')],
+            'interests' => [
+                __('member_profiles.owner.interests.trail_walks'),
+                __('member_profiles.owner.interests.foster_care'),
+                __('member_profiles.owner.interests.cat_enrichment'),
+                __('member_profiles.owner.interests.quiet_parks'),
+                __('member_profiles.owner.interests.positive_training'),
+            ],
             'languages' => [
                 [
                     'icon' => 'languages',
-                    'title' => __('messages.english_ba118bf7fc'),
-                    'description' => __('messages.primary_profile_and_conversation_language_bb0e0040e7'),
+                    'title' => __('member_profiles.owner.languages.english.title'),
+                    'description' => __('member_profiles.owner.languages.english.description'),
                 ],
                 [
                     'icon' => 'languages',
-                    'title' => __('messages.spanish_3411059cb8'),
-                    'description' => __('messages.available_for_conversational_messages_6ba952d0f2'),
+                    'title' => __('member_profiles.owner.languages.spanish.title'),
+                    'description' => __('member_profiles.owner.languages.spanish.description'),
                 ],
             ],
             'details' => [
-                ['label' => __('messages.username_e3b89e9d33'), 'value' => $identity['handle']],
-                ['label' => __('messages.account_type_dac7998fba'), 'value' => __('messages.pet_owner_and_volunteer_526f09cd38')],
-                ['label' => __('messages.joined_69318b0c6a'), 'value' => '2024'],
-                ['label' => __('messages.profile_language_7d015791da'), 'value' => __('messages.english_ba118bf7fc')],
+                ['label' => __('member_profiles.owner.details.username'), 'value' => $identity['handle']],
+                ['label' => __('member_profiles.owner.details.account_type'), 'value' => __('member_profiles.owner.details.account_type_value')],
+                ['label' => __('member_profiles.owner.details.joined'), 'value' => __('member_profiles.owner.details.joined_value')],
+                ['label' => __('member_profiles.owner.details.language'), 'value' => __('member_profiles.owner.details.language_value')],
             ],
             'badges' => [
-                ['icon' => 'badge-check', 'label' => __('messages.email_verified_bdfb1e4f00'), 'tone' => 'mint'],
-                ['icon' => 'heart-handshake', 'label' => __('messages.active_volunteer_3c5bb60697'), 'tone' => 'sun'],
-                ['icon' => 'circle-check-big', 'label' => __('messages.profile_complete_cf542cf483'), 'tone' => 'surface'],
+                ['icon' => 'badge-check', 'label' => __('member_profiles.owner.badges.email_verified'), 'tone' => 'mint'],
+                ['icon' => 'heart-handshake', 'label' => __('member_profiles.owner.badges.active_volunteer'), 'tone' => 'sun'],
+                ['icon' => 'circle-check-big', 'label' => __('member_profiles.owner.badges.profile_complete'), 'tone' => 'surface'],
             ],
             'completion' => [
                 'value' => 86,
-                'label' => __('messages.profile_completeness_71a35c6f7e'),
-                'detail' => __('messages.add_an_optional_website_to_finish_the_public_basics_9a38e0ad00'),
+                'label' => __('member_profiles.owner.completion.label'),
+                'detail' => __('member_profiles.owner.completion.detail'),
             ],
-            'privacy' => $this->privacySummary($privacy),
-            'safety_actions' => $this->safetyActions('owner-mia-carter', __('messages.mia_carter_0e5b29cc3b'), $audience),
+            'privacy' => $this->ownerPrivacySummary($privacy),
+            'safety_actions' => $this->ownerSafetyActions($audience),
+            'copy' => $this->ownerCopy($audience),
         ];
     }
 
@@ -313,51 +323,51 @@ final class ProfilePresenter
     {
         if ($audience === 'owner') {
             return [
-                $this->linkAction(__('messages.edit_profile_15c4aa1303'), 'pencil', route('compose', 'profile'), 'primary'),
-                $this->linkAction(__('auth.settings.action'), 'settings', route('profile.settings')),
+                $this->linkAction(__('member_profiles.owner.actions.edit'), 'pencil', route('compose', 'profile'), 'primary'),
+                $this->linkAction(__('member_profiles.owner.actions.settings'), 'settings', route('profile.settings')),
                 $this->linkAction(
-                    __('messages.privacy_54a57c3147'),
+                    __('member_profiles.owner.actions.privacy'),
                     'shield-check',
                     route('compose', ['kind' => 'profile-privacy']),
                 ),
-                $this->postAction(__('messages.share_29887a5ff9'), 'share-2', [
+                $this->postAction(__('member_profiles.owner.actions.share'), 'share-2', [
                     'action' => 'share',
                     'target' => 'mia-carter',
-                    'label' => __('messages.mia_carter_profile_52e1e8d2ba'),
+                    'label' => __('member_profiles.owner.actions.profile_label'),
                 ]),
             ];
         }
 
         return [
             $this->toggleAction(
-                label: __('messages.follow_mia_13439a868f'),
+                label: __('member_profiles.owner.actions.follow'),
                 icon: 'user-plus',
                 collection: 'subscriptions',
                 target: 'owner-mia-carter',
-                activeLabel: __('messages.following_mia_4ea69077f2'),
+                activeLabel: __('member_profiles.owner.actions.following'),
                 activeIcon: 'user-check',
                 action: 'toggle-subscription',
-                feedbackLabel: __('messages.mia_carter_0e5b29cc3b'),
+                feedbackLabel: __('member_profiles.owner.identity.name'),
             ),
             $this->toggleAction(
-                label: __('messages.add_friend_c1f8728197'),
+                label: __('member_profiles.owner.actions.friend'),
                 icon: 'user-round-plus',
                 collection: 'friends',
                 target: 'owner-mia-carter',
-                activeLabel: __('messages.request_sent_a73f99f6bf'),
+                activeLabel: __('member_profiles.owner.actions.request_sent'),
                 activeIcon: 'clock-3',
                 action: 'toggle-friend',
-                feedbackLabel: __('messages.mia_carter_0e5b29cc3b'),
+                feedbackLabel: __('member_profiles.owner.identity.name'),
             ),
             $this->linkAction(
-                __('messages.message_2f77668a9d'),
+                __('member_profiles.owner.actions.message'),
                 'message-circle',
                 route('compose', ['kind' => 'message']),
             ),
-            $this->postAction(__('messages.share_29887a5ff9'), 'share-2', [
+            $this->postAction(__('member_profiles.owner.actions.share'), 'share-2', [
                 'action' => 'share',
                 'target' => 'mia-carter',
-                'label' => __('messages.mia_carter_profile_52e1e8d2ba'),
+                'label' => __('member_profiles.owner.actions.profile_label'),
             ]),
         ];
     }
@@ -465,6 +475,183 @@ final class ProfilePresenter
     }
 
     /**
+     * @return array<string, mixed>
+     */
+    private function ownerCopy(string $audience): array
+    {
+        return [
+            'hero' => [
+                'summary_label' => __('member_profiles.owner.hero.summary_label'),
+                'summary_unavailable' => __('member_profiles.owner.hero.summary_unavailable'),
+                'actions_label' => __('member_profiles.owner.hero.actions_label', [
+                    'name' => __('member_profiles.owner.identity.name'),
+                ]),
+            ],
+            'tabs' => [
+                'label' => __('member_profiles.owner.tabs.label'),
+            ],
+            'preview' => [
+                'title' => __('member_profiles.owner.preview.title'),
+                'description' => __('member_profiles.owner.preview.audiences.'.$audience),
+                'label' => __('member_profiles.owner.preview.label'),
+            ],
+            'sections' => [
+                'about' => [
+                    'eyebrow' => __('member_profiles.owner.sections.about.eyebrow'),
+                    'title' => __('member_profiles.owner.sections.about.title'),
+                    'icon' => 'user-round',
+                ],
+                'pets' => [
+                    'eyebrow' => __('member_profiles.owner.sections.pets.eyebrow'),
+                    'title' => __('member_profiles.owner.sections.pets.title'),
+                    'tab_eyebrow' => __('member_profiles.owner.sections.pets.tab_eyebrow'),
+                    'tab_title' => __('member_profiles.owner.sections.pets.tab_title'),
+                    'empty' => __('member_profiles.owner.sections.pets.empty'),
+                    'icon' => 'paw-print',
+                    'add_action' => [
+                        'href' => route('pets.manage.create'),
+                        'label' => __('member_profiles.owner.sections.pets.add'),
+                        'icon' => 'plus',
+                    ],
+                ],
+                'posts' => [
+                    'eyebrow' => __('member_profiles.owner.sections.posts.eyebrow'),
+                    'tab_eyebrow' => __('member_profiles.owner.sections.posts.tab_eyebrow'),
+                    'title' => __('member_profiles.owner.sections.posts.title'),
+                    'tab_title' => __('member_profiles.owner.sections.posts.tab_title'),
+                    'empty' => __('member_profiles.owner.sections.posts.empty'),
+                    'icon' => 'images',
+                ],
+                'details' => [
+                    'eyebrow' => __('member_profiles.owner.sections.details.eyebrow'),
+                    'title' => __('member_profiles.owner.sections.details.title'),
+                    'icon' => 'id-card',
+                ],
+                'interests' => [
+                    'eyebrow' => __('member_profiles.owner.sections.interests.eyebrow'),
+                    'title' => __('member_profiles.owner.sections.interests.title'),
+                    'empty' => __('member_profiles.owner.sections.interests.empty'),
+                    'icon' => 'sparkles',
+                ],
+                'languages' => [
+                    'eyebrow' => __('member_profiles.owner.sections.languages.eyebrow'),
+                    'title' => __('member_profiles.owner.sections.languages.title'),
+                    'icon' => 'languages',
+                ],
+                'privacy' => [
+                    'eyebrow' => __('member_profiles.owner.sections.privacy.eyebrow'),
+                    'title' => __('member_profiles.owner.sections.privacy.title'),
+                    'icon' => 'shield-check',
+                ],
+                'completion' => [
+                    'eyebrow' => __('member_profiles.owner.sections.completion.eyebrow'),
+                    'title' => __('member_profiles.owner.sections.completion.title'),
+                    'icon' => 'gauge',
+                ],
+                'badges' => [
+                    'eyebrow' => __('member_profiles.owner.sections.badges.eyebrow'),
+                    'title' => __('member_profiles.owner.sections.badges.title'),
+                    'icon' => 'badge-check',
+                ],
+                'availability' => [
+                    'eyebrow' => __('member_profiles.owner.sections.availability.eyebrow'),
+                    'title' => __('member_profiles.owner.sections.availability.title'),
+                    'icon' => 'calendar-clock',
+                ],
+                'safety' => [
+                    'eyebrow' => __('member_profiles.owner.sections.safety.eyebrow'),
+                    'title' => __('member_profiles.owner.sections.safety.title'),
+                    'description' => __('member_profiles.owner.sections.safety.description'),
+                    'actions_label' => __('member_profiles.owner.sections.safety.actions_label'),
+                    'icon' => 'shield-alert',
+                ],
+            ],
+            'restrictions' => [
+                'pets' => [
+                    'title' => __('member_profiles.owner.restrictions.pets.title'),
+                    'tab_description' => __('member_profiles.owner.restrictions.pets.tab_description'),
+                    'overview_description' => __('member_profiles.owner.restrictions.pets.overview_description'),
+                ],
+                'posts' => [
+                    'title' => __('member_profiles.owner.restrictions.posts.title'),
+                    'tab_description' => __('member_profiles.owner.restrictions.posts.tab_description'),
+                    'overview_title' => __('member_profiles.owner.restrictions.posts.overview_title'),
+                    'overview_description' => __('member_profiles.owner.restrictions.posts.overview_description'),
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * @return array<int, array<string, mixed>>
+     */
+    private function ownerSafetyActions(string $audience): array
+    {
+        if ($audience === 'owner') {
+            return [];
+        }
+
+        return [
+            $this->toggleAction(
+                label: __('member_profiles.owner.actions.block'),
+                icon: 'ban',
+                collection: 'blocks',
+                target: 'owner-mia-carter',
+                activeLabel: __('member_profiles.owner.actions.unblock'),
+                activeIcon: 'shield-off',
+                action: 'toggle-block',
+                variant: 'paper',
+                feedbackLabel: __('member_profiles.owner.identity.name'),
+            ),
+            $this->linkAction(
+                __('member_profiles.owner.actions.report'),
+                'flag',
+                route('compose', ['kind' => 'report-profile', 'target' => 'owner-mia-carter']),
+            ),
+        ];
+    }
+
+    /**
+     * @param  array<string, string>  $privacy
+     * @return array<int, array{label: string, value: string}>
+     */
+    private function ownerPrivacySummary(array $privacy): array
+    {
+        return array_map(
+            static fn (string $value, string $key): array => [
+                'label' => __('member_profiles.owner.privacy.labels.'.$key),
+                'value' => __('member_profiles.owner.privacy.values.'.$value),
+            ],
+            array_values($privacy),
+            array_keys($privacy),
+        );
+    }
+
+    /**
+     * @return array<int, array<string, mixed>>
+     */
+    private function ownerAudienceOptions(string $routeName, string $tab, string $audience): array
+    {
+        $options = [
+            'owner' => ['label' => __('member_profiles.owner.preview.options.owner'), 'icon' => 'key-round'],
+            'public' => ['label' => __('member_profiles.owner.preview.options.public'), 'icon' => 'globe-2'],
+            'follower' => ['label' => __('member_profiles.owner.preview.options.follower'), 'icon' => 'user-check'],
+            'friend' => ['label' => __('member_profiles.owner.preview.options.friend'), 'icon' => 'users-round'],
+        ];
+
+        return array_map(
+            static fn (array $option, string $key): array => [
+                ...$option,
+                'code' => $key,
+                'href' => route($routeName, ['tab' => $tab, 'view' => $key]),
+                'active' => $key === $audience,
+            ],
+            array_values($options),
+            array_keys($options),
+        );
+    }
+
+    /**
      * @return array<int, array<string, mixed>>
      */
     private function ownerTabs(string $active, string $audience): array
@@ -474,10 +661,10 @@ final class ProfilePresenter
             active: $active,
             audience: $audience,
             definitions: [
-                'overview' => ['label' => __('messages.overview_d4b1ea5708'), 'icon' => 'layout-dashboard'],
-                'pets' => ['label' => __('messages.pets_7dc1cd7eaf'), 'icon' => 'paw-print', 'count' => '2'],
-                'posts' => ['label' => __('messages.posts_a80811cf68'), 'icon' => 'images', 'count' => '42'],
-                'about' => ['label' => __('messages.about_4efca0d10c'), 'icon' => 'circle-user-round'],
+                'overview' => ['label' => __('member_profiles.owner.tabs.overview'), 'icon' => 'layout-dashboard'],
+                'pets' => ['label' => __('member_profiles.owner.tabs.pets'), 'icon' => 'paw-print', 'count' => '2'],
+                'posts' => ['label' => __('member_profiles.owner.tabs.posts'), 'icon' => 'images', 'count' => '42'],
+                'about' => ['label' => __('member_profiles.owner.tabs.about'), 'icon' => 'circle-user-round'],
             ],
         );
     }
@@ -522,6 +709,7 @@ final class ProfilePresenter
         foreach ($definitions as $key => $definition) {
             $tabs[] = [
                 ...$definition,
+                'code' => $key,
                 'href' => route($routeName, ['tab' => $key, 'view' => $audience]),
                 'active' => $key === $active,
             ];
@@ -545,6 +733,7 @@ final class ProfilePresenter
         return array_map(
             static fn (array $option, string $key): array => [
                 ...$option,
+                'code' => $key,
                 'href' => route($routeName, ['tab' => $tab, 'view' => $key]),
                 'active' => $key === $audience,
             ],

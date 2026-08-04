@@ -18,6 +18,11 @@
 
 ### Interface System
 
+- Added a dedicated 131-leaf EN/LT/RU owner-profile contract for
+  `/@mia-carter`; stable tab and audience codes now drive passive Blade,
+  canonical Lucide icons identify every profile section, and inactive tabs no
+  longer load unrelated pet or moment data. The responsive audit also raised
+  the audience selector to the required 44-pixel target.
 - Extended the dedicated `/neighbors` EN/LT/RU contract from 71 to 160 leaves
   for the complete Ari neighbor profile; extracted its presentation from the
   broad preview service into a zero-query presenter, moved the walk action out

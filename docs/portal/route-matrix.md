@@ -52,7 +52,7 @@ the decision column is the desired page-identity boundary.
 | Name | URI | Runtime owner | Class | Decision |
 | --- | --- | --- | --- | --- |
 | `home` | `/` | `HomeController` | `redirect` | no page identity |
-| `profile.mia` | `/@mia-carter` | `MemberProfilePreviewController` | `deliberate-detail-or-profile` | retain token-compatible hero pending audit |
+| `profile.mia` | `/@mia-carter` | `MemberProfilePreviewController` | `deliberate-detail-or-profile` | verified localized token-compatible hero with stable tab/audience codes |
 | `pets.nori` | `/@mia-carter/nori` | `PetProfilePreviewController` | `deliberate-detail-or-profile` | retain token-compatible hero pending audit |
 | `pets.scout` | `/@mia-carter/scout` | `PetProfilePreviewController` | `deliberate-detail-or-profile` | retain token-compatible hero pending audit |
 | `admin.forum.index` | `/admin/forum` | `ForumAdministrationController` | `canonical-page` | retain `x-page-header` |

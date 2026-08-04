@@ -739,6 +739,45 @@ applies, fully rolls back, reapplies, and seeds all 138 migrations, retains
 both forum-source checks, deterministic 38,377-requirement generation, PHP
 localizer, and 859-call canonical icon audit also pass.
 
+The eighteenth non-header localization follow-up audits the deliberate
+`/@mia-carter` owner profile. A dedicated 131-leaf exact-parity EN/LT/RU
+contract now owns its page title, hero, statistics, actions, tabs, audience
+preview, overview, pets, posts, about, privacy, safety, completion, badges,
+availability, and first-party fixture copy. Stable four-tab and four-audience
+codes remain independent of the active locale. `ProfilePresenter` prepares
+the full projection and canonical Lucide icon map, while the owner Blade
+component consumes prepared values without generic translation domains,
+business rules, route construction, or mutations.
+
+The tab-aware projection skips pet and moment work when those collections are
+not rendered. The `about/friend` presenter path drops from seven queries to
+one cached-state query and performs no `pet_profiles` query. The focused
+contract passes 10 tests and 1,086 assertions; the affected profile, preview,
+responsive, page-identity, linked-media, and authentication-boundary slice
+passes 128 tests and 2,368 assertions.
+
+The browser matrix retains 91 primary route/viewport audits and the existing
+call, message-details, share, and neighbor-profile flows, then adds seven real
+owner-profile flows across 320-1920 pixels, EN/RU/LT, forced colors, reduced
+motion, and effective 200% zoom. It checks 54 localized values, four stable tab
+codes, four stable audience codes, all owner-profile icon maps, visible focus,
+clipping, horizontal overflow, raw keys, 44-pixel targets, and console output.
+The first 320-pixel run exposed 42-pixel audience controls; the shared audience
+tabs now use the canonical 44-pixel target. The repeated matrix passes and
+produces 36 screenshots, including dedicated RU 375px and EN 1440px owner
+profile captures.
+
+The exact staged tree, based on the current `origin/main`, passes 3,055 tests
+and 105,425 assertions in 176.605 seconds. Full Pint and Larastan report zero
+findings; Composer strict validation, locked audit, PHP 8.5 platform
+requirements, NPM audit, production Vite build, and JavaScript syntax pass.
+Disposable SQLite applies all 139 migrations, fully rolls them back, reapplies
+them, retains 219 tables and five users across repeated seeding, and both cache
+smoke paths pass after clearing the archive's inherited config cache. The
+179-route/173-first-party smoke, both forum-source checks, deterministic
+38,377-requirement generation, PHP localizer, and 859-call canonical icon audit
+also pass.
+
 ### 3.3 Next Execution Checkpoint
 
 1. Complete Package 0 by assigning the stable requirement ID and recording the
@@ -758,8 +797,9 @@ localizer, and 859-call canonical icon audit also pass.
    thread, composer, per-message action chrome, conversation metadata, context
    rail, and action-result feedback are verified across default, request,
    professional, channel, poll, task, declined, and empty-message states.
-   The active call stage, real message details route, share detail hub, and Ari
-   neighbor profile are now browser-verified; genuine future member-authored
+   The active call stage, real message details route, share detail hub, Ari
+   neighbor profile, and Mia owner profile are now browser-verified; genuine
+   future member-authored
    content, coherent
    removal of the unused
    historical details presenter/template chain, and the other priority bodies
