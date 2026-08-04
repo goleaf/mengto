@@ -2,7 +2,7 @@
 
 Date: 2026-08-04
 
-Status: implemented and release-verified; publication pending.
+Status: implemented, release-verified, and published.
 
 ## Requirement Boundary
 
@@ -101,7 +101,8 @@ Observed on the final attributable tree:
    shared compact-checkbox correction;
 8. immutable-source, deterministic 38,377-requirement, PHP-localization,
    JavaScript-syntax, and scoped staged-diff checks passed. Implementation
-   publication and the 12-ID evidence overlay remain the final pending steps.
+   commit `61efa6f` was pushed to `origin/main`; the evidence overlay verifies
+   exactly the 12 completed IDs while leaving `pet.identity.0223` open.
 
 ## Remaining Boundaries
 

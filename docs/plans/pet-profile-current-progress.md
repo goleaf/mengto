@@ -51,8 +51,9 @@ Last updated: 2026-08-04.
 - The structured appearance-color slice implements 12 selected requirements
   within `pet.identity.0207-pet.identity.0221` with controlled colors and
   patterns plus bounded clarification on the existing encrypted profile
-  payload. Final release gates passed; publication and requirement evidence are
-  pending. Automatic lost/found description `pet.identity.0223` remains open.
+  payload. Final release gates and exact 12-ID requirement evidence passed;
+  implementation commit `61efa6f` is published on `origin/main`. Automatic
+  lost/found description `pet.identity.0223` remains open.
 
 ## Current Work Package
 

@@ -9,7 +9,7 @@ status remains authoritative in
 
 ## Current Delivery: Pet Appearance Color
 
-Status: `implemented and release-verified; publication pending` on 2026-08-04.
+Status: `implemented, release-verified, and published` on 2026-08-04.
 
 - Store one controlled primary color, up to four unique additional colors,
   three controlled patterns, and bounded species-neutral clarification in the
