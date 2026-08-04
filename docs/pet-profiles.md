@@ -230,6 +230,26 @@ stage and source from `PetLifeStagePresenter` without exposing provenance IDs
 or timestamps. Exact scope and remaining cross-domain work are in
 `docs/plans/pet-profile-life-stage-work-package.md`.
 
+## Structured Appearance Color
+
+The Appearance step stores one optional controlled primary color, up to four
+unique additional colors, spots/stripes/gradient patterns, and optional
+bounded clarification for general color, feathers, scales, and seasonal
+changes. This species-neutral catalogue is stored in the existing encrypted
+profile payload and does not replace the legacy free-text summary.
+
+`PetAppearanceNormalizer` validates the full semantic payload for both the
+progressive step and durable compatibility update Action. It rejects forged,
+duplicated, over-capacity, or overlong values independently of Livewire.
+`PetAppearancePresenter` converts stored values into localized scalars and
+locale-aware lists before Blade renders them, without adding a query.
+
+Public profiles expose the structured visible description but never the
+manager-only identifying-marks value. Automatic lost/found description,
+coat/mark structure, measurements, identity media, and search consumption stay
+open. Exact scope is in
+`docs/plans/pet-profile-appearance-color-work-package.md`.
+
 ## Breed Origin And Provenance
 
 The Breed or origin step stores the overall description separately from up to

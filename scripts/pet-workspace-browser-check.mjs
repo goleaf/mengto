@@ -9,6 +9,7 @@ const outputDirectory = process.env.BROWSER_OUTPUT_DIR ?? join(tmpdir(), 'mengto
 const verifyAutosave = process.argv.includes('--autosave');
 const verifyBirth = process.argv.includes('--birth');
 const verifyBreed = process.argv.includes('--breed');
+const verifyAppearance = process.argv.includes('--appearance');
 const verifyNames = process.argv.includes('--names');
 const allowDataMutation = process.env.BROWSER_ALLOW_DATA_MUTATION === '1';
 const origin = new URL(baseUrl);
@@ -23,8 +24,8 @@ if (!['localhost', '127.0.0.1', '::1'].includes(origin.hostname)) {
     throw new Error('The pet workspace browser check only runs against a loopback URL.');
 }
 
-if ((verifyAutosave || verifyBirth || verifyBreed || verifyNames) && ! allowDataMutation) {
-    throw new Error('--autosave, --birth, --breed, and --names require BROWSER_ALLOW_DATA_MUTATION=1 and a disposable database.');
+if ((verifyAutosave || verifyBirth || verifyBreed || verifyAppearance || verifyNames) && ! allowDataMutation) {
+    throw new Error('--autosave, --birth, --breed, --appearance, and --names require BROWSER_ALLOW_DATA_MUTATION=1 and a disposable database.');
 }
 
 const assert = (condition, message) => {
@@ -321,6 +322,7 @@ try {
     let autosaveAudit = null;
     let birthAudit = null;
     let breedAudit = null;
+    let appearanceAudit = null;
     let nameAudit = null;
 
     if (verifyBirth) {
@@ -788,6 +790,161 @@ try {
         breedAudit = { initial, restored, publicProjection, responsive };
     }
 
+    if (verifyAppearance) {
+        await client.send('Emulation.setDeviceMetricsOverride', {
+            width: 1440, height: 900, deviceScaleFactor: 1,
+            mobile: false, screenWidth: 1440, screenHeight: 900,
+        }, sessionId);
+        await client.send('Emulation.setTouchEmulationEnabled', { enabled: false }, sessionId);
+        await setLocale(client, sessionId, 'en');
+        const manageUrl = `${baseUrl}/pets/manage/pet-scout?step=appearance`;
+        await navigate(client, sessionId, manageUrl);
+        const initial = await evaluate(client, sessionId, `(() => ({
+            formCount: document.querySelectorAll('[data-pet-profile-autosave-step="appearance"]').length,
+            primaryOptions: document.querySelectorAll('#managed-pet-primary-color option').length,
+            additionalOptions: document.querySelectorAll('#managed-pet-additional-colors input[type="checkbox"]').length,
+            patternOptions: document.querySelectorAll('#managed-pet-color-patterns input[type="checkbox"]').length,
+            catalogNotice: document.body.innerText.includes('Structured, species-neutral color description'),
+        }))()`);
+        assert(
+            initial.formCount === 1
+                && initial.primaryOptions === 19
+                && initial.additionalOptions === 18
+                && initial.patternOptions === 3,
+            `The structured appearance catalog is incomplete: ${JSON.stringify(initial)}.`,
+        );
+        assert(initial.catalogNotice, 'The structured appearance privacy guidance is missing.');
+
+        const privateMark = `Browser-private-mark-${Date.now()}`;
+        const colorDetails = `White chest and gold tail gradient ${Date.now()}`;
+        const seasonalChanges = 'The visible coat becomes lighter in summer.';
+        const requestsBeforeSave = livewireRequests.length;
+        await evaluate(client, sessionId, `((values) => {
+            const setInput = (selector, value) => {
+                const input = document.querySelector(selector);
+                const setter = Object.getOwnPropertyDescriptor(
+                    input instanceof HTMLTextAreaElement ? HTMLTextAreaElement.prototype : HTMLInputElement.prototype,
+                    'value',
+                ).set;
+                setter.call(input, value);
+                input.dispatchEvent(new Event('input', { bubbles: true }));
+                input.dispatchEvent(new Event('change', { bubbles: true }));
+            };
+            const primary = document.querySelector('#managed-pet-primary-color');
+            const selectSetter = Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, 'value').set;
+            selectSetter.call(primary, 'black');
+            primary.dispatchEvent(new Event('change', { bubbles: true }));
+            for (const value of ['white', 'gold']) {
+                const checkbox = document.querySelector('#managed-pet-additional-colors input[value="' + value + '"]');
+                checkbox.checked = true;
+                checkbox.dispatchEvent(new Event('change', { bubbles: true }));
+            }
+            for (const value of ['spots', 'gradient']) {
+                const checkbox = document.querySelector('#managed-pet-color-patterns input[value="' + value + '"]');
+                checkbox.checked = true;
+                checkbox.dispatchEvent(new Event('change', { bubbles: true }));
+            }
+            setInput('#managed-pet-color-details', values.colorDetails);
+            setInput('#managed-pet-seasonal-color-changes', values.seasonalChanges);
+            setInput('#managed-pet-identifying-marks', values.privateMark);
+        })(${JSON.stringify({ colorDetails, seasonalChanges, privateMark })})`);
+        await delay(1_000);
+        await evaluate(client, sessionId, `document.querySelector('[data-pet-profile-autosave-step="appearance"]').requestSubmit()`);
+        await waitUntil(
+            async () => await evaluate(client, sessionId, `document.body.innerText.includes('Appearance details saved.')`),
+            'The structured appearance was not saved through Livewire.',
+        );
+        assert(livewireRequests.length - requestsBeforeSave >= 1, 'Saving appearance did not reach Livewire.');
+
+        await navigate(client, sessionId, manageUrl);
+        const restored = await evaluate(client, sessionId, `(() => ({
+            primary: document.querySelector('#managed-pet-primary-color')?.value ?? null,
+            additional: [...document.querySelectorAll('#managed-pet-additional-colors input:checked')].map((input) => input.value),
+            patterns: [...document.querySelectorAll('#managed-pet-color-patterns input:checked')].map((input) => input.value),
+            colorDetails: document.querySelector('#managed-pet-color-details')?.value ?? null,
+            seasonalChanges: document.querySelector('#managed-pet-seasonal-color-changes')?.value ?? null,
+        }))()`);
+        assert(restored.primary === 'black', 'The primary appearance color was not restored.');
+        assert(JSON.stringify(restored.additional) === JSON.stringify(['gold', 'white'])
+            || JSON.stringify(restored.additional) === JSON.stringify(['white', 'gold']), 'The additional appearance colors were not restored.');
+        assert(restored.patterns.includes('spots') && restored.patterns.includes('gradient'), 'The appearance patterns were not restored.');
+        assert(restored.colorDetails === colorDetails && restored.seasonalChanges === seasonalChanges, 'The appearance clarifications were not restored.');
+
+        await navigate(client, sessionId, `${baseUrl}/pets/profile/pet-scout`);
+        const publicProjection = await evaluate(client, sessionId, `((expected) => ({
+            titleVisible: document.body.innerText.includes('Color and visible pattern'),
+            colorsVisible: document.body.innerText.includes('Black')
+                && document.body.innerText.includes('White')
+                && document.body.innerText.includes('Gold'),
+            patternsVisible: document.body.innerText.includes('Spots')
+                && document.body.innerText.includes('Gradient or color transition'),
+            detailsVisible: document.body.innerText.includes(expected.colorDetails)
+                && document.body.innerText.includes(expected.seasonalChanges),
+            privateMarkVisible: document.body.innerText.includes(expected.privateMark),
+            rawKeys: document.body.innerText.match(/\\bpet_profiles\\.[a-z0-9_.-]+/gi) ?? [],
+            overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+        }))(${JSON.stringify({ colorDetails, seasonalChanges, privateMark })})`);
+        assert(publicProjection.titleVisible && publicProjection.colorsVisible, 'The public appearance color projection is incomplete.');
+        assert(publicProjection.patternsVisible && publicProjection.detailsVisible, 'The public appearance pattern or clarification is incomplete.');
+        assert(! publicProjection.privateMarkVisible, 'A private identifying mark leaked into the public appearance projection.');
+        assert(publicProjection.rawKeys.length === 0, 'The public appearance projection exposes translation keys.');
+        assert(publicProjection.overflow <= 1, `The public appearance projection overflows by ${publicProjection.overflow}px.`);
+
+        const responsive = {};
+        for (const viewport of [
+            { label: 'desktop', width: 1440, height: 900, mobile: false },
+            { label: 'mobile-390', width: 390, height: 844, mobile: true },
+            { label: 'mobile-320', width: 320, height: 900, mobile: true },
+        ]) {
+            await client.send('Emulation.setDeviceMetricsOverride', {
+                width: viewport.width, height: viewport.height, deviceScaleFactor: 1,
+                mobile: viewport.mobile, screenWidth: viewport.width, screenHeight: viewport.height,
+            }, sessionId);
+            await client.send('Emulation.setTouchEmulationEnabled', { enabled: viewport.mobile }, sessionId);
+            await navigate(client, sessionId, manageUrl);
+            const audit = await evaluate(client, sessionId, `(() => {
+                const form = document.querySelector('[data-pet-profile-autosave-step="appearance"]');
+                const visible = (element) => {
+                    const style = getComputedStyle(element);
+                    const box = element.getBoundingClientRect();
+                    return style.display !== 'none' && style.visibility !== 'hidden'
+                        && box.width > 0 && box.height > 0;
+                };
+                const controls = [...(form?.querySelectorAll('button, input, select, textarea') ?? [])].filter(visible);
+                const ids = [...document.querySelectorAll('[id]')].map((element) => element.id).filter(Boolean);
+                return {
+                    h1Count: document.querySelectorAll('main h1').length,
+                    formCount: form ? 1 : 0,
+                    primaryValue: document.querySelector('#managed-pet-primary-color')?.value ?? null,
+                    overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+                    rawKeys: document.body.innerText.match(/\\bpet_profiles\\.[a-z0-9_.-]+/gi) ?? [],
+                    unnamed: controls.filter((element) => !(
+                        element.getAttribute('aria-label') || element.getAttribute('aria-labelledby')
+                        || element.labels?.length || element.textContent.trim() || element.title
+                    )).length,
+                    smallTargets: controls.filter((element) => {
+                        const target = ['checkbox', 'radio'].includes(element.type)
+                            ? element.closest('label') ?? element
+                            : element;
+                        const box = target.getBoundingClientRect();
+                        return box.width < 44 || box.height < 44;
+                    }).length,
+                    duplicateIds: [...new Set(ids.filter((id, index) => ids.indexOf(id) !== index))],
+                };
+            })()`);
+            assert(audit.h1Count === 1 && audit.formCount === 1 && audit.primaryValue === 'black', `${viewport.label}: invalid appearance workspace structure.`);
+            assert(audit.overflow <= 1, `${viewport.label}: appearance workspace overflows by ${audit.overflow}px.`);
+            assert(audit.rawKeys.length === 0 && audit.unnamed === 0, `${viewport.label}: appearance workspace exposes raw keys or unnamed controls.`);
+            assert(audit.duplicateIds.length === 0, `${viewport.label}: duplicate appearance control IDs remain.`);
+            if (viewport.mobile) assert(audit.smallTargets === 0, `${viewport.label}: appearance controls below 44px remain.`);
+            responsive[viewport.label] = audit;
+            const screenshot = await client.send('Page.captureScreenshot', { format: 'png', captureBeyondViewport: true }, sessionId);
+            await writeFile(join(outputDirectory, `pet-appearance-${viewport.label}.png`), Buffer.from(screenshot.data, 'base64'));
+        }
+
+        appearanceAudit = { initial, restored, publicProjection, responsive };
+    }
+
     if (verifyAutosave) {
         await client.send('Emulation.setDeviceMetricsOverride', {
             width: 1440, height: 900, deviceScaleFactor: 1,
@@ -1029,6 +1186,8 @@ try {
         birthAudit,
         verifyBreed,
         breedAudit,
+        verifyAppearance,
+        appearanceAudit,
         verifyNames,
         nameAudit,
         consoleErrors,

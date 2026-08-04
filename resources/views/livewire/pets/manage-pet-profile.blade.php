@@ -402,7 +402,107 @@
             </form>
         @elseif ($activeStep['value'] === 'appearance')
             <form wire:submit="saveAppearance" wire:change="autoSaveStep('appearance', $event.currentTarget.dataset.petProfileAutosaveRevision)" class="forum-form mt-6" data-pet-profile-autosave-step="appearance">
+                <x-callout
+                    :title="__('pet_profiles.appearance.catalog_notice_title')"
+                    :description="__('pet_profiles.appearance.catalog_notice')"
+                    icon="palette"
+                />
+
+                <label class="forum-form__field" for="managed-pet-primary-color">
+                    <span>{{ __('pet_profiles.appearance.primary_color') }}</span>
+                    <select
+                        id="managed-pet-primary-color"
+                        wire:model="form.appearancePrimaryColor"
+                        aria-describedby="managed-pet-primary-color-help managed-pet-primary-color-error"
+                        @error('form.appearancePrimaryColor') aria-invalid="true" @enderror
+                    >
+                        <option value="">{{ __('pet_profiles.appearance.not_recorded') }}</option>
+                        @forelse ($this->appearanceColorOptions as $value => $label)
+                            <option wire:key="managed-pet-primary-color-{{ $value }}" value="{{ $value }}">{{ $label }}</option>
+                        @empty
+                        @endforelse
+                    </select>
+                    <small id="managed-pet-primary-color-help">{{ __('pet_profiles.appearance.primary_color_help') }}</small>
+                    @error('form.appearancePrimaryColor') <small id="managed-pet-primary-color-error" role="alert">{{ $message }}</small> @enderror
+                </label>
+
+                <fieldset
+                    id="managed-pet-additional-colors"
+                    class="grid min-w-0 gap-3 rounded-2xl border border-paw-line p-4"
+                    aria-describedby="managed-pet-additional-colors-help managed-pet-additional-colors-error"
+                    @error('form.appearanceAdditionalColors') aria-invalid="true" @enderror
+                >
+                    <legend class="px-1 font-semibold text-paw-ink">{{ __('pet_profiles.appearance.additional_colors') }}</legend>
+                    <p id="managed-pet-additional-colors-help" class="text-sm text-paw-muted">{{ __('pet_profiles.appearance.additional_colors_help') }}</p>
+                    <div class="grid min-w-0 gap-2 sm:grid-cols-2 lg:grid-cols-3">
+                        @forelse ($this->appearanceColorOptions as $value => $label)
+                            <label wire:key="managed-pet-additional-color-{{ $value }}" class="forum-form__choice min-w-0 rounded-xl border border-paw-line px-3 py-2 text-sm">
+                                <input
+                                    type="checkbox"
+                                    value="{{ $value }}"
+                                    wire:model="form.appearanceAdditionalColors"
+                                >
+                                <span class="break-words">{{ $label }}</span>
+                            </label>
+                        @empty
+                            <p class="text-sm text-paw-muted">{{ __('pet_profiles.appearance.not_recorded') }}</p>
+                        @endforelse
+                    </div>
+                    @error('form.appearanceAdditionalColors') <small id="managed-pet-additional-colors-error" role="alert">{{ $message }}</small> @enderror
+                    @error('form.appearanceAdditionalColors.*') <small id="managed-pet-additional-colors-error-items" role="alert">{{ $message }}</small> @enderror
+                </fieldset>
+
+                <fieldset
+                    id="managed-pet-color-patterns"
+                    class="grid min-w-0 gap-3 rounded-2xl border border-paw-line p-4"
+                    aria-describedby="managed-pet-color-patterns-help managed-pet-color-patterns-error"
+                    @error('form.appearancePatterns') aria-invalid="true" @enderror
+                >
+                    <legend class="px-1 font-semibold text-paw-ink">{{ __('pet_profiles.appearance.pattern_label') }}</legend>
+                    <p id="managed-pet-color-patterns-help" class="text-sm text-paw-muted">{{ __('pet_profiles.appearance.pattern_help') }}</p>
+                    <div class="grid min-w-0 gap-2 sm:grid-cols-3">
+                        @forelse ($this->appearancePatternOptions as $value => $label)
+                            <label wire:key="managed-pet-color-pattern-{{ $value }}" class="forum-form__choice min-w-0 rounded-xl border border-paw-line px-3 py-2 text-sm">
+                                <input
+                                    type="checkbox"
+                                    value="{{ $value }}"
+                                    wire:model="form.appearancePatterns"
+                                >
+                                <span class="break-words">{{ $label }}</span>
+                            </label>
+                        @empty
+                            <p class="text-sm text-paw-muted">{{ __('pet_profiles.appearance.not_recorded') }}</p>
+                        @endforelse
+                    </div>
+                    @error('form.appearancePatterns') <small id="managed-pet-color-patterns-error" role="alert">{{ $message }}</small> @enderror
+                    @error('form.appearancePatterns.*') <small id="managed-pet-color-patterns-error-items" role="alert">{{ $message }}</small> @enderror
+                </fieldset>
+
                 <div class="grid min-w-0 gap-4 md:grid-cols-2">
+                    <label class="forum-form__field md:col-span-2" for="managed-pet-color-details">
+                        <span>{{ __('pet_profiles.appearance.color_details') }}</span>
+                        <textarea id="managed-pet-color-details" wire:model="form.appearanceColorDetails" rows="4" maxlength="1000" aria-describedby="managed-pet-color-details-help managed-pet-color-details-error" @error('form.appearanceColorDetails') aria-invalid="true" @enderror></textarea>
+                        <small id="managed-pet-color-details-help">{{ __('pet_profiles.appearance.color_details_help') }}</small>
+                        @error('form.appearanceColorDetails') <small id="managed-pet-color-details-error" role="alert">{{ $message }}</small> @enderror
+                    </label>
+                    <label class="forum-form__field" for="managed-pet-feather-color-details">
+                        <span>{{ __('pet_profiles.appearance.feather_color_details') }}</span>
+                        <textarea id="managed-pet-feather-color-details" wire:model="form.appearanceFeatherColorDetails" rows="4" maxlength="1000" aria-describedby="managed-pet-feather-color-details-help managed-pet-feather-color-details-error" @error('form.appearanceFeatherColorDetails') aria-invalid="true" @enderror></textarea>
+                        <small id="managed-pet-feather-color-details-help">{{ __('pet_profiles.appearance.feather_color_details_help') }}</small>
+                        @error('form.appearanceFeatherColorDetails') <small id="managed-pet-feather-color-details-error" role="alert">{{ $message }}</small> @enderror
+                    </label>
+                    <label class="forum-form__field" for="managed-pet-scale-color-details">
+                        <span>{{ __('pet_profiles.appearance.scale_color_details') }}</span>
+                        <textarea id="managed-pet-scale-color-details" wire:model="form.appearanceScaleColorDetails" rows="4" maxlength="1000" aria-describedby="managed-pet-scale-color-details-help managed-pet-scale-color-details-error" @error('form.appearanceScaleColorDetails') aria-invalid="true" @enderror></textarea>
+                        <small id="managed-pet-scale-color-details-help">{{ __('pet_profiles.appearance.scale_color_details_help') }}</small>
+                        @error('form.appearanceScaleColorDetails') <small id="managed-pet-scale-color-details-error" role="alert">{{ $message }}</small> @enderror
+                    </label>
+                    <label class="forum-form__field md:col-span-2" for="managed-pet-seasonal-color-changes">
+                        <span>{{ __('pet_profiles.appearance.seasonal_color_changes') }}</span>
+                        <textarea id="managed-pet-seasonal-color-changes" wire:model="form.appearanceSeasonalColorChanges" rows="3" maxlength="1000" aria-describedby="managed-pet-seasonal-color-changes-help managed-pet-seasonal-color-changes-error" @error('form.appearanceSeasonalColorChanges') aria-invalid="true" @enderror></textarea>
+                        <small id="managed-pet-seasonal-color-changes-help">{{ __('pet_profiles.appearance.seasonal_color_changes_help') }}</small>
+                        @error('form.appearanceSeasonalColorChanges') <small id="managed-pet-seasonal-color-changes-error" role="alert">{{ $message }}</small> @enderror
+                    </label>
                     <label class="forum-form__field" for="managed-pet-appearance">
                         <span>{{ __('pet_profiles.fields.appearance_summary') }}</span>
                         <textarea id="managed-pet-appearance" wire:model="form.appearanceSummary" rows="5" maxlength="1500" aria-describedby="managed-pet-appearance-help managed-pet-appearance-error" @error('form.appearanceSummary') aria-invalid="true" @enderror></textarea>
@@ -412,7 +512,7 @@
                     <label class="forum-form__field" for="managed-pet-identifying-marks">
                         <span>{{ __('pet_profiles.fields.identifying_marks') }}</span>
                         <textarea id="managed-pet-identifying-marks" wire:model="form.identifyingMarks" rows="5" maxlength="1500" aria-describedby="managed-pet-identifying-marks-help managed-pet-identifying-marks-error" @error('form.identifyingMarks') aria-invalid="true" @enderror></textarea>
-                        <small id="managed-pet-identifying-marks-help">{{ __('pet_profiles.completion.help.identifying_marks') }}</small>
+                        <small id="managed-pet-identifying-marks-help">{{ __('pet_profiles.appearance.identifying_marks_private_help') }}</small>
                         @error('form.identifyingMarks') <small id="managed-pet-identifying-marks-error" role="alert">{{ $message }}</small> @enderror
                     </label>
                 </div>

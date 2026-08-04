@@ -366,6 +366,13 @@ validation, `PetBreedOriginSynchronizer` owns the short relational write, and
 string is derived compatibility data. Confidence and source stay independent,
 and no media or appearance path may promote either value.
 
+Structured appearance color remains inside the existing encrypted
+`profile_data` compatibility boundary. `PetAppearanceNormalizer` owns the
+controlled color/pattern catalogue, cardinality, uniqueness, and bounded-text
+rules for every mutation path; `PetAppearancePresenter` owns the localized
+public-safe scalar projection. Blade never interprets stored enum values, and
+identifying marks are intentionally excluded from the public projection.
+
 ## Canonical Social Relationship Boundary
 
 `SocialActor` is a one-to-one internal adapter around an authoritative user,

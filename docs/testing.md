@@ -1093,3 +1093,33 @@ Observed evidence on 2026-08-04:
 
 The reusable browser command is
 `BROWSER_BASE_URL=http://127.0.0.1:PORT BROWSER_ALLOW_DATA_MUTATION=1 node scripts/pet-workspace-browser-check.mjs --breed`.
+
+## Pet Appearance Color Verification
+
+`PetProfileAppearanceTest` covers encrypted structured persistence, catalogue
+and text bounds, duplicate and forged direct Action input, authorization,
+idempotency, no-op behavior, EN/LT/RU Livewire restoration, public projection,
+identifying-mark privacy, legacy compatibility, completion detection, and
+zero-query presentation.
+
+Observed evidence on 2026-08-04:
+
+- focused suite: 15 tests and 108 assertions;
+- focused plus architecture: 35 tests and 30,944 assertions;
+- complete pet-profile regression: 153 tests and 4,829 assertions;
+- clean isolated sequential suite: 2,923 tests and 96,639 assertions in
+  169.946 seconds with the documented 1 GB limit for the existing large image
+  fixture;
+- full Pint, Larastan, Composer/platform/audit, npm audit, isolated Vite build,
+  JavaScript syntax, and staged-diff checks passed;
+- fresh disposable SQLite applied 137 migrations, retained 218 tables and five
+  users, and passed repeated complete seeding;
+- config, event, route, and view caches compiled, then were individually
+  cleared before the final suite;
+- disposable Chrome saved and restored structured color data, verified the
+  public projection without private identifying marks, and passed desktop,
+  390px, and 320px geometry, labels, touch targets, raw-key, duplicate-ID, and
+  console checks. The final screenshots were visually reviewed.
+
+The reusable browser command is
+`BROWSER_BASE_URL=http://127.0.0.1:PORT BROWSER_ALLOW_DATA_MUTATION=1 node scripts/pet-workspace-browser-check.mjs --appearance`.

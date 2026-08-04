@@ -268,3 +268,18 @@ owner-reported compatibility data only when the profile is edited.
 Rollback is safe only before normalized origin rows are relied upon. After
 production writes begin, retain the additive schema and deploy a reviewed
 forward fix; do not guess legacy strings into taxonomy classifications.
+
+## Pet Appearance Color Deployment
+
+The structured appearance-color package adds no migration, table, index,
+backfill, queue, cache store, environment key, or public-file route. Deploy the
+application code and all three locale catalogues together, then rebuild config,
+event, route, and view caches.
+
+Smoke an empty profile, a primary color with four different additional colors,
+all three patterns, feather/scale/seasonal clarification, one invalid direct
+payload, reload restoration, and the public projection. Confirm identifying
+marks remain absent from public HTML and the encrypted `profile_data` cast can
+read both legacy and schema-versioned payloads. Rollback is an application-code
+rollback; already stored schema-versioned data is preserved and ignored safely
+by older compatibility readers.

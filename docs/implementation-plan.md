@@ -7,7 +7,27 @@ This living plan records work that was actually performed. A pass is
 status remains authoritative in
 `docs/requirements/compliance-matrix.md`.
 
-## Current Delivery: Pet Life Stage
+## Current Delivery: Pet Appearance Color
+
+Status: `implemented and release-verified; publication pending` on 2026-08-04.
+
+- Store one controlled primary color, up to four unique additional colors,
+  three controlled patterns, and bounded species-neutral clarification in the
+  existing encrypted profile payload.
+- Reuse one server normalizer across progressive and durable compatibility
+  mutation paths while retaining authorization, optimistic locking,
+  idempotency, audit, and cache invalidation.
+- Render EN/LT/RU workspace and public projections through one presenter with
+  no new query, migration, or Blade business logic.
+- Preserve legacy free text and keep identifying marks out of the public
+  projection.
+- Keep automatic lost/found descriptions, coat, marks, measurements, identity
+  media, and cross-domain consumption outside this 12-requirement package.
+
+Exact scope and observed evidence belong in
+`docs/plans/pet-profile-appearance-color-work-package.md`.
+
+## Previous Delivery: Pet Life Stage
 
 Status: `implemented, release-verified, and published` on 2026-08-04.
 

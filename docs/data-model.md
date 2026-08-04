@@ -162,6 +162,20 @@ maintenance access. Stage is not a filter or ordering key in the selected
 package, so it has no speculative value index. Existing rows require no
 backfill because null means automatic resolution.
 
+## Pet Appearance Color Payload
+
+Structured color data is stored under `pet_profiles.profile_data.appearance`
+inside the existing encrypted text cast. Schema version 1 contains one nullable
+controlled primary color, at most four unique controlled additional colors,
+unique controlled patterns, and bounded general, feather, scale, and seasonal
+text. It stores no actor, private file, exact location, or identifying mark.
+
+The value is a profile display fact rather than a filter or relationship in
+this package. It therefore requires no new column, migration, backfill, index,
+or database query. The historical `appearance_summary` and private
+`identifying_marks` keys remain separate compatibility values. Empty structured
+data removes only the nested object.
+
 ## Data Retention
 
 Retention is category-specific:

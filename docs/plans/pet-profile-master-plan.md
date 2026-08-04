@@ -130,6 +130,16 @@ ownership, taxonomy import, and lost/found behavior also remain open. Exact
 boundaries and evidence are in
 `docs/plans/pet-profile-life-stage-work-package.md`.
 
+The appearance-color package implements 12 selected records within
+`pet.identity.0207-pet.identity.0221` with one controlled primary color, up to
+four unique additional colors, spots/stripes/gradient patterns, and bounded
+species-neutral, feather, scale, and seasonal clarification. The structured
+payload remains on the existing encrypted compatibility field and adds no
+query or migration. Automatic lost/found description generation
+`pet.identity.0223`, coat, private marks, measurements, and identity media
+remain open. Exact boundaries and evidence are in
+`docs/plans/pet-profile-appearance-color-work-package.md`.
+
 ## Phase 19: Ownership And Privacy
 
 **IDs:** `pet.ownership.0001-pet.ownership.0393` and

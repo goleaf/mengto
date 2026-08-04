@@ -67,7 +67,8 @@ final class PetProfileCompletionPresenter
                 || trim((string) $profile->breed) !== ''
                 || $profile->breed_origin_type !== null,
             PetProfileCompletionStep::Appearance => $this->hasText($data, 'appearance_summary')
-                || $this->hasText($data, 'identifying_marks'),
+                || $this->hasText($data, 'identifying_marks')
+                || $this->hasStructuredAppearance($data),
             PetProfileCompletionStep::Character => $this->hasText($data, 'story')
                 || $this->hasText($data, 'temperament_summary'),
             PetProfileCompletionStep::SocialPreferences => $this->hasText($data, 'social_preferences')
@@ -89,5 +90,39 @@ final class PetProfileCompletionPresenter
     private function existsAttribute(PetProfile $profile, string $attribute): bool
     {
         return (bool) $profile->getAttribute($attribute);
+    }
+
+    /** @param array<string, mixed> $data */
+    private function hasStructuredAppearance(array $data): bool
+    {
+        $appearance = $data['appearance'] ?? null;
+
+        if (! is_array($appearance)) {
+            return false;
+        }
+
+        if (is_string($appearance['primary_color'] ?? null)
+            && trim($appearance['primary_color']) !== '') {
+            return true;
+        }
+
+        foreach (['additional_colors', 'patterns'] as $key) {
+            if (is_array($appearance[$key] ?? null) && $appearance[$key] !== []) {
+                return true;
+            }
+        }
+
+        foreach ([
+            'color_details',
+            'feather_color_details',
+            'scale_color_details',
+            'seasonal_color_changes',
+        ] as $key) {
+            if (is_string($appearance[$key] ?? null) && trim($appearance[$key]) !== '') {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

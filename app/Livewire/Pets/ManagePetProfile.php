@@ -15,6 +15,8 @@ use App\Actions\StorePetPrimaryPhoto;
 use App\Actions\TransitionPetProfileStatus;
 use App\Actions\UpdatePetProfilePrivacy;
 use App\Actions\UpdatePetProfileStep;
+use App\Enums\PetAppearanceColor;
+use App\Enums\PetAppearancePattern;
 use App\Enums\PetBirthDatePrecision;
 use App\Enums\PetBreedConfidence;
 use App\Enums\PetBreedOriginType;
@@ -333,6 +335,34 @@ final class ManagePetProfile extends Component
 
             return;
         }
+    }
+
+    public function updatedFormAppearancePrimaryColor(string $color): void
+    {
+        $this->form->appearanceAdditionalColors = array_values(array_filter(
+            $this->form->appearanceAdditionalColors,
+            static fn (string $additional): bool => $additional !== $color,
+        ));
+    }
+
+    /** @return array<string, string> */
+    #[Computed]
+    public function appearanceColorOptions(): array
+    {
+        return collect(PetAppearanceColor::cases())
+            ->mapWithKeys(static fn (PetAppearanceColor $color): array => [
+                $color->value => $color->label(),
+            ])->all();
+    }
+
+    /** @return array<string, string> */
+    #[Computed]
+    public function appearancePatternOptions(): array
+    {
+        return collect(PetAppearancePattern::cases())
+            ->mapWithKeys(static fn (PetAppearancePattern $pattern): array => [
+                $pattern->value => $pattern->label(),
+            ])->all();
     }
 
     public function addBreedOrigin(): void

@@ -85,6 +85,10 @@
 
 ### Pet Profiles
 
+- Added a species-neutral structured appearance catalogue with primary and
+  additional colors, spots/stripes/gradient patterns, and optional feather,
+  scale, and seasonal clarification; public profiles now render a localized
+  visible description while private identifying marks remain manager-only.
 - Added normalized breed-origin profiles with one, mixed, possible-multiple,
   no-breed, and unknown states; up to four entries now retain independent
   confidence, provenance, and optional mixed percentages while legacy breed

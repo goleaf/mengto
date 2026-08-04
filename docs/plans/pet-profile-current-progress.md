@@ -48,14 +48,43 @@ Last updated: 2026-08-04.
   open until recommendations and filters consume the stage. Implementation and
   release verification are complete, and implementation commit `3c7db2e` is
   published on `origin/main`.
+- The structured appearance-color slice implements 12 selected requirements
+  within `pet.identity.0207-pet.identity.0221` with controlled colors and
+  patterns plus bounded clarification on the existing encrypted profile
+  payload. Final release gates passed; publication and requirement evidence are
+  pending. Automatic lost/found description `pet.identity.0223` remains open.
 
 ## Current Work Package
 
-The current package projects a conservative life stage from the published age
-range without storing a stale derived value or applying dog boundaries to all
-animals. It preserves every existing link while adding an attributed nullable
-manual clarification, one shared server boundary, and localized workspace and
-public source labels.
+The current package replaces prototype-only appearance free text with a
+species-neutral structured color description while preserving the encrypted
+legacy summary. One shared server boundary protects every mutation path and
+one presenter prepares a localized public projection without exposing private
+identifying marks or adding a database query.
+
+## Appearance Color
+
+- One optional controlled primary color, up to four unique controlled
+  additional colors, spots/stripes/gradient patterns, and bounded general,
+  feather, scale, and seasonal clarification share one schema-versioned
+  encrypted payload.
+- `PetAppearanceNormalizer` rejects forged values, duplicates, primary/addition
+  overlap, excessive selections, non-string values, and overlong text for both
+  Livewire and direct Action calls.
+- `PetAppearancePresenter` localizes enum labels and locale-aware lists before
+  Blade renders them. It performs zero queries and excludes the existing
+  identifying-marks value from the public projection.
+- The focused package passed 15 tests and 108 assertions, complete pet-profile
+  regression passed 153 tests and 4,829 assertions, and the clean isolated
+  suite passed 2,923 tests and 96,639 assertions in 169.946 seconds.
+- Full Pint, Larastan, dependency, disposable migration/seed, isolated Vite,
+  cache, immutable-source, deterministic-generation, and connected Chrome
+  gates passed. Chrome verified real Livewire persistence, public projection,
+  identifying-mark privacy, responsive geometry, labels, touch targets, and a
+  clean console at 1440px, 390px, and 320px.
+- Exactly 12 IDs are selected. Automatic lost/found description
+  `pet.identity.0223`, coat, marks, measurements, identity media, and all
+  cross-domain consumers remain open.
 
 ## Life Stage
 
@@ -290,7 +319,9 @@ public source labels.
 
 ## Next Package
 
-Select the next dependency-safe appearance-fact package.
+Complete and publish the selected appearance-color package, then choose the
+next dependency-safe appearance fact without inheriting status for automatic
+lost/found descriptions, coat structure, private marks, or measurements.
 Do not treat safe candidate review, possible species, alternative-name
 history, or birth precision as duplicate merge, proof verification, taxonomy
 verification, lost/found coordination, dispute resolution, organization

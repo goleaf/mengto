@@ -1163,6 +1163,24 @@
         min-height: 1rem;
     }
 
+    &__choice {
+        display: flex;
+        min-block-size: $touch-target;
+        align-items: center;
+        gap: 0.65rem;
+    }
+
+    &__choice input[type='checkbox'],
+    &__choice input[type='radio'] {
+        width: 1.25rem;
+        min-width: 1.25rem;
+        height: 1.25rem;
+        min-height: 1.25rem;
+        flex: 0 0 1.25rem;
+        margin: 0;
+        padding: 0;
+    }
+
     &__check {
         display: grid;
         grid-template-columns: $touch-target minmax(0, 1fr);

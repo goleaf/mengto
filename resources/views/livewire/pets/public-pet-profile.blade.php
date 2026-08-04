@@ -43,6 +43,57 @@
             @else
                 <p class="mt-3 text-paw-muted">{{ __('pet_profiles.public.no_bio') }}</p>
             @endif
+
+            @if ($pet['appearance'] !== null)
+                <div class="mt-6 rounded-2xl border border-paw-line bg-paw-canvas p-4" aria-labelledby="pet-profile-appearance-heading">
+                    <h3 id="pet-profile-appearance-heading" class="text-lg font-semibold text-paw-ink">{{ __('pet_profiles.appearance.public_title') }}</h3>
+                    <p class="mt-1 text-sm text-paw-muted">{{ __('pet_profiles.appearance.public_notice') }}</p>
+                    <dl class="mt-4 grid min-w-0 gap-3 sm:grid-cols-2">
+                        @if ($pet['appearance']['primary_color'] !== null)
+                            <div>
+                                <dt class="text-sm text-paw-muted">{{ __('pet_profiles.appearance.primary_color') }}</dt>
+                                <dd class="break-words">{{ $pet['appearance']['primary_color'] }}</dd>
+                            </div>
+                        @endif
+                        @if ($pet['appearance']['additional_color_list'] !== null)
+                            <div>
+                                <dt class="text-sm text-paw-muted">{{ __('pet_profiles.appearance.additional_colors') }}</dt>
+                                <dd class="break-words">{{ $pet['appearance']['additional_color_list'] }}</dd>
+                            </div>
+                        @endif
+                        @if ($pet['appearance']['pattern_list'] !== null)
+                            <div>
+                                <dt class="text-sm text-paw-muted">{{ __('pet_profiles.appearance.pattern_label') }}</dt>
+                                <dd class="break-words">{{ $pet['appearance']['pattern_list'] }}</dd>
+                            </div>
+                        @endif
+                        @if ($pet['appearance']['color_details'] !== '')
+                            <div>
+                                <dt class="text-sm text-paw-muted">{{ __('pet_profiles.appearance.color_details') }}</dt>
+                                <dd class="whitespace-pre-line break-words">{{ $pet['appearance']['color_details'] }}</dd>
+                            </div>
+                        @endif
+                        @if ($pet['appearance']['feather_color_details'] !== '')
+                            <div>
+                                <dt class="text-sm text-paw-muted">{{ __('pet_profiles.appearance.feather_color_details') }}</dt>
+                                <dd class="whitespace-pre-line break-words">{{ $pet['appearance']['feather_color_details'] }}</dd>
+                            </div>
+                        @endif
+                        @if ($pet['appearance']['scale_color_details'] !== '')
+                            <div>
+                                <dt class="text-sm text-paw-muted">{{ __('pet_profiles.appearance.scale_color_details') }}</dt>
+                                <dd class="whitespace-pre-line break-words">{{ $pet['appearance']['scale_color_details'] }}</dd>
+                            </div>
+                        @endif
+                        @if ($pet['appearance']['seasonal_color_changes'] !== '')
+                            <div>
+                                <dt class="text-sm text-paw-muted">{{ __('pet_profiles.appearance.seasonal_color_changes') }}</dt>
+                                <dd class="whitespace-pre-line break-words">{{ $pet['appearance']['seasonal_color_changes'] }}</dd>
+                            </div>
+                        @endif
+                    </dl>
+                </div>
+            @endif
         </section>
 
         <dl class="grid gap-3 border-s border-paw-line ps-5">

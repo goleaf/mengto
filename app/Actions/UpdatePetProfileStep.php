@@ -9,6 +9,7 @@ use App\Enums\PetSpeciesConfidence;
 use App\Models\AuditLog;
 use App\Models\PetProfile;
 use App\Services\ForumActor;
+use App\Services\PetAppearanceNormalizer;
 use App\Services\PetBirthDetailsNormalizer;
 use App\Services\PetBreedOriginNormalizer;
 use App\Services\PetBreedOriginSynchronizer;
@@ -62,6 +63,7 @@ final class UpdatePetProfileStep
         private readonly PetProfileEventRecorder $events,
         private readonly PetProfileCache $cache,
         private readonly PetProfileNameHistory $nameHistory,
+        private readonly PetAppearanceNormalizer $appearance,
         private readonly PetLifeStageOverrideNormalizer $lifeStageOverrides,
         private readonly PetBirthDetailsNormalizer $birthDetails,
         private readonly PetBreedOriginNormalizer $breedOrigins,
@@ -280,12 +282,18 @@ final class UpdatePetProfileStep
                 'breed_origins',
             ]],
             PetProfileCompletionStep::Appearance => [[
-                'profile_data' => [
-                    ...$profileData,
-                    'appearance_summary' => trim((string) ($data['appearance_summary'] ?? '')),
-                    'identifying_marks' => trim((string) ($data['identifying_marks'] ?? '')),
-                ],
-            ], ['appearance_summary', 'identifying_marks']],
+                'profile_data' => $this->appearance->apply($data, $profileData),
+            ], [
+                'primary_color',
+                'additional_colors',
+                'patterns',
+                'color_details',
+                'feather_color_details',
+                'scale_color_details',
+                'seasonal_color_changes',
+                'appearance_summary',
+                'identifying_marks',
+            ]],
             PetProfileCompletionStep::Character => [[
                 'profile_data' => [
                     ...$profileData,

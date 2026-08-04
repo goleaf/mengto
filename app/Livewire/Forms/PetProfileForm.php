@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Livewire\Forms;
 
+use App\Enums\PetAppearanceColor;
+use App\Enums\PetAppearancePattern;
 use App\Enums\PetBirthDatePrecision;
 use App\Enums\PetBreedConfidence;
 use App\Enums\PetBreedOriginType;
@@ -79,6 +81,22 @@ final class PetProfileForm extends Form
 
     public string $identifyingMarks = '';
 
+    public string $appearancePrimaryColor = '';
+
+    /** @var list<string> */
+    public array $appearanceAdditionalColors = [];
+
+    /** @var list<string> */
+    public array $appearancePatterns = [];
+
+    public string $appearanceColorDetails = '';
+
+    public string $appearanceFeatherColorDetails = '';
+
+    public string $appearanceScaleColorDetails = '';
+
+    public string $appearanceSeasonalColorChanges = '';
+
     public string $temperamentSummary = '';
 
     public string $socialPreferences = '';
@@ -128,6 +146,7 @@ final class PetProfileForm extends Form
             'bio' => ['nullable', 'string', 'max:3000'],
             'appearanceSummary' => ['nullable', 'string', 'max:1500'],
             'identifyingMarks' => ['nullable', 'string', 'max:1500'],
+            ...$this->appearanceRules(),
             'temperamentSummary' => ['nullable', 'string', 'max:1500'],
             'socialPreferences' => ['nullable', 'string', 'max:1500'],
             'meetingPreferences' => ['nullable', 'string', 'max:1500'],
@@ -320,15 +339,23 @@ final class PetProfileForm extends Form
         $this->breedOrigins = array_values($this->breedOrigins);
     }
 
-    /** @return array{appearance_summary: string, identifying_marks: string} */
+    /** @return array<string, mixed> */
     public function appearanceData(): array
     {
         $validated = $this->validate([
             'appearanceSummary' => ['nullable', 'string', 'max:1500'],
             'identifyingMarks' => ['nullable', 'string', 'max:1500'],
+            ...$this->appearanceRules(),
         ]);
 
         return [
+            'primary_color' => (string) ($validated['appearancePrimaryColor'] ?? ''),
+            'additional_colors' => array_values($validated['appearanceAdditionalColors'] ?? []),
+            'patterns' => array_values($validated['appearancePatterns'] ?? []),
+            'color_details' => trim((string) ($validated['appearanceColorDetails'] ?? '')),
+            'feather_color_details' => trim((string) ($validated['appearanceFeatherColorDetails'] ?? '')),
+            'scale_color_details' => trim((string) ($validated['appearanceScaleColorDetails'] ?? '')),
+            'seasonal_color_changes' => trim((string) ($validated['appearanceSeasonalColorChanges'] ?? '')),
             'appearance_summary' => trim((string) ($validated['appearanceSummary'] ?? '')),
             'identifying_marks' => trim((string) ($validated['identifyingMarks'] ?? '')),
         ];
@@ -422,6 +449,18 @@ final class PetProfileForm extends Form
         $this->bio = (string) ($profileData['story'] ?? '');
         $this->appearanceSummary = (string) ($profileData['appearance_summary'] ?? '');
         $this->identifyingMarks = (string) ($profileData['identifying_marks'] ?? '');
+        $appearance = is_array($profileData['appearance'] ?? null)
+            ? $profileData['appearance']
+            : [];
+        $this->appearancePrimaryColor = is_string($appearance['primary_color'] ?? null)
+            ? $appearance['primary_color']
+            : '';
+        $this->appearanceAdditionalColors = $this->stringList($appearance['additional_colors'] ?? null);
+        $this->appearancePatterns = $this->stringList($appearance['patterns'] ?? null);
+        $this->appearanceColorDetails = $this->profileText($appearance, 'color_details');
+        $this->appearanceFeatherColorDetails = $this->profileText($appearance, 'feather_color_details');
+        $this->appearanceScaleColorDetails = $this->profileText($appearance, 'scale_color_details');
+        $this->appearanceSeasonalColorChanges = $this->profileText($appearance, 'seasonal_color_changes');
         $this->temperamentSummary = (string) ($profileData['temperament_summary'] ?? '');
         $this->socialPreferences = (string) ($profileData['social_preferences'] ?? '');
         $this->meetingPreferences = (string) ($profileData['meeting_preferences'] ?? '');
@@ -457,6 +496,46 @@ final class PetProfileForm extends Form
             'sex' => (string) $validated['sex'],
             'reproductive_status' => (string) $validated['reproductiveStatus'],
         ];
+    }
+
+    /** @return array<string, list<mixed>> */
+    private function appearanceRules(): array
+    {
+        return [
+            'appearancePrimaryColor' => ['nullable', Rule::enum(PetAppearanceColor::class)],
+            'appearanceAdditionalColors' => ['array', 'max:4'],
+            'appearanceAdditionalColors.*' => [
+                'string',
+                'distinct:strict',
+                Rule::enum(PetAppearanceColor::class),
+            ],
+            'appearancePatterns' => ['array', 'max:3'],
+            'appearancePatterns.*' => [
+                'string',
+                'distinct:strict',
+                Rule::enum(PetAppearancePattern::class),
+            ],
+            'appearanceColorDetails' => ['nullable', 'string', 'max:1000'],
+            'appearanceFeatherColorDetails' => ['nullable', 'string', 'max:1000'],
+            'appearanceScaleColorDetails' => ['nullable', 'string', 'max:1000'],
+            'appearanceSeasonalColorChanges' => ['nullable', 'string', 'max:1000'],
+        ];
+    }
+
+    /** @return list<string> */
+    private function stringList(mixed $values): array
+    {
+        if (! is_array($values)) {
+            return [];
+        }
+
+        return array_values(array_filter($values, 'is_string'));
+    }
+
+    /** @param array<string, mixed> $appearance */
+    private function profileText(array $appearance, string $key): string
+    {
+        return is_string($appearance[$key] ?? null) ? $appearance[$key] : '';
     }
 
     /** @param array<string, mixed> $validated @return array<string, mixed> */
