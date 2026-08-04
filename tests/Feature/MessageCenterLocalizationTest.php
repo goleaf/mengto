@@ -2,7 +2,10 @@
 
 declare(strict_types=1);
 
+use App\Services\MessageCatalog;
+use App\Services\MessageState;
 use App\View\Components\MessagingComposer;
+use App\View\Components\MessagingContext;
 use App\View\Components\MessagingMessage;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\File;
@@ -11,8 +14,16 @@ test('the message center system contract is complete in every supported locale',
     $english = Arr::dot(require lang_path('en/messaging.php'));
 
     expect($english)
-        ->toHaveCount(132)
+        ->toHaveCount(329)
         ->toHaveKeys([
+            'conversations.ari.purpose',
+            'context.controls.pin',
+            'context.safety.private_description',
+            'context.boundary.accessibility_value',
+            'feedback.conversation.notifications_set',
+            'feedback.notification_levels.important',
+            'feedback.send.image',
+            'feedback.call.ended',
             'composer.tools.image',
             'composer.schedule_help',
             'message.actions.report_default_body',
@@ -35,6 +46,137 @@ test('the message center system contract is complete in every supported locale',
         }
     }
 });
+
+test('conversation context renders localized metadata with stable action codes and canonical icons', function (
+    string $locale,
+): void {
+    $this->authenticatedUser->update(['locale' => $locale]);
+    app()->setLocale($locale);
+    $copy = require lang_path("{$locale}/messaging.php");
+    $catalog = app(MessageCatalog::class)->conversations();
+
+    expect(array_keys($catalog))->toBe([
+        'ari',
+        'family-care',
+        'vingis-walk',
+        'paws-vet',
+        'foster-adoption',
+        'lost-luna',
+        'trail-tails',
+        'luna-request',
+    ]);
+
+    foreach ($catalog as $key => $conversation) {
+        $translationKey = str_replace('-', '_', $key);
+
+        foreach (['purpose', 'avatar_alt', 'verified', 'presence', 'response', 'privacy', 'role'] as $field) {
+            expect($conversation[$field], "{$locale}:{$key}:{$field}")
+                ->toBe((string) data_get($copy, "conversations.{$translationKey}.{$field}"));
+        }
+    }
+
+    $response = $this->get(route('messages.index', ['conversation' => 'ari']))->assertOk();
+
+    foreach (Arr::flatten([
+        data_get($copy, 'context.label'),
+        data_get($copy, 'context.identity_note'),
+        data_get($copy, 'context.search_label'),
+        data_get($copy, 'context.search_placeholder'),
+        data_get($copy, 'context.controls_label'),
+        data_get($copy, 'context.members.title'),
+        data_get($copy, 'context.shared.title'),
+        Arr::only((array) data_get($copy, 'context.shared'), [
+            'pet_profiles',
+            'places',
+            'public_places',
+            'events',
+            'create_from_chat',
+            'files',
+            'scanned',
+        ]),
+        data_get($copy, 'context.safety.title'),
+        Arr::except((array) data_get($copy, 'context.safety'), [
+            'empty',
+            'unrestrict',
+            'unblock',
+        ]),
+        data_get($copy, 'context.boundary.title'),
+        Arr::except((array) data_get($copy, 'context.boundary'), ['status', 'unavailable']),
+    ]) as $value) {
+        $response->assertSee((string) $value);
+    }
+
+    $xpath = responseXPath($response);
+    $actions = [
+        'pin-conversation' => ['pin', (string) data_get($copy, 'context.controls.pin')],
+        'mute-conversation' => ['bell-off', (string) data_get($copy, 'context.controls.mute')],
+        'archive-conversation' => ['archive', (string) data_get($copy, 'context.controls.archive')],
+        'mark-conversation-unread' => ['mail', (string) data_get($copy, 'context.controls.unread')],
+        'restrict-conversation' => ['shield-minus', (string) data_get($copy, 'context.safety.restrict')],
+        'block-conversation' => ['ban', (string) data_get($copy, 'context.safety.block')],
+        'export-conversation' => ['download', (string) data_get($copy, 'context.safety.export')],
+    ];
+
+    expect($xpath->query('//*[@data-messaging-context]')->length)->toBe(1)
+        ->and($xpath->query('//*[@data-messaging-context-identity-note]//*[@data-ui-icon="user-round-check"]')->length)->toBe(1)
+        ->and($xpath->query('//*[@data-messaging-context]//form/input[@name="action"]')->length)->toBe(count($actions));
+
+    foreach ($actions as $action => [$icon, $label]) {
+        $response->assertSee($label);
+        expect($xpath->query(
+            "//*[@data-messaging-context]//form[input[@name='action' and @value='{$action}']]//*[@data-ui-icon='{$icon}']",
+        )->length, $action)->toBe(1);
+    }
+
+    $professional = $this->get(route('messages.index', ['conversation' => 'paws-vet']))->assertOk();
+    foreach (Arr::flatten([
+        data_get($copy, 'context.professional.title'),
+        data_get($copy, 'context.professional.status'),
+        data_get($copy, 'context.professional.assigned'),
+        data_get($copy, 'context.professional.hours'),
+        data_get($copy, 'context.professional.waiting_photo'),
+        data_get($copy, 'context.professional.working_hours'),
+        data_get($copy, 'context.professional.privacy'),
+    ]) as $value) {
+        $professional->assertSee((string) $value);
+    }
+    expect(responseXPath($professional)->query('//*[@data-messaging-context-professional]')->length)->toBe(1);
+
+    $poll = $this->get(route('messages.index', ['conversation' => 'vingis-walk']))->assertOk();
+    foreach (Arr::flatten(Arr::except((array) data_get($copy, 'context.poll'), ['empty'])) as $value) {
+        $poll->assertSee((string) $value);
+    }
+    expect(responseXPath($poll)->query('//*[@data-messaging-context-poll]//form/input[@name="poll_option"]')->length)->toBe(3);
+
+    $tasks = $this->get(route('messages.index', ['conversation' => 'family-care']))->assertOk();
+    foreach (['title', 'statuses.assigned', 'statuses.in_progress'] as $key) {
+        $tasks->assertSee((string) data_get($copy, "context.tasks.{$key}"));
+    }
+    expect(responseXPath($tasks)->query('//*[@data-messaging-context-tasks]//form/input[@name="task"]')->length)->toBe(2);
+
+    $component = new MessagingContext(
+        conversation: [
+            'pinned' => false,
+            'muted' => false,
+            'archived' => false,
+            'restricted' => false,
+            'blocked' => false,
+        ],
+        context: [],
+        members: [],
+        poll: null,
+        tasks: [],
+        professional: null,
+        activeFilter: 'all',
+        messageQuery: '',
+        coverage: [],
+    );
+
+    expect(array_column($component->controls, 'action'))->toBe(array_slice(array_keys($actions), 0, 4))
+        ->and(array_column($component->controls, 'icon'))->toBe(['pin', 'bell-off', 'archive', 'mail'])
+        ->and(array_column($component->safetyActions, 'action'))->toBe(array_slice(array_keys($actions), 4))
+        ->and(array_column($component->safetyActions, 'icon'))->toBe(['shield-minus', 'ban', 'download']);
+})->with(['lt', 'ru']);
 
 test('the message center renders localized folder inbox type and relative time copy', function (string $locale): void {
     $this->authenticatedUser->update(['locale' => $locale]);
@@ -235,6 +377,164 @@ test('a newly sent message keeps its stable sent status in the current locale', 
     )->length)->toBe(1);
 })->with(['lt', 'ru']);
 
+test('message mutations return localized domain feedback for every action family', function (
+    string $locale,
+): void {
+    $this->authenticatedUser->update(['locale' => $locale]);
+    $copy = require lang_path("{$locale}/messaging.php");
+    $assertFeedback = function (array $payload, string $key, ?string $expected = null) use ($copy): void {
+        $this->post(route('messages.actions'), [
+            'conversation' => 'ari',
+            ...$payload,
+        ])
+            ->assertRedirect()
+            ->assertSessionHas('feedback', $expected ?? (string) data_get($copy, $key));
+    };
+
+    $this->post(route('messages.actions'), [
+        'action' => 'send-message',
+        'conversation' => 'luna-request',
+        'message_type' => 'text',
+        'body' => 'Pending request boundary',
+    ])->assertSessionHasErrors([
+        'body' => (string) data_get($copy, 'feedback.errors.request_pending'),
+    ]);
+
+    $assertFeedback([
+        'action' => 'accept-message-request',
+        'conversation' => 'luna-request',
+    ], 'feedback.request.accepted');
+    $assertFeedback([
+        'action' => 'decline-message-request',
+        'conversation' => 'luna-request',
+    ], 'feedback.request.declined');
+
+    foreach ([
+        ['archive-conversation', 'feedback.conversation.archived'],
+        ['archive-conversation', 'feedback.conversation.restored'],
+        ['pin-conversation', 'feedback.conversation.pinned'],
+        ['pin-conversation', 'feedback.conversation.unpinned'],
+        ['mute-conversation', 'feedback.conversation.muted'],
+        ['mute-conversation', 'feedback.conversation.notifications_restored'],
+        ['mark-conversation-unread', 'feedback.conversation.marked_unread'],
+        ['restrict-conversation', 'feedback.conversation.restricted'],
+        ['restrict-conversation', 'feedback.conversation.restriction_removed'],
+        ['export-conversation', 'feedback.conversation.export_prepared'],
+    ] as [$action, $key]) {
+        $assertFeedback(['action' => $action], $key);
+    }
+
+    $assertFeedback(['action' => 'block-conversation'], 'feedback.conversation.blocked');
+    $this->post(route('messages.actions'), [
+        'action' => 'send-message',
+        'conversation' => 'ari',
+        'message_type' => 'text',
+        'body' => 'Blocked conversation boundary',
+    ])->assertSessionHasErrors([
+        'body' => (string) data_get($copy, 'feedback.errors.conversation_blocked'),
+    ]);
+    $assertFeedback(['action' => 'block-conversation'], 'feedback.conversation.unblocked');
+
+    $notificationLevel = (string) data_get($copy, 'feedback.notification_levels.important');
+    $assertFeedback(
+        ['action' => 'set-message-notifications', 'notification_level' => 'important'],
+        'feedback.conversation.notifications_set',
+        str_replace(':level', $notificationLevel, (string) data_get($copy, 'feedback.conversation.notifications_set')),
+    );
+
+    foreach ([
+        ['react-message', ['message' => 'ari-1', 'reaction' => 'care'], 'feedback.message.reaction_added'],
+        ['react-message', ['message' => 'ari-1', 'reaction' => 'care'], 'feedback.message.reaction_removed'],
+        ['pin-message', ['message' => 'ari-1'], 'feedback.message.pinned'],
+        ['pin-message', ['message' => 'ari-1'], 'feedback.message.unpinned'],
+        ['bookmark-message', ['message' => 'ari-1'], 'feedback.message.bookmarked'],
+        ['bookmark-message', ['message' => 'ari-1'], 'feedback.message.bookmark_removed'],
+        ['delete-message-self', ['message' => 'ari-1'], 'feedback.message.removed_self'],
+        ['delete-message-everyone', ['message' => 'ari-2'], 'feedback.message.removed_everyone'],
+        ['report-message', [
+            'message' => 'ari-3',
+            'report_reason' => 'personal-data',
+            'body' => 'Localized moderation feedback check',
+        ], 'feedback.message.reported'],
+    ] as [$action, $payload, $key]) {
+        $assertFeedback(['action' => $action, ...$payload], $key);
+    }
+
+    $assertFeedback([
+        'action' => 'vote-chat-poll',
+        'conversation' => 'vingis-walk',
+        'poll_option' => 'saturday-morning',
+    ], 'feedback.poll_recorded');
+    $assertFeedback([
+        'action' => 'update-chat-task',
+        'conversation' => 'family-care',
+        'task' => 'evening-walk',
+        'task_status' => 'completed',
+    ], 'feedback.task_updated');
+
+    foreach ([
+        ['audio', 'feedback.send.audio', 'Audio feedback contract'],
+        ['image', 'feedback.send.image', 'Image feedback contract'],
+        ['video', 'feedback.send.video', 'Video feedback contract'],
+        ['file', 'feedback.send.file', 'File feedback contract'],
+        ['pet', 'feedback.send.pet', 'Pet feedback contract'],
+        ['place', 'feedback.send.place', 'Place feedback contract'],
+        ['event', 'feedback.send.event', 'Event feedback contract'],
+        ['task', 'feedback.send.task', 'Task feedback contract'],
+    ] as [$type, $key, $body]) {
+        $assertFeedback([
+            'action' => 'send-message',
+            'message_type' => $type,
+            'body' => $body,
+        ], $key);
+    }
+    $assertFeedback([
+        'action' => 'send-message',
+        'message_type' => 'text',
+        'body' => 'Silent feedback contract',
+        'silent' => 'yes',
+    ], 'feedback.send.silent');
+    $assertFeedback([
+        'action' => 'send-message',
+        'message_type' => 'text',
+        'body' => 'Default feedback contract',
+    ], 'feedback.send.sent');
+
+    $localMessage = Arr::last(app(MessageState::class)->messages('ari'));
+    expect($localMessage)->toBeArray()->toHaveKey('id');
+    $assertFeedback([
+        'action' => 'edit-message',
+        'message' => (string) $localMessage['id'],
+        'body' => 'Edited local feedback contract',
+    ], 'feedback.message.updated');
+    $this->post(route('messages.actions'), [
+        'action' => 'edit-message',
+        'conversation' => 'ari',
+        'message' => 'ari-4',
+        'body' => 'Catalog messages remain immutable',
+    ])->assertSessionHasErrors([
+        'body' => (string) data_get($copy, 'feedback.errors.message_not_editable'),
+    ]);
+
+    $assertFeedback([
+        'action' => 'start-message-call',
+        'call_type' => 'video',
+        'recording_consent' => 'no',
+    ], 'feedback.call.preflight_opened');
+    foreach ([
+        ['join', 'feedback.call.connected'],
+        ['audio-only', 'feedback.call.audio_only'],
+        ['reconnect', 'feedback.call.reconnected'],
+        ['captions', 'feedback.call.control_updated'],
+    ] as [$control, $key]) {
+        $assertFeedback([
+            'action' => 'update-message-call',
+            'call_control' => $control,
+        ], $key);
+    }
+    $assertFeedback(['action' => 'end-message-call'], 'feedback.call.ended');
+})->with(['lt', 'ru']);
+
 test('message action chrome and structured message labels render in the current locale', function (
     string $locale,
 ): void {
@@ -380,6 +680,7 @@ test('message center source uses its domain and the browser rejects English syst
         resource_path('views/components/messaging-message-list.blade.php'),
         resource_path('views/components/messaging-composer.blade.php'),
         resource_path('views/components/messaging-message.blade.php'),
+        resource_path('views/components/messaging-context.blade.php'),
     ] as $path) {
         expect(File::get($path), $path)
             ->not->toContain("__('ui.", "__('messages.")
@@ -387,21 +688,35 @@ test('message center source uses its domain and the browser rejects English syst
     }
 
     $composer = File::get(app_path('View/Components/MessagingComposer.php'));
+    $context = File::get(app_path('View/Components/MessagingContext.php'));
     $message = File::get(app_path('View/Components/MessagingMessage.php'));
+    $action = File::get(app_path('Actions/PerformMessageAction.php'));
 
     expect($composer)
         ->toContain("__('messaging.composer.tools.")
         ->not->toContain("__('ui.", "__('messages.", 'Str::headline')
+        ->and($context)
+        ->toContain("__('messaging.context.controls.", "__('messaging.context.safety.")
+        ->not->toContain("__('ui.", "__('messages.", 'Str::headline')
         ->and($message)
         ->toContain("__('messaging.message.types.", "__('messaging.message.reactions.")
+        ->not->toContain("__('ui.", "__('messages.", 'Str::headline')
+        ->and($action)
+        ->toContain("__('messaging.feedback.")
         ->not->toContain("__('ui.", "__('messages.", 'Str::headline');
+
+    foreach (['ari', 'family_care', 'vingis_walk', 'paws_vet', 'foster_adoption', 'lost_luna', 'trail_tails', 'luna_request'] as $key) {
+        expect($catalog)->toContain("__('messaging.conversations.{$key}.purpose')");
+    }
 
     $browser = File::get(base_path('scripts/accessibility-browser-check.mjs'));
     expect($browser)->toContain(
         'englishMessagingCopy',
-        'messagingCopy.length === 87',
+        'messagingCopy.length === 127',
         "route.path === '/messages' && viewport.width < 832",
         "['delivered', 'read', 'delivered', 'delivered']",
+        'contextActionCodes',
+        "['pin', 'bell-off', 'archive', 'mail', 'shield-minus', 'ban', 'download']",
         'threadActionTitles',
         'messageListLabel',
         'English messaging system fallback remains.',

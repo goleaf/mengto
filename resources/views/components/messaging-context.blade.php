@@ -1,16 +1,4 @@
-@props([
-    'conversation',
-    'context',
-    'members',
-    'poll',
-    'tasks',
-    'professional',
-    'activeFilter',
-    'messageQuery',
-    'coverage',
-])
-
-<aside class="messaging-context" aria-label="{{ __('ui.conversation_information_df634b408e') }}">
+<aside class="messaging-context" aria-label="{{ __('messaging.context.label') }}" data-messaging-context>
     <section class="messaging-context__identity">
         <x-linked-media
             :href="$conversation['media_target']['url']"
@@ -21,28 +9,27 @@
         </x-linked-media>
         <div>
             <h2>{{ $conversation['name'] }}</h2>
-            <p>{{ $conversation['purpose'] }}</p>
-            <span><x-ui-icon name="shield-check" size="sm" /> {{ $conversation['privacy'] }}</span>
+            <p data-messaging-context-purpose>{{ $conversation['purpose'] }}</p>
+            <span data-messaging-context-privacy><x-ui-icon name="shield-check" size="sm" /> {{ $conversation['privacy'] }}</span>
         </div>
     </section>
+    <p class="messaging-context__identity-note" data-messaging-context-identity-note>
+        <x-ui-icon name="user-round-check" size="sm" />
+        <span>{{ $context['identity_note'] }}</span>
+    </p>
 
     <form method="GET" action="{{ route('messages.index') }}" class="messaging-context__search">
         <input type="hidden" name="conversation" value="{{ $conversation['key'] }}">
         <input type="hidden" name="filter" value="{{ $activeFilter }}">
-        <label for="message-history-search">{{ __('ui.search_this_dialog_ce86abd45e') }}</label>
+        <label for="message-history-search">{{ __('messaging.context.search_label') }}</label>
         <div>
             <x-ui-icon name="search" size="sm" />
-            <input id="message-history-search" type="search" name="message_q" value="{{ $messageQuery }}" placeholder="{{ __('ui.text_sender_transcript_0b449170d2') }}">
+            <input id="message-history-search" type="search" name="message_q" value="{{ $messageQuery }}" placeholder="{{ __('messaging.context.search_placeholder') }}">
         </div>
     </form>
 
-    <div class="messaging-context__actions" aria-label="{{ __('ui.conversation_controls_5d0a3948ed') }}">
-        @foreach ([
-            ['action' => 'pin-conversation', 'icon' => 'pin', 'label' => $conversation['pinned'] ? __('ui.unpin_ee3c716130') : __('ui.pin_ff1cee7441')],
-            ['action' => 'mute-conversation', 'icon' => $conversation['muted'] ? 'bell' : 'bell-off', 'label' => $conversation['muted'] ? __('ui.unmute_ce4ee4efc5') : __('ui.mute_8dd6857baf')],
-            ['action' => 'archive-conversation', 'icon' => 'archive', 'label' => $conversation['archived'] ? __('ui.restore_a76e13b983') : __('ui.archive_66f4804ee2')],
-            ['action' => 'mark-conversation-unread', 'icon' => 'mail', 'label' => __('ui.unread_1b9f384c14')],
-        ] as $control)
+    <div class="messaging-context__actions" aria-label="{{ __('messaging.context.controls_label') }}" data-messaging-context-controls>
+        @forelse ($controls as $control)
             <form method="POST" action="{{ route('messages.actions') }}">
                 @csrf
                 <input type="hidden" name="action" value="{{ $control['action'] }}">
@@ -53,24 +40,26 @@
                     <span>{{ $control['label'] }}</span>
                 </button>
             </form>
-        @endforeach
+        @empty
+            <span>{{ __('messaging.context.boundary.unavailable') }}</span>
+        @endforelse
     </div>
 
     @if ($professional)
-        <section class="messaging-context__section">
-            <header><x-ui-icon name="briefcase-medical" size="sm" /><h3>{{ __('ui.professional_case_422c23181c') }}</h3></header>
+        <section class="messaging-context__section" data-messaging-context-professional>
+            <header><x-ui-icon name="briefcase-medical" size="sm" /><h3>{{ __('messaging.context.professional.title') }}</h3></header>
             <dl>
-                <div><dt>{{ __('ui.status_920e413c7d') }}</dt><dd>{{ $professional['status'] }}</dd></div>
-                <div><dt>{{ __('ui.assigned_8191888dd9') }}</dt><dd>{{ $professional['assigned'] }}</dd></div>
-                <div><dt>{{ __('ui.hours_21e8492938') }}</dt><dd>{{ $professional['hours'] }}</dd></div>
+                <div><dt>{{ __('messaging.context.professional.status') }}</dt><dd>{{ $professional['status'] }}</dd></div>
+                <div><dt>{{ __('messaging.context.professional.assigned') }}</dt><dd>{{ $professional['assigned'] }}</dd></div>
+                <div><dt>{{ __('messaging.context.professional.hours') }}</dt><dd>{{ $professional['hours'] }}</dd></div>
             </dl>
             <p>{{ $professional['privacy'] }}</p>
         </section>
     @endif
 
     @if ($poll)
-        <section class="messaging-context__section">
-            <header><x-ui-icon name="list-checks" size="sm" /><h3>{{ __('ui.group_poll_a5105be25a') }}</h3></header>
+        <section class="messaging-context__section" data-messaging-context-poll>
+            <header><x-ui-icon name="list-checks" size="sm" /><h3>{{ __('messaging.context.poll.title') }}</h3></header>
             <p>{{ $poll['question'] }}</p>
             <div class="messaging-poll">
                 @forelse ($poll['options'] as $option)
@@ -85,15 +74,15 @@
                         </button>
                     </form>
                 @empty
-                    <span>{{ __('ui.no_active_poll_166acb5b2c') }}</span>
+                    <span>{{ __('messaging.context.poll.empty') }}</span>
                 @endforelse
             </div>
         </section>
     @endif
 
     @if ($tasks !== [])
-        <section class="messaging-context__section">
-            <header><x-ui-icon name="list-todo" size="sm" /><h3>{{ __('ui.shared_tasks_d8ed38476f') }}</h3></header>
+        <section class="messaging-context__section" data-messaging-context-tasks>
+            <header><x-ui-icon name="list-todo" size="sm" /><h3>{{ __('messaging.context.tasks.title') }}</h3></header>
             <div class="messaging-tasks">
                 @forelse ($tasks as $task)
                     <form method="POST" action="{{ route('messages.actions') }}">
@@ -104,7 +93,7 @@
                         <input type="hidden" name="task_status" value="completed">
                         <button type="submit">
                             @if ($task['status'] === 'completed')
-                                <x-ui-icon name="circle-check-big" size="sm" label="{{ __('ui.completed_22a970d2e5') }}" />
+                                <x-ui-icon name="circle-check-big" size="sm" label="{{ __('messaging.context.tasks.completed') }}" />
                             @else
                                 <x-ui-icon name="circle" size="sm" label="{{ $task['status_label'] }}" />
                             @endif
@@ -112,14 +101,14 @@
                         </button>
                     </form>
                 @empty
-                    <span>{{ __('ui.no_shared_tasks_1973f60923') }}</span>
+                    <span>{{ __('messaging.context.tasks.empty') }}</span>
                 @endforelse
             </div>
         </section>
     @endif
 
-    <details class="messaging-context__section" open>
-        <summary><x-ui-icon name="users-round" size="sm" /><strong>{{ __('ui.members_1044a4c056') }}</strong><span>{{ $conversation['members'] }}</span></summary>
+    <details class="messaging-context__section" open data-messaging-context-members>
+        <summary><x-ui-icon name="users-round" size="sm" /><strong>{{ __('messaging.context.members.title') }}</strong><span>{{ $conversation['members'] }}</span></summary>
         <div class="messaging-members">
             @forelse ($members as $member)
                 <div>
@@ -127,13 +116,13 @@
                     <p><strong>{{ $member['name'] }}</strong><small>{{ $member['role'] }} · {{ $member['pet'] }}</small></p>
                 </div>
             @empty
-                <p>{{ __('ui.member_list_is_hidden_1ac12fc8f4') }}</p>
+                <p>{{ __('messaging.context.members.empty') }}</p>
             @endforelse
         </div>
     </details>
 
-    <details class="messaging-context__section">
-        <summary><x-ui-icon name="folders" size="sm" /><strong>{{ __('ui.shared_content_c42aceea28') }}</strong></summary>
+    <details class="messaging-context__section" data-messaging-context-shared>
+        <summary><x-ui-icon name="folders" size="sm" /><strong>{{ __('messaging.context.shared.title') }}</strong></summary>
         <div class="messaging-shared-grid">
             @forelse ($context['shared_cards'] as $card)
                 <button type="button">
@@ -141,13 +130,13 @@
                     <span><strong>{{ $card['label'] }}</strong><small>{{ $card['value'] }}</small></span>
                 </button>
             @empty
-                <p>{{ __('ui.no_shared_content_17da1ee21d') }}</p>
+                <p>{{ __('messaging.context.shared.empty') }}</p>
             @endforelse
         </div>
     </details>
 
-    <details class="messaging-context__section">
-        <summary><x-ui-icon name="shield-alert" size="sm" /><strong>{{ __('ui.safety_and_privacy_87d672f087') }}</strong></summary>
+    <details class="messaging-context__section" data-messaging-context-safety>
+        <summary><x-ui-icon name="shield-alert" size="sm" /><strong>{{ __('messaging.context.safety.title') }}</strong></summary>
         <div class="messaging-safety">
             @forelse ($context['safety'] as $item)
                 <div>
@@ -155,33 +144,31 @@
                     <p><strong>{{ $item['title'] }}</strong><span>{{ $item['description'] }}</span></p>
                 </div>
             @empty
-                <p>{{ __('ui.safety_guidance_unavailable_71dcc6b999') }}</p>
+                <p>{{ __('messaging.context.safety.empty') }}</p>
             @endforelse
         </div>
 
         <div class="messaging-danger-actions">
-            @foreach ([
-                ['action' => 'restrict-conversation', 'label' => $conversation['restricted'] ? __('ui.remove_restriction_8c3017834e') : __('ui.restrict_26f2f6e68e'), 'icon' => 'shield-minus'],
-                ['action' => 'block-conversation', 'label' => $conversation['blocked'] ? __('ui.unblock_712da63171') : __('ui.block_211d0bb8cf'), 'icon' => 'ban'],
-                ['action' => 'export-conversation', 'label' => __('ui.export_my_data_fddb7f9c69'), 'icon' => 'download'],
-            ] as $safetyAction)
+            @forelse ($safetyActions as $safetyAction)
                 <form method="POST" action="{{ route('messages.actions') }}">
                     @csrf
                     <input type="hidden" name="action" value="{{ $safetyAction['action'] }}">
                     <input type="hidden" name="conversation" value="{{ $conversation['key'] }}">
                     <button type="submit"><x-ui-icon size="sm" :name="$safetyAction['icon']" /> {{ $safetyAction['label'] }}</button>
                 </form>
-            @endforeach
+            @empty
+                <span>{{ __('messaging.context.boundary.unavailable') }}</span>
+            @endforelse
         </div>
     </details>
 
-    <details class="messaging-context__section messaging-context__section--boundary">
-        <summary><x-ui-icon name="layers-3" size="sm" /><strong>{{ __('ui.delivery_boundary_715f18a1dd') }}</strong></summary>
+    <details class="messaging-context__section messaging-context__section--boundary" data-messaging-context-boundary>
+        <summary><x-ui-icon name="layers-3" size="sm" /><strong>{{ __('messaging.context.boundary.title') }}</strong></summary>
         <dl>
             @forelse ($coverage as $item)
                 <div><dt>{{ $item['label'] }}</dt><dd>{{ $item['value'] }}</dd></div>
             @empty
-                <div><dt>{{ __('ui.status_920e413c7d') }}</dt><dd>{{ __('ui.unavailable_ca18449697') }}</dd></div>
+                <div><dt>{{ __('messaging.context.boundary.status') }}</dt><dd>{{ __('messaging.context.boundary.unavailable') }}</dd></div>
             @endforelse
         </dl>
     </details>

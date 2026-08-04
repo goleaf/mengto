@@ -726,6 +726,7 @@ try {
                     const messagingMessages = [...document.querySelectorAll('[data-messaging-message]')];
                     const firstMessagingMessage = messagingMessages[0];
                     const messagingThreadRegion = document.querySelector('.messaging-thread');
+                    const messagingContext = document.querySelector('[data-messaging-context]');
                     const placeSummary = document.querySelector('[data-section="places-summary"]');
                     const placeSearch = document.querySelector('.place-search');
                     const placeControls = document.querySelector('[data-place-controls]');
@@ -1318,6 +1319,61 @@ try {
                             ) ?? [])].map((element) => element.textContent.trim()),
                             audioActionLabel: messagingMessageList?.querySelector('[data-audio-toggle]')
                                 ?.getAttribute('aria-label') ?? null,
+                            contextLabel: messagingContext?.getAttribute('aria-label') ?? null,
+                            contextPurpose: messagingContext?.querySelector('[data-messaging-context-purpose]')
+                                ?.textContent.trim() ?? null,
+                            contextPrivacy: messagingContext?.querySelector('[data-messaging-context-privacy]')
+                                ?.textContent.trim() ?? null,
+                            contextIdentityNote: messagingContext?.querySelector('[data-messaging-context-identity-note]')
+                                ?.textContent.trim() ?? null,
+                            contextSearchLabel: messagingContext?.querySelector('label[for="message-history-search"]')
+                                ?.textContent.trim() ?? null,
+                            contextSearchPlaceholder: messagingContext?.querySelector('#message-history-search')
+                                ?.getAttribute('placeholder') ?? null,
+                            contextControlsLabel: messagingContext?.querySelector('[data-messaging-context-controls]')
+                                ?.getAttribute('aria-label') ?? null,
+                            contextControlLabels: [...(messagingContext?.querySelectorAll(
+                                '[data-messaging-context-controls] button span'
+                            ) ?? [])].map((element) => element.textContent.trim()),
+                            contextMembersTitle: messagingContext?.querySelector(
+                                '[data-messaging-context-members] summary strong'
+                            )?.textContent.trim() ?? null,
+                            contextSharedTitle: messagingContext?.querySelector(
+                                '[data-messaging-context-shared] summary strong'
+                            )?.textContent.trim() ?? null,
+                            contextSharedLabels: [...(messagingContext?.querySelectorAll(
+                                '[data-messaging-context-shared] .messaging-shared-grid strong'
+                            ) ?? [])].map((element) => element.textContent.trim()),
+                            contextSharedValues: [...(messagingContext?.querySelectorAll(
+                                '[data-messaging-context-shared] .messaging-shared-grid small'
+                            ) ?? [])].map((element) => element.textContent.trim()),
+                            contextSafetyTitle: messagingContext?.querySelector(
+                                '[data-messaging-context-safety] summary strong'
+                            )?.textContent.trim() ?? null,
+                            contextSafetyTitles: [...(messagingContext?.querySelectorAll(
+                                '[data-messaging-context-safety] .messaging-safety strong'
+                            ) ?? [])].map((element) => element.textContent.trim()),
+                            contextSafetyDescriptions: [...(messagingContext?.querySelectorAll(
+                                '[data-messaging-context-safety] .messaging-safety p span'
+                            ) ?? [])].map((element) => element.textContent.trim()),
+                            contextSafetyActionLabels: [...(messagingContext?.querySelectorAll(
+                                '[data-messaging-context-safety] .messaging-danger-actions button'
+                            ) ?? [])].map((element) => element.textContent.trim()),
+                            contextBoundaryTitle: messagingContext?.querySelector(
+                                '[data-messaging-context-boundary] summary strong'
+                            )?.textContent.trim() ?? null,
+                            contextBoundaryLabels: [...(messagingContext?.querySelectorAll(
+                                '[data-messaging-context-boundary] dt'
+                            ) ?? [])].map((element) => element.textContent.trim()),
+                            contextBoundaryValues: [...(messagingContext?.querySelectorAll(
+                                '[data-messaging-context-boundary] dd'
+                            ) ?? [])].map((element) => element.textContent.trim()),
+                            contextActionCodes: [...(messagingContext?.querySelectorAll(
+                                'form input[name="action"]'
+                            ) ?? [])].map((element) => element.value),
+                            contextActionIcons: [...(messagingContext?.querySelectorAll(
+                                'form:has(input[name="action"]) [data-ui-icon]'
+                            ) ?? [])].map((element) => element.getAttribute('data-ui-icon')),
                         },
                         messagingLayout: {
                             clippedFolderLabels: [...(messagingFolders?.querySelectorAll(
@@ -1332,6 +1388,9 @@ try {
                                     'input:not([type="hidden"]), button'
                                 ) ?? []),
                                 ...(messagingThreadRegion?.querySelectorAll(
+                                    'a, button, input:not([type="hidden"]), select, summary, textarea'
+                                ) ?? []),
+                                ...(messagingContext?.querySelectorAll(
                                     'a, button, input:not([type="hidden"]), select, summary, textarea'
                                 ) ?? []),
                             ]].filter(visible).map((element) => {
@@ -1844,10 +1903,29 @@ try {
                         behavior.messagingCopy.messageActionsLabel,
                         ...behavior.messagingCopy.messageActionLabels,
                         behavior.messagingCopy.audioActionLabel,
+                        behavior.messagingCopy.contextLabel,
+                        behavior.messagingCopy.contextPurpose,
+                        behavior.messagingCopy.contextPrivacy,
+                        behavior.messagingCopy.contextIdentityNote,
+                        behavior.messagingCopy.contextSearchLabel,
+                        behavior.messagingCopy.contextSearchPlaceholder,
+                        behavior.messagingCopy.contextControlsLabel,
+                        ...behavior.messagingCopy.contextControlLabels,
+                        behavior.messagingCopy.contextMembersTitle,
+                        behavior.messagingCopy.contextSharedTitle,
+                        ...behavior.messagingCopy.contextSharedLabels,
+                        ...behavior.messagingCopy.contextSharedValues,
+                        behavior.messagingCopy.contextSafetyTitle,
+                        ...behavior.messagingCopy.contextSafetyTitles,
+                        ...behavior.messagingCopy.contextSafetyDescriptions,
+                        ...behavior.messagingCopy.contextSafetyActionLabels,
+                        behavior.messagingCopy.contextBoundaryTitle,
+                        ...behavior.messagingCopy.contextBoundaryLabels,
+                        ...behavior.messagingCopy.contextBoundaryValues,
                     ];
 
                     assert(
-                        messagingCopy.length === 87
+                        messagingCopy.length === 127
                             && messagingCopy.every((value) => value?.length > 0),
                         `${label}: the messaging localization surface is incomplete ${JSON.stringify(behavior.messagingCopy)}.`,
                     );
@@ -1855,6 +1933,24 @@ try {
                         JSON.stringify(behavior.messagingCopy.messageStatusCodes)
                             === JSON.stringify(['delivered', 'read', 'delivered', 'delivered']),
                         `${label}: messaging delivery codes drifted ${JSON.stringify(behavior.messagingCopy.messageStatusCodes)}.`,
+                    );
+                    assert(
+                        JSON.stringify(behavior.messagingCopy.contextActionCodes)
+                            === JSON.stringify([
+                                'pin-conversation',
+                                'mute-conversation',
+                                'archive-conversation',
+                                'mark-conversation-unread',
+                                'restrict-conversation',
+                                'block-conversation',
+                                'export-conversation',
+                            ]),
+                        `${label}: messaging context action codes drifted ${JSON.stringify(behavior.messagingCopy.contextActionCodes)}.`,
+                    );
+                    assert(
+                        JSON.stringify(behavior.messagingCopy.contextActionIcons)
+                            === JSON.stringify(['pin', 'bell-off', 'archive', 'mail', 'shield-minus', 'ban', 'download']),
+                        `${label}: messaging context icons drifted ${JSON.stringify(behavior.messagingCopy.contextActionIcons)}.`,
                     );
                     assert(
                         behavior.messagingLayout.clippedFolderLabels.length === 0,

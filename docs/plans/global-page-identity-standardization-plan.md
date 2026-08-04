@@ -598,6 +598,41 @@ forum-source checks, deterministic 38,377-requirement generation, and PHP
 localizer also passed. This presentation package adds no Eloquent query, schema,
 route, persistence, or authorization change.
 
+The fourteenth non-header localization follow-up completes the `/messages`
+conversation metadata, right context rail, and action-result feedback. The
+dedicated EN/LT/RU contract grows from 132 to 329 exact-parity leaves: 56 own
+the seven system metadata fields for all eight stable conversations, 87 own
+the context identity, search, controls, professional case, poll, tasks,
+members, shared content, safety, and delivery boundary, and 54 own every
+request, conversation, send, message, poll, task, notification-level, and call
+feedback result or error. Accountable people, pet names, and member-authored
+message content remain verbatim. Stable conversation, action, message,
+notification, poll, task, and call codes remain locale-independent.
+
+`MessagingContext` prepares the fixed action/icon/label maps outside Blade,
+while `MessageCatalog`, `MessagePresenter`, and `PerformMessageAction` resolve
+all system copy through the messaging domain. The browser ratchet now compares
+127 rendered messaging fields with the English baseline and separately guards
+the seven context action codes and canonical Lucide icons. Its first expanded
+run exposed 40-pixel search input, 32-pixel disclosure summaries, and 36-pixel
+safety actions; search, summary, safety, poll, task, and shared-content targets
+now retain at least 44 pixels.
+
+The repeated matrix passed 91 route/viewport audits and 26 screenshots across
+320-1920 pixels, EN/RU/LT, forced colors, reduced motion, and effective 200%
+zoom with zero English system fallbacks, raw keys, clipped folder labels,
+undersized messaging controls, or console errors. The focused contract passed
+21 tests with 3,007 assertions; the affected slices passed 133 tests with
+4,233 assertions; and the complete sequential suite passed 2,964 tests with
+101,228 assertions. Full Pint and Larastan passed with zero findings. Composer
+strict validation, locked audit, PHP 8.5 platform requirements, NPM audit,
+production Vite build, and config/event/route/view cache compilation passed.
+Fresh disposable SQLite applied 137 migrations, retained 218 tables and five
+users across repeated seeding; the 180-route smoke, both forum-source checks,
+deterministic 38,377-requirement generation, PHP localizer, and 851-call
+canonical icon audit also passed. The package adds no Eloquent query, schema,
+route, or authorization change; it localizes existing authorized mutations.
+
 ### 3.3 Next Execution Checkpoint
 
 1. Complete Package 0 by assigning the stable requirement ID and recording the
@@ -614,11 +649,12 @@ route, persistence, or authorization change.
    the `/groups`, `/neighbors`, and `/messages` system directories are
    browser-verified. Group detail system chrome and first-party fixture content
    are verified across all eight tabs, and the message directory, top-level
-   thread, composer, and per-message action chrome are verified across default,
-   request, professional, channel, declined, and empty-message states. Genuine
-   future member-authored content, action-result feedback, the context rail,
-   call stage, details screen, and the other priority bodies remain open. Do not
-   conflate body-copy completion with the verified page-identity contract.
+   thread, composer, per-message action chrome, conversation metadata, context
+   rail, and action-result feedback are verified across default, request,
+   professional, channel, poll, task, declined, and empty-message states.
+   Genuine future member-authored content, the call stage, details screen, and
+   the other priority bodies remain open. Do not conflate body-copy completion
+   with the verified page-identity contract.
 
 ## 4. Scope
 

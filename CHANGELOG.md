@@ -18,6 +18,12 @@
 
 ### Interface System
 
+- Extended the dedicated `/messages` EN/LT/RU system contract from 132 to 329
+  leaves for all eight conversation metadata sets, the complete right context
+  rail, and every mutation/error feedback family; replaced locale-dependent
+  notification headlines with stable localized levels, added a canonical
+  sender-identity icon, and raised every context search, disclosure, safety,
+  poll, task, and shared-content target to at least 44 pixels.
 - Extended the dedicated `/messages` EN/LT/RU system contract from 61 to 132
   leaves for the composer, attachment tools, message types, reactions, audio
   controls, per-message actions, and sent/read/delivered states; kept eight

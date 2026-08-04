@@ -92,7 +92,7 @@ final class MessagePresenter
                     'initial' => Str::substr((string) $member['name'], 0, 1),
                 ],
                 $this->catalog->members()[$selectedKey] ?? [
-                    ['name' => __('messages.mia_carter_0e5b29cc3b'), 'role' => __('messages.owner_4b1b8aa360'), 'pet' => implode(', ', $selected['pet_names'])],
+                    ['name' => __('messages.mia_carter_0e5b29cc3b'), 'role' => __('messaging.context.roles.owner'), 'pet' => implode(', ', $selected['pet_names'])],
                     ['name' => $selected['name'], 'role' => $selected['role'], 'pet' => $selected['pet']],
                 ],
             ),
@@ -262,24 +262,24 @@ final class MessagePresenter
     private function context(array $conversation): array
     {
         return [
-            'identity_note' => __('messages.messages_are_always_sent_by_a_person_pet_profiles_only_p_0956a55d9e'),
+            'identity_note' => __('messaging.context.identity_note'),
             'linked_pets' => $conversation['pet_names'],
             'shared_cards' => [
                 [
                     'icon' => 'paw-print',
-                    'label' => __('messages.pet_profiles_6d3a4fd8d3'),
-                    'value' => trans_choice('presentation.linked_count', count($conversation['pet_names']), [
+                    'label' => __('messaging.context.shared.pet_profiles'),
+                    'value' => trans_choice('messaging.context.shared.linked_count', count($conversation['pet_names']), [
                         'count' => count($conversation['pet_names']),
                     ]),
                 ],
-                ['icon' => 'map-pinned', 'label' => __('messages.places_eb5cfb7367'), 'value' => $conversation['type'] === 'event' ? __('messages.1_private_point_a6bf2bc8ef') : __('messages.public_places_only_4c3f5db83b')],
-                ['icon' => 'calendar-days', 'label' => __('messages.events_8d14f6e72d'), 'value' => in_array($conversation['type'], ['event', 'search'], true) ? __('messages.1_active_82e489fddb') : __('messages.create_from_chat_676cd19bbf')],
-                ['icon' => 'files', 'label' => __('messages.files_abc7e98928'), 'value' => $conversation['professional'] ? __('messages.time_limited_access_d0477c64cf') : __('messages.scanned_before_access_b8816f1cac')],
+                ['icon' => 'map-pinned', 'label' => __('messaging.context.shared.places'), 'value' => $conversation['type'] === 'event' ? __('messaging.context.shared.private_point') : __('messaging.context.shared.public_places')],
+                ['icon' => 'calendar-days', 'label' => __('messaging.context.shared.events'), 'value' => in_array($conversation['type'], ['event', 'search'], true) ? __('messaging.context.shared.active_event') : __('messaging.context.shared.create_from_chat')],
+                ['icon' => 'files', 'label' => __('messaging.context.shared.files'), 'value' => $conversation['professional'] ? __('messaging.context.shared.time_limited') : __('messaging.context.shared.scanned')],
             ],
             'safety' => [
-                ['icon' => 'shield-check', 'title' => __('messages.private_by_default_f52e06762e'), 'description' => __('messages.phone_email_home_address_exact_location_medical_history__000cb043e1')],
-                ['icon' => 'map-pin-off', 'title' => __('messages.location_expires_b719177905'), 'description' => __('messages.temporary_location_sharing_requires_chosen_recipients_an_0aa88fb3cd')],
-                ['icon' => 'triangle-alert', 'title' => __('messages.report_with_context_42f5adb71a'), 'description' => __('messages.a_report_can_include_selected_messages_media_a_call_or_t_39bc694fe4')],
+                ['icon' => 'shield-check', 'title' => __('messaging.context.safety.private_title'), 'description' => __('messaging.context.safety.private_description')],
+                ['icon' => 'map-pin-off', 'title' => __('messaging.context.safety.location_title'), 'description' => __('messaging.context.safety.location_description')],
+                ['icon' => 'triangle-alert', 'title' => __('messaging.context.safety.report_title'), 'description' => __('messaging.context.safety.report_description')],
             ],
             'media_sections' => [
                 ['label' => __('messages.photos_5e3147ab51'), 'count' => 2],
@@ -302,12 +302,12 @@ final class MessagePresenter
 
         return [
             'case' => $conversation['handle'],
-            'status' => $conversation['key'] === 'paws-vet' ? __('messages.waiting_for_client_photo_0bc37e1318') : __('messages.visit_scheduled_63d6c02ec9'),
-            'hours' => __('messages.mon_sat_08_00_20_00_3d4b4879fc'),
-            'assigned' => $conversation['key'] === 'paws-vet' ? __('messages.dr_emilia_vaitke_a0f21f8b96') : __('messages.adoption_team_9b86634596'),
-            'queue' => __('messages.assigned_no_advertising_consent_4dd184f146'),
-            'privacy' => __('messages.internal_notes_are_visually_separate_and_never_rendered__407a8b56ec'),
-            'urgent' => __('messages.if_life_may_be_at_risk_do_not_wait_for_a_chat_or_video_c_373ae0bc7e'),
+            'status' => $conversation['key'] === 'paws-vet' ? __('messaging.context.professional.waiting_photo') : __('messaging.context.professional.visit_scheduled'),
+            'hours' => __('messaging.context.professional.working_hours'),
+            'assigned' => $conversation['key'] === 'paws-vet' ? __('messages.dr_emilia_vaitke_a0f21f8b96') : __('messaging.context.professional.adoption_team'),
+            'queue' => __('messaging.context.professional.queue'),
+            'privacy' => __('messaging.context.professional.privacy'),
+            'urgent' => __('messaging.context.professional.urgent'),
         ];
     }
 
@@ -321,12 +321,12 @@ final class MessagePresenter
         }
 
         return [
-            'question' => __('messages.when_should_the_next_calm_walk_start_2807110e76'),
+            'question' => __('messaging.context.poll.question'),
             'selected' => $this->state->pollSelection($conversation),
             'options' => [
-                ['key' => 'saturday-morning', 'label' => __('messages.saturday_morning_9c8d80b4eb'), 'votes' => 6],
-                ['key' => 'saturday-evening', 'label' => __('messages.saturday_evening_58938b1a0b'), 'votes' => 3],
-                ['key' => 'sunday-morning', 'label' => __('messages.sunday_morning_d0cc9cb260'), 'votes' => 4],
+                ['key' => 'saturday-morning', 'label' => __('messaging.context.poll.saturday_morning'), 'votes' => 6],
+                ['key' => 'saturday-evening', 'label' => __('messaging.context.poll.saturday_evening'), 'votes' => 3],
+                ['key' => 'sunday-morning', 'label' => __('messaging.context.poll.sunday_morning'), 'votes' => 4],
             ],
         ];
     }
@@ -360,7 +360,12 @@ final class MessagePresenter
             return [
                 ...$task,
                 'status' => $status,
-                'status_label' => Str::headline($status),
+                'status_label' => match ($status) {
+                    'assigned' => __('messaging.context.tasks.statuses.assigned'),
+                    'in-progress' => __('messaging.context.tasks.statuses.in_progress'),
+                    'completed' => __('messaging.context.tasks.statuses.completed'),
+                    default => __('messaging.context.tasks.statuses.skipped'),
+                },
             ];
         }, $tasks);
     }
@@ -371,10 +376,10 @@ final class MessagePresenter
     private function coverage(): array
     {
         return [
-            ['label' => __('messages.available_now_2a4729fa76'), 'value' => __('messages.personal_requests_rich_messages_group_event_family_profe_c82506fb3d')],
-            ['label' => __('messages.provider_boundary_18eba0c102'), 'value' => __('messages.realtime_webrtc_transport_media_storage_malware_scanning_12fbdb85a3')],
-            ['label' => __('messages.privacy_baseline_51c53e36f3'), 'value' => __('messages.people_remain_accountable_senders_linked_pets_never_reve_6fc5efbaeb')],
-            ['label' => __('messages.accessibility_d3368cbffe'), 'value' => __('messages.keyboard_controls_text_statuses_captions_transcripts_sur_857da2cf45')],
+            ['label' => __('messaging.context.boundary.available_label'), 'value' => __('messaging.context.boundary.available_value')],
+            ['label' => __('messaging.context.boundary.provider_label'), 'value' => __('messaging.context.boundary.provider_value')],
+            ['label' => __('messaging.context.boundary.privacy_label'), 'value' => __('messaging.context.boundary.privacy_value')],
+            ['label' => __('messaging.context.boundary.accessibility_label'), 'value' => __('messaging.context.boundary.accessibility_value')],
         ];
     }
 

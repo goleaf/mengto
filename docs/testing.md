@@ -1153,3 +1153,32 @@ Observed package evidence on 2026-08-04:
 
 The reusable browser command is
 `BROWSER_BASE_URL=http://127.0.0.1:PORT BROWSER_ALLOW_DATA_MUTATION=1 node scripts/pet-workspace-browser-check.mjs --covering`.
+
+## Messaging Context And Feedback Verification
+
+`MessageCenterLocalizationTest` guards exact EN/LT/RU key parity, all eight
+stable conversation metadata projections, the class-based context action/icon
+maps, professional, poll, task, shared, safety, and boundary rendering, every
+mutation feedback family, immutable catalogue-message editing, request/block
+send boundaries, notification levels, and sent/read/delivered codes.
+
+Observed package evidence on 2026-08-04:
+
+- focused suite: 21 tests and 3,007 assertions;
+- affected messaging, authentication, responsive, linked-media, and
+  page-identity slices: 133 tests and 4,233 assertions;
+- complete sequential repository suite: 2,964 tests and 101,228 assertions in
+  189.477 seconds with a 1 GB PHP limit;
+- the page-identity browser matrix passed 91 audits and 26 screenshots across
+  320-1920 pixels, EN/RU/LT, forced colors, reduced motion, and effective 200%
+  zoom with zero console errors or undersized messaging controls;
+- full Pint and Larastan, Composer strict validation, locked audit, PHP
+  platform requirements, npm audit, Vite build, JavaScript syntax, and
+  config/event/route/view cache gates passed;
+- fresh disposable SQLite applied 137 migrations, retained 218 tables and five
+  users, and passed repeated complete seeding;
+- both forum-source checks, deterministic 38,377-requirement generation, the
+  PHP localizer, 180-route smoke, and 851-call canonical icon audit passed.
+
+The reusable browser command is
+`BROWSER_BASE_URL=http://127.0.0.1:PORT npm run test:browser:page-identity`.
