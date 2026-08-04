@@ -717,6 +717,9 @@ try {
                     const neighborCard = neighborCards[0];
                     const messagingFolders = document.querySelector('[data-messaging-folders]');
                     const messagingInbox = document.querySelector('[data-messaging-inbox]');
+                    const messagingThread = document.querySelector('[data-messaging-thread-header]');
+                    const messagingMessageList = document.querySelector('[data-messaging-message-list]');
+                    const messagingThreadRegion = document.querySelector('.messaging-thread');
                     const placeSummary = document.querySelector('[data-section="places-summary"]');
                     const placeSearch = document.querySelector('.place-search');
                     const placeControls = document.querySelector('[data-place-controls]');
@@ -1215,6 +1218,8 @@ try {
                         messagingCopy: {
                             actionLabel: header?.querySelector('.page-header__actions .action span')
                                 ?.textContent.trim() ?? null,
+                            metaLabel: header?.querySelector('.page-header__meta')
+                                ?.getAttribute('aria-label') ?? null,
                             foldersLabel: messagingFolders?.getAttribute('aria-label') ?? null,
                             folderLabels: [...(messagingFolders?.querySelectorAll('.messaging-filter > span') ?? [])]
                                 .map((element) => element.textContent.trim()),
@@ -1237,6 +1242,17 @@ try {
                             relativeTimes: [...(messagingInbox?.querySelectorAll(
                                 '[data-messaging-conversation-time]'
                             ) ?? [])].slice(2).map((element) => element.textContent.trim()),
+                            threadBack: messagingThread?.querySelector('.messaging-thread-header__back')
+                                ?.getAttribute('aria-label') ?? null,
+                            threadActionTitles: [...(messagingThread?.querySelectorAll(
+                                '.messaging-thread-header__actions [title]'
+                            ) ?? [])].map((element) => element.getAttribute('title')),
+                            threadActionLabels: [...(messagingThread?.querySelectorAll(
+                                '.messaging-thread-header__actions .sr-only'
+                            ) ?? [])].map((element) => element.textContent.trim()),
+                            messageListLabel: messagingMessageList?.getAttribute('aria-label') ?? null,
+                            messageDate: messagingMessageList?.querySelector('.messaging-date-divider time')
+                                ?.textContent.trim() ?? null,
                         },
                         messagingLayout: {
                             clippedFolderLabels: [...(messagingFolders?.querySelectorAll(
@@ -1250,13 +1266,22 @@ try {
                                 ...(messagingInbox?.querySelectorAll(
                                     'input:not([type="hidden"]), button'
                                 ) ?? []),
-                            ]].filter(visible).map((element) => ({
-                                label: element.getAttribute('aria-label')
-                                    || element.textContent.trim()
-                                    || element.getAttribute('placeholder'),
-                                width: Math.round(element.getBoundingClientRect().width),
-                                height: Math.round(element.getBoundingClientRect().height),
-                            })).filter((target) => target.width < 44 || target.height < 44),
+                                ...(messagingThreadRegion?.querySelectorAll(
+                                    'a, button, input:not([type="hidden"]), select, summary, textarea'
+                                ) ?? []),
+                            ]].filter(visible).map((element) => {
+                                const target = element.matches('input[type="checkbox"], input[type="radio"]')
+                                    ? element.closest('label') ?? element
+                                    : element;
+
+                                return {
+                                    label: element.getAttribute('aria-label')
+                                        || element.textContent.trim()
+                                        || element.getAttribute('placeholder'),
+                                    width: Math.round(target.getBoundingClientRect().width),
+                                    height: Math.round(target.getBoundingClientRect().height),
+                                };
+                            }).filter((target) => target.width < 44 || target.height < 44),
                         },
                     };
                 })()`);
@@ -1715,6 +1740,7 @@ try {
                 if (route.path === '/messages') {
                     const messagingCopy = [
                         behavior.messagingCopy.actionLabel,
+                        behavior.messagingCopy.metaLabel,
                         behavior.messagingCopy.foldersLabel,
                         ...behavior.messagingCopy.folderLabels,
                         behavior.messagingCopy.inboxLabel,
@@ -1726,10 +1752,15 @@ try {
                         behavior.messagingCopy.summary,
                         ...behavior.messagingCopy.conversationTypes,
                         ...behavior.messagingCopy.relativeTimes,
+                        behavior.messagingCopy.threadBack,
+                        ...behavior.messagingCopy.threadActionTitles,
+                        ...behavior.messagingCopy.threadActionLabels,
+                        behavior.messagingCopy.messageListLabel,
+                        behavior.messagingCopy.messageDate,
                     ];
 
                     assert(
-                        messagingCopy.length === 32
+                        messagingCopy.length === 42
                             && messagingCopy.every((value) => value?.length > 0),
                         `${label}: the messaging localization surface is incomplete ${JSON.stringify(behavior.messagingCopy)}.`,
                     );

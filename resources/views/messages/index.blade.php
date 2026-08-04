@@ -1,4 +1,4 @@
-<x-app-shell :owner="$owner" title="{{ __('ui.messages_and_calls_brand_d76656782d') }}" active-section="messages">
+<x-app-shell :owner="$owner" title="{{ __('messaging.page.browser_title') }}" active-section="messages">
     <div
         class="messaging-page"
         data-messaging-center
@@ -9,7 +9,7 @@
             :title="$summary['title']"
             :description="$summary['description']"
             heading-id="messages-heading"
-            :meta-label="__('ui.inbox_summary_4323d5eb2a')"
+            :meta-label="__('messaging.page.meta_label')"
             data-section="messages-header"
             class="page-header--messaging"
         >
@@ -27,7 +27,7 @@
             <x-slot:actions>
                 <x-action-control
                     :href="route('compose', 'message')"
-                    label="{{ __('ui.new_message_78f5975a5d') }}"
+                    label="{{ __('messaging.page.new_message') }}"
                     icon="square-pen"
                     variant="primary"
                     size="regular"
@@ -62,8 +62,8 @@
                     <section class="messaging-state messaging-state--quiet">
                         <x-ui-icon name="message-square-off" />
                         <div>
-                            <h2>{{ __('ui.request_declined_1df48b2da0') }}</h2>
-                            <p>{{ __('ui.the_sender_is_not_told_when_you_viewed_b9db847ee0') }}</p>
+                            <h2>{{ __('messaging.page.declined_title') }}</h2>
+                            <p>{{ __('messaging.page.declined_description') }}</p>
                         </div>
                     </section>
                 @else
@@ -86,7 +86,7 @@
                             <span>{{ __('presentation.search_results_context', ['count' => count($messages), 'query' => $message_query]) }}</span>
                             <a href="{{ route('messages.index', ['conversation' => $selected['key'], 'filter' => $active_filter]) }}" class="inline-flex items-center gap-1">
                                 <x-ui-icon name="rotate-ccw" size="xs" />
-                                <span>{{ __('ui.clear_83b12c2216') }}</span>
+                                <span>{{ __('messaging.page.clear_search') }}</span>
                             </a>
                         </div>
                     @endif

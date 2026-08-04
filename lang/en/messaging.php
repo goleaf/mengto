@@ -3,6 +3,17 @@
 declare(strict_types=1);
 
 return [
+    'page' => [
+        'browser_title' => 'Messages and calls | PawCircle',
+        'eyebrow' => 'Private communication',
+        'heading' => 'Messages and calls',
+        'description' => 'Talk to pet people, family, specialists, groups, and event organizers without exposing personal contact details.',
+        'meta_label' => 'Inbox summary',
+        'new_message' => 'New message',
+        'declined_title' => 'Request declined',
+        'declined_description' => 'The sender is not told when you viewed or declined the request. You can still block or report the profile.',
+        'clear_search' => 'Clear',
+    ],
     'folders' => [
         'label' => 'Inbox folders',
         'unavailable' => 'Folders unavailable',
@@ -44,5 +55,33 @@ return [
         'saturday' => 'Sat',
         'friday' => 'Fri',
         'today' => 'Today',
+    ],
+    'thread' => [
+        'back' => 'Back to conversations',
+        'audio_preflight' => 'Start audio call preflight',
+        'audio_call' => 'Audio call',
+        'video_preflight' => 'Start video call preflight',
+        'video_call' => 'Video call',
+        'details' => 'Conversation details',
+        'messages_label' => 'Conversation messages',
+        'empty_title' => 'No matching messages',
+        'empty_description' => 'Try another word or clear message search.',
+    ],
+    'request' => [
+        'eyebrow' => 'New message request',
+        'linked_pet' => 'Linked pet context only',
+        'read_status_hidden' => 'Read status hidden',
+        'media_blocked' => 'Media blocked until accepted',
+        'accept' => 'Accept',
+        'decline' => 'Decline',
+        'block' => 'Block',
+        'note' => 'Accepting allows replies and call requests. It never reveals your phone, email, home address, exact location, or other profiles.',
+    ],
+    'professional' => [
+        'status_label' => 'Professional conversation status',
+    ],
+    'channels' => [
+        'label' => 'Conversation channels',
+        'general' => 'General',
     ],
 ];

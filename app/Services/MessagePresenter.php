@@ -45,9 +45,9 @@ final class MessagePresenter
         return [
             'owner' => $this->profiles->owner(),
             'summary' => [
-                'eyebrow' => __('messages.private_communication_b3ecd460d1'),
-                'title' => __('messages.messages_and_calls_2bda9155c7'),
-                'description' => __('messages.talk_to_pet_people_family_specialists_groups_and_event_o_7a75ff5b8e'),
+                'eyebrow' => __('messaging.page.eyebrow'),
+                'title' => __('messaging.page.heading'),
+                'description' => __('messaging.page.description'),
                 'count' => __('presentation.dialogs_with_unread', [
                     'dialogs' => trans_choice('presentation.dialogs_count', count($conversations), [
                         'count' => count($conversations),

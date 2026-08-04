@@ -530,6 +530,40 @@ applied 137 migrations and retained 218 tables, five users, and fourteen places
 across repeated seeding. The 180-route smoke, both forum-source checks, and the
 849-call canonical icon audit also passed.
 
+The twelfth non-header localization follow-up extends the `/messages` contract
+from the directory into the top-level conversation surface. Twenty-nine new
+EN/LT/RU leaves now own the page shell, canonical page identity, thread header,
+call-preflight labels, request gate, professional-state landmark, channel
+navigation, message-log landmark, search reset, declined-request state, and
+empty message result. Together with the previously verified folder, inbox,
+conversation-type, and relative-time contract, `messaging.php` now contains 61
+exact-parity leaves. Accountable member or organization names, linked pet
+identities, and authored message bodies remain verbatim content and are not
+misclassified as system fallback.
+
+The browser ratchet now compares 42 rendered messaging fields with the English
+baseline and measures every visible control in the thread. Its first expanded
+run exposed 32-pixel message menus and 36-pixel menu actions, audio playback,
+attachment tools, quiet-send labeling, and schedule disclosure. All affected
+controls and channel/search actions now expose at least a 44-pixel hit area;
+checkboxes are measured through their associated clickable label rather than
+their decorative inner square. The canonical empty-channel fallback also uses
+the shared Lucide primitive. The repeated matrix then passed all 91 route and
+viewport audits and 26 screenshots across 320-1920 pixels, EN/RU/LT,
+forced-colors, reduced motion, and effective 200% zoom with zero English system
+fallbacks, raw keys, undersized audited thread targets, or console errors.
+
+The focused messaging and page-identity slice passed 75 tests with 1,455
+assertions; the affected localization, authorization, interface, linked-media,
+and page-identity slice passed 117 tests with 1,741 assertions; and the complete
+sequential suite passed 2,925 tests with 97,025 assertions. Full Pint and
+Larastan passed with zero findings; Composer strict validation, locked audit,
+PHP 8.5 platform requirements, NPM audit, production Vite build, isolated
+config/event/route/view cache compilation, the 180-route smoke, both
+forum-source checks, PHP localizer, and the 850-call canonical icon audit also
+passed. No route, persistence, Eloquent query, or authorization boundary
+changed in this presentation package.
+
 ### 3.3 Next Execution Checkpoint
 
 1. Complete Package 0 by assigning the stable requirement ID and recording the
@@ -545,10 +579,12 @@ across repeated seeding. The 180-route smoke, both forum-source checks, and the
    `/care-journals`, `/places`, `/lost-found`, `/marketplace`, `/experts`, and
    the `/groups`, `/neighbors`, and `/messages` system directories are
    browser-verified. Group detail system chrome and first-party fixture content
-   are verified across all eight tabs, while genuine future member-authored
-   content, deeper message-thread system copy, and the other priority bodies
-   remain open. Do not conflate body-copy completion with the verified
-   page-identity contract.
+   are verified across all eight tabs, and the top-level message thread chrome
+   is verified across default, request, professional, channel, declined, and
+   empty-message states. Genuine future member-authored content, the message
+   composer, per-message action copy, context rail, call stage, details screen,
+   and the other priority bodies remain open. Do not conflate body-copy
+   completion with the verified page-identity contract.
 
 ## 4. Scope
 

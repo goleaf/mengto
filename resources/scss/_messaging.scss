@@ -462,7 +462,7 @@
 
 .messaging-channel {
     display: inline-flex;
-    min-block-size: 2.25rem;
+    min-block-size: 2.75rem;
     flex: 0 0 auto;
     align-items: center;
     gap: 0.375rem;
@@ -566,6 +566,9 @@
     }
 
     a {
+        display: inline-flex;
+        min-block-size: 2.75rem;
+        align-items: center;
         color: $leaf;
         font-weight: 650;
     }
@@ -803,7 +806,7 @@
 
 .messaging-audio {
     display: flex;
-    min-block-size: 2.25rem;
+    min-block-size: 2.75rem;
     grid-column: 1 / -1;
     align-items: center;
     gap: 0.625rem;
@@ -839,8 +842,8 @@
 
     summary {
         display: grid;
-        inline-size: 2rem;
-        block-size: 2rem;
+        inline-size: 2.75rem;
+        block-size: 2.75rem;
         place-items: center;
         border-radius: $control-radius;
         cursor: pointer;
@@ -870,7 +873,7 @@
 
         button {
             display: flex;
-            min-block-size: 2.25rem;
+            min-block-size: 2.75rem;
             align-items: center;
             gap: 0.5rem;
             border: 0;
@@ -912,8 +915,8 @@
 
         button {
             display: grid;
-            inline-size: 2rem;
-            block-size: 2rem;
+            inline-size: 2.75rem;
+            block-size: 2.75rem;
             place-items: center;
             border: 0;
             background: transparent;
@@ -938,9 +941,9 @@
 
         button {
             display: grid;
-            inline-size: 2.25rem;
-            min-inline-size: 2.25rem;
-            block-size: 2.25rem;
+            inline-size: 2.75rem;
+            min-inline-size: 2.75rem;
+            block-size: 2.75rem;
             place-items: center;
             border: 1px solid transparent;
             border-radius: $control-radius;
@@ -1005,7 +1008,7 @@
 
         label {
             display: inline-flex;
-            min-block-size: 2.25rem;
+            min-block-size: 2.75rem;
             align-items: center;
             cursor: pointer;
 
@@ -1042,7 +1045,7 @@
 
         summary {
             display: inline-flex;
-            min-block-size: 2.25rem;
+            min-block-size: 2.75rem;
             align-items: center;
             gap: 0.375rem;
             color: $muted;

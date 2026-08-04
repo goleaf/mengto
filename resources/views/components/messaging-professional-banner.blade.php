@@ -1,6 +1,6 @@
 @props(['professional'])
 
-<section class="messaging-professional" aria-label="{{ __('ui.professional_conversation_status_3f38e4c701') }}">
+<section class="messaging-professional" aria-label="{{ __('messaging.professional.status_label') }}" data-messaging-professional>
     <div>
         <x-ui-icon name="briefcase-medical" />
         <span>

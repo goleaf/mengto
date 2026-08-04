@@ -1,9 +1,9 @@
 @props(['messages', 'conversation'])
 
-<div class="messaging-messages" role="log" aria-live="polite" aria-label="{{ __('ui.conversation_messages_f5f8903fca') }}">
+<div class="messaging-messages" role="log" aria-live="polite" aria-label="{{ __('messaging.thread.messages_label') }}" data-messaging-message-list>
     <div class="messaging-date-divider">
         <span></span>
-        <time datetime="2026-07-30">{{ __('ui.today_2b065c7c9c') }}</time>
+        <time datetime="2026-07-30">{{ __('messaging.relative.today') }}</time>
         <span></span>
     </div>
 
@@ -12,8 +12,8 @@
     @empty
         <div class="messaging-messages__empty">
             <x-ui-icon name="message-circle-dashed" />
-            <strong>{{ __('ui.no_matching_messages_bf3cda4412') }}</strong>
-            <span>{{ __('ui.try_another_word_or_clear_message_search_a3215a2d1d') }}</span>
+            <strong>{{ __('messaging.thread.empty_title') }}</strong>
+            <span>{{ __('messaging.thread.empty_description') }}</span>
         </div>
     @endforelse
 </div>

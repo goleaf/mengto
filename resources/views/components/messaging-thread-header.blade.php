@@ -1,10 +1,10 @@
 @props(['conversation', 'activeFilter'])
 
-<header class="messaging-thread-header">
+<header class="messaging-thread-header" data-messaging-thread-header>
     <a
         href="{{ route('messages.index', ['filter' => $activeFilter]) }}"
         class="messaging-thread-header__back"
-        aria-label="{{ __('ui.back_to_conversations_d456fc7566') }}"
+        aria-label="{{ __('messaging.thread.back') }}"
     >
         <x-ui-icon name="arrow-left" />
     </a>
@@ -37,9 +37,9 @@
             <input type="hidden" name="call_type" value="audio">
             <input type="hidden" name="recording_consent" value="no">
             <input type="hidden" name="return_filter" value="{{ $activeFilter }}">
-            <button type="submit" class="messaging-icon-button" title="{{ __('ui.start_audio_call_preflight_4ce1256cff') }}" @disabled($conversation['blocked'])>
+            <button type="submit" class="messaging-icon-button" title="{{ __('messaging.thread.audio_preflight') }}" @disabled($conversation['blocked'])>
                 <x-ui-icon name="phone" size="sm" />
-                <span class="sr-only">{{ __('ui.audio_call_3501f9a7a9') }}</span>
+                <span class="sr-only">{{ __('messaging.thread.audio_call') }}</span>
             </button>
         </form>
 
@@ -50,19 +50,19 @@
             <input type="hidden" name="call_type" value="video">
             <input type="hidden" name="recording_consent" value="no">
             <input type="hidden" name="return_filter" value="{{ $activeFilter }}">
-            <button type="submit" class="messaging-icon-button" title="{{ __('ui.start_video_call_preflight_2109eee0a3') }}" @disabled($conversation['blocked'])>
+            <button type="submit" class="messaging-icon-button" title="{{ __('messaging.thread.video_preflight') }}" @disabled($conversation['blocked'])>
                 <x-ui-icon name="video" size="sm" />
-                <span class="sr-only">{{ __('ui.video_call_7b79b4f672') }}</span>
+                <span class="sr-only">{{ __('messaging.thread.video_call') }}</span>
             </button>
         </form>
 
         <a
             href="{{ $conversation['details_url'] }}"
             class="messaging-icon-button"
-            title="{{ __('ui.conversation_details_28b55e1258') }}"
+            title="{{ __('messaging.thread.details') }}"
         >
             <x-ui-icon name="info" size="sm" />
-            <span class="sr-only">{{ __('ui.conversation_details_28b55e1258') }}</span>
+            <span class="sr-only">{{ __('messaging.thread.details') }}</span>
         </a>
     </div>
 </header>

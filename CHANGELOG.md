@@ -18,6 +18,11 @@
 
 ### Interface System
 
+- Extended the dedicated `/messages` EN/LT/RU system contract from 32 to 61
+  leaves for the page shell, thread header, request gate, professional state,
+  channels, message log, and empty states; added the canonical channel fallback
+  icon; and raised every audited thread menu, audio, attachment, quiet-send,
+  search-clear, channel, and scheduling target to a 44-pixel hit area.
 - Localized the complete `/places` directory system surface through a dedicated
   188-leaf EN/LT/RU contract; kept filter, mode, view, and layer codes stable;
   resolved generalized-location labels in the active locale instead of

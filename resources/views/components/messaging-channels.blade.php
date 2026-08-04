@@ -1,6 +1,6 @@
 @props(['channels', 'activeChannel', 'conversation', 'activeFilter'])
 
-<nav class="messaging-channels" aria-label="{{ __('ui.conversation_channels_73ec88c25d') }}">
+<nav class="messaging-channels" aria-label="{{ __('messaging.channels.label') }}" data-messaging-channels>
     @forelse ($channels as $channel)
         <a
             href="{{ route('messages.index', ['conversation' => $conversation, 'filter' => $activeFilter, 'channel' => $channel['key']]) }}"
@@ -14,6 +14,9 @@
             @endif
         </a>
     @empty
-        <span class="messaging-channel">{{ __('ui.general_c910d474dc') }}</span>
+        <span class="messaging-channel">
+            <x-ui-icon name="message-square" size="sm" />
+            <span>{{ __('messaging.channels.general') }}</span>
+        </span>
     @endforelse
 </nav>

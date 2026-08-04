@@ -3,6 +3,17 @@
 declare(strict_types=1);
 
 return [
+    'page' => [
+        'browser_title' => 'Žinutės ir skambučiai | PawCircle',
+        'eyebrow' => 'Privatus bendravimas',
+        'heading' => 'Žinutės ir skambučiai',
+        'description' => 'Bendraukite su augintinių šeimininkais, šeima, specialistais, grupėmis ir renginių organizatoriais neatskleisdami asmeninių kontaktų.',
+        'meta_label' => 'Gautųjų santrauka',
+        'new_message' => 'Nauja žinutė',
+        'declined_title' => 'Užklausa atmesta',
+        'declined_description' => 'Siuntėjui nepranešama, kada peržiūrėjote ar atmetėte užklausą. Vis tiek galite užblokuoti profilį arba apie jį pranešti.',
+        'clear_search' => 'Išvalyti',
+    ],
     'folders' => [
         'label' => 'Gautųjų aplankai',
         'unavailable' => 'Aplankai nepasiekiami',
@@ -44,5 +55,33 @@ return [
         'saturday' => 'Št',
         'friday' => 'Pn',
         'today' => 'Šiandien',
+    ],
+    'thread' => [
+        'back' => 'Grįžti į pokalbius',
+        'audio_preflight' => 'Pradėti garso skambučio patikrą',
+        'audio_call' => 'Garso skambutis',
+        'video_preflight' => 'Pradėti vaizdo skambučio patikrą',
+        'video_call' => 'Vaizdo skambutis',
+        'details' => 'Pokalbio informacija',
+        'messages_label' => 'Pokalbio žinutės',
+        'empty_title' => 'Tinkamų žinučių nerasta',
+        'empty_description' => 'Pabandykite kitą žodį arba išvalykite žinučių paiešką.',
+    ],
+    'request' => [
+        'eyebrow' => 'Nauja žinutės užklausa',
+        'linked_pet' => 'Tik susieto augintinio kontekstas',
+        'read_status_hidden' => 'Perskaitymo būsena paslėpta',
+        'media_blocked' => 'Medija užblokuota, kol nepriimsite',
+        'accept' => 'Priimti',
+        'decline' => 'Atmesti',
+        'block' => 'Blokuoti',
+        'note' => 'Priėmus bus galima atsakyti ir prašyti skambučio. Jūsų telefonas, el. paštas, namų adresas, tiksli vieta ar kiti profiliai niekada neatskleidžiami.',
+    ],
+    'professional' => [
+        'status_label' => 'Profesionalaus pokalbio būsena',
+    ],
+    'channels' => [
+        'label' => 'Pokalbio kanalai',
+        'general' => 'Bendras',
     ],
 ];
