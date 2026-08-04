@@ -42,10 +42,12 @@ Last updated: 2026-08-04.
   `pet.identity.0072-pet.identity.0122` requirements with normalized multiple
   origins, explicit confidence and provenance, optional mixed percentages,
   and legacy compatibility. It is release-verified and published.
-- The bounded life-stage slice implements 12 selected
-  `pet.identity.0189-pet.identity.0204` requirements with animal-group-specific
-  automatic thresholds and attributed manual clarification. Implementation and
-  release verification are complete; publication is pending.
+- The bounded life-stage slice implements 11 selected requirements within
+  `pet.identity.0189-pet.identity.0204` with animal-group-specific automatic
+  thresholds and attributed manual clarification. `pet.identity.0202` remains
+  open until recommendations and filters consume the stage. Implementation and
+  release verification are complete, and implementation commit `3c7db2e` is
+  published on `origin/main`.
 
 ## Current Work Package
 
@@ -78,6 +80,9 @@ public source labels.
   manual stage, verified its privacy-safe public projection, restored automatic
   mode, and found no responsive, labeling, touch-target, raw-key, focus, or
   console defect at 1440px, 390px, or 320px.
+- Exactly 11 completed requirement IDs carry the release evidence. Requirement
+  `pet.identity.0202` remains discovered rather than verified because no
+  recommendation or filter consumes the stage yet.
 
 ## Creation Interface Refinement
 
@@ -285,8 +290,7 @@ public source labels.
 
 ## Next Package
 
-After the release-verified life-stage package is published, select the next
-dependency-safe appearance-fact package.
+Select the next dependency-safe appearance-fact package.
 Do not treat safe candidate review, possible species, alternative-name
 history, or birth precision as duplicate merge, proof verification, taxonomy
 verification, lost/found coordination, dispute resolution, organization

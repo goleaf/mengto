@@ -2,22 +2,22 @@
 
 Date: 2026-08-04
 
-Status: implemented and release-verified; publication pending.
+Status: implemented, release-verified, and published.
 
 ## Requirement Boundary
 
-This package selects exactly these 12 atomic requirements:
+This package selects exactly these 11 atomic requirements:
 
 - `pet.identity.0189-pet.identity.0196`;
-- `pet.identity.0198`, `pet.identity.0200`, `pet.identity.0202`, and
-  `pet.identity.0204`.
+- `pet.identity.0198`, `pet.identity.0200`, and `pet.identity.0204`.
 
 The section heading and explanatory prompts `pet.identity.0187`,
 `pet.identity.0188`, `pet.identity.0197`, `pet.identity.0199`,
-`pet.identity.0201`, and `pet.identity.0203` remain open. Appearance,
-measurements, medical verification, taxonomy ingestion, recommendations,
-discovery filters, ownership, and lost/found behavior remain separate work
-packages.
+`pet.identity.0201`, `pet.identity.0202`, and `pet.identity.0203` remain open.
+Appearance, measurements, medical verification, taxonomy ingestion,
+recommendations, discovery filters, ownership, and lost/found behavior remain
+separate work packages. In particular, `pet.identity.0202` cannot be verified
+until recommendations and filters actually consume the stage.
 
 ## Data Contract
 
@@ -114,9 +114,10 @@ Observed on the final attributable tree:
    overflow, raw keys, duplicate IDs, unnamed or undersized controls, privacy
    disclosure, or console errors, and the focused selector retained a visible
    keyboard-focus ring;
-8. immutable-source, deterministic 38,377-requirement, and generated compliance
-   matrix checks passed. Publication and the final requirement evidence overlay
-   remain the only pending release steps.
+8. immutable-source, deterministic 38,377-requirement, generated matrix, and
+   scoped staged-diff checks passed. Implementation commit `3c7db2e` was pushed
+   to `origin/main`, and the evidence overlay verifies only the 11 completed
+   IDs while leaving `pet.identity.0202` open.
 
 ## Remaining Boundaries
 

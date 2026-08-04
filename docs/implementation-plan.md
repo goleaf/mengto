@@ -9,7 +9,7 @@ status remains authoritative in
 
 ## Current Delivery: Pet Life Stage
 
-Status: `implemented and release-verified; publication pending` on 2026-08-04.
+Status: `implemented, release-verified, and published` on 2026-08-04.
 
 - Derive newborn, juvenile, young, adult, senior, or unknown at read time from
   the existing honest age range and controlled animal-group thresholds.
