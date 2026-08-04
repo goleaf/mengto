@@ -99,6 +99,7 @@
                     <x-messaging-composer
                         :conversation="$selected"
                         :active-filter="$active_filter"
+                        :sender="$owner['name']"
                     />
                 @endif
             </section>

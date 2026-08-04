@@ -564,6 +564,40 @@ forum-source checks, PHP localizer, and the 850-call canonical icon audit also
 passed. No route, persistence, Eloquent query, or authorization boundary
 changed in this presentation package.
 
+The thirteenth non-header localization follow-up completes the visible message
+composer and per-message menu chrome. Seventy-one new EN/LT/RU leaves extend the
+dedicated messaging contract from 61 to 132 exact-parity values for reply and
+draft state, eight attachment tools, recipient and placeholder framing, quiet
+and scheduled delivery, attachment privacy, twenty message types, six reaction
+labels, sent/read/delivered state, audio playback, and every visible message
+action. The class-based composer prepares the fixed tool-code/icon/label
+contract outside Blade; the message component resolves stable type and reaction
+codes through explicit localized mappings instead of locale-dependent headline
+generation. Accountable names, message bodies, and authored attachment content
+remain verbatim.
+
+The browser ratchet now compares 87 rendered messaging fields with the English
+baseline. For viewports below 832 pixels it opens `conversation=ari`, making the
+thread, message actions, attachment tools, textarea, quiet-send label, schedule
+disclosure, and privacy notice visible to the same 44-pixel target audit instead
+of accepting hidden DOM as mobile evidence. The repeated matrix passed all 91
+route and viewport audits and 26 screenshots across 320-1920 pixels, EN/RU/LT,
+forced colors, reduced motion, and effective 200% zoom with zero English system
+fallbacks, raw keys, clipped folder labels, undersized visible messaging
+targets, or console errors. The focused contract passed 17 tests with 1,342
+assertions, the affected messaging/authentication/interface/page-identity slice
+passed 113 tests with 2,448 assertions, focused PHPStan reported zero errors,
+and the canonical icon audit retained 850 shared-icon calls with zero debt.
+The complete sequential suite passed 2,960 tests with 98,927 assertions. The
+attributable PHP slice passed Pint and full Larastan passed with zero findings;
+Composer strict validation, locked audit, PHP 8.5 platform requirements, NPM
+audit, production Vite build, and isolated config/event/route/view cache
+compilation passed. Fresh disposable SQLite applied 137 migrations and retained
+218 tables and five users across repeated seeding; the 180-route smoke, both
+forum-source checks, deterministic 38,377-requirement generation, and PHP
+localizer also passed. This presentation package adds no Eloquent query, schema,
+route, persistence, or authorization change.
+
 ### 3.3 Next Execution Checkpoint
 
 1. Complete Package 0 by assigning the stable requirement ID and recording the
@@ -579,12 +613,12 @@ changed in this presentation package.
    `/care-journals`, `/places`, `/lost-found`, `/marketplace`, `/experts`, and
    the `/groups`, `/neighbors`, and `/messages` system directories are
    browser-verified. Group detail system chrome and first-party fixture content
-   are verified across all eight tabs, and the top-level message thread chrome
-   is verified across default, request, professional, channel, declined, and
-   empty-message states. Genuine future member-authored content, the message
-   composer, per-message action copy, context rail, call stage, details screen,
-   and the other priority bodies remain open. Do not conflate body-copy
-   completion with the verified page-identity contract.
+   are verified across all eight tabs, and the message directory, top-level
+   thread, composer, and per-message action chrome are verified across default,
+   request, professional, channel, declined, and empty-message states. Genuine
+   future member-authored content, action-result feedback, the context rail,
+   call stage, details screen, and the other priority bodies remain open. Do not
+   conflate body-copy completion with the verified page-identity contract.
 
 ## 4. Scope
 

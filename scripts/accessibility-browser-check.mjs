@@ -625,7 +625,10 @@ try {
 
             for (const route of pageIdentityRoutes) {
                 const label = `${viewport.label} ${route.label}`;
-                await navigate(client, sessionId, `${baseUrl}${route.path}`);
+                const routeUrl = route.path === '/messages' && viewport.width < 832
+                    ? `${baseUrl}${route.path}?conversation=ari`
+                    : `${baseUrl}${route.path}`;
+                await navigate(client, sessionId, routeUrl);
                 const pageAudit = await evaluate(client, sessionId, pageAuditExpression);
                 assertPageAudit(pageAudit, label);
                 const behavior = await evaluate(client, sessionId, `(() => {
@@ -719,6 +722,9 @@ try {
                     const messagingInbox = document.querySelector('[data-messaging-inbox]');
                     const messagingThread = document.querySelector('[data-messaging-thread-header]');
                     const messagingMessageList = document.querySelector('[data-messaging-message-list]');
+                    const messagingComposer = document.querySelector('[data-messaging-composer]');
+                    const messagingMessages = [...document.querySelectorAll('[data-messaging-message]')];
+                    const firstMessagingMessage = messagingMessages[0];
                     const messagingThreadRegion = document.querySelector('.messaging-thread');
                     const placeSummary = document.querySelector('[data-section="places-summary"]');
                     const placeSearch = document.querySelector('.place-search');
@@ -1253,6 +1259,65 @@ try {
                             messageListLabel: messagingMessageList?.getAttribute('aria-label') ?? null,
                             messageDate: messagingMessageList?.querySelector('.messaging-date-divider time')
                                 ?.textContent.trim() ?? null,
+                            composerLabel: messagingComposer?.getAttribute('aria-label') ?? null,
+                            composerReply: messagingComposer?.querySelector('[data-message-reply] span')
+                                ?.textContent.trim() ?? null,
+                            composerCancelReply: messagingComposer?.querySelector('[data-message-reply-clear]')
+                                ?.getAttribute('aria-label') ?? null,
+                            composerDraftSaving: messagingComposer?.querySelector('[data-message-composer]')
+                                ?.getAttribute('data-draft-saving') ?? null,
+                            composerDraftSaved: messagingComposer?.querySelector('[data-message-composer]')
+                                ?.getAttribute('data-draft-saved') ?? null,
+                            composerMessageType: messagingComposer?.querySelector('.messaging-composer__tools')
+                                ?.getAttribute('aria-label') ?? null,
+                            composerToolTitles: [...(messagingComposer?.querySelectorAll(
+                                '[data-message-type-button]'
+                            ) ?? [])].map((element) => element.getAttribute('title')),
+                            composerToolActionLabels: [...(messagingComposer?.querySelectorAll(
+                                '[data-message-type-button]'
+                            ) ?? [])].map((element) => element.getAttribute('aria-label')),
+                            composerRecipient: messagingComposer?.querySelector('label[for^="message-body-"]')
+                                ?.textContent.trim() ?? null,
+                            composerPlaceholder: messagingComposer?.querySelector('[data-message-body]')
+                                ?.getAttribute('placeholder') ?? null,
+                            composerQuiet: messagingComposer?.querySelector(
+                                '.messaging-composer__footer label span'
+                            )?.textContent.trim() ?? null,
+                            composerDraftStatus: messagingComposer?.querySelector('[data-message-draft-status]')
+                                ?.textContent.trim() ?? null,
+                            composerSend: messagingComposer?.querySelector('.action--primary span')
+                                ?.textContent.trim() ?? null,
+                            composerSchedule: messagingComposer?.querySelector(
+                                '.messaging-composer__schedule summary'
+                            )?.textContent.trim() ?? null,
+                            composerSendAt: messagingComposer?.querySelector(
+                                '.messaging-composer__schedule label'
+                            )?.textContent.trim() ?? null,
+                            composerScheduleHelp: messagingComposer?.querySelector(
+                                '.messaging-composer__schedule p'
+                            )?.textContent.trim() ?? null,
+                            composerPrivacy: messagingComposer?.querySelector('.messaging-composer__privacy')
+                                ?.textContent.trim() ?? null,
+                            structuredMessageTypes: messagingMessages.filter(
+                                (element) => ['place', 'audio'].includes(
+                                    element.getAttribute('data-messaging-message-type')
+                                )
+                            ).map((element) => element.querySelector('.messaging-message__media small')
+                                ?.textContent.trim() ?? null),
+                            messageStatuses: messagingMessages.map((element) => element.querySelector(
+                                '[data-messaging-message-status]'
+                            )?.textContent.trim() ?? null),
+                            messageStatusCodes: messagingMessages.map((element) => element.querySelector(
+                                '[data-messaging-message-status]'
+                            )?.getAttribute('data-messaging-message-status-code') ?? null),
+                            messageActionsLabel: firstMessagingMessage?.querySelector(
+                                '.messaging-message-menu summary'
+                            )?.getAttribute('aria-label') ?? null,
+                            messageActionLabels: [...(firstMessagingMessage?.querySelectorAll(
+                                '.messaging-message-menu > div button'
+                            ) ?? [])].map((element) => element.textContent.trim()),
+                            audioActionLabel: messagingMessageList?.querySelector('[data-audio-toggle]')
+                                ?.getAttribute('aria-label') ?? null,
                         },
                         messagingLayout: {
                             clippedFolderLabels: [...(messagingFolders?.querySelectorAll(
@@ -1757,12 +1822,39 @@ try {
                         ...behavior.messagingCopy.threadActionLabels,
                         behavior.messagingCopy.messageListLabel,
                         behavior.messagingCopy.messageDate,
+                        behavior.messagingCopy.composerLabel,
+                        behavior.messagingCopy.composerReply,
+                        behavior.messagingCopy.composerCancelReply,
+                        behavior.messagingCopy.composerDraftSaving,
+                        behavior.messagingCopy.composerDraftSaved,
+                        behavior.messagingCopy.composerMessageType,
+                        ...behavior.messagingCopy.composerToolTitles,
+                        ...behavior.messagingCopy.composerToolActionLabels,
+                        behavior.messagingCopy.composerRecipient,
+                        behavior.messagingCopy.composerPlaceholder,
+                        behavior.messagingCopy.composerQuiet,
+                        behavior.messagingCopy.composerDraftStatus,
+                        behavior.messagingCopy.composerSend,
+                        behavior.messagingCopy.composerSchedule,
+                        behavior.messagingCopy.composerSendAt,
+                        behavior.messagingCopy.composerScheduleHelp,
+                        behavior.messagingCopy.composerPrivacy,
+                        ...behavior.messagingCopy.structuredMessageTypes,
+                        ...behavior.messagingCopy.messageStatuses,
+                        behavior.messagingCopy.messageActionsLabel,
+                        ...behavior.messagingCopy.messageActionLabels,
+                        behavior.messagingCopy.audioActionLabel,
                     ];
 
                     assert(
-                        messagingCopy.length === 42
+                        messagingCopy.length === 87
                             && messagingCopy.every((value) => value?.length > 0),
                         `${label}: the messaging localization surface is incomplete ${JSON.stringify(behavior.messagingCopy)}.`,
+                    );
+                    assert(
+                        JSON.stringify(behavior.messagingCopy.messageStatusCodes)
+                            === JSON.stringify(['delivered', 'read', 'delivered', 'delivered']),
+                        `${label}: messaging delivery codes drifted ${JSON.stringify(behavior.messagingCopy.messageStatusCodes)}.`,
                     );
                     assert(
                         behavior.messagingLayout.clippedFolderLabels.length === 0,

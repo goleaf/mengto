@@ -371,6 +371,7 @@ final class MessageState
             'status' => $mine
                 ? __('messages.message.sent')
                 : __('messages.message.delivered'),
+            'status_code' => $mine ? 'sent' : 'delivered',
             'reactions' => [],
         ];
     }

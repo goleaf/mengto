@@ -18,6 +18,12 @@
 
 ### Interface System
 
+- Extended the dedicated `/messages` EN/LT/RU system contract from 61 to 132
+  leaves for the composer, attachment tools, message types, reactions, audio
+  controls, per-message actions, and sent/read/delivered states; kept eight
+  attachment and twenty message-type codes stable while assigning canonical
+  Lucide icons; and made the browser matrix open the real conversation view
+  below 832 pixels so mobile composer targets are measured while visible.
 - Extended the dedicated `/messages` EN/LT/RU system contract from 32 to 61
   leaves for the page shell, thread header, request gate, professional state,
   channels, message log, and empty states; added the canonical channel fallback

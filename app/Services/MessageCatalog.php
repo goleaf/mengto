@@ -303,6 +303,7 @@ final class MessageCatalog
             'reply' => $reply,
             'edited' => false,
             'status' => $mine ? __('messages.read_9b9a8d05a7') : __('messages.delivered_9061156573'),
+            'status_code' => $mine ? 'read' : 'delivered',
             'reactions' => [],
         ];
     }
