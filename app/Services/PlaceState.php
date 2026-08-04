@@ -217,7 +217,12 @@ final class PlaceState
      */
     public function generalizedLocation(): array
     {
-        return $this->state()['generalized_location'];
+        $location = $this->state()['generalized_location'];
+        $location['label'] = $location['enabled']
+            ? __('place_directory.search.location.approximate_area')
+            : __('place_directory.search.location.manual_area');
+
+        return $location;
     }
 
     public function setGeneralizedLocation(float $latitude, float $longitude): void
@@ -227,7 +232,7 @@ final class PlaceState
             'enabled' => true,
             'latitude' => round($latitude, 3),
             'longitude' => round($longitude, 3),
-            'label' => __('messages.approximate_current_area_08434d1dfa'),
+            'label' => 'approximate-area',
         ];
         $this->store($state);
     }
@@ -239,7 +244,7 @@ final class PlaceState
             'enabled' => false,
             'latitude' => null,
             'longitude' => null,
-            'label' => __('messages.vilnius_selected_manually_f7b2652331'),
+            'label' => 'manual-area',
         ];
         $this->store($state);
     }
@@ -634,7 +639,7 @@ final class PlaceState
                 'enabled' => false,
                 'latitude' => null,
                 'longitude' => null,
-                'label' => __('messages.vilnius_selected_manually_f7b2652331'),
+                'label' => 'manual-area',
             ],
             'submissions' => $stored['submissions'] ?? [],
             'corrections' => $stored['corrections'] ?? [],

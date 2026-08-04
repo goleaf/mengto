@@ -14,13 +14,13 @@ class PlaceDirectory extends Component
     /** @var array<string, mixed> */
     public array $queryParameters;
 
-    /** @var array<int, array{label: string, url: string, current: bool}> */
+    /** @var array<int, array{label: string, url: string, current: bool, icon: string}> */
     public array $modeLinks;
 
     /** @var array<int, array{label: string, url: string, current: bool, icon: string}> */
     public array $viewLinks;
 
-    /** @var array<int, array{label: string, url: string, current: bool}> */
+    /** @var array<int, array{label: string, url: string, current: bool, icon: string}> */
     public array $layerLinks;
 
     /** @var array<string, mixed> */
@@ -78,7 +78,7 @@ class PlaceDirectory extends Component
 
     /**
      * @param  array<string, string>  $options
-     * @return array<int, array{label: string, url: string, current: bool}>
+     * @return array<int, array{label: string, url: string, current: bool, icon: string}>
      */
     private function navigationLinks(array $options, string $parameter, string $currentValue): array
     {
@@ -87,6 +87,7 @@ class PlaceDirectory extends Component
                 'label' => $label,
                 'url' => $this->browseUrl([$parameter => $value]),
                 'current' => $currentValue === $value,
+                'icon' => $this->navigationIcon($parameter, $value),
             ])
             ->values()
             ->all();
@@ -113,6 +114,29 @@ class PlaceDirectory extends Component
             ])
             ->values()
             ->all();
+    }
+
+    private function navigationIcon(string $parameter, string $value): string
+    {
+        return match ($parameter) {
+            'mode' => match ($value) {
+                'favorites' => 'bookmark',
+                'visited' => 'map-pin-check',
+                'events' => 'calendar-days',
+                'warnings' => 'triangle-alert',
+                'emergency' => 'siren',
+                default => 'layout-grid',
+            },
+            'layer' => match ($value) {
+                'routes' => 'route',
+                'events' => 'calendar-days',
+                'warnings' => 'triangle-alert',
+                'lost-pets' => 'scan-search',
+                'emergency' => 'siren',
+                default => 'map-pinned',
+            },
+            default => 'circle',
+        };
     }
 
     /** @param array<string, mixed> $overrides */

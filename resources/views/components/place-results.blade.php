@@ -7,16 +7,17 @@
 <section class="place-results" aria-labelledby="place-results-title">
     <header class="place-results__heading">
         <div>
-            <p>{{ __('ui.results_219c4a6c86') }}</p>
+            <p>{{ __('place_directory.results.eyebrow') }}</p>
             <h2 id="place-results-title">{{ trans_choice('presentation.matching_places', count($places['items']), ['count' => count($places['items'])]) }}</h2>
         </div>
-        <nav class="place-results__layers" aria-label="{{ __('ui.map_layer_d820abaaf8') }}">
+        <nav class="place-results__layers" aria-label="{{ __('place_directory.results.map_layer') }}" data-place-layers>
             @forelse ($layerLinks as $link)
                 <a href="{{ $link['url'] }}" @if ($link['current']) aria-current="page" @endif>
-                    {{ $link['label'] }}
+                    <x-ui-icon size="sm" :name="$link['icon']" />
+                    <span>{{ $link['label'] }}</span>
                 </a>
             @empty
-                <span>{{ __('ui.no_layers_available_369d1c6483') }}</span>
+                <span>{{ __('place_directory.results.no_layers') }}</span>
             @endforelse
         </nav>
     </header>
@@ -32,7 +33,7 @@
         @empty
             <x-empty-state
                 icon="map-pin-off"
-                title="{{ __('ui.no_matching_places_10ec44f4ec') }}"
+                title="{{ __('place_directory.results.empty_title') }}"
                 :description="$places['empty_message']"
             />
         @endforelse

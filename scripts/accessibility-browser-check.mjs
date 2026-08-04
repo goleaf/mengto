@@ -564,6 +564,7 @@ try {
         let englishGroupCopy = null;
         let englishNeighborCopy = null;
         let englishMessagingCopy = null;
+        let englishPlaceCopy = null;
         let canonicalTitleFont = null;
 
         const setProfileLocale = async (locale) => {
@@ -716,6 +717,18 @@ try {
                     const neighborCard = neighborCards[0];
                     const messagingFolders = document.querySelector('[data-messaging-folders]');
                     const messagingInbox = document.querySelector('[data-messaging-inbox]');
+                    const placeSummary = document.querySelector('[data-section="places-summary"]');
+                    const placeSearch = document.querySelector('.place-search');
+                    const placeControls = document.querySelector('[data-place-controls]');
+                    const placeMap = document.querySelector('[data-place-map]');
+                    const placeResults = document.querySelector('.place-results');
+                    const placeCard = document.querySelector('[data-place-card]');
+                    const placeComparison = document.querySelector('.place-comparison');
+                    const placeRegions = [placeSummary, placeSearch, placeControls, placeMap, placeResults, placeComparison]
+                        .filter(Boolean);
+                    const placeTargets = placeRegions.flatMap((region) => [...region.querySelectorAll(
+                        'a, button, input:not([type="hidden"]), select, summary, [role="button"]'
+                    )]).filter(visible);
 
                     return {
                         documentLanguage: document.documentElement.lang,
@@ -754,7 +767,7 @@ try {
                             )
                         ),
                         rawTranslationKeys: document.body.innerText.match(
-                            /\\b(?:ui|messages|forum|navigation|pet_profiles|places|experts|groups|neighbors|messaging)\\.[a-z0-9_.-]+/gi
+                            /\\b(?:ui|messages|forum|navigation|pet_profiles|places|place_directory|experts|groups|neighbors|messaging)\\.[a-z0-9_.-]+/gi
                         ) ?? [],
                         navigationCopy: {
                             utility: {
@@ -1067,6 +1080,137 @@ try {
                                 (card) => card.querySelector('[data-neighbor-card-pet]')
                                     ?.textContent.trim() ?? null,
                             ),
+                        },
+                        placeCopy: {
+                            actionLabel: header?.querySelector('.page-header__actions .action span')
+                                ?.textContent.trim() ?? null,
+                            summaryLabel: placeSummary?.getAttribute('aria-label') ?? null,
+                            summaryLabels: [...(placeSummary?.querySelectorAll('.summary-stat__label span') ?? [])]
+                                .map((element) => element.textContent.trim()),
+                            summaryDetails: [...(placeSummary?.querySelectorAll('.summary-stat__detail') ?? [])]
+                                .map((element) => element.textContent.trim()),
+                            localizedSummaryValues: [...(placeSummary?.querySelectorAll('.summary-stat__value') ?? [])]
+                                .slice(2)
+                                .map((element) => element.textContent.trim()),
+                            searchEyebrow: placeSearch?.querySelector('.place-search__eyebrow')
+                                ?.textContent.trim() ?? null,
+                            emergencyAction: placeSearch?.querySelector('.place-search__heading .action span')
+                                ?.textContent.trim() ?? null,
+                            primaryLabels: [
+                                placeSearch?.querySelector('label[for="place-search"]')
+                                    ?.textContent.trim() ?? null,
+                                ...(placeSearch?.querySelectorAll(
+                                    '.place-search__primary .field-group__label'
+                                ) ?? []),
+                            ].map((element) => typeof element === 'string'
+                                ? element
+                                : element?.textContent.trim() ?? null),
+                            searchPlaceholder: placeSearch?.querySelector('#place-search')
+                                ?.getAttribute('placeholder') ?? null,
+                            noPetOption: placeSearch?.querySelector('#place-pet option[value="none"]')
+                                ?.textContent.trim() ?? null,
+                            searchAction: placeSearch?.querySelector('.place-search__submit span')
+                                ?.textContent.trim() ?? null,
+                            categoriesLabel: placeSearch?.querySelector('[data-place-categories]')
+                                ?.getAttribute('aria-label') ?? null,
+                            categoryLabels: [...(placeSearch?.querySelectorAll(
+                                '[data-place-categories] button span'
+                            ) ?? [])].map((element) => element.textContent.trim()),
+                            moreFilters: placeSearch?.querySelector('.place-search__filters > summary')
+                                ?.textContent.trim() ?? null,
+                            filterLabels: [...(placeSearch?.querySelectorAll(
+                                '.place-search__filter-grid .field-group__label'
+                            ) ?? [])].map((element) => element.textContent.trim()),
+                            filterDefaults: [...(placeSearch?.querySelectorAll(
+                                '.place-search__filter-grid select'
+                            ) ?? [])].map((select) => select.selectedOptions[0]?.textContent.trim() ?? null),
+                            openNow: placeSearch?.querySelector('.place-search__toggle span')
+                                ?.textContent.trim() ?? null,
+                            filterActions: [...(placeSearch?.querySelectorAll(
+                                '.place-search__filter-actions .action span'
+                            ) ?? [])].map((element) => element.textContent.trim()),
+                            locationTitle: placeSearch?.querySelector('.place-location__copy strong')
+                                ?.textContent.trim() ?? null,
+                            locationDescription: placeSearch?.querySelector('.place-location__copy span')
+                                ?.textContent.trim() ?? null,
+                            locationAction: placeSearch?.querySelector('[data-place-locate] span')
+                                ?.textContent.trim() ?? null,
+                            controlsLabel: placeControls?.getAttribute('aria-label') ?? null,
+                            modeLabels: [...(placeControls?.querySelectorAll(
+                                '.place-directory__modes a span'
+                            ) ?? [])].map((element) => element.textContent.trim()),
+                            viewLabel: placeControls?.querySelector('.place-directory__views')
+                                ?.getAttribute('aria-label') ?? null,
+                            viewLabels: [...(placeControls?.querySelectorAll(
+                                '.place-directory__views a span'
+                            ) ?? [])].map((element) => element.textContent.trim()),
+                            sortLabel: placeControls?.querySelector('label[for="place-sort"]')
+                                ?.textContent.trim() ?? null,
+                            sortOptions: [...(placeControls?.querySelectorAll('#place-sort option') ?? [])]
+                                .map((element) => element.textContent.trim()),
+                            sortAction: placeControls?.querySelector('.place-directory__sort button')
+                                ?.getAttribute('aria-label') ?? null,
+                            mapEyebrow: placeMap?.querySelector('.place-map__eyebrow')
+                                ?.textContent.trim() ?? null,
+                            mapTitle: placeMap?.querySelector('#place-map-title')
+                                ?.textContent.trim() ?? null,
+                            mapControlsLabel: placeMap?.querySelector('.place-map__controls')
+                                ?.getAttribute('aria-label') ?? null,
+                            mapControlLabels: [...(placeMap?.querySelectorAll('.place-map__controls button') ?? [])]
+                                .map((element) => element.getAttribute('aria-label')),
+                            oldTown: placeMap?.querySelector('.place-map__district--old-town')
+                                ?.textContent.trim() ?? null,
+                            mapAlternative: placeMap?.querySelector('ol')
+                                ?.getAttribute('aria-label') ?? null,
+                            resultsEyebrow: placeResults?.querySelector('.place-results__heading p')
+                                ?.textContent.trim() ?? null,
+                            resultsHeading: placeResults?.querySelector('#place-results-title')
+                                ?.textContent.trim() ?? null,
+                            layerLabel: placeResults?.querySelector('[data-place-layers]')
+                                ?.getAttribute('aria-label') ?? null,
+                            layerLabels: [...(placeResults?.querySelectorAll(
+                                '[data-place-layers] a span'
+                            ) ?? [])].map((element) => element.textContent.trim()),
+                            cardHighlights: placeCard?.querySelector('.place-card__facts')
+                                ?.getAttribute('aria-label') ?? null,
+                            cardActions: [...(placeCard?.querySelectorAll('.place-card__actions .action span') ?? [])]
+                                .map((element) => element.textContent.trim()),
+                            comparisonEyebrow: placeComparison?.querySelector(':scope > header p')
+                                ?.textContent.trim() ?? null,
+                            comparisonTitle: placeComparison?.querySelector(':scope > header h2')
+                                ?.textContent.trim() ?? null,
+                            comparisonLabels: [...(placeComparison?.querySelectorAll(
+                                '.place-comparison__card:first-child dt'
+                            ) ?? [])].map((element) => element.textContent.trim()),
+                            comparisonAccess: placeComparison?.querySelector(
+                                '.place-comparison__card:first-child dl > div:nth-child(4) dd'
+                            )?.textContent.trim() ?? null,
+                        },
+                        placeLayout: {
+                            clippedLabels: placeRegions.flatMap((region) => [...region.querySelectorAll(
+                                '.summary-stat__label span, .summary-stat__detail, '
+                                    + '.place-search__categories button span, .field-group__label, '
+                                    + '.place-search__toggle span, .place-directory__modes a span, '
+                                    + '.place-directory__views a span, .place-results__layers a span, '
+                                    + '.place-map__header h2, .place-comparison dt, .place-comparison > header h2'
+                            )]).filter((element) => (
+                                element.scrollWidth > element.clientWidth + 1
+                                || element.scrollHeight > element.clientHeight + 1
+                            )).map((element) => ({
+                                text: element.textContent.trim(),
+                                clientWidth: element.clientWidth,
+                                scrollWidth: element.scrollWidth,
+                                clientHeight: element.clientHeight,
+                                scrollHeight: element.scrollHeight,
+                            })),
+                            smallTargets: placeTargets.map((element) => ({
+                                label: element.getAttribute('aria-label')
+                                    || element.textContent.trim().slice(0, 80)
+                                    || element.getAttribute('placeholder')
+                                    || element.getAttribute('name'),
+                                width: Math.round(element.getBoundingClientRect().width),
+                                height: Math.round(element.getBoundingClientRect().height),
+                            })).filter((target) => target.width < 44 || target.height < 44),
                         },
                         messagingCopy: {
                             actionLabel: header?.querySelector('.page-header__actions .action span')
@@ -1482,6 +1626,92 @@ try {
                     }
                 }
 
+                if (route.path === '/places') {
+                    const placeCopy = [
+                        behavior.placeCopy.actionLabel,
+                        behavior.placeCopy.summaryLabel,
+                        ...behavior.placeCopy.summaryLabels,
+                        ...behavior.placeCopy.summaryDetails,
+                        ...behavior.placeCopy.localizedSummaryValues,
+                        behavior.placeCopy.searchEyebrow,
+                        behavior.placeCopy.emergencyAction,
+                        ...behavior.placeCopy.primaryLabels,
+                        behavior.placeCopy.searchPlaceholder,
+                        behavior.placeCopy.noPetOption,
+                        behavior.placeCopy.searchAction,
+                        behavior.placeCopy.categoriesLabel,
+                        ...behavior.placeCopy.categoryLabels,
+                        behavior.placeCopy.moreFilters,
+                        ...behavior.placeCopy.filterLabels,
+                        ...behavior.placeCopy.filterDefaults,
+                        behavior.placeCopy.openNow,
+                        ...behavior.placeCopy.filterActions,
+                        behavior.placeCopy.locationTitle,
+                        behavior.placeCopy.locationDescription,
+                        behavior.placeCopy.locationAction,
+                        behavior.placeCopy.controlsLabel,
+                        ...behavior.placeCopy.modeLabels,
+                        behavior.placeCopy.viewLabel,
+                        ...behavior.placeCopy.viewLabels,
+                        behavior.placeCopy.sortLabel,
+                        ...behavior.placeCopy.sortOptions,
+                        behavior.placeCopy.sortAction,
+                        behavior.placeCopy.mapEyebrow,
+                        behavior.placeCopy.mapTitle,
+                        behavior.placeCopy.mapControlsLabel,
+                        ...behavior.placeCopy.mapControlLabels,
+                        behavior.placeCopy.oldTown,
+                        behavior.placeCopy.mapAlternative,
+                        behavior.placeCopy.resultsEyebrow,
+                        behavior.placeCopy.resultsHeading,
+                        behavior.placeCopy.layerLabel,
+                        ...behavior.placeCopy.layerLabels,
+                        behavior.placeCopy.cardHighlights,
+                        ...behavior.placeCopy.cardActions,
+                        behavior.placeCopy.comparisonEyebrow,
+                        behavior.placeCopy.comparisonTitle,
+                        ...behavior.placeCopy.comparisonLabels,
+                        behavior.placeCopy.comparisonAccess,
+                    ];
+
+                    assert(
+                        placeCopy.length === 113
+                            && placeCopy.every((value) => value?.length > 0),
+                        label + ': the place-directory localization surface is incomplete '
+                            + JSON.stringify(behavior.placeCopy) + '.',
+                    );
+                    assert(
+                        behavior.placeCopy.categoryLabels.length === 10
+                            && behavior.placeCopy.modeLabels.length === 6
+                            && behavior.placeCopy.viewLabels.length === 5
+                            && behavior.placeCopy.layerLabels.length === 6,
+                        label + ': place-directory stable option counts changed '
+                            + JSON.stringify(behavior.placeCopy) + '.',
+                    );
+                    assert(
+                        behavior.placeLayout.clippedLabels.length === 0,
+                        label + ': place-directory labels are clipped '
+                            + JSON.stringify(behavior.placeLayout.clippedLabels) + '.',
+                    );
+                    assert(
+                        behavior.placeLayout.smallTargets.length === 0,
+                        label + ': place-directory controls below 44px '
+                            + JSON.stringify(behavior.placeLayout.smallTargets) + '.',
+                    );
+
+                    if (viewport.locale === 'en') {
+                        englishPlaceCopy ??= placeCopy;
+                    } else {
+                        assert(englishPlaceCopy !== null, label + ': English place-directory baseline is missing.');
+                        assert(
+                            placeCopy.every((value, index) => value !== englishPlaceCopy[index]),
+                            label + ': English place-directory system fallback remains. Current '
+                                + JSON.stringify(placeCopy) + '; English '
+                                + JSON.stringify(englishPlaceCopy) + '.',
+                        );
+                    }
+                }
+
                 if (route.path === '/messages') {
                     const messagingCopy = [
                         behavior.messagingCopy.actionLabel,
@@ -1592,6 +1822,7 @@ try {
         break auditRun;
     }
 
+    await setProfileLocale(client, sessionId, 'en');
     await navigate(client, sessionId, `${baseUrl}/forum`);
     const desktopAudit = await evaluate(client, sessionId, pageAuditExpression);
     assertPageAudit(desktopAudit, 'desktop forum');

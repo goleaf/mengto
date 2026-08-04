@@ -61,16 +61,16 @@ final class PlaceCatalog
     public function categoryOptions(): array
     {
         return [
-            'all' => __('messages.all_places_b4c2045f3a'),
-            'park' => __('messages.parks_11d467de82'),
-            'dog-park' => __('messages.dog_parks_95951822fa'),
-            'route' => __('messages.walking_routes_defb081135'),
-            'vet' => __('messages.veterinary_clinics_55964ddd11'),
-            'emergency-vet' => __('messages.24_hour_clinics_d66342d91b'),
-            'pet-store' => __('messages.pet_stores_c626117041'),
-            'grooming' => __('messages.grooming_5049c0bd16'),
-            'shelter' => __('messages.shelters_2e5e231d5f'),
-            'pet-cafe' => __('messages.pet_friendly_cafes_5032287e62'),
+            'all' => __('place_directory.options.categories.all'),
+            'park' => __('place_directory.options.categories.park'),
+            'dog-park' => __('place_directory.options.categories.dog-park'),
+            'route' => __('place_directory.options.categories.route'),
+            'vet' => __('place_directory.options.categories.vet'),
+            'emergency-vet' => __('place_directory.options.categories.emergency-vet'),
+            'pet-store' => __('place_directory.options.categories.pet-store'),
+            'grooming' => __('place_directory.options.categories.grooming'),
+            'shelter' => __('place_directory.options.categories.shelter'),
+            'pet-cafe' => __('place_directory.options.categories.pet-cafe'),
         ];
     }
 
@@ -80,14 +80,14 @@ final class PlaceCatalog
     public function speciesOptions(): array
     {
         return [
-            'any' => __('messages.any_pet_206a508d72'),
-            'dog' => __('messages.dogs_246b0deffb'),
-            'cat' => __('messages.cats_ec05d70c6f'),
-            'bird' => __('messages.birds_89e7dc3b9e'),
-            'rabbit' => __('messages.rabbits_83dc6246de'),
-            'rodent' => __('messages.small_mammals_30d34593f1'),
-            'reptile' => __('messages.reptiles_8c274bad42'),
-            'exotic' => __('messages.exotic_pets_7114a95a02'),
+            'any' => __('place_directory.options.species.any'),
+            'dog' => __('place_directory.options.species.dog'),
+            'cat' => __('place_directory.options.species.cat'),
+            'bird' => __('place_directory.options.species.bird'),
+            'rabbit' => __('place_directory.options.species.rabbit'),
+            'rodent' => __('place_directory.options.species.rodent'),
+            'reptile' => __('place_directory.options.species.reptile'),
+            'exotic' => __('place_directory.options.species.exotic'),
         ];
     }
 
@@ -97,12 +97,12 @@ final class PlaceCatalog
     public function sizeOptions(): array
     {
         return [
-            'any' => __('messages.any_size_9f46b4f2f6'),
-            'very-small' => __('messages.very_small_bf11dd3e1a'),
-            'small' => __('messages.small_5263293fc2'),
-            'medium' => __('messages.medium_8e588cd187'),
-            'large' => __('messages.large_ab80540d98'),
-            'very-large' => __('messages.very_large_0ada1cd747'),
+            'any' => __('place_directory.options.sizes.any'),
+            'very-small' => __('place_directory.options.sizes.very-small'),
+            'small' => __('place_directory.options.sizes.small'),
+            'medium' => __('place_directory.options.sizes.medium'),
+            'large' => __('place_directory.options.sizes.large'),
+            'very-large' => __('place_directory.options.sizes.very-large'),
         ];
     }
 
@@ -112,6 +112,7 @@ final class PlaceCatalog
     public function iconOptions(): array
     {
         return [
+            'all' => 'layout-grid',
             'park' => 'trees',
             'dog-park' => 'fence',
             'route' => 'route',

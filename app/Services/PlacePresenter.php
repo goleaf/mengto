@@ -64,7 +64,9 @@ final class PlacePresenter
 
         return [
             'owner' => $this->profiles->owner(),
-            'page_title' => $emergency ? __('messages.emergency_veterinary_help_pawcircle_164829d5e3') : __('messages.places_map_pawcircle_3cab208400'),
+            'page_title' => $emergency
+                ? __('place_directory.page.emergency_title')
+                : __('place_directory.page.title'),
             'active_section' => 'places',
             'summary' => $summary,
             'places' => [
@@ -78,6 +80,7 @@ final class PlacePresenter
                 'filter_options' => $this->filterOptions(),
                 'filter_labels' => $this->filterLabels(),
                 'category_options' => $this->catalog->categoryOptions(),
+                'category_icons' => $this->catalog->iconOptions(),
                 'species_options' => $this->catalog->speciesOptions(),
                 'size_options' => $this->catalog->sizeOptions(),
                 'sort_options' => $this->sortOptions(),
@@ -101,8 +104,8 @@ final class PlacePresenter
                 'submissions' => $this->state->submissions(),
                 'emergency' => $emergency,
                 'empty_message' => $emergency
-                    ? __('messages.no_suitable_open_clinic_matches_every_filter_widen_the_a_51daaa4fc8')
-                    : __('messages.no_places_match_every_selected_filter_remove_one_filter__4a57379874'),
+                    ? __('place_directory.empty.emergency')
+                    : __('place_directory.empty.default'),
             ],
         ];
     }
@@ -317,7 +320,7 @@ final class PlacePresenter
             ]),
             'category_tone' => $this->categoryTone((string) $place['primary_category']),
             'save_action' => [
-                'label' => $saved ? __('messages.saved_b5c120b316') : __('messages.save_place_56a1824be3'),
+                'label' => $saved ? __('place_directory.actions.saved') : __('place_directory.actions.save'),
                 'icon' => $saved ? 'bookmark-check' : 'bookmark',
                 'active' => $saved,
                 'payload' => ['action' => 'toggle-place-save', 'target' => $place['key']],
@@ -606,20 +609,20 @@ final class PlacePresenter
         ));
 
         return [
-            'eyebrow' => $emergency ? __('messages.urgent_veterinary_navigator_36b5ceda88') : __('messages.map_and_place_catalog_e874309a26'),
-            'title' => $emergency ? __('messages.find_suitable_veterinary_help_now_4d0c2c5c2b') : __('messages.plan_the_next_place_with_your_pet_47805e2905'),
+            'eyebrow' => $emergency ? __('place_directory.summary.emergency_eyebrow') : __('place_directory.summary.eyebrow'),
+            'title' => $emergency ? __('place_directory.summary.emergency_heading') : __('place_directory.summary.heading'),
             'description' => $emergency
-                ? __('messages.showing_open_or_on_call_clinics_that_match_the_selected__018c1023e4')
-                : __('messages.compare_parks_dog_runs_routes_clinics_services_shelters__f8d00ec18d'),
+                ? __('place_directory.summary.emergency_description')
+                : __('place_directory.summary.description'),
             'count' => __('presentation.places_in_area', [
                 'count' => trans_choice('presentation.places_count', count($places), ['count' => count($places)]),
                 'area' => $filters['area'],
             ]),
             'highlights' => [
-                ['label' => __('messages.open_now_14b67e6207'), 'value' => (string) $open, 'detail' => __('messages.based_on_stored_hours_cbc489530c')],
-                ['label' => __('messages.selected_pet_fec59d3d54'), 'value' => Str::headline($filters['pet']), 'detail' => __('messages.recommendations_are_editable_9c98126337')],
-                ['label' => __('messages.map_privacy_cb5b532cd2'), 'value' => __('messages.generalized_d2f705b2f2'), 'detail' => __('messages.no_home_point_published_aee7985f18')],
-                ['label' => __('messages.active_mode_75f1e987eb'), 'value' => Str::headline($filters['mode']), 'detail' => __('messages.filters_stay_in_place_386bc45155')],
+                ['label' => __('place_directory.summary.items.open.label'), 'value' => (string) $open, 'detail' => __('place_directory.summary.items.open.detail')],
+                ['label' => __('place_directory.summary.items.selected_pet.label'), 'value' => $this->petLabel($filters['pet']), 'detail' => __('place_directory.summary.items.selected_pet.detail')],
+                ['label' => __('place_directory.summary.items.map_privacy.label'), 'value' => __('place_directory.summary.items.map_privacy.value'), 'detail' => __('place_directory.summary.items.map_privacy.detail')],
+                ['label' => __('place_directory.summary.items.active_mode.label'), 'value' => $this->modeOptions()[$filters['mode']] ?? $this->modeOptions()['browse'], 'detail' => __('place_directory.summary.items.active_mode.detail')],
             ],
         ];
     }
@@ -685,32 +688,22 @@ final class PlacePresenter
     private function filterOptions(): array
     {
         return [
-            'distance' => ['any' => __('messages.any_distance_259532822d'), '1' => __('messages.up_to_1_km_f42baab3f5'), '5' => __('messages.up_to_5_km_a2dd8f44b2'), '10' => __('messages.up_to_10_km_e64168ccc8')],
-            'leash' => ['any' => __('messages.any_leash_rule_4631115f15'), 'off-leash' => __('messages.off_leash_area_0e3c0e0ee5'), 'fenced' => __('messages.fenced_620063310a'), 'required' => __('messages.leash_required_7ea874a2cb')],
-            'accessibility' => ['any' => __('messages.any_access_2ba9ccfee7'), 'wheelchair' => __('messages.step_free_or_wheelchair_access_813f8c1121'), 'quiet' => __('messages.quiet_zone_14e9fd069e'), 'parking' => __('messages.parking_4a64d6c849'), 'lighting' => __('messages.lighting_07607d609f')],
-            'safety' => ['any' => __('messages.any_safety_features_eb295e22b9'), 'fenced' => __('messages.fully_fenced_9a51f98506'), 'water' => __('messages.water_7ca7dea906'), 'lighting' => __('messages.lighting_07607d609f'), 'no-warnings' => __('messages.no_active_warnings_11cfa35292')],
-            'price' => ['any' => __('messages.any_price_63df5dcc99'), 'free' => __('messages.free_f411a1fb62'), 'paid' => __('messages.paid_fb81b961af')],
-            'rating' => ['any' => __('messages.any_rating_eb448ef89a'), '4' => __('messages.4_0_and_above_396ac80126'), '4.5' => __('messages.4_5_and_above_9538114b40')],
-            'verification' => ['any' => __('messages.any_source_8c7bc20d51'), 'verified' => __('messages.verified_or_managed_dbbfbaac69'), 'community' => __('messages.community_verified_5f4632da31'), 'recent' => __('messages.updated_recently_1206596132')],
-            'crowd' => ['any' => __('messages.any_crowd_level_e8ee29e691'), 'low' => __('messages.usually_quiet_c8b6cfea6b'), 'medium' => __('messages.moderate_5c42afc7a2'), 'high' => __('messages.often_busy_be95954ef4'), 'unknown' => __('messages.no_data_3b41ba9c7c')],
-            'visit_time' => ['any' => __('messages.any_time_5e7de49a40'), 'morning' => __('messages.morning_e9376a281a'), 'evening' => __('messages.evening_458c1fed57'), 'night' => __('messages.night_4e9f8db824'), 'quiet' => __('messages.quiet_time_417c2be235')],
+            'distance' => __('place_directory.options.filters.distance'),
+            'leash' => __('place_directory.options.filters.leash'),
+            'accessibility' => __('place_directory.options.filters.accessibility'),
+            'safety' => __('place_directory.options.filters.safety'),
+            'price' => __('place_directory.options.filters.price'),
+            'rating' => __('place_directory.options.filters.rating'),
+            'verification' => __('place_directory.options.filters.verification'),
+            'crowd' => __('place_directory.options.filters.crowd'),
+            'visit_time' => __('place_directory.options.filters.visit_time'),
         ];
     }
 
     /** @return array<string, string> */
     private function filterLabels(): array
     {
-        return [
-            'distance' => __('messages.distance_b7bdf7a2d6'),
-            'leash' => __('messages.leash_rule_c1ac5d532d'),
-            'accessibility' => __('messages.accessibility_d3368cbffe'),
-            'safety' => __('messages.safety_726d11bd5b'),
-            'price' => __('messages.price_93c91c851e'),
-            'rating' => __('messages.rating_9f29530464'),
-            'verification' => __('messages.verification_7140f4f19d'),
-            'crowd' => __('messages.crowd_level_00d26eb623'),
-            'visit_time' => __('messages.visit_time_1d9762a5fe'),
-        ];
+        return __('place_directory.options.filter_labels');
     }
 
     /**
@@ -718,16 +711,7 @@ final class PlacePresenter
      */
     private function sortOptions(): array
     {
-        return [
-            'recommended' => __('messages.recommended_d70604e843'),
-            'distance' => __('messages.distance_b7bdf7a2d6'),
-            'travel-time' => __('messages.travel_time_fc2dc45944'),
-            'rating' => __('messages.rating_9f29530464'),
-            'reviews' => __('messages.review_count_47ee12806e'),
-            'open' => __('messages.open_status_0ec35c6e2a'),
-            'freshness' => __('messages.recently_updated_474b2a869a'),
-            'name' => __('messages.name_dcd1d5223f'),
-        ];
+        return __('place_directory.options.sort');
     }
 
     /**
@@ -735,13 +719,7 @@ final class PlacePresenter
      */
     private function viewOptions(): array
     {
-        return [
-            'split' => __('messages.map_list_50c13b0456'),
-            'map' => __('messages.map_be176b0015'),
-            'list' => __('messages.list_6f202f54a7'),
-            'fullscreen' => __('messages.fullscreen_map_46259bcfd6'),
-            'route' => __('messages.route_mode_0bb6ec8534'),
-        ];
+        return __('place_directory.options.views');
     }
 
     /**
@@ -749,14 +727,7 @@ final class PlacePresenter
      */
     private function modeOptions(): array
     {
-        return [
-            'browse' => __('messages.all_places_b4c2045f3a'),
-            'favorites' => __('messages.favorites_7a1f2a83ac'),
-            'visited' => __('messages.visited_ec1e62325e'),
-            'events' => __('messages.with_events_7f8c568597'),
-            'warnings' => __('messages.warnings_0e04cd10f9'),
-            'emergency' => __('messages.emergency_clinics_73201eeeca'),
-        ];
+        return __('place_directory.options.modes');
     }
 
     /**
@@ -764,14 +735,16 @@ final class PlacePresenter
      */
     private function layerOptions(): array
     {
-        return [
-            'places' => __('messages.places_eb5cfb7367'),
-            'routes' => __('messages.walking_routes_defb081135'),
-            'events' => __('messages.events_8d14f6e72d'),
-            'warnings' => __('messages.warnings_0e04cd10f9'),
-            'lost-pets' => __('messages.lost_pets_0219466249'),
-            'emergency' => __('messages.emergency_clinics_73201eeeca'),
-        ];
+        return __('place_directory.options.layers');
+    }
+
+    private function petLabel(string $pet): string
+    {
+        return match ($pet) {
+            'scout' => __('ui.scout_8a1db462be'),
+            'nori' => __('ui.nori_a64203ba20'),
+            default => __('place_directory.search.no_pet'),
+        };
     }
 
     /**

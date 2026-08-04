@@ -494,6 +494,42 @@ compilation passed. Fresh disposable SQLite applied 137 migrations, retained
 218 tables and five users across repeated seeding; the 180-route smoke, both
 forum-source checks, and the 847-call canonical icon audit also passed.
 
+The eleventh non-header localization follow-up closes the `/places` directory
+system surface. A dedicated 188-leaf EN/LT/RU contract owns the page identity,
+summary, search, categories, filters, location status, catalog modes, views,
+sorting, map controls, layers, empty states, comparison labels, and actions.
+Stable category, species, size, filter, mode, view, and layer codes remain
+locale-independent. Proper place and pet identities and attributable place
+content remain outside this system-copy contract. Generalized-location state
+now stores a stable internal marker and resolves its visible label in the
+active locale, so changing locale cannot replay an English string persisted by
+an earlier session. The directory render adds no query; the existing
+catalog-growth regression confirms its query count remains bounded.
+
+Category, mode, view, and layer controls now use the canonical Lucide primitive
+with server-prepared icon names instead of presentation matching in Blade. The
+browser ratchet compares 113 rendered system fields with the English baseline,
+checks category/mode/view/layer cardinality, text clipping, and every visible
+directory target. It exposed and closed a 20-pixel comparison-link target and
+a Lithuanian map heading whose 20-pixel line box clipped diacritics. All 91
+route/viewport audits and 26 screenshots then passed across 320-1920 pixels,
+RU/LT, reduced motion, forced colors, and effective 200% zoom with zero clipped
+labels, sub-44-pixel targets, raw keys, or console errors. The dedicated
+directory/detail browser run also passed four desktop/mobile surfaces, loaded
+all six visible images, synchronized map selection, and found no private exact
+location leak.
+
+The focused place contract passed 18 tests with 581 assertions; the affected
+place slice passed 53 tests with 1,620 assertions; the architecture slice
+passed 25 tests with 31,271 assertions; and the complete sequential suite
+passed 2,923 tests with 96,639 assertions. Full Pint and Larastan passed with
+zero findings; Composer strict validation, locked audit, PHP 8.5 platform
+requirements, NPM audit, production Vite build, and isolated
+config/event/route/view cache compilation passed. Fresh disposable SQLite
+applied 137 migrations and retained 218 tables, five users, and fourteen places
+across repeated seeding. The 180-route smoke, both forum-source checks, and the
+849-call canonical icon audit also passed.
+
 ### 3.3 Next Execution Checkpoint
 
 1. Complete Package 0 by assigning the stable requirement ID and recording the
@@ -506,8 +542,8 @@ forum-source checks, and the 847-call canonical icon audit also passed.
    complete from source intent or screenshots alone.
 4. Continue the non-header English fallback audit on the remaining priority
    RU/LT pages; the global navigation and utility header, `/medical-records`,
-   `/care-journals`, `/lost-found`, `/marketplace`, `/experts`, and the
-   `/groups`, `/neighbors`, and `/messages` system directories are
+   `/care-journals`, `/places`, `/lost-found`, `/marketplace`, `/experts`, and
+   the `/groups`, `/neighbors`, and `/messages` system directories are
    browser-verified. Group detail system chrome and first-party fixture content
    are verified across all eight tabs, while genuine future member-authored
    content, deeper message-thread system copy, and the other priority bodies

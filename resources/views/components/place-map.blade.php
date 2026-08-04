@@ -14,24 +14,24 @@
 >
     <header class="place-map__header">
         <div>
-            <p class="place-map__eyebrow">{{ $emergency ? __('ui.urgent_mode_6593baaaa0') : __('presentation.layer_name', ['name' => $layerLabel]) }}</p>
-            <h2 id="place-map-title">{{ $emergency ? __('ui.suitable_open_clinics_f0eae2582a') : __('ui.places_in_the_selected_area_8f304ae7f9') }}</h2>
+            <p class="place-map__eyebrow">{{ $emergency ? __('place_directory.map.urgent_mode') : __('presentation.layer_name', ['name' => $layerLabel]) }}</p>
+            <h2 id="place-map-title">{{ $emergency ? __('place_directory.map.clinics_title') : __('place_directory.map.places_title') }}</h2>
         </div>
-        <div class="place-map__controls" aria-label="{{ __('ui.map_controls_e463873f9f') }}">
-            <button type="button" class="icon-button" data-place-zoom="in" aria-label="{{ __('ui.zoom_in_0e47f09a74') }}">
+        <div class="place-map__controls" aria-label="{{ __('place_directory.map.controls') }}">
+            <button type="button" class="icon-button" data-place-zoom="in" aria-label="{{ __('place_directory.map.zoom_in') }}">
                 <x-ui-icon name="plus" size="sm" />
             </button>
-            <button type="button" class="icon-button" data-place-zoom="out" aria-label="{{ __('ui.zoom_out_bc7b631a68') }}">
+            <button type="button" class="icon-button" data-place-zoom="out" aria-label="{{ __('place_directory.map.zoom_out') }}">
                 <x-ui-icon name="minus" size="sm" />
             </button>
-            <button type="button" class="icon-button" data-place-fullscreen aria-label="{{ __('ui.toggle_fullscreen_map_55b5219245') }}" aria-pressed="false">
+            <button type="button" class="icon-button" data-place-fullscreen aria-label="{{ __('place_directory.map.fullscreen') }}" aria-pressed="false">
                 <x-ui-icon name="maximize-2" size="sm" />
             </button>
         </div>
     </header>
 
     <div class="place-map__canvas" data-place-map-canvas>
-        <span class="place-map__district place-map__district--old-town">{{ __('ui.old_town_9a9e4acaf8') }}</span>
+        <span class="place-map__district place-map__district--old-town">{{ __('place_directory.map.old_town') }}</span>
         <span class="place-map__district place-map__district--zverynas">{{ __('ui.žvėrynas_76cb91baf6') }}</span>
         <span class="place-map__district place-map__district--naujamiestis">{{ __('ui.naujamiestis_17a26d0ce9') }}</span>
         <span class="place-map__river" aria-hidden="true"></span>
@@ -56,7 +56,7 @@
                 @endif
             </button>
         @empty
-            <p class="place-map__empty">{{ __('ui.no_map_points_match_these_filters_813101d503') }}</p>
+            <p class="place-map__empty">{{ __('place_directory.map.no_points') }}</p>
         @endforelse
     </div>
 
@@ -70,7 +70,7 @@
                 @if ($selected['call_url'])
                     <x-action-control
                         :href="$selected['call_url']"
-                        label="{{ __('ui.call_d6e645b7d2') }}"
+                        label="{{ __('place_directory.actions.call') }}"
                         icon="phone"
                         variant="surface"
                         size="compact"
@@ -78,7 +78,7 @@
                 @endif
                 <x-action-control
                     :href="$selected['detail_url']"
-                    label="{{ __('ui.open_ed077f3d81') }}"
+                    label="{{ __('place_directory.actions.open') }}"
                     icon="arrow-right"
                     variant="primary"
                     size="compact"
@@ -86,15 +86,15 @@
                 />
             </div>
         @else
-            <span>{{ __('ui.no_place_selected_21564af90e') }}</span>
+            <span>{{ __('place_directory.map.no_selection') }}</span>
         @endif
     </div>
 
-    <ol class="sr-only" aria-label="{{ __('ui.text_alternative_for_map_locations_9fcfc6f49c') }}">
+    <ol class="sr-only" aria-label="{{ __('place_directory.map.text_alternative') }}">
         @forelse ($places as $marker)
             <li>{{ $marker['label'] }}</li>
         @empty
-            <li>{{ __('ui.no_locations_available_c1f36516a2') }}</li>
+            <li>{{ __('place_directory.map.no_locations') }}</li>
         @endforelse
     </ol>
 </section>

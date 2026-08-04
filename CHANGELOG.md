@@ -18,6 +18,12 @@
 
 ### Interface System
 
+- Localized the complete `/places` directory system surface through a dedicated
+  188-leaf EN/LT/RU contract; kept filter, mode, view, and layer codes stable;
+  resolved generalized-location labels in the active locale instead of
+  persisting translated copy; and unified category, mode, and map-layer
+  controls on canonical Lucide icons with 44-pixel-safe comparison links and
+  diacritic-safe map headings.
 - Localized the `/messages` system directory surface through a dedicated
   32-leaf EN/LT/RU contract for folders, search, empty states, conversation
   types, and relative dates; preserved member-authored names and message bodies

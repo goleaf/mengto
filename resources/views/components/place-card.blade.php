@@ -51,7 +51,7 @@
 
         <x-card-description spacing="none">{{ $place['summary'] }}</x-card-description>
 
-        <div class="place-card__facts" aria-label="{{ __('ui.place_highlights_e9c48986d7') }}">
+        <div class="place-card__facts" aria-label="{{ __('place_directory.results.highlights') }}">
             <span>
                 <x-ui-icon name="star" size="sm" />
                 {{ $place['rating_label'] }}
@@ -91,7 +91,7 @@
             />
             <x-action-control
                 :href="$place['route_url']"
-                label="{{ __('ui.route_adc74704d6') }}"
+                label="{{ __('place_directory.actions.route') }}"
                 icon="navigation"
                 variant="primary"
                 size="compact"
@@ -101,7 +101,7 @@
             @if ($place['call_url'])
                 <x-action-control
                     :href="$place['call_url']"
-                    label="{{ __('ui.call_d6e645b7d2') }}"
+                    label="{{ __('place_directory.actions.call') }}"
                     icon="phone"
                     variant="surface"
                     size="compact"
@@ -109,7 +109,7 @@
             @endif
             <x-action-control
                 :href="$place['detail_url']"
-                label="{{ __('ui.details_45989de49f') }}"
+                label="{{ __('place_directory.actions.details') }}"
                 icon="arrow-right"
                 variant="ghost"
                 size="compact"

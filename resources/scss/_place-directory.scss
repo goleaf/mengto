@@ -240,8 +240,13 @@
         overscroll-behavior-inline: contain;
     }
 
-    .place-directory__modes a {
+    .place-directory__modes a,
+    .place-results__layers a {
+        display: inline-flex;
         min-block-size: 2.75rem;
+        gap: 0.4rem;
+        align-items: center;
+        justify-content: center;
         flex: 0 0 auto;
     }
 
@@ -326,8 +331,13 @@
         padding: 0.875rem;
     }
 
+    .place-map__header > div:first-child {
+        min-inline-size: 0;
+    }
+
     .place-map__header h2 {
         font-size: clamp(1rem, 3.8vw, 1.25rem);
+        line-height: 1.3;
     }
 
     .place-map__controls {
@@ -378,11 +388,6 @@
         padding-block-end: 0.2rem;
         overflow-x: auto;
         overscroll-behavior-inline: contain;
-    }
-
-    .place-results__layers a {
-        min-block-size: 2.75rem;
-        flex: 0 0 auto;
     }
 
     .place-results__list {
@@ -525,6 +530,9 @@
     }
 
     .place-comparison__card h3 a {
+        display: inline-flex;
+        min-block-size: 2.75rem;
+        align-items: center;
         color: $leaf;
         text-underline-offset: 0.18em;
     }
