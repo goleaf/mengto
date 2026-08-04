@@ -8,6 +8,7 @@ use App\Enums\PetBirthDatePrecision;
 use App\Enums\PetBreedConfidence;
 use App\Enums\PetBreedOriginType;
 use App\Enums\PetBreedSource;
+use App\Enums\PetLifeStage;
 use App\Enums\PetManagerRole;
 use App\Enums\PetProfileVisibility;
 use App\Enums\PetSpeciesConfidence;
@@ -62,6 +63,8 @@ final class PetProfileForm extends Form
 
     public string $celebrationDay = '';
 
+    public string $lifeStageOverride = 'auto';
+
     public string $sex = 'unknown';
 
     public string $reproductiveStatus = 'unknown';
@@ -103,6 +106,7 @@ final class PetProfileForm extends Form
             ],
             'breed' => ['nullable', 'string', 'max:120'],
             ...$this->birthRules(),
+            'lifeStageOverride' => $this->lifeStageRule(),
             'sex' => [
                 'required',
                 Rule::in(['male', 'female', 'unknown', 'undetermined', 'other-confirmed']),
@@ -188,6 +192,7 @@ final class PetProfileForm extends Form
     ): array {
         $validated = $this->validate([
             ...$this->birthRules(),
+            'lifeStageOverride' => $this->lifeStageRule(),
             'sex' => [
                 'required',
                 Rule::in(['male', 'female', 'unknown', 'undetermined', 'other-confirmed']),
@@ -224,6 +229,9 @@ final class PetProfileForm extends Form
 
         return [
             ...$normalized,
+            'life_stage_override' => $validated['lifeStageOverride'] === 'auto'
+                ? null
+                : (string) $validated['lifeStageOverride'],
             'sex' => (string) $validated['sex'],
             'reproductive_status' => (string) $validated['reproductiveStatus'],
         ];
@@ -395,6 +403,9 @@ final class PetProfileForm extends Form
         $this->celebrationDay = $profile->birthday_celebration_day === null
             ? ''
             : (string) $profile->birthday_celebration_day;
+        $this->lifeStageOverride = $profile->getRawOriginal('life_stage_override') === null
+            ? 'auto'
+            : $profile->life_stage_override->value;
 
         match ($profile->birth_date_precision) {
             PetBirthDatePrecision::Exact,
@@ -440,6 +451,9 @@ final class PetProfileForm extends Form
             'breed' => trim((string) ($validated['breed'] ?? '')),
             'body' => trim((string) ($validated['bio'] ?? '')),
             ...$this->birthInput($validated),
+            'life_stage_override' => $validated['lifeStageOverride'] === 'auto'
+                ? null
+                : (string) $validated['lifeStageOverride'],
             'sex' => (string) $validated['sex'],
             'reproductive_status' => (string) $validated['reproductiveStatus'],
         ];
@@ -570,6 +584,21 @@ final class PetProfileForm extends Form
             ],
             'celebrationMonth' => ['nullable', 'integer', 'between:1,12', 'required_with:celebrationDay'],
             'celebrationDay' => ['nullable', 'integer', 'between:1,31', 'required_with:celebrationMonth'],
+        ];
+    }
+
+    /** @return list<mixed> */
+    private function lifeStageRule(): array
+    {
+        return [
+            'required',
+            Rule::in([
+                'auto',
+                ...array_map(
+                    static fn (PetLifeStage $stage): string => $stage->value,
+                    PetLifeStage::cases(),
+                ),
+            ]),
         ];
     }
 }

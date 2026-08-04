@@ -42,14 +42,42 @@ Last updated: 2026-08-04.
   `pet.identity.0072-pet.identity.0122` requirements with normalized multiple
   origins, explicit confidence and provenance, optional mixed percentages,
   and legacy compatibility. It is release-verified and published.
+- The bounded life-stage slice implements 12 selected
+  `pet.identity.0189-pet.identity.0204` requirements with animal-group-specific
+  automatic thresholds and attributed manual clarification. Implementation and
+  release verification are complete; publication is pending.
 
 ## Current Work Package
 
-The current package preserves honest breed ancestry and provenance without
-forcing one breed or treating appearance as proof. It preserves all existing
-pet and adjacent-domain links while adding one normalized relation, a shared
-server boundary for all mutation paths, localized confidence/source controls,
-and an honest public projection.
+The current package projects a conservative life stage from the published age
+range without storing a stale derived value or applying dog boundaries to all
+animals. It preserves every existing link while adding an attributed nullable
+manual clarification, one shared server boundary, and localized workspace and
+public source labels.
+
+## Life Stage
+
+- Newborn, juvenile, young, adult, senior, and unknown are controlled enum
+  values. Automatic stages derive at read time from the existing honest age
+  range and separate dog, cat, bird, rabbit, rodent, fish, reptile, and horse
+  thresholds; uncertain or boundary-crossing ranges remain unknown.
+- The nullable manual clarification retains its authorized actor and time,
+  preserves provenance on an idempotent no-op, and clears all three stored
+  values when automatic mode is restored. It is never presented as medical
+  verification.
+- `PetLifeStageOverrideNormalizer`, `PetLifeStageResolver`, and
+  `PetLifeStagePresenter` form the shared server and presentation boundaries.
+  The progressive and compatibility updates reuse them without adding a query,
+  while Blade receives only prepared localized scalar data.
+- The focused package passed 17 tests and 67 assertions; affected and complete
+  pet-profile regressions passed 80 tests with 4,049 assertions and 138 tests
+  with 4,445 assertions. The final isolated complete suite passed 2,903 tests
+  and 94,998 assertions in 170.033 seconds.
+- Full Pint, Larastan, dependency, disposable migration/seed, Vite, cache,
+  source-generation, and connected Chrome gates passed. The browser saved a
+  manual stage, verified its privacy-safe public projection, restored automatic
+  mode, and found no responsive, labeling, touch-target, raw-key, focus, or
+  console defect at 1440px, 390px, or 320px.
 
 ## Creation Interface Refinement
 
@@ -257,7 +285,8 @@ and an honest public projection.
 
 ## Next Package
 
-Select the next dependency-safe appearance-fact or life-stage package.
+After the release-verified life-stage package is published, select the next
+dependency-safe appearance-fact package.
 Do not treat safe candidate review, possible species, alternative-name
 history, or birth precision as duplicate merge, proof verification, taxonomy
 verification, lost/found coordination, dispute resolution, organization

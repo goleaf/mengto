@@ -214,6 +214,22 @@ required. Exact scope, release evidence, and remaining life-stage and
 verification work are in
 `docs/plans/pet-profile-birth-precision-work-package.md`.
 
+## Life Stage
+
+The profile projects newborn, juvenile, young, adult, senior, or unknown from
+the existing age range and a controlled animal-group catalogue. Dog, cat,
+bird, rabbit, rodent, fish, reptile, and horse groups have separate thresholds;
+unsupported groups do not inherit dog rules. An uncertain species, unknown
+age, or age range crossing a threshold stays unknown.
+
+The derived stage is recalculated at read time and is never stored. An
+authorized profile manager may record a nullable clarification with actor and
+observation time; clearing it restores automatic calculation. The override is
+not medical verification. Workspace and public views receive the localized
+stage and source from `PetLifeStagePresenter` without exposing provenance IDs
+or timestamps. Exact scope and remaining cross-domain work are in
+`docs/plans/pet-profile-life-stage-work-package.md`.
+
 ## Breed Origin And Provenance
 
 The Breed or origin step stores the overall description separately from up to

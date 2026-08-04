@@ -7,7 +7,26 @@ This living plan records work that was actually performed. A pass is
 status remains authoritative in
 `docs/requirements/compliance-matrix.md`.
 
-## Current Delivery: Pet Breed Origin And Provenance
+## Current Delivery: Pet Life Stage
+
+Status: `implemented and release-verified; publication pending` on 2026-08-04.
+
+- Derive newborn, juvenile, young, adult, senior, or unknown at read time from
+  the existing honest age range and controlled animal-group thresholds.
+- Keep separate dog, cat, bird, rabbit, rodent, fish, reptile, and horse
+  boundaries; never use dog thresholds as a global fallback.
+- Store only an authorized manual clarification with actor and time, and label
+  it separately from an automatic result or medical verification.
+- Reuse one server normalizer in progressive and durable compatibility update
+  paths, retaining authorization, optimistic locking, idempotency, audit, and
+  cache invalidation.
+- Render EN/LT/RU workspace and public projections with no added query or
+  private provenance disclosure.
+
+Exact scope and final observed evidence belong in
+`docs/plans/pet-profile-life-stage-work-package.md`.
+
+## Previous Delivery: Pet Breed Origin And Provenance
 
 Status: `implemented, verified, and published` on 2026-08-04.
 

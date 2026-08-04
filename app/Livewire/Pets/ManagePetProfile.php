@@ -20,6 +20,7 @@ use App\Enums\PetBreedConfidence;
 use App\Enums\PetBreedOriginType;
 use App\Enums\PetBreedSource;
 use App\Enums\PetEvidenceStatus;
+use App\Enums\PetLifeStage;
 use App\Enums\PetManagerRole;
 use App\Enums\PetProfileCompletionStep;
 use App\Enums\PetProfileNameType;
@@ -40,6 +41,7 @@ use App\Models\PetProfileManager;
 use App\Models\PetProfileMedia;
 use App\Models\User;
 use App\Services\PetBirthDetailsNormalizer;
+use App\Services\PetLifeStagePresenter;
 use App\Services\PetProfileAgeLabel;
 use App\Services\PetProfileCompletionPresenter;
 use App\Services\PetProfileLifecycle;
@@ -127,6 +129,8 @@ final class ManagePetProfile extends Component
 
     private PetProfileAgeLabel $ageLabels;
 
+    private PetLifeStagePresenter $lifeStages;
+
     private AddPetProfileName $addNameAction;
 
     private RemovePetProfileName $removeNameAction;
@@ -143,6 +147,7 @@ final class ManagePetProfile extends Component
         PetProfileCompletionPresenter $completionPresenter,
         PetBirthDetailsNormalizer $birthDetails,
         PetProfileAgeLabel $ageLabels,
+        PetLifeStagePresenter $lifeStages,
         UpdatePetProfileStep $updateStepAction,
         RecordPetProfileFact $recordFactAction,
         UpdatePetProfilePrivacy $privacyAction,
@@ -163,6 +168,7 @@ final class ManagePetProfile extends Component
         $this->completionPresenter = $completionPresenter;
         $this->birthDetails = $birthDetails;
         $this->ageLabels = $ageLabels;
+        $this->lifeStages = $lifeStages;
         $this->updateStepAction = $updateStepAction;
         $this->recordFactAction = $recordFactAction;
         $this->privacyAction = $privacyAction;
@@ -254,6 +260,19 @@ final class ManagePetProfile extends Component
             ->mapWithKeys(static fn (PetBirthDatePrecision $precision): array => [
                 $precision->value => $precision->label(),
             ])->all();
+    }
+
+    /** @return array<string, string> */
+    #[Computed]
+    public function lifeStageOptions(): array
+    {
+        return [
+            'auto' => __('pet_profiles.life_stage.auto'),
+            ...collect(PetLifeStage::cases())
+                ->mapWithKeys(static fn (PetLifeStage $stage): array => [
+                    $stage->value => __("pet_profiles.life_stage.stages.{$stage->value}"),
+                ])->all(),
+        ];
     }
 
     /** @return array<string, string> */
@@ -745,6 +764,7 @@ final class ManagePetProfile extends Component
             'minimumBirthYear' => now()->year - PetBirthDetailsNormalizer::MAX_AGE_YEARS,
             'maximumAgeYears' => PetBirthDetailsNormalizer::MAX_AGE_YEARS,
             'currentAgeLabel' => $this->ageLabels->for($profile),
+            'currentLifeStage' => $this->lifeStages->for($profile),
             'managerMinimumEnd' => now()->addMinute()->format('Y-m-d\TH:i'),
             'activeStep' => [
                 'value' => $activeStep->value,
@@ -891,6 +911,9 @@ final class ManagePetProfile extends Component
                 'estimated_age_recorded_at',
                 'birthday_celebration_month',
                 'birthday_celebration_day',
+                'life_stage_override',
+                'life_stage_override_by_user_id',
+                'life_stage_override_at',
                 'sex',
                 'reproductive_status',
                 'visibility',

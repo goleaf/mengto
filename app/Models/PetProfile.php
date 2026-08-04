@@ -7,6 +7,7 @@ namespace App\Models;
 use App\Casts\PetProfileStatusCast;
 use App\Enums\PetBirthDatePrecision;
 use App\Enums\PetBreedOriginType;
+use App\Enums\PetLifeStage;
 use App\Enums\PetProfileStatus;
 use App\Enums\PetSpeciesConfidence;
 use Carbon\CarbonImmutable;
@@ -30,6 +31,9 @@ use Illuminate\Support\Carbon;
  * @property int|null $birthday_celebration_day
  * @property string|null $breed
  * @property PetBreedOriginType|null $breed_origin_type
+ * @property PetLifeStage|null $life_stage_override
+ * @property int|null $life_stage_override_by_user_id
+ * @property CarbonImmutable|null $life_stage_override_at
  * @property Carbon|null $created_at
  * @property Carbon|null $deleted_at
  * @property int $id
@@ -78,6 +82,9 @@ final class PetProfile extends Model
         'estimated_age_recorded_at',
         'birthday_celebration_month',
         'birthday_celebration_day',
+        'life_stage_override',
+        'life_stage_override_by_user_id',
+        'life_stage_override_at',
         'sex',
         'reproductive_status',
         'visibility',
@@ -110,6 +117,9 @@ final class PetProfile extends Model
             'estimated_age_recorded_at' => 'immutable_datetime',
             'birthday_celebration_month' => 'integer',
             'birthday_celebration_day' => 'integer',
+            'life_stage_override' => PetLifeStage::class,
+            'life_stage_override_by_user_id' => 'integer',
+            'life_stage_override_at' => 'immutable_datetime',
             'species_confidence' => PetSpeciesConfidence::class,
             'status' => PetProfileStatusCast::class,
             'is_discoverable' => 'boolean',

@@ -304,6 +304,21 @@
                             {{ __('pet_profiles.completion.current_age', ['age' => $currentAgeLabel]) }}
                         </p>
                     @endif
+                    <label class="forum-form__field md:col-span-2" for="managed-pet-life-stage">
+                        <span>{{ __('pet_profiles.fields.life_stage') }}</span>
+                        <select id="managed-pet-life-stage" wire:model="form.lifeStageOverride" aria-describedby="managed-pet-life-stage-help managed-pet-life-stage-error" @error('form.lifeStageOverride') aria-invalid="true" @enderror>
+                            @forelse ($this->lifeStageOptions as $value => $label)
+                                <option wire:key="managed-pet-life-stage-{{ $value }}" value="{{ $value }}">{{ $label }}</option>
+                            @empty
+                                <option value="auto">{{ __('pet_profiles.life_stage.auto') }}</option>
+                            @endforelse
+                        </select>
+                        <small id="managed-pet-life-stage-help">{{ __('pet_profiles.completion.help.life_stage') }}</small>
+                        @error('form.lifeStageOverride') <small id="managed-pet-life-stage-error" role="alert">{{ $message }}</small> @enderror
+                    </label>
+                    <p class="md:col-span-2 text-sm text-paw-muted" role="status">
+                        {{ __('pet_profiles.life_stage.current', ['stage' => $currentLifeStage['label'], 'source' => $currentLifeStage['source_label']]) }}
+                    </p>
                     <label class="forum-form__field" for="managed-pet-sex">
                         <span>{{ __('pet_profiles.fields.sex') }}</span>
                         <select id="managed-pet-sex" wire:model="form.sex">

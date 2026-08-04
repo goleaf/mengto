@@ -20,6 +20,16 @@ return [
         'unknown',
         'other',
     ],
+    'life_stage_threshold_months' => [
+        'dog' => ['newborn' => 0, 'juvenile' => 2, 'young' => 6, 'adult' => 24, 'senior' => 84],
+        'cat' => ['newborn' => 0, 'juvenile' => 2, 'young' => 6, 'adult' => 24, 'senior' => 120],
+        'bird' => ['newborn' => 0, 'juvenile' => 1, 'young' => 6, 'adult' => 18, 'senior' => 120],
+        'rabbit' => ['newborn' => 0, 'juvenile' => 1, 'young' => 3, 'adult' => 6, 'senior' => 60],
+        'rodent' => ['newborn' => 0, 'juvenile' => 1, 'young' => 2, 'adult' => 4, 'senior' => 18],
+        'fish' => ['newborn' => 0, 'juvenile' => 1, 'young' => 3, 'adult' => 12, 'senior' => 60],
+        'reptile' => ['newborn' => 0, 'juvenile' => 1, 'young' => 12, 'adult' => 36, 'senior' => 180],
+        'horse' => ['newborn' => 0, 'juvenile' => 1, 'young' => 12, 'adult' => 48, 'senior' => 180],
+    ],
     'versioned_fact_keys' => [
         'name',
         'birth-date',

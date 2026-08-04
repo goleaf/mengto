@@ -14,6 +14,7 @@ use App\Services\ForumActor;
 use App\Services\PetBirthDetailsNormalizer;
 use App\Services\PetBreedOriginNormalizer;
 use App\Services\PetBreedOriginSynchronizer;
+use App\Services\PetLifeStageOverrideNormalizer;
 use App\Services\PetProfileAccess;
 use App\Services\PetProfileCache;
 use App\Services\PetProfileEventRecorder;
@@ -33,6 +34,7 @@ final class UpdatePetProfile
         private readonly PetProfileEventRecorder $events,
         private readonly PetProfileCache $cache,
         private readonly PetProfileNameHistory $nameHistory,
+        private readonly PetLifeStageOverrideNormalizer $lifeStageOverrides,
         private readonly PetBirthDetailsNormalizer $birthDetails,
         private readonly PetBreedOriginNormalizer $breedOrigins,
         private readonly PetBreedOriginSynchronizer $breedOriginSynchronizer,
@@ -61,6 +63,9 @@ final class UpdatePetProfile
                 'estimated_age_recorded_at',
                 'birthday_celebration_month',
                 'birthday_celebration_day',
+                'life_stage_override',
+                'life_stage_override_by_user_id',
+                'life_stage_override_at',
                 'sex',
                 'reproductive_status',
                 'visibility',
@@ -182,6 +187,17 @@ final class UpdatePetProfile
                 $attributes = [
                     ...$attributes,
                     ...$this->birthDetails->normalize($data, $locked),
+                ];
+            }
+
+            if (array_key_exists('life_stage_override', $data)) {
+                $attributes = [
+                    ...$attributes,
+                    ...$this->lifeStageOverrides->attributes(
+                        $locked,
+                        $data['life_stage_override'],
+                        $user->id,
+                    ),
                 ];
             }
 

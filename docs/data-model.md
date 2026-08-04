@@ -148,6 +148,20 @@ classification-to-profile lookup. The relation cascades with its pet, while a
 removed classification nulls only the optional taxonomy reference and retains
 the recorded name/provenance.
 
+## Pet Life Stage Override
+
+The life stage derived from birth precision and the controlled animal-group
+catalogue is not stored. `pet_profiles.life_stage_override` is nullable and
+contains only a controlled manager clarification. The nullable
+`life_stage_override_by_user_id` FK and `life_stage_override_at` timestamp
+record who made that clarification and when; deleting the user nulls only the
+FK while immutable lifecycle/audit evidence retains the actor snapshot.
+
+The composite `(life_stage_override_by_user_id, id)` index supports FK and
+maintenance access. Stage is not a filter or ordering key in the selected
+package, so it has no speculative value index. Existing rows require no
+backfill because null means automatic resolution.
+
 ## Data Retention
 
 Retention is category-specific:

@@ -9,6 +9,7 @@ use App\Models\PetProfile;
 use App\Models\PetProfileManager;
 use App\Models\PetProfileMedia;
 use App\Services\PetBreedOriginPresenter;
+use App\Services\PetLifeStagePresenter;
 use App\Services\PetProfileAgeLabel;
 use App\Services\PetSpeciesLabel;
 use App\Services\ProfilePresenter;
@@ -33,17 +34,21 @@ final class PublicPetProfile extends Component
 
     private PetBreedOriginPresenter $breedOrigins;
 
+    private PetLifeStagePresenter $lifeStages;
+
     public function boot(
         Gate $gate,
         ProfilePresenter $profiles,
         PetProfileAgeLabel $ageLabels,
         PetBreedOriginPresenter $breedOrigins,
+        PetLifeStagePresenter $lifeStages,
         PetSpeciesLabel $speciesLabels,
     ): void {
         $this->gate = $gate;
         $this->profiles = $profiles;
         $this->ageLabels = $ageLabels;
         $this->breedOrigins = $breedOrigins;
+        $this->lifeStages = $lifeStages;
         $this->speciesLabels = $speciesLabels;
     }
 
@@ -83,6 +88,9 @@ final class PublicPetProfile extends Component
                 'estimated_age_recorded_at',
                 'birthday_celebration_month',
                 'birthday_celebration_day',
+                'life_stage_override',
+                'life_stage_override_by_user_id',
+                'life_stage_override_at',
                 'sex',
                 'visibility',
                 'status',
@@ -175,6 +183,7 @@ final class PublicPetProfile extends Component
             'breed_origin' => $this->breedOrigins->for($profile),
             'age' => $this->ageLabels->for($profile),
             'celebration_day' => $this->ageLabels->celebrationFor($profile),
+            'life_stage' => $this->lifeStages->for($profile),
             'status' => $profile->status->label(),
             'bio' => (string) ($profileData['story'] ?? ''),
             'owner' => $ownerLabel,

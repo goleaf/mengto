@@ -121,6 +121,14 @@ breed-based discovery, behavior, health, ownership, and found-animal effects
 remain open. Exact evidence is in
 `docs/plans/pet-profile-breed-origin-work-package.md`.
 
+The life-stage package implements 12 selected
+`pet.identity.0189-pet.identity.0204` records with species-group-specific
+automatic thresholds, conservative handling of uncertain ranges, and an
+attributed authorized override. It adds no recommendation, discovery,
+medical-verification, ownership, taxonomy-import, or lost/found behavior.
+Exact boundaries and evidence are in
+`docs/plans/pet-profile-life-stage-work-package.md`.
+
 ## Phase 19: Ownership And Privacy
 
 **IDs:** `pet.ownership.0001-pet.ownership.0393` and

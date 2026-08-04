@@ -12,6 +12,7 @@ use App\Services\ForumActor;
 use App\Services\PetBirthDetailsNormalizer;
 use App\Services\PetBreedOriginNormalizer;
 use App\Services\PetBreedOriginSynchronizer;
+use App\Services\PetLifeStageOverrideNormalizer;
 use App\Services\PetProfileAccess;
 use App\Services\PetProfileCache;
 use App\Services\PetProfileEventRecorder;
@@ -42,6 +43,9 @@ final class UpdatePetProfileStep
         'estimated_age_recorded_at',
         'birthday_celebration_month',
         'birthday_celebration_day',
+        'life_stage_override',
+        'life_stage_override_by_user_id',
+        'life_stage_override_at',
         'sex',
         'reproductive_status',
         'visibility',
@@ -58,6 +62,7 @@ final class UpdatePetProfileStep
         private readonly PetProfileEventRecorder $events,
         private readonly PetProfileCache $cache,
         private readonly PetProfileNameHistory $nameHistory,
+        private readonly PetLifeStageOverrideNormalizer $lifeStageOverrides,
         private readonly PetBirthDetailsNormalizer $birthDetails,
         private readonly PetBreedOriginNormalizer $breedOrigins,
         private readonly PetBreedOriginSynchronizer $breedOriginSynchronizer,
@@ -134,6 +139,7 @@ final class UpdatePetProfileStep
                 $step,
                 $data,
                 $normalizedBreedOrigins,
+                $user->id,
             );
             $locked->forceFill($attributes);
             $breedOriginsChanged = $normalizedBreedOrigins !== null
@@ -222,6 +228,7 @@ final class UpdatePetProfileStep
         PetProfileCompletionStep $step,
         array $data,
         ?array $normalizedBreedOrigins,
+        int $actorId,
     ): array {
         $profileData = $profile->profile_data ?? [];
 
@@ -236,6 +243,13 @@ final class UpdatePetProfileStep
             ], ['name', 'species', 'species_confidence']],
             PetProfileCompletionStep::AgeAndSex => [[
                 ...$this->birthDetails->normalize($data, $profile),
+                ...(array_key_exists('life_stage_override', $data)
+                    ? $this->lifeStageOverrides->attributes(
+                        $profile,
+                        $data['life_stage_override'],
+                        $actorId,
+                    )
+                    : []),
                 'sex' => (string) $data['sex'],
                 'reproductive_status' => (string) $data['reproductive_status'],
             ], [
@@ -245,6 +259,11 @@ final class UpdatePetProfileStep
                 'estimated_age_recorded_at',
                 'birthday_celebration_month',
                 'birthday_celebration_day',
+                ...(array_key_exists('life_stage_override', $data) ? [
+                    'life_stage_override',
+                    'life_stage_override_by_user_id',
+                    'life_stage_override_at',
+                ] : []),
                 'sex',
                 'reproductive_status',
             ]],
