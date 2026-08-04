@@ -18,6 +18,12 @@
 
 ### Interface System
 
+- Extended the dedicated `/messages` EN/LT/RU contract from 329 to 364 leaves
+  for the complete call stage and responsive details return path; call state
+  now persists stable type/status/quality codes instead of translated text,
+  a class-based Blade component prepares all control/icon maps, and the real
+  details route exposes its context panel below 1200 pixels instead of hiding
+  the requested content.
 - Extended the dedicated `/messages` EN/LT/RU system contract from 132 to 329
   leaves for all eight conversation metadata sets, the complete right context
   rail, and every mutation/error feedback family; replaced locale-dependent

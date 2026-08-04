@@ -238,7 +238,7 @@ final class MessageState
             'microphone' => true,
             'camera' => $type === 'video',
             'captions' => false,
-            'quality' => __('messages.checking_connection_537585d95f'),
+            'quality_code' => 'checking',
         ];
         $this->store($state);
     }
@@ -253,12 +253,12 @@ final class MessageState
         }
 
         $call = match ($control) {
-            'join' => [...$call, 'status' => 'connected', 'quality' => __('messages.connection_stable_0fc2aaa131')],
+            'join' => [...$call, 'status' => 'connected', 'quality_code' => 'stable'],
             'microphone' => [...$call, 'microphone' => ! $call['microphone']],
             'camera' => [...$call, 'camera' => ! $call['camera']],
             'captions' => [...$call, 'captions' => ! $call['captions']],
-            'audio-only' => [...$call, 'type' => 'audio', 'camera' => false, 'quality' => __('messages.audio_only_224b45b631')],
-            'reconnect' => [...$call, 'status' => 'connected', 'quality' => __('messages.reconnected_20a447dbc6')],
+            'audio-only' => [...$call, 'type' => 'audio', 'camera' => false, 'quality_code' => 'audio_only'],
+            'reconnect' => [...$call, 'status' => 'connected', 'quality_code' => 'reconnected'],
             default => $call,
         };
 

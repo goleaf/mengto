@@ -160,6 +160,7 @@ return [
     ],
     'context' => [
         'label' => 'Conversation information',
+        'back_to_conversation' => 'Back to conversation',
         'identity_note' => 'Messages are always sent by a person. Pet profiles only provide context.',
         'search_label' => 'Search this dialog',
         'search_placeholder' => 'Text, sender, or transcript',
@@ -265,6 +266,58 @@ return [
             'privacy_value' => 'People remain accountable senders; linked pets never reveal medical or location data automatically',
             'accessibility_label' => 'Accessibility',
             'accessibility_value' => 'Keyboard controls, text statuses, captions and transcript surfaces, reduced motion, and non-color indicators',
+        ],
+    ],
+    'call_stage' => [
+        'label' => 'Call controls',
+        'status_line' => ':type call · :status',
+        'types' => [
+            'audio' => 'Audio',
+            'video' => 'Video',
+        ],
+        'statuses' => [
+            'preflight' => 'Device check',
+            'connected' => 'Connected',
+        ],
+        'qualities' => [
+            'checking' => 'Checking connection',
+            'stable' => 'Connection stable',
+            'audio_only' => 'Audio-only mode',
+            'reconnected' => 'Connection restored',
+        ],
+        'device' => [
+            'unavailable' => 'Device preview is unavailable in this browser.',
+            'camera_active' => 'Camera and microphone preview active.',
+            'microphone_active' => 'Microphone preview active.',
+            'permission_denied' => 'Device permission was not granted.',
+            'not_requested' => 'Camera and microphone have not been requested.',
+        ],
+        'recording_off' => 'Recording off',
+        'checks' => [
+            'test_microphone' => 'Test microphone',
+            'preview_camera' => 'Preview camera',
+            'browser_connection' => 'Browser connection check',
+        ],
+        'consent_title' => 'Consent before connection',
+        'boundary' => [
+            'transport' => 'Local device preflight and call controls are active; realtime media transport is not connected.',
+            'recording' => 'Recording never starts silently and is unavailable without explicit consent.',
+            'emergency' => 'Calls and chats are not emergency veterinary services.',
+        ],
+        'controls' => [
+            'mute' => 'Mute microphone',
+            'unmute' => 'Unmute microphone',
+            'camera_off' => 'Turn camera off',
+            'camera_on' => 'Turn camera on',
+            'captions_on' => 'Turn captions on',
+            'captions_off' => 'Turn captions off',
+            'audio_only' => 'Switch to audio only',
+            'reconnect' => 'Reconnect',
+        ],
+        'actions' => [
+            'close' => 'Close call',
+            'join' => 'Join call',
+            'end' => 'End call',
         ],
     ],
     'feedback' => [

@@ -630,6 +630,14 @@ lost-and-found, marketplace, experts, and messages while retaining the
 existing reference-directory consumers. The nine message folders remain above
 the messaging shell, and the global linked-media navigation remains unchanged.
 
+The current messaging continuation also replaces locale-dependent call state
+with stable codes, moves call control/icon preparation into a class-based Blade
+component, localizes the complete preflight surface in EN/LT/RU, and makes the
+existing conversation-details route display its context panel at mobile and
+tablet widths with a localized return control. This reuses the same protected
+route, presenter, and context projection and adds no query or authorization
+path.
+
 The next Package 8 wave migrated the medical-record, care-journal,
 lost-and-found, marketplace, and expert create/edit/booking flows, the device
 directory and connect flow, and both professional-workspace states. Their ten

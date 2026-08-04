@@ -1182,3 +1182,38 @@ Observed package evidence on 2026-08-04:
 
 The reusable browser command is
 `BROWSER_BASE_URL=http://127.0.0.1:PORT npm run test:browser:page-identity`.
+
+## Messaging Call Stage And Details Verification
+
+`MessageCenterLocalizationTest` now also covers stable call-state persistence,
+current-locale presentation, video preflight, connection, reconnect,
+audio-only transition, class-prepared control/icon maps, and the responsive
+conversation-details route.
+
+Observed package evidence on 2026-08-04:
+
+- focused suite: 25 tests and 3,394 assertions;
+- affected messaging, preview, responsive, page-identity, and linked-media
+  slice: 98 tests and 4,367 assertions;
+- complete sequential shared-checkout suite: 2,998 tests and 102,279 assertions
+  in 187.881 seconds with a 1 GB PHP limit;
+- full Pint and Larastan, Composer strict validation, locked audit, PHP
+  platform requirements, npm audit, production Vite build, and JavaScript
+  syntax passed;
+- the page-identity browser matrix passed 91 primary audits, seven real
+  video-preflight flows, seven details-route flows, and 30 screenshots across
+  320-1920 pixels, EN/RU/LT, forced colors, reduced motion, and effective 200%
+  zoom;
+- the call audits found no missing or English fallback copy, unstable state
+  code, noncanonical control icon, focus failure, clipped label, unreachable
+  footer, sub-44-pixel target, dialog overflow, or console error;
+- compact details showed only the context surface with a localized return
+  action, while wide desktop retained the complete three-column conversation.
+- fresh disposable SQLite applied 138 migrations, retained 219 tables and five
+  users, and passed repeated complete seeding;
+- isolated config/event/route/view cache compilation, the 180-route smoke,
+  both forum-source checks, deterministic 38,377-requirement generation, the
+  PHP localizer, and the 854-call canonical icon audit passed.
+
+The reusable browser command is
+`BROWSER_BASE_URL=http://127.0.0.1:PORT npm run test:browser:page-identity`.

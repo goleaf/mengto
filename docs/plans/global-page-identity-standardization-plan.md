@@ -633,6 +633,46 @@ deterministic 38,377-requirement generation, PHP localizer, and 851-call
 canonical icon audit also passed. The package adds no Eloquent query, schema,
 route, or authorization change; it localizes existing authorized mutations.
 
+The fifteenth non-header localization follow-up completes the active call
+stage and the real conversation-details route. Thirty-four call leaves and one
+details-return leaf extend the dedicated EN/LT/RU messaging contract from 329
+to 364 exact-parity values. `MessageState` now persists stable
+`type`/`status`/`quality_code` values rather than copy resolved under the locale
+active when a call started. `MessagePresenter` explicitly maps those codes in
+the current locale, including a compatibility fallback for older state, and
+the class-based `MessagingCallStage` prepares microphone, camera, captions,
+audio-only, and reconnect code/icon/label maps outside Blade. The active call
+template uses only the messaging domain and canonical Lucide icons.
+
+The audit also proved that `messages.details` already reuses the current
+protected messaging presenter and context component, while a responsive CSS
+rule hid that requested context below 1200 pixels. The route now emits an
+explicit details marker, renders the same policy-scoped context full-width on
+mobile and tablet, hides the inbox/thread only in that compact details mode,
+and provides a localized 44-pixel return control. Desktop retains the complete
+three-column conversation. No route, query, persistence schema, or
+authorization boundary changed.
+
+The focused contract passes 25 tests and 3,394 assertions; the affected
+messaging, preview, responsive, page-identity, and linked-media slice passes 98
+tests and 4,367 assertions. The expanded browser ratchet passes the existing
+91 route/viewport audits plus seven real video-preflight flows and seven real
+details-route flows across 320-1920 pixels, EN/RU/LT, forced colors, reduced
+motion, and effective 200% zoom. It checks 22 call-stage values, stable codes,
+four control icons, first focus, scroll-reachable footer, unclipped labels,
+responsive details visibility, 44-pixel targets, horizontal overflow, and
+console output. Thirty screenshots, including dedicated 375/1440 call and
+details captures, passed and were visually reviewed. Final repository-wide
+gates then passed: the complete sequential shared-checkout suite reports
+2,998 tests and 102,279 assertions in 187.881 seconds; full Pint and Larastan
+report zero
+findings; Composer strict validation, locked audit, PHP platform requirements,
+NPM audit, production Vite build, and isolated config/event/route/view cache
+compilation pass. Fresh disposable SQLite applies 138 migrations, retains 219
+tables and five users across repeated seeding; the 180-route smoke, both
+forum-source checks, deterministic 38,377-requirement generation, PHP
+localizer, and 854-call canonical icon audit also pass.
+
 ### 3.3 Next Execution Checkpoint
 
 1. Complete Package 0 by assigning the stable requirement ID and recording the
@@ -652,9 +692,11 @@ route, or authorization change; it localizes existing authorized mutations.
    thread, composer, per-message action chrome, conversation metadata, context
    rail, and action-result feedback are verified across default, request,
    professional, channel, poll, task, declined, and empty-message states.
-   Genuine future member-authored content, the call stage, details screen, and
-   the other priority bodies remain open. Do not conflate body-copy completion
-   with the verified page-identity contract.
+   The active call stage and real details route are now browser-verified;
+   genuine future member-authored content, coherent removal of the unused
+   historical details presenter/template chain, and the other priority bodies
+   remain open. Do not conflate body-copy completion with the verified
+   page-identity contract.
 
 ## 4. Scope
 

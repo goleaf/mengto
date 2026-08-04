@@ -1,4 +1,13 @@
 <aside class="messaging-context" aria-label="{{ __('messaging.context.label') }}" data-messaging-context>
+    @if ($detailsOpen)
+        <nav class="messaging-context__back" aria-label="{{ __('messaging.context.back_to_conversation') }}">
+            <a href="{{ route('messages.index', ['conversation' => $conversation['key'], 'filter' => $activeFilter]) }}">
+                <x-ui-icon name="arrow-left" size="sm" />
+                <span>{{ __('messaging.context.back_to_conversation') }}</span>
+            </a>
+        </nav>
+    @endif
+
     <section class="messaging-context__identity">
         <x-linked-media
             :href="$conversation['media_target']['url']"

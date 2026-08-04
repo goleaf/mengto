@@ -3,6 +3,7 @@
         class="messaging-page"
         data-messaging-center
         @if ($thread_first) data-selected-conversation="{{ $selected['key'] }}" @endif
+        @if ($details_open) data-details-open @endif
     >
         <x-page-header
             :eyebrow="$summary['eyebrow']"
@@ -114,6 +115,7 @@
                 :active-filter="$active_filter"
                 :message-query="$message_query"
                 :coverage="$coverage"
+                :details-open="$details_open"
             />
         </div>
 

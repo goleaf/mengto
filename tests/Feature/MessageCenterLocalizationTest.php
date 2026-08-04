@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Services\MessageCatalog;
 use App\Services\MessageState;
+use App\View\Components\MessagingCallStage;
 use App\View\Components\MessagingComposer;
 use App\View\Components\MessagingContext;
 use App\View\Components\MessagingMessage;
@@ -14,12 +15,19 @@ test('the message center system contract is complete in every supported locale',
     $english = Arr::dot(require lang_path('en/messaging.php'));
 
     expect($english)
-        ->toHaveCount(329)
+        ->toHaveCount(364)
         ->toHaveKeys([
             'conversations.ari.purpose',
             'context.controls.pin',
+            'context.back_to_conversation',
             'context.safety.private_description',
             'context.boundary.accessibility_value',
+            'call_stage.types.video',
+            'call_stage.statuses.connected',
+            'call_stage.qualities.reconnected',
+            'call_stage.device.permission_denied',
+            'call_stage.controls.reconnect',
+            'call_stage.actions.end',
             'feedback.conversation.notifications_set',
             'feedback.notification_levels.important',
             'feedback.send.image',
@@ -178,6 +186,33 @@ test('conversation context renders localized metadata with stable action codes a
         ->and(array_column($component->safetyActions, 'icon'))->toBe(['shield-minus', 'ban', 'download']);
 })->with(['lt', 'ru']);
 
+test('the conversation details route exposes the localized context surface at every width', function (
+    string $locale,
+): void {
+    $this->authenticatedUser->update(['locale' => $locale]);
+    $copy = require lang_path("{$locale}/messaging.php");
+
+    $response = $this->get(route('messages.details', ['conversation' => 'ari']))
+        ->assertOk()
+        ->assertSee((string) data_get($copy, 'context.label'))
+        ->assertSee((string) data_get($copy, 'context.back_to_conversation'))
+        ->assertSee((string) data_get($copy, 'context.identity_note'));
+    $xpath = responseXPath($response);
+
+    expect($xpath->query('//*[@data-messaging-center and @data-details-open]')->length)->toBe(1)
+        ->and($xpath->query('//*[@data-messaging-context]')->length)->toBe(1)
+        ->and($xpath->query('//*[@data-messaging-context]/nav/a[@href]')->length)->toBe(1)
+        ->and($xpath->query('//*[@data-messaging-context]/nav/a//*[@data-ui-icon="arrow-left"]')->length)->toBe(1);
+
+    $stylesheet = File::get(resource_path('scss/_messaging.scss'));
+    expect($stylesheet)
+        ->toContain(
+            '@media (max-width: 74.999rem)',
+            '.messaging-page[data-details-open]',
+            '.messaging-context__back',
+        );
+})->with(['lt', 'ru']);
+
 test('the message center renders localized folder inbox type and relative time copy', function (string $locale): void {
     $this->authenticatedUser->update(['locale' => $locale]);
 
@@ -267,6 +302,138 @@ test('the message composer renders localized copy with stable attachment codes a
             "//*[@data-messaging-composer]//*[@data-message-type-button='{$type}']//*[@data-ui-icon='{$icon}']",
         )->length, $type)->toBe(1);
     }
+})->with(['lt', 'ru']);
+
+test('the call stage renders localized copy with stable state codes and canonical controls', function (
+    string $locale,
+): void {
+    $this->authenticatedUser->update(['locale' => $locale]);
+    $copy = require lang_path("{$locale}/messaging.php");
+
+    $this->post(route('messages.actions'), [
+        'action' => 'start-message-call',
+        'conversation' => 'ari',
+        'call_type' => 'video',
+        'recording_consent' => 'no',
+    ])->assertRedirect(route('messages.index', [
+        'conversation' => 'ari',
+        'filter' => 'all',
+        'panel' => 'call',
+    ]));
+
+    $stored = app(MessageState::class)->call('ari');
+    expect($stored)
+        ->toBeArray()
+        ->toHaveKey('type', 'video')
+        ->toHaveKey('status', 'preflight')
+        ->toHaveKey('quality_code', 'checking')
+        ->not->toHaveKey('quality');
+
+    $response = $this->get(route('messages.index', ['conversation' => 'ari']))->assertOk();
+
+    foreach (Arr::flatten([
+        data_get($copy, 'call_stage.label'),
+        str_replace(
+            [':type', ':status'],
+            [data_get($copy, 'call_stage.types.video'), data_get($copy, 'call_stage.statuses.preflight')],
+            (string) data_get($copy, 'call_stage.status_line'),
+        ),
+        data_get($copy, 'call_stage.qualities.checking'),
+        data_get($copy, 'call_stage.device.not_requested'),
+        data_get($copy, 'call_stage.recording_off'),
+        array_values((array) data_get($copy, 'call_stage.checks')),
+        data_get($copy, 'call_stage.consent_title'),
+        array_values((array) data_get($copy, 'call_stage.boundary')),
+        Arr::only((array) data_get($copy, 'call_stage.controls'), [
+            'mute',
+            'camera_off',
+            'captions_on',
+            'audio_only',
+        ]),
+        data_get($copy, 'call_stage.actions.close'),
+        data_get($copy, 'call_stage.actions.join'),
+    ]) as $value) {
+        $response->assertSee((string) $value);
+    }
+
+    $xpath = responseXPath($response);
+    $controls = [
+        'microphone' => 'mic',
+        'camera' => 'video',
+        'captions' => 'captions',
+        'audio-only' => 'phone',
+    ];
+
+    expect($xpath->query('//*[@data-call-stage and not(@hidden)]')->length)->toBe(1)
+        ->and($xpath->query('//*[@data-call-stage][@data-call-type-code="video"]')->length)->toBe(1)
+        ->and($xpath->query('//*[@data-call-stage][@data-call-status-code="preflight"]')->length)->toBe(1)
+        ->and($xpath->query('//*[@data-call-stage][@data-call-quality-code="checking"]')->length)->toBe(1)
+        ->and($xpath->query('//*[@data-call-stage]//*[@data-call-device]')->length)->toBe(2)
+        ->and($xpath->query('//*[@data-call-stage]//input[@name="call_control"]')->length)->toBe(count($controls) + 1);
+
+    foreach ($controls as $control => $icon) {
+        expect($xpath->query(
+            "//*[@data-call-stage]//form[input[@name='call_control' and @value='{$control}']]//*[@data-ui-icon='{$icon}']",
+        )->length, $control)->toBe(1);
+    }
+
+    $component = new MessagingCallStage(
+        conversation: ['key' => 'ari'],
+        call: [
+            'type_code' => 'video',
+            'status_code' => 'preflight',
+            'microphone' => true,
+            'camera' => true,
+            'captions' => false,
+        ],
+        boundary: ['transport' => '', 'recording' => '', 'emergency' => ''],
+        activeFilter: 'all',
+    );
+
+    expect(array_column($component->controls, 'control'))->toBe(array_keys($controls))
+        ->and(array_column($component->controls, 'icon'))->toBe(array_values($controls));
+
+    $this->post(route('messages.actions'), [
+        'action' => 'update-message-call',
+        'conversation' => 'ari',
+        'call_control' => 'join',
+    ])->assertRedirect();
+
+    $connected = $this->get(route('messages.index', ['conversation' => 'ari']))->assertOk();
+    $connectedXPath = responseXPath($connected);
+
+    expect(app(MessageState::class)->call('ari'))
+        ->toHaveKey('status', 'connected')
+        ->toHaveKey('quality_code', 'stable')
+        ->and($connectedXPath->query('//*[@data-call-stage][@data-call-status-code="connected"]')->length)->toBe(1)
+        ->and($connectedXPath->query('//*[@data-call-stage][@data-call-quality-code="stable"]')->length)->toBe(1)
+        ->and($connectedXPath->query(
+            '//*[@data-call-stage]//form[input[@name="call_control" and @value="reconnect"]]//*[@data-ui-icon="refresh-cw"]',
+        )->length)->toBe(1);
+
+    $connected
+        ->assertSee((string) data_get($copy, 'call_stage.qualities.stable'))
+        ->assertSee((string) data_get($copy, 'call_stage.controls.reconnect'))
+        ->assertSee((string) data_get($copy, 'call_stage.actions.end'));
+
+    $this->post(route('messages.actions'), [
+        'action' => 'update-message-call',
+        'conversation' => 'ari',
+        'call_control' => 'audio-only',
+    ])->assertRedirect();
+
+    $audio = $this->get(route('messages.index', ['conversation' => 'ari']))->assertOk();
+    $audioXPath = responseXPath($audio);
+
+    expect(app(MessageState::class)->call('ari'))
+        ->toHaveKey('type', 'audio')
+        ->toHaveKey('quality_code', 'audio_only')
+        ->and($audioXPath->query('//*[@data-call-stage][@data-call-type-code="audio"]')->length)->toBe(1)
+        ->and($audioXPath->query('//*[@data-call-stage][@data-call-quality-code="audio_only"]')->length)->toBe(1)
+        ->and($audioXPath->query('//*[@data-call-stage]//input[@name="call_control" and @value="camera"]')->length)->toBe(0)
+        ->and($audioXPath->query('//*[@data-call-stage]//input[@name="call_control" and @value="audio-only"]')->length)->toBe(0);
+
+    $audio->assertSee((string) data_get($copy, 'call_stage.qualities.audio_only'));
 })->with(['lt', 'ru']);
 
 test('every supported message type and reaction resolves through the messaging contract', function (
@@ -645,6 +812,7 @@ test('message center source uses its domain and the browser rejects English syst
     $presenter = File::get(app_path('Services/MessagePresenter.php'));
     $catalog = File::get(app_path('Services/MessageCatalog.php'));
     $state = File::get(app_path('Services/MessageState.php'));
+    $callStage = File::get(app_path('View/Components/MessagingCallStage.php'));
     preg_match(
         '/private function presentConversations\(.*?(?=private function presentMessages)/s',
         $presenter,
@@ -681,6 +849,7 @@ test('message center source uses its domain and the browser rejects English syst
         resource_path('views/components/messaging-composer.blade.php'),
         resource_path('views/components/messaging-message.blade.php'),
         resource_path('views/components/messaging-context.blade.php'),
+        resource_path('views/components/messaging-call-stage.blade.php'),
     ] as $path) {
         expect(File::get($path), $path)
             ->not->toContain("__('ui.", "__('messages.")
@@ -701,9 +870,18 @@ test('message center source uses its domain and the browser rejects English syst
         ->and($message)
         ->toContain("__('messaging.message.types.", "__('messaging.message.reactions.")
         ->not->toContain("__('ui.", "__('messages.", 'Str::headline')
+        ->and($callStage)
+        ->toContain("__('messaging.call_stage.controls.")
+        ->not->toContain("__('ui.", "__('messages.", 'Str::headline')
         ->and($action)
         ->toContain("__('messaging.feedback.")
         ->not->toContain("__('ui.", "__('messages.", 'Str::headline');
+
+    preg_match('/public function startCall\(.*?(?=public function endCall)/s', $state, $callState);
+    expect($callState[0] ?? '')
+        ->not->toBe('')
+        ->toContain("'quality_code' => 'checking'", "'quality_code' => 'stable'")
+        ->not->toContain("'quality' =>", "__('ui.", "__('messages.");
 
     foreach (['ari', 'family_care', 'vingis_walk', 'paws_vet', 'foster_adoption', 'lost_luna', 'trail_tails', 'luna_request'] as $key) {
         expect($catalog)->toContain("__('messaging.conversations.{$key}.purpose')");
@@ -717,6 +895,18 @@ test('message center source uses its domain and the browser rejects English syst
         "['delivered', 'read', 'delivered', 'delivered']",
         'contextActionCodes',
         "['pin', 'bell-off', 'archive', 'mail', 'shield-minus', 'ban', 'download']",
+        'callCopy.length === 22',
+        "['video', 'preflight', 'checking']",
+        "['mic', 'video', 'captions', 'phone']",
+        'call dialog did not focus its first close control',
+        'call controls below 44px',
+        'call control labels are clipped',
+        'call footer is not reachable by dialog scrolling',
+        'page-identity-messages-call-',
+        'details route marker is missing',
+        'conversation details are hidden',
+        'details controls below 44px',
+        'page-identity-messages-details-',
         'threadActionTitles',
         'messageListLabel',
         'English messaging system fallback remains.',

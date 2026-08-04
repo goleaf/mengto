@@ -160,6 +160,7 @@ return [
     ],
     'context' => [
         'label' => 'Pokalbio informacija',
+        'back_to_conversation' => 'Grįžti į pokalbį',
         'identity_note' => 'Žinutes visada siunčia žmogus. Augintinių profiliai tik suteikia kontekstą.',
         'search_label' => 'Ieškoti šiame pokalbyje',
         'search_placeholder' => 'Tekstas, siuntėjas ar išklotinė',
@@ -265,6 +266,58 @@ return [
             'privacy_value' => 'Žmonės išlieka atsakingais siuntėjais; susieti augintiniai automatiškai neatskleidžia medicinos ar vietos duomenų',
             'accessibility_label' => 'Prieinamumas',
             'accessibility_value' => 'Klaviatūros valdikliai, tekstinės būsenos, subtitrų ir išklotinių sritys, sumažintas judesys bei ne vien spalva paremti indikatoriai',
+        ],
+    ],
+    'call_stage' => [
+        'label' => 'Skambučio valdikliai',
+        'status_line' => ':type skambutis · :status',
+        'types' => [
+            'audio' => 'Garso',
+            'video' => 'Vaizdo',
+        ],
+        'statuses' => [
+            'preflight' => 'Įrenginių patikra',
+            'connected' => 'Prisijungta',
+        ],
+        'qualities' => [
+            'checking' => 'Tikrinamas ryšys',
+            'stable' => 'Ryšys stabilus',
+            'audio_only' => 'Tik garso režimas',
+            'reconnected' => 'Ryšys atkurtas',
+        ],
+        'device' => [
+            'unavailable' => 'Įrenginio peržiūra šioje naršyklėje nepasiekiama.',
+            'camera_active' => 'Kameros ir mikrofono peržiūra įjungta.',
+            'microphone_active' => 'Mikrofono peržiūra įjungta.',
+            'permission_denied' => 'Leidimas naudoti įrenginį nesuteiktas.',
+            'not_requested' => 'Prieiga prie kameros ir mikrofono dar neprašyta.',
+        ],
+        'recording_off' => 'Įrašymas išjungtas',
+        'checks' => [
+            'test_microphone' => 'Tikrinti mikrofoną',
+            'preview_camera' => 'Peržiūrėti kamerą',
+            'browser_connection' => 'Naršyklės ryšio patikra',
+        ],
+        'consent_title' => 'Sutikimas prieš prisijungiant',
+        'boundary' => [
+            'transport' => 'Vietinė įrenginių patikra ir skambučio valdikliai veikia; medijos perdavimas realiuoju laiku neprijungtas.',
+            'recording' => 'Įrašymas niekada nepradedamas nepastebimai ir be aiškaus sutikimo nepasiekiamas.',
+            'emergency' => 'Skambučiai ir pokalbiai nėra skubi veterinarinė pagalba.',
+        ],
+        'controls' => [
+            'mute' => 'Nutildyti mikrofoną',
+            'unmute' => 'Įjungti mikrofoną',
+            'camera_off' => 'Išjungti kamerą',
+            'camera_on' => 'Įjungti kamerą',
+            'captions_on' => 'Įjungti subtitrus',
+            'captions_off' => 'Išjungti subtitrus',
+            'audio_only' => 'Perjungti tik į garsą',
+            'reconnect' => 'Prisijungti iš naujo',
+        ],
+        'actions' => [
+            'close' => 'Uždaryti skambutį',
+            'join' => 'Prisijungti prie skambučio',
+            'end' => 'Baigti skambutį',
         ],
     ],
     'feedback' => [

@@ -39,7 +39,7 @@ final class MessagePresenter
         $messages = $this->presentMessages($selectedKey, (string) ($filters['message_q'] ?? ''));
         $requestStatus = $this->state->requestStatuses()[$selectedKey] ?? 'accepted';
         $conversationState = $this->state->conversation($selectedKey);
-        $call = $this->state->call($selectedKey);
+        $call = $this->presentCall($this->state->call($selectedKey));
         $detailsUrl = route('messages.details', ['conversation' => $selectedKey]);
 
         return [
@@ -100,16 +100,8 @@ final class MessagePresenter
             'poll' => $this->poll($selectedKey),
             'tasks' => $this->tasks($selectedKey),
             'professional' => $this->professional($selected),
-            'call' => $call === null ? null : [
-                ...$call,
-                'type_label' => Str::headline((string) $call['type']),
-                'status_label' => Str::headline((string) $call['status']),
-            ],
-            'call_boundary' => [
-                'transport' => __('messages.local_preflight_and_call_session_controls_are_active_a_r_4c9879ef87'),
-                'recording' => __('messages.recording_never_starts_silently_and_is_unavailable_witho_28696294de'),
-                'emergency' => __('messages.calls_and_chats_are_not_emergency_veterinary_services_2f8969f9de'),
-            ],
+            'call' => $call,
+            'call_boundary' => $this->callBoundary(),
             'panel' => (string) ($filters['panel'] ?? ($detailsOpen ? 'context' : '')),
             'details_open' => $detailsOpen,
             'thread_first' => isset($filters['conversation']) || $detailsOpen,
@@ -253,6 +245,62 @@ final class MessagePresenter
             'request' => __('messaging.types.request'),
             default => throw new \UnexpectedValueException("Unsupported conversation type [{$type}]."),
         };
+    }
+
+    /**
+     * @param  array<string, mixed>|null  $call
+     * @return array<string, mixed>|null
+     */
+    private function presentCall(?array $call): ?array
+    {
+        if ($call === null) {
+            return null;
+        }
+
+        $typeCode = in_array($call['type'] ?? null, ['audio', 'video'], true)
+            ? (string) $call['type']
+            : 'audio';
+        $statusCode = in_array($call['status'] ?? null, ['preflight', 'connected'], true)
+            ? (string) $call['status']
+            : 'preflight';
+        $qualityCode = in_array($call['quality_code'] ?? null, ['checking', 'stable', 'audio_only', 'reconnected'], true)
+            ? (string) $call['quality_code']
+            : ($statusCode === 'connected' ? 'stable' : 'checking');
+
+        return [
+            ...$call,
+            'type' => $typeCode,
+            'type_code' => $typeCode,
+            'type_label' => match ($typeCode) {
+                'video' => __('messaging.call_stage.types.video'),
+                default => __('messaging.call_stage.types.audio'),
+            },
+            'status' => $statusCode,
+            'status_code' => $statusCode,
+            'status_label' => match ($statusCode) {
+                'connected' => __('messaging.call_stage.statuses.connected'),
+                default => __('messaging.call_stage.statuses.preflight'),
+            },
+            'quality_code' => $qualityCode,
+            'quality' => match ($qualityCode) {
+                'stable' => __('messaging.call_stage.qualities.stable'),
+                'audio_only' => __('messaging.call_stage.qualities.audio_only'),
+                'reconnected' => __('messaging.call_stage.qualities.reconnected'),
+                default => __('messaging.call_stage.qualities.checking'),
+            },
+        ];
+    }
+
+    /**
+     * @return array{transport: string, recording: string, emergency: string}
+     */
+    private function callBoundary(): array
+    {
+        return [
+            'transport' => __('messaging.call_stage.boundary.transport'),
+            'recording' => __('messaging.call_stage.boundary.recording'),
+            'emergency' => __('messaging.call_stage.boundary.emergency'),
+        ];
     }
 
     /**

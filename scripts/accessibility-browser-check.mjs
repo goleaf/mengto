@@ -564,6 +564,8 @@ try {
         let englishGroupCopy = null;
         let englishNeighborCopy = null;
         let englishMessagingCopy = null;
+        let englishCallStageCopy = null;
+        let englishMessageDetailsCopy = null;
         let englishPlaceCopy = null;
         let canonicalTitleFont = null;
 
@@ -2002,6 +2004,318 @@ try {
                 assert(behavior.rawTranslationKeys.length === 0, `${label}: raw translation keys ${behavior.rawTranslationKeys.join(', ')}.`);
 
                 pageIdentityAudits[label] = { ...pageAudit, ...behavior };
+
+                if (route.path === '/messages') {
+                    const callLoaded = client.once('Page.loadEventFired', sessionId);
+                    await evaluate(client, sessionId, `(() => {
+                        const form = document.querySelector(
+                            'form:has(input[name="action"][value="start-message-call"])'
+                                + ':has(input[name="call_type"][value="video"])'
+                        );
+                        form?.requestSubmit();
+
+                        return Boolean(form);
+                    })()`);
+                    await callLoaded;
+                    await delay(350);
+
+                    const callAudit = await evaluate(client, sessionId, `(() => {
+                        const stage = document.querySelector('[data-call-stage]');
+                        const dialog = stage?.querySelector('[role="dialog"]');
+                        const visible = (element) => {
+                            const style = getComputedStyle(element);
+                            const box = element.getBoundingClientRect();
+
+                            return style.display !== 'none' && style.visibility !== 'hidden'
+                                && box.width > 0 && box.height > 0;
+                        };
+                        const targets = [...(stage?.querySelectorAll('button') ?? [])]
+                            .filter(visible)
+                            .map((element) => ({
+                                label: element.getAttribute('aria-label')
+                                    || element.getAttribute('title')
+                                    || element.textContent.trim(),
+                                width: Math.round(element.getBoundingClientRect().width),
+                                height: Math.round(element.getBoundingClientRect().height),
+                            }))
+                            .filter((target) => target.width < 44 || target.height < 44);
+                        const dialogBox = dialog?.getBoundingClientRect();
+                        const clippedControls = [...(stage?.querySelectorAll(
+                            '.messaging-call-stage__controls button span'
+                        ) ?? [])].filter(
+                            (element) => element.scrollWidth > element.clientWidth + 1
+                                || element.scrollHeight > element.clientHeight + 1,
+                        ).map((element) => element.textContent.trim());
+                        const previousScrollTop = dialog?.scrollTop ?? 0;
+                        if (dialog) {
+                            dialog.scrollTop = dialog.scrollHeight;
+                        }
+                        const footerBox = stage?.querySelector('footer')?.getBoundingClientRect();
+                        const footerReachable = Boolean(
+                            dialogBox
+                            && footerBox
+                            && footerBox.top >= dialogBox.top - 1
+                            && footerBox.bottom <= dialogBox.bottom + 1
+                        );
+                        if (dialog) {
+                            dialog.scrollTop = previousScrollTop;
+                        }
+
+                        return {
+                            visible: Boolean(stage && ! stage.hidden && visible(stage) && visible(dialog)),
+                            typeCode: stage?.dataset.callTypeCode ?? null,
+                            statusCode: stage?.dataset.callStatusCode ?? null,
+                            qualityCode: stage?.dataset.callQualityCode ?? null,
+                            copy: {
+                                statusLine: stage?.querySelector('[data-call-status-line]')?.textContent.trim() ?? null,
+                                quality: stage?.querySelector('[data-call-quality]')?.textContent.trim() ?? null,
+                                deviceStatus: stage?.querySelector('[data-call-device-status]')?.textContent.trim() ?? null,
+                                recording: stage?.querySelector('.messaging-call-stage__recording')?.textContent.trim() ?? null,
+                                checks: [...(stage?.querySelectorAll('.messaging-call-stage__checks > *') ?? [])]
+                                    .map((element) => element.textContent.trim()),
+                                consentTitle: stage?.querySelector('.messaging-call-stage__notice strong')
+                                    ?.textContent.trim() ?? null,
+                                transport: stage?.querySelector('[data-call-boundary-transport]')
+                                    ?.textContent.trim() ?? null,
+                                recordingBoundary: stage?.querySelector('[data-call-boundary-recording]')
+                                    ?.textContent.trim() ?? null,
+                                emergency: stage?.querySelector('[data-call-boundary-emergency]')
+                                    ?.textContent.trim() ?? null,
+                                controlsLabel: stage?.querySelector('.messaging-call-stage__controls')
+                                    ?.getAttribute('aria-label') ?? null,
+                                controlLabels: [...(stage?.querySelectorAll(
+                                    '.messaging-call-stage__controls button span'
+                                ) ?? [])].map((element) => element.textContent.trim()),
+                                close: stage?.querySelector('form[data-call-end] button')
+                                    ?.getAttribute('title') ?? null,
+                                join: stage?.querySelector('footer .action--primary span')
+                                    ?.textContent.trim() ?? null,
+                                deviceUnavailable: stage?.dataset.deviceUnavailable ?? null,
+                                cameraActive: stage?.dataset.cameraActive ?? null,
+                                microphoneActive: stage?.dataset.microphoneActive ?? null,
+                                deviceDenied: stage?.dataset.deviceDenied ?? null,
+                            },
+                            controlCodes: [...(stage?.querySelectorAll(
+                                '.messaging-call-stage__controls input[name="call_control"]'
+                            ) ?? [])].map((element) => element.value),
+                            controlIcons: [...(stage?.querySelectorAll(
+                                '.messaging-call-stage__controls [data-ui-icon]'
+                            ) ?? [])].map((element) => element.getAttribute('data-ui-icon')),
+                            firstFocusIsClose: document.activeElement?.matches(
+                                '[data-call-stage] form[data-call-end] button'
+                            ) ?? false,
+                            smallTargets: targets,
+                            clippedControls,
+                            footerReachable,
+                            dialogWithinViewport: Boolean(
+                                dialogBox
+                                && dialogBox.left >= -1
+                                && dialogBox.top >= -1
+                                && dialogBox.right <= innerWidth + 1
+                                && dialogBox.bottom <= innerHeight + 1
+                            ),
+                            dialogOverflow: dialog
+                                ? Math.max(0, dialog.scrollWidth - dialog.clientWidth)
+                                : null,
+                        };
+                    })()`);
+                    const callCopy = [
+                        callAudit.copy.statusLine,
+                        callAudit.copy.quality,
+                        callAudit.copy.deviceStatus,
+                        callAudit.copy.recording,
+                        ...callAudit.copy.checks,
+                        callAudit.copy.consentTitle,
+                        callAudit.copy.transport,
+                        callAudit.copy.recordingBoundary,
+                        callAudit.copy.emergency,
+                        callAudit.copy.controlsLabel,
+                        ...callAudit.copy.controlLabels,
+                        callAudit.copy.close,
+                        callAudit.copy.join,
+                        callAudit.copy.deviceUnavailable,
+                        callAudit.copy.cameraActive,
+                        callAudit.copy.microphoneActive,
+                        callAudit.copy.deviceDenied,
+                    ];
+
+                    assert(callAudit.visible, `${label}: call stage is not visible after submitting video preflight.`);
+                    assert(
+                        callCopy.length === 22 && callCopy.every((value) => value?.length > 0),
+                        `${label}: call-stage localization surface is incomplete ${JSON.stringify(callAudit.copy)}.`,
+                    );
+                    assert(
+                        JSON.stringify([callAudit.typeCode, callAudit.statusCode, callAudit.qualityCode])
+                            === JSON.stringify(['video', 'preflight', 'checking']),
+                        `${label}: call-stage state codes drifted.`,
+                    );
+                    assert(
+                        JSON.stringify(callAudit.controlCodes)
+                            === JSON.stringify(['microphone', 'camera', 'captions', 'audio-only']),
+                        `${label}: call-stage control codes drifted ${JSON.stringify(callAudit.controlCodes)}.`,
+                    );
+                    assert(
+                        JSON.stringify(callAudit.controlIcons)
+                            === JSON.stringify(['mic', 'video', 'captions', 'phone']),
+                        `${label}: call-stage icons drifted ${JSON.stringify(callAudit.controlIcons)}.`,
+                    );
+                    assert(callAudit.firstFocusIsClose, `${label}: call dialog did not focus its first close control.`);
+                    assert(callAudit.smallTargets.length === 0, `${label}: call controls below 44px ${JSON.stringify(callAudit.smallTargets)}.`);
+                    assert(callAudit.clippedControls.length === 0, `${label}: call control labels are clipped ${JSON.stringify(callAudit.clippedControls)}.`);
+                    assert(callAudit.footerReachable, `${label}: call footer is not reachable by dialog scrolling.`);
+                    assert(callAudit.dialogWithinViewport, `${label}: call dialog escapes the viewport.`);
+                    assert(callAudit.dialogOverflow <= 1, `${label}: call dialog has horizontal overflow.`);
+
+                    if (viewport.locale === 'en') {
+                        englishCallStageCopy ??= callCopy;
+                        assert(
+                            callCopy.every((value, index) => value === englishCallStageCopy[index]),
+                            `${label}: English call-stage copy changed across viewports.`,
+                        );
+                    } else {
+                        assert(englishCallStageCopy !== null, `${label}: English call-stage baseline is missing.`);
+                        assert(
+                            callCopy.every((value, index) => value !== englishCallStageCopy[index]),
+                            `${label}: English call-stage fallback remains. Current ${JSON.stringify(callCopy)}; English ${JSON.stringify(englishCallStageCopy)}.`,
+                        );
+                    }
+
+                    pageIdentityAudits[label].callStage = callAudit;
+
+                    if ([375, 1440].includes(viewport.width)) {
+                        const callScreenshotPath = join(
+                            outputDirectory,
+                            `page-identity-messages-call-${viewport.width}.png`,
+                        );
+                        const callScreenshotData = await client.send('Page.captureScreenshot', {
+                            format: 'png',
+                            captureBeyondViewport: true,
+                        }, sessionId);
+                        await writeFile(callScreenshotPath, Buffer.from(callScreenshotData.data, 'base64'));
+                        pageIdentityScreenshots.push(callScreenshotPath);
+                    }
+
+                    const callEnded = client.once('Page.loadEventFired', sessionId);
+                    await evaluate(client, sessionId, `(() => {
+                        const form = document.querySelector('[data-call-stage] form[data-call-end]');
+                        form?.requestSubmit();
+
+                        return Boolean(form);
+                    })()`);
+                    await callEnded;
+                    await delay(350);
+
+                    await navigate(client, sessionId, `${baseUrl}/messages/ari/details`);
+                    const detailsPageAudit = await evaluate(client, sessionId, pageAuditExpression);
+                    assertPageAudit(detailsPageAudit, `${label} details`);
+                    const detailsAudit = await evaluate(client, sessionId, `(() => {
+                        const center = document.querySelector('[data-messaging-center]');
+                        const context = document.querySelector('[data-messaging-context]');
+                        const inbox = document.querySelector('[data-messaging-inbox]');
+                        const thread = document.querySelector('.messaging-thread');
+                        const folders = document.querySelector('[data-messaging-folders]');
+                        const back = context?.querySelector('.messaging-context__back a');
+                        const visible = (element) => {
+                            const style = getComputedStyle(element);
+                            const box = element.getBoundingClientRect();
+
+                            return style.display !== 'none' && style.visibility !== 'hidden'
+                                && box.width > 0 && box.height > 0;
+                        };
+                        const targets = [...(context?.querySelectorAll(
+                            'a, button, input:not([type="hidden"]), select, summary, textarea'
+                        ) ?? [])].filter(visible).map((element) => {
+                            const target = element.matches('input[type="checkbox"], input[type="radio"]')
+                                ? element.closest('label') ?? element
+                                : element;
+
+                            return {
+                                label: element.getAttribute('aria-label')
+                                    || element.textContent.trim()
+                                    || element.getAttribute('placeholder'),
+                                width: Math.round(target.getBoundingClientRect().width),
+                                height: Math.round(target.getBoundingClientRect().height),
+                            };
+                        }).filter((target) => target.width < 44 || target.height < 44);
+
+                        return {
+                            path: location.pathname,
+                            detailsMode: center?.hasAttribute('data-details-open') ?? false,
+                            contextVisible: context ? visible(context) : false,
+                            inboxVisible: inbox ? visible(inbox) : false,
+                            threadVisible: thread ? visible(thread) : false,
+                            foldersVisible: folders ? visible(folders) : false,
+                            backVisible: back ? visible(back) : false,
+                            callStageHidden: document.querySelector('[data-call-stage]')?.hidden ?? false,
+                            copy: {
+                                label: context?.getAttribute('aria-label') ?? null,
+                                back: back?.textContent.trim() ?? null,
+                                identityNote: context?.querySelector('[data-messaging-context-identity-note]')
+                                    ?.textContent.trim() ?? null,
+                            },
+                            smallTargets: targets,
+                            overflow: document.documentElement.scrollWidth
+                                - document.documentElement.clientWidth,
+                        };
+                    })()`);
+                    const detailsCopy = [
+                        detailsAudit.copy.label,
+                        detailsAudit.copy.back,
+                        detailsAudit.copy.identityNote,
+                    ];
+                    const compactDetails = viewport.width < 1200;
+
+                    assert(detailsAudit.path === '/messages/ari/details', `${label}: details route path drifted.`);
+                    assert(detailsAudit.detailsMode, `${label}: details route marker is missing.`);
+                    assert(detailsAudit.contextVisible, `${label}: conversation details are hidden.`);
+                    assert(detailsAudit.callStageHidden, `${label}: inactive call stage leaked into details.`);
+                    assert(
+                        detailsAudit.inboxVisible === ! compactDetails
+                            && detailsAudit.threadVisible === ! compactDetails
+                            && detailsAudit.foldersVisible === ! compactDetails,
+                        `${label}: details responsive visibility is wrong ${JSON.stringify(detailsAudit)}.`,
+                    );
+                    assert(
+                        detailsAudit.backVisible === compactDetails,
+                        `${label}: details back control visibility is wrong.`,
+                    );
+                    assert(
+                        detailsCopy.length === 3 && detailsCopy.every((value) => value?.length > 0),
+                        `${label}: details localization surface is incomplete ${JSON.stringify(detailsAudit.copy)}.`,
+                    );
+                    assert(detailsAudit.smallTargets.length === 0, `${label}: details controls below 44px ${JSON.stringify(detailsAudit.smallTargets)}.`);
+                    assert(detailsAudit.overflow <= 1, `${label}: details route overflows horizontally.`);
+
+                    if (viewport.locale === 'en') {
+                        englishMessageDetailsCopy ??= detailsCopy;
+                    } else {
+                        assert(englishMessageDetailsCopy !== null, `${label}: English details baseline is missing.`);
+                        assert(
+                            detailsCopy.every((value, index) => value !== englishMessageDetailsCopy[index]),
+                            `${label}: English details fallback remains.`,
+                        );
+                    }
+
+                    pageIdentityAudits[label].messageDetails = {
+                        ...detailsPageAudit,
+                        ...detailsAudit,
+                    };
+
+                    if ([375, 1440].includes(viewport.width)) {
+                        const detailsScreenshotPath = join(
+                            outputDirectory,
+                            `page-identity-messages-details-${viewport.width}.png`,
+                        );
+                        const detailsScreenshotData = await client.send('Page.captureScreenshot', {
+                            format: 'png',
+                            captureBeyondViewport: true,
+                        }, sessionId);
+                        await writeFile(detailsScreenshotPath, Buffer.from(detailsScreenshotData.data, 'base64'));
+                        pageIdentityScreenshots.push(detailsScreenshotPath);
+                    }
+
+                    await navigate(client, sessionId, routeUrl);
+                }
 
                 if ([375, 1440].includes(viewport.width)) {
                     const screenshotPath = join(

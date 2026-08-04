@@ -34,6 +34,7 @@ final class MessagingContext extends Component
         public string $activeFilter,
         public string $messageQuery,
         public array $coverage,
+        public bool $detailsOpen = false,
     ) {
         $this->controls = [
             [

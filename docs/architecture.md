@@ -129,6 +129,12 @@ See `docs/decisions/0001-authenticated-actor-keys.md`.
 ## Presentation Boundaries
 
 - Blade components render prepared data.
+- Messaging persists locale-independent call type, lifecycle, and quality
+  codes. `MessagePresenter` resolves their current-locale labels and
+  `MessagingCallStage` prepares the fixed control/icon map before passive Blade
+  rendering. The conversation-details route reuses the policy-scoped context
+  projection and changes responsive visibility only; it does not introduce a
+  second data or authorization path.
 - Class-based Livewire components own server-backed interaction.
 - Alpine is the Livewire-provided client-state layer; no second Alpine install.
 - Existing vanilla JavaScript enhances map, message, publication-photo, and browser-media
