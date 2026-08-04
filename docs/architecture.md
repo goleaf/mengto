@@ -135,6 +135,11 @@ See `docs/decisions/0001-authenticated-actor-keys.md`.
   rendering. The conversation-details route reuses the policy-scoped context
   projection and changes responsive visibility only; it does not introduce a
   second data or authorization path.
+- Share targets retain their original destination, media, title, and active
+  navigation section, while `SharePresenter` maps the stable section code to
+  current-locale target taxonomy, delivery channels, prepared recipient
+  actions, link metadata, and privacy copy. The presenter performs no Eloquent
+  query; Blade renders the prepared projection and canonical icon names.
 - Class-based Livewire components own server-backed interaction.
 - Alpine is the Livewire-provided client-state layer; no second Alpine install.
 - Existing vanilla JavaScript enhances map, message, publication-photo, and browser-media

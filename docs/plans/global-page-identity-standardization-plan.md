@@ -665,13 +665,45 @@ console output. Thirty screenshots, including dedicated 375/1440 call and
 details captures, passed and were visually reviewed. Final repository-wide
 gates then passed: the complete sequential shared-checkout suite reports
 2,998 tests and 102,279 assertions in 187.881 seconds; full Pint and Larastan
-report zero
-findings; Composer strict validation, locked audit, PHP platform requirements,
+report zero findings; Composer strict validation, locked audit, PHP platform
+requirements,
 NPM audit, production Vite build, and isolated config/event/route/view cache
 compilation pass. Fresh disposable SQLite applies 138 migrations, retains 219
 tables and five users across repeated seeding; the 180-route smoke, both
 forum-source checks, deterministic 38,377-requirement generation, PHP
 localizer, and 854-call canonical icon audit also pass.
+
+The sixteenth non-header localization follow-up audits the deliberate
+`/share/{target}` detail hub. A dedicated 42-leaf EN/LT/RU contract now owns
+the complete page, delivery-channel, neighbor-action, details, privacy,
+subject, message, and empty-state surface. `SharePresenter` maps five stable
+active-section codes to target taxonomy and prepares three stable channel
+codes (`email`, `text`, and `original`) with canonical `mail`,
+`message-square-text`, and `external-link` icons. The recipient action keeps
+the canonical `send` icon. Existing destinations, authenticated access,
+message mutation, public-link boundaries, and target media remain unchanged;
+the presenter adds zero Eloquent queries.
+
+The focused share contract passes 11 tests and 458 assertions, and the
+affected preview, responsive, page-identity, linked-media, and portal-boundary
+slice passes 124 tests and 1,698 assertions. The browser matrix retains 91
+primary audits, seven video-call flows, and seven details flows, and adds seven
+real share routes across 320-1920 pixels, EN/RU/LT, forced colors, reduced
+motion, and effective 200% zoom. All 30 visible share values, three channel
+codes, 13 page icons, touch targets, long localized labels, clipping,
+horizontal overflow, raw keys, and console output pass; 32 screenshots,
+including dedicated RU 375px and EN 1440px share captures, were visually
+reviewed.
+
+The stabilized complete sequential shared-checkout suite passes 3,009 tests
+and 102,905 assertions in 183.677 seconds. Full Pint and Larastan report zero
+findings; Composer strict validation, locked audit, PHP 8.5 platform
+requirements, NPM audit, production Vite build, JavaScript syntax, and
+isolated config/event/route/view cache compilation pass. Fresh disposable
+SQLite applies, fully rolls back, reapplies, and seeds all 138 migrations,
+retains 219 tables and five users across repeated seeding, and the 180-route
+smoke, both forum-source checks, deterministic 38,377-requirement generation,
+PHP localizer, and 854-call canonical icon audit also pass.
 
 ### 3.3 Next Execution Checkpoint
 
@@ -692,8 +724,9 @@ localizer, and 854-call canonical icon audit also pass.
    thread, composer, per-message action chrome, conversation metadata, context
    rail, and action-result feedback are verified across default, request,
    professional, channel, poll, task, declined, and empty-message states.
-   The active call stage and real details route are now browser-verified;
-   genuine future member-authored content, coherent removal of the unused
+   The active call stage, real message details route, and share detail hub are
+   now browser-verified; genuine future member-authored content, coherent
+   removal of the unused
    historical details presenter/template chain, and the other priority bodies
    remain open. Do not conflate body-copy completion with the verified
    page-identity contract.

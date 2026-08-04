@@ -1248,3 +1248,36 @@ Observed package evidence on 2026-08-04:
 
 The reusable browser command is
 `BROWSER_BASE_URL=http://127.0.0.1:PORT npm run test:browser:page-identity`.
+
+## Share Page Localization And Icon Verification
+
+`SharePageLocalizationTest` guards exact 42-leaf EN/LT/RU parity, placeholder
+parity, five stable target families, three stable delivery-channel codes,
+prepared message/subject/recipient copy, canonical icons, destination schemes,
+domain isolation, and the zero-query `SharePresenter` boundary.
+
+Observed package evidence on 2026-08-04:
+
+- focused suite: 11 tests and 458 assertions;
+- affected preview, responsive, page-identity, linked-media, and portal access
+  slice: 124 tests and 1,698 assertions;
+- stabilized complete sequential shared-checkout suite: 3,009 tests and
+  102,905 assertions in 183.677 seconds with a 1 GB PHP limit;
+- the page-identity browser matrix passed 91 primary audits, seven call flows,
+  seven message-details flows, seven share flows, and 32 screenshots across
+  320-1920 pixels, EN/RU/LT, forced colors, reduced motion, and effective 200%
+  zoom;
+- all 30 visible share values, three channel codes, 13 page icons, 44-pixel
+  targets, clipping, overflow, raw-key, and console checks passed; RU 375px and
+  EN 1440px screenshots were visually reviewed;
+- full Pint and Larastan, Composer strict validation, locked audit, PHP
+  platform requirements, npm audit, JavaScript syntax, Vite 8.2 production
+  build, and isolated config/event/route/view cache compilation passed;
+- fresh disposable SQLite applied, fully rolled back, reapplied, and seeded all
+  138 migrations, retained 219 tables and five users across repeated seeding,
+  and the 180-route smoke, both forum-source checks, deterministic
+  38,377-requirement generation, PHP localizer, and 854-call canonical icon
+  audit passed.
+
+The reusable browser command is
+`BROWSER_BASE_URL=http://127.0.0.1:PORT npm run test:browser:page-identity`.

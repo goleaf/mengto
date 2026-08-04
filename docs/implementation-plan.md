@@ -657,6 +657,12 @@ tablet widths with a localized return control. This reuses the same protected
 route, presenter, and context projection and adds no query or authorization
 path.
 
+The next detail-page audit closes the `/share/{target}` English-fallback
+surface with a dedicated 42-leaf EN/LT/RU contract. `SharePresenter` resolves
+five stable target families and three stable delivery channels, prepares
+recipient actions and canonical icon names, and leaves destination, access,
+and mutation boundaries unchanged. The measured presenter query delta is zero.
+
 The next Package 8 wave migrated the medical-record, care-journal,
 lost-and-found, marketplace, and expert create/edit/booking flows, the device
 directory and connect flow, and both professional-workspace states. Their ten

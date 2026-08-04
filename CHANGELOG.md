@@ -18,6 +18,10 @@
 
 ### Interface System
 
+- Added a dedicated 42-leaf EN/LT/RU contract for `/share/{target}`; stable
+  target and channel codes now drive localized page, delivery, recipient,
+  detail, privacy, subject, and message copy, while every share action retains
+  the canonical Lucide icon system and a 44-pixel interaction target.
 - Extended the dedicated `/messages` EN/LT/RU contract from 329 to 364 leaves
   for the complete call stage and responsive details return path; call state
   now persists stable type/status/quality codes instead of translated text,

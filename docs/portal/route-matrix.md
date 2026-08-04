@@ -161,7 +161,7 @@ the decision column is the desired page-identity boundary.
 | `profile.settings` | `/profile/settings` | `ProfileSettings` | `canonical-page` | retain `x-page-header` |
 | `register` | `/register` | `Auth\Register` | `authentication-shell` | retain auth shell |
 | `password.reset` | `/reset-password/{token}` | `Auth\ResetPassword` | `authentication-shell` | retain auth shell |
-| `share.show` | `/share/{target}` | `SharePreviewController` | `deliberate-detail-or-profile` | retain token-compatible hero pending audit |
+| `share.show` | `/share/{target}` | `SharePreviewController` | `deliberate-detail-or-profile` | verified token-compatible hero, localized share projection, and canonical icon controls |
 | `verification.notice` | `/verify-email` | `Auth\VerifyEmail` | `authentication-shell` | retain auth shell |
 | `verification.verify` | `/verify-email/{id}/{hash}` | `Auth\VerifyEmailController` | `redirect` | no page identity |
 | `walks.index` | `/walks` | `WalkPlanPreviewController` | `canonical-page` | retain `x-page-header` |

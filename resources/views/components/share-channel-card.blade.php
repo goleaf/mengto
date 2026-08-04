@@ -1,7 +1,7 @@
 @props(['channel'])
 
-<article {{ $attributes->class(['share-channel']) }}>
-    <span class="share-channel__icon" aria-hidden="true">
+<article data-share-channel="{{ $channel['code'] }}" {{ $attributes->class(['share-channel']) }}>
+    <span class="share-channel__icon" data-share-channel-icon aria-hidden="true">
         <x-ui-icon :name="$channel['icon']" />
     </span>
 
@@ -17,5 +17,6 @@
         variant="paper"
         size="compact"
         class="share-channel__action"
+        data-share-channel-action
     />
 </article>

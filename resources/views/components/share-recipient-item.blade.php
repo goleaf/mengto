@@ -1,6 +1,6 @@
 @props(['recipient'])
 
-<article {{ $attributes->class(['share-recipient']) }}>
+<article data-share-recipient="{{ $recipient['key'] }}" {{ $attributes->class(['share-recipient']) }}>
     <x-avatar
         :src="$recipient['image']"
         :alt="$recipient['image_alt']"
@@ -20,10 +20,11 @@
             'target' => $recipient['key'],
             'body' => $recipient['message'],
         ]"
-        label="{{ __('ui.send_f6f4688ff2') }}"
+        :label="$recipient['action_label']"
         icon="send"
         variant="primary"
         size="compact"
         class="share-recipient__action"
+        data-share-recipient-action
     />
 </article>

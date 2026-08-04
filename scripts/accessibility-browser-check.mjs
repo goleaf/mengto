@@ -566,6 +566,7 @@ try {
         let englishMessagingCopy = null;
         let englishCallStageCopy = null;
         let englishMessageDetailsCopy = null;
+        let englishShareCopy = null;
         let englishPlaceCopy = null;
         let canonicalTitleFont = null;
 
@@ -2329,6 +2330,191 @@ try {
                     await writeFile(screenshotPath, Buffer.from(screenshotData.data, 'base64'));
                     pageIdentityScreenshots.push(screenshotPath);
                 }
+            }
+
+            const shareLabel = `${viewport.label} share`;
+            await navigate(client, sessionId, `${baseUrl}/share/apartment-pets`);
+            const sharePageAudit = await evaluate(client, sessionId, pageAuditExpression);
+            assertPageAudit(sharePageAudit, shareLabel);
+            const shareAudit = await evaluate(client, sessionId, `(() => {
+                const page = document.querySelector('[data-share-page]');
+                const channelsPanel = page?.querySelector('[data-share-channels-panel]');
+                const neighborsPanel = page?.querySelector('[data-share-neighbors-panel]');
+                const detailsPanel = page?.querySelector('[data-share-details]');
+                const privacy = page?.querySelector('[data-share-privacy]');
+                const visible = (element) => {
+                    const style = getComputedStyle(element);
+                    const box = element.getBoundingClientRect();
+
+                    return style.display !== 'none' && style.visibility !== 'hidden'
+                        && box.width > 0 && box.height > 0;
+                };
+                const targets = [...(page?.querySelectorAll(
+                    'a, button, input:not([type="hidden"]), select, textarea, [role="button"]'
+                ) ?? [])].filter(visible).map((element) => ({
+                    label: element.getAttribute('aria-label')
+                        || element.textContent.trim().slice(0, 80)
+                        || element.getAttribute('name'),
+                    width: Math.round(element.getBoundingClientRect().width),
+                    height: Math.round(element.getBoundingClientRect().height),
+                })).filter((target) => target.width < 44 || target.height < 44);
+                const clippedRegions = [
+                    page,
+                    page?.querySelector('.context-hero'),
+                    page?.querySelector('.context-hero__copy'),
+                    channelsPanel,
+                    neighborsPanel,
+                    detailsPanel,
+                    privacy,
+                    ...page?.querySelectorAll('.share-channel, .share-recipient') ?? [],
+                ].filter(Boolean).filter(
+                    (element) => element.scrollWidth > element.clientWidth + 1,
+                ).map((element) => element.className || element.dataset.section || element.tagName);
+
+                return {
+                    path: location.pathname,
+                    pageVisible: page ? visible(page) : false,
+                    copy: {
+                        documentTitle: document.title,
+                        back: page?.querySelector(':scope > .text-link span')?.textContent.trim() ?? null,
+                        heroEyebrow: page?.querySelector('.context-hero__eyebrow')?.textContent.trim() ?? null,
+                        openOriginal: page?.querySelector('[data-share-open-original] span')?.textContent.trim() ?? null,
+                        channels: {
+                            eyebrow: channelsPanel?.querySelector('.section-heading__eyebrow')?.textContent.trim() ?? null,
+                            title: channelsPanel?.querySelector('.section-heading__title')?.textContent.trim() ?? null,
+                            count: channelsPanel?.querySelector('.panel-heading__meta')?.textContent.trim() ?? null,
+                            titles: [...(channelsPanel?.querySelectorAll('.share-channel__title') ?? [])]
+                                .map((element) => element.textContent.trim()),
+                            descriptions: [...(channelsPanel?.querySelectorAll('.share-channel__description') ?? [])]
+                                .map((element) => element.textContent.trim()),
+                            actions: [...(channelsPanel?.querySelectorAll('[data-share-channel-action] span') ?? [])]
+                                .map((element) => element.textContent.trim()),
+                        },
+                        neighbors: {
+                            eyebrow: neighborsPanel?.querySelector('.section-heading__eyebrow')?.textContent.trim() ?? null,
+                            title: neighborsPanel?.querySelector('.section-heading__title')?.textContent.trim() ?? null,
+                            count: neighborsPanel?.querySelector('.panel-heading__meta')?.textContent.trim() ?? null,
+                            actions: [...(neighborsPanel?.querySelectorAll('[data-share-recipient-action] span') ?? [])]
+                                .map((element) => element.textContent.trim()),
+                        },
+                        details: {
+                            title: detailsPanel?.querySelector('.panel-heading__title')?.textContent.trim() ?? null,
+                            labels: [...(detailsPanel?.querySelectorAll('.definition-list__term') ?? [])]
+                                .map((element) => element.textContent.trim()),
+                            targetType: detailsPanel?.querySelector('.definition-list__value')?.textContent.trim() ?? null,
+                        },
+                        privacy: {
+                            title: privacy?.querySelector('.notice__title')?.textContent.trim() ?? null,
+                            description: privacy?.querySelector('.notice__description')?.textContent.trim() ?? null,
+                        },
+                    },
+                    channelCodes: [...(page?.querySelectorAll('[data-share-channel]') ?? [])]
+                        .map((element) => element.dataset.shareChannel),
+                    channelIcons: [...(channelsPanel?.querySelectorAll('[data-ui-icon]') ?? [])]
+                        .map((element) => element.getAttribute('data-ui-icon')),
+                    recipientIcons: [...(neighborsPanel?.querySelectorAll('[data-share-recipient-action] [data-ui-icon]') ?? [])]
+                        .map((element) => element.getAttribute('data-ui-icon')),
+                    pageIcons: [...(page?.querySelectorAll('[data-ui-icon]') ?? [])]
+                        .map((element) => element.getAttribute('data-ui-icon')),
+                    smallTargets: targets,
+                    clippedRegions,
+                    overflow: document.documentElement.scrollWidth
+                        - document.documentElement.clientWidth,
+                    rawTranslationKeys: document.body.innerText.match(
+                        /\bsharing\.[a-z0-9_.-]+/gi
+                    ) ?? [],
+                };
+            })()`);
+            const shareCopy = [
+                shareAudit.copy.documentTitle,
+                shareAudit.copy.back,
+                shareAudit.copy.heroEyebrow,
+                shareAudit.copy.openOriginal,
+                shareAudit.copy.channels.eyebrow,
+                shareAudit.copy.channels.title,
+                shareAudit.copy.channels.count,
+                ...shareAudit.copy.channels.titles,
+                ...shareAudit.copy.channels.descriptions,
+                ...shareAudit.copy.channels.actions,
+                shareAudit.copy.neighbors.eyebrow,
+                shareAudit.copy.neighbors.title,
+                shareAudit.copy.neighbors.count,
+                ...shareAudit.copy.neighbors.actions,
+                shareAudit.copy.details.title,
+                ...shareAudit.copy.details.labels,
+                shareAudit.copy.details.targetType,
+                shareAudit.copy.privacy.title,
+                shareAudit.copy.privacy.description,
+            ];
+            const expectedChannelIcons = ['mail', 'arrow-up-right', 'message-square-text', 'arrow-up-right', 'external-link', 'arrow-up-right'];
+
+            assert(shareAudit.path === '/share/apartment-pets', `${shareLabel}: share route path drifted.`);
+            assert(shareAudit.pageVisible, `${shareLabel}: share page is hidden.`);
+            assert(
+                shareCopy.length === 30 && shareCopy.every((value) => value?.length > 0),
+                `${shareLabel}: share localization surface is incomplete ${JSON.stringify(shareAudit.copy)}.`,
+            );
+            assert(
+                JSON.stringify(shareAudit.channelCodes) === JSON.stringify(['email', 'text', 'original']),
+                `${shareLabel}: share channel codes drifted ${JSON.stringify(shareAudit.channelCodes)}.`,
+            );
+            assert(
+                JSON.stringify(shareAudit.channelIcons) === JSON.stringify(expectedChannelIcons),
+                `${shareLabel}: share channel icons drifted ${JSON.stringify(shareAudit.channelIcons)}.`,
+            );
+            assert(
+                shareAudit.recipientIcons.length === 4
+                    && shareAudit.recipientIcons.every((icon) => icon === 'send'),
+                `${shareLabel}: recipient action icons drifted ${JSON.stringify(shareAudit.recipientIcons)}.`,
+            );
+            assert(
+                JSON.stringify(shareAudit.pageIcons) === JSON.stringify([
+                    'arrow-left',
+                    'external-link',
+                    ...expectedChannelIcons,
+                    'send',
+                    'send',
+                    'send',
+                    'send',
+                    'shield-check',
+                ]),
+                `${shareLabel}: share page icon order drifted ${JSON.stringify(shareAudit.pageIcons)}.`,
+            );
+            assert(shareAudit.smallTargets.length === 0, `${shareLabel}: share controls below 44px ${JSON.stringify(shareAudit.smallTargets)}.`);
+            assert(shareAudit.clippedRegions.length === 0, `${shareLabel}: share content is clipped ${JSON.stringify(shareAudit.clippedRegions)}.`);
+            assert(shareAudit.overflow <= 1, `${shareLabel}: share page overflows horizontally.`);
+            assert(shareAudit.rawTranslationKeys.length === 0, `${shareLabel}: raw share translation keys remain.`);
+
+            if (viewport.locale === 'en') {
+                englishShareCopy ??= shareCopy;
+                assert(
+                    shareCopy.every((value, index) => value === englishShareCopy[index]),
+                    `${shareLabel}: English share copy changed across viewports.`,
+                );
+            } else {
+                assert(englishShareCopy !== null, `${shareLabel}: English share baseline is missing.`);
+                assert(
+                    shareCopy.every((value, index) => value !== englishShareCopy[index]),
+                    `${shareLabel}: English share fallback remains. Current ${JSON.stringify(shareCopy)}; English ${JSON.stringify(englishShareCopy)}.`,
+                );
+            }
+
+            pageIdentityAudits[shareLabel] = {
+                ...sharePageAudit,
+                ...shareAudit,
+            };
+
+            if ([375, 1440].includes(viewport.width)) {
+                const shareScreenshotPath = join(
+                    outputDirectory,
+                    `page-identity-share-${viewport.width}.png`,
+                );
+                const shareScreenshotData = await client.send('Page.captureScreenshot', {
+                    format: 'png',
+                    captureBeyondViewport: true,
+                }, sessionId);
+                await writeFile(shareScreenshotPath, Buffer.from(shareScreenshotData.data, 'base64'));
+                pageIdentityScreenshots.push(shareScreenshotPath);
             }
         }
 
