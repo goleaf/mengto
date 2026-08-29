@@ -223,9 +223,9 @@ test('synchronization preserves administrator categories outside the source hier
 
 test('the public directory renders the complete selected category with stable child links', function () {
     $this->seed(ForumSystemSeeder::class);
+    $this->authenticatedUser->update(['locale' => 'lt']);
 
-    $response = $this->withSession(['locale' => 'lt'])
-        ->get(route('forum.index', ['category' => 'animal-science-evidence']))
+    $response = $this->get(route('forum.index', ['category' => 'animal-science-evidence']))
         ->assertOk()
         ->assertSee('Gyvūnų mokslas, tyrimai ir įrodymai')
         ->assertSee('Į įrodymus orientuotas gyvūnų mokslas, atsakingas teiginių vertinimas ir tyrimų aptarimas.')

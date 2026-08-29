@@ -11,6 +11,8 @@ use App\Models\ForumEvent;
 use App\Models\ForumGroup;
 use App\Models\ForumEventRegistration;
 use App\Models\ForumEventRegistrationPet;
+use App\Models\ForumEventSession;
+use App\Models\ForumEventSessionStaff;
 use App\Models\ForumMentorship;
 use App\Models\ForumMentorshipFeedback;
 use App\Models\ForumModerationCase;
@@ -28,6 +30,7 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Schema;
 use LogicException;
+use App\Enums\ForumEventSessionRole;
 
 final class RepresentativeDomainSeeder extends Seeder
 {
@@ -197,6 +200,31 @@ final class RepresentativeDomainSeeder extends Seeder
                 ->firstOrFail();
 
             return ['forum_poll_id' => $poll->id];
+        }
+
+        if ($modelClass === ForumEventSessionStaff::class) {
+            $sessions = ForumEventSession::query()->orderBy('id')->limit(10)->get();
+            $users = User::query()->orderBy('id')->limit(10)->get();
+
+            foreach ($sessions as $session) {
+                foreach ($users as $user) {
+                    foreach (ForumEventSessionRole::cases() as $role) {
+                        $exists = ForumEventSessionStaff::query()
+                            ->where('forum_event_session_id', $session->id)
+                            ->where('user_id', $user->id)
+                            ->where('role', $role->value)
+                            ->exists();
+
+                        if (! $exists) {
+                            return [
+                                'forum_event_session_id' => $session->id,
+                                'user_id' => $user->id,
+                                'role' => $role,
+                            ];
+                        }
+                    }
+                }
+            }
         }
 
         if ($modelClass === ForumEventRegistrationPet::class) {
