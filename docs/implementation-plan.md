@@ -7,6 +7,84 @@ This living plan records work that was actually performed. A pass is
 status remains authoritative in
 `docs/requirements/compliance-matrix.md`.
 
+The reconciled current backlog is maintained in
+`docs/plans/current-unfinished-work.md`. Completed deliveries below are release
+evidence, not active backlog items.
+
+## Active Delivery: Blade And Browser Lifecycle Modernization
+
+Status: `discovery in progress` on 2026-08-30.
+
+This delivery is governed by `SYS-FRONTEND-001`, `SYS-FRONTEND-002`,
+`SYS-LIVEWIRE-001`, `SEC-WEB-002`, `TEST-ARCH-001`, `TEST-SECURITY-001`, and
+the applicable accessibility, localization, responsive, and quality
+requirements. Discovery is read-only; the principal agent owns integration,
+production changes, final review dispositions, verification, publication,
+and rollback decisions.
+
+### Work Ledger
+
+| ID | Subagent | Exclusive discovery scope | Expected output | Dependencies | Status |
+| --- | --- | --- | --- | --- | --- |
+| BLM-A1 | Blade Purity and Data-Flow Analyst | All first-party Blade data access, PHP, business calculations, permission/SEO logic, relation access, literals, and raw rendering | Violation inventory, traced callers, correct owners, architecture-test candidates, risks, and commands | Repository contract and canonical frontend/security documents | pending |
+| BLM-A2 | Blade Component and Presentation Contract Analyst | Repeated cards, forms, tables, actions, status, modal, empty/error, navigation, and layout markup | Consolidation map, explicit props/slots/defaults/states, usage/test updates, risks, and commands | BLM-A1 evidence is informative but not blocking | pending |
+| BLM-A3 | Flux Compatibility and Accessibility Analyst | Installed package/license evidence and every Flux-like or custom form/modal/menu/table/notification use | Capability matrix, invalid/deprecated list, retain/replace decision, accessibility tests, risks, and commands | Installed Composer/NPM metadata | pending |
+| BLM-A4 | Alpine Integration Analyst | JavaScript entry points, packages, Livewire bootstrap, Alpine plugins/globals, `x-` directives, CSP/data boundaries | Ownership map, duplicate/conflict findings, migration/lifecycle tests, risks, and commands | Installed Livewire/Alpine metadata | pending |
+| BLM-A5 | JavaScript Navigation Lifecycle Analyst | First- and third-party widgets, listeners, timers, observers, media, maps, editors, Vite loading, navigation/account transitions | Lifecycle registry, init/destroy risks, wrapper/browser requirements, risks, and commands | BLM-A4 runtime map is informative but not blocking | pending |
+| BLM-A6 | Raw HTML and XSS Boundary Analyst | Blade raw echo, Markdown/rich text, email, preview, JSON-LD, SVG, URLs, script data, and third-party widgets | Origin-to-sink map, sanitizer controls, adversarial tests, risks, and commands | Canonical security and frontend rules | pending |
+| BLM-A7 | Frontend Architecture Test Analyst | Existing Pest architecture suite, Blade tree, package metadata, static checks, fixtures, and false-positive exclusions | Maintainable check specification, fixture strategy, exceptions, risks, and commands | Findings from BLM-A1/A3/A4/A6 are informative but not blocking | pending |
+| BLM-R1 | Blade Architecture Reviewer | Final changed views and their PHP preparation boundaries | Independent severity-ranked findings and exact failure scenarios | Implementation freeze | pending |
+| BLM-R2 | Flux and Accessibility Reviewer | Final Flux/custom components, forms, focus, keyboard, themes, translations, and tests | Independent compatibility/accessibility findings and verified usage list | Implementation freeze | pending |
+| BLM-R3 | JavaScript Lifecycle and XSS Reviewer | Final modules, Alpine, raw output, URLs, widgets, teardown, and browser tests | Independent lifecycle/XSS attack findings and reproductions | Implementation freeze | pending |
+
+The discovery reports will be reconciled into implementation items in this
+section before production code changes begin. Analysts and reviewers are
+read-only unless a later ledger revision delegates one narrowly isolated fix.
+
+## Active Work Ledger: Tailwind CSS 4 And Design System
+
+Status: `discovery in progress` on 2026-08-30. This ledger is the coordination
+boundary for the repository-wide Tailwind CSS-first migration. All discovery
+and review agents are read-only; the principal agent owns reconciliation,
+implementation, tests, documentation, Git integration, and publication.
+
+| ID | Agent | Exclusive scope | Expected output | Dependencies | Status |
+| --- | --- | --- | --- | --- | --- |
+| TW13-WL-A1 | Tailwind Upgrade and Configuration Analyst | Package metadata, NPM lock, Vite, Tailwind/PostCSS config, CSS entries, plugins, presets, scripts, Node compatibility | Configuration migration map, dependency changes, visual risk and rollback notes | Repository contract and canonical frontend/Tailwind docs | pending |
+| TW13-WL-A2 | Tailwind Source Detection and Dynamic Class Analyst | Blade, PHP class maps, Livewire, JavaScript, CSS sources, vendor templates, safelists | Source registry, unsafe dynamic-class findings, explicit-map and build-test needs | Repository contract and canonical Tailwind rules | pending |
+| TW13-WL-A3 | Design Token and Theme Architect | Brand/theme values, colors, typography, spacing, breakpoints, containers, radii, shadows, z-index, motion, component variants | Token inventory, target `@theme` model, repeated-value migration and contrast tests | Product and design documents | pending |
+| TW13-WL-A4 | Responsive Layout Analyst | Public/auth layouts, navigation, sidebars, cards, grids, tables, forms, filters, dialogs, drawers, media, charts, pagination | Screen/component matrix, prioritized defects, container-query and layout recommendations | Frontend, accessibility, localization, and active feature contracts | pending |
+| TW13-WL-A5 | Tailwind Accessibility Styling Analyst | Forms, controls, links, badges, alerts, dialogs, menus, tables, loading/disabled/error states, themes | Accessibility-style findings, utility/token changes, verification scenarios | WCAG and repository accessibility contracts | pending |
+| TW13-WL-A6 | Modern Tailwind Feature Applicability Analyst | Installed Tailwind 4 capabilities and reusable component/layout opportunities | Feature matrix with approved locations and rejected candidates/reasons | Exact installed version and browser contract | pending |
+| TW13-WL-A7 | CSS Duplication and Component Abstraction Analyst | CSS/SCSS, Blade class lists, components, `@apply`, arbitrary values, specificity and dead CSS | Duplication plan, dead-CSS candidates, component/token/utility decisions | Source-detection and token findings | pending |
+| TW13-WL-A8 | Frontend Build and Visual Verification Analyst | Build scripts/output, manifests, asset sizes, browser/visual tooling and critical pages | Build baseline, critical visual checklist, regression-test and screenshot plan | Existing dependencies and browser runners | pending |
+| TW13-WL-R1 | Tailwind Architecture Reviewer | Final package/config/CSS/source/token diff and production output | Severity-ranked findings and release-readiness verdict | Implementation freeze and final diff | pending |
+| TW13-WL-R2 | Responsive UI Reviewer | Final critical screens across widths, locales, zoom, touch and keyboard | Reproducible responsive findings and required fixes | Built assets and isolated browser fixture | pending |
+| TW13-WL-R3 | Accessibility Styling Reviewer | Final focus, contrast, status, motion, forced-colors, touch and theme states | Reproducible accessibility findings and verified state checklist | Built assets and isolated browser fixture | pending |
+| TW13-WL-R4 | Build Output Reviewer | Final lock/config/manifest/assets and critical generated selectors | Build findings, size comparison and release recommendation | Clean production build | pending |
+
+## Active Work Ledger: Complete Localization And Hardcoded Text Removal
+
+Status: `discovery in progress` on 2026-08-30. The `LC15-*` identifiers are
+the exclusive coordination boundary for this repository-wide localization
+delivery. Analysts and reviewers work read-only; the principal agent owns the
+canonical plan, implementation, tests, documentation, Git integration, and
+publication. Independent scopes run in waves because the shared agent pool has
+four total slots.
+
+| ID | Agent | Exclusive scope | Expected output | Dependencies | Status |
+| --- | --- | --- | --- | --- | --- |
+| LC15-A1 | Locale Architecture and Routing Analyst | Locale configuration, middleware, routes, sessions/cookies, user preferences, language files, database-translated content, HTTP/Livewire/mail/notification/API/job locale flow | Locale architecture map; canonical locales/fallback; routing, persistence, invalid-locale and RTL findings; tests and commands | Repository contract and canonical architecture, security, frontend, Livewire, and localization documents | pending |
+| LC15-A2 | Hardcoded String and Translation-Key Analyst | PHP, Blade, Livewire, JavaScript, validation, exceptions, notifications, mail, API output, accessibility, SEO, fixtures, and tests | Classified literal inventory; stable-key migration map; intentional nonlocalized exceptions; implementation order and scanner tests | Existing localizer scripts and translation conventions | pending |
+| LC15-A3 | Translation Consistency and Placeholder Analyst | All EN/LT/RU catalogues, JSON translations, validation, mail/notification templates, pluralization, placeholders, nesting, escaping, terminology, and dead keys | Locale parity report; mismatch inventory; consolidation and human-review recommendations; representative plural tests | Canonical locale tree and current translation references | pending |
+| LC15-A4 | Validation, Notification, Mail, and API Localization Analyst | Form Requests, Livewire validation, exceptions, notifications, mailables, deferred side effects, user-facing JSON and provider failure mapping | Communication localization matrix; recipient-locale and serialization defects; required fixes and tests | Locale architecture evidence and Laravel communication boundaries | pending |
+| LC15-A5 | Locale-Aware Formatting Analyst | Dates, times, relative time, timezone, numbers, percentages, currency, lists, measurements, coordinates, exports, reports, JavaScript and Blade formatting | Formatting ownership policy; direct-format inventory and migration map; locale/timezone/currency edge tests | Installed Intl/framework capabilities and existing formatter service | pending |
+| LC15-A6 | Localized Content and SEO Analyst | Public portal pages, route locale strategy, titles/descriptions, canonical and alternate metadata, Open Graph, JSON-LD, database translations and authored-content boundaries | Public-content/SEO matrix; indexing/fallback/escaping defects; applicable and not-applicable tests | Locale architecture and authenticated-portal contract | pending |
+| LC15-A7 | Localization Test and Automation Analyst | Pest/architecture/browser suites, scanner scripts, factories, seeders, critical routes, long/Unicode/RTL fixtures and deterministic timezones | Test/automation plan; coverage gaps; exact commands; scanner false-positive controls; long-text/RTL decision | Findings from current tests and repository scripts | pending |
+| LC15-R1 | Translation Coverage Reviewer | Final changed source, locale catalogues, notifications, mail, API errors, accessibility/SEO strings, tests and scanners | Severity-ranked literal/key/placeholder/escaping findings with exact locations and failure scenarios | Frozen attributable diff and completed implementation | pending |
+| LC15-R2 | Locale Behavior and Formatting Reviewer | Final locale selection/persistence/fallback, timezone/number/currency/plural behavior, recipient locale and deferred work | Severity-ranked behavior findings and locale-architecture readiness verdict | Frozen attributable diff and completed targeted checks | pending |
+| LC15-R3 | Localization Regression and UX Reviewer | Critical pages/components/forms/errors across EN/LT/RU, long/Unicode content, responsive layouts and accessibility labels | Severity-ranked mixed-language, clipping, terminology and journey findings with exact pages/locales | Built assets, deterministic fixtures and connected browser environment | pending |
+
 ## Current Delivery: General Pet Size Category
 
 Status: `implemented and release-verified` on 2026-08-04.
@@ -638,7 +716,9 @@ and are not claimed by this delivery.
 
 ## Current Planning: Portal And Events Completion
 
-Status: `execution-ready` on 2026-08-03; implementation packages pending
+Status: `in progress` on 2026-08-20; P02 organization authority and P03
+place/location/venue authority have verified foundations, while every parent
+package and the remaining portal/event scope stay open
 
 The live audit found 3,449 `portal.*` requirements still without Point 12
 evidence and 4,883 of 4,968 `event.*` requirements still planned/discovered.

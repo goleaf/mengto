@@ -1,0 +1,451 @@
+# 09. Policies, Roles, Permissions, Ownership, and Tenant Isolation
+
+## Principal-agent role
+
+You are the principal Codex implementation agent responsible for building a complete server-enforced authorization model that protects every route, Livewire action, API mutation, file, export, administrative operation, and tenant boundary.
+
+## Mission
+
+Inventory all roles, capabilities, resource states, ownership rules, privacy rules, and tenant boundaries. Implement consistent policies and gates, scope data access before exposure, prevent IDOR and cross-tenant leakage, and create positive and adversarial tests for every protected operation.
+
+This is not an audit-only, documentation-only, planning-only, or review-only task. Discovery and planning are mandatory intermediate phases. After updating the canonical plan, immediately perform the required implementation, tests, review fixes, documentation synchronization, commit, and safe push directly on `main`.
+
+## Repository-wide technology baseline
+
+Preserve and enforce this target unless a stricter, current repository requirement applies:
+
+- PHP 8.5.
+- Laravel 13, using the latest stable mutually compatible 13.x release available at execution time.
+- Livewire 4, using the latest stable mutually compatible 4.x release available at execution time.
+- Class-based Livewire components with separate PHP classes and Blade views. Do not use Volt.
+- Tailwind CSS 4, using the latest stable mutually compatible 4.x release available at execution time.
+- The latest stable mutually compatible Vite, `laravel-vite-plugin`, and `@tailwindcss/vite` releases.
+- Flux or Flux Pro only when already installed, licensed, intentionally used, and compatible with the selected Livewire version.
+- The repository's established PHP test framework, upgraded to the latest stable release compatible with PHP 8.5 and Laravel 13.
+- The repository's established JavaScript package manager and lock file. Never introduce a second lock file.
+
+Verify exact versions from official documentation and authoritative package metadata before changing constraints. Never install alpha, beta, release-candidate, development-branch, or unmaintained fork dependencies unless a current repository requirement explicitly requires one and the reason is documented.
+
+## Non-negotiable operating protocol
+
+1. **Work only on the existing `main` branch.**
+   - Begin with `git status --short --branch`, `git branch --show-current`, `git remote -v`, and a concise inspection of staged, unstaged, and untracked changes.
+   - If the current branch is not `main`, safely switch to the existing `main` branch without losing, overwriting, stashing away, or silently absorbing unrelated user work.
+   - Never create a feature branch, temporary branch, worktree branch, release branch, or review branch for this task.
+
+2. **Protect the working tree.**
+   - Preserve all unrelated existing changes.
+   - Do not use `git reset --hard`, `git clean -fd`, `git checkout -- .`, force push, history rewriting, or any command that can discard work.
+   - Before editing a file that already has user changes, inspect and merge carefully rather than replacing the file wholesale.
+   - Commit only task-owned changes. Do not claim unrelated user changes as your work.
+
+3. **Load governing instructions before work.**
+   - Read the applicable `AGENTS.md` and `AGENTS.override.md` instruction chain from repository root to the current directory.
+   - Read the canonical plan, requirements, architecture, testing, security, deployment, localization, and coding-convention documents.
+   - Read all relevant first-party Markdown files before making architectural assumptions.
+   - Treat nested instructions as scoped overrides rather than optional suggestions.
+
+4. **Use specialized subagents for discovery.**
+   - Spawn every required analysis subagent listed in this prompt.
+   - Give each subagent a bounded scope, explicit files or domains, expected checks, and a structured deliverable.
+   - Run independent scopes in parallel when safe.
+   - Do not allow multiple subagents to edit the same files concurrently.
+   - The principal agent remains the sole integrator and decision owner.
+
+5. **Do not ask the user questions.**
+   - Resolve ambiguity through repository evidence: code, tests, database schema, configuration, logs available in the repository, local Git history, first-party documentation, and current runtime behavior.
+   - Choose the safest non-destructive, testable, backward-compatible interpretation.
+   - Record material assumptions in the plan or an ADR and continue.
+   - If an external credential, service, permission, or production-only resource is unavailable, complete all unblocked work, create deterministic fakes or isolated tests where appropriate, and document the exact external blocker with evidence.
+
+6. **Quality is more important than speed.**
+   - Work in small, reviewable, dependency-aware passes.
+   - Inspect the diff after each meaningful pass.
+   - Run targeted checks immediately after each change set.
+   - Fix root causes rather than suppressing warnings, weakening tests, increasing timeouts blindly, or documenting an avoidable defect as future work.
+
+7. **The plan is a mandatory gate, not the final deliverable.**
+   - Locate the canonical execution plan. Prefer the existing canonical file; if none exists, create `PLANS.md` at repository root.
+   - Do not create competing plan files.
+   - Update the plan after discovery and before modifying production code.
+   - Immediately begin implementation after saving the updated plan. Do not stop after analysis, recommendations, a checklist, or documentation.
+   - Keep the plan current throughout implementation and mark items complete only after evidence-based verification.
+
+8. **Implement, test, review, fix, and re-verify.**
+   - Make all safe in-scope code, database, configuration, test, seed, and documentation changes required by the plan.
+   - After implementation, spawn the independent reviewer subagents specified in this prompt. Reviewers must not be the same agents that implemented the change.
+   - Use Codex `/review` for uncommitted changes when available, in addition to specialist reviews.
+   - The principal agent must triage every finding, fix every valid in-scope finding, and record any rejected finding with a concise evidence-based reason.
+   - Re-run all affected checks after fixes.
+
+9. **Never fabricate evidence.**
+   - Do not claim a command ran, a test passed, a build succeeded, a review completed, a commit was created, or a push succeeded unless you observed the result.
+   - Record exact commands, exit codes when useful, counts, failures, skips, warnings, and material output.
+   - Distinguish pre-existing failures from regressions introduced by this task.
+
+10. **Finish documentation and Git work.**
+    - Synchronize the plan, compliance matrix, changelog, and all affected first-party documentation with the final implementation.
+    - Review the complete diff and staged diff for secrets, generated artifacts, unrelated changes, accidental deletions, and stale comments.
+    - Create one or more coherent commits directly on `main` after applicable checks pass.
+    - Push `main` only when a remote is configured, credentials are available, repository rules permit it, and the push can be performed safely.
+    - Report the actual commit hashes and push result.
+
+## Subagent coordination contract
+
+The principal agent must create a work ledger before delegation. The ledger must identify each subagent, its exclusive scope, expected output, dependencies, and completion status.
+
+Every analysis subagent must return a concise structured report containing:
+
+1. Scope inspected.
+2. Files, classes, routes, tables, components, or workflows examined.
+3. Confirmed findings, each with severity and evidence.
+4. Suspected findings that require principal-agent validation.
+5. Missing coverage or unavailable evidence.
+6. Recommended implementation order.
+7. Suggested tests and verification commands.
+8. Risks of changing the affected area.
+
+Subagents must not dump raw logs without interpretation. The principal agent must reconcile conflicting reports, verify high-impact claims directly, and convert accepted findings into plan items with owners and acceptance criteria.
+
+## Required analysis subagents and detailed roles
+
+Spawn at least the following specialized subagents. Give each one the exact mission, scope, checks, deliverable, and restrictions below.
+
+### Role and Capability Matrix Analyst
+
+- **Mission:** Derive the actual role/capability model from requirements, seeds, code, and tests.
+- **Scope:** Role/permission tables, enums, middleware, policies, UI, seeders, admin features, and requirement documents.
+- **Must inspect:**
+  - Duplicate or contradictory role definitions, implicit permissions, role hierarchy, administrative overrides, and environment-only roles.
+  - Capabilities not represented in policies or gates.
+  - Seed data that grants unsafe permissions.
+- **Required checks:**
+  - Map every role to explicit capabilities.
+  - Separate role names from resource ownership rules.
+  - Identify stale or unused permissions.
+- **Required deliverable:**
+  - A canonical role-capability matrix.
+  - Conflict and cleanup list.
+  - Required policy/gate coverage.
+- **Restrictions:**
+  - Default to read-only analysis during the discovery phase.
+  - Do not modify files owned by another subagent.
+  - Do not make broad architectural decisions independently; surface evidence and options to the principal agent.
+  - Do not report a guess as a fact. Mark uncertainty and explain what evidence is missing.
+
+### Policy Coverage Analyst
+
+- **Mission:** Determine whether every model/resource action has a complete policy decision.
+- **Scope:** Policies, gates, controllers, Livewire, API, commands, downloads, imports/exports, and admin actions.
+- **Must inspect:**
+  - Missing `viewAny`, `view`, `create`, `update`, `delete`, `restore`, `forceDelete`, and domain-specific actions.
+  - Policies that trust mutable request fields or load unrelated data.
+  - Inconsistent admin bypass.
+- **Required checks:**
+  - Map each public action to a policy/gate.
+  - Check policy discovery and registration.
+  - Review resource state and privacy logic.
+- **Required deliverable:**
+  - A policy coverage table.
+  - Missing and incorrect methods.
+  - Required tests by role and state.
+- **Restrictions:**
+  - Default to read-only analysis during the discovery phase.
+  - Do not modify files owned by another subagent.
+  - Do not make broad architectural decisions independently; surface evidence and options to the principal agent.
+  - Do not report a guess as a fact. Mark uncertainty and explain what evidence is missing.
+
+### Livewire Authorization Analyst
+
+- **Mission:** Inspect every Livewire method and property-driven operation for direct invocation bypass.
+- **Scope:** Livewire components, form objects, event listeners, upload/download actions, sort/reorder methods, and tests.
+- **Must inspect:**
+  - Authorization only in mount or UI visibility.
+  - Public methods callable with forged IDs.
+  - Locked properties mistaken for authorization.
+  - Events carrying trusted role/tenant/owner data.
+- **Required checks:**
+  - Enumerate public methods and listeners.
+  - Attempt direct action invocation conceptually or in tests.
+  - Verify authorization occurs immediately before sensitive work.
+- **Required deliverable:**
+  - A component-action authorization map.
+  - Bypass scenarios.
+  - Required code and Livewire tests.
+- **Restrictions:**
+  - Default to read-only analysis during the discovery phase.
+  - Do not modify files owned by another subagent.
+  - Do not make broad architectural decisions independently; surface evidence and options to the principal agent.
+  - Do not report a guess as a fact. Mark uncertainty and explain what evidence is missing.
+
+### Route, Controller, API, and Command Authorization Analyst
+
+- **Mission:** Audit every non-Livewire entry point for authentication, authorization, and resource scoping.
+- **Scope:** Web/API routes, controllers, invokable actions, middleware, route bindings, console commands, scheduled tasks, and web maintenance endpoints.
+- **Must inspect:**
+  - Missing middleware, policy calls, broad admin routes, route model binding leakage, and commands lacking environment/role controls.
+  - API endpoints exposing unauthorized fields or collections.
+  - Nested resources not validated against parent ownership.
+- **Required checks:**
+  - Trace request to query and response.
+  - Check `viewAny` before lists and policy methods before writes.
+  - Review non-HTTP entry points.
+- **Required deliverable:**
+  - An entry-point authorization matrix.
+  - Exact missing controls.
+  - Test scenarios and route binding fixes.
+- **Restrictions:**
+  - Default to read-only analysis during the discovery phase.
+  - Do not modify files owned by another subagent.
+  - Do not make broad architectural decisions independently; surface evidence and options to the principal agent.
+  - Do not report a guess as a fact. Mark uncertainty and explain what evidence is missing.
+
+### Tenant Isolation and Data-Scoping Analyst
+
+- **Mission:** Identify every tenant/company/organization boundary and prevent cross-tenant reads, writes, cache leaks, files, and side effects.
+- **Scope:** Models, queries, global/local scopes, bindings, policies, caches, files, jobs, notifications, exports, imports, and seed data.
+- **Must inspect:**
+  - User-supplied tenant IDs, late policy checks after loading data, shared cache keys, global unique rules, cross-tenant relations, and admin override ambiguity.
+  - Background or web-batch processes losing tenant context.
+  - Private files accessible by guessed path.
+- **Required checks:**
+  - Trace representative cross-tenant attacks.
+  - Inspect query scopes before hydration.
+  - Check cache/file keys and external integration context.
+  - Review super-admin behavior explicitly.
+- **Required deliverable:**
+  - A tenant-boundary map.
+  - Leakage findings.
+  - Required query, policy, cache, file, and test changes.
+- **Restrictions:**
+  - Default to read-only analysis during the discovery phase.
+  - Do not modify files owned by another subagent.
+  - Do not make broad architectural decisions independently; surface evidence and options to the principal agent.
+  - Do not report a guess as a fact. Mark uncertainty and explain what evidence is missing.
+
+### Ownership, Privacy, and State Authorization Analyst
+
+- **Mission:** Model authorization that depends on owner, membership, relationship, privacy, or resource state.
+- **Scope:** Ownership fields, memberships, invites, follows/friendships, private/public states, archived/deleted states, moderation, and policies.
+- **Must inspect:**
+  - Rules duplicated in UI or query code.
+  - State changes permitted from invalid states.
+  - Owner checks that ignore tenant or membership.
+  - Private resource visibility leaks.
+- **Required checks:**
+  - Build authorization truth tables.
+  - Check create/update/delete/restore/publish/approve transitions.
+  - Inspect edge states such as blocked or inactive users.
+- **Required deliverable:**
+  - State-aware authorization matrix.
+  - Required domain guards and policies.
+  - Positive/negative test cases.
+- **Restrictions:**
+  - Default to read-only analysis during the discovery phase.
+  - Do not modify files owned by another subagent.
+  - Do not make broad architectural decisions independently; surface evidence and options to the principal agent.
+  - Do not report a guess as a fact. Mark uncertainty and explain what evidence is missing.
+
+### Authorization Test Designer
+
+- **Mission:** Build exhaustive, maintainable test coverage for roles, ownership, tenancy, resource state, and direct invocation.
+- **Scope:** Policies, gates, routes, Livewire components, APIs, files, factories, seeders, and existing tests.
+- **Must inspect:**
+  - Missing denied cases, wrong-tenant cases, direct method calls, and list-query leakage.
+  - Tests that only hide buttons.
+  - Factories unable to create cross-tenant scenarios.
+- **Required checks:**
+  - Design data providers/matrices by role and action.
+  - Test both access and absence of leaked data.
+  - Include inactive, blocked, deleted, private, and archived states.
+- **Required deliverable:**
+  - A complete authorization test matrix.
+  - Required factory states.
+  - Exact tests and assertions.
+- **Restrictions:**
+  - Default to read-only analysis during the discovery phase.
+  - Do not modify files owned by another subagent.
+  - Do not make broad architectural decisions independently; surface evidence and options to the principal agent.
+  - Do not report a guess as a fact. Mark uncertainty and explain what evidence is missing.
+
+## Mandatory plan update before implementation
+
+Update the canonical plan with a dedicated section for this task. At minimum include:
+
+- The canonical role, capability, ownership, privacy, membership, resource-state, and tenant model.
+- Every protected entry point and its required policy/gate decision.
+- Every Livewire public method/listener and direct-invocation risk.
+- Route binding, list-query, API resource, file, cache, export/import, command, and batch tenant boundaries.
+- Policy/gate additions, removals, and conflict resolutions.
+- Required query scoping before hydration or serialization.
+- Positive, negative, wrong-owner, wrong-tenant, blocked-user, invalid-state, and direct-call tests.
+- Migration, seeder, or permission-data changes and safe rollout.
+
+Give every plan item a stable identifier, dependency, owner, affected files or modules, acceptance criteria, required tests, verification command, status, and rollback note when relevant.
+
+Save the plan, then immediately begin implementation. Do not return a plan to the user and wait for approval.
+
+## Domain-specific guardrails
+
+- Do not treat hidden buttons, disabled inputs, `#[Locked]`, client-side guards, or route middleware alone as sufficient authorization.
+- Do not accept `user_id`, `owner_id`, `company_id`, `organization_id`, `tenant_id`, role, or permission values from untrusted input unless explicitly authorized and validated.
+- Do not load cross-tenant sensitive records and then rely only on presentation filtering.
+- Do not implement a universal super-admin bypass without explicit requirements, audit behavior, and tests.
+- Do not use global scopes to hide authorization logic when explicit scoped queries and policies are clearer and safer.
+
+## Required implementation scope
+
+Complete all applicable work below. Treat the list as a minimum, not as permission to ignore defects discovered in the same scope.
+
+- Create a canonical role-capability and state-aware authorization matrix from requirements and actual behavior.
+- Implement or repair policies for model/resource actions and gates for broad capabilities.
+- Authorize every protected route/controller/API action, Livewire mutation/listener, private download, upload, export, import, moderation, billing, invitation, ownership change, role change, and maintenance operation.
+- Scope list and resource queries by tenant, membership, privacy, and ownership before returning or serializing data.
+- Harden route model binding and nested-resource lookup so child records must belong to the authorized parent/tenant.
+- Remove authorization decisions from Blade and UI-only conditions; keep UI visibility as a convenience after server enforcement exists.
+- Prevent forged Livewire IDs, event payloads, sort positions, and file identifiers from crossing authorization boundaries.
+- Separate administrative capability from ordinary ownership and document/audit overrides.
+- Update role/permission seeders safely and idempotently when the model changes.
+- Create exhaustive policy, feature, API, Livewire, file, and tenant-isolation tests, including absence-of-data assertions.
+
+## Required verification
+
+Run the repository's real commands rather than inventing command names. Perform all safe applicable checks below and capture exact results:
+
+- A complete entry-point-to-policy/gate mapping.
+- Direct policy unit/feature tests for every method and domain-specific action.
+- Feature tests for allowed and denied routes, APIs, commands/web maintenance, files, exports, and imports.
+- Livewire tests invoking public actions directly with forged IDs and events.
+- Wrong-owner, wrong-role, wrong-tenant, private, archived, deleted, blocked, inactive, and invalid-state cases.
+- Query assertions proving unauthorized records are not loaded or serialized.
+- Cache/file tenant-scope tests where affected.
+- Full PHP suite, static analysis, formatter, migration/seed checks, and browser smoke paths for role-specific navigation.
+
+## Independent review protocol
+
+After implementation and before committing:
+
+1. Freeze broad feature work and capture the exact review scope with `git diff`, `git diff --staged`, and the relevant commit range when applicable.
+2. Spawn every reviewer subagent listed below. Reviewer agents must be independent from implementation agents.
+3. Run Codex `/review` against uncommitted changes when available.
+4. Require reviewers to inspect behavior, not only style.
+5. Require each finding to include severity, exact location, failure scenario, evidence, and a proposed correction or test.
+6. Have the principal agent reproduce or validate each material finding.
+7. Fix every valid in-scope finding.
+8. Add a regression test for every behavior defect when practical.
+9. Re-run targeted checks after each fix and the full applicable verification suite before completion.
+10. Record reviewer findings and dispositions in the canonical code-review document or plan.
+
+## Required independent reviewer subagents
+
+### Authorization Bypass Reviewer
+
+- **Review mission:** Act as an adversary and find server-side actions that can be invoked without the intended policy decision.
+- **Scope:** Routes, Livewire actions, APIs, commands, files, exports/imports, policies, and tests.
+- **Must inspect:**
+  - UI-only protection, missing policy calls, broad middleware, mass assignment, forged identifiers, and state-transition bypass.
+  - Admin bypasses and indirect actions through events or jobs.
+  - List endpoints leaking metadata.
+- **Required checks:**
+  - Attempt direct invocation paths.
+  - Review every public mutation.
+  - Construct owner/non-owner and role escalation scenarios.
+- **Required deliverable:**
+  - Severity-ranked bypasses.
+  - Reproduction steps.
+  - Required policy or query corrections.
+- **Restrictions:**
+  - Work read-only unless the principal agent explicitly delegates a narrowly scoped fix after the review is complete.
+  - Do not assume the implementation is correct because tests are green.
+  - Prioritize defects by severity, reproducibility, blast radius, and likelihood.
+  - Cite exact files, symbols, line ranges when possible, and provide a concrete failure scenario for every finding.
+
+### Tenant Leakage Reviewer
+
+- **Review mission:** Independently test cross-tenant reads, writes, caches, files, notifications, jobs, and exports.
+- **Scope:** Tenant-scoped models and queries, bindings, caches, storage, background/web-batch operations, and tests.
+- **Must inspect:**
+  - Late scoping, shared keys, guessed paths, global unique checks, relation traversal, and super-admin confusion.
+  - Cross-tenant count or existence leaks.
+  - Tenant context lost in deferred operations.
+- **Required checks:**
+  - Create two or more isolated tenants.
+  - Attempt ID swapping and shared-resource access.
+  - Inspect cache and file key composition.
+- **Required deliverable:**
+  - Leakage findings.
+  - Affected data classes.
+  - Required isolation tests and fixes.
+- **Restrictions:**
+  - Work read-only unless the principal agent explicitly delegates a narrowly scoped fix after the review is complete.
+  - Do not assume the implementation is correct because tests are green.
+  - Prioritize defects by severity, reproducibility, blast radius, and likelihood.
+  - Cite exact files, symbols, line ranges when possible, and provide a concrete failure scenario for every finding.
+
+### Policy and Authorization Test Reviewer
+
+- **Review mission:** Verify completeness and quality of authorization tests and role matrices.
+- **Scope:** Policies, gates, tests, factories, seeders, compliance matrix, and requirement IDs.
+- **Must inspect:**
+  - Missing denied paths, tests only checking status without data leakage, duplicate permission assumptions, and fragile role fixtures.
+  - Policy methods not directly or indirectly exercised.
+  - Seeded roles diverging from docs.
+- **Required checks:**
+  - Sample each role/action pair.
+  - Inspect assertions and factory states.
+  - Compare code to canonical matrix.
+- **Required deliverable:**
+  - Coverage gaps.
+  - Required test additions.
+  - Final authorization readiness verdict.
+- **Restrictions:**
+  - Work read-only unless the principal agent explicitly delegates a narrowly scoped fix after the review is complete.
+  - Do not assume the implementation is correct because tests are green.
+  - Prioritize defects by severity, reproducibility, blast radius, and likelihood.
+  - Cite exact files, symbols, line ranges when possible, and provide a concrete failure scenario for every finding.
+
+## Required documentation synchronization
+
+Update the canonical plan plus all affected first-party documentation. At minimum review and update, when present or applicable:
+
+- The canonical plan, requirements, compliance matrix, and changelog.
+- Authorization, security, domain-model, data-model, API, file, caching, testing, and seeding documentation.
+- A role-capability matrix and tenant-boundary diagram.
+- ADRs for super-admin behavior, global scopes, or membership/ownership decisions.
+- Code-review rules for required authorization at every mutation.
+
+Remove stale claims and commands. Keep useful historical changelog information. Ensure documentation describes the implemented and verified state, not the intended future state.
+
+## Definition of done
+
+This prompt is complete only when all applicable conditions are true:
+
+- Every protected entry point maps to an explicit, server-enforced policy or gate decision.
+- List and resource queries enforce ownership, membership, privacy, state, and tenant boundaries before exposure.
+- Direct Livewire/API/route/file/command invocation cannot bypass authorization.
+- Role and permission seed data matches the canonical matrix and is idempotent.
+- Positive and adversarial tests cover owner, non-owner, role, tenant, state, blocked/inactive, and forged-ID cases.
+- Independent bypass, tenant-leakage, and test reviewers find no unresolved valid in-scope defects.
+- Documentation and compliance status are accurate, and changes are committed and safely pushed on `main`.
+
+## Required final report
+
+Return one factual report with these sections:
+
+1. Branch and initial working-tree state.
+2. Applicable instructions and canonical plan file.
+3. Analysis subagents created, their scopes, and the important findings accepted or rejected.
+4. Plan changes made before implementation.
+5. Implementation summary by module and file group.
+6. Database, security, performance, accessibility, localization, factory, seeder, and test impact where applicable.
+7. Exact verification commands and observed results.
+8. Independent reviewers created, findings, fixes, and remaining rejected findings with reasons.
+9. Documentation synchronized.
+10. Final Git status, commit hashes, and factual push result.
+11. Remaining limitations, containing only genuine external or environmental blockers with exact affected requirement or plan identifiers.
+
+Do not describe planned work as completed. Do not hide unfinished in-scope work in a limitations section.
+
+## Start now
+
+Read the applicable instruction chain and first-party documentation, inspect the repository, create the required analysis subagents, update the canonical plan, and then immediately implement the complete in-scope plan. Do not stop after analysis or planning.

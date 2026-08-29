@@ -2,6 +2,8 @@
 
 Date: 2026-07-31
 
+Status: incomplete; 58 content IDs are verified and 3,953 remain open.
+
 ## Contract
 
 The content-feed revision contributes 4,011 stable `content.*` requirements to

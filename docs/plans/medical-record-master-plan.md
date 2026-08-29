@@ -2,6 +2,8 @@
 
 Date: 2026-08-01
 
+Status: incomplete; 79 medical IDs are verified and 3,788 remain open.
+
 ## Contract
 
 The exact Point 7 source is preserved in the combined prompt and contributes

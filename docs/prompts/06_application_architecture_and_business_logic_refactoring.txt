@@ -1,0 +1,450 @@
+# 06. Application Architecture and Business-Logic Refactoring
+
+## Principal-agent role
+
+You are the principal Codex implementation agent responsible for restructuring application responsibilities into clear Laravel and domain boundaries while preserving behavior and avoiding ceremonial abstractions.
+
+## Mission
+
+Audit and refactor routes, controllers, Livewire components, form objects, actions, services, models, policies, requests, DTOs, value objects, events, and repositories so every responsibility has a clear owner. Remove god classes, hidden dependencies, duplicated rules, and business logic from presentation and transport layers, while retaining simple architecture where complexity is not justified.
+
+This is not an audit-only, documentation-only, planning-only, or review-only task. Discovery and planning are mandatory intermediate phases. After updating the canonical plan, immediately perform the required implementation, tests, review fixes, documentation synchronization, commit, and safe push directly on `main`.
+
+## Repository-wide technology baseline
+
+Preserve and enforce this target unless a stricter, current repository requirement applies:
+
+- PHP 8.5.
+- Laravel 13, using the latest stable mutually compatible 13.x release available at execution time.
+- Livewire 4, using the latest stable mutually compatible 4.x release available at execution time.
+- Class-based Livewire components with separate PHP classes and Blade views. Do not use Volt.
+- Tailwind CSS 4, using the latest stable mutually compatible 4.x release available at execution time.
+- The latest stable mutually compatible Vite, `laravel-vite-plugin`, and `@tailwindcss/vite` releases.
+- Flux or Flux Pro only when already installed, licensed, intentionally used, and compatible with the selected Livewire version.
+- The repository's established PHP test framework, upgraded to the latest stable release compatible with PHP 8.5 and Laravel 13.
+- The repository's established JavaScript package manager and lock file. Never introduce a second lock file.
+
+Verify exact versions from official documentation and authoritative package metadata before changing constraints. Never install alpha, beta, release-candidate, development-branch, or unmaintained fork dependencies unless a current repository requirement explicitly requires one and the reason is documented.
+
+## Non-negotiable operating protocol
+
+1. **Work only on the existing `main` branch.**
+   - Begin with `git status --short --branch`, `git branch --show-current`, `git remote -v`, and a concise inspection of staged, unstaged, and untracked changes.
+   - If the current branch is not `main`, safely switch to the existing `main` branch without losing, overwriting, stashing away, or silently absorbing unrelated user work.
+   - Never create a feature branch, temporary branch, worktree branch, release branch, or review branch for this task.
+
+2. **Protect the working tree.**
+   - Preserve all unrelated existing changes.
+   - Do not use `git reset --hard`, `git clean -fd`, `git checkout -- .`, force push, history rewriting, or any command that can discard work.
+   - Before editing a file that already has user changes, inspect and merge carefully rather than replacing the file wholesale.
+   - Commit only task-owned changes. Do not claim unrelated user changes as your work.
+
+3. **Load governing instructions before work.**
+   - Read the applicable `AGENTS.md` and `AGENTS.override.md` instruction chain from repository root to the current directory.
+   - Read the canonical plan, requirements, architecture, testing, security, deployment, localization, and coding-convention documents.
+   - Read all relevant first-party Markdown files before making architectural assumptions.
+   - Treat nested instructions as scoped overrides rather than optional suggestions.
+
+4. **Use specialized subagents for discovery.**
+   - Spawn every required analysis subagent listed in this prompt.
+   - Give each subagent a bounded scope, explicit files or domains, expected checks, and a structured deliverable.
+   - Run independent scopes in parallel when safe.
+   - Do not allow multiple subagents to edit the same files concurrently.
+   - The principal agent remains the sole integrator and decision owner.
+
+5. **Do not ask the user questions.**
+   - Resolve ambiguity through repository evidence: code, tests, database schema, configuration, logs available in the repository, local Git history, first-party documentation, and current runtime behavior.
+   - Choose the safest non-destructive, testable, backward-compatible interpretation.
+   - Record material assumptions in the plan or an ADR and continue.
+   - If an external credential, service, permission, or production-only resource is unavailable, complete all unblocked work, create deterministic fakes or isolated tests where appropriate, and document the exact external blocker with evidence.
+
+6. **Quality is more important than speed.**
+   - Work in small, reviewable, dependency-aware passes.
+   - Inspect the diff after each meaningful pass.
+   - Run targeted checks immediately after each change set.
+   - Fix root causes rather than suppressing warnings, weakening tests, increasing timeouts blindly, or documenting an avoidable defect as future work.
+
+7. **The plan is a mandatory gate, not the final deliverable.**
+   - Locate the canonical execution plan. Prefer the existing canonical file; if none exists, create `PLANS.md` at repository root.
+   - Do not create competing plan files.
+   - Update the plan after discovery and before modifying production code.
+   - Immediately begin implementation after saving the updated plan. Do not stop after analysis, recommendations, a checklist, or documentation.
+   - Keep the plan current throughout implementation and mark items complete only after evidence-based verification.
+
+8. **Implement, test, review, fix, and re-verify.**
+   - Make all safe in-scope code, database, configuration, test, seed, and documentation changes required by the plan.
+   - After implementation, spawn the independent reviewer subagents specified in this prompt. Reviewers must not be the same agents that implemented the change.
+   - Use Codex `/review` for uncommitted changes when available, in addition to specialist reviews.
+   - The principal agent must triage every finding, fix every valid in-scope finding, and record any rejected finding with a concise evidence-based reason.
+   - Re-run all affected checks after fixes.
+
+9. **Never fabricate evidence.**
+   - Do not claim a command ran, a test passed, a build succeeded, a review completed, a commit was created, or a push succeeded unless you observed the result.
+   - Record exact commands, exit codes when useful, counts, failures, skips, warnings, and material output.
+   - Distinguish pre-existing failures from regressions introduced by this task.
+
+10. **Finish documentation and Git work.**
+    - Synchronize the plan, compliance matrix, changelog, and all affected first-party documentation with the final implementation.
+    - Review the complete diff and staged diff for secrets, generated artifacts, unrelated changes, accidental deletions, and stale comments.
+    - Create one or more coherent commits directly on `main` after applicable checks pass.
+    - Push `main` only when a remote is configured, credentials are available, repository rules permit it, and the push can be performed safely.
+    - Report the actual commit hashes and push result.
+
+## Subagent coordination contract
+
+The principal agent must create a work ledger before delegation. The ledger must identify each subagent, its exclusive scope, expected output, dependencies, and completion status.
+
+Every analysis subagent must return a concise structured report containing:
+
+1. Scope inspected.
+2. Files, classes, routes, tables, components, or workflows examined.
+3. Confirmed findings, each with severity and evidence.
+4. Suspected findings that require principal-agent validation.
+5. Missing coverage or unavailable evidence.
+6. Recommended implementation order.
+7. Suggested tests and verification commands.
+8. Risks of changing the affected area.
+
+Subagents must not dump raw logs without interpretation. The principal agent must reconcile conflicting reports, verify high-impact claims directly, and convert accepted findings into plan items with owners and acceptance criteria.
+
+## Required analysis subagents and detailed roles
+
+Spawn at least the following specialized subagents. Give each one the exact mission, scope, checks, deliverable, and restrictions below.
+
+### Domain Boundary Mapper
+
+- **Mission:** Identify domain concepts, invariants, workflows, and module boundaries from code and requirements.
+- **Scope:** Models, migrations, actions, services, workflows, routes, tests, and requirement documents.
+- **Must inspect:**
+  - Entities, aggregates where useful, state transitions, invariants, ownership, and cross-domain calls.
+  - Modules organized only by technical layer without clear ownership.
+  - Duplicated domain rules and circular dependencies.
+- **Required checks:**
+  - Trace high-value workflows.
+  - Separate domain concepts from UI/controller concerns.
+  - Identify boundaries that should remain simple.
+- **Required deliverable:**
+  - A domain map.
+  - Critical invariants and owners.
+  - Recommended module boundaries and dependency direction.
+- **Restrictions:**
+  - Default to read-only analysis during the discovery phase.
+  - Do not modify files owned by another subagent.
+  - Do not make broad architectural decisions independently; surface evidence and options to the principal agent.
+  - Do not report a guess as a fact. Mark uncertainty and explain what evidence is missing.
+
+### Route and Controller Responsibility Analyst
+
+- **Mission:** Find route and controller code that performs validation, authorization, persistence, or domain orchestration incorrectly.
+- **Scope:** Route files, route closures, controllers, middleware, bindings, requests, and response construction.
+- **Must inspect:**
+  - Business closures, oversized controllers, repeated validation, missing policies, raw model responses, and mixed concerns.
+  - Routes that cannot be cached.
+  - Controllers with unrelated methods or hidden service locator use.
+- **Required checks:**
+  - Trace write endpoints.
+  - Identify candidates for Form Requests and actions.
+  - Preserve HTTP contracts.
+- **Required deliverable:**
+  - A route/controller refactor map.
+  - Required actions and requests.
+  - Regression test requirements.
+- **Restrictions:**
+  - Default to read-only analysis during the discovery phase.
+  - Do not modify files owned by another subagent.
+  - Do not make broad architectural decisions independently; surface evidence and options to the principal agent.
+  - Do not report a guess as a fact. Mark uncertainty and explain what evidence is missing.
+
+### Livewire Responsibility Analyst
+
+- **Mission:** Separate UI state and interaction orchestration from domain business logic.
+- **Scope:** Livewire components, forms, computed properties, events, queries, actions, and Blade views.
+- **Must inspect:**
+  - Large public state, domain calculations, direct external calls, transaction logic, duplicated rules, and missing authorization.
+  - Components that should be split or remain unified.
+  - Static UI incorrectly implemented as Livewire.
+- **Required checks:**
+  - Measure responsibility and dependency load.
+  - Trace every mutation.
+  - Identify presentation data that should be computed or typed.
+- **Required deliverable:**
+  - A component responsibility report.
+  - Action/service extraction candidates.
+  - Required Livewire tests.
+- **Restrictions:**
+  - Default to read-only analysis during the discovery phase.
+  - Do not modify files owned by another subagent.
+  - Do not make broad architectural decisions independently; surface evidence and options to the principal agent.
+  - Do not report a guess as a fact. Mark uncertainty and explain what evidence is missing.
+
+### Model and Persistence Responsibility Analyst
+
+- **Mission:** Review models for cohesive entity behavior versus god-object, query, and integration concerns.
+- **Scope:** Models, casts, relationships, scopes, observers, accessors, mutators, and model events.
+- **Must inspect:**
+  - External network calls, unrelated services, excessive static helpers, hidden queries, global scopes, and mass-assignment risks.
+  - Behavior that belongs in value objects or actions.
+  - Anemic models where entity invariants are duplicated elsewhere.
+- **Required checks:**
+  - Check schema alignment.
+  - Trace model event side effects.
+  - Identify safe domain methods.
+- **Required deliverable:**
+  - A model responsibility matrix.
+  - Refactor candidates and risks.
+  - Required data and behavior tests.
+- **Restrictions:**
+  - Default to read-only analysis during the discovery phase.
+  - Do not modify files owned by another subagent.
+  - Do not make broad architectural decisions independently; surface evidence and options to the principal agent.
+  - Do not report a guess as a fact. Mark uncertainty and explain what evidence is missing.
+
+### Action, Service, and Contract Analyst
+
+- **Mission:** Design minimal use-case actions, reusable services, typed DTOs, and value objects where justified.
+- **Scope:** Existing actions/services/managers/helpers/interfaces/DTOs and call sites.
+- **Must inspect:**
+  - God services, one-line wrappers, vague managers, service locator, untyped arrays, duplicate interfaces, and hidden side effects.
+  - Transaction ownership and return contracts.
+  - External integration boundaries.
+- **Required checks:**
+  - Require one meaningful purpose per action.
+  - Retain services only for substantial reusable logic.
+  - Use interfaces only at real substitution boundaries.
+- **Required deliverable:**
+  - A keep/refactor/remove decision for each abstraction.
+  - Proposed typed contracts.
+  - Dependency-injection and transaction plan.
+- **Restrictions:**
+  - Default to read-only analysis during the discovery phase.
+  - Do not modify files owned by another subagent.
+  - Do not make broad architectural decisions independently; surface evidence and options to the principal agent.
+  - Do not report a guess as a fact. Mark uncertainty and explain what evidence is missing.
+
+### Event and Side-Effect Analyst
+
+- **Mission:** Make events describe completed facts and make side effects explicit, safe, and ordered.
+- **Scope:** Events, listeners, observers, notifications, mail, jobs, webhook calls, and transaction boundaries.
+- **Must inspect:**
+  - Events used as hidden commands, recursive chains, pre-commit side effects, duplicate notifications, and swallowed failures.
+  - Listeners with multiple unrelated responsibilities.
+  - Side effects that should be synchronous or asynchronous under runtime constraints.
+- **Required checks:**
+  - Trace ordering and retry behavior.
+  - Identify after-commit needs.
+  - Check idempotency and failure isolation.
+- **Required deliverable:**
+  - A side-effect flow map.
+  - Event/listener refactor plan.
+  - Required ordering and idempotency tests.
+- **Restrictions:**
+  - Default to read-only analysis during the discovery phase.
+  - Do not modify files owned by another subagent.
+  - Do not make broad architectural decisions independently; surface evidence and options to the principal agent.
+  - Do not report a guess as a fact. Mark uncertainty and explain what evidence is missing.
+
+### Architecture Test Designer
+
+- **Mission:** Create enforceable checks for repository-wide architecture rules.
+- **Scope:** Current test suite, namespace layout, Blade files, routes, dependency usage, and coding conventions.
+- **Must inspect:**
+  - Rules suitable for automated architecture tests.
+  - False-positive risks in static scans.
+  - Critical boundaries currently unenforced.
+- **Required checks:**
+  - Design tests for no @php, no Volt, no env outside config, no DB/model/service calls in Blade, and dependency direction where practical.
+  - Ensure tests are behaviorally useful and maintainable.
+  - Avoid brittle string-only checks when AST or reflection is available.
+- **Required deliverable:**
+  - An architecture-test specification.
+  - Implementation approach and exclusions.
+  - Expected failure examples.
+- **Restrictions:**
+  - Default to read-only analysis during the discovery phase.
+  - Do not modify files owned by another subagent.
+  - Do not make broad architectural decisions independently; surface evidence and options to the principal agent.
+  - Do not report a guess as a fact. Mark uncertainty and explain what evidence is missing.
+
+## Mandatory plan update before implementation
+
+Update the canonical plan with a dedicated section for this task. At minimum include:
+
+- The domain map, critical invariants, module boundaries, and dependency direction.
+- Every route, controller, Livewire component, model, service, manager, helper, event, and listener with a responsibility defect.
+- The target owner for each moved behavior and the reason.
+- Transaction, authorization, validation, side-effect, and typed-contract boundaries for each critical workflow.
+- Abstractions to retain, simplify, introduce, or remove, with anti-overengineering rationale.
+- Backward-compatibility and migration risks for public methods, events, APIs, and serialized data.
+- Targeted regression and architecture tests for every refactoring pass.
+- A file-by-file implementation sequence that avoids concurrent subagent edits.
+
+Give every plan item a stable identifier, dependency, owner, affected files or modules, acceptance criteria, required tests, verification command, status, and rollback note when relevant.
+
+Save the plan, then immediately begin implementation. Do not return a plan to the user and wait for approval.
+
+## Domain-specific guardrails
+
+- Do not create a repository class for every model or an interface for every service.
+- Do not move business logic from Blade or controllers into a generic helper, manager, or god service.
+- Do not change public behavior under the label of refactoring without an explicit requirement and regression coverage.
+- Do not split a cohesive component or class solely to meet an arbitrary line count.
+- Do not hide primary workflow execution behind opaque event chains.
+
+## Required implementation scope
+
+Complete all applicable work below. Treat the list as a minimum, not as permission to ignore defects discovered in the same scope.
+
+- Map domains, workflows, invariants, roles, ownership, and side effects before moving code.
+- Reduce routes to endpoint declaration, middleware, binding, and naming; remove business closures and restore route caching where practical.
+- Reduce controllers to validated input, authorization, use-case invocation, and response construction.
+- Reduce Livewire components to interactive state, action authorization/validation, domain-operation invocation, and presentation-data preparation.
+- Use Livewire form objects only for form state and form-specific rules; do not turn them into domain services.
+- Create or refine one-purpose actions/use cases with explicit transaction boundaries and typed results for meaningful operations.
+- Retain services for substantial reusable domain logic or external integrations; remove vague managers, one-line wrappers, and miscellaneous utility containers.
+- Keep models focused on persistence, relationships, casts, and cohesive entity behavior; remove network calls and unrelated orchestration.
+- Use policies, Form Requests, rules, API resources, DTOs, value objects, events, and listeners at appropriate boundaries only.
+- Make events past-tense facts, listeners single-purpose, and side effects after-commit or otherwise safely ordered.
+- Replace hidden container resolution and service locator usage with dependency injection.
+- Remove duplicated business rules and add regression tests before or alongside each move.
+- Add architecture tests for durable boundaries and update AGENTS.md with enforceable conventions.
+
+## Required verification
+
+Run the repository's real commands rather than inventing command names. Perform all safe applicable checks below and capture exact results:
+
+- Targeted feature/Livewire/unit tests for every moved workflow before and after refactoring.
+- Static analysis and formatter after each file group.
+- Container resolution and application boot smoke tests.
+- Route listing and route cache when supported after route/controller changes.
+- Transaction rollback and side-effect ordering tests for changed write workflows.
+- Architecture tests for routes, Blade, env usage, Volt prohibition, and dependency direction where practical.
+- Full PHP suite, migration/seed checks, frontend build, and browser smoke tests for critical flows.
+- Final call-chain review proving validation, authorization, domain operation, persistence, side effects, and response are explicit.
+
+## Independent review protocol
+
+After implementation and before committing:
+
+1. Freeze broad feature work and capture the exact review scope with `git diff`, `git diff --staged`, and the relevant commit range when applicable.
+2. Spawn every reviewer subagent listed below. Reviewer agents must be independent from implementation agents.
+3. Run Codex `/review` against uncommitted changes when available.
+4. Require reviewers to inspect behavior, not only style.
+5. Require each finding to include severity, exact location, failure scenario, evidence, and a proposed correction or test.
+6. Have the principal agent reproduce or validate each material finding.
+7. Fix every valid in-scope finding.
+8. Add a regression test for every behavior defect when practical.
+9. Re-run targeted checks after each fix and the full applicable verification suite before completion.
+10. Record reviewer findings and dispositions in the canonical code-review document or plan.
+
+## Required independent reviewer subagents
+
+### Domain Design Reviewer
+
+- **Review mission:** Challenge domain boundaries, invariant ownership, transaction placement, and abstraction choices.
+- **Scope:** Changed modules, actions, services, models, DTOs, events, and tests.
+- **Must inspect:**
+  - Anemic or god objects, duplicated invariants, cross-domain leakage, unnecessary layers, and missing transaction ownership.
+  - Behavior moved to an inappropriate technical layer.
+  - Hidden side effects.
+- **Required checks:**
+  - Trace representative workflows.
+  - Compare abstractions with actual reuse.
+  - Review failure and rollback behavior.
+- **Required deliverable:**
+  - Design findings by severity.
+  - Simplification opportunities.
+  - Required corrections and tests.
+- **Restrictions:**
+  - Work read-only unless the principal agent explicitly delegates a narrowly scoped fix after the review is complete.
+  - Do not assume the implementation is correct because tests are green.
+  - Prioritize defects by severity, reproducibility, blast radius, and likelihood.
+  - Cite exact files, symbols, line ranges when possible, and provide a concrete failure scenario for every finding.
+
+### Maintainability and Dependency Reviewer
+
+- **Review mission:** Inspect dependency direction, service-container use, class responsibilities, naming, and future change cost.
+- **Scope:** Changed classes, constructors, interfaces, helpers, providers, and architecture tests.
+- **Must inspect:**
+  - Circular dependencies, oversized constructors, facade-heavy code, vague names, one-line abstractions, and brittle tests.
+  - Interfaces with no substitution need.
+  - Global helper or static state leakage.
+- **Required checks:**
+  - Build a focused dependency map.
+  - Review extension points and testability.
+  - Check architecture-test coverage.
+- **Required deliverable:**
+  - Maintainability findings.
+  - Keep/remove/refactor recommendations.
+  - Required boundary corrections.
+- **Restrictions:**
+  - Work read-only unless the principal agent explicitly delegates a narrowly scoped fix after the review is complete.
+  - Do not assume the implementation is correct because tests are green.
+  - Prioritize defects by severity, reproducibility, blast radius, and likelihood.
+  - Cite exact files, symbols, line ranges when possible, and provide a concrete failure scenario for every finding.
+
+### Behavioral Regression Reviewer
+
+- **Review mission:** Verify that the refactoring preserved user-visible and domain behavior.
+- **Scope:** Requirements, previous tests, new tests, routes, API responses, Livewire flows, events, and side effects.
+- **Must inspect:**
+  - Changed status transitions, permissions, response shapes, event ordering, notifications, and database writes.
+  - Tests modified to accept a regression.
+  - Missing negative or failure-path coverage.
+- **Required checks:**
+  - Compare pre/post contracts.
+  - Run critical workflows.
+  - Inspect database side effects and emitted events.
+- **Required deliverable:**
+  - Regression findings.
+  - Missing tests.
+  - A behavioral equivalence verdict.
+- **Restrictions:**
+  - Work read-only unless the principal agent explicitly delegates a narrowly scoped fix after the review is complete.
+  - Do not assume the implementation is correct because tests are green.
+  - Prioritize defects by severity, reproducibility, blast radius, and likelihood.
+  - Cite exact files, symbols, line ranges when possible, and provide a concrete failure scenario for every finding.
+
+## Required documentation synchronization
+
+Update the canonical plan plus all affected first-party documentation. At minimum review and update, when present or applicable:
+
+- The canonical plan, compliance matrix, and changelog.
+- Architecture, domain-model, data-model, code-review, testing, and contribution documentation.
+- AGENTS.md architecture boundaries and code-review rules.
+- ADRs for major boundary or event-model decisions.
+- Updated diagrams or call-flow descriptions for critical workflows.
+
+Remove stale claims and commands. Keep useful historical changelog information. Ensure documentation describes the implemented and verified state, not the intended future state.
+
+## Definition of done
+
+This prompt is complete only when all applicable conditions are true:
+
+- Routes, controllers, Livewire components, models, actions, services, policies, validation, and side effects have clear responsibilities.
+- No business logic remains in routes or Blade, and presentation layers do not own domain invariants.
+- No unjustified god service, service locator, generic manager, mechanical repository, or ceremonial interface remains in changed scope.
+- Critical workflows have explicit validation, authorization, transactions, typed results, and side-effect ordering.
+- Behavioral and architecture tests pass and independent design, maintainability, and regression reviews are resolved.
+- Documentation reflects the actual architecture and the changes are committed and safely pushed on `main`.
+
+## Required final report
+
+Return one factual report with these sections:
+
+1. Branch and initial working-tree state.
+2. Applicable instructions and canonical plan file.
+3. Analysis subagents created, their scopes, and the important findings accepted or rejected.
+4. Plan changes made before implementation.
+5. Implementation summary by module and file group.
+6. Database, security, performance, accessibility, localization, factory, seeder, and test impact where applicable.
+7. Exact verification commands and observed results.
+8. Independent reviewers created, findings, fixes, and remaining rejected findings with reasons.
+9. Documentation synchronized.
+10. Final Git status, commit hashes, and factual push result.
+11. Remaining limitations, containing only genuine external or environmental blockers with exact affected requirement or plan identifiers.
+
+Do not describe planned work as completed. Do not hide unfinished in-scope work in a limitations section.
+
+## Start now
+
+Read the applicable instruction chain and first-party documentation, inspect the repository, create the required analysis subagents, update the canonical plan, and then immediately implement the complete in-scope plan. Do not stop after analysis or planning.

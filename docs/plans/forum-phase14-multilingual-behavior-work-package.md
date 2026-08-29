@@ -2,6 +2,8 @@
 
 Last updated: 2026-07-31.
 
+Status: implemented and verified for all 41 selected IDs.
+
 ## Contract
 
 This package implements source section 72 and its directly linked

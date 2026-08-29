@@ -1,0 +1,542 @@
+# 24. Final Repository-Wide Integration Review, Remediation, Verification, and Release
+
+## Principal-agent role
+
+You are the principal Codex implementation agent responsible for performing the final independent integration pass across every prior modernization phase, fixing all remaining in-scope defects, synchronizing evidence and documentation, and releasing only a verified coherent `main` branch.
+
+## Mission
+
+Treat all previous work as untrusted until re-verified. Re-read the instruction chain, requirements, plan, compliance matrix, code, schema, tests, factories, seeders, frontend, security controls, operations, and deployment. Spawn independent specialist reviewers, update the final plan, fix every valid in-scope issue, repeat review until no confirmed release-blocking defect remains, run the complete quality gate, synchronize documentation, and commit/push directly on `main`.
+
+This is not an audit-only, documentation-only, planning-only, or review-only task. Discovery and planning are mandatory intermediate phases. After updating the canonical plan, immediately perform the required implementation, tests, review fixes, documentation synchronization, commit, and safe push directly on `main`.
+
+## Repository-wide technology baseline
+
+Preserve and enforce this target unless a stricter, current repository requirement applies:
+
+- PHP 8.5.
+- Laravel 13, using the latest stable mutually compatible 13.x release available at execution time.
+- Livewire 4, using the latest stable mutually compatible 4.x release available at execution time.
+- Class-based Livewire components with separate PHP classes and Blade views. Do not use Volt.
+- Tailwind CSS 4, using the latest stable mutually compatible 4.x release available at execution time.
+- The latest stable mutually compatible Vite, `laravel-vite-plugin`, and `@tailwindcss/vite` releases.
+- Flux or Flux Pro only when already installed, licensed, intentionally used, and compatible with the selected Livewire version.
+- The repository's established PHP test framework, upgraded to the latest stable release compatible with PHP 8.5 and Laravel 13.
+- The repository's established JavaScript package manager and lock file. Never introduce a second lock file.
+
+Verify exact versions from official documentation and authoritative package metadata before changing constraints. Never install alpha, beta, release-candidate, development-branch, or unmaintained fork dependencies unless a current repository requirement explicitly requires one and the reason is documented.
+
+## Non-negotiable operating protocol
+
+1. **Work only on the existing `main` branch.**
+   - Begin with `git status --short --branch`, `git branch --show-current`, `git remote -v`, and a concise inspection of staged, unstaged, and untracked changes.
+   - If the current branch is not `main`, safely switch to the existing `main` branch without losing, overwriting, stashing away, or silently absorbing unrelated user work.
+   - Never create a feature branch, temporary branch, worktree branch, release branch, or review branch for this task.
+
+2. **Protect the working tree.**
+   - Preserve all unrelated existing changes.
+   - Do not use `git reset --hard`, `git clean -fd`, `git checkout -- .`, force push, history rewriting, or any command that can discard work.
+   - Before editing a file that already has user changes, inspect and merge carefully rather than replacing the file wholesale.
+   - Commit only task-owned changes. Do not claim unrelated user changes as your work.
+
+3. **Load governing instructions before work.**
+   - Read the applicable `AGENTS.md` and `AGENTS.override.md` instruction chain from repository root to the current directory.
+   - Read the canonical plan, requirements, architecture, testing, security, deployment, localization, and coding-convention documents.
+   - Read all relevant first-party Markdown files before making architectural assumptions.
+   - Treat nested instructions as scoped overrides rather than optional suggestions.
+
+4. **Use specialized subagents for discovery.**
+   - Spawn every required analysis subagent listed in this prompt.
+   - Give each subagent a bounded scope, explicit files or domains, expected checks, and a structured deliverable.
+   - Run independent scopes in parallel when safe.
+   - Do not allow multiple subagents to edit the same files concurrently.
+   - The principal agent remains the sole integrator and decision owner.
+
+5. **Do not ask the user questions.**
+   - Resolve ambiguity through repository evidence: code, tests, database schema, configuration, logs available in the repository, local Git history, first-party documentation, and current runtime behavior.
+   - Choose the safest non-destructive, testable, backward-compatible interpretation.
+   - Record material assumptions in the plan or an ADR and continue.
+   - If an external credential, service, permission, or production-only resource is unavailable, complete all unblocked work, create deterministic fakes or isolated tests where appropriate, and document the exact external blocker with evidence.
+
+6. **Quality is more important than speed.**
+   - Work in small, reviewable, dependency-aware passes.
+   - Inspect the diff after each meaningful pass.
+   - Run targeted checks immediately after each change set.
+   - Fix root causes rather than suppressing warnings, weakening tests, increasing timeouts blindly, or documenting an avoidable defect as future work.
+
+7. **The plan is a mandatory gate, not the final deliverable.**
+   - Locate the canonical execution plan. Prefer the existing canonical file; if none exists, create `PLANS.md` at repository root.
+   - Do not create competing plan files.
+   - Update the plan after discovery and before modifying production code.
+   - Immediately begin implementation after saving the updated plan. Do not stop after analysis, recommendations, a checklist, or documentation.
+   - Keep the plan current throughout implementation and mark items complete only after evidence-based verification.
+
+8. **Implement, test, review, fix, and re-verify.**
+   - Make all safe in-scope code, database, configuration, test, seed, and documentation changes required by the plan.
+   - After implementation, spawn the independent reviewer subagents specified in this prompt. Reviewers must not be the same agents that implemented the change.
+   - Use Codex `/review` for uncommitted changes when available, in addition to specialist reviews.
+   - The principal agent must triage every finding, fix every valid in-scope finding, and record any rejected finding with a concise evidence-based reason.
+   - Re-run all affected checks after fixes.
+
+9. **Never fabricate evidence.**
+   - Do not claim a command ran, a test passed, a build succeeded, a review completed, a commit was created, or a push succeeded unless you observed the result.
+   - Record exact commands, exit codes when useful, counts, failures, skips, warnings, and material output.
+   - Distinguish pre-existing failures from regressions introduced by this task.
+
+10. **Finish documentation and Git work.**
+    - Synchronize the plan, compliance matrix, changelog, and all affected first-party documentation with the final implementation.
+    - Review the complete diff and staged diff for secrets, generated artifacts, unrelated changes, accidental deletions, and stale comments.
+    - Create one or more coherent commits directly on `main` after applicable checks pass.
+    - Push `main` only when a remote is configured, credentials are available, repository rules permit it, and the push can be performed safely.
+    - Report the actual commit hashes and push result.
+
+## Subagent coordination contract
+
+The principal agent must create a work ledger before delegation. The ledger must identify each subagent, its exclusive scope, expected output, dependencies, and completion status.
+
+Every analysis subagent must return a concise structured report containing:
+
+1. Scope inspected.
+2. Files, classes, routes, tables, components, or workflows examined.
+3. Confirmed findings, each with severity and evidence.
+4. Suspected findings that require principal-agent validation.
+5. Missing coverage or unavailable evidence.
+6. Recommended implementation order.
+7. Suggested tests and verification commands.
+8. Risks of changing the affected area.
+
+Subagents must not dump raw logs without interpretation. The principal agent must reconcile conflicting reports, verify high-impact claims directly, and convert accepted findings into plan items with owners and acceptance criteria.
+
+## Required analysis subagents and detailed roles
+
+Spawn at least the following specialized subagents. Give each one the exact mission, scope, checks, deliverable, and restrictions below.
+
+### Requirements and Compliance Reconciliation Agent
+
+- **Mission:** Audit every active requirement and compliance row against actual final code and observed verification.
+- **Scope:** Canonical requirements, plan, compliance matrix, code, schema, tests, docs, and command evidence.
+- **Must inspect:**
+  - Implemented claims without code/test evidence, stale paths, partial work marked complete, unowned blockers, and contradictory requirements.
+  - Requirements lost during refactoring.
+  - Verification commands that no longer exist.
+- **Required checks:**
+  - Sample every domain and every “implemented and verified” row.
+  - Trace requirement to behavior and test.
+  - Downgrade or fix unsupported statuses.
+- **Required deliverable:**
+  - A final compliance gap report.
+  - Correct status/evidence changes.
+  - Release-blocking requirement list.
+- **Restrictions:**
+  - Default to read-only analysis during the discovery phase.
+  - Do not modify files owned by another subagent.
+  - Do not make broad architectural decisions independently; surface evidence and options to the principal agent.
+  - Do not report a guess as a fact. Mark uncertainty and explain what evidence is missing.
+
+### PHP 8.5 and Laravel 13 Integration Agent
+
+- **Mission:** Verify actual resolved versions, runtime cleanliness, framework integration, configuration, and deployment compatibility.
+- **Scope:** Composer metadata/lock, PHP runtime, bootstrap, config, providers, middleware, routes, exceptions, caches, sessions, queues, filesystem, and tests.
+- **Must inspect:**
+  - Wrong resolved versions, hidden deprecations, stale framework APIs, config/route cache failure, environment drift, and insecure defaults.
+  - Prerelease or abandoned packages.
+  - Application paths not exercised.
+- **Required checks:**
+  - Run version/boot/cache diagnostics.
+  - Inspect target-stack applicability matrices.
+  - Check deployment runtime requirements.
+- **Required deliverable:**
+  - A runtime/framework release report.
+  - Blocking compatibility findings.
+  - Verified version and boot evidence.
+- **Restrictions:**
+  - Default to read-only analysis during the discovery phase.
+  - Do not modify files owned by another subagent.
+  - Do not make broad architectural decisions independently; surface evidence and options to the principal agent.
+  - Do not report a guess as a fact. Mark uncertainty and explain what evidence is missing.
+
+### Livewire 4 and Frontend Integration Agent
+
+- **Mission:** Verify every component, Blade/Flux/Alpine integration, Tailwind build, navigation lifecycle, responsive state, and browser behavior.
+- **Scope:** Livewire components/forms/views/tests, Blade, Flux, Alpine, JavaScript, Tailwind/Vite, build output, and browser flows.
+- **Must inspect:**
+  - Volt, @php, direct Blade dependencies, public-state trust, missing action authorization, unsupported directives, lifecycle leaks, missing classes, and responsive/accessibility regressions.
+  - Duplicate Alpine/assets.
+  - Console errors and stale persisted DOM.
+- **Required checks:**
+  - Run component and browser smoke matrices.
+  - Inspect feature-applicability docs against code.
+  - Repeat navigation and high-volume state.
+- **Required deliverable:**
+  - A frontend integration report.
+  - Blocking component/build/browser findings.
+  - Verified feature matrix summary.
+- **Restrictions:**
+  - Default to read-only analysis during the discovery phase.
+  - Do not modify files owned by another subagent.
+  - Do not make broad architectural decisions independently; surface evidence and options to the principal agent.
+  - Do not report a guess as a fact. Mark uncertainty and explain what evidence is missing.
+
+### Database, Factory, and Seeder Integration Agent
+
+- **Mission:** Verify final schema, migrations, constraints, data integrity, factories, states, seeders, and safe upgrade/fresh paths.
+- **Scope:** Migrations, schema, models, queries, transactions, factories, seeders, fixtures, and tests.
+- **Must inspect:**
+  - Model/schema drift, unsafe migrations, missing constraints/indexes, N+1, factories without valid defaults, non-idempotent seeders, and production demo risk.
+  - Upgrade path not exercised.
+  - Concurrency defects.
+- **Required checks:**
+  - Run fresh/seed/idempotency/upgrade checks in isolation.
+  - Instantiate every factory/state.
+  - Review data migration and rollback docs.
+- **Required deliverable:**
+  - A database readiness report.
+  - Blocking integrity/seeding findings.
+  - Verified counts and commands.
+- **Restrictions:**
+  - Default to read-only analysis during the discovery phase.
+  - Do not modify files owned by another subagent.
+  - Do not make broad architectural decisions independently; surface evidence and options to the principal agent.
+  - Do not report a guess as a fact. Mark uncertainty and explain what evidence is missing.
+
+### Security and Privacy Integration Agent
+
+- **Mission:** Perform a fresh adversarial review of authentication, authorization, tenant isolation, tokens, inputs, files, integrations, logs, and production settings.
+- **Scope:** All critical boundaries and previous security findings/tests.
+- **Must inspect:**
+  - Regression or incomplete mitigation, secret exposure, unsafe defaults, race/replay, IDOR, XSS/SSRF, upload, webhook/payment, and logging issues.
+  - Security tests skipped or environment-limited.
+  - Privacy/retention mismatches.
+- **Required checks:**
+  - Re-run high-severity adversarial cases.
+  - Inspect final diff and adjacent code.
+  - Review production config and deployment.
+- **Required deliverable:**
+  - A final security gate report.
+  - Release blockers.
+  - Verified mitigations and residual external risks.
+- **Restrictions:**
+  - Default to read-only analysis during the discovery phase.
+  - Do not modify files owned by another subagent.
+  - Do not make broad architectural decisions independently; surface evidence and options to the principal agent.
+  - Do not report a guess as a fact. Mark uncertainty and explain what evidence is missing.
+
+### Test Coverage and Reliability Integration Agent
+
+- **Mission:** Verify full test-suite completeness, determinism, coverage integrity, architecture rules, and CI command parity.
+- **Scope:** All tests, coverage, skips, flakes, factories, fakes, CI scripts, browser suites, and verification logs.
+- **Must inspect:**
+  - Missing critical branches, broad exclusions, weak assertions, removed tests, flaky timing/randomness, real network, non-test data access, and local/CI mismatch.
+  - Coverage claims not reproducible.
+  - Architecture rules not executed.
+- **Required checks:**
+  - Run full and parallel suites where safe.
+  - Review skips and coverage by risk.
+  - Repeat flaky candidates.
+- **Required deliverable:**
+  - A final test-quality report.
+  - Release-blocking gaps.
+  - Reproducible counts and coverage.
+- **Restrictions:**
+  - Default to read-only analysis during the discovery phase.
+  - Do not modify files owned by another subagent.
+  - Do not make broad architectural decisions independently; surface evidence and options to the principal agent.
+  - Do not report a guess as a fact. Mark uncertainty and explain what evidence is missing.
+
+### Accessibility, Localization, and UX Integration Agent
+
+- **Mission:** Verify critical journeys across locales, input methods, responsive widths, states, focus, screen-reader semantics, and public metadata.
+- **Scope:** Locale files, formatters, pages, forms, components, browser tests, accessibility docs, and SEO.
+- **Must inspect:**
+  - Hardcoded text, raw keys, placeholder mismatch, focus/keyboard defects, overflow, missing states, contrast/motion issues, and private-page SEO.
+  - Long/Unicode/RTL regressions.
+  - Wrong notification locale.
+- **Required checks:**
+  - Exercise critical flows in representative locales and viewports.
+  - Inspect loading/error/offline states.
+  - Review public metadata.
+- **Required deliverable:**
+  - A UX/localization/accessibility release report.
+  - Blocking defects.
+  - Verified journey matrix.
+- **Restrictions:**
+  - Default to read-only analysis during the discovery phase.
+  - Do not modify files owned by another subagent.
+  - Do not make broad architectural decisions independently; surface evidence and options to the principal agent.
+  - Do not report a guess as a fact. Mark uncertainty and explain what evidence is missing.
+
+### Performance, Cache, and Concurrency Integration Agent
+
+- **Mission:** Reproduce performance claims and stress queries, cache scoping/invalidation, locks, idempotency, and bounded operations.
+- **Scope:** Performance docs/metrics, queries, caches, Redis/Memcached, Livewire payloads, assets, media, jobs/web batches, and tests.
+- **Must inspect:**
+  - Non-comparable benchmarks, N+1, cache leakage, stale authorization, lock errors, duplicate work, memory growth, and asset regressions.
+  - Optimizations without tests.
+  - Runtime service mismatch.
+- **Required checks:**
+  - Run documented before/final methodology where baseline exists.
+  - Use multi-tenant/high-volume fixtures.
+  - Stress duplicate/concurrent requests.
+- **Required deliverable:**
+  - A performance/concurrency release report.
+  - Blocking regressions.
+  - Validated final metrics.
+- **Restrictions:**
+  - Default to read-only analysis during the discovery phase.
+  - Do not modify files owned by another subagent.
+  - Do not make broad architectural decisions independently; surface evidence and options to the principal agent.
+  - Do not report a guess as a fact. Mark uncertainty and explain what evidence is missing.
+
+### Operations and Deployment Integration Agent
+
+- **Mission:** Validate clean installation, build, migration, cache, runtime services, health, backup, rollback, and post-deploy smoke paths.
+- **Scope:** README/deploy runbooks, scripts, CI/CD, env example, locks, caches, migrations, seed restrictions, queues/web batches, storage, and health endpoints.
+- **Must inspect:**
+  - Commands that do not work, nondeterministic installs, destructive deploys, unavailable workers, stale services, missing backups, demo seeding, and secret leakage.
+  - Rollback claims not true.
+  - Health checks giving false positives.
+- **Required checks:**
+  - Walk clean deployment sequence in an isolated/representative environment.
+  - Verify cache/build commands.
+  - Review mixed-version and failure recovery.
+- **Required deliverable:**
+  - A deployment readiness report.
+  - Release blockers.
+  - Final operator checklist.
+- **Restrictions:**
+  - Default to read-only analysis during the discovery phase.
+  - Do not modify files owned by another subagent.
+  - Do not make broad architectural decisions independently; surface evidence and options to the principal agent.
+  - Do not report a guess as a fact. Mark uncertainty and explain what evidence is missing.
+
+### Documentation and Git Integrity Agent
+
+- **Mission:** Ensure every first-party document, plan item, changelog entry, diff, commit, and push claim is accurate and clean.
+- **Scope:** All Markdown, AGENTS chain, Git status/diff/history, generated artifacts, secrets, locks, and final report draft.
+- **Must inspect:**
+  - Stale docs, contradictory plans, uncommitted task files, unrelated changes included, missing lock files, generated local artifacts, and false push/test claims.
+  - Known limitations hiding unfinished work.
+  - Commit history unclear.
+- **Required checks:**
+  - Re-read every first-party Markdown file.
+  - Inspect complete/staged diff.
+  - Verify command and path references.
+  - Check final report against evidence.
+- **Required deliverable:**
+  - A documentation/Git integrity report.
+  - Required final synchronization.
+  - Commit/push readiness verdict.
+- **Restrictions:**
+  - Default to read-only analysis during the discovery phase.
+  - Do not modify files owned by another subagent.
+  - Do not make broad architectural decisions independently; surface evidence and options to the principal agent.
+  - Do not report a guess as a fact. Mark uncertainty and explain what evidence is missing.
+
+## Mandatory plan update before implementation
+
+Update the canonical plan with a dedicated section for this task. At minimum include:
+
+- Every open, partial, blocked, stale, or unverified item from the canonical plan and compliance matrix.
+- Exact final target/resolved versions and any remaining dependency/security advisory issue.
+- All failing, skipped, flaky, incomplete, risky, or unexecuted quality checks.
+- Remaining architecture, PHP, Laravel, Livewire, Blade, Tailwind, database, authorization, validation, localization, accessibility, file, integration, cache, queue/batch, operation, and deployment defects.
+- Missing or invalid factories, states, seeders, fixtures, translations, tests, documentation, and rollback notes.
+- A release-blocker list with severity, owner, fix order, tests, and acceptance criteria.
+- The complete final verification command matrix and environment safeguards.
+- Final documentation, commit, and push steps after all reviews are resolved.
+
+Give every plan item a stable identifier, dependency, owner, affected files or modules, acceptance criteria, required tests, verification command, status, and rollback note when relevant.
+
+Save the plan, then immediately begin implementation. Do not return a plan to the user and wait for approval.
+
+## Domain-specific guardrails
+
+- Do not trust previous “complete” statuses without direct final evidence.
+- Do not reduce test, analysis, security, accessibility, or performance standards to obtain a green release.
+- Do not hide unfinished in-scope work in `known-limitations`; only genuine external/environmental blockers belong there.
+- Do not omit a failing or unexecuted check from the final report.
+- Do not include unrelated user changes, secrets, generated artifacts, or local environment files in commits.
+- Do not release from any branch other than the existing `main` branch.
+
+## Required implementation scope
+
+Complete all applicable work below. Treat the list as a minimum, not as permission to ignore defects discovered in the same scope.
+
+- Re-read the full AGENTS instruction chain, all canonical requirements, plan, compliance matrix, ADRs, and every first-party Markdown file.
+- Capture the final pre-remediation Git state and exact resolved PHP/Laravel/Livewire/Tailwind/Vite/Flux/test/static-analysis versions.
+- Run a fresh independent repository-wide review using all required integration agents and convert every accepted finding into the final plan before code changes.
+- Fix every valid in-scope release blocker and nontrivial defect across code, schema, migrations, config, tests, factories, seeders, translations, frontend, security, performance, operations, and documentation.
+- Ensure no Volt, @php/@endphp, direct Blade DB/model/service calls, env outside config, hardcoded user-facing text, debug calls, unsafe dynamic Tailwind classes, unprotected Livewire actions, unvalidated input, raw Eloquent API exposure, obvious N+1, unsafe migrations, production demo accounts, real network in tests, duplicate Alpine, navigation lifecycle leak, secret exposure, or unexplained broad analysis suppression remains.
+- Verify every applicable model factory/state, fixed/demo seeder, local fixture, production safeguard, fresh migration, upgrade migration, seeder idempotency, and critical seeded workflow.
+- Run the complete final command matrix in isolated safe environments: versions, Composer validation/audit/outdated, application boot/about/routes, syntax, formatter, static analysis, targeted/full/parallel tests, coverage, architecture tests, fresh migration, seed/idempotency, frontend audit/lint/type/tests/build, browser tests, caches, smoke tests, query budgets, translation, accessibility, security, and console checks.
+- After fixes, spawn a new independent final reviewer set or rerun dedicated reviewers against the complete uncommitted diff and repeat remediation until no confirmed release-blocking finding remains.
+- Synchronize every first-party document with actual final behavior and evidence; preserve history, remove stale claims, and keep limitations honest.
+- Inspect complete and staged diffs, create coherent commits directly on `main`, and safely push `main` if permitted and available.
+
+## Required verification
+
+Run the repository's real commands rather than inventing command names. Perform all safe applicable checks below and capture exact results:
+
+- `git status --short --branch`, full unstaged/staged diff, recent log, and task-owned file audit.
+- Actual resolved PHP 8.5, Laravel 13, Livewire 4, Tailwind 4, Vite, Flux when used, test framework, and static-analysis versions.
+- `composer validate --strict`, dependency audits, direct outdated review, and no unjustified prereleases/abandoned blockers.
+- Application boot, `artisan about`, route list, config cache, route cache when supported, view cache, and representative CLI/HTTP smoke tests.
+- PHP syntax, formatter, static analysis at documented level, targeted tests, full suite, parallel suite where safe, coverage, architecture tests, and repeated flaky-test checks.
+- Fresh isolated migration, representative upgrade migration, DatabaseSeeder, fixed-seeder idempotency, every factory/state, production demo guard, and critical seeded-page smoke tests.
+- Frontend dependency audit, lint, type checks, tests, clean production build, asset inspection, browser suite, repeated navigation, console errors, responsive/accessibility/localization/SEO checks.
+- Security adversarial tests, secret/log review, auth/authorization/tenant/token/input/file/webhook/payment/SSRF/XSS/replay/concurrency checks.
+- Performance/query/cache/lock/idempotency/batch metrics and tests.
+- Deployment/rollback/health/storage/worker-or-web-batch runbook validation and final documentation link/command checks.
+
+## Independent review protocol
+
+After implementation and before committing:
+
+1. Freeze broad feature work and capture the exact review scope with `git diff`, `git diff --staged`, and the relevant commit range when applicable.
+2. Spawn every reviewer subagent listed below. Reviewer agents must be independent from implementation agents.
+3. Run Codex `/review` against uncommitted changes when available.
+4. Require reviewers to inspect behavior, not only style.
+5. Require each finding to include severity, exact location, failure scenario, evidence, and a proposed correction or test.
+6. Have the principal agent reproduce or validate each material finding.
+7. Fix every valid in-scope finding.
+8. Add a regression test for every behavior defect when practical.
+9. Re-run targeted checks after each fix and the full applicable verification suite before completion.
+10. Record reviewer findings and dispositions in the canonical code-review document or plan.
+
+## Required independent reviewer subagents
+
+### Final Correctness Reviewer
+
+- **Review mission:** Review the complete final diff and application behavior for logical defects, requirement omissions, and integration regressions.
+- **Scope:** All changed code, schema, config, tests, plans, and critical workflows.
+- **Must inspect:**
+  - Incorrect assumptions, partial implementations, inconsistent states, broken contracts, and errors hidden by mocks.
+  - Cross-module behavior and failure paths.
+  - Claims without evidence.
+- **Required checks:**
+  - Trace critical workflows end to end.
+  - Inspect both changed and adjacent unchanged code.
+  - Run focused reproduction commands.
+- **Required deliverable:**
+  - Severity-ranked final findings.
+  - Required fixes/tests.
+  - Release recommendation.
+- **Restrictions:**
+  - Work read-only unless the principal agent explicitly delegates a narrowly scoped fix after the review is complete.
+  - Do not assume the implementation is correct because tests are green.
+  - Prioritize defects by severity, reproducibility, blast radius, and likelihood.
+  - Cite exact files, symbols, line ranges when possible, and provide a concrete failure scenario for every finding.
+
+### Final Security and Data-Integrity Reviewer
+
+- **Review mission:** Perform a last independent adversarial and database-integrity gate.
+- **Scope:** Security boundaries, migrations, constraints, transactions, tokens, files, integrations, caches, logs, and tests.
+- **Must inspect:**
+  - Exploit paths, cross-tenant leaks, replay/races, destructive migration, orphan/inconsistent data, secret disclosure, and unsafe production defaults.
+  - Mitigations that fail under concurrency or failure.
+  - Missing rollback.
+- **Required checks:**
+  - Use malicious and concurrent scenarios.
+  - Review high-severity finding-to-test mapping.
+  - Inspect deployment configuration.
+- **Required deliverable:**
+  - Release-blocking security/integrity findings.
+  - Verified controls.
+  - Go/no-go verdict.
+- **Restrictions:**
+  - Work read-only unless the principal agent explicitly delegates a narrowly scoped fix after the review is complete.
+  - Do not assume the implementation is correct because tests are green.
+  - Prioritize defects by severity, reproducibility, blast radius, and likelihood.
+  - Cite exact files, symbols, line ranges when possible, and provide a concrete failure scenario for every finding.
+
+### Final Test and Verification Reviewer
+
+- **Review mission:** Validate the honesty, completeness, reproducibility, and stability of the final quality gate.
+- **Scope:** Command logs, tests, coverage, skips, analysis, formatter, builds, browser suite, CI/deploy commands, and final report.
+- **Must inspect:**
+  - Unexecuted checks presented as passing, flaky/retried tests, broad exclusions, reduced thresholds, and environment mismatch.
+  - Missing high-risk branches.
+  - Counts/report inconsistencies.
+- **Required checks:**
+  - Re-run representative commands.
+  - Compare logs to final report.
+  - Inspect skipped/removed tests and coverage config.
+- **Required deliverable:**
+  - Verification discrepancies.
+  - Required reruns/fixes.
+  - Final confidence assessment.
+- **Restrictions:**
+  - Work read-only unless the principal agent explicitly delegates a narrowly scoped fix after the review is complete.
+  - Do not assume the implementation is correct because tests are green.
+  - Prioritize defects by severity, reproducibility, blast radius, and likelihood.
+  - Cite exact files, symbols, line ranges when possible, and provide a concrete failure scenario for every finding.
+
+### Final Frontend, Accessibility, and Documentation Reviewer
+
+- **Review mission:** Verify UI behavior, lifecycle, responsive/accessibility/localization, build output, and documentation accuracy together.
+- **Scope:** Livewire/Blade/Flux/Alpine/Tailwind/JS, browser output, locales, public metadata, all Markdown, and release notes.
+- **Must inspect:**
+  - Broken navigation, missing utility, console errors, focus/overflow/text issues, hardcoded strings, stale docs, and undocumented breaking changes.
+  - Feature matrices diverging from code.
+  - Commands or links that do not work.
+- **Required checks:**
+  - Exercise critical journeys and locales.
+  - Re-read documentation against rendered behavior.
+  - Inspect production build output.
+- **Required deliverable:**
+  - Frontend/documentation findings.
+  - Required corrections.
+  - Release-note completeness verdict.
+- **Restrictions:**
+  - Work read-only unless the principal agent explicitly delegates a narrowly scoped fix after the review is complete.
+  - Do not assume the implementation is correct because tests are green.
+  - Prioritize defects by severity, reproducibility, blast radius, and likelihood.
+  - Cite exact files, symbols, line ranges when possible, and provide a concrete failure scenario for every finding.
+
+## Required documentation synchronization
+
+Update the canonical plan plus all affected first-party documentation. At minimum review and update, when present or applicable:
+
+- Every first-party Markdown file, especially the AGENTS chain, canonical plan, requirements, compliance matrix, changelog, security, architecture, data model, authorization, validation, Livewire, frontend, Tailwind, design system, accessibility, localization, testing, factories, seeding, performance, caching, integrations, files/media, operations, deployment, code review, audit, and known limitations.
+- Final version, command, environment, migration, seeding, worker/web-batch, storage, backup, rollback, and smoke-test instructions.
+- Final requirement and verification evidence with no stale “planned” language for completed work.
+- Final reviewer findings and dispositions.
+- Accurate release notes and any genuine external blockers.
+
+Remove stale claims and commands. Keep useful historical changelog information. Ensure documentation describes the implemented and verified state, not the intended future state.
+
+## Definition of done
+
+This prompt is complete only when all applicable conditions are true:
+
+- The repository remains on `main`, all unrelated changes are preserved, and every committed file is intentional.
+- Actual resolved versions match the target stable PHP 8.5/Laravel 13/Livewire 4/Tailwind 4 stack and the application boots/builds.
+- All active requirements and compliance rows match implemented, tested behavior.
+- No known in-scope architecture, security, data-integrity, Livewire, Blade, Tailwind, localization, accessibility, file, integration, cache, concurrency, operations, or deployment defect remains unresolved.
+- Factories, states, seeders, fixtures, migrations, upgrades, idempotency, and production safeguards are complete and verified.
+- All applicable final tests, analysis, formatter, audits, builds, browser, accessibility, security, performance, cache, and deployment checks pass or are reported as genuine external blockers with evidence.
+- Every first-party document is synchronized and known limitations contain no hidden unfinished work.
+- Independent final reviewers return no unresolved release-blocking finding.
+- Coherent commits exist directly on `main`, the safe push result is observed and reported, and the final report exactly matches evidence.
+
+## Required final report
+
+Return one factual report with these sections:
+
+1. Branch and initial working-tree state.
+2. Applicable instructions and canonical plan file.
+3. Analysis subagents created, their scopes, and the important findings accepted or rejected.
+4. Plan changes made before implementation.
+5. Implementation summary by module and file group.
+6. Database, security, performance, accessibility, localization, factory, seeder, and test impact where applicable.
+7. Exact verification commands and observed results.
+8. Independent reviewers created, findings, fixes, and remaining rejected findings with reasons.
+9. Documentation synchronized.
+10. Final Git status, commit hashes, and factual push result.
+11. Remaining limitations, containing only genuine external or environmental blockers with exact affected requirement or plan identifiers.
+
+Do not describe planned work as completed. Do not hide unfinished in-scope work in a limitations section.
+
+## Start now
+
+Read the applicable instruction chain and first-party documentation, inspect the repository, create the required analysis subagents, update the canonical plan, and then immediately implement the complete in-scope plan. Do not stop after analysis or planning.

@@ -46,6 +46,7 @@ This index is the source-of-truth map for first-party documentation.
 | `docs/operations.md` | Runtime checks and incident response | Operations | Canonical |
 | `docs/current-state-audit.md` | Modernization baseline and resolved findings | Engineering | Living evidence |
 | `docs/implementation-plan.md` | Dependency-aware modernization plan | Engineering | Living plan |
+| `docs/plans/current-unfinished-work.md` | Reconciled inventory of every current unfinished plan stream, exact open totals, and completed/historical exclusions | Product + engineering + QA | Living unfinished-work index |
 | `docs/plans/pet-workspace-modernization-plan.md` | Authenticated `/pets` workspace decisions, data boundary, interface states, and release evidence | Product + engineering + QA | Implemented and verified |
 | `docs/plans/pet-profile-draft-autosave-work-package.md` | Safe descriptive-step autosave, reconnect recovery, idempotency, accessibility, and release evidence | Product + engineering + QA | Implemented and verified with dedicated requirement evidence |
 | `docs/plans/pet-profile-body-covering-work-package.md` | Species-aware coat, feather, scale, skin, mane, shedding, privacy, and release boundary | Product + engineering + QA | Implemented and release-verified with exact requirement evidence |
@@ -55,7 +56,7 @@ This index is the source-of-truth map for first-party documentation.
 | `docs/audits/place-shared-card-classification.md` | Places shared-leaf adoption, map-aware shell boundary, dashboard decision, and acceptance contract | Product + frontend + QA | Current audit |
 | `docs/plans/shared-directory-card-system-plan.md` | Unlimited phased directory-card repair, migration, verification, governance, and recovery backlog | Product + frontend + QA | In progress |
 | `docs/audits/icon-system-deep-audit.md` | Measured Lucide, sizing, accessibility, SVG, pictogram, and action-candidate baseline | Product + frontend + QA | Current audit |
-| `docs/plans/icon-system-unlimited-plan.md` | Zero-debt icon-system migration waves, gates, ratchets, and stop conditions | Product + frontend + QA | In progress |
+| `docs/plans/icon-system-unlimited-plan.md` | Zero-debt icon-system migration waves, gates, ratchets, and stop conditions | Product + frontend + QA | Current migration complete; regression ratchet active |
 | `docs/audits/portal-events-completion-gap-analysis.md` | Factual Point 12 and Point 13 implementation, evidence, dependency, and documentation gaps | Product + engineering + QA | Living evidence |
 | `docs/plans/portal-events-completion-master-plan.md` | Dependency-ordered completion packages, acceptance gates, and stop conditions for Point 12 and Point 13 | Product + engineering + QA + operations | Approved execution plan |
 | `docs/plans/portal-organization-authority-foundation-work-package.md` | First P02 tenant, membership, invitation, restriction, audit, event integration, and remaining-scope contract | Product + engineering + QA + security | Implemented, verified, and published foundation; P02 remains open |
@@ -164,7 +165,7 @@ authentication, persistence, localization, or current verification.
 | `docs/architecture.md` | Runtime architecture and boundaries | Current | None | Rewritten |
 | `docs/deployment.md` | Deployment and rollback checklist | Current | Environment verification remains operational | Rewritten |
 | `docs/implementation-plan.md` | Dependency-aware modernization execution | Current living evidence | None | Replaced and updated per pass |
-| `docs/requirements/compliance-matrix.md` | All 163 active requirements | Current generated evidence | None | Expanded and regenerated |
+| `docs/requirements/compliance-matrix.md` | All 169 canonical active requirements plus five supplemental Point 13 evidence rows | Current generated evidence | The generator count excludes the five supplemental rows | Expanded and reconciled |
 | `docs/requirements/laravel-engineering-standard.md` | Stable engineering rules | Current subordinate standard | Deliberate overlap with `AGENTS.md` | Preserve stable IDs |
 | `docs/forum-scope.md` | Forum-specific scope | Current | None | Preserved |
 | `docs/superpowers/specs/*.md` | Ten feature designs | Historical product source | Prototype assumptions are subordinate | Preserved with canonical override |

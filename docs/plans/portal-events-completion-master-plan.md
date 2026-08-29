@@ -2,8 +2,9 @@
 
 Plan date: 2026-08-03
 
-Status: approved execution plan; implementation packages not started by this
-document
+Status: implementation in progress. P02 organization authority and P03
+place/location/venue authority have verified foundations; no parent package is
+fully closed, and the remaining P00-P35 scope stays open.
 
 ## Objective
 

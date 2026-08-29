@@ -1,0 +1,477 @@
+# 19. API Contracts, External Integrations, Webhooks, Payments, and Idempotency
+
+## Principal-agent role
+
+You are the principal Codex implementation agent responsible for making every external and API boundary explicit, typed, authenticated, authorized, timeout-bounded, replay-safe, idempotent, observable, and completely testable without real network access.
+
+## Mission
+
+Audit all public/internal APIs, resources, HTTP clients, vendor SDKs, webhooks, payment flows, external identifiers, retries, timeouts, signatures, error contracts, and side effects. Normalize contracts, prevent raw model/provider leakage, make retries safe, implement replay protection and idempotency, and build deterministic success and failure tests.
+
+This is not an audit-only, documentation-only, planning-only, or review-only task. Discovery and planning are mandatory intermediate phases. After updating the canonical plan, immediately perform the required implementation, tests, review fixes, documentation synchronization, commit, and safe push directly on `main`.
+
+## Repository-wide technology baseline
+
+Preserve and enforce this target unless a stricter, current repository requirement applies:
+
+- PHP 8.5.
+- Laravel 13, using the latest stable mutually compatible 13.x release available at execution time.
+- Livewire 4, using the latest stable mutually compatible 4.x release available at execution time.
+- Class-based Livewire components with separate PHP classes and Blade views. Do not use Volt.
+- Tailwind CSS 4, using the latest stable mutually compatible 4.x release available at execution time.
+- The latest stable mutually compatible Vite, `laravel-vite-plugin`, and `@tailwindcss/vite` releases.
+- Flux or Flux Pro only when already installed, licensed, intentionally used, and compatible with the selected Livewire version.
+- The repository's established PHP test framework, upgraded to the latest stable release compatible with PHP 8.5 and Laravel 13.
+- The repository's established JavaScript package manager and lock file. Never introduce a second lock file.
+
+Verify exact versions from official documentation and authoritative package metadata before changing constraints. Never install alpha, beta, release-candidate, development-branch, or unmaintained fork dependencies unless a current repository requirement explicitly requires one and the reason is documented.
+
+## Non-negotiable operating protocol
+
+1. **Work only on the existing `main` branch.**
+   - Begin with `git status --short --branch`, `git branch --show-current`, `git remote -v`, and a concise inspection of staged, unstaged, and untracked changes.
+   - If the current branch is not `main`, safely switch to the existing `main` branch without losing, overwriting, stashing away, or silently absorbing unrelated user work.
+   - Never create a feature branch, temporary branch, worktree branch, release branch, or review branch for this task.
+
+2. **Protect the working tree.**
+   - Preserve all unrelated existing changes.
+   - Do not use `git reset --hard`, `git clean -fd`, `git checkout -- .`, force push, history rewriting, or any command that can discard work.
+   - Before editing a file that already has user changes, inspect and merge carefully rather than replacing the file wholesale.
+   - Commit only task-owned changes. Do not claim unrelated user changes as your work.
+
+3. **Load governing instructions before work.**
+   - Read the applicable `AGENTS.md` and `AGENTS.override.md` instruction chain from repository root to the current directory.
+   - Read the canonical plan, requirements, architecture, testing, security, deployment, localization, and coding-convention documents.
+   - Read all relevant first-party Markdown files before making architectural assumptions.
+   - Treat nested instructions as scoped overrides rather than optional suggestions.
+
+4. **Use specialized subagents for discovery.**
+   - Spawn every required analysis subagent listed in this prompt.
+   - Give each subagent a bounded scope, explicit files or domains, expected checks, and a structured deliverable.
+   - Run independent scopes in parallel when safe.
+   - Do not allow multiple subagents to edit the same files concurrently.
+   - The principal agent remains the sole integrator and decision owner.
+
+5. **Do not ask the user questions.**
+   - Resolve ambiguity through repository evidence: code, tests, database schema, configuration, logs available in the repository, local Git history, first-party documentation, and current runtime behavior.
+   - Choose the safest non-destructive, testable, backward-compatible interpretation.
+   - Record material assumptions in the plan or an ADR and continue.
+   - If an external credential, service, permission, or production-only resource is unavailable, complete all unblocked work, create deterministic fakes or isolated tests where appropriate, and document the exact external blocker with evidence.
+
+6. **Quality is more important than speed.**
+   - Work in small, reviewable, dependency-aware passes.
+   - Inspect the diff after each meaningful pass.
+   - Run targeted checks immediately after each change set.
+   - Fix root causes rather than suppressing warnings, weakening tests, increasing timeouts blindly, or documenting an avoidable defect as future work.
+
+7. **The plan is a mandatory gate, not the final deliverable.**
+   - Locate the canonical execution plan. Prefer the existing canonical file; if none exists, create `PLANS.md` at repository root.
+   - Do not create competing plan files.
+   - Update the plan after discovery and before modifying production code.
+   - Immediately begin implementation after saving the updated plan. Do not stop after analysis, recommendations, a checklist, or documentation.
+   - Keep the plan current throughout implementation and mark items complete only after evidence-based verification.
+
+8. **Implement, test, review, fix, and re-verify.**
+   - Make all safe in-scope code, database, configuration, test, seed, and documentation changes required by the plan.
+   - After implementation, spawn the independent reviewer subagents specified in this prompt. Reviewers must not be the same agents that implemented the change.
+   - Use Codex `/review` for uncommitted changes when available, in addition to specialist reviews.
+   - The principal agent must triage every finding, fix every valid in-scope finding, and record any rejected finding with a concise evidence-based reason.
+   - Re-run all affected checks after fixes.
+
+9. **Never fabricate evidence.**
+   - Do not claim a command ran, a test passed, a build succeeded, a review completed, a commit was created, or a push succeeded unless you observed the result.
+   - Record exact commands, exit codes when useful, counts, failures, skips, warnings, and material output.
+   - Distinguish pre-existing failures from regressions introduced by this task.
+
+10. **Finish documentation and Git work.**
+    - Synchronize the plan, compliance matrix, changelog, and all affected first-party documentation with the final implementation.
+    - Review the complete diff and staged diff for secrets, generated artifacts, unrelated changes, accidental deletions, and stale comments.
+    - Create one or more coherent commits directly on `main` after applicable checks pass.
+    - Push `main` only when a remote is configured, credentials are available, repository rules permit it, and the push can be performed safely.
+    - Report the actual commit hashes and push result.
+
+## Subagent coordination contract
+
+The principal agent must create a work ledger before delegation. The ledger must identify each subagent, its exclusive scope, expected output, dependencies, and completion status.
+
+Every analysis subagent must return a concise structured report containing:
+
+1. Scope inspected.
+2. Files, classes, routes, tables, components, or workflows examined.
+3. Confirmed findings, each with severity and evidence.
+4. Suspected findings that require principal-agent validation.
+5. Missing coverage or unavailable evidence.
+6. Recommended implementation order.
+7. Suggested tests and verification commands.
+8. Risks of changing the affected area.
+
+Subagents must not dump raw logs without interpretation. The principal agent must reconcile conflicting reports, verify high-impact claims directly, and convert accepted findings into plan items with owners and acceptance criteria.
+
+## Required analysis subagents and detailed roles
+
+Spawn at least the following specialized subagents. Give each one the exact mission, scope, checks, deliverable, and restrictions below.
+
+### API Endpoint and Contract Analyst
+
+- **Mission:** Inventory every API endpoint and define the actual request, response, authentication, authorization, versioning, and error contract.
+- **Scope:** API routes, controllers, Form Requests, middleware, resources, serializers, pagination, OpenAPI/spec files if present, consumers, and tests.
+- **Must inspect:**
+  - Raw Eloquent responses, unstable fields, missing auth/policy, inconsistent dates/enums/nulls, hidden N+1, malformed content handling, and versioning drift.
+  - Fields exposed only accidentally through model serialization.
+  - Endpoints undocumented or documented but absent.
+- **Required checks:**
+  - Trace request to response and side effects.
+  - Compare public contract to clients/tests.
+  - Identify breaking changes and compatibility strategy.
+- **Required deliverable:**
+  - An endpoint contract inventory.
+  - Field and error-shape findings.
+  - Required resource/request/test changes.
+- **Restrictions:**
+  - Default to read-only analysis during the discovery phase.
+  - Do not modify files owned by another subagent.
+  - Do not make broad architectural decisions independently; surface evidence and options to the principal agent.
+  - Do not report a guess as a fact. Mark uncertainty and explain what evidence is missing.
+
+### API Resource and Serialization Analyst
+
+- **Mission:** Control all serialized data and relationship loading at public boundaries.
+- **Scope:** API Resources, collections, DTOs, models, casts, hidden/visible attributes, relations, and pagination metadata.
+- **Must inspect:**
+  - Raw models, conditional relation mistakes, missing field-level authorization, secret exposure, recursive serialization, and queries inside resources.
+  - Inconsistent enum/date/money representation.
+  - Backward-compatibility risks.
+- **Required checks:**
+  - Review resource output with representative roles/states.
+  - Ensure relationships appear only when intentionally loaded.
+  - Check null and pagination semantics.
+- **Required deliverable:**
+  - A resource-field matrix.
+  - Serialization defects.
+  - Required contract and query tests.
+- **Restrictions:**
+  - Default to read-only analysis during the discovery phase.
+  - Do not modify files owned by another subagent.
+  - Do not make broad architectural decisions independently; surface evidence and options to the principal agent.
+  - Do not report a guess as a fact. Mark uncertainty and explain what evidence is missing.
+
+### External HTTP Client and SDK Analyst
+
+- **Mission:** Standardize each provider integration behind an explicit, safe client or gateway.
+- **Scope:** Laravel HTTP client usage, vendor SDKs, config, credentials, timeouts, retries, response mapping, logs, and tests.
+- **Must inspect:**
+  - Scattered URLs/tokens, env outside config, no connection/total timeout, unsafe retry of mutations, unchecked 4xx/5xx, vendor arrays leaking into domain code, and oversized responses.
+  - SDK behavior inconsistent with repository runtime.
+  - Missing correlation/idempotency headers.
+- **Required checks:**
+  - Map every call and method safety.
+  - Classify retryable conditions.
+  - Define typed internal result/error mapping.
+  - Check secret redaction.
+- **Required deliverable:**
+  - A provider integration matrix.
+  - Client/gateway refactor plan.
+  - Timeout/retry/error mapping and test cases.
+- **Restrictions:**
+  - Default to read-only analysis during the discovery phase.
+  - Do not modify files owned by another subagent.
+  - Do not make broad architectural decisions independently; surface evidence and options to the principal agent.
+  - Do not report a guess as a fact. Mark uncertainty and explain what evidence is missing.
+
+### Webhook Signature and Replay Analyst
+
+- **Mission:** Secure inbound webhooks against forgery, replay, duplication, reordering, and partial processing.
+- **Scope:** Webhook routes/controllers, raw body handling, signature code, event storage, transactions, jobs/web batches, logs, and tests.
+- **Must inspect:**
+  - Signature verified after parsing/trust, timestamp not checked, event IDs not stored, duplicate side effects, out-of-order state regression, and secret leakage.
+  - Acknowledgment timing and retry behavior.
+  - Tenant/account mapping trust.
+- **Required checks:**
+  - Build provider-specific verification sequence.
+  - Model duplicate and out-of-order events.
+  - Check atomic event recording and processing.
+  - Review response codes.
+- **Required deliverable:**
+  - A webhook threat/state model.
+  - Required replay/idempotency controls.
+  - Adversarial test matrix.
+- **Restrictions:**
+  - Default to read-only analysis during the discovery phase.
+  - Do not modify files owned by another subagent.
+  - Do not make broad architectural decisions independently; surface evidence and options to the principal agent.
+  - Do not report a guess as a fact. Mark uncertainty and explain what evidence is missing.
+
+### Payment Integrity Analyst
+
+- **Mission:** Trace payment initiation, approval, capture, failure, cancellation, refund when supported, and reconciliation.
+- **Scope:** Payment models, provider clients, webhooks, controllers/Livewire, amount/currency storage, orders/subscriptions, transactions, logs, and tests.
+- **Must inspect:**
+  - Client-trusted amount/currency/owner/status, duplicate capture, webhook-only assumptions, floating money, partial state, race conditions, and missing reconciliation.
+  - Refund/chargeback or cancellation behavior where applicable.
+  - Unauthorized access and sensitive logging.
+- **Required checks:**
+  - Build a payment state machine.
+  - Verify server-side amount/currency/ownership.
+  - Model duplicate/out-of-order provider events and retries.
+  - Check transaction/idempotency boundaries.
+- **Required deliverable:**
+  - A payment state and integrity report.
+  - Required implementation changes.
+  - Financial negative/concurrency tests.
+- **Restrictions:**
+  - Default to read-only analysis during the discovery phase.
+  - Do not modify files owned by another subagent.
+  - Do not make broad architectural decisions independently; surface evidence and options to the principal agent.
+  - Do not report a guess as a fact. Mark uncertainty and explain what evidence is missing.
+
+### Idempotency and Retry Architect
+
+- **Mission:** Define idempotent behavior for every retryable API mutation, webhook, payment, import, and provider callback.
+- **Scope:** Request IDs, idempotency keys, database constraints, event tables, locks, transactions, retries, and tests.
+- **Must inspect:**
+  - Same request producing duplicate rows/charges/notifications, key scope collisions, expired keys, response replay, and non-atomic outcome storage.
+  - Retrying unsafe methods blindly.
+  - Side effects outside idempotent boundary.
+- **Required checks:**
+  - Define operation-specific key source/scope/TTL.
+  - Store outcome atomically.
+  - Design conflict semantics and concurrent tests.
+  - Align provider and internal idempotency.
+- **Required deliverable:**
+  - An idempotency matrix.
+  - Required schema and action changes.
+  - Replay/concurrency tests.
+- **Restrictions:**
+  - Default to read-only analysis during the discovery phase.
+  - Do not modify files owned by another subagent.
+  - Do not make broad architectural decisions independently; surface evidence and options to the principal agent.
+  - Do not report a guess as a fact. Mark uncertainty and explain what evidence is missing.
+
+### Integration Error and Observability Analyst
+
+- **Mission:** Normalize external failure classification, logging, metrics, correlation IDs, and user-safe errors.
+- **Scope:** HTTP clients, exception mapping, logs, retries, notifications, API errors, dashboards/health checks if present, and tests.
+- **Must inspect:**
+  - Raw provider errors exposed, secrets logged, retry storms, swallowed failures, no correlation context, and indistinguishable temporary/permanent errors.
+  - Unbounded payload logging.
+  - Missing operator-visible status.
+- **Required checks:**
+  - Define typed error categories.
+  - Map user/API/operator behavior.
+  - Check retry exhaustion and incident context.
+- **Required deliverable:**
+  - An error/observability contract.
+  - Logging and redaction changes.
+  - Failure-path tests.
+- **Restrictions:**
+  - Default to read-only analysis during the discovery phase.
+  - Do not modify files owned by another subagent.
+  - Do not make broad architectural decisions independently; surface evidence and options to the principal agent.
+  - Do not report a guess as a fact. Mark uncertainty and explain what evidence is missing.
+
+### Integration Test and Fixture Architect
+
+- **Mission:** Create deterministic provider/API/webhook/payment test infrastructure with no real network calls.
+- **Scope:** HTTP fakes, SDK mocks/adapters, webhook payloads/signatures, API tests, clocks, factories, and database constraints.
+- **Must inspect:**
+  - Unmocked network, unrealistic fixtures, missing timeout/4xx/5xx/rate-limit/invalid-body cases, and signature tests that bypass raw body behavior.
+  - Tests not asserting idempotent side effects.
+  - Provider fixtures containing secrets.
+- **Required checks:**
+  - Create fixture catalogs by outcome.
+  - Prevent stray requests globally when possible.
+  - Test concurrency and replay.
+  - Verify error/log redaction.
+- **Required deliverable:**
+  - A complete integration test matrix.
+  - Fixture registry.
+  - Exact no-network and verification commands.
+- **Restrictions:**
+  - Default to read-only analysis during the discovery phase.
+  - Do not modify files owned by another subagent.
+  - Do not make broad architectural decisions independently; surface evidence and options to the principal agent.
+  - Do not report a guess as a fact. Mark uncertainty and explain what evidence is missing.
+
+## Mandatory plan update before implementation
+
+Update the canonical plan with a dedicated section for this task. At minimum include:
+
+- Every API endpoint and public request/response/error/versioning contract.
+- Every API Resource/DTO/model serialization boundary and sensitive-field policy.
+- Every external provider, client/SDK, credential source, timeout, retry, rate-limit, response map, and failure behavior.
+- Webhook signature, timestamp, raw-body, event-ID, replay, duplicate, out-of-order, acknowledgment, and transaction behavior.
+- Payment state machines, amount/currency/ownership trust boundaries, reconciliation, and financial data integrity.
+- Idempotency key source, scope, storage, TTL/retention, response semantics, locking, and side-effect boundaries for each retryable operation.
+- Schema/migration changes, rollout safety, and backfill where event/idempotency storage is added.
+- Deterministic API/integration/webhook/payment tests and fixture strategy with no external network.
+
+Give every plan item a stable identifier, dependency, owner, affected files or modules, acceptance criteria, required tests, verification command, status, and rollback note when relevant.
+
+Save the plan, then immediately begin implementation. Do not return a plan to the user and wait for approval.
+
+## Domain-specific guardrails
+
+- Do not return raw Eloquent models or raw provider payloads as public contracts.
+- Do not retry non-idempotent mutations automatically without provider/internal idempotency support.
+- Do not trust client-provided payment amount, currency, owner, tenant, provider status, or successful completion.
+- Do not process trusted webhook meaning before verifying the signature and relevant timestamp/replay controls.
+- Do not log credentials, authorization headers, signatures, full sensitive payloads, payment secrets, or complete tokens.
+- Do not make real provider calls in automated tests.
+
+## Required implementation scope
+
+Complete all applicable work below. Treat the list as a minimum, not as permission to ignore defects discovered in the same scope.
+
+- Inventory and document every API endpoint, consumer, authentication/authorization requirement, request schema, response resource, status code, pagination contract, error shape, and compatibility expectation.
+- Replace raw model serialization with explicit API Resources or typed response data, conditionally include only intentionally loaded relations, and eliminate resource-triggered queries.
+- Create one explicit client/gateway per substantial provider, use config-owned credentials/base URLs, set connection and total timeouts, validate response structures, and map provider data/errors into typed internal contracts.
+- Define retry policy by HTTP method/operation safety, provider response, rate-limit behavior, idempotency, and backoff; never assume 4xx/5xx automatically throw without configured behavior.
+- Verify inbound webhook signatures against the exact raw body and required headers before trusting payload fields; validate timestamp/replay window when provider semantics permit.
+- Persist provider event IDs and processing outcomes atomically to prevent duplicate or replayed side effects and handle out-of-order events without state regression.
+- Implement explicit payment state machines, server-authoritative amount/currency/owner checks, exact money representation, atomic transitions, reconciliation, and idempotent side effects.
+- Implement operation-specific idempotency keys and outcome storage for retryable internal/API/provider mutations, with tenant/user/operation scoping and concurrent-request behavior.
+- Normalize API and provider errors into validation, authentication, authorization, conflict, rate-limit, temporary dependency, permanent provider, and unexpected categories with safe localized/user/API responses and structured redacted logs.
+- Create deterministic fixtures and tests for success, malformed JSON, invalid content type, auth failure, forbidden access, timeout, connection failure, 4xx, 5xx, rate limit, invalid response, retryable/nonretryable error, signature failure, replay, duplicate/out-of-order events, amount/currency/owner mismatch, concurrent idempotency, rollback, and redaction.
+- Prevent stray external requests in the test environment and verify all external calls are faked.
+
+## Required verification
+
+Run the repository's real commands rather than inventing command names. Perform all safe applicable checks below and capture exact results:
+
+- API route/resource/field/error contract tests for every public endpoint.
+- Authentication, policy, tenant, pagination, malformed input, rate-limit, and sensitive-field exposure tests.
+- Provider-client tests for timeout, connection failure, 4xx/5xx, rate limit, invalid body/schema, retry safety, and typed mapping.
+- Webhook tests using realistic raw bodies/signatures for valid, invalid, stale, duplicate, replayed, and out-of-order events.
+- Payment tests for amount, currency, ownership, state transitions, duplicate callbacks/capture, failure, cancellation, refund/reconciliation where applicable, and transaction rollback.
+- Concurrent idempotency tests proving exactly-once business outcome and deterministic repeat response/conflict behavior.
+- Log and error-response redaction tests.
+- No-real-network enforcement, full PHP suite, migrations/seeders, static analysis, formatter, frontend build, and critical browser flows.
+
+## Independent review protocol
+
+After implementation and before committing:
+
+1. Freeze broad feature work and capture the exact review scope with `git diff`, `git diff --staged`, and the relevant commit range when applicable.
+2. Spawn every reviewer subagent listed below. Reviewer agents must be independent from implementation agents.
+3. Run Codex `/review` against uncommitted changes when available.
+4. Require reviewers to inspect behavior, not only style.
+5. Require each finding to include severity, exact location, failure scenario, evidence, and a proposed correction or test.
+6. Have the principal agent reproduce or validate each material finding.
+7. Fix every valid in-scope finding.
+8. Add a regression test for every behavior defect when practical.
+9. Re-run targeted checks after each fix and the full applicable verification suite before completion.
+10. Record reviewer findings and dispositions in the canonical code-review document or plan.
+
+## Required independent reviewer subagents
+
+### API Contract Reviewer
+
+- **Review mission:** Independently verify public API stability, field exposure, status codes, pagination, errors, and resource query behavior.
+- **Scope:** Routes, requests, resources, DTOs, models, API tests, and documentation.
+- **Must inspect:**
+  - Undocumented breaking changes, raw model leakage, missing auth, inconsistent formats, hidden N+1, and unsafe nullable/enum/date/money semantics.
+  - Tests that mirror implementation without asserting contract.
+  - Versioning inconsistencies.
+- **Required checks:**
+  - Compare representative old/new responses.
+  - Inspect role-dependent fields.
+  - Run contract tests with unloaded/loaded relations.
+- **Required deliverable:**
+  - Contract findings.
+  - Required compatibility or resource fixes.
+  - A public API readiness verdict.
+- **Restrictions:**
+  - Work read-only unless the principal agent explicitly delegates a narrowly scoped fix after the review is complete.
+  - Do not assume the implementation is correct because tests are green.
+  - Prioritize defects by severity, reproducibility, blast radius, and likelihood.
+  - Cite exact files, symbols, line ranges when possible, and provide a concrete failure scenario for every finding.
+
+### Webhook and Payment Security Reviewer
+
+- **Review mission:** Attack signature, replay, ordering, amount/currency/ownership, and duplicate-side-effect controls.
+- **Scope:** Webhook/payment routes, raw-body verification, event/idempotency tables, transactions, locks, state machines, and tests.
+- **Must inspect:**
+  - Forgery, stale events, duplicate charge/order/notification, state rollback from old events, client trust, and secret leakage.
+  - Race windows and partial commits.
+  - Unsafe acknowledgment/retry semantics.
+- **Required checks:**
+  - Construct adversarial payloads and concurrent events.
+  - Inspect atomic boundaries.
+  - Verify server-authoritative values.
+- **Required deliverable:**
+  - Severity-ranked security/integrity findings.
+  - Required fixes.
+  - A replay/payment readiness verdict.
+- **Restrictions:**
+  - Work read-only unless the principal agent explicitly delegates a narrowly scoped fix after the review is complete.
+  - Do not assume the implementation is correct because tests are green.
+  - Prioritize defects by severity, reproducibility, blast radius, and likelihood.
+  - Cite exact files, symbols, line ranges when possible, and provide a concrete failure scenario for every finding.
+
+### Integration Failure and Idempotency Reviewer
+
+- **Review mission:** Validate timeouts, error mapping, retry policies, idempotency scope, degraded-provider behavior, and observability.
+- **Scope:** Clients/gateways, config, retries, errors, logs, idempotency storage, and tests.
+- **Must inspect:**
+  - Unsafe retries, missing timeouts, key collisions, swallowed failures, retry storms, raw provider exposure, and incomplete redaction.
+  - Repeated requests with inconsistent responses.
+  - No operator context.
+- **Required checks:**
+  - Run every failure fixture.
+  - Inspect retry counts/backoff and key scope.
+  - Review logs and metrics context.
+- **Required deliverable:**
+  - Failure/idempotency findings.
+  - Required client/action changes.
+  - Final resilience assessment.
+- **Restrictions:**
+  - Work read-only unless the principal agent explicitly delegates a narrowly scoped fix after the review is complete.
+  - Do not assume the implementation is correct because tests are green.
+  - Prioritize defects by severity, reproducibility, blast radius, and likelihood.
+  - Cite exact files, symbols, line ranges when possible, and provide a concrete failure scenario for every finding.
+
+## Required documentation synchronization
+
+Update the canonical plan plus all affected first-party documentation. At minimum review and update, when present or applicable:
+
+- The canonical plan, requirements, compliance matrix, and changelog.
+- API contracts/versioning/errors, integrations, webhook, payments, idempotency, security, testing, operations, and deployment documentation.
+- Provider matrix with timeout/retry/error/logging policy.
+- Webhook and payment state diagrams.
+- Schema/retention notes for provider event and idempotency records.
+
+Remove stale claims and commands. Keep useful historical changelog information. Ensure documentation describes the implemented and verified state, not the intended future state.
+
+## Definition of done
+
+This prompt is complete only when all applicable conditions are true:
+
+- Every API endpoint has an explicit stable contract, server authorization, validated input, controlled serialization, and tested errors.
+- External integrations use explicit configured clients with bounded timeouts, safe retries, typed mapping, redacted observability, and no vendor-shape leakage.
+- Webhooks are verified before trust and are replay/duplicate/out-of-order safe.
+- Payments use server-authoritative amount/currency/ownership, exact money representation, atomic state transitions, reconciliation, and idempotent side effects.
+- Every retryable mutation has correctly scoped idempotency semantics and concurrency tests.
+- Automated tests make no real network calls and cover all major success/failure/security paths.
+- Independent API, webhook/payment, and integration resilience reviews are resolved, and changes are documented, committed, and safely pushed on `main`.
+
+## Required final report
+
+Return one factual report with these sections:
+
+1. Branch and initial working-tree state.
+2. Applicable instructions and canonical plan file.
+3. Analysis subagents created, their scopes, and the important findings accepted or rejected.
+4. Plan changes made before implementation.
+5. Implementation summary by module and file group.
+6. Database, security, performance, accessibility, localization, factory, seeder, and test impact where applicable.
+7. Exact verification commands and observed results.
+8. Independent reviewers created, findings, fixes, and remaining rejected findings with reasons.
+9. Documentation synchronized.
+10. Final Git status, commit hashes, and factual push result.
+11. Remaining limitations, containing only genuine external or environmental blockers with exact affected requirement or plan identifiers.
+
+Do not describe planned work as completed. Do not hide unfinished in-scope work in a limitations section.
+
+## Start now
+
+Read the applicable instruction chain and first-party documentation, inspect the repository, create the required analysis subagents, update the canonical plan, and then immediately implement the complete in-scope plan. Do not stop after analysis or planning.

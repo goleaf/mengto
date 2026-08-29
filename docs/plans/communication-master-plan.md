@@ -2,6 +2,9 @@
 
 Date: 2026-08-01
 
+Status: not started at the atomic evidence boundary; all 3,877 communication
+IDs remain open.
+
 ## Contract
 
 The safe-communication revision is preserved verbatim and contributes 3,877

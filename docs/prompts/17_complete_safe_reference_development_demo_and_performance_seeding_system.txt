@@ -1,0 +1,474 @@
+# 17. Complete Safe Reference, Development, Demo, and Performance Seeding System
+
+## Principal-agent role
+
+You are the principal Codex implementation agent responsible for building a deterministic, idempotent, environment-safe seeding architecture that makes every important role, workflow, state, page, and edge case immediately testable without risking production data.
+
+## Mission
+
+Replace fragmented or unsafe seed logic with structured reference, role/permission, development, demo, test-support, and optional volume seeders. Build realistic end-to-end graphs, protect production, use factories consistently, create local media fixtures, and prove fresh seeding and idempotency.
+
+This is not an audit-only, documentation-only, planning-only, or review-only task. Discovery and planning are mandatory intermediate phases. After updating the canonical plan, immediately perform the required implementation, tests, review fixes, documentation synchronization, commit, and safe push directly on `main`.
+
+## Repository-wide technology baseline
+
+Preserve and enforce this target unless a stricter, current repository requirement applies:
+
+- PHP 8.5.
+- Laravel 13, using the latest stable mutually compatible 13.x release available at execution time.
+- Livewire 4, using the latest stable mutually compatible 4.x release available at execution time.
+- Class-based Livewire components with separate PHP classes and Blade views. Do not use Volt.
+- Tailwind CSS 4, using the latest stable mutually compatible 4.x release available at execution time.
+- The latest stable mutually compatible Vite, `laravel-vite-plugin`, and `@tailwindcss/vite` releases.
+- Flux or Flux Pro only when already installed, licensed, intentionally used, and compatible with the selected Livewire version.
+- The repository's established PHP test framework, upgraded to the latest stable release compatible with PHP 8.5 and Laravel 13.
+- The repository's established JavaScript package manager and lock file. Never introduce a second lock file.
+
+Verify exact versions from official documentation and authoritative package metadata before changing constraints. Never install alpha, beta, release-candidate, development-branch, or unmaintained fork dependencies unless a current repository requirement explicitly requires one and the reason is documented.
+
+## Non-negotiable operating protocol
+
+1. **Work only on the existing `main` branch.**
+   - Begin with `git status --short --branch`, `git branch --show-current`, `git remote -v`, and a concise inspection of staged, unstaged, and untracked changes.
+   - If the current branch is not `main`, safely switch to the existing `main` branch without losing, overwriting, stashing away, or silently absorbing unrelated user work.
+   - Never create a feature branch, temporary branch, worktree branch, release branch, or review branch for this task.
+
+2. **Protect the working tree.**
+   - Preserve all unrelated existing changes.
+   - Do not use `git reset --hard`, `git clean -fd`, `git checkout -- .`, force push, history rewriting, or any command that can discard work.
+   - Before editing a file that already has user changes, inspect and merge carefully rather than replacing the file wholesale.
+   - Commit only task-owned changes. Do not claim unrelated user changes as your work.
+
+3. **Load governing instructions before work.**
+   - Read the applicable `AGENTS.md` and `AGENTS.override.md` instruction chain from repository root to the current directory.
+   - Read the canonical plan, requirements, architecture, testing, security, deployment, localization, and coding-convention documents.
+   - Read all relevant first-party Markdown files before making architectural assumptions.
+   - Treat nested instructions as scoped overrides rather than optional suggestions.
+
+4. **Use specialized subagents for discovery.**
+   - Spawn every required analysis subagent listed in this prompt.
+   - Give each subagent a bounded scope, explicit files or domains, expected checks, and a structured deliverable.
+   - Run independent scopes in parallel when safe.
+   - Do not allow multiple subagents to edit the same files concurrently.
+   - The principal agent remains the sole integrator and decision owner.
+
+5. **Do not ask the user questions.**
+   - Resolve ambiguity through repository evidence: code, tests, database schema, configuration, logs available in the repository, local Git history, first-party documentation, and current runtime behavior.
+   - Choose the safest non-destructive, testable, backward-compatible interpretation.
+   - Record material assumptions in the plan or an ADR and continue.
+   - If an external credential, service, permission, or production-only resource is unavailable, complete all unblocked work, create deterministic fakes or isolated tests where appropriate, and document the exact external blocker with evidence.
+
+6. **Quality is more important than speed.**
+   - Work in small, reviewable, dependency-aware passes.
+   - Inspect the diff after each meaningful pass.
+   - Run targeted checks immediately after each change set.
+   - Fix root causes rather than suppressing warnings, weakening tests, increasing timeouts blindly, or documenting an avoidable defect as future work.
+
+7. **The plan is a mandatory gate, not the final deliverable.**
+   - Locate the canonical execution plan. Prefer the existing canonical file; if none exists, create `PLANS.md` at repository root.
+   - Do not create competing plan files.
+   - Update the plan after discovery and before modifying production code.
+   - Immediately begin implementation after saving the updated plan. Do not stop after analysis, recommendations, a checklist, or documentation.
+   - Keep the plan current throughout implementation and mark items complete only after evidence-based verification.
+
+8. **Implement, test, review, fix, and re-verify.**
+   - Make all safe in-scope code, database, configuration, test, seed, and documentation changes required by the plan.
+   - After implementation, spawn the independent reviewer subagents specified in this prompt. Reviewers must not be the same agents that implemented the change.
+   - Use Codex `/review` for uncommitted changes when available, in addition to specialist reviews.
+   - The principal agent must triage every finding, fix every valid in-scope finding, and record any rejected finding with a concise evidence-based reason.
+   - Re-run all affected checks after fixes.
+
+9. **Never fabricate evidence.**
+   - Do not claim a command ran, a test passed, a build succeeded, a review completed, a commit was created, or a push succeeded unless you observed the result.
+   - Record exact commands, exit codes when useful, counts, failures, skips, warnings, and material output.
+   - Distinguish pre-existing failures from regressions introduced by this task.
+
+10. **Finish documentation and Git work.**
+    - Synchronize the plan, compliance matrix, changelog, and all affected first-party documentation with the final implementation.
+    - Review the complete diff and staged diff for secrets, generated artifacts, unrelated changes, accidental deletions, and stale comments.
+    - Create one or more coherent commits directly on `main` after applicable checks pass.
+    - Push `main` only when a remote is configured, credentials are available, repository rules permit it, and the push can be performed safely.
+    - Report the actual commit hashes and push result.
+
+## Subagent coordination contract
+
+The principal agent must create a work ledger before delegation. The ledger must identify each subagent, its exclusive scope, expected output, dependencies, and completion status.
+
+Every analysis subagent must return a concise structured report containing:
+
+1. Scope inspected.
+2. Files, classes, routes, tables, components, or workflows examined.
+3. Confirmed findings, each with severity and evidence.
+4. Suspected findings that require principal-agent validation.
+5. Missing coverage or unavailable evidence.
+6. Recommended implementation order.
+7. Suggested tests and verification commands.
+8. Risks of changing the affected area.
+
+Subagents must not dump raw logs without interpretation. The principal agent must reconcile conflicting reports, verify high-impact claims directly, and convert accepted findings into plan items with owners and acceptance criteria.
+
+## Required analysis subagents and detailed roles
+
+Spawn at least the following specialized subagents. Give each one the exact mission, scope, checks, deliverable, and restrictions below.
+
+### Reference Data and Idempotency Analyst
+
+- **Mission:** Identify fixed system data and define stable, repeatable seeding semantics.
+- **Scope:** Reference tables, statuses, categories, settings, plans, locales, system accounts, migrations, code constants, and existing seeders.
+- **Must inspect:**
+  - Natural keys, explicit IDs, update-versus-insert behavior, deleted/renamed reference values, and dependency order.
+  - Seeders that duplicate rows or overwrite administrator changes.
+  - Data that belongs in migrations/config rather than seeders.
+- **Required checks:**
+  - Classify immutable, managed, and environment-specific reference data.
+  - Design idempotent upsert/update policies.
+  - Check foreign-key ordering.
+- **Required deliverable:**
+  - A reference-data catalog.
+  - Stable key and update policy.
+  - Idempotency tests and migration notes.
+- **Restrictions:**
+  - Default to read-only analysis during the discovery phase.
+  - Do not modify files owned by another subagent.
+  - Do not make broad architectural decisions independently; surface evidence and options to the principal agent.
+  - Do not report a guess as a fact. Mark uncertainty and explain what evidence is missing.
+
+### Roles and Permissions Seeder Analyst
+
+- **Mission:** Align seeded roles and permissions with the canonical authorization matrix.
+- **Scope:** Role/permission models, policies, gates, middleware, requirements, factories, and current seeders.
+- **Must inspect:**
+  - Missing/extra permissions, unsafe defaults, environment-only admin roles, duplicate names, and stale capabilities.
+  - Assignment order and tenant scope.
+  - Existing user role preservation.
+- **Required checks:**
+  - Map every seeded permission to a requirement/policy.
+  - Design idempotent sync without destructive revocation unless explicitly required.
+  - Protect production accounts.
+- **Required deliverable:**
+  - A role/permission seed matrix.
+  - Safe synchronization plan.
+  - Authorization smoke tests.
+- **Restrictions:**
+  - Default to read-only analysis during the discovery phase.
+  - Do not modify files owned by another subagent.
+  - Do not make broad architectural decisions independently; surface evidence and options to the principal agent.
+  - Do not report a guess as a fact. Mark uncertainty and explain what evidence is missing.
+
+### Demo Workflow and Persona Designer
+
+- **Mission:** Create realistic end-to-end demo data covering every important role, page, and workflow.
+- **Scope:** Product requirements, routes, Livewire pages, policies, models, factories, media, and current demo accounts.
+- **Must inspect:**
+  - Personas, ownership, tenant separation, normal workflows, pending/failed/completed states, notifications, and cross-role interaction.
+  - Pages that remain empty after seeding.
+  - Credentials and environment gates.
+- **Required checks:**
+  - Trace seeded personas through critical journeys.
+  - Use safe fictional data.
+  - Keep graph size understandable and deterministic.
+- **Required deliverable:**
+  - A demo persona/workflow specification.
+  - Entity graph and expected pages.
+  - Documented non-production credentials where permitted.
+- **Restrictions:**
+  - Default to read-only analysis during the discovery phase.
+  - Do not modify files owned by another subagent.
+  - Do not make broad architectural decisions independently; surface evidence and options to the principal agent.
+  - Do not report a guess as a fact. Mark uncertainty and explain what evidence is missing.
+
+### Edge-Case and High-Volume Data Designer
+
+- **Mission:** Seed meaningful boundary states and optional scale data without making ordinary development slow.
+- **Scope:** Models, validation limits, statuses, translations, pagination, reports, performance tests, and UI layouts.
+- **Must inspect:**
+  - Empty states, long text, Unicode, expired/archived/deleted/failed records, missing optional data, wrong-owner/wrong-tenant fixtures, and large collections.
+  - Volume generation accidentally enabled by default.
+  - Data that breaks constraints rather than tests boundaries.
+- **Required checks:**
+  - Define small default edge data and opt-in volume profiles.
+  - Use deterministic seeds and batch creation.
+  - Estimate run time and storage.
+- **Required deliverable:**
+  - An edge-case catalog.
+  - Optional volume profiles and commands.
+  - Expected performance checks.
+- **Restrictions:**
+  - Default to read-only analysis during the discovery phase.
+  - Do not modify files owned by another subagent.
+  - Do not make broad architectural decisions independently; surface evidence and options to the principal agent.
+  - Do not report a guess as a fact. Mark uncertainty and explain what evidence is missing.
+
+### Media and External-State Seeder Analyst
+
+- **Mission:** Create local assets and simulated integration states for demo and development environments.
+- **Scope:** Files, images, thumbnails, documents, webhook/payment/import statuses, provider fixtures, and storage configuration.
+- **Must inspect:**
+  - Internet downloads, copyrighted or real personal data, missing files, invalid MIME, unstable URLs, and production credentials.
+  - Orphaned seed files on repeated runs.
+  - Private/public visibility mismatch.
+- **Required checks:**
+  - Generate or ship permitted local fixtures.
+  - Use deterministic paths and cleanup/update behavior.
+  - Model success/failure/pending integration states safely.
+- **Required deliverable:**
+  - A media/integration fixture registry.
+  - Storage lifecycle plan.
+  - Seeder and page-render tests.
+- **Restrictions:**
+  - Default to read-only analysis during the discovery phase.
+  - Do not modify files owned by another subagent.
+  - Do not make broad architectural decisions independently; surface evidence and options to the principal agent.
+  - Do not report a guess as a fact. Mark uncertainty and explain what evidence is missing.
+
+### Production Safety and Environment-Gating Analyst
+
+- **Mission:** Prevent seeders, demo accounts, truncation, and fixtures from harming production.
+- **Scope:** DatabaseSeeder, environment checks, commands, deployment scripts, CI, demo login, and documentation.
+- **Must inspect:**
+  - Unrestricted truncate/delete, automatic demo credentials, production default passwords, environment-name assumptions, and accidental seeding during deploy.
+  - Seeders mutating existing business data unexpectedly.
+  - Secrets in seed files.
+- **Required checks:**
+  - Define explicit safe environments and opt-in gates.
+  - Make destructive paths impossible or separately guarded.
+  - Test production-like configuration.
+- **Required deliverable:**
+  - A production-safety threat model.
+  - Required gates and tests.
+  - Deployment restrictions.
+- **Restrictions:**
+  - Default to read-only analysis during the discovery phase.
+  - Do not modify files owned by another subagent.
+  - Do not make broad architectural decisions independently; surface evidence and options to the principal agent.
+  - Do not report a guess as a fact. Mark uncertainty and explain what evidence is missing.
+
+### Seeder Orchestration and Performance Analyst
+
+- **Mission:** Design dependency-aware seeder composition that is observable, repeatable, and reasonably fast.
+- **Scope:** DatabaseSeeder, seeder dependencies, factories, events, hashing, media generation, transactions, and volume profiles.
+- **Must inspect:**
+  - Incorrect order, duplicate work, hidden event side effects, slow password hashing, large transactions, and memory growth.
+  - Seeders relying on implicit existing rows.
+  - Partial failure and rerun behavior.
+- **Required checks:**
+  - Define phases and ownership.
+  - Measure fresh and repeated runs.
+  - Use transactions only where safe and bounded.
+- **Required deliverable:**
+  - An orchestration plan.
+  - Performance baseline/targets.
+  - Failure/retry behavior.
+- **Restrictions:**
+  - Default to read-only analysis during the discovery phase.
+  - Do not modify files owned by another subagent.
+  - Do not make broad architectural decisions independently; surface evidence and options to the principal agent.
+  - Do not report a guess as a fact. Mark uncertainty and explain what evidence is missing.
+
+### Seeder Verification Architect
+
+- **Mission:** Create automated proof of fresh seeding, idempotency, role access, page rendering, files, and production safeguards.
+- **Scope:** Test database setup, seeders, factories, authentication, routes, storage, locales, and browser/feature tests.
+- **Must inspect:**
+  - No test for DatabaseSeeder, idempotency, demo access, or production gating.
+  - Tests that only count rows.
+  - Missing page/workflow smoke tests.
+- **Required checks:**
+  - Build isolated fresh-seed tests.
+  - Run fixed seeders repeatedly.
+  - Authenticate seeded personas and render critical pages.
+  - Assert files and relations.
+- **Required deliverable:**
+  - A seeding test matrix.
+  - Exact safe commands.
+  - Required fixtures and assertions.
+- **Restrictions:**
+  - Default to read-only analysis during the discovery phase.
+  - Do not modify files owned by another subagent.
+  - Do not make broad architectural decisions independently; surface evidence and options to the principal agent.
+  - Do not report a guess as a fact. Mark uncertainty and explain what evidence is missing.
+
+## Mandatory plan update before implementation
+
+Update the canonical plan with a dedicated section for this task. At minimum include:
+
+- The full seeder inventory and classification as reference, role/permission, development, demo, test-support, or optional volume.
+- Stable keys, update policies, dependency order, and idempotency rules for fixed data.
+- Canonical role/permission synchronization and existing-user preservation.
+- Demo personas, tenants, ownership, workflows, statuses, pages, credentials, and environment gates.
+- Edge-case, Unicode, long-text, empty, expired, archived, soft-deleted, failed, completed, cross-tenant, and high-volume datasets.
+- Local media/document/provider fixtures and repeated-run lifecycle.
+- Production safeguards, deployment restrictions, and no-destructive-data rules.
+- Fresh, repeated, idempotency, auth, page-render, file, locale, and performance tests.
+
+Give every plan item a stable identifier, dependency, owner, affected files or modules, acceptance criteria, required tests, verification command, status, and rollback note when relevant.
+
+Save the plan, then immediately begin implementation. Do not return a plan to the user and wait for approval.
+
+## Domain-specific guardrails
+
+- Do not truncate, delete, reset, or overwrite production business data.
+- Do not create demo users, known passwords, bypasses, or sample credentials in production.
+- Do not download fixtures from the internet during seeding or tests.
+- Do not place real personal data, production secrets, access tokens, payment data, or private user content in seeders.
+- Do not make high-volume seeding part of the default development path unless the repository explicitly requires it.
+- Do not use reference seeders to silently override administrator-managed values without a documented policy.
+
+## Required implementation scope
+
+Complete all applicable work below. Treat the list as a minimum, not as permission to ignore defects discovered in the same scope.
+
+- Classify and reorganize seeders into fixed reference, roles/permissions, development, demo, test-support, and optional performance-volume groups.
+- Make fixed reference seeders idempotent using stable natural keys, explicit identifiers where necessary, and deliberate update behavior.
+- Align roles and permissions with the canonical authorization matrix and preserve existing production assignments safely.
+- Build deterministic fictional demo personas for every important role, tenant/ownership boundary, and critical end-to-end workflow.
+- Seed normal, empty, filtered-empty, pending, approved, rejected, expired, archived, soft-deleted, failed, completed, long-text, Unicode, missing-optional, wrong-owner, and cross-tenant scenarios where meaningful.
+- Create local images, documents, uploads, thumbnails, webhook/payment/import/provider states, and storage paths without external network access.
+- Implement explicit environment gates so demo/test data and credentials cannot be created in production.
+- Remove unrestricted truncation/destructive behavior and make reruns safe after partial completion.
+- Keep default development seeding useful and reasonably fast; expose optional deterministic volume profiles separately.
+- Make DatabaseSeeder orchestrate the correct safe sequence and document each entry point.
+- Create tests for fresh migration plus seeding, repeated fixed seeding, idempotency, constraints, every seeded role, authentication, critical page rendering, files, locales, production safeguards, and optional volume behavior.
+
+## Required verification
+
+Run the repository's real commands rather than inventing command names. Perform all safe applicable checks below and capture exact results:
+
+- Fresh isolated database migration followed by the canonical DatabaseSeeder.
+- Repeated execution of fixed reference and role/permission seeders with no duplicate or destructive drift.
+- Foreign-key, unique, check-constraint, tenant, owner, and enum integrity after seeding.
+- Authentication and authorization smoke tests for every seeded persona/role.
+- Critical page and workflow rendering with seeded data, including empty and failure states.
+- Fake/local storage verification for every seeded media/document asset.
+- Production-like environment test proving demo seeders and credentials are blocked.
+- Seed duration/memory measurement for default and optional volume profiles.
+- Full PHP suite, static analysis, formatter, and frontend/browser smoke tests.
+
+## Independent review protocol
+
+After implementation and before committing:
+
+1. Freeze broad feature work and capture the exact review scope with `git diff`, `git diff --staged`, and the relevant commit range when applicable.
+2. Spawn every reviewer subagent listed below. Reviewer agents must be independent from implementation agents.
+3. Run Codex `/review` against uncommitted changes when available.
+4. Require reviewers to inspect behavior, not only style.
+5. Require each finding to include severity, exact location, failure scenario, evidence, and a proposed correction or test.
+6. Have the principal agent reproduce or validate each material finding.
+7. Fix every valid in-scope finding.
+8. Add a regression test for every behavior defect when practical.
+9. Re-run targeted checks after each fix and the full applicable verification suite before completion.
+10. Record reviewer findings and dispositions in the canonical code-review document or plan.
+
+## Required independent reviewer subagents
+
+### Seeder Integrity Reviewer
+
+- **Review mission:** Independently run fresh and repeated seeding and inspect data consistency, idempotency, and existing-data preservation.
+- **Scope:** All seeders, factories, migrations, constraints, and tests.
+- **Must inspect:**
+  - Duplicates, destructive updates, order dependencies, orphan records, invalid enums/states, and partial-run failures.
+  - Idempotency tests that miss changed values.
+  - Reference data overwriting managed content.
+- **Required checks:**
+  - Run seeders multiple times.
+  - Inspect before/after row identities and relations.
+  - Simulate partial failure where practical.
+- **Required deliverable:**
+  - Integrity findings.
+  - Required upsert/order fixes.
+  - An idempotency verdict.
+- **Restrictions:**
+  - Work read-only unless the principal agent explicitly delegates a narrowly scoped fix after the review is complete.
+  - Do not assume the implementation is correct because tests are green.
+  - Prioritize defects by severity, reproducibility, blast radius, and likelihood.
+  - Cite exact files, symbols, line ranges when possible, and provide a concrete failure scenario for every finding.
+
+### Demo Scenario Reviewer
+
+- **Review mission:** Verify that seeded personas and graphs exercise every critical role, workflow, state, locale, and page meaningfully.
+- **Scope:** Demo specs, seed data, routes, policies, pages, notifications, files, and tests.
+- **Must inspect:**
+  - Missing roles/workflows, unrealistic data, pages still empty, permission mismatches, and inaccessible credentials.
+  - Data graphs too large or opaque.
+  - Long/Unicode/edge cases absent.
+- **Required checks:**
+  - Log in as each persona.
+  - Navigate critical pages.
+  - Compare graph to requirements.
+- **Required deliverable:**
+  - Scenario gaps.
+  - Required seed additions/corrections.
+  - A demo usability assessment.
+- **Restrictions:**
+  - Work read-only unless the principal agent explicitly delegates a narrowly scoped fix after the review is complete.
+  - Do not assume the implementation is correct because tests are green.
+  - Prioritize defects by severity, reproducibility, blast radius, and likelihood.
+  - Cite exact files, symbols, line ranges when possible, and provide a concrete failure scenario for every finding.
+
+### Production Safety Reviewer
+
+- **Review mission:** Attempt to trigger unsafe seed behavior under production-like configuration.
+- **Scope:** Environment gates, DatabaseSeeder, commands, deployment scripts, credentials, storage, and documentation.
+- **Must inspect:**
+  - Demo users in production, destructive truncation, secret leakage, environment spoofing, automatic deployment seeding, and unsafe file writes.
+  - Seeders modifying real-like records unexpectedly.
+  - Inadequate audit/reporting.
+- **Required checks:**
+  - Run production-guard tests.
+  - Inspect environment condition logic.
+  - Review deploy commands.
+- **Required deliverable:**
+  - Severity-ranked safety findings.
+  - Required guards.
+  - Production seeding policy verdict.
+- **Restrictions:**
+  - Work read-only unless the principal agent explicitly delegates a narrowly scoped fix after the review is complete.
+  - Do not assume the implementation is correct because tests are green.
+  - Prioritize defects by severity, reproducibility, blast radius, and likelihood.
+  - Cite exact files, symbols, line ranges when possible, and provide a concrete failure scenario for every finding.
+
+## Required documentation synchronization
+
+Update the canonical plan plus all affected first-party documentation. At minimum review and update, when present or applicable:
+
+- The canonical plan, requirements, compliance matrix, and changelog.
+- README local/demo setup, seeding, testing, deployment, operations, factories, files, and authorization documentation.
+- A seeding coverage matrix listing model, factory, states, reference/demo seeder, fixtures, workflows, tests, and production restriction.
+- Demo persona and credential documentation only when safe and explicitly non-production.
+- AGENTS.md rules for new model/reference/demo data.
+
+Remove stale claims and commands. Keep useful historical changelog information. Ensure documentation describes the implemented and verified state, not the intended future state.
+
+## Definition of done
+
+This prompt is complete only when all applicable conditions are true:
+
+- Reference data and role/permission seeders are idempotent and preserve intended existing data.
+- A fresh isolated database can migrate and seed successfully through the canonical entry point.
+- Every important role, permission boundary, workflow, status, locale, page, empty/failure state, and ownership/tenant scenario has usable deterministic seed data.
+- All media and external-state fixtures are local, safe, and repeatable.
+- Demo credentials/data are impossible to create accidentally in production.
+- Default seeding is reasonably fast and optional volume seeding is explicit.
+- Independent integrity, demo-scenario, and production-safety reviews are resolved, and changes are documented, committed, and safely pushed on `main`.
+
+## Required final report
+
+Return one factual report with these sections:
+
+1. Branch and initial working-tree state.
+2. Applicable instructions and canonical plan file.
+3. Analysis subagents created, their scopes, and the important findings accepted or rejected.
+4. Plan changes made before implementation.
+5. Implementation summary by module and file group.
+6. Database, security, performance, accessibility, localization, factory, seeder, and test impact where applicable.
+7. Exact verification commands and observed results.
+8. Independent reviewers created, findings, fixes, and remaining rejected findings with reasons.
+9. Documentation synchronized.
+10. Final Git status, commit hashes, and factual push result.
+11. Remaining limitations, containing only genuine external or environmental blockers with exact affected requirement or plan identifiers.
+
+Do not describe planned work as completed. Do not hide unfinished in-scope work in a limitations section.
+
+## Start now
+
+Read the applicable instruction chain and first-party documentation, inspect the repository, create the required analysis subagents, update the canonical plan, and then immediately implement the complete in-scope plan. Do not stop after analysis or planning.

@@ -1,0 +1,474 @@
+# 20. Files, Uploads, Private Downloads, Media, and Image Processing
+
+## Principal-agent role
+
+You are the principal Codex implementation agent responsible for securing and normalizing the complete file lifecycle from validation and storage through transformation, authorization, delivery, replacement, cleanup, deletion, seeding, and testing.
+
+## Mission
+
+Inventory every file category and storage path. Replace unsafe names and public access, centralize validation and image presets, coordinate database/filesystem changes, protect private downloads, eliminate orphan and partial files, optimize delivered media, and prove the entire lifecycle with fake local storage and adversarial tests.
+
+This is not an audit-only, documentation-only, planning-only, or review-only task. Discovery and planning are mandatory intermediate phases. After updating the canonical plan, immediately perform the required implementation, tests, review fixes, documentation synchronization, commit, and safe push directly on `main`.
+
+## Repository-wide technology baseline
+
+Preserve and enforce this target unless a stricter, current repository requirement applies:
+
+- PHP 8.5.
+- Laravel 13, using the latest stable mutually compatible 13.x release available at execution time.
+- Livewire 4, using the latest stable mutually compatible 4.x release available at execution time.
+- Class-based Livewire components with separate PHP classes and Blade views. Do not use Volt.
+- Tailwind CSS 4, using the latest stable mutually compatible 4.x release available at execution time.
+- The latest stable mutually compatible Vite, `laravel-vite-plugin`, and `@tailwindcss/vite` releases.
+- Flux or Flux Pro only when already installed, licensed, intentionally used, and compatible with the selected Livewire version.
+- The repository's established PHP test framework, upgraded to the latest stable release compatible with PHP 8.5 and Laravel 13.
+- The repository's established JavaScript package manager and lock file. Never introduce a second lock file.
+
+Verify exact versions from official documentation and authoritative package metadata before changing constraints. Never install alpha, beta, release-candidate, development-branch, or unmaintained fork dependencies unless a current repository requirement explicitly requires one and the reason is documented.
+
+## Non-negotiable operating protocol
+
+1. **Work only on the existing `main` branch.**
+   - Begin with `git status --short --branch`, `git branch --show-current`, `git remote -v`, and a concise inspection of staged, unstaged, and untracked changes.
+   - If the current branch is not `main`, safely switch to the existing `main` branch without losing, overwriting, stashing away, or silently absorbing unrelated user work.
+   - Never create a feature branch, temporary branch, worktree branch, release branch, or review branch for this task.
+
+2. **Protect the working tree.**
+   - Preserve all unrelated existing changes.
+   - Do not use `git reset --hard`, `git clean -fd`, `git checkout -- .`, force push, history rewriting, or any command that can discard work.
+   - Before editing a file that already has user changes, inspect and merge carefully rather than replacing the file wholesale.
+   - Commit only task-owned changes. Do not claim unrelated user changes as your work.
+
+3. **Load governing instructions before work.**
+   - Read the applicable `AGENTS.md` and `AGENTS.override.md` instruction chain from repository root to the current directory.
+   - Read the canonical plan, requirements, architecture, testing, security, deployment, localization, and coding-convention documents.
+   - Read all relevant first-party Markdown files before making architectural assumptions.
+   - Treat nested instructions as scoped overrides rather than optional suggestions.
+
+4. **Use specialized subagents for discovery.**
+   - Spawn every required analysis subagent listed in this prompt.
+   - Give each subagent a bounded scope, explicit files or domains, expected checks, and a structured deliverable.
+   - Run independent scopes in parallel when safe.
+   - Do not allow multiple subagents to edit the same files concurrently.
+   - The principal agent remains the sole integrator and decision owner.
+
+5. **Do not ask the user questions.**
+   - Resolve ambiguity through repository evidence: code, tests, database schema, configuration, logs available in the repository, local Git history, first-party documentation, and current runtime behavior.
+   - Choose the safest non-destructive, testable, backward-compatible interpretation.
+   - Record material assumptions in the plan or an ADR and continue.
+   - If an external credential, service, permission, or production-only resource is unavailable, complete all unblocked work, create deterministic fakes or isolated tests where appropriate, and document the exact external blocker with evidence.
+
+6. **Quality is more important than speed.**
+   - Work in small, reviewable, dependency-aware passes.
+   - Inspect the diff after each meaningful pass.
+   - Run targeted checks immediately after each change set.
+   - Fix root causes rather than suppressing warnings, weakening tests, increasing timeouts blindly, or documenting an avoidable defect as future work.
+
+7. **The plan is a mandatory gate, not the final deliverable.**
+   - Locate the canonical execution plan. Prefer the existing canonical file; if none exists, create `PLANS.md` at repository root.
+   - Do not create competing plan files.
+   - Update the plan after discovery and before modifying production code.
+   - Immediately begin implementation after saving the updated plan. Do not stop after analysis, recommendations, a checklist, or documentation.
+   - Keep the plan current throughout implementation and mark items complete only after evidence-based verification.
+
+8. **Implement, test, review, fix, and re-verify.**
+   - Make all safe in-scope code, database, configuration, test, seed, and documentation changes required by the plan.
+   - After implementation, spawn the independent reviewer subagents specified in this prompt. Reviewers must not be the same agents that implemented the change.
+   - Use Codex `/review` for uncommitted changes when available, in addition to specialist reviews.
+   - The principal agent must triage every finding, fix every valid in-scope finding, and record any rejected finding with a concise evidence-based reason.
+   - Re-run all affected checks after fixes.
+
+9. **Never fabricate evidence.**
+   - Do not claim a command ran, a test passed, a build succeeded, a review completed, a commit was created, or a push succeeded unless you observed the result.
+   - Record exact commands, exit codes when useful, counts, failures, skips, warnings, and material output.
+   - Distinguish pre-existing failures from regressions introduced by this task.
+
+10. **Finish documentation and Git work.**
+    - Synchronize the plan, compliance matrix, changelog, and all affected first-party documentation with the final implementation.
+    - Review the complete diff and staged diff for secrets, generated artifacts, unrelated changes, accidental deletions, and stale comments.
+    - Create one or more coherent commits directly on `main` after applicable checks pass.
+    - Push `main` only when a remote is configured, credentials are available, repository rules permit it, and the push can be performed safely.
+    - Report the actual commit hashes and push result.
+
+## Subagent coordination contract
+
+The principal agent must create a work ledger before delegation. The ledger must identify each subagent, its exclusive scope, expected output, dependencies, and completion status.
+
+Every analysis subagent must return a concise structured report containing:
+
+1. Scope inspected.
+2. Files, classes, routes, tables, components, or workflows examined.
+3. Confirmed findings, each with severity and evidence.
+4. Suspected findings that require principal-agent validation.
+5. Missing coverage or unavailable evidence.
+6. Recommended implementation order.
+7. Suggested tests and verification commands.
+8. Risks of changing the affected area.
+
+Subagents must not dump raw logs without interpretation. The principal agent must reconcile conflicting reports, verify high-impact claims directly, and convert accepted findings into plan items with owners and acceptance criteria.
+
+## Required analysis subagents and detailed roles
+
+Spawn at least the following specialized subagents. Give each one the exact mission, scope, checks, deliverable, and restrictions below.
+
+### Upload Attack and Validation Analyst
+
+- **Mission:** Model malicious uploads and verify validation against content, size, dimensions, paths, and processing limits.
+- **Scope:** Form Requests, Livewire uploads, validators, temporary uploads, MIME detection, image/document parsers, archives, and tests.
+- **Must inspect:**
+  - Extension/MIME spoofing, polyglots, oversized files, decompression bombs where applicable, path traversal, invalid dimensions, filename injection, and parser resource exhaustion.
+  - Validation only on client.
+  - Temporary files retained after failure.
+- **Required checks:**
+  - Trace upload before persistence.
+  - Check actual content validation and limits.
+  - Construct malicious fixtures safely.
+  - Review error messages and logs.
+- **Required deliverable:**
+  - An upload threat model.
+  - Validation gaps and fixes.
+  - Adversarial fixture/test requirements.
+- **Restrictions:**
+  - Default to read-only analysis during the discovery phase.
+  - Do not modify files owned by another subagent.
+  - Do not make broad architectural decisions independently; surface evidence and options to the principal agent.
+  - Do not report a guess as a fact. Mark uncertainty and explain what evidence is missing.
+
+### Filesystem Architecture and Ownership Analyst
+
+- **Mission:** Define disks, directories, visibility, ownership, tenancy, retention, and access for every file class.
+- **Scope:** Filesystem config, storage calls, models, paths, URLs, CDN/object storage integration, temporary URLs, and documentation.
+- **Must inspect:**
+  - Hardcoded absolute paths, public/private confusion, user-controlled paths, shared tenant directories, missing ownership metadata, and direct URLs bypassing authorization.
+  - Environment-specific disk mismatch.
+  - Path naming and lifecycle collisions.
+- **Required checks:**
+  - Inventory every write/read/delete path.
+  - Map file to owner/tenant/model/purpose.
+  - Check disk portability and URL generation.
+- **Required deliverable:**
+  - A file-category ownership matrix.
+  - Disk/path migration plan.
+  - Authorization and retention requirements.
+- **Restrictions:**
+  - Default to read-only analysis during the discovery phase.
+  - Do not modify files owned by another subagent.
+  - Do not make broad architectural decisions independently; surface evidence and options to the principal agent.
+  - Do not report a guess as a fact. Mark uncertainty and explain what evidence is missing.
+
+### Image and Media Processing Analyst
+
+- **Mission:** Centralize safe transformations and deliver correctly sized optimized media.
+- **Scope:** Image API/libraries, resize/crop/thumbnail code, metadata/orientation, video/audio processing where present, presets, queues/web batches, and views.
+- **Must inspect:**
+  - Duplicated transforms, full originals in thumbnails, unbounded dimensions/memory, metadata/privacy leaks, unsupported formats, orientation errors, and synchronous timeouts.
+  - Watermark and purchased-original policies when present.
+  - Transformation idempotency and versioning.
+- **Required checks:**
+  - Map UI variants to exact presets.
+  - Check processing limits and failure cleanup.
+  - Measure output size/quality.
+  - Respect runtime constraints.
+- **Required deliverable:**
+  - A media preset registry.
+  - Performance/security findings.
+  - Required service and test changes.
+- **Restrictions:**
+  - Default to read-only analysis during the discovery phase.
+  - Do not modify files owned by another subagent.
+  - Do not make broad architectural decisions independently; surface evidence and options to the principal agent.
+  - Do not report a guess as a fact. Mark uncertainty and explain what evidence is missing.
+
+### Private Access and Delivery Analyst
+
+- **Mission:** Protect downloads, previews, temporary URLs, ranges/streams, and cached delivery by current authorization.
+- **Scope:** Download routes, signed URLs, controllers/Livewire, storage URLs, policies, CDN/cache, media players, and tests.
+- **Must inspect:**
+  - Guessable public paths, stale signed URLs, missing tenant/owner policy, cache leaking private files, range request bypass, and authorization checked only in UI.
+  - Purchased or role-gated original access.
+  - Content disposition/name injection.
+- **Required checks:**
+  - Trace every delivery method.
+  - Check authorization at request time.
+  - Test expired/revoked access and account/tenant changes.
+- **Required deliverable:**
+  - A delivery/access matrix.
+  - Bypass findings.
+  - Required route/policy/cache fixes and tests.
+- **Restrictions:**
+  - Default to read-only analysis during the discovery phase.
+  - Do not modify files owned by another subagent.
+  - Do not make broad architectural decisions independently; surface evidence and options to the principal agent.
+  - Do not report a guess as a fact. Mark uncertainty and explain what evidence is missing.
+
+### File Lifecycle and Compensation Analyst
+
+- **Mission:** Ensure database and filesystem changes remain consistent across create, replace, failure, rollback, delete, restore, and cleanup.
+- **Scope:** Actions, transactions, model events, filesystem operations, queues/web batches, cleanup commands, soft deletes, and tests.
+- **Must inspect:**
+  - Database row without file, file without row, failed replacement deleting old file, transaction rollback leaving new file, orphan accumulation, and duplicate concurrent processing.
+  - Cleanup depending on unavailable cron/queue.
+  - Restore semantics.
+- **Required checks:**
+  - Trace each lifecycle state.
+  - Design compensation and idempotency.
+  - Define web-safe cleanup when runtime services are unavailable.
+- **Required deliverable:**
+  - A lifecycle state machine.
+  - Compensation/cleanup plan.
+  - Failure and concurrency tests.
+- **Restrictions:**
+  - Default to read-only analysis during the discovery phase.
+  - Do not modify files owned by another subagent.
+  - Do not make broad architectural decisions independently; surface evidence and options to the principal agent.
+  - Do not report a guess as a fact. Mark uncertainty and explain what evidence is missing.
+
+### Media Privacy and Metadata Analyst
+
+- **Mission:** Review EXIF, document metadata, original names, access logs, retention, and sensitive content handling.
+- **Scope:** Image/document processing, metadata libraries, storage, logs, exports, privacy docs, and tests.
+- **Must inspect:**
+  - Location/device/author metadata leakage, original filename disclosure, logs containing private paths, indefinite retention, and public previews.
+  - Sensitive thumbnails or backups.
+  - Deletion/account-erasure behavior.
+- **Required checks:**
+  - Classify metadata to retain/remove.
+  - Check privacy/retention requirements.
+  - Review backup/cache implications.
+- **Required deliverable:**
+  - A metadata/privacy findings report.
+  - Required stripping/retention controls.
+  - Privacy tests and documentation.
+- **Restrictions:**
+  - Default to read-only analysis during the discovery phase.
+  - Do not modify files owned by another subagent.
+  - Do not make broad architectural decisions independently; surface evidence and options to the principal agent.
+  - Do not report a guess as a fact. Mark uncertainty and explain what evidence is missing.
+
+### File Fixture and Seeder Analyst
+
+- **Mission:** Create safe local deterministic fixtures and seeded media states for tests and demo environments.
+- **Scope:** Test fixtures, factories, seeders, image/document generators, fake disks, and media models.
+- **Must inspect:**
+  - Internet dependency, copyrighted/real personal data, invalid fixture metadata, nonrepeatable paths, and production seeding risk.
+  - Fixtures not covering attacks or transformations.
+  - Cleanup between tests.
+- **Required checks:**
+  - Generate minimal valid/invalid files locally.
+  - Separate demo and adversarial fixtures.
+  - Use deterministic names/content.
+- **Required deliverable:**
+  - A fixture registry.
+  - Factory/seeder changes.
+  - Storage isolation tests.
+- **Restrictions:**
+  - Default to read-only analysis during the discovery phase.
+  - Do not modify files owned by another subagent.
+  - Do not make broad architectural decisions independently; surface evidence and options to the principal agent.
+  - Do not report a guess as a fact. Mark uncertainty and explain what evidence is missing.
+
+### File and Media Test Architect
+
+- **Mission:** Create comprehensive lifecycle, access, validation, transformation, and cleanup coverage.
+- **Scope:** Upload/download code, policies, storage config, presets, factories, seeders, and existing tests.
+- **Must inspect:**
+  - Missing spoofing, oversize, dimensions, private access, replacement, rollback, orphan, temporary URL, and concurrent tests.
+  - Tests using real disks or network.
+  - No output-size/performance assertions.
+- **Required checks:**
+  - Use fake disks and generated fixtures.
+  - Test database/filesystem consistency.
+  - Exercise expiration and authorization changes.
+- **Required deliverable:**
+  - A file/media test matrix.
+  - Required fixtures and assertions.
+  - Exact safe verification commands.
+- **Restrictions:**
+  - Default to read-only analysis during the discovery phase.
+  - Do not modify files owned by another subagent.
+  - Do not make broad architectural decisions independently; surface evidence and options to the principal agent.
+  - Do not report a guess as a fact. Mark uncertainty and explain what evidence is missing.
+
+## Mandatory plan update before implementation
+
+Update the canonical plan with a dedicated section for this task. At minimum include:
+
+- Every file/media category, owner, tenant, visibility, disk, path, retention, access, and transformation rule.
+- Every upload entry point and required content/size/dimension/path/resource-limit validation.
+- Private delivery routes, temporary/signed URL behavior, cache/CDN implications, and authorization timing.
+- Image/media preset registry, format/metadata/orientation/watermark/original-delivery rules, and performance goals.
+- Create/replace/failure/rollback/delete/restore/orphan-cleanup state machines and compensation logic.
+- Storage/path/data migrations and rollout/rollback strategy.
+- Factories, seeders, local fixtures, fake disks, and production safeguards.
+- Adversarial, lifecycle, authorization, transformation, performance, and concurrency tests.
+
+Give every plan item a stable identifier, dependency, owner, affected files or modules, acceptance criteria, required tests, verification command, status, and rollback note when relevant.
+
+Save the plan, then immediately begin implementation. Do not return a plan to the user and wait for approval.
+
+## Domain-specific guardrails
+
+- Do not trust original filenames, extensions, MIME headers, user-controlled paths, or public URLs as authorization.
+- Do not expose private files through unrestricted public storage or cache keys.
+- Do not make tests or seeders download files from the internet or contain real private data.
+- Do not delete an existing valid file before a replacement is fully validated, stored, persisted, and committed.
+- Do not keep a database transaction open during long media processing unless a documented invariant requires it.
+- Do not rely on unavailable queues/cron for required cleanup; follow repository runtime constraints.
+
+## Required implementation scope
+
+Complete all applicable work below. Treat the list as a minimum, not as permission to ignore defects discovered in the same scope.
+
+- Create a file-category ownership matrix and centralize disk/path selection through configuration and explicit services/actions.
+- Replace original/user-supplied storage names with safe unique generated names while preserving a separately sanitized display name only when needed.
+- Validate maximum size, actual content/MIME, allowed format, dimensions/aspect ratio, filename/path, archive contents where applicable, and processing resource limits on the server.
+- Store private files outside unrestricted public access and authorize every preview/download at request time, including temporary URL, range, and original-versus-preview access.
+- Centralize image/media transformations into versioned presets matching actual UI sizes; normalize orientation, strip unnecessary sensitive metadata, and optimize output.
+- Implement watermark, purchased-original, or role-gated access only where current product requirements require it.
+- Make create/replace/delete/restore workflows idempotent and compensation-safe so database and filesystem cannot remain inconsistently partial.
+- Implement orphan and temporary-file cleanup using queue jobs when permitted or resumable web batches when runtime workers are prohibited.
+- Prevent tenant/owner leakage in paths, caches, URLs, notifications, exports, and media delivery.
+- Create deterministic local valid/invalid/adversarial fixtures and use fake disks in automated tests and safe demo assets in seeders.
+- Add tests for valid upload, MIME/extension spoofing, oversize, dimensions, path traversal, private access, expiry/revocation, replacement, rollback, cleanup, orphans, transformations, metadata, tenant separation, concurrency, and seeded media.
+
+## Required verification
+
+Run the repository's real commands rather than inventing command names. Perform all safe applicable checks below and capture exact results:
+
+- A complete file read/write/delete/URL call-site inventory.
+- Upload validation tests with generated valid and malicious fixtures.
+- Private access tests for owner/non-owner, tenant, role, expired/revoked link, guessed path, original/preview, and cache behavior.
+- Filesystem/database consistency tests for creation, replacement, transaction failure, deletion, restoration, and cleanup.
+- Image/media preset output dimensions, orientation, metadata, format, size, watermark, and idempotency tests where applicable.
+- Fake-disk/no-network enforcement and deterministic fixture cleanup.
+- Performance/memory checks for maximum allowed media and long processing paths.
+- Full PHP/Livewire/browser suites, static analysis, formatter, migration/seed checks, and frontend build.
+
+## Independent review protocol
+
+After implementation and before committing:
+
+1. Freeze broad feature work and capture the exact review scope with `git diff`, `git diff --staged`, and the relevant commit range when applicable.
+2. Spawn every reviewer subagent listed below. Reviewer agents must be independent from implementation agents.
+3. Run Codex `/review` against uncommitted changes when available.
+4. Require reviewers to inspect behavior, not only style.
+5. Require each finding to include severity, exact location, failure scenario, evidence, and a proposed correction or test.
+6. Have the principal agent reproduce or validate each material finding.
+7. Fix every valid in-scope finding.
+8. Add a regression test for every behavior defect when practical.
+9. Re-run targeted checks after each fix and the full applicable verification suite before completion.
+10. Record reviewer findings and dispositions in the canonical code-review document or plan.
+
+## Required independent reviewer subagents
+
+### Upload Security Reviewer
+
+- **Review mission:** Attack upload validation, parsers, names, paths, metadata, and temporary storage.
+- **Scope:** All upload entry points, validators, processors, fixtures, config, and tests.
+- **Must inspect:**
+  - Spoofing, polyglots, traversal, oversize/resource exhaustion, executable content, metadata leakage, and partial cleanup.
+  - Client-only checks or log disclosure.
+  - Format-specific bypass.
+- **Required checks:**
+  - Use adversarial fixtures.
+  - Trace temporary-to-final movement.
+  - Inspect parser limits and errors.
+- **Required deliverable:**
+  - Severity-ranked attack findings.
+  - Required validation/processing fixes.
+  - An upload-security verdict.
+- **Restrictions:**
+  - Work read-only unless the principal agent explicitly delegates a narrowly scoped fix after the review is complete.
+  - Do not assume the implementation is correct because tests are green.
+  - Prioritize defects by severity, reproducibility, blast radius, and likelihood.
+  - Cite exact files, symbols, line ranges when possible, and provide a concrete failure scenario for every finding.
+
+### Private Delivery and Lifecycle Reviewer
+
+- **Review mission:** Verify authorization, URL/cache behavior, replacement, rollback, deletion, restoration, and orphan cleanup.
+- **Scope:** Download routes, policies, storage, caches, actions, transactions, cleanup processes, and tests.
+- **Must inspect:**
+  - Guessable URLs, stale access, cross-tenant files, replacement data loss, orphaned files, and non-idempotent cleanup.
+  - Range or CDN bypass.
+  - Soft-delete/restore inconsistency.
+- **Required checks:**
+  - Swap user/tenant/account state.
+  - Inject failures at each lifecycle step.
+  - Repeat cleanup and replacement.
+- **Required deliverable:**
+  - Access/lifecycle findings.
+  - Required compensation and policy fixes.
+  - Consistency verdict.
+- **Restrictions:**
+  - Work read-only unless the principal agent explicitly delegates a narrowly scoped fix after the review is complete.
+  - Do not assume the implementation is correct because tests are green.
+  - Prioritize defects by severity, reproducibility, blast radius, and likelihood.
+  - Cite exact files, symbols, line ranges when possible, and provide a concrete failure scenario for every finding.
+
+### Media Performance and Privacy Reviewer
+
+- **Review mission:** Assess delivered size, transformation cost, metadata, format, and privacy/retention behavior.
+- **Scope:** Presets, processing code, output assets, pages, metadata, logs, backups/cache, and docs.
+- **Must inspect:**
+  - Full originals on small views, huge output, synchronous timeout risk, retained location/author metadata, private path leakage, and indefinite retention.
+  - Poor fallback or unsupported formats.
+  - Optimization claims without measurements.
+- **Required checks:**
+  - Measure representative outputs.
+  - Inspect metadata.
+  - Review maximum-size processing and UI delivery.
+- **Required deliverable:**
+  - Performance/privacy findings.
+  - Before/after output metrics.
+  - Required preset or retention fixes.
+- **Restrictions:**
+  - Work read-only unless the principal agent explicitly delegates a narrowly scoped fix after the review is complete.
+  - Do not assume the implementation is correct because tests are green.
+  - Prioritize defects by severity, reproducibility, blast radius, and likelihood.
+  - Cite exact files, symbols, line ranges when possible, and provide a concrete failure scenario for every finding.
+
+## Required documentation synchronization
+
+Update the canonical plan plus all affected first-party documentation. At minimum review and update, when present or applicable:
+
+- The canonical plan, requirements, compliance matrix, and changelog.
+- File/media architecture, security, privacy/retention, testing, seeding, deployment, operations, and frontend documentation.
+- A file-category ownership/access matrix and media preset registry.
+- Cleanup/compensation state diagrams and runtime execution model.
+- ADRs for private delivery, metadata, watermark/original access, or storage migration decisions.
+
+Remove stale claims and commands. Keep useful historical changelog information. Ensure documentation describes the implemented and verified state, not the intended future state.
+
+## Definition of done
+
+This prompt is complete only when all applicable conditions are true:
+
+- Every file category has explicit owner, tenant, visibility, disk, path, retention, access, validation, and lifecycle rules.
+- Uploads use generated safe names and server-side content/size/dimension/resource validation.
+- Private files and originals are authorized at delivery time and cannot leak through paths, caches, URLs, or tenant confusion.
+- Media transformations are centralized, idempotent, size-appropriate, orientation-correct, privacy-aware, and tested.
+- Create/replace/delete/restore/failure/cleanup flows preserve database/filesystem consistency.
+- Tests and seeders use local deterministic fixtures, fake storage, and no network.
+- Independent upload, delivery/lifecycle, and performance/privacy reviews are resolved, and changes are documented, committed, and safely pushed on `main`.
+
+## Required final report
+
+Return one factual report with these sections:
+
+1. Branch and initial working-tree state.
+2. Applicable instructions and canonical plan file.
+3. Analysis subagents created, their scopes, and the important findings accepted or rejected.
+4. Plan changes made before implementation.
+5. Implementation summary by module and file group.
+6. Database, security, performance, accessibility, localization, factory, seeder, and test impact where applicable.
+7. Exact verification commands and observed results.
+8. Independent reviewers created, findings, fixes, and remaining rejected findings with reasons.
+9. Documentation synchronized.
+10. Final Git status, commit hashes, and factual push result.
+11. Remaining limitations, containing only genuine external or environmental blockers with exact affected requirement or plan identifiers.
+
+Do not describe planned work as completed. Do not hide unfinished in-scope work in a limitations section.
+
+## Start now
+
+Read the applicable instruction chain and first-party documentation, inspect the repository, create the required analysis subagents, update the canonical plan, and then immediately implement the complete in-scope plan. Do not stop after analysis or planning.

@@ -35,7 +35,7 @@ The deterministic catalogue snapshot on `main` contains:
 | --- | ---: | ---: | ---: |
 | Original forum source | 2,566 | 0 | 2,566 |
 | Forum extension and taxonomy | 4,718 | 830 | 3,888 |
-| Pet-profile revision | 4,135 | 205 | 3,930 |
+| Pet-profile revision | 4,135 | 418 | 3,717 |
 | Social-relationships revision | 3,210 | 222 | 2,988 |
 | Content-feed revision | 4,011 | 58 | 3,953 |
 | Communication revision | 3,877 | 0 | 3,877 |
@@ -43,9 +43,9 @@ The deterministic catalogue snapshot on `main` contains:
 | Medical-record revision | 3,867 | 79 | 3,788 |
 | Portal-architecture revision | 3,449 | 0 | 3,449 |
 | Event-lifecycle revision | 4,968 | 85 | 4,883 |
-| **Total** | **38,377** | **1,514** | **36,863** |
+| **Total** | **38,377** | **1,727** | **36,650** |
 
-All 36,863 open records are currently `discovered`; there are no records
+All 36,650 open records are currently `discovered`; there are no records
 marked `in-progress`, `blocked`, or `intentionally-not-applicable`. The source
 payload checksum is
 `cbb7d3a36f3750106c4751191ddd7d882d922ce0ae0e0b12aed318c809206ea1`.
@@ -119,12 +119,12 @@ database atom.
 
 ## Dependency-Ordered Completion Waves
 
-The ten waves below account for all 36,863 open IDs exactly.
+The ten waves below account for all 36,650 open IDs exactly.
 
 | Wave | Scope | Phases | Open IDs |
 | ---: | --- | --- | ---: |
 | 1 | Core forum, taxonomy, trust, and moderation foundations | 3-7 | 2,781 |
-| 2 | Canonical pet profile | 17-25 | 3,930 |
+| 2 | Canonical pet profile | 17-25 | 3,717 |
 | 3 | Social relationships | 27-34 | 2,988 |
 | 4 | Content feed and distribution | 36-44 | 3,953 |
 | 5 | Communication and community interlock | 46-63 | 7,418 |
@@ -133,7 +133,7 @@ The ten waves below account for all 36,863 open IDs exactly.
 | 8 | Canonical complete portal architecture | 74 | 3,449 |
 | 9 | Complete event lifecycle | 75 | 4,883 |
 | 10 | Global control evidence, release verification, and publication | 0-2, 13-14 | 499 |
-|  | **Total** |  | **36,863** |
+|  | **Total** |  | **36,650** |
 
 ### Wave 0: Reconcile The Source Of Truth
 
@@ -173,7 +173,7 @@ Execute the remaining pet plan in dependency order:
 | Phase | Remaining result | Open IDs |
 | ---: | --- | ---: |
 | 17 | Finish canonical aggregate and release boundary | 230 |
-| 18 | Complete creation, claims, identifiers, versioned facts, duplicate review, and audit data | 769 |
+| 18 | Complete creation, claims, identifiers, versioned facts, duplicate review, and audit data | 556 |
 | 19 | Complete ownership, transfer, dispute, organization roles, privacy, and discoverability | 559 |
 | 20 | Complete public projection, behavior, media, consent, social graph, and achievements | 1,015 |
 | 21 | Complete private-safe cross-domain integrations and discovery | 368 |

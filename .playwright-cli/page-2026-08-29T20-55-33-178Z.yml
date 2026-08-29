@@ -1,0 +1,57 @@
+- generic [ref=e1]:
+  - link "Skip to content" [ref=e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - main [ref=e3]:
+    - complementary "About PawCircle" [ref=e4]:
+      - link "PawCircle" [ref=e5] [cursor=pointer]:
+        - /url: https://petsocial.miniserver.fun
+      - generic [ref=e13]:
+        - paragraph [ref=e14]: One place for pet life
+        - paragraph [ref=e15]: Care feels lighter when everything is connected.
+        - paragraph [ref=e16]: Keep the people, places, conversations, and private care details that matter to your pet in one thoughtful circle.
+        - list "PawCircle account benefits" [ref=e17]:
+          - listitem [ref=e18]:
+            - generic [ref=e23]:
+              - strong [ref=e24]: Private by design
+              - generic [ref=e25]: You decide who can see sensitive care information.
+          - listitem [ref=e26]:
+            - generic [ref=e30]:
+              - strong [ref=e31]: Every detail, together
+              - generic [ref=e32]: Profiles, care, devices, and conversations share one home.
+          - listitem [ref=e33]:
+            - generic [ref=e39]:
+              - strong [ref=e40]: Made for real neighborhoods
+              - generic [ref=e41]: Find trusted local people, groups, events, and places.
+      - generic [ref=e42]: Private account data stays behind protected access.
+      - navigation "Account entry language" [ref=e48]:
+        - button "English" [ref=e50] [cursor=pointer]
+        - button "Lithuanian" [ref=e52] [cursor=pointer]
+        - button "Russian" [ref=e54] [cursor=pointer]
+    - region "Account access" [ref=e60]:
+      - generic [ref=e62]:
+        - generic [ref=e63]:
+          - paragraph [ref=e64]: Welcome back
+          - heading "Sign in" [level=1] [ref=e65]
+          - paragraph [ref=e66]: Use your account to access private pet care, health, and device information.
+        - generic [ref=e67]:
+          - generic [ref=e68]:
+            - generic [ref=e70]:
+              - text: Email address *
+              - generic [ref=e71]: required
+            - textbox "Email address required" [active] [ref=e72]
+          - generic [ref=e73]:
+            - generic [ref=e74]:
+              - generic [ref=e75]:
+                - text: Password *
+                - generic [ref=e76]: required
+              - link "Forgot password?" [ref=e78] [cursor=pointer]:
+                - /url: https://petsocial.miniserver.fun/forgot-password
+            - textbox "Password required" [ref=e83]
+          - generic [ref=e84] [cursor=pointer]:
+            - checkbox "Keep me signed in" [ref=e85]
+            - generic [ref=e86]: Keep me signed in
+          - button "Sign in" [ref=e87] [cursor=pointer]
+        - paragraph [ref=e92]:
+          - generic [ref=e93]: New to PawCircle?
+          - link "Create an account" [ref=e94] [cursor=pointer]:
+            - /url: https://petsocial.miniserver.fun/register

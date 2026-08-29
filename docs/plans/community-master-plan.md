@@ -2,6 +2,8 @@
 
 Date: 2026-08-01
 
+Status: incomplete; 35 community IDs are verified and 3,541 remain open.
+
 ## Contract
 
 The exact Point 6 source is preserved in the combined master prompt. The

@@ -2,6 +2,8 @@
 
 Last updated: 2026-08-01
 
+Status: incomplete; 79 medical IDs are verified and 3,788 remain open.
+
 ## Current State
 
 The exact Point 7 source is preserved and deterministically expanded into

@@ -2,6 +2,8 @@
 
 Last updated: 2026-08-01
 
+Status: incomplete; 35 community IDs are verified and 3,541 remain open.
+
 ## Current State
 
 The exact Point 6 source is preserved and deterministically expanded into

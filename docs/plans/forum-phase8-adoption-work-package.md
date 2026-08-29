@@ -2,6 +2,9 @@
 
 Last reviewed: 2026-07-31.
 
+Status: implemented and verified for all 49 selected IDs across the adoption
+workflow and provider-identity evidence slices.
+
 ## Requirement Scope
 
 This work package implements the following exact requirement identifiers:

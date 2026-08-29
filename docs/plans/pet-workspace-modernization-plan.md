@@ -2,6 +2,8 @@
 
 Date: 2026-08-03
 
+Status: implemented and release-verified.
+
 ## Scope And Product Decision
 
 `/pets` is the authenticated personal pet workspace. It is not a public pet

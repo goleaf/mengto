@@ -1,6 +1,6 @@
 # Implementation Plan: PawCircle Groups MVP
 
-> Historical delivery record. Production requirements, security rules, testing gates, and runtime versions are governed by `docs/index.md` and its canonical documents.
+> Historical delivery record. Production requirements, security rules, testing gates, and runtime versions are governed by `docs/index.md` and its canonical documents. Unchecked boxes below are preserved prototype history, not current PawCircle backlog items.
 
 ## Architecture Decisions
 

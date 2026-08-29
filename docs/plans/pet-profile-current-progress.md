@@ -2,6 +2,8 @@
 
 Last updated: 2026-08-04.
 
+Status: incomplete; 418 pet-profile IDs are verified and 3,717 remain open.
+
 ## Current State
 
 - Source revision preserved: 155,417 bytes.

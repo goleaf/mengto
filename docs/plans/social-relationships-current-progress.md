@@ -2,6 +2,8 @@
 
 Last updated: 2026-07-31
 
+Status: incomplete; 222 social IDs are verified and 2,988 remain open.
+
 ## Current Phase
 
 Phase 26 preservation, atomization, repository audit, gap analysis, and

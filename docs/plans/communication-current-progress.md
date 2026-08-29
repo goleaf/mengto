@@ -2,6 +2,9 @@
 
 Last updated: 2026-08-01
 
+Status: not started at the atomic evidence boundary; all 3,877 communication
+IDs remain open.
+
 ## Current State
 
 The complete point 5 source is preserved verbatim in

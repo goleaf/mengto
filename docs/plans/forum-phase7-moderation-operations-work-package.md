@@ -2,6 +2,8 @@
 
 Last reviewed: 2026-07-31.
 
+Status: implemented and verified for all 46 selected IDs.
+
 ## Requirement Scope
 
 This package includes:

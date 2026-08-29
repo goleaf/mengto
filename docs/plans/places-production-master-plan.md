@@ -1,7 +1,9 @@
 # Places Production Completion Master Plan
 
 Plan version: 2026-08-03
-Status: approved for execution; no production package started by this document
+Status: implementation in progress. Nine task IDs are complete and 339 remain
+open; the verified place/location/venue authority foundation does not close
+the Places contribution, scale, management, safety, or release packages.
 Goal: turn `/places` from a strong authority-backed prototype into a complete,
 shared, privacy-aware, production-operable Places system without regressing the
 verified place/venue authority foundation

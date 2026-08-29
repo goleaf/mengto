@@ -2,6 +2,8 @@
 
 Date: 2026-07-31
 
+Status: incomplete; 418 pet-profile IDs are verified and 3,717 remain open.
+
 ## Contract
 
 This plan is additive to `docs/plans/forum-master-plan.md`. The generated phase

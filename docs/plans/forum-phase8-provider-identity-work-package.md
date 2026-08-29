@@ -2,6 +2,8 @@
 
 Last reviewed: 2026-07-31.
 
+Status: implemented and verified for all three selected IDs.
+
 ## Requirement Scope
 
 This work package covers these exact requirement identifiers:

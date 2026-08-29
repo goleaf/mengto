@@ -1,0 +1,472 @@
+# 01. Complete Repository Audit, Subagent Discovery, and Initial Execution Plan
+
+## Principal-agent role
+
+You are the principal Codex implementation agent responsible for building an evidence-based model of the entire repository, normalizing its governing instructions, removing immediate blockers, and establishing the execution plan used by every later modernization pass.
+
+## Mission
+
+Perform a complete repository-wide audit, protect existing work, identify all governing requirements and architectural boundaries, establish a factual baseline, update the canonical plan, and immediately fix every safe critical blocker that prevents reliable modernization. The output must be a working repository with an actionable plan and verified foundational repairs, not merely an audit report.
+
+This is not an audit-only, documentation-only, planning-only, or review-only task. Discovery and planning are mandatory intermediate phases. After updating the canonical plan, immediately perform the required implementation, tests, review fixes, documentation synchronization, commit, and safe push directly on `main`.
+
+## Repository-wide technology baseline
+
+Preserve and enforce this target unless a stricter, current repository requirement applies:
+
+- PHP 8.5.
+- Laravel 13, using the latest stable mutually compatible 13.x release available at execution time.
+- Livewire 4, using the latest stable mutually compatible 4.x release available at execution time.
+- Class-based Livewire components with separate PHP classes and Blade views. Do not use Volt.
+- Tailwind CSS 4, using the latest stable mutually compatible 4.x release available at execution time.
+- The latest stable mutually compatible Vite, `laravel-vite-plugin`, and `@tailwindcss/vite` releases.
+- Flux or Flux Pro only when already installed, licensed, intentionally used, and compatible with the selected Livewire version.
+- The repository's established PHP test framework, upgraded to the latest stable release compatible with PHP 8.5 and Laravel 13.
+- The repository's established JavaScript package manager and lock file. Never introduce a second lock file.
+
+Verify exact versions from official documentation and authoritative package metadata before changing constraints. Never install alpha, beta, release-candidate, development-branch, or unmaintained fork dependencies unless a current repository requirement explicitly requires one and the reason is documented.
+
+## Non-negotiable operating protocol
+
+1. **Work only on the existing `main` branch.**
+   - Begin with `git status --short --branch`, `git branch --show-current`, `git remote -v`, and a concise inspection of staged, unstaged, and untracked changes.
+   - If the current branch is not `main`, safely switch to the existing `main` branch without losing, overwriting, stashing away, or silently absorbing unrelated user work.
+   - Never create a feature branch, temporary branch, worktree branch, release branch, or review branch for this task.
+
+2. **Protect the working tree.**
+   - Preserve all unrelated existing changes.
+   - Do not use `git reset --hard`, `git clean -fd`, `git checkout -- .`, force push, history rewriting, or any command that can discard work.
+   - Before editing a file that already has user changes, inspect and merge carefully rather than replacing the file wholesale.
+   - Commit only task-owned changes. Do not claim unrelated user changes as your work.
+
+3. **Load governing instructions before work.**
+   - Read the applicable `AGENTS.md` and `AGENTS.override.md` instruction chain from repository root to the current directory.
+   - Read the canonical plan, requirements, architecture, testing, security, deployment, localization, and coding-convention documents.
+   - Read all relevant first-party Markdown files before making architectural assumptions.
+   - Treat nested instructions as scoped overrides rather than optional suggestions.
+
+4. **Use specialized subagents for discovery.**
+   - Spawn every required analysis subagent listed in this prompt.
+   - Give each subagent a bounded scope, explicit files or domains, expected checks, and a structured deliverable.
+   - Run independent scopes in parallel when safe.
+   - Do not allow multiple subagents to edit the same files concurrently.
+   - The principal agent remains the sole integrator and decision owner.
+
+5. **Do not ask the user questions.**
+   - Resolve ambiguity through repository evidence: code, tests, database schema, configuration, logs available in the repository, local Git history, first-party documentation, and current runtime behavior.
+   - Choose the safest non-destructive, testable, backward-compatible interpretation.
+   - Record material assumptions in the plan or an ADR and continue.
+   - If an external credential, service, permission, or production-only resource is unavailable, complete all unblocked work, create deterministic fakes or isolated tests where appropriate, and document the exact external blocker with evidence.
+
+6. **Quality is more important than speed.**
+   - Work in small, reviewable, dependency-aware passes.
+   - Inspect the diff after each meaningful pass.
+   - Run targeted checks immediately after each change set.
+   - Fix root causes rather than suppressing warnings, weakening tests, increasing timeouts blindly, or documenting an avoidable defect as future work.
+
+7. **The plan is a mandatory gate, not the final deliverable.**
+   - Locate the canonical execution plan. Prefer the existing canonical file; if none exists, create `PLANS.md` at repository root.
+   - Do not create competing plan files.
+   - Update the plan after discovery and before modifying production code.
+   - Immediately begin implementation after saving the updated plan. Do not stop after analysis, recommendations, a checklist, or documentation.
+   - Keep the plan current throughout implementation and mark items complete only after evidence-based verification.
+
+8. **Implement, test, review, fix, and re-verify.**
+   - Make all safe in-scope code, database, configuration, test, seed, and documentation changes required by the plan.
+   - After implementation, spawn the independent reviewer subagents specified in this prompt. Reviewers must not be the same agents that implemented the change.
+   - Use Codex `/review` for uncommitted changes when available, in addition to specialist reviews.
+   - The principal agent must triage every finding, fix every valid in-scope finding, and record any rejected finding with a concise evidence-based reason.
+   - Re-run all affected checks after fixes.
+
+9. **Never fabricate evidence.**
+   - Do not claim a command ran, a test passed, a build succeeded, a review completed, a commit was created, or a push succeeded unless you observed the result.
+   - Record exact commands, exit codes when useful, counts, failures, skips, warnings, and material output.
+   - Distinguish pre-existing failures from regressions introduced by this task.
+
+10. **Finish documentation and Git work.**
+    - Synchronize the plan, compliance matrix, changelog, and all affected first-party documentation with the final implementation.
+    - Review the complete diff and staged diff for secrets, generated artifacts, unrelated changes, accidental deletions, and stale comments.
+    - Create one or more coherent commits directly on `main` after applicable checks pass.
+    - Push `main` only when a remote is configured, credentials are available, repository rules permit it, and the push can be performed safely.
+    - Report the actual commit hashes and push result.
+
+## Subagent coordination contract
+
+The principal agent must create a work ledger before delegation. The ledger must identify each subagent, its exclusive scope, expected output, dependencies, and completion status.
+
+Every analysis subagent must return a concise structured report containing:
+
+1. Scope inspected.
+2. Files, classes, routes, tables, components, or workflows examined.
+3. Confirmed findings, each with severity and evidence.
+4. Suspected findings that require principal-agent validation.
+5. Missing coverage or unavailable evidence.
+6. Recommended implementation order.
+7. Suggested tests and verification commands.
+8. Risks of changing the affected area.
+
+Subagents must not dump raw logs without interpretation. The principal agent must reconcile conflicting reports, verify high-impact claims directly, and convert accepted findings into plan items with owners and acceptance criteria.
+
+## Required analysis subagents and detailed roles
+
+Spawn at least the following specialized subagents. Give each one the exact mission, scope, checks, deliverable, and restrictions below.
+
+### Repository Archaeologist
+
+- **Mission:** Reconstruct the repository structure, module boundaries, historical design intent, and critical execution paths.
+- **Scope:** The full first-party tree, local Git history when available, bootstrap files, module directories, entry points, and repository conventions.
+- **Must inspect:**
+  - Root and nested directory structure, excluding generated and third-party trees.
+  - Git log, rename history, deleted or replaced architecture files, and recurring commit themes when locally available.
+  - Application entry points, service boundaries, route groups, console entry points, and deployment scripts.
+  - Files that appear orphaned, duplicated, generated, or unexpectedly authoritative.
+- **Required checks:**
+  - Identify module ownership and cross-module dependencies.
+  - Trace at least the most critical user workflows from entry point to persistence and response.
+  - Distinguish active code from legacy or dead code using references, framework discovery, and tests.
+  - Flag architectural assumptions that cannot be proven from repository evidence.
+- **Required deliverable:**
+  - A module map with exact paths and primary responsibilities.
+  - A list of critical workflows and their call chains.
+  - A list of historical or structural risks with evidence.
+  - A prioritized set of repository-level audit items for the plan.
+- **Restrictions:**
+  - Default to read-only analysis during the discovery phase.
+  - Do not modify files owned by another subagent.
+  - Do not make broad architectural decisions independently; surface evidence and options to the principal agent.
+  - Do not report a guess as a fact. Mark uncertainty and explain what evidence is missing.
+
+### Instruction and Documentation Auditor
+
+- **Mission:** Find every first-party instruction and Markdown document, determine its authority, and identify conflicts or stale claims.
+- **Scope:** Root and nested AGENTS files, README, CHANGELOG, SECURITY, CONTRIBUTING, plan files, requirements, architecture, deployment, testing, localization, and all first-party Markdown.
+- **Must inspect:**
+  - Instruction discovery order and scoped overrides.
+  - Duplicate, contradictory, obsolete, or orphaned requirements.
+  - Commands, versions, paths, and workflows that no longer match the repository.
+  - Historical information that must be preserved rather than deleted.
+- **Required checks:**
+  - Classify each document as canonical, supporting, historical, obsolete, or generated.
+  - Identify missing canonical topics and competing plan files.
+  - Map high-impact requirements to code and tests where possible.
+  - Detect unsafe or impossible instructions that require normalization.
+- **Required deliverable:**
+  - A complete Markdown inventory table.
+  - A conflict list with proposed precedence and consolidation action.
+  - A recommended canonical documentation tree.
+  - Specific AGENTS.md rules that should become durable repository guidance.
+- **Restrictions:**
+  - Default to read-only analysis during the discovery phase.
+  - Do not modify files owned by another subagent.
+  - Do not make broad architectural decisions independently; surface evidence and options to the principal agent.
+  - Do not report a guess as a fact. Mark uncertainty and explain what evidence is missing.
+
+### Dependency and Runtime Auditor
+
+- **Mission:** Determine the real runtime stack, dependency health, package-manager state, and upgrade blockers.
+- **Scope:** Composer metadata and lock file, package metadata and lock file, PHP and Node requirements, extensions, CI setup, containers, server scripts, and framework bootstrap.
+- **Must inspect:**
+  - Declared and resolved versions for PHP, Laravel, Livewire, Tailwind, Vite, Flux, testing tools, and first-party Laravel packages.
+  - Abandoned, insecure, duplicated, or incompatible direct dependencies.
+  - Multiple lock files, inconsistent package-manager scripts, or invalid platform constraints.
+  - Environment requirements and extension assumptions not documented or not checked.
+- **Required checks:**
+  - Verify whether the repository can boot with the declared platform.
+  - Identify packages blocking PHP 8.5, Laravel 13, Livewire 4, or Tailwind 4.
+  - Separate dependency defects from source-code defects.
+  - Identify baseline commands that can run safely in the current environment.
+- **Required deliverable:**
+  - A resolved stack inventory and compatibility matrix.
+  - A blocker list with exact package names and constraints.
+  - Safe baseline commands and expected outputs.
+  - A dependency-risk section for the canonical plan.
+- **Restrictions:**
+  - Default to read-only analysis during the discovery phase.
+  - Do not modify files owned by another subagent.
+  - Do not make broad architectural decisions independently; surface evidence and options to the principal agent.
+  - Do not report a guess as a fact. Mark uncertainty and explain what evidence is missing.
+
+### Laravel Architecture Auditor
+
+- **Mission:** Assess application-layer responsibilities and identify code that violates Laravel architectural boundaries.
+- **Scope:** Routes, middleware, controllers, service providers, actions, services, models, policies, requests, rules, resources, events, listeners, notifications, jobs, and console commands.
+- **Must inspect:**
+  - Business logic in routes, controllers, Livewire components, or Blade.
+  - God classes, service locator usage, hidden facades, duplicated business rules, and unclear transaction boundaries.
+  - Missing authorization and validation at public entry points.
+  - Framework boot, provider registration, route registration, and exception configuration defects.
+- **Required checks:**
+  - Trace critical write operations through validation, authorization, transaction, side effects, and response.
+  - Identify circular dependencies and inappropriate layer coupling.
+  - Confirm whether existing abstractions are useful or ceremonial.
+  - Prioritize boot blockers and security-critical violations.
+- **Required deliverable:**
+  - An architecture findings table with severity and exact symbols.
+  - A dependency graph for critical modules.
+  - A shortlist of immediate safe fixes.
+  - Recommended follow-up prompts or plan phases.
+- **Restrictions:**
+  - Default to read-only analysis during the discovery phase.
+  - Do not modify files owned by another subagent.
+  - Do not make broad architectural decisions independently; surface evidence and options to the principal agent.
+  - Do not report a guess as a fact. Mark uncertainty and explain what evidence is missing.
+
+### Livewire and Frontend Auditor
+
+- **Mission:** Map the frontend architecture and identify Livewire, Blade, Flux, Alpine, Tailwind, and JavaScript defects that block modernization.
+- **Scope:** Livewire components and forms, Blade views and components, Flux usage, Alpine setup, JavaScript modules, CSS entry points, Vite config, and browser tests.
+- **Must inspect:**
+  - Volt usage, @php blocks, direct model or service calls in Blade, large Livewire public state, and missing action authorization.
+  - Unstable wire:key values, excessive requests, n+1 queries, navigation lifecycle leaks, and duplicate Alpine installations.
+  - Tailwind version/configuration, source detection, unsafe dynamic classes, and build scripts.
+  - Missing loading, error, empty, offline, and accessibility states.
+- **Required checks:**
+  - Identify components with the highest hydration and query risk.
+  - Verify whether custom JavaScript tears down correctly during Livewire navigation.
+  - Determine whether Flux usage matches installed capabilities and licensing assumptions.
+  - Separate static presentation components from server-interactive components.
+- **Required deliverable:**
+  - A component inventory with risks and candidate modernizations.
+  - A Blade purity findings list.
+  - A frontend build and lifecycle blocker list.
+  - Targeted test recommendations.
+- **Restrictions:**
+  - Default to read-only analysis during the discovery phase.
+  - Do not modify files owned by another subagent.
+  - Do not make broad architectural decisions independently; surface evidence and options to the principal agent.
+  - Do not report a guess as a fact. Mark uncertainty and explain what evidence is missing.
+
+### Database, Security, and Integrity Auditor
+
+- **Mission:** Identify schema, query, authorization, token, file, and data-integrity defects that present immediate risk.
+- **Scope:** Migrations, models, relationships, constraints, indexes, database configuration, authentication flows, policies, uploads, webhooks, caching, and sensitive configuration.
+- **Must inspect:**
+  - Missing foreign keys, unique constraints, check constraints, unsafe nullable/default choices, and money stored as floating point.
+  - N+1 queries, unbounded reads, query-in-loop behavior, unsafe raw SQL, and missing tenant scopes.
+  - IDOR, mass assignment, token replay, insecure session handling, secret exposure, and unsafe file access.
+  - Destructive migrations or deployment assumptions that could lose data.
+- **Required checks:**
+  - Trace data ownership and tenant boundaries for critical resources.
+  - Identify race-sensitive operations lacking atomicity or idempotency.
+  - Confirm whether production safeguards exist for demo data and destructive commands.
+  - Prioritize vulnerabilities by realistic exploitation path and blast radius.
+- **Required deliverable:**
+  - A schema and integrity risk register.
+  - A security findings table with attack scenario and evidence.
+  - A list of immediate safe remediations.
+  - Required regression tests for each accepted finding.
+- **Restrictions:**
+  - Default to read-only analysis during the discovery phase.
+  - Do not modify files owned by another subagent.
+  - Do not make broad architectural decisions independently; surface evidence and options to the principal agent.
+  - Do not report a guess as a fact. Mark uncertainty and explain what evidence is missing.
+
+### Testing, Factory, and Seeder Auditor
+
+- **Mission:** Measure current verification quality and determine whether the repository can be safely changed.
+- **Scope:** PHP tests, browser tests, test configuration, CI commands, factories, factory states, seeders, fixtures, fakes, coverage configuration, and architecture checks.
+- **Must inspect:**
+  - Test framework versions, failing tests, skipped tests, missing critical workflows, and unreliable or assertion-free tests.
+  - Models without factories, invalid default factories, missing states, and unsafe seeders.
+  - Real external calls in tests, production database risks, flaky time assumptions, and nondeterministic data.
+  - Missing architecture tests for repository-wide rules.
+- **Required checks:**
+  - Run safe baseline tests and classify failures as pre-existing or environment-related.
+  - Verify fresh test migration and seeding only against an isolated test database.
+  - Identify high-risk code with no regression coverage.
+  - Determine the minimum foundational tests needed before broad modernization.
+- **Required deliverable:**
+  - A test baseline with exact commands and results.
+  - A factory and seeder coverage inventory.
+  - A prioritized missing-coverage plan.
+  - A list of unreliable tests and proposed stabilization steps.
+- **Restrictions:**
+  - Default to read-only analysis during the discovery phase.
+  - Do not modify files owned by another subagent.
+  - Do not make broad architectural decisions independently; surface evidence and options to the principal agent.
+  - Do not report a guess as a fact. Mark uncertainty and explain what evidence is missing.
+
+## Mandatory plan update before implementation
+
+Update the canonical plan with a dedicated section for this task. At minimum include:
+
+- The initial Git and working-tree state, including unrelated changes that must be preserved.
+- The applicable instruction chain and the canonical/non-canonical status of every first-party Markdown file.
+- A complete module, route, role, model, component, integration, runtime-process, factory, seeder, and test inventory.
+- The factual stack and dependency baseline, including blockers to PHP 8.5, Laravel 13, Livewire 4, and Tailwind 4.
+- Critical user workflows traced from entry point through authorization, validation, persistence, side effects, and tests.
+- Confirmed boot blockers, security-critical defects, data-integrity risks, test blockers, and documentation contradictions.
+- Immediate safe repairs to perform in this prompt and deferred work assigned to later numbered modernization phases.
+- Baseline measurements and commands that will be compared with the final state.
+
+Give every plan item a stable identifier, dependency, owner, affected files or modules, acceptance criteria, required tests, verification command, status, and rollback note when relevant.
+
+Save the plan, then immediately begin implementation. Do not return a plan to the user and wait for approval.
+
+## Domain-specific guardrails
+
+- Do not perform broad dependency upgrades in this prompt unless required to restore a broken baseline or remove a critical blocker; record broader upgrades for the dedicated dependency prompt.
+- Do not rewrite the entire application during the audit. Fix only verified foundational blockers and critical defects that are safe to isolate and test.
+- Do not delete historical documentation or apparently unused code without proving it is not discovered by framework conventions, configuration, reflection, Blade references, or external contracts.
+- Never run destructive database commands against a non-test database.
+
+## Required implementation scope
+
+Complete all applicable work below. Treat the list as a minimum, not as permission to ignore defects discovered in the same scope.
+
+- Read and classify every first-party Markdown and instruction file, excluding generated and third-party trees.
+- Create a complete repository inventory covering routes, middleware, controllers, Livewire components, Blade views, models, migrations, policies, requests, actions, services, events, jobs, commands, API resources, external clients, files, caches, translations, factories, seeders, tests, CI, and deployment.
+- Trace the highest-risk workflows end to end and record missing validation, authorization, transaction, idempotency, or test boundaries.
+- Capture the baseline with safe repository commands, including runtime versions, Composer validation/audit, application boot, route listing, existing format/static-analysis commands, tests, frontend build, and browser tests where available.
+- Create or update `AGENTS.md` with durable rules: main-only workflow, mandatory plan update, immediate implementation after planning, subagent use, independent review, no Volt, no @php, passive Blade, no env outside config, localization, factories, seeders, testing, documentation, security, and definition of done.
+- Create or update the canonical audit, architecture overview, compliance matrix, code-review ledger, and known-limitations documents without creating empty ceremonial files.
+- Fix verified foundational blockers such as broken bootstrap references, invalid namespaces, stale provider registrations, invalid package scripts, impossible test configuration, obvious secret exposure, or missing files required for application boot.
+- Add targeted regression tests for every foundational behavior repaired.
+- Update the plan after each repair with evidence, remaining dependencies, and the next numbered prompt that owns deferred work.
+
+## Required verification
+
+Run the repository's real commands rather than inventing command names. Perform all safe applicable checks below and capture exact results:
+
+- `git status --short --branch` and complete diff inspection before and after changes.
+- `php -v`, relevant extension checks, and application bootstrap smoke test.
+- `composer validate --strict`, `composer audit`, and direct dependency inventory when Composer is present.
+- `php artisan about` and `php artisan route:list` when the application can boot.
+- The existing formatter and static-analysis commands, or a documented reason they cannot yet run.
+- Targeted tests for each foundational repair and the broadest safe existing test suite.
+- Frontend install/build/test commands using the existing package manager when frontend files or scripts are affected.
+- Fresh migration and seed smoke checks only against an isolated testing database when the repository already supports them safely.
+- A final scan for secrets, debug statements, accidental generated files, and unrelated changes.
+
+## Independent review protocol
+
+After implementation and before committing:
+
+1. Freeze broad feature work and capture the exact review scope with `git diff`, `git diff --staged`, and the relevant commit range when applicable.
+2. Spawn every reviewer subagent listed below. Reviewer agents must be independent from implementation agents.
+3. Run Codex `/review` against uncommitted changes when available.
+4. Require reviewers to inspect behavior, not only style.
+5. Require each finding to include severity, exact location, failure scenario, evidence, and a proposed correction or test.
+6. Have the principal agent reproduce or validate each material finding.
+7. Fix every valid in-scope finding.
+8. Add a regression test for every behavior defect when practical.
+9. Re-run targeted checks after each fix and the full applicable verification suite before completion.
+10. Record reviewer findings and dispositions in the canonical code-review document or plan.
+
+## Required independent reviewer subagents
+
+### Repository Audit Correctness Reviewer
+
+- **Review mission:** Challenge the completeness and factual accuracy of the repository inventory and baseline.
+- **Scope:** The audit documents, plan, accepted subagent reports, changed foundational files, and command evidence.
+- **Must inspect:**
+  - Inventory omissions, incorrect authority assumptions, unsupported claims, and missing critical workflows.
+  - Whether baseline results are accurately reported and reproducible.
+  - Whether immediate fixes were appropriately scoped and did not hide broader regressions.
+- **Required checks:**
+  - Compare the audit against the actual tree and framework discovery.
+  - Sample high-risk modules that were not changed.
+  - Verify every claimed fixed blocker has a regression test or reproducible check.
+- **Required deliverable:**
+  - Prioritized findings with exact missing or incorrect items.
+  - A completeness score by repository domain.
+  - Required corrections before the audit can be trusted.
+- **Restrictions:**
+  - Work read-only unless the principal agent explicitly delegates a narrowly scoped fix after the review is complete.
+  - Do not assume the implementation is correct because tests are green.
+  - Prioritize defects by severity, reproducibility, blast radius, and likelihood.
+  - Cite exact files, symbols, line ranges when possible, and provide a concrete failure scenario for every finding.
+
+### Security and Data-Integrity Reviewer
+
+- **Review mission:** Independently inspect the foundational changes for new or unresolved security and integrity risks.
+- **Scope:** Authentication boundaries, configuration, migrations touched, secret handling, file access, and data ownership assumptions.
+- **Must inspect:**
+  - Authorization regressions, secret disclosure, unsafe defaults, destructive behavior, and missing production safeguards.
+  - Whether audit fixes weakened CSRF, origin, validation, or database protections.
+  - Whether any migration or seeding command could affect non-test data.
+- **Required checks:**
+  - Construct realistic misuse scenarios.
+  - Review the diff and unchanged adjacent code.
+  - Verify that security findings are linked to tests or explicit deferred plan items.
+- **Required deliverable:**
+  - Severity-ranked findings and exact remediation requirements.
+  - A list of confirmed safe controls.
+  - Any blocker that must be fixed before proceeding to later prompts.
+- **Restrictions:**
+  - Work read-only unless the principal agent explicitly delegates a narrowly scoped fix after the review is complete.
+  - Do not assume the implementation is correct because tests are green.
+  - Prioritize defects by severity, reproducibility, blast radius, and likelihood.
+  - Cite exact files, symbols, line ranges when possible, and provide a concrete failure scenario for every finding.
+
+### Test and Regression Reviewer
+
+- **Review mission:** Determine whether the foundational repairs are sufficiently verified and whether the baseline is trustworthy.
+- **Scope:** Changed code, test configuration, new tests, failing tests, skipped tests, factories, seeders, and CI scripts.
+- **Must inspect:**
+  - Tests that assert implementation details instead of behavior.
+  - False positives, missing negative paths, environment coupling, and nondeterminism.
+  - Differences between local commands and documented CI/deployment commands.
+- **Required checks:**
+  - Re-run or reason through critical targeted tests.
+  - Check that each fix has a failing-before/passing-after rationale.
+  - Verify pre-existing failures are not misclassified.
+- **Required deliverable:**
+  - Missing tests and flaky-test risks.
+  - A verdict on whether later modernization can safely proceed.
+  - Exact required test fixes.
+- **Restrictions:**
+  - Work read-only unless the principal agent explicitly delegates a narrowly scoped fix after the review is complete.
+  - Do not assume the implementation is correct because tests are green.
+  - Prioritize defects by severity, reproducibility, blast radius, and likelihood.
+  - Cite exact files, symbols, line ranges when possible, and provide a concrete failure scenario for every finding.
+
+## Required documentation synchronization
+
+Update the canonical plan plus all affected first-party documentation. At minimum review and update, when present or applicable:
+
+- `AGENTS.md` and any justified scoped instruction files.
+- The canonical plan, preferably `PLANS.md`.
+- `README.md`, `CHANGELOG.md`, and `SECURITY.md` where current claims are affected.
+- `docs/current-state-audit.md` or the existing canonical audit document.
+- `docs/architecture.md` or the existing architecture source of truth.
+- `docs/compliance-matrix.md` with evidence-based statuses.
+- `docs/code-review.md` with reviewer findings and dispositions.
+- `docs/known-limitations.md`, containing only real external or environmental blockers.
+
+Remove stale claims and commands. Keep useful historical changelog information. Ensure documentation describes the implemented and verified state, not the intended future state.
+
+## Definition of done
+
+This prompt is complete only when all applicable conditions are true:
+
+- The repository is still on `main`, unrelated changes are preserved, and the final diff is understood.
+- Every applicable instruction and first-party Markdown document has been inventoried and classified.
+- The canonical plan exists, is current, and assigns later work to explicit phases.
+- The application stack, modules, workflows, data boundaries, and verification baseline are documented with evidence.
+- All verified foundational blockers that can be safely fixed in this prompt are fixed and regression-tested.
+- No audit claim is presented as verified without command, code, schema, or test evidence.
+- Independent reviewers have completed their work, valid findings are fixed, and checks are re-run.
+- Documentation is synchronized, coherent commits are created on `main`, and the push result is reported factually.
+
+## Required final report
+
+Return one factual report with these sections:
+
+1. Branch and initial working-tree state.
+2. Applicable instructions and canonical plan file.
+3. Analysis subagents created, their scopes, and the important findings accepted or rejected.
+4. Plan changes made before implementation.
+5. Implementation summary by module and file group.
+6. Database, security, performance, accessibility, localization, factory, seeder, and test impact where applicable.
+7. Exact verification commands and observed results.
+8. Independent reviewers created, findings, fixes, and remaining rejected findings with reasons.
+9. Documentation synchronized.
+10. Final Git status, commit hashes, and factual push result.
+11. Remaining limitations, containing only genuine external or environmental blockers with exact affected requirement or plan identifiers.
+
+Do not describe planned work as completed. Do not hide unfinished in-scope work in a limitations section.
+
+## Start now
+
+Read the applicable instruction chain and first-party documentation, inspect the repository, create the required analysis subagents, update the canonical plan, and then immediately implement the complete in-scope plan. Do not stop after analysis or planning.

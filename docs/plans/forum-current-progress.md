@@ -2,12 +2,14 @@
 
 Last updated: 2026-08-04.
 
+Status: incomplete; 1,727 atomic IDs are verified and 36,650 remain open.
+
 ## Current Phase
 
 Source preservation, atomic extraction, repository discovery, and domain
 planning are documented for all ten source payloads, but their control IDs
 still require exact evidence before Phases 0-2 can be called verified. The
-combined catalogue has 1,718 verified IDs and 36,659 open IDs. Forum/taxonomy,
+combined catalogue has 1,727 verified IDs and 36,650 open IDs. Forum/taxonomy,
 pet, social, content, community, and medical foundations are implemented in
 independently evidenced slices. Communication, complete portal architecture,
 the expanded event lifecycle, and all remaining depth/release packages stay
@@ -74,7 +76,7 @@ as complete. The dependency-ordered remaining work is in
   immutable case events, protected idempotent contact relays, advisory
   duplicate detection, unified false-sighting/reward-scam reports, and
   privacy-safe archival that preserves the complete operational history.
-- Requirement evidence is a deterministic overlay. `1,718` atomic requirements
+- Requirement evidence is a deterministic overlay. `1,727` atomic requirements
   are verified with file/test evidence and none are currently marked
   in-progress.
 - The pet-profile foundation preserves the existing aggregate while adding
@@ -83,8 +85,8 @@ as complete. The dependency-ordered remaining work is in
   idempotent backfill, and localized class-based Livewire workflows. Its
   focused compatibility slice passed 21 tests and 1,603 assertions; the final
   serial suite passed 1,748 tests and 68,172 assertions. Across the foundation
-  and independently evidenced focused packages, exactly 409 pet IDs are
-  verified; all remaining pet requirements stay open. The latest structured
+  and independently evidenced focused packages, exactly 418 pet IDs are
+  verified; 3,717 pet requirements stay open. The latest structured
   identifying-mark slice preserves encrypted private verification evidence,
   exposes only deliberately public rows, and passed an exact isolated
   2,998-test repository suite.
@@ -322,7 +324,7 @@ as complete. The dependency-ordered remaining work is in
 | --- | ---: | ---: | ---: |
 | Original forum source | 2,566 | 0 | 2,566 |
 | Forum extension and taxonomy | 4,718 | 830 | 3,888 |
-| Pet-profile revision | 4,135 | 358 | 3,777 |
+| Pet-profile revision | 4,135 | 418 | 3,717 |
 | Social-relationships revision | 3,210 | 222 | 2,988 |
 | Content-feed revision | 4,011 | 58 | 3,953 |
 | Communication revision | 3,877 | 0 | 3,877 |
@@ -330,7 +332,7 @@ as complete. The dependency-ordered remaining work is in
 | Medical-record revision | 3,867 | 79 | 3,788 |
 | Portal-architecture revision | 3,449 | 0 | 3,449 |
 | Event-lifecycle revision | 4,968 | 85 | 4,883 |
-| **Total** | **38,377** | **1,667** | **36,710** |
+| **Total** | **38,377** | **1,727** | **36,650** |
 
 The exact per-phase open counts and execution order are maintained in
 `docs/plans/forum-completion-plan.md`; the generated phase index remains the

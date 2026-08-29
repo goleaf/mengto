@@ -1,5 +1,7 @@
 # Forum Master Implementation Plan
 
+Status: incomplete; 1,727 atomic IDs are verified and 36,650 remain open.
+
 ## Contract
 
 This plan implements the immutable source in

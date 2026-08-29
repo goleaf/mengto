@@ -1,0 +1,465 @@
+# 07. Eloquent Models, Database Migrations, Query Performance, and Data Integrity
+
+## Principal-agent role
+
+You are the principal Codex implementation agent responsible for bringing the database schema, Eloquent model layer, migrations, transactions, constraints, and query behavior into a safe, efficient, testable, production-grade state without losing existing data.
+
+## Mission
+
+Inventory the full data model, align Eloquent with the actual schema, eliminate N+1 and unbounded data access, add justified constraints and indexes, repair race conditions, and design safe migrations for existing data. Prove fresh installation and representative upgrade paths in isolated databases.
+
+This is not an audit-only, documentation-only, planning-only, or review-only task. Discovery and planning are mandatory intermediate phases. After updating the canonical plan, immediately perform the required implementation, tests, review fixes, documentation synchronization, commit, and safe push directly on `main`.
+
+## Repository-wide technology baseline
+
+Preserve and enforce this target unless a stricter, current repository requirement applies:
+
+- PHP 8.5.
+- Laravel 13, using the latest stable mutually compatible 13.x release available at execution time.
+- Livewire 4, using the latest stable mutually compatible 4.x release available at execution time.
+- Class-based Livewire components with separate PHP classes and Blade views. Do not use Volt.
+- Tailwind CSS 4, using the latest stable mutually compatible 4.x release available at execution time.
+- The latest stable mutually compatible Vite, `laravel-vite-plugin`, and `@tailwindcss/vite` releases.
+- Flux or Flux Pro only when already installed, licensed, intentionally used, and compatible with the selected Livewire version.
+- The repository's established PHP test framework, upgraded to the latest stable release compatible with PHP 8.5 and Laravel 13.
+- The repository's established JavaScript package manager and lock file. Never introduce a second lock file.
+
+Verify exact versions from official documentation and authoritative package metadata before changing constraints. Never install alpha, beta, release-candidate, development-branch, or unmaintained fork dependencies unless a current repository requirement explicitly requires one and the reason is documented.
+
+## Non-negotiable operating protocol
+
+1. **Work only on the existing `main` branch.**
+   - Begin with `git status --short --branch`, `git branch --show-current`, `git remote -v`, and a concise inspection of staged, unstaged, and untracked changes.
+   - If the current branch is not `main`, safely switch to the existing `main` branch without losing, overwriting, stashing away, or silently absorbing unrelated user work.
+   - Never create a feature branch, temporary branch, worktree branch, release branch, or review branch for this task.
+
+2. **Protect the working tree.**
+   - Preserve all unrelated existing changes.
+   - Do not use `git reset --hard`, `git clean -fd`, `git checkout -- .`, force push, history rewriting, or any command that can discard work.
+   - Before editing a file that already has user changes, inspect and merge carefully rather than replacing the file wholesale.
+   - Commit only task-owned changes. Do not claim unrelated user changes as your work.
+
+3. **Load governing instructions before work.**
+   - Read the applicable `AGENTS.md` and `AGENTS.override.md` instruction chain from repository root to the current directory.
+   - Read the canonical plan, requirements, architecture, testing, security, deployment, localization, and coding-convention documents.
+   - Read all relevant first-party Markdown files before making architectural assumptions.
+   - Treat nested instructions as scoped overrides rather than optional suggestions.
+
+4. **Use specialized subagents for discovery.**
+   - Spawn every required analysis subagent listed in this prompt.
+   - Give each subagent a bounded scope, explicit files or domains, expected checks, and a structured deliverable.
+   - Run independent scopes in parallel when safe.
+   - Do not allow multiple subagents to edit the same files concurrently.
+   - The principal agent remains the sole integrator and decision owner.
+
+5. **Do not ask the user questions.**
+   - Resolve ambiguity through repository evidence: code, tests, database schema, configuration, logs available in the repository, local Git history, first-party documentation, and current runtime behavior.
+   - Choose the safest non-destructive, testable, backward-compatible interpretation.
+   - Record material assumptions in the plan or an ADR and continue.
+   - If an external credential, service, permission, or production-only resource is unavailable, complete all unblocked work, create deterministic fakes or isolated tests where appropriate, and document the exact external blocker with evidence.
+
+6. **Quality is more important than speed.**
+   - Work in small, reviewable, dependency-aware passes.
+   - Inspect the diff after each meaningful pass.
+   - Run targeted checks immediately after each change set.
+   - Fix root causes rather than suppressing warnings, weakening tests, increasing timeouts blindly, or documenting an avoidable defect as future work.
+
+7. **The plan is a mandatory gate, not the final deliverable.**
+   - Locate the canonical execution plan. Prefer the existing canonical file; if none exists, create `PLANS.md` at repository root.
+   - Do not create competing plan files.
+   - Update the plan after discovery and before modifying production code.
+   - Immediately begin implementation after saving the updated plan. Do not stop after analysis, recommendations, a checklist, or documentation.
+   - Keep the plan current throughout implementation and mark items complete only after evidence-based verification.
+
+8. **Implement, test, review, fix, and re-verify.**
+   - Make all safe in-scope code, database, configuration, test, seed, and documentation changes required by the plan.
+   - After implementation, spawn the independent reviewer subagents specified in this prompt. Reviewers must not be the same agents that implemented the change.
+   - Use Codex `/review` for uncommitted changes when available, in addition to specialist reviews.
+   - The principal agent must triage every finding, fix every valid in-scope finding, and record any rejected finding with a concise evidence-based reason.
+   - Re-run all affected checks after fixes.
+
+9. **Never fabricate evidence.**
+   - Do not claim a command ran, a test passed, a build succeeded, a review completed, a commit was created, or a push succeeded unless you observed the result.
+   - Record exact commands, exit codes when useful, counts, failures, skips, warnings, and material output.
+   - Distinguish pre-existing failures from regressions introduced by this task.
+
+10. **Finish documentation and Git work.**
+    - Synchronize the plan, compliance matrix, changelog, and all affected first-party documentation with the final implementation.
+    - Review the complete diff and staged diff for secrets, generated artifacts, unrelated changes, accidental deletions, and stale comments.
+    - Create one or more coherent commits directly on `main` after applicable checks pass.
+    - Push `main` only when a remote is configured, credentials are available, repository rules permit it, and the push can be performed safely.
+    - Report the actual commit hashes and push result.
+
+## Subagent coordination contract
+
+The principal agent must create a work ledger before delegation. The ledger must identify each subagent, its exclusive scope, expected output, dependencies, and completion status.
+
+Every analysis subagent must return a concise structured report containing:
+
+1. Scope inspected.
+2. Files, classes, routes, tables, components, or workflows examined.
+3. Confirmed findings, each with severity and evidence.
+4. Suspected findings that require principal-agent validation.
+5. Missing coverage or unavailable evidence.
+6. Recommended implementation order.
+7. Suggested tests and verification commands.
+8. Risks of changing the affected area.
+
+Subagents must not dump raw logs without interpretation. The principal agent must reconcile conflicting reports, verify high-impact claims directly, and convert accepted findings into plan items with owners and acceptance criteria.
+
+## Required analysis subagents and detailed roles
+
+Spawn at least the following specialized subagents. Give each one the exact mission, scope, checks, deliverable, and restrictions below.
+
+### Schema Inventory and Consistency Analyst
+
+- **Mission:** Build a complete authoritative model of the database schema and compare it with Eloquent declarations.
+- **Scope:** All migrations, schema dumps, models, casts, enums, relationships, pivots, views, triggers, test schemas, and database-specific code.
+- **Must inspect:**
+  - Columns, types, nullability, defaults, primary keys, foreign keys, unique/check constraints, indexes, timestamps, soft deletes, and generated values.
+  - Model attributes or relations that do not match schema.
+  - Database-engine-specific behavior and SQLite compatibility when required.
+- **Required checks:**
+  - Trace every model to its table and key.
+  - Identify implicit constraints enforced only in PHP.
+  - Find duplicate or contradictory migrations.
+  - Detect money, timezone, precision, and collation risks.
+- **Required deliverable:**
+  - A schema inventory.
+  - A model/schema mismatch list.
+  - Constraint and migration candidates.
+  - Database-engine compatibility notes.
+- **Restrictions:**
+  - Default to read-only analysis during the discovery phase.
+  - Do not modify files owned by another subagent.
+  - Do not make broad architectural decisions independently; surface evidence and options to the principal agent.
+  - Do not report a guess as a fact. Mark uncertainty and explain what evidence is missing.
+
+### Eloquent Relationship and Cast Analyst
+
+- **Mission:** Audit model relationships, casts, scopes, serialization, mass assignment, and lifecycle behavior.
+- **Scope:** Models, enums, custom casts, accessors/mutators, scopes, observers, events, factories, and API serialization.
+- **Must inspect:**
+  - Incorrect relation types, missing inverse relations, hidden lazy loading, ambiguous polymorphic types, and unsafe global scopes.
+  - Non-canonical casts, mutable dates where immutability is expected, enum drift, and sensitive attributes exposed.
+  - Model events with side effects or recursion.
+- **Required checks:**
+  - Compare relation keys with schema.
+  - Verify tenant/ownership scoping.
+  - Check mass-assignment and hidden/visible behavior.
+  - Identify factory/test gaps.
+- **Required deliverable:**
+  - A model-by-model findings matrix.
+  - Required relation/cast corrections.
+  - Serialization and mass-assignment risks.
+  - Regression test requirements.
+- **Restrictions:**
+  - Default to read-only analysis during the discovery phase.
+  - Do not modify files owned by another subagent.
+  - Do not make broad architectural decisions independently; surface evidence and options to the principal agent.
+  - Do not report a guess as a fact. Mark uncertainty and explain what evidence is missing.
+
+### Query Performance and N+1 Analyst
+
+- **Mission:** Find expensive, repeated, unbounded, or memory-heavy queries and design evidence-based fixes.
+- **Scope:** Controllers, Livewire components, actions, services, resources, models, Blade, reports, exports, imports, and tests.
+- **Must inspect:**
+  - Queries in loops, accidental lazy loading, repeated aggregates, full relation loads for counts, select-all use, PHP-side sorting, and unbounded get/all calls.
+  - Missing pagination, chunking, cursor pagination, or aggregate subqueries.
+  - Indexes that do not match filter/order/join patterns.
+- **Required checks:**
+  - Measure query counts for critical pages and actions.
+  - Inspect explain plans when available.
+  - Distinguish query defects from cache opportunities.
+  - Check that resources and Blade do not trigger hidden queries.
+- **Required deliverable:**
+  - A prioritized query defect list.
+  - Before metrics and proposed query/index fixes.
+  - Query-budget test cases.
+  - High-volume data scenarios.
+- **Restrictions:**
+  - Default to read-only analysis during the discovery phase.
+  - Do not modify files owned by another subagent.
+  - Do not make broad architectural decisions independently; surface evidence and options to the principal agent.
+  - Do not report a guess as a fact. Mark uncertainty and explain what evidence is missing.
+
+### Migration Safety and Data-Backfill Analyst
+
+- **Mission:** Design non-destructive schema and data migrations for existing environments.
+- **Scope:** All pending/new migrations, historical migrations, deployment scripts, schema dumps, backfill commands, and runtime constraints.
+- **Must inspect:**
+  - Destructive drops, blocking table rewrites, invalid defaults, unsafe non-null additions, data truncation, and irreversible transformations.
+  - Migration ordering, rollback behavior, resumability, and mixed-version deployment needs.
+  - Environment guards for test-only fresh operations.
+- **Required checks:**
+  - Create expand-and-contract plans where needed.
+  - Design idempotent resumable backfills.
+  - Estimate lock/timeout risk.
+  - Verify rollback or forward-repair strategy.
+- **Required deliverable:**
+  - A migration risk register.
+  - Detailed rollout and rollback plan.
+  - Data-validation queries.
+  - Upgrade-path tests.
+- **Restrictions:**
+  - Default to read-only analysis during the discovery phase.
+  - Do not modify files owned by another subagent.
+  - Do not make broad architectural decisions independently; surface evidence and options to the principal agent.
+  - Do not report a guess as a fact. Mark uncertainty and explain what evidence is missing.
+
+### Data Integrity and Constraint Analyst
+
+- **Mission:** Move critical invariants into enforceable database and transaction boundaries where appropriate.
+- **Scope:** Business requirements, schema, validation, actions, state transitions, unique checks, and concurrent writes.
+- **Must inspect:**
+  - Invariants protected only by UI or validation.
+  - Missing unique/foreign/check constraints.
+  - Orphan risks, invalid state combinations, and nullable fields hiding required data.
+  - Money stored in floats and inconsistent timezone storage.
+- **Required checks:**
+  - Map each invariant to application and database enforcement.
+  - Identify constraint names and migration ordering.
+  - Check deletion/update cascade semantics.
+  - Design violation tests.
+- **Required deliverable:**
+  - An invariant-to-control matrix.
+  - Constraint changes with compatibility notes.
+  - Data cleanup prerequisites.
+  - Required tests.
+- **Restrictions:**
+  - Default to read-only analysis during the discovery phase.
+  - Do not modify files owned by another subagent.
+  - Do not make broad architectural decisions independently; surface evidence and options to the principal agent.
+  - Do not report a guess as a fact. Mark uncertainty and explain what evidence is missing.
+
+### Concurrency, Transaction, and Idempotency Analyst
+
+- **Mission:** Find race conditions and incorrect transaction boundaries in write workflows.
+- **Scope:** Actions, services, model events, token use, invitations, payments, ordering, counters, imports, webhooks, file/database coordination, and retries.
+- **Must inspect:**
+  - Check-then-insert races, duplicate processing, lost updates, long transactions, external calls inside transactions, and pre-commit side effects.
+  - Missing row locks, atomic updates, idempotency keys, unique constraints, or cache locks.
+  - Deadlock and retry behavior.
+- **Required checks:**
+  - Construct concurrent request scenarios.
+  - Trace transaction scope and side-effect order.
+  - Identify safe lock granularity.
+  - Define idempotent outcomes.
+- **Required deliverable:**
+  - A race-condition report.
+  - Transaction and lock corrections.
+  - Concurrency test designs.
+  - Failure/retry behavior.
+- **Restrictions:**
+  - Default to read-only analysis during the discovery phase.
+  - Do not modify files owned by another subagent.
+  - Do not make broad architectural decisions independently; surface evidence and options to the principal agent.
+  - Do not report a guess as a fact. Mark uncertainty and explain what evidence is missing.
+
+### Database Test and Fixture Analyst
+
+- **Mission:** Design isolated, deterministic tests for schema, upgrade, integrity, performance, and concurrency behavior.
+- **Scope:** Database test configuration, factories, seeders, fixtures, migrations, schema dumps, parallel test setup, and query instrumentation.
+- **Must inspect:**
+  - Use of non-test databases, nondeterministic fixtures, incomplete migration tests, and engine mismatch.
+  - Missing assertions for constraints and query counts.
+  - Tests that bypass real schema.
+- **Required checks:**
+  - Verify fresh migration and seed path.
+  - Design representative upgrade fixtures.
+  - Ensure parallel-test isolation.
+  - Define query-budget and concurrency tests.
+- **Required deliverable:**
+  - A database verification plan.
+  - Required fixtures and factories.
+  - Exact safe commands.
+  - Known environment limitations.
+- **Restrictions:**
+  - Default to read-only analysis during the discovery phase.
+  - Do not modify files owned by another subagent.
+  - Do not make broad architectural decisions independently; surface evidence and options to the principal agent.
+  - Do not report a guess as a fact. Mark uncertainty and explain what evidence is missing.
+
+## Mandatory plan update before implementation
+
+Update the canonical plan with a dedicated section for this task. At minimum include:
+
+- The complete schema and Eloquent inventory, including database-engine differences.
+- Every model/schema mismatch, missing relation type, cast issue, serialization risk, and mass-assignment concern.
+- Every confirmed N+1, unbounded query, memory-heavy read, repeated aggregate, and missing pagination/chunking path.
+- Constraint and index changes justified by real invariants and query patterns.
+- Safe migration, backfill, rollout, verification, and rollback steps for existing data.
+- Transaction, locking, idempotency, and concurrency fixes for critical writes.
+- Fresh-install and representative upgrade test strategy using isolated databases.
+- Before/after query metrics and acceptance thresholds.
+
+Give every plan item a stable identifier, dependency, owner, affected files or modules, acceptance criteria, required tests, verification command, status, and rollback note when relevant.
+
+Save the plan, then immediately begin implementation. Do not return a plan to the user and wait for approval.
+
+## Domain-specific guardrails
+
+- Never run `migrate:fresh`, truncate, or destructive schema commands against a non-test database.
+- Do not add indexes indiscriminately. Base composite order on actual filters, joins, and ordering.
+- Do not change money representation, enum values, timezone semantics, or polymorphic types without an explicit data migration and compatibility tests.
+- Do not hold database transactions open across slow external network calls unless a documented invariant makes it unavoidable.
+- Do not silence strict Eloquent findings globally; fix the underlying query or attribute defect.
+
+## Required implementation scope
+
+Complete all applicable work below. Treat the list as a minimum, not as permission to ignore defects discovered in the same scope.
+
+- Document every table, column, key, relationship, enum, cast, scope, observer, view, trigger, and soft-delete rule.
+- Align model table/key definitions, relationship return types, casts, enums, hidden/visible attributes, and mass-assignment protection with the schema.
+- Enable strict Eloquent behavior in local and testing environments where compatible: prevent lazy loading, silently discarded attributes, and access to missing attributes; repair resulting defects.
+- Eliminate N+1 and repeated queries with constrained eager loading, `withCount`, `withExists`, aggregate subqueries, selected columns, and explicit query composition.
+- Replace unbounded production reads with pagination, cursor pagination, `chunkById`, `lazyById`, or database-side aggregation as appropriate.
+- Inspect explain plans for critical queries and add only justified foreign keys, unique constraints, check constraints, and composite indexes.
+- Correct money storage, precision, timezone, nullable/default, and status constraints when required, using safe data migrations.
+- Use short transactions for multi-record invariants, after-commit side effects when applicable, and row locks/atomic operations/idempotency for race-sensitive workflows.
+- Design expand-and-contract migrations and resumable backfills for risky schema changes.
+- Create migration, constraint, relationship, cast, scope, soft-delete, transaction, concurrency, query-count, and upgrade-path tests.
+- Update factories and seeders affected by schema or model changes.
+
+## Required verification
+
+Run the repository's real commands rather than inventing command names. Perform all safe applicable checks below and capture exact results:
+
+- Fresh migration from zero in an isolated test database.
+- Representative upgrade migration from a fixture or prior schema state when practical.
+- Seeder run and fixed-seeder idempotency after schema changes.
+- Foreign-key, unique, check-constraint, cascade, soft-delete, and restore tests.
+- Strict Eloquent test run with no unapproved lazy loading or discarded/missing attributes.
+- Query-count and N+1 regression tests for critical pages and workflows.
+- Explain-plan inspection for important changed queries where supported.
+- Concurrency/idempotency tests or deterministic simulation for race-sensitive operations.
+- Full PHP suite, static analysis, formatter, application boot, and frontend smoke tests for affected views.
+
+## Independent review protocol
+
+After implementation and before committing:
+
+1. Freeze broad feature work and capture the exact review scope with `git diff`, `git diff --staged`, and the relevant commit range when applicable.
+2. Spawn every reviewer subagent listed below. Reviewer agents must be independent from implementation agents.
+3. Run Codex `/review` against uncommitted changes when available.
+4. Require reviewers to inspect behavior, not only style.
+5. Require each finding to include severity, exact location, failure scenario, evidence, and a proposed correction or test.
+6. Have the principal agent reproduce or validate each material finding.
+7. Fix every valid in-scope finding.
+8. Add a regression test for every behavior defect when practical.
+9. Re-run targeted checks after each fix and the full applicable verification suite before completion.
+10. Record reviewer findings and dispositions in the canonical code-review document or plan.
+
+## Required independent reviewer subagents
+
+### Database Integrity Reviewer
+
+- **Review mission:** Independently verify that schema and application controls enforce the intended invariants without creating orphan or deletion risks.
+- **Scope:** Migrations, models, constraints, data cleanup, actions, and tests.
+- **Must inspect:**
+  - Missing or over-broad cascades, invalid null/default behavior, inconsistent enum/money/timezone handling, and application/database rule divergence.
+  - Data states that can still violate requirements.
+  - Unsafe mass assignment or serialization.
+- **Required checks:**
+  - Review representative existing data scenarios.
+  - Attempt constraint violations in tests.
+  - Trace deletion and restoration behavior.
+- **Required deliverable:**
+  - Integrity findings with exact invariant.
+  - Required schema/application corrections.
+  - A verified-invariant list.
+- **Restrictions:**
+  - Work read-only unless the principal agent explicitly delegates a narrowly scoped fix after the review is complete.
+  - Do not assume the implementation is correct because tests are green.
+  - Prioritize defects by severity, reproducibility, blast radius, and likelihood.
+  - Cite exact files, symbols, line ranges when possible, and provide a concrete failure scenario for every finding.
+
+### Migration Safety Reviewer
+
+- **Review mission:** Challenge every schema and data migration for production safety, rollout order, reversibility, and mixed-version behavior.
+- **Scope:** New/changed migrations, backfills, deployment docs, rollback notes, and test fixtures.
+- **Must inspect:**
+  - Blocking/destructive operations, unsafe non-null changes, unbounded backfills, missing guards, and rollback data loss.
+  - Migrations that assume empty tables or one database engine.
+  - Deployment order gaps.
+- **Required checks:**
+  - Walk through fresh and upgrade paths.
+  - Inspect SQL impact where possible.
+  - Verify resume/idempotency and data validation.
+- **Required deliverable:**
+  - Risk-ranked migration findings.
+  - Required rollout corrections.
+  - Go/no-go conditions.
+- **Restrictions:**
+  - Work read-only unless the principal agent explicitly delegates a narrowly scoped fix after the review is complete.
+  - Do not assume the implementation is correct because tests are green.
+  - Prioritize defects by severity, reproducibility, blast radius, and likelihood.
+  - Cite exact files, symbols, line ranges when possible, and provide a concrete failure scenario for every finding.
+
+### Query Performance Reviewer
+
+- **Review mission:** Verify that query fixes are correct, indexed, bounded, and free of hidden regressions.
+- **Scope:** Changed queries, indexes, Livewire/controllers/resources, query metrics, and tests.
+- **Must inspect:**
+  - New N+1 paths, over-eager loading, memory growth, wrong index order, PHP-side work, and pagination instability.
+  - Query-count tests that are too permissive.
+  - Cache used to hide poor SQL.
+- **Required checks:**
+  - Compare before/after metrics.
+  - Inspect plans and high-volume fixtures.
+  - Trace queries from Blade and resources.
+- **Required deliverable:**
+  - Performance findings.
+  - Required query/index corrections.
+  - Validated before/after summary.
+- **Restrictions:**
+  - Work read-only unless the principal agent explicitly delegates a narrowly scoped fix after the review is complete.
+  - Do not assume the implementation is correct because tests are green.
+  - Prioritize defects by severity, reproducibility, blast radius, and likelihood.
+  - Cite exact files, symbols, line ranges when possible, and provide a concrete failure scenario for every finding.
+
+## Required documentation synchronization
+
+Update the canonical plan plus all affected first-party documentation. At minimum review and update, when present or applicable:
+
+- The canonical plan, compliance matrix, and changelog.
+- Data-model, architecture, performance, caching, deployment, testing, factory, and seeding documentation.
+- Migration rollout and rollback instructions.
+- An invariant-to-control matrix and query-budget documentation for critical workflows.
+- ADRs for money, timezone, polymorphism, or database-engine-specific decisions.
+
+Remove stale claims and commands. Keep useful historical changelog information. Ensure documentation describes the implemented and verified state, not the intended future state.
+
+## Definition of done
+
+This prompt is complete only when all applicable conditions are true:
+
+- The documented schema and Eloquent model layer agree.
+- Critical invariants are enforced with appropriate validation, transactions, and database constraints.
+- Known N+1, unbounded, repeated, and memory-heavy query paths in scope are fixed and regression-tested.
+- Indexes are evidence-based and important query plans are acceptable.
+- Migrations preserve existing data through safe rollout/backfill strategies and pass isolated fresh and upgrade tests.
+- Race-sensitive writes are atomic or idempotent and have concurrency coverage.
+- Independent integrity, migration-safety, and performance reviews are resolved, and work is committed and safely pushed on `main`.
+
+## Required final report
+
+Return one factual report with these sections:
+
+1. Branch and initial working-tree state.
+2. Applicable instructions and canonical plan file.
+3. Analysis subagents created, their scopes, and the important findings accepted or rejected.
+4. Plan changes made before implementation.
+5. Implementation summary by module and file group.
+6. Database, security, performance, accessibility, localization, factory, seeder, and test impact where applicable.
+7. Exact verification commands and observed results.
+8. Independent reviewers created, findings, fixes, and remaining rejected findings with reasons.
+9. Documentation synchronized.
+10. Final Git status, commit hashes, and factual push result.
+11. Remaining limitations, containing only genuine external or environmental blockers with exact affected requirement or plan identifiers.
+
+Do not describe planned work as completed. Do not hide unfinished in-scope work in a limitations section.
+
+## Start now
+
+Read the applicable instruction chain and first-party documentation, inspect the repository, create the required analysis subagents, update the canonical plan, and then immediately implement the complete in-scope plan. Do not stop after analysis or planning.

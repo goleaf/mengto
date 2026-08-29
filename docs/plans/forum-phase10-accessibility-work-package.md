@@ -2,6 +2,8 @@
 
 Last updated: 2026-07-31.
 
+Status: implemented and verified for all 24 selected IDs.
+
 ## Contract
 
 This package implements source section 71 without changing forum business

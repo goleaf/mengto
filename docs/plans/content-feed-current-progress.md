@@ -2,6 +2,8 @@
 
 Last updated: 2026-08-01.
 
+Status: incomplete; 58 content IDs are verified and 3,953 remain open.
+
 ## Current State
 
 Phase 35 source preservation and design are complete. The phase 36 working

@@ -2,6 +2,8 @@
 
 Last updated: 2026-07-31.
 
+Status: implemented and verified for all 32 selected IDs.
+
 ## Requirement Scope
 
 This package implements the complete collaborative-guides source section:

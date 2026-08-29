@@ -1,6 +1,7 @@
 # Places Current Progress
 
 Updated: 2026-08-03
+Status: incomplete; 9 Places task IDs are complete and 339 remain open.
 Plan: `docs/plans/places-production-master-plan.md`
 Audit: `docs/audits/places-production-readiness-audit.md`
 Current package: `PLA-P01 / PLA-P11 — Immediate Correctness And First Shared Workflow`

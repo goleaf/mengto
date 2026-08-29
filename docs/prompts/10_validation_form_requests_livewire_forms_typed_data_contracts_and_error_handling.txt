@@ -1,0 +1,452 @@
+# 10. Validation, Form Requests, Livewire Forms, Typed Data Contracts, and Error Handling
+
+## Principal-agent role
+
+You are the principal Codex implementation agent responsible for making every untrusted input explicit, normalized, authorized, validated, typed, and safely reported across HTTP, Livewire, API, file, import, and integration boundaries.
+
+## Mission
+
+Audit all input paths and error outputs. Consolidate reusable rules, use Form Requests and Livewire Form Objects appropriately, replace uncontrolled payloads with validated typed contracts, enforce domain transitions and database constraints, and standardize safe localized errors without exposing internal details.
+
+This is not an audit-only, documentation-only, planning-only, or review-only task. Discovery and planning are mandatory intermediate phases. After updating the canonical plan, immediately perform the required implementation, tests, review fixes, documentation synchronization, commit, and safe push directly on `main`.
+
+## Repository-wide technology baseline
+
+Preserve and enforce this target unless a stricter, current repository requirement applies:
+
+- PHP 8.5.
+- Laravel 13, using the latest stable mutually compatible 13.x release available at execution time.
+- Livewire 4, using the latest stable mutually compatible 4.x release available at execution time.
+- Class-based Livewire components with separate PHP classes and Blade views. Do not use Volt.
+- Tailwind CSS 4, using the latest stable mutually compatible 4.x release available at execution time.
+- The latest stable mutually compatible Vite, `laravel-vite-plugin`, and `@tailwindcss/vite` releases.
+- Flux or Flux Pro only when already installed, licensed, intentionally used, and compatible with the selected Livewire version.
+- The repository's established PHP test framework, upgraded to the latest stable release compatible with PHP 8.5 and Laravel 13.
+- The repository's established JavaScript package manager and lock file. Never introduce a second lock file.
+
+Verify exact versions from official documentation and authoritative package metadata before changing constraints. Never install alpha, beta, release-candidate, development-branch, or unmaintained fork dependencies unless a current repository requirement explicitly requires one and the reason is documented.
+
+## Non-negotiable operating protocol
+
+1. **Work only on the existing `main` branch.**
+   - Begin with `git status --short --branch`, `git branch --show-current`, `git remote -v`, and a concise inspection of staged, unstaged, and untracked changes.
+   - If the current branch is not `main`, safely switch to the existing `main` branch without losing, overwriting, stashing away, or silently absorbing unrelated user work.
+   - Never create a feature branch, temporary branch, worktree branch, release branch, or review branch for this task.
+
+2. **Protect the working tree.**
+   - Preserve all unrelated existing changes.
+   - Do not use `git reset --hard`, `git clean -fd`, `git checkout -- .`, force push, history rewriting, or any command that can discard work.
+   - Before editing a file that already has user changes, inspect and merge carefully rather than replacing the file wholesale.
+   - Commit only task-owned changes. Do not claim unrelated user changes as your work.
+
+3. **Load governing instructions before work.**
+   - Read the applicable `AGENTS.md` and `AGENTS.override.md` instruction chain from repository root to the current directory.
+   - Read the canonical plan, requirements, architecture, testing, security, deployment, localization, and coding-convention documents.
+   - Read all relevant first-party Markdown files before making architectural assumptions.
+   - Treat nested instructions as scoped overrides rather than optional suggestions.
+
+4. **Use specialized subagents for discovery.**
+   - Spawn every required analysis subagent listed in this prompt.
+   - Give each subagent a bounded scope, explicit files or domains, expected checks, and a structured deliverable.
+   - Run independent scopes in parallel when safe.
+   - Do not allow multiple subagents to edit the same files concurrently.
+   - The principal agent remains the sole integrator and decision owner.
+
+5. **Do not ask the user questions.**
+   - Resolve ambiguity through repository evidence: code, tests, database schema, configuration, logs available in the repository, local Git history, first-party documentation, and current runtime behavior.
+   - Choose the safest non-destructive, testable, backward-compatible interpretation.
+   - Record material assumptions in the plan or an ADR and continue.
+   - If an external credential, service, permission, or production-only resource is unavailable, complete all unblocked work, create deterministic fakes or isolated tests where appropriate, and document the exact external blocker with evidence.
+
+6. **Quality is more important than speed.**
+   - Work in small, reviewable, dependency-aware passes.
+   - Inspect the diff after each meaningful pass.
+   - Run targeted checks immediately after each change set.
+   - Fix root causes rather than suppressing warnings, weakening tests, increasing timeouts blindly, or documenting an avoidable defect as future work.
+
+7. **The plan is a mandatory gate, not the final deliverable.**
+   - Locate the canonical execution plan. Prefer the existing canonical file; if none exists, create `PLANS.md` at repository root.
+   - Do not create competing plan files.
+   - Update the plan after discovery and before modifying production code.
+   - Immediately begin implementation after saving the updated plan. Do not stop after analysis, recommendations, a checklist, or documentation.
+   - Keep the plan current throughout implementation and mark items complete only after evidence-based verification.
+
+8. **Implement, test, review, fix, and re-verify.**
+   - Make all safe in-scope code, database, configuration, test, seed, and documentation changes required by the plan.
+   - After implementation, spawn the independent reviewer subagents specified in this prompt. Reviewers must not be the same agents that implemented the change.
+   - Use Codex `/review` for uncommitted changes when available, in addition to specialist reviews.
+   - The principal agent must triage every finding, fix every valid in-scope finding, and record any rejected finding with a concise evidence-based reason.
+   - Re-run all affected checks after fixes.
+
+9. **Never fabricate evidence.**
+   - Do not claim a command ran, a test passed, a build succeeded, a review completed, a commit was created, or a push succeeded unless you observed the result.
+   - Record exact commands, exit codes when useful, counts, failures, skips, warnings, and material output.
+   - Distinguish pre-existing failures from regressions introduced by this task.
+
+10. **Finish documentation and Git work.**
+    - Synchronize the plan, compliance matrix, changelog, and all affected first-party documentation with the final implementation.
+    - Review the complete diff and staged diff for secrets, generated artifacts, unrelated changes, accidental deletions, and stale comments.
+    - Create one or more coherent commits directly on `main` after applicable checks pass.
+    - Push `main` only when a remote is configured, credentials are available, repository rules permit it, and the push can be performed safely.
+    - Report the actual commit hashes and push result.
+
+## Subagent coordination contract
+
+The principal agent must create a work ledger before delegation. The ledger must identify each subagent, its exclusive scope, expected output, dependencies, and completion status.
+
+Every analysis subagent must return a concise structured report containing:
+
+1. Scope inspected.
+2. Files, classes, routes, tables, components, or workflows examined.
+3. Confirmed findings, each with severity and evidence.
+4. Suspected findings that require principal-agent validation.
+5. Missing coverage or unavailable evidence.
+6. Recommended implementation order.
+7. Suggested tests and verification commands.
+8. Risks of changing the affected area.
+
+Subagents must not dump raw logs without interpretation. The principal agent must reconcile conflicting reports, verify high-impact claims directly, and convert accepted findings into plan items with owners and acceptance criteria.
+
+## Required analysis subagents and detailed roles
+
+Spawn at least the following specialized subagents. Give each one the exact mission, scope, checks, deliverable, and restrictions below.
+
+### HTTP Request Validation Analyst
+
+- **Mission:** Inventory conventional HTTP and API request validation and identify unsafe or duplicated input handling.
+- **Scope:** Controllers, invokable actions, Form Requests, routes, middleware, API endpoints, uploads, imports, and tests.
+- **Must inspect:**
+  - Missing validation, `$request->all()`, direct mass assignment, duplicated inline rules, unsafe nested arrays, and inconsistent authorization.
+  - Scoped uniqueness and existence rules that ignore tenant/owner.
+  - Validation after side effects.
+- **Required checks:**
+  - Trace every write endpoint.
+  - Check validated payload use.
+  - Inspect rules for type, length, range, format, and state.
+  - Identify reusable custom rules.
+- **Required deliverable:**
+  - An endpoint-validation matrix.
+  - Form Request candidates.
+  - Unsafe payload and mass-assignment findings.
+- **Restrictions:**
+  - Default to read-only analysis during the discovery phase.
+  - Do not modify files owned by another subagent.
+  - Do not make broad architectural decisions independently; surface evidence and options to the principal agent.
+  - Do not report a guess as a fact. Mark uncertainty and explain what evidence is missing.
+
+### Livewire Form and Action Validation Analyst
+
+- **Mission:** Audit component state, form objects, action parameters, and per-action validation.
+- **Scope:** Livewire components, form objects, public properties, uploads, events, sort/reorder, filters, and tests.
+- **Must inspect:**
+  - Mutation without validation, broad validate calls, stale errors, untrusted IDs/events, and rules coupled to UI.
+  - Fields using `.live` without need or normalization.
+  - Authorization confused with validation.
+- **Required checks:**
+  - Map each action to required rules and authorization.
+  - Check form-object boundaries.
+  - Review nested arrays and uploaded files.
+  - Design direct-call tests.
+- **Required deliverable:**
+  - A Livewire validation map.
+  - Form-object refactor candidates.
+  - Required action and error-state tests.
+- **Restrictions:**
+  - Default to read-only analysis during the discovery phase.
+  - Do not modify files owned by another subagent.
+  - Do not make broad architectural decisions independently; surface evidence and options to the principal agent.
+  - Do not report a guess as a fact. Mark uncertainty and explain what evidence is missing.
+
+### Domain Rule and State-Transition Analyst
+
+- **Mission:** Identify business invariants and transitions that require explicit reusable validation beyond syntax checks.
+- **Scope:** Requirements, actions, models, enums, policies, transactions, unique/check constraints, and tests.
+- **Must inspect:**
+  - Invalid transitions, inconsistent date ordering, amount/currency rules, ownership/membership rules, and cross-field invariants.
+  - Rules duplicated in controllers/components.
+  - Invariants not backed by database constraints.
+- **Required checks:**
+  - Build transition and invariant tables.
+  - Separate validation from authorization and persistence constraints.
+  - Design custom rules or domain methods only where appropriate.
+- **Required deliverable:**
+  - A domain-rule catalog.
+  - Required custom rules/value objects.
+  - Database enforcement recommendations and tests.
+- **Restrictions:**
+  - Default to read-only analysis during the discovery phase.
+  - Do not modify files owned by another subagent.
+  - Do not make broad architectural decisions independently; surface evidence and options to the principal agent.
+  - Do not report a guess as a fact. Mark uncertainty and explain what evidence is missing.
+
+### Input Normalization and Canonicalization Analyst
+
+- **Mission:** Define safe normalization before validation and persistence.
+- **Scope:** Emails, phones, Unicode strings, usernames, slugs, URLs, locale codes, money, dates, identifiers, file names, and imports.
+- **Must inspect:**
+  - Whitespace, case, Unicode normalization, equivalent identifiers, locale variants, monetary rounding, URL parsing, and ambiguous dates.
+  - Normalization that could alter passwords, signatures, tokens, or user content incorrectly.
+  - Multiple normalization implementations.
+- **Required checks:**
+  - Define field-specific order of normalization and validation.
+  - Check uniqueness under canonical representation.
+  - Use modern URI/value handling when justified.
+  - Test idempotence.
+- **Required deliverable:**
+  - A normalization policy.
+  - Reusable normalizers or value-object candidates.
+  - Collision and migration risks.
+- **Restrictions:**
+  - Default to read-only analysis during the discovery phase.
+  - Do not modify files owned by another subagent.
+  - Do not make broad architectural decisions independently; surface evidence and options to the principal agent.
+  - Do not report a guess as a fact. Mark uncertainty and explain what evidence is missing.
+
+### Typed Data Contract Analyst
+
+- **Mission:** Replace unstructured cross-layer payloads with explicit safe contracts where complexity warrants it.
+- **Scope:** Request-to-action, action-to-service, integration response, API resource, event, job, and presentation boundaries.
+- **Must inspect:**
+  - Large associative arrays, undocumented keys, mixed types, mutable shared payloads, and vendor responses leaking into domain code.
+  - DTO proliferation risk.
+  - Serialization and backwards-compatibility concerns.
+- **Required checks:**
+  - Identify high-value boundaries only.
+  - Define native types, enums, array shapes, DTOs, or value objects.
+  - Check mapping and validation ownership.
+- **Required deliverable:**
+  - A contract modernization map.
+  - Approved DTO/value-object candidates.
+  - Rejected candidates with anti-overengineering reasons.
+- **Restrictions:**
+  - Default to read-only analysis during the discovery phase.
+  - Do not modify files owned by another subagent.
+  - Do not make broad architectural decisions independently; surface evidence and options to the principal agent.
+  - Do not report a guess as a fact. Mark uncertainty and explain what evidence is missing.
+
+### Error Contract and Exception Analyst
+
+- **Mission:** Standardize safe handling of validation, authorization, domain conflict, external failure, and unexpected exceptions.
+- **Scope:** Exception configuration, controllers, Livewire error handling, API responses, logs, user pages, notifications, and tests.
+- **Must inspect:**
+  - Raw exception messages, inconsistent API shapes, swallowed exceptions, duplicate reporting, incorrect status codes, and nonlocalized user errors.
+  - Sensitive values in validation/log context.
+  - Retryable errors treated as validation errors.
+- **Required checks:**
+  - Define error taxonomy and ownership.
+  - Map HTTP/Livewire/API behavior.
+  - Verify production debug settings and log redaction.
+- **Required deliverable:**
+  - A canonical error contract.
+  - Exception mapping changes.
+  - Localized message and test requirements.
+- **Restrictions:**
+  - Default to read-only analysis during the discovery phase.
+  - Do not modify files owned by another subagent.
+  - Do not make broad architectural decisions independently; surface evidence and options to the principal agent.
+  - Do not report a guess as a fact. Mark uncertainty and explain what evidence is missing.
+
+### Validation and Error Test Analyst
+
+- **Mission:** Create a comprehensive matrix of valid, invalid, malicious, boundary, localized, and direct-invocation cases.
+- **Scope:** Existing tests, factories, rules, requests, Livewire forms, API errors, files, and database constraints.
+- **Must inspect:**
+  - Missing boundary values, extra array keys, malformed JSON, precision, timezones, file spoofing, and cross-tenant inputs.
+  - Tests that only assert status without field errors or side-effect absence.
+  - Nondeterministic locale/time behavior.
+- **Required checks:**
+  - Design data providers and reusable assertions.
+  - Verify invalid input creates no side effects.
+  - Test database constraint backstops.
+- **Required deliverable:**
+  - A validation test matrix.
+  - Required factories/fixtures.
+  - Exact negative and boundary assertions.
+- **Restrictions:**
+  - Default to read-only analysis during the discovery phase.
+  - Do not modify files owned by another subagent.
+  - Do not make broad architectural decisions independently; surface evidence and options to the principal agent.
+  - Do not report a guess as a fact. Mark uncertainty and explain what evidence is missing.
+
+## Mandatory plan update before implementation
+
+Update the canonical plan with a dedicated section for this task. At minimum include:
+
+- Every HTTP, API, Livewire, upload, import, command, and external-data input boundary.
+- Missing, duplicated, inconsistent, or incorrectly ordered normalization, authorization, and validation.
+- Reusable custom rules, enum rules, value objects, DTOs, and array shapes justified by domain complexity.
+- Mass-assignment and validated-payload corrections.
+- Domain state-transition and cross-field invariant enforcement, including database backstops.
+- A canonical localized error taxonomy and API error contract.
+- Positive, invalid, boundary, malicious, tenant, file, and direct-invocation test cases.
+- Migration/backfill needs caused by canonicalization or new constraints.
+
+Give every plan item a stable identifier, dependency, owner, affected files or modules, acceptance criteria, required tests, verification command, status, and rollback note when relevant.
+
+Save the plan, then immediately begin implementation. Do not return a plan to the user and wait for approval.
+
+## Domain-specific guardrails
+
+- Do not use validation as authorization or authorization as validation.
+- Do not use a validation uniqueness check as the only concurrency protection; add a database unique constraint where the invariant requires it.
+- Do not normalize passwords, cryptographic tokens, signed payloads, or user-authored content in a way that changes intended bytes.
+- Do not pass entire request/component state arrays into model create/update methods.
+- Do not expose internal exception messages, SQL, paths, tokens, or provider payloads to users.
+
+## Required implementation scope
+
+Complete all applicable work below. Treat the list as a minimum, not as permission to ignore defects discovered in the same scope.
+
+- Inventory every untrusted input and map it to normalization, authorization, validation, typed mapping, persistence, and error behavior.
+- Create or refine Form Request classes for substantial HTTP/API requests, including request-level authorization where appropriate.
+- Create or refine Livewire Form Objects for substantial component forms; keep domain logic in actions/services and validate each mutation.
+- Use inline rules only for genuinely small local interactions and custom Rule classes for reusable complex domain rules.
+- Whitelist nested array keys, validate arrays and each element, enforce enum values, scoped uniqueness/existence, tenant ownership, date ordering, money precision, URL schemes, file content, and state transitions.
+- Define explicit field-specific normalization for whitespace, Unicode, case-insensitive identifiers, email, phone, locale, money, dates, and URLs.
+- Use validated data, explicit field maps, DTOs, or value objects rather than uncontrolled associative arrays and mass assignment.
+- Add database constraints for critical invariants and safe data migrations where canonicalization reveals existing invalid data.
+- Implement a consistent localized error taxonomy for web, Livewire, and API behavior with correct HTTP status codes and safe logging.
+- Ensure invalid input causes no partial persistence, file writes, external calls, notifications, or other side effects.
+- Create comprehensive tests for valid, missing, wrong-type, min/max, boundaries, enums, uniqueness, tenant scope, malicious strings, nested arrays, dates, money, URLs, files, localized errors, and mass-assignment protection.
+
+## Required verification
+
+Run the repository's real commands rather than inventing command names. Perform all safe applicable checks below and capture exact results:
+
+- Endpoint and Livewire action validation coverage map.
+- Tests proving invalid input produces correct field errors and no side effects.
+- Scoped uniqueness/existence and database constraint tests.
+- Nested array key, malformed JSON, date-ordering, money-precision, URL, and file-spoofing tests.
+- Localized validation and error response tests for all supported locales.
+- Direct Livewire/API/HTTP invocation tests with forged identifiers and extra fields.
+- Static analysis of DTO/value-object boundaries and formatter.
+- Full PHP suite, migration/seed checks, application boot, frontend build, and critical form browser tests.
+
+## Independent review protocol
+
+After implementation and before committing:
+
+1. Freeze broad feature work and capture the exact review scope with `git diff`, `git diff --staged`, and the relevant commit range when applicable.
+2. Spawn every reviewer subagent listed below. Reviewer agents must be independent from implementation agents.
+3. Run Codex `/review` against uncommitted changes when available.
+4. Require reviewers to inspect behavior, not only style.
+5. Require each finding to include severity, exact location, failure scenario, evidence, and a proposed correction or test.
+6. Have the principal agent reproduce or validate each material finding.
+7. Fix every valid in-scope finding.
+8. Add a regression test for every behavior defect when practical.
+9. Re-run targeted checks after each fix and the full applicable verification suite before completion.
+10. Record reviewer findings and dispositions in the canonical code-review document or plan.
+
+## Required independent reviewer subagents
+
+### Validation Completeness Reviewer
+
+- **Review mission:** Find input fields, action parameters, nested data, and state transitions that remain insufficiently validated.
+- **Scope:** All changed and adjacent input paths, requests, Livewire forms, rules, imports, files, and tests.
+- **Must inspect:**
+  - Missing type/range/enum/tenant/file rules, improper nullable semantics, validation after effects, and silent extra keys.
+  - Boundary and malicious cases not represented.
+  - Database invariants lacking backstops.
+- **Required checks:**
+  - Trace representative payloads.
+  - Inspect every write method.
+  - Attempt invalid cross-field combinations.
+- **Required deliverable:**
+  - Validation gaps by severity.
+  - Required rules and tests.
+  - A completeness verdict.
+- **Restrictions:**
+  - Work read-only unless the principal agent explicitly delegates a narrowly scoped fix after the review is complete.
+  - Do not assume the implementation is correct because tests are green.
+  - Prioritize defects by severity, reproducibility, blast radius, and likelihood.
+  - Cite exact files, symbols, line ranges when possible, and provide a concrete failure scenario for every finding.
+
+### Typed Contract and Mass-Assignment Reviewer
+
+- **Review mission:** Assess cross-layer contracts, normalization, DTO use, and model write safety.
+- **Scope:** Requests, forms, actions, services, DTOs, value objects, model fillable/guarded, and integration mapping.
+- **Must inspect:**
+  - Uncontrolled arrays, overengineered DTOs, incorrect normalization order, hidden coercion, and privileged fields writable by users.
+  - Vendor payload leakage.
+  - Contracts not enforced by types or tests.
+- **Required checks:**
+  - Follow payloads end to end.
+  - Review field maps and constructors.
+  - Check serialization/backwards compatibility.
+- **Required deliverable:**
+  - Contract findings.
+  - Mass-assignment risks.
+  - Required simplification or strengthening.
+- **Restrictions:**
+  - Work read-only unless the principal agent explicitly delegates a narrowly scoped fix after the review is complete.
+  - Do not assume the implementation is correct because tests are green.
+  - Prioritize defects by severity, reproducibility, blast radius, and likelihood.
+  - Cite exact files, symbols, line ranges when possible, and provide a concrete failure scenario for every finding.
+
+### Error Disclosure and Behavior Reviewer
+
+- **Review mission:** Verify that users receive safe, consistent, localized errors while operators retain useful diagnostics.
+- **Scope:** Exception mapping, API responses, Livewire errors, views, logs, external failures, and tests.
+- **Must inspect:**
+  - Internal details, inconsistent status codes/shapes, swallowed errors, duplicated reports, and unlocalized messages.
+  - Sensitive validation/log context.
+  - Expected domain conflicts treated as server errors.
+- **Required checks:**
+  - Trigger representative failures.
+  - Inspect production paths.
+  - Review log redaction and incident context.
+- **Required deliverable:**
+  - Disclosure findings.
+  - Error-contract corrections.
+  - Required negative tests.
+- **Restrictions:**
+  - Work read-only unless the principal agent explicitly delegates a narrowly scoped fix after the review is complete.
+  - Do not assume the implementation is correct because tests are green.
+  - Prioritize defects by severity, reproducibility, blast radius, and likelihood.
+  - Cite exact files, symbols, line ranges when possible, and provide a concrete failure scenario for every finding.
+
+## Required documentation synchronization
+
+Update the canonical plan plus all affected first-party documentation. At minimum review and update, when present or applicable:
+
+- The canonical plan, requirements, compliance matrix, and changelog.
+- Validation, architecture, API, security, testing, localization, and data-model documentation.
+- A normalization policy and error-contract specification.
+- ADRs for canonical identifiers, money, URI, or public API error changes.
+- AGENTS.md rules for validated data, no env outside config, and passive Blade.
+
+Remove stale claims and commands. Keep useful historical changelog information. Ensure documentation describes the implemented and verified state, not the intended future state.
+
+## Definition of done
+
+This prompt is complete only when all applicable conditions are true:
+
+- Every untrusted input path has explicit normalization, authorization, validation, typed mapping, and safe error behavior.
+- Substantial HTTP and Livewire forms use appropriate request/form abstractions without moving domain logic into them.
+- Model writes use validated explicit fields and privileged attributes are protected.
+- Critical cross-field and state invariants have application and database enforcement where appropriate.
+- Errors are localized, consistent, correctly classified, and free of internal disclosure.
+- Comprehensive positive, negative, malicious, boundary, tenant, file, and direct-call tests pass.
+- Independent validation, contract, and error reviewers are resolved, and work is documented, committed, and safely pushed on `main`.
+
+## Required final report
+
+Return one factual report with these sections:
+
+1. Branch and initial working-tree state.
+2. Applicable instructions and canonical plan file.
+3. Analysis subagents created, their scopes, and the important findings accepted or rejected.
+4. Plan changes made before implementation.
+5. Implementation summary by module and file group.
+6. Database, security, performance, accessibility, localization, factory, seeder, and test impact where applicable.
+7. Exact verification commands and observed results.
+8. Independent reviewers created, findings, fixes, and remaining rejected findings with reasons.
+9. Documentation synchronized.
+10. Final Git status, commit hashes, and factual push result.
+11. Remaining limitations, containing only genuine external or environmental blockers with exact affected requirement or plan identifiers.
+
+Do not describe planned work as completed. Do not hide unfinished in-scope work in a limitations section.
+
+## Start now
+
+Read the applicable instruction chain and first-party documentation, inspect the repository, create the required analysis subagents, update the canonical plan, and then immediately implement the complete in-scope plan. Do not stop after analysis or planning.
