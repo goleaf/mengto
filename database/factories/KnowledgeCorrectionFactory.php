@@ -7,6 +7,7 @@ namespace Database\Factories;
 use App\Enums\KnowledgeCorrectionStatus;
 use App\Models\KnowledgeArticle;
 use App\Models\KnowledgeCorrection;
+use Illuminate\Support\Str;
 
 /**
  * @extends ApplicationFactory<KnowledgeCorrection>
@@ -26,7 +27,7 @@ class KnowledgeCorrectionFactory extends ApplicationFactory
             'reporter_user_id' => null,
             'field' => 'body',
             'suggestion' => fake()->sentence(),
-            'source_url' => fake()->url(),
+            'source_url' => 'https://knowledge.example.test/references/'.Str::lower((string) Str::ulid()),
             'status' => KnowledgeCorrectionStatus::Submitted,
             'base_version_number' => 1,
             'reviewed_by_user_id' => null,

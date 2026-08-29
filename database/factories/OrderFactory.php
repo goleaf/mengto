@@ -6,7 +6,6 @@ namespace Database\Factories;
 
 use App\Enums\OrderStatus;
 use App\Enums\PaymentStatus;
-use App\Models\Listing;
 use App\Models\Order;
 use App\Models\Reservation;
 use Illuminate\Support\Str;
@@ -41,7 +40,7 @@ class OrderFactory extends ApplicationFactory
     public function definition(): array
     {
         return [
-            'listing_id' => Listing::factory(),
+            'listing_id' => null,
             'reservation_id' => Reservation::factory(),
             'reference' => (string) Str::uuid(),
             'idempotency_key' => (string) Str::uuid(),

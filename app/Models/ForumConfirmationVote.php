@@ -37,7 +37,7 @@ final class ForumConfirmationVote extends Model
     /** @return BelongsTo<ForumConfirmation, $this> */
     public function confirmation(): BelongsTo
     {
-        return $this->belongsTo(ForumConfirmation::class);
+        return $this->belongsTo(ForumConfirmation::class, 'forum_confirmation_id');
     }
 
     /** @return BelongsTo<User, $this> */

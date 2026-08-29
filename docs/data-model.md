@@ -379,7 +379,7 @@ through a nullable `forum_event_id`.
 
 Exact location, online URL, emergency plan, attendee notes, invitation
 messages, and private review feedback use encrypted casts. See
-`docs/events.md` for lifecycle and recovery.
+`docs/events/index.md` for lifecycle and recovery.
 
 ## Place And Venue Authority Tables
 

@@ -19,9 +19,9 @@ final class ContentPublicationEventFactory extends ApplicationFactory
     {
         return [
             'content_publication_id' => ContentPublication::factory(),
-            'actor_user_id' => User::factory(),
-            'represented_actor_id' => SocialActor::factory()->forUser(),
-            'actor_key_snapshot' => (string) Str::uuid(),
+            'actor_user_id' => null,
+            'represented_actor_id' => null,
+            'actor_key_snapshot' => null,
             'representation_role' => 'self',
             'event_type' => ContentPublicationEventType::Created,
             'from_status' => null,
@@ -30,5 +30,18 @@ final class ContentPublicationEventFactory extends ApplicationFactory
             'metadata' => null,
             'occurred_at' => now(),
         ];
+    }
+
+    public function configure(): static
+    {
+        return $this->afterMaking(function (ContentPublicationEvent $event): void {
+            $publication = ContentPublication::query()
+                ->with(['realAuthor', 'publishingActor'])
+                ->findOrFail($event->content_publication_id);
+
+            $event->actor_user_id = $publication->real_author_user_id;
+            $event->represented_actor_id = $publication->publishing_actor_id;
+            $event->actor_key_snapshot = $publication->realAuthor->actor_key;
+        });
     }
 }

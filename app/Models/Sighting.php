@@ -95,6 +95,12 @@ class Sighting extends Model
         return $this->belongsTo(SearchCase::class);
     }
 
+    /** @return BelongsTo<User, $this> */
+    public function reporter(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'reporter_id');
+    }
+
     /** @return HasMany<\App\Models\SearchReport, $this>*/
     public function reports(): HasMany
     {

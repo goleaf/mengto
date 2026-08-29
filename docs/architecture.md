@@ -97,6 +97,9 @@ See `docs/decisions/0001-authenticated-actor-keys.md`.
 
 - Database constraints protect foreign keys and uniqueness.
 - Actions own short transactions and row locks.
+- Monetary calculations use decimal strings converted to integer minor units;
+  floats never cross the marketplace calculation or persisted snapshot
+  boundary.
 - External HTTP does not execute inside a database transaction.
 - Payment, device command, medication dose, care entry, sighting, booking,
   webhook, and temporary token operations require idempotency.
@@ -322,7 +325,7 @@ queried.
 The previous JSON event state now owns only personal interest, calendar, and
 reminder preferences. Legacy creation URLs redirect to the class-based
 Livewire workflow, so there is one authoritative mutation path. See
-`docs/events.md`.
+`docs/events/index.md`.
 
 ## Verified Expert Session Boundary
 

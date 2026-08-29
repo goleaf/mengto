@@ -12,6 +12,31 @@ abstract class TestCase extends BaseTestCase
 {
     protected User $authenticatedUser;
 
+    public function createApplication()
+    {
+        $storagePath = $_ENV['LARAVEL_STORAGE_PATH'] ?? $_SERVER['LARAVEL_STORAGE_PATH'] ?? null;
+
+        if (is_string($storagePath) && str_starts_with($storagePath, sys_get_temp_dir().DIRECTORY_SEPARATOR.'pawcircle-test')) {
+            foreach ([
+                'app/private',
+                'app/public',
+                'framework/cache/data',
+                'framework/sessions',
+                'framework/testing',
+                'framework/views',
+                'logs',
+            ] as $directory) {
+                $path = $storagePath.DIRECTORY_SEPARATOR.$directory;
+
+                if (! is_dir($path) && ! mkdir($path, 0770, true) && ! is_dir($path)) {
+                    throw new \RuntimeException('Unable to create isolated test storage.');
+                }
+            }
+        }
+
+        return parent::createApplication();
+    }
+
     protected function setUp(): void
     {
         parent::setUp();

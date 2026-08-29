@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
 
 /**
@@ -75,6 +76,12 @@ class Review extends Model
     public function booking(): BelongsTo
     {
         return $this->belongsTo(Booking::class);
+    }
+
+    /** @return HasMany<ExpertReport, $this> */
+    public function expertReports(): HasMany
+    {
+        return $this->hasMany(ExpertReport::class);
     }
 
     public function scopePublished(Builder $query): Builder

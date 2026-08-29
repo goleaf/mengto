@@ -117,6 +117,18 @@ class Credential extends Model
         return $this->hasMany(CredentialVerificationAppeal::class);
     }
 
+    /** @return HasMany<AdoptionCase, $this> */
+    public function adoptionCases(): HasMany
+    {
+        return $this->hasMany(AdoptionCase::class, 'provider_credential_id');
+    }
+
+    /** @return HasMany<Credential, $this> */
+    public function replacementCredentials(): HasMany
+    {
+        return $this->hasMany(self::class, 'replaces_credential_id');
+    }
+
     public function effectiveStatus(): CredentialStatus
     {
         if (in_array($this->status, [CredentialStatus::Suspended, CredentialStatus::Revoked], true)) {

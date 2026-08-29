@@ -41,6 +41,9 @@ requires authenticated ownership or an explicit scoped grant.
 - Fresh password confirmation for precise device pages and remote commands.
 - Separate view, share, export, command, precise location, camera, and
   administrative capabilities.
+- There is no application-wide administrator `Gate::before` bypass. Every
+  administrator capability is an explicit policy decision; ordinary private
+  medical, care, device, group, journal, and forum-topic reads remain scoped.
 
 ### Professional And Adoption Identity
 
@@ -83,6 +86,14 @@ requires authenticated ownership or an explicit scoped grant.
 - Purpose, owner, scope, expiry, revocation, use, and audit metadata.
 - Atomic single use when the grant semantics require it.
 - Rate-limited lookup with no raw token logging.
+- Account-bound grants compare the stored recipient key to the authenticated
+  actor before incrementing counters or writing audit evidence. Every accepted
+  grant access records the actual authenticated bearer, never recipient text
+  supplied when the grant was created.
+- Grant-protected downloads and shared care writes keep the row lock through
+  downstream section, permission, ownership, and file/write checks. View
+  counters and success audits are committed only after the protected operation
+  succeeds; a denial or exception rolls the complete transaction back.
 
 ### HTTP And Browser
 

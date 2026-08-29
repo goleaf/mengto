@@ -44,4 +44,10 @@ final class ForumUserTrustLevel extends Model
     {
         return $this->belongsTo(ForumTrustLevel::class, 'forum_trust_level_id');
     }
+
+    /** @return BelongsTo<User, $this> */
+    public function grantedBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'granted_by_user_id');
+    }
 }

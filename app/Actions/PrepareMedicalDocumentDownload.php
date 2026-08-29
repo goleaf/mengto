@@ -36,7 +36,7 @@ class PrepareMedicalDocumentDownload
 
         return $this->download(
             $document,
-            $grant->recipient_key ?? 'temporary-link',
+            $this->actor->requireUser()->actor_key,
             $grant->recipient_role,
         );
     }

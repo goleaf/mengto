@@ -28,6 +28,8 @@ final class ForumConfirmationEvidence extends Model
         'metadata',
     ];
 
+    protected $hidden = ['private_disk', 'private_path'];
+
     protected function casts(): array
     {
         return ['metadata' => 'array'];
@@ -36,6 +38,12 @@ final class ForumConfirmationEvidence extends Model
     /** @return BelongsTo<ForumConfirmation, $this> */
     public function confirmation(): BelongsTo
     {
-        return $this->belongsTo(ForumConfirmation::class);
+        return $this->belongsTo(ForumConfirmation::class, 'forum_confirmation_id');
+    }
+
+    /** @return BelongsTo<User, $this> */
+    public function submitter(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'submitted_by_user_id');
     }
 }

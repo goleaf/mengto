@@ -43,4 +43,22 @@ final class ForumTrustHistory extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    /** @return BelongsTo<ForumTrustLevel, $this> */
+    public function fromLevel(): BelongsTo
+    {
+        return $this->belongsTo(ForumTrustLevel::class, 'from_forum_trust_level_id');
+    }
+
+    /** @return BelongsTo<ForumTrustLevel, $this> */
+    public function toLevel(): BelongsTo
+    {
+        return $this->belongsTo(ForumTrustLevel::class, 'to_forum_trust_level_id');
+    }
+
+    /** @return BelongsTo<User, $this> */
+    public function actor(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'actor_user_id');
+    }
 }

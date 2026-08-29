@@ -130,6 +130,12 @@ final class ForumExpertSession extends Model
         return $this->hasMany(ForumExpertSessionAnswer::class);
     }
 
+    /** @return HasMany<ForumExpertSessionCorrection, $this> */
+    public function corrections(): HasMany
+    {
+        return $this->hasMany(ForumExpertSessionCorrection::class);
+    }
+
     /** @return HasMany<ForumExpertSessionHistory, $this> */
     public function history(): HasMany
     {

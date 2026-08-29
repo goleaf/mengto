@@ -2,10 +2,11 @@
 
 ## Baseline
 
-All 159 first-party Eloquent models now have a model factory and are guarded by
-an architecture test. The generated matrix records explicit helpers and
-enum-backed state cases; valid existence alone is not accepted without
-persistence tests.
+All 204 first-party Eloquent models have a model factory and are guarded by an
+architecture test. The byte-generated `docs/seeding-coverage.md` currently
+records 248 explicit helpers and 1,521 enum-backed state cases; valid existence
+alone is not accepted without persistence tests. Regenerate it with
+`php scripts/generate-seeding-coverage.php` and require exact byte parity.
 
 ## Seeder Layers
 
@@ -77,7 +78,9 @@ creation idempotency keys used by event/location authority workflows.
 - No public internet downloads.
 - No destructive reset hidden inside a seeder.
 - Seeded marketplace records synchronize by stable slug and preserve IDs on
-  rerun; adoption cases synchronize by existing listing ID.
+  rerun; adoption cases synchronize by existing listing ID. The marketplace
+  demo seeder independently fails closed unless the current environment is in
+  the configured demo-seed allowlist, even when it is invoked directly.
 - Collaborative demo guide synchronization targets only two fixed demo slugs
   and runs only after the environment-gated demo users and forum graph exist.
 - Mentorship demo synchronization runs only in configured demo environments

@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use App\Services\ListingSafety;
 use App\Services\ListingTaxonomy;
+use App\ValueObjects\MinorUnitAmount;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -13,14 +14,24 @@ class StoreListingRequest extends FormRequest
 {
     protected function prepareForValidation(): void
     {
-        $this->merge([
+        $prepared = [
             'seller_type' => $this->input('seller_type', 'private'),
             'quantity' => $this->input('quantity', 1),
             'availability' => $this->input(
                 'availability',
                 $this->input('type') === 'rental' ? 'available-for-rent' : 'in-stock',
             ),
-        ]);
+        ];
+
+        foreach (['price', 'deposit_amount'] as $field) {
+            $value = $this->input($field);
+
+            if (is_scalar($value) && preg_match('/^\d+(?:\.\d{1,2})?$/', (string) $value) === 1) {
+                $prepared[$field] = MinorUnitAmount::fromDecimal((string) $value)->toDecimal();
+            }
+        }
+
+        $this->merge($prepared);
     }
 
     /**
@@ -48,7 +59,7 @@ class StoreListingRequest extends FormRequest
             'brand' => ['nullable', 'string', 'max:120'],
             'model' => ['nullable', 'string', 'max:120'],
             'material' => ['nullable', 'string', 'max:120'],
-            'price' => ['nullable', 'numeric', 'min:0', 'max:999999.99'],
+            'price' => ['nullable', 'numeric', 'decimal:0,2', 'min:0', 'max:999999.99'],
             'currency' => ['required', Rule::in(['EUR'])],
             'is_free' => ['nullable', 'boolean'],
             'quantity' => ['required', 'integer', 'min:1', 'max:100000'],
@@ -96,7 +107,7 @@ class StoreListingRequest extends FormRequest
                 Rule::in(['day', 'week']),
                 Rule::requiredIf(fn (): bool => $this->string('type')->toString() === 'rental'),
             ],
-            'deposit_amount' => ['nullable', 'numeric', 'min:0', 'max:999999.99'],
+            'deposit_amount' => ['nullable', 'numeric', 'decimal:0,2', 'min:0', 'max:999999.99'],
             'available_from' => [
                 'nullable',
                 'date',
@@ -135,7 +146,8 @@ class StoreListingRequest extends FormRequest
 
                 if (in_array($type, ['adoption', 'free', 'shelter-need'], true)
                     && ! blank($price)
-                    && (float) $price > 0) {
+                    && ! $validator->errors()->has('price')
+                    && MinorUnitAmount::fromDecimal((string) $price)->isPositive()) {
                     $validator->errors()->add('price', __('messages.this_listing_type_cannot_include_a_sale_price_0c32b17444'));
                 }
 

@@ -61,6 +61,11 @@ field. A connected registration-to-email-verification transition uses a full
 document navigation and leaves the destination console without duplicate Vite
 preload warnings. The current-page console contained no warnings or errors.
 
+Every authentication password field exposes an independent native visibility
+button with a 44-pixel target, exact `aria-controls`, localized changing name,
+and pressed state. The masked input remains the no-JavaScript baseline; the
+Lucide eye icons are decorative because the button owns the accessible name.
+
 The public forum and search directories for lost/found, marketplace, and
 experts were also checked at 320 pixels. Forum category/filter links and every
 visible search input, select, action, and square clear-filter control meet the
@@ -180,7 +185,9 @@ ring. A real administrator Livewire login followed by an invalid topic submit
 focused the complete summary and associated the title field with its error.
 The authorized administration table exposed its caption and scoped headers.
 
-Screenshots and the JSON report are written to `BROWSER_OUTPUT_DIR` and remain
-untracked verification artifacts. Set `BROWSER_BASE_URL` to an isolated local
-server and `CHROME_BIN` only when Chrome is not in a detected platform path.
-The runner refuses non-loopback application URLs before using demo credentials.
+Screenshots and the JSON report are written to an operating-system temporary
+directory and removed after the check. The package command creates its own
+temporary SQLite database and loopback server; set `CHROME_BIN` only when
+Chrome is not in a detected platform path. The underlying Node runner refuses
+non-loopback URLs and refuses to use demo credentials without the wrapper's
+explicit mutation consent.

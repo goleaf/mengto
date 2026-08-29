@@ -20,7 +20,7 @@ final class ForumMentorshipFactory extends ApplicationFactory
     {
         return [
             'forum_mentor_scope_id' => ForumMentorScope::factory(),
-            'mentor_user_id' => User::factory(),
+            'mentor_user_id' => null,
             'mentee_user_id' => User::factory(),
             'mentorship_type' => ForumMentorshipType::FirstTimeOwner,
             'state' => ForumMentorshipState::Requested,
@@ -39,15 +39,17 @@ final class ForumMentorshipFactory extends ApplicationFactory
 
     public function configure(): static
     {
-        return $this->afterCreating(function (ForumMentorship $mentorship): void {
+        return $this->afterMaking(static function (ForumMentorship $mentorship): void {
+            if ($mentorship->forum_mentor_scope_id === null) {
+                return;
+            }
+
             $scope = $mentorship->scope()->with('profile:id,user_id')->firstOrFail();
             $scope->update([
                 'mentorship_type' => $mentorship->mentorship_type,
             ]);
 
-            $mentorship->forceFill([
-                'mentor_user_id' => $scope->profile->user_id,
-            ])->save();
+            $mentorship->mentor_user_id = $scope->profile->user_id;
         });
     }
 

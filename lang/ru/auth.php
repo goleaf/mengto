@@ -29,6 +29,10 @@ return [
     'form' => [
         'unsaved' => 'Есть несохранённые изменения.',
     ],
+    'password_visibility' => [
+        'show' => 'Показать пароль',
+        'hide' => 'Скрыть пароль',
+    ],
     'accessibility' => [
         'skip_to_content' => 'Перейти к содержимому',
     ],

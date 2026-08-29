@@ -57,4 +57,10 @@ class SearchReport extends Model
     {
         return $this->belongsTo(ForumReport::class);
     }
+
+    /** @return BelongsTo<User, $this> */
+    public function reporter(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'reporter_id');
+    }
 }

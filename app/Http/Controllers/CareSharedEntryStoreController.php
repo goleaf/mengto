@@ -8,6 +8,8 @@ use App\Actions\CreateCareEntry;
 use App\Actions\ResolveCareAccess;
 use App\Enums\CareEntryType;
 use App\Http\Requests\StoreSharedCareEntryRequest;
+use App\Models\CareAccessGrant;
+use App\Services\ForumActor;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Validation\ValidationException;
@@ -19,45 +21,54 @@ class CareSharedEntryStoreController extends Controller
         string $token,
         ResolveCareAccess $resolve,
         CreateCareEntry $create,
+        ForumActor $actor,
     ): JsonResponse|RedirectResponse {
-        $grant = $resolve->handle($token, 'care-access.entry-submitted', false);
         $data = $request->validated();
         $type = CareEntryType::from($data['entry_type']);
+        $identity = $actor->identity();
 
-        if (! $grant->canAdd() || ! $grant->canViewSection($type->section())) {
-            abort(403);
-        }
+        $entry = $resolve->execute(
+            $token,
+            'care-access.entry-submitted',
+            function (CareAccessGrant $grant) use ($create, $data, $identity, $type) {
+                if (! $grant->canAdd() || ! $grant->canViewSection($type->section())) {
+                    abort(403);
+                }
 
-        if (! $grant->allow_location && (
-            filled($data['location_label'] ?? null)
-            || filled($data['route_summary'] ?? null)
-        )) {
-            throw ValidationException::withMessages([
-                'location_label' => __('messages.this_access_link_does_not_allow_location_details_c4899af7a0'),
-            ]);
-        }
+                if (! $grant->allow_location && (
+                    filled($data['location_label'] ?? null)
+                    || filled($data['route_summary'] ?? null)
+                )) {
+                    throw ValidationException::withMessages([
+                        'location_label' => __('messages.this_access_link_does_not_allow_location_details_c4899af7a0'),
+                    ]);
+                }
 
-        if (! $grant->allow_media && isset($data['media'])) {
-            throw ValidationException::withMessages([
-                'media' => __('messages.this_access_link_does_not_allow_media_uploads_9ff792ddc7'),
-            ]);
-        }
+                if (! $grant->allow_media && isset($data['media'])) {
+                    throw ValidationException::withMessages([
+                        'media' => __('messages.this_access_link_does_not_allow_media_uploads_9ff792ddc7'),
+                    ]);
+                }
 
-        $source = match ($grant->recipient_role) {
-            'co-owner', 'family' => 'family',
-            'sitter' => 'sitter',
-            default => 'specialist',
-        };
+                $source = match ($grant->recipient_role) {
+                    'co-owner', 'family' => 'family',
+                    'sitter' => 'sitter',
+                    default => 'specialist',
+                };
 
-        $entry = $create->handle($grant->careJournal, [
-            ...$data,
-            'source_type' => $source,
-            'source_name' => $grant->recipient_name,
-        ], [
-            'key' => $grant->recipient_key ?? 'care-grant-'.$grant->id,
-            'name' => $grant->recipient_name,
-            'role' => $source,
-        ]);
+                return $create->handle($grant->careJournal, [
+                    ...$data,
+                    'source_type' => $source,
+                    'source_name' => $identity['name'],
+                ], [
+                    'key' => $identity['key'],
+                    'name' => $identity['name'],
+                    'role' => $source,
+                ], $grant);
+            },
+            false,
+            false,
+        );
         $message = __('messages.care_report_added_with_your_name_and_contributor_role_2ad163127b');
 
         if ($request->expectsJson()) {

@@ -131,6 +131,12 @@ final class SocialRelationshipRequest extends Model
         return $this->hasMany(SocialRelationshipEvent::class, 'social_relationship_request_id');
     }
 
+    /** @return HasMany<SocialRelationship, $this> */
+    public function relationships(): HasMany
+    {
+        return $this->hasMany(SocialRelationship::class, 'request_id');
+    }
+
     /**
      * @param  Builder<SocialRelationshipRequest>  $query
      * @return Builder<SocialRelationshipRequest>

@@ -8,7 +8,8 @@
   GD or Imagick when image transformations are enabled; URI for PHP 8.5 URL
   boundaries where used
 - Composer 2
-- Node 22 or another Vite-supported LTS/current runtime
+- Node `^20.19.0 || >=22.12.0` and npm 10 or newer, matching
+  `package.json`
 - Writable `storage` and `bootstrap/cache`
 - Configured database, cache, session, mail, filesystem, and optional queue
   services
@@ -21,9 +22,9 @@
 4. `npm ci`
 5. `npm run build`
 6. Configure environment secrets outside the repository.
-7. `php artisan migrate --force`
+7. `scripts/artisan-runtime migrate --force`
 8. Never run demo seeders in production.
-9. `php artisan optimize`
+9. `scripts/artisan-runtime optimize`
 10. Restart managed PHP processes and approved queue workers.
 11. Verify health, login, permissions, private resources, forms, downloads,
     critical commands, and assets.
@@ -36,6 +37,26 @@ not considered verified merely because dependency installation completed.
 If route caching reports a non-cacheable first-party route, fix the route
 before release. Framework/package infrastructure routes are evaluated
 separately.
+
+## Laravel Runtime Account
+
+Run every production Artisan command through `scripts/artisan-runtime`. The
+wrapper executes directly when the caller is `www`, delegates a `root` caller
+to `www`, and refuses any other account. Direct `root` execution is prohibited
+because mixed-owner files in `storage/framework/views` cause Blade compilation
+to fail with `touch(): Utime failed: Operation not permitted` under PHP-FPM.
+
+Before enabling traffic, verify the runtime directories and warmed files:
+
+```bash
+chown -R www:www storage bootstrap/cache
+scripts/artisan-runtime view:cache
+find storage bootstrap/cache -type f ! -user www -print
+```
+
+The final command must print nothing. `PAWCIRCLE_RUNTIME_USER` may override the
+account only when the PHP-FPM pool intentionally uses a different service
+identity.
 
 ## Environment
 
@@ -186,8 +207,8 @@ aggregate and creates manager, privacy, lifecycle-event, slug-alias, and fact
 tables without deleting or remapping any pet or adjacent-domain record.
 
 1. Back up and record existing pet and integration counts.
-2. Run `php artisan migrate --force`.
-3. Run `php artisan pets:backfill-profile-foundation --chunk=500`.
+2. Run `scripts/artisan-runtime migrate --force`.
+3. Run `scripts/artisan-runtime pets:backfill-profile-foundation --chunk=500`.
 4. Rerun the backfill and require zero newly created manager/privacy/alias rows.
 5. Smoke create, manage, invitation, privacy, lifecycle, stable URL, and direct
    authorization paths.
@@ -204,8 +225,8 @@ settings, request, relationship, and event tables without rewriting any
 authoritative profile or encrypted compatibility state.
 
 1. Back up and record user, pet, expert, group, and legacy social-state counts.
-2. Run `php artisan migrate --force`.
-3. Run `php artisan social:backfill-actors --dry-run --chunk=500`.
+2. Run `scripts/artisan-runtime migrate --force`.
+3. Run `scripts/artisan-runtime social:backfill-actors --dry-run --chunk=500`.
 4. Run the write backfill twice and require stable adapter/settings counts.
 5. Smoke the authenticated `/circle/social` workflow and one denied direct
    request from an unauthorized user.
@@ -225,7 +246,7 @@ Neither migration converts an existing profile block into a broader account
 block because the historical intent is ambiguous.
 
 1. Deploy the foundation and complete actor backfill first.
-2. Run `php artisan migrate --force` and verify every new foreign key has a
+2. Run `scripts/artisan-runtime migrate --force` and verify every new foreign key has a
    leading index.
 3. Smoke recipient decline-and-prevent, report without block, report with
    account block, directory exclusion, and unblock without restoration.
@@ -258,7 +279,7 @@ ambiguous legacy backfill: existing breed strings remain readable and become
 owner-reported compatibility data only when the profile is edited.
 
 1. Back up and record pet-profile and domestic-classification counts.
-2. Run `php artisan migrate --force` and inspect the new FK/index shape.
+2. Run `scripts/artisan-runtime migrate --force` and inspect the new FK/index shape.
 3. Smoke one legacy string, one explicit unknown profile, and one mixed profile
    with two different source/confidence values.
 4. Confirm the public projection shows provenance without internal keys or
@@ -307,7 +328,7 @@ free-text value, create public data, or require a queue, cache store,
 environment key, or public-file route.
 
 1. Back up and record pet-profile counts, then run
-   `php artisan migrate --force` and inspect the foreign keys and indexes.
+   `scripts/artisan-runtime migrate --force` and inspect the foreign keys and indexes.
 2. Smoke an empty profile, one public mark, one private-verification mark,
    reorder, removal/retirement, invalid direct input, and reload restoration.
 3. Confirm the public route receives only the active public row and rendered
@@ -326,7 +347,7 @@ not backfill, infer, or publish a value and adds no queue, cache store,
 environment key, or public-file route.
 
 1. Back up and record pet-profile counts, then run
-   `php artisan migrate --force` and inspect the column and composite index.
+   `scripts/artisan-runtime migrate --force` and inspect the column and composite index.
 2. Confirm existing rows remain null and a manager can save, clear, and reload
    each controlled value while forged direct input fails.
 3. Confirm the public profile labels a recorded value as broad manager-provided

@@ -190,6 +190,12 @@ class Listing extends Model
         return $this->hasMany(Order::class);
     }
 
+    /** @return HasMany<OrderDispute, $this> */
+    public function orderDisputes(): HasMany
+    {
+        return $this->hasMany(OrderDispute::class);
+    }
+
     /** @return HasMany<\App\Models\ListingReview, $this>*/
     public function reviews(): HasMany
     {

@@ -97,6 +97,18 @@ final class SocialAccountBlock extends Model
         return $this->belongsTo(SocialActor::class, 'target_actor_id');
     }
 
+    /** @return BelongsTo<User, $this> */
+    public function createdBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'created_by_user_id');
+    }
+
+    /** @return BelongsTo<User, $this> */
+    public function revoker(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'revoked_by_user_id');
+    }
+
     /** @return HasMany<SocialRelationshipEvent, $this> */
     public function events(): HasMany
     {

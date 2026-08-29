@@ -303,6 +303,18 @@ class SearchCase extends Model
         return $this->hasMany(SearchReport::class);
     }
 
+    /** @return HasMany<DeviceEvent, $this> */
+    public function deviceEvents(): HasMany
+    {
+        return $this->hasMany(DeviceEvent::class);
+    }
+
+    /** @return HasMany<SearchCase, $this> */
+    public function duplicates(): HasMany
+    {
+        return $this->hasMany(self::class, 'duplicate_of_search_case_id');
+    }
+
     public function scopeForDirectory(Builder $query): Builder
     {
         return $query->select([

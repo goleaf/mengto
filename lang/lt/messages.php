@@ -3169,6 +3169,7 @@ return [
     'this_membership_is_no_longer_active_b60057155a' => 'This membership is no longer active.',
     'this_messaging_action_is_unavailable_e3554513da' => 'This messaging action is unavailable.',
     'this_observation_key_is_already_in_use_dbace23b87' => 'This observation key is already in use.',
+    'the_order_total_exceeds_the_supported_payment_limit_8f2b39a201' => 'Užsakymo suma viršija palaikomą mokėjimo ribą.',
     'this_order_already_has_a_review_3134a967df' => 'This order already has a review.',
     'this_pet_already_has_a_care_journal_84e3fec126' => 'This pet already has a care journal.',
     'this_pet_already_has_a_medical_record_d4c3459ec6' => 'This pet already has a medical record.',

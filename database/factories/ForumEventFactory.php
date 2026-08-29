@@ -6,6 +6,7 @@ namespace Database\Factories;
 
 use App\Actions\InitializeForumEventLifecycle;
 use App\Enums\ForumEventFormat;
+use App\Enums\ForumEventAccessibilityStatus;
 use App\Enums\ForumEventPetParticipation;
 use App\Enums\ForumEventPhotoConsent;
 use App\Enums\ForumEventRegistrationPolicy;
@@ -74,7 +75,7 @@ final class ForumEventFactory extends ApplicationFactory
             'minimum_animal_age_months' => null,
             'maximum_animal_age_months' => null,
             'accessibility_information' => fake()->sentence(),
-            'accessibility_status' => 'not_assessed',
+            'accessibility_status' => ForumEventAccessibilityStatus::NotAssessed,
             'cost_minor' => 0,
             'currency' => 'EUR',
             'refund_policy' => null,

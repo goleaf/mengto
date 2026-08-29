@@ -27,6 +27,7 @@ test('blade templates remain passive', function () {
             ->not->toContain('<?php')
             ->not->toContain('{!!')
             ->not->toMatch('/\bapp\s*\(/')
+            ->not->toMatch('/(?<!["\'])\brequest\s*\(/')
             ->not->toMatch('/\b(?:collect|str)\s*\(/')
             ->not->toContain('onclick=')
             ->not->toContain('<style');
@@ -36,6 +37,136 @@ test('blade templates remain passive', function () {
             $file->getRelativePathname(),
         )->toBe(0);
     }
+});
+
+test('canonical verification commands receive the measured memory budget', function () {
+    $configuration = File::get(base_path('phpunit.xml'));
+    $generator = File::get(base_path('scripts/generate-forum-requirements.php'));
+
+    expect($configuration)->toContain('<ini name="memory_limit" value="1G"/>')
+        ->and($generator)->toContain("ini_set('memory_limit', '1G')");
+});
+
+test('the full test commands clear cached application configuration before Pest boots', function () {
+    $composer = json_decode(File::get(base_path('composer.json')), true, flags: JSON_THROW_ON_ERROR);
+    $runner = File::get(base_path('scripts/run-tests.php'));
+
+    expect($composer['scripts']['test'])
+        ->toBe([
+            '@php artisan config:clear --ansi @no_additional_args',
+            '@php artisan test',
+        ])
+        ->and($runner)->toContain("[PHP_BINARY, 'artisan', 'config:clear', '--ansi']")
+        ->and($runner)->toContain("[PHP_BINARY, 'artisan', 'test', ...array_slice(\$argv, 1)]")
+        ->and(strpos($runner, "'config:clear'"))->toBeLessThan(strpos($runner, "'test'"));
+});
+
+test('stateful browser runners refuse to start without explicit mutation consent', function () {
+    foreach ([
+        'scripts/accessibility-browser-check.mjs',
+        'scripts/discovery-browser-check.mjs',
+    ] as $script) {
+        $process = Process::path(base_path())
+            ->env(['BROWSER_ALLOW_DATA_MUTATION' => false])
+            ->timeout(10)
+            ->run(['node', $script]);
+
+        expect($process->failed(), $script)->toBeTrue()
+            ->and($process->errorOutput(), $script)
+            ->toContain('requires BROWSER_ALLOW_DATA_MUTATION=1 with a disposable testing database');
+    }
+});
+
+test('the canonical browser runner owns a disposable database and loopback server', function () {
+    $runner = File::get(base_path('scripts/run-browser-check.php'));
+
+    expect($runner)
+        ->toContain("tempnam(sys_get_temp_dir(), 'pawcircle-browser-db-')")
+        ->toContain("'APP_ENV' => 'testing'")
+        ->toContain("'DB_CONNECTION' => 'sqlite'")
+        ->toContain("'APP_CONFIG_CACHE' => \$configCache")
+        ->toContain("'BROWSER_ALLOW_DATA_MUTATION' => '1'")
+        ->toContain("'migrate:fresh', '--seed', '--force'")
+        ->toContain("'--host=127.0.0.1'");
+});
+
+test('the browser wrapper proves isolation and removes its temporary paths', function () {
+    $process = Process::path(base_path())
+        ->timeout(10)
+        ->run([PHP_BINARY, 'scripts/run-browser-check.php', 'a11y', '--assert-isolation']);
+    $proof = json_decode($process->output(), true, flags: JSON_THROW_ON_ERROR);
+
+    expect($process->successful(), $process->errorOutput())->toBeTrue()
+        ->and($proof['app_env'])->toBe('testing')
+        ->and($proof['database_connection'])->toBe('sqlite')
+        ->and($proof['loopback_url'])->toStartWith('http://127.0.0.1:')
+        ->and($proof['database_path'])->not->toStartWith(base_path())
+        ->and($proof['config_cache_path'])->not->toStartWith(base_path())
+        ->and(File::exists($proof['database_path']))->toBeFalse()
+        ->and(File::exists($proof['config_cache_path']))->toBeFalse();
+});
+
+test('generated compliance and seeding evidence is byte deterministic', function () {
+    $compliance = Process::path(base_path())
+        ->timeout(30)
+        ->run([PHP_BINARY, 'scripts/generate-compliance-matrix.php']);
+    $seeding = Process::path(base_path())
+        ->timeout(30)
+        ->run([PHP_BINARY, 'scripts/generate-seeding-coverage.php']);
+
+    expect($compliance->successful(), $compliance->errorOutput())->toBeTrue()
+        ->and($compliance->output())->toBe(File::get(base_path('docs/requirements/compliance-matrix.md')))
+        ->and($seeding->successful(), $seeding->errorOutput())->toBeTrue()
+        ->and($seeding->output())->toBe(File::get(base_path('docs/seeding-coverage.md')));
+});
+
+test('generated repository inventory is byte deterministic', function () {
+    $inventory = Process::path(base_path())
+        ->timeout(30)
+        ->run([PHP_BINARY, 'scripts/generate-repository-inventory.php']);
+
+    expect($inventory->successful(), $inventory->errorOutput())->toBeTrue()
+        ->and($inventory->output())
+        ->toBe(File::get(base_path('docs/audits/repository-inventory.md')));
+});
+
+test('runtime manifests declare direct platform and frontend engine requirements', function () {
+    $composer = json_decode(File::get(base_path('composer.json')), true, flags: JSON_THROW_ON_ERROR);
+    $package = json_decode(File::get(base_path('package.json')), true, flags: JSON_THROW_ON_ERROR);
+
+    expect($composer['require'])->toHaveKeys(['ext-fileinfo', 'ext-intl', 'ext-pdo'])
+        ->and($composer['require-dev'])->toHaveKey('ext-pdo_sqlite')
+        ->and($package)->toHaveKeys(['engines', 'packageManager'])
+        ->and($package['engines'])->toHaveKeys(['node', 'npm']);
+});
+
+test('marketplace monetary call sites use exact minor unit arithmetic', function () {
+    foreach ([
+        app_path('Actions/CreateOrder.php'),
+        database_path('seeders/MarketplaceExpansionSeeder.php'),
+    ] as $path) {
+        $contents = File::get($path);
+
+        expect($contents, $path)
+            ->toContain('MinorUnitAmount::fromDecimal')
+            ->not->toMatch('/\(float\)|floatval\s*\(/');
+    }
+});
+
+test('shared care entry authorization and persistence stay in one grant transaction', function () {
+    $controller = File::get(app_path('Http/Controllers/CareSharedEntryStoreController.php'));
+
+    expect($controller)
+        ->toContain('$resolve->execute(')
+        ->not->toContain('$resolve->handle(');
+});
+
+test('repeated text controls have individual accessible labels', function () {
+    $booking = File::get(resource_path('views/components/booking-content.blade.php'));
+    $expert = File::get(resource_path('views/experts/editor.blade.php'));
+
+    expect($booking)->toContain('for="booking-action-plan-{{ $index }}"')
+        ->and($expert)->toContain('for="expert-method-{{ $index }}"');
 });
 
 test('app shell views do not introduce nested main landmarks', function () {
@@ -234,10 +365,18 @@ test('compliance matrix contains every canonical requirement exactly once', func
         ->toBeEmpty();
 });
 
-test('forum atomic requirements and evidence remain deterministic and traceable', function () {
+test('forum source prompt history remains available for preservation checks', function () {
     $preservation = Process::path(base_path())
         ->timeout(30)
         ->run([PHP_BINARY, 'scripts/preserve-forum-source-prompt.php', '--check']);
+
+    expect(
+        $preservation->successful(),
+        $preservation->errorOutput().$preservation->output(),
+    )->toBeTrue();
+});
+
+test('forum atomic requirements and evidence remain deterministic and traceable', function () {
     $result = Process::path(base_path())
         ->timeout(30)
         ->run([PHP_BINARY, 'scripts/generate-forum-requirements.php', '--check']);
@@ -248,11 +387,7 @@ test('forum atomic requirements and evidence remain deterministic and traceable'
     );
     $requirements = collect($catalogue['requirements']);
 
-    expect(
-        $preservation->successful(),
-        $preservation->errorOutput().$preservation->output(),
-    )->toBeTrue()
-        ->and($result->successful(), $result->errorOutput().$result->output())
+    expect($result->successful(), $result->errorOutput().$result->output())
         ->toBeTrue()
         ->and($catalogue['source_payload_sha256'])
         ->toBe('cbb7d3a36f3750106c4751191ddd7d882d922ce0ae0e0b12aed318c809206ea1')

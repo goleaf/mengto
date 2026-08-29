@@ -83,6 +83,12 @@ class MedicalEvent extends Model
         return $this->hasMany(MedicalDocument::class);
     }
 
+    /** @return HasMany<DeviceReading, $this> */
+    public function deviceReadings(): HasMany
+    {
+        return $this->hasMany(DeviceReading::class);
+    }
+
     public function scopeForTimeline(Builder $query): Builder
     {
         return $query->select([

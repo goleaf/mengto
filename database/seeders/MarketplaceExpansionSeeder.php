@@ -12,13 +12,21 @@ use App\Enums\SellerType;
 use App\Models\Listing;
 use App\Models\Order;
 use App\Models\Reservation;
+use App\ValueObjects\MinorUnitAmount;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
+use LogicException;
 
 class MarketplaceExpansionSeeder extends Seeder
 {
     public function run(): void
     {
+        $allowedEnvironments = config('platform.demo_seed_environments');
+
+        if (! is_array($allowedEnvironments) || ! app()->environment($allowedEnvironments)) {
+            throw new LogicException('Marketplace demo data is restricted to explicitly allowed environments.');
+        }
+
         $this->createListing('rehabilitation-ramp-rental-vilnius', [
             'owner_key' => 'mobility-care-vilnius',
             'owner_name' => 'Mobility Care Vilnius',
@@ -236,8 +244,12 @@ class MarketplaceExpansionSeeder extends Seeder
         ]);
 
         $rentalDays = 7;
-        $unitPrice = (float) $listing->price;
-        $deposit = (float) data_get($listing->attributes, 'deposit_amount', 0);
+        $unitPrice = MinorUnitAmount::fromDecimal($listing->price ?? 0);
+        $depositValue = data_get($listing->attributes, 'deposit_amount', 0);
+        $deposit = MinorUnitAmount::fromDecimal(
+            is_string($depositValue) || is_int($depositValue) ? $depositValue : 0,
+        );
+        $total = $unitPrice->multiply($rentalDays)->add($deposit);
 
         Order::factory()->create([
             'listing_id' => $listing->id,
@@ -250,10 +262,10 @@ class MarketplaceExpansionSeeder extends Seeder
             'seller_name' => $listing->owner_name,
             'order_kind' => 'rental',
             'quantity' => 1,
-            'unit_price' => $unitPrice,
+            'unit_price' => $unitPrice->toDecimal(),
             'delivery_amount' => 0,
-            'deposit_amount' => $deposit,
-            'total_amount' => ($unitPrice * $rentalDays) + $deposit,
+            'deposit_amount' => $deposit->toDecimal(),
+            'total_amount' => $total->toDecimal(),
             'currency' => $listing->currency,
             'delivery_method' => 'pickup',
             'public_delivery_area' => 'Žirmūnai, Vilnius',
@@ -264,7 +276,7 @@ class MarketplaceExpansionSeeder extends Seeder
                 'title' => $listing->title,
                 'condition' => $listing->condition,
                 'quantity' => 1,
-                'unit_price' => $unitPrice,
+                'unit_price' => $unitPrice->toDecimal(),
                 'currency' => $listing->currency,
                 'cover_url' => $listing->cover_url,
                 'attributes' => $listing->attributes,

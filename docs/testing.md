@@ -15,7 +15,7 @@ runner and is not a second test style.
 - Unit: pure state transitions, value objects, normalization, and safety rules.
 - Livewire: component state, forms, direct action authorization, repeated
   submission, events, redirects, and rendered states.
-- Policies: every method across all 13 policies is exercised for applicable
+- Policies: every method across all 47 policies is exercised for applicable
   owner/participant, outsider, administrator, blocked, guest, relationship, and
   resource-state cases.
 - Browser: browser permissions, media teardown, focus/modal behaviour,
@@ -31,7 +31,7 @@ runner and is not a second test style.
 Targeted:
 
 ```bash
-php artisan test --compact tests/Feature/RelevantTest.php
+php scripts/run-tests.php --compact tests/Feature/RelevantTest.php
 vendor/bin/pint --dirty
 PAO_DISABLE=1 vendor/bin/phpstan analyse --memory-limit=1G
 ```
@@ -43,15 +43,30 @@ composer validate --strict
 composer audit
 vendor/bin/pint --test
 PAO_DISABLE=1 vendor/bin/phpstan analyse --memory-limit=1G
-php artisan test --compact
-php artisan test --parallel
+php scripts/run-tests.php --compact
 php scripts/verify-fresh-database.php
 npm audit --audit-level=high
 npm run build
-BROWSER_BASE_URL=http://127.0.0.1:8000 npm run test:browser:a11y
+npm run test:browser:a11y
 ```
 
-Parallel tests run only when database isolation is safe.
+The repository test runner is mandatory because it removes cached application
+configuration before Laravel boots Pest; direct `php artisan test` is not a
+safe full-suite command after a config-cache smoke check. `composer test --`
+provides the same ordering for non-root Composer environments. The shared
+`APP_CONFIG_CACHE` value in `phpunit.xml` is a second isolation boundary: even
+when Pest is invoked directly, it cannot load the deployed configuration cache
+or resolve the production SQLite path. A runtime regression test verifies the
+testing environment and `:memory:` database before database-backed coverage.
+PHPUnit also gives direct invocations a temporary `LARAVEL_STORAGE_PATH`; the
+mandatory runner overrides it with a unique per-process directory and removes
+that directory after Pest exits. Tests therefore cannot compile Blade views or
+create filesystem fakes in production `storage`. The shared SQLite-backed
+suite runs serially. Browser package scripts create and destroy
+their own temporary SQLite database, seed it in `testing`, start a loopback
+server on an ephemeral port, and explicitly authorize only that isolated Node
+runner to mutate seeded state. Calling either underlying `.mjs` runner directly
+without `BROWSER_ALLOW_DATA_MUTATION=1` fails before browser discovery.
 
 ## Coverage
 
@@ -1244,7 +1259,7 @@ Observed package evidence on 2026-08-04:
   PHP localizer, 180-route smoke, and 851-call canonical icon audit passed.
 
 The reusable browser command is
-`BROWSER_BASE_URL=http://127.0.0.1:PORT npm run test:browser:page-identity`.
+`npm run test:browser:page-identity`.
 
 ## Neighbor Profile Localization And Icon Verification
 
@@ -1279,7 +1294,7 @@ Observed package evidence on 2026-08-04:
   audit passed.
 
 The reusable browser command is
-`BROWSER_BASE_URL=http://127.0.0.1:PORT npm run test:browser:page-identity`.
+`npm run test:browser:page-identity`.
 
 ## Owner Profile Localization And Icon Verification
 
@@ -1314,7 +1329,7 @@ Observed package evidence on 2026-08-04:
   complete seeding.
 
 The reusable browser command is
-`BROWSER_BASE_URL=http://127.0.0.1:PORT npm run test:browser:page-identity`.
+`npm run test:browser:page-identity`.
 
 ## Messaging Call Stage And Details Verification
 
@@ -1349,7 +1364,7 @@ Observed package evidence on 2026-08-04:
   PHP localizer, and the 854-call canonical icon audit passed.
 
 The reusable browser command is
-`BROWSER_BASE_URL=http://127.0.0.1:PORT npm run test:browser:page-identity`.
+`npm run test:browser:page-identity`.
 
 ## Share Page Localization And Icon Verification
 
@@ -1382,4 +1397,4 @@ Observed package evidence on 2026-08-04:
   audit passed.
 
 The reusable browser command is
-`BROWSER_BASE_URL=http://127.0.0.1:PORT npm run test:browser:page-identity`.
+`npm run test:browser:page-identity`.

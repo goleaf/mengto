@@ -10,6 +10,7 @@ use Database\Factories\DeviceEventFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
 
 /**
@@ -97,5 +98,11 @@ class DeviceEvent extends Model
     public function searchCase(): BelongsTo
     {
         return $this->belongsTo(SearchCase::class);
+    }
+
+    /** @return HasMany<DeviceAutomationRun, $this> */
+    public function automationRuns(): HasMany
+    {
+        return $this->hasMany(DeviceAutomationRun::class);
     }
 }

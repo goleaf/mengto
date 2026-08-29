@@ -9,6 +9,7 @@ use Database\Factories\DevicePetAssignmentFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
 
 /**
@@ -46,5 +47,17 @@ class DevicePetAssignment extends Model
     public function smartDevice(): BelongsTo
     {
         return $this->belongsTo(SmartDevice::class);
+    }
+
+    /** @return HasMany<DeviceEvent, $this> */
+    public function events(): HasMany
+    {
+        return $this->hasMany(DeviceEvent::class);
+    }
+
+    /** @return HasMany<DeviceReading, $this> */
+    public function readings(): HasMany
+    {
+        return $this->hasMany(DeviceReading::class);
     }
 }

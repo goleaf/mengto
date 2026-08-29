@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
 
@@ -180,6 +181,12 @@ class SmartDevice extends Model
             ->select(self::ROUTE_COLUMNS);
     }
 
+    /** @return BelongsTo<User, $this> */
+    public function owner(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'owner_id');
+    }
+
     /** @return HasMany<\App\Models\DevicePetAssignment, $this>*/
     public function assignments(): HasMany
     {
@@ -220,6 +227,12 @@ class SmartDevice extends Model
     public function accessGrants(): HasMany
     {
         return $this->hasMany(DeviceAccessGrant::class);
+    }
+
+    /** @return HasMany<DeviceAutomationRun, $this> */
+    public function automationRuns(): HasMany
+    {
+        return $this->hasMany(DeviceAutomationRun::class);
     }
 
     /** @return HasMany<DeviceLifecycleRecord, $this> */

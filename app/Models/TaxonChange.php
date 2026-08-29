@@ -49,4 +49,10 @@ final class TaxonChange extends Model
     {
         return $this->belongsTo(TaxonImport::class, 'taxon_import_id');
     }
+
+    /** @return BelongsTo<User, $this> */
+    public function actor(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'actor_user_id');
+    }
 }

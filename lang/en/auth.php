@@ -29,6 +29,10 @@ return [
     'form' => [
         'unsaved' => 'You have unsaved changes.',
     ],
+    'password_visibility' => [
+        'show' => 'Show password',
+        'hide' => 'Hide password',
+    ],
     'accessibility' => [
         'skip_to_content' => 'Skip to content',
     ],

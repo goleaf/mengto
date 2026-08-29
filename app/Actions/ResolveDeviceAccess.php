@@ -6,11 +6,14 @@ namespace App\Actions;
 
 use App\Models\AuditLog;
 use App\Models\DeviceAccessGrant;
+use App\Services\ForumActor;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
 
 class ResolveDeviceAccess
 {
+    public function __construct(private readonly ForumActor $actor) {}
+
     public function handle(string $token): DeviceAccessGrant
     {
         return DB::transaction(function () use ($token): DeviceAccessGrant {
@@ -31,13 +34,19 @@ class ResolveDeviceAccess
                 throw (new ModelNotFoundException)->setModel(DeviceAccessGrant::class);
             }
 
+            $actorKey = $this->actor->requireUser()->actor_key;
+
+            if ($grant->recipient_key !== null && ! hash_equals($grant->recipient_key, $actorKey)) {
+                throw (new ModelNotFoundException)->setModel(DeviceAccessGrant::class);
+            }
+
             $grant->forceFill([
                 'views_used' => $grant->views_used + 1,
                 'last_opened_at' => now(),
             ])->save();
 
             AuditLog::query()->create([
-                'actor_key' => $grant->recipient_key ?? 'temporary-device-link',
+                'actor_key' => $actorKey,
                 'actor_role' => $grant->recipient_role,
                 'action' => 'device-access.opened',
                 'target_type' => DeviceAccessGrant::class,

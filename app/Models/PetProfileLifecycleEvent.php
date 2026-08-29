@@ -40,7 +40,7 @@ final class PetProfileLifecycleEvent extends Model
         'occurred_at',
     ];
 
-    protected $hidden = ['private_metadata'];
+    protected $hidden = ['idempotency_key', 'private_metadata'];
 
     protected function casts(): array
     {

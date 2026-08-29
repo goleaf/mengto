@@ -33,16 +33,18 @@ final readonly class ChangeForumTopicState
             ['reason_code' => ['required', 'string', 'max:100', 'regex:/^[a-z0-9-]+$/']],
         )->validate()['reason_code'];
         $target = $target->canonical();
-        $ability = match ($target) {
-            ForumTopicStatus::Restored => 'restore',
-            ForumTopicStatus::Archived => 'archive',
-            ForumTopicStatus::Removed => 'remove',
-            ForumTopicStatus::Open => 'reopen',
-            ForumTopicStatus::Solved,
-            ForumTopicStatus::PartiallySolved,
-            ForumTopicStatus::Outdated => 'update',
-            default => 'moderateLifecycle',
-        };
+        $ability = $actor->isAdministrator()
+            ? 'moderateLifecycle'
+            : match ($target) {
+                ForumTopicStatus::Restored => 'restore',
+                ForumTopicStatus::Archived => 'archive',
+                ForumTopicStatus::Removed => 'remove',
+                ForumTopicStatus::Open => 'reopen',
+                ForumTopicStatus::Solved,
+                ForumTopicStatus::PartiallySolved,
+                ForumTopicStatus::Outdated => 'update',
+                default => 'moderateLifecycle',
+            };
         $this->gate->forUser($actor)->authorize($ability, $topic);
         $snapshot = $this->projection->snapshot($topic);
 

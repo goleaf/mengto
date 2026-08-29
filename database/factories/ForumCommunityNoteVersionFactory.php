@@ -18,7 +18,9 @@ final class ForumCommunityNoteVersionFactory extends ApplicationFactory
     {
         return [
             'forum_community_note_id' => ForumCommunityNote::factory(),
-            'version_number' => 1,
+            'version_number' => fn (array $attributes): int => (int) ForumCommunityNoteVersion::query()
+                ->where('forum_community_note_id', $attributes['forum_community_note_id'])
+                ->max('version_number') + 1,
             'editor_user_id' => User::factory(),
             'status' => ForumCommunityNoteStatus::Proposed,
             'body' => fake()->paragraph(),

@@ -75,8 +75,9 @@ echo 'The generator creates exactly one row per stable ID; evidence and status '
 echo "must still reflect observed implementation rather than file existence.\n\n";
 echo 'Controlled statuses: `implemented and verified`, `implemented`, ';
 echo '`partially implemented`, `blocked by external dependency`, ';
-echo "`not applicable`, `superseded`.\n\n";
+echo "`not applicable`, `intentionally not applicable`, `superseded`.\n\n";
 echo "Canonical active requirement count: **{$requirementCount}**.\n\n";
+echo "Supplemental Point 13 evidence rows: **5**.\n\n";
 echo "| ID | Summary | Canonical source | Implementation | Schema / policy / validation | Frontend / translations | Factory / seed | Tests | Verification | Status | Blocker |\n";
 echo "| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |\n";
 
@@ -95,6 +96,12 @@ foreach ($requirements as $id => $requirement) {
     echo ' | `'.escape($evidence['verify']).'`';
     echo ' | '.$status;
     echo ' | '.escape($evidence['blocker'])." |\n";
+
+    if ($id === 'PRD-SOCIAL-007') {
+        foreach (supplementalEventRows() as $row) {
+            echo $row."\n";
+        }
+    }
 }
 
 echo "\n## Status Rules\n\n";
@@ -342,15 +349,12 @@ function statusFor(string $id): string
     }
 
     $notApplicable = [
-        'LAR-12',
         'LAR-13',
         'LAR-14',
         'LAR-20',
-        'PERF-CACHE-001',
         'SEC-INTEGRATION-001',
         'SEC-WEB-003',
         'SYS-APP-005',
-        'SYS-CACHE-001',
         'SYS-HTTP-001',
         'SYS-RUNTIME-001',
         'SYS-WEBHOOK-001',
@@ -377,7 +381,7 @@ function statusFor(string $id): string
         return 'blocked by external dependency';
     }
 
-    return 'implemented and verified';
+    return 'implemented';
 }
 
 function blockerFor(string $id): string
@@ -396,6 +400,9 @@ function blockerFor(string $id): string
         'PRD-DEVICE-014' => 'Lifecycle, retention, maintenance, theft, transfer, and lost-mode policy pass; firmware, subscription, recall, and vendor ownership APIs require a selected provider.',
         'PRD-DEVICE-015' => 'Confidence, correction, evidence retention, and critical-command prohibition pass; provider-side AI processing disclosures require a selected consented AI provider.',
         'TEST-COVERAGE-001' => 'PHP 8.5 runtime has neither PCOV nor Xdebug, so Pest cannot collect coverage.',
+        'LAR-12' => 'First-party caches and locks exist; owner, key scope, TTL, invalidation, failure, and stampede evidence requires the dedicated cache phase.',
+        'PERF-CACHE-001' => 'Measured public aggregate caches exist for listings and search cases; broader cache suitability and stampede evidence remains owned by prompt 21.',
+        'SYS-CACHE-001' => 'First-party aggregate and taxonomy caches exist; their requirement-level lifecycle evidence remains owned by prompt 21.',
     ];
 
     if (isset($reasons[$id])) {
@@ -404,7 +411,6 @@ function blockerFor(string $id): string
 
     if (statusFor($id) === 'not applicable') {
         return match ($id) {
-            'LAR-12', 'PERF-CACHE-001', 'SYS-CACHE-001' => 'No first-party application cache entry exists; framework cache configuration remains available.',
             'LAR-13', 'SYS-APP-005' => 'The repository exposes no public JSON API contract.',
             'LAR-14', 'SEC-INTEGRATION-001', 'SYS-HTTP-001' => 'No enabled external HTTP provider client exists.',
             'LAR-20', 'SYS-RUNTIME-001' => 'No user-visible long-running operation exists.',
@@ -417,6 +423,18 @@ function blockerFor(string $id): string
     return 'None';
 }
 
+/** @return list<string> */
+function supplementalEventRows(): array
+{
+    return [
+        '| EVENT-P13-FOUNDATION | Point 13 extends the canonical `ForumEvent` rather than introducing a parallel event account, user, pet, report, or notification system. | Source Part J; `docs/events/index.md` | `ForumEvent`, lifecycle Actions, snapshot service | Five additive Point 13 migrations and event policies | Existing portal shell and class-based event Livewire components | Point 13 event factories and demo seeder | `EventLifecycleFoundationTest`, `EventWorkflowTest` | `php artisan test --compact tests/Feature/Forum/EventLifecycleFoundationTest.php tests/Feature/Forum/EventWorkflowTest.php` | implemented and verified | Full release gates are tracked separately. |',
+        '| EVENT-P13-LIFECYCLE | Event type, lifecycle, visibility, ownership, team roles, versions, series, occurrences, registration snapshots, and multi-pet eligibility have controlled server-side state. | `docs/events/state-machines.md` | Event enums, models, Actions, registration service | Indexed occurrence/version/team/registration-pet tables | Directory/workspace expose current state and occurrence/pet truth | Explicit factory states and stable demo scenarios | `EventLifecycleFoundationTest` | `php artisan test --compact tests/Feature/Forum/EventLifecycleFoundationTest.php` | implemented and verified | Schedule tracks and material-change notification expansion remain open. |',
+        '| EVENT-P13-PRIVACY | Public event surfaces exclude exact private location, online access, attendee identity, medical records, and eligibility detail; direct actions reauthorize. | `docs/events/media-and-privacy.md` | Encrypted event/place fields, `PlacePolicy`, reveal/update Actions, event policy scopes | Hidden casts, account/purpose/expiry grants, reveal audits, ownership/team/registration relations | Public cards and event builder use canonical IDs and public region only | Private/unlisted place and event states | Place authority privacy/policy cases plus event tests | `php artisan test --compact tests/Feature/Places/PlaceAuthorityFoundationTest.php tests/Feature/Forum/EventLifecycleFoundationTest.php tests/Feature/Forum/EventWorkflowTest.php` | implemented and verified | Expiring exact-location grants are implemented; attendee exports remain open. |',
+        '| EVENT-P13-PAYMENTS | Event checkout must not simulate payment without a verified provider, ticket state machine, signatures, and idempotency. | `docs/events/payments.md` | Registration service rejects paid checkout | Integer minor-unit metadata only | No false paid/QR confirmation UI | No synthetic payment seed data | Existing paid-registration rejection coverage | `php artisan test --compact tests/Feature/Forum/EventWorkflowTest.php` | intentionally not applicable | No verified event payment provider is configured. |',
+        '| EVENT-P13-ADVANCED | Tickets/refunds, tracks/sessions, competitions, vendors/sponsors, volunteer shifts, QR/offline check-in, incidents/weather, certificates, and event feedback require durable subdomains before UI claims. | `docs/events/requirements.md` | Not implemented | Not implemented | Not implemented | Not seeded | Not testable as completed | N/A | partially implemented | Source requirements remain planned/discovered in the generated catalogue. |',
+    ];
+}
+
 function verificationFor(string $id): string
 {
     if ($id === 'PRD-IDENTITY-003') {
@@ -424,7 +442,7 @@ function verificationFor(string $id): string
     }
 
     if ($id === 'PRD-SOCIAL-001') {
-        return 'php artisan test --compact tests/Feature/DiscoverExperienceTest.php && npm run build && BROWSER_BASE_URL=http://127.0.0.1:8026 npm run test:browser:discover';
+        return 'php scripts/run-tests.php --compact tests/Feature/DiscoverExperienceTest.php && npm run build && npm run test:browser:discover';
     }
 
     if ($id === 'PRD-PLACE-001') {

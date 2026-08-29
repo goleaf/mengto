@@ -285,6 +285,14 @@ class ForumTopic extends Model
             ->orderByDesc('id');
     }
 
+    /** @return HasMany<ForumTopicMove, $this> */
+    public function moves(): HasMany
+    {
+        return $this->hasMany(ForumTopicMove::class)
+            ->orderByDesc('created_at')
+            ->orderByDesc('id');
+    }
+
     /** @return HasMany<ForumTopicUpdateRequest, $this> */
     public function updateRequests(): HasMany
     {
@@ -295,6 +303,24 @@ class ForumTopic extends Model
     public function legalHolds(): HasMany
     {
         return $this->hasMany(ForumTopicLegalHold::class);
+    }
+
+    /** @return HasMany<ForumNotification, $this> */
+    public function notifications(): HasMany
+    {
+        return $this->hasMany(ForumNotification::class, 'topic_id');
+    }
+
+    /** @return HasMany<ForumTopic, $this> */
+    public function redirectedTopics(): HasMany
+    {
+        return $this->hasMany(self::class, 'merged_into_topic_id');
+    }
+
+    /** @return HasMany<KnowledgeArticle, $this> */
+    public function discussionKnowledgeArticles(): HasMany
+    {
+        return $this->hasMany(KnowledgeArticle::class, 'discussion_topic_id');
     }
 
     /** @return HasOne<ForumTopicLegalHold, $this> */

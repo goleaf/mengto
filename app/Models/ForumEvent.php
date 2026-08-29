@@ -348,6 +348,24 @@ final class ForumEvent extends Model
         return $this->hasMany(ForumEventSession::class);
     }
 
+    /** @return HasMany<ForumGroupActivity, $this> */
+    public function groupActivities(): HasMany
+    {
+        return $this->hasMany(ForumGroupActivity::class);
+    }
+
+    /** @return HasMany<PlaceAccessAudit, $this> */
+    public function placeAccessAudits(): HasMany
+    {
+        return $this->hasMany(PlaceAccessAudit::class, 'event_id');
+    }
+
+    /** @return HasMany<PlaceAccessGrant, $this> */
+    public function placeAccessGrants(): HasMany
+    {
+        return $this->hasMany(PlaceAccessGrant::class, 'event_id');
+    }
+
     /**
      * @param  Builder<ForumEvent>  $query
      * @return Builder<ForumEvent>

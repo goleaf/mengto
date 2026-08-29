@@ -30,7 +30,9 @@ use App\Models\KnowledgeCorrection;
 use App\Models\KnowledgeVersion;
 use App\Models\KnowledgeWorkflowEvent;
 use App\Models\Listing;
+use App\Models\Order;
 use App\Models\PetProfile;
+use App\Models\Reservation;
 use App\Models\SearchCase;
 use App\Models\Sighting;
 use App\Models\SmartDevice;
@@ -38,9 +40,11 @@ use App\Models\User;
 use Database\Factories\ApplicationFactory;
 use Database\Seeders\DatabaseSeeder;
 use Database\Seeders\DiscoveryDemoSeeder;
+use Database\Seeders\MarketplaceExpansionSeeder;
 use Database\Seeders\PerformanceSeeder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\DB;
 
 use function Pest\Laravel\seed;
 
@@ -175,6 +179,32 @@ test('every first party model factory creates a persisted valid record', functio
         ->and($model->getKey())->not->toBeNull();
 })->with('model factories');
 
+test('every first party model factory can make an unpersisted model', function (
+    string $modelClass,
+) {
+    $model = $modelClass::factory()->make();
+
+    expect($model)
+        ->toBeInstanceOf($modelClass)
+        ->and($model->exists)->toBeFalse();
+})->with('model factories');
+
+test('factory definitions do not persist related records while defining attributes', function (
+    string $modelClass,
+) {
+    $writes = [];
+
+    DB::listen(function ($query) use (&$writes): void {
+        if (preg_match('/^\s*(insert|update|delete)\b/i', $query->sql) === 1) {
+            $writes[] = $query->sql;
+        }
+    });
+
+    $modelClass::factory()->definition();
+
+    expect($writes)->toBe([]);
+})->with('model factories');
+
 test('every documented factory state creates a persisted valid record', function (
     string $modelClass,
     string $state,
@@ -250,7 +280,8 @@ test('database seeding is repeatable without changing stable entity counts', fun
         'content_publications' => ContentPublication::query()->count(),
     ])->toBe($firstCounts)
         ->and(User::query()->where('actor_key', 'mia-carter')->count())->toBe(1)
-        ->and(User::query()->where('email', 'mia@example.test')->count())->toBe(1)
+        ->and(User::query()->count())->toBe(10)
+        ->and(User::query()->where('email', 'user@example.com')->count())->toBe(1)
         ->and(User::query()->where('is_admin', true)->count())->toBe(1)
         ->and(User::query()->where('locale', 'lt')->count())->toBe(1)
         ->and(User::query()->where('status', 'blocked')->count())->toBe(1)
@@ -282,6 +313,20 @@ test('discovery demo seeding refuses an environment not explicitly allowed', fun
 
     expect(fn () => seed(DiscoveryDemoSeeder::class))
         ->toThrow(LogicException::class);
+});
+
+test('marketplace demo seeding refuses a disallowed environment without mutating a colliding listing', function () {
+    $listing = Listing::factory()->create([
+        'slug' => 'rehabilitation-ramp-rental-vilnius',
+        'quantity' => 17,
+    ]);
+    Config::set('platform.demo_seed_environments', []);
+
+    expect(fn () => seed(MarketplaceExpansionSeeder::class))
+        ->toThrow(LogicException::class)
+        ->and($listing->refresh()->quantity)->toBe(17)
+        ->and(Reservation::query()->where('listing_id', $listing->id)->exists())->toBeFalse()
+        ->and(Order::query()->where('listing_id', $listing->id)->exists())->toBeFalse();
 });
 
 test('performance seeding is opt in deterministic and repeatable', function () {

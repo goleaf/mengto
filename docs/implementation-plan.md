@@ -11,6 +11,314 @@ The reconciled current backlog is maintained in
 `docs/plans/current-unfinished-work.md`. Completed deliveries below are release
 evidence, not active backlog items.
 
+## Active Delivery: Forum Phase 4 Animal-Science Category
+
+Status: `planned; discovery in progress; implementation authorized` on
+2026-08-30.
+
+The unresolved placeholder in the initiating request is resolved from the
+canonical `forum-current-progress` next-pass instruction: this delivery owns
+the next dependency-safe Phase 4 source section, category 25, and no wider
+phase. The exact 58-ID scope is `forum.category.0237` through
+`forum.category.0294`; the two same-section atoms assigned to Phases 5 and 7
+remain open. The acceptance, dependency, verification, rollback, and exact-ID
+contracts are recorded in
+`docs/plans/forum-phase4-animal-science-category-work-package.md`; specialist
+coordination is recorded in
+`docs/audits/forum-phase4-animal-science-work-ledger.md`.
+
+| ID | Dependency | Owner | Affected paths | Acceptance criteria | Verification | Status | Rollback |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| F4-AS-01 | Canonical source and generated catalogue | Principal | Package plan and work ledger | All 58 selected records are listed and reconciled; adjacent Phase 5/7 records are excluded | Exact `jq` inventory and source/generator checks | in progress | Revert planning files only |
+| F4-AS-02 | F4-AS-01 | Principal | Category manifest/synchronizer/model/factory/seeder paths if required | Existing implementation is retained when correct; every real schema, persistence, or localization defect is test-first repaired | Focused red/green feature contract | pending | Revert finding-specific implementation with its test |
+| F4-AS-03 | F4-AS-01..02 | Principal | EN/LT/RU, server-prepared UI, accessibility/responsive paths if required | Category 25 renders the exact localized root/purpose/ordered hierarchy without exposing later-phase completion claims | Focused HTTP/Livewire and browser checks | pending | Revert presentation change and translations together |
+| F4-AS-04 | F4-AS-02..03 | Principal | Requirement evidence and generated progress/traceability documents | Exactly the independently proven 58 IDs move to verified and all generated artifacts remain deterministic | Source preservation, forum generator, exact overlay delta | pending | Revert evidence entry and regenerate |
+| F4-AS-05 | F4-AS-04 | Independent reviewer and principal | Frozen attributable diff | Material findings are reproduced, dispositioned, fixed, and retested; full final gates either pass or retain exact blockers | Review report, targeted/full gates, temporary-index diff, `git diff --check` | pending | Revert the coherent package commit normally |
+
+Implementation order is F4-AS-01 through F4-AS-05. Production code cannot
+precede a failing behavior contract. The package is committed through a
+temporary index so the pre-existing staged database/repository/auth work stays
+byte-present and outside this delivery.
+
+## Active Delivery: Complete Database Domain Audit And Implementation
+
+Status: `discovery in progress; implementation authorized` on 2026-08-30.
+
+This section is the canonical execution record for the complete migration,
+model, relationship, factory, seeder, and database-integrity pass. The
+specialist work ledger is
+`docs/audits/database-domain-audit-work-ledger.md`. Discovery is read-only;
+the principal agent owns every tracked edit and begins test-driven
+implementation immediately after this plan is saved.
+
+### Protected baseline and current inventory
+
+- Branch and initial task HEAD: `main` at
+  `fdaf7292a152ae61b85e17cf1ce69449d6d4292f`, matching `origin/main`.
+- The task began in a dirty shared tree. All pre-existing staged, unstaged, and
+  untracked work is preserved. The attributable publication slice will use a
+  temporary `GIT_INDEX_FILE`.
+- Runtime: PHP 8.5.8, Laravel 13.23.0, Pest 4, SQLite for isolated automated
+  verification, and the repository's configured Pint and Larastan gates.
+- Audited baseline: 139 migrations create or alter 219 tables with 3,478
+  columns, 514 foreign keys, 1,055 indexes, and 265 unique indexes. The 203
+  existing concrete application models all have factories; 42 seeders are
+  orchestrated from `DatabaseSeeder`.
+- A safe temporary-SQLite fresh migrate/seed completed and remained stable on
+  a second seed, but produced only five users. Across the 203 models, 163 had
+  fewer than ten rows and 70 had none. The existing dynamic factory suite
+  passed 1,791 tests and 5,313 assertions, proving individual factory
+  persistence but not complete representative seeding.
+- Confirmed discovery defects before implementation: six `belongsTo`
+  declarations infer nonexistent columns; `forum_topic_moves` is the only
+  application-owned table without a corresponding model/factory; additional
+  schema-backed child and inverse relationship candidates require final
+  usage review before addition.
+
+### Delivery items
+
+Every item records dependencies, ownership, affected paths, acceptance,
+verification, status, and rollback. Discovery specialists do not edit tracked
+files. The principal implements and dispositions every finding; DBA-09 is an
+independent reviewer of the frozen attributable diff.
+
+| ID | Dependency | Owner | Affected paths | Acceptance criteria | Verification | Status | Rollback |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| DBA-01 | None | Schema specialist | `database/migrations/**`, schema evidence | Every migration/table/column/key/index/pivot/morph edge is inventoried from a fresh isolated database | Migration inventory and schema introspection artifact | discovery complete | Remove evidence only |
+| DBA-02 | DBA-01 | Model specialist | `app/Models/**` | Every concrete model is mapped to its table, key, traits, casts, factory, and declared relations; mismatches are enumerated | Reflection/model-to-schema audit | in progress | Remove evidence only |
+| DBA-03 | DBA-01..02 | Relationship specialist | `app/Models/**` | Every reliable schema-backed child relation and appropriate inverse/pivot/morph relation exists with explicit relation types and correct keys | Red/green schema relationship contracts and round-trip tests | in progress | Revert relationship methods and paired tests |
+| DBA-04 | DBA-01..02 | Factory specialist | `database/factories/**` | Every applicable model has a valid realistic factory; required, unique, enum, encrypted, JSON, date, money, and representative nullable values satisfy schema/domain rules | Dynamic factory persistence and field-coverage tests | in progress | Revert factory/state changes together |
+| DBA-05 | DBA-03..04 | Factory-graph specialist | Factories and relation helpers | Parent reuse avoids circular creation and exponential graphs; pivot and polymorphic metadata are valid | Factory graph audit plus bounded count assertions | pending | Revert graph helpers only |
+| DBA-06 | DBA-01..05 | Seeder specialist | `database/seeders/**` | Root seeding is dependency-ordered, environment-safe, reasonably idempotent, creates `user@example.com`, and creates a coherent graph with at least ten rows for every concrete persistent application model without deleting existing data | Isolated fresh seed, repeat seed, counts, pivots, and target-account assertions | pending | Remove additive representative seeder and restore root orchestration |
+| DBA-07 | DBA-01..06 | Constraint specialist | Models, factories, seeders, validation, enums | Database and application uniqueness, checks, state/date/money constraints, casts, and tenant/owner boundaries are reflected in generated data | Constraint matrix and focused negative/positive Pest coverage | pending | Revert finding-specific change |
+| DBA-08 | DBA-03..07 | QA specialist | `tests/Feature/Database/**`, lifecycle scripts | Tests prove factories, required/representative fields, root seeding, counts, target user, relations, pivots, foreign keys, uniqueness, and repeatability on isolated SQLite | Targeted Pest suites and fresh lifecycle scripts | pending | Revert tests/scripts with their implementation slice |
+| DBA-09 | DBA-08 | Independent reviewer | Frozen attributable diff | Migration-model-factory-seeder-test chain is adversarially reviewed; every material finding is reproduced, dispositioned, fixed when valid, and retested | Review report and rerun affected gates | pending | Revert unsafe finding-specific repair |
+| DBA-10 | DBA-09 | Principal | Documentation, complete task slice | Audit/schema evidence and seeding docs are current; targeted/full PHP gates, Pint, Larastan, Composer checks, npm audit/build, caches, isolated migrate/seed, generator parity, forum preservation checks, diff/secret review pass or an exact external blocker is recorded; coherent attributable commit is safely pushed | Definition-of-done gate list and Git evidence | pending | Revert task commit normally; never rewrite history |
+
+### Implementation and verification order
+
+1. Reconcile DBA-01 through DBA-07 findings into a durable schema and model
+   audit, then observe failing Pest contracts for confirmed defects.
+2. Correct relationship keys and inverses, add the missing topic-move model and
+   factory, and repair only evidence-backed factory/state gaps.
+3. Build an environment-gated representative seeder in dependency order. It
+   tops up deficits without truncating data, uses real model instances rather
+   than hardcoded IDs, connects pivots with their metadata, and makes
+   `user@example.com` a deterministic, verified, fully connected account.
+4. Prove every concrete model reaches at least ten rows on a clean seed,
+   meaningful nullable fields have representative non-null coverage where
+   valid, all foreign keys pass, the second seed does not regress counts, and
+   key relationship round trips resolve.
+5. Run targeted tests first, then fresh lifecycle checks, Pint, Larastan, the
+   full Pest suite, Composer validation/audit/platform checks, npm audit/build,
+   route/config/view-cache smoke checks, documentation generators, forum
+   source/generator checks, independent review, and final attributable diff
+   review. Update these statuses only from observed results.
+
+## Active Delivery: Complete Repository Audit And Foundational Repair
+
+Status: `implementation approved from repository evidence` on 2026-08-30.
+
+This section is the canonical execution record for prompt 01. Discovery was
+performed read-only by the seven specialist scopes in
+`docs/audits/repository-audit-work-ledger.md`; production changes begin only
+after this section was saved. Later numbered prompts under `docs/prompts/`
+remain the owners of broad modernization and are not silently pulled into this
+foundational pass.
+
+### Protected Git And Instruction Baseline
+
+- Initial branch and HEAD: `main` at
+  `93a4595b136c3e0a8b7f4671215af91487d5f9e7`, tracking `origin/main` at the
+  same commit.
+- Initial tree: 89 staged paths and one unstaged path. The unrelated slice
+  contains first-party documentation, Playwright capture YAML, screenshot
+  deletions, and the unstaged `docs/validation-error-work-ledger.md` update.
+  A concurrent workspace operation committed most of that slice as
+  `fdaf7292a152ae61b85e17cf1ce69449d6d4292f` and advanced `origin/main` while
+  this audit was running. The remaining Playwright YAML deletions remain
+  unrelated. Both states are preserved and excluded from the audit commit
+  through a temporary `GIT_INDEX_FILE`.
+- Applicable instruction chain: root `AGENTS.md` only. No first-party nested
+  `AGENTS.md` or `AGENTS.override.md` exists. `CLAUDE.md` is a supporting
+  pointer, not an override.
+- Authority order: `AGENTS.md`; canonical requirements; security/privacy/data
+  integrity; accepted architecture/ADRs; this plan and subordinate domain
+  plans; accurate tests/code; supporting evidence; historical plans/specs.
+
+### Complete First-Party Markdown Classification
+
+The initial audit classified all 235 first-party Markdown files. The path
+patterns below preserve that initial snapshot. Concurrent first-party work
+raised the live total to 241; the generated, per-path authority table in
+`docs/audits/repository-inventory.md` is the exhaustive current inventory.
+Generated/tooling/vendor trees
+under `.agents`, `.claude`, `.cursor`, `vendor`, `node_modules`, and runtime
+caches are excluded.
+
+| Paths | Count | Authority |
+| --- | ---: | --- |
+| `AGENTS.md`, `CHANGELOG.md`, `DESIGN.md`, `PRODUCT.md`, `SECURITY.md` | 5 | Canonical |
+| `CLAUDE.md`, `README.md` | 2 | Supporting entry points |
+| Canonical cross-cutting documents named by `docs/index.md`, from `docs/accessibility.md` through `docs/topic-lifecycle.md` | 36 | Canonical |
+| `docs/{api-integrations-work-ledger,code-review,comprehensive-php-test-suite-work-ledger,current-state-audit,design-system,known-limitations,seeding-work-ledger,ui-component-inventory,ui-migration-matrix,validation-error-work-ledger}.md` | 10 | Supporting/living evidence |
+| `docs/events.md` | 1 | Historical; superseded by `docs/events/index.md` |
+| `docs/seeding-coverage.md` | 1 | Generated evidence |
+| `docs/components/shared-card-primitives.md` | 1 | Canonical component contract |
+| `docs/audits/*.md`, excluding `pet-social-network-benchmark.md` | 20 | Supporting dated/living evidence |
+| `docs/audits/pet-social-network-benchmark.md` | 1 | Historical research |
+| Ten architecture/feature decision files under `docs/decisions/` | 10 | Canonical decisions |
+| Eight `*-assumptions.md` and `*-conflicts.md` files under `docs/decisions/` | 8 | Supporting decision evidence |
+| `docs/events/index.md` | 1 | Canonical event-system index |
+| Every other `docs/events/*.md` | 29 | Supporting event specifications/evidence |
+| Eleven named domain master/completion plans under `docs/plans/` | 11 | Canonical within scope; subordinate to this plan |
+| Other `docs/plans/*.md`, excluding the two following rows | 58 | Supporting work-package evidence |
+| `docs/plans/join-landing-page-plan.md` | 1 | Historical/superseded |
+| `docs/plans/forum-phase-requirement-index.md` | 1 | Generated evidence |
+| `docs/portal/*.md` | 8 | Supporting portal contracts |
+| `docs/requirements/{forum-source-prompt,laravel-engineering-standard}.md` | 2 | Canonical; source prompt is immutable |
+| `docs/requirements/{compliance-matrix,forum-master-requirements}.md` | 2 | Generated canonical evidence |
+| `docs/superpowers/plans/*.md` | 10 | Historical prototype evidence |
+| `docs/superpowers/specs/*.md` | 16 | Historical/subordinate product sources |
+| `docs/traceability/forum-requirements-matrix.md` | 1 | Generated living evidence |
+
+There is no competing global plan. Domain plans remain scoped. No `PLANS.md`
+or ceremonial replacement is required.
+
+### Repository And Runtime Inventory
+
+| Surface | Current factual inventory |
+| --- | --- |
+| Routes | 180 runtime routes after `optimize:clear`, including one Boost development route; 179 audited application/framework routes; 167 first-party `App\\` actions; 173 named |
+| HTTP/runtime entry points | `routes/web.php`, five console commands, no scheduled tasks, no first-party Jobs/Events/Listeners/Notifications |
+| Application layers | 147 controllers; 9 middleware; 67 Form Requests; 226 Actions; 155 Services; 204 models; 47 policies; 1 API Resource; 1 service provider |
+| Livewire/Blade | 86 Livewire PHP files: 37 components and 49 form objects; 36 Livewire views; 357 Blade views including 246 anonymous Blade components; no Volt/Flux/Filament |
+| Persistence | 139 migrations create 218 named tables; isolated fresh migrate/seed reports 219 including Laravel's migration ledger; 514 declared constrained foreign keys sampled by integrity tests |
+| Factory/seed | 204 model factories plus `ApplicationFactory`; 42 seeders; 248 explicit factory helpers; 1,521 enum-backed states |
+| Tests | 120 feature files, 3 unit files, 128 PHP files including support/bootstrap, 1,025 Pest declarations, zero Pest browser files, standalone Node browser runners |
+| Frontend | 9 resource JavaScript modules, 1 Tailwind CSS entry, 32 CSS/SCSS files, npm lock v3; PhotoSwipe is the only production npm dependency |
+| Roles/capabilities | Active/blocked account status plus explicit administrator flag; pet-manager, forum-group, journal-collaborator, knowledge-collaborator, organization, event-team, and event-session role enums; policies are authoritative |
+| Integrations/processes | No first-party outbound HTTP client, webhook, worker job, or scheduler; private/local and authenticated portal-file adapters; synchronous queues; operator-run deployment documentation |
+| Cache | Public listing/search aggregates with TTL/invalidation plus taxonomy caches and atomic locks for taxonomy, place, event, and state mutations |
+| Localization | Laravel language catalogues for `en`, `lt`, and `ru`, 45 files per locale; `LocaleFormatter` depends on Intl |
+
+The module map is: bootstrap/access; identity; pet/taxonomy; encrypted social
+compatibility state; normalized social/content; forum/knowledge/community;
+organizations; experts/bookings; marketplace/adoption; lost/found; medical;
+care; devices; places; and cross-cutting file/audit services. Active
+compatibility classes are not dead merely because they retain `Prototype` or
+`Preview` names.
+
+### Resolved Stack And Dependency Baseline
+
+| Surface | Declared / locked | Factual audit result |
+| --- | --- | --- |
+| PHP | `>=8.5 <8.6` / 8.5.8 | Boots; Intl, PDO SQLite, GD, Imagick present locally; direct extension requirements incomplete |
+| Laravel | `^13.0` / 13.23.0 | Boots; 13.29.0 available but deferred to prompt 03 |
+| Livewire | `^4.3.4` / 4.3.4 | Compatible; 4.4.2 deferred to prompt 03 |
+| Tailwind | `^4.3.3` / 4.3.3 | Current stable line |
+| Vite/plugin | 8.2.0 / 3.1.3 | Nano ID advisory requires targeted Vite patch; broader updates deferred |
+| Pest/PHPUnit | 4.7.5 / 12.5.30 | Correct major line; canonical Artisan test process lacks required memory configuration |
+| Larastan/PHPStan | 3.10.0 / 2.2.7 | Baseline passed at level 5 with 1 GiB |
+| Lock state | Composer lock + npm lock only | CommonMark has six advisories; Nano ID has one high advisory using official npm registry |
+
+### Critical Workflow Traces
+
+| Workflow | Validation and authorization | Persistence / side effects | Current test evidence or gap |
+| --- | --- | --- | --- |
+| Registration | Livewire form; server-generated actor key; framework auth/session regeneration | User insert then framework `Registered` event | Auth and portal-boundary tests |
+| Pet creation | Livewire form, duplicate review, policy and idempotency | Transaction: profile, manager, privacy, alias, lifecycle, audit; optional protected photo | Pet foundation/create/duplicate tests |
+| Social mutation | `PerformActionRequest`, portal/auth/active middleware, Action authorization | Locked/versioned encrypted `UserDomainState` | Social persistence tests; decomposition deferred |
+| Medical/care temporary access | Owner policy, authenticated active bearer, expiring hashed token, optional account binding, section/file permission and row lock | Downstream download/write succeeds inside the grant transaction before view/audit mutation; actual bearer is audited | Bound mismatch, unbound different-bearer, denied side-effect, download and shared-entry tests |
+| Device command | Password confirmation, throttle, request, explicit `controlCommand` policy | Locked/idempotent command, state/event/audit transaction | Smart-device and real Gate tests; no global administrator bypass |
+| Marketplace acceptance | Decimal-normalizing request, listing policy, scoped reservation, row locks | Reservation/listing transition, checked minor-unit total, immutable Order and audit | Precision, exact rental/deposit, maximum-width, rollback and call-site tests |
+| Forum topic publication | Request plus runtime schema, policy, media normalization | Transactional topic/taxon/lifecycle creation and compensating media cleanup | Topic lifecycle/schema tests |
+
+### Reproducible Initial Baseline
+
+| Command | Observed result before repair |
+| --- | --- |
+| `composer validate --strict` | Pass |
+| `composer audit --locked` | Fail: six `league/commonmark` 2.8.3 advisories |
+| Official-registry `npm audit --package-lock-only --audit-level=high` | Fail: high Nano ID 3.3.16 advisory |
+| `php artisan about` / uncached route discovery | Pass; 180 total / 169 non-vendor routes |
+| `php artisan test --compact` | Fatal at 128 MiB in taxonomy/factory loading |
+| `php -d memory_limit=1G artisan test ...` | Still fatal: Artisan child Pest process remains at 128 MiB |
+| Direct Pest with `php -d memory_limit=1G` on factory/seeder suite | Pass: 1,791 tests / 5,313 assertions |
+| `ForumAccessibilityTest` | Fail: 5 pass / 1 false-negative DOMXPath assertion / 49 assertions |
+| `vendor/bin/pint --test` | Pass |
+| `PAO_DISABLE=1 vendor/bin/phpstan analyse --memory-limit=1G --no-progress` | Pass, zero errors |
+| `npm run build` | Pass; Vite 8.2.0, 670 ms |
+| `php scripts/verify-fresh-database.php` | Pass: 139 migrations, 219 tables, repeat seed stable at five users |
+| Forum requirement generator | Fatal at 128 MiB; with 1 GiB reports generated JSON stale |
+| Forum source preservation | External failure: source entry `1785397895` is unavailable |
+| Seeding coverage generator | Committed evidence stale: 203 models / 246 helpers / 1,521 enum states now |
+
+### Accepted Findings And Execution Items
+
+Every item names its dependency, owner, files, acceptance criterion, test,
+verification command, status, and rollback. `Principal` is the sole editor.
+
+| ID | Dependency | Owner | Files/modules | Acceptance criteria | Required test / verification | Status | Rollback |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| AUD-01 | None | Principal | Git/index and work ledger | Initial user slice remains byte-present and task commit contains only attributable work | Final status, staged/unstaged diffs, temporary-index staged diff | complete | Restore saved index tree, never working files |
+| AUD-02 | AUD-01 | Seven read-only auditors | Entire first-party tree | All requested analysis reports reconciled; high-impact claims directly validated | Inventory commands and exact file/symbol sampling | complete | Documentation-only reversal |
+| AUD-03 | AUD-02 | Principal | This plan and current-state audit | Stable implementation/deferred IDs exist before runtime edits | Diff proves plan precedes production changes | complete | Revert documentation section only |
+| AUD-04 | AUD-03 | Principal | `AppServiceProvider`, `ChangeForumTopicState`, authorization tests | No blanket admin Gate bypass; private care/medical/device/order/search resources deny unrelated admins while explicit policy admin abilities remain | Red/green real-Gate authorization tests; policy/security slices | review-corrected; targeted verified | Restore hook only if equivalent explicit policy controls are added first |
+| AUD-05 | AUD-04 | Principal | Care/medical/device grant resolvers, downloads and shared writes | Bound grants require the authenticated recipient; unbound grants log the actual authenticated bearer; mismatch/denial consumes nothing; authorization and shared care writes remain in one transaction | Bound and different-bearer tests, denied side-effect tests, transactional architecture check | review-corrected; targeted verified | Revert binding as one coherent slice; token hashing/expiry unchanged |
+| AUD-06 | AUD-03 | Principal | `CreateOrder`, marketplace request validation, marketplace seeder, exact amount value object | No float money calculation; canonical decimals and schema-width totals remain exact; demo seeder fails closed outside allowed environments | Unit amount tests plus precision, quantity/rental/deposit/boundary/rollback/seeder regressions | review-corrected; targeted verified | Revert call sites and value object together; no schema change |
+| AUD-07 | AUD-03 | Principal | Composer/npm manifests and locks | Targeted CommonMark and Nano ID advisories removed; required direct extensions and Node/package-manager floors declared; no broad upgrade | Composer validate/audit/platform; official npm audit; build | targeted verified; concurrent broad Composer slice excluded | Revert manifest/lock slice atomically |
+| AUD-08 | AUD-03 | Principal | `phpunit.xml`, safe test/browser runners, forum generator/test and generated outputs | Canonical tests clear cached config and have 1 GiB; stateful browser gates own disposable SQLite/loopback runtime and direct runners fail closed; forum output is deterministic independently of external history | Cached-config runner smoke, browser refusal/isolation tests, generator `--check`, architecture tests | review-corrected; targeted verified | Revert config/runners/generated outputs atomically |
+| AUD-09 | AUD-08 | Principal | Compliance/seeding generators and evidence | Point 13 supplemental rows survive generation; real cache use is not marked N/A; seeding evidence is byte-current | Generator byte-parity architecture tests | targeted verified | Regenerate from reverted generator |
+| AUD-10 | AUD-03 | Principal | Forum accessibility test, expert booking/editor Blade and controller | Caption test asserts actual behavior; repeated inputs have labels; Blade receives prepared request data | Targeted feature/architecture/render tests and build | targeted verified | Revert each independent UI/test slice |
+| AUD-11 | AUD-04..10 | Principal | `AGENTS.md`, generated inventory, audit/architecture/security/testing/seeding/deployment/index/review/changelog docs | Current claims are dated, per-path/symbol inventories are byte-current, canonical links agree, commands reproduce, no stale pass claim remains | Documentation generators, link/source scans, diff review | in progress | Revert task documentation only |
+| AUD-12 | AUD-11 | Three independent reviewers | Frozen attributable diff | Audit, security/integrity, and test reviewers disposition every finding; valid findings fixed | Review ledger plus rerun targeted/full gates | review complete; corrections targeted verified | Revert finding-specific change if correction is unsafe |
+| AUD-13 | AUD-12 | Principal | Complete repository | Applicable final gates pass or only exact external blockers remain; coherent main commit and safe push | Full verification list and Git evidence | pending | Revert task commit normally; never rewrite history |
+
+### Independent Review Dispositions
+
+- `AUD-RV-01` exact-inventory, direct SQLite-extension, device-binding,
+  money-wiring, lock-provenance, and workflow-staleness findings were accepted.
+  The deterministic inventory generator and per-path Markdown authority table,
+  manifest architecture checks, behavioral regressions, targeted lock audit,
+  and corrected workflow chains resolve them.
+- `AUD-RV-02` premature grant consumption, marketplace demo-seeder safety,
+  decimal precision/schema width, device binding coverage, and legacy JSON
+  money compatibility findings were accepted and regression-tested. Child
+  disclosure redesign remains assigned to prompts 09/10 because this pass did
+  not alter that product boundary. Grant `actor_role` remains the scoped role
+  named by the grant while `actor_key` is always the authenticated bearer; it
+  is audit metadata, not identity authorization.
+- `AUD-RV-03` care-write TOCTOU, unsafe browser mutation, cached-config test
+  execution, missing real-Gate/unbound-bearer tests, masked forum generation,
+  money branch coverage, generator drift, formatting, and stale-documentation
+  findings were accepted. The transaction wrappers, disposable runners,
+  split deterministic/external tests, expanded regressions, and synchronized
+  evidence resolve them subject to `AUD-13` final gates.
+- Codex `/review` is not available in this environment; the three required
+  behavior-focused independent reviewers supplied the review boundary.
+
+### Explicit Deferred Modernization Ownership
+
+| Finding | Owning later prompt | Reason it is not an audit-time repair |
+| --- | --- | --- |
+| Broad stable dependency upgrades | 03 | Current prompt permits only advisory/platform blockers |
+| Large Actions/services, prototype-state split, orphan candidates | 06 | Requires characterization and domain-by-domain migration |
+| Missing schema relationships, upload/DB atomicity, forum pagination and vote bounds | 07, 20, 21 | Requires additive schema/query/file design and volume tests |
+| Shared-browser forum/message/care offline draft isolation | 12, then 23 review | Requires versioned browser-storage migration and two-account browser coverage |
+| Nested child non-disclosure and form service location | 09 and 10 | Requires consistent binding/error-contract changes |
+| Large Livewire components, hydration/key gaps, direct Livewire persistence | 11 | Cross-component state and action extraction require dedicated tests |
+| Tailwind/SCSS bundle modernization | 13 | Existing build is valid; visual migration requires measured proof |
+| Remaining accessibility/browser-route coverage | 14 | Requires isolated connected browser matrix |
+| Device-to-medical literals and native linguistic review | 15 | Localization-specific ownership and native review |
+| Whole-schema factory/seed idempotency expansion | 16 and 17 | Needs explicit append-only table policy |
+| Authenticated-by-default test foundation and CI | 18 and 23 | Broad test bootstrap/automation change |
+| External providers/webhooks/payments | 19 and 22 | Provider selection/credentials and runtime process topology are absent |
+
+Suspected plaintext moderation/mentorship fields and device timezone provenance
+remain unclassified until the owning requirement is confirmed; no destructive
+migration or speculative rewrite is authorized here.
+
 ## Active Delivery: Blade And Browser Lifecycle Modernization
 
 Status: `discovery in progress` on 2026-08-30.

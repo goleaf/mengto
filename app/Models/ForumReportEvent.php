@@ -43,4 +43,10 @@ final class ForumReportEvent extends Model
     {
         return $this->belongsTo(ForumReport::class, 'forum_report_id');
     }
+
+    /** @return BelongsTo<User, $this> */
+    public function actor(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'actor_user_id');
+    }
 }

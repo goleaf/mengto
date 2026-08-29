@@ -250,6 +250,18 @@ class KnowledgeArticle extends Model
         return $this->hasMany(KnowledgeWorkflowEvent::class, 'article_id');
     }
 
+    /** @return HasMany<KnowledgeArticle, $this> */
+    public function translations(): HasMany
+    {
+        return $this->hasMany(self::class, 'translated_from_article_id');
+    }
+
+    /** @return HasMany<KnowledgeArticle, $this> */
+    public function replacedArticles(): HasMany
+    {
+        return $this->hasMany(self::class, 'replaced_by_article_id');
+    }
+
     public function scopeForLibrary(Builder $query): Builder
     {
         return $query->select([

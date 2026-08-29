@@ -6,7 +6,6 @@ namespace Database\Factories;
 
 use App\Models\DeviceAutomation;
 use App\Models\DeviceAutomationRun;
-use App\Models\SmartDevice;
 use Illuminate\Support\Str;
 
 /**
@@ -23,7 +22,7 @@ class DeviceAutomationRunFactory extends ApplicationFactory
     {
         return [
             'device_automation_id' => DeviceAutomation::factory(),
-            'smart_device_id' => SmartDevice::factory(),
+            'smart_device_id' => null,
             'idempotency_key' => (string) Str::uuid(),
             'trigger_snapshot' => ['type' => 'device-offline'],
             'action_snapshot' => ['type' => 'send-notification'],
@@ -33,5 +32,14 @@ class DeviceAutomationRunFactory extends ApplicationFactory
             'completed_at' => now(),
             'result' => ['message' => 'Test completed without a real command'],
         ];
+    }
+
+    public function configure(): static
+    {
+        return $this->afterMaking(function (DeviceAutomationRun $run): void {
+            $run->smart_device_id = DeviceAutomation::query()
+                ->findOrFail($run->device_automation_id)
+                ->smart_device_id;
+        });
     }
 }

@@ -158,6 +158,18 @@ class Booking extends Model
         return $this->hasOne(Review::class);
     }
 
+    /** @return HasMany<AuditLog, $this> */
+    public function auditLogs(): HasMany
+    {
+        return $this->hasMany(AuditLog::class);
+    }
+
+    /** @return HasMany<ExpertReport, $this> */
+    public function expertReports(): HasMany
+    {
+        return $this->hasMany(ExpertReport::class);
+    }
+
     public function scopeForClient(Builder $query, string $clientKey): Builder
     {
         return $query->where('client_key', $clientKey);

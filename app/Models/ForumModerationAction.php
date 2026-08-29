@@ -80,9 +80,21 @@ final class ForumModerationAction extends Model
         return $this->belongsTo(User::class, 'target_user_id');
     }
 
+    /** @return BelongsTo<ForumModerationAction, $this> */
+    public function reversedAction(): BelongsTo
+    {
+        return $this->belongsTo(self::class, 'reversal_of_action_id');
+    }
+
     /** @return HasMany<ForumModerationAppeal, $this> */
     public function appeals(): HasMany
     {
         return $this->hasMany(ForumModerationAppeal::class);
+    }
+
+    /** @return HasMany<ForumModerationAction, $this> */
+    public function reversals(): HasMany
+    {
+        return $this->hasMany(self::class, 'reversal_of_action_id');
     }
 }

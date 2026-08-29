@@ -127,7 +127,7 @@ test('valid WebVTT captions and escaped transcripts are stored and rendered', fu
     $xpath = responseXPath($show);
 
     expect($xpath->query('//video[@controls and @aria-describedby]')->length)->toBe(1)
-        ->and($xpath->query('//video/track[@kind="captions"][@srclang="en"][@default]')->length)->toBe(1)
+        ->and($xpath->query('//video//track[@kind="captions"][@srclang="en"][@default]')->length)->toBe(1)
         ->and($xpath->query('//figcaption[@id="topic-media-description-0"]//summary')->length)->toBe(1)
         ->and($xpath->query('//figcaption[@id="topic-media-description-0"]//script')->length)->toBe(0);
 

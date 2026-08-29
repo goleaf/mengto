@@ -11,7 +11,6 @@ use App\Observers\ForumTopicTypeObserver;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Routing\Events\RouteMatched;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
@@ -46,12 +45,6 @@ class AppServiceProvider extends ServiceProvider
 
         Password::defaults(
             static fn (): Password => Password::min(12)->mixedCase()->numbers(),
-        );
-
-        Gate::before(
-            static fn (User $user): ?bool => $user->isActive() && $user->isAdministrator()
-                ? true
-                : null,
         );
 
         ResetPassword::createUrlUsing(

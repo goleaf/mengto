@@ -8,8 +8,8 @@ use App\Enums\ForumEventVerificationStatus;
 use Carbon\CarbonImmutable;
 use Database\Factories\ForumEventRegistrationPetFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\Pivot;
 
 /**
  * @property CarbonImmutable|null $checked_in_at
@@ -21,10 +21,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $pet_profile_id
  * @property ForumEventVerificationStatus $verification_source
  */
-final class ForumEventRegistrationPet extends Model
+final class ForumEventRegistrationPet extends Pivot
 {
     /** @use HasFactory<ForumEventRegistrationPetFactory> */
     use HasFactory;
+
+    public $incrementing = true;
+
+    protected $table = 'forum_event_registration_pets';
 
     protected $fillable = [
         'forum_event_registration_id',

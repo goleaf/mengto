@@ -184,7 +184,7 @@ test('the repeatable page identity browser matrix covers every priority surface 
             "join(outputDirectory, 'page-identity-report.json')",
         )
         ->and($package)
-        ->toContain('"test:browser:page-identity": "node scripts/accessibility-browser-check.mjs --page-identity-only"');
+        ->toContain('"test:browser:page-identity": "php scripts/run-browser-check.php page-identity"');
 });
 
 test('priority page identity copy is translated instead of falling back to English', function () {

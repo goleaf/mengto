@@ -54,4 +54,22 @@ final class TaxonSource extends Model
     {
         return $this->hasMany(TaxonImport::class);
     }
+
+    /** @return HasMany<TaxonExternalIdentifier, $this> */
+    public function externalIdentifiers(): HasMany
+    {
+        return $this->hasMany(TaxonExternalIdentifier::class);
+    }
+
+    /** @return HasMany<TaxonName, $this> */
+    public function names(): HasMany
+    {
+        return $this->hasMany(TaxonName::class);
+    }
+
+    /** @return HasMany<TaxonVersion, $this> */
+    public function versions(): HasMany
+    {
+        return $this->hasMany(TaxonVersion::class);
+    }
 }

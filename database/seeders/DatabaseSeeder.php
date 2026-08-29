@@ -30,13 +30,14 @@ class DatabaseSeeder extends Seeder
         $this->demoUser([
             'actor_key' => 'mia-carter',
             'name' => 'Mia Carter',
-            'email' => 'mia@example.test',
+            'email' => 'user@example.com',
             'email_verified_at' => now(),
             'password' => 'password',
             'locale' => 'en',
             'timezone' => 'Europe/Vilnius',
             'status' => UserStatus::Active,
             'is_admin' => false,
+            'last_login_at' => now()->subDay(),
         ]);
         $this->demoUser([
             'actor_key' => 'demo-administrator',
@@ -59,6 +60,66 @@ class DatabaseSeeder extends Seeder
             'timezone' => 'Europe/Vilnius',
             'status' => UserStatus::Active,
             'is_admin' => false,
+        ]);
+        $this->demoUser([
+            'actor_key' => 'demo-caregiver',
+            'name' => 'Demo Caregiver',
+            'email' => 'caregiver@example.test',
+            'email_verified_at' => now(),
+            'password' => 'password',
+            'locale' => 'en',
+            'timezone' => 'Europe/London',
+            'status' => UserStatus::Active,
+            'is_admin' => false,
+            'last_login_at' => now()->subDays(2),
+        ]);
+        $this->demoUser([
+            'actor_key' => 'demo-volunteer',
+            'name' => 'Demo Search Volunteer',
+            'email' => 'volunteer@example.test',
+            'email_verified_at' => now(),
+            'password' => 'password',
+            'locale' => 'en',
+            'timezone' => 'Europe/Vilnius',
+            'status' => UserStatus::Active,
+            'is_admin' => false,
+            'last_login_at' => now()->subHours(8),
+        ]);
+        $this->demoUser([
+            'actor_key' => 'demo-expert-client',
+            'name' => 'Demo Expert Client',
+            'email' => 'expert-client@example.test',
+            'email_verified_at' => now(),
+            'password' => 'password',
+            'locale' => 'ru',
+            'timezone' => 'Europe/Vilnius',
+            'status' => UserStatus::Active,
+            'is_admin' => false,
+            'last_login_at' => now()->subWeek(),
+        ]);
+        $this->demoUser([
+            'actor_key' => 'demo-suspended',
+            'name' => 'Demo Suspended Member',
+            'email' => 'suspended@example.test',
+            'email_verified_at' => now(),
+            'password' => 'password',
+            'locale' => 'en',
+            'timezone' => 'UTC',
+            'status' => UserStatus::Suspended,
+            'is_admin' => false,
+            'last_login_at' => now()->subMonth(),
+        ]);
+        $this->demoUser([
+            'actor_key' => 'demo-marketplace-member',
+            'name' => 'Demo Marketplace Member',
+            'email' => 'marketplace@example.test',
+            'email_verified_at' => now(),
+            'password' => 'password',
+            'locale' => 'en',
+            'timezone' => 'Europe/Vilnius',
+            'status' => UserStatus::Active,
+            'is_admin' => false,
+            'last_login_at' => now()->subDays(4),
         ]);
         $this->demoUser([
             'actor_key' => 'demo-russian-blocked',
@@ -113,6 +174,19 @@ class DatabaseSeeder extends Seeder
         $this->call(SmartDeviceSeeder::class);
         $this->call(SocialActorFoundationSeeder::class);
         $this->call(DiscoveryDemoSeeder::class);
+        $this->call(RepresentativeDomainSeeder::class);
+
+        // Representative factories can introduce new parent aggregates. Run
+        // idempotent foundation/backfill passes once more so a fresh seed is
+        // complete on its first execution.
+        $this->call(PetProfileFoundationSeeder::class);
+        $this->call(SocialActorFoundationSeeder::class);
+        $this->call(ForumTopicLifecycleBackfillSeeder::class);
+        $this->call(ForumTopicTaxonomyBackfillSeeder::class);
+        $this->call(ForumJournalBackfillSeeder::class);
+        $this->call(ForumEventBackfillSeeder::class);
+        $this->call(ForumEventLifecycleBackfillSeeder::class);
+        $this->call(SearchCaseIntegritySeeder::class);
     }
 
     /** @param array<string, mixed> $attributes */

@@ -29,7 +29,7 @@ final class ForumModeratorRecusal extends Model
     /** @return BelongsTo<ForumModerationCase, $this> */
     public function moderationCase(): BelongsTo
     {
-        return $this->belongsTo(ForumModerationCase::class);
+        return $this->belongsTo(ForumModerationCase::class, 'forum_moderation_case_id');
     }
 
     /** @return BelongsTo<User, $this> */

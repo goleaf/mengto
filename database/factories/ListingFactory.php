@@ -38,7 +38,7 @@ class ListingFactory extends ApplicationFactory
             'title' => $title,
             'description' => fake()->paragraphs(2, true),
             'condition' => 'good',
-            'price' => fake()->randomFloat(2, 5, 120),
+            'price' => fake()->randomElement(['12.50', '24.90', '49.00', '89.95']),
             'currency' => 'EUR',
             'is_free' => false,
             'quantity' => 1,
@@ -61,7 +61,7 @@ class ListingFactory extends ApplicationFactory
             'delivery_options' => ['meetup', 'pickup'],
             'meetup_notes' => 'Agree on a public meeting point in platform messages.',
             'return_policy' => 'Inspect during handover. Hidden defects can be reported through the platform.',
-            'cover_url' => 'https://images.unsplash.com/photo-1601758228041-f3b2795255f1?auto=format&fit=crop&w=1200&q=85',
+            'cover_url' => '/images/places/pet-store-primary-lg.jpg',
             'gallery' => [],
             'video_url' => null,
             'status' => ListingStatus::Published,
@@ -104,7 +104,7 @@ class ListingFactory extends ApplicationFactory
         return $this->state(fn (): array => [
             'type' => ListingType::Rental,
             'category' => 'rehabilitation',
-            'price' => 8,
+            'price' => '8.00',
             'is_free' => false,
             'availability' => 'available-for-rent',
             'attributes' => [

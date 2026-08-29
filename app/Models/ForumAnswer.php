@@ -118,6 +118,18 @@ class ForumAnswer extends Model
             ->where('subject_type', 'forum-answer');
     }
 
+    /** @return HasMany<ForumReport, $this> */
+    public function reports(): HasMany
+    {
+        return $this->hasMany(ForumReport::class, 'answer_id');
+    }
+
+    /** @return HasMany<ForumTopicAcceptance, $this> */
+    public function acceptances(): HasMany
+    {
+        return $this->hasMany(ForumTopicAcceptance::class, 'forum_answer_id');
+    }
+
     public function scopeForThread(Builder $query): Builder
     {
         return $query->select([

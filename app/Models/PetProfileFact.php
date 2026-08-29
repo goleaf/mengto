@@ -10,6 +10,7 @@ use Database\Factories\PetProfileFactFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
 
 /**
@@ -75,5 +76,11 @@ final class PetProfileFact extends Model
     public function replacedFact(): BelongsTo
     {
         return $this->belongsTo(self::class, 'replaces_fact_id');
+    }
+
+    /** @return HasMany<PetProfileFact, $this> */
+    public function replacementFacts(): HasMany
+    {
+        return $this->hasMany(self::class, 'replaces_fact_id');
     }
 }

@@ -41,4 +41,10 @@ final class ForumReputationDimension extends Model
     {
         return $this->hasMany(ForumReputationEvent::class);
     }
+
+    /** @return HasMany<ForumReputationAggregate, $this> */
+    public function aggregates(): HasMany
+    {
+        return $this->hasMany(ForumReputationAggregate::class);
+    }
 }

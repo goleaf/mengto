@@ -100,4 +100,16 @@ final class TaxonImport extends Model
     {
         return $this->hasMany(TaxonImportIssue::class);
     }
+
+    /** @return HasMany<TaxonChange, $this> */
+    public function changes(): HasMany
+    {
+        return $this->hasMany(TaxonChange::class);
+    }
+
+    /** @return HasMany<TaxonName, $this> */
+    public function names(): HasMany
+    {
+        return $this->hasMany(TaxonName::class);
+    }
 }

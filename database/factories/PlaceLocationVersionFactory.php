@@ -6,7 +6,6 @@ namespace Database\Factories;
 
 use App\Models\Place;
 use App\Models\PlaceLocationVersion;
-use App\Models\User;
 
 /** @extends ApplicationFactory<PlaceLocationVersion> */
 final class PlaceLocationVersionFactory extends ApplicationFactory
@@ -17,8 +16,10 @@ final class PlaceLocationVersionFactory extends ApplicationFactory
     {
         return [
             'place_id' => Place::factory(),
-            'changed_by_user_id' => User::factory(),
-            'version' => 1,
+            'changed_by_user_id' => null,
+            'version' => fn (array $attributes): int => (int) PlaceLocationVersion::query()
+                ->where('place_id', $attributes['place_id'])
+                ->max('version') + 1,
             'public_region' => 'Vilnius',
             'public_address' => null,
             'public_latitude' => '54.687000',
@@ -30,5 +31,14 @@ final class PlaceLocationVersionFactory extends ApplicationFactory
             'reason_code' => 'factory-location-version',
             'created_at' => now(),
         ];
+    }
+
+    public function configure(): static
+    {
+        return $this->afterMaking(function (PlaceLocationVersion $version): void {
+            $version->changed_by_user_id ??= Place::query()
+                ->findOrFail($version->place_id)
+                ->owner_user_id;
+        });
     }
 }

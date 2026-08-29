@@ -8,6 +8,7 @@ use Database\Factories\ForumModerationAppealFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 final class ForumModerationAppeal extends Model
 {
@@ -56,5 +57,11 @@ final class ForumModerationAppeal extends Model
     public function reviewer(): BelongsTo
     {
         return $this->belongsTo(User::class, 'reviewer_user_id');
+    }
+
+    /** @return HasMany<ForumReviewPanel, $this> */
+    public function reviewPanels(): HasMany
+    {
+        return $this->hasMany(ForumReviewPanel::class);
     }
 }

@@ -174,6 +174,18 @@ final class Place extends Model
         return $this->belongsTo(Organization::class);
     }
 
+    /** @return BelongsTo<User, $this> */
+    public function createdBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'created_by_user_id');
+    }
+
+    /** @return BelongsTo<User, $this> */
+    public function lastEditedBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'last_edited_by_user_id');
+    }
+
     /** @return HasOne<Venue, $this> */
     public function venue(): HasOne
     {
@@ -208,6 +220,12 @@ final class Place extends Model
     public function events(): HasMany
     {
         return $this->hasMany(ForumEvent::class);
+    }
+
+    /** @return HasMany<ForumEventOccurrence, $this> */
+    public function eventOccurrences(): HasMany
+    {
+        return $this->hasMany(ForumEventOccurrence::class);
     }
 
     /** @param Builder<Place> $query @return Builder<Place> */

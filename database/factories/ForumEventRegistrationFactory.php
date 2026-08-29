@@ -63,9 +63,7 @@ final class ForumEventRegistrationFactory extends ApplicationFactory
 
     public function pending(): static
     {
-        return $this->state(fn (): array => [
-            'status' => ForumEventRegistrationStatus::Pending,
-        ]);
+        return $this->withStatus(ForumEventRegistrationStatus::Pending);
     }
 
     public function draft(): static
@@ -108,6 +106,7 @@ final class ForumEventRegistrationFactory extends ApplicationFactory
         return $this->state(fn (): array => [
             'status' => ForumEventRegistrationStatus::Waitlisted,
             'waitlist_position' => $position,
+            'confirmed_at' => null,
         ]);
     }
 
@@ -190,6 +189,16 @@ final class ForumEventRegistrationFactory extends ApplicationFactory
 
     private function withStatus(ForumEventRegistrationStatus $status): static
     {
-        return $this->state(fn (): array => ['status' => $status]);
+        return $this->state(fn (): array => [
+            'status' => $status,
+            'confirmed_at' => in_array($status, [
+                ForumEventRegistrationStatus::Confirmed,
+                ForumEventRegistrationStatus::CheckedIn,
+                ForumEventRegistrationStatus::Attended,
+                ForumEventRegistrationStatus::NoShow,
+                ForumEventRegistrationStatus::Refunded,
+                ForumEventRegistrationStatus::Cancelled,
+            ], true) ? now() : null,
+        ]);
     }
 }

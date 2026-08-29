@@ -122,6 +122,18 @@ class CareEntry extends Model
         return $this->hasMany(CareMedia::class);
     }
 
+    /** @return HasMany<DeviceEvent, $this> */
+    public function deviceEvents(): HasMany
+    {
+        return $this->hasMany(DeviceEvent::class);
+    }
+
+    /** @return HasMany<DeviceReading, $this> */
+    public function deviceReadings(): HasMany
+    {
+        return $this->hasMany(DeviceReading::class);
+    }
+
     public function scopeForTimeline(Builder $query): Builder
     {
         return $query->select([

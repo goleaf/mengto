@@ -75,6 +75,12 @@ final class TaxonVersion extends Model
         return $this->belongsTo(TaxonImport::class, 'taxon_import_id');
     }
 
+    /** @return BelongsTo<TaxonSource, $this> */
+    public function source(): BelongsTo
+    {
+        return $this->belongsTo(TaxonSource::class, 'taxon_source_id');
+    }
+
     public function scopeActive(Builder $query): Builder
     {
         return $query->where('is_active_version', true);

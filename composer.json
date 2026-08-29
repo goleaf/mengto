@@ -11,6 +11,9 @@
     ],
     "license": "MIT",
     "require": {
+        "ext-fileinfo": "*",
+        "ext-intl": "*",
+        "ext-pdo": "*",
         "php": ">=8.5.0 <8.6.0",
         "bacon/bacon-qr-code": "^3.1",
         "fakerphp/faker": "^1.23",
@@ -21,6 +24,7 @@
         "mallardduck/blade-lucide-icons": "^1.26"
     },
     "require-dev": {
+        "ext-pdo_sqlite": "*",
         "laravel/boost": "^2.2",
         "laravel/pail": "^1.2.5",
         "laravel/pao": "^1.0.6",

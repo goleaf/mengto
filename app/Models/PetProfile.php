@@ -18,6 +18,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -110,7 +111,7 @@ final class PetProfile extends Model
         'profile_data',
     ];
 
-    protected $hidden = ['profile_data'];
+    protected $hidden = ['creation_key', 'profile_data'];
 
     protected function casts(): array
     {
@@ -165,6 +166,12 @@ final class PetProfile extends Model
     public function domesticClassification(): BelongsTo
     {
         return $this->belongsTo(DomesticClassification::class);
+    }
+
+    /** @return BelongsTo<User, $this> */
+    public function lifeStageOverrideActor(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'life_stage_override_by_user_id');
     }
 
     /** @return HasMany<PetProfileBreedOrigin, $this> */
@@ -241,6 +248,39 @@ final class PetProfile extends Model
     public function facts(): HasMany
     {
         return $this->hasMany(PetProfileFact::class);
+    }
+
+    /** @return HasMany<ForumEventRegistrationPet, $this> */
+    public function eventRegistrationPets(): HasMany
+    {
+        return $this->hasMany(ForumEventRegistrationPet::class);
+    }
+
+    /** @return BelongsToMany<ForumEventRegistration, $this> */
+    public function forumEventRegistrations(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            ForumEventRegistration::class,
+            'forum_event_registration_pets',
+        )->using(ForumEventRegistrationPet::class)->withPivot([
+            'eligibility_status',
+            'verification_source',
+            'conditions',
+            'checked_in_at',
+            'checked_out_at',
+        ])->withTimestamps();
+    }
+
+    /** @return HasMany<ForumReport, $this> */
+    public function affectedForumReports(): HasMany
+    {
+        return $this->hasMany(ForumReport::class, 'affected_pet_profile_id');
+    }
+
+    /** @return HasMany<PetProfile, $this> */
+    public function duplicateProfiles(): HasMany
+    {
+        return $this->hasMany(self::class, 'canonical_profile_id');
     }
 
     /** @return HasOne<PetProfileFact, $this> */

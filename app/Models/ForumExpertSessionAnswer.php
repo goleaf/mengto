@@ -96,4 +96,10 @@ final class ForumExpertSessionAnswer extends Model
     {
         return $this->hasMany(ForumExpertSessionCorrection::class);
     }
+
+    /** @return HasMany<ForumExpertSessionHistory, $this> */
+    public function history(): HasMany
+    {
+        return $this->hasMany(ForumExpertSessionHistory::class);
+    }
 }

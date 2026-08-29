@@ -22,7 +22,7 @@ final class PlaceAccessGrantFactory extends ApplicationFactory
             'place_id' => Place::factory()->private(),
             'user_id' => User::factory(),
             'event_id' => null,
-            'issued_by_user_id' => User::factory(),
+            'issued_by_user_id' => null,
             'purpose' => PlaceAccessPurpose::ProfessionalVisit,
             'status' => PlaceAccessGrantStatus::Active,
             'may_view_exact_location' => true,
@@ -33,6 +33,15 @@ final class PlaceAccessGrantFactory extends ApplicationFactory
             'idempotency_key' => 'place-grant-'.Str::lower((string) Str::ulid()),
             'metadata' => null,
         ];
+    }
+
+    public function configure(): static
+    {
+        return $this->afterMaking(function (PlaceAccessGrant $grant): void {
+            $grant->issued_by_user_id ??= Place::query()
+                ->findOrFail($grant->place_id)
+                ->owner_user_id;
+        });
     }
 
     public function active(): static

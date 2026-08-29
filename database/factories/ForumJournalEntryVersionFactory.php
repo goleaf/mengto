@@ -19,7 +19,9 @@ final class ForumJournalEntryVersionFactory extends ApplicationFactory
         return [
             'forum_journal_entry_id' => ForumJournalEntry::factory(),
             'edited_by_user_id' => null,
-            'version' => 1,
+            'version' => fn (array $attributes): int => (int) ForumJournalEntryVersion::query()
+                ->where('forum_journal_entry_id', $attributes['forum_journal_entry_id'])
+                ->max('version') + 1,
             'snapshot' => [
                 'title' => fake()->sentence(4),
                 'body' => fake()->paragraph(),

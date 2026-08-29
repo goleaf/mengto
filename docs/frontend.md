@@ -113,12 +113,15 @@ order after the home link.
 
 Livewire owns only typed form and submission state. Shared Blade components
 own labels, autocomplete, help and validation associations, loading copy, and
-offline feedback. `resources/scss/_auth.scss` owns responsive composition,
-44-pixel targets, focus, reduced-motion-safe transitions, and forced-colors
-boundaries. Account-access links and post-auth redirects use ordinary document
-navigation so Vite preload tags are not inserted twice during Livewire page
-transitions; mutations themselves remain server-authoritative Livewire
-operations. See
+offline feedback. Password-type `auth-field` instances also own one native,
+localized visibility button. Each field remains statically masked before
+Alpine initializes, keeps its visibility state independent and browser-local,
+and does not add a server request or persistent browser value.
+`resources/scss/_auth.scss` owns responsive composition, 44-pixel targets,
+focus, reduced-motion-safe transitions, and forced-colors boundaries.
+Account-access links and post-auth redirects use ordinary document navigation
+so Vite preload tags are not inserted twice during Livewire page transitions;
+mutations themselves remain server-authoritative Livewire operations. See
 `docs/superpowers/specs/2026-07-31-auth-interface-redesign.md`.
 
 ## Organization Workspaces

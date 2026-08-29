@@ -52,6 +52,18 @@ final class TaxonName extends Model
         return $this->belongsTo(Taxon::class);
     }
 
+    /** @return BelongsTo<TaxonImport, $this> */
+    public function import(): BelongsTo
+    {
+        return $this->belongsTo(TaxonImport::class, 'taxon_import_id');
+    }
+
+    /** @return BelongsTo<TaxonSource, $this> */
+    public function source(): BelongsTo
+    {
+        return $this->belongsTo(TaxonSource::class, 'taxon_source_id');
+    }
+
     public function scopeSearch(Builder $query, string $normalizedQuery): Builder
     {
         return $query

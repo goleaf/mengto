@@ -22,7 +22,9 @@ class KnowledgeVersionFactory extends ApplicationFactory
     {
         return [
             'article_id' => KnowledgeArticle::factory(),
-            'version_number' => 1,
+            'version_number' => fn (array $attributes): int => (int) KnowledgeVersion::query()
+                ->where('article_id', $attributes['article_id'])
+                ->max('version_number') + 1,
             'title' => fake()->sentence(7),
             'body' => fake()->paragraphs(4, true),
             'edited_by' => fake()->name(),

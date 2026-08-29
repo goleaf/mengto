@@ -15,6 +15,7 @@ use App\Models\ForumAnswer;
 use App\Models\Publication;
 use App\Models\Review;
 use App\Models\Service;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
@@ -275,6 +276,7 @@ class ExpertSeeder extends Seeder
         ]);
 
         $booking = Booking::factory()->completed()->create([
+            'client_id' => User::query()->where('actor_key', 'mia-carter')->valueOrFail('id'),
             'expert_profile_id' => $catBehavior->id,
             'service_id' => $catService->id,
             'availability_slot_id' => $catSlot->id,

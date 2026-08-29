@@ -56,7 +56,7 @@ class ExpertProfileFactory extends ApplicationFactory
             'contact_verified' => true,
             'verification_expires_at' => now()->addYear(),
             'next_available_at' => now()->addDay(),
-            'avatar_url' => 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=640&q=85',
+            'avatar_url' => '/images/places/veterinary-primary-md.jpg',
             'review_average' => 0,
             'review_count' => 0,
             'verified_review_count' => 0,

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
+use App\Enums\MedicalKnowledgeStatus;
 use App\Models\MedicalRecord;
 use App\Models\PetProfile;
 use Illuminate\Support\Str;
@@ -38,9 +39,9 @@ class MedicalRecordFactory extends ApplicationFactory
             'microchip_number' => '900'.fake()->numerify('############'),
             'microchip_checked_on' => now()->subMonths(2)->toDateString(),
             'blood_group' => null,
-            'allergy_knowledge_status' => 'known',
+            'allergy_knowledge_status' => MedicalKnowledgeStatus::Known,
             'critical_allergies' => ['Chicken protein'],
-            'medication_knowledge_status' => 'none-known',
+            'medication_knowledge_status' => MedicalKnowledgeStatus::NoneKnown,
             'chronic_conditions' => [],
             'emergency_notes' => 'Use calm handling and call the primary clinic.',
             'primary_clinic_name' => 'Paws 24 Veterinary Center',

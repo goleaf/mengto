@@ -6,7 +6,6 @@ namespace Database\Factories;
 
 use App\Models\ForumMentorship;
 use App\Models\ForumMentorshipMessage;
-use App\Models\User;
 use Illuminate\Support\Str;
 
 /**
@@ -18,7 +17,7 @@ final class ForumMentorshipMessageFactory extends ApplicationFactory
     {
         return [
             'forum_mentorship_id' => ForumMentorship::factory()->active(),
-            'sender_user_id' => User::factory(),
+            'sender_user_id' => null,
             'body' => fake()->paragraph(),
             'idempotency_key' => 'factory:message:'.Str::uuid()->toString(),
             'created_at' => now(),

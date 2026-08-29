@@ -20,7 +20,7 @@ final class ContentMediaAssetFactory extends ApplicationFactory
         return [
             'media_key' => $key,
             'owner_user_id' => User::factory(),
-            'created_by_user_id' => User::factory(),
+            'created_by_user_id' => fn (array $attributes): mixed => $attributes['owner_user_id'],
             'media_type' => ContentMediaType::Image,
             'status' => ContentMediaStatus::Ready,
             'disk' => 'private',
@@ -34,5 +34,13 @@ final class ContentMediaAssetFactory extends ApplicationFactory
             'safe_metadata' => ['gps_removed' => true],
             'retained_until' => null,
         ];
+    }
+
+    public function ownedBy(User $user): static
+    {
+        return $this->state(fn (): array => [
+            'owner_user_id' => $user->id,
+            'created_by_user_id' => $user->id,
+        ]);
     }
 }

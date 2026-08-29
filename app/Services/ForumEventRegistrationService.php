@@ -584,6 +584,9 @@ final readonly class ForumEventRegistrationService
         $next->forceFill([
             'status' => $status,
             'waitlist_position' => null,
+            'confirmed_at' => $status === ForumEventRegistrationStatus::Confirmed
+                ? now()
+                : null,
             'lock_version' => $next->lock_version + 1,
         ])->save();
         $this->audit->record(

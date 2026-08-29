@@ -43,6 +43,8 @@ final class PetProfileMedia extends Model
         'restored_at',
     ];
 
+    protected $hidden = ['current_key', 'upload_key'];
+
     protected function casts(): array
     {
         return [

@@ -4,14 +4,32 @@ namespace App\Actions;
 
 use App\Models\AuditLog;
 use App\Models\MedicalAccessGrant;
+use App\Services\ForumActor;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
 
 class ResolveMedicalAccess
 {
+    public function __construct(private readonly ForumActor $actor) {}
+
     public function handle(string $token, string $action = 'medical-access.opened'): MedicalAccessGrant
     {
-        return DB::transaction(function () use ($token, $action): MedicalAccessGrant {
+        return $this->execute(
+            $token,
+            $action,
+            static fn (MedicalAccessGrant $grant): MedicalAccessGrant => $grant,
+        );
+    }
+
+    /**
+     * @template TResult
+     *
+     * @param  callable(MedicalAccessGrant): TResult  $operation
+     * @return TResult
+     */
+    public function execute(string $token, string $action, callable $operation): mixed
+    {
+        return DB::transaction(function () use ($token, $action, $operation): mixed {
             $grant = MedicalAccessGrant::query()
                 ->select([
                     'id', 'medical_record_id', 'granted_by_key', 'recipient_key',
@@ -28,26 +46,13 @@ class ResolveMedicalAccess
                 throw (new ModelNotFoundException)->setModel(MedicalAccessGrant::class);
             }
 
-            $grant->forceFill([
-                'views_used' => $grant->views_used + 1,
-                'last_opened_at' => now(),
-            ])->save();
+            $actorKey = $this->actor->requireUser()->actor_key;
 
-            AuditLog::query()->create([
-                'actor_key' => $grant->recipient_key ?? 'temporary-link',
-                'actor_role' => $grant->recipient_role,
-                'action' => $action,
-                'target_type' => MedicalAccessGrant::class,
-                'target_id' => (string) $grant->id,
-                'metadata' => [
-                    'medical_record_id' => $grant->medical_record_id,
-                    'sections' => $grant->sections,
-                    'views_used' => $grant->views_used,
-                    'max_views' => $grant->max_views,
-                ],
-            ]);
+            if ($grant->recipient_key !== null && ! hash_equals($grant->recipient_key, $actorKey)) {
+                throw (new ModelNotFoundException)->setModel(MedicalAccessGrant::class);
+            }
 
-            return $grant->load([
+            $grant->load([
                 'medicalRecord' => fn ($records) => $records->select([
                     'id', 'owner_key', 'slug', 'pet_profile_key', 'pet_name',
                     'species', 'breed', 'birth_date', 'birth_date_estimated',
@@ -60,6 +65,29 @@ class ResolveMedicalAccess
                     'last_visit_at', 'next_appointment_at',
                 ]),
             ]);
+
+            $result = $operation($grant);
+
+            $grant->forceFill([
+                'views_used' => $grant->views_used + 1,
+                'last_opened_at' => now(),
+            ])->save();
+
+            AuditLog::query()->create([
+                'actor_key' => $actorKey,
+                'actor_role' => $grant->recipient_role,
+                'action' => $action,
+                'target_type' => MedicalAccessGrant::class,
+                'target_id' => (string) $grant->id,
+                'metadata' => [
+                    'medical_record_id' => $grant->medical_record_id,
+                    'sections' => $grant->sections,
+                    'views_used' => $grant->views_used,
+                    'max_views' => $grant->max_views,
+                ],
+            ]);
+
+            return $result;
         });
     }
 }

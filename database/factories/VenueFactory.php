@@ -38,6 +38,8 @@ final class VenueFactory extends ApplicationFactory
 
         return $this
             ->for($organization)
-            ->for(Place::factory()->forOrganization($organization), 'place');
+            ->state(fn (): array => [
+                'place_id' => Place::factory()->forOrganization($organization),
+            ]);
     }
 }

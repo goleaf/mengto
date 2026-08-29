@@ -7,6 +7,7 @@ namespace App\Models;
 use Database\Factories\ForumBadgeFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 final class ForumBadge extends Model
 {
@@ -35,5 +36,11 @@ final class ForumBadge extends Model
             'expires' => 'boolean',
             'is_active' => 'boolean',
         ];
+    }
+
+    /** @return HasMany<ForumUserBadge, $this> */
+    public function userBadges(): HasMany
+    {
+        return $this->hasMany(ForumUserBadge::class);
     }
 }

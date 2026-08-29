@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+ini_set('memory_limit', '1G');
+
 $root = dirname(__DIR__);
 $sourcePath = $root.'/docs/requirements/forum-source-prompt.md';
 $evidencePath = $root.'/docs/traceability/forum-requirement-evidence.json';

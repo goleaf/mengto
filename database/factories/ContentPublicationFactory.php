@@ -19,7 +19,7 @@ final class ContentPublicationFactory extends ApplicationFactory
         return [
             'publication_key' => (string) Str::ulid(),
             'real_author_user_id' => User::factory(),
-            'publishing_actor_id' => SocialActor::factory()->forUser(),
+            'publishing_actor_id' => null,
             'representation_role' => 'self',
             'content_type' => ContentPublicationType::Post,
             'status' => ContentPublicationStatus::Draft,
@@ -34,6 +34,23 @@ final class ContentPublicationFactory extends ApplicationFactory
             'scheduled_at' => null,
             'expires_at' => null,
         ];
+    }
+
+    public function configure(): static
+    {
+        return $this->afterMaking(function (ContentPublication $publication): void {
+            if ($publication->publishing_actor_id !== null) {
+                return;
+            }
+
+            $author = User::query()->findOrFail($publication->real_author_user_id);
+            $actor = SocialActor::query()->firstOrCreate(
+                ['user_id' => $author->id],
+                SocialActor::factory()->forUser($author)->raw(),
+            );
+
+            $publication->publishing_actor_id = $actor->id;
+        });
     }
 
     public function by(User $user, SocialActor $actor): self

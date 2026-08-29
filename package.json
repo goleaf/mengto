@@ -1,14 +1,20 @@
 {
     "$schema": "https://www.schemastore.org/package.json",
+    "name": "pawcircle",
     "private": true,
     "type": "module",
+    "packageManager": "npm@12.0.1",
+    "engines": {
+        "node": "^20.19.0 || >=22.12.0",
+        "npm": ">=10.0.0"
+    },
     "scripts": {
         "build": "vite build",
-        "test:browser:a11y": "node scripts/accessibility-browser-check.mjs",
-        "test:browser:groups": "node scripts/accessibility-browser-check.mjs --groups-only",
-        "test:browser:page-identity": "node scripts/accessibility-browser-check.mjs --page-identity-only",
-        "test:browser:places": "node scripts/accessibility-browser-check.mjs --places-only",
-        "test:browser:discover": "node scripts/discovery-browser-check.mjs",
+        "test:browser:a11y": "php scripts/run-browser-check.php a11y",
+        "test:browser:groups": "php scripts/run-browser-check.php groups",
+        "test:browser:page-identity": "php scripts/run-browser-check.php page-identity",
+        "test:browser:places": "php scripts/run-browser-check.php places",
+        "test:browser:discover": "php scripts/run-browser-check.php discover",
         "dev": "vite",
         "skill-compass:check": "node .claude/skill-compass/install.js --check",
         "skill-compass:test": "node .claude/skill-compass/compass.js --self-test"
@@ -19,7 +25,7 @@
         "laravel-vite-plugin": "^3.1.3",
         "sass-embedded": "^1.100.0",
         "tailwindcss": "^4.3.3",
-        "vite": "^8.2.0"
+        "vite": "^8.2.2"
     },
     "dependencies": {
         "photoswipe": "^5.4.4"

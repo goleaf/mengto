@@ -11,7 +11,6 @@ use App\Enums\ForumPollType;
 use App\Enums\ForumPollVoterVisibility;
 use App\Models\ForumGroup;
 use App\Models\ForumPoll;
-use App\Models\User;
 use Illuminate\Support\Str;
 
 /**
@@ -25,7 +24,7 @@ final class ForumPollFactory extends ApplicationFactory
 
         return [
             'forum_group_id' => ForumGroup::factory(),
-            'created_by_user_id' => User::factory(),
+            'created_by_user_id' => null,
             'stable_key' => "poll-{$key}",
             'creation_idempotency_key' => "factory:poll:{$key}",
             'question' => fake()->sentence(8),
@@ -45,15 +44,23 @@ final class ForumPollFactory extends ApplicationFactory
 
     public function configure(): static
     {
-        return $this->afterCreating(static function (ForumPoll $poll): void {
-            if ($poll->options()->doesntExist()) {
-                $poll->options()->createMany([
-                    ['stable_key' => 'option-01', 'label' => 'First choice', 'position' => 1],
-                    ['stable_key' => 'option-02', 'label' => 'Second choice', 'position' => 2],
-                    ['stable_key' => 'option-03', 'label' => 'Third choice', 'position' => 3],
-                ]);
-            }
-        });
+        return $this
+            ->afterMaking(static function (ForumPoll $poll): void {
+                if ($poll->forum_group_id !== null) {
+                    $poll->created_by_user_id = ForumGroup::query()
+                        ->whereKey($poll->forum_group_id)
+                        ->value('owner_user_id');
+                }
+            })
+            ->afterCreating(static function (ForumPoll $poll): void {
+                if ($poll->options()->doesntExist()) {
+                    $poll->options()->createMany([
+                        ['stable_key' => 'option-01', 'label' => 'First choice', 'position' => 1],
+                        ['stable_key' => 'option-02', 'label' => 'Second choice', 'position' => 2],
+                        ['stable_key' => 'option-03', 'label' => 'Third choice', 'position' => 3],
+                    ]);
+                }
+            });
     }
 
     public function multipleChoice(): static

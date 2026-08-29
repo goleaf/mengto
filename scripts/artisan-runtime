@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+script_directory="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
+repository_root="$(cd -- "${script_directory}/.." && pwd -P)"
+runtime_user="${PAWCIRCLE_RUNTIME_USER:-www}"
+php_binary="${PAWCIRCLE_PHP_BINARY:-$(command -v php)}"
+
+if ! id -u "${runtime_user}" >/dev/null 2>&1; then
+    printf 'PawCircle runtime user does not exist: %s\n' "${runtime_user}" >&2
+    exit 69
+fi
+
+current_user="$(id -un)"
+
+cd "${repository_root}"
+
+if [[ "${current_user}" == "${runtime_user}" ]]; then
+    exec "${php_binary}" artisan "$@"
+fi
+
+if [[ "$(id -u)" -eq 0 ]]; then
+    exec runuser -u "${runtime_user}" -- "${php_binary}" artisan "$@"
+fi
+
+printf 'Run Artisan as %s or root; current user is %s.\n' \
+    "${runtime_user}" "${current_user}" >&2
+exit 77

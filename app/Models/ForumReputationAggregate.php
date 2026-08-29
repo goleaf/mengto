@@ -44,4 +44,16 @@ final class ForumReputationAggregate extends Model
     {
         return $this->belongsTo(ForumReputationDimension::class, 'forum_reputation_dimension_id');
     }
+
+    /** @return BelongsTo<ForumCategory, $this> */
+    public function category(): BelongsTo
+    {
+        return $this->belongsTo(ForumCategory::class, 'forum_category_id');
+    }
+
+    /** @return BelongsTo<Taxon, $this> */
+    public function taxon(): BelongsTo
+    {
+        return $this->belongsTo(Taxon::class);
+    }
 }

@@ -4,10 +4,14 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
+use App\Models\ForumAnswer;
+use App\Models\ForumComment;
 use App\Models\ForumReport;
 use App\Models\ForumReportReason;
 use App\Models\ForumTopic;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 /**
  * @extends ApplicationFactory<ForumReport>
@@ -28,7 +32,9 @@ class ForumReportFactory extends ApplicationFactory
             'subject_type' => ForumTopic::class,
             'subject_id' => fn (array $attributes): string => (string) $attributes['topic_id'],
             'reporter_id' => User::factory(),
-            'reporter_key' => fake()->unique()->userName(),
+            'reporter_key' => fn (array $attributes): string => User::query()
+                ->findOrFail($attributes['reporter_id'])
+                ->actor_key,
             'reason' => 'misinformation',
             'forum_report_reason_id' => ForumReportReason::factory([
                 'stable_key' => 'misinformation-'.fake()->unique()->numerify('#####'),
@@ -41,8 +47,29 @@ class ForumReportFactory extends ApplicationFactory
             'immediate_safety' => false,
             'truthfulness_confirmed' => true,
             'deduplication_key' => hash('sha256', fake()->uuid()),
-            'idempotency_key' => null,
+            'idempotency_key' => (string) Str::uuid(),
             'metadata' => [],
         ];
+    }
+
+    public function forSubject(Model $subject): static
+    {
+        return $this->state(fn (): array => [
+            'topic_id' => match (true) {
+                $subject instanceof ForumTopic => $subject->id,
+                $subject instanceof ForumAnswer,
+                $subject instanceof ForumComment => $subject->topic_id,
+                default => null,
+            },
+            'answer_id' => $subject instanceof ForumAnswer ? $subject->id : null,
+            'comment_id' => $subject instanceof ForumComment ? $subject->id : null,
+            'subject_type' => $subject::class,
+            'subject_id' => (string) $subject->getKey(),
+        ]);
+    }
+
+    public function legacyWithoutIdempotency(): static
+    {
+        return $this->state(fn (): array => ['idempotency_key' => null]);
     }
 }

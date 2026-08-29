@@ -2,6 +2,37 @@
 
 ## Unreleased - 2026-08-01
 
+### Repository Audit And Foundations
+
+- Completed a repository-wide instruction, documentation, module, route,
+  runtime, dependency, security, frontend, database, factory, seeder, and test
+  baseline with stable follow-up ownership in the canonical implementation
+  plan.
+- Removed the global administrator authorization bypass; administrator access
+  is now granted only by explicit policy methods, including no implicit read
+  access to ordinary private topics or owner-scoped medical, care, and device
+  records.
+- Bound account-specific medical and care shares to the authenticated recipient
+  before counters or audit writes, and record the actual authenticated bearer
+  for all accepted medical, care, device, and shared-file access.
+- Kept grant permission checks, private downloads, and shared care writes in
+  the locked grant transaction so rejected operations consume no view and emit
+  no success audit.
+- Replaced marketplace float totals with checked minor-unit arithmetic and
+  exact decimal persistence; canonicalized request decimals, guarded schema
+  width, retained safe legacy JSON compatibility, and made the demo marketplace
+  seeder fail closed outside explicitly allowed environments.
+- Patched the CommonMark and Vite/Nano ID advisory lines, declared direct PHP
+  extension and frontend engine requirements, raised canonical Pest/forum
+  generation memory, and restored deterministic compliance and seeding
+  evidence.
+- Removed direct request access from booking Blade, labeled repeated form
+  controls, and corrected the forum caption regression to assert the rendered
+  DOM behavior.
+- Added deterministic exact repository/Markdown inventories, a cache-clearing
+  test runner, and disposable browser-audit orchestration whose underlying
+  stateful scripts fail closed without explicit mutation consent.
+
 ### Security
 
 - Converted PawCircle into a closed authenticated portal: anonymous product

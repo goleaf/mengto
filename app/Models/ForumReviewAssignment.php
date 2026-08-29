@@ -11,6 +11,7 @@ use Database\Factories\ForumReviewAssignmentFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * @property string $anonymous_reviewer_key
@@ -74,5 +75,11 @@ final class ForumReviewAssignment extends Model
     public function replacementFor(): BelongsTo
     {
         return $this->belongsTo(self::class, 'replacement_for_assignment_id');
+    }
+
+    /** @return HasMany<ForumReviewAssignment, $this> */
+    public function replacements(): HasMany
+    {
+        return $this->hasMany(self::class, 'replacement_for_assignment_id');
     }
 }

@@ -50,6 +50,14 @@ final class ForumGroupFile extends Model
         'archived_at',
     ];
 
+    protected $hidden = [
+        'upload_idempotency_key',
+        'disk',
+        'path',
+        'original_name',
+        'checksum',
+    ];
+
     protected $attributes = [
         'disk' => 'local',
         'status' => 'active',

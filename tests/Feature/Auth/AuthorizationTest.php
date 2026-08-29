@@ -8,10 +8,13 @@ use App\Models\CareJournal;
 use App\Models\ForumAnswer;
 use App\Models\ForumTopic;
 use App\Models\KnowledgeArticle;
+use App\Models\MedicalRecord;
+use App\Models\Order;
+use App\Models\SearchCase;
 use App\Models\SmartDevice;
 use App\Models\User;
 
-test('private forum topic is visible only to its owner or an administrator', function () {
+test('private forum topic is visible only to its owner', function () {
     $topic = ForumTopic::factory()->create([
         'author_key' => 'owner-a',
         'visibility' => ForumVisibility::Private,
@@ -22,7 +25,7 @@ test('private forum topic is visible only to its owner or an administrator', fun
 
     expect($owner->can('view', $topic))->toBeTrue()
         ->and($stranger->can('view', $topic))->toBeFalse()
-        ->and($administrator->can('view', $topic))->toBeTrue();
+        ->and($administrator->can('view', $topic))->toBeFalse();
 });
 
 test('care journal ownership uses the authenticated actor key', function () {
@@ -44,6 +47,36 @@ test('blocked administrators do not bypass policies', function () {
         ->create(['actor_key' => 'blocked-admin']);
 
     expect($blockedAdministrator->can('view', $journal))->toBeFalse();
+});
+
+test('active administrators do not bypass private owner policies', function () {
+    $administrator = User::factory()->administrator()->create();
+    $journal = CareJournal::factory()->create(['owner_key' => 'private-care-owner']);
+    $record = MedicalRecord::factory()->create(['owner_key' => 'private-medical-owner']);
+    $device = SmartDevice::factory()->create(['owner_key' => 'private-device-owner']);
+    $order = Order::factory()->create([
+        'buyer_key' => 'private-buyer',
+        'seller_key' => 'private-seller',
+    ]);
+    $searchCase = SearchCase::factory()->create([
+        'owner_key' => 'private-search-owner',
+        'coordinator_key' => 'private-search-owner',
+        'visibility' => 'private',
+    ]);
+
+    expect($administrator->can('view', $journal))->toBeFalse()
+        ->and($administrator->can('share', $journal))->toBeFalse()
+        ->and($administrator->can('delete', $journal))->toBeFalse()
+        ->and($administrator->can('view', $record))->toBeFalse()
+        ->and($administrator->can('share', $record))->toBeFalse()
+        ->and($administrator->can('forceDelete', $record))->toBeFalse()
+        ->and($administrator->can('view', $device))->toBeFalse()
+        ->and($administrator->can('controlCommand', [$device, 'dispense']))->toBeFalse()
+        ->and($administrator->can('delete', $device))->toBeFalse()
+        ->and($administrator->can('view', $order))->toBeFalse()
+        ->and($administrator->can('dispute', $order))->toBeFalse()
+        ->and($administrator->can('view', $searchCase))->toBeFalse()
+        ->and($administrator->can('update', $searchCase))->toBeFalse();
 });
 
 test('private forum mutations cannot be invoked by another authenticated user', function () {

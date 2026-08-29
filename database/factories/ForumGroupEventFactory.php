@@ -7,7 +7,6 @@ namespace Database\Factories;
 use App\Enums\ForumGroupEventType;
 use App\Models\ForumGroup;
 use App\Models\ForumGroupEvent;
-use App\Models\User;
 use Illuminate\Support\Str;
 
 /**
@@ -19,7 +18,7 @@ final class ForumGroupEventFactory extends ApplicationFactory
     {
         return [
             'forum_group_id' => ForumGroup::factory(),
-            'actor_user_id' => User::factory(),
+            'actor_user_id' => null,
             'subject_user_id' => null,
             'event_type' => ForumGroupEventType::Created,
             'reason_code' => 'factory-event',
@@ -28,5 +27,16 @@ final class ForumGroupEventFactory extends ApplicationFactory
             'idempotency_key' => 'factory:group-event:'.Str::uuid()->toString(),
             'created_at' => now(),
         ];
+    }
+
+    public function configure(): static
+    {
+        return $this->afterMaking(static function (ForumGroupEvent $event): void {
+            if ($event->forum_group_id !== null) {
+                $event->actor_user_id = ForumGroup::query()
+                    ->whereKey($event->forum_group_id)
+                    ->value('owner_user_id');
+            }
+        });
     }
 }

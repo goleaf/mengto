@@ -18,7 +18,16 @@ final class ForumEventSessionStaffFactory extends ApplicationFactory
         return [
             'forum_event_session_id' => ForumEventSession::factory(),
             'user_id' => User::factory(),
-            'role' => ForumEventSessionRole::Speaker,
+            'role' => function (array $attributes): ForumEventSessionRole {
+                $used = ForumEventSessionStaff::query()
+                    ->where('forum_event_session_id', $attributes['forum_event_session_id'])
+                    ->where('user_id', $attributes['user_id'])
+                    ->pluck('role');
+
+                return collect(ForumEventSessionRole::cases())
+                    ->first(static fn (ForumEventSessionRole $role): bool => ! $used->contains($role->value))
+                    ?? ForumEventSessionRole::Staff;
+            },
             'is_public' => true,
         ];
     }

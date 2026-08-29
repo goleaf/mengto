@@ -29,6 +29,10 @@ return [
     'form' => [
         'unsaved' => 'Yra neišsaugotų pakeitimų.',
     ],
+    'password_visibility' => [
+        'show' => 'Rodyti slaptažodį',
+        'hide' => 'Slėpti slaptažodį',
+    ],
     'accessibility' => [
         'skip_to_content' => 'Pereiti prie turinio',
     ],

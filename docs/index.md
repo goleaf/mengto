@@ -29,7 +29,7 @@ This index is the source-of-truth map for first-party documentation.
 | `docs/mentorship.md` | Peer mentorship, matching, privacy, lifecycle, reports, seeding, and recovery | Product + engineering | Canonical |
 | `docs/groups.md` | Persistent group identity, membership, privacy, management, seeding, and recovery | Product + engineering | Canonical |
 | `docs/polls.md` | Persistent group content, polls, private files, concurrency, seeding, and recovery | Product + engineering | Canonical |
-| `docs/events.md` | Events, attendance, clubs, privacy, backfill, and recovery | Product + engineering | Canonical |
+| `docs/events/index.md` | Events, attendance, clubs, privacy, backfill, and recovery | Product + engineering | Canonical |
 | `docs/expert-question-sessions.md` | Verified-host question sessions, queue privacy, corrections, and recovery | Product + engineering | Canonical |
 | `docs/topic-lifecycle.md` | Topic states, retention, legal hold, redirects, seeding, and recovery | Product + engineering | Canonical |
 | `docs/pet-profiles.md` | Canonical pet identity, managers, privacy, lifecycle, backfill, and recovery | Product + engineering | Canonical |
@@ -46,6 +46,8 @@ This index is the source-of-truth map for first-party documentation.
 | `docs/operations.md` | Runtime checks and incident response | Operations | Canonical |
 | `docs/current-state-audit.md` | Modernization baseline and resolved findings | Engineering | Living evidence |
 | `docs/implementation-plan.md` | Dependency-aware modernization plan | Engineering | Living plan |
+| `docs/audits/repository-audit-work-ledger.md` | Repository-wide audit delegation, review, and delivery evidence | Engineering + QA | Living evidence |
+| `docs/audits/repository-inventory.md` | Generated exact routes, roles, tables, symbols, files, runtime boundaries, and critical workflow chains | Engineering + QA | Canonical generated evidence |
 | `docs/plans/current-unfinished-work.md` | Reconciled inventory of every current unfinished plan stream, exact open totals, and completed/historical exclusions | Product + engineering + QA | Living unfinished-work index |
 | `docs/plans/pet-workspace-modernization-plan.md` | Authenticated `/pets` workspace decisions, data boundary, interface states, and release evidence | Product + engineering + QA | Implemented and verified |
 | `docs/plans/pet-profile-draft-autosave-work-package.md` | Safe descriptive-step autosave, reconnect recovery, idempotency, accessibility, and release evidence | Product + engineering + QA | Implemented and verified with dedicated requirement evidence |

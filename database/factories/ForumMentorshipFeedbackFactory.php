@@ -6,7 +6,6 @@ namespace Database\Factories;
 
 use App\Models\ForumMentorship;
 use App\Models\ForumMentorshipFeedback;
-use App\Models\User;
 
 /**
  * @extends ApplicationFactory<ForumMentorshipFeedback>
@@ -17,8 +16,8 @@ final class ForumMentorshipFeedbackFactory extends ApplicationFactory
     {
         return [
             'forum_mentorship_id' => ForumMentorship::factory()->completed(),
-            'author_user_id' => User::factory(),
-            'recipient_user_id' => User::factory(),
+            'author_user_id' => null,
+            'recipient_user_id' => null,
             'rating' => 5,
             'summary' => fake()->sentence(),
             'would_recommend' => true,

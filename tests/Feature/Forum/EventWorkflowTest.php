@@ -373,6 +373,7 @@ test('capacity counts guests and cancelling a registration promotes the waitlist
     expect($confirmed->refresh()->status)->toBe(ForumEventRegistrationStatus::Cancelled)
         ->and($waitlisted->refresh()->status)->toBe(ForumEventRegistrationStatus::Confirmed)
         ->and($waitlisted->waitlist_position)->toBeNull()
+        ->and($waitlisted->confirmed_at)->not->toBeNull()
         ->and($registrations->remainingSeats($event))->toBe(1);
 });
 

@@ -89,6 +89,12 @@ final class OrganizationInvitation extends Model
         return $this->belongsTo(User::class, 'invited_by_user_id');
     }
 
+    /** @return BelongsTo<User, $this> */
+    public function revoker(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'revoked_by_user_id');
+    }
+
     public function isCurrent(): bool
     {
         return $this->status === OrganizationInvitationStatus::Pending

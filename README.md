@@ -39,10 +39,11 @@ current execution instructions.
 
 Requirements:
 
-- PHP `>=8.5.0 <8.6.0` with the extensions reported by `composer check-platform-reqs`
+- PHP `>=8.5.0 <8.6.0` with Fileinfo, Intl, PDO and the remaining
+  extensions reported by `composer check-platform-reqs`
 - Composer 2
-- Node.js 22 or newer
-- NPM, using the committed `package-lock.json`
+- Node.js `^20.19.0 || >=22.12.0`
+- npm 10 or newer, using the committed `package-lock.json`
 
 ```bash
 cp .env.example .env
@@ -80,12 +81,12 @@ Run shared SQLite checks serially:
 
 ```bash
 composer validate --strict
-composer audit
+composer audit --locked
 vendor/bin/pint
 PAO_DISABLE=1 vendor/bin/phpstan analyse --memory-limit=1G
-php artisan test --compact
+php scripts/run-tests.php --compact
 php scripts/verify-fresh-database.php
-npm audit --audit-level=high
+npm audit --package-lock-only --audit-level=high --registry=https://registry.npmjs.org/ --strict-ssl=true
 npm run build
 php artisan route:list --except-vendor
 ```

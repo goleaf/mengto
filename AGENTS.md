@@ -63,6 +63,21 @@ Use this order:
 Do not preserve an insecure implementation merely because an old test expects
 it. Update the requirement, implementation, and test together.
 
+## Execution Planning And Review
+
+- For repository-wide or multi-module work, update the one canonical plan in
+  `docs/implementation-plan.md` before production-code changes. Record stable
+  item IDs, dependencies, ownership, affected paths, acceptance criteria,
+  verification, status, and rollback.
+- Planning is a gate, not a stopping point. Begin the approved in-scope
+  implementation immediately after the plan is saved.
+- Create a work ledger before delegating discovery. Give each subagent an
+  exclusive scope and structured deliverable; the principal agent owns every
+  cross-module decision and edit.
+- Reviewers must be independent from implementers. Freeze the review diff,
+  reproduce material findings, record every disposition, fix valid in-scope
+  findings, and rerun affected checks before publication.
+
 ## Technology Baseline
 
 - PHP: `>=8.5.0 <8.6.0`
@@ -266,6 +281,9 @@ calls, debug functions, and `env()` outside configuration.
 - Preserve useful historical specifications. Mark superseded instructions
   clearly rather than leaving contradictory active documents.
 - Do not publish secrets or real personal data.
+- Generated documentation is edited through its first-party generator. The
+  committed output must remain byte-identical to a fresh generator run; never
+  hand-edit generated evidence or mark future intent as verified.
 - Forum and animal-taxonomy changes must preserve the immutable source prompt,
   update atomic requirement evidence, and complete a phase audit before moving
   the affected requirement IDs to `verified`.

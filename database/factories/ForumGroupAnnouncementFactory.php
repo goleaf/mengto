@@ -6,7 +6,6 @@ namespace Database\Factories;
 
 use App\Models\ForumGroup;
 use App\Models\ForumGroupAnnouncement;
-use App\Models\User;
 use Illuminate\Support\Str;
 
 /**
@@ -20,7 +19,7 @@ final class ForumGroupAnnouncementFactory extends ApplicationFactory
 
         return [
             'forum_group_id' => ForumGroup::factory(),
-            'author_user_id' => User::factory(),
+            'author_user_id' => null,
             'stable_key' => "group-announcement-{$key}",
             'publication_idempotency_key' => "factory:group-announcement:{$key}",
             'title' => fake()->sentence(5),
@@ -29,6 +28,17 @@ final class ForumGroupAnnouncementFactory extends ApplicationFactory
             'expires_at' => null,
             'lock_version' => 0,
         ];
+    }
+
+    public function configure(): static
+    {
+        return $this->afterMaking(static function (ForumGroupAnnouncement $announcement): void {
+            if ($announcement->forum_group_id !== null) {
+                $announcement->author_user_id = ForumGroup::query()
+                    ->whereKey($announcement->forum_group_id)
+                    ->value('owner_user_id');
+            }
+        });
     }
 
     public function scheduled(): static

@@ -7,6 +7,7 @@ namespace App\Models;
 use Database\Factories\ForumModerationActionDefinitionFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 final class ForumModerationActionDefinition extends Model
 {
@@ -36,5 +37,11 @@ final class ForumModerationActionDefinition extends Model
             'position' => 'integer',
             'metadata' => 'array',
         ];
+    }
+
+    /** @return HasMany<ForumModerationAction, $this> */
+    public function actions(): HasMany
+    {
+        return $this->hasMany(ForumModerationAction::class);
     }
 }

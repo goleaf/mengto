@@ -82,6 +82,12 @@ final class ForumConfirmation extends Model
         return $this->belongsTo(User::class, 'requester_user_id');
     }
 
+    /** @return BelongsTo<User, $this> */
+    public function moderator(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'moderator_user_id');
+    }
+
     /** @return HasMany<ForumConfirmationVote, $this> */
     public function votes(): HasMany
     {

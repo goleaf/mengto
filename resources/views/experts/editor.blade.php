@@ -169,7 +169,8 @@
                     <fieldset class="grid gap-2">
                         <legend class="text-sm font-bold">{{ __('ui.methods_and_principles_57429c1351') }}</legend>
                         @for ($index = 0; $index < 3; $index++)
-                            <input name="methods[]" value="{{ old('methods.'.$index, $expert?->methods[$index] ?? '') }}" class="rounded-md border border-paw-line bg-white px-3 py-2.5" placeholder="{{ __('presentation.method_or_principle', ['number' => $index + 1]) }}">
+                            <label class="sr-only" for="expert-method-{{ $index }}">{{ __('presentation.method_or_principle', ['number' => $index + 1]) }}</label>
+                            <input id="expert-method-{{ $index }}" name="methods[]" value="{{ old('methods.'.$index, $expert?->methods[$index] ?? '') }}" class="rounded-md border border-paw-line bg-white px-3 py-2.5" placeholder="{{ __('presentation.method_or_principle', ['number' => $index + 1]) }}">
                         @endfor
                     </fieldset>
                     <fieldset>

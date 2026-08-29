@@ -196,6 +196,12 @@ class MedicalRecord extends Model
         return $this->belongsTo(PetProfile::class);
     }
 
+    /** @return BelongsTo<User, $this> */
+    public function owner(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'owner_id');
+    }
+
     public function scopeForOwnerDirectory(Builder $query, string $ownerKey): Builder
     {
         return $query

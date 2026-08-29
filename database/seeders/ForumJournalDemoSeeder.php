@@ -12,6 +12,7 @@ use App\Enums\ForumJournalCollaboratorRole;
 use App\Enums\ForumJournalEntryKind;
 use App\Enums\ForumJournalType;
 use App\Models\ForumJournal;
+use App\Models\ForumJournalCollaborator;
 use App\Models\ForumTopic;
 use App\Models\User;
 use Carbon\CarbonImmutable;
@@ -86,11 +87,20 @@ final class ForumJournalDemoSeeder extends Seeder
             body: 'The gradual pace and clear observations make this progress easy to understand.',
             idempotencyKey: 'demo-forum-journal-carrier-comment-v1',
         );
-        $grantCollaborator->handle(
-            actor: $owner,
-            journal: $journal,
-            email: $collaborator->email,
-            role: ForumJournalCollaboratorRole::Viewer,
-        );
+        $existingCollaborator = ForumJournalCollaborator::query()
+            ->where('forum_journal_id', $journal->id)
+            ->where('user_id', $collaborator->id)
+            ->whereNull('revoked_at')
+            ->first();
+
+        if (! $existingCollaborator instanceof ForumJournalCollaborator
+            || $existingCollaborator->role !== ForumJournalCollaboratorRole::Viewer) {
+            $grantCollaborator->handle(
+                actor: $owner,
+                journal: $journal,
+                email: $collaborator->email,
+                role: ForumJournalCollaboratorRole::Viewer,
+            );
+        }
     }
 }

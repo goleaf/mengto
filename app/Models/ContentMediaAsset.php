@@ -36,6 +36,8 @@ final class ContentMediaAsset extends Model
         'retained_until',
     ];
 
+    protected $hidden = ['disk', 'path', 'original_name', 'checksum_sha256'];
+
     protected function casts(): array
     {
         return [

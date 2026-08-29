@@ -6,6 +6,7 @@ import { setTimeout as delay } from 'node:timers/promises';
 
 const baseUrl = (process.env.BROWSER_BASE_URL ?? 'http://127.0.0.1:8000').replace(/\/$/, '');
 const origin = new URL(baseUrl);
+const allowDataMutation = process.env.BROWSER_ALLOW_DATA_MUTATION === '1';
 const outputDirectory = process.env.BROWSER_OUTPUT_DIR
     ?? join(tmpdir(), 'mengto-discovery-browser');
 const chromeCandidates = [
@@ -18,6 +19,10 @@ const chromeCandidates = [
 
 if (!['localhost', '127.0.0.1', '::1'].includes(origin.hostname)) {
     throw new Error('The discovery browser check only runs against a loopback URL.');
+}
+
+if (!allowDataMutation) {
+    throw new Error('The discovery browser check changes seeded account state and requires BROWSER_ALLOW_DATA_MUTATION=1 with a disposable testing database.');
 }
 
 const assert = (condition, message) => {

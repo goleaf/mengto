@@ -47,7 +47,7 @@ class MedicalDocument extends Model
         'uploaded_by_key', 'download_count',
     ];
 
-    protected $hidden = ['file_path'];
+    protected $hidden = ['file_path', 'original_name'];
 
     protected function casts(): array
     {

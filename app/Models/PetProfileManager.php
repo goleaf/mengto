@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
 
 /**
@@ -97,6 +98,18 @@ final class PetProfileManager extends Model
     public function revoker(): BelongsTo
     {
         return $this->belongsTo(User::class, 'revoked_by_user_id');
+    }
+
+    /** @return HasMany<PetProfileAccessRequest, $this> */
+    public function grantedAccessRequests(): HasMany
+    {
+        return $this->hasMany(PetProfileAccessRequest::class, 'granted_manager_id');
+    }
+
+    /** @return HasMany<PetProfileLifecycleEvent, $this> */
+    public function lifecycleEvents(): HasMany
+    {
+        return $this->hasMany(PetProfileLifecycleEvent::class, 'manager_id');
     }
 
     public function scopeActiveAt(Builder $query, Carbon $at): Builder

@@ -21,6 +21,7 @@ use App\Models\DeviceReading;
 use App\Models\DeviceSafeZone;
 use App\Models\MedicalRecord;
 use App\Models\SmartDevice;
+use App\Models\User;
 use App\Models\WeightEntry;
 use Database\Seeders\SmartDeviceSeeder;
 use Illuminate\Support\Facades\DB;
@@ -448,6 +449,8 @@ test('temporary device access is scoped masks home data expires by views and is 
         ->assertDontSee('54.68916')
         ->assertDontSee('Exact private bedroom shelf')
         ->assertDontSee('DO-NOT-SHARE-9911');
+    expect(AuditLog::query()->where('action', 'device-access.opened')->firstOrFail()->actor_key)
+        ->toBe($this->authenticatedUser->actor_key);
     $this->get($accessUrl)->assertNotFound();
 
     $secondResponse = $this->post(route('devices.access.store', $device), [
@@ -465,6 +468,45 @@ test('temporary device access is scoped masks home data expires by views and is 
     $this->delete(route('devices.access.revoke', [$device, $secondGrant]))
         ->assertRedirect(route('devices.manage', $device));
     $this->get($secondUrl)->assertNotFound();
+});
+
+test('account-bound device access rejects the wrong bearer without consuming a view', function () {
+    $device = SmartDevice::factory()->create();
+    $recipient = User::factory()->create();
+    $token = Str::random(64);
+    $grant = DeviceAccessGrant::factory()->for($device, 'smartDevice')->create([
+        'recipient_key' => $recipient->actor_key,
+        'token_hash' => hash('sha256', $token),
+    ]);
+    $url = route('device-access.show', ['token' => $token]);
+
+    $this->get($url)->assertNotFound();
+    expect($grant->refresh()->views_used)->toBe(0)
+        ->and(AuditLog::query()->where('action', 'device-access.opened')->count())->toBe(0);
+
+    $this->actingAs($recipient)->get($url)->assertOk();
+    expect($grant->refresh()->views_used)->toBe(1)
+        ->and(AuditLog::query()->where('action', 'device-access.opened')->firstOrFail()->actor_key)
+        ->toBe($recipient->actor_key);
+});
+
+test('unbound device access remains usable by an authenticated bearer other than the grantor', function () {
+    $device = SmartDevice::factory()->create(['owner_key' => $this->authenticatedUser->actor_key]);
+    $recipient = User::factory()->create();
+    $token = Str::random(64);
+    $grant = DeviceAccessGrant::factory()->for($device, 'smartDevice')->create([
+        'granted_by_key' => $this->authenticatedUser->actor_key,
+        'recipient_key' => null,
+        'token_hash' => hash('sha256', $token),
+    ]);
+
+    $this->actingAs($recipient)
+        ->get(route('device-access.show', ['token' => $token]))
+        ->assertOk();
+
+    expect($grant->refresh()->views_used)->toBe(1)
+        ->and(AuditLog::query()->where('action', 'device-access.opened')->firstOrFail()->actor_key)
+        ->toBe($recipient->actor_key);
 });
 
 test('an owner can explicitly promote a device event into care as needs review', function () {

@@ -60,6 +60,18 @@ final class OrganizationRestriction extends Model
         return $this->belongsTo(Organization::class);
     }
 
+    /** @return BelongsTo<User, $this> */
+    public function appliedBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'applied_by_user_id');
+    }
+
+    /** @return BelongsTo<User, $this> */
+    public function revoker(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'revoked_by_user_id');
+    }
+
     /** @param Builder<OrganizationRestriction> $query */
     public function scopeActive(Builder $query): Builder
     {

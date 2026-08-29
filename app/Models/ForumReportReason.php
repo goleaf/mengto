@@ -7,6 +7,7 @@ namespace App\Models;
 use Database\Factories\ForumReportReasonFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 final class ForumReportReason extends Model
 {
@@ -33,5 +34,11 @@ final class ForumReportReason extends Model
             'position' => 'integer',
             'metadata' => 'array',
         ];
+    }
+
+    /** @return HasMany<ForumReport, $this> */
+    public function reports(): HasMany
+    {
+        return $this->hasMany(ForumReport::class);
     }
 }

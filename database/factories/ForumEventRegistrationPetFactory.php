@@ -17,13 +17,31 @@ final class ForumEventRegistrationPetFactory extends ApplicationFactory
     {
         return [
             'forum_event_registration_id' => ForumEventRegistration::factory(),
-            'pet_profile_id' => PetProfile::factory(),
+            'pet_profile_id' => null,
             'eligibility_status' => ForumEventVerificationStatus::NotAssessed,
             'verification_source' => ForumEventVerificationStatus::Unknown,
             'conditions' => null,
             'checked_in_at' => null,
             'checked_out_at' => null,
         ];
+    }
+
+    public function configure(): static
+    {
+        return $this->afterMaking(function (ForumEventRegistrationPet $registrationPet): void {
+            if ($registrationPet->pet_profile_id !== null) {
+                return;
+            }
+
+            $registration = ForumEventRegistration::query()
+                ->with('user')
+                ->findOrFail($registrationPet->forum_event_registration_id);
+
+            $registrationPet->pet_profile_id = PetProfile::factory()
+                ->for($registration->user)
+                ->create()
+                ->id;
+        });
     }
 
     public function confirmed(): static

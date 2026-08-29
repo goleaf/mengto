@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Database\Factories;
 
 use App\Enums\ReviewStatus;
-use App\Models\Listing;
 use App\Models\ListingReview;
 use App\Models\Order;
 
@@ -39,7 +38,7 @@ class ListingReviewFactory extends ApplicationFactory
     public function definition(): array
     {
         return [
-            'listing_id' => Listing::factory(),
+            'listing_id' => null,
             'order_id' => Order::factory(),
             'reviewer_key' => fake()->unique()->userName(),
             'reviewer_name' => fake()->name(),

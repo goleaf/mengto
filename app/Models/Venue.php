@@ -80,4 +80,16 @@ final class Venue extends Model
     {
         return $this->hasMany(VenueArea::class);
     }
+
+    /** @return HasMany<ForumEventOccurrence, $this> */
+    public function eventOccurrences(): HasMany
+    {
+        return $this->hasMany(ForumEventOccurrence::class);
+    }
+
+    /** @return HasMany<ForumEvent, $this> */
+    public function events(): HasMany
+    {
+        return $this->hasMany(ForumEvent::class);
+    }
 }

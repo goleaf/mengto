@@ -1,5 +1,105 @@
 # Current-State Audit
 
+## Current Repository-Wide Audit Snapshot
+
+Audit date: 2026-08-30. This dated section supersedes the older point-in-time
+baseline below for current stack, inventory, and open-risk decisions; the older
+record remains preserved as historical evidence.
+
+### Scope And Authority
+
+- The root `AGENTS.md` is the only applicable instruction file. No nested
+  `AGENTS.md` or `AGENTS.override.md` exists.
+- The initial 235 first-party Markdown files were classified; concurrent work
+  raised the live inventory to 241. The exact per-path classification, routes,
+  tables, roles, and complete first-party symbol/file lists are generated in
+  `docs/audits/repository-inventory.md`. `docs/events/index.md` is canonical
+  and `docs/events.md` is historical.
+- Seven independent discovery scopes covered repository archaeology,
+  documentation authority, dependencies/runtime, Laravel architecture,
+  Livewire/frontend, database/security/integrity, and testing/factories/seeds.
+  Their ownership and completion record is
+  `docs/audits/repository-audit-work-ledger.md`.
+
+### Current Inventory
+
+| Surface | Observed 2026-08-30 |
+| --- | ---: |
+| Routes | 180 runtime / 179 audited after excluding Boost's development route; 167 first-party actions; 173 named |
+| Controllers / middleware / Form Requests | 147 / 9 / 67 |
+| Actions / Services / models / policies | 226 / 155 / 204 / 47 |
+| Livewire PHP / components / form objects | 86 / 37 / 49 |
+| Blade views / anonymous components | 357 / 246 |
+| Migrations / named tables / isolated runtime tables | 139 / 218 / 219 |
+| Model factories / seeders | 204 / 42 |
+| Factory helpers / enum-backed states | 248 / 1,521 |
+| Test PHP files / Pest declarations | 128 / 1,025 |
+| Resource JavaScript / CSS-SCSS files | 9 / 32 |
+
+There are no first-party Jobs, Events, Listeners, Notifications, outbound HTTP
+clients, webhook handlers, or scheduled tasks. Runtime-critical workflows are
+synchronous. SQLite is the required local/test boundary; destructive
+verification uses only operating-system temporary database paths.
+
+### Stack And Initial Command Baseline
+
+| Surface | Observed baseline |
+| --- | --- |
+| PHP / Composer / Node / npm | 8.5.8 / 2.10.2 / 26.4.0 / 12.0.1 |
+| Laravel / Livewire | 13.23.0 / 4.3.4 |
+| Tailwind / Vite / Laravel Vite plugin | 4.3.3 / 8.2.0 / 3.1.3 |
+| Pest / PHPUnit / Larastan | 4.7.5 / 12.5.30 / 3.10.0 |
+| Composer audit | Failed: six advisories in CommonMark 2.8.3 |
+| Official-registry npm audit | Failed: high Nano ID 3.3.16 advisory |
+| Canonical Artisan suite | Failed at the inherited 128 MiB memory limit |
+| Pint / Larastan / Vite build | Passed before repair |
+| Isolated fresh migration and repeat seed | Passed: 139 migrations, 219 tables, five users after each seed |
+| Forum requirement generation | Failed at 128 MiB; 1 GiB run proved committed generated output stale |
+
+### Accepted Foundational Findings
+
+The immediate repair boundary is deliberately narrow:
+
+- remove the application-wide administrator policy bypass while retaining
+  only explicit policy capabilities;
+- bind account-specific care and medical grants to the authenticated actor,
+  audit the real bearer for every temporary grant, and consume no view on a
+  mismatch;
+- replace marketplace float calculations with exact minor-unit arithmetic;
+- repair the canonical test/generator memory budget, deterministic compliance
+  and seeding evidence, the false-negative caption assertion, passive booking
+  request preparation, and repeated-input labels;
+- patch only the vulnerable CommonMark and Vite/Nano ID dependency lines and
+  declare direct runtime/engine requirements.
+
+### Implemented Foundational Repairs
+
+- Policy authorization no longer has a global administrator bypass; real Gate
+  tests cover private care, medical, device, order, search, and forum records.
+- Medical/care downloads and shared care writes perform downstream permission
+  and file/write work while the hashed grant remains locked. Failed operations
+  do not consume views or record a success audit; bound and unbound grants use
+  the actual authenticated bearer.
+- Marketplace inputs normalize canonical decimal strings before validated data
+  is extracted. Totals use checked minor units, enforce the order column width,
+  accept legacy finite JSON float deposits compatibly, and roll back rejected
+  transitions. The demo marketplace seeder fails closed outside configured
+  demo environments.
+- `php scripts/run-tests.php` clears cached configuration before Pest boots,
+  avoiding accidental non-test database reuse. Browser package gates create a
+  temporary SQLite database and loopback server; the underlying stateful Node
+  scripts refuse direct execution without explicit mutation consent.
+- Repository, compliance, seeding, and forum catalogues have deterministic
+  parity checks. Forum catalogue verification is independent from the missing
+  historical prompt-entry check, so the external history blocker cannot mask
+  generated-data regressions.
+
+Broader framework upgrades, schema/query redesign, browser-storage account
+isolation, large Livewire/Action decomposition, CSS modernization, provider
+integration, and CI expansion are assigned to the numbered later prompts in
+the active canonical plan. They are repository work, not external
+limitations.
+
 Audit date: 2026-07-30
 
 ## Protected Repository State

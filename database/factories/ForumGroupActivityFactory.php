@@ -8,7 +8,6 @@ use App\Enums\ForumGroupActivityFormat;
 use App\Enums\ForumGroupActivityStatus;
 use App\Models\ForumGroup;
 use App\Models\ForumGroupActivity;
-use App\Models\User;
 use Illuminate\Support\Str;
 
 /**
@@ -22,7 +21,7 @@ final class ForumGroupActivityFactory extends ApplicationFactory
 
         return [
             'forum_group_id' => ForumGroup::factory(),
-            'created_by_user_id' => User::factory(),
+            'created_by_user_id' => null,
             'stable_key' => "group-activity-{$key}",
             'creation_idempotency_key' => "factory:group-activity:{$key}",
             'title' => fake()->sentence(5),
@@ -37,6 +36,17 @@ final class ForumGroupActivityFactory extends ApplicationFactory
             'participation_notes' => fake()->sentence(),
             'lock_version' => 0,
         ];
+    }
+
+    public function configure(): static
+    {
+        return $this->afterMaking(static function (ForumGroupActivity $activity): void {
+            if ($activity->forum_group_id !== null) {
+                $activity->created_by_user_id = ForumGroup::query()
+                    ->whereKey($activity->forum_group_id)
+                    ->value('owner_user_id');
+            }
+        });
     }
 
     public function online(): static

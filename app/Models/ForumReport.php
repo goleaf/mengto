@@ -95,10 +95,46 @@ class ForumReport extends Model
         return $this->belongsTo(ForumReportReason::class, 'forum_report_reason_id');
     }
 
+    /** @return BelongsTo<User, $this> */
+    public function affectedUser(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'affected_user_id');
+    }
+
+    /** @return BelongsTo<PetProfile, $this> */
+    public function affectedPetProfile(): BelongsTo
+    {
+        return $this->belongsTo(PetProfile::class, 'affected_pet_profile_id');
+    }
+
+    /** @return BelongsTo<ForumReport, $this> */
+    public function duplicateOf(): BelongsTo
+    {
+        return $this->belongsTo(self::class, 'duplicate_of_report_id');
+    }
+
     /** @return HasMany<ForumReportEvent, $this> */
     public function events(): HasMany
     {
         return $this->hasMany(ForumReportEvent::class);
+    }
+
+    /** @return HasMany<ForumReportAttachment, $this> */
+    public function attachments(): HasMany
+    {
+        return $this->hasMany(ForumReportAttachment::class);
+    }
+
+    /** @return HasMany<ForumReport, $this> */
+    public function duplicates(): HasMany
+    {
+        return $this->hasMany(self::class, 'duplicate_of_report_id');
+    }
+
+    /** @return HasMany<SearchReport, $this> */
+    public function searchReports(): HasMany
+    {
+        return $this->hasMany(SearchReport::class);
     }
 
     /** @return BelongsToMany<ForumModerationCase, $this> */

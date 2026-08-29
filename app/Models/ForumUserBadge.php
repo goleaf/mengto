@@ -50,4 +50,10 @@ final class ForumUserBadge extends Model
     {
         return $this->belongsTo(ForumBadge::class, 'forum_badge_id');
     }
+
+    /** @return BelongsTo<User, $this> */
+    public function grantedBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'granted_by_user_id');
+    }
 }

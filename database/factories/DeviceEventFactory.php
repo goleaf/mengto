@@ -22,6 +22,8 @@ class DeviceEventFactory extends ApplicationFactory
      */
     public function definition(): array
     {
+        $occurredAt = now()->subMinutes(10);
+
         return [
             'smart_device_id' => SmartDevice::factory(),
             'pet_profile_key' => 'scout',
@@ -31,12 +33,12 @@ class DeviceEventFactory extends ApplicationFactory
             'severity' => DeviceEventSeverity::Important,
             'status' => 'open',
             'occurrence_count' => 1,
-            'first_occurred_at' => now()->subMinutes(10),
-            'last_occurred_at' => now()->subMinutes(10),
+            'first_occurred_at' => $occurredAt,
+            'last_occurred_at' => $occurredAt,
             'title' => 'Device connection needs checking',
             'summary' => 'The device has not sent a recent update.',
             'details' => ['last_signal' => now()->subMinutes(20)->toAtomString()],
-            'occurred_at' => now()->subMinutes(20),
+            'occurred_at' => $occurredAt,
             'timezone' => 'Europe/Vilnius',
             'confidence' => DeviceConfidence::High,
             'source' => 'device',

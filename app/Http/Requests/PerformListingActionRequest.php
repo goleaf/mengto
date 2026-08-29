@@ -6,6 +6,7 @@ namespace App\Http\Requests;
 
 use App\Models\Listing;
 use App\Services\ListingTaxonomy;
+use App\ValueObjects\MinorUnitAmount;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -13,6 +14,17 @@ use Illuminate\Validation\Validator;
 
 class PerformListingActionRequest extends FormRequest
 {
+    protected function prepareForValidation(): void
+    {
+        $offeredPrice = $this->input('offered_price');
+
+        if (is_scalar($offeredPrice) && preg_match('/^\d+(?:\.\d{1,2})?$/', (string) $offeredPrice) === 1) {
+            $this->merge([
+                'offered_price' => MinorUnitAmount::fromDecimal((string) $offeredPrice)->toDecimal(),
+            ]);
+        }
+    }
+
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -48,7 +60,7 @@ class PerformListingActionRequest extends FormRequest
             'idempotency_key' => ['nullable', 'uuid', 'required_if:action,request'],
             'message' => ['nullable', 'string', 'min:10', 'max:1500', 'required_if:action,request'],
             'quantity' => ['nullable', 'integer', 'min:1', 'max:100000', 'required_if:action,request'],
-            'offered_price' => ['nullable', 'numeric', 'min:0', 'max:999999.99'],
+            'offered_price' => ['nullable', 'numeric', 'decimal:0,2', 'min:0', 'max:999999.99'],
             'exchange_method' => [
                 'nullable',
                 Rule::in(array_keys($taxonomy->deliveryOptions())),

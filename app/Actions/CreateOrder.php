@@ -8,7 +8,10 @@ use App\Models\AuditLog;
 use App\Models\Listing;
 use App\Models\Order;
 use App\Models\Reservation;
+use App\ValueObjects\MinorUnitAmount;
 use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
+use UnexpectedValueException;
 
 class CreateOrder
 {
@@ -27,13 +30,21 @@ class CreateOrder
         }
 
         $quantity = max(1, (int) $reservation->quantity);
-        $unitPrice = (float) ($reservation->offered_price ?? $listing->price ?? 0);
+        $unitPrice = MinorUnitAmount::fromDecimal($reservation->offered_price ?? $listing->price ?? 0);
         $rentalDays = $this->rentalDays($listing, $reservation);
         $deposit = $listing->type->value === 'rental'
-            ? max(0, (float) data_get($listing->attributes, 'deposit_amount', 0))
-            : 0;
-        $subtotal = $unitPrice * $quantity * $rentalDays;
-        $requiresPayment = $listing->type->requiresPayment() && ($subtotal + $deposit) > 0;
+            ? $this->amount(data_get($listing->attributes, 'deposit_amount', 0))
+            : MinorUnitAmount::fromDecimal(0);
+        $subtotal = $unitPrice->multiply($quantity)->multiply($rentalDays);
+        $total = $subtotal->add($deposit);
+
+        if ($total->isGreaterThan(MinorUnitAmount::fromDecimal('99999999.99'))) {
+            throw ValidationException::withMessages([
+                'quantity' => __('messages.the_order_total_exceeds_the_supported_payment_limit_8f2b39a201'),
+            ]);
+        }
+
+        $requiresPayment = $listing->type->requiresPayment() && $total->isPositive();
         $reference = 'ORD-'.strtoupper(Str::random(10));
 
         $order = Order::query()->create([
@@ -49,10 +60,10 @@ class CreateOrder
             'seller_name' => $listing->owner_name,
             'order_kind' => $listing->type->requestKind(),
             'quantity' => $quantity,
-            'unit_price' => $unitPrice,
+            'unit_price' => $unitPrice->toDecimal(),
             'delivery_amount' => 0,
-            'deposit_amount' => $deposit,
-            'total_amount' => $subtotal + $deposit,
+            'deposit_amount' => $deposit->toDecimal(),
+            'total_amount' => $total->toDecimal(),
             'currency' => $listing->currency,
             'delivery_method' => $reservation->exchange_method,
             'public_delivery_area' => collect([$listing->area, $listing->city])->filter()->implode(', '),
@@ -79,6 +90,19 @@ class CreateOrder
         ]);
 
         return $order;
+    }
+
+    private function amount(mixed $value): MinorUnitAmount
+    {
+        if (is_float($value) && is_finite($value)) {
+            return MinorUnitAmount::fromDecimal(number_format($value, 2, '.', ''));
+        }
+
+        if (! is_string($value) && ! is_int($value)) {
+            throw new UnexpectedValueException('stored-money-not-decimal');
+        }
+
+        return MinorUnitAmount::fromDecimal($value);
     }
 
     private function rentalDays(Listing $listing, Reservation $reservation): int

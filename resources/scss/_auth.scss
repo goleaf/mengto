@@ -246,6 +246,15 @@
         min-inline-size: 0;
     }
 
+    &__control {
+        position: relative;
+        min-inline-size: 0;
+    }
+
+    &__control--password &__input {
+        padding-inline-end: 3.5rem;
+    }
+
     &__input {
         inline-size: 100%;
         min-block-size: 3.25rem;
@@ -274,6 +283,40 @@
             border-color: $coral;
             box-shadow: 0 0 0 1px color-mix(in srgb, $coral 24%, transparent);
         }
+    }
+
+    &__password-toggle {
+        position: absolute;
+        inset-block: 0;
+        inset-inline-end: 0.25rem;
+        display: grid;
+        inline-size: $touch-target;
+        block-size: $touch-target;
+        margin-block: auto;
+        place-items: center;
+        border: 0;
+        border-radius: $control-radius;
+        background: transparent;
+        color: $muted;
+        cursor: pointer;
+
+        @include control-transition;
+        @include focus-ring;
+
+        &:hover,
+        &[aria-pressed='true'] {
+            background: color-mix(in srgb, $mint 62%, transparent);
+            color: $leaf;
+        }
+    }
+
+    &__password-icon {
+        display: grid;
+        place-items: center;
+    }
+
+    &__password-icon[x-cloak] {
+        display: none;
     }
 
     &__feedback {
@@ -628,6 +671,7 @@
     }
 
     .auth-field__input,
+    .auth-field__password-toggle,
     .auth-button,
     .auth-card,
     .auth-story {

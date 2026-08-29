@@ -53,6 +53,6 @@ test('every migration rolls back and reapplies in an isolated database', functio
         ->and($report['second_apply_migrations'])->toBe($migrationFiles)
         ->and($report['first_ledger_matches_files'])->toBeTrue()
         ->and($report['second_ledger_matches_files'])->toBeTrue()
-        ->and($report['users_before_repeat'])->toBe(5)
-        ->and($report['users_after_repeat'])->toBe(5);
+        ->and($report['users_before_repeat'])->toBe(10)
+        ->and($report['users_after_repeat'])->toBe(10);
 });

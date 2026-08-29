@@ -110,7 +110,8 @@
                 <fieldset class="grid gap-2">
                     <legend class="text-sm font-bold">{{ __('ui.action_plan_02ef5dc133') }}</legend>
                     @for ($index = 0; $index < 3; $index++)
-                        <input name="action_plan[]" value="{{ old('action_plan.'.$index) }}" class="rounded-md border border-paw-line bg-white px-3 py-2.5" placeholder="{{ __('presentation.step_number', ['number' => $index + 1]) }}">
+                        <label class="sr-only" for="booking-action-plan-{{ $index }}">{{ __('presentation.step_number', ['number' => $index + 1]) }}</label>
+                        <input id="booking-action-plan-{{ $index }}" name="action_plan[]" value="{{ old('action_plan.'.$index) }}" class="rounded-md border border-paw-line bg-white px-3 py-2.5" placeholder="{{ __('presentation.step_number', ['number' => $index + 1]) }}">
                     @endfor
                 </fieldset>
                 <label class="grid gap-1 text-sm font-semibold">{{ __('ui.referral_or_in_person_follow_up_242191b36a') }}<textarea name="referral_summary" rows="3" class="rounded-md border border-paw-line bg-white px-3 py-2.5">{{ old('referral_summary') }}</textarea></label>

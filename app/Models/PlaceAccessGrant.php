@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * @property int|null $event_id
@@ -72,6 +73,24 @@ final class PlaceAccessGrant extends Model
     public function event(): BelongsTo
     {
         return $this->belongsTo(ForumEvent::class, 'event_id');
+    }
+
+    /** @return BelongsTo<User, $this> */
+    public function issuedBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'issued_by_user_id');
+    }
+
+    /** @return BelongsTo<User, $this> */
+    public function revoker(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'revoked_by_user_id');
+    }
+
+    /** @return HasMany<PlaceAccessAudit, $this> */
+    public function audits(): HasMany
+    {
+        return $this->hasMany(PlaceAccessAudit::class);
     }
 
     /** @param Builder<PlaceAccessGrant> $query @return Builder<PlaceAccessGrant> */

@@ -45,7 +45,7 @@ class PrepareCareMediaDownload
 
         return $this->download(
             $media,
-            $grant->recipient_key ?? 'temporary-link',
+            $this->actor->requireUser()->actor_key,
             $grant->recipient_role,
         );
     }

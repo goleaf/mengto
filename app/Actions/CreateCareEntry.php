@@ -10,6 +10,7 @@ use App\Enums\CareSourceType;
 use App\Enums\CareSyncStatus;
 use App\Enums\CareTaskStatus;
 use App\Models\AuditLog;
+use App\Models\CareAccessGrant;
 use App\Models\CareEntry;
 use App\Models\CareJournal;
 use App\Models\CareMedia;
@@ -34,6 +35,7 @@ class CreateCareEntry
         CareJournal $journal,
         array $data,
         ?array $contributor = null,
+        ?CareAccessGrant $accessGrant = null,
     ): CareEntry {
         $storedPath = null;
 
@@ -42,6 +44,7 @@ class CreateCareEntry
                 $journal,
                 $data,
                 $contributor,
+                $accessGrant,
                 &$storedPath,
             ): CareEntry {
                 $existing = CareEntry::query()
@@ -182,6 +185,23 @@ class CreateCareEntry
                         'source_timezone' => $sourceTimezone,
                     ],
                 ]);
+
+                if ($accessGrant instanceof CareAccessGrant) {
+                    AuditLog::query()->create([
+                        'actor_key' => $identity['key'],
+                        'actor_role' => $accessGrant->recipient_role,
+                        'action' => 'care-access.entry-submitted',
+                        'target_type' => CareAccessGrant::class,
+                        'target_id' => (string) $accessGrant->id,
+                        'metadata' => [
+                            'care_journal_id' => $lockedJournal->id,
+                            'care_entry_id' => $entry->id,
+                            'sections' => $accessGrant->sections,
+                            'views_used' => $accessGrant->views_used,
+                            'max_views' => $accessGrant->max_views,
+                        ],
+                    ]);
+                }
 
                 return $entry;
             });

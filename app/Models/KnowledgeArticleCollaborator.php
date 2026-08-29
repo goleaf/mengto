@@ -58,6 +58,18 @@ final class KnowledgeArticleCollaborator extends Model
         return $this->belongsTo(User::class);
     }
 
+    /** @return BelongsTo<User, $this> */
+    public function addedBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'added_by_user_id');
+    }
+
+    /** @return BelongsTo<User, $this> */
+    public function revoker(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'revoked_by_user_id');
+    }
+
     public function scopeActive(Builder $query): Builder
     {
         return $query->whereNull('revoked_at');

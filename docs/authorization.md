@@ -23,6 +23,10 @@ a product resource.
 Policies inspect the passed `User` and compare `User::actor_key` to ownership
 or grant records. They do not rely on an ambient fixed identity.
 
+Administrator status is not a global authorization override. A policy may
+grant a named moderation or operational capability explicitly, but private
+owner resources and ordinary private topic visibility do not inherit access.
+
 ## Capability Matrix
 
 | Resource | Portal member view | Owner/member | Scoped recipient | Administrator |
@@ -109,6 +113,11 @@ A grant defines:
 Revocation invalidates server access and dependent cache keys immediately.
 Downloaded historical copies cannot be remotely revoked, so exports disclose
 that consequence and use short-lived links.
+
+For an account-bound grant, the stored recipient key must match the current
+authenticated actor before any counter or audit mutation. An unbound token is
+still usable only inside the authenticated portal, and its audit actor is the
+actual bearer rather than the grant's display metadata.
 
 ## Failure Behaviour
 

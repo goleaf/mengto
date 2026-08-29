@@ -43,4 +43,10 @@ final class PlaceLocationVersion extends Model
     {
         return $this->belongsTo(Place::class);
     }
+
+    /** @return BelongsTo<User, $this> */
+    public function changedBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'changed_by_user_id');
+    }
 }

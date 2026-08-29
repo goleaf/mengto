@@ -18,7 +18,9 @@ final class ForumEventVersionFactory extends ApplicationFactory
 
         return [
             'forum_event_id' => ForumEvent::factory(),
-            'version_number' => 1,
+            'version_number' => fn (array $attributes): int => (int) ForumEventVersion::query()
+                ->where('forum_event_id', $attributes['forum_event_id'])
+                ->max('version_number') + 1,
             'created_by_user_id' => User::factory(),
             'kind' => 'draft',
             'reason_code' => 'factory-version',

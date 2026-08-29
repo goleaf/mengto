@@ -43,7 +43,7 @@
                     @forelse ($services as $service)
                         <label class="grid min-w-0 cursor-pointer gap-2 rounded-md border border-paw-line bg-white p-4 has-[:checked]:border-paw-leaf has-[:checked]:ring-2 has-[:checked]:ring-paw-leaf/20">
                             <span class="flex min-w-0 items-start gap-3">
-                                <input type="radio" name="service_id" value="{{ $service['id'] }}" required @checked((string) old('service_id', request('service')) === (string) $service['id']) class="mt-1 size-4 text-paw-leaf">
+                                <input type="radio" name="service_id" value="{{ $service['id'] }}" required @checked((string) old('service_id', $selected_service_id) === (string) $service['id']) class="mt-1 size-4 text-paw-leaf">
                                 <span class="min-w-0 flex-1">
                                     <strong class="block">{{ $service['name'] }}</strong>
                                     <span class="mt-1 block text-sm text-paw-muted">{{ $service['format'] }} · {{ $service['duration'] }} · {{ $service['price'] !== null ? $service['currency'].' '.$service['price'] : __('ui.price_on_request') }}</span>

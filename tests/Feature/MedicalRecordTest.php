@@ -275,12 +275,62 @@ test('temporary access reveals only selected sections and can be revoked', funct
         ->assertDontSee('Do not expose without emergency permission');
 
     expect($grant->refresh()->views_used)->toBe(1)
-        ->and(AuditLog::query()->where('action', 'medical-access.opened')->count())->toBe(1);
+        ->and(AuditLog::query()->where('action', 'medical-access.opened')->count())->toBe(1)
+        ->and(AuditLog::query()->where('action', 'medical-access.opened')->firstOrFail()->actor_key)
+        ->toBe($this->authenticatedUser->actor_key);
 
     $this->delete(route('medical-records.access.revoke', [$record, $grant]))
         ->assertRedirect(route('medical-records.manage', $record));
 
     $this->get($accessUrl)->assertNotFound();
+});
+
+test('account-bound medical access rejects the wrong bearer without consuming a view', function () {
+    $record = MedicalRecord::factory()->create(['owner_key' => $this->authenticatedUser->actor_key]);
+    $recipient = User::factory()->create();
+    $response = $this->post(route('medical-records.access.store', $record), [
+        'recipient_key' => $recipient->actor_key,
+        'recipient_name' => $recipient->name,
+        'recipient_role' => 'caregiver',
+        'label' => 'Account-bound review',
+        'sections' => ['summary'],
+        'max_views' => 2,
+        'expires_in_hours' => 24,
+        'privacy_acknowledged' => 1,
+    ]);
+    $accessUrl = $response->getSession()->get('medical_access_url');
+    $grant = MedicalAccessGrant::query()->firstOrFail();
+
+    $this->get($accessUrl)->assertNotFound();
+    expect($grant->refresh()->views_used)->toBe(0)
+        ->and(AuditLog::query()->where('action', 'medical-access.opened')->count())->toBe(0);
+
+    $this->actingAs($recipient)->get($accessUrl)->assertOk();
+    expect($grant->refresh()->views_used)->toBe(1)
+        ->and(AuditLog::query()->where('action', 'medical-access.opened')->firstOrFail()->actor_key)
+        ->toBe($recipient->actor_key);
+});
+
+test('unbound medical access attributes the view to a different authenticated bearer', function () {
+    $record = MedicalRecord::factory()->create(['owner_key' => $this->authenticatedUser->actor_key]);
+    $recipient = User::factory()->create();
+    $response = $this->post(route('medical-records.access.store', $record), [
+        'recipient_name' => 'Any authenticated clinician',
+        'recipient_role' => 'veterinarian',
+        'label' => 'Unbound medical review',
+        'sections' => ['summary'],
+        'max_views' => 2,
+        'expires_in_hours' => 24,
+        'privacy_acknowledged' => 1,
+    ]);
+    $accessUrl = $response->getSession()->get('medical_access_url');
+    $grant = MedicalAccessGrant::query()->firstOrFail();
+
+    $this->actingAs($recipient)->get($accessUrl)->assertOk();
+
+    expect($grant->refresh()->views_used)->toBe(1)
+        ->and(AuditLog::query()->where('action', 'medical-access.opened')->firstOrFail()->actor_key)
+        ->toBe($recipient->actor_key);
 });
 
 test('medical documents stay on private storage and downloads are audited', function () {
@@ -308,6 +358,52 @@ test('medical documents stay on private storage and downloads are audited', func
 
     expect($document->refresh()->download_count)->toBe(1)
         ->and(AuditLog::query()->where('action', 'medical-document.downloaded')->count())->toBe(1);
+
+    $restrictedResponse = $this->post(route('medical-records.access.store', $record), [
+        'recipient_name' => 'Restricted reviewer',
+        'recipient_role' => 'caregiver',
+        'label' => 'Read-only document review',
+        'sections' => ['documents'],
+        'max_views' => 3,
+        'expires_in_hours' => 8,
+        'privacy_acknowledged' => 1,
+    ]);
+    $restrictedToken = str($restrictedResponse->getSession()->get('medical_access_url'))
+        ->afterLast('/')
+        ->toString();
+    $restrictedGrant = MedicalAccessGrant::query()->latest('id')->firstOrFail();
+
+    $this->get(route('medical-access.documents.download', [$restrictedToken, $document]))
+        ->assertForbidden();
+
+    expect($restrictedGrant->refresh()->views_used)->toBe(0)
+        ->and($document->refresh()->download_count)->toBe(1)
+        ->and(AuditLog::query()->where('action', 'medical-access.document-opened')->count())->toBe(0)
+        ->and(AuditLog::query()->where('action', 'medical-document.downloaded')->count())->toBe(1);
+
+    $allowedResponse = $this->post(route('medical-records.access.store', $record), [
+        'recipient_name' => 'Allowed reviewer',
+        'recipient_role' => 'caregiver',
+        'label' => 'Downloadable document review',
+        'sections' => ['documents'],
+        'allow_download' => 1,
+        'max_views' => 3,
+        'expires_in_hours' => 8,
+        'privacy_acknowledged' => 1,
+    ]);
+    $allowedToken = str($allowedResponse->getSession()->get('medical_access_url'))
+        ->afterLast('/')
+        ->toString();
+    $allowedGrant = MedicalAccessGrant::query()->latest('id')->firstOrFail();
+
+    $this->get(route('medical-access.documents.download', [$allowedToken, $document]))
+        ->assertOk()
+        ->assertDownload('visit-summary.pdf');
+
+    expect($allowedGrant->refresh()->views_used)->toBe(1)
+        ->and($document->refresh()->download_count)->toBe(2)
+        ->and(AuditLog::query()->where('action', 'medical-access.document-opened')->count())->toBe(1)
+        ->and(AuditLog::query()->where('action', 'medical-document.downloaded')->count())->toBe(2);
 });
 
 test('directory detail manage emergency and create screens render', function () {

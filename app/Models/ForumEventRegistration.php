@@ -154,7 +154,7 @@ final class ForumEventRegistration extends Model
         return $this->belongsToMany(
             PetProfile::class,
             'forum_event_registration_pets',
-        )->withPivot([
+        )->using(ForumEventRegistrationPet::class)->withPivot([
             'eligibility_status',
             'verification_source',
             'conditions',

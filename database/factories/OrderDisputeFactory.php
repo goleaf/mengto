@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Database\Factories;
 
 use App\Enums\DisputeStatus;
-use App\Models\Listing;
 use App\Models\Order;
 use App\Models\OrderDispute;
 
@@ -39,7 +38,7 @@ class OrderDisputeFactory extends ApplicationFactory
     {
         return [
             'order_id' => Order::factory(),
-            'listing_id' => Listing::factory(),
+            'listing_id' => null,
             'opened_by_key' => fake()->unique()->userName(),
             'opened_by_role' => 'buyer',
             'reason' => 'not-as-described',

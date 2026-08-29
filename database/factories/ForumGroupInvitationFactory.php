@@ -23,7 +23,7 @@ final class ForumGroupInvitationFactory extends ApplicationFactory
         return [
             'forum_group_id' => ForumGroup::factory()->private(),
             'invited_user_id' => User::factory(),
-            'invited_by_user_id' => User::factory(),
+            'invited_by_user_id' => null,
             'role' => ForumGroupRole::Member,
             'state' => ForumGroupInvitationState::Pending,
             'message' => fake()->sentence(),
@@ -35,13 +35,11 @@ final class ForumGroupInvitationFactory extends ApplicationFactory
 
     public function configure(): static
     {
-        return $this->afterCreating(function (ForumGroupInvitation $invitation): void {
-            $ownerUserId = $invitation->group->owner_user_id;
-
-            if ($ownerUserId !== null) {
-                $invitation->forceFill([
-                    'invited_by_user_id' => $ownerUserId,
-                ])->save();
+        return $this->afterMaking(static function (ForumGroupInvitation $invitation): void {
+            if ($invitation->forum_group_id !== null) {
+                $invitation->invited_by_user_id = ForumGroup::query()
+                    ->whereKey($invitation->forum_group_id)
+                    ->value('owner_user_id');
             }
         });
     }

@@ -11,6 +11,7 @@ use App\Models\CareMedia;
 use App\Models\CareTask;
 use App\Models\MedicalRecord;
 use App\Models\Medication;
+use App\Models\User;
 use Database\Seeders\CareJournalSeeder;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
@@ -204,6 +205,9 @@ test('temporary care access reveals selected sections and records contributor id
         ->assertDontSee('Private home address')
         ->assertDontSee('Private route summary');
 
+    expect(AuditLog::query()->where('action', 'care-access.opened')->firstOrFail()->actor_key)
+        ->toBe($this->authenticatedUser->actor_key);
+
     $this->post(route('care-access.entries.store', ['token' => $token]), careEntryPayload(
         (string) Str::uuid(),
         [
@@ -220,13 +224,88 @@ test('temporary care access reveals selected sections and records contributor id
         ->firstOrFail();
 
     expect($sitterEntry)
-        ->author_name->toBe('Sam Sitter')
+        ->author_name->toBe($this->authenticatedUser->name)
         ->source_type->value->toBe('sitter')
-        ->verification_status->toBe('contributor-reported');
+        ->verification_status->toBe('contributor-reported')
+        ->and(AuditLog::query()->where('action', 'care-access.entry-submitted')->count())->toBe(1)
+        ->and(AuditLog::query()->where('action', 'care-access.entry-submitted')->firstOrFail()->actor_key)
+        ->toBe($this->authenticatedUser->actor_key);
 
     $this->delete(route('care-journals.access.revoke', [$journal, $grant]))
         ->assertRedirect(route('care-journals.manage', $journal));
     $this->get($accessUrl)->assertNotFound();
+});
+
+test('account-bound care access rejects the wrong bearer without consuming a view', function () {
+    $journal = CareJournal::factory()->create(['owner_key' => $this->authenticatedUser->actor_key]);
+    $recipient = User::factory()->create();
+    $response = $this->post(route('care-journals.access.store', $journal), [
+        'recipient_key' => $recipient->actor_key,
+        'recipient_name' => $recipient->name,
+        'recipient_role' => 'family',
+        'label' => 'Account-bound care',
+        'sections' => ['summary'],
+        'max_views' => 2,
+        'expires_in_hours' => 24,
+        'privacy_acknowledged' => 1,
+    ]);
+    $accessUrl = $response->getSession()->get('care_access_url');
+    $grant = CareAccessGrant::query()->firstOrFail();
+
+    $this->get($accessUrl)->assertNotFound();
+    expect($grant->refresh()->views_used)->toBe(0)
+        ->and(AuditLog::query()->where('action', 'care-access.opened')->count())->toBe(0);
+
+    $this->actingAs($recipient)->get($accessUrl)->assertOk();
+    expect($grant->refresh()->views_used)->toBe(1)
+        ->and(AuditLog::query()->where('action', 'care-access.opened')->firstOrFail()->actor_key)
+        ->toBe($recipient->actor_key);
+});
+
+test('unbound care access attributes the view to a different authenticated bearer', function () {
+    $journal = CareJournal::factory()->create(['owner_key' => $this->authenticatedUser->actor_key]);
+    $recipient = User::factory()->create();
+    $response = $this->post(route('care-journals.access.store', $journal), [
+        'recipient_name' => 'Any authenticated caregiver',
+        'recipient_role' => 'sitter',
+        'label' => 'Unbound care review',
+        'sections' => ['summary'],
+        'max_views' => 2,
+        'expires_in_hours' => 24,
+        'privacy_acknowledged' => 1,
+    ]);
+    $accessUrl = $response->getSession()->get('care_access_url');
+    $grant = CareAccessGrant::query()->firstOrFail();
+
+    $this->actingAs($recipient)->get($accessUrl)->assertOk();
+
+    expect($grant->refresh()->views_used)->toBe(1)
+        ->and(AuditLog::query()->where('action', 'care-access.opened')->firstOrFail()->actor_key)
+        ->toBe($recipient->actor_key);
+});
+
+test('read-only care access rejects entry submission without audit or view mutations', function () {
+    $journal = CareJournal::factory()->create(['owner_key' => $this->authenticatedUser->actor_key]);
+    $response = $this->post(route('care-journals.access.store', $journal), [
+        'recipient_name' => 'Read-only sitter',
+        'recipient_role' => 'sitter',
+        'label' => 'Read-only feeding report',
+        'sections' => ['feeding'],
+        'max_views' => 3,
+        'expires_in_hours' => 8,
+        'privacy_acknowledged' => 1,
+    ]);
+    $token = str($response->getSession()->get('care_access_url'))->afterLast('/')->toString();
+    $grant = CareAccessGrant::query()->firstOrFail();
+
+    $this->post(route('care-access.entries.store', ['token' => $token]), careEntryPayload(
+        (string) Str::uuid(),
+        ['entry_type' => 'feeding', 'title' => 'Forbidden shared entry'],
+    ))->assertForbidden();
+
+    expect($grant->refresh()->views_used)->toBe(0)
+        ->and(CareEntry::query()->where('title', 'Forbidden shared entry')->exists())->toBeFalse()
+        ->and(AuditLog::query()->where('action', 'care-access.entry-submitted')->count())->toBe(0);
 });
 
 test('care media stays private and owner and allowed shared downloads are audited', function () {
@@ -291,7 +370,15 @@ test('care media stays private and owner and allowed shared downloads are audite
     $this->get(route('care-access.media.download', [$restrictedToken, $media]))
         ->assertForbidden();
 
-    expect(AuditLog::query()->where('action', 'care-media.downloaded')->count())->toBe(2);
+    $allowedGrant = CareAccessGrant::query()->where('token_hash', hash('sha256', $token))->firstOrFail();
+    $restrictedGrant = CareAccessGrant::query()
+        ->where('token_hash', hash('sha256', $restrictedToken))
+        ->firstOrFail();
+
+    expect($allowedGrant->refresh()->views_used)->toBe(2)
+        ->and($restrictedGrant->refresh()->views_used)->toBe(0)
+        ->and(AuditLog::query()->where('action', 'care-access.media-opened')->count())->toBe(1)
+        ->and(AuditLog::query()->where('action', 'care-media.downloaded')->count())->toBe(2);
 });
 
 test('care media factory keeps the attachment and entry in one journal', function () {

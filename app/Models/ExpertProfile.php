@@ -240,6 +240,30 @@ class ExpertProfile extends Model
         return $this->hasMany(ForumAnswer::class);
     }
 
+    /** @return HasMany<AdoptionCase, $this> */
+    public function adoptionCases(): HasMany
+    {
+        return $this->hasMany(AdoptionCase::class, 'provider_expert_profile_id');
+    }
+
+    /** @return HasMany<AuditLog, $this> */
+    public function auditLogs(): HasMany
+    {
+        return $this->hasMany(AuditLog::class);
+    }
+
+    /** @return HasMany<DocumentGrant, $this> */
+    public function documentGrants(): HasMany
+    {
+        return $this->hasMany(DocumentGrant::class);
+    }
+
+    /** @return HasMany<ForumExpertSession, $this> */
+    public function forumExpertSessions(): HasMany
+    {
+        return $this->hasMany(ForumExpertSession::class);
+    }
+
     public function scopeForDirectory(Builder $query): Builder
     {
         return $query->select(self::ROUTE_COLUMNS);

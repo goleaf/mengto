@@ -9,6 +9,7 @@ const browserOrigin = new URL(baseUrl);
 const groupsOnly = process.argv.includes('--groups-only');
 const placesOnly = process.argv.includes('--places-only');
 const pageIdentityOnly = process.argv.includes('--page-identity-only');
+const allowDataMutation = process.env.BROWSER_ALLOW_DATA_MUTATION === '1';
 const outputDirectory = process.env.BROWSER_OUTPUT_DIR
     ?? join(tmpdir(), 'mengto-accessibility-browser');
 const chromeCandidates = [
@@ -22,6 +23,10 @@ const chromeCandidates = [
 
 if (!['localhost', '127.0.0.1', '::1'].includes(browserOrigin.hostname)) {
     throw new Error('The accessibility browser check only runs against a loopback application URL.');
+}
+
+if (!allowDataMutation) {
+    throw new Error('The accessibility browser check changes seeded account state and requires BROWSER_ALLOW_DATA_MUTATION=1 with a disposable testing database.');
 }
 
 const assert = (condition, message) => {

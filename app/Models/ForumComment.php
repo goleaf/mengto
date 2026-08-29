@@ -74,10 +74,16 @@ class ForumComment extends Model
         return $this->belongsTo(ForumAnswer::class, 'answer_id');
     }
 
+    /** @return BelongsTo<User, $this> */
+    public function author(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'author_id');
+    }
+
     /** @return BelongsTo<ForumJournalEntry, $this> */
     public function journalEntry(): BelongsTo
     {
-        return $this->belongsTo(ForumJournalEntry::class);
+        return $this->belongsTo(ForumJournalEntry::class, 'forum_journal_entry_id');
     }
 
     /** @return BelongsTo<\App\Models\ForumComment, $this>*/
@@ -90,6 +96,12 @@ class ForumComment extends Model
     public function replies(): HasMany
     {
         return $this->hasMany(self::class, 'parent_id');
+    }
+
+    /** @return HasMany<ForumReport, $this> */
+    public function reports(): HasMany
+    {
+        return $this->hasMany(ForumReport::class, 'comment_id');
     }
 
     public function scopeForThread(Builder $query): Builder

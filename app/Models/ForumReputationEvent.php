@@ -9,6 +9,7 @@ use Database\Factories\ForumReputationEventFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 final class ForumReputationEvent extends Model
@@ -68,6 +69,18 @@ final class ForumReputationEvent extends Model
         return $this->belongsTo(ForumReputationDimension::class, 'forum_reputation_dimension_id');
     }
 
+    /** @return BelongsTo<ForumCategory, $this> */
+    public function category(): BelongsTo
+    {
+        return $this->belongsTo(ForumCategory::class, 'forum_category_id');
+    }
+
+    /** @return BelongsTo<Taxon, $this> */
+    public function taxon(): BelongsTo
+    {
+        return $this->belongsTo(Taxon::class);
+    }
+
     /** @return BelongsTo<ForumReputationEvent, $this> */
     public function reversedEvent(): BelongsTo
     {
@@ -78,5 +91,11 @@ final class ForumReputationEvent extends Model
     public function reversal(): HasOne
     {
         return $this->hasOne(self::class, 'reversal_of_event_id');
+    }
+
+    /** @return HasMany<ForumVote, $this> */
+    public function votes(): HasMany
+    {
+        return $this->hasMany(ForumVote::class, 'reputation_event_id');
     }
 }

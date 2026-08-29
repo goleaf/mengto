@@ -104,6 +104,42 @@ final class ForumCategory extends Model
         return $this->hasMany(ForumTopic::class);
     }
 
+    /** @return HasMany<ForumTopicMove, $this> */
+    public function outgoingTopicMoves(): HasMany
+    {
+        return $this->hasMany(ForumTopicMove::class, 'from_forum_category_id');
+    }
+
+    /** @return HasMany<ForumTopicMove, $this> */
+    public function incomingTopicMoves(): HasMany
+    {
+        return $this->hasMany(ForumTopicMove::class, 'to_forum_category_id');
+    }
+
+    /** @return HasMany<ForumCategoryRedirect, $this> */
+    public function incomingRedirects(): HasMany
+    {
+        return $this->hasMany(ForumCategoryRedirect::class, 'target_forum_category_id');
+    }
+
+    /** @return HasMany<ForumMentorScope, $this> */
+    public function mentorScopes(): HasMany
+    {
+        return $this->hasMany(ForumMentorScope::class);
+    }
+
+    /** @return HasMany<ForumReputationAggregate, $this> */
+    public function reputationAggregates(): HasMany
+    {
+        return $this->hasMany(ForumReputationAggregate::class);
+    }
+
+    /** @return HasMany<ForumReputationEvent, $this> */
+    public function reputationEvents(): HasMany
+    {
+        return $this->hasMany(ForumReputationEvent::class);
+    }
+
     public function scopeRoots(Builder $query): Builder
     {
         return $query->whereNull('parent_id');

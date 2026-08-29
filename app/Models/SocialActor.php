@@ -138,6 +138,54 @@ final class SocialActor extends Model
         return $this->hasMany(SocialRelationshipRequest::class, 'target_actor_id');
     }
 
+    /** @return HasMany<ContentAudienceActor, $this> */
+    public function contentAudienceAssignments(): HasMany
+    {
+        return $this->hasMany(ContentAudienceActor::class);
+    }
+
+    /** @return HasMany<ContentAudienceRule, $this> */
+    public function contextAudienceRules(): HasMany
+    {
+        return $this->hasMany(ContentAudienceRule::class, 'context_actor_id');
+    }
+
+    /** @return HasMany<ContentPublicationEvent, $this> */
+    public function representedPublicationEvents(): HasMany
+    {
+        return $this->hasMany(ContentPublicationEvent::class, 'represented_actor_id');
+    }
+
+    /** @return HasMany<SocialAccountBlock, $this> */
+    public function sourceAccountBlocks(): HasMany
+    {
+        return $this->hasMany(SocialAccountBlock::class, 'source_actor_id');
+    }
+
+    /** @return HasMany<SocialAccountBlock, $this> */
+    public function targetAccountBlocks(): HasMany
+    {
+        return $this->hasMany(SocialAccountBlock::class, 'target_actor_id');
+    }
+
+    /** @return HasMany<SocialRelationshipEvent, $this> */
+    public function sourceRelationshipEvents(): HasMany
+    {
+        return $this->hasMany(SocialRelationshipEvent::class, 'source_actor_id');
+    }
+
+    /** @return HasMany<SocialRelationshipEvent, $this> */
+    public function targetRelationshipEvents(): HasMany
+    {
+        return $this->hasMany(SocialRelationshipEvent::class, 'target_actor_id');
+    }
+
+    /** @return HasMany<SocialRelationshipEvent, $this> */
+    public function representedRelationshipEvents(): HasMany
+    {
+        return $this->hasMany(SocialRelationshipEvent::class, 'represented_actor_id');
+    }
+
     /**
      * @param  Builder<SocialActor>  $query
      * @return Builder<SocialActor>

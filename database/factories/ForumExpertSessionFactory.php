@@ -16,20 +16,15 @@ final class ForumExpertSessionFactory extends ApplicationFactory
     /** @return array<string, mixed> */
     public function definition(): array
     {
-        $user = User::factory()->create();
-        $profile = ExpertProfile::factory()->create([
-            'owner_id' => $user->id,
-            'owner_key' => $user->actor_key,
-        ]);
         $opensAt = now()->subHour();
 
         return [
-            'expert_profile_id' => $profile->id,
-            'created_by_user_id' => $user->id,
+            'expert_profile_id' => null,
+            'created_by_user_id' => User::factory(),
             'stable_key' => 'expert-session-'.Str::lower((string) Str::ulid()),
             'creation_idempotency_key' => (string) Str::uuid(),
-            'host_name_snapshot' => $profile->public_name,
-            'professional_scope' => $profile->primary_type,
+            'host_name_snapshot' => null,
+            'professional_scope' => null,
             'jurisdiction' => 'LT',
             'title' => fake()->sentence(6),
             'summary' => fake()->paragraphs(2, true),
@@ -46,6 +41,25 @@ final class ForumExpertSessionFactory extends ApplicationFactory
             'archive_reason_code' => null,
             'lock_version' => 0,
         ];
+    }
+
+    public function configure(): static
+    {
+        return $this->afterMaking(function (ForumExpertSession $session): void {
+            if ($session->expert_profile_id !== null) {
+                return;
+            }
+
+            $user = User::query()->findOrFail($session->created_by_user_id);
+            $profile = ExpertProfile::factory()->create([
+                'owner_id' => $user->id,
+                'owner_key' => $user->actor_key,
+            ]);
+
+            $session->expert_profile_id = $profile->id;
+            $session->host_name_snapshot = $profile->public_name;
+            $session->professional_scope = $profile->primary_type;
+        });
     }
 
     public function upcoming(): static
@@ -76,7 +90,7 @@ final class ForumExpertSessionFactory extends ApplicationFactory
     {
         return $this->state(fn (array $attributes): array => [
             'status' => ForumExpertSessionStatus::Archived,
-            'archived_by_user_id' => $attributes['created_by_user_id'],
+            'archived_by_user_id' => fn (array $expanded): mixed => $expanded['created_by_user_id'],
             'archived_at' => now(),
             'archive_reason_code' => 'host-archived',
         ]);

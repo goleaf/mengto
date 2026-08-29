@@ -87,13 +87,13 @@ final class ForumReviewPanel extends Model
     /** @return BelongsTo<ForumModerationCase, $this> */
     public function moderationCase(): BelongsTo
     {
-        return $this->belongsTo(ForumModerationCase::class);
+        return $this->belongsTo(ForumModerationCase::class, 'forum_moderation_case_id');
     }
 
     /** @return BelongsTo<ForumModerationAppeal, $this> */
     public function moderationAppeal(): BelongsTo
     {
-        return $this->belongsTo(ForumModerationAppeal::class);
+        return $this->belongsTo(ForumModerationAppeal::class, 'forum_moderation_appeal_id');
     }
 
     /** @return BelongsTo<User, $this> */
@@ -112,5 +112,11 @@ final class ForumReviewPanel extends Model
     public function events(): HasMany
     {
         return $this->hasMany(ForumReviewPanelEvent::class);
+    }
+
+    /** @return HasMany<ForumCommunityNote, $this> */
+    public function communityNotes(): HasMany
+    {
+        return $this->hasMany(ForumCommunityNote::class);
     }
 }

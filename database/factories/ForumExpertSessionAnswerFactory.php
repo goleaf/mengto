@@ -17,16 +17,14 @@ final class ForumExpertSessionAnswerFactory extends ApplicationFactory
     /** @return array<string, mixed> */
     public function definition(): array
     {
-        $question = ForumExpertSessionQuestion::factory()->approved()->create([
-            'status' => ForumExpertQuestionStatus::Answered,
-            'moderation_status' => ForumExpertQuestionModerationStatus::Approved,
-            'answered_at' => now(),
-        ]);
-
         return [
-            'forum_expert_session_id' => $question->forum_expert_session_id,
-            'forum_expert_session_question_id' => $question->id,
-            'author_user_id' => $question->session->created_by_user_id,
+            'forum_expert_session_id' => null,
+            'forum_expert_session_question_id' => ForumExpertSessionQuestion::factory()->approved()->state([
+                'status' => ForumExpertQuestionStatus::Answered,
+                'moderation_status' => ForumExpertQuestionModerationStatus::Approved,
+                'answered_at' => now(),
+            ]),
+            'author_user_id' => null,
             'stable_key' => 'answer-'.Str::lower((string) Str::ulid()),
             'idempotency_key' => (string) Str::uuid(),
             'body' => fake()->paragraphs(2, true),
@@ -38,6 +36,18 @@ final class ForumExpertSessionAnswerFactory extends ApplicationFactory
             'current_version' => 1,
             'answered_at' => now(),
         ];
+    }
+
+    public function configure(): static
+    {
+        return $this->afterMaking(function (ForumExpertSessionAnswer $answer): void {
+            $question = ForumExpertSessionQuestion::query()
+                ->with('session')
+                ->findOrFail($answer->forum_expert_session_question_id);
+
+            $answer->forum_expert_session_id = $question->forum_expert_session_id;
+            $answer->author_user_id = $question->session->created_by_user_id;
+        });
     }
 
     public function corrected(): static

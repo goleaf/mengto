@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
+use App\Enums\PetEvidenceStatus;
+use App\Enums\PetProfileVisibility;
 use App\Models\PetProfile;
 use App\Models\PetProfileFact;
-use App\Models\User;
 
 /** @extends ApplicationFactory<PetProfileFact> */
 final class PetProfileFactFactory extends ApplicationFactory
@@ -14,21 +15,51 @@ final class PetProfileFactFactory extends ApplicationFactory
     /** @return array<string, mixed> */
     public function definition(): array
     {
-        $factKey = fake()->randomElement(['birth-date', 'breed', 'microchip-status']);
+        $fact = fake()->randomElement([
+            [
+                'key' => 'birth-date',
+                'value' => ['date' => now()->subYears(4)->toDateString()],
+                'precision' => 'exact',
+            ],
+            [
+                'key' => 'breed',
+                'value' => ['label' => 'Mixed breed', 'classification' => 'owner-reported'],
+                'precision' => 'estimated',
+            ],
+            [
+                'key' => 'microchip-status',
+                'value' => ['status' => 'chipped'],
+                'precision' => 'exact',
+            ],
+        ]);
+        $valueHash = hash('sha256', json_encode($fact['value'], JSON_THROW_ON_ERROR));
 
         return [
             'pet_profile_id' => PetProfile::factory(),
-            'fact_key' => $factKey,
-            'value' => ['value' => fake()->word()],
-            'precision' => 'unknown',
+            'fact_key' => $fact['key'],
+            'value' => $fact['value'],
+            'normalized_value_hash' => $valueHash,
+            'precision' => $fact['precision'],
             'source_type' => 'owner',
-            'author_user_id' => User::factory(),
-            'verification_status' => 'unverified',
-            'visibility' => 'private',
+            'source_reference' => 'factory owner report',
+            'author_user_id' => null,
+            'verification_status' => PetEvidenceStatus::Unverified,
+            'visibility' => PetProfileVisibility::Private,
             'is_current' => true,
-            'current_key' => null,
+            'current_key' => fn (array $attributes): string => "pet:{$attributes['pet_profile_id']}:fact:{$attributes['fact_key']}",
             'recorded_at' => now(),
-            'metadata' => [],
+            'metadata' => ['captured_by' => 'factory', 'review_required' => false],
         ];
+    }
+
+    public function configure(): static
+    {
+        return $this->afterMaking(static function (PetProfileFact $fact): void {
+            if ($fact->pet_profile_id !== null) {
+                $fact->author_user_id = PetProfile::query()
+                    ->whereKey($fact->pet_profile_id)
+                    ->value('user_id');
+            }
+        });
     }
 }

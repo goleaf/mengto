@@ -39,4 +39,16 @@ final class PlaceAccessAudit extends Model
     {
         return $this->belongsTo(PlaceAccessGrant::class, 'place_access_grant_id');
     }
+
+    /** @return BelongsTo<ForumEvent, $this> */
+    public function event(): BelongsTo
+    {
+        return $this->belongsTo(ForumEvent::class, 'event_id');
+    }
+
+    /** @return BelongsTo<User, $this> */
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
 }

@@ -7,7 +7,6 @@ namespace Database\Factories;
 use App\Enums\ForumGroupFileStatus;
 use App\Models\ForumGroup;
 use App\Models\ForumGroupFile;
-use App\Models\User;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -23,7 +22,7 @@ final class ForumGroupFileFactory extends ApplicationFactory
 
         return [
             'forum_group_id' => ForumGroup::factory(),
-            'uploaded_by_user_id' => User::factory(),
+            'uploaded_by_user_id' => null,
             'stable_key' => "group-file-{$key}",
             'upload_idempotency_key' => "factory:group-file:{$key}",
             'disk' => 'local',
@@ -39,16 +38,24 @@ final class ForumGroupFileFactory extends ApplicationFactory
 
     public function configure(): static
     {
-        return $this->afterCreating(static function (ForumGroupFile $file): void {
-            if (! Storage::disk($file->disk)->exists($file->path)) {
-                Storage::disk($file->disk)->put(
-                    $file->path,
-                    'Private group fixture '
-                    .str($file->stable_key)->after('group-file-')->toString()
-                    ."\n",
-                );
-            }
-        });
+        return $this
+            ->afterMaking(static function (ForumGroupFile $file): void {
+                if ($file->forum_group_id !== null) {
+                    $file->uploaded_by_user_id = ForumGroup::query()
+                        ->whereKey($file->forum_group_id)
+                        ->value('owner_user_id');
+                }
+            })
+            ->afterCreating(static function (ForumGroupFile $file): void {
+                if (! Storage::disk($file->disk)->exists($file->path)) {
+                    Storage::disk($file->disk)->put(
+                        $file->path,
+                        'Private group fixture '
+                        .str($file->stable_key)->after('group-file-')->toString()
+                        ."\n",
+                    );
+                }
+            });
     }
 
     public function archived(): static

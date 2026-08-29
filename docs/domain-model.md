@@ -276,7 +276,7 @@ shelter aggregates. Those remain separate P02 packages.
 - `ForumReport`, `ForumNotification`, `Taxon`, and professional credential
   models are reused rather than duplicated.
 
-The complete lifecycle and invariants are in `docs/events.md`.
+The complete lifecycle and invariants are in `docs/events/index.md`.
 
 ## Verified Professional Question Sessions
 

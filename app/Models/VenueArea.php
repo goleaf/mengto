@@ -10,6 +10,7 @@ use Database\Factories\VenueAreaFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 final class VenueArea extends Model
 {
@@ -44,5 +45,11 @@ final class VenueArea extends Model
     public function venue(): BelongsTo
     {
         return $this->belongsTo(Venue::class);
+    }
+
+    /** @return HasMany<ForumEventRoom, $this> */
+    public function rooms(): HasMany
+    {
+        return $this->hasMany(ForumEventRoom::class);
     }
 }

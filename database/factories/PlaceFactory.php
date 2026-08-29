@@ -26,8 +26,8 @@ final class PlaceFactory extends ApplicationFactory
         return [
             'owner_user_id' => User::factory(),
             'organization_id' => null,
-            'created_by_user_id' => User::factory(),
-            'last_edited_by_user_id' => User::factory(),
+            'created_by_user_id' => null,
+            'last_edited_by_user_id' => null,
             'stable_key' => Str::slug($name).'-'.Str::lower((string) Str::ulid()),
             'slug' => Str::slug($name).'-'.Str::lower((string) Str::ulid()),
             'creation_idempotency_key' => 'place-factory-'.Str::lower((string) Str::ulid()),
@@ -56,6 +56,22 @@ final class PlaceFactory extends ApplicationFactory
             'lock_version' => 0,
             'archived_at' => null,
         ];
+    }
+
+    public function configure(): static
+    {
+        return $this->afterMaking(function (Place $place): void {
+            $authorityId = $place->owner_user_id;
+
+            if ($authorityId === null && $place->organization_id !== null) {
+                $authorityId = Organization::query()
+                    ->findOrFail($place->organization_id)
+                    ->owner_user_id;
+            }
+
+            $place->created_by_user_id ??= $authorityId;
+            $place->last_edited_by_user_id ??= $authorityId;
+        });
     }
 
     public function public(): static

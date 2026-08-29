@@ -88,4 +88,10 @@ final class ForumModerationCase extends Model
     {
         return $this->hasMany(ForumModeratorRecusal::class);
     }
+
+    /** @return HasMany<ForumReviewPanel, $this> */
+    public function reviewPanels(): HasMany
+    {
+        return $this->hasMany(ForumReviewPanel::class);
+    }
 }

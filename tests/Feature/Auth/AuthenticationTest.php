@@ -103,6 +103,56 @@ test('authentication fields keep explicit labels and browser autocomplete contra
         ->assertSee('register-password-feedback', false);
 });
 
+test('every authentication password field has an independent localized visibility toggle', function () {
+    auth()->logout();
+
+    $guestPages = [
+        route('login') => ['login-password'],
+        route('register') => ['register-password', 'register-password-confirmation'],
+        route('password.reset', ['token' => 'visibility-token']) => ['reset-password', 'reset-password-confirmation'],
+    ];
+
+    foreach ($guestPages as $url => $passwordIds) {
+        $content = (string) $this->get($url)->assertOk()->getContent();
+
+        expect(substr_count($content, 'class="auth-field__password-toggle"'))
+            ->toBe(count($passwordIds));
+
+        foreach ($passwordIds as $passwordId) {
+            expect($content)
+                ->toContain('data-password-visibility="'.$passwordId.'"')
+                ->toContain('aria-controls="'.$passwordId.'"')
+                ->toContain('x-bind:type="passwordVisible ? \'text\' : \'password\'"')
+                ->toContain('data-show-label="'.__('auth.password_visibility.show').'"')
+                ->toContain('data-hide-label="'.__('auth.password_visibility.hide').'"');
+        }
+    }
+
+    expect((string) $this->get(route('login'))->getContent())
+        ->not->toContain('data-password-visibility="login-email"');
+
+    $this->actingAs(User::factory()->unverified()->create());
+
+    $this->get(route('password.confirm'))
+        ->assertOk()
+        ->assertSee('data-password-visibility="confirm-password"', false)
+        ->assertSee('aria-controls="confirm-password"', false);
+
+    auth()->logout();
+
+    foreach ([
+        'en' => ['Show password', 'Hide password'],
+        'lt' => ['Rodyti slaptažodį', 'Slėpti slaptažodį'],
+        'ru' => ['Показать пароль', 'Скрыть пароль'],
+    ] as $locale => [$showLabel, $hideLabel]) {
+        $this->withSession(['locale' => $locale])
+            ->get(route('register'))
+            ->assertOk()
+            ->assertSee('data-show-label="'.$showLabel.'"', false)
+            ->assertSee('data-hide-label="'.$hideLabel.'"', false);
+    }
+});
+
 test('stateful authentication forms expose localized unsaved state feedback', function () {
     auth()->logout();
 
@@ -223,10 +273,19 @@ test('login rejects invalid and blocked accounts with the same safe error', func
     auth()->logout();
 
     Livewire::test(Login::class)
+        ->set('form.email', 'missing@example.test')
+        ->set('form.password', 'Wrong-Password-42')
+        ->call('authenticate')
+        ->assertHasErrors(['form.email'])
+        ->assertSee(__('auth.login.failed'))
+        ->assertDispatched('auth-validation-failed');
+
+    Livewire::test(Login::class)
         ->set('form.email', $blocked->email)
         ->set('form.password', 'Correct-Horse-42')
         ->call('authenticate')
         ->assertHasErrors(['form.email'])
+        ->assertSee(__('auth.login.failed'))
         ->assertDispatched('auth-validation-failed');
 
     $this->assertGuest();
