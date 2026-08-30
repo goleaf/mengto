@@ -8,8 +8,8 @@
 | Tracks, rooms, sessions | Implemented and tested | durable schedule models, Livewire editor, responsive agenda |
 | Schedule conflict control | Implemented and tested | room/track/staff overlap detection and audited owner override |
 | Pet registration and eligibility | Implemented and tested | registration service and pet rows |
-| Privacy and exact locations | Implemented and tested | encrypted casts and policies |
-| Capacity/waitlist | Legacy event scope implemented | occurrence-aware capacity and promotion require broader concurrency coverage |
+| Meetup privacy and exact locations | Focused implementation verified | deny-first visibility/block policy, absent unauthorized payload markers, encrypted manual exact access, scoped audited Place reveal |
+| Meetup capacity/waitlist | Focused implementation verified | locked event/occurrence allocation, active uniqueness, deterministic promotion, real two-process final-place race |
 | Tickets/payments/refunds | Not implemented | no verified event payment provider or ticket aggregate |
 | QR/offline check-in | Not implemented | manual server-confirmed check-in only |
 | Competitions | Implementation present; release verification pending | competition migration, 14 models, policies, and create/entry/judge/score/correction Actions exist; factories, complete entrypoints, focused/full gates, and release evidence remain incomplete |

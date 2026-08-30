@@ -195,7 +195,7 @@ test('duplicate actions name the candidate and access errors remain associated',
         'species' => 'dog',
     ]);
 
-    Livewire::actingAs($user)
+    $component = Livewire::actingAs($user)
         ->test(CreatePetProfileComponent::class)
         ->set('form.name', 'Baks')
         ->set('form.species', 'dog')
@@ -203,6 +203,18 @@ test('duplicate actions name the candidate and access errors remain associated',
         ->set('form.visibility', 'private')
         ->call('create')
         ->call('startAccessRequest', $candidate->profile_key)
+        ->assertDontSeeHtml('aria-describedby="pet-access-request-type-error"')
+        ->assertDontSeeHtml('aria-describedby="pet-access-request-role-error"')
+        ->assertDontSeeHtml('aria-describedby="pet-access-request-ends-error"')
+        ->assertDontSeeHtml('pet-access-request-evidence-help pet-access-request-evidence-error')
+        ->assertSee(__('pet_profiles.duplicate_review.confirming_different_animal'))
+        ->assertSee(__('pet_profiles.access_requests.submitting'));
+
+    expect($component->html())->toMatch(
+        '/<button[^>]*wire:click="confirmDifferentAnimal"[^>]*wire:loading\.attr="aria-busy"[^>]*>/s',
+    );
+
+    $component
         ->set('accessRequestForm.evidenceSummary', '')
         ->call('submitSelectedAccessRequest')
         ->assertHasErrors(['accessRequestForm.evidenceSummary'])

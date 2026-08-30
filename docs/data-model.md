@@ -368,15 +368,20 @@ and contain no ownership inference or destructive backfill.
 The additive event schema consists of `forum_events`,
 `forum_event_registrations`, `forum_event_invitations`,
 `forum_event_updates`, `forum_event_messages`, `forum_event_reviews`,
-`forum_event_history`, and `forum_event_taxon`.
+`forum_event_history`, `forum_event_taxon`, payload-bound
+`forum_event_participation_operations`, and versioned
+`forum_event_participation_transitions`. The wider event foundation also
+contains capacity-pool/allocation/hold and typed-waitlist tables; the current
+Meetup service does not claim those tables as its allocator.
 
 Unique constraints protect stable keys, creation/action idempotency, one
-registration and one review per event/user, one invitation per event/user,
-and one taxon link. Compound indexes cover visible schedules, group schedules,
-registration capacity/waitlist ordering, invitation status/expiry, message and
-update timelines, review status, and append-only history. Every foreign key
-has a leading index. The migration is additive and links group activities
-through a nullable `forum_event_id`.
+active participation scope, payload-bound register operations, transition
+versions, one review and invitation per event/user, and one taxon link.
+Compound indexes cover visible schedules, group schedules, registration
+capacity/waitlist ordering, invitation status/expiry, message and update
+timelines, review status, and append-only history. Every foreign key has a
+leading index. The migration is additive and links group activities through a
+nullable `forum_event_id`.
 
 Exact location, online URL, emergency plan, attendee notes, invitation
 messages, and private review feedback use encrypted casts. See

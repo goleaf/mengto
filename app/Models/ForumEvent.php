@@ -422,6 +422,17 @@ final class ForumEvent extends Model
                                 });
                         });
                 });
+
+                $access->orWhere(function (Builder $cancelledHistory) use ($user): void {
+                    $cancelledHistory
+                        ->where('status', ForumEventStatus::Cancelled->value)
+                        ->whereHas('registrations', function (Builder $registrations) use ($user): void {
+                            $registrations
+                                ->where('user_id', $user->id)
+                                ->where('status', ForumEventRegistrationStatus::Cancelled->value)
+                                ->where('cancellation_reason_code', 'event-cancelled');
+                        });
+                });
             }
 
             $access->orWhere(function (Builder $visible) use ($user): void {

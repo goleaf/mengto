@@ -238,6 +238,17 @@ Static-analysis, build, cache, and browser details are recorded in
 `docs/plans/forum-phase8-journals-work-package.md`.
 ## Event Coverage
 
+The 2026-08-30 Meetup completion checkpoint adds direct policy/Action/Livewire
+coverage for private visibility, pending invitation preview, account blocks,
+suspended accounts, incomplete draft publication, payload-bound replay,
+foreign and stale pet authority, exact-location payload absence, audited Place
+reveal, cancellation notification privacy, organizer removal, waitlist
+promotion, query growth, and EN/LT/RU parity. A disposable-file SQLite test
+starts two independent PHP workers against one remaining place and observes
+exactly one confirmed and one waitlisted participant. The focused command
+passed 72 tests and 38,738 assertions. It is not a substitute for the final
+full serial suite or browser viewport gate.
+
 `tests/Feature/Forum/EventWorkflowTest.php` covers event creation,
 idempotency, validation, encryption, visibility, invitations, capacity,
 waitlists, registration review, check-in, protected access, updates,

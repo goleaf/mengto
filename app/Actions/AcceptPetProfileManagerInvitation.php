@@ -63,7 +63,17 @@ final class AcceptPetProfileManagerInvitation
                 "pet-manager-accept|{$locked->id}|{$user->id}|{$validated['idempotency_key']}",
             );
             $existingEvent = $locked->profile->lifecycleEvents()
-                ->where('idempotency_key', $eventKey)
+                ->where(function ($events) use ($eventKey, $locked, $user, $validated): void {
+                    $events
+                        ->where('idempotency_key', $eventKey)
+                        ->orWhere(function ($legacy) use ($locked, $user, $validated): void {
+                            $legacy
+                                ->where('idempotency_key', $validated['idempotency_key'])
+                                ->where('event_type', 'manager-accepted')
+                                ->where('manager_id', $locked->id)
+                                ->where('actor_user_id', $user->id);
+                        });
+                })
                 ->first();
 
             if ($existingEvent !== null && $locked->status === PetManagerStatus::Active) {

@@ -110,6 +110,21 @@ final class ForumEventDirectory extends Component
     {
         $this->form->venueId = null;
         $this->form->locationScope = '';
+        $this->form->exactLocation = '';
+    }
+
+    public function updatedFormFormat(string $format): void
+    {
+        if ($format === ForumEventFormat::Online->value) {
+            $this->form->placeId = null;
+            $this->form->venueId = null;
+            $this->form->locationScope = '';
+            $this->form->exactLocation = '';
+
+            return;
+        }
+
+        $this->form->onlineUrl = '';
     }
 
     /** @return LengthAwarePaginator<int, array<string, mixed>> */

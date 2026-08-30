@@ -1,6 +1,7 @@
 # Meetups Completion Work Ledger
 
-Status: discovery in progress on 2026-08-30.
+Status: implementation complete; final gates and independent review in progress
+on 2026-08-30.
 
 This ledger coordinates the production completion of `/meetups` as the
 meetup-focused presentation of PawCircle's canonical `ForumEvent` aggregate.
@@ -75,10 +76,11 @@ files, caches, databases, Git state, generated output, or dependencies.
 - Visibility and registration policy remain separate. Public, followers,
   member, organization, group, invitation and private access reuse canonical
   social authorities; open, approval and invitation admission remain distinct.
-- P17/P18 operation, active-scope, snapshot, transition, capacity allocation,
-  ordered waitlist and notification-intent records become the sole canonical
-  Meetup participation authority. Legacy count-only mutation is not a second
-  supported RSVP path.
+- Payload-bound P17 operations, the active-scope invariant, accepted snapshots,
+  transition rows, and the locked `ForumEventRegistrationService` are the sole
+  Meetup RSVP mutation path. The generalized capacity-pool/hold/allocation,
+  typed-waitlist, and notification-intent tables remain wider Event
+  infrastructure and are not falsely described as the active Meetup allocator.
 - Human capacity is `1 + guest_count`; pet participation never consumes the
   human pool unless a future explicit typed pet pool is configured. Waitlist
   order is server-owned priority, requested time, then identifier.
@@ -107,22 +109,22 @@ files, caches, databases, Git state, generated output, or dependencies.
 
 | ID | Severity | Reproduced current behavior | Disposition / required evidence |
 | --- | --- | --- | --- |
-| MEET-F01 | critical | Organization membership branch is not constrained to organization visibility and can project private/invitation cards. | Confirmed; query-level visibility matrix and projection-absence RED test precede the fix. |
-| MEET-F02 | critical | Pending private invitee cannot open the only invitation-response UI. | Confirmed; safe recipient-only preview and HTTP/Livewire acceptance journey required. |
-| MEET-F03 | critical | P17/P18 migration removed prior uniqueness but current writes leave `active_scope_key` null and never use operation/allocation/waitlist records. | Confirmed; behavior, constraint and two-process tests must prove the replacement authority. |
-| MEET-F04 | critical | Create writes discoverable, registration-capable `Scheduled`; no draft/review/publish or full edit flow exists. | Confirmed; dedicated create/edit routes, private draft, explicit readiness validation and publish required. |
-| MEET-F05 | high | Registration replay ignores changed payload and terminal rejoin overwrites historical snapshots/pets. | Confirmed; checksum conflict and immutable new-generation tests required. |
-| MEET-F06 | high | Pet status/permission is not checked through `PetProfileAccess` inside the transaction; approval manufactures confirmed eligibility. | Confirmed with the caregiver/View predicate above; full manager/lifecycle/stale matrix required. |
-| MEET-F07 | high | Block semantics are absent from Meetup query, policy, RSVP, invite, messaging and location paths. | Confirmed; canonical account-block tests before and after RSVP required. |
-| MEET-F08 | high | Canonical Place reveal is not available through Meetup; current participation selection is unordered and can use a stale row. | Confirmed; explicit current registration and audited reveal/revocation tests required. |
-| MEET-F09 | high | Cancellation/reschedule do not synchronize occurrence/version/participation allocation/transition/notification evidence. | Confirmed; atomic material-change and cancellation lifecycle required. |
-| MEET-F10 | high | Organizer management hard-caps at 500 and gives broad roles a mixed projection of email, consent and private pet data. | Confirmed; status-filtered pagination and least-privilege capabilities/projections required. |
-| MEET-F11 | high | Legacy home/sidebar Meetup controls mutate encrypted prototype state rather than canonical registrations. | Confirmed; fake RSVP mutation will be removed or replaced by a canonical route-only CTA. |
-| MEET-F12 | important | Invitations, material updates, requests, removal and cancellation lack durable recipient-specific notification intent; existing invitation placeholder and cross-locale status are wrong. | Confirmed; transition-versioned recipient-locale intent and privacy tests required. |
-| MEET-F13 | important | Mobile detail buries RSVP after content; creation/management are one dense surface; several mutations lack loading, error and focus behavior. | Confirmed; route split, mobile-first priority, complete errors and correctly scoped browser checks required. |
-| MEET-F14 | important | EN/LT/RU catalogs have exact 471-leaf key and placeholder parity, but raw pet species, unqualified timezones and internal validation names remain. | Confirmed; preserve parity while adding localized species, timezone clarity and validation attributes. |
-| MEET-F15 | important | Directory is bounded, but detail hydrates up to 500 sessions and management 500 registrations; no safe pet aggregate or management pagination exists. | Confirmed; split projections, aggregate counts, pagination and explicit query/payload ceilings required. |
-| MEET-F16 | important | Existing tests are sequential/shallow at the hardest boundaries; current accessibility touch-target selector does not match event pages. | Confirmed; dedicated real-domain security, concurrency, payload, locale, accessibility, query and browser journey suites required. |
+| MEET-F01 | critical | Organization membership branch projected private/invitation cards. | Fixed in deny-first visibility scope; focused projection tests pass. |
+| MEET-F02 | critical | Pending private invitee could not open the invitation-response UI. | Fixed with a safe recipient-only preview; exact/participant data remains absent. |
+| MEET-F03 | critical | Active uniqueness and replay authority were unwritten. | Fixed with active scope, payload-bound operations, transitions and a passing two-process final-place race. Generalized pool tables remain unused and documented honestly. |
+| MEET-F04 | critical | Create wrote discoverable `Scheduled` and had no draft/publish/edit flow. | Fixed with dedicated create/edit/manage routes, incomplete private drafts, explicit publish validation and occurrence synchronization. |
+| MEET-F05 | high | Changed replay was accepted and terminal rejoin overwrote history. | Fixed: changed checksum conflicts; terminal rejoin creates a new active generation. |
+| MEET-F06 | high | Pet authority was stale and approval manufactured eligibility. | Fixed through transaction-time `PetProfileAccess::View` and manager-state revalidation. |
+| MEET-F07 | high | Blocks were absent from Meetup boundaries. | Fixed in query/policy/register/message/reveal paths; historical attendance is retained but inaccessible. |
+| MEET-F08 | high | Place reveal was unreachable and participation selection could be stale. | Fixed with latest registration selection and explicit audited grant-bound Place reveal. |
+| MEET-F09 | high | Cancellation/reschedule left occurrence and notification state split. | Fixed for base occurrences, active registrations, safe updates, history and post-commit notifications. |
+| MEET-F10 | high | Management loaded 500 mixed registrations. | Fixed with paginated registration cards and bounded invitation projection. |
+| MEET-F11 | high | Prototype RSVP was a second mutation path. | Canonical Meetup routes/actions are authoritative; final diff review must confirm no task-owned fake mutation remains. |
+| MEET-F12 | important | Notification placeholders/locale and material lifecycle notices were incomplete. | Fixed using recipient locale and deduplicated existing `ForumNotification`; generalized intent tables are not claimed. |
+| MEET-F13 | important | Create/manage were dense and action state incomplete. | Route split and responsive card/form controls implemented; real browser review pending. |
+| MEET-F14 | important | Raw species/internal copy and new locale keys risked drift. | Localized species/labels added; recursive EN/LT/RU parity passes. |
+| MEET-F15 | important | Management was unbounded and query growth unmeasured. | Registration pagination and constant-growth detail/manage query regression pass. |
+| MEET-F16 | important | Hard boundaries lacked real concurrency/security evidence. | Dedicated focused suite and real two-process race pass; browser gate pending. |
 
 ## Independent final reviewers
 

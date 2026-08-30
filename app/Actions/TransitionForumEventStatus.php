@@ -40,6 +40,12 @@ final readonly class TransitionForumEventStatus
             'idempotency_key' => ['required', 'string', 'min:16', 'max:190'],
         ])->validate();
 
+        if ($next === ForumEventStatus::Cancelled) {
+            throw ValidationException::withMessages([
+                'status' => __('forum_events.validation.cancellation_status'),
+            ]);
+        }
+
         return DB::transaction(function () use (
             $actor,
             $event,

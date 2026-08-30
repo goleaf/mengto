@@ -6,10 +6,12 @@ namespace App\Actions;
 
 use App\Enums\ForumEventUpdateAudience;
 use App\Enums\ForumEventUpdateType;
+use App\Models\ForumEventRegistration;
 use App\Models\ForumEvent;
 use App\Models\ForumEventUpdate;
 use App\Models\User;
 use App\Services\ForumEventAudit;
+use App\Services\ForumEventNotifier;
 use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -22,6 +24,7 @@ final readonly class PublishForumEventUpdate
     public function __construct(
         private Gate $gate,
         private ForumEventAudit $audit,
+        private ForumEventNotifier $notifier,
     ) {}
 
     public function handle(
@@ -48,7 +51,7 @@ final readonly class PublishForumEventUpdate
             'idempotency_key' => ['required', 'string', 'min:16', 'max:190'],
         ])->validate();
 
-        return DB::transaction(function () use (
+        $update = DB::transaction(function () use (
             $actor,
             $audience,
             $body,
@@ -94,5 +97,25 @@ final readonly class PublishForumEventUpdate
 
             return $update;
         }, 3);
+
+        ForumEventRegistration::query()
+            ->where('forum_event_id', $event->id)
+            ->whereIn('status', ForumEvent::participantAccessStatusValues())
+            ->with('user:id,actor_key,locale')
+            ->orderBy('id')
+            ->chunkById(100, function ($registrations) use ($event, $update): void {
+                foreach ($registrations as $registration) {
+                    $this->notifier->send(
+                        $registration->user,
+                        $event,
+                        'event-organizer-update',
+                        'forum_events.notifications.material_update_title',
+                        'forum_events.notifications.material_update_body',
+                        'event-organizer-update:'.$update->id.':'.$registration->user_id,
+                    );
+                }
+            });
+
+        return $update;
     }
 }

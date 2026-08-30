@@ -156,4 +156,10 @@ final class PetProfileManager extends Model
         return in_array($permission->value, $granted, true)
             || in_array($permission, $this->role->defaultPermissions(), true);
     }
+
+    public function canRepresentAtMeetup(?Carbon $at = null): bool
+    {
+        return $this->allows(PetProfilePermission::ManageCare, $at)
+            || $this->allows(PetProfilePermission::ManageSocial, $at);
+    }
 }

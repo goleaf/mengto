@@ -244,11 +244,17 @@ updates, communication, reviews, and reports.
 registration. Every Livewire mutation reloads its record and repeats policy
 authorization; `#[Locked]` identifiers are only hydration protection.
 
-Private events require an accepted, unexpired invitation. Exact location,
+Private and invitation events require organizer/team authority, current
+confirmed participation, or a current account-bound invitation. A pending
+recipient may open only the safe invitation-response page. Exact location,
 online access, and the emergency plan require organizer, administrator, or
-confirmed/checked-in attendee access. Group events additionally enforce the
-current group policy. Professional organizer presentation reads independent
-current credential evidence and cannot be granted by event reputation.
+confirmed/checked-in attendee access; pending, waitlisted, removed, blocked,
+and cancelled participation fails. Linked Place exact details additionally
+require a current event-scoped Place grant and an audited explicit reveal.
+Group and organization events enforce current canonical membership without
+broadening private visibility. Professional organizer presentation reads
+independent current credential evidence and cannot be granted by event
+reputation.
 
 ## Verified Expert Sessions
 

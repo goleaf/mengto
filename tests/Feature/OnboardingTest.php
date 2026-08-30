@@ -184,12 +184,12 @@ test('pet relationship transition requires canonical evidence or an explicit def
         $this->authenticatedUser,
         OnboardingStep::PetRelationship,
         $state->lock_version,
-        OnboardingPetChoice::NotNow,
+        OnboardingPetChoice::AddLater,
     );
 
     expect($state->fresh())
         ->current_step->toBe(OnboardingStep::PrivacyDiscovery)
-        ->pet_relationship_choice->toBe(OnboardingPetChoice::NotNow)
+        ->pet_relationship_choice->toBe(OnboardingPetChoice::AddLater)
         ->pet_relationship_completed_at->not->toBeNull();
 });
 
@@ -280,7 +280,8 @@ test('expired pet access evidence is not offered by the onboarding interface', f
         ->create(['temporary_access_ends_at' => now()->subMinute()]);
 
     Livewire::test(Onboarding::class)
-        ->assertDontSee(__('onboarding.steps.pet_relationship.access_requested'));
+        ->assertSee(__('onboarding.steps.pet_relationship.access_requested.label'))
+        ->assertDontSee(__('onboarding.steps.pet_relationship.access_pending'));
 });
 
 test('onboarding repairs a missing canonical social identity with private defaults', function (): void {
@@ -311,12 +312,12 @@ test('privacy step offers a safe pet deferral when prior evidence disappears', f
 
     Livewire::test(Onboarding::class)
         ->assertSee(__('onboarding.validation.pet_evidence'))
-        ->assertSee(__('onboarding.steps.pet_relationship.not_now'))
+        ->assertSee(__('onboarding.steps.pet_relationship.add_later.label'))
         ->call('deferPetRelationship')
         ->assertHasNoErrors();
 
     expect($this->authenticatedUser->onboarding()->firstOrFail())
-        ->pet_relationship_choice->toBe(OnboardingPetChoice::NotNow)
+        ->pet_relationship_choice->toBe(OnboardingPetChoice::AddLater)
         ->lock_version->toBe(5);
 });
 
@@ -574,7 +575,7 @@ test('every direct onboarding transition requires current configured verificatio
         ->timezone->toBe('UTC')
         ->and($preferences->fresh()?->current_step)->toBe(OnboardingStep::Preferences)
         ->and($privacy->fresh()?->isComplete())->toBeFalse()
-        ->and($privacy->fresh()?->pet_relationship_choice)->toBe(OnboardingPetChoice::NotNow)
+        ->and($privacy->fresh()?->pet_relationship_choice)->toBe(OnboardingPetChoice::AddLater)
         ->and($privacy->fresh()?->lock_version)->toBe(4)
         ->and($privacyActor->fresh()?->is_discoverable)->toBeFalse();
 });

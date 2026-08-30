@@ -306,6 +306,41 @@ it('lets the current manager review evidence then requires the requester to acce
         ->and($accepted->allows(PetProfilePermission::ManageManagers))->toBeTrue();
 });
 
+it('recognizes a resolved access review stored with the legacy decision key', function (): void {
+    $owner = User::factory()->create();
+    $requester = User::factory()->create();
+    $profile = PetProfile::factory()->for($owner)->discoverable()->create();
+    $rawIdempotencyKey = 'legacy-access-review';
+    $request = PetProfileAccessRequest::factory()
+        ->for($profile, 'profile')
+        ->for($requester, 'requester')
+        ->create([
+            'status' => PetProfileAccessRequestStatus::Rejected,
+            'active_key' => null,
+            'decision_key' => hash(
+                'sha256',
+                "pet-access-decision|{$owner->id}|{$rawIdempotencyKey}",
+            ),
+            'reviewed_by_user_id' => $owner->id,
+            'reviewed_at' => now(),
+        ]);
+    $this->actingAs($owner);
+
+    $replayed = app(ReviewPetProfileAccessRequest::class)->handle(
+        $request,
+        PetProfileAccessRequestDecision::Reject,
+        'The legacy decision has already been recorded.',
+        $rawIdempotencyKey,
+    );
+
+    expect($replayed->is($request))->toBeTrue()
+        ->and($replayed->status)->toBe(PetProfileAccessRequestStatus::Rejected)
+        ->and(PetProfileManager::query()
+            ->where('pet_profile_id', $profile->id)
+            ->where('user_id', $requester->id)
+            ->exists())->toBeFalse();
+});
+
 it('corrects an existing non-critical relationship without duplicating manager records', function (): void {
     $owner = User::factory()->create();
     $requester = User::factory()->create();
@@ -568,7 +603,11 @@ it('expires a stale temporary request and permits a new request', function (): v
     expect($expired->refresh()->status)->toBe(PetProfileAccessRequestStatus::Expired)
         ->and($expired->active_key)->toBeNull()
         ->and($replacement->status)->toBe(PetProfileAccessRequestStatus::Pending)
-        ->and($replacement->active_key)->not->toBeNull();
+        ->and($replacement->active_key)->not->toBeNull()
+        ->and($profile->lifecycleEvents()
+            ->where('event_type', 'access-request-expired')
+            ->where('actor_user_id', $requester->id)
+            ->count())->toBe(1);
 });
 
 it('expires a stale temporary request instead of approving access', function (): void {
@@ -593,10 +632,21 @@ it('expires a stale temporary request instead of approving access', function ():
         'The review occurred after the requested care period ended.',
         'review-expired-temporary-request',
     );
+    $replayed = app(ReviewPetProfileAccessRequest::class)->handle(
+        $request,
+        PetProfileAccessRequestDecision::Approve,
+        'The review occurred after the requested care period ended.',
+        'review-expired-temporary-request',
+    );
 
     expect($reviewed->status)->toBe(PetProfileAccessRequestStatus::Expired)
+        ->and($replayed->status)->toBe(PetProfileAccessRequestStatus::Expired)
         ->and($reviewed->active_key)->toBeNull()
         ->and($reviewed->granted_manager_id)->toBeNull()
+        ->and($profile->lifecycleEvents()
+            ->where('event_type', 'access-request-expired')
+            ->where('actor_user_id', $owner->id)
+            ->count())->toBe(1)
         ->and(PetProfileManager::query()
             ->where('pet_profile_id', $profile->id)
             ->where('user_id', $requester->id)

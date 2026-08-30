@@ -227,15 +227,15 @@ final reviewer did not participate in Prompt 06 implementation.
 
 | ID | Specialist role | Exclusive Prompt 06 scope | Required deliverable | Status |
 | --- | --- | --- | --- | --- |
-| ONB-P06-A | Pet identity auditor | `PetProfile` identity, ownership, status, actor and canonical creation only | Safest canonical creation/relationship integration and exact reusable paths | assigned read-only |
-| ONB-P06-B | Duplicate-detection auditor | Candidate visibility, bounds, review tokens, confirm-different and direct-creation protection only | Privacy-preserving duplicate and return-flow findings | assigned read-only |
-| ONB-P06-C | Pet-management auditor | Manager status/role, starts/ends/revocation, permissions and creator fallback only | Exact active-management predicate and edge-case matrix | assigned read-only |
-| ONB-P06-D | Access-request auditor | Request types, evidence, expiry, encryption, idempotency, approval/invitation only | Onboarding-safe request paths and pending-evidence decision | queued read-only after ONB-P06-A |
-| ONB-P06-E | Pet-privacy auditor | Creation visibility, discovery/index/direct-link/location defaults and public projections only | Default-safety findings and required regressions | queued read-only after ONB-P06-B |
-| ONB-P06-F | UX/accessibility reviewer | Four truthful choices, owned/managed summary, empty/pending/cancel states, mobile and semantics only | UI state map and measurable accessibility risks | queued read-only after ONB-P06-C |
-| ONB-P06-G | Security reviewer | Foreign/private pets, forged return/input, stale tokens/managers/components and completion bypass only | Exploit-focused negative-test matrix | queued read-only after ONB-P06-D |
-| ONB-P06-H | Test reviewer | Existing pet/onboarding coverage, missing positive/negative/query/idempotency cases only | Minimal non-duplicative Prompt 06 test matrix | queued read-only after ONB-P06-E |
-| ONB-P06-I | Final independent reviewer | Frozen attributable Prompt 06 diff; no discovery or implementation participation | Pet-domain/auth/privacy/UX/regression verdict | reserved read-only |
+| ONB-P06-A | Pet identity auditor | `PetProfile` identity, ownership, status, actor and canonical creation only | Safest canonical creation/relationship integration and exact reusable paths | completed read-only; canonical Action/manager/privacy/lifecycle retained |
+| ONB-P06-B | Duplicate-detection auditor | Candidate visibility, bounds, review tokens, confirm-different and direct-creation protection only | Privacy-preserving duplicate and return-flow findings | completed read-only; exact indexed identity plus purpose-bound review/decision tokens selected |
+| ONB-P06-C | Pet-management auditor | Manager status/role, starts/ends/revocation, permissions and creator fallback only | Exact active-management predicate and edge-case matrix | completed read-only; canonical active-at plus guarded legacy creator fallback selected |
+| ONB-P06-D | Access-request auditor | Request types, evidence, expiry, encryption, idempotency, approval/invitation only | Onboarding-safe request paths and pending-evidence decision | completed read-only; current pending/current invited-or-active approved evidence defined |
+| ONB-P06-E | Pet-privacy auditor | Creation visibility, discovery/index/direct-link/location defaults and public projections only | Default-safety findings and required regressions | completed read-only; create defaults verified, broader projection findings assigned to Prompt 07 |
+| ONB-P06-F | UX/accessibility reviewer | Four truthful choices, owned/managed summary, empty/pending/cancel states, mobile and semantics only | UI state map and measurable accessibility risks | completed read-only; four choices, bounded summary, edit and focused create shell implemented |
+| ONB-P06-G | Security reviewer | Foreign/private pets, forged return/input, stale tokens/managers/components and completion bypass only | Exploit-focused negative-test matrix | completed read-only; five reproduced authorization/lifecycle defects fixed and rerun |
+| ONB-P06-H | Test reviewer | Existing pet/onboarding coverage, missing positive/negative/query/idempotency cases only | Minimal non-duplicative Prompt 06 test matrix | completed read-only; legacy choice/token/bounds/return/expiry gaps added |
+| ONB-P06-I | Final independent reviewer | Frozen attributable Prompt 06 diff; no discovery or implementation participation | Pet-domain/auth/privacy/UX/regression verdict | completed read-only; initial NO-GO findings fixed, final re-review GO |
 
 Selected starting decisions: keep the existing canonical create, duplicate
 review and access-request operations; a current pending request may resolve the
@@ -243,6 +243,31 @@ review and access-request operations; a current pending request may resolve the
 `no pet` and `add later` become distinct controlled choices while legacy
 `not-now` remains readable; return behavior is derived only from the persisted
 authenticated onboarding state, never a browser URL or durable session flag.
+
+Prompt 06 reviewer dispositions:
+
+| Finding | Disposition and evidence |
+| --- | --- |
+| Review could follow a caller-mutated profile relation or stale reviewer authority | Valid security defect; review now locks the authenticated account, canonical request/profile and reviewer membership, then authorizes that exact profile. Cross-profile and stale-account tests pass. |
+| Expired temporary requests retained an active key and could be reviewed/resubmitted incorrectly | Valid lifecycle defect; both paths atomically expire and clear the key, append one idempotent `access-request-expired` event, and never grant a manager. Replay/event-count tests pass. |
+| Blocked/suspended invitees could activate an invitation | Valid availability defect; acceptance locks and rechecks the current account plus configured verification before mutation. Negative tests pass. |
+| New bound idempotency formulas broke replay of pre-Prompt-06 accepted/reviewed operations | Valid compatibility defect from final review; narrowly accept legacy keys only with matching actor/manager/event or reviewer/result facts. Legacy replay tests pass. |
+| Conditional access-request error IDs caused dangling ARIA references and two actions lacked action-specific progress | Valid accessibility defect; descriptions are conditional and request/confirm actions now expose localized loading text and `aria-busy`. Rendered markup tests pass. |
+| Duplicate hash could be NULL under mixed-version writes | Not a blocker under the canonical deployment contract: writes are quiesced before migration and code switches atomically afterward. This required order is now explicit in the onboarding rollout record. |
+| Public privacy projection and section/direct-action/location contracts are incomplete | Valid pre-existing Prompt 07 scope; not required to preserve safe creation defaults and not claimed complete. Exact risks remain open in the canonical onboarding plan. |
+
+Observed final Prompt 06 evidence: final extended Pest 279/279 (6,191
+assertions), independent review Pest 112/112 (5,233), targeted Pint/PHPStan
+green, migration ledger 151→0→151, fresh/repeat seed 10→10, Composer/npm/build
+and route/view cache green. Full Pest ran 3,180 tests with 3,014 passing and 47
+failures; full Pint is red on unrelated Event/Places/forum files and full
+Larastan reports 38 unrelated errors. The disposable browser reached
+migrated/seeded state before Chrome closed DevTools. Those repository/environment
+gates keep publication NO-GO. A concurrent process committed and pushed the
+pre-final-review Prompt 06 implementation together with unrelated Event work as
+`c2b081a`; this was not principal publication approval. Final review
+remediations/documentation remain uncommitted and the principal performs no
+follow-up push while the required gates are red.
 
 ## Prompt 01 Current-Checkout Revalidation
 
@@ -462,3 +487,30 @@ focused result is a repository-wide gate claim.
 - Connected onboarding browser proof was not run because no disposable
   onboarding wrapper exists; the standalone pet browser script is mutation
   capable and forbidden against the configured database.
+
+## Prompt 07 Privacy And Discoverability Work Ledger
+
+Baseline: `main`, `HEAD`, and `origin/main` were all
+`c2b081aa0c807015b0af66d362af3e005d77db3e` when Prompt 07 began. The shared
+index already contained Prompt 06 review remediation mixed with unrelated
+Forum/Event/Places work, and the unstaged tree contained additional concurrent
+Forum/Event changes. Prompt 07 preserves that ownership boundary and does not
+stage, unstage, discard, or rewrite existing work.
+
+| Role | Exclusive read-only scope | Required deliverable | Status |
+| --- | --- | --- | --- |
+| P07-A User privacy auditor | `User`, personal profile projection and every account-level visibility mutation | Evidence table for canonical human privacy state, defaults, runtime effect and gaps | in progress |
+| P07-B Pet privacy auditor | `PetProfile`, `PetProfilePrivacySetting`, pet presenters/routes and privacy Actions | Canonical pet privacy authority, permissions, defaults and public-surface evidence | in progress |
+| P07-C Social actor privacy auditor | `SocialActor`, `SocialActorSetting`, resolver/initializer, actor policies and directory projections | Personal/pet actor discoverability source, synchronization and production initialization evidence | in progress |
+| P07-D Discovery auditor | `DiscoveryPreference`, discovery catalogues/scopes and recommendation suppression | Proof separating profile discoverability from feed/recommendation preferences | pending |
+| P07-E Location safety auditor | User/pet/place/search/device location fields, presenters and serializers | Exact-versus-generalized location map and HTML/JSON leak risks | pending |
+| P07-F External indexing auditor | `allow_external_indexing`, eligibility, robots/meta/sitemap behavior and public routes | Exact runtime semantics, contradictory-state behavior and coverage gaps | pending |
+| P07-G Security/privacy reviewer | Livewire properties, Actions, policies, mass assignment, cross-user/pet attacks and completion bypass | Prioritized abuse paths with reproducible evidence; no speculative fixes | pending |
+| P07-H Accessibility/UX reviewer | Privacy screen semantics, copy, mobile/zoom/forced-colors/loading/offline/error states | WCAG-focused defects and concrete acceptance checks | pending |
+| P07-I Test reviewer | Existing onboarding/privacy/discovery/profile/pet tests and wrappers | Non-duplicative RED/GREEN matrix, query budget and public-surface assertions | pending |
+| P07-J Independent final reviewer | Frozen attributable Prompt 07 diff after implementation | Architecture, authorization, privacy, discovery, indexing, a11y and regression verdict | pending |
+
+The principal owns all production, test, documentation and cross-domain edits.
+Discovery agents must not modify files or run destructive/database-mutating
+commands. Each material finding is independently reproduced before it can
+change the implementation.

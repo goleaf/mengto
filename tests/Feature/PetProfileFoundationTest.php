@@ -220,6 +220,41 @@ it('requires the invited account and keeps manager acceptance idempotent', funct
             ->count())->toBe(1);
 });
 
+it('recognizes an accepted invitation recorded with the legacy idempotency key', function (): void {
+    $owner = User::factory()->create();
+    $invitee = User::factory()->create();
+    $profile = PetProfile::factory()->for($owner)->create();
+    $invitation = PetProfileManager::factory()
+        ->for($profile, 'profile')
+        ->for($invitee)
+        ->create([
+            'status' => PetManagerStatus::Active,
+            'accepted_at' => now(),
+            'starts_at' => now(),
+        ]);
+    PetProfileLifecycleEvent::factory()
+        ->for($profile, 'profile')
+        ->for($invitee, 'actor')
+        ->create([
+            'manager_id' => $invitation->id,
+            'event_type' => 'manager-accepted',
+            'reason_code' => 'manager-accepted',
+            'reason_translation_key' => 'pet_profiles.reasons.manager-accepted',
+            'idempotency_key' => 'legacy-manager-accept',
+        ]);
+    $this->actingAs($invitee);
+
+    $replayed = app(AcceptPetProfileManagerInvitation::class)->handle(
+        $invitation,
+        'legacy-manager-accept',
+    );
+
+    expect($replayed->status)->toBe(PetManagerStatus::Active)
+        ->and($profile->lifecycleEvents()
+            ->where('event_type', 'manager-accepted')
+            ->count())->toBe(1);
+});
+
 it('records one transition and rejects stale lifecycle writes', function (): void {
     $owner = User::factory()->create();
     $this->actingAs($owner);

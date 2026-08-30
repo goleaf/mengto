@@ -15,6 +15,8 @@ final class ForumEventRegistrationPolicy
     ): bool {
         return $user?->isActive() === true
             && $registration->user_id === $user->id
-            && $registration->status->canCancel();
+            && $registration->status->canCancel()
+            && $registration->event->starts_at->isFuture()
+            && ! $registration->event->hasEnded();
     }
 }

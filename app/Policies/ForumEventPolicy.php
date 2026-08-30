@@ -47,6 +47,17 @@ final class ForumEventPolicy
             return false;
         }
 
+        if ($event->status === ForumEventStatus::Cancelled
+            && $user?->isActive() === true
+            && $event->registrations()
+                ->where('user_id', $user->id)
+                ->where('status', ForumEventRegistrationStatus::Cancelled->value)
+                ->where('cancellation_reason_code', 'event-cancelled')
+                ->exists()
+        ) {
+            return true;
+        }
+
         return match ($event->visibility) {
             ForumEventVisibility::Public,
             ForumEventVisibility::Unlisted => true,

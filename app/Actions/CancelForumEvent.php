@@ -9,6 +9,7 @@ use App\Enums\ForumEventStatus;
 use App\Enums\ForumEventUpdateAudience;
 use App\Enums\ForumEventUpdateType;
 use App\Models\ForumEvent;
+use App\Models\ForumEventParticipationTransition;
 use App\Models\ForumEventRegistration;
 use App\Models\ForumEventUpdate;
 use App\Models\User;
@@ -97,19 +98,32 @@ final readonly class CancelForumEvent
                     ->filter(static fn (ForumEventRegistrationStatus $status): bool => $status->isActive())
                     ->map(static fn (ForumEventRegistrationStatus $status): string => $status->value)
                     ->all())
-                ->update([
-                    'status' => ForumEventRegistrationStatus::Cancelled->value,
-                    'active_scope_key' => null,
-                    'waitlist_position' => null,
-                    'cancelled_at' => now(),
-                    'cancellation_reason_code' => 'event-cancelled',
-                    'status_changed_at' => now(),
-                    'updated_at' => now(),
-                ]);
-            ForumEventRegistration::query()
-                ->where('forum_event_id', $locked->id)
-                ->where('cancellation_reason_code', 'event-cancelled')
-                ->increment('lock_version');
+                ->orderBy('id')
+                ->lockForUpdate()
+                ->chunkById(100, function ($registrations) use ($actor): void {
+                    foreach ($registrations as $registration) {
+                        $from = $registration->status;
+                        $registration->forceFill([
+                            'status' => ForumEventRegistrationStatus::Cancelled,
+                            'active_scope_key' => null,
+                            'waitlist_position' => null,
+                            'cancelled_at' => now(),
+                            'cancellation_reason_code' => 'event-cancelled',
+                            'lock_version' => $registration->lock_version + 1,
+                            'status_changed_at' => now(),
+                        ])->save();
+                        ForumEventParticipationTransition::query()->firstOrCreate([
+                            'forum_event_registration_id' => $registration->id,
+                            'version' => $registration->lock_version,
+                        ], [
+                            'actor_user_id' => $actor->id,
+                            'from_status' => $from->value,
+                            'to_status' => ForumEventRegistrationStatus::Cancelled->value,
+                            'reason_code' => 'event-cancelled',
+                            'occurred_at' => now(),
+                        ]);
+                    }
+                });
             $locked->occurrences()
                 ->whereNotIn('status', [
                     ForumEventStatus::Completed->value,

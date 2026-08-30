@@ -434,6 +434,8 @@ return [
         'occurrence_override' => 'Šiai datai taikomas atskiras laikas arba vieta.',
         'registered_occurrence' => 'Registracijos data: :date',
         'accepted_version' => 'Priimta renginio versija: :version',
+        'private_pet' => 'Privatus gyvūnas',
+        'unavailable_pet' => 'Gyvūno profilis nepasiekiamas',
     ],
     'notices' => [
         'offline' => 'Nėra interneto ryšio. Registracija ir organizatoriaus veiksmai neišsaugomi, kol serveris jų nepatvirtina.',

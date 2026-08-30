@@ -8,6 +8,7 @@ use App\Casts\PetProfileStatusCast;
 use App\Enums\PetBirthDatePrecision;
 use App\Enums\PetBreedOriginType;
 use App\Enums\PetLifeStage;
+use App\Enums\PetManagerRole;
 use App\Enums\PetProfilePermission;
 use App\Enums\PetProfileStatus;
 use App\Enums\PetSizeCategory;
@@ -393,7 +394,61 @@ final class PetProfile extends Model
 
     public function scopeRepresentableBy(Builder $query, User $user): Builder
     {
-        return $this->applyManagedBy($query, $user, PetProfilePermission::View);
+        $at = now();
+        $rolesByPermission = collect([
+            PetProfilePermission::ManageCare,
+            PetProfilePermission::ManageSocial,
+        ])->mapWithKeys(static fn (PetProfilePermission $permission): array => [
+            $permission->value => collect(PetManagerRole::cases())
+                ->filter(static fn (PetManagerRole $role): bool => in_array(
+                    $permission,
+                    $role->defaultPermissions(),
+                    true,
+                ))
+                ->map(static fn (PetManagerRole $role): string => $role->value)
+                ->all(),
+        ])->all();
+
+        return $query->where(function (Builder $represented) use ($at, $rolesByPermission, $user): void {
+            $represented->where(function (Builder $legacyOwner) use ($user): void {
+                $legacyOwner
+                    ->where('user_id', $user->id)
+                    ->whereDoesntHave(
+                        'managers',
+                        fn (Builder $manager): Builder => $manager
+                            ->where('user_id', $user->id),
+                    );
+            })->orWhereHas('managers', function (Builder $managers) use ($at, $rolesByPermission, $user): void {
+                $managers->where('user_id', $user->id);
+                PetProfileManager::constrainActiveAt($managers, $at);
+                $managers->where(function (Builder $authority) use ($rolesByPermission): void {
+                    foreach ([
+                        PetProfilePermission::ManageCare,
+                        PetProfilePermission::ManageSocial,
+                    ] as $permission) {
+                        $authority->orWhere(function (Builder $allowed) use ($permission, $rolesByPermission): void {
+                            $allowed
+                                ->where(function (Builder $notDenied) use ($permission): void {
+                                    $notDenied
+                                        ->whereNull('permission_overrides')
+                                        ->orWhereJsonDoesntContain(
+                                            'permission_overrides->deny',
+                                            $permission->value,
+                                        );
+                                })
+                                ->where(function (Builder $granted) use ($permission, $rolesByPermission): void {
+                                    $granted
+                                        ->whereIn('role', $rolesByPermission[$permission->value])
+                                        ->orWhereJsonContains(
+                                            'permission_overrides->grant',
+                                            $permission->value,
+                                        );
+                                });
+                        });
+                    }
+                });
+            });
+        });
     }
 
     private function applyManagedBy(

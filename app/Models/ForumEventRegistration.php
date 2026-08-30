@@ -158,7 +158,7 @@ final class ForumEventRegistration extends Model
     /** @return BelongsTo<PetProfile, $this> */
     public function petProfile(): BelongsTo
     {
-        return $this->belongsTo(PetProfile::class);
+        return $this->belongsTo(PetProfile::class)->withTrashed();
     }
 
     /** @return BelongsToMany<PetProfile, $this, ForumEventRegistrationPet, 'pivot'> */

@@ -48,6 +48,27 @@ requires authenticated ownership or an explicit scoped grant.
   administrator capability is an explicit policy decision; ordinary private
   medical, care, device, group, journal, and forum-topic reads remain scoped.
 
+### Meetup Safety And Location Privacy
+
+- Meetup discovery is query-scoped before hydration; drafts, invitation-only
+  records, account blocks, and inactive organizers fail closed.
+- Visibility and join policy are distinct. Open registration cannot bypass
+  approval or account-bound invitation admission.
+- Register operations are payload-bound and replay-safe. Event/occurrence
+  locks plus active database uniqueness prevent duplicate participation and
+  capacity overbooking; a two-process final-place regression exercises the
+  SQLite `IMMEDIATE` transaction path.
+- Selected pets are rechecked against current canonical owner/active-manager
+  `PetProfileAccess`; browser IDs, pending invitations, expired managers, and
+  private profile presentation grant no authority.
+- Approximate location is the only discovery projection. Manual exact access
+  is encrypted and confirmed-participant scoped. Linked Place exact facts
+  require a current event grant plus explicit audited reveal and never enter
+  notification previews.
+- Cancellation and organizer removal retain history while revoking
+  participant-only access. No GPS history, background location, medical proof,
+  bearer invite link, or state-changing GET endpoint is introduced.
+
 ### Professional And Adoption Identity
 
 - Professional verification and forum reputation are independent.

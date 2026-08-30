@@ -499,7 +499,7 @@ test('event builder exposes only organizations the actor may use and creates org
     );
 
     Livewire::actingAs($owner)
-        ->test(ForumEventDirectory::class)
+        ->test(ForumEventDirectory::class, ['createOnly' => true])
         ->assertSee(ForumEventVisibility::Organization->label())
         ->set('form.visibility', ForumEventVisibility::Organization->value)
         ->assertSee('Builder Manageable Organization')

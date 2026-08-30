@@ -43,6 +43,12 @@
 | `@persist` | Media player across navigation | Not currently required | Never persist sensitive server data | N/A |
 | `@teleport` | Accessible modal surface | Candidate | Preserve focus trap/restoration | Browser test |
 
+The Meetup workspace uses locked route/mode/session identifiers, form objects,
+computed bounded projections, precise loading targets, inline confirmations,
+and direct policy reauthorization. Exact linked-Place data is populated only
+by the audited reveal Action and is reset during the next hydration so it is
+not a durable browser-controlled property.
+
 ## Form Rules
 
 - Normalize before validation only when semantics are preserved.

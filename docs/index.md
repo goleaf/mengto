@@ -30,6 +30,7 @@ This index is the source-of-truth map for first-party documentation.
 | `docs/groups.md` | Persistent group identity, membership, privacy, management, seeding, and recovery | Product + engineering | Canonical |
 | `docs/polls.md` | Persistent group content, polls, private files, concurrency, seeding, and recovery | Product + engineering | Canonical |
 | `docs/events/index.md` | Events, attendance, clubs, privacy, backfill, and recovery | Product + engineering | Canonical |
+| `docs/events/meetups.md` | Meetup discovery, RSVP, pets, waitlist, invitations, organizer controls, and exact-location privacy | Product + engineering + QA | Canonical Meetup projection |
 | `docs/expert-question-sessions.md` | Verified-host question sessions, queue privacy, corrections, and recovery | Product + engineering | Canonical |
 | `docs/topic-lifecycle.md` | Topic states, retention, legal hold, redirects, seeding, and recovery | Product + engineering | Canonical |
 | `docs/pet-profiles.md` | Canonical pet identity, managers, privacy, lifecycle, backfill, and recovery | Product + engineering | Canonical |

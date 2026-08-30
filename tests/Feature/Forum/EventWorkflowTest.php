@@ -32,6 +32,7 @@ use App\Models\ForumEvent;
 use App\Models\ForumEventHistory;
 use App\Models\ForumEventInvitation;
 use App\Models\ForumEventMessage;
+use App\Models\ForumNotification;
 use App\Models\ForumEventRegistration;
 use App\Models\ForumEventReview;
 use App\Models\ForumEventUpdate;
@@ -483,6 +484,13 @@ test('access details attendee updates and messages stay inside the authorized au
         ->and($update->audience)->toBe(ForumEventUpdateAudience::Attendees)
         ->and($message->audience)->toBe(ForumEventMessageAudience::Organizers)
         ->and(ForumEventUpdate::query()->where('forum_event_id', $event->id)->count())->toBe(1)
+        ->and(ForumNotification::query()
+            ->where('type', 'event-organizer-update')
+            ->count())->toBe(2)
+        ->and(ForumNotification::query()
+            ->where('type', 'event-organizer-update')
+            ->where('body', 'like', '%attendee-only video room%')
+            ->exists())->toBeFalse()
         ->and(ForumEventMessage::query()->where('forum_event_id', $event->id)->count())->toBe(1);
 
     $this->actingAs($outsider);
@@ -520,7 +528,8 @@ test('rescheduling and cancellation preserve an auditable lifecycle', function (
         ->create();
     $newStart = CarbonImmutable::now()->addWeeks(2)->startOfHour();
 
-    app(RescheduleForumEvent::class)->handle(
+    $reschedule = app(RescheduleForumEvent::class);
+    $reschedule->handle(
         $organizer,
         $event,
         $newStart,
@@ -529,6 +538,24 @@ test('rescheduling and cancellation preserve an auditable lifecycle', function (
         'The venue requested a later date for animal welfare planning.',
         'event-reschedule-token-0001',
     );
+    $reschedule->handle(
+        $organizer,
+        $event,
+        $newStart,
+        $newStart->addHours(3),
+        'Europe/Vilnius',
+        'The venue requested a later date for animal welfare planning.',
+        'event-reschedule-token-0001',
+    );
+    expect(fn () => $reschedule->handle(
+        $organizer,
+        $event,
+        $newStart->addDay(),
+        $newStart->addDay()->addHours(3),
+        'Europe/Vilnius',
+        'The venue requested a different date for animal welfare planning.',
+        'event-reschedule-token-0001',
+    ))->toThrow(ValidationException::class);
     app(CancelForumEvent::class)->handle(
         $organizer,
         $event,
@@ -544,7 +571,10 @@ test('rescheduling and cancellation preserve an auditable lifecycle', function (
         ->and(ForumEventHistory::query()
             ->where('forum_event_id', $event->id)
             ->whereIn('event_type', ['rescheduled', 'cancelled'])
-            ->count())->toBe(2);
+            ->count())->toBe(2)
+        ->and(ForumNotification::query()
+            ->where('type', 'event-rescheduled')
+            ->count())->toBe(1);
 });
 
 test('only attendees can submit one idempotent post-event review', function () {

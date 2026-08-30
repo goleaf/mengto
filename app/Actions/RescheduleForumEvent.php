@@ -8,6 +8,7 @@ use App\Enums\ForumEventStatus;
 use App\Enums\ForumEventUpdateAudience;
 use App\Enums\ForumEventUpdateType;
 use App\Models\ForumEvent;
+use App\Models\ForumEventHistory;
 use App\Models\ForumEventUpdate;
 use App\Models\User;
 use App\Services\ForumEventAudit;
@@ -64,6 +65,27 @@ final readonly class RescheduleForumEvent
                 ->lockForUpdate()
                 ->findOrFail($event->id);
             $this->gate->forUser($actor)->authorize('update', $locked);
+            $auditKey = 'event:reschedule:'.$idempotencyKey;
+            $existing = ForumEventHistory::query()
+                ->where('idempotency_key', $auditKey)
+                ->lockForUpdate()
+                ->first();
+
+            if ($existing !== null) {
+                if ($existing->forum_event_id !== $locked->id
+                    || $existing->actor_user_id !== $actor->id
+                    || data_get($existing->metadata, 'new_starts_at') !== $startsAt->toAtomString()
+                    || data_get($existing->metadata, 'new_ends_at') !== $endsAt->toAtomString()
+                    || data_get($existing->metadata, 'new_timezone') !== $timezone
+                    || data_get($existing->metadata, 'explanation') !== trim($explanation)
+                ) {
+                    throw ValidationException::withMessages([
+                        'rescheduleForm' => __('forum_events.validation.idempotency_conflict'),
+                    ]);
+                }
+
+                return $locked;
+            }
 
             if (! in_array($locked->status, [
                 ForumEventStatus::Scheduled,
@@ -128,9 +150,10 @@ final readonly class RescheduleForumEvent
                     'old_ends_at' => $oldEndsAt,
                     'new_starts_at' => $startsAt->toAtomString(),
                     'new_ends_at' => $endsAt->toAtomString(),
+                    'new_timezone' => $timezone,
                     'explanation' => trim($explanation),
                 ],
-                idempotencyKey: 'event:reschedule:'.$idempotencyKey,
+                idempotencyKey: $auditKey,
             );
 
             return $locked;

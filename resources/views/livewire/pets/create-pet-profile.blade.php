@@ -272,7 +272,7 @@
                             <div class="grid gap-4 sm:grid-cols-2">
                                 <label class="forum-form__field" for="pet-access-request-type">
                                     <span>{{ __('pet_profiles.access_requests.request_type') }}</span>
-                                    <select id="pet-access-request-type" wire:model.live="accessRequestForm.requestType" aria-describedby="pet-access-request-type-error" @error('accessRequestForm.requestType') aria-invalid="true" @enderror>
+                                    <select id="pet-access-request-type" wire:model.live="accessRequestForm.requestType" @error('accessRequestForm.requestType') aria-describedby="pet-access-request-type-error" aria-invalid="true" @enderror>
                                         @forelse ($this->accessRequestTypes as $value => $label)
                                             <option wire:key="pet-access-type-{{ $value }}" value="{{ $value }}">{{ $label }}</option>
                                         @empty
@@ -285,7 +285,7 @@
                                 @if ($accessRequestForm->requestType === 'relationship-correction')
                                     <label class="forum-form__field" for="pet-access-request-role">
                                         <span>{{ __('pet_profiles.access_requests.requested_role') }}</span>
-                                        <select id="pet-access-request-role" wire:model="accessRequestForm.requestedRole" aria-describedby="pet-access-request-role-error" @error('accessRequestForm.requestedRole') aria-invalid="true" @enderror>
+                                        <select id="pet-access-request-role" wire:model="accessRequestForm.requestedRole" @error('accessRequestForm.requestedRole') aria-describedby="pet-access-request-role-error" aria-invalid="true" @enderror>
                                             @forelse ($this->correctionRoleOptions as $value => $label)
                                                 <option wire:key="pet-access-role-{{ $value }}" value="{{ $value }}">{{ $label }}</option>
                                             @empty
@@ -299,14 +299,14 @@
                                 @if ($accessRequestForm->requestType === 'temporary-access')
                                     <label class="forum-form__field" for="pet-access-request-ends">
                                         <span>{{ __('pet_profiles.access_requests.temporary_ends_at') }}</span>
-                                        <input id="pet-access-request-ends" type="datetime-local" wire:model="accessRequestForm.temporaryAccessEndsAt" required aria-describedby="pet-access-request-ends-error" @error('accessRequestForm.temporaryAccessEndsAt') aria-invalid="true" @enderror>
+                                        <input id="pet-access-request-ends" type="datetime-local" wire:model="accessRequestForm.temporaryAccessEndsAt" required @error('accessRequestForm.temporaryAccessEndsAt') aria-describedby="pet-access-request-ends-error" aria-invalid="true" @enderror>
                                         @error('accessRequestForm.temporaryAccessEndsAt') <small id="pet-access-request-ends-error" role="alert">{{ $message }}</small> @enderror
                                     </label>
                                 @endif
 
                                 <label class="forum-form__field sm:col-span-2" for="pet-access-request-evidence">
                                     <span>{{ __('pet_profiles.access_requests.evidence') }}</span>
-                                    <textarea id="pet-access-request-evidence" wire:model="accessRequestForm.evidenceSummary" rows="5" minlength="20" maxlength="2000" required aria-describedby="pet-access-request-evidence-help pet-access-request-evidence-error" @error('accessRequestForm.evidenceSummary') aria-invalid="true" @enderror></textarea>
+                                    <textarea id="pet-access-request-evidence" wire:model="accessRequestForm.evidenceSummary" rows="5" minlength="20" maxlength="2000" required aria-describedby="pet-access-request-evidence-help @error('accessRequestForm.evidenceSummary') pet-access-request-evidence-error @enderror" @error('accessRequestForm.evidenceSummary') aria-invalid="true" @enderror></textarea>
                                     <small id="pet-access-request-evidence-help">{{ __('pet_profiles.access_requests.evidence_help') }}</small>
                                     @error('accessRequestForm.evidenceSummary') <small id="pet-access-request-evidence-error" role="alert">{{ $message }}</small> @enderror
                                 </label>
@@ -320,7 +320,8 @@
                                 </button>
                                 <button type="button" class="forum-button forum-button--primary min-h-11" wire:click="submitSelectedAccessRequest" wire:loading.attr="disabled" wire:loading.attr="aria-busy" wire:target="submitSelectedAccessRequest">
                                     <x-ui-icon name="send" />
-                                    <span>{{ __('pet_profiles.access_requests.submit') }}</span>
+                                    <span wire:loading.remove wire:target="submitSelectedAccessRequest">{{ __('pet_profiles.access_requests.submit') }}</span>
+                                    <span wire:loading wire:target="submitSelectedAccessRequest" role="status" aria-live="polite">{{ __('pet_profiles.access_requests.submitting') }}</span>
                                 </button>
                             </div>
                         </fieldset>
@@ -354,10 +355,12 @@
                         class="action action--primary action--regular"
                         wire:click="confirmDifferentAnimal"
                         wire:loading.attr="disabled"
+                        wire:loading.attr="aria-busy"
                         wire:target="confirmDifferentAnimal"
                     >
                         <x-ui-icon name="plus" size="sm" />
-                        <span>{{ __('pet_profiles.duplicate_review.different_animal') }}</span>
+                        <span wire:loading.remove wire:target="confirmDifferentAnimal">{{ __('pet_profiles.duplicate_review.different_animal') }}</span>
+                        <span wire:loading wire:target="confirmDifferentAnimal" role="status" aria-live="polite">{{ __('pet_profiles.duplicate_review.confirming_different_animal') }}</span>
                     </button>
                 @else
                     <button

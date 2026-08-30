@@ -8,11 +8,12 @@ and testing contracts affected by account entry.
 
 ## Status
 
-**Prompt 05 canonical language/timezone integration and independent scoped
-review are complete; connected Chrome evidence and repository-wide release
-gates remain blocked. Prompt 06 canonical pet-relationship integration is
-planned and in progress. The complete onboarding product and repository
-release remain unclaimed.**
+**Prompt 06 canonical pet-relationship implementation and review remediation
+are complete at the focused code boundary. Connected Chrome evidence and
+repository-wide release gates remain blocked. A concurrent process already
+published the pre-final-review Prompt 06/Event bundle as `c2b081a`; that event
+is not release approval, and the principal makes no follow-up commit/push while
+the complete onboarding product/repository release remains unclaimed.**
 
 The checkout already contains the additive onboarding aggregate, registration
 bootstrap, central middleware, forward-only Actions, a class-based Livewire
@@ -242,17 +243,19 @@ registration
   -> introduction
   -> language and timezone
   -> pet relationship decision
-       -> canonical pet create/duplicate/access workflow when requested
-       -> or continue without a pet for now
+       -> own/manage: prove an owned or actively managed canonical pet
+       -> care for existing: canonical duplicate/access-request workflow
+       -> no pet: continue without creating a placeholder
+       -> add later: continue and retain the normal pet workflow for later
   -> privacy explanation, choices, and explicit acknowledgement
   -> server completion check
   -> one safe intended portal URL or home
 ```
 
-The separate “no pet” and “add later” survey answers are deliberately collapsed
-into `not-now`: both have the same safe product behavior and no required domain
-side effect. A later analytics requirement may add a non-blocking distinction;
-it is not needed for secure portal entry.
+New transitions persist four distinct controlled choices: `managed-pet`,
+`access-requested`, `no-pet`, and `add-later`. The old `not-now` value remains
+readable only for backward-compatible rows and cannot be selected or written
+by the current UI/Action boundary.
 
 ## Mandatory Steps
 
@@ -261,8 +264,9 @@ it is not needed for secure portal entry.
 - Introduction acknowledgement.
 - Supported locale and valid IANA timezone persisted through the canonical
   preference Action.
-- One server-validated pet relationship choice: managed evidence, pending
-  access-request evidence, or explicit `not-now`.
+- One server-validated pet relationship choice: current managed evidence,
+  current request/invitation evidence, explicit `no-pet`, or explicit
+  `add-later`; legacy `not-now` remains completion-compatible only.
 - Privacy/discovery values plus explicit acknowledgement.
 - Server-side prerequisite recheck before setting `complete` exactly once.
 
@@ -283,16 +287,18 @@ Optional work never blocks portal access and may be completed later.
 | --- | --- | --- | --- | --- |
 | `introduction` | acknowledge | active configured-verified owner, accepted acknowledgement, expected version | `preferences` | only the immediate successor, expected version + 1, and repeated acknowledgement are a no-op |
 | `preferences` | save preferences | same owner; EN/LT/RU; IANA timezone; expected version | `pet-relationship` | only the immediate successor, expected version + 1, and identical locale/timezone are a no-op |
-| `pet-relationship` | choose relationship | same owner; enum; current managed/pending evidence when claimed | `privacy-discovery` | same choice is no-op; conflicting choice is stale conflict |
-| `privacy-discovery` | save privacy and acknowledge | same owner; booleans; acknowledgement; both onboarding/settings versions; locked current pet evidence or `not-now` | `complete` | only matching booleans and both immediately preceding versions preserve settings/timestamps as a no-op |
-| `privacy-discovery` | defer invalidated pet relationship | same owner; expected version; controlled `not-now` destination | `privacy-discovery` | an exact immediately preceding retry is a no-op |
+| `pet-relationship` | choose relationship | same owner; current selectable enum; current managed/request evidence when claimed | `privacy-discovery` | same choice is no-op; conflicting choice is stale conflict |
+| `privacy-discovery` | revisit pet relationship | same owner; expected version; incomplete row | `pet-relationship` | exact immediately preceding retry is a no-op; real pet/request data is never erased |
+| `privacy-discovery` | save privacy and acknowledge | same owner; booleans; acknowledgement; both onboarding/settings versions; locked current pet evidence, `no-pet`, `add-later`, or legacy `not-now` | `complete` | only matching booleans and both immediately preceding versions preserve settings/timestamps as a no-op |
+| `privacy-discovery` | defer invalidated pet relationship | same owner; expected version; controlled `add-later` destination | `privacy-discovery` | an exact immediately preceding retry is a no-op |
 | `complete` | none | middleware passes; component redirects | portal | completion timestamp/version remain unchanged |
 
 No future-step call, arbitrary step integer, foreign user, inactive or
 configured-unverified account, stale lock, foreign pet/request, or browser
-completion timestamp is accepted. Backward navigation is deferred: canonical
-profile, social, and pet settings remain editable after completion without
-rewinding onboarding history.
+completion timestamp is accepted. General backward navigation remains absent;
+the only backward edge is the owner-scoped, version-guarded Privacy → Pet
+Relationship edit edge. Canonical profile, social, and pet settings remain
+editable after completion without reopening onboarding.
 
 Prompt 02 preserves this exact graph:
 
@@ -306,10 +312,11 @@ INTRODUCTION -> PREFERENCES -> PET RELATIONSHIP -> PRIVACY / DISCOVERY -> COMPLE
 The only forward edge from each incomplete state is the edge shown. Exact
 replay of an already-applied operation is a no-op; a conflicting replay or
 stale version fails without state regression. General backward navigation is
-not a persistent transition in this version. A narrow same-step recovery lets
-the user replace revoked, expired, rejected, deleted, or otherwise unavailable
-pet evidence with the canonical `not-now` choice, so optional pet setup can
-never dead-end portal access. The state resolver may report a conceptual
+not supported. A narrow edit transition lets an incomplete user revisit Pet
+Relationship from Privacy without deleting later facts. A separate same-step
+recovery lets the user replace revoked, expired, rejected, deleted, or
+otherwise unavailable pet evidence with the canonical `add-later` choice, so
+optional pet setup can never dead-end portal access. The state resolver may report a conceptual
 previous step for presentation, but `canEnter` permits only the current
 persisted step. A missing row means legacy-complete. An unknown raw
 step or pet-choice value never means complete: it resolves to the earliest
@@ -449,7 +456,9 @@ the canonical profile settings flow.
 - `CompleteOnboardingPreferences`: locks state and delegates canonical profile
   validation/persistence.
 - `DeferOnboardingPetRelationship`: keeps the account at privacy while
-  atomically replacing invalidated relationship evidence with `not-now`.
+  atomically replacing invalidated relationship evidence with `add-later`.
+- `RevisitOnboardingPetRelationship`: provides the only owner-scoped,
+  versioned backward edit transition without deleting canonical domain facts.
 - `CompleteOnboardingPrivacy`: locks state, delegates canonical social settings,
   records acknowledgement/completion once.
 - Existing pet create/duplicate/access and social settings Actions remain the
@@ -462,6 +471,10 @@ the canonical profile settings flow.
 - `EmailVerificationMode` owns the configured verification rule.
 - `SocialActorResolver` owns runtime actor/settings provisioning.
 - `PetProfileAccess` and the canonical managed query own pet authority.
+- `OnboardingPetRelationshipOverview` prepares bounded, permission-safe pet
+  summaries and current request/invitation indicators without Blade queries.
+- `PetProfileDuplicateIdentity` and `PetProfileDuplicateReview` own exact
+  normalized identity lookup and viewer/input/candidate-bound tokens.
 - `OnboardingPetEvidence` performs the same bounded canonical evidence check at
   pet selection and immediately before completion; the completion check locks
   a non-deleted profile first, then its qualifying request/manager or legacy
@@ -506,22 +519,36 @@ the two distinct user intents. “Managed” is valid only for an active
 manager membership or documented legacy creator fallback when no own manager
 row exists. Revoked, expired, future, invited, foreign, or soft-deleted
 relationships do not count. “Access requested” requires either a current,
-non-expired pending request owned by the authenticated user and a current
-profile, or an approved request backed by its currently active granted manager.
-Rejected, cancelled, expired, unlinked approved, or expired-temporary requests
-do not count. The decision itself grants no permission.
+active-keyed, non-expired pending request owned by the authenticated user and
+a current profile, or an approved request backed by its same-user/same-profile
+granted manager in a current invited or active state. An invitation satisfies
+request progress only; it is never active management until accepted. Rejected,
+cancelled, expired, unlinked approved, or expired-temporary requests do not
+count. The decision itself grants no permission.
 
 A current pending request satisfies only the onboarding decision to care for
 an existing pet so that external approval cannot trap an account. It never
 creates `PetProfileManager`, never authorizes private pet data, and must still
 be approved and accepted through the canonical invitation lifecycle. New pet
 creation continues to create the canonical draft profile, manager, privacy,
-alias, actor/lifecycle and audit records with private, non-discoverable,
-non-indexable, non-direct-link and hidden-location defaults. The safe return
-context is the authenticated persisted onboarding step: canonical pet Actions
-re-read it under lock and the destination resolver returns to onboarding only
-while that step is current. No `return_url`, `next`, arbitrary route name or
-session flag is accepted, so there is no stale return state to clean up.
+alias, lifecycle and audit records with private, non-discoverable,
+non-indexable, non-direct-link and hidden-location defaults. Pet social actor
+resolution remains in its existing lazy canonical boundary and is not
+duplicated by onboarding. The safe return context is the authenticated
+persisted onboarding step: the destination resolver returns to onboarding
+only while Pet Relationship is current. No `return_url`, `next`, arbitrary
+route name or session flag is accepted, so there is no stale return state to
+clean up. Duplicate candidates use an exact normalized SHA-256 identity hash
+plus the existing viewer scope and bounded result cap. Review and explicit
+different-animal tokens are distinct, viewer/input/candidate-bound and
+mandatory for direct Action creation.
+
+Access-request review is rebound to the fresh canonical request/profile and a
+fresh active reviewer membership under lock. Expired temporary requests become
+append-only audited `access-request-expired` transitions. Legacy invitation
+and review idempotency keys remain accepted only when their persisted actor,
+manager/request and result facts match, while new keys bind the operation more
+tightly.
 
 ## Privacy Integration
 
@@ -531,6 +558,14 @@ settings in the same outer transaction as onboarding completion. Explicit
 acknowledgement records understanding of the displayed privacy model only. It
 does not create pet, discovery-preference, location, medical, GPS/device, or
 marketing-consent records.
+
+Prompt 06 verified canonical creation defaults only. The privacy audit also
+found pre-existing Prompt 07 work: public projection must fail closed when a
+privacy row is missing/malformed, section-level rules and created-content
+presentation must honor the same policy, direct privacy Action validation must
+be server-authoritative, external-index/direct-link consumers need explicit
+contracts, and location-field compatibility needs reconciliation. None is
+misreported as completed by this pet-integration package.
 
 ## Localization
 
@@ -584,12 +619,19 @@ recipient-locale content tests pass.
 
 ## Migration Plan
 
-1. Keep the already-applied additive migration; do not edit or rename it.
+1. Keep the already-applied onboarding migration; do not edit or rename it.
+   Prompt 06 adds reversible
+   `2026_08_30_280000_add_duplicate_name_hash_to_pet_profiles.php`: nullable
+   `duplicate_name_hash` (64), deterministic chunked backfill, and the
+   `pet_profiles_duplicate_identity_idx` composite index on species/hash.
 2. Old code ignores the table; new code creates rows only through canonical
    registration.
 3. Do not bulk-enrol or rewrite existing accounts/privacy.
-4. Verify isolated empty and populated up/down/reapply behavior. After writes,
-   treat table removal as destructive and prefer a forward fix.
+4. Follow the deployment contract that quiesces writes before migrations and
+   atomically switches code afterward; this prevents mixed-version writers
+   from creating a post-backfill NULL hash. Verify isolated empty and populated
+   up/down/reapply behavior. After writes, treat table/column removal as
+   destructive and prefer a forward fix.
 5. Monitor unexpected missing rows for post-cutover accounts, transition
    conflicts, redirect loops, and non-identifying aggregate completion counts.
 
@@ -757,25 +799,25 @@ recipient-locale content tests pass.
   pet identity, creation, duplicate review, manager, access-request, privacy,
   onboarding and authorization boundaries; record nine exclusive reviewer
   roles and the chosen pending-request/return semantics before runtime edits.
-- [ ] **ONB-P06-02 — RED pet relationship contracts.** Prove distinct no-pet
+- [x] **ONB-P06-02 — RED pet relationship contracts.** Proved distinct no-pet
   and add-later choices, active relationship edge cases, bounded summaries,
   pending request semantics, safe returns, completion defense and abuse cases.
-- [ ] **ONB-P06-03 — Canonical relationship integration.** Extend the existing
+- [x] **ONB-P06-03 — Canonical relationship integration.** Extended the existing
   controlled choice model compatibly, centralize bounded relationship
   presentation, and reuse the canonical manager/request evidence predicates
   without creating onboarding pet records or permissions.
-- [ ] **ONB-P06-04 — Canonical create, duplicate and request bridge.** Keep
+- [x] **ONB-P06-04 — Canonical create, duplicate and request bridge.** Kept
   duplicate tokens/candidate visibility and access-request idempotency intact;
   derive onboarding return solely from locked authenticated server state while
   preserving normal creation redirects.
-- [ ] **ONB-P06-05 — Accessible localized Pets experience.** Render four
+- [x] **ONB-P06-05 — Accessible localized Pets experience.** Rendered four
   semantic radio choices, safe bounded relationship summaries, clear empty and
   pending states, canonical actions, EN/LT/RU copy, errors, loading and offline
   feedback with one H1 and 44px targets.
-- [ ] **ONB-P06-06 — Independent review, gates and publication.** Freeze the
-  attributable diff, reproduce/disposition pet-domain, authorization,
-  security, privacy, UX and test findings, run focused/full gates, and commit /
-  push only if every material gate is green.
+- [ ] **ONB-P06-06 — Independent review, gates and publication.** Independent
+  re-review returned GO after legacy replay, audited expiry and ARIA/loading
+  fixes, and focused/infrastructure gates are green. Full repository and
+  connected Chrome gates remain red, so commit/push remains correctly blocked.
 
 ## Acceptance Criteria
 
@@ -938,8 +980,36 @@ application database.
 - [x] Initial code trace confirms the canonical duplicate-aware create and
   access-request domains already exist; Prompt 06 will extend rather than copy
   them. A pending current request may resolve onboarding but grants no access.
-- [ ] RED tests, implementation, focused verification, independent frozen-diff
-  review, broad gates and publication decision remain in progress.
+- [x] RED tests reproduced missing four-choice, evidence, bounded-summary,
+  duplicate-token, direct-Action, access-lifecycle, safe-return, stale-state,
+  privacy-default and completion-defense contracts before implementation.
+- [x] The implementation reuses canonical create/duplicate/request domains,
+  adds the exact indexed duplicate identity, four current choices, bounded
+  relationship presentation, guarded Privacy → Pets editing, server-derived
+  return, append-only expiry audit and legacy idempotency compatibility.
+- [x] Post-remediation focused verification passed 85 tests / 5,187 assertions;
+  the final extended pet/onboarding regression passed 279 / 279 with 6,191
+  assertions, and the independent reviewer separately passed 112 / 5,233 and
+  returned GO. Targeted Prompt 06 PHPStan and Pint are green. Localization
+  passed 7 / 7 with 37,908 assertions; the translation scanners are green
+  except for the unrelated `CreateForumEvent.php` English literal.
+- [x] Isolated migration cycle passed 151 up → 0 down → 151 up and repeat seed
+  10 → 10; fresh migration/seed and repeat seed also retained 10 users.
+  Composer validation/audit/platform, npm high audit/build, route cache and
+  view cache passed.
+- [x] Full Pest was executed: 3,180 tests, 3,014 passed, 47 failed, 133,961
+  assertions, exit 2. Failures include unfinished Places/Portal/factory and
+  generated evidence plus concurrent shared-tree work; the prior Prompt 06
+  legacy-choice regression was fixed and its affected suite rerun green.
+  Full Pint reports unrelated Event/Places/forum formatting and full Larastan
+  reports 38 errors in Event/Places/forum code. Architecture compliance likewise
+  remains red on unrelated generated/forum work. Chrome migrated and seeded
+  its disposable database, then closed the DevTools connection before page
+  assertions. Publication is NO-GO. A concurrent process committed and pushed
+  the pre-final-review Prompt 06 implementation together with unrelated Event
+  work as `c2b081a`; the principal did not create or approve that publication.
+  Final review remediations/documentation remain in the shared index/tree and
+  no follow-up commit or push is made while required gates remain red.
 
 ### Prompt 03
 

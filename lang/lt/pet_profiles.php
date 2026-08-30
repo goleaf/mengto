@@ -50,6 +50,7 @@ return [
         'review_protected_description' => 'Šio prašymo negalima patvirtinti įprastame peržiūros lange. Atmeskite jį čia arba naudokite specialų nuosavybės perdavimo procesą, kai jis bus prieinamas.',
         'review_title' => ':name prieigos prašymai',
         'submit' => 'Siųsti prieigos prašymą',
+        'submitting' => 'Siunčiamas prieigos prašymas...',
         'submitted_at' => 'Pateikta',
         'temporary_ends_at' => 'Laikina prieiga baigiasi',
         'unavailable_requester' => 'Paskyra nepasiekiama',
@@ -442,6 +443,7 @@ return [
         'visibility_help' => 'Tai numatoma auditorija po peržiūros; naujas profilis vis tiek pradedamas kaip paieškoje nerodomas juodraštis.',
     ],
     'duplicate_review' => [
+        'confirming_different_animal' => 'Patvirtinama, kad tai kitas gyvūnas...',
         'description' => 'Rodomi tik jūsų paskyrai jau matomi profiliai. Jautrūs faktai, dokumentai, tikslios vietos ir privatūs valdytojų duomenys nerodomi.',
         'different_animal' => 'Tai kitas gyvūnas',
         'empty' => 'Saugių atitikmenų nėra.',
@@ -458,6 +460,7 @@ return [
     ],
     'events' => [
         'access-request-approved' => 'Profilio prieigos prašymas patvirtintas',
+        'access-request-expired' => 'Profilio prieigos prašymo galiojimas baigėsi',
         'access-request-rejected' => 'Profilio prieigos prašymas atmestas',
         'access-request-submitted' => 'Paprašyta profilio prieigos',
         'foundation-backfilled' => 'Pridėtas ankstesnio profilio pagrindas',
@@ -724,6 +727,7 @@ return [
     ],
     'reasons' => [
         'access-request-approved' => 'Profilio prieigos prašymas patvirtintas',
+        'access-request-expired' => 'Profilio prieigos prašymo galiojimas baigėsi',
         'access-request-rejected' => 'Profilio prieigos prašymas atmestas',
         'access-request-submitted' => 'Paprašyta profilio prieigos',
         'foundation-backfilled' => 'Pridėtas ankstesnio profilio pagrindas',

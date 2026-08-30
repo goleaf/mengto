@@ -444,6 +444,8 @@ return [
         'occurrence_override' => 'This occurrence has its own schedule or venue override.',
         'registered_occurrence' => 'Registered occurrence: :date',
         'accepted_version' => 'Accepted event version :version',
+        'private_pet' => 'Private pet',
+        'unavailable_pet' => 'Pet profile unavailable',
     ],
     'notices' => [
         'offline' => 'You are offline. Registration and organizer actions are not saved until the server confirms them.',

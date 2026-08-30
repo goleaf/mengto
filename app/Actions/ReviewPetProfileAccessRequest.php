@@ -54,11 +54,16 @@ final class ReviewPetProfileAccessRequest
             'sha256',
             "pet-access-decision|{$authenticatedReviewer->id}|{$request->id}|{$decision->value}|{$idempotencyKey}",
         );
+        $legacyDecisionKey = hash(
+            'sha256',
+            "pet-access-decision|{$authenticatedReviewer->id}|{$idempotencyKey}",
+        );
 
         return DB::transaction(function () use (
             $authenticatedReviewer,
             $decision,
             $decisionKey,
+            $legacyDecisionKey,
             $request,
             $validated,
         ): PetProfileAccessRequest {
@@ -99,6 +104,15 @@ final class ReviewPetProfileAccessRequest
                 return $locked;
             }
 
+            $legacyStatus = $decision === PetProfileAccessRequestDecision::Approve
+                ? PetProfileAccessRequestStatus::Approved
+                : PetProfileAccessRequestStatus::Rejected;
+            if ($locked->decision_key === $legacyDecisionKey
+                && $locked->status === $legacyStatus
+            ) {
+                return $locked;
+            }
+
             if ($locked->status !== PetProfileAccessRequestStatus::Pending) {
                 throw ValidationException::withMessages([
                     'access_request' => __('pet_profiles.validation.access_request_resolved'),
@@ -112,8 +126,24 @@ final class ReviewPetProfileAccessRequest
                 $locked->forceFill([
                     'status' => PetProfileAccessRequestStatus::Expired,
                     'active_key' => null,
+                    'decision_key' => $decisionKey,
+                    'reviewed_by_user_id' => $reviewer->id,
+                    'reviewed_at' => now(),
                     'lock_version' => $locked->lock_version + 1,
                 ])->saveOrFail();
+                $this->events->record(
+                    profile: $lockedProfile,
+                    actor: $reviewer,
+                    eventType: 'access-request-expired',
+                    reasonCode: 'access-request-expired',
+                    publicMetadata: [
+                        'request_type' => $locked->request_type->value,
+                        'requested_role' => $locked->requested_role->value,
+                    ],
+                    privateMetadata: ['access_request_key' => $locked->request_key],
+                    idempotencyKey: "pet-access-expire:{$locked->id}",
+                    manager: $reviewerMembership,
+                );
 
                 return $locked->refresh();
             }

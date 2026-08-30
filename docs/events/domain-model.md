@@ -22,6 +22,15 @@ scheduled truth. `ForumEventVersion` preserves accepted snapshots.
 `ForumEventTeamMembership` grants one scoped event role.
 `ForumEventRegistration` stores the participant snapshot and occurrence;
 `ForumEventRegistrationPet` stores each pet eligibility decision.
+`ForumEventParticipationOperation` binds a register idempotency key to a
+payload checksum and result. `ForumEventParticipationTransition` preserves
+versioned participant state changes. A nullable, unique `active_scope_key`
+enforces one active participant generation while terminal rows retain history.
+
+Meetup capacity currently uses the locked `ForumEvent`/occurrence plus
+aggregate people quantity and database uniqueness. The generalized capacity
+pool/allocation/hold and typed waitlist tables are not claimed as the active
+Meetup allocator; see `docs/events/meetups.md`.
 
 `ForumEventTrack` groups public agenda content. `ForumEventRoom` represents an
 event-scoped physical or online space and encrypts exact directions and access

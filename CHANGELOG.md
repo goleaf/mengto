@@ -9,6 +9,14 @@ status, invalidated evidence, external blockers, and rollback guidance are in
 
 ### Repository Audit And Foundations
 
+- Completed the canonical `/meetups` projection on `ForumEvent` with
+  privacy-scoped discovery, incomplete drafts and explicit publication,
+  open/approval/invitation RSVP, payload-bound replay, concurrency-safe
+  capacity and deterministic waitlist promotion, current pet-manager
+  authority, organizer management, cancellation history, recipient-localized
+  notifications, and explicit audited exact-Place reveal without introducing
+  duplicate event, pet, block, location, chat, or notification domains.
+
 - Replaced all 5,860 mechanically generated `messages` and `ui` translation
   keys and their first-party references with readable names, preserved EN/LT/RU
   catalogue values, made normalized collisions fail closed, distinguished
@@ -134,6 +142,13 @@ status, invalidated evidence, external blockers, and rollback guidance are in
   real IANA timezones now apply immediately to the authenticated session and
   next response, while malformed, stale, cross-account, inactive-account and
   repeated submissions fail closed without resetting onboarding progress.
+- Integrated onboarding with the canonical pet-profile domain: four truthful
+  relationship choices, bounded active-management evidence, pending requests
+  without implied access, duplicate-safe private draft creation, and a
+  persisted-step-only return to onboarding. Exact duplicate identity is now
+  indexed; direct creation requires purpose-bound review/decision tokens;
+  request expiry is append-only audited; legacy invitation/review replays stay
+  compatible; normal pet creation redirects and private defaults are retained.
 - Recovered post-commit verification delivery exceptions and standard skipped
   notifications without returning HTTP 500 or losing the authenticated
   account, localized verification mail and recovery feedback for EN/LT/RU, and

@@ -32,20 +32,31 @@ The current release adds:
 - production-safe backfill and environment-gated demo data;
 - class-based Livewire directory/workspace improvements using existing shared
   status, form, page, and action components.
+- a dedicated `/meetups` discovery/create/detail/edit/manage projection with
+  payload-bound RSVP replay, deterministic waitlist promotion, current pet
+  manager authority, block enforcement, incomplete private drafts, explicit
+  publish/cancel history, and audited Place exact-location reveal. The exact
+  Meetup boundary is `docs/events/meetups.md`.
 
 ## Current Route Surface
 
 | Route | Purpose | Authorization |
 | --- | --- | --- |
-| `meetups.index` | Bounded event discovery and event creation | `ForumEventPolicy::viewAny/create` |
+| `meetups.index` | Bounded Discover, My Meetups, and Invitations projections | `ForumEventPolicy::viewAny` plus query scope |
+| `meetups.create` | Dedicated draft/create surface | `ForumEventPolicy::create` |
 | `meetups.show` | Canonical event workspace by bound event | `ForumEventPolicy::view` |
+| `meetups.edit` | Organizer edit and publish workspace | `ForumEventPolicy::update/publish` |
+| `meetups.manage` | Organizer participant/invitation/update/cancel workspace | Scoped organizer/team abilities |
 | `meetups.small_dog_social` | Stable compatibility detail URL | Same bound-event policy |
 | `meetups.created` | Legacy created-content compatibility URL | Existing created-content boundary |
 
 All product routes are inside the verified active-account portal boundary.
 Unlisted events are direct-link visible but excluded from directory queries.
 Private, group, organization, and invitation visibility use group access,
-accepted invitations, owner, administrator, or active event-team membership.
+current organization authority, account-bound invitations, confirmed
+participation, owner, administrator, or active event-team membership. A
+pending invitation exposes only the safe response page, not participant-only
+access. Account blocks are deny-first.
 
 ## Implemented State Machines
 
@@ -93,6 +104,8 @@ remain separate portal packages.
 - Localization: `lang/{en,lt,ru}/forum_events.php`
 - Browser contract: event directory and recurring-event detail checks in
   `scripts/accessibility-browser-check.mjs`
+- Meetup security, privacy, lifecycle, and concurrency:
+  `MeetupSecurityBoundaryTest` and `MeetupCapacityConcurrencyTest`
 
 The detailed documents in this directory define each boundary and its current
 evidence. The status matrix is `requirements.md`.

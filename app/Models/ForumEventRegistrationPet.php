@@ -67,6 +67,6 @@ final class ForumEventRegistrationPet extends Pivot
     /** @return BelongsTo<PetProfile, $this> */
     public function petProfile(): BelongsTo
     {
-        return $this->belongsTo(PetProfile::class);
+        return $this->belongsTo(PetProfile::class)->withTrashed();
     }
 }

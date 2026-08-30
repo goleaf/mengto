@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Livewire\Forum;
 
 use App\Actions\CancelForumEvent;
+use App\Actions\EnsureForumEventPlaceAccess;
 use App\Actions\InviteToForumEvent;
 use App\Actions\PublishForumEvent;
 use App\Actions\PublishForumEventUpdate;
@@ -35,6 +36,7 @@ use App\Enums\ForumEventUpdateAudience;
 use App\Enums\ForumEventUpdateType;
 use App\Enums\ForumEventVisibility;
 use App\Enums\PetProfileStatus;
+use App\Enums\PlaceAccessPurpose;
 use App\Livewire\Forms\ForumEventEditForm;
 use App\Livewire\Forms\ForumEventInvitationForm;
 use App\Livewire\Forms\ForumEventMessageForm;
@@ -67,6 +69,7 @@ use App\Services\ForumEventOrganizerVerification;
 use App\Services\ForumEventRegistrationService;
 use App\Services\ForumReportReasonCatalog;
 use App\Services\LocaleFormatter;
+use App\Services\PetProfileAccess;
 use App\Services\PetSpeciesLabel;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
@@ -130,13 +133,17 @@ final class ForumEventWorkspace extends Component
 
     private PetSpeciesLabel $petSpeciesLabel;
 
+    private PetProfileAccess $petProfileAccess;
+
     public function boot(
         ForumEventOrganizerVerification $organizerVerification,
         LocaleFormatter $formatter,
+        PetProfileAccess $petProfileAccess,
         PetSpeciesLabel $petSpeciesLabel,
     ): void {
         $this->organizerVerification = $organizerVerification;
         $this->formatter = $formatter;
+        $this->petProfileAccess = $petProfileAccess;
         $this->petSpeciesLabel = $petSpeciesLabel;
     }
 
@@ -588,7 +595,10 @@ final class ForumEventWorkspace extends Component
                 'occurrence:id,forum_event_id,starts_at,timezone',
                 'version:id,forum_event_id,version_number',
                 'registrationPets:id,forum_event_registration_id,pet_profile_id,eligibility_status',
-                'registrationPets.petProfile:id,name,species',
+                'registrationPets.petProfile:id,user_id,name,species,status,visibility,is_discoverable',
+                'registrationPets.petProfile.managers' => static function (Relation $managers) use ($user): void {
+                    $managers->where('user_id', $user->id);
+                },
             ])
             ->where('forum_event_id', $this->eventId)
             ->where('user_id', $user->id)
@@ -615,11 +625,10 @@ final class ForumEventWorkspace extends Component
                 ),
             'event_version' => $registration->version?->version_number,
             'pets' => $registration->registrationPets
-                ->map(static fn (ForumEventRegistrationPet $registrationPet): array => [
-                    'name' => $registrationPet->petProfile->name,
-                    'species' => $registrationPet->petProfile->species,
-                    'eligibility' => $registrationPet->eligibility_status->label(),
-                ])
+                ->map(fn (ForumEventRegistrationPet $registrationPet): array => $this->presentRegistrationPet(
+                    $registrationPet,
+                    $user,
+                ))
                 ->all(),
             'can_cancel' => Gate::forUser($user)->allows('cancelRegistration', $registration),
         ];
@@ -831,6 +840,7 @@ final class ForumEventWorkspace extends Component
     {
         $event = $this->eventModel();
         Gate::authorize('manageRegistrations', $event);
+        $viewer = $this->requireUser();
 
         return ForumEventRegistration::query()
             ->select([
@@ -851,11 +861,14 @@ final class ForumEventWorkspace extends Component
             ])
             ->with([
                 'user:id,name,email',
-                'petProfile:id,user_id,name,species',
+                'petProfile:id,user_id,name,species,status,visibility,is_discoverable',
                 'occurrence:id,forum_event_id,starts_at,timezone',
                 'version:id,forum_event_id,version_number',
                 'registrationPets:id,forum_event_registration_id,pet_profile_id,eligibility_status',
-                'registrationPets.petProfile:id,name,species',
+                'registrationPets.petProfile:id,user_id,name,species,status,visibility,is_discoverable',
+                'registrationPets.petProfile.managers' => static function (Relation $managers) use ($viewer): void {
+                    $managers->where('user_id', $viewer->id);
+                },
             ])
             ->where('forum_event_id', $event->id)
             ->orderBy('status')
@@ -866,13 +879,12 @@ final class ForumEventWorkspace extends Component
                 'id' => $registration->id,
                 'user_name' => $registration->user->name,
                 'user_email' => $registration->user->email,
-                'pet_name' => $registration->petProfile?->name,
+                'pet_name' => null,
                 'pets' => $registration->registrationPets
-                    ->map(static fn (ForumEventRegistrationPet $registrationPet): array => [
-                        'name' => $registrationPet->petProfile->name,
-                        'species' => $registrationPet->petProfile->species,
-                        'eligibility' => $registrationPet->eligibility_status->label(),
-                    ])
+                    ->map(fn (ForumEventRegistrationPet $registrationPet): array => $this->presentRegistrationPet(
+                        $registrationPet,
+                        $viewer,
+                    ))
                     ->all(),
                 'status' => $registration->status->label(),
                 'status_key' => $registration->status->value,
@@ -888,6 +900,30 @@ final class ForumEventWorkspace extends Component
                     ),
                 'event_version' => $registration->version?->version_number,
             ]);
+    }
+
+    /** @return array{name: string, species: string|null, eligibility: string} */
+    private function presentRegistrationPet(
+        ForumEventRegistrationPet $registrationPet,
+        User $viewer,
+    ): array {
+        $pet = $registrationPet->petProfile;
+
+        if (! $pet instanceof PetProfile) {
+            return [
+                'name' => __('forum_events.labels.unavailable_pet'),
+                'species' => null,
+                'eligibility' => $registrationPet->eligibility_status->label(),
+            ];
+        }
+
+        return [
+            'name' => $this->petProfileAccess->canView($pet, $viewer)
+                ? $pet->name
+                : __('forum_events.labels.private_pet'),
+            'species' => $pet->species,
+            'eligibility' => $registrationPet->eligibility_status->label(),
+        ];
     }
 
     /** @return array<int, string> */
@@ -1059,7 +1095,10 @@ final class ForumEventWorkspace extends Component
         $this->refreshComputed();
     }
 
-    public function revealPlaceExactLocation(RevealPlaceExactLocation $reveal): void
+    public function revealPlaceExactLocation(
+        EnsureForumEventPlaceAccess $ensureAccess,
+        RevealPlaceExactLocation $reveal,
+    ): void
     {
         $user = $this->requireUser();
         $event = $this->eventModel(['place']);
@@ -1069,11 +1108,15 @@ final class ForumEventWorkspace extends Component
             abort(404);
         }
 
+        if (! $event->place->isManagedBy($user)) {
+            $ensureAccess->handle($user, $event);
+        }
+
         $this->revealedPlaceLocation = $reveal->handle(
             $user,
             $event->place,
             new PlaceExactLocationRevealContext(
-                purpose: null,
+                purpose: PlaceAccessPurpose::EventAttendance,
                 eventId: $event->id,
                 channel: 'meetup-detail',
             ),
@@ -1086,6 +1129,7 @@ final class ForumEventWorkspace extends Component
         $registration = ForumEventRegistration::query()
             ->where('forum_event_id', $this->eventId)
             ->where('user_id', $user->id)
+            ->latest('id')
             ->firstOrFail();
         $registrations->cancel($user, $registration);
         $this->feedback = __('forum_events.feedback.registration_cancelled');
@@ -1111,14 +1155,17 @@ final class ForumEventWorkspace extends Component
 
     public function invite(InviteToForumEvent $invite): void
     {
-        $data = $this->invitationForm->data($this->eventModel()->timezone);
+        $user = $this->requireUser();
+        $event = $this->eventModel();
+        Gate::forUser($user)->authorize('invite', $event);
+        $data = $this->invitationForm->data($event->timezone);
         $recipient = User::query()
             ->select(['id', 'name', 'email', 'status'])
             ->where('email', $data['recipient_email'])
             ->firstOrFail();
         $invite->handle(
-            $this->requireUser(),
-            $this->eventModel(),
+            $user,
+            $event,
             $recipient,
             $data['expires_at'],
             $data['idempotency_key'],
@@ -1133,10 +1180,13 @@ final class ForumEventWorkspace extends Component
         int $invitationId,
         RevokeForumEventInvitation $revoke,
     ): void {
+        $user = $this->requireUser();
+        $event = $this->eventModel();
+        Gate::forUser($user)->authorize('invite', $event);
         $invitation = ForumEventInvitation::query()
             ->where('forum_event_id', $this->eventId)
             ->findOrFail($invitationId);
-        $revoke->handle($this->requireUser(), $invitation);
+        $revoke->handle($user, $invitation);
         $this->feedback = __('forum_events.feedback.invitation_revoked');
         $this->refreshComputed();
     }
@@ -1146,10 +1196,12 @@ final class ForumEventWorkspace extends Component
         bool $approve,
         ForumEventRegistrationService $registrations,
     ): void {
+        $user = $this->requireUser();
+        Gate::forUser($user)->authorize('manageRegistrations', $this->eventModel());
         $registration = ForumEventRegistration::query()
             ->where('forum_event_id', $this->eventId)
             ->findOrFail($registrationId);
-        $registrations->review($this->requireUser(), $registration, $approve);
+        $registrations->review($user, $registration, $approve);
         $this->feedback = $approve
             ? __('forum_events.feedback.registration_approved')
             : __('forum_events.feedback.registration_declined');
@@ -1160,10 +1212,12 @@ final class ForumEventWorkspace extends Component
         int $registrationId,
         ForumEventRegistrationService $registrations,
     ): void {
+        $user = $this->requireUser();
+        Gate::forUser($user)->authorize('manageRegistrations', $this->eventModel());
         $registration = ForumEventRegistration::query()
             ->where('forum_event_id', $this->eventId)
             ->findOrFail($registrationId);
-        $registrations->remove($this->requireUser(), $registration);
+        $registrations->remove($user, $registration);
         $this->feedback = __('forum_events.feedback.participant_removed');
         $this->refreshComputed();
     }
@@ -1172,10 +1226,12 @@ final class ForumEventWorkspace extends Component
         int $registrationId,
         ForumEventRegistrationService $registrations,
     ): void {
+        $user = $this->requireUser();
+        Gate::forUser($user)->authorize('manageRegistrations', $this->eventModel());
         $registration = ForumEventRegistration::query()
             ->where('forum_event_id', $this->eventId)
             ->findOrFail($registrationId);
-        $registrations->checkIn($this->requireUser(), $registration, 'manual');
+        $registrations->checkIn($user, $registration, 'manual');
         $this->feedback = __('forum_events.feedback.checked_in');
         $this->refreshComputed();
     }
@@ -1184,10 +1240,12 @@ final class ForumEventWorkspace extends Component
         int $registrationId,
         ForumEventRegistrationService $registrations,
     ): void {
+        $user = $this->requireUser();
+        Gate::forUser($user)->authorize('manageRegistrations', $this->eventModel());
         $registration = ForumEventRegistration::query()
             ->where('forum_event_id', $this->eventId)
             ->findOrFail($registrationId);
-        $registrations->checkOut($this->requireUser(), $registration);
+        $registrations->checkOut($user, $registration);
         $this->feedback = __('forum_events.feedback.checked_out');
         $this->refreshComputed();
     }

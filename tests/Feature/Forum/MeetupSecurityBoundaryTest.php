@@ -3,9 +3,9 @@
 declare(strict_types=1);
 
 use App\Actions\CancelForumEvent;
-use App\Actions\GrantPlaceAccess;
 use App\Actions\PublishForumEvent;
 use App\Actions\RevokeForumEventInvitation;
+use App\Actions\TransitionForumEventStatus;
 use App\Actions\UpdateForumEvent;
 use App\Data\RegisterForForumEventData;
 use App\Data\UpdateForumEventData;
@@ -14,15 +14,17 @@ use App\Enums\ForumEventInvitationStatus;
 use App\Enums\ForumEventPhotoConsent;
 use App\Enums\ForumEventRegistrationStatus;
 use App\Enums\ForumEventStatus;
+use App\Enums\ForumEventVerificationStatus;
 use App\Enums\ForumEventVisibility;
 use App\Enums\PetManagerRole;
 use App\Enums\PetManagerStatus;
-use App\Enums\PlaceAccessPurpose;
+use App\Enums\PetProfilePermission;
 use App\Livewire\Forum\ForumEventDirectory;
 use App\Livewire\Forum\ForumEventWorkspace;
 use App\Models\ForumEvent;
 use App\Models\ForumEventHistory;
 use App\Models\ForumEventInvitation;
+use App\Models\ForumEventOccurrence;
 use App\Models\ForumEventParticipationTransition;
 use App\Models\ForumEventRegistration;
 use App\Models\ForumNotification;
@@ -259,7 +261,7 @@ test('registration operation binds active scope and rejects changed payload repl
     ))->toThrow(ValidationException::class);
 });
 
-test('only an active pet owner or active viewer may attach a pet to meetup participation', function (): void {
+test('only an active pet owner or active care or social manager may attach a pet to meetup participation', function (): void {
     $owner = User::factory()->create(['email_verified_at' => now()]);
     $caregiver = User::factory()->create(['email_verified_at' => now()]);
     $outsider = User::factory()->create(['email_verified_at' => now()]);
@@ -292,6 +294,23 @@ test('only an active pet owner or active viewer may attach a pet to meetup parti
     ))->toThrow(ValidationException::class);
 });
 
+test('view-only pet managers cannot represent a pet at a meetup', function (): void {
+    $owner = User::factory()->create();
+    $previousOwner = User::factory()->create(['email_verified_at' => now()]);
+    $event = ForumEvent::factory()->create();
+    $pet = PetProfile::factory()->for($owner)->create();
+    PetProfileManager::factory()->for($pet, 'profile')->for($previousOwner)->create([
+        'role' => PetManagerRole::PreviousOwner,
+        'status' => PetManagerStatus::Active,
+    ]);
+
+    expect(fn () => app(ForumEventRegistrationService::class)->register(
+        $previousOwner,
+        $event,
+        meetupRegistrationData('meetup-view-only-manager-0001', petProfileIds: [$pet->id]),
+    ))->toThrow(ValidationException::class);
+});
+
 test('pending expired revoked and explicitly denied pet access cannot be used for meetup participation', function (
     PetManagerStatus $status,
     ?array $overrides,
@@ -318,7 +337,10 @@ test('pending expired revoked and explicitly denied pet access cannot be used fo
     'pending invitation' => [PetManagerStatus::Invited, null, null],
     'expired term' => [PetManagerStatus::Active, null, '-1 minute'],
     'revoked access' => [PetManagerStatus::Revoked, null, null],
-    'denied view' => [PetManagerStatus::Active, ['deny' => ['view']], null],
+    'denied representation' => [PetManagerStatus::Active, ['deny' => [
+        PetProfilePermission::ManageCare->value,
+        PetProfilePermission::ManageSocial->value,
+    ]], null],
 ]);
 
 test('exact meetup location is absent from html and livewire state unless participation is confirmed', function (
@@ -496,6 +518,133 @@ test('stale organizer approval rechecks participant block account and pet author
         ->and($registration->refresh()->status)->toBe(ForumEventRegistrationStatus::Pending);
 });
 
+test('waitlist promotion expires stale pet authority and promotes the next eligible participant', function (): void {
+    $organizer = User::factory()->create();
+    $owner = User::factory()->create();
+    $occupant = User::factory()->create();
+    $staleParticipant = User::factory()->create();
+    $eligibleParticipant = User::factory()->create();
+    $event = ForumEvent::factory()->forOrganizer($organizer)->withCapacity(1)->create();
+    $pet = PetProfile::factory()->for($owner)->create();
+    $manager = PetProfileManager::factory()
+        ->for($pet, 'profile')
+        ->for($staleParticipant)
+        ->create(['role' => PetManagerRole::Caregiver]);
+    $service = app(ForumEventRegistrationService::class);
+    $confirmed = $service->register(
+        $occupant,
+        $event,
+        meetupRegistrationData('meetup-waitlist-occupant-000001'),
+    );
+    $stale = $service->register(
+        $staleParticipant,
+        $event,
+        meetupRegistrationData('meetup-waitlist-stale-pet-00001', petProfileIds: [$pet->id]),
+    );
+    $eligible = $service->register(
+        $eligibleParticipant,
+        $event,
+        meetupRegistrationData('meetup-waitlist-next-eligible-001'),
+    );
+    $manager->forceFill([
+        'status' => PetManagerStatus::Revoked,
+        'revoked_at' => now(),
+    ])->save();
+
+    $service->cancel($occupant, $confirmed);
+
+    expect($stale->refresh()->status)->toBe(ForumEventRegistrationStatus::Expired)
+        ->and($stale->active_scope_key)->toBeNull()
+        ->and($eligible->refresh()->status)->toBe(ForumEventRegistrationStatus::Confirmed)
+        ->and($eligible->waitlist_position)->toBeNull();
+});
+
+test('check in revalidates current pet representation authority', function (): void {
+    $organizer = User::factory()->create();
+    $owner = User::factory()->create();
+    $participant = User::factory()->create();
+    $event = ForumEvent::factory()->forOrganizer($organizer)->create();
+    $pet = PetProfile::factory()->for($owner)->create();
+    $manager = PetProfileManager::factory()
+        ->for($pet, 'profile')
+        ->for($participant)
+        ->create(['role' => PetManagerRole::Caregiver]);
+    $registration = app(ForumEventRegistrationService::class)->register(
+        $participant,
+        $event,
+        meetupRegistrationData('meetup-checkin-current-pet-00001', petProfileIds: [$pet->id]),
+    );
+    $manager->forceFill([
+        'status' => PetManagerStatus::Revoked,
+        'revoked_at' => now(),
+    ])->save();
+
+    expect(fn () => app(ForumEventRegistrationService::class)->checkIn(
+        $organizer,
+        $registration,
+        'manual',
+    ))->toThrow(ValidationException::class)
+        ->and($registration->refresh()->status)->toBe(ForumEventRegistrationStatus::Confirmed);
+});
+
+test('pet age eligibility uses the selected occurrence date', function (): void {
+    $participant = User::factory()->create();
+    $event = ForumEvent::factory()->create([
+        'starts_at' => now()->addMonth()->startOfDay(),
+        'ends_at' => now()->addMonth()->startOfDay()->addHours(2),
+        'maximum_animal_age_months' => 13,
+    ]);
+    $pet = PetProfile::factory()->for($participant)->create([
+        'birth_date' => now()->subMonths(11)->startOfDay(),
+    ]);
+    $laterOccurrence = ForumEventOccurrence::factory()->for($event, 'event')->create([
+        'starts_at' => now()->addMonths(4)->startOfDay(),
+        'ends_at' => now()->addMonths(4)->startOfDay()->addHours(2),
+        'capacity' => $event->capacity,
+    ]);
+    $data = meetupRegistrationData(
+        'meetup-occurrence-age-boundary-0001',
+        petProfileIds: [$pet->id],
+    );
+
+    expect(fn () => app(ForumEventRegistrationService::class)->register(
+        $participant,
+        $event,
+        new RegisterForForumEventData(
+            attendanceFormat: $data->attendanceFormat,
+            guestCount: $data->guestCount,
+            petProfileId: $data->petProfileId,
+            requirementsNote: $data->requirementsNote,
+            photoConsent: $data->photoConsent,
+            requirementsAccepted: $data->requirementsAccepted,
+            idempotencyKey: $data->idempotencyKey,
+            petProfileIds: $data->petProfileIds,
+            occurrenceId: $laterOccurrence->id,
+        ),
+    ))->toThrow(ValidationException::class);
+});
+
+test('vaccination guidance remains informational and does not manufacture verification evidence', function (): void {
+    $organizer = User::factory()->create();
+    $participant = User::factory()->create();
+    $event = ForumEvent::factory()->forOrganizer($organizer)->approvalRequired()->create([
+        'vaccination_requirements' => 'Please follow your veterinarian guidance.',
+    ]);
+    $pet = PetProfile::factory()->for($participant)->create();
+    $service = app(ForumEventRegistrationService::class);
+    $registration = $service->register(
+        $participant,
+        $event,
+        meetupRegistrationData('meetup-informational-vaccine-0001', petProfileIds: [$pet->id]),
+    );
+    $service->review($organizer, $registration, true);
+
+    $petRegistration = $registration->registrationPets()->sole();
+
+    expect($petRegistration->eligibility_status)->toBe(ForumEventVerificationStatus::Confirmed)
+        ->and($petRegistration->verification_source)->toBe(ForumEventVerificationStatus::ReportedByParticipant);
+});
+
 test('pending invitation revocation is organizer scoped and removes private meetup access', function (): void {
     $organizer = User::factory()->create();
     $invitee = User::factory()->create();
@@ -537,6 +686,99 @@ test('public meetup exposes aggregate attendance without private participant or 
         ->assertOk()
         ->assertDontSee('PRIVATE-ATTENDEE-MARKER')
         ->assertDontSee('PRIVATE-PET-MARKER');
+});
+
+test('organizer management does not reveal a private pet without independent profile access', function (): void {
+    $organizer = User::factory()->create();
+    $participant = User::factory()->create();
+    $event = ForumEvent::factory()->forOrganizer($organizer)->create();
+    $pet = PetProfile::factory()->for($participant)->privateProfile()->create([
+        'name' => 'ORGANIZER-PRIVATE-PET-MARKER',
+    ]);
+    $registration = ForumEventRegistration::factory()
+        ->for($event, 'event')
+        ->for($participant, 'user')
+        ->confirmed()
+        ->create(['pet_profile_id' => $pet->id]);
+    $registration->pets()->attach($pet->id, [
+        'eligibility_status' => ForumEventVerificationStatus::Confirmed->value,
+        'verification_source' => ForumEventVerificationStatus::ReportedByParticipant->value,
+    ]);
+
+    Livewire::actingAs($organizer)
+        ->test(ForumEventWorkspace::class, [
+            'eventId' => $event->id,
+            'workspaceMode' => 'manage',
+        ])
+        ->assertDontSee('ORGANIZER-PRIVATE-PET-MARKER')
+        ->assertSee(__('forum_events.labels.private_pet'));
+});
+
+test('soft deleted participating pet remains a safe historical projection', function (): void {
+    $participant = User::factory()->create();
+    $event = ForumEvent::factory()->create();
+    $pet = PetProfile::factory()->for($participant)->create([
+        'name' => 'SOFT-DELETED-PET-HISTORY',
+    ]);
+    $registration = ForumEventRegistration::factory()
+        ->for($event, 'event')
+        ->for($participant, 'user')
+        ->confirmed()
+        ->create(['pet_profile_id' => $pet->id]);
+    $registration->pets()->attach($pet->id, [
+        'eligibility_status' => ForumEventVerificationStatus::Confirmed->value,
+        'verification_source' => ForumEventVerificationStatus::ReportedByParticipant->value,
+    ]);
+    $pet->delete();
+
+    Livewire::actingAs($participant)
+        ->test(ForumEventWorkspace::class, ['eventId' => $event->id])
+        ->assertSee('SOFT-DELETED-PET-HISTORY');
+});
+
+test('create form clears hidden place and format dependent values', function (): void {
+    $organizer = User::factory()->create();
+
+    Livewire::actingAs($organizer)
+        ->test(ForumEventDirectory::class, ['createOnly' => true])
+        ->set('form.exactLocation', 'Hidden manual address')
+        ->set('form.placeId', 123)
+        ->assertSet('form.exactLocation', '')
+        ->set('form.locationScope', 'Hidden location')
+        ->set('form.venueId', 456)
+        ->set('form.format', 'online')
+        ->assertSet('form.placeId', null)
+        ->assertSet('form.venueId', null)
+        ->assertSet('form.locationScope', '')
+        ->assertSet('form.exactLocation', '')
+        ->set('form.onlineUrl', 'https://events.example.test/meetup')
+        ->set('form.format', 'physical')
+        ->assertSet('form.onlineUrl', '');
+});
+
+test('historical participant cannot leave or trigger waitlist promotion after meetup start', function (): void {
+    $participant = User::factory()->create();
+    $waitlistedUser = User::factory()->create();
+    $event = ForumEvent::factory()->create([
+        'starts_at' => now()->subHour(),
+        'ends_at' => now()->addHour(),
+        'capacity' => 1,
+    ]);
+    $confirmed = ForumEventRegistration::factory()
+        ->for($event, 'event')
+        ->for($participant, 'user')
+        ->confirmed()
+        ->create();
+    $waitlisted = ForumEventRegistration::factory()
+        ->for($event, 'event')
+        ->for($waitlistedUser, 'user')
+        ->waitlisted(1)
+        ->create();
+
+    expect(fn () => app(ForumEventRegistrationService::class)->cancel($participant, $confirmed))
+        ->toThrow(AuthorizationException::class)
+        ->and($confirmed->refresh()->status)->toBe(ForumEventRegistrationStatus::Confirmed)
+        ->and($waitlisted->refresh()->status)->toBe(ForumEventRegistrationStatus::Waitlisted);
 });
 
 test('directory projections separate discovery participation and pending invitations with contextual status', function (): void {
@@ -648,8 +890,75 @@ test('cancellation preserves history revokes participation access and sends dedu
             ->where('type', 'event-cancelled')
             ->where('body', 'like', '%CANCELLED-SECRET-LOCATION%')
             ->exists())->toBeFalse()
+        ->and(ForumEventParticipationTransition::query()
+            ->whereIn('forum_event_registration_id', $registrations->pluck('id'))
+            ->where('to_status', ForumEventRegistrationStatus::Cancelled->value)
+            ->count())->toBe(3)
         ->and(Gate::forUser($participants[0])->allows('viewAccessDetails', $event))->toBeFalse()
         ->and(Gate::forUser($participants[0])->allows('register', $event))->toBeFalse();
+});
+
+test('cancelled private meetup remains safe history for its former participant only', function (): void {
+    $organizer = User::factory()->create();
+    $participant = User::factory()->create();
+    $outsider = User::factory()->create();
+    $event = ForumEvent::factory()->forOrganizer($organizer)->create([
+        'visibility' => ForumEventVisibility::Private,
+        'title' => 'CANCELLED-PRIVATE-HISTORY-MARKER',
+        'exact_location' => 'CANCELLED-PRIVATE-SECRET gate 8819',
+    ]);
+    ForumEventRegistration::factory()
+        ->for($event, 'event')
+        ->for($participant, 'user')
+        ->confirmed()
+        ->create();
+
+    app(CancelForumEvent::class)->handle(
+        $organizer,
+        $event,
+        'weather-safety',
+        'Severe weather makes this gathering unsafe.',
+        'meetup-private-cancel-history-0001',
+    );
+
+    expect(Gate::forUser($participant)->allows('view', $event->refresh()))->toBeTrue()
+        ->and(Gate::forUser($participant)->allows('viewAccessDetails', $event))->toBeFalse()
+        ->and(ForumEvent::query()->visibleTo($participant)->whereKey($event)->exists())->toBeTrue()
+        ->and(ForumEvent::query()->visibleTo($outsider)->whereKey($event)->exists())->toBeFalse();
+
+    $this->actingAs($participant)
+        ->get(route('meetups.show', $event))
+        ->assertOk()
+        ->assertSee('CANCELLED-PRIVATE-HISTORY-MARKER')
+        ->assertDontSee('CANCELLED-PRIVATE-SECRET');
+
+    $this->actingAs($participant)
+        ->get(route('meetups.index', ['scope' => 'my', 'period' => 'all']))
+        ->assertOk()
+        ->assertSee('CANCELLED-PRIVATE-HISTORY-MARKER');
+
+    $this->actingAs($outsider)->get(route('meetups.show', $event))->assertForbidden();
+});
+
+test('generic status transition cannot bypass the complete cancellation workflow', function (): void {
+    $organizer = User::factory()->create();
+    $participant = User::factory()->create();
+    $event = ForumEvent::factory()->forOrganizer($organizer)->create();
+    $registration = ForumEventRegistration::factory()
+        ->for($event, 'event')
+        ->for($participant, 'user')
+        ->confirmed()
+        ->create();
+
+    expect(fn () => app(TransitionForumEventStatus::class)->handle(
+        $organizer,
+        $event,
+        ForumEventStatus::Cancelled,
+        'weather-safety',
+        'meetup-generic-cancel-guard-0001',
+    ))->toThrow(ValidationException::class)
+        ->and($event->refresh()->status)->not->toBe(ForumEventStatus::Cancelled)
+        ->and($registration->refresh()->status)->toBe(ForumEventRegistrationStatus::Confirmed);
 });
 
 test('meetup factory capacity and historical states create coherent records', function (): void {
@@ -659,6 +968,82 @@ test('meetup factory capacity and historical states create coherent records', fu
     expect($bounded->capacity)->toBe(7)
         ->and($past->hasEnded())->toBeTrue()
         ->and($past->status)->toBe(ForumEventStatus::Completed);
+});
+
+test('rejoining after a terminal cancellation creates a new active generation and preserves history', function (): void {
+    $participant = User::factory()->create();
+    $event = ForumEvent::factory()->withCapacity(5)->create();
+    $service = app(ForumEventRegistrationService::class);
+    $first = $service->register(
+        $participant,
+        $event,
+        meetupRegistrationData('meetup-first-generation-0001'),
+    );
+    $service->cancel($participant, $first);
+    $second = $service->register(
+        $participant,
+        $event,
+        meetupRegistrationData('meetup-second-generation-0001'),
+    );
+
+    expect($second->id)->not->toBe($first->id)
+        ->and($first->refresh()->status)->toBe(ForumEventRegistrationStatus::Cancelled)
+        ->and($first->active_scope_key)->toBeNull()
+        ->and($second->status)->toBe(ForumEventRegistrationStatus::Confirmed)
+        ->and($second->active_scope_key)->not->toBeNull()
+        ->and(ForumEventRegistration::query()
+            ->where('forum_event_id', $event->id)
+            ->where('user_id', $participant->id)
+            ->count())->toBe(2)
+        ->and($event->registrationFor($participant)?->is($second))->toBeTrue();
+});
+
+test('livewire leave after rejoin cancels the latest active registration generation', function (): void {
+    $participant = User::factory()->create();
+    $event = ForumEvent::factory()->withCapacity(5)->create();
+    $service = app(ForumEventRegistrationService::class);
+    $first = $service->register(
+        $participant,
+        $event,
+        meetupRegistrationData('meetup-livewire-first-generation-0001'),
+    );
+    $service->cancel($participant, $first);
+    $second = $service->register(
+        $participant,
+        $event,
+        meetupRegistrationData('meetup-livewire-second-generation-001'),
+    );
+
+    Livewire::actingAs($participant)
+        ->test(ForumEventWorkspace::class, ['eventId' => $event->id])
+        ->call('cancelRegistration')
+        ->assertHasNoErrors();
+
+    expect($first->refresh()->status)->toBe(ForumEventRegistrationStatus::Cancelled)
+        ->and($second->refresh()->status)->toBe(ForumEventRegistrationStatus::Cancelled);
+});
+
+test('organizer decline releases the active scope so a participant may request again', function (): void {
+    $organizer = User::factory()->create();
+    $participant = User::factory()->create();
+    $event = ForumEvent::factory()->forOrganizer($organizer)->approvalRequired()->create();
+    $service = app(ForumEventRegistrationService::class);
+    $first = $service->register(
+        $participant,
+        $event,
+        meetupRegistrationData('meetup-declined-generation-000001'),
+    );
+    $service->review($organizer, $first, false);
+    $second = $service->register(
+        $participant,
+        $event,
+        meetupRegistrationData('meetup-after-decline-generation-01'),
+    );
+
+    expect($first->refresh()->status)->toBe(ForumEventRegistrationStatus::Declined)
+        ->and($first->active_scope_key)->toBeNull()
+        ->and($second->status)->toBe(ForumEventRegistrationStatus::Pending)
+        ->and($second->id)->not->toBe($first->id);
 });
 
 test('confirmed participant reveals a linked place only through a scoped audited grant', function (): void {
@@ -677,17 +1062,6 @@ test('confirmed participant reveals a linked place only through a scoped audited
         ->for($attendee, 'user')
         ->confirmed()
         ->create();
-    app(GrantPlaceAccess::class)->handle(
-        $organizer,
-        $place,
-        $attendee,
-        PlaceAccessPurpose::EventAttendance,
-        now()->toImmutable()->subMinute(),
-        now()->toImmutable()->addDays(7),
-        'meetup-place-attendance-grant-0001',
-        $event,
-    );
-
     $component = Livewire::actingAs($attendee)
         ->test(ForumEventWorkspace::class, ['eventId' => $event->id])
         ->assertDontSee('PLACE-SECRET-ADDRESS')

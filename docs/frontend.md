@@ -100,6 +100,17 @@ Every data surface defines applicable loading, empty, filtered-empty, success,
 recoverable error, fatal error, offline, unauthorized, disabled, pending, and
 completed states. Status is textual and not color-only.
 
+## Meetup Surfaces
+
+`/meetups` uses dedicated create, detail, edit, and manage routes while reusing
+the canonical class-based Event components. Discover/My/Invitations filters
+remain horizontally scrollable at narrow widths, cards present one contextual
+primary action, and organizer queues render responsive bounded cards rather
+than a desktop-only table. Visibility, join policy, and pet rules use native
+fieldset/legend/radio semantics. Exact Place details are absent until an
+authorized explicit reveal and are cleared from Livewire state on the next
+hydration. See `docs/events/meetups.md`.
+
 ## Authentication Interface
 
 Anonymous visitors are redirected to account entry before product route-model

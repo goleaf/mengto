@@ -127,7 +127,7 @@ test('event state transitions are explicit audited and available only to scoped 
     ))->toThrow(ValidationException::class);
 });
 
-test('registration snapshots several pets manual eligibility and check out remain separate states', function () {
+test('registration snapshots several pets without manufacturing medical verification and keeps check out separate', function () {
     $organizer = User::factory()->create();
     $participant = User::factory()->create();
     $pets = PetProfile::factory()->count(2)->for($participant)->create();
@@ -161,7 +161,8 @@ test('registration snapshots several pets manual eligibility and check out remai
         ->and($registration->status)->toBe(ForumEventRegistrationStatus::Pending)
         ->and($registration->registrationPets()->count())->toBe(2)
         ->and($registration->registrationPets()
-            ->where('eligibility_status', ForumEventVerificationStatus::RequiresManualReview->value)
+            ->where('eligibility_status', ForumEventVerificationStatus::Confirmed->value)
+            ->where('verification_source', ForumEventVerificationStatus::ReportedByParticipant->value)
             ->count())->toBe(2)
         ->and($registration->accepted_snapshot['pet_profile_ids'])->toEqualCanonicalizing($pets->modelKeys())
         ->and($registration->accepted_snapshot_checksum)->toHaveLength(64)
@@ -172,6 +173,7 @@ test('registration snapshots several pets manual eligibility and check out remai
     expect($approved->status)->toBe(ForumEventRegistrationStatus::Confirmed)
         ->and($approved->registrationPets()
             ->where('eligibility_status', ForumEventVerificationStatus::Confirmed->value)
+            ->where('verification_source', ForumEventVerificationStatus::ReportedByParticipant->value)
             ->count())->toBe(2);
 
     $checkedIn = $registrations->checkIn($organizer, $approved, 'manual');

@@ -50,6 +50,7 @@ return [
         'review_protected_description' => 'This request cannot be approved from the standard review screen. Reject it here or continue through the dedicated ownership-transfer workflow when that workflow is available.',
         'review_title' => 'Access requests for :name',
         'submit' => 'Send access request',
+        'submitting' => 'Sending access request...',
         'submitted_at' => 'Submitted',
         'temporary_ends_at' => 'Temporary access ends',
         'unavailable_requester' => 'Unavailable account',
@@ -442,6 +443,7 @@ return [
         'visibility_help' => 'This is the intended audience after review; the new profile still starts as a non-discoverable draft.',
     ],
     'duplicate_review' => [
+        'confirming_different_animal' => 'Confirming a different animal...',
         'description' => 'Only profiles already visible to your account are shown. Sensitive facts, documents, exact locations, and private manager details are never included.',
         'different_animal' => 'This is a different animal',
         'empty' => 'No safe matches are available.',
@@ -458,6 +460,7 @@ return [
     ],
     'events' => [
         'access-request-approved' => 'Profile access request approved',
+        'access-request-expired' => 'Profile access request expired',
         'access-request-rejected' => 'Profile access request rejected',
         'access-request-submitted' => 'Profile access requested',
         'foundation-backfilled' => 'Legacy profile foundation added',
@@ -724,6 +727,7 @@ return [
     ],
     'reasons' => [
         'access-request-approved' => 'A profile access request was approved',
+        'access-request-expired' => 'A profile access request expired',
         'access-request-rejected' => 'A profile access request was rejected',
         'access-request-submitted' => 'Profile access was requested',
         'foundation-backfilled' => 'Legacy profile foundation was added',

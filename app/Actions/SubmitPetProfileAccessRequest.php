@@ -175,6 +175,19 @@ final class SubmitPetProfileAccessRequest
                         'active_key' => null,
                         'lock_version' => $pending->lock_version + 1,
                     ])->saveOrFail();
+                    $this->events->record(
+                        profile: $lockedProfile,
+                        actor: $requester,
+                        eventType: 'access-request-expired',
+                        reasonCode: 'access-request-expired',
+                        publicMetadata: [
+                            'request_type' => $pending->request_type->value,
+                            'requested_role' => $pending->requested_role->value,
+                        ],
+                        privateMetadata: ['access_request_key' => $pending->request_key],
+                        idempotencyKey: "pet-access-expire:{$pending->id}",
+                        manager: $membership,
+                    );
                     $pending = null;
                 }
 
