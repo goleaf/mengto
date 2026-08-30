@@ -28,6 +28,7 @@ final readonly class AdvanceUserOnboarding
         OnboardingStep $expectedStep,
         int $expectedLockVersion,
         ?OnboardingPetChoice $petChoice = null,
+        bool $introductionAcknowledged = false,
     ): UserOnboarding {
         $authenticated = $this->actor->requireUser();
 
@@ -41,6 +42,7 @@ final readonly class AdvanceUserOnboarding
         return DB::transaction(function () use (
             $expectedLockVersion,
             $expectedStep,
+            $introductionAcknowledged,
             $petChoice,
             $user,
         ): UserOnboarding {
@@ -75,9 +77,9 @@ final readonly class AdvanceUserOnboarding
             }
 
             $attributes = match ($expectedStep) {
-                OnboardingStep::Introduction => [
-                    'introduction_completed_at' => now(),
-                ],
+                OnboardingStep::Introduction => $this->introductionAttributes(
+                    $introductionAcknowledged,
+                ),
                 OnboardingStep::PetRelationship => $this->petAttributes($user, $petChoice),
                 default => throw ValidationException::withMessages([
                     'onboarding' => __('onboarding.errors.transition_conflict'),
@@ -91,6 +93,18 @@ final readonly class AdvanceUserOnboarding
 
             return $state->refresh();
         }, 3);
+    }
+
+    /** @return array{introduction_completed_at: \Illuminate\Support\Carbon} */
+    private function introductionAttributes(bool $acknowledged): array
+    {
+        if (! $acknowledged) {
+            throw ValidationException::withMessages([
+                'introductionAcknowledged' => __('onboarding.validation.acknowledgement'),
+            ]);
+        }
+
+        return ['introduction_completed_at' => now()];
     }
 
     /** @return array<string, mixed> */

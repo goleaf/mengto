@@ -60,7 +60,18 @@ final class SocialActorAccess
             return true;
         }
 
-        return $actor->status === SocialActorStatus::Active && $actor->is_discoverable;
+        if ($actor->status !== SocialActorStatus::Active || ! $actor->is_discoverable) {
+            return false;
+        }
+
+        if ($actor->actor_type === SocialActorType::Pet) {
+            $profile = $this->pet($actor);
+
+            return $profile instanceof PetProfile
+                && $this->petAccess->canView($profile, $user);
+        }
+
+        return true;
     }
 
     public function primaryControllerUserId(SocialActor $actor): ?int

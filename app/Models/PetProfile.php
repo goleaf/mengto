@@ -8,6 +8,7 @@ use App\Casts\PetProfileStatusCast;
 use App\Enums\PetBirthDatePrecision;
 use App\Enums\PetBreedOriginType;
 use App\Enums\PetLifeStage;
+use App\Enums\PetProfilePermission;
 use App\Enums\PetProfileStatus;
 use App\Enums\PetSizeCategory;
 use App\Enums\PetSpeciesConfidence;
@@ -364,7 +365,11 @@ final class PetProfile extends Model
 
                 if ($user !== null) {
                     $visibility->orWhere(function (Builder $managed) use ($user): void {
-                        $this->applyManagedBy($managed, $user);
+                        $this->applyManagedBy(
+                            $managed,
+                            $user,
+                            PetProfilePermission::View,
+                        );
                     });
                 }
             });
@@ -375,11 +380,14 @@ final class PetProfile extends Model
         return $this->applyManagedBy($query, $user);
     }
 
-    private function applyManagedBy(Builder $query, User $user): Builder
-    {
+    private function applyManagedBy(
+        Builder $query,
+        User $user,
+        ?PetProfilePermission $requiredPermission = null,
+    ): Builder {
         $at = now();
 
-        return $query->where(function (Builder $managed) use ($at, $user): void {
+        return $query->where(function (Builder $managed) use ($at, $requiredPermission, $user): void {
             $managed->where(function (Builder $legacyOwner) use ($user): void {
                 $legacyOwner
                     ->where('user_id', $user->id)
@@ -389,9 +397,20 @@ final class PetProfile extends Model
                             ->where('user_id', $user->id),
                     );
             })
-                ->orWhereHas('managers', function ($managers) use ($at, $user): void {
+                ->orWhereHas('managers', function ($managers) use ($at, $requiredPermission, $user): void {
                     $managers->where('user_id', $user->id);
                     PetProfileManager::constrainActiveAt($managers, $at);
+
+                    if ($requiredPermission instanceof PetProfilePermission) {
+                        $managers->where(function (Builder $overrides) use ($requiredPermission): void {
+                            $overrides
+                                ->whereNull('permission_overrides')
+                                ->orWhereJsonDoesntContain(
+                                    'permission_overrides->deny',
+                                    $requiredPermission->value,
+                                );
+                        });
+                    }
                 });
         });
     }

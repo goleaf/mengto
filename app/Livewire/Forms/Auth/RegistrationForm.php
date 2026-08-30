@@ -42,6 +42,14 @@ final class RegistrationForm extends Form
         ];
     }
 
+    /** @return array<string, string> */
+    protected function messages(): array
+    {
+        return [
+            'email.unique' => __('auth.register.unavailable'),
+        ];
+    }
+
     /**
      * @return array{name: string, email: string, password: string}
      */

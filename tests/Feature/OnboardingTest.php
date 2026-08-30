@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Actions\AdvanceUserOnboarding;
 use App\Actions\CompleteOnboardingPreferences;
 use App\Actions\CompleteOnboardingPrivacy;
+use App\Actions\RegisterUser;
 use App\Enums\OnboardingPetChoice;
 use App\Enums\OnboardingStep;
 use App\Enums\PetManagerRole;
@@ -85,6 +86,8 @@ test('user factory exposes composable onboarding lifecycle states without changi
     $pets = User::factory()->onboardingAtPets()->create();
     $privacy = User::factory()->onboardingAtPrivacy()->create();
     $complete = User::factory()->onboarded()->create();
+    $incompleteActor = $incomplete->socialActor()->firstOrFail();
+    $incompleteSettings = $incompleteActor->settings()->firstOrFail();
 
     expect($legacy->onboarding()->exists())->toBeFalse()
         ->and($incomplete->onboarding()->firstOrFail()->current_step)->toBe(OnboardingStep::Introduction)
@@ -92,17 +95,29 @@ test('user factory exposes composable onboarding lifecycle states without changi
         ->and($pets->onboarding()->firstOrFail()->current_step)->toBe(OnboardingStep::PetRelationship)
         ->and($privacy->onboarding()->firstOrFail()->current_step)->toBe(OnboardingStep::PrivacyDiscovery)
         ->and($complete->onboarding()->firstOrFail()->current_step)->toBe(OnboardingStep::Complete)
-        ->and($complete->onboarding()->firstOrFail()->completed_at)->not->toBeNull();
+        ->and($complete->onboarding()->firstOrFail()->completed_at)->not->toBeNull()
+        ->and($incompleteActor->is_discoverable)->toBeFalse()
+        ->and($incompleteSettings->is_recommendable)->toBeFalse()
+        ->and($incompleteSettings->allow_message_requests)->toBeFalse()
+        ->and($complete->socialActor()->count())->toBe(1)
+        ->and($complete->socialActor()->firstOrFail()->settings()->count())->toBe(1);
 });
 
 test('introduction transition is forward only replay safe and versioned', function (): void {
     $state = UserOnboarding::factory()->for($this->authenticatedUser)->create();
     $this->freezeTime();
 
+    expect(fn () => app(AdvanceUserOnboarding::class)->handle(
+        $this->authenticatedUser,
+        OnboardingStep::Introduction,
+        1,
+    ))->toThrow(ValidationException::class);
+
     $advanced = app(AdvanceUserOnboarding::class)->handle(
         $this->authenticatedUser,
         OnboardingStep::Introduction,
         1,
+        introductionAcknowledged: true,
     );
     $firstTimestamp = $advanced->introduction_completed_at;
 
@@ -120,6 +135,38 @@ test('introduction transition is forward only replay safe and versioned', functi
         ->and($replayed->introduction_completed_at?->equalTo($firstTimestamp))->toBeTrue()
         ->and($replayed->lock_version)->toBe(2)
         ->and($state->fresh()?->lock_version)->toBe(2);
+});
+
+test('registration action converts a normalized uniqueness race into validation without partial identity', function (): void {
+    Notification::fake();
+    User::factory()->create(['email' => 'race@example.test']);
+    $before = [
+        User::query()->count(),
+        UserOnboarding::query()->count(),
+        SocialActor::query()->count(),
+        SocialActorSetting::query()->count(),
+    ];
+
+    try {
+        app(RegisterUser::class)->handle([
+            'name' => 'Race Member',
+            'email' => 'RACE@EXAMPLE.TEST',
+            'password' => 'Secure-Paw-2026',
+        ]);
+
+        $this->fail('The normalized uniqueness conflict was not rejected.');
+    } catch (ValidationException $exception) {
+        expect($exception->errors()['email'] ?? [])->toBe([
+            __('auth.register.unavailable'),
+        ]);
+    }
+
+    expect([
+        User::query()->count(),
+        UserOnboarding::query()->count(),
+        SocialActor::query()->count(),
+        SocialActorSetting::query()->count(),
+    ])->toBe($before);
 });
 
 test('pet relationship transition requires canonical evidence or an explicit deferral', function (): void {

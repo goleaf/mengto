@@ -10,8 +10,10 @@ use App\Services\EmailVerificationMode;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Illuminate\Contracts\Translation\Translator;
+use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 
 final class RegisterUser
 {
@@ -28,26 +30,37 @@ final class RegisterUser
     public function handle(array $data): User
     {
         $verificationEnabled = $this->emailVerification->isEnabled();
+        $email = mb_strtolower(trim($data['email']));
 
-        $user = DB::transaction(function () use ($data, $verificationEnabled): User {
-            $user = User::query()->create([
-                'actor_key' => 'user-'.Str::lower((string) Str::ulid()),
-                'name' => trim($data['name']),
-                'email' => mb_strtolower(trim($data['email'])),
-                'password' => $data['password'],
-                'locale' => $this->defaultLocale(),
-                'timezone' => $this->defaultTimezone(),
-                'status' => UserStatus::Active,
-            ]);
+        try {
+            $user = DB::transaction(function () use ($data, $email, $verificationEnabled): User {
+                $user = User::query()->create([
+                    'actor_key' => 'user-'.Str::lower((string) Str::ulid()),
+                    'name' => trim($data['name']),
+                    'email' => $email,
+                    'password' => $data['password'],
+                    'locale' => $this->defaultLocale(),
+                    'timezone' => $this->defaultTimezone(),
+                    'status' => UserStatus::Active,
+                ]);
 
-            if (! $verificationEnabled) {
-                $user->forceFill(['email_verified_at' => now()])->saveOrFail();
+                if (! $verificationEnabled) {
+                    $user->forceFill(['email_verified_at' => now()])->saveOrFail();
+                }
+
+                $this->initializeOnboarding->handle($user);
+
+                return $user;
+            });
+        } catch (UniqueConstraintViolationException $exception) {
+            if (! User::query()->where('email', $email)->exists()) {
+                throw $exception;
             }
 
-            $this->initializeOnboarding->handle($user);
-
-            return $user;
-        });
+            throw ValidationException::withMessages([
+                'email' => __('auth.register.unavailable'),
+            ]);
+        }
 
         if ($verificationEnabled) {
             event(new Registered($user));

@@ -11,6 +11,7 @@ use Illuminate\Auth\AuthManager;
 use Illuminate\Cache\RateLimiter;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Validation\ValidationException;
 
 final class Register extends AuthPage
 {
@@ -35,7 +36,20 @@ final class Register extends AuthPage
         }
 
         $limiter->hit($rateLimitKey, 60);
-        $user = $registerUser->handle($this->form->validatedData());
+        try {
+            $user = $registerUser->handle($this->form->validatedData());
+        } catch (ValidationException $exception) {
+            $messages = $exception->errors()['email'] ?? null;
+
+            if (! is_array($messages)) {
+                throw $exception;
+            }
+
+            $this->setErrorBag(['form.email' => $messages]);
+            $this->dispatch('auth-validation-failed');
+
+            return;
+        }
 
         $auth->guard('web')->login($user);
         Session::regenerate();

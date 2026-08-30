@@ -101,6 +101,7 @@ final class FollowSocialActor
             }
 
             $this->gate->authorize('represent', $lockedSource);
+            $this->gate->authorize('view', $lockedTarget);
 
             if ($this->blocks->blockedBetween($lockedSource, $lockedTarget)
                 || $this->blocks->blockedForContact($user, $lockedTarget)) {

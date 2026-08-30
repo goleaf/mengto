@@ -156,6 +156,7 @@ final class Onboarding extends Component
                 $this->requireUser(),
                 $this->snapshotStep(),
                 $this->onboardingLockVersion,
+                introductionAcknowledged: $this->introductionAcknowledged,
             );
         });
     }

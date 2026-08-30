@@ -657,11 +657,16 @@ it('searches public actors with bounded queries and excludes hidden or blocked p
 it('does not project a private pet through an actor visibility mismatch', function (): void {
     $sourceUser = User::factory()->create(['name' => 'Private Pet Searcher']);
     $owner = User::factory()->create();
+    $sourcePet = PetProfile::factory()->for($sourceUser)->create();
     $pet = PetProfile::factory()->for($owner)->privateProfile()->create([
         'name' => 'Secret Pet Name',
     ]);
+    PetProfileManager::factory()->for($sourcePet, 'profile')->for($sourceUser)->create([
+        'role' => PetManagerRole::PrimaryOwner,
+    ]);
     $resolver = app(SocialActorResolver::class);
     $source = $resolver->forUser($sourceUser);
+    $sourcePetActor = $resolver->forPet($sourcePet);
     $petActor = $resolver->forPet($pet);
 
     expect($petActor->is_discoverable)->toBeFalse();
@@ -674,6 +679,20 @@ it('does not project a private pet through an actor visibility mismatch', functi
     );
 
     expect($results)->toBe([]);
+
+    $this->actingAs($sourceUser);
+    expect(fn () => app(FollowSocialActor::class)->handle(
+        $source,
+        $petActor,
+        'private-pet-direct-follow',
+    ))->toThrow(AuthorizationException::class);
+
+    expect(fn () => app(SendSocialRelationshipRequest::class)->handle(
+        $sourcePetActor,
+        $petActor,
+        SocialRelationshipType::PetFriendship,
+        'private-pet-direct-request',
+    ))->toThrow(AuthorizationException::class);
 });
 
 it('creates a follow and a separate friendship request from the livewire directory', function (): void {

@@ -7,6 +7,7 @@ namespace Database\Factories;
 use App\Enums\UserStatus;
 use App\Models\User;
 use App\Models\UserOnboarding;
+use App\Services\SocialActorResolver;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
@@ -92,38 +93,35 @@ class UserFactory extends ApplicationFactory
 
     public function onboardingIncomplete(): static
     {
-        return $this->has(UserOnboarding::factory(), 'onboarding');
+        return $this->withOnboarding(UserOnboarding::factory());
     }
 
     public function onboardingAtPreferences(): static
     {
-        return $this->has(
-            UserOnboarding::factory()->preferences(),
-            'onboarding',
-        );
+        return $this->withOnboarding(UserOnboarding::factory()->preferences());
     }
 
     public function onboardingAtPets(): static
     {
-        return $this->has(
-            UserOnboarding::factory()->petRelationship(),
-            'onboarding',
-        );
+        return $this->withOnboarding(UserOnboarding::factory()->petRelationship());
     }
 
     public function onboardingAtPrivacy(): static
     {
-        return $this->has(
-            UserOnboarding::factory()->privacyDiscovery(),
-            'onboarding',
-        );
+        return $this->withOnboarding(UserOnboarding::factory()->privacyDiscovery());
     }
 
     public function onboarded(): static
     {
-        return $this->has(
-            UserOnboarding::factory()->completed(),
-            'onboarding',
-        );
+        return $this->withOnboarding(UserOnboarding::factory()->completed());
+    }
+
+    private function withOnboarding(UserOnboardingFactory $onboarding): static
+    {
+        return $this
+            ->has($onboarding, 'onboarding')
+            ->afterCreating(static function (User $user): void {
+                app(SocialActorResolver::class)->provisionPrivateForUser($user);
+            });
     }
 }

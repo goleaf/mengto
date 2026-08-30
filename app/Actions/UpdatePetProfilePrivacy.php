@@ -8,6 +8,7 @@ use App\Enums\PetProfileVisibility;
 use App\Models\AuditLog;
 use App\Models\PetProfile;
 use App\Models\PetProfilePrivacySetting;
+use App\Models\SocialActor;
 use App\Services\ForumActor;
 use App\Services\PetProfileAccess;
 use App\Services\PetProfileCache;
@@ -98,6 +99,7 @@ final class UpdatePetProfilePrivacy
             );
 
             if ($visibility !== PetProfileVisibility::Public) {
+                $isDiscoverable = false;
                 $allowExternalIndexing = false;
             }
 
@@ -111,6 +113,18 @@ final class UpdatePetProfilePrivacy
                     'privacy' => $privacy,
                 ],
             ])->save();
+            $socialActor = SocialActor::query()
+                ->where('pet_profile_id', $locked->id)
+                ->lockForUpdate()
+                ->first();
+
+            if ($socialActor instanceof SocialActor
+                && $socialActor->is_discoverable !== $isDiscoverable) {
+                $socialActor->forceFill([
+                    'is_discoverable' => $isDiscoverable,
+                    'lock_version' => $socialActor->lock_version + 1,
+                ])->saveOrFail();
+            }
             $settings = PetProfilePrivacySetting::query()->firstOrNew([
                 'pet_profile_id' => $locked->id,
             ]);

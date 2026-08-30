@@ -359,7 +359,9 @@ test('registration validates email uniqueness after canonical case normalization
         ->set('form.password', 'Secure-Paw-2026')
         ->set('form.password_confirmation', 'Secure-Paw-2026')
         ->call('register')
-        ->assertHasErrors(['form.email']);
+        ->assertHasErrors(['form.email'])
+        ->assertSee(__('auth.register.unavailable'))
+        ->assertDontSee('already been taken');
 
     expect(User::query()->count())->toBe($before);
     $this->assertGuest();

@@ -64,6 +64,7 @@ return [
         'register' => 'Create an account',
     ],
     'register' => [
+        'unavailable' => 'An account cannot be created with the provided details.',
         'eyebrow' => 'Join the circle',
         'title' => 'Create your account',
         'description' => 'Your private information stays restricted to people you authorize.',

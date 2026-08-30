@@ -161,6 +161,23 @@ it('suppresses the legacy creator fallback after that account receives a revoked
         ))->toBeFalse();
 });
 
+it('keeps an active manager with an explicit view denial out of private profile projections', function (): void {
+    $owner = User::factory()->create();
+    $manager = User::factory()->create();
+    $profile = PetProfile::factory()->for($owner)->privateProfile()->create();
+    PetProfileManager::factory()->for($profile, 'profile')->for($manager)->create([
+        'role' => PetManagerRole::FamilyMember,
+        'permission_overrides' => [
+            'grant' => [],
+            'deny' => [PetProfilePermission::View->value],
+        ],
+    ]);
+
+    expect(PetProfile::query()->managedBy($manager)->whereKey($profile)->exists())->toBeTrue()
+        ->and(PetProfile::query()->visibleTo($manager)->whereKey($profile)->exists())->toBeFalse()
+        ->and(app(PetProfileAccess::class)->canView($profile, $manager))->toBeFalse();
+});
+
 it('requires the invited account and keeps manager acceptance idempotent', function (): void {
     $owner = User::factory()->create();
     $invitee = User::factory()->create();
@@ -492,6 +509,7 @@ it('invalidates public projections immediately after a privacy change', function
     PetProfileManager::factory()->for($profile, 'profile')->for($owner)->create([
         'role' => PetManagerRole::PrimaryOwner,
     ]);
+    $actor = app(\App\Services\SocialActorResolver::class)->forPet($profile);
     $this->actingAs($owner);
 
     foreach ([
@@ -511,7 +529,7 @@ it('invalidates public projections immediately after a privacy change', function
         'friends_visibility' => 'private',
         'care_visibility' => 'private',
         'activity_visibility' => 'private',
-        'is_discoverable' => false,
+        'is_discoverable' => true,
         'allow_external_indexing' => false,
         'lock_version' => 1,
         'idempotency_key' => 'privacy-cache-001',
@@ -522,7 +540,9 @@ it('invalidates public projections immediately after a privacy change', function
         ->and(Cache::has('pet-profile:directory:public'))->toBeFalse()
         ->and(Cache::has('pet-profile:search:public'))->toBeFalse()
         ->and(Cache::has('pet-profile:recommendations:public'))->toBeFalse()
-        ->and(Cache::get("pet-profile:{$profile->id}:projection-version"))->toBe(2);
+        ->and(Cache::get("pet-profile:{$profile->id}:projection-version"))->toBe(2)
+        ->and($profile->fresh()?->is_discoverable)->toBeFalse()
+        ->and($actor->fresh()?->is_discoverable)->toBeFalse();
 });
 
 it('keeps pet profile translation keys and placeholders aligned across supported locales', function (): void {

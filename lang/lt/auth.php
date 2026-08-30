@@ -64,6 +64,7 @@ return [
         'register' => 'Sukurti paskyrą',
     ],
     'register' => [
+        'unavailable' => 'Pagal pateiktus duomenis paskyros sukurti negalima.',
         'eyebrow' => 'Prisijunkite prie rato',
         'title' => 'Sukurkite paskyrą',
         'description' => 'Jūsų privatūs duomenys prieinami tik jūsų įgaliotiems žmonėms.',
