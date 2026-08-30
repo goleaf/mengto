@@ -13,7 +13,6 @@ use App\Enums\SocialListVisibility;
 use App\Models\ExpertProfile;
 use App\Models\ForumGroup;
 use App\Models\PetProfile;
-use App\Models\PetProfileManager;
 use App\Models\SocialActor;
 use App\Models\SocialActorSetting;
 use App\Models\User;
@@ -59,6 +58,7 @@ final class SocialActorResolver
             SocialActorType::Pet,
             'pet_profile_id',
             $profile->id,
+            $this->petIsDiscoverable($profile),
         );
     }
 
@@ -86,7 +86,15 @@ final class SocialActorResolver
         $personalActor = $this->forUser($user);
 
         $pets = PetProfile::query()
-            ->select(['id', 'user_id', 'profile_key', 'name', 'status'])
+            ->select([
+                'id',
+                'user_id',
+                'profile_key',
+                'name',
+                'status',
+                'visibility',
+                'is_discoverable',
+            ])
             ->with(['managers' => fn ($query) => $query
                 ->select([
                     'id',
@@ -100,14 +108,7 @@ final class SocialActorResolver
                     'revoked_at',
                 ])
                 ->where('user_id', $user->id)])
-            ->where(function ($query) use ($user): void {
-                $query
-                    ->where('user_id', $user->id)
-                    ->orWhereHas('managers', fn ($managerQuery) => PetProfileManager::constrainActiveAt(
-                        $managerQuery->where('user_id', $user->id),
-                        now(),
-                    ));
-            })
+            ->managedBy($user)
             ->orderBy('id')
             ->limit(100)
             ->get();
@@ -116,6 +117,12 @@ final class SocialActorResolver
             ->filter(fn (PetProfile $pet): bool => $this->petAccess
                 ->allows($pet, $user, PetProfilePermission::ManageSocial))
             ->modelKeys();
+        $petDiscoverability = $pets
+            ->whereIn('id', $petIds)
+            ->mapWithKeys(static fn (PetProfile $pet): array => [
+                $pet->id => $pet->is_discoverable,
+            ])
+            ->all();
 
         $expertIds = ExpertProfile::query()
             ->select(['id', 'owner_id'])
@@ -135,7 +142,12 @@ final class SocialActorResolver
             ->map(static fn (mixed $id): int => (int) $id)
             ->all();
 
-        $this->ensureActors(SocialActorType::Pet, 'pet_profile_id', $petIds);
+        $this->ensureActors(
+            SocialActorType::Pet,
+            'pet_profile_id',
+            $petIds,
+            $petDiscoverability,
+        );
         $this->ensureActors(SocialActorType::Expert, 'expert_profile_id', $expertIds);
         $this->ensureActors(SocialActorType::Group, 'forum_group_id', $groupIds);
 
@@ -189,11 +201,15 @@ final class SocialActorResolver
         return $actors;
     }
 
-    /** @param list<int> $foreignIds */
+    /**
+     * @param  list<int>  $foreignIds
+     * @param  array<int, bool>  $discoverabilityById
+     */
     private function ensureActors(
         SocialActorType $type,
         string $foreignKey,
         array $foreignIds,
+        array $discoverabilityById = [],
     ): void {
         if ($foreignIds === []) {
             return;
@@ -218,7 +234,7 @@ final class SocialActorResolver
                 'actor_type' => $type->value,
                 'status' => SocialActorStatus::Active->value,
                 $foreignKey => $foreignId,
-                'is_discoverable' => true,
+                'is_discoverable' => $discoverabilityById[$foreignId] ?? true,
                 'lock_version' => 1,
                 'created_at' => $now,
                 'updated_at' => $now,
@@ -254,5 +270,16 @@ final class SocialActorResolver
         );
 
         return $actor;
+    }
+
+    private function petIsDiscoverable(PetProfile $profile): bool
+    {
+        if (array_key_exists('is_discoverable', $profile->getAttributes())) {
+            return (bool) $profile->getAttribute('is_discoverable');
+        }
+
+        return (bool) PetProfile::query()
+            ->whereKey($profile->getKey())
+            ->value('is_discoverable');
     }
 }

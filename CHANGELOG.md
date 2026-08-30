@@ -91,6 +91,14 @@ status, invalidated evidence, external blockers, and rollback guidance are in
 
 ### Security
 
+- Hardened the existing onboarding foundation without claiming the remaining
+  onboarding product complete: configured email verification is rechecked at
+  Livewire and direct Action mutations, parser-confusing intended URLs are
+  rejected after password confirmation, revoked pet-manager evidence and
+  private-pet actor projection now fail closed, and privacy completion requires
+  an explicit localized acknowledgement. Added named `UserFactory` lifecycle
+  states and focused auth/onboarding/pet/social regressions while preserving the
+  legacy no-row compatibility default.
 - Added a fail-closed `EMAIL_VERIFICATION_ENABLED` switch with a secure enabled
   default, consistent central and route middleware behavior, atomic
   no-notification registration when disabled, and a bounded idempotent command

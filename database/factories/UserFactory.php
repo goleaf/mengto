@@ -6,6 +6,7 @@ namespace Database\Factories;
 
 use App\Enums\UserStatus;
 use App\Models\User;
+use App\Models\UserOnboarding;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
@@ -87,5 +88,42 @@ class UserFactory extends ApplicationFactory
             'locale' => 'ru',
             'timezone' => 'Europe/Vilnius',
         ]);
+    }
+
+    public function onboardingIncomplete(): static
+    {
+        return $this->has(UserOnboarding::factory(), 'onboarding');
+    }
+
+    public function onboardingAtPreferences(): static
+    {
+        return $this->has(
+            UserOnboarding::factory()->preferences(),
+            'onboarding',
+        );
+    }
+
+    public function onboardingAtPets(): static
+    {
+        return $this->has(
+            UserOnboarding::factory()->petRelationship(),
+            'onboarding',
+        );
+    }
+
+    public function onboardingAtPrivacy(): static
+    {
+        return $this->has(
+            UserOnboarding::factory()->privacyDiscovery(),
+            'onboarding',
+        );
+    }
+
+    public function onboarded(): static
+    {
+        return $this->has(
+            UserOnboarding::factory()->completed(),
+            'onboarding',
+        );
     }
 }

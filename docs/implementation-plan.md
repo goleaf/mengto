@@ -257,14 +257,15 @@ not close expression-level, lazy-loading, duplication or lifecycle review.
 
 ## Active Delivery: Resumable Account Onboarding Foundation
 
-Status: `audit complete; RED-first implementation starting at ONB-02` on
-2026-08-30.
+Status: `existing foundation revalidated; prerequisite RED remediation starts
+at ONB-03; repository release remains NO-GO` on 2026-08-30.
 
-This delivery introduces a server-authoritative, resumable onboarding boundary
-between conditional email verification and ordinary portal access. The full
-current-state audit, selected one-to-one state design, state machine, database,
-route/middleware, Livewire, localization, accessibility, test, rollout,
-rollback, acceptance, and exact task ledger are in
+This delivery revalidates and hardens the already-present server-authoritative,
+resumable onboarding boundary between conditional email verification and
+ordinary portal access. The full current-state audit, selected one-to-one
+state design, state machine, database, route/middleware, Livewire,
+localization, accessibility, test, rollout, rollback, acceptance, and exact
+task ledger are in
 `docs/plans/onboarding-implementation-plan.md`. Specialist ownership and
 finding dispositions are recorded in
 `docs/audits/onboarding-audit-work-ledger.md`.
@@ -276,20 +277,35 @@ creation must atomically provision the durable state plus one privacy-first
 canonical user social actor/settings row. Pet creation remains optional and
 continues exclusively through the existing duplicate-aware pet workflow.
 
+Current-checkout discovery reproduced five prerequisite defects selected for
+this package: configured verification can be bypassed by a stale Livewire
+snapshot unless the component and direct Actions re-check it; backslash-style
+intended URLs and password confirmation do not share one safe redirect
+boundary; pet creator-FK evidence disagrees with revoked/expired manager
+authority and private pet actors can leak into social search; privacy
+completion has no explicit acknowledgement; and the wizard's error/progress/
+forced-colors semantics are incomplete. Named `UserFactory` onboarding states
+and the missing localized verification-throttle key are also required. The
+planned implementation paths are the affected onboarding/auth Actions and
+components, `SafeIntendedUrl`, canonical pet/social scopes, factory states,
+Blade/catalogues, focused tests, this plan, the threat model, ledger, and
+changelog. The already-applied migration is not edited.
+
 | ID | Dependency | Owner | Affected paths/modules | Acceptance criteria | Required verification | Status | Rollback |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| ONB-01 | Repository contract and canonical identity/auth/profile/pet/privacy docs | Principal plus ten read-only specialists | Onboarding audit ledger, dedicated plan, canonical plan | Current state, reusable authorities, selected design, dirty-tree ownership, compatibility, rollout and rollback are evidence-backed before production edits | Route/code/schema/test inventory, specialist reports, planning diff | completed | Revert only onboarding planning additions |
-| ONB-02 | ONB-01 | Principal | Focused onboarding/auth/profile/pet/social tests | RED contracts cover bootstrap, gates, transitions, replay, isolation, intended URLs, legacy exemption, privacy and accessibility | Focused tests observed failing for absent behavior | in progress | Revert attributable test additions |
-| ONB-03 | ONB-02 | Principal | Additive onboarding schema/model/factory/enums and registration initializer | New accounts atomically receive one durable state and one private user actor/settings identity; legacy accounts are untouched | Migration up/down/reapply, factory/schema/bootstrap tests | planned | Roll back table only before writes; otherwise forward-fix |
-| ONB-04 | ONB-03 | Principal | Destination resolver, onboarding middleware, persistent Livewire boundary, routes | Verification precedes onboarding; incomplete users cannot bypass; internal intended destination survives until completion | HTML/JSON/Livewire/binding/direct-action and intended-chain tests | planned | Disable enforcement while retaining rows |
-| ONB-05 | ONB-03..04 | Principal | Class-based onboarding component, form objects, Actions, Blade, EN/LT/RU, page identity | Mandatory acknowledgement/preferences/privacy and an explicit optional pet relationship choice are resumable, policy-safe, localized and accessible | Livewire, localization, architecture, responsive keyboard/browser tests | planned | Remove UI/gate; retain account/pet/social facts |
-| ONB-06 | ONB-02..05 | Independent security and code reviewers then principal | Frozen attributable diff and affected repository gates | Every finding is dispositioned; exact docs/evidence match observed focused/final results; only task-owned hunks publish | Focused/full Pest, syntax/Pint/Larastan, migration/seed, audits/build/caches/browser, staged diff/check | planned | No push with a material finding or failed gate; normal revert only |
+| ONB-01 | Repository contract and canonical identity/auth/profile/pet/privacy docs | Principal plus twelve read-only specialist roles | Ledger, dedicated plan, canonical plan, onboarding threat model | Current state, reusable authorities, selected design, risks, compatibility, rollout and rollback are evidence-backed before production edits | Route/code/schema/test inventory, specialist reports, principal reproduction and planning diff | completed | Revert onboarding planning additions only |
+| ONB-02 | ONB-01 | Principal | Existing migration/model/factory/enums, registration initializer, middleware, Actions, Livewire, Blade, EN/LT/RU and tests | Actual foundation is mapped without duplicating working business logic; current focused baseline is observed | 101 focused tests and 718 assertions passed; root seed gate separately reproduced red from stale cross-domain manifest | completed revalidation; global NO-GO | Disable enforcement while preserving rows; never edit the applied migration |
+| ONB-03 | ONB-02 | Principal | Focused onboarding/auth/pet/social/factory/accessibility tests | RED contracts reproduce stale-unverified mutation, unsafe intended forms, revoked/expired pet evidence, private pet discovery, missing privacy acknowledgement, incomplete error/progress semantics and factory-state gaps | Each selected regression fails for the intended reason before implementation | completed; serial RED evidence recorded | Revert attributable test additions |
+| ONB-04 | ONB-03 | Principal | Onboarding/profile Actions/components, redirect service/confirmation, pet/social authority, factory states, Blade and EN/LT/RU | Smallest implementation closes ONB-03 without changing legacy users, migration history, canonical pet workflow or unrelated privacy values | Focused GREEN after every coherent slice; adjacent auth/pet/social/localization/architecture regressions | completed focused; 154 tests and 43,698 assertions passed across seven serial files | Revert coherent test/fix pair; retain schema and canonical data |
+| ONB-05 | ONB-04 | Principal | Dedicated plan, canonical plan, ledger, threat model, changelog and generated-evidence checks | Documentation records only observed results, exact remaining Prompt 02+ work and current repository blockers; generated files remain generator-owned | Documentation/source/generator parity and diff review | completed for pre-review candidate; final gate results pending | Revert attributable documentation only |
+| ONB-06 | ONB-04..05 | Five independent read-only reviewers then principal | Frozen attributable diff: architecture, security, database, tests, regression | Every material finding is reproduced and fixed or rejected/deferred with evidence; affected checks rerun | Independent reports and a complete disposition ledger | planned | Revert unsafe finding-specific change before publication |
+| ONB-07 | ONB-06 | Principal | Exact attributable candidate on `main` | Applicable Composer/Pint/Larastan/Pest/migration/seed/npm/build/cache/browser/diff/secret gates pass; isolated index includes only task-owned files; normal push succeeds | Exact commands, exit codes, staged diff/check, commit and push output | planned | No commit/push with a material failed gate; normal revert only after publication |
 
-Implementation begins immediately after ONB-01 is complete and follows TDD in
-the order `ONB-02` through `ONB-06`. Individual users may complete the
-implemented foundation, but the delivery must not be represented as satisfying
-functional requirements from later onboarding prompts until those requirements
-are incorporated and independently verified.
+Implementation resumes immediately after this plan update and follows TDD in
+the order `ONB-03` through `ONB-07`. Individual users may complete the current
+foundation, but the delivery must not be represented as satisfying functional
+requirements from later onboarding prompts until those requirements are
+incorporated and independently verified.
 
 ## Active Delivery: I18N-KEY Readable Translation Keys
 

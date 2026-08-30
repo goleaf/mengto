@@ -7,17 +7,21 @@ namespace App\Actions;
 use App\Enums\OnboardingPetChoice;
 use App\Enums\OnboardingStep;
 use App\Enums\PetProfileAccessRequestStatus;
+use App\Models\PetProfile;
 use App\Models\PetProfileAccessRequest;
-use App\Models\PetProfileManager;
 use App\Models\User;
 use App\Models\UserOnboarding;
+use App\Services\EmailVerificationMode;
 use App\Services\ForumActor;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
 final readonly class AdvanceUserOnboarding
 {
-    public function __construct(private ForumActor $actor) {}
+    public function __construct(
+        private ForumActor $actor,
+        private EmailVerificationMode $emailVerification,
+    ) {}
 
     public function handle(
         User $user,
@@ -28,7 +32,9 @@ final readonly class AdvanceUserOnboarding
         $authenticated = $this->actor->requireUser();
 
         abort_unless(
-            $authenticated->is($user) && $authenticated->isActive(),
+            $authenticated->is($user)
+                && $authenticated->isActive()
+                && $this->emailVerification->allows($authenticated),
             403,
         );
 
@@ -99,11 +105,9 @@ final readonly class AdvanceUserOnboarding
         }
 
         if ($choice === OnboardingPetChoice::ManagedPet) {
-            $hasManagedPet = $user->petProfiles()->exists()
-                || PetProfileManager::query()
-                    ->whereBelongsTo($user)
-                    ->activeAt(now())
-                    ->exists();
+            $hasManagedPet = PetProfile::query()
+                ->managedBy($user)
+                ->exists();
 
             if (! $hasManagedPet) {
                 $this->throwPetEvidence();
@@ -115,6 +119,7 @@ final readonly class AdvanceUserOnboarding
             && ! PetProfileAccessRequest::query()
                 ->whereBelongsTo($user, 'requester')
                 ->where('status', PetProfileAccessRequestStatus::Pending)
+                ->whereHas('profile')
                 ->exists()
         ) {
             $this->throwPetEvidence();

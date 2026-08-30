@@ -380,8 +380,15 @@ final class PetProfile extends Model
         $at = now();
 
         return $query->where(function (Builder $managed) use ($at, $user): void {
-            $managed
-                ->where('user_id', $user->id)
+            $managed->where(function (Builder $legacyOwner) use ($user): void {
+                $legacyOwner
+                    ->where('user_id', $user->id)
+                    ->whereDoesntHave(
+                        'managers',
+                        fn (Builder $manager): Builder => $manager
+                            ->where('user_id', $user->id),
+                    );
+            })
                 ->orWhereHas('managers', function ($managers) use ($at, $user): void {
                     $managers->where('user_id', $user->id);
                     PetProfileManager::constrainActiveAt($managers, $at);

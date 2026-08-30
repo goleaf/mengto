@@ -126,6 +126,7 @@ return [
         'resend' => 'Send another verification email',
         'sending' => 'Sending…',
         'sent' => 'A new verification email has been sent.',
+        'throttled' => 'Too many verification emails requested. Try again in :seconds seconds.',
         'success' => 'Your email address has been verified.',
     ],
     'email_verification_activation' => [

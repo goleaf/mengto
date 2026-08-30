@@ -143,6 +143,24 @@ it('honors active manager permissions and expires time-bound access', function (
     ))->toBeFalse();
 });
 
+it('suppresses the legacy creator fallback after that account receives a revoked manager record', function (): void {
+    $owner = User::factory()->create();
+    $profile = PetProfile::factory()->for($owner)->privateProfile()->create();
+    PetProfileManager::factory()->for($profile, 'profile')->for($owner)->create([
+        'role' => PetManagerRole::PrimaryOwner,
+        'status' => PetManagerStatus::Revoked,
+        'revoked_at' => now(),
+    ]);
+
+    expect(PetProfile::query()->managedBy($owner)->whereKey($profile)->exists())->toBeFalse()
+        ->and(PetProfile::query()->visibleTo($owner)->whereKey($profile)->exists())->toBeFalse()
+        ->and(app(PetProfileAccess::class)->allows(
+            $profile->fresh(),
+            $owner,
+            PetProfilePermission::View,
+        ))->toBeFalse();
+});
+
 it('requires the invited account and keeps manager acceptance idempotent', function (): void {
     $owner = User::factory()->create();
     $invitee = User::factory()->create();
@@ -554,9 +572,13 @@ it('keeps canonical public profile queries bounded as manager history grows', fu
     DB::flushQueryLog();
     DB::enableQueryLog();
     $response = $this->get(route('pets.profile', ['petProfile' => $profile->profile_key]));
-    $queryCount = count(DB::getQueryLog());
+    $queries = collect(DB::getQueryLog());
+    $queryCount = $queries->count();
     DB::disableQueryLog();
 
     $response->assertOk();
-    expect($queryCount)->toBeLessThanOrEqual(12);
+    expect($queries->filter(
+        static fn (array $query): bool => str_contains($query['query'], 'user_onboardings'),
+    )->count())->toBe(1)
+        ->and($queryCount)->toBeLessThanOrEqual(13);
 });

@@ -126,6 +126,7 @@ return [
         'resend' => 'Siųsti patvirtinimo laišką dar kartą',
         'sending' => 'Siunčiama…',
         'sent' => 'Naujas patvirtinimo laiškas išsiųstas.',
+        'throttled' => 'Paprašyta per daug patvirtinimo laiškų. Bandykite po :seconds sek.',
         'success' => 'El. pašto adresas patvirtintas.',
     ],
     'email_verification_activation' => [

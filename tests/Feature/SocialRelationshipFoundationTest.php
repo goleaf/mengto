@@ -654,6 +654,28 @@ it('searches public actors with bounded queries and excludes hidden or blocked p
         ->and($queryCount)->toBeLessThanOrEqual(9);
 });
 
+it('does not project a private pet through an actor visibility mismatch', function (): void {
+    $sourceUser = User::factory()->create(['name' => 'Private Pet Searcher']);
+    $owner = User::factory()->create();
+    $pet = PetProfile::factory()->for($owner)->privateProfile()->create([
+        'name' => 'Secret Pet Name',
+    ]);
+    $resolver = app(SocialActorResolver::class);
+    $source = $resolver->forUser($sourceUser);
+    $petActor = $resolver->forPet($pet);
+
+    expect($petActor->is_discoverable)->toBeFalse();
+
+    $petActor->forceFill(['is_discoverable' => true])->saveOrFail();
+    $results = app(SocialActorDirectory::class)->search(
+        $source,
+        $sourceUser,
+        'Secret Pet',
+    );
+
+    expect($results)->toBe([]);
+});
+
 it('creates a follow and a separate friendship request from the livewire directory', function (): void {
     $sourceUser = User::factory()->create(['name' => 'Livewire Source']);
     $targetUser = User::factory()->create(['name' => 'Livewire Directory Target']);

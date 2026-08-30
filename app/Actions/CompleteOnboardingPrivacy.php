@@ -7,6 +7,7 @@ namespace App\Actions;
 use App\Enums\OnboardingStep;
 use App\Models\User;
 use App\Models\UserOnboarding;
+use App\Services\EmailVerificationMode;
 use App\Services\ForumActor;
 use App\Services\SocialActorResolver;
 use Illuminate\Support\Facades\DB;
@@ -16,12 +17,14 @@ final readonly class CompleteOnboardingPrivacy
 {
     public function __construct(
         private ForumActor $account,
+        private EmailVerificationMode $emailVerification,
         private SocialActorResolver $actors,
         private UpdateSocialActorSettings $updateSettings,
     ) {}
 
     public function handle(
         User $user,
+        bool $privacyAcknowledged,
         bool $isDiscoverable,
         bool $isRecommendable,
         bool $allowMessageRequests,
@@ -30,7 +33,18 @@ final readonly class CompleteOnboardingPrivacy
         int $expectedSocialSettingsLockVersion,
     ): UserOnboarding {
         $authenticated = $this->account->requireUser();
-        abort_unless($authenticated->is($user) && $authenticated->isActive(), 403);
+        abort_unless(
+            $authenticated->is($user)
+                && $authenticated->isActive()
+                && $this->emailVerification->allows($authenticated),
+            403,
+        );
+
+        if (! $privacyAcknowledged) {
+            throw ValidationException::withMessages([
+                'privacyAcknowledged' => __('onboarding.validation.privacy_acknowledgement'),
+            ]);
+        }
 
         return DB::transaction(function () use (
             $allowMessageRequests,

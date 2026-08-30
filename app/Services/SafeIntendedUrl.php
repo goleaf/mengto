@@ -22,6 +22,10 @@ final readonly class SafeIntendedUrl
             return $fallback;
         }
 
+        if (preg_match('/[\\\\\x00-\x1F\x7F]/', $intended) === 1) {
+            return $fallback;
+        }
+
         if (str_starts_with($intended, '/') && ! str_starts_with($intended, '//')) {
             return $intended;
         }

@@ -47,6 +47,8 @@ return [
             'recommendable_description' => 'Allows PawCircle to recommend your public-safe account profile to eligible members.',
             'messages_label' => 'Allow message requests',
             'messages_description' => 'Allows eligible members outside your existing relationships to request a conversation.',
+            'protected_data' => 'Account and pet data is not automatically made public. Exact location, medical records and GPS data stay private unless you explicitly share them. External indexing stays disabled unless you enable it in a supported profile setting.',
+            'acknowledgement' => 'I understand these privacy boundaries and confirm my discovery and contact choices.',
             'save' => 'Finish account setup',
         ],
     ],
@@ -55,12 +57,14 @@ return [
     ],
     'states' => [
         'saving' => 'Saving securely…',
+        'checking' => 'Checking your pet relationship…',
         'offline' => 'You are offline. Reconnect before saving this step.',
         'unsaved' => 'This step has unsaved changes.',
     ],
     'validation' => [
         'summary' => 'Review the highlighted information before continuing.',
         'acknowledgement' => 'Confirm that you understand these choices can be reviewed later.',
+        'privacy_acknowledgement' => 'Confirm that you understand the privacy boundaries before finishing account setup.',
         'pet_choice' => 'Choose one of the available pet relationship options.',
         'pet_evidence' => 'We could not confirm that pet relationship for your account yet.',
     ],

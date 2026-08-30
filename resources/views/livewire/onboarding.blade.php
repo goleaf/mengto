@@ -8,8 +8,9 @@
     <h1 class="mt-2 text-3xl font-bold leading-tight text-paw-ink sm:text-4xl">{{ __('onboarding.page.title') }}</h1>
     <p class="mt-3 max-w-2xl text-base leading-7 text-paw-muted">{{ __('onboarding.page.description') }}</p>
 
-    <nav class="mt-6" aria-label="{{ __('onboarding.progress.label') }}">
-        <ol class="grid gap-2 sm:grid-cols-4">
+    <section data-onboarding-progress class="mt-6" aria-labelledby="onboarding-progress-label">
+        <h2 id="onboarding-progress-label" class="sr-only">{{ __('onboarding.progress.label') }}</h2>
+        <ol role="list" class="grid gap-2 sm:grid-cols-4">
             <li @if ($expectedStep === 'introduction') aria-current="step" @endif class="rounded-lg border px-3 py-3 text-sm @if ($expectedStep === 'introduction') border-paw-leaf bg-paw-leaf/10 font-semibold @else border-paw-line @endif">
                 <span class="block text-xs text-paw-muted">{{ __('onboarding.progress.step', ['current' => 1, 'total' => 4]) }}</span>
                 {{ __('onboarding.steps.introduction.label') }}
@@ -27,14 +28,19 @@
                 {{ __('onboarding.steps.privacy_discovery.label') }}
             </li>
         </ol>
-        <progress class="mt-3 h-2 w-full accent-paw-leaf" value="{{ $this->progressPosition }}" max="4">
+        <progress aria-labelledby="onboarding-progress-label" class="mt-3 h-2 w-full accent-paw-leaf" value="{{ $this->progressPosition }}" max="4">
             {{ __('onboarding.progress.step', ['current' => $this->progressPosition, 'total' => 4]) }}
         </progress>
-    </nav>
+    </section>
 
     @if ($errors->any())
-        <div x-ref="errorSummary" tabindex="-1" role="alert" class="mt-6 rounded-lg border-2 border-paw-coral bg-paw-coral/10 px-4 py-3 font-semibold text-paw-ink">
-            {{ __('onboarding.validation.summary') }}
+        <div x-ref="errorSummary" tabindex="-1" role="alert" aria-labelledby="onboarding-error-summary-title" class="mt-6 rounded-lg border-2 border-paw-coral bg-paw-coral/10 px-4 py-3 text-paw-ink">
+            <p id="onboarding-error-summary-title" class="font-semibold">{{ __('onboarding.validation.summary') }}</p>
+            <ul role="list" class="mt-2 list-disc space-y-1 pl-5 text-sm">
+                @foreach ($errors->all() as $message)
+                    <li data-error-summary-message>{{ $message }}</li>
+                @endforeach
+            </ul>
         </div>
     @endif
 
@@ -49,11 +55,11 @@
 
             <form wire:submit="acknowledgeIntroduction" class="mt-6 grid gap-5">
                 <label class="flex min-h-11 items-start gap-3 rounded-lg border border-paw-line p-4">
-                    <input type="checkbox" wire:model="introductionAcknowledged" class="mt-1 size-5 accent-paw-leaf" @error('introductionAcknowledged') aria-invalid="true" aria-describedby="onboarding-introduction-error" @enderror>
+                    <input type="checkbox" wire:model="introductionAcknowledged" required aria-required="true" class="mt-1 size-5 accent-paw-leaf" @error('introductionAcknowledged') aria-invalid="true" aria-describedby="onboarding-introduction-error" @enderror>
                     <span>{{ __('onboarding.steps.introduction.acknowledgement') }}</span>
                 </label>
                 @error('introductionAcknowledged') <p id="onboarding-introduction-error" class="text-sm font-medium text-paw-coral">{{ $message }}</p> @enderror
-                <button type="submit" wire:loading.attr="disabled" wire:target="acknowledgeIntroduction" class="inline-flex min-h-11 items-center justify-center rounded-md bg-paw-leaf px-5 py-3 font-semibold text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-paw-leaf focus-visible:ring-offset-2 disabled:opacity-60">
+                <button type="submit" wire:loading.attr="disabled" wire:target="acknowledgeIntroduction" class="inline-flex min-h-11 items-center justify-center rounded-md border-2 border-transparent bg-paw-leaf px-5 py-3 font-semibold text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-paw-leaf disabled:opacity-60">
                     <span wire:loading.remove wire:target="acknowledgeIntroduction">{{ __('onboarding.steps.introduction.continue') }}</span>
                     <span wire:loading wire:target="acknowledgeIntroduction">{{ __('onboarding.states.saving') }}</span>
                 </button>
@@ -90,7 +96,7 @@
                     @error('preferencesForm.timezone') <p id="onboarding-timezone-error" class="mt-2 text-sm font-medium text-paw-coral">{{ $message }}</p> @enderror
                 </div>
                 <p wire:dirty role="status" class="text-sm font-medium text-paw-muted">{{ __('onboarding.states.unsaved') }}</p>
-                <button type="submit" wire:loading.attr="disabled" wire:target="savePreferences" class="inline-flex min-h-11 items-center justify-center rounded-md bg-paw-leaf px-5 py-3 font-semibold text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-paw-leaf focus-visible:ring-offset-2 disabled:opacity-60">
+                <button type="submit" wire:loading.attr="disabled" wire:target="savePreferences" class="inline-flex min-h-11 items-center justify-center rounded-md border-2 border-transparent bg-paw-leaf px-5 py-3 font-semibold text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-paw-leaf disabled:opacity-60">
                     <span wire:loading.remove wire:target="savePreferences">{{ __('onboarding.steps.preferences.save') }}</span>
                     <span wire:loading wire:target="savePreferences">{{ __('onboarding.states.saving') }}</span>
                 </button>
@@ -99,26 +105,27 @@
     @elseif ($expectedStep === 'pet-relationship')
         <section class="mt-7" aria-labelledby="onboarding-step-heading">
             <h2 id="onboarding-step-heading" x-ref="stepHeading" tabindex="-1" class="text-2xl font-bold">{{ __('onboarding.steps.pet_relationship.title') }}</h2>
-            <p class="mt-3 leading-7 text-paw-muted">{{ __('onboarding.steps.pet_relationship.body') }}</p>
-            @error('petChoice') <p class="mt-4 text-sm font-medium text-paw-coral">{{ $message }}</p> @enderror
+            <p id="onboarding-pet-help" class="mt-3 leading-7 text-paw-muted">{{ __('onboarding.steps.pet_relationship.body') }}</p>
+            @error('petChoice') <p id="onboarding-pet-error" class="mt-4 text-sm font-medium text-paw-coral">{{ $message }}</p> @enderror
 
-            <div class="mt-6 grid gap-3">
-                <a href="{{ route('pets.manage.create', ['onboarding' => 1]) }}" class="inline-flex min-h-11 items-center justify-center rounded-md bg-paw-leaf px-5 py-3 font-semibold text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-paw-leaf focus-visible:ring-offset-2">
+            <div role="group" aria-describedby="onboarding-pet-help @error('petChoice') onboarding-pet-error @enderror" class="mt-6 grid gap-3">
+                <a href="{{ route('pets.manage.create', ['onboarding' => 1]) }}" class="inline-flex min-h-11 items-center justify-center rounded-md border-2 border-transparent bg-paw-leaf px-5 py-3 font-semibold text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-paw-leaf">
                     {{ __('onboarding.steps.pet_relationship.create_or_find') }}
                 </a>
                 @if ($this->hasManagedPet)
-                    <button type="button" wire:click="confirmPetRelationship('managed-pet')" wire:loading.attr="disabled" wire:target="confirmPetRelationship" class="min-h-11 rounded-md border-2 border-paw-leaf px-5 py-3 font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-paw-leaf focus-visible:ring-offset-2">
+                    <button type="button" wire:click="confirmPetRelationship('managed-pet')" wire:loading.attr="disabled" wire:target="confirmPetRelationship" class="min-h-11 rounded-md border-2 border-paw-leaf px-5 py-3 font-semibold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-paw-leaf">
                         {{ __('onboarding.steps.pet_relationship.managed_pet') }}
                     </button>
                 @endif
                 @if ($this->hasPendingAccessRequest)
-                    <button type="button" wire:click="confirmPetRelationship('access-requested')" wire:loading.attr="disabled" wire:target="confirmPetRelationship" class="min-h-11 rounded-md border-2 border-paw-leaf px-5 py-3 font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-paw-leaf focus-visible:ring-offset-2">
+                    <button type="button" wire:click="confirmPetRelationship('access-requested')" wire:loading.attr="disabled" wire:target="confirmPetRelationship" class="min-h-11 rounded-md border-2 border-paw-leaf px-5 py-3 font-semibold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-paw-leaf">
                         {{ __('onboarding.steps.pet_relationship.access_requested') }}
                     </button>
                 @endif
-                <button type="button" wire:click="confirmPetRelationship('not-now')" wire:loading.attr="disabled" wire:target="confirmPetRelationship" class="min-h-11 rounded-md border-2 border-paw-muted px-5 py-3 font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-paw-leaf focus-visible:ring-offset-2">
+                <button type="button" wire:click="confirmPetRelationship('not-now')" wire:loading.attr="disabled" wire:target="confirmPetRelationship" class="min-h-11 rounded-md border-2 border-paw-muted px-5 py-3 font-semibold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-paw-leaf">
                     {{ __('onboarding.steps.pet_relationship.not_now') }}
                 </button>
+                <p wire:loading wire:target="confirmPetRelationship" role="status" class="text-sm font-medium text-paw-muted">{{ __('onboarding.states.checking') }}</p>
             </div>
         </section>
     @elseif ($expectedStep === 'privacy-discovery')
@@ -139,8 +146,14 @@
                     <input type="checkbox" wire:model="privacyForm.allowMessageRequests" class="mt-1 size-5 accent-paw-leaf">
                     <span><strong class="block">{{ __('onboarding.steps.privacy_discovery.messages_label') }}</strong><small class="mt-1 block text-sm leading-6 text-paw-muted">{{ __('onboarding.steps.privacy_discovery.messages_description') }}</small></span>
                 </label>
+                <p id="onboarding-privacy-protected" class="rounded-lg border border-paw-line bg-paw-canvas px-4 py-3 text-sm leading-6 text-paw-muted">{{ __('onboarding.steps.privacy_discovery.protected_data') }}</p>
+                <label class="flex min-h-11 items-start gap-3 rounded-lg border border-paw-line p-4">
+                    <input type="checkbox" wire:model="privacyAcknowledged" required aria-required="true" class="mt-1 size-5 accent-paw-leaf" aria-describedby="onboarding-privacy-protected @error('privacyAcknowledged') onboarding-privacy-acknowledgement-error @enderror" @error('privacyAcknowledged') aria-invalid="true" @enderror>
+                    <span>{{ __('onboarding.steps.privacy_discovery.acknowledgement') }}</span>
+                </label>
+                @error('privacyAcknowledged') <p id="onboarding-privacy-acknowledgement-error" class="text-sm font-medium text-paw-coral">{{ $message }}</p> @enderror
                 <p wire:dirty role="status" class="text-sm font-medium text-paw-muted">{{ __('onboarding.states.unsaved') }}</p>
-                <button type="submit" wire:loading.attr="disabled" wire:target="savePrivacy" class="inline-flex min-h-11 items-center justify-center rounded-md bg-paw-leaf px-5 py-3 font-semibold text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-paw-leaf focus-visible:ring-offset-2 disabled:opacity-60">
+                <button type="submit" wire:loading.attr="disabled" wire:target="savePrivacy" class="inline-flex min-h-11 items-center justify-center rounded-md border-2 border-transparent bg-paw-leaf px-5 py-3 font-semibold text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-paw-leaf disabled:opacity-60">
                     <span wire:loading.remove wire:target="savePrivacy">{{ __('onboarding.steps.privacy_discovery.save') }}</span>
                     <span wire:loading wire:target="savePrivacy">{{ __('onboarding.states.saving') }}</span>
                 </button>

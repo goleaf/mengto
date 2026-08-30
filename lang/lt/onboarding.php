@@ -47,6 +47,8 @@ return [
             'recommendable_description' => 'Leidžia „PawCircle“ rekomenduoti viešai saugų paskyros profilį tinkamiems nariams.',
             'messages_label' => 'Leisti žinučių užklausas',
             'messages_description' => 'Leidžia tinkamiems nariams už esamų ryšių ribų paprašyti pradėti pokalbį.',
+            'protected_data' => 'Paskyros ir augintinio duomenys nėra automatiškai viešinami. Tiksli vieta, medicininiai įrašai ir GPS duomenys lieka privatūs, kol jais aiškiai nepasidalijate. Išorinis indeksavimas lieka išjungtas, kol jo neįjungiate palaikomame profilio nustatyme.',
+            'acknowledgement' => 'Suprantu šias privatumo ribas ir patvirtinu savo paieškos bei kontakto pasirinkimus.',
             'save' => 'Baigti paskyros paruošimą',
         ],
     ],
@@ -55,12 +57,14 @@ return [
     ],
     'states' => [
         'saving' => 'Saugiai išsaugoma…',
+        'checking' => 'Tikrinamas jūsų ryšys su augintiniu…',
         'offline' => 'Nesate prisijungę prie interneto. Prisijunkite prieš išsaugodami šį žingsnį.',
         'unsaved' => 'Šiame žingsnyje yra neišsaugotų pakeitimų.',
     ],
     'validation' => [
         'summary' => 'Prieš tęsdami peržiūrėkite pažymėtą informaciją.',
         'acknowledgement' => 'Patvirtinkite, kad suprantate: šiuos pasirinkimus vėliau galėsite peržiūrėti.',
+        'privacy_acknowledgement' => 'Prieš baigdami paskyros paruošimą patvirtinkite, kad suprantate privatumo ribas.',
         'pet_choice' => 'Pasirinkite vieną iš galimų ryšio su augintiniu variantų.',
         'pet_evidence' => 'Kol kas nepavyko patvirtinti šio ryšio su augintiniu jūsų paskyrai.',
     ],

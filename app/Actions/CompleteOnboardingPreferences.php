@@ -7,6 +7,7 @@ namespace App\Actions;
 use App\Enums\OnboardingStep;
 use App\Models\User;
 use App\Models\UserOnboarding;
+use App\Services\EmailVerificationMode;
 use App\Services\ForumActor;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
@@ -15,6 +16,7 @@ final readonly class CompleteOnboardingPreferences
 {
     public function __construct(
         private ForumActor $actor,
+        private EmailVerificationMode $emailVerification,
         private UpdateProfilePreferences $updatePreferences,
     ) {}
 
@@ -26,7 +28,12 @@ final readonly class CompleteOnboardingPreferences
         int $expectedLockVersion,
     ): UserOnboarding {
         $authenticated = $this->actor->requireUser();
-        abort_unless($authenticated->is($user) && $authenticated->isActive(), 403);
+        abort_unless(
+            $authenticated->is($user)
+                && $authenticated->isActive()
+                && $this->emailVerification->allows($authenticated),
+            403,
+        );
 
         return DB::transaction(function () use (
             $data,

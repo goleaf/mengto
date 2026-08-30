@@ -12,10 +12,11 @@ use App\Enums\OnboardingStep;
 use App\Enums\PetProfileAccessRequestStatus;
 use App\Livewire\Forms\OnboardingPrivacyForm;
 use App\Livewire\Forms\ProfilePreferencesForm;
+use App\Models\PetProfile;
 use App\Models\PetProfileAccessRequest;
-use App\Models\PetProfileManager;
 use App\Models\User;
 use App\Models\UserOnboarding;
+use App\Services\EmailVerificationMode;
 use App\Services\SafeIntendedUrl;
 use App\Services\SocialActorResolver;
 use Illuminate\Contracts\Auth\Factory as AuthFactory;
@@ -34,6 +35,8 @@ final class Onboarding extends Component
 
     public bool $introductionAcknowledged = false;
 
+    public bool $privacyAcknowledged = false;
+
     #[Locked]
     public string $expectedStep = '';
 
@@ -44,6 +47,8 @@ final class Onboarding extends Component
     public int $socialSettingsLockVersion = 0;
 
     private AuthFactory $auth;
+
+    private EmailVerificationMode $emailVerification;
 
     private SocialActorResolver $actors;
 
@@ -57,6 +62,7 @@ final class Onboarding extends Component
 
     public function boot(
         AuthFactory $auth,
+        EmailVerificationMode $emailVerification,
         SocialActorResolver $actors,
         AdvanceUserOnboarding $advanceOnboarding,
         CompleteOnboardingPreferences $completePreferences,
@@ -64,6 +70,7 @@ final class Onboarding extends Component
         SafeIntendedUrl $intendedUrl,
     ): void {
         $this->auth = $auth;
+        $this->emailVerification = $emailVerification;
         $this->actors = $actors;
         $this->advanceOnboarding = $advanceOnboarding;
         $this->completePreferences = $completePreferences;
@@ -113,11 +120,9 @@ final class Onboarding extends Component
     {
         $user = $this->requireUser();
 
-        return $user->petProfiles()->exists()
-            || PetProfileManager::query()
-                ->whereBelongsTo($user)
-                ->activeAt(now())
-                ->exists();
+        return PetProfile::query()
+            ->managedBy($user)
+            ->exists();
     }
 
     #[Computed]
@@ -126,6 +131,7 @@ final class Onboarding extends Component
         return PetProfileAccessRequest::query()
             ->whereBelongsTo($this->requireUser(), 'requester')
             ->where('status', PetProfileAccessRequestStatus::Pending)
+            ->whereHas('profile')
             ->exists();
     }
 
@@ -139,13 +145,13 @@ final class Onboarding extends Component
 
     public function acknowledgeIntroduction(): void
     {
-        $this->validate([
-            'introductionAcknowledged' => ['accepted'],
-        ], [
-            'introductionAcknowledged.accepted' => __('onboarding.validation.acknowledgement'),
-        ]);
-
         $this->runMutation(function (): UserOnboarding {
+            $this->validate([
+                'introductionAcknowledged' => ['accepted'],
+            ], [
+                'introductionAcknowledged.accepted' => __('onboarding.validation.acknowledgement'),
+            ]);
+
             return $this->advanceOnboarding->handle(
                 $this->requireUser(),
                 $this->snapshotStep(),
@@ -156,8 +162,9 @@ final class Onboarding extends Component
 
     public function savePreferences(): void
     {
-        $data = $this->preferencesForm->validatedData();
-        $state = $this->runMutation(function () use ($data): UserOnboarding {
+        $state = $this->runMutation(function (): UserOnboarding {
+            $data = $this->preferencesForm->validatedData();
+
             return $this->completePreferences->handle(
                 $this->requireUser(),
                 $data,
@@ -195,10 +202,17 @@ final class Onboarding extends Component
 
     public function savePrivacy(): void
     {
-        $data = $this->privacyForm->validatedData();
-        $state = $this->runMutation(function () use ($data): UserOnboarding {
+        $state = $this->runMutation(function (): UserOnboarding {
+            $this->validate([
+                'privacyAcknowledged' => ['accepted'],
+            ], [
+                'privacyAcknowledged.accepted' => __('onboarding.validation.privacy_acknowledgement'),
+            ]);
+            $data = $this->privacyForm->validatedData();
+
             return $this->completePrivacy->handle(
                 user: $this->requireUser(),
+                privacyAcknowledged: $this->privacyAcknowledged,
                 isDiscoverable: $data['isDiscoverable'],
                 isRecommendable: $data['isRecommendable'],
                 allowMessageRequests: $data['allowMessageRequests'],
@@ -226,7 +240,12 @@ final class Onboarding extends Component
     private function requireUser(): User
     {
         $user = $this->auth->guard('web')->user();
-        abort_unless($user instanceof User && $user->isActive(), 403);
+        abort_unless(
+            $user instanceof User
+                && $user->isActive()
+                && $this->emailVerification->allows($user),
+            403,
+        );
 
         return $user;
     }

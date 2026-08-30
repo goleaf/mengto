@@ -7,6 +7,7 @@ namespace App\Livewire;
 use App\Actions\UpdateProfilePreferences;
 use App\Livewire\Forms\ProfilePreferencesForm;
 use App\Models\User;
+use App\Services\EmailVerificationMode;
 use App\Services\ProfilePresenter;
 use Illuminate\Contracts\Auth\Factory as AuthFactory;
 use Illuminate\Contracts\View\View;
@@ -22,16 +23,20 @@ final class ProfileSettings extends Component
 
     private AuthFactory $auth;
 
+    private EmailVerificationMode $emailVerification;
+
     private ProfilePresenter $profiles;
 
     private UpdateProfilePreferences $updatePreferences;
 
     public function boot(
         AuthFactory $auth,
+        EmailVerificationMode $emailVerification,
         ProfilePresenter $profiles,
         UpdateProfilePreferences $updatePreferences,
     ): void {
         $this->auth = $auth;
+        $this->emailVerification = $emailVerification;
         $this->profiles = $profiles;
         $this->updatePreferences = $updatePreferences;
     }
@@ -95,7 +100,12 @@ final class ProfileSettings extends Component
     {
         $user = $this->auth->guard('web')->user();
 
-        abort_unless($user instanceof User && $user->isActive(), 403);
+        abort_unless(
+            $user instanceof User
+                && $user->isActive()
+                && $this->emailVerification->allows($user),
+            403,
+        );
 
         return $user;
     }

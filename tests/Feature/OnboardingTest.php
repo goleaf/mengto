@@ -7,6 +7,8 @@ use App\Actions\CompleteOnboardingPreferences;
 use App\Actions\CompleteOnboardingPrivacy;
 use App\Enums\OnboardingPetChoice;
 use App\Enums\OnboardingStep;
+use App\Enums\PetManagerRole;
+use App\Enums\PetManagerStatus;
 use App\Http\Middleware\EnsureOnboardingIsComplete;
 use App\Livewire\Auth\Login;
 use App\Livewire\Auth\Register;
@@ -14,6 +16,7 @@ use App\Livewire\Auth\VerifyEmail;
 use App\Livewire\Onboarding;
 use App\Models\PetProfile;
 use App\Models\PetProfileAccessRequest;
+use App\Models\PetProfileManager;
 use App\Models\SocialActor;
 use App\Models\SocialActorSetting;
 use App\Models\User;
@@ -28,6 +31,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Validation\ValidationException;
 use Livewire\Livewire;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 test('registration atomically provisions private onboarding identity', function (bool $verificationEnabled, string $destination): void {
     Notification::fake();
@@ -72,6 +76,23 @@ test('onboarding state is unique per user and cascades with the account', functi
     $user->delete();
 
     expect(UserOnboarding::query()->where('user_id', $user->id)->exists())->toBeFalse();
+});
+
+test('user factory exposes composable onboarding lifecycle states without changing its default', function (): void {
+    $legacy = User::factory()->create();
+    $incomplete = User::factory()->onboardingIncomplete()->create();
+    $preferences = User::factory()->onboardingAtPreferences()->create();
+    $pets = User::factory()->onboardingAtPets()->create();
+    $privacy = User::factory()->onboardingAtPrivacy()->create();
+    $complete = User::factory()->onboarded()->create();
+
+    expect($legacy->onboarding()->exists())->toBeFalse()
+        ->and($incomplete->onboarding()->firstOrFail()->current_step)->toBe(OnboardingStep::Introduction)
+        ->and($preferences->onboarding()->firstOrFail()->current_step)->toBe(OnboardingStep::Preferences)
+        ->and($pets->onboarding()->firstOrFail()->current_step)->toBe(OnboardingStep::PetRelationship)
+        ->and($privacy->onboarding()->firstOrFail()->current_step)->toBe(OnboardingStep::PrivacyDiscovery)
+        ->and($complete->onboarding()->firstOrFail()->current_step)->toBe(OnboardingStep::Complete)
+        ->and($complete->onboarding()->firstOrFail()->completed_at)->not->toBeNull();
 });
 
 test('introduction transition is forward only replay safe and versioned', function (): void {
@@ -199,6 +220,7 @@ test('preferences and privacy complete through named livewire mutations', functi
         ->set('privacyForm.isDiscoverable', true)
         ->set('privacyForm.isRecommendable', true)
         ->set('privacyForm.allowMessageRequests', false)
+        ->set('privacyAcknowledged', true)
         ->call('savePrivacy')
         ->assertHasNoErrors()
         ->assertRedirect(route('home'));
@@ -217,6 +239,7 @@ test('onboarding validates acknowledgement preferences and stale snapshots', fun
     Livewire::test(Onboarding::class)
         ->call('acknowledgeIntroduction')
         ->assertHasErrors(['introductionAcknowledged'])
+        ->assertDispatched('onboarding-validation-failed')
         ->set('introductionAcknowledged', true)
         ->call('acknowledgeIntroduction')
         ->assertHasNoErrors();
@@ -238,6 +261,34 @@ test('onboarding validates acknowledgement preferences and stale snapshots', fun
         ]);
 });
 
+test('privacy acknowledgement is mandatory and completion remains unchanged when it is absent', function (): void {
+    $state = UserOnboarding::factory()
+        ->for($this->authenticatedUser)
+        ->privacyDiscovery()
+        ->create();
+    $actor = app(SocialActorResolver::class)->provisionPrivateForUser($this->authenticatedUser);
+    $settings = $actor->settings()->firstOrFail();
+
+    expect(fn () => app(CompleteOnboardingPrivacy::class)->handle(
+        user: $this->authenticatedUser,
+        privacyAcknowledged: false,
+        isDiscoverable: false,
+        isRecommendable: false,
+        allowMessageRequests: false,
+        expectedStep: OnboardingStep::PrivacyDiscovery,
+        expectedOnboardingLockVersion: $state->lock_version,
+        expectedSocialSettingsLockVersion: $settings->lock_version,
+    ))->toThrow(ValidationException::class);
+
+    Livewire::test(Onboarding::class)
+        ->call('savePrivacy')
+        ->assertHasErrors(['privacyAcknowledged'])
+        ->assertDispatched('onboarding-validation-failed');
+
+    expect($state->fresh()?->isComplete())->toBeFalse()
+        ->and($state->fresh()?->privacy_discovery_completed_at)->toBeNull();
+});
+
 test('onboarding page has a dedicated accessible account flow shell', function (): void {
     UserOnboarding::factory()->for($this->authenticatedUser)->create();
     app(SocialActorResolver::class)
@@ -247,6 +298,9 @@ test('onboarding page has a dedicated accessible account flow shell', function (
         ->assertOk()
         ->assertSee('data-section="onboarding"', false)
         ->assertSee('aria-current="step"', false)
+        ->assertSee('data-onboarding-progress', false)
+        ->assertSee('role="list"', false)
+        ->assertSee('aria-labelledby="onboarding-progress-label"', false)
         ->assertSee('wire:offline', false)
         ->assertSee('wire:loading', false);
 
@@ -276,7 +330,7 @@ test('login preserves an intended route until onboarding completion', function (
 test('email verification preserves a protected destination and hands off to onboarding', function (): void {
     $user = User::factory()->unverified()->create();
     UserOnboarding::factory()->for($user)->create();
-    app(\App\Services\SocialActorResolver::class)->provisionPrivateForUser($user);
+    app(SocialActorResolver::class)->provisionPrivateForUser($user);
     $this->actingAs($user);
 
     $this->get(route('devices.index'))
@@ -309,10 +363,80 @@ test('safe completion rejects an external intended destination', function (): vo
     session()->put('url.intended', 'https://attacker.example/steal');
 
     Livewire::test(Onboarding::class)
+        ->set('privacyAcknowledged', true)
         ->call('savePrivacy')
         ->assertRedirect(route('home'));
 
     expect(session()->has('url.intended'))->toBeFalse();
+});
+
+test('stale livewire and direct actions cannot mutate onboarding after verification is lost', function (): void {
+    config()->set('platform.email_verification_enabled', true);
+    $state = UserOnboarding::factory()->for($this->authenticatedUser)->create();
+    app(SocialActorResolver::class)->provisionPrivateForUser($this->authenticatedUser);
+    $component = Livewire::test(Onboarding::class)
+        ->set('introductionAcknowledged', true);
+
+    $this->authenticatedUser->forceFill(['email_verified_at' => null])->saveOrFail();
+
+    $component
+        ->call('acknowledgeIntroduction')
+        ->assertForbidden();
+
+    expect(fn () => app(AdvanceUserOnboarding::class)->handle(
+        $this->authenticatedUser,
+        OnboardingStep::Introduction,
+        $state->lock_version,
+    ))->toThrow(HttpException::class);
+
+    expect($state->fresh()?->current_step)->toBe(OnboardingStep::Introduction)
+        ->and($state->fresh()?->introduction_completed_at)->toBeNull();
+});
+
+test('every direct onboarding transition requires current configured verification', function (): void {
+    config()->set('platform.email_verification_enabled', true);
+
+    $preferencesUser = User::factory()->unverified()->create();
+    $preferences = UserOnboarding::factory()
+        ->for($preferencesUser)
+        ->preferences()
+        ->create();
+    app(SocialActorResolver::class)->provisionPrivateForUser($preferencesUser);
+    $this->actingAs($preferencesUser);
+
+    expect(fn () => app(CompleteOnboardingPreferences::class)->handle(
+        $preferencesUser,
+        ['locale' => 'ru', 'timezone' => 'Europe/Riga'],
+        OnboardingStep::Preferences,
+        $preferences->lock_version,
+    ))->toThrow(HttpException::class);
+
+    $privacyUser = User::factory()->unverified()->create();
+    $privacy = UserOnboarding::factory()
+        ->for($privacyUser)
+        ->privacyDiscovery()
+        ->create();
+    $privacyActor = app(SocialActorResolver::class)->provisionPrivateForUser($privacyUser);
+    $privacySettings = $privacyActor->settings()->firstOrFail();
+    $this->actingAs($privacyUser);
+
+    expect(fn () => app(CompleteOnboardingPrivacy::class)->handle(
+        user: $privacyUser,
+        privacyAcknowledged: true,
+        isDiscoverable: true,
+        isRecommendable: true,
+        allowMessageRequests: true,
+        expectedStep: OnboardingStep::PrivacyDiscovery,
+        expectedOnboardingLockVersion: $privacy->lock_version,
+        expectedSocialSettingsLockVersion: $privacySettings->lock_version,
+    ))->toThrow(HttpException::class);
+
+    expect($preferencesUser->fresh())
+        ->locale->toBe('en')
+        ->timezone->toBe('UTC')
+        ->and($preferences->fresh()?->current_step)->toBe(OnboardingStep::Preferences)
+        ->and($privacy->fresh()?->isComplete())->toBeFalse()
+        ->and($privacyActor->fresh()?->is_discoverable)->toBeFalse();
 });
 
 test('stale authenticated guest components cannot switch or create accounts', function (): void {
@@ -377,7 +501,9 @@ test('registration and verification resend mutations are rate limited', function
 
     Livewire::test(VerifyEmail::class)
         ->call('resend')
-        ->assertHasErrors(['resend']);
+        ->assertHasErrors(['resend'])
+        ->assertSee(__('auth.verification.throttled', ['seconds' => 60]))
+        ->assertDontSee('auth.verification.throttled');
 });
 
 test('managed pets and pending access requests are verified from canonical relationships', function (): void {
@@ -423,6 +549,32 @@ test('managed pets and pending access requests are verified from canonical relat
         ->toBe(OnboardingPetChoice::AccessRequested);
 });
 
+test('revoked creator membership cannot satisfy managed pet onboarding evidence', function (): void {
+    $state = UserOnboarding::factory()
+        ->for($this->authenticatedUser)
+        ->petRelationship()
+        ->create();
+    $pet = PetProfile::factory()->for($this->authenticatedUser)->privateProfile()->create();
+    PetProfileManager::factory()
+        ->for($pet, 'profile')
+        ->for($this->authenticatedUser)
+        ->create([
+            'role' => PetManagerRole::PrimaryOwner,
+            'status' => PetManagerStatus::Revoked,
+            'revoked_at' => now(),
+        ]);
+
+    expect(fn () => app(AdvanceUserOnboarding::class)->handle(
+        $this->authenticatedUser,
+        OnboardingStep::PetRelationship,
+        $state->lock_version,
+        OnboardingPetChoice::ManagedPet,
+    ))->toThrow(ValidationException::class);
+
+    expect($state->fresh()?->current_step)->toBe(OnboardingStep::PetRelationship)
+        ->and($state->fresh()?->pet_relationship_choice)->toBeNull();
+});
+
 test('stale account and social versions roll back onboarding side effects', function (): void {
     $state = UserOnboarding::factory()
         ->for($this->authenticatedUser)
@@ -452,6 +604,7 @@ test('stale account and social versions roll back onboarding side effects', func
 
     expect(fn () => app(CompleteOnboardingPrivacy::class)->handle(
         $this->authenticatedUser,
+        true,
         true,
         true,
         true,

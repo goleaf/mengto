@@ -2,441 +2,593 @@
 
 Plan date: 2026-08-30  
 Branch: `main`  
-Delivery status: audit complete; RED-first implementation starting
+Requirement scope: `PRD-IDENTITY-001`, `PRD-IDENTITY-003..005`,
+`SYS-AUTH-001`, `SYS-AUTH-006`, privacy, localization, accessibility, seeding,
+and testing contracts affected by account entry.
 
-## Goal And Scope
+## Status
 
-Deliver a server-authoritative, resumable onboarding path between account
-creation/email verification and the authenticated portal. The foundation must
-preserve the existing authentication, pet identity, duplicate-review, access
-request, social graph, profile-preference, privacy, and discovery authorities.
-It must not claim that later onboarding prompts or every planned account
-setting are complete.
+**Foundation implemented before this revalidation; Prompt 01 remediation in
+progress; repository release remains NO-GO.**
 
-This plan is the source of truth for the onboarding delivery. The specialist
-ownership and finding ledger is
-`docs/audits/onboarding-audit-work-ledger.md`; the repository-wide delivery
-entry remains `docs/implementation-plan.md`.
+The checkout already contains the additive onboarding aggregate, registration
+bootstrap, central middleware, forward-only Actions, a class-based Livewire
+flow, EN/LT/RU catalogues, and focused tests from commit `0787b76`. Prompt 01
+does not recreate them. It revalidates them, repairs proven prerequisite
+defects, and records later packages without claiming that the complete
+onboarding product or repository release is done.
 
-## Current-State Audit
+Current revalidation baseline: `main` and `origin/main` both at
+`48730147fde586108bf79477dff066e5bb1b0ec5`; the tree was clean before this
+plan update. A focused auth/onboarding run passed 101 tests and 718 assertions.
+The representative-seed test separately failed because the current dynamic
+model inventory has 263 models while its stale manifest has 211; this includes
+onboarding plus extensive concurrent Event and Places drift and is a release
+blocker, not a passing onboarding gate.
 
-### Entry points and observed transitions
+## Current Repository State
 
-| Entry or transition | Current behavior | Onboarding consequence |
-| --- | --- | --- |
-| Registration | `RegisterUser` creates one active `User`, assigns a server-generated immutable account actor key, normalized email, request locale, configured timezone, and optionally an immediate verification timestamp. `Register` logs the user in, regenerates the session, persists locale, and redirects to email verification or `home`. | There is no durable onboarding row, social actor bootstrap, onboarding redirect, or resumable progress. |
-| Login | `AuthenticateUser` normalizes credentials, limits attempts, requires an active account, records last login, regenerates the session, restores locale, and consumes Laravel's `url.intended`. | A verified incomplete user would currently enter the portal. An unverified user can lose the protected intended URL when central middleware subsequently redirects to verification. |
-| Email verification | Configuration can require or operationally bypass proof. The signed route authorizes the current user, is expiring/throttled, and `fulfill()` is persistence-idempotent. Success always redirects to `home`; resend is a Livewire mutation without a dedicated limiter. | Verification has no onboarding handoff and does not preserve an intended deep link. Onboarding initialization cannot depend only on `Registered` or `Verified`, because those events are deliberately absent in disabled mode. |
-| Logout | Framework logout invalidates the session and regenerates the CSRF token. | Progress must be database-backed; session is suitable only for a temporary return destination. |
-| Profile preferences | `ProfilePreferencesForm` and `UpdateProfilePreferences` validate the EN/LT/RU allowlist and IANA timezone, authorize self-update, and persist both values on `users`. | Reuse this operation; do not copy locale/timezone validation into Blade or a second domain service. |
-| Social identity/privacy | `SocialActorResolver` lazily creates a user actor and one settings row with historically permissive defaults. `UpdateSocialActorSettings` policy-checks and optimistic-locks settings. Actor discoverability is a separate field. | A new account does not yet receive every canonical social identity. Provision it during registration with privacy-first defaults, while preserving legacy lazy defaults. The onboarding privacy transition must atomically cover actor discoverability and settings. |
-| Pet creation | The class-based `CreatePetProfile` flow already owns validation, idempotency, duplicate candidates, duplicate review tokens, safe creation defaults, manager grants, private location/privacy rows, and access-request submission. Newly created pets are non-discoverable. | Reuse the existing route/component/Actions. Onboarding records only the relationship decision and confirms durable evidence; it does not create a second pet form or duplicate detector. |
-| Portal boundary | `RequirePortalAccess` runs in the web stack after the session and before route bindings, admits only explicit guest/unverified routes, handles JSON, and is persistent for Livewire. | Add a second fail-closed onboarding boundary after portal access and before bindings. It must not expose bound models or block its own Livewire requests. |
-| Home | Authenticated eligible users are redirected from `/` to `content.index`. | Keep `/` as the canonical portal entry. Use a separate named onboarding route and let the boundary select it. |
+- PHP 8.5, Laravel 13, Livewire 4 class-based multi-file components, Blade,
+  Tailwind CSS 4, Vite, Pest 4, and Larastan are the active stack.
+- PawCircle is a closed authenticated portal. Product data is unavailable to
+  guests; policies remain mandatory after the outer portal boundary.
+- `user_onboardings` is an additive one-to-one aggregate. A row means the
+  account participates in onboarding; no row is the deliberate legacy
+  exemption.
+- New registrations create `User`, private personal `SocialActor`,
+  `SocialActorSetting`, and `UserOnboarding` in one database transaction.
+- Persisted states are `introduction`, `preferences`, `pet-relationship`,
+  `privacy-discovery`, and `complete`. The server, not a URL or browser step,
+  selects the rendered state.
+- The current `UserFactory` default creates a verified legacy-compatible user
+  with no onboarding row. This intentionally avoids trapping hundreds of
+  unrelated tests. Named onboarding factory states are required instead of
+  changing that default implicitly.
+- Compliance currently says `implemented`, not `implemented and verified`.
+  That is the highest defensible status until current gaps and applicable
+  repository gates are closed.
 
-### Existing-user behavior
+## Existing Authentication Flow
 
-There is no onboarding state in the current schema or application. Existing
-accounts can access the portal after the existing active-account and optional
-verification checks without configuring profile, pet, privacy, or discovery
-preferences. Compatibility therefore uses the absence of an onboarding row as
-an explicit legacy exemption; it is not interpreted as an incomplete account.
+Visitor -> `register` -> `RegistrationForm` validation -> `RegisterUser`
+transaction -> login -> session regeneration -> verification notice or
+onboarding.
 
-### Canonical identities issued today
+- Registration normalizes the stored email, hashes the password through the
+  model cast, creates an active account, copies the request locale, applies a
+  configured IANA timezone, bootstraps private identity/progress, and emits
+  `Registered` after commit when verification is enabled.
+- Login normalizes credentials, applies an email-and-IP limiter, rejects
+  unavailable accounts, records `last_login_at`, regenerates the session,
+  restores locale, and sends incomplete accounts through verification then
+  onboarding before consuming the intended destination.
+- Logout invalidates the session and regenerates the CSRF token.
+- Password reset and confirmation remain canonical auth flows. Confirmation
+  currently consumes an unvalidated intended URL and is included in the
+  prerequisite remediation. Password-reset request throttling and
+  session-lifecycle proof remain explicit follow-up work unless completed in
+  this package.
 
-- Registration always creates `User` and `users.actor_key`.
-- Registration does not create the normalized user `SocialActor` or
-  `SocialActorSetting`; they are created lazily by social flows or explicit
-  backfill/seeding.
-- Registration does not create a pet, pet manager, pet social actor, or
-  compatibility `UserDomainState`; those absences are valid.
-- Owner and pet identities and their actor keys remain separate contracts.
+Observed gaps include case-insensitive pre-validation of registration email,
+recoverable handling of synchronous verification-mail failure, reset-request
+rate limiting, and direct session-ID/CSRF lifecycle assertions.
 
-## Discovered Problems
+## Existing Email Verification Flow
 
-| ID | Severity | Problem | Required disposition |
+- `EmailVerificationMode` is the single configuration boundary and defaults
+  safely to enabled. Only exact boolean `false` bypasses proof.
+- Enabled registration leaves the account unverified, sends `Registered`, and
+  routes to `verification.notice`.
+- Disabled registration stamps `email_verified_at` inside the transaction,
+  sends no verification notification, and routes to onboarding.
+- The verify route requires authenticated active state, an expiring absolute
+  signature, request ownership/hash authorization, and route throttling.
+- Verification success routes an incomplete account to onboarding without
+  consuming the protected product destination. A complete/legacy account
+  receives the safe intended destination or `home`.
+- Repeated valid verification is persistence-idempotent.
+
+Required hardening: stale Livewire snapshots must not mutate onboarding after
+the account becomes unverified; invalid/expired/wrong-user signed-link tests,
+recipient-locale mail rendering, raw throttling-key prevention, and
+post-commit mail-failure recovery remain required evidence.
+
+## Existing Profile Preference Flow
+
+`ProfilePreferencesForm` and `UpdateProfilePreferences` are canonical for the
+EN/LT/RU allowlist and IANA timezone validation. Onboarding delegates to them,
+then stores the selected locale in the session and redirects before the next
+render so copy is not mixed-language. No second preference validator or
+duplicate profile persistence is permitted.
+
+Profile biography, media, location, interests, and prototype presenter data
+are not mandatory onboarding identity. The existing hard-coded owner profile
+projection is not a source of truth for onboarding.
+
+## Existing Pet Creation Flow
+
+The only allowed pet path is the existing class-based
+`Pets\CreatePetProfile` component with `PetProfileCreateForm`,
+`CreatePetProfile`, `PetProfileDuplicateReview`, and the canonical
+access-request Actions.
+
+- Creation is idempotent and defaults to private, non-discoverable,
+  direct-link disabled, external-indexing disabled, and hidden location.
+- Duplicate candidates are bounded, visibility-scoped, and carried through an
+  encrypted expiring viewer-bound token.
+- Access requests are validated, encrypted, idempotent, and do not grant
+  manager rights. Review plus invitation acceptance owns that transition.
+- Onboarding stores only a relationship decision and server-observed evidence;
+  it accepts no browser user ID, actor key, pet ID, or return URL.
+- The current bridge uses middleware redirects after create/cancel. A later UI
+  package should provide a named server-controlled return context without
+  trusting arbitrary destinations.
+
+The current owner-FK shortcut in `PetProfile::managedBy()` and onboarding
+evidence disagrees with `PetProfileAccess` after an own manager row is revoked
+or expired. Prompt 01 must make active membership or the documented legacy
+fallback the single authority.
+
+## Existing Privacy/Discovery Flow
+
+- New personal actors start non-discoverable, non-recommendable,
+  message-request closed, friend/follow closed, and both lists hidden.
+- Onboarding delegates privacy persistence to `UpdateSocialActorSettings` and
+  preserves unrelated canonical friend/follow/list policies.
+- `DiscoveryPreference` rows suppress recommendations; they are relevance
+  controls, not privacy consent, and onboarding must not create them.
+- Pet, medical, care, exact-location, and GPS/device privacy remain in their
+  owning domains. Onboarding must not copy or infer those values.
+- External indexing is a pet-domain preference and is not evidence that an
+  external crawler indexed or removed anything.
+
+The privacy step currently records `privacy_discovery_completed_at`, but its
+UI lacks an explicit required acknowledgement. That existing timestamp will
+remain the non-redundant acknowledgement evidence after the browser explicitly
+accepts the privacy explanation. No marketing, medical, GPS, location, or
+external-indexing consent is inferred.
+
+A separate audit also found that lazy pet social actors can be discoverable
+while the owning pet profile is private, and discovery can fail open when an
+actor settings row is missing. Those are canonical privacy defects. The
+minimum Prompt 01 fix must prevent a private pet created through onboarding
+from entering the social directory; broader legacy synchronization remains a
+tracked follow-up if not closed here.
+
+## Existing Social Identity Initialization
+
+`InitializeUserOnboarding` runs inside `RegisterUser` and idempotently creates:
+
+1. one `User`-backed `SocialActor`;
+2. one private `SocialActorSetting` row;
+3. one `UserOnboarding` row at `introduction`, lock version 1.
+
+Runtime registration no longer depends on a seeder or backfill. Legacy lazy
+resolver behavior remains intentionally compatible and must not be silently
+rewritten. Registration does not create fake pets, expert profiles,
+organizations, groups, medical records, devices, locations, or discovery
+preferences.
+
+## Problems Found
+
+| ID | Severity | Current problem | Prompt 01 disposition |
 | --- | --- | --- | --- |
-| ONB-F01 | critical foundation | No durable, server-authoritative onboarding state or portal gate exists. | Add one-to-one state, transitions, middleware, and direct-action authorization. |
-| ONB-F02 | high | Newly registered accounts lack their normalized user social actor/settings until an unrelated social flow runs. | Provision exactly one user actor/settings row in the registration transaction with privacy-first defaults. |
-| ONB-F03 | high | Login and verification can consume or lose a protected intended URL before all account gates are satisfied. | Route through one destination decision and consume only after verification and onboarding complete. |
-| ONB-F04 | high | Historical social actor defaults are discoverable/recommendable/message-open. | Preserve legacy defaults for legacy lazy creation, but use explicit private defaults for new-account provisioning. |
-| ONB-F05 | high | Pet creation, duplicate review, and access requests are complex existing authorities that a new wizard could accidentally bypass. | Link to and detect evidence from the canonical pet workflow; never reproduce its mutations in onboarding. |
-| ONB-F06 | high | Registration and verification resend mutations do not have dedicated application limiters, and stale Livewire guest snapshots need an explicit fail-closed account-state check. | Cover with RED security tests and bounded mutation limiters/guards in the auth foundation slice. |
-| ONB-F07 | medium | Social settings update does not include actor discoverability. | Add one atomic onboarding operation that reuses the existing settings Action and locks the onboarding/actor rows. |
-| ONB-F08 | medium | Profile settings presentation contains prototype owner destinations that are not a safe onboarding source of truth. | Reuse only the validated preference operation and neutral form patterns. |
-| ONB-F09 | medium | Current tests do not cover durable resume, direct route bypass, wrong-user state, transition replay, legacy exemption, or the complete intended-URL chain. | Add focused feature/Livewire/database/architecture cases before implementation. |
+| ONB-G01 | high | Persistent Livewire transport is allowlisted, while onboarding/profile Actions check active identity but not a verification state that changed after mount. | Add fresh configured-verification checks to the affected component and direct Actions, with no-side-effect tests. |
+| ONB-G02 | high | Pet owner-FK queries and onboarding evidence ignore an own revoked/expired manager row. | Reuse one canonical managed scope and test active, legacy, revoked, expired, future, and foreign evidence. |
+| ONB-G03 | high | Private pet social actors can be provisioned discoverable and found through social search. | Fail closed for private pet actor creation/search; add cross-user regression. |
+| ONB-G04 | medium security | `SafeIntendedUrl` accepts backslash-relative parser-confusion values; password confirmation bypasses the service. | Reject backslashes/control bytes and route password confirmation through the same service. |
+| ONB-G05 | medium accessibility | Error summary hides real state errors, ordinary validation does not focus it, progress uses a false navigation landmark, and forced-colors focus/boundaries are incomplete. | Render actual errors, dispatch focus events, use named progress semantics, add forced-colors-safe outlines/borders and loading text. |
+| ONB-G06 | medium product | Privacy completion has no explicit required browser acknowledgement. | Require explicit acknowledgement and use the existing completion timestamp as its server evidence. |
+| ONB-G07 | medium testing | `UserFactory` has no named onboarding states; transition tests omit several negative/replay paths. | Add composable named states without changing the legacy-compatible default and add focused tests. |
+| ONB-G08 | high localization | LT/RU generic validation and auth mail are English; verification throttle references a missing key. | Fix the raw onboarding-adjacent key in this package; keep full linguistic mail/validation remediation explicit unless verified here. |
+| ONB-G09 | high release | Representative model manifest/generated DB evidence and the repository-wide suite are already stale across multiple concurrent domains. | Do not hand-edit generated evidence or claim release. Run current gates and report exact attributable vs concurrent failures. |
+| ONB-G10 | medium reliability | Registration mail transport can throw after DB commit but before login/redirect. | Preserve data integrity; define and test a recoverable resend UX in a subsequent auth package unless safely completed here. |
 
-## Evaluated Designs
+## Security Risks Found
 
-### Option A — columns on `users`
+The detailed repository-grounded threat model is
+`docs/audits/petsocial.miniserver.fun-threat-model.md`.
 
-Store a completion flag/current step directly on `users`. This is simple but
-mixes authentication identity with workflow history, provides weak per-step
-evidence, and makes future expansion/backward compatibility harder.
+| Threat | Priority | Required control |
+| --- | --- | --- |
+| Direct URL or Livewire transport bypass | high impact / medium residual | Central pre-binding middleware plus fresh component/Action authorization and real transport tests. |
+| Browser step/version/user tampering | medium residual | No browser identity input; locked snapshots; authenticated owner row lock and version check. |
+| Conflicting stale tabs | medium | Forward-only transitions, exact replay, first-writer state, and stale conflict without side effects. |
+| Intended URL parser confusion | medium | Same-origin service for every account-flow return and rejection of backslash/control/protocol-relative forms. |
+| Missing onboarding row used as bypass | medium | Only canonical registration may create production accounts; missing-row legacy exemption is monitored and not generated for new accounts. |
+| Verification bypass | medium | Configured verification check at HTTP, Livewire component, and direct Action boundaries. |
+| Pet IDOR/private discovery | high impact / medium residual | Policy-visible duplicate flow, viewer-bound tokens, active manager authority, and pet-profile visibility cap on social discovery. |
+| Session fixation | low residual / high impact | Regenerate after login/register, invalidate on logout, and add direct lifecycle assertions. |
 
-### Option B — one-to-one onboarding aggregate (selected)
+## Proposed User Journey
 
-Create an additive `user_onboardings` table with a controlled current step,
-per-step timestamps, explicit pet decision, completion timestamp, and lock
-version. A missing row means legacy exemption; registration creates the row
-for new accounts. This provides resumability, transactional transitions,
-optimistic concurrency, rollback-friendly deployment, and clear authorization.
+```text
+registration
+  -> verification notice when configured
+  -> introduction
+  -> language and timezone
+  -> pet relationship decision
+       -> canonical pet create/duplicate/access workflow when requested
+       -> or continue without a pet for now
+  -> privacy explanation, choices, and explicit acknowledgement
+  -> server completion check
+  -> one safe intended portal URL or home
+```
 
-### Option C — derive completion from existing account/pet/social facts
+The separate “no pet” and “add later” survey answers are deliberately collapsed
+into `not-now`: both have the same safe product behavior and no required domain
+side effect. A later analytics requirement may add a non-blocking distinction;
+it is not needed for secure portal entry.
 
-Infer onboarding from non-default locale/timezone, pet relationships, and
-social settings. This cannot distinguish an accepted default from an unseen
-form, cannot record a legitimate no-pet choice, and makes completion unstable
-when the user later changes a setting. It is rejected.
+## Mandatory Steps
+
+- Active account throughout every transition.
+- Email verification when the configured mode is enabled.
+- Introduction acknowledgement.
+- Supported locale and valid IANA timezone persisted through the canonical
+  preference Action.
+- One server-validated pet relationship choice: managed evidence, pending
+  access-request evidence, or explicit `not-now`.
+- Privacy/discovery values plus explicit acknowledgement.
+- Server-side prerequisite recheck before setting `complete` exactly once.
+
+## Optional Steps
+
+- Creating a pet, submitting an access request, or accepting an invitation.
+- Profile photo, biography, location, interests, and additional profile facts.
+- Discovery suppressions, follows, suggested accounts, and notification
+  customization.
+- Additional pets, pet media/details, groups, organizations, expert identity,
+  medical/care/device data, and precise location.
+
+Optional work never blocks portal access and may be completed later.
 
 ## Canonical State Machine
 
-```text
-registered
-    |
-    +-- verification required and pending --> verify-email
-    |
-    `-- verified/bypassed ------------------>
-                                                introduction
-                                                     |
-                                                preferences
-                                                     |
-                                              pet-relationship
-                                           /         |          \
-                                     managed pet  access request  not now
-                                           \         |          /
-                                             privacy-discovery
-                                                     |
-                                                  complete
-                                                     |
-                                          intended URL or portal
-```
+| Current state | Accepted operation | Guard | Next state | Replay |
+| --- | --- | --- | --- | --- |
+| `introduction` | acknowledge | active configured-verified owner, accepted acknowledgement, expected version | `preferences` | exact already-applied request returns current state |
+| `preferences` | save preferences | same owner; EN/LT/RU; IANA timezone; expected version | `pet-relationship` | later state returned without rewriting preferences |
+| `pet-relationship` | choose relationship | same owner; enum; current managed/pending evidence when claimed | `privacy-discovery` | same choice is no-op; conflicting choice is stale conflict |
+| `privacy-discovery` | save privacy and acknowledge | same owner; booleans; acknowledgement; both onboarding/settings versions | `complete` | completed state returned without rewriting settings/timestamps |
+| `complete` | none | middleware passes; component redirects | portal | completion timestamp/version remain unchanged |
 
-The persisted steps are `introduction`, `preferences`, `pet-relationship`,
-`privacy-discovery`, and `complete`. Transitions are forward-only, lock and
-reload the authenticated user's row, validate the expected current step, and
-are replay-safe. Repeated submission of an already completed transition
-returns the existing state without duplicating effects. A stale, future-step,
-foreign-user, or browser-supplied state identifier is rejected.
+No future-step call, arbitrary step integer, foreign user, inactive or
+configured-unverified account, stale lock, foreign pet/request, or browser
+completion timestamp is accepted. Backward navigation is deferred: canonical
+profile, social, and pet settings remain editable after completion without
+rewinding onboarding history.
 
-### Mandatory, skippable, and deferrable choices
+## Database Changes
 
-| Step | Requirement |
+The existing additive `user_onboardings` table is retained:
+
+- unique indexed `user_id` with cascade delete;
+- controlled `current_step` string cast to `OnboardingStep`;
+- nullable controlled pet choice cast to `OnboardingPetChoice`;
+- started, per-step, privacy acknowledgement/completion, and final timestamps;
+- integer optimistic `lock_version`.
+
+No redundant locale, timezone, privacy-toggle, actor, or pet columns are added.
+No historical migration is edited. Portable database constraints or a repair
+path for corrupted enum/timestamp invariants remain a later hardening package;
+application writes and tests must preserve them now.
+
+## Backward Compatibility
+
+| Account | Behavior |
 | --- | --- |
-| Introduction | Mandatory acknowledgement; no marketing consent is inferred. |
-| Account preferences | Mandatory explicit confirmation of locale and timezone; current safe defaults may be accepted unchanged. |
-| Pet relationship | Mandatory explicit choice. Creating a pet is optional. A user may prove an existing managed pet, submit a canonical access request after duplicate review, or choose `not-now`. |
-| Privacy and discovery | Mandatory explicit confirmation of user-actor discoverability, recommendation inclusion, and message-request preference. Initial defaults are off/private. |
-| Completion | Server transition only after prior evidence. Pet/profile expansion, public discovery, notification settings, export/deletion, and additional pets remain available later and are not implied complete. |
+| Existing normal/admin/demo user with no row | Legacy exemption; normal portal/policies; values are not rewritten. |
+| Existing unverified user | Verification gate remains authoritative; no implicit enrollment. |
+| Existing blocked/suspended user | Availability denial precedes onboarding. |
+| Existing user with incomplete row | Resumes persisted step. |
+| Existing user with complete row | Normal portal access. |
+| Newly registered user | Must atomically receive a private identity and incomplete row. |
 
-Email verification is conditionally mandatory according to the existing
-configuration. It is an account gate before onboarding, not a mutable
-onboarding step.
+No bulk backfill is performed. After production writes, rollback is an
+application forward-fix that stops enforcement while retaining progress, not
+destructive removal of user data.
 
-## Required Database Changes
+## Runtime User Initialization
 
-Add `user_onboardings` in one new expand-only, SQLite-portable migration after
-the current latest migration:
+All production account creation must call `RegisterUser` and
+`InitializeUserOnboarding`. Unique database keys plus `firstOrCreate` make
+sequential retries idempotent. A fault-injection test must prove that a failure
+inside identity/progress bootstrap rolls back `User`, actor, settings, and
+onboarding together. Synchronous mail delivery occurs after the transaction
+and needs a separately recoverable UX; it cannot be called database atomicity.
 
-| Column | Contract |
-| --- | --- |
-| `id` | Internal primary key; never accepted from browser state. |
-| `user_id` | Required unique foreign key to `users`, cascade delete. |
-| `current_step` | Required bounded string backed by `OnboardingStep`; default `introduction`. |
-| `pet_relationship_choice` | Nullable bounded string backed by `OnboardingPetChoice`. |
-| `started_at` | Required server timestamp. |
-| `introduction_completed_at` | Nullable server timestamp. |
-| `preferences_completed_at` | Nullable server timestamp. |
-| `pet_relationship_completed_at` | Nullable server timestamp. |
-| `privacy_discovery_completed_at` | Nullable server timestamp. |
-| `completed_at` | Nullable server timestamp; only the final transition sets it. |
-| `lock_version` | Unsigned integer, default `1`, incremented on every transition. |
-| timestamps | Normal Eloquent timestamps. |
+## Routes
 
-The unique user constraint is the race-safe idempotency boundary. No backfill
-is performed. Existing users remain operational because missing state is a
-legacy exemption. New registrations create the row in the same transaction as
-`User`, `SocialActor`, and `SocialActorSetting`, so no partially initialized
-account can commit.
+- `GET /onboarding`, name `onboarding.show`, is the single wizard route.
+- The persisted server state chooses the step. There is no browser-controlled
+  `/onboarding/{step}` route.
+- `pets.manage.create` is the only product bridge allowed while incomplete.
+- Verification notice/handler, password confirmation, logout, and required
+  Livewire transport remain available according to the outer account state.
+- A later pet-return improvement may use a server-known enum/context; arbitrary
+  return URLs remain forbidden.
 
-Add `UserOnboarding`, its factory, explicit fillable fields, enum casts, and a
-typed `User::onboarding()` relation. Factory defaults must satisfy every schema
-constraint and provide meaningful per-step/completed states.
+## Middleware
 
-## Routes And Destinations
+Required order:
 
-| Method | Name | URI | Boundary |
-| --- | --- | --- | --- |
-| GET | `onboarding.show` | `/onboarding` | `web`, central portal boundary, `auth`, `active`; verification enforced by central boundary |
-| existing GET | `pets.manage.create` | `/pets/manage/new` | Temporarily allowed while onboarding is incomplete; all pet mutations stay in the existing component/Actions. |
+`StartSession -> RequirePortalAccess -> EnsureOnboardingIsComplete -> CSRF -> SubstituteBindings`
 
-No anonymous onboarding endpoint, route closure, public state token, or
-client-selected user/state key is introduced. The onboarding page uses a
-dedicated authenticated account-flow shell derived from shared auth design
-tokens, and is classified in the global route/page-identity ledgers.
+`RequirePortalAccess` owns guest, active/inactive, and conditional verification
+decisions. `EnsureOnboardingIsComplete` performs one indexed one-to-one state
+lookup, passes missing/complete rows, redirects safe HTML GETs, and returns a
+localized `409` for product mutations/JSON. Both are persistent in Livewire.
+Detailed prerequisite queries never run in middleware.
 
-Post-auth destination order is:
+## Livewire Components
 
-1. inactive-account response;
-2. email verification when configured and pending;
-3. incomplete onboarding when a row exists;
-4. validated internal intended destination;
-5. `home`/content feed.
+The existing `App\Livewire\Onboarding` class remains a thin coordinator with a
+separate Blade view. It owns typed form/scalar presentation state, locked step
+and version snapshots, focus/status events, and redirects. It does not accept
+user IDs, pet IDs, actor keys, completion timestamps, arbitrary next states, or
+return URLs. Business transitions stay in Actions.
 
-Login, registration, verification, onboarding completion, and central
-middleware must apply the same order. The Laravel session may retain
-`url.intended`, but it is consumed only at step 4.
+## Forms
 
-## Middleware Behavior
+- Reuse `ProfilePreferencesForm` for locale/timezone.
+- Reuse `OnboardingPrivacyForm` for the three real social settings.
+- Validate explicit introduction/privacy acknowledgement at the component
+  boundary and again through server transition prerequisites where applicable.
+- Pet choice is parsed through `OnboardingPetChoice`; pet creation/access forms
+  stay in their canonical components.
 
-Add `EnsureOnboardingIsComplete` immediately after `RequirePortalAccess` and
-before `SubstituteBindings` in the priority list and web stack.
+## Actions
 
-- Guests, inactive users, and conditionally unverified users remain owned by
-  `RequirePortalAccess`; the onboarding middleware never weakens those gates.
-- A user without an onboarding row is treated as a legacy-complete account.
-- A completed row passes through.
-- An incomplete row may access `onboarding.show`, `logout`, password
-  confirmation, verification endpoints, the canonical pet-create bridge, and
-  framework Livewire update/upload/preview endpoints required by an allowed
-  page. Other HTML GET requests store the internal intended URL and redirect
-  to onboarding before route binding.
-- JSON/API expectations receive a localized `409 Conflict` problem response
-  with a safe onboarding URL; they never receive HTML or a private resource.
-- Non-GET product mutations fail closed rather than being converted to a
-  redirect that could hide data loss.
-- The middleware is registered as persistent Livewire middleware, while every
-  onboarding action still reauthorizes and reloads the current user/state.
-- Query strings may be retained only through Laravel's internal intended URL;
-  hosts/schemes are never accepted from public onboarding input.
+- `InitializeUserOnboarding`: idempotent private identity/progress bootstrap.
+- `AdvanceUserOnboarding`: introduction and pet-choice transitions.
+- `CompleteOnboardingPreferences`: locks state and delegates canonical profile
+  validation/persistence.
+- `CompleteOnboardingPrivacy`: locks state, delegates canonical social settings,
+  records acknowledgement/completion once.
+- Existing pet create/duplicate/access and social settings Actions remain the
+  only domain mutation authorities.
 
-## Livewire, Actions, Forms, And Policies
+## Services
 
-### Class-based component
+- `AccountEntryDestination` owns verification/onboarding gate order.
+- `SafeIntendedUrl` owns every account-flow return destination.
+- `EmailVerificationMode` owns the configured verification rule.
+- `SocialActorResolver` owns runtime actor/settings provisioning.
+- `PetProfileAccess` and the canonical managed query own pet authority.
 
-`App\Livewire\Onboarding` with
-`resources/views/livewire/onboarding.blade.php` owns small typed presentation
-state only. It exposes locked `expectedStep`, `onboardingLockVersion`, and
-`socialSettingsLockVersion` snapshots so a stale tab cannot execute the next
-step accidentally. It still derives the authoritative state and relationship
-evidence from a fresh authorized query on every named mutation, exposes no user
-or onboarding primary key, and uses locked state only as hydration
-integrity—not authorization.
+No second state store, repository wrapper, or client-side state machine is
+introduced.
 
-### Form objects
+## Authorization
 
-- Reuse `ProfilePreferencesForm` for locale/timezone and
-  `UpdateProfilePreferences` for the persisted account preference mutation.
-- Add an onboarding privacy form containing only booleans for discoverability,
-  recommendation inclusion, and message requests. Existing controlled social
-  policy/list values remain server-owned in this foundation and are not
-  silently broadened.
-- Pet relationship choices are allow-listed enums; pet data itself remains in
-  `CreatePetProfile` and its existing forms.
+Every HTTP request is subject to portal middleware before binding. Every
+Livewire mutation and Action independently resolves the current session user,
+requires active/configured-verified status, verifies identity equality, reloads
+and locks the owned onboarding/settings rows, and checks policy/domain
+evidence. `#[Locked]` is hydration integrity only, never authorization.
 
-### Application operations
+## Validation
 
-- `InitializeUserOnboarding`: idempotently provision the onboarding row and
-  privacy-first user social actor/settings inside registration's transaction.
-- `AdvanceUserOnboarding`: lock the authenticated user's state, validate the
-  expected transition, record step timestamps/choice, and increment the lock.
-- `CompleteOnboardingPreferences`: compose the existing preference Action and
-  state transition in one outer transaction.
-- `CompleteOnboardingPrivacy`: authorize the personal actor, atomically update
-  actor discoverability and existing social settings, then complete the state.
-- Pet evidence checks use scoped Eloquent relationships for an active manager
-  grant or the authenticated user's current access request. They never accept
-  a pet ID supplied by the onboarding page.
+- Locale: exact configured EN/LT/RU allowlist.
+- Timezone: PHP/Laravel IANA timezone rule.
+- Pet choice: backed enum; claimed relationships require current server data.
+- Privacy settings: actual booleans; explicit acknowledgement is accepted.
+- Step/version: server enum plus expected snapshot checked against locked DB
+  state.
+- Intended URL: root-relative with no backslash/control ambiguity, or exact
+  application scheme/host/port.
+- All errors are localized and rendered in a focusable summary plus associated
+  field/group feedback.
 
-`UserPolicy` and `SocialActorPolicy` remain the mutation authorities. Add a
-focused `UserOnboardingPolicy` only if the aggregate is addressed outside the
-authenticated user's relationship; otherwise the Actions must enforce exact
-ownership directly and tests must prove wrong-user denial. No administrator
-bypass is introduced.
+## Pet Integration
 
-## Privacy And Security Defaults
+Onboarding never creates a simplified pet record. The create/find link enters
+the canonical duplicate-aware component. “Managed” is valid only for an active
+manager membership or documented legacy creator fallback when no own manager
+row exists. Revoked, expired, future, invited, foreign, or soft-deleted
+relationships do not count. “Access requested” requires a current pending
+request owned by the authenticated user and a current profile. The decision
+itself grants no permission.
 
-Newly registered user actors start with:
+## Privacy Integration
 
-- `is_discoverable = false`;
-- `is_recommendable = false`;
-- `allow_message_requests = false`;
-- friend requests disabled and follows approval- or nobody-gated until the
-  user explicitly confirms broader contact settings;
-- friend/follower lists hidden or minimally count-only.
-
-These are explicit new-account provisioning values, not a historical migration
-of legacy social settings. Pet creation retains its existing private,
-non-discoverable, no-external-indexing, hidden-location defaults.
-
-Registration is limited to five attempts per minute per IP and verification
-resend to three attempts per minute per user-and-IP key. Stale guest-only
-Livewire actions must re-check the current session
-actor. No token, session identifier, intended URL, private pet candidate, or
-email-proof material is logged or placed in public component state.
+All social discovery/contact switches start false. Completion preserves the
+existing friend/follow/list policies and updates actor discoverability plus
+settings in the same outer transaction as onboarding completion. Explicit
+acknowledgement records understanding of the displayed privacy model only. It
+does not create pet, discovery-preference, location, medical, GPS/device, or
+marketing-consent records.
 
 ## Localization
 
-- Add one `onboarding.php` catalogue with recursive key parity in `lang/en`,
-  `lang/lt`, and `lang/ru`.
-- Cover page title, progress text, every step heading/body/control, mandatory
-  versus optional wording, pet choices, privacy explanations, validation,
-  conflict/replay feedback, offline/loading text, and completion feedback.
-- Reuse `auth.locales.*`, existing timezone identifiers, pet catalogue terms,
-  and social policy labels where their semantics are exact.
-- Persist locale only through `UpdateProfilePreferences`, then update session
-  locale immediately so the current onboarding response and later errors use
-  the selected language.
-- Keep stable enum/database codes language-neutral; no translated value is
-  stored.
+All wizard copy lives in recursive `lang/{en,lt,ru}/onboarding.php` catalogues
+with exact key and placeholder parity. Preference success redirects after
+updating user/session locale. No PHP/Blade/JavaScript user-facing literal is
+added. Prompt 01 will prevent raw onboarding/auth keys; full linguistic repair
+of generic LT/RU validation and framework auth mail is tracked until actual
+recipient-locale content tests pass.
 
-## Accessibility And Mobile Interface
+## Accessibility
 
-- Use a dedicated authenticated `onboarding-layout` with a skip link, calm
-  brand mark, one task workspace, and logout/help after the task. It reuses
-  design tokens and field/button primitives but does not expose portal
-  navigation, the auth marketing story, or the guest-only language switcher.
-- One `<main>` and one `<h1>`; a semantic ordered step list exposes
-  `aria-current="step"` and localized textual progress.
-- Steps are noninteractive in this forward-only flow; a native `<progress>`
-  supplies the numeric four-step position without requiring a horizontal
-  mobile gesture.
-- Every input has a persistent label, description where consequences matter,
-  and linked error text. Errors use text plus non-color cues and move/focus to
-  a useful summary after submission.
-- Buttons and links have at least 44-by-44 CSS-pixel targets, visible focus,
-  logical DOM/tab order, and no hover-only behavior.
-- Mutations expose target-specific loading/disabled text, dirty state,
-  explicit server error state, and a Livewire offline notice. Repeated
-  submission remains safe server-side.
-- Privacy choices explain the real audience effect before confirmation; no
-  preselected consent, precise location, public contact, or dark pattern is
-  introduced.
-- Mobile-first single-column layout has no horizontal overflow at 320 pixels;
-  wider layouts may enhance spacing but not reorder meaning.
-- Existing reduced-motion, forced-colors, contrast, auth-shell, field, button,
-  and Lucide icon contracts are reused. Decorative icons are hidden from
-  assistive technology.
+- One document `main`, one H1, sequential H2, skip link, and current-step text.
+- A noninteractive ordered step list plus an explicitly named native progress
+  element; no false navigation landmark.
+- Focusable summary contains every localized error; ordinary validation and
+  transition conflicts move focus to it; successful local transitions focus
+  the next H2.
+- Labels/help/error associations and required semantics for every control.
+- Target-specific loading, dirty, offline, disabled, and completion feedback.
+- Minimum 44px targets, visible focus including forced colors, non-color state,
+  reduced-motion compatibility, 200% zoom/no-overflow, and keyboard-only flow.
+- Connected checks cover 320, 375, 768, 1024, and 1440 widths in EN/LT/RU.
+
+## Performance
+
+- Middleware performs one indexed existence/state query and loads no pet,
+  privacy, or social graph.
+- Pet evidence uses bounded `exists()` queries and canonical scopes.
+- Locale options are bounded; timezone identifiers are finite. No model graph
+  is stored in the Livewire snapshot.
+- No query runs in Blade and no relationship is lazy-loaded there.
+- Completion work uses short transactions; cache invalidation remains in the
+  owning social Action.
 
 ## Test Matrix
 
-### RED-first focused tests
-
 | Area | Required cases |
 | --- | --- |
-| Registration bootstrap | Enabled and disabled verification create exactly one onboarding row, one user social actor, and one settings row; transaction rollback leaves none; replay/resolver does not duplicate identities; private defaults are exact. |
-| State machine | Happy path, each forward transition, refresh/logout/login resume, duplicate submit, stale lock, future-step call, wrong user, inactive user, and completed replay. |
-| Portal boundary | New incomplete user redirected before binding; legacy user and completed user pass; guest/unverified behavior unchanged; onboarding and pet-create bridge allowed; product POST/JSON fail closed; Livewire updates remain viable. |
-| Destinations | Guest deep link -> login -> verification if required -> onboarding -> original internal URL; registration and disabled verification variants; no stale intended leak after completion. |
-| Preferences | EN/LT/RU allowlist, invalid locale/timezone, policy denial, persistence and same-request session locale. |
-| Pet relationship | Existing owner/active manager evidence, canonical pending access request evidence, `not-now`, foreign/revoked/expired manager and foreign request denial; no pet is created by onboarding. |
-| Privacy | Personal actor only, boolean tampering, optimistic conflict, exact private defaults, atomic actor/settings/state update, rollback, and later settings consistency. |
-| Auth hardening | Registration/resend throttles; stale authenticated login/register Livewire invocation rejects; session rotation/invalidation remains covered. |
-| Localization/a11y | Recursive EN/LT/RU parity, no hardcoded first-party text, one H1/main, labels/errors/live states/step semantics, 44-pixel controls, keyboard/focus, forced colors, reduced motion, 320/375/1440 viewport and console checks. |
-| Architecture/data | Class-based Livewire/separate Blade, no `@php`/Volt/raw SQL/dynamic Tailwind, route coverage/classification, explicit model factory/fillable/casts, migration up/down/reapply, fresh factory. |
-| Compatibility | Existing user with no row enters portal unchanged; no legacy social/privacy row is rewritten; optional backout treats missing state as legacy exemption. |
+| Registration | Verification enabled/disabled; normalized case-insensitive email; one state/actor/settings; private defaults; session rotation; injected bootstrap rollback; mail-failure recovery. |
+| Verification | Signed success; invalid/expired/unsigned/wrong-user; replay; enabled/disabled; complete/incomplete/legacy destinations; recipient locale. |
+| Login/logout/reset/confirm | Complete/incomplete/unverified/inactive; intended chain; same-origin confirmation; session/CSRF lifecycle; stale guest snapshots; reset limiter. |
+| Middleware | Guest, inactive, unverified, incomplete, complete, legacy; pre-binding; HTML/JSON/mutation; real Livewire transport; exact pet-create allowlist. |
+| State machine | Every forward step; future/wrong-user/inactive/unverified denial; exact and conflicting replay; stale locks; two-connection race; completion exactly once. |
+| Preferences | EN/LT/RU; valid/invalid timezone; unsupported locale; policy denial; DB/session locale and next-render language. |
+| Pets | `not-now`; canonical create/duplicate/access; legacy creator, active manager, invited/revoked/expired/future/foreign manager; own/foreign/current request; soft-deleted profile; no permission grant. |
+| Privacy | All private defaults; explicit acknowledgement required; booleans/tampering; personal actor only; settings/state rollback; private pet absent from social directory; no sensitive-domain rows. |
+| Compatibility/factory | Old account/admin/demo/unverified/blocked; named UserFactory states; default remains legacy-compatible; migration up/down/reapply and user/domain preservation. |
+| Localization | Recursive parity/placeholders; every step EN/LT/RU; no raw key/literal; long LT/RU; throttle and validation/mail semantics. |
+| Accessibility/browser | One H1/main, named progress/list, real error summary/focus, labels, required/help associations, loading/dirty/offline, 44px, keyboard, zoom, forced colors, reduced motion, overflow and console. |
 
-Focused commands use the repository isolation wrapper:
+## Migration Plan
 
-```bash
-php scripts/run-tests.php --compact tests/Feature/OnboardingTest.php
-php scripts/run-tests.php --compact \
-  tests/Feature/Auth/AuthenticationTest.php \
-  tests/Feature/Auth/ConfigurableEmailVerificationTest.php \
-  tests/Feature/Auth/PortalAccessBoundaryTest.php \
-  tests/Feature/PetProfileDuplicateAccessRequestTest.php \
-  tests/Feature/SocialRelationshipFoundationTest.php \
-  tests/Feature/ArchitectureComplianceTest.php \
-  tests/Feature/LocalizationTest.php \
-  tests/Feature/PageIdentityStandardizationTest.php
-```
+1. Keep the already-applied additive migration; do not edit or rename it.
+2. Old code ignores the table; new code creates rows only through canonical
+   registration.
+3. Do not bulk-enrol or rewrite existing accounts/privacy.
+4. Verify isolated empty and populated up/down/reapply behavior. After writes,
+   treat table removal as destructive and prefer a forward fix.
+5. Monitor unexpected missing rows for post-cutover accounts, transition
+   conflicts, redirect loops, and non-identifying aggregate completion counts.
 
-After focused GREEN: PHP syntax, Pint, Larastan, the full serial Pest suite,
-fresh isolated migration/seed, idempotent seed, Composer/npm audits, Vite build,
-cache smokes, and connected browser checks remain required before publication.
+## Rollout Plan
 
-## Migration And Backward Compatibility Strategy
+1. Ship schema before or with code that tolerates its absence only according
+   to the documented deployment order.
+2. Smoke both verification modes, refresh/logout resume, canonical pet bridge,
+   private defaults, explicit privacy acknowledgement, completion, and intended
+   destination on an isolated environment.
+3. Keep production debug off; validate route/config/view caches and actual
+   Livewire asset HTTP status.
+4. Promote compliance to verified only after focused, repository, migration,
+   build, and connected-browser evidence is current on the exact candidate.
 
-1. Deploy the additive nullable-timestamp table while old code ignores it.
-2. Deploy application code that creates state only for new registrations and
-   treats missing state as legacy exemption.
-3. Do not bulk-enrol existing users or rewrite legacy social settings.
-4. Monitor registration transaction failures, onboarding redirect loops,
-   transition conflicts, completion rates by non-identifying aggregate, and
-   verification/onboarding return-path errors.
-5. A later product decision may explicitly invite legacy accounts through an
-   opt-in row; it is not part of this migration.
+## Rollback Plan
 
-The schema and queries remain SQLite-compatible and avoid database-specific
-check SQL. Enums are validated in application code and covered by tests;
-business uniqueness uses the unique foreign key.
+- Before any production rows: normal reviewed migration rollback is possible.
+- After rows: disable creation/enforcement through a forward fix while
+  retaining progress; old application code safely ignores the additive table.
+- Reverting wizard/middleware must not revert email verification, actor keys,
+  privacy choices, pet authority, or other canonical facts.
+- Never delete users, actors, settings, pets, access requests, or onboarding
+  rows as an operational shortcut.
 
-## Rollout Strategy
+## Work Packages
 
-- Release behind the structural fact of a newly created onboarding row, not a
-  client feature flag: existing accounts are unaffected by default.
-- Run migration status/up/down/reapply in an isolated database before deploy.
-- Smoke both email-verification modes, one new registration, resume after
-  logout, the pet duplicate/access-request bridge, privacy defaults, completion,
-  and restoration of a protected intended route.
-- Keep production debug off and verify route/config/view caches and real
-  Livewire asset HTTP status before enabling broad traffic.
-- Promote compliance evidence only to `implemented` after focused checks; use
-  `implemented and verified` only after every cited gate actually passes.
-
-## Rollback Strategy
-
-- Before production onboarding writes, normal migration rollback may remove
-  the additive table.
-- After writes exist, prefer a forward fix. Application rollback is safe only
-  to a version that ignores the additive table and therefore restores the
-  legacy-exemption behavior.
-- If redirect loops appear, a forward fix can stop creating/enforcing rows
-  while retaining progress for later recovery. Do not delete user, social,
-  pet, access-request, or onboarding records.
-- Reverting UI/middleware must not revert account verification, actor keys,
-  social privacy choices, or pet ownership facts.
+- [x] **ONB-01 — Repository and domain audit.** Twelve narrow read-only roles
+  plus principal reproduction covered auth, verification, identity, pets,
+  privacy/discovery, middleware, database, Livewire, UX/a11y, localization,
+  tests, and threat modeling.
+- [x] **ONB-02 — Existing foundation inventory.** Additive aggregate,
+  initializer, middleware, state Actions, wizard, catalogues, and existing
+  tests are mapped against current code.
+- [x] **ONB-03 — RED prerequisite contracts.** Added failing tests for selected
+  verification, redirect, pet authority/privacy, privacy acknowledgement,
+  accessibility, and factory gaps; serial runs observed the intended failures.
+- [x] **ONB-04 — Minimal prerequisite remediation.** Implemented only the
+  changes required by ONB-03; all four focused files and three adjacent files
+  pass after serial reruns.
+- [x] **ONB-05 — Documentation and changelog reconciliation.** Recorded exact
+  results and remaining Prompt 02+ work; do not hand-edit generated evidence.
+- [ ] **ONB-06 — Frozen-diff independent review.** Architecture, security,
+  database, tests, and regression reviewers disposition every material finding.
+- [ ] **ONB-07 — Final gates and publication decision.** Focused/full Pest,
+  Pint, Larastan, migrations/seed, Composer/npm/build/cache/browser/diff/secret
+  gates; isolated commit/push only if all applicable gates pass.
+- [ ] **ONB-08 — Prompt 02+ wizard depth.** Safe pet return context, browser
+  runner, concurrency proof, mail/validation linguistic remediation, recovery
+  UX, observability, and later requirements remain unclaimed until delivered.
 
 ## Acceptance Criteria
 
-- A new registration atomically receives `User`, durable onboarding state,
-  one user `SocialActor`, and one privacy-first settings row.
-- Conditional email verification remains authoritative and precedes
-  onboarding without losing a protected intended URL.
-- An incomplete newly registered user cannot access or mutate ordinary portal
-  resources by direct route, binding, JSON, or Livewire action.
-- The user can resume the exact server step after refresh, logout/login, or a
-  duplicate submission.
-- Locale/timezone, pet relationship choice, and privacy/discovery choices use
-  existing canonical domain operations and server evidence.
-- Creating a pet remains optional; creation, duplicate detection, and access
-  requests stay entirely inside the canonical pet workflow.
-- Existing users without onboarding rows retain current portal access and
-  existing social/privacy values.
-- The interface is fully localized in EN/LT/RU, keyboard complete,
-  screen-reader meaningful, mobile-first, reduced-motion/forced-colors safe,
-  and free of horizontal overflow.
-- Every changed behavior has meaningful positive and negative automated tests;
-  no gate is reported as passed without observed output.
-- The plan and compliance evidence distinguish this implemented foundation
-  from remaining requirements in later onboarding prompts.
+- New registrations atomically receive one `User`, private user actor/settings,
+  and resumable onboarding row; no production account path bypasses bootstrap.
+- Conditional verification precedes onboarding at HTTP, Livewire, and direct
+  Action boundaries.
+- Incomplete users cannot read/bind/mutate ordinary portal resources and can
+  use only exact account-flow and canonical pet-create routes.
+- Transitions are owner-scoped, enum-driven, forward-only, idempotent,
+  optimistic, and deterministic under stale/replayed submissions.
+- Preferences use canonical validation; pet relationship uses canonical active
+  authority; privacy uses real settings plus explicit acknowledgement.
+- Completion is set once only after every mandatory prerequisite and restores
+  one safe same-origin destination.
+- Existing users without rows retain access and existing canonical data.
+- Named factory states make incomplete/step/complete tests explicit without
+  changing the default factory contract.
+- EN/LT/RU, keyboard, focus, errors, loading/offline, mobile, forced-colors,
+  reduced-motion, and overflow criteria are verified, not inferred.
+- Documentation and compliance distinguish implemented foundation, observed
+  checks, global blockers, and later work truthfully.
 
-## Executable Delivery Ledger
+## Verification Commands
 
-| ID | Dependency | Owner | Affected paths | Acceptance and verification | Status | Rollback |
-| --- | --- | --- | --- | --- | --- | --- |
-| ONB-01 | Repository contract and canonical docs | Principal plus ONB-A01..A10 | Audit ledger, this plan, canonical implementation plan | Current routes/state/authority/reuse, dirty ownership, design choice, compatibility, tests, rollout and rollback are recorded | completed | Revert onboarding planning additions only |
-| ONB-02 | ONB-01 | Principal | Focused onboarding/auth tests | Required behavior is first observed RED for missing schema/state/middleware/UI | in progress | Revert attributable test additions |
-| ONB-03 | ONB-02 | Principal | Migration, enums, model, factory, user relation | Additive schema is reversible, factory-valid, unique per user, and legacy-exempt | planned | Roll back table only before production writes; forward-fix later |
-| ONB-04 | ONB-03 | Principal | Registration initializer, social actor bootstrap, auth destination flow | Both verification modes provision exact private identities atomically; intended URL survives all gates | planned | Stop provisioning/enforcement; retain committed identities |
-| ONB-05 | ONB-03..04 | Principal | State Actions, middleware, Livewire persistence, route | Direct/replay/stale/wrong-user requests fail closed; resumability and legacy exemption pass | planned | Remove gate/route while preserving progress rows |
-| ONB-06 | ONB-05 | Principal | Onboarding component, forms, Blade, route/page ledgers, styles | Mandatory acknowledgement/preferences/privacy and optional canonical pet bridge are usable and accessible | planned | Remove onboarding UI/gate; retain canonical account/pet/social facts |
-| ONB-07 | ONB-04..06 | Principal | EN/LT/RU, architecture/security/data/frontend/testing/deployment docs, generator and changelog | Locale parity and source-of-truth checks pass; evidence matches observed status | planned | Revert attributable documentation/catalogue additions |
-| ONB-08 | ONB-02..07 | Independent ONB-R11/ONB-R12 then principal | Frozen onboarding-owned diff | Every material security/code finding is reproduced, dispositioned, fixed when valid, and affected tests rerun | planned | Revert unsafe finding-specific change before publication |
-| ONB-09 | ONB-08 | Principal | Repository gates and browser runtime | Applicable final gates are observed and recorded without masking unrelated failures | planned | No push on an open material finding or failed gate |
-| ONB-10 | ONB-09 | Principal | Exact temporary index, commit, push | Only attributable hunks are staged; staged diff/check pass; `main` fast-forwards and push result is factual | planned | Normal revert only; never rewrite history |
+```bash
+composer validate --strict
+composer audit --locked
+composer check-platform-reqs --lock
+vendor/bin/pint --test
+PAO_DISABLE=1 PHPSTAN_TURBO=0 vendor/bin/phpstan analyse --memory-limit=1G
+php scripts/run-tests.php --compact tests/Feature/OnboardingTest.php \
+  tests/Feature/Auth/AuthenticationTest.php \
+  tests/Feature/Auth/ConfigurableEmailVerificationTest.php \
+  tests/Feature/Auth/PortalAccessBoundaryTest.php \
+  tests/Feature/PetProfileFoundationTest.php \
+  tests/Feature/PetProfileDuplicateAccessRequestTest.php \
+  tests/Feature/SocialRelationshipFoundationTest.php \
+  tests/Feature/LocalizationTest.php \
+  tests/Feature/PageIdentityStandardizationTest.php \
+  tests/Feature/ArchitectureComplianceTest.php
+php scripts/run-tests.php --compact
+php scripts/verify-migration-cycle.php
+php scripts/verify-fresh-database.php
+php scripts/generate-database-domain-audit.php --check
+php scripts/generate-seeding-coverage.php --check
+php scripts/localize-blade-literals.php --check
+php scripts/localize-php-messages.php --check
+php scripts/migrate-readable-translation-keys.php --check
+npm audit --package-lock-only --audit-level=high \
+  --registry=https://registry.npmjs.org/ --strict-ssl=true
+npm run build
+php artisan route:cache && php artisan route:clear
+php artisan view:cache && php artisan view:clear
+git diff --check
+```
 
-Implementation order is `ONB-02` through `ONB-10`. The state may reach
-`complete` for an individual user once these foundation steps pass, while this
-delivery remains explicitly incomplete against any later onboarding prompt
-whose functional requirements have not yet been incorporated and verified.
+Connected onboarding browser proof must use a disposable repository wrapper.
+The current standalone pet duplicate/access browser script is state-changing
+without the wrapper's mutation guard and must not be run against a configured
+application database.
+
+## Current Execution Status
+
+- [x] Branch/HEAD/origin/index/worktree inventory observed before edits.
+- [x] Mandatory and directly relevant documents read; stale current-state and
+  release evidence classified as historical rather than silently trusted.
+- [x] Twelve specialist audit roles completed read-only; principal reproduced
+  the material code paths.
+- [x] Focused baseline: 101 passed, 718 assertions, exit 0.
+- [x] Root seed gate reproduced red: 3 tests, 2 passed, 1 failed; dynamic model
+  list and 211-entry representative manifest differ across many domains.
+- [x] This dedicated plan and the canonical implementation plan updated before
+  new production-code changes.
+- [x] Selected prerequisite tests observed RED; the combined runner's earlier
+  `SIGSEGV` was excluded and serial failure evidence was used.
+- [x] Minimal implementation and adjacent focused tests GREEN: onboarding
+  24/24 (161 assertions), auth 33/33 (270), pet 15/15 (4,763), social 23/23
+  (530), configurable verification 10/10 (42), portal boundary 42/42 (291),
+  and localization 7/7 (37,641).
+- [ ] Five independent frozen-diff reviews completed and dispositioned.
+- [ ] Applicable final gates recorded on the exact candidate.
+- [ ] Commit/push decision made from observed gates. No publication is allowed
+  while a required material gate is red.

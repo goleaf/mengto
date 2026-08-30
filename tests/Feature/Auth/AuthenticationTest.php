@@ -209,6 +209,18 @@ test('authenticated user can confirm a password before a high-risk action', func
     expect(session()->has('auth.password_confirmed_at'))->toBeTrue();
 });
 
+test('password confirmation rejects parser-confusing intended destinations', function () {
+    session()->put('url.intended', '/\\attacker.example/steal');
+
+    Livewire::test(ConfirmPassword::class)
+        ->set('form.password', 'password')
+        ->call('confirm')
+        ->assertHasNoErrors()
+        ->assertRedirect(route('home'));
+
+    expect(session()->has('url.intended'))->toBeFalse();
+});
+
 test('password confirmation rejects an invalid password without opening the window', function () {
     Livewire::test(ConfirmPassword::class)
         ->set('form.password', 'incorrect-password')
@@ -334,6 +346,40 @@ test('registration validates every untrusted account field', function () {
         ]);
 
     $this->assertGuest();
+});
+
+test('registration validates email uniqueness after canonical case normalization', function () {
+    User::factory()->create(['email' => 'existing@example.test']);
+    auth()->logout();
+    $before = User::query()->count();
+
+    Livewire::test(Register::class)
+        ->set('form.name', 'Duplicate Member')
+        ->set('form.email', 'EXISTING@EXAMPLE.TEST')
+        ->set('form.password', 'Secure-Paw-2026')
+        ->set('form.password_confirmation', 'Secure-Paw-2026')
+        ->call('register')
+        ->assertHasErrors(['form.email']);
+
+    expect(User::query()->count())->toBe($before);
+    $this->assertGuest();
+});
+
+test('stale profile settings cannot mutate preferences after verification is lost', function () {
+    config()->set('platform.email_verification_enabled', true);
+    $component = Livewire::test(ProfileSettings::class)
+        ->set('form.locale', 'ru')
+        ->set('form.timezone', 'Europe/Riga');
+
+    $this->authenticatedUser->forceFill(['email_verified_at' => null])->saveOrFail();
+
+    $component
+        ->call('save')
+        ->assertForbidden();
+
+    expect($this->authenticatedUser->fresh())
+        ->locale->toBe('en')
+        ->timezone->toBe('Europe/Vilnius');
 });
 
 test('registration does not expose language or timezone controls', function () {

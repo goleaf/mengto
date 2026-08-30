@@ -20,7 +20,7 @@
         </a>
 
         <main id="onboarding-main" class="mx-auto flex min-h-screen w-full max-w-3xl flex-col px-4 py-6 sm:px-6 sm:py-10" tabindex="-1">
-            <div class="mb-6 flex items-center gap-3" aria-label="{{ __('auth.brand') }}">
+            <div class="mb-6 flex items-center gap-3">
                 <span class="flex size-11 items-center justify-center rounded-full bg-paw-leaf text-white" aria-hidden="true">
                     <x-ui-icon name="paw-print" />
                 </span>
@@ -35,7 +35,7 @@
                 <p>{{ __('onboarding.page.resume_note') }}</p>
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
-                    <button type="submit" class="min-h-11 rounded-md px-4 font-semibold text-paw-ink underline decoration-paw-line underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-paw-leaf focus-visible:ring-offset-2">
+                    <button type="submit" class="min-h-11 rounded-md px-4 font-semibold text-paw-ink underline decoration-paw-line underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-paw-leaf">
                         {{ __('onboarding.page.logout') }}
                     </button>
                 </form>

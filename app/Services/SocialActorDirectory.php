@@ -7,6 +7,7 @@ namespace App\Services;
 use App\Enums\SocialActorStatus;
 use App\Enums\SocialActorType;
 use App\Enums\SocialRelationshipType;
+use App\Models\PetProfile;
 use App\Models\SocialActor;
 use App\Models\SocialRelationship;
 use App\Models\SocialRelationshipRequest;
@@ -58,6 +59,16 @@ final class SocialActorDirectory
             ->whereKeyNot($source->id)
             ->where('status', SocialActorStatus::Active->value)
             ->where('is_discoverable', true)
+            ->where(function (Builder $visibility): void {
+                $visibility
+                    ->where('actor_type', '!=', SocialActorType::Pet->value)
+                    ->orWhereIn(
+                        'pet_profile_id',
+                        PetProfile::query()
+                            ->visibleTo(null)
+                            ->select('id'),
+                    );
+            })
             ->when(
                 $blockedActorIds !== [],
                 fn (Builder $query): Builder => $query->whereNotIn('id', $blockedActorIds),
