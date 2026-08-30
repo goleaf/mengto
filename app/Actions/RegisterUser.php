@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Actions;
 
+use App\Data\RegisterUserResult;
 use App\Enums\UserStatus;
 use App\Models\User;
 use App\Services\EmailVerificationMode;
@@ -27,7 +28,7 @@ final class RegisterUser
     /**
      * @param  array{name: string, email: string, password: string}  $data
      */
-    public function handle(array $data): User
+    public function handle(array $data): RegisterUserResult
     {
         $verificationEnabled = $this->emailVerification->isEnabled();
         $email = mb_strtolower(trim($data['email']));
@@ -62,11 +63,14 @@ final class RegisterUser
             ]);
         }
 
+        $verificationNotificationDelivered = true;
+
         if ($verificationEnabled) {
             event(new Registered($user));
+            $verificationNotificationDelivered = $user->verificationNotificationWasDelivered();
         }
 
-        return $user;
+        return new RegisterUserResult($user, $verificationNotificationDelivered);
     }
 
     private function defaultLocale(): string

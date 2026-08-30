@@ -482,3 +482,35 @@ administrator-only until their dedicated reviewed workflows exist.
   flooding, and duplicate races.
 - Merge redirects resolve only after source and destination policy checks and
   return no-store private redirects; inaccessible records remain 404.
+## Account Entry And Onboarding Boundary
+
+Authenticated account entry is ordered server-side as account availability,
+configured email verification, persisted onboarding completion, then ordinary
+portal authorization. `AccountEntryDestination` applies the same decision to
+registration, login, password confirmation, verification notice/success, and
+onboarding completion. Pending verification or onboarding never consumes the
+session's intended product destination.
+
+`SafeIntendedUrl` accepts only existing same-origin GET routes and rejects
+external, protocol-relative, userinfo, mismatched scheme/host/port,
+backslash/control, unknown, transport, and lifecycle destinations. The central
+middleware stores only the first safe product request. Incomplete JSON and
+unsafe mutation requests receive a localized `409` lifecycle response instead
+of portal HTML.
+
+The pet onboarding bridge is least-privilege: its route and Livewire transport
+are available only at the persisted pet-relationship step. The canonical pet
+create and access-request Actions reauthorize the configured verification and
+onboarding state, lock the current user, and lock any existing onboarding row
+in their mutation transaction, so a stale component or direct Action call
+cannot cross the lifecycle boundary. Legacy-compatible users deliberately have
+no onboarding row to lock.
+
+Verification delivery failure after the registration transaction is reported
+and shown as a recoverable localized notice without logging out the newly
+created account or returning a server error. Registration success and existing
+address outcomes remain observably different because the required product flow
+authenticates a newly created account but cannot authenticate an attacker as an
+existing account; this known enumeration risk keeps repository publication
+NO-GO pending a separately approved common registration-attempt/recovery
+contract.

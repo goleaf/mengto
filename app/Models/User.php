@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Enums\UserStatus;
+use App\Notifications\VerifyEmailNotification;
 use Carbon\CarbonImmutable;
 use Database\Factories\UserFactory;
 use Illuminate\Auth\MustVerifyEmail;
@@ -17,6 +18,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
+use Throwable;
 
 #[Fillable([
     'actor_key',
@@ -52,6 +54,8 @@ class User extends Authenticatable implements MustVerifyEmailContract
     use MustVerifyEmail;
     use Notifiable;
 
+    private bool $verificationNotificationDelivered = true;
+
     public function isActive(): bool
     {
         return $this->status === UserStatus::Active;
@@ -60,6 +64,42 @@ class User extends Authenticatable implements MustVerifyEmailContract
     public function isAdministrator(): bool
     {
         return $this->is_admin && $this->isActive();
+    }
+
+    public function sendEmailVerificationNotification(): void
+    {
+        $notification = new VerifyEmailNotification;
+        $notification->locale($this->locale);
+        $this->verificationNotificationDelivered = false;
+
+        try {
+            $this->notify($notification);
+        } catch (Throwable $exception) {
+            report($exception);
+
+            return;
+        }
+
+        $this->verificationNotificationDelivered = $notification->wasDelivered();
+    }
+
+    public function verificationNotificationWasDelivered(): bool
+    {
+        return $this->verificationNotificationDelivered;
+    }
+
+    public function hasCompletedOnboarding(): bool
+    {
+        $state = $this->relationLoaded('onboarding')
+            ? $this->getRelation('onboarding')
+            : $this->onboarding()->first();
+
+        return ! $state instanceof UserOnboarding || $state->isComplete();
+    }
+
+    public function requiresOnboarding(): bool
+    {
+        return ! $this->hasCompletedOnboarding();
     }
 
     /** @return HasMany<PetProfile, $this> */

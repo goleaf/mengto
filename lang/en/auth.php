@@ -127,8 +127,17 @@ return [
         'resend' => 'Send another verification email',
         'sending' => 'Sending…',
         'sent' => 'A new verification email has been sent.',
+        'delivery_failed' => 'Your account was created, but the verification email could not be sent. Try sending it again.',
         'throttled' => 'Too many verification emails requested. Try again in :seconds seconds.',
         'success' => 'Your email address has been verified.',
+        'required' => 'Verify your email address before using protected features.',
+        'mail' => [
+            'subject' => 'Verify your PawCircle email address',
+            'greeting' => 'Hello, :name!',
+            'introduction' => 'Confirm this email address to continue setting up your PawCircle account.',
+            'action' => 'Verify email address',
+            'ignore' => 'If you did not create this account, you can ignore this message.',
+        ],
     ],
     'email_verification_activation' => [
         'dry_run' => 'Eligible active accounts: :eligible. No accounts were changed.',

@@ -5,11 +5,15 @@ declare(strict_types=1);
 use App\Actions\AdvanceUserOnboarding;
 use App\Actions\CompleteOnboardingPreferences;
 use App\Actions\CompleteOnboardingPrivacy;
+use App\Actions\DeferOnboardingPetRelationship;
 use App\Actions\RegisterUser;
 use App\Enums\OnboardingPetChoice;
 use App\Enums\OnboardingStep;
 use App\Enums\PetManagerRole;
 use App\Enums\PetManagerStatus;
+use App\Enums\SocialFollowPolicy;
+use App\Enums\SocialFriendRequestPolicy;
+use App\Enums\SocialListVisibility;
 use App\Http\Middleware\EnsureOnboardingIsComplete;
 use App\Livewire\Auth\Login;
 use App\Livewire\Auth\Register;
@@ -129,6 +133,7 @@ test('introduction transition is forward only replay safe and versioned', functi
         $this->authenticatedUser,
         OnboardingStep::Introduction,
         1,
+        introductionAcknowledged: true,
     );
 
     expect($replayed->current_step)->toBe(OnboardingStep::Preferences)
@@ -233,6 +238,88 @@ test('onboarding middleware runs after portal access before bindings and persist
         ->toContain(EnsureOnboardingIsComplete::class);
 });
 
+test('a stale product livewire snapshot cannot bypass newly required onboarding', function (): void {
+    $page = $this->get(route('profile.settings'))->assertSuccessful();
+    $snapshot = htmlspecialchars_decode(
+        (string) str((string) $page->getContent())->betweenFirst('wire:snapshot="', '"'),
+        ENT_QUOTES | ENT_SUBSTITUTE,
+    );
+
+    UserOnboarding::factory()->for($this->authenticatedUser)->create();
+
+    $this->withHeader('X-Livewire', 'true')
+        ->postJson(route('default-livewire.update'), [
+            'components' => [[
+                'snapshot' => $snapshot,
+                'updates' => [
+                    'form.locale' => 'ru',
+                    'form.timezone' => 'Europe/Riga',
+                ],
+                'calls' => [[
+                    'method' => 'save',
+                    'params' => [],
+                    'path' => '',
+                ]],
+            ]],
+        ])
+        ->assertStatus(409);
+
+    expect($this->authenticatedUser->fresh())
+        ->locale->toBe('en')
+        ->timezone->toBe('Europe/Vilnius');
+});
+
+test('expired pet access evidence is not offered by the onboarding interface', function (): void {
+    UserOnboarding::factory()
+        ->for($this->authenticatedUser)
+        ->petRelationship()
+        ->create();
+    app(SocialActorResolver::class)->provisionPrivateForUser($this->authenticatedUser);
+    PetProfileAccessRequest::factory()
+        ->for($this->authenticatedUser, 'requester')
+        ->create(['temporary_access_ends_at' => now()->subMinute()]);
+
+    Livewire::test(Onboarding::class)
+        ->assertDontSee(__('onboarding.steps.pet_relationship.access_requested'));
+});
+
+test('onboarding repairs a missing canonical social identity with private defaults', function (): void {
+    UserOnboarding::factory()->for($this->authenticatedUser)->create();
+
+    expect($this->authenticatedUser->socialActor()->exists())->toBeFalse();
+
+    $this->get(route('onboarding.show'))->assertSuccessful();
+
+    $actor = $this->authenticatedUser->socialActor()->firstOrFail();
+    $settings = $actor->settings()->firstOrFail();
+
+    expect($actor->is_discoverable)->toBeFalse()
+        ->and($settings->friend_request_policy)->toBe(SocialFriendRequestPolicy::Nobody)
+        ->and($settings->follow_policy)->toBe(SocialFollowPolicy::Nobody)
+        ->and($settings->friend_list_visibility)->toBe(SocialListVisibility::Hidden)
+        ->and($settings->follower_list_visibility)->toBe(SocialListVisibility::Hidden)
+        ->and($settings->is_recommendable)->toBeFalse()
+        ->and($settings->allow_message_requests)->toBeFalse();
+});
+
+test('privacy step offers a safe pet deferral when prior evidence disappears', function (): void {
+    UserOnboarding::factory()
+        ->for($this->authenticatedUser)
+        ->privacyDiscovery()
+        ->create(['pet_relationship_choice' => OnboardingPetChoice::ManagedPet]);
+    app(SocialActorResolver::class)->provisionPrivateForUser($this->authenticatedUser);
+
+    Livewire::test(Onboarding::class)
+        ->assertSee(__('onboarding.validation.pet_evidence'))
+        ->assertSee(__('onboarding.steps.pet_relationship.not_now'))
+        ->call('deferPetRelationship')
+        ->assertHasNoErrors();
+
+    expect($this->authenticatedUser->onboarding()->firstOrFail())
+        ->pet_relationship_choice->toBe(OnboardingPetChoice::NotNow)
+        ->lock_version->toBe(5);
+});
+
 test('preferences and privacy complete through named livewire mutations', function (): void {
     $state = UserOnboarding::factory()
         ->for($this->authenticatedUser)
@@ -299,13 +386,17 @@ test('onboarding validates acknowledgement preferences and stale snapshots', fun
     ])->saveOrFail();
 
     $stale
-        ->set('preferencesForm.locale', 'unsupported')
-        ->set('preferencesForm.timezone', 'not-a-timezone')
+        ->set('preferencesForm.locale', 'ru')
+        ->set('preferencesForm.timezone', 'Europe/Riga')
         ->call('savePreferences')
-        ->assertHasErrors([
-            'preferencesForm.locale',
-            'preferencesForm.timezone',
-        ]);
+        ->assertHasErrors(['onboarding'])
+        ->assertSee(__('onboarding.errors.stale_state'));
+
+    expect($this->authenticatedUser->fresh())
+        ->locale->toBe('en')
+        ->timezone->toBe('Europe/Vilnius')
+        ->and($state->fresh()?->current_step)->toBe(OnboardingStep::PetRelationship)
+        ->and($state->fresh()?->lock_version)->toBe(3);
 });
 
 test('privacy acknowledgement is mandatory and completion remains unchanged when it is absent', function (): void {
@@ -478,11 +569,18 @@ test('every direct onboarding transition requires current configured verificatio
         expectedSocialSettingsLockVersion: $privacySettings->lock_version,
     ))->toThrow(HttpException::class);
 
+    expect(fn () => app(DeferOnboardingPetRelationship::class)->handle(
+        $privacyUser,
+        $privacy->lock_version,
+    ))->toThrow(HttpException::class);
+
     expect($preferencesUser->fresh())
         ->locale->toBe('en')
         ->timezone->toBe('UTC')
         ->and($preferences->fresh()?->current_step)->toBe(OnboardingStep::Preferences)
         ->and($privacy->fresh()?->isComplete())->toBeFalse()
+        ->and($privacy->fresh()?->pet_relationship_choice)->toBe(OnboardingPetChoice::NotNow)
+        ->and($privacy->fresh()?->lock_version)->toBe(4)
         ->and($privacyActor->fresh()?->is_discoverable)->toBeFalse();
 });
 
@@ -539,11 +637,10 @@ test('registration and verification resend mutations are rate limited', function
     $this->actingAs($unverified);
     $resendKey = 'verification-resend|'.$unverified->id.'|127.0.0.1';
     $limiter->clear($resendKey);
+    Notification::fake();
 
     foreach (range(1, 3) as $_attempt) {
-        Livewire::test(VerifyEmail::class)
-            ->call('resend')
-            ->assertHasNoErrors();
+        $limiter->hit($resendKey, 60);
     }
 
     Livewire::test(VerifyEmail::class)
@@ -551,6 +648,8 @@ test('registration and verification resend mutations are rate limited', function
         ->assertHasErrors(['resend'])
         ->assertSee(__('auth.verification.throttled', ['seconds' => 60]))
         ->assertDontSee('auth.verification.throttled');
+
+    Notification::assertNothingSent();
 });
 
 test('managed pets and pending access requests are verified from canonical relationships', function (): void {

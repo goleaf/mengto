@@ -7,7 +7,6 @@ namespace App\Livewire\Auth;
 use App\Actions\AuthenticateUser;
 use App\Livewire\Forms\Auth\LoginForm;
 use App\Services\AccountEntryDestination;
-use App\Services\SafeIntendedUrl;
 use Illuminate\Auth\AuthManager;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Session;
@@ -20,7 +19,6 @@ final class Login extends AuthPage
     public function authenticate(
         AuthenticateUser $authenticateUser,
         AccountEntryDestination $destination,
-        SafeIntendedUrl $intendedUrl,
         AuthManager $auth,
     ): void {
         abort_if($auth->guard('web')->check(), 403);
@@ -44,15 +42,7 @@ final class Login extends AuthPage
         Session::regenerate();
         Session::put('locale', $user->locale);
 
-        $pendingRoute = $destination->pendingRoute($user);
-
-        if (is_string($pendingRoute)) {
-            $this->redirectRoute($pendingRoute);
-
-            return;
-        }
-
-        $this->redirect($intendedUrl->pull(route('home')));
+        $this->redirect($destination->urlFor($user, route('home')));
     }
 
     public function render(): View

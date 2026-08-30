@@ -7,7 +7,7 @@ namespace App\Livewire\Auth;
 use App\Actions\ConfirmUserPassword;
 use App\Livewire\Forms\Auth\ConfirmPasswordForm;
 use App\Models\User;
-use App\Services\SafeIntendedUrl;
+use App\Services\AccountEntryDestination;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Validation\ValidationException;
@@ -18,7 +18,7 @@ final class ConfirmPassword extends AuthPage
 
     public function confirm(
         ConfirmUserPassword $confirmUserPassword,
-        SafeIntendedUrl $intendedUrl,
+        AccountEntryDestination $destination,
     ): void {
         $this->form->validate();
 
@@ -45,7 +45,7 @@ final class ConfirmPassword extends AuthPage
 
         Session::passwordConfirmed();
 
-        $this->redirect($intendedUrl->pull(route('home')));
+        $this->redirect($destination->urlFor($user, route('home')));
     }
 
     public function render(): View

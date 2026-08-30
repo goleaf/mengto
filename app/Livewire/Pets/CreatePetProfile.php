@@ -7,6 +7,7 @@ namespace App\Livewire\Pets;
 use App\Actions\CreatePetProfile as CreatePetProfileAction;
 use App\Actions\StorePetPrimaryPhoto;
 use App\Actions\SubmitPetProfileAccessRequest;
+use App\Enums\OnboardingStep;
 use App\Enums\PetManagerRole;
 use App\Enums\PetProfileAccessRequestType;
 use App\Enums\PetProfileVisibility;
@@ -15,6 +16,9 @@ use App\Livewire\Forms\PetProfileAccessRequestForm;
 use App\Livewire\Forms\PetProfileCreateForm;
 use App\Livewire\Forms\PetProfileMediaForm;
 use App\Models\User;
+use App\Models\UserOnboarding;
+use App\Services\EmailVerificationMode;
+use App\Services\OnboardingState;
 use App\Services\PetProfileDuplicateReview;
 use App\Services\ProfilePresenter;
 use Illuminate\Contracts\Auth\Factory as AuthFactory;
@@ -65,6 +69,10 @@ final class CreatePetProfile extends Component
 
     private ProfilePresenter $profiles;
 
+    private EmailVerificationMode $emailVerification;
+
+    private OnboardingState $onboardingState;
+
     public function boot(
         AuthFactory $auth,
         CreatePetProfileAction $createAction,
@@ -72,6 +80,8 @@ final class CreatePetProfile extends Component
         SubmitPetProfileAccessRequest $submitAccessRequest,
         PetProfileDuplicateReview $duplicateReview,
         ProfilePresenter $profiles,
+        EmailVerificationMode $emailVerification,
+        OnboardingState $onboardingState,
     ): void {
         $this->auth = $auth;
         $this->createAction = $createAction;
@@ -79,6 +89,8 @@ final class CreatePetProfile extends Component
         $this->submitAccessRequest = $submitAccessRequest;
         $this->duplicateReview = $duplicateReview;
         $this->profiles = $profiles;
+        $this->emailVerification = $emailVerification;
+        $this->onboardingState = $onboardingState;
     }
 
     public function mount(): void
@@ -112,6 +124,7 @@ final class CreatePetProfile extends Component
 
     public function updatedFormSpecies(string $species): void
     {
+        $this->requireUser();
         $this->form->speciesConfidence = PetSpeciesConfidence::normalize(
             $species,
             $this->form->speciesConfidence,
@@ -243,6 +256,7 @@ final class CreatePetProfile extends Component
 
     public function cancelAccessRequest(): void
     {
+        $this->requireUser();
         $this->selectedDuplicateProfileKey = '';
         $this->accessRequestForm->reset();
         $this->resetValidation();
@@ -268,14 +282,23 @@ final class CreatePetProfile extends Component
             $data['temporary_access_ends_at'],
             $this->accessRequestIdempotencyKey,
         );
-        $this->accessRequestFeedback = __('pet_profiles.feedback.access_request_submitted');
         $this->selectedDuplicateProfileKey = '';
         $this->accessRequestForm->reset();
+
+        if ($this->isOnboardingPetRelationship($user)) {
+            session()->flash('feedback', __('pet_profiles.feedback.access_request_submitted'));
+            $this->redirectRoute('onboarding.show');
+
+            return;
+        }
+
+        $this->accessRequestFeedback = __('pet_profiles.feedback.access_request_submitted');
     }
 
     /** @param array<string, string> $creationData */
     private function persistCreation(array $creationData): void
     {
+        $user = $this->requireUser();
         $media = $this->mediaForm->data();
         $profile = $this->createAction->handle(
             $creationData + ['duplicate_review_token' => $this->duplicateReviewToken],
@@ -290,12 +313,20 @@ final class CreatePetProfile extends Component
             );
         }
 
+        if ($this->isOnboardingPetRelationship($user)) {
+            session()->flash('feedback', __('pet_profiles.feedback.created'));
+            $this->redirectRoute('onboarding.show');
+
+            return;
+        }
+
         session()->flash('pet-profile-feedback', __('pet_profiles.feedback.created'));
         $this->redirectRoute('pets.manage.show', ['petProfile' => $profile->profile_key]);
     }
 
     public function clearPhoto(): void
     {
+        $this->requireUser();
         $this->mediaForm->reset();
         $this->resetValidation(['mediaForm.upload', 'mediaForm.altText']);
     }
@@ -314,8 +345,31 @@ final class CreatePetProfile extends Component
     {
         $user = $this->auth->guard('web')->user();
 
-        abort_unless($user instanceof User && $user->isActive(), 403);
+        abort_unless(
+            $user instanceof User
+                && $user->isActive()
+                && $this->emailVerification->allows($user),
+            403,
+        );
+
+        $state = $user->onboarding()->first();
+
+        abort_unless(
+            ! $state instanceof UserOnboarding
+                || $this->onboardingState->isComplete($state)
+                || $this->onboardingState->currentStep($state) === OnboardingStep::PetRelationship,
+            403,
+        );
 
         return $user;
+    }
+
+    private function isOnboardingPetRelationship(User $user): bool
+    {
+        $state = $user->onboarding()->first();
+
+        return $state instanceof UserOnboarding
+            && ! $this->onboardingState->isComplete($state)
+            && $this->onboardingState->currentStep($state) === OnboardingStep::PetRelationship;
     }
 }

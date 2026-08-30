@@ -8,8 +8,9 @@ and testing contracts affected by account entry.
 
 ## Status
 
-**Prompt 01 foundation remediation and independent review complete; the full
-onboarding product and repository release remain NO-GO.**
+**Prompt 03 authentication and central portal-boundary integration is
+implemented and focused-verification/review complete on the Prompt 02 state
+foundation; final repository gates and publication remain NO-GO.**
 
 The checkout already contains the additive onboarding aggregate, registration
 bootstrap, central middleware, forward-only Actions, a class-based Livewire
@@ -29,6 +30,27 @@ history. The final focused matrix passed 156 tests and 43,718 assertions. The
 full suite and current generated database/seeding evidence remain red across
 unrelated Event, Places, Portal, factory, seeding, forum-history, localization,
 and component work, so none of the external commits is a release approval.
+
+Prompt 02 began with `main`, `HEAD`, and `origin/main` all at
+`1ef8da9512d19bed29ef1fee84efbc07e1494cf5`. Five attributable documentation
+files from Prompt 01 were already unstaged and are preserved. The deployed
+`2026_08_30_270000_create_user_onboardings_table.php` migration is treated as
+immutable. Re-audit confirms that the normalized one-to-one aggregate already
+provides every required persistent field, unique account ownership, cascade
+cleanup, optimistic `lock_version`, enum casts, runtime registration
+initialization, named factory states, and missing-row legacy compatibility.
+Prompt 02 therefore adds no duplicate `users` columns and no speculative
+second schema migration. Its implementation target is the missing focused
+state resolver/model helpers, safe malformed-row handling, completion
+prerequisite revalidation, and dedicated transition/compatibility/schema test
+coverage.
+
+During Prompt 02 an external process committed and pushed the previously
+unstaged Prompt 01 documentation plus the Prompt 02 ledger as
+`4b71974fb22e944f423b7b1bf164540ae9514faf`. The principal did not stage,
+commit, or push that event and did not rewrite history. Current implementation
+work continues from that fast-forwarded `main` while preserving the shared
+index exactly.
 
 ## Current Repository State
 
@@ -73,11 +95,12 @@ onboarding.
   session-lifecycle proof remain explicit follow-up work unless completed in
   this package.
 
-Registration now normalizes before validation and maps a confirmed database
-uniqueness conflict to localized validation without partial identity. Remaining
-gaps include indistinguishable existing/new registration outcomes, recoverable
-handling of synchronous verification-mail failure, reset-request rate limiting,
-and direct session-ID/CSRF lifecycle assertions.
+Registration now normalizes before validation, maps a confirmed database
+uniqueness conflict to localized validation without partial identity, and
+recovers from a failed or deliberately skipped post-commit verification
+delivery without returning HTTP 500 or losing the authenticated session.
+Remaining gaps include indistinguishable existing/new registration outcomes,
+reset-request rate limiting, and direct session-ID/CSRF lifecycle assertions.
 
 ## Existing Email Verification Flow
 
@@ -94,10 +117,11 @@ and direct session-ID/CSRF lifecycle assertions.
   receives the safe intended destination or `home`.
 - Repeated valid verification is persistence-idempotent.
 
-Stale Livewire snapshots and direct Actions now deny mutation after the account
-becomes unverified. Invalid/expired/wrong-user signed-link tests,
-recipient-locale mail rendering, raw throttling-key prevention, and
-post-commit mail-failure recovery remain required evidence.
+Stale Livewire snapshots and direct Actions deny mutation after the account
+becomes unverified or inactive. Invalid/expired/wrong-user/replayed signed-link,
+recipient-locale mail and signed action URL, raw throttling-key prevention,
+post-commit failure/skip recovery, and resend stale-state behavior have focused
+test evidence. Positive signed upload/preview browser evidence remains open.
 
 ## Existing Profile Preference Flow
 
@@ -205,7 +229,7 @@ The detailed repository-grounded threat model is
 | Missing onboarding row used as bypass | medium | Only canonical registration may create production accounts; missing-row legacy exemption is monitored and not generated for new accounts. |
 | Verification bypass | medium | Configured verification check at HTTP, Livewire component, and direct Action boundaries. |
 | Pet IDOR/private discovery | low residual / high impact | Policy-visible duplicate flow, viewer-bound tokens, active/permission-aware manager authority, actor synchronization, and pet-profile visibility checks in directory and direct social mutations. |
-| Registration enumeration/delivery failure | medium / high availability | Generic localized constraint handling is present, but common observable registration outcomes and recoverable post-commit verification delivery remain open. |
+| Registration enumeration/delivery failure | medium / high availability | Delivery exceptions and standard notification skips are recoverable and localized; common observable existing/new registration outcomes remain open. |
 | Session fixation | low residual / high impact | Regenerate after login/register, invalidate on logout, and add direct lifecycle assertions. |
 
 ## Proposed User Journey
@@ -255,10 +279,11 @@ Optional work never blocks portal access and may be completed later.
 
 | Current state | Accepted operation | Guard | Next state | Replay |
 | --- | --- | --- | --- | --- |
-| `introduction` | acknowledge | active configured-verified owner, accepted acknowledgement, expected version | `preferences` | exact already-applied request returns current state |
-| `preferences` | save preferences | same owner; EN/LT/RU; IANA timezone; expected version | `pet-relationship` | later state returned without rewriting preferences |
+| `introduction` | acknowledge | active configured-verified owner, accepted acknowledgement, expected version | `preferences` | only the immediate successor, expected version + 1, and repeated acknowledgement are a no-op |
+| `preferences` | save preferences | same owner; EN/LT/RU; IANA timezone; expected version | `pet-relationship` | only the immediate successor, expected version + 1, and identical locale/timezone are a no-op |
 | `pet-relationship` | choose relationship | same owner; enum; current managed/pending evidence when claimed | `privacy-discovery` | same choice is no-op; conflicting choice is stale conflict |
-| `privacy-discovery` | save privacy and acknowledge | same owner; booleans; acknowledgement; both onboarding/settings versions | `complete` | completed state returned without rewriting settings/timestamps |
+| `privacy-discovery` | save privacy and acknowledge | same owner; booleans; acknowledgement; both onboarding/settings versions; locked current pet evidence or `not-now` | `complete` | only matching booleans and both immediately preceding versions preserve settings/timestamps as a no-op |
+| `privacy-discovery` | defer invalidated pet relationship | same owner; expected version; controlled `not-now` destination | `privacy-discovery` | an exact immediately preceding retry is a no-op |
 | `complete` | none | middleware passes; component redirects | portal | completion timestamp/version remain unchanged |
 
 No future-step call, arbitrary step integer, foreign user, inactive or
@@ -266,6 +291,35 @@ configured-unverified account, stale lock, foreign pet/request, or browser
 completion timestamp is accepted. Backward navigation is deferred: canonical
 profile, social, and pet settings remain editable after completion without
 rewinding onboarding history.
+
+Prompt 02 preserves this exact graph:
+
+```text
+NEW REGISTRATION
+       |
+       v
+INTRODUCTION -> PREFERENCES -> PET RELATIONSHIP -> PRIVACY / DISCOVERY -> COMPLETE
+```
+
+The only forward edge from each incomplete state is the edge shown. Exact
+replay of an already-applied operation is a no-op; a conflicting replay or
+stale version fails without state regression. General backward navigation is
+not a persistent transition in this version. A narrow same-step recovery lets
+the user replace revoked, expired, rejected, deleted, or otherwise unavailable
+pet evidence with the canonical `not-now` choice, so optional pet setup can
+never dead-end portal access. The state resolver may report a conceptual
+previous step for presentation, but `canEnter` permits only the current
+persisted step. A missing row means legacy-complete. An unknown raw
+step or pet-choice value never means complete: it resolves to the earliest
+safe step or fails the completion guard and can be repaired only through a
+guarded forward transition or an explicit operator repair.
+
+Persisted timestamps must parse exactly as database timestamps, and the raw
+lock version must be an integer at least equal to the persisted step position.
+A malformed or under-versioned `complete` row therefore fails closed rather
+than opening the portal. An invalid `started_at` resolves to `introduction`;
+only an authorized acknowledged introduction transition repairs it and
+removes contradictory future checkpoints.
 
 ## Database Changes
 
@@ -281,6 +335,18 @@ No redundant locale, timezone, privacy-toggle, actor, or pet columns are added.
 No historical migration is edited. Portable database constraints or a repair
 path for corrupted enum/timestamp invariants remain a later hardening package;
 application writes and tests must preserve them now.
+
+Prompt 02 re-audit found no justified additive schema change. The existing
+columns are exactly `user_id`, `current_step`, `pet_relationship_choice`,
+`started_at`, `introduction_completed_at`, `preferences_completed_at`,
+`pet_relationship_completed_at`, `privacy_discovery_completed_at`,
+`completed_at`, `lock_version`, and Laravel timestamps. The unique `user_id`
+index serves ownership and idempotency; middleware checks one account row by
+that index, so an additional completion index has no current query
+justification. Rollback/reapply evidence comes from the disposable SQLite
+migration-cycle wrapper and the package-specific populated legacy verifier,
+not from editing the applied migration or touching the configured application
+database.
 
 ## Backward Compatibility
 
@@ -300,8 +366,9 @@ destructive removal of user data.
 ## Runtime User Initialization
 
 All production account creation must call `RegisterUser` and
-`InitializeUserOnboarding`. Unique database keys plus `firstOrCreate` make
-sequential retries idempotent. A fault-injection test must prove that a failure
+`InitializeUserOnboarding`. Unique database keys plus `insertOrIgnore` followed
+by an owner-scoped read make sequential and racing retries idempotent without
+opening authoritative state to mass assignment. A fault-injection test proves that a failure
 inside identity/progress bootstrap rolls back `User`, actor, settings, and
 onboarding together. Synchronous mail delivery occurs after the transaction
 and needs a separately recoverable UX; it cannot be called database atomicity.
@@ -329,6 +396,12 @@ lookup, passes missing/complete rows, redirects safe HTML GETs, and returns a
 localized `409` for product mutations/JSON. Both are persistent in Livewire.
 Detailed prerequisite queries never run in middleware.
 
+The shared Livewire transport route remains reachable long enough to verify
+its signed snapshot. Persistent middleware then evaluates the signed original
+route: incomplete accounts may hydrate onboarding, canonical pet setup, and
+account-recovery snapshots only; stale product snapshots abort with `409`
+before a component mutation runs.
+
 ## Livewire Components
 
 The existing `App\Livewire\Onboarding` class remains a thin coordinator with a
@@ -352,6 +425,8 @@ return URLs. Business transitions stay in Actions.
 - `AdvanceUserOnboarding`: introduction and pet-choice transitions.
 - `CompleteOnboardingPreferences`: locks state and delegates canonical profile
   validation/persistence.
+- `DeferOnboardingPetRelationship`: keeps the account at privacy while
+  atomically replacing invalidated relationship evidence with `not-now`.
 - `CompleteOnboardingPrivacy`: locks state, delegates canonical social settings,
   records acknowledgement/completion once.
 - Existing pet create/duplicate/access and social settings Actions remain the
@@ -364,6 +439,14 @@ return URLs. Business transitions stay in Actions.
 - `EmailVerificationMode` owns the configured verification rule.
 - `SocialActorResolver` owns runtime actor/settings provisioning.
 - `PetProfileAccess` and the canonical managed query own pet authority.
+- `OnboardingPetEvidence` performs the same bounded canonical evidence check at
+  pet selection and immediately before completion; the completion check locks
+  a non-deleted profile first, then its qualifying request/manager or legacy
+  pet evidence in the completion transaction. Pending requests must still be current, while an approved
+  request counts only with its active granted manager.
+- `OnboardingState` is the Prompt 02 read-only interpreter for raw enum-safe
+  current/pet values, completion truth, next/previous presentation,
+  current-step entry, and completion-prerequisite checks.
 
 No second state store, repository wrapper, or client-side state machine is
 introduced.
@@ -395,9 +478,11 @@ Onboarding never creates a simplified pet record. The create/find link enters
 the canonical duplicate-aware component. “Managed” is valid only for an active
 manager membership or documented legacy creator fallback when no own manager
 row exists. Revoked, expired, future, invited, foreign, or soft-deleted
-relationships do not count. “Access requested” requires a current pending
-request owned by the authenticated user and a current profile. The decision
-itself grants no permission.
+relationships do not count. “Access requested” requires either a current,
+non-expired pending request owned by the authenticated user and a current
+profile, or an approved request backed by its currently active granted manager.
+Rejected, cancelled, expired, unlinked approved, or expired-temporary requests
+do not count. The decision itself grants no permission.
 
 ## Privacy Integration
 
@@ -522,6 +607,67 @@ recipient-locale content tests pass.
 - [ ] **ONB-08 — Prompt 02+ wizard depth.** Safe pet return context, browser
   runner, concurrency proof, mail/validation linguistic remediation, recovery
   UX, observability, and later requirements remain unclaimed until delivered.
+- [x] **ONB-P02-01 — Current persistent-state revalidation and planning.**
+  Reconcile Prompt 02 with the deployed normalized aggregate, preserve the
+  no-row legacy exemption, and record seven read-only specialist scopes before
+  production edits.
+- [x] **ONB-P02-02 — RED state and compatibility contracts.** Added focused tests
+  for safe malformed values, semantic account helpers, exact step traversal,
+  start/completion idempotency, prerequisite rechecks, cross-user/stale
+  rejection, legacy statuses, schema shape, enum casts, and valid factory
+  combinations. The initial 13-test RED run produced five failures and five
+  errors; an extended 18-test run then reproduced five selected failures.
+- [x] **ONB-P02-03 — Minimal state hardening.** Added the focused state resolver
+  and small `User` facts, route existing transition readers through safe raw
+  interpretation, and reject impossible completion without changing the
+  deployed schema, factory default, pet workflow, or verification state.
+- [x] **ONB-P02-04 — Migration/factory/seeder evidence.** Focused tests,
+  package-specific populated rollback/reapply, the complete migration cycle,
+  fresh database, and repeat seed are green. Five representative legacy users
+  retain every captured identity/lifecycle field and receive no onboarding row.
+- [x] **ONB-P02-05 — Frozen-diff independent review.** Architecture,
+  database, security, tests, and regression concerns are reviewed by an agent
+  that made no implementation edits; every material finding is reproduced and
+  dispositioned before publication. The first freeze produced valid findings
+  for malformed completion, stale replay data, Livewire transport, pet-evidence
+  locking, replay side effects, mass assignment, UI evidence parity, and
+  verifier isolation; the first re-review then found missing pet recovery,
+  public-default identity repair, malformed-start dead-end, and deleted-profile
+  evidence. The second test review then identified three evidence-only gaps:
+  negative authorization/state coverage for pet deferral, exact malformed-start
+  repair assertions, and complete private social-default assertions. All were
+  remediated. Architecture/database/regression, security, and test/privacy/
+  compatibility reviewers independently returned SHIP for the 24-path candidate
+  SHA-256 `10a17725230fc1316ba4b64a9b0ba8d5f94bda687e829ffd9be63644117279d4`.
+- [ ] **ONB-P02-06 — Documentation, gates, and publication.** Reconcile both
+  plans, ledger, and changelog with observed evidence, run applicable gates,
+  inspect an isolated task index, and commit/push only if material gates pass.
+- [x] **ONB-P03-01 — Authentication-boundary re-audit and plan.** Re-read the
+  registration, login, verification, password-confirmation, intended-URL,
+  middleware, Livewire, pet-create and focused-test paths; preserve the Prompt
+  02 working tree; record seven read-only roles and the exact Prompt 03 package
+  before production changes.
+- [x] **ONB-P03-02 — RED lifecycle contracts.** Added focused failing tests
+  for reproduced gaps in destination centralization, intended URL safety,
+  lifecycle precedence, pet-route least privilege, JSON and real Livewire
+  transport while retaining existing session/limiter/signature assertions.
+- [x] **ONB-P03-03 — Minimal auth integration remediation.** Reused one focused
+  account-entry resolver from registration, login, verification, confirmation
+  and onboarding completion; preserved intended URLs across mandatory gates and
+  consumed them only after completion; kept the central middleware allowlist
+  explicit and step-aware where the audit proves it necessary.
+- [x] **ONB-P03-04 — Focused and adjacent verification.** Ran onboarding,
+  authentication, configurable verification, portal boundary, pet and
+  Livewire transport suites plus targeted Pint and Larastan.
+- [x] **ONB-P03-05 — Frozen independent review.** Independent auth-security,
+  verification-security, middleware, Livewire and completed-user regression
+  reviewers inspected successive frozen remediation hashes; every material
+  finding was reproduced, dispositioned and rerun. The final scoped reviewers
+  returned SHIP; production-adapter two-connection lock evidence remains a
+  release-evidence blocker, not a reproduced code defect.
+- [x] **ONB-P03-06 — Documentation, gates and publication decision.** Recorded
+  exact diagrams, allowlist, commands, counts, global blockers, diff ownership,
+  commit and push status without claiming Prompt 04 UI work.
 
 ## Acceptance Criteria
 
@@ -554,6 +700,10 @@ composer check-platform-reqs --lock
 vendor/bin/pint --test
 PAO_DISABLE=1 PHPSTAN_TURBO=0 vendor/bin/phpstan analyse --memory-limit=1G
 php scripts/run-tests.php --compact tests/Feature/OnboardingTest.php \
+  tests/Feature/Onboarding/OnboardingMigrationTest.php \
+  tests/Feature/Onboarding/OnboardingPersistenceTest.php \
+  tests/Feature/Onboarding/OnboardingTransitionTest.php \
+  tests/Unit/Services/OnboardingStateTest.php \
   tests/Feature/Auth/AuthenticationTest.php \
   tests/Feature/Auth/ConfigurableEmailVerificationTest.php \
   tests/Feature/Auth/PortalAccessBoundaryTest.php \
@@ -565,6 +715,7 @@ php scripts/run-tests.php --compact tests/Feature/OnboardingTest.php \
   tests/Feature/ArchitectureComplianceTest.php
 php scripts/run-tests.php --compact
 php scripts/verify-migration-cycle.php
+php scripts/verify-onboarding-migration.php
 php scripts/verify-fresh-database.php
 php scripts/generate-database-domain-audit.php --check
 php scripts/generate-seeding-coverage.php --check
@@ -585,6 +736,124 @@ without the wrapper's mutation guard and must not be run against a configured
 application database.
 
 ## Current Execution Status
+
+### Prompt 03
+
+- [x] Branch, HEAD, origin, staged, unstaged and untracked inventory observed.
+  `main`, `HEAD` and `origin/main` are
+  `4b71974fb22e944f423b7b1bf164540ae9514faf`; the attributable Prompt 02
+  working tree is preserved and no reset/clean/stash was used.
+- [x] Governing and directly relevant auth, verification, security, routing,
+  Livewire, testing, portal-boundary and onboarding documents re-read; current
+  code was traced rather than inferred from Prompt 02 status.
+- [x] Both canonical plans and the work ledger updated before Prompt 03
+  production changes.
+- [x] Six specialist discovery reports received and independently reproduced.
+- [x] RED behavior observed for selected missing contracts, including intended
+  consumption, pet-step transport, direct/stale Actions, localized JSON,
+  notification exception/skip, resend state and inactive replay boundaries.
+- [x] Minimal production changes implemented with focused GREEN evidence.
+  Registration delivery no longer produces the reported post-commit HTTP 500;
+  auth entry points share one destination resolver; lifecycle middleware is
+  ordered after locale and before bindings; intended URLs and pet setup are
+  server-authoritative.
+- [x] Exact route allowlist, enabled/disabled lifecycle diagrams, focused tests
+  and changelog reconciled. Positive signed upload/preview browser coverage is
+  recorded as open rather than described as complete Livewire evidence.
+- [x] Independent review completed across auth, verification, middleware,
+  Livewire, pet transaction, architecture/database/test and completed-user
+  regression scopes. Broad `Registered` error handling, stale resend state,
+  notification skip/clone handling, inactive resend, pet Action status/step
+  races, feedback and locale ordering were fixed and rerun. Registration
+  enumeration is explicitly deferred because the mandated immediate-login
+  success flow cannot be made externally identical to an existing-account
+  attempt without a separate product contract.
+- [x] Final gates, ownership, commit and push results recorded. Focused scope,
+  Composer, npm, isolated migration/fresh/repeat-seed, route/view caches and
+  diff checks are green. Full Pest, full Pint, full Larastan, generated
+  database/seeding evidence, immutable forum-source preservation, production-
+  adapter concurrency, and connected onboarding browser evidence are not
+  green. No principal commit or push was made.
+
+Prompt 03 observed evidence on the final implementation:
+
+- Focused serial matrix: authentication 33/33 (272 assertions), configurable
+  verification 10/10 (42), portal boundary 42/42 (291), onboarding directory
+  110/110 (452), onboarding integration 29/29 (192), pet create 5/5 (31), pet
+  duplicate/access 15/15 (68), pet foundation 16/16 (4,768), security surface
+  5/5 (36), localization 7/7 (37,665): **272 tests and 43,817 assertions**.
+- Targeted Pint passed; targeted production Larastan passed with zero errors.
+  Full `pint --test` remained red only across unrelated Event/Places/forum and
+  adjacent work. Full Larastan completed with **34 unrelated errors**.
+- Full isolated Pest completed **3,034 tests, 2,884 passed, 39 failed, 133,454
+  assertions, 423,077 ms, exit 2**. Failures remain in generated database
+  audit drift and unfinished Event/Places/Portal/shared-component work; the
+  focused Prompt 03 files above stayed green.
+- `verify-onboarding-migration.php` preserved five legacy users through
+  apply/down/up. The full migration cycle reapplied 150 migrations and repeat
+  seed preserved 10 users; fresh verification produced 293 tables, 150
+  migrations and the same stable 10-user repeat seed.
+- Composer strict validation, locked audit and platform requirements passed;
+  npm high audit found zero vulnerabilities and Vite built successfully;
+  route and view cache create/clear smokes passed as `www`.
+- Database-domain audit remains red because 52 discovered models (including
+  `UserOnboarding`) are absent from its stale manifest; seeding coverage reports
+  25 missing factories. Forum requirement generation verified 38,377 atomic
+  requirements, while immutable-source preservation remains red because source
+  prompt entry `1785397895` is absent.
+- No connected onboarding browser flow was run: the repository has no focused
+  disposable onboarding wrapper. Real stale portal/pet Livewire update tests
+  pass, but positive signed upload/preview, production-adapter row-lock races,
+  and connected responsive/keyboard/console evidence remain explicit release
+  blockers.
+- Final Git refresh observed `main`, HEAD and `origin/main` at
+  `4b71974fb22e944f423b7b1bf164540ae9514faf`; 55 changed paths are present in
+  the shared tree (45 staged, 23 unstaged, with overlap; zero untracked). The
+  shared index was preserved. Global and security gates prohibit commit/push.
+
+### Prompt 02
+
+- [x] Branch, `HEAD`, `origin/main`, staged, unstaged, and untracked state
+  observed before Prompt 02 edits. The branch is `main`; `HEAD` and
+  `origin/main` are `1ef8da9512d19bed29ef1fee84efbc07e1494cf5`; no staged or
+  untracked paths were present; five Prompt 01 documentation files were
+  unstaged and are preserved.
+- [x] Governing contract, prior onboarding plan, canonical requirements, and
+  current aggregate/enum/model/factory/registration/middleware/Action/test
+  implementation re-read. The Prompt 01 one-to-one design still matches code.
+- [x] Prompt 02 seven-role read-only ledger created before delegation; the
+  state-machine, database, compatibility, factory/seeder, security, and test
+  reviewers completed without modifying files.
+- [x] This plan and `docs/implementation-plan.md` updated before Prompt 02
+  production changes.
+- [x] Focused RED behavior observed: the first run had 13 tests, 3 passed, 21
+  assertions, five failures and five errors; the extended run had 18 tests, 13
+  passed, 77 assertions and five intended failures.
+- [x] Minimal production hardening implemented and focused GREEN observed:
+  state resolver/model helpers, exact replay guards, completion prerequisite
+  and locked pet-evidence rechecks, controlled factory states, malformed-state
+  recovery, replay side-effect prevention, and stale Livewire snapshot denial.
+  The current onboarding slice passes 65/65 with 396 assertions;
+  onboarding plus auth/portal passes 150/150 with 1,001 assertions; pet/social
+  regression passes 54/54 with 5,368 assertions.
+- [x] Disposable rollback/reapply, fresh database, and repeat seed verified.
+  The package verifier preserved five legacy users through apply/down/up with
+  zero enrollment rows. The full 150-migration cycle returned to zero and
+  reapplied all 150; fresh/repeat seed retained 10 users and 293 tables.
+- [x] Independent final review completed and every material finding disposed.
+  The first frozen review and first re-review were NO-GO; all reproduced
+  findings have focused GREEN regressions. Three independent reviewers verified
+  the same 24-path hash and returned SHIP; no material finding remains open.
+- [ ] Applicable final gates, exact test/assertion counts, diff ownership,
+  commit, and push results recorded. Composer validation/audit/platform,
+  focused Pint, task production Larastan, npm audit/build, route/view caches,
+  localization generators, migration, fresh DB, repeat seed, and focused tests
+  are green. Final full Pest is red at 2,957 tests / 2,807 passed / 39 failed /
+  133,140 assertions / 415,525 ms / exit 2; full Pint reports unrelated
+  Event/Places/forum files;
+  full Larastan reports 34 unrelated Event/Places/forum errors; generated DB
+  audit and seed coverage remain red. Therefore no principal commit or push is
+  authorized.
 
 - [x] Branch/HEAD/origin/index/worktree inventory observed before edits.
 - [x] Mandatory and directly relevant documents read; stale current-state and

@@ -127,8 +127,17 @@ return [
         'resend' => 'Siųsti patvirtinimo laišką dar kartą',
         'sending' => 'Siunčiama…',
         'sent' => 'Naujas patvirtinimo laiškas išsiųstas.',
+        'delivery_failed' => 'Paskyra sukurta, tačiau patvirtinimo laiško išsiųsti nepavyko. Pabandykite išsiųsti dar kartą.',
         'throttled' => 'Paprašyta per daug patvirtinimo laiškų. Bandykite po :seconds sek.',
         'success' => 'El. pašto adresas patvirtintas.',
+        'required' => 'Prieš naudodami apsaugotas funkcijas patvirtinkite el. pašto adresą.',
+        'mail' => [
+            'subject' => 'Patvirtinkite „PawCircle“ el. pašto adresą',
+            'greeting' => 'Sveiki, :name!',
+            'introduction' => 'Patvirtinkite šį el. pašto adresą, kad galėtumėte tęsti „PawCircle“ paskyros nustatymą.',
+            'action' => 'Patvirtinti el. pašto adresą',
+            'ignore' => 'Jei šios paskyros nekūrėte, šį laišką galite ignoruoti.',
+        ],
     ],
     'email_verification_activation' => [
         'dry_run' => 'Tinkamų aktyvių paskyrų: :eligible. Paskyros nepakeistos.',

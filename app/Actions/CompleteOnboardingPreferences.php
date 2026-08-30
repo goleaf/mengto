@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Models\UserOnboarding;
 use App\Services\EmailVerificationMode;
 use App\Services\ForumActor;
+use App\Services\OnboardingState;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
@@ -18,6 +19,7 @@ final readonly class CompleteOnboardingPreferences
         private ForumActor $actor,
         private EmailVerificationMode $emailVerification,
         private UpdateProfilePreferences $updatePreferences,
+        private OnboardingState $onboardingState,
     ) {}
 
     /** @param array{locale: string, timezone: string} $data */
@@ -46,18 +48,35 @@ final readonly class CompleteOnboardingPreferences
                 ->lockForUpdate()
                 ->firstOrFail();
 
-            if ($state->current_step->position() > OnboardingStep::Preferences->position()) {
-                return $state;
+            if ($expectedStep !== OnboardingStep::Preferences) {
+                $this->throwConflict();
+            }
+
+            $currentStep = $this->onboardingState->currentStep($state);
+
+            if ($currentStep->position() > OnboardingStep::Preferences->position()) {
+                $persistedUser = User::query()
+                    ->select(['id', 'locale', 'timezone'])
+                    ->findOrFail($user->id);
+
+                if (
+                    $currentStep === OnboardingStep::PetRelationship
+                    && $state->lock_version === $expectedLockVersion + 1
+                    && $state->getRawOriginal('preferences_completed_at') !== null
+                    && $persistedUser->locale === $data['locale']
+                    && $persistedUser->timezone === $data['timezone']
+                ) {
+                    return $state;
+                }
+
+                $this->throwConflict();
             }
 
             if (
-                $expectedStep !== OnboardingStep::Preferences
-                || $state->current_step !== OnboardingStep::Preferences
+                $currentStep !== OnboardingStep::Preferences
                 || $state->lock_version !== $expectedLockVersion
             ) {
-                throw ValidationException::withMessages([
-                    'onboarding' => __('onboarding.errors.stale_state'),
-                ]);
+                $this->throwConflict();
             }
 
             $this->updatePreferences->handle($user, $data);
@@ -69,5 +88,12 @@ final readonly class CompleteOnboardingPreferences
 
             return $state->refresh();
         }, 3);
+    }
+
+    private function throwConflict(): never
+    {
+        throw ValidationException::withMessages([
+            'onboarding' => __('onboarding.errors.stale_state'),
+        ]);
     }
 }

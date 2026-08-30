@@ -16,14 +16,19 @@ final readonly class InitializeUserOnboarding
     public function handle(User $user): UserOnboarding
     {
         $this->actors->provisionPrivateForUser($user);
+        $startedAt = now();
 
-        return UserOnboarding::query()->firstOrCreate(
-            ['user_id' => $user->id],
-            [
-                'current_step' => OnboardingStep::Introduction,
-                'started_at' => now(),
-                'lock_version' => 1,
-            ],
-        );
+        UserOnboarding::query()->insertOrIgnore([
+            'user_id' => $user->id,
+            'current_step' => OnboardingStep::Introduction->value,
+            'started_at' => $startedAt,
+            'lock_version' => 1,
+            'created_at' => $startedAt,
+            'updated_at' => $startedAt,
+        ]);
+
+        return UserOnboarding::query()
+            ->whereBelongsTo($user)
+            ->firstOrFail();
     }
 }

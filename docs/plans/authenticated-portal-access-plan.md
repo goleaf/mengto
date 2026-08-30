@@ -220,3 +220,48 @@ The only anonymous HTTP surface is the account-entry allowlist above plus
 framework assets and the health endpoint. Existing deployment installations
 must remove a legacy `public/storage` symlink if one was created before this
 boundary; current configuration does not create or serve it.
+
+## 2026-08-30 Onboarding Lifecycle Addendum
+
+The authenticated portal boundary now includes the persisted onboarding
+aggregate without broadening anonymous access or replacing resource policies.
+The canonical enabled-verification flow is:
+
+```text
+REGISTER / LOGIN
+       |
+       v
+ACCOUNT ACTIVE? -- no --> unavailable-account response
+       |
+      yes
+       v
+VERIFICATION REQUIRED AND PENDING? -- yes --> verification notice
+       |
+      no
+       v
+ONBOARDING COMPLETE? -- no --> onboarding
+       |
+      yes
+       v
+SAFE INTENDED PRODUCT ROUTE OR HOME
+```
+
+With verification disabled, registration atomically stamps the account as
+verified and enters onboarding directly. Verification and onboarding remain
+independent persisted facts; migrated/legacy accounts may be onboarding-ready
+without an email timestamp, and configured verification still decides whether
+that timestamp gates portal entry.
+
+The incomplete-account route allowlist is exact:
+
+- `onboarding.show`, `password.confirm`, `verification.notice`,
+  `verification.verify`, `logout`, and the persistent Livewire update route;
+- `pets.manage.create`, `livewire.upload-file`, and
+  `livewire.preview-file` only while the persisted current step is
+  `pet-relationship`.
+
+All other safe HTML product requests redirect to onboarding without replacing
+the first stored product destination. JSON and unsafe mutation requests return
+a localized `409` lifecycle response. A safe intended URL is consumed only by
+a completed/legacy account and must resolve to an existing same-origin GET
+product route.

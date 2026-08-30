@@ -20,6 +20,8 @@ use App\Models\PetProfileManager;
 use App\Models\PetProfilePrivacySetting;
 use App\Models\PetProfileSlugAlias;
 use App\Models\Taxon;
+use App\Models\User;
+use App\Models\UserOnboarding;
 use App\Services\ForumActor;
 use App\Services\PetBirthDetailsNormalizer;
 use App\Services\PetBreedOriginNormalizer;
@@ -112,6 +114,15 @@ final class CreatePetProfile
                 $birthDetails,
                 $reportedBreed,
             ): PetProfile {
+                $user = User::query()
+                    ->lockForUpdate()
+                    ->findOrFail($user->getKey());
+                UserOnboarding::query()
+                    ->whereBelongsTo($user)
+                    ->lockForUpdate()
+                    ->first();
+                $this->gate->forUser($user)->authorize('create', PetProfile::class);
+
                 $existing = PetProfile::query()
                     ->where('creation_key', $creationKey)
                     ->first();

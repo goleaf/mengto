@@ -37,7 +37,7 @@ final class Register extends AuthPage
 
         $limiter->hit($rateLimitKey, 60);
         try {
-            $user = $registerUser->handle($this->form->validatedData());
+            $result = $registerUser->handle($this->form->validatedData());
         } catch (ValidationException $exception) {
             $messages = $exception->errors()['email'] ?? null;
 
@@ -51,11 +51,16 @@ final class Register extends AuthPage
             return;
         }
 
+        $user = $result->user;
         $auth->guard('web')->login($user);
         Session::regenerate();
         Session::put('locale', $user->locale);
 
-        $this->redirectRoute($destination->pendingRoute($user) ?? 'home');
+        if (! $result->verificationNotificationDelivered) {
+            Session::flash('verification_delivery_failed', true);
+        }
+
+        $this->redirect($destination->urlFor($user, route('home')));
     }
 
     public function render(): View

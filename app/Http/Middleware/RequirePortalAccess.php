@@ -42,6 +42,23 @@ final readonly class RequirePortalAccess
 
     private const string LIVEWIRE_UPDATE_ROUTE = 'default-livewire.update';
 
+    /** @var list<string> */
+    private const array NON_PRODUCT_ROUTE_NAMES = [
+        'login',
+        'register',
+        'password.request',
+        'password.reset',
+        'password.confirm',
+        'verification.notice',
+        'verification.verify',
+        'onboarding.show',
+        'logout',
+        'locale.update',
+        'default-livewire.update',
+        'livewire.upload-file',
+        'livewire.preview-file',
+    ];
+
     public function __construct(
         private UnavailableAccountResponse $unavailableAccount,
         private EmailVerificationMode $emailVerification,
@@ -70,7 +87,9 @@ final readonly class RequirePortalAccess
                 );
             }
 
-            return redirect()->guest(route('login'));
+            $this->storeFirstProductDestination($request, $routeName);
+
+            return redirect()->route('login');
         }
 
         if (! $user->isActive()) {
@@ -83,13 +102,15 @@ final readonly class RequirePortalAccess
             && ! $this->isUnverifiedRoute($routeName)
             && $routeName !== self::LIVEWIRE_UPDATE_ROUTE
         ) {
-            if (
-                $request->isMethodSafe()
-                && ! $request->expectsJson()
-                && ! $request->session()->has('url.intended')
-            ) {
-                $request->session()->put('url.intended', $request->fullUrl());
+            if ($request->expectsJson() || ! $request->isMethodSafe()) {
+                return response()->json([
+                    'code' => 'email_verification_required',
+                    'message' => __('auth.verification.required'),
+                    'verification_url' => route('verification.notice'),
+                ], Response::HTTP_CONFLICT);
             }
+
+            $this->storeFirstProductDestination($request, $routeName);
 
             return redirect()->route('verification.notice');
         }
@@ -105,5 +126,20 @@ final readonly class RequirePortalAccess
     private function isUnverifiedRoute(?string $routeName): bool
     {
         return is_string($routeName) && in_array($routeName, self::UNVERIFIED_ROUTE_NAMES, true);
+    }
+
+    private function storeFirstProductDestination(Request $request, ?string $routeName): void
+    {
+        if (
+            ! $request->isMethodSafe()
+            || $request->expectsJson()
+            || $request->session()->has('url.intended')
+            || ! is_string($routeName)
+            || in_array($routeName, self::NON_PRODUCT_ROUTE_NAMES, true)
+        ) {
+            return;
+        }
+
+        $request->session()->put('url.intended', $request->fullUrl());
     }
 }

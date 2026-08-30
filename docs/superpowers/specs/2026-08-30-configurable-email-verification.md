@@ -20,8 +20,8 @@ an operator deliberately disables it.
   central portal boundary or `verified` middleware.
 - `EMAIL_VERIFICATION_ENABLED=false` disables proof-of-email ownership: a new
   account receives `email_verified_at` during registration, receives no
-  verification notification, and is sent directly into the authenticated
-  portal.
+  verification notification, and enters its persisted onboarding flow before
+  the authenticated portal.
 - Application code reads the value only through `config/platform.php`; it does
   not call `env()` outside configuration.
 - Configuration caching must preserve both boolean values. Automated tests
@@ -52,12 +52,15 @@ event. In disabled mode it marks the new account verified before returning it
 and does not dispatch that event, preventing an unnecessary verification
 email. The Livewire registration component chooses its destination from the
 persisted result: unverified accounts go to the verification notice and
-verified accounts go to `home`.
+verified onboarding-incomplete accounts go to `onboarding.show`. Only a
+completed or legacy-compatible account may consume a safe intended product URL
+or fall back to `home`.
 
 The verification notice must never be displayed while the setting is
-disabled. A direct request or Livewire action redirects to `home`. Existing
-signed verification links may safely resolve to the normal authenticated home
-flow; they do not reopen or weaken product access.
+disabled. A direct request or Livewire action resolves through the same
+onboarding-aware account-entry destination. Existing signed verification links
+may safely resolve through that normal authenticated lifecycle; they do not
+reopen or weaken product access.
 
 ## Existing Account Activation
 
@@ -99,11 +102,11 @@ Feature tests must prove:
 - enabled mode keeps registration pending, sends the verification
   notification, redirects to the notice, and blocks protected product routes;
 - disabled mode persists `email_verified_at`, sends no verification
-  notification, redirects registration to `home`, and permits an otherwise
-  authorized active account through both the central portal boundary and an
-  explicit `verified` route;
+  notification, redirects an incomplete registration to onboarding, and
+  permits an otherwise authorized completed active account through both the
+  central portal boundary and an explicit `verified` route;
 - disabled mode redirects direct verification-notice access and its resend
-  action to `home` without sending mail;
+  action through the account-entry resolver without sending mail;
 - enabled mode remains the default for the automated suite regardless of the
   deployed `.env` value;
 - the activation operation reports dry-run counts without writes, changes

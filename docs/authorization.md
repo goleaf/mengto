@@ -332,3 +332,18 @@ Managers may request information or link that candidate; they cannot approve,
 reject, publish, merge, restore, or act on their own submission. Those critical
 decisions require a different active verified administrator. Every Action
 rechecks policy against locked current state.
+## Onboarding Authorization Order
+
+The authenticated portal boundary applies account status before configured
+email verification, and configured verification before onboarding. An
+incomplete account may reach only `onboarding.show`, logout, password
+confirmation, verification lifecycle routes, the persistent Livewire update
+route, and—only while the server resolves the current step as
+`pet-relationship`—the canonical pet-create upload/preview bridge. Route names
+do not replace model policies or Action authorization.
+
+Pet creation and duplicate-profile access requests are independently guarded
+at policy and Action boundaries. Each mutation locks a freshly loaded current
+user and then any existing onboarding row before its final authorization
+check. Legacy users without an onboarding row and valid completed rows retain
+their existing policy-scoped access; malformed or incomplete rows fail closed.

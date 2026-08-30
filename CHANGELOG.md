@@ -91,6 +91,16 @@ status, invalidated evidence, external blockers, and rollback guidance are in
 
 ### Security
 
+- Added a fail-closed interpreter for the persistent onboarding aggregate,
+  cheap `User` completion facts, exact replay/version guards, completion-time
+  prerequisite and locked pet-evidence rechecks, strict malformed-state
+  recovery, stale product-Livewire denial, side-effect-free privacy replay,
+  private identity repair, deleted-profile rejection, a versioned `not-now`
+  recovery when optional pet evidence disappears, fully guarded aggregate
+  writes, constrained factory states, and a populated
+  legacy migration verifier isolated before application bootstrap. The already
+  deployed one-to-one migration remains unchanged; existing no-row accounts
+  stay legacy-complete and new registrations remain explicitly incomplete.
 - Hardened the existing onboarding foundation without claiming the remaining
   onboarding product complete: configured email verification is rechecked at
   Livewire and direct Action mutations, parser-confusing intended URLs are
@@ -104,9 +114,20 @@ status, invalidated evidence, external blockers, and rollback guidance are in
   factory aggregate, component-only introduction acknowledgement, and
   normalized duplicate-registration 500. The foundation remains NO-GO for a
   complete production release until registration outcomes no longer disclose
-  account existence, verification delivery has a recoverable failure path,
-  and the required transport/concurrency/browser and repository-wide gates are
-  green.
+  account existence and the required production-adapter concurrency, positive
+  signed transport/browser, and repository-wide gates are green.
+- Integrated persistent onboarding into registration, login, password
+  confirmation, configurable email verification, safe intended destinations,
+  localized JSON denial, persistent Livewire middleware, and the central
+  availability → verification → onboarding → portal boundary. Incomplete
+  accounts retain only the exact lifecycle allowlist and the pet bridge only
+  at the persisted pet-relationship step.
+- Recovered post-commit verification delivery exceptions and standard skipped
+  notifications without returning HTTP 500 or losing the authenticated
+  account, localized verification mail and recovery feedback for EN/LT/RU, and
+  made resend success/error state replay-safe. Pet creation and access-request
+  Actions now lock and reauthorize fresh account/onboarding state, and their
+  onboarding redirects preserve accessible success feedback.
 - Added a fail-closed `EMAIL_VERIFICATION_ENABLED` switch with a secure enabled
   default, consistent central and route middleware behavior, atomic
   no-notification registration when disabled, and a bounded idempotent command

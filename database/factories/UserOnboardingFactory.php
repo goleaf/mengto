@@ -49,12 +49,11 @@ final class UserOnboardingFactory extends ApplicationFactory
         ]);
     }
 
-    public function privacyDiscovery(
-        OnboardingPetChoice $choice = OnboardingPetChoice::NotNow,
-    ): self {
+    public function privacyDiscovery(): self
+    {
         return $this->state(fn (): array => [
             'current_step' => OnboardingStep::PrivacyDiscovery,
-            'pet_relationship_choice' => $choice,
+            'pet_relationship_choice' => OnboardingPetChoice::NotNow,
             'introduction_completed_at' => now(),
             'preferences_completed_at' => now(),
             'pet_relationship_completed_at' => now(),
@@ -62,12 +61,11 @@ final class UserOnboardingFactory extends ApplicationFactory
         ]);
     }
 
-    public function completed(
-        OnboardingPetChoice $choice = OnboardingPetChoice::NotNow,
-    ): self {
+    public function completed(): self
+    {
         return $this->state(fn (): array => [
             'current_step' => OnboardingStep::Complete,
-            'pet_relationship_choice' => $choice,
+            'pet_relationship_choice' => OnboardingPetChoice::NotNow,
             'introduction_completed_at' => now(),
             'preferences_completed_at' => now(),
             'pet_relationship_completed_at' => now(),

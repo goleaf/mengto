@@ -1509,3 +1509,18 @@ Observed package evidence on 2026-08-04:
 
 The reusable browser command is
 `npm run test:browser:page-identity`.
+## Onboarding Authentication Boundary Coverage
+
+The focused authentication/onboarding matrix covers enabled and disabled
+registration, session regeneration, recipient-locale verification mail,
+delivery failure recovery, signed/expired/tampered/wrong-user/replayed
+verification links, persisted login resume, password confirmation, first safe
+intended URL ownership, parser-confusing redirect inputs, account-status and
+verification precedence, representative portal routes, localized JSON
+conflicts, pet-route least privilege, direct pet Actions, real stale Livewire
+snapshots, logout/login resume, completed rows, and legacy no-row accounts.
+
+Run database-backed files sequentially through `scripts/run-tests.php`. A PHP
+process crash is environment evidence, not a passing or failing assertion;
+rerun the same isolated file and record both the crash and the deterministic
+result.

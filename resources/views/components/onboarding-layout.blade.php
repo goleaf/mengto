@@ -27,6 +27,10 @@
                 <span class="text-lg font-bold">{{ __('auth.brand') }}</span>
             </div>
 
+            @if (session('feedback'))
+                <x-flash-feedback :message="session('feedback')" class="mb-4" />
+            @endif
+
             <div class="rounded-2xl border border-paw-line bg-white p-5 shadow-sm sm:p-8">
                 {{ $slot }}
             </div>

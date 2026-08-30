@@ -4,15 +4,23 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
+use App\Enums\OnboardingStep;
 use App\Enums\PetProfilePermission;
 use App\Enums\PetProfileStatus;
 use App\Models\PetProfile;
 use App\Models\User;
+use App\Models\UserOnboarding;
+use App\Services\EmailVerificationMode;
+use App\Services\OnboardingState;
 use App\Services\PetProfileAccess;
 
 final class PetProfilePolicy
 {
-    public function __construct(private readonly PetProfileAccess $access) {}
+    public function __construct(
+        private readonly PetProfileAccess $access,
+        private readonly EmailVerificationMode $emailVerification,
+        private readonly OnboardingState $onboardingState,
+    ) {}
 
     public function viewAny(?User $user): bool
     {
@@ -26,12 +34,31 @@ final class PetProfilePolicy
 
     public function create(User $user): bool
     {
-        return $user->isActive();
+        return $this->canUsePetSetup($user);
     }
 
     public function requestAccess(User $user, PetProfile $petProfile): bool
     {
-        return $user->isActive() && $this->access->canView($petProfile, $user);
+        return $this->canUsePetSetup($user) && $this->access->canView($petProfile, $user);
+    }
+
+    private function canUsePetSetup(User $user): bool
+    {
+        $account = User::query()->find($user->getKey());
+
+        if (
+            ! $account instanceof User
+            || ! $account->isActive()
+            || ! $this->emailVerification->allows($account)
+        ) {
+            return false;
+        }
+
+        $state = $account->onboarding()->first();
+
+        return ! $state instanceof UserOnboarding
+            || $this->onboardingState->isComplete($state)
+            || $this->onboardingState->currentStep($state) === OnboardingStep::PetRelationship;
     }
 
     public function update(User $user, PetProfile $petProfile): bool

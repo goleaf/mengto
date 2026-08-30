@@ -5,21 +5,30 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Models\User;
-use App\Models\UserOnboarding;
 
 final readonly class AccountEntryDestination
 {
-    public function __construct(private EmailVerificationMode $emailVerification) {}
+    public function __construct(
+        private EmailVerificationMode $emailVerification,
+        private SafeIntendedUrl $intendedUrl,
+    ) {}
 
-    public function pendingRoute(User $user): ?string
+    public function urlFor(User $user, string $fallback): string
+    {
+        $pendingRoute = $this->pendingRoute($user);
+
+        return is_string($pendingRoute)
+            ? route($pendingRoute)
+            : $this->intendedUrl->pull($fallback);
+    }
+
+    private function pendingRoute(User $user): ?string
     {
         if ($this->emailVerification->isEnabled() && ! $user->hasVerifiedEmail()) {
             return 'verification.notice';
         }
 
-        $onboarding = $user->onboarding()->first();
-
-        if ($onboarding instanceof UserOnboarding && ! $onboarding->isComplete()) {
+        if ($user->requiresOnboarding()) {
             return 'onboarding.show';
         }
 

@@ -6,13 +6,12 @@ namespace App\Actions;
 
 use App\Enums\OnboardingPetChoice;
 use App\Enums\OnboardingStep;
-use App\Enums\PetProfileAccessRequestStatus;
-use App\Models\PetProfile;
-use App\Models\PetProfileAccessRequest;
 use App\Models\User;
 use App\Models\UserOnboarding;
 use App\Services\EmailVerificationMode;
 use App\Services\ForumActor;
+use App\Services\OnboardingPetEvidence;
+use App\Services\OnboardingState;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
@@ -22,6 +21,8 @@ final readonly class AdvanceUserOnboarding
     public function __construct(
         private ForumActor $actor,
         private EmailVerificationMode $emailVerification,
+        private OnboardingState $onboardingState,
+        private OnboardingPetEvidence $petEvidence,
     ) {}
 
     public function handle(
@@ -58,12 +59,17 @@ final readonly class AdvanceUserOnboarding
                 ]);
             }
 
-            if ($state->current_step->position() > $expectedStep->position()) {
-                if (
-                    $expectedStep === OnboardingStep::PetRelationship
-                    && $petChoice !== null
-                    && $state->pet_relationship_choice !== $petChoice
-                ) {
+            $currentStep = $this->onboardingState->currentStep($state);
+
+            if ($currentStep->position() > $expectedStep->position()) {
+                if (! $this->isEquivalentReplay(
+                    $state,
+                    $currentStep,
+                    $expectedStep,
+                    $expectedLockVersion,
+                    $petChoice,
+                    $introductionAcknowledged,
+                )) {
                     $this->throwConflict();
                 }
 
@@ -71,7 +77,7 @@ final readonly class AdvanceUserOnboarding
             }
 
             if (
-                $state->current_step !== $expectedStep
+                $currentStep !== $expectedStep
                 || $state->lock_version !== $expectedLockVersion
             ) {
                 $this->throwConflict();
@@ -79,6 +85,7 @@ final readonly class AdvanceUserOnboarding
 
             $attributes = match ($expectedStep) {
                 OnboardingStep::Introduction => $this->introductionAttributes(
+                    $state,
                     $introductionAcknowledged,
                 ),
                 OnboardingStep::PetRelationship => $this->petAttributes($user, $petChoice),
@@ -86,6 +93,13 @@ final readonly class AdvanceUserOnboarding
                     'onboarding' => __('onboarding.errors.transition_conflict'),
                 ]),
             };
+
+            if (
+                $expectedStep === OnboardingStep::Introduction
+                && ! $state->hasPersistedTimestamp('started_at')
+            ) {
+                return $this->repairMalformedStart($state, $attributes);
+            }
 
             $state->forceFill($attributes + [
                 'current_step' => $expectedStep->next(),
@@ -96,16 +110,74 @@ final readonly class AdvanceUserOnboarding
         }, 3);
     }
 
-    /** @return array{introduction_completed_at: Carbon} */
-    private function introductionAttributes(bool $acknowledged): array
-    {
+    /** @param array<string, mixed> $attributes */
+    private function repairMalformedStart(
+        UserOnboarding $state,
+        array $attributes,
+    ): UserOnboarding {
+        $updated = UserOnboarding::query()
+            ->whereKey($state->id)
+            ->where('lock_version', $state->lock_version)
+            ->update($attributes + [
+                'current_step' => OnboardingStep::Preferences->value,
+                'preferences_completed_at' => null,
+                'pet_relationship_choice' => null,
+                'pet_relationship_completed_at' => null,
+                'privacy_discovery_completed_at' => null,
+                'completed_at' => null,
+                'lock_version' => $state->lock_version + 1,
+            ]);
+
+        if ($updated !== 1) {
+            $this->throwConflict();
+        }
+
+        return UserOnboarding::query()->findOrFail($state->id);
+    }
+
+    private function isEquivalentReplay(
+        UserOnboarding $state,
+        OnboardingStep $currentStep,
+        OnboardingStep $expectedStep,
+        int $expectedLockVersion,
+        ?OnboardingPetChoice $petChoice,
+        bool $introductionAcknowledged,
+    ): bool {
+        if (
+            $currentStep !== $expectedStep->next()
+            || $state->lock_version !== $expectedLockVersion + 1
+        ) {
+            return false;
+        }
+
+        return match ($expectedStep) {
+            OnboardingStep::Introduction => $introductionAcknowledged
+                && $state->getRawOriginal('introduction_completed_at') !== null,
+            OnboardingStep::PetRelationship => $petChoice instanceof OnboardingPetChoice
+                && $this->onboardingState->currentPetChoice($state) === $petChoice,
+            default => false,
+        };
+    }
+
+    /** @return array{introduction_completed_at: Carbon, started_at?: Carbon} */
+    private function introductionAttributes(
+        UserOnboarding $state,
+        bool $acknowledged,
+    ): array {
         if (! $acknowledged) {
             throw ValidationException::withMessages([
                 'introductionAcknowledged' => __('onboarding.validation.acknowledgement'),
             ]);
         }
 
-        return ['introduction_completed_at' => now()];
+        $completedAt = now();
+        $attributes = ['introduction_completed_at' => $completedAt];
+
+        if (! $state->hasPersistedTimestamp('started_at')) {
+            $attributes['started_at'] = $completedAt;
+        }
+
+        return $attributes;
     }
 
     /** @return array<string, mixed> */
@@ -119,24 +191,7 @@ final readonly class AdvanceUserOnboarding
             ]);
         }
 
-        if ($choice === OnboardingPetChoice::ManagedPet) {
-            $hasManagedPet = PetProfile::query()
-                ->managedBy($user)
-                ->exists();
-
-            if (! $hasManagedPet) {
-                $this->throwPetEvidence();
-            }
-        }
-
-        if (
-            $choice === OnboardingPetChoice::AccessRequested
-            && ! PetProfileAccessRequest::query()
-                ->whereBelongsTo($user, 'requester')
-                ->where('status', PetProfileAccessRequestStatus::Pending)
-                ->whereHas('profile')
-                ->exists()
-        ) {
+        if (! $this->petEvidence->supports($user, $choice)) {
             $this->throwPetEvidence();
         }
 

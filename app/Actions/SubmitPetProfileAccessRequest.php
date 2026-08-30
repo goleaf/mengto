@@ -10,6 +10,8 @@ use App\Enums\PetProfileAccessRequestType;
 use App\Models\PetProfile;
 use App\Models\PetProfileAccessRequest;
 use App\Models\PetProfileManager;
+use App\Models\User;
+use App\Models\UserOnboarding;
 use App\Services\ForumActor;
 use App\Services\PetProfileEventRecorder;
 use Illuminate\Contracts\Auth\Access\Gate;
@@ -40,6 +42,7 @@ final class SubmitPetProfileAccessRequest
         string $idempotencyKey,
     ): PetProfileAccessRequest {
         $requester = $this->actor->requireUser();
+        $this->gate->authorize('requestAccess', $profile);
         $role = $this->resolveRole($type, $requestedRole);
         $validated = $this->validator->make([
             'evidence_summary' => $evidenceSummary,
@@ -95,6 +98,13 @@ final class SubmitPetProfileAccessRequest
                 $type,
                 $validated,
             ): PetProfileAccessRequest {
+                $requester = User::query()
+                    ->lockForUpdate()
+                    ->findOrFail($requester->getKey());
+                UserOnboarding::query()
+                    ->whereBelongsTo($requester)
+                    ->lockForUpdate()
+                    ->first();
                 $lockedProfile = PetProfile::query()
                     ->select([
                         'id',
@@ -127,7 +137,7 @@ final class SubmitPetProfileAccessRequest
                     'managers',
                     new Collection($membership instanceof PetProfileManager ? [$membership] : []),
                 );
-                $this->gate->authorize('requestAccess', $lockedProfile);
+                $this->gate->forUser($requester)->authorize('requestAccess', $lockedProfile);
 
                 $hasActiveMembership = $membership instanceof PetProfileManager
                     && $membership->isActiveAt(now());

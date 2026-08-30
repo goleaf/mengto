@@ -199,3 +199,16 @@ Every mutation delegates to its Action and resets the request memo/computed
 presentations afterward. Tests cover direct invalid URL state, mutation-free
 skip, independent fields, replay, stale versions, protected fact denial, and
 query stability as unrelated history grows.
+## Onboarding Lifecycle Requests
+
+`RequirePortalAccess` and `EnsureOnboardingIsComplete` remain persistent on
+Livewire update requests. The transport endpoint itself is not treated as a
+product authorization bypass: the original component route context is
+replayed, and onboarding plus pet components re-resolve the authenticated
+account and persisted lifecycle state for every mutation. Stale portal and pet
+snapshots receive a conflict/forbidden response before domain writes.
+
+Verification resend clears only its own prior success/error state before each
+attempt. A failed notification reports a localized error, a later success
+removes that stale error, and neither result is inferred from disabled buttons
+or client state.

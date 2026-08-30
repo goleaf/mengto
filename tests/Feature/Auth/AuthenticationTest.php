@@ -10,8 +10,10 @@ use App\Livewire\Auth\ResetPassword;
 use App\Livewire\Auth\VerifyEmail;
 use App\Livewire\ProfileSettings;
 use App\Models\User;
+use App\Notifications\VerifyEmailNotification;
 use Illuminate\Auth\Notifications\ResetPassword as ResetPasswordNotification;
-use Illuminate\Auth\Notifications\VerifyEmail as VerifyEmailNotification;
+use Illuminate\Notifications\Events\NotificationSent;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Password;
@@ -325,7 +327,7 @@ test('registration creates a normalized verified-pending account', function () {
         ->and($user->locale)->toBe('lt')
         ->and($user->timezone)->toBe('UTC');
 
-    Notification::assertSentTo($user, VerifyEmailNotification::class);
+    Notification::assertSentToTimes($user, VerifyEmailNotification::class, 1);
     $this->assertAuthenticatedAs($user);
     app()->setLocale('en');
 });
@@ -535,7 +537,7 @@ test('signed verification link verifies the authenticated account', function () 
 });
 
 test('unverified account can resend verification and verified account is redirected', function () {
-    Notification::fake();
+    Event::fake([NotificationSent::class]);
     $unverified = User::factory()->unverified()->create();
     $this->actingAs($unverified);
 
@@ -543,7 +545,13 @@ test('unverified account can resend verification and verified account is redirec
         ->call('resend')
         ->assertSet('sent', true);
 
-    Notification::assertSentTo($unverified, VerifyEmailNotification::class);
+    Event::assertDispatched(
+        NotificationSent::class,
+        fn (NotificationSent $event): bool => $event->notifiable instanceof User
+            && $event->notifiable->is($unverified)
+            && $event->notification instanceof VerifyEmailNotification
+            && $event->channel === 'mail',
+    );
 
     $verified = User::factory()->create();
     $this->actingAs($verified);

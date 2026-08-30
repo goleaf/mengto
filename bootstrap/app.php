@@ -39,6 +39,10 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
         $middleware->appendToPriorityList(
             StartSession::class,
+            SetLocale::class,
+        );
+        $middleware->appendToPriorityList(
+            SetLocale::class,
             RequirePortalAccess::class,
         );
         $middleware->appendToPriorityList(

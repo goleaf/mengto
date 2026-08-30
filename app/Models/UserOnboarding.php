@@ -7,6 +7,8 @@ namespace App\Models;
 use App\Enums\OnboardingPetChoice;
 use App\Enums\OnboardingStep;
 use Database\Factories\UserOnboardingFactory;
+use DateTimeImmutable;
+use DateTimeInterface;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -33,18 +35,7 @@ final class UserOnboarding extends Model
     /** @use HasFactory<UserOnboardingFactory> */
     use HasFactory;
 
-    protected $fillable = [
-        'user_id',
-        'current_step',
-        'pet_relationship_choice',
-        'started_at',
-        'introduction_completed_at',
-        'preferences_completed_at',
-        'pet_relationship_completed_at',
-        'privacy_discovery_completed_at',
-        'completed_at',
-        'lock_version',
-    ];
+    protected $guarded = ['*'];
 
     protected function casts(): array
     {
@@ -63,8 +54,60 @@ final class UserOnboarding extends Model
 
     public function isComplete(): bool
     {
-        return $this->current_step === OnboardingStep::Complete
-            && $this->completed_at !== null;
+        return $this->persistedStep() === OnboardingStep::Complete
+            && $this->persistedPetChoice() instanceof OnboardingPetChoice
+            && $this->hasPersistedTimestamp('started_at')
+            && $this->hasPersistedTimestamp('introduction_completed_at')
+            && $this->hasPersistedTimestamp('preferences_completed_at')
+            && $this->hasPersistedTimestamp('pet_relationship_completed_at')
+            && $this->hasPersistedTimestamp('privacy_discovery_completed_at')
+            && $this->hasPersistedTimestamp('completed_at')
+            && ($this->persistedLockVersion() ?? 0) >= OnboardingStep::Complete->position();
+    }
+
+    public function persistedStep(): ?OnboardingStep
+    {
+        $value = $this->getRawOriginal('current_step');
+
+        return is_string($value) ? OnboardingStep::tryFrom($value) : null;
+    }
+
+    public function persistedPetChoice(): ?OnboardingPetChoice
+    {
+        $value = $this->getRawOriginal('pet_relationship_choice');
+
+        return is_string($value) ? OnboardingPetChoice::tryFrom($value) : null;
+    }
+
+    public function persistedLockVersion(): ?int
+    {
+        $value = $this->getRawOriginal('lock_version');
+
+        if (is_int($value)) {
+            return $value;
+        }
+
+        return is_string($value) && ctype_digit($value) ? (int) $value : null;
+    }
+
+    public function hasPersistedTimestamp(string $attribute): bool
+    {
+        $value = $this->getRawOriginal($attribute);
+
+        if ($value instanceof DateTimeInterface) {
+            return true;
+        }
+
+        if (! is_string($value) || $value === '') {
+            return false;
+        }
+
+        $parsed = DateTimeImmutable::createFromFormat('!Y-m-d H:i:s', $value);
+        $errors = DateTimeImmutable::getLastErrors();
+
+        return $parsed instanceof DateTimeImmutable
+            && ($errors === false || ($errors['warning_count'] === 0 && $errors['error_count'] === 0))
+            && $parsed->format('Y-m-d H:i:s') === $value;
     }
 
     /** @return BelongsTo<User, $this> */

@@ -7,17 +7,18 @@ namespace App\Livewire;
 use App\Actions\AdvanceUserOnboarding;
 use App\Actions\CompleteOnboardingPreferences;
 use App\Actions\CompleteOnboardingPrivacy;
+use App\Actions\DeferOnboardingPetRelationship;
 use App\Enums\OnboardingPetChoice;
 use App\Enums\OnboardingStep;
-use App\Enums\PetProfileAccessRequestStatus;
 use App\Livewire\Forms\OnboardingPrivacyForm;
 use App\Livewire\Forms\ProfilePreferencesForm;
 use App\Models\PetProfile;
-use App\Models\PetProfileAccessRequest;
 use App\Models\User;
 use App\Models\UserOnboarding;
+use App\Services\AccountEntryDestination;
 use App\Services\EmailVerificationMode;
-use App\Services\SafeIntendedUrl;
+use App\Services\OnboardingPetEvidence;
+use App\Services\OnboardingState;
 use App\Services\SocialActorResolver;
 use Illuminate\Contracts\Auth\Factory as AuthFactory;
 use Illuminate\Contracts\View\View;
@@ -58,7 +59,13 @@ final class Onboarding extends Component
 
     private CompleteOnboardingPrivacy $completePrivacy;
 
-    private SafeIntendedUrl $intendedUrl;
+    private DeferOnboardingPetRelationship $deferPetRelationship;
+
+    private AccountEntryDestination $entryDestination;
+
+    private OnboardingState $onboardingState;
+
+    private OnboardingPetEvidence $petEvidence;
 
     public function boot(
         AuthFactory $auth,
@@ -67,7 +74,10 @@ final class Onboarding extends Component
         AdvanceUserOnboarding $advanceOnboarding,
         CompleteOnboardingPreferences $completePreferences,
         CompleteOnboardingPrivacy $completePrivacy,
-        SafeIntendedUrl $intendedUrl,
+        DeferOnboardingPetRelationship $deferPetRelationship,
+        AccountEntryDestination $entryDestination,
+        OnboardingState $onboardingState,
+        OnboardingPetEvidence $petEvidence,
     ): void {
         $this->auth = $auth;
         $this->emailVerification = $emailVerification;
@@ -75,7 +85,10 @@ final class Onboarding extends Component
         $this->advanceOnboarding = $advanceOnboarding;
         $this->completePreferences = $completePreferences;
         $this->completePrivacy = $completePrivacy;
-        $this->intendedUrl = $intendedUrl;
+        $this->deferPetRelationship = $deferPetRelationship;
+        $this->entryDestination = $entryDestination;
+        $this->onboardingState = $onboardingState;
+        $this->petEvidence = $petEvidence;
     }
 
     public function mount(): void
@@ -83,14 +96,14 @@ final class Onboarding extends Component
         $user = $this->requireUser();
         $state = $user->onboarding()->first();
 
-        if (! $state instanceof UserOnboarding || $state->isComplete()) {
-            $this->redirect($this->intendedUrl->pull(route('home')));
+        if (! $state instanceof UserOnboarding || $this->onboardingState->isComplete($state)) {
+            $this->redirect($this->entryDestination->urlFor($user, route('home')));
 
             return;
         }
 
         $this->preferencesForm->fillFromUser($user);
-        $actor = $this->actors->forUser($user);
+        $actor = $this->actors->provisionPrivateForUser($user);
         $this->privacyForm->fillFrom($actor, $actor->settings()->firstOrFail());
         $this->syncSnapshot($state);
     }
@@ -126,13 +139,32 @@ final class Onboarding extends Component
     }
 
     #[Computed]
-    public function hasPendingAccessRequest(): bool
+    public function hasAccessRequestEvidence(): bool
     {
-        return PetProfileAccessRequest::query()
-            ->whereBelongsTo($this->requireUser(), 'requester')
-            ->where('status', PetProfileAccessRequestStatus::Pending)
-            ->whereHas('profile')
-            ->exists();
+        return $this->petEvidence->supports(
+            $this->requireUser(),
+            OnboardingPetChoice::AccessRequested,
+        );
+    }
+
+    #[Computed]
+    public function needsPetEvidenceRecovery(): bool
+    {
+        $user = $this->requireUser();
+        $state = $user->onboarding()->first();
+
+        if (
+            ! $state instanceof UserOnboarding
+            || $this->onboardingState->currentStep($state) !== OnboardingStep::PrivacyDiscovery
+        ) {
+            return false;
+        }
+
+        $choice = $this->onboardingState->currentPetChoice($state);
+
+        return $choice instanceof OnboardingPetChoice
+            && $choice !== OnboardingPetChoice::NotNow
+            && ! $this->petEvidence->supports($user, $choice);
     }
 
     #[Computed]
@@ -223,10 +255,20 @@ final class Onboarding extends Component
             );
         });
 
-        if ($state?->isComplete()) {
+        if ($state instanceof UserOnboarding && $this->onboardingState->isComplete($state)) {
             Session::flash('feedback', __('onboarding.completion.feedback'));
-            $this->redirect($this->intendedUrl->pull(route('home')));
+            $user = $this->requireUser();
+            $user->refresh();
+            $this->redirect($this->entryDestination->urlFor($user, route('home')));
         }
+    }
+
+    public function deferPetRelationship(): void
+    {
+        $this->runMutation(fn (): UserOnboarding => $this->deferPetRelationship->handle(
+            $this->requireUser(),
+            $this->onboardingLockVersion,
+        ));
     }
 
     public function render(): View
@@ -285,10 +327,14 @@ final class Onboarding extends Component
 
     private function syncSnapshot(UserOnboarding $state): void
     {
-        $this->expectedStep = $state->current_step->value;
+        $this->expectedStep = $this->onboardingState->currentStep($state)->value;
         $this->onboardingLockVersion = $state->lock_version;
-        $actor = $this->actors->forUser($this->requireUser());
+        $actor = $this->actors->provisionPrivateForUser($this->requireUser());
         $this->socialSettingsLockVersion = $actor->settings()->firstOrFail()->lock_version;
-        unset($this->hasManagedPet, $this->hasPendingAccessRequest);
+        unset(
+            $this->hasManagedPet,
+            $this->hasAccessRequestEvidence,
+            $this->needsPetEvidenceRecovery,
+        );
     }
 }

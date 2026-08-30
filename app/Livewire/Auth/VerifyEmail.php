@@ -18,14 +18,21 @@ final class VerifyEmail extends AuthPage
         EmailVerificationMode $emailVerification,
         AccountEntryDestination $destination,
     ): void {
+        $this->sent = false;
         $user = request()->user();
+
+        if ($user instanceof User && ! $user->isActive()) {
+            abort(403);
+        }
 
         if (
             ! $emailVerification->isEnabled()
             || ($user instanceof User && $user->hasVerifiedEmail())
         ) {
-            $this->redirectRoute(
-                $user instanceof User ? ($destination->pendingRoute($user) ?? 'home') : 'home',
+            $this->redirect(
+                $user instanceof User
+                    ? $destination->urlFor($user, route('home'))
+                    : route('home'),
             );
         }
     }
@@ -35,15 +42,27 @@ final class VerifyEmail extends AuthPage
         AccountEntryDestination $destination,
         RateLimiter $limiter,
     ): void {
+        $this->sent = false;
+        $this->resetErrorBag('resend');
         $user = request()->user();
+
+        if ($user instanceof User) {
+            $user = User::query()->find($user->getKey());
+        }
+
+        if ($user instanceof User && ! $user->isActive()) {
+            abort(403);
+        }
 
         if (
             ! $emailVerification->isEnabled()
             || ! $user instanceof User
             || $user->hasVerifiedEmail()
         ) {
-            $this->redirectRoute(
-                $user instanceof User ? ($destination->pendingRoute($user) ?? 'home') : 'home',
+            $this->redirect(
+                $user instanceof User
+                    ? $destination->urlFor($user, route('home'))
+                    : route('home'),
             );
 
             return;
@@ -60,7 +79,15 @@ final class VerifyEmail extends AuthPage
         }
 
         $limiter->hit($rateLimitKey, 60);
+
         $user->sendEmailVerificationNotification();
+
+        if (! $user->verificationNotificationWasDelivered()) {
+            $this->addError('resend', __('auth.verification.delivery_failed'));
+
+            return;
+        }
+
         $this->sent = true;
     }
 

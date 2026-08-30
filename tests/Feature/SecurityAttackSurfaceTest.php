@@ -32,6 +32,7 @@ PHP;
     $result = Process::path(base_path())
         ->env([
             'APP_ENV' => 'production',
+            'MAIL_MAILER' => 'smtp',
             'SESSION_SECURE_COOKIE' => 'false',
             'SESSION_HTTP_ONLY' => 'false',
             'SESSION_SAME_SITE' => 'none',
@@ -76,7 +77,7 @@ test('registration ignores privilege and identity fields outside its allow list'
         'email_verified_at' => now(),
         'locale' => 'unsupported',
         'timezone' => 'Pacific/Honolulu',
-    ]);
+    ])->user;
     $user->refresh();
 
     expect($user)

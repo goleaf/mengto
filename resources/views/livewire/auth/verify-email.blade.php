@@ -5,6 +5,12 @@
         description="{{ __('auth.verification.description') }}"
     />
 
+    @if (session('verification_delivery_failed'))
+        <x-auth-status role="alert" tone="danger" class="mb-5">
+            {{ __('auth.verification.delivery_failed') }}
+        </x-auth-status>
+    @endif
+
     @if ($sent)
         <x-auth-status role="status" class="mb-5">
             {{ __('auth.verification.sent') }}

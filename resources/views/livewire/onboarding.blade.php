@@ -117,7 +117,7 @@
                         {{ __('onboarding.steps.pet_relationship.managed_pet') }}
                     </button>
                 @endif
-                @if ($this->hasPendingAccessRequest)
+                @if ($this->hasAccessRequestEvidence)
                     <button type="button" wire:click="confirmPetRelationship('access-requested')" wire:loading.attr="disabled" wire:target="confirmPetRelationship" class="min-h-11 rounded-md border-2 border-paw-leaf px-5 py-3 font-semibold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-paw-leaf">
                         {{ __('onboarding.steps.pet_relationship.access_requested') }}
                     </button>
@@ -132,6 +132,15 @@
         <section class="mt-7" aria-labelledby="onboarding-step-heading">
             <h2 id="onboarding-step-heading" x-ref="stepHeading" tabindex="-1" class="text-2xl font-bold">{{ __('onboarding.steps.privacy_discovery.title') }}</h2>
             <p class="mt-3 leading-7 text-paw-muted">{{ __('onboarding.steps.privacy_discovery.body') }}</p>
+
+            @if ($this->needsPetEvidenceRecovery)
+                <div role="status" class="mt-5 rounded-lg border border-paw-coral bg-paw-coral/10 px-4 py-4 text-sm">
+                    <p class="font-semibold">{{ __('onboarding.validation.pet_evidence') }}</p>
+                    <button type="button" wire:click="deferPetRelationship" wire:loading.attr="disabled" wire:target="deferPetRelationship" class="mt-3 min-h-11 rounded-md border-2 border-paw-muted px-5 py-3 font-semibold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-paw-leaf">
+                        {{ __('onboarding.steps.pet_relationship.not_now') }}
+                    </button>
+                </div>
+            @endif
 
             <form wire:submit="savePrivacy" class="mt-6 grid gap-4">
                 <label class="flex min-h-11 items-start gap-3 rounded-lg border border-paw-line p-4">
