@@ -1524,3 +1524,32 @@ Run database-backed files sequentially through `scripts/run-tests.php`. A PHP
 process crash is environment evidence, not a passing or failing assertion;
 rerun the same isolated file and record both the crash and the deterministic
 result.
+
+## Onboarding Wizard Coverage
+
+`tests/Feature/Onboarding/OnboardingWizardTest.php` covers lifecycle
+precedence, every persisted screen, semantic progress, direct-method and
+locked-property abuse, stale snapshots, double/replayed actions, account
+switching, pet-evidence deferral, localized validation, bounded Preferences
+queries, and repeatable browser fixtures. Run it through the serial wrapper:
+
+```bash
+php scripts/run-tests.php --compact \
+  tests/Feature/Onboarding/OnboardingWizardTest.php
+```
+
+The connected flow is:
+
+```bash
+npm run test:browser:onboarding
+```
+
+The wrapper always creates a disposable SQLite database, temporary Laravel
+storage and loopback server, keeps verification enabled, and loads
+`OnboardingBrowserSeeder`, which refuses non-testing environments. Its CDP
+journey covers 320, 360, 375, 390, 768 and 1440 pixel viewports, EN/LT/RU,
+keyboard selection, validation/error focus, loading/offline feedback,
+logout/login resume, 200% page scale, forced colors, reduced motion, Finish,
+overflow, touch targets, raw keys, network failures, and console errors.
+Chrome/process failure is recorded separately from application assertions and
+never counts as a passing browser gate.

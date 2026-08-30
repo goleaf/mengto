@@ -10,8 +10,8 @@ use App\Models\User;
 use App\Models\UserOnboarding;
 use App\Services\EmailVerificationMode;
 use App\Services\ForumActor;
-use App\Services\OnboardingState;
 use App\Services\OnboardingPetEvidence;
+use App\Services\OnboardingState;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 

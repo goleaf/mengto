@@ -87,7 +87,10 @@ test('the canonical browser runner owns a disposable database and loopback serve
         ->toContain("'APP_CONFIG_CACHE' => \$configCache")
         ->toContain("'BROWSER_ALLOW_DATA_MUTATION' => '1'")
         ->toContain("'migrate:fresh', '--seed', '--force'")
-        ->toContain("'--host=127.0.0.1'");
+        ->toContain("'-S',")
+        ->toContain("'127.0.0.1:'.\$portMatch[1]")
+        ->toContain("/resources/server.php'")
+        ->not->toContain("[PHP_BINARY, 'artisan', 'serve'");
 });
 
 test('the browser wrapper proves isolation and removes its temporary paths', function () {

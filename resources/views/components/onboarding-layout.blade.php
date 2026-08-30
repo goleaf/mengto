@@ -31,7 +31,7 @@
                 <x-flash-feedback :message="session('feedback')" class="mb-4" />
             @endif
 
-            <div class="rounded-lg border border-paw-line bg-paw-paper p-5 shadow-panel sm:p-8">
+            <div class="rounded-lg border border-paw-line bg-paw-paper p-5 sm:p-8">
                 {{ $slot }}
             </div>
 

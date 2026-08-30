@@ -1,6 +1,7 @@
 <div
     data-section="onboarding"
     x-data
+    @if ($focusCurrentStep) x-init="$nextTick(() => { $refs.stepHeading?.focus(); $refs.stepHeading?.scrollIntoView({ block: 'start' }) })" @endif
     x-on:onboarding-validation-failed.window="$nextTick(() => $refs.errorSummary?.focus())"
     x-on:onboarding-step-changed.window="$nextTick(() => { $refs.stepHeading?.focus(); $refs.stepHeading?.scrollIntoView({ block: 'start' }) })"
 >
@@ -8,9 +9,9 @@
     <h1 class="mt-2 text-2xl font-semibold leading-tight text-paw-ink">{{ __('onboarding.page.title') }}</h1>
     <p class="mt-3 max-w-2xl text-base leading-7 text-paw-muted">{{ __('onboarding.page.description') }}</p>
 
-    <nav data-onboarding-progress class="mt-6" aria-labelledby="onboarding-progress-label">
+    <div data-onboarding-progress class="mt-6">
         <h2 id="onboarding-progress-label" class="sr-only">{{ __('onboarding.progress.label') }}</h2>
-        <ol data-onboarding-progress-list role="list" class="grid grid-cols-4 gap-2">
+        <ol data-onboarding-progress-list role="list" aria-labelledby="onboarding-progress-label" class="grid grid-cols-4 gap-2">
             @foreach ($this->progressSteps as $progressStep)
                 <li
                     wire:key="onboarding-progress-{{ $progressStep['step'] }}"
@@ -35,10 +36,10 @@
                 </li>
             @endforeach
         </ol>
-        <progress aria-labelledby="onboarding-progress-label" class="mt-3 h-2 w-full accent-paw-leaf" value="{{ $this->progressPosition }}" max="4">
-            {{ __('onboarding.progress.step', ['current' => $this->progressPosition, 'total' => 4]) }}
+        <progress aria-labelledby="onboarding-progress-label" aria-valuetext="{{ __('onboarding.progress.completed', ['completed' => $this->completedProgressSteps, 'total' => 4]) }}" class="mt-3 h-2 w-full accent-paw-leaf" value="{{ $this->completedProgressSteps }}" max="4">
+            {{ __('onboarding.progress.completed', ['completed' => $this->completedProgressSteps, 'total' => 4]) }}
         </progress>
-    </nav>
+    </div>
 
     @if ($errors->any())
         <div x-ref="errorSummary" tabindex="-1" role="alert" aria-labelledby="onboarding-error-summary-title" class="mt-6 rounded-lg border-2 border-paw-coral bg-paw-coral/10 px-4 py-3 text-paw-ink">
@@ -104,17 +105,17 @@
             <h2 id="onboarding-step-heading" x-ref="stepHeading" tabindex="-1" class="text-lg font-semibold">{{ __('onboarding.steps.pet_relationship.title') }}</h2>
             <p class="mt-3 leading-7 text-paw-muted">{{ __('onboarding.steps.pet_relationship.body') }}</p>
             <a href="{{ route('pets.manage.create') }}" class="action action--regular mt-5 min-h-11 w-full whitespace-normal sm:w-auto">{{ __('onboarding.steps.pet_relationship.create_or_find') }}</a>
-            <form wire:submit="savePetRelationship" class="mt-6 grid gap-5">
-                <fieldset data-onboarding-choice-group @error('petForm.choice') aria-describedby="onboarding-pet-choice-error" @enderror>
+            <form wire:submit="savePetRelationship" class="mt-6 grid gap-5" novalidate>
+                <fieldset data-onboarding-choice-group aria-required="true" @error('petForm.choice') aria-invalid="true" aria-describedby="onboarding-pet-choice-error" @enderror>
                     <legend class="font-semibold">{{ __('onboarding.steps.pet_relationship.legend') }}</legend>
                     <div class="mt-3 grid gap-3">
                         @if ($this->hasManagedPet)
-                            <label class="flex min-h-11 cursor-pointer items-start gap-3 rounded-lg border border-paw-line p-4 has-checked:border-paw-leaf has-checked:bg-paw-mint forced-colors:has-checked:border-[Highlight]"><input type="radio" wire:model="petForm.choice" value="managed-pet" class="mt-1 size-5 shrink-0 accent-paw-leaf"><span class="min-w-0 break-words">{{ __('onboarding.steps.pet_relationship.managed_pet') }}</span></label>
+                            <label class="flex min-h-11 cursor-pointer items-start gap-3 rounded-lg border border-paw-line p-4 has-checked:border-paw-leaf has-checked:bg-paw-mint forced-colors:has-checked:border-[Highlight]"><input type="radio" wire:model="petForm.choice" value="managed-pet" required class="mt-1 size-5 shrink-0 accent-paw-leaf" @error('petForm.choice') aria-invalid="true" aria-describedby="onboarding-pet-choice-error" @enderror><span class="min-w-0 break-words">{{ __('onboarding.steps.pet_relationship.managed_pet') }}</span></label>
                         @endif
                         @if ($this->hasAccessRequestEvidence)
-                            <label class="flex min-h-11 cursor-pointer items-start gap-3 rounded-lg border border-paw-line p-4 has-checked:border-paw-leaf has-checked:bg-paw-mint forced-colors:has-checked:border-[Highlight]"><input type="radio" wire:model="petForm.choice" value="access-requested" class="mt-1 size-5 shrink-0 accent-paw-leaf"><span class="min-w-0 break-words">{{ __('onboarding.steps.pet_relationship.access_requested') }}</span></label>
+                            <label class="flex min-h-11 cursor-pointer items-start gap-3 rounded-lg border border-paw-line p-4 has-checked:border-paw-leaf has-checked:bg-paw-mint forced-colors:has-checked:border-[Highlight]"><input type="radio" wire:model="petForm.choice" value="access-requested" required class="mt-1 size-5 shrink-0 accent-paw-leaf" @error('petForm.choice') aria-invalid="true" aria-describedby="onboarding-pet-choice-error" @enderror><span class="min-w-0 break-words">{{ __('onboarding.steps.pet_relationship.access_requested') }}</span></label>
                         @endif
-                        <label class="flex min-h-11 cursor-pointer items-start gap-3 rounded-lg border border-paw-line p-4 has-checked:border-paw-leaf has-checked:bg-paw-mint forced-colors:has-checked:border-[Highlight]"><input type="radio" wire:model="petForm.choice" value="not-now" class="mt-1 size-5 shrink-0 accent-paw-leaf"><span class="min-w-0 break-words">{{ __('onboarding.steps.pet_relationship.not_now') }}</span></label>
+                        <label class="flex min-h-11 cursor-pointer items-start gap-3 rounded-lg border border-paw-line p-4 has-checked:border-paw-leaf has-checked:bg-paw-mint forced-colors:has-checked:border-[Highlight]"><input type="radio" wire:model="petForm.choice" value="not-now" required class="mt-1 size-5 shrink-0 accent-paw-leaf" @error('petForm.choice') aria-invalid="true" aria-describedby="onboarding-pet-choice-error" @enderror><span class="min-w-0 break-words">{{ __('onboarding.steps.pet_relationship.not_now') }}</span></label>
                     </div>
                 </fieldset>
                 @error('petForm.choice') <p id="onboarding-pet-choice-error" class="text-sm font-medium text-paw-coral">{{ $message }}</p> @enderror
@@ -137,20 +138,20 @@
                     <button type="button" wire:click="deferPetRelationship" wire:loading.attr="disabled" wire:loading.attr="aria-busy" wire:target="deferPetRelationship" class="action action--regular mt-3 min-h-11 w-full whitespace-normal sm:w-auto"><span wire:loading.remove wire:target="deferPetRelationship">{{ __('onboarding.steps.pet_relationship.not_now') }}</span><span wire:loading wire:target="deferPetRelationship" role="status" aria-live="polite">{{ __('onboarding.states.checking') }}</span></button>
                 </div>
             @endif
-            <form wire:submit="savePrivacy" class="mt-6 grid gap-5">
+            <form wire:submit="savePrivacy" class="mt-6 grid gap-5" novalidate>
                 <fieldset data-onboarding-choice-group>
                     <legend class="font-semibold">{{ __('onboarding.steps.privacy_discovery.options_legend') }}</legend>
                     <div class="mt-3 grid gap-3">
-                        <label class="flex min-h-11 cursor-pointer items-start gap-3 rounded-lg border border-paw-line p-4 has-checked:border-paw-leaf has-checked:bg-paw-mint forced-colors:has-checked:border-[Highlight]"><input type="checkbox" wire:model="privacyForm.isDiscoverable" class="mt-1 size-5 shrink-0 accent-paw-leaf" aria-describedby="onboarding-discoverable-description @error('privacyForm.isDiscoverable') onboarding-discoverable-error @enderror" @error('privacyForm.isDiscoverable') aria-invalid="true" @enderror><span class="min-w-0"><span class="block font-semibold">{{ __('onboarding.steps.privacy_discovery.discoverable_label') }}</span><span id="onboarding-discoverable-description" class="mt-1 block text-sm leading-6 text-paw-muted">{{ __('onboarding.steps.privacy_discovery.discoverable_description') }}</span></span></label>
+                        <label class="flex min-h-11 cursor-pointer items-start gap-3 rounded-lg border border-paw-line p-4 has-checked:border-paw-leaf has-checked:bg-paw-mint forced-colors:has-checked:border-[Highlight]"><input type="checkbox" wire:model="privacyForm.isDiscoverable" class="mt-1 size-5 shrink-0 accent-paw-leaf" aria-labelledby="onboarding-discoverable-label" aria-describedby="onboarding-discoverable-description @error('privacyForm.isDiscoverable') onboarding-discoverable-error @enderror" @error('privacyForm.isDiscoverable') aria-invalid="true" @enderror><span class="min-w-0"><span id="onboarding-discoverable-label" class="block font-semibold">{{ __('onboarding.steps.privacy_discovery.discoverable_label') }}</span><span id="onboarding-discoverable-description" class="mt-1 block text-sm leading-6 text-paw-muted">{{ __('onboarding.steps.privacy_discovery.discoverable_description') }}</span></span></label>
                         @error('privacyForm.isDiscoverable') <p id="onboarding-discoverable-error" class="text-sm font-medium text-paw-coral">{{ $message }}</p> @enderror
-                        <label class="flex min-h-11 cursor-pointer items-start gap-3 rounded-lg border border-paw-line p-4 has-checked:border-paw-leaf has-checked:bg-paw-mint forced-colors:has-checked:border-[Highlight]"><input type="checkbox" wire:model="privacyForm.isRecommendable" class="mt-1 size-5 shrink-0 accent-paw-leaf" aria-describedby="onboarding-recommendable-description @error('privacyForm.isRecommendable') onboarding-recommendable-error @enderror" @error('privacyForm.isRecommendable') aria-invalid="true" @enderror><span class="min-w-0"><span class="block font-semibold">{{ __('onboarding.steps.privacy_discovery.recommendable_label') }}</span><span id="onboarding-recommendable-description" class="mt-1 block text-sm leading-6 text-paw-muted">{{ __('onboarding.steps.privacy_discovery.recommendable_description') }}</span></span></label>
+                        <label class="flex min-h-11 cursor-pointer items-start gap-3 rounded-lg border border-paw-line p-4 has-checked:border-paw-leaf has-checked:bg-paw-mint forced-colors:has-checked:border-[Highlight]"><input type="checkbox" wire:model="privacyForm.isRecommendable" class="mt-1 size-5 shrink-0 accent-paw-leaf" aria-labelledby="onboarding-recommendable-label" aria-describedby="onboarding-recommendable-description @error('privacyForm.isRecommendable') onboarding-recommendable-error @enderror" @error('privacyForm.isRecommendable') aria-invalid="true" @enderror><span class="min-w-0"><span id="onboarding-recommendable-label" class="block font-semibold">{{ __('onboarding.steps.privacy_discovery.recommendable_label') }}</span><span id="onboarding-recommendable-description" class="mt-1 block text-sm leading-6 text-paw-muted">{{ __('onboarding.steps.privacy_discovery.recommendable_description') }}</span></span></label>
                         @error('privacyForm.isRecommendable') <p id="onboarding-recommendable-error" class="text-sm font-medium text-paw-coral">{{ $message }}</p> @enderror
-                        <label class="flex min-h-11 cursor-pointer items-start gap-3 rounded-lg border border-paw-line p-4 has-checked:border-paw-leaf has-checked:bg-paw-mint forced-colors:has-checked:border-[Highlight]"><input type="checkbox" wire:model="privacyForm.allowMessageRequests" class="mt-1 size-5 shrink-0 accent-paw-leaf" aria-describedby="onboarding-messages-description @error('privacyForm.allowMessageRequests') onboarding-messages-error @enderror" @error('privacyForm.allowMessageRequests') aria-invalid="true" @enderror><span class="min-w-0"><span class="block font-semibold">{{ __('onboarding.steps.privacy_discovery.messages_label') }}</span><span id="onboarding-messages-description" class="mt-1 block text-sm leading-6 text-paw-muted">{{ __('onboarding.steps.privacy_discovery.messages_description') }}</span></span></label>
+                        <label class="flex min-h-11 cursor-pointer items-start gap-3 rounded-lg border border-paw-line p-4 has-checked:border-paw-leaf has-checked:bg-paw-mint forced-colors:has-checked:border-[Highlight]"><input type="checkbox" wire:model="privacyForm.allowMessageRequests" class="mt-1 size-5 shrink-0 accent-paw-leaf" aria-labelledby="onboarding-messages-label" aria-describedby="onboarding-messages-description @error('privacyForm.allowMessageRequests') onboarding-messages-error @enderror" @error('privacyForm.allowMessageRequests') aria-invalid="true" @enderror><span class="min-w-0"><span id="onboarding-messages-label" class="block font-semibold">{{ __('onboarding.steps.privacy_discovery.messages_label') }}</span><span id="onboarding-messages-description" class="mt-1 block text-sm leading-6 text-paw-muted">{{ __('onboarding.steps.privacy_discovery.messages_description') }}</span></span></label>
                         @error('privacyForm.allowMessageRequests') <p id="onboarding-messages-error" class="text-sm font-medium text-paw-coral">{{ $message }}</p> @enderror
                     </div>
                 </fieldset>
                 <div class="rounded-lg border border-paw-line bg-paw-paper p-4 text-sm leading-6">{{ __('onboarding.steps.privacy_discovery.protected_data') }}</div>
-                <label class="flex min-h-11 cursor-pointer items-start gap-3 rounded-lg border border-paw-line p-4"><input type="checkbox" wire:model="privacyAcknowledged" required aria-required="true" aria-describedby="onboarding-privacy-acknowledgement @error('privacyAcknowledged') onboarding-privacy-acknowledgement-error @enderror" class="mt-1 size-5 shrink-0 accent-paw-leaf" @error('privacyAcknowledged') aria-invalid="true" @enderror><span id="onboarding-privacy-acknowledgement" class="min-w-0 break-words">{{ __('onboarding.steps.privacy_discovery.acknowledgement') }}</span></label>
+                <label class="flex min-h-11 cursor-pointer items-start gap-3 rounded-lg border border-paw-line p-4"><input type="checkbox" wire:model="privacyAcknowledged" required aria-required="true" @error('privacyAcknowledged') aria-invalid="true" aria-describedby="onboarding-privacy-acknowledgement-error" @enderror class="mt-1 size-5 shrink-0 accent-paw-leaf"><span class="min-w-0 break-words">{{ __('onboarding.steps.privacy_discovery.acknowledgement') }}</span></label>
                 @error('privacyAcknowledged') <p id="onboarding-privacy-acknowledgement-error" class="text-sm font-medium text-paw-coral">{{ $message }}</p> @enderror
                 <p wire:dirty role="status" aria-live="polite" class="text-sm font-medium text-paw-muted">{{ __('onboarding.states.unsaved') }}</p>
                 <div class="flex flex-col items-stretch sm:items-start">

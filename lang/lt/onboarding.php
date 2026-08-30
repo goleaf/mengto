@@ -13,6 +13,7 @@ return [
     'progress' => [
         'label' => 'Paskyros paruošimo eiga',
         'step' => ':current žingsnis iš :total',
+        'completed' => 'Baigta žingsnių: :completed iš :total',
         'status' => [
             'complete' => 'Baigta',
             'current' => 'Dabartinis žingsnis',

@@ -172,8 +172,13 @@ try {
         }
 
         $server = new Process(
-            [PHP_BINARY, 'artisan', 'serve', '--host=127.0.0.1', '--port='.$portMatch[1], '--no-reload'],
-            $root,
+            [
+                PHP_BINARY,
+                '-S',
+                '127.0.0.1:'.$portMatch[1],
+                $root.'/vendor/laravel/framework/src/Illuminate/Foundation/resources/server.php',
+            ],
+            $root.'/public',
             $environment,
         );
         $server->setTimeout(null);

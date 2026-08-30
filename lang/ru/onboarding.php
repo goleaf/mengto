@@ -13,6 +13,7 @@ return [
     'progress' => [
         'label' => 'Прогресс первоначальной настройки',
         'step' => 'Шаг :current из :total',
+        'completed' => 'Завершено шагов: :completed из :total',
         'status' => [
             'complete' => 'Завершено',
             'current' => 'Текущий шаг',

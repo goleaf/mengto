@@ -67,6 +67,30 @@ options server-side, validates both browser-controlled values, and delegates
 the current-user-only mutation to `UpdateProfilePreferences`. Saving the locale
 also updates the current session so the translated response is immediate.
 
+## Resumable Onboarding Wizard
+
+`App\Livewire\Onboarding` remains the single class-based component for
+`GET /onboarding`. It renders through the focused onboarding layout and asks
+the persisted `UserOnboarding` aggregate for the current screen; no route
+segment, integer counter, Alpine value, or writable browser step determines
+progress.
+
+The component composes the canonical `ProfilePreferencesForm` and
+`OnboardingPrivacyForm` plus the controlled `OnboardingPetChoiceForm`.
+Mutations call the existing transition Actions with locked step and version
+snapshots, reload canonical state after success, and redirect a stale tab to
+fresh progress without applying old input. The mount account ID is locked and
+rechecked against the authenticated user on every hydration so a signed
+snapshot cannot cross accounts.
+
+The view exposes one H1, one semantic ordered progress list, native
+fieldset/legend and input controls, associated validation errors, a focusable
+error summary, step-heading focus after successful movement, and
+action-specific loading, dirty, and offline status. The state graph is
+currently forward-only, so no decorative or client-only Back mutation is
+rendered. Pet creation remains the canonical duplicate-aware subflow; the
+wizard never creates a fake pet or accepts a return URL.
+
 ## Collaborative Guide Editor
 
 `KnowledgeGuideEditor` is a normal class component with

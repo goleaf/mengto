@@ -13,6 +13,7 @@ return [
     'progress' => [
         'label' => 'Onboarding progress',
         'step' => 'Step :current of :total',
+        'completed' => ':completed of :total steps completed',
         'status' => [
             'complete' => 'Completed',
             'current' => 'Current step',

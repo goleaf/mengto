@@ -353,7 +353,6 @@ const placeTouchTargetExpression = `(() => [...document.querySelectorAll(
 })).filter((target) => target.width < 44 || target.height < 44))()`;
 
 const runOnboardingAudit = async (client, sessionId, consoleErrors, resourceErrors) => {
-    process.stderr.write('[onboarding-browser] start\n');
     const audits = {};
     const screenshots = [];
     const setViewport = async (width, height, mobile = false) => {
@@ -383,6 +382,7 @@ const runOnboardingAudit = async (client, sessionId, consoleErrors, resourceErro
             }).filter((target) => target.width < 44 || target.height < 44);
             const current = document.querySelector('[data-onboarding-step][aria-current="step"]');
             const currentNumber = Number(current?.querySelector('[aria-hidden="true"]')?.textContent.trim());
+            const progress = document.querySelector('progress');
             const skip = document.querySelector('a[href^="#"]');
             const skipTarget = skip ? document.querySelector(skip.getAttribute('href')) : null;
             const text = document.body.innerText;
@@ -397,6 +397,8 @@ const runOnboardingAudit = async (client, sessionId, consoleErrors, resourceErro
                 currentStep: current?.dataset.step ?? null,
                 completedCount: document.querySelectorAll('[data-onboarding-step][data-status="complete"]').length,
                 currentNumber,
+                progressValue: Number(progress?.value),
+                progressMax: Number(progress?.max),
                 overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
                 smallTargets,
                 rawKeys: text.match(/(?:onboarding|auth)\\.[a-z0-9_.-]+/gi) ?? [],
@@ -416,6 +418,7 @@ const runOnboardingAudit = async (client, sessionId, consoleErrors, resourceErro
         assert(result.progressListCount === 1 && result.progressItemCount === 4, `${label}: progress structure drifted.`);
         assert(result.currentCount === 1, `${label}: expected one current step.`);
         assert(result.completedCount === result.currentNumber - 1, `${label}: completed progress drifted.`);
+        assert(result.progressValue === result.completedCount && result.progressMax === 4, `${label}: native progress overstates completed work.`);
         assert(result.overflow <= 1, `${label}: horizontal overflow is ${result.overflow}px.`);
         assert(result.smallTargets.length === 0, `${label}: controls below 44px ${JSON.stringify(result.smallTargets)}.`);
         assert(result.rawKeys.length === 0, `${label}: raw keys ${result.rawKeys.join(', ')}.`);
@@ -433,11 +436,23 @@ const runOnboardingAudit = async (client, sessionId, consoleErrors, resourceErro
 
     await setViewport(320, 800, true);
     await login(client, sessionId, 'onboarding-browser@example.test');
-    process.stderr.write('[onboarding-browser] login\n');
     const introduction = await audit('320x800 English introduction');
     assert(introduction.locale === 'en' && introduction.currentStep === 'introduction', 'English introduction did not render.');
     await screenshot('onboarding-320-introduction.png');
-    process.stderr.write('[onboarding-browser] introduction\n');
+    await evaluate(client, sessionId, `document.activeElement?.blur(); true`);
+    await client.send('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Tab', code: 'Tab' }, sessionId);
+    await client.send('Input.dispatchKeyEvent', { type: 'keyUp', key: 'Tab', code: 'Tab' }, sessionId);
+    assert(await evaluate(client, sessionId, `document.activeElement?.getAttribute('href') === '#onboarding-main'`), 'Tab did not reach the skip link first.');
+    await client.send('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Enter', code: 'Enter' }, sessionId);
+    await client.send('Input.dispatchKeyEvent', { type: 'keyUp', key: 'Enter', code: 'Enter' }, sessionId);
+    assert(await evaluate(client, sessionId, `document.activeElement?.id === 'onboarding-main'`), 'Skip link did not focus onboarding content.');
+    await client.send('Input.dispatchKeyEvent', {
+        type: 'keyDown', key: 'Tab', code: 'Tab', modifiers: 8,
+    }, sessionId);
+    await client.send('Input.dispatchKeyEvent', {
+        type: 'keyUp', key: 'Tab', code: 'Tab', modifiers: 8,
+    }, sessionId);
+    assert(await evaluate(client, sessionId, `document.activeElement?.getAttribute('href') === '#onboarding-main'`), 'Shift+Tab did not return to the skip link.');
 
     await client.send('Network.emulateNetworkConditions', {
         offline: true, latency: 0, downloadThroughput: 0, uploadThroughput: 0,
@@ -449,7 +464,6 @@ const runOnboardingAudit = async (client, sessionId, consoleErrors, resourceErro
         })()`),
         'The onboarding offline status did not become visible.',
     );
-    process.stderr.write('[onboarding-browser] offline\n');
     await client.send('Network.emulateNetworkConditions', {
         offline: false, latency: 700, downloadThroughput: 50_000,
         uploadThroughput: 50_000, connectionType: 'cellular3g',
@@ -465,7 +479,6 @@ const runOnboardingAudit = async (client, sessionId, consoleErrors, resourceErro
         })()`),
         'The introduction mutation did not expose disabled loading feedback.',
     );
-    process.stderr.write('[onboarding-browser] loading\n');
     await client.send('Network.emulateNetworkConditions', {
         offline: false, latency: 0, downloadThroughput: -1,
         uploadThroughput: -1, connectionType: 'none',
@@ -475,7 +488,6 @@ const runOnboardingAudit = async (client, sessionId, consoleErrors, resourceErro
         'Introduction did not advance to Preferences.',
     );
     assert(await evaluate(client, sessionId, `document.activeElement?.id === 'onboarding-step-heading'`), 'Preferences heading did not receive focus.');
-    process.stderr.write('[onboarding-browser] preferences\n');
 
     await setViewport(360, 800, true);
     await audit('360x800 English preferences');
@@ -487,15 +499,21 @@ const runOnboardingAudit = async (client, sessionId, consoleErrors, resourceErro
         };
         setSelect('#onboarding-locale', '');
         setSelect('#onboarding-timezone', '');
-        document.querySelector('button[wire\\\\:target="savePreferences"]').click();
         return true;
     })()`);
+    await waitUntil(
+        async () => await evaluate(client, sessionId, `(() => {
+            const dirty = document.querySelector('[wire\\\\:dirty]');
+            return dirty && getComputedStyle(dirty).display !== 'none';
+        })()`),
+        'Changed Preferences did not expose dirty feedback.',
+    );
+    await evaluate(client, sessionId, `document.querySelector('button[wire\\\\:target="savePreferences"]').click(); true`);
     await waitUntil(
         async () => await evaluate(client, sessionId, `document.querySelector('#onboarding-error-summary-title') !== null`),
         'Invalid preferences did not render an error summary.',
     );
     assert(await evaluate(client, sessionId, `document.activeElement?.getAttribute('x-ref') === 'errorSummary'`), 'Validation summary did not receive focus.');
-    process.stderr.write('[onboarding-browser] validation\n');
     await evaluate(client, sessionId, `(() => {
         const setSelect = (selector, value) => {
             const select = document.querySelector(selector);
@@ -511,7 +529,7 @@ const runOnboardingAudit = async (client, sessionId, consoleErrors, resourceErro
         async () => await evaluate(client, sessionId, `document.querySelector('[data-step="pet-relationship"][aria-current="step"]') !== null && document.documentElement.lang === 'lt'`),
         'Preferences did not persist Lithuanian and advance.',
     );
-    process.stderr.write('[onboarding-browser] localized\n');
+    assert(await evaluate(client, sessionId, `document.activeElement?.id === 'onboarding-step-heading'`), 'Pet relationship heading did not receive focus after the localized redirect.');
 
     await setViewport(375, 812, true);
     const pets = await audit('375x812 Lithuanian pet relationship');
@@ -526,7 +544,10 @@ const runOnboardingAudit = async (client, sessionId, consoleErrors, resourceErro
         'Pet relationship did not advance to Privacy.',
     );
     assert(await evaluate(client, sessionId, `document.activeElement?.id === 'onboarding-step-heading'`), 'Privacy heading did not receive focus.');
-    process.stderr.write('[onboarding-browser] pets\n');
+
+    await setViewport(390, 844, true);
+    const compactPrivacy = await audit('390x844 Lithuanian privacy');
+    assert(compactPrivacy.currentStep === 'privacy-discovery', '390px Privacy did not render.');
 
     await setViewport(768, 1024, false);
     await audit('768x1024 Lithuanian privacy');
@@ -538,18 +559,41 @@ const runOnboardingAudit = async (client, sessionId, consoleErrors, resourceErro
     await login(client, sessionId, 'onboarding-browser@example.test');
     const relogged = await audit('768x1024 Lithuanian privacy login resume');
     assert(relogged.currentStep === 'privacy-discovery', 'Login did not resume Privacy.');
-    process.stderr.write('[onboarding-browser] resume\n');
 
-    await setViewport(1440, 900, false);
-    await client.send('Emulation.setPageScaleFactor', { pageScaleFactor: 2 }, sessionId);
-    await audit('1440x900 Lithuanian privacy at 200 percent page scale');
-    assert(await evaluate(client, sessionId, `window.visualViewport?.scale >= 1.9`), 'Chrome did not apply 200 percent page scale.');
+    await client.send('Emulation.setDeviceMetricsOverride', {
+        width: 720,
+        height: 450,
+        deviceScaleFactor: 2,
+        mobile: false,
+        screenWidth: 1440,
+        screenHeight: 900,
+    }, sessionId);
+    await audit('1440x900 Lithuanian privacy at effective 200 percent zoom');
+    assert(await evaluate(client, sessionId, `window.innerWidth <= 720 && window.devicePixelRatio >= 2`), 'Chrome did not apply the effective 200 percent reflow metrics.');
     await screenshot('onboarding-1440-privacy-zoom.png');
-    await client.send('Emulation.setPageScaleFactor', { pageScaleFactor: 1 }, sessionId);
-    process.stderr.write('[onboarding-browser] zoom\n');
+    await setViewport(1440, 900, false);
+
+    await evaluate(client, sessionId, `(() => {
+        const acknowledgement = document.querySelector('input[wire\\\\:model="privacyAcknowledged"]');
+        acknowledgement.click();
+        document.querySelector('button[wire\\\\:target="savePrivacy"]').click();
+        return true;
+    })()`);
+    await waitUntil(
+        async () => await evaluate(client, sessionId, `location.pathname === '/'`),
+        'Privacy completion did not release the member to the portal.',
+    );
+    assert(await evaluate(client, sessionId, `Boolean(
+        document.querySelector('[data-site-header]')
+        && document.querySelector('.feedback[role="status"][aria-live="polite"]')
+        && !document.querySelector('[data-section="onboarding"]')
+    )`), 'Completion did not render the portal shell with polite feedback.');
 
     await client.send('Network.clearBrowserCookies');
     await login(client, sessionId, 'onboarding-browser-ru@example.test');
+    await setViewport(390, 844, true);
+    const russianNarrow = await audit('390x844 Russian privacy');
+    assert(russianNarrow.locale === 'ru' && russianNarrow.currentStep === 'privacy-discovery', 'Narrow Russian Privacy did not render.');
     await setViewport(1024, 900, false);
     await client.send('Emulation.setEmulatedMedia', {
         media: 'screen',
@@ -561,9 +605,36 @@ const runOnboardingAudit = async (client, sessionId, consoleErrors, resourceErro
     const russian = await audit('1024x900 Russian privacy forced colors');
     assert(russian.locale === 'ru' && russian.currentStep === 'privacy-discovery', 'Russian Privacy did not render.');
     assert(await evaluate(client, sessionId, `matchMedia('(forced-colors: active)').matches && matchMedia('(prefers-reduced-motion: reduce)').matches`), 'Accessibility media emulation did not apply.');
+    const accessibilityMedia = await evaluate(client, sessionId, `(() => {
+        const acknowledgement = document.querySelector('input[wire\\\\:model="privacyAcknowledged"]');
+        acknowledgement.click();
+        const finish = document.querySelector('button[wire\\\\:target="savePrivacy"]');
+        finish.focus();
+        const finishStyle = getComputedStyle(finish);
+        const selectedStyle = getComputedStyle(acknowledgement.closest('label'));
+        return {
+            checked: acknowledgement.checked,
+            outlineStyle: finishStyle.outlineStyle,
+            outlineWidth: parseFloat(finishStyle.outlineWidth),
+            selectedBorderStyle: selectedStyle.borderStyle,
+            transitionDuration: parseFloat(finishStyle.transitionDuration) || 0,
+            animationDuration: parseFloat(finishStyle.animationDuration) || 0,
+        };
+    })()`);
+    assert(
+        accessibilityMedia.checked
+            && accessibilityMedia.outlineStyle !== 'none'
+            && accessibilityMedia.outlineWidth >= 2
+            && accessibilityMedia.selectedBorderStyle !== 'none',
+        'Forced-colors selection or focus remains visually ambiguous.',
+    );
+    assert(
+        accessibilityMedia.transitionDuration <= 0.00001
+            && accessibilityMedia.animationDuration <= 0.00001,
+        'Reduced motion did not collapse onboarding motion.',
+    );
     await screenshot('onboarding-1024-privacy-forced-colors.png');
     await client.send('Emulation.setEmulatedMedia', { media: 'screen', features: [] }, sessionId);
-    process.stderr.write('[onboarding-browser] russian\n');
 
     assert(consoleErrors.length === 0, `Onboarding console errors: ${consoleErrors.join(' | ')}.`);
     assert(resourceErrors.length === 0, `Onboarding resource errors: ${JSON.stringify(resourceErrors)}.`);
@@ -5698,6 +5769,14 @@ try {
     );
     console.log(JSON.stringify(report, null, 2));
     }
+} catch (error) {
+    const diagnostics = chromeOutput.join('').trim();
+
+    if (diagnostics !== '') {
+        throw new Error(`${error.message}\nChrome diagnostics:\n${diagnostics}`, { cause: error });
+    }
+
+    throw error;
 } finally {
     if (client && sessionId && originalProfileLocale) {
         try {

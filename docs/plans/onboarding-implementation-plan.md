@@ -8,10 +8,11 @@ and testing contracts affected by account entry.
 
 ## Status
 
-**Prompt 04 resumable Livewire wizard implementation is approved and in
-progress on the reviewed Prompt 02 state foundation and Prompt 03 lifecycle
-boundary; the complete onboarding product and repository release remain
-unclaimed.**
+**Prompt 04 resumable Livewire wizard implementation and reproduced review
+remediation are complete at the scoped PHP boundary; connected Chrome evidence
+and repository-wide release gates remain blocked. Prompt 05 canonical
+language/timezone integration is approved and in progress. The complete
+onboarding product and repository release remain unclaimed.**
 
 The checkout already contains the additive onboarding aggregate, registration
 bootstrap, central middleware, forward-only Actions, a class-based Livewire
@@ -694,17 +695,21 @@ recipient-locale content tests pass.
   component, forms, Actions, state service, route, layout, catalogues, design
   system and tests; recorded eight exclusive specialist roles before code
   changes. Retain the one class-based component and forward-only server state.
-- [ ] **ONB-P04-02 — RED wizard contracts.** Add focused component, semantic,
+- [x] **ONB-P04-02 — RED wizard contracts.** Added focused component, semantic,
   localization, stale/replay, optional-evidence and disposable-browser-wrapper
-  tests, and observe each selected gap fail for its intended reason.
-- [ ] **ONB-P04-03 — Thin interaction and responsive UI remediation.** Implement
+  tests; the initial 15-case suite produced 14 intended failures before the
+  implementation and the expanded 23-case suite now passes.
+- [x] **ONB-P04-03 — Thin interaction and responsive UI remediation.** Implemented
   computed progress, semantic radio/checkbox groups, explicit loading/offline/
   dirty/error feedback, localized validation, stale-state recovery, guarded
   pet deferral, focused hydration and mobile-first design-system-aligned views.
-- [ ] **ONB-P04-04 — Connected browser evidence.** Extend the canonical isolated
-  runner with onboarding coverage at 320x800, 375x812, 768x1024 and 1440x900,
+- [ ] **ONB-P04-04 — Connected browser evidence.** The canonical isolated
+  runner now contains onboarding coverage at 320x800, 360x800, 375x812,
+  390x844, 768x1024 and 1440x900,
   including overflow, focus, touch target, zoom/forced-colors, locale, console
-  and network assertions against disposable data.
+  and network assertions against disposable data. Isolation and seeding pass,
+  but installed Chrome 152 exits with `SIGSEGV`/139 before page assertions, so
+  connected evidence remains open rather than inferred.
 - [ ] **ONB-P04-05 — Independent frozen-diff review.** A reviewer excluded from
   discovery and implementation must cover architecture, Livewire security,
   UX, accessibility and regression; every material finding is reproduced and
@@ -712,6 +717,26 @@ recipient-locale content tests pass.
 - [ ] **ONB-P04-06 — Documentation, gates and publication.** Record exact tests,
   commands, failures, browser evidence, diff ownership, commit and push output;
   publish only if every applicable material gate is green.
+- [x] **ONB-P05-01 — Preference-domain re-audit and delivery plan.** Re-read the
+  canonical profile form/action, locale middleware/configuration, onboarding
+  transition boundary, profile/auth tests and EN/LT/RU catalogues before any
+  Prompt 05 production edit; retain one profile-preference persistence path.
+- [ ] **ONB-P05-02 — RED preference contracts.** Prove initial hydration,
+  configured locale options, real IANA timezone acceptance/rejection, immediate
+  LT/RU application, stale/replay safety, resume and normal-settings
+  consistency before changing runtime behavior.
+- [ ] **ONB-P05-03 — Canonical preference integration.** Reuse
+  `ProfilePreferencesForm` and `CompleteOnboardingPreferences` /
+  `UpdateProfilePreferences`; persist only `users.locale` and `users.timezone`,
+  apply the saved locale to session/current response, and let the canonical
+  onboarding Action advance the server state.
+- [ ] **ONB-P05-04 — Accessible localized presentation.** Keep one H1, labelled
+  44px selects, associated help/errors, summary focus, dirty/loading/offline
+  status, wrapping EN/LT/RU copy and no browser-owned identity/step state.
+- [ ] **ONB-P05-05 — Independent review and verification.** Review architecture,
+  localization/timezone correctness, Livewire security, accessibility and
+  profile regression on a frozen diff; rerun focused/full applicable gates and
+  publish only when every material gate is green.
 
 ## Acceptance Criteria
 
@@ -798,11 +823,37 @@ application database.
   one class component and server state; reuse canonical preference/privacy
   boundaries; add only one controlled pet-choice form; do not invent Back while
   `OnboardingState::canEnter()` forbids previous-state entry.
-- [ ] RED wizard/security/localization/browser contracts observed.
-- [ ] Production interaction and presentation remediation implemented.
-- [ ] Focused, adjacent, browser and repository gates observed.
-- [ ] Independent frozen-diff review completed and findings dispositioned.
+- [x] RED wizard/security/localization/browser contracts observed: 15 tests
+  produced 14 intended failures; browser isolation had no onboarding mode.
+- [x] Production interaction and presentation remediation implemented. After
+  independent review fixes, the expanded wizard suite passes 29 tests / 226
+  assertions; the selected onboarding/auth/browser-isolation/architecture
+  slice passes 214 of 218 tests / 54,915 assertions, with only four previously
+  open generated-evidence/factory/forum-history architecture failures. Focused
+  production Larastan was rerun uncached with `--debug` and passes.
+- [x] Focused and adjacent gates observed. The broader selected slice passed
+  271 of 277 tests; its six failures are the already-open 25 missing
+  cross-domain factories, stale generated compliance/inventory/forum history,
+  and pre-existing shared JS lifecycle/literal contracts. Browser database
+  preparation and `OnboardingBrowserSeeder` pass, then Chrome 152 crashes with
+  `SIGSEGV` before the connected assertions.
+- [x] Initial independent architecture/security, UX/accessibility and regression
+  reviews completed. Reproduced account-snapshot, progress, validation/focus,
+  pet-evidence mapping, process-lifecycle, query-budget and flat-surface defects
+  were fixed with regressions. A final post-fix frozen-diff confirmation remains
+  part of ONB-P04-05.
 - [ ] Changelog, plans, commit and push status reconciled from observed output.
+
+### Prompt 05
+
+- [x] Prompt 05 scope added to both canonical plans before runtime changes:
+  canonical form/action reuse, configured locale source, IANA timezone,
+  immediate locale application, resume/profile consistency, accessibility,
+  security and EN/LT/RU evidence.
+- [ ] Six read-only specialist roles completed and findings dispositioned.
+- [ ] RED preference-domain/component contracts observed.
+- [ ] Canonical implementation, focused verification and independent review
+  completed.
 
 ### Prompt 03
 

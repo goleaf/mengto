@@ -76,6 +76,8 @@ final class CreatePetProfile extends Component
 
     private OnboardingState $onboardingState;
 
+    private bool $mounting = false;
+
     public function boot(
         AuthFactory $auth,
         CreatePetProfileAction $createAction,
@@ -98,10 +100,21 @@ final class CreatePetProfile extends Component
 
     public function mount(): void
     {
-        $this->mountedUserId = (int) $this->requireUser()->getKey();
-        $this->idempotencyKey = (string) Str::uuid();
-        $this->mediaIdempotencyKey = (string) Str::uuid();
-        $this->accessRequestIdempotencyKey = (string) Str::uuid();
+        $this->mounting = true;
+
+        try {
+            $this->mountedUserId = (int) $this->requireUser()->getKey();
+            $this->idempotencyKey = (string) Str::uuid();
+            $this->mediaIdempotencyKey = (string) Str::uuid();
+            $this->accessRequestIdempotencyKey = (string) Str::uuid();
+        } finally {
+            $this->mounting = false;
+        }
+    }
+
+    public function hydrate(): void
+    {
+        $this->requireUser();
     }
 
     /** @return array<string, string> */
@@ -352,7 +365,10 @@ final class CreatePetProfile extends Component
             $user instanceof User
                 && $user->isActive()
                 && $this->emailVerification->allows($user)
-                && ($this->mountedUserId === 0 || $this->mountedUserId === (int) $user->getKey()),
+                && (
+                    $this->mountedUserId === (int) $user->getKey()
+                    || ($this->mounting && $this->mountedUserId === 0)
+                ),
             403,
         );
 

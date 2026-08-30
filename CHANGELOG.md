@@ -122,6 +122,13 @@ status, invalidated evidence, external blockers, and rollback guidance are in
   availability → verification → onboarding → portal boundary. Incomplete
   accounts retain only the exact lifecycle allowlist and the pet bridge only
   at the persisted pet-relationship step.
+- Added the resumable class-based Livewire onboarding wizard with
+  server-derived semantic progress, localized preference/pet/privacy forms,
+  guarded stale/replayed transitions, account-bound snapshots, focused
+  loading/dirty/offline/error feedback, and a mobile-first EN/LT/RU interface.
+  Added an isolated onboarding browser mode and deterministic testing-only
+  fixtures; connected visual execution remains a release gate because the
+  host Chrome 152 binary currently terminates with `SIGSEGV`.
 - Recovered post-commit verification delivery exceptions and standard skipped
   notifications without returning HTTP 500 or losing the authenticated
   account, localized verification mail and recovery feedback for EN/LT/RU, and

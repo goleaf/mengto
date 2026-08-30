@@ -10,8 +10,8 @@ use App\Actions\CompleteOnboardingPrivacy;
 use App\Actions\DeferOnboardingPetRelationship;
 use App\Enums\OnboardingPetChoice;
 use App\Enums\OnboardingStep;
-use App\Livewire\Forms\OnboardingPrivacyForm;
 use App\Livewire\Forms\OnboardingPetChoiceForm;
+use App\Livewire\Forms\OnboardingPrivacyForm;
 use App\Livewire\Forms\ProfilePreferencesForm;
 use App\Models\PetProfile;
 use App\Models\User;
@@ -38,6 +38,8 @@ final class Onboarding extends Component
     public OnboardingPetChoiceForm $petForm;
 
     public bool $privacyAcknowledged = false;
+
+    public bool $focusCurrentStep = false;
 
     #[Locked]
     public string $expectedStep = '';
@@ -71,6 +73,8 @@ final class Onboarding extends Component
 
     private OnboardingPetEvidence $petEvidence;
 
+    private bool $mounting = false;
+
     public function boot(
         AuthFactory $auth,
         EmailVerificationMode $emailVerification,
@@ -97,19 +101,31 @@ final class Onboarding extends Component
 
     public function mount(): void
     {
-        $user = $this->requireUser();
-        $state = $user->onboarding()->first();
+        $this->mounting = true;
 
-        if (! $state instanceof UserOnboarding || $this->onboardingState->isComplete($state)) {
-            $this->redirect($this->entryDestination->urlFor($user, route('home')));
+        try {
+            $user = $this->requireUser();
+            $state = $user->onboarding()->first();
 
-            return;
+            if (! $state instanceof UserOnboarding || $this->onboardingState->isComplete($state)) {
+                $this->redirect($this->entryDestination->urlFor($user, route('home')));
+
+                return;
+            }
+
+            $this->mountedUserId = (int) $user->getKey();
+            $this->focusCurrentStep = Session::pull('onboarding-focus-step', false) === true;
+            $this->actors->provisionPrivateForUser($user);
+            $this->syncSnapshot($state);
+            $this->prepareCurrentStep($user, $state);
+        } finally {
+            $this->mounting = false;
         }
+    }
 
-        $this->mountedUserId = (int) $user->getKey();
-        $this->actors->provisionPrivateForUser($user);
-        $this->syncSnapshot($state);
-        $this->prepareCurrentStep($user, $state);
+    public function hydrate(): void
+    {
+        $this->requireUser();
     }
 
     /** @return array<string, string> */
@@ -179,6 +195,12 @@ final class Onboarding extends Component
         return min($step?->position() ?? 1, 4);
     }
 
+    #[Computed]
+    public function completedProgressSteps(): int
+    {
+        return max(0, $this->progressPosition() - 1);
+    }
+
     /**
      * @return list<array{step: string, number: int, label: string, status: 'complete'|'current'|'upcoming'}>
      */
@@ -235,6 +257,7 @@ final class Onboarding extends Component
 
         if ($state instanceof UserOnboarding) {
             Session::put('locale', $this->requireUser()->fresh()->locale);
+            Session::flash('onboarding-focus-step', true);
             $this->redirectRoute('onboarding.show');
         }
     }
@@ -307,7 +330,10 @@ final class Onboarding extends Component
             $user instanceof User
                 && $user->isActive()
                 && $this->emailVerification->allows($user)
-                && ($this->mountedUserId === 0 || $this->mountedUserId === (int) $user->getKey()),
+                && (
+                    $this->mountedUserId === (int) $user->getKey()
+                    || ($this->mounting && $this->mountedUserId === 0)
+                ),
             403,
         );
 
@@ -340,7 +366,7 @@ final class Onboarding extends Component
                 return null;
             }
 
-            $this->setErrorBag($exception->errors());
+            $this->setErrorBag($this->componentErrors($exception));
             $this->dispatch('onboarding-validation-failed');
 
             return null;
@@ -360,6 +386,8 @@ final class Onboarding extends Component
         $this->onboardingLockVersion = $state->lock_version;
         unset(
             $this->progressSteps,
+            $this->progressPosition,
+            $this->completedProgressSteps,
             $this->hasManagedPet,
             $this->hasAccessRequestEvidence,
             $this->needsPetEvidenceRecovery,
@@ -398,5 +426,18 @@ final class Onboarding extends Component
 
         return $state instanceof UserOnboarding
             && $this->onboardingState->currentStep($state)->value !== $this->expectedStep;
+    }
+
+    /** @return array<string, list<string>> */
+    private function componentErrors(ValidationException $exception): array
+    {
+        $errors = $exception->errors();
+
+        if (isset($errors['petChoice'])) {
+            $errors['petForm.choice'] = $errors['petChoice'];
+            unset($errors['petChoice']);
+        }
+
+        return $errors;
     }
 }
