@@ -7,6 +7,7 @@ return [
     'access_expires_views' => ':label · galioja iki :expires · perziuros: :views',
     'access_limited_to' => 'Prieiga ribojama iki: :sections',
     'action_moment' => ':pet akimirka',
+    'action_processing' => 'Vykdoma…',
     'action_publication' => ':name publikacija',
     'administered_by' => ':status, atliko :name · :date',
     'active_warnings' => '{1} :count aktyvus ispejimas|[2,*] :count aktyvus ispejimai',

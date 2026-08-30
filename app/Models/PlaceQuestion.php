@@ -12,6 +12,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 /**
  * @property CarbonImmutable|null $answered_at
@@ -38,7 +40,12 @@ final class PlaceQuestion extends Model
         'idempotency_key',
         'body',
         'status',
+        'moderation_status',
+        'duplicate_question_id',
+        'closed_by_user_id',
         'answered_at',
+        'closed_at',
+        'close_reason',
     ];
 
     protected $hidden = ['idempotency_key'];
@@ -50,6 +57,7 @@ final class PlaceQuestion extends Model
         return [
             'status' => PlaceQuestionStatus::class,
             'answered_at' => 'immutable_datetime',
+            'closed_at' => 'immutable_datetime',
         ];
     }
 
@@ -76,12 +84,26 @@ final class PlaceQuestion extends Model
         return $this->hasOne(PlaceQuestionAnswer::class);
     }
 
+    /** @return HasMany<PlaceQuestionEvent, $this> */
+    public function events(): HasMany
+    {
+        return $this->hasMany(PlaceQuestionEvent::class);
+    }
+
+    /** @return MorphMany<ForumReport, $this> */
+    public function reports(): MorphMany
+    {
+        return $this->morphMany(ForumReport::class, 'subject');
+    }
+
     /** @param Builder<PlaceQuestion> $query @return Builder<PlaceQuestion> */
     public function scopeVisible(Builder $query): Builder
     {
-        return $query->whereIn('status', [
-            PlaceQuestionStatus::Open->value,
-            PlaceQuestionStatus::Answered->value,
-        ]);
+        return $query
+            ->where('moderation_status', 'approved')
+            ->whereNotIn('status', [
+                PlaceQuestionStatus::Hidden->value,
+                PlaceQuestionStatus::Removed->value,
+            ]);
     }
 }

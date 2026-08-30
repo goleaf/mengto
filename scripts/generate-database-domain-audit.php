@@ -62,6 +62,7 @@ function runDatabaseDomainAudit(array $argv): int
 
         setAuditEnvironment('APP_ENV', 'testing');
         setAuditEnvironment('APP_CONFIG_CACHE', $configCache);
+        setAuditEnvironment('EMAIL_VERIFICATION_ENABLED', 'true');
         setAuditEnvironment('DB_CONNECTION', 'sqlite');
         setAuditEnvironment('DB_DATABASE', $database);
         setAuditEnvironment('CACHE_STORE', 'array');
@@ -506,6 +507,20 @@ function migrationInventory(array $migrationSources): array
                 $dynamicMatches,
             );
             $tables = [...$tables, ...$dynamicMatches[1]];
+        }
+
+        preg_match_all('/^use\s+(App\\\\Models\\\\[A-Za-z0-9_]+);$/m', $source, $modelMatches);
+
+        foreach ($modelMatches[1] as $modelClass) {
+            $shortName = substr($modelClass, (int) strrpos($modelClass, '\\') + 1);
+
+            if (preg_match('/\b'.preg_quote($shortName, '/').'::query\s*\(/', $source) !== 1
+                || ! class_exists($modelClass)
+                || ! is_subclass_of($modelClass, Model::class)) {
+                continue;
+            }
+
+            $tables[] = (new $modelClass)->getTable();
         }
 
         $tables = array_values(array_unique($tables));

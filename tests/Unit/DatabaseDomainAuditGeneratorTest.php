@@ -97,6 +97,27 @@ test('the integrity gate accepts complete audit evidence', function () {
     expect($process->isSuccessful())->toBeTrue($process->getErrorOutput());
 });
 
+test('data only migrations map the table of an explicitly queried first party model', function () {
+    $inventory = migrationInventory([
+        '/tmp/0001_seed_identity_lock.php' => <<<'PHP'
+<?php
+
+use App\Models\PlaceSubmissionIdentityLock;
+
+return new class {
+    public function up(): void
+    {
+        PlaceSubmissionIdentityLock::query()->firstOrCreate(['identity_hash' => 'fixed']);
+    }
+};
+PHP,
+    ]);
+
+    expect($inventory)->toBe([
+        '0001_seed_identity_lock.php' => ['place_submission_identity_locks'],
+    ]);
+});
+
 test('the integrity gate exits nonzero for invalid audit evidence', function (
     array $overrides,
     string $expectedError,

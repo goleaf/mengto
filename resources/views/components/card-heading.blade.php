@@ -5,7 +5,7 @@
     'spacing' => 'regular',
 ])
 
-@if ($level === 2)
+@if ((string) $level === '2')
     <h2
         data-card-heading
         {{ $attributes->class([
@@ -15,7 +15,7 @@
             'mt-3' => $spacing === 'relaxed',
         ]) }}
     >
-        <x-optional-link :href="$href">{{ $title }}</x-optional-link>
+        <x-optional-link :href="$href">{{ (string) $title }}</x-optional-link>
     </h2>
 @else
     <h3
@@ -27,6 +27,6 @@
             'mt-3' => $spacing === 'relaxed',
         ]) }}
     >
-        <x-optional-link :href="$href">{{ $title }}</x-optional-link>
+        <x-optional-link :href="$href">{{ (string) $title }}</x-optional-link>
     </h3>
 @endif

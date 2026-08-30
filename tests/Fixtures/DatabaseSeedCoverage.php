@@ -300,6 +300,7 @@ final class DatabaseSeedCoverage
             'place_access_audits' => ['metadata'],
             'place_access_grants' => ['metadata'],
             'place_location_versions' => ['public_address'],
+            'place_merge_redirects' => ['superseded_at'],
             'place_questions' => ['answered_at'],
             'reservations' => ['completed_at', 'offered_price'],
             'search_alerts' => ['stopped_at'],

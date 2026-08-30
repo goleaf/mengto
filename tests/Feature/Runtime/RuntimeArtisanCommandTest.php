@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Services\EmailVerificationMode;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\Process\Process;
 
@@ -38,6 +39,7 @@ test('the test process never loads the deployed configuration cache', function (
         ->and(config('mail.default'))->toBe('array')
         ->and(config('queue.default'))->toBe('sync')
         ->and(config('session.driver'))->toBe('array')
+        ->and(app(EmailVerificationMode::class)->isEnabled())->toBeTrue()
         ->and(DB::connection()->getDriverName())->toBe('sqlite')
         ->and(DB::connection()->getDatabaseName())->toBe(':memory:')
         ->and(storage_path())->toStartWith(sys_get_temp_dir().DIRECTORY_SEPARATOR.'laravel-tests-');

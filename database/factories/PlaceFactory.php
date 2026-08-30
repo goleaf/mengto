@@ -7,6 +7,7 @@ namespace Database\Factories;
 use App\Enums\PlaceAccessibilityStatus;
 use App\Enums\PlaceStatus;
 use App\Enums\PlaceType;
+use App\Enums\PlacePublicLocationPrecision;
 use App\Enums\PlaceVerificationStatus;
 use App\Enums\PlaceVisibility;
 use App\Models\Organization;
@@ -55,6 +56,7 @@ final class PlaceFactory extends ApplicationFactory
             'normalized_website' => $normalizer->website($website),
             'public_latitude' => '54.687200',
             'public_longitude' => '25.279700',
+            'public_location_precision' => PlacePublicLocationPrecision::ApproximatePoint,
             'exact_address' => fake()->streetAddress().', Vilnius',
             'exact_latitude' => '54.687234',
             'exact_longitude' => '25.279734',

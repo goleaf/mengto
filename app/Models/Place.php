@@ -7,6 +7,7 @@ namespace App\Models;
 use App\Enums\OrganizationRole;
 use App\Enums\PlaceAccessibilityStatus;
 use App\Enums\PlaceAccessPurpose;
+use App\Enums\PlacePublicLocationPrecision;
 use App\Enums\PlaceStatus;
 use App\Enums\PlaceType;
 use App\Enums\PlaceVerificationStatus;
@@ -21,6 +22,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 /**
  * @property PlaceAccessibilityStatus $accessibility_status
@@ -44,6 +46,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property string|null $public_email
  * @property numeric-string|null $public_latitude
  * @property numeric-string|null $public_longitude
+ * @property PlacePublicLocationPrecision|null $public_location_precision
  * @property string|null $public_phone
  * @property string $public_region
  * @property string|null $public_website
@@ -98,6 +101,7 @@ final class Place extends Model
         'public_email',
         'public_latitude',
         'public_longitude',
+        'public_location_precision',
         'exact_address',
         'exact_latitude',
         'exact_longitude',
@@ -151,6 +155,7 @@ final class Place extends Model
             'status' => PlaceStatus::class,
             'public_latitude' => 'decimal:6',
             'public_longitude' => 'decimal:6',
+            'public_location_precision' => PlacePublicLocationPrecision::class,
             'exact_address' => 'encrypted',
             'exact_latitude' => 'encrypted',
             'exact_longitude' => 'encrypted',
@@ -225,6 +230,30 @@ final class Place extends Model
     public function questions(): HasMany
     {
         return $this->hasMany(PlaceQuestion::class);
+    }
+
+    /** @return HasMany<PlaceCorrection, $this> */
+    public function corrections(): HasMany
+    {
+        return $this->hasMany(PlaceCorrection::class);
+    }
+
+    /** @return MorphMany<ForumReport, $this> */
+    public function reports(): MorphMany
+    {
+        return $this->morphMany(ForumReport::class, 'subject');
+    }
+
+    /** @return HasMany<PlaceMedia, $this> */
+    public function media(): HasMany
+    {
+        return $this->hasMany(PlaceMedia::class);
+    }
+
+    /** @return HasMany<PlaceInvitation, $this> */
+    public function invitations(): HasMany
+    {
+        return $this->hasMany(PlaceInvitation::class);
     }
 
     /** @return HasMany<PlaceFact, $this> */

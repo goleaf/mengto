@@ -49,6 +49,7 @@ $environment = [
     'DB_CONNECTION' => 'sqlite',
     'DB_DATABASE' => ':memory:',
     'DB_URL' => false,
+    'EMAIL_VERIFICATION_ENABLED' => 'true',
     'LARAVEL_STORAGE_PATH' => $testStorage,
     'MAIL_MAILER' => 'array',
     'QUEUE_CONNECTION' => 'sync',

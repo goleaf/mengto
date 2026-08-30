@@ -21,6 +21,9 @@ use App\Models\ForumReportEvent;
 use App\Models\ForumReportReason;
 use App\Models\ForumTopic;
 use App\Models\Listing;
+use App\Models\PlaceQuestion;
+use App\Models\Place;
+use App\Models\PlaceCorrection;
 use App\Models\SearchCase;
 use App\Models\Sighting;
 use App\Models\SocialRelationshipRequest;
@@ -84,6 +87,9 @@ final readonly class SubmitForumReport
             ForumExpertSessionQuestion::class,
             ForumExpertSessionAnswer::class,
             SocialRelationshipRequest::class,
+            PlaceQuestion::class,
+            Place::class,
+            PlaceCorrection::class,
         ], true)) {
             throw ValidationException::withMessages([
                 'subject' => __('forum_moderation.validation.unsupported_subject'),
@@ -106,6 +112,10 @@ final readonly class SubmitForumReport
         }
 
         if ($subject instanceof SocialRelationshipRequest) {
+            $this->gate->forUser($reporter)->authorize('report', $subject);
+        }
+
+        if ($subject instanceof PlaceQuestion || $subject instanceof PlaceCorrection || $subject instanceof Place) {
             $this->gate->forUser($reporter)->authorize('report', $subject);
         }
 
@@ -281,6 +291,9 @@ final readonly class SubmitForumReport
             $subject instanceof ForumExpertSessionQuestion => $subject->author_user_id,
             $subject instanceof ForumExpertSessionAnswer => $subject->author_user_id,
             $subject instanceof SocialRelationshipRequest => $subject->created_by_user_id,
+            $subject instanceof PlaceQuestion => $subject->author_user_id,
+            $subject instanceof PlaceCorrection => $subject->submitter_user_id,
+            $subject instanceof Place => $subject->owner_user_id,
             default => null,
         };
 

@@ -82,6 +82,7 @@ test('the canonical browser runner owns a disposable database and loopback serve
     expect($runner)
         ->toContain("tempnam(sys_get_temp_dir(), 'laravel-browser-db-')")
         ->toContain("'APP_ENV' => 'testing'")
+        ->toContain("'EMAIL_VERIFICATION_ENABLED' => 'true'")
         ->toContain("'DB_CONNECTION' => 'sqlite'")
         ->toContain("'APP_CONFIG_CACHE' => \$configCache")
         ->toContain("'BROWSER_ALLOW_DATA_MUTATION' => '1'")

@@ -27,6 +27,8 @@ final class PlaceQuestionAnswerFactory extends ApplicationFactory
             'stable_key' => 'place-answer-'.Str::lower((string) Str::ulid()),
             'idempotency_key' => (string) Str::uuid(),
             'body' => $this->faker->paragraph(),
+            'current_version' => 1,
+            'correction_reason' => null,
             'answered_at' => now(),
         ];
     }

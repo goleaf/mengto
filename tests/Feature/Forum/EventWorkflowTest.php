@@ -52,6 +52,15 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Validation\ValidationException;
 use Livewire\Livewire;
 
+test('event vaccination requirements defer browser synchronization until submit', function () {
+    $view = file_get_contents(resource_path('views/livewire/forum/forum-event-directory.blade.php'));
+
+    expect($view)
+        ->toBeString()
+        ->toContain('wire:model="form.vaccinationRequirements"')
+        ->not->toContain('wire:model.live.debounce.400ms="form.vaccinationRequirements"');
+});
+
 uses(RefreshDatabase::class);
 
 test('event migration is reversible without touching legacy group activity data', function () {

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Enums\PlaceVisibility;
+use App\Enums\PlacePublicLocationPrecision;
 use App\Models\Place;
 
 final class PlacePublicProjection
@@ -13,6 +14,8 @@ final class PlacePublicProjection
     public function for(Place $place): array
     {
         $isPublic = $place->visibility === PlaceVisibility::Public;
+        $hasApproximatePoint = $isPublic
+            && $place->public_location_precision === PlacePublicLocationPrecision::ApproximatePoint;
 
         return [
             'stable_key' => $place->stable_key,
@@ -25,8 +28,11 @@ final class PlacePublicProjection
             'status' => $place->status->value,
             'public_region' => $place->public_region,
             'public_address' => $isPublic ? $place->public_address : null,
-            'public_latitude' => $isPublic ? $place->public_latitude : null,
-            'public_longitude' => $isPublic ? $place->public_longitude : null,
+            'public_latitude' => $hasApproximatePoint ? $place->public_latitude : null,
+            'public_longitude' => $hasApproximatePoint ? $place->public_longitude : null,
+            'public_location_precision' => $isPublic
+                ? ($place->public_location_precision?->value ?? PlacePublicLocationPrecision::Region->value)
+                : PlacePublicLocationPrecision::Region->value,
             'verification_status' => $place->verification_status->value,
             'verification_label' => $place->verification_status->label(),
             'verification_expires_at' => $place->information_expires_at?->toAtomString(),

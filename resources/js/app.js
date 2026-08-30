@@ -1,3 +1,4 @@
+import './action-forms';
 import './care-offline-sync';
 import './pet-profile-autosave-recovery';
 import './places-map';

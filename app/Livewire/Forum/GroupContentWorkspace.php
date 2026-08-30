@@ -36,7 +36,6 @@ use App\Models\KnowledgeArticle;
 use App\Models\User;
 use App\Services\ForumPollEligibility as ForumPollEligibilityService;
 use Carbon\CarbonInterface;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Str;
@@ -111,11 +110,22 @@ final class GroupContentWorkspace extends Component
         $this->activity->locationScope = $group->location_scope ?? '';
         $this->rotateContentTokens();
 
+        $visiblePollIds = ForumPoll::query()
+            ->where('forum_group_id', $group->id)
+            ->whereIn('status', [
+                ForumPollStatus::Active->value,
+                ForumPollStatus::Cancelled->value,
+            ])
+            ->whereNull('archived_at')
+            ->latest('created_at')
+            ->latest('id')
+            ->limit(10)
+            ->pluck('id');
+
         ForumPollVote::query()
             ->select(['id', 'forum_poll_id', 'user_id', 'choices', 'lock_version'])
             ->where('user_id', $user->id)
-            ->whereHas('poll', fn (Builder $query): Builder => $query
-                ->where('forum_group_id', $group->id))
+            ->whereIn('forum_poll_id', $visiblePollIds)
             ->get()
             ->each(function (ForumPollVote $vote): void {
                 $this->pollChoices[$vote->forum_poll_id] = $vote->choices;
@@ -263,7 +273,8 @@ final class GroupContentWorkspace extends Component
                 ForumPollStatus::Cancelled->value,
             ])
             ->whereNull('archived_at')
-            ->latest()
+            ->latest('created_at')
+            ->latest('id')
             ->limit(10)
             ->get();
         $hasTrustedCommunityAssignment = $this->pollEligibility

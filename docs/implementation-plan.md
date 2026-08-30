@@ -2,6 +2,257 @@
 
 Plan date: 2026-07-30
 
+## Active Delivery: EVENT-P13-ADVANCED Durable Event Operations
+
+Status: `approved; canonical requirements read and specialist discovery starting`
+on 2026-08-30.
+
+This delivery implements the bounded advanced Point 13 scope requested for
+competitions, commercial participants, volunteer staffing, incidents, weather,
+certificates, feedback, archive, and retention on the existing `ForumEvent`
+aggregate. It does not promote unrelated ticket/payment, QR/offline check-in,
+route geometry, training, exhibition, conference, or media-gallery packages.
+The exclusive specialist scopes, dirty-tree exclusions, findings, and review
+dispositions live in
+`docs/audits/event-p13-advanced-work-ledger.md`. The principal owns the shared
+schema, cross-domain decisions, production edits, evidence promotion, commit,
+and push.
+
+### Delivery contract
+
+- Advanced records remain children of canonical `ForumEvent` and, where
+  configured, `ForumEventOccurrence`; no parallel event, user, pet,
+  organization, place, marketplace, notification, media, or moderation
+  authority is introduced.
+- Competition rules, categories, entries, eligibility, judge assignments,
+  scaled-integer criteria/scores, corrections, result versions, appeals, and
+  certificate sources are relational. Finalization is deterministic,
+  transactionally locked, idempotent, and append-only after publication.
+- Vendor and sponsor records separate application/review state, packages,
+  benefits, areas, contacts, expiry/cancellation, disclosure, and public-safe
+  projections. Event participation never weakens marketplace verification or
+  grants attendee exports.
+- Volunteer roles, required skills, applications, shifts, capacity,
+  assignments, substitutions, cancellations, attendance, and communication
+  scopes are relational. Removal revokes current operational access while
+  preserving attribution.
+- Incident records distinguish severity, category, occurrence/location,
+  reporter, responder, factual sources, actions, evidence metadata,
+  resolution, and private append-only history. Public views never expose
+  evidence, private people/pet facts, or fault claims.
+- Weather uses one explicitly configured adapter contract. Disabled or failed
+  providers make no accidental network claim; manual observations remain
+  attributable; stale observations fail visibly; provider data alone cannot
+  cancel, postpone, suspend, or otherwise transition an event.
+- Certificates derive only from canonical attendance or published achievement
+  sources. Issue, regenerate, revoke, locale, checksum, and version history are
+  auditable; private downloads are authenticated, authorized, expiring where
+  shared, and never use unrestricted public URLs.
+- Feedback supports typed public or private visibility, moderation,
+  attendance/source verification, idempotency, rate limiting, and
+  privacy-preserving aggregates that remain suppressed below a configured
+  minimum distinct-contributor threshold.
+- Archive projections are explicit allowlists. Retention rules, legal holds,
+  deletion requests, authorized exports, expiry, and redaction are relational,
+  idempotent, audited, and fail closed around incidents, results,
+  certificates, consent, and immutable history.
+- Every public property/action argument is untrusted. Policies cover every
+  advanced aggregate and mutation; Actions own short transactions and row
+  locks; database constraints enforce uniqueness/capacity/idempotency; only
+  committed events may create recipient-locale deduplicated notifications.
+- Class-based Livewire components use separate passive Blade views, localized
+  EN/LT/RU strings, bounded queries, stable keys, visible loading/error/empty/
+  offline states, non-color status, keyboard paths, focus, and 44-pixel touch
+  targets. No JSON placeholder or UI-only capability may satisfy an item.
+
+| ID | Dependency | Owner | Affected paths/modules | Acceptance criteria | Required verification | Status | Rollback |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| EVENT-ADV-01 | Existing event/organization/place/marketplace/moderation foundations; P22/P26-P29 requirements | Principal plus nine read-only domain specialists | Canonical plan/ledger, event requirements/docs, current schema/code/tests | Existing authority, exact requirement manifest, shared data boundaries, dirty-tree ownership, risks, rollback, and every specialist disposition are recorded before production edits | Git/inventory baseline, specialist reports, plan/ledger diff | in progress | Revert only this delivery's planning additions |
+| EVENT-ADV-02 | EVENT-ADV-01 | Principal | Focused advanced-event feature/unit tests | Failing contracts cover schema constraints, direct authorization, tenant/owner isolation, stale IDs, replay, concurrency, privacy, state transitions, provider failure/staleness, aggregation threshold, retention/hold/export/redaction, and notification rollback/deduplication before production code | Each focused test is observed failing for the missing behavior | planned | Revert only attributable red contracts |
+| EVENT-ADV-03 | EVENT-ADV-02 | Principal | Additive SQLite-portable advanced-event migrations, enums, models, factories | Every requested subdomain is relational, indexed, enum-cast, factory-backed, hidden/redacted where private, uniquely constrained, and reversible before production writes | Migration up/down/reapply, schema/model/factory tests | planned | Roll back additive tables only before use; forward-fix after writes |
+| EVENT-ADV-04 | EVENT-ADV-03 | Principal | Competition Policies, Actions, services, projections, notifications | Eligibility and judge conflicts fail closed; scaled scores cannot overwrite another judge; corrections preserve originals; finalization/correction/appeal/publication are deterministic, versioned, locked, idempotent, and privacy-safe | Competition authorization/state/replay/tie/conflict/concurrency/history/public-projection tests | planned | Disable mutations/publication and forward-fix retained history |
+| EVENT-ADV-05 | EVENT-ADV-03 | Principal | Vendor/sponsor and volunteer Policies, Actions, projections, notifications | Applications, reviews, packages/benefits/areas/contacts and staffing roles/skills/shifts/capacity/substitution/cancellation/attendance follow explicit state machines; expiry/removal revokes access; public projections are allowlisted | Commercial/staff role, wrong-tenant, capacity, replay, expiry, privacy, notification tests | planned | Disable new applications/assignments; retain audited rows |
+| EVENT-ADV-06 | EVENT-ADV-03 | Principal | Incident, weather-provider, certificate, feedback, archive/retention Policies and Actions | Factual incidents, manual/provider weather, canonical certificate sources, moderated feedback, safe aggregates, holds, deletion, export and redaction satisfy the delivery contract without automatic provider cancellation | Incident/source/action/evidence/history, HTTP fake/manual/stale/no-auto-cancel, certificate version/revoke/download, abuse/threshold, legal-hold/export/redaction tests | planned | Disable entry points/providers/exports; preserve protected audit evidence |
+| EVENT-ADV-07 | EVENT-ADV-04..06 | Principal | Class-based advanced event Livewire workspace/form/view/routes and bounded presenters | Authorized members can operate every in-scope workflow; direct calls reauthorize/reload; public/member/private projections, all interface states, responsiveness, keyboard/focus and locale parity are truthful | Livewire tamper/direct-call/replay, query/payload, localization, architecture and browser tests | planned | Remove advanced workspace route/UI while retaining relational data |
+| EVENT-ADV-08 | EVENT-ADV-03..07 | Principal | Advanced factories, deterministic demo seeder, database seeder integration, EN/LT/RU, provider/deployment config | Meaningful state matrices and integrated scenarios are count-stable and environment-safe; provider configuration has explicit disabled/manual fallback; translations remain recursively aligned | Factory coverage, production guard, fresh/repeat seed, config/locale checks | planned | Remove demo synchronization and disable provider; never delete user records |
+| EVENT-ADV-09 | EVENT-ADV-04..08 | Independent final reviewer then principal | Frozen attributable diff and finding ledger | Reviewer is independent of implementation; every material finding is reproduced, dispositioned, fixed when valid, and affected checks rerun before promotion | Review package, disposition ledger, focused reruns, `git diff --check` | planned | Revert unsafe finding-specific changes before publication |
+| EVENT-ADV-10 | EVENT-ADV-09 | Principal | Event/data/security/authorization/frontend/testing/seeding/deployment docs, exact requirement evidence, changelog, full repository | `EVENT-P13-ADVANCED` is promoted only from observed focused/full gates; generated evidence remains byte-current; one attributable temporary-index commit fast-forwards `main` and pushes only after all required gates pass | Focused suites, full serial Pest, syntax/Pint/Larastan, Composer/npm audits, migration/seed repeat, Vite, route/config/view caches, browser, source/generator, secret and staged-diff checks | planned | Do not promote/push on any open material finding or failed gate; forward-fix migrated production data |
+
+Implementation order is `EVENT-ADV-01` through `EVENT-ADV-10`. Every behavior
+change begins with an observed failing test. Cross-domain schema is added only
+after the specialist findings are reconciled; evidence status remains
+`planned`/`discovered` until the exact implementation and verification exists.
+
+## Active Delivery: Portal Events P12-P16 Core Completion
+
+Status: `approved; canonical reading complete and specialist discovery
+starting` on 2026-08-30.
+
+This delivery executes P12 through P16 of
+`docs/plans/portal-events-completion-master-plan.md` against the existing
+`ForumEvent` aggregate. It does not create a second event, place, pet,
+organization, document, notification, translation, or authorization system.
+The exclusive read-only specialist scopes, dirty-tree exclusions, findings,
+and dispositions are recorded in
+`docs/audits/portal-events-p12-p16-work-ledger.md`; the principal owns every
+cross-module decision and edit.
+
+### Delivery contract
+
+- One typed registry owns each event type's translated metadata, validated
+  configuration, builder sections, organizer/participant/pet model, risk
+  defaults, recurrence/session/directory capabilities, icon, factory state,
+  and deterministic seed scenario. Legacy mappings are explicit and unsafe or
+  exploitative configurations fail closed.
+- One class-based Livewire builder persists the server-authoritative draft and
+  current step. Templates copy reusable configuration only, never ownership,
+  participants, invitations/access links, registration state, or stale
+  eligibility evidence. Material edits append immutable versions and history.
+- `ForumEventSeries` owns validated recurrence defaults and
+  `ForumEventOccurrence` remains the stable scheduled truth. Additional,
+  skipped, one-occurrence, future-occurrence, cancelled, postponed,
+  rescheduled, and moved instances preserve history and version defaults and
+  overrides independently.
+- Schedules store UTC instants, an IANA timezone, and deliberate wall time.
+  All-day, overnight, multi-day, ambiguous, and nonexistent DST times have
+  explicit behavior. Tracks, rooms, sessions, speakers/staff, capacity, and
+  ordering remain occurrence-scoped.
+- Group walks reuse canonical places/venues. Public routes and meeting points
+  are approximate and text-complete; exact geometry, directions, access, and
+  operational detail remain private and policy-scoped.
+- Typed participant and pet requirements cover multi-pet species/taxon, age,
+  vaccination, documents, membership, accessibility, and role where required.
+  Unknown, expired, disputed, missing, not assessed, or manual-review facts do
+  not pass silently.
+- Registrations retain the accepted event version and minimal eligibility
+  snapshots. Material pet or event changes re-evaluate affected decisions;
+  exceptions are requirement-specific, expiring, audited, and independently
+  authorized.
+- Only committed material changes create deduplicated recipient-locale
+  notifications. Rollback, no-op, non-material draft, and private-detail-only
+  edits send none; public and notification projections stay privacy-safe.
+- Every new model has a bounded factory. Deterministic scenarios use stable
+  identities and production Actions, rerun without drift, and remain blocked
+  outside local, demo, or testing environments.
+
+| ID | Dependency | Owner | Affected paths/modules | Acceptance criteria | Required verification | Status | Rollback |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| PEV-01 | Approved P12-P16 request; P02/P03 foundations | Principal plus read-only event-domain, builder, recurrence, timezone, schedule, eligibility, authorization, and migration specialists | Canonical plan/ledger, event docs, current event code/tests | Authority, state machines, schema, privacy, dirty-tree ownership, exact scope, and specialist dispositions are recorded before production edits | Git/inventory baseline, specialist reports, plan/ledger diff | in progress | Revert planning-only additions |
+| PEV-02 | PEV-01 | Principal | Type metadata/value objects, configuration validator, compatibility mapping, factories/tests | Canonical and legacy types resolve through one registry used by builder, domain validation, presentation, factories, and tests; invalid configurations reject | Red/green type/configuration tests | planned | Revert registry and retain readable legacy values |
+| PEV-03 | PEV-02 | Principal | Additive builder/template/version/history migration; models, factories, policies, forms, Actions | Draft step/version are server-owned; safe templates and immutable versions are constrained, indexed, authorized, idempotent, and populated-data safe | Migration/rollback, stale/concurrent organizer, wrong-account, template privacy, history tests | planned | Roll back before use; forward-fix after production writes |
+| PEV-04 | PEV-03 | Principal | Class-based builder/form/view, routes, presenter, EN/LT/RU | Resumable steps, readiness, previews, loading/dirty/error/empty/offline states, direct authorization, locale parity, keyboard/focus, and touch targets pass | Livewire tamper/direct-call/replay, localization, browser tests | planned | Remove builder UI while retaining valid drafts/versions |
+| PEV-05 | PEV-03 | Principal | Recurrence/occurrence migration, value objects/services, occurrence Actions, factories/tests | Valid daily/weekly/weekday/monthly/custom/fixed rules generate stable unique occurrences; one/future edits and lifecycle changes never rewrite past instances | Boundary, invalid-rule, stable-key, one/future edit, cancellation, migration tests | planned | Disable expansion/mutations; retain evidence and forward-fix |
+| PEV-06 | PEV-05 | Principal | Timezone/DST normalization, occurrence/session integration, presenters/tests | UTC/IANA/wall-time data is unambiguous; multi-day, DST gap/fold, ordering, session/speaker capacity, and occurrence bounds are deterministic | DST matrix, multi-day, overlap, ordering, capacity, locale-format tests | planned | Disable affected edits and preserve instants/history |
+| PEV-07 | PEV-05..06 and P03 | Principal | Route/meeting-point/route-group schema, models, Actions, policies, presenters, forms/factories/tests | Walk routes reuse place/venue authority; exact operational data never enters public cards/notifications; text alternatives remain complete | Public/private projection, wrong-account, capacity, serialization, Livewire/browser tests | planned | Remove route UI/disable mutations; retain encrypted routes |
+| PEV-08 | PEV-02..07 | Principal | Requirement/decision/evidence/exception/snapshot schema, evaluator, policies/forms/Actions/factories/tests | Multi-pet and participant decisions are minimal, versioned, privacy-scoped, registration-snapshotted, exception-safe, and re-evaluated after material changes | Eligibility matrix, expiry/dispute/review, pet/event change, exception, wrong-account, concurrency, privacy tests | planned | Disable new decisions; retain snapshots/evidence |
+| PEV-09 | PEV-03..08 | Principal | Material-change classifier and after-commit notification boundary | One committed material change produces one privacy-safe localized notification; rollback/no-op/non-material edits produce none | After-commit, rollback, dedupe, locale, audience, revoked-access tests | planned | Disable delivery while retaining versions/history |
+| PEV-10 | PEV-02..09 | Principal | Demo seeder, root seed, canonical/generated docs, changelog | Factories/scenarios cover the implemented matrix; docs/evidence state only observed behavior | Factory/seeder, fresh/repeat seed, source/generator, docs/diff/secret checks | planned | Remove demo/docs additions; never delete user evidence |
+| PEV-11 | PEV-01..10 | Independent reviewers then principal | Frozen attributable diff and runtime boundaries | Domain, privacy, migration/concurrency, localization/accessibility, and regression findings are reproduced, dispositioned, fixed when valid, and rerun | Focused events, full Pest, Pint, Larastan, migration/seed, npm/build, browser, cache, requirement-generation, staged diff | planned | Revert before production use; forward-fix production data |
+
+Test-first order is registry, builder/template/version, recurrence/timezone/DST,
+routes and eligibility snapshots, then notification materiality. Focused gates
+and an independent frozen-diff review precede generated evidence and the full
+release gate.
+
+## Active Delivery: Canonical Emergency Veterinary Discovery
+
+Status: `planned; specialist discovery and red contracts next` on 2026-08-30.
+
+This delivery closes the bounded `PRD-PLACE-003` / `PLA-P15` emergency
+discovery slice by replacing fixture category, hours, species, distance, and
+ranking assumptions with canonical server-side facts. It also implements the
+minimum `PLA-P02`, `PLA-P04`, `PLA-P05`, and `PLA-P14` dependencies required by
+that slice: additive canonical weekly schedules and exceptions, canonical
+veterinary service offerings and supported species, a portal-visible Eloquent
+query, fact-scoped freshness and verification, and privacy-safe approximate
+distance. It does not claim the remaining Places packages complete.
+
+The task starts on `main` at
+`ae4ac3241f99b05645dcc07316f424dfb877892e`, aligned with `origin/main`, in a
+dirty shared tree containing concurrent Places planning, database-seed
+coverage, and audit-ledger work. Every existing staged, unstaged, and untracked
+path is user-owned unless an attributable hunk is recorded below. No existing
+change may be reset, discarded, rewritten, or included in this delivery.
+Publication uses a temporary `GIT_INDEX_FILE` and the complete staged diff is
+reviewed before commit.
+
+### Design and safety decisions
+
+- The candidate query starts with active public `Place` rows whose canonical
+  type is `veterinary_clinic`; category text alone never establishes emergency
+  capability. Only a canonical emergency service offering may do so.
+- One place schedule owns a validated IANA timezone, fact verification state,
+  observed/verified/fresh-until times, weekly intervals, and date exceptions.
+  Overnight intervals are evaluated across their local-date boundary. A full
+  closure exception wins over ordinary intervals; a special-opening exception
+  replaces that date's weekly intervals. `PlaceStatus::TemporarilyClosed`
+  always wins over schedule data.
+- The evaluator is clock-controlled and pure after its bounded eager-loaded
+  input. It exposes `open_now`, `opening_soon`, `closed`, `status_unknown`,
+  `stale_schedule`, and `temporarily_closed`; appointment-only is an explicit
+  qualifier and never implies walk-in acceptance. A schedule is stale when
+  its fact expiry has passed. Missing or invalid timezone, intervals,
+  verification evidence, or dates fail closed to an uncertainty state.
+- A canonical emergency offering records availability, supported species,
+  verification, provenance/freshness, and appointment-only semantics. Null
+  supported species means `species_capability_unknown`; an explicit list that
+  omits the selected species means `species_not_supported`; neither becomes a
+  compatible result.
+- Ranking is a lexicographic tuple prepared on the server: verified emergency
+  capability, opening state, schedule/capability freshness, species
+  compatibility, appointment-only qualifier, privacy-safe approximate
+  distance when both generalized origin and public place point are valid, and
+  stable place ID as the final tie-break. The presentation receives localized
+  explanations for the factors; it never recomputes them in Blade or
+  JavaScript.
+- Emergency mode is a complete server-rendered list and normal HTML form/link
+  flow. It does not require JavaScript, geolocation, a map, route provider, or
+  exact origin. It returns only call and authorized public-detail actions.
+  Approximate origin coordinates stay inside the server calculation and are
+  absent from returned view data, HTML, JavaScript, logs, URLs, and shared
+  caches.
+- The EN/LT/RU safety message is unconditional. It tells the member to call
+  first and states that PawCircle does not diagnose or guarantee admission,
+  waiting time, clinician availability, species acceptance, or treatment.
+
+### Specialist work ledger
+
+Specialists are read-only during discovery and review. Their scopes are
+exclusive, reports identify exact files, requirements, tests, and severity,
+and the principal owns every cross-scope decision and tracked edit. An
+implementer cannot act as the independent reviewer for the same slice.
+
+| Specialist ID | Exclusive scope | Required deliverable | Dependency | Status |
+| --- | --- | --- | --- | --- |
+| EVD-S01 Veterinary safety | Clinical-risk copy, call-first prominence, non-diagnosis and non-guarantee boundaries, species-mismatch handling | Severity-ranked copy/state review with safety-equivalent EN/LT/RU intent and unsafe-failure examples | Canonical design above | pending |
+| EVD-S02 Schedule computation | IANA timezone, DST, weekly/overnight intervals, date exceptions, temporary closure, appointment-only, verification and freshness precedence | State table, edge-case matrix, proposed pure evaluator interface, and canonical schedule red tests | EVD-01 plan | pending |
+| EVD-S03 Ranking | Candidate eligibility, deterministic tuple, unknown/mismatch ordering, approximate-distance fallback and stable ties | Ranking truth table, tie-break contract, factor explanations, and adversarial cases | EVD-S02 facts | pending |
+| EVD-S04 Privacy | Portal-visible scoping, generalized origin, public coordinates, HTML/JS/log/cache/URL exclusion and no-provider fallback | Data-flow review with leak assertions and exact private-location tests | Existing place authority | pending |
+| EVD-S05 Localization | EN/LT/RU catalogue ownership, safety equivalence, key/placeholder parity, status and ranking-factor wording | Catalogue/key map, semantic parity review, long-copy risks, and locale test matrix | EVD-S01 states | pending |
+| EVD-S06 Accessibility | Mobile call/details actions, heading/status semantics, focus, 44-pixel targets, non-color states, no-JavaScript order and reflow | WCAG-oriented markup review and desktop/mobile/keyboard acceptance matrix | Server presentation design | pending |
+| EVD-S07 Testing | Pest layers, factories, time/locale isolation, DST/overnight/holiday/malformed/private/no-results/tie cases, Places/full-suite/static/build/browser gates | Exact red/green test inventory, command sequence, isolation risks, and coverage-gap review | EVD-S01..06 | pending |
+| EVD-R01 Independent review | Frozen attributable diff after implementation | Reproduce material findings, record every disposition, require affected reruns, and issue release-readiness verdict | EVD-01..08 | pending |
+
+### Delivery ledger
+
+| ID | Dependency | Owner | Affected paths | Acceptance criteria | Verification | Status | Rollback |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| EVD-01 | PRD-PLACE-003, PLA-P15, schedule/service/privacy/safety requirements | Principal plus EVD-S01..07 | This ledger and read-only specialist reports | Existing authority, dirty-tree ownership, state precedence, privacy, safety, accessibility, localization, test, and rollback contracts are mapped before production edits | Repository baseline, requirement trace, specialist reports | in progress | Revert only this planning addition |
+| EVD-02 | EVD-01 | Principal | `tests/Unit/Places/**`, `tests/Feature/Places/**`, `tests/Feature/PlaceDirectoryTest.php` | Failing behavior contracts cover DST, overnight, holiday exceptions, temporary closure, missing/invalid timezone, stale/unverified schedules, appointment-only, species compatible/unknown/mismatch, public-only candidates, deterministic ties, malformed coordinates, no origin, no results, private-location exclusion, localized safety copy, and no-JavaScript HTML | Focused red commands observed before implementation | pending | Revert only attributable red contracts |
+| EVD-03 | EVD-02 | Principal | Additive migration; new Places enums/models/factories; `Place` relations | Schedule, interval, exception, and veterinary offering facts are normalized, constrained, indexed, enum-cast, factory-backed, SQLite-portable, and reversible before production writes | Schema/factory tests and isolated migration rollback/reapply | pending | Roll back additive tables only before production writes; forward-fix afterward |
+| EVD-04 | EVD-03 | Principal | Schedule and veterinary capability evaluators/value objects | Clock-controlled evaluation implements documented precedence and never promotes missing, stale, invalid, unverified, appointment-only, or incompatible facts | Unit red/green matrix including Vilnius DST boundaries | pending | Revert evaluator with its tests while retaining unused additive tables |
+| EVD-05 | EVD-03..04 | Principal | Portal-visible veterinary query, approximate-distance calculator, deterministic ranker | One bounded eager-loaded Eloquent query scopes public active veterinary places first; rank tuple and explanations are stable; malformed/missing coordinates yield unknown distance without failure or leakage | Query-count, privacy, eligibility, distance, and tie tests | pending | Revert query/ranker and fall back to disabled emergency results, never fixture ranking |
+| EVD-06 | EVD-04..05 | Principal | Focused emergency presenter and emergency Blade/components | Emergency output is server-prepared, localized, and usable with JavaScript, maps, geolocation, and providers absent; call renders only for a canonical public phone; approved public details remain available; every card exposes textual states and ranking factors | Feature/render/no-script tests and Blade architecture checks | pending | Revert presentation slice and disable emergency entry point if canonical facts are unavailable |
+| EVD-07 | EVD-03..06 | Principal | `PlaceDemoSeeder`, relevant factories, `lang/{en,lt,ru}/place_directory.php`, SCSS only if existing tokens cannot express the markup | Deterministic safe examples cover every state without internet data; EN/LT/RU wording is safety-equivalent and key/placeholder complete; mobile actions retain 44-pixel targets and visible focus | Seed repeatability, locale parity, three-locale render, mobile/keyboard checks | pending | Remove demo-only synchronization and revert locale/presentation keys together |
+| EVD-08 | EVD-02..07 | EVD-R01 and principal | Frozen attributable diff | Independent findings are reproduced and dispositioned; valid in-scope findings are fixed and affected checks rerun before documentation promotion | Review package, disposition ledger, focused reruns | pending | Revert unsafe finding-specific change |
+| EVD-09 | EVD-08 | Principal | PRD/compliance/Places/data/privacy/security/testing/deployment/current-progress docs and changelog only after proof | Canonical schedule tests pass before PRD-PLACE-003 is updated; documentation claims match observed focused Places, full Pest, Pint, Larastan, npm build, mobile browser, and isolated migration evidence | Exact commands from `docs/testing.md`, user-requested complete Places checks, diff/secret review, and temporary-index staged diff | pending | Revert coherent documentation/evidence commit; never mark unobserved gates verified |
+
+Implementation order is `EVD-01` through `EVD-09`. Every behavior change
+begins with an observed failing test. `PRD-PLACE-003` and its compliance row
+remain partially implemented until the canonical schedule test matrix passes;
+failed later gates remain explicit even if focused emergency behavior is
+green.
+
 This living plan records work that was actually performed. A pass is
 `verified` only when its listed check completed successfully. Requirement-level
 status remains authoritative in
@@ -10,6 +261,504 @@ status remains authoritative in
 The reconciled current backlog is maintained in
 `docs/plans/current-unfinished-work.md`. Completed deliveries below are release
 evidence, not active backlog items.
+
+## Active Delivery: Global Page Identity Completion
+
+Status: `plan registered; dirty shared-tree baseline captured; specialist discovery starting`
+on 2026-08-30.
+
+This delivery closes the remaining work in
+`docs/plans/global-page-identity-standardization-plan.md` without changing
+route destinations, authorization, active navigation, message-folder order,
+authorized back links, or deep-link behavior. It starts from clean `main` at
+`ae4ac32`, aligned with `origin/main`. The specialist ownership, evidence
+format, and independent-review boundary are recorded in
+`docs/audits/global-page-identity-completion-work-ledger.md`. Discovery
+specialists are read-only; the principal owns every attributable tracked edit,
+cross-module decision, final verification result, commit, and push. The live
+worktree now also contains unrelated in-progress event, place, seeding, and
+repository-audit slices. Those paths remain outside this delivery unless an
+exact overlapping Global Page Identity change is already present; publication
+must therefore use a temporary index built from the attributable path and hunk
+set rather than the ambient staging area.
+
+| ID | Dependency | Owner | Affected paths | Acceptance criteria | Verification | Status | Rollback |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| GPI-C01 | Existing global plan and canonical route matrix | Principal plus route-classification specialist | Canonical requirements, `docs/portal/route-matrix.md`, executable route ledger and route tests | One new stable requirement ID owns the page-identity contract; every current first-party GET route appears exactly once and is classified as directory, detail, workspace, editor, dashboard, settings, authentication, shared access, print/export, or deliberate special case with runtime owner, identity component, exception reason, and test evidence | Route JSON inventory, route-ledger parity, duplicate/missing classification tests | in progress | Revert requirement, generated evidence, and route-ledger updates together |
+| GPI-C02 | GPI-C01 | Principal plus query-budget specialist | Page presenters/controllers/Livewire components and focused performance tests | Representative directory, detail, and workspace routes have observed constant query ceilings; page headers, breadcrumbs, actions, navigation, and Blade rendering trigger no lazy loading or N+1 queries | Red/green query-count tests, strict Eloquent, route renders with small and expanded fixtures | planned | Revert query preparation and its budget tests as one slice |
+| GPI-C03 | GPI-C01 | Principal plus localization specialist | Priority presenters/catalogues/views, `lang/{en,lt,ru}`, localization tests | Remaining priority-page RU/LT non-header system copy is reviewed; English fallbacks, raw keys, placeholder mismatches, and locale-dependent overflow are detected and fixed while authored/proper content remains unchanged | Locale tree/placeholder parity, focused render tests, browser comparison against English baseline | planned | Revert the affected locale/presenter slice together |
+| GPI-C04 | GPI-C01..03 | Principal plus detail/workspace and dead-code specialists | Detail/profile/workspace heroes, message-details presenter/template chain, duplicate Blade headers, SCSS | Every detail/workspace exception is audited; only semantically distinct token-compatible heroes remain; the historical message-details chain is removed only after zero active route/include/test/deep-link proof; retired selectors and duplicate implementations have zero consumers | Structural route tests, exhaustive source/deep-link inventory, Blade compilation, dead-code ratchets | planned | Restore one proven consumer chain or selector with its covering test if the zero-consumer proof was wrong |
+| GPI-C05 | GPI-C01..04 | Principal plus accessibility specialist | Page identity, breadcrumbs, actions, navigation, detail/workspace heroes and responsive styles | Every rendered page has exactly one correct `h1` and a documented identity component; keyboard focus, 44px targets, forced colors, reduced motion, long RU/LT copy, and 200% zoom preserve operation and heading hierarchy | Focused accessibility/architecture tests and isolated browser assertions | planned | Revert the affected presentation slice without changing route or authorization behavior |
+| GPI-C06 | GPI-C01..05 | Responsive browser specialist and principal | `scripts/page-identity-browser-check.mjs`, package command, temporary browser artifacts | The authenticated matrix covers 320, 375, 768, 1024, 1280 at effective 200% zoom, 1440, and 1920 widths, all priority routes/locales, forced colors, reduced motion, keyboard focus, no horizontal overflow, no raw keys/fallback copy, stable navigation/back links/deep links, and clean console output | `npm run test:browser:page-identity` with disposable SQLite/loopback runtime and screenshot review | planned | Revert browser assertions only if they encode a disproven contract; retain valid product fixes |
+| GPI-C07 | GPI-C01..06 | Independent reviewer then principal | Frozen attributable diff, final exception matrix, screenshots, and evidence | Independent review dispositions every route, query, localization, dead-code, accessibility, responsive, and preservation finding; valid in-scope findings are fixed and affected checks rerun | Frozen review package, finding ledger, post-fix focused verification | planned | Revert finding-specific corrections that cannot be made safe |
+| GPI-C08 | GPI-C07 | Principal | Requirements, compliance generator/output, global plan, UI inventories, testing/deployment notes, changelog, complete attributable diff | Final exception audit and documentation match observed behavior; focused tests, full sequential Pest, Pint, Larastan, dependency audits, Vite build, complete browser matrix, route/config/view cache smokes, dead-code scan, source generators, and diff/secret checks pass before one coherent commit and push on `main` | Exact final commands, observed exits/counts, complete staged diff, commit hash and push output | planned | Revert the coherent commit normally; never rewrite history |
+
+Implementation order is `GPI-C01` through `GPI-C08`. Every behavior change
+starts with an observed failing test. CSS, Blade, presenter, or template code
+is removed only after reproducible zero-consumer evidence. Database-backed
+tests remain sequential and every browser mutation uses the repository's
+disposable database and loopback runtime.
+
+## Active Delivery: Measured Repository-Wide Performance Audit
+
+Status: `approved; canonical plan and specialist ledger saved` on 2026-08-30.
+
+This delivery audits directories, feeds, search, dashboards, workspaces,
+calendars, message lists, Places, Events, medical and care timelines, device
+screens, exports, seeders, generators, and browser assets against
+`PERF-QUERY-001..003`, `PERF-LIVEWIRE-001`, `PERF-ASSET-001`,
+`PERF-CACHE-001`, `SYS-CACHE-001`, `SYS-LOG-001`, and the deployment/runtime
+contracts. It fixes only reproduced problems. Every performance-sensitive path
+receives a deterministic representative dataset, recorded query count,
+response or snapshot size, peak-memory delta, elapsed time, an explicit
+regression budget, and a comparable after measurement.
+
+The task runs on `main` from `ae4ac32`, initially aligned with `origin/main`,
+inside a materially dirty shared tree. Existing Place, event, email-
+verification, seed-coverage, plan, and audit-ledger work is user-owned and
+must remain outside this delivery. Specialist discovery is read-only under
+`docs/audits/repository-performance-audit-work-ledger.md`; the principal owns
+all edits and cross-module decisions. Any attributable commit uses a temporary
+`GIT_INDEX_FILE` and is pushed only after the required gates and frozen-diff
+review pass.
+
+### Delivery decisions
+
+- Correct authorization/scoping, query shape, selected columns, eager loading,
+  database aggregation, deterministic pagination, and justified indexes before
+  considering cache. Do not cache around a bad query.
+- Query-count and payload budgets are deterministic test contracts. Elapsed
+  time and peak memory are recorded before and after on the same runtime; they
+  become automated failures only where a stable non-flaky invariant exists.
+- Add indexes only from observed filter/join/order patterns, verify their plan
+  use at representative volume, avoid duplicate prefixes, and retain SQLite
+  plus configured production-database grammar portability.
+- Livewire public state stays typed scalar/small-array input. Models, builders,
+  relationship graphs, private fields, and large derived catalogues stay in
+  bounded computed/server-prepared projections. Browser measurements must
+  distinguish initial HTML, snapshot, update payload, and duplicate requests.
+- New or retained cache entries require a measured benefit plus owner,
+  versioned key, account/organization/role/locale scope, TTL, invalidation,
+  bounded lock/wait behavior, unavailable-store behavior, and isolation plus
+  stampede tests. Private cache values never cross any scope.
+- Request IDs remain server-generated. Slow-operation logging is structured,
+  sampled/bounded where appropriate, and restricted to safe identifiers,
+  duration/count/size measurements and named operation context; it never logs
+  secrets, request bodies, exact locations, private media, tokens, sessions,
+  credentials, or authorization headers.
+
+| ID | Dependency | Owner | Affected paths/modules | Acceptance criteria | Verification | Status | Rollback |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| PERF-AUD-01 | Canonical performance/cache/observability/data/Livewire/deployment requirements | Principal plus read-only query, index, Livewire, cache, asset, runtime and metrics specialists | Canonical plan, performance work ledger, current repository and dirty-tree inventory | Every requested surface and antipattern has an owner, exact inventory path and reproducible measurement method before production edits; unrelated bytes are identified | Starting status/diffs, specialist reports, principal dispositions | in progress | Revert this plan slice and ledger only |
+| PERF-AUD-02 | PERF-AUD-01 | Principal | Performance test helpers, deterministic factories/fixtures or explicit `PerformanceSeeder` extension, measurement artifacts | Each selected sensitive path has representative deterministic small/large data and records baseline query count, response/snapshot bytes, peak memory and elapsed time without touching shared data | Focused baseline commands on isolated testing data; fixture repeatability and seed-safety tests | planned | Revert audit-only helpers/fixtures; no production data change |
+| PERF-AUD-03 | PERF-AUD-02 | Principal | Directory/feed/search/dashboard/workspace/calendar/message/place/event/medical/care/device/export queries, presenters and passive views | Confirmed N+1, lazy-load, `Model::all()`, unbounded `get()`, PHP filtering/pagination, per-row aggregate, over-selection and unstable pagination findings are removed; sensitive scopes precede retrieval | Red/green feature/query-budget tests, small-versus-large constant-growth assertions, response/payload budgets and repeated-page stability | planned | Revert each query/presenter slice independently without schema loss |
+| PERF-AUD-04 | PERF-AUD-02..03 | Principal | New additive index migration only where query-plan evidence justifies it | Each added index maps to an actual predicate/join/order, avoids redundant prefixes, is used or materially improves the representative plan, retains relationship keys, and is reversible before production use | Schema/index assertions, representative SQLite `EXPLAIN`, configured production grammar inspection, fresh/rollback/reapply migration checks | planned | Roll back the additive index migration before production use; afterward forward-fix |
+| PERF-AUD-05 | PERF-AUD-02..03 | Principal | Class-based Livewire components/forms/computed projections/views and browser request lifecycle | Confirmed oversized public state, Eloquent graphs, repeated serialization and duplicate interaction/request issues are removed without changing authorization or accessible states | Livewire direct-action tests, initial/update snapshot byte budgets, query budgets, browser network/listener checks and no duplicate request evidence | planned | Revert component/presentation optimization while retaining domain fixes |
+| PERF-AUD-06 | PERF-AUD-02..05 | Principal | Existing cache/lock consumers and only measured new cache candidates | Every cache has the complete declared lifecycle; confirmed leakage/stampede/staleness is fixed; cold/warm/failure behavior is equivalent and scoped; no cache masks a query defect | Cross-user/organization/role/locale isolation tests, invalidation tests, concurrent regeneration/lock tests, unavailable-store fallback and cold/warm measurements | planned | Bump/remove the attributable versioned key or disable the cache path; retain source-of-truth reads |
+| PERF-AUD-07 | PERF-AUD-01..02 | Principal | Vite inputs, Tailwind/SCSS/JavaScript chunks, image contracts and browser lifecycle | Only measured duplicate or oversized asset/request defects are changed; production raw/gzip sizes and request counts are recorded; first-party images retain dimensions/variants; no lifecycle duplication is introduced | Before/after Vite manifest and gzip table, JavaScript/source tests, responsive browser network/console/layout checks, 10% regression gate | planned | Revert the isolated asset change and restore prior manifest inputs |
+| PERF-AUD-08 | PERF-AUD-01..02 | Principal | Seeders, generators, exports, commands/jobs and runtime scripts | Confirmed unbounded work uses portable bounded chunks/cursors/streams, deterministic progress and idempotent resume/failure behavior; ordinary requests do not hide long work | Focused command/seeder/generator/export tests, representative memory/time records, repeat/resume/failure checks and production-environment denial | planned | Disable the operation or restore prior bounded entry point; preserve checkpoints and generated source data |
+| PERF-AUD-09 | PERF-AUD-01..08 | Principal | Request-context middleware, logging/operations configuration and tests | Every response retains a server request ID; slow measured operations expose safe bounded correlation context with owner/retention and no secret/private payload; normal requests avoid noisy duplicate records | Observability and architecture tests, header/log assertions, redaction scans, representative slow-path trigger and normal-path non-trigger | planned | Disable attributable slow-operation reporting while retaining request correlation |
+| PERF-AUD-10 | PERF-AUD-02..09 | Independent reviewer then principal | Frozen attributable diff, performance/cache/testing/data/deployment/operations docs, changelog and all affected runtime boundaries | Before/after evidence contains observed values only; every material review finding is dispositioned and valid findings fixed; all applicable release gates pass before isolated commit/push | Performance tests, full serial Pest, Pint, Larastan, migration/seed/repeat, Composer/npm audits, Vite/bundle inspection, cache isolation, cache smokes, browser network/responsive/keyboard/console checks, docs/secret/diff/staged-diff review and push result | planned | Revert coherent commit normally; use forward fixes for any migrated production schema/data |
+
+Implementation order is `PERF-AUD-01` through `PERF-AUD-10`. Measurement and
+an observed failing test precede each behavior change. Specialist suggestions
+remain advisory until the principal reproduces them, and documentation may
+claim improvement only from comparable observed before/after values.
+
+## Active Delivery: Place Presentation And Privacy Boundaries
+
+Status: `planned; specialist discovery and test-first implementation pending`
+on 2026-08-30.
+
+This delivery completes the boundary shared by `PLA-P12` through `PLA-P16`
+without claiming the still-open canonical-facts, community-moderation, or
+emergency-ranking packages. It preserves canonical `Place`, `Venue`,
+`VenueArea`, exact-location grant/audit/version, organization, event, and
+encrypted `places.state.v1` foundations. Specialist scopes and review
+hand-offs are recorded in
+`docs/audits/places-presentation-privacy-work-ledger.md` before delegation.
+
+The task runs on `main` in a materially dirty shared tree. Existing Place
+submission, contribution, facts, directory, and email-verification changes are
+user-owned and remain outside this delivery. The principal records
+attributable hunks and uses a temporary `GIT_INDEX_FILE` for publication.
+
+### Canonical decisions
+
+- Saves, follows, private collections, visits, recent history, generalized
+  origin, and private check-ins remain encrypted versioned per-user state,
+  use canonical place IDs, and expose only explicit `private` visibility.
+  Collaborative collections and visible presence stay outside this delivery.
+- Invitations become relational because sender, recipient, relationship/block
+  eligibility, expiry, response, revocation, idempotency, and audit require a
+  shared lifecycle.
+- Place media is image-only for the first lifecycle. Originals stage on the
+  private disk; only content-validated, auto-oriented, bounded, re-encoded
+  derivatives may be approved. Every response is authenticated and authorized.
+- Public location is a region plus a deliberately approximate point. Exact
+  facts stay encrypted and are revealed only through account-, purpose-,
+  event-, and time-bound grants; every success is audited.
+- The complete server-rendered list and textual map/route alternatives are
+  authoritative. JavaScript receives only the authorized bounded approximate
+  projection and never receives exact private coordinates.
+- Geocoding and routing are optional configured adapters. Disabled providers
+  make no network call. Enabled clients use configured endpoints, explicit
+  timeouts and response limits, normalized DTOs, 429 handling, safe errors,
+  and HTTP fakes with stray calls blocked.
+- Places remain canonical identities for organizations, venues, venue areas,
+  and events. Exact facts are never copied into public cards, caches,
+  notifications, exports, calendars, or analytics.
+
+| ID | Dependency | Owner | Affected paths | Acceptance criteria | Verification | Status | Rollback |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| PLA-PPB-01 | PLA-P12..P16 and authority foundation | Principal plus read-only specialists | Plan, ledger, requirements, audits, code inventory | Media, personal-state, location, providers, venues/events, privacy, and UI boundaries are mapped before code edits; unrelated dirty work is identified | Specialist reports and starting status/diff evidence | in progress | Revert planning-only additions |
+| PLA-PPB-02 | PLA-PPB-01 | Principal | Focused Places/private-file/provider/migration/seed/UI tests | Tests first cover canonical personal state, invitation isolation/expiry, staged media and authorized delivery, exact-location non-serialization/grants, provider fallback/errors, and canonical venue/event reuse | Each focused test fails for missing behavior before implementation | planned | Revert only new red contracts |
+| PLA-PPB-03 | PLA-PPB-02 | Principal | Additive migration, media/invitation models, enums, policies, factories, state compatibility | Relational media/invitations preserve lifecycle, idempotency, moderation, retention, recipient, and audit; private state upgrades idempotently from slugs to canonical IDs | Migration/backfill, schema/factory, replay, and isolation tests | planned | Roll back before writes; afterward preserve evidence and forward-fix |
+| PLA-PPB-04 | PLA-PPB-03 | Principal | Media Actions and response route | MIME/content, byte/dimension limits, orientation, safe derivatives, attribution, ordering, moderation, cleanup, deletion, retention, containment, and authorization are enforced | Malicious, oversize, orientation, failure, foreign, deleted, and unauthorized file tests | planned | Disable writes/responses and retain records/files for reviewed cleanup |
+| PLA-PPB-05 | PLA-PPB-03 | Principal | Personal state and invitation Actions/presentation | Personal records use canonical IDs, bounded retention, private visibility, and ownership; invitations use eligible recipients, expiry, revocation/response, blocks, idempotency, and safe delivery | Two-account, foreign-ID, archive, expiry, block, replay, transfer, and compatibility tests | planned | Disable mutations and preserve history |
+| PLA-PPB-06 | PLA-PPB-03 | Principal | Location projection and grant/revoke/reveal management | Approximate public and encrypted exact facts stay separate; grants are recipient/purpose/event/time scoped and revocable; every reveal is audited; exact facts stay out of secondary channels | HTML/source/serialization/cache/notification/export tests plus expiry/revocation/audit cases | planned | Disable reveal/grant UI while retaining audit/history |
+| PLA-PPB-07 | PLA-PPB-02 | Principal | Provider contracts, DTOs, configured clients, fallback | Disabled adapters perform no request; enabled geocoder/router normalize bounded responses and safely map timeout, 429, malformed, and oversize responses | Stray-request prevention and provider success/failure tests | planned | Set drivers to `null`; provider-free core remains active |
+| PLA-PPB-08 | PLA-PPB-03..07 | Principal | Class-based Livewire/HTTP, passive Blade, map JS/CSS, EN/LT/RU | Server list works without JS; mobile/keyboard/text alternatives and precise states remain accessible; map/list sync tears down cleanly; fallback copy is truthful | Direct-action, locale, architecture, Vite, and browser checks | planned | Revert enhancement/UI routes while preserving server list/data |
+| PLA-PPB-09 | PLA-PPB-03..08 | Principal | Place/venue/event/organization integration, factories, seeders | Existing canonical IDs are reused with no duplicate identity/exact snapshot; normal/private/expired/revoked/moderated/provider-free scenarios rerun unchanged | Event/place regression, fresh migration, migration cycle, complete/repeat seed | planned | Disable management surfaces; keep additive canonical relations |
+| PLA-PPB-10 | PLA-PPB-02..09 | Independent reviewers and principal | Frozen attributable diff, docs, release gates | Findings are reproduced/dispositioned/fixed; focused/full Pest, private files, Pint, Larastan, audits, build, caches, browser, diff, secrets, commit, and push reflect observed results only | Frozen review package and exact final commands | planned | Revert coherent commit; never delete retained private/audit data |
+
+Implementation order is `PLA-PPB-01` through `PLA-PPB-10`. No production
+behavior precedes an observed failing test. Provider absence and denied
+geolocation remain supported states; evidence advances only after exact checks.
+
+## Active Delivery: Event Participation, Capacity, And Waitlists
+
+Status: `approved; specialist findings dispositioned and red contracts in progress` on
+2026-08-30.
+
+This delivery implements the P17 registration and P18 capacity/waitlist slice
+of `docs/plans/portal-events-completion-master-plan.md` against the canonical
+`ForumEvent` aggregate. It starts from clean `main` at `ae4ac32`, preserves the
+existing payment/ticket provider boundary, and owns only the attributable event
+participation schema, models, Actions/services, policies, Livewire workspace,
+translations, factories, seed scenario, tests, and synchronized documentation.
+
+The selected architecture is an additive relational workflow: registrations
+retain immutable decision snapshots and optimistic versions; normalized typed
+capacity pools and allocations cover event, occurrence, session, resource, and
+future ticket-type scopes; one ordered waitlist entry represents each active
+registration; and an operation ledger returns the canonical result for a
+replayed command. This is preferred over JSON counters, application-only
+preflight counts, or one column per capacity type because database constraints,
+row locks, deterministic ordering, and SQLite-portable integrity must remain
+independently testable. Ordinary free registration allocates inside one short
+transaction. Expiring reservations are created only by an explicitly configured
+flow that must hold a scarce place across requests; the unavailable paid checkout
+does not receive a simulated timer or provider success.
+
+The exact source manifest is `event.eligibility.0001` through
+`event.eligibility.0104`, `event.registration.0001` through
+`event.registration.0159`, and `event.capacity.waitlist.0001` through
+`event.capacity.waitlist.0078`, with publication status updated only for atoms
+proved by this package. P19 payments/tickets, guest-pet public identity,
+competition/vendor/volunteer aggregates, and provider-backed delivery remain
+outside this package unless an existing canonical identity can be referenced
+without inventing a parallel subsystem.
+
+### Specialist work ledger
+
+| Specialist | Exclusive discovery/review scope | Required structured deliverable | Editing boundary |
+| --- | --- | --- | --- |
+| Registration state-machine specialist | Registration/eligibility enums, transitions, immutable decision snapshots, multi-pet authority, stale decision detection, cancellation/completion semantics | Current-state gap table, exact transition graph, snapshot schema, invalid/replay cases, source requirement IDs | Read-only discovery; no repository edits |
+| Capacity/concurrency/waitlist specialist | Typed pools, allocations, optional expiring holds, final-slot races, ordered waitlist, atomic promotion, optimistic versions, duplicate constraints | Portable schema/index proposal, lock order, concurrency test design, deadlock/retry risks, deterministic ordering contract | Read-only discovery; no repository edits |
+| Authorization/notification/UI specialist | Participant/organizer policy matrix, removed organizer behavior, private attendee projection, after-commit deduplication, Livewire UI, localization/accessibility, deterministic factories/seeds | Role/data-field matrix, notification key matrix, UI state/interaction contract, test and browser matrix | Read-only discovery; no repository edits |
+| Independent final reviewer | Frozen attributable diff after implementation | Requirement-by-requirement state-machine, concurrency, privacy, notification, and UI findings with severity and reproduction evidence | Review only; must not be an implementer |
+
+The principal owns every cross-module decision and repository edit. Specialist
+findings are advisory until reproduced and dispositioned. Review begins only
+after the attributable diff is frozen; every material finding is recorded,
+valid findings are fixed, and affected checks are rerun before publication.
+
+| ID | Dependency | Owner | Affected paths/modules | Acceptance criteria | Required verification | Status | Rollback |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| EVP-01 | P16 authority plus P17/P18 source and clean `main` baseline | Principal plus three read-only specialists | Canonical event/eligibility/privacy docs, current schema/models/services/policies/Livewire/tests, this ledger | Existing behavior, source IDs, privacy boundary, unsupported provider scope, lock order, and attributable paths are mapped before production edits | Repository inventory, source/generator checks, specialist reports and dispositions | completed | Revert this planning section only |
+| EVP-02 | EVP-01 | Principal | Additive participation migration; registration, participant/pet decision, capacity pool/allocation/hold/waitlist/operation models and factories | Database constraints prevent duplicate active scope/allocation/waitlist/operation results; snapshot/checksum, optimistic versions, indexes, hidden sensitive fields, expiry, and rollback are portable to SQLite | Red schema/model/constraint/cast/factory tests; populated rollback/reapply | in progress | Roll back before production writes; after use deploy a forward fix and preserve audit/history |
+| EVP-03 | EVP-02 | Principal | Registration state machine, eligibility evaluator/snapshotter, register/replay/withdraw/re-evaluate Actions | One or more currently managed eligible pets register once; the exact decision snapshot is retained; wrong account, stale eligibility, duplicate key/payload conflicts, inactive pet, and invalid transition fail without side effects; replay returns the same registration | Red-green Action/policy/idempotency/snapshot/stale-pet tests | planned | Disable mutations; preserve registrations and evidence; forward-fix after writes |
+| EVP-04 | EVP-02..03 | Principal | Capacity allocator, optional expiring reservation Action, ordered waitlist and promotion Actions | Event/occurrence/session/resource/ticket-type pools are typed; direct free allocation is transactional; holds exist only for configured cross-request scarcity; final slot cannot double allocate; waitlist order uses explicit priority then request time then ID; promotion locks pool/entry/registration, revalidates, and is replay-safe | Two-process final-slot, simultaneous promotion, expiry/release, multi-pool, capacity reduction/increase tests | planned | Disable affected pool; release active holds idempotently; retain allocation/waitlist history |
+| EVP-05 | EVP-03..04 | Principal | Organizer approve/reject/remove/promote/cancel Actions, event/occurrence/pet/capacity change integration, policies and privacy projections | Explicit transition matrix covers invited, pending, confirmed, waitlisted, rejected, cancelled, withdrawn, expired, checked-in, and completed where applicable; removed organizers and wrong accounts fail; event cancellation and occurrence movement re-evaluate atomically; attendee fields are role-minimized and medical/eligibility detail never enters ordinary projections | Role/policy matrix, stale version, cancellation/move/pet-change, privacy serialization and direct-action tests | planned | Remove organizer controls; preserve state/history and use compensating authorized transitions |
+| EVP-06 | EVP-03..05 | Principal | After-commit event notification records/listener/notification classes | Registration, review, waitlist, promotion, cancellation, expiry, and revalidation notifications deduplicate by recipient/event/registration/transition version; rollback sends none; replay sends none; delivery uses recipient locale | Notification replay/rollback/locale/recipient tests and operation-ledger assertions | planned | Disable listener/queue delivery while retaining durable deduplication evidence |
+| EVP-07 | EVP-03..06 | Principal | Class-based `ForumEventWorkspace`, form/view/presenter, shared status/actions, EN/LT/RU, accessibility styles | Authorized pet selection and organizer queue expose full, ineligible, invited, pending, confirmed, waitlisted, cancelled, and expired text states; no private evidence; loading/error/empty/offline feedback, native keyboard path, visible focus, 44px targets, no horizontal overflow, deterministic waitlist explanation | Livewire direct-call/tamper/replay tests, locale parity, browser journeys at required widths with keyboard/console/privacy checks | planned | Remove new controls/projections while leaving the domain workflow available to trusted server callers |
+| EVP-08 | EVP-02..07 | Principal | `ForumEvent*Factory`, `ForumEventDemoSeeder`, event docs, architecture/data/security/authorization/testing/seeding/deployment/changelog, generator evidence | Deterministic confirmed/pending/waitlisted/ineligible/invited/cancelled/expired and scarce-capacity scenarios are repeat-safe and environment-gated; docs state only observed behavior and exact evidence | Factory inventory, fresh/repeat seed, generated source checks, documentation/source/diff/secret scans | planned | Revert demo/docs with package; never remove persisted production registrations |
+| EVP-09 | EVP-01..08 | Independent reviewer then principal | Frozen attributable diff and every affected runtime boundary | Every requirement and specialist concern is dispositioned; valid findings are fixed; no unresolved critical/important state-machine, race, authorization, privacy, notification, or UI defect remains | Focused event and concurrency suites, full serial Pest, Pint, Larastan, migration/seed, dependency audits, npm build, cache smokes, browser journeys, frozen-diff review, `git diff --check` | planned | Revert the coherent commit normally only before production use; otherwise forward-fix schema/data and disable entry controls |
+
+Implementation order is EVP-01 through EVP-09. Each behavioral step starts
+with an observed failing test. The principal records specialist dispositions
+before schema work, fixes focused failures before broad gates, and uses an
+isolated temporary index if unrelated work appears before publication.
+
+## Active Delivery: PLA-P04 Scalable Place Directory Query
+
+Status: `approved; canonical plan saved and specialist discovery in progress`
+on 2026-08-30.
+
+This delivery replaces the capped, collection-backed `PlaceCatalog` directory
+pipeline with a policy-aware database query and bounded presentation pipeline.
+The complete directory remains server rendered and usable without JavaScript,
+maps, geolocation, or an external provider. Rich demo content may decorate only
+the current result page; it cannot decide visibility, filtering, ordering,
+counts, selection, or pagination. `PRD-PLACE-001` remains unchanged until the
+more-than-500-place acceptance dataset and its performance evidence pass.
+
+The task starts on synchronized `main` at `ae4ac32`. The pre-existing changes
+to this canonical plan, the seed-coverage fixture and the untracked audit
+ledgers are unrelated user-owned work and remain byte-preserved. Specialist
+discovery is read-only and uses the exclusive scopes recorded in
+`docs/audits/places-directory-query-work-ledger.md`; the principal owns every
+cross-module decision and tracked edit. Any publication uses a temporary
+`GIT_INDEX_FILE` so unrelated changes cannot enter the attributable commit.
+
+### Delivery contract
+
+- One focused query object returns an Eloquent builder whose first concern is
+  active, non-archived, non-merged, policy-equivalent public/account/owner and
+  organization visibility. Every search, filter, sort, count, selection and
+  page operates inside that boundary.
+- Supported category, species, size, accessibility, service, opening,
+  verification, region, text and related directory controls use portable
+  query-builder predicates over canonical searchable fields. Unsupported
+  prototype-only controls fail safely or are removed from the active contract;
+  no PHP collection is a second query engine.
+- Offset pagination remains the public contract for numbered, crawlable links.
+  Every ordering has a deterministic stable-key or identifier tie-breaker,
+  validated query parameters survive page links, and stale pages resolve to a
+  bounded valid page without loading the complete result set.
+- Queries select only card projection fields and relationship keys. Only
+  relations used by current-page presentation are eager loaded; query and
+  memory budgets stay independent of complete table size.
+- Additive indexes follow the observed visibility/filter/order predicates and
+  are verified against SQLite and the supported PostgreSQL query grammar. No
+  database-specific SQL is scattered through controllers, models, Actions,
+  Livewire components, or Blade.
+
+| ID | Dependency | Owner | Affected paths | Acceptance criteria | Verification | Status | Rollback |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| PLQ-01 | PRD-PLACE-001, PLA-P04, database-performance and place-visibility contracts | Principal plus Eloquent, portability, authorization, indexing, pagination, performance and accessibility specialists | Canonical plan, work ledger, Places query/schema/presentation/test inventory | Existing behavior, supported filters, policy boundary, query shape, indexes, accessibility and dirty-tree ownership are reconciled before implementation | Read-only source/schema/test inventory and dispositioned specialist reports | in progress | Revert this delivery plan and ledger only |
+| PLQ-02 | PLQ-01 | Principal | New large-dataset Places performance/feature tests and test helpers | More than 500 accessible records prove completeness, private exclusion, correct filters, stable ordering, deterministic pages, safe invalid input, explicit query budget, bounded memory and no N+1 | Focused red run records failures caused by the current 500-row cap and collection pipeline | planned | Revert only the new acceptance tests/helpers |
+| PLQ-03 | PLQ-02 | Principal | Additive Places directory projection migration, `Place`, factory and environment-safe demo synchronization if required | Canonical searchable scalars/relations are portable, default safely, retain existing data, and carry indexes derived from real predicates and ordering | Fresh migration, rollback rehearsal before production use, schema/index assertions, SQLite/PostgreSQL grammar inspection | planned | Roll back the additive migration before production use; forward-fix after production writes |
+| PLQ-04 | PLQ-03 | Principal | `VisiblePlacesQuery` or equivalent focused query object and visibility scopes | The object returns `Builder<Place>`; active/archive/merge and policy-equivalent public/account/organization/owner/grant visibility precede all search/filter/sort/page operations; selected columns retain relation keys | Query-object, policy matrix and SQL/query-log assertions | planned | Revert query object and restore prior call site while retaining additive nullable fields |
+| PLQ-05 | PLQ-04 | Principal | Place directory request/query/presenter/catalog boundaries | Every supported persisted filter, deterministic ordering, count and pagination run in the database; the 500 cap, unbounded `get`, filtering loops, `usort`, collection pagination and full-result decoration are absent | Focused filters/order/pagination tests, source architecture assertions, explicit query and memory budgets | planned | Restore the prior presenter boundary without dropping migrated data |
+| PLQ-06 | PLQ-05 | Principal | Server-prepared directory presentation, Blade components and pagination links | Current-page rows, selected row, summaries, map fallback and comparison are bounded prepared values; GET forms and page links preserve validated parameters; the complete list works with JavaScript disabled and no external services | Blade/HTTP accessibility assertions and real-browser no-JavaScript desktop/mobile journeys | planned | Revert presentation-only changes while retaining query correctness |
+| PLQ-07 | PLQ-02..06 | Principal | Places/data/performance/testing/accessibility docs, progress records, changelog, and finally PRD-PLACE-001 evidence | Documentation matches observed behavior; PRD-PLACE-001 is promoted only after the large-dataset suite passes; generated evidence is updated only through its generator | Large-dataset evidence first, then documentation generator/check and source/diff review | planned | Revert documentation/evidence independently; never retain an unverified completion claim |
+| PLQ-08 | PLQ-01..07 | Independent final reviewer then principal | Frozen attributable diff and all affected runtime boundaries | Every material finding is reproduced and dispositioned; valid findings are fixed and affected checks rerun; all requested gates pass before an isolated commit and push on `main` | Focused Places/performance tests, full sequential Pest, Pint, Larastan, migration/seed/repeat, dependency and npm audits, Vite build, cache smokes, no-JS browser checks, `git diff --check`, staged diff and push result | planned | Revert the coherent commit normally; forward-fix migrated production data |
+
+Implementation order is `PLQ-01` through `PLQ-08`. Tests precede production
+behavior. The independent reviewer receives a frozen attributable diff only
+after implementation and focused checks are green; PRD evidence is the final
+documentation promotion after the large-dataset proof, never a statement of
+intent.
+
+## Active Delivery: Relational Place Contributions And Moderation
+
+Status: `planned; implementation begins test-first` on 2026-08-30.
+
+This delivery implements `PLA-P08` through `PLA-P11` and the directly required
+`PLA-P02`, `PLA-P03`, `PLA-P17`, `PLA-P19`, and `PLA-P20` support. It replaces
+shared-looking corrections, warnings, reviews, and reports in encrypted
+account-local `places.state.v1` with canonical place relations, completes the
+existing question/official-answer relation, and reuses the unified forum
+moderation case boundary for Place subjects. Private saves, follows,
+collections, generalized location, visits, check-ins, invitations, claims,
+recent history, and unpromoted compatibility keys remain encrypted account
+state and are outside this delivery.
+
+The task starts from clean `main` at `ae4ac32`, aligned with `origin/main`.
+The earlier PLA-P06 migrations and publication workflow are preserved. All
+schema work is additive; the compatibility backfill never deletes or mutates
+legacy payloads. Contracting legacy keys is prohibited until a later release
+proves relational parity, rollback, retention, and production reconciliation.
+
+### Product And Data Decisions
+
+- One current review is allowed per authenticated author and place. An author
+  may replace it through a versioned edit, delete it reversibly, and restore it.
+  Optional managed-pet context is accepted only from a current pet-management
+  relation. Visit eligibility is derived server-side from existing private
+  visit compatibility state; an unverified visit context is labelled rather
+  than represented as verified.
+- Review anonymity is presentation-only. Author identity remains available to
+  authorized moderators and is never replaced with a hard-coded persona.
+- Correctable Place fields use a closed field map. Submission captures the
+  server-side original value and `places.lock_version`; acceptance applies a
+  field-specific mutation under a row lock and records the applied value and
+  immutable event history.
+- Low/medium warnings publish immediately with a bounded default expiry;
+  high/critical warnings enter `needs_review`. Publication, dispute,
+  resolution, expiry, removal, rejection, and appeal are explicit enum-backed
+  states. Expiry is enforced on reads and by a repeat-safe maintenance Action,
+  so correctness does not depend solely on scheduler availability.
+- Place questions use open, answered, needs-information, duplicate, closed,
+  hidden, and removed states. Exactly one official answer projection is kept,
+  while every edit appends an immutable answer version. Closing/reopening and
+  official answers require current place-management or administrator scope.
+- Place, correction, warning, review, and question reports are polymorphic
+  `ForumReport` records. Reporter identity and evidence remain hidden from the
+  subject and place managers; existing idempotent case opening, assignment,
+  action events, appeals, reversal, retention, and administrator-only
+  operations remain authoritative.
+- Database notifications use unique deduplication keys, the recipient's
+  validated locale, and `DB::afterCommit`. Database delivery is the synchronous
+  fallback and does not require a worker.
+
+### Work And Specialist Ledger
+
+| ID | Dependency | Exclusive owner | Affected paths or modules | Acceptance criteria | Verification | Status | Rollback |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| PLC-01 | PLA-P08..P11 and canonical moderation/review/notification requirements | Principal plus read-only corrections, warnings, reviews, questions, reports, moderation, authorization, migration, and final-review specialists | Canonical docs, PlaceState compatibility behavior, current Places/forum moderation schema/actions/policies/UI/tests | Every legacy key, reusable boundary, product decision, conflict, and attributable path is mapped before production edits; specialist reports are structured and independently reconciled | Repository inventory, specialist reports, clean-base confirmation | in progress | Revert this planning section only |
+| PLC-02 | PLC-01 | Corrections specialist implements; independent authorization reviewer | New correction enums/models/factories/migration, focused Actions/policy methods/tests | Exact field/fact, original value/version, proposal, explanation, evidence, submitter/reviewer, moderation status, resolution, canonical mutation link, deduplication, stale-conflict handling, and immutable history are relational and policy-scoped | Observed red/green correction feature, policy, schema, concurrency, and cross-account tests | planned | Roll back additive tables only before production writes; afterward forward-fix |
+| PLC-03 | PLC-01 | Warnings specialist implements; independent moderation reviewer | New warning enums/models/factories/migration, lifecycle Actions/tests | Category, severity, scope, source, evidence, one confirmation per actor, publication, expiry, dispute, resolution, appeal, moderation history, duplicate/rate controls, and read/write expiry fallback are durable and auditable | Observed red/green warning lifecycle, two-account, expiry, appeal, deduplication, and race tests | planned | Preserve warning/history rows; disable UI and forward-fix after writes |
+| PLC-04 | PLC-01 | Reviews specialist implements; independent authorization reviewer | New review/response enums/models/factories/migration, Actions/tests | Authenticated author, optional server-resolved managed pet, eligibility context, rating dimensions, text, presentation anonymity, moderation, immutable versions, reversible delete/restore, exact review response relation, verified manager scope, and response versions are enforced | Observed red/green cross-account, hard-coded-author, uniqueness, moderation, restore, manager-scope, aggregate, and race tests | planned | Preserve versions and soft-deleted rows; disable mutations and forward-fix |
+| PLC-05 | PLC-01 | Questions specialist implements; independent notifications reviewer | Existing question/answer tables and models plus additive versions/events, Actions/tests | Cross-account visibility, explicit states/moderation, official-answer authorization, answer versions, close/reopen, reporting, and after-commit deduplicated manager/author notifications are complete | Observed red/green question concurrency, authorization, version, closure, report, locale, and notification tests | planned | Retain existing answer projection; disable new transitions and forward-fix |
+| PLC-06 | PLC-03..05 | Reports/moderation specialist implements; independent privacy reviewer | `SubmitForumReport`, report policy/presenters, Place subjects, canonical cases/actions/appeals/tests | Place contribution reports enter one canonical moderation boundary; reporter privacy, idempotency, assignment, action history, resolution, appeal, reopen/reversal, and typed subject relations are proven without copying private evidence | Focused report/case/action/appeal/privacy tests and direct authorization checks | planned | Remove Place subject allowlist/UI while retaining moderation records |
+| PLC-07 | PLC-02..06 | Principal implements integration; independent accessibility reviewer | Class-based Place contributions Livewire component/form/view, routes/detail composition, EN/LT/RU | Accessible localized forms and histories expose precise loading, validation, success, empty, offline, status, focus, keyboard, touch, responsive, and privacy behavior; public state stays scalar and every mutation reloads and authorizes its target | Livewire direct-action, localization, architecture, browser, console, keyboard, and overflow checks | planned | Remove component mount while retaining relational data and Actions |
+| PLC-08 | PLC-02..06 | Migration specialist implements; independent data reviewer | Compatibility backfill Action/command/checkpoint model, factories, deterministic demo seeder, deployment/data-model docs | `places.state.v1` contributions import in bounded chunks with dry-run, checkpoints, deterministic reconciliation, retry safety, per-record transactions, no legacy deletion, repeatable seeds, parity report, and documented retention/rollback | Backfill red/green repeatability, partial-failure/resume, fresh migration/rollback, complete seed, repeat seed, and production-guard tests | planned | Stop backfill; preserve checkpoints, targets, and encrypted source; forward-fix discrepancies |
+| PLC-09 | PLC-02..08 | Independent corrections/warnings/reviews/questions/reports/moderation/authorization/migration reviewers plus principal | Frozen attributable diff and recorded review dispositions | Each specialist reviews outside its implementation scope; principal reproduces material findings, records every disposition, fixes valid findings, and reruns affected gates | Frozen diff packages, review reports, focused reruns, `git diff --check` | planned | Revert unsafe finding-specific hunks only |
+| PLC-10 | PLC-09 | Independent final reviewer plus principal | PLA status, current progress, compliance/data/security/authorization/testing/seeding/deployment/localization docs, changelog, full repository | All Places/moderation/migration/seed/Pest/Pint/Larastan/dependency/Vite/cache/browser/diff/secret gates are observed; `PRD-PLACE-002` advances only from those results; one attributable commit is pushed on `main` only if every required gate permits | Exact final command output, temporary-index staged diff when the tree becomes shared/dirty, commit and push evidence | planned | Revert coherent task commit normally; never delete imported legacy state |
+
+Implementation order is PLC-01, the first failing contracts for PLC-02 through
+PLC-06, their minimal schema and Actions, PLC-07, PLC-08, then independent
+PLC-09 review and PLC-10 release gates. Every behavior change begins with an
+observed failing test. The principal owns all cross-module decisions and final
+edits; specialists receive exclusive scopes and may not silently broaden them.
+
+## Active Delivery: Canonical Place Facts, Schedules, And Emergency Truth
+
+Status: `planning and specialist discovery in progress` on 2026-08-30.
+
+This delivery replaces the production Places catalogue's fixture/default truth
+with normalized canonical records under `PRD-PLACE-002`, `PRD-PLACE-003`,
+`PLA-P02`, `PLA-P05`, and `PLA-P15`. Dedicated relational records own
+categories and localized names, contacts, operating schedules and exceptions,
+services and eligibility, structured rules/facts, and source/provenance.
+Unknown, stale, closed, temporarily closed, appointment-only, and unavailable
+states remain explicit; no category or missing record implies a confirmed
+capability. Important replacements retain immutable source evidence and
+version history.
+
+The delivery starts on `main` at `ae4ac32`, aligned with `origin/main`.
+Specialist discovery is read-only and recorded in
+`docs/audits/place-canonical-facts-work-ledger.md`; the principal owns every
+cross-domain decision and tracked edit. Concurrent changes remain user-owned
+until exact attributable hunks are established. Publication uses a temporary
+`GIT_INDEX_FILE` while unrelated work is present.
+
+| ID | Dependency | Owner | Affected paths | Acceptance criteria | Verification | Status | Rollback |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| PLA-CF-01 | PRD-PLACE-002/003, PLA-P02/P05/P15, current place authority | Principal plus schema, schedule/DST, taxonomy, provenance, accessibility, migration, and testing specialists | Canonical requirements, current Places schema/catalogue/presentation, specialist ledger | One additive normalized design maps every requested record, public/private projection, source/freshness state, idempotency boundary, index, history rule, and rollback before production edits | Repository inventory, specialist reports, principal conflict review | in progress | Revert planning-only additions |
+| PLA-CF-02 | PLA-CF-01 | Principal | `tests/Feature/Places/**`, `tests/Feature/PlaceDirectoryTest.php`, focused unit tests | Failing contracts cover schema integrity, duplicate/idempotent facts, authorization, privacy, DST gaps/folds, overnight intervals, date exceptions, temporary closures, appointment-only, stale/unknown states, service/species/size eligibility, contradictory intervals, unavailable services, and concurrency | Focused red runs through the isolated repository test wrapper | planned | Revert only new red contracts |
+| PLA-CF-03 | PLA-CF-02 | Principal | Additive Places migration; `app/Enums/Place*`; `app/Models/Place*`; `database/factories/Place*` | Stable categories/localized names, ordered contacts, schedule/timezone/interval/exception/closure records, services/offerings/species/sizes, structured rule/safety/accessibility/parking/transport facts, provenance/current-version/history records, constraints, casts, encryption, relationships, and factories satisfy SQLite-portable integrity | Schema/model/factory contracts plus isolated migration rollback/reapply | planned | Roll back only before canonical writes; after writes retain schema and forward-fix |
+| PLA-CF-04 | PLA-CF-03 | Principal | Focused schedule and freshness domain services | One injected reference instant resolves open, closed, opening soon, unknown, stale, temporarily closed, and appointment-only in the place's IANA timezone; overnight, DST gap/fold, exception precedence, and missing timezone behavior are deterministic | Clock-controlled unit/feature tests in Europe/Vilnius and a second DST zone | planned | Revert resolver while retaining normalized schedule evidence |
+| PLA-CF-05 | PLA-CF-03..04 | Principal | Typed fact-management data, Actions, `PlacePolicy`, provenance/version services | Policy-authorized idempotent create/replace/retire operations lock the place/current fact, preserve submitted evidence, reject stale/concurrent versions and contradictory schedule writes, encrypt private contacts/evidence, and append immutable history | Policy matrix, direct Action, privacy, idempotency, and concurrent-process tests | planned | Disable mutations and forward-fix; never delete retained evidence/history |
+| PLA-CF-06 | PLA-CF-03..05 | Principal | Place taxonomy/reference seeder, bounded canonical fixture synchronization, `DatabaseSeeder` integration | Existing demo places receive deterministic canonical facts without IDs changing; repeat seed is count-stable; production paths have no invented Vilnius coordinates/species/services/default facts and no rich-fact fallback to fixture catalogues | Focused seeder tests, isolated fresh/repeat seed, fixture/default source scan | planned | Remove demo-only synchronization before production use; preserve user facts |
+| PLA-CF-07 | PLA-CF-04..06 | Principal | `PlaceCatalog`, `PlacePresenter`, `PlacePublicProjection`, detail/directory controllers and query consumers | Bounded eager-loaded database projections replace fixture/default facts on directory, detail, and emergency paths; source/freshness/verification are prepared before Blade; emergency eligibility requires canonical veterinary service plus species capability | Focused Places tests, query-count assertions, no-fixture production-path scan | planned | Revert readers only while normalized records remain available for forward recovery |
+| PLA-CF-08 | PLA-CF-07 | Principal plus accessibility specialist review | Place Blade/components/SCSS if needed; `lang/{en,lt,ru}/{places,place_directory}.php`; browser script | Reviewed EN/LT/RU labels explain unknown/stale/source/scope and unconditional call-first safety; passive Blade renders semantic non-color status, safe phone/source actions, focus/touch/reflow behavior, and no private evidence | Locale/architecture tests plus desktop, 375px, 320px, keyboard, console, and screenshot review | planned | Revert presentation and translations together without changing canonical facts |
+| PLA-CF-09 | PLA-CF-03..08 | Principal | Data/security/authorization/testing/seeding/deployment/current-progress/compliance/changelog docs and generators | Canonical documents describe only observed behavior, migration/forward-fix boundaries, public/private data, schedule semantics, and exact verification evidence; generated files remain byte-current | Documentation generation/checks, source/secret/diff review | planned | Revert documentation/evidence with the attributable implementation slice |
+| PLA-CF-10 | PLA-CF-02..09 | Independent final reviewer and principal | Frozen attributable diff and complete repository gates | Every material finding is reproduced and dispositioned; valid findings are fixed and affected checks rerun; focused Places, rollback/reapply, repeat seed, full Pest, Pint, Larastan, dependency audits, Vite, caches, browser, docs generation, diff, and secret gates pass before commit/push | Frozen review package and exact observed final commands | planned | Do not publish on an open material finding or failed gate; revert coherent commit normally after publication |
+
+Implementation order is `PLA-CF-01` through `PLA-CF-10`. Every production
+behavior begins with an observed failing test. Schema changes are additive and
+SQLite-portable; lifecycle checks use disposable databases only. Canonical
+readers switch only after deterministic synchronization is proven, and the old
+fixture/default path is removed rather than retained as silent fallback truth.
+
+## Active Delivery: Shared Directory Card Completion
+
+Status: `inventory and implementation planning in progress` on 2026-08-30.
+
+This delivery completes the explicitly open work in
+`docs/plans/shared-directory-card-system-plan.md` without creating a
+domain-neutral mega-component. The established `x-directory-card` shell stays
+limited to proven media/body/footer directory topology; shared media,
+heading, description, and action-row leaves may be adopted independently;
+domain-rich operational cards retain their own implementation. Existing
+routes, queries, authorization, private-media delivery, and domain behaviour
+are invariant.
+
+The task starts on `main` at `5008937` in a materially dirty shared tree whose
+staged email-verification and Places work is unrelated user-owned work. The
+specialist ledger is
+`docs/audits/shared-directory-card-completion-work-ledger.md`. Discovery
+specialists are read-only, the principal owns every tracked edit and
+cross-family decision, and publication uses a temporary `GIT_INDEX_FILE` so
+pre-existing staged work remains byte-preserved and excluded.
+
+| ID | Dependency | Owner | Affected paths | Acceptance criteria | Verification | Status | Rollback |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| SDC-01 | Existing shared-card contract and active plan | Principal plus component-API and consumer-inventory specialists | Shared-card plan, component contract, UI inventories, Blade/CSS/test inventory | Every card, row, identity, compact result, media-bearing item, and footer action is mapped to adopt-shell, adopt-leaf, keep-domain, merge, or retire; every primitive and bounded prop is documented | Exhaustive `rg` inventories, component call graph, zero-consumer evidence, specialist reconciliation | in progress | Revert planning and audit records only |
+| SDC-02 | SDC-01 | Principal plus media specialist | Shared card/image components, presenters, private media routes, relevant tests | Intrinsic dimensions, responsive sources/sizes, loading priority, local fallbacks, accessible linked media, layout stability, and policy-protected delivery are correct for every affected family | Rendered markup contracts, route/policy tests, browser image and geometry assertions | planned | Revert family-specific leaf adoption and media tests together |
+| SDC-03 | SDC-01 | Principal plus interaction/accessibility specialists | Card footers, shared actions, Livewire/forms, CSS, EN/LT/RU | Navigation, toggle, destructive, and submit controls retain native semantics; no nested interaction; 44px targets; loading, disabled, active/pressed, error, offline, and duplicate-submit states are exposed where applicable | Test-first Blade/Livewire contracts, localization parity, keyboard/focus/forced-colors/reduced-motion checks | planned | Revert the affected family composition while retaining its prior authorized action path |
+| SDC-04 | SDC-01..03 | Principal plus responsive-geometry specialist | Proven public-directory and compact consumer views, shared CSS/Blade primitives | Text-only escaped headings and bounded variants are explicit; media-less and compact abstractions exist only with two equivalent consumers; supported widths and 200/400 percent zoom avoid clipping and two-axis scrolling | Component tests plus authenticated geometry matrix at 320, 375, 768, 1024, 1440, and 1920 pixels | planned | Revert new shared variant and restore the prior domain shell |
+| SDC-05 | SDC-01..04 | Principal | Place, search-case, pet-profile, feed, group-post, medical, care, device, and booking card families | Equivalent implementations merge, eligible leaves/shells migrate, domain-specific topology stays local, and obsolete CSS/components are removed only after reproducible zero-consumer proof | Affected feature suites, architecture ratchets, source inventory, Blade compilation | planned | Revert one family migration independently; restore removed asset only with its proven consumer |
+| SDC-06 | SDC-05 | Browser-testing specialist and principal | Browser scripts and generated screenshot artifacts | Authenticated EN/LT/RU journeys prove keyboard access, screen-reader names, focus, forced colors, reduced motion, 44px targets, responsive media, zoom, no two-axis scroll, no console errors, and unchanged destinations | Repeatable browser commands, geometry output, screenshot capture | planned | Revert browser-only assertion changes if they encode an invalid contract |
+| SDC-07 | SDC-01..06 | Independent visual reviewer and principal | Frozen attributable diff and screenshots | Independent review dispositions every material API, visual, responsive, accessibility, localization, and regression finding; valid findings are fixed and affected checks rerun | Frozen-diff review package, screenshot report, finding disposition ledger | planned | Revert finding-specific changes that cannot be made safe |
+| SDC-08 | SDC-07 | Principal | Complete attributable implementation, tests, documentation, and evidence | Every open checklist item is updated individually from observed evidence; focused and affected tests, Blade compilation, full Pest, Pint, Larastan, npm build, browser checks, screenshot review, and `git diff --check` pass before isolated publication | Exact final commands, temporary-index staged diff, normal commit and push result | planned | Revert the coherent attributable commit normally; never rewrite history |
+
+Implementation order is SDC-01 through SDC-08. Behavioural changes begin with
+an observed failing test. Migration waves stay family-sized and independently
+revertible; no CSS or component is retired before all Blade, PHP, JavaScript,
+test, and documentation consumers are proven absent.
+
+## Active Delivery: PLA-P07 Place Management And Verification Claims
+
+Status: `approved; implementation planning and specialist discovery in progress`
+on 2026-08-30.
+
+This delivery implements `PLA-P07` as a canonical relational claim, scoped
+management-authority, verification-evidence, audit, notification, expiry,
+revocation, transfer, and abuse-report workflow. The exact specialist
+ownership and preservation boundary is recorded in
+`docs/audits/places-management-verification-work-ledger.md`. The existing
+dirty tree is user-owned; the principal is the only editor for this package.
+
+### Delivery contract
+
+- Claimant, represented organization, requested role and scopes, verification
+  method, safe evidence metadata, lifecycle state, reviewer decision,
+  expiration, revocation, optimistic version, idempotency, and immutable audit
+  history are relational and server-authoritative.
+- Evidence files use a configured private disk, generated paths, content-based
+  validation, request-time authorization, parent containment, and cleanup on
+  failed persistence. No unrestricted public URL is created.
+- The state machine has exactly `pending`, `needs_information`,
+  `under_review`, `approved`, `rejected`, `expired`, `revoked`, and
+  `superseded`; every transition is a focused authorized Action using a short
+  transaction and locked current row.
+- Approved claims grant only explicit current capabilities. Removal, scope
+  change, expiry, revocation, and controlled transfer invalidate future
+  authority without erasing historical attribution.
+- Notifications are dispatched only after committed transitions and are
+  idempotent. Audit and abuse-report records retain safe identifiers and
+  reasons without evidence bodies, tokens, storage paths, or secrets.
+- All user-facing states, errors, validation, notifications, and management
+  presentation use aligned EN, LT, and RU translation contracts.
+
+| ID | Dependency | Owner | Affected paths/modules | Acceptance criteria | Required verification | Status | Rollback |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| PCLM-01 | PLA-P02, PLA-P03, PLA-P05, PLA-P06; approved request | Principal | Canonical plan, work ledger, Places/organization/private-file/authorization docs and current code | Existing behavior and dirty-tree ownership are mapped; specialist decisions are dispositioned before schema design | Read-only inventory, `git status`, specialist reports | in progress | Revert package documentation only |
+| PCLM-02 | PCLM-01 | Principal | Claim/scope/audit/evidence/report enums, additive migration, models, factories | Portable relational integrity, hidden sensitive fields, private evidence metadata, exact lifecycle, optimistic versions, conflict and idempotency constraints | Red schema/model/factory/state tests, migration rollback | planned | Roll back additive migration before use; forward-fix after production use |
+| PCLM-03 | PCLM-02 | Principal | Submission/evidence Actions, claim policy, private evidence controller/response, rate limit | Eligible active authenticated members submit once; organization identity is server-authoritative; actual content is validated; foreign/direct access denies without disclosure | Red submission, wrong-account, conflict, upload, rate, and private-file tests | planned | Disable entry routes and retain private evidence for reviewed cleanup |
+| PCLM-04 | PCLM-02..03 | Principal | Needs-information, resubmit, review-start, approve, reject, expire, revoke, supersede Actions | Every transition reauthorizes, locks, checks version/state/idempotency and records a safe audit; reviewers recuse from conflicts; concurrent approvals produce one authority result | Red transition matrix, stale/replay, recusal, and two-process concurrency tests | planned | Revoke newly granted authority through audited forward transition |
+| PCLM-05 | PCLM-04 | Principal | Scoped place manager authority and Policy integration | Approval grants only requested/approved scopes; ordinary members, wrong organization, former/revoked/expired managers, blocked/inactive actors, and outsiders fail closed | Full role/capability policy matrix and revoked-management tests | planned | Audited revocation or manager removal; never delete attribution |
+| PCLM-06 | PCLM-04..05 | Principal | Remove, change-scope, transfer, expiration operation, official-response scope projection | Manager removal, narrowed scope, expiry, revocation, and controlled transfer are atomic and audited; historical responses retain actor attribution and display the verification scope effective when authored | Removal/scope/transfer/expiry/history/official-response tests | planned | Audited compensating scope or transfer transition |
+| PCLM-07 | PCLM-03..06 | Principal | Claim and manager Livewire workspaces/forms/views/routes, EN/LT/RU catalogues | Class-based server-rendered workflows expose only authorized minimal state and provide loading, error, empty, offline, focus, keyboard, touch, and translated status behavior | Livewire direct-action/tamper tests, locale parity, responsive browser checks | planned | Remove routes/components while retaining relational evidence |
+| PCLM-08 | PCLM-04..07 | Principal | After-commit transition notifications, abuse reports, expiration command/schedule, audit viewer | One notification per committed transition/recipient; rollback sends none; abuse reports are private and rate-limited; expiration is bounded/idempotent; audit presentation is redacted | Notification idempotency/rollback, report privacy/rate, command repeat tests | planned | Disable schedule and delivery; preserve claim/audit state |
+| PCLM-09 | PCLM-02..08 | Principal | Seeders and canonical requirements, data, security, authorization, files, testing, deployment, Places progress/master plan, compliance generator/output, changelog | Demo data is environment-safe/repeatable; PLA-P07 has direct implementation and test evidence; no generated evidence is hand-edited | Fresh/repeat seed, generator check, source/diff/secret scans | planned | Revert documentation and demo additions with the code package |
+| PCLM-10 | PCLM-01..09 | Independent reviewer then principal | Frozen attributable diff and all affected runtime boundaries | Every reproduced finding is dispositioned; all required gates pass before an isolated coherent commit and push on `main` | Focused/full Pest, Pint, Larastan, migration/seed, browser, npm/build, cache smokes, independent security review, staged diff | planned | Revert coherent commit normally; use forward-fix for migrated production data |
+
+### Test-first execution order
+
+1. Write and observe failing schema/state/private-file tests, then implement
+   only the relational foundation needed to pass.
+2. Write and observe failing transition, policy, concurrency, expiry,
+   notification, and abuse-report tests before their focused Actions.
+3. Write and observe failing Livewire, localization, private response, and
+   official-scope presentation tests before adding routes and views.
+4. Run focused verification, freeze the attributable diff for independent
+   review, disposition every finding, then run the complete release gates.
 
 ## Active Delivery: Configurable Email Verification
 
@@ -1524,3 +2273,354 @@ Status: `implemented and release verified` on 2026-08-03.
 
 The baseline, decisions, implementation passes, security boundaries, and gate
 evidence are recorded in `docs/plans/pet-workspace-modernization-plan.md`.
+
+## Active Delivery: Portal Point 12 Completion
+
+Status: `approved; canonical reading complete and specialist discovery
+starting` on 2026-08-30.
+
+This delivery completes the remaining `PLA-P01` and `PLA-P04` through
+`PLA-P11` Portal packages from
+`docs/plans/portal-events-completion-master-plan.md`, plus the directly
+required `PLA-P33` through `PLA-P35` evidence and release work. It reconciles
+the exact 3,449 `portal.*` atomic requirements against executable behavior and
+does not create parallel user, pet, organization, place, message,
+notification, media, payment, report, event, or search-case systems. The
+exclusive specialist scopes and dispositions are recorded in
+`docs/audits/portal-point-12-completion-work-ledger.md`; the principal owns
+cross-module decisions, integration edits, evidence promotion, and
+publication.
+
+The start baseline is `main` at
+`ae4ac3241f99b05645dcc07316f424dfb877892e`, aligned with `origin/main` before
+work began. A concurrent Places/events/seeding workstream modified the shared
+tree after that clean observation. Every pre-existing or concurrent hunk is
+excluded from this delivery unless its ownership is explicitly transferred;
+publication will use a temporary index containing only the attributable Portal
+patch.
+
+### Delivery contract
+
+- One explicit named-route guest allowlist admits only account entry, public
+  directories, public-safe detail projections, legal/static pages, health,
+  and deliberately scoped temporary shares. Public presenters select an
+  allowlisted projection at the query boundary and cannot expose participant
+  lists, exact locations, tickets, incidents, medical facts, private activity,
+  private media, hidden relationships, or non-public counts.
+- Every promoted page has a canonical URL. Compatibility URLs may redirect
+  only after resolving a safe canonical target; authorization failures and
+  deleted or unavailable resources never leak a target through redirect
+  location or timing-sensitive post-filtering.
+- One request-scoped Portal context owns the authenticated account, selected
+  manageable pet, selected active organization membership, locale, timezone,
+  and capabilities. Stored identifiers are untrusted and are reauthorized on
+  every HTTP request and every Livewire boot/hydration. Deep links preserve
+  their explicit resource context and never silently switch a global context.
+- One typed navigation registry supplies desktop and mobile primary
+  navigation, active-module state, breadcrumbs, badges, contextual actions,
+  safe back destinations, and palette navigation. No Blade template invents
+  authorization or destination rules.
+- Existing domain notifications feed one policy-scoped notification
+  projection. Deep links are resolved at read time to authorized canonical
+  resources and degrade to localized unavailable/deleted states without
+  leaking private identifiers or content.
+- Calendar, feed, global search, discovery, dashboards, and workspaces are
+  bounded read projections over existing aggregates. Providers scope access
+  before counts/results; public search uses a separate minimal projection;
+  private results never enter a post-filtered collection or cache.
+- Settings and data controls reuse the current user, privacy, notification,
+  relationship, session, export, and deletion boundaries. Unsupported
+  providers remain explicit unavailable states. Quick actions and the command
+  palette invoke real routes or authorized server Actions, and destructive
+  operations require their normal confirmation/step-up boundary.
+- Shared empty, filtered-empty, loading, dirty, offline, unavailable,
+  forbidden, and deleted states are localized in EN/LT/RU, keyboard complete,
+  screen-reader explicit, forced-colors safe, reduced-motion safe, and mobile
+  first. Each new projection has an explicit constant query ceiling and each
+  Livewire surface has a measured serialized-payload ceiling.
+- Factories produce valid bounded rows and deterministic local/demo/testing
+  scenarios exercise guest, member, multi-pet, organization, professional,
+  organizer, moderator, unavailable, and privacy-denied paths without network
+  access or production identities.
+- A Portal atom is promoted only after direct implementation plus a named
+  automated or browser/security check proves the exact behavior. Existence of
+  a route, component, enum, model, translation key, or document is never
+  sufficient evidence.
+
+| ID | Dependency | Owner | Affected paths/modules | Acceptance criteria | Required verification | Status | Rollback |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| POR-01 | Approved request and canonical Point 12 source | Principal plus public-projection, context/navigation, notification, search, dashboard, settings, quick-action, privacy, accessibility, and evidence specialists | Canonical requirements, portal plan/docs, routes, middleware, current foundations, evidence overlays | Current behavior is mapped to exact atomic IDs; conflicts and reused authorities are dispositioned; no atom is promoted from existence | Clean-base/current dirty-tree capture, route/page matrix regeneration, specialist reports, plan/ledger diff | in progress | Revert planning-only additions |
+| POR-02 | POR-01 | Principal | Routes, `RequirePortalAccess`, public requests/controllers/presenters/resources, policies, public views, canonical redirects | Guest allowlist is explicit; owner, pet, organization, place, event, result, and archive projections expose only public allowlisted fields; compatibility redirects are safe | Red/green guest allowlist, enumeration, private-field, canonical-link, deleted/forbidden, query-budget, localization tests; public browser/security matrix | planned | Remove guest route names and public entry points; authenticated portal remains intact |
+| POR-03 | POR-01 | Principal | Portal context value object/resolver, middleware, session keys, Livewire base concern, pet/organization switch actions and UI | Stale, forged, suspended, former-member, wrong-owner, or deleted context fails closed and is reauthorized on HTTP and hydration; deep links do not silently switch | Context forgery/revocation/request/hydration/replay tests and multi-context browser flows | planned | Disable switchers and clear only Portal context keys |
+| POR-04 | POR-03 | Principal | Typed navigation/page registry, shared shell/header/mobile dock, breadcrumbs, contextual actions, back destinations | Desktop/mobile derive from one registry; current module, breadcrumbs, badges, actions, and returns are capability-scoped and canonical | Registry/route coverage, authorization, locale parity, keyboard, active-state, responsive browser tests | planned | Revert registry consumers to existing primary navigation |
+| POR-05 | POR-02..04 | Principal | Existing notification model/delivery adapters, notification projection/controller/view/preferences/deep-link resolver | One notification center has bounded categories, safe previews, grouping, preferences, unread state, and authorization-at-read canonical deep links | Recipient isolation, revoked/deleted target, preview privacy, dedupe, locale, query-budget, browser tests | planned | Disable center links/delivery adapters while retaining domain records |
+| POR-06 | POR-02..04 | Principal | Existing event/care/task/booking/content aggregates, calendar/feed projection, routes/views/export | Calendar and feed aggregate authorized source records without duplicating source state; public/external projection is minimal and private fields never serialize | Source-visibility, timezone, recurrence, revoked access, query-budget, cache-scope, export, browser tests | planned | Remove aggregate routes and keep source modules authoritative |
+| POR-07 | POR-02..04 | Principal | Global search provider registry, query request/presenter/controller/view, existing Discovery and search-case systems | Search is typed, grouped, bounded, canonical, privacy-safe, scope-first, and explains empty/unavailable results; discovery remains the recommendation authority | Cross-account/blocked/private/count leak, pagination, query-budget, locale, keyboard, browser tests | planned | Remove global provider registry/route; retain domain search and Discovery |
+| POR-08 | POR-03..07 | Principal | Role/capability widget registry, member/organization/professional/organizer/moderator dashboards and workspaces | Widgets reuse existing Actions and authoritative aggregates, prioritize urgent work, enforce role/tenant scope, and expose explicit states | Role matrix, former-member, wrong-tenant, count/query budget, locale, responsive browser tests | planned | Remove registry-driven dashboards without deleting domain data |
+| POR-09 | POR-03..05 | Principal | Existing profile settings plus privacy, notifications, sessions, export/deletion data-control interfaces | Complete settings IA reuses authoritative records, authorizes every mutation, represents unavailable providers honestly, and provides safe export/deletion requests | Livewire direct-call/tamper/replay, policy, validation, idempotency, locale, payload-budget, browser tests | planned | Hide new settings sections and retain stored preferences/requests |
+| POR-10 | POR-03..09 | Principal | Command/quick-action registries, palette Livewire component, shell trigger, existing routes/Actions | Results are capability-scoped and canonical; keyboard/focus behavior is complete; mutations use real authorized operations and destructive actions retain confirmation | Direct-call, forged target, revoked context, payload/query budget, keyboard and mobile browser tests | planned | Remove palette/quick-action entry points; underlying routes remain |
+| POR-11 | POR-02..10 | Principal | Shared state components, EN/LT/RU files, CSS/JS, factories/seeders, query/payload assertions | Locale parity and all shared states pass; explicit ceilings are enforced; deterministic scenarios cover promoted roles and privacy boundaries | Localization/accessibility tests, factory/seed repeatability, focused performance tests, responsive/forced-colors/reduced-motion/offline browser checks | planned | Revert shared presentation/scenario additions only |
+| POR-12 | POR-01..11 | Independent privacy, accessibility, and final reviewers, then principal | Frozen attributable diff, route/page matrices, Portal docs, exact evidence overlay, generated requirements/matrices, changelog | Every finding is reproduced and dispositioned; only directly proven Portal atoms advance; canonical/generated docs match behavior; no unrelated work is published | Focused domains, full Pest, Pint, Larastan, migration/rollback/fresh/repeat seed, Composer/npm audits, Vite, browser/security suites, cache smoke, source preservation, requirement generation, diff/secret review | planned | Revert unpublished Portal slice; after production use forward-fix data and disable affected entry points |
+
+Implementation is test-first in dependency order: public projection and
+canonical URLs, context, navigation, notifications/calendar/search,
+dashboards/settings, quick actions, then shared state/performance/demo work.
+Independent privacy and accessibility review run against a frozen attributable
+diff before exact evidence promotion and the final repository gate.
+
+## Active Delivery: Forum Category 25 Verification And Evidence Closure
+
+Status: `approved; exact manifest selected and final verification starting`
+on 2026-08-30.
+
+This delivery closes the already implemented animal-science/evidence category
+without inventing new behavior or inheriting adjacent taxonomy/moderation
+work. The three prerequisite read-only audits agree that the selected atoms
+have direct source, persistence, validation, presentation, localization,
+factory, seed, and focused-test evidence; their honest current classification
+is `implemented but not fully verified` because required repository gates were
+previously not green. The shared checkout is concurrently dirty with
+unrelated Places, events, portal, performance, seeding, and interface work.
+Those paths remain user-owned and publication uses a temporary index.
+
+### Exact requirement-ID manifest
+
+This package owns exactly the following 58 Phase 4 extension atoms and no
+others:
+
+```text
+forum.category.0237 forum.category.0238 forum.category.0239
+forum.category.0240 forum.category.0241 forum.category.0242
+forum.category.0243 forum.category.0244 forum.category.0245
+forum.category.0246 forum.category.0247 forum.category.0248
+forum.category.0249 forum.category.0250 forum.category.0251
+forum.category.0252 forum.category.0253 forum.category.0254
+forum.category.0255 forum.category.0256 forum.category.0257
+forum.category.0258 forum.category.0259 forum.category.0260
+forum.category.0261 forum.category.0262 forum.category.0263
+forum.category.0264 forum.category.0265 forum.category.0266
+forum.category.0267 forum.category.0268 forum.category.0269
+forum.category.0270 forum.category.0271 forum.category.0272
+forum.category.0273 forum.category.0274 forum.category.0275
+forum.category.0276 forum.category.0277 forum.category.0278
+forum.category.0279 forum.category.0280 forum.category.0281
+forum.category.0282 forum.category.0283 forum.category.0284
+forum.category.0285 forum.category.0286 forum.category.0287
+forum.category.0288 forum.category.0289 forum.category.0290
+forum.category.0291 forum.category.0292 forum.category.0293
+forum.category.0294
+```
+
+`animal.taxonomy.0021` and `forum.moderation.0012` originate in the same
+immutable source section but remain `discovered` in Phases 5 and 7. No
+original-source `forum.feature.*` atom, category-26 atom, untranslated-child
+contract, or broader forum control/release requirement receives status from
+this package.
+
+### Delivery contract
+
+- Reinspect the manifest, existing category migration/models/Policy, catalogue
+  validator, transactional synchronizer, locale-scoped tree cache, request
+  validation, presenter/controller, passive navigator Blade, EN/LT/RU reviewed
+  root copy, factories, seeders, focused tests, browser harness, documentation,
+  and evidence overlay. File presence alone is never proof.
+- Existing focused coverage already records the required RED/GREEN behavior
+  for the fixed category heading and isolated browser entrypoint. Because this
+  closure adds no new behavior, schema, policy, or interface, another failing
+  test created solely to manufacture evidence is prohibited. Any newly
+  reproduced attributable defect must receive a failing behavioral test before
+  its smallest fix.
+- Run verification against a clean `main` baseline containing the committed
+  category implementation so unrelated, actively changing untracked files do
+  not enter test discovery or formatting results. Re-run documentation and
+  generated-artifact checks against the final attributable documentation
+  patch.
+- The missing local Codex history entry `1785397895` and absent PCOV/Xdebug
+  coverage driver are external environment blockers. Execute both checks and
+  record their exact result; do not convert either to a pass. Immutable payload
+  checksums and deterministic generation remain independent required gates.
+- Only after every non-external gate passes may the evidence overlay set the
+  exact 58 atoms to `current_implementation_status: verified`,
+  `implementation_status: implemented`, `verification_status: verified`, and
+  `final_result: verified`. Generated catalogue, matrix, counts, manual plans,
+  progress, testing evidence, final audit, compliance evidence, and changelog
+  must then agree.
+- Independent final review receives a frozen attributable diff and observed
+  command ledger. Every material finding is reproduced and dispositioned;
+  valid in-scope findings are fixed and affected checks rerun before staging.
+
+| ID | Dependency | Owner | Affected paths/modules | Acceptance criteria | Required verification | Status | Rollback |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| FAC-C25-01 | Immutable source, Phase 4 category foundations, prior category-25 implementation | Principal plus FAC-S01, FAC-S02, and FAC-S11 read-only specialists | Source/category/evidence corpus, live schema/code/tests, coordination ledger | Exact 58-ID manifest and two exclusions are reconciled across every required layer; all selected atoms remain honestly `implemented but not fully verified` before gates | Source/checksum inventory, exact `jq` status query, specialist reports, Git provenance | complete | Revert this plan/ledger slice only |
+| FAC-C25-02 | FAC-C25-01 | Principal; FAC-S12 read-only testing specialist | Existing category-25 and related forum/category/localization/schema/architecture tests | Existing focused tests prove all selected behavior; no speculative test or implementation is added; an attributable defect, if found, is first observed by a failing test | Focused 7-test contract and related suites through `scripts/run-tests.php` | in progress | Revert only an attributable test/fix pair |
+| FAC-C25-03 | FAC-C25-02 | Principal | Clean baseline release boundaries; no production paths unless a red test proves a selected defect | Full Pest, Architecture, Pint, Larastan, migration/fresh/repeat seed, Composer/platform/audit, npm/build, cache, category and complete browser gates pass; external blockers remain explicit | Commands in `docs/testing.md`, migration lifecycle verifier, both browser commands, source/category/generator checks | planned | No runtime rollback when no production change exists; revert any test-first fix normally |
+| FAC-C25-04 | FAC-C25-03 | Principal | `docs/traceability/forum-requirement-evidence.json`, generator-owned outputs, forum plans/progress/audits/testing/compliance/changelog | Only the 58 manifest IDs advance; both exclusions and all other atoms retain their prior states; generated and manual totals agree with observed gates | Regenerate through `scripts/generate-forum-requirements.php`, then exact status/count and byte-parity checks | planned | Revert overlay/manual evidence and regenerate prior outputs |
+| FAC-C25-05 | FAC-C25-02..04 | Independent FAC-S13 reviewer, then principal | Frozen attributable diff, gate ledger, isolated temporary index | Review has separate requirement-compliance and code-quality verdicts; all findings are dispositioned; staged diff contains no unrelated bytes | Frozen diff review, `git diff --check`, `git diff --cached --check`, complete staged diff, branch/remote recheck | planned | Discard only the unpublished attributable patch; never alter unrelated work |
+| FAC-C25-06 | FAC-C25-05 | Principal | One evidence-closure commit on `main` | Coherent attributable commit is created only after review and required verification, then pushed fast-forward to `origin/main` with observed result | Commit/tree inspection, push output, final `main...origin/main` status | planned | Normal revert of the coherent evidence commit; regenerated outputs revert with overlay |
+
+After FAC-C25-06, select category 26 as a new exact dependency-safe package;
+do not fold it into this delivery. The later source-stream audits remain
+read-only planning evidence and cannot promote their requirements.
+
+## Active Delivery: Provider-Ready Event Finance, Tickets, And Attendance
+
+Status: `approved; canonical reading and specialist discovery in progress` on
+2026-08-30.
+
+This delivery implements the provider-neutral P19 event finance/ticket
+foundation and the P21 secure attendance foundation against the canonical
+`ForumEvent`, occurrence, registration, organization-authority, pet-eligibility,
+and capacity boundaries. It does not select, emulate, or claim a payment
+provider. Paid checkout remains disabled unless a separately approved real
+provider is configured, while free tickets, durable state, reconciliation,
+secure credentials, online scanning, offline capture/reconciliation, and
+manual authorized lookup remain provider-independent.
+
+The task began on `main` at `ae4ac32`. The shared tree contains concurrent,
+unrelated Places, Portal, forum-category, event-planning, seeding, generated
+evidence, and test work. Those paths and hunks remain user-owned. The
+attributable boundary, specialist assignments, frozen-review rules, and
+finding dispositions are recorded in
+`docs/audits/event-financial-attendance-work-ledger.md`. The principal owns all
+repository edits and cross-domain decisions. Publication uses a temporary
+`GIT_INDEX_FILE` and cannot include the shared index or unrelated bytes.
+
+### Architecture and integrity contract
+
+- Ticket types own an immutable-at-reservation integer-minor-unit price and
+  uppercase currency, sales window, bounded or explicitly unlimited inventory,
+  per-reservation and per-account limits, active state, occurrence scope, and
+  typed registration-eligibility rule. Server locks and database uniqueness,
+  not preflight UI checks, protect inventory and limits.
+- Reservations, economic payments, provider attempts, refunds,
+  disputes/chargebacks, issued tickets, provider events, reconciliation
+  records, and immutable financial audit entries are separate durable records.
+  Registration state never serves as payment truth, and payment success never
+  overrides event cancellation, eligibility failure, capacity loss, ticket
+  revocation, or registration cancellation.
+- Reservation transitions are explicit: `active -> awaiting_payment ->
+  confirmed`, with terminal `expired` and `cancelled` exits. A free reservation
+  confirms and issues from server authority without fabricating a payment.
+  Paid reservations require a configured provider and remain held only for a
+  bounded server-owned expiry.
+- Payment attempts transition through `created`, `submitted`, `pending`, and
+  `succeeded`, or terminal `failed`, `expired`, and `cancelled`. The economic
+  payment independently derives `unpaid`, `pending`, `paid`,
+  `partially_refunded`, `refunded`, `disputed`, and `charged_back`. Refunds are
+  durable partial/full operations with their own pending/succeeded/failed or
+  reversed outcome. Dispute/chargeback evidence is never encoded as a refund.
+- The browser supplies only a durable resource reference and operation key.
+  Event, occurrence, actor, ticket type, amount, currency, price checksum,
+  refund balance, eligibility, and issuance predicates are re-derived from
+  locked server state. Same scoped operation key and request fingerprint
+  replays the original result; a changed fingerprint conflicts. Concurrent
+  refunds cannot exceed captured value.
+- One event-specific provider interface exists only at the actual external
+  payment boundary. The default disabled implementation performs no network
+  request and exposes a typed unavailable capability. Provider I/O never runs
+  under database locks. Timeout, rate limit, malformed response, and ambiguous
+  partial failure leave a retry-safe attempt requiring reconciliation; they do
+  not create a paid, confirmed, ticketed, or refunded browser claim.
+- A webhook is accepted only for a configured provider. Its signature and
+  freshness are checked against the raw request body before any decoded field
+  is trusted. A provider-scoped event digest is inserted uniquely before
+  financial mutation. Replays acknowledge the canonical prior result;
+  amount/currency/reference mismatches fail closed; raw payloads, credentials,
+  authorization headers, checkout URLs, and card data are never persisted or
+  logged.
+- Reconciliation compares provider observations with immutable internal
+  amount, currency, reference, and state facts. Each run/item and every
+  financial transition writes append-only, actor/source-attributed safe audit
+  evidence. Corrections are new records and compensating transitions, never
+  history rewrites.
+- Each issued ticket may receive an opaque random credential containing only a
+  non-semantic version prefix and secret. Only a digest is stored. Purpose,
+  event, occurrence, ticket, expiry, revocation, refund/dispute status, and
+  eligibility are checked server-side. QR content never contains database IDs,
+  attendee identity, pet/medical facts, private location/access instructions,
+  or authorization claims.
+- Scan operations have a client-generated UUID and safe event, occurrence,
+  authenticated scanner, device digest, source time, server time, entrance,
+  channel, result, and reason context. One conditional authoritative
+  registration/ticket transition plus unique operation identity prevents two
+  accepted check-ins during concurrent scans; later attempts are immutable
+  duplicates or conflicts.
+- Offline capture encrypts the temporary raw credential locally, records only
+  the bounded scan envelope, and deletes accepted/rejected material after
+  reconciliation. The server reauthorizes the scanner and reevaluates every
+  current predicate. Revoked, refunded, disputed, invalid, expired,
+  wrong-event, cancelled, or ineligible server state always defeats offline
+  observations. Batch results are per-operation and support safe partial
+  retry. Manual lookup is event-scoped, minimal, bounded, and policy-authorized.
+- The class-based Livewire scanning workspace and passive Blade view provide
+  precise online, queued-offline, synchronizing, accepted, duplicate,
+  conflict, invalid, revoked/refunded, unavailable-provider, empty, loading,
+  and error states in EN, LT, and RU. External scanners and manual entry retain
+  a full keyboard path, labelled controls, status announcements, visible
+  focus, 44-pixel targets, reduced-motion and forced-colors behavior, and no
+  horizontal overflow.
+- Provider tests use an application fake at the interface boundary and an
+  exact fake HTTP adapter harness only; stray requests are prohibited. Success,
+  timeout, invalid signature, duplicate event, malformed response, rate limit,
+  ambiguous/partial failure, refund, and reconciliation tests never contact a
+  real provider.
+
+The canonical lock order is event, occurrence/capacity pool in ascending ID,
+ticket type, reservation, registration, ticket, payment, attempt, then refund,
+dispute/chargeback, provider-event, reconciliation, credential, and scan rows
+in ascending ID. External calls happen between committed phases, never while
+this lock set is held.
+
+| ID | Dependency | Owner | Affected paths/modules | Acceptance criteria | Required verification | Status | Rollback |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| EFA-01 | P17/P18 authority; P19/P21 sources; security/privacy/integration contract; current shared-tree baseline | Principal plus EFA-D1 through EFA-D8 read-only specialists | Canonical event/payment/ticket/check-in/offline/security/privacy docs; current event aggregate; work ledger; this plan | Current behavior, exact provider absence, state/integrity gaps, lock order, additive path boundary, and specialist findings are reproduced and dispositioned before production edits | Source inventory, dirty-tree evidence, specialist reports, targeted baseline tests, plan/ledger diff | in progress | Revert only this planning and ledger slice |
+| EFA-02 | EFA-01 | Principal | Focused Pest feature/unit/concurrency/architecture tests and test-only provider/webhook fakes | Red tests isolate ticket definition, price snapshot, inventory/eligibility/limit races, every state transition, disabled checkout, provider failures, signature/dedupe, reconciliation/audit immutability, QR disclosure/revocation/replay, offline precedence/partial retry, authorization/locales/accessibility | Each new behavior is observed failing before its production implementation; fakes assert no stray network | planned | Revert only new red contracts |
+| EFA-03 | EFA-02 | Principal | Additive event-finance/attendance migration; enums; models; factories; model relationships; architecture guards | SQLite-portable constraints/indexes enforce scoped uniqueness, minor-unit/currency fields, operation/provider-event identity, bounded relationships, append-only audit/scan evidence, and reversible fresh-install schema; every first-party model has a factory | Schema/cast/relation/factory/constraint/rollback-reapply tests and architecture checks | planned | Roll back before writes; after use preserve financial/attendance evidence and forward-fix |
+| EFA-04 | EFA-03 | Principal | Ticket-type, reservation, free-ticket issue, expiry/cancel Actions; policy abilities; registration/capacity integration | Authorized organizers define ticket types; eligible users receive server-priced reservations within windows/inventory/limits; free issue is atomic/idempotent; paid reservations fail closed without provider; cancellation/expiry releases capacity once | Positive/negative policy, window, eligibility, old/new price, limit, final-ticket concurrency, replay/payload-conflict, cancel/expiry tests | planned | Disable ticket-type/reservation mutations; preserve issued/history rows and forward-fix after use |
+| EFA-05 | EFA-03..04 | Principal | Event payment provider contract/DTOs/errors, disabled driver/config/availability, payment/start/result/refund/dispute/chargeback Actions | One event-specific real-boundary contract; disabled/unknown configuration sends nothing; server values own every request; external calls occur outside transactions; ambiguous outcomes reconcile; refunds cannot overrun captured value; paid browser returns never mutate success | Disabled/no-request, success, timeout, 429, malformed, partial failure, wrong amount/currency/reference, attempt/refund replay, cancellation, dispute/chargeback, concurrency tests | planned | Set driver to disabled, hide checkout/refund entry points, retain attempts/audits for reconciliation |
+| EFA-06 | EFA-03..05 | Principal | Stateless webhook route/controller/request boundary, provider verification DTO, event/result Actions, throttling and redacted audit | Raw-body signature/freshness precede decode/trust; provider event uniqueness precedes mutation; duplicates are idempotent; out-of-order/mismatch/unknown/processing failure are retry-safe and never browser-authoritative; secrets and raw bodies are absent | Valid, invalid-signature, stale, duplicate, malformed, unknown, mismatch, out-of-order, processing-failure/retry, rate-limit, redaction, CSRF-origin separation tests | planned | Disable webhook route/provider key; retain receipt/result records for reviewed replay |
+| EFA-07 | EFA-03..06 | Principal | Immutable financial audit and reconciliation run/item models/Actions; operator policies; cancellation/reschedule integration | Every financial transition has append-only before/after/source/actor evidence; reconciliation is repeatable and records match/mismatch/missing/ambiguous outcomes; corrections compensate; paid cancellation/reschedule cannot silently release or confirm | Immutability, balance, replay, mismatch, operator separation, cancellation/reschedule, provider-unavailable reconciliation tests | planned | Disable reconciliation commands/UI; retain immutable evidence and use compensating records |
+| EFA-08 | EFA-03..07 | Principal | Ticket credential issue/rotate/revoke and scan Actions; attendance policies; online scan and manual lookup | Random one-time-returned credential with stored digest and server scope; no sensitive QR payload; revoked/refunded/disputed/wrong-event/expired/ineligible tickets fail closed; conditional transition accepts once under concurrent scans; manual lookup is scoped/minimal/authorized | Payload/source scans, digest/rotation/revocation, wrong-event, refund precedence, duplicate/replay/payload-conflict, two-process scan, manual lookup isolation/query-budget tests | planned | Disable issue/scan/manual controls; revoke active credentials while retaining ticket/audit history |
+| EFA-09 | EFA-08 | Principal | Offline scan batch request/controller/Action, encrypted IndexedDB queue module, CSRF/auth/throttling, retention cleanup | Unique operations capture bounded device/source context; encrypted local records sync in bounded batches; current server truth wins; per-item accepted/duplicate/conflict/rejected results retry safely; reconciled secrets are deleted; no offline claim becomes authoritative before sync | Offline replay, changed payload, old/future time, partial batch/failure/retry, wrong account/event/device, revoked/refunded-after-capture, storage/crypto unavailable, JS source/behavior tests | planned | Remove offline enhancement and endpoint; online/manual scanning and durable server history remain |
+| EFA-10 | EFA-04..09 | Principal | Class-based event ticket/attendance Livewire components, passive Blade, event workspace integration, EN/LT/RU translations, CSS/JS | Paid/free/unavailable distinctions are server-prepared and truthful; no browser-only payment/ticket/refund state; scanner feedback and manual fallback meet mobile, keyboard, screen-reader, focus, reduced-motion, forced-colors, touch-target, and privacy contracts | Livewire direct-call/tamper/state tests, locale parity, architecture, production Vite, authenticated responsive/keyboard/offline/console browser matrix | planned | Remove new UI entry points and JS while retaining provider-neutral domain/audit records |
+| EFA-11 | EFA-03..10 | Principal | Event factories/demo seeder; events/payment/ticket/check-in/offline/security/authorization/architecture/data/testing/seeding/deployment/integration docs; implementation plan; compliance evidence and changelog | Deterministic free, paid-unavailable, pending, paid, partial/full-refund, disputed, valid/revoked/duplicate/offline-conflict/manual scenarios are environment-safe and repeatable; docs describe only observed provider applicability and gate results | Factory inventory, fresh migration/complete seed/repeat seed, source/generator checks, docs/diff/secret scans | planned | Revert demo/docs with package; never delete durable production finance/attendance evidence |
+| EFA-12 | EFA-01..11 | Independent EFA-R1 reviewer, then principal | Frozen attributable diff and command ledger | Every requested requirement and specialist concern is independently reviewed and dispositioned; valid findings are fixed; no unresolved critical/important provider, financial, ticket, QR, offline, authorization, privacy, localization, accessibility, migration, race, or test defect remains | Payment/ticket/QR/security/concurrency suites; full serial Pest; Pint; Larastan; Composer validation/audit/platform check; fresh migration/full seed/repeat seed; npm audit/build; route/config/view caches; responsive authenticated browser/offline/keyboard/console flows; generated docs; staged diff/secrets | planned | Revert the coherent unpublished slice; after production writes disable entry points and forward-fix schema/data |
+
+Implementation is test-first in dependency order `EFA-01` through `EFA-12`.
+Payment applicability and exact requirement evidence remain unchanged until
+every applicable gate has been observed and the independent review is closed.
+
+## Active Delivery: Final Repository-Wide Production Release Audit
+
+Status: `approved; mandatory reading complete and read-only specialist audit
+starting` on 2026-08-30.
+
+This release audit reconciles the live `main` tree against every canonical
+requirement, active plan/progress record, generated requirement artefact,
+changelog, deployment instruction, and production quality gate. It does not
+inherit completion from any historical snapshot or currently active delivery.
+The exclusive read-only specialist scopes, protected dirty-tree baseline,
+finding dispositions, gate evidence, and publication rules are recorded in
+`docs/audits/final-release-audit-work-ledger.md`.
+
+The audit began at `ae4ac3241f99b05645dcc07316f424dfb877892e`, aligned with
+`origin/main`, on a materially dirty shared tree containing concurrent Places,
+event, Portal, page-identity, performance, seeding, interface, test, generated
+evidence, and documentation work. Every pre-existing or concurrent byte stays
+user-owned. Reviewers are read-only; the principal owns every edit and may use
+only an attributable temporary-index slice if all release conditions are met.
+
+| ID | Dependency | Owner | Affected paths/modules | Acceptance criteria | Required verification | Status | Rollback |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| FRA-01 | Repository contract and complete mandatory reading | Principal | Canonical plan and final-audit ledger | Exact baseline, ownership, twelve exclusive reviewer scopes, evidence semantics, release gates, and rollback are recorded before production edits or delegation | Git/remote/runtime/status evidence and canonical documentation inventory | complete | Revert audit-only planning additions |
+| FRA-02 | FRA-01 | Eleven independent read-only discovery specialists; principal dispositions | Entire first-party repository | Requirements, security, database, architecture, Livewire/Blade, localization/accessibility, performance/cache, integrations, testing/coverage, deployment/rollback, and documentation findings are reproduced and classified | Structured specialist reports and principal read-only reproduction | in progress | Documentation-only correction |
+| FRA-03 | FRA-02 | Principal | Tests and smallest attributable implementation/documentation slices | Every valid fixable material finding receives test-first correction where behavior changes; unrelated work remains untouched | Targeted red/green checks, static analysis, exact ownership diff | pending | Revert only the attributable test/fix pair |
+| FRA-04 | FRA-02..03 | Principal | Current-state/unfinished/domain progress, requirements/evidence, generated outputs, changelog, deployment/operations, final report | Active statuses and exact evidence match live implementation and observed results; useful history is clearly historical; external blockers remain blocked | Generator parity, route/symbol/link/reference scans, documentation review | pending | Revert audit docs and regenerate prior outputs |
+| FRA-05 | FRA-03..04 | Principal | Complete current tree | Every requested release gate runs safely with exact environment, command, exit, result, blocker, risk, and rollback evidence | Full release command ledger in `docs/reports/final-release-verification.md` | pending | Remove only disposable verification artefacts |
+| FRA-06 | FRA-05 | Independent adversarial reviewer; principal dispositions | Frozen attributable diff and every release/completion claim | Every material claim is challenged, reproduced, dispositioned, fixed when valid, and affected checks rerun | Independent final review and post-fix gate evidence | pending | Revert finding-specific correction if unsafe |
+| FRA-07 | FRA-06 | Principal | Temporary-index attributable slice on `main` | Commit and fast-forward push occur only if every applicable gate passes and no fixable failed gate, partial canonical requirement, unclassified active requirement, contradiction, or material review finding remains | Complete staged diff, both diff checks, branch/origin recheck, commit/push output | pending | Normal revert commit only; never rewrite history |
+
+Execution order is `FRA-01` through `FRA-07`. Provider and hardware success
+cannot be simulated; coverage and browser gates cannot be waived; historical
+pass records cannot replace current execution; and a dirty concurrent slice is
+reported as a blocker rather than overwritten or silently published.

@@ -62,36 +62,60 @@ final class PlaceModerationWorkspace extends Component
     {
         abort_unless($this->requireUser()->isAdministrator(), 403);
 
-        return PlaceSubmission::query()
+        $relations = [
+            'submitter:id,name',
+            'duplicateCandidates.candidatePlace:id,name,public_region',
+            'mergeRedirects' => fn ($redirects) => $redirects
+                ->whereNotNull('active_source_identifier')
+                ->whereNull('restored_at'),
+        ];
+        $actionable = PlaceSubmission::query()
             ->where(function ($queue): void {
                 $queue->whereIn('status', [
                     PlaceSubmissionStatus::Submitted->value,
                     PlaceSubmissionStatus::DuplicateReview->value,
                     PlaceSubmissionStatus::NeedsInformation->value,
                     PlaceSubmissionStatus::Approved->value,
-                    PlaceSubmissionStatus::Rejected->value,
-                    PlaceSubmissionStatus::Withdrawn->value,
                 ])->orWhere(function ($published): void {
                     $published
                         ->where('status', PlaceSubmissionStatus::Published->value)
                         ->where(function ($actionable): void {
                             $actionable
-                                ->where('resolution', PlaceSubmissionResolution::DuplicateMerge->value)
-                                ->orWhereHas('duplicateCandidates', fn ($candidates) => $candidates
-                                    ->whereNotNull('candidate_place_id'));
+                                ->where(function ($restorable): void {
+                                    $restorable
+                                        ->where('resolution', PlaceSubmissionResolution::DuplicateMerge->value)
+                                        ->whereHas('mergeRedirects', fn ($redirects) => $redirects
+                                            ->whereNotNull('active_source_identifier')
+                                            ->whereNull('restored_at'));
+                                })
+                                ->orWhere(function ($mergeable): void {
+                                    $mergeable
+                                        ->where('resolution', PlaceSubmissionResolution::NewPlace->value)
+                                        ->whereNotNull('published_place_id')
+                                        ->whereHas('duplicateCandidates', fn ($candidates) => $candidates
+                                            ->whereNotNull('candidate_place_id'));
+                                });
                         });
                 });
             })
-            ->with([
-                'submitter:id,name',
-                'duplicateCandidates.candidatePlace:id,name,public_region',
-                'mergeRedirects' => fn ($redirects) => $redirects
-                    ->whereNotNull('active_source_identifier')
-                    ->whereNull('restored_at'),
-            ])
+            ->with($relations)
             ->orderBy('submitted_at')
-            ->limit(50)
-            ->get()
+            ->orderBy('id')
+            ->limit(40)
+            ->get();
+        $terminalHistory = PlaceSubmission::query()
+            ->whereIn('status', [
+                PlaceSubmissionStatus::Rejected->value,
+                PlaceSubmissionStatus::Withdrawn->value,
+            ])
+            ->with($relations)
+            ->orderByDesc('submitted_at')
+            ->orderByDesc('id')
+            ->limit(10)
+            ->get();
+
+        return $actionable
+            ->concat($terminalHistory)
             ->map(fn (PlaceSubmission $submission): array => [
                 'key' => $submission->stable_key,
                 'name' => $submission->name,

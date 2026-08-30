@@ -9,13 +9,17 @@ use App\Enums\PlaceAccessGrantStatus;
 use App\Models\Place;
 use App\Models\PlaceLocationVersion;
 use App\Models\User;
+use App\Services\PlacePublicLocation;
 use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 final readonly class UpdatePlaceLocation
 {
-    public function __construct(private Gate $gate) {}
+    public function __construct(
+        private Gate $gate,
+        private PlacePublicLocation $publicLocation,
+    ) {}
 
     public function handle(User $actor, Place $place, UpdatePlaceLocationData $data): Place
     {
@@ -30,6 +34,7 @@ final readonly class UpdatePlaceLocation
             'exactLongitude' => $data->exactLongitude,
             'privateInstructions' => $data->privateInstructions,
             'reasonCode' => $data->reasonCode,
+            'publicLocationPrecision' => $data->publicLocationPrecision?->value,
         ], [
             'publicRegion' => ['required', 'string', 'max:160'],
             'publicAddress' => ['nullable', 'string', 'max:500'],
@@ -40,9 +45,16 @@ final readonly class UpdatePlaceLocation
             'exactLongitude' => ['nullable', 'numeric', 'between:-180,180', 'required_with:exactLatitude'],
             'privateInstructions' => ['nullable', 'string', 'max:3000'],
             'reasonCode' => ['required', 'string', 'max:120', 'regex:/^[a-z0-9-]+$/'],
+            'publicLocationPrecision' => ['nullable', 'string', 'in:region,approximate_point'],
         ])->validate();
 
-        return DB::transaction(function () use ($actor, $place, $data): Place {
+        $public = $this->publicLocation->normalize(
+            $data->publicLatitude,
+            $data->publicLongitude,
+            $data->publicLocationPrecision,
+        );
+
+        return DB::transaction(function () use ($actor, $place, $data, $public): Place {
             $locked = Place::query()->lockForUpdate()->findOrFail($place->id);
             $this->gate->forUser($actor)->authorize('update', $locked);
             $version = $locked->locationVersions()->max('version') + 1;
@@ -66,8 +78,9 @@ final readonly class UpdatePlaceLocation
             $locked->forceFill([
                 'public_region' => trim($data->publicRegion),
                 'public_address' => $data->publicAddress,
-                'public_latitude' => $data->publicLatitude,
-                'public_longitude' => $data->publicLongitude,
+                'public_latitude' => $public['latitude'],
+                'public_longitude' => $public['longitude'],
+                'public_location_precision' => $public['precision'],
                 'exact_address' => $data->exactAddress,
                 'exact_latitude' => $data->exactLatitude,
                 'exact_longitude' => $data->exactLongitude,

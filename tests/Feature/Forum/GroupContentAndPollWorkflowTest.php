@@ -533,6 +533,49 @@ test('group content query count stays bounded as poll volume grows', function ()
         ->and($tenPollQueries)->toBeLessThanOrEqual($singlePollQueries + 1);
 });
 
+test('group content hydrates vote state only for polls visible in the workspace', function () {
+    $owner = User::factory()->create();
+    $group = ForumGroup::factory()->for($owner, 'owner')->create();
+    $visiblePoll = ForumPoll::factory()
+        ->for($group, 'group')
+        ->for($owner, 'creator')
+        ->create(['created_at' => now()]);
+    ForumPollVote::factory()
+        ->for($visiblePoll, 'poll')
+        ->for($owner, 'user')
+        ->create();
+
+    $archivedPolls = ForumPoll::factory()
+        ->count(25)
+        ->for($group, 'group')
+        ->for($owner, 'creator')
+        ->create([
+            'archived_at' => now()->subDay(),
+            'created_at' => now()->subDay(),
+        ]);
+
+    foreach ($archivedPolls as $archivedPoll) {
+        ForumPollVote::factory()
+            ->for($archivedPoll, 'poll')
+            ->for($owner, 'user')
+            ->create();
+    }
+
+    $component = Livewire::actingAs($owner)
+        ->test(GroupContentWorkspace::class, ['groupId' => $group->id])
+        ->assertOk();
+
+    expect($component->get('pollChoices'))
+        ->toHaveCount(1)
+        ->toHaveKey($visiblePoll->id)
+        ->and($component->get('voteVersions'))
+        ->toHaveCount(1)
+        ->toHaveKey($visiblePoll->id)
+        ->and($component->get('voteTokens'))
+        ->toHaveCount(1)
+        ->toHaveKey($visiblePoll->id);
+});
+
 test('private group content component rejects a non member directly', function () {
     $owner = User::factory()->create();
     $group = ForumGroup::factory()->for($owner, 'owner')->private()->create();

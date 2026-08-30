@@ -1,0 +1,1 @@
+<?php declare(strict_types=1); namespace App\Enums; enum EventCompetitionEntryStatus: string { case AwaitingEligibility='awaiting_eligibility'; case Eligible='eligible'; case Withdrawn='withdrawn'; case Disqualified='disqualified'; case Finalized='finalized'; }

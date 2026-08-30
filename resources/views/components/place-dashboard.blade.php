@@ -489,15 +489,17 @@
                     <p>{{ __('ui.arrival_794adbbc6c') }}</p>
                     <h2 id="place-location-title">{{ $place['coordinate_accuracy'] }}</h2>
                 </div>
-                <x-action-control
-                    :href="$place['route_url']"
-                    label="{{ __('ui.open_route_6728958c30') }}"
-                    icon="navigation"
-                    variant="primary"
-                    size="compact"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                />
+                @if ($place['route_url'])
+                    <x-action-control
+                        :href="$place['route_url']"
+                        label="{{ __('ui.open_route_6728958c30') }}"
+                        icon="navigation"
+                        variant="primary"
+                        size="compact"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    />
+                @endif
             </header>
             <x-place-map
                 :places="[[
@@ -522,7 +524,16 @@
             <dl class="place-fact-list">
                 <div><dt>{{ __('ui.address_56ef8f2095') }}</dt><dd>{{ $place['address'] }}</dd></div>
                 <div><dt>{{ __('ui.public_area_911f5d1f74') }}</dt><dd>{{ $place['general_location'] }}</dd></div>
-                <div><dt>{{ __('ui.coordinates_117c132e93') }}</dt><dd>{{ $place['latitude'] }}, {{ $place['longitude'] }}</dd></div>
+                <div>
+                    <dt>{{ __('ui.coordinates_117c132e93') }}</dt>
+                    <dd>
+                        @if ($place['latitude'] !== null && $place['longitude'] !== null)
+                            {{ $place['latitude'] }}, {{ $place['longitude'] }}
+                        @else
+                            {{ __('places.presentation.region_only_location') }}
+                        @endif
+                    </dd>
+                </div>
                 <div><dt>{{ __('ui.privacy_54a57c3147') }}</dt><dd>{{ __('ui.only_this_public_place_point_is_displayed_no_5086dcd2d4') }}</dd></div>
             </dl>
         </section>

@@ -3,7 +3,13 @@
     'payload' => [],
 ])
 
-<form method="POST" action="{{ $action }}" class="contents">
+<form
+    method="POST"
+    action="{{ $action }}"
+    class="contents"
+    data-action-form
+    data-action-pending="false"
+>
     @csrf
 
     @forelse ($payload as $name => $value)

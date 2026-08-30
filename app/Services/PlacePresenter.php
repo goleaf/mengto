@@ -281,12 +281,21 @@ final class PlacePresenter
             'closing-soon', 'on-call', 'open-with-warning' => 'warning',
             default => 'neutral',
         };
+        $hasApproximatePoint = is_float($place['latitude']) || is_int($place['latitude']);
+        $hasApproximatePoint = $hasApproximatePoint
+            && (is_float($place['longitude']) || is_int($place['longitude']));
+        $mapUrl = $hasApproximatePoint
+            ? 'https://www.openstreetmap.org/?mlat='.$place['latitude'].'&mlon='.$place['longitude'].'#map=14/'.$place['latitude'].'/'.$place['longitude']
+            : null;
+        $routeUrl = $hasApproximatePoint
+            ? 'https://www.openstreetmap.org/directions?engine=fossgis_osrm_foot&route=54.687%2C25.279%3B'.$place['latitude'].'%2C'.$place['longitude']
+            : null;
 
         return [
             ...$place,
             'detail_url' => route('places.show', ['place' => $place['key']]),
-            'map_url' => 'https://www.openstreetmap.org/?mlat='.$place['latitude'].'&mlon='.$place['longitude'].'#map=16/'.$place['latitude'].'/'.$place['longitude'],
-            'route_url' => 'https://www.openstreetmap.org/directions?engine=fossgis_osrm_foot&route=54.687%2C25.279%3B'.$place['latitude'].'%2C'.$place['longitude'],
+            'map_url' => $mapUrl,
+            'route_url' => $routeUrl,
             'call_url' => $place['phone'] === null ? null : 'tel:'.preg_replace('/[^+0-9]/', '', $place['phone']),
             'status_tone' => $statusTone,
             'saved' => $saved,

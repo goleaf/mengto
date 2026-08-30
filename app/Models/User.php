@@ -104,6 +104,18 @@ class User extends Authenticatable implements MustVerifyEmailContract
         return $this->hasMany(UserDomainState::class);
     }
 
+    /** @return HasMany<PlaceInvitation, $this> */
+    public function sentPlaceInvitations(): HasMany
+    {
+        return $this->hasMany(PlaceInvitation::class, 'sender_user_id');
+    }
+
+    /** @return HasMany<PlaceInvitation, $this> */
+    public function receivedPlaceInvitations(): HasMany
+    {
+        return $this->hasMany(PlaceInvitation::class, 'recipient_user_id');
+    }
+
     /** @return HasOne<SocialActor, $this> */
     public function socialActor(): HasOne
     {

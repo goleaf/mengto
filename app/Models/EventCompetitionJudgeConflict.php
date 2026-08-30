@@ -1,0 +1,1 @@
+<?php declare(strict_types=1); namespace App\Models; use Illuminate\Database\Eloquent\Model; final class EventCompetitionJudgeConflict extends Model { protected $table='forum_event_competition_judge_conflicts'; protected $guarded=[]; protected $hidden=['details']; protected function casts():array{return ['details'=>'encrypted'];} }

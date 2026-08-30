@@ -211,7 +211,7 @@ final class ForumEventDemoSeeder extends Seeder
                     'format' => $format,
                     'pet_participation_mode' => $petParticipation,
                     'status' => $status,
-                    'locale' => $index % 3 === 0 ? 'lt' : ($index % 3 === 1 ? 'en' : 'ru'),
+                    'locale' => 'en',
                     'starts_at' => $startsAt,
                     'ends_at' => $endsAt,
                     'timezone' => 'Europe/Vilnius',

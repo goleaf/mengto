@@ -29,7 +29,12 @@ final class PlaceQuestionFactory extends ApplicationFactory
             'idempotency_key' => (string) Str::uuid(),
             'body' => $this->faker->sentence(12),
             'status' => PlaceQuestionStatus::Open,
+            'moderation_status' => 'approved',
+            'duplicate_question_id' => null,
+            'closed_by_user_id' => null,
             'answered_at' => null,
+            'closed_at' => null,
+            'close_reason' => null,
         ];
     }
 }

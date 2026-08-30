@@ -38,9 +38,10 @@ final class PlaceAccessGrant extends Model
         'place_id', 'user_id', 'event_id', 'issued_by_user_id', 'revoked_by_user_id',
         'purpose', 'status', 'may_view_exact_location', 'valid_from', 'valid_until',
         'revoked_at', 'revocation_reason_code', 'idempotency_key', 'metadata',
+        'revocation_idempotency_key',
     ];
 
-    protected $hidden = ['idempotency_key', 'metadata'];
+    protected $hidden = ['idempotency_key', 'revocation_idempotency_key', 'metadata'];
 
     protected $attributes = ['status' => 'active', 'may_view_exact_location' => true];
 

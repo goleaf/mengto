@@ -10,6 +10,9 @@ use Illuminate\Support\Facades\Schema;
 putenv('APP_ENV=testing');
 $_ENV['APP_ENV'] = 'testing';
 $_SERVER['APP_ENV'] = 'testing';
+putenv('EMAIL_VERIFICATION_ENABLED=true');
+$_ENV['EMAIL_VERIFICATION_ENABLED'] = 'true';
+$_SERVER['EMAIL_VERIFICATION_ENABLED'] = 'true';
 
 require dirname(__DIR__).'/vendor/autoload.php';
 

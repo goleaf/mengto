@@ -8,7 +8,10 @@ use App\Enums\PlaceQuestionStatus;
 use App\Models\Place;
 use App\Models\PlaceQuestion;
 use App\Models\PlaceQuestionAnswer;
+use App\Models\PlaceQuestionAnswerVersion;
+use App\Models\PlaceQuestionEvent;
 use App\Models\User;
+use App\Services\PlaceContributionNotifier;
 use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -16,7 +19,10 @@ use Illuminate\Validation\ValidationException;
 
 final readonly class AnswerPlaceQuestion
 {
-    public function __construct(private Gate $gate) {}
+    public function __construct(
+        private Gate $gate,
+        private PlaceContributionNotifier $notifier,
+    ) {}
 
     public function handle(
         User $actor,
@@ -42,6 +48,7 @@ final readonly class AnswerPlaceQuestion
                 'stable_key',
                 'body',
                 'status',
+                'moderation_status',
                 'answered_at',
             ])
             ->where('place_id', $place->id)
@@ -76,6 +83,7 @@ final readonly class AnswerPlaceQuestion
 
         return DB::transaction(function () use ($actor, $place, $question, $validated): PlaceQuestionAnswer {
             $lockedPlace = Place::query()
+                ->with('organization')
                 ->select([
                     'id',
                     'owner_user_id',
@@ -89,7 +97,6 @@ final readonly class AnswerPlaceQuestion
                 ])
                 ->lockForUpdate()
                 ->findOrFail($place->id);
-            $lockedPlace->setRelation('organization', $place->organization);
             $lockedQuestion = PlaceQuestion::query()
                 ->select([
                     'id',
@@ -98,6 +105,7 @@ final readonly class AnswerPlaceQuestion
                     'stable_key',
                     'body',
                     'status',
+                    'moderation_status',
                     'answered_at',
                 ])
                 ->lockForUpdate()
@@ -118,13 +126,46 @@ final readonly class AnswerPlaceQuestion
                 'stable_key' => 'place-answer-'.Str::lower((string) Str::ulid()),
                 'idempotency_key' => $validated['idempotency_key'],
                 'body' => $validated['body'],
+                'current_version' => 1,
                 'answered_at' => $answeredAt,
+            ]);
+
+            PlaceQuestionAnswerVersion::query()->create([
+                'place_question_answer_id' => $answer->id,
+                'editor_user_id' => $actor->id,
+                'idempotency_key' => $validated['idempotency_key'],
+                'version' => 1,
+                'body' => $validated['body'],
+                'created_at' => $answeredAt,
             ]);
 
             $lockedQuestion->forceFill([
                 'status' => PlaceQuestionStatus::Answered,
                 'answered_at' => $answeredAt,
             ])->save();
+
+            PlaceQuestionEvent::query()->create([
+                'place_question_id' => $lockedQuestion->id,
+                'actor_user_id' => $actor->id,
+                'idempotency_key' => $validated['idempotency_key'],
+                'event_type' => 'answered',
+                'from_status' => PlaceQuestionStatus::Open->value,
+                'to_status' => PlaceQuestionStatus::Answered->value,
+                'public_summary_key' => 'places.questions.events.answered',
+                'created_at' => $answeredAt,
+            ]);
+
+            $recipient = User::query()->find($lockedQuestion->author_user_id);
+            if ($recipient !== null && $recipient->id !== $actor->id) {
+                DB::afterCommit(fn () => $this->notifier->send(
+                    $recipient,
+                    'place_question_answered',
+                    'places.notifications.question_answered_title',
+                    'places.notifications.question_answered_body',
+                    'place-question-answered:'.$lockedQuestion->stable_key.':'.$recipient->id,
+                    ['place' => $lockedPlace->name],
+                ));
+            }
 
             return $answer;
         }, 3);

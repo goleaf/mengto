@@ -75,4 +75,10 @@ final class ContentMediaAsset extends Model
     {
         return $this->hasMany(PetProfileMedia::class);
     }
+
+    /** @return HasMany<PlaceMedia, $this> */
+    public function placeMedia(): HasMany
+    {
+        return $this->hasMany(PlaceMedia::class);
+    }
 }

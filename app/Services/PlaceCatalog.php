@@ -6,6 +6,7 @@ namespace App\Services;
 
 use App\Enums\PlaceAccessibilityStatus;
 use App\Enums\PlaceType;
+use App\Enums\PlacePublicLocationPrecision;
 use App\Enums\PlaceVerificationStatus;
 use App\Models\Place;
 use App\Models\User;
@@ -153,12 +154,15 @@ final class PlaceCatalog
             $record['phone'] = $place->public_phone;
             $record['website'] = $place->public_website;
             $record['email'] = $place->public_email;
-            $record['latitude'] = $place->public_latitude === null
-                ? $record['latitude']
-                : (float) $place->public_latitude;
-            $record['longitude'] = $place->public_longitude === null
-                ? $record['longitude']
-                : (float) $place->public_longitude;
+            $hasApproximatePoint = $place->public_location_precision
+                === PlacePublicLocationPrecision::ApproximatePoint
+                && $place->public_latitude !== null
+                && $place->public_longitude !== null;
+            $record['latitude'] = $hasApproximatePoint ? (float) $place->public_latitude : null;
+            $record['longitude'] = $hasApproximatePoint ? (float) $place->public_longitude : null;
+            $record['public_location_precision'] = $hasApproximatePoint
+                ? PlacePublicLocationPrecision::ApproximatePoint->value
+                : PlacePublicLocationPrecision::Region->value;
             $record['accepted_species'] = $place->species_rules === null
                 || $place->species_rules === []
                     ? $record['accepted_species']
@@ -218,6 +222,7 @@ final class PlaceCatalog
                 'public_email',
                 'public_latitude',
                 'public_longitude',
+                'public_location_precision',
                 'is_indoor',
                 'verification_status',
                 'accessibility_status',
@@ -286,13 +291,21 @@ final class PlaceCatalog
             'neighborhood' => $place->public_region,
             'address' => $place->public_address ?? $place->public_region,
             'general_location' => $place->public_region,
-            'latitude' => (float) ($place->public_latitude ?? 54.6872),
-            'longitude' => (float) ($place->public_longitude ?? 25.2797),
+            'latitude' => $place->public_location_precision === PlacePublicLocationPrecision::ApproximatePoint
+                && $place->public_latitude !== null
+                ? (float) $place->public_latitude
+                : null,
+            'longitude' => $place->public_location_precision === PlacePublicLocationPrecision::ApproximatePoint
+                && $place->public_longitude !== null
+                ? (float) $place->public_longitude
+                : null,
+            'public_location_precision' => $place->public_location_precision?->value
+                ?? PlacePublicLocationPrecision::Region->value,
             'map_x' => 50,
             'map_y' => 50,
-            'coordinate_accuracy' => $place->public_latitude === null
+            'coordinate_accuracy' => $place->public_location_precision !== PlacePublicLocationPrecision::ApproximatePoint
                 ? __('places.presentation.manual_public_location')
-                : __('places.presentation.public_coordinates'),
+                : __('places.presentation.approximate_public_coordinates'),
             'distance_km' => 0.0,
             'travel_minutes' => 0,
             'open_state' => 'unknown',

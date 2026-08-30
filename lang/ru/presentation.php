@@ -7,6 +7,7 @@ return [
     'access_expires_views' => ':label · действует до :expires · просмотров: :views',
     'access_limited_to' => 'Доступ ограничен разделами: :sections',
     'action_moment' => 'момент питомца :pet',
+    'action_processing' => 'Выполняется…',
     'action_publication' => 'публикация :name',
     'administered_by' => ':status, выполнил(а) :name · :date',
     'active_warnings' => '{1} :count активное предупреждение|[2,4] :count активных предупреждения|[5,*] :count активных предупреждений',

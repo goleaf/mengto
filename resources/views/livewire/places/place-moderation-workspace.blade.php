@@ -13,6 +13,13 @@
         <p class="notice" role="status">{{ session('place-moderation-feedback') }}</p>
     @endif
 
+    @if ($errors->any())
+        <x-forum-error-summary
+            :messages="$errors->getMessages()"
+            :heading="__('places.submissions.validation.summary')"
+        />
+    @endif
+
     <section class="panel stack" aria-labelledby="place-moderation-reason-heading">
         <h2 id="place-moderation-reason-heading">{{ __('places.submissions.moderation.decision') }}</h2>
         <label class="stack" for="place-moderation-reason-code">

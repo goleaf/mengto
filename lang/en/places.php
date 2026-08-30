@@ -255,6 +255,7 @@ return [
             'category_location' => 'This place category requires a public address, a map point, or an exact location shared privately with reviewers.',
             'emergency_phone' => 'An emergency veterinary submission requires a public phone number.',
             'emergency_hours' => 'An emergency veterinary submission requires sourced opening-hours information.',
+            'unknown_fact' => 'Remove place facts that are not supported by this submission form.',
             'organization' => 'You are not authorized to represent that organization.',
             'idempotency_conflict' => 'This operation key was already used with different information.',
             'rate_limited' => 'Too many place workflow actions. Try again later.',

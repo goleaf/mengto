@@ -7,7 +7,9 @@ namespace App\Actions;
 use App\Enums\PlaceQuestionStatus;
 use App\Models\Place;
 use App\Models\PlaceQuestion;
+use App\Models\PlaceQuestionEvent;
 use App\Models\User;
+use App\Services\PlaceContributionNotifier;
 use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -15,7 +17,10 @@ use Illuminate\Validation\ValidationException;
 
 final readonly class SubmitPlaceQuestion
 {
-    public function __construct(private Gate $gate) {}
+    public function __construct(
+        private Gate $gate,
+        private PlaceContributionNotifier $notifier,
+    ) {}
 
     public function handle(
         User $actor,
@@ -54,6 +59,7 @@ final readonly class SubmitPlaceQuestion
 
         return DB::transaction(function () use ($actor, $place, $validated): PlaceQuestion {
             $lockedPlace = Place::query()
+                ->with('organization')
                 ->select([
                     'id',
                     'owner_user_id',
@@ -67,8 +73,6 @@ final readonly class SubmitPlaceQuestion
                 ])
                 ->lockForUpdate()
                 ->findOrFail($place->id);
-            $lockedPlace->setRelation('organization', $place->organization);
-
             $this->gate->forUser($actor)->authorize('askQuestion', $lockedPlace);
 
             $question = PlaceQuestion::query()->createOrFirst(
@@ -84,6 +88,30 @@ final readonly class SubmitPlaceQuestion
 
             if (! $question->wasRecentlyCreated) {
                 return $this->validatedReplay($question, $actor, $lockedPlace, $validated['body']);
+            }
+
+            PlaceQuestionEvent::query()->create([
+                'place_question_id' => $question->id,
+                'actor_user_id' => $actor->id,
+                'idempotency_key' => $validated['idempotency_key'],
+                'event_type' => 'submitted',
+                'to_status' => PlaceQuestionStatus::Open->value,
+                'public_summary_key' => 'places.questions.events.submitted',
+                'created_at' => now(),
+            ]);
+
+            if ($lockedPlace->owner_user_id !== null && $lockedPlace->owner_user_id !== $actor->id) {
+                $recipient = User::query()->find($lockedPlace->owner_user_id);
+                if ($recipient !== null) {
+                    DB::afterCommit(fn () => $this->notifier->send(
+                        $recipient,
+                        'place_question_submitted',
+                        'places.notifications.question_submitted_title',
+                        'places.notifications.question_submitted_body',
+                        'place-question-submitted:'.$question->stable_key.':'.$recipient->id,
+                        ['place' => $lockedPlace->name],
+                    ));
+                }
             }
 
             return $question;

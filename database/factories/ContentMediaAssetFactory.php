@@ -23,7 +23,7 @@ final class ContentMediaAssetFactory extends ApplicationFactory
             'created_by_user_id' => fn (array $attributes): mixed => $attributes['owner_user_id'],
             'media_type' => ContentMediaType::Image,
             'status' => ContentMediaStatus::Ready,
-            'disk' => 'private',
+            'disk' => 'local',
             'path' => "content/{$key}.jpg",
             'original_name' => 'pet-photo.jpg',
             'mime_type' => 'image/jpeg',

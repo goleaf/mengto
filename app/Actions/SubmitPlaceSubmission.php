@@ -276,6 +276,15 @@ final readonly class SubmitPlaceSubmission
         ]);
 
         $validator->after(function ($validator) use ($data): void {
+            $unknownFactKeys = array_diff(
+                array_keys($data->facts),
+                ['hours', 'services', 'features', 'rules'],
+            );
+
+            if ($unknownFactKeys !== []) {
+                $validator->errors()->add('facts', __('places.submissions.validation.unknown_fact'));
+            }
+
             $publicCoordinates = filled($data->publicLatitude) && filled($data->publicLongitude);
             $exactCoordinates = filled($data->exactLatitude) && filled($data->exactLongitude);
 

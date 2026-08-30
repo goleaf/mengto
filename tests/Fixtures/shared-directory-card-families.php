@@ -1,0 +1,36 @@
+<?php
+
+declare(strict_types=1);
+
+return [
+    'resources/views/components/care-journal-card.blade.php' => 'retain domain-specific implementation',
+    'resources/views/components/connection-card.blade.php' => 'retain domain-specific implementation',
+    'resources/views/components/content-publication-card.blade.php' => 'retain domain-specific implementation',
+    'resources/views/components/device-card.blade.php' => 'retain domain-specific implementation',
+    'resources/views/components/discovery-result-card.blade.php' => 'adopt shared leaf components',
+    'resources/views/components/expert-card.blade.php' => 'adopt shared leaf components',
+    'resources/views/components/feed-card.blade.php' => 'retain domain-specific implementation',
+    'resources/views/components/forum-topic-card.blade.php' => 'retain domain-specific implementation',
+    'resources/views/components/group-card.blade.php' => 'adopt shared shell',
+    'resources/views/components/group-event-card.blade.php' => 'retain domain-specific implementation',
+    'resources/views/components/group-pet-card.blade.php' => 'retain domain-specific implementation',
+    'resources/views/components/group-post-card.blade.php' => 'retain domain-specific implementation',
+    'resources/views/components/knowledge-article-card.blade.php' => 'adopt shared leaf components',
+    'resources/views/components/listing-card.blade.php' => 'adopt shared leaf components',
+    'resources/views/components/media-link-card.blade.php' => 'retain domain-specific implementation',
+    'resources/views/components/medical-record-card.blade.php' => 'retain domain-specific implementation',
+    'resources/views/components/meetup-card.blade.php' => 'adopt shared shell',
+    'resources/views/components/neighbor-card.blade.php' => 'adopt shared shell',
+    'resources/views/components/pet-directory-card.blade.php' => 'adopt shared shell',
+    'resources/views/components/pet-friend-card.blade.php' => 'retain domain-specific implementation',
+    'resources/views/components/place-card.blade.php' => 'adopt shared leaf components',
+    'resources/views/components/profile-card-pet.blade.php' => 'retain domain-specific implementation',
+    'resources/views/components/profile-card.blade.php' => 'retain domain-specific implementation',
+    'resources/views/components/profile-pet-card.blade.php' => 'adopt shared leaf components',
+    'resources/views/components/promo-card.blade.php' => 'retain domain-specific implementation',
+    'resources/views/components/search-case-card.blade.php' => 'adopt shared leaf components',
+    'resources/views/components/service-card.blade.php' => 'retain domain-specific implementation',
+    'resources/views/components/share-channel-card.blade.php' => 'merge equivalent implementations',
+    'resources/views/components/share-recipient-item.blade.php' => 'merge equivalent implementations',
+    'resources/views/components/walk-plan-card.blade.php' => 'retain domain-specific implementation',
+];

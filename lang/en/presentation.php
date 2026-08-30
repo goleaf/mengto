@@ -7,6 +7,7 @@ return [
     'access_expires_views' => ':label · expires :expires · view :views',
     'access_limited_to' => 'Access is limited to: :sections',
     'action_moment' => ':pet moment',
+    'action_processing' => 'Processing…',
     'action_publication' => ':name publication',
     'administered_by' => ':status by :name · :date',
     'active_warnings' => '{1} :count active warning|[2,*] :count active warnings',

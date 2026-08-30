@@ -9,6 +9,7 @@ use Database\Factories\PlaceQuestionAnswerFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * @property CarbonImmutable $answered_at
@@ -32,6 +33,8 @@ final class PlaceQuestionAnswer extends Model
         'stable_key',
         'idempotency_key',
         'body',
+        'current_version',
+        'correction_reason',
         'answered_at',
     ];
 
@@ -39,7 +42,10 @@ final class PlaceQuestionAnswer extends Model
 
     protected function casts(): array
     {
-        return ['answered_at' => 'immutable_datetime'];
+        return [
+            'answered_at' => 'immutable_datetime',
+            'current_version' => 'integer',
+        ];
     }
 
     public function getRouteKeyName(): string
@@ -57,5 +63,11 @@ final class PlaceQuestionAnswer extends Model
     public function author(): BelongsTo
     {
         return $this->belongsTo(User::class, 'author_user_id');
+    }
+
+    /** @return HasMany<PlaceQuestionAnswerVersion, $this> */
+    public function versions(): HasMany
+    {
+        return $this->hasMany(PlaceQuestionAnswerVersion::class);
     }
 }

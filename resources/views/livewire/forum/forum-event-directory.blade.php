@@ -353,7 +353,7 @@
                 <div class="grid gap-4 md:grid-cols-2">
                     <label class="forum-form__field">
                         <span>{{ __('forum_events.fields.vaccination_requirements') }}</span>
-                        <textarea wire:model.live.debounce.400ms="form.vaccinationRequirements" rows="3" maxlength="5000"></textarea>
+                        <textarea wire:model="form.vaccinationRequirements" rows="3" maxlength="5000"></textarea>
                     </label>
                     <label class="forum-form__field">
                         <span>{{ __('forum_events.fields.vaccination_jurisdiction') }}</span>

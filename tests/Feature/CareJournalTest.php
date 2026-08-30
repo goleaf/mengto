@@ -462,6 +462,32 @@ test('care journal screens keep query counts bounded as timeline data grows', fu
     expect($queryCount)->toBeLessThanOrEqual(12);
 });
 
+test('care journal audit history is scoped before its row budget is applied', function () {
+    $journal = CareJournal::factory()->create(['owner_key' => 'mia-carter']);
+    $unrelatedJournal = CareJournal::factory()->create(['owner_key' => 'another-owner']);
+
+    AuditLog::factory()->count(5)->create([
+        'expert_profile_id' => null,
+        'action' => 'care-entry.created',
+        'target_type' => CareEntry::class,
+        'target_id' => 'target-entry',
+        'metadata' => ['care_journal_id' => $journal->id],
+        'created_at' => now()->subDay(),
+    ]);
+    AuditLog::factory()->count(31)->create([
+        'expert_profile_id' => null,
+        'action' => 'care-entry.created',
+        'target_type' => CareEntry::class,
+        'target_id' => 'unrelated-entry',
+        'metadata' => ['care_journal_id' => $unrelatedJournal->id],
+        'created_at' => now(),
+    ]);
+
+    $data = app(\App\Services\CareJournalPresenter::class)->show($journal, manage: true);
+
+    expect($data['audits'])->toHaveCount(5);
+});
+
 test('the care journal seeder is idempotent and creates useful family care data', function () {
     $seeder = app(CareJournalSeeder::class);
 

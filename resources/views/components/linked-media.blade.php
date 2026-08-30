@@ -5,7 +5,7 @@
     'external' => false,
 ])
 
-@if ($href)
+@if ($href && is_string($label) && trim($label) !== '')
     <a
         href="{{ $href }}"
         aria-label="{{ $label }}"

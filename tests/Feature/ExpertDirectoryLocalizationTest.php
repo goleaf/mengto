@@ -227,8 +227,8 @@ test('the expert directory query count stays bounded as profiles grow', function
 
     $this->get(route('experts.index'))->assertOk();
 
-    expect($singleProfileQueryCount)->toBe(6)
-        ->and(count($queries))->toBe(6);
+    expect($singleProfileQueryCount)->toBe(5)
+        ->and(count($queries))->toBe(5);
 });
 
 test('the browser matrix rejects expert body fallbacks', function (): void {

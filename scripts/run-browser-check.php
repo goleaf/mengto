@@ -57,6 +57,7 @@ $environment = [
     'APP_CONFIG_CACHE' => $configCache,
     'DB_CONNECTION' => 'sqlite',
     'DB_DATABASE' => $database,
+    'EMAIL_VERIFICATION_ENABLED' => 'true',
     'CACHE_STORE' => 'array',
     'SESSION_DRIVER' => 'database',
     'QUEUE_CONNECTION' => 'sync',

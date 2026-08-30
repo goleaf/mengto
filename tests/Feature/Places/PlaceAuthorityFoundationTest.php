@@ -129,6 +129,7 @@ test('legacy place presentation consumes canonical public facts without private 
         'public_address' => 'Canonical public entrance',
         'public_latitude' => '54.700001',
         'public_longitude' => '25.300001',
+        'public_location_precision' => \App\Enums\PlacePublicLocationPrecision::ApproximatePoint,
         'exact_address' => 'Internal operations entrance',
     ]);
     Place::factory()->private()->create([

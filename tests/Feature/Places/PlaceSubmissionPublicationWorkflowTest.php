@@ -817,6 +817,80 @@ test('submission and moderation routes enforce account and reviewer boundaries',
         ->assertSee(__('places.submissions.moderation.title'));
 });
 
+test('terminal moderation history cannot hide newer actionable submissions', function () {
+    $moderator = User::factory()->administrator()->create();
+    PlaceSubmission::factory()
+        ->for($this->authenticatedUser, 'submitter')
+        ->rejected()
+        ->count(50)
+        ->sequence(fn ($sequence): array => [
+            'name' => 'Historical rejected place '.($sequence->index + 1),
+            'submitted_at' => now()->subDays(60)->addMinutes($sequence->index),
+        ])
+        ->create();
+    $actionable = PlaceSubmission::factory()
+        ->for($this->authenticatedUser, 'submitter')
+        ->create([
+            'name' => 'Newest actionable place',
+            'submitted_at' => now(),
+        ]);
+
+    Livewire::actingAs($moderator)
+        ->test(PlaceModerationWorkspace::class)
+        ->assertSee($actionable->name);
+});
+
+test('completed existing links cannot fill the actionable moderation queue', function () {
+    $moderator = User::factory()->administrator()->create();
+    $destination = Place::factory()->public()->create();
+    $completed = PlaceSubmission::factory()
+        ->for($this->authenticatedUser, 'submitter')
+        ->count(40)
+        ->sequence(fn ($sequence): array => [
+            'name' => 'Completed existing link '.($sequence->index + 1),
+            'status' => PlaceSubmissionStatus::Published,
+            'resolution' => PlaceSubmissionResolution::ExistingLink,
+            'linked_place_id' => $destination->id,
+            'published_place_id' => null,
+            'submitted_at' => now()->subDays(30)->addMinutes($sequence->index),
+        ])
+        ->create();
+
+    foreach ($completed as $submission) {
+        PlaceDuplicateCandidate::factory()
+            ->for($submission, 'submission')
+            ->for($destination, 'candidatePlace')
+            ->create();
+    }
+
+    $actionable = PlaceSubmission::factory()
+        ->for($this->authenticatedUser, 'submitter')
+        ->create([
+            'name' => 'Pending after completed links',
+            'submitted_at' => now(),
+        ]);
+
+    Livewire::actingAs($moderator)
+        ->test(PlaceModerationWorkspace::class)
+        ->assertSee($actionable->name);
+});
+
+test('moderation validation renders a localized recovery summary without changing state', function () {
+    $moderator = User::factory()->administrator()->create();
+    $submission = PlaceSubmission::factory()
+        ->for($this->authenticatedUser, 'submitter')
+        ->create();
+
+    Livewire::actingAs($moderator)
+        ->test(PlaceModerationWorkspace::class)
+        ->call('requestInformation', $submission->stable_key)
+        ->assertHasErrors(['reason_detail'])
+        ->assertSee(__('places.submissions.validation.summary'));
+
+    expect($submission->fresh()->status)->toBe(PlaceSubmissionStatus::Submitted)
+        ->and($submission->events()->count())->toBe(0);
+});
+
 test('moderation workspace renders review evidence and reaches merge restore and withdrawn reopen', function () {
     $moderator = User::factory()->administrator()->create();
     $source = Place::factory()->public()->create();
@@ -1107,6 +1181,32 @@ test('category rules require operational emergency facts while general-area rout
     expect($route->catalog_category)->toBe('route')
         ->and($route->public_address)->toBeNull()
         ->and($route->public_latitude)->toBeNull();
+});
+
+test('submission rejects unknown fact keys without writing review records', function () {
+    $exception = null;
+
+    try {
+        app(SubmitPlaceSubmission::class)->handle(
+            $this->authenticatedUser,
+            placeSubmissionData(
+                '10000000-0000-4000-8000-000000000011',
+                facts: [
+                    'services' => ['preventive-care'],
+                    'unreviewed_private_hint' => 'Do not persist this.',
+                ],
+            ),
+        );
+    } catch (ValidationException $caught) {
+        $exception = $caught;
+    }
+
+    expect($exception)->toBeInstanceOf(ValidationException::class)
+        ->and($exception?->errors())->toHaveKey('facts')
+        ->and($exception?->errors()['facts'][0])->toBe(__('places.submissions.validation.unknown_fact'))
+        ->and(PlaceSubmission::query()->count())->toBe(0)
+        ->and(PlaceFact::query()->count())->toBe(0)
+        ->and(PlaceSubmissionEvent::query()->count())->toBe(0);
 });
 
 test('an active candidate place manager may link but cannot approve reject merge or review another scope', function () {

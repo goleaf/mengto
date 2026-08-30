@@ -139,7 +139,7 @@ Blade disagrees.
 | Message folder placement (`All` through `Archive`) | Implemented and tested | Keep the nine-folder toolbar above the messaging shell |
 | Plan registration and current-versus-target documentation | Complete | Reconcile again whenever implementation changes the rendered state |
 | `/messages` canonical page identity | Implemented and targeted-verified | Preserve one canonical header, nine folders above the messaging shell, and zero horizontal overflow |
-| Package 0 requirements and red contracts | Partial | All 111 current first-party GET routes now have an executable one-class ledger and canonical routes have structural contracts; the stable requirement ID and broader query baselines remain open |
+| Package 0 requirements and red contracts | Partial | `PRD-UI-001` now owns the global page-identity contract; all current first-party GET routes have an executable one-class ledger and canonical routes have structural contracts; broader query baselines and the final regenerated route audit remain open |
 | Package 1 current `/meetups` schema/runtime | Implemented and verified | Fresh migration, complete migration lifecycle, explicit projection, team-membership schema, `/meetups`, and event-workspace runtime checks pass |
 | Package 2 shared component | Implemented and browser-verified for current consumers | Explicit page-specific heading IDs, empty/count/single/multiple action states, escaped long content, metadata/actions slots, compatibility, wrapping, semantic tests, localized identity copy, 200% zoom, reduced-motion, and forced-colors focus checks pass |
 | Package 3 reference directories | Implemented and browser-verified | All listed routes consume the shared component and pass the complete priority golden matrix at seven responsive/accessibility profiles |
@@ -780,9 +780,9 @@ also pass.
 
 ### 3.3 Next Execution Checkpoint
 
-1. Complete Package 0 by assigning the stable requirement ID and recording the
-   remaining representative query baselines; keep the executable 111-route
-   ledger synchronized.
+1. Complete Package 0 under `PRD-UI-001` by recording the remaining
+   representative query baselines and keeping the executable GET-route ledger
+   synchronized with the regenerated route inventory.
 2. Retain the verified incremental `/meetups` and event lifecycle checks as
    release gates for Package 6.
 3. Audit every classified detail/workspace exception, retaining purposeful

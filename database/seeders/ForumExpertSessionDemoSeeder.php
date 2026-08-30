@@ -83,7 +83,7 @@ final class ForumExpertSessionDemoSeeder extends Seeder
                 'jurisdiction' => 'LT',
                 'title' => 'Calm dog training community questions',
                 'summary' => 'A public educational session about humane training routines and referral boundaries.',
-                'locale' => 'lt',
+                'locale' => 'en',
                 'timezone' => 'Europe/Vilnius',
                 'status' => ForumExpertSessionStatus::Published,
                 'disclaimer_version' => '2026-07',

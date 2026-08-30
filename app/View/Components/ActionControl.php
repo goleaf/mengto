@@ -11,6 +11,8 @@ class ActionControl extends Component
 
     public ?string $resolvedIcon;
 
+    public string $resolvedLoadingLabel;
+
     /** @var array<int|string, string|bool> */
     public array $classes;
 
@@ -29,6 +31,7 @@ class ActionControl extends Component
         public bool $active = false,
         public ?string $activeLabel = null,
         public ?string $activeIcon = null,
+        public ?string $loadingLabel = null,
         public ?bool $pressed = null,
         public bool $disabled = false,
         public ?string $name = null,
@@ -36,6 +39,7 @@ class ActionControl extends Component
     ) {
         $this->resolvedLabel = $active && $activeLabel ? $activeLabel : $label;
         $this->resolvedIcon = $active && $activeIcon ? $activeIcon : $icon;
+        $this->resolvedLoadingLabel = $loadingLabel ?: __('presentation.action_processing');
         $this->classes = [
             'action',
             'action--'.$variant,

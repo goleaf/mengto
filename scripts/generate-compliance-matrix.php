@@ -219,6 +219,13 @@ function evidenceFor(string $id): array
             'Existing demo states',
             '`LinkedMediaNavigationContractTest` and connected browser review',
         ],
+        'PRD-UI-001' => [
+            '`x-page-header`, audited detail/profile heroes, route identity ledger and prepared presenters',
+            'Existing route middleware, bindings, policies, scoped-token and private-file boundaries',
+            'Documented identity component per GET route; EN/LT/RU copy; responsive, keyboard, forced-colors and reduced-motion contracts',
+            'Deterministic route-specific factories, seed identities and isolated browser database',
+            '`PageIdentityStandardizationTest`, localization regressions, representative query budgets and isolated browser matrix',
+        ],
         'LAR-21' => [
             'Direct Actions and framework authentication events',
             'Transactional domain mutations and idempotent notification records',
@@ -509,6 +516,10 @@ function verificationFor(string $id): string
 
     if (in_array($id, ['PRD-SOCIAL-009', 'UI-NAV-001'], true)) {
         return 'php artisan test --compact tests/Feature/LinkedMediaNavigationContractTest.php && vendor/bin/phpstan analyse --no-progress && npm run build && connected Playwright viewport/keyboard review';
+    }
+
+    if ($id === 'PRD-UI-001') {
+        return 'php scripts/run-tests.php --compact tests/Feature/PageIdentityStandardizationTest.php tests/Feature/LocalizationTest.php && vendor/bin/pint --test && vendor/bin/phpstan analyse --no-progress && npm run build && npm run test:browser:page-identity';
     }
 
     if ($id === 'TEST-COVERAGE-001') {

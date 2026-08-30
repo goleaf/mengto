@@ -49,9 +49,37 @@ final class PlacePolicy
             && $place->isManagedBy($user);
     }
 
+    public function submitManagementClaim(?User $user, Place $place): bool
+    {
+        return $user?->isActive() === true
+            && $user->hasVerifiedEmail()
+            && $place->status === PlaceStatus::Active
+            && $place->archived_at === null
+            && $this->view($user, $place);
+    }
+
     public function manageAccess(?User $user, Place $place): bool
     {
         return $this->update($user, $place);
+    }
+
+    public function manageMedia(?User $user, Place $place): bool
+    {
+        return $this->update($user, $place);
+    }
+
+    public function moderateMedia(?User $user, Place $place): bool
+    {
+        return $user?->isAdministrator() === true
+            && $user->hasVerifiedEmail()
+            && ! in_array($place->status, [PlaceStatus::Archived, PlaceStatus::Merged], true);
+    }
+
+    public function report(?User $user, Place $place): bool
+    {
+        return $user?->isActive() === true
+            && $user->hasVerifiedEmail()
+            && $this->view($user, $place);
     }
 
     public function useForEvent(?User $user, Place $place): bool

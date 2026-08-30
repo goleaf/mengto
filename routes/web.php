@@ -120,6 +120,7 @@ use App\Http\Controllers\PetProfileWorkspaceController;
 use App\Http\Controllers\PhotoInteractionController;
 use App\Http\Controllers\PlaceDetailPreviewController;
 use App\Http\Controllers\PlaceDirectoryPreviewController;
+use App\Http\Controllers\PlaceMediaController;
 use App\Http\Controllers\PortalMediaController;
 use App\Http\Controllers\PostThreadPreviewController;
 use App\Http\Controllers\PreviewController;
@@ -241,6 +242,14 @@ Route::middleware('web')
                 Route::get('/places/moderation/submissions', PlaceModerationWorkspace::class)
                     ->middleware(['verified', 'throttle:60,1'])
                     ->name('places.moderation.submissions');
+                Route::get(
+                    '/places/{place:slug}/media/{placeMedia:media_key}/{variant}',
+                    PlaceMediaController::class,
+                )
+                    ->middleware(['verified', 'throttle:60,1'])
+                    ->whereIn('variant', ['fallback', 'small', 'medium', 'large'])
+                    ->withoutScopedBindings()
+                    ->name('places.media.show');
 
                 Route::get('/circle', CirclePreviewController::class)->name('circle.index');
                 Route::get('/circle/connections', ConnectionCenterPreviewController::class)

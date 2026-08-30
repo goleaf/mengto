@@ -59,15 +59,6 @@ class ExpertPresenter
                 ($filters['availability'] ?? null) === 'waitlist',
                 fn (Builder $builder): Builder => $builder->where('availability_status', 'waitlist'),
             )
-            ->with([
-                'services' => fn ($services) => $services
-                    ->select([
-                        'id', 'expert_profile_id', 'name', 'format', 'duration_minutes',
-                        'price', 'currency', 'status',
-                    ])
-                    ->active()
-                    ->orderBy('price'),
-            ])
             ->withExists([
                 'engagements as is_saved' => fn ($engagements) => $engagements
                     ->where('user_key', $this->actor->key())

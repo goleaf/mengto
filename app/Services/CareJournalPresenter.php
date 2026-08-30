@@ -195,18 +195,25 @@ class CareJournalPresenter
                 'care-access.revoked',
                 'care-media.downloaded',
             ])
+            ->where(function (Builder $query) use ($journal): void {
+                $query
+                    ->where(function (Builder $target) use ($journal): void {
+                        $target
+                            ->where('target_type', CareJournal::class)
+                            ->where('target_id', (string) $journal->id);
+                    })
+                    ->orWhere('metadata->care_journal_id', $journal->id);
+            })
             ->where('created_at', '>=', now()->subDays(30))
             ->latest('created_at')
+            ->latest('id')
             ->limit(30)
             ->get()
-            ->filter(fn (AuditLog $log): bool => ($log->metadata['care_journal_id'] ?? null) === $journal->id
-                || ($log->target_type === CareJournal::class && (int) $log->target_id === $journal->id))
             ->map(fn (AuditLog $log): array => [
                 'action' => Str::headline($log->action),
                 'actor' => $log->actor_role,
                 'time' => $this->formatter->dateTime($log->created_at),
             ])
-            ->values()
             ->all();
 
         return [

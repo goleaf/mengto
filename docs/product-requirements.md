@@ -99,6 +99,12 @@ fields omitted from an individual row inherit the controls in
 | PRD-PLACE-002 | Place details expose source, verification scope, freshness, services, rules, accessibility, warnings, reviews, questions, and corrections. | Active verified member, owner, moderator; place content/state | Portal authentication; portal-visible/owner/moderator policies | Corrections and warnings preserve evidence/history | No false live inventory, booking, weather, or official status |
 | PRD-PLACE-003 | Emergency veterinary mode prioritizes open species-capable clinics and always instructs the user to call first. | Active verified member; clinic | Portal authentication; filter validation | Relevant clinics and direct call/route actions render | Never guarantees admission, wait, clinician, or treatment |
 
+## Global Interface
+
+| ID | Testable statement | Roles and entities | Authorization and validation | Success / failure | Security, data, i18n, a11y, performance |
+| --- | --- | --- | --- | --- | --- |
+| PRD-UI-001 | Every first-party GET route has exactly one documented page-identity classification and every rendered HTML page exposes one semantically correct localized `h1` through the canonical header, a deliberately distinct detail/profile hero, an authentication/shared-access/document identity, or an audited special-case contract. | Visitor, member, owner, professional, administrator, scoped recipient; every first-party GET response | Existing route authentication, authorization, binding, and scoped-token boundaries remain authoritative; identity copy and action destinations are prepared server-side | Routes retain stable deep links, authorized back links, active navigation, and workflow order while duplicate headers, raw keys, fallback copy, lazy loading, and horizontal overflow fail executable checks | EN/LT/RU placeholder parity; escaped output; keyboard-visible focus; 44-pixel targets; forced-colors and reduced-motion support; 200-percent zoom; constant representative directory/detail/workspace query budgets |
+
 ## Implementation And Test Traceability
 
 Implementation paths, migration paths, policy paths, translation keys, factory
