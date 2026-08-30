@@ -11,6 +11,7 @@ use App\Models\ForumEvent;
 use App\Models\ForumEventUpdate;
 use App\Models\User;
 use App\Services\ForumEventAudit;
+use App\Services\ForumEventNotifier;
 use Carbon\CarbonImmutable;
 use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Support\Facades\DB;
@@ -23,6 +24,7 @@ final readonly class RescheduleForumEvent
     public function __construct(
         private Gate $gate,
         private ForumEventAudit $audit,
+        private ForumEventNotifier $notifier,
     ) {}
 
     public function handle(
@@ -49,7 +51,7 @@ final readonly class RescheduleForumEvent
             'idempotency_key' => ['required', 'string', 'min:16', 'max:190'],
         ])->validate();
 
-        return DB::transaction(function () use (
+        $rescheduled = DB::transaction(function () use (
             $actor,
             $endsAt,
             $event,
@@ -61,8 +63,21 @@ final readonly class RescheduleForumEvent
             $locked = ForumEvent::query()
                 ->lockForUpdate()
                 ->findOrFail($event->id);
+            $this->gate->forUser($actor)->authorize('update', $locked);
 
-            if ($locked->status !== ForumEventStatus::Scheduled) {
+            if (! in_array($locked->status, [
+                ForumEventStatus::Scheduled,
+                ForumEventStatus::Published,
+                ForumEventStatus::RegistrationScheduled,
+                ForumEventStatus::RegistrationOpen,
+                ForumEventStatus::RegistrationPaused,
+                ForumEventStatus::RegistrationClosed,
+                ForumEventStatus::Full,
+                ForumEventStatus::WaitlistOnly,
+                ForumEventStatus::Postponed,
+                ForumEventStatus::Moved,
+                ForumEventStatus::FormatChanged,
+            ], true) || $locked->starts_at->isPast()) {
                 throw ValidationException::withMessages([
                     'rescheduleForm' => __('forum_events.validation.reschedule_status'),
                 ]);
@@ -76,6 +91,18 @@ final readonly class RescheduleForumEvent
                 'timezone' => $timezone,
                 'lock_version' => $locked->lock_version + 1,
             ])->save();
+            $occurrence = $locked->occurrences()
+                ->where('is_override', false)
+                ->lockForUpdate()
+                ->first();
+            if ($occurrence !== null) {
+                $occurrence->forceFill([
+                    'starts_at' => $startsAt,
+                    'ends_at' => $endsAt,
+                    'timezone' => $timezone,
+                    'lock_version' => $occurrence->lock_version + 1,
+                ])->save();
+            }
 
             ForumEventUpdate::query()->createOrFirst(
                 ['idempotency_key' => 'event-reschedule-update:'.$idempotencyKey],
@@ -85,7 +112,7 @@ final readonly class RescheduleForumEvent
                     'stable_key' => 'event-update-'.Str::lower((string) Str::ulid()),
                     'type' => ForumEventUpdateType::Rescheduled,
                     'audience' => ForumEventUpdateAudience::Public,
-                    'title' => __('forum_events.updates.rescheduled_title'),
+                    'title' => 'forum_events.updates.rescheduled_title',
                     'body' => trim($explanation),
                     'published_at' => now(),
                 ],
@@ -108,5 +135,24 @@ final readonly class RescheduleForumEvent
 
             return $locked;
         }, 3);
+
+        $rescheduled->registrations()
+            ->whereIn('status', ForumEvent::participantAccessStatusValues())
+            ->with('user:id,actor_key,locale')
+            ->orderBy('id')
+            ->chunkById(100, function ($registrations) use ($rescheduled): void {
+                foreach ($registrations as $registration) {
+                    $this->notifier->send(
+                        $registration->user,
+                        $rescheduled,
+                        'event-rescheduled',
+                        'forum_events.notifications.rescheduled_title',
+                        'forum_events.notifications.rescheduled_body',
+                        'event-rescheduled:'.$rescheduled->id.':'.$rescheduled->lock_version.':'.$registration->user_id,
+                    );
+                }
+            });
+
+        return $rescheduled;
     }
 }

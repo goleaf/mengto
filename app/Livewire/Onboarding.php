@@ -8,17 +8,18 @@ use App\Actions\AdvanceUserOnboarding;
 use App\Actions\CompleteOnboardingPreferences;
 use App\Actions\CompleteOnboardingPrivacy;
 use App\Actions\DeferOnboardingPetRelationship;
+use App\Actions\RevisitOnboardingPetRelationship;
 use App\Enums\OnboardingPetChoice;
 use App\Enums\OnboardingStep;
 use App\Livewire\Forms\OnboardingPetChoiceForm;
 use App\Livewire\Forms\OnboardingPrivacyForm;
 use App\Livewire\Forms\ProfilePreferencesForm;
-use App\Models\PetProfile;
 use App\Models\User;
 use App\Models\UserOnboarding;
 use App\Services\AccountEntryDestination;
 use App\Services\EmailVerificationMode;
 use App\Services\OnboardingPetEvidence;
+use App\Services\OnboardingPetRelationshipOverview;
 use App\Services\OnboardingState;
 use App\Services\SocialActorResolver;
 use Illuminate\Contracts\Auth\Factory as AuthFactory;
@@ -68,11 +69,15 @@ final class Onboarding extends Component
 
     private DeferOnboardingPetRelationship $deferPetRelationship;
 
+    private RevisitOnboardingPetRelationship $revisitPetRelationship;
+
     private AccountEntryDestination $entryDestination;
 
     private OnboardingState $onboardingState;
 
     private OnboardingPetEvidence $petEvidence;
+
+    private OnboardingPetRelationshipOverview $petRelationshipOverview;
 
     private bool $mounting = false;
 
@@ -84,9 +89,11 @@ final class Onboarding extends Component
         CompleteOnboardingPreferences $completePreferences,
         CompleteOnboardingPrivacy $completePrivacy,
         DeferOnboardingPetRelationship $deferPetRelationship,
+        RevisitOnboardingPetRelationship $revisitPetRelationship,
         AccountEntryDestination $entryDestination,
         OnboardingState $onboardingState,
         OnboardingPetEvidence $petEvidence,
+        OnboardingPetRelationshipOverview $petRelationshipOverview,
     ): void {
         $this->auth = $auth;
         $this->emailVerification = $emailVerification;
@@ -95,9 +102,11 @@ final class Onboarding extends Component
         $this->completePreferences = $completePreferences;
         $this->completePrivacy = $completePrivacy;
         $this->deferPetRelationship = $deferPetRelationship;
+        $this->revisitPetRelationship = $revisitPetRelationship;
         $this->entryDestination = $entryDestination;
         $this->onboardingState = $onboardingState;
         $this->petEvidence = $petEvidence;
+        $this->petRelationshipOverview = $petRelationshipOverview;
     }
 
     public function mount(): void
@@ -152,20 +161,29 @@ final class Onboarding extends Component
     #[Computed]
     public function hasManagedPet(): bool
     {
-        $user = $this->requireUser();
-
-        return PetProfile::query()
-            ->managedBy($user)
-            ->exists();
+        return $this->petRelationship()['managed'];
     }
 
     #[Computed]
     public function hasAccessRequestEvidence(): bool
     {
-        return $this->petEvidence->supports(
-            $this->requireUser(),
-            OnboardingPetChoice::AccessRequested,
-        );
+        return $this->petRelationship()['access_requested'];
+    }
+
+    /**
+     * @return array{
+     *     managed: bool,
+     *     access_requested: bool,
+     *     has_current_invitation: bool,
+     *     has_inactive_relationship: bool,
+     *     has_more_managed: bool,
+     *     managed_pets: list<array{profile_key: string, name: string, species: string}>
+     * }
+     */
+    #[Computed]
+    public function petRelationship(): array
+    {
+        return $this->petRelationshipOverview->for($this->requireUser());
     }
 
     #[Computed]
@@ -184,7 +202,7 @@ final class Onboarding extends Component
         $choice = $this->onboardingState->currentPetChoice($state);
 
         return $choice instanceof OnboardingPetChoice
-            && $choice !== OnboardingPetChoice::NotNow
+            && $choice->requiresPetEvidence()
             && ! $this->petEvidence->supports($user, $choice);
     }
 
@@ -319,6 +337,14 @@ final class Onboarding extends Component
         ));
     }
 
+    public function editPetRelationship(): void
+    {
+        $this->runMutation(fn (): UserOnboarding => $this->revisitPetRelationship->handle(
+            $this->requireUser(),
+            $this->onboardingLockVersion,
+        ));
+    }
+
     public function render(): View
     {
         return view('livewire.onboarding')
@@ -395,6 +421,7 @@ final class Onboarding extends Component
             $this->completedProgressSteps,
             $this->hasManagedPet,
             $this->hasAccessRequestEvidence,
+            $this->petRelationship,
             $this->needsPetEvidenceRecovery,
         );
     }
@@ -410,7 +437,10 @@ final class Onboarding extends Component
         }
 
         if ($step === OnboardingStep::PetRelationship) {
-            $this->petForm->choice = '';
+            $choice = $this->onboardingState->currentPetChoice($state);
+            $this->petForm->choice = $choice instanceof OnboardingPetChoice
+                ? $choice->value
+                : '';
 
             return;
         }

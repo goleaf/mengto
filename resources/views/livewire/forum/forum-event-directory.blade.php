@@ -1,8 +1,8 @@
 <section class="grid gap-6" aria-labelledby="forum-event-directory-heading" data-section="event-directory">
     <x-page-header
         :eyebrow="__('forum_events.page.eyebrow')"
-        :title="__('forum_events.page.heading')"
-        :description="__('forum_events.page.description')"
+        :title="$createOnly ? __('forum_events.page.create_heading') : __('forum_events.page.heading')"
+        :description="$createOnly ? __('forum_events.page.create_description') : __('forum_events.page.description')"
         heading-id="forum-event-directory-heading"
         data-section="forum-event-directory-header"
     />
@@ -17,6 +17,19 @@
         {{ __('forum_events.notices.offline') }}
     </p>
 
+    @unless ($createOnly)
+    <nav class="flex gap-2 overflow-x-auto pb-1" aria-label="{{ __('forum_events.tabs.label') }}">
+        @foreach (['discover', 'my', 'invitations'] as $meetupScope)
+            <button
+                type="button"
+                class="forum-button min-h-11 shrink-0"
+                wire:click="$set('scope', '{{ $meetupScope }}')"
+                @if ($scope === $meetupScope) aria-current="page" @endif
+            >
+                {{ __('forum_events.tabs.'.$meetupScope) }}
+            </button>
+        @endforeach
+    </nav>
     <form class="forum-form grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <label class="forum-form__field sm:col-span-2 xl:col-span-1">
             <span>{{ __('forum_events.filters.search') }}</span>
@@ -72,7 +85,12 @@
                 <article class="forum-form" wire:key="forum-event-{{ $event['id'] }}">
                     <div class="flex flex-wrap items-center justify-between gap-2">
                         <x-status-badge :label="$event['type']" icon="calendar-days" />
-                        <span class="text-sm">{{ $event['status'] }}</span>
+                        <div class="flex flex-wrap gap-2">
+                            @if ($event['participation_status'])
+                                <x-status-badge :label="$event['participation_status']" icon="circle-dot" />
+                            @endif
+                            <span class="text-sm">{{ $event['status'] }}</span>
+                        </div>
                     </div>
 
                     <div>
@@ -145,7 +163,7 @@
 
                     <a class="forum-button forum-button--primary min-h-11 justify-self-start" href="{{ $event['url'] }}" wire:navigate>
                         <x-ui-icon name="arrow-up-right" />
-                        {{ __('forum_events.actions.open') }}
+                        {{ $event['action_label'] }}
                     </a>
                 </article>
             @empty
@@ -160,11 +178,15 @@
     </section>
 
     @if ($this->canCreate)
-        <details class="forum-form">
-            <summary class="forum-button min-h-11">
-                <x-ui-icon name="calendar-plus" />
-                {{ __('forum_events.page.create_heading') }}
-            </summary>
+        <a class="forum-button forum-button--primary min-h-11 justify-self-start" href="{{ route('meetups.create') }}" wire:navigate>
+            <x-ui-icon name="calendar-plus" />
+            {{ __('forum_events.page.create_heading') }}
+        </a>
+    @endif
+    @endunless
+
+    @if ($createOnly && $this->canCreate)
+        <div class="forum-form">
             <form wire:submit="create" class="mt-4 grid gap-5" wire:dirty.class="border-status-warning">
                 <p>{{ __('forum_events.page.create_description') }}</p>
 
@@ -195,15 +217,18 @@
                             @endforelse
                         </select>
                     </label>
-                    <label class="forum-form__field">
-                        <span>{{ __('forum_events.fields.visibility') }}</span>
-                        <select wire:model.live="form.visibility" required>
+                    <fieldset class="forum-form__field md:col-span-2">
+                        <legend>{{ __('forum_events.fields.visibility') }}</legend>
+                        <div class="grid gap-2 sm:grid-cols-2">
                             @forelse ($this->visibilityOptions as $value => $label)
-                                <option value="{{ $value }}">{{ $label }}</option>
+                                <label class="inline-flex min-h-11 items-center gap-3">
+                                    <input type="radio" wire:model.live="form.visibility" value="{{ $value }}" required>
+                                    <span>{{ $label }}</span>
+                                </label>
                             @empty
                             @endforelse
-                        </select>
-                    </label>
+                        </div>
+                    </fieldset>
                     @if ($form->visibility === 'organization')
                         <label class="forum-form__field md:col-span-2">
                             <span>{{ __('forum_events.fields.responsible_organization') }}</span>
@@ -226,25 +251,31 @@
                             @endforelse
                         </select>
                     </label>
-                    <label class="forum-form__field">
-                        <span>{{ __('forum_events.fields.registration_policy') }}</span>
-                        <select wire:model="form.registrationPolicy" required>
+                    <fieldset class="forum-form__field md:col-span-2">
+                        <legend>{{ __('forum_events.fields.registration_policy') }}</legend>
+                        <div class="grid gap-2 sm:grid-cols-2">
                             @forelse ($this->registrationPolicyOptions as $value => $label)
-                                <option value="{{ $value }}">{{ $label }}</option>
+                                <label class="inline-flex min-h-11 items-center gap-3">
+                                    <input type="radio" wire:model="form.registrationPolicy" value="{{ $value }}" required>
+                                    <span>{{ $label }}</span>
+                                </label>
                             @empty
                             @endforelse
-                        </select>
-                    </label>
-                    <label class="forum-form__field">
-                        <span>{{ __('forum_events.fields.pet_participation_mode') }}</span>
-                        <select wire:model="form.petParticipationMode" required>
+                        </div>
+                    </fieldset>
+                    <fieldset class="forum-form__field md:col-span-2">
+                        <legend>{{ __('forum_events.fields.pet_participation_mode') }}</legend>
+                        <div class="grid gap-2 sm:grid-cols-2">
                             @forelse ($this->petParticipationOptions as $value => $label)
-                                <option value="{{ $value }}">{{ $label }}</option>
+                                <label class="inline-flex min-h-11 items-center gap-3">
+                                    <input type="radio" wire:model="form.petParticipationMode" value="{{ $value }}" required>
+                                    <span>{{ $label }}</span>
+                                </label>
                             @empty
                             @endforelse
-                        </select>
+                        </div>
                         @error('form.petParticipationMode') <small role="alert">{{ $message }}</small> @enderror
-                    </label>
+                    </fieldset>
                     <label class="forum-form__field">
                         <span>{{ __('forum_events.fields.starts_at') }}</span>
                         <input type="datetime-local" wire:model="form.startsAt" required>
@@ -296,6 +327,12 @@
                                 <span>{{ __('forum_events.fields.location_scope') }}</span>
                                 <input type="text" wire:model="form.locationScope" maxlength="190" required>
                                 @error('form.locationScope') <small role="alert">{{ $message }}</small> @enderror
+                            </label>
+                            <label class="forum-form__field md:col-span-2">
+                                <span>{{ __('forum_events.fields.exact_location') }}</span>
+                                <textarea wire:model="form.exactLocation" rows="3" maxlength="2000"></textarea>
+                                <small>{{ __('forum_events.notices.exact_location_private') }}</small>
+                                @error('form.exactLocation') <small role="alert">{{ $message }}</small> @enderror
                             </label>
                         @endif
                     @endif
@@ -408,17 +445,29 @@
                     @error('form.taxonIds.*') <small role="alert">{{ $message }}</small> @enderror
                 </div>
 
-                <button
-                    type="submit"
-                    class="forum-button forum-button--primary min-h-11 justify-self-start"
-                    wire:loading.attr="disabled"
-                    wire:target="create"
-                >
-                    <x-ui-icon name="calendar-plus" />
-                    <span wire:loading.remove wire:target="create">{{ __('forum_events.actions.create') }}</span>
-                    <span wire:loading wire:target="create">{{ __('forum_events.actions.creating') }}</span>
-                </button>
+                <div class="flex flex-wrap gap-3">
+                    <button
+                        type="button"
+                        class="forum-button min-h-11"
+                        wire:click="saveDraft"
+                        wire:loading.attr="disabled"
+                        wire:target="saveDraft,create"
+                    >
+                        <x-ui-icon name="save" />
+                        {{ __('forum_events.actions.save_draft') }}
+                    </button>
+                    <button
+                        type="submit"
+                        class="forum-button forum-button--primary min-h-11"
+                        wire:loading.attr="disabled"
+                        wire:target="saveDraft,create"
+                    >
+                        <x-ui-icon name="calendar-plus" />
+                        <span wire:loading.remove wire:target="create">{{ __('forum_events.actions.create') }}</span>
+                        <span wire:loading wire:target="create">{{ __('forum_events.actions.creating') }}</span>
+                    </button>
+                </div>
             </form>
-        </details>
+        </div>
     @endif
 </section>

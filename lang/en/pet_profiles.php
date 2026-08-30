@@ -7,6 +7,7 @@ return [
         'accept' => 'Accept invitation',
         'add_name' => 'Add name',
         'back_to_profile' => 'Back to profile',
+        'back_to_onboarding' => 'Back to account setup',
         'back_to_pets' => 'Back to pets',
         'cancel' => 'Cancel',
         'change_status' => 'Change status',
@@ -446,6 +447,7 @@ return [
         'empty' => 'No safe matches are available.',
         'eyebrow' => 'Duplicate check',
         'this_is_my_pet' => 'This is my pet',
+        'request_access_to' => 'Request access to :name',
         'title' => 'Could this profile already exist?',
     ],
     'evidence_statuses' => [

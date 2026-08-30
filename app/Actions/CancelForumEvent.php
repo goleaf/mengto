@@ -13,6 +13,7 @@ use App\Models\ForumEventRegistration;
 use App\Models\ForumEventUpdate;
 use App\Models\User;
 use App\Services\ForumEventAudit;
+use App\Services\ForumEventNotifier;
 use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -24,6 +25,7 @@ final readonly class CancelForumEvent
     public function __construct(
         private Gate $gate,
         private ForumEventAudit $audit,
+        private ForumEventNotifier $notifier,
     ) {}
 
     public function handle(
@@ -44,7 +46,7 @@ final readonly class CancelForumEvent
             'idempotency_key' => ['required', 'string', 'min:16', 'max:190'],
         ])->validate();
 
-        return DB::transaction(function () use (
+        $cancelled = DB::transaction(function () use (
             $actor,
             $event,
             $explanation,
@@ -60,7 +62,21 @@ final readonly class CancelForumEvent
                 return $locked;
             }
 
-            if ($locked->status !== ForumEventStatus::Scheduled) {
+            if (! in_array($locked->status, [
+                ForumEventStatus::Scheduled,
+                ForumEventStatus::Published,
+                ForumEventStatus::RegistrationScheduled,
+                ForumEventStatus::RegistrationOpen,
+                ForumEventStatus::RegistrationPaused,
+                ForumEventStatus::RegistrationClosed,
+                ForumEventStatus::Full,
+                ForumEventStatus::WaitlistOnly,
+                ForumEventStatus::Postponed,
+                ForumEventStatus::Moved,
+                ForumEventStatus::FormatChanged,
+                ForumEventStatus::SafetySuspended,
+                ForumEventStatus::Live,
+            ], true)) {
                 throw ValidationException::withMessages([
                     'cancellationForm' => __('forum_events.validation.cancellation_status'),
                 ]);
@@ -77,16 +93,33 @@ final readonly class CancelForumEvent
 
             ForumEventRegistration::query()
                 ->where('forum_event_id', $locked->id)
-                ->whereIn('status', [
-                    ForumEventRegistrationStatus::Pending->value,
-                    ForumEventRegistrationStatus::Confirmed->value,
-                    ForumEventRegistrationStatus::Waitlisted->value,
-                ])
+                ->whereIn('status', collect(ForumEventRegistrationStatus::cases())
+                    ->filter(static fn (ForumEventRegistrationStatus $status): bool => $status->isActive())
+                    ->map(static fn (ForumEventRegistrationStatus $status): string => $status->value)
+                    ->all())
                 ->update([
                     'status' => ForumEventRegistrationStatus::Cancelled->value,
+                    'active_scope_key' => null,
                     'waitlist_position' => null,
                     'cancelled_at' => now(),
                     'cancellation_reason_code' => 'event-cancelled',
+                    'status_changed_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            ForumEventRegistration::query()
+                ->where('forum_event_id', $locked->id)
+                ->where('cancellation_reason_code', 'event-cancelled')
+                ->increment('lock_version');
+            $locked->occurrences()
+                ->whereNotIn('status', [
+                    ForumEventStatus::Completed->value,
+                    ForumEventStatus::Cancelled->value,
+                    ForumEventStatus::Archived->value,
+                ])
+                ->update([
+                    'status' => ForumEventStatus::Cancelled->value,
+                    'cancelled_at' => now(),
+                    'cancellation_reason_code' => $reasonCode,
                     'updated_at' => now(),
                 ]);
 
@@ -98,7 +131,7 @@ final readonly class CancelForumEvent
                     'stable_key' => 'event-update-'.Str::lower((string) Str::ulid()),
                     'type' => ForumEventUpdateType::Cancelled,
                     'audience' => ForumEventUpdateAudience::Public,
-                    'title' => __('forum_events.updates.cancelled_title'),
+                    'title' => 'forum_events.updates.cancelled_title',
                     'body' => trim($explanation),
                     'published_at' => now(),
                 ],
@@ -117,5 +150,25 @@ final readonly class CancelForumEvent
 
             return $locked;
         }, 3);
+
+        ForumEventRegistration::query()
+            ->where('forum_event_id', $cancelled->id)
+            ->where('cancellation_reason_code', 'event-cancelled')
+            ->with('user:id,actor_key,locale')
+            ->orderBy('id')
+            ->chunkById(100, function ($registrations) use ($cancelled): void {
+                foreach ($registrations as $registration) {
+                    $this->notifier->send(
+                        $registration->user,
+                        $cancelled,
+                        'event-cancelled',
+                        'forum_events.notifications.cancelled_title',
+                        'forum_events.notifications.cancelled_body',
+                        'event-cancelled:'.$cancelled->id.':'.$registration->user_id,
+                    );
+                }
+            });
+
+        return $cancelled;
     }
 }

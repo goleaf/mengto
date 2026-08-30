@@ -276,7 +276,7 @@ test('event detail presents complete scoped requirements taxonomy club and verif
         ->assertSee('144');
 });
 
-test('private event visibility requires a current accepted invitation', function () {
+test('private event grants a pending invite response boundary but withholds participant access', function () {
     $event = ForumEvent::factory()->invitationOnly()->create();
     $invited = User::factory()->create();
     $outsider = User::factory()->create();
@@ -285,7 +285,8 @@ test('private event visibility requires a current accepted invitation', function
         ->for($invited, 'recipient')
         ->create();
 
-    expect(Gate::forUser($invited)->allows('view', $event))->toBeFalse()
+    expect(Gate::forUser($invited)->allows('view', $event))->toBeTrue()
+        ->and(Gate::forUser($invited)->allows('viewAccessDetails', $event))->toBeFalse()
         ->and(Gate::forUser($outsider)->allows('view', $event))->toBeFalse();
 
     $invitation->forceFill([

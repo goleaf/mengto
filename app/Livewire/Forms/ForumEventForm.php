@@ -51,6 +51,8 @@ final class ForumEventForm extends Form
 
     public string $locationScope = '';
 
+    public string $exactLocation = '';
+
     public ?int $placeId = null;
 
     public ?int $venueId = null;
@@ -131,6 +133,12 @@ final class ForumEventForm extends Form
                 'nullable',
                 'string',
                 'max:190',
+            ],
+            'exactLocation' => [
+                Rule::prohibitedIf($this->placeId !== null),
+                'nullable',
+                'string',
+                'max:2000',
             ],
             'placeId' => [
                 Rule::prohibitedIf($this->format === ForumEventFormat::Online->value),
@@ -223,19 +231,63 @@ final class ForumEventForm extends Form
             'capacity' => __('forum_events.fields.capacity'),
             'registrationPolicy' => __('forum_events.fields.registration_policy'),
             'locationScope' => __('forum_events.fields.location_scope'),
+            'exactLocation' => __('forum_events.fields.exact_location'),
             'placeId' => __('places.fields.place'),
             'venueId' => __('places.fields.venue'),
             'onlineUrl' => __('forum_events.fields.online_url'),
+            'attendanceRequirements' => __('forum_events.fields.attendance_requirements'),
+            'vaccinationRequirements' => __('forum_events.fields.vaccination_requirements'),
+            'vaccinationJurisdiction' => __('forum_events.fields.vaccination_jurisdiction'),
+            'minimumAnimalAgeMonths' => __('forum_events.fields.minimum_animal_age_months'),
+            'maximumAnimalAgeMonths' => __('forum_events.fields.maximum_animal_age_months'),
+            'accessibilityInformation' => __('forum_events.fields.accessibility_information'),
+            'accessibilityStatus' => __('forum_events.fields.accessibility_status'),
+            'costMinor' => __('forum_events.fields.cost_minor'),
+            'currency' => __('forum_events.fields.currency'),
+            'refundPolicy' => __('forum_events.fields.refund_policy'),
+            'photoConsentMode' => __('forum_events.fields.photo_consent_mode'),
             'animalWelfareRules' => __('forum_events.fields.animal_welfare_rules'),
             'emergencyContactPlan' => __('forum_events.fields.emergency_contact_plan'),
+            'taxonIds' => __('forum_events.fields.taxon_ids'),
+            'locale' => __('forum_events.fields.locale'),
             'responsibleOrganizationId' => __('forum_events.fields.responsible_organization'),
         ];
     }
 
     public function data(): CreateForumEventData
     {
-        $validated = $this->withValidator(function (Validator $validator): void {
-            $validator->after(function (Validator $validator): void {
+        return $this->makeData($this->validatedInput(false));
+    }
+
+    public function draftData(): CreateForumEventData
+    {
+        return $this->makeData($this->validatedInput(true));
+    }
+
+    /** @return array<string, mixed> */
+    private function validatedInput(bool $draft): array
+    {
+        $rules = $this->rules();
+
+        if ($draft) {
+            $rules['summary'] = ['nullable', 'string', 'max:10000'];
+            $rules['locationScope'] = ['nullable', 'string', 'max:190'];
+            $rules['onlineUrl'] = ['nullable', 'url:http,https', 'max:2000'];
+            $rules['vaccinationJurisdiction'] = ['nullable', 'string', 'max:120'];
+            $rules['refundPolicy'] = ['nullable', 'string', 'max:5000'];
+            $rules['animalWelfareRules'] = ['nullable', 'string', 'max:10000'];
+            $rules['emergencyContactPlan'] = ['nullable', 'string', 'max:10000'];
+            $rules['responsibleOrganizationId'] = [
+                'nullable',
+                'integer',
+                new EventOrganizableOrganization(
+                    Auth::user() instanceof User ? Auth::user() : null,
+                ),
+            ];
+        }
+
+        $validated = $this->withValidator(function (Validator $validator) use ($draft): void {
+            $validator->after(function (Validator $validator) use ($draft): void {
                 if ($validator->errors()->hasAny(['startsAt', 'endsAt', 'timezone'])) {
                     return;
                 }
@@ -249,7 +301,9 @@ final class ForumEventForm extends Form
                     return;
                 }
 
-                if ($startsAt->lessThanOrEqualTo(CarbonImmutable::now($this->timezone))) {
+                if (! $draft
+                    && $startsAt->lessThanOrEqualTo(CarbonImmutable::now($this->timezone))
+                ) {
                     $validator->errors()->add('startsAt', __('validation.after', [
                         'attribute' => __('forum_events.fields.starts_at'),
                         'date' => 'now',
@@ -262,8 +316,25 @@ final class ForumEventForm extends Form
                         'date' => __('forum_events.fields.starts_at'),
                     ]));
                 }
+
+                if (! $draft
+                    && $this->visibility === ForumEventVisibility::Invitation->value
+                    && $this->registrationPolicy !== ForumEventRegistrationPolicy::Invitation->value
+                ) {
+                    $validator->errors()->add(
+                        'registrationPolicy',
+                        __('forum_events.validation.invitation_visibility_policy'),
+                    );
+                }
             });
-        })->validate();
+        })->validate($rules);
+
+        return $validated;
+    }
+
+    /** @param array<string, mixed> $validated */
+    private function makeData(array $validated): CreateForumEventData
+    {
         $timezone = (string) $validated['timezone'];
         $startsAt = $this->parseLocalDateTime((string) $validated['startsAt'], $timezone);
         $endsAt = $this->parseLocalDateTime((string) $validated['endsAt'], $timezone);
@@ -287,7 +358,7 @@ final class ForumEventForm extends Form
             ),
             waitlistEnabled: (bool) $validated['waitlistEnabled'],
             locationScope: $this->optionalString($validated, 'locationScope'),
-            exactLocation: null,
+            exactLocation: $this->optionalString($validated, 'exactLocation'),
             onlineUrl: $this->optionalString($validated, 'onlineUrl'),
             attendanceRequirements: $this->optionalString($validated, 'attendanceRequirements'),
             vaccinationRequirements: $this->optionalString($validated, 'vaccinationRequirements'),

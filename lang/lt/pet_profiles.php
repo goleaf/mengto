@@ -7,6 +7,7 @@ return [
         'accept' => 'Priimti kvietimą',
         'add_name' => 'Pridėti vardą',
         'back_to_profile' => 'Grįžti į profilį',
+        'back_to_onboarding' => 'Grįžti prie paskyros paruošimo',
         'back_to_pets' => 'Grįžti prie augintinių',
         'cancel' => 'Atšaukti',
         'change_status' => 'Keisti būseną',
@@ -446,6 +447,7 @@ return [
         'empty' => 'Saugių atitikmenų nėra.',
         'eyebrow' => 'Dublikatų patikra',
         'this_is_my_pet' => 'Tai mano augintinis',
+        'request_access_to' => 'Prašyti prieigos prie :name',
         'title' => 'Gal šis profilis jau egzistuoja?',
     ],
     'evidence_statuses' => [

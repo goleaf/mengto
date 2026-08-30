@@ -28,6 +28,23 @@
         </x-slot:meta>
     </x-page-header>
 
+    @if ($this->event['can_update'] || $this->event['can_manage_registrations'])
+        <nav class="flex flex-wrap gap-3" aria-label="{{ __('forum_events.detail.management') }}">
+            @if ($this->event['can_update'])
+                <a class="forum-button min-h-11" href="{{ route('meetups.edit', $this->event['stable_key']) }}" wire:navigate>
+                    <x-ui-icon name="pencil" />
+                    {{ __('forum_events.actions.edit') }}
+                </a>
+            @endif
+            @if ($this->event['can_manage_registrations'])
+                <a class="forum-button min-h-11" href="{{ route('meetups.manage', $this->event['stable_key']) }}" wire:navigate>
+                    <x-ui-icon name="users" />
+                    {{ __('forum_events.actions.manage') }}
+                </a>
+            @endif
+        </nav>
+    @endif
+
     @if ($this->event['image'])
         <img
             src="{{ $this->event['image'] }}"
@@ -42,6 +59,149 @@
         <p class="border-s-4 border-status-success py-3 ps-4" role="status" aria-live="polite">
             {{ $feedback }}
         </p>
+    @endif
+
+    @if ($this->event['can_publish'] && $this->event['status_key'] === 'draft')
+        <section class="forum-form" aria-labelledby="meetup-draft-heading">
+            <h2 id="meetup-draft-heading" class="text-lg">{{ __('forum_events.statuses.draft') }}</h2>
+            <p>{{ __('forum_events.notices.draft_private') }}</p>
+            <button
+                type="button"
+                class="forum-button forum-button--primary mt-3 min-h-11"
+                wire:click="publish"
+                wire:loading.attr="disabled"
+                wire:target="publish"
+            >
+                <x-ui-icon name="send" />
+                {{ __('forum_events.actions.publish') }}
+            </button>
+        </section>
+    @endif
+
+    @if ($this->event['can_update'])
+        <details class="forum-form" @if ($workspaceMode === 'edit') open @endif>
+            <summary class="forum-button min-h-11">
+                <x-ui-icon name="pencil" />
+                {{ __('forum_events.actions.edit') }}
+            </summary>
+            <form wire:submit="saveEdit" class="mt-4 grid gap-5">
+                @if ($errors->any())
+                    <x-forum-error-summary
+                        :messages="$errors->getMessages()"
+                        :heading="__('forum_events.validation.summary')"
+                    />
+                @endif
+
+                <div class="grid gap-4 md:grid-cols-2">
+                    <label class="forum-form__field md:col-span-2">
+                        <span>{{ __('forum_events.fields.title') }}</span>
+                        <input type="text" wire:model="editForm.title" minlength="4" maxlength="180" required>
+                        @error('editForm.title') <small role="alert">{{ $message }}</small> @enderror
+                    </label>
+                    <label class="forum-form__field md:col-span-2">
+                        <span>{{ __('forum_events.fields.summary') }}</span>
+                        <textarea wire:model="editForm.summary" rows="5" minlength="10" maxlength="10000" required></textarea>
+                        @error('editForm.summary') <small role="alert">{{ $message }}</small> @enderror
+                    </label>
+                    <label class="forum-form__field">
+                        <span>{{ __('forum_events.fields.type') }}</span>
+                        <select wire:model="editForm.type" required>
+                            @forelse ($this->editableTypeOptions as $value => $label)
+                                <option value="{{ $value }}">{{ $label }}</option>
+                            @empty
+                            @endforelse
+                        </select>
+                    </label>
+                    <label class="forum-form__field">
+                        <span>{{ __('forum_events.fields.capacity') }}</span>
+                        <input type="number" wire:model="editForm.capacity" min="1" max="100000">
+                        @error('editForm.capacity') <small role="alert">{{ $message }}</small> @enderror
+                    </label>
+                </div>
+
+                <fieldset class="forum-form__field">
+                    <legend>{{ __('forum_events.fields.visibility') }}</legend>
+                    <div class="grid gap-2 sm:grid-cols-2">
+                        @forelse ($this->editableVisibilityOptions as $value => $label)
+                            <label class="inline-flex min-h-11 items-center gap-3">
+                                <input type="radio" wire:model="editForm.visibility" value="{{ $value }}">
+                                <span>{{ $label }}</span>
+                            </label>
+                        @empty
+                        @endforelse
+                    </div>
+                </fieldset>
+
+                <fieldset class="forum-form__field">
+                    <legend>{{ __('forum_events.fields.registration_policy') }}</legend>
+                    <div class="grid gap-2 sm:grid-cols-2">
+                        @forelse ($this->editableRegistrationPolicyOptions as $value => $label)
+                            <label class="inline-flex min-h-11 items-center gap-3">
+                                <input type="radio" wire:model="editForm.registrationPolicy" value="{{ $value }}">
+                                <span>{{ $label }}</span>
+                            </label>
+                        @empty
+                        @endforelse
+                    </div>
+                </fieldset>
+
+                <fieldset class="forum-form__field">
+                    <legend>{{ __('forum_events.fields.pet_participation_mode') }}</legend>
+                    <div class="grid gap-2 sm:grid-cols-2">
+                        @forelse ($this->editablePetParticipationOptions as $value => $label)
+                            <label class="inline-flex min-h-11 items-center gap-3">
+                                <input type="radio" wire:model="editForm.petParticipationMode" value="{{ $value }}">
+                                <span>{{ $label }}</span>
+                            </label>
+                        @empty
+                        @endforelse
+                    </div>
+                </fieldset>
+
+                <label class="inline-flex min-h-11 items-center gap-3">
+                    <input type="checkbox" wire:model="editForm.waitlistEnabled">
+                    <span>{{ __('forum_events.fields.waitlist_enabled') }}</span>
+                </label>
+                <label class="forum-form__field">
+                    <span>{{ __('forum_events.fields.location_scope') }}</span>
+                    <input type="text" wire:model="editForm.locationScope" maxlength="190">
+                    @error('editForm.locationScope') <small role="alert">{{ $message }}</small> @enderror
+                </label>
+                @unless ($this->event['has_place'])
+                    <label class="forum-form__field">
+                        <span>{{ __('forum_events.fields.exact_location') }}</span>
+                        <textarea wire:model="editForm.exactLocation" rows="3" maxlength="2000"></textarea>
+                        <small>{{ __('forum_events.notices.exact_location_private') }}</small>
+                        @error('editForm.exactLocation') <small role="alert">{{ $message }}</small> @enderror
+                    </label>
+                @endunless
+                <label class="forum-form__field">
+                    <span>{{ __('forum_events.fields.attendance_requirements') }}</span>
+                    <textarea wire:model="editForm.attendanceRequirements" rows="3" maxlength="5000"></textarea>
+                </label>
+                <label class="forum-form__field">
+                    <span>{{ __('forum_events.fields.accessibility_information') }}</span>
+                    <textarea wire:model="editForm.accessibilityInformation" rows="3" maxlength="5000"></textarea>
+                </label>
+                <label class="forum-form__field">
+                    <span>{{ __('forum_events.fields.animal_welfare_rules') }}</span>
+                    <textarea wire:model="editForm.animalWelfareRules" rows="4" minlength="10" maxlength="10000" required></textarea>
+                </label>
+                <label class="forum-form__field">
+                    <span>{{ __('forum_events.fields.emergency_contact_plan') }}</span>
+                    <textarea wire:model="editForm.emergencyContactPlan" rows="4" minlength="10" maxlength="10000" required></textarea>
+                </label>
+                <button
+                    type="submit"
+                    class="forum-button forum-button--primary min-h-11 justify-self-start"
+                    wire:loading.attr="disabled"
+                    wire:target="saveEdit"
+                >
+                    <x-ui-icon name="save" />
+                    {{ __('forum_events.actions.save_changes') }}
+                </button>
+            </form>
+        </details>
     @endif
 
     <p class="hidden border-s-4 border-status-warning py-3 ps-4" wire:offline.class.remove="hidden" role="status">
@@ -264,6 +424,30 @@
                     @if ($this->event['can_view_access'])
                         @if ($this->event['exact_location'])
                             <p class="mt-3 whitespace-pre-line">{{ $this->event['exact_location'] }}</p>
+                        @endif
+                        @if ($this->event['can_reveal_place_exact'])
+                            <button
+                                type="button"
+                                class="forum-button mt-3 min-h-11"
+                                wire:click="revealPlaceExactLocation"
+                                wire:loading.attr="disabled"
+                                wire:target="revealPlaceExactLocation"
+                            >
+                                <x-ui-icon name="map-pin" />
+                                <span wire:loading.remove wire:target="revealPlaceExactLocation">{{ __('forum_events.actions.reveal_exact_place') }}</span>
+                                <span wire:loading wire:target="revealPlaceExactLocation">{{ __('forum_events.actions.revealing_exact_place') }}</span>
+                            </button>
+                        @endif
+                        @if ($revealedPlaceLocation)
+                            <div class="mt-3 border-s-4 border-status-info ps-4" role="status" aria-live="polite">
+                                <h3 class="text-base">{{ __('forum_events.labels.exact_place_details') }}</h3>
+                                @if ($revealedPlaceLocation['address'])
+                                    <p class="whitespace-pre-line">{{ $revealedPlaceLocation['address'] }}</p>
+                                @endif
+                                @if ($revealedPlaceLocation['instructions'])
+                                    <p class="mt-2 whitespace-pre-line">{{ $revealedPlaceLocation['instructions'] }}</p>
+                                @endif
+                            </div>
                         @endif
                         @if ($this->event['online_url'])
                             <a
@@ -706,6 +890,31 @@
                                 </button>
                             </form>
                         </details>
+                        <div class="mt-4 divide-y divide-paw-line" aria-label="{{ __('forum_events.detail.invitations') }}">
+                            @forelse ($this->invitations as $invitation)
+                                <article class="grid gap-2 py-3 sm:grid-cols-[minmax(0,1fr)_auto]" wire:key="event-invitation-{{ $invitation['id'] }}">
+                                    <div>
+                                        <strong class="break-words">{{ $invitation['recipient'] }}</strong>
+                                        <p class="text-sm">{{ $invitation['status'] }} · {{ $invitation['expires_at'] }}</p>
+                                    </div>
+                                    @if ($invitation['status_key'] === 'pending')
+                                        <button
+                                            type="button"
+                                            class="forum-button min-h-11 self-start"
+                                            wire:click="revokeInvitation({{ $invitation['id'] }})"
+                                            wire:confirm="{{ __('forum_events.actions.revoke_invitation_confirm') }}"
+                                            wire:loading.attr="disabled"
+                                            wire:target="revokeInvitation({{ $invitation['id'] }})"
+                                        >
+                                            <x-ui-icon name="x" />
+                                            {{ __('forum_events.actions.revoke_invitation') }}
+                                        </button>
+                                    @endif
+                                </article>
+                            @empty
+                                <p class="py-3">{{ __('forum_events.empty.invitations') }}</p>
+                            @endforelse
+                        </div>
                     @endif
 
                     <details class="mt-3">
@@ -849,12 +1058,26 @@
                                             {{ __('forum_events.actions.check_out') }}
                                         </button>
                                     @endif
+                                    @if (! in_array($registration['status_key'], ['cancelled', 'cancelled_by_organizer', 'declined', 'rejected', 'withdrawn', 'expired', 'attended', 'completed'], true))
+                                        <button
+                                            type="button"
+                                            class="forum-button forum-button--danger min-h-11"
+                                            wire:click="removeRegistration({{ $registration['id'] }})"
+                                            wire:confirm="{{ __('forum_events.actions.remove_participant_confirm') }}"
+                                            wire:loading.attr="disabled"
+                                            wire:target="removeRegistration({{ $registration['id'] }})"
+                                        >
+                                            <x-ui-icon name="user-minus" />
+                                            {{ __('forum_events.actions.remove_participant') }}
+                                        </button>
+                                    @endif
                                 </div>
                             </article>
                         @empty
                             <p>{{ __('forum_events.empty.registrations') }}</p>
                         @endforelse
                     </div>
+                    <div class="mt-4">{{ $this->registrations->links() }}</div>
                 </section>
             @endif
 

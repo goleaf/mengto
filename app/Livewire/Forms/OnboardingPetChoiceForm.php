@@ -16,7 +16,13 @@ final class OnboardingPetChoiceForm extends Form
     protected function rules(): array
     {
         return [
-            'choice' => ['required', Rule::enum(OnboardingPetChoice::class)],
+            'choice' => [
+                'required',
+                Rule::in(array_map(
+                    static fn (OnboardingPetChoice $choice): string => $choice->value,
+                    OnboardingPetChoice::selectableCases(),
+                )),
+            ],
         ];
     }
 
@@ -25,7 +31,7 @@ final class OnboardingPetChoiceForm extends Form
     {
         return [
             'choice.required' => __('onboarding.validation.pet_choice'),
-            'choice.enum' => __('onboarding.validation.pet_choice'),
+            'choice.in' => __('onboarding.validation.pet_choice'),
         ];
     }
 

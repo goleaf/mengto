@@ -127,6 +127,7 @@ final readonly class InviteToForumEvent
             'forum_events.notifications.invitation_title',
             'forum_events.notifications.invitation_body',
             'event-invitation:'.$invitation->id.':'.$invitation->updated_at?->timestamp,
+            ['organizer' => $actor->name],
         );
 
         return $invitation;

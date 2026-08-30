@@ -32,6 +32,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property int $guest_count
  * @property int $id
  * @property string $idempotency_key
+ * @property string|null $active_scope_key
  * @property int $lock_version
  * @property string|null $locale
  * @property int|null $pet_profile_id
@@ -40,6 +41,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property bool $requirements_accepted
  * @property string $stable_key
  * @property ForumEventRegistrationStatus $status
+ * @property CarbonImmutable|null $status_changed_at
  * @property CarbonImmutable|null $submitted_at
  * @property string|null $timezone
  * @property int $user_id
@@ -50,6 +52,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property-read Collection<int, PetProfile> $pets
  * @property-read PetProfile|null $petProfile
  * @property-read User $user
+ * @property-read Collection<int, ForumEventParticipationTransition> $transitions
  */
 final class ForumEventRegistration extends Model
 {
@@ -64,6 +67,13 @@ final class ForumEventRegistration extends Model
         'pet_profile_id',
         'stable_key',
         'idempotency_key',
+        'active_scope_key',
+        'participation_role',
+        'current_snapshot_id',
+        'current_eligibility_decision_set_id',
+        'eligibility_stale_at',
+        'acceptance_stale_at',
+        'status_changed_at',
         'status',
         'attendance_format',
         'guest_count',
@@ -110,6 +120,9 @@ final class ForumEventRegistration extends Model
             'waitlist_position' => 'integer',
             'checked_in_at' => 'immutable_datetime',
             'cancelled_at' => 'immutable_datetime',
+            'eligibility_stale_at' => 'immutable_datetime',
+            'acceptance_stale_at' => 'immutable_datetime',
+            'status_changed_at' => 'immutable_datetime',
             'lock_version' => 'integer',
             'accepted_snapshot' => 'encrypted:array',
             'submitted_at' => 'immutable_datetime',
@@ -167,5 +180,11 @@ final class ForumEventRegistration extends Model
     public function registrationPets(): HasMany
     {
         return $this->hasMany(ForumEventRegistrationPet::class);
+    }
+
+    /** @return HasMany<ForumEventParticipationTransition, $this> */
+    public function transitions(): HasMany
+    {
+        return $this->hasMany(ForumEventParticipationTransition::class);
     }
 }

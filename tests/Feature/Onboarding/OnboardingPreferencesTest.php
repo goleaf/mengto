@@ -267,6 +267,30 @@ test('direct profile preference updates authorize the account and discard unrela
         ->is_admin->toBeFalse();
 });
 
+test('a signed profile settings snapshot cannot mutate a different authenticated account', function (): void {
+    $owner = User::factory()->onboarded()->create([
+        'locale' => 'en',
+        'timezone' => 'UTC',
+    ]);
+    $component = Livewire::actingAs($owner)
+        ->test(ProfileSettings::class)
+        ->set('form.locale', 'ru')
+        ->set('form.timezone', 'Europe/Riga');
+
+    $other = User::factory()->onboarded()->create([
+        'locale' => 'lt',
+        'timezone' => 'Europe/Vilnius',
+    ]);
+    $this->actingAs($other);
+    Livewire::actingAs($other);
+
+    $component->call('save')->assertForbidden();
+
+    expect($other->fresh())
+        ->locale->toBe('lt')
+        ->timezone->toBe('Europe/Vilnius');
+});
+
 test('saved Lithuanian preferences survive logout and login at the persisted pet step', function (): void {
     $user = User::factory()->onboardingAtPreferences()->create([
         'password' => 'Secure-Paw-2026',

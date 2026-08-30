@@ -46,7 +46,7 @@ final readonly class DeferOnboardingPetRelationship
 
             if (
                 $state->lock_version === $expectedLockVersion + 1
-                && $this->onboardingState->currentPetChoice($state) === OnboardingPetChoice::NotNow
+                && $this->onboardingState->currentPetChoice($state) === OnboardingPetChoice::AddLater
             ) {
                 return $state;
             }
@@ -57,7 +57,7 @@ final readonly class DeferOnboardingPetRelationship
 
             $choice = $this->onboardingState->currentPetChoice($state);
 
-            if ($choice === OnboardingPetChoice::NotNow) {
+            if ($choice instanceof OnboardingPetChoice && ! $choice->requiresPetEvidence()) {
                 return $state;
             }
 
@@ -72,7 +72,7 @@ final readonly class DeferOnboardingPetRelationship
             }
 
             $state->forceFill([
-                'pet_relationship_choice' => OnboardingPetChoice::NotNow,
+                'pet_relationship_choice' => OnboardingPetChoice::AddLater,
                 'lock_version' => $state->lock_version + 1,
             ])->saveOrFail();
 

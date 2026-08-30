@@ -12,6 +12,7 @@ use App\Enums\PetProfilePermission;
 use App\Enums\PetProfileStatus;
 use App\Enums\PetSizeCategory;
 use App\Enums\PetSpeciesConfidence;
+use App\Services\PetProfileDuplicateIdentity;
 use Carbon\CarbonImmutable;
 use Database\Factories\PetProfileFactory;
 use Illuminate\Database\Eloquent\Builder;
@@ -39,6 +40,7 @@ use Illuminate\Support\Carbon;
  * @property CarbonImmutable|null $life_stage_override_at
  * @property Carbon|null $created_at
  * @property Carbon|null $deleted_at
+ * @property string|null $duplicate_name_hash
  * @property int $id
  * @property string $name
  * @property array<string, mixed>|null $profile_data
@@ -112,7 +114,16 @@ final class PetProfile extends Model
         'profile_data',
     ];
 
-    protected $hidden = ['creation_key', 'profile_data'];
+    protected $hidden = ['creation_key', 'duplicate_name_hash', 'profile_data'];
+
+    protected static function booted(): void
+    {
+        self::saving(function (self $profile): void {
+            if ($profile->isDirty('name')) {
+                $profile->duplicate_name_hash = PetProfileDuplicateIdentity::nameHash($profile->name);
+            }
+        });
+    }
 
     protected function casts(): array
     {
@@ -378,6 +389,11 @@ final class PetProfile extends Model
     public function scopeManagedBy(Builder $query, User $user): Builder
     {
         return $this->applyManagedBy($query, $user);
+    }
+
+    public function scopeRepresentableBy(Builder $query, User $user): Builder
+    {
+        return $this->applyManagedBy($query, $user, PetProfilePermission::View);
     }
 
     private function applyManagedBy(

@@ -14,6 +14,7 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Session;
 use Livewire\Attributes\Computed;
+use Livewire\Attributes\Locked;
 use Livewire\Component;
 
 final class ProfileSettings extends Component
@@ -22,6 +23,9 @@ final class ProfileSettings extends Component
 
     public string $feedback = '';
 
+    #[Locked]
+    public int $mountedUserId = 0;
+
     private AuthFactory $auth;
 
     private EmailVerificationMode $emailVerification;
@@ -29,6 +33,8 @@ final class ProfileSettings extends Component
     private ProfilePresenter $profiles;
 
     private UpdateProfilePreferences $updatePreferences;
+
+    private bool $mounting = false;
 
     public function boot(
         AuthFactory $auth,
@@ -44,8 +50,21 @@ final class ProfileSettings extends Component
 
     public function mount(): void
     {
-        $this->form->fillFromUser($this->requireUser());
-        $this->feedback = (string) Session::get('profile-settings-feedback', '');
+        $this->mounting = true;
+
+        try {
+            $user = $this->requireUser();
+            $this->mountedUserId = (int) $user->getKey();
+            $this->form->fillFromUser($user);
+            $this->feedback = (string) Session::get('profile-settings-feedback', '');
+        } finally {
+            $this->mounting = false;
+        }
+    }
+
+    public function hydrate(): void
+    {
+        $this->requireUser();
     }
 
     /**
@@ -106,7 +125,11 @@ final class ProfileSettings extends Component
         abort_unless(
             $user instanceof User
                 && $user->isActive()
-                && $this->emailVerification->allows($user),
+                && $this->emailVerification->allows($user)
+                && (
+                    $this->mounting
+                    || ($this->mountedUserId > 0 && $this->mountedUserId === (int) $user->getKey())
+                ),
             403,
         );
 

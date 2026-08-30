@@ -6,25 +6,36 @@ namespace App\Livewire\Forum;
 
 use App\Actions\CancelForumEvent;
 use App\Actions\InviteToForumEvent;
+use App\Actions\PublishForumEvent;
 use App\Actions\PublishForumEventUpdate;
 use App\Actions\RescheduleForumEvent;
 use App\Actions\RespondToForumEventInvitation;
+use App\Actions\RevealPlaceExactLocation;
+use App\Actions\RevokeForumEventInvitation;
 use App\Actions\SaveForumEventSession;
 use App\Actions\SendForumEventMessage;
 use App\Actions\SubmitForumEventReport;
 use App\Actions\SubmitForumEventReview;
+use App\Actions\UpdateForumEvent;
+use App\Data\PlaceExactLocationRevealContext;
 use App\Enums\ForumEventFormat;
 use App\Enums\ForumEventInvitationStatus;
 use App\Enums\ForumEventMessageAudience;
+use App\Enums\ForumEventPetParticipation;
 use App\Enums\ForumEventPhotoConsent;
+use App\Enums\ForumEventRegistrationPolicy;
 use App\Enums\ForumEventRegistrationStatus;
 use App\Enums\ForumEventReviewStatus;
 use App\Enums\ForumEventSessionReservationPolicy;
 use App\Enums\ForumEventSessionRole;
 use App\Enums\ForumEventSessionStatus;
 use App\Enums\ForumEventSessionType;
+use App\Enums\ForumEventType;
 use App\Enums\ForumEventUpdateAudience;
 use App\Enums\ForumEventUpdateType;
+use App\Enums\ForumEventVisibility;
+use App\Enums\PetProfileStatus;
+use App\Livewire\Forms\ForumEventEditForm;
 use App\Livewire\Forms\ForumEventInvitationForm;
 use App\Livewire\Forms\ForumEventMessageForm;
 use App\Livewire\Forms\ForumEventRegistrationForm;
@@ -48,6 +59,7 @@ use App\Models\ForumEventTrack;
 use App\Models\ForumEventUpdate;
 use App\Models\ForumReportReason;
 use App\Models\PetProfile;
+use App\Models\Place;
 use App\Models\Taxon;
 use App\Models\TaxonVersion;
 use App\Models\User;
@@ -55,22 +67,33 @@ use App\Services\ForumEventOrganizerVerification;
 use App\Services\ForumEventRegistrationService;
 use App\Services\ForumReportReasonCatalog;
 use App\Services\LocaleFormatter;
+use App\Services\PetSpeciesLabel;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Lang;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Locked;
 use Livewire\Component;
+use Livewire\WithPagination;
 
 final class ForumEventWorkspace extends Component
 {
+    use WithPagination;
+
     #[Locked]
     public int $eventId;
+
+    #[Locked]
+    public string $workspaceMode = 'detail';
 
     public ForumEventRegistrationForm $registrationForm;
 
     public ForumEventInvitationForm $invitationForm;
+
+    public ForumEventEditForm $editForm;
 
     public ForumEventUpdateForm $updateForm;
 
@@ -95,25 +118,41 @@ final class ForumEventWorkspace extends Component
 
     public string $feedback = '';
 
+    /** @var array{address: string|null, latitude: string|null, longitude: string|null, instructions: string|null}|null */
+    #[Locked]
+    public ?array $revealedPlaceLocation = null;
+
     private ?ForumEvent $resolvedEvent = null;
 
     private ForumEventOrganizerVerification $organizerVerification;
 
     private LocaleFormatter $formatter;
 
+    private PetSpeciesLabel $petSpeciesLabel;
+
     public function boot(
         ForumEventOrganizerVerification $organizerVerification,
         LocaleFormatter $formatter,
+        PetSpeciesLabel $petSpeciesLabel,
     ): void {
         $this->organizerVerification = $organizerVerification;
         $this->formatter = $formatter;
+        $this->petSpeciesLabel = $petSpeciesLabel;
     }
 
-    public function mount(int $eventId): void
+    public function mount(int $eventId, string $workspaceMode = 'detail'): void
     {
         $this->eventId = $eventId;
+        $this->workspaceMode = in_array($workspaceMode, ['detail', 'edit', 'manage'], true)
+            ? $workspaceMode
+            : 'detail';
         Gate::authorize('view', $this->eventModel());
         $this->initializeForms();
+    }
+
+    public function hydrate(): void
+    {
+        $this->revealedPlaceLocation = null;
     }
 
     /** @return array<string, mixed> */
@@ -123,6 +162,7 @@ final class ForumEventWorkspace extends Component
         $event = $this->eventModel([
             'organizer:id,name,status',
             'group:id,stable_key,name,name_translation_key',
+            'place',
             'taxa:id,stable_key',
             'taxa.activeVersion:id,taxon_id,rank,scientific_name,is_active_version',
         ]);
@@ -130,6 +170,9 @@ final class ForumEventWorkspace extends Component
         $user = Auth::user();
         $authorizedUser = $user instanceof User ? $user : null;
         $canViewAccess = Gate::forUser($authorizedUser)->allows('viewAccessDetails', $event);
+        $canRevealPlaceExact = $canViewAccess
+            && $event->place instanceof Place
+            && Gate::forUser($authorizedUser)->allows('viewExactLocation', $event->place);
         $confirmedCount = (int) $event->registrations()
             ->whereIn('status', $this->seatConsumingStatuses())
             ->count();
@@ -173,6 +216,8 @@ final class ForumEventWorkspace extends Component
             ),
             'timezone' => $event->timezone,
             'location_scope' => $event->location_scope,
+            'has_place' => $event->place_id !== null,
+            'can_reveal_place_exact' => $canRevealPlaceExact,
             'exact_location' => $canViewAccess ? $event->exact_location : null,
             'online_url' => $canViewAccess ? $event->online_url : null,
             'emergency_contact_plan' => $canViewAccess
@@ -213,6 +258,7 @@ final class ForumEventWorkspace extends Component
             'can_register' => Gate::forUser($authorizedUser)->allows('register', $event),
             'can_invite' => Gate::forUser($authorizedUser)->allows('invite', $event),
             'can_update' => Gate::forUser($authorizedUser)->allows('update', $event),
+            'can_publish' => Gate::forUser($authorizedUser)->allows('publish', $event),
             'can_send_message' => Gate::forUser($authorizedUser)->allows('sendMessage', $event),
             'can_review' => Gate::forUser($authorizedUser)->allows('review', $event),
             'can_report' => Gate::forUser($authorizedUser)->allows('report', $event),
@@ -546,6 +592,7 @@ final class ForumEventWorkspace extends Component
             ])
             ->where('forum_event_id', $this->eventId)
             ->where('user_id', $user->id)
+            ->latest('id')
             ->first();
 
         if ($registration === null) {
@@ -616,6 +663,32 @@ final class ForumEventWorkspace extends Component
         ];
     }
 
+    /** @return list<array{id: int, recipient: string, status: string, expires_at: string}> */
+    #[Computed]
+    public function invitations(): array
+    {
+        $event = $this->eventModel();
+
+        if (! Gate::allows('invite', $event)) {
+            return [];
+        }
+
+        return ForumEventInvitation::query()
+            ->select(['id', 'forum_event_id', 'invited_user_id', 'status', 'expires_at'])
+            ->with('recipient:id,name,email')
+            ->where('forum_event_id', $event->id)
+            ->latest('id')
+            ->limit(100)
+            ->get()
+            ->map(fn (ForumEventInvitation $invitation): array => [
+                'id' => $invitation->id,
+                'recipient' => $invitation->recipient->name.' · '.$invitation->recipient->email,
+                'status' => $invitation->status->label(),
+                'status_key' => $invitation->status->value,
+                'expires_at' => $this->formatter->dateTime($invitation->expires_at),
+            ])->all();
+    }
+
     /** @return list<array<string, mixed>> */
     #[Computed]
     public function updates(): array
@@ -653,7 +726,7 @@ final class ForumEventWorkspace extends Component
 
                 return [
                     'id' => $update->id,
-                    'title' => $update->title,
+                    'title' => Lang::has($update->title) ? __($update->title) : $update->title,
                     'body' => $update->body,
                     'type' => $update->type->label(),
                     'audience' => $update->audience->label(),
@@ -752,15 +825,12 @@ final class ForumEventWorkspace extends Component
             ->all();
     }
 
-    /** @return list<array<string, mixed>> */
+    /** @return LengthAwarePaginator<int, array<string, mixed>> */
     #[Computed]
-    public function registrations(): array
+    public function registrations(): LengthAwarePaginator
     {
         $event = $this->eventModel();
-
-        if (! Gate::allows('manageRegistrations', $event)) {
-            return [];
-        }
+        Gate::authorize('manageRegistrations', $event);
 
         return ForumEventRegistration::query()
             ->select([
@@ -791,9 +861,8 @@ final class ForumEventWorkspace extends Component
             ->orderBy('status')
             ->orderBy('waitlist_position')
             ->orderBy('id')
-            ->limit(500)
-            ->get()
-            ->map(fn (ForumEventRegistration $registration): array => [
+            ->paginate(25, pageName: 'attendees')
+            ->through(fn (ForumEventRegistration $registration): array => [
                 'id' => $registration->id,
                 'user_name' => $registration->user->name,
                 'user_email' => $registration->user->email,
@@ -818,8 +887,7 @@ final class ForumEventWorkspace extends Component
                         $registration->occurrence->timezone,
                     ),
                 'event_version' => $registration->version?->version_number,
-            ])
-            ->all();
+            ]);
     }
 
     /** @return array<int, string> */
@@ -833,14 +901,17 @@ final class ForumEventWorkspace extends Component
         }
 
         return PetProfile::query()
-            ->select(['id', 'user_id', 'name', 'species'])
-            ->managedBy($user)
-            ->where('status', 'active')
+            ->select(['id', 'user_id', 'name', 'species', 'species_confidence'])
+            ->representableBy($user)
+            ->where('status', PetProfileStatus::Active)
             ->orderBy('name')
             ->limit(50)
             ->get()
-            ->mapWithKeys(static fn (PetProfile $pet): array => [
-                $pet->id => $pet->name.' · '.$pet->species,
+            ->mapWithKeys(fn (PetProfile $pet): array => [
+                $pet->id => $pet->name.' · '.$this->petSpeciesLabel->for(
+                    $pet->species,
+                    $pet->species_confidence,
+                ),
             ])
             ->all();
     }
@@ -872,6 +943,51 @@ final class ForumEventWorkspace extends Component
                 $consent->value => $consent->label(),
             ])
             ->all();
+    }
+
+    /** @return array<string, string> */
+    #[Computed]
+    public function editableTypeOptions(): array
+    {
+        return collect(ForumEventType::cases())
+            ->mapWithKeys(static fn (ForumEventType $type): array => [
+                $type->value => $type->label(),
+            ])->all();
+    }
+
+    /** @return array<string, string> */
+    #[Computed]
+    public function editableVisibilityOptions(): array
+    {
+        return collect(ForumEventVisibility::cases())
+            ->reject(fn (ForumEventVisibility $visibility): bool => match ($visibility) {
+                ForumEventVisibility::Group => $this->eventModel()->forum_group_id === null,
+                ForumEventVisibility::Organization => $this->eventModel()->responsible_organization_id === null,
+                default => false,
+            })
+            ->mapWithKeys(static fn (ForumEventVisibility $visibility): array => [
+                $visibility->value => $visibility->label(),
+            ])->all();
+    }
+
+    /** @return array<string, string> */
+    #[Computed]
+    public function editableRegistrationPolicyOptions(): array
+    {
+        return collect(ForumEventRegistrationPolicy::cases())
+            ->mapWithKeys(static fn (ForumEventRegistrationPolicy $policy): array => [
+                $policy->value => $policy->label(),
+            ])->all();
+    }
+
+    /** @return array<string, string> */
+    #[Computed]
+    public function editablePetParticipationOptions(): array
+    {
+        return collect(ForumEventPetParticipation::cases())
+            ->mapWithKeys(static fn (ForumEventPetParticipation $mode): array => [
+                $mode->value => $mode->label(),
+            ])->all();
     }
 
     /** @return array<string, string> */
@@ -943,6 +1059,27 @@ final class ForumEventWorkspace extends Component
         $this->refreshComputed();
     }
 
+    public function revealPlaceExactLocation(RevealPlaceExactLocation $reveal): void
+    {
+        $user = $this->requireUser();
+        $event = $this->eventModel(['place']);
+        Gate::forUser($user)->authorize('viewAccessDetails', $event);
+
+        if (! $event->place instanceof Place) {
+            abort(404);
+        }
+
+        $this->revealedPlaceLocation = $reveal->handle(
+            $user,
+            $event->place,
+            new PlaceExactLocationRevealContext(
+                purpose: null,
+                eventId: $event->id,
+                channel: 'meetup-detail',
+            ),
+        );
+    }
+
     public function cancelRegistration(ForumEventRegistrationService $registrations): void
     {
         $user = $this->requireUser();
@@ -992,6 +1129,18 @@ final class ForumEventWorkspace extends Component
         $this->refreshComputed();
     }
 
+    public function revokeInvitation(
+        int $invitationId,
+        RevokeForumEventInvitation $revoke,
+    ): void {
+        $invitation = ForumEventInvitation::query()
+            ->where('forum_event_id', $this->eventId)
+            ->findOrFail($invitationId);
+        $revoke->handle($this->requireUser(), $invitation);
+        $this->feedback = __('forum_events.feedback.invitation_revoked');
+        $this->refreshComputed();
+    }
+
     public function reviewRegistration(
         int $registrationId,
         bool $approve,
@@ -1004,6 +1153,18 @@ final class ForumEventWorkspace extends Component
         $this->feedback = $approve
             ? __('forum_events.feedback.registration_approved')
             : __('forum_events.feedback.registration_declined');
+        $this->refreshComputed();
+    }
+
+    public function removeRegistration(
+        int $registrationId,
+        ForumEventRegistrationService $registrations,
+    ): void {
+        $registration = ForumEventRegistration::query()
+            ->where('forum_event_id', $this->eventId)
+            ->findOrFail($registrationId);
+        $registrations->remove($this->requireUser(), $registration);
+        $this->feedback = __('forum_events.feedback.participant_removed');
         $this->refreshComputed();
     }
 
@@ -1047,6 +1208,25 @@ final class ForumEventWorkspace extends Component
         $this->initializeUpdateForm();
         $this->feedback = __('forum_events.feedback.update_published');
         $this->refreshComputed();
+    }
+
+    public function publish(PublishForumEvent $publish): void
+    {
+        $publish->handle($this->requireUser(), $this->eventModel());
+        $this->feedback = __('forum_events.feedback.published');
+        $this->refreshComputed();
+    }
+
+    public function saveEdit(UpdateForumEvent $update): void
+    {
+        $update->handle(
+            $this->requireUser(),
+            $this->eventModel(),
+            $this->editForm->data(),
+        );
+        $this->feedback = __('forum_events.feedback.updated');
+        $this->refreshComputed();
+        $this->initializeEditForm();
     }
 
     public function sendMessage(SendForumEventMessage $send): void
@@ -1228,6 +1408,8 @@ final class ForumEventWorkspace extends Component
                 'owner_user_id',
                 'organizer_user_id',
                 'responsible_organization_id',
+                'place_id',
+                'venue_id',
                 'organizer_key',
                 'organizer_name',
                 'forum_group_id',
@@ -1303,6 +1485,7 @@ final class ForumEventWorkspace extends Component
 
     private function initializeForms(): void
     {
+        $this->initializeEditForm();
         $this->initializeRegistrationForm();
         $this->initializeInvitationForm();
         $this->initializeUpdateForm();
@@ -1311,6 +1494,15 @@ final class ForumEventWorkspace extends Component
         $this->initializeRescheduleForm();
         $this->initializeSessionForm();
         $this->cancellationIdempotencyKey = (string) str()->uuid();
+    }
+
+    private function initializeEditForm(): void
+    {
+        $event = $this->eventModel();
+
+        if (Gate::allows('update', $event)) {
+            $this->editForm->fillFromEvent($event);
+        }
     }
 
     private function initializeRegistrationForm(): void
@@ -1428,6 +1620,7 @@ final class ForumEventWorkspace extends Component
             $this->schedule,
             $this->currentRegistration,
             $this->currentInvitation,
+            $this->invitations,
             $this->updates,
             $this->messages,
             $this->reviews,

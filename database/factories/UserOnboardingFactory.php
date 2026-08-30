@@ -53,7 +53,7 @@ final class UserOnboardingFactory extends ApplicationFactory
     {
         return $this->state(fn (): array => [
             'current_step' => OnboardingStep::PrivacyDiscovery,
-            'pet_relationship_choice' => OnboardingPetChoice::NotNow,
+            'pet_relationship_choice' => OnboardingPetChoice::AddLater,
             'introduction_completed_at' => now(),
             'preferences_completed_at' => now(),
             'pet_relationship_completed_at' => now(),
@@ -65,7 +65,7 @@ final class UserOnboardingFactory extends ApplicationFactory
     {
         return $this->state(fn (): array => [
             'current_step' => OnboardingStep::Complete,
-            'pet_relationship_choice' => OnboardingPetChoice::NotNow,
+            'pet_relationship_choice' => OnboardingPetChoice::AddLater,
             'introduction_completed_at' => now(),
             'preferences_completed_at' => now(),
             'pet_relationship_completed_at' => now(),

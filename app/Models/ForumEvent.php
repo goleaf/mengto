@@ -385,16 +385,26 @@ final class ForumEvent extends Model
             return $query;
         }
 
-        return $query->where(function (Builder $visibility) use ($user): void {
-            $visibility->where('visibility', ForumEventVisibility::Public->value);
+        if ($user?->isActive() === true) {
+            $query->where(function (Builder $unblocked) use ($user): void {
+                $unblocked
+                    ->whereNull('organizer_user_id')
+                    ->orWhere('organizer_user_id', $user->id)
+                    ->orWhere(function (Builder $otherOrganizer) use ($user): void {
+                        $otherOrganizer
+                            ->whereDoesntHave('organizer.outgoingSocialAccountBlocks', function (Builder $blocks) use ($user): void {
+                                $blocks->active()->where('blocked_user_id', $user->id);
+                            })
+                            ->whereDoesntHave('organizer.incomingSocialAccountBlocks', function (Builder $blocks) use ($user): void {
+                                $blocks->active()->where('blocker_user_id', $user->id);
+                            });
+                    });
+            });
+        }
 
-            if ($user?->isActive() !== true) {
-                return;
-            }
-
-            $visibility
-                ->orWhere('visibility', ForumEventVisibility::Members->value)
-                ->orWhere(function (Builder $managed) use ($user): void {
+        return $query->where(function (Builder $access) use ($user): void {
+            if ($user?->isActive() === true) {
+                $access->where(function (Builder $managed) use ($user): void {
                     $managed
                         ->where(function (Builder $authority) use ($user): void {
                             $authority
@@ -411,36 +421,66 @@ final class ForumEvent extends Model
                                     $memberships->where('user_id', $user->id);
                                 });
                         });
-                })
-                ->orWhereHas('responsibleOrganization.activeMemberships', function (Builder $memberships) use ($user): void {
-                    $memberships->where('user_id', $user->id);
-                })
-                ->orWhere(function (Builder $groups) use ($user): void {
-                    $groups
-                        ->where('visibility', ForumEventVisibility::Group->value)
-                        ->whereHas('group', function (Builder $group) use ($user): void {
-                            $group
-                                ->where('owner_user_id', $user->id)
-                                ->orWhereHas('memberships', function (Builder $memberships) use ($user): void {
-                                    $memberships
-                                        ->where('user_id', $user->id)
-                                        ->where('state', 'active');
-                                });
-                        });
-                })
-                ->orWhere(function (Builder $private) use ($user): void {
-                    $private
-                        ->whereIn('visibility', [
-                            ForumEventVisibility::Private->value,
-                            ForumEventVisibility::Invitation->value,
-                        ])
-                        ->whereHas('invitations', function (Builder $invitations) use ($user): void {
-                            $invitations
-                                ->where('invited_user_id', $user->id)
-                                ->where('status', ForumEventInvitationStatus::Accepted->value)
-                                ->where('expires_at', '>', now());
-                        });
                 });
+            }
+
+            $access->orWhere(function (Builder $visible) use ($user): void {
+                $visible->whereIn('status', self::discoverableStatusValues())
+                    ->where(function (Builder $visibility) use ($user): void {
+                        $visibility->where('visibility', ForumEventVisibility::Public->value);
+
+                        if ($user?->isActive() !== true) {
+                            return;
+                        }
+
+                        $visibility
+                            ->orWhere('visibility', ForumEventVisibility::Members->value)
+                            ->orWhere(function (Builder $organization) use ($user): void {
+                                $organization
+                                    ->where('visibility', ForumEventVisibility::Organization->value)
+                                    ->whereHas('responsibleOrganization.activeMemberships', function (Builder $memberships) use ($user): void {
+                                        $memberships->where('user_id', $user->id);
+                                    });
+                            })
+                            ->orWhere(function (Builder $groups) use ($user): void {
+                                $groups
+                                    ->where('visibility', ForumEventVisibility::Group->value)
+                                    ->whereHas('group', function (Builder $group) use ($user): void {
+                                        $group
+                                            ->where('owner_user_id', $user->id)
+                                            ->orWhereHas('memberships', function (Builder $memberships) use ($user): void {
+                                                $memberships
+                                                    ->where('user_id', $user->id)
+                                                    ->where('state', 'active');
+                                            });
+                                    });
+                            })
+                            ->orWhere(function (Builder $private) use ($user): void {
+                                $private
+                                    ->whereIn('visibility', [
+                                        ForumEventVisibility::Private->value,
+                                        ForumEventVisibility::Invitation->value,
+                                    ])
+                                    ->where(function (Builder $participant) use ($user): void {
+                                        $participant
+                                            ->whereHas('invitations', function (Builder $invitations) use ($user): void {
+                                                $invitations
+                                                    ->where('invited_user_id', $user->id)
+                                                    ->whereIn('status', [
+                                                        ForumEventInvitationStatus::Pending->value,
+                                                        ForumEventInvitationStatus::Accepted->value,
+                                                    ])
+                                                    ->where('expires_at', '>', now());
+                                            })
+                                            ->orWhereHas('registrations', function (Builder $registrations) use ($user): void {
+                                                $registrations
+                                                    ->where('user_id', $user->id)
+                                                    ->whereIn('status', self::participantAccessStatusValues());
+                                            });
+                                    });
+                            });
+                    });
+            });
         });
     }
 
@@ -464,11 +504,15 @@ final class ForumEvent extends Model
     public function registrationFor(User $user): ?ForumEventRegistration
     {
         if ($this->relationLoaded('registrations')) {
-            return $this->registrations->firstWhere('user_id', $user->id);
+            return $this->registrations
+                ->where('user_id', $user->id)
+                ->sortByDesc('id')
+                ->first();
         }
 
         return $this->registrations()
             ->where('user_id', $user->id)
+            ->orderByDesc('id')
             ->first();
     }
 
@@ -478,15 +522,43 @@ final class ForumEvent extends Model
             return true;
         }
 
+        if ($this->hasEnded() || $this->status === ForumEventStatus::Cancelled) {
+            return false;
+        }
+
         return in_array(
             $this->registrationFor($user)?->status,
             [
                 ForumEventRegistrationStatus::Confirmed,
                 ForumEventRegistrationStatus::CheckedIn,
                 ForumEventRegistrationStatus::PartiallyCheckedIn,
-                ForumEventRegistrationStatus::Attended,
             ],
             true,
         );
+    }
+
+    /** @return list<string> */
+    public static function participantAccessStatusValues(): array
+    {
+        return array_map(
+            static fn (ForumEventRegistrationStatus $status): string => $status->value,
+            [
+                ForumEventRegistrationStatus::Confirmed,
+                ForumEventRegistrationStatus::CheckedIn,
+                ForumEventRegistrationStatus::PartiallyCheckedIn,
+                ForumEventRegistrationStatus::Attended,
+                ForumEventRegistrationStatus::Completed,
+            ],
+        );
+    }
+
+    /** @return list<string> */
+    private static function discoverableStatusValues(): array
+    {
+        return collect(ForumEventStatus::cases())
+            ->filter(static fn (ForumEventStatus $status): bool => $status->isDiscoverable())
+            ->map(static fn (ForumEventStatus $status): string => $status->value)
+            ->values()
+            ->all();
     }
 }

@@ -205,7 +205,44 @@ specialist below is read-only; the principal owns all decisions and writes.
 | ONB-P05-C | Timezone auditor | current timezone rule/options/defaults/DST/tests only | IANA acceptance/performance/normalization matrix | completed read-only; `timezone:all`, deterministic PHP list and exact values retained |
 | ONB-P05-D | Livewire UX reviewer | Preferences hydration/save, errors, focus, loading/offline/dirty and mobile only | Component/presentation defect matrix | completed read-only; required semantics, help associations and invalid styling fixed |
 | ONB-P05-E | Security reviewer | unsupported values, forged/stale state, direct method and cross-user mutation only | Exploit-focused negative test matrix | completed read-only; malformed replay and stale inactive mutations reproduced, fixed and covered |
-| ONB-P05-F | Final independent reviewer | Frozen Prompt 05 diff; no implementation participation | Architecture/localization/security/accessibility/regression verdict | frozen final review pending |
+| ONB-P05-F | Final independent reviewer | Frozen Prompt 05 diff; no implementation participation | Architecture/localization/security/accessibility/regression verdict | completed; initial NO-GO cross-account Profile Settings snapshot reproduced, RED/GREEN fixed, and two-file hash `57843270388ccd8394d09a83457745dc46f386149ea05952e6067e759a8363cd` confirmed SHIP |
+
+The final reviewer proved that a signed `ProfileSettings` snapshot mounted for
+account A could submit its values after the session changed to account B. The
+direct Action authorization test could not cover this component-boundary
+confusion because the component resolved B and then legitimately authorized
+B updating B. The principal reproduced `200` instead of `403`, added a locked
+mount account binding plus hydration/mutation guard, observed the regression
+GREEN, and received SHIP on the corrected two-file diff. Snapshots missing the
+new ID default to zero and fail closed before mutation.
+
+## Prompt 06 Pet Relationship Delivery
+
+Prompt 06 planning started on `main` at
+`7c96e504a5bfc9d8e32259971b25157bcb67fa3f`, equal to `origin/main`, while the
+uncommitted Prompt 05 security/documentation reconciliation and unrelated
+meetups ledger/threat-model work remain preserved. The principal owns every
+write. Discovery specialists are read-only and have exclusive scopes; the
+final reviewer did not participate in Prompt 06 implementation.
+
+| ID | Specialist role | Exclusive Prompt 06 scope | Required deliverable | Status |
+| --- | --- | --- | --- | --- |
+| ONB-P06-A | Pet identity auditor | `PetProfile` identity, ownership, status, actor and canonical creation only | Safest canonical creation/relationship integration and exact reusable paths | assigned read-only |
+| ONB-P06-B | Duplicate-detection auditor | Candidate visibility, bounds, review tokens, confirm-different and direct-creation protection only | Privacy-preserving duplicate and return-flow findings | assigned read-only |
+| ONB-P06-C | Pet-management auditor | Manager status/role, starts/ends/revocation, permissions and creator fallback only | Exact active-management predicate and edge-case matrix | assigned read-only |
+| ONB-P06-D | Access-request auditor | Request types, evidence, expiry, encryption, idempotency, approval/invitation only | Onboarding-safe request paths and pending-evidence decision | queued read-only after ONB-P06-A |
+| ONB-P06-E | Pet-privacy auditor | Creation visibility, discovery/index/direct-link/location defaults and public projections only | Default-safety findings and required regressions | queued read-only after ONB-P06-B |
+| ONB-P06-F | UX/accessibility reviewer | Four truthful choices, owned/managed summary, empty/pending/cancel states, mobile and semantics only | UI state map and measurable accessibility risks | queued read-only after ONB-P06-C |
+| ONB-P06-G | Security reviewer | Foreign/private pets, forged return/input, stale tokens/managers/components and completion bypass only | Exploit-focused negative-test matrix | queued read-only after ONB-P06-D |
+| ONB-P06-H | Test reviewer | Existing pet/onboarding coverage, missing positive/negative/query/idempotency cases only | Minimal non-duplicative Prompt 06 test matrix | queued read-only after ONB-P06-E |
+| ONB-P06-I | Final independent reviewer | Frozen attributable Prompt 06 diff; no discovery or implementation participation | Pet-domain/auth/privacy/UX/regression verdict | reserved read-only |
+
+Selected starting decisions: keep the existing canonical create, duplicate
+review and access-request operations; a current pending request may resolve the
+`care for an existing pet` onboarding decision but never grants management;
+`no pet` and `add later` become distinct controlled choices while legacy
+`not-now` remains readable; return behavior is derived only from the persisted
+authenticated onboarding state, never a browser URL or durable session flag.
 
 ## Prompt 01 Current-Checkout Revalidation
 

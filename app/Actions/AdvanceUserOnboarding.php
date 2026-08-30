@@ -185,7 +185,10 @@ final readonly class AdvanceUserOnboarding
         User $user,
         ?OnboardingPetChoice $choice,
     ): array {
-        if (! $choice instanceof OnboardingPetChoice) {
+        if (
+            ! $choice instanceof OnboardingPetChoice
+            || ! in_array($choice, OnboardingPetChoice::selectableCases(), true)
+        ) {
             throw ValidationException::withMessages([
                 'petChoice' => __('onboarding.validation.pet_choice'),
             ]);

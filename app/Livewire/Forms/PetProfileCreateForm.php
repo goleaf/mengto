@@ -5,10 +5,8 @@ declare(strict_types=1);
 namespace App\Livewire\Forms;
 
 use App\Enums\PetManagerRole;
-use App\Enums\PetProfileVisibility;
 use App\Enums\PetSpeciesConfidence;
-use App\Rules\ValidPetProfileName;
-use Illuminate\Validation\Rule;
+use App\Services\PetProfileCreationInput;
 use Livewire\Form;
 
 final class PetProfileCreateForm extends Form
@@ -26,38 +24,13 @@ final class PetProfileCreateForm extends Form
     /** @return list<PetManagerRole> */
     public static function relationshipRoles(): array
     {
-        return [
-            PetManagerRole::PrimaryOwner,
-            PetManagerRole::CoOwner,
-            PetManagerRole::FamilyMember,
-            PetManagerRole::Shelter,
-            PetManagerRole::Volunteer,
-            PetManagerRole::Finder,
-            PetManagerRole::FosterCarer,
-            PetManagerRole::Specialist,
-            PetManagerRole::Other,
-        ];
+        return PetProfileCreationInput::relationshipRoles();
     }
 
     /** @return array<string, list<mixed>> */
     protected function rules(): array
     {
-        return [
-            'name' => ['required', 'string', 'min:1', 'max:120', app(ValidPetProfileName::class)],
-            'species' => [
-                'required',
-                Rule::in(config('pet_profiles.species_options', [])),
-            ],
-            'speciesConfidence' => ['required', Rule::enum(PetSpeciesConfidence::class)],
-            'relationshipRole' => [
-                'required',
-                Rule::in(array_map(
-                    static fn (PetManagerRole $role): string => $role->value,
-                    self::relationshipRoles(),
-                )),
-            ],
-            'visibility' => ['required', Rule::enum(PetProfileVisibility::class)],
-        ];
+        return app(PetProfileCreationInput::class)->formRules();
     }
 
     /** @return array<string, string> */

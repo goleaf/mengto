@@ -4,9 +4,9 @@
         :title="__('pet_profiles.create.title')"
         :description="__('pet_profiles.create.description')"
         heading-id="create-pet-profile-heading"
-        :action-label="__('pet_profiles.actions.back_to_pets')"
+        :action-label="$this->petSetupExit['label']"
         action-icon="arrow-left"
-        :action-href="route('pets.index')"
+        :action-href="$this->petSetupExit['url']"
     />
 
     <div class="pet-create">
@@ -249,6 +249,7 @@
                                     type="button"
                                     class="forum-button forum-button--primary min-h-11 w-full"
                                     wire:click="startAccessRequest('{{ $candidate['profile_key'] }}')"
+                                    aria-label="{{ __('pet_profiles.duplicate_review.request_access_to', ['name' => $candidate['name']]) }}"
                                 >
                                     <x-ui-icon name="user-plus" />
                                     <span>{{ __('pet_profiles.duplicate_review.this_is_my_pet') }}</span>
@@ -271,39 +272,41 @@
                             <div class="grid gap-4 sm:grid-cols-2">
                                 <label class="forum-form__field" for="pet-access-request-type">
                                     <span>{{ __('pet_profiles.access_requests.request_type') }}</span>
-                                    <select id="pet-access-request-type" wire:model.live="accessRequestForm.requestType">
+                                    <select id="pet-access-request-type" wire:model.live="accessRequestForm.requestType" aria-describedby="pet-access-request-type-error" @error('accessRequestForm.requestType') aria-invalid="true" @enderror>
                                         @forelse ($this->accessRequestTypes as $value => $label)
                                             <option wire:key="pet-access-type-{{ $value }}" value="{{ $value }}">{{ $label }}</option>
                                         @empty
                                             <option value="co-ownership">{{ __('pet_profiles.access_requests.types.co-ownership') }}</option>
                                         @endforelse
                                     </select>
+                                    @error('accessRequestForm.requestType') <small id="pet-access-request-type-error" role="alert">{{ $message }}</small> @enderror
                                 </label>
 
                                 @if ($accessRequestForm->requestType === 'relationship-correction')
                                     <label class="forum-form__field" for="pet-access-request-role">
                                         <span>{{ __('pet_profiles.access_requests.requested_role') }}</span>
-                                        <select id="pet-access-request-role" wire:model="accessRequestForm.requestedRole">
+                                        <select id="pet-access-request-role" wire:model="accessRequestForm.requestedRole" aria-describedby="pet-access-request-role-error" @error('accessRequestForm.requestedRole') aria-invalid="true" @enderror>
                                             @forelse ($this->correctionRoleOptions as $value => $label)
                                                 <option wire:key="pet-access-role-{{ $value }}" value="{{ $value }}">{{ $label }}</option>
                                             @empty
                                                 <option value="family-member">{{ __('pet_profiles.manager_roles.family-member') }}</option>
                                             @endforelse
                                         </select>
+                                        @error('accessRequestForm.requestedRole') <small id="pet-access-request-role-error" role="alert">{{ $message }}</small> @enderror
                                     </label>
                                 @endif
 
                                 @if ($accessRequestForm->requestType === 'temporary-access')
                                     <label class="forum-form__field" for="pet-access-request-ends">
                                         <span>{{ __('pet_profiles.access_requests.temporary_ends_at') }}</span>
-                                        <input id="pet-access-request-ends" type="datetime-local" wire:model="accessRequestForm.temporaryAccessEndsAt" required>
-                                        @error('accessRequestForm.temporaryAccessEndsAt') <small role="alert">{{ $message }}</small> @enderror
+                                        <input id="pet-access-request-ends" type="datetime-local" wire:model="accessRequestForm.temporaryAccessEndsAt" required aria-describedby="pet-access-request-ends-error" @error('accessRequestForm.temporaryAccessEndsAt') aria-invalid="true" @enderror>
+                                        @error('accessRequestForm.temporaryAccessEndsAt') <small id="pet-access-request-ends-error" role="alert">{{ $message }}</small> @enderror
                                     </label>
                                 @endif
 
                                 <label class="forum-form__field sm:col-span-2" for="pet-access-request-evidence">
                                     <span>{{ __('pet_profiles.access_requests.evidence') }}</span>
-                                    <textarea id="pet-access-request-evidence" wire:model="accessRequestForm.evidenceSummary" rows="5" minlength="20" maxlength="2000" required aria-describedby="pet-access-request-evidence-help pet-access-request-evidence-error"></textarea>
+                                    <textarea id="pet-access-request-evidence" wire:model="accessRequestForm.evidenceSummary" rows="5" minlength="20" maxlength="2000" required aria-describedby="pet-access-request-evidence-help pet-access-request-evidence-error" @error('accessRequestForm.evidenceSummary') aria-invalid="true" @enderror></textarea>
                                     <small id="pet-access-request-evidence-help">{{ __('pet_profiles.access_requests.evidence_help') }}</small>
                                     @error('accessRequestForm.evidenceSummary') <small id="pet-access-request-evidence-error" role="alert">{{ $message }}</small> @enderror
                                 </label>
@@ -315,7 +318,7 @@
                                 <button type="button" class="forum-button min-h-11" wire:click="cancelAccessRequest">
                                     {{ __('pet_profiles.actions.cancel') }}
                                 </button>
-                                <button type="button" class="forum-button forum-button--primary min-h-11" wire:click="submitSelectedAccessRequest" wire:loading.attr="disabled" wire:target="submitSelectedAccessRequest">
+                                <button type="button" class="forum-button forum-button--primary min-h-11" wire:click="submitSelectedAccessRequest" wire:loading.attr="disabled" wire:loading.attr="aria-busy" wire:target="submitSelectedAccessRequest">
                                     <x-ui-icon name="send" />
                                     <span>{{ __('pet_profiles.access_requests.submit') }}</span>
                                 </button>
@@ -341,7 +344,7 @@
             </div>
 
             <footer class="pet-create__actions">
-                <a href="{{ route('pets.index') }}" class="action action--paper action--regular">
+                <a href="{{ $this->petSetupExit['url'] }}" class="action action--paper action--regular">
                     <x-ui-icon name="x" size="sm" />
                     <span>{{ __('pet_profiles.actions.cancel') }}</span>
                 </a>

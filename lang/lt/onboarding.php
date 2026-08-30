@@ -42,9 +42,31 @@ return [
             'body' => 'Galite sukurti privatų augintinio profilį, rasti esamą profilį ir paprašyti prieigos arba tęsti be augintinio. Ši galimybė liks prieinama ir vėliau.',
             'legend' => 'Pasirinkite savo ryšį su augintiniu',
             'create_or_find' => 'Sukurti arba rasti augintinio profilį',
-            'managed_pet' => 'Tęsti su mano valdomu augintiniu',
-            'access_requested' => 'Tęsti su mano prieigos prašymu',
+            'managed_pet' => [
+                'label' => 'Turiu arba valdau augintinį',
+                'description' => 'Pridėkite naują augintinį arba tęskite su jau aktyviai valdomu augintiniu.',
+            ],
+            'access_requested' => [
+                'label' => 'Padedu prižiūrėti esamą augintinį',
+                'description' => 'Raskite augintinį ir paprašykite tinkamos prieigos. Kol prašymas tikrinamas, jis prieigos nesuteikia.',
+            ],
+            'no_pet' => [
+                'label' => 'Šiuo metu augintinio neturiu',
+                'description' => 'Vis tiek galite naudotis „PawCircle“ ir augintinį pridėti vėliau.',
+            ],
+            'add_later' => [
+                'label' => 'Augintinį pridėsiu vėliau',
+                'description' => 'Užbaikite paruošimą dabar, o profilį sukurkite arba susiekite, kai būsite pasirengę.',
+            ],
             'not_now' => 'Kol kas tęsti be augintinio',
+            'managed_summary' => 'Aktyviai valdomi augintiniai',
+            'managed_summary_more' => 'Baigę paruošimą augintinių darbo srityje rasite daugiau aktyviai valdomų augintinių.',
+            'managed_evidence_private' => 'Aktyvus ryšys su augintiniu patvirtintas. Duomenys nerodomi, nes dabartinė prieiga neleidžia šios peržiūros.',
+            'managed_empty' => 'Aktyvus ryšys su augintiniu dar nepatvirtintas. Sukurkite profilį arba pasirinkite kitą teisingą variantą.',
+            'access_pending' => 'Jūsų prieigos prašymas laukia patikros. Galite tęsti paruošimą, tačiau prašymas nesuteikia prieigos, kol nepatvirtintas.',
+            'invitation_pending' => 'Laukiama jūsų sprendimo dėl kvietimo valdyti augintinį. Kol kvietimas nepriimtas, tai nėra aktyvus valdymas.',
+            'inactive_relationship' => 'Ankstesnis ryšys su augintiniu nebegalioja.',
+            'edit' => 'Grįžti prie ryšio su augintiniu',
             'continue' => 'Išsaugoti ir tęsti',
         ],
         'privacy_discovery' => [

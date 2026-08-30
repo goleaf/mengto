@@ -101,8 +101,11 @@ use App\Http\Controllers\MedicalRecordStoreController;
 use App\Http\Controllers\MedicalSharedDocumentDownloadController;
 use App\Http\Controllers\MedicalSharedRecordController;
 use App\Http\Controllers\MedicationDoseStoreController;
+use App\Http\Controllers\MeetupCreateController;
 use App\Http\Controllers\MeetupDetailPreviewController;
 use App\Http\Controllers\MeetupDirectoryPreviewController;
+use App\Http\Controllers\MeetupEditController;
+use App\Http\Controllers\MeetupManageController;
 use App\Http\Controllers\MemberProfileController;
 use App\Http\Controllers\MemberProfilePreviewController;
 use App\Http\Controllers\MessageCenterPreviewController;
@@ -152,6 +155,7 @@ use App\Http\Controllers\WalkPlanPreviewController;
 use App\Http\Middleware\ProtectCareResponse;
 use App\Http\Middleware\ProtectDeviceResponse;
 use App\Http\Middleware\ProtectMedicalResponse;
+use App\Http\Middleware\ProtectPrivateResponse;
 use App\Livewire\Auth\ConfirmPassword;
 use App\Livewire\Auth\ForgotPassword;
 use App\Livewire\Auth\Login;
@@ -353,17 +357,26 @@ Route::middleware('web')
                 'senior-companions',
             ])
             ->name('groups.show');
-        Route::get('/meetups', MeetupDirectoryPreviewController::class)->name('meetups.index');
-        Route::get('/meetups/small-dog-social', MeetupDetailPreviewController::class)
-            ->defaults('event', 'small-dog-social')
-            ->name('meetups.small_dog_social');
-        Route::get('/meetups/{item}', CreatedContentPreviewController::class)
-            ->defaults('kind', 'meetup')
-            ->where('item', 'created-meetup-[A-Za-z0-9-]+')
-            ->name('meetups.created');
-        Route::get('/meetups/{event}', MeetupDetailPreviewController::class)
-            ->where('event', '[A-Za-z0-9-]+')
-            ->name('meetups.show');
+        Route::middleware(ProtectPrivateResponse::class)->group(function (): void {
+            Route::get('/meetups', MeetupDirectoryPreviewController::class)->name('meetups.index');
+            Route::get('/meetups/create', MeetupCreateController::class)->name('meetups.create');
+            Route::get('/meetups/small-dog-social', MeetupDetailPreviewController::class)
+                ->defaults('event', 'small-dog-social')
+                ->name('meetups.small_dog_social');
+            Route::get('/meetups/{item}', CreatedContentPreviewController::class)
+                ->defaults('kind', 'meetup')
+                ->where('item', 'created-meetup-[A-Za-z0-9-]+')
+                ->name('meetups.created');
+            Route::get('/meetups/{event}/edit', MeetupEditController::class)
+                ->where('event', '[A-Za-z0-9-]+')
+                ->name('meetups.edit');
+            Route::get('/meetups/{event}/manage', MeetupManageController::class)
+                ->where('event', '[A-Za-z0-9-]+')
+                ->name('meetups.manage');
+            Route::get('/meetups/{event}', MeetupDetailPreviewController::class)
+                ->where('event', '[A-Za-z0-9-]+')
+                ->name('meetups.show');
+        });
         Route::get('/places', PlaceDirectoryPreviewController::class)->name('places.index');
         Route::get('/places/{place}', PlaceDetailPreviewController::class)
             ->where('place', '[a-z0-9-]+')

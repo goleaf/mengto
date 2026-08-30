@@ -410,7 +410,8 @@ const runOnboardingAudit = async (client, sessionId, consoleErrors, resourceErro
                         || element.textContent.trim()))
                     .map((element) => element.outerHTML.slice(0, 160)),
                 skipTargetExists: Boolean(skipTarget),
-                hasBackMutation: Boolean(document.querySelector('[wire\\\\:click="back"], [wire\\\\:submit="back"]')),
+                hasUnexpectedBackMutation: Boolean(document.querySelector('[wire\\\\:click="back"], [wire\\\\:submit="back"]')),
+                hasPetEditAction: Boolean(document.querySelector('[wire\\\\:click="editPetRelationship"]')),
             };
         })()`);
         assert(result.path === '/onboarding', `${label}: path drifted to ${result.path}.`);
@@ -423,7 +424,8 @@ const runOnboardingAudit = async (client, sessionId, consoleErrors, resourceErro
         assert(result.smallTargets.length === 0, `${label}: controls below 44px ${JSON.stringify(result.smallTargets)}.`);
         assert(result.rawKeys.length === 0, `${label}: raw keys ${result.rawKeys.join(', ')}.`);
         assert(result.unnamedControls.length === 0, `${label}: unnamed controls ${JSON.stringify(result.unnamedControls)}.`);
-        assert(result.skipTargetExists && !result.hasBackMutation, `${label}: skip target or navigation boundary drifted.`);
+        assert(result.skipTargetExists && !result.hasUnexpectedBackMutation, `${label}: skip target or navigation boundary drifted.`);
+        assert(result.hasPetEditAction === (result.currentStep === 'privacy-discovery'), `${label}: pet edit action drifted.`);
         audits[label] = result;
         return result;
     };
@@ -534,10 +536,10 @@ const runOnboardingAudit = async (client, sessionId, consoleErrors, resourceErro
     await setViewport(375, 812, true);
     const pets = await audit('375x812 Lithuanian pet relationship');
     assert(pets.locale === 'lt' && pets.currentStep === 'pet-relationship', 'Lithuanian pet step did not render.');
-    await evaluate(client, sessionId, `document.querySelector('input[value="not-now"]').focus(); true`);
+    await evaluate(client, sessionId, `document.querySelector('input[value="add-later"]').focus(); true`);
     await client.send('Input.dispatchKeyEvent', { type: 'keyDown', key: ' ', code: 'Space' }, sessionId);
     await client.send('Input.dispatchKeyEvent', { type: 'keyUp', key: ' ', code: 'Space' }, sessionId);
-    assert(await evaluate(client, sessionId, `document.querySelector('input[value="not-now"]').checked`), 'Space did not select the pet radio.');
+    assert(await evaluate(client, sessionId, `document.querySelector('input[value="add-later"]').checked`), 'Space did not select the pet radio.');
     await evaluate(client, sessionId, `document.querySelector('button[wire\\\\:target="savePetRelationship"]').click(); true`);
     await waitUntil(
         async () => await evaluate(client, sessionId, `document.querySelector('[data-step="privacy-discovery"][aria-current="step"]') !== null`),

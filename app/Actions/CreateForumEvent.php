@@ -40,10 +40,21 @@ final readonly class CreateForumEvent
         private InitializeForumEventLifecycle $initializeLifecycle,
     ) {}
 
-    public function handle(User $actor, CreateForumEventData $data): ForumEvent
-    {
+    public function handle(
+        User $actor,
+        CreateForumEventData $data,
+        ForumEventStatus $initialStatus = ForumEventStatus::Scheduled,
+    ): ForumEvent {
         $this->gate->forUser($actor)->authorize('create', ForumEvent::class);
-        $this->validate($data);
+
+        if (! in_array($initialStatus, [
+            ForumEventStatus::Draft,
+            ForumEventStatus::Scheduled,
+        ], true)) {
+            throw new \InvalidArgumentException('Unsupported initial event status.');
+        }
+
+        $this->validate($data, $initialStatus === ForumEventStatus::Draft);
 
         $existing = ForumEvent::query()
             ->where('creation_idempotency_key', $data->idempotencyKey)
@@ -116,7 +127,7 @@ final readonly class CreateForumEvent
             ]);
         }
 
-        return DB::transaction(function () use ($actor, $data, $group, $organization, $place, $taxa, $venue): ForumEvent {
+        return DB::transaction(function () use ($actor, $data, $group, $initialStatus, $organization, $place, $taxa, $venue): ForumEvent {
             $lockedPlace = $place === null
                 ? null
                 : Place::query()->lockForUpdate()->findOrFail($place->id);
@@ -162,7 +173,7 @@ final readonly class CreateForumEvent
                 'visibility' => $data->visibility,
                 'format' => $data->format,
                 'pet_participation_mode' => $data->petParticipationMode,
-                'status' => ForumEventStatus::Scheduled,
+                'status' => $initialStatus,
                 'locale' => $data->locale,
                 'starts_at' => $data->startsAt,
                 'ends_at' => $data->endsAt,
@@ -204,7 +215,7 @@ final readonly class CreateForumEvent
                 eventType: 'created',
                 reasonCode: 'event-created',
                 summaryTranslationKey: 'forum_events.history.created',
-                toStatus: ForumEventStatus::Scheduled->value,
+                toStatus: $initialStatus->value,
                 metadata: [
                     'group_id' => $group?->id,
                     'responsible_organization_id' => $organization?->id,
@@ -219,9 +230,9 @@ final readonly class CreateForumEvent
         }, 3);
     }
 
-    private function validate(CreateForumEventData $data): void
+    private function validate(CreateForumEventData $data, bool $draft): void
     {
-        Validator::make([
+        $input = [
             'title' => $data->title,
             'summary' => $data->summary,
             'type' => $data->type->value,
@@ -256,7 +267,8 @@ final readonly class CreateForumEvent
             'responsible_organization_id' => $data->responsibleOrganizationId,
             'place_id' => $data->placeId,
             'venue_id' => $data->venueId,
-        ], [
+        ];
+        $rules = [
             'title' => ['required', 'string', 'min:4', 'max:180'],
             'summary' => ['required', 'string', 'min:10', 'max:10000'],
             'type' => ['required', Rule::enum(ForumEventType::class)],
@@ -354,7 +366,19 @@ final readonly class CreateForumEvent
                 'integer',
                 'exists:venues,id',
             ],
-        ])->validate();
+        ];
+
+        if ($draft) {
+            $rules['summary'] = ['nullable', 'string', 'max:10000'];
+            $rules['location_scope'] = ['nullable', 'string', 'max:190'];
+            $rules['online_url'] = ['nullable', 'url:http,https', 'max:2000'];
+            $rules['vaccination_jurisdiction'] = ['nullable', 'string', 'max:120'];
+            $rules['refund_policy'] = ['nullable', 'string', 'max:5000'];
+            $rules['animal_welfare_rules'] = ['nullable', 'string', 'max:10000'];
+            $rules['emergency_contact_plan'] = ['nullable', 'string', 'max:10000'];
+        }
+
+        Validator::make($input, $rules)->validate();
 
         if ($data->venueId !== null && $data->placeId === null) {
             throw ValidationException::withMessages([
@@ -362,17 +386,30 @@ final readonly class CreateForumEvent
             ]);
         }
 
-        if ($data->visibility === ForumEventVisibility::Group && $data->groupId === null) {
+        if (! $draft
+            && $data->visibility === ForumEventVisibility::Group
+            && $data->groupId === null
+        ) {
             throw ValidationException::withMessages([
                 'eventForm.groupId' => __('forum_events.validation.group_visibility'),
             ]);
         }
 
-        if ($data->visibility === ForumEventVisibility::Organization
+        if (! $draft
+            && $data->visibility === ForumEventVisibility::Organization
             && $data->responsibleOrganizationId === null
         ) {
             throw ValidationException::withMessages([
                 'eventForm.responsibleOrganizationId' => __('forum_events.validation.organization_visibility'),
+            ]);
+        }
+
+        if (! $draft
+            && $data->visibility === ForumEventVisibility::Invitation
+            && $data->registrationPolicy !== ForumEventRegistrationPolicy::Invitation
+        ) {
+            throw ValidationException::withMessages([
+                'eventForm.registrationPolicy' => __('forum_events.validation.invitation_visibility_policy'),
             ]);
         }
     }

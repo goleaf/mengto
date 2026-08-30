@@ -44,6 +44,7 @@ final class SubmitPetProfileAccessRequest
         $requester = $this->actor->requireUser();
         $this->gate->authorize('requestAccess', $profile);
         $role = $this->resolveRole($type, $requestedRole);
+        $evidenceSummary = trim($evidenceSummary);
         $validated = $this->validator->make([
             'evidence_summary' => $evidenceSummary,
             'temporary_access_ends_at' => $temporaryAccessEndsAt,
@@ -160,8 +161,22 @@ final class SubmitPetProfileAccessRequest
 
                 $pending = PetProfileAccessRequest::query()
                     ->where('active_key', $activeKey)
+                    ->where('status', PetProfileAccessRequestStatus::Pending)
                     ->lockForUpdate()
                     ->first();
+
+                if (
+                    $pending instanceof PetProfileAccessRequest
+                    && $pending->temporary_access_ends_at !== null
+                    && ! $pending->temporary_access_ends_at->isFuture()
+                ) {
+                    $pending->forceFill([
+                        'status' => PetProfileAccessRequestStatus::Expired,
+                        'active_key' => null,
+                        'lock_version' => $pending->lock_version + 1,
+                    ])->saveOrFail();
+                    $pending = null;
+                }
 
                 if ($pending instanceof PetProfileAccessRequest) {
                     throw ValidationException::withMessages([

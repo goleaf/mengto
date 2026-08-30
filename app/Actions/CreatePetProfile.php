@@ -11,8 +11,6 @@ use App\Enums\PetEvidenceStatus;
 use App\Enums\PetManagerRole;
 use App\Enums\PetManagerStatus;
 use App\Enums\PetProfileStatus;
-use App\Enums\PetProfileVisibility;
-use App\Enums\PetSpeciesConfidence;
 use App\Models\AuditLog;
 use App\Models\DomesticClassification;
 use App\Models\PetProfile;
@@ -26,6 +24,7 @@ use App\Services\ForumActor;
 use App\Services\PetBirthDetailsNormalizer;
 use App\Services\PetBreedOriginNormalizer;
 use App\Services\PetBreedOriginSynchronizer;
+use App\Services\PetProfileCreationInput;
 use App\Services\PetProfileDuplicateReview;
 use App\Services\PetProfileEventRecorder;
 use Illuminate\Contracts\Auth\Access\Gate;
@@ -41,6 +40,7 @@ final class CreatePetProfile
         private readonly Gate $gate,
         private readonly PetProfileEventRecorder $events,
         private readonly PetProfileDuplicateReview $duplicateReview,
+        private readonly PetProfileCreationInput $creationInput,
         private readonly PetBirthDetailsNormalizer $birthDetails,
         private readonly PetBreedOriginNormalizer $breedOrigins,
         private readonly PetBreedOriginSynchronizer $breedOriginSynchronizer,
@@ -51,14 +51,14 @@ final class CreatePetProfile
     {
         $user = $this->actor->requireUser();
         $this->gate->authorize('create', PetProfile::class);
-        $name = trim((string) ($data['title'] ?? ''));
-        $species = (string) ($data['species'] ?? $data['category'] ?? 'unknown');
-        $speciesConfidence = PetSpeciesConfidence::normalize(
-            $species,
-            $data['species_confidence'] ?? null,
-        );
+        $validated = $this->creationInput->validateAction($data);
+        $name = $validated['name'];
+        $species = $validated['species'];
+        $speciesConfidence = $validated['species_confidence'];
+        $relationship = $validated['relationship'];
+        $visibility = $validated['visibility'];
 
-        $idempotencyKey = (string) ($data['idempotency_key'] ?? Str::uuid());
+        $idempotencyKey = $validated['idempotency_key'];
         $creationKey = hash('sha256', "pet-create|{$user->id}|{$idempotencyKey}");
         $existing = PetProfile::query()
             ->where('creation_key', $creationKey)
@@ -78,19 +78,14 @@ final class CreatePetProfile
             $user,
             $name,
             $species,
-            (string) ($data['duplicate_review_token'] ?? ''),
+            $validated['duplicate_review_token'],
+            $validated['duplicate_review_decision_token'],
         )) {
             throw ValidationException::withMessages([
                 'duplicate_review' => __('pet_profiles.validation.duplicate_review_required'),
             ]);
         }
 
-        $relationship = PetManagerRole::tryFrom(
-            (string) ($data['relationship_role'] ?? PetManagerRole::PrimaryOwner->value),
-        ) ?? PetManagerRole::Other;
-        $visibility = PetProfileVisibility::tryFrom(
-            (string) ($data['visibility'] ?? PetProfileVisibility::Private->value),
-        ) ?? PetProfileVisibility::Private;
         $taxon = $this->taxon($data['taxon_id'] ?? null);
         $classification = $this->classification(
             $data['domestic_classification_id'] ?? null,
@@ -137,7 +132,7 @@ final class CreatePetProfile
                 $profile = PetProfile::query()->create([
                     'user_id' => $user->id,
                     'profile_key' => $profileKey,
-                    'slug' => $this->uniqueSlug($user->id, (string) $data['title'], $profileKey),
+                    'slug' => $this->uniqueSlug($user->id, $name, $profileKey),
                     'name' => $name,
                     'species' => $species,
                     'species_confidence' => $speciesConfidence,
@@ -268,13 +263,13 @@ final class CreatePetProfile
 
     private function uniqueSlug(int $userId, string $name, string $profileKey): string
     {
-        $base = Str::slug($name) ?: 'pet';
+        $base = Str::substr(Str::slug($name) ?: 'pet', 0, 80);
         $slug = $base;
         if (PetProfile::query()
             ->where('user_id', $userId)
             ->where('slug', $slug)
             ->exists()) {
-            $slug = $base.'-'.substr(hash('sha256', $profileKey), 0, 8);
+            $slug = Str::substr($base, 0, 71).'-'.substr(hash('sha256', $profileKey), 0, 8);
         }
 
         return $slug;

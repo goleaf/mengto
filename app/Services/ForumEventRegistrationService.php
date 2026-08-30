@@ -13,14 +13,19 @@ use App\Enums\ForumEventPhotoConsent;
 use App\Enums\ForumEventRegistrationPolicy;
 use App\Enums\ForumEventRegistrationStatus;
 use App\Enums\ForumEventVerificationStatus;
+use App\Enums\PetProfilePermission;
+use App\Enums\PetProfileStatus;
 use App\Models\ForumEvent;
 use App\Models\ForumEventInvitation;
 use App\Models\ForumEventOccurrence;
+use App\Models\ForumEventParticipationOperation;
+use App\Models\ForumEventParticipationTransition;
 use App\Models\ForumEventRegistration;
 use App\Models\PetProfile;
 use App\Models\User;
 use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -36,6 +41,7 @@ final readonly class ForumEventRegistrationService
         private InitializeForumEventLifecycle $initializeLifecycle,
         private ForumEventLifecycleSnapshot $snapshots,
         private PetProfileAgeCalculator $petAges,
+        private PetProfileAccess $petAccess,
     ) {}
 
     public function register(
@@ -44,7 +50,6 @@ final readonly class ForumEventRegistrationService
         RegisterForForumEventData $data,
     ): ForumEventRegistration {
         $this->gate->forUser($actor)->authorize('register', $event);
-        $this->validateRegistration($actor, $event, $data);
 
         if ($event->cost_minor > 0) {
             throw ValidationException::withMessages([
@@ -57,6 +62,7 @@ final readonly class ForumEventRegistrationService
                 ->lockForUpdate()
                 ->findOrFail($event->id);
             $this->gate->forUser($actor)->authorize('register', $lockedEvent);
+            $this->validateRegistration($actor, $lockedEvent, $data);
             $lifecycle = $this->initializeLifecycle->handle(
                 $lockedEvent,
                 $lockedEvent->organizer,
@@ -68,6 +74,19 @@ final readonly class ForumEventRegistrationService
                     ->whereKey($data->occurrenceId)
                     ->lockForUpdate()
                     ->firstOrFail();
+            $operation = $this->participationOperation(
+                $actor,
+                $lockedEvent,
+                $occurrence,
+                $data,
+            );
+
+            if ($operation->status === 'completed'
+                && $operation->forum_event_registration_id !== null
+            ) {
+                return ForumEventRegistration::query()
+                    ->findOrFail($operation->forum_event_registration_id);
+            }
 
             if (! $occurrence->status->acceptsRegistration() || $occurrence->starts_at->isPast()) {
                 throw ValidationException::withMessages([
@@ -110,8 +129,12 @@ final readonly class ForumEventRegistrationService
                 ForumEventRegistrationStatus::Rejected,
                 ForumEventRegistrationStatus::Expired,
             ], true)) {
+                $this->completeParticipationOperation($operation, $existing);
+
                 return $existing;
             }
+
+            $previousStatus = $existing?->status;
 
             $requestedSeats = 1 + $data->guestCount;
             $remainingSeats = $this->remainingSeats($lockedEvent, $occurrence);
@@ -136,6 +159,12 @@ final readonly class ForumEventRegistrationService
                 'forum_event_version_id' => $lifecycle->version->id,
                 'pet_profile_id' => $petProfileIds[0] ?? null,
                 'idempotency_key' => $data->idempotencyKey,
+                'active_scope_key' => $this->activeScopeKey(
+                    $lockedEvent,
+                    $occurrence,
+                    $actor,
+                ),
+                'participation_role' => 'attendee',
                 'status' => $status,
                 'attendance_format' => $data->attendanceFormat,
                 'guest_count' => $data->guestCount,
@@ -156,6 +185,7 @@ final readonly class ForumEventRegistrationService
                 'confirmed_at' => $status === ForumEventRegistrationStatus::Confirmed
                     ? now()
                     : null,
+                'status_changed_at' => now(),
             ];
 
             if ($existing !== null) {
@@ -210,6 +240,15 @@ final readonly class ForumEventRegistrationService
                 ],
                 idempotencyKey: 'event:registration:'.$data->idempotencyKey,
             );
+            $this->recordTransition(
+                $registration,
+                $actor,
+                $previousStatus,
+                $status,
+                'registration-created',
+                $operation,
+            );
+            $this->completeParticipationOperation($operation, $registration);
 
             return $registration;
         }, 3);
@@ -250,10 +289,12 @@ final readonly class ForumEventRegistrationService
             $from = $locked->status;
             $locked->forceFill([
                 'status' => ForumEventRegistrationStatus::Cancelled,
+                'active_scope_key' => null,
                 'waitlist_position' => null,
                 'cancelled_at' => now(),
                 'cancellation_reason_code' => $reasonCode,
                 'lock_version' => $locked->lock_version + 1,
+                'status_changed_at' => now(),
             ])->save();
 
             $this->audit->record(
@@ -266,6 +307,13 @@ final readonly class ForumEventRegistrationService
                 fromStatus: $from->value,
                 toStatus: ForumEventRegistrationStatus::Cancelled->value,
                 metadata: ['registration_id' => $locked->id],
+            );
+            $this->recordTransition(
+                $locked,
+                $actor,
+                $from,
+                ForumEventRegistrationStatus::Cancelled,
+                $reasonCode,
             );
 
             return [
@@ -320,6 +368,28 @@ final readonly class ForumEventRegistrationService
             $waitlistPosition = null;
 
             if ($approve) {
+                $participant = User::query()->lockForUpdate()->findOrFail($locked->user_id);
+                $this->gate->forUser($participant)->authorize('register', $lockedEvent);
+                $petProfileIds = $locked->registrationPets()
+                    ->orderBy('id')
+                    ->pluck('pet_profile_id')
+                    ->map(static fn (mixed $id): int => (int) $id)
+                    ->all();
+                $this->validateRegistration(
+                    $participant,
+                    $lockedEvent,
+                    new RegisterForForumEventData(
+                        attendanceFormat: $locked->attendance_format,
+                        guestCount: $locked->guest_count,
+                        petProfileId: null,
+                        requirementsNote: $locked->requirements_note,
+                        photoConsent: $locked->photo_consent,
+                        requirementsAccepted: $locked->requirements_accepted,
+                        idempotencyKey: $locked->idempotency_key,
+                        petProfileIds: $petProfileIds,
+                        occurrenceId: $locked->forum_event_occurrence_id,
+                    ),
+                );
                 $remaining = $this->remainingSeats($lockedEvent, $locked->occurrence);
                 $requested = 1 + $locked->guest_count;
 
@@ -347,6 +417,7 @@ final readonly class ForumEventRegistrationService
                     ? now()
                     : null,
                 'lock_version' => $locked->lock_version + 1,
+                'status_changed_at' => now(),
             ])->save();
 
             if ($approve) {
@@ -367,6 +438,13 @@ final readonly class ForumEventRegistrationService
                 toStatus: $status->value,
                 metadata: ['registration_id' => $locked->id],
             );
+            $this->recordTransition(
+                $locked,
+                $actor,
+                ForumEventRegistrationStatus::Pending,
+                $status,
+                $approve ? 'registration-approved' : 'registration-declined',
+            );
 
             return $locked;
         }, 3);
@@ -382,6 +460,97 @@ final readonly class ForumEventRegistrationService
         );
 
         return $reviewed;
+    }
+
+    public function remove(
+        User $actor,
+        ForumEventRegistration $registration,
+    ): ForumEventRegistration {
+        $event = $registration->event;
+        $this->gate->forUser($actor)->authorize('manageRegistrations', $event);
+
+        [$removed, $promoted] = DB::transaction(function () use ($actor, $event, $registration): array {
+            $lockedEvent = ForumEvent::query()->lockForUpdate()->findOrFail($event->id);
+            $locked = ForumEventRegistration::query()->lockForUpdate()->findOrFail($registration->id);
+            $this->gate->forUser($actor)->authorize('manageRegistrations', $lockedEvent);
+
+            if ($locked->forum_event_id !== $lockedEvent->id
+                || $lockedEvent->isOrganizer($locked->user)
+            ) {
+                throw ValidationException::withMessages([
+                    'registration' => __('forum_events.validation.remove_participant'),
+                ]);
+            }
+
+            if ($locked->status === ForumEventRegistrationStatus::CancelledByOrganizer) {
+                return [$locked, null];
+            }
+
+            if ($locked->status->isTerminal()) {
+                throw ValidationException::withMessages([
+                    'registration' => __('forum_events.validation.remove_participant'),
+                ]);
+            }
+
+            $from = $locked->status;
+            $locked->forceFill([
+                'status' => ForumEventRegistrationStatus::CancelledByOrganizer,
+                'active_scope_key' => null,
+                'waitlist_position' => null,
+                'cancelled_at' => now(),
+                'cancellation_reason_code' => 'removed-by-organizer',
+                'lock_version' => $locked->lock_version + 1,
+                'status_changed_at' => now(),
+            ])->save();
+            $this->audit->record(
+                event: $lockedEvent,
+                actor: $actor,
+                eventType: 'participant-removed',
+                reasonCode: 'removed-by-organizer',
+                summaryTranslationKey: 'forum_events.history.participant_removed',
+                subject: $locked->user,
+                fromStatus: $from->value,
+                toStatus: ForumEventRegistrationStatus::CancelledByOrganizer->value,
+                metadata: ['registration_id' => $locked->id],
+                idempotencyKey: 'event-participant-removed:'.$locked->id,
+            );
+            $this->recordTransition(
+                $locked,
+                $actor,
+                $from,
+                ForumEventRegistrationStatus::CancelledByOrganizer,
+                'removed-by-organizer',
+            );
+
+            return [
+                $locked,
+                $from->consumesSeat()
+                    ? $this->promoteFirstWaitlisted($lockedEvent, $actor, $locked->occurrence)
+                    : null,
+            ];
+        }, 3);
+
+        $this->notifier->send(
+            $removed->user,
+            $event,
+            'event-participant-removed',
+            'forum_events.notifications.removed_title',
+            'forum_events.notifications.removed_body',
+            'event-participant-removed:'.$removed->id,
+        );
+
+        if ($promoted instanceof ForumEventRegistration) {
+            $this->notifier->send(
+                $promoted->user,
+                $event,
+                'event-waitlist-promoted',
+                'forum_events.notifications.promoted_title',
+                'forum_events.notifications.promoted_body',
+                'event-waitlist-promoted:'.$promoted->id.':'.$promoted->lock_version,
+            );
+        }
+
+        return $removed;
     }
 
     public function checkIn(
@@ -436,6 +605,7 @@ final readonly class ForumEventRegistrationService
                 'check_in_method' => $method,
                 'checked_in_at' => now(),
                 'lock_version' => $locked->lock_version + 1,
+                'status_changed_at' => now(),
             ])->save();
             $locked->registrationPets()->update(['checked_in_at' => now()]);
             $this->audit->record(
@@ -452,6 +622,13 @@ final readonly class ForumEventRegistrationService
                     'method' => $method,
                 ],
                 idempotencyKey: 'event-check-in:'.$locked->id,
+            );
+            $this->recordTransition(
+                $locked,
+                $actor,
+                ForumEventRegistrationStatus::Confirmed,
+                ForumEventRegistrationStatus::CheckedIn,
+                'attendee-checked-in',
             );
 
             return $locked;
@@ -482,8 +659,10 @@ final readonly class ForumEventRegistrationService
 
             $locked->forceFill([
                 'status' => ForumEventRegistrationStatus::Attended,
+                'active_scope_key' => null,
                 'checked_out_at' => now(),
                 'lock_version' => $locked->lock_version + 1,
+                'status_changed_at' => now(),
             ])->save();
             $locked->registrationPets()->update(['checked_out_at' => now()]);
             $this->audit->record(
@@ -497,6 +676,13 @@ final readonly class ForumEventRegistrationService
                 toStatus: ForumEventRegistrationStatus::Attended->value,
                 metadata: ['registration_id' => $locked->id],
                 idempotencyKey: 'event-check-out:'.$locked->id,
+            );
+            $this->recordTransition(
+                $locked,
+                $actor,
+                ForumEventRegistrationStatus::CheckedIn,
+                ForumEventRegistrationStatus::Attended,
+                'attendee-checked-out',
             );
 
             return $locked;
@@ -588,6 +774,7 @@ final readonly class ForumEventRegistrationService
                 ? now()
                 : null,
             'lock_version' => $next->lock_version + 1,
+            'status_changed_at' => now(),
         ])->save();
         $this->audit->record(
             event: $event,
@@ -599,6 +786,13 @@ final readonly class ForumEventRegistrationService
             fromStatus: ForumEventRegistrationStatus::Waitlisted->value,
             toStatus: $status->value,
             metadata: ['registration_id' => $next->id],
+        );
+        $this->recordTransition(
+            $next,
+            $actor,
+            ForumEventRegistrationStatus::Waitlisted,
+            $status,
+            'seat-released',
         );
 
         return $next;
@@ -662,12 +856,18 @@ final readonly class ForumEventRegistrationService
                 'birth_date_precision',
                 'estimated_age_months',
                 'estimated_age_recorded_at',
+                'status',
             ])
-            ->managedBy($actor)
             ->whereIn('id', $petProfileIds)
+            ->with(['managers' => static function (Relation $managers) use ($actor): void {
+                $managers->where('user_id', $actor->id);
+            }])
             ->get();
 
-        if ($pets->count() !== count($petProfileIds)) {
+        if ($pets->count() !== count($petProfileIds)
+            || $pets->contains(fn (PetProfile $pet): bool => $pet->status !== PetProfileStatus::Active
+                || ! $this->petAccess->allows($pet, $actor, PetProfilePermission::View))
+        ) {
             throw ValidationException::withMessages([
                 'registrationForm.petProfileIds' => __('forum_events.validation.pet_ownership'),
             ]);
@@ -712,6 +912,112 @@ final readonly class ForumEventRegistrationService
                 ]);
             }
         }
+    }
+
+    private function participationOperation(
+        User $actor,
+        ForumEvent $event,
+        ForumEventOccurrence $occurrence,
+        RegisterForForumEventData $data,
+    ): ForumEventParticipationOperation {
+        $principalKey = 'user:'.$actor->id;
+        $requestChecksum = $this->registrationRequestChecksum($data, $occurrence);
+        $operation = ForumEventParticipationOperation::query()
+            ->where('forum_event_id', $event->id)
+            ->where('principal_key', $principalKey)
+            ->where('operation_type', 'register')
+            ->where('idempotency_key', $data->idempotencyKey)
+            ->lockForUpdate()
+            ->first();
+
+        if ($operation !== null) {
+            if (! hash_equals($operation->request_checksum, $requestChecksum)) {
+                throw ValidationException::withMessages([
+                    'registrationForm' => __('forum_events.validation.idempotency_conflict'),
+                ]);
+            }
+
+            return $operation;
+        }
+
+        return ForumEventParticipationOperation::query()->create([
+            'forum_event_id' => $event->id,
+            'forum_event_occurrence_id' => $occurrence->id,
+            'actor_user_id' => $actor->id,
+            'principal_key' => $principalKey,
+            'operation_type' => 'register',
+            'idempotency_key' => $data->idempotencyKey,
+            'request_checksum' => $requestChecksum,
+        ]);
+    }
+
+    private function completeParticipationOperation(
+        ForumEventParticipationOperation $operation,
+        ForumEventRegistration $registration,
+    ): void {
+        $operation->forceFill([
+            'forum_event_registration_id' => $registration->id,
+            'status' => 'completed',
+            'result_type' => 'forum_event_registration',
+            'result_id' => $registration->id,
+            'result_status' => $registration->status->value,
+            'result_version' => $registration->lock_version,
+            'completed_at' => now(),
+            'lock_version' => $operation->lock_version + 1,
+        ])->save();
+    }
+
+    private function registrationRequestChecksum(
+        RegisterForForumEventData $data,
+        ForumEventOccurrence $occurrence,
+    ): string {
+        $petProfileIds = $this->petProfileIds($data);
+        sort($petProfileIds);
+
+        return hash('sha256', json_encode([
+            'attendance_format' => $data->attendanceFormat->value,
+            'guest_count' => $data->guestCount,
+            'pet_profile_ids' => $petProfileIds,
+            'occurrence_id' => $occurrence->id,
+            'requirements_note' => $data->requirementsNote,
+            'photo_consent' => $data->photoConsent->value,
+            'requirements_accepted' => $data->requirementsAccepted,
+        ], JSON_THROW_ON_ERROR));
+    }
+
+    private function activeScopeKey(
+        ForumEvent $event,
+        ForumEventOccurrence $occurrence,
+        User $actor,
+    ): string {
+        return hash('sha256', implode(':', [
+            'event-registration',
+            (string) $event->id,
+            (string) $occurrence->id,
+            (string) $actor->id,
+            'attendee',
+        ]));
+    }
+
+    private function recordTransition(
+        ForumEventRegistration $registration,
+        User $actor,
+        ?ForumEventRegistrationStatus $from,
+        ForumEventRegistrationStatus $to,
+        string $reasonCode,
+        ?ForumEventParticipationOperation $operation = null,
+    ): void {
+        ForumEventParticipationTransition::query()->firstOrCreate([
+            'forum_event_registration_id' => $registration->id,
+            'version' => $registration->lock_version,
+        ], [
+            'forum_event_participation_operation_id' => $operation?->id,
+            'actor_user_id' => $actor->id,
+            'from_status' => $from?->value,
+            'to_status' => $to->value,
+            'reason_code' => $reasonCode,
+            'occurred_at' => now(),
+        ]);
     }
 
     /** @return list<int> */

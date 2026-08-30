@@ -12,9 +12,12 @@ use App\Enums\ForumEventVisibility;
 use App\Enums\OrganizationRestrictionCapability;
 use App\Models\ForumEvent;
 use App\Models\User;
+use App\Services\SocialBlockService;
 
 final class ForumEventPolicy
 {
+    public function __construct(private readonly SocialBlockService $blocks) {}
+
     public function viewAny(?User $user): bool
     {
         return true;
@@ -22,13 +25,25 @@ final class ForumEventPolicy
 
     public function view(?User $user, ForumEvent $event): bool
     {
-        if ($user?->isAdministrator() === true
-            || ($user !== null && $this->canManage($user, $event))
-        ) {
+        if ($user?->isAdministrator() === true) {
+            return true;
+        }
+
+        if ($user !== null && $this->canManage($user, $event)) {
             return true;
         }
 
         if ($event->archived_at !== null || $event->status === ForumEventStatus::Archived) {
+            return false;
+        }
+
+        if (! $event->status->isDiscoverable()
+            && $event->status !== ForumEventStatus::Cancelled
+        ) {
+            return false;
+        }
+
+        if ($user !== null && $this->blockedFromOrganizer($user, $event)) {
             return false;
         }
 
@@ -52,11 +67,18 @@ final class ForumEventPolicy
                     ->exists(),
             ForumEventVisibility::Private,
             ForumEventVisibility::Invitation => $user?->isActive() === true
-                && $event->invitations()
+                && ($event->invitations()
                     ->where('invited_user_id', $user->id)
-                    ->where('status', ForumEventInvitationStatus::Accepted->value)
+                    ->whereIn('status', [
+                        ForumEventInvitationStatus::Pending->value,
+                        ForumEventInvitationStatus::Accepted->value,
+                    ])
                     ->where('expires_at', '>', now())
-                    ->exists(),
+                    ->exists()
+                    || $event->registrations()
+                        ->where('user_id', $user->id)
+                        ->whereIn('status', ForumEvent::participantAccessStatusValues())
+                        ->exists()),
         };
     }
 
@@ -72,9 +94,20 @@ final class ForumEventPolicy
             && $event->status !== ForumEventStatus::Archived;
     }
 
+    public function publish(?User $user, ForumEvent $event): bool
+    {
+        return $this->update($user, $event)
+            && in_array($event->status, [
+                ForumEventStatus::Draft,
+                ForumEventStatus::Incomplete,
+                ForumEventStatus::Scheduled,
+            ], true);
+    }
+
     public function viewAccessDetails(?User $user, ForumEvent $event): bool
     {
         return $user?->isActive() === true
+            && $this->view($user, $event)
             && ($event->canDiscloseAccessTo($user)
                 || $this->hasTeamRole($user, $event, [
                     ForumEventTeamRole::Owner,
@@ -95,6 +128,7 @@ final class ForumEventPolicy
             && $user->hasVerifiedEmail()
             && $this->view($user, $event)
             && ! $event->isOrganizer($user)
+            && ($event->organizer === null || $event->organizer->isActive())
             && $this->organizationAllows(
                 $event,
                 OrganizationRestrictionCapability::AcceptRegistrations,
@@ -211,6 +245,7 @@ final class ForumEventPolicy
     public function respondToInvitation(?User $user, ForumEvent $event): bool
     {
         return $user?->isActive() === true
+            && $this->view($user, $event)
             && $event->invitations()
                 ->where('invited_user_id', $user->id)
                 ->where('status', ForumEventInvitationStatus::Pending->value)
@@ -226,6 +261,10 @@ final class ForumEventPolicy
     public function sendMessage(?User $user, ForumEvent $event): bool
     {
         if ($user?->isActive() !== true) {
+            return false;
+        }
+
+        if (! $this->view($user, $event)) {
             return false;
         }
 
@@ -247,7 +286,10 @@ final class ForumEventPolicy
 
     public function review(?User $user, ForumEvent $event): bool
     {
-        if ($user?->isActive() !== true || ! $event->hasEnded()) {
+        if ($user?->isActive() !== true
+            || ! $this->view($user, $event)
+            || ! $event->hasEnded()
+        ) {
             return false;
         }
 
@@ -343,5 +385,17 @@ final class ForumEventPolicy
     {
         return $event->responsibleOrganization === null
             || $event->responsibleOrganization->membershipFor($user) !== null;
+    }
+
+    private function blockedFromOrganizer(User $user, ForumEvent $event): bool
+    {
+        if ($event->organizer_user_id === null || $event->organizer_user_id === $user->id) {
+            return false;
+        }
+
+        return $this->blocks->accountBlockedBetween(
+            [$user->id],
+            [$event->organizer_user_id],
+        );
     }
 }

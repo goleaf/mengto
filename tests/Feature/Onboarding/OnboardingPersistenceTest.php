@@ -90,7 +90,7 @@ test('it exposes internally consistent named factory states while preserving the
         ->and($pets->pet_relationship_completed_at)->toBeNull()
         ->and($pets->lock_version)->toBe(3)
         ->and($privacy->current_step)->toBe(OnboardingStep::PrivacyDiscovery)
-        ->and($privacy->pet_relationship_choice)->toBe(OnboardingPetChoice::NotNow)
+        ->and($privacy->pet_relationship_choice)->toBe(OnboardingPetChoice::AddLater)
         ->and($privacy->pet_relationship_completed_at)->not->toBeNull()
         ->and($privacy->privacy_discovery_completed_at)->toBeNull()
         ->and($privacy->lock_version)->toBe(4)

@@ -257,9 +257,10 @@ not close expression-level, lazy-loading, duplication or lifecycle review.
 
 ## Active Delivery: Resumable Account Onboarding Foundation
 
-Status: `Prompt 04 scoped wizard review is complete; Prompt 05 canonical
-preference implementation is focused-green and entering independent review;
-complete onboarding and repository release remain unclaimed` on 2026-08-30.
+Status: `Prompt 05 canonical preferences and independent scoped review are
+complete; Prompt 06 canonical pet relationship delivery is planned and in
+progress; complete onboarding and repository release remain unclaimed` on
+2026-08-30.
 
 This delivery revalidates and hardens the already-present server-authoritative,
 resumable onboarding boundary between conditional email verification and
@@ -335,8 +336,14 @@ ledger.
 | ONB-P05-02 | ONB-P05-01 | Principal | Focused onboarding preference/component/profile/auth tests | RED proves hydration, configured EN/LT/RU choices, UTC/Europe/Vilnius/DST zone validity, malformed input rejection, immediate language switch, resume, stale/replay and settings consistency | Canonical isolated serial runner; each new behavior fails for its intended reason | completed; 26-test RED reproduced 10 failures and four errors before implementation | Revert Prompt 05 tests only |
 | ONB-P05-03 | ONB-P05-02 | Principal | Existing profile form/action and onboarding coordination Action/component/view/catalogues | One canonical validator and user persistence path owns locale/timezone; saved locale is applied to DB, session and next response; server transition remains optimistic/idempotent and accepts no user/step input | Focused GREEN onboarding/profile/auth/localization tests, Pint and production Larastan | completed focused; Preferences + Wizard 58/58, related matrix 150/150, Pint and targeted Larastan green | Revert coherent runtime/test pair; retain canonical user values |
 | ONB-P05-04 | ONB-P05-03 | Principal | Preference-step Blade/component presentation and EN/LT/RU catalogue keys | Labelled/help-associated touch-size selects, summary/field focus, dirty/loading/offline status, one H1, long-copy wrapping and passive Blade remain usable without pet/domain queries | Rendered DOM, localization scanners/parity and connected browser matrix when host permits | completed statically/feature-level; parity/scanners and rendered DOM green, connected Chrome remains blocked by host `SIGSEGV` | Revert presentation/catalogue slice |
-| ONB-P05-05 | ONB-P05-03..04 | Independent architecture/localization/security/accessibility/regression reviewers; principal dispositions | Frozen attributable Prompt 05 diff | No duplicated preference rules, locale/timezone injection, stale transition, inaccessible validation or normal-profile regression remains | Reviewer reports, disposition ledger and affected reruns | pending | Revert unsafe finding-specific correction |
-| ONB-P05-06 | ONB-P05-05 | Principal | Changelog, both plans, ledger and exact attributable candidate on `main` | Exact focused/full gates and ownership are recorded; commit/push occurs only when every material gate passes | Composer/Pint/Larastan/Pest/migration/seed/npm/build/cache/browser/diff/secret and normal push output | pending | No commit/push on material failure; normal reviewed revert only after publication |
+| ONB-P05-05 | ONB-P05-03..04 | Independent architecture/localization/security/accessibility/regression reviewers; principal dispositions | Frozen attributable Prompt 05 diff | No duplicated preference rules, locale/timezone injection, stale transition, inaccessible validation or normal-profile regression remains | Reviewer reports, disposition ledger and affected reruns | completed after remediation; initial cross-account Profile Settings snapshot NO-GO reproduced and corrected hash `57843270388ccd8394d09a83457745dc46f386149ea05952e6067e759a8363cd` confirmed SHIP | Revert unsafe finding-specific correction |
+| ONB-P05-06 | ONB-P05-05 | Principal | Changelog, both plans, ledger and exact attributable candidate on `main` | Exact focused/full gates and ownership are recorded; commit/push occurs only when every material gate passes | Composer/Pint/Larastan/Pest/migration/seed/npm/build/cache/browser/diff/secret and normal push output | NO-GO publication: external process published pre-final-review `7c96e50`; principal made no commit/push; final security remediation and evidence reconciliation remain uncommitted while full Pest/Pint/Larastan and Chrome gates are red | No commit/push on material failure; normal reviewed revert only after publication |
+| ONB-P06-01 | ONB-P05-03..06 | Principal plus eight exclusive discovery specialists | Pet identity/create/duplicate/manager/request/privacy/onboarding/UI/tests, both plans and ledger | Reconcile actual canonical pet-domain behavior before runtime edits; record four-choice semantics, active relationship and pending-request predicates, safe server-only return, privacy defaults and rollback | Git/code/test trace, nine-role ledger and planning diff | completed planning; runtime audit and specialist dispositions in progress | Revert Prompt 06 planning additions only |
+| ONB-P06-02 | ONB-P06-01 | Principal | Focused onboarding pet/component/transition/integration tests plus reused pet-domain suites | RED proves distinct no-pet/add-later values, owned/active/expired/invited cases, bounded summary, duplicate/privacy safety, pending request, return isolation, replay/stale/direct bypass and completion defense | Canonical isolated serial runner; every selected regression fails for its intended missing contract | pending | Revert attributable tests only |
+| ONB-P06-03 | ONB-P06-02 | Principal | Existing choice enum/form, `OnboardingPetEvidence`, focused presenter/status service, onboarding Action/component/view/catalogues | Server state validates four truthful choices; managed requires canonical active evidence; care-existing accepts current request evidence without access; summaries are bounded; legacy `not-now` stays readable | Focused GREEN onboarding/pet/auth/privacy tests, Pint and production Larastan | pending | Revert coherent runtime/test pair; preserve canonical pets/requests |
+| ONB-P06-04 | ONB-P06-02..03 | Principal | Existing `CreatePetProfile`, duplicate review, access request and destination bridge | Canonical creation/duplicate/access/privacy/idempotency remain unchanged; authenticated locked onboarding state alone selects return; arbitrary URLs and stale context cannot redirect | Focused duplicate/request/create/normal-redirect/privacy/security GREEN | pending | Revert bridge only; retain created domain records |
+| ONB-P06-05 | ONB-P06-03..04 | Principal | Pets step Blade/component and EN/LT/RU catalogues | Four semantic radio cards, safe bounded summaries, empty/pending guidance, labels/errors/loading/offline and long text remain accessible/mobile without Blade queries | Rendered DOM, parity/scanners, browser matrix when host permits | pending | Revert presentation/catalogue slice |
+| ONB-P06-06 | ONB-P06-03..05 | Independent pet-domain/authorization/security/privacy/UX/test reviewers; principal dispositions | Frozen attributable Prompt 06 diff, changelog/plans and isolated candidate | No canonical-domain duplication, IDOR/privacy leak, false management claim, return bypass, inaccessible state or regression remains; publish only after material gates pass | Reviewer reports, focused/full Composer/Pint/Larastan/Pest/migration/seed/npm/build/cache/browser/diff/secret evidence | pending | No commit/push on material failure; normal reviewed revert only after publication |
 
 Implementation resumes immediately after this plan update and follows TDD in
 the order `ONB-03` through `ONB-07`. Individual users may complete the current
@@ -866,6 +873,178 @@ Implementation order is EVP-01 through EVP-09. Each behavioral step starts
 with an observed failing test. The principal records specialist dispositions
 before schema work, fixes focused failures before broad gates, and uses an
 isolated temporary index if unrelated work appears before publication.
+
+## Active Delivery: Meetups Implementation Plan
+
+Status: `approved after read-only A-M discovery; test-first implementation is
+starting` on 2026-08-30.
+
+This delivery completes `/meetups` as PawCircle's mobile-first social
+projection over the one canonical `ForumEvent` aggregate. It does not create a
+`Meetup` model/table or parallel participant, pet, relationship, location,
+invitation, notification, discussion, report, or moderation authority. The
+existing P12-P16 event foundation and the active P17/P18 delivery above are
+dependencies, not optional alternatives. Exact discovery evidence, principal
+dispositions, protected dirty-tree ownership, specialist assignments, and the
+final review ledger are recorded in
+`docs/audits/meetups-completion-work-ledger.md`; abuse paths and security
+acceptance are recorded in `docs/audits/meetups-threat-model.md`.
+
+The audit began at synchronized `main`/`origin/main`
+`a1fa4668f7636eec2db532f2d4a5fc7a130ec4da` with one unrelated onboarding
+hunk. During read-only discovery, a separate onboarding delivery moved both
+references to `7c96e504a5bfc9d8e32259971b25157bcb67fa3f` and later resumed its own
+dirty edits. The principal accepts the synchronized commit as the new base,
+preserves every onboarding path byte-for-byte, and will stage only Meetup-owned
+paths through a temporary `GIT_INDEX_FILE`.
+
+### Current State And Reuse Decision
+
+- `GET /meetups` and `GET /meetups/{event}` already render class-based
+  `ForumEventDirectory` and `ForumEventWorkspace` components. A legacy
+  compatibility route and home/sidebar prototype cards still expose a fake
+  `PrototypeState` RSVP and must not remain a second mutation path.
+- `ForumEvent` already owns the organizer User, optional organization/group,
+  type, visibility, registration policy, UTC schedule plus IANA timezone,
+  capacity, waitlist switch, pet policy/taxa, approximate and encrypted access
+  details, Place/Venue, occurrences, versions, registrations and pet pivots,
+  invitations, updates, messages, reviews, reports, history, team roles, and
+  cancellation fields.
+- P17/P18 storage for active scopes, immutable snapshots/decisions, operation
+  replay, transitions, typed capacity, allocations/holds, ordered waitlists,
+  and notification intents exists, but current application writes do not use
+  it. The schema test alone is not implementation evidence.
+- Confirmed strengths retained are query-level pagination, escaped user
+  content, server-assigned organizer identity, separate visibility/join policy,
+  account-bound invitations, encrypted legacy access fields, canonical Place
+  grant/audit Actions, unified reports/updates/messages/notifications, and
+  exact EN/LT/RU catalogue key and placeholder parity.
+- Confirmed release blockers include an organization/private discovery leak,
+  unreachable pending-invite acceptance, inactive uniqueness after the P17
+  migration, replay/history loss, count-only capacity, stale pet authority,
+  missing account-block enforcement, missing draft/edit/publish/removal flows,
+  unsynchronized cancellation/reschedule, absent Place reveal integration,
+  unbounded mixed management projections, incomplete notifications, and
+  shallow race/privacy/mobile/accessibility evidence.
+
+### Selected Domain And State Contracts
+
+Meetup routes remain identifiers, middleware and presentation only. The route
+surface becomes:
+
+```text
+GET /meetups
+GET /meetups/create
+GET /meetups/{event}
+GET /meetups/{event}/edit
+GET /meetups/{event}/manage
+```
+
+Every mutation remains a CSRF-protected Livewire call into a cohesive Action.
+The server resolves the organizer and every child row; no browser-provided
+organizer, owner, status, participant, pet, invitation, occurrence, Place,
+Venue, update, session, capacity counter, waitlist priority, or disclosure flag
+is authoritative.
+
+The Meetup-facing Event lifecycle is:
+
+```text
+Draft -> explicit readiness validation -> Published
+Published -> Cancelled
+Published + clock -> derived upcoming / ongoing / past
+Published + allocations -> derived available / full / waitlist
+```
+
+The richer general Event status enum remains readable for backward
+compatibility. Meetup cards do not require cron and do not persist `Full` or
+`Completed` merely because time or capacity changed. Drafts remain organizer
+only; cancelled records retain safe participant history and accept no new
+participation; material mutation after start is restricted to an authorized
+update, safety action, correction, or cancellation.
+
+Visibility remains independent from admission. Public, followers, members,
+organization, group, unlisted, invitation, and private modes reuse canonical
+User/SocialActor/group/organization/block authority. Open admission confirms
+only after allocation; approval creates `Pending`; invitation admission
+requires the current account-bound invitation; full eligible requests enter
+the canonical waitlist only when enabled.
+
+The core participation graph is:
+
+```text
+none -> Pending | Confirmed | Waitlisted
+Pending -> Confirmed | Waitlisted | Rejected | Withdrawn
+Waitlisted -> Confirmed | Withdrawn | CancelledByOrganizer
+Confirmed -> Withdrawn | CancelledByOrganizer | CheckedIn
+CheckedIn -> Attended | Completed
+```
+
+Legacy terminal statuses remain readable. A terminal rejoin creates a new
+immutable participation generation rather than rewriting the historical row.
+The organizer is a host and consumes no attendee row or human-capacity unit.
+Human quantity is `1 + guest_count`; selected pets never consume the human pool
+unless a separate typed pet pool is deliberately configured.
+
+All participation writes lock in this order: operation, event, occurrences by
+ID, waitlists by ID, capacity pools by ID, registrations by ID, then entries,
+holds and allocations; transitions and notification intents append last. A
+canonical request checksum binds operation type, event, occurrence, principal,
+guest quantity, pets, consent and accepted rules. Exact replay returns the same
+result; a changed payload conflicts. SQLite uses the configured immediate
+transaction, while row-locking adapters use the same ordering.
+
+Attending pets use `ForumEventRegistrationPet` and canonical Taxon data. At
+register, approval, promotion and selected-pet update, the transaction requires
+an active account, active `PetProfile`, and current owner/manager authority for
+which `PetProfileAccess` permits `View`. This deliberately supports valid
+caregivers/sitters without granting the separate `ManageSocial` power to act as
+the pet actor. Pending, invited, suspended, revoked, future, expired, explicitly
+denied, or legacy-revoked authority fails. Public presentation uses confirmed
+aggregate counts and localized species only; private pet identifiers/media
+remain absent unless the viewer independently has canonical access.
+
+Discovery and cards select only public/approximate location fields. Requested,
+waitlisted, rejected, withdrawn, removed, blocked, and suspended accounts never
+receive protected access. A current confirmed participant or authorized
+operator may explicitly reveal a matching canonical Place through an active
+event/purpose grant; `RevealPlaceExactLocation` reauthorizes under lock and
+audits the view. Legacy exact location remains encrypted and query-minimized.
+No exact address, coordinates, private instructions, room details, URL, or
+emergency plan may enter unauthorized HTML, Livewire state, hidden controls,
+metadata, JSON, notification text, or search.
+
+Account blocks prevent organizer/participant discovery, direct view, invite,
+join, approval, attendee communication, participant identity, and exact access.
+Existing participation is closed without deleting history, access is revoked,
+and capacity-safe promotion runs once. Inactive/suspended organizers cannot
+create or mutate and their Meetups accept no new participation until a
+canonical moderation decision. Reports, safety suspension, and unified
+moderation are reused; no moderator receives pet ownership authority.
+
+### Delivery Ledger
+
+| ID | Dependency | Owner | Affected paths/modules | Acceptance criteria | Required verification | Status | Rollback |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| MTP-01 | Repository contract; P12-P18 sources; synchronized base | Principal plus MEET-A through MEET-O read-only specialists | Mandatory docs, routes, Event/Pet/Place/Social/moderation/notification code and tests, Meetup ledger/threat model | Current implementation, reuse decision, authority conflicts, dirty ownership, lifecycle, privacy, concurrency, UX and test gaps are evidence-backed before production edits | Git/source inventory, 15 specialist reports, principal reproduction, 32-test/664-assertion focused baseline | completed | Revert only Meetup planning/audit additions |
+| MTP-02 | MTP-01 | Principal | New focused Meetup security, lifecycle, participation, pet, place, invitation, notification, output, query, locale, accessibility and concurrency tests | RED contracts reproduce organization/private projection, blocked access, pending-invite deadlock, draft leak, inactive scope, changed-payload replay, final-slot/promotion race, stale pet/location authority, forged child IDs, cancellation/history, raw locale values and broken browser selectors for the intended reason | Serial focused RED commands plus isolated two-process SQLite workers; no production edit before the matching RED | in progress | Revert only new tests/fixtures |
+| MTP-03 | MTP-02 | Principal | `ForumEvent` visibility scopes, `ForumEventPolicy`, Meetup controllers/routes, canonical block integration and private-response boundary | Every visibility branch is query-scoped; pending recipient gets safe invite preview; confirmed participant access survives invite expiry where appropriate; blocked/inactive parties fail discovery/view/join/message/reveal; drafts never project | Visibility/block/account/route/private-header tests, HTML and Livewire projection assertions | planned | Disable protected routes or restore prior scope only with the new deny-first tests retained |
+| MTP-04 | MTP-02..03; P12-P14 | Principal | Dedicated class-based Event editor/form/views, create/update/publish/material-change Actions, routes/controllers, versions/occurrences/history | Create saves a private draft; review and explicit publish validate complete future schedule; edit reauthorizes under lock and rejects stale versions; date/location/capacity/pet/privacy material changes synchronize version/occurrence and notify eligible participants; past records are not misleading | Create/edit/publish/stale/timezone/DST/material-change/authorization tests and mobile form journey | planned | Remove new editor routes; retain drafts/history and disable publication; forward-fix persisted data |
+| MTP-05 | MTP-02..04; EVP-02..06 | Principal | P17/P18 models/factories; participation operation/snapshot/transition/eligibility/capacity/allocation/waitlist/notification-intent Actions/services; registration model relationships | One active participation is DB-enforced; same replay is stable and changed payload conflicts; terminal rejoin preserves history; allocation never exceeds capacity; approval and promotion are atomic; waitlist ordering is deterministic; leave/removal/cancel release exact quantity and promote every fitting eligible entry once | Constraint/factory/state/replay tests, real two-process final-slot and promotion tests, migration rollback/reapply and supported-adapter inspection | planned | Disable admission; retain immutable participation evidence; forward-fix after production writes |
+| MTP-06 | MTP-05; P16 canonical pet authority | Principal | Focused pet eligibility evaluator, registration/promotion/review Actions, workspace pet projection and localized species | Owned and current actively managed visible pets may attend; foreign/inactive/denied/pending/invited/suspended/revoked/future/expired authority fails under the transaction; organizer approval cannot manufacture eligibility; optional/required/humans-only/taxa/age/max selection rules work; private pet remains aggregate-only | Full Pet manager-state matrix, stale/revocation tests, private HTML/Livewire/media assertions and adjacent Pet regressions | planned | Disable pet selection without deleting historical pivots; never create parallel ownership data |
+| MTP-07 | MTP-03..06; canonical Place boundary | Principal | Meetup approximate/private location form, current-participation selector, Place grant/reveal/revoke integration, private room projection, response headers | Public cards search/render approximate fields only; manual UI labels public area separately from exact details; confirmed eligible user explicitly reveals matching current Place/legacy access; requested/waitlisted/removed/ended/blocked user cannot; reveal is audited and grants revoke on leave/removal/cancel/change | Exact marker absence in HTML/head/Livewire/JSON/notification, positive grant/audit test, stale historical-row test, no-store/no-referrer/noindex assertions | planned | Hide reveal controls and revoke active event grants; preserve audit/version history |
+| MTP-08 | MTP-03..07 | Principal | Invitation accept/revoke/list Actions and safe preview; transition-versioned notification intents/delivery; existing notification deep-link integration | Invite is account/event scoped, expiring, revocable and replay-safe; acceptance flows through eligibility/capacity to confirmed/waitlisted; forwarded ID fails; request organizer and affected participants receive one recipient-locale privacy-safe notification after commit; no-op edits do not spam | Wrong-user/expiry/revoke/replay/capacity tests; rollback/retry/dedupe/locale/placeholder/deep-link/privacy matrix | planned | Disable delivery while retaining intents; revoke pending access without deleting invitation history |
+| MTP-09 | MTP-03..08 | Principal | Dedicated manage route/component, queue/check-in/emergency capabilities, removal/safety Actions, paginated projections, canonical reports/blocks | Requests, going, waitlist, invitations, updates and history are bounded and phone-manageable; least privilege prevents excess email/private pet data; approve/reject/remove/promote/cancel reauthorize locked scoped rows; canonical reports and block/removal semantics revoke access and promote safely | Cross-event child IDOR and role-by-field/action matrix, pagination/query/payload bounds, moderation/block/removal/cancellation tests | planned | Remove manager controls while retaining authoritative Actions/history; disable unsafe role ability |
+| MTP-10 | MTP-04..09 | Principal | Meetup directory/detail/editor/manage Livewire and Blade, shared components/styles/JS, prototype Meetup card/sidebar | Discover, Upcoming/My and Invitations remain simple; cards show concise safe facts and one contextual CTA; RSVP state/primary action is early on mobile; fake prototype mutation is absent; every action has loading/offline/stale/error/focus behavior; native keyboard flow and 44px primary targets work without overflow | Livewire journeys, semantic XPath tests and real browser 320/360/375/390/430, 200% zoom, keyboard, offline, forced-colors, reduced-motion and console checks | planned | Revert presentation only while keeping secure server Actions; replace broken control with canonical view link |
+| MTP-11 | MTP-03..10 | Principal | EN/LT/RU catalogues, validation attributes, recipient locale, `PetSpeciesLabel`, timezone presentation, query projections/indexes and payload budgets | Exact recursive key/type/placeholder parity remains; no raw enum/species/internal field name; Meetup and user timezones are unambiguous; long LT/RU copy wraps; directory/detail/manage use aggregates and pagination with measured query/payload ceilings; no speculative index/cache | Locale matrix, cross-locale notifications, Vilnius/UTC/New York DST, query growth/absolute ceilings, payload absence/size and query-plan tests | planned | Revert locale/performance slice independently; retain correctness and remove only unproven index |
+| MTP-12 | MTP-03..11 | Principal | Event/registration/participation factories, environment-safe demo seed graph, event/architecture/security/privacy/frontend/testing/seeding/deployment docs, `docs/events/meetups.md`, changelog and exact generated evidence source | Factories create coherent draft/published/approval/invite/full/waitlist/past/cancelled/removal/private-pet/Place graphs; demo seed is local/demo/testing-only and repeat-safe; docs describe only working behavior; only exact passed atoms move evidence | Factory-state tests, fresh/repeat seed, source preservation, forum requirements/compliance generator parity, docs/diff/secret review | planned | Revert seed/docs/evidence independently; never hand-edit generated outputs or delete production data |
+| MTP-13 | MTP-02..12 | Principal | All affected runtime boundaries and repository | Focused Meetup, Pet, Social/block, auth, privacy, security, localization, accessibility and query suites pass, followed by Composer/platform/audits, Pint, Larastan, full serial Pest, fresh DB, seed repeat, npm audit/build, route/config/view cache and diff checks | Exact observed commands, exit codes and counts recorded; no historical pass substituted | planned | No publication; forward-fix attributable failures and report independent environmental blockers exactly |
+| MTP-14 | MTP-13 | MEET-R1 through MEET-R10 independent read-only reviewers; Principal dispositions | Frozen attributable diff and command ledger | Architecture, lifecycle, pet, location, security, UX/mobile, accessibility, localization, performance and test reviewers reproduce every material finding; principal fixes all attributable High/Critical defects and reruns affected checks | Frozen-diff reports, finding disposition table and post-fix evidence | planned | Revert unsafe finding-specific fix; reopen affected delivery item |
+| MTP-15 | MTP-13..14 | Principal | Exact attributable candidate on current `main` | Complete diff and staged diff contain no onboarding/user work; `git diff --check` passes; coherent commit is created; origin is unchanged or safely refreshed; normal fast-forward push to `origin/main` succeeds | Temporary-index ownership, staged file list/diff, commit hash, pre-push origin comparison and push output | planned | No commit/push on any failed material gate; after publication use a normal revert/forward fix, never history rewrite |
+
+Implementation order is `MTP-01` through `MTP-15`. Tests precede every
+behavioral fix. No requirement, compliance row, forum atom, quality gate,
+browser journey, commit, or push moves to verified from file presence, a
+specialist opinion, a historical run, or an unobserved command.
 
 ## Active Delivery: PLA-P04 Scalable Place Directory Query
 

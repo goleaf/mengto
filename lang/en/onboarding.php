@@ -42,9 +42,31 @@ return [
             'body' => 'You may create a private pet profile, find an existing profile and request access, or continue without a pet. Choosing not now does not remove this option later.',
             'legend' => 'Choose your relationship with a pet',
             'create_or_find' => 'Create or find a pet profile',
-            'managed_pet' => 'Continue with my managed pet',
-            'access_requested' => 'Continue with my access request',
+            'managed_pet' => [
+                'label' => 'I own or manage a pet',
+                'description' => 'Add a new pet or continue with a pet you already actively manage.',
+            ],
+            'access_requested' => [
+                'label' => 'I help care for an existing pet',
+                'description' => 'Find the pet and request the correct access. A request does not grant access while it is reviewed.',
+            ],
+            'no_pet' => [
+                'label' => 'I do not have a pet right now',
+                'description' => 'You can still use PawCircle and add pets later.',
+            ],
+            'add_later' => [
+                'label' => 'I will add a pet later',
+                'description' => 'Finish setup now and create or link a pet when you are ready.',
+            ],
             'not_now' => 'Continue without a pet for now',
+            'managed_summary' => 'Pets you actively manage',
+            'managed_summary_more' => 'More actively managed pets are available in your pet workspace after setup.',
+            'managed_evidence_private' => 'An active pet relationship is confirmed. Its details remain hidden because your current permission does not allow this preview.',
+            'managed_empty' => 'No active pet relationship is confirmed yet. Create a pet or choose another truthful option.',
+            'access_pending' => 'Your access request is pending. You can continue setup, but the request does not grant pet access while it is reviewed.',
+            'invitation_pending' => 'A pet invitation awaits your decision. It does not count as active management until accepted.',
+            'inactive_relationship' => 'A previous pet relationship is no longer active.',
+            'edit' => 'Back to pet relationship',
             'continue' => 'Save and continue',
         ],
         'privacy_discovery' => [

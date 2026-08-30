@@ -29,6 +29,7 @@ use App\Services\ForumEventOrganizerVerification;
 use App\Services\LocaleFormatter;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
@@ -59,7 +60,12 @@ final class ForumEventDirectory extends Component
     #[Url(except: 'upcoming')]
     public string $period = 'upcoming';
 
+    #[Url(except: 'discover')]
+    public string $scope = 'discover';
+
     public string $feedback = '';
+
+    public bool $createOnly = false;
 
     public function boot(
         ForumEventOrganizerVerification $organizerVerification,
@@ -91,6 +97,11 @@ final class ForumEventDirectory extends Component
     }
 
     public function updatedPeriod(): void
+    {
+        $this->resetPage();
+    }
+
+    public function updatedScope(): void
     {
         $this->resetPage();
     }
@@ -142,6 +153,12 @@ final class ForumEventDirectory extends Component
             ->with([
                 'taxa:id,stable_key',
                 'taxa.activeVersion:id,taxon_id,rank,scientific_name,is_active_version',
+                'registrations' => static function (Relation $registrations) use ($user): void {
+                    $registrations
+                        ->select(['id', 'forum_event_id', 'user_id', 'status', 'waitlist_position'])
+                        ->where('user_id', $user instanceof User ? $user->id : 0)
+                        ->latest('id');
+                },
             ])
             ->withCount([
                 'registrations as confirmed_registrations_count' => static fn (Builder $registrations) => $registrations
@@ -156,6 +173,21 @@ final class ForumEventDirectory extends Component
                 'reviews as published_review_average' => static fn (Builder $reviews) => $reviews
                     ->where('status', ForumEventReviewStatus::Published->value),
             ], 'rating');
+
+        if ($filters['scope'] === 'my' && $user instanceof User) {
+            $query->where(function (Builder $mine) use ($user): void {
+                $mine
+                    ->where('organizer_user_id', $user->id)
+                    ->orWhere('owner_user_id', $user->id)
+                    ->orWhereHas('registrations', static fn (Builder $registrations) => $registrations
+                        ->where('user_id', $user->id));
+            });
+        } elseif ($filters['scope'] === 'invitations' && $user instanceof User) {
+            $query->whereHas('invitations', static fn (Builder $invitations) => $invitations
+                ->where('invited_user_id', $user->id)
+                ->where('status', 'pending')
+                ->where('expires_at', '>', now()));
+        }
 
         if ($filters['search'] !== '') {
             $query->where(function (Builder $search) use ($filters): void {
@@ -410,12 +442,25 @@ final class ForumEventDirectory extends Component
         $this->redirectRoute('meetups.show', $event, navigate: true);
     }
 
+    public function saveDraft(CreateForumEvent $createEvent): void
+    {
+        $event = $createEvent->handle(
+            $this->requireUser(),
+            $this->form->draftData(),
+            ForumEventStatus::Draft,
+        );
+        $this->feedback = __('forum_events.feedback.draft_saved');
+        $this->form->reset();
+        $this->initializeForm();
+        $this->redirectRoute('meetups.edit', $event, navigate: true);
+    }
+
     public function render()
     {
         return view('livewire.forum.forum-event-directory');
     }
 
-    /** @return array{search: string, type: string, format: string, period: string} */
+    /** @return array{search: string, type: string, format: string, period: string, scope: string} */
     private function validatedFilters(): array
     {
         $validator = validator([
@@ -423,6 +468,7 @@ final class ForumEventDirectory extends Component
             'type' => $this->type,
             'format' => $this->format,
             'period' => $this->period,
+            'scope' => $this->scope,
         ], [
             'search' => ['nullable', 'string', 'max:120'],
             'type' => [
@@ -446,6 +492,7 @@ final class ForumEventDirectory extends Component
                 ]),
             ],
             'period' => ['required', Rule::in(['upcoming', 'past', 'all'])],
+            'scope' => ['required', Rule::in(['discover', 'my', 'invitations'])],
         ]);
 
         if ($validator->fails()) {
@@ -453,16 +500,18 @@ final class ForumEventDirectory extends Component
             $this->type = 'all';
             $this->format = 'all';
             $this->period = 'upcoming';
+            $this->scope = 'discover';
 
             return [
                 'search' => '',
                 'type' => 'all',
                 'format' => 'all',
                 'period' => 'upcoming',
+                'scope' => 'discover',
             ];
         }
 
-        /** @var array{search: string|null, type: string, format: string, period: string} $validated */
+        /** @var array{search: string|null, type: string, format: string, period: string, scope: string} $validated */
         $validated = $validator->validated();
 
         return [
@@ -470,6 +519,7 @@ final class ForumEventDirectory extends Component
             'type' => $validated['type'],
             'format' => $validated['format'],
             'period' => $validated['period'],
+            'scope' => $validated['scope'],
         ];
     }
 
@@ -505,6 +555,10 @@ final class ForumEventDirectory extends Component
     {
         $confirmed = (int) $event->getAttribute('confirmed_registrations_count')
             + (int) data_get($event->metadata, 'legacy_base_attendees', 0);
+        $user = Auth::user();
+        $registration = $event->registrations->first();
+        $isOrganizer = $user instanceof User
+            && in_array($user->id, [$event->organizer_user_id, $event->owner_user_id], true);
 
         return [
             'id' => $event->id,
@@ -535,6 +589,9 @@ final class ForumEventDirectory extends Component
             'cost' => $event->cost_minor === 0
                 ? __('forum_events.labels.cost_free')
                 : $this->formatter->currency($event->cost_minor / 100, $event->currency),
+            'participation_status' => $registration?->status->label(),
+            'participation_status_key' => $registration?->status->value,
+            'is_organizer' => $isOrganizer,
             'taxa' => $event->taxa
                 ->map(static function (Taxon $taxon): string {
                     $version = $taxon->activeVersion;
@@ -544,7 +601,12 @@ final class ForumEventDirectory extends Component
                         : __('taxonomy.unidentified');
                 })
                 ->all(),
-            'url' => route('meetups.show', $event),
+            'url' => $isOrganizer
+                ? route('meetups.manage', $event)
+                : route('meetups.show', $event),
+            'action_label' => $isOrganizer
+                ? __('forum_events.actions.manage')
+                : __('forum_events.actions.open'),
         ];
     }
 }

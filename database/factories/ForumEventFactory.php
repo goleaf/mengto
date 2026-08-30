@@ -125,6 +125,13 @@ final class ForumEventFactory extends ApplicationFactory
         ]);
     }
 
+    public function withCapacity(int $capacity = 20): static
+    {
+        return $this->state(fn (): array => [
+            'capacity' => $capacity,
+        ]);
+    }
+
     public function unlisted(): static
     {
         return $this->state(fn (): array => [
@@ -166,6 +173,11 @@ final class ForumEventFactory extends ApplicationFactory
             'starts_at' => $startsAt,
             'ends_at' => $startsAt->clone()->addHours(2),
         ]);
+    }
+
+    public function past(): static
+    {
+        return $this->completed();
     }
 
     public function cancelled(): static

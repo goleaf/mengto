@@ -12,11 +12,13 @@ use App\Models\PetProfile;
 use App\Models\PetProfileAccessRequest;
 use App\Models\PetProfileManager;
 use App\Models\User;
+use App\Services\EmailVerificationMode;
 use App\Services\ForumActor;
-use App\Services\PetProfileAccess;
 use App\Services\PetProfileEventRecorder;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Contracts\Validation\Factory as ValidationFactory;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
@@ -26,7 +28,7 @@ final class ReviewPetProfileAccessRequest
         private readonly ForumActor $actor,
         private readonly Gate $gate,
         private readonly ValidationFactory $validator,
-        private readonly PetProfileAccess $access,
+        private readonly EmailVerificationMode $emailVerification,
         private readonly InvitePetProfileManager $inviteManager,
         private readonly PetProfileEventRecorder $events,
     ) {}
@@ -37,9 +39,8 @@ final class ReviewPetProfileAccessRequest
         string $resolutionNote,
         string $idempotencyKey,
     ): PetProfileAccessRequest {
-        $reviewer = $this->actor->requireUser();
-        $profile = $request->profile()->firstOrFail();
-        $this->gate->authorize('manageManagers', $profile);
+        $authenticatedReviewer = $this->actor->requireUser();
+        $resolutionNote = trim($resolutionNote);
         $validated = $this->validator->make([
             'resolution_note' => $resolutionNote,
             'idempotency_key' => $idempotencyKey,
@@ -51,26 +52,46 @@ final class ReviewPetProfileAccessRequest
         ])->validate();
         $decisionKey = hash(
             'sha256',
-            "pet-access-decision|{$reviewer->id}|{$idempotencyKey}",
+            "pet-access-decision|{$authenticatedReviewer->id}|{$request->id}|{$decision->value}|{$idempotencyKey}",
         );
 
         return DB::transaction(function () use (
+            $authenticatedReviewer,
             $decision,
             $decisionKey,
-            $profile,
             $request,
-            $reviewer,
             $validated,
         ): PetProfileAccessRequest {
-            $lockedProfile = PetProfile::query()
-                ->select(['id', 'user_id', 'status', 'lock_version'])
+            $reviewer = User::query()
                 ->lockForUpdate()
-                ->findOrFail($profile->id);
-            $this->gate->authorize('manageManagers', $lockedProfile);
+                ->findOrFail($authenticatedReviewer->getKey());
+
+            if (! $reviewer->isActive() || ! $this->emailVerification->allows($reviewer)) {
+                throw new AuthorizationException;
+            }
+
             $locked = PetProfileAccessRequest::query()
                 ->with('requester:id,actor_key,name,status')
                 ->lockForUpdate()
                 ->findOrFail($request->id);
+            $lockedProfile = PetProfile::query()
+                ->select(['id', 'user_id', 'status', 'lock_version'])
+                ->lockForUpdate()
+                ->findOrFail($locked->pet_profile_id);
+            $reviewerMembership = $lockedProfile->managers()
+                ->where('user_id', $reviewer->id)
+                ->lockForUpdate()
+                ->first();
+            $lockedProfile->setRelation(
+                'managers',
+                new Collection(
+                    $reviewerMembership instanceof PetProfileManager
+                        ? [$reviewerMembership]
+                        : [],
+                ),
+            );
+
+            $this->gate->forUser($reviewer)->authorize('manageManagers', $lockedProfile);
 
             if ($locked->decision_key === $decisionKey
                 && $locked->status !== PetProfileAccessRequestStatus::Pending
@@ -82,6 +103,19 @@ final class ReviewPetProfileAccessRequest
                 throw ValidationException::withMessages([
                     'access_request' => __('pet_profiles.validation.access_request_resolved'),
                 ]);
+            }
+
+            if (
+                $locked->temporary_access_ends_at !== null
+                && ! $locked->temporary_access_ends_at->isFuture()
+            ) {
+                $locked->forceFill([
+                    'status' => PetProfileAccessRequestStatus::Expired,
+                    'active_key' => null,
+                    'lock_version' => $locked->lock_version + 1,
+                ])->saveOrFail();
+
+                return $locked->refresh();
             }
 
             if ($locked->requester_user_id === $reviewer->id) {
@@ -111,10 +145,9 @@ final class ReviewPetProfileAccessRequest
                 'reviewed_by_user_id' => $reviewer->id,
                 'reviewed_at' => now(),
                 'granted_manager_id' => $manager?->id,
-                'resolution_note' => trim((string) ($validated['resolution_note'] ?? '')) ?: null,
+                'resolution_note' => (string) ($validated['resolution_note'] ?? '') ?: null,
                 'lock_version' => $locked->lock_version + 1,
             ])->save();
-            $reviewerMembership = $this->access->membership($lockedProfile, $reviewer);
             $this->events->record(
                 profile: $lockedProfile,
                 actor: $reviewer,

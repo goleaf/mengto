@@ -6,8 +6,11 @@ namespace App\Actions;
 
 use App\Enums\PetManagerStatus;
 use App\Models\PetProfileManager;
+use App\Models\User;
+use App\Services\EmailVerificationMode;
 use App\Services\ForumActor;
 use App\Services\PetProfileEventRecorder;
+use Illuminate\Contracts\Validation\Factory as ValidationFactory;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
@@ -16,19 +19,34 @@ final class AcceptPetProfileManagerInvitation
     public function __construct(
         private readonly ForumActor $actor,
         private readonly PetProfileEventRecorder $events,
+        private readonly EmailVerificationMode $emailVerification,
+        private readonly ValidationFactory $validator,
     ) {}
 
     public function handle(
         PetProfileManager $invitation,
         string $idempotencyKey,
     ): PetProfileManager {
-        $user = $this->actor->requireUser();
+        $authenticated = $this->actor->requireUser();
+        /** @var array{idempotency_key: string} $validated */
+        $validated = $this->validator->make([
+            'idempotency_key' => trim($idempotencyKey),
+        ], [
+            'idempotency_key' => ['required', 'string', 'max:190'],
+        ])->validate();
 
         return DB::transaction(function () use (
+            $authenticated,
             $invitation,
-            $idempotencyKey,
-            $user,
+            $validated,
         ): PetProfileManager {
+            $user = User::query()
+                ->lockForUpdate()
+                ->findOrFail($authenticated->getKey());
+            abort_unless(
+                $user->isActive() && $this->emailVerification->allows($user),
+                403,
+            );
             $locked = PetProfileManager::query()
                 ->with('profile:id,user_id,profile_key,status,lock_version')
                 ->lockForUpdate()
@@ -40,8 +58,12 @@ final class AcceptPetProfileManagerInvitation
                 ]);
             }
 
+            $eventKey = hash(
+                'sha256',
+                "pet-manager-accept|{$locked->id}|{$user->id}|{$validated['idempotency_key']}",
+            );
             $existingEvent = $locked->profile->lifecycleEvents()
-                ->where('idempotency_key', $idempotencyKey)
+                ->where('idempotency_key', $eventKey)
                 ->first();
 
             if ($existingEvent !== null && $locked->status === PetManagerStatus::Active) {
@@ -77,7 +99,7 @@ final class AcceptPetProfileManagerInvitation
                 eventType: 'manager-accepted',
                 reasonCode: 'manager-accepted',
                 publicMetadata: ['role' => $locked->role->value],
-                idempotencyKey: $idempotencyKey,
+                idempotencyKey: $eventKey,
                 manager: $locked,
             );
 

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Enums\OnboardingPetChoice;
+use App\Enums\PetManagerStatus;
 use App\Enums\PetProfileAccessRequestStatus;
 use App\Models\PetProfile;
 use App\Models\PetProfileAccessRequest;
@@ -18,6 +19,8 @@ final class OnboardingPetEvidence
     public function supports(User $user, OnboardingPetChoice $choice): bool
     {
         return match ($choice) {
+            OnboardingPetChoice::NoPet,
+            OnboardingPetChoice::AddLater,
             OnboardingPetChoice::NotNow => true,
             OnboardingPetChoice::ManagedPet => PetProfile::query()
                 ->managedBy($user)
@@ -35,6 +38,8 @@ final class OnboardingPetEvidence
         $at = now();
 
         return match ($choice) {
+            OnboardingPetChoice::NoPet,
+            OnboardingPetChoice::AddLater,
             OnboardingPetChoice::NotNow => true,
             OnboardingPetChoice::ManagedPet => $this->lockManagedPetEvidence($user, $at),
             OnboardingPetChoice::AccessRequested => $this->lockAccessRequestEvidence($user, $at),
@@ -53,6 +58,7 @@ final class OnboardingPetEvidence
                     ->where(function (Builder $pending) use ($at): void {
                         $pending
                             ->where('status', PetProfileAccessRequestStatus::Pending)
+                            ->whereNotNull('active_key')
                             ->where(function (Builder $temporary) use ($at): void {
                                 $temporary
                                     ->whereNull('temporary_access_ends_at')
@@ -64,13 +70,16 @@ final class OnboardingPetEvidence
                             ->where('status', PetProfileAccessRequestStatus::Approved)
                             ->whereHas(
                                 'grantedManager',
-                                fn (Builder $manager): Builder => PetProfileManager::constrainActiveAt(
+                                function (Builder $manager) use ($at): void {
                                     $manager->whereColumn(
                                         'pet_profile_managers.user_id',
                                         'pet_profile_access_requests.requester_user_id',
-                                    ),
-                                    $at,
-                                ),
+                                    )->whereColumn(
+                                        'pet_profile_managers.pet_profile_id',
+                                        'pet_profile_access_requests.pet_profile_id',
+                                    );
+                                    $this->constrainCurrentGrantedManager($manager, $at);
+                                },
                             );
                     });
             })
@@ -113,6 +122,7 @@ final class OnboardingPetEvidence
             ->whereBelongsTo($user, 'requester')
             ->whereHas('profile')
             ->where('status', PetProfileAccessRequestStatus::Pending)
+            ->whereNotNull('active_key')
             ->where(function (Builder $temporary) use ($at): void {
                 $temporary
                     ->whereNull('temporary_access_ends_at')
@@ -130,6 +140,7 @@ final class OnboardingPetEvidence
                     ->whereBelongsTo($user, 'requester')
                     ->where('pet_profile_id', $profile->id)
                     ->where('status', PetProfileAccessRequestStatus::Pending)
+                    ->whereNotNull('active_key')
                     ->where(function (Builder $temporary) use ($at): void {
                         $temporary
                             ->whereNull('temporary_access_ends_at')
@@ -149,13 +160,15 @@ final class OnboardingPetEvidence
             ->whereHas('profile')
             ->where('status', PetProfileAccessRequestStatus::Approved)
             ->whereNotNull('granted_manager_id')
-            ->whereHas(
-                'grantedManager',
-                fn (Builder $manager): Builder => PetProfileManager::constrainActiveAt(
-                    $manager->whereBelongsTo($user),
-                    $at,
-                ),
-            )
+            ->whereHas('grantedManager', function (Builder $manager) use ($at, $user): void {
+                $manager
+                    ->whereBelongsTo($user)
+                    ->whereColumn(
+                        'pet_profile_managers.pet_profile_id',
+                        'pet_profile_access_requests.pet_profile_id',
+                    );
+                $this->constrainCurrentGrantedManager($manager, $at);
+            })
             ->orderByDesc('id')
             ->first(['id', 'pet_profile_id']);
 
@@ -182,13 +195,14 @@ final class OnboardingPetEvidence
             return false;
         }
 
-        return PetProfileManager::query()
+        $manager = PetProfileManager::query()
             ->whereKey($approved->granted_manager_id)
             ->whereBelongsTo($profile, 'profile')
             ->whereBelongsTo($user)
-            ->activeAt($at)
-            ->lockForUpdate()
-            ->first(['id']) instanceof PetProfileManager;
+            ->lockForUpdate();
+        $this->constrainCurrentGrantedManager($manager, $at);
+
+        return $manager->first(['id']) instanceof PetProfileManager;
     }
 
     private function lockCurrentProfile(int $profileId): ?PetProfile
@@ -197,5 +211,23 @@ final class OnboardingPetEvidence
             ->whereKey($profileId)
             ->lockForUpdate()
             ->first(['id', 'user_id']);
+    }
+
+    private function constrainCurrentGrantedManager(Builder $query, Carbon $at): void
+    {
+        $query->where(function (Builder $current) use ($at): void {
+            $current
+                ->where(function (Builder $active) use ($at): void {
+                    PetProfileManager::constrainActiveAt($active, $at);
+                })
+                ->orWhere(function (Builder $invited) use ($at): void {
+                    $invited
+                        ->where('status', PetManagerStatus::Invited)
+                        ->whereNull('revoked_at')
+                        ->where(function (Builder $ends) use ($at): void {
+                            $ends->whereNull('ends_at')->orWhere('ends_at', '>', $at);
+                        });
+                });
+        });
     }
 }

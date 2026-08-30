@@ -70,6 +70,10 @@ the translated response is immediate. `ProfilePreferenceRules` is the one
 neutral validation/message/attribute source used by both the form object and
 Action: configured locale codes are exact, and timezones use Laravel's
 `timezone:all` IANA validation.
+The component also locks the account ID captured at mount and checks it on
+hydration and mutation. A signed Profile Settings snapshot cannot cross an
+authentication change; older snapshots without the binding fail closed and
+must refresh.
 
 ## Resumable Onboarding Wizard
 

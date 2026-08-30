@@ -97,7 +97,7 @@ test('it rechecks managed pet evidence immediately before completion', function 
     );
 
     expect($recovered->current_step)->toBe(OnboardingStep::PrivacyDiscovery)
-        ->and($recovered->pet_relationship_choice)->toBe(OnboardingPetChoice::NotNow)
+        ->and($recovered->pet_relationship_choice)->toBe(OnboardingPetChoice::AddLater)
         ->and($recovered->lock_version)->toBe(5)
         ->and($replayed->lock_version)->toBe(5);
 
@@ -155,6 +155,49 @@ test('it rejects completion after the supporting pet profile is deleted', functi
     expect($state->fresh()?->completed_at)->toBeNull();
 });
 
+test('it rechecks pending access evidence and permits an explicit add later recovery', function (): void {
+    $state = UserOnboarding::factory()
+        ->for($this->authenticatedUser)
+        ->petRelationship()
+        ->create();
+    $request = PetProfileAccessRequest::factory()
+        ->for($this->authenticatedUser, 'requester')
+        ->create();
+    app(AdvanceUserOnboarding::class)->handle(
+        $this->authenticatedUser,
+        OnboardingStep::PetRelationship,
+        $state->lock_version,
+        OnboardingPetChoice::AccessRequested,
+    );
+    $request->forceFill([
+        'status' => PetProfileAccessRequestStatus::Expired,
+        'active_key' => null,
+    ])->saveOrFail();
+    $actor = app(SocialActorResolver::class)->provisionPrivateForUser($this->authenticatedUser);
+    $settings = $actor->settings()->firstOrFail();
+    $state->refresh();
+
+    expect(fn () => app(CompleteOnboardingPrivacy::class)->handle(
+        user: $this->authenticatedUser,
+        privacyAcknowledged: true,
+        isDiscoverable: false,
+        isRecommendable: false,
+        allowMessageRequests: false,
+        expectedStep: OnboardingStep::PrivacyDiscovery,
+        expectedOnboardingLockVersion: $state->lock_version,
+        expectedSocialSettingsLockVersion: $settings->lock_version,
+    ))->toThrow(ValidationException::class);
+
+    $recovered = app(DeferOnboardingPetRelationship::class)->handle(
+        $this->authenticatedUser,
+        $state->lock_version,
+    );
+
+    expect($recovered->current_step)->toBe(OnboardingStep::PrivacyDiscovery)
+        ->and($recovered->pet_relationship_choice)->toBe(OnboardingPetChoice::AddLater)
+        ->and($recovered->completed_at)->toBeNull();
+});
+
 test('it rejects non-equivalent pet replay while preserving the newer state', function (): void {
     $state = UserOnboarding::factory()
         ->for($this->authenticatedUser)
@@ -164,14 +207,14 @@ test('it rejects non-equivalent pet replay while preserving the newer state', fu
         $this->authenticatedUser,
         OnboardingStep::PetRelationship,
         $state->lock_version,
-        OnboardingPetChoice::NotNow,
+        OnboardingPetChoice::AddLater,
     );
 
     $replayed = app(AdvanceUserOnboarding::class)->handle(
         $this->authenticatedUser,
         OnboardingStep::PetRelationship,
         $state->lock_version,
-        OnboardingPetChoice::NotNow,
+        OnboardingPetChoice::AddLater,
     );
 
     expect($replayed->id)->toBe($advanced->id)
@@ -185,7 +228,7 @@ test('it rejects non-equivalent pet replay while preserving the newer state', fu
     ))->toThrow(ValidationException::class);
 
     expect($state->fresh()?->current_step)->toBe(OnboardingStep::PrivacyDiscovery)
-        ->and($state->fresh()?->pet_relationship_choice)->toBe(OnboardingPetChoice::NotNow)
+        ->and($state->fresh()?->pet_relationship_choice)->toBe(OnboardingPetChoice::AddLater)
         ->and($state->fresh()?->lock_version)->toBe(4);
 });
 

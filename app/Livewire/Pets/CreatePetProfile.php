@@ -190,6 +190,23 @@ final class CreatePetProfile extends Component
             ])->all();
     }
 
+    /** @return array{url: string, label: string} */
+    #[Computed]
+    public function petSetupExit(): array
+    {
+        if ($this->isOnboardingPetRelationship($this->requireUser())) {
+            return [
+                'url' => route('onboarding.show'),
+                'label' => __('pet_profiles.actions.back_to_onboarding'),
+            ];
+        }
+
+        return [
+            'url' => route('pets.index'),
+            'label' => __('pet_profiles.actions.back_to_pets'),
+        ];
+    }
+
     /** @return list<array<string, string|null>> */
     #[Computed]
     public function duplicateCandidates(): array
@@ -232,13 +249,14 @@ final class CreatePetProfile extends Component
     {
         $user = $this->requireUser();
         $creationData = $this->form->creationData($this->idempotencyKey);
-
-        if (! $this->duplicateReview->hasCompletedReview(
+        $decisionToken = $this->duplicateReview->confirmDifferentAnimal(
             $user,
             $this->form->name,
             $this->form->species,
             $this->duplicateReviewToken,
-        )) {
+        );
+
+        if ($decisionToken === '') {
             $this->addError(
                 'duplicate_review',
                 __('pet_profiles.validation.duplicate_review_required'),
@@ -247,7 +265,7 @@ final class CreatePetProfile extends Component
             return;
         }
 
-        $this->persistCreation($creationData);
+        $this->persistCreation($creationData, $decisionToken);
     }
 
     public function startAccessRequest(string $profileKey): void
@@ -312,12 +330,15 @@ final class CreatePetProfile extends Component
     }
 
     /** @param array<string, string> $creationData */
-    private function persistCreation(array $creationData): void
+    private function persistCreation(array $creationData, string $decisionToken = ''): void
     {
         $user = $this->requireUser();
         $media = $this->mediaForm->data();
         $profile = $this->createAction->handle(
-            $creationData + ['duplicate_review_token' => $this->duplicateReviewToken],
+            $creationData + [
+                'duplicate_review_token' => $this->duplicateReviewToken,
+                'duplicate_review_decision_token' => $decisionToken,
+            ],
         );
 
         if ($media['upload'] instanceof TemporaryUploadedFile) {
@@ -349,12 +370,20 @@ final class CreatePetProfile extends Component
 
     public function render(): View
     {
-        return view('livewire.pets.create-pet-profile')
-            ->layout('components.livewire-app-layout', [
-                'owner' => $this->profiles->owner(),
+        $view = view('livewire.pets.create-pet-profile');
+
+        if ($this->isOnboardingPetRelationship($this->requireUser())) {
+            return $view->layout('components.onboarding-layout', [
                 'title' => __('pet_profiles.create.title'),
-                'activeSection' => 'pets',
+                'htmlLocale' => str_replace('_', '-', app()->getLocale()),
             ]);
+        }
+
+        return $view->layout('components.livewire-app-layout', [
+            'owner' => $this->profiles->owner(),
+            'title' => __('pet_profiles.create.title'),
+            'activeSection' => 'pets',
+        ]);
     }
 
     private function requireUser(): User

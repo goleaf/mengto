@@ -10,14 +10,11 @@ use App\Models\User;
 use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Str;
 use JsonException;
 
 final readonly class PetProfileDuplicateReview
 {
     private const CANDIDATE_LIMIT = 6;
-
-    private const QUERY_LIMIT = 50;
 
     private const TOKEN_LIFETIME_SECONDS = 1800;
 
@@ -56,12 +53,52 @@ final readonly class PetProfileDuplicateReview
         User $viewer,
         string $name,
         string $species,
-        string $token,
+        string $reviewToken,
+        string $decisionToken = '',
     ): bool {
         $candidates = $this->candidateModels($viewer, $name, $species);
 
         return $candidates->isEmpty()
-            || $this->tokenMatches($viewer, $name, $species, $token, $candidates);
+            || (
+                $this->tokenMatches(
+                    $viewer,
+                    $name,
+                    $species,
+                    $reviewToken,
+                    $candidates,
+                    'review',
+                )
+                && $this->tokenMatches(
+                    $viewer,
+                    $name,
+                    $species,
+                    $decisionToken,
+                    $candidates,
+                    'different-animal',
+                )
+            );
+    }
+
+    public function confirmDifferentAnimal(
+        User $viewer,
+        string $name,
+        string $species,
+        string $reviewToken,
+    ): string {
+        $candidates = $this->candidateModels($viewer, $name, $species);
+
+        if ($candidates->isEmpty() || ! $this->tokenMatches(
+            $viewer,
+            $name,
+            $species,
+            $reviewToken,
+            $candidates,
+            'review',
+        )) {
+            return '';
+        }
+
+        return $this->issueToken($viewer, $name, $species, $candidates, 'different-animal');
     }
 
     public function candidateProfile(
@@ -89,7 +126,7 @@ final readonly class PetProfileDuplicateReview
         string $species,
         bool $withMedia = false,
     ): Collection {
-        $normalizedName = $this->normalizeName($name);
+        $normalizedName = PetProfileDuplicateIdentity::normalizeName($name);
 
         if ($normalizedName === '' || ! in_array(
             $species,
@@ -119,12 +156,17 @@ final readonly class PetProfileDuplicateReview
                 'lock_version',
             ])
             ->where('species', $species)
+            ->where('duplicate_name_hash', PetProfileDuplicateIdentity::nameHash($name))
             ->whereNull('canonical_profile_id')
             ->visibleTo($viewer)
             ->orderByDesc('id')
-            ->limit(self::QUERY_LIMIT)
+            ->limit(self::CANDIDATE_LIMIT)
             ->get()
-            ->filter(fn (PetProfile $profile): bool => $this->normalizeName($profile->name) === $normalizedName)
+            ->filter(
+                fn (PetProfile $profile): bool => PetProfileDuplicateIdentity::normalizeName(
+                    $profile->name,
+                ) === $normalizedName,
+            )
             ->take(self::CANDIDATE_LIMIT)
             ->values();
 
@@ -185,12 +227,14 @@ final readonly class PetProfileDuplicateReview
         string $name,
         string $species,
         Collection $candidates,
+        string $purpose = 'review',
     ): string {
         try {
             $payload = json_encode([
                 'viewer_id' => $viewer->id,
-                'name' => $this->normalizeName($name),
+                'name' => PetProfileDuplicateIdentity::normalizeName($name),
                 'species' => $species,
+                'purpose' => $purpose,
                 'candidate_keys' => $this->candidateKeys($candidates),
                 'expires_at' => now()->addSeconds(self::TOKEN_LIFETIME_SECONDS)->getTimestamp(),
             ], JSON_THROW_ON_ERROR);
@@ -208,6 +252,7 @@ final readonly class PetProfileDuplicateReview
         string $species,
         string $token,
         Collection $candidates,
+        string $purpose = 'review',
     ): bool {
         if ($token === '') {
             return false;
@@ -225,8 +270,9 @@ final readonly class PetProfileDuplicateReview
 
         return is_array($payload)
             && ($payload['viewer_id'] ?? null) === $viewer->id
-            && ($payload['name'] ?? null) === $this->normalizeName($name)
+            && ($payload['name'] ?? null) === PetProfileDuplicateIdentity::normalizeName($name)
             && ($payload['species'] ?? null) === $species
+            && ($payload['purpose'] ?? null) === $purpose
             && ($payload['candidate_keys'] ?? null) === $this->candidateKeys($candidates)
             && is_int($payload['expires_at'] ?? null)
             && $payload['expires_at'] >= now()->getTimestamp();
@@ -243,10 +289,5 @@ final readonly class PetProfileDuplicateReview
             ->filter(static fn (mixed $key): bool => is_string($key))
             ->values()
             ->all();
-    }
-
-    private function normalizeName(string $name): string
-    {
-        return Str::lower(Str::squish($name));
     }
 }

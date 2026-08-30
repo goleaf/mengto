@@ -8,11 +8,11 @@ and testing contracts affected by account entry.
 
 ## Status
 
-**Prompt 04 resumable Livewire wizard implementation and reproduced review
-remediation are complete at the scoped PHP boundary; connected Chrome evidence
-and repository-wide release gates remain blocked. Prompt 05 canonical
-language/timezone integration is approved and in progress. The complete
-onboarding product and repository release remain unclaimed.**
+**Prompt 05 canonical language/timezone integration and independent scoped
+review are complete; connected Chrome evidence and repository-wide release
+gates remain blocked. Prompt 06 canonical pet-relationship integration is
+planned and in progress. The complete onboarding product and repository
+release remain unclaimed.**
 
 The checkout already contains the additive onboarding aggregate, registration
 bootstrap, central middleware, forward-only Actions, a class-based Livewire
@@ -498,7 +498,11 @@ evidence. `#[Locked]` is hydration integrity only, never authorization.
 ## Pet Integration
 
 Onboarding never creates a simplified pet record. The create/find link enters
-the canonical duplicate-aware component. “Managed” is valid only for an active
+the canonical duplicate-aware component. Four new-account choices are stored
+as controlled domain values: manage a pet, care for an existing pet, no pet,
+and add later. The earlier `not-now` value remains a backward-compatible
+read-only equivalent for rows saved before Prompt 06; new UI does not collapse
+the two distinct user intents. “Managed” is valid only for an active
 manager membership or documented legacy creator fallback when no own manager
 row exists. Revoked, expired, future, invited, foreign, or soft-deleted
 relationships do not count. “Access requested” requires either a current,
@@ -506,6 +510,18 @@ non-expired pending request owned by the authenticated user and a current
 profile, or an approved request backed by its currently active granted manager.
 Rejected, cancelled, expired, unlinked approved, or expired-temporary requests
 do not count. The decision itself grants no permission.
+
+A current pending request satisfies only the onboarding decision to care for
+an existing pet so that external approval cannot trap an account. It never
+creates `PetProfileManager`, never authorizes private pet data, and must still
+be approved and accepted through the canonical invitation lifecycle. New pet
+creation continues to create the canonical draft profile, manager, privacy,
+alias, actor/lifecycle and audit records with private, non-discoverable,
+non-indexable, non-direct-link and hidden-location defaults. The safe return
+context is the authenticated persisted onboarding step: canonical pet Actions
+re-read it under lock and the destination resolver returns to onboarding only
+while that step is current. No `return_url`, `next`, arbitrary route name or
+session flag is accepted, so there is no stale return state to clean up.
 
 ## Privacy Integration
 
@@ -560,7 +576,7 @@ recipient-locale content tests pass.
 | Middleware | Guest, inactive, unverified, incomplete, complete, legacy; pre-binding; HTML/JSON/mutation; real Livewire transport; exact pet-create allowlist. |
 | State machine | Every forward step; future/wrong-user/inactive/unverified denial; exact and conflicting replay; stale locks; two-connection race; completion exactly once. |
 | Preferences | EN/LT/RU; valid/invalid timezone; unsupported locale; policy denial; DB/session locale and next-render language. |
-| Pets | `not-now`; canonical create/duplicate/access; legacy creator, active manager, invited/revoked/expired/future/foreign manager; own/foreign/current request; soft-deleted profile; no permission grant. |
+| Pets | no-pet; add-later; legacy `not-now`; canonical create/duplicate/access; bounded owned/managed summary; legacy creator, active manager, invited/revoked/expired/future/foreign manager; own/foreign/current request; soft-deleted/private candidate; safe return; no permission grant. |
 | Privacy | All private defaults; explicit acknowledgement required; booleans/tampering; personal actor only; settings/state rollback; private pet absent from social directory; no sensitive-domain rows. |
 | Compatibility/factory | Old account/admin/demo/unverified/blocked; named UserFactory states; default remains legacy-compatible; migration up/down/reapply and user/domain preservation. |
 | Localization | Recursive parity/placeholders; every step EN/LT/RU; no raw key/literal; long LT/RU; throttle and validation/mail semantics. |
@@ -721,22 +737,45 @@ recipient-locale content tests pass.
   canonical profile form/action, locale middleware/configuration, onboarding
   transition boundary, profile/auth tests and EN/LT/RU catalogues before any
   Prompt 05 production edit; retain one profile-preference persistence path.
-- [ ] **ONB-P05-02 — RED preference contracts.** Prove initial hydration,
+- [x] **ONB-P05-02 — RED preference contracts.** Prove initial hydration,
   configured locale options, real IANA timezone acceptance/rejection, immediate
   LT/RU application, stale/replay safety, resume and normal-settings
   consistency before changing runtime behavior.
-- [ ] **ONB-P05-03 — Canonical preference integration.** Reuse
+- [x] **ONB-P05-03 — Canonical preference integration.** Reuse
   `ProfilePreferencesForm` and `CompleteOnboardingPreferences` /
   `UpdateProfilePreferences`; persist only `users.locale` and `users.timezone`,
   apply the saved locale to session/current response, and let the canonical
   onboarding Action advance the server state.
-- [ ] **ONB-P05-04 — Accessible localized presentation.** Keep one H1, labelled
+- [x] **ONB-P05-04 — Accessible localized presentation.** Keep one H1, labelled
   44px selects, associated help/errors, summary focus, dirty/loading/offline
   status, wrapping EN/LT/RU copy and no browser-owned identity/step state.
-- [ ] **ONB-P05-05 — Independent review and verification.** Review architecture,
+- [x] **ONB-P05-05 — Independent review and verification.** Review architecture,
   localization/timezone correctness, Livewire security, accessibility and
   profile regression on a frozen diff; rerun focused/full applicable gates and
   publish only when every material gate is green.
+- [x] **ONB-P06-01 — Pet-domain re-audit and delivery plan.** Re-read canonical
+  pet identity, creation, duplicate review, manager, access-request, privacy,
+  onboarding and authorization boundaries; record nine exclusive reviewer
+  roles and the chosen pending-request/return semantics before runtime edits.
+- [ ] **ONB-P06-02 — RED pet relationship contracts.** Prove distinct no-pet
+  and add-later choices, active relationship edge cases, bounded summaries,
+  pending request semantics, safe returns, completion defense and abuse cases.
+- [ ] **ONB-P06-03 — Canonical relationship integration.** Extend the existing
+  controlled choice model compatibly, centralize bounded relationship
+  presentation, and reuse the canonical manager/request evidence predicates
+  without creating onboarding pet records or permissions.
+- [ ] **ONB-P06-04 — Canonical create, duplicate and request bridge.** Keep
+  duplicate tokens/candidate visibility and access-request idempotency intact;
+  derive onboarding return solely from locked authenticated server state while
+  preserving normal creation redirects.
+- [ ] **ONB-P06-05 — Accessible localized Pets experience.** Render four
+  semantic radio choices, safe bounded relationship summaries, clear empty and
+  pending states, canonical actions, EN/LT/RU copy, errors, loading and offline
+  feedback with one H1 and 44px targets.
+- [ ] **ONB-P06-06 — Independent review, gates and publication.** Freeze the
+  attributable diff, reproduce/disposition pet-domain, authorization,
+  security, privacy, UX and test findings, run focused/full gates, and commit /
+  push only if every material gate is green.
 
 ## Acceptance Criteria
 
@@ -853,9 +892,12 @@ application database.
   canonical form/action reuse, configured locale source, IANA timezone,
   immediate locale application, resume/profile consistency, accessibility,
   security and EN/LT/RU evidence.
-- [x] Six read-only specialist roles allocated. Domain, localization, timezone,
-  UX and security discovery completed; the independent final review is reserved
-  for the frozen post-verification diff.
+- [x] Six read-only specialist roles completed. The final reviewer returned
+  initial NO-GO for a cross-account signed Profile Settings snapshot, the
+  principal reproduced `200` instead of `403`, fixed it with a locked mount
+  binding/hydration guard, and the reviewer confirmed corrected hash
+  `57843270388ccd8394d09a83457745dc46f386149ea05952e6067e759a8363cd`
+  as SHIP.
 - [x] RED preference-domain/component contracts observed: the initial 26-test
   file had 12 passing, 10 failing and four errors (147 assertions), reproducing
   raw help keys, missing immediate locale application, malformed replay and
@@ -869,8 +911,35 @@ application database.
   auth/onboarding transition matrix 150/150 (1,004) before the final added
   negative cases, scoped architecture 10/10 (47,356), Blade boundary 1/1
   (2,457), localization 7/7 (37,713), task Pint, three localization scanners
-  and targeted Larastan all pass. Final independent review and broad gates are
-  still pending.
+  and targeted Larastan all pass. This was the pre-final-review checkpoint;
+  final review and broad evidence follow below.
+- [x] Post-review verification is green: Preferences + Wizard 59/59 (493),
+  Preferences + Authentication 63/63 (535), the cross-account RED/GREEN
+  regression 1/1 (3), and the final five-file onboarding/auth matrix 154/154
+  (1,026); task Pint and targeted Larastan pass. Composer strict/audit/platform,
+  npm high audit/build, isolated onboarding migration, fresh/repeat seed, route
+  cache and view cache also pass.
+- [x] Broad and connected evidence recorded without inflating completion. Full
+  Pest ran 3,093 tests: 2,943 passed, 39 failed, 134,027 assertions, exit 2 in
+  440,296 ms; failures remain in stale generated database evidence and missing
+  Places/Portal/shared implementations. Full Pint remains red only on unrelated
+  Event/Places/forum work; full Larastan reports 34 unrelated errors. The
+  disposable onboarding browser migrated and seeded successfully, then Chrome
+  closed DevTools before any page assertion. Publication remains NO-GO.
+
+### Prompt 06
+
+- [x] Git inventory observed `main`, `HEAD`, and `origin/main` at
+  `7c96e504a5bfc9d8e32259971b25157bcb67fa3f`; final Prompt 05 reconciliation
+  remains staged/unstaged and unrelated meetups files are excluded.
+- [x] Governing product, architecture, security, authorization, pet profile,
+  privacy, Livewire, accessibility, localization, testing, seeding and
+  deployment documents were re-read before runtime changes.
+- [x] Initial code trace confirms the canonical duplicate-aware create and
+  access-request domains already exist; Prompt 06 will extend rather than copy
+  them. A pending current request may resolve onboarding but grants no access.
+- [ ] RED tests, implementation, focused verification, independent frozen-diff
+  review, broad gates and publication decision remain in progress.
 
 ### Prompt 03
 

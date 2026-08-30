@@ -12,6 +12,7 @@ use App\Enums\PetProfileAccessRequestDecision;
 use App\Enums\PetProfileAccessRequestStatus;
 use App\Enums\PetProfileAccessRequestType;
 use App\Enums\PetProfilePermission;
+use App\Enums\UserStatus;
 use App\Livewire\Pets\CreatePetProfile as CreatePetProfileComponent;
 use App\Livewire\Pets\PetProfileAccessRequests;
 use App\Models\PetProfile;
@@ -25,6 +26,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Validation\ValidationException;
 use Livewire\Livewire;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 uses(RefreshDatabase::class);
 
@@ -35,6 +37,7 @@ it('creates the indexed encrypted access request boundary with valid factory def
     ]);
 
     expect(Schema::hasTable('pet_profile_access_requests'))->toBeTrue()
+        ->and(Schema::hasColumn('pet_profiles', 'duplicate_name_hash'))->toBeTrue()
         ->and(Schema::hasIndex(
             'pet_profile_access_requests',
             'pet_access_requests_profile_status_idx',
@@ -46,6 +49,10 @@ it('creates the indexed encrypted access request boundary with valid factory def
         ->and(Schema::hasIndex(
             'pet_profiles',
             'pet_profiles_duplicate_review_idx',
+        ))->toBeTrue()
+        ->and(Schema::hasIndex(
+            'pet_profiles',
+            'pet_profiles_duplicate_identity_idx',
         ))->toBeTrue()
         ->and($request->request_type)->toBe(PetProfileAccessRequestType::CoOwnership)
         ->and($request->requested_role)->toBe(PetManagerRole::CoOwner)
@@ -127,7 +134,16 @@ it('requires a current duplicate review before direct creation but replays idemp
         ->toThrow(ValidationException::class);
 
     $review = app(PetProfileDuplicateReview::class)->review($creator, 'Baks', 'dog');
-    $created = $action->handle($data + ['duplicate_review_token' => $review['token']]);
+    $decisionToken = app(PetProfileDuplicateReview::class)->confirmDifferentAnimal(
+        $creator,
+        'Baks',
+        'dog',
+        $review['token'],
+    );
+    $created = $action->handle($data + [
+        'duplicate_review_token' => $review['token'],
+        'duplicate_review_decision_token' => $decisionToken,
+    ]);
     $replayed = $action->handle($data);
 
     expect($replayed->is($created))->toBeTrue()
@@ -495,4 +511,171 @@ it('submits a duplicate-card request from Livewire and never exposes a private m
 
     expect(PetProfileAccessRequest::query()->count())->toBe(1)
         ->and(PetProfile::query()->count())->toBe(2);
+});
+
+it('binds a locked access request to its canonical profile before review authorization', function (): void {
+    $reviewer = User::factory()->create();
+    $foreignOwner = User::factory()->create();
+    $requester = User::factory()->create();
+    $authorizedProfile = PetProfile::factory()->for($reviewer)->discoverable()->create();
+    $foreignProfile = PetProfile::factory()->for($foreignOwner)->discoverable()->create();
+    $request = PetProfileAccessRequest::factory()
+        ->for($foreignProfile, 'profile')
+        ->for($requester, 'requester')
+        ->create();
+    $request->setAttribute('pet_profile_id', $authorizedProfile->id);
+    $request->setRelation('profile', $authorizedProfile);
+    $this->actingAs($reviewer);
+
+    expect(fn () => app(ReviewPetProfileAccessRequest::class)->handle(
+        $request,
+        PetProfileAccessRequestDecision::Reject,
+        'This request does not belong to a profile I may review.',
+        'cross-profile-review-binding',
+    ))->toThrow(AuthorizationException::class);
+
+    expect(PetProfileAccessRequest::query()->findOrFail($request->id)->status)
+        ->toBe(PetProfileAccessRequestStatus::Pending)
+        ->and(PetProfileManager::query()->where('pet_profile_id', $foreignProfile->id)->exists())
+        ->toBeFalse();
+});
+
+it('expires a stale temporary request and permits a new request', function (): void {
+    $owner = User::factory()->create();
+    $requester = User::factory()->create();
+    $profile = PetProfile::factory()->for($owner)->discoverable()->create();
+    $this->actingAs($requester);
+    $action = app(SubmitPetProfileAccessRequest::class);
+    $expired = $action->handle(
+        $profile,
+        PetProfileAccessRequestType::TemporaryAccess,
+        null,
+        'I will provide short-term care and can verify the arrangement privately.',
+        now()->addMinute()->toDateTimeString(),
+        'temporary-request-to-expire',
+    );
+    $this->travel(2)->minutes();
+
+    $replacement = $action->handle(
+        $profile,
+        PetProfileAccessRequestType::CoOwnership,
+        null,
+        'I can now provide current co-ownership evidence for private review.',
+        null,
+        'replacement-after-temporary-expiry',
+    );
+
+    expect($expired->refresh()->status)->toBe(PetProfileAccessRequestStatus::Expired)
+        ->and($expired->active_key)->toBeNull()
+        ->and($replacement->status)->toBe(PetProfileAccessRequestStatus::Pending)
+        ->and($replacement->active_key)->not->toBeNull();
+});
+
+it('expires a stale temporary request instead of approving access', function (): void {
+    $owner = User::factory()->create();
+    $requester = User::factory()->create();
+    $profile = PetProfile::factory()->for($owner)->discoverable()->create();
+    $this->actingAs($requester);
+    $request = app(SubmitPetProfileAccessRequest::class)->handle(
+        $profile,
+        PetProfileAccessRequestType::TemporaryAccess,
+        null,
+        'I will provide short-term care and can verify the arrangement privately.',
+        now()->addMinute()->toDateTimeString(),
+        'expired-before-review',
+    );
+    $this->travel(2)->minutes();
+    $this->actingAs($owner);
+
+    $reviewed = app(ReviewPetProfileAccessRequest::class)->handle(
+        $request,
+        PetProfileAccessRequestDecision::Approve,
+        'The review occurred after the requested care period ended.',
+        'review-expired-temporary-request',
+    );
+
+    expect($reviewed->status)->toBe(PetProfileAccessRequestStatus::Expired)
+        ->and($reviewed->active_key)->toBeNull()
+        ->and($reviewed->granted_manager_id)->toBeNull()
+        ->and(PetProfileManager::query()
+            ->where('pet_profile_id', $profile->id)
+            ->where('user_id', $requester->id)
+            ->exists())->toBeFalse();
+});
+
+it('prevents unavailable invited accounts from activating pet management', function (
+    UserStatus $status,
+): void {
+    $owner = User::factory()->create();
+    $invitee = User::factory()->create(['status' => $status]);
+    $profile = PetProfile::factory()->for($owner)->privateProfile()->create();
+    $invitation = PetProfileManager::factory()
+        ->for($profile, 'profile')
+        ->for($invitee)
+        ->invited()
+        ->create();
+    $this->actingAs($invitee);
+
+    expect(fn () => app(AcceptPetProfileManagerInvitation::class)->handle(
+        $invitation,
+        'unavailable-invitation-acceptance',
+    ))->toThrow(HttpException::class);
+
+    expect($invitation->refresh()->status)->toBe(PetManagerStatus::Invited)
+        ->and($invitation->accepted_at)->toBeNull();
+})->with([
+    'blocked' => [UserStatus::Blocked],
+    'suspended' => [UserStatus::Suspended],
+]);
+
+it('reloads reviewer availability at the locked decision boundary', function (): void {
+    $owner = User::factory()->create();
+    $requester = User::factory()->create();
+    $profile = PetProfile::factory()->for($owner)->discoverable()->create();
+    $request = PetProfileAccessRequest::factory()
+        ->for($profile, 'profile')
+        ->for($requester, 'requester')
+        ->create();
+    $this->actingAs($owner);
+    User::query()->whereKey($owner)->update(['status' => UserStatus::Blocked]);
+
+    expect(fn () => app(ReviewPetProfileAccessRequest::class)->handle(
+        $request,
+        PetProfileAccessRequestDecision::Reject,
+        'This request must not be reviewed by an unavailable account.',
+        'stale-reviewer-status',
+    ))->toThrow(AuthorizationException::class);
+
+    expect($request->refresh()->status)->toBe(PetProfileAccessRequestStatus::Pending);
+});
+
+it('rejects whitespace-only access evidence and rejection rationale', function (): void {
+    $owner = User::factory()->create();
+    $requester = User::factory()->create();
+    $profile = PetProfile::factory()->for($owner)->discoverable()->create();
+    $this->actingAs($requester);
+
+    expect(fn () => app(SubmitPetProfileAccessRequest::class)->handle(
+        $profile,
+        PetProfileAccessRequestType::CoOwnership,
+        null,
+        str_repeat(' ', 20),
+        null,
+        'whitespace-access-evidence',
+    ))->toThrow(ValidationException::class);
+
+    $request = PetProfileAccessRequest::factory()
+        ->for($profile, 'profile')
+        ->for($requester, 'requester')
+        ->create();
+    $this->actingAs($owner);
+
+    expect(fn () => app(ReviewPetProfileAccessRequest::class)->handle(
+        $request,
+        PetProfileAccessRequestDecision::Reject,
+        str_repeat(' ', 10),
+        'whitespace-rejection-rationale',
+    ))->toThrow(ValidationException::class);
+
+    expect($request->refresh()->status)->toBe(PetProfileAccessRequestStatus::Pending);
 });
