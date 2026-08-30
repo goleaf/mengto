@@ -552,11 +552,20 @@ test('a failed merge rolls back source redirect facts submission and audit then 
         1,
         'merge-reconsidered',
     );
+    $restoreReplay = app(RestoreMergedPlace::class)->handle(
+        $moderator,
+        $restored,
+        '6570a209-060f-425a-a5ed-d2b91973e521',
+        1,
+        'merge-reconsidered',
+    );
 
     expect($merged->resolution)->toBe(PlaceSubmissionResolution::DuplicateMerge)
         ->and($source->fresh()->merged_into_place_id)->toBeNull()
         ->and($source->fresh()->status)->toBe(PlaceStatus::Active)
         ->and($restored->restored_at)->not->toBeNull()
+        ->and($restoreReplay->is($restored))->toBeTrue()
+        ->and($merged->events()->where('action', 'merge-restored')->count())->toBe(1)
         ->and($destination->facts()->where('origin_place_id', $source->id)->exists())->toBeTrue();
 });
 

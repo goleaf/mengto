@@ -26,15 +26,15 @@ final readonly class RestoreMergedPlace
         int $expectedLockVersion,
         string $reasonCode,
     ): PlaceMergeRedirect {
-        $submission = PlaceSubmission::query()
-            ->where('published_place_id', $redirect->source_place_id)
-            ->where('linked_place_id', $redirect->destination_place_id)
-            ->where('resolution', PlaceSubmissionResolution::DuplicateMerge->value)
-            ->firstOrFail();
+        $submissionId = $redirect->event()
+            ->where('action', PlaceSubmissionAction::PlacesMerged->value)
+            ->where('destination_place_id', $redirect->destination_place_id)
+            ->value('place_submission_id');
 
-        if ($redirect->restored_at !== null) {
-            throw ValidationException::withMessages(['redirect' => __('places.submissions.validation.already_restored')]);
-        }
+        $submission = PlaceSubmission::query()
+            ->whereKey($submissionId)
+            ->where('published_place_id', $redirect->source_place_id)
+            ->firstOrFail();
 
         $this->transition->handle(
             $actor,
@@ -49,7 +49,14 @@ final readonly class RestoreMergedPlace
             destinationPlaceId: $redirect->destination_place_id,
             resolution: PlaceSubmissionResolution::NewPlace,
             mutate: static function (PlaceSubmission $locked) use ($actor, $redirect): void {
+                $lockedRedirect = PlaceMergeRedirect::query()->lockForUpdate()->findOrFail($redirect->id);
                 $source = Place::query()->lockForUpdate()->findOrFail($redirect->source_place_id);
+
+                if ($locked->resolution !== PlaceSubmissionResolution::DuplicateMerge
+                    || $locked->linked_place_id !== $redirect->destination_place_id
+                    || $lockedRedirect->restored_at !== null) {
+                    throw ValidationException::withMessages(['redirect' => __('places.submissions.validation.already_restored')]);
+                }
 
                 if ($source->status !== PlaceStatus::Merged
                     || $source->merged_into_place_id !== $redirect->destination_place_id) {
