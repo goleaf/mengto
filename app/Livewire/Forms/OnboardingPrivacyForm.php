@@ -26,6 +26,26 @@ final class OnboardingPrivacyForm extends Form
         ];
     }
 
+    /** @return array<string, string> */
+    protected function messages(): array
+    {
+        return [
+            'isDiscoverable.boolean' => __('onboarding.validation.privacy_choice'),
+            'isRecommendable.boolean' => __('onboarding.validation.privacy_choice'),
+            'allowMessageRequests.boolean' => __('onboarding.validation.privacy_choice'),
+        ];
+    }
+
+    /** @return array<string, string> */
+    protected function validationAttributes(): array
+    {
+        return [
+            'isDiscoverable' => __('onboarding.steps.privacy_discovery.discoverable_label'),
+            'isRecommendable' => __('onboarding.steps.privacy_discovery.recommendable_label'),
+            'allowMessageRequests' => __('onboarding.steps.privacy_discovery.messages_label'),
+        ];
+    }
+
     public function fillFrom(SocialActor $actor, SocialActorSetting $settings): void
     {
         $this->isDiscoverable = $actor->is_discoverable;

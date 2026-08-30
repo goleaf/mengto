@@ -8,9 +8,10 @@ and testing contracts affected by account entry.
 
 ## Status
 
-**Prompt 03 authentication and central portal-boundary integration is
-implemented and focused-verification/review complete on the Prompt 02 state
-foundation; final repository gates and publication remain NO-GO.**
+**Prompt 04 resumable Livewire wizard implementation is approved and in
+progress on the reviewed Prompt 02 state foundation and Prompt 03 lifecycle
+boundary; the complete onboarding product and repository release remain
+unclaimed.**
 
 The checkout already contains the additive onboarding aggregate, registration
 bootstrap, central middleware, forward-only Actions, a class-based Livewire
@@ -410,14 +411,35 @@ and version snapshots, focus/status events, and redirects. It does not accept
 user IDs, pet IDs, actor keys, completion timestamps, arbitrary next states, or
 return URLs. Business transitions stay in Actions.
 
+Prompt 04 keeps the existing single `/onboarding` route, class-based component,
+and focused authenticated layout. The server-derived persisted step selects the
+only rendered input screen. A computed presentation map supplies step number,
+localized label, current state, and completed state to one semantic ordered
+progress list; no public step counter is introduced. The component rechecks the
+fresh aggregate before every mutation and redirects a stale snapshot to the
+canonical current screen with localized feedback.
+
+The canonical state graph is forward-only. `OnboardingState::canEnter()` permits
+only the current persisted state and current transition Actions reject stale
+expected steps and versions. Prompt 04 therefore does not render a Back control:
+the prompt requires Back only where the state machine permits it, and a
+presentation-only previous screen would create a second, browser-authoritative
+state machine. Previously persisted preferences remain editable later through
+the canonical profile settings flow.
+
 ## Forms
 
 - Reuse `ProfilePreferencesForm` for locale/timezone.
 - Reuse `OnboardingPrivacyForm` for the three real social settings.
-- Validate explicit introduction/privacy acknowledgement at the component
-  boundary and again through server transition prerequisites where applicable.
-- Pet choice is parsed through `OnboardingPetChoice`; pet creation/access forms
-  stay in their canonical components.
+- Add a small `OnboardingPetChoiceForm` for the radio-card browser input; it
+  parses only the controlled `OnboardingPetChoice` enum while evidence remains
+  enforced by the existing Action and canonical pet queries.
+- Introduction advances from an explicit Continue action without a meaningless
+  checkbox; privacy acknowledgement remains explicit, unchecked, validated at
+  the component boundary, and enforced by the completion Action.
+- Add onboarding-specific localized validation messages/attribute names while
+  continuing to reuse the profile preference rules and Action.
+- Pet creation/access forms stay in their canonical components.
 
 ## Actions
 
@@ -668,6 +690,28 @@ recipient-locale content tests pass.
 - [x] **ONB-P03-06 — Documentation, gates and publication decision.** Recorded
   exact diagrams, allowlist, commands, counts, global blockers, diff ownership,
   commit and push status without claiming Prompt 04 UI work.
+- [x] **ONB-P04-01 — Wizard re-audit and delivery design.** Re-read the current
+  component, forms, Actions, state service, route, layout, catalogues, design
+  system and tests; recorded eight exclusive specialist roles before code
+  changes. Retain the one class-based component and forward-only server state.
+- [ ] **ONB-P04-02 — RED wizard contracts.** Add focused component, semantic,
+  localization, stale/replay, optional-evidence and disposable-browser-wrapper
+  tests, and observe each selected gap fail for its intended reason.
+- [ ] **ONB-P04-03 — Thin interaction and responsive UI remediation.** Implement
+  computed progress, semantic radio/checkbox groups, explicit loading/offline/
+  dirty/error feedback, localized validation, stale-state recovery, guarded
+  pet deferral, focused hydration and mobile-first design-system-aligned views.
+- [ ] **ONB-P04-04 — Connected browser evidence.** Extend the canonical isolated
+  runner with onboarding coverage at 320x800, 375x812, 768x1024 and 1440x900,
+  including overflow, focus, touch target, zoom/forced-colors, locale, console
+  and network assertions against disposable data.
+- [ ] **ONB-P04-05 — Independent frozen-diff review.** A reviewer excluded from
+  discovery and implementation must cover architecture, Livewire security,
+  UX, accessibility and regression; every material finding is reproduced and
+  dispositioned before publication.
+- [ ] **ONB-P04-06 — Documentation, gates and publication.** Record exact tests,
+  commands, failures, browser evidence, diff ownership, commit and push output;
+  publish only if every applicable material gate is green.
 
 ## Acceptance Criteria
 
@@ -736,6 +780,29 @@ without the wrapper's mutation guard and must not be run against a configured
 application database.
 
 ## Current Execution Status
+
+### Prompt 04
+
+- [x] Initial inventory observed `main`, `HEAD`, and `origin/main` at
+  `4b71974fb22e944f423b7b1bf164540ae9514faf`, with 45 staged and 23 unstaged
+  shared Prompt 02/03 paths and zero untracked files. While read-only Prompt 04
+  audits ran, an external process committed and pushed that shared candidate,
+  including the initial Prompt 04 ledger, as
+  `6efe0241bc23771ef17510bd843ef66a4a6cd23d`. The principal did not create that
+  commit or push; history is preserved. Prompt 04 production work starts from
+  the now-clean `main` at that commit.
+- [x] Governing frontend, Livewire, Tailwind, accessibility, localization,
+  authentication, security, testing, onboarding and implementation documents
+  re-read; code and current tests were inspected rather than inferred.
+- [x] Current architecture selected before production edits: keep one route,
+  one class component and server state; reuse canonical preference/privacy
+  boundaries; add only one controlled pet-choice form; do not invent Back while
+  `OnboardingState::canEnter()` forbids previous-state entry.
+- [ ] RED wizard/security/localization/browser contracts observed.
+- [ ] Production interaction and presentation remediation implemented.
+- [ ] Focused, adjacent, browser and repository gates observed.
+- [ ] Independent frozen-diff review completed and findings dispositioned.
+- [ ] Changelog, plans, commit and push status reconciled from observed output.
 
 ### Prompt 03
 

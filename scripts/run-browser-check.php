@@ -18,6 +18,7 @@ $checks = [
     'page-identity' => ['scripts/accessibility-browser-check.mjs', '--page-identity-only'],
     'places' => ['scripts/accessibility-browser-check.mjs', '--places-only'],
     'discover' => ['scripts/discovery-browser-check.mjs'],
+    'onboarding' => ['scripts/accessibility-browser-check.mjs', '--onboarding-only'],
 ];
 $name = $argv[1] ?? '';
 $isolationOnly = ($argv[2] ?? '') === '--assert-isolation';
@@ -152,6 +153,22 @@ try {
 
         if (! $migrate->isSuccessful()) {
             throw new RuntimeException('The isolated browser database could not be prepared.');
+        }
+
+        if ($name === 'onboarding') {
+            $seedOnboarding = new Process(
+                [PHP_BINARY, 'artisan', 'db:seed', '--class=Database\\Seeders\\OnboardingBrowserSeeder', '--force', '--no-interaction'],
+                $root,
+                $environment,
+            );
+            $seedOnboarding->setTimeout(60);
+            $seedOnboarding->run(static function (string $type, string $buffer): void {
+                fwrite($type === Process::ERR ? STDERR : STDOUT, $buffer);
+            });
+
+            if (! $seedOnboarding->isSuccessful()) {
+                throw new RuntimeException('The isolated onboarding browser fixtures could not be prepared.');
+            }
         }
 
         $server = new Process(

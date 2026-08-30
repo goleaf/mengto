@@ -365,16 +365,12 @@ test('preferences and privacy complete through named livewire mutations', functi
         ->and($actor->settings()->firstOrFail()->allow_message_requests)->toBeFalse();
 });
 
-test('onboarding validates acknowledgement preferences and stale snapshots', function (): void {
+test('onboarding advances introduction and refreshes stale preference snapshots', function (): void {
     $state = UserOnboarding::factory()->for($this->authenticatedUser)->create();
     app(SocialActorResolver::class)
         ->provisionPrivateForUser($this->authenticatedUser);
 
     Livewire::test(Onboarding::class)
-        ->call('acknowledgeIntroduction')
-        ->assertHasErrors(['introductionAcknowledged'])
-        ->assertDispatched('onboarding-validation-failed')
-        ->set('introductionAcknowledged', true)
         ->call('acknowledgeIntroduction')
         ->assertHasNoErrors();
 
@@ -389,8 +385,8 @@ test('onboarding validates acknowledgement preferences and stale snapshots', fun
         ->set('preferencesForm.locale', 'ru')
         ->set('preferencesForm.timezone', 'Europe/Riga')
         ->call('savePreferences')
-        ->assertHasErrors(['onboarding'])
-        ->assertSee(__('onboarding.errors.stale_state'));
+        ->assertRedirect(route('onboarding.show'))
+        ->assertSessionHas('feedback', __('onboarding.states.progress_updated'));
 
     expect($this->authenticatedUser->fresh())
         ->locale->toBe('en')
@@ -512,8 +508,7 @@ test('stale livewire and direct actions cannot mutate onboarding after verificat
     config()->set('platform.email_verification_enabled', true);
     $state = UserOnboarding::factory()->for($this->authenticatedUser)->create();
     app(SocialActorResolver::class)->provisionPrivateForUser($this->authenticatedUser);
-    $component = Livewire::test(Onboarding::class)
-        ->set('introductionAcknowledged', true);
+    $component = Livewire::test(Onboarding::class);
 
     $this->authenticatedUser->forceFill(['email_verified_at' => null])->saveOrFail();
 

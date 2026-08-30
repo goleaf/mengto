@@ -11,6 +11,7 @@ use App\Actions\DeferOnboardingPetRelationship;
 use App\Enums\OnboardingPetChoice;
 use App\Enums\OnboardingStep;
 use App\Livewire\Forms\OnboardingPrivacyForm;
+use App\Livewire\Forms\OnboardingPetChoiceForm;
 use App\Livewire\Forms\ProfilePreferencesForm;
 use App\Models\PetProfile;
 use App\Models\User;
@@ -34,7 +35,7 @@ final class Onboarding extends Component
 
     public OnboardingPrivacyForm $privacyForm;
 
-    public bool $introductionAcknowledged = false;
+    public OnboardingPetChoiceForm $petForm;
 
     public bool $privacyAcknowledged = false;
 
@@ -46,6 +47,9 @@ final class Onboarding extends Component
 
     #[Locked]
     public int $socialSettingsLockVersion = 0;
+
+    #[Locked]
+    public int $mountedUserId = 0;
 
     private AuthFactory $auth;
 
@@ -102,10 +106,10 @@ final class Onboarding extends Component
             return;
         }
 
-        $this->preferencesForm->fillFromUser($user);
-        $actor = $this->actors->provisionPrivateForUser($user);
-        $this->privacyForm->fillFrom($actor, $actor->settings()->firstOrFail());
+        $this->mountedUserId = (int) $user->getKey();
+        $this->actors->provisionPrivateForUser($user);
         $this->syncSnapshot($state);
+        $this->prepareCurrentStep($user, $state);
     }
 
     /** @return array<string, string> */
@@ -175,20 +179,43 @@ final class Onboarding extends Component
         return min($step?->position() ?? 1, 4);
     }
 
+    /**
+     * @return list<array{step: string, number: int, label: string, status: 'complete'|'current'|'upcoming'}>
+     */
+    #[Computed]
+    public function progressSteps(): array
+    {
+        $current = OnboardingStep::tryFrom($this->expectedStep) ?? OnboardingStep::Introduction;
+
+        return collect([
+            OnboardingStep::Introduction,
+            OnboardingStep::Preferences,
+            OnboardingStep::PetRelationship,
+            OnboardingStep::PrivacyDiscovery,
+        ])->map(static function (OnboardingStep $step) use ($current): array {
+            $status = match (true) {
+                $step === $current => 'current',
+                $step->position() < $current->position() => 'complete',
+                default => 'upcoming',
+            };
+
+            return [
+                'step' => $step->value,
+                'number' => $step->position(),
+                'label' => __('onboarding.steps.'.str_replace('-', '_', $step->value).'.label'),
+                'status' => $status,
+            ];
+        })->all();
+    }
+
     public function acknowledgeIntroduction(): void
     {
         $this->runMutation(function (): UserOnboarding {
-            $this->validate([
-                'introductionAcknowledged' => ['accepted'],
-            ], [
-                'introductionAcknowledged.accepted' => __('onboarding.validation.acknowledgement'),
-            ]);
-
             return $this->advanceOnboarding->handle(
                 $this->requireUser(),
                 $this->snapshotStep(),
                 $this->onboardingLockVersion,
-                introductionAcknowledged: $this->introductionAcknowledged,
+                introductionAcknowledged: true,
             );
         });
     }
@@ -212,18 +239,11 @@ final class Onboarding extends Component
         }
     }
 
-    public function confirmPetRelationship(string $choice): void
+    public function savePetRelationship(): void
     {
-        $petChoice = OnboardingPetChoice::tryFrom($choice);
+        $this->runMutation(function (): UserOnboarding {
+            $petChoice = $this->petForm->selectedChoice();
 
-        if (! $petChoice instanceof OnboardingPetChoice) {
-            $this->addError('petChoice', __('onboarding.validation.pet_choice'));
-            $this->dispatch('onboarding-validation-failed');
-
-            return;
-        }
-
-        $this->runMutation(function () use ($petChoice): UserOnboarding {
             return $this->advanceOnboarding->handle(
                 $this->requireUser(),
                 $this->snapshotStep(),
@@ -286,7 +306,8 @@ final class Onboarding extends Component
         abort_unless(
             $user instanceof User
                 && $user->isActive()
-                && $this->emailVerification->allows($user),
+                && $this->emailVerification->allows($user)
+                && ($this->mountedUserId === 0 || $this->mountedUserId === (int) $user->getKey()),
             403,
         );
 
@@ -312,6 +333,13 @@ final class Onboarding extends Component
         try {
             $state = $mutation();
         } catch (ValidationException $exception) {
+            if ($this->canonicalStepChanged()) {
+                Session::flash('feedback', __('onboarding.states.progress_updated'));
+                $this->redirectRoute('onboarding.show');
+
+                return null;
+            }
+
             $this->setErrorBag($exception->errors());
             $this->dispatch('onboarding-validation-failed');
 
@@ -320,6 +348,7 @@ final class Onboarding extends Component
 
         $this->resetErrorBag();
         $this->syncSnapshot($state);
+        $this->prepareCurrentStep($this->requireUser(), $state);
         $this->dispatch('onboarding-step-changed');
 
         return $state;
@@ -329,12 +358,45 @@ final class Onboarding extends Component
     {
         $this->expectedStep = $this->onboardingState->currentStep($state)->value;
         $this->onboardingLockVersion = $state->lock_version;
-        $actor = $this->actors->provisionPrivateForUser($this->requireUser());
-        $this->socialSettingsLockVersion = $actor->settings()->firstOrFail()->lock_version;
         unset(
+            $this->progressSteps,
             $this->hasManagedPet,
             $this->hasAccessRequestEvidence,
             $this->needsPetEvidenceRecovery,
         );
+    }
+
+    private function prepareCurrentStep(User $user, UserOnboarding $state): void
+    {
+        $step = $this->onboardingState->currentStep($state);
+
+        if ($step === OnboardingStep::Preferences) {
+            $this->preferencesForm->fillFromUser($user);
+
+            return;
+        }
+
+        if ($step === OnboardingStep::PetRelationship) {
+            $this->petForm->choice = '';
+
+            return;
+        }
+
+        if ($step !== OnboardingStep::PrivacyDiscovery) {
+            return;
+        }
+
+        $actor = $this->actors->provisionPrivateForUser($user);
+        $settings = $actor->settings()->firstOrFail();
+        $this->privacyForm->fillFrom($actor, $settings);
+        $this->socialSettingsLockVersion = $settings->lock_version;
+    }
+
+    private function canonicalStepChanged(): bool
+    {
+        $state = $this->requireUser()->onboarding()->first();
+
+        return $state instanceof UserOnboarding
+            && $this->onboardingState->currentStep($state)->value !== $this->expectedStep;
     }
 }

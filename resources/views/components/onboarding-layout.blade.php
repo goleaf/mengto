@@ -11,7 +11,7 @@
         @vite(['resources/css/app.css', 'resources/scss/app.scss'])
         @livewireStyles
     </head>
-    <body class="min-h-screen bg-paw-canvas text-paw-ink antialiased">
+    <body class="min-h-screen bg-paw-cream text-paw-ink antialiased">
         <a
             href="#onboarding-main"
             class="sr-only fixed left-4 top-4 z-50 rounded-md bg-paw-ink px-4 py-3 font-semibold text-white focus:not-sr-only"
@@ -31,7 +31,7 @@
                 <x-flash-feedback :message="session('feedback')" class="mb-4" />
             @endif
 
-            <div class="rounded-2xl border border-paw-line bg-white p-5 shadow-sm sm:p-8">
+            <div class="rounded-lg border border-paw-line bg-paw-paper p-5 shadow-panel sm:p-8">
                 {{ $slot }}
             </div>
 

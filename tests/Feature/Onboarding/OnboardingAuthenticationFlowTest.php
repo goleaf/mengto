@@ -442,4 +442,10 @@ test('logout and login resume the persisted onboarding step', function (): void 
         ->toBe(OnboardingStep::PrivacyDiscovery)
         ->and(session()->getId())->not->toBe($guestSessionId)
         ->and(session('locale'))->toBe('ru');
+
+    $this->get(route('onboarding.show'))
+        ->assertOk()
+        ->assertSee(__('onboarding.steps.privacy_discovery.title'))
+        ->assertSee('data-step="privacy-discovery"', false)
+        ->assertDontSee(__('onboarding.steps.preferences.title'));
 });

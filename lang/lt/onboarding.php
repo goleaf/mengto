@@ -13,6 +13,11 @@ return [
     'progress' => [
         'label' => 'Paskyros paruošimo eiga',
         'step' => ':current žingsnis iš :total',
+        'status' => [
+            'complete' => 'Baigta',
+            'current' => 'Dabartinis žingsnis',
+            'upcoming' => 'Nepradėta',
+        ],
     ],
     'steps' => [
         'introduction' => [
@@ -32,15 +37,18 @@ return [
             'label' => 'Ryšys su augintiniu',
             'title' => 'Susiekite augintinį, kai būsite pasirengę',
             'body' => 'Galite sukurti privatų augintinio profilį, rasti esamą profilį ir paprašyti prieigos arba tęsti be augintinio. Ši galimybė liks prieinama ir vėliau.',
+            'legend' => 'Pasirinkite savo ryšį su augintiniu',
             'create_or_find' => 'Sukurti arba rasti augintinio profilį',
             'managed_pet' => 'Tęsti su mano valdomu augintiniu',
             'access_requested' => 'Tęsti su mano prieigos prašymu',
             'not_now' => 'Kol kas tęsti be augintinio',
+            'continue' => 'Išsaugoti ir tęsti',
         ],
         'privacy_discovery' => [
             'label' => 'Privatumas',
             'title' => 'Patvirtinkite paieškos ir kontakto pasirinkimus',
             'body' => 'Iš pradžių visos parinktys išjungtos. Įjunkite tik tuos būdus, kuriais norite būti randami ar pasiekiami kitų narių.',
+            'options_legend' => 'Paieškos ir kontakto parinktys',
             'discoverable_label' => 'Rodyti mano paskyrą narių paieškoje',
             'discoverable_description' => 'Leidžia tinkamiems nariams rasti viešai saugią jūsų paskyros profilio dalį.',
             'recommendable_label' => 'Įtraukti mano paskyrą į rekomendacijas',
@@ -60,6 +68,7 @@ return [
         'checking' => 'Tikrinamas jūsų ryšys su augintiniu…',
         'offline' => 'Nesate prisijungę prie interneto. Prisijunkite prieš išsaugodami šį žingsnį.',
         'unsaved' => 'Šiame žingsnyje yra neišsaugotų pakeitimų.',
+        'progress_updated' => 'Paskyros paruošimo eiga pasikeitė kitame skirtuke. Perkėlėme jus į dabartinį žingsnį.',
     ],
     'validation' => [
         'summary' => 'Prieš tęsdami peržiūrėkite pažymėtą informaciją.',
@@ -67,11 +76,15 @@ return [
         'privacy_acknowledgement' => 'Prieš baigdami paskyros paruošimą patvirtinkite, kad suprantate privatumo ribas.',
         'pet_choice' => 'Pasirinkite vieną iš galimų ryšio su augintiniu variantų.',
         'pet_evidence' => 'Kol kas nepavyko patvirtinti šio ryšio su augintiniu jūsų paskyrai.',
+        'locale' => 'Pasirinkite anglų, lietuvių arba rusų kalbą.',
+        'timezone' => 'Pasirinkite galiojančią IANA laiko juostą.',
+        'privacy_choice' => 'Pasirinkite galiojančią privatumo parinktį.',
     ],
     'errors' => [
         'state_unavailable' => 'Nepavyko rasti išsaugotos paskyros paruošimo eigos. Atnaujinkite puslapį ir bandykite dar kartą.',
         'stale_state' => 'Ši paskyros paruošimo eiga pasikeitė kitame skirtuke arba užklausoje. Prieš tęsdami atnaujinkite puslapį.',
         'transition_conflict' => 'Šis paskyros paruošimo žingsnis dar nepasiekiamas.',
+        'pet_evidence_current' => 'Šis ryšys su augintiniu vis dar galioja, todėl jo negalima pakeisti atkūrimo veiksmu.',
     ],
     'middleware' => [
         'incomplete_detail' => 'Prieš pasiekdami šį išteklių užbaikite paskyros paruošimą.',

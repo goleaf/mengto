@@ -158,22 +158,26 @@ relaxed.
 
 ## Prompt 04 Livewire Wizard Delivery
 
-Prompt 04 starts from `main`, `HEAD`, and `origin/main` at
+Prompt 04 inventory began with `main`, `HEAD`, and `origin/main` at
 `4b71974fb22e944f423b7b1bf164540ae9514faf`. The shared Prompt 02/03 working
-tree has 45 staged and 23 unstaged paths with overlap and no untracked files;
-the principal preserves that index and owns every Prompt 04 write. Discovery
+tree had 45 staged and 23 unstaged paths with overlap and no untracked files.
+While the read-only audits ran, an external process committed and pushed that
+shared candidate, including this ledger's initial Prompt 04 entry, as
+`6efe0241bc23771ef17510bd843ef66a4a6cd23d`; the principal did not create that
+commit or push and preserved history. Prompt 04 production work begins from a
+clean `main` at `6efe024`. Discovery
 specialists are read-only, receive exclusive scopes, and may not edit, stage,
 commit, push, or run a state-changing browser/database command. The final
 reviewer is reserved until the implementation diff is frozen.
 
 | ID | Specialist role | Exclusive Prompt 04 scope | Required deliverable | Status |
 | --- | --- | --- | --- | --- |
-| ONB-P04-A | Livewire architecture reviewer | Existing `Onboarding` component, forms, Actions, locked/computed state, events, redirects and hydration only | Recommended thin-component boundaries, reuse map, stale/replay risks and exact evidence | assigned read-only |
-| ONB-P04-B | Existing design-system reviewer | Onboarding/auth/application shells, shared Blade controls, tokens, panels, form/error/status patterns only | Reusable primitives, layout recommendation and exact visual-contract gaps | assigned read-only |
-| ONB-P04-C | Mobile UX reviewer | Onboarding layout at 320/360/375/390, tablet and desktop; progress/actions/long copy/touch only | Responsive structure and measurable overflow/touch acceptance matrix | assigned read-only |
-| ONB-P04-D | Accessibility reviewer | Onboarding landmarks, headings, progress, focus, labels/errors, keyboard, forced colors, reduced motion and zoom only | WCAG 2.2 defect list and semantic/browser acceptance matrix | queued read-only |
+| ONB-P04-A | Livewire architecture reviewer | Existing `Onboarding` component, forms, Actions, locked/computed state, events, redirects and hydration only | Recommended thin-component boundaries, reuse map, stale/replay risks and exact evidence | completed read-only; guarded deferral, stale recovery, focused hydration and semantic progress accepted |
+| ONB-P04-B | Existing design-system reviewer | Onboarding/auth/application shells, shared Blade controls, tokens, panels, form/error/status patterns only | Reusable primitives, layout recommendation and exact visual-contract gaps | completed read-only; dedicated shell retained, canonical action/surface/type tokens selected |
+| ONB-P04-C | Mobile UX reviewer | Onboarding layout at 320/360/375/390, tablet and desktop; progress/actions/long copy/touch only | Responsive structure and measurable overflow/touch acceptance matrix | completed read-only; compact mobile progress and non-stretched desktop actions selected |
+| ONB-P04-D | Accessibility reviewer | Onboarding landmarks, headings, progress, focus, labels/errors, keyboard, forced colors, reduced motion and zoom only | WCAG 2.2 defect list and semantic/browser acceptance matrix | completed read-only; progress/group/status findings accepted; Back finding rejected because server entry forbids prior states |
 | ONB-P04-E | Livewire security reviewer | Public-property tampering, direct methods, stale snapshots, replay, identity/step/return manipulation only | Exploit-focused cases, severity, reproduction and required regression tests | queued read-only |
-| ONB-P04-F | Localization-layout reviewer | Recursive EN/LT/RU onboarding catalogues, placeholder parity, raw keys and long-label layout only | Key/layout gaps with exact render/scanner evidence | queued read-only |
+| ONB-P04-F | Localization-layout reviewer | Recursive EN/LT/RU onboarding catalogues, placeholder parity, raw keys and long-label layout only | Key/layout gaps with exact render/scanner evidence | completed read-only with D; 50-key parity and scanner baseline green, localized preference validation and browser reflow accepted |
 | ONB-P04-G | Test reviewer | Current onboarding/auth/architecture/localization/browser tests and isolated runners only | Requirement-to-test matrix, false positives, missing negative/browser cases and exact commands | queued read-only |
 | ONB-P04-H | Final independent reviewer | Frozen Prompt 04 attributable diff only; must not participate in discovery or implementation | Architecture, Livewire security, UX, accessibility and regression verdict with reproduced findings | reserved read-only |
 

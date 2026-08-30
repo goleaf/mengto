@@ -40,6 +40,17 @@ final class ProfilePreferencesForm extends Form
         ];
     }
 
+    /** @return array<string, string> */
+    protected function messages(): array
+    {
+        return [
+            'locale.required' => __('onboarding.validation.locale'),
+            'locale.in' => __('onboarding.validation.locale'),
+            'timezone.required' => __('onboarding.validation.timezone'),
+            'timezone.timezone' => __('onboarding.validation.timezone'),
+        ];
+    }
+
     public function fillFromUser(User $user): void
     {
         $this->locale = $user->locale;

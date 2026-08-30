@@ -13,6 +13,11 @@ return [
     'progress' => [
         'label' => 'Onboarding progress',
         'step' => 'Step :current of :total',
+        'status' => [
+            'complete' => 'Completed',
+            'current' => 'Current step',
+            'upcoming' => 'Not started',
+        ],
     ],
     'steps' => [
         'introduction' => [
@@ -32,15 +37,18 @@ return [
             'label' => 'Pet relationship',
             'title' => 'Connect a pet when it is right for you',
             'body' => 'You may create a private pet profile, find an existing profile and request access, or continue without a pet. Choosing not now does not remove this option later.',
+            'legend' => 'Choose your relationship with a pet',
             'create_or_find' => 'Create or find a pet profile',
             'managed_pet' => 'Continue with my managed pet',
             'access_requested' => 'Continue with my access request',
             'not_now' => 'Continue without a pet for now',
+            'continue' => 'Save and continue',
         ],
         'privacy_discovery' => [
             'label' => 'Privacy',
             'title' => 'Confirm discovery and contact choices',
             'body' => 'All options start off. Enable only the ways you want other members to find or contact your account.',
+            'options_legend' => 'Discovery and contact options',
             'discoverable_label' => 'Show my account in member discovery',
             'discoverable_description' => 'Allows eligible members to find the public-safe part of your account profile.',
             'recommendable_label' => 'Include my account in recommendations',
@@ -60,6 +68,7 @@ return [
         'checking' => 'Checking your pet relationship…',
         'offline' => 'You are offline. Reconnect before saving this step.',
         'unsaved' => 'This step has unsaved changes.',
+        'progress_updated' => 'Your account setup changed in another tab. We moved you to the current step.',
     ],
     'validation' => [
         'summary' => 'Review the highlighted information before continuing.',
@@ -67,11 +76,15 @@ return [
         'privacy_acknowledgement' => 'Confirm that you understand the privacy boundaries before finishing account setup.',
         'pet_choice' => 'Choose one of the available pet relationship options.',
         'pet_evidence' => 'We could not confirm that pet relationship for your account yet.',
+        'locale' => 'Choose English, Lithuanian or Russian.',
+        'timezone' => 'Choose a valid IANA timezone.',
+        'privacy_choice' => 'Choose a valid privacy option.',
     ],
     'errors' => [
         'state_unavailable' => 'Your saved account setup could not be found. Refresh the page and try again.',
         'stale_state' => 'This setup changed in another tab or request. Refresh before continuing.',
         'transition_conflict' => 'That setup step is not available yet.',
+        'pet_evidence_current' => 'This pet relationship is still active and cannot be replaced by the recovery action.',
     ],
     'middleware' => [
         'incomplete_detail' => 'Complete account setup before accessing this resource.',

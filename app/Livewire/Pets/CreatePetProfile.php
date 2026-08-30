@@ -55,6 +55,9 @@ final class CreatePetProfile extends Component
     #[Locked]
     public string $selectedDuplicateProfileKey = '';
 
+    #[Locked]
+    public int $mountedUserId = 0;
+
     public string $accessRequestFeedback = '';
 
     private AuthFactory $auth;
@@ -95,7 +98,7 @@ final class CreatePetProfile extends Component
 
     public function mount(): void
     {
-        $this->requireUser();
+        $this->mountedUserId = (int) $this->requireUser()->getKey();
         $this->idempotencyKey = (string) Str::uuid();
         $this->mediaIdempotencyKey = (string) Str::uuid();
         $this->accessRequestIdempotencyKey = (string) Str::uuid();
@@ -348,7 +351,8 @@ final class CreatePetProfile extends Component
         abort_unless(
             $user instanceof User
                 && $user->isActive()
-                && $this->emailVerification->allows($user),
+                && $this->emailVerification->allows($user)
+                && ($this->mountedUserId === 0 || $this->mountedUserId === (int) $user->getKey()),
             403,
         );
 

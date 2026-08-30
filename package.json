@@ -16,6 +16,7 @@
         "test:browser:page-identity": "php scripts/run-browser-check.php page-identity",
         "test:browser:places": "php scripts/run-browser-check.php places",
         "test:browser:discover": "php scripts/run-browser-check.php discover",
+        "test:browser:onboarding": "php scripts/run-browser-check.php onboarding",
         "dev": "vite",
         "skill-compass:check": "node .claude/skill-compass/install.js --check",
         "skill-compass:test": "node .claude/skill-compass/compass.js --self-test"

@@ -11,6 +11,7 @@ use App\Models\UserOnboarding;
 use App\Services\EmailVerificationMode;
 use App\Services\ForumActor;
 use App\Services\OnboardingState;
+use App\Services\OnboardingPetEvidence;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
@@ -20,6 +21,7 @@ final readonly class DeferOnboardingPetRelationship
         private ForumActor $account,
         private EmailVerificationMode $emailVerification,
         private OnboardingState $onboardingState,
+        private OnboardingPetEvidence $petEvidence,
     ) {}
 
     public function handle(User $user, int $expectedLockVersion): UserOnboarding
@@ -53,8 +55,20 @@ final readonly class DeferOnboardingPetRelationship
                 $this->throwConflict();
             }
 
-            if ($this->onboardingState->currentPetChoice($state) === OnboardingPetChoice::NotNow) {
+            $choice = $this->onboardingState->currentPetChoice($state);
+
+            if ($choice === OnboardingPetChoice::NotNow) {
                 return $state;
+            }
+
+            if (! $choice instanceof OnboardingPetChoice) {
+                $this->throwConflict();
+            }
+
+            if ($this->petEvidence->supportsForCompletion($user, $choice)) {
+                throw ValidationException::withMessages([
+                    'onboarding' => __('onboarding.errors.pet_evidence_current'),
+                ]);
             }
 
             $state->forceFill([
