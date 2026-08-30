@@ -32,6 +32,8 @@ return [
             'label' => 'Preferences',
             'title' => 'Choose language and timezone',
             'body' => 'These settings control interface language and how dates and times are shown. They do not change stored event times.',
+            'locale_help' => 'You can change the interface language later in Profile settings.',
+            'timezone_help' => 'Used for schedules, reminders, events and displayed times. It does not publish your exact location.',
             'save' => 'Save and continue',
         ],
         'pet_relationship' => [

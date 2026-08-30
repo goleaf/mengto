@@ -1553,3 +1553,20 @@ logout/login resume, 200% page scale, forced colors, reduced motion, Finish,
 overflow, touch targets, raw keys, network failures, and console errors.
 Chrome/process failure is recorded separately from application assertions and
 never counts as a passing browser gate.
+
+## Onboarding Preference Coverage
+
+`tests/Feature/Onboarding/OnboardingPreferencesTest.php` covers account-backed
+form hydration, the shared profile-rule source, EN/LT/RU and UTC/Vilnius/
+London/New York/Tokyo persistence, immediate document language, logout/login
+resume, normal Profile Settings consistency, accessible labels/help/errors,
+direct invalid and cross-account Action calls, freshly blocked/suspended
+accounts, malformed replay, stale state and two-tab idempotency. It runs with
+the Wizard and authentication regressions through the serial wrapper:
+
+```bash
+php scripts/run-tests.php --compact \
+  tests/Feature/Onboarding/OnboardingPreferencesTest.php \
+  tests/Feature/Onboarding/OnboardingWizardTest.php \
+  tests/Feature/Auth/AuthenticationTest.php
+```

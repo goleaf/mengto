@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Actions;
 
 use App\Enums\OnboardingStep;
+use App\Enums\UserStatus;
 use App\Models\User;
 use App\Models\UserOnboarding;
 use App\Services\EmailVerificationMode;
@@ -33,6 +34,10 @@ final readonly class CompleteOnboardingPreferences
         abort_unless(
             $authenticated->is($user)
                 && $authenticated->isActive()
+                && User::query()
+                    ->whereKey($user->getKey())
+                    ->where('status', UserStatus::Active)
+                    ->exists()
                 && $this->emailVerification->allows($authenticated),
             403,
         );
@@ -63,8 +68,8 @@ final readonly class CompleteOnboardingPreferences
                     $currentStep === OnboardingStep::PetRelationship
                     && $state->lock_version === $expectedLockVersion + 1
                     && $state->getRawOriginal('preferences_completed_at') !== null
-                    && $persistedUser->locale === $data['locale']
-                    && $persistedUser->timezone === $data['timezone']
+                    && $persistedUser->locale === ($data['locale'] ?? null)
+                    && $persistedUser->timezone === ($data['timezone'] ?? null)
                 ) {
                     return $state;
                 }

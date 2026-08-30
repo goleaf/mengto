@@ -11,6 +11,7 @@ use App\Services\EmailVerificationMode;
 use App\Services\ProfilePresenter;
 use Illuminate\Contracts\Auth\Factory as AuthFactory;
 use Illuminate\Contracts\View\View;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Session;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
@@ -80,7 +81,9 @@ final class ProfileSettings extends Component
             $this->form->validatedData(),
         );
 
+        $this->auth->guard('web')->setUser($user);
         Session::put('locale', $user->locale);
+        App::setLocale($user->locale);
         $this->feedback = trans('auth.settings.saved', locale: $user->locale);
         Session::flash('profile-settings-feedback', $this->feedback);
         $this->redirectRoute('profile.settings');

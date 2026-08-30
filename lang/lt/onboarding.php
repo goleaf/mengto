@@ -32,6 +32,8 @@ return [
             'label' => 'Nuostatos',
             'title' => 'Pasirinkite kalbą ir laiko juostą',
             'body' => 'Šios nuostatos valdo sąsajos kalbą ir datų bei laiko rodymą. Jos nekeičia išsaugoto įvykių laiko.',
+            'locale_help' => 'Sąsajos kalbą vėliau galėsite pakeisti profilio nustatymuose.',
+            'timezone_help' => 'Naudojama tvarkaraščiams, priminimams, įvykiams ir rodomam laikui. Ji neatskleidžia tikslios jūsų vietos.',
             'save' => 'Išsaugoti ir tęsti',
         ],
         'pet_relationship' => [

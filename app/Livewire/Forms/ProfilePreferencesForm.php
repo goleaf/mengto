@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Livewire\Forms;
 
 use App\Models\User;
-use Illuminate\Validation\Rule;
+use App\Validation\ProfilePreferenceRules;
 use Livewire\Form;
 
 final class ProfilePreferencesForm extends Form
@@ -19,14 +19,7 @@ final class ProfilePreferencesForm extends Form
      */
     protected function rules(): array
     {
-        return [
-            'locale' => [
-                'required',
-                'string',
-                Rule::in(config('platform.supported_locales', ['en'])),
-            ],
-            'timezone' => ['required', 'string', 'timezone:all'],
-        ];
+        return ProfilePreferenceRules::rules();
     }
 
     /**
@@ -34,21 +27,13 @@ final class ProfilePreferencesForm extends Form
      */
     protected function validationAttributes(): array
     {
-        return [
-            'locale' => __('auth.fields.locale'),
-            'timezone' => __('auth.fields.timezone'),
-        ];
+        return ProfilePreferenceRules::attributes();
     }
 
     /** @return array<string, string> */
     protected function messages(): array
     {
-        return [
-            'locale.required' => __('onboarding.validation.locale'),
-            'locale.in' => __('onboarding.validation.locale'),
-            'timezone.required' => __('onboarding.validation.timezone'),
-            'timezone.timezone' => __('onboarding.validation.timezone'),
-        ];
+        return ProfilePreferenceRules::messages();
     }
 
     public function fillFromUser(User $user): void

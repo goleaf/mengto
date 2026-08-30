@@ -70,25 +70,25 @@
         <section class="mt-7" aria-labelledby="onboarding-step-heading">
             <h2 id="onboarding-step-heading" x-ref="stepHeading" tabindex="-1" class="text-lg font-semibold">{{ __('onboarding.steps.preferences.title') }}</h2>
             <p class="mt-3 leading-7 text-paw-muted">{{ __('onboarding.steps.preferences.body') }}</p>
-            <form wire:submit="savePreferences" class="mt-6 grid gap-5">
-                <div>
+            <form wire:submit="savePreferences" class="mt-6 grid min-w-0 gap-5" novalidate>
+                <div class="min-w-0">
                     <label for="onboarding-locale" class="font-semibold">{{ __('auth.fields.locale') }}</label>
-                    <select id="onboarding-locale" wire:model="preferencesForm.locale" class="mt-2 min-h-11 w-full rounded-md border-2 border-paw-muted bg-white px-3 py-2" aria-describedby="onboarding-locale-help @error('preferencesForm.locale') onboarding-locale-error @enderror" @error('preferencesForm.locale') aria-invalid="true" @enderror>
+                    <select id="onboarding-locale" wire:model="preferencesForm.locale" required aria-required="true" class="mt-2 min-h-11 w-full max-w-full rounded-md border-2 border-paw-muted bg-white px-3 py-2 aria-invalid:border-paw-coral" aria-describedby="onboarding-locale-help @error('preferencesForm.locale') onboarding-locale-error @enderror" @error('preferencesForm.locale') aria-invalid="true" @enderror>
                         @foreach ($this->localeOptions as $locale => $label)
                             <option wire:key="onboarding-locale-{{ $locale }}" value="{{ $locale }}">{{ $label }}</option>
                         @endforeach
                     </select>
-                    <p id="onboarding-locale-help" class="mt-2 text-sm text-paw-muted">{{ __('auth.profile.locale_help') }}</p>
+                    <p id="onboarding-locale-help" class="mt-2 text-sm text-paw-muted">{{ __('onboarding.steps.preferences.locale_help') }}</p>
                     @error('preferencesForm.locale') <p id="onboarding-locale-error" class="mt-2 text-sm font-medium text-paw-coral">{{ $message }}</p> @enderror
                 </div>
-                <div>
+                <div class="min-w-0">
                     <label for="onboarding-timezone" class="font-semibold">{{ __('auth.fields.timezone') }}</label>
-                    <select id="onboarding-timezone" wire:model="preferencesForm.timezone" class="mt-2 min-h-11 w-full rounded-md border-2 border-paw-muted bg-white px-3 py-2" aria-describedby="onboarding-timezone-help @error('preferencesForm.timezone') onboarding-timezone-error @enderror" @error('preferencesForm.timezone') aria-invalid="true" @enderror>
+                    <select id="onboarding-timezone" wire:model="preferencesForm.timezone" required aria-required="true" class="mt-2 min-h-11 w-full max-w-full rounded-md border-2 border-paw-muted bg-white px-3 py-2 aria-invalid:border-paw-coral" aria-describedby="onboarding-timezone-help @error('preferencesForm.timezone') onboarding-timezone-error @enderror" @error('preferencesForm.timezone') aria-invalid="true" @enderror>
                         @foreach ($this->timezoneOptions as $timezone => $label)
                             <option wire:key="onboarding-timezone-{{ $timezone }}" value="{{ $timezone }}">{{ $label }}</option>
                         @endforeach
                     </select>
-                    <p id="onboarding-timezone-help" class="mt-2 text-sm text-paw-muted">{{ __('auth.profile.timezone_help') }}</p>
+                    <p id="onboarding-timezone-help" class="mt-2 text-sm text-paw-muted">{{ __('onboarding.steps.preferences.timezone_help') }}</p>
                     @error('preferencesForm.timezone') <p id="onboarding-timezone-error" class="mt-2 text-sm font-medium text-paw-coral">{{ $message }}</p> @enderror
                 </div>
                 <p wire:dirty role="status" aria-live="polite" class="text-sm font-medium text-paw-muted">{{ __('onboarding.states.unsaved') }}</p>

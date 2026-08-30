@@ -6,9 +6,9 @@ namespace App\Actions;
 
 use App\Models\User;
 use App\Services\EmailVerificationMode;
+use App\Validation\ProfilePreferenceRules;
 use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Contracts\Validation\Factory as ValidationFactory;
-use Illuminate\Validation\Rule;
 
 final readonly class UpdateProfilePreferences
 {
@@ -23,21 +23,24 @@ final readonly class UpdateProfilePreferences
      */
     public function handle(User $user, array $data): User
     {
-        $this->gate->authorize('update', $user);
-        abort_unless($this->emailVerification->allows($user), 403);
+        $currentUser = User::query()->findOrFail($user->getKey());
+        $this->gate->authorize('update', $currentUser);
+        abort_unless(
+            $currentUser->isActive()
+                && $this->emailVerification->allows($currentUser),
+            403,
+        );
 
         /** @var array{locale: string, timezone: string} $validated */
-        $validated = $this->validator->make($data, [
-            'locale' => [
-                'required',
-                'string',
-                Rule::in(config('platform.supported_locales', ['en'])),
-            ],
-            'timezone' => ['required', 'string', 'timezone:all'],
-        ])->validate();
+        $validated = $this->validator->make(
+            $data,
+            ProfilePreferenceRules::rules(),
+            ProfilePreferenceRules::messages(),
+            ProfilePreferenceRules::attributes(),
+        )->validate();
 
-        $user->forceFill($validated)->save();
+        $currentUser->forceFill($validated)->saveOrFail();
 
-        return $user;
+        return $currentUser;
     }
 }

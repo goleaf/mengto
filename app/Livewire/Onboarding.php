@@ -23,6 +23,7 @@ use App\Services\OnboardingState;
 use App\Services\SocialActorResolver;
 use Illuminate\Contracts\Auth\Factory as AuthFactory;
 use Illuminate\Contracts\View\View;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Validation\ValidationException;
 use Livewire\Attributes\Computed;
@@ -256,7 +257,11 @@ final class Onboarding extends Component
         });
 
         if ($state instanceof UserOnboarding) {
-            Session::put('locale', $this->requireUser()->fresh()->locale);
+            $user = $this->requireUser()->fresh();
+            $this->auth->guard('web')->setUser($user);
+            $locale = $user->locale;
+            Session::put('locale', $locale);
+            App::setLocale($locale);
             Session::flash('onboarding-focus-step', true);
             $this->redirectRoute('onboarding.show');
         }

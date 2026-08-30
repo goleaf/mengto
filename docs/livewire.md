@@ -65,7 +65,11 @@ template and `ProfilePreferencesForm`. Registration never serializes language
 or time-zone input. The settings component derives bounded locale and time-zone
 options server-side, validates both browser-controlled values, and delegates
 the current-user-only mutation to `UpdateProfilePreferences`. Saving the locale
-also updates the current session so the translated response is immediate.
+also updates the current auth-guard model, session and application locale so
+the translated response is immediate. `ProfilePreferenceRules` is the one
+neutral validation/message/attribute source used by both the form object and
+Action: configured locale codes are exact, and timezones use Laravel's
+`timezone:all` IANA validation.
 
 ## Resumable Onboarding Wizard
 
@@ -82,6 +86,14 @@ snapshots, reload canonical state after success, and redirect a stale tab to
 fresh progress without applying old input. The mount account ID is locked and
 rechecked against the authenticated user on every hydration so a signed
 snapshot cannot cross accounts.
+
+The Preferences mutation delegates persistence to the same
+`UpdateProfilePreferences` Action as normal settings, then advances through
+`CompleteOnboardingPreferences`. A successful locale change synchronizes the
+fresh authenticated model before redirecting, so `SetLocale` renders the pet
+step in the selected language without a refresh. Exact two-tab replays are
+idempotent; changed or malformed stale payloads and freshly inactive accounts
+are rejected without moving progress.
 
 The view exposes one H1, one semantic ordered progress list, native
 fieldset/legend and input controls, associated validation errors, a focusable

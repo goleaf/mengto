@@ -179,7 +179,7 @@ reviewer is reserved until the implementation diff is frozen.
 | ONB-P04-E | Livewire security reviewer | Public-property tampering, direct methods, stale snapshots, replay, identity/step/return manipulation only | Exploit-focused cases, severity, reproduction and required regression tests | completed read-only; cross-account signed snapshots, stale-state trapping and evidence-deferral bypasses reproduced, fixed and covered |
 | ONB-P04-F | Localization-layout reviewer | Recursive EN/LT/RU onboarding catalogues, placeholder parity, raw keys and long-label layout only | Key/layout gaps with exact render/scanner evidence | completed read-only with D; 61-key baseline parity and scanners were green, localized preference validation and browser reflow accepted; Prompt 04 added one matched progress key per locale |
 | ONB-P04-G | Test reviewer | Current onboarding/auth/architecture/localization/browser tests and isolated runners only | Requirement-to-test matrix, false positives, missing negative/browser cases and exact commands | completed read-only; component matrix, strict testing-only fixtures and canonical browser-wrapper mode accepted; connected Chrome execution remains required |
-| ONB-P04-H | Final independent reviewer | Frozen Prompt 04 attributable diff only; must not participate in discovery or implementation | Architecture, Livewire security, UX, accessibility and regression verdict with reproduced findings | initial frozen reviews completed; every reproduced finding fixed and rerun; post-fix hash confirmation pending |
+| ONB-P04-H | Final independent reviewer | Frozen Prompt 04 attributable diff only; must not participate in discovery or implementation | Architecture, Livewire security, UX, accessibility and regression verdict with reproduced findings | completed; post-fix hash `f597d93a39caf189a2759de65a0d50d882b85de20f45a5b6b449449aa614a150` confirmed SHIP for the scoped runtime/test candidate |
 
 The selected baseline is the existing class-based `App\Livewire\Onboarding`
 and separate view/layout. Prompt 04 will not introduce a second route,
@@ -190,19 +190,22 @@ mutation until that domain contract exists.
 
 ## Prompt 05 Preference Step Delivery
 
-Prompt 05 starts on `main` at externally published `9f8d74e9da5c1a1774721827d7350d98d03eaa68`
-with the attributable Prompt 04 review-remediation tree preserved. Planning is
-updated before any Prompt 05 production edit. Every specialist below is
-read-only; the principal owns all decisions and writes.
+Prompt 05 planning started on `main` at externally published
+`9f8d74e9da5c1a1774721827d7350d98d03eaa68` with the attributable Prompt 04
+review-remediation tree preserved. Before Prompt 05 production edits, an
+external process published that Prompt 04 remediation as
+`a1fa4668f7636eec2db532f2d4a5fc7a130ec4da`; the principal did not commit or
+push it. Planning was updated before every Prompt 05 production edit. Every
+specialist below is read-only; the principal owns all decisions and writes.
 
 | ID | Specialist role | Exclusive Prompt 05 scope | Required deliverable | Status |
 | --- | --- | --- | --- | --- |
-| ONB-P05-A | Profile preference domain auditor | Profile form/action, User fields, session locale and authorization only | Canonical reuse map, duplication and transaction risks | assigned read-only |
-| ONB-P05-B | Localization auditor | supported locale config, middleware, EN/LT/RU parity, labels and fallback only | Locale source/application/parity findings | assigned read-only |
-| ONB-P05-C | Timezone auditor | current timezone rule/options/defaults/DST/tests only | IANA acceptance/performance/normalization matrix | assigned read-only |
-| ONB-P05-D | Livewire UX reviewer | Preferences hydration/save, errors, focus, loading/offline/dirty and mobile only | Component/presentation defect matrix | assigned read-only |
-| ONB-P05-E | Security reviewer | unsupported values, forged/stale state, direct method and cross-user mutation only | Exploit-focused negative test matrix | assigned read-only |
-| ONB-P05-F | Final independent reviewer | Frozen Prompt 05 diff; no implementation participation | Architecture/localization/security/accessibility/regression verdict | reserved read-only |
+| ONB-P05-A | Profile preference domain auditor | Profile form/action, User fields, session locale and authorization only | Canonical reuse map, duplication and transaction risks | completed read-only; one rule source and auth-model synchronization findings accepted |
+| ONB-P05-B | Localization auditor | supported locale config, middleware, EN/LT/RU parity, labels and fallback only | Locale source/application/parity findings | completed read-only; missing help keys and immediate application gap reproduced and fixed |
+| ONB-P05-C | Timezone auditor | current timezone rule/options/defaults/DST/tests only | IANA acceptance/performance/normalization matrix | completed read-only; `timezone:all`, deterministic PHP list and exact values retained |
+| ONB-P05-D | Livewire UX reviewer | Preferences hydration/save, errors, focus, loading/offline/dirty and mobile only | Component/presentation defect matrix | completed read-only; required semantics, help associations and invalid styling fixed |
+| ONB-P05-E | Security reviewer | unsupported values, forged/stale state, direct method and cross-user mutation only | Exploit-focused negative test matrix | completed read-only; malformed replay and stale inactive mutations reproduced, fixed and covered |
+| ONB-P05-F | Final independent reviewer | Frozen Prompt 05 diff; no implementation participation | Architecture/localization/security/accessibility/regression verdict | frozen final review pending |
 
 ## Prompt 01 Current-Checkout Revalidation
 

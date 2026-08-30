@@ -150,6 +150,8 @@ test('required pet and privacy input reaches localized Livewire validation seman
     Livewire::test(Onboarding::class)
         ->call('savePetRelationship')
         ->assertHasErrors(['petForm.choice'])
+        ->assertSeeHtml('wire:submit="savePetRelationship"')
+        ->assertSeeHtml('novalidate')
         ->assertSeeHtml('aria-required="true"')
         ->assertSeeHtml('aria-invalid="true"')
         ->assertSeeHtml('required');
@@ -199,8 +201,8 @@ test('preference validation is localized in Lithuanian and Russian', function (
         ->assertHasErrors(['preferencesForm.locale', 'preferencesForm.timezone'])
         ->assertSee(__($expectedMessageKey));
 })->with([
-    'Lithuanian' => ['lt', 'onboarding.validation.locale'],
-    'Russian' => ['ru', 'onboarding.validation.timezone'],
+    'Lithuanian' => ['lt', 'auth.settings.validation.locale'],
+    'Russian' => ['ru', 'auth.settings.validation.timezone'],
 ]);
 
 test('a stale wizard redirects to fresh canonical progress without regressing data', function (): void {
@@ -234,6 +236,10 @@ test('locked lifecycle snapshots and future methods cannot select or skip a step
     $component = Livewire::test(Onboarding::class);
 
     expect(fn () => $component->set('expectedStep', OnboardingStep::PrivacyDiscovery->value))
+        ->toThrow(CannotUpdateLockedPropertyException::class);
+    expect(fn () => $component->set('onboardingLockVersion', 999))
+        ->toThrow(CannotUpdateLockedPropertyException::class);
+    expect(fn () => $component->set('mountedUserId', 999))
         ->toThrow(CannotUpdateLockedPropertyException::class);
 
     $component
@@ -313,13 +319,16 @@ test('the focused onboarding panel follows the flat surface design rule', functi
 
     expect($layout)
         ->toContain('border border-paw-line')
-        ->not->toContain('border border-paw-line bg-paw-paper p-5 shadow-panel');
+        ->not->toContain('shadow-panel');
 });
 
 test('a signed wizard snapshot cannot mutate a different authenticated account', function (): void {
     UserOnboarding::factory()->for($this->authenticatedUser)->preferences()->create();
     app(SocialActorResolver::class)->provisionPrivateForUser($this->authenticatedUser);
-    $component = Livewire::actingAs($this->authenticatedUser)->test(Onboarding::class);
+    $component = Livewire::actingAs($this->authenticatedUser)
+        ->test(Onboarding::class)
+        ->set('preferencesForm.locale', 'ru')
+        ->set('preferencesForm.timezone', 'Europe/Riga');
 
     $other = User::factory()->onboardingAtPreferences()->create([
         'locale' => 'lt',
@@ -328,11 +337,7 @@ test('a signed wizard snapshot cannot mutate a different authenticated account',
     $this->actingAs($other);
     Livewire::actingAs($other);
 
-    $component
-        ->set('preferencesForm.locale', 'ru')
-        ->set('preferencesForm.timezone', 'Europe/Riga')
-        ->call('savePreferences')
-        ->assertNotFound();
+    $component->call('savePreferences')->assertForbidden();
 
     expect($other->fresh())
         ->locale->toBe('lt')

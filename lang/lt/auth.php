@@ -92,6 +92,10 @@ return [
         'saving' => 'Išsaugoma…',
         'saved' => 'Profilio nustatymai išsaugoti.',
         'validation_summary' => 'Patikrinkite pažymėtus nustatymus.',
+        'validation' => [
+            'locale' => 'Pasirinkite palaikomą sąsajos kalbą.',
+            'timezone' => 'Pasirinkite galiojančią IANA laiko juostą.',
+        ],
         'privacy_eyebrow' => 'Privatumas',
         'privacy_title' => 'Privačios paskyros nuostatos',
         'privacy_description' => 'Sąsajos kalba ir laiko juosta yra paskyros nustatymai. Jie nerodomi viešajame profilyje.',

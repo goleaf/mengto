@@ -826,7 +826,7 @@ application database.
 - [x] RED wizard/security/localization/browser contracts observed: 15 tests
   produced 14 intended failures; browser isolation had no onboarding mode.
 - [x] Production interaction and presentation remediation implemented. After
-  independent review fixes, the expanded wizard suite passes 29 tests / 226
+  independent review fixes, the expanded wizard suite passes 29 tests / 230
   assertions; the selected onboarding/auth/browser-isolation/architecture
   slice passes 214 of 218 tests / 54,915 assertions, with only four previously
   open generated-evidence/factory/forum-history architecture failures. Focused
@@ -837,12 +837,15 @@ application database.
   and pre-existing shared JS lifecycle/literal contracts. Browser database
   preparation and `OnboardingBrowserSeeder` pass, then Chrome 152 crashes with
   `SIGSEGV` before the connected assertions.
-- [x] Initial independent architecture/security, UX/accessibility and regression
+- [x] Independent architecture/security, UX/accessibility and regression
   reviews completed. Reproduced account-snapshot, progress, validation/focus,
   pet-evidence mapping, process-lifecycle, query-budget and flat-surface defects
-  were fixed with regressions. A final post-fix frozen-diff confirmation remains
-  part of ONB-P04-05.
-- [ ] Changelog, plans, commit and push status reconciled from observed output.
+  were fixed with regressions. The final reviewer confirmed frozen hash
+  `f597d93a39caf189a2759de65a0d50d882b85de20f45a5b6b449449aa614a150`
+  as SHIP for the scoped runtime/test candidate.
+- [x] Prompt 04 changelog and plans reconciled. An external process published
+  the reviewed package as `a1fa466`; the principal did not commit or push it.
+  Connected Chrome and repository-wide gates remain explicit release blockers.
 
 ### Prompt 05
 
@@ -850,10 +853,24 @@ application database.
   canonical form/action reuse, configured locale source, IANA timezone,
   immediate locale application, resume/profile consistency, accessibility,
   security and EN/LT/RU evidence.
-- [ ] Six read-only specialist roles completed and findings dispositioned.
-- [ ] RED preference-domain/component contracts observed.
-- [ ] Canonical implementation, focused verification and independent review
-  completed.
+- [x] Six read-only specialist roles allocated. Domain, localization, timezone,
+  UX and security discovery completed; the independent final review is reserved
+  for the frozen post-verification diff.
+- [x] RED preference-domain/component contracts observed: the initial 26-test
+  file had 12 passing, 10 failing and four errors (147 assertions), reproducing
+  raw help keys, missing immediate locale application, malformed replay and
+  stale inactive-account mutation.
+- [x] Canonical implementation completed: `ProfilePreferenceRules` is shared by
+  `ProfilePreferencesForm` and `UpdateProfilePreferences`; the Action reloads
+  fresh account availability; onboarding/profile Livewire synchronizes the
+  fresh guard plus session/application locale; the Preferences view has
+  required/help/error semantics and matching EN/LT/RU copy.
+- [x] Focused verification is green: Preferences + Wizard 58/58 (490), the
+  auth/onboarding transition matrix 150/150 (1,004) before the final added
+  negative cases, scoped architecture 10/10 (47,356), Blade boundary 1/1
+  (2,457), localization 7/7 (37,713), task Pint, three localization scanners
+  and targeted Larastan all pass. Final independent review and broad gates are
+  still pending.
 
 ### Prompt 03
 

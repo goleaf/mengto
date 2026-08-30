@@ -92,6 +92,10 @@ return [
         'saving' => 'Saving…',
         'saved' => 'Profile settings saved.',
         'validation_summary' => 'Check the highlighted settings.',
+        'validation' => [
+            'locale' => 'Choose a supported interface language.',
+            'timezone' => 'Choose a valid IANA time zone.',
+        ],
         'privacy_eyebrow' => 'Privacy',
         'privacy_title' => 'Private account preferences',
         'privacy_description' => 'Your interface language and time zone are account settings. They are not displayed on your public profile.',

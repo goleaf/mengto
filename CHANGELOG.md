@@ -129,6 +129,11 @@ status, invalidated evidence, external blockers, and rollback guidance are in
   Added an isolated onboarding browser mode and deterministic testing-only
   fixtures; connected visual execution remains a release gate because the
   host Chrome 152 binary currently terminates with `SIGSEGV`.
+- Connected onboarding Preferences and normal Profile Settings to one
+  canonical locale/timezone validation and persistence boundary. EN/LT/RU and
+  real IANA timezones now apply immediately to the authenticated session and
+  next response, while malformed, stale, cross-account, inactive-account and
+  repeated submissions fail closed without resetting onboarding progress.
 - Recovered post-commit verification delivery exceptions and standard skipped
   notifications without returning HTTP 500 or losing the authenticated
   account, localized verification mail and recovery feedback for EN/LT/RU, and
