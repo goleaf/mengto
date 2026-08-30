@@ -1,18 +1,20 @@
 # PawCircle Onboarding Threat Model
 
-Date: 2026-08-30  
+Date: 2026-08-30
 Scope baseline: `main` at
-`48730147fde586108bf79477dff066e5bb1b0ec5`
+`48730147fde586108bf79477dff066e5bb1b0ec5`; remediation reviewed through
+`1ef8da9512d19bed29ef1fee84efbc07e1494cf5`.
 
 ## Executive summary
 
 PawCircle's onboarding foundation has strong outer portal, signed-email,
-owner-scoped Action, transaction, and optimistic-version controls. The most
-important current risks are stale Livewire snapshots mutating state after email
-verification is lost, inconsistent pet-manager and pet-social privacy
-authorities, and parser-confusion in return URLs. Missing onboarding rows are a
-deliberate compatibility exception and therefore remain a monitored fail-open
-boundary for any account created outside the canonical registration Action.
+owner-scoped Action, transaction, and optimistic-version controls. Prompt 01
+closed the reproduced stale-verification mutation, pet-manager/private-pet
+authority, direct social-target, and parser-confusing return-URL paths. The
+remaining material risks are distinguishable duplicate-registration outcomes,
+post-commit verification-mail failure, unproved real Livewire transport and
+concurrency behavior, and the deliberate missing-row compatibility exception
+for any account created outside the canonical registration Action.
 
 ## Scope and assumptions
 
@@ -167,14 +169,21 @@ flowchart LR
    stale visibility -> insufficient reauthorization reveals private candidate
    data or records a foreign access request.
 
+Paths 1 through 4 were reproduced during Prompt 01 and are now covered by the
+focused remediation described in TM-001 through TM-004. They remain in this
+list as regression scenarios. TM-011 and TM-012 are the unresolved
+registration risks that currently prevent a production ship verdict.
+
 ## Threat model table
 
 | Threat ID | Threat source | Prerequisites | Threat action | Impact | Impacted assets | Existing controls (evidence) | Gaps | Recommended mitigations | Detection ideas | Likelihood | Impact severity | Priority |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| TM-001 | Unverified member with stale Livewire snapshot | Snapshot was mounted while verified or middleware transport is generally allowed | Invoke onboarding/profile mutation after verification is lost | Verification bypass and unapproved state change | Verification, onboarding, privacy | Persistent portal middleware; current user and active checks (`AppServiceProvider`, onboarding Actions) | Component/Actions do not freshly require configured verification | Add a shared fresh verification predicate to component and direct Actions; real update test | Count denied stale updates by non-sensitive reason | medium | high | high |
-| TM-002 | Remote navigation attacker | Attacker can influence session intended value through a request/referer chain | Use backslash/control/parser-confusing URL or password-confirmation bypass | Trusted open redirect/phishing | Intended destination, session trust | Same scheme/host/port service used by login/onboarding | Relative backslash accepted; confirmation uses raw `redirectIntended` | Reject backslash/control/protocol-relative forms; use service everywhere; dataset tests | Log bounded reason code for rejected intended value, never the URL | medium | medium | high |
-| TM-003 | Member with stale/revoked pet relationship | Pet creator FK remains and own manager row becomes inactive | Claim managed pet or search private duplicate despite revoked authority | Pet IDOR/private identity disclosure | Pet identity and manager state | `PetProfileAccess` correctly suppresses legacy fallback when own row exists | `managedBy` and onboarding use unconditional owner FK | Make query scope match `PetProfileAccess`; test all status/time boundaries | Audit denied stale-manager decisions by IDs only | medium | high | high |
-| TM-004 | Ordinary member searching social actors | A private pet actor is lazily provisioned or remains actor-discoverable | Search or target the actor directly | Private pet name/existence leak | Pet privacy and social actor | Pet profile defaults private/non-discoverable | Resolver defaults pet actor discoverable; directory does not cap by pet visibility | Provision from pet visibility and cap directory/interaction by profile policy | Alert on actor/profile visibility mismatch aggregates | medium | high | high |
+| TM-001 | Unverified member with stale Livewire snapshot | Snapshot was mounted while verified or middleware transport is generally allowed | Invoke onboarding/profile mutation after verification is lost | Verification bypass and unapproved state change | Verification, onboarding, privacy | Component and transition Actions now freshly enforce configured verification; focused stale-state tests pass | Real `POST /livewire/update` matrix remains absent | Add real transport tests for guest, inactive, unverified, incomplete, complete, and legacy accounts | Count denied stale updates by non-sensitive reason | low residual | high | medium |
+| TM-002 | Remote navigation attacker | Attacker can influence session intended value through a request/referer chain | Use backslash/control/parser-confusing URL or password-confirmation bypass | Trusted open redirect/phishing | Intended destination, session trust | One same-origin service is used after login/onboarding/confirmation and rejects backslash/control/protocol-relative forms | Broader parser/browser dataset remains incomplete | Add connected browser dataset without logging candidate URLs | Log bounded reason code for rejected intended value, never the URL | low residual | medium | low |
+| TM-003 | Member with stale/revoked pet relationship | Pet creator FK remains and own manager row becomes inactive | Claim managed pet or search private duplicate despite revoked authority | Pet IDOR/private identity disclosure | Pet identity and manager state | `managedBy`, `visibleTo`, and `PetProfileAccess` now share active membership, legacy fallback, and explicit `deny:view` semantics | Full onboarding invited/future/foreign matrix remains incomplete | Add the remaining transition-level relationship matrix | Audit denied stale-manager decisions by IDs only | low residual | high | medium |
+| TM-004 | Ordinary member searching social actors | A private pet actor is lazily provisioned or remains actor-discoverable | Search or target the actor directly | Private pet name/existence leak | Pet privacy and social actor | Resolver/privacy Action cap actor discovery; directory, policy, follow, and request paths reauthorize canonical pet visibility, including locked targets | Idempotent replay returns before locked target reload; it creates no new relationship but lacks stale-model proof | Move replay return after authoritative reload/gates and add stale-target tests | Alert on actor/profile visibility mismatch aggregates | low residual | high | medium |
+| TM-011 | Guest probing registration | A valid email may or may not already exist | Compare validation/authentication/redirect outcome for the same otherwise valid registration | Account enumeration | Account identity | Case normalization, database uniqueness, generic localized text, and rate limiting prevent raw database errors and bound probing | Existing and new addresses still produce observably different outcomes | Design a common registration-attempt response and recovery path compatible with verification-enabled and disabled modes | Record only aggregate rejection categories without addresses | medium | medium | high |
+| TM-012 | Mail/provider failure | Synchronous verification notification throws after the account transaction commits | Receive a 500, retry registration, then hit the uniqueness boundary | Account stranded before normal login/resend UX | Availability, account identity | User, actor/settings, and onboarding remain atomically committed; normal login/resend exists | Registration component catches only validation failures and has no delivery-failure recovery contract | Report the provider failure safely and return an explicit recoverable login/resend state; fault-injection test | Alert on notification failures by provider/status only | medium | medium | high |
 | TM-005 | Noncanonical account creator or data fault | A post-cutover account exists without onboarding row | Rely on legacy exemption to enter portal | Mandatory choices bypassed | Onboarding integrity | `RegisterUser` transaction creates identity/state; unique FK | Missing row intentionally means legacy and has no cutoff marker | Restrict all production creation paths; monitor unexpected missing rows; consider explicit grandfather marker in later migration | Aggregate post-cutover users without rows | low | high | medium |
 | TM-006 | Browser payload attacker | Authenticated incomplete account can call Livewire methods | Tamper step/version/user/pet/boolean data or call completion directly | Skipped prerequisites, IDOR, privacy change | Onboarding, privacy, pet | Typed forms, backed enums, `#[Locked]`, owner checks, row locks and versions | Adversarial property/direct-Action coverage incomplete | Add wrong-user/future-step/locked-property/boolean tests; keep IDs absent from API | Count transition conflicts and authorization denials | low | high | medium |
 | TM-007 | Same user with two tabs or replay tooling | Two valid requests share an expected version | Race or replay conflicting transitions | Lost update or divergent completion | Onboarding/settings | Transactions, `lockForUpdate`, expected versions, replay rules | No true two-connection concurrency proof | Add real SQLite two-worker and production-adapter contract; one winner/one conflict | Monitor conflict/replay ratios without content | medium | medium | medium |

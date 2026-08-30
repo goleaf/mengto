@@ -1,15 +1,15 @@
 # Onboarding Implementation Plan
 
-Plan date: 2026-08-30  
-Branch: `main`  
+Plan date: 2026-08-30
+Branch: `main`
 Requirement scope: `PRD-IDENTITY-001`, `PRD-IDENTITY-003..005`,
 `SYS-AUTH-001`, `SYS-AUTH-006`, privacy, localization, accessibility, seeding,
 and testing contracts affected by account entry.
 
 ## Status
 
-**Foundation implemented before this revalidation; Prompt 01 remediation in
-progress; repository release remains NO-GO.**
+**Prompt 01 foundation remediation and independent review complete; the full
+onboarding product and repository release remain NO-GO.**
 
 The checkout already contains the additive onboarding aggregate, registration
 bootstrap, central middleware, forward-only Actions, a class-based Livewire
@@ -18,13 +18,17 @@ does not recreate them. It revalidates them, repairs proven prerequisite
 defects, and records later packages without claiming that the complete
 onboarding product or repository release is done.
 
-Current revalidation baseline: `main` and `origin/main` both at
-`48730147fde586108bf79477dff066e5bb1b0ec5`; the tree was clean before this
-plan update. A focused auth/onboarding run passed 101 tests and 718 assertions.
-The representative-seed test separately failed because the current dynamic
-model inventory has 263 models while its stale manifest has 211; this includes
-onboarding plus extensive concurrent Event and Places drift and is a release
-blocker, not a passing onboarding gate.
+The revalidation began with `main` and `origin/main` both at
+`48730147fde586108bf79477dff066e5bb1b0ec5` and a clean tree. External
+processes subsequently committed and pushed the initial, review-remediation,
+and mechanical-format candidates as `77a1c9cb384614d10db5d13c9c9504cbb3d45aff`,
+`8826415382d9d83968568ddd01b70f3129de3f70`, and
+`1ef8da9512d19bed29ef1fee84efbc07e1494cf5` before final gates completed. The
+principal did not stage, commit, or push those commits and did not rewrite
+history. The final focused matrix passed 156 tests and 43,718 assertions. The
+full suite and current generated database/seeding evidence remain red across
+unrelated Event, Places, Portal, factory, seeding, forum-history, localization,
+and component work, so none of the external commits is a release approval.
 
 ## Current Repository State
 
@@ -42,8 +46,8 @@ blocker, not a passing onboarding gate.
   selects the rendered state.
 - The current `UserFactory` default creates a verified legacy-compatible user
   with no onboarding row. This intentionally avoids trapping hundreds of
-  unrelated tests. Named onboarding factory states are required instead of
-  changing that default implicitly.
+  unrelated tests. Named onboarding factory states now create the requested
+  progress row plus the canonical private actor/settings aggregate.
 - Compliance currently says `implemented`, not `implemented and verified`.
   That is the highest defensible status until current gaps and applicable
   repository gates are closed.
@@ -69,9 +73,11 @@ onboarding.
   session-lifecycle proof remain explicit follow-up work unless completed in
   this package.
 
-Observed gaps include case-insensitive pre-validation of registration email,
-recoverable handling of synchronous verification-mail failure, reset-request
-rate limiting, and direct session-ID/CSRF lifecycle assertions.
+Registration now normalizes before validation and maps a confirmed database
+uniqueness conflict to localized validation without partial identity. Remaining
+gaps include indistinguishable existing/new registration outcomes, recoverable
+handling of synchronous verification-mail failure, reset-request rate limiting,
+and direct session-ID/CSRF lifecycle assertions.
 
 ## Existing Email Verification Flow
 
@@ -88,8 +94,8 @@ rate limiting, and direct session-ID/CSRF lifecycle assertions.
   receives the safe intended destination or `home`.
 - Repeated valid verification is persistence-idempotent.
 
-Required hardening: stale Livewire snapshots must not mutate onboarding after
-the account becomes unverified; invalid/expired/wrong-user signed-link tests,
+Stale Livewire snapshots and direct Actions now deny mutation after the account
+becomes unverified. Invalid/expired/wrong-user signed-link tests,
 recipient-locale mail rendering, raw throttling-key prevention, and
 post-commit mail-failure recovery remain required evidence.
 
@@ -124,10 +130,10 @@ access-request Actions.
   package should provide a named server-controlled return context without
   trusting arbitrary destinations.
 
-The current owner-FK shortcut in `PetProfile::managedBy()` and onboarding
-evidence disagrees with `PetProfileAccess` after an own manager row is revoked
-or expired. Prompt 01 must make active membership or the documented legacy
-fallback the single authority.
+`PetProfile::managedBy()`, `visibleTo()`, and onboarding evidence now agree
+with `PetProfileAccess`: current active membership is authoritative, explicit
+`deny:view` is honored for projections, and creator fallback applies only when
+no own manager row exists.
 
 ## Existing Privacy/Discovery Flow
 
@@ -142,18 +148,16 @@ fallback the single authority.
 - External indexing is a pet-domain preference and is not evidence that an
   external crawler indexed or removed anything.
 
-The privacy step currently records `privacy_discovery_completed_at`, but its
-UI lacks an explicit required acknowledgement. That existing timestamp will
-remain the non-redundant acknowledgement evidence after the browser explicitly
-accepts the privacy explanation. No marketing, medical, GPS, location, or
-external-indexing consent is inferred.
+The privacy step requires explicit browser acknowledgement and records the
+existing `privacy_discovery_completed_at` timestamp as its non-redundant
+server evidence. No marketing, medical, GPS, location, or external-indexing
+consent is inferred.
 
-A separate audit also found that lazy pet social actors can be discoverable
-while the owning pet profile is private, and discovery can fail open when an
-actor settings row is missing. Those are canonical privacy defects. The
-minimum Prompt 01 fix must prevent a private pet created through onboarding
-from entering the social directory; broader legacy synchronization remains a
-tracked follow-up if not closed here.
+A separate audit found that lazy pet social actors could be discoverable while
+the owning pet profile was private. Prompt 01 now caps actor provisioning,
+privacy transitions, directory projection, policy checks, and direct social
+mutations by canonical pet visibility. Discovery still fails open when a
+legacy actor settings row is missing; that separate debt remains tracked.
 
 ## Existing Social Identity Initialization
 
@@ -173,16 +177,19 @@ preferences.
 
 | ID | Severity | Current problem | Prompt 01 disposition |
 | --- | --- | --- | --- |
-| ONB-G01 | high | Persistent Livewire transport is allowlisted, while onboarding/profile Actions check active identity but not a verification state that changed after mount. | Add fresh configured-verification checks to the affected component and direct Actions, with no-side-effect tests. |
-| ONB-G02 | high | Pet owner-FK queries and onboarding evidence ignore an own revoked/expired manager row. | Reuse one canonical managed scope and test active, legacy, revoked, expired, future, and foreign evidence. |
-| ONB-G03 | high | Private pet social actors can be provisioned discoverable and found through social search. | Fail closed for private pet actor creation/search; add cross-user regression. |
-| ONB-G04 | medium security | `SafeIntendedUrl` accepts backslash-relative parser-confusion values; password confirmation bypasses the service. | Reject backslashes/control bytes and route password confirmation through the same service. |
-| ONB-G05 | medium accessibility | Error summary hides real state errors, ordinary validation does not focus it, progress uses a false navigation landmark, and forced-colors focus/boundaries are incomplete. | Render actual errors, dispatch focus events, use named progress semantics, add forced-colors-safe outlines/borders and loading text. |
-| ONB-G06 | medium product | Privacy completion has no explicit required browser acknowledgement. | Require explicit acknowledgement and use the existing completion timestamp as its server evidence. |
-| ONB-G07 | medium testing | `UserFactory` has no named onboarding states; transition tests omit several negative/replay paths. | Add composable named states without changing the legacy-compatible default and add focused tests. |
-| ONB-G08 | high localization | LT/RU generic validation and auth mail are English; verification throttle references a missing key. | Fix the raw onboarding-adjacent key in this package; keep full linguistic mail/validation remediation explicit unless verified here. |
+| ONB-G01 | high | Persistent Livewire transport is allowlisted, while onboarding/profile Actions checked active identity but not a verification state that changed after mount. | Fixed at component and direct Action boundaries with no-side-effect tests; real transport proof remains open. |
+| ONB-G02 | high | Pet owner-FK queries and onboarding evidence ignored an own revoked/expired manager row. | Fixed with the canonical active/legacy query scope plus explicit `deny:view` projection handling; remaining onboarding relationship cases are test debt. |
+| ONB-G03 | high | Private pet social actors can be provisioned discoverable, found through search, or addressed directly by a known actor key. | Fixed: cap provisioning, policy, directory, privacy synchronization, and locked follow/request targets by canonical pet visibility; direct negative regressions pass. |
+| ONB-G04 | medium security | `SafeIntendedUrl` accepted backslash-relative parser-confusion values; password confirmation bypassed the service. | Fixed through one sanitizer; broader connected browser dataset remains open. |
+| ONB-G05 | medium accessibility | Error summary hid real state errors, ordinary validation did not focus it, progress used a false navigation landmark, and forced-colors focus/boundaries were incomplete. | Fixed at source/render contract level; connected keyboard/zoom/forced-colors browser proof remains open. |
+| ONB-G06 | medium product | Privacy completion had no explicit required browser acknowledgement. | Fixed in Livewire and the direct Action, reusing the completion timestamp as server evidence. |
+| ONB-G07 | medium testing | `UserFactory` had no named onboarding states; transition tests omitted several negative/replay paths. | Named states now create the canonical private aggregate without changing the default; broader transition/concurrency coverage remains open. |
+| ONB-G08 | high localization | LT/RU generic validation and auth mail are English; verification throttle referenced a missing key. | The missing onboarding-adjacent keys and new generic registration conflict text are localized; full framework validation/mail linguistic remediation remains open. |
 | ONB-G09 | high release | Representative model manifest/generated DB evidence and the repository-wide suite are already stale across multiple concurrent domains. | Do not hand-edit generated evidence or claim release. Run current gates and report exact attributable vs concurrent failures. |
 | ONB-G10 | medium reliability | Registration mail transport can throw after DB commit but before login/redirect. | Preserve data integrity; define and test a recoverable resend UX in a subsequent auth package unless safely completed here. |
+| ONB-G11 | medium security | Existing and new registration addresses still produce distinguishable validation/auth/redirect outcomes even after replacing the specific duplicate text. | Open: design one common registration-attempt response compatible with both verification modes; keep release NO-GO. |
+| ONB-G12 | low defense in depth | An existing social idempotency replay returns before locked target reauthorization. | Open: it creates no new relationship, but stale-target and revoked-source replay tests plus authoritative reload are required. |
+| ONB-G13 | low future cache | Pet privacy synchronizes actor visibility but does not invoke `SocialGraphCache` invalidation. | No current affected cache reader was found; unify invalidation and add projection-version coverage before enabling cached social projections. |
 
 ## Security Risks Found
 
@@ -197,7 +204,8 @@ The detailed repository-grounded threat model is
 | Intended URL parser confusion | medium | Same-origin service for every account-flow return and rejection of backslash/control/protocol-relative forms. |
 | Missing onboarding row used as bypass | medium | Only canonical registration may create production accounts; missing-row legacy exemption is monitored and not generated for new accounts. |
 | Verification bypass | medium | Configured verification check at HTTP, Livewire component, and direct Action boundaries. |
-| Pet IDOR/private discovery | high impact / medium residual | Policy-visible duplicate flow, viewer-bound tokens, active manager authority, and pet-profile visibility cap on social discovery. |
+| Pet IDOR/private discovery | low residual / high impact | Policy-visible duplicate flow, viewer-bound tokens, active/permission-aware manager authority, actor synchronization, and pet-profile visibility checks in directory and direct social mutations. |
+| Registration enumeration/delivery failure | medium / high availability | Generic localized constraint handling is present, but common observable registration outcomes and recoverable post-commit verification delivery remain open. |
 | Session fixation | low residual / high impact | Regenerate after login/register, invalidate on logout, and add direct lifecycle assertions. |
 
 ## Proposed User Journey
@@ -496,15 +504,21 @@ recipient-locale content tests pass.
   verification, redirect, pet authority/privacy, privacy acknowledgement,
   accessibility, and factory gaps; serial runs observed the intended failures.
 - [x] **ONB-04 — Minimal prerequisite remediation.** Implemented only the
-  changes required by ONB-03; all four focused files and three adjacent files
-  pass after serial reruns.
+  changes required by ONB-03 and reproduced independent findings; all focused
+  and adjacent files pass through the isolated runner.
 - [x] **ONB-05 — Documentation and changelog reconciliation.** Recorded exact
   results and remaining Prompt 02+ work; do not hand-edit generated evidence.
-- [ ] **ONB-06 — Frozen-diff independent review.** Architecture, security,
-  database, tests, and regression reviewers disposition every material finding.
-- [ ] **ONB-07 — Final gates and publication decision.** Focused/full Pest,
-  Pint, Larastan, migrations/seed, Composer/npm/build/cache/browser/diff/secret
-  gates; isolated commit/push only if all applicable gates pass.
+- [x] **ONB-06 — Frozen-diff independent review.** Architecture, security,
+  database, tests, and regression roles completed. Direct private-pet access,
+  `deny:view`, factory aggregate, Action acknowledgement, and uniqueness-500
+  findings were fixed and retested. Registration enumeration, mail recovery,
+  true concurrency/transport/browser evidence, and replay hardening remain
+  explicitly open.
+- [x] **ONB-07 — Final gates and publication decision.** Focused checks pass;
+  full Pest/Pint/Larastan/generated database and seed gates are red, and the
+  browser gate lacks a safe wrapper. Decision: NO-GO and no principal
+  publication. External processes nevertheless pushed three candidate commits;
+  history is preserved and the event is documented.
 - [ ] **ONB-08 — Prompt 02+ wizard depth.** Safe pet return context, browser
   runner, concurrency proof, mail/validation linguistic remediation, recovery
   UX, observability, and later requirements remain unclaimed until delivered.
@@ -584,11 +598,27 @@ application database.
   new production-code changes.
 - [x] Selected prerequisite tests observed RED; the combined runner's earlier
   `SIGSEGV` was excluded and serial failure evidence was used.
-- [x] Minimal implementation and adjacent focused tests GREEN: onboarding
-  24/24 (161 assertions), auth 33/33 (270), pet 15/15 (4,763), social 23/23
-  (530), configurable verification 10/10 (42), portal boundary 42/42 (291),
-  and localization 7/7 (37,641).
-- [ ] Five independent frozen-diff reviews completed and dispositioned.
-- [ ] Applicable final gates recorded on the exact candidate.
-- [ ] Commit/push decision made from observed gates. No publication is allowed
-  while a required material gate is red.
+- [x] Review-remediated implementation and adjacent focused tests GREEN through
+  the canonical isolated runner: onboarding 25/25 (169 assertions), auth 33/33
+  (272), pet 16/16 (4,768), social 23/23 (532), configurable verification
+  10/10 (42), portal boundary 42/42 (291), and localization 7/7 (37,644):
+  **156 tests and 43,718 assertions**.
+- [x] Five independent frozen-diff review roles completed and dispositioned.
+  No material task-owned runtime regression remains in the covered matrix;
+  reviewers retain NO-GO for the explicitly open recovery/security/evidence
+  gaps.
+- [x] Applicable final gates recorded. Full isolated Pest ran 2,917 tests with
+  2,767 passing, 39 failing, 132,877 assertions, exit 2; failures are current
+  cross-domain generated evidence, absent Places/Event/Portal code/factories,
+  seed, localization, and component drift. Full Pint and configured Larastan
+  are also globally red; focused task PHP formatting and production Larastan
+  groups pass.
+- [x] Composer validation/audit/platform, npm high audit/build, migration
+  cycle, fresh database/seed, route cache, and view cache checks passed on the
+  first frozen candidate. Current database-domain and factory/seeding
+  generators remain red. Connected browser proof was not executed because no
+  disposable onboarding wrapper exists.
+- [x] Publication decision made from observed gates: NO-GO. The principal made
+  no commit or push. External processes pushed `77a1c9c`, `8826415`, and the
+  mechanical-format commit `1ef8da9` before gates closed; no reset, force-push,
+  or history rewrite was attempted.

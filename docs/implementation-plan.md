@@ -257,8 +257,8 @@ not close expression-level, lazy-loading, duplication or lifecycle review.
 
 ## Active Delivery: Resumable Account Onboarding Foundation
 
-Status: `existing foundation revalidated; prerequisite RED remediation starts
-at ONB-03; repository release remains NO-GO` on 2026-08-30.
+Status: `Prompt 01 foundation remediation and independent review complete;
+repository release remains NO-GO` on 2026-08-30.
 
 This delivery revalidates and hardens the already-present server-authoritative,
 resumable onboarding boundary between conditional email verification and
@@ -291,15 +291,25 @@ components, `SafeIntendedUrl`, canonical pet/social scopes, factory states,
 Blade/catalogues, focused tests, this plan, the threat model, ledger, and
 changelog. The already-applied migration is not edited.
 
+Independent review then reproduced a direct known-key private-pet social
+bypass, `deny:view` projection leak, incomplete named factory aggregate,
+component-only introduction acknowledgement, and normalized uniqueness 500.
+Those findings were fixed and focused tests pass. The same review retained
+NO-GO for observably different duplicate-registration outcomes, synchronous
+post-commit verification-mail failure, true concurrency and real Livewire
+transport proof, complete signed-link/migration compatibility matrices, and a
+connected accessibility/browser run. Exact dispositions and command evidence
+are in the onboarding plan and work ledger.
+
 | ID | Dependency | Owner | Affected paths/modules | Acceptance criteria | Required verification | Status | Rollback |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | ONB-01 | Repository contract and canonical identity/auth/profile/pet/privacy docs | Principal plus twelve read-only specialist roles | Ledger, dedicated plan, canonical plan, onboarding threat model | Current state, reusable authorities, selected design, risks, compatibility, rollout and rollback are evidence-backed before production edits | Route/code/schema/test inventory, specialist reports, principal reproduction and planning diff | completed | Revert onboarding planning additions only |
 | ONB-02 | ONB-01 | Principal | Existing migration/model/factory/enums, registration initializer, middleware, Actions, Livewire, Blade, EN/LT/RU and tests | Actual foundation is mapped without duplicating working business logic; current focused baseline is observed | 101 focused tests and 718 assertions passed; root seed gate separately reproduced red from stale cross-domain manifest | completed revalidation; global NO-GO | Disable enforcement while preserving rows; never edit the applied migration |
 | ONB-03 | ONB-02 | Principal | Focused onboarding/auth/pet/social/factory/accessibility tests | RED contracts reproduce stale-unverified mutation, unsafe intended forms, revoked/expired pet evidence, private pet discovery, missing privacy acknowledgement, incomplete error/progress semantics and factory-state gaps | Each selected regression fails for the intended reason before implementation | completed; serial RED evidence recorded | Revert attributable test additions |
-| ONB-04 | ONB-03 | Principal | Onboarding/profile Actions/components, redirect service/confirmation, pet/social authority, factory states, Blade and EN/LT/RU | Smallest implementation closes ONB-03 without changing legacy users, migration history, canonical pet workflow or unrelated privacy values | Focused GREEN after every coherent slice; adjacent auth/pet/social/localization/architecture regressions | completed focused; 154 tests and 43,698 assertions passed across seven serial files | Revert coherent test/fix pair; retain schema and canonical data |
-| ONB-05 | ONB-04 | Principal | Dedicated plan, canonical plan, ledger, threat model, changelog and generated-evidence checks | Documentation records only observed results, exact remaining Prompt 02+ work and current repository blockers; generated files remain generator-owned | Documentation/source/generator parity and diff review | completed for pre-review candidate; final gate results pending | Revert attributable documentation only |
-| ONB-06 | ONB-04..05 | Five independent read-only reviewers then principal | Frozen attributable diff: architecture, security, database, tests, regression | Every material finding is reproduced and fixed or rejected/deferred with evidence; affected checks rerun | Independent reports and a complete disposition ledger | planned | Revert unsafe finding-specific change before publication |
-| ONB-07 | ONB-06 | Principal | Exact attributable candidate on `main` | Applicable Composer/Pint/Larastan/Pest/migration/seed/npm/build/cache/browser/diff/secret gates pass; isolated index includes only task-owned files; normal push succeeds | Exact commands, exit codes, staged diff/check, commit and push output | planned | No commit/push with a material failed gate; normal revert only after publication |
+| ONB-04 | ONB-03 | Principal | Onboarding/profile Actions/components, redirect service/confirmation, pet/social authority, factory states, Blade and EN/LT/RU | Smallest implementation closes ONB-03 without changing legacy users, migration history, canonical pet workflow or unrelated privacy values | Focused GREEN after every coherent slice; adjacent auth/pet/social/localization/architecture regressions | completed focused and after review fixes; 156 tests and 43,718 assertions passed across seven isolated serial files | Revert coherent test/fix pair; retain schema and canonical data |
+| ONB-05 | ONB-04 | Principal | Dedicated plan, canonical plan, ledger, threat model, changelog and generated-evidence checks | Documentation records only observed results, exact remaining Prompt 02+ work and current repository blockers; generated files remain generator-owned | Documentation/source/generator parity and diff review | completed for Prompt 01; generated database/seeding evidence remains globally red and was not hand-edited | Revert attributable documentation only |
+| ONB-06 | ONB-04..05 | Five independent read-only reviewer roles then principal | Frozen attributable diff: architecture, security, database, tests, regression | Every material finding is reproduced and fixed or rejected/deferred with evidence; affected checks rerun | Independent reports and a complete disposition ledger | completed; private-pet direct access, permission projection, factory aggregate, Action acknowledgement and uniqueness-500 findings fixed; registration enumeration, mail recovery and evidence gaps remain NO-GO | Revert unsafe finding-specific change before publication |
+| ONB-07 | ONB-06 | Principal | Exact attributable candidate on `main` | Applicable Composer/Pint/Larastan/Pest/migration/seed/npm/build/cache/browser/diff/secret gates pass; isolated index includes only task-owned files; normal push succeeds | Exact commands, exit codes, staged diff/check, commit and push output | verification completed with NO-GO: full Pest 2,917 total / 2,767 passed / 39 failed / 132,877 assertions / exit 2; full Pint, full Larastan, generated DB/seed and browser gates not green. Principal made no commit/push; external processes pushed `77a1c9c`, `8826415`, and mechanical formatting `1ef8da9` before gates completed | Preserve history; publish no further task slice until gates and open security/recovery findings close |
 
 Implementation resumes immediately after this plan update and follows TDD in
 the order `ONB-03` through `ONB-07`. Individual users may complete the current

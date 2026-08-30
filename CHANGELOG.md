@@ -99,6 +99,14 @@ status, invalidated evidence, external blockers, and rollback guidance are in
   an explicit localized acknowledgement. Added named `UserFactory` lifecycle
   states and focused auth/onboarding/pet/social regressions while preserving the
   legacy no-row compatibility default.
+- Closed the independent onboarding review's direct known-key private-pet
+  follow/request bypass, permission-denied manager projection, incomplete
+  factory aggregate, component-only introduction acknowledgement, and
+  normalized duplicate-registration 500. The foundation remains NO-GO for a
+  complete production release until registration outcomes no longer disclose
+  account existence, verification delivery has a recoverable failure path,
+  and the required transport/concurrency/browser and repository-wide gates are
+  green.
 - Added a fail-closed `EMAIL_VERIFICATION_ENABLED` switch with a secure enabled
   default, consistent central and route middleware behavior, atomic
   no-notification registration when disabled, and a bounded idempotent command

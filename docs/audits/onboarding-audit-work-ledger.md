@@ -1,8 +1,8 @@
 # Onboarding Audit Work Ledger
 
-Date: 2026-08-30  
-Branch: `main`  
-Status: Prompt 01 prerequisite remediation implemented; independent review pending
+Date: 2026-08-30
+Branch: `main`
+Status: Prompt 01 foundation reviewed; repository release remains NO-GO
 
 ## Ownership And Safety Boundary
 
@@ -16,6 +16,32 @@ Status: Prompt 01 prerequisite remediation implemented; independent review pendi
 - Final architecture, security, database, test, and regression review roles
   remain unassigned until the implementation diff is frozen. No specialist
   participates in implementation.
+
+## Prompt 02 Persistent-State Revalidation
+
+Prompt 02 starts from `main` at
+`1ef8da9512d19bed29ef1fee84efbc07e1494cf5`. The existing
+`user_onboardings` aggregate, migration, enums, factories, registration
+initializer, optimistic Actions, middleware, and tests are current production
+evidence and must not be duplicated in `users`. The principal owns every edit,
+test, review disposition, staged path, commit, and push. Every specialist below
+is read-only and must report exact file/line evidence without changing the
+shared checkout or running a mutating database/Git command.
+
+| ID | Specialist role | Exclusive Prompt 02 scope | Required deliverable | Status |
+| --- | --- | --- | --- | --- |
+| ONB-P02-A | State-machine designer | Existing onboarding plan, enums, aggregate, transition Actions, wizard consumption only | Canonical state/transition/entry/replay/backward-navigation/malformed-state recommendation and exact gaps | assigned wave 1 |
+| ONB-P02-B | Database migration reviewer | `users` and `user_onboardings` migrations/schema/model/indexes plus SQLite/production portability only | Additive-schema, deployed-migration immutability, legacy compatibility, rollback/reapply and malformed-row risk report | assigned wave 1 |
+| ONB-P02-C | Backward-compatibility reviewer | Existing/admin/demo/unverified/blocked/suspended accounts and default `UserFactory` assumptions only | Compatibility matrix and any way Prompt 02 could trap or reactivate a legacy account | assigned wave 1 |
+| ONB-P02-D | Factory and seeder reviewer | `UserFactory`, `UserOnboardingFactory`, deterministic user/demo seeders and repeat-seed assumptions only | Valid-state matrix, impossible combinations, default-compatibility and repeat-seed findings | queued wave 2 |
+| ONB-P02-E | Security reviewer | Direct Action misuse, foreign user, forged step/version/choice, replay, stale tabs, timestamps and malformed persistence only | Exploit-focused threat cases, severity, reproduction path and required regression tests | queued wave 2 |
+| ONB-P02-F | Test reviewer | Existing onboarding/migration/factory/registration tests and safe isolated wrappers only | Requirement-to-test matrix, false positives, missing positive/negative/migration cases and exact focused commands | queued wave 2 |
+| ONB-P02-G | Final independent reviewer | Frozen Prompt 02 attributable diff only; reviewer must not implement | Architecture/database/security/test/regression verdict and material findings with reproduction steps | unassigned until diff freeze |
+
+Prompt 02 preserves the already-selected compatibility rule: an onboarding row
+means the account participates in onboarding; a missing row is the explicit
+legacy-complete exemption. A contrary recommendation must prove a current
+security or data-integrity defect before the principal may replace that rule.
 
 ## Prompt 01 Current-Checkout Revalidation
 
@@ -54,8 +80,11 @@ read-only and has an exclusive evidence scope.
 | ONB-A08 | UI/UX and accessibility auditor | Auth/profile/pet UI, shared components, mobile layout, keyboard/focus/error semantics, SCSS/Tailwind tokens | Step UX recommendation; WCAG 2.2 acceptance checklist; reuse map; exact evidence | completed; a dedicated authenticated account-flow shell and noninteractive semantic stepper avoid blocked portal chrome and misleading auth controls |
 | ONB-A09 | EN/LT/RU localization auditor | Auth/profile/pet catalogues, locale middleware/session persistence, key and placeholder parity | Catalogue plan; missing concepts; language-switch timing; parity/test requirements | completed; dedicated recursive catalogues are required and locale changes must redirect or set the application locale before rendering |
 | ONB-A10 | Test architecture auditor | Auth/profile/pet/middleware/database/architecture/browser test harness and isolation wrappers | TDD test matrix; focused commands; high-value negative/replay/compatibility cases | completed; P0 contracts cover atomic registration bootstrap, state/replay, pre-binding access, destination chains and auth mutation hardening before implementation |
-| ONB-R11 | Independent security reviewer | Frozen onboarding-owned diff only, plus affected trust boundaries | Severity-ranked findings with exploit path, evidence, and disposition recommendation | reserved |
-| ONB-R12 | Final independent code reviewer | Frozen onboarding-owned diff and final plan/acceptance criteria | Requirements/code/test review with critical/important/minor findings and ship assessment | reserved |
+| ONB-R01 | Independent architecture reviewer | Frozen onboarding-owned diff and abstraction boundaries | Duplication, state authority, Action/component/model boundary and ship assessment | completed; three material findings reproduced and remediated |
+| ONB-R02 | Independent security reviewer | Frozen onboarding-owned diff plus affected trust boundaries | Exploit paths, verification, replay, privacy, IDOR and ship assessment | completed and repeated after remediation; pet bypasses closed, registration enumeration remains |
+| ONB-R03 | Independent database reviewer | Frozen schema, transaction, factory and compatibility boundary | Migration/data safety, aggregate validity and rollback assessment | completed; factory/race findings fixed, demo no-row finding rejected as contrary to the selected compatibility rule |
+| ONB-R04 | Independent test reviewer | Frozen implementation and test matrix | Missing negatives, false positives, transport/concurrency and migration evidence | completed; focused suites green, material mail/transport/concurrency gaps remain |
+| ONB-R05 | Independent regression reviewer | Full frozen range and legacy/product adjacency | Existing-account, factory, pet authority and repository regression assessment | completed; no material task-owned runtime regression found, global release failures reproduced |
 
 ## Principal-Agent Evidence Checklist
 
@@ -66,10 +95,12 @@ read-only and has an exclusive evidence scope.
 - [x] Add behavior tests first and observe the expected RED failure.
 - [x] Implement only the foundation requirements proven necessary by current
       architecture; do not claim the later prompt set is complete.
-- [ ] Freeze the onboarding-owned diff before the five independent reviews.
-- [ ] Record each review finding and its fixed, rejected-with-evidence, or
+- [x] Freeze the onboarding-owned diff before the five independent reviews.
+- [x] Record each review finding and its fixed, rejected-with-evidence, or
       deferred-out-of-scope disposition.
-- [ ] Use a temporary `GIT_INDEX_FILE` if an attributable commit becomes safe.
+- [x] Do not create a task commit while material gates are red. Three external
+      processes nevertheless committed and pushed the frozen candidates; the
+      principal did not stage, commit, or push them and did not rewrite history.
 
 ## Onboarding-Owned Paths
 
@@ -82,8 +113,12 @@ principal agent takes ownership of another path:
 - onboarding-specific additions to `docs/implementation-plan.md`
 - `CHANGELOG.md`
 - `app/Actions/AdvanceUserOnboarding.php`
+- `app/Actions/FollowSocialActor.php`
+- `app/Actions/RegisterUser.php`
+- `app/Actions/SendSocialRelationshipRequest.php`
 - `app/Actions/CompleteOnboardingPreferences.php`
 - `app/Actions/CompleteOnboardingPrivacy.php`
+- `app/Actions/UpdatePetProfilePrivacy.php`
 - `app/Actions/UpdateProfilePreferences.php`
 - `app/Livewire/Auth/ConfirmPassword.php`
 - `app/Livewire/Forms/Auth/RegistrationForm.php`
@@ -92,6 +127,7 @@ principal agent takes ownership of another path:
 - `app/Models/PetProfile.php`
 - `app/Services/EmailVerificationMode.php`
 - `app/Services/SafeIntendedUrl.php`
+- `app/Services/SocialActorAccess.php`
 - `app/Services/SocialActorDirectory.php`
 - `app/Services/SocialActorResolver.php`
 - `database/factories/UserFactory.php`
@@ -103,6 +139,24 @@ principal agent takes ownership of another path:
 - `tests/Feature/OnboardingTest.php`
 - `tests/Feature/PetProfileFoundationTest.php`
 - `tests/Feature/SocialRelationshipFoundationTest.php`
+
+## Frozen Review And Publication Events
+
+- Initial task baseline: `48730147fde586108bf79477dff066e5bb1b0ec5`.
+- First frozen implementation diff SHA-256:
+  `c3a3a750036290ce89116d2e5ccd033bf822316461b44b018da7b3a39b0ad32a`.
+- While independent reviewers were reading that exact diff, an external
+  process created and pushed `77a1c9cb384614d10db5d13c9c9504cbb3d45aff`.
+- After the principal reproduced and fixed review findings, another external
+  process created and pushed
+  `8826415382d9d83968568ddd01b70f3129de3f70` before final gates completed.
+- After focused Pint, an external process separately committed and pushed the
+  two mechanical import/PHPDoc changes as
+  `1ef8da9512d19bed29ef1fee84efbc07e1494cf5`.
+- These events are observed repository history, not principal publication
+  approval. History was not rewritten, reset, or force-pushed. The later
+  documentation reconciliation remains unpublished while required repository
+  gates are red.
 
 ## Audit Dispositions Before Implementation
 
@@ -153,3 +207,45 @@ focused result is a repository-wide gate claim.
 - Adjacent configurable-verification, portal-boundary, and localization files
   passed 10/10 (42 assertions), 42/42 (291 assertions), and 7/7 (37,641
   assertions). These are focused checks, not full-suite evidence.
+
+## Independent Review Dispositions
+
+| Review finding | Classification and disposition | Evidence after disposition |
+| --- | --- | --- |
+| Private pet actor could be targeted directly despite profile privacy | Valid HIGH; fixed in the canonical actor policy boundary, privacy synchronization, and post-lock target authorization | Directory plus direct follow/request negative tests pass; privacy flip synchronizes the existing actor |
+| Active manager with explicit `deny:view` remained in `visibleTo()` | Valid MEDIUM; fixed without changing the independent `managedBy()` relationship fact | Pet foundation projection/access regression passes |
+| Named onboarding factory states omitted the required private actor/settings aggregate | Valid MEDIUM; fixed by composing the canonical private runtime initializer while retaining the default legacy factory | Named-state aggregate assertions pass |
+| Introduction acknowledgement was enforced only by Livewire | Valid MEDIUM; fixed in `AdvanceUserOnboarding`; replay remains idempotent | Direct Action denial and accepted/replayed transition assertions pass |
+| Normalized database uniqueness race returned 500 | Valid MEDIUM; fixed by mapping only a confirmed email constraint conflict to localized validation and rolling back partial identity | Direct Action conflict test passes with unchanged user/onboarding/actor/settings counts |
+| Duplicate registration disclosed the exact database/account reason | Partially fixed: raw/specific wording removed and rate limit retained; reviewer correctly found the success/error/auth/redirect outcomes still distinguish account existence | Deferred to the common registration-attempt/recovery design; security verdict remains NO-GO |
+| Existing idempotent social replay returns before locked target reauthorization | Valid LOW defense-in-depth gap; no new mutation occurs and the source already owns the returned relationship/request | Deferred with stale-target/revoked-source replay tests required |
+| Pet privacy now synchronizes actor visibility without calling `SocialGraphCache` invalidation | LOW non-material future-cache concern; no current reader of the affected social cache keys was found | Defer until cached social projections are enabled; unify invalidation and add a projection-version regression first |
+| Synchronous verification notification can fail after account commit | Valid HIGH availability/recovery gap, pre-existing and already recorded in the plan | Deferred to a recoverable delivery UX plus fault-injection test; release remains NO-GO |
+| Real Livewire update, two-connection concurrency, full signed-link, populated migration, and browser/a11y matrices are incomplete | Valid evidence gaps | Deferred to ONB-08; no production-grade completion claim |
+| Demo/root seeder should create onboarding rows | Rejected for this package: existing demo accounts are legacy users by the selected compatibility contract; an incomplete row would trap them and a completed row would add redundant state | Default factory and missing-row middleware compatibility tests remain authoritative; representative seed drift is separately red |
+
+## Final Gate Evidence
+
+- Canonical isolated focused run: onboarding 25/25 (169 assertions), auth
+  33/33 (272), pet 16/16 (4,768), social 23/23 (532), configurable
+  verification 10/10 (42), portal boundary 42/42 (291), and localization 7/7
+  (37,644): **156 tests, 43,718 assertions, exit 0**.
+- Post-format affected rerun: onboarding plus pet **41 tests, 4,937
+  assertions, exit 0**.
+- Focused Pint on every task-owned PHP file: exit 0 after two mechanical
+  import/PHPDoc fixes. Focused Larastan on both production-code groups: zero
+  errors. Explicitly passing Pest files to Larastan is outside the configured
+  analysis boundary and produced 167 `Pest\\PendingCalls\\TestCall` typing
+  errors; no suppression or test weakening was added.
+- Full isolated Pest: **2,917 tests, 2,767 passed, 39 failed, 132,877
+  assertions, exit 2**. Failures are global generated database/repository/forum
+  evidence drift, missing Place/Event/Portal classes/factories/routes, seeding,
+  and unrelated localization/component defects; the focused onboarding matrix
+  remained green.
+- Composer validation/audit/platform, npm high audit/build, migration cycle,
+  fresh database/seed, and route/view cache smokes passed earlier on the first
+  frozen candidate. Full Pint, full Larastan, database-domain generation, and
+  seeding coverage remain red from current cross-domain repository drift.
+- Connected onboarding browser proof was not run because no disposable
+  onboarding wrapper exists; the standalone pet browser script is mutation
+  capable and forbidden against the configured database.
