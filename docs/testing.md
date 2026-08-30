@@ -36,6 +36,13 @@ vendor/bin/pint --dirty
 PAO_DISABLE=1 vendor/bin/phpstan analyse --memory-limit=1G
 ```
 
+Email-verification changes must include
+`tests/Feature/Auth/ConfigurableEmailVerificationTest.php` together with the
+authentication and central portal-boundary suites. `phpunit.xml` forces the
+secure enabled mode so a deployed disabled value cannot silently weaken the
+default test baseline; individual tests opt into disabled mode through the
+configuration repository.
+
 Final:
 
 ```bash

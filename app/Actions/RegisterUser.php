@@ -6,9 +6,11 @@ namespace App\Actions;
 
 use App\Enums\UserStatus;
 use App\Models\User;
+use App\Services\EmailVerificationMode;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Illuminate\Contracts\Translation\Translator;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 final class RegisterUser
@@ -16,6 +18,7 @@ final class RegisterUser
     public function __construct(
         private readonly ConfigRepository $config,
         private readonly Translator $translator,
+        private readonly EmailVerificationMode $emailVerification,
     ) {}
 
     /**
@@ -23,17 +26,29 @@ final class RegisterUser
      */
     public function handle(array $data): User
     {
-        $user = User::query()->create([
-            'actor_key' => 'user-'.Str::lower((string) Str::ulid()),
-            'name' => trim($data['name']),
-            'email' => mb_strtolower(trim($data['email'])),
-            'password' => $data['password'],
-            'locale' => $this->defaultLocale(),
-            'timezone' => $this->defaultTimezone(),
-            'status' => UserStatus::Active,
-        ]);
+        $verificationEnabled = $this->emailVerification->isEnabled();
 
-        event(new Registered($user));
+        $user = DB::transaction(function () use ($data, $verificationEnabled): User {
+            $user = User::query()->create([
+                'actor_key' => 'user-'.Str::lower((string) Str::ulid()),
+                'name' => trim($data['name']),
+                'email' => mb_strtolower(trim($data['email'])),
+                'password' => $data['password'],
+                'locale' => $this->defaultLocale(),
+                'timezone' => $this->defaultTimezone(),
+                'status' => UserStatus::Active,
+            ]);
+
+            if (! $verificationEnabled) {
+                $user->forceFill(['email_verified_at' => now()])->saveOrFail();
+            }
+
+            return $user;
+        });
+
+        if ($verificationEnabled) {
+            event(new Registered($user));
+        }
 
         return $user;
     }

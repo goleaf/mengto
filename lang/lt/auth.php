@@ -126,4 +126,10 @@ return [
         'sent' => 'Naujas patvirtinimo laiškas išsiųstas.',
         'success' => 'El. pašto adresas patvirtintas.',
     ],
+    'email_verification_activation' => [
+        'dry_run' => 'Tinkamų aktyvių paskyrų: :eligible. Paskyros nepakeistos.',
+        'complete' => 'Tinkamų aktyvių paskyrų: :eligible. Aktyvuotų paskyrų: :activated.',
+        'enabled_error' => 'Prieš aktyvuodami laukiančias paskyras išjunkite el. pašto patvirtinimą.',
+        'changed_unexpectedly' => 'Laukiančių el. pašto paskyrų aktyvinimas pakeitė netikėtą paskyrų skaičių.',
+    ],
 ];

@@ -22,6 +22,7 @@ final class PlaceMergeRedirectFactory extends ApplicationFactory
             'destination_place_id' => Place::factory(),
             'created_by_user_id' => User::factory(),
             'source_identifier' => 'merged-place-'.Str::lower((string) Str::ulid()),
+            'active_source_identifier' => static fn (array $attributes): string => (string) $attributes['source_identifier'],
             'source_visibility' => PlaceVisibility::Public,
             'created_at' => now(),
         ];

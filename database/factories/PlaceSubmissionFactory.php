@@ -92,6 +92,14 @@ final class PlaceSubmissionFactory extends ApplicationFactory
         ]);
     }
 
+    public function withdrawn(): static
+    {
+        return $this->state(fn (): array => [
+            'status' => PlaceSubmissionStatus::Withdrawn,
+            'withdrawn_at' => now(),
+        ]);
+    }
+
     public function privateExact(): static
     {
         return $this->state(fn (): array => [

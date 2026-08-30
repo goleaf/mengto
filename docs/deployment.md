@@ -65,6 +65,35 @@ URL, database, cache/session, mail, private filesystem, and logging values are
 required. New environment variables must have safe `.env.example` and config
 entries; runtime code reads `config()`, never `env()`.
 
+### Email verification mode
+
+`EMAIL_VERIFICATION_ENABLED=true` is the secure default. Set it to exactly
+`false` only after accepting that new and activated accounts will receive an
+`email_verified_at` timestamp without independent proof that they own the
+address. Authentication, active-account checks, policies, scoped private
+access, and step-up verification remain mandatory.
+
+For an intentional transition to disabled mode, use this order:
+
+1. Set `EMAIL_VERIFICATION_ENABLED=false` and run
+   `scripts/artisan-runtime config:clear`.
+2. Back up the exact configured database and verify the backup integrity.
+3. Inspect and apply pending migrations with
+   `scripts/artisan-runtime migrate:status` and `migrate --force`.
+4. Run `DatabaseSeeder` only in an explicitly allowed non-production
+   environment.
+5. Run `scripts/artisan-runtime auth:activate-pending-email-users --dry-run`,
+   then run the command without `--dry-run` and repeat it to prove
+   idempotence. Only active pending accounts are changed; blocked and suspended
+   accounts remain pending and each changed account receives a non-sensitive
+   audit record.
+6. Verify zero active accounts remain pending, check database integrity, warm
+   caches, and smoke registration plus authenticated portal access.
+
+Re-enabling the flag restores verification for future registrations and
+middleware checks. It deliberately does not erase existing verification
+timestamps; any account-level reversal requires an audited recovery decision.
+
 Set `IMAGE_DRIVER=gd` or `IMAGE_DRIVER=imagick` and install the matching PHP
 extension. Public photo uploads depend on the production
 `intervention/image:^4.0` package through Laravel's first-party image API; the
@@ -118,6 +147,20 @@ Prefer forward fixes after an additive migration. Rolling application code
 back is safe only while the schema remains backward compatible. Never restore
 old code that cannot understand new mandatory data. Restore database backup
 only through an approved incident process.
+
+### Place submission and merge redirects
+
+The place-submission schema is additive. Before any submission, moderation, or
+merge write, the complete migration ledger can be rolled back and reapplied by
+the isolated lifecycle verifier. Once a source identifier has more than one
+merge generation, the active-identifier migration deliberately refuses its
+`down()` path: collapsing those rows into the former globally unique column
+would discard field provenance and redirect audit history. Keep the additive
+schema, disable the affected mutation if containment is required, and deploy an
+audited forward fix. A database restore is an incident procedure, not an
+application rollback. The merge Action itself remains transactional: a failed
+copy or redirect write rolls back the place state, copied facts, aliases, event,
+and notification dispatch together.
 
 ## Progressive Pet Profile Release
 

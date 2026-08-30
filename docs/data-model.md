@@ -454,9 +454,15 @@ resolution, timestamps, and optimistic version. Immutable revisions,
 append-only `place_facts`, deterministic duplicate candidates, and immutable
 events retain field provenance and every member or reviewer decision.
 
-`place_submission_identity_locks` serializes matching concurrent submissions.
-`place_merge_redirects` retains active or restored old identifiers and binds
-each merge to its exact audit event. A merge marks the source as merged, copies
-facts to the survivor with origin and copied-from links, and never deletes
-source evidence. Normalized place identity columns are backfilled and indexed
-for bounded candidate retrieval.
+`place_submission_identity_locks` serializes matching concurrent submissions;
+one reserved row also serializes the final candidate-detection and open-work
+rate check so different normalized identities cannot bypass a shared duplicate
+signal concurrently. `place_merge_redirects` retains every active, restored,
+or superseded identifier generation and binds each generation to its exact
+audit event. Only `active_source_identifier` is unique, so a restored source
+may be merged again without overwriting history. Multi-hop merges supersede
+intermediate aliases and point active old identifiers directly at the current
+survivor. A merge marks the source as merged, copies facts to the survivor with
+immutable origin and immediate copied-from links, and never deletes source
+evidence. Normalized place identity columns are backfilled and indexed for
+bounded candidate retrieval.

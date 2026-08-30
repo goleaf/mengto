@@ -5,17 +5,29 @@ declare(strict_types=1);
 namespace App\Livewire\Auth;
 
 use App\Models\User;
+use App\Services\EmailVerificationMode;
 use Illuminate\Contracts\View\View;
 
 final class VerifyEmail extends AuthPage
 {
     public bool $sent = false;
 
-    public function resend(): void
+    public function mount(EmailVerificationMode $emailVerification): void
+    {
+        if (! $emailVerification->isEnabled()) {
+            $this->redirectRoute('home');
+        }
+    }
+
+    public function resend(EmailVerificationMode $emailVerification): void
     {
         $user = request()->user();
 
-        if (! $user instanceof User || $user->hasVerifiedEmail()) {
+        if (
+            ! $emailVerification->isEnabled()
+            || ! $user instanceof User
+            || $user->hasVerifiedEmail()
+        ) {
             $this->redirectRoute('home');
 
             return;

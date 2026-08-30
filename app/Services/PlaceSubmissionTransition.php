@@ -50,7 +50,7 @@ final readonly class PlaceSubmissionTransition
         string $rateScope = 'place-moderation',
         int $rateLimit = 60,
     ): PlaceSubmission {
-        $this->authorize($actor, $ability, $submission, $candidate);
+        $this->authorize($actor, 'view', $submission, null);
         $this->validate($operationKey, $expectedLockVersion, $reasonCode, $reasonDetail);
 
         $eventKey = 'moderation:'.$actor->id.':'.$operationKey;
@@ -68,6 +68,8 @@ final readonly class PlaceSubmissionTransition
         if ($replay !== null) {
             return $this->replay($replay, $submission, $fingerprint);
         }
+
+        $this->authorize($actor, $ability, $submission, $candidate);
 
         $rateKey = $rateScope.':hour:'.hash('sha256', (string) $actor->id);
 
@@ -96,6 +98,9 @@ final readonly class PlaceSubmissionTransition
             $afterEvent,
             $recordsReview,
         ): array {
+            $locked = PlaceSubmission::query()->lockForUpdate()->findOrFail($submission->id);
+            $this->authorize($actor, 'view', $locked, null);
+
             $existingEvent = PlaceSubmissionEvent::query()
                 ->where('idempotency_key', $eventKey)
                 ->lockForUpdate()
@@ -105,7 +110,6 @@ final readonly class PlaceSubmissionTransition
                 return [$this->replay($existingEvent, $submission, $fingerprint), false];
             }
 
-            $locked = PlaceSubmission::query()->lockForUpdate()->findOrFail($submission->id);
             $this->authorize($actor, $ability, $locked, $candidate);
 
             if ($locked->lock_version !== $expectedLockVersion) {

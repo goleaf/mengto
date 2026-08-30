@@ -41,6 +41,8 @@ final readonly class MergePlaceDuplicate
             throw ValidationException::withMessages(['candidate' => __('places.submissions.validation.candidate')]);
         }
 
+        $createdRedirectIds = [];
+
         return $this->transition->handle(
             $actor,
             $submission,
@@ -54,7 +56,7 @@ final readonly class MergePlaceDuplicate
             candidate: $candidate,
             destinationPlaceId: $destinationId,
             resolution: PlaceSubmissionResolution::DuplicateMerge,
-            mutate: function (PlaceSubmission $locked) use ($actor, $source, $destinationId): void {
+            mutate: function (PlaceSubmission $locked) use ($actor, $source, $destinationId, &$createdRedirectIds): void {
                 $places = Place::query()
                     ->whereKey([$source->id, $destinationId])
                     ->orderBy('id')
@@ -78,29 +80,86 @@ final readonly class MergePlaceDuplicate
                 $lockedSource->save();
 
                 $this->copyFacts($lockedSource, $destination, $actor);
+                $this->flattenUpstreamAliases(
+                    $lockedSource,
+                    $destination,
+                    $actor,
+                    $createdRedirectIds,
+                );
 
                 foreach (array_unique([$lockedSource->stable_key, $lockedSource->slug]) as $identifier) {
-                    PlaceMergeRedirect::query()->create([
+                    $redirect = PlaceMergeRedirect::query()->create([
                         'source_place_id' => $lockedSource->id,
                         'destination_place_id' => $destination->id,
                         'created_by_user_id' => $actor->id,
                         'source_identifier' => $identifier,
+                        'active_source_identifier' => $identifier,
                         'source_visibility' => $lockedSource->visibility,
                         'created_at' => now(),
                     ]);
+                    $createdRedirectIds[] = $redirect->id;
                 }
 
                 $locked->published_place_id = $lockedSource->id;
                 $locked->linked_place_id = $destination->id;
             },
-            afterEvent: static function (PlaceSubmission $locked, PlaceSubmissionEvent $event): void {
+            afterEvent: static function (PlaceSubmission $locked, PlaceSubmissionEvent $event) use (&$createdRedirectIds): void {
                 PlaceMergeRedirect::query()
-                    ->where('source_place_id', $locked->published_place_id)
-                    ->where('destination_place_id', $locked->linked_place_id)
-                    ->whereNull('place_submission_event_id')
+                    ->whereKey($createdRedirectIds)
                     ->update(['place_submission_event_id' => $event->id]);
             },
         );
+    }
+
+    /** @param list<int> $createdRedirectIds */
+    private function flattenUpstreamAliases(
+        Place $source,
+        Place $destination,
+        User $actor,
+        array &$createdRedirectIds,
+    ): void {
+        $redirects = PlaceMergeRedirect::query()
+            ->where('destination_place_id', $source->id)
+            ->whereNotNull('active_source_identifier')
+            ->whereNull('restored_at')
+            ->orderBy('id')
+            ->lockForUpdate()
+            ->get();
+
+        foreach ($redirects->groupBy('source_place_id') as $sourceId => $sourceRedirects) {
+            $upstreamSource = Place::query()->lockForUpdate()->findOrFail((int) $sourceId);
+
+            if ($upstreamSource->status !== PlaceStatus::Merged
+                || $upstreamSource->merged_into_place_id !== $source->id) {
+                throw ValidationException::withMessages(['candidate' => __('places.submissions.validation.redirect')]);
+            }
+
+            foreach ($sourceRedirects as $redirect) {
+                if ($redirect->active_source_identifier === null) {
+                    throw ValidationException::withMessages(['candidate' => __('places.submissions.validation.redirect')]);
+                }
+
+                $identifier = $redirect->active_source_identifier;
+                $redirect->active_source_identifier = null;
+                $redirect->superseded_at = now()->toImmutable();
+                $redirect->save();
+
+                $flattened = PlaceMergeRedirect::query()->create([
+                    'source_place_id' => $upstreamSource->id,
+                    'destination_place_id' => $destination->id,
+                    'created_by_user_id' => $actor->id,
+                    'source_identifier' => $identifier,
+                    'active_source_identifier' => $identifier,
+                    'source_visibility' => $redirect->source_visibility,
+                    'created_at' => now(),
+                ]);
+                $createdRedirectIds[] = $flattened->id;
+            }
+
+            $upstreamSource->merged_into_place_id = $destination->id;
+            $upstreamSource->lock_version++;
+            $upstreamSource->save();
+        }
     }
 
     private function copyFacts(Place $source, Place $destination, User $reviewer): void
@@ -111,7 +170,7 @@ final readonly class MergePlaceDuplicate
                 [
                     'place_submission_id' => $fact->place_submission_id,
                     'place_submission_revision_id' => $fact->place_submission_revision_id,
-                    'origin_place_id' => $source->id,
+                    'origin_place_id' => $fact->origin_place_id ?? $source->id,
                     'submitted_by_user_id' => $fact->submitted_by_user_id,
                     'reviewed_by_user_id' => $reviewer->id,
                     'stable_key' => $fact->stable_key.'-merged-'.$destination->id,

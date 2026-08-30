@@ -133,6 +133,16 @@ return [
         'page' => 'Page :page',
     ],
     'submissions' => [
+        'region_only' => 'Region-only sharing cannot include a public address or coordinates.',
+        'review' => [
+            'source' => 'Source', 'source_reference' => 'Source evidence', 'relationship' => 'Relationship',
+            'precision' => 'Location precision', 'public_location' => 'Public location',
+            'private_location' => 'Private reviewer location', 'summary' => 'Summary', 'contact' => 'Public contact',
+            'observed' => 'Observed', 'submitted' => 'Submitted', 'consent' => 'Consent record',
+            'audit' => 'Audit context', 'facts' => 'Submitted facts', 'merge' => 'Merge duplicate',
+            'restore' => 'Restore merged place',
+        ],
+        'information_request' => 'Information requested by the reviewer',
         'create' => [
             'eyebrow' => 'Community places',
             'title' => 'Submit a place',
@@ -237,7 +247,7 @@ return [
             'summary' => 'Correct the highlighted place information.',
             'open_limit' => 'Resolve an existing open submission before adding another place.',
             'public_point_required' => 'A public map point requires both coordinates.',
-            'region_only' => 'Region-only sharing cannot include public coordinates.',
+            'region_only' => 'Region-only sharing cannot include a public address or coordinates.',
             'private_exact_only' => 'Exact location may be supplied only with encrypted exact-location sharing.',
             'private_exact_required' => 'Provide an exact address or both exact coordinates.',
             'phone' => 'Enter a complete international phone number.',

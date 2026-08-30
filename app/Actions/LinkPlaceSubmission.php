@@ -35,9 +35,12 @@ final readonly class LinkPlaceSubmission
 
         $destination = Place::query()->findOrFail($candidate->candidate_place_id);
 
-        if ($destination->status !== PlaceStatus::Active) {
+        if (! $this->isLinkable($destination)) {
             throw ValidationException::withMessages(['candidate' => __('places.submissions.validation.candidate')]);
         }
+
+        $candidateId = $candidate->id;
+        $destinationId = $destination->id;
 
         return $this->transition->handle(
             $actor,
@@ -52,12 +55,32 @@ final readonly class LinkPlaceSubmission
             candidate: $candidate,
             destinationPlaceId: $destination->id,
             resolution: PlaceSubmissionResolution::ExistingLink,
-            mutate: function (PlaceSubmission $locked) use ($actor, $destination): void {
-                $locked->linked_place_id = $destination->id;
+            mutate: function (PlaceSubmission $locked) use ($actor, $candidateId, $destinationId): void {
+                $lockedCandidate = PlaceDuplicateCandidate::query()->lockForUpdate()->find($candidateId);
+                $lockedDestination = Place::query()->lockForUpdate()->find($destinationId);
+
+                if ($lockedCandidate === null
+                    || $lockedCandidate->place_submission_id !== $locked->id
+                    || $lockedCandidate->candidate_place_id !== $destinationId
+                    || $lockedDestination === null
+                    || ! $this->isLinkable($lockedDestination)) {
+                    throw ValidationException::withMessages([
+                        'candidate' => __('places.submissions.validation.candidate'),
+                    ]);
+                }
+
+                $locked->linked_place_id = $lockedDestination->id;
                 $locked->published_place_id = null;
-                $this->copyFacts($locked, $destination, $actor);
+                $this->copyFacts($locked, $lockedDestination, $actor);
             },
         );
+    }
+
+    private function isLinkable(Place $place): bool
+    {
+        return $place->status === PlaceStatus::Active
+            && $place->archived_at === null
+            && $place->merged_into_place_id === null;
     }
 
     private function copyFacts(PlaceSubmission $submission, Place $destination, User $reviewer): void

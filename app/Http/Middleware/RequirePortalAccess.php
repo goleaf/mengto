@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Middleware;
 
 use App\Models\User;
+use App\Services\EmailVerificationMode;
 use App\Services\UnavailableAccountResponse;
 use Closure;
 use Illuminate\Auth\AuthenticationException;
@@ -41,7 +42,10 @@ final readonly class RequirePortalAccess
 
     private const string LIVEWIRE_UPDATE_ROUTE = 'default-livewire.update';
 
-    public function __construct(private UnavailableAccountResponse $unavailableAccount) {}
+    public function __construct(
+        private UnavailableAccountResponse $unavailableAccount,
+        private EmailVerificationMode $emailVerification,
+    ) {}
 
     /**
      * @param  Closure(Request): Response  $next
@@ -74,7 +78,8 @@ final readonly class RequirePortalAccess
         }
 
         if (
-            ! $user->hasVerifiedEmail()
+            $this->emailVerification->isEnabled()
+            && ! $user->hasVerifiedEmail()
             && ! $this->isUnverifiedRoute($routeName)
             && $routeName !== self::LIVEWIRE_UPDATE_ROUTE
         ) {

@@ -18,9 +18,12 @@ requires authenticated ownership or an explicit scoped grant.
 - The complete anonymous application allowlist is login, registration,
   password request/reset, and localized account entry. Livewire update is
   transport-only for those pages; upload and preview endpoints remain closed.
-- Active unverified accounts may use verification, password confirmation, and
-  logout only. Inactive accounts are logged out and their session is
-  invalidated.
+- When `EMAIL_VERIFICATION_ENABLED=true`, active unverified accounts may use
+  verification, password confirmation, and logout only. When it is exactly
+  `false`, registration and the bounded activation operation stamp
+  `email_verified_at` without claiming independent proof of address ownership;
+  no verification notification or notice is exposed. Inactive accounts are
+  logged out and their session is invalidated in either mode.
 - Laravel session authentication.
 - Session regeneration after login.
 - Session invalidation and CSRF regeneration after logout.

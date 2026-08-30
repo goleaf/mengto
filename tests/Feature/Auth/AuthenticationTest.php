@@ -313,6 +313,7 @@ test('registration creates a normalized verified-pending account', function () {
         ->and($user->locale)->toBe('lt')
         ->and($user->timezone)->toBe('UTC');
 
+    Notification::assertSentTo($user, VerifyEmailNotification::class);
     $this->assertAuthenticatedAs($user);
     app()->setLocale('en');
 });

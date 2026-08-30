@@ -184,6 +184,7 @@ final class PlaceSubmissionDemoSeeder extends Seeder
                         'place_submission_event_id' => $event->id,
                         'created_by_user_id' => $administrator->id,
                         'restored_by_user_id' => $number === 1 ? $administrator->id : null,
+                        'active_source_identifier' => $number === 1 ? null : $source->slug,
                         'source_visibility' => $source->visibility,
                         'restored_at' => $number === 1 ? now() : null,
                         'created_at' => now(),

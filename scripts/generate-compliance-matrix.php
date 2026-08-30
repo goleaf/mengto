@@ -135,6 +135,13 @@ function evidenceFor(string $id): array
     ];
 
     $specific = [
+        'PRD-IDENTITY-001' => [
+            '`RegisterUser`, `EmailVerificationMode`, auth Livewire components, activation Action and command',
+            'Normalized unique email, conditional verified middleware, bounded audited active-only activation',
+            'Localized EN/LT/RU auth shell and verification states',
+            '`UserFactory` states and mode-aware repeatable `DatabaseSeeder` identities',
+            '`ConfigurableEmailVerificationTest`, `AuthenticationTest`, and auth policy regressions',
+        ],
         'PRD-IDENTITY-003' => [
             '`PetProfile`, `PetProfileWorkspace`, `PetProfileDuplicateReview`, typed access-request Actions, social actor services',
             '`PetProfilePolicy`, active manager scope, encrypted access requests, duplicate-review and access-request indexes',
@@ -192,18 +199,18 @@ function evidenceFor(string $id): array
             '`LinkedMediaNavigationContractTest` and affected feature tests',
         ],
         'SEC-AUTH-004' => [
-            '`RequirePortalAccess`, `PortalMediaResponse`, filesystem configuration',
-            'Middleware priority, active/verified account state, canonical media containment',
+            '`RequirePortalAccess`, `EmailVerificationMode`, custom verified middleware, `PortalMediaResponse`, filesystem configuration',
+            'Middleware priority, unconditional active-account state, conditional verified-email state, canonical media containment',
             'Localized account entry and non-disclosing redirects/errors',
             'User and file security fixtures',
-            '`PortalAccessBoundaryTest`, `PortalMediaAccessTest`, auth and architecture regressions',
+            '`ConfigurableEmailVerificationTest`, `PortalAccessBoundaryTest`, `PortalMediaAccessTest`, auth and architecture regressions',
         ],
         'SYS-AUTH-005' => [
-            '`RequirePortalAccess`, persistent Livewire middleware, authenticated media route',
-            'Exact guest allowlist, pre-binding denial, route policies and token boundaries',
+            '`RequirePortalAccess`, `EmailVerificationMode`, custom verified middleware, persistent Livewire middleware, authenticated media route',
+            'Exact guest allowlist, pre-binding denial, unconditional active-account checks, conditional email-verification gate, route policies and token boundaries',
             'Localized auth shell; no anonymous product presentation',
-            'User and media fixtures',
-            '`PortalAccessBoundaryTest`, `PortalMediaAccessTest`, full serial suite',
+            'Mode-aware repeatable user seed and media fixtures',
+            '`ConfigurableEmailVerificationTest`, `PortalAccessBoundaryTest`, `PortalMediaAccessTest`, full serial suite',
         ],
         'UI-NAV-001' => [
             'Presenter projections and `linked-media` component',
@@ -227,11 +234,11 @@ function evidenceFor(string $id): array
             '`tests/Feature/ObservabilityTest.php`',
         ],
         'OPS-DEPLOYMENT-001' => [
-            '`docs/deployment.md`, framework configuration',
-            'Additive migrations and production seed guards',
+            '`docs/deployment.md`, `EmailVerificationMode`, activation command, framework configuration',
+            'Database backup, additive migrations, bounded audited activation, production seed guards',
             'Vite manifest and minimal health response',
-            'Environment-guarded seeders',
-            'Boot/cache/build/fresh-database smokes',
+            'Environment-guarded mode-aware seeders',
+            '`ConfigurableEmailVerificationTest` plus boot/cache/build/fresh-database smokes',
         ],
         'OPS-OBSERVABILITY-001' => [
             '`AttachRequestContext`, `config/platform.php`, `config/logging.php`',
@@ -492,8 +499,8 @@ function verificationFor(string $id): string
         return 'php artisan test --compact tests/Feature/PlaceDirectoryTest.php';
     }
 
-    if (in_array($id, ['SEC-AUTH-004', 'SYS-AUTH-005'], true)) {
-        return 'php artisan test --compact tests/Feature/Auth/PortalAccessBoundaryTest.php tests/Feature/Auth/PortalMediaAccessTest.php tests/Feature/Auth/AuthenticationTest.php tests/Feature/ArchitectureComplianceTest.php';
+    if (in_array($id, ['PRD-IDENTITY-001', 'SEC-AUTH-004', 'SYS-AUTH-005'], true)) {
+        return 'php scripts/run-tests.php --compact tests/Feature/Auth/ConfigurableEmailVerificationTest.php tests/Feature/Auth/PortalAccessBoundaryTest.php tests/Feature/Auth/PortalMediaAccessTest.php tests/Feature/Auth/AuthenticationTest.php tests/Feature/ArchitectureComplianceTest.php';
     }
 
     if (in_array($id, ['PRD-SOCIAL-008', 'SYS-FRONTEND-003'], true)) {

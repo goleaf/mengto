@@ -45,7 +45,7 @@ final class PlacePolicy
     public function update(?User $user, Place $place): bool
     {
         return $user?->isActive() === true
-            && $place->status !== PlaceStatus::Archived
+            && ! in_array($place->status, [PlaceStatus::Archived, PlaceStatus::Merged], true)
             && $place->isManagedBy($user);
     }
 
@@ -87,13 +87,17 @@ final class PlacePolicy
         return false;
     }
 
-    public function discloseMergedIdentifier(?User $user, Place $place): bool
-    {
+    public function discloseMergedIdentifier(
+        ?User $user,
+        Place $place,
+        ?PlaceVisibility $visibilityCeiling = null,
+    ): bool {
         if ($user?->isActive() !== true || ! $user->hasVerifiedEmail()) {
             return false;
         }
 
-        if ($place->visibility === PlaceVisibility::Public
+        if (($visibilityCeiling === null || $visibilityCeiling === PlaceVisibility::Public)
+            && $place->visibility === PlaceVisibility::Public
             || $user->isAdministrator()
             || $place->owner_user_id === $user->id) {
             return true;

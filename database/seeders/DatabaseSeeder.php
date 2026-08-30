@@ -6,6 +6,7 @@ namespace Database\Seeders;
 
 use App\Enums\UserStatus;
 use App\Models\User;
+use App\Services\EmailVerificationMode;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use LogicException;
@@ -17,7 +18,7 @@ class DatabaseSeeder extends Seeder
     /**
      * Seed the application's database.
      */
-    public function run(): void
+    public function run(EmailVerificationMode $emailVerification): void
     {
         $allowedEnvironments = config('platform.demo_seed_environments');
 
@@ -136,7 +137,9 @@ class DatabaseSeeder extends Seeder
             'actor_key' => 'demo-unverified',
             'name' => 'Demo Unverified Member',
             'email' => 'unverified@example.test',
-            'email_verified_at' => null,
+            'email_verified_at' => $emailVerification->isEnabled()
+                ? null
+                : now(),
             'password' => 'password',
             'locale' => 'en',
             'timezone' => 'UTC',

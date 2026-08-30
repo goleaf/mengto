@@ -5,11 +5,23 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Enums\PlaceVisibility;
+use Carbon\CarbonImmutable;
 use Database\Factories\PlaceMergeRedirectFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * @property int $id
+ * @property int $source_place_id
+ * @property int $destination_place_id
+ * @property int|null $place_submission_event_id
+ * @property string $source_identifier
+ * @property string|null $active_source_identifier
+ * @property PlaceVisibility $source_visibility
+ * @property CarbonImmutable|null $restored_at
+ * @property CarbonImmutable|null $superseded_at
+ */
 final class PlaceMergeRedirect extends Model
 {
     /** @use HasFactory<PlaceMergeRedirectFactory> */
@@ -24,8 +36,10 @@ final class PlaceMergeRedirect extends Model
         'created_by_user_id',
         'restored_by_user_id',
         'source_identifier',
+        'active_source_identifier',
         'source_visibility',
         'restored_at',
+        'superseded_at',
         'created_at',
     ];
 
@@ -34,6 +48,7 @@ final class PlaceMergeRedirect extends Model
         'destination_place_id',
         'place_submission_event_id',
         'source_identifier',
+        'active_source_identifier',
         'source_visibility',
     ];
 
@@ -42,6 +57,7 @@ final class PlaceMergeRedirect extends Model
         return [
             'source_visibility' => PlaceVisibility::class,
             'restored_at' => 'immutable_datetime',
+            'superseded_at' => 'immutable_datetime',
             'created_at' => 'immutable_datetime',
         ];
     }

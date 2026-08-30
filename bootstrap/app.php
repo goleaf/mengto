@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Http\Middleware\AddSecurityHeaders;
 use App\Http\Middleware\AttachRequestContext;
 use App\Http\Middleware\EnsureActiveUser;
+use App\Http\Middleware\EnsureEmailIsVerified;
 use App\Http\Middleware\RequirePortalAccess;
 use App\Http\Middleware\SetLocale;
 use Illuminate\Foundation\Application;
@@ -33,6 +34,7 @@ return Application::configure(basePath: dirname(__DIR__))
         );
         $middleware->alias([
             'active' => EnsureActiveUser::class,
+            'verified' => EnsureEmailIsVerified::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

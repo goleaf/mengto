@@ -38,6 +38,8 @@ final readonly class SubmitPlaceSubmission
 {
     private const OPEN_SUBMISSION_LIMIT = 10;
 
+    private const DETECTION_LOCK_HASH = '992a34320277074bc22580f50a8b5e0dfe227340f878c928967833e456a136aa';
+
     public function __construct(
         private Gate $gate,
         private PlaceIdentityNormalizer $normalizer,
@@ -71,6 +73,11 @@ final readonly class SubmitPlaceSubmission
             $normalized,
             $identityHash,
         ): array {
+            PlaceSubmissionIdentityLock::query()
+                ->whereKey(self::DETECTION_LOCK_HASH)
+                ->lockForUpdate()
+                ->firstOrFail();
+            $this->enforceRateLimits($actor);
             $this->gate->forUser($actor)->authorize('create', PlaceSubmission::class);
 
             $replay = PlaceSubmission::query()
@@ -190,12 +197,13 @@ final readonly class SubmitPlaceSubmission
                 $identityLock->save();
             }
 
+            RateLimiter::hit($this->shortRateKey($actor), 600);
+            RateLimiter::hit($this->dailyRateKey($actor), 86_400);
+
             return [$submission->refresh(), true];
         }, 3);
 
         if ($created) {
-            RateLimiter::hit($this->shortRateKey($actor), 600);
-            RateLimiter::hit($this->dailyRateKey($actor), 86_400);
             DB::afterCommit(static function () use ($actor, $submission): void {
                 $actor->notify(new PlaceSubmissionStatusChanged($submission, $submission->status));
             });
@@ -275,8 +283,9 @@ final readonly class SubmitPlaceSubmission
                 $validator->errors()->add('public_latitude', __('places.submissions.validation.public_point_required'));
             }
 
-            if ($data->locationPrecision === PlaceLocationPrecision::PublicRegion && $publicCoordinates) {
-                $validator->errors()->add('public_latitude', __('places.submissions.validation.region_only'));
+            if ($data->locationPrecision === PlaceLocationPrecision::PublicRegion
+                && (filled($data->publicAddress) || $publicCoordinates)) {
+                $validator->errors()->add('public_latitude', __('places.submissions.region_only'));
             }
 
             if ($data->locationPrecision !== PlaceLocationPrecision::PrivateExact
@@ -291,6 +300,11 @@ final readonly class SubmitPlaceSubmission
             }
 
             $phone = $this->normalizer->phone($data->publicPhone);
+
+            if (filled($data->publicPhone)
+                && preg_match('/\A\+?[0-9][0-9\s().-]*\z/', (string) $data->publicPhone) !== 1) {
+                $validator->errors()->add('public_phone', __('places.submissions.validation.phone'));
+            }
 
             if ($phone !== null && (strlen($phone) < 8 || strlen($phone) > 15)) {
                 $validator->errors()->add('public_phone', __('places.submissions.validation.phone'));

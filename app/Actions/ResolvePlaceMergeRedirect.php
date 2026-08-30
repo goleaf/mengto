@@ -18,7 +18,7 @@ final readonly class ResolvePlaceMergeRedirect
     public function handle(?User $actor, string $identifier): ?Place
     {
         $redirect = PlaceMergeRedirect::query()
-            ->where('source_identifier', $identifier)
+            ->where('active_source_identifier', $identifier)
             ->whereNull('restored_at')
             ->with(['sourcePlace.organization', 'destinationPlace.organization'])
             ->first();
@@ -33,7 +33,7 @@ final readonly class ResolvePlaceMergeRedirect
         if ($source->status !== PlaceStatus::Merged
             || $source->merged_into_place_id !== $destination->id
             || $destination->status !== PlaceStatus::Active
-            || ! $this->canDiscloseSource($actor, $source)
+            || ! $this->canDiscloseSource($actor, $source, $redirect->source_visibility)
             || ! $this->canViewDestination($actor, $destination)) {
             return null;
         }
@@ -41,11 +41,12 @@ final readonly class ResolvePlaceMergeRedirect
         return $destination;
     }
 
-    private function canDiscloseSource(?User $actor, Place $source): bool
+    private function canDiscloseSource(?User $actor, Place $source, PlaceVisibility $visibilityCeiling): bool
     {
         return $actor === null
-            ? $source->visibility === PlaceVisibility::Public
-            : $this->policy->discloseMergedIdentifier($actor, $source);
+            ? $visibilityCeiling === PlaceVisibility::Public
+                && $source->visibility === PlaceVisibility::Public
+            : $this->policy->discloseMergedIdentifier($actor, $source, $visibilityCeiling);
     }
 
     private function canViewDestination(?User $actor, Place $destination): bool

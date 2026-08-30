@@ -12,6 +12,10 @@
 - Portal authentication is an outer boundary: every product route, mutation,
   token share, Livewire upload/preview, and product-media response requires an
   active authenticated account. Product policy checks still apply afterward.
+- Verified-email state is an additional outer-boundary requirement only while
+  configured email verification is enabled. Disabling it does not weaken
+  active-account, policy, scoped-grant, or step-up authorization checks and
+  does not represent independent proof that the member owns the address.
 
 ## Actor Resolution
 

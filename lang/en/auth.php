@@ -126,4 +126,10 @@ return [
         'sent' => 'A new verification email has been sent.',
         'success' => 'Your email address has been verified.',
     ],
+    'email_verification_activation' => [
+        'dry_run' => 'Eligible active accounts: :eligible. No accounts were changed.',
+        'complete' => 'Eligible active accounts: :eligible. Activated accounts: :activated.',
+        'enabled_error' => 'Disable email verification before activating pending accounts.',
+        'changed_unexpectedly' => 'Pending email activation changed an unexpected number of accounts.',
+    ],
 ];

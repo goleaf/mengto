@@ -10,6 +10,7 @@ use App\Models\PlaceDuplicateCandidate;
 use App\Models\PlaceSubmission;
 use App\Models\User;
 use App\Services\PlaceSubmissionTransition;
+use Illuminate\Support\Facades\Validator;
 
 final readonly class RequestPlaceSubmissionInformation
 {
@@ -24,6 +25,11 @@ final readonly class RequestPlaceSubmissionInformation
         string $reasonDetail,
         ?PlaceDuplicateCandidate $candidate = null,
     ): PlaceSubmission {
+        $validated = Validator::make(
+            ['reason_detail' => $reasonDetail],
+            ['reason_detail' => ['required', 'string', 'min:10', 'max:2000']],
+        )->validate();
+
         return $this->transition->handle(
             $actor,
             $submission,
@@ -38,7 +44,7 @@ final readonly class RequestPlaceSubmissionInformation
             $operationKey,
             $expectedLockVersion,
             $reasonCode,
-            $reasonDetail,
+            (string) $validated['reason_detail'],
             $candidate,
         );
     }

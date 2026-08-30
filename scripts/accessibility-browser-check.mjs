@@ -4124,7 +4124,6 @@ try {
             const values = {
                 '#place-submission-name': 'Browser Verified Community Green',
                 '#place-submission-region': 'Vilnius',
-                '#place-submission-address': 'Browser Street 42, Vilnius',
                 '#place-submission-source-reference': 'Observed during a community walk',
                 '#place-submission-public_phone': '+37061234999',
                 '#place-submission-public_email': 'browser-place@example.test',
@@ -4188,6 +4187,40 @@ try {
             Buffer.from(submissionScreenshot.data, 'base64'),
         );
 
+        await client.send('Network.clearBrowserCookies', {}, sessionId);
+        await login(client, sessionId, 'administrator@example.test');
+        await navigate(client, sessionId, `${baseUrl}/places/moderation/submissions`);
+        const moderationAudit = await evaluate(client, sessionId, pageAuditExpression);
+        assertPageAudit(moderationAudit, 'mobile place moderation workspace');
+        const moderationTargets = await evaluate(client, sessionId, surfaceTouchTargetExpression);
+        assert(
+            moderationTargets.length === 0,
+            `mobile place moderation workspace: controls below 44px ${JSON.stringify(moderationTargets)}.`,
+        );
+        const moderationWorkflow = await evaluate(client, sessionId, `(() => ({
+            surface: document.querySelector('[data-section="place-moderation"]') !== null,
+            evidenceRows: document.querySelectorAll('[wire\\\\:key^="moderation-evidence-"]').length,
+            restoreControls: [...document.querySelectorAll('button')]
+                .filter((button) => button.textContent.includes(${JSON.stringify('Restore merged place')})).length,
+            reopenControls: [...document.querySelectorAll('button')]
+                .filter((button) => button.textContent.includes(${JSON.stringify('Reopen')})).length,
+            rawKeys: document.body.innerText.match(/\\bplaces\\.[a-z0-9_.-]+/gi) ?? [],
+        }))()`);
+        assert(moderationWorkflow.surface, 'The place moderation workspace is missing.');
+        assert(moderationWorkflow.evidenceRows > 0, 'The moderation workspace rendered no review evidence.');
+        assert(moderationWorkflow.restoreControls > 0, 'The moderation workspace exposed no merge restoration control.');
+        assert(moderationWorkflow.reopenControls > 0, 'The moderation workspace exposed no reopen control.');
+        assert(moderationWorkflow.rawKeys.length === 0, `Raw moderation keys are visible: ${moderationWorkflow.rawKeys.join(', ')}.`);
+
+        const moderationScreenshot = await client.send('Page.captureScreenshot', {
+            format: 'png',
+            captureBeyondViewport: true,
+        }, sessionId);
+        await writeFile(
+            join(outputDirectory, 'place-moderation-mobile.png'),
+            Buffer.from(moderationScreenshot.data, 'base64'),
+        );
+
         assert(consoleErrors.length === 0, `Browser console errors: ${consoleErrors.join(' | ')}`);
 
         const report = {
@@ -4198,6 +4231,8 @@ try {
             submissionFormAudit,
             submissionStatusAudit,
             protectedDuplicate,
+            moderationAudit,
+            moderationWorkflow,
             consoleErrors,
             screenshots: [
                 join(outputDirectory, 'place-directory-desktop.png'),
@@ -4205,6 +4240,7 @@ try {
                 join(outputDirectory, 'place-detail-desktop.png'),
                 join(outputDirectory, 'place-detail-mobile.png'),
                 join(outputDirectory, 'place-submission-mobile.png'),
+                join(outputDirectory, 'place-moderation-mobile.png'),
             ],
         };
 

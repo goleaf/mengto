@@ -51,6 +51,12 @@
         @endif
 
         @if ($this->submission->status === \App\Enums\PlaceSubmissionStatus::NeedsInformation)
+            @if ($this->informationRequest !== null)
+                <div class="notice">
+                    <h3>{{ __('places.submissions.information_request') }}</h3>
+                    <p>{{ $this->informationRequest }}</p>
+                </div>
+            @endif
             <form class="stack" wire:submit="respond">
                 <label class="field" for="place-submission-response">
                     <span>{{ __('places.submissions.fields.information_response') }}</span>
@@ -74,12 +80,8 @@
             </button>
         @endif
 
-        @if ($this->submission->publishedPlace !== null)
-            <a data-place-published-link class="action action--primary action--regular" href="{{ route('places.show', ['place' => $this->submission->publishedPlace->slug]) }}">
-                {{ __('places.submissions.actions.view_published') }}
-            </a>
-        @elseif ($this->submission->linkedPlace !== null)
-            <a data-place-published-link class="action action--primary action--regular" href="{{ route('places.show', ['place' => $this->submission->linkedPlace->slug]) }}">
+        @if ($this->visibleDestination !== null)
+            <a data-place-published-link class="action action--primary action--regular" href="{{ route('places.show', ['place' => $this->visibleDestination['slug']]) }}">
                 {{ __('places.submissions.actions.view_published') }}
             </a>
         @endif

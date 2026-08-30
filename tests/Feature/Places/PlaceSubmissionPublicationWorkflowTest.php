@@ -24,7 +24,9 @@ use App\Enums\PlaceSubmissionResolution;
 use App\Enums\PlaceSubmissionSource;
 use App\Enums\PlaceSubmissionStatus;
 use App\Enums\PlaceType;
+use App\Enums\PlaceVisibility;
 use App\Livewire\Places\CreatePlaceSubmission;
+use App\Livewire\Places\PlaceModerationWorkspace;
 use App\Livewire\Places\PlaceSubmissionStatusPage;
 use App\Models\Organization;
 use App\Models\OrganizationMembership;
@@ -37,6 +39,7 @@ use App\Models\PlaceSubmissionEvent;
 use App\Models\PlaceSubmissionRevision;
 use App\Models\User;
 use App\Notifications\PlaceSubmissionStatusChanged;
+use App\Services\PlaceDuplicateDetector;
 use Carbon\CarbonImmutable;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Support\Facades\DB;
@@ -99,6 +102,30 @@ test('place submission persistence protects review state provenance candidates a
         ->and(fn () => $event->delete())->toThrow(LogicException::class)
         ->and(fn () => $revision->update(['kind' => 'changed']))->toThrow(LogicException::class)
         ->and(fn () => $candidate->delete())->toThrow(LogicException::class);
+});
+
+test('redirect history prevents a destructive rollback to globally unique source identifiers', function () {
+    $identifier = 'remerged-place-history';
+    PlaceMergeRedirect::factory()->create([
+        'source_identifier' => $identifier,
+        'active_source_identifier' => null,
+        'restored_at' => now(),
+    ]);
+    PlaceMergeRedirect::factory()->create([
+        'source_identifier' => $identifier,
+        'active_source_identifier' => $identifier,
+    ]);
+    $migration = require database_path(
+        'migrations/2026_08_30_121000_add_active_identifier_to_place_merge_redirects.php',
+    );
+
+    expect(fn () => $migration->down())->toThrow(
+        LogicException::class,
+        'Preserve their audit history and recover with a forward fix.',
+    );
+
+    expect(Schema::hasColumn('place_merge_redirects', 'active_source_identifier'))->toBeTrue()
+        ->and(PlaceMergeRedirect::query()->where('source_identifier', $identifier)->count())->toBe(2);
 });
 
 test('an active verified member submits one pending review with facts audit and after-success notification', function () {
@@ -227,6 +254,42 @@ test('deterministic duplicate signals create review candidates without creating 
         ->and($existing->fresh()->status->value)->toBe('active');
 });
 
+test('duplicate scoring does not hide a strong candidate behind the bounded name cohort', function () {
+    $submission = PlaceSubmission::factory()->for($this->authenticatedUser, 'submitter')->create([
+        'normalized_name' => 'shared place name',
+        'normalized_address' => '42 strong signal street',
+        'normalized_phone' => '37061234999',
+        'public_latitude' => null,
+        'public_longitude' => null,
+        'canonical_organization_id' => null,
+    ]);
+
+    Place::factory()->count(200)->create([
+        'normalized_name' => 'shared place name',
+        'normalized_address' => null,
+        'normalized_phone' => null,
+        'normalized_email' => null,
+        'normalized_website' => null,
+        'public_latitude' => null,
+        'public_longitude' => null,
+        'organization_id' => null,
+    ]);
+    $strongCandidate = Place::factory()->create([
+        'normalized_name' => 'shared place name',
+        'normalized_address' => '42 strong signal street',
+        'normalized_phone' => '37061234999',
+        'public_latitude' => null,
+        'public_longitude' => null,
+        'organization_id' => null,
+    ]);
+
+    app(PlaceDuplicateDetector::class)->detect($submission);
+
+    expect($submission->duplicateCandidates()
+        ->where('candidate_place_id', $strongCandidate->id)
+        ->exists())->toBeTrue();
+});
+
 test('active merge aliases resolve duplicate suggestions to the canonical public place', function () {
     $destination = Place::factory()->public()->create([
         'name' => 'Canonical Community Clinic',
@@ -317,6 +380,19 @@ test('only an independent active moderator can approve and publish a visitor sub
         ->and($place->facts()->whereNotNull('copied_from_fact_id')->count())->toBe($submission->facts()->count())
         ->and($replayed->is($published))->toBeTrue()
         ->and($published->events()->count())->toBe(3);
+
+    Notification::assertSentToTimes($this->authenticatedUser, PlaceSubmissionStatusChanged::class, 3);
+    foreach ([
+        PlaceSubmissionStatus::Submitted,
+        PlaceSubmissionStatus::Approved,
+        PlaceSubmissionStatus::Published,
+    ] as $status) {
+        Notification::assertSentTo(
+            $this->authenticatedUser,
+            PlaceSubmissionStatusChanged::class,
+            static fn (PlaceSubmissionStatusChanged $notification): bool => $notification->status === $status,
+        );
+    }
 });
 
 test('moderation can link without creating or merging a canonical place and replay stays idempotent', function () {
@@ -353,6 +429,56 @@ test('moderation can link without creating or merging a canonical place and repl
         ->and(Place::query()->count())->toBe($before)
         ->and(PlaceMergeRedirect::query()->count())->toBe(0)
         ->and($same->is($linked))->toBeTrue();
+});
+
+test('moderation cannot link a submission to an archived candidate place', function () {
+    $moderator = User::factory()->administrator()->create();
+    $destination = Place::factory()->public()->create(['archived_at' => now()]);
+    $submission = PlaceSubmission::factory()->for($this->authenticatedUser, 'submitter')->duplicateReview()->create();
+    $candidate = PlaceDuplicateCandidate::factory()
+        ->for($submission, 'submission')
+        ->for($destination, 'candidatePlace')
+        ->create();
+
+    expect(fn () => app(LinkPlaceSubmission::class)->handle(
+        $moderator,
+        $submission,
+        $candidate,
+        'ae3ba76d-0f97-439f-8d84-058570bb8223',
+        0,
+        'same-archived-place',
+    ))->toThrow(ValidationException::class);
+
+    expect($submission->fresh()->status)->toBe(PlaceSubmissionStatus::DuplicateReview)
+        ->and($submission->events()->count())->toBe(0);
+});
+
+test('a protected linked destination never exposes its identifier to the submitter', function () {
+    $moderator = User::factory()->administrator()->create();
+    $destination = Place::factory()->private()->create();
+    $submission = PlaceSubmission::factory()
+        ->for($this->authenticatedUser, 'submitter')
+        ->duplicateReview()
+        ->create();
+    $candidate = PlaceDuplicateCandidate::factory()
+        ->for($submission, 'submission')
+        ->for($destination, 'candidatePlace')
+        ->create(['presentation_scope' => 'review_only']);
+    $linked = app(LinkPlaceSubmission::class)->handle(
+        $moderator,
+        $submission,
+        $candidate,
+        '973053c1-5c24-4dd0-a622-64c64de907b7',
+        0,
+        'same-protected-place',
+    );
+
+    expect($this->authenticatedUser->can('view', $destination))->toBeFalse();
+
+    Livewire::actingAs($this->authenticatedUser)
+        ->test(PlaceSubmissionStatusPage::class, ['placeSubmission' => $linked->stable_key])
+        ->assertDontSee($destination->slug)
+        ->assertDontSee($destination->name);
 });
 
 test('the submitter controls duplicate choices while unrelated members cannot act', function () {
@@ -429,9 +555,20 @@ test('the submitter can answer an information request and withdraw without losin
         'Please provide the official source.',
     );
 
+    Livewire::actingAs($this->authenticatedUser)
+        ->test(PlaceSubmissionStatusPage::class, ['placeSubmission' => $requested->stable_key])
+        ->assertSee('Please provide the official source.');
+
     $answered = app(RespondToPlaceSubmissionInformation::class)->handle(
         $this->authenticatedUser,
         $requested,
+        'c1682ab2-fbf6-4e39-a4fe-e5ea2146c1c7',
+        1,
+        'The public hours are confirmed by the posted municipal notice dated today.',
+    );
+    $answerReplay = app(RespondToPlaceSubmissionInformation::class)->handle(
+        $this->authenticatedUser,
+        $answered,
         'c1682ab2-fbf6-4e39-a4fe-e5ea2146c1c7',
         1,
         'The public hours are confirmed by the posted municipal notice dated today.',
@@ -442,8 +579,16 @@ test('the submitter can answer an information request and withdraw without losin
         'b9cd38c9-26cb-4fd7-b7b5-b2ad03cba11d',
         2,
     );
+    $withdrawReplay = app(WithdrawPlaceSubmission::class)->handle(
+        $this->authenticatedUser,
+        $withdrawn,
+        'b9cd38c9-26cb-4fd7-b7b5-b2ad03cba11d',
+        2,
+    );
 
     expect($answered->status)->toBe(PlaceSubmissionStatus::Submitted)
+        ->and($answerReplay->is($answered))->toBeTrue()
+        ->and($withdrawReplay->is($withdrawn))->toBeTrue()
         ->and($answered->revisions()->where('kind', 'information-response')->count())->toBe(1)
         ->and($withdrawn->status)->toBe(PlaceSubmissionStatus::Withdrawn)
         ->and($withdrawn->withdrawn_at)->not->toBeNull()
@@ -453,12 +598,23 @@ test('the submitter can answer an information request and withdraw without losin
             'information-provided',
             'withdrawn',
         ]);
+
+    Notification::assertSentToTimes($this->authenticatedUser, PlaceSubmissionStatusChanged::class, 3);
 });
 
 test('rejection information request and reopen are audited authorized and version locked', function () {
     Notification::fake();
     $moderator = User::factory()->administrator()->create();
     $submission = PlaceSubmission::factory()->for($this->authenticatedUser, 'submitter')->create();
+
+    expect(fn () => app(RequestPlaceSubmissionInformation::class)->handle(
+        $moderator,
+        $submission,
+        '5221529c-fb5c-4a46-965d-48b9a0f035c7',
+        0,
+        'contact-evidence-needed',
+        '',
+    ))->toThrow(ValidationException::class);
 
     $needsInformation = app(RequestPlaceSubmissionInformation::class)->handle(
         $moderator,
@@ -567,6 +723,33 @@ test('a failed merge rolls back source redirect facts submission and audit then 
         ->and($restoreReplay->is($restored))->toBeTrue()
         ->and($merged->events()->where('action', 'merge-restored')->count())->toBe(1)
         ->and($destination->facts()->where('origin_place_id', $source->id)->exists())->toBeTrue();
+
+    $remerged = app(MergePlaceDuplicate::class)->handle(
+        $moderator,
+        $merged->fresh(),
+        $source->fresh(),
+        $candidate,
+        '59a0b5b1-8d94-45d3-a674-47125af26e3a',
+        2,
+        'duplicate-confirmed-again',
+    );
+    $remergeReplay = app(MergePlaceDuplicate::class)->handle(
+        $moderator,
+        $remerged,
+        $source->fresh(),
+        $candidate,
+        '59a0b5b1-8d94-45d3-a674-47125af26e3a',
+        2,
+        'duplicate-confirmed-again',
+    );
+
+    expect($remergeReplay->is($remerged))->toBeTrue()
+        ->and($source->fresh()->status)->toBe(PlaceStatus::Merged)
+        ->and(PlaceMergeRedirect::query()->whereNull('restored_at')->count())->toBe(2)
+        ->and(PlaceMergeRedirect::query()->whereNotNull('restored_at')->count())->toBe(2)
+        ->and($merged->events()->where('action', 'places-merged')->count())->toBe(2);
+
+    Notification::assertSentToTimes($this->authenticatedUser, PlaceSubmissionStatusChanged::class, 3);
 });
 
 test('blocked suspended unverified and unrelated accounts cannot submit or inspect another submission', function () {
@@ -612,8 +795,8 @@ test('dedicated livewire submission validates retains operation identity and iso
         ->and(Place::query()->count())->toBe(0);
 
     Livewire::actingAs(User::factory()->create())
-        ->test(PlaceSubmissionStatusPage::class, ['placeSubmission' => $submission])
-        ->assertForbidden();
+        ->test(PlaceSubmissionStatusPage::class, ['placeSubmission' => $submission->stable_key])
+        ->assertNotFound();
 });
 
 test('submission and moderation routes enforce account and reviewer boundaries', function () {
@@ -623,11 +806,64 @@ test('submission and moderation routes enforce account and reviewer boundaries',
     $this->get(route('places.submissions.show', $submission))->assertOk();
     $this->get(route('places.moderation.submissions'))->assertForbidden();
 
+    $this->actingAs(User::factory()->create())
+        ->get(route('places.submissions.show', $submission))
+        ->assertNotFound();
+
     $administrator = User::factory()->administrator()->create();
     $this->actingAs($administrator)
         ->get(route('places.moderation.submissions'))
         ->assertOk()
         ->assertSee(__('places.submissions.moderation.title'));
+});
+
+test('moderation workspace renders review evidence and reaches merge restore and withdrawn reopen', function () {
+    $moderator = User::factory()->administrator()->create();
+    $source = Place::factory()->public()->create();
+    $destination = Place::factory()->public()->create();
+    $submission = PlaceSubmission::factory()
+        ->for($this->authenticatedUser, 'submitter')
+        ->create([
+            'status' => PlaceSubmissionStatus::Published,
+            'resolution' => PlaceSubmissionResolution::NewPlace,
+            'published_place_id' => $source->id,
+            'source_reference' => 'https://example.test/official-place-evidence',
+            'relationship_to_place' => 'visitor',
+            'location_precision' => PlaceLocationPrecision::PrivateExact,
+            'exact_address' => 'Private review entrance 9',
+            'submitted_facts' => ['services' => ['water', 'quiet-area']],
+        ]);
+    $candidate = PlaceDuplicateCandidate::factory()
+        ->for($submission, 'submission')
+        ->for($destination, 'candidatePlace')
+        ->create();
+    $withdrawn = PlaceSubmission::factory()
+        ->for($this->authenticatedUser, 'submitter')
+        ->withdrawn()
+        ->create();
+
+    $component = Livewire::actingAs($moderator)
+        ->test(PlaceModerationWorkspace::class)
+        ->assertSee('https://example.test/official-place-evidence')
+        ->assertSee('Private review entrance 9')
+        ->assertSee('quiet-area')
+        ->assertSee($withdrawn->name)
+        ->call('merge', $submission->stable_key, $candidate->candidate_key)
+        ->assertHasNoErrors();
+
+    $activeRedirect = PlaceMergeRedirect::query()
+        ->where('source_place_id', $source->id)
+        ->whereNotNull('active_source_identifier')
+        ->firstOrFail();
+
+    $component
+        ->call('restore', $submission->stable_key, $activeRedirect->active_source_identifier)
+        ->assertHasNoErrors()
+        ->call('reopen', $withdrawn->stable_key)
+        ->assertHasNoErrors();
+
+    expect($source->fresh()->status)->toBe(PlaceStatus::Active)
+        ->and($withdrawn->fresh()->status)->toBe(PlaceSubmissionStatus::Submitted);
 });
 
 test('invalid livewire submission writes no aggregate and preserves its operation key', function () {
@@ -661,7 +897,7 @@ test('protected duplicate status renders generic copy without candidate identity
         ->create(['presentation_scope' => 'review_only']);
 
     Livewire::actingAs($this->authenticatedUser)
-        ->test(PlaceSubmissionStatusPage::class, ['placeSubmission' => $submission])
+        ->test(PlaceSubmissionStatusPage::class, ['placeSubmission' => $submission->stable_key])
         ->assertSee(__('places.submissions.duplicates.protected'))
         ->assertDontSee('Hidden Foster Location');
 
@@ -706,6 +942,101 @@ test('merged identifiers redirect only when both source and destination are safe
     $this->actingAs(User::factory()->create())
         ->get(route('places.show', ['place' => $hiddenSource->slug]))
         ->assertNotFound();
+
+    $hiddenSource->forceFill(['visibility' => PlaceVisibility::Public])->save();
+
+    $this->actingAs(User::factory()->create())
+        ->get(route('places.show', ['place' => $hiddenSource->slug]))
+        ->assertNotFound();
+});
+
+test('chained merges keep original fact provenance and redirect the oldest public identifier', function () {
+    $moderator = User::factory()->administrator()->create();
+    $first = Place::factory()->public()->create();
+    $second = Place::factory()->public()->create();
+    $canonical = Place::factory()->public()->create();
+    $originFact = PlaceFact::factory()->for($first, 'place')->create([
+        'place_submission_id' => null,
+        'origin_place_id' => null,
+    ]);
+    $firstSubmission = PlaceSubmission::factory()
+        ->for($this->authenticatedUser, 'submitter')
+        ->duplicateReview()
+        ->create(['published_place_id' => $first->id]);
+    $firstCandidate = PlaceDuplicateCandidate::factory()
+        ->for($firstSubmission, 'submission')
+        ->for($second, 'candidatePlace')
+        ->create();
+    app(MergePlaceDuplicate::class)->handle(
+        $moderator,
+        $firstSubmission,
+        $first,
+        $firstCandidate,
+        'f6d52e10-b668-4f95-b45a-5804ca28e7cc',
+        0,
+        'first-duplicate-hop',
+    );
+
+    $secondSubmission = PlaceSubmission::factory()
+        ->for($this->authenticatedUser, 'submitter')
+        ->duplicateReview()
+        ->create(['published_place_id' => $second->id]);
+    $secondCandidate = PlaceDuplicateCandidate::factory()
+        ->for($secondSubmission, 'submission')
+        ->for($canonical, 'candidatePlace')
+        ->create();
+    $secondMerged = app(MergePlaceDuplicate::class)->handle(
+        $moderator,
+        $secondSubmission,
+        $second,
+        $secondCandidate,
+        'df862b49-29ed-4fd5-925f-c17143022ca8',
+        0,
+        'second-duplicate-hop',
+    );
+
+    $canonicalFact = $canonical->facts()->where('value_hash', $originFact->value_hash)->sole();
+
+    $this->get(route('places.show', ['place' => $first->slug]))
+        ->assertRedirect(route('places.show', ['place' => $canonical->slug]));
+
+    expect($first->fresh()->merged_into_place_id)->toBe($canonical->id)
+        ->and($canonicalFact->origin_place_id)->toBe($first->id)
+        ->and($canonicalFact->copiedFrom->place_id)->toBe($second->id)
+        ->and(PlaceMergeRedirect::query()
+            ->where('source_place_id', $first->id)
+            ->where('destination_place_id', $canonical->id)
+            ->whereNotNull('active_source_identifier')
+            ->count())->toBe(2);
+
+    $secondRedirect = PlaceMergeRedirect::query()
+        ->where('source_place_id', $second->id)
+        ->where('destination_place_id', $canonical->id)
+        ->whereNotNull('active_source_identifier')
+        ->firstOrFail();
+    app(RestoreMergedPlace::class)->handle(
+        $moderator,
+        $secondRedirect,
+        '36da826d-ce42-438d-8876-ed5bc4649825',
+        $secondMerged->lock_version,
+        'restore-second-hop',
+    );
+
+    $this->get(route('places.show', ['place' => $first->slug]))
+        ->assertRedirect(route('places.show', ['place' => $second->slug]));
+
+    expect($second->fresh()->status)->toBe(PlaceStatus::Active)
+        ->and($first->fresh()->merged_into_place_id)->toBe($second->id)
+        ->and(PlaceMergeRedirect::query()
+            ->where('source_place_id', $first->id)
+            ->where('destination_place_id', $second->id)
+            ->whereNotNull('active_source_identifier')
+            ->count())->toBe(2)
+        ->and(PlaceMergeRedirect::query()
+            ->where('source_place_id', $first->id)
+            ->where('destination_place_id', $canonical->id)
+            ->whereNotNull('active_source_identifier')
+            ->count())->toBe(0);
 });
 
 test('validation rejects inconsistent locations contacts consent and future evidence without writes', function () {
@@ -717,12 +1048,19 @@ test('validation rejects inconsistent locations contacts consent and future evid
             locationPrecision: PlaceLocationPrecision::PublicRegion,
         ),
         placeSubmissionData(
+            '10000000-0000-4000-8000-000000000009',
+            locationPrecision: PlaceLocationPrecision::PublicRegion,
+            publicLatitude: null,
+            publicLongitude: null,
+        ),
+        placeSubmissionData(
             '10000000-0000-4000-8000-000000000003',
             locationPrecision: PlaceLocationPrecision::PrivateExact,
             publicLatitude: null,
             publicLongitude: null,
         ),
         placeSubmissionData('10000000-0000-4000-8000-000000000004', publicPhone: '123'),
+        placeSubmissionData('10000000-0000-4000-8000-000000000010', publicPhone: 'call-me-at-12345678'),
         placeSubmissionData('10000000-0000-4000-8000-000000000005', consentGranted: false),
         placeSubmissionData('10000000-0000-4000-8000-000000000006', observedAt: now()->addDays(3)->toImmutable()),
     ];

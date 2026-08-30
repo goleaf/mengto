@@ -26,6 +26,12 @@ without changing the repository.
 `PerformanceSeeder` creates 250 deterministic pet profiles only when invoked
 explicitly in a local, demo, or testing environment.
 
+The deterministic `demo-unverified` identity remains pending when configured
+email verification is enabled. When the mode is disabled, root seeding stamps
+that identity as verified so repeat seeding cannot recreate an active pending
+account. This timestamp is an operational bypass marker, not independent proof
+of email ownership.
+
 ## Complete Representative Dataset
 
 On a clean allowed database, `DatabaseSeeder` creates exactly ten users and at

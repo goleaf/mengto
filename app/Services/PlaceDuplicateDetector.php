@@ -12,11 +12,14 @@ use App\Models\Place;
 use App\Models\PlaceDuplicateCandidate;
 use App\Models\PlaceMergeRedirect;
 use App\Models\PlaceSubmission;
+use Closure;
 use Illuminate\Database\Eloquent\Builder;
 
 final readonly class PlaceDuplicateDetector
 {
     public const ALGORITHM_VERSION = 'pla-p06-v1';
+
+    private const PER_SIGNAL_LIMIT = 200;
 
     public function __construct(private PlaceIdentityNormalizer $normalizer) {}
 
@@ -147,64 +150,84 @@ final readonly class PlaceDuplicateDetector
     /** @return iterable<int, Place> */
     private function candidatePlaces(PlaceSubmission $submission): iterable
     {
-        return Place::query()
-            ->with(['mergedInto', 'mergeRedirects'])
-            ->select([
-                'id', 'normalized_name', 'normalized_address', 'normalized_phone', 'normalized_email',
-                'normalized_website', 'public_latitude', 'public_longitude', 'catalog_category',
-                'organization_id', 'visibility', 'status', 'merged_into_place_id',
-            ])
-            ->where(function (Builder $query) use ($submission): void {
-                $this->identityWhere($query, $submission);
-            })
-            ->orderBy('id')
-            ->limit(200)
-            ->get();
+        $matches = [];
+
+        foreach ($this->identityConstraints($submission) as $constraint) {
+            $query = Place::query()
+                ->with(['mergedInto', 'mergeRedirects'])
+                ->select([
+                    'id', 'normalized_name', 'normalized_address', 'normalized_phone', 'normalized_email',
+                    'normalized_website', 'public_latitude', 'public_longitude', 'catalog_category',
+                    'organization_id', 'visibility', 'status', 'merged_into_place_id',
+                ]);
+            $constraint($query);
+
+            foreach ($query->orderBy('id')->limit(self::PER_SIGNAL_LIMIT)->get() as $place) {
+                $matches[$place->id] = $place;
+            }
+        }
+
+        ksort($matches);
+
+        return array_values($matches);
     }
 
     /** @return iterable<int, PlaceSubmission> */
     private function candidateSubmissions(PlaceSubmission $submission): iterable
     {
-        return PlaceSubmission::query()
-            ->select([
-                'id', 'normalized_name', 'normalized_address', 'normalized_phone', 'normalized_email',
-                'normalized_website', 'public_latitude', 'public_longitude', 'catalog_category',
-                'canonical_organization_id', 'status',
-            ])
-            ->whereKeyNot($submission->id)
-            ->whereIn('status', array_map(
-                static fn (PlaceSubmissionStatus $status): string => $status->value,
-                [
-                    PlaceSubmissionStatus::Submitted,
-                    PlaceSubmissionStatus::NeedsInformation,
-                    PlaceSubmissionStatus::DuplicateReview,
-                    PlaceSubmissionStatus::Approved,
-                ],
-            ))
-            ->where(function (Builder $query) use ($submission): void {
-                $this->identityWhere($query, $submission);
-            })
-            ->orderBy('id')
-            ->limit(200)
-            ->get();
+        $matches = [];
+
+        foreach ($this->identityConstraints($submission) as $constraint) {
+            $query = PlaceSubmission::query()
+                ->select([
+                    'id', 'normalized_name', 'normalized_address', 'normalized_phone', 'normalized_email',
+                    'normalized_website', 'public_latitude', 'public_longitude', 'catalog_category',
+                    'canonical_organization_id', 'status',
+                ])
+                ->whereKeyNot($submission->id)
+                ->whereIn('status', array_map(
+                    static fn (PlaceSubmissionStatus $status): string => $status->value,
+                    [
+                        PlaceSubmissionStatus::Submitted,
+                        PlaceSubmissionStatus::NeedsInformation,
+                        PlaceSubmissionStatus::DuplicateReview,
+                        PlaceSubmissionStatus::Approved,
+                    ],
+                ));
+            $constraint($query);
+
+            foreach ($query->orderBy('id')->limit(self::PER_SIGNAL_LIMIT)->get() as $candidate) {
+                $matches[$candidate->id] = $candidate;
+            }
+        }
+
+        ksort($matches);
+
+        return array_values($matches);
     }
 
-    /** @param Builder<Place>|Builder<PlaceSubmission> $query */
-    private function identityWhere(Builder $query, PlaceSubmission $submission): void
+    /** @return list<Closure(Builder<Place>|Builder<PlaceSubmission>): void> */
+    private function identityConstraints(PlaceSubmission $submission): array
     {
-        $query->where('normalized_name', $submission->normalized_name);
+        $constraints = [
+            static function (Builder $query) use ($submission): void {
+                $query->where('normalized_name', $submission->normalized_name);
+            },
+        ];
 
         foreach (['normalized_address', 'normalized_phone', 'normalized_email', 'normalized_website'] as $column) {
             $value = $submission->getAttribute($column);
 
             if (is_string($value) && $value !== '') {
-                $query->orWhere($column, $value);
+                $constraints[] = static function (Builder $query) use ($column, $value): void {
+                    $query->where($column, $value);
+                };
             }
         }
 
         if ($submission->public_latitude !== null && $submission->public_longitude !== null) {
-            $query->orWhere(function (Builder $coordinates) use ($submission): void {
-                $coordinates
+            $constraints[] = static function (Builder $query) use ($submission): void {
+                $query
                     ->whereBetween('public_latitude', [
                         (float) $submission->public_latitude - 0.002,
                         (float) $submission->public_latitude + 0.002,
@@ -213,8 +236,10 @@ final readonly class PlaceDuplicateDetector
                         (float) $submission->public_longitude - 0.003,
                         (float) $submission->public_longitude + 0.003,
                     ]);
-            });
+            };
         }
+
+        return $constraints;
     }
 
     /** @return array{score: int, signals: list<string>, distance: int|null} */

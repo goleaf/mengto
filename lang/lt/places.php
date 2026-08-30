@@ -133,6 +133,9 @@ return [
         'page' => ':page puslapis',
     ],
     'submissions' => [
+        'region_only' => 'Bendrinant tik regioną viešo adreso ar koordinačių pateikti negalima.',
+        'review' => ['source' => 'Šaltinis', 'source_reference' => 'Šaltinio įrodymas', 'relationship' => 'Ryšys su vieta', 'precision' => 'Vietos tikslumas', 'public_location' => 'Vieša vieta', 'private_location' => 'Privati vieta tikrintojui', 'summary' => 'Santrauka', 'contact' => 'Vieši kontaktai', 'observed' => 'Stebėta', 'submitted' => 'Pateikta', 'consent' => 'Sutikimo įrašas', 'audit' => 'Audito kontekstas', 'facts' => 'Pateikti faktai', 'merge' => 'Sujungti dublikatą', 'restore' => 'Atkurti sujungtą vietą'],
+        'information_request' => 'Tikrintojo paprašyta informacija',
         'create' => ['eyebrow' => 'Bendruomenės vietos', 'title' => 'Pateikti vietą', 'description' => 'Pasidalykite šaltiniais pagrįsta informacija, kuri prieš paskelbiant bus peržiūrėta.'],
         'status' => ['eyebrow' => 'Vietos pateikimas', 'title' => 'Pateikimo būsena', 'description' => 'Pateikti faktai ir peržiūros istorija išlieka susieti su šiuo įrašu.', 'current' => 'Dabartinė būsena'],
         'statuses' => ['submitted' => 'Pateikta', 'needs-information' => 'Reikia daugiau informacijos', 'duplicate-review' => 'Galimas dublikatas', 'approved' => 'Patvirtinta', 'rejected' => 'Atmesta', 'published' => 'Paskelbta', 'withdrawn' => 'Atšaukta'],

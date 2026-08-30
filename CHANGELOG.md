@@ -64,6 +64,12 @@
 
 ### Security
 
+- Added a fail-closed `EMAIL_VERIFICATION_ENABLED` switch with a secure enabled
+  default, consistent central and route middleware behavior, atomic
+  no-notification registration when disabled, and a bounded idempotent command
+  that activates only active pending accounts with one non-sensitive audit per
+  account. Disabled mode is documented as an operational bypass rather than
+  proof of email ownership.
 - Converted PawCircle into a closed authenticated portal: anonymous product
   pages, mutations, token shares, Livewire uploads/previews, and product media
   now fail before route-model binding. Active verified accounts retain normal

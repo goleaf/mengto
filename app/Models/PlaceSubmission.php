@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 /**
  * @property int $id
@@ -229,5 +230,16 @@ final class PlaceSubmission extends Model
     public function events(): HasMany
     {
         return $this->hasMany(PlaceSubmissionEvent::class);
+    }
+
+    /** @return HasManyThrough<PlaceMergeRedirect, PlaceSubmissionEvent, $this> */
+    public function mergeRedirects(): HasManyThrough
+    {
+        return $this->hasManyThrough(
+            PlaceMergeRedirect::class,
+            PlaceSubmissionEvent::class,
+            'place_submission_id',
+            'place_submission_event_id',
+        );
     }
 }

@@ -6,10 +6,13 @@ namespace App\Livewire\Places;
 
 use App\Actions\ConfirmPlaceDuplicateCandidate;
 use App\Actions\ContinueDistinctPlaceSubmission;
+use App\Actions\ResolveAccessiblePlaceSubmission;
 use App\Actions\RespondToPlaceSubmissionInformation;
 use App\Actions\WithdrawPlaceSubmission;
 use App\Enums\PlaceStatus;
+use App\Enums\PlaceSubmissionAction;
 use App\Enums\PlaceVisibility;
+use App\Models\Place;
 use App\Models\PlaceSubmission;
 use App\Models\User;
 use App\Services\ProfilePresenter;
@@ -26,7 +29,7 @@ final class PlaceSubmissionStatusPage extends Component
     use AuthorizesRequests;
 
     #[Locked]
-    public int $submissionId;
+    public string $submissionKey;
 
     #[Locked]
     public string $operationKey = '';
@@ -37,28 +40,63 @@ final class PlaceSubmissionStatusPage extends Component
 
     private ProfilePresenter $profiles;
 
-    public function boot(AuthFactory $auth, ProfilePresenter $profiles): void
-    {
+    private ResolveAccessiblePlaceSubmission $resolveSubmission;
+
+    public function boot(
+        AuthFactory $auth,
+        ProfilePresenter $profiles,
+        ResolveAccessiblePlaceSubmission $resolveSubmission,
+    ): void {
         $this->auth = $auth;
         $this->profiles = $profiles;
+        $this->resolveSubmission = $resolveSubmission;
     }
 
-    public function mount(PlaceSubmission $placeSubmission): void
+    public function mount(string $placeSubmission): void
     {
-        $this->authorize('view', $placeSubmission);
-        $this->submissionId = $placeSubmission->id;
+        $submission = $this->resolveSubmission->handle($this->requireUser(), $placeSubmission);
+        $this->submissionKey = $submission->stable_key;
         $this->operationKey = (string) Str::uuid();
     }
 
     #[Computed]
     public function submission(): PlaceSubmission
     {
-        $submission = PlaceSubmission::query()
-            ->with(['publishedPlace:id,slug,name', 'linkedPlace:id,slug,name'])
-            ->findOrFail($this->submissionId);
-        $this->authorize('view', $submission);
+        return $this->resolveSubmission->handle($this->requireUser(), $this->submissionKey);
+    }
 
-        return $submission;
+    /** @return array{slug: string}|null */
+    #[Computed]
+    public function visibleDestination(): ?array
+    {
+        $submission = $this->submission();
+        $placeId = $submission->published_place_id ?? $submission->linked_place_id;
+
+        if ($placeId === null) {
+            return null;
+        }
+
+        $place = Place::query()->select(['id', 'slug', 'owner_user_id', 'organization_id', 'visibility', 'status'])
+            ->find($placeId);
+
+        if ($place === null || ! $this->requireUser()->can('view', $place)) {
+            return null;
+        }
+
+        return ['slug' => $place->slug];
+    }
+
+    #[Computed]
+    public function informationRequest(): ?string
+    {
+        $event = $this->submission()->events()
+            ->where('action', PlaceSubmissionAction::InformationRequested->value)
+            ->latest('id')
+            ->first(['reason_detail']);
+
+        return $event === null || blank($event->reason_detail)
+            ? null
+            : (string) $event->reason_detail;
     }
 
     /** @return list<array{key: string, name: string, region: string, url: string, correction_url: string}> */
@@ -72,9 +110,12 @@ final class PlaceSubmissionStatusPage extends Component
             ->where('presentation_scope', 'member_visible')
             ->whereHas('candidatePlace', static fn ($query) => $query
                 ->where('visibility', PlaceVisibility::Public->value)
-                ->where('status', PlaceStatus::Active->value))
+                ->where('status', PlaceStatus::Active->value)
+                ->whereNull('archived_at')
+                ->whereNull('merged_into_place_id'))
             ->with('candidatePlace:id,stable_key,slug,name,public_region')
             ->orderByDesc('score')
+            ->orderBy('id')
             ->limit(5)
             ->get(['id', 'candidate_key', 'candidate_place_id'])
             ->map(static fn ($candidate): array => [
@@ -172,6 +213,6 @@ final class PlaceSubmissionStatusPage extends Component
     {
         session()->flash('place-submission-feedback', __('places.submissions.feedback.'.$feedback));
         $this->operationKey = (string) Str::uuid();
-        unset($this->submission, $this->visibleCandidates);
+        unset($this->submission, $this->visibleCandidates, $this->visibleDestination, $this->informationRequest);
     }
 }
