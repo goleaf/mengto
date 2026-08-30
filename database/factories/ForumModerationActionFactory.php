@@ -25,10 +25,10 @@ final class ForumModerationActionFactory extends ApplicationFactory
             'scope_key' => 'global',
             'user_reason_translation_key' => 'forum_moderation.messages.action_applied',
             'internal_reason' => fake()->sentence(),
-            'evidence' => [],
+            'evidence' => [['type' => 'moderation-context', 'reference' => 'factory-case']],
             'starts_at' => now(),
             'appeal_available' => true,
-            'metadata' => [],
+            'metadata' => ['source' => 'factory', 'version' => 1],
         ];
     }
 }

@@ -407,10 +407,10 @@ test('medical documents stay on private storage and downloads are audited', func
 });
 
 test('directory detail manage emergency and create screens render', function () {
-    $record = MedicalRecord::factory()->create([
-        'owner_key' => 'mia-carter',
-        'pet_name' => 'Scout Health Test',
+    $pet = PetProfile::factory()->for($this->authenticatedUser)->create([
+        'name' => 'Scout Health Test',
     ]);
+    $record = MedicalRecord::factory()->forPetProfile($pet)->create();
     Medication::factory()->for($record)->create();
     Vaccination::factory()->for($record)->create();
     WeightEntry::factory()->for($record)->create();

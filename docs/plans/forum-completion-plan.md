@@ -45,9 +45,10 @@ The deterministic catalogue snapshot on `main` contains:
 | Event-lifecycle revision | 4,968 | 85 | 4,883 |
 | **Total** | **38,377** | **1,727** | **36,650** |
 
-All 36,650 open records are currently `discovered`; there are no records
-marked `in-progress`, `blocked`, or `intentionally-not-applicable`. The source
-payload checksum is
+Of the 36,650 unresolved records, 36,592 are `discovered` and the 58
+category-25 records are implemented/tested but `in-progress`; no records are
+marked `blocked` or `intentionally-not-applicable`. The source payload
+checksum is
 `cbb7d3a36f3750106c4751191ddd7d882d922ce0ae0e0b12aed318c809206ea1`.
 
 ## Definition Of Complete
@@ -119,7 +120,7 @@ database atom.
 
 ## Dependency-Ordered Completion Waves
 
-The ten waves below account for all 36,650 open IDs exactly.
+The ten waves below account for all 36,650 unresolved IDs exactly.
 
 | Wave | Scope | Phases | Open IDs |
 | ---: | --- | --- | ---: |
@@ -334,7 +335,9 @@ The final 499 open control/release IDs span Phases 0-2 and 13-14.
 
 Phase 3 is closed at 82 verified IDs. The category-21 package added 64 IDs,
 category 22 added 63, category 23 added 59, and category 24 added 49, bringing
-Phase 4 to 239 verified and 1,224 open. Continue with the exact category-25
-section while leaving cross-domain atoms assigned to later phases open. Independently,
+Phase 4 to 239 verified. Category 25's 58 IDs are implemented/tested but remain
+in progress, leaving 1,224 Phase 4 IDs unresolved. Complete category 25's final
+gates before selecting category 26, while leaving cross-domain atoms assigned
+to later phases open. Independently,
 continue Phase 75 from its 85 verified schedule IDs without promoting the
 other 4,883 event requirements.

@@ -29,8 +29,8 @@ test('private forum topic is visible only to its owner', function () {
 });
 
 test('care journal ownership uses the authenticated actor key', function () {
-    $journal = CareJournal::factory()->create(['owner_key' => 'owner-a']);
     $owner = User::factory()->create(['actor_key' => 'owner-a']);
+    $journal = CareJournal::factory()->create(['owner_key' => 'owner-a']);
     $stranger = User::factory()->create(['actor_key' => 'owner-b']);
 
     expect($owner->can('view', $journal))->toBeTrue()

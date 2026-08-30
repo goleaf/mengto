@@ -131,12 +131,12 @@ Snapshot date: 2026-08-30.
 | `GET\|HEAD` | `knowledge/{knowledgeArticle}/export` | `knowledge.articles.export` | `App\Http\Controllers\KnowledgeGuideExportController` | `web` |
 | `GET\|HEAD` | `knowledge/{knowledgeArticle}/print` | `knowledge.articles.print` | `App\Http\Controllers\KnowledgeGuidePrintController` | `web` |
 | `GET\|HEAD` | `knowledge/{knowledgeArticle}/translations/new` | `knowledge.guides.translations.create` | `App\Http\Controllers\KnowledgeGuideTranslationCreateController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, Illuminate\Auth\Middleware\EnsureEmailIsVerified` |
-| `GET\|HEAD` | `livewire-5c61bfc4/css/{component}.css` | `generated::RtcKiTQdgCUeANoO` | `Closure` | `` |
-| `GET\|HEAD` | `livewire-5c61bfc4/css/{component}.global.css` | `generated::JrRsjRD2qGswAeGU` | `Closure` | `` |
-| `GET\|HEAD` | `livewire-5c61bfc4/js/{component}.js` | `generated::ijZSEAZ2acQZE38f` | `Closure` | `` |
-| `GET\|HEAD` | `livewire-5c61bfc4/livewire.csp.min.js.map` | `generated::f12x1aayrVEVS3pA` | `Livewire\Mechanisms\FrontendAssets\FrontendAssets@cspMaps` | `` |
-| `GET\|HEAD` | `livewire-5c61bfc4/livewire.js` | `generated::V46QUo5LkBjQFnCl` | `Livewire\Mechanisms\FrontendAssets\FrontendAssets@returnJavaScriptAsFile` | `` |
-| `GET\|HEAD` | `livewire-5c61bfc4/livewire.min.js.map` | `generated::benYTPLeWCDXqLth` | `Livewire\Mechanisms\FrontendAssets\FrontendAssets@maps` | `` |
+| `GET\|HEAD` | `livewire-5c61bfc4/css/{component}.css` | `-` | `Closure` | `` |
+| `GET\|HEAD` | `livewire-5c61bfc4/css/{component}.global.css` | `-` | `Closure` | `` |
+| `GET\|HEAD` | `livewire-5c61bfc4/js/{component}.js` | `-` | `Closure` | `` |
+| `GET\|HEAD` | `livewire-5c61bfc4/livewire.csp.min.js.map` | `-` | `Livewire\Mechanisms\FrontendAssets\FrontendAssets@cspMaps` | `` |
+| `GET\|HEAD` | `livewire-5c61bfc4/livewire.min.js` | `-` | `Livewire\Mechanisms\FrontendAssets\FrontendAssets@returnJavaScriptAsFile` | `` |
+| `GET\|HEAD` | `livewire-5c61bfc4/livewire.min.js.map` | `-` | `Livewire\Mechanisms\FrontendAssets\FrontendAssets@maps` | `` |
 | `GET\|HEAD` | `livewire-5c61bfc4/preview-file/{filename}` | `livewire.preview-file` | `Livewire\Features\SupportFileUploads\FilePreviewController@handle` | `web` |
 | `POST` | `livewire-5c61bfc4/update` | `default-livewire.update` | `Livewire\Mechanisms\HandleRequests\HandleRequests@handleUpdate` | `web, Livewire\Mechanisms\HandleRequests\RequireLivewireHeaders` |
 | `POST` | `livewire-5c61bfc4/upload-file` | `livewire.upload-file` | `Livewire\Features\SupportFileUploads\FileUploadController@handle` | `web, Illuminate\Routing\Middleware\ThrottleRequests:60,1` |
@@ -200,6 +200,9 @@ Snapshot date: 2026-08-30.
 | `GET\|HEAD` | `pets/{item}` | `pets.created` | `App\Http\Controllers\CreatedContentPreviewController` | `web` |
 | `POST` | `photos/actions` | `photos.interactions.store` | `App\Http\Controllers\PhotoInteractionController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, Illuminate\Routing\Middleware\ThrottleRequests:40,1` |
 | `GET\|HEAD` | `places` | `places.index` | `App\Http\Controllers\PlaceDirectoryPreviewController` | `web` |
+| `GET\|HEAD` | `places/moderation/submissions` | `places.moderation.submissions` | `App\Livewire\Places\PlaceModerationWorkspace` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, Illuminate\Auth\Middleware\EnsureEmailIsVerified, Illuminate\Routing\Middleware\ThrottleRequests:60,1` |
+| `GET\|HEAD` | `places/submissions/new` | `places.submissions.create` | `App\Livewire\Places\CreatePlaceSubmission` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, Illuminate\Auth\Middleware\EnsureEmailIsVerified, Illuminate\Routing\Middleware\ThrottleRequests:30,1` |
+| `GET\|HEAD` | `places/submissions/{placeSubmission}` | `places.submissions.show` | `App\Livewire\Places\PlaceSubmissionStatusPage` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, Illuminate\Auth\Middleware\EnsureEmailIsVerified` |
 | `GET\|HEAD` | `places/{place}` | `places.show` | `App\Http\Controllers\PlaceDetailPreviewController` | `web` |
 | `GET\|HEAD` | `portal-media/{path}` | `portal-media.show` | `App\Http\Controllers\PortalMediaController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, Illuminate\Auth\Middleware\EnsureEmailIsVerified, Illuminate\Routing\Middleware\ThrottleRequests:600,1` |
 | `GET\|HEAD` | `posts/{post}` | `posts.show` | `App\Http\Controllers\PostThreadPreviewController` | `web` |
@@ -209,7 +212,7 @@ Snapshot date: 2026-08-30.
 | `GET\|HEAD` | `register` | `register` | `App\Livewire\Auth\Register` | `web, Illuminate\Auth\Middleware\RedirectIfAuthenticated` |
 | `GET\|HEAD` | `reset-password/{token}` | `password.reset` | `App\Livewire\Auth\ResetPassword` | `web, Illuminate\Auth\Middleware\RedirectIfAuthenticated` |
 | `GET\|HEAD` | `share/{target}` | `share.show` | `App\Http\Controllers\SharePreviewController` | `web` |
-| `GET\|HEAD` | `up` | `generated::8OZ5tZ4LNNPonH9R` | `Closure` | `` |
+| `GET\|HEAD` | `up` | `-` | `Closure` | `` |
 | `GET\|HEAD` | `verify-email` | `verification.notice` | `App\Livewire\Auth\VerifyEmail` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser` |
 | `GET\|HEAD` | `verify-email/{id}/{hash}` | `verification.verify` | `App\Http\Controllers\Auth\VerifyEmailController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, Illuminate\Routing\Middleware\ValidateSignature, Illuminate\Routing\Middleware\ThrottleRequests:6,1` |
 | `GET\|HEAD` | `walks` | `walks.index` | `App\Http\Controllers\WalkPlanPreviewController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser` |
@@ -229,7 +232,7 @@ Snapshot date: 2026-08-30.
 
 ## Persistence Table Inventory
 
-The migration ledger creates 218 named application/framework tables; the isolated database smoke additionally reports framework-managed runtime tables where applicable.
+The migration ledger creates 226 named application/framework tables; the isolated database smoke additionally reports framework-managed runtime tables where applicable.
 
 - `adoption_applications` — `database/migrations/2026_07_31_000500_create_adoption_case_tables.php`
 - `adoption_cases` — `database/migrations/2026_07_31_000500_create_adoption_case_tables.php`
@@ -385,6 +388,7 @@ The migration ledger creates 218 named application/framework tables; the isolate
 - `medical_reminders` — `database/migrations/2026_07_30_130008_create_medical_reminders_table.php`
 - `medication_doses` — `database/migrations/2026_07_30_130006_create_medication_doses_table.php`
 - `medications` — `database/migrations/2026_07_30_130005_create_medications_table.php`
+- `notifications` — `database/migrations/2026_08_30_120000_create_place_submission_publication_tables.php`
 - `order_disputes` — `database/migrations/2026_07_30_104012_create_order_disputes_table.php`
 - `orders` — `database/migrations/2026_07_30_104011_create_orders_table.php`
 - `organization_audit_events` — `database/migrations/2026_08_03_115119_create_organization_authority_tables.php`
@@ -409,9 +413,16 @@ The migration ledger creates 218 named application/framework tables; the isolate
 - `photo_reactions` — `database/migrations/2026_07_31_100000_create_photo_interaction_tables.php`
 - `place_access_audits` — `database/migrations/2026_08_03_140020_create_place_access_and_location_history_tables.php`
 - `place_access_grants` — `database/migrations/2026_08_03_140020_create_place_access_and_location_history_tables.php`
+- `place_duplicate_candidates` — `database/migrations/2026_08_30_120000_create_place_submission_publication_tables.php`
+- `place_facts` — `database/migrations/2026_08_30_120000_create_place_submission_publication_tables.php`
 - `place_location_versions` — `database/migrations/2026_08_03_140020_create_place_access_and_location_history_tables.php`
+- `place_merge_redirects` — `database/migrations/2026_08_30_120000_create_place_submission_publication_tables.php`
 - `place_question_answers` — `database/migrations/2026_08_03_142638_create_place_question_answers_table.php`
 - `place_questions` — `database/migrations/2026_08_03_142637_create_place_questions_table.php`
+- `place_submission_events` — `database/migrations/2026_08_30_120000_create_place_submission_publication_tables.php`
+- `place_submission_identity_locks` — `database/migrations/2026_08_30_120000_create_place_submission_publication_tables.php`
+- `place_submission_revisions` — `database/migrations/2026_08_30_120000_create_place_submission_publication_tables.php`
+- `place_submissions` — `database/migrations/2026_08_30_120000_create_place_submission_publication_tables.php`
 - `places` — `database/migrations/2026_08_03_140000_create_places_table.php`
 - `publications` — `database/migrations/2026_07_30_084915_create_publications_table.php`
 - `reservations` — `database/migrations/2026_07_30_100930_create_reservations_table.php`
@@ -476,43 +487,153 @@ The migration ledger creates 218 named application/framework tables; the isolate
 
 ## Complete First-Party Markdown Authority Inventory
 
-This table classifies every first-party Markdown file outside contributor-tool, dependency, runtime, and browser-artifact trees. Governing precedence remains `AGENTS.md` -> nested instructions -> canonical requirements -> security/privacy/data integrity -> architecture decisions -> canonical plan -> accurate tests -> code -> historical evidence.
+This table classifies every first-party Markdown file outside dependency, runtime, and browser-artifact trees. Repository-local agent and editor guidance is included as a tooling mirror and remains subordinate to `AGENTS.md`. Governing precedence remains `AGENTS.md` -> nested instructions -> canonical requirements -> security/privacy/data integrity -> architecture decisions -> canonical plan -> accurate tests -> code -> historical evidence.
 
 | Path | Authority classification | Evidence / precedence note |
 | --- | --- | --- |
-| `AGENTS.md` | Canonical / living | Registered by `docs/index.md`: Canonical |
-| `CHANGELOG.md` | Canonical / living | Registered by `docs/index.md`: Rewritten with preserved history and release evidence |
-| `CLAUDE.md` | Canonical / living | Registered by `docs/index.md`: Reduced to durable pointer |
-| `DESIGN.md` | Canonical / living | Registered by `docs/index.md`: Preserved and aligned with Tailwind tokens |
-| `PRODUCT.md` | Canonical / living | Registered by `docs/index.md`: Principles preserved; boundaries normalized |
-| `README.md` | Canonical / living | Registered by `docs/index.md`: Rewritten and maintained |
+| `.agents/skills/infer-conventions/SKILL.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.agents/skills/infer-conventions/references/checklist.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.agents/skills/laravel-best-practices/SKILL.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.agents/skills/laravel-best-practices/rules/advanced-queries.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.agents/skills/laravel-best-practices/rules/architecture.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.agents/skills/laravel-best-practices/rules/blade-views.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.agents/skills/laravel-best-practices/rules/caching.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.agents/skills/laravel-best-practices/rules/collections.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.agents/skills/laravel-best-practices/rules/config.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.agents/skills/laravel-best-practices/rules/db-performance.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.agents/skills/laravel-best-practices/rules/eloquent.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.agents/skills/laravel-best-practices/rules/error-handling.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.agents/skills/laravel-best-practices/rules/events-notifications.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.agents/skills/laravel-best-practices/rules/http-client.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.agents/skills/laravel-best-practices/rules/mail.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.agents/skills/laravel-best-practices/rules/migrations.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.agents/skills/laravel-best-practices/rules/queue-jobs.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.agents/skills/laravel-best-practices/rules/routing.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.agents/skills/laravel-best-practices/rules/scheduling.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.agents/skills/laravel-best-practices/rules/security.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.agents/skills/laravel-best-practices/rules/style.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.agents/skills/laravel-best-practices/rules/validation.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.agents/skills/livewire-development/SKILL.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.agents/skills/livewire-development/reference/javascript-hooks.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.agents/skills/tailwindcss-development/SKILL.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.agents/skills/testing-best-practices/SKILL.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.agents/skills/testing-best-practices/rules/assertions.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.agents/skills/testing-best-practices/rules/endpoint-tests.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.agents/skills/testing-best-practices/rules/finding-features.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.agents/skills/testing-best-practices/rules/isolation.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.agents/skills/testing-best-practices/rules/naming.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.agents/skills/testing-best-practices/rules/performance.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.agents/skills/testing-best-practices/rules/review.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.agents/skills/testing-best-practices/rules/security.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.agents/skills/testing-best-practices/rules/test-data.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.claude/skills/infer-conventions/SKILL.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.claude/skills/infer-conventions/references/checklist.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.claude/skills/laravel-best-practices/SKILL.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.claude/skills/laravel-best-practices/rules/advanced-queries.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.claude/skills/laravel-best-practices/rules/architecture.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.claude/skills/laravel-best-practices/rules/blade-views.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.claude/skills/laravel-best-practices/rules/caching.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.claude/skills/laravel-best-practices/rules/collections.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.claude/skills/laravel-best-practices/rules/config.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.claude/skills/laravel-best-practices/rules/db-performance.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.claude/skills/laravel-best-practices/rules/eloquent.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.claude/skills/laravel-best-practices/rules/error-handling.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.claude/skills/laravel-best-practices/rules/events-notifications.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.claude/skills/laravel-best-practices/rules/http-client.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.claude/skills/laravel-best-practices/rules/mail.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.claude/skills/laravel-best-practices/rules/migrations.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.claude/skills/laravel-best-practices/rules/queue-jobs.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.claude/skills/laravel-best-practices/rules/routing.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.claude/skills/laravel-best-practices/rules/scheduling.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.claude/skills/laravel-best-practices/rules/security.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.claude/skills/laravel-best-practices/rules/style.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.claude/skills/laravel-best-practices/rules/validation.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.claude/skills/livewire-development/SKILL.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.claude/skills/livewire-development/reference/javascript-hooks.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.claude/skills/skill-compass/SKILL.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.claude/skills/tailwindcss-development/SKILL.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.claude/skills/testing-best-practices/SKILL.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.claude/skills/testing-best-practices/rules/assertions.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.claude/skills/testing-best-practices/rules/endpoint-tests.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.claude/skills/testing-best-practices/rules/finding-features.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.claude/skills/testing-best-practices/rules/isolation.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.claude/skills/testing-best-practices/rules/naming.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.claude/skills/testing-best-practices/rules/performance.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.claude/skills/testing-best-practices/rules/review.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.claude/skills/testing-best-practices/rules/security.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.claude/skills/testing-best-practices/rules/test-data.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.cursor/skills/infer-conventions/SKILL.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.cursor/skills/infer-conventions/references/checklist.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.cursor/skills/laravel-best-practices/SKILL.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.cursor/skills/laravel-best-practices/rules/advanced-queries.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.cursor/skills/laravel-best-practices/rules/architecture.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.cursor/skills/laravel-best-practices/rules/blade-views.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.cursor/skills/laravel-best-practices/rules/caching.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.cursor/skills/laravel-best-practices/rules/collections.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.cursor/skills/laravel-best-practices/rules/config.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.cursor/skills/laravel-best-practices/rules/db-performance.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.cursor/skills/laravel-best-practices/rules/eloquent.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.cursor/skills/laravel-best-practices/rules/error-handling.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.cursor/skills/laravel-best-practices/rules/events-notifications.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.cursor/skills/laravel-best-practices/rules/http-client.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.cursor/skills/laravel-best-practices/rules/mail.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.cursor/skills/laravel-best-practices/rules/migrations.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.cursor/skills/laravel-best-practices/rules/queue-jobs.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.cursor/skills/laravel-best-practices/rules/routing.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.cursor/skills/laravel-best-practices/rules/scheduling.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.cursor/skills/laravel-best-practices/rules/security.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.cursor/skills/laravel-best-practices/rules/style.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.cursor/skills/laravel-best-practices/rules/validation.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.cursor/skills/livewire-development/SKILL.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.cursor/skills/livewire-development/reference/javascript-hooks.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.cursor/skills/tailwindcss-development/SKILL.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.cursor/skills/testing-best-practices/SKILL.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.cursor/skills/testing-best-practices/rules/assertions.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.cursor/skills/testing-best-practices/rules/endpoint-tests.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.cursor/skills/testing-best-practices/rules/finding-features.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.cursor/skills/testing-best-practices/rules/isolation.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.cursor/skills/testing-best-practices/rules/naming.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.cursor/skills/testing-best-practices/rules/performance.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.cursor/skills/testing-best-practices/rules/review.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.cursor/skills/testing-best-practices/rules/security.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.cursor/skills/testing-best-practices/rules/test-data.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `AGENTS.md` | Canonical / living | Root repository contract or source of truth |
+| `CHANGELOG.md` | Canonical / living | Root repository contract or source of truth |
+| `CLAUDE.md` | Supporting | Repository entry point or contributor adapter |
+| `DESIGN.md` | Canonical / living | Root repository contract or source of truth |
+| `PRODUCT.md` | Canonical / living | Root repository contract or source of truth |
+| `README.md` | Supporting | Repository entry point or contributor adapter |
 | `SECURITY.md` | Canonical / living | Root repository contract or source of truth |
 | `docs/accessibility.md` | Canonical / living | Registered by `docs/index.md`: Canonical |
 | `docs/api-integrations-work-ledger.md` | Supporting | Unregistered first-party Markdown; not an independent source of authority |
 | `docs/architecture.md` | Canonical / living | Registered by `docs/index.md`: Rewritten |
 | `docs/audits/accessibility-responsive-seo-work-ledger.md` | Supporting evidence | Dated or living audit evidence; canonical documents retain authority |
+| `docs/audits/codex-remediation-baseline-work-ledger.md` | Supporting evidence | Dated or living audit evidence; canonical documents retain authority |
 | `docs/audits/communication-existing-system-audit.md` | Supporting evidence | Dated or living audit evidence; canonical documents retain authority |
-| `docs/audits/community-existing-system-audit.md` | Canonical / living | Registered by `docs/index.md`: Living evidence |
+| `docs/audits/community-existing-system-audit.md` | Supporting evidence | Dated or living audit evidence; canonical documents retain authority |
 | `docs/audits/content-feed-existing-system-audit.md` | Supporting evidence | Dated or living audit evidence; canonical documents retain authority |
 | `docs/audits/content-feed-gap-analysis.md` | Supporting evidence | Dated or living audit evidence; canonical documents retain authority |
 | `docs/audits/database-domain-audit-work-ledger.md` | Supporting evidence | Dated or living audit evidence; canonical documents retain authority |
-| `docs/audits/forum-existing-system-audit.md` | Canonical / living | Registered by `docs/index.md`: Living evidence |
-| `docs/audits/forum-final-completeness-audit.md` | Canonical / living | Registered by `docs/index.md`: Living evidence |
-| `docs/audits/forum-gap-analysis.md` | Canonical / living | Registered by `docs/index.md`: Living evidence |
-| `docs/audits/groups-shared-card-ux-audit.md` | Canonical / living | Registered by `docs/index.md`: Current audit |
-| `docs/audits/icon-system-deep-audit.md` | Canonical / living | Registered by `docs/index.md`: Current audit |
-| `docs/audits/medical-record-existing-system-audit.md` | Canonical / living | Registered by `docs/index.md`: Living evidence |
-| `docs/audits/pet-profile-existing-system-audit.md` | Canonical / living | Registered by `docs/index.md`: Living evidence |
-| `docs/audits/pet-profile-gap-analysis.md` | Canonical / living | Registered by `docs/index.md`: Living evidence |
-| `docs/audits/pet-social-network-benchmark.md` | Canonical / living | Registered by `docs/index.md`: Dated research evidence |
-| `docs/audits/place-shared-card-classification.md` | Canonical / living | Registered by `docs/index.md`: Current audit |
-| `docs/audits/places-production-readiness-audit.md` | Canonical / living | Registered by `docs/index.md`: Living evidence |
-| `docs/audits/portal-events-completion-gap-analysis.md` | Canonical / living | Registered by `docs/index.md`: Living evidence |
-| `docs/audits/repository-audit-work-ledger.md` | Canonical / living | Registered by `docs/index.md`: Living evidence |
-| `docs/audits/repository-inventory.md` | Canonical generated evidence | Registered by `docs/index.md`: Canonical generated evidence |
+| `docs/audits/database-domain-audit.md` | Supporting evidence | Dated or living audit evidence; canonical documents retain authority |
+| `docs/audits/forum-existing-system-audit.md` | Supporting evidence | Dated or living audit evidence; canonical documents retain authority |
+| `docs/audits/forum-final-completeness-audit.md` | Supporting evidence | Dated or living audit evidence; canonical documents retain authority |
+| `docs/audits/forum-gap-analysis.md` | Supporting evidence | Dated or living audit evidence; canonical documents retain authority |
+| `docs/audits/forum-phase4-animal-science-work-ledger.md` | Supporting evidence | Dated or living audit evidence; canonical documents retain authority |
+| `docs/audits/groups-shared-card-ux-audit.md` | Supporting evidence | Dated or living audit evidence; canonical documents retain authority |
+| `docs/audits/icon-system-deep-audit.md` | Supporting evidence | Dated or living audit evidence; canonical documents retain authority |
+| `docs/audits/medical-record-existing-system-audit.md` | Supporting evidence | Dated or living audit evidence; canonical documents retain authority |
+| `docs/audits/pet-profile-existing-system-audit.md` | Supporting evidence | Dated or living audit evidence; canonical documents retain authority |
+| `docs/audits/pet-profile-gap-analysis.md` | Supporting evidence | Dated or living audit evidence; canonical documents retain authority |
+| `docs/audits/pet-social-network-benchmark.md` | Supporting evidence | Dated or living audit evidence; canonical documents retain authority |
+| `docs/audits/place-shared-card-classification.md` | Supporting evidence | Dated or living audit evidence; canonical documents retain authority |
+| `docs/audits/places-production-readiness-audit.md` | Supporting evidence | Dated or living audit evidence; canonical documents retain authority |
+| `docs/audits/places-submission-publication-work-ledger.md` | Supporting evidence | Dated or living audit evidence; canonical documents retain authority |
+| `docs/audits/portal-events-completion-gap-analysis.md` | Supporting evidence | Dated or living audit evidence; canonical documents retain authority |
+| `docs/audits/repository-audit-work-ledger.md` | Supporting evidence | Dated or living audit evidence; canonical documents retain authority |
+| `docs/audits/repository-inventory.md` | Supporting evidence | Dated or living audit evidence; canonical documents retain authority |
 | `docs/audits/shared-card-action-row.md` | Supporting evidence | Dated or living audit evidence; canonical documents retain authority |
-| `docs/audits/social-relationships-existing-system-audit.md` | Canonical / living | Registered by `docs/index.md`: Living evidence |
-| `docs/audits/social-relationships-gap-analysis.md` | Canonical / living | Registered by `docs/index.md`: Living evidence |
+| `docs/audits/social-relationships-existing-system-audit.md` | Supporting evidence | Dated or living audit evidence; canonical documents retain authority |
+| `docs/audits/social-relationships-gap-analysis.md` | Supporting evidence | Dated or living audit evidence; canonical documents retain authority |
 | `docs/authorization.md` | Canonical / living | Registered by `docs/index.md`: Canonical |
 | `docs/caching.md` | Canonical / living | Registered by `docs/index.md`: Canonical |
 | `docs/code-review.md` | Canonical / living | Registered by `docs/index.md`: Living evidence |
@@ -525,20 +646,20 @@ This table classifies every first-party Markdown file outside contributor-tool, 
 | `docs/decisions/0002-blade-livewire-boundary.md` | Supporting decision record | Decision evidence subordinate to current canonical requirements |
 | `docs/decisions/0003-runtime-execution-model.md` | Supporting decision record | Decision evidence subordinate to current canonical requirements |
 | `docs/decisions/communication-architecture-decisions.md` | Supporting decision record | Decision evidence subordinate to current canonical requirements |
-| `docs/decisions/community-architecture-decisions.md` | Canonical / living | Registered by `docs/index.md`: Canonical decisions |
+| `docs/decisions/community-architecture-decisions.md` | Supporting decision record | Decision evidence subordinate to current canonical requirements |
 | `docs/decisions/content-feed-architecture-decisions.md` | Supporting decision record | Decision evidence subordinate to current canonical requirements |
 | `docs/decisions/content-feed-assumptions.md` | Supporting decision record | Decision evidence subordinate to current canonical requirements |
 | `docs/decisions/content-feed-conflicts.md` | Supporting decision record | Decision evidence subordinate to current canonical requirements |
-| `docs/decisions/forum-architecture-decisions.md` | Canonical / living | Registered by `docs/index.md`: Canonical decisions |
-| `docs/decisions/forum-assumptions.md` | Canonical / living | Registered by `docs/index.md`: Living decisions |
-| `docs/decisions/forum-conflicts.md` | Canonical / living | Registered by `docs/index.md`: Living decisions |
-| `docs/decisions/medical-record-architecture-decisions.md` | Canonical / living | Registered by `docs/index.md`: Canonical decisions |
-| `docs/decisions/pet-profile-architecture-decisions.md` | Canonical / living | Registered by `docs/index.md`: Canonical decisions |
-| `docs/decisions/pet-profile-assumptions.md` | Canonical / living | Registered by `docs/index.md`: Living decisions |
-| `docs/decisions/pet-profile-conflicts.md` | Canonical / living | Registered by `docs/index.md`: Living decisions |
-| `docs/decisions/social-relationships-architecture-decisions.md` | Canonical / living | Registered by `docs/index.md`: Canonical decisions |
-| `docs/decisions/social-relationships-assumptions.md` | Canonical / living | Registered by `docs/index.md`: Living decisions |
-| `docs/decisions/social-relationships-conflicts.md` | Canonical / living | Registered by `docs/index.md`: Living decisions |
+| `docs/decisions/forum-architecture-decisions.md` | Supporting decision record | Decision evidence subordinate to current canonical requirements |
+| `docs/decisions/forum-assumptions.md` | Supporting decision record | Decision evidence subordinate to current canonical requirements |
+| `docs/decisions/forum-conflicts.md` | Supporting decision record | Decision evidence subordinate to current canonical requirements |
+| `docs/decisions/medical-record-architecture-decisions.md` | Supporting decision record | Decision evidence subordinate to current canonical requirements |
+| `docs/decisions/pet-profile-architecture-decisions.md` | Supporting decision record | Decision evidence subordinate to current canonical requirements |
+| `docs/decisions/pet-profile-assumptions.md` | Supporting decision record | Decision evidence subordinate to current canonical requirements |
+| `docs/decisions/pet-profile-conflicts.md` | Supporting decision record | Decision evidence subordinate to current canonical requirements |
+| `docs/decisions/social-relationships-architecture-decisions.md` | Supporting decision record | Decision evidence subordinate to current canonical requirements |
+| `docs/decisions/social-relationships-assumptions.md` | Supporting decision record | Decision evidence subordinate to current canonical requirements |
+| `docs/decisions/social-relationships-conflicts.md` | Supporting decision record | Decision evidence subordinate to current canonical requirements |
 | `docs/deployment.md` | Canonical / living | Registered by `docs/index.md`: Rewritten |
 | `docs/design-system.md` | Supporting | Unregistered first-party Markdown; not an independent source of authority |
 | `docs/domain-model.md` | Canonical / living | Registered by `docs/index.md`: Canonical |
@@ -580,7 +701,7 @@ This table classifies every first-party Markdown file outside contributor-tool, 
 | `docs/groups.md` | Canonical / living | Registered by `docs/index.md`: Canonical |
 | `docs/guides.md` | Canonical / living | Registered by `docs/index.md`: Canonical |
 | `docs/implementation-plan.md` | Canonical / living | Registered by `docs/index.md`: Replaced and updated per pass |
-| `docs/index.md` | Supporting | Unregistered first-party Markdown; not an independent source of authority |
+| `docs/index.md` | Canonical / living | Documentation source-of-truth index required by `AGENTS.md` |
 | `docs/integrations.md` | Canonical / living | Registered by `docs/index.md`: Canonical |
 | `docs/journals.md` | Canonical / living | Registered by `docs/index.md`: Canonical |
 | `docs/known-limitations.md` | Canonical / living | Registered by `docs/index.md`: Living evidence |
@@ -591,29 +712,30 @@ This table classifies every first-party Markdown file outside contributor-tool, 
 | `docs/operations.md` | Canonical / living | Registered by `docs/index.md`: Canonical |
 | `docs/performance.md` | Canonical / living | Registered by `docs/index.md`: Canonical |
 | `docs/pet-profiles.md` | Canonical / living | Registered by `docs/index.md`: Canonical |
-| `docs/plans/authenticated-portal-access-plan.md` | Canonical / living | Registered by `docs/index.md`: Verified |
+| `docs/plans/authenticated-portal-access-plan.md` | Supporting scoped plan | Scoped plan subordinate to `docs/implementation-plan.md` |
 | `docs/plans/communication-current-progress.md` | Supporting scoped plan | Scoped plan subordinate to `docs/implementation-plan.md` |
 | `docs/plans/communication-master-plan.md` | Supporting scoped plan | Scoped plan subordinate to `docs/implementation-plan.md` |
-| `docs/plans/community-current-progress.md` | Canonical / living | Registered by `docs/index.md`: Living evidence |
-| `docs/plans/community-master-plan.md` | Canonical / living | Registered by `docs/index.md`: Living canonical plan |
+| `docs/plans/community-current-progress.md` | Supporting scoped plan | Scoped plan subordinate to `docs/implementation-plan.md` |
+| `docs/plans/community-master-plan.md` | Supporting scoped plan | Scoped plan subordinate to `docs/implementation-plan.md` |
 | `docs/plans/content-feed-current-progress.md` | Supporting scoped plan | Scoped plan subordinate to `docs/implementation-plan.md` |
 | `docs/plans/content-feed-foundation-work-package.md` | Supporting scoped plan | Scoped plan subordinate to `docs/implementation-plan.md` |
 | `docs/plans/content-feed-master-plan.md` | Supporting scoped plan | Scoped plan subordinate to `docs/implementation-plan.md` |
-| `docs/plans/current-unfinished-work.md` | Canonical / living | Registered by `docs/index.md`: Living unfinished-work index |
+| `docs/plans/current-unfinished-work.md` | Supporting scoped plan | Scoped plan subordinate to `docs/implementation-plan.md` |
 | `docs/plans/discover-modernization-plan.md` | Supporting scoped plan | Scoped plan subordinate to `docs/implementation-plan.md` |
-| `docs/plans/forum-completion-plan.md` | Canonical / living | Registered by `docs/index.md`: Living canonical completion plan |
+| `docs/plans/forum-completion-plan.md` | Supporting scoped plan | Scoped plan subordinate to `docs/implementation-plan.md` |
 | `docs/plans/forum-core-foundation-reconciliation-work-package.md` | Supporting scoped plan | Scoped plan subordinate to `docs/implementation-plan.md` |
-| `docs/plans/forum-current-progress.md` | Canonical / living | Registered by `docs/index.md`: Living evidence |
+| `docs/plans/forum-current-progress.md` | Supporting scoped plan | Scoped plan subordinate to `docs/implementation-plan.md` |
 | `docs/plans/forum-database-correctness-reconciliation-work-package.md` | Supporting scoped plan | Scoped plan subordinate to `docs/implementation-plan.md` |
-| `docs/plans/forum-master-plan.md` | Canonical / living | Registered by `docs/index.md`: Living canonical plan |
-| `docs/plans/forum-phase-requirement-index.md` | Canonical generated evidence | Registered by `docs/index.md`: Canonical generated |
+| `docs/plans/forum-master-plan.md` | Supporting scoped plan | Scoped plan subordinate to `docs/implementation-plan.md` |
+| `docs/plans/forum-phase-requirement-index.md` | Supporting scoped plan | Scoped plan subordinate to `docs/implementation-plan.md` |
 | `docs/plans/forum-phase10-accessibility-work-package.md` | Supporting scoped plan | Scoped plan subordinate to `docs/implementation-plan.md` |
 | `docs/plans/forum-phase14-multilingual-behavior-work-package.md` | Supporting scoped plan | Scoped plan subordinate to `docs/implementation-plan.md` |
-| `docs/plans/forum-phase3-migration-verification-work-package.md` | Canonical / living | Registered by `docs/index.md`: Implemented and verified |
-| `docs/plans/forum-phase4-before-ownership-category-work-package.md` | Canonical / living | Registered by `docs/index.md`: Implemented and verified |
-| `docs/plans/forum-phase4-one-health-category-work-package.md` | Canonical / living | Registered by `docs/index.md`: Implemented and verified |
-| `docs/plans/forum-phase4-special-needs-category-work-package.md` | Canonical / living | Registered by `docs/index.md`: Implemented and verified |
-| `docs/plans/forum-phase4-wildlife-coexistence-category-work-package.md` | Canonical / living | Registered by `docs/index.md`: Implemented and verified |
+| `docs/plans/forum-phase3-migration-verification-work-package.md` | Supporting scoped plan | Scoped plan subordinate to `docs/implementation-plan.md` |
+| `docs/plans/forum-phase4-animal-science-category-work-package.md` | Supporting scoped plan | Scoped plan subordinate to `docs/implementation-plan.md` |
+| `docs/plans/forum-phase4-before-ownership-category-work-package.md` | Supporting scoped plan | Scoped plan subordinate to `docs/implementation-plan.md` |
+| `docs/plans/forum-phase4-one-health-category-work-package.md` | Supporting scoped plan | Scoped plan subordinate to `docs/implementation-plan.md` |
+| `docs/plans/forum-phase4-special-needs-category-work-package.md` | Supporting scoped plan | Scoped plan subordinate to `docs/implementation-plan.md` |
+| `docs/plans/forum-phase4-wildlife-coexistence-category-work-package.md` | Supporting scoped plan | Scoped plan subordinate to `docs/implementation-plan.md` |
 | `docs/plans/forum-phase6-community-review-work-package.md` | Supporting scoped plan | Scoped plan subordinate to `docs/implementation-plan.md` |
 | `docs/plans/forum-phase7-moderation-operations-work-package.md` | Supporting scoped plan | Scoped plan subordinate to `docs/implementation-plan.md` |
 | `docs/plans/forum-phase8-adoption-work-package.md` | Supporting scoped plan | Scoped plan subordinate to `docs/implementation-plan.md` |
@@ -627,40 +749,40 @@ This table classifies every first-party Markdown file outside contributor-tool, 
 | `docs/plans/forum-phase8-lost-found-work-package.md` | Supporting scoped plan | Scoped plan subordinate to `docs/implementation-plan.md` |
 | `docs/plans/forum-phase8-mentorship-work-package.md` | Supporting scoped plan | Scoped plan subordinate to `docs/implementation-plan.md` |
 | `docs/plans/forum-phase8-provider-identity-work-package.md` | Supporting scoped plan | Scoped plan subordinate to `docs/implementation-plan.md` |
-| `docs/plans/forum-topic-editor-redesign-work-package.md` | Canonical / living | Registered by `docs/index.md`: Implemented and verified |
-| `docs/plans/forum-topic-type-schema-runtime-work-package.md` | Canonical / living | Registered by `docs/index.md`: Implemented and verified |
-| `docs/plans/global-linked-media-navigation-plan.md` | Canonical / living | Registered by `docs/index.md`: Implemented and verified |
-| `docs/plans/global-page-identity-standardization-plan.md` | Canonical / living | Registered by `docs/index.md`: In progress; first safe slice targeted-verified |
-| `docs/plans/icon-system-unlimited-plan.md` | Canonical / living | Registered by `docs/index.md`: Current migration complete; regression ratchet active |
-| `docs/plans/join-landing-page-plan.md` | Historical / superseded | Registered by `docs/index.md`: Superseded |
-| `docs/plans/medical-record-current-progress.md` | Canonical / living | Registered by `docs/index.md`: Living evidence |
-| `docs/plans/medical-record-master-plan.md` | Canonical / living | Registered by `docs/index.md`: Living canonical plan |
+| `docs/plans/forum-topic-editor-redesign-work-package.md` | Supporting scoped plan | Scoped plan subordinate to `docs/implementation-plan.md` |
+| `docs/plans/forum-topic-type-schema-runtime-work-package.md` | Supporting scoped plan | Scoped plan subordinate to `docs/implementation-plan.md` |
+| `docs/plans/global-linked-media-navigation-plan.md` | Supporting scoped plan | Scoped plan subordinate to `docs/implementation-plan.md` |
+| `docs/plans/global-page-identity-standardization-plan.md` | Supporting scoped plan | Scoped plan subordinate to `docs/implementation-plan.md` |
+| `docs/plans/icon-system-unlimited-plan.md` | Supporting scoped plan | Scoped plan subordinate to `docs/implementation-plan.md` |
+| `docs/plans/join-landing-page-plan.md` | Supporting scoped plan | Scoped plan subordinate to `docs/implementation-plan.md` |
+| `docs/plans/medical-record-current-progress.md` | Supporting scoped plan | Scoped plan subordinate to `docs/implementation-plan.md` |
+| `docs/plans/medical-record-master-plan.md` | Supporting scoped plan | Scoped plan subordinate to `docs/implementation-plan.md` |
 | `docs/plans/pet-profile-appearance-color-work-package.md` | Supporting scoped plan | Scoped plan subordinate to `docs/implementation-plan.md` |
 | `docs/plans/pet-profile-birth-precision-work-package.md` | Supporting scoped plan | Scoped plan subordinate to `docs/implementation-plan.md` |
-| `docs/plans/pet-profile-body-covering-work-package.md` | Canonical / living | Registered by `docs/index.md`: Living evidence |
+| `docs/plans/pet-profile-body-covering-work-package.md` | Supporting scoped plan | Scoped plan subordinate to `docs/implementation-plan.md` |
 | `docs/plans/pet-profile-breed-origin-work-package.md` | Supporting scoped plan | Scoped plan subordinate to `docs/implementation-plan.md` |
-| `docs/plans/pet-profile-current-progress.md` | Canonical / living | Registered by `docs/index.md`: Living evidence |
-| `docs/plans/pet-profile-draft-autosave-work-package.md` | Canonical / living | Registered by `docs/index.md`: Implemented and verified with dedicated requirement evidence |
+| `docs/plans/pet-profile-current-progress.md` | Supporting scoped plan | Scoped plan subordinate to `docs/implementation-plan.md` |
+| `docs/plans/pet-profile-draft-autosave-work-package.md` | Supporting scoped plan | Scoped plan subordinate to `docs/implementation-plan.md` |
 | `docs/plans/pet-profile-duplicate-access-work-package.md` | Supporting scoped plan | Scoped plan subordinate to `docs/implementation-plan.md` |
-| `docs/plans/pet-profile-foundation-work-package.md` | Canonical / living | Registered by `docs/index.md`: Living evidence |
-| `docs/plans/pet-profile-identifying-marks-work-package.md` | Canonical / living | Registered by `docs/index.md`: Living evidence |
+| `docs/plans/pet-profile-foundation-work-package.md` | Supporting scoped plan | Scoped plan subordinate to `docs/implementation-plan.md` |
+| `docs/plans/pet-profile-identifying-marks-work-package.md` | Supporting scoped plan | Scoped plan subordinate to `docs/implementation-plan.md` |
 | `docs/plans/pet-profile-life-stage-work-package.md` | Supporting scoped plan | Scoped plan subordinate to `docs/implementation-plan.md` |
-| `docs/plans/pet-profile-master-plan.md` | Canonical / living | Registered by `docs/index.md`: Living canonical plan |
-| `docs/plans/pet-profile-name-identity-work-package.md` | Canonical / living | Registered by `docs/index.md`: Living evidence |
-| `docs/plans/pet-profile-primary-photo-work-package.md` | Canonical / living | Registered by `docs/index.md`: Living evidence |
+| `docs/plans/pet-profile-master-plan.md` | Supporting scoped plan | Scoped plan subordinate to `docs/implementation-plan.md` |
+| `docs/plans/pet-profile-name-identity-work-package.md` | Supporting scoped plan | Scoped plan subordinate to `docs/implementation-plan.md` |
+| `docs/plans/pet-profile-primary-photo-work-package.md` | Supporting scoped plan | Scoped plan subordinate to `docs/implementation-plan.md` |
 | `docs/plans/pet-profile-progressive-completion-work-package.md` | Supporting scoped plan | Scoped plan subordinate to `docs/implementation-plan.md` |
-| `docs/plans/pet-profile-size-category-work-package.md` | Canonical / living | Registered by `docs/index.md`: Living evidence |
+| `docs/plans/pet-profile-size-category-work-package.md` | Supporting scoped plan | Scoped plan subordinate to `docs/implementation-plan.md` |
 | `docs/plans/pet-profile-species-confidence-work-package.md` | Supporting scoped plan | Scoped plan subordinate to `docs/implementation-plan.md` |
-| `docs/plans/pet-workspace-modernization-plan.md` | Canonical / living | Registered by `docs/index.md`: Implemented and verified |
-| `docs/plans/places-current-progress.md` | Canonical / living | Registered by `docs/index.md`: Living evidence |
-| `docs/plans/places-production-master-plan.md` | Canonical / living | Registered by `docs/index.md`: Approved execution plan |
-| `docs/plans/portal-events-completion-master-plan.md` | Canonical / living | Registered by `docs/index.md`: Approved execution plan |
-| `docs/plans/portal-organization-authority-foundation-work-package.md` | Canonical / living | Registered by `docs/index.md`: Implemented, verified, and published foundation; P02 remains open |
+| `docs/plans/pet-workspace-modernization-plan.md` | Supporting scoped plan | Scoped plan subordinate to `docs/implementation-plan.md` |
+| `docs/plans/places-current-progress.md` | Supporting scoped plan | Scoped plan subordinate to `docs/implementation-plan.md` |
+| `docs/plans/places-production-master-plan.md` | Supporting scoped plan | Scoped plan subordinate to `docs/implementation-plan.md` |
+| `docs/plans/portal-events-completion-master-plan.md` | Supporting scoped plan | Scoped plan subordinate to `docs/implementation-plan.md` |
+| `docs/plans/portal-organization-authority-foundation-work-package.md` | Supporting scoped plan | Scoped plan subordinate to `docs/implementation-plan.md` |
 | `docs/plans/portal-place-location-venue-authority-work-package.md` | Supporting scoped plan | Scoped plan subordinate to `docs/implementation-plan.md` |
-| `docs/plans/shared-directory-card-system-plan.md` | Canonical / living | Registered by `docs/index.md`: In progress |
-| `docs/plans/social-relationships-current-progress.md` | Canonical / living | Registered by `docs/index.md`: Living evidence |
-| `docs/plans/social-relationships-foundation-work-package.md` | Canonical / living | Registered by `docs/index.md`: Living evidence |
-| `docs/plans/social-relationships-master-plan.md` | Canonical / living | Registered by `docs/index.md`: Living canonical plan |
+| `docs/plans/shared-directory-card-system-plan.md` | Supporting scoped plan | Scoped plan subordinate to `docs/implementation-plan.md` |
+| `docs/plans/social-relationships-current-progress.md` | Supporting scoped plan | Scoped plan subordinate to `docs/implementation-plan.md` |
+| `docs/plans/social-relationships-foundation-work-package.md` | Supporting scoped plan | Scoped plan subordinate to `docs/implementation-plan.md` |
+| `docs/plans/social-relationships-master-plan.md` | Supporting scoped plan | Scoped plan subordinate to `docs/implementation-plan.md` |
 | `docs/plans/social-relationships-safety-work-package.md` | Supporting scoped plan | Scoped plan subordinate to `docs/implementation-plan.md` |
 | `docs/polls.md` | Canonical / living | Registered by `docs/index.md`: Canonical |
 | `docs/portal/calendar.md` | Supporting | Unregistered first-party Markdown; not an independent source of authority |
@@ -674,10 +796,10 @@ This table classifies every first-party Markdown file outside contributor-tool, 
 | `docs/privacy.md` | Canonical / living | Registered by `docs/index.md`: Canonical |
 | `docs/product-requirements.md` | Canonical / living | Registered by `docs/index.md`: Canonical |
 | `docs/requirements.md` | Canonical / living | Registered by `docs/index.md`: Canonical |
-| `docs/requirements/compliance-matrix.md` | Canonical / living | Registered by `docs/index.md`: Expanded and reconciled |
-| `docs/requirements/forum-master-requirements.md` | Canonical generated evidence | Registered by `docs/index.md`: Canonical generated |
-| `docs/requirements/forum-source-prompt.md` | Canonical / living | Registered by `docs/index.md`: Canonical immutable input |
-| `docs/requirements/laravel-engineering-standard.md` | Canonical / living | Registered by `docs/index.md`: Preserve stable IDs |
+| `docs/requirements/compliance-matrix.md` | Canonical requirement or generated evidence | Authority resolved by `docs/requirements.md` and repository precedence |
+| `docs/requirements/forum-master-requirements.md` | Canonical requirement or generated evidence | Authority resolved by `docs/requirements.md` and repository precedence |
+| `docs/requirements/forum-source-prompt.md` | Canonical requirement or generated evidence | Authority resolved by `docs/requirements.md` and repository precedence |
+| `docs/requirements/laravel-engineering-standard.md` | Canonical requirement or generated evidence | Authority resolved by `docs/requirements.md` and repository precedence |
 | `docs/security.md` | Canonical / living | Registered by `docs/index.md`: Canonical |
 | `docs/seeding-coverage.md` | Canonical generated evidence | Registered by `docs/index.md`: Canonical generated evidence |
 | `docs/seeding-work-ledger.md` | Supporting | Unregistered first-party Markdown; not an independent source of authority |
@@ -717,7 +839,7 @@ This table classifies every first-party Markdown file outside contributor-tool, 
 | `docs/tailwind.md` | Canonical / living | Registered by `docs/index.md`: Canonical |
 | `docs/testing.md` | Canonical / living | Registered by `docs/index.md`: Canonical |
 | `docs/topic-lifecycle.md` | Canonical / living | Registered by `docs/index.md`: Canonical |
-| `docs/traceability/forum-requirements-matrix.md` | Canonical generated evidence | Registered by `docs/index.md`: Living generated evidence |
+| `docs/traceability/forum-requirements-matrix.md` | Generated / supporting evidence | Generated traceability output |
 | `docs/ui-component-inventory.md` | Supporting | Unregistered first-party Markdown; not an independent source of authority |
 | `docs/ui-migration-matrix.md` | Supporting | Unregistered first-party Markdown; not an independent source of authority |
 | `docs/validation-error-work-ledger.md` | Supporting | Unregistered first-party Markdown; not an independent source of authority |
@@ -749,12 +871,9 @@ This table classifies every first-party Markdown file outside contributor-tool, 
 </details>
 
 <details>
-<summary>Framework bootstrap files (5)</summary>
+<summary>Framework bootstrap files (2)</summary>
 
 - `bootstrap/app.php`
-- `bootstrap/cache/packages.php`
-- `bootstrap/cache/routes-v7.php`
-- `bootstrap/cache/services.php`
 - `bootstrap/providers.php`
 
 </details>
@@ -800,7 +919,7 @@ This table classifies every first-party Markdown file outside contributor-tool, 
 </details>
 
 <details>
-<summary>Enums (195)</summary>
+<summary>Enums (202)</summary>
 
 - `app/Enums/AdoptionApplicationStatus.php`
 - `app/Enums/AdoptionCaseStatus.php`
@@ -965,8 +1084,15 @@ This table classifies every first-party Markdown file outside contributor-tool, 
 - `app/Enums/PlaceAccessGrantStatus.php`
 - `app/Enums/PlaceAccessPurpose.php`
 - `app/Enums/PlaceAccessibilityStatus.php`
+- `app/Enums/PlaceDuplicateConfidence.php`
+- `app/Enums/PlaceFactScope.php`
+- `app/Enums/PlaceLocationPrecision.php`
 - `app/Enums/PlaceQuestionStatus.php`
 - `app/Enums/PlaceStatus.php`
+- `app/Enums/PlaceSubmissionAction.php`
+- `app/Enums/PlaceSubmissionResolution.php`
+- `app/Enums/PlaceSubmissionSource.php`
+- `app/Enums/PlaceSubmissionStatus.php`
 - `app/Enums/PlaceType.php`
 - `app/Enums/PlaceVerificationStatus.php`
 - `app/Enums/PlaceVisibility.php`
@@ -1019,8 +1145,9 @@ This table classifies every first-party Markdown file outside contributor-tool, 
 </details>
 
 <details>
-<summary>Notifications (0)</summary>
+<summary>Notifications (1)</summary>
 
+- `app/Notifications/PlaceSubmissionStatusChanged.php`
 
 </details>
 
@@ -1273,7 +1400,7 @@ This table classifies every first-party Markdown file outside contributor-tool, 
 </details>
 
 <details>
-<summary>Actions (226)</summary>
+<summary>Actions (241)</summary>
 
 - `app/Actions/AcceptForumAnswer.php`
 - `app/Actions/AcceptPetProfileManagerInvitation.php`
@@ -1285,6 +1412,7 @@ This table classifies every first-party Markdown file outside contributor-tool, 
 - `app/Actions/AppealForumReviewPanel.php`
 - `app/Actions/ApplyForumModerationAction.php`
 - `app/Actions/ApplyOrganizationRestriction.php`
+- `app/Actions/ApprovePlaceSubmission.php`
 - `app/Actions/ArchiveForumExpertSession.php`
 - `app/Actions/ArchiveForumGroupFile.php`
 - `app/Actions/ArchiveForumJournal.php`
@@ -1309,7 +1437,9 @@ This table classifies every first-party Markdown file outside contributor-tool, 
 - `app/Actions/CloseAdoptionCase.php`
 - `app/Actions/CloseForumModerationCase.php`
 - `app/Actions/CompleteCareTask.php`
+- `app/Actions/ConfirmPlaceDuplicateCandidate.php`
 - `app/Actions/ConfirmUserPassword.php`
+- `app/Actions/ContinueDistinctPlaceSubmission.php`
 - `app/Actions/CorrectForumExpertSessionAnswer.php`
 - `app/Actions/CreateAnswer.php`
 - `app/Actions/CreateBooking.php`
@@ -1365,7 +1495,9 @@ This table classifies every first-party Markdown file outside contributor-tool, 
 - `app/Actions/InviteToForumEvent.php`
 - `app/Actions/IssueDeviceCommand.php`
 - `app/Actions/LeaveForumGroup.php`
+- `app/Actions/LinkPlaceSubmission.php`
 - `app/Actions/ManageKnowledgeCollaborator.php`
+- `app/Actions/MergePlaceDuplicate.php`
 - `app/Actions/ModerateCommunityNote.php`
 - `app/Actions/ModerateForumExpertSessionQuestion.php`
 - `app/Actions/OpenForumModerationCase.php`
@@ -1398,6 +1530,7 @@ This table classifies every first-party Markdown file outside contributor-tool, 
 - `app/Actions/PublishForumEventUpdate.php`
 - `app/Actions/PublishForumExpertSessionAnswer.php`
 - `app/Actions/PublishForumGroupAnnouncement.php`
+- `app/Actions/PublishPlaceSubmission.php`
 - `app/Actions/RecordAnswerVote.php`
 - `app/Actions/RecordDeviceLifecycle.php`
 - `app/Actions/RecordDeviceReading.php`
@@ -1408,25 +1541,31 @@ This table classifies every first-party Markdown file outside contributor-tool, 
 - `app/Actions/RecuseForumModerator.php`
 - `app/Actions/RedirectForumTopic.php`
 - `app/Actions/RegisterUser.php`
+- `app/Actions/RejectPlaceSubmission.php`
 - `app/Actions/RemoveOrganizationMember.php`
 - `app/Actions/RemovePetPrimaryPhoto.php`
 - `app/Actions/RemovePetProfileName.php`
+- `app/Actions/ReopenPlaceSubmission.php`
 - `app/Actions/ReplaceForumPanelReviewer.php`
 - `app/Actions/ReportSocialRelationshipRequest.php`
 - `app/Actions/RequestForumGroupMembership.php`
 - `app/Actions/RequestForumTopicUpdate.php`
 - `app/Actions/RequestMentorship.php`
+- `app/Actions/RequestPlaceSubmissionInformation.php`
 - `app/Actions/RescheduleForumEvent.php`
 - `app/Actions/ResolveAccessiblePlace.php`
 - `app/Actions/ResolveCareAccess.php`
 - `app/Actions/ResolveDeviceAccess.php`
 - `app/Actions/ResolveMedicalAccess.php`
+- `app/Actions/ResolvePlaceMergeRedirect.php`
 - `app/Actions/RespondToCommunityNote.php`
 - `app/Actions/RespondToForumEventInvitation.php`
 - `app/Actions/RespondToForumGroupInvitation.php`
 - `app/Actions/RespondToMentorship.php`
 - `app/Actions/RespondToOrganizationInvitation.php`
+- `app/Actions/RespondToPlaceSubmissionInformation.php`
 - `app/Actions/RespondToSocialRelationshipRequest.php`
+- `app/Actions/RestoreMergedPlace.php`
 - `app/Actions/RestorePetPrimaryPhoto.php`
 - `app/Actions/RestrictForumGroupMember.php`
 - `app/Actions/RevealPlaceExactLocation.php`
@@ -1475,6 +1614,7 @@ This table classifies every first-party Markdown file outside contributor-tool, 
 - `app/Actions/SubmitMentorshipFeedback.php`
 - `app/Actions/SubmitPetProfileAccessRequest.php`
 - `app/Actions/SubmitPlaceQuestion.php`
+- `app/Actions/SubmitPlaceSubmission.php`
 - `app/Actions/SubmitSighting.php`
 - `app/Actions/SuspendOrganization.php`
 - `app/Actions/SynchronizeAdoptionCase.php`
@@ -1489,6 +1629,7 @@ This table classifies every first-party Markdown file outside contributor-tool, 
 - `app/Actions/UpdateDeviceRetention.php`
 - `app/Actions/UpdateDiscoveryPreference.php`
 - `app/Actions/UpdateExpertProfile.php`
+- `app/Actions/UpdateForumCategorySettings.php`
 - `app/Actions/UpdateForumJournalEntry.php`
 - `app/Actions/UpdateMentorProfile.php`
 - `app/Actions/UpdatePetProfile.php`
@@ -1501,11 +1642,12 @@ This table classifies every first-party Markdown file outside contributor-tool, 
 - `app/Actions/ValidateMentorshipCompletion.php`
 - `app/Actions/ValidateTaxonomyImport.php`
 - `app/Actions/WithdrawForumExpertSessionQuestion.php`
+- `app/Actions/WithdrawPlaceSubmission.php`
 
 </details>
 
 <details>
-<summary>Services (155)</summary>
+<summary>Services (158)</summary>
 
 - `app/Services/CareJournalPresenter.php`
 - `app/Services/CirclePresenter.php`
@@ -1621,11 +1763,14 @@ This table classifies every first-party Markdown file outside contributor-tool, 
 - `app/Services/PhotoInteractionState.php`
 - `app/Services/PlaceCatalog.php`
 - `app/Services/PlaceContentCatalog.php`
+- `app/Services/PlaceDuplicateDetector.php`
+- `app/Services/PlaceIdentityNormalizer.php`
 - `app/Services/PlaceMediaCatalog.php`
 - `app/Services/PlacePresenter.php`
 - `app/Services/PlacePublicProjection.php`
 - `app/Services/PlaceQuestionPresenter.php`
 - `app/Services/PlaceState.php`
+- `app/Services/PlaceSubmissionTransition.php`
 - `app/Services/PortalMediaResponse.php`
 - `app/Services/PortalMediaUrl.php`
 - `app/Services/PreviewService.php`
@@ -1666,7 +1811,7 @@ This table classifies every first-party Markdown file outside contributor-tool, 
 </details>
 
 <details>
-<summary>Models (204)</summary>
+<summary>Models (211)</summary>
 
 - `app/Models/AdoptionApplication.php`
 - `app/Models/AdoptionCase.php`
@@ -1834,9 +1979,16 @@ This table classifies every first-party Markdown file outside contributor-tool, 
 - `app/Models/Place.php`
 - `app/Models/PlaceAccessAudit.php`
 - `app/Models/PlaceAccessGrant.php`
+- `app/Models/PlaceDuplicateCandidate.php`
+- `app/Models/PlaceFact.php`
 - `app/Models/PlaceLocationVersion.php`
+- `app/Models/PlaceMergeRedirect.php`
 - `app/Models/PlaceQuestion.php`
 - `app/Models/PlaceQuestionAnswer.php`
+- `app/Models/PlaceSubmission.php`
+- `app/Models/PlaceSubmissionEvent.php`
+- `app/Models/PlaceSubmissionIdentityLock.php`
+- `app/Models/PlaceSubmissionRevision.php`
 - `app/Models/Publication.php`
 - `app/Models/Reservation.php`
 - `app/Models/Review.php`
@@ -1876,7 +2028,7 @@ This table classifies every first-party Markdown file outside contributor-tool, 
 </details>
 
 <details>
-<summary>Policies (47)</summary>
+<summary>Policies (48)</summary>
 
 - `app/Policies/AdoptionApplicationPolicy.php`
 - `app/Policies/AdoptionCasePolicy.php`
@@ -1917,6 +2069,7 @@ This table classifies every first-party Markdown file outside contributor-tool, 
 - `app/Policies/PhotoReactionPolicy.php`
 - `app/Policies/PlacePolicy.php`
 - `app/Policies/PlaceQuestionPolicy.php`
+- `app/Policies/PlaceSubmissionPolicy.php`
 - `app/Policies/SearchCasePolicy.php`
 - `app/Policies/SmartDevicePolicy.php`
 - `app/Policies/SocialAccountBlockPolicy.php`
@@ -1938,7 +2091,7 @@ This table classifies every first-party Markdown file outside contributor-tool, 
 </details>
 
 <details>
-<summary>Livewire components (37)</summary>
+<summary>Livewire components (40)</summary>
 
 - `app/Livewire/Auth/AuthPage.php`
 - `app/Livewire/Auth/ConfirmPassword.php`
@@ -1975,13 +2128,16 @@ This table classifies every first-party Markdown file outside contributor-tool, 
 - `app/Livewire/Pets/PetProfileAccessRequests.php`
 - `app/Livewire/Pets/PetProfileInvitations.php`
 - `app/Livewire/Pets/PublicPetProfile.php`
+- `app/Livewire/Places/CreatePlaceSubmission.php`
+- `app/Livewire/Places/PlaceModerationWorkspace.php`
+- `app/Livewire/Places/PlaceSubmissionStatusPage.php`
 - `app/Livewire/ProfileSettings.php`
 - `app/Livewire/Social/RelationshipCenter.php`
 
 </details>
 
 <details>
-<summary>Livewire form objects (49)</summary>
+<summary>Livewire form objects (50)</summary>
 
 - `app/Livewire/Forms/AdoptionApplicationForm.php`
 - `app/Livewire/Forms/Auth/ConfirmPasswordForm.php`
@@ -2029,6 +2185,7 @@ This table classifies every first-party Markdown file outside contributor-tool, 
 - `app/Livewire/Forms/PetProfileMediaForm.php`
 - `app/Livewire/Forms/PetProfileNameForm.php`
 - `app/Livewire/Forms/PetProfilePrivacyForm.php`
+- `app/Livewire/Forms/PlaceSubmissionForm.php`
 - `app/Livewire/Forms/ProfilePreferencesForm.php`
 - `app/Livewire/Forms/SocialActorSettingsForm.php`
 - `app/Livewire/Forms/SocialRequestReportForm.php`
@@ -2036,7 +2193,7 @@ This table classifies every first-party Markdown file outside contributor-tool, 
 </details>
 
 <details>
-<summary>Blade views (357)</summary>
+<summary>Blade views (360)</summary>
 
 - `resources/views/care-journals/create.blade.php`
 - `resources/views/care-journals/index.blade.php`
@@ -2361,6 +2518,9 @@ This table classifies every first-party Markdown file outside contributor-tool, 
 - `resources/views/livewire/pets/pet-profile-access-requests.blade.php`
 - `resources/views/livewire/pets/pet-profile-invitations.blade.php`
 - `resources/views/livewire/pets/public-pet-profile.blade.php`
+- `resources/views/livewire/places/create-place-submission.blade.php`
+- `resources/views/livewire/places/place-moderation-workspace.blade.php`
+- `resources/views/livewire/places/place-submission-status-page.blade.php`
 - `resources/views/livewire/profile-settings.blade.php`
 - `resources/views/livewire/social/relationship-center.blade.php`
 - `resources/views/lost-found/coordinate.blade.php`
@@ -2651,7 +2811,7 @@ This table classifies every first-party Markdown file outside contributor-tool, 
 </details>
 
 <details>
-<summary>Migrations (139)</summary>
+<summary>Migrations (140)</summary>
 
 - `database/migrations/0001_01_01_000000_create_users_table.php`
 - `database/migrations/0001_01_01_000001_create_cache_table.php`
@@ -2792,11 +2952,12 @@ This table classifies every first-party Markdown file outside contributor-tool, 
 - `database/migrations/2026_08_04_001000_add_life_stage_override_to_pet_profiles_table.php`
 - `database/migrations/2026_08_04_024152_create_pet_profile_identifying_marks_table.php`
 - `database/migrations/2026_08_04_034056_add_size_category_to_pet_profiles_table.php`
+- `database/migrations/2026_08_30_120000_create_place_submission_publication_tables.php`
 
 </details>
 
 <details>
-<summary>Factories (205)</summary>
+<summary>Factories (212)</summary>
 
 - `database/factories/AdoptionApplicationFactory.php`
 - `database/factories/AdoptionCaseFactory.php`
@@ -2964,10 +3125,17 @@ This table classifies every first-party Markdown file outside contributor-tool, 
 - `database/factories/PhotoReactionFactory.php`
 - `database/factories/PlaceAccessAuditFactory.php`
 - `database/factories/PlaceAccessGrantFactory.php`
+- `database/factories/PlaceDuplicateCandidateFactory.php`
+- `database/factories/PlaceFactFactory.php`
 - `database/factories/PlaceFactory.php`
 - `database/factories/PlaceLocationVersionFactory.php`
+- `database/factories/PlaceMergeRedirectFactory.php`
 - `database/factories/PlaceQuestionAnswerFactory.php`
 - `database/factories/PlaceQuestionFactory.php`
+- `database/factories/PlaceSubmissionEventFactory.php`
+- `database/factories/PlaceSubmissionFactory.php`
+- `database/factories/PlaceSubmissionIdentityLockFactory.php`
+- `database/factories/PlaceSubmissionRevisionFactory.php`
 - `database/factories/PublicationFactory.php`
 - `database/factories/ReservationFactory.php`
 - `database/factories/ReviewFactory.php`
@@ -3007,7 +3175,7 @@ This table classifies every first-party Markdown file outside contributor-tool, 
 </details>
 
 <details>
-<summary>Seeders (42)</summary>
+<summary>Seeders (47)</summary>
 
 - `database/seeders/AdoptionCaseSeeder.php`
 - `database/seeders/AdoptionDemoSeeder.php`
@@ -3015,6 +3183,7 @@ This table classifies every first-party Markdown file outside contributor-tool, 
 - `database/seeders/CatalogueOfLifeSourceSeeder.php`
 - `database/seeders/CollaborativeGuideDemoSeeder.php`
 - `database/seeders/CommunityAnimalGroupSeeder.php`
+- `database/seeders/Concerns/GuardsDemoSeeding.php`
 - `database/seeders/CoreAnimalTaxonomySeeder.php`
 - `database/seeders/DatabaseSeeder.php`
 - `database/seeders/DiscoveryDemoSeeder.php`
@@ -3046,6 +3215,10 @@ This table classifies every first-party Markdown file outside contributor-tool, 
 - `database/seeders/PetProfileFoundationSeeder.php`
 - `database/seeders/PlaceAuthoritySeeder.php`
 - `database/seeders/PlaceDemoSeeder.php`
+- `database/seeders/PlaceSubmissionDemoSeeder.php`
+- `database/seeders/RepresentativeDomainSeeder.php`
+- `database/seeders/RepresentativeFieldCoverageSeeder.php`
+- `database/seeders/RepresentativeModelManifest.php`
 - `database/seeders/SearchCaseIntegritySeeder.php`
 - `database/seeders/SearchSeeder.php`
 - `database/seeders/SmartDeviceSeeder.php`
@@ -3055,7 +3228,7 @@ This table classifies every first-party Markdown file outside contributor-tool, 
 </details>
 
 <details>
-<summary>PHP tests and support (128)</summary>
+<summary>PHP tests and support (150)</summary>
 
 - `tests/Feature/AnimalTaxonomy/CoreAnimalTaxonomyTest.php`
 - `tests/Feature/AnimalTaxonomy/TaxonomyImportPipelineTest.php`
@@ -3069,12 +3242,24 @@ This table classifies every first-party Markdown file outside contributor-tool, 
 - `tests/Feature/CareJournalTest.php`
 - `tests/Feature/ComponentNamingTest.php`
 - `tests/Feature/ContentPublicationFoundationTest.php`
+- `tests/Feature/Database/CompleteDatabaseSeederTest.php`
 - `tests/Feature/Database/DatabaseDomainRelationshipTest.php`
+- `tests/Feature/Database/DemoSeederEnvironmentTest.php`
+- `tests/Feature/Database/DomainFactoryStateIntegrityTest.php`
+- `tests/Feature/Database/ExpertAggregateFactoryTest.php`
 - `tests/Feature/Database/FactoryAndSeederTest.php`
+- `tests/Feature/Database/FactoryFieldIntegrityTest.php`
+- `tests/Feature/Database/FactoryMakeSideEffectTest.php`
+- `tests/Feature/Database/FactoryOwnerAndLocalMediaTest.php`
 - `tests/Feature/Database/FactoryRelationshipIntegrityTest.php`
 - `tests/Feature/Database/ForumTaxonomyFactoryTest.php`
+- `tests/Feature/Database/MedicalJournalGraphIntegrityTest.php`
 - `tests/Feature/Database/MigrationLifecycleVerificationTest.php`
+- `tests/Feature/Database/ModelSerializationPrivacyTest.php`
+- `tests/Feature/Database/RelationshipCompletionTest.php`
 - `tests/Feature/Database/SchemaIntegrityTest.php`
+- `tests/Feature/Database/SearchContactTokenSecurityTest.php`
+- `tests/Feature/Database/SeededFieldCoverageTest.php`
 - `tests/Feature/Database/UserIdentitySchemaTest.php`
 - `tests/Feature/DiscoverExperienceTest.php`
 - `tests/Feature/ExpertBookingTest.php`
@@ -3092,6 +3277,7 @@ This table classifies every first-party Markdown file outside contributor-tool, 
 - `tests/Feature/Forum/EventWorkflowTest.php`
 - `tests/Feature/Forum/ExpertQuestionSessionWorkflowTest.php`
 - `tests/Feature/Forum/ForumAccessibilityTest.php`
+- `tests/Feature/Forum/ForumAnimalScienceCategoryTest.php`
 - `tests/Feature/Forum/ForumBeforeOwnershipCategoryTest.php`
 - `tests/Feature/Forum/ForumCategorySeedTest.php`
 - `tests/Feature/Forum/ForumDatabaseCorrectnessTest.php`
@@ -3102,6 +3288,7 @@ This table classifies every first-party Markdown file outside contributor-tool, 
 - `tests/Feature/Forum/ForumOneHealthCategoryTest.php`
 - `tests/Feature/Forum/ForumReputationAndConfirmationTest.php`
 - `tests/Feature/Forum/ForumSpecialNeedsCategoryTest.php`
+- `tests/Feature/Forum/ForumTimezoneValidationTest.php`
 - `tests/Feature/Forum/ForumTopicEditorLayoutTest.php`
 - `tests/Feature/Forum/ForumTopicLifecycleTest.php`
 - `tests/Feature/Forum/ForumTopicTypeSchemaContractTest.php`
@@ -3110,6 +3297,7 @@ This table classifies every first-party Markdown file outside contributor-tool, 
 - `tests/Feature/Forum/GroupContentAndPollWorkflowTest.php`
 - `tests/Feature/Forum/GroupCoreWorkflowTest.php`
 - `tests/Feature/Forum/MentorshipWorkflowTest.php`
+- `tests/Feature/Forum/UpdateForumCategorySettingsTest.php`
 - `tests/Feature/ForumDirectoryTest.php`
 - `tests/Feature/ForumTopicTest.php`
 - `tests/Feature/GroupContentLocalizationTest.php`
@@ -3163,12 +3351,14 @@ This table classifies every first-party Markdown file outside contributor-tool, 
 - `tests/Feature/PlaceSharedCardCompositionTest.php`
 - `tests/Feature/Places/PlaceAuthorityFoundationTest.php`
 - `tests/Feature/Places/PlaceQuestionWorkflowTest.php`
+- `tests/Feature/Places/PlaceSubmissionPublicationWorkflowTest.php`
 - `tests/Feature/PreviewTest.php`
 - `tests/Feature/PrimaryNavigationLocalizationTest.php`
 - `tests/Feature/PrivateFilePathTraversalTest.php`
 - `tests/Feature/PublicImageProcessingTest.php`
 - `tests/Feature/ResponsiveInterfaceTest.php`
 - `tests/Feature/Runtime/RuntimeArtisanCommandTest.php`
+- `tests/Feature/Runtime/TestRunnerIsolationTest.php`
 - `tests/Feature/SecurityAttackSurfaceTest.php`
 - `tests/Feature/SharePageLocalizationTest.php`
 - `tests/Feature/SharedCardActionRowTest.php`
@@ -3177,14 +3367,19 @@ This table classifies every first-party Markdown file outside contributor-tool, 
 - `tests/Feature/SocialPersistenceTest.php`
 - `tests/Feature/SocialRelationshipFoundationTest.php`
 - `tests/Feature/SocialRelationshipSafetyTest.php`
+- `tests/Fixtures/DatabaseSeedCoverage.php`
 - `tests/Fixtures/linked-media-navigation.php`
+- `tests/Fixtures/place_submission_race_worker.php`
 - `tests/Pest.php`
 - `tests/Support/page-identity-route-classification.php`
 - `tests/Support/route-coverage.php`
 - `tests/TestCase.php`
+- `tests/Unit/DatabaseDomainAuditGeneratorTest.php`
 - `tests/Unit/EventLifecycleMigrationTest.php`
 - `tests/Unit/ForumTopicStatusTest.php`
 - `tests/Unit/MinorUnitAmountTest.php`
+- `tests/Unit/Places/PlaceSubmissionConcurrencyTest.php`
+- `tests/Unit/Services/PlaceIdentityNormalizerTest.php`
 
 </details>
 
@@ -3199,11 +3394,12 @@ This table classifies every first-party Markdown file outside contributor-tool, 
 </details>
 
 <details>
-<summary>Runtime, generation, and verification scripts (19)</summary>
+<summary>Runtime, generation, and verification scripts (20)</summary>
 
 - `scripts/accessibility-browser-check.mjs`
 - `scripts/discovery-browser-check.mjs`
 - `scripts/generate-compliance-matrix.php`
+- `scripts/generate-database-domain-audit.php`
 - `scripts/generate-forum-category-manifest.php`
 - `scripts/generate-forum-requirements.php`
 - `scripts/generate-repository-inventory.php`
@@ -3283,7 +3479,7 @@ This table classifies every first-party Markdown file outside contributor-tool, 
 </details>
 
 <details>
-<summary>Translation catalogues (135)</summary>
+<summary>Translation catalogues (138)</summary>
 
 - `lang/en/actions.php`
 - `lang/en/adoption.php`
@@ -3325,6 +3521,7 @@ This table classifies every first-party Markdown file outside contributor-tool, 
 - `lang/en/place_directory.php`
 - `lang/en/places.php`
 - `lang/en/presentation.php`
+- `lang/en/seeding.php`
 - `lang/en/sharing.php`
 - `lang/en/social_relationships.php`
 - `lang/en/taxonomy.php`
@@ -3370,6 +3567,7 @@ This table classifies every first-party Markdown file outside contributor-tool, 
 - `lang/lt/place_directory.php`
 - `lang/lt/places.php`
 - `lang/lt/presentation.php`
+- `lang/lt/seeding.php`
 - `lang/lt/sharing.php`
 - `lang/lt/social_relationships.php`
 - `lang/lt/taxonomy.php`
@@ -3415,6 +3613,7 @@ This table classifies every first-party Markdown file outside contributor-tool, 
 - `lang/ru/place_directory.php`
 - `lang/ru/places.php`
 - `lang/ru/presentation.php`
+- `lang/ru/seeding.php`
 - `lang/ru/sharing.php`
 - `lang/ru/social_relationships.php`
 - `lang/ru/taxonomy.php`

@@ -2,7 +2,7 @@
 
 Date: 2026-08-30
 
-Status: planned; discovery in progress; implementation authorized
+Status: implemented and targeted verification complete; final verification pending
 
 ## Goal And Selection
 
@@ -95,6 +95,25 @@ class-based Livewire components, passive Blade, and Laravel language files.
 Do not add a parallel hierarchy, modify historical migrations, create a
 category-specific authorization rule, or mark the Phase 5/7 atoms complete.
 
+## Reconciliation Result
+
+Three independent read-only reviews confirmed that the immutable manifest,
+checksum validator, transactional synchronizer, normalized category and
+translation rows, reviewed root translations, locale-scoped cached tree,
+request validation, server-prepared directory projection, factories, and
+idempotent system seed already implement the selected hierarchy. The package
+therefore retains those boundaries and adds exact characterization rather
+than speculative schema, Policy, Action, Service, or translation machinery.
+
+The review found one presentation defect directly exercised by the selected
+category: the shared category navigator used Georgia and viewport-scaled
+`clamp()` typography for its category headings. That violated the canonical
+Instrument Sans fixed-rem scale. A focused contract observed that defect in
+RED, and the smallest correction restores the inherited product font and the
+fixed `1.125rem` title scale. Unlocalized shared filter/sort labels, generic
+visibility projection, and an unbounded administrator-defined category count
+are broader existing debts; this package does not falsely close them.
+
 ## Acceptance Criteria
 
 1. A focused Pest contract pins number `25`, exact stable key and slug,
@@ -103,12 +122,14 @@ category-specific authorization rule, or mark the Phase 5/7 atoms complete.
    stable keys, slugs, positions, parentage, active/system flags, and reviewed
    EN/LT/RU root name/purpose rows while preserving administrator categories.
 3. The public category projection renders the selected root purpose and all
-   54 localized child destinations through a server-authorized bounded query;
-   fallback mode has the same semantics and no user-facing raw keys.
+   54 child destinations through server-validated selection and the existing
+   eager-loaded tree; fallback mode has the same semantics and no user-facing
+   raw keys.
 4. Category reads retain the existing query/cache budget, locale-scoped cache
    key and invalidation behavior, safe empty/error states, stable links,
    semantic headings, keyboard path, visible focus, 44-pixel mobile targets,
-   reduced-motion/forced-colors behavior, and no horizontal overflow.
+   reduced-motion/forced-colors behavior, safe empty/manifest-fallback states,
+   and no horizontal overflow.
 5. No schema change is introduced unless a failing test proves a normalized
    persistence gap. Any additive migration must preserve populated data and
    pass rollback/reapply. No route, controller, policy, Form Request, Action,
@@ -116,9 +137,11 @@ category-specific authorization rule, or mark the Phase 5/7 atoms complete.
    evidence when the existing boundary is correct.
 6. Every behavior repair follows red-green-refactor. Targeted tests pass
    before evidence changes.
-7. The evidence overlay promotes exactly the 58 listed IDs. Generator output,
-   phase counts, traceability, compliance, progress, implementation plan, and
-   changelog agree with executed evidence; the two later-phase atoms stay open.
+7. The evidence overlay records exactly the 58 listed IDs as implemented and
+   tested but keeps their final result in progress until every required
+   repository gate passes. Generator output, phase counts, traceability,
+   compliance, progress, implementation plan, and changelog agree with that
+   conservative result; the two later-phase atoms stay open.
 8. An independent reviewer examines a frozen attributable diff and every
    material finding is dispositioned and retested before publication.
 
@@ -126,8 +149,9 @@ category-specific authorization rule, or mark the Phase 5/7 atoms complete.
 
 1. Run the exact `jq` inventory for open Phase 4 records in the category-25
    source section and confirm 58 IDs.
-2. Run the focused category-25 test in red, implement the smallest required
-   correction, then rerun it green.
+2. Run the focused category-25 test. Retain already-correct source and
+   persistence behavior, observe the navigator typography contract in RED,
+   implement the smallest correction, then rerun the full contract green.
 3. Run related category synchronization, localization/cache, schema,
    architecture, authorization, factory, and seeder tests.
 4. Run the immutable source check and the deterministic forum requirement
@@ -140,6 +164,35 @@ category-specific authorization rule, or mark the Phase 5/7 atoms complete.
 6. Freeze and independently review the attributable diff, run
    `git diff --check`, inspect the temporary-index staged diff, commit the
    coherent package on `main`, and push only after required gates pass.
+
+## Observed Verification
+
+- Focused RED isolated the category heading's Georgia and viewport-scaled
+  typography while five source/persistence/UI tests remained green. The
+  browser-entry contract later failed before its bounded command existed.
+- Focused GREEN passed 7 tests and 104 assertions.
+- The category/cache/administration slice passed 62 tests and 6,097
+  assertions. Localization, responsive, schema, and taxonomy-factory checks
+  passed another 50 tests and 37,056 assertions.
+- An earlier isolated Chrome package passed at 1440px English, 375px Lithuanian,
+  320px English reflow, and 1024px Russian forced colors with exact localized
+  copy, all 54 children, fixed typography, visible focus, 44px targets, zero
+  overflow, zero raw keys, and zero console errors.
+- Exact regeneration records only `forum.category.0237` through
+  `forum.category.0294` as implemented, tested, and in progress. The resulting
+  catalogue has 1,727 verified, 58 in-progress, and 36,592 discovered records;
+  Phase 4 has 239 verified, 58 in-progress, and 1,166 discovered records.
+- The immutable-source reconstruction remains externally blocked by missing
+  Codex history entry `1785397895`. Coverage remains externally blocked because
+  neither PCOV nor Xdebug is installed. A current bounded browser rerun now
+  stops during isolated database seeding at `ReviewFactory.php:69` because
+  concurrent unrelated factory work rejects an incoherent completed booking.
+  The monolithic browser command also
+  exceeded its 900-second wrapper limit in the current shared environment;
+  an earlier bounded animal-science package passed, but neither browser gate
+  is currently recorded as successful. Full Pest, Architecture, full Pint,
+  and generated-inventory gates also failed on unrelated concurrent work, so
+  final promotion is withheld.
 
 ## Rollback And Stop Conditions
 

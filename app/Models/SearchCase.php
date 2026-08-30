@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 
@@ -301,6 +302,12 @@ class SearchCase extends Model
     public function reports(): HasMany
     {
         return $this->hasMany(SearchReport::class);
+    }
+
+    /** @return MorphMany<ForumReport, $this> */
+    public function subjectReports(): MorphMany
+    {
+        return $this->morphMany(ForumReport::class, 'subject');
     }
 
     /** @return HasMany<DeviceEvent, $this> */

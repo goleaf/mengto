@@ -10,12 +10,18 @@ use App\Enums\SellerType;
 use App\Models\Listing;
 use App\Models\ListingEngagement;
 use App\Models\Reservation;
+use App\Models\User;
+use Database\Seeders\Concerns\GuardsDemoSeeding;
 use Illuminate\Database\Seeder;
 
 final class ListingSeeder extends Seeder
 {
+    use GuardsDemoSeeding;
+
     public function run(): void
     {
+        $this->assertDemoSeedingIsAllowed();
+
         $listings = collect([
             [
                 'owner_key' => 'lena-petrauskaite',
@@ -32,7 +38,7 @@ final class ListingSeeder extends Seeder
                 'city' => 'Vilnius',
                 'area' => 'Žvėrynas',
                 'delivery_options' => ['meetup', 'shipping'],
-                'cover_url' => 'https://images.unsplash.com/photo-1558788353-f76d92427f16?auto=format&fit=crop&w=1400&q=85',
+                'cover_url' => asset('images/places/pet-store-primary-lg.jpg'),
             ],
             [
                 'owner_key' => 'quiet-paws-studio',
@@ -49,12 +55,12 @@ final class ListingSeeder extends Seeder
                 'city' => 'Vilnius',
                 'area' => 'Naujamiestis',
                 'delivery_options' => ['meetup'],
-                'cover_url' => 'https://images.unsplash.com/photo-1518791841217-8f162f1e1131?auto=format&fit=crop&w=1400&q=85',
+                'cover_url' => asset('images/places/pet-store-secondary-lg.jpg'),
                 'is_business' => true,
                 'business_name' => 'Quiet Paws Studio',
             ],
             [
-                'owner_key' => 'vilnius-animal-aid',
+                'owner_key' => 'demo-marketplace-member',
                 'owner_name' => 'Vilnius Animal Aid',
                 'owner_initials' => 'VA',
                 'type' => ListingType::Adoption,
@@ -79,7 +85,7 @@ final class ListingSeeder extends Seeder
                     'temperament' => 'Calm indoors and comfortable with a predictable routine.',
                     'adoption_conditions' => 'Indoor home, two meetings, and a signed transfer agreement.',
                 ],
-                'cover_url' => 'https://images.unsplash.com/photo-1573865526739-10659fec78a5?auto=format&fit=crop&w=1400&q=85',
+                'cover_url' => asset('images/places/shelter-primary-lg.jpg'),
                 'is_business' => true,
                 'business_name' => 'Vilnius Animal Aid',
                 'seller_type' => SellerType::Shelter,
@@ -100,7 +106,7 @@ final class ListingSeeder extends Seeder
                 'city' => 'Kaunas',
                 'area' => 'Centras',
                 'delivery_options' => ['meetup'],
-                'cover_url' => 'https://images.unsplash.com/photo-1516734212186-a967f81ad0d7?auto=format&fit=crop&w=1400&q=85',
+                'cover_url' => asset('images/places/pet-store-tertiary-lg.jpg'),
             ],
             [
                 'owner_key' => 'rasa-v',
@@ -118,7 +124,7 @@ final class ListingSeeder extends Seeder
                 'city' => 'Vilnius',
                 'area' => 'Šnipiškės',
                 'delivery_options' => ['pickup', 'meetup'],
-                'cover_url' => 'https://images.unsplash.com/photo-1522276498395-f4f68f7f8454?auto=format&fit=crop&w=1400&q=85',
+                'cover_url' => asset('images/places/pet-store-secondary-lg.jpg'),
             ],
             [
                 'owner_key' => 'mia-carter',
@@ -135,7 +141,7 @@ final class ListingSeeder extends Seeder
                 'city' => 'Vilnius',
                 'area' => 'Naujamiestis',
                 'delivery_options' => ['meetup', 'pickup'],
-                'cover_url' => 'https://images.unsplash.com/photo-1591946614720-90a587da4a36?auto=format&fit=crop&w=1400&q=85',
+                'cover_url' => asset('images/places/pet-store-primary-lg.jpg'),
             ],
             [
                 'owner_key' => 'ari-jensen',
@@ -152,7 +158,7 @@ final class ListingSeeder extends Seeder
                 'city' => 'Vilnius',
                 'area' => null,
                 'delivery_options' => ['online'],
-                'cover_url' => 'https://images.unsplash.com/photo-1544568100-847a948585b9?auto=format&fit=crop&w=1400&q=85',
+                'cover_url' => asset('images/places/veterinary-primary-lg.jpg'),
             ],
             [
                 'owner_key' => 'monika-k',
@@ -169,12 +175,15 @@ final class ListingSeeder extends Seeder
                 'city' => 'Klaipėda',
                 'area' => 'Centras',
                 'delivery_options' => ['pickup'],
-                'cover_url' => 'https://images.unsplash.com/photo-1507146426996-ef05306b995a?auto=format&fit=crop&w=1400&q=85',
+                'cover_url' => asset('images/places/pet-store-tertiary-lg.jpg'),
             ],
         ])->map(function (array $attributes): Listing {
             $slug = str($attributes['title'])->slug()->toString();
             $values = [
                 ...$attributes,
+                'owner_id' => User::query()
+                    ->where('actor_key', $attributes['owner_key'])
+                    ->value('id'),
                 'slug' => $slug,
                 'currency' => 'EUR',
                 'meetup_notes' => 'Use platform messages, confirm the item or service first, and choose a safe public location.',

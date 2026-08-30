@@ -22,7 +22,7 @@ final class CredentialVerificationAppealFactory extends ApplicationFactory
             'reviewer_response' => null,
             'reviewed_at' => null,
             'closed_at' => null,
-            'metadata' => [],
+            'metadata' => ['source' => 'factory', 'version' => 1],
         ];
     }
 }

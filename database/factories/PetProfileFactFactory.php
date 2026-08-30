@@ -27,8 +27,12 @@ final class PetProfileFactFactory extends ApplicationFactory
                 'precision' => 'estimated',
             ],
             [
-                'key' => 'microchip-status',
-                'value' => ['status' => 'chipped'],
+                'key' => 'microchip-record',
+                'value' => [
+                    'status' => 'chipped',
+                    'identifier' => fake()->numerify('981020#########'),
+                    'documents_state' => 'available',
+                ],
                 'precision' => 'exact',
             ],
         ]);
@@ -50,6 +54,25 @@ final class PetProfileFactFactory extends ApplicationFactory
             'recorded_at' => now(),
             'metadata' => ['captured_by' => 'factory', 'review_required' => false],
         ];
+    }
+
+    public function microchipRecord(?string $identifier = null): static
+    {
+        $value = [
+            'status' => 'chipped',
+            'identifier' => $identifier ?? fake()->numerify('981020#########'),
+            'documents_state' => 'available',
+        ];
+
+        return $this->state(fn (): array => [
+            'fact_key' => 'microchip-record',
+            'value' => $value,
+            'normalized_value_hash' => hash(
+                'sha256',
+                json_encode($value, JSON_THROW_ON_ERROR),
+            ),
+            'precision' => 'exact',
+        ]);
     }
 
     public function configure(): static

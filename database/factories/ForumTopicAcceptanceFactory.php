@@ -20,7 +20,7 @@ final class ForumTopicAcceptanceFactory extends ApplicationFactory
             'acceptance_type' => 'author',
             'is_active' => true,
             'accepted_at' => now(),
-            'metadata' => [],
+            'metadata' => ['source' => 'factory', 'version' => 1],
         ];
     }
 

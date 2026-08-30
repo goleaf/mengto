@@ -32,6 +32,35 @@
 - Added deterministic exact repository/Markdown inventories, a cache-clearing
   test runner, and disposable browser-audit orchestration whose underlying
   stateful scripts fail closed without explicit mutation consent.
+- Added a service-account Artisan wrapper plus isolated PHPUnit config,
+  in-memory database, and per-process temporary storage boundaries so root
+  maintenance and test commands cannot create mixed-owner production runtime
+  files or target the live SQLite database.
+- Completed the 204-model database-domain pass: corrected schema-backed
+  relationships and factory graph invariants, added the missing topic-move
+  model/factory, made the root demo seed produce ten deterministic users
+  including `user@example.com`, topped up every persistent model to at least
+  ten coherent records, populated all eight pivots, and added generated
+  schema/factory evidence plus field, orphan, relationship, count, and
+  repeat-seed verification.
+
+### Shared Place Submission And Publication
+
+- Added a durable, privacy-scoped place submission aggregate with typed input,
+  category/location/contact validation, consent, normalized identity,
+  encrypted exact facts, field provenance, immutable revisions/events,
+  optimistic versions, and payload-bound idempotency.
+- Added deterministic duplicate suggestions across names, addresses,
+  coordinates, public contacts, canonical organizations, pending submissions,
+  and active merge aliases; protected candidates remain moderator-only and no
+  candidate is merged automatically.
+- Added member duplicate choices and information responses plus independently
+  authorized approve, link, request-information, reject, reopen, publish,
+  merge, and restore Actions with rate controls, rollback-safe fact lineage,
+  privacy-checked redirects, and after-commit notifications.
+- Added class-based localized submission/status/moderation surfaces, factories,
+  twenty deterministic seeded submission scenarios, concurrent SQLite race
+  coverage, and a dedicated desktop/mobile Places browser journey.
 
 ### Security
 
@@ -49,6 +78,9 @@
 
 ### Interface System
 
+- Added independent localized show/hide controls to every shared
+  authentication password field, including accessible pressed state, Lucide
+  eye icons, keyboard focus, 44-pixel targets, and mobile browser coverage.
 - Added a dedicated 131-leaf EN/LT/RU owner-profile contract for
   `/@mia-carter`; stable tab and audience codes now drive passive Blade,
   canonical Lucide icons identify every profile section, and inactive tabs no
@@ -238,6 +270,15 @@
 
 ### Forum And Animal Taxonomy
 
+- Implemented and targeted-tested all 58 Phase 4 animal-science/evidence category atoms from the
+  immutable source through exact synchronized keys, ordered children,
+  reviewed EN/LT/RU root copy, safe child fallbacks, stable public links, and
+  administrator-category preservation. Corrected the category navigator to
+  the fixed Instrument Sans heading scale and added an isolated four-viewport
+  Chrome contract for localization, reflow, forced colors, focus, touch
+  targets, translation keys, and console errors while retaining the Phase 5
+  taxonomy and Phase 7 case-report atoms as open. Final requirement promotion
+  remains withheld until the failed repository-wide release gates pass.
 - Redesigned `/forum/ask` as one responsive authoring surface, moved the full
   publishing checklist above the form, removed the detached right sidebar, and
   grouped every preserved field into clear context, response, and optional

@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 
@@ -182,6 +183,12 @@ class Listing extends Model
     public function reports(): HasMany
     {
         return $this->hasMany(ListingReport::class);
+    }
+
+    /** @return MorphMany<ForumReport, $this> */
+    public function subjectReports(): MorphMany
+    {
+        return $this->morphMany(ForumReport::class, 'subject');
     }
 
     /** @return HasMany<\App\Models\Order, $this>*/

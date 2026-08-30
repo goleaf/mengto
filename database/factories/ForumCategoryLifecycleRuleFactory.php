@@ -29,7 +29,7 @@ final class ForumCategoryLifecycleRuleFactory extends ApplicationFactory
             'auto_archive_enabled' => false,
             'rules_version' => 1,
             'is_system_managed' => false,
-            'metadata' => [],
+            'metadata' => ['source' => 'factory', 'version' => 1],
         ];
     }
 

@@ -29,7 +29,7 @@ final class ForumReputationEventFactory extends ApplicationFactory
             'explanation_translation_key' => 'forum.reputation.events.helpful_vote',
             'status' => ReputationEventStatus::Active,
             'idempotency_key' => (string) Str::ulid(),
-            'metadata' => [],
+            'metadata' => ['source' => 'factory', 'version' => 1],
             'effective_at' => now(),
         ];
     }

@@ -29,7 +29,7 @@ final class ForumMentorScopeFactory extends ApplicationFactory
 
     public function forType(ForumMentorshipType $type): static
     {
-        return $this->withEnum('mentorship_type', $type);
+        return $this->state(fn (): array => ['mentorship_type' => $type]);
     }
 
     public function requiresVerifiedExpertise(): static

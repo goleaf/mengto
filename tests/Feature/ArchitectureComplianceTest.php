@@ -53,8 +53,7 @@ test('the full test commands clear cached application configuration before Pest 
 
     expect($composer['scripts']['test'])
         ->toBe([
-            '@php artisan config:clear --ansi @no_additional_args',
-            '@php artisan test',
+            '@php scripts/run-tests.php',
         ])
         ->and($runner)->toContain("[PHP_BINARY, 'artisan', 'config:clear', '--ansi']")
         ->and($runner)->toContain("[PHP_BINARY, 'artisan', 'test', ...array_slice(\$argv, 1)]")
@@ -81,7 +80,7 @@ test('the canonical browser runner owns a disposable database and loopback serve
     $runner = File::get(base_path('scripts/run-browser-check.php'));
 
     expect($runner)
-        ->toContain("tempnam(sys_get_temp_dir(), 'pawcircle-browser-db-')")
+        ->toContain("tempnam(sys_get_temp_dir(), 'laravel-browser-db-')")
         ->toContain("'APP_ENV' => 'testing'")
         ->toContain("'DB_CONNECTION' => 'sqlite'")
         ->toContain("'APP_CONFIG_CACHE' => \$configCache")
@@ -121,13 +120,22 @@ test('generated compliance and seeding evidence is byte deterministic', function
 });
 
 test('generated repository inventory is byte deterministic', function () {
-    $inventory = Process::path(base_path())
+    $firstInventory = Process::path(base_path())
+        ->timeout(30)
+        ->run([PHP_BINARY, 'scripts/generate-repository-inventory.php']);
+    $secondInventory = Process::path(base_path())
         ->timeout(30)
         ->run([PHP_BINARY, 'scripts/generate-repository-inventory.php']);
 
-    expect($inventory->successful(), $inventory->errorOutput())->toBeTrue()
-        ->and($inventory->output())
-        ->toBe(File::get(base_path('docs/audits/repository-inventory.md')));
+    expect($firstInventory->successful(), $firstInventory->errorOutput())->toBeTrue()
+        ->and($secondInventory->successful(), $secondInventory->errorOutput())->toBeTrue()
+        ->and($firstInventory->output())->toBe($secondInventory->output())
+        ->and($firstInventory->output())
+        ->toBe(File::get(base_path('docs/audits/repository-inventory.md')))
+        ->and($firstInventory->output())
+        ->toContain('| `.agents/skills/laravel-best-practices/SKILL.md` | Tooling mirror |')
+        ->toContain('| `README.md` | Supporting |')
+        ->toContain('| `docs/index.md` | Canonical / living |');
 });
 
 test('runtime manifests declare direct platform and frontend engine requirements', function () {

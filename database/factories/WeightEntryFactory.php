@@ -21,11 +21,11 @@ class WeightEntryFactory extends ApplicationFactory
             'measured_at' => now()->subDays(fake()->numberBetween(1, 60)),
             'timezone' => 'Europe/Vilnius',
             'weight_grams' => fake()->numberBetween(17500, 19000),
-            'tare_grams' => null,
+            'tare_grams' => 250,
             'source_type' => MedicalSourceType::Owner,
             'source_name' => 'Home scale',
             'measurement_context' => 'Morning before breakfast',
-            'notes' => null,
+            'notes' => 'Measured twice on a stable home scale.',
             'verification_status' => MedicalVerificationStatus::OwnerReported,
             'created_by_key' => 'mia-carter',
         ];

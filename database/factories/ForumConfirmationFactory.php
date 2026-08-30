@@ -22,8 +22,14 @@ final class ForumConfirmationFactory extends ApplicationFactory
             'requester_user_id' => User::factory(),
             'state' => ConfirmationState::AwaitingConfirmation,
             'claim_text' => fake()->sentence(),
-            'structured_claim' => [],
-            'scope' => [],
+            'structured_claim' => [
+                'claim_type' => 'community-observation',
+                'value' => true,
+            ],
+            'scope' => [
+                'locale' => 'en',
+                'audience' => 'community',
+            ],
             'risk_class' => 'low',
             'required_quorum' => 3,
             'required_diversity' => 2,
@@ -33,7 +39,7 @@ final class ForumConfirmationFactory extends ApplicationFactory
             'abstentions' => 0,
             'review_deadline_at' => now()->addWeek(),
             'expires_at' => now()->addMonth(),
-            'metadata' => [],
+            'metadata' => ['source' => 'factory'],
         ];
     }
 

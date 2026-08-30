@@ -9,6 +9,7 @@ use App\Enums\PlaceVisibility;
 use App\Models\Organization;
 use App\Models\Place;
 use App\Models\User;
+use App\Services\PlaceIdentityNormalizer;
 use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -18,7 +19,10 @@ use Illuminate\Validation\ValidationException;
 
 final readonly class CreatePlace
 {
-    public function __construct(private Gate $gate) {}
+    public function __construct(
+        private Gate $gate,
+        private PlaceIdentityNormalizer $normalizer,
+    ) {}
 
     public function handle(User $actor, CreatePlaceData $data): Place
     {
@@ -87,6 +91,7 @@ final readonly class CreatePlace
                 'slug' => $baseSlug.'-'.$suffix,
                 'creation_idempotency_key' => $data->idempotencyKey,
                 'name' => trim($data->name),
+                'normalized_name' => $this->normalizer->name($data->name),
                 'summary' => filled($data->summary) ? trim((string) $data->summary) : null,
                 'type' => $data->type,
                 'catalog_category' => $data->catalogCategory,
@@ -96,14 +101,26 @@ final readonly class CreatePlace
                 'public_address' => in_array($data->visibility, [PlaceVisibility::Public, PlaceVisibility::Unlisted], true)
                     ? $this->nullableTrim($data->publicAddress)
                     : null,
+                'normalized_address' => in_array($data->visibility, [PlaceVisibility::Public, PlaceVisibility::Unlisted], true)
+                    ? $this->normalizer->address($data->publicAddress)
+                    : null,
                 'public_phone' => in_array($data->visibility, [PlaceVisibility::Public, PlaceVisibility::Unlisted], true)
                     ? $this->nullableTrim($data->publicPhone)
+                    : null,
+                'normalized_phone' => in_array($data->visibility, [PlaceVisibility::Public, PlaceVisibility::Unlisted], true)
+                    ? $this->normalizer->phone($data->publicPhone)
                     : null,
                 'public_website' => in_array($data->visibility, [PlaceVisibility::Public, PlaceVisibility::Unlisted], true)
                     ? $this->nullableTrim($data->publicWebsite)
                     : null,
+                'normalized_website' => in_array($data->visibility, [PlaceVisibility::Public, PlaceVisibility::Unlisted], true)
+                    ? $this->normalizer->website($data->publicWebsite)
+                    : null,
                 'public_email' => in_array($data->visibility, [PlaceVisibility::Public, PlaceVisibility::Unlisted], true)
                     ? $this->nullableTrim($data->publicEmail)
+                    : null,
+                'normalized_email' => in_array($data->visibility, [PlaceVisibility::Public, PlaceVisibility::Unlisted], true)
+                    ? $this->normalizer->email($data->publicEmail)
                     : null,
                 'public_latitude' => $data->publicLatitude,
                 'public_longitude' => $data->publicLongitude,

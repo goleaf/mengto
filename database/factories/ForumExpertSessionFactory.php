@@ -33,7 +33,7 @@ final class ForumExpertSessionFactory extends ApplicationFactory
             'status' => ForumExpertSessionStatus::Published,
             'disclaimer_version' => '2026-07',
             'question_opens_at' => $opensAt,
-            'question_closes_at' => $opensAt->clone()->addDay(),
+            'question_closes_at' => $opensAt->clone()->addHours(2),
             'starts_at' => $opensAt->clone()->addHours(3),
             'ends_at' => $opensAt->clone()->addHours(5),
             'archived_by_user_id' => null,

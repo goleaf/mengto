@@ -98,6 +98,17 @@ final class ForumCategory extends Model
         )->withPivot(['relation_type', 'position'])->withTimestamps();
     }
 
+    /** @return BelongsToMany<ForumCategory, $this> */
+    public function incomingRelatedCategories(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            self::class,
+            'forum_category_relations',
+            'related_forum_category_id',
+            'forum_category_id',
+        )->withPivot(['relation_type', 'position'])->withTimestamps();
+    }
+
     /** @return HasMany<ForumTopic, $this> */
     public function topics(): HasMany
     {

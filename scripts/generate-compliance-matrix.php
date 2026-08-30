@@ -282,6 +282,41 @@ function evidenceFor(string $id): array
             'Bounded deterministic feed catalogue',
             '`tests/Feature/PhotoViewerTest.php` and connected responsive browser review',
         ],
+        'SEC-AUTH-003' => [
+            '`DatabaseSeeder` and independently guarded demo seeders',
+            'Configured environment allowlist checked before demo reads or writes',
+            'Localized fail-closed errors',
+            '`AdoptionDemoSeeder`, `CollaborativeGuideDemoSeeder`, and other guarded demo seeders',
+            '`tests/Feature/Database/DemoSeederEnvironmentTest.php` and factory/seeder safeguards',
+        ],
+        'SEED-SAFETY-001' => [
+            'Environment-gated, idempotent seeder graph',
+            'Root and directly callable demo seeders fail closed before mutation',
+            'Seeded page output',
+            'All factories/states/seeders',
+            '`DemoSeederEnvironmentTest`, `FactoryAndSeederTest`, `CompleteDatabaseSeederTest`',
+        ],
+        'SYS-APP-003' => [
+            '`UpdateForumCategorySettings` and focused application Actions',
+            'Livewire validates and authorizes, then delegates one operation',
+            'Class-based Livewire with passive Blade',
+            'Forum category factories and reference seeder',
+            '`UpdateForumCategorySettingsTest`, `ForumLivewireAdministrationTest`, architecture tests',
+        ],
+        'SYS-DATA-002' => [
+            '`UpdateForumCategorySettings` and existing transactional Actions',
+            'Short database transactions, row locks, constraints, and post-success cache invalidation',
+            'Prepared success and validation feedback',
+            'Deterministic factories and seeders',
+            '`UpdateForumCategorySettingsTest` rollback and authorization coverage',
+        ],
+        'SYS-FILE-001' => [
+            '`PrivateFileResponse`, `PortalMediaResponse`, private storage configuration',
+            'Policy/containment checks and an empty public-link contract',
+            'Authenticated media routes only',
+            'Fake private disks and local fixtures',
+            '`PortalMediaAccessTest`, private-file security tests',
+        ],
     ];
 
     if (isset($specific[$id])) {

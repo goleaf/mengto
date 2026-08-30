@@ -24,8 +24,12 @@ final class TaxonImportFactory extends ApplicationFactory
             'state' => TaxonImportState::Pending,
             'checksum' => hash('sha256', $version),
             'impact_report' => [],
-            'error_report' => [],
-            'metadata' => [],
+            'error_report' => [
+                'rows_received' => 12,
+                'rows_rejected' => 1,
+                'issues' => [['row' => 7, 'code' => 'unmatched-name']],
+            ],
+            'metadata' => ['source' => 'factory', 'version' => 1],
         ];
     }
 

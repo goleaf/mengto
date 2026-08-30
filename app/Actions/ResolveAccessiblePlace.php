@@ -26,7 +26,7 @@ final readonly class ResolveAccessiblePlace
                 'archived_at',
             ])
             ->with([
-                'organization:id',
+                'organization:id,status,archived_at',
                 'organization.memberships' => static function (Relation $memberships) use ($actor): void {
                     $memberships
                         ->select([

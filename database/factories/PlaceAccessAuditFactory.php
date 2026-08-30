@@ -34,7 +34,7 @@ final class PlaceAccessAuditFactory extends ApplicationFactory
 
             $audit->place_id = $grant->place_id;
             $audit->user_id = $grant->user_id;
-            $audit->purpose = $grant->purpose;
+            $audit->purpose = $grant->purpose->value;
         });
     }
 }

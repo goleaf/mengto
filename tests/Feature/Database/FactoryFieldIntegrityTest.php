@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-use App\Enums\MedicalKnowledgeStatus;
 use App\Enums\ForumEventAccessibilityStatus;
+use App\Enums\MedicalKnowledgeStatus;
 use App\Enums\PetEvidenceStatus;
 use App\Enums\PetProfileVisibility;
-use App\Models\ExpertProfile;
 use App\Models\DeviceEvent;
+use App\Models\ExpertProfile;
 use App\Models\ForumEvent;
 use App\Models\ForumEventRegistration;
 use App\Models\ForumJournalMeasurement;
@@ -32,9 +32,9 @@ test('factory decimals use exact strings and fixture urls are local or reserved'
         ->and($searchCase->public_longitude)->toBeString()
         ->and($sighting->public_latitude)->toBeString()
         ->and($sighting->public_longitude)->toBeString()
-        ->and($listing->cover_url)->toStartWith('/images/')
-        ->and($searchCase->cover_url)->toStartWith('/images/')
-        ->and($expert->avatar_url)->toStartWith('/images/')
+        ->and(parse_url($listing->cover_url, PHP_URL_PATH))->toStartWith('/images/')
+        ->and(parse_url($searchCase->cover_url, PHP_URL_PATH))->toStartWith('/images/')
+        ->and(parse_url($expert->avatar_url, PHP_URL_PATH))->toStartWith('/images/')
         ->and($correction->source_url)->toStartWith('https://knowledge.example.test/');
 });
 

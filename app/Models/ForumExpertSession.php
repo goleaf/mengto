@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 /**
  * @property CarbonImmutable|null $archived_at
@@ -140,6 +141,12 @@ final class ForumExpertSession extends Model
     public function history(): HasMany
     {
         return $this->hasMany(ForumExpertSessionHistory::class);
+    }
+
+    /** @return MorphMany<ForumReport, $this> */
+    public function subjectReports(): MorphMany
+    {
+        return $this->morphMany(ForumReport::class, 'subject');
     }
 
     public function isHost(User $user): bool

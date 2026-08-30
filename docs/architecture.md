@@ -107,6 +107,11 @@ See `docs/decisions/0001-authenticated-actor-keys.md`.
   rollback consistency matters.
 - Side effects execute after commit when their observation before commit would
   be unsafe.
+- Forum category administration validates Livewire state, then delegates to
+  `UpdateForumCategorySettings`. The Action reauthorizes the actor, locks the
+  category, persists category and localized translation changes atomically,
+  and invalidates locale-specific category-tree caches only after the
+  transaction succeeds.
 
 ## File And Image Boundaries
 
@@ -450,3 +455,18 @@ media, manager, privacy, fact, and lifecycle relations are loaded only for the
 active URL-backed step. `microchip-record` remains a versioned encrypted
 `PetProfileFact` behind the critical microchip permission rather than becoming
 ordinary public profile data.
+
+## Shared Place Submission Boundary
+
+The class-based form maps validated browser state into `SubmitPlaceData`;
+`SubmitPlaceSubmission` repeats authorization and validation server-side. The
+Action creates one pending aggregate, initial revision, field facts, duplicate
+suggestions, and audit event in a short transaction. Duplicate scoring is
+deterministic and advisory only.
+
+Review changes run through `PlaceSubmissionTransition`, which re-authorizes
+the locked row, checks an optimistic version and payload-bound operation key,
+writes an immutable event, and schedules notification only after commit.
+Publication alone creates a canonical place. Link and merge are separate
+decisions; merge preserves source rows, copied fact lineage, and privacy-scoped
+redirects, while restore reverses routing without deleting history.

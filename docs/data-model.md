@@ -2,11 +2,12 @@
 
 ## Storage Baseline
 
-- 68 migrations created 71 SQLite tables at baseline; the current additive
-  schema has 111 migrations and 191 tables after identity, care-sync,
-  social-state, device-lifecycle, forum taxonomy, global animal taxonomy,
-  reputation, moderation, credential verification, structured-community, and
-  persistent-group work.
+- The current additive schema has 139 migrations and 218 named application and
+  framework tables, plus Laravel's migration ledger at runtime. All 204
+  concrete persistent application models have a matching factory. The
+  generated per-model schema, constraint, cast, relationship, seeder, and
+  clean-seed inventory is maintained in
+  `docs/audits/database-domain-audit.md`.
 - Tests use isolated in-memory or temporary SQLite.
 - Schema and Eloquent queries remain portable unless an ADR explicitly accepts
   a production-engine-specific optimization.
@@ -443,3 +444,19 @@ answer. Compound indexes cover public schedule discovery, queue state/order,
 answer lookup, and append-only history. Restrictive foreign keys preserve
 professional, author, and audit ownership. See
 `docs/expert-question-sessions.md`.
+
+## Place Submission And Publication Tables
+
+`place_submissions` is the durable review aggregate and does not create a
+discoverable `places` row. It owns encrypted exact-location/source/audit data,
+normalized public identity keys, consent, source, submitter, status,
+resolution, timestamps, and optimistic version. Immutable revisions,
+append-only `place_facts`, deterministic duplicate candidates, and immutable
+events retain field provenance and every member or reviewer decision.
+
+`place_submission_identity_locks` serializes matching concurrent submissions.
+`place_merge_redirects` retains active or restored old identifiers and binds
+each merge to its exact audit event. A merge marks the source as merged, copies
+facts to the survivor with origin and copied-from links, and never deletes
+source evidence. Normalized place identity columns are backfilled and indexed
+for bounded candidate retrieval.

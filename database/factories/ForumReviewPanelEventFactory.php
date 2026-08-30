@@ -21,7 +21,7 @@ final class ForumReviewPanelEventFactory extends ApplicationFactory
             'event_type' => 'created',
             'reason_code' => 'factory',
             'summary_translation_key' => 'forum_review.events.created',
-            'metadata' => [],
+            'metadata' => ['source' => 'factory', 'version' => 1],
             'created_at' => now(),
         ];
     }

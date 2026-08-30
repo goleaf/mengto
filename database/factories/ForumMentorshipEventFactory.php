@@ -23,7 +23,7 @@ final class ForumMentorshipEventFactory extends ApplicationFactory
             'to_state' => ForumMentorshipState::Requested,
             'reason_code' => 'mentorship-requested',
             'summary_translation_key' => 'forum_mentorship.events.requested',
-            'metadata' => [],
+            'metadata' => ['source' => 'factory', 'version' => 1],
             'idempotency_key' => 'factory:event:'.Str::uuid()->toString(),
             'created_at' => now(),
         ];

@@ -52,11 +52,11 @@ final class ForumJournalEntryFactory extends ApplicationFactory
 
     public function milestone(): static
     {
-        return $this->withEnum('kind', ForumJournalEntryKind::Milestone);
+        return $this->state(fn (): array => ['kind' => ForumJournalEntryKind::Milestone]);
     }
 
     public function setback(): static
     {
-        return $this->withEnum('kind', ForumJournalEntryKind::Setback);
+        return $this->state(fn (): array => ['kind' => ForumJournalEntryKind::Setback]);
     }
 }

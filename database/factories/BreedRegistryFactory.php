@@ -22,7 +22,7 @@ final class BreedRegistryFactory extends ApplicationFactory
             'jurisdiction' => fake()->countryCode(),
             'source_url' => 'https://example.test/registry/'.Str::slug($name),
             'is_active' => true,
-            'metadata' => [],
+            'metadata' => ['source' => 'factory', 'version' => 1],
         ];
     }
 }

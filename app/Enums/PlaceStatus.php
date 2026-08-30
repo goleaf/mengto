@@ -10,6 +10,7 @@ enum PlaceStatus: string
     case TemporarilyClosed = 'temporarily_closed';
     case Suspended = 'suspended';
     case Archived = 'archived';
+    case Merged = 'merged';
 
     public function label(): string
     {

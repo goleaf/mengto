@@ -49,6 +49,7 @@ final class PetProfileFactory extends ApplicationFactory
             'allow_external_indexing' => false,
             'lock_version' => 1,
             'state_entered_at' => now(),
+            'published_at' => now(),
             'profile_data' => [],
         ];
     }
@@ -89,43 +90,119 @@ final class PetProfileFactory extends ApplicationFactory
 
     public function draft(): static
     {
-        return $this->state(fn (): array => [
-            'status' => PetProfileStatus::Draft,
-            'published_at' => null,
-            'is_discoverable' => false,
-        ]);
+        return $this->withStatus(PetProfileStatus::Draft);
+    }
+
+    public function active(): static
+    {
+        return $this->withStatus(PetProfileStatus::Active);
+    }
+
+    public function fosterCare(): static
+    {
+        return $this->withStatus(PetProfileStatus::FosterCare);
+    }
+
+    public function shelter(): static
+    {
+        return $this->withStatus(PetProfileStatus::Shelter);
+    }
+
+    public function seekingHome(): static
+    {
+        return $this->withStatus(PetProfileStatus::SeekingHome);
+    }
+
+    public function adoptionInProgress(): static
+    {
+        return $this->withStatus(PetProfileStatus::AdoptionInProgress);
+    }
+
+    public function transferred(): static
+    {
+        return $this->withStatus(PetProfileStatus::Transferred);
     }
 
     public function discoverable(): static
     {
-        return $this->state(fn (): array => [
-            'visibility' => 'public',
-            'status' => PetProfileStatus::Active,
-            'published_at' => now(),
-            'is_discoverable' => true,
-        ]);
+        return $this->active()->state(fn (): array => ['visibility' => 'public']);
     }
 
     public function archived(): static
     {
-        return $this->state(fn (): array => [
-            'status' => PetProfileStatus::Archived,
-            'archived_at' => now(),
-            'is_discoverable' => false,
-        ]);
+        return $this->withStatus(PetProfileStatus::Archived);
     }
 
     public function lost(): static
     {
-        return $this->state(fn (): array => [
-            'status' => PetProfileStatus::Lost,
-            'visibility' => 'public',
-            'is_discoverable' => true,
+        return $this->withStatus(PetProfileStatus::Lost);
+    }
+
+    public function found(): static
+    {
+        return $this->withStatus(PetProfileStatus::Found);
+    }
+
+    public function identityUnverified(): static
+    {
+        return $this->withStatus(PetProfileStatus::IdentityUnverified);
+    }
+
+    public function disputedOwnership(): static
+    {
+        return $this->withStatus(PetProfileStatus::DisputedOwnership);
+    }
+
+    public function hidden(): static
+    {
+        return $this->withStatus(PetProfileStatus::Hidden);
+    }
+
+    public function memorial(): static
+    {
+        return $this->withStatus(PetProfileStatus::Memorial);
+    }
+
+    public function merged(?PetProfile $canonicalProfile = null): static
+    {
+        return $this->withStatus(PetProfileStatus::Merged)->state(fn (): array => [
+            'canonical_profile_id' => $canonicalProfile ?? PetProfile::factory()->active(),
         ]);
+    }
+
+    public function deletionPending(): static
+    {
+        return $this->withStatus(PetProfileStatus::DeletionPending);
     }
 
     public function inactive(): static
     {
         return $this->archived();
+    }
+
+    private function withStatus(PetProfileStatus $status): static
+    {
+        return $this->state(function () use ($status): array {
+            $now = now();
+            $wasPublished = ! in_array($status, [
+                PetProfileStatus::Draft,
+                PetProfileStatus::IdentityUnverified,
+            ], true);
+
+            return [
+                'status' => $status,
+                'state_entered_at' => $now,
+                'published_at' => $wasPublished ? $now->clone()->subDay() : null,
+                'hidden_at' => $status === PetProfileStatus::Hidden ? $now : null,
+                'archived_at' => $status === PetProfileStatus::Archived ? $now : null,
+                'memorialized_at' => $status === PetProfileStatus::Memorial ? $now : null,
+                'deletion_requested_at' => $status === PetProfileStatus::DeletionPending ? $now : null,
+                'deletion_scheduled_for' => $status === PetProfileStatus::DeletionPending
+                    ? $now->clone()->addDays((int) config('pet_profiles.deletion_grace_days', 30))
+                    : null,
+                'merged_at' => $status === PetProfileStatus::Merged ? $now : null,
+                'is_discoverable' => $status->isPubliclyEligible(),
+            ];
+        });
     }
 }

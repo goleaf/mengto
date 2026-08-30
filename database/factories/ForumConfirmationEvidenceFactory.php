@@ -22,7 +22,7 @@ final class ForumConfirmationEvidenceFactory extends ApplicationFactory
             'summary' => fake()->sentence(),
             'source_url' => 'https://example.test/evidence/'.fake()->uuid(),
             'status' => 'submitted',
-            'metadata' => [],
+            'metadata' => ['source' => 'factory', 'version' => 1],
         ];
     }
 }

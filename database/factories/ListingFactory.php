@@ -9,6 +9,7 @@ use App\Enums\ListingType;
 use App\Enums\ModerationStatus;
 use App\Enums\SellerType;
 use App\Models\Listing;
+use App\Models\User;
 use Illuminate\Support\Str;
 
 /**
@@ -26,6 +27,9 @@ class ListingFactory extends ApplicationFactory
         $title = fake()->unique()->sentence(5);
 
         return [
+            'owner_id' => static fn (array $attributes): mixed => User::query()
+                ->where('actor_key', (string) $attributes['owner_key'])
+                ->value('id') ?? User::factory(),
             'owner_key' => fake()->unique()->userName(),
             'owner_name' => fake()->name(),
             'owner_initials' => fake()->lexify('??'),
@@ -61,7 +65,7 @@ class ListingFactory extends ApplicationFactory
             'delivery_options' => ['meetup', 'pickup'],
             'meetup_notes' => 'Agree on a public meeting point in platform messages.',
             'return_policy' => 'Inspect during handover. Hidden defects can be reported through the platform.',
-            'cover_url' => '/images/places/pet-store-primary-lg.jpg',
+            'cover_url' => asset('images/places/pet-store-primary-lg.jpg'),
             'gallery' => [],
             'video_url' => null,
             'status' => ListingStatus::Published,
@@ -76,6 +80,23 @@ class ListingFactory extends ApplicationFactory
             'view_count' => fake()->numberBetween(2, 240),
             'published_at' => now(),
         ];
+    }
+
+    public function configure(): static
+    {
+        return $this->afterMaking(function (Listing $listing): void {
+            if ($listing->owner_id === null) {
+                return;
+            }
+
+            $owner = User::query()->where('actor_key', $listing->owner_key)->first()
+                ?? User::query()->findOrFail($listing->owner_id);
+
+            $listing->owner_id = $owner->id;
+            $listing->owner_key = $owner->actor_key;
+            $listing->owner_name = $owner->name;
+            $listing->owner_initials = self::initials($owner->name);
+        });
     }
 
     public function adoption(): static
@@ -144,5 +165,14 @@ class ListingFactory extends ApplicationFactory
             'status' => ListingStatus::Draft,
             'published_at' => null,
         ]);
+    }
+
+    private static function initials(string $name): string
+    {
+        return collect(preg_split('/\s+/', trim($name)) ?: [])
+            ->filter()
+            ->take(2)
+            ->map(static fn (string $part): string => Str::upper(Str::substr($part, 0, 1)))
+            ->implode('');
     }
 }

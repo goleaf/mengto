@@ -7,6 +7,7 @@ namespace Database\Factories;
 use App\Enums\SightingStatus;
 use App\Models\SearchCase;
 use App\Models\Sighting;
+use App\Models\User;
 use Illuminate\Support\Str;
 
 /**
@@ -18,6 +19,7 @@ class SightingFactory extends ApplicationFactory
     {
         return [
             'search_case_id' => SearchCase::factory(),
+            'reporter_id' => null,
             'reporter_key' => fake()->userName(),
             'reporter_name' => fake()->name(),
             'idempotency_key' => (string) Str::uuid(),
@@ -41,7 +43,7 @@ class SightingFactory extends ApplicationFactory
             'notes' => 'Kept distance and did not pursue.',
             'is_anonymous' => false,
             'exact_location_public' => false,
-            'risk_flags' => [],
+            'risk_flags' => ['location-sensitive'],
         ];
     }
 
@@ -52,5 +54,18 @@ class SightingFactory extends ApplicationFactory
             'verified_by_key' => 'mia-carter',
             'verified_at' => now(),
         ]);
+    }
+
+    public function configure(): static
+    {
+        return $this->afterMaking(static function (Sighting $sighting): void {
+            if ($sighting->reporter_id === null) {
+                return;
+            }
+
+            $reporter = User::query()->findOrFail($sighting->reporter_id);
+            $sighting->reporter_key = $reporter->actor_key;
+            $sighting->reporter_name = $reporter->name;
+        });
     }
 }

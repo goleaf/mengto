@@ -6,6 +6,7 @@ namespace Database\Factories;
 
 use App\Enums\OrderStatus;
 use App\Enums\PaymentStatus;
+use App\Models\Listing;
 use App\Models\Order;
 use App\Models\Reservation;
 use Illuminate\Support\Str;
@@ -23,12 +24,19 @@ class OrderFactory extends ApplicationFactory
             }
 
             $reservation = Reservation::query()
-                ->select(['id', 'listing_id', 'requester_key', 'requester_name'])
+                ->select(['id', 'listing_id', 'requester_id', 'requester_key', 'requester_name'])
                 ->findOrFail($order->reservation_id);
+            $listing = Listing::query()
+                ->select(['id', 'owner_id', 'owner_key', 'owner_name'])
+                ->findOrFail($reservation->listing_id);
 
             $order->listing_id = $reservation->listing_id;
+            $order->buyer_id = $reservation->requester_id;
             $order->buyer_key = $reservation->requester_key;
             $order->buyer_name = $reservation->requester_name;
+            $order->seller_id = $listing->owner_id;
+            $order->seller_key = $listing->owner_key;
+            $order->seller_name = $listing->owner_name;
         });
     }
 

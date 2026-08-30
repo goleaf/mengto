@@ -22,7 +22,7 @@ final class ForumReportReasonFactory extends ApplicationFactory
             'requires_specialist_review' => false,
             'is_active' => true,
             'position' => fake()->numberBetween(1, 500),
-            'metadata' => [],
+            'metadata' => ['source' => 'factory', 'version' => 1],
         ];
     }
 }

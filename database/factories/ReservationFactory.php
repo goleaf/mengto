@@ -7,6 +7,7 @@ namespace Database\Factories;
 use App\Enums\ReservationStatus;
 use App\Models\Listing;
 use App\Models\Reservation;
+use App\Models\User;
 use Illuminate\Support\Str;
 
 /**
@@ -23,6 +24,7 @@ class ReservationFactory extends ApplicationFactory
     {
         return [
             'listing_id' => Listing::factory(),
+            'requester_id' => null,
             'requester_key' => fake()->unique()->userName(),
             'requester_name' => fake()->name(),
             'idempotency_key' => (string) Str::uuid(),
@@ -40,5 +42,18 @@ class ReservationFactory extends ApplicationFactory
             'privacy_accepted' => true,
             'expires_at' => now()->addDays(3),
         ];
+    }
+
+    public function configure(): static
+    {
+        return $this->afterMaking(static function (Reservation $reservation): void {
+            if ($reservation->requester_id === null) {
+                return;
+            }
+
+            $requester = User::query()->findOrFail($reservation->requester_id);
+            $reservation->requester_key = $requester->actor_key;
+            $reservation->requester_name = $requester->name;
+        });
     }
 }

@@ -21,11 +21,15 @@ class BookingFactory extends ApplicationFactory
         return [
             'expert_profile_id' => null,
             'service_id' => Service::factory(),
-            'client_id' => User::factory(),
+            'client_id' => static fn (array $attributes): mixed => filled($attributes['client_key'] ?? null)
+                ? User::query()
+                    ->where('actor_key', (string) $attributes['client_key'])
+                    ->value('id') ?? User::factory()
+                : User::factory(),
             'reference' => (string) Str::uuid(),
             'idempotency_key' => (string) Str::uuid(),
-            'client_key' => 'mia-carter',
-            'client_name' => 'Mia Carter',
+            'client_key' => null,
+            'client_name' => null,
             'pet_key' => 'scout',
             'pet_name' => 'Scout',
             'pet_species' => 'dog',
@@ -42,7 +46,7 @@ class BookingFactory extends ApplicationFactory
                 'tried' => 'Kept notes and avoided forcing the situation.',
                 'urgent_signs' => false,
             ],
-            'documents' => [],
+            'documents' => [['name' => 'intake-summary.pdf', 'kind' => 'intake-summary']],
             'amount' => 55,
             'currency' => 'EUR',
             'payment_status' => PaymentStatus::NotRequired,
@@ -57,9 +61,13 @@ class BookingFactory extends ApplicationFactory
     {
         return $this->afterMaking(function (Booking $booking): void {
             $service = Service::query()->findOrFail($booking->service_id);
-            $client = User::query()->findOrFail($booking->client_id);
+            $explicitClient = $booking->client_key === null
+                ? null
+                : User::query()->where('actor_key', $booking->client_key)->first();
+            $client = $explicitClient ?? User::query()->findOrFail($booking->client_id);
 
             $booking->expert_profile_id = $service->expert_profile_id;
+            $booking->client_id = $client->id;
             $booking->client_key = $client->actor_key;
             $booking->client_name = $client->name;
         });

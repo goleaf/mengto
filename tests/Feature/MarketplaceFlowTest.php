@@ -11,6 +11,7 @@ use App\Models\ListingReview;
 use App\Models\Order;
 use App\Models\OrderDispute;
 use App\Models\Reservation;
+use App\Models\User;
 use Database\Seeders\MarketplaceExpansionSeeder;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Schema;
@@ -237,7 +238,10 @@ test('accepting a request permits an exact total immediately below the order bou
 });
 
 test('paid marketplace orders cannot be completed before protected payment', function () {
-    [$listing, $reservation, $order] = acceptedMarketplaceOrder();
+    [$listing, $reservation, $order] = acceptedMarketplaceOrder(
+        buyerKey: 'marketplace-payment-buyer',
+        sellerKey: 'mia-carter',
+    );
 
     $this->from(route('marketplace.show', $listing))
         ->post(route('marketplace.actions', $listing), [
@@ -276,7 +280,10 @@ test('paid marketplace orders cannot be completed before protected payment', fun
 });
 
 test('a stale cancellation cannot restore reserved inventory twice', function () {
-    [$listing, $reservation] = acceptedMarketplaceOrder();
+    [$listing, $reservation] = acceptedMarketplaceOrder(
+        buyerKey: 'mia-carter',
+        sellerKey: 'marketplace-cancellation-seller',
+    );
     $action = app(PerformListingAction::class);
     $staleReservation = $reservation->replicate();
     $staleReservation->id = $reservation->id;
@@ -296,17 +303,15 @@ test('a stale cancellation cannot restore reserved inventory twice', function ()
 });
 
 test('only order participants can view an order or open a dispute', function () {
-    [$listing, $reservation, $order] = acceptedMarketplaceOrder([
-        'buyer_key' => 'another-buyer',
-        'seller_key' => 'another-seller',
-    ]);
+    [$listing, $reservation, $order] = acceptedMarketplaceOrder(
+        buyerKey: 'another-buyer',
+        sellerKey: 'another-seller',
+    );
 
     $this->get(route('marketplace.orders.show', [$listing, $order]))->assertForbidden();
 
-    $order->update([
-        'buyer_key' => 'mia-carter',
-        'payment_status' => PaymentStatus::Paid,
-    ]);
+    $this->actingAs(User::query()->where('actor_key', 'another-buyer')->firstOrFail());
+    $order->update(['payment_status' => PaymentStatus::Paid]);
 
     $this->get(route('marketplace.orders.show', [$listing, $order]))
         ->assertOk()
@@ -327,7 +332,10 @@ test('only order participants can view an order or open a dispute', function () 
 });
 
 test('only a completed buyer can publish one verified review', function () {
-    [$listing, $reservation, $order] = acceptedMarketplaceOrder();
+    [$listing, $reservation, $order] = acceptedMarketplaceOrder(
+        buyerKey: 'mia-carter',
+        sellerKey: 'marketplace-review-seller',
+    );
     $order->update([
         'status' => OrderStatus::Completed,
         'payment_status' => PaymentStatus::Paid,
@@ -473,32 +481,47 @@ function marketplacePayload(array $overrides = []): array
 }
 
 /**
- * @param  array<string, mixed>  $orderOverrides
  * @return array{Listing, Reservation, Order}
  */
-function acceptedMarketplaceOrder(array $orderOverrides = []): array
+function acceptedMarketplaceOrder(string $buyerKey, string $sellerKey): array
 {
+    if ($buyerKey === $sellerKey) {
+        throw new LogicException('Marketplace order fixtures require distinct buyer and seller identities.');
+    }
+
+    $buyer = User::query()->where('actor_key', $buyerKey)->first()
+        ?? User::factory()->create(['actor_key' => $buyerKey]);
+    $seller = User::query()->where('actor_key', $sellerKey)->first()
+        ?? User::factory()->create(['actor_key' => $sellerKey]);
     $listing = Listing::factory()->create([
-        'owner_key' => 'mia-carter',
-        'owner_name' => 'Mia Carter',
+        'owner_id' => $seller->id,
+        'owner_key' => $seller->actor_key,
+        'owner_name' => $seller->name,
         'quantity' => 0,
         'availability' => 'out-of-stock',
         'status' => ListingStatus::Reserved,
     ]);
     $reservation = Reservation::factory()->create([
         'listing_id' => $listing->id,
-        'requester_key' => $orderOverrides['buyer_key'] ?? 'mia-carter',
-        'requester_name' => 'Mia Carter',
+        'requester_id' => $buyer->id,
+        'requester_key' => $buyer->actor_key,
+        'requester_name' => $buyer->name,
         'idempotency_key' => (string) Str::uuid(),
         'status' => ReservationStatus::Accepted,
     ]);
     $order = Order::factory()->create([
         'reservation_id' => $reservation->id,
-        'buyer_key' => $orderOverrides['buyer_key'] ?? 'mia-carter',
-        'seller_key' => $orderOverrides['seller_key'] ?? 'seller-owner',
         'status' => OrderStatus::AwaitingPayment,
         'payment_status' => PaymentStatus::Pending,
     ]);
+
+    expect($buyer->is($seller))->toBeFalse()
+        ->and($reservation->requester_id)->toBe($buyer->id)
+        ->and($reservation->requester_key)->toBe($buyer->actor_key)
+        ->and($order->buyer_id)->toBe($reservation->requester_id)
+        ->and($order->buyer_key)->toBe($reservation->requester_key)
+        ->and($order->seller_id)->toBe($listing->owner_id)
+        ->and($order->seller_key)->toBe($listing->owner_key);
 
     return [$listing, $reservation, $order];
 }

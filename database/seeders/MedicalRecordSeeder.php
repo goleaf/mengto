@@ -11,13 +11,18 @@ use App\Enums\MedicationStatus;
 use App\Enums\VaccinationStatus;
 use App\Models\MedicalRecord;
 use App\Models\PetProfile;
+use Database\Seeders\Concerns\GuardsDemoSeeding;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 
 class MedicalRecordSeeder extends Seeder
 {
+    use GuardsDemoSeeding;
+
     public function run(): void
     {
+        $this->assertDemoSeedingIsAllowed();
+
         $profiles = PetProfile::query()
             ->select(['id', 'user_id', 'slug'])
             ->whereIn('slug', ['scout', 'nori'])
@@ -34,7 +39,17 @@ class MedicalRecordSeeder extends Seeder
             ->keyBy('slug');
 
         if ($existingRecords->isNotEmpty()) {
-            $existingRecords->get('scout-health')?->update([
+            if ($existingRecords->count() !== 2) {
+                throw new \LogicException('The deterministic medical demo graph is partially present.');
+            }
+
+            $scout = $existingRecords->get('scout-health');
+
+            if (! $scout instanceof MedicalRecord || ! $this->scoutChildrenAreComplete($scout)) {
+                throw new \LogicException('The deterministic medical demo graph is partially present.');
+            }
+
+            $scout->update([
                 'owner_id' => $scoutProfile?->user_id,
                 'pet_profile_id' => $scoutProfile?->id,
                 'allergy_knowledge_status' => 'known',
@@ -63,7 +78,7 @@ class MedicalRecordSeeder extends Seeder
             'sex' => 'male',
             'reproductive_status' => 'neutered',
             'current_weight_grams' => 19050,
-            'image_url' => 'https://images.unsplash.com/photo-1654256578072-b932c33cb92e?auto=format&fit=crop&crop=faces&w=480&h=480&q=85',
+            'image_url' => asset('images/places/veterinary-primary-md.jpg'),
             'status' => 'active',
             'privacy' => 'private',
             'timezone' => 'Europe/Vilnius',
@@ -278,7 +293,7 @@ class MedicalRecordSeeder extends Seeder
             'sex' => 'female',
             'reproductive_status' => 'spayed',
             'current_weight_grams' => 4120,
-            'image_url' => 'https://images.unsplash.com/photo-1518791841217-8f162f1e1131?auto=format&fit=crop&crop=faces&w=480&h=480&q=85',
+            'image_url' => asset('images/places/veterinary-secondary-md.jpg'),
             'status' => 'active',
             'privacy' => 'private',
             'timezone' => 'Europe/Vilnius',
@@ -300,5 +315,56 @@ class MedicalRecordSeeder extends Seeder
             'last_visit_at' => now()->subMonths(4),
             'next_appointment_at' => now()->addMonths(2)->setTime(11, 0),
         ]);
+    }
+
+    private function scoutChildrenAreComplete(MedicalRecord $scout): bool
+    {
+        $weightsComplete = collect([
+            [19200, 'Routine clinic visit'],
+            [19150, 'Home scale before breakfast'],
+            [19080, 'Routine clinic visit'],
+            [19050, 'Home scale before breakfast'],
+        ])->every(
+            static fn (array $weight): bool => $scout->weightEntries()
+                ->where('weight_grams', $weight[0])
+                ->where('measurement_context', $weight[1])
+                ->exists(),
+        );
+        $eventsComplete = collect([
+            'Annual wellness examination',
+            'Food reaction documented',
+            'Routine blood panel',
+        ])->every(
+            static fn (string $title): bool => $scout->events()
+                ->where('title', $title)
+                ->exists(),
+        );
+        $vaccinationsComplete = collect([
+            'Rabies vaccination',
+            'Core combination booster',
+        ])->every(
+            static fn (string $name): bool => $scout->vaccinations()
+                ->where('name', $name)
+                ->exists(),
+        );
+        $remindersComplete = collect([
+            'Skin follow-up appointment',
+            'Review rabies vaccination',
+        ])->every(
+            static fn (string $title): bool => $scout->reminders()
+                ->where('title', $title)
+                ->exists(),
+        );
+
+        return $weightsComplete
+            && $eventsComplete
+            && $vaccinationsComplete
+            && $remindersComplete
+            && $scout->medications()
+                ->where('name', 'Cetirizine')
+                ->whereHas('doses', static fn ($query) => $query
+                    ->where('dose_given', '1 tablet')
+                    ->where('administered_by_key', 'mia-carter'))
+                ->exists();
     }
 }

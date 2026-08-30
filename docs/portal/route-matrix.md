@@ -1,8 +1,8 @@
 # Portal Route Matrix
 
 The executable source of truth is `routes/web.php`; `php artisan route:list
---json` reported 177 active routes on 2026-08-03. The canonical
-`php artisan route:list --except-vendor --json` audit reported 166 first-party
+--json` reported 183 active routes on 2026-08-30. The canonical
+`php artisan route:list --except-vendor --json` audit reported 172 first-party
 routes and excluded 11 package/runtime endpoints.
 
 ## Event Routes
@@ -29,7 +29,7 @@ boundaries.
 
 ## Global Page Identity Classification
 
-The 113 first-party routes accepting `GET` are classified below. The executable
+The 117 first-party routes accepting `GET` are classified below. The executable
 one-route/one-class ledger is
 `tests/Support/page-identity-route-classification.php`; the route inventory test
 fails when a route is added, removed, duplicated, or left unclassified.
@@ -153,7 +153,10 @@ the decision column is the desired page-identity boundary.
 | `pets.scout.legacy` | `/pets/scout` | `RedirectController` | `redirect` | no page identity |
 | `pets.created` | `/pets/{item}` | `CreatedContentPreviewController` | `deliberate-detail-or-profile` | retain token-compatible hero pending audit |
 | `places.index` | `/places` | `PlaceDirectoryPreviewController` | `canonical-page` | retain `x-page-header`; policy-scoped persisted catalogue |
+| `places.moderation.submissions` | `/places/moderation/submissions` | `Places\PlaceModerationWorkspace` | `canonical-page` | authorized moderator queue with canonical page identity |
 | `places.show` | `/places/{place}` | `PlaceDetailPreviewController` | `deliberate-detail-or-profile` | stable dynamic slug; public-safe projection only |
+| `places.submissions.create` | `/places/submissions/new` | `Places\CreatePlaceSubmission` | `canonical-page` | validated member submission workspace |
+| `places.submissions.show` | `/places/submissions/{placeSubmission}` | `Places\PlaceSubmissionStatusPage` | `deliberate-detail-or-profile` | submitter-scoped durable review status |
 | `portal-media.show` | `/portal-media/{path}` | `PortalMediaController` | `file-response` | no page identity |
 | `posts.show` | `/posts/{post}` | `PostThreadPreviewController` | `canonical-page` | retain `x-page-header` |
 | `preview.feed` | `/preview/feed` | `PreviewController` | `canonical-page` | retain `x-page-header` |

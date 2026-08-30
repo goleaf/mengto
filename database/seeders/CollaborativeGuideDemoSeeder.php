@@ -9,11 +9,18 @@ use App\Enums\KnowledgeWorkflowEventType;
 use App\Models\KnowledgeArticle;
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use LogicException;
 
 final class CollaborativeGuideDemoSeeder extends Seeder
 {
     public function run(): void
     {
+        $allowedEnvironments = config('platform.demo_seed_environments');
+
+        if (! is_array($allowedEnvironments) || ! app()->environment($allowedEnvironments)) {
+            throw new LogicException(__('seeding.errors.demo_environment'));
+        }
+
         $administrator = User::query()
             ->where('actor_key', 'demo-administrator')
             ->firstOrFail();

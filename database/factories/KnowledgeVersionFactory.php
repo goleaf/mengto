@@ -36,7 +36,7 @@ class KnowledgeVersionFactory extends ApplicationFactory
             'language' => 'en',
             'jurisdiction' => null,
             'taxon_id' => null,
-            'protected_sections' => [],
+            'protected_sections' => ['safety-boundaries'],
         ];
     }
 }

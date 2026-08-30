@@ -24,8 +24,8 @@ final class ForumTrustLevelFactory extends ApplicationFactory
             'is_professional' => false,
             'is_moderation_role' => false,
             'is_active' => true,
-            'criteria' => [],
-            'metadata' => [],
+            'criteria' => [['key' => 'helpful_contributions', 'operator' => '>=', 'value' => 5]],
+            'metadata' => ['source' => 'factory', 'version' => 1],
         ];
     }
 }

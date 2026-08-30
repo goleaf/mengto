@@ -18,7 +18,7 @@ final class ForumModerationAppealFactory extends ApplicationFactory
             'appellant_user_id' => User::factory(),
             'status' => 'submitted',
             'reason' => fake()->paragraph(),
-            'evidence' => [],
+            'evidence' => [['type' => 'appeal-context', 'reference' => 'factory-appeal']],
             'submitted_at' => now(),
         ];
     }

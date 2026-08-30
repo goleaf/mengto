@@ -12,6 +12,7 @@ use App\Enums\SellerType;
 use App\Models\Listing;
 use App\Models\Order;
 use App\Models\Reservation;
+use App\Models\User;
 use App\ValueObjects\MinorUnitAmount;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
@@ -60,7 +61,7 @@ class MarketplaceExpansionSeeder extends Seeder
             'area' => 'Žirmūnai',
             'delivery_options' => ['pickup', 'local-delivery'],
             'return_policy' => 'Return in the recorded condition by the agreed time. The deposit is released after inspection.',
-            'cover_url' => 'https://images.unsplash.com/photo-1558788353-f76d92427f16?auto=format&fit=crop&w=1400&q=85',
+            'cover_url' => asset('images/places/pet-store-primary-lg.jpg'),
             'seller_type' => SellerType::Business,
             'is_verified_seller' => true,
             'is_business' => true,
@@ -99,7 +100,7 @@ class MarketplaceExpansionSeeder extends Seeder
             'area' => 'Šnipiškės',
             'delivery_options' => ['meetup', 'shelter-delivery'],
             'return_policy' => 'Inspect the seal and expiry date at handover.',
-            'cover_url' => 'https://images.unsplash.com/photo-1589924691995-400dc9ecc119?auto=format&fit=crop&w=1400&q=85',
+            'cover_url' => asset('images/places/pet-store-secondary-lg.jpg'),
         ]);
 
         $this->createListing('vilnius-shelter-needs-twenty-carriers', [
@@ -133,7 +134,7 @@ class MarketplaceExpansionSeeder extends Seeder
             'area' => 'Antakalnis',
             'delivery_options' => ['shelter-delivery', 'pickup'],
             'return_policy' => 'The shelter confirms receipt inside the platform.',
-            'cover_url' => 'https://images.unsplash.com/photo-1516734212186-a967f81ad0d7?auto=format&fit=crop&w=1400&q=85',
+            'cover_url' => asset('images/places/shelter-primary-lg.jpg'),
             'seller_type' => SellerType::Shelter,
             'is_verified_seller' => true,
             'is_business' => true,
@@ -171,7 +172,7 @@ class MarketplaceExpansionSeeder extends Seeder
             'area' => 'Naujamiestis',
             'delivery_options' => ['home-visit'],
             'return_policy' => 'Cancel or reschedule at least 24 hours before the first visit.',
-            'cover_url' => 'https://images.unsplash.com/photo-1495360010541-f48722b34f7d?auto=format&fit=crop&w=1400&q=85',
+            'cover_url' => asset('images/places/community-primary-lg.jpg'),
             'seller_type' => SellerType::Specialist,
             'is_verified_seller' => true,
             'is_business' => true,
@@ -191,14 +192,17 @@ class MarketplaceExpansionSeeder extends Seeder
         }
 
         Listing::factory()->create([
+            'owner_id' => User::query()
+                ->where('actor_key', $attributes['owner_key'])
+                ->value('id'),
             ...$attributes,
             'slug' => $slug,
             'currency' => 'EUR',
-            'gallery' => [],
+            'gallery' => [$attributes['cover_url']],
             'status' => ListingStatus::Published,
             'moderation_status' => ModerationStatus::Approved,
             'safety_status' => 'reviewed',
-            'risk_flags' => [],
+            'risk_flags' => ['demo-listing-reviewed'],
             'contact_policy' => 'platform-only',
             'meetup_notes' => 'Keep addresses and handover details private until the request is accepted.',
             'published_at' => now()->subHours(4),
@@ -213,17 +217,19 @@ class MarketplaceExpansionSeeder extends Seeder
 
         $listing = Listing::query()
             ->select([
-                'id', 'owner_key', 'owner_name', 'slug', 'title', 'condition',
+                'id', 'owner_id', 'owner_key', 'owner_name', 'slug', 'title', 'condition',
                 'quantity', 'price', 'currency', 'delivery_options',
                 'return_policy', 'contact_policy', 'cover_url', 'attributes',
             ])
             ->where('slug', 'rehabilitation-ramp-rental-vilnius')
             ->firstOrFail();
+        $buyer = User::query()->where('actor_key', 'mia-carter')->firstOrFail();
 
         $startsAt = now()->addDays(3)->startOfDay();
         $endsAt = $startsAt->copy()->addDays(6);
         $reservation = Reservation::factory()->create([
             'listing_id' => $listing->id,
+            'requester_id' => $buyer->id,
             'requester_key' => 'mia-carter',
             'requester_name' => 'Mia Carter',
             'idempotency_key' => (string) Str::uuid(),
@@ -254,6 +260,8 @@ class MarketplaceExpansionSeeder extends Seeder
         Order::factory()->create([
             'listing_id' => $listing->id,
             'reservation_id' => $reservation->id,
+            'buyer_id' => $buyer->id,
+            'seller_id' => $listing->owner_id,
             'reference' => 'ORD-DEMO-RAMP',
             'idempotency_key' => (string) Str::uuid(),
             'buyer_key' => 'mia-carter',

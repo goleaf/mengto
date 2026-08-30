@@ -27,6 +27,7 @@ final class ForumEventSessionFactory extends ApplicationFactory
 
                 return ForumEventOccurrence::factory()->create([
                     'forum_event_id' => $event->id,
+                    'status' => $event->status,
                     'starts_at' => $event->starts_at,
                     'ends_at' => $event->ends_at,
                     'timezone' => $event->timezone,
@@ -71,7 +72,10 @@ final class ForumEventSessionFactory extends ApplicationFactory
 
     public function live(): static
     {
-        return $this->state(fn (): array => ['status' => ForumEventSessionStatus::Live]);
+        return $this->state(fn (): array => [
+            'forum_event_id' => ForumEvent::factory()->live(),
+            'status' => ForumEventSessionStatus::Live,
+        ]);
     }
 
     public function cancelled(): static

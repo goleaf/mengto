@@ -3,16 +3,25 @@
 declare(strict_types=1);
 
 use App\Enums\AdoptionProviderIdentityStatus;
+use App\Enums\DiscoveryCategory;
+use App\Enums\ForumJournalType;
+use App\Enums\ForumMentorshipType;
+use App\Enums\MedicalKnowledgeStatus;
+use App\Enums\PetSizeCategory;
 use App\Models\AdoptionApplication;
 use App\Models\AdoptionCase;
 use App\Models\AdoptionEvent;
 use App\Models\Booking;
+use App\Models\ContentMediaAsset;
 use App\Models\ContentPublication;
 use App\Models\Credential;
+use App\Models\DiscoveryPreference;
+use App\Models\ExpertEngagement;
 use App\Models\ExpertProfile;
 use App\Models\ForumAnswer;
 use App\Models\ForumCategoryLifecycleRule;
 use App\Models\ForumCommunityNote;
+use App\Models\ForumConfirmation;
 use App\Models\ForumGroupActivity;
 use App\Models\ForumGroupAnnouncement;
 use App\Models\ForumGroupFile;
@@ -20,8 +29,11 @@ use App\Models\ForumJournal;
 use App\Models\ForumJournalCollaborator;
 use App\Models\ForumJournalEntry;
 use App\Models\ForumJournalMedia;
+use App\Models\ForumMentorScope;
 use App\Models\ForumPoll;
+use App\Models\ForumReport;
 use App\Models\ForumTopic;
+use App\Models\ForumTopicAcceptance;
 use App\Models\ForumTopicLegalHold;
 use App\Models\ForumTopicUpdateRequest;
 use App\Models\KnowledgeArticle;
@@ -30,23 +42,40 @@ use App\Models\KnowledgeCorrection;
 use App\Models\KnowledgeVersion;
 use App\Models\KnowledgeWorkflowEvent;
 use App\Models\Listing;
+use App\Models\MedicalRecord;
 use App\Models\Order;
+use App\Models\Organization;
 use App\Models\PetProfile;
 use App\Models\Reservation;
 use App\Models\SearchCase;
 use App\Models\Sighting;
 use App\Models\SmartDevice;
+use App\Models\SocialActor;
+use App\Models\TaxonImport;
+use App\Models\TaxonVersion;
 use App\Models\User;
 use Database\Factories\ApplicationFactory;
+use Database\Seeders\CareJournalSeeder;
 use Database\Seeders\DatabaseSeeder;
 use Database\Seeders\DiscoveryDemoSeeder;
+use Database\Seeders\ExpertSeeder;
+use Database\Seeders\ForumSeeder;
+use Database\Seeders\ListingSeeder;
 use Database\Seeders\MarketplaceExpansionSeeder;
+use Database\Seeders\MedicalRecordSeeder;
 use Database\Seeders\PerformanceSeeder;
+use Database\Seeders\SearchSeeder;
+use Database\Seeders\SmartDeviceSeeder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 use function Pest\Laravel\seed;
+
+beforeEach(function (): void {
+    Storage::fake('local');
+});
 
 dataset('model factories', static function (): array {
     $models = [];
@@ -127,34 +156,45 @@ dataset('factory states', [
     'user Russian' => [User::class, 'russian'],
 ]);
 
-dataset('enum factory states', static function (): array {
-    $states = [];
-    $modelDirectory = dirname(__DIR__, 3).'/app/Models';
+dataset('direct demo seeders', [
+    'care journals' => [CareJournalSeeder::class],
+    'experts' => [ExpertSeeder::class],
+    'forum' => [ForumSeeder::class],
+    'listings' => [ListingSeeder::class],
+    'medical records' => [MedicalRecordSeeder::class],
+    'search' => [SearchSeeder::class],
+    'smart devices' => [SmartDeviceSeeder::class],
+]);
 
-    foreach (glob($modelDirectory.'/*.php') ?: [] as $path) {
-        $modelClass = 'App\\Models\\'.pathinfo($path, PATHINFO_FILENAME);
+dataset('zero argument factory helpers', static function (): array {
+    $helpers = [];
+    $factoryDirectory = dirname(__DIR__, 3).'/database/factories';
 
-        if (! is_subclass_of($modelClass, Model::class)) {
+    foreach (glob($factoryDirectory.'/*Factory.php') ?: [] as $path) {
+        $factoryClass = 'Database\\Factories\\'.pathinfo($path, PATHINFO_FILENAME);
+
+        if ($factoryClass === ApplicationFactory::class || ! class_exists($factoryClass)) {
             continue;
         }
 
-        $model = new $modelClass;
+        $reflection = new ReflectionClass($factoryClass);
 
-        foreach ($model->getCasts() as $attribute => $cast) {
-            if (! is_string($cast) || ! enum_exists($cast)) {
+        foreach ($reflection->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
+            if (
+                $method->getDeclaringClass()->getName() !== $factoryClass
+                || in_array($method->getName(), ['definition', 'configure'], true)
+                || $method->getNumberOfRequiredParameters() !== 0
+            ) {
                 continue;
             }
 
-            foreach ((new ReflectionEnum($cast))->getCases() as $case) {
-                $value = $case->getValue();
-                $states[
-                    pathinfo($path, PATHINFO_FILENAME)." {$attribute} {$case->getName()}"
-                ] = [$modelClass, $attribute, $value];
-            }
+            $helpers[
+                pathinfo($path, PATHINFO_FILENAME).' '.$method->getName()
+            ] = [$factoryClass, $method->getName()];
         }
     }
 
-    return $states;
+    return $helpers;
 });
 
 test('database seeding dependencies are installed without development packages', function () {
@@ -192,15 +232,24 @@ test('every first party model factory can make an unpersisted model', function (
 test('factory definitions do not persist related records while defining attributes', function (
     string $modelClass,
 ) {
-    $writes = [];
+    $connection = DB::connection();
+    $connection->flushQueryLog();
+    $connection->enableQueryLog();
 
-    DB::listen(function ($query) use (&$writes): void {
-        if (preg_match('/^\s*(insert|update|delete)\b/i', $query->sql) === 1) {
-            $writes[] = $query->sql;
-        }
-    });
+    try {
+        $modelClass::factory()->definition();
 
-    $modelClass::factory()->definition();
+        $writes = array_values(array_filter(
+            $connection->getQueryLog(),
+            static fn (array $query): bool => preg_match(
+                '/^\s*(insert|update|delete)\b/i',
+                $query['query'],
+            ) === 1,
+        ));
+    } finally {
+        $connection->disableQueryLog();
+        $connection->flushQueryLog();
+    }
 
     expect($writes)->toBe([]);
 })->with('model factories');
@@ -216,24 +265,59 @@ test('every documented factory state creates a persisted valid record', function
         ->and($model->exists)->toBeTrue();
 })->with('factory states');
 
-test('every enum-backed factory state creates a persisted valid record', function (
-    string $modelClass,
-    string $attribute,
-    BackedEnum $value,
+test('every zero argument factory helper creates a persisted valid record', function (
+    string $factoryClass,
+    string $helper,
 ) {
-    $factory = $modelClass::factory();
+    $factory = $factoryClass::new()->{$helper}();
+    $model = $factory->create();
 
-    if (! $factory instanceof ApplicationFactory) {
-        throw new LogicException("{$modelClass} must use ApplicationFactory.");
+    expect($factory)->toBeInstanceOf($factoryClass)
+        ->and($model)->toBeInstanceOf(Model::class)
+        ->and($model->exists)->toBeTrue();
+})->with('zero argument factory helpers');
+
+test('every parameterized factory helper creates a persisted valid record', function () {
+    $user = User::factory()->create();
+    $actor = SocialActor::factory()->forUser($user)->create();
+    $credential = Credential::factory()->create();
+    $topic = ForumTopic::factory()->create();
+    $answer = ForumAnswer::factory()->create(['topic_id' => $topic->id]);
+    $journal = ForumJournal::factory()->forUser($user)->create();
+    $sourceArticle = KnowledgeArticle::factory()->create([
+        'translation_group_key' => 'factory-helper-translation-group',
+    ]);
+    $profile = PetProfile::factory()->for($user)->create();
+    $import = TaxonImport::factory()->create();
+
+    $models = [
+        AdoptionCase::factory()->withVerifiedProvider($credential)->create(),
+        ContentMediaAsset::factory()->ownedBy($user)->create(),
+        ContentPublication::factory()->by($user, $actor)->create(),
+        DiscoveryPreference::factory()->category(DiscoveryCategory::Pets)->create(),
+        ExpertEngagement::factory()->forUser($user)->create(),
+        ForumConfirmation::factory()->forSubject(ForumTopic::class, $topic->id)->create(),
+        ForumJournalEntry::factory()->forJournal($journal)->create(),
+        ForumJournalEntry::factory()->by($user)->create(),
+        ForumJournal::factory()->forUser($user)->create(),
+        ForumJournal::factory()->withType(ForumJournalType::Training)->create(),
+        ForumMentorScope::factory()->forType(ForumMentorshipType::TrainingSupport)->create(),
+        ForumReport::factory()->forSubject($topic)->create(),
+        ForumTopicAcceptance::factory()->forAnswer($answer)->create(),
+        KnowledgeArticle::factory()->translatedFrom($sourceArticle, $user, 'lt')->create(),
+        MedicalRecord::factory()->forPetProfile($profile)->create(),
+        Organization::factory()->forOwner($user)->create(),
+        PetProfile::factory()->withSize(PetSizeCategory::Large)->create(),
+        TaxonVersion::factory()->forImport($import)->create(),
+    ];
+
+    expect($models)->toHaveCount(18);
+
+    foreach ($models as $model) {
+        expect($model)->toBeInstanceOf(Model::class)
+            ->and($model->exists)->toBeTrue();
     }
-
-    $model = $factory->withEnum($attribute, $value)->create();
-
-    expect($model)
-        ->toBeInstanceOf($modelClass)
-        ->and($model->exists)->toBeTrue()
-        ->and($model->getAttribute($attribute))->toBe($value);
-})->with('enum factory states');
+});
 
 test('database seeding is repeatable without changing stable entity counts', function () {
     seed(DatabaseSeeder::class);
@@ -293,8 +377,8 @@ test('database seeding is repeatable without changing stable entity counts', fun
             ->whereNotNull('translation_group_key')
             ->whereNotNull('discussion_topic_id')
             ->count())->toBe(2)
-        ->and(KnowledgeArticleCollaborator::query()->count())->toBe(2)
-        ->and(KnowledgeWorkflowEvent::query()->count())->toBe(2)
+        ->and(KnowledgeArticleCollaborator::query()->count())->toBe(10)
+        ->and(KnowledgeWorkflowEvent::query()->count())->toBe(10)
         ->and(AdoptionCase::query()
             ->whereHas('listing', fn ($query) => $query
                 ->where('slug', 'gentle-adult-cat-meta-is-ready-for-adoption'))
@@ -306,6 +390,98 @@ test('demo seeding refuses an environment not explicitly allowed', function () {
 
     expect(fn () => seed(DatabaseSeeder::class))
         ->toThrow(LogicException::class);
+});
+
+test('direct demo seeders refuse an environment not explicitly allowed', function (
+    string $seederClass,
+) {
+    Config::set('platform.demo_seed_environments', []);
+
+    expect(fn () => seed($seederClass))->toThrow(LogicException::class);
+})->with('direct demo seeders');
+
+test('unrelated existing records do not suppress deterministic forum and expert graphs', function () {
+    ForumTopic::factory()->create();
+    ExpertProfile::factory()->create();
+
+    seed(ForumSeeder::class);
+    seed(ExpertSeeder::class);
+
+    expect(ForumTopic::query()->where('slug', 'calm-lift-entry-after-loud-noise')->exists())
+        ->toBeTrue()
+        ->and(ExpertProfile::query()->where('slug', 'dr-emilia-vaitke')->exists())
+        ->toBeTrue();
+});
+
+test('partial deterministic forum graph fails closed without adding records', function () {
+    ForumTopic::factory()->create(['slug' => 'calm-lift-entry-after-loud-noise']);
+    $topicCount = ForumTopic::query()->count();
+
+    expect(fn () => seed(ForumSeeder::class))
+        ->toThrow(LogicException::class, 'The deterministic forum demo graph is partially present.')
+        ->and(ForumTopic::query()->count())->toBe($topicCount);
+});
+
+test('partial deterministic expert graph fails closed without adding records', function () {
+    ExpertProfile::factory()->create(['slug' => 'dr-emilia-vaitke']);
+    $profileCount = ExpertProfile::query()->count();
+
+    expect(fn () => seed(ExpertSeeder::class))
+        ->toThrow(LogicException::class, 'The deterministic expert demo graph is partially present.')
+        ->and(ExpertProfile::query()->count())->toBe($profileCount);
+});
+
+test('deterministic seeders reject missing children after their roots exist', function (
+    string $seederClass,
+    Closure $deleteChild,
+) {
+    seed($seederClass);
+    $deleteChild();
+
+    expect(fn () => seed($seederClass))->toThrow(LogicException::class);
+})->with([
+    'forum answer' => [
+        ForumSeeder::class,
+        static fn () => ForumAnswer::query()
+            ->whereHas('topic', fn ($query) => $query->where('slug', 'calm-lift-entry-after-loud-noise'))
+            ->firstOrFail()
+            ->delete(),
+    ],
+    'expert credential' => [
+        ExpertSeeder::class,
+        static fn () => Credential::query()
+            ->whereHas('expertProfile', fn ($query) => $query->where('slug', 'dr-emilia-vaitke'))
+            ->firstOrFail()
+            ->delete(),
+    ],
+    'medical record' => [
+        MedicalRecordSeeder::class,
+        static fn () => MedicalRecord::query()
+            ->where('slug', 'scout-health')
+            ->firstOrFail()
+            ->weightEntries()
+            ->where('weight_grams', 19200)
+            ->where('measurement_context', 'Routine clinic visit')
+            ->firstOrFail()
+            ->delete(),
+    ],
+]);
+
+test('medical seeding validates its named child graph before updating deterministic roots', function () {
+    seed(MedicalRecordSeeder::class);
+
+    $scout = MedicalRecord::query()->where('slug', 'scout-health')->firstOrFail();
+    $scout->forceFill(['allergy_knowledge_status' => MedicalKnowledgeStatus::Unknown])->save();
+    $scout->weightEntries()
+        ->where('weight_grams', 19200)
+        ->where('measurement_context', 'Routine clinic visit')
+        ->firstOrFail()
+        ->delete();
+
+    expect(fn () => seed(MedicalRecordSeeder::class))
+        ->toThrow(LogicException::class, 'The deterministic medical demo graph is partially present.')
+        ->and($scout->refresh()->allergy_knowledge_status)
+        ->toBe(MedicalKnowledgeStatus::Unknown);
 });
 
 test('discovery demo seeding refuses an environment not explicitly allowed', function () {

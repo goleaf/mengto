@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Livewire\Forum;
 
 use App\Actions\ReviewProfessionalCredential;
+use App\Actions\UpdateForumCategorySettings;
 use App\Enums\CredentialStatus;
 use App\Enums\KnowledgeCorrectionStatus;
 use App\Models\Credential;
@@ -31,6 +32,8 @@ final class AdminDashboard extends Component
     private LocaleFormatter $formatter;
 
     private ReviewProfessionalCredential $reviewCredentialAction;
+
+    private UpdateForumCategorySettings $updateCategorySettings;
 
     #[Url(as: 'view')]
     public string $tab = 'categories';
@@ -61,10 +64,12 @@ final class AdminDashboard extends Component
         CacheRepository $cache,
         LocaleFormatter $formatter,
         ReviewProfessionalCredential $reviewCredentialAction,
+        UpdateForumCategorySettings $updateCategorySettings,
     ): void {
         $this->cache = $cache;
         $this->formatter = $formatter;
         $this->reviewCredentialAction = $reviewCredentialAction;
+        $this->updateCategorySettings = $updateCategorySettings;
     }
 
     public function mount(): void
@@ -282,27 +287,20 @@ final class AdminDashboard extends Component
 
     public function saveCategory(): void
     {
-        $category = $this->authorizedCategory((int) $this->selectedCategoryId);
         $validated = $this->validate([
+            'selectedCategoryId' => ['required', 'integer', 'exists:forum_categories,id'],
             'translationName' => ['required', 'string', 'max:180'],
             'visibility' => ['required', 'in:public,members,restricted,hidden'],
             'moderationLevel' => ['required', 'in:standard,review,high-risk,emergency'],
         ]);
-        $category->forceFill([
-            'visibility' => $validated['visibility'],
-            'moderation_level' => $validated['moderationLevel'],
-        ])->save();
-        ForumCategoryTranslation::query()->updateOrCreate(
-            [
-                'forum_category_id' => $category->id,
-                'locale' => App::currentLocale(),
-            ],
-            [
-                'name' => $validated['translationName'],
-                'is_reviewed' => true,
-            ],
+        $this->updateCategorySettings->handle(
+            actor: $this->administrator(),
+            categoryId: (int) $validated['selectedCategoryId'],
+            locale: App::currentLocale(),
+            name: $validated['translationName'],
+            visibility: $validated['visibility'],
+            moderationLevel: $validated['moderationLevel'],
         );
-        $this->invalidateCategoryCaches();
         unset($this->categories);
         session()->flash('feedback', __('forum_admin.feedback.category_saved'));
     }

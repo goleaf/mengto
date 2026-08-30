@@ -4,11 +4,6 @@ declare(strict_types=1);
 
 namespace App\Actions;
 
-use App\Data\CreatePlaceData;
-use App\Enums\PlaceAccessibilityStatus;
-use App\Enums\PlaceType;
-use App\Enums\PlaceVerificationStatus;
-use App\Enums\PlaceVisibility;
 use App\Models\Place;
 use App\Models\User;
 use App\Services\PlaceCatalog;
@@ -23,7 +18,6 @@ final class PerformPlaceAction
     public function __construct(
         private readonly PlaceCatalog $catalog,
         private readonly PlaceState $state,
-        private readonly CreatePlace $createPlace,
         private readonly ResolveAccessiblePlace $resolvePlace,
         private readonly SubmitPlaceQuestion $submitQuestion,
         private readonly AnswerPlaceQuestion $answerQuestion,
@@ -276,77 +270,11 @@ final class PerformPlaceAction
      */
     private function createPlace(array $data): array
     {
-        $title = $this->requiredText($data, 'title');
-        $address = $this->requiredText($data, 'place_address');
-        $duplicate = collect($this->catalog->all())->first(
-            static fn (array $place): bool => Str::slug($place['name']) === Str::slug($title)
-                || Str::lower($place['address']) === Str::lower($address),
-        );
-
-        if ($duplicate !== null) {
-            throw ValidationException::withMessages([
-                'title' => __('messages.similar_place_exists', [
-                    'name' => $duplicate['name'],
-                ]),
-            ]);
-        }
-
-        $actor = Auth::user();
-
-        if (! $actor instanceof User) {
-            throw new AuthorizationException;
-        }
-
-        $category = (string) $data['category'];
-        $place = $this->createPlace->handle($actor, new CreatePlaceData(
-            name: $title,
-            type: $this->placeType($category),
-            visibility: PlaceVisibility::Unlisted,
-            publicRegion: $this->requiredText($data, 'city'),
-            publicAddress: $address,
-            exactAddress: null,
-            publicLatitude: null,
-            publicLongitude: null,
-            exactLatitude: null,
-            exactLongitude: null,
-            locale: $actor->locale,
-            idempotencyKey: hash('sha256', implode('|', [
-                (string) $actor->id,
-                Str::lower($title),
-                Str::lower($address),
-                $category,
-            ])),
-            summary: $this->requiredText($data, 'body'),
-            petRules: trim((string) ($data['rules'] ?? '')),
-            isIndoor: in_array($category, [
-                'vet',
-                'emergency-vet',
-                'pet-store',
-                'grooming',
-                'shelter',
-                'pet-cafe',
-            ], true),
-            verificationStatus: PlaceVerificationStatus::OrganizerProvided,
-            accessibilityStatus: PlaceAccessibilityStatus::NotAssessed,
-            catalogCategory: $category,
-        ));
-
         return [
-            'message' => __('messages.place_submitted_for_duplicate_and_information_review_df37779e01'),
-            'route' => 'places.index',
-            'parameters' => ['mode' => 'browse', 'q' => $place->name],
+            'message' => __('places.submissions.create.description'),
+            'route' => 'places.submissions.create',
+            'parameters' => [],
         ];
-    }
-
-    private function placeType(string $category): PlaceType
-    {
-        return match ($category) {
-            'park', 'dog-park' => PlaceType::Park,
-            'route' => PlaceType::WalkingRoute,
-            'vet', 'emergency-vet' => PlaceType::VeterinaryClinic,
-            'shelter' => PlaceType::Shelter,
-            default => PlaceType::PublicSpace,
-        };
     }
 
     /**

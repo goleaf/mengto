@@ -83,6 +83,12 @@ final class TaxonImport extends Model
         return $this->belongsTo(TaxonSource::class, 'taxon_source_id');
     }
 
+    /** @return HasMany<TaxonSource, $this> */
+    public function activeSources(): HasMany
+    {
+        return $this->hasMany(TaxonSource::class, 'active_taxon_import_id');
+    }
+
     /** @return BelongsTo<User, $this> */
     public function initiatedBy(): BelongsTo
     {

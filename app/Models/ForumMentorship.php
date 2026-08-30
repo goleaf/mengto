@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 /**
  * @property CarbonImmutable|null $accepted_at
@@ -152,5 +153,11 @@ final class ForumMentorship extends Model
     public function events(): HasMany
     {
         return $this->hasMany(ForumMentorshipEvent::class);
+    }
+
+    /** @return MorphMany<ForumReport, $this> */
+    public function subjectReports(): MorphMany
+    {
+        return $this->morphMany(ForumReport::class, 'subject');
     }
 }

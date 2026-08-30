@@ -6,13 +6,13 @@ This is a living gate record. It is deliberately not a completion claim.
 
 | Gate | Status | Evidence |
 | --- | --- | --- |
-| 0 Source preservation | verified artifact; current reconstruction rerun blocked | `forum-source-prompt.md` checksum and generation check pass; the current local Codex history lacks the ten timestamped entries required by the preservation check |
+| 0 Source preservation | verified artifact; current reconstruction rerun blocked | `forum-source-prompt.md` checksum and generation check pass; the current local Codex history lacks required entry `1785397895` |
 | 1 Discovery | in progress | `forum-existing-system-audit.md` |
 | 2 Atomic plan coverage | verified | 38,377 records in JSON and generated phase index |
 | 3 Implementation | not complete | production implementation has not yet reached all phases |
-| 4 Tests | not complete | current combined checkpoint passed 2,586 tests and 81,835 assertions plus migration/seed, analysis, build, cache, and browser gates; open requirement suites remain |
+| 4 Tests | not complete | the current full run executed 3,891 tests: 3,881 passed with 109,110 assertions, while 9 failed and 1 errored outside the selected package; targeted category-25 checks passed |
 | 5 Documentation | in progress | initial canonical pass exists |
-| 6 Final traceability | not complete | deterministic evidence overlay records 1,727 verified IDs; 36,650 remain discovered |
+| 6 Final traceability | not complete | deterministic evidence overlay records 1,727 verified, 58 in-progress, and 36,592 discovered IDs |
 
 ## Atomic Totals
 
@@ -22,8 +22,8 @@ This is a living gate record. It is deliberately not a completion claim.
 | Atomic requirements | 38,377 |
 | Assigned to a phase | 38,377 |
 | Verified | 1,727 |
-| In progress | 0 |
-| Planned or discovered | 36,650 |
+| In progress | 58 |
+| Planned or discovered | 36,592 |
 | Blocked | 0 |
 | Intentionally not applicable | 0 |
 

@@ -28,7 +28,7 @@ The audit was performed on clean `main` at `93a4595`, with local `main` and
 The current implementation is not globally complete.
 
 - The combined forum/product catalogue contains 38,377 atomic requirements:
-  1,727 verified and 36,650 still `discovered`.
+  1,727 verified, 58 `in-progress`, and 36,592 still `discovered`.
 - The canonical 169-requirement matrix contains 144 verified, 12 not
   applicable, 10 externally blocked, and 3 partially implemented requirements.
 - Five supplemental Point 13 evidence rows add three verified records, one
@@ -43,8 +43,8 @@ The current implementation is not globally complete.
   remains open.
 
 The counts above overlap by design. For example, Places and event work also
-appear in the 36,650 atomic requirements. They must not be added together as a
-single backlog total.
+appear in the 36,650 unresolved atomic requirements. They must not be added
+together as a single backlog total.
 
 ## Canonical Requirement Gaps
 

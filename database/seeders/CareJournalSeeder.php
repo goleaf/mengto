@@ -12,23 +12,31 @@ use App\Models\CareEntry;
 use App\Models\CareJournal;
 use App\Models\CareRoutine;
 use App\Models\CareTask;
+use App\Models\User;
 use Carbon\CarbonImmutable;
+use Database\Seeders\Concerns\GuardsDemoSeeding;
 use Illuminate\Database\Seeder;
 
 class CareJournalSeeder extends Seeder
 {
+    use GuardsDemoSeeding;
+
     public function run(): void
     {
+        $this->assertDemoSeedingIsAllowed();
+
         $now = CarbonImmutable::now('Europe/Vilnius');
+        $ownerId = User::query()->where('actor_key', 'mia-carter')->valueOrFail('id');
 
         $scout = CareJournal::query()->updateOrCreate(
             ['owner_key' => 'mia-carter', 'pet_profile_key' => 'scout'],
             [
+                'owner_id' => $ownerId,
                 'slug' => 'scout-care',
                 'pet_name' => 'Scout',
                 'species' => 'dog',
                 'breed' => 'Border Collie mix',
-                'image_url' => 'https://images.unsplash.com/photo-1654256578072-b932c33cb92e?auto=format&fit=crop&crop=faces&w=480&h=480&q=85',
+                'image_url' => asset('images/places/veterinary-primary-md.jpg'),
                 'privacy' => 'private',
                 'timezone' => 'Europe/Vilnius',
                 'current_caregiver_key' => 'mia-carter',
@@ -44,11 +52,12 @@ class CareJournalSeeder extends Seeder
         $nori = CareJournal::query()->updateOrCreate(
             ['owner_key' => 'mia-carter', 'pet_profile_key' => 'nori'],
             [
+                'owner_id' => $ownerId,
                 'slug' => 'nori-care',
                 'pet_name' => 'Nori',
                 'species' => 'cat',
                 'breed' => 'Tabby',
-                'image_url' => 'https://images.unsplash.com/photo-1518791841217-8f162f1e1131?auto=format&fit=crop&crop=faces&w=480&h=480&q=85',
+                'image_url' => asset('images/places/veterinary-secondary-md.jpg'),
                 'privacy' => 'private',
                 'timezone' => 'Europe/Vilnius',
                 'current_caregiver_key' => 'mia-carter',

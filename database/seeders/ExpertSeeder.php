@@ -16,15 +16,23 @@ use App\Models\Publication;
 use App\Models\Review;
 use App\Models\Service;
 use App\Models\User;
+use Database\Seeders\Concerns\GuardsDemoSeeding;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
+use LogicException;
 
 class ExpertSeeder extends Seeder
 {
+    use GuardsDemoSeeding;
+
     public function run(): void
     {
-        if (ExpertProfile::query()->exists()) {
+        $this->assertDemoSeedingIsAllowed();
+
+        if (ExpertProfile::query()->where('slug', 'dr-emilia-vaitke')->exists()) {
+            $this->assertExistingGraphIsComplete();
+
             return;
         }
 
@@ -44,7 +52,7 @@ class ExpertSeeder extends Seeder
             'languages' => ['Lithuanian', 'English', 'Russian'],
             'price_from' => 58,
             'next_available_at' => now()->addHours(5),
-            'avatar_url' => 'https://images.unsplash.com/photo-1594824476967-48c8b964273f?auto=format&fit=crop&w=640&q=85',
+            'avatar_url' => asset('images/places/veterinary-primary-md.jpg'),
         ]);
         $avianService = $this->service($avian, [
             'slug' => 'avian-clinic-visit',
@@ -76,7 +84,7 @@ class ExpertSeeder extends Seeder
             'methods' => ['Reward-based training', 'Choice and distance', 'Owner coaching'],
             'price_from' => 49,
             'next_available_at' => now()->addDay(),
-            'avatar_url' => 'https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&w=640&q=85',
+            'avatar_url' => asset('images/places/veterinary-secondary-md.jpg'),
         ]);
         $trainerService = $this->service($trainer, [
             'slug' => 'behavior-walk',
@@ -108,7 +116,7 @@ class ExpertSeeder extends Seeder
             'formats' => ['video', 'text', 'asynchronous'],
             'price_from' => 44,
             'next_available_at' => now()->addDays(2),
-            'avatar_url' => 'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=640&q=85',
+            'avatar_url' => asset('images/places/veterinary-tertiary-md.jpg'),
         ]);
         $catService = $this->service($catBehavior, [
             'slug' => 'feline-video-consultation',
@@ -141,7 +149,7 @@ class ExpertSeeder extends Seeder
             'accessibility' => ['parking', 'quiet-zone', 'wait-in-car'],
             'price_from' => 38,
             'next_available_at' => now()->addDays(3),
-            'avatar_url' => 'https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&w=640&q=85',
+            'avatar_url' => asset('images/places/grooming-primary-md.jpg'),
         ]);
         $grooming = $this->service($groomer, [
             'slug' => 'quiet-cat-grooming',
@@ -172,7 +180,7 @@ class ExpertSeeder extends Seeder
             'formats' => ['in-person', 'video'],
             'price_from' => 50,
             'next_available_at' => now()->addDays(4),
-            'avatar_url' => 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=640&q=85',
+            'avatar_url' => asset('images/places/community-primary-md.jpg'),
         ]);
         $rehabService = $this->service($rehab, [
             'slug' => 'mobility-assessment',
@@ -245,6 +253,7 @@ class ExpertSeeder extends Seeder
         $this->slots($shelter, $shelterService, 15, 'Secure video room');
 
         $mia = ExpertProfile::factory()->unverified()->create([
+            'owner_id' => User::query()->where('actor_key', 'mia-carter')->valueOrFail('id'),
             'owner_key' => 'mia-carter',
             'slug' => 'mia-carter-care-coordinator',
             'public_name' => 'Mia Carter',
@@ -352,10 +361,105 @@ class ExpertSeeder extends Seeder
         $this->refreshMetrics($catBehavior);
     }
 
+    private function assertExistingGraphIsComplete(): void
+    {
+        $credentialTitles = [
+            'dr-emilia-vaitke' => 'Avian Veterinarian qualification',
+            'eva-jonas' => 'Dog Trainer qualification',
+            'sofia-arden' => 'Cat Behavior Consultant qualification',
+            'irena-petrauske' => 'Cat Groomer qualification',
+            'jonas-kairys' => 'Physiotherapist qualification',
+            'laura-zukauskaite' => 'Feline Specialist qualification',
+            'ana-petraityte' => 'Shelter Specialist qualification',
+            'mia-carter-care-coordinator' => 'Volunteer coordinator confirmation',
+        ];
+        $serviceSlugs = [
+            'avian-clinic-visit',
+            'behavior-walk',
+            'feline-video-consultation',
+            'quiet-cat-grooming',
+            'mobility-assessment',
+            'show-preparation-review',
+            'adoption-preparation',
+        ];
+
+        $profiles = ExpertProfile::query()
+            ->whereIn('slug', array_keys($credentialTitles))
+            ->get()
+            ->keyBy('slug');
+        $services = Service::query()
+            ->withCount('availabilitySlots')
+            ->whereIn('slug', $serviceSlugs)
+            ->get()
+            ->keyBy('slug');
+
+        $credentialsComplete = collect($credentialTitles)->every(
+            static fn (string $title, string $slug): bool => isset($profiles[$slug])
+                && Credential::query()
+                    ->where('expert_profile_id', $profiles[$slug]->id)
+                    ->where('title', $title)
+                    ->exists(),
+        );
+        $slotsComplete = $services->count() === count($serviceSlugs)
+            && $services->every(
+                static fn (Service $service): bool => $service->availability_slots_count >= 3,
+            );
+        $catProfile = $profiles->get('sofia-arden');
+        $catService = $services->get('feline-video-consultation');
+        $bookingComplete = $catProfile instanceof ExpertProfile
+            && $catService instanceof Service
+            && Booking::query()
+                ->where('expert_profile_id', $catProfile->id)
+                ->where('service_id', $catService->id)
+                ->where('client_key', 'mia-carter')
+                ->whereHas('consultation')
+                ->whereHas('review')
+                ->exists();
+        $publicationsComplete = Publication::query()
+            ->whereIn('slug', [
+                'prepare-a-parrot-for-an-avian-appointment',
+                'work-below-a-dogs-fear-threshold',
+            ])
+            ->count() === 2;
+        $engagementComplete = isset($profiles['dr-emilia-vaitke'])
+            && ExpertEngagement::query()
+                ->where('expert_profile_id', $profiles['dr-emilia-vaitke']->id)
+                ->where('user_key', 'mia-carter')
+                ->exists();
+        $answerProfilesComplete = collect([
+            'dr-emilia' => 'dr-emilia-vaitke',
+            'eva-jonas' => 'eva-jonas',
+            'sofia-behavior' => 'sofia-arden',
+        ])->every(
+            static fn (string $slug, string $authorKey): bool => isset($profiles[$slug])
+                && ForumAnswer::query()
+                    ->where('author_key', $authorKey)
+                    ->where('expert_profile_id', $profiles[$slug]->id)
+                    ->exists(),
+        );
+
+        if ($profiles->count() !== count($credentialTitles)
+            || ! $credentialsComplete
+            || ! $slotsComplete
+            || ! $bookingComplete
+            || ! $publicationsComplete
+            || ! $engagementComplete
+            || ! $answerProfilesComplete) {
+            throw new LogicException('The deterministic expert demo graph is partially present.');
+        }
+    }
+
     /** @param array<string, mixed> $overrides */
     private function profile(array $overrides): ExpertProfile
     {
-        $profile = ExpertProfile::factory()->create($overrides);
+        $ownerKey = $overrides['owner_key'] ?? null;
+        $ownerId = is_string($ownerKey)
+            ? User::query()->where('actor_key', $ownerKey)->value('id')
+            : null;
+        $profile = ExpertProfile::factory()->create([
+            'owner_id' => $ownerId,
+            ...$overrides,
+        ]);
 
         Credential::factory()->create([
             'expert_profile_id' => $profile->id,

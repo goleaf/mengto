@@ -31,13 +31,26 @@ final class ForumJournalMediaFactory extends ApplicationFactory
             'byte_size' => 1024,
             'checksum' => hash('sha256', $stableKey),
             'alt_text' => 'Journal progress photograph',
-            'caption' => null,
+            'caption' => 'Representative journal progress image.',
             'status' => ForumJournalMediaStatus::Active,
         ];
     }
 
     public function archived(): static
     {
-        return $this->withEnum('status', ForumJournalMediaStatus::Archived);
+        return $this->state(fn (): array => ['status' => ForumJournalMediaStatus::Archived]);
+    }
+
+    public function configure(): static
+    {
+        return $this->afterMaking(function (ForumJournalMedia $media): void {
+            if ($media->uploaded_by_user_id !== null) {
+                return;
+            }
+
+            $media->uploaded_by_user_id = ForumJournalEntry::query()
+                ->whereKey($media->forum_journal_entry_id)
+                ->value('author_user_id');
+        });
     }
 }

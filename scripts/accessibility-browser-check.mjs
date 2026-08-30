@@ -9,6 +9,7 @@ const browserOrigin = new URL(baseUrl);
 const groupsOnly = process.argv.includes('--groups-only');
 const placesOnly = process.argv.includes('--places-only');
 const pageIdentityOnly = process.argv.includes('--page-identity-only');
+const animalScienceOnly = process.argv.includes('--animal-science-only');
 const allowDataMutation = process.env.BROWSER_ALLOW_DATA_MUTATION === '1';
 const outputDirectory = process.env.BROWSER_OUTPUT_DIR
     ?? join(tmpdir(), 'mengto-accessibility-browser');
@@ -167,9 +168,20 @@ const evaluate = async (client, sessionId, expression) => {
 };
 
 const navigate = async (client, sessionId, url) => {
-    const loaded = client.once('Page.loadEventFired', sessionId);
+    const loaded = client.once('Page.loadEventFired', sessionId)
+        .catch(() => new Promise(() => {}));
     await client.send('Page.navigate', { url }, sessionId);
-    await loaded;
+    await Promise.race([
+        loaded,
+        waitUntil(
+            async () => await evaluate(
+                client,
+                sessionId,
+                `document.readyState === 'complete' && location.href === ${JSON.stringify(url)}`,
+            ),
+            `Timed out navigating to ${url}.`,
+        ),
+    ]);
     await delay(350);
 };
 
@@ -339,6 +351,7 @@ const chrome = await chromeExecutable();
 const chromeOutput = [];
 const browser = spawn(chrome, [
     '--headless=new',
+    ...(typeof process.getuid === 'function' && process.getuid() === 0 ? ['--no-sandbox'] : []),
     '--disable-background-networking',
     '--disable-default-apps',
     '--disable-extensions',
@@ -530,7 +543,7 @@ try {
         Buffer.from(accountEntryDesktopScreenshot.data, 'base64'),
     );
 
-    await login(client, sessionId, 'mia@example.test');
+    await login(client, sessionId, 'user@example.com');
 
     if (pageIdentityOnly) {
         const pageIdentityRoutes = [
@@ -3035,6 +3048,7 @@ try {
         break auditRun;
     }
 
+    if (!placesOnly) {
     await setProfileLocale(client, sessionId, 'en');
     await navigate(client, sessionId, `${baseUrl}/forum`);
     const desktopAudit = await evaluate(client, sessionId, pageAuditExpression);
@@ -3183,6 +3197,172 @@ try {
             join(outputDirectory, `forum-one-health-${viewport.label}.png`),
             Buffer.from(screenshotData.data, 'base64'),
         );
+    }
+
+    const animalScienceAudits = {};
+    const animalScienceLocaleCopy = {
+        en: {
+            name: 'Animal science, research, and evidence',
+            purpose: 'Evidence-oriented animal science, responsible claim evaluation, and research discussion.',
+        },
+        lt: {
+            name: 'Gyvūnų mokslas, tyrimai ir įrodymai',
+            purpose: 'Į įrodymus orientuotas gyvūnų mokslas, atsakingas teiginių vertinimas ir tyrimų aptarimas.',
+        },
+        ru: {
+            name: 'Наука о животных, исследования и доказательства',
+            purpose: 'Ориентированная на доказательства наука о животных, ответственная оценка утверждений и обсуждение исследований.',
+        },
+    };
+
+    for (const viewport of [
+        { label: 'desktop-en', locale: 'en', width: 1440, height: 900, mobile: false },
+        { label: 'mobile-lt', locale: 'lt', width: 375, height: 812, mobile: true },
+        { label: 'reflow-en', locale: 'en', width: 320, height: 900, mobile: true },
+        { label: 'forced-colors-ru', locale: 'ru', width: 1024, height: 900, mobile: false, forcedColors: true },
+    ]) {
+        await setProfileLocale(client, sessionId, viewport.locale);
+        await client.send('Emulation.setDeviceMetricsOverride', {
+            width: viewport.width,
+            height: viewport.height,
+            deviceScaleFactor: 1,
+            mobile: viewport.mobile,
+            screenWidth: viewport.width,
+            screenHeight: viewport.height,
+        }, sessionId);
+        await client.send('Emulation.setTouchEmulationEnabled', {
+            enabled: viewport.mobile,
+            maxTouchPoints: viewport.mobile ? 5 : 1,
+        }, sessionId);
+        await client.send('Emulation.setEmulatedMedia', {
+            features: [
+                { name: 'prefers-reduced-motion', value: 'reduce' },
+                { name: 'forced-colors', value: viewport.forcedColors ? 'active' : 'none' },
+            ],
+        }, sessionId);
+
+        const label = `${viewport.label} animal-science category`;
+        await navigate(
+            client,
+            sessionId,
+            `${baseUrl}/forum?category=animal-science-evidence`,
+        );
+        const audit = await evaluate(client, sessionId, pageAuditExpression);
+        assertPageAudit(audit, label);
+        const behavior = await evaluate(client, sessionId, `(() => {
+            const visible = (element) => {
+                const style = getComputedStyle(element);
+                const box = element.getBoundingClientRect();
+
+                return style.display !== 'none' && style.visibility !== 'hidden'
+                    && box.width > 0 && box.height > 0;
+            };
+            const heading = document.querySelector('#active-forum-category-heading');
+            const headingStyle = heading ? getComputedStyle(heading) : null;
+            const childLinks = [...document.querySelectorAll(
+                '[data-subcategory-list="animal-science-evidence"] [data-category-child]'
+            )];
+            const firstChild = childLinks[0];
+            firstChild?.focus();
+            const focusedStyle = firstChild ? getComputedStyle(firstChild) : null;
+            const smallTargets = [...document.querySelectorAll(
+                '[data-forum-category-navigator] a, [data-forum-category-navigator] summary'
+            )].filter(visible).map((element) => ({
+                label: element.textContent.trim().slice(0, 80),
+                width: Math.round(element.getBoundingClientRect().width),
+                height: Math.round(element.getBoundingClientRect().height),
+            })).filter((target) => target.width < 44 || target.height < 44);
+
+            return {
+                documentLanguage: document.documentElement.lang,
+                activeRootCount: document.querySelectorAll(
+                    '[data-category-root="animal-science-evidence"]'
+                    + '[data-active-root="true"][aria-current="page"]'
+                ).length,
+                headingText: heading?.textContent.trim() ?? null,
+                purposeText: heading?.nextElementSibling?.textContent.trim() ?? null,
+                headingFontFamily: headingStyle?.fontFamily ?? null,
+                headingFontSize: Number.parseFloat(headingStyle?.fontSize ?? '0'),
+                childCount: childLinks.length,
+                childSlugs: childLinks.map((element) => element.dataset.categoryChild),
+                firstChildText: firstChild?.textContent.trim() ?? null,
+                taxonomyChildPresent: Boolean(document.querySelector(
+                    '[data-category-child="animal-science-evidence/taxonomy-and-systematics"]'
+                )),
+                caseReportsChildPresent: Boolean(document.querySelector(
+                    '[data-category-child="animal-science-evidence/case-reports"]'
+                )),
+                focusVisible: Boolean(
+                    focusedStyle
+                    && focusedStyle.outlineStyle !== 'none'
+                    && Number.parseFloat(focusedStyle.outlineWidth) > 0
+                ),
+                smallTargets,
+                reducedMotion: matchMedia('(prefers-reduced-motion: reduce)').matches,
+                forcedColors: matchMedia('(forced-colors: active)').matches,
+                rawTranslationKeys: document.body.innerText.match(
+                    /\\bforum_categories\\.[a-z0-9_.-]+/gi
+                ) ?? [],
+            };
+        })()`);
+        const expectedCopy = animalScienceLocaleCopy[viewport.locale];
+
+        assert(behavior.documentLanguage === viewport.locale, `${label}: locale drifted.`);
+        assert(behavior.activeRootCount === 1, `${label}: selected root state is missing or duplicated.`);
+        assert(behavior.headingText === expectedCopy.name, `${label}: localized root name drifted.`);
+        assert(behavior.purposeText === expectedCopy.purpose, `${label}: localized purpose drifted.`);
+        assert(behavior.headingFontFamily.includes('Instrument Sans'), `${label}: product font is not applied.`);
+        assert(behavior.headingFontSize === 18, `${label}: expected fixed 18px title, found ${behavior.headingFontSize}px.`);
+        assert(behavior.childCount === 54, `${label}: expected 54 source subcategories.`);
+        assert(behavior.firstChildText === 'General animal science', `${label}: source fallback label drifted.`);
+        assert(behavior.taxonomyChildPresent, `${label}: Phase 5 taxonomy label disappeared.`);
+        assert(behavior.caseReportsChildPresent, `${label}: Phase 7 case-reports label disappeared.`);
+        assert(behavior.focusVisible, `${label}: child-link focus is not visible.`);
+        assert(behavior.smallTargets.length === 0, `${label}: category targets below 44px ${JSON.stringify(behavior.smallTargets)}.`);
+        assert(behavior.reducedMotion, `${label}: reduced-motion emulation is not active.`);
+        assert(behavior.forcedColors === Boolean(viewport.forcedColors), `${label}: forced-colors state drifted.`);
+        assert(
+            behavior.rawTranslationKeys.length === 0,
+            `${label}: raw category keys are visible: ${behavior.rawTranslationKeys.join(', ')}.`,
+        );
+        animalScienceAudits[label] = { ...audit, ...behavior };
+
+        const screenshotData = await client.send('Page.captureScreenshot', {
+            format: 'png',
+            captureBeyondViewport: true,
+        }, sessionId);
+        await writeFile(
+            join(outputDirectory, `forum-animal-science-${viewport.label}.png`),
+            Buffer.from(screenshotData.data, 'base64'),
+        );
+    }
+
+    await setProfileLocale(client, sessionId, 'en');
+
+    if (animalScienceOnly) {
+        assert(consoleErrors.length === 0, `Browser console errors: ${consoleErrors.join(' | ')}`);
+
+        const report = {
+            scope: 'animal-science',
+            baseUrl,
+            checkedAt: new Date().toISOString(),
+            animalScienceAudits,
+            consoleErrors,
+            screenshots: [
+                join(outputDirectory, 'forum-animal-science-desktop-en.png'),
+                join(outputDirectory, 'forum-animal-science-mobile-lt.png'),
+                join(outputDirectory, 'forum-animal-science-reflow-en.png'),
+                join(outputDirectory, 'forum-animal-science-forced-colors-ru.png'),
+            ],
+        };
+
+        await writeFile(
+            join(outputDirectory, 'report.json'),
+            `${JSON.stringify(report, null, 2)}\n`,
+        );
+        console.log(JSON.stringify(report, null, 2));
+
+        break auditRun;
     }
 
     const groupCardAudits = {};
@@ -3728,6 +3908,7 @@ try {
             Buffer.from(screenshotData.data, 'base64'),
         );
     }
+    }
 
     const placeAudits = {};
 
@@ -3898,6 +4079,115 @@ try {
     }
 
     if (placesOnly) {
+        await client.send('Emulation.setDeviceMetricsOverride', {
+            width: 375,
+            height: 812,
+            deviceScaleFactor: 1,
+            mobile: true,
+            screenWidth: 375,
+            screenHeight: 812,
+        }, sessionId);
+        await navigate(client, sessionId, `${baseUrl}/places/submissions/new`);
+        const submissionFormAudit = await evaluate(client, sessionId, pageAuditExpression);
+        assertPageAudit(submissionFormAudit, 'mobile place submission form');
+        const submissionFormTargets = await evaluate(client, sessionId, surfaceTouchTargetExpression);
+        assert(
+            submissionFormTargets.length === 0,
+            `mobile place submission form: controls below 44px ${JSON.stringify(submissionFormTargets)}.`,
+        );
+
+        await evaluate(client, sessionId, `(() => {
+            const name = document.querySelector('#place-submission-name');
+            const region = document.querySelector('#place-submission-region');
+            const consent = document.querySelector('#place-submission-consent');
+            name.value = 'x';
+            region.value = '';
+            consent.checked = false;
+            for (const element of [name, region, consent]) {
+                element.dispatchEvent(new Event('input', { bubbles: true }));
+                element.dispatchEvent(new Event('change', { bubbles: true }));
+            }
+            document.querySelector('form button[type="submit"]').click();
+
+            return true;
+        })()`);
+        await waitUntil(
+            async () => await evaluate(client, sessionId, "document.querySelectorAll('.field-error').length >= 2"),
+            'The place submission form did not render validation recovery.',
+        );
+        assert(
+            await evaluate(client, sessionId, "location.pathname === '/places/submissions/new'"),
+            'Invalid place input navigated away from the form.',
+        );
+
+        await evaluate(client, sessionId, `(() => {
+            const values = {
+                '#place-submission-name': 'Browser Verified Community Green',
+                '#place-submission-region': 'Vilnius',
+                '#place-submission-address': 'Browser Street 42, Vilnius',
+                '#place-submission-source-reference': 'Observed during a community walk',
+                '#place-submission-public_phone': '+37061234999',
+                '#place-submission-public_email': 'browser-place@example.test',
+                '#place-submission-public_website': 'https://example.test/browser-place',
+                '#place-submission-summary': 'A browser-verified community place awaiting moderator review.',
+                '#place-submission-hours': 'Daylight hours',
+                '#place-submission-services': 'water, quiet area',
+                '#place-submission-rules': 'Keep dogs under control.',
+                '#place-submission-features': 'benches, lighting',
+            };
+            for (const [selector, value] of Object.entries(values)) {
+                const element = document.querySelector(selector);
+                if (! element) throw new Error('Missing place submission control ' + selector);
+                element.value = value;
+                element.dispatchEvent(new Event('input', { bubbles: true }));
+                element.dispatchEvent(new Event('change', { bubbles: true }));
+            }
+            const consent = document.querySelector('#place-submission-consent');
+            consent.checked = true;
+            consent.dispatchEvent(new Event('input', { bubbles: true }));
+            consent.dispatchEvent(new Event('change', { bubbles: true }));
+            document.querySelector('form button[type="submit"]').click();
+
+            return true;
+        })()`);
+        await waitUntil(
+            async () => await evaluate(
+                client,
+                sessionId,
+                "location.pathname.startsWith('/places/submissions/place-submission-')",
+            ),
+            'The valid place submission did not reach its durable status page.',
+        );
+        const submissionStatusAudit = await evaluate(client, sessionId, pageAuditExpression);
+        assertPageAudit(submissionStatusAudit, 'mobile place submission status');
+        const submissionStatus = await evaluate(client, sessionId, `(() => ({
+            statusSurface: document.querySelector('[data-section="place-submission-status"]') !== null,
+            rawKeys: document.body.innerText.match(/\\bplaces\\.[a-z0-9_.-]+/gi) ?? [],
+            publishedLink: document.querySelector('[data-place-published-link]') !== null,
+        }))()`);
+        assert(submissionStatus.statusSurface, 'The durable place submission status surface is missing.');
+        assert(submissionStatus.rawKeys.length === 0, `Raw place submission keys are visible: ${submissionStatus.rawKeys.join(', ')}.`);
+        assert(! submissionStatus.publishedLink, 'A newly submitted place appeared published before moderation.');
+
+        await navigate(client, sessionId, `${baseUrl}/places/submissions/demo-place-submission-01`);
+        const protectedDuplicate = await evaluate(client, sessionId, `(() => ({
+            genericNotice: document.body.innerText.includes(${JSON.stringify('A possible match requires private moderator review. Protected details are not shown.')}),
+            visibleCandidateCards: document.querySelectorAll('[wire\\\\:key^="place-candidate-"]').length,
+            rawScores: /\\b(?:score|distance|matched signals)\\b/i.test(document.body.innerText),
+        }))()`);
+        assert(protectedDuplicate.genericNotice, 'Protected duplicate review did not render generic copy.');
+        assert(protectedDuplicate.visibleCandidateCards === 0, 'Protected duplicate review exposed a candidate card.');
+        assert(! protectedDuplicate.rawScores, 'Protected duplicate review exposed internal scoring evidence.');
+
+        const submissionScreenshot = await client.send('Page.captureScreenshot', {
+            format: 'png',
+            captureBeyondViewport: true,
+        }, sessionId);
+        await writeFile(
+            join(outputDirectory, 'place-submission-mobile.png'),
+            Buffer.from(submissionScreenshot.data, 'base64'),
+        );
+
         assert(consoleErrors.length === 0, `Browser console errors: ${consoleErrors.join(' | ')}`);
 
         const report = {
@@ -3905,12 +4195,16 @@ try {
             baseUrl,
             checkedAt: new Date().toISOString(),
             placeAudits,
+            submissionFormAudit,
+            submissionStatusAudit,
+            protectedDuplicate,
             consoleErrors,
             screenshots: [
                 join(outputDirectory, 'place-directory-desktop.png'),
                 join(outputDirectory, 'place-directory-mobile.png'),
                 join(outputDirectory, 'place-detail-desktop.png'),
                 join(outputDirectory, 'place-detail-mobile.png'),
+                join(outputDirectory, 'place-submission-mobile.png'),
             ],
         };
 
@@ -4757,6 +5051,7 @@ try {
         mobileAudit,
         zoomAudit,
         oneHealthAudits,
+        animalScienceAudits,
         groupCardAudits,
         eventAudits,
         placeAudits,
@@ -4798,6 +5093,10 @@ try {
             join(outputDirectory, 'forum-mobile.png'),
             join(outputDirectory, 'forum-one-health-desktop.png'),
             join(outputDirectory, 'forum-one-health-mobile.png'),
+            join(outputDirectory, 'forum-animal-science-desktop-en.png'),
+            join(outputDirectory, 'forum-animal-science-mobile-lt.png'),
+            join(outputDirectory, 'forum-animal-science-reflow-en.png'),
+            join(outputDirectory, 'forum-animal-science-forced-colors-ru.png'),
             join(outputDirectory, 'group-directory-desktop.png'),
             join(outputDirectory, 'group-directory-mobile.png'),
             join(outputDirectory, 'group-directory-lt-mobile.png'),

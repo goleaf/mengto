@@ -31,7 +31,7 @@ final class ForumTopicUpdateRequestFactory extends ApplicationFactory
             'resolution_reason' => null,
             'lock_version' => 1,
             'idempotency_key' => 'factory-topic-update-'.Str::uuid(),
-            'metadata' => [],
+            'metadata' => ['source' => 'factory', 'version' => 1],
         ];
     }
 

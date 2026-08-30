@@ -24,10 +24,10 @@ final class ForumCommunityNoteVersionFactory extends ApplicationFactory
             'editor_user_id' => User::factory(),
             'status' => ForumCommunityNoteStatus::Proposed,
             'body' => fake()->paragraph(),
-            'evidence' => [],
+            'evidence' => [['type' => 'source-link', 'url' => 'https://example.test/evidence/community-note']],
             'change_reason' => 'factory',
             'source_event' => 'proposed',
-            'metadata' => [],
+            'metadata' => ['source' => 'factory', 'version' => 1],
             'created_at' => now(),
         ];
     }

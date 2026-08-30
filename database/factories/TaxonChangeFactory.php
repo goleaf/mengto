@@ -22,7 +22,7 @@ final class TaxonChangeFactory extends ApplicationFactory
             'before' => ['scientific_name' => 'Previous name'],
             'after' => ['scientific_name' => 'Current name'],
             'reason_code' => 'source-import',
-            'metadata' => [],
+            'metadata' => ['source' => 'factory', 'version' => 1],
         ];
     }
 }

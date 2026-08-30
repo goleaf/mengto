@@ -28,7 +28,7 @@ final class ForumTopicLegalHoldFactory extends ApplicationFactory
             'released_by_user_id' => null,
             'release_reason' => null,
             'active_key' => 'factory-topic-hold-'.Str::uuid(),
-            'metadata' => [],
+            'metadata' => ['source' => 'factory', 'version' => 1],
         ];
     }
 

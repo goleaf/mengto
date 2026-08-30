@@ -48,6 +48,7 @@ This index is the source-of-truth map for first-party documentation.
 | `docs/implementation-plan.md` | Dependency-aware modernization plan | Engineering | Living plan |
 | `docs/audits/repository-audit-work-ledger.md` | Repository-wide audit delegation, review, and delivery evidence | Engineering + QA | Living evidence |
 | `docs/audits/repository-inventory.md` | Generated exact routes, roles, tables, symbols, files, runtime boundaries, and critical workflow chains | Engineering + QA | Canonical generated evidence |
+| `docs/audits/database-domain-audit.md` | Generated per-model schema, constraints, casts, relationships, factories, seeders, counts, and integrity evidence | Data + QA | Canonical generated evidence |
 | `docs/plans/current-unfinished-work.md` | Reconciled inventory of every current unfinished plan stream, exact open totals, and completed/historical exclusions | Product + engineering + QA | Living unfinished-work index |
 | `docs/plans/pet-workspace-modernization-plan.md` | Authenticated `/pets` workspace decisions, data boundary, interface states, and release evidence | Product + engineering + QA | Implemented and verified |
 | `docs/plans/pet-profile-draft-autosave-work-package.md` | Safe descriptive-step autosave, reconnect recovery, idempotency, accessibility, and release evidence | Product + engineering + QA | Implemented and verified with dedicated requirement evidence |
@@ -75,6 +76,7 @@ This index is the source-of-truth map for first-party documentation.
 | `docs/plans/forum-phase4-special-needs-category-work-package.md` | Exact 63-ID category-22 source, translation-trust, locale-cache, and synchronization contract | Product + engineering + QA | Implemented and verified |
 | `docs/plans/forum-phase4-wildlife-coexistence-category-work-package.md` | Exact 59-ID category-23 source, manifest, persistence, and Phase 7 exclusion contract | Product + engineering + QA | Implemented and verified |
 | `docs/plans/forum-phase4-one-health-category-work-package.md` | Exact 49-ID category-24 source, hierarchy, localized professional boundary, cache, and browser contract | Product + engineering + QA | Implemented and verified |
+| `docs/plans/forum-phase4-animal-science-category-work-package.md` | Exact 58-ID category-25 source, hierarchy, evidence-evaluation, typography, and isolated browser contract | Product + engineering + QA | Implemented; final verification pending |
 | `docs/plans/forum-topic-editor-redesign-work-package.md` | Unified forum topic editor, preserved authoring contract, responsive layout, and release evidence | Product + frontend + QA | Implemented and verified |
 | `docs/plans/global-page-identity-standardization-plan.md` | Global page-header, route-classification, forum navigation, meetup stability, and visual consistency execution plan | Product + frontend + QA | In progress; first safe slice targeted-verified |
 | `docs/requirements/compliance-matrix.md` | Requirements-to-code-and-test mapping | QA | Living evidence |

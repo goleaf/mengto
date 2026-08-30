@@ -24,7 +24,7 @@ final class ForumUserBadgeFactory extends ApplicationFactory
             'reason_code' => 'criteria-met',
             'is_public' => true,
             'granted_at' => now(),
-            'metadata' => [],
+            'metadata' => ['source' => 'factory', 'version' => 1],
         ];
     }
 }

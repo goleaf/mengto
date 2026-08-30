@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Models\AdoptionCase;
 use App\Models\Booking;
 use App\Models\Consultation;
 use App\Models\ContentMediaAsset;
@@ -9,9 +10,16 @@ use App\Models\ContentPublication;
 use App\Models\ContentPublicationEvent;
 use App\Models\DeviceAutomationRun;
 use App\Models\DocumentGrant;
+use App\Models\ForumAnswer;
+use App\Models\ForumComment;
+use App\Models\ForumEvent;
 use App\Models\ForumEventInvitation;
-use App\Models\ForumEventTeamMembership;
 use App\Models\ForumEventRegistrationPet;
+use App\Models\ForumEventTeamMembership;
+use App\Models\ForumExpertSession;
+use App\Models\ForumExpertSessionAnswer;
+use App\Models\ForumExpertSessionQuestion;
+use App\Models\ForumGroup;
 use App\Models\ForumGroupActivity;
 use App\Models\ForumGroupAnnouncement;
 use App\Models\ForumGroupEvent;
@@ -22,9 +30,10 @@ use App\Models\ForumMentorshipFeedback;
 use App\Models\ForumMentorshipMessage;
 use App\Models\ForumPoll;
 use App\Models\ForumPollVote;
-use App\Models\ForumVote;
 use App\Models\ForumReport;
+use App\Models\ForumTopic;
 use App\Models\ForumTopicMove;
+use App\Models\ForumVote;
 use App\Models\Listing;
 use App\Models\ListingReview;
 use App\Models\Order;
@@ -34,6 +43,9 @@ use App\Models\Place;
 use App\Models\PlaceAccessAudit;
 use App\Models\PlaceAccessGrant;
 use App\Models\PlaceLocationVersion;
+use App\Models\SearchCase;
+use App\Models\Sighting;
+use App\Models\SocialRelationshipRequest;
 use App\Models\User;
 use App\Models\Venue;
 use Illuminate\Support\Facades\Storage;
@@ -144,7 +156,13 @@ test('marketplace child factories do not create discarded listings', function ()
     $order = Order::factory()->create();
 
     expect(Listing::query()->count() - $initialListings)->toBe(1)
-        ->and($order->listing_id)->toBe($order->reservation->listing_id);
+        ->and($order->listing_id)->toBe($order->reservation->listing_id)
+        ->and($order->buyer_id)->toBe($order->reservation->requester_id)
+        ->and($order->buyer_key)->toBe($order->reservation->requester_key)
+        ->and($order->buyer_name)->toBe($order->reservation->requester_name)
+        ->and($order->seller_id)->toBe($order->listing->owner_id)
+        ->and($order->seller_key)->toBe($order->listing->owner_key)
+        ->and($order->seller_name)->toBe($order->listing->owner_name);
 
     $initialListings = Listing::query()->count();
     $dispute = OrderDispute::factory()->create();
@@ -179,20 +197,20 @@ test('topic move factory keeps the topic in its destination category', function 
 
 test('report factory supports every application report subject', function () {
     $subjectClasses = [
-        \App\Models\ForumTopic::class,
-        \App\Models\ForumAnswer::class,
-        \App\Models\ForumComment::class,
-        \App\Models\Listing::class,
-        \App\Models\AdoptionCase::class,
-        \App\Models\SearchCase::class,
-        \App\Models\Sighting::class,
-        \App\Models\ForumMentorship::class,
-        \App\Models\ForumGroup::class,
-        \App\Models\ForumEvent::class,
-        \App\Models\ForumExpertSession::class,
-        \App\Models\ForumExpertSessionQuestion::class,
-        \App\Models\ForumExpertSessionAnswer::class,
-        \App\Models\SocialRelationshipRequest::class,
+        ForumTopic::class,
+        ForumAnswer::class,
+        ForumComment::class,
+        Listing::class,
+        AdoptionCase::class,
+        SearchCase::class,
+        Sighting::class,
+        ForumMentorship::class,
+        ForumGroup::class,
+        ForumEvent::class,
+        ForumExpertSession::class,
+        ForumExpertSessionQuestion::class,
+        ForumExpertSessionAnswer::class,
+        SocialRelationshipRequest::class,
     ];
 
     foreach ($subjectClasses as $subjectClass) {
@@ -202,16 +220,16 @@ test('report factory supports every application report subject', function () {
         expect($report->subject_type)->toBe($subjectClass)
             ->and($report->subject_id)->toBe((string) $subject->getKey())
             ->and($report->topic_id)->toBe(match (true) {
-                $subject instanceof \App\Models\ForumTopic => $subject->id,
-                $subject instanceof \App\Models\ForumAnswer,
-                $subject instanceof \App\Models\ForumComment => $subject->topic_id,
+                $subject instanceof ForumTopic => $subject->id,
+                $subject instanceof ForumAnswer,
+                $subject instanceof ForumComment => $subject->topic_id,
                 default => null,
             })
             ->and($report->answer_id)->toBe(
-                $subject instanceof \App\Models\ForumAnswer ? $subject->id : null,
+                $subject instanceof ForumAnswer ? $subject->id : null,
             )
             ->and($report->comment_id)->toBe(
-                $subject instanceof \App\Models\ForumComment ? $subject->id : null,
+                $subject instanceof ForumComment ? $subject->id : null,
             )
             ->and($report->subject->is($subject))->toBeTrue();
     }

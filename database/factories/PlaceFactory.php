@@ -12,6 +12,7 @@ use App\Enums\PlaceVisibility;
 use App\Models\Organization;
 use App\Models\Place;
 use App\Models\User;
+use App\Services\PlaceIdentityNormalizer;
 use Illuminate\Support\Str;
 
 /** @extends ApplicationFactory<Place> */
@@ -22,6 +23,11 @@ final class PlaceFactory extends ApplicationFactory
     public function definition(): array
     {
         $name = fake()->unique()->company().' Community Place';
+        $address = fake()->streetAddress().', Vilnius';
+        $phone = '+370 6'.fake()->numerify('## ## ###');
+        $email = fake()->unique()->safeEmail();
+        $website = 'https://'.fake()->unique()->domainName().'/places';
+        $normalizer = new PlaceIdentityNormalizer;
 
         return [
             'owner_user_id' => User::factory(),
@@ -32,13 +38,21 @@ final class PlaceFactory extends ApplicationFactory
             'slug' => Str::slug($name).'-'.Str::lower((string) Str::ulid()),
             'creation_idempotency_key' => 'place-factory-'.Str::lower((string) Str::ulid()),
             'name' => $name,
+            'normalized_name' => $normalizer->name($name),
             'summary' => fake()->sentence(),
             'type' => PlaceType::PublicSpace,
             'visibility' => PlaceVisibility::Public,
             'status' => PlaceStatus::Active,
             'locale' => 'en',
             'public_region' => 'Vilnius',
-            'public_address' => fake()->streetAddress().', Vilnius',
+            'public_address' => $address,
+            'normalized_address' => $normalizer->address($address),
+            'public_phone' => $phone,
+            'normalized_phone' => $normalizer->phone($phone),
+            'public_email' => $email,
+            'normalized_email' => $normalizer->email($email),
+            'public_website' => $website,
+            'normalized_website' => $normalizer->website($website),
             'public_latitude' => '54.687200',
             'public_longitude' => '25.279700',
             'exact_address' => fake()->streetAddress().', Vilnius',
@@ -55,6 +69,7 @@ final class PlaceFactory extends ApplicationFactory
             'species_rules' => ['dog'],
             'lock_version' => 0,
             'archived_at' => null,
+            'merged_into_place_id' => null,
         ];
     }
 

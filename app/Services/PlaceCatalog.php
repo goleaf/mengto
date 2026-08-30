@@ -229,7 +229,7 @@ final class PlaceCatalog
                 'updated_at',
             ])
             ->with([
-                'organization:id',
+                'organization:id,status,archived_at',
                 'organization.memberships' => static function (Relation $memberships) use ($user): void {
                     $memberships
                         ->select([

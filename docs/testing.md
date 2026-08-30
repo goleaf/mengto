@@ -50,19 +50,31 @@ npm run build
 npm run test:browser:a11y
 ```
 
-The repository test runner is mandatory because it removes cached application
-configuration before Laravel boots Pest; direct `php artisan test` is not a
-safe full-suite command after a config-cache smoke check. `composer test --`
-provides the same ordering for non-root Composer environments. The shared
-`APP_CONFIG_CACHE` value in `phpunit.xml` is a second isolation boundary: even
-when Pest is invoked directly, it cannot load the deployed configuration cache
-or resolve the production SQLite path. A runtime regression test verifies the
-testing environment and `:memory:` database before database-backed coverage.
-PHPUnit also gives direct invocations a temporary `LARAVEL_STORAGE_PATH`; the
-mandatory runner overrides it with a unique per-process directory and removes
-that directory after Pest exits. Tests therefore cannot compile Blade views or
-create filesystem fakes in production `storage`. The shared SQLite-backed
-suite runs serially. Browser package scripts create and destroy
+Focused browser packages may expose a narrower command, such as
+`npm run test:browser:animal-science`, but they supplement rather than replace
+the complete browser gate.
+
+The repository test runner is mandatory because it forces `APP_ENV=testing`,
+the SQLite `:memory:` connection, array cache/session/mail, and synchronous
+queues before Artisan boots; it also removes inherited `DB_URL` and clears
+cached application configuration before Laravel boots Pest. It resolves and
+opens that isolated connection as a fail-closed preflight before any
+database-backed test can run. In-memory SQLite is intentional here: the
+database exists only inside the Pest process and cannot resolve to a persistent
+development or production path. Direct `php artisan test` is not a safe
+full-suite command after a config-cache smoke check. `composer test --` routes
+through the same wrapper and forwards every following Pest argument.
+
+The database values in `phpunit.xml` use forced overrides as a second boundary
+for ordinary direct PHPUnit/Pest invocations. The canonical wrapper remains
+required because it also owns a cryptographically named per-process storage
+directory and private cache paths under the operating-system temporary
+directory. It validates that exact path before cleanup and removes it after
+Pest exits, so tests cannot compile Blade views or create filesystem fakes in
+production `storage`. A hostile-environment regression runs the real wrapper
+with production-like inherited settings and proves that a sentinel SQLite
+database remains untouched. The SQLite-backed suite runs serially. Browser
+package scripts create and destroy
 their own temporary SQLite database, seed it in `testing`, start a loopback
 server on an ephemeral port, and explicitly authorize only that isolated Node
 runner to mutate seeded state. Calling either underlying `.mjs` runner directly
@@ -663,6 +675,42 @@ Final evidence on 2026-08-03:
 Exact scope is in
 `docs/plans/forum-phase4-one-health-category-work-package.md`.
 
+## Phase 4 Animal-Science Category
+
+`ForumAnimalScienceCategoryTest` pins the exact category-25 number, stable key,
+slug, source name, purpose, all 54 ordered labels, synchronized child keys and
+positions, reviewed EN/LT/RU root rows, reviewed-only child fallback state,
+administrator-category preservation, stable public links, and server rejection
+of an unknown child key. It also protects the canonical fixed category-heading
+typography and the isolated package browser entrypoint.
+
+Evidence observed on 2026-08-30:
+
+- RED: five existing source/persistence/UI contracts passed while the shared
+  category heading failed because it used Georgia and a viewport-scaled
+  `clamp(1.25rem, 2vw, 1.65rem)` size; the browser-entry contract separately
+  failed before the package-specific wrapper existed;
+- focused GREEN: 7 tests and 104 assertions after the narrow SCSS correction
+  and isolated wrapper were present;
+- related category/cache/administration slice: 62 tests and 6,097 assertions;
+  localization, responsive, schema, and taxonomy-factory slice: 50 tests and
+  37,056 assertions;
+- exact manifest and deterministic requirement generation: 44 roots, 1,637
+  children, and 38,377 atomic requirements passed;
+- earlier isolated Chrome: 1440px English, 375px Lithuanian, 320px English
+  reflow, and 1024px Russian forced colors passed with exact localized root
+  copy, 54 stable children, both later-phase labels, Instrument Sans at 18px, visible
+  focus, 44px targets, zero overflow, zero raw keys, and zero console errors;
+- current isolated Chrome rerun: failed before launch while seeding unrelated
+  concurrent factory work; `ReviewFactory.php:69` rejected an incoherent
+  completed booking;
+- immutable-source reconstruction remains externally blocked by missing Codex
+  history entry `1785397895`, and the coverage gate remains externally blocked
+  because neither PCOV nor Xdebug is installed.
+
+Exact scope and final gate dispositions are in
+`docs/plans/forum-phase4-animal-science-category-work-package.md`.
+
 ## Forum Topic Editor Redesign Verification
 
 `ForumTopicEditorLayoutTest` protects the `/forum/ask` authoring contract. It
@@ -1260,6 +1308,21 @@ Observed package evidence on 2026-08-04:
 
 The reusable browser command is
 `npm run test:browser:page-identity`.
+
+## Place Submission Verification
+
+`PlaceSubmissionPublicationWorkflowTest` covers persistence privacy,
+append-only history, server validation, category rules, two-account isolation,
+member choices, manager/administrator capabilities, review transitions, replay
+conflicts, merge rollback/restore, redirects, notifications, rates, and
+Livewire routes. `PlaceSubmissionConcurrencyTest` uses two PHP processes
+against disposable SQLite to prove matching simultaneous submissions both
+survive and one receives a deterministic candidate.
+
+`php scripts/run-browser-check.php places` checks desktop/mobile directory and
+detail, invalid recovery, successful pending state, protected duplicate
+redaction, localization keys, touch targets, overflow, screenshots, and
+console errors on a disposable seeded database.
 
 ## Neighbor Profile Localization And Icon Verification
 

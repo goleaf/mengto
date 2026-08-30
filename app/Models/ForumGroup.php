@@ -18,6 +18,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 /**
  * @property int $active_member_count
@@ -301,6 +302,12 @@ final class ForumGroup extends Model
         return $this->belongsToMany(Taxon::class, 'forum_group_taxon')
             ->withPivot('is_primary')
             ->withTimestamps();
+    }
+
+    /** @return MorphMany<ForumReport, $this> */
+    public function subjectReports(): MorphMany
+    {
+        return $this->morphMany(ForumReport::class, 'subject');
     }
 
     private function translatedValue(?string $key, string $fallback): string

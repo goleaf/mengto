@@ -48,7 +48,7 @@ class ForumReportFactory extends ApplicationFactory
             'truthfulness_confirmed' => true,
             'deduplication_key' => hash('sha256', fake()->uuid()),
             'idempotency_key' => (string) Str::uuid(),
-            'metadata' => [],
+            'metadata' => ['source' => 'factory', 'version' => 1],
         ];
     }
 

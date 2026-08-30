@@ -358,3 +358,17 @@ Rollback drops only the new index and nullable column and is safe before a
 deployed consumer depends on recorded categories. After production values are
 used, retain them and deploy a reviewed forward fix rather than silently
 discarding user-supplied facts.
+
+## Place Submission Publication Migration
+
+`2026_08_30_120000_create_place_submission_publication_tables.php` is additive.
+It adds normalized and merge-destination columns to `places`, backfills
+identity values in bounded chunks, then creates the review, fact, candidate,
+event, redirect, identity-lock, and database-notification tables with
+restrictive foreign keys and leading indexes.
+
+Back up the database and record place counts before deployment. After migrate,
+verify normalized coverage and foreign keys, then smoke submission, duplicate
+review, publication, merge redirect, and protected redirect denial. Rollback
+is safe only before submissions or merges exist. After production writes, use
+a reviewed forward fix and retain audit, provenance, and redirect history.

@@ -11,6 +11,7 @@ use App\Models\CareMedia;
 use App\Models\CareTask;
 use App\Models\MedicalRecord;
 use App\Models\Medication;
+use App\Models\PetProfile;
 use App\Models\User;
 use Database\Seeders\CareJournalSeeder;
 use Illuminate\Http\UploadedFile;
@@ -388,15 +389,17 @@ test('care media factory keeps the attachment and entry in one journal', functio
 });
 
 test('the care journal reflects medication from the medical record without duplicating doses', function () {
+    $pet = PetProfile::factory()->for($this->authenticatedUser)->create([
+        'profile_key' => 'scout',
+        'slug' => 'scout',
+        'name' => 'Scout',
+    ]);
     $journal = CareJournal::factory()->create([
         'owner_key' => 'mia-carter',
-        'pet_profile_key' => 'scout',
+        'pet_profile_key' => $pet->slug,
         'pet_name' => 'Scout',
     ]);
-    $medicalRecord = MedicalRecord::factory()->create([
-        'owner_key' => 'mia-carter',
-        'pet_profile_key' => 'scout',
-    ]);
+    $medicalRecord = MedicalRecord::factory()->forPetProfile($pet)->create();
     Medication::factory()->for($medicalRecord)->create([
         'name' => 'Single source medication',
         'status' => 'active',

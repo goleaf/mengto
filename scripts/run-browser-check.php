@@ -10,6 +10,7 @@ $root = dirname(__DIR__);
 $checks = [
     'a11y' => ['scripts/accessibility-browser-check.mjs'],
     'groups' => ['scripts/accessibility-browser-check.mjs', '--groups-only'],
+    'animal-science' => ['scripts/accessibility-browser-check.mjs', '--animal-science-only'],
     'page-identity' => ['scripts/accessibility-browser-check.mjs', '--page-identity-only'],
     'places' => ['scripts/accessibility-browser-check.mjs', '--places-only'],
     'discover' => ['scripts/discovery-browser-check.mjs'],
@@ -23,11 +24,11 @@ if (! isset($checks[$name])) {
     exit(2);
 }
 
-$database = tempnam(sys_get_temp_dir(), 'pawcircle-browser-db-');
-$outputDirectory = sys_get_temp_dir().'/pawcircle-browser-output-'.bin2hex(random_bytes(8));
-$configCache = sys_get_temp_dir().'/pawcircle-browser-config-'.bin2hex(random_bytes(8)).'.php';
+$database = tempnam(sys_get_temp_dir(), 'laravel-browser-db-');
+$outputDirectory = sys_get_temp_dir().'/laravel-browser-output-'.bin2hex(random_bytes(8));
+$configCache = sys_get_temp_dir().'/laravel-browser-config-'.bin2hex(random_bytes(8)).'.php';
 
-if (! is_string($database) || ! str_starts_with($database, sys_get_temp_dir().DIRECTORY_SEPARATOR.'pawcircle-browser-db-')) {
+if (! is_string($database) || ! str_starts_with($database, sys_get_temp_dir().DIRECTORY_SEPARATOR.'laravel-browser-db-')) {
     throw new RuntimeException('Unable to create a verified temporary browser database.');
 }
 
@@ -156,7 +157,7 @@ try {
     }
 
     if (is_dir($outputDirectory)
-        && str_starts_with($outputDirectory, sys_get_temp_dir().DIRECTORY_SEPARATOR.'pawcircle-browser-output-')) {
+        && str_starts_with($outputDirectory, sys_get_temp_dir().DIRECTORY_SEPARATOR.'laravel-browser-output-')) {
         $iterator = new RecursiveIteratorIterator(
             new RecursiveDirectoryIterator($outputDirectory, FilesystemIterator::SKIP_DOTS),
             RecursiveIteratorIterator::CHILD_FIRST,

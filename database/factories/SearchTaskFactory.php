@@ -25,7 +25,10 @@ class SearchTaskFactory extends ApplicationFactory
             'safety_level' => 'standard',
             'starts_at' => now()->addHour(),
             'due_at' => now()->addHours(3),
-            'attachments' => [],
+            'attachments' => [[
+                'name' => 'sector-map.jpg',
+                'url' => asset('images/places/park-primary-lg.jpg'),
+            ]],
             'version' => 1,
         ];
     }

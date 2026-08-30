@@ -75,5 +75,6 @@ test('portal media urls convert stored paths and legacy storage urls', function 
         ->and($urls->for($expected))->toBe($expected)
         ->and($urls->for('https://images.example.test/topic.webp'))
         ->toBe('https://images.example.test/topic.webp')
-        ->and(config('filesystems.links'))->toBe([]);
+        ->and(config('filesystems.links'))->toBe([])
+        ->and(is_link(public_path('storage')))->toBeFalse();
 });

@@ -19,9 +19,13 @@ final class ForumTopicMoveFactory extends ApplicationFactory
     public function definition(): array
     {
         return [
-            'forum_topic_id' => ForumTopic::factory(),
+            'forum_topic_id' => ForumTopic::factory()->state([
+                'forum_category_id' => ForumCategory::factory(),
+            ]),
             'from_forum_category_id' => ForumCategory::factory(),
-            'to_forum_category_id' => ForumCategory::factory(),
+            'to_forum_category_id' => static fn (array $attributes): mixed => ForumTopic::query()
+                ->whereKey($attributes['forum_topic_id'])
+                ->value('forum_category_id'),
             'actor_user_id' => User::factory()->administrator(),
             'reason_code' => fake()->randomElement([
                 'category-correction',
@@ -34,19 +38,6 @@ final class ForumTopicMoveFactory extends ApplicationFactory
                 'preserve_redirect' => true,
             ],
         ];
-    }
-
-    public function configure(): static
-    {
-        return $this->afterMaking(static function (ForumTopicMove $move): void {
-            if ($move->forum_topic_id === null || $move->to_forum_category_id === null) {
-                return;
-            }
-
-            ForumTopic::query()
-                ->whereKey($move->forum_topic_id)
-                ->update(['forum_category_id' => $move->to_forum_category_id]);
-        });
     }
 
     public function initialPlacement(): static

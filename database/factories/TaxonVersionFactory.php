@@ -27,6 +27,7 @@ final class TaxonVersionFactory extends ApplicationFactory
             'scientific_name' => $name,
             'canonical_name' => $name,
             'normalized_scientific_name' => Str::lower($name),
+            'authorship' => 'Factory et al., 2026',
             'taxonomic_status' => 'accepted',
             'depth' => 1,
             'hierarchy_path' => null,

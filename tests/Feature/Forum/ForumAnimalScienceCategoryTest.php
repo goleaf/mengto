@@ -297,3 +297,19 @@ test('the animal science navigator uses the canonical fixed heading scale', func
         ->not->toContain('Georgia')
         ->not->toContain('Times New Roman');
 });
+
+test('the animal science browser matrix has an isolated package entrypoint', function () {
+    $browser = file_get_contents(base_path('scripts/accessibility-browser-check.mjs'));
+    $runner = file_get_contents(base_path('scripts/run-browser-check.php'));
+    $package = file_get_contents(base_path('package.json'));
+
+    expect($browser)
+        ->toContain("process.argv.includes('--animal-science-only')")
+        ->toContain("scope: 'animal-science'")
+        ->toContain("process.getuid() === 0 ? ['--no-sandbox'] : []")
+        ->toContain("await login(client, sessionId, 'user@example.com')")
+        ->and($runner)
+        ->toContain("'animal-science' => ['scripts/accessibility-browser-check.mjs', '--animal-science-only']")
+        ->and($package)
+        ->toContain('"test:browser:animal-science": "php scripts/run-browser-check.php animal-science"');
+});

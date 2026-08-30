@@ -177,6 +177,12 @@ final class Organization extends Model
         return $this->hasMany(Place::class);
     }
 
+    /** @return HasMany<PlaceSubmission, $this> */
+    public function placeSubmissions(): HasMany
+    {
+        return $this->hasMany(PlaceSubmission::class, 'canonical_organization_id');
+    }
+
     /** @return HasMany<Venue, $this> */
     public function venues(): HasMany
     {

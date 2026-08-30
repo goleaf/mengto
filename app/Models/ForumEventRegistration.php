@@ -148,7 +148,7 @@ final class ForumEventRegistration extends Model
         return $this->belongsTo(PetProfile::class);
     }
 
-    /** @return BelongsToMany<PetProfile, $this> */
+    /** @return BelongsToMany<PetProfile, $this, ForumEventRegistrationPet, 'pivot'> */
     public function pets(): BelongsToMany
     {
         return $this->belongsToMany(

@@ -165,6 +165,9 @@ use App\Livewire\Pets\ManagePetProfile;
 use App\Livewire\Pets\PetProfileAccessRequests;
 use App\Livewire\Pets\PetProfileInvitations;
 use App\Livewire\Pets\PublicPetProfile;
+use App\Livewire\Places\CreatePlaceSubmission;
+use App\Livewire\Places\PlaceModerationWorkspace;
+use App\Livewire\Places\PlaceSubmissionStatusPage;
 use App\Livewire\ProfileSettings;
 use App\Livewire\Social\RelationshipCenter;
 use Illuminate\Support\Facades\Route;
@@ -224,6 +227,20 @@ Route::middleware('web')
                         Route::get('/{petProfile:profile_key}', ManagePetProfile::class)
                             ->name('show');
                     });
+
+                Route::prefix('places/submissions')
+                    ->name('places.submissions.')
+                    ->middleware('verified')
+                    ->group(function (): void {
+                        Route::get('/new', CreatePlaceSubmission::class)
+                            ->middleware('throttle:30,1')
+                            ->name('create');
+                        Route::get('/{placeSubmission}', PlaceSubmissionStatusPage::class)
+                            ->name('show');
+                    });
+                Route::get('/places/moderation/submissions', PlaceModerationWorkspace::class)
+                    ->middleware(['verified', 'throttle:60,1'])
+                    ->name('places.moderation.submissions');
 
                 Route::get('/circle', CirclePreviewController::class)->name('circle.index');
                 Route::get('/circle/connections', ConnectionCenterPreviewController::class)

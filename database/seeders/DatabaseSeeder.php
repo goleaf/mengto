@@ -162,6 +162,7 @@ class DatabaseSeeder extends Seeder
         $this->call(ForumEventDemoSeeder::class);
         $this->call(PlaceAuthoritySeeder::class);
         $this->call(PlaceDemoSeeder::class);
+        $this->call(PlaceSubmissionDemoSeeder::class);
         $this->call(ForumEventLifecycleBackfillSeeder::class);
         $this->call(ListingSeeder::class);
         $this->call(AdoptionCaseSeeder::class);
@@ -175,10 +176,12 @@ class DatabaseSeeder extends Seeder
         $this->call(SocialActorFoundationSeeder::class);
         $this->call(DiscoveryDemoSeeder::class);
         $this->call(RepresentativeDomainSeeder::class);
+        $this->call(RepresentativeFieldCoverageSeeder::class);
 
         // Representative factories can introduce new parent aggregates. Run
         // idempotent foundation/backfill passes once more so a fresh seed is
         // complete on its first execution.
+        $this->call(AdoptionCaseSeeder::class);
         $this->call(PetProfileFoundationSeeder::class);
         $this->call(SocialActorFoundationSeeder::class);
         $this->call(ForumTopicLifecycleBackfillSeeder::class);
@@ -192,9 +195,23 @@ class DatabaseSeeder extends Seeder
     /** @param array<string, mixed> $attributes */
     private function demoUser(array $attributes): User
     {
-        $user = User::query()->firstOrNew([
-            'actor_key' => $attributes['actor_key'],
-        ]);
+        $actorKey = (string) $attributes['actor_key'];
+        $email = (string) $attributes['email'];
+        $actorUser = User::query()->where('actor_key', $actorKey)->first();
+        $emailUser = User::query()->where('email', $email)->first();
+
+        if (
+            ($actorUser instanceof User && $actorUser->email !== $email)
+            ||
+            ($emailUser instanceof User && $emailUser->actor_key !== $actorKey)
+            || ($actorUser instanceof User && $emailUser instanceof User && ! $actorUser->is($emailUser))
+        ) {
+            throw new LogicException(
+                "Demo identity conflict for actor {$actorKey} and email {$email}.",
+            );
+        }
+
+        $user = $actorUser ?? $emailUser ?? new User;
         $user->forceFill($attributes)->save();
 
         return $user;

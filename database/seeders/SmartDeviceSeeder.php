@@ -17,13 +17,19 @@ use App\Models\DevicePetAssignment;
 use App\Models\DeviceReading;
 use App\Models\DeviceSafeZone;
 use App\Models\SmartDevice;
+use App\Models\User;
 use Carbon\CarbonImmutable;
+use Database\Seeders\Concerns\GuardsDemoSeeding;
 use Illuminate\Database\Seeder;
 
 class SmartDeviceSeeder extends Seeder
 {
+    use GuardsDemoSeeding;
+
     public function run(): void
     {
+        $this->assertDemoSeedingIsAllowed();
+
         $now = CarbonImmutable::now();
 
         $gps = $this->device('scout-trail-gps', [
@@ -435,9 +441,14 @@ class SmartDeviceSeeder extends Seeder
     /** @param array<string, mixed> $attributes */
     private function device(string $slug, array $attributes): SmartDevice
     {
+        $ownerId = User::query()
+            ->where('actor_key', 'mia-carter')
+            ->valueOrFail('id');
+
         return SmartDevice::query()->updateOrCreate(
             ['owner_key' => 'mia-carter', 'slug' => $slug],
             [
+                'owner_id' => $ownerId,
                 'privacy' => 'private',
                 'operating_mode' => 'normal',
                 'has_backup_power' => false,

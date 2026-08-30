@@ -30,7 +30,7 @@ final class ContentMediaAssetFactory extends ApplicationFactory
             'byte_size' => 150_000,
             'checksum_sha256' => hash('sha256', $key),
             'alt_text' => fake()->sentence(),
-            'licence' => null,
+            'licence' => 'all-rights-reserved',
             'safe_metadata' => ['gps_removed' => true],
             'retained_until' => null,
         ];

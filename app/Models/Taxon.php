@@ -56,6 +56,12 @@ final class Taxon extends Model
         return $this->belongsTo(self::class, 'original_taxon_id');
     }
 
+    /** @return HasMany<Taxon, $this> */
+    public function derivedTaxa(): HasMany
+    {
+        return $this->hasMany(self::class, 'original_taxon_id');
+    }
+
     /** @return HasMany<TaxonVersion, $this> */
     public function versions(): HasMany
     {

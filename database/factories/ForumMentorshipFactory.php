@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Database\Factories;
 
 use App\Enums\ForumMentorshipState;
-use App\Enums\ForumMentorshipType;
 use App\Models\ForumMentorScope;
 use App\Models\ForumMentorship;
 use App\Models\User;
@@ -20,9 +19,14 @@ final class ForumMentorshipFactory extends ApplicationFactory
     {
         return [
             'forum_mentor_scope_id' => ForumMentorScope::factory(),
-            'mentor_user_id' => null,
+            'mentor_user_id' => static fn (array $attributes): mixed => ForumMentorScope::query()
+                ->whereKey($attributes['forum_mentor_scope_id'])
+                ->join('forum_mentor_profiles', 'forum_mentor_profiles.id', '=', 'forum_mentor_scopes.forum_mentor_profile_id')
+                ->value('forum_mentor_profiles.user_id'),
             'mentee_user_id' => User::factory(),
-            'mentorship_type' => ForumMentorshipType::FirstTimeOwner,
+            'mentorship_type' => static fn (array $attributes): mixed => ForumMentorScope::query()
+                ->whereKey($attributes['forum_mentor_scope_id'])
+                ->value('mentorship_type'),
             'state' => ForumMentorshipState::Requested,
             'language' => 'en',
             'location_scope' => 'lt-vilnius',
@@ -35,22 +39,6 @@ final class ForumMentorshipFactory extends ApplicationFactory
             'idempotency_key' => 'factory:request:'.Str::uuid()->toString(),
             'metadata' => [],
         ];
-    }
-
-    public function configure(): static
-    {
-        return $this->afterMaking(static function (ForumMentorship $mentorship): void {
-            if ($mentorship->forum_mentor_scope_id === null) {
-                return;
-            }
-
-            $scope = $mentorship->scope()->with('profile:id,user_id')->firstOrFail();
-            $scope->update([
-                'mentorship_type' => $mentorship->mentorship_type,
-            ]);
-
-            $mentorship->mentor_user_id = $scope->profile->user_id;
-        });
     }
 
     public function active(): static

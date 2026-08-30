@@ -33,4 +33,18 @@ class PublicationFactory extends ApplicationFactory
             'published_at' => now()->subMonths(2),
         ];
     }
+
+    public function configure(): static
+    {
+        return $this->afterCreating(static function (Publication $publication): void {
+            $publicationCount = Publication::query()
+                ->where('expert_profile_id', $publication->expert_profile_id)
+                ->published()
+                ->count();
+
+            ExpertProfile::query()
+                ->whereKey($publication->expert_profile_id)
+                ->update(['publication_count' => $publicationCount]);
+        });
+    }
 }

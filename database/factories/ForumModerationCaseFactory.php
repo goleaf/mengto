@@ -20,7 +20,7 @@ final class ForumModerationCaseFactory extends ApplicationFactory
             'opened_by_user_id' => User::factory()->administrator(),
             'summary_translation_key' => 'forum_moderation.messages.case_opened',
             'review_due_at' => now()->addDays(3),
-            'metadata' => [],
+            'metadata' => ['source' => 'factory', 'version' => 1],
         ];
     }
 }

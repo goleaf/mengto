@@ -80,6 +80,7 @@ final class Place extends Model
         'slug',
         'creation_idempotency_key',
         'name',
+        'normalized_name',
         'summary',
         'type',
         'catalog_category',
@@ -88,8 +89,12 @@ final class Place extends Model
         'locale',
         'public_region',
         'public_address',
+        'normalized_address',
         'public_phone',
+        'normalized_phone',
+        'normalized_email',
         'public_website',
+        'normalized_website',
         'public_email',
         'public_latitude',
         'public_longitude',
@@ -111,6 +116,7 @@ final class Place extends Model
         'lock_version',
         'metadata',
         'archived_at',
+        'merged_into_place_id',
     ];
 
     protected $hidden = [
@@ -120,6 +126,11 @@ final class Place extends Model
         'exact_longitude',
         'private_instructions',
         'metadata',
+        'normalized_name',
+        'normalized_address',
+        'normalized_phone',
+        'normalized_email',
+        'normalized_website',
     ];
 
     protected $attributes = [
@@ -214,6 +225,42 @@ final class Place extends Model
     public function questions(): HasMany
     {
         return $this->hasMany(PlaceQuestion::class);
+    }
+
+    /** @return HasMany<PlaceFact, $this> */
+    public function facts(): HasMany
+    {
+        return $this->hasMany(PlaceFact::class);
+    }
+
+    /** @return BelongsTo<Place, $this> */
+    public function mergedInto(): BelongsTo
+    {
+        return $this->belongsTo(self::class, 'merged_into_place_id');
+    }
+
+    /** @return HasMany<Place, $this> */
+    public function mergedPlaces(): HasMany
+    {
+        return $this->hasMany(self::class, 'merged_into_place_id');
+    }
+
+    /** @return HasMany<PlaceMergeRedirect, $this> */
+    public function mergeRedirects(): HasMany
+    {
+        return $this->hasMany(PlaceMergeRedirect::class, 'source_place_id');
+    }
+
+    /** @return HasMany<PlaceSubmission, $this> */
+    public function publishedSubmissions(): HasMany
+    {
+        return $this->hasMany(PlaceSubmission::class, 'published_place_id');
+    }
+
+    /** @return HasMany<PlaceSubmission, $this> */
+    public function linkedSubmissions(): HasMany
+    {
+        return $this->hasMany(PlaceSubmission::class, 'linked_place_id');
     }
 
     /** @return HasMany<ForumEvent, $this> */
@@ -312,7 +359,8 @@ final class Place extends Model
 
         $membership = $this->organization?->membershipFor($user);
 
-        return $membership?->role->canManagePlaces() === true;
+        return $this->organization?->isActive() === true
+            && $membership?->role->canManagePlaces() === true;
     }
 
     public function isVisibleToOrganizationMember(User $user): bool

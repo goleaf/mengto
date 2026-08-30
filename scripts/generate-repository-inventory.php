@@ -69,8 +69,9 @@ function firstPartyMarkdownFiles(string $root): array
         ->files()
         ->in($root)
         ->name('*.md')
+        ->ignoreDotFiles(false)
         ->exclude([
-            '.agents', '.claude', '.cursor', '.git', '.playwright-cli',
+            '.git', '.playwright-cli',
             'bootstrap/cache', 'node_modules', 'storage', 'vendor',
         ]);
 
@@ -86,26 +87,20 @@ function firstPartyMarkdownFiles(string $root): array
 /** @return array{string, string} */
 function markdownAuthority(string $path, array $indexedStatuses): array
 {
-    if (isset($indexedStatuses[$path])) {
-        $status = $indexedStatuses[$path];
-
-        if (str_contains(strtolower($status), 'generated')) {
-            return ['Canonical generated evidence', 'Registered by `docs/index.md`: '.$status];
-        }
-
-        if (str_contains(strtolower($status), 'superseded') || str_contains(strtolower($status), 'historical')) {
-            return ['Historical / superseded', 'Registered by `docs/index.md`: '.$status];
-        }
-
-        return ['Canonical / living', 'Registered by `docs/index.md`: '.$status];
-    }
-
     if (in_array($path, ['AGENTS.md', 'PRODUCT.md', 'DESIGN.md', 'SECURITY.md', 'CHANGELOG.md'], true)) {
         return ['Canonical / living', 'Root repository contract or source of truth'];
     }
 
     if (in_array($path, ['README.md', 'CLAUDE.md'], true)) {
         return ['Supporting', 'Repository entry point or contributor adapter'];
+    }
+
+    if (str_starts_with($path, '.agents/') || str_starts_with($path, '.claude/') || str_starts_with($path, '.cursor/')) {
+        return ['Tooling mirror', 'Repository-local agent guidance subordinate to `AGENTS.md`'];
+    }
+
+    if ($path === 'docs/index.md') {
+        return ['Canonical / living', 'Documentation source-of-truth index required by `AGENTS.md`'];
     }
 
     if (str_starts_with($path, 'docs/superpowers/plans/') || str_starts_with($path, 'docs/superpowers/specs/')) {
@@ -136,6 +131,20 @@ function markdownAuthority(string $path, array $indexedStatuses): array
         return ['Canonical requirement or generated evidence', 'Authority resolved by `docs/requirements.md` and repository precedence'];
     }
 
+    if (isset($indexedStatuses[$path])) {
+        $status = $indexedStatuses[$path];
+
+        if (str_contains(strtolower($status), 'generated')) {
+            return ['Canonical generated evidence', 'Registered by `docs/index.md`: '.$status];
+        }
+
+        if (str_contains(strtolower($status), 'superseded') || str_contains(strtolower($status), 'historical')) {
+            return ['Historical / superseded', 'Registered by `docs/index.md`: '.$status];
+        }
+
+        return ['Canonical / living', 'Registered by `docs/index.md`: '.$status];
+    }
+
     return ['Supporting', 'Unregistered first-party Markdown; not an independent source of authority'];
 }
 
@@ -147,6 +156,14 @@ $routes = array_values(array_filter(
     $routes,
     static fn (array $route): bool => ! str_starts_with((string) ($route['name'] ?? ''), 'boost.'),
 ));
+
+foreach ($routes as &$route) {
+    if (str_starts_with((string) ($route['name'] ?? ''), 'generated::')) {
+        $route['name'] = null;
+    }
+}
+
+unset($route);
 
 usort($routes, static fn (array $left, array $right): int => [
     $left['uri'], $left['method'], $left['name'] ?? '',
@@ -194,7 +211,7 @@ foreach ($migrations as $migration) {
 
     preg_match_all('/Schema::create\(\s*[\'\"]([^\'\"]+)[\'\"]/', $source, $matches);
 
-    foreach ($matches[1] ?? [] as $table) {
+    foreach ($matches[1] as $table) {
         $tables[$table] = $migration;
     }
 }
@@ -326,7 +343,7 @@ $output .= inventorySection('First-party cache or atomic-lock consumers', $cache
 $output .= inventorySection('First-party outbound HTTP/client consumers', $integrationConsumers);
 
 $output .= "## Complete First-Party Markdown Authority Inventory\n\n";
-$output .= 'This table classifies every first-party Markdown file outside contributor-tool, dependency, runtime, and browser-artifact trees. Governing precedence remains `AGENTS.md` -> nested instructions -> canonical requirements -> security/privacy/data integrity -> architecture decisions -> canonical plan -> accurate tests -> code -> historical evidence.'."\n\n";
+$output .= 'This table classifies every first-party Markdown file outside dependency, runtime, and browser-artifact trees. Repository-local agent and editor guidance is included as a tooling mirror and remains subordinate to `AGENTS.md`. Governing precedence remains `AGENTS.md` -> nested instructions -> canonical requirements -> security/privacy/data integrity -> architecture decisions -> canonical plan -> accurate tests -> code -> historical evidence.'."\n\n";
 $output .= '| Path | Authority classification | Evidence / precedence note |'."\n";
 $output .= '| --- | --- | --- |'."\n";
 
@@ -344,7 +361,10 @@ $sections = [
         'public/index.php',
     ], static fn (string $path): bool => file_exists($root.'/'.$path))),
     'Route definitions' => inventoryFiles($root, 'routes', ['php']),
-    'Framework bootstrap files' => inventoryFiles($root, 'bootstrap', ['php']),
+    'Framework bootstrap files' => withoutPrefix(
+        inventoryFiles($root, 'bootstrap', ['php']),
+        'bootstrap/cache/',
+    ),
     'Configuration files' => inventoryFiles($root, 'config', ['php']),
     'Application providers' => inventoryFiles($root, 'app/Providers', ['php']),
     'Console commands' => inventoryFiles($root, 'app/Console/Commands', ['php']),
@@ -394,4 +414,30 @@ foreach ($sections as $title => $paths) {
     $output .= inventorySection($title, $paths);
 }
 
-fwrite(STDOUT, rtrim($output)."\n");
+$output = rtrim($output)."\n";
+$outputPath = $root.'/docs/audits/repository-inventory.md';
+$arguments = array_slice($_SERVER['argv'] ?? [], 1);
+
+if (in_array('--write', $arguments, true)) {
+    if (file_put_contents($outputPath, $output) === false) {
+        fwrite(STDERR, "Unable to write {$outputPath}.\n");
+        exit(1);
+    }
+
+    fwrite(STDOUT, "Generated docs/audits/repository-inventory.md.\n");
+    exit(0);
+}
+
+if (in_array('--check', $arguments, true)) {
+    $current = is_file($outputPath) ? file_get_contents($outputPath) : false;
+
+    if (! is_string($current) || ! hash_equals($output, $current)) {
+        fwrite(STDERR, "docs/audits/repository-inventory.md is stale.\n");
+        exit(1);
+    }
+
+    fwrite(STDOUT, "docs/audits/repository-inventory.md is current.\n");
+    exit(0);
+}
+
+fwrite(STDOUT, $output);

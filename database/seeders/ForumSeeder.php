@@ -11,17 +11,29 @@ use App\Models\ForumNotification;
 use App\Models\ForumTopic;
 use App\Models\KnowledgeArticle;
 use App\Models\KnowledgeVersion;
+use App\Models\User;
+use Database\Seeders\Concerns\GuardsDemoSeeding;
 use Illuminate\Database\Seeder;
+use LogicException;
 
 class ForumSeeder extends Seeder
 {
+    use GuardsDemoSeeding;
+
     public function run(): void
     {
-        if (ForumTopic::query()->exists()) {
+        $this->assertDemoSeedingIsAllowed();
+
+        if (ForumTopic::query()->where('slug', 'calm-lift-entry-after-loud-noise')->exists()) {
+            $this->assertExistingGraphIsComplete();
+
             return;
         }
 
+        $mia = User::query()->where('actor_key', 'mia-carter')->firstOrFail();
+
         $elevator = ForumTopic::factory()->create([
+            'author_id' => $mia->id,
             'author_key' => 'mia-carter',
             'author_name' => 'Mia Carter',
             'author_initials' => 'MC',
@@ -40,7 +52,7 @@ class ForumSeeder extends Seeder
             'last_activity_at' => now()->subMinutes(18),
             'media' => [[
                 'type' => 'image',
-                'path' => 'https://images.unsplash.com/photo-1558788353-f76d92427f16?auto=format&fit=crop&w=1400&q=85',
+                'path' => asset('images/places/dog-park-primary-lg.jpg'),
                 'alt' => 'Dog waiting calmly near a building entrance',
                 'sensitive' => false,
             ]],
@@ -175,6 +187,7 @@ class ForumSeeder extends Seeder
         ]);
 
         $carrier = ForumTopic::factory()->resolved()->create([
+            'author_id' => $mia->id,
             'author_key' => 'mia-carter',
             'author_name' => 'Mia Carter',
             'author_initials' => 'MC',
@@ -195,7 +208,7 @@ class ForumSeeder extends Seeder
             'last_activity_at' => now()->subDay(),
             'media' => [[
                 'type' => 'image',
-                'path' => 'https://images.unsplash.com/photo-1573865526739-10659fec78a5?auto=format&fit=crop&w=1400&q=85',
+                'path' => asset('images/places/community-secondary-lg.jpg'),
                 'alt' => 'A relaxed cat resting beside a soft blanket',
                 'sensitive' => false,
             ]],
@@ -247,6 +260,7 @@ class ForumSeeder extends Seeder
         ]);
 
         ForumTopic::factory()->draft()->create([
+            'author_id' => $mia->id,
             'author_key' => 'mia-carter',
             'author_name' => 'Mia Carter',
             'author_initials' => 'MC',
@@ -356,5 +370,87 @@ class ForumSeeder extends Seeder
             'edited_by' => 'Sofia Arden',
             'change_summary' => 'Initial guide with a choice-based handling review.',
         ]);
+    }
+
+    private function assertExistingGraphIsComplete(): void
+    {
+        $topicSlugs = [
+            'calm-lift-entry-after-loud-noise',
+            'dog-breathing-heavily-and-unable-to-stand',
+            'documents-for-dog-travel-lithuania-poland',
+            'bird-veterinarian-in-vilnius',
+            'helping-a-cat-feel-safe-in-a-carrier',
+            'welcoming-a-senior-shelter-dog',
+            'gps-collar-features-that-matter-on-trails',
+            'quiet-winter-walk-checklist-draft',
+        ];
+        $articleSlugs = [
+            'dog-travel-documents-lithuania-to-poland',
+            'help-a-cat-feel-safe-in-a-carrier',
+        ];
+
+        $topics = ForumTopic::query()
+            ->whereIn('slug', $topicSlugs)
+            ->get()
+            ->keyBy('slug');
+        $articles = KnowledgeArticle::query()
+            ->whereIn('slug', $articleSlugs)
+            ->get()
+            ->keyBy('slug');
+        $answersComplete = collect([
+            'calm-lift-entry-after-loud-noise' => 'eva-jonas',
+            'dog-breathing-heavily-and-unable-to-stand' => 'dr-emilia',
+            'documents-for-dog-travel-lithuania-poland' => 'ruta-and-milo',
+            'bird-veterinarian-in-vilnius' => 'paws-24-team',
+            'helping-a-cat-feel-safe-in-a-carrier' => 'sofia-behavior',
+        ])->every(
+            static fn (string $authorKey, string $slug): bool => isset($topics[$slug])
+                && ForumAnswer::query()
+                    ->where('topic_id', $topics[$slug]->id)
+                    ->where('author_key', $authorKey)
+                    ->exists(),
+        );
+        $commentsComplete = isset($topics['calm-lift-entry-after-loud-noise'])
+            && ForumComment::query()
+                ->where('topic_id', $topics['calm-lift-entry-after-loud-noise']->id)
+                ->whereIn('author_key', ['mia-carter', 'eva-jonas'])
+                ->count() >= 2;
+        $engagementsComplete = collect([
+            'documents-for-dog-travel-lithuania-poland',
+            'calm-lift-entry-after-loud-noise',
+        ])->every(
+            static fn (string $slug): bool => isset($topics[$slug])
+                && ForumEngagement::query()
+                    ->where('topic_id', $topics[$slug]->id)
+                    ->where('user_key', 'mia-carter')
+                    ->exists(),
+        );
+        $notificationsComplete = ForumNotification::query()
+            ->whereIn('deduplication_key', [
+                'seed:elevator:expert:mia',
+                'seed:carrier:knowledge:mia',
+            ])
+            ->count() === 2;
+        $versionsComplete = $articles->count() === count($articleSlugs)
+            && $articles->every(
+                static fn (KnowledgeArticle $article): bool => $article->versions()->exists(),
+            );
+        $acceptedAnswersComplete = collect([
+            'documents-for-dog-travel-lithuania-poland',
+            'helping-a-cat-feel-safe-in-a-carrier',
+        ])->every(
+            static fn (string $slug): bool => isset($topics[$slug])
+                && $topics[$slug]->accepted_answer_id !== null,
+        );
+
+        if ($topics->count() !== count($topicSlugs)
+            || ! $answersComplete
+            || ! $commentsComplete
+            || ! $engagementsComplete
+            || ! $notificationsComplete
+            || ! $versionsComplete
+            || ! $acceptedAnswersComplete) {
+            throw new LogicException('The deterministic forum demo graph is partially present.');
+        }
     }
 }

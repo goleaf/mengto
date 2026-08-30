@@ -10,8 +10,9 @@ record remains preserved as historical evidence.
 
 - The root `AGENTS.md` is the only applicable instruction file. No nested
   `AGENTS.md` or `AGENTS.override.md` exists.
-- The initial 235 first-party Markdown files were classified; concurrent work
-  raised the live inventory to 241. The exact per-path classification, routes,
+- The current 350 first-party Markdown files were classified: 244 product,
+  engineering, audit, and plan documents plus 106 repository-local tooling
+  mirrors. The exact per-path classification, routes,
   tables, roles, and complete first-party symbol/file lists are generated in
   `docs/audits/repository-inventory.md`. `docs/events/index.md` is canonical
   and `docs/events.md` is historical.
@@ -25,15 +26,15 @@ record remains preserved as historical evidence.
 
 | Surface | Observed 2026-08-30 |
 | --- | ---: |
-| Routes | 180 runtime / 179 audited after excluding Boost's development route; 167 first-party actions; 173 named |
+| Routes | 180 runtime / 174 from `--except-vendor`; 167 first-party actions |
 | Controllers / middleware / Form Requests | 147 / 9 / 67 |
 | Actions / Services / models / policies | 226 / 155 / 204 / 47 |
-| Livewire PHP / components / form objects | 86 / 37 / 49 |
+| Livewire PHP / renderable components / base component / form objects | 86 / 36 / 1 / 49 |
 | Blade views / anonymous components | 357 / 246 |
 | Migrations / named tables / isolated runtime tables | 139 / 218 / 219 |
-| Model factories / seeders | 204 / 42 |
-| Factory helpers / enum-backed states | 248 / 1,521 |
-| Test PHP files / Pest declarations | 128 / 1,025 |
+| Model factories / seeders | 204 / 44 |
+| Factory helpers / enum-backed states | 251 / 1,521 |
+| Test/support PHP files / `*Test.php` files / Pest declarations | 138 / 129 / 1,051 |
 | Resource JavaScript / CSS-SCSS files | 9 / 32 |
 
 There are no first-party Jobs, Events, Listeners, Notifications, outbound HTTP
@@ -46,13 +47,13 @@ verification uses only operating-system temporary database paths.
 | Surface | Observed baseline |
 | --- | --- |
 | PHP / Composer / Node / npm | 8.5.8 / 2.10.2 / 26.4.0 / 12.0.1 |
-| Laravel / Livewire | 13.23.0 / 4.3.4 |
-| Tailwind / Vite / Laravel Vite plugin | 4.3.3 / 8.2.0 / 3.1.3 |
-| Pest / PHPUnit / Larastan | 4.7.5 / 12.5.30 / 3.10.0 |
-| Composer audit | Failed: six advisories in CommonMark 2.8.3 |
-| Official-registry npm audit | Failed: high Nano ID 3.3.16 advisory |
-| Canonical Artisan suite | Failed at the inherited 128 MiB memory limit |
-| Pint / Larastan / Vite build | Passed before repair |
+| Laravel / Livewire | 13.29.0 / 4.4.2 |
+| Tailwind / Vite / Laravel Vite plugin | 4.3.3 / 8.2.2 / 3.2.0 |
+| Pest / PHPUnit / Larastan | 4.7.8 / 12.5.33 / 3.10.0 |
+| Composer strict validation / locked audit / platform check | Passed; zero advisories |
+| Official-registry npm audit | Passed; zero vulnerabilities; configured mirror audit endpoint returned 404 |
+| Canonical Artisan suite | Serial execution required; a parallel wrapper attempt was invalid and received signal 11 |
+| Current Vite production build | Passed with Vite 8.2.2 |
 | Isolated fresh migration and repeat seed | Passed: 139 migrations, 219 tables, five users after each seed |
 | Forum requirement generation | Failed at 128 MiB; 1 GiB run proved committed generated output stale |
 
@@ -73,6 +74,24 @@ The immediate repair boundary is deliberately narrow:
   declare direct runtime/engine requirements.
 
 ### Implemented Foundational Repairs
+
+The current `AUD2` revalidation additionally established these bounded
+repairs with failing-before and passing-after evidence:
+
+- `UpdateForumCategorySettings` reauthorizes the actor, locks the category,
+  persists category and localized translation state in one transaction, and
+  invalidates category-tree caches only after success. `AdminDashboard`
+  validates browser state and delegates the one operation.
+- `AdoptionDemoSeeder` and `CollaborativeGuideDemoSeeder` now fail closed when
+  invoked directly outside the configured demo environments, before querying
+  or mutating domain rows.
+- the repository inventory normalizes framework-generated route names,
+  classifies all 350 Markdown paths including tooling mirrors, preserves
+  `docs/index.md` and root-document authority, and produces byte-identical
+  output on consecutive runs;
+- the prohibited local `public/storage` symlink was removed after its target
+  was verified to contain only the retained `.gitignore`; private media remain
+  route-authorized and `config('filesystems.links')` remains empty.
 
 - Policy authorization no longer has a global administrator bypass; real Gate
   tests cover private care, medical, device, order, search, and forum records.

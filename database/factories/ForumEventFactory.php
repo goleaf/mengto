@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Database\Factories;
 
 use App\Actions\InitializeForumEventLifecycle;
-use App\Enums\ForumEventFormat;
 use App\Enums\ForumEventAccessibilityStatus;
+use App\Enums\ForumEventFormat;
 use App\Enums\ForumEventPetParticipation;
 use App\Enums\ForumEventPhotoConsent;
 use App\Enums\ForumEventRegistrationPolicy;
@@ -227,7 +227,15 @@ final class ForumEventFactory extends ApplicationFactory
 
     public function live(): static
     {
-        return $this->withStatus(ForumEventStatus::Live);
+        return $this->state(function (): array {
+            $startsAt = now()->subMinutes(30);
+
+            return [
+                'status' => ForumEventStatus::Live,
+                'starts_at' => $startsAt,
+                'ends_at' => $startsAt->clone()->addHours(2),
+            ];
+        });
     }
 
     public function archived(): static

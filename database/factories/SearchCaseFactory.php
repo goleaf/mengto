@@ -8,6 +8,7 @@ use App\Enums\ModerationStatus;
 use App\Enums\SearchCaseType;
 use App\Enums\SearchStatus;
 use App\Models\SearchCase;
+use App\Models\User;
 use Illuminate\Support\Str;
 
 /**
@@ -17,22 +18,25 @@ class SearchCaseFactory extends ApplicationFactory
 {
     public function definition(): array
     {
-        $name = fake()->randomElement(['Scout', 'Nori', 'Luna', 'Kesha']);
-        $ownerKey = fake()->unique()->userName();
+        $name = fake()->unique()->firstName();
+        $petProfileKey = Str::slug($name).'-'.Str::lower((string) Str::ulid());
 
         return [
-            'owner_key' => $ownerKey,
+            'owner_id' => static fn (array $attributes): mixed => User::query()
+                ->where('actor_key', (string) $attributes['owner_key'])
+                ->value('id') ?? User::factory(),
+            'owner_key' => fake()->unique()->userName(),
             'owner_name' => fake()->name(),
             'owner_initials' => fake()->lexify('??'),
-            'coordinator_key' => $ownerKey,
+            'coordinator_key' => fake()->unique()->userName(),
             'coordinator_name' => fake()->name(),
             'slug' => Str::slug($name.' missing '.Str::random(7)),
             'public_code' => Str::upper(Str::random(8)),
-            'active_key' => $ownerKey.':'.Str::lower($name),
+            'active_key' => fake()->unique()->userName().':'.Str::lower($name),
             'type' => SearchCaseType::Lost,
             'status' => SearchStatus::Active,
             'moderation_status' => ModerationStatus::Approved,
-            'pet_profile_key' => Str::lower($name),
+            'pet_profile_key' => $petProfileKey,
             'pet_name' => $name,
             'species' => 'dog',
             'breed' => 'Mixed breed',
@@ -69,9 +73,9 @@ class SearchCaseFactory extends ApplicationFactory
             'volunteer_join_open' => true,
             'animal_secured' => false,
             'contact_protected' => true,
-            'contact_details' => ['channel' => 'platform', 'value' => 'mia-carter'],
-            'contact_token' => Str::random(48),
-            'cover_url' => '/images/places/park-primary-lg.jpg',
+            'contact_details' => ['channel' => 'platform', 'value' => fake()->unique()->userName()],
+            'contact_token' => hash('sha256', (string) Str::uuid()),
+            'cover_url' => asset('images/places/park-primary-lg.jpg'),
             'photos' => [],
             'risk_flags' => [],
             'animal_snapshot' => [
@@ -87,6 +91,31 @@ class SearchCaseFactory extends ApplicationFactory
             'lock_version' => 1,
             'view_count' => fake()->numberBetween(20, 500),
         ];
+    }
+
+    public function configure(): static
+    {
+        return $this->afterMaking(function (SearchCase $case): void {
+            if ($case->owner_id === null) {
+                return;
+            }
+
+            $owner = User::query()->where('actor_key', $case->owner_key)->first()
+                ?? User::query()->findOrFail($case->owner_id);
+
+            $case->owner_id = $owner->id;
+            $case->owner_key = $owner->actor_key;
+            $case->owner_name = $owner->name;
+            $case->owner_initials = self::initials($owner->name);
+            $case->coordinator_key = $owner->actor_key;
+            $case->coordinator_name = $owner->name;
+            $case->active_key = ! $case->status->isClosed()
+                && in_array($case->type, [SearchCaseType::Lost, SearchCaseType::Stolen], true)
+                && filled($case->pet_profile_key)
+                    ? $owner->actor_key.':'.$case->pet_profile_key
+                    : null;
+            $case->contact_details = ['channel' => 'platform', 'value' => $owner->actor_key];
+        });
     }
 
     public function found(): static
@@ -154,5 +183,14 @@ class SearchCaseFactory extends ApplicationFactory
             'closed_at' => now(),
             'closure_reason' => SearchStatus::Reunited->value,
         ]);
+    }
+
+    private static function initials(string $name): string
+    {
+        return collect(preg_split('/\s+/', trim($name)) ?: [])
+            ->filter()
+            ->take(2)
+            ->map(static fn (string $part): string => Str::upper(Str::substr($part, 0, 1)))
+            ->implode('');
     }
 }

@@ -8,6 +8,7 @@ use App\Enums\DeviceConnectionStatus;
 use App\Enums\DeviceStatus;
 use App\Enums\DeviceType;
 use App\Models\SmartDevice;
+use App\Models\User;
 use Illuminate\Support\Str;
 
 /**
@@ -28,13 +29,17 @@ class SmartDeviceFactory extends ApplicationFactory
         ]);
 
         return [
-            'owner_key' => 'mia-carter',
+            'owner_id' => static fn (array $attributes): mixed => User::query()
+                ->where('actor_key', (string) $attributes['owner_key'])
+                ->value('id') ?? User::factory(),
+            'owner_key' => fake()->unique()->userName(),
             'slug' => Str::slug($name.'-'.fake()->unique()->numerify('####')),
             'name' => $name,
             'type' => fake()->randomElement(DeviceType::cases()),
             'brand' => fake()->company(),
             'model' => fake()->bothify('Pet-##??'),
             'serial_number' => fake()->bothify('SN-########'),
+            'image_url' => asset('images/places/pet-store-primary-md.jpg'),
             'public_zone_label' => 'Home area',
             'private_location_label' => 'Private room inside the home',
             'privacy' => 'private',
@@ -51,6 +56,8 @@ class SmartDeviceFactory extends ApplicationFactory
             'location_retention_days' => 30,
             'media_retention_days' => 7,
             'telemetry_retention_days' => 365,
+            'safety_state' => null,
+            'safety_state_recorded_at' => null,
             'has_backup_power' => true,
             'supports_local_operation' => true,
             'requires_cloud' => false,
@@ -59,5 +66,33 @@ class SmartDeviceFactory extends ApplicationFactory
             'is_reported_stolen' => false,
             'lock_version' => 1,
         ];
+    }
+
+    public function configure(): static
+    {
+        return $this->afterMaking(function (SmartDevice $device): void {
+            if ($device->owner_id === null) {
+                return;
+            }
+
+            $owner = User::query()->where('actor_key', $device->owner_key)->first()
+                ?? User::query()->findOrFail($device->owner_id);
+
+            $device->owner_id = $owner->id;
+            $device->owner_key = $owner->actor_key;
+        });
+    }
+
+    public function withFreshClearSafetyInterlocks(): static
+    {
+        return $this->state(fn (): array => [
+            'safety_state' => [
+                'pet_in_doorway' => false,
+                'obstruction_detected' => false,
+                'pet_present' => false,
+                'leak_detected' => false,
+            ],
+            'safety_state_recorded_at' => now(),
+        ]);
     }
 }

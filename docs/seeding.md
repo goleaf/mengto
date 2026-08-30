@@ -4,9 +4,14 @@
 
 All 204 first-party Eloquent models have a model factory and are guarded by an
 architecture test. The byte-generated `docs/seeding-coverage.md` currently
-records 248 explicit helpers and 1,521 enum-backed state cases; valid existence
-alone is not accepted without persistence tests. Regenerate it with
-`php scripts/generate-seeding-coverage.php` and require exact byte parity.
+records the explicit named helpers whose factories are exercised by the
+database suite. Generic enum substitution is deliberately not treated as a
+valid domain state: lifecycle variants require invariant-aware named helpers
+and focused assertions. Regenerate the matrix with
+`php scripts/generate-seeding-coverage.php --write` and require exact byte
+parity with `php scripts/generate-seeding-coverage.php --check`. Running the
+generator without an option prints the prospective document to standard output
+without changing the repository.
 
 ## Seeder Layers
 
@@ -20,6 +25,43 @@ alone is not accepted without persistence tests. Regenerate it with
 `DatabaseSeeder` orchestrates a safe order and may be run repeatedly.
 `PerformanceSeeder` creates 250 deterministic pet profiles only when invoked
 explicitly in a local, demo, or testing environment.
+
+## Complete Representative Dataset
+
+On a clean allowed database, `DatabaseSeeder` creates exactly ten users and at
+least ten records for each of the 204 persistent application models. The first
+user is the deterministic `user@example.com` identity with actor key
+`mia-carter`; it has verified, localized account data and connected pet,
+social, organization, forum, mentorship, adoption, lost-pet, medical, care,
+expert, marketplace, place, and device records. Identity synchronization
+refuses an actor-key/email conflict instead of overwriting either account.
+
+`RepresentativeDomainSeeder` reads the canonical
+`RepresentativeModelManifest` and tops up only models below the target count.
+It reuses bounded parent pools, allocates unique relationship parents where the
+schema requires them, applies model-specific invariant overrides, and never
+deletes records merely to reach an exact count. A final set of idempotent
+foundation/backfill passes completes derived relationships introduced by the
+representative factories on the first root-seed run.
+
+`RepresentativeFieldCoverageSeeder` then updates only named deterministic
+demo aggregates (stable email, actor key, slug, reference, UUID, or stable
+key) and creates two natural-keyed order lifecycle examples. It never selects
+or rewrites an arbitrary first row. This layer supplies representative
+nullable lifecycle values and non-empty structured payloads while preserving
+unrelated records and owner/buyer/seller coherence.
+
+Calling `make()` on a default Laravel factory may persist a required
+relationship parent because Laravel expands `belongsTo` factories during
+attribute resolution. Focused tests instead guarantee that `make()` never
+writes to, transitions, or replaces an explicitly supplied aggregate; this is
+the boundary needed to prevent hidden mutation of caller-owned records.
+
+All eight application-owned pivot tables receive at least ten connected rows,
+including their timestamps and meaningful position, status, role, consent,
+eligibility, taxonomy-context, or snapshot metadata. The clean-seed tests cap
+non-reference model growth and the complete model-plus-pivot graph so factory
+relationships cannot silently multiply into an unbounded dataset.
 
 Forum reference seeding is split into deterministic category, topic-type,
 reputation, moderation, taxonomy-source, core-taxonomy, and community-group
@@ -36,7 +78,8 @@ idempotently, and leaves ambiguous animal identity for review.
 the two stable knowledge examples. It assigns deterministic translation groups,
 discussion links, maintainers, version snapshots, and immutable creation events
 without replacing IDs or user content. Stable uniqueness makes reruns
-idempotent.
+idempotent. Direct invocation fails closed before any query unless the current
+environment is explicitly allowed.
 `MentorshipDemoSeeder` is environment-gated and reuses the audited trust and
 mentorship Actions. It synchronizes one opted-in mentor profile, two
 independent scopes, one accepted private mentorship, and one message from each
@@ -81,6 +124,9 @@ creation idempotency keys used by event/location authority workflows.
   rerun; adoption cases synchronize by existing listing ID. The marketplace
   demo seeder independently fails closed unless the current environment is in
   the configured demo-seed allowlist, even when it is invoked directly.
+- Adoption demo and collaborative-guide demo seeders independently apply the
+  same fail-closed allowlist before reading or mutating records, so invoking a
+  child seeder directly cannot bypass `DatabaseSeeder`.
 - Collaborative demo guide synchronization targets only two fixed demo slugs
   and runs only after the environment-gated demo users and forum graph exist.
 - Mentorship demo synchronization runs only in configured demo environments
@@ -112,11 +158,22 @@ The detailed per-model matrix is generated and maintained in
 
 ## Required Tests
 
-- every model factory creates one valid record;
-- every documented state creates a valid record;
-- relationships and unique/foreign constraints remain valid;
-- fresh isolated migrate plus seed succeeds;
-- repeated fixed/full seed is idempotent;
+- `FactoryAndSeederTest` persists every default factory and every supported
+  zero-argument helper/state;
+- `CompleteDatabaseSeederTest` reconciles the 204-model manifest with runtime
+  discovery, enforces the 10-record minimum and graph budgets, checks the
+  deterministic user and major relations, verifies pivot metadata and private
+  files, derives orphan checks from every schema foreign key, and proves a
+  second root-seed run preserves model and pivot counts;
+- `SeededFieldCoverageTest` rejects null required columns, requires either a
+  representative non-null value or an exact schema-qualified domain reason
+  for every nullable column, requires non-empty representative structured
+  payloads, and proves unrelated rows survive the coverage pass;
+- relationship suites verify both sides of schema-derived associations and
+  custom pivot casts/metadata;
+- unique constraints, foreign keys, and the conflicting deterministic-email
+  fail-closed path remain valid;
+- fresh isolated migration plus root seed succeeds;
 - production safeguard prevents demo identity creation;
 - primary pages render from seeded data;
 - seeded private files exist on the selected fake disk.
@@ -128,7 +185,10 @@ php scripts/verify-fresh-database.php
 ```
 
 The script creates and asserts a system temporary SQLite path before invoking
-`migrate:fresh --seed`, then repeats `db:seed` and compares stable counts.
+`migrate:fresh --seed`, then repeats `db:seed` and compares stable counts. The
+root-seed, field-coverage, foreign-key, and pivot checks likewise run against an
+isolated testing database; they must never target a configured production or
+shared development database.
 
 `DatabaseSeeder` deliberately uses model factories for its guarded demo graph,
 so `fakerphp/faker` is a runtime Composer dependency. This keeps explicitly
@@ -137,10 +197,12 @@ allowed local, demo, and testing seed operations functional after
 
 ## Demo Accounts
 
-Documented demo identities use `*.example.test` addresses and an explicit
-non-production password. They may exist only when
-`APP_ENV` is `local`, `demo`, or `testing`. Production attempts must fail
-closed.
+The primary deterministic demo identity is `user@example.com`; the remaining
+demo identities use `*.example.test` addresses. Development passwords are
+stored through the application's normal password hashing boundary and these
+accounts may exist only when `APP_ENV` is `local`, `demo`, or `testing`.
+Production attempts must fail closed.
+
 ## Event Seeders
 
 `ForumEventBackfillSeeder` is production-safe, additive, and rerunnable. It
@@ -175,3 +237,13 @@ deterministic outdated, archived, restored, and legal-hold examples through
 the production lifecycle boundary. The four lifecycle child models have
 factories and meaningful states. Fresh seed and repeat `ForumSystemSeeder`
 execution are verified against a temporary SQLite database.
+
+## Place Submission Demo Scenarios
+
+`PlaceSubmissionDemoSeeder` is restricted to configured local, demo, and test
+environments. It deterministically creates twenty connected submissions across
+submitted, duplicate-review, needs-information, approved, rejected, published,
+withdrawn, existing-link, merge, and restored histories. Every new persistent
+model has a bounded factory; ten merge/restore scenarios retain redirect and
+copied-fact provenance. `user@example.com` owns a navigable scenario. Root and
+repeat seeding retain ten users and stable identities without truncation.

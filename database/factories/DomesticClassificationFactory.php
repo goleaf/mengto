@@ -23,8 +23,8 @@ final class DomesticClassificationFactory extends ApplicationFactory
             'classification_type' => 'breed',
             'canonical_name' => $name,
             'is_active' => true,
-            'aliases' => [],
-            'metadata' => [],
+            'aliases' => ['Companion animal classification'],
+            'metadata' => ['source' => 'factory', 'version' => 1],
         ];
     }
 }

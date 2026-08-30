@@ -88,7 +88,7 @@ final class PlacePresenter
                 'mode_options' => $this->modeOptions(),
                 'layer_options' => $this->layerOptions(),
                 'browse_url' => route('places.index'),
-                'add_url' => route('compose', ['kind' => 'place']),
+                'add_url' => route('places.submissions.create'),
                 'emergency_url' => route('places.index', ['emergency' => 1, 'open_now' => 1]),
                 'location' => $location,
                 'comparison' => array_slice($places, 0, 3),

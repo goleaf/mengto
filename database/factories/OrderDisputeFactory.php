@@ -43,7 +43,10 @@ class OrderDisputeFactory extends ApplicationFactory
             'opened_by_role' => 'buyer',
             'reason' => 'not-as-described',
             'details' => fake()->paragraph(),
-            'evidence' => [],
+            'evidence' => [[
+                'type' => 'photo',
+                'url' => asset('images/places/pet-store-primary-lg.jpg'),
+            ]],
             'priority' => 'normal',
             'status' => DisputeStatus::Open,
         ];

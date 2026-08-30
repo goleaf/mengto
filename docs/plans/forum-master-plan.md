@@ -1,6 +1,6 @@
 # Forum Master Implementation Plan
 
-Status: incomplete; 1,727 atomic IDs are verified and 36,650 remain open.
+Status: incomplete; 1,727 atomic IDs are verified and 36,650 remain unresolved.
 
 ## Contract
 
@@ -96,19 +96,22 @@ Its scope and final evidence are maintained in
 
 **IDs:** all Phase 4 rows.
 
-The first four verified Phase 4 slices cover exactly category 21's 64 atoms,
+The first four verified Phase 4 category slices cover category 21's 64 atoms,
 category 22 plus three translation/cache atoms, category 23's 59 atoms, and
-category 24's 49 atoms, for 239 verified IDs total.
+category 24's 49 atoms. Together with four earlier independently evidenced
+Phase 4 atoms, the phase has 239 verified IDs. Category 25's 58 atoms are
+implemented and tested but remain in progress until required final gates pass.
 Runtime manifest validation fails closed for structural/source drift, warm
 locale trees execute zero database queries, and unreviewed locale values can
 no longer override reviewed fallback text. Category 24 additionally renders a
 localized professional/emergency boundary from the same cached tree without a
 new query. The remaining category roots and technical taxonomy requirements
-stay open; exact evidence is maintained in
+stay unresolved; exact evidence is maintained in
 `docs/plans/forum-phase4-before-ownership-category-work-package.md`,
 `docs/plans/forum-phase4-special-needs-category-work-package.md`, and
-`docs/plans/forum-phase4-wildlife-coexistence-category-work-package.md`, and
-`docs/plans/forum-phase4-one-health-category-work-package.md`.
+`docs/plans/forum-phase4-wildlife-coexistence-category-work-package.md`,
+`docs/plans/forum-phase4-one-health-category-work-package.md`, and
+`docs/plans/forum-phase4-animal-science-category-work-package.md`.
 
 **Result:** 44 stable root keys, every recovered required child, translations,
 rules, aliases, redirects, related categories, deterministic ordering,

@@ -11,10 +11,51 @@ The reconciled current backlog is maintained in
 `docs/plans/current-unfinished-work.md`. Completed deliveries below are release
 evidence, not active backlog items.
 
+## Active Delivery: Shared Place Submission And Publication
+
+Status: `implementation and focused verification complete; independent review
+and final repository gates in progress` on 2026-08-30.
+
+The 2026-08-30 resumed execution revalidates the existing attributable slice
+with fresh read-only workflow, duplicate-detection, moderation, security, and
+testing specialists before the independent frozen-diff review. The principal
+continues to own every edit, finding disposition, final gate, and publication
+decision.
+
+This delivery implements the complete `PLA-P06` workflow on top of the
+preserved place/location authority foundation and the applicable `PLA-P02`,
+`PLA-P03`, and `PLA-P05` contracts. The exclusive specialist scopes,
+deliverables, and independent-review boundary are recorded in
+`docs/audits/places-submission-publication-work-ledger.md`. Specialists remain
+read-only; the principal owns every cross-module decision and tracked edit.
+
+The task began on `main` at
+`153ae45c2bc6864ec6061dc407d82be68a437c26`, aligned with `origin/main`, in a
+materially dirty shared tree. Every pre-existing staged, unstaged, and
+untracked path is unrelated user-owned work unless this ledger proves an exact
+attributable hunk. Publication will use a temporary `GIT_INDEX_FILE`; no
+existing change may be reset, discarded, or included accidentally.
+
+| ID | Dependency | Owner | Affected paths | Acceptance criteria | Verification | Status | Rollback |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| PLA-SUB-01 | PLA-P02/P03/P05/P06 and preserved authority baseline | Principal plus read-only workflow, duplicate, moderation, and security specialists | Places plans/audit ledger, existing schema/models/actions/policies/routes/UI | Canonical lifecycle, identities, privacy boundaries, duplicate signals, role capabilities, idempotency, notification timing, and rollback are mapped before production edits | Repository inventory, specialist reports, attributable-path review | complete | Revert planning-only additions |
+| PLA-SUB-02 | PLA-SUB-01 | Principal | `tests/Feature/Places/**`, focused unit tests | Red tests cover validated active-member submission, two-account isolation, deterministic duplicate candidates, repeated/concurrent operations, moderation transitions, merge rollback, redirects, authorization, notifications, provenance, and audit history | Focused Pest failures observed before implementation | complete; red/green contracts retained | Revert only the new red contracts |
+| PLA-SUB-03 | PLA-SUB-02 | Principal | Additive migration, Places enums/models/factories and existing `Place`/`User` relations | Submission, fact provenance, candidate, event, merge redirect, and notification persistence is indexed, privacy-safe, reversible, factory-backed, and enum-cast | Fresh migration, rollback cycle, schema/factory contracts | complete; 140-file migration cycle and 227-table fresh seed pass | Roll back the additive migration before production writes; forward-fix after writes |
+| PLA-SUB-04 | PLA-SUB-03 | Principal | Places data objects, normalizers, duplicate service, submission/moderation/merge Actions, policies | Server-authoritative input creates pending review state; candidates are deterministic suggestions; transitions, merges, restore/reopen, idempotency, abuse controls, after-success notifications, provenance, and audit are transactional and policy-scoped | Action, policy, concurrency, privacy, rollback, and notification tests | complete; isolated two-process race passes | Revert implementation with its schema only before production writes; otherwise forward-fix |
+| PLA-SUB-05 | PLA-SUB-04 | Principal | Class-based Places Livewire components/forms/views, routes, EN/LT/RU catalogues | Members can submit and inspect safe status; authorized reviewers can act; loading, validation, pending, duplicate, approved, rejected, empty, and offline states are localized, keyboard-usable, and non-leaking | Livewire direct-action tests, locale parity, view/cache checks, browser journeys | complete; dedicated desktop/mobile Places browser journey passes | Revert route/component/presentation slice while preserving submitted records |
+| PLA-SUB-06 | PLA-SUB-03..05 | Principal plus testing specialist | Places factories, deterministic demo seeder, root seed integration, database tests | Every new model has a bounded factory; deterministic pending/duplicate/needs-info/published/rejected/merged scenarios are repeat-safe and environment-gated | Factory/seeder tests, isolated fresh/repeat seed, count and relation checks | complete; twenty submissions and ten merge/restore scenarios seed repeat-safely | Remove demo-only synchronization; never delete user submissions |
+| PLA-SUB-07 | PLA-SUB-02..06 | Independent final reviewer and principal | Frozen attributable diff | Independent review reproduces every material finding; valid findings are fixed and affected gates rerun | Review report, disposition ledger, focused reruns | in progress | Revert unsafe finding-specific change |
+| PLA-SUB-08 | PLA-SUB-07 | Principal | PLA-P06 evidence, current progress, compliance/data/security/testing/seeding/deployment docs, changelog | Documentation matches observed behavior; focused Places, migration/seed, full Pest, Pint, Larastan, dependency, Vite, cache, browser, diff, and secret gates pass before one attributable commit | Exact final command evidence and temporary-index diff | in progress; final full-suite rerun and publication disposition remain | Revert the coherent task commit normally; never rewrite history |
+
+Implementation order is `PLA-SUB-01` through `PLA-SUB-08`. Tests precede
+production behavior. New submissions remain review records until an authorized
+publication transition; duplicate scoring never merges by itself. Protected
+identifiers and pending facts are scoped before presentation, and audit or
+provenance rows are retained through merge and restore operations.
+
 ## Active Delivery: Forum Phase 4 Animal-Science Category
 
-Status: `planned; discovery in progress; implementation authorized` on
-2026-08-30.
+Status: `implemented; final verification pending` on 2026-08-30.
 
 The unresolved placeholder in the initiating request is resolved from the
 canonical `forum-current-progress` next-pass instruction: this delivery owns
@@ -29,10 +70,10 @@ coordination is recorded in
 
 | ID | Dependency | Owner | Affected paths | Acceptance criteria | Verification | Status | Rollback |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| F4-AS-01 | Canonical source and generated catalogue | Principal | Package plan and work ledger | All 58 selected records are listed and reconciled; adjacent Phase 5/7 records are excluded | Exact `jq` inventory and source/generator checks | in progress | Revert planning files only |
-| F4-AS-02 | F4-AS-01 | Principal | Category manifest/synchronizer/model/factory/seeder paths if required | Existing implementation is retained when correct; every real schema, persistence, or localization defect is test-first repaired | Focused red/green feature contract | pending | Revert finding-specific implementation with its test |
-| F4-AS-03 | F4-AS-01..02 | Principal | EN/LT/RU, server-prepared UI, accessibility/responsive paths if required | Category 25 renders the exact localized root/purpose/ordered hierarchy without exposing later-phase completion claims | Focused HTTP/Livewire and browser checks | pending | Revert presentation change and translations together |
-| F4-AS-04 | F4-AS-02..03 | Principal | Requirement evidence and generated progress/traceability documents | Exactly the independently proven 58 IDs move to verified and all generated artifacts remain deterministic | Source preservation, forum generator, exact overlay delta | pending | Revert evidence entry and regenerate |
+| F4-AS-01 | Canonical source and generated catalogue | Principal | Package plan and work ledger | All 58 selected records are listed and reconciled; adjacent Phase 5/7 records are excluded | Exact `jq` inventory and source/generator checks | complete | Revert planning files only |
+| F4-AS-02 | F4-AS-01 | Principal | Category manifest/synchronizer/model/factory/seeder paths if required | Existing implementation is retained when correct; every real schema, persistence, or localization defect is test-first repaired | Focused red/green feature contract | complete | Revert finding-specific implementation with its test |
+| F4-AS-03 | F4-AS-01..02 | Principal | EN/LT/RU, server-prepared UI, accessibility/responsive paths if required | Category 25 renders the exact localized root/purpose/ordered hierarchy without exposing later-phase completion claims | Focused HTTP and browser checks | complete | Revert presentation change and translations together |
+| F4-AS-04 | F4-AS-02..03 | Principal | Requirement evidence and generated progress/traceability documents | Exactly the 58 implemented/tested IDs remain in progress until all required release gates pass; generated artifacts remain deterministic | Source preservation, forum generator, exact overlay delta | pending final promotion; source-history and failed repository gates retained | Revert evidence entry and regenerate |
 | F4-AS-05 | F4-AS-04 | Independent reviewer and principal | Frozen attributable diff | Material findings are reproduced, dispositioned, fixed, and retested; full final gates either pass or retain exact blockers | Review report, targeted/full gates, temporary-index diff, `git diff --check` | pending | Revert the coherent package commit normally |
 
 Implementation order is F4-AS-01 through F4-AS-05. Production code cannot
@@ -42,7 +83,8 @@ byte-present and outside this delivery.
 
 ## Active Delivery: Complete Database Domain Audit And Implementation
 
-Status: `discovery in progress; implementation authorized` on 2026-08-30.
+Status: `implementation and independent rereview complete; publication blocked
+by unavailable immutable forum-history evidence` on 2026-08-30.
 
 This section is the canonical execution record for the complete migration,
 model, relationship, factory, seeder, and database-integrity pass. The
@@ -60,10 +102,12 @@ implementation immediately after this plan is saved.
   temporary `GIT_INDEX_FILE`.
 - Runtime: PHP 8.5.8, Laravel 13.23.0, Pest 4, SQLite for isolated automated
   verification, and the repository's configured Pint and Larastan gates.
-- Audited baseline: 139 migrations create or alter 219 tables with 3,478
-  columns, 514 foreign keys, 1,055 indexes, and 265 unique indexes. The 203
-  existing concrete application models all have factories; 42 seeders are
-  orchestrated from `DatabaseSeeder`.
+- Audited baseline: 139 migrations create or alter 218 named tables plus
+  Laravel's migration ledger at runtime, with 3,478 columns and 514 foreign
+  keys. The generated database-domain audit records every index and unique
+  constraint. All 204 concrete application models have factories; 44 Seeder
+  classes plus the representative manifest and demo guard trait provide root
+  orchestration, focused seeders, and bounded representative top-up.
 - A safe temporary-SQLite fresh migrate/seed completed and remained stable on
   a second seed, but produced only five users. Across the 203 models, 163 had
   fewer than ten rows and 70 had none. The existing dynamic factory suite
@@ -74,6 +118,17 @@ implementation immediately after this plan is saved.
   application-owned table without a corresponding model/factory; additional
   schema-backed child and inverse relationship candidates require final
   usage review before addition.
+- Final implementation inventory: all 204 concrete application models have a
+  valid factory and at least ten rows after a clean root seed; the generated
+  audit covers all 3,395 model-contract columns, 514 foreign keys, 941 declared
+  relationships, 267 explicit factory helpers, and the complete model/pivot
+  seed graph. The deterministic `user@example.com` account is one of exactly
+  ten clean-seed users and remains unique after a repeat seed.
+- Safety incident: before the isolated runner was hardened, one exploratory
+  factory command wrote additive sample rows to the configured shared SQLite
+  database. No rows were deleted or overwritten. All subsequent destructive
+  or persistence verification used asserted operating-system temporary
+  SQLite databases; the pre-existing shared data was left untouched.
 
 ### Delivery items
 
@@ -85,15 +140,36 @@ independent reviewer of the frozen attributable diff.
 | ID | Dependency | Owner | Affected paths | Acceptance criteria | Verification | Status | Rollback |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | DBA-01 | None | Schema specialist | `database/migrations/**`, schema evidence | Every migration/table/column/key/index/pivot/morph edge is inventoried from a fresh isolated database | Migration inventory and schema introspection artifact | discovery complete | Remove evidence only |
-| DBA-02 | DBA-01 | Model specialist | `app/Models/**` | Every concrete model is mapped to its table, key, traits, casts, factory, and declared relations; mismatches are enumerated | Reflection/model-to-schema audit | in progress | Remove evidence only |
-| DBA-03 | DBA-01..02 | Relationship specialist | `app/Models/**` | Every reliable schema-backed child relation and appropriate inverse/pivot/morph relation exists with explicit relation types and correct keys | Red/green schema relationship contracts and round-trip tests | in progress | Revert relationship methods and paired tests |
-| DBA-04 | DBA-01..02 | Factory specialist | `database/factories/**` | Every applicable model has a valid realistic factory; required, unique, enum, encrypted, JSON, date, money, and representative nullable values satisfy schema/domain rules | Dynamic factory persistence and field-coverage tests | in progress | Revert factory/state changes together |
-| DBA-05 | DBA-03..04 | Factory-graph specialist | Factories and relation helpers | Parent reuse avoids circular creation and exponential graphs; pivot and polymorphic metadata are valid | Factory graph audit plus bounded count assertions | pending | Revert graph helpers only |
-| DBA-06 | DBA-01..05 | Seeder specialist | `database/seeders/**` | Root seeding is dependency-ordered, environment-safe, reasonably idempotent, creates `user@example.com`, and creates a coherent graph with at least ten rows for every concrete persistent application model without deleting existing data | Isolated fresh seed, repeat seed, counts, pivots, and target-account assertions | pending | Remove additive representative seeder and restore root orchestration |
-| DBA-07 | DBA-01..06 | Constraint specialist | Models, factories, seeders, validation, enums | Database and application uniqueness, checks, state/date/money constraints, casts, and tenant/owner boundaries are reflected in generated data | Constraint matrix and focused negative/positive Pest coverage | pending | Revert finding-specific change |
-| DBA-08 | DBA-03..07 | QA specialist | `tests/Feature/Database/**`, lifecycle scripts | Tests prove factories, required/representative fields, root seeding, counts, target user, relations, pivots, foreign keys, uniqueness, and repeatability on isolated SQLite | Targeted Pest suites and fresh lifecycle scripts | pending | Revert tests/scripts with their implementation slice |
-| DBA-09 | DBA-08 | Independent reviewer | Frozen attributable diff | Migration-model-factory-seeder-test chain is adversarially reviewed; every material finding is reproduced, dispositioned, fixed when valid, and retested | Review report and rerun affected gates | pending | Revert unsafe finding-specific repair |
-| DBA-10 | DBA-09 | Principal | Documentation, complete task slice | Audit/schema evidence and seeding docs are current; targeted/full PHP gates, Pint, Larastan, Composer checks, npm audit/build, caches, isolated migrate/seed, generator parity, forum preservation checks, diff/secret review pass or an exact external blocker is recorded; coherent attributable commit is safely pushed | Definition-of-done gate list and Git evidence | pending | Revert task commit normally; never rewrite history |
+| DBA-02 | DBA-01 | Model specialist | `app/Models/**` | Every concrete model is mapped to its table, key, traits, casts, factory, and declared relations; mismatches are enumerated | Reflection/model-to-schema audit | complete | Remove evidence only |
+| DBA-03 | DBA-01..02 | Relationship specialist | `app/Models/**` | Every reliable schema-backed child relation and appropriate inverse/pivot/morph relation exists with explicit relation types and correct keys | Red/green schema relationship contracts and round-trip tests | complete | Revert relationship methods and paired tests |
+| DBA-04 | DBA-01..02 | Factory specialist | `database/factories/**` | Every applicable model has a valid realistic factory; required, unique, enum, encrypted, JSON, date, money, and representative nullable values satisfy schema/domain rules | Dynamic factory persistence and field-coverage tests | complete | Revert factory/state changes together |
+| DBA-05 | DBA-03..04 | Factory-graph specialist | Factories and relation helpers | Parent reuse avoids circular creation and exponential graphs; pivot and polymorphic metadata are valid | Factory graph audit plus bounded count assertions | complete | Revert graph helpers only |
+| DBA-06 | DBA-01..05 | Seeder specialist | `database/seeders/**` | Root seeding is dependency-ordered, environment-safe, reasonably idempotent, creates `user@example.com`, and creates a coherent graph with at least ten rows for every concrete persistent application model without deleting existing data | Isolated fresh seed, repeat seed, counts, pivots, and target-account assertions | complete | Remove additive representative seeder and restore root orchestration |
+| DBA-07 | DBA-01..06 | Constraint specialist | Models, factories, seeders, validation, enums | Database and application uniqueness, checks, state/date/money constraints, casts, and tenant/owner boundaries are reflected in generated data | Constraint matrix and focused negative/positive Pest coverage | complete | Revert finding-specific change |
+| DBA-08 | DBA-03..07 | QA specialist | `tests/Feature/Database/**`, lifecycle scripts | Tests prove factories, required/representative fields, root seeding, counts, target user, relations, pivots, foreign keys, uniqueness, and repeatability on isolated SQLite | Targeted Pest suites and fresh lifecycle scripts | complete; 1,130 database feature tests / 4,047 assertions and both isolated lifecycle scripts passed | Revert tests/scripts with their implementation slice |
+| DBA-09 | DBA-08 | Independent reviewer | Frozen attributable diff | Migration-model-factory-seeder-test chain is adversarially reviewed; every material finding is reproduced, dispositioned, fixed when valid, and retested | Review report and rerun affected gates | complete; three independent adversarial rereviews report release ready with no material attributable finding | Revert unsafe finding-specific repair |
+| DBA-10 | DBA-09 | Principal | Documentation, complete task slice | Audit/schema evidence and seeding docs are current; targeted/full PHP gates, Pint, Larastan, Composer checks, npm audit/build, caches, isolated migrate/seed, generator parity, forum preservation checks, diff/secret review pass or an exact external blocker is recorded; coherent attributable commit is safely pushed | Definition-of-done gate list and Git evidence | implementation and evidence complete; publication blocked, so no commit or push | Revert task commit normally; never rewrite history |
+
+### Final observed verification and publication disposition
+
+- Partitioned PHP verification: 2,442 tests and 105,112 assertions; 2,441
+  tests passed. The sole failure is the immutable forum-source preservation
+  contract because required historical entry `1785397895` is unavailable.
+- The database feature partition passed 1,130 tests and 4,047 assertions. The
+  complete unit partition passed 32 tests and 218 assertions. The audit
+  regeneration subprocess that once received signal 11 passed on an isolated
+  retry; the oversized combined PHP 8.5 process remains operationally
+  unstable, so final verification is recorded from bounded sequential runs.
+- Fresh lifecycle passed with 139 migrations, 219 runtime tables, ten users
+  before and after repeat seeding, complete rollback to zero migrations, and
+  successful reapplication of all 139 migrations.
+- Pint, Larastan, Composer validation/audit/platform checks, official-registry
+  npm audit, production Vite build, isolated config/route/view cache smoke,
+  all three generated-evidence parity checks, and the 38,377-item forum
+  requirements generator passed.
+- Publication is blocked by the required forum-source preservation failure.
+  Repository policy permits no push until required gates pass; no task commit
+  or push was made in the dirty shared tree.
 
 ### Implementation and verification order
 
@@ -194,7 +270,7 @@ or ceremonial replacement is required.
 | Application layers | 147 controllers; 9 middleware; 67 Form Requests; 226 Actions; 155 Services; 204 models; 47 policies; 1 API Resource; 1 service provider |
 | Livewire/Blade | 86 Livewire PHP files: 37 components and 49 form objects; 36 Livewire views; 357 Blade views including 246 anonymous Blade components; no Volt/Flux/Filament |
 | Persistence | 139 migrations create 218 named tables; isolated fresh migrate/seed reports 219 including Laravel's migration ledger; 514 declared constrained foreign keys sampled by integrity tests |
-| Factory/seed | 204 model factories plus `ApplicationFactory`; 42 seeders; 248 explicit factory helpers; 1,521 enum-backed states |
+| Factory/seed | 204 model factories plus `ApplicationFactory`; 44 Seeder classes plus the representative manifest and demo guard trait; 267 explicit invariant-aware factory helpers |
 | Tests | 120 feature files, 3 unit files, 128 PHP files including support/bootstrap, 1,025 Pest declarations, zero Pest browser files, standalone Node browser runners |
 | Frontend | 9 resource JavaScript modules, 1 Tailwind CSS entry, 32 CSS/SCSS files, npm lock v3; PhotoSwipe is the only production npm dependency |
 | Roles/capabilities | Active/blocked account status plus explicit administrator flag; pet-manager, forum-group, journal-collaborator, knowledge-collaborator, organization, event-team, and event-session role enums; policies are authoritative |
@@ -318,6 +394,92 @@ verification command, status, and rollback. `Principal` is the sole editor.
 Suspected plaintext moderation/mentorship fields and device timezone provenance
 remain unclassified until the owning requirement is confirmed; no destructive
 migration or speculative rewrite is authorized here.
+
+## Active Revalidation: Prompt 01 Repository Audit And Foundational Repairs
+
+Status: `plan saved; implementation in progress` on 2026-08-30.
+
+This `AUD2` section records the current prompt-01 revalidation. It supplements,
+rather than rewrites, the completed `AUD-*` history above. Production edits for
+this revalidation begin only after this section is saved.
+
+### Protected State And Governing Evidence
+
+- The audit started on `main` at `fdaf7292a152ae61b85e17cf1ce69449d6d4292f`,
+  aligned with `origin/main`, with a materially dirty shared tree containing a
+  large staged audit/auth/forum/database/documentation slice and 18 additional
+  unstaged paths. While discovery was read-only, concurrent repository work
+  committed and pushed `f605d58` and `153ae45`; those commits are external to
+  this revalidation and must not be claimed, reverted, or restaged here.
+- The applicable repository instruction chain is the root `AGENTS.md`; no
+  nested first-party `AGENTS.md` or `AGENTS.override.md` exists. `docs/index.md`
+  is the documentation source-of-truth index. The existing
+  `docs/implementation-plan.md` remains the one canonical global plan.
+- The documentation auditor classified 350 repository Markdown files: 244
+  non-tooling first-party documents and 106 repository skill/instruction mirror
+  documents. Canonical, supporting, generated, historical, and tooling-mirror
+  status must be emitted per path by `docs/audits/repository-inventory.md`.
+  Repository-local skill examples that conflict with `AGENTS.md` are
+  non-authoritative; the root contract wins.
+
+### Current Inventory And Baseline
+
+| Surface | Revalidated inventory / evidence |
+| --- | --- |
+| Runtime routes | 180 routes from `route:list --json`; 174 with `--except-vendor`; 167 `App\\` actions; all 179 audited non-Boost routes named, including unstable generated names found in the inventory generator |
+| Application modules | 147 controllers, 9 middleware, 67 Form Requests, 226 Actions, 155 Services, 204 models, 47 policies, 1 API Resource, 1 provider, no first-party jobs/webhooks/outbound clients |
+| Livewire / presentation | 36 renderable class components plus 49 form objects, 36 Livewire views, 357 Blade views, 246 anonymous Blade components, 9 JavaScript modules, 1 Tailwind entry and 31 SCSS files; no Volt, Flux, Filament, impure Blade, or duplicate Alpine |
+| Persistence | 139 migrations, 218 named schema tables plus Laravel's migration ledger at runtime, 204 model factories plus `ApplicationFactory`, and 44 seeder files |
+| Tests | 129 `*Test.php` files: 126 Feature and 3 Unit; 1,051 static Pest declarations, 6 datasets, no detected skip/todo markers, and five standalone browser commands |
+| Localization / cache / process | 45 language files for each of `en`, `lt`, and `ru`; 10 sampled cache/lock consumers; database-backed queue and operator-managed deployment, with no scheduler or first-party queued jobs |
+| Stack | PHP 8.5.8; Laravel 13.29.0; Livewire 4.4.2; Tailwind and `@tailwindcss/vite` 4.3.3; Vite 8.2.2; Laravel Vite plugin 3.2.0; Pest 4.7.8; PHPUnit 12.5.33; Larastan 3.10 / PHPStan 2.2.9; Node 26.4.0 / npm 12.0.1 |
+
+Critical workflow traces remain the registration, pet creation, social-state,
+medical/care/device temporary access, device command, marketplace acceptance,
+and forum-publication chains recorded above. This revalidation additionally
+traced forum category administration through
+`AdminDashboard::saveCategory()`: validated Livewire state and component
+authorization currently lead to two independent writes and cache invalidation,
+without one Action-owned transaction. The accepted immediate repair makes that
+chain authorize again inside a focused Action, lock and update the category and
+translation atomically, then invalidate cache only after success.
+
+Observed baseline: PHP/application boot, Composer strict validation/audit and
+platform checks passed; `composer outdated --direct --strict` returned `1` only
+for out-of-scope next-major alternatives; official-registry npm audit passed
+with zero vulnerabilities while the configured mirror's audit endpoint returned
+404; production Vite build passed; route/about commands passed; generated
+repository and seeding evidence were stale; forum generation passed when rerun
+serially; immutable forum-source preservation remains blocked by missing source
+entry `1785397895`. An attempted parallel invocation of database-backed test
+wrappers produced signal 11, so every authoritative PHP suite remains serial as
+required by `AGENTS.md`.
+
+### Accepted Findings, Repairs, And Deferred Ownership
+
+| ID | Dependency | Owner | Affected paths/modules | Acceptance criteria | Required tests / verification | Status | Rollback |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| AUD2-01 | None | Principal | Git state and audit ledger | Shared staged/unstaged work and concurrent commits remain intact and attributable | Status, complete diffs, final task-only staged diff | complete | Never reset; unstage only task-owned paths if required |
+| AUD2-02 | AUD2-01 | Seven read-only specialist auditors | Entire first-party tree | Required structured reports are reconciled; material findings are independently sampled | Framework inventories, exact symbol/schema/document checks | complete | Documentation-only correction |
+| AUD2-03 | AUD2-02 | Principal | This plan | Stable dependencies, owners, acceptance, tests, status, and rollback exist before production edits | Git diff and ledger chronology | complete | Revert this additive section only |
+| AUD2-04 | AUD2-03 | Principal | `scripts/generate-repository-inventory.php`, generated inventory, architecture tests | Two consecutive generations are byte-identical; generated route names cannot inject randomness; every first-party Markdown path has correct authority, including skill mirrors | Red/green deterministic-generator test, generator byte-parity test | implemented; focused test passed 1 test / 7 assertions | Revert generator/test and regenerate previous evidence |
+| AUD2-05 | AUD2-03 | Principal | Forum category Action, `AdminDashboard`, focused forum tests | Category and translation update in one authorized locked transaction; cache invalidation occurs only after success; component delegates one operation | Red/green Action authorization/success/rollback-oriented tests and Livewire administration test | implemented; focused slice passed 16 / 86 | Revert Action/delegation together; no schema change |
+| AUD2-06 | AUD2-03 | Principal | `AdoptionDemoSeeder`, `CollaborativeGuideDemoSeeder`, factory/seeder tests | Direct production invocation fails before any mutation; allowed environments retain deterministic behavior | Red/green production-denial tests and affected seeder tests | implemented; guard test passed 2 / 2 | Revert guard/tests together |
+| AUD2-07 | AUD2-03 | Principal | Local `public/storage`, `storage`, `bootstrap/cache`, media/config regression | Prohibited public-storage symlink is absent; private-link config remains empty; runtime paths are owned by `www:www` | Red/green private-media test, exact `readlink`/`find` ownership checks | link removed and media test passed 10 / 25; final ownership check pending | Recreate link only if a future approved public-media ADR replaces the private boundary; restore documented owner if changed |
+| AUD2-08 | AUD2-04..07 | Principal | Audit, architecture, seeding, review, limitations, compliance, changelog, plan | Counts, authority, commands, findings, limitations, and statuses describe only observed current state; generated evidence is byte-current | All documentation generators/checks and link/secret/diff review | pending | Revert task documentation; regenerate generated files |
+| AUD2-09 | AUD2-08 | Principal | Complete repository | Targeted tests, serial full Pest, Pint, Larastan, isolated fresh migration/seed, official npm audit/build, cache and browser smoke checks pass or expose exact external blockers | Canonical commands recorded with observed counts/exits | pending | Revert only the failing attributable repair |
+| AUD2-10 | AUD2-09 | Three new independent reviewers | Frozen task diff and adjacent boundaries | Audit-correctness, security/integrity, and regression reviewers disposition every behavior finding; valid findings are fixed and rerun | Review ledger plus post-fix targeted/full checks | pending | Revert finding-specific correction if unsafe |
+| AUD2-11 | AUD2-10 | Principal | Task-owned Git slice | Coherent commit is created on `main`; push occurs only if origin remains safe and credentials work | Staged diff, `diff --check`, commit hash, push output, final status | pending | Normal revert commit only; never rewrite history |
+
+The following evidence-backed findings are deferred to their existing owners:
+browser-storage account isolation and JavaScript teardown to prompt 12;
+Livewire monolith/key/offline-state work to prompt 11; nested-resource
+non-disclosure and temporary-access revocation races to prompts 09 and 10;
+care file/database atomicity and parent-qualified task integrity to prompts 07,
+20, and 21; Composer extension and Node-floor normalization to prompt 03;
+behavioral route coverage, opt-in test authentication, global outbound-request
+prevention, and CI/coverage to prompts 18 and 23. These items require broader
+contract or schema design and are not hidden as audit-time fixes.
 
 ## Active Delivery: Blade And Browser Lifecycle Modernization
 

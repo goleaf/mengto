@@ -34,12 +34,12 @@ final class ForumMentorProfileFactory extends ApplicationFactory
 
     public function paused(): static
     {
-        return $this->withEnum('state', ForumMentorProfileState::Paused);
+        return $this->state(fn (): array => ['state' => ForumMentorProfileState::Paused]);
     }
 
     public function withdrawn(): static
     {
-        return $this->withEnum('state', ForumMentorProfileState::Withdrawn);
+        return $this->state(fn (): array => ['state' => ForumMentorProfileState::Withdrawn]);
     }
 
     public function private(): static

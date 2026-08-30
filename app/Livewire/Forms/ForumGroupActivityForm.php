@@ -7,11 +7,15 @@ namespace App\Livewire\Forms;
 use App\Data\CreateForumGroupActivityData;
 use App\Enums\ForumGroupActivityFormat;
 use Carbon\CarbonImmutable;
+use Carbon\Exceptions\InvalidFormatException;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Validator;
 use Livewire\Form;
 
 final class ForumGroupActivityForm extends Form
 {
+    private const LOCAL_DATE_TIME_FORMAT = 'Y-m-d\TH:i';
+
     public string $title = '';
 
     public string $summary = '';
@@ -39,8 +43,8 @@ final class ForumGroupActivityForm extends Form
             'title' => ['required', 'string', 'min:4', 'max:180'],
             'summary' => ['required', 'string', 'min:10', 'max:3000'],
             'format' => ['required', Rule::enum(ForumGroupActivityFormat::class)],
-            'startsAt' => ['required', 'date', 'after:now'],
-            'endsAt' => ['required', 'date', 'after:startsAt'],
+            'startsAt' => ['required', 'date_format:'.self::LOCAL_DATE_TIME_FORMAT],
+            'endsAt' => ['required', 'date_format:'.self::LOCAL_DATE_TIME_FORMAT],
             'timezone' => ['required', 'timezone:all'],
             'locationScope' => ['nullable', 'string', 'max:160'],
             'onlineUrl' => [
@@ -61,15 +65,50 @@ final class ForumGroupActivityForm extends Form
 
     public function toData(string $idempotencyKey): CreateForumGroupActivityData
     {
-        $validated = $this->validate();
+        $validated = $this->withValidator(function (Validator $validator): void {
+            $validator->after(function (Validator $validator): void {
+                if ($validator->errors()->hasAny(['startsAt', 'endsAt', 'timezone'])) {
+                    return;
+                }
+
+                $startsAt = $this->parseLocalDateTime($this->startsAt, $this->timezone);
+                $endsAt = $this->parseLocalDateTime($this->endsAt, $this->timezone);
+
+                if ($startsAt === null || $endsAt === null) {
+                    $this->addLocalDateTimeShapeErrors($validator, $startsAt, $endsAt);
+
+                    return;
+                }
+
+                if ($startsAt->lessThanOrEqualTo(CarbonImmutable::now($this->timezone))) {
+                    $validator->errors()->add('startsAt', __('validation.after', [
+                        'attribute' => __('forum_polls.fields.activity_starts_at'),
+                        'date' => 'now',
+                    ]));
+                }
+
+                if ($endsAt->lessThanOrEqualTo($startsAt)) {
+                    $validator->errors()->add('endsAt', __('validation.after', [
+                        'attribute' => __('forum_polls.fields.activity_ends_at'),
+                        'date' => __('forum_polls.fields.activity_starts_at'),
+                    ]));
+                }
+            });
+        })->validate();
         $timezone = (string) $validated['timezone'];
+        $startsAt = $this->parseLocalDateTime((string) $validated['startsAt'], $timezone);
+        $endsAt = $this->parseLocalDateTime((string) $validated['endsAt'], $timezone);
+
+        if ($startsAt === null || $endsAt === null) {
+            throw new \LogicException(__('messages.validated_group_activity_date_times_could_not_be_parsed_ebbb17579a'));
+        }
 
         return new CreateForumGroupActivityData(
             title: trim((string) $validated['title']),
             summary: trim((string) $validated['summary']),
             format: ForumGroupActivityFormat::from((string) $validated['format']),
-            startsAt: CarbonImmutable::parse((string) $validated['startsAt'], $timezone),
-            endsAt: CarbonImmutable::parse((string) $validated['endsAt'], $timezone),
+            startsAt: $startsAt->utc(),
+            endsAt: $endsAt->utc(),
             timezone: $timezone,
             locationScope: filled($validated['locationScope'] ?? null)
                 ? trim((string) $validated['locationScope'])
@@ -83,5 +122,53 @@ final class ForumGroupActivityForm extends Form
                 : null,
             idempotencyKey: $idempotencyKey,
         );
+    }
+
+    /** @return array<string, string> */
+    protected function validationAttributes(): array
+    {
+        return [
+            'startsAt' => __('forum_polls.fields.activity_starts_at'),
+            'endsAt' => __('forum_polls.fields.activity_ends_at'),
+            'timezone' => __('forum_polls.fields.activity_timezone'),
+        ];
+    }
+
+    private function parseLocalDateTime(string $value, string $timezone): ?CarbonImmutable
+    {
+        try {
+            $dateTime = CarbonImmutable::createFromFormat(
+                '!'.self::LOCAL_DATE_TIME_FORMAT,
+                $value,
+                $timezone,
+            );
+        } catch (InvalidFormatException) {
+            return null;
+        }
+
+        return $dateTime instanceof CarbonImmutable
+            && $dateTime->format(self::LOCAL_DATE_TIME_FORMAT) === $value
+            ? $dateTime
+            : null;
+    }
+
+    private function addLocalDateTimeShapeErrors(
+        Validator $validator,
+        ?CarbonImmutable $startsAt,
+        ?CarbonImmutable $endsAt,
+    ): void {
+        if ($startsAt === null) {
+            $validator->errors()->add('startsAt', __('validation.date_format', [
+                'attribute' => __('forum_polls.fields.activity_starts_at'),
+                'format' => self::LOCAL_DATE_TIME_FORMAT,
+            ]));
+        }
+
+        if ($endsAt === null) {
+            $validator->errors()->add('endsAt', __('validation.date_format', [
+                'attribute' => __('forum_polls.fields.activity_ends_at'),
+                'format' => self::LOCAL_DATE_TIME_FORMAT,
+            ]));
+        }
     }
 }

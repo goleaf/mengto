@@ -1,15 +1,16 @@
 # Forum Current Progress
 
-Last updated: 2026-08-04.
+Last updated: 2026-08-30.
 
-Status: incomplete; 1,727 atomic IDs are verified and 36,650 remain open.
+Status: incomplete; 1,727 atomic IDs are verified and 36,650 remain unresolved.
 
 ## Current Phase
 
 Source preservation, atomic extraction, repository discovery, and domain
 planning are documented for all ten source payloads, but their control IDs
 still require exact evidence before Phases 0-2 can be called verified. The
-combined catalogue has 1,727 verified IDs and 36,650 open IDs. Forum/taxonomy,
+combined catalogue has 1,727 verified IDs, 58 in-progress IDs, and 36,592
+discovered IDs. Forum/taxonomy,
 pet, social, content, community, and medical foundations are implemented in
 independently evidenced slices. Communication, complete portal architecture,
 the expanded event lifecycle, and all remaining depth/release packages stay
@@ -77,8 +78,8 @@ as complete. The dependency-ordered remaining work is in
   duplicate detection, unified false-sighting/reward-scam reports, and
   privacy-safe archival that preserves the complete operational history.
 - Requirement evidence is a deterministic overlay. `1,727` atomic requirements
-  are verified with file/test evidence and none are currently marked
-  in-progress.
+  are verified with file/test evidence; the 58 category-25 requirements are
+  implemented/tested but remain in progress pending required final gates.
 - The pet-profile foundation preserves the existing aggregate while adding
   permanent identity, typed lifecycle, timed multi-manager permissions,
   layered privacy, append-only events, versioned facts, stable URLs/QR,
@@ -317,6 +318,22 @@ as complete. The dependency-ordered remaining work is in
   passed 47 tests and 36,632 assertions, and the complete suite passed 2,586
   tests and 81,835 assertions. Desktop/mobile Chrome passed. Phase 4 now has
   239 verified and 1,224 open.
+- The fifth Phase 4 slice implements and targeted-tests exactly 58 category-25
+  atoms. It pins the animal-science/evidence root and all 54 ordered labels
+  through synchronized stable keys, slugs, positions, reviewed EN/LT/RU root
+  rows, and reviewed-only child fallbacks while preserving administrator
+  categories. A focused RED
+  contract exposed the shared navigator's Georgia and viewport-scaled title;
+  the narrow correction restores Instrument Sans at a fixed 18px. The focused
+  contract passed 7 tests and 104 assertions. An earlier isolated Chrome run
+  passed at 1440px English, 375px Lithuanian, 320px reflow, and 1024px Russian
+  forced colors with zero overflow, raw keys, undersized targets, or console
+  errors. The
+  Phase 5 taxonomy and Phase 7 case-report atoms remain open. Required
+  repository-wide gates did not all pass, and a current browser rerun now
+  stops during unrelated concurrent `ReviewFactory` seeding, so the 58 IDs
+  remain in progress.
+  Phase 4 has 239 verified, 58 in-progress, and 1,166 discovered IDs.
 
 ## Requirement Status Snapshot
 
@@ -340,8 +357,8 @@ authority for individual IDs.
 
 ## Next Verified Pass
 
-1. Continue Phase 4 with the exact category-25 source section while preserving
-   any cross-domain atoms assigned to later phases as open.
+1. Complete the exact category-25 final gates and promote its 58 IDs only after
+   they pass; do not select category 26 while this package remains in progress.
 2. Continue Phase 75 from its 85 verified schedule IDs: attendee reservations,
    waitlists, notifications, venue depth, and the remaining exact lifecycle
    packages. Do not promote the other 4,883 IDs from one foundation slice.

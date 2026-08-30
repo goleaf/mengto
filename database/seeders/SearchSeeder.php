@@ -10,18 +10,25 @@ use App\Models\SearchTask;
 use App\Models\SearchUpdate;
 use App\Models\SearchVolunteer;
 use App\Models\Sighting;
+use App\Models\User;
+use Database\Seeders\Concerns\GuardsDemoSeeding;
 use Illuminate\Database\Seeder;
 
 class SearchSeeder extends Seeder
 {
+    use GuardsDemoSeeding;
+
     public function run(): void
     {
+        $this->assertDemoSeedingIsAllowed();
+
         $scout = SearchCase::query()
             ->where('slug', 'scout-missing-vingis-park')
             ->first();
 
         if ($scout === null) {
             $scout = SearchCase::factory()->create([
+                'owner_id' => User::query()->where('actor_key', 'mia-carter')->valueOrFail('id'),
                 'owner_key' => 'mia-carter',
                 'owner_name' => 'Mia Carter',
                 'owner_initials' => 'MC',
@@ -51,12 +58,17 @@ class SearchSeeder extends Seeder
                 'reported_at' => now()->subHours(4),
                 'latest_update' => 'A confirmed sighting moved the quiet search east toward the river.',
                 'last_sighting_at' => now()->subMinutes(45),
+                'reward_offered' => true,
+                'reward_summary' => 'A EUR 50 thank-you reward is available after a safe reunion.',
             ]);
         }
 
-        if (! $scout->sightings()->exists()) {
+        if (! $scout->sightings()
+            ->where('idempotency_key', '60000000-0000-4000-8000-000000000001')
+            ->exists()) {
             Sighting::factory()->confirmed()->create([
                 'search_case_id' => $scout->id,
+                'idempotency_key' => '60000000-0000-4000-8000-000000000001',
                 'reporter_key' => 'ari-jensen',
                 'reporter_name' => 'Ari Jensen',
                 'public_area' => 'Vingis Park east river path',
@@ -70,8 +82,14 @@ class SearchSeeder extends Seeder
                 'observed_at' => now()->subMinutes(45),
                 'notes' => 'Scout kept distance and moved east. No one followed.',
             ]);
+        }
+
+        if (! $scout->sightings()
+            ->where('idempotency_key', '60000000-0000-4000-8000-000000000002')
+            ->exists()) {
             Sighting::factory()->create([
                 'search_case_id' => $scout->id,
+                'idempotency_key' => '60000000-0000-4000-8000-000000000002',
                 'public_area' => 'Žvėrynas footbridge approach',
                 'observed_at' => now()->subMinutes(20),
                 'confidence' => 'possible',
@@ -146,6 +164,7 @@ class SearchSeeder extends Seeder
 
         if (! SearchCase::query()->where('slug', 'found-tabby-naujamiestis')->exists()) {
             SearchCase::factory()->found()->create([
+                'owner_id' => User::query()->where('actor_key', 'ari-jensen')->value('id'),
                 'owner_key' => 'ari-jensen',
                 'owner_name' => 'Ari Jensen',
                 'owner_initials' => 'AJ',
@@ -163,13 +182,14 @@ class SearchSeeder extends Seeder
                     'longitude' => 25.269411,
                     'note' => 'Temporary safe room; address withheld',
                 ],
-                'cover_url' => 'https://images.unsplash.com/photo-1573865526739-10659fec78a5?auto=format&fit=crop&w=1400&q=85',
+                'cover_url' => asset('images/places/park-secondary-lg.jpg'),
                 'latest_update' => 'The cat is safe and will be scanned for a microchip.',
             ]);
         }
 
         if (! SearchCase::query()->where('slug', 'kesha-long-term-search')->exists()) {
             SearchCase::factory()->create([
+                'owner_id' => User::query()->where('actor_key', 'noah-williams')->value('id'),
                 'owner_key' => 'noah-williams',
                 'owner_name' => 'Noah Williams',
                 'owner_initials' => 'NW',
@@ -190,7 +210,7 @@ class SearchSeeder extends Seeder
                 'alerts_active' => false,
                 'volunteer_join_open' => false,
                 'last_seen_area' => 'Žirmūnai, Vilnius',
-                'cover_url' => 'https://images.unsplash.com/photo-1552728089-57bdde30beb3?auto=format&fit=crop&w=1400&q=85',
+                'cover_url' => asset('images/places/park-tertiary-lg.jpg'),
                 'latest_update' => 'Urgent push alerts are paused; shelters can still submit possible matches.',
             ]);
         }

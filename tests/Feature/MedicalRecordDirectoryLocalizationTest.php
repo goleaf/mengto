@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Models\MedicalRecord;
+use App\Models\PetProfile;
 use Illuminate\Support\Facades\File;
 
 const MEDICAL_DIRECTORY_UI_KEYS = [
@@ -25,12 +26,14 @@ test('the medical record directory renders its body in the authenticated users l
 ): void {
     $this->authenticatedUser->update(['locale' => $locale]);
 
-    MedicalRecord::factory()->create([
-        'owner_id' => $this->authenticatedUser->id,
-        'owner_key' => $this->authenticatedUser->actor_key,
-        'pet_name' => 'Scout Locale Test',
-        'image_url' => '/images/pets/scout-locale-test.jpg',
+    $pet = PetProfile::factory()->for($this->authenticatedUser)->create([
+        'name' => 'Scout Locale Test',
+        'profile_data' => [
+            'profile_image' => '/images/pets/scout-locale-test.jpg',
+        ],
     ]);
+
+    MedicalRecord::factory()->forPetProfile($pet)->create();
 
     $response = $this->get(route('medical-records.index'))->assertOk();
 

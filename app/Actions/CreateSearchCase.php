@@ -140,7 +140,7 @@ final class CreateSearchCase
                         ? $identity['key']
                         : ($data['contact_value'] ?? null),
                 ],
-                'contact_token' => Str::random(48),
+                'contact_token' => hash('sha256', (string) Str::uuid()),
                 'reward_offered' => (bool) ($data['reward_offered'] ?? false),
                 'reward_summary' => $data['reward_offered'] ?? false
                     ? ($data['reward_summary'] ?? null)

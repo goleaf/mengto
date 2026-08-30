@@ -314,3 +314,17 @@ See `docs/topic-lifecycle.md`.
   instead of protected inputs or a mutation control.
 - A normal `?step=` link and the mutation-free skip operation have no authority
   effect.
+
+## Place Submission Capability Matrix
+
+Active verified submitters may create, view their own record, answer an
+information request, choose a member-visible duplicate, continue as distinct,
+or withdraw while state permits it. Unrelated members, blocked actors,
+inactive accounts, and unverified accounts receive no submission capability.
+
+An active manager may view/review only when the canonical organization,
+linked place, or duplicate candidate is in that manager's current scope.
+Managers may request information or link that candidate; they cannot approve,
+reject, publish, merge, restore, or act on their own submission. Those critical
+decisions require a different active verified administrator. Every Action
+rechecks policy against locked current state.

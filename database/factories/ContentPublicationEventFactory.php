@@ -8,8 +8,6 @@ use App\Enums\ContentPublicationEventType;
 use App\Enums\ContentPublicationStatus;
 use App\Models\ContentPublication;
 use App\Models\ContentPublicationEvent;
-use App\Models\SocialActor;
-use App\Models\User;
 use Illuminate\Support\Str;
 
 /** @extends ApplicationFactory<ContentPublicationEvent> */

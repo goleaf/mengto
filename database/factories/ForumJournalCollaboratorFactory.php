@@ -31,7 +31,7 @@ final class ForumJournalCollaboratorFactory extends ApplicationFactory
 
     public function editor(): static
     {
-        return $this->withEnum('role', ForumJournalCollaboratorRole::Editor);
+        return $this->state(fn (): array => ['role' => ForumJournalCollaboratorRole::Editor]);
     }
 
     public function revoked(): static

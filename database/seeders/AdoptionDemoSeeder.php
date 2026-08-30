@@ -18,6 +18,7 @@ use App\Models\User;
 use App\Services\SynchronizeAdoptionProviderIdentity;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
+use LogicException;
 
 final class AdoptionDemoSeeder extends Seeder
 {
@@ -25,19 +26,27 @@ final class AdoptionDemoSeeder extends Seeder
         ReviewProfessionalCredential $reviewCredential,
         SynchronizeAdoptionProviderIdentity $synchronizeProviderIdentity,
     ): void {
+        $allowedEnvironments = config('platform.demo_seed_environments');
+
+        if (! is_array($allowedEnvironments) || ! app()->environment($allowedEnvironments)) {
+            throw new LogicException(__('seeding.errors.demo_environment'));
+        }
+
         $case = AdoptionCase::query()
             ->whereHas('listing', fn ($query) => $query->where('slug', 'gentle-adult-cat-meta-is-ready-for-adoption'))
             ->first();
         $applicant = User::query()->where('actor_key', 'mia-carter')->first();
         $administrator = User::query()->where('actor_key', 'demo-administrator')->first();
+        $providerOwner = User::query()->where('actor_key', 'demo-marketplace-member')->first();
 
-        if ($case === null || $applicant === null || $administrator === null) {
+        if ($case === null || $applicant === null || $administrator === null || $providerOwner === null) {
             return;
         }
 
         $this->seedProviderVerification(
             $case,
             $administrator,
+            $providerOwner,
             $reviewCredential,
             $synchronizeProviderIdentity,
         );
@@ -88,27 +97,30 @@ final class AdoptionDemoSeeder extends Seeder
     private function seedProviderVerification(
         AdoptionCase $case,
         User $administrator,
+        User $providerOwner,
         ReviewProfessionalCredential $reviewCredential,
         SynchronizeAdoptionProviderIdentity $synchronizeProviderIdentity,
     ): void {
         $profile = ExpertProfile::query()
-            ->where('owner_key', 'vilnius-animal-aid')
+            ->where('slug', 'vilnius-animal-aid-provider')
             ->first();
 
         if ($profile === null) {
-            $profile = ExpertProfile::factory()->unverified()->create([
-                'owner_key' => 'vilnius-animal-aid',
-                'slug' => 'vilnius-animal-aid-provider',
-                'public_name' => 'Vilnius Animal Aid',
-                'legal_name' => 'Vilnius Animal Aid',
-                'primary_type' => 'rescue-organization',
-                'headline' => 'Local animal rescue and adoption provider',
-                'bio' => 'A demonstration rescue profile used to exercise the complete identity review and adoption placement workflow.',
-                'boundaries' => 'Provider verification confirms organization identity only and does not represent veterinary or legal authority.',
-                'specializations' => ['adoption', 'rescue'],
-                'species' => ['dog', 'cat'],
-                'formats' => ['in-person', 'text'],
-            ]);
+            $profile = ExpertProfile::factory()
+                ->for($providerOwner, 'owner')
+                ->unverified()
+                ->create([
+                    'slug' => 'vilnius-animal-aid-provider',
+                    'public_name' => 'Vilnius Animal Aid',
+                    'legal_name' => 'Vilnius Animal Aid',
+                    'primary_type' => 'rescue-organization',
+                    'headline' => 'Local animal rescue and adoption provider',
+                    'bio' => 'A demonstration rescue profile used to exercise the complete identity review and adoption placement workflow.',
+                    'boundaries' => 'Provider verification confirms organization identity only and does not represent veterinary or legal authority.',
+                    'specializations' => ['adoption', 'rescue'],
+                    'species' => ['dog', 'cat'],
+                    'formats' => ['in-person', 'text'],
+                ]);
         }
 
         $credential = Credential::query()->firstOrCreate(

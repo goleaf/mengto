@@ -17,7 +17,7 @@ final class PetProfilePrivacySettingFactory extends ApplicationFactory
         return [
             'pet_profile_id' => PetProfile::factory(),
             'profile_visibility' => PetProfileVisibility::Private,
-            'section_rules' => [],
+            'section_rules' => ['medical' => 'private', 'timeline' => 'connections'],
             'is_discoverable' => false,
             'allow_external_indexing' => false,
             'allow_direct_link' => false,

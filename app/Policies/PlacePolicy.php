@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
+use App\Enums\OrganizationRole;
+use App\Enums\OrganizationStatus;
 use App\Enums\PlaceAccessPurpose;
 use App\Enums\PlaceStatus;
 use App\Enums\PlaceVisibility;
+use App\Models\OrganizationMembership;
 use App\Models\Place;
 use App\Models\User;
 
@@ -29,7 +32,7 @@ final class PlacePolicy
 
     public function view(?User $user, Place $place): bool
     {
-        if ($user?->isActive() !== true || $place->status === PlaceStatus::Archived) {
+        if ($user?->isActive() !== true || in_array($place->status, [PlaceStatus::Archived, PlaceStatus::Merged], true)) {
             return false;
         }
 
@@ -82,5 +85,29 @@ final class PlacePolicy
     public function forceDelete(?User $user, Place $place): bool
     {
         return false;
+    }
+
+    public function discloseMergedIdentifier(?User $user, Place $place): bool
+    {
+        if ($user?->isActive() !== true || ! $user->hasVerifiedEmail()) {
+            return false;
+        }
+
+        if ($place->visibility === PlaceVisibility::Public
+            || $user->isAdministrator()
+            || $place->owner_user_id === $user->id) {
+            return true;
+        }
+
+        return $place->organization_id !== null
+            && OrganizationMembership::query()
+                ->active()
+                ->where('organization_id', $place->organization_id)
+                ->where('user_id', $user->id)
+                ->whereIn('role', OrganizationRole::placeManagerValues())
+                ->whereHas('organization', static fn ($query) => $query
+                    ->where('status', OrganizationStatus::Active->value)
+                    ->whereNull('archived_at'))
+                ->exists();
     }
 }

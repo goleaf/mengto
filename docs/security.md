@@ -462,3 +462,20 @@ administrator-only until their dedicated reviewed workflows exist.
   resting Livewire snapshots; an existing identifier is merged server-side
   when the authorized replacement input is left blank. The editable documents
   form is not rendered for a role without that permission.
+
+## Place Submission Security Controls
+
+- Submission requires an active, email-verified member and repeats policy
+  authorization inside the transaction. Organization attribution requires a
+  current place-manager membership.
+- Exact location, source references, fact values, response revisions, audit
+  context, and fingerprints are encrypted or hidden from serialization as
+  appropriate.
+- Only active public candidate places may be named to a submitter. Protected
+  place, pending-submission, and private merge-alias matches render a generic
+  review notice.
+- Per-actor route and Action rates, an open-submission cap, payload-bound
+  idempotency, identity locks, and optimistic versions constrain replay,
+  flooding, and duplicate races.
+- Merge redirects resolve only after source and destination policy checks and
+  return no-store private redirects; inaccessible records remain 404.

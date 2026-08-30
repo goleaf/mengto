@@ -256,7 +256,13 @@ final class PetProfile extends Model
         return $this->hasMany(ForumEventRegistrationPet::class);
     }
 
-    /** @return BelongsToMany<ForumEventRegistration, $this> */
+    /** @return HasMany<ForumEventRegistration, $this> */
+    public function directForumEventRegistrations(): HasMany
+    {
+        return $this->hasMany(ForumEventRegistration::class, 'pet_profile_id');
+    }
+
+    /** @return BelongsToMany<ForumEventRegistration, $this, ForumEventRegistrationPet, 'pivot'> */
     public function forumEventRegistrations(): BelongsToMany
     {
         return $this->belongsToMany(

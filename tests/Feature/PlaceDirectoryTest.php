@@ -221,7 +221,7 @@ test('place demo catalog is database backed and repeatable', function () {
         ->assertDontSee('Vingis Park quiet loop');
 });
 
-test('a submitted place is immediately searchable and has a durable detail page', function () {
+test('the legacy place composer redirects to the reviewed submission workflow', function () {
     $this->post(route('actions.perform'), [
         'action' => 'create-place',
         'title' => 'Riverside safety park',
@@ -231,30 +231,12 @@ test('a submitted place is immediately searchable and has a durable detail page'
         'place_address' => 'Public entrance, River Street 10',
         'rules' => 'Leashes are required beside the cycle path.',
         'place_relationship' => 'visitor',
-    ])->assertRedirect(route('places.index', [
-        'mode' => 'browse',
-        'q' => 'Riverside safety park',
-    ]));
+    ])->assertRedirect(route('places.submissions.create'));
 
-    $place = Place::query()
-        ->where('name', 'Riverside safety park')
-        ->sole();
+    expect(Place::query()->where('name', 'Riverside safety park')->exists())->toBeFalse();
 
-    $this->get(route('places.index', [
-        'view' => 'list',
-        'q' => 'Riverside safety park',
-    ]))
-        ->assertOk()
-        ->assertViewHas('places', fn (array $places): bool => array_column($places['items'], 'key') === [
-            $place->stable_key,
-        ])
-        ->assertSee('Riverside safety park');
-
-    $this->get(route('places.show', ['place' => $place->stable_key]))
-        ->assertOk()
-        ->assertSee('Riverside safety park')
-        ->assertSee('Vilnius Riverside')
-        ->assertSee('Leashes are required beside the cycle path.');
+    $this->get(route('compose', ['kind' => 'place']))
+        ->assertRedirect(route('places.submissions.create'));
 });
 
 test('private and archived places never enter the public directory', function () {

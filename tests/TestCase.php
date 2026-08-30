@@ -16,7 +16,7 @@ abstract class TestCase extends BaseTestCase
     {
         $storagePath = $_ENV['LARAVEL_STORAGE_PATH'] ?? $_SERVER['LARAVEL_STORAGE_PATH'] ?? null;
 
-        if (is_string($storagePath) && str_starts_with($storagePath, sys_get_temp_dir().DIRECTORY_SEPARATOR.'pawcircle-test')) {
+        if (is_string($storagePath) && str_starts_with($storagePath, sys_get_temp_dir().DIRECTORY_SEPARATOR.'laravel-test')) {
             foreach ([
                 'app/private',
                 'app/public',
@@ -44,7 +44,7 @@ abstract class TestCase extends BaseTestCase
         $this->authenticatedUser = User::factory()->create([
             'actor_key' => 'mia-carter',
             'name' => 'Mia Carter',
-            'email' => 'mia@example.test',
+            'email' => 'user@example.com',
             'email_verified_at' => now(),
             'locale' => 'en',
             'timezone' => 'Europe/Vilnius',

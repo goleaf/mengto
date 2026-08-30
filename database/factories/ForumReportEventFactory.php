@@ -19,7 +19,7 @@ final class ForumReportEventFactory extends ApplicationFactory
             'event_type' => 'submitted',
             'to_status' => 'submitted',
             'user_message_translation_key' => 'forum_moderation.messages.report_submitted',
-            'metadata' => [],
+            'metadata' => ['source' => 'factory', 'version' => 1],
         ];
     }
 }

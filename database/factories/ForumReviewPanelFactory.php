@@ -29,7 +29,7 @@ final class ForumReviewPanelFactory extends ApplicationFactory
             'public_context' => [
                 'summary' => fake()->sentence(),
             ],
-            'metadata' => [],
+            'metadata' => ['source' => 'factory', 'version' => 1],
         ];
     }
 

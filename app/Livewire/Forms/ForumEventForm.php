@@ -15,12 +15,16 @@ use App\Enums\ForumEventVisibility;
 use App\Models\User;
 use App\Rules\EventOrganizableOrganization;
 use Carbon\CarbonImmutable;
+use Carbon\Exceptions\InvalidFormatException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Validator;
 use Livewire\Form;
 
 final class ForumEventForm extends Form
 {
+    private const LOCAL_DATE_TIME_FORMAT = 'Y-m-d\TH:i';
+
     public string $title = '';
 
     public string $summary = '';
@@ -111,8 +115,8 @@ final class ForumEventForm extends Form
                 'required',
                 Rule::enum(ForumEventPetParticipation::class),
             ],
-            'startsAt' => ['required', 'date', 'after:now'],
-            'endsAt' => ['required', 'date', 'after:startsAt'],
+            'startsAt' => ['required', 'date_format:'.self::LOCAL_DATE_TIME_FORMAT],
+            'endsAt' => ['required', 'date_format:'.self::LOCAL_DATE_TIME_FORMAT],
             'timezone' => ['required', 'timezone:all'],
             'capacity' => ['nullable', 'integer', 'min:1', 'max:100000'],
             'registrationPolicy' => [
@@ -230,8 +234,43 @@ final class ForumEventForm extends Form
 
     public function data(): CreateForumEventData
     {
-        $validated = $this->validate();
+        $validated = $this->withValidator(function (Validator $validator): void {
+            $validator->after(function (Validator $validator): void {
+                if ($validator->errors()->hasAny(['startsAt', 'endsAt', 'timezone'])) {
+                    return;
+                }
+
+                $startsAt = $this->parseLocalDateTime($this->startsAt, $this->timezone);
+                $endsAt = $this->parseLocalDateTime($this->endsAt, $this->timezone);
+
+                if ($startsAt === null || $endsAt === null) {
+                    $this->addLocalDateTimeShapeErrors($validator, $startsAt, $endsAt);
+
+                    return;
+                }
+
+                if ($startsAt->lessThanOrEqualTo(CarbonImmutable::now($this->timezone))) {
+                    $validator->errors()->add('startsAt', __('validation.after', [
+                        'attribute' => __('forum_events.fields.starts_at'),
+                        'date' => 'now',
+                    ]));
+                }
+
+                if ($endsAt->lessThanOrEqualTo($startsAt)) {
+                    $validator->errors()->add('endsAt', __('validation.after', [
+                        'attribute' => __('forum_events.fields.ends_at'),
+                        'date' => __('forum_events.fields.starts_at'),
+                    ]));
+                }
+            });
+        })->validate();
         $timezone = (string) $validated['timezone'];
+        $startsAt = $this->parseLocalDateTime((string) $validated['startsAt'], $timezone);
+        $endsAt = $this->parseLocalDateTime((string) $validated['endsAt'], $timezone);
+
+        if ($startsAt === null || $endsAt === null) {
+            throw new \LogicException(__('messages.validated_event_date_times_could_not_be_parsed_961859fb21'));
+        }
 
         return new CreateForumEventData(
             title: trim((string) $validated['title']),
@@ -239,8 +278,8 @@ final class ForumEventForm extends Form
             type: ForumEventType::from((string) $validated['type']),
             visibility: ForumEventVisibility::from((string) $validated['visibility']),
             format: ForumEventFormat::from((string) $validated['format']),
-            startsAt: CarbonImmutable::parse((string) $validated['startsAt'], $timezone),
-            endsAt: CarbonImmutable::parse((string) $validated['endsAt'], $timezone),
+            startsAt: $startsAt->utc(),
+            endsAt: $endsAt->utc(),
             timezone: $timezone,
             capacity: isset($validated['capacity']) ? (int) $validated['capacity'] : null,
             registrationPolicy: ForumEventRegistrationPolicy::from(
@@ -294,5 +333,43 @@ final class ForumEventForm extends Form
         return filled($validated[$key] ?? null)
             ? trim((string) $validated[$key])
             : null;
+    }
+
+    private function parseLocalDateTime(string $value, string $timezone): ?CarbonImmutable
+    {
+        try {
+            $dateTime = CarbonImmutable::createFromFormat(
+                '!'.self::LOCAL_DATE_TIME_FORMAT,
+                $value,
+                $timezone,
+            );
+        } catch (InvalidFormatException) {
+            return null;
+        }
+
+        return $dateTime instanceof CarbonImmutable
+            && $dateTime->format(self::LOCAL_DATE_TIME_FORMAT) === $value
+            ? $dateTime
+            : null;
+    }
+
+    private function addLocalDateTimeShapeErrors(
+        Validator $validator,
+        ?CarbonImmutable $startsAt,
+        ?CarbonImmutable $endsAt,
+    ): void {
+        if ($startsAt === null) {
+            $validator->errors()->add('startsAt', __('validation.date_format', [
+                'attribute' => __('forum_events.fields.starts_at'),
+                'format' => self::LOCAL_DATE_TIME_FORMAT,
+            ]));
+        }
+
+        if ($endsAt === null) {
+            $validator->errors()->add('endsAt', __('validation.date_format', [
+                'attribute' => __('forum_events.fields.ends_at'),
+                'format' => self::LOCAL_DATE_TIME_FORMAT,
+            ]));
+        }
     }
 }

@@ -403,34 +403,35 @@ Dependencies: PLA-P02, PLA-P03, PLA-P05
 Exit gate: a member can submit a truthful place, recover from validation,
 resolve duplicate candidates, and see an authorized review/publication state
 
-- [ ] `PLA-06-001` Create a dedicated place submission request/form and typed
+- [x] `PLA-06-001` Create a dedicated place submission request/form and typed
   data object.
-- [ ] `PLA-06-002` Define category-specific required and optional fields without
+- [x] `PLA-06-002` Define category-specific required and optional fields without
   requiring an exact/public address for place types that should use a general
   area.
-- [ ] `PLA-06-003` Validate contact URLs, phone/email, coordinates, schedule,
+- [x] `PLA-06-003` Validate contact URLs, phone/email, coordinates, schedule,
   services, rules, features, source, and evidence per field.
-- [ ] `PLA-06-004` Show and persist the exact difference between public region,
+- [x] `PLA-06-004` Show and persist the exact difference between public region,
   public point/address, and encrypted exact location.
-- [ ] `PLA-06-005` Use an explicit operation idempotency key carried across
+- [x] `PLA-06-005` Use an explicit operation idempotency key carried across
   validation retries.
-- [ ] `PLA-06-006` Create all submitted facts and provenance in one short
-  transaction with the place.
-- [ ] `PLA-06-007` Implement duplicate candidate scoring over normalized name,
+- [x] `PLA-06-006` Create all submitted facts and provenance in one short
+  transaction with the submission aggregate; create the canonical place only
+  in the later authorized publication transaction.
+- [x] `PLA-06-007` Implement duplicate candidate scoring over normalized name,
   address, phone, website, coordinates, category, and aliases.
-- [ ] `PLA-06-008` Scope duplicate presentation so private/unlisted places do
+- [x] `PLA-06-008` Scope duplicate presentation so private/unlisted places do
   not leak to unauthorized submitters.
-- [ ] `PLA-06-009` Allow a member to confirm an existing public place, propose
+- [x] `PLA-06-009` Allow a member to confirm an existing public place, propose
   a correction, or continue a distinct submission.
-- [ ] `PLA-06-010` Route ambiguous/private duplicates to an authorized review
+- [x] `PLA-06-010` Route ambiguous/private duplicates to an authorized review
   queue without revealing protected facts.
-- [ ] `PLA-06-011` Define submitted, needs-information, duplicate-review,
+- [x] `PLA-06-011` Define submitted, needs-information, duplicate-review,
   approved, rejected, published, and withdrawn transitions.
-- [ ] `PLA-06-012` Add manager/moderator decisions with reasons and immutable
+- [x] `PLA-06-012` Add manager/moderator decisions with reasons and immutable
   audit history.
-- [ ] `PLA-06-013` Send user-visible status through synchronous fallback plus
+- [x] `PLA-06-013` Send user-visible status through synchronous fallback plus
   after-commit notifications when queues are available.
-- [ ] `PLA-06-014` Add tests for duplicate races, repeated submits, hidden
+- [x] `PLA-06-014` Add tests for duplicate races, repeated submits, hidden
   duplicates, stale operation keys, rejected fields, and successful publish.
 
 ## PLA-P07 — Place Management, Verification, And Claims

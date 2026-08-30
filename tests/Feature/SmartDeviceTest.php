@@ -20,6 +20,7 @@ use App\Models\DevicePetAssignment;
 use App\Models\DeviceReading;
 use App\Models\DeviceSafeZone;
 use App\Models\MedicalRecord;
+use App\Models\PetProfile;
 use App\Models\SmartDevice;
 use App\Models\User;
 use App\Models\WeightEntry;
@@ -543,11 +544,12 @@ test('an owner can explicitly promote a scale reading to health as non-clinical'
         'type' => DeviceType::Scale,
         'name' => 'Nori Home Scale',
     ]);
-    MedicalRecord::factory()->create([
-        'owner_key' => 'mia-carter',
-        'pet_profile_key' => 'nori',
-        'pet_name' => 'Nori',
+    $pet = PetProfile::factory()->for($this->authenticatedUser)->create([
+        'profile_key' => 'nori',
+        'slug' => 'nori',
+        'name' => 'Nori',
     ]);
+    MedicalRecord::factory()->forPetProfile($pet)->create();
     $reading = DeviceReading::factory()->for($device)->create([
         'pet_profile_key' => 'nori',
         'pet_name' => 'Nori',

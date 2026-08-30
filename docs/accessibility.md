@@ -185,9 +185,17 @@ ring. A real administrator Livewire login followed by an invalid topic submit
 focused the complete summary and associated the title field with its error.
 The authorized administration table exposed its caption and scoped headers.
 
+`npm run test:browser:animal-science` uses the same disposable boundary but
+stops after the category-25 matrix. It verifies desktop English, mobile
+Lithuanian, 320-pixel English reflow, and Russian forced colors with the exact
+54-child hierarchy, localized root copy, fixed product typography, focus,
+touch-target, overflow, translation-key, and console contracts.
+
 Screenshots and the JSON report are written to an operating-system temporary
 directory and removed after the check. The package command creates its own
 temporary SQLite database and loopback server; set `CHROME_BIN` only when
 Chrome is not in a detected platform path. The underlying Node runner refuses
 non-loopback URLs and refuses to use demo credentials without the wrapper's
-explicit mutation consent.
+explicit mutation consent. When the runner itself executes as root in an
+isolated CI/container environment, it supplies Chromium's required
+`--no-sandbox` launch flag; non-root runs retain the browser sandbox.
