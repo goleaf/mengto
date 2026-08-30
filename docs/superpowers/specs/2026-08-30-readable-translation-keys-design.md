@@ -31,7 +31,7 @@ to match the mechanical naming rule. Translation values and placeholders in
 duplicate source values are consolidated only after confirming that their
 rendering does not rely on translated fragments.
 
-Normalization can expose distinct source strings with the same readable key,
+Normalization exposes 42 groups of distinct source strings with the same readable key,
 such as sentence-case and lower-case labels or a label with and without final
 punctuation. The migration owns an explicit reviewed override map for these
 cases. Override names use semantic qualifiers such as `label`, `sentence`,
