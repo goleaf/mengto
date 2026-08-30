@@ -2,6 +2,39 @@
 
 Plan date: 2026-07-30
 
+## Active Delivery: I18N-KEY Readable Translation Keys
+
+Status: `approved; root cause reproduced and implementation planned` on
+2026-08-30.
+
+This delivery removes every mechanically generated ten-hex-digest suffix from
+the `messages` and `ui` translation catalogues and every exact first-party
+reference. It replaces the two SHA-based generator paths with one readable,
+collision-aware naming contract and adds a permanent architecture ratchet.
+The approved design is
+`docs/superpowers/specs/2026-08-30-readable-translation-keys-design.md`; the
+executable TDD plan is
+`docs/superpowers/plans/2026-08-30-readable-translation-keys.md`.
+
+The work runs on `main` in a materially dirty shared tree. All pre-existing
+staged, unstaged, and untracked changes remain user-owned. Catalogue and
+reference files necessarily overlap concurrent work, so the migration must
+preserve their current values and unrelated hunks while publication uses an
+attributable temporary index and a complete diff review.
+
+| ID | Dependency | Owner | Affected paths/modules | Acceptance criteria | Required verification | Status | Rollback |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| I18N-KEY-01 | Approved readable-key design | Principal | Current Git inventory, `lang/{en,lt,ru}/{messages,ui}.php`, localization scripts and references | Exact hashed-key inventory, generator root cause, dirty-tree overlap, collision inventory, scope, and rollback are recorded before production edits | Git baseline, catalogue/reference counts, design and plan diff | completed | Revert planning documents only |
+| I18N-KEY-02 | I18N-KEY-01 | Principal | `tests/Unit/Support/ReadableTranslationKeyTest.php`, `ArchitectureComplianceTest` | RED contracts prove readable normalization, fail-closed collisions, and repository-wide rejection of ten-hex translation suffixes | Focused tests observed failing for missing helper and current 5,860 keys | planned | Revert attributable test additions |
+| I18N-KEY-03 | I18N-KEY-02 | Principal | shared script helper and both localization scripts | Existing English values reuse stable keys; new unambiguous text gets a readable key; ambiguity stops with an actionable error; no digest/random/counter fallback exists | Helper tests and both localization script checks | planned | Revert helper/script changes |
+| I18N-KEY-04 | I18N-KEY-03 | Principal | deterministic migration command, six catalogues, exact PHP/Blade/test references | Exactly 5,860 hashed keys migrate without locale-value/placeholder loss; every reference resolves; 42 collision groups receive reviewed meaningful names; check mode is clean and non-mutating | Migration RED/write/GREEN counts, locale parity, no-old-key scan, focused rendering/contracts | planned | Normal revert of the coherent source migration; no database action |
+| I18N-KEY-05 | I18N-KEY-04 | Principal | localization/testing/compliance/changelog documentation | Contributor workflow and evidence match observed behavior; no requirement is promoted beyond executed checks | Documentation/diff/source-generator review | planned | Revert documentation with implementation |
+| I18N-KEY-06 | I18N-KEY-02..05 | Independent reviewer then principal | Frozen attributable diff and full repository gates | Every material finding is reproduced and dispositioned; focused/full tests, Pint, Larastan, audits, build, caches and applicable browser checks are green before publication | Complete commands, staged diff, `git diff --check`, commit hash and push output | planned | Do not push on a material failure; normal revert after publication |
+
+Implementation order is `I18N-KEY-02` through `I18N-KEY-06`. Translation
+values, placeholders, stored domain identifiers, user prose, and generated
+forum evidence are outside the rename boundary.
+
 ## Active Delivery: EVENT-P13-ADVANCED Durable Event Operations
 
 Status: `approved; canonical requirements read and specialist discovery starting`
