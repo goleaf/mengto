@@ -13,6 +13,7 @@ use App\Models\User;
 use App\Models\UserOnboarding;
 use App\Services\EmailVerificationMode;
 use App\Services\ForumActor;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
@@ -95,7 +96,7 @@ final readonly class AdvanceUserOnboarding
         }, 3);
     }
 
-    /** @return array{introduction_completed_at: \Illuminate\Support\Carbon} */
+    /** @return array{introduction_completed_at: Carbon} */
     private function introductionAttributes(bool $acknowledged): array
     {
         if (! $acknowledged) {

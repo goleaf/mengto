@@ -26,6 +26,7 @@ use App\Models\PetProfileSlugAlias;
 use App\Models\User;
 use App\Services\PetProfileAccess;
 use App\Services\PetProfileFoundationBackfill;
+use App\Services\SocialActorResolver;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Arr;
@@ -509,7 +510,7 @@ it('invalidates public projections immediately after a privacy change', function
     PetProfileManager::factory()->for($profile, 'profile')->for($owner)->create([
         'role' => PetManagerRole::PrimaryOwner,
     ]);
-    $actor = app(\App\Services\SocialActorResolver::class)->forPet($profile);
+    $actor = app(SocialActorResolver::class)->forPet($profile);
     $this->actingAs($owner);
 
     foreach ([
