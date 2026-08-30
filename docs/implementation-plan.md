@@ -2,6 +2,135 @@
 
 Plan date: 2026-07-30
 
+## Active Delivery: Full Stack And Dependency Upgrade (Prompt 03)
+
+Status: `mandatory discovery completed; implementation authorized after this
+plan checkpoint` on 2026-08-30.
+
+This delivery began on `main` at
+`9540fe83756833ae1c6d22053e883a07dca9f014`, three commits ahead of
+`origin/main`, with 478 pre-existing changed paths across staged, unstaged and
+untracked states. Those bytes remain user-owned. The task-owned work ledger is
+`docs/audits/full-stack-dependency-upgrade-work-ledger.md`. Eight required
+read-only analysts completed Composer, PHP 8.5, Laravel 13, Livewire/Flux,
+Tailwind/Vite, testing, supply-chain and reproducibility discovery before any
+production-code change. The principal owns integration, TDD, documentation,
+runtime remediation, an attributable temporary index, publication decisions
+and every finding disposition.
+
+### Exact current and target matrix
+
+Authoritative package metadata was refreshed on 2026-08-30. A range in the
+target column is the supported contract; the resolved value is the exact lock
+target. All retained packages are stable.
+
+| Surface | Current declaration / resolved | Target declaration / resolved | Decision |
+| --- | --- | --- | --- |
+| PHP | `>=8.5.0 <8.6.0` / `8.5.8` CLI and FPM | retain PHP 8.5 contract; host patch target `8.5.10` | Major baseline is met; no platform emulation. Host panel currently pins 8.5.8, so patch replacement requires a supported panel build and ABI validation. |
+| Composer | 2.10.2 | 2.10.3 | Repository locks remain usable; host self-update and missing verification keys are an operator/toolchain exception, never a Composer platform override. |
+| Laravel | `^13.0` / `13.29.0` | retain / `13.29.0` | Latest stable compatible 13.x; no framework lock churn. |
+| Livewire | `^4.3.4` / `4.4.2` | retain / `4.4.2` | Latest stable compatible 4.x; add project generator config for class-based components. |
+| Flux / Flux Pro / Volt | absent | absent | No requirement or licence evidence; do not add. |
+| Tailwind CSS | `^4.3.3` / `4.3.3` | retain / `4.3.3` | Latest stable CSS-first release. |
+| `@tailwindcss/vite` | `^4.3.3` / `4.3.3` | retain / `4.3.3` | Latest stable compatible plugin. |
+| Vite | `^8.2.2` / `8.2.2` | retain / `8.2.2` | Latest stable supported release. |
+| `laravel-vite-plugin` | `^3.1.3` / `3.2.0` | retain / `3.2.0` | Latest stable and requires Vite 8. |
+| Node | `^20.19.0 || >=22.12.0` / `26.4.0` | `>=22.12.0 <27.0.0`; `.node-version=26.4.0` | `concurrently@10` invalidates the documented Node 20 floor. |
+| npm | `>=10` and `npm@12.0.1` / `12.0.1` | `>=12.0.2 <13`; `npm@12.0.2` | Latest stable package-manager patch; one package manager and one v3 lock. |
+| Pest / PHPUnit | Pest `^4.7` / `4.7.8`; PHPUnit `12.5.33` transitive | retain | Repository and Laravel 13 require Pest 4 / PHPUnit 12; reject Pest 5. |
+| Larastan / PHPStan | `^3.10` / `3.10.0`; `2.2.9` transitive | retain | Latest direct stable compatible stack. |
+| Pint / Mockery / Collision / Pao | `1.30.5` / `1.6.15` / `8.9.5` / `1.1.4` | retain | Current stable compatible releases. |
+| Lucide Blade icons | `^1.26` / `1.26.32` | `^2.0` / `2.0.9` | Only justified direct Composer major; no removed existing icon names, but package asset layout changed. |
+| Instrument Sans | mutable Google build fetch | `@fontsource/instrument-sans:^5.3.0` / `5.3.0` | Lock font bytes and remove clean-build network dependence; OFL-1.1. |
+| Bacon QR / Faker / Intervention Image / Tinker | `3.1.1` / `1.24.1` / `4.3.2` / `3.0.2` | retain | Current and used or operationally required; Faker stays production because approved no-dev seeding uses factories. |
+| Boost / Pail | `2.7.0` / `1.2.7` | retain | Current Laravel 13-compatible development tooling. |
+| PhotoSwipe / Sass Embedded / concurrently | `5.4.4` / `1.103.1` / `10.0.5` | retain | Current stable; concurrently establishes Node 22+ floor. |
+
+### Accepted blockers, removals and exceptions
+
+| ID | Category | Evidence and decision | Resolution evidence / owner / condition |
+| --- | --- | --- | --- |
+| FS03-DEP-01 | required upgrade | `mallardduck/blade-lucide-icons:^1.26` alone blocks 2.0.9; v2 moves core SVGs to `resources/svg/icons` | Targeted Composer update with scripts disabled, one-package lock diff, icon contract/audit and browser sampling; principal |
+| FS03-DEP-02 | required replacement | Vite's Google provider fetches mutable CSS/font bytes outside npm locks on a clean build | Add Fontsource 5.3.0, use the plugin's `fontsource()` provider, prove clean build and no Google URL; principal |
+| FS03-DEP-03 | removal | `php-http/discovery` is absent but pre-authorized as a Composer plugin | Remove stale permission; Composer validate/install/audit; principal |
+| FS03-SUPPLY-01 | required repair | 148/148 npm `resolved` URLs use undeclared `registry.npmmirror.com`; its advisory endpoint returns 404 | Project `.npmrc` pins official registry/TLS, npm 12 regenerates lock, host/integrity/version review and official audit pass; principal |
+| FS03-REPRO-01 | required repair | `composer setup` uses mutable `npm install`; Node 20 claim conflicts with concurrently 10 | Use `npm ci`, encode Node/npm bounds and exact `.node-version`, synchronize setup/deployment docs; principal |
+| FS03-LW-01 | required configuration | Package default `make:livewire` creates prohibited emoji SFC because app config is absent | RED config contract then minimal complete `make_command` override for class/view convention; principal |
+| FS03-TEST-01 | existing gate failure | Shared-tree Larastan baseline has 34 findings in unrelated active event/place work | No broad ignore or ownership theft. Re-run on frozen tree; only task regression is in scope. Owners of the existing modules must clear findings before release. |
+| FS03-TEST-02 | temporary environment exception | No PCOV/Xdebug, so the 90% coverage command cannot start | `TEST-COVERAGE-001`; server/CI operator installs PCOV only for test SAPI, then canonical wrapper must pass before release. |
+| FS03-ENV-01 | temporary host exception | Official PHP patch is 8.5.10, but the custom panel build script pins 8.5.8 and PHP/extension binaries are not RPM-owned | Server operator supplies a reviewed 8.5.10 panel build, backs up current binaries/config, validates every PECL ABI, FPM config/socket and HTTP smoke before release. PHP 8.5 major target remains met meanwhile. |
+| FS03-ENV-02 | required host remediation | Live runtime reports `APP_ENV=local`, an insecure session cookie, FPM `display_errors=On`, PRC INI timezone and root-owned runtime caches | Safely change only runtime configuration/ownership, cache as `www`, reload FPM only after config test, and verify sanitized HTTP attributes; principal/operator |
+| FS03-TOOL-01 | temporary host exception | Composer 2.10.2 lacks configured tags/dev verification keys; 2.10.3 is current | Server operator installs official keys and checksum-verified Composer 2.10.3 before release; repository remains free of a bundled alternate Composer. |
+| FS03-OPS-01 | retained release blocker | No CI/container, atomic release switch or authenticated readiness probe exists | Keep deployment NO-GO and existing `SYS-RUNTIME-002` / `OPS-DEPLOYMENT-001` ownership; dependency work must not claim production release readiness. |
+
+Rejected upgrades: Pest 5 would violate the mandatory Pest 4 baseline and
+drive PHPUnit 13 plus broad transitive churn; Flux, Volt, Filament, Horizon,
+Fortify, Socialite, Octane, Reverb, Telescope, Sanctum, Scout and Cashier have
+no current requirement or operational boundary. Full-page `Route::livewire()`
+migration is non-blocking and belongs to a separately tested route change.
+
+### Ordered implementation ledger
+
+| ID | Dependency | Owner | Affected paths/modules | Acceptance criteria | Required tests / verification | Status | Rollback |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| FS03-01 | Repository contract and eight analyst reports | Principal | Work ledger, manifests, runtime, docs | Baseline, exact versions, findings, decisions and ownership are recorded before production edits | Git inventory, Composer/npm/runtime diagnostics, analyst reports | completed | Revert only task planning additions |
+| FS03-02 | FS03-01 | Principal | `tests/Feature/DependencyManifestTest.php`, architecture/icon contracts | RED proves official lock provenance, locked installer, Node floor, local font, class generator and Lucide 2 asset contract | Focused tests fail for the intended missing contracts | pending | Revert test additions |
+| FS03-03 | FS03-02 | Principal | `composer.json`, `composer.lock`, `scripts/icon-system-audit.php` | Lucide 2.0.9 is the only Composer package changed; stale plugin permission is gone; all used icon names resolve | Composer validate/audit/dry install; icon audit and contract | pending | Restore constraint and regenerate lock with targeted Composer command; clear view/icon caches |
+| FS03-04 | FS03-02 | Principal | `.npmrc`, `.node-version`, `package.json`, `package-lock.json`, `vite.config.js` | Official registry only, npm scripts disabled, strict engines, Node/npm matrix true, Fontsource bytes locked, no remote font fetch | Lock host/version/integrity diff, clean isolated `npm ci`, audit, build, JS syntax and browser typography | pending | Restore previous manifest/config through npm, regenerate prior lock; previous Google provider is application-only rollback |
+| FS03-05 | FS03-02 | Principal | `config/livewire.php` | New generators produce normal class plus separate view without emoji/SFC defaults; existing runtime behavior unchanged | Focused config/architecture and representative Livewire suites; config/route/view caches | pending | Remove app override and clear config cache |
+| FS03-06 | FS03-03..05 | Principal | `.env` runtime only, PHP INI/runtime directories, README and deployment/testing/frontend/Livewire/Tailwind/security docs | Production environment and cookie/error/timezone/ownership controls are observed; docs match exact stack/install semantics; no secrets enter Git | FPM config test, sanitized cookie check, ownership probes, `artisan about`, docs/diff review | pending | Restore exact backed-up runtime lines; reload only after configuration test; source docs use normal revert |
+| FS03-07 | FS03-03..06 | Principal | Locked dependency/build/application boundary | Targeted gates, boot/routes/caches, isolated migration+seed+idempotence, clean installs, build and applicable browser checks execute; baseline failures are attributed exactly | Commands in the next subsection | pending | Stop publication; revert unsafe task-owned group only |
+| FS03-08 | FS03-07 | Three independent read-only reviewers; principal dispositions | Frozen attributable diff and command evidence | Dependency resolution, runtime compatibility and gate integrity reviewers disposition every finding; valid defects fixed and rerun | Reviewer reports, focused post-fix checks | pending | Revert reviewer-induced unsafe fix only |
+| FS03-09 | FS03-08 | Principal | Plan, ledger, compliance matrix, changelog and affected first-party docs | Documentation states only observed results; generated evidence remains generator-identical | Documentation, generator, secret and complete diff review | pending | Revert documentation slice and regenerate prior generated evidence |
+| FS03-10 | FS03-09 | Principal | Temporary Git index on `main` | Only task-owned paths/hunks staged; staged diff/check clean; commit created only after applicable gates; push only if all required gates and remote safety pass | Temporary-index staged diff, `git diff --check`, commit hash, `git push origin main` result | pending | Do not commit/push on material failure; after publication use an ordinary reviewed revert |
+
+### Checkpoints and reproducible command set
+
+Composer operations run serially because coincident diagnostics produced two
+host-level signal-11 failures while sequential reruns passed. Targeted updates
+use `--no-scripts`; package discovery and any required project scripts run
+separately under the runtime account after diff inspection. Lock files are
+never hand-edited. npm 12 and `package-lock.json` are the sole JavaScript
+resolution authority.
+
+```bash
+php -v
+php -m
+composer validate --strict
+composer diagnose
+composer check-platform-reqs --lock
+composer audit --locked
+composer outdated --direct --locked
+composer install --dry-run --no-scripts --no-plugins --no-interaction
+composer install --dry-run --no-dev --no-scripts --no-plugins --no-interaction --classmap-authoritative
+
+npm ci --ignore-scripts --registry=https://registry.npmjs.org/ --strict-ssl=true
+npm ls --all
+npm audit --package-lock-only --audit-level=high --registry=https://registry.npmjs.org/ --strict-ssl=true
+npm run build
+
+php scripts/icon-system-audit.php --check
+php scripts/run-tests.php --compact tests/Feature/DependencyManifestTest.php tests/Feature/IconSystemContractTest.php tests/Feature/FrontendArchitectureTest.php tests/Feature/ArchitectureComplianceTest.php
+vendor/bin/pint --test
+PAO_DISABLE=1 PHPSTAN_TURBO=0 vendor/bin/phpstan analyse --memory-limit=1G --no-progress
+php scripts/run-tests.php --compact
+php scripts/verify-fresh-database.php
+scripts/artisan-runtime about
+scripts/artisan-runtime config:cache
+scripts/artisan-runtime route:cache
+scripts/artisan-runtime view:cache
+php artisan route:list --except-vendor
+npm run test:browser:a11y
+```
+
+The compatibility fallback never weakens PHP 8.5, Laravel 13, Livewire 4,
+Tailwind 4, Vite 8 or stable-only constraints. If a selected package becomes
+externally unavailable, retain the last verified lock, stop publication,
+record exact registry/package evidence under the corresponding `FS03-*` item
+and resume only with an authoritative stable release or a fully implemented,
+tested framework-native replacement. No prerelease, fork, mutable branch or
+platform override is an accepted fallback.
+
 ## Active Delivery: Complete Laravel 13 Framework Modernization
 
 Status: `protected baseline recorded; mandatory read-only specialist discovery
@@ -1493,25 +1622,135 @@ read-only unless a later ledger revision delegates one narrowly isolated fix.
 
 ## Active Work Ledger: Tailwind CSS 4 And Design System
 
-Status: `discovery in progress` on 2026-08-30. This ledger is the coordination
-boundary for the repository-wide Tailwind CSS-first migration. All discovery
-and review agents are read-only; the principal agent owns reconciliation,
-implementation, tests, documentation, Git integration, and publication.
+Status: `discovery complete; implementation authorized after this checkpoint`
+on 2026-08-30. This ledger is the coordination boundary for the
+repository-wide Tailwind CSS-first migration. All discovery and review agents
+are read-only; the principal agent owns reconciliation, implementation, tests,
+documentation, Git integration, and publication.
 
 | ID | Agent | Exclusive scope | Expected output | Dependencies | Status |
 | --- | --- | --- | --- | --- | --- |
-| TW13-WL-A1 | Tailwind Upgrade and Configuration Analyst | Package metadata, NPM lock, Vite, Tailwind/PostCSS config, CSS entries, plugins, presets, scripts, Node compatibility | Configuration migration map, dependency changes, visual risk and rollback notes | Repository contract and canonical frontend/Tailwind docs | assigned wave 1 |
-| TW13-WL-A2 | Tailwind Source Detection and Dynamic Class Analyst | Blade, PHP class maps, Livewire, JavaScript, CSS sources, vendor templates, safelists | Source registry, unsafe dynamic-class findings, explicit-map and build-test needs | Repository contract and canonical Tailwind rules | assigned wave 1 |
-| TW13-WL-A3 | Design Token and Theme Architect | Brand/theme values, colors, typography, spacing, breakpoints, containers, radii, shadows, z-index, motion, component variants | Token inventory, target `@theme` model, repeated-value migration and contrast tests | Product and design documents | assigned wave 1 |
-| TW13-WL-A4 | Responsive Layout Analyst | Public/auth layouts, navigation, sidebars, cards, grids, tables, forms, filters, dialogs, drawers, media, charts, pagination | Screen/component matrix, prioritized defects, container-query and layout recommendations | Frontend, accessibility, localization, and active feature contracts | pending |
-| TW13-WL-A5 | Tailwind Accessibility Styling Analyst | Forms, controls, links, badges, alerts, dialogs, menus, tables, loading/disabled/error states, themes | Accessibility-style findings, utility/token changes, verification scenarios | WCAG and repository accessibility contracts | pending |
-| TW13-WL-A6 | Modern Tailwind Feature Applicability Analyst | Installed Tailwind 4 capabilities and reusable component/layout opportunities | Feature matrix with approved locations and rejected candidates/reasons | Exact installed version and browser contract | pending |
-| TW13-WL-A7 | CSS Duplication and Component Abstraction Analyst | CSS/SCSS, Blade class lists, components, `@apply`, arbitrary values, specificity and dead CSS | Duplication plan, dead-CSS candidates, component/token/utility decisions | Source-detection and token findings | pending |
-| TW13-WL-A8 | Frontend Build and Visual Verification Analyst | Build scripts/output, manifests, asset sizes, browser/visual tooling and critical pages | Build baseline, critical visual checklist, regression-test and screenshot plan | Existing dependencies and browser runners | pending |
+| TW13-WL-A1 | Tailwind Upgrade and Configuration Analyst | Package metadata, NPM lock, Vite, Tailwind/PostCSS config, CSS entries, plugins, presets, scripts, Node compatibility | Configuration migration map, dependency changes, visual risk and rollback notes | Repository contract and canonical frontend/Tailwind docs | complete; report accepted and dispositioned |
+| TW13-WL-A2 | Tailwind Source Detection and Dynamic Class Analyst | Blade, PHP class maps, Livewire, JavaScript, CSS sources, vendor templates, safelists | Source registry, unsafe dynamic-class findings, explicit-map and build-test needs | Repository contract and canonical Tailwind rules | complete; report accepted and dispositioned |
+| TW13-WL-A3 | Design Token and Theme Architect | Brand/theme values, colors, typography, spacing, breakpoints, containers, radii, shadows, z-index, motion, component variants | Token inventory, target `@theme` model, repeated-value migration and contrast tests | Product and design documents | complete; report accepted and dispositioned |
+| TW13-WL-A4 | Responsive Layout Analyst | Public/auth layouts, navigation, sidebars, cards, grids, tables, forms, filters, dialogs, drawers, media, charts, pagination | Screen/component matrix, prioritized defects, container-query and layout recommendations | Frontend, accessibility, localization, and active feature contracts | complete; report accepted and dispositioned |
+| TW13-WL-A5 | Tailwind Accessibility Styling Analyst | Forms, controls, links, badges, alerts, dialogs, menus, tables, loading/disabled/error states, themes | Accessibility-style findings, utility/token changes, verification scenarios | WCAG and repository accessibility contracts | complete; report accepted and dispositioned |
+| TW13-WL-A6 | Modern Tailwind Feature Applicability Analyst | Installed Tailwind 4 capabilities and reusable component/layout opportunities | Feature matrix with approved locations and rejected candidates/reasons | Exact installed version and browser contract | complete; report accepted and dispositioned |
+| TW13-WL-A7 | CSS Duplication and Component Abstraction Analyst | CSS/SCSS, Blade class lists, components, `@apply`, arbitrary values, specificity and dead CSS | Duplication plan, dead-CSS candidates, component/token/utility decisions | Source-detection and token findings | complete; report accepted and dispositioned |
+| TW13-WL-A8 | Frontend Build and Visual Verification Analyst | Build scripts/output, manifests, asset sizes, browser/visual tooling and critical pages | Build baseline, critical visual checklist, regression-test and screenshot plan | Existing dependencies and browser runners | complete; report accepted and dispositioned |
 | TW13-WL-R1 | Tailwind Architecture Reviewer | Final package/config/CSS/source/token diff and production output | Severity-ranked findings and release-readiness verdict | Implementation freeze and final diff | pending |
 | TW13-WL-R2 | Responsive UI Reviewer | Final critical screens across widths, locales, zoom, touch and keyboard | Reproducible responsive findings and required fixes | Built assets and isolated browser fixture | pending |
 | TW13-WL-R3 | Accessibility Styling Reviewer | Final focus, contrast, status, motion, forced-colors, touch and theme states | Reproducible accessibility findings and verified state checklist | Built assets and isolated browser fixture | pending |
 | TW13-WL-R4 | Build Output Reviewer | Final lock/config/manifest/assets and critical generated selectors | Build findings, size comparison and release recommendation | Clean production build | pending |
+
+### TW13 protected baseline and configuration migration map
+
+The task began on `main` at
+`9540fe83756833ae1c6d22053e883a07dca9f014`, three commits ahead of
+`origin/main`, with 478 pre-existing changed paths across staged, unstaged and
+untracked states. Those bytes remain user-owned. Package, lock, npm registry
+and font-provider files also changed concurrently during discovery; their
+final state must be frozen and attributed before release. The baseline
+production build succeeded with Tailwind CSS 53,426 bytes, retained SCSS
+311,032 bytes, application JavaScript 35,099 bytes and PhotoSwipe JavaScript
+58,832 bytes. Those provisional numbers are not a final comparison because a
+concurrent Fontsource change altered the build while analysts were reading it.
+
+| Surface | Observed state and exact resolved version | CSS-first target / retention decision | Verification |
+| --- | --- | --- | --- |
+| Tailwind | `tailwindcss@4.3.3`; `@tailwindcss/vite@4.3.3` | Retain current stable pair and Vite plugin; no prerelease or PostCSS fallback | `npm ls`; isolated `npm ci`; production build |
+| Vite | `vite@8.2.2`; `laravel-vite-plugin@3.2.0` | Retain current stable compatible integration and the three intentional entries | Manifest reachability and entry-count contract |
+| Node/npm | Node 26.4.0 and npm 12.0.1 in the execution environment; active dependency plan requires Node `>=22.12 <27` and npm 12 | Adopt the stricter active repository contract and synchronize documentation; do not reintroduce Node 20 while `concurrently@10` requires Node 22 | engines, package-manager and clean-install checks |
+| CSS entry | `@import 'tailwindcss' source(none)` plus six explicit sources | Keep CSS-first import; narrow pagination sources to exact Tailwind templates; keep Blade, JS, Livewire PHP and class-component PHP sources | Source-registry test and emitted-selector probe |
+| SCSS entry | Deliberate, later-loaded component layer; no Less and zero `@apply` | Retain as a separate Vite entry; bridge shared primitives to CSS theme variables; remove only proven dead selectors | Sass build, mixed-component browser styles and size comparison |
+| JavaScript Tailwind config | No `tailwind.config.*`, preset, safelist or legacy directive exists | No compatibility config is needed; do not create one | Architecture scan |
+| PostCSS | No `postcss.config.*`, Tailwind PostCSS, import plugin or first-party Autoprefixer wiring exists | Nothing to migrate or delete | Manifest and dependency scan |
+| Source plugin paths | Broad Laravel and Livewire pagination globs | Replace with Laravel `tailwind.blade.php` and Livewire `tailwind.blade.php` plus `simple-tailwind.blade.php`; no vendor-wide source | Exact source-registry assertion |
+| Custom variant | Unused custom `forced-colors` duplicates Tailwind 4 built-in support | Remove after RED architecture coverage; use the built-in variant and a base forced-color fallback | Architecture and generated CSS checks |
+| Font | Instrument Sans brand family; concurrent Fontsource output contains Latin only | Preserve the family and add `latin-ext` for Lithuanian; accept only locally locked glyph-complete output | Manifest unicode ranges, LT browser sample and font requests |
+
+Every previous theme value is retained or deliberately corrected: brand
+colors remain unchanged; the existing `xs` breakpoint, radii, shadows, easing
+and z-index values move under correct Tailwind namespaces; the invalid
+`--duration-interface` name becomes `--transition-duration-interface`.
+There is no legacy container, animation or plugin value to migrate. The
+default Tailwind namespaces remain enabled because active views still use
+default colors, spacing, radii and shadows.
+
+### TW13 accepted discovery and design model
+
+Production CSS currently omits active `paw-canvas`, `paw-surface`,
+`paw-accent`, `paw-border`, `paw-teal`, `status-information`, `border-subtle`,
+`border-strong` and `text-muted` utility families. This is a token-ownership
+defect, not a general source-scanner failure: representative Blade, PHP,
+Laravel pagination and Livewire pagination utilities are present. Runtime
+utility concatenation was not confirmed; the architecture ratchet must still
+cover JavaScript templates, PHP interpolation/concatenation and Blade
+fragments so the guarantee cannot regress.
+
+The target token layers are:
+
+- primitive brand colors: cream, paper, ink, muted, line, leaf, mint, coral
+  and sun, with the current literal values preserved;
+- semantic aliases: canvas, surface, subtle/strong border, control border,
+  muted text, focus, success, warning foreground/background, danger and info;
+- component decisions: control/panel radii, touch target, panel/control/dialog
+  shadows, content/reading containers, eyebrow tracking, z-index and interface
+  duration/easing. Component-only map geometry and one-off table widths remain
+  local.
+
+Warning body text receives a dedicated foreground because the existing warning
+token has only 3.71:1 contrast on white. Interactive borders receive a darker
+control-border token because the deliberate light separator is not visible
+enough as a control boundary. Repeated SCSS primitives reference the emitted
+CSS variables. Exact brand literals in the forum layer may be replaced
+mechanically only in bounded, separately verified passes; wholesale SCSS or
+form-component conversion is rejected for this delivery.
+
+Accepted responsive and accessibility corrections are: render all 13 mobile
+destinations instead of slicing two routes away; allow translated desktop
+navigation to wrap without horizontal overflow; allow four-column hero stats
+and service-card copy to wrap at 320 pixels; restore visible messaging-search
+focus; preserve focus in forced colors when `outline-none` utilities would
+otherwise win; enlarge search-map marker controls to 44 pixels and use a
+contrasting focus color; replace color-only/low-contrast warning and notice
+text; use native list/button semantics for taxonomy results instead of an
+incomplete listbox; and layer `dvh` after `vh` in messaging and place-map
+surfaces.
+
+Approved Tailwind 4 features are CSS-first theme/source ownership, logical
+properties, existing `:has()` state, built-in motion/forced-color/pointer
+variants where a real state uses them, and layered dynamic viewport units.
+Container queries are deferred because no nested-container defect was
+reproduced. Dark mode remains intentionally not applicable. Masks, text
+shadows, view transitions, custom feature-showcase utilities and a mass
+ARIA/data-variant rewrite are rejected because they add compatibility or
+private-DOM lifecycle risk without a requirement.
+
+### TW13 ordered implementation and verification ledger
+
+| ID | Dependency | Owner | Affected paths/modules | Acceptance criteria | Required tests / verification command | Status | Rollback |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| TW13-01 | Eight analyst reports and protected Git baseline | Principal | This plan and TW13 work ledger | Exact configuration, accepted/rejected findings, ownership and rollback recorded before production edits | Ledger/report reconciliation and attributable diff | completed | Revert only TW13 planning additions |
+| TW13-02 | TW13-01 | Principal | New Tailwind architecture and build-output tests/scripts | RED proves missing semantic selectors, unsafe construction coverage, exact source paths, modern variant ownership, intentional entries and LT font coverage | Focused Pest test; production selector script against baseline | pending | Revert new tests/scripts |
+| TW13-03 | TW13-02 | Principal | `resources/css/app.css`, `_tokens.scss`, affected Blade/Livewire class maps | Required primitive/semantic/component variables compile; every active semantic utility is emitted; obsolete aliases and duplicate custom variant are gone; brand is unchanged | Focused architecture test; `npm run build`; selector script; contrast assertions | pending | Revert theme/source/alias group and restore previous build |
+| TW13-04 | TW13-03 | Principal | Navigation, stats, service-card, messaging, map, taxonomy, forum warning/notice and viewport SCSS/views | All routes remain reachable; no 320/375/768/1024/1280/1440/1920 overflow; long EN/LT/RU copy wraps; touch, keyboard, forced colors and reduced motion stay usable | RED/green feature tests; Sass build; retained browser reports and screenshots | pending | Revert per component; no database rollback |
+| TW13-05 | TW13-03 | Principal | Repeated arbitrary utilities, forum primitives and confirmed dead selectors | Only proven duplication is removed; local layout values remain local; zero new `@apply`; source output unchanged except intended selectors | Repetition/dead-consumer scan, focused component tests, size comparison | pending | Restore individual selector/class migration |
+| TW13-06 | TW13-02 | Principal | Browser CDP client, browser wrapper and viewport/report contracts | CDP close/error rejects pending work with causal stderr; true 1280 viewport runs; failure evidence may be retained without retaining sessions, credentials or temporary database | Node/Pest harness tests and isolated browser run | pending | Revert harness-only group |
+| TW13-07 | TW13-03..06 | Principal | Frozen dependency tree, production assets and critical routes | Isolated `npm ci`, audit and clean build pass; selector/manifest/font contracts pass; final raw/gzip delta is recorded from comparable builds | npm/version/audit/build commands; browser matrix; console/resource inspection | pending | Stop release and restore last verified lock/assets |
+| TW13-08 | TW13-07 | Four independent read-only reviewers; principal dispositions | Frozen attributable diff and built runtime | Architecture, responsive, accessibility and build reviewers report exact evidence; every valid finding is fixed and rerun | Reviewer reports, finding dispositions and focused/full reruns | pending | Revert only an unsafe reviewer-induced fix |
+| TW13-09 | TW13-08 | Principal | Tailwind/design-system/frontend/accessibility/localization/testing/deployment docs, compliance generator/output and changelog | Documentation describes observed implementation and commands; generated compliance evidence is byte-identical | Documentation scan, forum generator checks if applicable, diff/secret review | pending | Revert documentation slice and regenerate prior evidence |
+| TW13-10 | TW13-09 | Principal | Temporary Git index on `main` | Only attributable files/hunks are staged; staged diff/check are clean; commit and push occur only after applicable gates | Temporary-index review, commit hash and observed `git push origin main` result | pending | Do not publish on a material failure; use a reviewed ordinary revert after publication |
+
+The required browser matrix is 320, 375, 768 portrait, 1024 landscape, true
+1280, 1440 and 1920 CSS pixels; EN/LT/RU and long content; 200 percent reflow;
+keyboard and touch; hover-disabled input; reduced motion; forced colors; page
+overflow; console and asset status. The clean-build selector contract samples
+critical semantic utilities plus `max-w-[90%]`, the PHP-produced
+`md:grid-cols-[minmax(0,1fr)_18rem]`, Laravel `ring-gray-300` and Livewire
+`ring-blue-300`. Browser artifacts may be retained only in a sanitized
+explicit output path; temporary databases, cookies and credentials must still
+be destroyed.
 
 ## Active Work Ledger: Complete Localization And Hardcoded Text Removal
 
@@ -1525,13 +1764,13 @@ four total slots.
 
 | ID | Agent | Exclusive scope | Expected output | Dependencies | Status |
 | --- | --- | --- | --- | --- | --- |
-| LC15-A1 | Locale Architecture and Routing Analyst | Locale configuration, middleware, routes, sessions/cookies, user preferences, language and JSON files, database-translated content, and HTTP/Livewire/mail/notification/API/job locale flow | Locale architecture map; canonical locales/fallback; routing, persistence, invalid-locale, tenant/content-locale and RTL findings; tests and commands | Repository contract and canonical architecture, security, frontend, Livewire, and localization documents | assigned wave 1 |
-| LC15-A2 | Hardcoded String Scanner | PHP, Blade, Livewire, JavaScript, validation, exceptions, notifications, mail, API output, accessibility, SEO, fixtures, and tests | Classified literal inventory; stable-key migration map; intentional nonlocalized exceptions; implementation order and scanner tests | Existing localizer scripts and translation conventions | assigned wave 1 |
-| LC15-A3 | Translation Consistency Agent | All EN/LT/RU catalogues, JSON translations, validation, mail/notification templates, pluralization, placeholders, nesting, escaping, terminology, and dead keys | Locale parity report; mismatch inventory; consolidation and human-review recommendations; representative plural tests | Canonical locale tree and current translation references | assigned wave 1 |
-| LC15-A4 | Validation and Notification Translation Agent | Form Requests, Livewire validation, exceptions, notifications, mailables, deferred side effects, user-facing JSON and provider failure mapping | Communication localization matrix; recipient-locale and serialization defects; required fixes and tests | Locale architecture evidence and Laravel communication boundaries | queued wave 2 |
-| LC15-A5 | Formatting and Pluralization Agent | Dates, times, relative time, timezone, numbers, percentages, currency, lists, measurements, counts, coordinates, exports, reports, JavaScript and Blade formatting | Formatting ownership policy; direct-format/fragment inventory and locale/timezone/currency/plural edge tests | Installed Intl/framework capabilities and existing formatter service | queued wave 2 |
-| LC15-A6 | Localized Content and SEO Analyst | Public pages, presenters/SEO builders, locale routes, slugs, database translations, canonical/alternate metadata, Open Graph, JSON-LD, authored-content boundaries and tests | Localized public-content matrix; fallback/indexing/escaping defects; applicable and not-applicable SEO decisions with required tests | Locale architecture and current public-route/indexability evidence | queued wave 2 |
-| LC15-A7 | Localization Test and Automation Analyst | Pest/architecture/browser suites, scanners, factories, seeders, critical routes and communications, fallback/switch/persistence, long/Unicode/RTL fixtures and deterministic timezones | Test/automation plan; coverage gaps; exact commands; scanner false-positive controls; deterministic fixture and long-text/RTL decisions | Findings from LC15-A1 through LC15-A6 and current test/tooling inventory | queued wave 3 |
+| LC15-A1 | Locale Architecture and Routing Analyst | Locale configuration, middleware, routes, sessions/cookies, user preferences, language and JSON files, database-translated content, and HTTP/Livewire/mail/notification/API/job locale flow | Locale architecture map; canonical locales/fallback; routing, persistence, invalid-locale, tenant/content-locale and RTL findings; tests and commands | Repository contract and canonical architecture, security, frontend, Livewire, and localization documents | complete; report accepted |
+| LC15-A2 | Hardcoded String Scanner | PHP, Blade, Livewire, JavaScript, validation, exceptions, notifications, mail, API output, accessibility, SEO, fixtures, and tests | Classified literal inventory; stable-key migration map; intentional nonlocalized exceptions; implementation order and scanner tests | Existing localizer scripts and translation conventions | complete; report accepted |
+| LC15-A3 | Translation Consistency Agent | All EN/LT/RU catalogues, JSON translations, validation, mail/notification templates, pluralization, placeholders, nesting, escaping, terminology, and dead keys | Locale parity report; mismatch inventory; consolidation and human-review recommendations; representative plural tests | Canonical locale tree and current translation references | complete; report accepted |
+| LC15-A4 | Validation and Notification Translation Agent | Form Requests, Livewire validation, exceptions, notifications, mailables, deferred side effects, user-facing JSON and provider failure mapping | Communication localization matrix; recipient-locale and serialization defects; required fixes and tests | Locale architecture evidence and Laravel communication boundaries | complete; report accepted |
+| LC15-A5 | Formatting and Pluralization Agent | Dates, times, relative time, timezone, numbers, percentages, currency, lists, measurements, counts, coordinates, exports, reports, JavaScript and Blade formatting | Formatting ownership policy; direct-format/fragment inventory and locale/timezone/currency/plural edge tests | Installed Intl/framework capabilities and existing formatter service | complete; report accepted |
+| LC15-A6 | Localized Content and SEO Analyst | Public pages, presenters/SEO builders, locale routes, slugs, database translations, canonical/alternate metadata, Open Graph, JSON-LD, authored-content boundaries and tests | Localized public-content matrix; fallback/indexing/escaping defects; applicable and not-applicable SEO decisions with required tests | Locale architecture and current public-route/indexability evidence | complete; report accepted |
+| LC15-A7 | Localization Test and Automation Analyst | Pest/architecture/browser suites, scanners, factories, seeders, critical routes and communications, fallback/switch/persistence, long/Unicode/RTL fixtures and deterministic timezones | Test/automation plan; coverage gaps; exact commands; scanner false-positive controls; deterministic fixture and long-text/RTL decisions | Findings from LC15-A1 through LC15-A6 and current test/tooling inventory | assigned wave 3 |
 | LC15-R1 | Translation Coverage Reviewer | Final changed source, locale catalogues, notifications, mail, API errors, accessibility/SEO strings, tests and scanners | Severity-ranked literal/key/placeholder/escaping findings with exact locations and failure scenarios | Frozen attributable diff and completed implementation | pending |
 | LC15-R2 | Locale Behavior and Formatting Reviewer | Final locale selection/persistence/fallback, timezone/number/currency/plural behavior, recipient locale and deferred work | Severity-ranked behavior findings and locale-architecture readiness verdict | Frozen attributable diff and completed targeted checks | pending |
 | LC15-R3 | Localization Regression and UX Reviewer | Critical pages/components/forms/errors across EN/LT/RU, long/Unicode content, responsive layouts and accessibility labels | Severity-ranked mixed-language, clipping, terminology and journey findings with exact pages/locales | Built assets, deterministic fixtures and connected browser environment | pending |

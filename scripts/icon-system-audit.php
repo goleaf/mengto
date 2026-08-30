@@ -10,7 +10,7 @@ if ($projectRoot === false) {
 
 $viewsRoot = $projectRoot.'/resources/views';
 $scssRoot = $projectRoot.'/resources/scss';
-$vendorIconsRoot = $projectRoot.'/vendor/mallardduck/blade-lucide-icons/resources/svg';
+$vendorIconsRoot = $projectRoot.'/vendor/mallardduck/blade-lucide-icons/resources/svg/icons';
 $canonicalPrimitive = 'components/ui-icon.blade.php';
 $inlineSvgAllowlist = ['components/medical-weight-chart.blade.php'];
 $pictogramPattern = '/[←→↗↻×✓✔✕✖⚠★☆♥♡]/u';

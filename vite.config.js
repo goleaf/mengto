@@ -1,6 +1,6 @@
 import { defineConfig } from 'vite';
 import laravel from 'laravel-vite-plugin';
-import { google } from 'laravel-vite-plugin/fonts';
+import { fontsource } from 'laravel-vite-plugin/fonts';
 import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
@@ -9,7 +9,8 @@ export default defineConfig({
             input: ['resources/css/app.css', 'resources/scss/app.scss', 'resources/js/app.js'],
             refresh: true,
             fonts: [
-                google('Instrument Sans', {
+                fontsource('Instrument Sans', {
+                    package: '@fontsource/instrument-sans',
                     weights: [400, 500, 600],
                     optimizedFallbacks: false,
                 }),

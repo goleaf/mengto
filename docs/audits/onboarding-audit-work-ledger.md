@@ -2,7 +2,7 @@
 
 Date: 2026-08-30  
 Branch: `main`  
-Status: ten-role audit complete; RED-first implementation starting
+Status: Prompt 01 current-checkout revalidation in progress; foundation exists in `main`
 
 ## Ownership And Safety Boundary
 
@@ -15,6 +15,29 @@ Status: ten-role audit complete; RED-first implementation starting
   must remain intact. Onboarding-owned paths are tracked explicitly below.
 - Review roles 11 and 12 remain unassigned until the implementation diff is
   frozen; neither reviewer may participate in implementation.
+
+## Prompt 01 Current-Checkout Revalidation
+
+The earlier audit described the pre-foundation checkout. Commit `0787b76`
+subsequently added the onboarding foundation, so every earlier finding and
+status is a historical lead until reproduced against the current `main`
+checkout. The principal agent owns all writes. Each specialist below is
+read-only and has an exclusive evidence scope.
+
+| ID | Specialist role | Exclusive current-checkout scope | Required deliverable | Status |
+| --- | --- | --- | --- | --- |
+| ONB-V01 | Authentication and registration auditor | Registration, login, logout, reset-password entry and account/session destinations only | Current transition map, reuse inventory, defects with file/line and test evidence | assigned |
+| ONB-V02 | Email verification auditor | Verification configuration, notice, signed handler, resend, enabled/disabled destinations only | State/destination matrix, replay/rate-limit findings, exact evidence | assigned |
+| ONB-V03 | User/profile domain auditor | User identity, profile preferences, locale/timezone, account social actor bootstrap only | Canonical identity inventory, mandatory/deferrable preference findings, exact evidence | assigned |
+| ONB-V04 | Pet-profile domain auditor | Pet creation, duplicate detection/review, manager grants and access requests only | Canonical reuse map, choice/evidence matrix, bypass findings | assigned |
+| ONB-V05 | Authorization and middleware auditor | Middleware ordering, route guards, bindings, intended URL and direct mutation authorization only | Before/during/after access matrix and exploit-focused findings | assigned |
+| ONB-V06 | Database and migration auditor | Onboarding schema/model/factory/constraints, upgrade and rollback compatibility only | Schema correctness, concurrency/idempotency and migration-risk report | assigned |
+| ONB-V07 | Livewire architecture auditor | Onboarding/auth component hydration, forms, actions and persistent middleware only | Public-state/tamper/replay analysis and v4 convention findings | assigned |
+| ONB-V08 | UI/UX and accessibility auditor | Onboarding shell/view/styles, responsive keyboard/focus/error/offline semantics only | WCAG 2.2/mobile acceptance audit with exact evidence | assigned |
+| ONB-V09 | EN/LT/RU localization auditor | Onboarding/auth keys, placeholders, pluralization and locale transition only | Recursive parity and rendered-language findings | assigned |
+| ONB-V10 | Test architecture auditor | Onboarding/auth/pet/social test coverage and isolated runner only | Decision-to-test matrix, missing high-value negative cases and exact commands | assigned |
+| ONB-V11 | Independent security reviewer | Frozen Prompt 01 attributable diff and affected trust boundaries only | Severity-ranked findings, exploit path, reproduction and disposition | reserved until diff freeze |
+| ONB-V12 | Final independent code reviewer | Frozen diff, updated plans and acceptance criteria only | Requirement-by-requirement verdict and ship/no-ship assessment | reserved until diff freeze |
 
 ## Specialist Assignments
 

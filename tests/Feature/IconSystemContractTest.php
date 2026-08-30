@@ -5,6 +5,19 @@ declare(strict_types=1);
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\File;
 
+test('the installed lucide package exposes the supported version two icon source', function () {
+    $composer = json_decode(File::get(base_path('composer.lock')), true, flags: JSON_THROW_ON_ERROR);
+    $lucide = collect($composer['packages'])
+        ->firstWhere('name', 'mallardduck/blade-lucide-icons');
+
+    expect($lucide)
+        ->toBeArray()
+        ->and($lucide['version'])
+        ->toStartWith('2.')
+        ->and(File::isDirectory(base_path('vendor/mallardduck/blade-lucide-icons/resources/svg/icons')))
+        ->toBeTrue();
+});
+
 function iconSystemXPath(string $markup): DOMXPath
 {
     $document = new DOMDocument;

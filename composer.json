@@ -21,7 +21,7 @@
         "laravel/framework": "^13.0",
         "laravel/tinker": "^3.0",
         "livewire/livewire": "^4.3.4",
-        "mallardduck/blade-lucide-icons": "^1.26"
+        "mallardduck/blade-lucide-icons": "^2.0"
     },
     "require-dev": {
         "ext-pdo_sqlite": "*",
@@ -52,8 +52,8 @@
             "composer install",
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\"",
             "@php artisan key:generate",
-            "@php artisan migrate --force",
-            "npm install --ignore-scripts",
+            "@php artisan migrate",
+            "npm ci --ignore-scripts",
             "npm run build"
         ],
         "dev": [
@@ -93,8 +93,7 @@
         "preferred-install": "dist",
         "sort-packages": true,
         "allow-plugins": {
-            "pestphp/pest-plugin": true,
-            "php-http/discovery": true
+            "pestphp/pest-plugin": true
         }
     },
     "minimum-stability": "stable",

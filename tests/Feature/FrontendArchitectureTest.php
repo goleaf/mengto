@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use IlluminateSupportFacadesFile;
+use Illuminate\Support\Facades\File;
 
 test('blade templates prohibit executable application boundaries', function () {
     $patterns = [
