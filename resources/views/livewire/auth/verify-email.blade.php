@@ -11,6 +11,12 @@
         </x-auth-status>
     @endif
 
+    @error('resend')
+        <x-auth-status role="alert" tone="danger" class="mb-5">
+            {{ $message }}
+        </x-auth-status>
+    @enderror
+
     <div class="auth-actions">
         <x-auth-submit
             type="button"

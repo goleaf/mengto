@@ -158,6 +158,7 @@ use App\Livewire\Auth\Login;
 use App\Livewire\Auth\Register;
 use App\Livewire\Auth\ResetPassword;
 use App\Livewire\Auth\VerifyEmail;
+use App\Livewire\Onboarding;
 use App\Livewire\Organizations\OrganizationDirectory;
 use App\Livewire\Organizations\OrganizationInvitationResponse;
 use App\Livewire\Organizations\OrganizationWorkspace;
@@ -208,6 +209,7 @@ Route::middleware('web')
                     ->middleware(['signed', 'throttle:6,1'])
                     ->name('verification.verify');
                 Route::post('/logout', LogoutController::class)->name('logout');
+                Route::get('/onboarding', Onboarding::class)->name('onboarding.show');
 
                 Route::prefix('profile')
                     ->name('profile.')

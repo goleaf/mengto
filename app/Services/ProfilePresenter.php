@@ -195,13 +195,13 @@ final class ProfilePresenter
         $friendsVisible = $this->visibility->allows($privacy['friends'], $audience);
         $careVisible = $this->visibility->allows($privacy['care'], $audience);
 
-        $pet['location'] = $locationVisible ? $pet['location'] : __('messages.location_kept_private_867cdae4a7');
+        $pet['location'] = $locationVisible ? $pet['location'] : __('messages.location_kept_private_profile');
         $pet['actions'] = $this->petActions($pet, $audience);
         $pet['stats'] = [
-            ['label' => __('messages.followers_a145ab342a'), 'value' => $slug === 'scout' ? '1.8k' : '690', 'detail' => __('messages.pet_audience_aa5dae2193')],
-            ['label' => __('messages.friends_bd104d1b98'), 'value' => $slug === 'scout' ? '28' : '14', 'detail' => __('messages.pet_connections_999fbdfe85')],
-            ['label' => __('messages.moments_0b016f8b0a'), 'value' => $slug === 'scout' ? '36' : '18', 'detail' => __('messages.about_eae9424335').$pet['name']],
-            ['label' => __('messages.walks_22e4ca854b'), 'value' => $slug === 'scout' ? '12' : '0', 'detail' => $slug === 'scout' ? __('messages.shared_plans_29e1ecab1c') : __('messages.indoor_routine_89dfe81292')],
+            ['label' => __('messages.followers'), 'value' => $slug === 'scout' ? '1.8k' : '690', 'detail' => __('messages.pet_audience')],
+            ['label' => __('messages.friends'), 'value' => $slug === 'scout' ? '28' : '14', 'detail' => __('messages.pet_connections')],
+            ['label' => __('messages.moments'), 'value' => $slug === 'scout' ? '36' : '18', 'detail' => __('messages.about_lowercase_prefix').$pet['name']],
+            ['label' => __('messages.walks'), 'value' => $slug === 'scout' ? '12' : '0', 'detail' => $slug === 'scout' ? __('messages.shared_plans') : __('messages.indoor_routine')],
         ];
 
         return [
@@ -231,8 +231,8 @@ final class ProfilePresenter
             'managers' => $this->pets->managers($slug, $this->owner()),
             'privacy' => $this->privacySummary($privacy),
             'badges' => [
-                ['icon' => 'paw-print', 'label' => __('messages.pet_profile_complete_8af1889736'), 'tone' => 'mint'],
-                ['icon' => 'user-round-check', 'label' => __('messages.owner_confirmed_57fe730848'), 'tone' => 'surface'],
+                ['icon' => 'paw-print', 'label' => __('messages.pet_profile_complete'), 'tone' => 'mint'],
+                ['icon' => 'user-round-check', 'label' => __('messages.owner_confirmed'), 'tone' => 'surface'],
             ],
             'safety_actions' => $this->safetyActions('pet-'.$slug, $pet['name'], $audience),
         ];
@@ -280,7 +280,7 @@ final class ProfilePresenter
         if ($target === 'owner-mia-carter') {
             return [
                 'target' => $target,
-                'label' => __('messages.mia_carter_0e5b29cc3b'),
+                'label' => __('messages.mia_carter'),
                 'route' => 'profile.mia',
                 'route_parameters' => [],
             ];
@@ -381,18 +381,18 @@ final class ProfilePresenter
         if ($audience === 'owner') {
             $actions = [
                 $this->linkAction(
-                    __('messages.edit_profile_15c4aa1303'),
+                    __('messages.edit_profile'),
                     'pencil',
                     route('compose', ['kind' => 'pet-profile', 'pet' => $pet['slug']]),
                     'primary',
                 ),
                 $this->linkAction(
-                    __('messages.privacy_54a57c3147'),
+                    __('messages.privacy'),
                     'shield-check',
                     route('compose', ['kind' => 'pet-privacy', 'pet' => $pet['slug']]),
                 ),
                 $this->linkAction(
-                    __('messages.pet_friends_8866f0adbb'),
+                    __('messages.pet_friends'),
                     'heart-handshake',
                     route('pet-friends.index', ['pet' => $pet['slug']]),
                 ),
@@ -400,13 +400,13 @@ final class ProfilePresenter
 
             if ($pet['slug'] === 'scout') {
                 $actions[] = $this->linkAction(
-                    __('messages.plan_a_walk_10f67c3800'),
+                    __('messages.plan_a_walk'),
                     'footprints',
                     route('compose', ['kind' => 'walk-plan', 'target' => 'mochi']),
                 );
             }
 
-            $actions[] = $this->postAction(__('messages.share_29887a5ff9'), 'share-2', [
+            $actions[] = $this->postAction(__('messages.share'), 'share-2', [
                 'action' => 'share',
                 'target' => $pet['slug'],
                 'label' => __('presentation.profile_for', ['name' => $pet['name']]),
@@ -417,7 +417,7 @@ final class ProfilePresenter
 
         $actions = [
             $this->toggleAction(
-                label: __('messages.follow_ab54ab0728').$pet['name'],
+                label: __('messages.follow_prefix').$pet['name'],
                 icon: 'heart',
                 collection: 'subscriptions',
                 target: 'pet-'.$pet['slug'],
@@ -430,13 +430,13 @@ final class ProfilePresenter
 
         if ($pet['slug'] === 'scout') {
             $actions[] = $this->linkAction(
-                __('messages.invite_to_walk_35311967f3'),
+                __('messages.invite_to_walk'),
                 'footprints',
                 route('compose', ['kind' => 'walk-plan', 'target' => 'scout']),
             );
         }
 
-        $actions[] = $this->postAction(__('messages.share_29887a5ff9'), 'share-2', [
+        $actions[] = $this->postAction(__('messages.share'), 'share-2', [
             'action' => 'share',
             'target' => $pet['slug'],
             'label' => __('presentation.profile_for', ['name' => $pet['name']]),
@@ -456,18 +456,18 @@ final class ProfilePresenter
 
         return [
             $this->toggleAction(
-                label: __('messages.block_profile_fe810d74e7'),
+                label: __('messages.block_profile'),
                 icon: 'ban',
                 collection: 'blocks',
                 target: $target,
-                activeLabel: __('messages.unblock_profile_2781020042'),
+                activeLabel: __('messages.unblock_profile'),
                 activeIcon: 'shield-off',
                 action: 'toggle-block',
                 variant: 'paper',
                 feedbackLabel: $label,
             ),
             $this->linkAction(
-                __('messages.report_profile_c32c158ce5'),
+                __('messages.report_profile'),
                 'flag',
                 route('compose', ['kind' => 'report-profile', 'target' => $target]),
             ),
@@ -680,16 +680,16 @@ final class ProfilePresenter
             active: $active,
             audience: $audience,
             definitions: [
-                'feed' => ['label' => __('messages.feed_396c3cb18f'), 'icon' => 'newspaper'],
-                'about' => ['label' => __('messages.about_4efca0d10c'), 'icon' => 'paw-print'],
-                'photos' => ['label' => __('messages.photos_5e3147ab51'), 'icon' => 'images', 'count' => (string) count($pet['gallery'])],
+                'feed' => ['label' => __('messages.feed'), 'icon' => 'newspaper'],
+                'about' => ['label' => __('messages.about'), 'icon' => 'paw-print'],
+                'photos' => ['label' => __('messages.photos'), 'icon' => 'images', 'count' => (string) count($pet['gallery'])],
                 'friends' => [
-                    'label' => __('messages.friends_bd104d1b98'),
+                    'label' => __('messages.friends'),
                     'icon' => 'heart-handshake',
                     'count' => $pet['slug'] === 'scout' ? '28' : '14',
                 ],
-                'care' => ['label' => __('messages.care_4262074d6c'), 'icon' => $careVisible ? 'heart-pulse' : 'lock-keyhole'],
-                'family' => ['label' => __('messages.family_bd2d677b2e'), 'icon' => 'users-round'],
+                'care' => ['label' => __('messages.care'), 'icon' => $careVisible ? 'heart-pulse' : 'lock-keyhole'],
+                'family' => ['label' => __('messages.family'), 'icon' => 'users-round'],
             ],
         );
     }
@@ -724,10 +724,10 @@ final class ProfilePresenter
     private function audienceOptions(string $routeName, string $tab, string $audience): array
     {
         $options = [
-            'owner' => ['label' => __('messages.owner_4b1b8aa360'), 'icon' => 'key-round'],
-            'public' => ['label' => __('messages.public_591935b15b'), 'icon' => 'globe-2'],
-            'follower' => ['label' => __('messages.follower_9d949fae9f'), 'icon' => 'user-check'],
-            'friend' => ['label' => __('messages.friend_acd8f66440'), 'icon' => 'users-round'],
+            'owner' => ['label' => __('messages.owner'), 'icon' => 'key-round'],
+            'public' => ['label' => __('messages.public'), 'icon' => 'globe-2'],
+            'follower' => ['label' => __('messages.follower'), 'icon' => 'user-check'],
+            'friend' => ['label' => __('messages.friend'), 'icon' => 'users-round'],
         ];
 
         return array_map(
@@ -749,12 +749,12 @@ final class ProfilePresenter
     private function privacySummary(array $privacy): array
     {
         $labels = [
-            'location' => __('messages.location_15b61974b2'),
-            'pets' => __('messages.pet_profiles_6d3a4fd8d3'),
-            'posts' => __('messages.posts_a80811cf68'),
-            'friends' => __('messages.friends_bd104d1b98'),
-            'activity' => __('messages.activity_38da1505ca'),
-            'care' => __('messages.care_details_2ea88ecec1'),
+            'location' => __('messages.location'),
+            'pets' => __('messages.pet_profiles'),
+            'posts' => __('messages.posts'),
+            'friends' => __('messages.friends'),
+            'activity' => __('messages.activity'),
+            'care' => __('messages.care_details'),
         ];
         $options = $this->visibility->options();
         $summary = [];
@@ -762,7 +762,7 @@ final class ProfilePresenter
         foreach ($privacy as $key => $value) {
             $summary[] = [
                 'label' => $labels[$key] ?? ucfirst($key),
-                'value' => $options[$value] ?? __('messages.hidden_7e6fefff0f'),
+                'value' => $options[$value] ?? __('messages.hidden'),
             ];
         }
 

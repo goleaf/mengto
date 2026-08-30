@@ -141,27 +141,27 @@ class StoreListingRequest extends FormRequest
                 $price = $this->input('price');
 
                 if (in_array($type, ['sale', 'service', 'rental'], true) && ! $isFree && blank($price)) {
-                    $validator->errors()->add('price', __('messages.add_a_price_or_mark_the_listing_as_free_3f0718a9b5'));
+                    $validator->errors()->add('price', __('messages.add_a_price_or_mark_the_listing_as_free'));
                 }
 
                 if (in_array($type, ['adoption', 'free', 'shelter-need'], true)
                     && ! blank($price)
                     && ! $validator->errors()->has('price')
                     && MinorUnitAmount::fromDecimal((string) $price)->isPositive()) {
-                    $validator->errors()->add('price', __('messages.this_listing_type_cannot_include_a_sale_price_0c32b17444'));
+                    $validator->errors()->add('price', __('messages.this_listing_type_cannot_include_a_sale_price'));
                 }
 
                 if ($type === 'adoption') {
                     foreach (['animal_name', 'animal_age', 'temperament', 'adoption_conditions'] as $field) {
                         if (blank($this->input($field))) {
-                            $validator->errors()->add($field, __('messages.complete_the_adoption_profile_before_publishing_94f6b9713b'));
+                            $validator->errors()->add($field, __('messages.complete_the_adoption_profile_before_publishing'));
                         }
                     }
                 }
 
                 if ($type === 'shelter-need'
                     && (int) $this->input('received_quantity', 0) > (int) $this->input('quantity', 0)) {
-                    $validator->errors()->add('received_quantity', __('messages.received_quantity_cannot_exceed_the_amount_needed_0a3466528d'));
+                    $validator->errors()->add('received_quantity', __('messages.received_quantity_cannot_exceed_the_amount_needed'));
                 }
 
                 if ($this->string('intent')->toString() === 'publish') {

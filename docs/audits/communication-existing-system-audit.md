@@ -4,9 +4,15 @@ Date: 2026-08-01
 
 ## Presentation Prototype
 
-The authenticated `/messages` routes render Blade preview screens backed by
-`MessageCatalog`, `MessagePresenter`, `ConversationPresenter`, and
-`MessageState`. The interface demonstrates requests, folders, message types,
+At the date of this audit, the authenticated `/messages` routes rendered Blade
+preview screens backed by `MessageCatalog`, `MessagePresenter`, the now-retired
+`ConversationPresenter`, and `MessageState`. The current implementation routes
+both `messages.index` and the preserved `messages.details` deep link through
+`MessagePresenter`, `resources/views/messages/index.blade.php`, and the active
+`messaging-*` components. The historical presenter/template/component cohort
+was removed only after a zero-consumer route/include/test/JavaScript/deep-link
+audit; the named details route and its return/context behavior were retained.
+The interface demonstrates requests, folders, message types,
 tasks, reports, and call controls in EN/LT/RU, but its catalogue is fixed and
 its mutations are private to the current user.
 

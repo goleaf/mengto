@@ -2,10 +2,13 @@
     <div class="grid gap-6">
         <header class="flex flex-wrap items-center justify-between gap-3 border-b border-paw-line pb-5">
             <div>
-                <a href="{{ route('bookings.show', $booking['reference']) }}" class="inline-flex items-center gap-2 text-sm font-bold text-paw-leaf"><x-ui-icon name="arrow-left" size="sm" />{{ __('ui.appointment_details_f938bdb863') }}</a>
-                <h1 class="mt-2 text-3xl font-bold">{{ __('ui.video_consultation_06e6184efc') }}</h1>
+                <x-detail-navigation
+                    :href="route('bookings.show', $booking['reference'])"
+                    :label="__('ui.appointment_details')"
+                />
+                <h1 class="mt-2 text-3xl font-bold">{{ __('ui.video_consultation') }}</h1>
             </div>
-            <x-status-badge label="{{ __('ui.not_an_emergency_service_4bfaa6bb36') }}" icon="siren" tone="warning" />
+            <x-status-badge label="{{ __('ui.not_an_emergency_service') }}" icon="siren" tone="warning" />
         </header>
 
         <x-booking-content

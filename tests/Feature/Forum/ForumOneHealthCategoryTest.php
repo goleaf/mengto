@@ -127,7 +127,9 @@ test('the one health directory displays its localized professional boundary only
 
     foreach (['en', 'lt', 'ru'] as $locale) {
         app()->setLocale($locale);
-        Cache::forget(ForumCategoryTree::CACHE_KEY_PREFIX.$locale);
+        foreach (ForumCategoryTree::cacheKeysForLocale($locale) as $key) {
+            Cache::forget($key);
+        }
 
         $tree = app(ForumCategoryTree::class)->forLocale($locale);
 
@@ -136,7 +138,9 @@ test('the one health directory displays its localized professional boundary only
     }
 
     app()->setLocale('en');
-    Cache::forget(ForumCategoryTree::CACHE_KEY_PREFIX.'en');
+    foreach (ForumCategoryTree::cacheKeysForLocale('en') as $key) {
+        Cache::forget($key);
+    }
 
     $this->get(route('forum.index', ['category' => 'one-health-human-safety']))
         ->assertOk()

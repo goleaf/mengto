@@ -1,9 +1,9 @@
 @props([
     'plans',
-    'title' => __('ui.active_walk_plans_37c7dfdd97'),
+    'title' => __('ui.active_walk_plans'),
     'titleId' => 'message-walk-plans-title',
-    'emptyTitle' => __('ui.no_active_walk_plans_02706c5174'),
-    'emptyDescription' => __('ui.create_a_plan_first_then_its_neighbor_conversation_ab81e781a0'),
+    'emptyTitle' => __('ui.no_active_walk_plans'),
+    'emptyDescription' => __('ui.create_a_plan_first_then_its_neighbor_conversation_will_appear_in_this_filter'),
 ])
 
 <section aria-labelledby="{{ $titleId }}" {{ $attributes->class('walk-message-summary') }}>
@@ -15,7 +15,7 @@
         </x-slot:heading>
         <x-slot:aside>
             <x-text-link :href="route('walks.index')" icon="arrow-right" variant="action">
-                {{ __('ui.view_planner_b9cf04d5d6') }}
+                {{ __('ui.view_planner') }}
             </x-text-link>
         </x-slot:aside>
     </x-panel-heading>
@@ -52,7 +52,7 @@
                 :title="$emptyTitle"
                 :description="$emptyDescription"
                 :href="route('compose', 'walk')"
-                action-label="{{ __('ui.create_a_plan_7f7eafae4f') }}"
+                action-label="{{ __('ui.create_a_plan') }}"
                 action-icon="calendar-plus"
                 compact
                 role="listitem"

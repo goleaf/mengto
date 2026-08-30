@@ -25,8 +25,8 @@ final class SearchCaseStoreController extends Controller
             ->with(
                 'feedback',
                 $searchCase->moderation_status === ModerationStatus::Approved
-                    ? __('messages.urgent_search_published_nearby_alerts_are_queued_and_the_401514c452')
-                    : __('messages.search_draft_saved_for_safety_review_exact_location_and__176ff9e95d'),
+                    ? __('messages.urgent_search_published_nearby_alerts_are_queued_and_the_coordination_workspace_is_ready')
+                    : __('messages.search_draft_saved_for_safety_review_exact_location_and_contact_remain_protected'),
             );
     }
 }

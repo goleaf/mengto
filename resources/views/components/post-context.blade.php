@@ -1,6 +1,6 @@
 @props(['post'])
 
-<div class="post-context" aria-label="{{ __('ui.publication_context_f393183682') }}">
+<div class="post-context" aria-label="{{ __('ui.publication_context') }}">
     <span>
         <x-ui-icon name="shapes" size="xs" />
         {{ $post['topic'] }}

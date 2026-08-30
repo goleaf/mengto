@@ -74,7 +74,7 @@ class ListingPresenter
 
         return [
             'owner' => $this->profiles->owner(),
-            'page_title' => __('messages.marketplace_c608981d8d'),
+            'page_title' => __('messages.marketplace'),
             'active_section' => 'marketplace',
             'listings' => $listings,
             'filters' => $filters,
@@ -251,7 +251,7 @@ class ListingPresenter
     {
         return [
             'owner' => $this->profiles->owner(),
-            'page_title' => __('messages.create_marketplace_listing_e4c5eb524e'),
+            'page_title' => __('messages.create_marketplace_listing'),
             'active_section' => 'marketplace',
             'types' => $this->taxonomy->types(),
             'categories' => $this->taxonomy->categories(),

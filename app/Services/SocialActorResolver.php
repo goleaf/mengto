@@ -7,6 +7,9 @@ namespace App\Services;
 use App\Enums\PetProfilePermission;
 use App\Enums\SocialActorStatus;
 use App\Enums\SocialActorType;
+use App\Enums\SocialFollowPolicy;
+use App\Enums\SocialFriendRequestPolicy;
+use App\Enums\SocialListVisibility;
 use App\Models\ExpertProfile;
 use App\Models\ForumGroup;
 use App\Models\PetProfile;
@@ -28,6 +31,25 @@ final class SocialActorResolver
             SocialActorType::User,
             'user_id',
             $user->id,
+        );
+    }
+
+    public function provisionPrivateForUser(User $user): SocialActor
+    {
+        return $this->resolve(
+            SocialActorType::User,
+            'user_id',
+            $user->id,
+            false,
+            [
+                'friend_request_policy' => SocialFriendRequestPolicy::Nobody,
+                'follow_policy' => SocialFollowPolicy::Nobody,
+                'friend_list_visibility' => SocialListVisibility::Hidden,
+                'follower_list_visibility' => SocialListVisibility::Hidden,
+                'is_recommendable' => false,
+                'allow_message_requests' => false,
+                'updated_by_user_id' => $user->id,
+            ],
         );
     }
 
@@ -205,10 +227,15 @@ final class SocialActorResolver
         ));
     }
 
+    /**
+     * @param  array<string, mixed>  $settingDefaults
+     */
     private function resolve(
         SocialActorType $type,
         string $foreignKey,
         int $foreignId,
+        bool $isDiscoverable = true,
+        array $settingDefaults = [],
     ): SocialActor {
         $actor = SocialActor::query()->firstOrCreate(
             [$foreignKey => $foreignId],
@@ -216,14 +243,15 @@ final class SocialActorResolver
                 'actor_key' => (string) Str::uuid(),
                 'actor_type' => $type,
                 'status' => SocialActorStatus::Active,
-                'is_discoverable' => true,
+                'is_discoverable' => $isDiscoverable,
                 'lock_version' => 1,
             ],
         );
 
-        SocialActorSetting::query()->firstOrCreate([
-            'social_actor_id' => $actor->id,
-        ]);
+        SocialActorSetting::query()->firstOrCreate(
+            ['social_actor_id' => $actor->id],
+            $settingDefaults,
+        );
 
         return $actor;
     }

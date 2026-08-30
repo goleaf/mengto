@@ -31,7 +31,7 @@
         <details class="comment-reply">
             <summary>
                 <x-ui-icon name="reply" size="sm" />
-                {{ __('ui.reply_c253f451bd') }}
+                {{ __('ui.reply') }}
             </summary>
             <form method="POST" action="{{ route('actions.perform') }}" class="comment-reply__form">
                 @csrf
@@ -50,7 +50,7 @@
                 ></textarea>
                 <x-action-control
                     type="submit"
-                    label="{{ __('ui.post_reply_860e367626') }}"
+                    label="{{ __('ui.post_reply') }}"
                     icon="send"
                     variant="primary"
                     size="compact"

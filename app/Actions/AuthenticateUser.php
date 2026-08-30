@@ -55,7 +55,7 @@ final readonly class AuthenticateUser
         $user = $this->auth->guard('web')->user();
 
         if (! $user instanceof User) {
-            throw new LogicException(__('messages.authenticated_principal_is_not_a_pawcircle_user_a822091edc'));
+            throw new LogicException(__('messages.authenticated_principal_is_not_a_brand_user'));
         }
 
         $user->forceFill(['last_login_at' => now()])->saveQuietly();

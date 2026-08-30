@@ -55,7 +55,7 @@ final class BrowsePlacesRequest extends FormRequest
             'layer' => ['nullable', Rule::in(['places', 'routes', 'events', 'warnings', 'lost-pets', 'emergency'])],
             'selected' => ['nullable', 'string', 'max:80', 'regex:/^[a-z0-9-]+$/'],
             'emergency' => ['nullable', 'boolean'],
-            'page' => ['nullable', 'integer', 'min:1', 'max:100'],
+            'page' => ['nullable', 'integer', 'min:1', 'max:10000'],
             'tab' => [
                 'nullable',
                 Rule::in([

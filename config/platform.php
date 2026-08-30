@@ -19,6 +19,13 @@ return [
             'owner' => 'platform-operations',
             'retention_days' => 30,
         ],
+        'slow_requests' => [
+            'owner' => 'platform-operations',
+            'retention_days' => 14,
+            'enabled' => env('SLOW_REQUEST_LOGGING_ENABLED', true),
+            'threshold_ms' => env('SLOW_REQUEST_THRESHOLD_MS', 1000),
+            'max_per_minute' => 60,
+        ],
         'temporary_files' => [
             'owner' => 'platform-operations',
             'retention_days' => 1,

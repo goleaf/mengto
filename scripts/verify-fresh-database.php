@@ -14,10 +14,17 @@ putenv('EMAIL_VERIFICATION_ENABLED=true');
 $_ENV['EMAIL_VERIFICATION_ENABLED'] = 'true';
 $_SERVER['EMAIL_VERIFICATION_ENABLED'] = 'true';
 
+$reportUncaughtFailure = static function (Throwable $throwable): never {
+    fwrite(STDERR, 'Fresh database verification failed: '.$throwable->getMessage().PHP_EOL);
+    exit(1);
+};
+set_exception_handler($reportUncaughtFailure);
+
 require dirname(__DIR__).'/vendor/autoload.php';
 
 $application = require dirname(__DIR__).'/bootstrap/app.php';
 $application->make(Kernel::class)->bootstrap();
+set_exception_handler($reportUncaughtFailure);
 
 $temporaryDirectory = realpath(sys_get_temp_dir());
 

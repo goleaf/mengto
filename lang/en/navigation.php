@@ -5,6 +5,7 @@ declare(strict_types=1);
 return [
     'primary_label' => 'Primary navigation',
     'mobile_label' => 'Mobile navigation',
+    'detail_label' => 'Breadcrumb',
     'unavailable' => 'Navigation unavailable.',
     'utility' => [
         'brand_home' => 'PawCircle home',

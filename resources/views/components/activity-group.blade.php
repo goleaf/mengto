@@ -11,7 +11,7 @@
         @forelse ($group['items'] as $item)
             <x-activity-item :item="$item" />
         @empty
-            <p role="listitem" class="px-5 py-6 text-sm text-paw-muted">{{ __('ui.no_activity_in_this_group_d4ca16d95c') }}</p>
+            <p role="listitem" class="px-5 py-6 text-sm text-paw-muted">{{ __('ui.no_activity_in_this_group') }}</p>
         @endforelse
     </div>
 </section>

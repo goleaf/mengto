@@ -1,6 +1,6 @@
 @props(['poll'])
 
-<div class="post-poll" aria-label="{{ __('ui.poll_d54f7d124c') }}">
+<div class="post-poll" aria-label="{{ __('ui.poll') }}">
     @foreach ($poll['options'] as $option)
         <button type="button" class="post-poll__option" disabled>
             <span>{{ $option['label'] }}</span>

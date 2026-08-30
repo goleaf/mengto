@@ -356,7 +356,9 @@ final class AdminDashboard extends Component
         $locales = config('platform.supported_locales', ['en']);
 
         foreach ($locales as $locale) {
-            $this->cache->forget(ForumCategoryTree::CACHE_KEY_PREFIX.$locale);
+            foreach (ForumCategoryTree::cacheKeysForLocale($locale) as $key) {
+                $this->cache->forget($key);
+            }
         }
 
         session()->flash('feedback', __('forum_admin.feedback.cache_invalidated'));

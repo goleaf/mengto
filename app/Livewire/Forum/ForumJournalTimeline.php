@@ -25,7 +25,7 @@ use App\Models\ForumJournalMeasurement;
 use App\Models\User;
 use App\Services\ForumJournalMetricRegistry;
 use App\Services\LocaleFormatter;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Livewire\Attributes\Computed;
@@ -57,6 +57,15 @@ final class ForumJournalTimeline extends Component
 
     #[Locked]
     public ?int $mediaEntryId = null;
+
+    #[Locked]
+    public int $measurementsPerEntry = 20;
+
+    #[Locked]
+    public int $commentsPerEntry = 50;
+
+    #[Locked]
+    public int $mediaPerEntry = 10;
 
     public ForumJournalEntryForm $entryForm;
 
@@ -129,14 +138,40 @@ final class ForumJournalTimeline extends Component
             ->forTimeline()
             ->where('forum_journal_id', $journal->id)
             ->with([
-                'measurements:id,forum_journal_entry_id,metric_key,numeric_value,unit,position',
+                'measurements' => fn ($measurements) => $measurements
+                    ->select([
+                        'id',
+                        'forum_journal_entry_id',
+                        'metric_key',
+                        'numeric_value',
+                        'unit',
+                        'position',
+                    ])
+                    ->orderBy('position')
+                    ->orderBy('id')
+                    ->limit($this->measurementsPerEntry),
                 'comments' => fn ($comments) => $comments
                     ->forJournalEntry()
                     ->orderBy('created_at')
-                    ->orderBy('id'),
-                'media:id,forum_journal_entry_id,stable_key,mime_type,byte_size,alt_text,caption,status,created_at',
+                    ->orderBy('id')
+                    ->limit($this->commentsPerEntry),
+                'media' => fn ($media) => $media
+                    ->select([
+                        'id',
+                        'forum_journal_entry_id',
+                        'stable_key',
+                        'mime_type',
+                        'byte_size',
+                        'alt_text',
+                        'caption',
+                        'status',
+                        'created_at',
+                    ])
+                    ->latest('created_at')
+                    ->latest('id')
+                    ->limit($this->mediaPerEntry),
             ])
-            ->withCount('versions')
+            ->withCount(['versions', 'measurements', 'comments', 'media'])
             ->orderByDesc('occurred_at')
             ->orderByDesc('id')
             ->paginate(10, pageName: 'journalPage')
@@ -199,14 +234,16 @@ final class ForumJournalTimeline extends Component
             ->all();
     }
 
-    /** @return list<array{id: int, name: string, email: string, role: string}> */
+    /** @return LengthAwarePaginator<int, array{id: int, name: string, email: string, role: string}> */
     #[Computed]
-    public function collaborators(): array
+    public function collaborators(): LengthAwarePaginator
     {
         $journal = $this->journal();
 
         if (! Gate::allows('manageCollaborators', $journal)) {
-            return [];
+            return new LengthAwarePaginator([], 0, 25, 1, [
+                'pageName' => 'collaboratorPage',
+            ]);
         }
 
         return $journal->collaborators()
@@ -214,14 +251,34 @@ final class ForumJournalTimeline extends Component
             ->where('state', ForumJournalCollaboratorState::Active->value)
             ->with('user:id,name,email')
             ->orderBy('id')
-            ->get()
-            ->map(static fn (ForumJournalCollaborator $collaborator): array => [
+            ->paginate(25, pageName: 'collaboratorPage')
+            ->through(static fn (ForumJournalCollaborator $collaborator): array => [
                 'id' => $collaborator->id,
                 'name' => $collaborator->user->name,
                 'email' => $collaborator->user->email,
                 'role' => $collaborator->role->label(),
-            ])
-            ->all();
+            ]);
+    }
+
+    public function loadMoreMeasurements(): void
+    {
+        Gate::authorize('view', $this->journal());
+        $this->measurementsPerEntry += 20;
+        unset($this->entries);
+    }
+
+    public function loadMoreComments(): void
+    {
+        Gate::authorize('view', $this->journal());
+        $this->commentsPerEntry += 50;
+        unset($this->entries);
+    }
+
+    public function loadMoreMedia(): void
+    {
+        Gate::authorize('view', $this->journal());
+        $this->mediaPerEntry += 10;
+        unset($this->entries);
     }
 
     /** @return list<array{key: string, label: string, unit: string, unit_label: string, min: float, max: float}> */
@@ -470,6 +527,7 @@ final class ForumJournalTimeline extends Component
             'author_name' => $entry->author_name,
             'occurred_at' => $formatter->dateTime($entry->occurred_at, $entry->timezone),
             'version_count' => $entry->versions_count,
+            'measurement_count' => $entry->measurements_count,
             'measurements' => $entry->measurements
                 ->sortBy('position')
                 ->map(static fn ($measurement): array => [
@@ -489,6 +547,7 @@ final class ForumJournalTimeline extends Component
                     'created_at' => $formatter->relative($comment->created_at),
                 ])
                 ->all(),
+            'comment_count' => $entry->comments_count,
             'media' => $entry->media
                 ->map(static fn ($media): array => [
                     'id' => $media->id,
@@ -500,6 +559,7 @@ final class ForumJournalTimeline extends Component
                     'caption' => $media->caption,
                 ])
                 ->all(),
+            'media_count' => $entry->media_count,
         ];
     }
 }

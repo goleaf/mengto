@@ -1,6 +1,6 @@
 @props(['place'])
 
-<section class="place-hero">
+<section class="place-hero" data-place-detail-hero aria-labelledby="place-hero-title">
     <div class="place-hero__media">
         <x-responsive-image
             :src="$place['image']"
@@ -19,7 +19,7 @@
                 :tone="$place['category_tone']"
             />
             @if ($place['sponsored'])
-                <x-status-badge label="{{ __('ui.paid_promotion_854a52cc20') }}" icon="badge-dollar-sign" tone="warning" />
+                <x-status-badge label="{{ __('ui.paid_promotion') }}" icon="badge-dollar-sign" tone="warning" />
             @endif
         </div>
     </div>
@@ -28,7 +28,7 @@
         <div class="place-hero__title">
             <div>
                 <p>{{ $place['neighborhood'] }} · {{ $place['city'] }}</p>
-                <h1>{{ $place['name'] }}</h1>
+                <h1 id="place-hero-title">{{ $place['name'] }}</h1>
             </div>
             <x-status-badge
                 :label="$place['open_label']"
@@ -40,19 +40,19 @@
 
         <dl class="place-hero__meta">
             <div>
-                <dt><x-ui-icon name="map-pin" size="sm" /> {{ __('ui.address_56ef8f2095') }}</dt>
+                <dt><x-ui-icon name="map-pin" size="sm" /> {{ __('ui.address') }}</dt>
                 <dd>{{ $place['address'] }}</dd>
             </div>
             <div>
-                <dt><x-ui-icon name="navigation" size="sm" /> {{ __('ui.travel_d2b98fb537') }}</dt>
+                <dt><x-ui-icon name="navigation" size="sm" /> {{ __('ui.travel') }}</dt>
                 <dd>{{ $place['distance_label'] }} · {{ $place['travel_label'] }}</dd>
             </div>
             <div>
-                <dt><x-ui-icon name="star" size="sm" /> {{ __('ui.reviews_84cb7871b7') }}</dt>
+                <dt><x-ui-icon name="star" size="sm" /> {{ __('ui.reviews') }}</dt>
                 <dd>{{ $place['rating_label'] }}</dd>
             </div>
             <div>
-                <dt><x-ui-icon name="badge-check" size="sm" /> {{ __('ui.data_cec3a9b89b') }}</dt>
+                <dt><x-ui-icon name="badge-check" size="sm" /> {{ __('ui.data') }}</dt>
                 <dd>{{ $place['verification']['label'] }} · {{ $place['data_freshness'] }}</dd>
             </div>
         </dl>
@@ -62,7 +62,7 @@
                 <x-ui-icon name="triangle-alert" />
                 <span>
                     <strong>{{ trans_choice('presentation.active_warnings', $place['warning_count'], ['count' => $place['warning_count']]) }}</strong>
-                    {{ __('ui.review_current_conditions_before_travel_e420a9395b') }}
+                    {{ __('ui.review_current_conditions_before_travel') }}
                 </span>
             </a>
         @endif
@@ -90,7 +90,7 @@
             />
             <x-action-control
                 :href="$place['route_url']"
-                label="{{ __('ui.route_adc74704d6') }}"
+                label="{{ __('ui.route') }}"
                 icon="navigation"
                 variant="primary"
                 size="compact"
@@ -100,7 +100,7 @@
             @if ($place['call_url'])
                 <x-action-control
                     :href="$place['call_url']"
-                    label="{{ __('ui.call_d6e645b7d2') }}"
+                    label="{{ __('ui.call') }}"
                     icon="phone"
                     variant="surface"
                     size="compact"

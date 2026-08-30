@@ -6,7 +6,7 @@
 <details class="friend-request">
     <summary class="friend-request__summary">
         <x-ui-icon name="user-plus" size="sm" />
-        <span>{{ __('ui.send_friend_request_a0383a957f') }}</span>
+        <span>{{ __('ui.send_friend_request') }}</span>
         <x-ui-icon name="chevron-down" size="sm" class="friend-request__chevron" />
     </summary>
 
@@ -22,50 +22,50 @@
         @endforelse
 
         <label for="friend-request-{{ $item['key'] }}-intent" class="friend-request__field">
-            <span>{{ __('ui.connection_type_a2cfeb2898') }}</span>
+            <span>{{ __('ui.connection_type') }}</span>
             <select id="friend-request-{{ $item['key'] }}-intent" name="friendship_intent" class="field field--select" required>
-                <option value="friend" @selected($item['request_form']['default_intent'] === 'friend')>{{ __('ui.general_friends_806914d5dd') }}</option>
-                <option value="walk" @selected($item['request_form']['default_intent'] === 'walk')>{{ __('ui.walk_companions_ffea92097d') }}</option>
-                <option value="play" @selected($item['request_form']['default_intent'] === 'play')>{{ __('ui.play_friends_e9f51431c8') }}</option>
-                <option value="training" @selected($item['request_form']['default_intent'] === 'training')>{{ __('ui.training_partners_a9afdefac7') }}</option>
-                <option value="neighbor" @selected($item['request_form']['default_intent'] === 'neighbor')>{{ __('ui.nearby_friends_ceee23cfd2') }}</option>
+                <option value="friend" @selected($item['request_form']['default_intent'] === 'friend')>{{ __('ui.general_friends') }}</option>
+                <option value="walk" @selected($item['request_form']['default_intent'] === 'walk')>{{ __('ui.walk_companions') }}</option>
+                <option value="play" @selected($item['request_form']['default_intent'] === 'play')>{{ __('ui.play_friends') }}</option>
+                <option value="training" @selected($item['request_form']['default_intent'] === 'training')>{{ __('ui.training_partners') }}</option>
+                <option value="neighbor" @selected($item['request_form']['default_intent'] === 'neighbor')>{{ __('ui.nearby_friends') }}</option>
             </select>
         </label>
 
         <label for="friend-request-{{ $item['key'] }}-message" class="friend-request__field">
-            <span>{{ __('ui.short_owner_message_fefd36340c') }}</span>
+            <span>{{ __('ui.short_owner_message') }}</span>
             <textarea
                 id="friend-request-{{ $item['key'] }}-message"
                 name="friendship_message"
                 rows="3"
                 maxlength="280"
                 class="field field--textarea"
-                placeholder="{{ __('ui.share_where_you_met_or_suggest_a_calm_37ddaba3e4') }}"
+                placeholder="{{ __('ui.share_where_you_met_or_suggest_a_calm_first_activity') }}"
             ></textarea>
         </label>
 
         <label for="friend-request-{{ $item['key'] }}-met" class="friend-request__field">
-            <span>{{ __('ui.where_you_may_have_met_05f56e939e') }} <small>{{ __('ui.optional_ec91fdd925') }}</small></span>
+            <span>{{ __('ui.where_you_may_have_met') }} <small>{{ __('ui.optional') }}</small></span>
             <input
                 id="friend-request-{{ $item['key'] }}-met"
                 type="text"
                 name="met_at"
                 maxlength="120"
                 class="field"
-                placeholder="{{ __('ui.public_park_group_or_event_ed205d2d46') }}"
+                placeholder="{{ __('ui.public_park_group_or_event') }}"
             >
         </label>
 
         <label class="friend-request__check">
             <input type="checkbox" name="share_area" value="yes">
-            <span>{{ __('ui.share_only_my_broad_neighborhood_2a64f6bd74') }}</span>
+            <span>{{ __('ui.share_only_my_broad_neighborhood') }}</span>
         </label>
 
         <div class="friend-request__footer">
-            <p>{{ __('presentation.sent_on_behalf', ['pet' => $item['request_form']['source_pet'] === 'pet-scout' ? __('ui.scout_8a1db462be') : __('ui.nori_a64203ba20')]) }}</p>
+            <p>{{ __('presentation.sent_on_behalf', ['pet' => $item['request_form']['source_pet'] === 'pet-scout' ? __('ui.scout') : __('ui.nori')]) }}</p>
             <x-action-control
                 type="submit"
-                label="{{ __('ui.send_request_3a69f89729') }}"
+                label="{{ __('ui.send_request') }}"
                 icon="send"
                 variant="primary"
                 size="regular"

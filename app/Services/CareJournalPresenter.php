@@ -52,12 +52,13 @@ class CareJournalPresenter
                     ->where('due_at', '<', now()),
             ])
             ->latest('updated_at')
+            ->latest('id')
             ->simplePaginate(9);
 
         $records->through(fn (CareJournal $journal): array => $this->journalCard($journal));
 
         return [
-            ...$this->page(__('messages.private_care_journals_f718a9186c'), 'care'),
+            ...$this->page(__('messages.private_care_journals'), 'care'),
             'journals' => $records,
         ];
     }
@@ -82,7 +83,7 @@ class CareJournalPresenter
             ->all();
 
         return [
-            ...$this->page(__('messages.create_a_private_care_journal_4275e0de97'), 'care'),
+            ...$this->page(__('messages.create_a_private_care_journal'), 'care'),
             'pet_options' => $options,
             'timezone' => 'Europe/Vilnius',
         ];
@@ -255,7 +256,7 @@ class CareJournalPresenter
                 ->map(fn (CareEntry $entry): array => $this->entry($journal, $entry))
                 ->all(),
             'weekly' => $this->weekly($entries, $from, $to),
-            'source_note' => __('messages.this_report_contains_recorded_facts_only_missing_entries_eb18d34b1e'),
+            'source_note' => __('messages.this_report_contains_recorded_facts_only_missing_entries_mean_not_recorded_not_necessarily_not_completed'),
         ];
     }
 
@@ -341,11 +342,11 @@ class CareJournalPresenter
             'pet_profile_key' => $journal->pet_profile_key,
             'pet_name' => $journal->pet_name,
             'species' => $this->speciesLabels->for($journal->species),
-            'breed' => $journal->breed ?: __('messages.breed_not_recorded_ebcac0c0af'),
+            'breed' => $journal->breed ?: __('messages.breed_not_recorded'),
             'image_url' => $journal->image_url,
             'privacy' => Str::headline($journal->privacy),
             'timezone' => $journal->timezone,
-            'current_caregiver' => $journal->current_caregiver_name ?: __('messages.not_assigned_13075c2336'),
+            'current_caregiver' => $journal->current_caregiver_name ?: __('messages.not_assigned'),
             'show_url' => route('care-journals.show', $journal),
             'manage_url' => route('care-journals.manage', $journal),
             'report_url' => route('care-journals.report', $journal),
@@ -427,7 +428,7 @@ class CareJournalPresenter
             ? $entry->media->map(fn ($item): array => [
                 'id' => $item->id,
                 'mime_type' => $item->mime_type,
-                'alt_text' => $item->alt_text ?: __('messages.private_care_journal_attachment_dba75610bc'),
+                'alt_text' => $item->alt_text ?: __('messages.private_care_journal_attachment'),
                 'sensitivity' => $item->sensitivity,
                 'sensitivity_label' => Str::headline($item->sensitivity),
                 'download_url' => $accessToken === null
@@ -524,7 +525,7 @@ class CareJournalPresenter
             'type' => $task->type->value,
             'type_label' => $task->type->label(),
             'icon' => $task->type->icon(),
-            'assignee' => $task->assignee_name ?: __('messages.anyone_available_7913b79c03'),
+            'assignee' => $task->assignee_name ?: __('messages.anyone_available'),
             'due_at' => $this->formatter->dateTime($task->due_at),
             'is_overdue' => $task->due_at?->isPast() ?? false,
             'priority' => $task->priority->label(),
@@ -568,7 +569,7 @@ class CareJournalPresenter
             'views' => $grant->views_used.'/'.$grant->max_views,
             'expires_at' => $this->formatter->dateTime($grant->expires_at),
             'active' => $grant->canBeOpened(),
-            'status' => $grant->canBeOpened() ? __('messages.active_9234069589') : __('messages.expired_or_revoked_eebe0c11e5'),
+            'status' => $grant->canBeOpened() ? __('messages.active') : __('messages.expired_or_revoked'),
         ];
     }
 
@@ -695,6 +696,6 @@ class CareJournalPresenter
 
     private function relative(?DateTimeInterface $value): string
     {
-        return $this->formatter->relative($value) ?? __('ui.not_recorded_b37c7879f6');
+        return $this->formatter->relative($value) ?? __('ui.not_recorded');
     }
 }

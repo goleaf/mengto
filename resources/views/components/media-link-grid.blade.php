@@ -1,4 +1,4 @@
-@props(['items', 'empty' => __('ui.nothing_to_explore_yet_e51c166531')])
+@props(['items', 'empty' => __('ui.nothing_to_explore_yet')])
 
 <div role="list" {{ $attributes->class('media-link-grid') }}>
     @forelse ($items as $item)

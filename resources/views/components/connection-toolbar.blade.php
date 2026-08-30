@@ -2,12 +2,12 @@
     'connections',
 ])
 
-<section class="connection-toolbar" aria-label="{{ __('ui.connection_filters_3eb27ff736') }}">
+<section class="connection-toolbar" aria-label="{{ __('ui.connection_filters') }}">
     <form method="GET" action="{{ $connections['browse_url'] }}" class="connection-toolbar__form">
         <input type="hidden" name="tab" value="{{ $connections['tab'] }}">
 
         <label for="connection-type" class="connection-toolbar__field">
-            <span>{{ __('ui.profile_type_3a2cfc3fe4') }}</span>
+            <span>{{ __('ui.profile_type') }}</span>
             <select
                 id="connection-type"
                 name="type"
@@ -22,7 +22,7 @@
         </label>
 
         <label for="connection-sort" class="connection-toolbar__field">
-            <span>{{ __('ui.order_6be090825c') }}</span>
+            <span>{{ __('ui.order') }}</span>
             <select
                 id="connection-sort"
                 name="sort"
@@ -38,7 +38,7 @@
 
         <x-action-control
             type="submit"
-            label="{{ __('ui.apply_31e392d1c0') }}"
+            label="{{ __('ui.apply') }}"
             icon="sliders-horizontal"
             variant="paper"
             size="regular"
@@ -48,7 +48,7 @@
     @if ($connections['tab'] === 'following')
         <x-action-control
             :href="$connections['feed_url']"
-            label="{{ __('ui.open_following_feed_c3a30a536e') }}"
+            label="{{ __('ui.open_following_feed') }}"
             icon="newspaper"
             variant="quiet"
             size="regular"

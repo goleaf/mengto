@@ -68,7 +68,7 @@
                 <x-initials-avatar :initials="$group['organizer_initials']" />
                 <div>
                     <p>{{ __('presentation.group_led_by', ['organizer' => $group['organizer']]) }}</p>
-                    <span>{{ $group['location'] ?? __('ui.community_organizer_8e4618300a') }}</span>
+                    <span>{{ $group['location'] ?? __('ui.community_organizer') }}</span>
                 </div>
             </div>
 

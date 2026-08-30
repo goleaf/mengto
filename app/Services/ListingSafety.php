@@ -32,7 +32,7 @@ class ListingSafety
             'blood sample',
             'wild animal for sale',
         ])) {
-            $blocked[] = __('messages.this_marketplace_does_not_allow_unverified_medicines_bio_d9ba821c66');
+            $blocked[] = __('messages.this_marketplace_does_not_allow_unverified_medicines_biological_material_or_wildlife_trading');
             $flags[] = 'prohibited-product';
         }
 
@@ -43,7 +43,7 @@ class ListingSafety
             'no veterinarian needed',
             '100% safe treatment',
         ])) {
-            $blocked[] = __('messages.remove_medical_guarantees_or_claims_that_a_product_repla_0f3aec7557');
+            $blocked[] = __('messages.remove_medical_guarantees_or_claims_that_a_product_replaces_veterinary_care');
             $flags[] = 'medical-claim';
         }
 
@@ -52,14 +52,14 @@ class ListingSafety
             'pain training device',
             'choking punishment',
         ])) {
-            $blocked[] = __('messages.devices_intended_to_cause_pain_or_cruel_punishment_are_p_a1f08ea48b');
+            $blocked[] = __('messages.devices_intended_to_cause_pain_or_cruel_punishment_are_prohibited');
             $flags[] = 'animal-welfare';
         }
 
         if (($data['category'] ?? null) === 'food'
             && ! (bool) ($data['sealed_package'] ?? false)
             && ($data['condition'] ?? null) !== 'new') {
-            $blocked[] = __('messages.food_must_be_sealed_clearly_dated_and_in_new_condition_0d3c267f47');
+            $blocked[] = __('messages.food_must_be_sealed_clearly_dated_and_in_new_condition');
             $flags[] = 'open-food';
         }
 

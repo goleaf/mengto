@@ -10,6 +10,7 @@ use App\Services\ForumCategoryTree;
 use Database\Seeders\ForumSystemSeeder;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Events\QueryExecuted;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
@@ -90,4 +91,38 @@ test('forum category settings roll back the category when translation persistenc
         ->visibility->toBe($originalVisibility)
         ->moderation_level->toBe($originalModerationLevel)
         ->and(Cache::has(ForumCategoryTree::CACHE_KEY_PREFIX.'en'))->toBeTrue();
+});
+
+test('forum category tree cache is isolated by audience and excludes private categories', function (): void {
+    $this->seed(ForumSystemSeeder::class);
+    $member = User::factory()->create();
+    $administrator = User::factory()->administrator()->create();
+    $categories = ForumCategory::query()->roots()->active()->ordered()->limit(3)->get();
+    [$public, $members, $hidden] = $categories->all();
+
+    $members->forceFill(['visibility' => 'members'])->save();
+    $hidden->forceFill(['visibility' => 'hidden'])->save();
+
+    $tree = app(ForumCategoryTree::class);
+    Auth::logout();
+    $guestTree = $tree->forLocale('en');
+
+    $this->actingAs($member);
+    $memberTree = $tree->forLocale('en');
+
+    $this->actingAs($administrator);
+    $administratorTree = $tree->forLocale('en');
+
+    expect($guestTree)
+        ->toHaveKey($public->slug)
+        ->not->toHaveKey($members->slug)
+        ->not->toHaveKey($hidden->slug)
+        ->and($memberTree)
+        ->toHaveKey($public->slug)
+        ->toHaveKey($members->slug)
+        ->not->toHaveKey($hidden->slug)
+        ->and($administratorTree)
+        ->toHaveKey($public->slug)
+        ->toHaveKey($members->slug)
+        ->toHaveKey($hidden->slug);
 });

@@ -6,18 +6,29 @@ namespace App\Services;
 
 use App\Models\ForumCategory;
 use App\Models\ForumCategoryTranslation;
+use App\Models\User;
+use Illuminate\Contracts\Auth\Factory as AuthFactory;
+use Illuminate\Contracts\Cache\LockProvider;
 use Illuminate\Contracts\Cache\Repository as CacheRepository;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
+use Throwable;
 
 final readonly class ForumCategoryTree
 {
-    public const CACHE_KEY_PREFIX = 'forum:category-tree:v3:locale:';
+    public const CACHE_KEY_PREFIX = 'forum:category-tree:v4:locale:';
+
+    private const AUDIENCE_ADMINISTRATOR = 'administrator';
+
+    private const AUDIENCE_GUEST = 'guest';
+
+    private const AUDIENCE_MEMBER = 'member';
 
     public function __construct(
         private ForumCategoryCatalog $catalog,
         private CacheRepository $cache,
+        private AuthFactory $auth,
     ) {}
 
     /**
@@ -26,11 +37,11 @@ final readonly class ForumCategoryTree
     public function forLocale(string $locale): array
     {
         $locale = $this->supportedLocale($locale);
+        $audience = $this->audience();
 
-        return $this->cache->remember(
-            self::CACHE_KEY_PREFIX.$locale,
-            now()->addSeconds((int) config('taxonomy.tree_cache_seconds')),
-            function () use ($locale): array {
+        return $this->rememberTree(
+            self::cacheKey($locale, $audience),
+            function () use ($locale, $audience): array {
                 if (
                     ! Schema::hasTable('forum_categories')
                     || ! ForumCategory::query()->active()->roots()->exists()
@@ -38,9 +49,19 @@ final readonly class ForumCategoryTree
                     return $this->manifestFallback($locale);
                 }
 
-                return $this->databaseTree($locale);
+                return $this->databaseTree($locale, $audience);
             },
         );
+    }
+
+    /** @return list<string> */
+    public static function cacheKeysForLocale(string $locale): array
+    {
+        return [
+            self::cacheKey($locale, self::AUDIENCE_GUEST),
+            self::cacheKey($locale, self::AUDIENCE_MEMBER),
+            self::cacheKey($locale, self::AUDIENCE_ADMINISTRATOR),
+        ];
     }
 
     /** @return array<int, string> */
@@ -89,14 +110,16 @@ final readonly class ForumCategoryTree
     /**
      * @return array<string, array{label: string, description: string|null, notice: string|null, icon: string, subcategories: array<string, string>}>
      */
-    private function databaseTree(string $locale): array
+    private function databaseTree(string $locale, string $audience): array
     {
         $fallbackLocale = (string) config('app.fallback_locale');
         $locales = array_values(array_unique([$locale, $fallbackLocale]));
+        $visibilities = $this->visibleToAudience($audience);
         $roots = ForumCategory::query()
             ->select(['id', 'slug', 'icon', 'position'])
             ->active()
             ->roots()
+            ->whereIn('visibility', $visibilities)
             ->ordered()
             ->with([
                 'translations' => fn ($query) => $query
@@ -112,6 +135,7 @@ final readonly class ForumCategoryTree
                 'children' => fn ($query) => $query
                     ->select(['id', 'parent_id', 'slug', 'position'])
                     ->active()
+                    ->whereIn('visibility', $visibilities)
                     ->ordered()
                     ->with([
                         'translations' => fn ($translationQuery) => $translationQuery
@@ -159,6 +183,68 @@ final readonly class ForumCategoryTree
         }
 
         return $tree;
+    }
+
+    /**
+     * @param  callable(): array<string, array{label: string, description: string|null, notice: string|null, icon: string, subcategories: array<string, string>}>  $resolver
+     * @return array<string, array{label: string, description: string|null, notice: string|null, icon: string, subcategories: array<string, string>}>
+     */
+    private function rememberTree(string $key, callable $resolver): array
+    {
+        try {
+            $cached = $this->cache->get($key);
+
+            if (is_array($cached)) {
+                return $cached;
+            }
+
+            $remember = fn (): array => $this->cache->remember(
+                $key,
+                now()->addSeconds((int) config('taxonomy.tree_cache_seconds')),
+                $resolver,
+            );
+            $store = $this->cache->getStore();
+
+            if (! $store instanceof LockProvider) {
+                return $remember();
+            }
+
+            return $store->lock($key.':refresh', 10)->block(2, $remember);
+        } catch (Throwable) {
+            return $resolver();
+        }
+    }
+
+    private static function cacheKey(string $locale, string $audience): string
+    {
+        $key = self::CACHE_KEY_PREFIX.$locale;
+
+        return $audience === self::AUDIENCE_GUEST
+            ? $key
+            : $key.':audience:'.$audience;
+    }
+
+    private function audience(): string
+    {
+        $user = $this->auth->guard()->user();
+
+        if (! $user instanceof User || ! $user->isActive()) {
+            return self::AUDIENCE_GUEST;
+        }
+
+        return $user->isAdministrator()
+            ? self::AUDIENCE_ADMINISTRATOR
+            : self::AUDIENCE_MEMBER;
+    }
+
+    /** @return list<string> */
+    private function visibleToAudience(string $audience): array
+    {
+        return match ($audience) {
+            self::AUDIENCE_ADMINISTRATOR => ['public', 'members', 'restricted', 'hidden'],
+            self::AUDIENCE_MEMBER => ['public', 'members'],
+            default => ['public'],
+        };
     }
 
     /**

@@ -119,20 +119,24 @@
     }
 
     &__title {
+        min-inline-size: 0;
         margin-block-start: 0.375rem;
         color: $ink;
         font-size: 2rem;
         font-weight: 650;
         line-height: 2.375rem;
+        overflow-wrap: anywhere;
         text-wrap: balance;
     }
 
     &__description {
+        min-inline-size: 0;
         max-inline-size: 72ch;
         margin-block-start: 0.75rem;
         color: $muted;
         font-size: 0.9375rem;
         line-height: 1.625rem;
+        overflow-wrap: anywhere;
         text-wrap: pretty;
     }
 

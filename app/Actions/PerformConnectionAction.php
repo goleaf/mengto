@@ -53,7 +53,7 @@ final class PerformConnectionAction
             'accept-follow-request' => $this->resolveFollowRequest($data, 'accepted'),
             'decline-follow-request' => $this->resolveFollowRequest($data, 'declined'),
             default => throw ValidationException::withMessages([
-                'action' => __('messages.this_action_is_unavailable_c64fa3888d'),
+                'action' => __('messages.this_action_is_unavailable'),
             ]),
         };
     }
@@ -69,7 +69,7 @@ final class PerformConnectionAction
 
         if ($connection['private']) {
             throw ValidationException::withMessages([
-                'target' => __('messages.this_private_profile_requires_a_follow_request_1bb9cc4b19'),
+                'target' => __('messages.this_private_profile_requires_a_follow_request'),
             ]);
         }
 
@@ -95,7 +95,7 @@ final class PerformConnectionAction
 
         if (! $connection['private']) {
             throw ValidationException::withMessages([
-                'target' => __('messages.this_public_profile_can_be_followed_immediately_67a8ce1ee8'),
+                'target' => __('messages.this_public_profile_can_be_followed_immediately'),
             ]);
         }
 
@@ -122,7 +122,7 @@ final class PerformConnectionAction
 
         if ($enabled === null) {
             throw ValidationException::withMessages([
-                'target' => __('messages.follow_this_profile_before_changing_its_settings_d191be8926'),
+                'target' => __('messages.follow_this_profile_before_changing_its_settings'),
             ]);
         }
 
@@ -169,7 +169,7 @@ final class PerformConnectionAction
 
         if (! $this->state->setSubscriptionNotificationLevel($target, $level)) {
             throw ValidationException::withMessages([
-                'target' => __('messages.follow_this_profile_before_changing_notifications_86c14f1dad'),
+                'target' => __('messages.follow_this_profile_before_changing_notifications'),
             ]);
         }
 
@@ -201,7 +201,7 @@ final class PerformConnectionAction
         $connection = $this->requireConnection($target);
 
         if (! $this->connections->isRecommendation($target)) {
-            throw ValidationException::withMessages(['target' => __('messages.this_recommendation_is_unavailable_b4a79291ab')]);
+            throw ValidationException::withMessages(['target' => __('messages.this_recommendation_is_unavailable')]);
         }
 
         $this->state->dismissRecommendation($target);
@@ -223,7 +223,7 @@ final class PerformConnectionAction
         $connection = $this->requireConnection($target);
 
         if ($this->state->undoRecommendationDismissal($target) === null) {
-            throw ValidationException::withMessages(['target' => __('messages.there_is_no_recommendation_to_restore_103e62ec23')]);
+            throw ValidationException::withMessages(['target' => __('messages.there_is_no_recommendation_to_restore')]);
         }
 
         return $this->connectionResult(
@@ -243,7 +243,7 @@ final class PerformConnectionAction
         $connection = $this->requireConnection($target);
 
         if (! $this->connections->isFollower($target)) {
-            throw ValidationException::withMessages(['target' => __('messages.this_follower_is_unavailable_d4adefcbc7')]);
+            throw ValidationException::withMessages(['target' => __('messages.this_follower_is_unavailable')]);
         }
 
         $this->state->removeFollower($target);
@@ -268,7 +268,7 @@ final class PerformConnectionAction
             ! $this->connections->isIncomingRequest($target)
             || ! $this->state->resolveIncomingFollowRequest($target, $status)
         ) {
-            throw ValidationException::withMessages(['target' => __('messages.this_follow_request_is_unavailable_0db6453cf7')]);
+            throw ValidationException::withMessages(['target' => __('messages.this_follow_request_is_unavailable')]);
         }
 
         return $this->connectionResult(
@@ -289,7 +289,7 @@ final class PerformConnectionAction
         $connection = $this->connections->target($target);
 
         if ($connection === null) {
-            throw ValidationException::withMessages(['target' => __('messages.this_profile_or_interest_is_unavailable_3e0039cca7')]);
+            throw ValidationException::withMessages(['target' => __('messages.this_profile_or_interest_is_unavailable')]);
         }
 
         return $connection;
@@ -330,7 +330,7 @@ final class PerformConnectionAction
     {
         if ($target === '') {
             throw ValidationException::withMessages([
-                'target' => __('messages.choose_an_item_first_eb58aed060'),
+                'target' => __('messages.choose_an_item_first'),
             ]);
         }
     }

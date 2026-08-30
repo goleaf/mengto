@@ -8,21 +8,21 @@
                 <small>{{ $day['date_short'] }}</small>
             </div>
         @empty
-            <span>{{ __('ui.no_data_3b41ba9c7c') }}</span>
+            <span>{{ __('ui.no_data') }}</span>
         @endforelse
     </div>
     <div class="care-table-scroll">
         <table class="care-table">
             <thead>
                 <tr>
-                    <th scope="col">{{ __('ui.date_99c40ab405') }}</th>
-                    <th scope="col">{{ __('ui.feed_396c3cb18f') }}</th>
-                    <th scope="col">{{ __('ui.water_7ca7dea906') }}</th>
-                    <th scope="col">{{ __('ui.walk_08ee52ae12') }}</th>
-                    <th scope="col">{{ __('ui.toilet_3e49ac277c') }}</th>
-                    <th scope="col">{{ __('ui.sleep_d466bcf52e') }}</th>
-                    <th scope="col">{{ __('ui.activity_38da1505ca') }}</th>
-                    <th scope="col">{{ __('ui.notes_8a7525b149') }}</th>
+                    <th scope="col">{{ __('ui.date') }}</th>
+                    <th scope="col">{{ __('ui.feed') }}</th>
+                    <th scope="col">{{ __('ui.water') }}</th>
+                    <th scope="col">{{ __('ui.walk') }}</th>
+                    <th scope="col">{{ __('ui.toilet') }}</th>
+                    <th scope="col">{{ __('ui.sleep') }}</th>
+                    <th scope="col">{{ __('ui.activity') }}</th>
+                    <th scope="col">{{ __('ui.notes') }}</th>
                 </tr>
             </thead>
             <tbody>
@@ -36,13 +36,13 @@
                             <td>{{ $day['toilet'] }}</td>
                             <td>{{ __('presentation.minutes', ['count' => $day['sleep_minutes']]) }}</td>
                             <td>{{ __('presentation.minutes', ['count' => $day['activity_minutes']]) }}</td>
-                            <td>{{ $day['unusual'] ? __('presentation.unusual_count', ['count' => $day['unusual']]) : __('ui.none_marked_2d3a636956') }}</td>
+                            <td>{{ $day['unusual'] ? __('presentation.unusual_count', ['count' => $day['unusual']]) : __('ui.none_marked') }}</td>
                         @else
-                            <td colspan="7">{{ __('ui.not_recorded_b37c7879f6') }}</td>
+                            <td colspan="7">{{ __('ui.not_recorded') }}</td>
                         @endif
                     </tr>
                 @empty
-                    <tr><td colspan="8">{{ __('ui.no_recorded_days_112f9e5f80') }}</td></tr>
+                    <tr><td colspan="8">{{ __('ui.no_recorded_days') }}</td></tr>
                 @endforelse
             </tbody>
         </table>

@@ -27,7 +27,7 @@ final readonly class ProcessTaxonomyImportChunk
         $chunkSize = $requestedChunkSize ?? (int) config('taxonomy.chunk_size');
 
         if ($chunkSize < 1 || $chunkSize > 5_000) {
-            throw new RuntimeException(__('messages.the_taxonomy_import_chunk_size_must_be_between_1_and_500_6bf0b658b4'));
+            throw new RuntimeException(__('messages.the_taxonomy_import_chunk_size_must_be_between_1_and_5000'));
         }
 
         return Cache::lock(
@@ -39,7 +39,7 @@ final readonly class ProcessTaxonomyImportChunk
                 ->findOrFail($import->id);
 
             if (! $import->state->canProcess()) {
-                throw new RuntimeException(__('messages.the_taxonomy_import_is_not_in_a_processable_state_b223ee972c'));
+                throw new RuntimeException(__('messages.the_taxonomy_import_is_not_in_a_processable_state'));
             }
 
             $import->forceFill([

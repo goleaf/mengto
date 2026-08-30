@@ -106,6 +106,7 @@ return [
     ],
     'authentication' => [
         'login',
+        'onboarding.show',
         'password.confirm',
         'password.request',
         'password.reset',

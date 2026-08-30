@@ -14,10 +14,17 @@ putenv('EMAIL_VERIFICATION_ENABLED=true');
 $_ENV['EMAIL_VERIFICATION_ENABLED'] = 'true';
 $_SERVER['EMAIL_VERIFICATION_ENABLED'] = 'true';
 
+$reportUncaughtFailure = static function (Throwable $throwable): never {
+    fwrite(STDERR, 'Migration cycle verification failed: '.$throwable->getMessage().PHP_EOL);
+    exit(1);
+};
+set_exception_handler($reportUncaughtFailure);
+
 require dirname(__DIR__).'/vendor/autoload.php';
 
 $application = require dirname(__DIR__).'/bootstrap/app.php';
 $application->make(Kernel::class)->bootstrap();
+set_exception_handler($reportUncaughtFailure);
 
 $temporaryDirectory = realpath(sys_get_temp_dir());
 
@@ -72,7 +79,14 @@ try {
 
     /** @param array<string, int|string|bool> $arguments */
     $run = static function (string $command, array $arguments): int {
-        $exit = Artisan::call($command, $arguments);
+        try {
+            $exit = Artisan::call($command, $arguments);
+        } catch (Throwable $throwable) {
+            throw new RuntimeException(
+                "{$command} raised an exception: ".trim(Artisan::output()).' '.$throwable->getMessage(),
+                previous: $throwable,
+            );
+        }
 
         if ($exit !== 0) {
             throw new RuntimeException(

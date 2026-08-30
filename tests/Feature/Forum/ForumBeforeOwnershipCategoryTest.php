@@ -215,7 +215,9 @@ test('synchronization persists the exact before ownership hierarchy and translat
 
 test('a warm localized category tree performs no database queries', function () {
     $this->seed(ForumSystemSeeder::class);
-    Cache::forget(ForumCategoryTree::CACHE_KEY_PREFIX.'en');
+    foreach (ForumCategoryTree::cacheKeysForLocale('en') as $key) {
+        Cache::forget($key);
+    }
     DB::enableQueryLog();
 
     $tree = app(ForumCategoryTree::class)->forLocale('en');

@@ -197,7 +197,9 @@ final class SynchronizeForumCategories
         }, 3);
 
         foreach (self::LOCALES as $locale) {
-            $this->cache->forget(ForumCategoryTree::CACHE_KEY_PREFIX.$locale);
+            foreach (ForumCategoryTree::cacheKeysForLocale($locale) as $key) {
+                $this->cache->forget($key);
+            }
         }
 
         return $result;

@@ -40,3 +40,31 @@ components/workflows examined; confirmed findings with severity and evidence;
 suspected findings requiring principal validation; missing evidence; recommended
 implementation order; tests and exact verification commands; and change risks.
 Raw logs without interpretation and unsupported guesses are not accepted.
+
+## 2026-08-30 implementation resumption
+
+The current principal resumed this previously incomplete delivery on `main`
+with the shared tree already materially dirty and the branch three commits
+ahead of `origin/main`. Every pre-existing byte remains user-owned. Discovery
+agents are read-only; they must not edit, stage, commit, run destructive Git or
+database commands, or reuse another specialist's scope. The principal owns the
+test-first implementation, all overlapping-file reconciliation, the frozen
+review diff, documentation, temporary-index staging, commit, and push.
+
+| ID | Required agent instance | Exclusive current scope | Deliverable | Status |
+| --- | --- | --- | --- | --- |
+| A11Y-PUB-D01 | Semantic HTML Agent | Landmarks, headings, native semantics, lists, tables, images, icons, duplicate IDs across in-scope rendered views | Current-checkout defect report with exact paths/evidence/tests | dispatched |
+| A11Y-PUB-D02 | Keyboard and Focus Agent | Focus order/visibility, skip/navigation, dialogs/drawers/dropdowns, restoration, sort/drag alternatives | Reproducible keyboard/focus journey report and browser cases | dispatched |
+| A11Y-PUB-D03 | Screen Reader Agent | Names, descriptions, error/status announcements, reading order, dynamic Livewire/device/media state | Screen-reader contract report and test recommendations | dispatched |
+| A11Y-PUB-D04 | Responsive UX Agent | Mobile navigation/forms/tables/cards/overlays/pagination/filters/toolbars, zoom, long locales, touch/overflow | Viewport-ranked defect report and exact selectors/routes | queued after an available agent slot |
+| A11Y-PUB-D05 | Form Accessibility Agent | Auth/shared forms, labels/grouping/autocomplete, validation association/focus, duplicate/offline/dirty states | Form matrix with server-validation and recovery defects | queued after an available agent slot |
+| A11Y-PUB-D06 | UI State Agent | Required initial/action/empty/filtered/success/error/offline/auth/disabled/dirty/pending/completed states | Component/state coverage matrix and missing-state evidence | queued after an available agent slot |
+| A11Y-PUB-D07 | Public SEO Agent | Effective anonymous/indexable routes, response/head metadata, robots/canonical/OG/JSON-LD/pagination/locale/sitemap | Route-by-route applicability and leak/duplication report | queued after an available agent slot |
+| A11Y-PUB-R01 | Accessibility Reviewer | Frozen attributable implementation diff | Severity-ranked independent review | pending implementation freeze |
+| A11Y-PUB-R02 | Responsive UX Reviewer | Frozen diff plus browser artifacts and viewport evidence | Severity-ranked independent review | pending implementation freeze |
+| A11Y-PUB-R03 | SEO and Semantic Reviewer | Frozen diff, route matrix and rendered metadata evidence | Severity-ranked independent review | pending implementation freeze |
+
+Each agent reports the files/routes inspected, confirmed findings, severity,
+reproduction, applicable WCAG/requirements contract, smallest correction,
+covering PHP/browser test, missing evidence, and risks. A report does not mark
+implementation complete.

@@ -19,13 +19,13 @@
                     <span class="sr-only">{{ __('presentation.download_document', ['title' => $document['title']]) }}</span>
                 </a>
             @else
-                <x-status-badge label="{{ __('ui.view_only_9b4c6c8590') }}" icon="eye" tone="surface" />
+                <x-status-badge label="{{ __('ui.view_only') }}" icon="eye" tone="surface" />
             @endif
         </article>
     @empty
         <div class="medical-empty">
             <x-ui-icon name="file-x" size="xl" />
-            <p>{{ __('ui.no_documents_in_this_view_38f3bf316f') }}</p>
+            <p>{{ __('ui.no_documents_in_this_view') }}</p>
         </div>
     @endforelse
 </div>

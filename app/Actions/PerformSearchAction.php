@@ -58,7 +58,7 @@ final class PerformSearchAction
     {
         if (! $searchCase->volunteer_join_open || $searchCase->status->isClosed()) {
             throw ValidationException::withMessages([
-                'action' => __('messages.this_search_is_not_accepting_new_volunteers_006233c343'),
+                'action' => __('messages.this_search_is_not_accepting_new_volunteers'),
             ]);
         }
 
@@ -83,7 +83,7 @@ final class PerformSearchAction
         ]);
 
         return [
-            'message' => __('messages.you_joined_the_search_choose_a_safe_task_and_keep_exact__72c926acc7'),
+            'message' => __('messages.you_joined_the_search_choose_a_safe_task_and_keep_exact_locations_inside_the_team'),
             'search_case' => $searchCase,
         ];
     }
@@ -97,7 +97,7 @@ final class PerformSearchAction
             ->exists();
 
         if ($exists) {
-            throw ValidationException::withMessages(['sector_code' => __('messages.this_sector_code_already_exists_bc9a898376')]);
+            throw ValidationException::withMessages(['sector_code' => __('messages.this_sector_code_already_exists')]);
         }
 
         $sector = SearchSector::query()->create([
@@ -112,7 +112,7 @@ final class PerformSearchAction
 
         $this->audit('search-sector.created', $searchCase, ['sector_id' => $sector->id]);
 
-        return ['message' => __('messages.search_sector_created_b22dc8ea7d'), 'search_case' => $searchCase];
+        return ['message' => __('messages.search_sector_created'), 'search_case' => $searchCase];
     }
 
     /** @param array<string, mixed> $data @return array{message: string, search_case: SearchCase} */
@@ -137,7 +137,7 @@ final class PerformSearchAction
             'safety_level' => $task->safety_level,
         ]);
 
-        return ['message' => __('messages.volunteer_task_created_ef94b5a4e3'), 'search_case' => $searchCase];
+        return ['message' => __('messages.volunteer_task_created'), 'search_case' => $searchCase];
     }
 
     /** @param array<string, mixed> $data @return array{message: string, search_case: SearchCase} */
@@ -147,12 +147,12 @@ final class PerformSearchAction
             $task = $this->lockedTask($searchCase, (int) $data['task_id']);
 
             if (! $task->status->canBeClaimed() || $task->assignee_key !== null) {
-                throw ValidationException::withMessages(['task_id' => __('messages.this_task_has_already_been_claimed_2a1e58208b')]);
+                throw ValidationException::withMessages(['task_id' => __('messages.this_task_has_already_been_claimed')]);
             }
 
             if (in_array($task->safety_level, ['specialist-only', 'dangerous'], true)) {
                 throw ValidationException::withMessages([
-                    'task_id' => __('messages.this_task_can_only_be_assigned_by_the_coordinator_to_a_q_1c406e9aa1'),
+                    'task_id' => __('messages.this_task_can_only_be_assigned_by_the_coordinator_to_a_qualified_team'),
                 ]);
             }
 
@@ -180,7 +180,7 @@ final class PerformSearchAction
 
             $this->audit('search-task.claimed', $searchCase, ['task_id' => $task->id]);
 
-            return ['message' => __('messages.task_claimed_check_the_safety_note_before_starting_3a70e96d9f'), 'search_case' => $searchCase];
+            return ['message' => __('messages.task_claimed_check_the_safety_note_before_starting'), 'search_case' => $searchCase];
         });
     }
 
@@ -192,7 +192,7 @@ final class PerformSearchAction
             $this->authorizeTaskAssignee($searchCase, $task);
 
             if ($task->status !== SearchTaskStatus::Claimed) {
-                throw ValidationException::withMessages(['task_id' => __('messages.claim_the_task_before_starting_it_124aec7565')]);
+                throw ValidationException::withMessages(['task_id' => __('messages.claim_the_task_before_starting_it')]);
             }
 
             $task->update([
@@ -203,7 +203,7 @@ final class PerformSearchAction
 
             $this->audit('search-task.started', $searchCase, ['task_id' => $task->id]);
 
-            return ['message' => __('messages.task_started_check_in_with_the_coordinator_if_conditions_eef4b694c0'), 'search_case' => $searchCase];
+            return ['message' => __('messages.task_started_check_in_with_the_coordinator_if_conditions_change'), 'search_case' => $searchCase];
         });
     }
 
@@ -218,7 +218,7 @@ final class PerformSearchAction
                 SearchTaskStatus::Claimed,
                 SearchTaskStatus::InProgress,
             ], true)) {
-                throw ValidationException::withMessages(['task_id' => __('messages.this_task_cannot_be_completed_now_2a646e2f4f')]);
+                throw ValidationException::withMessages(['task_id' => __('messages.this_task_cannot_be_completed_now')]);
             }
 
             $task->update([
@@ -244,7 +244,7 @@ final class PerformSearchAction
                 'result' => $task->result,
             ]);
 
-            return ['message' => __('messages.task_completed_and_recorded_on_the_search_timeline_7e292452ca'), 'search_case' => $searchCase];
+            return ['message' => __('messages.task_completed_and_recorded_on_the_search_timeline'), 'search_case' => $searchCase];
         });
     }
 
@@ -264,7 +264,7 @@ final class PerformSearchAction
 
             if (in_array($sighting->status, [SightingStatus::Confirmed, SightingStatus::Rejected], true)) {
                 throw ValidationException::withMessages([
-                    'sighting_id' => __('messages.this_sighting_has_already_been_reviewed_1434faf60f'),
+                    'sighting_id' => __('messages.this_sighting_has_already_been_reviewed'),
                 ]);
             }
 
@@ -283,7 +283,7 @@ final class PerformSearchAction
                     'public_longitude' => $sighting->public_longitude,
                     'direction' => $sighting->direction,
                     'last_sighting_at' => $sighting->observed_at,
-                    'latest_update' => __('messages.a_sighting_was_confirmed_by_the_search_coordinator_4df492bbcc'),
+                    'latest_update' => __('messages.a_sighting_was_confirmed_by_the_search_coordinator'),
                     'alerts_active' => true,
                 ]);
 
@@ -294,7 +294,7 @@ final class PerformSearchAction
                     'type' => 'sighting-confirmed',
                     'visibility' => 'public',
                     'title' => __('messages.new_confirmed_sighting'),
-                    'body' => __('messages.report_new_observations_and_do_not_chase_the_animal_890b08866b'),
+                    'body' => __('messages.report_new_observations_and_do_not_chase_the_animal'),
                     'public_area' => $sighting->public_area,
                     'occurred_at' => $sighting->observed_at,
                 ]);
@@ -322,7 +322,7 @@ final class PerformSearchAction
             );
 
             return [
-                'message' => $confirmed ? __('messages.sighting_confirmed_and_the_priority_area_updated_f2f7719fce') : __('messages.sighting_marked_as_not_a_match_2159f8c3f9'),
+                'message' => $confirmed ? __('messages.sighting_confirmed_and_the_priority_area_updated') : __('messages.sighting_marked_as_not_a_match'),
                 'search_case' => $searchCase,
             ];
         });
@@ -346,7 +346,7 @@ final class PerformSearchAction
         $searchCase->update(['latest_update' => $data['update_title']]);
         $this->audit('search-case.updated', $searchCase, ['title' => $data['update_title']]);
 
-        return ['message' => __('messages.public_search_update_published_efa941fed9'), 'search_case' => $searchCase];
+        return ['message' => __('messages.public_search_update_published'), 'search_case' => $searchCase];
     }
 
     /** @param array<string, mixed> $data @return array{message: string, search_case: SearchCase} */
@@ -397,7 +397,7 @@ final class PerformSearchAction
                 ->whereKeyNot($lockedCase->id)
                 ->exists()) {
                 throw ValidationException::withMessages([
-                    'status' => __('messages.this_pet_already_has_another_active_search_ff4ae1bcbc'),
+                    'status' => __('messages.this_pet_already_has_another_active_search'),
                 ]);
             }
 
@@ -490,8 +490,8 @@ final class PerformSearchAction
 
             return [
                 'message' => $status->isClosed()
-                    ? __('messages.search_closed_urgent_alerts_open_tasks_and_temporary_vol_f4a8dd23c9')
-                    : __('messages.search_status_updated_4645c1ebc1'),
+                    ? __('messages.search_closed_urgent_alerts_open_tasks_and_temporary_volunteer_access_were_stopped')
+                    : __('messages.search_status_updated'),
                 'search_case' => $searchCase->fresh(),
             ];
         });
@@ -607,7 +607,7 @@ final class PerformSearchAction
             ->exists();
 
         if (! $exists) {
-            throw ValidationException::withMessages(['sector_id' => __('messages.this_sector_belongs_to_another_search_30a775d0b7')]);
+            throw ValidationException::withMessages(['sector_id' => __('messages.this_sector_belongs_to_another_search')]);
         }
 
         return (int) $sectorId;
@@ -629,7 +629,7 @@ final class PerformSearchAction
     private function authorizeTaskAssignee(SearchCase $searchCase, SearchTask $task): void
     {
         if ($task->assignee_key !== $this->actor->key() && ! $searchCase->isManagedBy($this->actor->key())) {
-            throw ValidationException::withMessages(['task_id' => __('messages.this_task_is_assigned_to_another_volunteer_4c053c3d77')]);
+            throw ValidationException::withMessages(['task_id' => __('messages.this_task_is_assigned_to_another_volunteer')]);
         }
     }
 

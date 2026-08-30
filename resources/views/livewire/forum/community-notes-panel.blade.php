@@ -1,11 +1,10 @@
 <section class="forum-community-notes" aria-labelledby="community-notes-heading">
-    <header class="forum-header">
-        <div class="forum-header__copy">
-            <p class="forum-header__eyebrow">{{ __('forum_review.notes.eyebrow') }}</p>
-            <h2 id="community-notes-heading">{{ __('forum_review.notes.heading') }}</h2>
-            <p>{{ __('forum_review.notes.description') }}</p>
-        </div>
-    </header>
+    <x-section-heading
+        :eyebrow="__('forum_review.notes.eyebrow')"
+        :title="__('forum_review.notes.heading')"
+        :description="__('forum_review.notes.description')"
+        title-id="community-notes-heading"
+    />
 
     @if ($feedback !== '')
         <p class="border-s-4 border-status-success py-3 ps-4" role="status" aria-live="polite">
@@ -222,7 +221,7 @@
     @if ($this->canPropose)
         <form wire:submit="propose" class="forum-form">
             <div>
-                <p class="forum-header__eyebrow">{{ __('forum_review.notes.propose_eyebrow') }}</p>
+                <p class="section-heading__eyebrow">{{ __('forum_review.notes.propose_eyebrow') }}</p>
                 <h3>{{ __('forum_review.notes.propose_heading') }}</h3>
                 <p>{{ __('forum_review.notes.propose_description') }}</p>
             </div>

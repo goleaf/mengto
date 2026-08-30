@@ -2,14 +2,20 @@
 
 declare(strict_types=1);
 
+use App\Models\Credential;
 use App\Models\ExpertProfile;
+use App\Models\ForumAnswer;
 use App\Models\ForumEvent;
+use App\Models\ForumTopic;
 use App\Models\KnowledgeArticle;
+use App\Models\Listing;
+use App\Models\Service;
 use App\Models\User;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Str;
 
 test('canonical requirements assign one stable product id to global page identity', function () {
     $productRequirements = File::get(base_path('docs/product-requirements.md'));
@@ -57,6 +63,25 @@ test('the shared page header exposes one stable semantic identity contract', fun
         ->toBe(1);
 });
 
+test('detail back links use one labelled navigation contract without changing destinations', function () {
+    $markup = Blade::render(<<<'BLADE'
+        <x-detail-navigation href="/authorized-return" label="Return to record">
+            <span data-test-trail>Private</span>
+        </x-detail-navigation>
+    BLADE);
+
+    $document = new DOMDocument;
+    $document->loadHTML($markup, LIBXML_NOERROR | LIBXML_NOWARNING);
+    $xpath = new DOMXPath($document);
+
+    expect($xpath->query('//nav[@data-detail-navigation and normalize-space(@aria-label)]')->length)
+        ->toBe(1)
+        ->and($xpath->query('//nav[@data-detail-navigation]//a[@href="/authorized-return"]')->length)
+        ->toBe(1)
+        ->and($xpath->query('//nav[@data-detail-navigation]//*[@data-test-trail]')->length)
+        ->toBe(1);
+});
+
 test('canonical page chrome renders prepared identities and navigation without database queries', function () {
     DB::flushQueryLog();
     DB::enableQueryLog();
@@ -89,26 +114,36 @@ test('canonical page chrome renders prepared identities and navigation without d
 });
 
 test('representative directory detail and workspace routes retain recorded query baselines', function () {
+    $expert = ExpertProfile::factory()->create();
+    Service::factory()->create(['expert_profile_id' => $expert->id]);
+    Credential::factory()->create(['expert_profile_id' => $expert->id]);
+    ForumAnswer::factory()->create([
+        'topic_id' => ForumTopic::factory(),
+        'expert_profile_id' => $expert->id,
+    ]);
+
     $queryCount = function (string $routeName, array $parameters = []): int {
         DB::flushQueryLog();
         DB::enableQueryLog();
 
-        $this->get(route($routeName, $parameters))->assertOk();
-        $count = count(DB::getQueryLog());
-
-        DB::disableQueryLog();
+        try {
+            $this->get(route($routeName, $parameters))->assertOk();
+            $count = count(DB::getQueryLog());
+        } finally {
+            DB::disableQueryLog();
+        }
 
         return $count;
     };
 
     expect([
-        'directory:messages.index' => $queryCount('messages.index'),
-        'detail:messages.details' => $queryCount('messages.details', ['conversation' => 'ari']),
-        'workspace:experts.dashboard' => $queryCount('experts.dashboard'),
+        'directory:experts.index' => $queryCount('experts.index'),
+        'detail:experts.show' => $queryCount('experts.show', ['expertProfile' => $expert]),
+        'workspace:messages.details' => $queryCount('messages.details', ['conversation' => 'ari']),
     ])->toBe([
-        'directory:messages.index' => 4,
-        'detail:messages.details' => 4,
-        'workspace:experts.dashboard' => 2,
+        'directory:experts.index' => 6,
+        'detail:experts.show' => 13,
+        'workspace:messages.details' => 5,
     ]);
 });
 
@@ -139,6 +174,23 @@ test('the unreachable historical messaging presentation cohort stays removed', f
             'conversationDetailsData(',
             'messageCenterData(',
         );
+});
+
+test('retired header and call consent selector families stay removed', function () {
+    $sources = collect([
+        ...File::allFiles(resource_path('views')),
+        ...File::allFiles(resource_path('scss')),
+    ])->map(fn (SplFileInfo $file): string => $file->getContents())->implode("\n");
+
+    expect($sources)
+        ->not->toContain(
+            'forum-header',
+            'care-directory-header',
+            'messaging-page__header',
+            'call-consent',
+        )
+        ->and(File::get(resource_path('views/components/section-heading.blade.php')))
+        ->toContain('section-heading__description');
 });
 
 test('the shared page header supports empty, count, single action, and multiple action states', function () {
@@ -273,108 +325,132 @@ test('the repeatable page identity browser matrix covers every priority surface 
             "{ label: '1280-en-200-percent', locale: 'en', width: 640, height: 450, screenWidth: 1280, screenHeight: 900, zoom: 2",
             "{ label: '1440-en', locale: 'en', width: 1440",
             "{ label: '1920-lt', locale: 'lt', width: 1920",
+            "path: '/experts/dr-emilia-vaitke'",
+            "path: '/groups/trail-tails'",
+            "path: '/places/vingis-quiet-loop'",
+            "path: '/lost-found/scout-missing-vingis-park'",
+            "path: '/medical-records/scout-health'",
+            "path: '/care-journals/scout-care'",
+            "path: '/devices/scout-trail-gps'",
+            "currentPath === '/confirm-password'",
+            "location.pathname') === route.path",
+            "'Input.dispatchKeyEvent'",
+            "matches(':focus-visible')",
+            "document.querySelector('[data-detail-navigation]')",
             'const englishIdentityCopy = new Map()',
+            "header?.querySelector('[data-page-header-content]')",
             'deviceScaleFactor: viewport.zoom ?? 1',
             'document title was not localized',
             'heading was not localized',
             "{ name: 'prefers-reduced-motion', value: 'reduce' }",
             "{ name: 'forced-colors', value: viewport.forcedColors ? 'active' : 'none' }",
+            "client.on('Network.responseReceived'",
+            'entry.url',
+            'resourceErrors',
             "join(outputDirectory, 'page-identity-report.json')",
+            'consoleErrors.length === 0 && resourceErrors.length === 0',
         )
         ->and($package)
         ->toContain('"test:browser:page-identity": "php scripts/run-browser-check.php page-identity"');
+
+    expect(strpos($source, "join(outputDirectory, 'page-identity-report.json')"))
+        ->toBeLessThan(strpos($source, 'consoleErrors.length === 0 && resourceErrors.length === 0'));
 });
 
 test('priority page identity copy is translated instead of falling back to English', function () {
     $contracts = [
         'ui' => [
-            'accepted_a00fb0c507',
-            'active_local_searches_a0b657fac3',
-            'all_a52ace420f',
-            'all_languages_acce3d0e30',
-            'all_topics_29366ff597',
-            'ask_well_find_what_lasts_3c2fdf9b45',
-            'ask_a_question_3a533d7ef8',
-            'buy_exchange_rehome_or_book_without_exposing_your_a7174cb664',
-            'care_journals_efcbb402a3',
-            'community_knowledge_31eb615b90',
-            'community_marketplace_1525148f3c',
-            'compare_scope_species_independently_checked_credentials_availability_lan_8ad672b4c3',
-            'create_journal_0be6b9b3a5',
-            'create_listing_815d30caa6',
-            'create_professional_profile_30276b75d3',
-            'find_the_right_specialist_for_this_pet_21bb34d7d0',
-            'english_ba118bf7fc',
-            'expert_reply_6da9cb7be8',
-            'forum_summary_b01b2e0a58',
-            'forum_topics_dfec5e5f89',
-            'groups_brand_2cc8a218be',
-            'knowledge_and_notifications_b349fb1522',
-            'knowledge_dcb3e1c00e',
-            'knowledge_desk_518296addd',
-            'lithuanian_8625f6a206',
-            'lost_found_217c655848',
-            'messages_and_calls_brand_d76656782d',
-            'neighbors_brand_de44b47ada',
-            'new_health_record_376edfa614',
-            'new_message_78f5975a5d',
-            'no_categories_available_a557500f61',
-            'no_filters_available_dc23b63725',
-            'no_forum_statistics_yet_0b02e01738',
-            'no_matching_discussion_yet_1dee81e8c3',
-            'no_new_updates_5a45a6c539',
-            'no_reviewed_guides_yet_3d9f862601',
-            'no_sort_options_available_0b2341d59b',
-            'no_subcategories_9f1010c1a3',
-            'no_topic_tags_f441952188',
-            'pet_health_records_911c3e19be',
-            'private_care_workspace_12776f8bcf',
-            'private_family_workspace_521e77339e',
-            'professional_workspace_eb8eb6dde6',
-            'questions_field_notes_expert_context_and_practical_guides_5f0c917aa8',
-            'report_a_sighting_join_a_coordinated_task_or_e5e0bbe8c2',
-            'report_an_animal_6188a5d89e',
-            'russian_5bcc40adf6',
-            'search_forum_aae59cf0ad',
-            'search_questions_pets_places_or_exact_phrases_5190090592',
-            'start_a_topic_c27175f4e0',
-            'topic_activity_e7e514dfe2',
-            'topic_filters_9250e8d56b',
-            'topic_language_8d3b8b5b39',
-            'topic_sorting_199040afbe',
-            'today_s_feeding_water_walks_rest_toilet_activity_dc1cdec032',
-            'try_a_broader_phrase_or_start_a_focused_a511e7e0d2',
-            'useful_things_and_trusted_pet_services_0b2d0b997a',
-            'vaccinations_medication_schedules_measurements_visits_and_original_docum_72518c6620',
-            'verified_professional_community_f3f93b61ff',
-            'with_b708724a23',
-            'your_updates_438558961b',
+            'accepted',
+            'active_local_searches',
+            'all',
+            'all_languages',
+            'all_topics',
+            'ask_well_find_what_lasts',
+            'ask_a_question',
+            'buy_exchange_rehome_or_book_without_exposing_your_phone_number_or_home_address_before_both_sides_agree',
+            'care_journals',
+            'community_knowledge',
+            'community_marketplace',
+            'compare_scope_species_independently_checked_credentials_availability_language_and_price_before_sharing_any_private_pet_information',
+            'create_journal',
+            'create_listing',
+            'create_professional_profile',
+            'find_the_right_specialist_for_this_pet',
+            'english',
+            'expert_reply',
+            'forum_summary',
+            'forum_topics',
+            'groups_brand',
+            'knowledge_and_notifications',
+            'knowledge',
+            'knowledge_desk',
+            'lithuanian',
+            'lost_found',
+            'messages_and_calls_brand',
+            'neighbors_brand',
+            'new_health_record',
+            'new_message',
+            'no_categories_available_sentence',
+            'no_filters_available',
+            'no_forum_statistics_yet',
+            'no_matching_discussion_yet',
+            'no_new_updates',
+            'no_reviewed_guides_yet',
+            'no_sort_options_available',
+            'no_subcategories',
+            'no_topic_tags',
+            'pet_health_records',
+            'private_care_workspace',
+            'private_family_workspace',
+            'professional_workspace',
+            'questions_field_notes_expert_context_and_practical_guides_that_remain_useful_after_the_feed_moves_on',
+            'report_a_sighting_join_a_coordinated_task_or_help_a_found_animal_reach_a_verified_owner_without_exposing_private_addresses',
+            'report_an_animal',
+            'russian',
+            'search_forum',
+            'search_questions_pets_places_or_exact_phrases',
+            'start_a_topic',
+            'topic_activity',
+            'topic_filters',
+            'topic_language',
+            'topic_sorting',
+            'today_s_feeding_water_walks_rest_toilet_activity_routines_and_handoffs_for_every_pet_you_manage',
+            'try_a_broader_phrase_or_start_a_focused_question_with_the_details_that_make_your_case_different',
+            'useful_things_and_trusted_pet_services',
+            'vaccinations_medication_schedules_measurements_visits_and_original_documents',
+            'verified_professional_community',
+            'with',
+            'your_updates',
         ],
         'messages' => [
-            'ask_the_community_pawcircle_81f7f8f052',
-            'communities_with_a_purpose_b2d3a5a7b6',
-            'compare_parks_dog_runs_routes_clinics_services_shelters__f8d00ec18d',
-            'expert_community_b9f71bc7cd',
-            'edit_topic_pawcircle_aea297c81d',
-            'expert_replies_c909ce7644',
-            'explore_local_breed_care_adoption_and_interest_groups_wi_219f9d1209',
-            'find_nearby_owners_who_share_your_routes_routines_and_ap_662718d443',
-            'find_your_people_and_build_something_useful_b7d93d9c88',
-            'groups_pawcircle_2cc8a218be',
-            'lost_found_217c655848',
-            'map_and_place_catalog_e874309a26',
-            'marketplace_c608981d8d',
-            'meet_the_people_behind_the_pets_a0afb859f3',
-            'messages_and_calls_2bda9155c7',
-            'need_an_answer_8824024b01',
-            'open_topics_5207eb9e06',
-            'pet_health_records_911c3e19be',
-            'places_map_pawcircle_3cab208400',
-            'plan_the_next_place_with_your_pet_47805e2905',
-            'portland_neighbors_c6674bf8c7',
-            'private_care_journals_f718a9186c',
-            'private_communication_b3ecd460d1',
-            'talk_to_pet_people_family_specialists_groups_and_event_o_7a75ff5b8e',
+            'ask_the_community_brand',
+            'communities_with_a_purpose',
+            'compare_parks_dog_runs_routes_clinics_services_shelters_stores_and_pet_friendly_places_without_exposing_your_home_or_movement_history',
+            'expert_community',
+            'edit_topic_brand',
+            'expert_replies',
+            'explore_local_breed_care_adoption_and_interest_groups_with_clear_privacy_and_moderation_boundaries',
+            'find_nearby_owners_who_share_your_routes_routines_and_approach_to_everyday_care',
+            'find_your_people_and_build_something_useful',
+            'groups_brand',
+            'legacy_compatibility_contribution_retained_for_review',
+            'legacy_question_retained_for_moderation_review',
+            'legacy_review_retained_for_moderation_review',
+            'legacy_warning_retained_for_moderation_review',
+            'lost_found',
+            'map_and_place_catalog',
+            'marketplace',
+            'meet_the_people_behind_the_pets',
+            'messages_and_calls',
+            'need_an_answer',
+            'open_topics',
+            'pet_health_records',
+            'places_map_brand',
+            'plan_the_next_place_with_your_pet',
+            'portland_neighbors',
+            'private_care_journals',
+            'private_communication',
+            'talk_to_pet_people_family_specialists_groups_and_event_organizers_without_exposing_personal_contact_details',
         ],
     ];
 
@@ -391,6 +467,58 @@ test('priority page identity copy is translated instead of falling back to Engli
             foreach ($keys as $key) {
                 expect($translated[$key])
                     ->not->toBe($english[$key])
+                    ->not->toBe('');
+            }
+        }
+    }
+});
+
+test('remaining priority body copy has no English fallback in Lithuanian or Russian', function () {
+    $surfaces = [
+        'pets' => [
+            resource_path('views/pets/index.blade.php'),
+            resource_path('views/components/pet-directory-card.blade.php'),
+        ],
+        'meetups' => [
+            resource_path('views/livewire/forum/forum-event-directory.blade.php'),
+        ],
+        'forum' => [
+            resource_path('views/forum/index.blade.php'),
+            resource_path('views/components/forum-category-navigator.blade.php'),
+            resource_path('views/components/forum-topic-card.blade.php'),
+        ],
+        'discover' => [
+            resource_path('views/discover/index.blade.php'),
+            resource_path('views/components/discovery-category-nav.blade.php'),
+            resource_path('views/components/discovery-toolbar.blade.php'),
+            resource_path('views/components/discovery-section.blade.php'),
+            resource_path('views/components/discovery-result-card.blade.php'),
+        ],
+    ];
+
+    foreach ($surfaces as $surface => $files) {
+        $keys = collect($files)
+            ->flatMap(function (string $path): array {
+                preg_match_all(
+                    "/(?:__|trans_choice)\\(\\s*'([^']+)'/",
+                    File::get($path),
+                    $matches,
+                );
+
+                return $matches[1];
+            })
+            ->unique()
+            ->values();
+
+        expect($keys, $surface)->not->toBeEmpty();
+
+        foreach ($keys as $key) {
+            $english = trans($key, locale: 'en');
+
+            foreach (['lt', 'ru'] as $locale) {
+                expect(trans($key, locale: $locale), "{$surface}:{$locale}:{$key}")
+                    ->not->toBe($key)
+                    ->not->toBe($english)
                     ->not->toBe('');
             }
         }
@@ -487,6 +615,19 @@ test('every first party get route has exactly one page identity classification',
         ->toBe($expectedClassifications);
 });
 
+test('every detail and workspace route has a completed exception disposition', function () {
+    /** @var array<string, list<string>> $classifications */
+    $classifications = require base_path('tests/Support/page-identity-route-classification.php');
+    $audit = Str::after(
+        File::get(base_path('docs/portal/route-matrix.md')),
+        '## Completed Detail And Workspace Exception Audit',
+    );
+
+    foreach (array_merge($classifications['detail'], $classifications['workspace']) as $routeName) {
+        expect($audit, $routeName)->toContain("`{$routeName}`");
+    }
+});
+
 test('classified canonical portal pages render the canonical page identity', function (string $routeName) {
     $response = $this->get(route($routeName))->assertOk();
     $xpath = responseXPath($response);
@@ -557,6 +698,45 @@ test('parameterized expert workflows render the canonical page identity', functi
     'edit expert profile' => 'experts.edit',
     'book expert' => 'experts.bookings.create',
 ]);
+
+test('representative detail report textareas retain visible programmatic labels', function () {
+    $expert = ExpertProfile::factory()->create();
+    $listing = Listing::factory()->create();
+
+    foreach ([
+        'expert detail' => route('experts.show', $expert),
+        'marketplace detail' => route('marketplace.show', $listing),
+    ] as $surface => $url) {
+        $xpath = responseXPath($this->get($url)->assertOk());
+        $details = $xpath->query('//main//textarea[@name="details"]');
+
+        expect($details->length, $surface)->toBeGreaterThan(0);
+
+        foreach ($details as $textarea) {
+            expect($xpath->query('ancestor::label[normalize-space()]', $textarea)->length, $surface)
+                ->toBe(1);
+        }
+    }
+});
+
+test('representative detail report labels and guidance are localized', function () {
+    foreach ([
+        'ui.details',
+        'ui.describe_the_specific_concern',
+        'ui.describe_the_specific_issue',
+        'ui.serial_not_recorded',
+        'ui.serial_number',
+    ] as $key) {
+        $english = trans($key, locale: 'en');
+
+        foreach (['lt', 'ru'] as $locale) {
+            expect(trans($key, locale: $locale), "{$locale}:{$key}")
+                ->not->toBe($key)
+                ->not->toBe($english)
+                ->not->toBe('');
+        }
+    }
+});
 
 test('the composer renders its prepared form identity through the canonical header', function () {
     $response = $this->get(route('compose', ['kind' => 'post']))->assertOk();

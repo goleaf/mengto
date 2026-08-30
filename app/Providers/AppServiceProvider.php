@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use App\Http\Middleware\EnsureOnboardingIsComplete;
 use App\Http\Middleware\RequirePortalAccess;
 use App\Models\ForumTopicType;
 use App\Models\User;
@@ -31,9 +32,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        $this->assertProductionMailTransportIsSafe();
+
         ForumTopicType::observe(ForumTopicTypeObserver::class);
 
         Livewire::addPersistentMiddleware(RequirePortalAccess::class);
+        Livewire::addPersistentMiddleware(EnsureOnboardingIsComplete::class);
 
         Route::matched(static function (RouteMatched $event): void {
             if ($event->route->getName() === 'boost.browser-logs') {
@@ -53,5 +57,52 @@ class AppServiceProvider extends ServiceProvider
                 'email' => $user->getEmailForPasswordReset(),
             ]),
         );
+    }
+
+    private function assertProductionMailTransportIsSafe(): void
+    {
+        if (! $this->app->isProduction()) {
+            return;
+        }
+
+        $mailers = config('mail.mailers');
+        $pending = [(string) config('mail.default')];
+        $visited = [];
+
+        if (! is_array($mailers)) {
+            throw new \LogicException('Production mail configuration is unavailable.');
+        }
+
+        while ($pending !== []) {
+            $mailer = array_shift($pending);
+
+            if (! is_string($mailer) || $mailer === '' || isset($visited[$mailer])) {
+                continue;
+            }
+
+            $visited[$mailer] = true;
+            $configuration = $mailers[$mailer] ?? null;
+            $transport = is_array($configuration) ? ($configuration['transport'] ?? null) : null;
+
+            if (! is_string($transport)) {
+                throw new \LogicException("Production mailer [{$mailer}] is not configured.");
+            }
+
+            if (in_array($transport, ['array', 'log'], true)) {
+                throw new \LogicException(
+                    "Production authentication mail must not use the [{$transport}] transport.",
+                );
+            }
+
+            if (in_array($transport, ['failover', 'roundrobin'], true)) {
+                $configuredMailers = $configuration['mailers'] ?? [];
+
+                if (! is_array($configuredMailers) || $configuredMailers === []) {
+                    throw new \LogicException("Production mailer [{$mailer}] has no delivery transport.");
+                }
+
+                array_push($pending, ...$configuredMailers);
+            }
+        }
     }
 }

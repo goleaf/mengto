@@ -79,3 +79,65 @@ rereview.
 | DBA-CP-06 | Targeted, isolated lifecycle, static, formatting, full-suite, dependency, build, and cache gates observed | Complete except the unavailable external forum-history entry; 2,441 of 2,442 partitioned tests pass with 105,112 assertions, and bounded sequential PHP suites avoid the unstable oversized PHP 8.5 process |
 | DBA-CP-07 | Frozen diff independently reviewed; every material finding dispositioned, fixed when valid, and retested | Complete; schema/relationship and two factory/seeder adversarial rereviews report release ready |
 | DBA-CP-08 | Plan/evidence finalized; attributable diff isolated, checked, committed, and safely pushed | Evidence complete; publication blocked by missing forum entry `1785397895`, so no commit or push was performed |
+
+## P07 Eloquent, migrations, query performance, and integrity continuation
+
+This section is the work ledger for the repository-wide P07 mission begun on
+2026-08-30. It supplements the historical DBA workstreams above and does not
+replace `docs/implementation-plan.md`. The principal agent is the sole
+integrator and owns every edit, cross-domain decision, finding disposition,
+verification claim, commit, and push decision.
+
+### P07 working-tree protection baseline
+
+- Branch: `main` at `9540fe83756833ae1c6d22053e883a07dca9f014`,
+  tracking `origin/main` at `462539c0ff63bc80a18c7f73b402cb41df02eead`.
+- Initial status contained 486 staged entries, 34 unstaged entries, eight
+  untracked entries, and 492 total paths. Those existing bytes are not P07
+  ownership merely because they overlap database or performance concerns.
+- Discovery and review agents are read-only and may write reports only under
+  `/tmp/p07-*`. They must not edit, stage, commit, push, alter configuration,
+  start shared servers, or run destructive/shared-database commands.
+- P07-owned publication uses a temporary `GIT_INDEX_FILE`. No reset, clean,
+  stash, force push, history rewrite, historical migration edit, or destructive
+  database command is permitted.
+
+### P07 discovery assignments
+
+Every analyst must return the eight-part structured report required by the P07
+mission: inspected scope; exact entities/files; confirmed severity-ranked
+findings with evidence; suspected findings; missing evidence; implementation
+order; exact tests/commands; and change risks.
+
+| ID | Specialist | Exclusive read-only scope | Report path | Dependencies | Status |
+| --- | --- | --- | --- | --- | --- |
+| P07-A01 | Schema Inventory and Consistency Analyst | All migrations, schema discovery/generators, models-to-table/key mapping, columns, constraints, indexes, pivots, engine differences | `/tmp/p07-schema-inventory.md` | Baseline only | Assigned |
+| P07-A02 | Eloquent Relationship and Cast Analyst | Models, enums, casts, accessors, observers/events, factories, serialization, mass assignment, relation keys and ownership scopes | `/tmp/p07-eloquent-relations.md` | Baseline only | Assigned |
+| P07-A03 | Query Performance and N+1 Analyst | Controllers, Livewire, Actions, Services, Resources, Blade/presenters, exports/imports and query-budget tests | `/tmp/p07-query-performance.md` | Baseline only | Assigned |
+| P07-A04 | Migration Safety and Data-Backfill Analyst | Migration ordering, historical immutability, deploy/rollback, schema dumps, backfills, mixed-version and SQLite portability | `/tmp/p07-migration-safety.md` | P07-A01 evidence may be reconciled by principal only | Assigned |
+| P07-A05 | Data Integrity and Constraint Analyst | Requirements-to-schema/application invariants, foreign/unique/check constraints, cascades, money/timezone/nullability/status integrity | `/tmp/p07-data-integrity.md` | P07-A01 evidence may be reconciled by principal only | Assigned |
+| P07-A06 | Concurrency, Transaction, and Idempotency Analyst | Race-sensitive Actions/Services, tokens, invitations, payments/orders, counters, imports/webhooks, locks/retries/after-commit effects | `/tmp/p07-concurrency.md` | Baseline only | Assigned |
+| P07-A07 | Database Test and Fixture Analyst | Test database isolation, factories/seeders, lifecycle scripts, fresh/upgrade/constraint/query/concurrency coverage | `/tmp/p07-database-tests.md` | All discovery evidence reconciled later by principal | Assigned |
+
+### P07 implementation and review ownership
+
+| ID | Owner | Exclusive scope | Acceptance evidence | Status |
+| --- | --- | --- | --- | --- |
+| P07-I01 | Principal | Canonical plan, accepted schema/model/constraint/migration fixes and regression tests | TDD red/green evidence and focused commands | Pending discovery |
+| P07-I02 | Principal | Accepted bounded-query/index/transaction/idempotency fixes and regression tests | Before/after budgets, plans, deterministic race evidence | Pending discovery |
+| P07-I03 | Principal | Factories, seeders, isolated lifecycle verification, canonical documentation and generators | Fresh/upgrade/repeat-seed and byte-parity evidence | Pending discovery |
+| P07-R01 | Independent Database Integrity Reviewer | Frozen P07 attributable diff: models, constraints, Actions, tests, representative data states | Exact invariant findings, violation attempts, deletion/restore trace | Pending implementation |
+| P07-R02 | Independent Migration Safety Reviewer | Frozen P07 migrations/backfills/deployment/rollback/tests | Fresh and upgrade walkthrough, SQL/lock risk, go/no-go conditions | Pending implementation |
+| P07-R03 | Independent Query Performance Reviewer | Frozen P07 query/index/pagination/metric/test diff | Before/after metrics, EXPLAIN evidence, hidden-query/high-volume review | Pending implementation |
+
+### P07 principal checkpoints
+
+| Checkpoint | Acceptance evidence | Status |
+| --- | --- | --- |
+| P07-CP01 | Instruction chain, canonical documents, current branch, dirty ownership and runtime baseline inspected | In progress |
+| P07-CP02 | Seven discovery reports reconciled; every material claim independently reproduced | Pending |
+| P07-CP03 | `docs/implementation-plan.md` updated before P07 production-code edits | Pending |
+| P07-CP04 | Accepted defects implemented via observed red/green regression cycles | Pending |
+| P07-CP05 | Fresh/upgrade/seed/constraint/strict/query/concurrency gates observed in isolated runtimes | Pending |
+| P07-CP06 | Frozen P07 diff reviewed by all three independent reviewers; findings dispositioned and retested | Pending |
+| P07-CP07 | Canonical docs/evidence synchronized; task-owned staged diff checked, committed and safely pushed | Pending |

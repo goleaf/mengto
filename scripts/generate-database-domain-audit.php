@@ -140,7 +140,12 @@ function runDatabaseDomainAudit(array $argv): int
 }
 
 if (realpath((string) ($_SERVER['SCRIPT_FILENAME'] ?? '')) === __FILE__) {
-    exit(runDatabaseDomainAudit($_SERVER['argv'] ?? []));
+    try {
+        exit(runDatabaseDomainAudit($_SERVER['argv'] ?? []));
+    } catch (Throwable $throwable) {
+        fwrite(STDERR, 'Database domain audit failed: '.$throwable->getMessage().PHP_EOL);
+        exit(1);
+    }
 }
 
 function reportFirstAuditDifference(string $current, string $generated): void

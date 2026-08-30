@@ -235,7 +235,6 @@ complete item a single link:
 - `components/medical-record-card.blade.php`;
 - `components/device-card.blade.php` placeholder/icon region;
 - `components/connection-identity.blade.php`;
-- `components/conversation-item.blade.php`;
 - `components/messaging-inbox.blade.php`;
 - `components/header-actions.blade.php`;
 - `components/pet-friend-switcher.blade.php`;
@@ -264,7 +263,8 @@ real authorized destination:
 - `components/group-chat-preview.blade.php`;
 - member, pet, friend, and nearby rows inside
   `components/group-dashboard.blade.php` and `place-dashboard.blade.php`;
-- `components/message-thread-header.blade.php` and `message-context.blade.php`;
+- `components/messaging-thread-header.blade.php` and
+  `messaging-context.blade.php`;
 - forum group, mentorship, event, and expert-session identity rows when their
   Livewire projection already contains a policy-safe profile/detail URL.
 

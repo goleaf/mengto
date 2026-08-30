@@ -7,18 +7,18 @@ use App\Models\PetProfile;
 use Illuminate\Support\Facades\File;
 
 const MEDICAL_DIRECTORY_UI_KEYS = [
-    'medical_privacy_status_a8a40a4bd3',
-    'medical_data_is_private_by_default_2829377998',
-    'pet_followers_social_groups_marketplace_sellers_and_unrelated_62afc5fdb8',
-    'managed_records_663bb02e0d',
-    'private_health_record_f1b39f16e5',
-    'private_c63eb6720c',
-    'weight_81d27ef6d5',
-    'medications_6b5763afa6',
-    'tasks_b3a60e61a5',
-    'open_ed077f3d81',
-    'no_health_records_yet_8cc935a87c',
-    'create_the_first_record_381606f2e5',
+    'medical_privacy_status',
+    'medical_data_is_private_by_default',
+    'pet_followers_social_groups_marketplace_sellers_and_unrelated_specialists_cannot_open_these_records',
+    'managed_records',
+    'private_health_record',
+    'private',
+    'weight',
+    'medications',
+    'tasks',
+    'open',
+    'no_health_records_yet',
+    'create_the_first_record',
 ];
 
 test('the medical record directory renders its body in the authenticated users locale', function (
@@ -65,8 +65,8 @@ test('the medical record empty state follows the authenticated users locale', fu
 
     $this->get(route('medical-records.index'))
         ->assertOk()
-        ->assertSee(trans('ui.no_health_records_yet_8cc935a87c', locale: $locale))
-        ->assertSee(trans('ui.create_the_first_record_381606f2e5', locale: $locale));
+        ->assertSee(trans('ui.no_health_records_yet', locale: $locale))
+        ->assertSee(trans('ui.create_the_first_record', locale: $locale));
 })->with(['lt', 'ru']);
 
 test('the medical record directory has complete non english copy and no hardcoded image alt', function (): void {

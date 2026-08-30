@@ -46,7 +46,7 @@ test('the group directory renders localized system and catalogue copy', function
 
     $response = $this->get(route('groups.index'))->assertOk();
 
-    $response->assertSee(trans('ui.why_this_profile_11657790a4', locale: $locale));
+    $response->assertSee(trans('ui.why_this_profile', locale: $locale));
 
     foreach (GROUP_DIRECTORY_RENDERED_COPY as $key) {
         $response->assertSee(trans("groups.{$key}", locale: $locale));
@@ -102,8 +102,8 @@ test('the group catalogue has a complete shared localization contract', function
                 ->not->toBe($value);
         }
 
-        expect(trans('ui.why_this_profile_11657790a4', locale: $locale))
-            ->not->toBe(trans('ui.why_this_profile_11657790a4', locale: 'en'));
+        expect(trans('ui.why_this_profile', locale: $locale))
+            ->not->toBe(trans('ui.why_this_profile', locale: 'en'));
     }
 });
 

@@ -1,5 +1,14 @@
 @use 'tokens' as *;
 
+.detail-navigation {
+    display: flex;
+    min-inline-size: 0;
+    max-inline-size: 100%;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.25rem 0.5rem;
+}
+
 .text-link {
     display: inline-flex;
     min-inline-size: 0;

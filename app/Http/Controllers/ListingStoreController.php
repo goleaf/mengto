@@ -21,10 +21,10 @@ class ListingStoreController extends Controller
             ->with(
                 'feedback',
                 $listing->status === ListingStatus::Published
-                    ? __('messages.listing_published_keep_conversations_and_arrangements_in_991918c930')
+                    ? __('messages.listing_published_keep_conversations_and_arrangements_inside_the_platform')
                     : ($listing->moderation_status === ModerationStatus::Pending
-                        ? __('messages.listing_saved_and_sent_for_safety_review_only_you_can_se_e0115ec05f')
-                        : __('messages.draft_saved_only_you_can_see_it_6126d8ac6e')),
+                        ? __('messages.listing_saved_and_sent_for_safety_review_only_you_can_see_it_until_approval')
+                        : __('messages.draft_saved_only_you_can_see_it')),
             );
     }
 }

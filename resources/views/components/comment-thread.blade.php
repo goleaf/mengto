@@ -7,8 +7,8 @@
 >
     <header class="comment-thread__header">
         <x-section-heading
-            eyebrow="{{ __('ui.neighbor_conversation_8ab26ebc32') }}"
-            title="{{ __('ui.replies_31ecb5e00f') }}"
+            eyebrow="{{ __('ui.neighbor_conversation') }}"
+            title="{{ __('ui.replies') }}"
             title-id="conversation-title"
             size="compact"
         />

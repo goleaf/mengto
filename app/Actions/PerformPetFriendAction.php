@@ -51,7 +51,7 @@ final class PerformPetFriendAction
             'dismiss-pet-friend-recommendation' => $this->dismissPetFriendRecommendation($data),
             'undo-pet-friend-recommendation' => $this->undoPetFriendRecommendation($data),
             default => throw ValidationException::withMessages([
-                'action' => __('messages.this_action_is_unavailable_c64fa3888d'),
+                'action' => __('messages.this_action_is_unavailable'),
             ]),
         };
     }
@@ -66,7 +66,7 @@ final class PerformPetFriendAction
 
         if ($this->state->isActive('blocks', $target)) {
             throw ValidationException::withMessages([
-                'target' => __('messages.unblock_this_profile_before_sending_a_friend_request_17e3219fe4'),
+                'target' => __('messages.unblock_this_profile_before_sending_a_friend_request'),
             ]);
         }
 
@@ -79,7 +79,7 @@ final class PerformPetFriendAction
 
         if (! $sent) {
             throw ValidationException::withMessages([
-                'target' => __('messages.this_friendship_already_has_an_active_request_or_connect_9df02db23e'),
+                'target' => __('messages.this_friendship_already_has_an_active_request_or_connection'),
             ]);
         }
 
@@ -99,7 +99,7 @@ final class PerformPetFriendAction
         [$source, $target, $candidate] = $this->requirePetFriendPair($data);
 
         if (! $this->petFriendState->cancelRequest($source, $target)) {
-            throw ValidationException::withMessages(['target' => __('messages.this_request_can_no_longer_be_cancelled_aa646e6cbd')]);
+            throw ValidationException::withMessages(['target' => __('messages.this_request_can_no_longer_be_cancelled')]);
         }
 
         return $this->petFriendResult(
@@ -119,7 +119,7 @@ final class PerformPetFriendAction
         $sourceName = (string) ($this->petFriends->find($source)['name'] ?? __('messages.your_pet'));
 
         if (! $this->petFriendState->resolveRequest($source, $target, $status)) {
-            throw ValidationException::withMessages(['target' => __('messages.this_friend_request_is_no_longer_available_83d6ae6b3f')]);
+            throw ValidationException::withMessages(['target' => __('messages.this_friend_request_is_no_longer_available')]);
         }
 
         return $this->petFriendResult(
@@ -144,7 +144,7 @@ final class PerformPetFriendAction
         $status = $this->petFriendState->togglePause($source, $target);
 
         if ($status === null) {
-            throw ValidationException::withMessages(['target' => __('messages.this_friendship_cannot_be_paused_or_restored_9e7261afa7')]);
+            throw ValidationException::withMessages(['target' => __('messages.this_friendship_cannot_be_paused_or_restored')]);
         }
 
         return $this->petFriendResult(
@@ -165,7 +165,7 @@ final class PerformPetFriendAction
         [$source, $target, $candidate] = $this->requirePetFriendPair($data);
 
         if (! $this->petFriendState->removeFriendship($source, $target)) {
-            throw ValidationException::withMessages(['target' => __('messages.this_friendship_is_no_longer_active_6af9d35ac7')]);
+            throw ValidationException::withMessages(['target' => __('messages.this_friendship_is_no_longer_active')]);
         }
 
         return $this->petFriendResult(
@@ -219,7 +219,7 @@ final class PerformPetFriendAction
         [$source, $target, $candidate] = $this->requirePetFriendPair($data);
 
         if (! $this->petFriendState->undoRecommendationDismissal($source, $target)) {
-            throw ValidationException::withMessages(['target' => __('messages.there_is_no_pet_recommendation_to_restore_ab7b1eb9bc')]);
+            throw ValidationException::withMessages(['target' => __('messages.there_is_no_pet_recommendation_to_restore')]);
         }
 
         return $this->petFriendResult(
@@ -241,7 +241,7 @@ final class PerformPetFriendAction
         $candidate = $this->petFriends->find($target);
 
         if (! isset($owned[$source]) || $candidate === null || isset($owned[$target]) || $source === $target) {
-            throw ValidationException::withMessages(['target' => __('messages.choose_an_available_pet_friendship_b06a4dbe80')]);
+            throw ValidationException::withMessages(['target' => __('messages.choose_an_available_pet_friendship')]);
         }
 
         return [$source, $target, $candidate];

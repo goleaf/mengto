@@ -26,7 +26,10 @@ final readonly class BackfillForumEventLifecycle
         $petLinksCreated = 0;
 
         ForumEvent::query()
-            ->select(['id', 'organizer_user_id', 'owner_user_id', 'current_version_number'])
+            ->select([
+                'id', 'organizer_user_id', 'owner_user_id', 'current_version_number',
+                'cost_minor', 'currency',
+            ])
             ->where(function (Builder $events): void {
                 $events
                     ->where(function (Builder $owner): void {
@@ -92,6 +95,7 @@ final readonly class BackfillForumEventLifecycle
                         ])
                         ->orderBy('id')
                         ->chunkById(100, function ($registrations) use (
+                            $event,
                             $lifecycle,
                             &$petLinksCreated,
                             &$registrationsUpdated,
@@ -141,6 +145,7 @@ final readonly class BackfillForumEventLifecycle
                                     : [$registration->pet_profile_id];
 
                                 if ($registration->accepted_snapshot === null) {
+                                    $registration->setRelation('event', $event);
                                     $snapshot = $this->snapshots->registration(
                                         $registration,
                                         $lifecycle->version,

@@ -19,6 +19,6 @@ class DeviceAccessRevokeController extends Controller
         $revoke->handle($smartDevice, $deviceAccessGrant);
 
         return to_route('devices.manage', $smartDevice)
-            ->with('feedback', __('messages.temporary_access_revoked_immediately_c770471439'));
+            ->with('feedback', __('messages.temporary_access_revoked_immediately'));
     }
 }

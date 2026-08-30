@@ -30,7 +30,7 @@ class IssueDeviceCommand
         return DB::transaction(function () use ($device, $data): DeviceCommand {
             if (in_array($data['command_type'], self::FORBIDDEN_COMMANDS, true)) {
                 throw ValidationException::withMessages([
-                    'command_type' => __('messages.this_command_is_not_allowed_by_the_platform_safety_polic_d02835f564'),
+                    'command_type' => __('messages.this_command_is_not_allowed_by_the_platform_safety_policy'),
                 ]);
             }
 
@@ -42,7 +42,7 @@ class IssueDeviceCommand
             if ($existing !== null) {
                 if ($existing->smart_device_id !== $device->id) {
                     throw ValidationException::withMessages([
-                        'idempotency_key' => __('messages.this_command_key_is_already_in_use_d64c47642c'),
+                        'idempotency_key' => __('messages.this_command_key_is_already_in_use'),
                     ]);
                 }
 
@@ -61,7 +61,7 @@ class IssueDeviceCommand
 
             if ($lockedDevice->is_blocked) {
                 throw ValidationException::withMessages([
-                    'command_type' => __('messages.remote_control_is_blocked_for_this_device_c0b2dc51f0'),
+                    'command_type' => __('messages.remote_control_is_blocked_for_this_device'),
                 ]);
             }
 
@@ -137,7 +137,7 @@ class IssueDeviceCommand
 
         if (! in_array($command, $allowed, true)) {
             throw ValidationException::withMessages([
-                'command_type' => __('messages.this_command_is_not_supported_by_the_selected_device_typ_60d0f37c98'),
+                'command_type' => __('messages.this_command_is_not_supported_by_the_selected_device_type'),
             ]);
         }
     }
@@ -169,7 +169,7 @@ class IssueDeviceCommand
             && ! ($data['confirmed'] ?? false)
         ) {
             throw ValidationException::withMessages([
-                'confirmed' => __('messages.confirm_this_high_impact_command_before_it_is_sent_78f41d9b30'),
+                'confirmed' => __('messages.confirm_this_high_impact_command_before_it_is_sent'),
             ]);
         }
     }
@@ -199,7 +199,7 @@ class IssueDeviceCommand
         if ($recent !== null) {
             throw ValidationException::withMessages([
                 'confirm_duplicate' => sprintf(
-                    __('messages.a_portion_was_already_issued_by_s_at_s_confirm_only_if_a_7e62030100'),
+                    __('messages.a_portion_was_already_issued_by_s_at_s_confirm_only_if_another_portion_is_intended'),
                     $recent->author_name,
                     $recent->issued_at?->format('H:i:s'),
                 ),

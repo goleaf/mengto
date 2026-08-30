@@ -104,7 +104,7 @@ class OrderPresenter
                 'item' => $item,
                 'item_brand_model' => $brandModel !== ''
                     ? $brandModel
-                    : __('ui.not_specified_dc12bec5d7'),
+                    : __('ui.not_specified'),
                 'item_condition_label' => Str::headline(
                     (string) ($item['condition'] ?? ''),
                 ),

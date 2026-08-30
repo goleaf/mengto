@@ -45,7 +45,7 @@ test('place catalog and gallery media use local responsive assets with stable di
 
     expect(array_unique($primaryImages))->toHaveCount(7)
         ->and($groomingPlace)->not->toBeNull()
-        ->and($groomingPlace['image_alt'])->toBe(__('messages.quiet_pet_grooming_workspace_with_clean_equipment_0f581fa9e5'));
+        ->and($groomingPlace['image_alt'])->toBe(__('messages.quiet_pet_grooming_workspace_with_clean_equipment'));
 });
 
 test('place directory hero and gallery render truthful local srcsets', function () {

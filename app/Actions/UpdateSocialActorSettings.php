@@ -29,6 +29,7 @@ final class UpdateSocialActorSettings
         SocialFollowPolicy $followPolicy,
         SocialListVisibility $friendListVisibility,
         SocialListVisibility $followerListVisibility,
+        bool $isDiscoverable,
         bool $isRecommendable,
         bool $allowMessageRequests,
         int $expectedLockVersion,
@@ -48,6 +49,7 @@ final class UpdateSocialActorSettings
             $followPolicy,
             $friendListVisibility,
             $followerListVisibility,
+            $isDiscoverable,
             $isRecommendable,
             $allowMessageRequests,
             $expectedLockVersion,
@@ -80,6 +82,7 @@ final class UpdateSocialActorSettings
             ])->save();
 
             $lockedActor->forceFill([
+                'is_discoverable' => $isDiscoverable,
                 'lock_version' => $lockedActor->lock_version + 1,
             ])->save();
             $this->cache->invalidate($lockedActor);

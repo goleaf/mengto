@@ -101,6 +101,6 @@ return [
     'notifications' => [
         'read' => 'perskaityta',
         'unread' => 'nauja',
-        'summary' => ':date / :state',
+        'summary' => ':date · būsena: :state',
     ],
 ];

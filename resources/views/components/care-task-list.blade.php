@@ -22,16 +22,16 @@
                         @csrf
                         <input type="hidden" name="idempotency_key" value="{{ $task['idempotency_key'] }}">
                         <select name="status" aria-label="{{ __('presentation.task_outcome', ['task' => $task['title']]) }}">
-                            <option value="completed">{{ __('ui.completed_22a970d2e5') }}</option>
-                            <option value="partial">{{ __('ui.partially_completed_24421344ab') }}</option>
-                            <option value="refused">{{ __('ui.pet_refused_323b25a990') }}</option>
-                            <option value="skipped">{{ __('ui.skipped_12698ce1ea') }}</option>
-                            <option value="needs-help">{{ __('ui.needs_help_102dd0fe0f') }}</option>
+                            <option value="completed">{{ __('ui.completed') }}</option>
+                            <option value="partial">{{ __('ui.partially_completed') }}</option>
+                            <option value="refused">{{ __('ui.pet_refused') }}</option>
+                            <option value="skipped">{{ __('ui.skipped') }}</option>
+                            <option value="needs-help">{{ __('ui.needs_help') }}</option>
                         </select>
-                        <input name="completion_note" maxlength="2000" placeholder="{{ __('ui.optional_outcome_note_89275bfde7') }}" aria-label="{{ __('ui.completion_note_2a5d64b27b') }}">
+                        <input name="completion_note" maxlength="2000" placeholder="{{ __('ui.optional_outcome_note') }}" aria-label="{{ __('ui.completion_note') }}">
                         <button type="submit" class="action action--primary action--compact">
                             <x-ui-icon name="check" size="sm" />
-                            <span>{{ __('ui.record_bfdd510698') }}</span>
+                            <span>{{ __('ui.record') }}</span>
                         </button>
                     </form>
                 @endif
@@ -40,7 +40,7 @@
     @empty
         <div class="care-empty">
             <x-ui-icon name="list-checks" size="xl" />
-            <p>{{ __('ui.no_open_tasks_unrecorded_care_is_not_assumed_7c5b27f384') }}</p>
+            <p>{{ __('ui.no_open_tasks_unrecorded_care_is_not_assumed_to_be_missed') }}</p>
         </div>
     @endforelse
 </div>

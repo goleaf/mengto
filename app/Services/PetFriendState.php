@@ -72,7 +72,7 @@ final class PetFriendState
             'share_area' => $details['share_area'],
             'requested_at' => now()->toAtomString(),
             'accepted_at' => '',
-            'last_activity' => __('messages.request_sent_just_now_3d449d1369'),
+            'last_activity' => __('messages.request_sent_just_now'),
         ];
         $this->store($state);
 
@@ -91,7 +91,7 @@ final class PetFriendState
             return false;
         }
 
-        return $this->setStatus($source, $target, 'removed', __('messages.request_cancelled_7108183f18'));
+        return $this->setStatus($source, $target, 'removed', __('messages.request_cancelled'));
     }
 
     public function resolveRequest(string $source, string $target, string $status): bool
@@ -113,7 +113,7 @@ final class PetFriendState
             ...$relationship,
             'status' => $status,
             'accepted_at' => $status === 'accepted' ? now()->toAtomString() : '',
-            'last_activity' => $status === 'accepted' ? __('messages.friends_since_today_ae7fd8685d') : __('messages.request_declined_1df48b2da0'),
+            'last_activity' => $status === 'accepted' ? __('messages.friends_since_today') : __('messages.request_declined'),
         ];
         $this->store($state);
 
@@ -129,7 +129,7 @@ final class PetFriendState
         }
 
         $status = $relationship['status'] === 'accepted' ? 'paused' : 'accepted';
-        $activity = $status === 'paused' ? __('messages.friendship_paused_bece4e4bfe') : __('messages.friendship_restored_f991206499');
+        $activity = $status === 'paused' ? __('messages.friendship_paused') : __('messages.friendship_restored');
         $this->setStatus($source, $target, $status, $activity);
 
         return $status;
@@ -143,7 +143,7 @@ final class PetFriendState
             return false;
         }
 
-        return $this->setStatus($source, $target, 'removed', __('messages.friendship_removed_a34bf9cab9'));
+        return $this->setStatus($source, $target, 'removed', __('messages.friendship_removed'));
     }
 
     public function setBlocked(string $source, string $target, bool $blocked): void
@@ -167,7 +167,7 @@ final class PetFriendState
                 'accepted_at' => '',
             ]),
             'status' => $blocked ? 'blocked' : 'removed',
-            'last_activity' => $blocked ? __('messages.profile_blocked_6daa462432') : __('messages.block_removed_8de2508233'),
+            'last_activity' => $blocked ? __('messages.profile_blocked') : __('messages.block_removed'),
         ];
         $state['last_blocked'][$source] = $blocked ? $target : null;
         $this->store($state);
@@ -285,10 +285,10 @@ final class PetFriendState
                 'pet-mochi',
                 'accepted',
                 ['walk', 'neighbor'],
-                __('messages.we_met_through_ari_after_a_calm_fields_park_walk_ede421f870'),
-                __('messages.fields_park_82bb556189'),
+                __('messages.we_met_through_ari_after_a_calm_fields_park_walk'),
+                __('messages.fields_park'),
                 '2025-09-14T10:00:00-07:00',
-                __('messages.walked_together_3_days_ago_1e3aa30e32'),
+                __('messages.walked_together_3_days_ago'),
             ),
             $this->defaultRelationship(
                 'pet-nori',
@@ -297,10 +297,10 @@ final class PetFriendState
                 'pet-pip',
                 'accepted',
                 ['play', 'neighbor'],
-                __('messages.quiet_indoor_friends_through_lena_and_mia_f38478f7e5'),
-                __('messages.kerns_neighborhood_4a912bd124'),
+                __('messages.quiet_indoor_friends_through_lena_and_mia'),
+                __('messages.kerns_neighborhood'),
                 '2026-02-08T11:30:00-08:00',
-                __('messages.shared_a_photo_2_weeks_ago_080755aed8'),
+                __('messages.shared_a_photo_2_weeks_ago'),
             ),
             $this->defaultRelationship(
                 'pet-juniper',
@@ -309,10 +309,10 @@ final class PetFriendState
                 'pet-scout',
                 'pending',
                 ['walk', 'training'],
-                __('messages.we_met_near_the_river_trail_juniper_does_best_with_a_par_0e0ee057e1'),
-                __('messages.sellwood_riverfront_0bd0c8c5f7'),
+                __('messages.we_met_near_the_river_trail_juniper_does_best_with_a_parallel_first_walk'),
+                __('messages.sellwood_riverfront'),
                 '',
-                __('messages.requested_yesterday_abd3e3657c'),
+                __('messages.requested_yesterday'),
             ),
             $this->defaultRelationship(
                 'pet-scout',
@@ -321,10 +321,10 @@ final class PetFriendState
                 'pet-luna-labrador',
                 'pending',
                 ['walk', 'play'],
-                __('messages.scout_and_luna_have_similar_energy_we_could_start_with_a_8bc6712356'),
-                __('messages.wallace_park_59b65dd2e0'),
+                __('messages.scout_and_luna_have_similar_energy_we_could_start_with_a_leashed_park_loop'),
+                __('messages.wallace_park'),
                 '',
-                __('messages.requested_4_days_ago_f0c153da61'),
+                __('messages.requested_4_days_ago'),
             ),
             $this->defaultRelationship(
                 'pet-olive-rabbit',
@@ -333,10 +333,10 @@ final class PetFriendState
                 'pet-nori',
                 'pending',
                 ['neighbor'],
-                __('messages.we_share_quiet_indoor_enrichment_ideas_any_visit_would_u_a7fd1af583'),
-                __('messages.sellwood_neighbors_575768cd4a'),
+                __('messages.we_share_quiet_indoor_enrichment_ideas_any_visit_would_use_separate_rooms'),
+                __('messages.sellwood_neighbors'),
                 '',
-                __('messages.requested_2_days_ago_b796b08cd2'),
+                __('messages.requested_2_days_ago'),
             ),
         ];
 

@@ -102,7 +102,7 @@ class PerformAction
             'cancel-walk-plan' => $this->cancelWalkPlan($target, $label),
             'call' => $this->call($target, $label),
             'show-info' => $this->showInfo($target),
-            default => throw ValidationException::withMessages(['action' => __('messages.this_action_is_unavailable_c64fa3888d')]),
+            default => throw ValidationException::withMessages(['action' => __('messages.this_action_is_unavailable')]),
         };
     }
 
@@ -143,7 +143,7 @@ class PerformAction
     {
         $this->state->markNotificationsRead();
 
-        return ['message' => __('messages.all_notifications_marked_as_read_83f03231fd'), 'route' => null];
+        return ['message' => __('messages.all_notifications_marked_as_read'), 'route' => null];
     }
 
     /**
@@ -165,7 +165,7 @@ class PerformAction
         ]);
 
         return [
-            'message' => __('messages.message_sent_to_your_neighbor_03a067492c'),
+            'message' => __('messages.message_sent_to_your_neighbor'),
             'route' => 'messages.index',
             'parameters' => ['conversation' => (string) ($data['target'] ?? 'ari')],
         ];
@@ -181,7 +181,7 @@ class PerformAction
         $this->requireTarget($post);
 
         if ($this->preview->postThreadData($post) === null) {
-            throw ValidationException::withMessages(['target' => __('messages.this_conversation_is_unavailable_801e86401b')]);
+            throw ValidationException::withMessages(['target' => __('messages.this_conversation_is_unavailable')]);
         }
 
         $now = now();
@@ -201,7 +201,7 @@ class PerformAction
         ]);
 
         return [
-            'message' => __('messages.your_reply_joined_the_conversation_916fc13d73'),
+            'message' => __('messages.your_reply_joined_the_conversation'),
             'route' => 'posts.show',
             'parameters' => ['post' => $post],
         ];
@@ -228,8 +228,8 @@ class PerformAction
 
         return [
             'message' => $status === 'draft'
-                ? __('messages.draft_saved_privately_ab0ca7007c')
-                : __('messages.your_publication_is_live_195fc8763c'),
+                ? __('messages.draft_saved_privately')
+                : __('messages.your_publication_is_live'),
             'route' => 'home',
             'parameters' => ['feed' => $status === 'draft' ? 'drafts' : 'home'],
         ];
@@ -248,11 +248,11 @@ class PerformAction
             ...$this->postValues($data),
             'status' => $status,
         ])) {
-            throw ValidationException::withMessages(['target' => __('messages.this_publication_cannot_be_edited_cd569ecd88')]);
+            throw ValidationException::withMessages(['target' => __('messages.this_publication_cannot_be_edited')]);
         }
 
         return [
-            'message' => $status === 'draft' ? __('messages.changes_saved_as_a_draft_3aa513489d') : __('messages.publication_updated_eb5c1a416c'),
+            'message' => $status === 'draft' ? __('messages.changes_saved_as_a_draft') : __('messages.publication_updated'),
             'route' => 'home',
             'parameters' => ['feed' => $status === 'draft' ? 'drafts' : 'home'],
         ];
@@ -291,13 +291,13 @@ class PerformAction
         $post = $this->feed->post($target);
 
         if ($post === null || ! array_key_exists($reaction, $post['reaction_options'])) {
-            throw ValidationException::withMessages(['reaction' => __('messages.choose_an_available_reaction_c8a1ac8cff')]);
+            throw ValidationException::withMessages(['reaction' => __('messages.choose_an_available_reaction')]);
         }
 
         $selected = $this->state->setReaction($target, $reaction);
 
         return [
-            'message' => $selected === null ? __('messages.reaction_removed_edfe329c55') : __('messages.reaction_updated_cf33defc87'),
+            'message' => $selected === null ? __('messages.reaction_removed') : __('messages.reaction_updated'),
             'route' => null,
         ];
     }
@@ -310,7 +310,7 @@ class PerformAction
         $post = $this->feed->post($target);
 
         if ($post === null) {
-            throw ValidationException::withMessages(['target' => __('messages.this_author_is_unavailable_ba8e27d835')]);
+            throw ValidationException::withMessages(['target' => __('messages.this_author_is_unavailable')]);
         }
 
         $muted = $this->state->toggle('muted-authors', (string) $post['author_key']);
@@ -331,7 +331,7 @@ class PerformAction
         $post = $this->feed->post($target);
 
         if ($post === null) {
-            throw ValidationException::withMessages(['target' => __('messages.this_author_is_unavailable_ba8e27d835')]);
+            throw ValidationException::withMessages(['target' => __('messages.this_author_is_unavailable')]);
         }
 
         $blocked = $this->state->toggle('blocked-authors', (string) $post['author_key']);
@@ -352,7 +352,7 @@ class PerformAction
         $post = $this->feed->post($target);
 
         if ($post === null || ($post['status'] ?? 'published') !== 'published') {
-            throw ValidationException::withMessages(['target' => __('messages.this_publication_cannot_be_reposted_c3dc814159')]);
+            throw ValidationException::withMessages(['target' => __('messages.this_publication_cannot_be_reposted')]);
         }
 
         $now = now()->toAtomString();
@@ -362,7 +362,7 @@ class PerformAction
             'identity' => 'mia',
             'format' => 'repost',
             'title' => '',
-            'body' => __('messages.sharing_this_with_my_circle_50ccd6a107'),
+            'body' => __('messages.sharing_this_with_my_circle'),
             'topic' => 'community',
             'tags' => '',
             'media' => 'none',
@@ -378,7 +378,7 @@ class PerformAction
         ]);
 
         return [
-            'message' => __('messages.repost_added_to_your_feed_1bf1fdc046'),
+            'message' => __('messages.repost_added_to_your_feed'),
             'route' => 'home',
             'parameters' => ['feed' => 'home'],
         ];
@@ -390,11 +390,11 @@ class PerformAction
     private function movePost(string $target, string $status): array
     {
         if (! $this->state->movePost($target, $status)) {
-            throw ValidationException::withMessages(['target' => __('messages.this_publication_cannot_be_moved_0f6915891f')]);
+            throw ValidationException::withMessages(['target' => __('messages.this_publication_cannot_be_moved')]);
         }
 
         return [
-            'message' => $status === 'archived' ? __('messages.publication_moved_to_archive_8b363dba7d') : __('messages.publication_restored_2f3bc8866f'),
+            'message' => $status === 'archived' ? __('messages.publication_moved_to_archive') : __('messages.publication_restored'),
             'route' => 'home',
             'parameters' => ['feed' => $status === 'archived' ? 'archive' : 'home'],
         ];
@@ -406,11 +406,11 @@ class PerformAction
     private function deletePost(string $target): array
     {
         if (! $this->state->deletePost($target)) {
-            throw ValidationException::withMessages(['target' => __('messages.this_publication_cannot_be_deleted_a76aba8a20')]);
+            throw ValidationException::withMessages(['target' => __('messages.this_publication_cannot_be_deleted')]);
         }
 
         return [
-            'message' => __('messages.publication_deleted_from_this_prototype_5bea6b89dd'),
+            'message' => __('messages.publication_deleted_from_this_prototype'),
             'route' => 'home',
             'parameters' => ['feed' => 'home'],
         ];
@@ -426,7 +426,7 @@ class PerformAction
         $context = $this->feed->reportContext($target);
 
         if ($context === null) {
-            throw ValidationException::withMessages(['target' => __('messages.this_publication_is_unavailable_to_report_2d9708ab61')]);
+            throw ValidationException::withMessages(['target' => __('messages.this_publication_is_unavailable_to_report')]);
         }
 
         $this->state->addPostReport([
@@ -437,7 +437,7 @@ class PerformAction
         ]);
 
         return [
-            'message' => __('messages.your_private_report_was_received_4923cd3966'),
+            'message' => __('messages.your_private_report_was_received'),
             'route' => $context['route'],
             'parameters' => $context['route_parameters'],
         ];
@@ -465,7 +465,7 @@ class PerformAction
         ]);
 
         return [
-            'message' => __('messages.your_new_group_is_ready_in_the_directory_52f9d90542'),
+            'message' => __('messages.your_new_group_is_ready_in_the_directory'),
             'route' => 'groups.index',
         ];
     }
@@ -479,7 +479,7 @@ class PerformAction
         $profile = $this->createPetProfile->handle($data);
 
         return [
-            'message' => __('messages.your_pet_was_added_to_pawcircle_e388ba3275'),
+            'message' => __('messages.your_pet_was_added_to_brand'),
             'route' => 'pets.created',
             'parameters' => ['item' => $profile->profile_key],
         ];
@@ -512,7 +512,7 @@ class PerformAction
         ]);
 
         return [
-            'message' => __('messages.your_walk_draft_is_ready_to_review_d8dd595b84'),
+            'message' => __('messages.your_walk_draft_is_ready_to_review'),
             'route' => 'walks.index',
             'parameters' => ['filter' => 'drafts'],
         ];
@@ -537,8 +537,8 @@ class PerformAction
             'title' => __('messages.walk_with_pet', [
                 'pet' => $participant['pet'],
             ]),
-            'body' => __('messages.start_with_a_calm_hello_keep_the_first_loop_easy_and_lea_6c7a632618'),
-            'detail' => __('messages.easy_pace_30_min_c2585b7d4e'),
+            'body' => __('messages.start_with_a_calm_hello_keep_the_first_loop_easy_and_leave_room_for_a_quiet_finish'),
+            'detail' => __('messages.easy_pace_30_min'),
             'location' => $participant['location'],
             'date' => today()->addDays(2)->format('Y-m-d'),
             'time' => '08:30',
@@ -565,7 +565,7 @@ class PerformAction
         $status = $this->state->advanceWalkPlan($target);
 
         if ($status === null) {
-            throw ValidationException::withMessages(['target' => __('messages.this_walk_plan_cannot_be_updated_ef7b0ed3e2')]);
+            throw ValidationException::withMessages(['target' => __('messages.this_walk_plan_cannot_be_updated')]);
         }
 
         return [
@@ -585,7 +585,7 @@ class PerformAction
         $this->requireTarget($target);
 
         if (! $this->state->cancelWalkPlan($target)) {
-            throw ValidationException::withMessages(['target' => __('messages.this_walk_plan_cannot_be_cancelled_18f7467f1b')]);
+            throw ValidationException::withMessages(['target' => __('messages.this_walk_plan_cannot_be_cancelled')]);
         }
 
         return [
@@ -603,7 +603,7 @@ class PerformAction
         $this->requireTarget($target);
 
         if ($this->preview->shareData($target) === null) {
-            throw ValidationException::withMessages(['target' => __('messages.this_item_is_unavailable_to_share_202318ce15')]);
+            throw ValidationException::withMessages(['target' => __('messages.this_item_is_unavailable_to_share')]);
         }
 
         return [
@@ -638,7 +638,7 @@ class PerformAction
         $this->requireTarget($target);
 
         return [
-            'message' => __('messages.conversation_details_are_ready_ca385e2d75'),
+            'message' => __('messages.conversation_details_are_ready'),
             'route' => 'messages.details',
             'parameters' => ['conversation' => $target],
         ];
@@ -657,7 +657,7 @@ class PerformAction
             'location' => (string) ($data['location'] ?? ''),
         ]);
 
-        return ['message' => __('messages.your_profile_was_updated_e395941658'), 'route' => 'profile.mia'];
+        return ['message' => __('messages.your_profile_was_updated'), 'route' => 'profile.mia'];
     }
 
     /**
@@ -690,7 +690,7 @@ class PerformAction
         ]);
 
         return [
-            'message' => __('messages.owner_profile_privacy_was_updated_72d1c807dd'),
+            'message' => __('messages.owner_profile_privacy_was_updated'),
             'route' => 'profile.mia',
         ];
     }
@@ -720,7 +720,7 @@ class PerformAction
         $context = $this->profiles->reportContext($target);
 
         if ($context === null) {
-            throw ValidationException::withMessages(['target' => __('messages.this_profile_is_unavailable_to_report_7589c6a3b2')]);
+            throw ValidationException::withMessages(['target' => __('messages.this_profile_is_unavailable_to_report')]);
         }
 
         $this->state->addProfileReport([
@@ -731,7 +731,7 @@ class PerformAction
         ]);
 
         return [
-            'message' => __('messages.your_report_was_received_privately_b7efdcb0db'),
+            'message' => __('messages.your_report_was_received_privately'),
             'route' => $context['route'],
             'parameters' => $context['route_parameters'],
         ];
@@ -743,17 +743,17 @@ class PerformAction
     private function walkParticipant(string $target): array
     {
         return match ($target) {
-            'mochi' => ['pet' => 'Mochi', 'conversation' => 'ari', 'location' => __('messages.fields_park_north_gate_aaa68203b6')],
-            'juniper' => ['pet' => 'Juniper', 'conversation' => 'noah', 'location' => __('messages.sellwood_riverfront_trailhead_3506f7596e')],
-            'scout' => ['pet' => 'Scout', 'conversation' => '', 'location' => __('messages.laurelhurst_park_pond_c179091be7')],
-            default => throw ValidationException::withMessages(['target' => __('messages.choose_an_available_walking_companion_13f0448331')]),
+            'mochi' => ['pet' => 'Mochi', 'conversation' => 'ari', 'location' => __('messages.fields_park_north_gate')],
+            'juniper' => ['pet' => 'Juniper', 'conversation' => 'noah', 'location' => __('messages.sellwood_riverfront_trailhead')],
+            'scout' => ['pet' => 'Scout', 'conversation' => '', 'location' => __('messages.laurelhurst_park_pond')],
+            default => throw ValidationException::withMessages(['target' => __('messages.choose_an_available_walking_companion')]),
         };
     }
 
     private function requireTarget(string $target): void
     {
         if ($target === '') {
-            throw ValidationException::withMessages(['target' => __('messages.choose_an_item_first_eb58aed060')]);
+            throw ValidationException::withMessages(['target' => __('messages.choose_an_item_first')]);
         }
     }
 
@@ -765,7 +765,7 @@ class PerformAction
         $value = trim((string) ($data[$key] ?? ''));
 
         if ($value === '') {
-            throw ValidationException::withMessages([$key => __('messages.this_field_is_required_68cadcee19')]);
+            throw ValidationException::withMessages([$key => __('messages.this_field_is_required')]);
         }
 
         return $value;

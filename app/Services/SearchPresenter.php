@@ -28,6 +28,10 @@ use Illuminate\Support\Str;
 
 class SearchPresenter
 {
+    private const COORDINATION_COLLECTION_LIMIT = 100;
+
+    private const COORDINATION_HISTORY_LIMIT = 50;
+
     public function __construct(
         private readonly ProfilePresenter $profiles,
         private readonly ForumActor $actor,
@@ -79,7 +83,7 @@ class SearchPresenter
         $searchCases->through(fn (SearchCase $searchCase): array => $this->card($searchCase));
 
         return [
-            ...$this->page(__('messages.lost_found_217c655848'), 'lost-found'),
+            ...$this->page(__('messages.lost_found'), 'lost-found'),
             'search_cases' => $searchCases,
             'filters' => $filters,
             'types' => $this->taxonomy->types(),
@@ -134,7 +138,7 @@ class SearchPresenter
             : 'other';
 
         return [
-            ...$this->page(__('messages.report_a_missing_or_found_animal_d04bc18c2b'), 'lost-found'),
+            ...$this->page(__('messages.report_a_missing_or_found_animal'), 'lost-found'),
             'types' => $this->taxonomy->types(),
             'type_descriptions' => $this->taxonomy->typeDescriptions(),
             'species_options' => $speciesOptions,
@@ -289,7 +293,9 @@ class SearchPresenter
                     'photo_url', 'video_url', 'is_anonymous', 'risk_flags',
                     'verified_by_key', 'verified_at',
                 ])
-                ->latest('observed_at'),
+                ->latest('observed_at')
+                ->latest('id')
+                ->limit(self::COORDINATION_COLLECTION_LIMIT),
             'sectors' => fn ($query) => $query
                 ->select([
                     'id', 'search_case_id', 'code', 'label', 'status', 'priority',
@@ -297,7 +303,9 @@ class SearchPresenter
                     'checked_at',
                 ])
                 ->orderBy('priority')
-                ->orderBy('code'),
+                ->orderBy('code')
+                ->orderBy('id')
+                ->limit(self::COORDINATION_COLLECTION_LIMIT),
             'tasks' => fn ($query) => $query
                 ->select([
                     'id', 'search_case_id', 'search_sector_id', 'assignee_key',
@@ -306,27 +314,35 @@ class SearchPresenter
                     'completed_at', 'result', 'version',
                 ])
                 ->with(['sector' => fn ($sectors) => $sectors->select(['id', 'code', 'label'])])
-                ->orderBy('due_at'),
+                ->orderBy('due_at')
+                ->orderBy('id')
+                ->limit(self::COORDINATION_COLLECTION_LIMIT),
             'volunteers' => fn ($query) => $query
                 ->select([
                     'id', 'search_case_id', 'actor_key', 'display_name', 'role',
                     'capabilities', 'status', 'privacy_level', 'available_until',
                     'joined_at', 'last_check_in_at', 'location_expires_at',
                 ])
-                ->latest('joined_at'),
+                ->latest('joined_at')
+                ->latest('id')
+                ->limit(self::COORDINATION_COLLECTION_LIMIT),
             'updates' => fn ($query) => $query
                 ->select([
                     'id', 'search_case_id', 'author_name', 'type', 'visibility',
                     'title', 'body', 'public_area', 'occurred_at',
                 ])
-                ->latest('occurred_at'),
+                ->latest('occurred_at')
+                ->latest('id')
+                ->limit(self::COORDINATION_COLLECTION_LIMIT),
             'alerts' => fn ($query) => $query
                 ->select([
                     'id', 'search_case_id', 'kind', 'radius_km', 'region',
                     'channels', 'audiences', 'status', 'recipient_count',
                     'message', 'sent_at', 'stopped_at',
                 ])
-                ->latest('created_at'),
+                ->latest('created_at')
+                ->latest('id')
+                ->limit(self::COORDINATION_HISTORY_LIMIT),
             'events' => fn ($query) => $query
                 ->select([
                     'id', 'search_case_id', 'actor_user_id', 'event_type',
@@ -335,7 +351,8 @@ class SearchPresenter
                 ])
                 ->with(['actor' => fn ($actors) => $actors->select(['id', 'name', 'actor_key'])])
                 ->latest('created_at')
-                ->limit(50),
+                ->latest('id')
+                ->limit(self::COORDINATION_HISTORY_LIMIT),
             'contactRelays' => fn ($query) => $query
                 ->select([
                     'id', 'search_case_id', 'sender_user_id', 'recipient_user_id',
@@ -343,7 +360,8 @@ class SearchPresenter
                 ])
                 ->with(['sender' => fn ($senders) => $senders->select(['id', 'name', 'actor_key'])])
                 ->latest('created_at')
-                ->limit(50),
+                ->latest('id')
+                ->limit(self::COORDINATION_HISTORY_LIMIT),
         ]);
 
         return [
@@ -551,7 +569,7 @@ class SearchPresenter
     {
         return [
             'id' => $sighting->id,
-            'reporter_name' => $sighting->is_anonymous ? __('messages.anonymous_witness_ae85cd41aa') : $sighting->reporter_name,
+            'reporter_name' => $sighting->is_anonymous ? __('messages.anonymous_witness') : $sighting->reporter_name,
             'status' => $sighting->status->value,
             'status_label' => $sighting->status->label(),
             'public_area' => $sighting->public_area,
@@ -671,7 +689,7 @@ class SearchPresenter
     {
         return collect([[
             'kind' => 'last-seen',
-            'label' => __('messages.last_confirmed_location_78ced54d1e'),
+            'label' => __('messages.last_confirmed_location'),
             'area' => $searchCase->last_seen_area,
             'time' => $this->formatter->dateTime($searchCase->last_seen_at),
             'x' => $this->mapPosition($searchCase->public_longitude, $searchCase->id, 18),
@@ -692,13 +710,10 @@ class SearchPresenter
     /** @return array<int, array<string, mixed>> */
     private function nearbyOrganizations(): array
     {
-        return collect($this->places->all())
-            ->filter(fn (array $place): bool => in_array(
-                $place['primary_category'],
-                ['vet', 'emergency-vet', 'shelter'],
-                true,
-            ))
-            ->take(6)
+        return collect($this->places->forCategories(
+            ['vet', 'emergency-vet', 'shelter'],
+            6,
+        ))
             ->map(fn (array $place): array => [
                 'key' => $place['key'],
                 'name' => $place['name'],

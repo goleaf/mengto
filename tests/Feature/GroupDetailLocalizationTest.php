@@ -198,7 +198,7 @@ test('group detail chrome uses only the group localization domain and browser ra
 
     expect($browser)->toContain(
         'englishGroupDetailCopy',
-        'groupDetailCopy.length === 39',
+        'groupDetailCopy.length === 45',
         'English group detail chrome fallback remains.',
     );
 

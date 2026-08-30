@@ -51,7 +51,7 @@ final class CreateSearchCase
                 && $petProfileKey === null
             ) {
                 throw ValidationException::withMessages([
-                    'pet_profile_key' => __('messages.choose_the_pet_profile_for_a_missing_pet_search_b22b0b96d2'),
+                    'pet_profile_key' => __('messages.choose_the_pet_profile_for_a_missing_pet_search'),
                 ]);
             }
 
@@ -61,7 +61,7 @@ final class CreateSearchCase
 
             if ($activeKey !== null && SearchCase::query()->where('active_key', $activeKey)->exists()) {
                 throw ValidationException::withMessages([
-                    'pet_profile_key' => __('messages.this_pet_already_has_an_active_search_update_that_search_434f1d4269'),
+                    'pet_profile_key' => __('messages.this_pet_already_has_an_active_search_update_that_search_instead'),
                 ]);
             }
 
@@ -157,8 +157,8 @@ final class CreateSearchCase
                 'requires_taxonomy_review' => $taxonId === null
                     && in_array($type, [SearchCaseType::Sighted, SearchCaseType::Found], true),
                 'latest_update' => $publish
-                    ? __('messages.search_published_report_sightings_without_chasing_the_an_685599a0f1')
-                    : __('messages.draft_saved_for_safety_review_07e75d694f'),
+                    ? __('messages.search_published_report_sightings_without_chasing_the_animal')
+                    : __('messages.draft_saved_for_safety_review'),
             ]);
 
             SearchUpdate::query()->create([

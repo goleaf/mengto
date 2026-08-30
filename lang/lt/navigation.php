@@ -5,6 +5,7 @@ declare(strict_types=1);
 return [
     'primary_label' => 'Pagrindinė navigacija',
     'mobile_label' => 'Mobilioji navigacija',
+    'detail_label' => 'Naršymo kelias',
     'unavailable' => 'Navigacija nepasiekiama.',
     'utility' => [
         'brand_home' => 'PawCircle pradžia',

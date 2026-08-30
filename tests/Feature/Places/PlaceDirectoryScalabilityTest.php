@@ -2,12 +2,16 @@
 
 declare(strict_types=1);
 
-use AppModelsPlace;
-use AppModelsUser;
-use AppServicesPlaceIdentityNormalizer;
-use IlluminateDatabaseEloquentFactoriesSequence;
+use App\Models\Place;
+use App\Models\User;
+use App\Services\PlaceIdentityNormalizer;
+use Illuminate\Database\Eloquent\Factories\Sequence;
+use Illuminate\Database\Events\QueryExecuted;
+use Illuminate\Support\Facades\DB;
 
 test('the complete visible place result remains reachable beyond six hundred rows', function (): void {
+    fake()->seed(830);
+    $this->travelTo('2026-08-30 10:00:00');
     createScalableDirectoryPlaces($this->authenticatedUser, 613);
 
     $privateOwner = User::factory()->create();
@@ -18,12 +22,34 @@ test('the complete visible place result remains reachable beyond six hundred row
         'normalized_name' => 'scale directory private sentinel',
     ]);
 
+    $queries = [];
+    DB::listen(static function (QueryExecuted $query) use (&$queries): void {
+        $queries[] = $query->sql;
+    });
+    memory_reset_peak_usage();
+    $memoryBefore = memory_get_usage(true);
+    $startedAt = hrtime(true);
+
     $pageWithinFormerCatalogCeiling = $this->get(route('places.index', [
         'q' => 'Scale directory',
         'sort' => 'name',
         'view' => 'list',
         'page' => 84,
     ]));
+
+    $measurement = [
+        'queries' => count($queries),
+        'response_bytes' => strlen((string) $pageWithinFormerCatalogCeiling->getContent()),
+        'peak_memory_delta_bytes' => max(0, memory_get_peak_usage(true) - $memoryBefore),
+        'elapsed_ms' => round((hrtime(true) - $startedAt) / 1_000_000, 2),
+    ];
+
+    if (getenv('PERFORMANCE_REPORT') === '1') {
+        fwrite(STDERR, json_encode(['places_large_page' => $measurement], JSON_THROW_ON_ERROR).PHP_EOL);
+    }
+
+    expect($measurement['queries'])->toBeLessThanOrEqual(8)
+        ->and($measurement['response_bytes'])->toBeLessThanOrEqual(196_608);
 
     $pageWithinFormerCatalogCeiling
         ->assertOk()

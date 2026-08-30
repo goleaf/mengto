@@ -51,11 +51,11 @@ final class ForumCategoryCatalog
         try {
             $manifest = json_decode($contents, true, flags: JSON_THROW_ON_ERROR);
         } catch (JsonException $exception) {
-            throw new RuntimeException(__('messages.the_forum_category_manifest_is_invalid_json_36219f1d45'), previous: $exception);
+            throw new RuntimeException(__('messages.the_forum_category_manifest_is_invalid_json'), previous: $exception);
         }
 
         if (! is_array($manifest)) {
-            throw new RuntimeException(__('messages.the_forum_category_manifest_must_contain_all_44_root_cat_e313247f54'));
+            throw new RuntimeException(__('messages.the_forum_category_manifest_must_contain_all_44_root_categories'));
         }
 
         $this->assertValidManifest($manifest);
@@ -193,6 +193,6 @@ final class ForumCategoryCatalog
 
     private function invalidManifest(): never
     {
-        throw new RuntimeException(__('messages.the_forum_category_manifest_must_contain_all_44_root_cat_e313247f54'));
+        throw new RuntimeException(__('messages.the_forum_category_manifest_must_contain_all_44_root_categories'));
     }
 }

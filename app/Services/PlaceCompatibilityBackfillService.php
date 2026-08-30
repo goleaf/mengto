@@ -73,7 +73,7 @@ final class PlaceCompatibilityBackfillService
     }
 
     /**
-     * @param array<string, mixed> $payload
+     * @param  array<string, mixed>  $payload
      * @return list<array{type: string, place_key: string, legacy_key: string, payload: array<string, mixed>}>
      */
     private function contributions(array $payload): array
@@ -116,8 +116,8 @@ final class PlaceCompatibilityBackfillService
     }
 
     /**
-     * @param array{type: string, place_key: string, legacy_key: string, payload: array<string, mixed>} $contribution
-     * @param array{scanned_state_rows: int, scanned: int, imported: int, skipped: int, failed: int, already_processed: int} $counts
+     * @param  array{type: string, place_key: string, legacy_key: string, payload: array<string, mixed>}  $contribution
+     * @param  array{scanned_state_rows: int, scanned: int, imported: int, skipped: int, failed: int, already_processed: int}  $counts
      */
     private function process(UserDomainState $state, array $contribution, array &$counts): void
     {
@@ -184,7 +184,7 @@ final class PlaceCompatibilityBackfillService
             'original_value' => $payload['current_value'] ?? $place->getAttribute($field->placeColumn()),
             'original_version' => $place->lock_version,
             'proposed_value' => $payload['proposed_value'] ?? null,
-            'explanation' => (string) ($payload['explanation'] ?? $payload['evidence'] ?? 'Legacy compatibility contribution retained for review.'),
+            'explanation' => (string) ($payload['explanation'] ?? $payload['evidence'] ?? __('messages.legacy_compatibility_contribution_retained_for_review')),
             'evidence' => $payload['evidence'] ?? null,
             'source' => PlaceCorrectionSource::LegacyImport,
             'observed_at' => $this->timestamp($payload['visited_at'] ?? null),
@@ -227,7 +227,7 @@ final class PlaceCompatibilityBackfillService
             'affected_scope' => (string) ($payload['zone'] ?? 'general'),
             'source' => PlaceWarningSource::LegacyImport,
             'title' => (string) ($payload['title'] ?? 'Legacy place warning'),
-            'detail' => (string) ($payload['detail'] ?? $payload['body'] ?? 'Legacy warning retained for moderation review.'),
+            'detail' => (string) ($payload['detail'] ?? $payload['body'] ?? __('messages.legacy_warning_retained_for_moderation_review')),
             'evidence' => $payload['evidence'] ?? null,
             'status' => PlaceWarningStatus::NeedsReview,
             'expires_at' => $expiresAt,
@@ -264,7 +264,7 @@ final class PlaceCompatibilityBackfillService
             'rating_service' => ($payload['criterion'] ?? null) === 'service' ? $rating : null,
             'rating_accessibility' => ($payload['criterion'] ?? null) === 'accessibility' ? $rating : null,
             'rating_pet_friendliness' => null,
-            'body' => (string) ($payload['body'] ?? 'Legacy review retained for moderation review.'),
+            'body' => (string) ($payload['body'] ?? __('messages.legacy_review_retained_for_moderation_review')),
             'anonymity_mode' => ($payload['anonymous'] ?? false) ? PlaceReviewAnonymityMode::Anonymous : PlaceReviewAnonymityMode::Named,
             'moderation_status' => PlaceReviewModerationStatus::Pending,
             'current_version' => 1,
@@ -307,7 +307,7 @@ final class PlaceCompatibilityBackfillService
             'author_user_id' => $state->user_id,
             'stable_key' => 'legacy-question-'.substr($checksum, 0, 32),
             'idempotency_key' => substr($checksum, 0, 8).'-'.substr($checksum, 8, 4).'-4'.substr($checksum, 13, 3).'-a'.substr($checksum, 17, 3).'-'.substr($checksum, 20, 12),
-            'body' => (string) ($payload['body'] ?? $payload['question'] ?? 'Legacy question retained for moderation review.'),
+            'body' => (string) ($payload['body'] ?? $payload['question'] ?? __('messages.legacy_question_retained_for_moderation_review')),
             'status' => PlaceQuestionStatus::Open,
             'moderation_status' => 'pending',
             'created_at' => $createdAt,
@@ -369,7 +369,7 @@ final class PlaceCompatibilityBackfillService
     }
 
     /**
-     * @param array{type: string, place_key: string, legacy_key: string, payload: array<string, mixed>} $contribution
+     * @param  array{type: string, place_key: string, legacy_key: string, payload: array<string, mixed>}  $contribution
      */
     private function record(
         UserDomainState $state,

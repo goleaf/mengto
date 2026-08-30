@@ -1,11 +1,10 @@
 <section class="grid gap-6 border-t border-paw-line pt-8" aria-labelledby="forum-journal-timeline-heading">
-    <header class="forum-header">
-        <div class="forum-header__copy">
-            <p class="forum-header__eyebrow">{{ __('forum_journals.timeline.eyebrow') }}</p>
-            <h2 id="forum-journal-timeline-heading">{{ __('forum_journals.timeline.heading') }}</h2>
-            <p>{{ __('forum_journals.timeline.description') }}</p>
-        </div>
-    </header>
+    <x-section-heading
+        :eyebrow="__('forum_journals.timeline.eyebrow')"
+        :title="__('forum_journals.timeline.heading')"
+        :description="__('forum_journals.timeline.description')"
+        title-id="forum-journal-timeline-heading"
+    />
 
     <dl class="grid gap-3 border-y border-paw-line py-4 text-sm sm:grid-cols-2 lg:grid-cols-5">
         <div>
@@ -167,7 +166,7 @@
                 <article class="forum-form" wire:key="forum-journal-entry-{{ $entry['id'] }}">
                     <header class="flex flex-wrap items-start justify-between gap-3">
                         <div>
-                            <p class="forum-header__eyebrow">{{ $entry['kind'] }}</p>
+                            <p class="section-heading__eyebrow">{{ $entry['kind'] }}</p>
                             <h4 class="text-lg">{{ $entry['title'] }}</h4>
                             <p class="text-sm text-paw-muted">
                                 {{ __('forum_journals.labels.entry_by', ['name' => $entry['author_name'], 'date' => $entry['occurred_at']]) }}
@@ -199,6 +198,12 @@
                             @endforelse
                         </dl>
                     @endif
+                    @if ($entry['measurement_count'] > count($entry['measurements']))
+                        <button type="button" class="forum-button min-h-11" wire:click="loadMoreMeasurements" wire:loading.attr="disabled" wire:target="loadMoreMeasurements">
+                            <x-ui-icon name="chevrons-down" />
+                            {{ __('ui.load_more') }} ({{ count($entry['measurements']) }} / {{ $entry['measurement_count'] }})
+                        </button>
+                    @endif
 
                     @if ($entry['media'] !== [])
                         <div class="grid gap-3 sm:grid-cols-2">
@@ -220,6 +225,12 @@
                             @endforelse
                         </div>
                     @endif
+                    @if ($entry['media_count'] > count($entry['media']))
+                        <button type="button" class="forum-button min-h-11" wire:click="loadMoreMedia" wire:loading.attr="disabled" wire:target="loadMoreMedia">
+                            <x-ui-icon name="chevrons-down" />
+                            {{ __('ui.load_more') }} ({{ count($entry['media']) }} / {{ $entry['media_count'] }})
+                        </button>
+                    @endif
 
                     <section aria-label="{{ __('forum_journals.labels.entry_comments', ['title' => $entry['title']]) }}">
                         <div class="divide-y divide-paw-line border-y border-paw-line">
@@ -236,6 +247,12 @@
                                 <p class="py-3 text-paw-muted">{{ __('forum_journals.empty.comments') }}</p>
                             @endforelse
                         </div>
+                        @if ($entry['comment_count'] > count($entry['comments']))
+                            <button type="button" class="forum-button mt-3 min-h-11" wire:click="loadMoreComments" wire:loading.attr="disabled" wire:target="loadMoreComments">
+                                <x-ui-icon name="chevrons-down" />
+                                {{ __('ui.load_more') }} ({{ count($entry['comments']) }} / {{ $entry['comment_count'] }})
+                            </button>
+                        @endif
                     </section>
 
                     <div class="flex flex-wrap gap-2">
@@ -338,6 +355,7 @@
                         <p class="py-3">{{ __('forum_journals.empty.collaborators') }}</p>
                     @endforelse
                 </div>
+                <div>{{ $this->collaborators->links() }}</div>
                 <form wire:submit="grantCollaborator" class="grid gap-4 md:grid-cols-[minmax(0,1fr)_minmax(10rem,14rem)_auto]">
                     <label class="forum-form__field">
                         <span>{{ __('forum_journals.fields.collaborator_email') }}</span>

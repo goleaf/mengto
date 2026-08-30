@@ -49,8 +49,11 @@ use Database\Seeders\ForumJournalDemoSeeder;
 use Database\Seeders\ForumSystemSeeder;
 use Database\Seeders\ForumTopicTypeSeeder;
 use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Database\Eloquent\Factories\Sequence;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Database\Events\QueryExecuted;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
@@ -565,6 +568,14 @@ test('journal export is private bounded and omits storage and idempotency secret
         'A private export comment.',
         'journal-export-comment-0000001',
     );
+    ForumComment::factory()->create([
+        'topic_id' => $journal->forum_topic_id,
+        'forum_journal_entry_id' => $entry->id,
+        'author_id' => $owner->id,
+        'body' => 'An earlier private export comment.',
+        'status' => 'published',
+        'created_at' => now()->subDay(),
+    ]);
     $media = ForumJournalMedia::factory()
         ->for($entry, 'entry')
         ->for($owner, 'uploadedBy')
@@ -586,7 +597,11 @@ test('journal export is private bounded and omits storage and idempotency secret
 
     expect($payload['journal']['stable_key'])->toBe($journal->stable_key)
         ->and($payload['entries'])->toHaveCount(1)
-        ->and($payload['entries'][0]['comments'])->toHaveCount(1)
+        ->and($payload['entries'][0]['comments'])->toHaveCount(2)
+        ->and(array_column($payload['entries'][0]['comments'], 'body'))->toBe([
+            'An earlier private export comment.',
+            'A private export comment.',
+        ])
         ->and($payload['entries'][0]['media'][0]['stable_key'])->toBe($media->stable_key)
         ->and($content)->not->toContain('server-only.jpg')
         ->and($content)->not->toContain('journal-export-media-secret-001')
@@ -594,6 +609,61 @@ test('journal export is private bounded and omits storage and idempotency secret
         ->and(fn () => app(PrepareForumJournalExport::class)
             ->handle($outsider, $journal))
         ->toThrow(AuthorizationException::class);
+});
+
+test('journal export streams expanded entries with a constant query budget', function (): void {
+    fake()->seed(830);
+    $this->travelTo('2026-08-30 10:00:00');
+    $owner = $this->authenticatedUser;
+    $journal = forumJournalForUser($owner, ForumVisibility::Private);
+    $entries = ForumJournalEntry::factory()
+        ->count(125)
+        ->forJournal($journal)
+        ->by($owner)
+        ->create();
+    ForumComment::factory()
+        ->count(125)
+        ->state(new Sequence(
+            ...$entries->map(fn (ForumJournalEntry $entry): array => [
+                'topic_id' => $journal->forum_topic_id,
+                'forum_journal_entry_id' => $entry->id,
+                'author_id' => $owner->id,
+                'status' => 'published',
+            ])->all(),
+        ))
+        ->create();
+    $response = app(PrepareForumJournalExport::class)
+        ->handle($owner, $journal->refresh());
+    $queryCount = 0;
+    DB::listen(static function (QueryExecuted $query) use (&$queryCount): void {
+        $queryCount++;
+    });
+    memory_reset_peak_usage();
+    $memoryBefore = memory_get_usage(true);
+    $startedAt = hrtime(true);
+
+    ob_start();
+    $response->sendContent();
+    $content = (string) ob_get_clean();
+
+    $elapsedMs = round((hrtime(true) - $startedAt) / 1_000_000, 2);
+    $memoryDelta = max(0, memory_get_peak_usage(true) - $memoryBefore);
+    $payload = json_decode($content, true, flags: JSON_THROW_ON_ERROR);
+
+    if (getenv('PERFORMANCE_REPORT') === '1') {
+        fwrite(STDERR, json_encode([
+            'path' => 'forum.journal.export',
+            'fixture_entries' => 125,
+            'queries' => $queryCount,
+            'response_bytes' => strlen($content),
+            'peak_memory_delta_bytes' => $memoryDelta,
+            'elapsed_ms' => $elapsedMs,
+        ], JSON_THROW_ON_ERROR).PHP_EOL);
+    }
+
+    expect($payload['entries'])->toHaveCount(125)
+        ->and($queryCount)->toBeLessThanOrEqual(9)
+        ->and(strlen($content))->toBeLessThanOrEqual(262_144);
 });
 
 test('journal http routes authenticate authorize and return protected responses', function () {
@@ -705,6 +775,78 @@ test('livewire timeline reauthorizes direct mutations and keeps locked ids immut
     Livewire::actingAs($outsider)
         ->test(ForumJournalTimeline::class, ['journalId' => $journal->id])
         ->assertForbidden();
+});
+
+test('journal timeline bounds child activity for an expanded deterministic entry', function (): void {
+    fake()->seed(830);
+    $this->travelTo('2026-08-30 10:00:00');
+    $owner = $this->authenticatedUser;
+    $journal = forumJournalForUser($owner, ForumVisibility::Private);
+    $entry = ForumJournalEntry::factory()->forJournal($journal)->by($owner)->create();
+    ForumComment::factory()->count(75)->create([
+        'topic_id' => $journal->forum_topic_id,
+        'forum_journal_entry_id' => $entry->id,
+        'author_id' => $owner->id,
+        'status' => 'published',
+    ]);
+    memory_reset_peak_usage();
+    $memoryBefore = memory_get_usage(true);
+    $startedAt = hrtime(true);
+
+    $component = Livewire::actingAs($owner)
+        ->test(ForumJournalTimeline::class, ['journalId' => $journal->id]);
+    $entries = $component->instance()->entries();
+
+    $elapsedMs = round((hrtime(true) - $startedAt) / 1_000_000, 2);
+    $memoryDelta = max(0, memory_get_peak_usage(true) - $memoryBefore);
+    $payloadBytes = strlen(json_encode($entries->items(), JSON_THROW_ON_ERROR));
+
+    if (getenv('PERFORMANCE_REPORT') === '1') {
+        fwrite(STDERR, json_encode([
+            'path' => 'forum.journal.timeline',
+            'fixture_comments' => 75,
+            'payload_bytes' => $payloadBytes,
+            'peak_memory_delta_bytes' => $memoryDelta,
+            'elapsed_ms' => $elapsedMs,
+        ], JSON_THROW_ON_ERROR).PHP_EOL);
+    }
+
+    expect($entries->items()[0]['comments'])->toHaveCount(50)
+        ->and($entries->items()[0]['comment_count'])->toBe(75)
+        ->and($payloadBytes)->toBeLessThanOrEqual(131_072);
+
+    $component->call('loadMoreComments')->assertHasNoErrors();
+    $expandedEntries = $component->instance()->entries();
+
+    expect($expandedEntries->items()[0]['comments'])->toHaveCount(75)
+        ->and($expandedEntries->items()[0]['comment_count'])->toBe(75);
+});
+
+test('every active journal collaborator remains reachable through bounded pagination', function (): void {
+    $owner = $this->authenticatedUser;
+    $journal = forumJournalForUser($owner, ForumVisibility::Private);
+    $users = User::factory()->count(101)->create();
+
+    ForumJournalCollaborator::factory()
+        ->count(101)
+        ->for($journal, 'journal')
+        ->state(new Sequence(
+            ...$users->map(static fn (User $user): array => ['user_id' => $user->id])->all(),
+        ))
+        ->create();
+
+    $component = Livewire::actingAs($owner)
+        ->test(ForumJournalTimeline::class, ['journalId' => $journal->id]);
+    $firstPage = $component->instance()->collaborators();
+
+    expect($firstPage->total())->toBe(101)
+        ->and($firstPage->items())->toHaveCount(25);
+
+    $component->call('setPage', 5, 'collaboratorPage');
+    $lastPage = $component->instance()->collaborators();
+
+    expect($lastPage->currentPage())->toBe(5)
+        ->and($lastPage->items())->toHaveCount(1);
 });
 
 test('livewire entry form validates future boundaries after timezone normalization', function () {

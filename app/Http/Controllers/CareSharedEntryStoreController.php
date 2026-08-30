@@ -40,13 +40,13 @@ class CareSharedEntryStoreController extends Controller
                     || filled($data['route_summary'] ?? null)
                 )) {
                     throw ValidationException::withMessages([
-                        'location_label' => __('messages.this_access_link_does_not_allow_location_details_c4899af7a0'),
+                        'location_label' => __('messages.this_access_link_does_not_allow_location_details'),
                     ]);
                 }
 
                 if (! $grant->allow_media && isset($data['media'])) {
                     throw ValidationException::withMessages([
-                        'media' => __('messages.this_access_link_does_not_allow_media_uploads_9ff792ddc7'),
+                        'media' => __('messages.this_access_link_does_not_allow_media_uploads'),
                     ]);
                 }
 
@@ -69,7 +69,7 @@ class CareSharedEntryStoreController extends Controller
             false,
             false,
         );
-        $message = __('messages.care_report_added_with_your_name_and_contributor_role_2ad163127b');
+        $message = __('messages.care_report_added_with_your_name_and_contributor_role');
 
         if ($request->expectsJson()) {
             return response()->json([

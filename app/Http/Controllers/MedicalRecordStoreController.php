@@ -18,6 +18,6 @@ class MedicalRecordStoreController extends Controller
         $record = $create->handle($request->validated());
 
         return to_route('medical-records.show', $record)
-            ->with('feedback', __('messages.private_medical_record_created_nothing_was_added_to_the__5e3864e478'));
+            ->with('feedback', __('messages.private_medical_record_created_nothing_was_added_to_the_public_pet_profile'));
     }
 }

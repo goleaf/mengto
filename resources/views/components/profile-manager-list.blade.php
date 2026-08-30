@@ -18,7 +18,7 @@
     @empty
         <x-empty-state
             icon="users-round"
-            title="{{ __('ui.no_managers_listed_1b15b7009b') }}"
+            title="{{ __('ui.no_managers_listed') }}"
             compact
         />
     @endforelse

@@ -22,13 +22,13 @@ class CareTaskCompleteController extends Controller
 
         if ($careTask->care_journal_id !== $careJournal->id) {
             throw ValidationException::withMessages([
-                'task' => __('messages.this_task_does_not_belong_to_the_selected_care_journal_62cdb67e40'),
+                'task' => __('messages.this_task_does_not_belong_to_the_selected_care_journal'),
             ]);
         }
 
         $complete->handle($careJournal, $careTask, $request->validated());
 
         return to_route('care-journals.show', $careJournal)
-            ->with('feedback', __('messages.task_outcome_recorded_once_in_the_care_timeline_fd2d2831a3'));
+            ->with('feedback', __('messages.task_outcome_recorded_once_in_the_care_timeline'));
     }
 }

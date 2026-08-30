@@ -100,7 +100,7 @@ final class ForumGroupActivityForm extends Form
         $endsAt = $this->parseLocalDateTime((string) $validated['endsAt'], $timezone);
 
         if ($startsAt === null || $endsAt === null) {
-            throw new \LogicException(__('messages.validated_group_activity_date_times_could_not_be_parsed_ebbb17579a'));
+            throw new \LogicException(__('messages.validated_group_activity_date_times_could_not_be_parsed'));
         }
 
         return new CreateForumGroupActivityData(

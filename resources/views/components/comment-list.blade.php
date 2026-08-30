@@ -6,8 +6,8 @@
     @empty
         <x-empty-state
             icon="messages-square"
-            title="{{ __('ui.start_this_conversation_71cd4bdb26') }}"
-            description="{{ __('ui.add_a_useful_care_note_a_kind_question_70928ec16b') }}"
+            title="{{ __('ui.start_this_conversation') }}"
+            description="{{ __('ui.add_a_useful_care_note_a_kind_question_or_a_local_recommendation') }}"
             compact
             role="listitem"
         />

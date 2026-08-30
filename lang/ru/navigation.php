@@ -5,6 +5,7 @@ declare(strict_types=1);
 return [
     'primary_label' => 'Основная навигация',
     'mobile_label' => 'Мобильная навигация',
+    'detail_label' => 'Навигационная цепочка',
     'unavailable' => 'Навигация недоступна.',
     'utility' => [
         'brand_home' => 'Главная PawCircle',

@@ -19,6 +19,6 @@ class CareAccessRevokeController extends Controller
         $revoke->handle($careJournal, $careAccessGrant);
 
         return to_route('care-journals.manage', $careJournal)
-            ->with('feedback', __('messages.temporary_care_access_revoked_immediately_a4a20cc90e'));
+            ->with('feedback', __('messages.temporary_care_access_revoked_immediately'));
     }
 }

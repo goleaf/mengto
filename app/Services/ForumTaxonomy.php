@@ -192,8 +192,8 @@ final readonly class ForumTaxonomy
     public function pets(): array
     {
         return [
-            'scout' => ['name' => __('messages.scout_8a1db462be'), 'species' => __('messages.dog_0eb129bf94'), 'age' => __('messages.4_years_cfd73a0bc4')],
-            'nori' => ['name' => __('messages.nori_a64203ba20'), 'species' => __('messages.cat_48735c4fae'), 'age' => __('messages.2_years_7dab2372ff')],
+            'scout' => ['name' => __('messages.scout'), 'species' => __('messages.dog'), 'age' => __('messages.4_years')],
+            'nori' => ['name' => __('messages.nori'), 'species' => __('messages.cat'), 'age' => __('messages.2_years')],
         ];
     }
 

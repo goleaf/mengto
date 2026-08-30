@@ -6,6 +6,7 @@
     'tone' => 'leaf',
     'level' => 2,
     'icon' => null,
+    'description' => null,
 ])
 
 <div {{ $attributes->class('section-heading') }}>
@@ -51,5 +52,8 @@
                 {{ $title }}
             @endif
         </h2>
+    @endif
+    @if ($description)
+        <p class="section-heading__description">{{ $description }}</p>
     @endif
 </div>

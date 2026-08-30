@@ -1,13 +1,17 @@
 # Factories And Seeding
 
-## Baseline
+## Current Gate State
 
-All 204 first-party Eloquent models have a model factory and are guarded by an
-architecture test. The byte-generated `docs/seeding-coverage.md` currently
-records the explicit named helpers whose factories are exercised by the
-database suite. Generic enum substitution is deliberately not treated as a
-valid domain state: lifecycle variants require invariant-aware named helpers
-and focused assertions. Regenerate the matrix with
+Factory and representative-seed completeness is currently **not verified**.
+The final release audit discovers 262 persistent model classes;
+`generate-seeding-coverage.php --check` reports 25 missing factories, and the
+database-domain audit reports 51 models absent from the representative
+manifest. The committed `docs/seeding-coverage.md` and older 204-model counts
+are therefore historical evidence, not current completion proof.
+
+Generic enum substitution is deliberately not treated as a valid domain
+state: lifecycle variants require invariant-aware named helpers and focused
+assertions. Regenerate the matrix with
 `php scripts/generate-seeding-coverage.php --write` and require exact byte
 parity with `php scripts/generate-seeding-coverage.php --check`. Running the
 generator without an option prints the prospective document to standard output
@@ -32,10 +36,11 @@ that identity as verified so repeat seeding cannot recreate an active pending
 account. This timestamp is an operational bypass marker, not independent proof
 of email ownership.
 
-## Complete Representative Dataset
+## Historical Representative Dataset Contract
 
-On a clean allowed database, `DatabaseSeeder` creates exactly ten users and at
-least ten records for each of the 204 persistent application models. The first
+The earlier 204-model checkpoint recorded that `DatabaseSeeder` created
+exactly ten users and at least ten records for each model then in its manifest.
+That checkpoint does not cover the newly discovered models. The first
 user is the deterministic `user@example.com` identity with actor key
 `mia-carter`; it has verified, localized account data and connected pet,
 social, organization, forum, mentorship, adoption, lost-pet, medical, care,
@@ -117,6 +122,11 @@ place/venue examples through production Actions. `PlaceDemoSeeder` then
 synchronizes the twelve localized directory fixtures by stable key without
 replacing IDs or user-created places. Repeated seeding preserves the canonical
 creation idempotency keys used by event/location authority workflows.
+`DiscoveryDemoSeeder` creates its publications through the production Action.
+The Mia-authored `page-identity-demo-post` has a stable route key and
+idempotency key so the disposable authenticated browser matrix can verify a
+real authorized content-detail deep link even when representative social
+blocks correctly remove other actors' publications from Mia's feed.
 
 ## Production Safeguards
 
@@ -166,7 +176,7 @@ The detailed per-model matrix is generated and maintained in
 
 - `FactoryAndSeederTest` persists every default factory and every supported
   zero-argument helper/state;
-- `CompleteDatabaseSeederTest` reconciles the 204-model manifest with runtime
+- `CompleteDatabaseSeederTest` must reconcile the manifest with current runtime
   discovery, enforces the 10-record minimum and graph budgets, checks the
   deterministic user and major relations, verifies pivot metadata and private
   files, derives orphan checks from every schema foreign key, and proves a

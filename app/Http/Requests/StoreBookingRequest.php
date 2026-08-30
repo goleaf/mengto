@@ -43,7 +43,7 @@ class StoreBookingRequest extends FormRequest
                 if ($this->boolean('urgent_signs')) {
                     $validator->errors()->add(
                         'urgent_signs',
-                        __('messages.do_not_wait_for_a_planned_consultation_call_an_emergency_3dc5f8be63'),
+                        __('messages.do_not_wait_for_a_planned_consultation_call_an_emergency_clinic_and_confirm_it_can_receive_your_pet'),
                     );
                 }
             },

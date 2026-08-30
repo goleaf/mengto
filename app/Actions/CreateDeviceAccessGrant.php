@@ -26,13 +26,13 @@ class CreateDeviceAccessGrant
 
             if ($allowCommands && ! in_array('control', $permissions, true)) {
                 throw ValidationException::withMessages([
-                    'permissions' => __('messages.command_access_requires_the_control_permission_e2e74ae6f1'),
+                    'permissions' => __('messages.command_access_requires_the_control_permission'),
                 ]);
             }
 
             if (($data['allow_audio'] ?? false) && ! ($data['allow_camera'] ?? false)) {
                 throw ValidationException::withMessages([
-                    'allow_audio' => __('messages.audio_cannot_be_shared_without_camera_access_2a2b75e880'),
+                    'allow_audio' => __('messages.audio_cannot_be_shared_without_camera_access'),
                 ]);
             }
 

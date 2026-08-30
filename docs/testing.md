@@ -36,6 +36,20 @@ vendor/bin/pint --dirty
 PAO_DISABLE=1 vendor/bin/phpstan analyse --memory-limit=1G
 ```
 
+Translation-key changes additionally run:
+
+```bash
+php scripts/run-tests.php --compact tests/Unit/Support/ReadableTranslationKeyTest.php tests/Unit/Support/PhpMessageLiteralClassifierTest.php tests/Feature/LocalizationTest.php tests/Feature/PageIdentityStandardizationTest.php
+php scripts/run-tests.php --compact --filter='translation keys never use generated digest suffixes|readable translation key migration remains clean' tests/Feature/ArchitectureComplianceTest.php
+php scripts/localize-blade-literals.php --check
+php scripts/localize-php-messages.php --check
+php scripts/migrate-readable-translation-keys.php --check
+```
+
+The migration check and architecture ratchet must report zero catalogue keys
+and zero references ending in a generated ten-hex digest. A new normalized
+collision is resolved with a reviewed semantic key, never an automatic suffix.
+
 Email-verification changes must include
 `tests/Feature/Auth/ConfigurableEmailVerificationTest.php` together with the
 authentication and central portal-boundary suites. `phpunit.xml` and the
@@ -939,7 +953,7 @@ The complete suite total and scoped publication evidence are maintained in
 component contract, exact media/title destination equality for pets, groups,
 neighbors, meetups, discovery, profiles, experts, bookings, messages, and
 marketplace orders, and source guards against nested interactive content. Its
-fixture classifies all 74 first-party media-bearing Blade templates, including
+fixture classifies all 71 first-party media-bearing Blade templates, including
 viewer, current-page, action, decorative, protected-download, composite, and
 passive exclusions.
 
@@ -1315,6 +1329,33 @@ Observed package evidence on 2026-08-04:
 
 The reusable browser command is
 `npm run test:browser:page-identity`.
+
+## Measured Repository Performance Audit
+
+The 2026-08-30 audit adds deterministic regression coverage for the complete
+Place result set, private lost/found coordination, stable care/medical/device
+pagination, seven measured indexes and SQLite query plans, maximum-valid
+Livewire snapshots, cache audience/privacy/failure behavior, request
+correlation and slow streams, bounded forum-journal child projections, and a
+constant-query full journal export.
+
+Run the observed-value probes with:
+
+    PERFORMANCE_REPORT=1 php artisan test --compact \
+      tests/Feature/Places/PlaceDirectoryScalabilityTest.php \
+      tests/Feature/SearchCoordinationPerformanceTest.php \
+      tests/Feature/LivewirePayloadBudgetTest.php \
+      tests/Feature/Forum/ForumJournalWorkflowTest.php
+
+The focused post-fix measurement run reported Place at 4 queries/99,628 bytes,
+lost/found coordination at 10 queries/77,051 bytes, journal export at 4
+queries/90,737 bytes, journal timeline at 8,083 bytes, and ManagePetProfile at
+58,579 initial HTML/18,406 snapshot/58,161 update bytes. The combined focused
+cache, index, stable-pagination, payload, observability, forum-tree, timeline,
+and export selection passed 22 tests and 224 assertions; the complementary
+Place/Livewire/index/cache/observability selection passed 22 tests and 232
+assertions. These are focused results, not a substitute for the final serial
+suite.
 
 ## Place Submission Verification
 

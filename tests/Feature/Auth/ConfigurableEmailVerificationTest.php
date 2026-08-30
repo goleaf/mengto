@@ -90,7 +90,7 @@ test('registration immediately verifies the account without sending mail when di
         ->set('form.password_confirmation', 'Secure-Paw-2026')
         ->call('register')
         ->assertHasNoErrors()
-        ->assertRedirect(route('home'));
+        ->assertRedirect(route('onboarding.show'));
 
     $user = User::query()->where('email', 'lina@example.test')->firstOrFail();
 

@@ -171,9 +171,11 @@ test('owner profile blade consumes prepared copy without generic translation dom
     expect(File::get(base_path('scripts/accessibility-browser-check.mjs')))
         ->toContain(
             'englishOwnerProfileCopy',
-            'ownerProfileCopy.length === 54',
+            'ownerProfileCopy.length === 55',
             'English owner profile body fallback remains.',
             'page-identity-owner-profile-',
+            'data-owner-profile-focus-target',
+            "matches(':focus-visible')",
         );
 });
 

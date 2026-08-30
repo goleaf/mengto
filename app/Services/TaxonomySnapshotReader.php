@@ -20,7 +20,7 @@ final class TaxonomySnapshotReader
         $filesystem = Storage::disk($disk);
 
         if (! $filesystem->exists($path)) {
-            throw new InvalidArgumentException(__('messages.the_taxonomy_snapshot_does_not_exist_on_the_configured_d_f88553b64d'));
+            throw new InvalidArgumentException(__('messages.the_taxonomy_snapshot_does_not_exist_on_the_configured_disk'));
         }
 
         $delimiter = str_ends_with(mb_strtolower($path), '.tsv')
@@ -57,7 +57,7 @@ final class TaxonomySnapshotReader
         }
 
         if ($rowCount === 0) {
-            throw new InvalidArgumentException(__('messages.the_taxonomy_snapshot_contains_no_data_rows_115b837cf0'));
+            throw new InvalidArgumentException(__('messages.the_taxonomy_snapshot_contains_no_data_rows'));
         }
 
         return new TaxonomySnapshotAnalysis(
@@ -81,7 +81,7 @@ final class TaxonomySnapshotReader
         $columnMap = $metadata['column_map'] ?? null;
 
         if ($disk === '' || $path === '' || ! is_array($columnMap)) {
-            throw new RuntimeException(__('messages.the_taxonomy_import_has_no_valid_snapshot_metadata_b246d42c2c'));
+            throw new RuntimeException(__('messages.the_taxonomy_import_has_no_valid_snapshot_metadata'));
         }
 
         $this->assertSafePath($path);
@@ -93,7 +93,7 @@ final class TaxonomySnapshotReader
         try {
             if ($offset > 0) {
                 if (fseek($stream, $offset) !== 0) {
-                    throw new RuntimeException(__('messages.the_taxonomy_snapshot_stream_cannot_resume_at_the_saved__bbb2c6fe6d'));
+                    throw new RuntimeException(__('messages.the_taxonomy_snapshot_stream_cannot_resume_at_the_saved_offset'));
                 }
             } else {
                 fgetcsv($stream, null, $delimiter, '"', '');
@@ -129,7 +129,7 @@ final class TaxonomySnapshotReader
             $nextOffset = ftell($stream);
 
             if ($nextOffset === false) {
-                throw new RuntimeException(__('messages.the_taxonomy_snapshot_stream_position_could_not_be_read_d1cbefca75'));
+                throw new RuntimeException(__('messages.the_taxonomy_snapshot_stream_position_could_not_be_read'));
             }
 
             $isComplete = feof($stream);
@@ -158,7 +158,7 @@ final class TaxonomySnapshotReader
             || $normalized === '..'
             || ! str_starts_with($normalized, $directory.'/')
         ) {
-            throw new InvalidArgumentException(__('messages.taxonomy_snapshots_must_use_a_relative_path_inside_the_c_c50d8fce0a'));
+            throw new InvalidArgumentException(__('messages.taxonomy_snapshots_must_use_a_relative_path_inside_the_configured_snapshot_directory'));
         }
     }
 
@@ -171,7 +171,7 @@ final class TaxonomySnapshotReader
         $headers = fgetcsv($stream, null, $delimiter, '"', '');
 
         if (! is_array($headers)) {
-            throw new InvalidArgumentException(__('messages.the_taxonomy_snapshot_header_is_missing_fb4a079058'));
+            throw new InvalidArgumentException(__('messages.the_taxonomy_snapshot_header_is_missing'));
         }
 
         return array_values(array_map(
@@ -244,7 +244,7 @@ final class TaxonomySnapshotReader
         $stream = $filesystem->readStream($path);
 
         if (! is_resource($stream)) {
-            throw new RuntimeException(__('messages.the_taxonomy_snapshot_could_not_be_opened_4eeadbaac0'));
+            throw new RuntimeException(__('messages.the_taxonomy_snapshot_could_not_be_opened'));
         }
 
         return $stream;

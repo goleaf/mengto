@@ -58,7 +58,9 @@ final readonly class UpdateForumCategorySettings
         }, 3);
 
         foreach (config('platform.supported_locales', ['en']) as $supportedLocale) {
-            $this->cache->forget(ForumCategoryTree::CACHE_KEY_PREFIX.$supportedLocale);
+            foreach (ForumCategoryTree::cacheKeysForLocale($supportedLocale) as $key) {
+                $this->cache->forget($key);
+            }
         }
 
         return $category;

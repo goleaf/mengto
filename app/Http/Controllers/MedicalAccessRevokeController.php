@@ -19,6 +19,6 @@ class MedicalAccessRevokeController extends Controller
         $revoke->handle($medicalRecord, $medicalAccessGrant);
 
         return to_route('medical-records.manage', $medicalRecord)
-            ->with('feedback', __('messages.access_revoked_cached_portal_views_and_the_temporary_lin_eabd46297d'));
+            ->with('feedback', __('messages.access_revoked_cached_portal_views_and_the_temporary_link_can_no_longer_open_the_record'));
     }
 }

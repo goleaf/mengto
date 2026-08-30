@@ -29,7 +29,7 @@ class CreateDeviceAutomation
         return DB::transaction(function () use ($device, $data): DeviceAutomation {
             if (in_array($data['action_type'], self::FORBIDDEN_ACTIONS, true)) {
                 throw ValidationException::withMessages([
-                    'action_type' => __('messages.this_automatic_action_is_prohibited_9aceea4dba'),
+                    'action_type' => __('messages.this_automatic_action_is_prohibited'),
                 ]);
             }
 
@@ -49,7 +49,7 @@ class CreateDeviceAutomation
 
             if ($duplicate !== null) {
                 throw ValidationException::withMessages([
-                    'action_type' => __('messages.a_rule_with_the_same_trigger_and_action_already_exists_90ba15948f'),
+                    'action_type' => __('messages.a_rule_with_the_same_trigger_and_action_already_exists'),
                 ]);
             }
 
@@ -103,7 +103,7 @@ class CreateDeviceAutomation
 
         if (! $valid) {
             throw ValidationException::withMessages([
-                'action_type' => __('messages.this_automatic_action_does_not_match_the_device_type_ae326608bf'),
+                'action_type' => __('messages.this_automatic_action_does_not_match_the_device_type'),
             ]);
         }
     }

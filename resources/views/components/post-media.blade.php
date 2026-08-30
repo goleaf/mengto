@@ -6,8 +6,8 @@
             <summary>
                 <x-ui-icon name="eye-off" />
                 <span>
-                    <strong>{{ __('ui.sensitive_media_e6a7a0b7b8') }}</strong>
-                    {{ __('ui.open_only_when_you_are_ready_d27631ff6e') }}
+                    <strong>{{ __('ui.sensitive_media') }}</strong>
+                    {{ __('ui.open_only_when_you_are_ready') }}
                 </span>
             </summary>
             <x-post-media-gallery :media="$post['media']" :eager="$eager" />

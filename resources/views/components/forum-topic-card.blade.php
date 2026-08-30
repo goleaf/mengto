@@ -22,25 +22,25 @@
     <p class="forum-topic-card__excerpt">{{ $topic['excerpt'] }}</p>
 
     @if ($topic['tags'] !== [])
-        <div class="forum-topic-card__tags" aria-label="{{ __('ui.topic_tags_e3f08dc56f') }}">
+        <div class="forum-topic-card__tags" aria-label="{{ __('ui.topic_tags') }}">
             @forelse ($topic['tags'] as $tag)
                 <span class="forum-topic-card__tag">{{ $tag }}</span>
             @empty
-                <span class="sr-only">{{ __('ui.no_topic_tags_f441952188') }}</span>
+                <span class="sr-only">{{ __('ui.no_topic_tags') }}</span>
             @endforelse
         </div>
     @endif
 
-    <div class="forum-topic-card__facts" aria-label="{{ __('ui.topic_activity_e7e514dfe2') }}">
+    <div class="forum-topic-card__facts" aria-label="{{ __('ui.topic_activity') }}">
         <span><x-ui-icon name="message-square" /> {{ trans_choice('presentation.answers_count', $topic['answers_count'], ['count' => $topic['answers_count']]) }}</span>
         <span><x-ui-icon name="messages-square" /> {{ trans_choice('presentation.comments_count', $topic['comments_count'], ['count' => $topic['comments_count']]) }}</span>
         <span><x-ui-icon name="thumbs-up" /> {{ __('presentation.helpful_count', ['count' => $topic['helpful_score']]) }}</span>
         <span><x-ui-icon name="eye" /> {{ $topic['view_count'] }}</span>
         @if ($topic['has_expert_answer'])
-            <span class="forum-badge"><x-ui-icon name="badge-check" /> {{ __('ui.expert_reply_6da9cb7be8') }}</span>
+            <span class="forum-badge"><x-ui-icon name="badge-check" /> {{ __('ui.expert_reply') }}</span>
         @endif
         @if ($topic['has_accepted_answer'])
-            <span class="forum-badge"><x-ui-icon name="circle-check-big" /> {{ __('ui.accepted_a00fb0c507') }}</span>
+            <span class="forum-badge"><x-ui-icon name="circle-check-big" /> {{ __('ui.accepted') }}</span>
         @endif
     </div>
 
@@ -50,7 +50,7 @@
             <span>
                 <strong>{{ $topic['author_name'] }}</strong>
                 <span>
-                    {{ $topic['pet_name'] ? __('ui.with_b708724a23').' '.$topic['pet_name'].' / ' : '' }}{{ $topic['activity_label'] }}
+                    {{ $topic['pet_name'] ? __('ui.with').' '.$topic['pet_name'].' / ' : '' }}{{ $topic['activity_label'] }}
                 </span>
             </span>
         </div>
@@ -62,11 +62,11 @@
                 <input type="hidden" name="topic_id" value="{{ $topic['id'] }}">
                 <button type="submit" class="forum-button" aria-pressed="{{ $topic['bookmarked'] ? 'true' : 'false' }}">
                     <x-ui-icon :name="$topic['bookmarked'] ? 'bookmark-check' : 'bookmark'" />
-                    {{ $topic['bookmarked'] ? __('ui.saved_b5c120b316') : __('ui.save_1509f561f2') }}
+                    {{ $topic['bookmarked'] ? __('ui.saved') : __('ui.save') }}
                 </button>
             </form>
             <a href="{{ route('forum.topics.show', $topic['slug']) }}" class="forum-button forum-button--primary">
-                {{ __('ui.open_ed077f3d81') }}
+                {{ __('ui.open') }}
                 <x-ui-icon name="arrow-right" />
             </a>
         </div>

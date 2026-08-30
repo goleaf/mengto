@@ -11,8 +11,10 @@ use App\Models\ForumAnswer;
 use App\Models\ForumTopic;
 use App\Models\ForumTopicType as ForumTopicTypeModel;
 use App\Models\ForumVote;
+use App\Services\ForumTopicTypeSchemaCatalog;
 use App\Services\ForumTopicTypeSchemaRegistry;
 use Database\Seeders\ForumTopicTypeSeeder;
+use Illuminate\Contracts\Cache\Repository as CacheRepository;
 use Illuminate\Database\Events\QueryExecuted;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Cache;
@@ -133,6 +135,21 @@ test('schema registry uses the immutable catalogue before definitions are seeded
     expect($definition)->not->toBeNull()
         ->and($definition?->databaseId)->toBeNull()
         ->and($definition?->stableKey)->toBe(ForumTopicType::Question->value);
+});
+
+test('schema registry fails open to its bounded source when cache is unavailable', function () {
+    $cache = Mockery::mock(CacheRepository::class);
+    $cache->shouldReceive('get')
+        ->once()
+        ->andThrow(new RuntimeException('cache unavailable'));
+    $registry = new ForumTopicTypeSchemaRegistry(
+        app(ForumTopicTypeSchemaCatalog::class),
+        $cache,
+    );
+
+    expect($registry->definition(ForumTopicType::Question->value))
+        ->not->toBeNull()
+        ->stableKey->toBe(ForumTopicType::Question->value);
 });
 
 test('schema registry caches one bounded query and invalidates after writes and synchronization', function () {

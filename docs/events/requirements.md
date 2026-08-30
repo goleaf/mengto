@@ -12,7 +12,8 @@
 | Capacity/waitlist | Legacy event scope implemented | occurrence-aware capacity and promotion require broader concurrency coverage |
 | Tickets/payments/refunds | Not implemented | no verified event payment provider or ticket aggregate |
 | QR/offline check-in | Not implemented | manual server-confirmed check-in only |
-| Competitions/vendors/volunteers | Not implemented | no durable aggregate/state machines |
+| Competitions | Implementation present; release verification pending | competition migration, 14 models, policies, and create/entry/judge/score/correction Actions exist; factories, complete entrypoints, focused/full gates, and release evidence remain incomplete |
+| Vendors/volunteers | Not implemented | no verified durable vendor/sponsor or volunteer-shift workflow |
 | Event incidents/weather plans | Not implemented | generic report and emergency plan only |
 | EN/LT/RU UI | Implemented for current surface | recursive key-parity test |
 | Browser/performance release evidence | Measured for implemented surface | schedule has a five-query/20 KB budget; six event viewport audits pass |

@@ -36,7 +36,7 @@ class OpenOrderDispute
 
             if ($role === null) {
                 throw ValidationException::withMessages([
-                    'order' => __('messages.only_order_participants_can_open_a_dispute_1f1766f85f'),
+                    'order' => __('messages.only_order_participants_can_open_a_dispute'),
                 ]);
             }
 
@@ -52,7 +52,7 @@ class OpenOrderDispute
 
             if ($hasActiveDispute) {
                 throw ValidationException::withMessages([
-                    'order' => __('messages.an_active_dispute_already_exists_for_this_order_c19708eebb'),
+                    'order' => __('messages.an_active_dispute_already_exists_for_this_order'),
                 ]);
             }
 

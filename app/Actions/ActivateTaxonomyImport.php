@@ -32,7 +32,7 @@ final class ActivateTaxonomyImport
                     ->findOrFail($import->taxon_source_id);
 
                 if (! $import->state->canActivate()) {
-                    throw new RuntimeException(__('messages.only_a_completed_taxonomy_import_can_be_activated_2561491aba'));
+                    throw new RuntimeException(__('messages.only_a_completed_taxonomy_import_can_be_activated'));
                 }
 
                 $previousImportId = $source->active_taxon_import_id;

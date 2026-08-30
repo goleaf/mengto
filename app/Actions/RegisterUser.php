@@ -19,6 +19,7 @@ final class RegisterUser
         private readonly ConfigRepository $config,
         private readonly Translator $translator,
         private readonly EmailVerificationMode $emailVerification,
+        private readonly InitializeUserOnboarding $initializeOnboarding,
     ) {}
 
     /**
@@ -42,6 +43,8 @@ final class RegisterUser
             if (! $verificationEnabled) {
                 $user->forceFill(['email_verified_at' => now()])->saveOrFail();
             }
+
+            $this->initializeOnboarding->handle($user);
 
             return $user;
         });

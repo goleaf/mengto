@@ -94,7 +94,7 @@
 
         <p class="mt-4 text-sm font-medium text-paw-coral">{{ $pet['status'] }}</p>
 
-        <x-tag-list :items="$pet['traits']" empty="{{ __('ui.no_traits_shared_251b121ad1') }}" reserve class="mt-4" />
+        <x-tag-list :items="$pet['traits']" empty="{{ __('ui.no_traits_shared') }}" reserve class="mt-4" />
 
         <x-slot:footer>
             <p class="text-sm font-semibold text-paw-ink">{{ __('presentation.with_owner', ['owner' => $pet['owner']]) }}</p>
@@ -109,13 +109,13 @@
                         icon="eye"
                         variant="action"
                     >
-                        {{ __('ui.view_profile_d4788f256f') }}
+                        {{ __('ui.view_profile') }}
                     </x-text-link>
                 @endif
 
                 <x-action-control
-                    label="{{ __('ui.follow_641d1ef657') }}"
-                    active-label="{{ __('ui.following_344b4271ca') }}"
+                    label="{{ __('ui.follow') }}"
+                    active-label="{{ __('ui.following') }}"
                     icon="user-plus"
                     active-icon="user-check"
                     variant="paper"

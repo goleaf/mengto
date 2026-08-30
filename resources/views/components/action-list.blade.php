@@ -1,6 +1,6 @@
 @props([
     'actions',
-    'label' => __('ui.actions_ff8059dc67'),
+    'label' => __('ui.actions'),
     'size' => 'profile',
 ])
 
@@ -24,6 +24,6 @@
             :pressed="$action['pressed'] ?? null"
         />
     @empty
-        <span class="text-sm text-paw-muted">{{ __('ui.no_actions_available_77746a168c') }}</span>
+        <span class="text-sm text-paw-muted">{{ __('ui.no_actions_available') }}</span>
     @endforelse
 </div>

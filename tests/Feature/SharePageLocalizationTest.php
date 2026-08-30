@@ -92,7 +92,7 @@ test('the share page keeps stable channel codes and canonical icons', function (
         ->and($xpath->query('//*[@data-share-page]//*[@data-share-recipient]')->length)->toBe(4)
         ->and($xpath->query('//*[@data-share-page]//*[@data-share-recipient-action]//*[@data-ui-icon="send"]')->length)->toBe(4)
         ->and($xpath->query(
-            '//*[@data-share-page]/*[contains(concat(" ", normalize-space(@class), " "), " text-link ")]//*[@data-ui-icon="arrow-left"]',
+            '//*[@data-share-page]/*[@data-detail-navigation]//*[contains(concat(" ", normalize-space(@class), " "), " text-link ")]//*[@data-ui-icon="arrow-left"]',
         )->length)->toBe(1)
         ->and($xpath->query('//*[@data-share-page]//*[@data-share-open-original]//*[@data-ui-icon="external-link"]')->length)->toBe(1)
         ->and($xpath->query('//*[@data-share-page]//*[@data-share-privacy]//*[@data-ui-icon="shield-check"]')->length)->toBe(1);
@@ -174,7 +174,8 @@ test('the share page source stays inside its domain and browser ratchet', functi
         ->not->toContain("__('ui.", "__('messages.", "__('presentation.")
         ->and($browser)
         ->toContain(
-            'shareCopy.length === 30',
+            'shareCopy.length === 34',
+            "querySelector('[data-detail-navigation] .text-link span')",
             "['mail', 'arrow-up-right', 'message-square-text', 'arrow-up-right', 'external-link', 'arrow-up-right']",
             'share controls below 44px',
             'English share fallback remains',

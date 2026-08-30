@@ -24,7 +24,7 @@ final class CancelTaxonomyImport
                 TaxonImportState::Active,
                 TaxonImportState::RolledBack,
             ], true)) {
-                throw new RuntimeException(__('messages.a_completed_or_active_taxonomy_import_cannot_be_cancelle_2fefbaca08'));
+                throw new RuntimeException(__('messages.a_completed_or_active_taxonomy_import_cannot_be_cancelled'));
             }
 
             $import->forceFill([

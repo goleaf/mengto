@@ -4,7 +4,7 @@
     'label',
     'placeholder',
     'fieldId',
-    'submitLabel' => __('ui.send_f6f4688ff2'),
+    'submitLabel' => __('ui.send'),
     'submitIcon' => 'send',
     'variant' => 'embedded',
 ])

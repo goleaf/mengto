@@ -48,16 +48,16 @@ final class FeedPresenter
                 'summary' => $this->summary($mode, $sort, count($posts)),
                 'modes' => $this->modeOptions($query),
                 'sort_options' => [
-                    'recommended' => __('messages.recommended_d70604e843'),
-                    'latest' => __('messages.newest_first_ffb6f5764b'),
+                    'recommended' => __('messages.recommended'),
+                    'latest' => __('messages.newest_first'),
                 ],
                 'type_options' => $this->typeOptions(),
                 'pet_options' => [
-                    'all' => __('messages.all_pets_46c6bd796e'),
-                    'dogs' => __('messages.dogs_246b0deffb'),
-                    'cats' => __('messages.cats_ec05d70c6f'),
-                    'scout' => __('messages.scout_8a1db462be'),
-                    'nori' => __('messages.nori_a64203ba20'),
+                    'all' => __('messages.all_pets'),
+                    'dogs' => __('messages.dogs'),
+                    'cats' => __('messages.cats'),
+                    'scout' => __('messages.scout'),
+                    'nori' => __('messages.nori'),
                 ],
                 'stories' => $this->catalog->stories(),
                 'posts' => $visiblePosts,
@@ -329,10 +329,10 @@ final class FeedPresenter
             $media = $original['media'];
         }
 
-        $topic = $this->catalog->topics()[$record['topic'] ?? 'community'] ?? __('messages.community_bb501d7877');
-        $location = $this->catalog->safePlaces()[$record['location'] ?? 'none'] ?? __('messages.place_hidden_7fcf894e21');
-        $audience = $this->catalog->audiences()[$record['audience'] ?? 'public'] ?? __('messages.everyone_da2e5dc515');
-        $comments = $this->catalog->commentPolicies()[$record['comment_policy'] ?? 'all'] ?? __('messages.everyone_da2e5dc515');
+        $topic = $this->catalog->topics()[$record['topic'] ?? 'community'] ?? __('messages.community');
+        $location = $this->catalog->safePlaces()[$record['location'] ?? 'none'] ?? __('messages.place_hidden');
+        $audience = $this->catalog->audiences()[$record['audience'] ?? 'public'] ?? __('messages.everyone');
+        $comments = $this->catalog->commentPolicies()[$record['comment_policy'] ?? 'all'] ?? __('messages.everyone');
 
         return [
             'key' => $record['key'],
@@ -341,7 +341,7 @@ final class FeedPresenter
             ...$identity,
             'author_parameters' => [],
             'published_at' => $record['updated_at'] ?? $record['created_at'],
-            'time' => ($record['status'] ?? 'published') === 'draft' ? __('messages.draft_ebf12ef47c') : __('messages.just_now_66f53417d3'),
+            'time' => ($record['status'] ?? 'published') === 'draft' ? __('messages.draft') : __('messages.just_now'),
             'title' => ($record['title'] ?? '') !== '' ? $record['title'] : null,
             'body' => $record['body'],
             'topic' => $topic,
@@ -350,7 +350,7 @@ final class FeedPresenter
             'comment_policy' => $comments,
             'tags' => $this->tags($record['tags'] ?? ''),
             'feeds' => $this->createdFeeds($identity, $format),
-            'why' => __('messages.you_published_this_from_a_profile_you_manage_6dafaf62d6'),
+            'why' => __('messages.you_published_this_from_a_profile_you_manage'),
             'verified' => false,
             'urgent' => $format === 'lost',
             'sensitive' => ($record['sensitive'] ?? 'no') === 'yes',
@@ -565,18 +565,18 @@ final class FeedPresenter
     private function typeOptions(): array
     {
         return [
-            'all' => __('messages.all_formats_8a01c6b5b4'),
-            'text' => __('messages.text_71988c4d8e'),
-            'photo' => __('messages.photos_5e3147ab51'),
-            'video' => __('messages.video_d534be829e'),
-            'question' => __('messages.questions_9a72221a27'),
-            'poll' => __('messages.polls_9967294585'),
-            'event' => __('messages.events_8d14f6e72d'),
-            'lost' => __('messages.lost_pets_0219466249'),
-            'adoption' => __('messages.adoption_9b33128339'),
-            'expert' => __('messages.expert_notes_89fa8fbfbf'),
-            'group' => __('messages.groups_39bbb719fa'),
-            'repost' => __('messages.reposts_13172e9767'),
+            'all' => __('messages.all_formats'),
+            'text' => __('messages.text'),
+            'photo' => __('messages.photos'),
+            'video' => __('messages.video'),
+            'question' => __('messages.questions'),
+            'poll' => __('messages.polls'),
+            'event' => __('messages.events'),
+            'lost' => __('messages.lost_pets'),
+            'adoption' => __('messages.adoption'),
+            'expert' => __('messages.expert_notes'),
+            'group' => __('messages.groups'),
+            'repost' => __('messages.reposts'),
         ];
     }
 
@@ -586,20 +586,20 @@ final class FeedPresenter
     private function summary(string $mode, string $sort, int $count): array
     {
         $copy = match ($mode) {
-            'following' => [__('messages.following_feed_7b34012abf'), __('messages.profiles_you_chose_6d1226b547'), __('messages.only_posts_from_people_pets_and_organizations_you_follow_073038435f')],
-            'friends' => [__('messages.friends_feed_6d7bb14048'), __('messages.your_closer_circle_60aef3e3d8'), __('messages.updates_from_owner_friends_and_pet_friends_ef4e806459')],
-            'pets' => [__('messages.pet_feed_e95604e8e0'), 'Published as pets', __('messages.pet_profile_moments_stay_separate_from_owner_posts_b91fa84c02')],
-            'local' => [__('messages.local_feed_71058215fd'), __('messages.around_portland_e8c73dafb5'), __('messages.posts_use_safe_neighborhoods_and_public_places_never_hom_0957dac059')],
-            'groups' => [__('messages.group_feed_0889b9eb3f'), __('messages.from_your_communities_256d469ea4'), __('messages.updates_from_groups_you_joined_736568e5be')],
-            'experts' => [__('messages.expert_feed_ede6af2a84'), __('messages.verified_professional_notes_99ec09f039'), __('messages.professional_context_stays_distinct_from_ordinary_social_bef40decac')],
-            'shelters' => [__('messages.shelter_feed_ae0e5883f1'), __('messages.adoption_and_volunteer_updates_e7fc7fcdaa'), __('messages.verified_shelter_profiles_and_animals_looking_for_homes_d2edac30bb')],
-            'alerts' => [__('messages.lost_and_found_a64c586261'), __('messages.active_local_alerts_f8937a2cae'), __('messages.priority_notices_with_approximate_locations_and_in_platf_00183a3451')],
-            'video' => [__('messages.video_feed_63a6c097e3'), __('messages.pet_videos_with_controls_334144e9b2'), __('messages.no_autoplay_captions_and_native_playback_remain_availabl_17df1a3cce')],
-            'photos' => [__('messages.photo_feed_0df6d13df5'), __('messages.photo_moments_and_albums_8d0ceb2253'), __('messages.responsive_images_with_author_provided_alternative_text_54c9082f78')],
-            'saved' => [__('messages.your_library_1ad8428627'), __('messages.saved_posts_c6171ac089'), __('messages.private_bookmarks_collected_for_later_2770524194')],
-            'drafts' => [__('messages.private_workspace_0ba6db3b75'), __('messages.post_drafts_f2065e643a'), __('messages.unpublished_ideas_visible_only_to_you_e27f5eff46')],
-            'archive' => [__('messages.private_archive_bd92e82d53'), __('messages.archived_posts_1e95f11a3b'), __('messages.hidden_from_public_profiles_and_ready_to_restore_58321519c1')],
-            default => [__('messages.recommended_feed_e170abf11a'), __('messages.today_around_your_pack_5a5743194e'), __('messages.following_local_context_and_explained_recommendations_in_e5f925bf03')],
+            'following' => [__('messages.following_feed'), __('messages.profiles_you_chose'), __('messages.only_posts_from_people_pets_and_organizations_you_follow')],
+            'friends' => [__('messages.friends_feed'), __('messages.your_closer_circle'), __('messages.updates_from_owner_friends_and_pet_friends')],
+            'pets' => [__('messages.pet_feed'), 'Published as pets', __('messages.pet_profile_moments_stay_separate_from_owner_posts')],
+            'local' => [__('messages.local_feed'), __('messages.around_portland'), __('messages.posts_use_safe_neighborhoods_and_public_places_never_home_coordinates')],
+            'groups' => [__('messages.group_feed'), __('messages.from_your_communities'), __('messages.updates_from_groups_you_joined')],
+            'experts' => [__('messages.expert_feed'), __('messages.verified_professional_notes'), __('messages.professional_context_stays_distinct_from_ordinary_social_advice')],
+            'shelters' => [__('messages.shelter_feed'), __('messages.adoption_and_volunteer_updates'), __('messages.verified_shelter_profiles_and_animals_looking_for_homes')],
+            'alerts' => [__('messages.lost_and_found'), __('messages.active_local_alerts'), __('messages.priority_notices_with_approximate_locations_and_in_platform_contact')],
+            'video' => [__('messages.video_feed'), __('messages.pet_videos_with_controls'), __('messages.no_autoplay_captions_and_native_playback_remain_available')],
+            'photos' => [__('messages.photo_feed'), __('messages.photo_moments_and_albums'), __('messages.responsive_images_with_author_provided_alternative_text')],
+            'saved' => [__('messages.your_library'), __('messages.saved_posts'), __('messages.private_bookmarks_collected_for_later')],
+            'drafts' => [__('messages.private_workspace'), __('messages.post_drafts'), __('messages.unpublished_ideas_visible_only_to_you')],
+            'archive' => [__('messages.private_archive'), __('messages.archived_posts'), __('messages.hidden_from_public_profiles_and_ready_to_restore')],
+            default => [__('messages.recommended_feed'), __('messages.today_around_your_pack'), __('messages.following_local_context_and_explained_recommendations_in_one_stream')],
         };
 
         return [
@@ -608,7 +608,7 @@ final class FeedPresenter
             'description' => $copy[2],
             'count' => __('presentation.sorted_posts_count', [
                 'count' => trans_choice('presentation.posts_count', $count, ['count' => $count]),
-                'sort' => $sort === 'latest' ? __('messages.newest_first_d5a5a90ac9') : __('presentation.recommended'),
+                'sort' => $sort === 'latest' ? __('messages.newest_first_lowercase') : __('presentation.recommended'),
             ]),
         ];
     }
@@ -734,17 +734,17 @@ final class FeedPresenter
     private function formatLabel(string $format): string
     {
         return match ($format) {
-            'photo' => __('messages.photo_update_e9b85666f8'),
-            'video' => __('messages.pet_video_60c6c123fe'),
-            'question' => __('messages.question_289aff12b0'),
-            'poll' => __('messages.poll_d54f7d124c'),
-            'event' => __('messages.event_4e1f49a9c8'),
-            'lost' => __('messages.lost_pet_alert_43b8776771'),
-            'adoption' => __('messages.adoption_profile_6c7cd4fe9a'),
-            'expert' => __('messages.expert_note_5280705b5d'),
-            'group' => __('messages.group_post_8e6ef13f5d'),
-            'repost' => __('messages.repost_f4fd9adb8f'),
-            default => __('messages.text_post_273de1dfea'),
+            'photo' => __('messages.photo_update'),
+            'video' => __('messages.pet_video'),
+            'question' => __('messages.question'),
+            'poll' => __('messages.poll'),
+            'event' => __('messages.event'),
+            'lost' => __('messages.lost_pet_alert'),
+            'adoption' => __('messages.adoption_profile'),
+            'expert' => __('messages.expert_note'),
+            'group' => __('messages.group_post'),
+            'repost' => __('messages.repost'),
+            default => __('messages.text_post'),
         };
     }
 
@@ -767,22 +767,22 @@ final class FeedPresenter
         return [
             [
                 'key' => 'small-dog-social',
-                'title' => __('messages.small_dog_social_hour_1bf893f4e1'),
-                'place' => __('messages.laurelhurst_park_b88ab4320c'),
-                'time' => __('messages.sat_10_00_d69c3a1278'),
+                'title' => __('messages.small_dog_social_hour'),
+                'place' => __('messages.laurelhurst_park'),
+                'time' => __('messages.sat_10_00'),
                 'datetime' => '2026-08-01T10:00:00-07:00',
-                'date_accessible' => __('messages.saturday_august_1_2026_at_10_00_am_9b5da30186'),
-                'attendees' => __('messages.18_neighbors_going_9c673ce4a4'),
+                'date_accessible' => __('messages.saturday_august_1_2026_at_10_00_am'),
+                'attendees' => __('messages.18_neighbors_going'),
                 'detail_route' => 'meetups.small_dog_social',
             ],
             [
                 'key' => 'foster-coffee-walk',
-                'title' => __('messages.foster_coffee_walk_c7e7e0019b'),
-                'place' => __('messages.tabor_commons_bd61fdc703'),
-                'time' => __('messages.sun_9_30_ac84bc8651'),
+                'title' => __('messages.foster_coffee_walk'),
+                'place' => __('messages.tabor_commons'),
+                'time' => __('messages.sun_9_30'),
                 'datetime' => '2026-08-02T09:30:00-07:00',
-                'date_accessible' => __('messages.sunday_august_2_2026_at_9_30_am_81e3f57dc7'),
-                'attendees' => __('messages.12_neighbors_going_fc1ef249ec'),
+                'date_accessible' => __('messages.sunday_august_2_2026_at_9_30_am'),
+                'attendees' => __('messages.12_neighbors_going'),
             ],
         ];
     }
@@ -795,16 +795,16 @@ final class FeedPresenter
         return [
             [
                 'key' => 'apartment-pets',
-                'name' => __('messages.apartment_pets_pdx_6488f4db06'),
-                'members' => __('messages.2_4k_members_ef94699d39'),
-                'topic' => __('messages.small_space_routines_31ea3a8e79'),
+                'name' => __('messages.apartment_pets_pdx'),
+                'members' => __('messages.2_4k_members'),
+                'topic' => __('messages.small_space_routines'),
                 'detail_route' => 'groups.apartment_pets',
             ],
             [
                 'key' => 'trail-tails',
-                'name' => __('messages.trail_tails_8c13c56b9f'),
-                'members' => __('messages.8_1k_members_bd48b96dc1'),
-                'topic' => __('messages.local_hikes_and_safety_8ee75e71d3'),
+                'name' => __('messages.trail_tails'),
+                'members' => __('messages.8_1k_members'),
+                'topic' => __('messages.local_hikes_and_safety'),
             ],
         ];
     }
@@ -816,16 +816,16 @@ final class FeedPresenter
     {
         return [
             [
-                'title' => __('messages.why_this_appears_f469b2f985'),
-                'description' => __('messages.every_recommended_post_includes_a_specific_reason_you_ca_56f1b7aa25'),
+                'title' => __('messages.why_this_appears'),
+                'description' => __('messages.every_recommended_post_includes_a_specific_reason_you_can_use_to_tune_the_feed'),
             ],
             [
-                'title' => __('messages.safe_location_defaults_13ba85fa86'),
-                'description' => __('messages.posts_use_neighborhoods_parks_and_approximate_areas_inst_87ce3c44d7'),
+                'title' => __('messages.safe_location_defaults'),
+                'description' => __('messages.posts_use_neighborhoods_parks_and_approximate_areas_instead_of_home_coordinates'),
             ],
             [
-                'title' => __('messages.data_saver_ready_7ca4d7d288'),
-                'description' => __('messages.videos_never_autoplay_and_responsive_images_load_only_wh_d0707972aa'),
+                'title' => __('messages.data_saver_ready'),
+                'description' => __('messages.videos_never_autoplay_and_responsive_images_load_only_when_needed'),
             ],
         ];
     }

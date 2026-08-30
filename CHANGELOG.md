@@ -2,8 +2,18 @@
 
 ## Unreleased - 2026-08-01
 
+Release status: **NO-GO**. Entries below record delivered slices; they are not
+repository-wide completion or current passing-gate claims. The current exact
+status, invalidated evidence, external blockers, and rollback guidance are in
+`docs/reports/final-release-verification.md`.
+
 ### Repository Audit And Foundations
 
+- Replaced all 5,860 mechanically generated `messages` and `ui` translation
+  keys and their first-party references with readable names, preserved EN/LT/RU
+  catalogue values, made normalized collisions fail closed, distinguished
+  operator log events from user-facing PHP copy, and added a permanent
+  architecture/migration ratchet against digest suffixes.
 - Completed a repository-wide instruction, documentation, module, route,
   runtime, dependency, security, frontend, database, factory, seeder, and test
   baseline with stable follow-up ownership in the canonical implementation
@@ -36,13 +46,30 @@
   in-memory database, and per-process temporary storage boundaries so root
   maintenance and test commands cannot create mixed-owner production runtime
   files or target the live SQLite database.
-- Completed the 204-model database-domain pass: corrected schema-backed
-  relationships and factory graph invariants, added the missing topic-move
-  model/factory, made the root demo seed produce ten deterministic users
-  including `user@example.com`, topped up every persistent model to at least
-  ten coherent records, populated all eight pivots, and added generated
-  schema/factory evidence plus field, orphan, relationship, count, and
-  repeat-seed verification.
+- Recorded the earlier 204-model database-domain pass and its then-current
+  schema/factory evidence. That evidence is now superseded: current discovery
+  finds 262 persistent models, the seeding gate reports 25 missing factories,
+  and the database-audit manifest is missing 51 models. No current release
+  claim may rely on the older counts or pass result.
+
+### Measured Performance And Observability
+
+- Replaced measured unbounded/PHP-side Place directory pagination, lost-pet
+  coordination collections, journal timeline relations, and journal export
+  fan-out with stable database limits or constant-query streaming, with
+  deterministic query and payload budgets recording the observed before/after
+  values in the repository performance audit.
+- Added seven reversible composite indexes from reproduced predicate/order
+  plans; added Livewire snapshot budgets without storing model graphs; and
+  hardened all four first-party caches with versioned scope, invalidation,
+  stampede locks, source fallbacks, and private audience isolation tests.
+- Added server-generated request correlation and bounded slow-request logging
+  with an explicit safe context allow-list, deterministic duration tests, rate
+  limiting, streamed-response coverage, and documented operational ownership.
+- Recorded current raw/gzip production bundle sizes, representative browser
+  request counts, responsive image dimensions, generator memory/time, and the
+  active Nginx cache-policy deployment gap. These are observed audit results,
+  not a repository-wide release or passing-gate claim.
 
 ### Shared Place Submission And Publication
 

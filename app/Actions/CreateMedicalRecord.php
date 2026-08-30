@@ -42,7 +42,7 @@ class CreateMedicalRecord
                 PetProfilePermission::ManageMedical,
             )) {
                 throw ValidationException::withMessages([
-                    'pet_profile_key' => __('messages.choose_a_pet_profile_you_manage_de4a79e7f0'),
+                    'pet_profile_key' => __('messages.choose_a_pet_profile_you_manage'),
                 ]);
             }
 
@@ -50,7 +50,7 @@ class CreateMedicalRecord
                 ->where('pet_profile_id', $pet->id)
                 ->exists()) {
                 throw ValidationException::withMessages([
-                    'pet_profile_key' => __('messages.this_pet_already_has_a_medical_record_d4c3459ec6'),
+                    'pet_profile_key' => __('messages.this_pet_already_has_a_medical_record'),
                 ]);
             }
 

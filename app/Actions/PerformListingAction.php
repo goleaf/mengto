@@ -58,7 +58,7 @@ class PerformListingAction
         $engagement->update(['is_saved' => ! $engagement->is_saved]);
 
         return [
-            'message' => $engagement->is_saved ? __('messages.listing_saved_13e0b90db7') : __('messages.listing_removed_from_saved_items_e8345e1edf'),
+            'message' => $engagement->is_saved ? __('messages.listing_saved') : __('messages.listing_removed_from_saved_items'),
             'listing' => $listing,
         ];
     }
@@ -78,11 +78,11 @@ class PerformListingAction
             if ($existing !== null) {
                 if ($existing->listing_id !== $listing->id || $existing->requester_key !== $this->actor->key()) {
                     throw ValidationException::withMessages([
-                        'idempotency_key' => __('messages.this_request_key_is_already_in_use_2a954a3352'),
+                        'idempotency_key' => __('messages.this_request_key_is_already_in_use'),
                     ]);
                 }
 
-                return ['message' => __('messages.your_request_was_already_received_c8dbe9a7b8'), 'listing' => $listing];
+                return ['message' => __('messages.your_request_was_already_received'), 'listing' => $listing];
             }
 
             $lockedListing = Listing::query()
@@ -91,11 +91,11 @@ class PerformListingAction
                 ->findOrFail($listing->id);
 
             if ($lockedListing->owner_key === $this->actor->key()) {
-                throw ValidationException::withMessages(['action' => __('messages.you_cannot_request_your_own_listing_2a8414f4f4')]);
+                throw ValidationException::withMessages(['action' => __('messages.you_cannot_request_your_own_listing')]);
             }
 
             if ($lockedListing->status !== ListingStatus::Published) {
-                throw ValidationException::withMessages(['action' => __('messages.this_listing_is_no_longer_available_6fef992c08')]);
+                throw ValidationException::withMessages(['action' => __('messages.this_listing_is_no_longer_available')]);
             }
 
             $hasActiveRequest = Reservation::query()
@@ -108,7 +108,7 @@ class PerformListingAction
                 ->exists();
 
             if ($hasActiveRequest) {
-                throw ValidationException::withMessages(['action' => __('messages.you_already_have_an_active_request_f8c4726fd2')]);
+                throw ValidationException::withMessages(['action' => __('messages.you_already_have_an_active_request')]);
             }
 
             $identity = $this->actor->identity();
@@ -143,7 +143,7 @@ class PerformListingAction
                 'exchange_method' => $reservation->exchange_method,
             ]);
 
-            return ['message' => __('messages.request_sent_keep_payment_and_contact_details_inside_the_086f753d5f'), 'listing' => $listing];
+            return ['message' => __('messages.request_sent_keep_payment_and_contact_details_inside_the_platform'), 'listing' => $listing];
         });
     }
 
@@ -151,11 +151,11 @@ class PerformListingAction
     private function cancelRequest(Listing $listing, Reservation $reservation): array
     {
         if ($reservation->requester_key !== $this->actor->key()) {
-            throw ValidationException::withMessages(['reservation_id' => __('messages.this_request_does_not_belong_to_you_4f247edd8d')]);
+            throw ValidationException::withMessages(['reservation_id' => __('messages.this_request_does_not_belong_to_you')]);
         }
 
         if (! in_array($reservation->status, [ReservationStatus::Requested, ReservationStatus::Accepted], true)) {
-            throw ValidationException::withMessages(['reservation_id' => __('messages.this_request_can_no_longer_be_cancelled_aa646e6cbd')]);
+            throw ValidationException::withMessages(['reservation_id' => __('messages.this_request_can_no_longer_be_cancelled')]);
         }
 
         return DB::transaction(function () use ($listing, $reservation): array {
@@ -168,11 +168,11 @@ class PerformListingAction
                 ->findOrFail($reservation->id);
 
             if ($lockedReservation->requester_key !== $this->actor->key()) {
-                throw ValidationException::withMessages(['reservation_id' => __('messages.this_request_does_not_belong_to_you_4f247edd8d')]);
+                throw ValidationException::withMessages(['reservation_id' => __('messages.this_request_does_not_belong_to_you')]);
             }
 
             if (! in_array($lockedReservation->status, [ReservationStatus::Requested, ReservationStatus::Accepted], true)) {
-                throw ValidationException::withMessages(['reservation_id' => __('messages.this_request_can_no_longer_be_cancelled_aa646e6cbd')]);
+                throw ValidationException::withMessages(['reservation_id' => __('messages.this_request_can_no_longer_be_cancelled')]);
             }
 
             $wasAccepted = $lockedReservation->status === ReservationStatus::Accepted;
@@ -201,7 +201,7 @@ class PerformListingAction
 
                 if ($order?->payment_status === PaymentStatus::Paid) {
                     throw ValidationException::withMessages([
-                        'reservation_id' => __('messages.a_paid_order_must_be_refunded_through_the_dispute_proces_6f9b41c249'),
+                        'reservation_id' => __('messages.a_paid_order_must_be_refunded_through_the_dispute_process'),
                     ]);
                 }
 
@@ -216,7 +216,7 @@ class PerformListingAction
 
             $this->audit('reservation.cancelled', $listing, ['reservation_id' => $reservation->id]);
 
-            return ['message' => __('messages.request_cancelled_5312dbee54'), 'listing' => $listing];
+            return ['message' => __('messages.request_cancelled_sentence'), 'listing' => $listing];
         });
     }
 
@@ -224,7 +224,7 @@ class PerformListingAction
     private function acceptRequest(Listing $listing, Reservation $reservation): array
     {
         if ($reservation->status !== ReservationStatus::Requested) {
-            throw ValidationException::withMessages(['reservation_id' => __('messages.only_pending_requests_can_be_accepted_5788365cdd')]);
+            throw ValidationException::withMessages(['reservation_id' => __('messages.only_pending_requests_can_be_accepted')]);
         }
 
         return DB::transaction(function () use ($listing, $reservation): array {
@@ -244,7 +244,7 @@ class PerformListingAction
                 ->findOrFail($listing->id);
 
             if ($lockedListing->status !== ListingStatus::Published) {
-                throw ValidationException::withMessages(['action' => __('messages.this_listing_is_already_reserved_or_completed_19d53e26a3')]);
+                throw ValidationException::withMessages(['action' => __('messages.this_listing_is_already_reserved_or_completed')]);
             }
 
             $lockedReservation = Reservation::query()
@@ -259,12 +259,12 @@ class PerformListingAction
                 ->findOrFail($reservation->id);
 
             if ($lockedReservation->status !== ReservationStatus::Requested) {
-                throw ValidationException::withMessages(['reservation_id' => __('messages.only_pending_requests_can_be_accepted_5788365cdd')]);
+                throw ValidationException::withMessages(['reservation_id' => __('messages.only_pending_requests_can_be_accepted')]);
             }
 
             if ($lockedReservation->quantity > $lockedListing->quantity) {
                 throw ValidationException::withMessages([
-                    'reservation_id' => __('messages.the_requested_quantity_is_no_longer_available_91358bffe6'),
+                    'reservation_id' => __('messages.the_requested_quantity_is_no_longer_available'),
                 ]);
             }
 
@@ -302,8 +302,8 @@ class PerformListingAction
 
             return [
                 'message' => $order->payment_status === PaymentStatus::Pending
-                    ? __('messages.request_accepted_the_order_is_ready_for_protected_paymen_81bfd02b4d')
-                    : __('messages.request_accepted_the_order_is_confirmed_3923e9c76e'),
+                    ? __('messages.request_accepted_the_order_is_ready_for_protected_payment')
+                    : __('messages.request_accepted_the_order_is_confirmed'),
                 'listing' => $listing,
             ];
         });
@@ -313,7 +313,7 @@ class PerformListingAction
     private function declineRequest(Listing $listing, Reservation $reservation): array
     {
         if ($reservation->status !== ReservationStatus::Requested) {
-            throw ValidationException::withMessages(['reservation_id' => __('messages.only_pending_requests_can_be_declined_55b3b320c5')]);
+            throw ValidationException::withMessages(['reservation_id' => __('messages.only_pending_requests_can_be_declined')]);
         }
 
         $reservation->update([
@@ -322,14 +322,14 @@ class PerformListingAction
         ]);
         $this->audit('reservation.declined', $listing, ['reservation_id' => $reservation->id]);
 
-        return ['message' => __('messages.request_declined_796f2c771c'), 'listing' => $listing];
+        return ['message' => __('messages.request_declined_sentence'), 'listing' => $listing];
     }
 
     /** @return array{message: string, listing: Listing} */
     private function complete(Listing $listing, Reservation $reservation): array
     {
         if ($reservation->status !== ReservationStatus::Accepted) {
-            throw ValidationException::withMessages(['reservation_id' => __('messages.accept_a_request_before_completing_the_exchange_820d048d0d')]);
+            throw ValidationException::withMessages(['reservation_id' => __('messages.accept_a_request_before_completing_the_exchange')]);
         }
 
         return DB::transaction(function () use ($listing, $reservation): array {
@@ -340,7 +340,7 @@ class PerformListingAction
 
             if ($lockedReservation->status !== ReservationStatus::Accepted) {
                 throw ValidationException::withMessages([
-                    'reservation_id' => __('messages.accept_a_request_before_completing_the_exchange_820d048d0d'),
+                    'reservation_id' => __('messages.accept_a_request_before_completing_the_exchange'),
                 ]);
             }
 
@@ -355,13 +355,13 @@ class PerformListingAction
 
             if (! in_array($order->payment_status, [PaymentStatus::Paid, PaymentStatus::NotRequired], true)) {
                 throw ValidationException::withMessages([
-                    'reservation_id' => __('messages.protected_payment_must_be_confirmed_before_completion_fda7e3cbcd'),
+                    'reservation_id' => __('messages.protected_payment_must_be_confirmed_before_completion'),
                 ]);
             }
 
             if ($order->status === OrderStatus::Disputed) {
                 throw ValidationException::withMessages([
-                    'reservation_id' => __('messages.resolve_the_active_dispute_before_completion_723f65cdf0'),
+                    'reservation_id' => __('messages.resolve_the_active_dispute_before_completion'),
                 ]);
             }
 
@@ -396,7 +396,7 @@ class PerformListingAction
                 'order_id' => $order->id,
             ]);
 
-            return ['message' => __('messages.exchange_marked_complete_1490cdff69'), 'listing' => $listing];
+            return ['message' => __('messages.exchange_marked_complete'), 'listing' => $listing];
         });
     }
 
@@ -449,7 +449,7 @@ class PerformListingAction
             ]);
         }, 3);
 
-        return ['message' => __('messages.report_submitted_for_safety_review_4aa74b8eb9'), 'listing' => $listing];
+        return ['message' => __('messages.report_submitted_for_safety_review'), 'listing' => $listing];
     }
 
     /** @param array<string, mixed> $data */

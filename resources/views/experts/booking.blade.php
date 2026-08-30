@@ -2,11 +2,11 @@
     <div class="grid gap-6">
         <header class="flex flex-wrap items-center justify-between gap-3 border-b border-paw-line pb-5">
             <div>
-                <a href="{{ route('experts.show', $expert['slug']) }}" class="inline-flex items-center gap-2 text-sm font-bold text-paw-leaf"><x-ui-icon name="arrow-left" size="sm" />{{ $expert['name'] }}</a>
-                <h1 class="mt-2 text-3xl font-bold">{{ __('ui.appointment_details_f938bdb863') }}</h1>
+                <x-detail-navigation :href="route('experts.show', $expert['slug'])" :label="$expert['name']" />
+                <h1 class="mt-2 text-3xl font-bold">{{ __('ui.appointment_details') }}</h1>
             </div>
             @if ($consultation && $booking['format'] === 'Video')
-                <x-action-control label="{{ __('ui.open_consultation_room_f2236af786') }}" icon="video" variant="primary" :href="route('consultations.show', $consultation['id'])" />
+                <x-action-control label="{{ __('ui.open_consultation_room') }}" icon="video" variant="primary" :href="route('consultations.show', $consultation['id'])" />
             @endif
         </header>
 

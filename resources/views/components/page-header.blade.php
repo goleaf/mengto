@@ -18,7 +18,7 @@
     aria-labelledby="{{ $headingId }}"
     {{ $attributes->class('page-header') }}
 >
-    <div class="page-header__content">
+    <div class="page-header__content" data-page-header-content>
         <p class="page-header__eyebrow">{{ $eyebrow }}</p>
         <h1 id="{{ $headingId }}" class="page-header__title">{{ $title }}</h1>
         <p class="page-header__description">{{ $description }}</p>

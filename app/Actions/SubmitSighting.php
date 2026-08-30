@@ -37,7 +37,7 @@ class SubmitSighting
                 if ($existing->search_case_id !== $searchCase->id
                     || $existing->reporter_key !== $this->actor->key()) {
                     throw ValidationException::withMessages([
-                        'idempotency_key' => __('messages.this_observation_key_is_already_in_use_dbace23b87'),
+                        'idempotency_key' => __('messages.this_observation_key_is_already_in_use'),
                     ]);
                 }
 
@@ -51,7 +51,7 @@ class SubmitSighting
 
             if ($lockedCase->status->isClosed() || ! $lockedCase->alerts_active) {
                 throw ValidationException::withMessages([
-                    'observed_at' => __('messages.this_urgent_search_is_closed_the_observation_was_not_sub_00f872c818'),
+                    'observed_at' => __('messages.this_urgent_search_is_closed_the_observation_was_not_submitted'),
                 ]);
             }
 
@@ -99,7 +99,7 @@ class SubmitSighting
             $lockedCase->update([
                 'status' => $caseStatus,
                 'last_sighting_at' => $sighting->observed_at,
-                'latest_update' => __('messages.a_new_sighting_is_awaiting_coordinator_verification_d2efe4cfe3'),
+                'latest_update' => __('messages.a_new_sighting_is_awaiting_coordinator_verification'),
             ]);
 
             SearchUpdate::query()->create([

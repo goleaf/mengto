@@ -10,7 +10,7 @@
 <div {{ $attributes->class('circle-dashboard') }}>
     <x-summary-strip
         :items="$summary['stats']"
-        label="{{ __('ui.your_circle_summary_39d25b4e7f') }}"
+        label="{{ __('ui.your_circle_summary') }}"
         :icons="['bookmark', 'user-round-check', 'users-round', 'calendar-check']"
         :columns="4"
     />
@@ -20,16 +20,16 @@
         :filters="$filters"
         :active="$activeFilter"
         :count="$summary['count']"
-        title="{{ __('ui.collection_view_ddc0d8cbe8') }}"
-        label="{{ __('ui.filter_your_circle_dbaff85629') }}"
+        title="{{ __('ui.collection_view') }}"
+        label="{{ __('ui.filter_your_circle') }}"
     />
 
     @if ($showStarter)
         <x-media-starter
-            eyebrow="{{ __('ui.start_with_one_useful_thing_8a85f9bcd9') }}"
-            title="{{ __('ui.build_a_circle_around_real_routines_3ec77af975') }}"
+            eyebrow="{{ __('ui.start_with_one_useful_thing') }}"
+            title="{{ __('ui.build_a_circle_around_real_routines') }}"
             title-id="circle-starter-title"
-            description="{{ __('ui.save_a_useful_post_follow_a_familiar_neighbor_cac470a75c') }}"
+            description="{{ __('ui.save_a_useful_post_follow_a_familiar_neighbor_or_rsvp_to_a_comfortable_meetup_each_choice_will_return_here') }}"
             :items="$starterItems"
         />
     @else
@@ -45,10 +45,10 @@
             @empty
                 <x-empty-state
                     icon="inbox"
-                    title="{{ __('ui.this_collection_is_quiet_3653cb0ecb') }}"
-                    description="{{ __('ui.choose_another_view_or_collect_something_useful_from_8086b1797a') }}"
+                    title="{{ __('ui.this_collection_is_quiet') }}"
+                    description="{{ __('ui.choose_another_view_or_collect_something_useful_from_around_brand') }}"
                     :href="route('discover.index')"
-                    action-label="{{ __('ui.open_discover_43454afd16') }}"
+                    action-label="{{ __('ui.open_discover') }}"
                     action-icon="search"
                 />
             @endforelse

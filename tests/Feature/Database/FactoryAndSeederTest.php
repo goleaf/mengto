@@ -46,6 +46,7 @@ use App\Models\MedicalRecord;
 use App\Models\Order;
 use App\Models\Organization;
 use App\Models\PetProfile;
+use App\Models\PetProfileMedia;
 use App\Models\Reservation;
 use App\Models\SearchCase;
 use App\Models\Sighting;
@@ -321,6 +322,7 @@ test('every parameterized factory helper creates a persisted valid record', func
 
 test('database seeding is repeatable without changing stable entity counts', function () {
     seed(DatabaseSeeder::class);
+    $firstPetMediaFiles = Storage::disk('local')->allFiles('pet-profiles');
 
     $firstCounts = [
         'users' => User::query()->count(),
@@ -340,6 +342,7 @@ test('database seeding is repeatable without changing stable entity counts', fun
         'adoption_events' => AdoptionEvent::query()->count(),
         'devices' => SmartDevice::query()->count(),
         'content_publications' => ContentPublication::query()->count(),
+        'pet_profile_media' => PetProfileMedia::query()->count(),
     ];
 
     seed(DatabaseSeeder::class);
@@ -362,6 +365,7 @@ test('database seeding is repeatable without changing stable entity counts', fun
         'adoption_events' => AdoptionEvent::query()->count(),
         'devices' => SmartDevice::query()->count(),
         'content_publications' => ContentPublication::query()->count(),
+        'pet_profile_media' => PetProfileMedia::query()->count(),
     ])->toBe($firstCounts)
         ->and(User::query()->where('actor_key', 'mia-carter')->count())->toBe(1)
         ->and(User::query()->count())->toBe(10)
@@ -373,6 +377,9 @@ test('database seeding is repeatable without changing stable entity counts', fun
         ->and(ContentPublication::query()
             ->where('idempotency_key', 'discovery-demo-post-v1')
             ->count())->toBe(1)
+        ->and(ContentPublication::query()
+            ->where('idempotency_key', 'page-identity-demo-post-v1')
+            ->value('publication_key'))->toBe('page-identity-demo-post')
         ->and(KnowledgeArticle::query()
             ->whereNotNull('translation_group_key')
             ->whereNotNull('discussion_topic_id')
@@ -382,7 +389,42 @@ test('database seeding is repeatable without changing stable entity counts', fun
         ->and(AdoptionCase::query()
             ->whereHas('listing', fn ($query) => $query
                 ->where('slug', 'gentle-adult-cat-meta-is-ready-for-adoption'))
-            ->value('provider_identity_status'))->toBe(AdoptionProviderIdentityStatus::Verified);
+            ->value('provider_identity_status'))->toBe(AdoptionProviderIdentityStatus::Verified)
+        ->and(Storage::disk('local')->allFiles('pet-profiles'))->toBe($firstPetMediaFiles);
+
+    $viewer = User::query()->where('email', 'user@example.com')->firstOrFail();
+    $publication = ContentPublication::query()
+        ->where('publication_key', 'page-identity-demo-post')
+        ->firstOrFail();
+
+    $this->actingAs($viewer)
+        ->get(route('content.show', $publication))
+        ->assertSuccessful()
+        ->assertSee('data-content-detail-identity', false);
+
+    $representativeMedia = PetProfileMedia::query()
+        ->with(['asset', 'profile'])
+        ->whereHas('profile', fn ($query) => $query
+            ->where('visibility', 'public')
+            ->where('is_discoverable', true))
+        ->whereHas('asset', fn ($query) => $query
+            ->where('disk', 'local')
+            ->where('mime_type', 'image/webp')
+            ->where('path', 'like', 'pet-profiles/%/media/%'))
+        ->firstOrFail();
+    $representativeAsset = $representativeMedia->asset;
+
+    expect($representativeAsset)->not->toBeNull()
+        ->and(Storage::disk('local')->exists($representativeAsset->path))->toBeTrue()
+        ->and(getimagesizefromstring(Storage::disk('local')->get($representativeAsset->path))['mime'] ?? null)
+        ->toBe('image/webp');
+
+    $this->get(route('pets.media.show', [
+        'petProfile' => $representativeMedia->profile,
+        'petProfileMedia' => $representativeMedia,
+    ]))
+        ->assertOk()
+        ->assertHeader('Content-Type', 'image/webp');
 });
 
 test('demo seeding refuses an environment not explicitly allowed', function () {

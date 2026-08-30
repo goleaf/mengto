@@ -3,8 +3,8 @@
 <section {{ $attributes->class(['medical-section']) }} aria-labelledby="medical-timeline-title">
     <div class="medical-section__heading">
         <div>
-            <p class="text-xs font-bold uppercase text-paw-leaf">{{ __('ui.history_0e76960093') }}</p>
-            <h2 id="medical-timeline-title" class="mt-1 text-xl font-bold">{{ __('ui.medical_timeline_81bce0a0b8') }}</h2>
+            <p class="text-xs font-bold uppercase text-paw-leaf">{{ __('ui.history') }}</p>
+            <h2 id="medical-timeline-title" class="mt-1 text-xl font-bold">{{ __('ui.medical_timeline') }}</h2>
         </div>
         <span class="text-sm font-semibold text-paw-muted">{{ trans_choice('presentation.entries_count', count($events), ['count' => count($events)]) }}</span>
     </div>
@@ -38,7 +38,7 @@
         @empty
             <li class="medical-empty">
                 <x-ui-icon name="notebook-pen" size="xl" />
-                <p>{{ __('ui.no_medical_events_have_been_recorded_aa044cc03b') }}</p>
+                <p>{{ __('ui.no_medical_events_have_been_recorded') }}</p>
             </li>
         @endforelse
     </ol>

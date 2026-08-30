@@ -86,7 +86,7 @@ class ForumPresenter
 
         return [
             'owner' => $this->profiles->owner(),
-            'page_title' => __('messages.forum_and_knowledge_pawcircle_664109d235'),
+            'page_title' => __('messages.forum_and_knowledge_brand'),
             'active_section' => 'forum',
             'topics' => $topics,
             'filters' => [
@@ -250,7 +250,7 @@ class ForumPresenter
     {
         return [
             'owner' => $this->profiles->owner(),
-            'page_title' => $topic ? __('messages.edit_topic_pawcircle_aea297c81d') : __('messages.ask_the_community_pawcircle_81f7f8f052'),
+            'page_title' => $topic ? __('messages.edit_topic_brand') : __('messages.ask_the_community_brand'),
             'active_section' => 'forum',
             'topic' => $topic,
             'selected_taxon_ids' => $topic instanceof ForumTopic
@@ -294,13 +294,13 @@ class ForumPresenter
         $base = fn (): Builder => ForumTopic::query()->published();
 
         return [
-            ['label' => __('messages.open_topics_5207eb9e06'), 'value' => $base()->count(), 'icon' => 'messages-square'],
-            ['label' => __('messages.need_an_answer_8824024b01'), 'value' => $base()->whereDoesntHave('answers')->count(), 'icon' => 'circle-help'],
-            ['label' => __('messages.resolved_5be3c2c835'), 'value' => $base()->whereIn('status', [
+            ['label' => __('messages.open_topics'), 'value' => $base()->count(), 'icon' => 'messages-square'],
+            ['label' => __('messages.need_an_answer'), 'value' => $base()->whereDoesntHave('answers')->count(), 'icon' => 'circle-help'],
+            ['label' => __('messages.resolved'), 'value' => $base()->whereIn('status', [
                 ForumTopicStatus::Solved->value,
                 ForumTopicStatus::Resolved->value,
             ])->count(), 'icon' => 'circle-check-big'],
-            ['label' => __('messages.expert_replies_c909ce7644'), 'value' => $base()->where('has_expert_answer', true)->count(), 'icon' => 'badge-check'],
+            ['label' => __('messages.expert_replies'), 'value' => $base()->where('has_expert_answer', true)->count(), 'icon' => 'badge-check'],
         ];
     }
 

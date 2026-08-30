@@ -20,7 +20,7 @@ class MedicalAccessStoreController extends Controller
         $url = route('medical-access.show', ['token' => $result['token']]);
 
         return to_route('medical-records.manage', $medicalRecord)
-            ->with('feedback', __('messages.temporary_access_created_this_link_is_shown_once_and_exp_ccb0d77a0e'))
+            ->with('feedback', __('messages.temporary_access_created_this_link_is_shown_once_and_expires_automatically'))
             ->with('medical_access_url', $url);
     }
 }

@@ -111,7 +111,7 @@ final readonly class BackfillForumEvents
             ->map(static fn (array $item): string => trim($item['title'].': '.$item['description']))
             ->implode("\n");
         $accessibility = collect($content['location']['details'])
-            ->firstWhere('label', __('messages.accessibility_d3368cbffe'))['value'] ?? null;
+            ->firstWhere('label', __('messages.accessibility'))['value'] ?? null;
         $requiresReview = $organizer === null
             || ($record['format'] === 'online' && blank($record['online_link'] ?? null));
         $attributes = [

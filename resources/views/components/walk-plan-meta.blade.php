@@ -3,19 +3,19 @@
 <dl {{ $attributes->class('walk-meta') }}>
     <x-walk-plan-meta-item
         icon="calendar-days"
-        label="{{ __('ui.date_99c40ab405') }}"
+        label="{{ __('ui.date') }}"
         :value="$plan['date_label']"
         :datetime="$plan['datetime']"
     />
     <x-walk-plan-meta-item
         icon="clock-3"
-        label="{{ __('ui.start_e4bb9f1ece') }}"
+        label="{{ __('ui.start') }}"
         :value="$plan['time_label']"
         :datetime="$plan['datetime']"
     />
     <x-walk-plan-meta-item
         icon="map-pin"
-        label="{{ __('ui.meeting_point_f08183059f') }}"
+        label="{{ __('ui.meeting_point') }}"
         :value="$plan['location']"
     />
 </dl>

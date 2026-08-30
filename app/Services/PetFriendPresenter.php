@@ -38,9 +38,9 @@ final class PetFriendPresenter
             ]),
             'active_section' => 'circle',
             'summary' => [
-                'eyebrow' => __('messages.owner_managed_pet_friendships_090ab6668a'),
+                'eyebrow' => __('messages.owner_managed_pet_friendships'),
                 'title' => $source['name'].'’s social circle',
-                'description' => __('messages.review_every_connection_as_an_owner_keep_exact_locations_a524eca256'),
+                'description' => __('messages.review_every_connection_as_an_owner_keep_exact_locations_private_and_choose_the_right_first_meeting_format'),
                 'count' => trans_choice('presentation.results_count', count($items), ['count' => count($items)]),
                 'stats' => $summary,
             ],
@@ -61,8 +61,8 @@ final class PetFriendPresenter
                 'last_dismissed' => $this->lastDismissed($source['id'], $tab, $intent, $sort, $query),
                 'last_blocked' => $this->lastBlocked($source['id'], $tab, $intent, $sort, $query),
                 'safety_note' => [
-                    'title' => __('messages.owners_make_every_decision_3aaca410d9'),
-                    'description' => __('messages.compatibility_notes_are_conversation_starters_not_a_safe_9ee5d42df0'),
+                    'title' => __('messages.owners_make_every_decision'),
+                    'description' => __('messages.compatibility_notes_are_conversation_starters_not_a_safety_guarantee_use_a_public_place_and_a_calm_owner_led_first_introduction'),
                 ],
             ],
         ];
@@ -165,8 +165,8 @@ final class PetFriendPresenter
             'key' => $this->friendState->pairKey($source, $target),
             'href' => route($candidate['route_name'], $candidate['route_parameters']),
             'type_label' => $candidate['breed'].' · '.$candidate['age'],
-            'followers' => __('messages.managed_by_54b2da24a9').$candidate['owner'],
-            'context' => $relationship['last_activity'] ?? __('messages.suggested_from_shared_routines_0a1c5b2025'),
+            'followers' => __('messages.managed_by').$candidate['owner'],
+            'context' => $relationship['last_activity'] ?? __('messages.suggested_from_shared_routines'),
             'relationship' => $relationship,
             'direction' => $direction,
             'status' => $status,
@@ -228,7 +228,7 @@ final class PetFriendPresenter
 
         if ($tab === 'discover') {
             return [
-                'label' => __('messages.review_profile_cfecc2f125'),
+                'label' => __('messages.review_profile'),
                 'icon' => 'circle-user-round',
                 'variant' => 'paper',
                 'href' => route($candidate['route_name'], $candidate['route_parameters']),
@@ -237,17 +237,17 @@ final class PetFriendPresenter
 
         if ($relationship !== null && $relationship['status'] === 'pending') {
             return $direction === 'incoming'
-                ? $this->action('accept-pet-friend-request', $source, $target, __('messages.accept_89713b9c9c'), 'user-check', 'primary', $returnState)
-                : $this->action('cancel-pet-friend-request', $source, $target, __('messages.cancel_request_5619668359'), 'user-x', 'paper', $returnState);
+                ? $this->action('accept-pet-friend-request', $source, $target, __('messages.accept'), 'user-check', 'primary', $returnState)
+                : $this->action('cancel-pet-friend-request', $source, $target, __('messages.cancel_request'), 'user-x', 'paper', $returnState);
         }
 
         if ($relationship !== null && $relationship['status'] === 'paused') {
-            return $this->action('toggle-pet-friend-pause', $source, $target, __('messages.restore_friendship_04d053ed23'), 'play', 'primary', $returnState);
+            return $this->action('toggle-pet-friend-pause', $source, $target, __('messages.restore_friendship'), 'play', 'primary', $returnState);
         }
 
         if ($walkHref !== null && ($tab === 'walks' || in_array('walk', $relationship['intents'] ?? [], true))) {
             return [
-                'label' => __('messages.plan_a_walk_10f67c3800'),
+                'label' => __('messages.plan_a_walk'),
                 'icon' => 'route',
                 'variant' => 'primary',
                 'href' => $walkHref,
@@ -256,7 +256,7 @@ final class PetFriendPresenter
 
         if ($candidate['owner_conversation'] !== '') {
             return [
-                'label' => __('messages.message_owner_20af2a2a89'),
+                'label' => __('messages.message_owner'),
                 'icon' => 'message-circle',
                 'variant' => 'primary',
                 'href' => route('messages.index', [
@@ -266,7 +266,7 @@ final class PetFriendPresenter
         }
 
         return [
-            'label' => __('messages.view_profile_d4788f256f'),
+            'label' => __('messages.view_profile'),
             'icon' => 'circle-user-round',
             'variant' => 'primary',
             'href' => route($candidate['route_name'], $candidate['route_parameters']),
@@ -296,7 +296,7 @@ final class PetFriendPresenter
             && $candidate['owner_conversation'] !== ''
         ) {
             $actions[] = [
-                'label' => __('messages.message_4a40c79612').$candidate['owner'],
+                'label' => __('messages.message_prefix').$candidate['owner'],
                 'icon' => 'message-circle',
                 'variant' => 'paper',
                 'href' => route('messages.index', [
@@ -310,7 +310,7 @@ final class PetFriendPresenter
                 'decline-pet-friend-request',
                 $source,
                 $target,
-                __('messages.decline_request_72740f4a78'),
+                __('messages.decline_request'),
                 'user-x',
                 'paper',
                 $returnState,
@@ -322,7 +322,7 @@ final class PetFriendPresenter
                 'toggle-pet-friend-pause',
                 $source,
                 $target,
-                $relationship['status'] === 'paused' ? __('messages.restore_friendship_04d053ed23') : __('messages.pause_friendship_1178bcb7d0'),
+                $relationship['status'] === 'paused' ? __('messages.restore_friendship') : __('messages.pause_friendship'),
                 $relationship['status'] === 'paused' ? 'play' : 'pause',
                 'paper',
                 $returnState,
@@ -331,7 +331,7 @@ final class PetFriendPresenter
                 'remove-pet-friendship',
                 $source,
                 $target,
-                __('messages.remove_friendship_377db87428'),
+                __('messages.remove_friendship'),
                 'user-minus',
                 'quiet',
                 $returnState,
@@ -343,7 +343,7 @@ final class PetFriendPresenter
                 'dismiss-pet-friend-recommendation',
                 $source,
                 $target,
-                __('messages.not_interested_7991fb9792'),
+                __('messages.not_interested'),
                 'eye-off',
                 'quiet',
                 $returnState,
@@ -354,13 +354,13 @@ final class PetFriendPresenter
             'toggle-pet-friend-block',
             $source,
             $target,
-            __('messages.block_pet_and_owner_36b2e25f0c'),
+            __('messages.block_pet_and_owner'),
             'ban',
             'quiet',
             $returnState,
         );
         $actions[] = [
-            'label' => __('messages.report_profile_c32c158ce5'),
+            'label' => __('messages.report_profile'),
             'icon' => 'flag',
             'variant' => 'quiet',
             'href' => route('compose', [
@@ -424,16 +424,16 @@ final class PetFriendPresenter
     private function status(?array $relationship, ?string $direction): array
     {
         if ($relationship === null) {
-            return ['label' => __('messages.suggested_friend_96f1975a91'), 'icon' => 'sparkles', 'tone' => 'surface'];
+            return ['label' => __('messages.suggested_friend'), 'icon' => 'sparkles', 'tone' => 'surface'];
         }
 
         return match ($relationship['status']) {
-            'accepted' => ['label' => __('messages.friends_bd104d1b98'), 'icon' => 'heart-handshake', 'tone' => 'mint'],
-            'paused' => ['label' => __('messages.friendship_paused_bece4e4bfe'), 'icon' => 'pause', 'tone' => 'surface'],
+            'accepted' => ['label' => __('messages.friends'), 'icon' => 'heart-handshake', 'tone' => 'mint'],
+            'paused' => ['label' => __('messages.friendship_paused'), 'icon' => 'pause', 'tone' => 'surface'],
             'pending' => $direction === 'incoming'
-                ? ['label' => __('messages.wants_to_connect_469da2bb35'), 'icon' => 'inbox', 'tone' => 'sun']
-                : ['label' => __('messages.request_sent_a73f99f6bf'), 'icon' => 'send', 'tone' => 'surface'],
-            default => ['label' => __('messages.suggested_friend_96f1975a91'), 'icon' => 'sparkles', 'tone' => 'surface'],
+                ? ['label' => __('messages.wants_to_connect'), 'icon' => 'inbox', 'tone' => 'sun']
+                : ['label' => __('messages.request_sent'), 'icon' => 'send', 'tone' => 'surface'],
+            default => ['label' => __('messages.suggested_friend'), 'icon' => 'sparkles', 'tone' => 'surface'],
         };
     }
 
@@ -503,10 +503,10 @@ final class PetFriendPresenter
         );
 
         return [
-            ['label' => __('messages.friends_bd104d1b98'), 'value' => (string) count($active), 'detail' => __('messages.accepted_or_paused_03aa0c485c')],
-            ['label' => __('messages.incoming_e301820ac8'), 'value' => (string) count($incoming), 'detail' => __('messages.owner_review_needed_7bc63e5e2a')],
-            ['label' => __('messages.sent_c16bc82bf1'), 'value' => (string) count($outgoing), 'detail' => __('messages.awaiting_a_reply_e489bcfdd7')],
-            ['label' => __('messages.walk_ready_cabf162768'), 'value' => (string) count($walks), 'detail' => __('messages.accepted_walk_friends_d25952d846')],
+            ['label' => __('messages.friends'), 'value' => (string) count($active), 'detail' => __('messages.accepted_or_paused')],
+            ['label' => __('messages.incoming'), 'value' => (string) count($incoming), 'detail' => __('messages.owner_review_needed')],
+            ['label' => __('messages.sent'), 'value' => (string) count($outgoing), 'detail' => __('messages.awaiting_a_reply')],
+            ['label' => __('messages.walk_ready'), 'value' => (string) count($walks), 'detail' => __('messages.accepted_walk_friends')],
         ];
     }
 
@@ -542,10 +542,10 @@ final class PetFriendPresenter
                 ], static fn (string $value): bool => $value !== '')),
             ];
         }, [
-            ['key' => 'friends', 'label' => __('messages.friends_bd104d1b98'), 'icon' => 'heart-handshake'],
-            ['key' => 'requests', 'label' => __('messages.requests_ada27592c9'), 'icon' => 'inbox'],
-            ['key' => 'discover', 'label' => __('messages.find_friends_feb7bfd172'), 'icon' => 'search'],
-            ['key' => 'walks', 'label' => __('messages.walks_22e4ca854b'), 'icon' => 'route'],
+            ['key' => 'friends', 'label' => __('messages.friends'), 'icon' => 'heart-handshake'],
+            ['key' => 'requests', 'label' => __('messages.requests'), 'icon' => 'inbox'],
+            ['key' => 'discover', 'label' => __('messages.find_friends'), 'icon' => 'search'],
+            ['key' => 'walks', 'label' => __('messages.walks'), 'icon' => 'route'],
         ]);
     }
 
@@ -586,11 +586,11 @@ final class PetFriendPresenter
     private function intentOptions(): array
     {
         return [
-            'all' => __('messages.all_friendship_types_e29ae9dcd9'),
-            'walk' => __('messages.walk_companions_ffea92097d'),
-            'play' => __('messages.play_friends_e9f51431c8'),
-            'training' => __('messages.training_partners_a9afdefac7'),
-            'neighbor' => __('messages.nearby_friends_ceee23cfd2'),
+            'all' => __('messages.all_friendship_types'),
+            'walk' => __('messages.walk_companions'),
+            'play' => __('messages.play_friends'),
+            'training' => __('messages.training_partners'),
+            'neighbor' => __('messages.nearby_friends'),
         ];
     }
 
@@ -600,9 +600,9 @@ final class PetFriendPresenter
     private function sortOptions(): array
     {
         return [
-            'compatibility' => __('messages.best_shared_routines_e4abfa52d6'),
-            'recent' => __('messages.recent_activity_6cb44b5633'),
-            'name' => __('messages.name_dcd1d5223f'),
+            'compatibility' => __('messages.best_shared_routines'),
+            'recent' => __('messages.recent_activity'),
+            'name' => __('messages.name'),
         ];
     }
 
@@ -651,7 +651,7 @@ final class PetFriendPresenter
                 'undo-pet-friend-recommendation',
                 $source,
                 $target,
-                __('messages.undo_a8283ade31'),
+                __('messages.undo'),
                 'undo-2',
                 'paper',
                 $this->returnState($tab, $intent, $sort, $query),
@@ -682,7 +682,7 @@ final class PetFriendPresenter
                 'toggle-pet-friend-block',
                 $source,
                 $target,
-                __('messages.unblock_712da63171'),
+                __('messages.unblock'),
                 'shield-check',
                 'paper',
                 $this->returnState($tab, $intent, $sort, $query),
@@ -698,23 +698,23 @@ final class PetFriendPresenter
         return match ($tab) {
             'requests' => [
                 'icon' => 'inbox',
-                'title' => __('messages.no_open_requests_b2aac6c253'),
+                'title' => __('messages.no_open_requests'),
                 'description' => __('presentation.no_friendship_requests', ['pet' => $pet]),
             ],
             'discover' => [
                 'icon' => 'search-x',
-                'title' => __('messages.no_matching_recommendations_a3380733e8'),
-                'description' => __('messages.try_a_broader_friendship_type_or_clear_the_search_da13c6b05f'),
+                'title' => __('messages.no_matching_recommendations'),
+                'description' => __('messages.try_a_broader_friendship_type_or_clear_the_search'),
             ],
             'walks' => [
                 'icon' => 'route-off',
-                'title' => __('messages.no_walk_companions_yet_3105e875d1'),
-                'description' => __('messages.accept_a_walk_friendship_before_planning_a_meetup_4a586aa95e'),
+                'title' => __('messages.no_walk_companions_yet'),
+                'description' => __('messages.accept_a_walk_friendship_before_planning_a_meetup'),
             ],
             default => [
                 'icon' => 'users-round',
-                'title' => __('messages.no_friends_in_this_view_35452ce5f0'),
-                'description' => __('messages.use_find_friends_to_start_an_owner_managed_introduction_433d180201'),
+                'title' => __('messages.no_friends_in_this_view'),
+                'description' => __('messages.use_find_friends_to_start_an_owner_managed_introduction'),
             ],
         };
     }

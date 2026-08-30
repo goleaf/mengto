@@ -16,7 +16,7 @@
                                 <x-status-badge :label="$entry['sync_label']" icon="cloud-check" tone="surface" />
                             @endif
                             @if ($entry['is_unusual'])
-                                <x-status-badge label="{{ __('ui.unusual_observation_a958dc6268') }}" icon="triangle-alert" tone="warning" />
+                                <x-status-badge label="{{ __('ui.unusual_observation') }}" icon="triangle-alert" tone="warning" />
                             @endif
                         </div>
                         <p class="mt-1 text-sm text-paw-muted">
@@ -30,7 +30,7 @@
                     @forelse ($entry['facts'] as $fact)
                         <span><strong>{{ $fact['label'] }}:</strong> {{ $fact['value'] }}</span>
                     @empty
-                        <span class="sr-only">{{ __('ui.no_measured_details_379b08d5ca') }}</span>
+                        <span class="sr-only">{{ __('ui.no_measured_details') }}</span>
                     @endforelse
                 </div>
 
@@ -39,7 +39,7 @@
                         @forelse ($entry['measurements'] as $detail)
                             <div><dt>{{ $detail['label'] }}</dt><dd>{{ $detail['value'] }}</dd></div>
                         @empty
-                            <div><dt>{{ __('ui.measurements_3c75780356') }}</dt><dd>{{ __('ui.not_recorded_b37c7879f6') }}</dd></div>
+                            <div><dt>{{ __('ui.measurements') }}</dt><dd>{{ __('ui.not_recorded') }}</dd></div>
                         @endforelse
                     </dl>
                 @endif
@@ -49,7 +49,7 @@
                         @forelse ($entry['context'] as $detail)
                             <div><dt>{{ $detail['label'] }}</dt><dd>{{ $detail['value'] }}</dd></div>
                         @empty
-                            <div><dt>{{ __('ui.context_a6e600a10f') }}</dt><dd>{{ __('ui.not_recorded_b37c7879f6') }}</dd></div>
+                            <div><dt>{{ __('ui.context') }}</dt><dd>{{ __('ui.not_recorded') }}</dd></div>
                         @endforelse
                     </dl>
                 @endif
@@ -67,7 +67,7 @@
                                 <small>{{ $media['sensitivity_label'] }}</small>
                             </a>
                         @empty
-                            <span class="text-sm text-paw-muted">{{ __('ui.no_private_media_f0c6a2550f') }}</span>
+                            <span class="text-sm text-paw-muted">{{ __('ui.no_private_media') }}</span>
                         @endforelse
                     </div>
                 @endif
@@ -76,7 +76,7 @@
     @empty
         <div class="care-empty">
             <x-ui-icon name="notebook-tabs" size="xl" />
-            <p>{{ __('ui.no_care_actions_have_been_recorded_for_this_4e87ea5361') }}</p>
+            <p>{{ __('ui.no_care_actions_have_been_recorded_for_this_period') }}</p>
         </div>
     @endforelse
 </div>

@@ -165,6 +165,7 @@ return new class extends Migration
         Schema::dropIfExists('place_media');
 
         Schema::table('place_access_grants', function (Blueprint $table): void {
+            $table->dropUnique('place_access_grants_revocation_idempotency_key_unique');
             $table->dropColumn('revocation_idempotency_key');
         });
 

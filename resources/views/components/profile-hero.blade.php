@@ -2,8 +2,8 @@
     'profile',
     'section',
     'badges' => [],
-    'summaryLabel' => __('ui.profile_summary_b5913ff585'),
-    'summaryEmpty' => __('ui.profile_summary_unavailable_4509769cdd'),
+    'summaryLabel' => __('ui.profile_summary'),
+    'summaryEmpty' => __('ui.profile_summary_unavailable'),
     'summaryIcons' => [],
     'actionsLabel' => null,
 ])

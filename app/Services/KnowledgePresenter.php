@@ -51,13 +51,13 @@ class KnowledgePresenter
 
         return [
             'owner' => $this->profiles->owner(),
-            'page_title' => __('messages.knowledge_base_pawcircle_8a93af1398'),
+            'page_title' => __('messages.knowledge_base_brand'),
             'active_section' => 'forum',
             'articles' => $articles,
             'filters' => ['q' => $query, 'category' => $category, 'type' => $type],
             'categories' => $this->taxonomy->categoryOptions(),
             'types' => [
-                'all' => __('messages.all_formats_8a01c6b5b4'),
+                'all' => __('messages.all_formats'),
                 'guide' => __('knowledge.types.guide'),
                 'checklist' => __('knowledge.types.checklist'),
                 'faq' => __('knowledge.types.faq'),
@@ -157,12 +157,12 @@ class KnowledgePresenter
         $legacyContributors = collect($article->contributors ?? [])
             ->map(fn (array|string $contributor): array => is_array($contributor)
                 ? [
-                    'name' => (string) ($contributor['name'] ?? __('messages.editorial_contributor_497377eedf')),
-                    'role' => (string) ($contributor['role'] ?? __('messages.contributor_d5535b9113')),
+                    'name' => (string) ($contributor['name'] ?? __('messages.editorial_contributor')),
+                    'role' => (string) ($contributor['role'] ?? __('messages.contributor')),
                 ]
                 : [
                     'name' => $contributor,
-                    'role' => __('messages.contributor_d5535b9113'),
+                    'role' => __('messages.contributor'),
                 ]);
 
         return [

@@ -65,13 +65,13 @@ class CreateBooking
 
             if (! $slot->hasCapacity() || ($slot->service_id !== null && $slot->service_id !== $service->id)) {
                 throw ValidationException::withMessages([
-                    'availability_slot_id' => __('messages.this_appointment_time_is_no_longer_available_2ca3f4142c'),
+                    'availability_slot_id' => __('messages.this_appointment_time_is_no_longer_available'),
                 ]);
             }
 
             $pet = $this->taxonomy->petData()[$data['pet_key']] ?? null;
             if ($pet === null) {
-                throw ValidationException::withMessages(['pet_key' => __('messages.choose_an_available_pet_profile_b76dc60a71')]);
+                throw ValidationException::withMessages(['pet_key' => __('messages.choose_an_available_pet_profile')]);
             }
 
             $status = $service->requires_payment

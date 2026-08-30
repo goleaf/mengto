@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 
 /**
  * @property string|null $age_group
@@ -85,6 +86,8 @@ class Listing extends Model
     /** @use HasFactory<ListingFactory> */
     use HasFactory;
 
+    public const DIRECTORY_STATS_CACHE_KEY = 'listings.directory.stats.v2';
+
     private const ROUTE_COLUMNS = [
         'id', 'owner_id', 'owner_key', 'owner_name', 'owner_initials', 'slug',
         'type', 'category', 'brand', 'model', 'material', 'title', 'description',
@@ -122,8 +125,8 @@ class Listing extends Model
 
     protected static function booted(): void
     {
-        static::saved(fn (): bool => Cache::forget('listings.directory.stats'));
-        static::deleted(fn (): bool => Cache::forget('listings.directory.stats'));
+        static::saved(fn (): bool => self::invalidateDirectoryStats());
+        static::deleted(fn (): bool => self::invalidateDirectoryStats());
     }
 
     protected function casts(): array
@@ -324,13 +327,41 @@ class Listing extends Model
     /** @return array{available: int, adoption: int, free: int, rental: int, shelter: int, cities: int} */
     public static function directoryStats(): array
     {
-        return Cache::remember('listings.directory.stats', now()->addMinutes(5), fn (): array => [
+        $resolver = fn (): array => [
             'available' => self::query()->published()->count(),
             'adoption' => self::query()->published()->where('type', ListingType::Adoption->value)->count(),
             'free' => self::query()->published()->where('is_free', true)->count(),
             'rental' => self::query()->published()->where('type', ListingType::Rental->value)->count(),
             'shelter' => self::query()->published()->where('type', ListingType::ShelterNeed->value)->count(),
             'cities' => self::query()->published()->distinct()->count('city'),
-        ]);
+        ];
+
+        try {
+            $cached = Cache::get(self::DIRECTORY_STATS_CACHE_KEY);
+
+            if (is_array($cached)) {
+                return $cached;
+            }
+
+            return Cache::lock(self::DIRECTORY_STATS_CACHE_KEY.':refresh', 10)
+                ->block(2, fn (): array => Cache::remember(
+                    self::DIRECTORY_STATS_CACHE_KEY,
+                    now()->addMinutes(5),
+                    $resolver,
+                ));
+        } catch (\Throwable) {
+            return $resolver();
+        }
+    }
+
+    public static function invalidateDirectoryStats(): bool
+    {
+        $forgotten = Cache::forget(self::DIRECTORY_STATS_CACHE_KEY);
+
+        if (DB::transactionLevel() > 0) {
+            DB::afterCommit(static fn (): bool => Cache::forget(self::DIRECTORY_STATS_CACHE_KEY));
+        }
+
+        return $forgotten;
     }
 }

@@ -36,14 +36,16 @@ final class ContentPublicationController extends Controller
             'domainLinks:id,content_publication_id,domain_type,domain_key,relationship,is_primary',
         ]);
         $viewer = $request->user();
+        $title = $contentPublication->title ?: __('content.publication.untitled');
+        $publication = $presenter->present(
+            $contentPublication,
+            $viewer instanceof User ? $viewer : null,
+        );
 
         return view('content.show', [
             'owner' => $profiles->owner(),
-            'page_title' => $contentPublication->title ?: __('content.publication.untitled'),
-            'publication' => $presenter->present(
-                $contentPublication,
-                $viewer instanceof User ? $viewer : null,
-            ),
+            'page_title' => $title,
+            'publication' => [...$publication, 'title' => $title],
         ]);
     }
 }

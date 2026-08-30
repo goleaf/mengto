@@ -250,6 +250,49 @@ test('first party php messages are localized', function () {
     expect($result->successful(), $result->errorOutput().$result->output())->toBeTrue();
 });
 
+test('translation keys never use generated digest suffixes', function () {
+    foreach (['messages', 'ui'] as $catalogue) {
+        foreach (['en', 'lt', 'ru'] as $locale) {
+            /** @var array<string, string> $translations */
+            $translations = require lang_path("{$locale}/{$catalogue}.php");
+
+            foreach (array_keys($translations) as $key) {
+                expect($key, "{$locale}.{$catalogue}.{$key}")
+                    ->not->toMatch('/_[0-9a-f]{10}$/');
+            }
+        }
+    }
+
+    foreach ([app_path(), resource_path(), base_path('routes'), database_path(), base_path('tests')] as $path) {
+        foreach (sourceFiles($path) as $file) {
+            $matches = [];
+            preg_match_all(
+                '/\b(?:messages|ui)\.[\pL\pN_]*_[0-9a-f]{10}\b/u',
+                $file->getContents(),
+                $matches,
+            );
+
+            expect($matches[0], $file->getRelativePathname())->toBeEmpty();
+        }
+    }
+
+    foreach (['localize-blade-literals.php', 'localize-php-messages.php'] as $script) {
+        $contents = File::get(base_path("scripts/{$script}"));
+
+        expect($contents, $script)
+            ->toContain('ReadableTranslationKey::resolve')
+            ->not->toMatch('/\\b(?:hash|md5|sha1)\\s*\\(/i');
+    }
+});
+
+test('readable translation key migration remains clean', function () {
+    $result = Process::path(base_path())
+        ->timeout(30)
+        ->run([PHP_BINARY, 'scripts/migrate-readable-translation-keys.php', '--check']);
+
+    expect($result->successful(), $result->errorOutput().$result->output())->toBeTrue();
+});
+
 test('javascript receives user facing copy from localized markup', function () {
     $literalMutation = '/(?:textContent|innerText)\s*=\s*[\'"][^\'"]*\pL/iu';
     $literalAccessibleName = '/setAttribute\(\s*[\'"](?:aria-label|title)[\'"]\s*,\s*[\'"][^\'"]*\pL/iu';

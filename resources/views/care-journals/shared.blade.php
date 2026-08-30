@@ -3,7 +3,7 @@
         <header class="care-shared-header">
             <div>
                 <div class="flex flex-wrap items-center gap-2">
-                    <x-status-badge label="{{ __('ui.temporary_private_access_9960aba82b') }}" icon="key-round" tone="success" size="regular" />
+                    <x-status-badge label="{{ __('ui.temporary_private_access') }}" icon="key-round" tone="success" size="regular" />
                     <x-status-badge :label="$grant['recipient_role']" icon="user-round-check" tone="surface" />
                 </div>
                 <h1 class="mt-4 text-3xl font-bold sm:text-4xl">{{ __('presentation.pet_care_plan', ['pet' => $care_journal['pet_name']]) }}</h1>
@@ -11,7 +11,7 @@
             </div>
             <div class="care-shared-header__pet">
                 @if ($care_journal['image_url'])
-                    <img src="{{ $care_journal['image_url'] }}" alt="{{ $care_journal['pet_name'] }}">
+                    <img src="{{ $care_journal['image_url'] }}" alt="{{ $care_journal['pet_name'] }}" width="1200" height="900">
                 @else
                     <x-ui-icon name="paw-print" size="xl" />
                 @endif
@@ -22,26 +22,26 @@
             <div class="care-form-errors" role="alert">
                 <x-ui-icon name="circle-alert" size="lg" />
                 <div>
-                    <strong>{{ __('ui.the_report_was_not_saved_5503500502') }}</strong>
+                    <strong>{{ __('ui.the_report_was_not_saved') }}</strong>
                     <ul>
                         @forelse ($errors->all() as $error)
                             <li>{{ $error }}</li>
                         @empty
-                            <li>{{ __('ui.validation_failed_fa0dce7e0b') }}</li>
+                            <li>{{ __('ui.validation_failed') }}</li>
                         @endforelse
                     </ul>
                 </div>
             </div>
         @endif
 
-        <section class="care-access-scope" aria-label="{{ __('ui.temporary_access_limits_2259af7d73') }}">
+        <section class="care-access-scope" aria-label="{{ __('ui.temporary_access_limits') }}">
             <x-ui-icon name="shield-check" size="lg" />
             <div>
                 <strong>{{ __('presentation.access_limited_to', ['sections' => implode(', ', $grant['sections'])]) }}</strong>
                 <p>
-                    {{ $grant['allow_add'] ? __('ui.you_may_add_structured_reports_16a0ff5e60') : __('ui.read_only_access_14284bb92c') }}
-                    {{ $grant['allow_location'] ? __('ui.location_sharing_is_enabled_fa7f5eb0ef') : __('ui.exact_locations_remain_hidden_cbb913bf99') }}
-                    {{ $grant['allow_media'] ? __('ui.media_is_enabled_52ec773bfd') : __('ui.private_media_remains_hidden_fc8f84f6cb') }}
+                    {{ $grant['allow_add'] ? __('ui.you_may_add_structured_reports') : __('ui.read_only_access') }}
+                    {{ $grant['allow_location'] ? __('ui.location_sharing_is_enabled') : __('ui.exact_locations_remain_hidden') }}
+                    {{ $grant['allow_media'] ? __('ui.media_is_enabled') : __('ui.private_media_remains_hidden') }}
                 </p>
             </div>
         </section>
@@ -52,8 +52,8 @@
                     <section class="care-section" aria-labelledby="shared-entry-title">
                         <div class="care-section__heading">
                             <div>
-                                <p class="text-xs font-bold uppercase text-paw-leaf">{{ __('ui.sitter_or_specialist_report_29848f5a2c') }}</p>
-                                <h2 id="shared-entry-title" class="mt-1 text-xl font-bold">{{ __('ui.record_completed_care_90a24f2922') }}</h2>
+                                <p class="text-xs font-bold uppercase text-paw-leaf">{{ __('ui.sitter_or_specialist_report') }}</p>
+                                <h2 id="shared-entry-title" class="mt-1 text-xl font-bold">{{ __('ui.record_completed_care') }}</h2>
                             </div>
                         </div>
                         <x-care-entry-form
@@ -65,7 +65,7 @@
                             :source-name="$grant['recipient_name']"
                             :allow-location="$grant['allow_location']"
                             :allow-media="$grant['allow_media']"
-                            submit-label="{{ __('ui.submit_care_report_d960917c43') }}"
+                            submit-label="{{ __('ui.submit_care_report') }}"
                             compact
                         />
                     </section>
@@ -74,8 +74,8 @@
                 <section class="care-section" aria-labelledby="shared-timeline-title">
                     <div class="care-section__heading">
                         <div>
-                            <p class="text-xs font-bold uppercase text-paw-leaf">{{ __('ui.allowed_history_0b92c02cc8') }}</p>
-                            <h2 id="shared-timeline-title" class="mt-1 text-xl font-bold">{{ __('ui.care_timeline_73af4b6545') }}</h2>
+                            <p class="text-xs font-bold uppercase text-paw-leaf">{{ __('ui.allowed_history') }}</p>
+                            <h2 id="shared-timeline-title" class="mt-1 text-xl font-bold">{{ __('ui.care_timeline') }}</h2>
                         </div>
                     </div>
                     <x-care-timeline :entries="$entries" />
@@ -85,8 +85,8 @@
                 <section class="care-section" aria-labelledby="shared-task-title">
                     <div class="care-section__heading">
                         <div>
-                            <p class="text-xs font-bold uppercase text-paw-leaf">{{ __('ui.assigned_plan_6be7ae6b34') }}</p>
-                            <h2 id="shared-task-title" class="mt-1 text-xl font-bold">{{ __('ui.open_tasks_87cfa1a507') }}</h2>
+                            <p class="text-xs font-bold uppercase text-paw-leaf">{{ __('ui.assigned_plan') }}</p>
+                            <h2 id="shared-task-title" class="mt-1 text-xl font-bold">{{ __('ui.open_tasks') }}</h2>
                         </div>
                     </div>
                     <x-care-task-list :tasks="$tasks" read-only />

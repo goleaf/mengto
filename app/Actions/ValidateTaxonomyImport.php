@@ -28,7 +28,7 @@ final readonly class ValidateTaxonomyImport
             $import = TaxonImport::query()->findOrFail($import->id);
 
             if ($import->state !== TaxonImportState::Validating) {
-                throw new RuntimeException(__('messages.the_taxonomy_import_is_not_ready_for_validation_c6ce691532'));
+                throw new RuntimeException(__('messages.the_taxonomy_import_is_not_ready_for_validation'));
             }
 
             $hierarchy = $this->hierarchy->rebuild($import);

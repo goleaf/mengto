@@ -53,6 +53,12 @@ class Sighting extends Model
     /** @use HasFactory<SightingFactory> */
     use HasFactory;
 
+    protected static function booted(): void
+    {
+        static::saved(fn (): bool => SearchCase::invalidateDirectoryStats());
+        static::deleted(fn (): bool => SearchCase::invalidateDirectoryStats());
+    }
+
     protected $fillable = [
         'search_case_id', 'reporter_id', 'reporter_key', 'reporter_name',
         'idempotency_key', 'status', 'observed_at', 'submitted_at',

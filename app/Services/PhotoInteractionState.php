@@ -121,7 +121,7 @@ final class PhotoInteractionState
         if (! $reactionType instanceof PhotoReactionType) {
             throw ValidationException::withMessages([
                 'reaction' => __(
-                    'messages.choose_an_available_reaction_c8a1ac8cff',
+                    'messages.choose_an_available_reaction',
                 ),
             ]);
         }

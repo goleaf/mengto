@@ -1,11 +1,14 @@
 <?php
 
 use App\Enums\ExpertProfileStatus;
+use App\Models\Booking;
 use App\Models\Credential;
 use App\Models\ExpertProfile;
 use App\Models\ForumAnswer;
 use App\Models\ForumTopic;
 use App\Models\Service;
+use App\Services\ExpertPresenter;
+use Illuminate\Support\Facades\DB;
 
 test('expert directory applies species and qualification filters without publishing pending profiles', function () {
     $avian = ExpertProfile::factory()->create([
@@ -129,4 +132,38 @@ test('professional workspace shows the current specialists scope services and ve
         ->assertSee('Adoption preparation call')
         ->assertSee('Qualification')
         ->assertSee('License');
+});
+
+test('professional workspace keeps representative collections and query count bounded', function () {
+    $expert = ExpertProfile::factory()->create([
+        'owner_key' => 'mia-carter',
+        'public_name' => 'Bounded Workspace Professional',
+    ]);
+    $service = Service::factory()->create([
+        'expert_profile_id' => $expert->id,
+        'name' => 'Primary workspace service',
+    ]);
+
+    Service::factory()->count(15)->create(['expert_profile_id' => $expert->id]);
+    Credential::factory()->count(12)->create(['expert_profile_id' => $expert->id]);
+    Booking::factory()->count(15)->create([
+        'service_id' => $service->id,
+        'starts_at' => now()->addDay(),
+    ]);
+
+    DB::flushQueryLog();
+    DB::enableQueryLog();
+
+    try {
+        $dashboard = app(ExpertPresenter::class)->dashboard();
+        $queryCount = count(DB::getQueryLog());
+    } finally {
+        DB::disableQueryLog();
+    }
+
+    expect($queryCount)->toBe(6)
+        ->and($dashboard['bookings'])->toHaveCount(12)
+        ->and($dashboard['credentials'])->toHaveCount(8)
+        ->and($dashboard['services'])->toHaveCount(12)
+        ->and($dashboard['metrics'][1]['value'])->toBe(15);
 });

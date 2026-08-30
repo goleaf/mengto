@@ -67,7 +67,7 @@ final class ForumEventRescheduleForm extends Form
         $endsAt = $this->parseLocalDateTime((string) $validated['endsAt'], $timezone);
 
         if ($startsAt === null || $endsAt === null) {
-            throw new \LogicException(__('messages.validated_reschedule_date_times_could_not_be_parsed_aed1a03123'));
+            throw new \LogicException(__('messages.validated_reschedule_date_times_could_not_be_parsed'));
         }
 
         return [

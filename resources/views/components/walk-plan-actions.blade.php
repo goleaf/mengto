@@ -19,7 +19,7 @@
     @if ($plan['conversation'])
         <x-action-control
             :href="route('messages.index', ['conversation' => $plan['conversation']])"
-            label="{{ __('ui.open_messages_cf997592c9') }}"
+            label="{{ __('ui.open_messages') }}"
             icon="message-circle"
             variant="paper"
             size="regular"
@@ -34,7 +34,7 @@
                 'target' => $plan['id'],
                 'label' => $plan['title'],
             ]"
-            label="{{ __('ui.cancel_plan_2e5d129831') }}"
+            label="{{ __('ui.cancel_plan') }}"
             icon="x"
             variant="quiet"
             size="regular"
@@ -42,7 +42,7 @@
     @else
         <x-action-control
             :href="route('compose', 'walk')"
-            label="{{ __('ui.plan_another_d34fe3c272') }}"
+            label="{{ __('ui.plan_another') }}"
             icon="calendar-plus"
             variant="paper"
             size="regular"

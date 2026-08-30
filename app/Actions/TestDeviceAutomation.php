@@ -21,7 +21,7 @@ class TestDeviceAutomation
     ): DeviceAutomationRun {
         if ($automation->smart_device_id !== $device->id) {
             throw ValidationException::withMessages([
-                'automation' => __('messages.this_automation_does_not_belong_to_the_selected_device_51a0fba631'),
+                'automation' => __('messages.this_automation_does_not_belong_to_the_selected_device'),
             ]);
         }
 
@@ -46,7 +46,7 @@ class TestDeviceAutomation
                 'result' => [
                     'would_run' => true,
                     'real_command_sent' => false,
-                    'message' => __('messages.conditions_and_recipients_validated_no_real_command_was__f20f0c88cd'),
+                    'message' => __('messages.conditions_and_recipients_validated_no_real_command_was_sent'),
                 ],
             ]);
 

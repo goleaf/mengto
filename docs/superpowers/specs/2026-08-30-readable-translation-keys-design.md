@@ -3,10 +3,9 @@
 ## Problem
 
 The `messages` and `ui` catalogues contain 5,860 mechanically generated keys
-ending in a ten-character SHA-256 fragment, for example
-`legacy_question_retained_for_moderation_review_1c47951f44`. The suffixes are
-not meaningful to contributors, make references difficult to review, and are
-created deliberately by both first-party localization scripts.
+ending in a ten-character SHA-256 fragment. Those suffixes are not meaningful
+to contributors, make references difficult to review, and are created
+deliberately by both first-party localization scripts.
 
 The defect is repository-wide rather than limited to the four observed Place
 compatibility fallbacks:
@@ -51,6 +50,11 @@ localization scripts. Each script follows this order:
 The collision error directs the contributor to add a deliberate catalogue key
 for the new text. The scripts may never fall back to a digest, random suffix,
 timestamp, or numeric sequence.
+
+Operator-only log messages are not user-facing translation candidates. The PHP
+localizer distinguishes direct logger arguments and values passed directly to
+the logger from domain methods with similar names; browser/API messages remain
+inside the localization boundary.
 
 ## Migration
 

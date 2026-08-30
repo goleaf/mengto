@@ -9,12 +9,12 @@
         @if ($post['urgent'])
             <div class="post-alert">
                 <x-ui-icon name="siren" size="sm" />
-                <span>{{ __('ui.active_local_alert_449aa801e6') }}</span>
+                <span>{{ __('ui.active_local_alert') }}</span>
             </div>
         @elseif ($post['verified'] && $post['format'] === 'expert')
             <div class="post-expert">
                 <x-ui-icon name="badge-check" size="sm" />
-                <span>{{ __('ui.verified_professional_context_78bb632383') }}</span>
+                <span>{{ __('ui.verified_professional_context') }}</span>
             </div>
         @endif
 
@@ -39,7 +39,7 @@
             @endif
 
             <x-post-context :post="$post" />
-            <x-tag-list :items="$post['tags']" empty="{{ __('ui.no_tags_147e6bba43') }}" class="mt-4" />
+            <x-tag-list :items="$post['tags']" empty="{{ __('ui.no_tags') }}" class="mt-4" />
         </div>
 
         <x-post-media :post="$post" :eager="$eager" />
@@ -63,7 +63,7 @@
 
         <p class="mt-4 text-sm leading-6 text-paw-ink">{{ $post['body'] }}</p>
 
-        <x-tag-list :items="$post['tags']" empty="{{ __('ui.no_tags_147e6bba43') }}" class="mt-4" />
+        <x-tag-list :items="$post['tags']" empty="{{ __('ui.no_tags') }}" class="mt-4" />
     </div>
 
     <x-responsive-image

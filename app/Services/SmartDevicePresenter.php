@@ -53,6 +53,7 @@ class SmartDevicePresenter
                     ->where('status', DeviceAutomationStatus::Enabled->value),
             ])
             ->latest('updated_at')
+            ->latest('id')
             ->simplePaginate(12)
             ->withQueryString();
 
@@ -80,7 +81,7 @@ class SmartDevicePresenter
         $devices->through(fn (SmartDevice $device): array => $this->deviceCard($device));
 
         return [
-            ...$this->page(__('messages.private_smart_devices_24df61f205')),
+            ...$this->page(__('messages.private_smart_devices')),
             'devices' => $devices,
             'summary' => $summary,
         ];
@@ -99,7 +100,7 @@ class SmartDevicePresenter
         ];
 
         return [
-            ...$this->page(__('messages.connect_a_smart_device_778fc41657')),
+            ...$this->page(__('messages.connect_a_smart_device')),
             'device_types' => collect(DeviceType::cases())
                 ->map(fn (DeviceType $type): array => [
                     'value' => $type->value,
@@ -446,7 +447,7 @@ class SmartDevicePresenter
         $sharedDevice['exact_location'] = null;
         $sharedDevice['location_label'] = $grant->allow_location
             ? $device->public_zone_label
-            : __('messages.location_not_shared_4c6e250730');
+            : __('messages.location_not_shared');
         $sharedDevice['camera_available'] = $grant->allow_camera
             && $device->type === DeviceType::Camera;
         $sharedDevice['audio_available'] = $grant->allow_audio;
@@ -505,26 +506,26 @@ class SmartDevicePresenter
             'operating_mode' => Str::headline($device->operating_mode),
             'connection_type' => $device->connection_type
                 ? Str::headline($device->connection_type)
-                : __('ui.not_recorded_b37c7879f6'),
+                : __('ui.not_recorded'),
             'provider_status' => __("devices.provider_status.{$device->provider_status}"),
-            'firmware_version' => $device->firmware_version ?: __('ui.not_reported_adadface01'),
+            'firmware_version' => $device->firmware_version ?: __('ui.not_reported'),
             'battery_percent' => $device->battery_percent,
             'battery_label' => $device->battery_percent !== null
                 ? $this->formatter->percent($device->battery_percent)
-                : __('ui.not_reported_adadface01'),
+                : __('ui.not_reported'),
             'signal_strength' => $device->signal_strength,
             'last_seen' => $this->formatter->relative($device->last_seen_at)
-                ?? __('ui.no_signal_yet_e2df9f4a13'),
+                ?? __('ui.no_signal_yet'),
             'last_seen_exact' => $this->formatter->dateTime($device->last_seen_at),
             'last_synced' => $this->formatter->relative($device->last_synced_at)
-                ?? __('ui.not_synced_ed65095553'),
+                ?? __('ui.not_synced'),
             'last_location' => $this->formatter->relative($device->last_location_at)
-                ?? __('ui.no_location_yet_8fcba1f55b'),
+                ?? __('ui.no_location_yet'),
             'location_label' => $device->private_location_label
                 ?: $device->public_zone_label
-                ?: __('ui.location_not_recorded_1851de591f'),
+                ?: __('ui.location_not_recorded'),
             'public_zone_label' => $device->public_zone_label
-                ?: __('ui.private_zone_43997bb41f'),
+                ?: __('ui.private_zone'),
             'exact_location' => $latitude !== null && $longitude !== null
                 ? __('presentation.coordinates', [
                     'latitude' => $this->formatter->number((float) $latitude, 5, 5),
@@ -533,7 +534,7 @@ class SmartDevicePresenter
                 : null,
             'location_accuracy' => $device->location_accuracy_meters !== null
                 ? __('presentation.approximate_meters', ['count' => $this->formatter->number((float) $device->location_accuracy_meters)])
-                : __('ui.accuracy_unavailable_100be90b04'),
+                : __('ui.accuracy_unavailable'),
             'location_retention_days' => $device->location_retention_days,
             'media_retention_days' => $device->media_retention_days,
             'telemetry_retention_days' => $device->telemetry_retention_days,
@@ -607,8 +608,8 @@ class SmartDevicePresenter
             'id' => $reading->id,
             'metric_type' => $reading->metric_type,
             'metric_label' => Str::headline($reading->metric_type),
-            'value' => trim(($value ?? __('ui.not_reported_adadface01')).' '.($reading->unit ?? '')),
-            'pet_name' => $reading->pet_name ?: __('ui.pet_not_identified_4feadfda07'),
+            'value' => trim(($value ?? __('ui.not_reported')).' '.($reading->unit ?? '')),
+            'pet_name' => $reading->pet_name ?: __('ui.pet_not_identified'),
             'recorded_at' => $this->formatter->dateTime($reading->recorded_at),
             'recorded_relative' => $this->formatter->relative($reading->recorded_at),
             'confidence' => $reading->confidence->label(),
@@ -662,7 +663,7 @@ class SmartDevicePresenter
             ),
             'title' => $event->title,
             'summary' => $event->summary,
-            'pet_name' => $event->pet_name ?: __('ui.pet_not_identified_4feadfda07'),
+            'pet_name' => $event->pet_name ?: __('ui.pet_not_identified'),
             'occurred_at' => $this->formatter->dateTime($event->occurred_at),
             'occurred_relative' => $this->formatter->relative($event->occurred_at),
             'confidence' => $event->confidence->label(),
@@ -803,7 +804,7 @@ class SmartDevicePresenter
                 'count' => $this->formatter->number($automation->max_runs_per_hour),
             ]),
             'last_run' => $this->formatter->relative($automation->last_run_at)
-                ?? __('ui.never_run_e23ed30c16'),
+                ?? __('ui.never_run'),
         ];
     }
 
@@ -816,7 +817,7 @@ class SmartDevicePresenter
             'status' => Str::headline($run->status),
             'is_simulation' => $run->is_simulation,
             'started_at' => $this->formatter->dateTime($run->started_at),
-            'result' => $run->result['message'] ?? __('ui.no_result_message_c1d9d0886a'),
+            'result' => $run->result['message'] ?? __('ui.no_result_message'),
         ];
     }
 
@@ -840,7 +841,7 @@ class SmartDevicePresenter
             'starts_at' => $this->formatter->dateTime($grant->starts_at),
             'expires_at' => $this->formatter->dateTime($grant->expires_at),
             'last_opened' => $this->formatter->relative($grant->last_opened_at)
-                ?? __('ui.never_7e0c679ec7'),
+                ?? __('ui.never'),
             'is_active' => $grant->canBeOpened(),
         ];
     }
@@ -881,16 +882,16 @@ class SmartDevicePresenter
     private function metricOptions(DeviceType $type): array
     {
         $metrics = match ($type) {
-            DeviceType::GpsTracker => [['location', __('messages.location_15b61974b2'), 'coordinates'], ['battery-percent', __('messages.battery_dfcb7c1619'), '%']],
-            DeviceType::ActivityTracker => [['activity-minutes', __('messages.activity_38da1505ca'), 'min'], ['sleep-minutes', __('messages.sleep_d466bcf52e'), 'min']],
-            DeviceType::Feeder => [['food-dispensed', __('messages.food_dispensed_cf51683374'), 'g']],
-            DeviceType::Waterer => [['water-use', __('messages.water_use_3dceacf63b'), 'ml']],
-            DeviceType::LitterBox => [['litter-visit', __('messages.litter_visit_a743a4fff5'), 'times'], ['weight-grams', __('messages.weight_81d27ef6d5'), 'g']],
-            DeviceType::Scale => [['weight-grams', __('messages.weight_81d27ef6d5'), 'g']],
-            DeviceType::TemperatureSensor => [['temperature-c', __('messages.temperature_b958ce8b87'), '°C']],
-            DeviceType::HumiditySensor => [['humidity-percent', __('messages.humidity_46819ccb5e'), '%']],
-            DeviceType::SmartDoor => [['door-use', __('messages.door_use_c755ea3d75'), 'times']],
-            DeviceType::Camera => [['activity-minutes', __('messages.observed_activity_e48b576b41'), 'min'], ['sleep-minutes', __('messages.estimated_sleep_0a231ab440'), 'min']],
+            DeviceType::GpsTracker => [['location', __('messages.location'), 'coordinates'], ['battery-percent', __('messages.battery'), '%']],
+            DeviceType::ActivityTracker => [['activity-minutes', __('messages.activity'), 'min'], ['sleep-minutes', __('messages.sleep'), 'min']],
+            DeviceType::Feeder => [['food-dispensed', __('messages.food_dispensed'), 'g']],
+            DeviceType::Waterer => [['water-use', __('messages.water_use'), 'ml']],
+            DeviceType::LitterBox => [['litter-visit', __('messages.litter_visit'), 'times'], ['weight-grams', __('messages.weight'), 'g']],
+            DeviceType::Scale => [['weight-grams', __('messages.weight'), 'g']],
+            DeviceType::TemperatureSensor => [['temperature-c', __('messages.temperature'), '°C']],
+            DeviceType::HumiditySensor => [['humidity-percent', __('messages.humidity'), '%']],
+            DeviceType::SmartDoor => [['door-use', __('messages.door_use'), 'times']],
+            DeviceType::Camera => [['activity-minutes', __('messages.observed_activity'), 'min'], ['sleep-minutes', __('messages.estimated_sleep'), 'min']],
         };
 
         return collect($metrics)->map(fn (array $metric): array => [

@@ -98,7 +98,7 @@ final class MessageState
         if ($status === 'accepted') {
             $state['messages'][] = $this->newMessage(
                 conversation: $conversation,
-                body: __('messages.message_request_accepted_you_can_now_share_messages_and__474a282278'),
+                body: __('messages.message_request_accepted_you_can_now_share_messages_and_request_a_call'),
                 type: 'system',
                 mine: false,
             );
@@ -299,7 +299,7 @@ final class MessageState
         if (in_array($id, $state['deleted_everyone'], true)) {
             return [
                 ...$message,
-                'body' => __('messages.message_deleted_7e94d4b9a4'),
+                'body' => __('messages.message_deleted'),
                 'type' => 'deleted',
                 'meta' => null,
                 'reply' => null,
@@ -359,8 +359,8 @@ final class MessageState
         return [
             'id' => $id ?? 'system-'.Str::lower(Str::random(10)),
             'conversation' => $conversation,
-            'sender' => $mine ? __('messages.mia_carter_0e5b29cc3b') : __('messages.brand_name'),
-            'time' => __('messages.now_fe18013d93'),
+            'sender' => $mine ? __('messages.mia_carter') : __('messages.brand_name'),
+            'time' => __('messages.now'),
             'datetime' => now()->toAtomString(),
             'body' => $body,
             'mine' => $mine,
@@ -379,14 +379,14 @@ final class MessageState
     private function messageMeta(string $type): ?string
     {
         return match ($type) {
-            'audio' => __('messages.audio_message_0_18_transcript_requested_84dedac6db'),
-            'image' => __('messages.photo_location_metadata_removed_ae2cf1fc7f'),
-            'video' => __('messages.video_captions_can_be_added_49b10f94a3'),
-            'file' => __('messages.document_virus_scan_required_before_download_2fa77c9312'),
-            'pet' => __('messages.pet_profile_card_public_fields_only_ed899af941'),
-            'place' => __('messages.place_card_exact_home_location_excluded_fbc22c1fa7'),
-            'event' => __('messages.event_card_registration_status_private_4ec236ba31'),
-            'task' => __('messages.shared_task_awaiting_owner_9df29e4ca5'),
+            'audio' => __('messages.audio_message_0_18_transcript_requested'),
+            'image' => __('messages.photo_location_metadata_removed'),
+            'video' => __('messages.video_captions_can_be_added'),
+            'file' => __('messages.document_virus_scan_required_before_download'),
+            'pet' => __('messages.pet_profile_card_public_fields_only'),
+            'place' => __('messages.place_card_exact_home_location_excluded'),
+            'event' => __('messages.event_card_registration_status_private'),
+            'task' => __('messages.shared_task_awaiting_owner'),
             default => null,
         };
     }

@@ -62,12 +62,13 @@ class MedicalRecordPresenter
                 'documents',
             ])
             ->latest('updated_at')
+            ->latest('id')
             ->simplePaginate(9);
 
         $records->through(fn (MedicalRecord $record): array => $this->recordCard($record));
 
         return [
-            ...$this->page(__('messages.pet_health_records_911c3e19be'), 'health'),
+            ...$this->page(__('messages.pet_health_records'), 'health'),
             'records' => $records,
         ];
     }
@@ -107,7 +108,7 @@ class MedicalRecordPresenter
             ->all();
 
         return [
-            ...$this->page(__('messages.create_a_private_health_record_78b6de7a5e'), 'health'),
+            ...$this->page(__('messages.create_a_private_health_record'), 'health'),
             'pet_options' => $options,
             'knowledge_status_options' => collect(MedicalKnowledgeStatus::cases())
                 ->mapWithKeys(fn (MedicalKnowledgeStatus $status): array => [
@@ -774,14 +775,14 @@ class MedicalRecordPresenter
                 ->mapWithKeys(fn (MedicationDoseStatus $status): array => [$status->value => $status->label()])
                 ->all(),
             'share_sections' => [
-                'summary' => __('messages.health_summary_0550871563'),
-                'emergency' => __('messages.emergency_instructions_136f946766'),
-                'timeline' => __('messages.medical_timeline_81bce0a0b8'),
-                'medications' => __('messages.active_medications_2a3bd50cbe'),
-                'vaccinations' => __('messages.vaccinations_ed3861e631'),
-                'weight' => __('messages.weight_history_a1ea27c673'),
-                'documents' => __('messages.documents_b4e929d8bc'),
-                'reminders' => __('messages.upcoming_reminders_2ca835d9e9'),
+                'summary' => __('messages.health_summary'),
+                'emergency' => __('messages.emergency_instructions'),
+                'timeline' => __('messages.medical_timeline'),
+                'medications' => __('messages.active_medications'),
+                'vaccinations' => __('messages.vaccinations'),
+                'weight' => __('messages.weight_history'),
+                'documents' => __('messages.documents'),
+                'reminders' => __('messages.upcoming_reminders'),
             ],
         ];
     }

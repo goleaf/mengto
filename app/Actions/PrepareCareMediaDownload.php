@@ -85,7 +85,7 @@ class PrepareCareMediaDownload
     ): void {
         if ($media->care_journal_id !== $journal->id) {
             throw ValidationException::withMessages([
-                'media' => __('messages.this_file_does_not_belong_to_the_selected_care_journal_e162111eec'),
+                'media' => __('messages.this_file_does_not_belong_to_the_selected_care_journal'),
             ]);
         }
     }

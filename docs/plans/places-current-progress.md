@@ -24,8 +24,8 @@ workflows are production-complete.
 | Gate | State | Evidence or blocker |
 | --- | --- | --- |
 | Canonical place/venue authority | Verified foundation | Authority work package |
-| Complete server-rendered directory at scale | Open | Catalogue loads at most 500 records before in-memory filters/pagination |
-| Dynamic place actions | Partial | Static twelve-slug validation is removed; dynamic save and inaccessible-place regressions pass, while the full action matrix remains open |
+| Complete server-rendered directory at scale | Partial | Stable name search uses database pagination and direct detail/action lookup queries one authorized stable key or slug; advanced in-memory filter modes still begin from a 500-record catalogue |
+| Dynamic place actions | Partial | Static twelve-slug validation is removed; direct authorized lookup, dynamic save, and inaccessible-place regressions pass, while the full action matrix remains open |
 | Shared corrections/warnings/reviews/questions | Partial | Questions/official answers are relational and cross-account; corrections, warnings, and reviews remain in encrypted `places.state.v1` |
 | Shared claims and moderation reports | Open | Stored per account; no receiving reviewer/moderation queue |
 | Canonical facts and schedules | Open | Rich content still primarily fixture/default-driven |
@@ -39,12 +39,14 @@ workflows are production-complete.
 
 1. Most shared-looking contribution types remain isolated to the submitting
    account and cannot be managed across accounts.
-2. Non-anonymous review authorship is still hard-coded to Mia Carter; question
-   authorship now comes from the authenticated user.
+2. The attributable final-audit slice now derives non-anonymous review name
+   and Unicode initials from the authenticated account and ignores browser
+   author fields; the wider relational review workflow remains open.
 3. Corrections, warnings, reviews, claims, and reports outside PLA-P06 still
    require their planned relational moderation boundaries.
-4. The directory silently excludes accessible records after its 500-row
-   catalogue cap.
+4. Advanced directory modes can still exclude accessible records after the
+   500-row in-memory catalogue cap; direct detail/action lookup and the stable
+   name-sorted directory no longer share that ceiling.
 5. Emergency ranking and most rich facts are not yet driven by canonical
    schedules, capabilities, and provenance.
 

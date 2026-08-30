@@ -25,6 +25,25 @@ established.
   work is allowed. Any attributable publication must use a temporary
   `GIT_INDEX_FILE` and include a complete staged-diff review.
 
+### External baseline transition during the audit
+
+At `2026-08-30T12:20:09+03:00`, an external process committed the previously
+shared working-tree slice as
+`462539c0ff63bc80a18c7f73b402cb41df02eead` directly on `main`; by
+`2026-08-30T12:20:13+03:00`, `origin/main` had advanced to the same commit.
+The principal did not create, stage, or push that commit. It included this
+ledger and the canonical-plan entry while release gates were already failing.
+The post-transition ahead/behind count remained `0/0`, and four additional
+staged paths remained user-owned. Findings first observed in the dirty tree are
+therefore reclassified against the new committed HEAD, and every final gate
+must be rerun after this transition before it can be current evidence.
+
+Three later documentation-only commits were also created by the concurrent
+process on local `main`: `ce80d2e`, `582f790`, and `9540fe8`. At the latest
+recorded audit checkpoint, local `main` was therefore three commits ahead of
+`origin/main` while a much larger staged and unstaged user-owned change set
+remained active. The principal did not create or publish those commits.
+
 ## Release Decision Rules
 
 1. A historical pass is not current evidence. Every final gate is rerun and
@@ -54,18 +73,50 @@ stage changes, start servers, seed databases, or use networked providers.
 
 | ID | Exclusive scope | Dependencies | Deliverable | Status |
 | --- | --- | --- | --- | --- |
-| FRA-R01 | Requirements, atomic evidence, status semantics, and generated drift | Canonical requirement corpus | Exact status contradictions, missing evidence, provider/external classifications, and generator risks | pending |
-| FRA-R02 | Authentication, authorization, privacy, files, secrets, unsafe success states, and abuse boundaries | Security/privacy contracts | Exploitable or misleading paths with direct evidence and safe reproduction | pending |
-| FRA-R03 | Migrations, schema, constraints, casts, relationships, factories, seeders, and production-data safety | Data and seeding contracts | Additive/rollback/fresh/repeat integrity findings and migration risk ranking | pending |
-| FRA-R04 | Routes, controllers, Actions, Services, policies, models, boundaries, dead code, and obsolete references | Architecture contracts | Boundary violations, unused/deleted symbols, and route/component contradictions | pending |
-| FRA-R05 | Class-based Livewire, passive Blade, browser state, JavaScript lifecycle, templates, and components | Frontend/Livewire contracts | Direct-action, hydration, Blade purity, dead-template, and lifecycle findings | pending |
-| FRA-R06 | EN/LT/RU, formatting, accessibility, mobile, keyboard, forced colors, and reduced motion | Localization/accessibility contracts | Locale parity/literal/placeholder and critical workflow accessibility findings | pending |
-| FRA-R07 | Query bounds, indexes, payloads, assets, cache ownership/scope/TTL/invalidation/locks/failure | Performance/cache contracts | N+1/unbounded/cache-leak or stale-cache findings with measurable checks | pending |
-| FRA-R08 | Payments, devices, maps, weather, WebRTC, push, AI, webhooks, provider configuration, and no-network behavior | Integration/provider contracts | Real/fake/disabled capability matrix and any false-success evidence | pending |
-| FRA-R09 | Pest architecture/feature/unit coverage, policy matrices, factory tests, browser harnesses, coverage driver, and no-network isolation | Testing contract | Missing or misleading coverage, unsafe runners, and exact final commands | pending |
-| FRA-R10 | Deployment, backup, migration, health, cache warming, runtime ownership, rollback, restore, and recovery | Deployment/operations contracts | Code-to-runbook mismatch, destructive procedure, missing smoke, and rollback risks | pending |
-| FRA-R11 | Canonical/historical/generated documentation, active progress files, changelog, route/component/file references, and completion claims | All preceding factual inventories | Contradiction and stale-reference inventory with exact replacement status | pending |
+| FRA-R01 | Requirements, atomic evidence, status semantics, and generated drift | Canonical requirement corpus | Exact status contradictions, missing evidence, provider/external classifications, and generator risks | complete; findings returned |
+| FRA-R02 | Authentication, authorization, privacy, files, secrets, unsafe success states, and abuse boundaries | Security/privacy contracts | Exploitable or misleading paths with direct evidence and safe reproduction | complete; findings returned |
+| FRA-R03 | Migrations, schema, constraints, casts, relationships, factories, seeders, and production-data safety | Data and seeding contracts | Additive/rollback/fresh/repeat integrity findings and migration risk ranking | complete; findings returned |
+| FRA-R04 | Routes, controllers, Actions, Services, policies, models, boundaries, dead code, and obsolete references | Architecture contracts | Boundary violations, unused/deleted symbols, and route/component contradictions | complete; findings returned against `462539c0` |
+| FRA-R05 | Class-based Livewire, passive Blade, browser state, JavaScript lifecycle, templates, and components | Frontend/Livewire contracts | Direct-action, hydration, Blade purity, dead-template, and lifecycle findings | complete; findings returned against `462539c0` |
+| FRA-R06 | EN/LT/RU, formatting, accessibility, mobile, keyboard, forced colors, and reduced motion | Localization/accessibility contracts | Locale parity/literal/placeholder and critical workflow accessibility findings | complete; findings returned against `462539c0` |
+| FRA-R07 | Query bounds, indexes, payloads, assets, cache ownership/scope/TTL/invalidation/locks/failure | Performance/cache contracts | N+1/unbounded/cache-leak or stale-cache findings with measurable checks | complete; findings returned against `462539c0` |
+| FRA-R08 | Payments, devices, maps, weather, WebRTC, push, AI, webhooks, provider configuration, and no-network behavior | Integration/provider contracts | Real/fake/disabled capability matrix and any false-success evidence | complete; findings returned against `462539c0` |
+| FRA-R09 | Pest architecture/feature/unit coverage, policy matrices, factory tests, browser harnesses, coverage driver, and no-network isolation | Testing contract | Missing or misleading coverage, unsafe runners, and exact final commands | complete; findings returned against `462539c0` |
+| FRA-R10 | Deployment, backup, migration, health, cache warming, runtime ownership, rollback, restore, and recovery | Deployment/operations contracts | Code-to-runbook mismatch, destructive procedure, missing smoke, and rollback risks | complete; findings returned against `462539c0` |
+| FRA-R11 | Canonical/historical/generated documentation, active progress files, changelog, route/component/file references, and completion claims | All preceding factual inventories | Contradiction and stale-reference inventory with exact replacement status | in progress against `9540fe8` plus concurrent tree |
 | FRA-R12 | Frozen attributable diff and every release/completion claim | FRA-R01..R11 dispositions and completed gate ledger | Independent adversarial verdict; every material claim challenged and dispositioned | blocked until diff freeze |
+
+## Final Integration Resumption Cycle
+
+Resumption baseline: `9540fe8a` on `main`, with local `main` three commits ahead
+of `origin/main` at `462539c0`. The staged, unstaged, and untracked paths shown
+by the mandatory opening `git status` remain protected shared work. This cycle
+does not treat any earlier review, pass, status, or generated file as current
+proof.
+
+All reviewers below are newly dispatched independent read-only agents. They
+may inspect files and run non-mutating discovery commands, but must not edit,
+format, stage, commit, seed, migrate, start a server, alter caches, or call a
+real provider. Each deliverable must contain exact path/line or symbol
+evidence, stable requirement IDs where applicable, a safe reproduction
+command, severity, fixability classification, and a release verdict.
+
+| ID | Requested reviewer | Exclusive concern scope | Required deliverable | Status |
+| --- | --- | --- | --- | --- |
+| FIR-R01 | Requirements Compliance Reviewer | Canonical requirement IDs, compliance status semantics, generated requirement evidence, open/unverified totals | False `implemented`/`verified` claims, missing evidence, drift, and exact status corrections | pending |
+| FIR-R02 | PHP 8.5 Reviewer | First-party PHP 8.5 syntax/types/deprecations, Composer platform constraints, prerelease risk | Compatibility defects and warnings independent of framework architecture | pending |
+| FIR-R03 | Laravel 13 Reviewer | Laravel routes/controllers/requests/Actions/Services/models/config and framework-13 compatibility | Boundary, validation, authorization delegation, deprecated API, and boot defects | pending |
+| FIR-R04 | Livewire 4 Reviewer | Class-based Livewire PHP, paired templates, hydration/action safety, loading/offline states, navigation lifecycle | Volt/SFC, untyped state, unprotected actions, unstable keys, lifecycle defects | pending |
+| FIR-R05 | Tailwind 4 Reviewer | Tailwind/Vite package integration, CSS-first configuration, SCSS coexistence, utility construction | Version/config, dynamic-class, deprecated utility, overflow/focus/motion/build risks | pending |
+| FIR-R06 | Database Integrity Reviewer | Migrations/schema/models/factories/seeders/fixtures and data lifecycle | Unsafe migration, constraint/cast/relationship, missing factory/seeder, idempotency and production-safety defects | pending |
+| FIR-R07 | Security Reviewer | Auth/session/policies/private files/tokens/uploads/webhooks/logging/secrets/provider truthfulness | Exploitable or fail-open paths and exact safe reproduction | pending |
+| FIR-R08 | Test Coverage Reviewer | Pest/PHPUnit/PHPStan configuration, test value/isolation, runner exit contracts and coverage evidence | Missing high-risk coverage, false-positive tests/runners, network/shared-DB risks | pending |
+| FIR-R09 | Accessibility Reviewer | WCAG 2.2 AA semantics, keyboard/focus/status/contrast/motion/forced-colors/touch/zoom across critical UI | Critical/serious source-level defects and browser scenarios | pending |
+| FIR-R10 | Documentation and Deployment Reviewer | Every first-party Markdown file plus documented commands/paths/versions/deploy/rollback/limitations | Contradictions, broken paths/commands, stale statuses, false evidence, unsafe operations | pending |
+
+The principal agent owns reproduction, all cross-scope decisions, every edit,
+the consolidated plan, and every gate rerun. No specialist finding is accepted
+without current-tree reproduction.
 
 ## Principal Execution Items
 
@@ -73,7 +124,7 @@ stage changes, start servers, seed databases, or use networked providers.
 | --- | --- | --- | --- | --- | --- | --- |
 | FRA-01 | Repository contract and complete mandatory reading | This ledger and canonical plan | Baseline, ownership, scopes, gates, evidence rules, and rollback are saved before production edits or delegation | Git/remote/runtime/status evidence and documentation inventory | complete | Revert audit-only planning additions |
 | FRA-02 | FRA-01 | Entire first-party repository, read-only | All eleven discovery scopes return structured evidence; principal reproduces every material finding and records a disposition | Specialist reports plus principal read-only reproduction | in progress | Documentation-only correction |
-| FRA-03 | FRA-02 | Tests first, then the smallest attributable source/doc slice | Every accepted fixable material finding has a failing contract where behavior changes, a bounded fix, and passing affected checks; unrelated work is untouched | Targeted red/green evidence, Pint/Larastan as applicable, exact diff ownership | pending | Revert only the attributable test/fix pair |
+| FRA-03 | FRA-02 | Tests first, then the smallest attributable source/doc slice | Every accepted fixable material finding has a failing contract where behavior changes, a bounded fix, and passing affected checks; unrelated work is untouched | Targeted red/green evidence, Pint/Larastan as applicable, exact diff ownership | in progress; bounded generator, lifecycle, rollback, and browser-isolation fixes verified | Revert only the attributable test/fix pair |
 | FRA-04 | FRA-02..03 | Canonical plans/progress, current-state audit, requirements/evidence, generated outputs, changelog, deployment/operations, final report | Every active status and evidence reference matches current code and observed checks; historical records are preserved and clearly labelled; external blockers stay blocked | Generator checks, link/symbol/route scans, documentation diff review | pending | Revert audit documentation and regenerate prior outputs |
 | FRA-05 | FRA-03..04 | Complete current tree | All requested release gates run serially and safely, with exact commands, exits, results, environment, risks, and blockers recorded in `docs/reports/final-release-verification.md` | Complete gate ledger including real coverage, isolated database lifecycle, browser/no-network, secret and diff checks | pending | Remove only disposable test/runtime artifacts |
 | FRA-06 | FRA-05 | Frozen attributable diff and adjacent boundaries | Independent adversarial reviewer challenges every completion claim; principal reproduces and fixes every valid material finding, then reruns affected checks | FRA-R12 report, disposition ledger, post-fix reruns | pending | Revert finding-specific correction if unsafe |
@@ -88,11 +139,17 @@ explicit reason; none may disappear from the final report.
 
 | Finding | Source | Severity | Reproduced evidence | Disposition | Fix / blocker | Verification | Status |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| pending | pending | pending | pending | pending | pending | pending | open |
+| Compliance `--check` ignored drift | FRA-R01 | high | Temporary stale target returned zero and was not compared | accepted | Implemented read-only comparison, first differing line, atomic `--write`, target override, symlink refusal, and permission preservation | 4 Pest tests, 13 assertions; focused Pint/PHPStan; actual matrix check all exit 0 | corrected in attributable working tree |
+| Lifecycle scripts returned zero after uncaught exceptions | FRA-R09/FRA-R10 | high | Intentionally unavailable `sys_temp_dir` produced error output with process exit 0 | accepted | Installed fail-closed uncaught-exception handling; database-audit direct entry now catches `Throwable` | 2 Pest data cases, 8 assertions; focused Pint/PHPStan exit 0 | corrected in attributable working tree |
+| Place privacy migration rollback left a unique index | FRA-R03/FRA-R10 | high | Initial full cycle failed dropping `revocation_idempotency_key` | accepted | Explicitly drop the named unique index before its column | Full 149-file rollback/reapply reached zero remaining and reapplied all 149 | corrected in attributable working tree |
+| Browser runner trusted inherited `DB_URL` and shared storage | FRA-R09 | critical | Hostile `DB_URL` was not cleared and isolation mode did not resolve PDO | accepted | Clear `DB_URL`, isolate storage/cache paths, bootstrap and assert the resolved PDO/database/storage boundary before destructive migration | Adversarial Pest test 1/1 with 7 assertions; existing two runner contracts; Pint/PHPStan exit 0 | corrected in attributable working tree |
+| Missing factories and manifest membership | FRA-R01/FRA-R03/FRA-R09 | high | Seeding check reports 25 factories; database audit reports 51 manifest omissions | accepted | Concurrent domain work owns the missing models/factories/manifest; do not overwrite it | Generators remain nonzero | open release blocker |
+| Providerless mail, device, WebRTC, push, route, weather, payment, and AI success evidence | FRA-R02/FRA-R08 | high | Direct code and test evidence in specialist reports | accepted | Keep capabilities disabled/blocked until audited provider boundaries exist; overlapping files are concurrently modified | Final integration tests and documentation reconciliation required | open release blocker |
+| Host-header poisoning and authentication mail log fallback | FRA-R02/FRA-R08 | high | Bootstrap had no trusted-host middleware; default/failover included log transport | accepted | Enabled Laravel trusted hosts, defaulted to bounded SMTP, removed failover-to-log, and prohibited production log/array transports at boot | Security configuration plus focused reset tests: 4 tests, 23 assertions; Pint/PHPStan exit 0 | corrected in attributable working tree; real mail provider remains external |
+| Real 90 percent coverage unavailable | FRA-R09 | external | Neither Xdebug nor PCOV is installed | external blocker | Runtime owner must install a compatible CLI driver | Coverage command exits before measuring tests | blocked externally |
 
 ## Final Gate Ledger
 
 Exact commands, exit codes, durations, and observed output summaries are
 recorded in `docs/reports/final-release-verification.md`. This ledger may refer
 to that report only after the corresponding command has actually completed.
-

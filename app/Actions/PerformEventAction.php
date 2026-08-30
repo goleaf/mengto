@@ -40,7 +40,7 @@ final class PerformEventAction
             'toggle-event-calendar' => $this->toggleCalendar($data),
             'toggle-event-reminder' => $this->toggleReminder($data),
             default => throw ValidationException::withMessages([
-                'action' => __('messages.this_action_is_unavailable_c64fa3888d'),
+                'action' => __('messages.this_action_is_unavailable'),
             ]),
         };
     }
@@ -73,8 +73,8 @@ final class PerformEventAction
 
         return $this->result(
             $active
-                ? __('messages.event_added_to_your_calendar_d7defae028')
-                : __('messages.event_removed_from_your_calendar_5bde4e038c'),
+                ? __('messages.event_added_to_your_calendar')
+                : __('messages.event_removed_from_your_calendar'),
             $data,
         );
     }
@@ -90,8 +90,8 @@ final class PerformEventAction
 
         return $this->result(
             $active
-                ? __('messages.event_reminders_enabled_b95d6adbd8')
-                : __('messages.event_reminders_paused_61da156d54'),
+                ? __('messages.event_reminders_enabled')
+                : __('messages.event_reminders_paused'),
             $data,
         );
     }
@@ -106,7 +106,7 @@ final class PerformEventAction
 
         if ($event === null) {
             throw ValidationException::withMessages([
-                'target' => __('messages.choose_an_available_event_38bf68e8c6'),
+                'target' => __('messages.choose_an_available_event'),
             ]);
         }
 

@@ -32,7 +32,7 @@
     />
     <x-card-description>{{ $meetup['description'] }}</x-card-description>
 
-    <x-tag-list :items="$meetup['tags']" empty="{{ __('ui.all_friendly_pets_welcome_1319984225') }}" reserve class="mt-4" />
+    <x-tag-list :items="$meetup['tags']" empty="{{ __('ui.all_friendly_pets_welcome') }}" reserve class="mt-4" />
 
     <x-slot:footer>
         <x-icon-text icon="map-pin" class="meta--strong">
@@ -42,15 +42,15 @@
 
         <x-initials-action-row
             :initials="$meetup['host_initials']"
-            :title="__('ui.hosted_by_f772bf2712').' '.$meetup['host']"
+            :title="__('ui.hosted_by').' '.$meetup['host']"
             :detail="$meetup['attendees']"
             detail-icon="users"
-            action-label="{{ __('ui.rsvp_1dfe8a8e0c') }}"
+            action-label="{{ __('ui.rsvp') }}"
             action-icon="calendar-plus"
             :action-endpoint="route('actions.perform')"
             :action-payload="['action' => 'toggle-meetup', 'target' => $meetupKey, 'label' => $meetup['title']]"
             :active="$rsvp"
-            active-label="{{ __('ui.going_7bd49cdc7d') }}"
+            active-label="{{ __('ui.going') }}"
             active-icon="calendar-check"
         />
     </x-slot:footer>

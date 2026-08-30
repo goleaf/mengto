@@ -3,13 +3,13 @@
         <div class="recommendation-reason__copy">
             <x-ui-icon name="sparkles" size="sm" />
             <div>
-                <p class="recommendation-reason__label">{{ __('ui.why_this_profile_11657790a4') }}</p>
+                <p class="recommendation-reason__label">{{ __('ui.why_this_profile') }}</p>
                 <p>{{ $resolvedReason }}</p>
             </div>
         </div>
 
         @if ($resolvedSignals !== [])
-            <div class="recommendation-reason__signals" aria-label="{{ __('ui.recommendation_signals_a853668995') }}">
+            <div class="recommendation-reason__signals" aria-label="{{ __('ui.recommendation_signals') }}">
                 @forelse ($resolvedSignals as $signal)
                     <span>{{ $signal }}</span>
                 @empty

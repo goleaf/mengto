@@ -19,6 +19,6 @@ class DeviceSafeZoneStoreController extends Controller
         $create->handle($smartDevice, $request->validated());
 
         return to_route('devices.show', $smartDevice)
-            ->with('feedback', __('messages.private_safe_zone_saved_exact_coordinates_remain_owner_o_fb6e7d594e'));
+            ->with('feedback', __('messages.private_safe_zone_saved_exact_coordinates_remain_owner_only'));
     }
 }

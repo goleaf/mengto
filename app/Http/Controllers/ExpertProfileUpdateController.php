@@ -18,6 +18,6 @@ class ExpertProfileUpdateController extends Controller
         Gate::authorize('update', $expertProfile);
         $profile = $update->handle($expertProfile, $request->validated());
 
-        return to_route('experts.show', $profile)->with('feedback', __('messages.professional_profile_updated_97ed3193a9'));
+        return to_route('experts.show', $profile)->with('feedback', __('messages.professional_profile_updated'));
     }
 }

@@ -3,17 +3,17 @@
     'connections',
 ])
 
-<section class="connection-dashboard" aria-label="{{ __('ui.subscriptions_and_recommendations_11ff7fb78e') }}">
+<section class="connection-dashboard" aria-label="{{ __('ui.subscriptions_and_recommendations') }}">
     <x-summary-strip
         :items="$summary['stats']"
-        label="{{ __('ui.connection_summary_de5459f742') }}"
+        label="{{ __('ui.connection_summary') }}"
         :icons="['user-check', 'users-round', 'inbox', 'star']"
         :columns="4"
     />
 
     <x-tab-list
         :tabs="$connections['tabs']"
-        label="{{ __('ui.connection_views_8011876901') }}"
+        label="{{ __('ui.connection_views') }}"
     />
 
     @if ($connections['last_dismissed'])

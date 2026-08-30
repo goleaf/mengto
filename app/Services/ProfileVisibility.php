@@ -21,10 +21,10 @@ final class ProfileVisibility
     {
         return [
             'public' => __('messages.visibility.everyone'),
-            'members' => __('messages.registered_members_1757e26849'),
-            'followers' => __('messages.followers_a145ab342a'),
+            'members' => __('messages.registered_members'),
+            'followers' => __('messages.followers'),
             'friends' => __('messages.visibility.friends'),
-            'owners' => __('messages.owners_and_managers_28539cb842'),
+            'owners' => __('messages.owners_and_managers'),
             'hidden' => __('messages.visibility.hidden'),
         ];
     }

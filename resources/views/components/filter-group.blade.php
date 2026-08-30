@@ -2,7 +2,7 @@
     'filters',
     'label',
     'size' => 'compact',
-    'empty' => __('ui.filters_unavailable_8c77a59db6'),
+    'empty' => __('ui.filters_unavailable'),
     'active' => null,
     'submit' => false,
 ])

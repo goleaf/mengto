@@ -1,10 +1,10 @@
 @props([
     'pets',
-    'eyebrow' => __('ui.at_home_fbccda060e'),
-    'title' => __('ui.pets_7dc1cd7eaf'),
+    'eyebrow' => __('ui.at_home'),
+    'title' => __('ui.pets'),
     'section' => 'profile-pets',
     'canManage' => false,
-    'emptyTitle' => __('ui.no_pets_added_yet_5728267e77'),
+    'emptyTitle' => __('ui.no_pets_added_yet'),
     'icon' => null,
     'addAction' => null,
 ])
@@ -22,7 +22,7 @@
         <x-slot:action>
             <x-action-control
                 :href="$addAction['href'] ?? route('pets.manage.create')"
-                :label="$addAction['label'] ?? __('ui.add_pet_7065b90594')"
+                :label="$addAction['label'] ?? __('ui.add_pet')"
                 :icon="$addAction['icon'] ?? 'plus'"
             />
         </x-slot:action>

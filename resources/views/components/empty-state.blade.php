@@ -4,7 +4,7 @@
     'description' => null,
     'compact' => false,
     'href' => null,
-    'actionLabel' => __('ui.clear_filters_7179ea0035'),
+    'actionLabel' => __('ui.clear_filters'),
     'actionIcon' => 'rotate-ccw',
 ])
 

@@ -83,6 +83,14 @@ final readonly class RequirePortalAccess
             && ! $this->isUnverifiedRoute($routeName)
             && $routeName !== self::LIVEWIRE_UPDATE_ROUTE
         ) {
+            if (
+                $request->isMethodSafe()
+                && ! $request->expectsJson()
+                && ! $request->session()->has('url.intended')
+            ) {
+                $request->session()->put('url.intended', $request->fullUrl());
+            }
+
             return redirect()->route('verification.notice');
         }
 

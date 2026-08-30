@@ -14,6 +14,6 @@ class TopicDeleteController extends Controller
         Gate::authorize('delete', $forumTopic);
         $deleteTopic->handle($forumTopic);
 
-        return to_route('forum.index')->with('feedback', __('messages.topic_deleted_43b934d0df'));
+        return to_route('forum.index')->with('feedback', __('messages.topic_deleted'));
     }
 }

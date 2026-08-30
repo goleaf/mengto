@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 
 /**
  * @property array<array-key, mixed>|null $accessories
@@ -95,6 +96,8 @@ class SearchCase extends Model
     /** @use HasFactory<SearchCaseFactory> */
     use HasFactory;
 
+    public const DIRECTORY_STATS_CACHE_KEY = 'search-cases.directory.stats.v2';
+
     private const ROUTE_COLUMNS = [
         'id', 'owner_id', 'owner_key', 'owner_name', 'owner_initials',
         'coordinator_key', 'coordinator_name', 'slug', 'public_code',
@@ -167,8 +170,8 @@ class SearchCase extends Model
 
     protected static function booted(): void
     {
-        static::saved(fn (): bool => Cache::forget('search-cases.directory.stats'));
-        static::deleted(fn (): bool => Cache::forget('search-cases.directory.stats'));
+        static::saved(fn (): bool => self::invalidateDirectoryStats());
+        static::deleted(fn (): bool => self::invalidateDirectoryStats());
     }
 
     protected function casts(): array
@@ -411,7 +414,7 @@ class SearchCase extends Model
     /** @return array{active: int, lost: int, found: int, sightings: int, volunteers: int} */
     public static function directoryStats(): array
     {
-        return Cache::remember('search-cases.directory.stats', now()->addMinutes(2), fn (): array => [
+        $resolver = fn (): array => [
             'active' => self::query()->publiclyVisible()->urgent()->count(),
             'lost' => self::query()->publiclyVisible()->urgent()
                 ->where('type', SearchCaseType::Lost->value)
@@ -425,14 +428,50 @@ class SearchCase extends Model
                 ])
                 ->count(),
             'sightings' => Sighting::query()
+                ->whereHas('searchCase', fn (Builder $query): Builder => $query
+                    ->where('moderation_status', ModerationStatus::Approved->value)
+                    ->where('visibility', 'public')
+                    ->whereNull('archived_at'))
                 ->whereIn('status', [
                     SightingStatus::Submitted->value,
                     SightingStatus::Confirmed->value,
                 ])
                 ->count(),
             'volunteers' => SearchVolunteer::query()
+                ->whereHas('searchCase', fn (Builder $query): Builder => $query
+                    ->where('moderation_status', ModerationStatus::Approved->value)
+                    ->where('visibility', 'public')
+                    ->whereNull('archived_at'))
                 ->where('status', SearchVolunteerStatus::Active->value)
                 ->count(),
-        ]);
+        ];
+
+        try {
+            $cached = Cache::get(self::DIRECTORY_STATS_CACHE_KEY);
+
+            if (is_array($cached)) {
+                return $cached;
+            }
+
+            return Cache::lock(self::DIRECTORY_STATS_CACHE_KEY.':refresh', 10)
+                ->block(2, fn (): array => Cache::remember(
+                    self::DIRECTORY_STATS_CACHE_KEY,
+                    now()->addMinutes(2),
+                    $resolver,
+                ));
+        } catch (\Throwable) {
+            return $resolver();
+        }
+    }
+
+    public static function invalidateDirectoryStats(): bool
+    {
+        $forgotten = Cache::forget(self::DIRECTORY_STATS_CACHE_KEY);
+
+        if (DB::transactionLevel() > 0) {
+            DB::afterCommit(static fn (): bool => Cache::forget(self::DIRECTORY_STATS_CACHE_KEY));
+        }
+
+        return $forgotten;
     }
 }

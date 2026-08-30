@@ -22,8 +22,8 @@ class SearchReportController extends Controller
             ->with(
                 'feedback',
                 $report->priority === 'high'
-                    ? __('messages.high_priority_safety_report_sent_for_review_d9015e0965')
-                    : __('messages.report_sent_for_review_277b24caf4'),
+                    ? __('messages.high_priority_safety_report_sent_for_review')
+                    : __('messages.report_sent_for_review'),
             );
     }
 }

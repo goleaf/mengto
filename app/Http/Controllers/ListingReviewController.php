@@ -23,6 +23,6 @@ class ListingReviewController extends Controller
         $createReview->handle($order, $request->validated());
 
         return to_route('marketplace.orders.show', [$listing, $order])
-            ->with('feedback', __('messages.verified_review_published_8e20119f16'));
+            ->with('feedback', __('messages.verified_review_published'));
     }
 }

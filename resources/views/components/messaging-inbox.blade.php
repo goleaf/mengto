@@ -54,13 +54,13 @@
                     <span class="messaging-conversation__status">
                         <span data-messaging-conversation-type>{{ $conversation['type_label'] }}</span>
                         @if ($conversation['pinned'])
-                            <x-ui-icon name="pin" size="xs" label="{{ __('ui.pinned_f20c879465') }}" />
+                            <x-ui-icon name="pin" size="xs" label="{{ __('ui.pinned') }}" />
                         @endif
                         @if ($conversation['muted'])
-                            <x-ui-icon name="bell-off" size="xs" label="{{ __('ui.muted_2346f214ad') }}" />
+                            <x-ui-icon name="bell-off" size="xs" label="{{ __('ui.muted') }}" />
                         @endif
                         @if ($conversation['blocked'])
-                            <x-ui-icon name="ban" size="xs" label="{{ __('ui.blocked_18f2a0947f') }}" />
+                            <x-ui-icon name="ban" size="xs" label="{{ __('ui.blocked') }}" />
                         @endif
                     </span>
                 </span>

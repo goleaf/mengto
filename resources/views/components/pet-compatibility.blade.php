@@ -2,11 +2,11 @@
     'compatibility',
 ])
 
-<section class="compatibility" aria-label="{{ __('ui.owner_reviewed_compatibility_notes_f93c277a89') }}">
+<section class="compatibility" aria-label="{{ __('ui.owner_reviewed_compatibility_notes') }}">
     <div class="compatibility__heading">
         <x-ui-icon name="sparkles" size="sm" />
         <div>
-            <h4>{{ __('ui.shared_routines_36e841cb6c') }}</h4>
+            <h4>{{ __('ui.shared_routines') }}</h4>
             <p>{{ $compatibility['reason'] }}</p>
         </div>
     </div>
@@ -27,7 +27,7 @@
         <div class="compatibility__cautions">
             <p>
                 <x-ui-icon name="message-circle-warning" size="sm" />
-                {{ __('ui.discuss_before_meeting_e113b4e8b3') }}
+                {{ __('ui.discuss_before_meeting') }}
             </p>
             <ul class="compatibility__list">
                 @forelse ($compatibility['cautions'] as $caution)

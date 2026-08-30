@@ -2,6 +2,12 @@
 
 declare(strict_types=1);
 
+require_once __DIR__.'/Support/ReadableTranslationKey.php';
+require_once __DIR__.'/Support/PhpMessageLiteralClassifier.php';
+
+use PawCircle\Scripts\Support\PhpMessageLiteralClassifier;
+use PawCircle\Scripts\Support\ReadableTranslationKey;
+
 /**
  * Move complete first-party PHP messages into stable translation keys.
  *
@@ -10,9 +16,12 @@ declare(strict_types=1);
  * php scripts/localize-php-messages.php --check
  */
 $root = dirname(__DIR__);
-$write = in_array('--write', $argv, true);
-$check = in_array('--check', $argv, true);
-$verbose = in_array('--verbose', $argv, true);
+$arguments = isset($_SERVER['argv']) && is_array($_SERVER['argv'])
+    ? $_SERVER['argv']
+    : [];
+$write = in_array('--write', $arguments, true);
+$check = in_array('--check', $arguments, true);
+$verbose = in_array('--verbose', $arguments, true);
 
 if ($write === $check) {
     fwrite(STDERR, "Choose exactly one of --write or --check.\n");
@@ -77,6 +86,7 @@ foreach ($files as $file) {
 
         if (
             isInsideConstantExpression($tokens, $index)
+            || PhpMessageLiteralClassifier::isDiagnostic($tokens, $index)
             || (
                 ! isCompleteUserMessage($message)
                 && ! isUserFacingArrayValue($tokens, $index, $message)
@@ -89,7 +99,7 @@ foreach ($files as $file) {
             continue;
         }
 
-        $key = messageKey($message);
+        $key = ReadableTranslationKey::resolve($message, $catalogues['en']);
         $catalogues['en'][$key] = $message;
 
         foreach (['lt', 'ru'] as $locale) {
@@ -426,15 +436,6 @@ function isInsideConstantExpression(array $tokens, int $index): bool
     }
 
     return false;
-}
-
-function messageKey(string $message): string
-{
-    $slug = preg_replace('/[^a-z0-9]+/', '_', strtolower($message));
-    $slug = trim((string) $slug, '_');
-    $slug = substr($slug, 0, 56);
-
-    return $slug.'_'.substr(hash('sha256', $message), 0, 10);
 }
 
 /**

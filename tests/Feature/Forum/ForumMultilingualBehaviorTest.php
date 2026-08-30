@@ -117,15 +117,15 @@ test('every seeded forum definition resolves through every supported locale', fu
 
 test('the forum page title has reviewed values in every supported locale', function () {
     expect(trans(
-        'messages.forum_and_knowledge_pawcircle_664109d235',
+        'messages.forum_and_knowledge_brand',
         locale: 'en',
     ))->toBe('Forum and knowledge | PawCircle')
         ->and(trans(
-            'messages.forum_and_knowledge_pawcircle_664109d235',
+            'messages.forum_and_knowledge_brand',
             locale: 'lt',
         ))->toBe('Forumas ir žinių bazė | PawCircle')
         ->and(trans(
-            'messages.forum_and_knowledge_pawcircle_664109d235',
+            'messages.forum_and_knowledge_brand',
             locale: 'ru',
         ))->toBe('Форум и база знаний | PawCircle');
 });
@@ -166,13 +166,17 @@ test('every system category has a locale row and deterministic fallback content'
 
 test('category synchronization invalidates every locale-scoped tree cache', function () {
     foreach (config('platform.supported_locales', ['en']) as $locale) {
-        Cache::put(ForumCategoryTree::CACHE_KEY_PREFIX.$locale, ['stale' => true], 600);
+        foreach (ForumCategoryTree::cacheKeysForLocale($locale) as $key) {
+            Cache::put($key, ['stale' => true], 600);
+        }
     }
 
     $this->seed(ForumSystemSeeder::class);
 
     foreach (config('platform.supported_locales', ['en']) as $locale) {
-        expect(Cache::has(ForumCategoryTree::CACHE_KEY_PREFIX.$locale))->toBeFalse();
+        foreach (ForumCategoryTree::cacheKeysForLocale($locale) as $key) {
+            expect(Cache::has($key))->toBeFalse();
+        }
     }
 });
 

@@ -51,7 +51,7 @@ final class PerformPlaceAction
             'create-place-claim' => $this->createClaim($data),
             'create-place-report' => $this->createReport($data),
             default => throw ValidationException::withMessages([
-                'action' => __('messages.this_place_action_is_unavailable_beb1e64e42'),
+                'action' => __('messages.this_place_action_is_unavailable'),
             ]),
         };
     }
@@ -85,7 +85,7 @@ final class PerformPlaceAction
 
         return $this->placeResult(
             $place,
-            $active ? __('messages.place_updates_enabled_60cd691dfb') : __('messages.place_updates_paused_6c7fb2288f'),
+            $active ? __('messages.place_updates_enabled') : __('messages.place_updates_paused'),
             $data,
         );
     }
@@ -102,7 +102,7 @@ final class PerformPlaceAction
 
         return $this->placeResult(
             $place,
-            $active ? __('messages.place_added_to_the_selected_collection_9ae9bcfdff') : __('messages.place_removed_from_the_selected_collection_28a687124f'),
+            $active ? __('messages.place_added_to_the_selected_collection') : __('messages.place_removed_from_the_selected_collection'),
             $data,
         );
     }
@@ -116,7 +116,7 @@ final class PerformPlaceAction
         $place = $this->requirePlace($data);
         $this->state->markVisited($place['key'], (string) ($data['place_pet'] ?? 'scout'));
 
-        return $this->placeResult($place, __('messages.visit_saved_privately_to_your_history_9c47cfe823'), $data);
+        return $this->placeResult($place, __('messages.visit_saved_privately_to_your_history'), $data);
     }
 
     /**
@@ -134,7 +134,7 @@ final class PerformPlaceAction
 
         return $this->placeResult(
             $place,
-            __('messages.check_in_active_for_two_hours_your_exact_position_is_not_a63cd5f631'),
+            __('messages.check_in_active_for_two_hours_your_exact_position_is_not_published'),
             $data,
         );
     }
@@ -148,10 +148,10 @@ final class PerformPlaceAction
         $place = $this->requirePlace($data);
 
         if (! $this->state->clearCheckIn($place['key'])) {
-            throw ValidationException::withMessages(['target' => __('messages.there_is_no_active_check_in_to_end_687d5a4687')]);
+            throw ValidationException::withMessages(['target' => __('messages.there_is_no_active_check_in_to_end')]);
         }
 
-        return $this->placeResult($place, __('messages.check_in_ended_3f3fb06d29'), $data);
+        return $this->placeResult($place, __('messages.check_in_ended'), $data);
     }
 
     /**
@@ -162,7 +162,7 @@ final class PerformPlaceAction
         $this->state->clearRecent();
 
         return [
-            'message' => __('messages.recent_place_history_cleared_abcac04962'),
+            'message' => __('messages.recent_place_history_cleared'),
             'route' => 'places.index',
             'parameters' => ['mode' => 'browse'],
         ];
@@ -180,7 +180,7 @@ final class PerformPlaceAction
         );
 
         return [
-            'message' => __('messages.approximate_current_area_enabled_no_home_point_or_locati_a48cf43587'),
+            'message' => __('messages.approximate_current_area_enabled_no_home_point_or_location_history_was_saved'),
             'route' => 'places.index',
             'parameters' => ['view' => 'split'],
         ];
@@ -194,7 +194,7 @@ final class PerformPlaceAction
         $this->state->clearGeneralizedLocation();
 
         return [
-            'message' => __('messages.location_access_removed_manual_city_search_remains_avail_4b3ba1cf71'),
+            'message' => __('messages.location_access_removed_manual_city_search_remains_available'),
             'route' => 'places.index',
             'parameters' => ['area' => 'Vilnius'],
         ];
@@ -213,7 +213,7 @@ final class PerformPlaceAction
             'body' => trim((string) ($data['body'] ?? '')),
         ]);
 
-        return $this->placeResult($place, __('messages.private_place_invitation_sent_10fea480d5'), $data);
+        return $this->placeResult($place, __('messages.private_place_invitation_sent'), $data);
     }
 
     /**
@@ -225,7 +225,7 @@ final class PerformPlaceAction
         $place = $this->requirePlace($data);
         $this->state->confirmWarning($place['key'], (string) $data['place_warning']);
 
-        return $this->placeResult($place, __('messages.warning_confirmation_recorded_with_the_current_time_5a2d8d4ba4'), $data, 'updates');
+        return $this->placeResult($place, __('messages.warning_confirmation_recorded_with_the_current_time'), $data, 'updates');
     }
 
     /**
@@ -237,7 +237,7 @@ final class PerformPlaceAction
         $place = $this->requirePlace($data);
         $this->state->resolveWarning($place['key'], (string) $data['place_warning']);
 
-        return $this->placeResult($place, __('messages.warning_marked_resolved_and_moved_to_history_aa0b43945e'), $data, 'updates');
+        return $this->placeResult($place, __('messages.warning_marked_resolved_and_moved_to_history'), $data, 'updates');
     }
 
     /**
@@ -293,7 +293,7 @@ final class PerformPlaceAction
             'source' => (string) ($data['place_source'] ?? 'personal-visit'),
         ]);
 
-        return $this->placeResult($place, __('messages.correction_submitted_with_evidence_7d964aa734'), $data, 'corrections');
+        return $this->placeResult($place, __('messages.correction_submitted_with_evidence'), $data, 'corrections');
     }
 
     /**
@@ -313,7 +313,7 @@ final class PerformPlaceAction
 
         return $this->placeResult(
             $place,
-            __('messages.temporary_warning_published_for_review_and_automatic_exp_76764068a4'),
+            __('messages.temporary_warning_published_for_review_and_automatic_expiry'),
             $data,
             'updates',
         );
@@ -325,8 +325,9 @@ final class PerformPlaceAction
      */
     private function createReview(array $data): array
     {
+        $actor = $this->requireActor();
         $place = $this->requirePlace($data);
-        $this->state->addReview($place['key'], [
+        $this->state->addReview($place['key'], $actor, [
             'rating' => (int) $data['place_rating'],
             'body' => $this->requiredText($data, 'body'),
             'visited_with' => Str::headline((string) ($data['place_pet'] ?? 'scout')),
@@ -334,7 +335,7 @@ final class PerformPlaceAction
             'anonymous' => ($data['place_anonymous'] ?? 'no') === 'yes',
         ]);
 
-        return $this->placeResult($place, __('messages.review_published_with_its_visit_context_d0d6ca5e07'), $data, 'reviews');
+        return $this->placeResult($place, __('messages.review_published_with_its_visit_context'), $data, 'reviews');
     }
 
     /**
@@ -369,7 +370,7 @@ final class PerformPlaceAction
         $place = $this->requirePlace($data);
 
         if ($place['owner_managed']) {
-            throw ValidationException::withMessages(['target' => __('messages.this_demo_place_already_has_an_active_manager_808e171ba6')]);
+            throw ValidationException::withMessages(['target' => __('messages.this_demo_place_already_has_an_active_manager')]);
         }
 
         $this->state->addClaim($place['key'], [
@@ -380,7 +381,7 @@ final class PerformPlaceAction
             'evidence' => $this->requiredText($data, 'place_evidence'),
         ]);
 
-        return $this->placeResult($place, __('messages.management_claim_sent_for_scoped_verification_6f89507342'), $data, 'updates');
+        return $this->placeResult($place, __('messages.management_claim_sent_for_scoped_verification'), $data, 'updates');
     }
 
     /**
@@ -396,7 +397,7 @@ final class PerformPlaceAction
             'evidence' => trim((string) ($data['place_evidence'] ?? '')),
         ]);
 
-        return $this->placeResult($place, __('messages.private_report_received_by_the_moderation_queue_6e7db0e9d9'), $data);
+        return $this->placeResult($place, __('messages.private_report_received_by_the_moderation_queue'), $data);
     }
 
     /**
@@ -408,7 +409,7 @@ final class PerformPlaceAction
         $place = $this->catalog->find((string) ($data['target'] ?? ''));
 
         if ($place === null) {
-            throw ValidationException::withMessages(['target' => __('messages.this_place_is_unavailable_61355a19b2')]);
+            throw ValidationException::withMessages(['target' => __('messages.this_place_is_unavailable')]);
         }
 
         return $place;
@@ -468,7 +469,7 @@ final class PerformPlaceAction
         $value = trim((string) ($data[$field] ?? ''));
 
         if ($value === '') {
-            throw ValidationException::withMessages([$field => __('messages.this_field_is_required_68cadcee19')]);
+            throw ValidationException::withMessages([$field => __('messages.this_field_is_required')]);
         }
 
         return $value;

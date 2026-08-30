@@ -101,6 +101,6 @@ return [
     'notifications' => [
         'read' => 'прочитано',
         'unread' => 'новое',
-        'summary' => ':date / :state',
+        'summary' => ':date · статус: :state',
     ],
 ];

@@ -98,7 +98,7 @@ final class StoreSearchCaseRequest extends FormRequest
                     && blank($this->input('pet_profile_key'))
                     && blank($this->input('pet_profile_id'))
                 ) {
-                    $validator->errors()->add('pet_profile_key', __('messages.choose_the_pet_profile_for_a_missing_pet_search_b22b0b96d2'));
+                    $validator->errors()->add('pet_profile_key', __('messages.choose_the_pet_profile_for_a_missing_pet_search'));
                 }
 
                 $user = $this->user();
@@ -151,7 +151,7 @@ final class StoreSearchCaseRequest extends FormRequest
                 }
 
                 if ($this->string('contact_channel')->toString() !== 'platform' && blank($this->input('contact_value'))) {
-                    $validator->errors()->add('contact_value', __('messages.add_the_protected_contact_value_aa102be0b3'));
+                    $validator->errors()->add('contact_value', __('messages.add_the_protected_contact_value'));
                 }
 
                 if (! $safety->rewardSummaryIsSafe($this->string('reward_summary')->toString())) {
@@ -166,7 +166,7 @@ final class StoreSearchCaseRequest extends FormRequest
                     if (in_array($flag, ['sensitive-payment-data', 'threat-language'], true)) {
                         $validator->errors()->add(
                             'description',
-                            __('messages.remove_payment_codes_threats_or_other_unsafe_details_bef_76f50669e4'),
+                            __('messages.remove_payment_codes_threats_or_other_unsafe_details_before_publishing'),
                         );
                     }
                 }

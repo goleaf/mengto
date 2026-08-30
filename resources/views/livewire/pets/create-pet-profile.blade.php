@@ -61,6 +61,8 @@
                             <img
                                 src="{{ $mediaForm->upload->temporaryUrl() }}"
                                 alt="{{ __('pet_profiles.media.selected_preview') }}"
+                                width="1200"
+                                height="900"
                             >
                             <button
                                 type="button"
@@ -230,7 +232,7 @@
                                 <div class="flex min-w-0 items-center gap-3">
                                     <div class="grid size-20 shrink-0 place-items-center overflow-hidden rounded-lg bg-paw-canvas">
                                         @if ($candidate['photo'] !== null)
-                                            <img class="size-full object-cover" src="{{ $candidate['photo'] }}" alt="{{ $candidate['photo_alt'] }}">
+                                            <img class="size-full object-cover" src="{{ $candidate['photo'] }}" alt="{{ $candidate['photo_alt'] }}" width="80" height="80" loading="lazy">
                                         @else
                                             <span role="img" aria-label="{{ $candidate['photo_alt'] }}"><x-ui-icon name="paw-print" size="lg" /></span>
                                         @endif

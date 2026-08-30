@@ -557,6 +557,26 @@ it('links independent media and typed domains without exposing private storage p
         ->assertDontSee($media->checksum_sha256);
 });
 
+it('renders one localized h1 when a published detail has no authored title', function (string $locale): void {
+    $this->authenticatedUser->forceFill(['locale' => $locale])->save();
+    app()->setLocale($locale);
+
+    $actor = contentActorFor($this->authenticatedUser);
+    $publication = createContentFor(
+        $this->authenticatedUser,
+        $actor,
+        ContentAudienceType::Everyone,
+    );
+    $publication->forceFill(['title' => null])->save();
+
+    $response = $this->get(route('content.show', $publication))->assertSuccessful();
+    $xpath = responseXPath($response);
+
+    expect($xpath->query('//main//h1[normalize-space()]')->length)->toBe(1)
+        ->and(trim($xpath->query('//main//h1')->item(0)?->textContent ?? ''))
+        ->toBe(trans('content.publication.untitled', locale: $locale));
+})->with(['en', 'lt', 'ru']);
+
 it('reports preserved content compatibility without importing private payloads', function (): void {
     $legacyUser = User::factory()->create();
     $legacyState = UserDomainState::factory()->for($legacyUser)->create([

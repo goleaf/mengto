@@ -47,6 +47,36 @@ small safe bootstrap payload.
 
 Never ship the raw key as normal visible content.
 
+## Readable Translation Key Contract
+
+`messages.php` and `ui.php` use readable lower-snake-case keys. A translation
+key must not end in a generated digest, random token, timestamp, or opaque
+counter. Existing readable keys are stable contracts even when the English
+copy is edited later.
+
+`scripts/Support/ReadableTranslationKey.php` is the single normalization
+boundary used by both literal-localization scripts. It reuses an existing key
+only when the complete source value matches, including intentional prefix
+spacing. New unambiguous text receives a readable key capped at a word
+boundary. A normalized collision stops with an actionable error; the
+contributor must add a deliberate semantic key such as `*_sentence`,
+`*_question`, `*_label`, `*_prefix`, or `*_lowercase`.
+
+The repository-wide migration is retained as a permanent non-mutating ratchet:
+
+```bash
+php scripts/migrate-readable-translation-keys.php --check
+```
+
+Architecture tests also reject digest-suffixed catalogue keys, static
+`messages.*` or `ui.*` references, and SHA-derived key generation. Do not
+replace those failures with another automatic disambiguator.
+
+Operator-only diagnostic messages written to a logger are not interface copy
+and remain stable untranslated log events. The PHP localizer recognizes direct
+logger arguments and values whose next use is the first logger argument; it
+must not exempt similarly named domain methods or messages returned to users.
+
 ## Forum Platform Definitions
 
 Forum category, topic-type, report-reason, moderation-action, appeal-state,
@@ -60,9 +90,10 @@ reviewed locale-specific value exists; the category tree and root selector
 ignore unreviewed target-locale values, prefer a reviewed configured fallback,
 and finally use the immutable server fallback. Subcategories have no source
 description, so an empty description is intentional rather than a missing
-translation. Category tree caches are locale-scoped as
-`forum:category-tree:v2:locale:{locale}` and synchronization invalidates every
-supported locale.
+translation. Category tree caches are locale-and-audience scoped as
+`forum:category-tree:v4:locale:{locale}:audience:{guest|member|admin}`;
+synchronization and category mutations invalidate every supported locale and
+audience so restricted definitions cannot cross an authorization boundary.
 
 Forum notifications are materialized in the recipient's validated locale.
 Notification writers pass that locale directly to Laravel's translator and
@@ -173,6 +204,7 @@ Architecture gates:
 ```bash
 php scripts/localize-blade-literals.php --check
 php scripts/localize-php-messages.php --check
+php scripts/migrate-readable-translation-keys.php --check
 php artisan test --compact tests/Feature/Forum/ForumMultilingualBehaviorTest.php tests/Feature/LocalizationTest.php tests/Feature/ArchitectureComplianceTest.php
 php artisan view:cache
 ```

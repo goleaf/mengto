@@ -33,7 +33,7 @@ final class CreateSearchReport
 
             if (! $belongsToCase) {
                 throw ValidationException::withMessages([
-                    'sighting_id' => __('messages.the_selected_sighting_does_not_belong_to_this_search_e5f40bd2e8'),
+                    'sighting_id' => __('messages.the_selected_sighting_does_not_belong_to_this_search'),
                 ]);
             }
         }

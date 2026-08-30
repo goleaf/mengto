@@ -368,20 +368,24 @@ return new class extends Migration
             $table->index(['status', 'created_at', 'id'], 'fe_notify_intent_status_idx');
         });
 
-        Schema::table('forum_event_registrations', function (Blueprint $table): void {
-            $table->foreign('current_snapshot_id', 'fe_reg_current_snapshot_fk')
-                ->references('id')->on('forum_event_registration_snapshots')->restrictOnDelete();
-            $table->foreign('current_eligibility_decision_set_id', 'fe_reg_current_elig_set_fk')
-                ->references('id')->on('forum_event_eligibility_decision_sets')->restrictOnDelete();
-        });
+        if (DB::getDriverName() !== 'sqlite') {
+            Schema::table('forum_event_registrations', function (Blueprint $table): void {
+                $table->foreign('current_snapshot_id', 'fe_reg_current_snapshot_fk')
+                    ->references('id')->on('forum_event_registration_snapshots')->restrictOnDelete();
+                $table->foreign('current_eligibility_decision_set_id', 'fe_reg_current_elig_set_fk')
+                    ->references('id')->on('forum_event_eligibility_decision_sets')->restrictOnDelete();
+            });
+        }
     }
 
     public function down(): void
     {
-        Schema::table('forum_event_registrations', function (Blueprint $table): void {
-            $table->dropForeign('fe_reg_current_snapshot_fk');
-            $table->dropForeign('fe_reg_current_elig_set_fk');
-        });
+        if (DB::getDriverName() !== 'sqlite') {
+            Schema::table('forum_event_registrations', function (Blueprint $table): void {
+                $table->dropForeign('fe_reg_current_snapshot_fk');
+                $table->dropForeign('fe_reg_current_elig_set_fk');
+            });
+        }
 
         Schema::dropIfExists('forum_event_notification_intents');
         Schema::dropIfExists('forum_event_waitlist_requirements');

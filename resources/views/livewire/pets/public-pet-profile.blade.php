@@ -5,6 +5,8 @@
                 <img
                     src="{{ $pet['avatar'] }}"
                     alt="{{ $pet['avatar_alt'] }}"
+                    width="128"
+                    height="128"
                     class="h-full w-full object-cover"
                 >
             @else

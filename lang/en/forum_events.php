@@ -79,6 +79,7 @@ return [
         'rejected' => 'Rejected',
         'expired' => 'Expired',
         'refunded' => 'Refunded',
+        'completed' => 'Completed',
         'suspended_for_safety_review' => 'Suspended for safety review',
     ],
     'review_statuses' => [

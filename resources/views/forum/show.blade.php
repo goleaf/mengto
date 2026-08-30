@@ -19,8 +19,8 @@
                 </div>
             </x-slot:meta>
             <x-slot:actions>
-                <x-action-control :label="__('ui.forum_4da7bd42ab')" icon="arrow-left" :href="route('forum.index')" variant="paper" size="regular" />
-                <x-action-control :label="__('ui.knowledge_base_f56819a30d')" icon="library" :href="route('knowledge.index')" variant="paper" size="regular" />
+                <x-action-control :label="__('ui.forum')" icon="arrow-left" :href="route('forum.index')" variant="paper" size="regular" />
+                <x-action-control :label="__('ui.knowledge_base')" icon="library" :href="route('knowledge.index')" variant="paper" size="regular" />
             </x-slot:actions>
         </x-page-header>
 
@@ -30,8 +30,8 @@
                     <aside class="forum-safety" role="note">
                         <x-ui-icon name="triangle-alert" />
                         <div>
-                            <strong>{{ __('ui.the_forum_is_not_emergency_veterinary_care_69525c5755') }}</strong>
-                            <span>{{ __('ui.if_breathing_consciousness_severe_bleeding_poisoning_trauma_or_17efdebe9e') }}</span>
+                            <strong>{{ __('ui.the_forum_is_not_emergency_veterinary_care') }}</strong>
+                            <span>{{ __('ui.if_breathing_consciousness_severe_bleeding_poisoning_trauma_or_urination_is_a_concern_call_a_clinic_now_rather_than_waiting_for_replies') }}</span>
                         </div>
                     </aside>
                 @endif
@@ -52,7 +52,7 @@
                             @if ($media['sensitive'])
                                 <div class="forum-safety">
                                     <x-ui-icon name="eye-off" />
-                                    {{ __('ui.sensitive_media_open_only_if_you_are_comfortable_6ce743c987') }}
+                                    {{ __('ui.sensitive_media_open_only_if_you_are_comfortable_viewing_it') }}
                                 </div>
                             @endif
                             @if ($media['type'] === 'video')
@@ -90,7 +90,7 @@
                         @forelse ($topic['tags'] as $tag)
                             <span class="forum-topic-card__tag">{{ $tag }}</span>
                         @empty
-                            <span class="sr-only">{{ __('ui.no_tags_9098cf0d23') }}</span>
+                            <span class="sr-only">{{ __('ui.no_tags_sentence') }}</span>
                         @endforelse
                     </div>
 
@@ -110,14 +110,14 @@
                             <input type="hidden" name="topic_id" value="{{ $topic['id'] }}">
                             <button type="submit" class="forum-button" aria-pressed="{{ $engagement['is_bookmarked'] ? 'true' : 'false' }}">
                                 <x-ui-icon name="bookmark" />
-                                {{ $engagement['is_bookmarked'] ? __('ui.saved_b5c120b316') : __('ui.save_1509f561f2') }}
+                                {{ $engagement['is_bookmarked'] ? __('ui.saved') : __('ui.save') }}
                             </button>
                         </form>
 
                         @if ($can_manage)
                             <a href="{{ route('forum.topics.edit', $topic['slug']) }}" class="forum-button">
                                 <x-ui-icon name="pencil" />
-                                {{ __('ui.edit_464c4ffd01') }}
+                                {{ __('ui.edit') }}
                             </a>
                             @if (in_array($topic['status_value'], ['solved', 'resolved'], true) && $topic['has_accepted_answer'])
                                 <form method="POST" action="{{ route('forum.actions') }}">
@@ -126,7 +126,7 @@
                                     <input type="hidden" name="topic_id" value="{{ $topic['id'] }}">
                                     <button type="submit" class="forum-button">
                                         <x-ui-icon name="library-big" />
-                                        {{ __('ui.create_knowledge_draft_2e84d856b3') }}
+                                        {{ __('ui.create_knowledge_draft') }}
                                     </button>
                                 </form>
                             @endif
@@ -142,20 +142,19 @@
 
                 @if ($journal_id === null || $answers !== [])
                     <section aria-labelledby="answers-heading">
-                        <div class="forum-header">
-                            <div class="forum-header__copy">
-                                <p class="forum-header__eyebrow">{{ __('ui.community_answers_793d6c2f23') }}</p>
-                                <h2 id="answers-heading">{{ trans_choice('presentation.thoughtful_answers', count($answers), ['count' => count($answers)]) }}</h2>
-                            </div>
-                        </div>
+                        <x-section-heading
+                            :eyebrow="__('ui.community_answers')"
+                            :title="trans_choice('presentation.thoughtful_answers', count($answers), ['count' => count($answers)])"
+                            title-id="answers-heading"
+                        />
 
                         <div class="forum-topic-list">
                             @forelse ($answers as $answer)
                                 <x-forum-answer :answer="$answer" :topic="$topic" :can-manage="$can_manage" />
                             @empty
                                 <div class="forum-form">
-                                    <h3>{{ __('ui.this_topic_still_needs_an_answer_0810c1f0fe') }}</h3>
-                                    <p>{{ __('ui.share_a_relevant_experience_a_careful_professional_perspective_b7d2787789') }}</p>
+                                    <h3>{{ __('ui.this_topic_still_needs_an_answer') }}</h3>
+                                    <p>{{ __('ui.share_a_relevant_experience_a_careful_professional_perspective_or_a_source_tied_to_a_specific_claim') }}</p>
                                 </div>
                             @endforelse
                         </div>
@@ -168,36 +167,36 @@
                     <form method="POST" action="{{ route('forum.answers.store', $topic['slug']) }}" class="forum-form">
                         @csrf
                         <div>
-                            <p class="forum-header__eyebrow">{{ __('ui.add_an_answer_63cebd92d5') }}</p>
-                            <h2>{{ __('ui.contribute_a_clear_next_step_3a72805f08') }}</h2>
+                            <p class="section-heading__eyebrow">{{ __('ui.add_an_answer') }}</p>
+                            <h2>{{ __('ui.contribute_a_clear_next_step') }}</h2>
                         </div>
                         @if ($errors->any())
                             <x-forum-error-summary :messages="$errors->getMessages()" />
                         @endif
                         <label class="forum-form__field">
-                            <span>{{ __('ui.your_answer_d0e869b777') }}</span>
+                            <span>{{ __('ui.your_answer') }}</span>
                             <textarea name="body" minlength="20" maxlength="6000" required>{{ old('body') }}</textarea>
-                            <small>{{ __('ui.separate_personal_experience_from_professional_claims_and_note_3d87bc6905') }}</small>
+                            <small>{{ __('ui.separate_personal_experience_from_professional_claims_and_note_important_limits') }}</small>
                         </label>
                         <div class="forum-form__grid">
                             <label class="forum-form__field">
-                                <span>{{ __('ui.context_a6e600a10f') }}</span>
+                                <span>{{ __('ui.context') }}</span>
                                 <select name="experience_type" required>
-                                    <option value="personal-experience">{{ __('ui.personal_experience_b46280093b') }}</option>
-                                    <option value="volunteer-experience">{{ __('ui.volunteer_experience_7a7c500571') }}</option>
-                                    <option value="professional-opinion">{{ __('ui.professional_opinion_26d50b58ad') }}</option>
-                                    <option value="organization-experience">{{ __('ui.organization_experience_3d7079e87b') }}</option>
-                                    <option value="source-summary">{{ __('ui.source_summary_7ec78b6389') }}</option>
+                                    <option value="personal-experience">{{ __('ui.personal_experience') }}</option>
+                                    <option value="volunteer-experience">{{ __('ui.volunteer_experience') }}</option>
+                                    <option value="professional-opinion">{{ __('ui.professional_opinion') }}</option>
+                                    <option value="organization-experience">{{ __('ui.organization_experience') }}</option>
+                                    <option value="source-summary">{{ __('ui.source_summary') }}</option>
                                 </select>
                             </label>
                             <label class="forum-form__field">
-                                <span>{{ __('ui.sources_one_url_per_line_b360f9a707') }}</span>
+                                <span>{{ __('ui.sources_one_url_per_line') }}</span>
                                 <textarea name="sources" maxlength="1500">{{ old('sources') }}</textarea>
                             </label>
                         </div>
                         <button type="submit" class="forum-button forum-button--primary">
                             <x-ui-icon name="send" />
-                            {{ __('ui.publish_answer_a87ef6402e') }}
+                            {{ __('ui.publish_answer') }}
                         </button>
                     </form>
                 @endif
@@ -205,30 +204,30 @@
 
             <aside class="forum-sidebar">
                 <section class="forum-sidebar__section">
-                    <div class="forum-sidebar__title"><span>{{ __('ui.follow_this_topic_5b12931d8c') }}</span></div>
+                    <div class="forum-sidebar__title"><span>{{ __('ui.follow_this_topic') }}</span></div>
                     <form method="POST" action="{{ route('forum.actions') }}" class="forum-form">
                         @csrf
                         <input type="hidden" name="action" value="set-subscription">
                         <input type="hidden" name="topic_id" value="{{ $topic['id'] }}">
                         <label class="forum-form__field">
-                            <span>{{ __('ui.notifications_788011833a') }}</span>
+                            <span>{{ __('ui.notifications') }}</span>
                             <select name="value">
                                 @forelse ($subscription_options as $key => $label)
                                     <option value="{{ $key }}" @selected($engagement['subscription_level'] === $key)>{{ $label }}</option>
                                 @empty
-                                    <option value="none">{{ __('ui.no_notifications_cbce2040cc') }}</option>
+                                    <option value="none">{{ __('ui.no_notifications') }}</option>
                                 @endforelse
                             </select>
                         </label>
                         <button type="submit" class="forum-button">
                             <x-ui-icon name="bell-ring" />
-                            {{ __('ui.update_c1c1009d3f') }}
+                            {{ __('ui.update') }}
                         </button>
                     </form>
                 </section>
 
                 <section class="forum-sidebar__section">
-                    <div class="forum-sidebar__title"><span>{{ __('ui.related_questions_3b91cba168') }}</span></div>
+                    <div class="forum-sidebar__title"><span>{{ __('ui.related_questions') }}</span></div>
                     <div class="forum-mini-list">
                         @forelse ($similar_topics as $similar)
                             <a href="{{ route('forum.topics.show', $similar['slug']) }}">
@@ -239,13 +238,13 @@
                                 </span>
                             </a>
                         @empty
-                            <p>{{ __('ui.no_close_matches_319d415e94') }}</p>
+                            <p>{{ __('ui.no_close_matches') }}</p>
                         @endforelse
                     </div>
                 </section>
 
                 <section class="forum-sidebar__section">
-                    <div class="forum-sidebar__title"><span>{{ __('ui.reviewed_guides_8aacaa0f77') }}</span></div>
+                    <div class="forum-sidebar__title"><span>{{ __('ui.reviewed_guides') }}</span></div>
                     <div class="forum-mini-list">
                         @forelse ($related_articles as $article)
                             <a href="{{ route('knowledge.articles.show', $article['slug']) }}">
@@ -256,7 +255,7 @@
                                 </span>
                             </a>
                         @empty
-                            <p>{{ __('ui.no_reviewed_guide_in_this_category_yet_d43d89639b') }}</p>
+                            <p>{{ __('ui.no_reviewed_guide_in_this_category_yet') }}</p>
                         @endforelse
                     </div>
                 </section>
@@ -265,7 +264,7 @@
                     <details>
                         <summary class="forum-button">
                             <x-ui-icon name="shield-alert" />
-                            {{ __('ui.safety_actions_c582dd7800') }}
+                            {{ __('ui.safety_actions') }}
                         </summary>
                         <div class="forum-topic-list mt-2">
                             <form method="POST" action="{{ route('forum.actions') }}" class="forum-form">
@@ -273,14 +272,14 @@
                                 <input type="hidden" name="action" value="report-topic">
                                 <input type="hidden" name="topic_id" value="{{ $topic['id'] }}">
                                 <label class="forum-form__field">
-                                    <span>{{ __('ui.report_reason_db3a509076') }}</span>
+                                    <span>{{ __('ui.report_reason') }}</span>
                                     <select name="reason">
-                                        <option value="dangerous-advice">{{ __('ui.dangerous_advice_df40777716') }}</option>
-                                        <option value="personal-data">{{ __('ui.personal_data_434886e6b6') }}</option>
-                                        <option value="animal-cruelty">{{ __('ui.animal_cruelty_6020404186') }}</option>
-                                        <option value="fraud">{{ __('ui.fraud_1baabd4791') }}</option>
-                                        <option value="spam">{{ __('ui.spam_94a9eac404') }}</option>
-                                        <option value="other">{{ __('ui.other_f97e9da0e3') }}</option>
+                                        <option value="dangerous-advice">{{ __('ui.dangerous_advice') }}</option>
+                                        <option value="personal-data">{{ __('ui.personal_data') }}</option>
+                                        <option value="animal-cruelty">{{ __('ui.animal_cruelty') }}</option>
+                                        <option value="fraud">{{ __('ui.fraud') }}</option>
+                                        <option value="spam">{{ __('ui.spam') }}</option>
+                                        <option value="other">{{ __('ui.other') }}</option>
                                     </select>
                                 </label>
                                 <label class="forum-form__check">
@@ -297,7 +296,7 @@
                                 </label>
                                 <button type="submit" class="forum-button forum-button--danger">
                                     <x-ui-icon name="flag" />
-                                    {{ __('ui.report_topic_918ef4030a') }}
+                                    {{ __('ui.report_topic') }}
                                 </button>
                             </form>
                             @if (! $can_manage)
@@ -307,7 +306,7 @@
                                     <input type="hidden" name="author_key" value="{{ $topic['author_key'] }}">
                                     <button type="submit" class="forum-button forum-button--danger">
                                         <x-ui-icon name="user-x" />
-                                        {{ __('ui.block_author_0252bd42c3') }}
+                                        {{ __('ui.block_author') }}
                                     </button>
                                 </form>
                             @endif

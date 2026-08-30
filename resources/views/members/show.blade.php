@@ -1,9 +1,9 @@
 <x-app-shell :owner="$owner" :title="$page_title" active-section="discover">
     <x-page-stack>
-        <a href="{{ route('discover.index', ['category' => 'owners']) }}" class="inline-flex items-center gap-2 text-sm font-semibold text-paw-leaf hover:underline">
-            <x-ui-icon name="arrow-left" size="sm" />
-            {{ __('member_profiles.actions.back_to_discovery') }}
-        </a>
+        <x-detail-navigation
+            :href="route('discover.index', ['category' => 'owners'])"
+            :label="__('member_profiles.actions.back_to_discovery')"
+        />
 
         <x-page-header
             :eyebrow="__('member_profiles.page.eyebrow')"

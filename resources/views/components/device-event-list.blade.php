@@ -30,7 +30,7 @@
                                 @csrf
                                 <button class="device-text-button" type="submit">
                                     <x-ui-icon name="circle-check" size="sm" />
-                                    <span>{{ __('ui.mark_checked_e5aaa31d48') }}</span>
+                                    <span>{{ __('ui.mark_checked') }}</span>
                                 </button>
                             </form>
                         @endunless
@@ -40,7 +40,7 @@
                                 <input type="hidden" name="confirmed" value="1">
                                 <button class="device-text-button" type="submit">
                                     <x-ui-icon name="notebook-pen" size="sm" />
-                                    <span>{{ __('ui.add_to_care_journal_363d373726') }}</span>
+                                    <span>{{ __('ui.add_to_care_journal') }}</span>
                                 </button>
                             </form>
                         @endif
@@ -52,8 +52,8 @@
         <div class="device-empty">
             <x-ui-icon name="shield-check" size="xl" />
             <div>
-                <h3>{{ __('ui.no_events_in_this_scope_8196b3adde') }}</h3>
-                <p>{{ __('ui.routine_telemetry_remains_separate_from_alerts_that_need_5685e619eb') }}</p>
+                <h3>{{ __('ui.no_events_in_this_scope') }}</h3>
+                <p>{{ __('ui.routine_telemetry_remains_separate_from_alerts_that_need_a_person_to_check_them') }}</p>
             </div>
         </div>
     @endforelse

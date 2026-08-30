@@ -1,4 +1,4 @@
-<x-app-shell :owner="$owner" title="{{ __('ui.walk_planner_brand_b113eccac9') }}" active-section="meetups">
+<x-app-shell :owner="$owner" title="{{ __('ui.walk_planner_brand') }}" active-section="meetups">
     <x-page-stack>
         <x-page-header
             :eyebrow="$summary['eyebrow']"
@@ -11,14 +11,14 @@
                 <x-action-group>
                     <x-action-control
                         :href="route('messages.index', ['filter' => 'walk-plans'])"
-                        label="{{ __('ui.walk_messages_389ba5a893') }}"
+                        label="{{ __('ui.walk_messages') }}"
                         icon="messages-square"
                         variant="paper"
                         size="regular"
                     />
                     <x-action-control
                         :href="route('compose', 'walk')"
-                        label="{{ __('ui.new_plan_0e646825df') }}"
+                        label="{{ __('ui.new_plan') }}"
                         icon="calendar-plus"
                         variant="primary"
                         size="regular"

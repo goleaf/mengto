@@ -1,4 +1,4 @@
-<x-app-shell :owner="$owner" title="{{ __('ui.notifications_brand_c7c4c56ebe') }}" active-section="notifications">
+<x-app-shell :owner="$owner" title="{{ __('ui.notifications_brand') }}" active-section="notifications">
     <x-page-stack>
         <x-page-header
             :eyebrow="$summary['eyebrow']"
@@ -6,10 +6,10 @@
             :description="$summary['description']"
             heading-id="notifications-heading"
             :count="$summary['count']"
-            :action-label="__('ui.mark_all_read_3bc62a9e6a')"
+            :action-label="__('ui.mark_all_read')"
             action-icon="check-check"
             :action-endpoint="route('actions.perform')"
-            :action-payload="['action' => 'mark-all-read', 'target' => 'notifications', 'label' => __('ui.notifications_788011833a')]"
+            :action-payload="['action' => 'mark-all-read', 'target' => 'notifications', 'label' => __('ui.notifications')]"
             data-section="notification-header"
         />
 
@@ -26,15 +26,15 @@
             <x-slot:sidebar>
                 <x-content-panel
                     section="weekly-activity"
-                    eyebrow="{{ __('ui.this_week_8c4eef5ab2') }}"
-                    title="{{ __('ui.your_activity_aef2eb4ec5') }}"
+                    eyebrow="{{ __('ui.this_week') }}"
+                    title="{{ __('ui.your_activity') }}"
                     size="compact"
                 >
                     <x-stat-grid
                         :items="$weeklyStats"
-                        label="{{ __('ui.weekly_activity_summary_cbd54558cc') }}"
+                        label="{{ __('ui.weekly_activity_summary') }}"
                         :icons="['paw-print', 'message-circle', 'users']"
-                        empty="{{ __('ui.no_weekly_activity_721a7ffcb6') }}"
+                        empty="{{ __('ui.no_weekly_activity') }}"
                         variant="panel"
                         tone="muted"
                         large

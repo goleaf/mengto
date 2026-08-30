@@ -148,7 +148,9 @@ test('the locale tree never renders an unreviewed category translation', functio
         'name' => 'NEPATIKRINTAS VERTIMAS',
         'is_reviewed' => false,
     ]);
-    Cache::forget(ForumCategoryTree::CACHE_KEY_PREFIX.'lt');
+    foreach (ForumCategoryTree::cacheKeysForLocale('lt') as $key) {
+        Cache::forget($key);
+    }
 
     $unreviewedTree = app(ForumCategoryTree::class)->forLocale('lt');
 
@@ -160,7 +162,9 @@ test('the locale tree never renders an unreviewed category translation', functio
         'name' => 'Judėjimo apribojimai',
         'is_reviewed' => true,
     ]);
-    Cache::forget(ForumCategoryTree::CACHE_KEY_PREFIX.'lt');
+    foreach (ForumCategoryTree::cacheKeysForLocale('lt') as $key) {
+        Cache::forget($key);
+    }
 
     $reviewedTree = app(ForumCategoryTree::class)->forLocale('lt');
 

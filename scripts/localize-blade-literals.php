@@ -2,6 +2,10 @@
 
 declare(strict_types=1);
 
+require_once __DIR__.'/Support/ReadableTranslationKey.php';
+
+use PawCircle\Scripts\Support\ReadableTranslationKey;
+
 /**
  * Moves static first-party Blade presentation strings into lang/{locale}/ui.php.
  *
@@ -12,7 +16,10 @@ declare(strict_types=1);
 $root = dirname(__DIR__);
 $viewRoot = $root.'/resources/views';
 $locales = ['en', 'lt', 'ru'];
-$checkOnly = in_array('--check', $argv, true);
+$arguments = isset($_SERVER['argv']) && is_array($_SERVER['argv'])
+    ? $_SERVER['argv']
+    : [];
+$checkOnly = in_array('--check', $arguments, true);
 $attributeNames = [
     'action-label',
     'active-label',
@@ -54,22 +61,17 @@ foreach ($english as $key => $value) {
 $keyByText = [];
 
 foreach ($english as $key => $value) {
-    $keyByText[$value] = $key;
+    $keyByText[ReadableTranslationKey::normalizeText($value)] ??= $key;
 }
 
 $translationKey = static function (string $text) use (&$english, &$keyByText): string {
-    $text = trim((string) preg_replace('/\s+/u', ' ', html_entity_decode($text, ENT_QUOTES | ENT_HTML5)));
+    $text = ReadableTranslationKey::normalizeText($text);
 
     if (isset($keyByText[$text])) {
         return $keyByText[$text];
     }
 
-    $words = preg_split('/[^\pL\pN]+/u', mb_strtolower($text), -1, PREG_SPLIT_NO_EMPTY);
-    $stem = implode('_', array_slice($words ?: ['text'], 0, 8));
-    $stem = preg_replace('/[^\pL\pN_]+/u', '', $stem) ?: 'text';
-    $stem = str_replace('pawcircle', 'brand', $stem);
-    $stem = mb_substr($stem, 0, 72);
-    $key = $stem.'_'.substr(hash('sha256', $text), 0, 10);
+    $key = ReadableTranslationKey::resolve($text, $english);
 
     $english[$key] = $text;
     $keyByText[$text] = $key;

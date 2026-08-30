@@ -1,4 +1,4 @@
-@props(['items', 'empty' => __('ui.metrics_unavailable_a407734729')])
+@props(['items', 'empty' => __('ui.metrics_unavailable')])
 
 <dl {{ $attributes->class(['mt-4 grid gap-3']) }}>
     @forelse ($items as $item)
@@ -9,7 +9,7 @@
         </div>
     @empty
         <div>
-            <dt class="sr-only">{{ __('ui.metrics_a58da793c7') }}</dt>
+            <dt class="sr-only">{{ __('ui.metrics') }}</dt>
             <dd class="text-sm text-paw-muted">{{ $empty }}</dd>
         </div>
     @endforelse

@@ -63,8 +63,12 @@ accepted invitations, owner, administrator, or active event-team membership.
 
 The repository does not yet contain verified provider-backed event payment,
 ticket, refund, receipt, donation, checkout reservation, QR/offline scanning,
-competition scoring, vendor/booth, sponsor, volunteer-shift,
-event incident, weather-plan, certificate, or event-feedback aggregates.
+vendor/booth, sponsor, volunteer-shift, event incident, weather-plan,
+certificate, or event-feedback aggregates. A competition persistence and
+Action subset is present, including categories, entries, judges, conflicts,
+scores, corrections, result versions, finalization, and appeals, but its
+factories, reachable workflow surface, exact requirement evidence, and
+release gates remain incomplete; it is not a verified competition feature.
 Positive event prices remain metadata and registration refuses to simulate a
 charge. Existing generic booking/payment-like UI is not promoted to an event
 payment implementation.

@@ -72,6 +72,7 @@ return [
         'rejected' => 'Atmesta',
         'expired' => 'Baigė galioti',
         'refunded' => 'Pinigai grąžinti',
+        'completed' => 'Baigta',
         'suspended_for_safety_review' => 'Sustabdyta saugumo patikrai',
     ],
     'review_statuses' => ['published' => 'Paskelbtas', 'hidden' => 'Paslėptas'],

@@ -5,7 +5,7 @@
 >
     <x-page-stack>
         <x-text-link :href="route('places.index')" icon="arrow-left" variant="back">
-            {{ __('ui.back_to_places_8dbb908a58') }}
+            {{ __('ui.back_to_places') }}
         </x-text-link>
 
         <x-place-hero :place="$place" />

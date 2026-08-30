@@ -122,6 +122,12 @@ class User extends Authenticatable implements MustVerifyEmailContract
         return $this->hasOne(SocialActor::class);
     }
 
+    /** @return HasOne<UserOnboarding, $this> */
+    public function onboarding(): HasOne
+    {
+        return $this->hasOne(UserOnboarding::class);
+    }
+
     /** @return HasMany<SocialAccountBlock, $this> */
     public function outgoingSocialAccountBlocks(): HasMany
     {

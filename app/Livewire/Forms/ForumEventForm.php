@@ -269,7 +269,7 @@ final class ForumEventForm extends Form
         $endsAt = $this->parseLocalDateTime((string) $validated['endsAt'], $timezone);
 
         if ($startsAt === null || $endsAt === null) {
-            throw new \LogicException(__('messages.validated_event_date_times_could_not_be_parsed_961859fb21'));
+            throw new \LogicException(__('messages.validated_event_date_times_could_not_be_parsed'));
         }
 
         return new CreateForumEventData(

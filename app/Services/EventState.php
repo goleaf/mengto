@@ -110,7 +110,7 @@ final class EventState
 
         $state = $this->state();
         $state['registrations'][$event] = $registration;
-        $this->recordHistory($state, $event, __('messages.registration_cancelled_and_the_place_released_5c161826aa'));
+        $this->recordHistory($state, $event, __('messages.registration_cancelled_and_the_place_released'));
         $this->store($state);
 
         return $registration;
@@ -130,13 +130,13 @@ final class EventState
         if ($outcome === 'failure') {
             $registration['status'] = 'payment_failed';
             $registration['payment_status'] = 'failed';
-            $message = __('messages.prototype_payment_failed_without_creating_a_charge_9fb495f598');
+            $message = __('messages.prototype_payment_failed_without_creating_a_charge');
         } else {
             $registration['status'] = 'confirmed';
             $registration['payment_status'] = 'paid';
             $registration['payment_reference'] ??= 'PAY-'.Str::upper(Str::random(10));
             $registration['ticket_code'] ??= $this->ticketCode($event);
-            $message = __('messages.prototype_payment_confirmed_and_a_ticket_was_issued_2fda730b10');
+            $message = __('messages.prototype_payment_confirmed_and_a_ticket_was_issued');
         }
 
         $registration['updated_at'] = now()->toAtomString();
@@ -153,7 +153,7 @@ final class EventState
         $state = $this->state();
         $active = ! ($state['interested'][$event] ?? false);
         $state['interested'][$event] = $active;
-        $this->recordHistory($state, $event, $active ? __('messages.marked_interested_068353d86e') : __('messages.removed_interested_status_a69b3f6736'));
+        $this->recordHistory($state, $event, $active ? __('messages.marked_interested') : __('messages.removed_interested_status'));
         $this->store($state);
 
         return $active;
@@ -169,7 +169,7 @@ final class EventState
         $state = $this->state();
         $active = ! ($state['calendar'][$event] ?? false);
         $state['calendar'][$event] = $active;
-        $this->recordHistory($state, $event, $active ? __('messages.added_to_personal_calendar_2fe4babf24') : __('messages.removed_from_personal_calendar_9ef4ce46e7'));
+        $this->recordHistory($state, $event, $active ? __('messages.added_to_personal_calendar') : __('messages.removed_from_personal_calendar'));
         $this->store($state);
 
         return $active;
@@ -185,7 +185,7 @@ final class EventState
         $state = $this->state();
         $active = ! ($state['reminders'][$event] ?? false);
         $state['reminders'][$event] = $active;
-        $this->recordHistory($state, $event, $active ? __('messages.event_reminders_enabled_b95d6adbd8') : __('messages.event_reminders_paused_61da156d54'));
+        $this->recordHistory($state, $event, $active ? __('messages.event_reminders_enabled') : __('messages.event_reminders_paused'));
         $this->store($state);
 
         return $active;
@@ -254,7 +254,7 @@ final class EventState
         $registration['updated_at'] = now()->toAtomString();
         $state = $this->state();
         $state['registrations'][$event] = $registration;
-        $this->recordHistory($state, $event, __('messages.rescheduled_date_acknowledged_8c7f2bbf70'));
+        $this->recordHistory($state, $event, __('messages.rescheduled_date_acknowledged'));
         $this->store($state);
 
         return $registration;
@@ -269,7 +269,7 @@ final class EventState
         $state['messages'][$event] ??= [];
         array_push($state['messages'][$event], $message);
         $state['messages'][$event] = array_slice($state['messages'][$event], -30);
-        $this->recordHistory($state, $event, __('messages.a_participant_message_was_added_39654837bd'));
+        $this->recordHistory($state, $event, __('messages.a_participant_message_was_added'));
         $this->store($state);
     }
 
@@ -290,7 +290,7 @@ final class EventState
         $state['announcements'][$event] ??= [];
         array_unshift($state['announcements'][$event], $announcement);
         $state['announcements'][$event] = array_slice($state['announcements'][$event], 0, 12);
-        $this->recordHistory($state, $event, __('messages.organizer_published_an_announcement_3cd16ba3f3'));
+        $this->recordHistory($state, $event, __('messages.organizer_published_an_announcement'));
         $this->store($state);
     }
 
@@ -315,7 +315,7 @@ final class EventState
 
         $state = $this->state();
         $state['reviews'][$event] = [$review];
-        $this->recordHistory($state, $event, __('messages.verified_attendance_review_submitted_74c743176a'));
+        $this->recordHistory($state, $event, __('messages.verified_attendance_review_submitted'));
         $this->store($state);
 
         return true;
@@ -337,7 +337,7 @@ final class EventState
         $state = $this->state();
         array_unshift($state['reports'], ['event' => $event, ...$report]);
         $state['reports'] = array_slice($state['reports'], 0, 20);
-        $this->recordHistory($state, $event, __('messages.private_event_report_submitted_a42f001f72'));
+        $this->recordHistory($state, $event, __('messages.private_event_report_submitted'));
         $this->store($state);
     }
 
@@ -408,7 +408,7 @@ final class EventState
             $state['registrations'][$event]['reschedule_acknowledged'] = false;
         }
 
-        $this->recordHistory($state, $event, __('messages.event_rescheduled_attendee_confirmation_required_8b44253702'));
+        $this->recordHistory($state, $event, __('messages.event_rescheduled_attendee_confirmation_required'));
         $this->store($state);
     }
 
@@ -424,7 +424,7 @@ final class EventState
             'note' => $reason,
             'created_at' => now()->toAtomString(),
         ]);
-        $this->recordHistory($state, $event, __('messages.organizer_cancelled_the_event_08d059d9ca'));
+        $this->recordHistory($state, $event, __('messages.organizer_cancelled_the_event'));
         $this->store($state);
     }
 
@@ -450,7 +450,7 @@ final class EventState
         $state['photos'][$event] ??= [];
         array_unshift($state['photos'][$event], $photo);
         $state['photos'][$event] = array_slice($state['photos'][$event], 0, 12);
-        $this->recordHistory($state, $event, __('messages.photo_added_to_the_event_album_b33d5e2d51'));
+        $this->recordHistory($state, $event, __('messages.photo_added_to_the_event_album'));
         $this->store($state);
     }
 

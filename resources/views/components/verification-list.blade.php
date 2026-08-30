@@ -11,7 +11,7 @@
                 </div>
             </div>
         @empty
-            <p class="text-sm text-paw-muted">{{ __('ui.no_verification_details_are_available_a54b79a51a') }}</p>
+            <p class="text-sm text-paw-muted">{{ __('ui.no_verification_details_are_available') }}</p>
         @endforelse
     </div>
 

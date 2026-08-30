@@ -55,7 +55,7 @@ class CreateCareEntry
                 if ($existing !== null) {
                     if ($existing->care_journal_id !== $journal->id) {
                         throw ValidationException::withMessages([
-                            'idempotency_key' => __('messages.this_submission_key_is_already_in_use_dae6feeffb'),
+                            'idempotency_key' => __('messages.this_submission_key_is_already_in_use'),
                         ]);
                     }
 
@@ -73,7 +73,7 @@ class CreateCareEntry
 
                 if ($lockedJournal->status !== 'active') {
                     throw ValidationException::withMessages([
-                        'entry_type' => __('messages.this_care_journal_is_not_active_8c3a076094'),
+                        'entry_type' => __('messages.this_care_journal_is_not_active'),
                     ]);
                 }
 
@@ -230,13 +230,13 @@ class CreateCareEntry
 
         if ($task->care_journal_id !== $journal->id) {
             throw ValidationException::withMessages([
-                'care_task_id' => __('messages.this_task_does_not_belong_to_the_selected_care_journal_62cdb67e40'),
+                'care_task_id' => __('messages.this_task_does_not_belong_to_the_selected_care_journal'),
             ]);
         }
 
         if (! $task->status->isOpen()) {
             throw ValidationException::withMessages([
-                'care_task_id' => __('messages.this_task_has_already_been_handled_bdf94378ba'),
+                'care_task_id' => __('messages.this_task_has_already_been_handled'),
             ]);
         }
 

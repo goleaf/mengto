@@ -29,6 +29,60 @@ offline, reduced-motion, and forced-colors states. The larger semantic SCSS
 bundle is unchanged and remains a measured incremental-migration boundary, not
 an unreviewed rewrite target.
 
+## 2026-08-30 Repository-Wide Audit
+
+The audit used deterministic SQLite factories and emitted timings and memory
+as observations while enforcing machine-stable query and byte ceilings:
+
+- Place name-directory fixture: 613 public rows plus one private sentinel.
+  The old path stopped at 500 and could not serve page 101. The SQL-paginated
+  path served the complete set with 4 queries, 99,628 response bytes,
+  6,291,456 peak-memory-delta bytes, and 146.82 ms. The regression budgets are
+  at most 8 queries and 196,608 response bytes.
+- Private lost/found coordination with 125 confirmed sightings retained 10
+  queries while the bounded projection reduced serialized bytes from 95,395
+  to 77,051 and the observed run from 116.10 to 85.74 ms. Peak-memory delta
+  remained 4,194,304 bytes. Collections are capped at 100; history at 50.
+- A journal entry with 75 published comments reduced its projected payload
+  from 11,759 to 8,083 bytes and the observed run from 83.29 to 44.84 ms.
+  Timeline entries remain paginated by 10; comments are capped at 50,
+  measurements at 20, media at 10, and collaborators at 100.
+- A full export of 125 entries retained every entry and changed from 8 queries,
+  89,037 bytes, and 23.61 ms to a constant 4 queries, 90,737 bytes, and
+  30.41 ms. The measured tradeoff removes relation-graph accumulation and
+  chunk-dependent query growth; the executable budget is at most 5 queries
+  and 262,144 bytes for that fixture.
+- The maximum-valid representative ManagePetProfile form produced 58,579
+  initial HTML bytes, an 18,406-byte Livewire snapshot, and a 58,161-byte
+  update response. Budgets are 196,608, 24,576, and 65,536 bytes
+  respectively. No public Eloquent model or relationship graph was found, so
+  no speculative component rewrite was made.
+- Public listing statistics execute 6 source queries cold and 0 warm, then
+  invalidate on mutation. Forum category tree warm reads execute 0 SQL.
+  Search, listing, forum-category, and topic-schema regeneration now use
+  bounded locks and fail-open source reads; private search activity and
+  non-public category audiences have isolation tests.
+- Seven additive composite indexes are tied to measured timeline/directory
+  predicates. SQLite query plans select each named index without a temporary
+  order B-tree, and the migration has an executable down/up reversal test.
+- The deterministic forum requirements check processed 38,377 requirements in
+  7.28 seconds with 388,120 KiB maximum RSS. Its explicit manual release budget
+  is 10 seconds and 420 MiB on this host; deterministic byte equality remains
+  the authoritative gate. This release-only generator does not run in a web
+  request.
+
+A clean isolated Vite build completed in 711 ms. Current raw/gzip outputs are
+1.31/0.32 kB font CSS, 52.77/9.98 kB Tailwind CSS, 311.03/40.25 kB semantic
+SCSS, 35.09/10.85 kB application JavaScript, and 58.83/17.06 kB for the
+dynamic PhotoSwipe chunk. No duplicate URL was observed in the five-request
+guest login trace, and PhotoSwipe remains a single dynamic chunk. Semantic
+SCSS is 17.5% raw and 15.0% gzip above the prior recorded baseline because all
+29 retained feature partials remain in the global compatibility entry. No
+duplicate bundle or route-safe split was demonstrated, so the audit records
+the growth rather than deleting active styles. All direct first-party image
+elements now declare intrinsic dimensions; the four representative directory
+cards use the responsive-image boundary.
+
 ## Budgets
 
 - No N+1 on critical list/detail pages.
@@ -49,6 +103,16 @@ an unreviewed rewrite target.
 6. Add a stable test or documented manual benchmark.
 
 ## Query Budgets
+
+`tests/Feature/PageIdentityStandardizationTest.php` records representative
+global-page-identity baselines with prepared, bounded fixtures: expert
+directory at 5 queries, expert detail at 12 queries, and the active message
+details workspace at 4 queries. Shared headers and navigation render from
+prepared scalar values with zero database statements.
+`tests/Feature/ExpertDirectoryTest.php` separately grows the expert dashboard
+fixtures beyond their presentation limits and holds the route to 6 queries;
+the presenter caps bookings at 12, credentials at 8, and services at 12 while
+retaining the authoritative total booking count.
 
 `tests/Feature/CareJournalTest.php` verifies that the care journal detail
 remains at or below 12 queries as timeline fixtures grow.

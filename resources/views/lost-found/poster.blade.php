@@ -19,7 +19,7 @@
                 <div class="grid gap-6 p-5 sm:p-8 md:grid-cols-[minmax(0,1.2fr)_minmax(16rem,.8fr)]">
                     <div>
                         @if ($search_case['cover_url'])
-                            <img src="{{ $search_case['cover_url'] }}" alt="{{ $poster['image_alt'] }}" class="aspect-[4/3] w-full rounded-md object-cover">
+                            <img src="{{ $search_case['cover_url'] }}" alt="{{ $poster['image_alt'] }}" width="1200" height="900" class="aspect-[4/3] w-full rounded-md object-cover">
                         @else
                             <div class="grid aspect-[4/3] place-items-center rounded-md bg-paw-mint">
                                 <x-ui-icon size="hero" :name="$search_case['type_icon']" class="text-paw-leaf" />
@@ -43,7 +43,7 @@
                         </dl>
 
                         <div class="grid grid-cols-[8rem_1fr] items-center gap-4 border-t border-paw-line pt-5">
-                            <img src="{{ $qr_code }}" alt="{{ __('lost_found.poster.qr_alt') }}" class="size-32">
+                            <img src="{{ $qr_code }}" alt="{{ __('lost_found.poster.qr_alt') }}" width="128" height="128" class="size-32">
                             <div>
                                 <p class="font-bold">{{ __('lost_found.poster.scan_status') }}</p>
                                 <p class="mt-1 break-all text-xs text-paw-muted">{{ $public_url }}</p>

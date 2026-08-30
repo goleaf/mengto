@@ -4,7 +4,7 @@
     @if ($errors->any())
         <div role="alert" class="form-errors">
             <x-ui-icon name="circle-alert" size="sm" />
-            <p>{{ __('ui.please_review_the_highlighted_fields_9941c0ee3c') }}</p>
+            <p>{{ __('ui.please_review_the_highlighted_fields') }}</p>
         </div>
     @endif
 
@@ -23,7 +23,7 @@
         <x-action-group class="form-actions">
             <x-action-control
                 :href="route($form['cancel_route'], $form['cancel_parameters'] ?? [])"
-                label="{{ __('ui.cancel_19766ed6cc') }}"
+                label="{{ __('ui.cancel') }}"
                 icon="x"
                 variant="paper"
                 size="regular"

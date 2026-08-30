@@ -23,7 +23,7 @@
                     {{ $post['author'] }}
                 @endif
                 @if ($post['verified'] ?? false)
-                    <x-ui-icon name="badge-check" size="sm" class="text-paw-teal" label="{{ __('ui.verified_profile_445947549b') }}" />
+                    <x-ui-icon name="badge-check" size="sm" class="text-paw-teal" label="{{ __('ui.verified_profile') }}" />
                 @endif
         @if ((int) $level === 3)
             </h3>

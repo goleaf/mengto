@@ -27,10 +27,10 @@
 
             <div class="connection-identity__badges">
                 @if ($item['verified'])
-                    <x-status-badge label="{{ __('ui.verified_4f7838402f') }}" icon="badge-check" tone="mint" />
+                    <x-status-badge label="{{ __('ui.verified') }}" icon="badge-check" tone="mint" />
                 @endif
                 @if ($item['private'])
-                    <x-status-badge label="{{ __('ui.private_c63eb6720c') }}" icon="lock-keyhole" tone="surface" />
+                    <x-status-badge label="{{ __('ui.private') }}" icon="lock-keyhole" tone="surface" />
                 @endif
             </div>
         </div>

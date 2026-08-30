@@ -11,14 +11,14 @@
         />
         <x-feed-action
             :label="trans_choice('presentation.reposts_count', $post['reposts'], ['count' => $post['reposts']])"
-            compact-label="{{ __('ui.repost_f4fd9adb8f') }}"
+            compact-label="{{ __('ui.repost') }}"
             icon="repeat-2"
             :endpoint="route('actions.perform')"
             :payload="['action' => 'repost-post', 'target' => $post['key'], 'label' => __('presentation.action_publication', ['name' => $post['represented']])]"
         />
         <x-feed-action
-            label="{{ __('ui.save_1509f561f2') }}"
-            active-label="{{ __('ui.saved_b5c120b316') }}"
+            label="{{ __('ui.save') }}"
+            active-label="{{ __('ui.saved') }}"
             icon="bookmark"
             :active="$post['saved']"
             :endpoint="route('actions.perform')"
@@ -26,9 +26,9 @@
         />
     @else
     <x-feed-action
-        :label="$post['stats']['paws'].' '.__('ui.paws_45f20e8148')"
+        :label="$post['stats']['paws'].' '.__('ui.paws')"
         :compact-label="$post['stats']['paws']"
-        active-label="{{ __('ui.pawed_73bec350db') }}"
+        active-label="{{ __('ui.pawed') }}"
         icon="paw-print"
         :active="$post['pawed']"
         :endpoint="route('actions.perform')"
@@ -41,14 +41,14 @@
         :href="route('posts.show', ['post' => $post['key']])"
     />
     <x-feed-action
-        label="{{ __('ui.share_29887a5ff9') }}"
+        label="{{ __('ui.share') }}"
         icon="share-2"
         :endpoint="route('actions.perform')"
         :payload="['action' => 'share', 'target' => $post['key'], 'label' => __('presentation.action_moment', ['pet' => $post['pet']])]"
     />
     <x-feed-action
-        label="{{ __('ui.save_1509f561f2') }}"
-        active-label="{{ __('ui.saved_b5c120b316') }}"
+        label="{{ __('ui.save') }}"
+        active-label="{{ __('ui.saved') }}"
         icon="bookmark"
         :active="$post['saved']"
         :endpoint="route('actions.perform')"

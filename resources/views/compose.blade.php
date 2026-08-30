@@ -9,7 +9,7 @@
             :title="$form['title']"
             :description="$form['description']"
             heading-id="composer-title"
-            :action-label="__('ui.back_76900f1bfd')"
+            :action-label="__('ui.back')"
             action-icon="arrow-left"
             :action-href="route($form['cancel_route'], $form['cancel_parameters'] ?? [])"
             action-variant="paper"

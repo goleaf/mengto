@@ -4,11 +4,12 @@
     @if (! $this->workspace['authorized']) hidden aria-hidden="true" @endif
 >
     @if ($this->workspace['authorized'])
-        <header>
-            <p class="forum-header__eyebrow">{{ __('forum_groups.labels.managed') }}</p>
-            <h2 id="group-management-heading">{{ __('forum_groups.page.manage_heading') }}</h2>
-            <p>{{ __('forum_groups.notices.management_limit') }}</p>
-        </header>
+        <x-section-heading
+            :eyebrow="__('forum_groups.labels.managed')"
+            :title="__('forum_groups.page.manage_heading')"
+            :description="__('forum_groups.notices.management_limit')"
+            title-id="group-management-heading"
+        />
 
         @if ($feedback !== '')
             <p class="border-s-4 border-status-success py-3 ps-4" role="status" aria-live="polite">

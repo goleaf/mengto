@@ -3,17 +3,17 @@
     'center',
 ])
 
-<section class="friend-dashboard" aria-label="{{ __('ui.pet_friendship_center_7323941f70') }}">
+<section class="friend-dashboard" aria-label="{{ __('ui.pet_friendship_center') }}">
     <x-pet-friend-switcher :pets="$center['pet_switcher']" />
 
     <x-summary-strip
         :items="$summary['stats']"
-        label="{{ __('ui.pet_friendship_summary_fe57f2f733') }}"
+        label="{{ __('ui.pet_friendship_summary') }}"
         :icons="['heart-handshake', 'inbox', 'send', 'route']"
         :columns="4"
     />
 
-    <x-tab-list :tabs="$center['tabs']" label="{{ __('ui.pet_friendship_views_960c18c50c') }}" />
+    <x-tab-list :tabs="$center['tabs']" label="{{ __('ui.pet_friendship_views') }}" />
 
     @if ($center['last_dismissed'])
         <div class="friend-feedback" role="status">
@@ -70,9 +70,9 @@
                 <h2 id="friend-safety-title">{{ $center['safety_note']['title'] }}</h2>
                 <p>{{ $center['safety_note']['description'] }}</p>
                 <ul>
-                    <li>{{ __('ui.choose_a_neutral_public_place_fd36e64017') }}</li>
-                    <li>{{ __('ui.share_exact_meeting_details_only_after_acceptance_91a3d9f1a5') }}</li>
-                    <li>{{ __('ui.end_an_introduction_whenever_either_pet_is_uncomfortable_142ce42a01') }}</li>
+                    <li>{{ __('ui.choose_a_neutral_public_place') }}</li>
+                    <li>{{ __('ui.share_exact_meeting_details_only_after_acceptance') }}</li>
+                    <li>{{ __('ui.end_an_introduction_whenever_either_pet_is_uncomfortable') }}</li>
                 </ul>
             </div>
         </aside>

@@ -1,9 +1,9 @@
 @props([
     'posts',
     'eyebrow',
-    'title' => __('ui.recent_moments_091f9f27cf'),
+    'title' => __('ui.recent_moments'),
     'section' => 'recent-moments',
-    'emptyTitle' => __('ui.no_moments_shared_yet_6f33794cde'),
+    'emptyTitle' => __('ui.no_moments_shared_yet'),
     'icon' => null,
 ])
 

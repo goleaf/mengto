@@ -21,7 +21,7 @@ final readonly class RollbackTaxonomyImport
             $target->taxon_source_id !== $source->id
             || ! $target->state->canActivate()
         ) {
-            throw new RuntimeException(__('messages.the_requested_taxonomy_rollback_target_is_not_eligible_08a54eff4b'));
+            throw new RuntimeException(__('messages.the_requested_taxonomy_rollback_target_is_not_eligible'));
         }
 
         $currentImportId = $source->active_taxon_import_id;

@@ -23,6 +23,6 @@ class OrderDisputeController extends Controller
         $openDispute->handle($order, $request->validated());
 
         return to_route('marketplace.orders.show', [$listing, $order])
-            ->with('feedback', __('messages.dispute_opened_protected_payment_is_paused_while_the_evi_56b3082b26'));
+            ->with('feedback', __('messages.dispute_opened_protected_payment_is_paused_while_the_evidence_is_reviewed'));
     }
 }

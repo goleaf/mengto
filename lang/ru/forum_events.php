@@ -72,6 +72,7 @@ return [
         'rejected' => 'Отклонена',
         'expired' => 'Истекла',
         'refunded' => 'Возвращена',
+        'completed' => 'Завершена',
         'suspended_for_safety_review' => 'Приостановлена для проверки безопасности',
     ],
     'review_statuses' => ['published' => 'Опубликован', 'hidden' => 'Скрыт'],

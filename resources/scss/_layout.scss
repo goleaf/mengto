@@ -146,6 +146,16 @@
             line-height: 1.875rem;
         }
     }
+
+    &__description {
+        max-inline-size: 46rem;
+        margin-block-start: 0.65rem;
+        color: $muted;
+        font-size: 0.95rem;
+        line-height: 1.6;
+        overflow-wrap: anywhere;
+        text-wrap: pretty;
+    }
 }
 
 .empty-state {

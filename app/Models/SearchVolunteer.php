@@ -34,6 +34,12 @@ class SearchVolunteer extends Model
     /** @use HasFactory<SearchVolunteerFactory> */
     use HasFactory;
 
+    protected static function booted(): void
+    {
+        static::saved(fn (): bool => SearchCase::invalidateDirectoryStats());
+        static::deleted(fn (): bool => SearchCase::invalidateDirectoryStats());
+    }
+
     protected $fillable = [
         'search_case_id', 'actor_key', 'display_name', 'role', 'capabilities',
         'status', 'privacy_level', 'available_until', 'joined_at',

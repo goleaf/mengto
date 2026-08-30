@@ -24,7 +24,7 @@ class CreateComment
 
             if ($answer->topic_id !== $topic->id) {
                 throw ValidationException::withMessages([
-                    'answer_id' => __('messages.the_selected_answer_does_not_belong_to_this_topic_c891a426c1'),
+                    'answer_id' => __('messages.the_selected_answer_does_not_belong_to_this_topic'),
                 ]);
             }
 
@@ -38,7 +38,7 @@ class CreateComment
 
                 if ($parent->answer_id !== $answer->id || $parent->parent_id !== null) {
                     throw ValidationException::withMessages([
-                        'parent_id' => __('messages.comments_support_one_reply_level_f9daefc35a'),
+                        'parent_id' => __('messages.comments_support_one_reply_level'),
                     ]);
                 }
             }

@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 use App\Http\Middleware\AddSecurityHeaders;
 use App\Http\Middleware\AttachRequestContext;
+use App\Http\Middleware\EnrichRequestContext;
 use App\Http\Middleware\EnsureActiveUser;
 use App\Http\Middleware\EnsureEmailIsVerified;
+use App\Http\Middleware\EnsureOnboardingIsComplete;
+use App\Http\Middleware\ReportSlowRequest;
 use App\Http\Middleware\RequirePortalAccess;
 use App\Http\Middleware\SetLocale;
 use Illuminate\Foundation\Application;
@@ -22,15 +25,25 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->trustHosts();
+        $middleware->prepend([
+            AttachRequestContext::class,
+            ReportSlowRequest::class,
+        ]);
         $middleware->append(AddSecurityHeaders::class);
         $middleware->web(append: [
             SetLocale::class,
-            AttachRequestContext::class,
+            EnrichRequestContext::class,
             RequirePortalAccess::class,
+            EnsureOnboardingIsComplete::class,
         ]);
         $middleware->appendToPriorityList(
             StartSession::class,
             RequirePortalAccess::class,
+        );
+        $middleware->appendToPriorityList(
+            RequirePortalAccess::class,
+            EnsureOnboardingIsComplete::class,
         );
         $middleware->alias([
             'active' => EnsureActiveUser::class,

@@ -9,9 +9,7 @@
 
 <x-app-shell :owner="$owner" :title="$title" :active-section="$activeSection">
     <div data-section="{{ $section }}" {{ $attributes->class(['detail-page']) }}>
-        <x-text-link :href="$backHref" icon="arrow-left" variant="back">
-            {{ $backLabel }}
-        </x-text-link>
+        <x-detail-navigation :href="$backHref" :label="$backLabel" />
 
         {{ $hero }}
 

@@ -1,7 +1,7 @@
 @props(['photos' => []])
 
 <section data-section="gallery" {{ $attributes->merge(['class' => 'panel panel--padded']) }}>
-    <x-section-heading eyebrow="{{ __('ui.field_notes_10894d52cb') }}" title="{{ __('ui.scout_s_gallery_e6c4bbb9a7') }}" />
+    <x-section-heading eyebrow="{{ __('ui.field_notes') }}" title="{{ __('ui.scout_s_gallery') }}" />
 
     <div class="mt-4 grid gap-3 sm:grid-cols-2">
         @forelse ($photos as $photo)
@@ -28,7 +28,7 @@
         @empty
             <x-empty-state
                 icon="images"
-                title="{{ __('ui.no_photos_shared_yet_7c4695ca73') }}"
+                title="{{ __('ui.no_photos_shared_yet') }}"
                 compact
                 class="sm:col-span-2"
             />

@@ -5,7 +5,7 @@
     'startedAt',
     'sourceType' => 'owner',
     'sourceName' => '',
-    'submitLabel' => __('ui.record_care_action_b2937ac51f'),
+    'submitLabel' => __('ui.record_care_action'),
     'compact' => false,
     'allowLocation' => true,
     'allowMedia' => true,
@@ -36,164 +36,164 @@
 
     <div class="care-form-grid">
         <label>
-            {{ __('ui.action_64cff1319d') }}
+            {{ __('ui.action') }}
             <select name="entry_type" required>
                 @forelse ($types as $type)
                     <option value="{{ $type['value'] }}" @selected(old('entry_type') === $type['value'])>{{ $type['label'] }}</option>
                 @empty
-                    <option value="">{{ __('ui.no_allowed_actions_0fb73607ff') }}</option>
+                    <option value="">{{ __('ui.no_allowed_actions') }}</option>
                 @endforelse
             </select>
         </label>
         <label>
-            {{ __('ui.what_happened_483bd49023') }}
-            <input name="title" value="{{ old('title') }}" maxlength="180" required placeholder="{{ __('ui.breakfast_park_walk_quiet_nap_1623873d92') }}">
+            {{ __('ui.what_happened') }}
+            <input name="title" value="{{ old('title') }}" maxlength="180" required placeholder="{{ __('ui.breakfast_park_walk_quiet_nap') }}">
         </label>
         <label>
-            {{ __('ui.started_ecbc89cd37') }}
+            {{ __('ui.started') }}
             <input type="datetime-local" name="started_at" value="{{ old('started_at', $startedAt) }}" required>
         </label>
         <label>
-            {{ __('ui.outcome_4e80abb5b1') }}
+            {{ __('ui.outcome') }}
             <select name="status" required>
-                <option value="completed">{{ __('ui.completed_22a970d2e5') }}</option>
-                <option value="partial">{{ __('ui.partially_completed_24421344ab') }}</option>
-                <option value="in-progress">{{ __('ui.in_progress_c1f88e9d6c') }}</option>
-                <option value="refused">{{ __('ui.pet_refused_323b25a990') }}</option>
-                <option value="skipped">{{ __('ui.skipped_12698ce1ea') }}</option>
-                <option value="needs-help">{{ __('ui.needs_help_102dd0fe0f') }}</option>
-                <option value="needs-review">{{ __('ui.needs_review_07297fa94a') }}</option>
+                <option value="completed">{{ __('ui.completed') }}</option>
+                <option value="partial">{{ __('ui.partially_completed') }}</option>
+                <option value="in-progress">{{ __('ui.in_progress') }}</option>
+                <option value="refused">{{ __('ui.pet_refused') }}</option>
+                <option value="skipped">{{ __('ui.skipped') }}</option>
+                <option value="needs-help">{{ __('ui.needs_help') }}</option>
+                <option value="needs-review">{{ __('ui.needs_review') }}</option>
             </select>
         </label>
     </div>
 
     <details class="care-form-details">
-        <summary><x-ui-icon name="sliders-horizontal" size="sm" /> {{ __('ui.structured_details_5a8ec19ecb') }}</summary>
+        <summary><x-ui-icon name="sliders-horizontal" size="sm" /> {{ __('ui.structured_details') }}</summary>
         <div class="care-form-grid">
             <label>
-                {{ __('ui.product_or_activity_cced0a8554') }}
-                <input name="product_name" value="{{ old('product_name') }}" maxlength="180" placeholder="{{ __('ui.food_toy_grooming_product_b251812f21') }}">
+                {{ __('ui.product_or_activity') }}
+                <input name="product_name" value="{{ old('product_name') }}" maxlength="180" placeholder="{{ __('ui.food_toy_grooming_product') }}">
             </label>
             <label>
-                {{ __('ui.subtype_a26e25c373') }}
-                <input name="subtype" value="{{ old('subtype') }}" maxlength="80" placeholder="{{ __('ui.breakfast_toilet_walk_brushing_a1434ee38b') }}">
+                {{ __('ui.subtype') }}
+                <input name="subtype" value="{{ old('subtype') }}" maxlength="80" placeholder="{{ __('ui.breakfast_toilet_walk_brushing') }}">
             </label>
             <label>
-                {{ __('ui.amount_49e96d7cdf') }}
+                {{ __('ui.amount') }}
                 <input type="number" step="0.001" min="0" name="quantity_value" value="{{ old('quantity_value') }}">
             </label>
             <label>
-                {{ __('ui.unit_4e545960f1') }}
+                {{ __('ui.unit') }}
                 <select name="quantity_unit">
-                    <option value="">{{ __('ui.not_measured_040f7884d3') }}</option>
+                    <option value="">{{ __('ui.not_measured') }}</option>
                     @forelse (['g', 'kg', 'ml', 'l', 'oz', 'fl-oz', 'cups', 'pieces', 'packets', 'times', 'unknown'] as $unit)
                         <option value="{{ $unit }}" @selected(old('quantity_unit') === $unit)>{{ $unit }}</option>
                     @empty
-                        <option value="">{{ __('ui.no_units_558efbe757') }}</option>
+                        <option value="">{{ __('ui.no_units') }}</option>
                     @endforelse
                 </select>
             </label>
             <label>
-                {{ __('ui.offered_95e7004b8d') }}
-                <input name="amount_offered" value="{{ old('amount_offered') }}" maxlength="120" placeholder="{{ __('ui.150_g_4511515ef6') }}">
+                {{ __('ui.offered') }}
+                <input name="amount_offered" value="{{ old('amount_offered') }}" maxlength="120" placeholder="{{ __('ui.150_g') }}">
             </label>
             <label>
-                {{ __('ui.consumed_847ba2a7cc') }}
-                <input name="amount_consumed" value="{{ old('amount_consumed') }}" maxlength="120" placeholder="{{ __('ui.about_100_g_2f5362c946') }}">
+                {{ __('ui.consumed') }}
+                <input name="amount_consumed" value="{{ old('amount_consumed') }}" maxlength="120" placeholder="{{ __('ui.about_100_g') }}">
             </label>
             <label>
-                {{ __('ui.appetite_1b7037d5c7') }}
+                {{ __('ui.appetite') }}
                 <select name="appetite">
-                    <option value="">{{ __('ui.not_assessed_025761aaeb') }}</option>
-                    <option value="usual">{{ __('ui.usual_0f42435b74') }}</option>
-                    <option value="good">{{ __('ui.good_c939327ca1') }}</option>
-                    <option value="increased">{{ __('ui.increased_19513aa4f2') }}</option>
-                    <option value="reduced">{{ __('ui.reduced_9f96285d77') }}</option>
-                    <option value="strongly-reduced">{{ __('ui.strongly_reduced_5294990653') }}</option>
-                    <option value="refused">{{ __('ui.refused_66b873543a') }}</option>
-                    <option value="selective">{{ __('ui.selective_57999ad44c') }}</option>
-                    <option value="unknown">{{ __('ui.unknown_b764cdc0ea') }}</option>
+                    <option value="">{{ __('ui.not_assessed') }}</option>
+                    <option value="usual">{{ __('ui.usual') }}</option>
+                    <option value="good">{{ __('ui.good') }}</option>
+                    <option value="increased">{{ __('ui.increased') }}</option>
+                    <option value="reduced">{{ __('ui.reduced') }}</option>
+                    <option value="strongly-reduced">{{ __('ui.strongly_reduced') }}</option>
+                    <option value="refused">{{ __('ui.refused') }}</option>
+                    <option value="selective">{{ __('ui.selective') }}</option>
+                    <option value="unknown">{{ __('ui.unknown') }}</option>
                 </select>
             </label>
             <label>
-                {{ __('ui.water_source_428868534e') }}
-                <input name="water_source" value="{{ old('water_source') }}" maxlength="120" placeholder="{{ __('ui.kitchen_bowl_fountain_74d88c228f') }}">
+                {{ __('ui.water_source') }}
+                <input name="water_source" value="{{ old('water_source') }}" maxlength="120" placeholder="{{ __('ui.kitchen_bowl_fountain') }}">
             </label>
             <label>
-                {{ __('ui.duration_minutes_c7d487ea6a') }}
+                {{ __('ui.duration_minutes') }}
                 <input type="number" min="0" max="10080" name="duration_minutes" value="{{ old('duration_minutes') }}">
             </label>
             <label>
-                {{ __('ui.distance_meters_e3792a8057') }}
+                {{ __('ui.distance_meters') }}
                 <input type="number" min="0" max="1000000" name="distance_meters" value="{{ old('distance_meters') }}">
             </label>
             <label>
-                {{ __('ui.intensity_a6d01dcff3') }}
+                {{ __('ui.intensity') }}
                 <select name="intensity">
-                    <option value="">{{ __('ui.not_assessed_025761aaeb') }}</option>
-                    <option value="very-low">{{ __('ui.very_low_3090c619f6') }}</option>
-                    <option value="low">{{ __('ui.low_f793de205e') }}</option>
-                    <option value="moderate">{{ __('ui.moderate_5c42afc7a2') }}</option>
-                    <option value="high">{{ __('ui.high_c4ebc6d4a5') }}</option>
-                    <option value="very-high">{{ __('ui.very_high_0a84a4fa1d') }}</option>
-                    <option value="unknown">{{ __('ui.unknown_b764cdc0ea') }}</option>
+                    <option value="">{{ __('ui.not_assessed') }}</option>
+                    <option value="very-low">{{ __('ui.very_low') }}</option>
+                    <option value="low">{{ __('ui.low') }}</option>
+                    <option value="moderate">{{ __('ui.moderate') }}</option>
+                    <option value="high">{{ __('ui.high') }}</option>
+                    <option value="very-high">{{ __('ui.very_high') }}</option>
+                    <option value="unknown">{{ __('ui.unknown') }}</option>
                 </select>
             </label>
             <label>
-                {{ __('ui.ended_7cdc804e69') }}
+                {{ __('ui.ended') }}
                 <input type="datetime-local" name="ended_at" value="{{ old('ended_at') }}">
             </label>
             @if ($allowLocation)
                 <label>
-                    {{ __('ui.place_e9463dccf0') }}
-                    <input name="location_label" value="{{ old('location_label') }}" maxlength="180" placeholder="{{ __('ui.general_place_only_620de8c87b') }}">
+                    {{ __('ui.place') }}
+                    <input name="location_label" value="{{ old('location_label') }}" maxlength="180" placeholder="{{ __('ui.general_place_only') }}">
                 </label>
                 <label>
-                    {{ __('ui.private_route_summary_a865ffd8dc') }}
-                    <input name="route_summary" value="{{ old('route_summary') }}" maxlength="500" placeholder="{{ __('ui.route_remains_encrypted_and_private_f45bfdb29d') }}">
+                    {{ __('ui.private_route_summary') }}
+                    <input name="route_summary" value="{{ old('route_summary') }}" maxlength="500" placeholder="{{ __('ui.route_remains_encrypted_and_private') }}">
                 </label>
             @endif
             <label>
-                {{ __('ui.toilet_observation_8a4af0e376') }}
-                <input name="toilet_quality" value="{{ old('toilet_quality') }}" maxlength="120" placeholder="{{ __('ui.formed_soft_attempt_only_95e9913b9d') }}">
+                {{ __('ui.toilet_observation') }}
+                <input name="toilet_quality" value="{{ old('toilet_quality') }}" maxlength="120" placeholder="{{ __('ui.formed_soft_attempt_only') }}">
             </label>
             <label>
-                {{ __('ui.sleep_quality_646543197f') }}
-                <input name="sleep_quality" value="{{ old('sleep_quality') }}" maxlength="120" placeholder="{{ __('ui.calm_interrupted_restless_07c0714096') }}">
+                {{ __('ui.sleep_quality') }}
+                <input name="sleep_quality" value="{{ old('sleep_quality') }}" maxlength="120" placeholder="{{ __('ui.calm_interrupted_restless') }}">
             </label>
             <label>
-                {{ __('ui.mood_780fe43f6e') }}
-                <input name="mood" value="{{ old('mood') }}" maxlength="120" placeholder="{{ __('ui.calm_playful_anxious_a822629770') }}">
+                {{ __('ui.mood') }}
+                <input name="mood" value="{{ old('mood') }}" maxlength="120" placeholder="{{ __('ui.calm_playful_anxious') }}">
             </label>
             <label>
-                {{ __('ui.environment_temperature_c_8432c9f4c8') }}
+                {{ __('ui.environment_temperature_c') }}
                 <input type="number" step="0.1" min="-80" max="100" name="temperature_c" value="{{ old('temperature_c') }}">
             </label>
             <label>
-                {{ __('ui.trigger_or_context_6417742b70') }}
+                {{ __('ui.trigger_or_context') }}
                 <textarea name="trigger" maxlength="500">{{ old('trigger') }}</textarea>
             </label>
             <label>
-                {{ __('ui.result_6e7d50e84f') }}
+                {{ __('ui.result') }}
                 <textarea name="result" maxlength="500">{{ old('result') }}</textarea>
             </label>
         </div>
     </details>
 
     <label>
-        {{ __('ui.private_note_8b95b48431') }}
-        <textarea name="notes" maxlength="5000" placeholder="{{ __('ui.facts_reaction_what_changed_or_what_should_be_c1634f0ddf') }}">{{ old('notes') }}</textarea>
+        {{ __('ui.private_note') }}
+        <textarea name="notes" maxlength="5000" placeholder="{{ __('ui.facts_reaction_what_changed_or_what_should_be_watched') }}">{{ old('notes') }}</textarea>
     </label>
 
     @if ($allowMedia)
         <div class="care-form-grid">
             <label>
-                {{ __('ui.private_photo_or_short_video_5b5cc4cf72') }}
+                {{ __('ui.private_photo_or_short_video') }}
                 <input type="file" name="media" accept="image/jpeg,image/png,image/webp,video/mp4,video/quicktime">
             </label>
             <label>
-                {{ __('ui.media_description_2e22cefe8c') }}
-                <input name="media_alt" value="{{ old('media_alt') }}" maxlength="500" placeholder="{{ __('ui.describe_the_useful_visible_detail_4d73322126') }}">
+                {{ __('ui.media_description') }}
+                <input name="media_alt" value="{{ old('media_alt') }}" maxlength="500" placeholder="{{ __('ui.describe_the_useful_visible_detail') }}">
             </label>
         </div>
     @endif
@@ -201,11 +201,11 @@
     <div class="care-checks">
         <label class="care-check">
             <input type="checkbox" name="is_unusual" value="1" @checked(old('is_unusual'))>
-            <span>{{ __('ui.mark_as_an_unusual_observation_550fb3f38f') }}</span>
+            <span>{{ __('ui.mark_as_an_unusual_observation') }}</span>
         </label>
         <label class="care-check">
             <input type="checkbox" name="confirm_duplicate" value="1" @checked(old('confirm_duplicate'))>
-            <span>{{ __('ui.this_is_intentionally_separate_from_a_recent_feeding_aadfe2e861') }}</span>
+            <span>{{ __('ui.this_is_intentionally_separate_from_a_recent_feeding') }}</span>
         </label>
     </div>
 

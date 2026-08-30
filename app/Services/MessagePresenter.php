@@ -92,7 +92,7 @@ final class MessagePresenter
                     'initial' => Str::substr((string) $member['name'], 0, 1),
                 ],
                 $this->catalog->members()[$selectedKey] ?? [
-                    ['name' => __('messages.mia_carter_0e5b29cc3b'), 'role' => __('messaging.context.roles.owner'), 'pet' => implode(', ', $selected['pet_names'])],
+                    ['name' => __('messages.mia_carter'), 'role' => __('messaging.context.roles.owner'), 'pet' => implode(', ', $selected['pet_names'])],
                     ['name' => $selected['name'], 'role' => $selected['role'], 'pet' => $selected['pet']],
                 ],
             ),
@@ -330,11 +330,11 @@ final class MessagePresenter
                 ['icon' => 'triangle-alert', 'title' => __('messaging.context.safety.report_title'), 'description' => __('messaging.context.safety.report_description')],
             ],
             'media_sections' => [
-                ['label' => __('messages.photos_5e3147ab51'), 'count' => 2],
-                ['label' => __('messages.video_d534be829e'), 'count' => 1],
-                ['label' => __('messages.audio_bc1b88907d'), 'count' => 1],
-                ['label' => __('messages.documents_b4e929d8bc'), 'count' => $conversation['professional'] ? 1 : 0],
-                ['label' => __('messages.places_eb5cfb7367'), 'count' => 1],
+                ['label' => __('messages.photos'), 'count' => 2],
+                ['label' => __('messages.video'), 'count' => 1],
+                ['label' => __('messages.audio'), 'count' => 1],
+                ['label' => __('messages.documents'), 'count' => $conversation['professional'] ? 1 : 0],
+                ['label' => __('messages.places'), 'count' => 1],
             ],
         ];
     }
@@ -352,7 +352,7 @@ final class MessagePresenter
             'case' => $conversation['handle'],
             'status' => $conversation['key'] === 'paws-vet' ? __('messaging.context.professional.waiting_photo') : __('messaging.context.professional.visit_scheduled'),
             'hours' => __('messaging.context.professional.working_hours'),
-            'assigned' => $conversation['key'] === 'paws-vet' ? __('messages.dr_emilia_vaitke_a0f21f8b96') : __('messaging.context.professional.adoption_team'),
+            'assigned' => $conversation['key'] === 'paws-vet' ? __('messages.dr_emilia_vaitke') : __('messaging.context.professional.adoption_team'),
             'queue' => __('messaging.context.professional.queue'),
             'privacy' => __('messaging.context.professional.privacy'),
             'urgent' => __('messaging.context.professional.urgent'),
@@ -386,14 +386,14 @@ final class MessagePresenter
     {
         $tasks = match ($conversation) {
             'family-care' => [
-                ['key' => 'evening-walk', 'label' => __('messages.evening_walk_51fede72ad'), 'status' => 'assigned', 'owner' => __('messages.alex_db74c940d4')],
-                ['key' => 'buy-food', 'label' => __('messages.buy_scout_s_food_d4ac46fe53'), 'status' => 'in-progress', 'owner' => __('messages.mia_4150950870')],
+                ['key' => 'evening-walk', 'label' => __('messages.evening_walk'), 'status' => 'assigned', 'owner' => __('messages.alex')],
+                ['key' => 'buy-food', 'label' => __('messages.buy_scout_s_food'), 'status' => 'in-progress', 'owner' => __('messages.mia')],
             ],
             'lost-luna' => [
-                ['key' => 'sector-c', 'label' => __('messages.check_sector_c_235e386018'), 'status' => 'completed', 'owner' => __('messages.tomas_86c496b088')],
+                ['key' => 'sector-c', 'label' => __('messages.check_sector_c'), 'status' => 'completed', 'owner' => __('messages.tomas')],
             ],
             'paws-vet' => [
-                ['key' => 'photo-before-friday', 'label' => __('messages.send_one_clear_photo_6f132e5bb7'), 'status' => 'assigned', 'owner' => __('messages.mia_4150950870')],
+                ['key' => 'photo-before-friday', 'label' => __('messages.send_one_clear_photo'), 'status' => 'assigned', 'owner' => __('messages.mia')],
             ],
             default => [],
         };

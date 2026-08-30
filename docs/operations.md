@@ -3,7 +3,11 @@
 ## Health
 
 The public health response reveals only minimal status. Detailed dependency
-health requires operator authorization.
+health requires operator authorization. The current application exposes only
+framework liveness at `/up`; it does **not** yet implement the required
+authenticated/CLI readiness proof for database, cache/locks, session, private
+storage, and enabled integrations. Until that probe and its failure tests
+exist, `SYS-RUNTIME-002` and release readiness are not verified.
 
 Monitor:
 
@@ -37,6 +41,18 @@ trusted. Domain object IDs are added only by the operation that owns them.
 Passwords, session IDs, tokens, authorization headers, request bodies, precise
 location, and private media never belong in generic request context.
 
+Request correlation starts in the first global middleware and therefore also
+covers health responses, portal redirects, binding failures, and rendered
+server errors. Route and internal actor context is added before application
+code executes. Slow-request reporting is independently disabled with
+`SLOW_REQUEST_LOGGING_ENABLED=false`; the default positive threshold is 1,000
+milliseconds. Invalid, zero, or negative thresholds disable the reporter
+instead of logging every request. A route/status counter atomically limits
+detailed records to 60 per minute. Streamed work is timed through callback
+completion; its byte count is deliberately `null` because the body is not
+buffered. Stream failures propagate and use a failed outcome/message. Logging,
+cache-counter, and lock failures never replace the application response.
+
 ## Incident Priorities
 
 - Critical: private data exposure, unauthorized camera/GPS/door access,
@@ -65,6 +81,21 @@ location, and private media never belong in generic request context.
 - backup restoration exercise;
 - migration and seed smoke on isolated data;
 - critical browser/accessibility smoke after release.
+
+## Backup And Restore Contract
+
+A production backup is one correlated versioned manifest, not an isolated
+database dump. It must cover the database and `storage/app/private`, identify
+the deployed commit and migration ledger, reference configuration/key custody
+without copying secrets into the manifest, and record encryption, checksum,
+off-host destination, retention, RPO/RTO, object/row counts, and operator.
+
+Quiesce writes or use an adapter/object-store snapshot mechanism that proves a
+consistent point in time. Restore into an isolated environment, verify every
+checksum plus representative authorized private-file reads and denied reads,
+then run integrity and application smoke checks before accepting the backup.
+Document the restore order and last successful rehearsal. A database-only
+backup is insufficient for a release containing durable private files.
 
 ## Moderation Operations
 

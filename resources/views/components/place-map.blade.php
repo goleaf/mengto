@@ -32,8 +32,8 @@
 
     <div class="place-map__canvas" data-place-map-canvas>
         <span class="place-map__district place-map__district--old-town">{{ __('place_directory.map.old_town') }}</span>
-        <span class="place-map__district place-map__district--zverynas">{{ __('ui.žvėrynas_76cb91baf6') }}</span>
-        <span class="place-map__district place-map__district--naujamiestis">{{ __('ui.naujamiestis_17a26d0ce9') }}</span>
+        <span class="place-map__district place-map__district--zverynas">{{ __('ui.žvėrynas') }}</span>
+        <span class="place-map__district place-map__district--naujamiestis">{{ __('ui.naujamiestis') }}</span>
         <span class="place-map__river" aria-hidden="true"></span>
         <span class="place-map__road place-map__road--north" aria-hidden="true"></span>
         <span class="place-map__road place-map__road--south" aria-hidden="true"></span>

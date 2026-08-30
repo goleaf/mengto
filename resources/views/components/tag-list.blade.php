@@ -1,6 +1,6 @@
 @props([
     'items',
-    'empty' => __('ui.no_tags_available_221c2f0221'),
+    'empty' => __('ui.no_tags_available'),
     'reserve' => false,
     'roomy' => false,
 ])

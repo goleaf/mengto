@@ -41,8 +41,8 @@
                 <span class="field-group__control">
                     <x-ui-icon name="paw-print" size="sm" />
                     <select id="place-pet" name="pet" class="field field--select">
-                        <option value="scout" @selected($filters['pet'] === 'scout')>{{ __('ui.scout_8a1db462be') }}</option>
-                        <option value="nori" @selected($filters['pet'] === 'nori')>{{ __('ui.nori_a64203ba20') }}</option>
+                        <option value="scout" @selected($filters['pet'] === 'scout')>{{ __('ui.scout') }}</option>
+                        <option value="nori" @selected($filters['pet'] === 'nori')>{{ __('ui.nori') }}</option>
                         <option value="none" @selected($filters['pet'] === 'none')>{{ __('place_directory.search.no_pet') }}</option>
                     </select>
                 </span>

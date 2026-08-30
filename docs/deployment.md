@@ -14,20 +14,43 @@
 - Configured database, cache, session, mail, filesystem, and optional queue
   services
 
-## Release Sequence
+## Current Release Status
 
-1. Put a risk-appropriate backup and rollback/forward-fix plan in place.
-2. Deploy the reviewed commit.
-3. `composer install --no-dev --classmap-authoritative --no-interaction`
-4. `npm ci`
-5. `npm run build`
-6. Configure environment secrets outside the repository.
-7. `scripts/artisan-runtime migrate --force`
-8. Never run demo seeders in production.
-9. `scripts/artisan-runtime optimize`
-10. Restart managed PHP processes and approved queue workers.
-11. Verify health, login, permissions, private resources, forms, downloads,
-    critical commands, and assets.
+The final audit records **NO-GO** in
+`docs/reports/final-release-verification.md`. Do not deploy the current tree:
+required code, static, generated-evidence, coverage, populated-migration,
+readiness, browser, and documentation gates are not green. The repository also
+does not yet ship an atomic release-directory switch or a dependency-readiness
+probe; `/up` is liveness only.
+
+## Required Release Sequence After The NO-GO Is Cleared
+
+1. Freeze one reviewed commit and attach passing evidence for every applicable
+   gate to that exact commit.
+2. Create a versioned release directory without changing the active release.
+3. As the configured runtime account, run
+   `composer install --no-dev --classmap-authoritative --no-interaction`, then
+   `npm ci` and `npm run build`; do not overwrite assets in the active release.
+4. Configure environment secrets outside the repository and run dependency
+   compatibility/preflight checks without exposing them.
+5. Quiesce writes or enter a documented maintenance window. Capture one
+   correlated, encrypted, checksummed, off-host backup manifest covering the
+   database, `storage/app/private`, and required configuration references.
+6. Verify the backup in an isolated restore rehearsal. Record RPO/RTO,
+   retention, operator, source commit, schema ledger, and object counts.
+7. From the versioned release, run `scripts/artisan-runtime migrate --force`
+   only after every package-specific populated-data preflight passes. Never
+   run `migrate:fresh` or demo seeders in production.
+8. Run authenticated database/private-storage/cache/session readiness plus
+   critical smoke checks while traffic is still contained. The current
+   repository lacks this readiness probe, so this step is presently blocked.
+9. Atomically switch the active release, run `scripts/artisan-runtime optimize`,
+   restart managed PHP processes and only approved queue workers, then enable
+   traffic.
+10. Verify liveness, readiness, login, authorization denials, private files,
+    forms, critical commands, assets, logs, and request IDs. On a pre-write
+    failure, switch back to the prior release; after new-schema writes, retain
+    data and use a reviewed forward fix.
 
 The verification record must include the deployed commit, PHP/Laravel/Livewire
 versions, migration batch, asset manifest timestamp, `/up` result, one
@@ -52,11 +75,14 @@ Before enabling traffic, verify the runtime directories and warmed files:
 chown -R www:www storage bootstrap/cache
 scripts/artisan-runtime view:cache
 find storage bootstrap/cache -type f ! -user www -print
+find storage bootstrap/cache -type d ! -user www -print
+runuser -u www -- test -r bootstrap/cache
+runuser -u www -- test -w storage/framework
 ```
 
-The final command must print nothing. `PAWCIRCLE_RUNTIME_USER` may override the
-account only when the PHP-FPM pool intentionally uses a different service
-identity.
+Both `find` commands must print nothing and both permission probes must return
+zero. `PAWCIRCLE_RUNTIME_USER` may override the account only when the PHP-FPM
+pool intentionally uses a different service identity.
 
 ## Environment
 
@@ -104,6 +130,19 @@ Use a rotating production log destination. The repository default is
 `LOG_CHANNEL=stack`, `LOG_STACK=daily`, and `LOG_DAILY_DAYS=14`; an external
 collector may replace the destination while preserving the ownership,
 redaction, and retention contract in `docs/operations.md`.
+
+Slow-request records default to `SLOW_REQUEST_LOGGING_ENABLED=true` and
+`SLOW_REQUEST_THRESHOLD_MS=1000`. A non-positive or invalid threshold disables
+the reporter. Operators may disable it explicitly during a logging incident;
+the request-ID header remains active. Detailed records are capped at 60 per
+named route and response status per minute and contain no URL, query, body,
+headers, session value, private location, or media payload.
+
+Production Vite filenames are content hashed. The web server should return
+those JS, CSS, font, and image files with a long-lived immutable cache policy.
+The 2026-08-30 audit observed only a 12-hour CSS/JS maximum age and no explicit
+font cache header on the active host; deployment remains responsible for
+correcting and rechecking that host configuration before promotion.
 
 ## Database
 
@@ -415,3 +454,27 @@ verify normalized coverage and foreign keys, then smoke submission, duplicate
 review, publication, merge redirect, and protected redirect denial. Rollback
 is safe only before submissions or merges exist. After production writes, use
 a reviewed forward fix and retain audit, provenance, and redirect history.
+
+## Unreleased Event And Places Schema Packages
+
+The following current packages are **not production-cleared**. Their source
+exists, but exact populated-data preflight, adapter behavior, lock/duration,
+post-migrate smoke, rollback cutoff, and forward-recovery evidence is not yet
+complete:
+
+| Migration | Package | Current release disposition |
+| --- | --- | --- |
+| `2026_08_30_081125_create_event_participation_workflow.php` | Participation snapshots, eligibility, capacity, waitlist, notification intents | Empty SQLite rollback/reapply passes in the audit tree; active-scope collision preflight and production-adapter DDL atomicity remain unproved |
+| `2026_08_30_100100_create_forum_event_competition_tables.php` | Competition categories, entries, judges, scoring, results, appeals | Implementation present; factories, manifest, reachable workflow, populated lifecycle, and release evidence incomplete |
+| `2026_08_30_121000_add_active_identifier_to_place_merge_redirects.php` | Active merge identifier | Package-specific populated smoke/recovery record missing |
+| `2026_08_30_122000_create_place_submission_detection_lock.php` | Duplicate-detection lock | Lock contention, timeout, cleanup, and recovery runbook missing |
+| `2026_08_30_130000_create_place_management_claim_tables.php` | Management claims/authority | Provider/reviewer operations and populated recovery runbook incomplete |
+| `2026_08_30_230000_create_place_contribution_workflows.php` | Relational corrections, warnings, reviews, and questions | Compatibility migration and moderation operations remain incomplete |
+| `2026_08_30_240000_create_place_presentation_privacy_tables.php` | Media, invitations, presentation privacy | Empty SQLite rollback defect corrected in the audit tree; production-write rollback remains forward-only |
+| `2026_08_30_250000_create_place_emergency_fact_tables.php` | Emergency facts | Canonical schedule/service population and emergency-ranking smoke incomplete |
+| `2026_08_30_260000_add_measured_performance_indexes.php` | Measured query indexes | Concurrent working-tree migration; not part of the published baseline and not release-reviewed |
+
+Do not apply these packages merely because the empty-database lifecycle passes.
+After writes exist, preserve audit, access, registration, contribution,
+competition, media, and emergency facts and recover through an additive
+forward migration.

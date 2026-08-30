@@ -507,6 +507,7 @@ final class RelationshipCenter extends Component
             followPolicy: SocialFollowPolicy::from($this->settingsForm->followPolicy),
             friendListVisibility: SocialListVisibility::from($this->settingsForm->friendListVisibility),
             followerListVisibility: SocialListVisibility::from($this->settingsForm->followerListVisibility),
+            isDiscoverable: $this->currentActor()->is_discoverable,
             isRecommendable: $this->settingsForm->isRecommendable,
             allowMessageRequests: $this->settingsForm->allowMessageRequests,
             expectedLockVersion: $this->settingsForm->lockVersion,

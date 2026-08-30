@@ -50,7 +50,7 @@
                     <x-ui-icon name="messages-square" />
                 </span>
                 <span>
-                    <strong>{{ __('ui.all_topics_29366ff597') }}</strong>
+                    <strong>{{ __('ui.all_topics') }}</strong>
                     <small>{{ __('forum.directory.all_topics_description') }}</small>
                 </span>
             </a>
@@ -69,7 +69,7 @@
                     <strong>{{ $category['label'] }}</strong>
                 </a>
             @empty
-                <span>{{ __('ui.no_categories_available_a557500f61') }}</span>
+                <span>{{ __('ui.no_categories_available_sentence') }}</span>
             @endforelse
         </nav>
     </details>
@@ -140,7 +140,7 @@
                         <span>{{ $subcategoryLabel }}</span>
                     </a>
                 @empty
-                    <span>{{ __('ui.no_subcategories_9f1010c1a3') }}</span>
+                    <span>{{ __('ui.no_subcategories') }}</span>
                 @endforelse
             </nav>
         </section>

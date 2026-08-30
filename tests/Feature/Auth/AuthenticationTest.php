@@ -501,7 +501,6 @@ test('unverified account can resend verification and verified account is redirec
     $this->actingAs($verified);
 
     Livewire::test(VerifyEmail::class)
-        ->call('resend')
         ->assertRedirect(route('home'));
 });
 

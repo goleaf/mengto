@@ -56,12 +56,11 @@
 
     <section aria-labelledby="forum-journal-results-heading">
         <div class="flex flex-wrap items-end justify-between gap-3">
-            <div>
-                <p class="forum-header__eyebrow">{{ __('forum_journals.page.your_journals') }}</p>
-                <h2 id="forum-journal-results-heading">
-                    {{ trans_choice('forum_journals.labels.journal_count', $this->journals->total(), ['count' => $this->journals->total()]) }}
-                </h2>
-            </div>
+            <x-section-heading
+                :eyebrow="__('forum_journals.page.your_journals')"
+                :title="trans_choice('forum_journals.labels.journal_count', $this->journals->total(), ['count' => $this->journals->total()])"
+                title-id="forum-journal-results-heading"
+            />
             <span wire:loading wire:target="search,type,status" role="status">
                 {{ __('forum_journals.actions.filtering') }}
             </span>

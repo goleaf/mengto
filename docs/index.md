@@ -38,7 +38,7 @@ This index is the source-of-truth map for first-party documentation.
 | `docs/localization.md` | Locale architecture and translation workflow | Product + frontend | Canonical |
 | `docs/testing.md` | Automated and browser verification | QA | Canonical |
 | `docs/seeding.md` | Factory, fixture, and seeder contracts | Data + QA | Canonical |
-| `docs/seeding-coverage.md` | Generated per-model factory/seeder matrix | Data + QA | Canonical generated evidence |
+| `docs/seeding-coverage.md` | Generated per-model factory/seeder matrix | Data + QA | Generated evidence; currently stale/failing |
 | `docs/performance.md` | Measured budgets and query rules | Engineering | Canonical |
 | `docs/caching.md` | Cache ownership and invalidation | Engineering | Canonical |
 | `docs/integrations.md` | External-provider boundaries | Engineering | Canonical |
@@ -47,8 +47,9 @@ This index is the source-of-truth map for first-party documentation.
 | `docs/current-state-audit.md` | Modernization baseline and resolved findings | Engineering | Living evidence |
 | `docs/implementation-plan.md` | Dependency-aware modernization plan | Engineering | Living plan |
 | `docs/audits/repository-audit-work-ledger.md` | Repository-wide audit delegation, review, and delivery evidence | Engineering + QA | Living evidence |
-| `docs/audits/repository-inventory.md` | Generated exact routes, roles, tables, symbols, files, runtime boundaries, and critical workflow chains | Engineering + QA | Canonical generated evidence |
-| `docs/audits/database-domain-audit.md` | Generated per-model schema, constraints, casts, relationships, factories, seeders, counts, and integrity evidence | Data + QA | Canonical generated evidence |
+| `docs/audits/repository-inventory.md` | Generated exact routes, roles, tables, symbols, files, runtime boundaries, and critical workflow chains | Engineering + QA | Generated evidence; currently stale/failing |
+| `docs/audits/database-domain-audit.md` | Generated per-model schema, constraints, casts, relationships, factories, seeders, counts, and integrity evidence | Data + QA | Generated evidence; currently stale/failing |
+| `docs/reports/final-release-verification.md` | Exact final-audit Git/environment/gate/blocker/rollback evidence | Engineering + QA + operations | Current NO-GO release record |
 | `docs/plans/current-unfinished-work.md` | Reconciled inventory of every current unfinished plan stream, exact open totals, and completed/historical exclusions | Product + engineering + QA | Living unfinished-work index |
 | `docs/plans/pet-workspace-modernization-plan.md` | Authenticated `/pets` workspace decisions, data boundary, interface states, and release evidence | Product + engineering + QA | Implemented and verified |
 | `docs/plans/pet-profile-draft-autosave-work-package.md` | Safe descriptive-step autosave, reconnect recovery, idempotency, accessibility, and release evidence | Product + engineering + QA | Implemented and verified with dedicated requirement evidence |
@@ -169,7 +170,7 @@ authentication, persistence, localization, or current verification.
 | `docs/architecture.md` | Runtime architecture and boundaries | Current | None | Rewritten |
 | `docs/deployment.md` | Deployment and rollback checklist | Current | Environment verification remains operational | Rewritten |
 | `docs/implementation-plan.md` | Dependency-aware modernization execution | Current living evidence | None | Replaced and updated per pass |
-| `docs/requirements/compliance-matrix.md` | All 169 canonical active requirements plus five supplemental Point 13 evidence rows | Current generated evidence | The generator count excludes the five supplemental rows | Expanded and reconciled |
+| `docs/requirements/compliance-matrix.md` | All 170 canonical active requirements plus five supplemental Point 13 evidence rows | Current generated mapping; status semantics under audit | The generator count excludes the five supplemental rows and blanket `implemented` defaults are not verification proof | Preserve generated parity; reconcile through per-ID evidence |
 | `docs/requirements/laravel-engineering-standard.md` | Stable engineering rules | Current subordinate standard | Deliberate overlap with `AGENTS.md` | Preserve stable IDs |
 | `docs/forum-scope.md` | Forum-specific scope | Current | None | Preserved |
 | `docs/superpowers/specs/*.md` | Ten feature designs | Historical product source | Prototype assumptions are subordinate | Preserved with canonical override |

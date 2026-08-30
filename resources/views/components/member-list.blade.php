@@ -1,6 +1,6 @@
 @props([
     'members' => [],
-    'empty' => __('ui.no_members_listed_e6f3f7ca71'),
+    'empty' => __('ui.no_members_listed'),
 ])
 
 <div role="list" {{ $attributes->class(['member-list']) }}>

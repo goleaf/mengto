@@ -382,13 +382,23 @@ try {
         flatten: true,
     }));
     const consoleErrors = [];
+    const resourceErrors = [];
 
     client.on('Runtime.exceptionThrown', ({ exceptionDetails }) => {
-        consoleErrors.push(exceptionDetails.text);
+        consoleErrors.push(`Runtime: ${exceptionDetails.text}`);
     }, sessionId);
     client.on('Log.entryAdded', ({ entry }) => {
         if (entry.level === 'error') {
-            consoleErrors.push(entry.text);
+            consoleErrors.push(entry.url ? `${entry.text} (${entry.url})` : entry.text);
+        }
+    }, sessionId);
+    client.on('Network.responseReceived', ({ response, type }) => {
+        if (response.status >= 400) {
+            resourceErrors.push({
+                status: response.status,
+                url: response.url,
+                type,
+            });
         }
     }, sessionId);
 
@@ -589,6 +599,7 @@ try {
         let englishShareCopy = null;
         let englishPlaceCopy = null;
         let canonicalTitleFont = null;
+        let deviceStepUpVerified = false;
 
         const setProfileLocale = async (locale) => {
             await navigate(client, sessionId, `${baseUrl}/profile/settings`);
@@ -625,6 +636,80 @@ try {
             "document.querySelector('#profile-settings-locale').value",
         );
 
+        const contentDetailPath = '/content/page-identity-demo-post';
+        const pageIdentityExceptionRoutes = [
+            {
+                path: contentDetailPath,
+                slug: 'content-detail',
+                label: 'content detail',
+                identity: '[data-content-detail-identity]',
+                expectsBack: true,
+            },
+            {
+                path: '/experts/dr-emilia-vaitke',
+                slug: 'expert-detail',
+                label: 'expert detail',
+                identity: '[data-expert-detail-identity]',
+                expectsBack: true,
+            },
+            {
+                path: '/groups/trail-tails',
+                slug: 'group-detail',
+                label: 'group detail',
+                identity: '[data-group-detail-hero]',
+                expectsBack: false,
+            },
+            {
+                path: '/places/vingis-quiet-loop',
+                slug: 'place-detail',
+                label: 'place detail',
+                identity: '[data-place-detail-hero]',
+                expectsBack: false,
+            },
+            {
+                path: '/meetups/demo-point13-weekly-group-walk',
+                slug: 'event-workspace',
+                label: 'event workspace',
+                identity: '[data-section="event-workspace"]',
+                expectsBack: false,
+            },
+            {
+                path: '/lost-found/scout-missing-vingis-park',
+                slug: 'lost-found-detail',
+                label: 'lost and found detail',
+                identity: '[data-lost-found-detail-identity]',
+                expectsBack: true,
+            },
+            {
+                path: '/marketplace/reflective-ruffwear-harness-for-medium-dogs',
+                slug: 'marketplace-detail',
+                label: 'marketplace detail',
+                identity: '[data-marketplace-detail-identity]',
+                expectsBack: true,
+            },
+            {
+                path: '/medical-records/scout-health',
+                slug: 'medical-workspace',
+                label: 'medical workspace',
+                identity: '[data-medical-record-workspace-identity]',
+                expectsBack: true,
+            },
+            {
+                path: '/care-journals/scout-care',
+                slug: 'care-workspace',
+                label: 'care workspace',
+                identity: '[data-care-journal-workspace-identity]',
+                expectsBack: true,
+            },
+            {
+                path: '/devices/scout-trail-gps',
+                slug: 'device-dashboard',
+                label: 'device dashboard',
+                identity: '[data-device-dashboard-identity]',
+                expectsBack: true,
+            },
+        ];
+
         for (const viewport of pageIdentityViewports) {
             await setProfileLocale(viewport.locale);
             await client.send('Emulation.setDeviceMetricsOverride', {
@@ -657,7 +742,7 @@ try {
                 const behavior = await evaluate(client, sessionId, `(() => {
                     const header = document.querySelector('main [data-page-identity="canonical"]');
                     const heading = header?.querySelector('h1');
-                    const copy = header?.querySelector('.page-header__copy');
+                    const copy = header?.querySelector('[data-page-header-content]');
                     const description = header?.querySelector('.page-header__description');
                     const aside = header?.querySelector('.page-header__aside');
                     const actions = header?.querySelector('.page-header__actions');
@@ -767,6 +852,7 @@ try {
                         documentLanguage: document.documentElement.lang,
                         documentTitle: document.title,
                         headerCount: document.querySelectorAll('main [data-page-identity="canonical"]').length,
+                        contentPresent: Boolean(copy),
                         h1Count: document.querySelectorAll('main h1').length,
                         legacyHeaderCount: document.querySelectorAll(
                             'main .forum-header, main .care-directory-header, main .messaging-page__header'
@@ -1847,7 +1933,7 @@ try {
                     ];
 
                     assert(
-                        placeCopy.length === 113
+                        placeCopy.length === 114
                             && placeCopy.every((value) => value?.length > 0),
                         label + ': the place-directory localization surface is incomplete '
                             + JSON.stringify(behavior.placeCopy) + '.',
@@ -1997,6 +2083,7 @@ try {
 
                 assert(behavior.documentLanguage === viewport.locale, `${label}: wrong document language.`);
                 assert(behavior.headerCount === 1, `${label}: expected one canonical page header.`);
+                assert(behavior.contentPresent, `${label}: canonical page-header content hook is missing.`);
                 assert(behavior.h1Count === 1, `${label}: expected one main h1.`);
                 assert(behavior.legacyHeaderCount === 0, `${label}: legacy header family remains.`);
                 assert(behavior.headingId !== null, `${label}: heading id is missing.`);
@@ -2352,10 +2439,211 @@ try {
                 }
             }
 
+            for (const route of pageIdentityExceptionRoutes) {
+                const label = `${viewport.label} ${route.label}`;
+                await navigate(client, sessionId, `${baseUrl}${route.path}`);
+
+                if (route.slug === 'device-dashboard') {
+                    const currentPath = await evaluate(client, sessionId, 'location.pathname');
+
+                    if (! deviceStepUpVerified) {
+                        assert(currentPath === '/confirm-password', `${label}: password step-up redirect is missing.`);
+                        await evaluate(client, sessionId, `(() => {
+                            const input = document.querySelector('#confirm-password');
+                            const setter = Object.getOwnPropertyDescriptor(
+                                HTMLInputElement.prototype,
+                                'value',
+                            ).set;
+                            setter.call(input, 'password');
+                            input.dispatchEvent(new Event('input', { bubbles: true }));
+                            input.dispatchEvent(new Event('change', { bubbles: true }));
+                            input.blur();
+                            document.querySelector('[data-auth-page="confirm-password"] button[type="submit"]').click();
+
+                            return true;
+                        })()`);
+                        await waitUntil(
+                            async () => await evaluate(client, sessionId, 'location.pathname') === route.path,
+                            `${label}: password step-up did not return to the device deep link.`,
+                        );
+                        deviceStepUpVerified = true;
+                    } else {
+                        assert(currentPath === route.path, `${label}: confirmed device deep link drifted to ${currentPath}.`);
+                    }
+                }
+
+                const pageAudit = await evaluate(client, sessionId, pageAuditExpression);
+                assertPageAudit(pageAudit, label);
+                const focusTargetPrepared = await evaluate(client, sessionId, `(() => {
+                    const identity = document.querySelector(${JSON.stringify(route.identity)});
+                    const navigation = document.querySelector('[data-detail-navigation]');
+                    const target = navigation?.querySelector('a, button')
+                        || identity?.querySelector('a, button, input:not([type="hidden"]), select, textarea, [role="button"]');
+                    target?.setAttribute('data-page-identity-focus-target', '');
+                    target?.focus();
+
+                    return Boolean(target);
+                })()`);
+                assert(focusTargetPrepared, `${label}: identity/back contract has no keyboard target.`);
+                await client.send('Input.dispatchKeyEvent', {
+                    type: 'keyDown',
+                    key: 'Tab',
+                    code: 'Tab',
+                    modifiers: 8,
+                    windowsVirtualKeyCode: 9,
+                    nativeVirtualKeyCode: 9,
+                }, sessionId);
+                await client.send('Input.dispatchKeyEvent', {
+                    type: 'keyUp',
+                    key: 'Tab',
+                    code: 'Tab',
+                    modifiers: 8,
+                    windowsVirtualKeyCode: 9,
+                    nativeVirtualKeyCode: 9,
+                }, sessionId);
+                await client.send('Input.dispatchKeyEvent', {
+                    type: 'keyDown',
+                    key: 'Tab',
+                    code: 'Tab',
+                    windowsVirtualKeyCode: 9,
+                    nativeVirtualKeyCode: 9,
+                }, sessionId);
+                await client.send('Input.dispatchKeyEvent', {
+                    type: 'keyUp',
+                    key: 'Tab',
+                    code: 'Tab',
+                    windowsVirtualKeyCode: 9,
+                    nativeVirtualKeyCode: 9,
+                }, sessionId);
+                const exceptionAudit = await evaluate(client, sessionId, `(() => {
+                    const identity = document.querySelector(${JSON.stringify(route.identity)});
+                    const navigation = document.querySelector('[data-detail-navigation]');
+                    const visible = (element) => {
+                        const style = getComputedStyle(element);
+                        const box = element.getBoundingClientRect();
+
+                        return style.display !== 'none' && style.visibility !== 'hidden'
+                            && box.width > 0 && box.height > 0;
+                    };
+                    const targets = [...new Set([
+                        ...(identity?.querySelectorAll('a, button, input:not([type="hidden"]), select, textarea, [role="button"]') ?? []),
+                        ...(navigation?.querySelectorAll('a, button') ?? []),
+                    ])].filter(visible);
+                    const smallTargets = targets.map((element) => ({
+                        label: element.getAttribute('aria-label')
+                            || element.textContent.trim().slice(0, 80)
+                            || element.getAttribute('name'),
+                        width: Math.round(element.getBoundingClientRect().width),
+                        height: Math.round(element.getBoundingClientRect().height),
+                    })).filter((target) => target.width < 44 || target.height < 44);
+                    const clippedRegions = [identity, navigation, identity?.querySelector('h1')]
+                        .filter(Boolean)
+                        .filter((element) => element.scrollWidth > element.clientWidth + 1)
+                        .map((element) => element.className || element.tagName);
+                    const firstControl = document.activeElement;
+                    const focusStyle = firstControl ? getComputedStyle(firstControl) : null;
+
+                    return {
+                        path: location.pathname,
+                        identityCount: document.querySelectorAll(${JSON.stringify(route.identity)}).length,
+                        headingText: identity?.querySelector('h1')?.textContent.trim() ?? null,
+                        navigationCount: document.querySelectorAll('[data-detail-navigation]').length,
+                        backHref: navigation?.querySelector('a')?.getAttribute('href') ?? null,
+                        smallTargets,
+                        clippedRegions,
+                        reducedMotion: matchMedia('(prefers-reduced-motion: reduce)').matches,
+                        forcedColors: matchMedia('(forced-colors: active)').matches,
+                        keyboardFocusTarget: firstControl?.hasAttribute('data-page-identity-focus-target') ?? false,
+                        focusVisible: Boolean(firstControl?.matches(':focus-visible')) && Boolean(
+                            focusStyle
+                            && ((focusStyle.outlineStyle !== 'none'
+                                && Number.parseFloat(focusStyle.outlineWidth) > 0)
+                                || focusStyle.boxShadow !== 'none')
+                        ),
+                        rawTranslationKeys: document.body.innerText.match(
+                            /\b(?:ui|messages|forum|navigation|content|medical_records|care_journals|devices|places|experts|groups)\.[a-z0-9_.-]+/gi
+                        ) ?? [],
+                    };
+                })()`);
+
+                assert(exceptionAudit.path === route.path, `${label}: route path drifted to ${exceptionAudit.path}.`);
+                assert(exceptionAudit.identityCount === 1, `${label}: documented identity hook is missing.`);
+                assert(exceptionAudit.headingText?.length > 0, `${label}: identity h1 is empty.`);
+                assert(
+                    exceptionAudit.navigationCount === (route.expectsBack ? 1 : 0),
+                    `${label}: detail-navigation contract drifted.`,
+                );
+                if (route.expectsBack) {
+                    assert(exceptionAudit.backHref?.length > 0, `${label}: authorized back destination is missing.`);
+                }
+                assert(exceptionAudit.smallTargets.length === 0, `${label}: controls below 44px ${JSON.stringify(exceptionAudit.smallTargets)}.`);
+                assert(exceptionAudit.clippedRegions.length === 0, `${label}: identity content is clipped ${JSON.stringify(exceptionAudit.clippedRegions)}.`);
+                assert(exceptionAudit.reducedMotion, `${label}: reduced-motion emulation is inactive.`);
+                assert(exceptionAudit.forcedColors === Boolean(viewport.forcedColors), `${label}: forced-colors state is wrong.`);
+                assert(exceptionAudit.keyboardFocusTarget, `${label}: keyboard focus escaped the identity/back contract.`);
+                assert(exceptionAudit.focusVisible, `${label}: identity/back focus is not visible.`);
+                assert(exceptionAudit.rawTranslationKeys.length === 0, `${label}: raw translation keys remain.`);
+                exceptionAudit.stepUpBoundaryVerified = route.slug === 'device-dashboard'
+                    ? deviceStepUpVerified
+                    : undefined;
+                pageIdentityAudits[label] = { ...pageAudit, ...exceptionAudit };
+
+                if ([375, 1440].includes(viewport.width)) {
+                    const screenshotPath = join(
+                        outputDirectory,
+                        `page-identity-${route.slug}-${viewport.width}.png`,
+                    );
+                    const screenshotData = await client.send('Page.captureScreenshot', {
+                        format: 'png',
+                        captureBeyondViewport: true,
+                    }, sessionId);
+                    await writeFile(screenshotPath, Buffer.from(screenshotData.data, 'base64'));
+                    pageIdentityScreenshots.push(screenshotPath);
+                }
+            }
+
             const ownerProfileLabel = `${viewport.label} owner profile`;
             await navigate(client, sessionId, `${baseUrl}/@mia-carter`);
             const ownerProfilePageAudit = await evaluate(client, sessionId, pageAuditExpression);
             assertPageAudit(ownerProfilePageAudit, ownerProfileLabel);
+            const ownerProfileFocusTargetPrepared = await evaluate(client, sessionId, `(() => {
+                const target = document.querySelector('[data-profile-tab="overview"]');
+                target?.setAttribute('data-owner-profile-focus-target', '');
+                target?.focus();
+
+                return Boolean(target);
+            })()`);
+            assert(ownerProfileFocusTargetPrepared, `${ownerProfileLabel}: overview tab is missing.`);
+            await client.send('Input.dispatchKeyEvent', {
+                type: 'keyDown',
+                key: 'Tab',
+                code: 'Tab',
+                modifiers: 8,
+                windowsVirtualKeyCode: 9,
+                nativeVirtualKeyCode: 9,
+            }, sessionId);
+            await client.send('Input.dispatchKeyEvent', {
+                type: 'keyUp',
+                key: 'Tab',
+                code: 'Tab',
+                modifiers: 8,
+                windowsVirtualKeyCode: 9,
+                nativeVirtualKeyCode: 9,
+            }, sessionId);
+            await client.send('Input.dispatchKeyEvent', {
+                type: 'keyDown',
+                key: 'Tab',
+                code: 'Tab',
+                windowsVirtualKeyCode: 9,
+                nativeVirtualKeyCode: 9,
+            }, sessionId);
+            await client.send('Input.dispatchKeyEvent', {
+                type: 'keyUp',
+                key: 'Tab',
+                code: 'Tab',
+                windowsVirtualKeyCode: 9,
+                nativeVirtualKeyCode: 9,
+            }, sessionId);
             const ownerProfileAudit = await evaluate(client, sessionId, `(() => {
                 const page = document.querySelector('[data-owner-profile]');
                 const hero = page?.querySelector('[data-owner-profile-hero]');
@@ -2399,15 +2687,15 @@ try {
                 ].filter(Boolean).filter(
                     (element) => element.scrollWidth > element.clientWidth + 1,
                 ).map((element) => element.className || element.dataset.section || element.tagName);
-                const firstTab = page?.querySelector('[data-profile-tab="overview"]');
-                firstTab?.focus();
+                const firstTab = document.activeElement;
                 const focusStyle = firstTab ? getComputedStyle(firstTab) : null;
                 const tabFocusVisible = Boolean(
-                    focusStyle
+                    firstTab?.hasAttribute('data-owner-profile-focus-target')
+                    && firstTab.matches(':focus-visible')
+                    && focusStyle
                     && ((focusStyle.outlineStyle !== 'none' && focusStyle.outlineWidth !== '0px')
                         || focusStyle.boxShadow !== 'none')
                 );
-                firstTab?.blur();
 
                 return {
                     path: location.pathname,
@@ -2529,7 +2817,7 @@ try {
             assert(ownerProfileAudit.path === '/@mia-carter', `${ownerProfileLabel}: owner profile route path drifted.`);
             assert(ownerProfileAudit.pageVisible, `${ownerProfileLabel}: owner profile is hidden.`);
             assert(
-                ownerProfileCopy.length === 54
+                ownerProfileCopy.length === 55
                     && ownerProfileCopy.every((value) => value?.length > 0),
                 `${ownerProfileLabel}: owner profile localization surface is incomplete ${JSON.stringify(ownerProfileAudit.copy)}.`,
             );
@@ -2774,7 +3062,7 @@ try {
             assert(neighborProfileAudit.path === '/neighbors/ari-jensen', `${neighborProfileLabel}: neighbor profile route path drifted.`);
             assert(neighborProfileAudit.pageVisible, `${neighborProfileLabel}: neighbor profile is hidden.`);
             assert(
-                neighborProfileCopy.length === 57
+                neighborProfileCopy.length === 58
                     && neighborProfileCopy.every((value) => value?.length > 0),
                 `${neighborProfileLabel}: neighbor profile localization surface is incomplete ${JSON.stringify(neighborProfileAudit.copy)}.`,
             );
@@ -2883,7 +3171,8 @@ try {
                     pageVisible: page ? visible(page) : false,
                     copy: {
                         documentTitle: document.title,
-                        back: page?.querySelector(':scope > .text-link span')?.textContent.trim() ?? null,
+                        back: page?.querySelector('[data-detail-navigation] .text-link span')
+                            ?.textContent.trim() ?? null,
                         heroEyebrow: page?.querySelector('.context-hero__eyebrow')?.textContent.trim() ?? null,
                         openOriginal: page?.querySelector('[data-share-open-original] span')?.textContent.trim() ?? null,
                         channels: {
@@ -2958,7 +3247,7 @@ try {
             assert(shareAudit.path === '/share/apartment-pets', `${shareLabel}: share route path drifted.`);
             assert(shareAudit.pageVisible, `${shareLabel}: share page is hidden.`);
             assert(
-                shareCopy.length === 30 && shareCopy.every((value) => value?.length > 0),
+                shareCopy.length === 34 && shareCopy.every((value) => value?.length > 0),
                 `${shareLabel}: share localization surface is incomplete ${JSON.stringify(shareAudit.copy)}.`,
             );
             assert(
@@ -3026,7 +3315,6 @@ try {
         }
 
         await setProfileLocale(originalProfileLocale);
-        assert(consoleErrors.length === 0, `Browser console errors: ${consoleErrors.join(' | ')}`);
 
         const report = {
             scope: 'page-identity',
@@ -3036,6 +3324,7 @@ try {
             viewports: pageIdentityViewports,
             audits: pageIdentityAudits,
             consoleErrors,
+            resourceErrors,
             screenshots: pageIdentityScreenshots,
         };
 
@@ -3044,6 +3333,10 @@ try {
             `${JSON.stringify(report, null, 2)}\n`,
         );
         console.log(JSON.stringify(report, null, 2));
+        assert(
+            consoleErrors.length === 0 && resourceErrors.length === 0,
+            `Browser resource errors: ${JSON.stringify({ consoleErrors, resourceErrors })}`,
+        );
 
         break auditRun;
     }
@@ -3666,7 +3959,7 @@ try {
             assert(detailBehavior.actionCount === 3, `${detailLabel}: expected three hero actions.`);
             assert(detailBehavior.tabCount === 8, `${detailLabel}: expected eight detail tabs.`);
             assert(
-                detailBehavior.groupDetailCopy.length === 39
+                detailBehavior.groupDetailCopy.length === 45
                     && detailBehavior.groupDetailCopy.every((value) => value?.length > 0),
                 `${detailLabel}: group detail localization surface is incomplete ${JSON.stringify(detailBehavior.groupDetailCopy)}.`,
             );

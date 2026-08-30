@@ -19,6 +19,6 @@ class DeviceReadingStoreController extends Controller
         $record->handle($smartDevice, $request->validated());
 
         return to_route('devices.show', $smartDevice)
-            ->with('feedback', __('messages.device_reading_saved_as_an_unverified_source_fact_fe90303ecd'));
+            ->with('feedback', __('messages.device_reading_saved_as_an_unverified_source_fact'));
     }
 }

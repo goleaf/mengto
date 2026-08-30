@@ -40,7 +40,7 @@ class CreateOrder
 
         if ($total->isGreaterThan(MinorUnitAmount::fromDecimal('99999999.99'))) {
             throw ValidationException::withMessages([
-                'quantity' => __('messages.the_order_total_exceeds_the_supported_payment_limit_8f2b39a201'),
+                'quantity' => __('messages.the_order_total_exceeds_the_supported_payment_limit'),
             ]);
         }
 

@@ -31,7 +31,7 @@ class PromoteDeviceEventToCareJournal
 
             if ($locked->smart_device_id !== $device->id) {
                 throw ValidationException::withMessages([
-                    'event' => __('messages.this_event_does_not_belong_to_the_selected_device_d0f4b33d37'),
+                    'event' => __('messages.this_event_does_not_belong_to_the_selected_device'),
                 ]);
             }
 
@@ -41,7 +41,7 @@ class PromoteDeviceEventToCareJournal
 
             if ($locked->pet_profile_key === null) {
                 throw ValidationException::withMessages([
-                    'event' => __('messages.choose_the_pet_before_adding_this_shared_device_event_to_84f17fc014'),
+                    'event' => __('messages.choose_the_pet_before_adding_this_shared_device_event_to_care'),
                 ]);
             }
 
@@ -57,7 +57,7 @@ class PromoteDeviceEventToCareJournal
 
             if ($journal === null) {
                 throw ValidationException::withMessages([
-                    'event' => __('messages.create_this_pet_s_care_journal_before_adding_the_event_29f50c0638'),
+                    'event' => __('messages.create_this_pet_s_care_journal_before_adding_the_event'),
                 ]);
             }
 

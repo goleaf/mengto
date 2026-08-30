@@ -172,9 +172,9 @@
             <div class="mt-6 grid gap-5 lg:grid-cols-[14rem_minmax(0,1fr)] lg:items-start">
                 <div class="aspect-square overflow-hidden rounded-2xl border border-paw-line bg-paw-canvas">
                     @if ($mediaForm->upload !== null)
-                        <img src="{{ $mediaForm->upload->temporaryUrl() }}" alt="{{ __('pet_profiles.media.selected_preview') }}" class="h-full w-full object-cover">
+                        <img src="{{ $mediaForm->upload->temporaryUrl() }}" alt="{{ __('pet_profiles.media.selected_preview') }}" width="1200" height="900" class="h-full w-full object-cover">
                     @elseif ($primaryPhoto !== null)
-                        <img src="{{ $primaryPhoto['url'] }}" alt="{{ $primaryPhoto['alt_text'] }}" class="h-full w-full object-cover">
+                        <img src="{{ $primaryPhoto['url'] }}" alt="{{ $primaryPhoto['alt_text'] }}" width="1200" height="900" class="h-full w-full object-cover">
                     @else
                         <div class="grid h-full place-items-center" role="img" aria-label="{{ __('pet_profiles.public.avatar_alt', ['name' => $profile->name]) }}">
                             <x-ui-icon name="paw-print" size="3xl" />
@@ -944,7 +944,7 @@
                         <a class="forum-button mt-4 min-h-11" href="{{ $profileUrl }}"><x-ui-icon name="external-link" />{{ __('pet_profiles.actions.view_profile') }}</a>
                     </div>
                     @if ($qrCode !== null)
-                        <img src="{{ $qrCode }}" alt="{{ __('pet_profiles.manage.qr_alt', ['name' => $profile->name]) }}" class="size-36 bg-white p-2">
+                        <img src="{{ $qrCode }}" alt="{{ __('pet_profiles.manage.qr_alt', ['name' => $profile->name]) }}" width="144" height="144" class="size-36 bg-white p-2">
                     @endif
                 </section>
                 <form wire:submit="transitionStatus" class="forum-form">

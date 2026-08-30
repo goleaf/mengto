@@ -1,46 +1,46 @@
 <x-app-shell :owner="$owner" :title="$page_title" :active-section="$active_section">
     <div class="forum-page">
         <x-page-header
-            :eyebrow="__('ui.community_knowledge_31eb615b90')"
-            :title="__('ui.ask_well_find_what_lasts_3c2fdf9b45')"
-            :description="__('ui.questions_field_notes_expert_context_and_practical_guides_5f0c917aa8')"
+            :eyebrow="__('ui.community_knowledge')"
+            :title="__('ui.ask_well_find_what_lasts')"
+            :description="__('ui.questions_field_notes_expert_context_and_practical_guides_that_remain_useful_after_the_feed_moves_on')"
             heading-id="forum-directory-heading"
             data-section="forum-directory-header"
         >
             <x-slot:actions>
-                <x-action-control :label="__('ui.knowledge_dcb3e1c00e')" icon="library" :href="route('knowledge.index')" variant="paper" size="regular" />
+                <x-action-control :label="__('ui.knowledge')" icon="library" :href="route('knowledge.index')" variant="paper" size="regular" />
                 <x-action-control :label="__('forum_expert_sessions.navigation.label')" icon="circle-help" :href="route('forum.expert-sessions.index')" variant="paper" size="regular" />
                 @auth
                     <x-action-control :label="__('forum_journals.navigation.label')" icon="notebook-tabs" :href="route('forum.journals.index')" variant="paper" size="regular" />
                     <x-action-control :label="__('forum_groups.navigation.label')" icon="users" :href="route('forum.groups.index')" variant="paper" size="regular" />
                     <x-action-control :label="__('forum_mentorship.navigation.label')" icon="users-round" :href="route('forum.mentorship.index')" variant="paper" size="regular" />
                 @endauth
-                <x-action-control :label="__('ui.ask_a_question_3a533d7ef8')" icon="square-pen" :href="route('forum.topics.create')" variant="primary" size="regular" />
+                <x-action-control :label="__('ui.ask_a_question')" icon="square-pen" :href="route('forum.topics.create')" variant="primary" size="regular" />
             </x-slot:actions>
         </x-page-header>
 
         <form method="GET" action="{{ route('forum.index') }}" class="forum-search" role="search">
             <label>
-                <span class="sr-only">{{ __('ui.search_forum_aae59cf0ad') }}</span>
+                <span class="sr-only">{{ __('ui.search_forum') }}</span>
                 <x-ui-icon name="search" />
-                <input name="q" value="{{ $filters['q'] }}" placeholder="{{ __('ui.search_questions_pets_places_or_exact_phrases_5190090592') }}">
+                <input name="q" value="{{ $filters['q'] }}" placeholder="{{ __('ui.search_questions_pets_places_or_exact_phrases') }}">
             </label>
-            <select name="language" aria-label="{{ __('ui.topic_language_8d3b8b5b39') }}">
-                <option value="all" @selected($filters['language'] === 'all')>{{ __('ui.all_languages_acce3d0e30') }}</option>
-                <option value="en" @selected($filters['language'] === 'en')>{{ __('ui.english_ba118bf7fc') }}</option>
-                <option value="lt" @selected($filters['language'] === 'lt')>{{ __('ui.lithuanian_8625f6a206') }}</option>
-                <option value="ru" @selected($filters['language'] === 'ru')>{{ __('ui.russian_5bcc40adf6') }}</option>
+            <select name="language" aria-label="{{ __('ui.topic_language') }}">
+                <option value="all" @selected($filters['language'] === 'all')>{{ __('ui.all_languages') }}</option>
+                <option value="en" @selected($filters['language'] === 'en')>{{ __('ui.english') }}</option>
+                <option value="lt" @selected($filters['language'] === 'lt')>{{ __('ui.lithuanian') }}</option>
+                <option value="ru" @selected($filters['language'] === 'ru')>{{ __('ui.russian') }}</option>
             </select>
             <button type="submit" class="forum-button forum-button--primary">
                 <x-ui-icon name="search" />
-                {{ __('ui.search_49c266baaa') }}
+                {{ __('ui.search') }}
             </button>
             <input type="hidden" name="category" value="{{ $filters['category'] }}">
             <input type="hidden" name="filter" value="{{ $filters['filter'] }}">
             <input type="hidden" name="sort" value="{{ $filters['sort'] }}">
         </form>
 
-        <section class="forum-stats" aria-label="{{ __('ui.forum_summary_b01b2e0a58') }}">
+        <section class="forum-stats" aria-label="{{ __('ui.forum_summary') }}">
             @forelse ($stats as $stat)
                 <div class="forum-stats__item">
                     <x-ui-icon :name="$stat['icon']" />
@@ -50,7 +50,7 @@
                     </div>
                 </div>
             @empty
-                <p>{{ __('ui.no_forum_statistics_yet_0b02e01738') }}</p>
+                <p>{{ __('ui.no_forum_statistics_yet') }}</p>
             @endforelse
         </section>
 
@@ -63,39 +63,39 @@
                 />
 
                 <div class="forum-directory-controls">
-                    <nav class="forum-filter-tabs" aria-label="{{ __('ui.topic_filters_9250e8d56b') }}">
+                    <nav class="forum-filter-tabs" aria-label="{{ __('ui.topic_filters') }}">
                         @forelse ($filter_options as $key => $label)
                             <a
                                 href="{{ route('forum.index', [...$filters, 'filter' => $key, 'page' => null]) }}"
                                 @if ($filters['filter'] === $key) aria-current="page" @endif
                             >{{ $label }}</a>
                         @empty
-                            <span>{{ __('ui.no_filters_available_dc23b63725') }}</span>
+                            <span>{{ __('ui.no_filters_available') }}</span>
                         @endforelse
                     </nav>
 
-                    <div class="forum-filter-tabs" aria-label="{{ __('ui.topic_sorting_199040afbe') }}">
+                    <div class="forum-filter-tabs" aria-label="{{ __('ui.topic_sorting') }}">
                         @forelse ($sort_options as $key => $label)
                             <a
                                 href="{{ route('forum.index', [...$filters, 'sort' => $key, 'page' => null]) }}"
                                 @if ($filters['sort'] === $key) aria-current="page" @endif
                             >{{ $label }}</a>
                         @empty
-                            <span>{{ __('ui.no_sort_options_available_0b2341d59b') }}</span>
+                            <span>{{ __('ui.no_sort_options_available') }}</span>
                         @endforelse
                     </div>
                 </div>
 
-                <section class="forum-topic-list" aria-label="{{ __('ui.forum_topics_dfec5e5f89') }}">
+                <section class="forum-topic-list" aria-label="{{ __('ui.forum_topics') }}">
                     @forelse ($topics as $topic)
                         <x-forum-topic-card :topic="$topic" />
                     @empty
                         <div class="forum-form">
-                            <h2>{{ __('ui.no_matching_discussion_yet_1dee81e8c3') }}</h2>
-                            <p>{{ __('ui.try_a_broader_phrase_or_start_a_focused_a511e7e0d2') }}</p>
+                            <h2>{{ __('ui.no_matching_discussion_yet') }}</h2>
+                            <p>{{ __('ui.try_a_broader_phrase_or_start_a_focused_question_with_the_details_that_make_your_case_different') }}</p>
                             <a href="{{ route('forum.topics.create') }}" class="forum-button forum-button--primary">
                                 <x-ui-icon name="square-pen" />
-                                {{ __('ui.start_a_topic_c27175f4e0') }}
+                                {{ __('ui.start_a_topic') }}
                             </a>
                         </div>
                     @endforelse
@@ -104,12 +104,12 @@
                 <div class="mt-5">{{ $topics->links() }}</div>
             </div>
 
-            <aside class="forum-sidebar" aria-label="{{ __('ui.knowledge_and_notifications_b349fb1522') }}">
+            <aside class="forum-sidebar" aria-label="{{ __('ui.knowledge_and_notifications') }}">
                 <section class="forum-sidebar__section">
                     <div class="forum-sidebar__title">
-                        <span>{{ __('ui.knowledge_desk_518296addd') }}</span>
+                        <span>{{ __('ui.knowledge_desk') }}</span>
                         <a href="{{ route('knowledge.index') }}" class="inline-flex items-center gap-1">
-                            <span>{{ __('ui.all_a52ace420f') }}</span>
+                            <span>{{ __('ui.all') }}</span>
                             <x-ui-icon name="arrow-right" size="xs" />
                         </a>
                     </div>
@@ -123,14 +123,14 @@
                                 </span>
                             </a>
                         @empty
-                            <p>{{ __('ui.no_reviewed_guides_yet_3d9f862601') }}</p>
+                            <p>{{ __('ui.no_reviewed_guides_yet') }}</p>
                         @endforelse
                     </div>
                 </section>
 
                 <section class="forum-sidebar__section">
                     <div class="forum-sidebar__title">
-                        <span>{{ __('ui.your_updates_438558961b') }}</span>
+                        <span>{{ __('ui.your_updates') }}</span>
                     </div>
                     <div class="forum-mini-list">
                         @forelse ($notifications as $notification)
@@ -150,7 +150,7 @@
                                 </button>
                             </form>
                         @empty
-                            <p>{{ __('ui.no_new_updates_5a45a6c539') }}</p>
+                            <p>{{ __('ui.no_new_updates') }}</p>
                         @endforelse
                     </div>
                 </section>

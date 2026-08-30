@@ -1,6 +1,6 @@
 @props([
     'items' => [],
-    'empty' => __('ui.no_details_available_1c787606df'),
+    'empty' => __('ui.no_details_available'),
 ])
 
 <div role="list" {{ $attributes->class(['icon-list']) }}>

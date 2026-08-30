@@ -30,7 +30,7 @@ class PromoteDeviceReadingToMedicalRecord
 
             if ($locked->smart_device_id !== $device->id) {
                 throw ValidationException::withMessages([
-                    'reading' => __('messages.this_reading_does_not_belong_to_the_selected_device_9eed5b281e'),
+                    'reading' => __('messages.this_reading_does_not_belong_to_the_selected_device'),
                 ]);
             }
 
@@ -44,7 +44,7 @@ class PromoteDeviceReadingToMedicalRecord
 
             if ($locked->pet_profile_key === null) {
                 throw ValidationException::withMessages([
-                    'reading' => __('messages.choose_the_pet_before_adding_this_shared_device_reading_e757b00ba0'),
+                    'reading' => __('messages.choose_the_pet_before_adding_this_shared_device_reading'),
                 ]);
             }
 
@@ -59,7 +59,7 @@ class PromoteDeviceReadingToMedicalRecord
 
             if ($record === null) {
                 throw ValidationException::withMessages([
-                    'reading' => __('messages.create_this_pet_s_health_record_before_adding_the_readin_8cd759dd90'),
+                    'reading' => __('messages.create_this_pet_s_health_record_before_adding_the_reading'),
                 ]);
             }
 
@@ -75,8 +75,8 @@ class PromoteDeviceReadingToMedicalRecord
                     'measured_at' => $locked->recorded_at,
                     'source_type' => 'device',
                     'source_name' => $device->name,
-                    'measurement_context' => __('messages.connected_device_owner_promoted_for_review_884eff73b0'),
-                    'notes' => __('messages.non_clinical_device_reading_confirm_calibration_and_cond_a3086fcbae'),
+                    'measurement_context' => __('messages.connected_device_owner_promoted_for_review'),
+                    'notes' => __('messages.non_clinical_device_reading_confirm_calibration_and_conditions'),
                 ]);
                 $locked->forceFill(['weight_entry_id' => $entry->getKey()])->save();
 
@@ -99,7 +99,7 @@ class PromoteDeviceReadingToMedicalRecord
                     $locked->unit ?? '',
                 ),
                 'severity' => 'not-assessed',
-                'next_step' => __('messages.verify_the_device_context_and_interpretation_with_a_vete_3724cd9832'),
+                'next_step' => __('messages.verify_the_device_context_and_interpretation_with_a_veterinarian'),
                 'is_critical' => false,
             ]);
             $locked->forceFill(['medical_event_id' => $entry->getKey()])->save();

@@ -121,18 +121,18 @@ final class WalkPlanPresenter
             'steps' => [
                 [
                     'icon' => 'map-pin',
-                    'label' => __('messages.meet_74567d3512'),
-                    'title' => $plan['location'] ?? __('messages.choose_a_familiar_meeting_point_0b782ca18e'),
+                    'label' => __('messages.meet'),
+                    'title' => $plan['location'] ?? __('messages.choose_a_familiar_meeting_point'),
                 ],
                 [
                     'icon' => 'footprints',
-                    'label' => __('messages.walk_08ee52ae12'),
-                    'title' => $plan['detail'] ?: __('messages.easy_pace_30_min_c2585b7d4e'),
+                    'label' => __('messages.walk'),
+                    'title' => $plan['detail'] ?: __('messages.easy_pace_30_min'),
                 ],
                 [
                     'icon' => 'message-circle',
-                    'label' => __('messages.settle_a0c79a8531'),
-                    'title' => __('messages.share_a_quick_check_in_before_heading_home_5b797466a0'),
+                    'label' => __('messages.settle'),
+                    'title' => __('messages.share_a_quick_check_in_before_heading_home'),
                 ],
             ],
         ];
@@ -149,10 +149,10 @@ final class WalkPlanPresenter
     private function filters(): array
     {
         return [
-            ['value' => 'upcoming', 'label' => __('messages.upcoming_5f1a2542e4')],
-            ['value' => 'drafts', 'label' => __('messages.drafts_f592e6a4db')],
-            ['value' => 'completed', 'label' => __('messages.completed_22a970d2e5')],
-            ['value' => 'cancelled', 'label' => __('messages.cancelled_d353a99eb4')],
+            ['value' => 'upcoming', 'label' => __('messages.upcoming')],
+            ['value' => 'drafts', 'label' => __('messages.drafts')],
+            ['value' => 'completed', 'label' => __('messages.completed')],
+            ['value' => 'cancelled', 'label' => __('messages.cancelled')],
         ];
     }
 
@@ -183,15 +183,15 @@ final class WalkPlanPresenter
         $neighbors = array_unique(array_filter(array_column($activePlans, 'conversation')));
 
         return [
-            'eyebrow' => __('messages.walk_planner_46c2829124'),
-            'title' => __('messages.clear_plans_make_calmer_walks_c2629160b5'),
-            'description' => __('messages.keep_timing_meeting_points_pace_and_neighbor_context_tog_835975886d'),
+            'eyebrow' => __('messages.walk_planner'),
+            'title' => __('messages.clear_plans_make_calmer_walks'),
+            'description' => __('messages.keep_timing_meeting_points_pace_and_neighbor_context_together_from_the_first_draft_through_the_final_check_in'),
             'count' => trans_choice('presentation.plans_count', count($plans), ['count' => count($plans)]),
             'stats' => [
-                ['label' => __('messages.upcoming_5f1a2542e4'), 'value' => (string) count($activePlans), 'detail' => __('messages.draft_or_confirmed_7115043976')],
-                ['label' => __('messages.confirmed_fe00b67b6d'), 'value' => (string) ($countByStatus['confirmed'] ?? 0), 'detail' => __('messages.ready_to_go_feb320ee9c')],
-                ['label' => __('messages.completed_22a970d2e5'), 'value' => (string) ($countByStatus['completed'] ?? 0), 'detail' => __('messages.walks_finished_920a60a508')],
-                ['label' => __('messages.neighbors_ecc05289ef'), 'value' => (string) count($neighbors), 'detail' => __('messages.in_active_plans_95c99c2c87')],
+                ['label' => __('messages.upcoming'), 'value' => (string) count($activePlans), 'detail' => __('messages.draft_or_confirmed')],
+                ['label' => __('messages.confirmed'), 'value' => (string) ($countByStatus['confirmed'] ?? 0), 'detail' => __('messages.ready_to_go')],
+                ['label' => __('messages.completed'), 'value' => (string) ($countByStatus['completed'] ?? 0), 'detail' => __('messages.walks_finished')],
+                ['label' => __('messages.neighbors'), 'value' => (string) count($neighbors), 'detail' => __('messages.in_active_plans')],
             ],
         ];
     }
@@ -202,10 +202,10 @@ final class WalkPlanPresenter
     private function statusMeta(string $status): array
     {
         return match ($status) {
-            'confirmed' => ['label' => __('messages.confirmed_fe00b67b6d'), 'icon' => 'calendar-check', 'tone' => 'mint'],
-            'completed' => ['label' => __('messages.completed_22a970d2e5'), 'icon' => 'circle-check', 'tone' => 'ink'],
-            'cancelled' => ['label' => __('messages.cancelled_d353a99eb4'), 'icon' => 'circle-x', 'tone' => 'surface'],
-            default => ['label' => __('messages.draft_ebf12ef47c'), 'icon' => 'pencil-line', 'tone' => 'sun'],
+            'confirmed' => ['label' => __('messages.confirmed'), 'icon' => 'calendar-check', 'tone' => 'mint'],
+            'completed' => ['label' => __('messages.completed'), 'icon' => 'circle-check', 'tone' => 'ink'],
+            'cancelled' => ['label' => __('messages.cancelled'), 'icon' => 'circle-x', 'tone' => 'surface'],
+            default => ['label' => __('messages.draft'), 'icon' => 'pencil-line', 'tone' => 'sun'],
         };
     }
 
@@ -215,8 +215,8 @@ final class WalkPlanPresenter
     private function nextAction(string $status): ?array
     {
         return match ($status) {
-            'draft' => ['label' => __('messages.confirm_plan_d80926e20d'), 'icon' => 'calendar-check'],
-            'confirmed' => ['label' => __('messages.mark_complete_6470f48e43'), 'icon' => 'circle-check'],
+            'draft' => ['label' => __('messages.confirm_plan'), 'icon' => 'calendar-check'],
+            'confirmed' => ['label' => __('messages.mark_complete'), 'icon' => 'circle-check'],
             default => null,
         };
     }
@@ -228,31 +228,31 @@ final class WalkPlanPresenter
     {
         return match ($target) {
             'mochi' => [
-                'pet' => __('messages.mochi_95114c81f3'),
-                'person' => __('messages.ari_jensen_6c670df410'),
+                'pet' => __('messages.mochi'),
+                'person' => __('messages.ari_jensen'),
                 'conversation' => 'ari',
                 'image' => 'https://images.unsplash.com/photo-1753685723016-78c233daa8a2?auto=format&fit=crop&w=1200&h=800&q=85',
                 'image_small' => 'https://images.unsplash.com/photo-1753685723016-78c233daa8a2?auto=format&fit=crop&w=576&h=384&q=80',
                 'image_medium' => 'https://images.unsplash.com/photo-1753685723016-78c233daa8a2?auto=format&fit=crop&w=900&h=600&q=82',
-                'image_alt' => __('messages.ari_relaxing_with_mochi_in_a_neighborhood_park_2e4ba2f4ec'),
+                'image_alt' => __('messages.ari_relaxing_with_mochi_in_a_neighborhood_park'),
             ],
             'juniper' => [
-                'pet' => __('messages.juniper_fe6a448ec9'),
-                'person' => __('messages.noah_patel_147a9793ed'),
+                'pet' => __('messages.juniper'),
+                'person' => __('messages.noah_patel'),
                 'conversation' => 'noah',
                 'image' => 'https://images.unsplash.com/photo-1638552718376-7d4881e31418?auto=format&fit=crop&w=1200&h=800&q=85',
                 'image_small' => 'https://images.unsplash.com/photo-1638552718376-7d4881e31418?auto=format&fit=crop&w=576&h=384&q=80',
                 'image_medium' => 'https://images.unsplash.com/photo-1638552718376-7d4881e31418?auto=format&fit=crop&w=900&h=600&q=82',
-                'image_alt' => __('messages.noah_practicing_with_a_small_dog_in_a_wooded_park_a01c6fa46c'),
+                'image_alt' => __('messages.noah_practicing_with_a_small_dog_in_a_wooded_park'),
             ],
             default => [
-                'pet' => __('messages.scout_8a1db462be'),
-                'person' => __('messages.mia_carter_0e5b29cc3b'),
+                'pet' => __('messages.scout'),
+                'person' => __('messages.mia_carter'),
                 'conversation' => '',
                 'image' => 'https://images.unsplash.com/photo-1654256578072-b932c33cb92e?auto=format&fit=crop&w=1200&h=800&q=85',
                 'image_small' => 'https://images.unsplash.com/photo-1654256578072-b932c33cb92e?auto=format&fit=crop&w=576&h=384&q=80',
                 'image_medium' => 'https://images.unsplash.com/photo-1654256578072-b932c33cb92e?auto=format&fit=crop&w=900&h=600&q=82',
-                'image_alt' => __('messages.scout_a_black_and_white_border_collie_resting_on_grass_4abc84adab'),
+                'image_alt' => __('messages.scout_a_black_and_white_border_collie_resting_on_grass'),
             ],
         };
     }
@@ -264,33 +264,33 @@ final class WalkPlanPresenter
     {
         return [
             [
-                'title' => __('messages.start_with_a_familiar_companion_644a17d04c'),
-                'meta' => __('messages.scout_and_mia_a4d8a1fd0f'),
+                'title' => __('messages.start_with_a_familiar_companion'),
+                'meta' => __('messages.scout_and_mia'),
                 'image' => 'https://images.unsplash.com/photo-1654256578072-b932c33cb92e?auto=format&fit=crop&w=1200&h=800&q=85',
                 'image_small' => 'https://images.unsplash.com/photo-1654256578072-b932c33cb92e?auto=format&fit=crop&w=576&h=384&q=80',
                 'image_medium' => 'https://images.unsplash.com/photo-1654256578072-b932c33cb92e?auto=format&fit=crop&w=900&h=600&q=82',
-                'image_alt' => __('messages.scout_a_black_and_white_border_collie_resting_on_grass_4abc84adab'),
+                'image_alt' => __('messages.scout_a_black_and_white_border_collie_resting_on_grass'),
                 'href' => route('compose', 'walk'),
                 'icon' => 'calendar-plus',
             ],
             [
-                'title' => __('messages.plan_a_quiet_city_loop_86a2350f59'),
-                'meta' => __('messages.ari_and_mochi_6ab978b432'),
+                'title' => __('messages.plan_a_quiet_city_loop'),
+                'meta' => __('messages.ari_and_mochi'),
                 'image' => 'https://images.unsplash.com/photo-1753685723016-78c233daa8a2?auto=format&fit=crop&w=1200&h=800&q=85',
                 'image_small' => 'https://images.unsplash.com/photo-1753685723016-78c233daa8a2?auto=format&fit=crop&w=576&h=384&q=80',
                 'image_medium' => 'https://images.unsplash.com/photo-1753685723016-78c233daa8a2?auto=format&fit=crop&w=900&h=600&q=82',
-                'image_alt' => __('messages.ari_relaxing_with_mochi_in_a_neighborhood_park_2e4ba2f4ec'),
+                'image_alt' => __('messages.ari_relaxing_with_mochi_in_a_neighborhood_park'),
                 'href' => route('neighbors.ari'),
                 'icon' => 'map',
             ],
             [
-                'title' => __('messages.choose_a_shaded_route_8cd4ac8c8a'),
-                'meta' => __('messages.noah_and_juniper_875732f92f'),
+                'title' => __('messages.choose_a_shaded_route'),
+                'meta' => __('messages.noah_and_juniper'),
                 'image' => 'https://images.unsplash.com/photo-1638552718376-7d4881e31418?auto=format&fit=crop&w=1200&h=800&q=85',
                 'image_small' => 'https://images.unsplash.com/photo-1638552718376-7d4881e31418?auto=format&fit=crop&w=576&h=384&q=80',
                 'image_medium' => 'https://images.unsplash.com/photo-1638552718376-7d4881e31418?auto=format&fit=crop&w=900&h=600&q=82',
-                'image_alt' => __('messages.noah_practicing_with_a_small_dog_in_a_wooded_park_a01c6fa46c'),
-                'href' => route('neighbors.index', ['q' => __('messages.noah_678202b3c0')]),
+                'image_alt' => __('messages.noah_practicing_with_a_small_dog_in_a_wooded_park'),
+                'href' => route('neighbors.index', ['q' => __('messages.noah')]),
                 'icon' => 'trees',
             ],
         ];

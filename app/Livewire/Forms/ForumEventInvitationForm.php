@@ -55,7 +55,7 @@ final class ForumEventInvitationForm extends Form
         $expiresAt = $this->parseLocalDateTime((string) $validated['expiresAt'], $timezone);
 
         if ($expiresAt === null) {
-            throw new \LogicException(__('messages.validated_invitation_expiry_could_not_be_parsed_a6b2d4c9ff'));
+            throw new \LogicException(__('messages.validated_invitation_expiry_could_not_be_parsed'));
         }
 
         return [

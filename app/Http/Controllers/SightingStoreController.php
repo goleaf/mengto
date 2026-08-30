@@ -19,6 +19,6 @@ class SightingStoreController extends Controller
         $submit->handle($searchCase, $request->validated());
 
         return to_route('lost-found.show', $searchCase)
-            ->with('feedback', __('messages.observation_received_the_coordinator_can_verify_it_witho_3bd09c6278'));
+            ->with('feedback', __('messages.observation_received_the_coordinator_can_verify_it_without_exposing_your_exact_location'));
     }
 }

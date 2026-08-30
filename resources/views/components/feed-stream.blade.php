@@ -11,7 +11,7 @@
         @empty
             <x-empty-state
                 icon="newspaper"
-                title="{{ __('ui.no_publications_match_these_filters_3ccadd0d18') }}"
+                title="{{ __('ui.no_publications_match_these_filters') }}"
                 compact
                 role="listitem"
             />

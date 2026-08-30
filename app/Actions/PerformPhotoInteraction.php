@@ -42,7 +42,7 @@ final class PerformPhotoInteraction
                 (string) $data['idempotency_key'],
             ),
             default => throw ValidationException::withMessages([
-                'action' => __('messages.this_action_is_unavailable_c64fa3888d'),
+                'action' => __('messages.this_action_is_unavailable'),
             ]),
         };
     }
@@ -55,7 +55,7 @@ final class PerformPhotoInteraction
     {
         if (! array_key_exists($reaction, $photo['reaction_options'])) {
             throw ValidationException::withMessages([
-                'reaction' => __('messages.choose_an_available_reaction_c8a1ac8cff'),
+                'reaction' => __('messages.choose_an_available_reaction'),
             ]);
         }
 

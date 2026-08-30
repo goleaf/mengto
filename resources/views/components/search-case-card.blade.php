@@ -4,11 +4,14 @@
     <a href="{{ route('lost-found.show', $searchCase['slug']) }}" class="group grid" aria-label="{{ __('presentation.open_search_for', ['pet' => $searchCase['pet_name']]) }}">
         <div class="relative aspect-[16/10] overflow-hidden bg-paw-mint">
             @if ($searchCase['cover_url'])
-                <img
-                    src="{{ $searchCase['cover_url'] }}"
-                    alt="{{ $searchCase['pet_name'] }}, {{ strtolower($searchCase['species_label']) }}, {{ $searchCase['color'] }}"
+                <x-responsive-image
+                    :src="$searchCase['cover_url']"
+                    :alt="$searchCase['pet_name'].', '.strtolower($searchCase['species_label']).', '.$searchCase['color']"
+                    :width="1600"
+                    :height="1000"
+                    sizes="(min-width: 1024px) 360px, (min-width: 640px) 50vw, 100vw"
                     class="size-full object-cover transition duration-300 group-hover:scale-[1.02]"
-                >
+                />
             @else
                 <div class="grid size-full place-items-center">
                     <x-ui-icon size="4xl" :name="$searchCase['type_icon']" class="text-paw-leaf" />
@@ -42,13 +45,13 @@
                 <div class="flex items-start gap-2">
                     <x-ui-icon name="map-pin" size="sm" class="mt-0.5 shrink-0 text-paw-coral" />
                     <div>
-                        <dt data-search-case-area-label class="sr-only">{{ __('ui.area_024dc204d7') }}</dt>
+                        <dt data-search-case-area-label class="sr-only">{{ __('ui.area') }}</dt>
                         <dd class="font-semibold">{{ $searchCase['last_seen_area'] }}</dd>
                     </div>
                 </div>
                 <div class="flex items-center gap-2 text-paw-muted">
                     <x-ui-icon name="clock-3" size="sm" class="shrink-0" />
-                    <dt data-search-case-last-seen-label class="sr-only">{{ __('ui.last_seen_21fd79c7de') }}</dt>
+                    <dt data-search-case-last-seen-label class="sr-only">{{ __('ui.last_seen') }}</dt>
                     <dd>{{ $searchCase['last_seen_label'] }}</dd>
                 </div>
             </dl>

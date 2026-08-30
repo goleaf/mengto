@@ -12,8 +12,8 @@
 | private care directories (`/medical-records`, `/care-journals`) | canonical `x-page-header` with privacy context and authorized create action | migrated and targeted-verified |
 | operational directories (`/lost-found`, `/marketplace`, `/experts`) | canonical `x-page-header` with domain content below identity | migrated and targeted-verified |
 | `/messages` | canonical `x-page-header`; nine-folder toolbar remains above messaging shell | migrated and targeted-verified |
-| `/meetups` catalogue directory | database-backed `ForumEventDirectory` in shared shell; page identity still uses legacy `forum-header` | data/workflow migrated; page identity pending |
-| `/meetups/{event}` detail | canonical `ForumEventWorkspace`; page identity still uses legacy `forum-header` | data/workflow migrated; page identity pending classification |
+| `/meetups` catalogue directory | database-backed `ForumEventDirectory` in shared shell with canonical `x-page-header` | migrated and targeted-verified |
+| `/meetups/{event}` detail | canonical `ForumEventWorkspace` with canonical `x-page-header` | migrated and classified as detail |
 | `/organizations` and organization workspace | class-based Livewire tenant authority in the shared shell and canonical page-header/panel patterns | added and targeted-verified |
 | event responsible organization | role- and capability-scoped select inside the existing event builder | added and targeted-verified |
 | `/places` and `/places/{place}` | existing responsive directory/detail consume policy-scoped persisted places and stable dynamic slugs | data authority migrated; visual shell preserved |
@@ -31,7 +31,7 @@
 | event schedule | canonical `x-event-schedule` backed by occurrence-scoped tracks, rooms, sessions and server conflict checks | added |
 | manual check-in/out | shared action patterns and server-confirmed state | improved |
 
-No new obsolete CSS or JavaScript was added by the event package; the
-pre-existing `forum-header` family remains scheduled for migration. QR scanner,
+No new obsolete CSS or JavaScript was added by the event package; the retired
+`forum-header` family now has zero active Blade or SCSS consumers. QR scanner,
 participant session-reservation, ticket, competition, incident, vendor, and
 volunteer components do not exist and are not represented as migrated.

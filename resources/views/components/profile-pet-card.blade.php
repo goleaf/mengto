@@ -38,6 +38,6 @@
         <p class="mt-1 text-sm text-paw-muted">{{ $pet['breed'] }}</p>
         <p class="mt-3 text-sm font-medium text-paw-ink">{{ $pet['status'] }}</p>
 
-        <x-tag-list :items="$pet['traits']" empty="{{ __('ui.no_traits_shared_251b121ad1') }}" class="mt-3" />
+        <x-tag-list :items="$pet['traits']" empty="{{ __('ui.no_traits_shared') }}" class="mt-3" />
     </div>
 </article>

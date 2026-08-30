@@ -97,5 +97,29 @@ final class DiscoveryDemoSeeder extends Seeder
                 body: 'Confirm the route, bring water, and agree on distance before introducing the animals.',
             ),
         );
+
+        $miaActor = $actors->forUser($mia);
+        $miaActor->forceFill(['is_discoverable' => true])->saveQuietly();
+        $miaActor->settings()->update(['is_recommendable' => true]);
+        $identityPublication = $createPublication->handle(
+            $mia,
+            $miaActor,
+            new CreateContentPublicationData(
+                type: ContentPublicationType::Post,
+                status: ContentPublicationStatus::Published,
+                audience: ContentAudienceType::Registered,
+                language: 'en',
+                idempotencyKey: 'page-identity-demo-post-v1',
+                title: 'A calm route for a first community walk',
+                summary: 'A stable demonstration publication for authenticated detail and deep-link checks.',
+                body: 'Choose a quiet route, agree on distance, and keep the first walk short.',
+            ),
+        );
+
+        if ($identityPublication->publication_key !== 'page-identity-demo-post') {
+            $identityPublication
+                ->forceFill(['publication_key' => 'page-identity-demo-post'])
+                ->saveQuietly();
+        }
     }
 }

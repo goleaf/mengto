@@ -23,9 +23,25 @@ final readonly class AttachRequestContext
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $requestId = Str::uuid()->toString();
-        $request->attributes->set(self::REQUEST_ATTRIBUTE, $requestId);
+        $requestId = $request->attributes->get(self::REQUEST_ATTRIBUTE);
 
+        if (! is_string($requestId) || ! Str::isUuid($requestId)) {
+            $requestId = Str::uuid()->toString();
+            $request->attributes->set(self::REQUEST_ATTRIBUTE, $requestId);
+        }
+
+        $context = $this->safeContext($request, $requestId);
+        $this->context->add($context);
+        $response = $next($request);
+        $this->context->add($this->safeContext($request, $requestId));
+        $response->headers->set('X-Request-ID', $requestId);
+
+        return $response;
+    }
+
+    /** @return array<string, int|string> */
+    private function safeContext(Request $request, string $requestId): array
+    {
         $route = $request->route();
         $user = $request->user();
         $context = [
@@ -42,8 +58,6 @@ final readonly class AttachRequestContext
             $context['actor_key'] = $user->actor_key;
         }
 
-        $this->context->add($context);
-
-        return $next($request);
+        return $context;
     }
 }

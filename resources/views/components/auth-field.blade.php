@@ -15,7 +15,7 @@
             {{ $label }}
             @if ($required)
                 <span class="auth-field__required" aria-hidden="true">*</span>
-                <span class="sr-only">{{ __('ui.required_d0a3630555') }}</span>
+                <span class="sr-only">{{ __('ui.required_lowercase') }}</span>
             @endif
         </label>
 

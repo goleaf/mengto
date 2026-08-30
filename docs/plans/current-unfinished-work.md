@@ -1,15 +1,15 @@
 # Current Unfinished Work Audit
 
-Audit date: 2026-08-20
+Audit date: 2026-08-30
 
-Status: current plan inventory reconciled; product implementation remains
-incomplete.
+Status: release audit reconciliation in progress; product implementation and
+release verification remain incomplete. Current gate evidence is in
+`docs/reports/final-release-verification.md`.
 
 ## Scope And Counting Rules
 
-This audit classifies the current `docs/implementation-plan.md` plus all 70
-pre-existing documents directly under `docs/plans`; this report becomes the
-71st document in that directory. The ten files under
+This audit classifies the current `docs/implementation-plan.md` and active
+documents directly under `docs/plans`. The files under
 `docs/superpowers/plans` are historical prototype delivery records and are not
 current backlog sources. Their unchecked boxes are therefore not counted as
 unfinished production work.
@@ -20,8 +20,11 @@ are excluded from the active backlog. Generated atomic requirements remain the
 authority for exact forum/product IDs; the grouped totals below are not a
 second requirement catalogue.
 
-The audit was performed on clean `main` at `93a4595`, with local `main` and
-`origin/main` aligned.
+The prior clean-tree reconciliation was performed at `93a4595`. The final
+release audit began at `ae4ac32`; a concurrent process published `462539c0`
+and later left local `main` three documentation commits ahead of
+`origin/main`. Because the shared tree remains concurrently modified, counts
+below are inventory facts rather than a release-ready baseline.
 
 ## Current Result
 
@@ -29,12 +32,15 @@ The current implementation is not globally complete.
 
 - The combined forum/product catalogue contains 38,377 atomic requirements:
   1,727 verified, 58 `in-progress`, and 36,592 still `discovered`.
-- The canonical 169-requirement matrix contains 144 verified, 12 not
-  applicable, 10 externally blocked, and 3 partially implemented requirements.
+- The canonical 170-requirement matrix currently labels 148 rows
+  `implemented`, 9 not applicable, 10 externally blocked, and 3 partially
+  implemented. `Implemented` is not treated as `verified`: the final audit
+  found generic or invalid evidence on many rows and multiple required gates
+  fail.
 - Five supplemental Point 13 evidence rows add three verified records, one
   intentionally-not-applicable payment record, and one partially implemented
   advanced-events record; they are not part of the canonical count of 169.
-- The Places execution ledger has 339 open and 9 completed checkboxes.
+- The Places execution ledger has 325 open and 23 completed checkboxes.
 - The shared-directory-card ledger has 56 open and 117 completed checkboxes.
 - The icon migration has zero actionable migration debt. Its plan remains only
   as a regression ratchet.
@@ -315,7 +321,7 @@ requirements.
 - The focused architecture suite currently reports 19 passing tests and one
   failure at that same source-reconstruction assertion. No application-code
   regression was reported by the other 19 architecture tests.
-- `php scripts/generate-compliance-matrix.php --check` currently prints the
-  generated matrix but does not implement check-mode comparison. This audit
-  therefore validated its status rows directly and did not treat that command
-  as drift proof.
+- `php scripts/generate-compliance-matrix.php --check` now performs a real
+  byte comparison and passes in the attributable working tree. This proves
+  generated-file parity only; the blanket `implemented` defaults and generic
+  per-ID evidence remain release-blocking semantic defects.

@@ -6,7 +6,9 @@ namespace App\Services;
 
 use App\Data\ForumTopicTypeSchema;
 use App\Models\ForumTopicType;
+use Illuminate\Contracts\Cache\LockProvider;
 use Illuminate\Contracts\Cache\Repository as CacheRepository;
+use Throwable;
 
 final readonly class ForumTopicTypeSchemaRegistry
 {
@@ -27,14 +29,7 @@ final readonly class ForumTopicTypeSchemaRegistry
     /** @return array<string, ForumTopicTypeSchema> */
     public function definitions(): array
     {
-        $rows = $this->cache->remember(
-            self::CACHE_KEY,
-            now()->addSeconds(max(
-                1,
-                (int) config('taxonomy.topic_type_schema_cache_seconds'),
-            )),
-            fn (): array => $this->loadRows(),
-        );
+        $rows = $this->rememberRows();
 
         $definitions = [];
 
@@ -48,6 +43,36 @@ final readonly class ForumTopicTypeSchemaRegistry
         }
 
         return $definitions;
+    }
+
+    /** @return list<array<string, mixed>> */
+    private function rememberRows(): array
+    {
+        try {
+            $cached = $this->cache->get(self::CACHE_KEY);
+
+            if (is_array($cached)) {
+                return $cached;
+            }
+
+            $remember = fn (): array => $this->cache->remember(
+                self::CACHE_KEY,
+                now()->addSeconds(max(
+                    1,
+                    (int) config('taxonomy.topic_type_schema_cache_seconds'),
+                )),
+                fn (): array => $this->loadRows(),
+            );
+            $store = $this->cache->getStore();
+
+            if (! $store instanceof LockProvider) {
+                return $remember();
+            }
+
+            return $store->lock(self::CACHE_KEY.':refresh', 10)->block(2, $remember);
+        } catch (Throwable) {
+            return $this->loadRows();
+        }
     }
 
     public function invalidate(): void

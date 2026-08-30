@@ -2,9 +2,169 @@
 
 Plan date: 2026-07-30
 
+## Active Delivery: Complete Laravel 13 Framework Modernization
+
+Status: `protected baseline recorded; mandatory read-only specialist discovery
+starting` on 2026-08-30.
+
+This delivery reconciles the current application with Laravel 13 bootstrap,
+configuration, routing, middleware, provider, exception, authentication,
+session, cache, queue, filesystem, mail, logging, testing, and deployment
+boundaries without replacing project-specific behavior with skeleton defaults.
+It began on `main` at `9540fe83756833ae1c6d22053e883a07dca9f014`,
+three commits ahead of `origin/main`, with 478 staged paths, 27 additional
+unstaged paths, and 11 untracked paths already present. Every pre-existing byte
+remains user-owned. Discovery and review agents are read-only; the principal
+owns the plan, cross-module decisions, production edits, tests, documentation,
+isolated staging, commit, and safe push.
+
+### Laravel 13 specialist work ledger
+
+Every analyst returns: inspected scope; exact files, symbols, routes, tables,
+and workflows; severity-ranked confirmed findings with evidence; suspected
+findings needing principal validation; missing evidence; implementation order;
+tests and commands; and change risks. Reviewers additionally provide exact
+locations, reproducible failure scenarios, proposed corrections, and a final
+verdict. Agents do not edit the shared tree.
+
+| ID | Agent | Exclusive scope and expected output | Dependencies | Status |
+| --- | --- | --- | --- | --- |
+| L13M-A1 | Laravel Bootstrap and Configuration Analyst | `bootstrap/app.php`, `bootstrap/providers.php`, all `config/**`, `public/index.php`, `artisan`, `.env.example`, Composer discovery; bootstrap/config migration map with preserve/replace/remove decisions and boot/cache tests | Repository contract, canonical architecture/security/deployment docs, protected Git baseline | assigned wave 1 |
+| L13M-A2 | Routing and Middleware Analyst | `routes/**`, bootstrap middleware callbacks, `app/Http/Middleware/**`, bindings, limiters, trusted hosts/proxies, CSRF/origin, maintenance and `/up`; route/middleware findings map, registration changes, security/regression tests | Repository contract and portal/auth boundaries | assigned wave 1 |
+| L13M-A3 | Service Container and Provider Analyst | `app/Providers/**`, provider discovery, bindings, macros, events, observers, boot side effects and resolution paths; provider/binding map, lifecycle fixes, resolution tests | Repository contract and current container/provider code | assigned wave 1 |
+| L13M-A4 | Exception, Logging, and Response Analyst | bootstrap exception callbacks, exception classes, error pages/API responses, `config/logging.php`, request context/redaction; error taxonomy, safe response/logging behavior, tests | L13M-A1 bootstrap evidence and security/logging contracts | queued wave 2 |
+| L13M-A5 | Authentication, Session, and Security Configuration Analyst | auth/session/cookie/password reset/verification/login/logout/rate-limit/CSRF/origin configuration and flows; security findings, framework changes, regression tests | L13M-A2 route/middleware evidence and canonical auth/security contracts | queued wave 2 |
+| L13M-A6 | Laravel 13 Feature Applicability Analyst | current Laravel 13 attributes, cache TTL, images, Resources, queues, origin, health, AI/vector and first-party integrations; applicability matrix with approved candidates and exact rejections | Current dependency/runtime inventory and L13M-A1..A3 maps | queued wave 2 |
+| L13M-A7 | Framework Regression Test Analyst | existing boot/route/middleware/provider/auth/session/cache/filesystem/mail/queue/exception/cache-build tests; behavior-focused regression plan and critical smoke commands | L13M-A1..A6 accepted evidence | queued wave 3 |
+| L13M-R1 | Laravel Architecture Reviewer | Frozen attributable diff across bootstrap/config/providers/middleware/routes/exceptions; framework correctness, lost-behavior risks, cache/boot reproduction, corrections | Completed implementation and frozen review package; independent of analysts | pending |
+| L13M-R2 | Laravel Security Configuration Reviewer | Frozen auth/session/cookie/CSRF/origin/rate/log/proxy/host/health diff; realistic attack review, config-cache behavior, verified-control list | Completed implementation and frozen review package; independent of analysts | pending |
+| L13M-R3 | Framework Regression Reviewer | Frozen tests/smokes/cache/deployment evidence; CLI/HTTP behavior, middleware order, provider side effects, route/error drift, readiness verdict | Completed implementation and frozen review package; independent of analysts | pending |
+| L13M-P | Principal integrator | Reproduce material findings; update this section with stable implementation items, acceptance, commands and rollback before production edits; execute TDD, fixes, documentation, isolated Git publication | L13M-A1..A7 reports | in progress |
+
+The detailed implementation ledger, accepted/rejected finding dispositions,
+Laravel 13 applicability matrix, checkpoint results, review dispositions, and
+publication result will be maintained in this same section after discovery and
+before any production-code change.
+
+## Active Delivery: PHP85 Repository-Wide Source Modernization
+
+Status: `protected baseline recorded; read-only specialist discovery starting`
+on 2026-08-30.
+
+This delivery inspects every first-party PHP runtime, application, migration,
+factory, seeder, script, and test boundary for PHP 8.5 correctness. It accepts
+only evidence-backed compatibility, warning, type, framework-contract, or
+maintainability changes; broad syntax churn, persisted-value changes, public
+shape changes, and mechanical `strict_types` additions are prohibited. The
+principal owns every cross-module decision and edit. Analysts and reviewers
+remain read-only unless this ledger later delegates one non-overlapping fix.
+
+The task began on `main` at
+`9540fe83756833ae1c6d22053e883a07dca9f014`, three commits ahead of
+`origin/main`. The shared tree already contained 478 staged paths, 25 unstaged
+paths, six untracked paths, and 20 paths with both staged and unstaged changes.
+Every pre-existing byte remains user-owned. Publication may use only an
+attributable temporary `GIT_INDEX_FILE` after complete verification; no
+existing index or working-tree change may be reset, cleaned, stashed, or
+silently included.
+
+### PHP85 specialist work ledger
+
+| ID | Agent | Exclusive read-only scope | Expected structured output | Dependencies | Status |
+| --- | --- | --- | --- | --- | --- |
+| PHP85-A1 | PHP Deprecation and Warning Scanner | All first-party PHP, bootstrap, migrations, seeders, scripts, custom packages, full-error runtime output, version shims and suppression | Severity catalogue with exact reproductions, first-party/vendor separation, fixes, tests, unavailable evidence and risks | Repository contract, runtime and source inventory | assigned wave 1 |
+| PHP85-A2 | Type Safety Analyst | Native/docblock parameter, return, property, closure, iterable, array-shape and collection contracts across callers, schema and tests | Prioritized type-hardening map, safe strict-types candidates, DTO/value-object candidates only where justified, inheritance risks, tests and commands | Repository contract and schema/framework contracts | assigned wave 1 |
+| PHP85-A3 | Serialization, Reflection, and Magic-Method Analyst | Serialized/cache/session/queue objects, magic methods, reflection, attributes, proxies, mocks and closures | Serialization risk report, compatibility/invalidation needs, round-trip tests, missing evidence and change risks | Runtime configuration and persistence contracts | assigned wave 1 |
+| PHP85-A4 | Modern PHP Design Analyst | Closed states, immutable transport data, mapping/switch code, URLs and critical results; PHP 8.5 URI, clone-with, pipe, `#[NoDiscard]`, `#[Override]`, array helpers | Applicability matrix with approved/rejected candidates, reasons, locations, migration cost and tests | A1-A3 evidence is informative but not blocking | queued wave 2 |
+| PHP85-A5 | Framework Contract Compatibility Analyst | Laravel, Livewire, Pest/PHPUnit and Eloquent extension points, overrides, lifecycle hooks, commands, policies, notifications/jobs and strict external boundaries | Parent/interface compatibility checklist, exact signature defects, proxy/mock risks and callback tests | Installed locked package contracts | queued wave 2 |
+| PHP85-A6 | PHP Test Compatibility Analyst | Pest/PHPUnit config, bootstrap, providers/datasets, mocks, warning handling, helpers, process isolation, skips and assertion semantics | Test-migration list, strict-error reproductions, count/skip comparison, helper fixes and missing language regressions | A1 runtime evidence is informative but not blocking | queued wave 2 |
+| PHP85-R1 | PHP Type and Runtime Reviewer | Frozen attributable PHP diff, public boundaries, casts, overrides and runtime output | Severity-ranked runtime/type findings with callers, edge values, exact failure scenarios and PHP 8.5 cleanliness verdict | Implementation freeze and targeted evidence | pending |
+| PHP85-R2 | Backward-Compatibility Reviewer | Frozen enum/value/serialization/session/cache/queue/API/model/migration/extension-point diff and rollout | Breaking-change findings, old-to-new traces, migration/rollback requirements and approved exceptions | Implementation freeze and compatibility tests | pending |
+| PHP85-R3 | PHP Test and Deprecation Reviewer | Frozen tests/config/static-analysis/warning evidence, suppressions, skips and regression coverage | Verification gaps, exact strict-error reruns, required tests/config fixes and evidence verdict | Implementation freeze and targeted evidence | pending |
+
+Every analyst report must state inspected scope and symbols, confirmed findings
+with severity/evidence, suspected findings requiring principal validation,
+missing coverage, implementation order, exact tests/commands, and change risk.
+The principal will reproduce every material claim before it becomes an
+implementation item. After discovery, this section will receive the ordered
+stable `PHP85-*` implementation ledger, accepted/rejected applicability
+matrix, serialization rollout decision, test-first sequence, exact gates,
+review dispositions, documentation evidence, rollback and publication state
+before any production-code edit.
+
+## Active Delivery: BFA Blade And Frontend Boundary Audit
+
+Status: `planned; read-only specialist discovery starting` on 2026-08-30.
+
+This repository-wide delivery makes Blade a passive presentation layer,
+audits reusable Blade components, records Flux as absent/not applicable,
+retains only Livewire-provided Alpine, repairs custom JavaScript lifecycle
+defects, and adds permanent architecture/browser ratchets. The complete
+inventory, selected boundaries, six exclusive discovery scopes, three
+independent review scopes, TDD sequence, rollback and publication rules are in
+`PLANS.md`.
+
+The audit began on `main` at
+`9540fe83756833ae1c6d22053e883a07dca9f014`, three commits ahead of
+`origin/main`, in a materially dirty shared tree. All pre-existing staged,
+unstaged and untracked content remains user-owned. The principal owns every
+edit and may publish only an attributable temporary-index slice after the
+exact candidate passes all applicable gates.
+
+| ID | Dependency | Owner | Affected paths/modules | Acceptance criteria | Required verification | Status | Rollback |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| BFA-01 | Repository contract and mandatory docs | Principal | `PLANS.md`, this plan, protected baseline | Scope, ownership, agent ledger, acceptance, tests and rollback exist before production edits | Git/source inventory and planning diff | in progress | Revert planning additions only |
+| BFA-02 | BFA-01 | Six exclusive read-only specialists; principal dispositions | Blade, components, manifests, Alpine, JavaScript, frontend tests | Every material finding has file:line evidence and an owning server/presentation boundary | Specialist reports and principal reproduction | pending | Documentation-only disposition |
+| BFA-03 | BFA-02 | Principal | Architecture, feature and browser tests | RED contracts cover all requested forbidden Blade boundaries, Flux/Alpine applicability and navigation lifecycle | Observed intended RED, then focused GREEN | pending | Revert attributable tests |
+| BFA-04 | BFA-03 | Principal | Smallest presenter/Livewire/controller/Blade/component/JS slices | Passive escaped localized Blade, no hidden lazy load, explicit component APIs and idempotent init/teardown | Focused render/query/localization/JS/browser tests | pending | Revert coherent test/fix pairs |
+| BFA-05 | BFA-04 | Principal | Required docs, generator/source and changelog | Documentation and compliance evidence match only observed implementation/results | Generator parity and docs/diff review | pending | Revert docs and regenerate prior evidence |
+| BFA-06 | BFA-04..05 | Three independent reviewers; principal dispositions | Frozen attributable diff | Every critical/important finding is fixed or rejected with evidence and affected checks rerun | Independent reports and post-fix reruns | pending | Revert unsafe finding-specific fix |
+| BFA-07 | BFA-06 | Principal | Exact attributable candidate on `main` | Full required gates pass, isolated index contains no foreign work, commit and fast-forward push succeed | Pest/Pint/Larastan/audits/migration/seed/Vite/cache/browser/diff/secret/push evidence | pending | No commit/push on a failed material gate; normal revert only after publication |
+
+Implementation is test-first in order `BFA-01` through `BFA-07`. Flux is not
+installed and will not be added without a separate current requirement and
+licence evidence. Existing zero-occurrence scans are only baselines; they do
+not close expression-level, lazy-loading, duplication or lifecycle review.
+
+## Active Delivery: Resumable Account Onboarding Foundation
+
+Status: `audit complete; RED-first implementation starting at ONB-02` on
+2026-08-30.
+
+This delivery introduces a server-authoritative, resumable onboarding boundary
+between conditional email verification and ordinary portal access. The full
+current-state audit, selected one-to-one state design, state machine, database,
+route/middleware, Livewire, localization, accessibility, test, rollout,
+rollback, acceptance, and exact task ledger are in
+`docs/plans/onboarding-implementation-plan.md`. Specialist ownership and
+finding dispositions are recorded in
+`docs/audits/onboarding-audit-work-ledger.md`.
+
+The selected compatibility rule is additive and fail-safe: only newly
+registered accounts receive a `user_onboardings` row; an existing account with
+no row retains its current portal access and social/privacy values. New account
+creation must atomically provision the durable state plus one privacy-first
+canonical user social actor/settings row. Pet creation remains optional and
+continues exclusively through the existing duplicate-aware pet workflow.
+
+| ID | Dependency | Owner | Affected paths/modules | Acceptance criteria | Required verification | Status | Rollback |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| ONB-01 | Repository contract and canonical identity/auth/profile/pet/privacy docs | Principal plus ten read-only specialists | Onboarding audit ledger, dedicated plan, canonical plan | Current state, reusable authorities, selected design, dirty-tree ownership, compatibility, rollout and rollback are evidence-backed before production edits | Route/code/schema/test inventory, specialist reports, planning diff | completed | Revert only onboarding planning additions |
+| ONB-02 | ONB-01 | Principal | Focused onboarding/auth/profile/pet/social tests | RED contracts cover bootstrap, gates, transitions, replay, isolation, intended URLs, legacy exemption, privacy and accessibility | Focused tests observed failing for absent behavior | in progress | Revert attributable test additions |
+| ONB-03 | ONB-02 | Principal | Additive onboarding schema/model/factory/enums and registration initializer | New accounts atomically receive one durable state and one private user actor/settings identity; legacy accounts are untouched | Migration up/down/reapply, factory/schema/bootstrap tests | planned | Roll back table only before writes; otherwise forward-fix |
+| ONB-04 | ONB-03 | Principal | Destination resolver, onboarding middleware, persistent Livewire boundary, routes | Verification precedes onboarding; incomplete users cannot bypass; internal intended destination survives until completion | HTML/JSON/Livewire/binding/direct-action and intended-chain tests | planned | Disable enforcement while retaining rows |
+| ONB-05 | ONB-03..04 | Principal | Class-based onboarding component, form objects, Actions, Blade, EN/LT/RU, page identity | Mandatory acknowledgement/preferences/privacy and an explicit optional pet relationship choice are resumable, policy-safe, localized and accessible | Livewire, localization, architecture, responsive keyboard/browser tests | planned | Remove UI/gate; retain account/pet/social facts |
+| ONB-06 | ONB-02..05 | Independent security and code reviewers then principal | Frozen attributable diff and affected repository gates | Every finding is dispositioned; exact docs/evidence match observed focused/final results; only task-owned hunks publish | Focused/full Pest, syntax/Pint/Larastan, migration/seed, audits/build/caches/browser, staged diff/check | planned | No push with a material finding or failed gate; normal revert only |
+
+Implementation begins immediately after ONB-01 is complete and follows TDD in
+the order `ONB-02` through `ONB-06`. Individual users may complete the
+implemented foundation, but the delivery must not be represented as satisfying
+functional requirements from later onboarding prompts until those requirements
+are incorporated and independently verified.
+
 ## Active Delivery: I18N-KEY Readable Translation Keys
 
-Status: `approved; root cause reproduced and implementation planned` on
+Status: `implemented; targeted verification passed; publication blocked by concurrent full-gate failures` on
 2026-08-30.
 
 This delivery removes every mechanically generated ten-hex-digest suffix from
@@ -25,11 +185,11 @@ attributable temporary index and a complete diff review.
 | ID | Dependency | Owner | Affected paths/modules | Acceptance criteria | Required verification | Status | Rollback |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | I18N-KEY-01 | Approved readable-key design | Principal | Current Git inventory, `lang/{en,lt,ru}/{messages,ui}.php`, localization scripts and references | Exact hashed-key inventory, generator root cause, dirty-tree overlap, collision inventory, scope, and rollback are recorded before production edits | Git baseline, catalogue/reference counts, design and plan diff | completed | Revert planning documents only |
-| I18N-KEY-02 | I18N-KEY-01 | Principal | `tests/Unit/Support/ReadableTranslationKeyTest.php`, `ArchitectureComplianceTest` | RED contracts prove readable normalization, fail-closed collisions, and repository-wide rejection of ten-hex translation suffixes | Focused tests observed failing for missing helper and current 5,860 keys | planned | Revert attributable test additions |
-| I18N-KEY-03 | I18N-KEY-02 | Principal | shared script helper and both localization scripts | Existing English values reuse stable keys; new unambiguous text gets a readable key; ambiguity stops with an actionable error; no digest/random/counter fallback exists | Helper tests and both localization script checks | planned | Revert helper/script changes |
-| I18N-KEY-04 | I18N-KEY-03 | Principal | deterministic migration command, six catalogues, exact PHP/Blade/test references | Exactly 5,860 hashed keys migrate without locale-value/placeholder loss; every reference resolves; 42 collision groups receive reviewed meaningful names; check mode is clean and non-mutating | Migration RED/write/GREEN counts, locale parity, no-old-key scan, focused rendering/contracts | planned | Normal revert of the coherent source migration; no database action |
-| I18N-KEY-05 | I18N-KEY-04 | Principal | localization/testing/compliance/changelog documentation | Contributor workflow and evidence match observed behavior; no requirement is promoted beyond executed checks | Documentation/diff/source-generator review | planned | Revert documentation with implementation |
-| I18N-KEY-06 | I18N-KEY-02..05 | Independent reviewer then principal | Frozen attributable diff and full repository gates | Every material finding is reproduced and dispositioned; focused/full tests, Pint, Larastan, audits, build, caches and applicable browser checks are green before publication | Complete commands, staged diff, `git diff --check`, commit hash and push output | planned | Do not push on a material failure; normal revert after publication |
+| I18N-KEY-02 | I18N-KEY-01 | Principal | `ReadableTranslationKeyTest`, `PhpMessageLiteralClassifierTest`, `ArchitectureComplianceTest` | RED contracts prove readable normalization, fail-closed collisions, operator-log isolation, and repository-wide rejection of ten-hex translation suffixes | Focused tests observed failing for missing helpers, diagnostic false positives, and current 5,860 keys | completed | Revert attributable test additions |
+| I18N-KEY-03 | I18N-KEY-02 | Principal | shared script helpers and both localization scripts | Existing English values reuse stable keys; new unambiguous text gets a readable key; operator logs remain untranslated; ambiguity stops with an actionable error; no digest/random/counter fallback exists | Helper tests and both localization script checks | completed | Revert helper/script changes |
+| I18N-KEY-04 | I18N-KEY-03 | Principal | deterministic migration command, six catalogues, exact PHP/Blade/test references | Exactly 5,860 hashed keys migrate without locale-value/placeholder loss; every reference resolves; 42 collision groups receive reviewed meaningful names; check mode is clean and non-mutating | Migration RED/write/GREEN counts, locale parity, no-old-key scan, focused rendering/contracts | targeted verified | Normal revert of the coherent source migration; no database action |
+| I18N-KEY-05 | I18N-KEY-04 | Principal | localization/testing/compliance/changelog documentation | Contributor workflow and evidence match observed behavior; no requirement is promoted beyond executed checks | Documentation/diff/source-generator review | completed | Revert documentation with implementation |
+| I18N-KEY-06 | I18N-KEY-02..05 | Independent reviewer then principal | Frozen attributable diff and full repository gates | Every material finding is reproduced and dispositioned; focused/full tests, Pint, Larastan, audits, build, caches and applicable browser checks are green before publication | Complete commands, staged diff, `git diff --check`, commit hash and push output | blocked: full Pest, Pint, Larastan, places backfill, and browser a11y are red in concurrent work; both localization checks are green; do not publish | Do not push on a material failure; normal revert after publication |
 
 Implementation order is `I18N-KEY-02` through `I18N-KEY-06`. Translation
 values, placeholders, stored domain identifiers, user prose, and generated
@@ -297,7 +457,7 @@ evidence, not active backlog items.
 
 ## Active Delivery: Global Page Identity Completion
 
-Status: `plan registered; dirty shared-tree baseline captured; specialist discovery starting`
+Status: `implementation focused checks green; responsive browser gate in progress`
 on 2026-08-30.
 
 This delivery closes the remaining work in
@@ -317,12 +477,12 @@ set rather than the ambient staging area.
 
 | ID | Dependency | Owner | Affected paths | Acceptance criteria | Verification | Status | Rollback |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| GPI-C01 | Existing global plan and canonical route matrix | Principal plus route-classification specialist | Canonical requirements, `docs/portal/route-matrix.md`, executable route ledger and route tests | One new stable requirement ID owns the page-identity contract; every current first-party GET route appears exactly once and is classified as directory, detail, workspace, editor, dashboard, settings, authentication, shared access, print/export, or deliberate special case with runtime owner, identity component, exception reason, and test evidence | Route JSON inventory, route-ledger parity, duplicate/missing classification tests | in progress | Revert requirement, generated evidence, and route-ledger updates together |
-| GPI-C02 | GPI-C01 | Principal plus query-budget specialist | Page presenters/controllers/Livewire components and focused performance tests | Representative directory, detail, and workspace routes have observed constant query ceilings; page headers, breadcrumbs, actions, navigation, and Blade rendering trigger no lazy loading or N+1 queries | Red/green query-count tests, strict Eloquent, route renders with small and expanded fixtures | planned | Revert query preparation and its budget tests as one slice |
-| GPI-C03 | GPI-C01 | Principal plus localization specialist | Priority presenters/catalogues/views, `lang/{en,lt,ru}`, localization tests | Remaining priority-page RU/LT non-header system copy is reviewed; English fallbacks, raw keys, placeholder mismatches, and locale-dependent overflow are detected and fixed while authored/proper content remains unchanged | Locale tree/placeholder parity, focused render tests, browser comparison against English baseline | planned | Revert the affected locale/presenter slice together |
-| GPI-C04 | GPI-C01..03 | Principal plus detail/workspace and dead-code specialists | Detail/profile/workspace heroes, message-details presenter/template chain, duplicate Blade headers, SCSS | Every detail/workspace exception is audited; only semantically distinct token-compatible heroes remain; the historical message-details chain is removed only after zero active route/include/test/deep-link proof; retired selectors and duplicate implementations have zero consumers | Structural route tests, exhaustive source/deep-link inventory, Blade compilation, dead-code ratchets | planned | Restore one proven consumer chain or selector with its covering test if the zero-consumer proof was wrong |
-| GPI-C05 | GPI-C01..04 | Principal plus accessibility specialist | Page identity, breadcrumbs, actions, navigation, detail/workspace heroes and responsive styles | Every rendered page has exactly one correct `h1` and a documented identity component; keyboard focus, 44px targets, forced colors, reduced motion, long RU/LT copy, and 200% zoom preserve operation and heading hierarchy | Focused accessibility/architecture tests and isolated browser assertions | planned | Revert the affected presentation slice without changing route or authorization behavior |
-| GPI-C06 | GPI-C01..05 | Responsive browser specialist and principal | `scripts/page-identity-browser-check.mjs`, package command, temporary browser artifacts | The authenticated matrix covers 320, 375, 768, 1024, 1280 at effective 200% zoom, 1440, and 1920 widths, all priority routes/locales, forced colors, reduced motion, keyboard focus, no horizontal overflow, no raw keys/fallback copy, stable navigation/back links/deep links, and clean console output | `npm run test:browser:page-identity` with disposable SQLite/loopback runtime and screenshot review | planned | Revert browser assertions only if they encode a disproven contract; retain valid product fixes |
+| GPI-C01 | Existing global plan and canonical route matrix | Principal plus route-classification specialist | Canonical requirements, `docs/portal/route-matrix.md`, executable route ledger and route tests | One new stable requirement ID owns the page-identity contract; every current first-party GET route appears exactly once and is classified as directory, detail, workspace, editor, dashboard, settings, authentication, shared access, print/export, or deliberate special case with runtime owner, identity component, exception reason, and test evidence | Route JSON inventory, route-ledger parity, duplicate/missing classification tests | focused verified: 118 runtime names, 118 ledger rows, 118 matrix rows, zero drift | Revert requirement, generated evidence, and route-ledger updates together |
+| GPI-C02 | GPI-C01 | Principal plus query-budget specialist | Page presenters/controllers/Livewire components and focused performance tests | Representative directory, detail, and workspace routes have observed constant query ceilings; page headers, breadcrumbs, actions, navigation, and Blade rendering trigger no lazy loading or N+1 queries | Red/green query-count tests, strict Eloquent, route renders with small and expanded fixtures | focused verified: zero-query chrome; 5-query directory, 12-query detail, 4-query workspace; bounded 6-query expert dashboard | Revert query preparation and its budget tests as one slice |
+| GPI-C03 | GPI-C01 | Principal plus localization specialist | Priority presenters/catalogues/views, `lang/{en,lt,ru}`, localization tests | Remaining priority-page RU/LT non-header system copy is reviewed; English fallbacks, raw keys, placeholder mismatches, and locale-dependent overflow are detected and fixed while authored/proper content remains unchanged | Locale tree/placeholder parity, focused render tests, browser comparison against English baseline | focused verified: static priority body contract covers 1,078 assertions; final browser comparison pending GPI-C06 | Revert the affected locale/presenter slice together |
+| GPI-C04 | GPI-C01..03 | Principal plus detail/workspace and dead-code specialists | Detail/profile/workspace heroes, message-details presenter/template chain, duplicate Blade headers, SCSS | Every detail/workspace exception is audited; only semantically distinct token-compatible heroes remain; the historical message-details chain is removed only after zero active route/include/test/deep-link proof; retired selectors and duplicate implementations have zero consumers | Structural route tests, exhaustive source/deep-link inventory, Blade compilation, dead-code ratchets | focused verified: 39 detail/workspace dispositions; retired cohort and selector ratchets green | Restore one proven consumer chain or selector with its covering test if the zero-consumer proof was wrong |
+| GPI-C05 | GPI-C01..04 | Principal plus accessibility specialist | Page identity, breadcrumbs, actions, navigation, detail/workspace heroes and responsive styles | Every rendered page has exactly one correct `h1` and a documented identity component; keyboard focus, 44px targets, forced colors, reduced motion, long RU/LT copy, and 200% zoom preserve operation and heading hierarchy | Focused accessibility/architecture tests and isolated browser assertions | focused verified: nullable content title and shared identity/navigation checks green; runtime matrix pending GPI-C06 | Revert the affected presentation slice without changing route or authorization behavior |
+| GPI-C06 | GPI-C01..05 | Responsive browser specialist and principal | `scripts/accessibility-browser-check.mjs` through `scripts/run-browser-check.php page-identity`, package command, temporary browser artifacts | The authenticated matrix covers 320, 375, 768, 1024, 1280 at effective 200% zoom, 1440, and 1920 widths, all priority routes/locales, forced colors, reduced motion, keyboard focus, no horizontal overflow, no raw keys/fallback copy, stable navigation/back links/deep links, and clean console output | `npm run test:browser:page-identity` with disposable SQLite/loopback runtime and screenshot review | in progress | Revert browser assertions only if they encode a disproven contract; retain valid product fixes |
 | GPI-C07 | GPI-C01..06 | Independent reviewer then principal | Frozen attributable diff, final exception matrix, screenshots, and evidence | Independent review dispositions every route, query, localization, dead-code, accessibility, responsive, and preservation finding; valid in-scope findings are fixed and affected checks rerun | Frozen review package, finding ledger, post-fix focused verification | planned | Revert finding-specific corrections that cannot be made safe |
 | GPI-C08 | GPI-C07 | Principal | Requirements, compliance generator/output, global plan, UI inventories, testing/deployment notes, changelog, complete attributable diff | Final exception audit and documentation match observed behavior; focused tests, full sequential Pest, Pint, Larastan, dependency audits, Vite build, complete browser matrix, route/config/view cache smokes, dead-code scan, source generators, and diff/secret checks pass before one coherent commit and push on `main` | Exact final commands, observed exits/counts, complete staged diff, commit hash and push output | planned | Revert the coherent commit normally; never rewrite history |
 
@@ -334,7 +494,7 @@ disposable database and loopback runtime.
 
 ## Active Delivery: Measured Repository-Wide Performance Audit
 
-Status: `approved; canonical plan and specialist ledger saved` on 2026-08-30.
+Status: `implementation and focused measurement complete; final gates and independent frozen-diff review pending` on 2026-08-30.
 
 This delivery audits directories, feeds, search, dashboards, workspaces,
 calendars, message lists, Places, Events, medical and care timelines, device
@@ -346,7 +506,8 @@ receives a deterministic representative dataset, recorded query count,
 response or snapshot size, peak-memory delta, elapsed time, an explicit
 regression budget, and a comparable after measurement.
 
-The task runs on `main` from `ae4ac32`, initially aligned with `origin/main`,
+The task runs on `main` from `462539c0`, aligned with `origin/main` at the
+2026-08-30 audit restart,
 inside a materially dirty shared tree. Existing Place, event, email-
 verification, seed-coverage, plan, and audit-ledger work is user-owned and
 must remain outside this delivery. Specialist discovery is read-only under
@@ -382,16 +543,16 @@ review pass.
 
 | ID | Dependency | Owner | Affected paths/modules | Acceptance criteria | Verification | Status | Rollback |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| PERF-AUD-01 | Canonical performance/cache/observability/data/Livewire/deployment requirements | Principal plus read-only query, index, Livewire, cache, asset, runtime and metrics specialists | Canonical plan, performance work ledger, current repository and dirty-tree inventory | Every requested surface and antipattern has an owner, exact inventory path and reproducible measurement method before production edits; unrelated bytes are identified | Starting status/diffs, specialist reports, principal dispositions | in progress | Revert this plan slice and ledger only |
-| PERF-AUD-02 | PERF-AUD-01 | Principal | Performance test helpers, deterministic factories/fixtures or explicit `PerformanceSeeder` extension, measurement artifacts | Each selected sensitive path has representative deterministic small/large data and records baseline query count, response/snapshot bytes, peak memory and elapsed time without touching shared data | Focused baseline commands on isolated testing data; fixture repeatability and seed-safety tests | planned | Revert audit-only helpers/fixtures; no production data change |
-| PERF-AUD-03 | PERF-AUD-02 | Principal | Directory/feed/search/dashboard/workspace/calendar/message/place/event/medical/care/device/export queries, presenters and passive views | Confirmed N+1, lazy-load, `Model::all()`, unbounded `get()`, PHP filtering/pagination, per-row aggregate, over-selection and unstable pagination findings are removed; sensitive scopes precede retrieval | Red/green feature/query-budget tests, small-versus-large constant-growth assertions, response/payload budgets and repeated-page stability | planned | Revert each query/presenter slice independently without schema loss |
-| PERF-AUD-04 | PERF-AUD-02..03 | Principal | New additive index migration only where query-plan evidence justifies it | Each added index maps to an actual predicate/join/order, avoids redundant prefixes, is used or materially improves the representative plan, retains relationship keys, and is reversible before production use | Schema/index assertions, representative SQLite `EXPLAIN`, configured production grammar inspection, fresh/rollback/reapply migration checks | planned | Roll back the additive index migration before production use; afterward forward-fix |
-| PERF-AUD-05 | PERF-AUD-02..03 | Principal | Class-based Livewire components/forms/computed projections/views and browser request lifecycle | Confirmed oversized public state, Eloquent graphs, repeated serialization and duplicate interaction/request issues are removed without changing authorization or accessible states | Livewire direct-action tests, initial/update snapshot byte budgets, query budgets, browser network/listener checks and no duplicate request evidence | planned | Revert component/presentation optimization while retaining domain fixes |
-| PERF-AUD-06 | PERF-AUD-02..05 | Principal | Existing cache/lock consumers and only measured new cache candidates | Every cache has the complete declared lifecycle; confirmed leakage/stampede/staleness is fixed; cold/warm/failure behavior is equivalent and scoped; no cache masks a query defect | Cross-user/organization/role/locale isolation tests, invalidation tests, concurrent regeneration/lock tests, unavailable-store fallback and cold/warm measurements | planned | Bump/remove the attributable versioned key or disable the cache path; retain source-of-truth reads |
-| PERF-AUD-07 | PERF-AUD-01..02 | Principal | Vite inputs, Tailwind/SCSS/JavaScript chunks, image contracts and browser lifecycle | Only measured duplicate or oversized asset/request defects are changed; production raw/gzip sizes and request counts are recorded; first-party images retain dimensions/variants; no lifecycle duplication is introduced | Before/after Vite manifest and gzip table, JavaScript/source tests, responsive browser network/console/layout checks, 10% regression gate | planned | Revert the isolated asset change and restore prior manifest inputs |
-| PERF-AUD-08 | PERF-AUD-01..02 | Principal | Seeders, generators, exports, commands/jobs and runtime scripts | Confirmed unbounded work uses portable bounded chunks/cursors/streams, deterministic progress and idempotent resume/failure behavior; ordinary requests do not hide long work | Focused command/seeder/generator/export tests, representative memory/time records, repeat/resume/failure checks and production-environment denial | planned | Disable the operation or restore prior bounded entry point; preserve checkpoints and generated source data |
-| PERF-AUD-09 | PERF-AUD-01..08 | Principal | Request-context middleware, logging/operations configuration and tests | Every response retains a server request ID; slow measured operations expose safe bounded correlation context with owner/retention and no secret/private payload; normal requests avoid noisy duplicate records | Observability and architecture tests, header/log assertions, redaction scans, representative slow-path trigger and normal-path non-trigger | planned | Disable attributable slow-operation reporting while retaining request correlation |
-| PERF-AUD-10 | PERF-AUD-02..09 | Independent reviewer then principal | Frozen attributable diff, performance/cache/testing/data/deployment/operations docs, changelog and all affected runtime boundaries | Before/after evidence contains observed values only; every material review finding is dispositioned and valid findings fixed; all applicable release gates pass before isolated commit/push | Performance tests, full serial Pest, Pint, Larastan, migration/seed/repeat, Composer/npm audits, Vite/bundle inspection, cache isolation, cache smokes, browser network/responsive/keyboard/console checks, docs/secret/diff/staged-diff review and push result | planned | Revert coherent commit normally; use forward fixes for any migrated production schema/data |
+| PERF-AUD-01 | Canonical performance/cache/observability/data/Livewire/deployment requirements | Principal plus read-only query, index, Livewire, cache, asset, runtime and metrics specialists | Canonical plan, performance work ledger, current repository and dirty-tree inventory | Every requested surface and antipattern has an owner, exact inventory path and reproducible measurement method before production edits; unrelated bytes are identified | Starting status/diffs, specialist reports, principal dispositions | completed; eight scopes dispositioned | Revert this plan slice and ledger only |
+| PERF-AUD-02 | PERF-AUD-01 | Principal | Performance test helpers, deterministic factories/fixtures or explicit `PerformanceSeeder` extension, measurement artifacts | Each selected sensitive path has representative deterministic small/large data and records baseline query count, response/snapshot bytes, peak memory and elapsed time without touching shared data | Focused baseline commands on isolated testing data; fixture repeatability and seed-safety tests | focused verified; observed values in audit report | Revert audit-only helpers/fixtures; no production data change |
+| PERF-AUD-03 | PERF-AUD-02 | Principal | Directory/feed/search/dashboard/workspace/calendar/message/place/event/medical/care/device/export queries, presenters and passive views | Confirmed N+1, lazy-load, `Model::all()`, unbounded `get()`, PHP filtering/pagination, per-row aggregate, over-selection and unstable pagination findings are removed; sensitive scopes precede retrieval | Red/green feature/query-budget tests, small-versus-large constant-growth assertions, response/payload budgets and repeated-page stability | focused verified; full suite has 36 unrelated concurrent failures | Revert each query/presenter slice independently without schema loss |
+| PERF-AUD-04 | PERF-AUD-02..03 | Principal | New additive index migration only where query-plan evidence justifies it | Each added index maps to an actual predicate/join/order, avoids redundant prefixes, is used or materially improves the representative plan, retains relationship keys, and is reversible before production use | Schema/index assertions, representative SQLite `EXPLAIN`, configured production grammar inspection, fresh/rollback/reapply migration checks | focused verified: seven plans and reversible migration | Roll back the additive index migration before production use; afterward forward-fix |
+| PERF-AUD-05 | PERF-AUD-02..03 | Principal | Class-based Livewire components/forms/computed projections/views and browser request lifecycle | Confirmed oversized public state, Eloquent graphs, repeated serialization and duplicate interaction/request issues are removed without changing authorization or accessible states | Livewire direct-action tests, initial/update snapshot byte budgets, query budgets, browser network/listener checks and no duplicate request evidence | focused verified; no production rewrite justified | Revert component/presentation optimization while retaining domain fixes |
+| PERF-AUD-06 | PERF-AUD-02..05 | Principal | Existing cache/lock consumers and only measured new cache candidates | Every cache has the complete declared lifecycle; confirmed leakage/stampede/staleness is fixed; cold/warm/failure behavior is equivalent and scoped; no cache masks a query defect | Cross-user/organization/role/locale isolation tests, invalidation tests, concurrent regeneration/lock tests, unavailable-store fallback and cold/warm measurements | focused verified: isolation, invalidation, lock, fallback | Bump/remove the attributable versioned key or disable the cache path; retain source-of-truth reads |
+| PERF-AUD-07 | PERF-AUD-01..02 | Principal | Vite inputs, Tailwind/SCSS/JavaScript chunks, image contracts and browser lifecycle | Only measured duplicate or oversized asset/request defects are changed; production raw/gzip sizes and request counts are recorded; first-party images retain dimensions/variants; no lifecycle duplication is introduced | Before/after Vite manifest and gzip table, JavaScript/source tests, responsive browser network/console/layout checks, 10% regression gate | focused verified; 748 ms build and Places browser pass; broader a11y/discovery blocked outside slice | Revert the isolated asset change and restore prior manifest inputs |
+| PERF-AUD-08 | PERF-AUD-01..02 | Principal | Seeders, generators, exports, commands/jobs and runtime scripts | Confirmed unbounded work uses portable bounded chunks/cursors/streams, deterministic progress and idempotent resume/failure behavior; ordinary requests do not hide long work | Focused command/seeder/generator/export tests, representative memory/time records, repeat/resume/failure checks and production-environment denial | focused verified; 149-migration rollback/reapply and repeat seed passed | Disable the operation or restore prior bounded entry point; preserve checkpoints and generated source data |
+| PERF-AUD-09 | PERF-AUD-01..08 | Principal | Request-context middleware, logging/operations configuration and tests | Every response retains a server request ID; slow measured operations expose safe bounded correlation context with owner/retention and no secret/private payload; normal requests avoid noisy duplicate records | Observability and architecture tests, header/log assertions, redaction scans, representative slow-path trigger and normal-path non-trigger | focused verified: 11 tests, 158 assertions | Disable attributable slow-operation reporting while retaining request correlation |
+| PERF-AUD-10 | PERF-AUD-02..09 | Independent reviewer then principal | Frozen attributable diff, performance/cache/testing/data/deployment/operations docs, changelog and all affected runtime boundaries | Before/after evidence contains observed values only; every material review finding is dispositioned and valid findings fixed; all applicable release gates pass before isolated commit/push | Performance tests, full serial Pest, Pint, Larastan, migration/seed/repeat, Composer/npm audits, Vite/bundle inspection, cache isolation, cache smokes, browser network/responsive/keyboard/console checks, docs/secret/diff/staged-diff review and push result | no-go pending independent review: full Pest 36 failures, Larastan 30 findings, a11y/discovery/source checks blocked | Revert coherent commit normally; use forward fixes for any migrated production schema/data |
 
 Implementation order is `PERF-AUD-01` through `PERF-AUD-10`. Measurement and
 an observed failing test precede each behavior change. Specialist suggestions
@@ -1339,9 +1500,9 @@ implementation, tests, documentation, Git integration, and publication.
 
 | ID | Agent | Exclusive scope | Expected output | Dependencies | Status |
 | --- | --- | --- | --- | --- | --- |
-| TW13-WL-A1 | Tailwind Upgrade and Configuration Analyst | Package metadata, NPM lock, Vite, Tailwind/PostCSS config, CSS entries, plugins, presets, scripts, Node compatibility | Configuration migration map, dependency changes, visual risk and rollback notes | Repository contract and canonical frontend/Tailwind docs | pending |
-| TW13-WL-A2 | Tailwind Source Detection and Dynamic Class Analyst | Blade, PHP class maps, Livewire, JavaScript, CSS sources, vendor templates, safelists | Source registry, unsafe dynamic-class findings, explicit-map and build-test needs | Repository contract and canonical Tailwind rules | pending |
-| TW13-WL-A3 | Design Token and Theme Architect | Brand/theme values, colors, typography, spacing, breakpoints, containers, radii, shadows, z-index, motion, component variants | Token inventory, target `@theme` model, repeated-value migration and contrast tests | Product and design documents | pending |
+| TW13-WL-A1 | Tailwind Upgrade and Configuration Analyst | Package metadata, NPM lock, Vite, Tailwind/PostCSS config, CSS entries, plugins, presets, scripts, Node compatibility | Configuration migration map, dependency changes, visual risk and rollback notes | Repository contract and canonical frontend/Tailwind docs | assigned wave 1 |
+| TW13-WL-A2 | Tailwind Source Detection and Dynamic Class Analyst | Blade, PHP class maps, Livewire, JavaScript, CSS sources, vendor templates, safelists | Source registry, unsafe dynamic-class findings, explicit-map and build-test needs | Repository contract and canonical Tailwind rules | assigned wave 1 |
+| TW13-WL-A3 | Design Token and Theme Architect | Brand/theme values, colors, typography, spacing, breakpoints, containers, radii, shadows, z-index, motion, component variants | Token inventory, target `@theme` model, repeated-value migration and contrast tests | Product and design documents | assigned wave 1 |
 | TW13-WL-A4 | Responsive Layout Analyst | Public/auth layouts, navigation, sidebars, cards, grids, tables, forms, filters, dialogs, drawers, media, charts, pagination | Screen/component matrix, prioritized defects, container-query and layout recommendations | Frontend, accessibility, localization, and active feature contracts | pending |
 | TW13-WL-A5 | Tailwind Accessibility Styling Analyst | Forms, controls, links, badges, alerts, dialogs, menus, tables, loading/disabled/error states, themes | Accessibility-style findings, utility/token changes, verification scenarios | WCAG and repository accessibility contracts | pending |
 | TW13-WL-A6 | Modern Tailwind Feature Applicability Analyst | Installed Tailwind 4 capabilities and reusable component/layout opportunities | Feature matrix with approved locations and rejected candidates/reasons | Exact installed version and browser contract | pending |
@@ -1354,7 +1515,8 @@ implementation, tests, documentation, Git integration, and publication.
 
 ## Active Work Ledger: Complete Localization And Hardcoded Text Removal
 
-Status: `discovery in progress` on 2026-08-30. The `LC15-*` identifiers are
+Status: `PLANS.md and protected work ledger recorded; discovery wave 1 assigned` on
+2026-08-30. The `LC15-*` identifiers are
 the exclusive coordination boundary for this repository-wide localization
 delivery. Analysts and reviewers work read-only; the principal agent owns the
 canonical plan, implementation, tests, documentation, Git integration, and
@@ -1363,13 +1525,13 @@ four total slots.
 
 | ID | Agent | Exclusive scope | Expected output | Dependencies | Status |
 | --- | --- | --- | --- | --- | --- |
-| LC15-A1 | Locale Architecture and Routing Analyst | Locale configuration, middleware, routes, sessions/cookies, user preferences, language files, database-translated content, HTTP/Livewire/mail/notification/API/job locale flow | Locale architecture map; canonical locales/fallback; routing, persistence, invalid-locale and RTL findings; tests and commands | Repository contract and canonical architecture, security, frontend, Livewire, and localization documents | pending |
-| LC15-A2 | Hardcoded String and Translation-Key Analyst | PHP, Blade, Livewire, JavaScript, validation, exceptions, notifications, mail, API output, accessibility, SEO, fixtures, and tests | Classified literal inventory; stable-key migration map; intentional nonlocalized exceptions; implementation order and scanner tests | Existing localizer scripts and translation conventions | pending |
-| LC15-A3 | Translation Consistency and Placeholder Analyst | All EN/LT/RU catalogues, JSON translations, validation, mail/notification templates, pluralization, placeholders, nesting, escaping, terminology, and dead keys | Locale parity report; mismatch inventory; consolidation and human-review recommendations; representative plural tests | Canonical locale tree and current translation references | pending |
-| LC15-A4 | Validation, Notification, Mail, and API Localization Analyst | Form Requests, Livewire validation, exceptions, notifications, mailables, deferred side effects, user-facing JSON and provider failure mapping | Communication localization matrix; recipient-locale and serialization defects; required fixes and tests | Locale architecture evidence and Laravel communication boundaries | pending |
-| LC15-A5 | Locale-Aware Formatting Analyst | Dates, times, relative time, timezone, numbers, percentages, currency, lists, measurements, coordinates, exports, reports, JavaScript and Blade formatting | Formatting ownership policy; direct-format inventory and migration map; locale/timezone/currency edge tests | Installed Intl/framework capabilities and existing formatter service | pending |
-| LC15-A6 | Localized Content and SEO Analyst | Public portal pages, route locale strategy, titles/descriptions, canonical and alternate metadata, Open Graph, JSON-LD, database translations and authored-content boundaries | Public-content/SEO matrix; indexing/fallback/escaping defects; applicable and not-applicable tests | Locale architecture and authenticated-portal contract | pending |
-| LC15-A7 | Localization Test and Automation Analyst | Pest/architecture/browser suites, scanner scripts, factories, seeders, critical routes, long/Unicode/RTL fixtures and deterministic timezones | Test/automation plan; coverage gaps; exact commands; scanner false-positive controls; long-text/RTL decision | Findings from current tests and repository scripts | pending |
+| LC15-A1 | Locale Architecture and Routing Analyst | Locale configuration, middleware, routes, sessions/cookies, user preferences, language and JSON files, database-translated content, and HTTP/Livewire/mail/notification/API/job locale flow | Locale architecture map; canonical locales/fallback; routing, persistence, invalid-locale, tenant/content-locale and RTL findings; tests and commands | Repository contract and canonical architecture, security, frontend, Livewire, and localization documents | assigned wave 1 |
+| LC15-A2 | Hardcoded String Scanner | PHP, Blade, Livewire, JavaScript, validation, exceptions, notifications, mail, API output, accessibility, SEO, fixtures, and tests | Classified literal inventory; stable-key migration map; intentional nonlocalized exceptions; implementation order and scanner tests | Existing localizer scripts and translation conventions | assigned wave 1 |
+| LC15-A3 | Translation Consistency Agent | All EN/LT/RU catalogues, JSON translations, validation, mail/notification templates, pluralization, placeholders, nesting, escaping, terminology, and dead keys | Locale parity report; mismatch inventory; consolidation and human-review recommendations; representative plural tests | Canonical locale tree and current translation references | assigned wave 1 |
+| LC15-A4 | Validation and Notification Translation Agent | Form Requests, Livewire validation, exceptions, notifications, mailables, deferred side effects, user-facing JSON and provider failure mapping | Communication localization matrix; recipient-locale and serialization defects; required fixes and tests | Locale architecture evidence and Laravel communication boundaries | queued wave 2 |
+| LC15-A5 | Formatting and Pluralization Agent | Dates, times, relative time, timezone, numbers, percentages, currency, lists, measurements, counts, coordinates, exports, reports, JavaScript and Blade formatting | Formatting ownership policy; direct-format/fragment inventory and locale/timezone/currency/plural edge tests | Installed Intl/framework capabilities and existing formatter service | queued wave 2 |
+| LC15-A6 | Localized Content and SEO Analyst | Public pages, presenters/SEO builders, locale routes, slugs, database translations, canonical/alternate metadata, Open Graph, JSON-LD, authored-content boundaries and tests | Localized public-content matrix; fallback/indexing/escaping defects; applicable and not-applicable SEO decisions with required tests | Locale architecture and current public-route/indexability evidence | queued wave 2 |
+| LC15-A7 | Localization Test and Automation Analyst | Pest/architecture/browser suites, scanners, factories, seeders, critical routes and communications, fallback/switch/persistence, long/Unicode/RTL fixtures and deterministic timezones | Test/automation plan; coverage gaps; exact commands; scanner false-positive controls; deterministic fixture and long-text/RTL decisions | Findings from LC15-A1 through LC15-A6 and current test/tooling inventory | queued wave 3 |
 | LC15-R1 | Translation Coverage Reviewer | Final changed source, locale catalogues, notifications, mail, API errors, accessibility/SEO strings, tests and scanners | Severity-ranked literal/key/placeholder/escaping findings with exact locations and failure scenarios | Frozen attributable diff and completed implementation | pending |
 | LC15-R2 | Locale Behavior and Formatting Reviewer | Final locale selection/persistence/fallback, timezone/number/currency/plural behavior, recipient locale and deferred work | Severity-ranked behavior findings and locale-architecture readiness verdict | Frozen attributable diff and completed targeted checks | pending |
 | LC15-R3 | Localization Regression and UX Reviewer | Critical pages/components/forms/errors across EN/LT/RU, long/Unicode content, responsive layouts and accessibility labels | Severity-ranked mixed-language, clipping, terminology and journey findings with exact pages/locales | Built assets, deterministic fixtures and connected browser environment | pending |
@@ -2657,3 +2819,63 @@ Execution order is `FRA-01` through `FRA-07`. Provider and hardware success
 cannot be simulated; coverage and browser gates cannot be waived; historical
 pass records cannot replace current execution; and a dirty concurrent slice is
 reported as a blocker rather than overwritten or silently published.
+
+## Active Delivery: Public Experience Accessibility, Responsive UX, UI States, and SEO
+
+Status: `approved; specialist current-checkout audit and RED contracts in progress`
+on 2026-08-30.
+
+This delivery audits the anonymous entry experience, explicitly authorized
+anonymous shared content, genuinely public indexable pages, and the shared UI
+components needed by critical authenticated workflows. Public SEO applies only
+after effective middleware proves a route is anonymous and intended for
+indexing. Private portal, authentication, recovery, verification, temporary
+share, and error routes receive no public SEO infrastructure. Full scope,
+defect hypotheses, route/viewport/state matrices, browser plan, and acceptance
+criteria are recorded in `PLANS.md`; exclusive agent ownership and reports are
+recorded in `docs/audits/accessibility-responsive-seo-work-ledger.md`.
+
+The delivery resumed on `main` with the branch three commits ahead of
+`origin/main` and a materially dirty shared index/tree. Every pre-existing byte
+remains user-owned. The principal owns all edits and cross-module decisions;
+publication may use only an attributable temporary index after complete gates.
+
+| ID | Dependency | Owner | Affected paths/modules | Acceptance criteria | Required verification | Status | Rollback |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| A11Y-PUB-01 | Repository contract, mandatory reading, current Git/runtime baseline | Principal plus seven named read-only specialists | `PLANS.md`, work ledger, effective route inventory, shared/public layouts/components/scripts/tests | Current semantics, keyboard/focus, screen-reader, responsive/form/state and SEO defects are reproduced and dispositioned; protected concurrent work is explicit | Git/diff baseline, effective middleware/route evidence, seven structured reports | in progress | Revert planning/ledger additions only |
+| A11Y-PUB-02 | A11Y-PUB-01 | Principal | Focused Pest and existing browser-runner contracts | Each confirmed behavior defect has a minimal test observed failing for the expected reason before production edits | Exact RED commands/output for semantics, validation/focus, dialogs, live states, responsive journeys and metadata | planned | Revert test-only additions |
+| A11Y-PUB-03 | A11Y-PUB-02 | Principal | Shared/public Blade/Livewire/JS, EN/LT/RU catalogues, existing design tokens/component SCSS | Native semantics, headings/landmarks/names/descriptions, form associations and focus, dialog lifecycle, keyboard alternatives, announcements, all applicable UI states, duplicate prevention and non-color/destructive status meet the plan | Focused GREEN PHP/JS/browser tests, locale parity, architecture checks | planned | Revert each coherent behavior/component slice |
+| A11Y-PUB-04 | A11Y-PUB-02..03 | Principal | Navigation/forms/tables/cards/overlays/pagination/filter/toolbar styles and browser assertions | No page overflow; local table scrolling stays named/semantic; 320..1920 widths, 200%/400% reflow, long RU/LT, touch, forced colors and reduced motion retain complete operation without global blocking | Existing isolated browser runner at required viewports/preferences plus production Vite build | planned | Revert responsive presentation slice |
+| A11Y-PUB-05 | A11Y-PUB-01..04 | Principal | Effective route/indexability policy, layouts/head metadata, robots only where justified | Only intended public pages are indexable; unique localized title/description, canonical, robots, OG, locale, pagination and safely encoded JSON-LD exist only when applicable; no private data leaks; sitemap remains absent unless a public URL set justifies it | Route/middleware and rendered-head tests, duplicate/leak scans, browser head inspection | planned | Restore prior metadata/robots behavior without weakening authorization |
+| A11Y-PUB-06 | A11Y-PUB-03..05 | Three independent named reviewers then principal | Frozen attributable diff, browser artifacts, route/head matrix | Every material accessibility, responsive, SEO/semantic finding is reproduced and dispositioned; valid findings are fixed and affected browser/PHP tests repeat | Three independent reports and post-fix focused reruns | planned | Revert unsafe finding-specific correction |
+| A11Y-PUB-07 | A11Y-PUB-06 | Principal | Requested canonical docs, generated compliance source/output, changelog, full attributable slice | Documentation states only observed behavior; all applicable repository gates pass before one coherent task-owned commit and fast-forward push on `main` | Focused/full sequential Pest, Pint/Larastan, Composer/npm audits, migrations/seeds, Vite, caches, browser, generators, secrets and staged diff | planned | Normal revert commit only; never reset or rewrite history |
+
+Implementation is test-first in order `A11Y-PUB-01` through
+`A11Y-PUB-07`. Browser unavailability, concurrent failures, or a dirty
+unattributable overlap remains explicit evidence and blocks publication rather
+than being waived.
+
+## FAC-2026-08-30 — First-party Eloquent factory overhaul
+
+**Status:** in progress  
+**Owner:** principal agent (`FAC-ROOT`)  
+**Dependencies:** current schema/model contracts; `docs/seeding.md`; `docs/testing.md`; repository factory/seeder gates  
+**Affected paths:** `PLANS.md`, `app/Models/**` (inspection only unless a verified model defect blocks validity), `database/factories/**`, `tests/Feature/Database/**`, `tests/Fixtures/**`, `docs/factory-coverage.md`, `docs/seeding.md`, `docs/testing.md`, `docs/requirements/compliance-matrix.md`, `CHANGELOG.md`
+
+### Acceptance criteria
+
+- Every concrete first-party Eloquent model has a resolvable factory whose default creates one minimal valid row, or a documented technical exemption with test construction guidance and linked requirement.
+- Defaults satisfy foreign keys, uniqueness, check constraints, enum domains, owner/tenant coherence, date ordering, monetary representation, lifecycle state, and required relationships without hidden large graphs.
+- Meaningful lifecycle/content/role/date/optional-data states and explicit relationship helpers exist only where supported by real domain semantics.
+- Local non-personal fixtures cover every factory-relevant image, document, upload, JSON payload, and external-provider response without public-network access.
+- Automated tests create every default and every documented state/helper, verify uniqueness and file behavior, and include an isolated parallel-creation probe.
+- Three independent reviewers inspect a frozen attributable diff; every material finding is reproduced, dispositioned, fixed when valid, and followed by affected checks.
+- `PLANS.md`, seeding/testing/factory coverage, compliance evidence, and changelog remain synchronized with observed verification only.
+
+### Verification
+
+Targeted Pest tests first; PHP syntax; Pint; Larastan with stable serial diagnostics when needed; full Pest sequentially for shared SQLite; isolated migration/seed/idempotency; Composer validation/audit; dependency compatibility; NPM audit and production build; route/config/view cache smoke; generated-document checks applicable to touched evidence; `git diff --check`; secret and complete attributable-diff review.
+
+### Rollback
+
+Revert the single coherent factory-overhaul commit. The work adds test-data builders, fixtures, tests, and documentation only; it does not require destructive schema or production-data rollback.

@@ -22,12 +22,12 @@
         </div>
         <div class="forum-topic-card__tags">
             @if ($answer['is_accepted'])
-                <span class="forum-badge"><x-ui-icon name="circle-check-big" /> {{ __('ui.accepted_answer_205ea1c1e2') }}</span>
+                <span class="forum-badge"><x-ui-icon name="circle-check-big" /> {{ __('ui.accepted_answer') }}</span>
             @endif
             @if ($answer['is_verified_expert'])
                 <span class="forum-badge">
                     <x-ui-icon name="badge-check" />
-                    {{ ($answer['expert_profile']['qualification_verified'] ?? false) ? __('ui.qualification_verified_bfd453f9ac') : $answer['expertise'] }}
+                    {{ ($answer['expert_profile']['qualification_verified'] ?? false) ? __('ui.qualification_verified') : $answer['expertise'] }}
                 </span>
                 @if ($answer['expert_profile'] && $answer['expert_profile']['profile_status'] !== 'Published')
                     <span class="forum-badge forum-badge--sun">
@@ -38,7 +38,7 @@
                 <span class="forum-badge forum-badge--neutral">{{ $answer['experience_label'] }}</span>
             @endif
             @if ($answer['needs_source'])
-                <span class="forum-badge forum-badge--sun"><x-ui-icon name="link" /> {{ __('ui.source_requested_dd87a1a3ea') }}</span>
+                <span class="forum-badge forum-badge--sun"><x-ui-icon name="link" /> {{ __('ui.source_requested') }}</span>
             @endif
         </div>
     </header>
@@ -47,28 +47,28 @@
 
     @if ($answer['sources'] !== [])
         <div class="forum-answer__sources">
-            <strong>{{ __('ui.sources_caf85b0888') }}</strong>
+            <strong>{{ __('ui.sources') }}</strong>
             @forelse ($answer['sources'] as $source)
                 <a href="{{ $source }}" target="_blank" rel="noopener noreferrer">{{ $source }}</a>
             @empty
-                <span>{{ __('ui.no_sources_listed_5a688e193a') }}</span>
+                <span>{{ __('ui.no_sources_listed') }}</span>
             @endforelse
         </div>
     @endif
 
     @if ($answer['comments'] !== [])
-        <div class="forum-comments" aria-label="{{ __('ui.comments_on_this_answer_6d23397bb0') }}">
+        <div class="forum-comments" aria-label="{{ __('ui.comments_on_this_answer') }}">
             @forelse ($answer['comments'] as $comment)
                 <div class="forum-comments__item {{ $comment['parent_id'] ? 'forum-comments__item--reply' : '' }}">
                     <strong>{{ $comment['author_name'] }}</strong>
                     <span> / {{ $comment['created_label'] }}</span>
                     @if ($comment['is_pinned'])
-                        <span class="forum-badge forum-badge--sun">{{ __('ui.pinned_clarification_f22d156e4e') }}</span>
+                        <span class="forum-badge forum-badge--sun">{{ __('ui.pinned_clarification') }}</span>
                     @endif
                     <p>{{ $comment['body'] }}</p>
                 </div>
             @empty
-                <span>{{ __('ui.no_comments_71153e6b23') }}</span>
+                <span>{{ __('ui.no_comments') }}</span>
             @endforelse
         </div>
     @endif
@@ -93,7 +93,7 @@
                     <input type="hidden" name="answer_id" value="{{ $answer['id'] }}">
                     <button type="submit" class="forum-button">
                         <x-ui-icon name="circle-check-big" />
-                        {{ __('ui.accept_89713b9c9c') }}
+                        {{ __('ui.accept') }}
                     </button>
                 </form>
             @endif
@@ -101,20 +101,20 @@
             <details>
                 <summary class="forum-button">
                     <x-ui-icon name="flag" />
-                    {{ __('ui.report_b6ce788d97') }}
+                    {{ __('ui.report') }}
                 </summary>
                 <form method="POST" action="{{ route('forum.actions') }}" class="forum-form mt-2">
                     @csrf
                     <input type="hidden" name="action" value="report-answer">
                     <input type="hidden" name="answer_id" value="{{ $answer['id'] }}">
                     <label class="forum-form__field">
-                        <span>{{ __('ui.reason_f81ab834de') }}</span>
+                        <span>{{ __('ui.reason') }}</span>
                         <select name="reason" required>
-                            <option value="dangerous-advice">{{ __('ui.dangerous_advice_df40777716') }}</option>
-                            <option value="misinformation">{{ __('ui.misinformation_34d52e35bd') }}</option>
-                            <option value="spam">{{ __('ui.spam_94a9eac404') }}</option>
-                            <option value="harassment">{{ __('ui.harassment_98a7655d02') }}</option>
-                            <option value="other">{{ __('ui.other_f97e9da0e3') }}</option>
+                            <option value="dangerous-advice">{{ __('ui.dangerous_advice') }}</option>
+                            <option value="misinformation">{{ __('ui.misinformation') }}</option>
+                            <option value="spam">{{ __('ui.spam') }}</option>
+                            <option value="harassment">{{ __('ui.harassment') }}</option>
+                            <option value="other">{{ __('ui.other') }}</option>
                         </select>
                     </label>
                     <label class="forum-form__check">
@@ -131,7 +131,7 @@
                     </label>
                     <button type="submit" class="forum-button forum-button--danger">
                         <x-ui-icon name="send" />
-                        {{ __('ui.send_report_a44d353113') }}
+                        {{ __('ui.send_report') }}
                     </button>
                 </form>
             </details>
@@ -141,18 +141,18 @@
             <details>
                 <summary class="forum-button">
                     <x-ui-icon name="message-circle-plus" />
-                    {{ __('ui.comment_44f5e3fbec') }}
+                    {{ __('ui.comment') }}
                 </summary>
                 <form method="POST" action="{{ route('forum.comments.store', $topic['slug']) }}" class="forum-form mt-2">
                     @csrf
                     <input type="hidden" name="answer_id" value="{{ $answer['id'] }}">
                     <label class="forum-form__field">
-                        <span>{{ __('ui.clarification_or_focused_comment_557b219d7a') }}</span>
+                        <span>{{ __('ui.clarification_or_focused_comment') }}</span>
                         <textarea name="body" minlength="2" maxlength="1500" required></textarea>
                     </label>
                     <button type="submit" class="forum-button forum-button--primary">
                         <x-ui-icon name="send" />
-                        {{ __('ui.add_comment_c4d891e9a8') }}
+                        {{ __('ui.add_comment') }}
                     </button>
                 </form>
             </details>

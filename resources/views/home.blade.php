@@ -11,7 +11,7 @@
             <x-slot:actions>
                 @if ($feed['sort'] !== 'latest')
                     <x-action-control
-                        :label="__('ui.new_posts_35b75561fc')"
+                        :label="__('ui.new_posts')"
                         icon="refresh-cw"
                         :href="$feed['new_posts_url']"
                         variant="paper"
@@ -19,7 +19,7 @@
                     />
                 @endif
                 <x-action-control
-                    :label="__('ui.new_post_7e50e2667b')"
+                    :label="__('ui.new_post')"
                     icon="plus"
                     :href="$feed['composer_url']"
                     size="regular"

@@ -47,7 +47,7 @@ final class PerformGroupAction
             'undo-group-recommendation' => $this->undoGroupRecommendation($data),
             'create-group-report' => $this->createGroupReport($data),
             default => throw ValidationException::withMessages([
-                'action' => __('messages.this_action_is_unavailable_c64fa3888d'),
+                'action' => __('messages.this_action_is_unavailable'),
             ]),
         };
     }
@@ -78,7 +78,7 @@ final class PerformGroupAction
         $group = $this->requireGroup($data);
 
         if (! $this->groupState->cancelRequest($group['key'])) {
-            throw ValidationException::withMessages(['target' => __('messages.this_joining_request_is_no_longer_pending_a5dceb6c85')]);
+            throw ValidationException::withMessages(['target' => __('messages.this_joining_request_is_no_longer_pending')]);
         }
 
         return $this->groupResult(
@@ -96,7 +96,7 @@ final class PerformGroupAction
         $group = $this->requireGroup($data);
 
         if (! $this->groupState->leave($group['key'])) {
-            throw ValidationException::withMessages(['target' => __('messages.this_membership_is_no_longer_active_b60057155a')]);
+            throw ValidationException::withMessages(['target' => __('messages.this_membership_is_no_longer_active')]);
         }
 
         return $this->groupResult(
@@ -116,7 +116,7 @@ final class PerformGroupAction
 
         if (! $this->groupState->setNotificationLevel($group['key'], $level)) {
             throw ValidationException::withMessages([
-                'group_notification_level' => __('messages.join_this_group_before_changing_its_notifications_a986c56e8b'),
+                'group_notification_level' => __('messages.join_this_group_before_changing_its_notifications'),
             ]);
         }
 
@@ -140,11 +140,11 @@ final class PerformGroupAction
             (string) ($data['poll_option'] ?? ''),
         )) {
             throw ValidationException::withMessages([
-                'poll_option' => __('messages.join_this_group_before_voting_63ecac8e5c'),
+                'poll_option' => __('messages.join_this_group_before_voting'),
             ]);
         }
 
-        return $this->groupResult(__('messages.your_vote_was_counted_3b2c99720b'), $data);
+        return $this->groupResult(__('messages.your_vote_was_counted'), $data);
     }
 
     /**
@@ -172,7 +172,7 @@ final class PerformGroupAction
 
         if (! $this->groupState->undoRecommendationDismissal($group['key'])) {
             throw ValidationException::withMessages([
-                'target' => __('messages.there_is_no_group_recommendation_to_restore_cc402fc8cf'),
+                'target' => __('messages.there_is_no_group_recommendation_to_restore'),
             ]);
         }
 
@@ -191,7 +191,7 @@ final class PerformGroupAction
         $group = $this->groups->find((string) ($data['target'] ?? ''));
 
         if ($group === null) {
-            throw ValidationException::withMessages(['target' => __('messages.choose_an_available_group_7490d39f8a')]);
+            throw ValidationException::withMessages(['target' => __('messages.choose_an_available_group')]);
         }
 
         return $group;
@@ -247,7 +247,7 @@ final class PerformGroupAction
         ]);
 
         return [
-            'message' => __('messages.your_private_group_report_was_received_597503f8b9'),
+            'message' => __('messages.your_private_group_report_was_received'),
             'route' => 'groups.show',
             'parameters' => ['group' => $group['key']],
         ];
@@ -262,7 +262,7 @@ final class PerformGroupAction
 
         if ($value === '') {
             throw ValidationException::withMessages([
-                $key => __('messages.this_field_is_required_68cadcee19'),
+                $key => __('messages.this_field_is_required'),
             ]);
         }
 

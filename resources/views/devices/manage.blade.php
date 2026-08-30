@@ -2,26 +2,23 @@
     <div class="grid gap-7">
         <header class="device-detail-header">
             <div>
-                <a href="{{ $device['show_url'] }}" class="inline-flex items-center gap-2 text-sm font-bold text-paw-leaf">
-                    <x-ui-icon name="arrow-left" size="sm" />
-                    {{ $device['name'] }}
-                </a>
-                <p class="mt-5 text-sm font-bold uppercase text-paw-leaf">{{ __('ui.owner_controls_c468d0a8ad') }}</p>
-                <h1 class="mt-2 text-3xl font-bold sm:text-4xl">{{ __('ui.rules_access_and_audit_f547744ca7') }}</h1>
+                <x-detail-navigation :href="$device['show_url']" :label="$device['name']" />
+                <p class="mt-5 text-sm font-bold uppercase text-paw-leaf">{{ __('ui.owner_controls') }}</p>
+                <h1 class="mt-2 text-3xl font-bold sm:text-4xl">{{ __('ui.rules_access_and_audit') }}</h1>
             </div>
-            <x-status-badge label="{{ __('ui.least_privilege_bdec4748d6') }}" icon="shield-check" tone="success" size="regular" />
+            <x-status-badge label="{{ __('ui.least_privilege') }}" icon="shield-check" tone="success" size="regular" />
         </header>
 
         @if ($errors->any())
             <div class="device-form-errors" role="alert">
                 <x-ui-icon name="circle-alert" size="lg" />
                 <div>
-                    <strong>{{ __('ui.the_change_was_not_saved_5515ca43db') }}</strong>
+                    <strong>{{ __('ui.the_change_was_not_saved') }}</strong>
                     <ul>
                         @forelse ($errors->all() as $error)
                             <li>{{ $error }}</li>
                         @empty
-                            <li>{{ __('ui.validation_failed_fa0dce7e0b') }}</li>
+                            <li>{{ __('ui.validation_failed') }}</li>
                         @endforelse
                     </ul>
                 </div>
@@ -31,22 +28,22 @@
         @if (session('device_access_url'))
             <section class="device-access-link" aria-labelledby="device-access-link-title">
                 <div>
-                    <p>{{ __('ui.shown_once_22548d041f') }}</p>
-                    <h2 id="device-access-link-title">{{ __('ui.temporary_device_link_cf6a3b5be0') }}</h2>
+                    <p>{{ __('ui.shown_once') }}</p>
+                    <h2 id="device-access-link-title">{{ __('ui.temporary_device_link') }}</h2>
                     <code>{{ session('device_access_url') }}</code>
                 </div>
                 <x-ui-icon name="link" size="xl" />
             </section>
         @endif
 
-        <nav class="device-anchor-nav" aria-label="{{ __('ui.device_management_1a7c41d58a') }}">
+        <nav class="device-anchor-nav" aria-label="{{ __('ui.device_management') }}">
             <a href="#retention"><x-ui-icon name="history" size="sm" /> {{ __('devices.retention.heading') }}</a>
             <a href="#lifecycle"><x-ui-icon name="wrench" size="sm" /> {{ __('devices.lifecycle.heading') }}</a>
-            <a href="#automations"><x-ui-icon name="workflow" size="sm" /> {{ __('ui.automations_ad1fb9ec0c') }}</a>
-            <a href="#access"><x-ui-icon name="key-round" size="sm" /> {{ __('ui.access_ec5ba0abb7') }}</a>
-            <a href="#audit"><x-ui-icon name="shield-check" size="sm" /> {{ __('ui.audit_bb6aea2873') }}</a>
+            <a href="#automations"><x-ui-icon name="workflow" size="sm" /> {{ __('ui.automations') }}</a>
+            <a href="#access"><x-ui-icon name="key-round" size="sm" /> {{ __('ui.access') }}</a>
+            <a href="#audit"><x-ui-icon name="shield-check" size="sm" /> {{ __('ui.audit') }}</a>
             @if ($device['type'] === 'gps-tracker')
-                <a href="#safe-zone"><x-ui-icon name="map-pinned" size="sm" /> {{ __('ui.safe_zone_2333d88d6a') }}</a>
+                <a href="#safe-zone"><x-ui-icon name="map-pinned" size="sm" /> {{ __('ui.safe_zone') }}</a>
             @endif
         </nav>
 
@@ -70,7 +67,7 @@
                                     @forelse ($retention_options['location'] as $option)
                                         <option value="{{ $option['value'] }}" @selected((int) old('location_retention_days', $device['location_retention_days']) === $option['value'])>{{ $option['label'] }}</option>
                                     @empty
-                                        <option value="">{{ __('ui.unavailable_ca18449697') }}</option>
+                                        <option value="">{{ __('ui.unavailable') }}</option>
                                     @endforelse
                                 </select>
                             </label>
@@ -80,7 +77,7 @@
                                     @forelse ($retention_options['media'] as $option)
                                         <option value="{{ $option['value'] }}" @selected((int) old('media_retention_days', $device['media_retention_days']) === $option['value'])>{{ $option['label'] }}</option>
                                     @empty
-                                        <option value="">{{ __('ui.unavailable_ca18449697') }}</option>
+                                        <option value="">{{ __('ui.unavailable') }}</option>
                                     @endforelse
                                 </select>
                             </label>
@@ -90,7 +87,7 @@
                                     @forelse ($retention_options['telemetry'] as $option)
                                         <option value="{{ $option['value'] }}" @selected((int) old('telemetry_retention_days', $device['telemetry_retention_days']) === $option['value'])>{{ $option['label'] }}</option>
                                     @empty
-                                        <option value="">{{ __('ui.unavailable_ca18449697') }}</option>
+                                        <option value="">{{ __('ui.unavailable') }}</option>
                                     @endforelse
                                 </select>
                             </label>
@@ -119,7 +116,7 @@
                                     @forelse ($lifecycle_kinds as $kind)
                                         <option value="{{ $kind['value'] }}">{{ $kind['label'] }}</option>
                                     @empty
-                                        <option value="">{{ __('ui.unavailable_ca18449697') }}</option>
+                                        <option value="">{{ __('ui.unavailable') }}</option>
                                     @endforelse
                                 </select>
                             </label>
@@ -129,7 +126,7 @@
                                     @forelse ($lifecycle_statuses as $status)
                                         <option value="{{ $status['value'] }}">{{ $status['label'] }}</option>
                                     @empty
-                                        <option value="">{{ __('ui.unavailable_ca18449697') }}</option>
+                                        <option value="">{{ __('ui.unavailable') }}</option>
                                     @endforelse
                                 </select>
                             </label>
@@ -139,7 +136,7 @@
                                     @forelse ($lifecycle_severities as $severity)
                                         <option value="{{ $severity['value'] }}">{{ $severity['label'] }}</option>
                                     @empty
-                                        <option value="">{{ __('ui.unavailable_ca18449697') }}</option>
+                                        <option value="">{{ __('ui.unavailable') }}</option>
                                     @endforelse
                                 </select>
                             </label>
@@ -196,73 +193,73 @@
                 <section id="automations" class="device-form-section">
                     <div class="device-panel__heading">
                         <div>
-                            <p>{{ __('ui.test_before_enabling_3a27d5afb1') }}</p>
-                            <h2>{{ __('ui.create_an_automation_30ea569c1a') }}</h2>
+                            <p>{{ __('ui.test_before_enabling') }}</p>
+                            <h2>{{ __('ui.create_an_automation') }}</h2>
                         </div>
                     </div>
                     <form method="POST" action="{{ route('devices.automations.store', $device['slug']) }}" class="grid gap-4">
                         @csrf
                         <div class="device-form-grid">
-                            <label>{{ __('ui.name_dcd1d5223f') }}<input name="name" maxlength="140" required placeholder="{{ __('ui.notify_when_device_goes_offline_5576bd71ac') }}"></label>
+                            <label>{{ __('ui.name') }}<input name="name" maxlength="140" required placeholder="{{ __('ui.notify_when_device_goes_offline') }}"></label>
                             <label>
-                                {{ __('ui.trigger_8b9c643731') }}
+                                {{ __('ui.trigger') }}
                                 <select name="trigger_type" required>
                                     @forelse ($automation_triggers as $trigger)
                                         <option value="{{ $trigger['value'] }}">{{ $trigger['label'] }}</option>
                                     @empty
-                                        <option value="">{{ __('ui.no_triggers_ea3c76042e') }}</option>
+                                        <option value="">{{ __('ui.no_triggers') }}</option>
                                     @endforelse
                                 </select>
                             </label>
-                            <label>{{ __('ui.threshold_0da627ada4') }}<input type="number" step="any" name="trigger_value"></label>
+                            <label>{{ __('ui.threshold') }}<input type="number" step="any" name="trigger_value"></label>
                             <label>
-                                {{ __('ui.home_mode_6e0bd795bb') }}
+                                {{ __('ui.home_mode') }}
                                 <select name="condition_mode">
                                     @forelse ($automation_modes as $mode)
                                         <option value="{{ $mode['value'] }}">{{ $mode['label'] }}</option>
                                     @empty
-                                        <option value="">{{ __('ui.any_2b505597da') }}</option>
+                                        <option value="">{{ __('ui.any') }}</option>
                                     @endforelse
                                 </select>
                             </label>
                             <label>
-                                {{ __('ui.action_64cff1319d') }}
+                                {{ __('ui.action') }}
                                 <select name="action_type">
                                     @forelse ($automation_actions as $action)
                                         <option value="{{ $action['value'] }}">{{ $action['label'] }}</option>
                                     @empty
-                                        <option value="">{{ __('ui.no_actions_219e734fd9') }}</option>
+                                        <option value="">{{ __('ui.no_actions') }}</option>
                                     @endforelse
                                 </select>
                             </label>
                             <label>
-                                {{ __('ui.priority_d60dbba079') }}
+                                {{ __('ui.priority') }}
                                 <select name="priority">
                                     @forelse ($automation_priorities as $priority)
                                         <option value="{{ $priority['value'] }}">{{ $priority['label'] }}</option>
                                     @empty
-                                        <option value="">{{ __('ui.normal_a7248eeb45') }}</option>
+                                        <option value="">{{ __('ui.normal') }}</option>
                                     @endforelse
                                 </select>
                             </label>
                             <label>
-                                {{ __('ui.initial_status_4484edc323') }}
-                                <select name="status"><option value="draft">{{ __('ui.draft_ebf12ef47c') }}</option><option value="enabled">{{ __('ui.enabled_92c1cdfdf4') }}</option></select>
+                                {{ __('ui.initial_status') }}
+                                <select name="status"><option value="draft">{{ __('ui.draft') }}</option><option value="enabled">{{ __('ui.enabled') }}</option></select>
                             </label>
-                            <label>{{ __('ui.maximum_runs_hour_877518d93d') }}<input type="number" name="max_runs_per_hour" min="1" max="12" value="2" required></label>
-                            <label>{{ __('ui.cooldown_seconds_20dde92b9c') }}<input type="number" name="cooldown_seconds" min="30" max="86400" value="300" required></label>
+                            <label>{{ __('ui.maximum_runs_hour') }}<input type="number" name="max_runs_per_hour" min="1" max="12" value="2" required></label>
+                            <label>{{ __('ui.cooldown_seconds') }}<input type="number" name="cooldown_seconds" min="30" max="86400" value="300" required></label>
                         </div>
                         <label class="device-check device-check--boxed">
                             <input type="checkbox" name="safety_acknowledged" value="1" required>
-                            <span>{{ __('ui.i_reviewed_the_action_cooldown_fallback_and_understand_1bf9807d8c') }}</span>
+                            <span>{{ __('ui.i_reviewed_the_action_cooldown_fallback_and_understand_that_prohibited_commands_cannot_be_automated') }}</span>
                         </label>
-                        <button class="action action--primary" type="submit"><x-ui-icon name="workflow" /><span>{{ __('ui.save_guarded_rule_b5b05434db') }}</span></button>
+                        <button class="action action--primary" type="submit"><x-ui-icon name="workflow" /><span>{{ __('ui.save_guarded_rule') }}</span></button>
                     </form>
                 </section>
 
                 <section class="device-panel">
                     <div class="device-panel__heading">
-                        <div><p>{{ __('ui.current_rules_78da99d6a7') }}</p><h2>{{ __('ui.automation_register_755d812325') }}</h2></div>
+                        <div><p>{{ __('ui.current_rules') }}</p><h2>{{ __('ui.automation_register') }}</h2></div>
                     </div>
                     <div class="device-rule-list">
                         @forelse ($automations as $automation)
@@ -281,11 +278,11 @@
                                 </div>
                                 <form method="POST" action="{{ route('devices.automations.test', [$device['slug'], $automation['id']]) }}">
                                     @csrf
-                                    <button class="action" type="submit"><x-ui-icon name="flask-conical" /><span>{{ __('ui.simulate_66154a0841') }}</span></button>
+                                    <button class="action" type="submit"><x-ui-icon name="flask-conical" /><span>{{ __('ui.simulate') }}</span></button>
                                 </form>
                             </article>
                         @empty
-                            <p class="text-sm text-paw-muted">{{ __('ui.no_automations_yet_rules_never_run_until_explicitly_d134edd34f') }}</p>
+                            <p class="text-sm text-paw-muted">{{ __('ui.no_automations_yet_rules_never_run_until_explicitly_enabled') }}</p>
                         @endforelse
                     </div>
                 </section>
@@ -293,25 +290,25 @@
                 @if ($device['type'] === 'gps-tracker')
                     <section id="safe-zone" class="device-form-section">
                         <div class="device-panel__heading">
-                            <div><p>{{ __('ui.coordinates_encrypted_26a5cc1a74') }}</p><h2>{{ __('ui.add_a_safe_zone_0bfe6f8618') }}</h2></div>
+                            <div><p>{{ __('ui.coordinates_encrypted') }}</p><h2>{{ __('ui.add_a_safe_zone') }}</h2></div>
                         </div>
                         <form method="POST" action="{{ route('devices.safe-zones.store', $device['slug']) }}" class="grid gap-4">
                             @csrf
                             <div class="device-form-grid">
-                                <label>{{ __('ui.name_dcd1d5223f') }}<input name="name" required maxlength="120" placeholder="{{ __('ui.home_boundary_f85a717070') }}"></label>
-                                <label>{{ __('ui.shape_e0e492707f') }}<select name="shape"><option value="circle">{{ __('ui.circle_b93d3bcecf') }}</option><option value="polygon">{{ __('ui.polygon_anchor_13e3f25961') }}</option></select></label>
-                                <label>{{ __('ui.public_area_label_5d9b790916') }}<input name="public_area_label" required maxlength="160" placeholder="{{ __('ui.home_area_df8f366499') }}"></label>
-                                <label>{{ __('ui.latitude_238a676da4') }}<input type="number" step="0.000001" name="latitude" min="-90" max="90" required></label>
-                                <label>{{ __('ui.longitude_6d80458fd1') }}<input type="number" step="0.000001" name="longitude" min="-180" max="180" required></label>
-                                <label>{{ __('ui.radius_meters_1b41d657bf') }}<input type="number" name="radius_meters" min="20" max="50000" value="120"></label>
-                                <label>{{ __('ui.exit_confirmation_seconds_a0b5f5eaa1') }}<input type="number" name="exit_delay_seconds" min="0" max="900" value="45" required></label>
-                                <label>{{ __('ui.accuracy_threshold_meters_16ed6d8c44') }}<input type="number" name="accuracy_threshold_meters" min="5" max="1000" value="35" required></label>
+                                <label>{{ __('ui.name') }}<input name="name" required maxlength="120" placeholder="{{ __('ui.home_boundary') }}"></label>
+                                <label>{{ __('ui.shape') }}<select name="shape"><option value="circle">{{ __('ui.circle') }}</option><option value="polygon">{{ __('ui.polygon_anchor') }}</option></select></label>
+                                <label>{{ __('ui.public_area_label') }}<input name="public_area_label" required maxlength="160" placeholder="{{ __('ui.home_area') }}"></label>
+                                <label>{{ __('ui.latitude') }}<input type="number" step="0.000001" name="latitude" min="-90" max="90" required></label>
+                                <label>{{ __('ui.longitude') }}<input type="number" step="0.000001" name="longitude" min="-180" max="180" required></label>
+                                <label>{{ __('ui.radius_meters') }}<input type="number" name="radius_meters" min="20" max="50000" value="120"></label>
+                                <label>{{ __('ui.exit_confirmation_seconds') }}<input type="number" name="exit_delay_seconds" min="0" max="900" value="45" required></label>
+                                <label>{{ __('ui.accuracy_threshold_meters') }}<input type="number" name="accuracy_threshold_meters" min="5" max="1000" value="35" required></label>
                             </div>
                             <div class="device-check-grid">
-                                <label class="device-check"><input type="checkbox" name="is_home" value="1"><span>{{ __('ui.home_privacy_zone_1ccca16d37') }}</span></label>
-                                <label class="device-check"><input type="checkbox" name="always_active" value="1"><span>{{ __('ui.always_active_8c559f48ea') }}</span></label>
+                                <label class="device-check"><input type="checkbox" name="is_home" value="1"><span>{{ __('ui.home_privacy_zone') }}</span></label>
+                                <label class="device-check"><input type="checkbox" name="always_active" value="1"><span>{{ __('ui.always_active') }}</span></label>
                             </div>
-                            <button class="action" type="submit"><x-ui-icon name="map-pinned" /><span>{{ __('ui.save_private_zone_1aae110811') }}</span></button>
+                            <button class="action" type="submit"><x-ui-icon name="map-pinned" /><span>{{ __('ui.save_private_zone') }}</span></button>
                         </form>
                     </section>
                 @endif
@@ -320,58 +317,58 @@
             <aside class="grid min-w-0 content-start gap-5">
                 <section id="access" class="device-form-section">
                     <div class="device-panel__heading">
-                        <div><p>{{ __('ui.time_bound_and_revocable_a9be89ec6b') }}</p><h2>{{ __('ui.temporary_access_7059688673') }}</h2></div>
+                        <div><p>{{ __('ui.time_bound_and_revocable') }}</p><h2>{{ __('ui.temporary_access') }}</h2></div>
                     </div>
                     <form method="POST" action="{{ route('devices.access.store', $device['slug']) }}" class="grid gap-4">
                         @csrf
-                        <label>{{ __('ui.recipient_51fac985e9') }}<input name="recipient_name" maxlength="120" required placeholder="{{ __('ui.alex_carter_805f38f620') }}"></label>
+                        <label>{{ __('ui.recipient') }}<input name="recipient_name" maxlength="120" required placeholder="{{ __('ui.alex_carter') }}"></label>
                         <label>
-                            {{ __('ui.role_14736a2eb9') }}
+                            {{ __('ui.role') }}
                             <select name="recipient_role">
-                                <option value="sitter">{{ __('ui.sitter_d26540f1d7') }}</option>
-                                <option value="co-owner">{{ __('ui.co_owner_f3027e079c') }}</option>
-                                <option value="veterinarian">{{ __('ui.veterinarian_38d6a38c0c') }}</option>
-                                <option value="trainer">{{ __('ui.trainer_9f085ee951') }}</option>
-                                <option value="support">{{ __('ui.technical_support_a9cea7b91c') }}</option>
+                                <option value="sitter">{{ __('ui.sitter') }}</option>
+                                <option value="co-owner">{{ __('ui.co_owner') }}</option>
+                                <option value="veterinarian">{{ __('ui.veterinarian') }}</option>
+                                <option value="trainer">{{ __('ui.trainer') }}</option>
+                                <option value="support">{{ __('ui.technical_support') }}</option>
                             </select>
                         </label>
-                        <label>{{ __('ui.access_label_14b6448467') }}<input name="label" maxlength="140" required placeholder="{{ __('ui.weekend_care_6701d63cf6') }}"></label>
+                        <label>{{ __('ui.access_label') }}<input name="label" maxlength="140" required placeholder="{{ __('ui.weekend_care') }}"></label>
                         <fieldset>
-                            <legend>{{ __('ui.permissions_abccc78cc9') }}</legend>
+                            <legend>{{ __('ui.permissions') }}</legend>
                             <div class="device-check-grid">
                                 @forelse ($access_permission_options as $permission)
                                     <label class="device-check"><input type="checkbox" name="permissions[]" value="{{ $permission['value'] }}"><span>{{ $permission['label'] }}</span></label>
                                 @empty
-                                    <span>{{ __('ui.no_permissions_fbe77cb976') }}</span>
+                                    <span>{{ __('ui.no_permissions') }}</span>
                                 @endforelse
                             </div>
                         </fieldset>
                         <div class="device-check-grid">
-                            <label class="device-check"><input type="checkbox" name="allow_location" value="1"><span>{{ __('ui.general_area_e0e1218303') }}</span></label>
-                            <label class="device-check"><input type="checkbox" name="allow_camera" value="1"><span>{{ __('ui.camera_status_f2aa3c9ff6') }}</span></label>
-                            <label class="device-check"><input type="checkbox" name="allow_commands" value="1"><span>{{ __('ui.commands_b269dc4e81') }}</span></label>
-                            <label class="device-check"><input type="checkbox" name="allow_audio" value="1"><span>{{ __('ui.audio_bc1b88907d') }}</span></label>
+                            <label class="device-check"><input type="checkbox" name="allow_location" value="1"><span>{{ __('ui.general_area') }}</span></label>
+                            <label class="device-check"><input type="checkbox" name="allow_camera" value="1"><span>{{ __('ui.camera_status') }}</span></label>
+                            <label class="device-check"><input type="checkbox" name="allow_commands" value="1"><span>{{ __('ui.commands') }}</span></label>
+                            <label class="device-check"><input type="checkbox" name="allow_audio" value="1"><span>{{ __('ui.audio') }}</span></label>
                         </div>
                         <div class="device-form-grid device-form-grid--compact">
-                            <label>{{ __('ui.expires_in_hours_fd2774777e') }}<input type="number" name="expires_in_hours" min="1" max="720" value="48" required></label>
-                            <label>{{ __('ui.maximum_opens_2a0d565dd4') }}<input type="number" name="max_views" min="1" max="100" value="20" required></label>
+                            <label>{{ __('ui.expires_in_hours') }}<input type="number" name="expires_in_hours" min="1" max="720" value="48" required></label>
+                            <label>{{ __('ui.maximum_opens') }}<input type="number" name="max_views" min="1" max="100" value="20" required></label>
                         </div>
                         <label class="device-check device-check--boxed">
                             <input type="checkbox" name="privacy_acknowledged" value="1" required>
-                            <span>{{ __('ui.i_reviewed_every_permission_and_will_share_the_3ea90ac56b') }}</span>
+                            <span>{{ __('ui.i_reviewed_every_permission_and_will_share_the_one_time_link_securely') }}</span>
                         </label>
-                        <button class="action action--primary" type="submit"><x-ui-icon name="key-round" /><span>{{ __('ui.create_link_e6b850cff6') }}</span></button>
+                        <button class="action action--primary" type="submit"><x-ui-icon name="key-round" /><span>{{ __('ui.create_link') }}</span></button>
                     </form>
                 </section>
 
                 <section class="device-panel">
-                    <div class="device-panel__heading"><div><p>{{ __('ui.active_and_historical_5202f01463') }}</p><h2>{{ __('ui.access_register_0d32891821') }}</h2></div></div>
+                    <div class="device-panel__heading"><div><p>{{ __('ui.active_and_historical') }}</p><h2>{{ __('ui.access_register') }}</h2></div></div>
                     <div class="device-access-list">
                         @forelse ($access_grants as $grant)
                             <article>
                                 <div class="flex items-start justify-between gap-2">
                                     <div><h3>{{ $grant['recipient_name'] }}</h3><p>{{ $grant['recipient_role'] }} · {{ $grant['label'] }}</p></div>
-                                    <x-status-badge :label="$grant['is_active'] ? __('ui.active_9234069589') : __('ui.expired_424a2551d3')" :tone="$grant['is_active'] ? 'success' : 'surface'" />
+                                    <x-status-badge :label="$grant['is_active'] ? __('ui.active') : __('ui.expired')" :tone="$grant['is_active'] ? 'success' : 'surface'" />
                                 </div>
                                 <small>{{ __('presentation.grant_permissions_expires_views', ['permissions' => implode(' · ', $grant['permissions']), 'expires' => $grant['expires_at'], 'views' => $grant['views']]) }}</small>
                                 @if ($grant['is_active'])
@@ -380,19 +377,19 @@
                                         @method('DELETE')
                                         <button class="device-text-button device-text-button--danger" type="submit">
                                             <x-ui-icon name="ban" size="sm" />
-                                            <span>{{ __('ui.revoke_now_581e15bd3f') }}</span>
+                                            <span>{{ __('ui.revoke_now') }}</span>
                                         </button>
                                     </form>
                                 @endif
                             </article>
                         @empty
-                            <p class="text-sm text-paw-muted">{{ __('ui.no_temporary_links_created_4c6d25033f') }}</p>
+                            <p class="text-sm text-paw-muted">{{ __('ui.no_temporary_links_created') }}</p>
                         @endforelse
                     </div>
                 </section>
 
                 <section class="device-panel">
-                    <div class="device-panel__heading"><div><p>{{ __('ui.no_real_commands_3e53eb8cb5') }}</p><h2>{{ __('ui.recent_simulations_573f2f057a') }}</h2></div></div>
+                    <div class="device-panel__heading"><div><p>{{ __('ui.no_real_commands') }}</p><h2>{{ __('ui.recent_simulations') }}</h2></div></div>
                     <div class="device-compact-list">
                         @forelse ($automation_runs as $run)
                             <article>
@@ -400,18 +397,18 @@
                                 <div><h3>{{ $run['status'] }}</h3><p>{{ $run['result'] }}</p><small>{{ $run['started_at'] }}</small></div>
                             </article>
                         @empty
-                            <p class="text-sm text-paw-muted">{{ __('ui.no_simulation_runs_5a3bd1cd58') }}</p>
+                            <p class="text-sm text-paw-muted">{{ __('ui.no_simulation_runs') }}</p>
                         @endforelse
                     </div>
                 </section>
 
                 <section id="audit" class="device-panel">
-                    <div class="device-panel__heading"><div><p>{{ __('ui.owner_visible_history_759382a4db') }}</p><h2>{{ __('ui.audit_trail_c1ada08ce1') }}</h2></div></div>
+                    <div class="device-panel__heading"><div><p>{{ __('ui.owner_visible_history') }}</p><h2>{{ __('ui.audit_trail') }}</h2></div></div>
                     <div class="device-audit-list">
                         @forelse ($audit as $item)
                             <article><span></span><div><h3>{{ $item['action'] }}</h3><p>{{ $item['actor'] }} · {{ $item['role'] }}</p><small>{{ $item['at'] }}</small></div></article>
                         @empty
-                            <p class="text-sm text-paw-muted">{{ __('ui.no_audited_actions_yet_7e08fcb1f5') }}</p>
+                            <p class="text-sm text-paw-muted">{{ __('ui.no_audited_actions_yet') }}</p>
                         @endforelse
                     </div>
                 </section>

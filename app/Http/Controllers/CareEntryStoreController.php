@@ -20,7 +20,7 @@ class CareEntryStoreController extends Controller
     ): JsonResponse|RedirectResponse {
         Gate::authorize('update', $careJournal);
         $entry = $create->handle($careJournal, $request->validated());
-        $message = __('messages.care_action_recorded_with_its_author_source_and_exact_ti_f88190bcb3');
+        $message = __('messages.care_action_recorded_with_its_author_source_and_exact_time');
 
         if ($request->expectsJson()) {
             return response()->json([

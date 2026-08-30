@@ -23,7 +23,7 @@
                     class="post-media__video"
                 >
                     <source src="{{ $item['source'] }}" type="{{ $item['mime'] }}">
-                    {{ __('ui.your_browser_does_not_support_embedded_video_7dd705b10c') }}
+                    {{ __('ui.your_browser_does_not_support_embedded_video') }}
                 </video>
             @else
                 <a

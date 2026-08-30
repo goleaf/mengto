@@ -17,26 +17,26 @@
             />
         </div>
 
-        <div class="device-card__pets" aria-label="{{ __('ui.assigned_pets_dd50d74ca4') }}">
+        <div class="device-card__pets" aria-label="{{ __('ui.assigned_pets') }}">
             <x-ui-icon name="paw-print" size="sm" />
-            <span>{{ $device['pets'] === [] ? __('ui.shared_zone_pet_not_identified_0d7d91e867') : implode(' · ', $device['pets']) }}</span>
+            <span>{{ $device['pets'] === [] ? __('ui.shared_zone_pet_not_identified') : implode(' · ', $device['pets']) }}</span>
         </div>
 
         <dl class="device-card__metrics">
             <div>
-                <dt>{{ __('ui.connection_639a40e82b') }}</dt>
+                <dt>{{ __('ui.connection') }}</dt>
                 <dd><span class="device-dot device-dot--{{ $device['connection_tone'] }}"></span>{{ $device['connection_label'] }}</dd>
             </div>
             <div>
-                <dt>{{ __('ui.battery_dfcb7c1619') }}</dt>
+                <dt>{{ __('ui.battery') }}</dt>
                 <dd>{{ $device['battery_label'] }}</dd>
             </div>
             <div>
-                <dt>{{ __('ui.last_signal_6f2cfbf3ce') }}</dt>
+                <dt>{{ __('ui.last_signal') }}</dt>
                 <dd>{{ $device['last_seen'] }}</dd>
             </div>
             <div>
-                <dt>{{ __('ui.area_024dc204d7') }}</dt>
+                <dt>{{ __('ui.area') }}</dt>
                 <dd>{{ $device['public_zone_label'] }}</dd>
             </div>
         </dl>

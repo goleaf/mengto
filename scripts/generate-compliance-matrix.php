@@ -7,8 +7,54 @@ declare(strict_types=1);
  *
  * Usage:
  * php scripts/generate-compliance-matrix.php > docs/requirements/compliance-matrix.md
+ * php scripts/generate-compliance-matrix.php --check
+ * php scripts/generate-compliance-matrix.php --write
+ * php scripts/generate-compliance-matrix.php --check --target=/tmp/matrix.md
  */
 $root = dirname(__DIR__);
+$arguments = array_slice($_SERVER['argv'] ?? [], 1);
+$checkOnly = in_array('--check', $arguments, true);
+$write = in_array('--write', $arguments, true);
+$targetArguments = array_values(array_filter(
+    $arguments,
+    static fn (string $argument): bool => str_starts_with($argument, '--target='),
+));
+$unknownArguments = array_values(array_filter(
+    $arguments,
+    static fn (string $argument): bool => ! in_array($argument, ['--check', '--write'], true)
+        && ! str_starts_with($argument, '--target='),
+));
+
+if ($unknownArguments !== []) {
+    fwrite(STDERR, 'Unknown argument(s): '.implode(', ', $unknownArguments).".\n");
+    exit(1);
+}
+
+if ($checkOnly && $write) {
+    fwrite(STDERR, "Use either --check or --write, not both.\n");
+    exit(1);
+}
+
+if (count($targetArguments) > 1) {
+    fwrite(STDERR, "Provide at most one --target argument.\n");
+    exit(1);
+}
+
+if ($targetArguments !== [] && ! $checkOnly && ! $write) {
+    fwrite(STDERR, "--target requires --check or --write.\n");
+    exit(1);
+}
+
+$target = $targetArguments === []
+    ? $root.'/docs/requirements/compliance-matrix.md'
+    : substr($targetArguments[0], strlen('--target='));
+
+if ($target === '') {
+    fwrite(STDERR, "--target must not be empty.\n");
+    exit(1);
+}
+
+ob_start();
 $sources = [
     'docs/product-requirements.md',
     'docs/system-requirements.md',
@@ -111,6 +157,43 @@ echo "- `Partially implemented` identifies an active repository gap, not a futur
 echo "- External blockers must name evidence and an owner in `docs/known-limitations.md`.\n";
 echo "- The final documentation pass regenerates this matrix and updates only evidence-backed statuses.\n";
 
+$generated = ob_get_clean();
+
+if (! is_string($generated)) {
+    fwrite(STDERR, "Unable to capture generated compliance matrix output.\n");
+    exit(1);
+}
+
+if (! $checkOnly && ! $write) {
+    fwrite(STDOUT, $generated);
+    exit(0);
+}
+
+if (is_link($target)) {
+    fwrite(STDERR, "Refusing symlink compliance-matrix target: {$target}.\n");
+    exit(1);
+}
+
+if ($checkOnly) {
+    $current = is_file($target) ? file_get_contents($target) : false;
+
+    if (! is_string($current) || ! hash_equals($generated, $current)) {
+        fwrite(STDERR, "Compliance matrix drift detected for {$target}.\n");
+        reportFirstComplianceDifference(
+            is_string($current) ? $current : '',
+            $generated,
+        );
+        exit(1);
+    }
+
+    fwrite(STDOUT, "Compliance matrix is current: {$target}.\n");
+    exit(0);
+}
+
+writeComplianceMatrix($target, $generated);
+fwrite(STDOUT, "Wrote compliance matrix: {$target}.\n");
+exit(0);
+
 /**
  * @return array{
  *   implementation: string,
@@ -135,6 +218,13 @@ function evidenceFor(string $id): array
     ];
 
     $specific = [
+        'I18N-002' => [
+            '`ReadableTranslationKey`, `PhpMessageLiteralClassifier`, Blade/PHP localization scripts, readable-key migration',
+            'Fail-closed semantic collision handling and exact locale-key parity',
+            '`lang/{en,lt,ru}/{messages,ui}.php` with no generated digest suffixes',
+            'Localized deterministic demo states retain their existing values',
+            '`ReadableTranslationKeyTest`, `PhpMessageLiteralClassifierTest`, `LocalizationTest`, `PageIdentityStandardizationTest`, architecture ratchets',
+        ],
         'PRD-IDENTITY-001' => [
             '`RegisterUser`, `EmailVerificationMode`, auth Livewire components, activation Action and command',
             'Normalized unique email, conditional verified middleware, bounded audited active-only activation',
@@ -148,6 +238,20 @@ function evidenceFor(string $id): array
             'Canonical `/pets` and `/pets/manage/new` workspaces, manager review, and EN/LT/RU pet catalogues',
             '`PetProfileFactory`, `PetProfileAccessRequestFactory`, `SocialIdentitySeeder`, `DiscoveryDemoSeeder`',
             '`PetProfileWorkspaceTest`, `PetProfileDuplicateAccessRequestTest`, pet profile policy and lifecycle tests',
+        ],
+        'PRD-IDENTITY-005' => [
+            '`RegisterUser`, onboarding Actions/state enums, destination services, `Onboarding` Livewire component',
+            '`user_onboardings` unique ownership, pre-binding onboarding middleware, social/pet policies and optimistic locks',
+            'Dedicated account-flow shell and recursive `lang/{en,lt,ru}/onboarding.php` catalogues',
+            '`UserOnboardingFactory`; existing user/demo factories intentionally remain legacy-exempt',
+            '`OnboardingTest`, affected auth/social/localization/page-identity regressions',
+        ],
+        'SYS-AUTH-006' => [
+            '`AccountEntryDestination`, `SafeIntendedUrl`, onboarding Actions and Livewire component',
+            '`EnsureOnboardingIsComplete` after portal access and before bindings; locked owner-scoped transitions',
+            'Dedicated localized onboarding shell with semantic progress, validation/loading/dirty/offline states',
+            '`UserOnboardingFactory` step/completion states',
+            '`OnboardingTest` access, replay, destination, privacy and compatibility cases',
         ],
         'PRD-SOCIAL-001' => [
             '`DiscoveryCatalog`, `MemberProfileCatalog`, controlled category/preference enums and named module routes',
@@ -486,8 +590,16 @@ function supplementalEventRows(): array
 
 function verificationFor(string $id): string
 {
+    if ($id === 'I18N-002') {
+        return "php scripts/run-tests.php --compact tests/Unit/Support/ReadableTranslationKeyTest.php tests/Unit/Support/PhpMessageLiteralClassifierTest.php tests/Feature/LocalizationTest.php tests/Feature/PageIdentityStandardizationTest.php && php scripts/run-tests.php --compact --filter='translation keys never use generated digest suffixes|readable translation key migration remains clean' tests/Feature/ArchitectureComplianceTest.php && php scripts/localize-blade-literals.php --check && php scripts/localize-php-messages.php --check && php scripts/migrate-readable-translation-keys.php --check";
+    }
+
     if ($id === 'PRD-IDENTITY-003') {
         return 'php artisan test --compact tests/Feature/PetProfileWorkspaceTest.php tests/Feature/PetProfileFoundationTest.php tests/Feature/PetProfileDuplicateAccessRequestTest.php && BROWSER_BASE_URL=http://127.0.0.1:8031 node scripts/pet-duplicate-access-browser-check.mjs';
+    }
+
+    if (in_array($id, ['PRD-IDENTITY-005', 'SYS-AUTH-006'], true)) {
+        return 'php scripts/run-tests.php --compact tests/Feature/OnboardingTest.php tests/Feature/Auth/AuthenticationTest.php tests/Feature/Auth/ConfigurableEmailVerificationTest.php tests/Feature/Auth/PortalAccessBoundaryTest.php tests/Feature/SocialRelationshipFoundationTest.php tests/Feature/LocalizationTest.php tests/Feature/PageIdentityStandardizationTest.php';
     }
 
     if ($id === 'PRD-SOCIAL-001') {
@@ -571,6 +683,79 @@ function normalizeSummary(string $summary): string
 function escape(string $value): string
 {
     return str_replace('|', '\\|', $value);
+}
+
+function reportFirstComplianceDifference(string $current, string $generated): void
+{
+    $currentLines = explode("\n", $current);
+    $generatedLines = explode("\n", $generated);
+    $lineCount = max(count($currentLines), count($generatedLines));
+
+    for ($index = 0; $index < $lineCount; $index++) {
+        $currentLine = $currentLines[$index] ?? '[missing]';
+        $generatedLine = $generatedLines[$index] ?? '[missing]';
+
+        if ($currentLine === $generatedLine) {
+            continue;
+        }
+
+        fwrite(STDERR, 'First difference at line '.($index + 1).":\n");
+        fwrite(STDERR, "  tracked: {$currentLine}\n");
+        fwrite(STDERR, "  generated: {$generatedLine}\n");
+
+        return;
+    }
+}
+
+function writeComplianceMatrix(string $target, string $generated): void
+{
+    $directory = dirname($target);
+    $resolvedDirectory = realpath($directory);
+
+    if ($resolvedDirectory === false || ! is_dir($resolvedDirectory)) {
+        fwrite(STDERR, "Compliance-matrix target directory does not exist: {$directory}.\n");
+        exit(1);
+    }
+
+    if (file_exists($target) && ! is_file($target)) {
+        fwrite(STDERR, "Compliance-matrix target is not a regular file: {$target}.\n");
+        exit(1);
+    }
+
+    $permissions = is_file($target) ? fileperms($target) : false;
+    $mode = is_int($permissions) ? $permissions & 0777 : 0644;
+    $temporary = tempnam($resolvedDirectory, '.compliance-matrix.');
+
+    if ($temporary === false) {
+        fwrite(STDERR, "Unable to create a temporary compliance matrix in {$resolvedDirectory}.\n");
+        exit(1);
+    }
+
+    try {
+        if (file_put_contents($temporary, $generated, LOCK_EX) === false) {
+            fwrite(STDERR, "Unable to write temporary compliance matrix: {$temporary}.\n");
+            exit(1);
+        }
+
+        if (! chmod($temporary, $mode)) {
+            fwrite(STDERR, "Unable to preserve compliance-matrix permissions.\n");
+            exit(1);
+        }
+
+        if (is_link($target)) {
+            fwrite(STDERR, "Refusing symlink compliance-matrix target: {$target}.\n");
+            exit(1);
+        }
+
+        if (! rename($temporary, $target)) {
+            fwrite(STDERR, "Unable to atomically replace compliance matrix: {$target}.\n");
+            exit(1);
+        }
+    } finally {
+        if (is_file($temporary)) {
+            unlink($temporary);
+        }
+    }
 }
 
 /**

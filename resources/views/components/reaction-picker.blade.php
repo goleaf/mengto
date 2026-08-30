@@ -3,15 +3,15 @@
 <details class="reaction-picker">
     <summary
         class="feed-action"
-        aria-label="{{ $post['selected_reaction_label'] ?? __('ui.react_01fad993ff') }}"
-        title="{{ $post['selected_reaction_label'] ?? __('ui.react_01fad993ff') }}"
+        aria-label="{{ $post['selected_reaction_label'] ?? __('ui.react') }}"
+        title="{{ $post['selected_reaction_label'] ?? __('ui.react') }}"
     >
         <x-ui-icon name="heart" size="sm" />
-        <span class="feed-action__label">{{ $post['selected_reaction_label'] ?? __('ui.react_01fad993ff') }}</span>
+        <span class="feed-action__label">{{ $post['selected_reaction_label'] ?? __('ui.react') }}</span>
         <span class="feed-action__compact-label" aria-hidden="true">{{ $post['reaction_total'] }}</span>
     </summary>
 
-    <div class="reaction-picker__menu" aria-label="{{ __('ui.choose_reaction_9921f14006') }}">
+    <div class="reaction-picker__menu" aria-label="{{ __('ui.choose_reaction') }}">
         @foreach ($post['reaction_items'] as $reaction)
             <x-action-form
                 :action="route('actions.perform')"

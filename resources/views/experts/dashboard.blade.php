@@ -2,11 +2,11 @@
     @if ($expert === null)
         <div class="grid w-full min-w-0 gap-7">
             <x-page-header
-                :eyebrow="__('ui.professional_workspace_eb8eb6dde6')"
-                :title="__('ui.create_your_professional_workspace_c025183333')"
-                :description="__('ui.publish_a_precise_scope_submit_credentials_privately_offer_3099c3a8b0')"
+                :eyebrow="__('ui.professional_workspace')"
+                :title="__('ui.create_your_professional_workspace')"
+                :description="__('ui.publish_a_precise_scope_submit_credentials_privately_offer_services_and_manage_consultation_requests_without_mixing_professional_activity_with_your_personal')"
                 heading-id="expert-workspace-heading"
-                :action-label="__('ui.create_professional_profile_30276b75d3')"
+                :action-label="__('ui.create_professional_profile')"
                 action-icon="badge-plus"
                 :action-href="route('experts.create')"
                 data-section="expert-workspace-header"
@@ -15,19 +15,19 @@
     @else
         <div class="grid w-full min-w-0 gap-7">
             <x-page-header
-                :eyebrow="__('ui.professional_workspace_eb8eb6dde6')"
+                :eyebrow="__('ui.professional_workspace')"
                 :title="$expert['name']"
                 :description="$expert['type'].' · '.$expert['profile_status'].' · '.$expert['verification']"
                 heading-id="expert-workspace-heading"
                 data-section="expert-workspace-header"
             >
                 <x-slot:actions>
-                    <x-action-control :label="__('ui.view_public_profile_9acb2dbb15')" icon="external-link" :href="route('experts.show', $expert['slug'])" />
-                    <x-action-control :label="__('ui.edit_profile_15c4aa1303')" icon="pencil" variant="primary" :href="route('experts.edit', $expert['slug'])" />
+                    <x-action-control :label="__('ui.view_public_profile')" icon="external-link" :href="route('experts.show', $expert['slug'])" />
+                    <x-action-control :label="__('ui.edit_profile')" icon="pencil" variant="primary" :href="route('experts.edit', $expert['slug'])" />
                 </x-slot:actions>
             </x-page-header>
 
-            <section class="grid min-w-0 grid-cols-2 gap-px overflow-hidden rounded-md border border-paw-line bg-paw-line lg:grid-cols-4" aria-label="{{ __('ui.workspace_metrics_729c6cbd06') }}">
+            <section class="grid min-w-0 grid-cols-2 gap-px overflow-hidden rounded-md border border-paw-line bg-paw-line lg:grid-cols-4" aria-label="{{ __('ui.workspace_metrics') }}">
                 @forelse ($metrics as $metric)
                     <div class="bg-white p-4">
                         <strong class="text-2xl">{{ $metric['value'] }}</strong>
@@ -35,7 +35,7 @@
                         <span class="mt-1 block text-xs text-paw-muted">{{ $metric['note'] }}</span>
                     </div>
                 @empty
-                    <p class="col-span-full bg-white p-4 text-paw-muted">{{ __('ui.no_metrics_yet_01104486d0') }}</p>
+                    <p class="col-span-full bg-white p-4 text-paw-muted">{{ __('ui.no_metrics_yet') }}</p>
                 @endforelse
             </section>
 
@@ -44,19 +44,19 @@
                     <section class="min-w-0" aria-labelledby="upcoming-bookings">
                         <div class="flex items-end justify-between gap-3">
                             <div>
-                                <h2 id="upcoming-bookings" class="text-2xl font-bold">{{ __('ui.consultation_queue_94bab5430d') }}</h2>
-                                <p class="mt-1 text-sm text-paw-muted">{{ __('ui.the_client_sees_who_currently_handles_the_appointment_e792b5ab4c') }}</p>
+                                <h2 id="upcoming-bookings" class="text-2xl font-bold">{{ __('ui.consultation_queue') }}</h2>
+                                <p class="mt-1 text-sm text-paw-muted">{{ __('ui.the_client_sees_who_currently_handles_the_appointment') }}</p>
                             </div>
                         </div>
                         <div class="mt-4 max-w-full min-w-0 overflow-x-auto">
                             <table class="w-full min-w-[44rem] border-collapse text-left text-sm">
                                 <thead>
                                     <tr class="border-b border-paw-line text-xs uppercase text-paw-muted">
-                                        <th class="px-3 py-2">{{ __('ui.time_33b93476cf') }}</th>
-                                        <th class="px-3 py-2">{{ __('ui.client_and_pet_d27897b01c') }}</th>
-                                        <th class="px-3 py-2">{{ __('ui.service_d677190e0a') }}</th>
-                                        <th class="px-3 py-2">{{ __('ui.status_920e413c7d') }}</th>
-                                        <th class="px-3 py-2">{{ __('ui.action_64cff1319d') }}</th>
+                                        <th class="px-3 py-2">{{ __('ui.time') }}</th>
+                                        <th class="px-3 py-2">{{ __('ui.client_and_pet') }}</th>
+                                        <th class="px-3 py-2">{{ __('ui.service') }}</th>
+                                        <th class="px-3 py-2">{{ __('ui.status') }}</th>
+                                        <th class="px-3 py-2">{{ __('ui.action') }}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -68,13 +68,13 @@
                                             <td class="px-3 py-3">{{ $booking['status'] }}<span class="block text-paw-muted">{{ $booking['payment_status'] }}</span></td>
                                             <td class="px-3 py-3 text-right">
                                                 <a href="{{ route('bookings.show', $booking['reference']) }}" class="inline-flex items-center gap-1 font-bold text-paw-leaf">
-                                                    <span>{{ __('ui.open_ed077f3d81') }}</span>
+                                                    <span>{{ __('ui.open') }}</span>
                                                     <x-ui-icon name="arrow-up-right" size="sm" />
                                                 </a>
                                             </td>
                                         </tr>
                                     @empty
-                                        <tr><td colspan="5" class="px-3 py-6 text-center text-paw-muted">{{ __('ui.no_consultation_requests_yet_cbc6f79994') }}</td></tr>
+                                        <tr><td colspan="5" class="px-3 py-6 text-center text-paw-muted">{{ __('ui.no_consultation_requests_yet') }}</td></tr>
                                     @endforelse
                                 </tbody>
                             </table>
@@ -82,12 +82,12 @@
                     </section>
 
                     <section class="min-w-0" aria-labelledby="workspace-services">
-                        <h2 id="workspace-services" class="text-2xl font-bold">{{ __('ui.published_services_2ef178868d') }}</h2>
+                        <h2 id="workspace-services" class="text-2xl font-bold">{{ __('ui.published_services') }}</h2>
                         <div class="mt-4 grid gap-4 md:grid-cols-2">
                             @forelse ($services as $service)
                                 <x-service-card :service="$service" />
                             @empty
-                                <p class="text-paw-muted">{{ __('ui.no_services_have_been_configured_df990f6b57') }}</p>
+                                <p class="text-paw-muted">{{ __('ui.no_services_have_been_configured') }}</p>
                             @endforelse
                         </div>
                     </section>
@@ -95,14 +95,14 @@
 
                 <aside class="grid min-w-0 content-start gap-7">
                     <section aria-labelledby="workspace-verification">
-                        <h2 id="workspace-verification" class="text-xl font-bold">{{ __('ui.verification_status_aedfff7efc') }}</h2>
+                        <h2 id="workspace-verification" class="text-xl font-bold">{{ __('ui.verification_status') }}</h2>
                         <div class="mt-4">
                             <x-verification-list :items="$expert['verification_items']" :expires="$expert['verification_expires']" />
                         </div>
                     </section>
 
                     <section class="border-y border-paw-line py-5" aria-labelledby="workspace-credentials">
-                        <h2 id="workspace-credentials" class="text-xl font-bold">{{ __('ui.submitted_credentials_70fa5b0df3') }}</h2>
+                        <h2 id="workspace-credentials" class="text-xl font-bold">{{ __('ui.submitted_credentials') }}</h2>
                         <div class="mt-3 grid gap-3 text-sm">
                             @forelse ($credentials as $credential)
                                 <article>
@@ -111,14 +111,14 @@
                                     @if ($credential['expires_at'])<p class="text-xs text-paw-muted">{{ __('presentation.credential_expires', ['date' => $credential['expires_at']]) }}</p>@endif
                                 </article>
                             @empty
-                                <p class="text-paw-muted">{{ __('ui.no_credentials_submitted_1d62729151') }}</p>
+                                <p class="text-paw-muted">{{ __('ui.no_credentials_submitted') }}</p>
                             @endforelse
                         </div>
                     </section>
 
                     <section aria-labelledby="privacy-note">
-                        <h2 id="privacy-note" class="text-xl font-bold">{{ __('ui.privacy_boundary_fecc0f1b06') }}</h2>
-                        <p class="mt-2 text-sm leading-6 text-paw-muted">{{ __('ui.profile_viewers_their_searches_home_addresses_gps_history_7783292e23') }}</p>
+                        <h2 id="privacy-note" class="text-xl font-bold">{{ __('ui.privacy_boundary') }}</h2>
+                        <p class="mt-2 text-sm leading-6 text-paw-muted">{{ __('ui.profile_viewers_their_searches_home_addresses_gps_history_unrelated_pets_and_hidden_medical_records_are_never_exposed_in_workspace_analytics') }}</p>
                     </section>
                 </aside>
             </div>

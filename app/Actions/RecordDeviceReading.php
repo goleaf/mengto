@@ -110,7 +110,7 @@ class RecordDeviceReading
 
             if ($assignment === null) {
                 throw ValidationException::withMessages([
-                    'pet_profile_key' => __('messages.this_pet_is_not_assigned_to_the_device_37b9f2a03b'),
+                    'pet_profile_key' => __('messages.this_pet_is_not_assigned_to_the_device'),
                 ]);
             }
 
@@ -190,7 +190,7 @@ class RecordDeviceReading
             'first_occurred_at' => $reading->recorded_at,
             'last_occurred_at' => $reading->recorded_at,
             'title' => $event['title'],
-            'summary' => __('messages.automatic_device_event_confirm_the_real_world_outcome_be_9b61052aae'),
+            'summary' => __('messages.automatic_device_event_confirm_the_real_world_outcome_before_using_it_as_a_care_fact'),
             'details' => [
                 'reading_id' => $reading->id,
                 'reading_ids' => [$reading->id],

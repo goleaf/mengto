@@ -26,7 +26,7 @@ class AcknowledgeDeviceEvent
 
             if ($locked->smart_device_id !== $device->id) {
                 throw ValidationException::withMessages([
-                    'event' => __('messages.this_event_does_not_belong_to_the_selected_device_d0f4b33d37'),
+                    'event' => __('messages.this_event_does_not_belong_to_the_selected_device'),
                 ]);
             }
 

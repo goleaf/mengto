@@ -1,10 +1,14 @@
 # Current-State Audit
 
-## Current Repository-Wide Audit Snapshot
+## Superseded Repository-Wide Audit Snapshot
 
 Audit date: 2026-08-30. This dated section supersedes the older point-in-time
-baseline below for current stack, inventory, and open-risk decisions; the older
-record remains preserved as historical evidence.
+baseline below only as historical evidence. It is no longer a current
+inventory or release decision: subsequent Event, Places, performance,
+localization, and audit work changed the tree, and the repository-inventory
+generator currently reports drift. The current release decision, exact Git
+state, gate results, and blockers are maintained in
+`docs/reports/final-release-verification.md`.
 
 ### Scope And Authority
 
@@ -22,7 +26,7 @@ record remains preserved as historical evidence.
   Their ownership and completion record is
   `docs/audits/repository-audit-work-ledger.md`.
 
-### Current Inventory
+### Historical Inventory At This Snapshot
 
 | Surface | Observed 2026-08-30 |
 | --- | ---: |
@@ -42,7 +46,7 @@ clients, webhook handlers, or scheduled tasks. Runtime-critical workflows are
 synchronous. SQLite is the required local/test boundary; destructive
 verification uses only operating-system temporary database paths.
 
-### Stack And Initial Command Baseline
+### Historical Stack And Initial Command Baseline
 
 | Surface | Observed baseline |
 | --- | --- |

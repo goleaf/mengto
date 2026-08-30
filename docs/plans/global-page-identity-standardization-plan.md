@@ -508,7 +508,7 @@ catalog-growth regression confirms its query count remains bounded.
 
 Category, mode, view, and layer controls now use the canonical Lucide primitive
 with server-prepared icon names instead of presentation matching in Blade. The
-browser ratchet compares 113 rendered system fields with the English baseline,
+browser ratchet compares 114 rendered system fields with the English baseline,
 checks category/mode/view/layer cardinality, text clipping, and every visible
 directory target. It exposed and closed a 20-pixel comparison-link target and
 a Lithuanian map heading whose 20-pixel line box clipped diacritics. All 91

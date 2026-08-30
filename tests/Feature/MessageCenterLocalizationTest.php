@@ -234,7 +234,7 @@ test('the message center renders localized folder inbox type and relative time c
     }
 
     $response->assertSee(trans(
-        'messages.the_riverside_entrance_works_i_can_keep_mochi_on_the_out_41eb85053a',
+        'messages.the_riverside_entrance_works_i_can_keep_mochi_on_the_outside_lane',
         locale: 'en',
     ));
 

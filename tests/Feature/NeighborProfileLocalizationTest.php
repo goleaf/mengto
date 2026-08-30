@@ -132,7 +132,7 @@ test('the neighbor profile has a dedicated presenter and passive blade boundary'
 
     $previewSource = File::get(app_path('Services/PreviewService.php'));
     preg_match(
-        '/public function ariNeighborProfileData\(\): array(?<body>.*?)(?=public function messageCenterData)/s',
+        '/public function ariNeighborProfileData\(\): array(?<body>.*?)(?=public function notificationCenterData)/s',
         $previewSource,
         $profileMethod,
     );
@@ -155,7 +155,7 @@ test('the neighbor profile has a dedicated presenter and passive blade boundary'
     expect(File::get(base_path('scripts/accessibility-browser-check.mjs')))
         ->toContain(
             'englishNeighborProfileCopy',
-            'neighborProfileCopy.length === 57',
+            'neighborProfileCopy.length === 58',
             'English neighbor profile body fallback remains.',
             'page-identity-neighbor-profile-',
         );
