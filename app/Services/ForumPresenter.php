@@ -17,7 +17,6 @@ use Illuminate\Support\Str;
 class ForumPresenter
 {
     public function __construct(
-        private readonly ProfilePresenter $profiles,
         private readonly ForumTaxonomy $taxonomy,
         private readonly ForumActor $actor,
         private readonly LocaleFormatter $formatter,
@@ -85,7 +84,6 @@ class ForumPresenter
         ));
 
         return [
-            'owner' => $this->profiles->owner(),
             'page_title' => __('messages.forum_and_knowledge_brand'),
             'active_section' => 'forum',
             'topics' => $topics,
@@ -180,7 +178,6 @@ class ForumPresenter
             : null;
 
         return [
-            'owner' => $this->profiles->owner(),
             'page_title' => __('presentation.brand_title', ['title' => $topic->title]),
             'active_section' => 'forum',
             'topic' => $this->topicDetail($topic),
@@ -249,7 +246,6 @@ class ForumPresenter
     public function editor(?ForumTopic $topic = null): array
     {
         return [
-            'owner' => $this->profiles->owner(),
             'page_title' => $topic ? __('messages.edit_topic_brand') : __('messages.ask_the_community_brand'),
             'active_section' => 'forum',
             'topic' => $topic,

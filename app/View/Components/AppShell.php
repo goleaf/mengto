@@ -22,9 +22,7 @@ final class AppShell extends Component
     /** @var array<string, mixed>|null */
     public ?array $owner;
 
-    /** @param array<string, mixed>|null $owner */
     public function __construct(
-        ?array $owner,
         AuthFactory $auth,
         AuthenticatedUserPresenter $authenticatedUsers,
         ?string $title = null,

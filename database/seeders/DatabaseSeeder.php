@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Database\Seeders;
 
+use App\Actions\InitializeUserOnboarding;
+use App\Enums\OnboardingPetChoice;
+use App\Enums\OnboardingStep;
 use App\Enums\UserStatus;
 use App\Models\User;
 use App\Services\EmailVerificationMode;
@@ -216,6 +219,19 @@ class DatabaseSeeder extends Seeder
 
         $user = $actorUser ?? $emailUser ?? new User;
         $user->forceFill($attributes)->save();
+
+        $onboarding = app(InitializeUserOnboarding::class)->handle($user);
+        $completedAt = $onboarding->completed_at ?? now();
+        $onboarding->forceFill([
+            'current_step' => OnboardingStep::Complete,
+            'pet_relationship_choice' => $onboarding->pet_relationship_choice ?? OnboardingPetChoice::AddLater,
+            'introduction_completed_at' => $onboarding->introduction_completed_at ?? $completedAt,
+            'preferences_completed_at' => $onboarding->preferences_completed_at ?? $completedAt,
+            'pet_relationship_completed_at' => $onboarding->pet_relationship_completed_at ?? $completedAt,
+            'privacy_discovery_completed_at' => $onboarding->privacy_discovery_completed_at ?? $completedAt,
+            'completed_at' => $completedAt,
+            'lock_version' => max($onboarding->lock_version, OnboardingStep::Complete->position()),
+        ])->saveOrFail();
 
         return $user;
     }

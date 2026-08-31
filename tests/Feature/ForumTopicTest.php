@@ -22,8 +22,8 @@ test('owner can publish a structured topic with safe media storage', function ()
         'category' => 'behavior',
         'subcategory' => 'fear',
         'pet_key' => 'scout',
-        'title' => 'How can I help Scout feel calm near the lift doors?',
-        'body' => 'Scout became worried after a metal cart fell near the lift. He can currently observe the doors from a distance and recover when we move away.',
+        'title' => 'How can I help Birch feel calm near the lift doors?',
+        'body' => 'Birch became worried after a metal cart fell near the lift. He can currently observe the doors from a distance and recover when we move away.',
         'tried' => 'We stopped before he froze and kept sessions short.',
         'desired_answer' => 'professional-opinion',
         'tags' => 'fear, lift, confidence, fear',
@@ -32,7 +32,7 @@ test('owner can publish a structured topic with safe media storage', function ()
         'comment_policy' => 'registered',
         'language' => 'en',
         'intent' => 'publish',
-        'photo_alt' => 'Scout waiting at a comfortable distance from the lift',
+        'photo_alt' => 'Birch waiting at a comfortable distance from the lift',
         'photos' => [UploadedFile::fake()->image('scout.jpg', 1200, 800)],
     ]);
 
@@ -40,8 +40,8 @@ test('owner can publish a structured topic with safe media storage', function ()
 
     $response->assertRedirect(route('forum.topics.show', $topic));
     expect($topic)
-        ->author_key->toBe('mia-carter')
-        ->pet_name->toBe('Scout')
+        ->author_key->toBe('test-member')
+        ->pet_name->toBe('Birch')
         ->status->toBe(ForumTopicStatus::Published)
         ->and($topic->tags)->toBe(['fear', 'lift', 'confidence'])
         ->and($topic->media)->toHaveCount(1);
@@ -71,7 +71,7 @@ test('topic creation validates structure before persistence', function () {
 test('answers votes acceptance and knowledge conversion remain idempotent', function () {
     $topic = ForumTopic::factory()->create([
         'author_id' => $this->authenticatedUser->id,
-        'author_key' => 'mia-carter',
+        'author_key' => 'test-member',
         'title' => 'How can I prepare a calm carrier routine for my cat?',
         'category' => 'behavior',
         'tags' => ['cat', 'carrier'],

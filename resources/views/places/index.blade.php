@@ -1,5 +1,4 @@
 <x-directory-page
-    :owner="$owner"
     :title="$page_title"
     :active-section="$active_section"
     :summary="$summary"

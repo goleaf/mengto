@@ -254,7 +254,7 @@ final class PerformPetFriendAction
     private function petFriendResult(string $message, array $data, string $defaultTab): array
     {
         $parameters = [
-            'pet' => str_replace('pet-', '', (string) ($data['source_pet'] ?? 'pet-scout')),
+            'pet' => str_replace('pet-', '', (string) ($data['source_pet'] ?? '')),
             'tab' => (string) ($data['pet_return_tab'] ?? $defaultTab),
         ];
 

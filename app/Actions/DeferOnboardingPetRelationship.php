@@ -8,8 +8,7 @@ use App\Enums\OnboardingPetChoice;
 use App\Enums\OnboardingStep;
 use App\Models\User;
 use App\Models\UserOnboarding;
-use App\Services\EmailVerificationMode;
-use App\Services\ForumActor;
+use App\Services\ActiveAuthenticatedUser;
 use App\Services\OnboardingPetEvidence;
 use App\Services\OnboardingState;
 use Illuminate\Support\Facades\DB;
@@ -18,23 +17,17 @@ use Illuminate\Validation\ValidationException;
 final readonly class DeferOnboardingPetRelationship
 {
     public function __construct(
-        private ForumActor $account,
-        private EmailVerificationMode $emailVerification,
+        private ActiveAuthenticatedUser $principal,
         private OnboardingState $onboardingState,
         private OnboardingPetEvidence $petEvidence,
     ) {}
 
     public function handle(User $user, int $expectedLockVersion): UserOnboarding
     {
-        $authenticated = $this->account->requireUser();
-        abort_unless(
-            $authenticated->is($user)
-                && $authenticated->isActive()
-                && $this->emailVerification->allows($authenticated),
-            403,
-        );
+        $this->principal->require($user);
 
         return DB::transaction(function () use ($expectedLockVersion, $user): UserOnboarding {
+            $user = $this->principal->require($user, true);
             $state = UserOnboarding::query()
                 ->whereBelongsTo($user)
                 ->lockForUpdate()

@@ -50,26 +50,7 @@ final class FollowSocialActor
             ]);
         }
 
-        $settings = SocialActorSetting::query()->firstOrCreate([
-            'social_actor_id' => $target->id,
-        ]);
-
-        if ($settings->follow_policy === SocialFollowPolicy::Nobody) {
-            throw ValidationException::withMessages([
-                'target' => __('social_relationships.validation.requests_disabled'),
-            ]);
-        }
-
-        if ($settings->follow_policy === SocialFollowPolicy::Approval) {
-            return $this->sendRequest->handle(
-                source: $source,
-                target: $target,
-                type: SocialRelationshipType::Follow,
-                idempotencyKey: $idempotencyKey,
-            );
-        }
-
-        return DB::transaction(function () use ($source, $target, $idempotencyKey, $user): SocialRelationship {
+        return DB::transaction(function () use ($source, $target, $idempotencyKey, $user): SocialRelationship|SocialRelationshipRequest {
             $existingEvent = SocialRelationshipEvent::query()
                 ->where('idempotency_key', $idempotencyKey)
                 ->first();
@@ -108,6 +89,27 @@ final class FollowSocialActor
                 throw ValidationException::withMessages([
                     'target' => __('social_relationships.validation.contact_unavailable'),
                 ]);
+            }
+
+            $settings = SocialActorSetting::query()
+                ->where('social_actor_id', $lockedTarget->id)
+                ->lockForUpdate()
+                ->first();
+
+            if (! $settings instanceof SocialActorSetting
+                || $settings->follow_policy === SocialFollowPolicy::Nobody) {
+                throw ValidationException::withMessages([
+                    'target' => __('social_relationships.validation.requests_disabled'),
+                ]);
+            }
+
+            if ($settings->follow_policy === SocialFollowPolicy::Approval) {
+                return $this->sendRequest->handle(
+                    source: $lockedSource,
+                    target: $lockedTarget,
+                    type: SocialRelationshipType::Follow,
+                    idempotencyKey: $idempotencyKey,
+                );
             }
 
             $activeKey = SocialRelationshipKey::forRelationship(

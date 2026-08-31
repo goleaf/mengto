@@ -25,7 +25,7 @@ test('an owner can create one private medical record for a managed pet', functio
     $pet = PetProfile::factory()->for($this->authenticatedUser)->create([
         'profile_key' => 'pet-scout',
         'slug' => 'scout',
-        'name' => 'Scout',
+        'name' => 'Birch',
         'species' => 'dog',
         'breed' => 'Border Collie mix',
     ]);
@@ -36,7 +36,7 @@ test('an owner can create one private medical record for a managed pet', functio
     $record = MedicalRecord::query()->firstOrFail();
 
     expect($record)
-        ->owner_key->toBe('mia-carter')
+        ->owner_key->toBe('test-member')
         ->owner_id->toBe($this->authenticatedUser->id)
         ->pet_profile_id->toBe($pet->id)
         ->pet_profile_key->toBe('scout')
@@ -78,7 +78,7 @@ test('a canonical medical record follows the pet when the primary owner changes'
     expect($record->refresh())
         ->pet_profile_id->toBe($pet->id)
         ->owner_id->toBe($this->authenticatedUser->id)
-        ->owner_key->toBe('mia-carter');
+        ->owner_key->toBe('test-member');
 });
 
 test('co-owners can manage medical data while view-only carers cannot', function () {
@@ -132,7 +132,7 @@ test('expired professional access cannot reveal a canonical medical record', fun
 
 test('unknown and confirmed empty medical knowledge remain distinct', function () {
     $record = MedicalRecord::factory()->create([
-        'owner_key' => 'mia-carter',
+        'owner_key' => 'test-member',
         'allergy_knowledge_status' => MedicalKnowledgeStatus::Unknown,
         'critical_allergies' => [],
         'medication_knowledge_status' => MedicalKnowledgeStatus::NoneKnown,
@@ -165,17 +165,17 @@ test('sensitive medical values are encrypted and never shown to another owner', 
 });
 
 test('medical events preserve their source and owner observations remain unverified', function () {
-    $record = MedicalRecord::factory()->create(['owner_key' => 'mia-carter']);
+    $record = MedicalRecord::factory()->create(['owner_key' => 'test-member']);
 
     $this->post(route('medical-records.entries.store', $record), [
         'entry_type' => 'event',
         'title' => 'Reduced appetite after breakfast',
         'source_type' => 'owner',
-        'source_name' => 'Mia Carter',
+        'source_name' => 'Test Member',
         'event_type' => 'symptom',
         'occurred_at' => now()->subHour()->format('Y-m-d H:i:s'),
         'event_status' => 'active',
-        'summary' => 'Scout ate less than usual but remained alert.',
+        'summary' => 'Birch ate less than usual but remained alert.',
         'severity' => 'mild',
         'next_step' => 'Continue observation and contact the clinic if symptoms worsen.',
     ])->assertRedirect(route('medical-records.manage', $record));
@@ -188,7 +188,7 @@ test('medical events preserve their source and owner observations remain unverif
 
 test('weight entries retain gram precision and update the current summary', function () {
     $record = MedicalRecord::factory()->create([
-        'owner_key' => 'mia-carter',
+        'owner_key' => 'test-member',
         'species' => 'bird',
         'current_weight_grams' => 92,
     ]);
@@ -209,7 +209,7 @@ test('weight entries retain gram precision and update the current summary', func
 });
 
 test('a medication dose is idempotent and a handled slot cannot be marked twice', function () {
-    $record = MedicalRecord::factory()->create(['owner_key' => 'mia-carter']);
+    $record = MedicalRecord::factory()->create(['owner_key' => 'test-member']);
     $medication = Medication::factory()->for($record)->create([
         'status' => MedicationStatus::Active,
     ]);
@@ -244,7 +244,7 @@ test('a medication dose is idempotent and a handled slot cannot be marked twice'
 
 test('temporary access reveals only selected sections and can be revoked', function () {
     $record = MedicalRecord::factory()->create([
-        'owner_key' => 'mia-carter',
+        'owner_key' => 'test-member',
         'microchip_number' => '981020001112223',
         'critical_allergies' => ['Do not expose without emergency permission'],
     ]);
@@ -335,7 +335,7 @@ test('unbound medical access attributes the view to a different authenticated be
 
 test('medical documents stay on private storage and downloads are audited', function () {
     Storage::fake('local');
-    $record = MedicalRecord::factory()->create(['owner_key' => 'mia-carter']);
+    $record = MedicalRecord::factory()->create(['owner_key' => 'test-member']);
 
     $this->post(route('medical-records.documents.store', $record), [
         'title' => 'Clinic visit summary',
@@ -408,7 +408,7 @@ test('medical documents stay on private storage and downloads are audited', func
 
 test('directory detail manage emergency and create screens render', function () {
     $pet = PetProfile::factory()->for($this->authenticatedUser)->create([
-        'name' => 'Scout Health Test',
+        'name' => 'Birch Health Test',
     ]);
     $record = MedicalRecord::factory()->forPetProfile($pet)->create();
     Medication::factory()->for($record)->create();
@@ -419,7 +419,7 @@ test('directory detail manage emergency and create screens render', function () 
     $this->get(route('medical-records.index'))
         ->assertOk()
         ->assertSee('Pet health records')
-        ->assertSee('Scout Health Test');
+        ->assertSee('Birch Health Test');
     $this->get(route('medical-records.create'))
         ->assertOk()
         ->assertSee('Create a medical record');
@@ -439,7 +439,7 @@ test('directory detail manage emergency and create screens render', function () 
 });
 
 test('medical responses cannot be cached indexed or leak temporary links through referrers', function () {
-    $record = MedicalRecord::factory()->create(['owner_key' => 'mia-carter']);
+    $record = MedicalRecord::factory()->create(['owner_key' => 'test-member']);
 
     $this->get(route('medical-records.show', $record))
         ->assertOk()
@@ -458,7 +458,7 @@ test('the medical record seeder is idempotent and creates a useful demo timeline
     $scout = MedicalRecord::query()->where('slug', 'scout-health')->firstOrFail();
     $nori = MedicalRecord::query()->where('slug', 'nori-health')->firstOrFail();
 
-    expect(MedicalRecord::query()->where('owner_key', 'mia-carter')->count())->toBe(2)
+    expect(MedicalRecord::query()->where('owner_key', 'test-member')->count())->toBe(2)
         ->and($scout->events()->count())->toBe(3)
         ->and($scout->vaccinations()->count())->toBe(2)
         ->and($scout->weightEntries()->count())->toBe(4)
@@ -512,7 +512,7 @@ function medicalRecordPayload(array $overrides = []): array
         'emergency_notes' => 'Approach calmly and call the owner.',
         'primary_clinic_name' => 'Paws 24',
         'primary_clinic_contact' => '+370 600 00001',
-        'emergency_contact_name' => 'Mia Carter',
+        'emergency_contact_name' => 'Test Member',
         'emergency_contact_phone' => '+370 600 00002',
         'emergency_contact_relationship' => 'Owner',
         'privacy_acknowledged' => 1,

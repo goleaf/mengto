@@ -1,5 +1,4 @@
 <x-app-shell
-    :owner="$owner"
     :title="__('presentation.brand_title', ['title' => $form['title']])"
     :active-section="$form['active_section']"
 >

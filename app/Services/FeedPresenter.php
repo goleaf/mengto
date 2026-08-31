@@ -26,10 +26,11 @@ final class FeedPresenter
         string $pet = 'all',
         int $page = 1,
     ): array {
+        $managedPets = $this->profiles->pets();
         $mode = array_key_exists($mode, $this->catalog->modes()) ? $mode : 'home';
         $sort = in_array($sort, ['recommended', 'latest'], true) ? $sort : 'recommended';
         $type = $this->validType($type);
-        $pet = $this->validPet($pet);
+        $pet = $this->validPet($pet, $managedPets);
         $page = max(1, min(10, $page));
         $posts = $this->filteredPosts($mode, $sort, $type, $pet);
         $visibleCount = min(count($posts), $page * self::PER_PAGE);
@@ -38,7 +39,7 @@ final class FeedPresenter
 
         return [
             'owner' => $this->profiles->owner(),
-            'pets' => $this->profiles->pets(),
+            'pets' => $managedPets,
             'feed' => [
                 'mode' => $mode,
                 'sort' => $sort,
@@ -56,8 +57,11 @@ final class FeedPresenter
                     'all' => __('messages.all_pets'),
                     'dogs' => __('messages.dogs'),
                     'cats' => __('messages.cats'),
-                    'scout' => __('messages.scout'),
-                    'nori' => __('messages.nori'),
+                    ...collect($managedPets)->mapWithKeys(
+                        static fn (array $managedPet): array => [
+                            $managedPet['profile_key'] => $managedPet['name'],
+                        ],
+                    )->all(),
                 ],
                 'stories' => $this->catalog->stories(),
                 'posts' => $visiblePosts,
@@ -195,14 +199,6 @@ final class FeedPresenter
     /**
      * @return array<string, string>
      */
-    public function identities(): array
-    {
-        return $this->catalog->identities();
-    }
-
-    /**
-     * @return array<string, string>
-     */
     public function safePlaces(): array
     {
         return $this->catalog->safePlaces();
@@ -311,7 +307,18 @@ final class FeedPresenter
      */
     private function createdPost(array $record): array
     {
-        $identity = $this->catalog->identity($record['identity'] ?? 'mia');
+        $owner = $this->profiles->owner();
+        $identity = [
+            'author' => $owner['name'],
+            'handle' => __('messages.owner_profile'),
+            'avatar' => $owner['avatar'],
+            'author_route' => 'members.show',
+            'represented' => $owner['name'],
+            'represented_kind' => __('messages.owner_profile'),
+            'manager' => '',
+            'pet_slug' => '',
+            'species' => 'all',
+        ];
         $preset = $this->catalog->mediaPresets()[$record['media'] ?? 'none']
             ?? $this->catalog->mediaPresets()['none'];
         $format = $record['format'] ?? $preset['format'];
@@ -339,7 +346,7 @@ final class FeedPresenter
             'format' => $format,
             'type_label' => $this->formatLabel($format),
             ...$identity,
-            'author_parameters' => [],
+            'author_parameters' => $owner['profile_route_parameters'],
             'published_at' => $record['updated_at'] ?? $record['created_at'],
             'time' => ($record['status'] ?? 'published') === 'draft' ? __('messages.draft') : __('messages.just_now'),
             'title' => ($record['title'] ?? '') !== '' ? $record['title'] : null,
@@ -628,8 +635,8 @@ final class FeedPresenter
     {
         return match ($pet) {
             'dogs', 'cats' => $post['species'] === $pet,
-            'scout', 'nori' => $post['pet_slug'] === $pet,
-            default => true,
+            'all' => true,
+            default => $post['pet_slug'] === $pet,
         };
     }
 
@@ -664,8 +671,6 @@ final class FeedPresenter
     private function connectionTargets(array $post): array
     {
         return match ((string) ($post['key'] ?? '')) {
-            'mochi-cafe-win' => ['pet-mochi'],
-            'scout-shaded-loop' => ['pet-scout'],
             'dr-elena-heat-check' => ['specialist-elena-ruiz'],
             'rose-city-mabel-home', 'sunny-first-play-video' => ['organization-rose-city'],
             'willow-lost-richmond' => ['pet-willow'],
@@ -679,9 +684,17 @@ final class FeedPresenter
         return array_key_exists($type, $this->typeOptions()) ? $type : 'all';
     }
 
-    private function validPet(string $pet): string
+    /** @param array<int, array<string, mixed>> $managedPets */
+    private function validPet(string $pet, array $managedPets): string
     {
-        return in_array($pet, ['all', 'dogs', 'cats', 'scout', 'nori'], true) ? $pet : 'all';
+        $valid = [
+            'all',
+            'dogs',
+            'cats',
+            ...array_column($managedPets, 'profile_key'),
+        ];
+
+        return in_array($pet, $valid, true) ? $pet : 'all';
     }
 
     /**
@@ -764,27 +777,7 @@ final class FeedPresenter
      */
     private function meetups(): array
     {
-        return [
-            [
-                'key' => 'small-dog-social',
-                'title' => __('messages.small_dog_social_hour'),
-                'place' => __('messages.laurelhurst_park'),
-                'time' => __('messages.sat_10_00'),
-                'datetime' => '2026-08-01T10:00:00-07:00',
-                'date_accessible' => __('messages.saturday_august_1_2026_at_10_00_am'),
-                'attendees' => __('messages.18_neighbors_going'),
-                'detail_route' => 'meetups.small_dog_social',
-            ],
-            [
-                'key' => 'foster-coffee-walk',
-                'title' => __('messages.foster_coffee_walk'),
-                'place' => __('messages.tabor_commons'),
-                'time' => __('messages.sun_9_30'),
-                'datetime' => '2026-08-02T09:30:00-07:00',
-                'date_accessible' => __('messages.sunday_august_2_2026_at_9_30_am'),
-                'attendees' => __('messages.12_neighbors_going'),
-            ],
-        ];
+        return [];
     }
 
     /**

@@ -1,4 +1,4 @@
-<x-app-shell :owner="$owner" :title="$page_title" :active-section="$active_section">
+<x-app-shell :title="$page_title" :active-section="$active_section">
     @if ($expert === null)
         <div class="grid w-full min-w-0 gap-7">
             <x-page-header

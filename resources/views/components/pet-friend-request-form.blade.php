@@ -62,7 +62,7 @@
         </label>
 
         <div class="friend-request__footer">
-            <p>{{ __('presentation.sent_on_behalf', ['pet' => $item['request_form']['source_pet'] === 'pet-scout' ? __('ui.scout') : __('ui.nori')]) }}</p>
+            <p>{{ __('presentation.sent_on_behalf', ['pet' => $item['request_form']['source_pet_name']]) }}</p>
             <x-action-control
                 type="submit"
                 label="{{ __('ui.send_request') }}"

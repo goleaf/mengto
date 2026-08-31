@@ -4,8 +4,16 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-class ExpertTaxonomy
+use App\Models\User;
+use Illuminate\Contracts\Auth\Factory;
+
+final readonly class ExpertTaxonomy
 {
+    public function __construct(
+        private PetProfileCatalog $petProfiles,
+        private Factory $auth,
+    ) {}
+
     /** @return array<string, string> */
     public function types(): array
     {
@@ -130,21 +138,29 @@ class ExpertTaxonomy
     /** @return array<string, string> */
     public function pets(): array
     {
-        return $this->labels('pets', [
-            'scout',
-            'nori',
-            'kesha',
-        ]);
+        return collect($this->petData())->mapWithKeys(
+            static fn (array $pet, string $key): array => [$key => $pet['name']],
+        )->all();
     }
 
     /** @return array<string, array{name: string, species: string, age: string}> */
     public function petData(): array
     {
-        return [
-            'scout' => ['name' => __('messages.scout'), 'species' => 'dog', 'age' => __('messages.4_years')],
-            'nori' => ['name' => __('messages.nori'), 'species' => 'cat', 'age' => __('messages.2_years')],
-            'kesha' => ['name' => __('messages.kesha'), 'species' => 'bird', 'age' => __('messages.2_years')],
-        ];
+        $user = $this->auth->guard()->user();
+
+        if (! $user instanceof User) {
+            return [];
+        }
+
+        return collect($this->petProfiles->managedBy($user))
+            ->mapWithKeys(static fn (array $pet): array => [
+                $pet['profile_key'] => [
+                    'name' => $pet['name'],
+                    'species' => $pet['species'],
+                    'age' => $pet['age'],
+                ],
+            ])
+            ->all();
     }
 
     /**

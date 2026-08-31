@@ -56,7 +56,12 @@ final class BrowseFeedRequest extends FormRequest
                     'repost',
                 ]),
             ],
-            'pet' => ['nullable', Rule::in(['all', 'dogs', 'cats', 'scout', 'nori'])],
+            'pet' => [
+                'nullable',
+                'string',
+                'max:120',
+                'regex:/^(all|dogs|cats|[a-z0-9][a-z0-9-]*)$/',
+            ],
             'page' => ['nullable', 'integer', 'min:1', 'max:10'],
         ];
     }

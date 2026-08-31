@@ -1,4 +1,4 @@
-<x-app-shell :owner="$owner" :title="$page_title" :active-section="$active_section">
+<x-app-shell :title="$page_title" :active-section="$active_section">
     <div class="grid gap-7">
         <header class="care-journal-header" data-care-journal-workspace-identity>
             <div class="care-journal-header__identity">

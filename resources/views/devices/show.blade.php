@@ -1,4 +1,4 @@
-<x-app-shell :owner="$owner" :title="$page_title" :active-section="$active_section">
+<x-app-shell :title="$page_title" :active-section="$active_section">
     <div class="grid gap-7">
         <header class="device-detail-header" data-device-dashboard-identity>
             <div class="device-detail-header__identity">

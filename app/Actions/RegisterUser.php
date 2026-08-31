@@ -31,13 +31,13 @@ final class RegisterUser
     public function handle(array $data): RegisterUserResult
     {
         $verificationEnabled = $this->emailVerification->isEnabled();
-        $email = mb_strtolower(trim($data['email']));
+        $email = Str::lower(Str::trim($data['email']));
 
         try {
             $user = DB::transaction(function () use ($data, $email, $verificationEnabled): User {
-                $user = User::query()->create([
+                $user = User::query()->forceCreate([
                     'actor_key' => 'user-'.Str::lower((string) Str::ulid()),
-                    'name' => trim($data['name']),
+                    'name' => Str::trim($data['name']),
                     'email' => $email,
                     'password' => $data['password'],
                     'locale' => $this->defaultLocale(),
@@ -65,8 +65,9 @@ final class RegisterUser
 
         $verificationNotificationDelivered = true;
 
+        event(new Registered($user));
+
         if ($verificationEnabled) {
-            event(new Registered($user));
             $verificationNotificationDelivered = $user->verificationNotificationWasDelivered();
         }
 

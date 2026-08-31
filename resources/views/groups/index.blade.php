@@ -1,5 +1,4 @@
 <x-directory-page
-    :owner="$owner"
     title="{{ __('groups.directory.page_title') }}"
     active-section="groups"
     :summary="$summary"

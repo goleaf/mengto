@@ -48,7 +48,7 @@ final class BrowsePlacesRequest extends FormRequest
             'verification' => ['nullable', Rule::in(['any', 'verified', 'community', 'recent'])],
             'crowd' => ['nullable', Rule::in(['any', 'low', 'medium', 'high', 'unknown'])],
             'visit_time' => ['nullable', Rule::in(['any', 'morning', 'evening', 'night', 'quiet'])],
-            'pet' => ['nullable', Rule::in(['scout', 'nori', 'none'])],
+            'pet' => ['nullable', 'string', 'max:120', 'regex:/^(none|[a-z0-9-]+)$/'],
             'sort' => ['nullable', Rule::in(['recommended', 'distance', 'travel-time', 'rating', 'reviews', 'open', 'freshness', 'name'])],
             'view' => ['nullable', Rule::in(['split', 'map', 'list', 'fullscreen', 'route'])],
             'mode' => ['nullable', Rule::in(['browse', 'favorites', 'visited', 'events', 'warnings', 'emergency'])],

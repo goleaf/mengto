@@ -89,11 +89,6 @@ return [
         'experience' => 'Patirtis',
         'newest' => 'Neseniai prisijungę',
     ],
-    'pets' => [
-        'scout' => 'Scout · Šuo · 4 metai',
-        'nori' => 'Nori · Katė · 2 metai',
-        'kesha' => 'Kesha · Paukštis · 2 metai',
-    ],
     'profile_statuses' => [
         'draft' => 'Juodraštis',
         'pending' => 'Laukiama patikros',

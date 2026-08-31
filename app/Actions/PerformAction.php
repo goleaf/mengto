@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Actions;
 
+use App\Models\User;
 use App\Services\FeedPresenter;
 use App\Services\LocaleFormatter;
 use App\Services\PreviewService;
@@ -27,6 +28,7 @@ class PerformAction
         private readonly CreatePetProfile $createPetProfile,
         private readonly UpdatePetProfile $updatePetProfile,
         private readonly UpdatePetProfilePrivacy $updatePetProfilePrivacy,
+        private readonly UpdateCurrentUserProfile $updateCurrentUserProfile,
         private readonly LocaleFormatter $formatter,
     ) {}
 
@@ -38,7 +40,7 @@ class PerformAction
      *     parameters?: array<string, string>
      * }
      */
-    public function handle(array $data): array
+    public function handle(User $user, array $data): array
     {
         $action = (string) $data['action'];
         $target = (string) ($data['target'] ?? '');
@@ -73,34 +75,26 @@ class PerformAction
             'toggle-friend' => $this->toggle('friends', $target, __('messages.action.friend_requested', ['label' => $label]), __('messages.action.friend_cancelled', ['label' => $label])),
             'toggle-block' => $this->toggle('blocks', $target, __('messages.action.blocked', ['label' => $label]), __('messages.action.unblocked', ['label' => $label])),
             'mark-all-read' => $this->markAllRead(),
-            'send-message' => $this->sendMessage($data),
-            'create-comment' => $this->createComment($data),
-            'create-post' => $this->createPost($data),
-            'update-post' => $this->updatePost($data),
+            'create-comment' => $this->createComment($user, $data),
+            'create-post' => $this->createPost($user, $data),
+            'update-post' => $this->updatePost($user, $data),
             'set-reaction' => $this->setReaction($data),
             'toggle-post-subscription' => $this->toggle('post-subscriptions', $target, __('messages.action.notifications_enabled', ['label' => $label]), __('messages.action.notifications_paused', ['label' => $label])),
             'hide-post' => $this->toggle('hidden-posts', $target, __('messages.action.hidden', ['label' => $label]), __('messages.action.visible', ['label' => $label])),
             'mute-author' => $this->muteAuthor($target),
             'block-post-author' => $this->blockAuthor($target),
-            'repost-post' => $this->repostPost($target),
+            'repost-post' => $this->repostPost($user, $target),
             'archive-post' => $this->movePost($target, 'archived'),
             'restore-post' => $this->movePost($target, 'published'),
             'delete-post' => $this->deletePost($target),
             'create-post-report' => $this->createPostReport($data),
-            'create-group' => $this->createGroup($data),
-            'create-walk-plan' => $this->createWalkPlan($data),
+            'create-group' => $this->createGroup($user, $data),
             'create-pet' => $this->createPet($data),
-            'update-profile' => $this->updateProfile($data),
+            'update-profile' => $this->updateProfile($user, $data),
             'update-pet' => $this->updatePet($data),
-            'update-profile-privacy' => $this->updateProfilePrivacy($data),
             'update-pet-privacy' => $this->updatePetPrivacy($data),
             'create-profile-report' => $this->createProfileReport($data),
             'share' => $this->share($target, $label),
-            'plan-walk' => $this->planWalk($data),
-            'advance-walk-plan' => $this->advanceWalkPlan($target, $label),
-            'cancel-walk-plan' => $this->cancelWalkPlan($target, $label),
-            'call' => $this->call($target, $label),
-            'show-info' => $this->showInfo($target),
             default => throw ValidationException::withMessages(['action' => __('messages.this_action_is_unavailable')]),
         };
     }
@@ -147,34 +141,9 @@ class PerformAction
 
     /**
      * @param  array<string, mixed>  $data
-     * @return array{message: string, route: string, parameters: array{conversation: string}}
-     */
-    private function sendMessage(array $data): array
-    {
-        $body = $this->requireText($data, 'body');
-        $now = now();
-
-        $this->state->addMessage([
-            'target' => (string) ($data['target'] ?? 'ari'),
-            'sender' => 'Mia',
-            'body' => $body,
-            'time' => $this->formatter->time($now),
-            'datetime' => $now->toAtomString(),
-            'mine' => true,
-        ]);
-
-        return [
-            'message' => __('messages.message_sent_to_your_neighbor'),
-            'route' => 'messages.index',
-            'parameters' => ['conversation' => (string) ($data['target'] ?? 'ari')],
-        ];
-    }
-
-    /**
-     * @param  array<string, mixed>  $data
      * @return array{message: string, route: string, parameters: array{post: string}}
      */
-    private function createComment(array $data): array
+    private function createComment(User $user, array $data): array
     {
         $post = (string) ($data['target'] ?? '');
         $this->requireTarget($post);
@@ -189,10 +158,10 @@ class PerformAction
             'id' => 'comment-'.Str::lower((string) Str::ulid()),
             'post' => $post,
             'parent' => (string) ($data['parent'] ?? ''),
-            'author' => 'Mia Carter',
-            'pet' => 'Scout',
-            'initials' => 'MC',
-            'tone' => 'sun',
+            'author' => $user->name,
+            'pet' => '',
+            'initials' => $this->initials($user->name),
+            'tone' => 'mint',
             'body' => $this->requireText($data, 'body'),
             'time' => $this->formatter->time($now),
             'datetime' => $now->toAtomString(),
@@ -210,7 +179,7 @@ class PerformAction
      * @param  array<string, mixed>  $data
      * @return array{message: string, route: string, parameters: array<string, string>}
      */
-    private function createPost(array $data): array
+    private function createPost(User $user, array $data): array
     {
         $key = 'created-post-'.Str::lower((string) Str::ulid());
         $status = (string) ($data['intent'] ?? 'published');
@@ -218,7 +187,7 @@ class PerformAction
 
         $this->state->addPost([
             'key' => $key,
-            ...$this->postValues($data),
+            ...$this->postValues($user, $data),
             'status' => $status,
             'original_key' => '',
             'created_at' => $now,
@@ -238,13 +207,13 @@ class PerformAction
      * @param  array<string, mixed>  $data
      * @return array{message: string, route: string, parameters: array<string, string>}
      */
-    private function updatePost(array $data): array
+    private function updatePost(User $user, array $data): array
     {
         $target = (string) ($data['target'] ?? '');
         $status = (string) ($data['intent'] ?? 'published');
 
         if (! $this->state->updatePost($target, [
-            ...$this->postValues($data),
+            ...$this->postValues($user, $data),
             'status' => $status,
         ])) {
             throw ValidationException::withMessages(['target' => __('messages.this_publication_cannot_be_edited')]);
@@ -261,10 +230,14 @@ class PerformAction
      * @param  array<string, mixed>  $data
      * @return array<string, string>
      */
-    private function postValues(array $data): array
+    private function postValues(User $user, array $data): array
     {
+        $actor = $user->socialActor()->firstOrFail();
+
         return [
-            'identity' => (string) ($data['identity'] ?? 'mia'),
+            'identity' => $actor->actor_key,
+            'identity_type' => 'user',
+            'author' => $user->name,
             'format' => (string) ($data['format'] ?? 'text'),
             'title' => trim((string) ($data['title'] ?? '')),
             'body' => $this->requireText($data, 'body'),
@@ -346,7 +319,7 @@ class PerformAction
     /**
      * @return array{message: string, route: string, parameters: array<string, string>}
      */
-    private function repostPost(string $target): array
+    private function repostPost(User $user, string $target): array
     {
         $post = $this->feed->post($target);
 
@@ -358,7 +331,9 @@ class PerformAction
 
         $this->state->addPost([
             'key' => 'created-post-'.Str::lower((string) Str::ulid()),
-            'identity' => 'mia',
+            'identity' => $user->socialActor()->value('actor_key'),
+            'identity_type' => 'user',
+            'author' => $user->name,
             'format' => 'repost',
             'title' => '',
             'body' => __('messages.sharing_this_with_my_circle'),
@@ -446,7 +421,7 @@ class PerformAction
      * @param  array<string, mixed>  $data
      * @return array{message: string, route: string}
      */
-    private function createGroup(array $data): array
+    private function createGroup(User $user, array $data): array
     {
         $this->state->addCreated('groups', [
             'id' => (string) Str::uuid(),
@@ -459,7 +434,7 @@ class PerformAction
             'privacy' => (string) ($data['privacy'] ?? 'public'),
             'language' => (string) ($data['language'] ?? 'English'),
             'rules' => $this->requireText($data, 'rules'),
-            'pet_identity' => (string) ($data['pet_identity'] ?? 'mia'),
+            'pet_identity' => (string) ($data['pet_identity'] ?? $user->actor_key),
             'posting_policy' => (string) ($data['posting_policy'] ?? 'members'),
         ]);
 
@@ -471,7 +446,7 @@ class PerformAction
 
     /**
      * @param  array<string, mixed>  $data
-     * @return array{message: string, route: string, parameters: array{item: string}}
+     * @return array{message: string, route: string, parameters: array{petProfile: string}}
      */
     private function createPet(array $data): array
     {
@@ -479,118 +454,8 @@ class PerformAction
 
         return [
             'message' => __('messages.your_pet_was_added_to_brand'),
-            'route' => 'pets.created',
-            'parameters' => ['item' => $profile->profile_key],
-        ];
-    }
-
-    /**
-     * @param  array<string, mixed>  $data
-     * @return array{message: string, route: string, parameters: array{filter: string}}
-     */
-    private function createWalkPlan(array $data): array
-    {
-        $target = (string) ($data['target'] ?? '');
-        $participant = $this->walkParticipant($target);
-        $now = now();
-
-        $this->state->addWalkPlan([
-            'id' => (string) Str::uuid(),
-            'target' => $target,
-            'label' => $participant['pet'],
-            'conversation' => $participant['conversation'],
-            'title' => $this->requireText($data, 'title'),
-            'body' => $this->requireText($data, 'body'),
-            'detail' => (string) ($data['detail'] ?? __('messages.walk.easy_pace_thirty_minutes')),
-            'location' => (string) ($data['location'] ?? ''),
-            'date' => (string) ($data['date'] ?? ''),
-            'time' => (string) ($data['time'] ?? ''),
-            'status' => 'draft',
-            'created_at' => $now->toAtomString(),
-            'updated_at' => $now->toAtomString(),
-        ]);
-
-        return [
-            'message' => __('messages.your_walk_draft_is_ready_to_review'),
-            'route' => 'walks.index',
-            'parameters' => ['filter' => 'drafts'],
-        ];
-    }
-
-    /**
-     * @param  array<string, mixed>  $data
-     * @return array{message: string, route: string, parameters: array{filter: string}}
-     */
-    private function planWalk(array $data): array
-    {
-        $target = (string) ($data['target'] ?? '');
-        $this->requireTarget($target);
-        $participant = $this->walkParticipant($target);
-        $now = now();
-
-        $this->state->ensureWalkPlanDraft([
-            'id' => (string) Str::uuid(),
-            'target' => $target,
-            'label' => $participant['pet'],
-            'conversation' => $participant['conversation'],
-            'title' => __('messages.walk_with_pet', [
-                'pet' => $participant['pet'],
-            ]),
-            'body' => __('messages.start_with_a_calm_hello_keep_the_first_loop_easy_and_leave_room_for_a_quiet_finish'),
-            'detail' => __('messages.easy_pace_30_min'),
-            'location' => $participant['location'],
-            'date' => today()->addDays(2)->format('Y-m-d'),
-            'time' => '08:30',
-            'status' => 'draft',
-            'created_at' => $now->toAtomString(),
-            'updated_at' => $now->toAtomString(),
-        ]);
-
-        return [
-            'message' => __('messages.calm_walk_ready', [
-                'pet' => $participant['pet'],
-            ]),
-            'route' => 'walks.index',
-            'parameters' => ['filter' => 'drafts'],
-        ];
-    }
-
-    /**
-     * @return array{message: string, route: string, parameters: array{filter: string}}
-     */
-    private function advanceWalkPlan(string $target, string $label): array
-    {
-        $this->requireTarget($target);
-        $status = $this->state->advanceWalkPlan($target);
-
-        if ($status === null) {
-            throw ValidationException::withMessages(['target' => __('messages.this_walk_plan_cannot_be_updated')]);
-        }
-
-        return [
-            'message' => $status === 'confirmed'
-                ? __('messages.action.walk_confirmed', ['label' => $label])
-                : __('messages.action.walk_completed', ['label' => $label]),
-            'route' => 'walks.index',
-            'parameters' => ['filter' => $status === 'completed' ? 'completed' : 'upcoming'],
-        ];
-    }
-
-    /**
-     * @return array{message: string, route: string, parameters: array{filter: string}}
-     */
-    private function cancelWalkPlan(string $target, string $label): array
-    {
-        $this->requireTarget($target);
-
-        if (! $this->state->cancelWalkPlan($target)) {
-            throw ValidationException::withMessages(['target' => __('messages.this_walk_plan_cannot_be_cancelled')]);
-        }
-
-        return [
-            'message' => __('messages.action.walk_cancelled', ['label' => $label]),
-            'route' => 'walks.index',
-            'parameters' => ['filter' => 'cancelled'],
+            'route' => 'pets.manage.show',
+            'parameters' => ['petProfile' => $profile->profile_key],
         ];
     }
 
@@ -613,50 +478,19 @@ class PerformAction
     }
 
     /**
-     * @return array{message: string, route: string, parameters: array{conversation: string}}
-     */
-    private function call(string $target, string $label): array
-    {
-        $this->requireTarget($target);
-        $isRequested = $this->state->toggle('call-requests', $target);
-
-        return [
-            'message' => $isRequested
-                ? __('messages.action.call_requested', ['label' => $label])
-                : __('messages.action.call_cancelled', ['label' => $label]),
-            'route' => 'messages.details',
-            'parameters' => ['conversation' => $target],
-        ];
-    }
-
-    /**
-     * @return array{message: string, route: string, parameters: array{conversation: string}}
-     */
-    private function showInfo(string $target): array
-    {
-        $this->requireTarget($target);
-
-        return [
-            'message' => __('messages.conversation_details_are_ready'),
-            'route' => 'messages.details',
-            'parameters' => ['conversation' => $target],
-        ];
-    }
-
-    /**
      * @param  array<string, mixed>  $data
      * @return array{message: string, route: string}
      */
-    private function updateProfile(array $data): array
+    private function updateProfile(User $user, array $data): array
     {
-        $this->state->updateProfile([
-            'name' => $this->requireText($data, 'title'),
-            'bio' => $this->requireText($data, 'body'),
-            'status' => (string) ($data['detail'] ?? ''),
-            'location' => (string) ($data['location'] ?? ''),
-        ]);
+        $updated = $this->updateCurrentUserProfile->handle($user, $data);
+        $actor = $updated->socialActor()->firstOrFail();
 
-        return ['message' => __('messages.your_profile_was_updated'), 'route' => 'profile.mia'];
+        return [
+            'message' => __('messages.your_profile_was_updated'),
+            'route' => 'members.show',
+            'parameters' => ['socialActor' => $actor->actor_key],
+        ];
     }
 
     /**
@@ -665,32 +499,13 @@ class PerformAction
      */
     private function updatePet(array $data): array
     {
-        $pet = (string) ($data['target'] ?? 'scout');
+        $pet = (string) ($data['target'] ?? '');
         $profile = $this->updatePetProfile->handle($pet, $data);
 
         return [
             'message' => __('messages.pet_profile_updated', ['pet' => $profile->name]),
-            'route' => $pet === 'nori' ? 'pets.nori' : 'pets.scout',
-        ];
-    }
-
-    /**
-     * @param  array<string, mixed>  $data
-     * @return array{message: string, route: string}
-     */
-    private function updateProfilePrivacy(array $data): array
-    {
-        $this->state->updateOwnerPrivacy([
-            'location' => (string) $data['location_visibility'],
-            'pets' => (string) $data['pets_visibility'],
-            'posts' => (string) $data['posts_visibility'],
-            'friends' => (string) $data['friends_visibility'],
-            'activity' => (string) $data['activity_visibility'],
-        ]);
-
-        return [
-            'message' => __('messages.owner_profile_privacy_was_updated'),
-            'route' => 'profile.mia',
+            'route' => 'pets.manage.show',
+            'parameters' => ['petProfile' => $profile->profile_key],
         ];
     }
 
@@ -705,8 +520,18 @@ class PerformAction
 
         return [
             'message' => __('messages.pet_profile_privacy_updated', ['pet' => $profile->name]),
-            'route' => $pet === 'nori' ? 'pets.nori' : 'pets.scout',
+            'route' => 'pets.manage.show',
+            'parameters' => ['petProfile' => $profile->profile_key],
         ];
+    }
+
+    private function initials(string $name): string
+    {
+        return collect(preg_split('/\s+/u', trim($name)) ?: [])
+            ->filter()
+            ->take(2)
+            ->map(static fn (string $part): string => mb_strtoupper(mb_substr($part, 0, 1)))
+            ->implode('');
     }
 
     /**
@@ -734,19 +559,6 @@ class PerformAction
             'route' => $context['route'],
             'parameters' => $context['route_parameters'],
         ];
-    }
-
-    /**
-     * @return array{pet: string, conversation: string, location: string}
-     */
-    private function walkParticipant(string $target): array
-    {
-        return match ($target) {
-            'mochi' => ['pet' => 'Mochi', 'conversation' => 'ari', 'location' => __('messages.fields_park_north_gate')],
-            'juniper' => ['pet' => 'Juniper', 'conversation' => 'noah', 'location' => __('messages.sellwood_riverfront_trailhead')],
-            'scout' => ['pet' => 'Scout', 'conversation' => '', 'location' => __('messages.laurelhurst_park_pond')],
-            default => throw ValidationException::withMessages(['target' => __('messages.choose_an_available_walking_companion')]),
-        };
     }
 
     private function requireTarget(string $target): void

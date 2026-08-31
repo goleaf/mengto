@@ -40,17 +40,19 @@ final readonly class MemberProfileCatalog
                 $viewerActorIds,
             );
 
-        $pets = PetProfile::query()
-            ->visibleTo(null)
-            ->select([
-                'id', 'user_id', 'profile_key', 'slug', 'name', 'species', 'breed',
-                'visibility', 'status', 'is_discoverable', 'published_at',
-            ])
+        $petQuery = PetProfile::query()
+            ->visibleTo($viewer)
             ->where('user_id', $member->id)
             ->when($blockedActorIds !== [], fn ($query) => $query->whereDoesntHave(
                 'socialActor',
                 fn ($actor) => $actor->whereIn('id', $blockedActorIds),
-            ))
+            ));
+        $petCount = (clone $petQuery)->count();
+        $pets = $petQuery
+            ->select([
+                'id', 'user_id', 'profile_key', 'slug', 'name', 'species', 'breed',
+                'visibility', 'status', 'is_discoverable', 'published_at',
+            ])
             ->orderByDesc('published_at')
             ->orderBy('id')
             ->limit(6)
@@ -62,11 +64,13 @@ final readonly class MemberProfileCatalog
             ])
             ->all();
 
-        $posts = ContentPublication::query()
-            ->feedFields()
+        $postQuery = ContentPublication::query()
             ->visibleTo($viewer, $viewerActorIds, $blockedActorIds)
             ->where('publishing_actor_id', $actor->id)
-            ->where('content_type', ContentPublicationType::Post->value)
+            ->where('content_type', ContentPublicationType::Post->value);
+        $postCount = (clone $postQuery)->count();
+        $posts = $postQuery
+            ->feedFields()
             ->with([
                 'publishingActor' => fn ($query) => $query->directoryFields(),
                 'publishingActor.user:id,name',
@@ -85,8 +89,22 @@ final readonly class MemberProfileCatalog
         return [
             'name' => $member->name,
             'description' => __('member_profiles.page.description'),
-            'status' => __('member_profiles.page.public_status'),
-            'details' => [
+            'status' => __($actor->is_discoverable
+                ? 'member_profiles.page.public_status'
+                : 'member_profiles.page.private_status'),
+            'stats' => [
+                [
+                    'key' => 'pets',
+                    'label' => __('member_profiles.stats.pets'),
+                    'value' => $petCount,
+                ],
+                [
+                    'key' => 'posts',
+                    'label' => __('member_profiles.stats.posts'),
+                    'value' => $postCount,
+                ],
+            ],
+            'details' => array_values(array_filter([
                 [
                     'label' => __('member_profiles.details.member_type'),
                     'value' => $actor->actor_type->label(),
@@ -95,7 +113,11 @@ final readonly class MemberProfileCatalog
                     'label' => __('member_profiles.details.joined'),
                     'value' => $this->formatter->monthYear($member->created_at),
                 ],
-            ],
+                $member->hasVerifiedEmail() ? [
+                    'label' => __('member_profiles.details.verification'),
+                    'value' => __('member_profiles.details.email_verified'),
+                ] : null,
+            ])),
             'pets' => $pets,
             'posts' => $posts,
         ];

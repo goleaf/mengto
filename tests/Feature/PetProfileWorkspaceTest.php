@@ -88,12 +88,12 @@ it('shows only owned and actively shared profiles in the workspace', function ()
 
 it('searches filters sorts and paginates managed profiles with safe url state', function (): void {
     PetProfile::factory()->for($this->authenticatedUser)->discoverable()->create([
-        'name' => 'Alpha Scout',
+        'name' => 'Alpha Birch',
         'species' => 'dog',
         'breed' => 'Border Collie',
     ]);
     PetProfile::factory()->for($this->authenticatedUser)->draft()->create([
-        'name' => 'Beta Nori',
+        'name' => 'Beta Maple',
         'species' => 'cat',
         'breed' => 'Domestic Shorthair',
     ]);
@@ -101,13 +101,13 @@ it('searches filters sorts and paginates managed profiles with safe url state', 
 
     $this->get(route('pets.index', ['q' => 'Border', 'filter' => 'owned', 'sort' => 'name']))
         ->assertOk()
-        ->assertSee('Alpha Scout')
-        ->assertDontSee('Beta Nori');
+        ->assertSee('Alpha Birch')
+        ->assertDontSee('Beta Maple');
 
     $this->get(route('pets.index', ['filter' => 'drafts']))
         ->assertOk()
-        ->assertSee('Beta Nori')
-        ->assertDontSee('Alpha Scout');
+        ->assertSee('Beta Maple')
+        ->assertDontSee('Alpha Birch');
 
     $page = $this->get(route('pets.index'));
     $xpath = responseXPath($page);

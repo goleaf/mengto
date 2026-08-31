@@ -9,7 +9,6 @@ use App\Enums\OrganizationType;
 use App\Livewire\Forms\OrganizationForm;
 use App\Models\Organization;
 use App\Models\User;
-use App\Services\ProfilePresenter;
 use Illuminate\Contracts\Auth\Factory as AuthFactory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -29,12 +28,9 @@ final class OrganizationDirectory extends Component
 
     private AuthFactory $auth;
 
-    private ProfilePresenter $profiles;
-
-    public function boot(AuthFactory $auth, ProfilePresenter $profiles): void
+    public function boot(AuthFactory $auth): void
     {
         $this->auth = $auth;
-        $this->profiles = $profiles;
     }
 
     public function mount(): void
@@ -98,7 +94,6 @@ final class OrganizationDirectory extends Component
     {
         return view('livewire.organizations.organization-directory')
             ->layout('components.livewire-app-layout', [
-                'owner' => $this->profiles->owner(),
                 'title' => __('organizations.pages.index.title'),
                 'activeSection' => 'organizations',
             ]);

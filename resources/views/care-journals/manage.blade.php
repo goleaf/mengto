@@ -1,4 +1,4 @@
-<x-app-shell :owner="$owner" :title="$page_title" :active-section="$active_section">
+<x-app-shell :title="$page_title" :active-section="$active_section">
     <div class="grid gap-7">
         <header class="care-manage-header">
             <div>
@@ -87,7 +87,7 @@
                             </label>
                             <label>
                                 {{ __('ui.assignee_name') }}
-                                <input name="assignee_name" value="{{ old('assignee_name', __('ui.mia_carter')) }}" maxlength="120">
+                                <input name="assignee_name" value="{{ old('assignee_name', $owner['name']) }}" maxlength="120">
                             </label>
                             <label>
                                 {{ __('ui.repeat_rule') }}

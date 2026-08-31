@@ -454,6 +454,7 @@ test('onboarding pet creation uses canonical private defaults and a server-only 
 
 test('normal pet creation keeps its canonical workspace destination', function (): void {
     $user = User::factory()->create();
+    app(SocialActorResolver::class)->provisionPrivateForUser($user);
 
     $component = Livewire::actingAs($user)
         ->test(CreatePetProfile::class)

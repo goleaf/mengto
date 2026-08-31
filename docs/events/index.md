@@ -47,8 +47,6 @@ The current release adds:
 | `meetups.show` | Canonical event workspace by bound event | `ForumEventPolicy::view` |
 | `meetups.edit` | Organizer edit and publish workspace | `ForumEventPolicy::update/publish` |
 | `meetups.manage` | Organizer participant/invitation/update/cancel workspace | Scoped organizer/team abilities |
-| `meetups.small_dog_social` | Stable compatibility detail URL | Same bound-event policy |
-| `meetups.created` | Legacy created-content compatibility URL | Existing created-content boundary |
 
 All product routes are inside the verified active-account portal boundary.
 Unlisted events are direct-link visible but excluded from directory queries.

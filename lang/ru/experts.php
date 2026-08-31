@@ -89,11 +89,6 @@ return [
         'experience' => 'Опыт',
         'newest' => 'Недавно присоединились',
     ],
-    'pets' => [
-        'scout' => 'Scout · Собака · 4 года',
-        'nori' => 'Nori · Кошка · 2 года',
-        'kesha' => 'Kesha · Птица · 2 года',
-    ],
     'profile_statuses' => [
         'draft' => 'Черновик',
         'pending' => 'Ожидает проверки',

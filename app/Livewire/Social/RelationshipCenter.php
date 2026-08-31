@@ -28,7 +28,6 @@ use App\Models\SocialActor;
 use App\Models\SocialRelationship;
 use App\Models\SocialRelationshipRequest;
 use App\Models\User;
-use App\Services\ProfilePresenter;
 use App\Services\SocialActorDirectory;
 use App\Services\SocialActorPresenter;
 use App\Services\SocialActorResolver;
@@ -87,8 +86,6 @@ final class RelationshipCenter extends Component
 
     private SocialBlockService $blocks;
 
-    private ProfilePresenter $profiles;
-
     private ?SocialActor $resolvedActor = null;
 
     public function boot(
@@ -108,7 +105,6 @@ final class RelationshipCenter extends Component
         RevokeSocialAccountBlock $revokeAccountBlock,
         ReportSocialRelationshipRequest $reportRequest,
         SocialBlockService $blocks,
-        ProfilePresenter $profiles,
     ): void {
         $this->auth = $auth;
         $this->actors = $actors;
@@ -126,7 +122,6 @@ final class RelationshipCenter extends Component
         $this->revokeAccountBlock = $revokeAccountBlock;
         $this->reportRequest = $reportRequest;
         $this->blocks = $blocks;
-        $this->profiles = $profiles;
     }
 
     public function mount(): void
@@ -520,7 +515,6 @@ final class RelationshipCenter extends Component
     {
         return view('livewire.social.relationship-center')
             ->layout('components.livewire-app-layout', [
-                'owner' => $this->profiles->owner(),
                 'title' => __('social_relationships.title'),
                 'activeSection' => 'circle',
             ]);

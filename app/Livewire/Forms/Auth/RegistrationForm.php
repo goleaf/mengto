@@ -56,8 +56,8 @@ final class RegistrationForm extends Form
      */
     public function validatedData(): array
     {
-        $this->name = trim($this->name);
-        $this->email = Str::lower(trim($this->email));
+        $this->name = Str::trim($this->name);
+        $this->email = Str::lower(Str::trim($this->email));
 
         /** @var array{name: string, email: string, password: string} $validated */
         $validated = $this->validate();

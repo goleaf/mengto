@@ -19,9 +19,11 @@
         <header class="comment-item__header">
             <div class="min-w-0">
                 <h3 class="comment-item__author">{{ $comment['author'] }}</h3>
-                <x-icon-text icon="paw-print" class="mt-1">
-                    {{ __('presentation.with_pet', ['pet' => $comment['pet']]) }}
-                </x-icon-text>
+                @if ($comment['pet'] !== '')
+                    <x-icon-text icon="paw-print" class="mt-1">
+                        {{ __('presentation.with_pet', ['pet' => $comment['pet']]) }}
+                    </x-icon-text>
+                @endif
             </div>
             <time datetime="{{ $comment['datetime'] }}" class="comment-item__time">{{ $comment['time'] }}</time>
         </header>

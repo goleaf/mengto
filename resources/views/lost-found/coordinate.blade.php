@@ -1,4 +1,4 @@
-<x-app-shell :owner="$owner" :title="$page_title" :active-section="$active_section">
+<x-app-shell :title="$page_title" :active-section="$active_section">
     <div class="grid gap-6">
         <header class="flex flex-col gap-4 border-b border-paw-line pb-6 lg:flex-row lg:items-end lg:justify-between">
             <div>

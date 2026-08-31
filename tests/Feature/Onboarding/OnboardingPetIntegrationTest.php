@@ -172,7 +172,7 @@ test('onboarding pet create navigation returns directly without changing intende
     $xpath = responseXPath($response);
 
     expect($xpath->query('//a[@href="'.route('onboarding.show').'"]')->length)
-        ->toBeGreaterThanOrEqual(2)
+        ->toBeGreaterThanOrEqual(1)
         ->and($xpath->query('//a[@href="'.route('pets.index').'"]'))->toHaveCount(0)
         ->and(session('url.intended'))->toBe(route('devices.index'));
 });

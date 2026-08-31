@@ -1,4 +1,4 @@
-<x-app-shell :owner="$owner" :title="$page_title" :active-section="$active_section">
+<x-app-shell :title="$page_title" :active-section="$active_section">
     <div class="mx-auto grid w-full max-w-6xl gap-7">
         <header class="care-shared-header">
             <div>

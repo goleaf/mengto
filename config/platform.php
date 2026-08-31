@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 return [
     'supported_locales' => ['en', 'lt', 'ru'],
-    'demo_seed_environments' => ['local', 'testing'],
+    'demo_seed_environments' => ['local', 'demo', 'testing'],
     'email_verification_enabled' => env('EMAIL_VERIFICATION_ENABLED', true),
     'observability' => [
         'application_logs' => [

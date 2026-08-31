@@ -19,7 +19,6 @@ use App\Services\PetProfileAccess;
 use App\Services\PetProfileCache;
 use App\Services\PetProfileEventRecorder;
 use App\Services\PetProfileNameHistory;
-use App\Services\PrototypeState;
 use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
@@ -29,7 +28,6 @@ final class UpdatePetProfile
     public function __construct(
         private readonly ForumActor $actor,
         private readonly Gate $gate,
-        private readonly PrototypeState $state,
         private readonly PetProfileAccess $access,
         private readonly PetProfileEventRecorder $events,
         private readonly PetProfileCache $cache,
@@ -89,7 +87,7 @@ final class UpdatePetProfile
             ? 'pet-update:'.hash('sha256', (string) $data['idempotency_key'])
             : null;
 
-        return DB::transaction(function () use ($data, $eventIdempotencyKey, $profile, $slug, $user): PetProfile {
+        return DB::transaction(function () use ($data, $eventIdempotencyKey, $profile, $user): PetProfile {
             if ($eventIdempotencyKey !== null && $profile->lifecycleEvents()
                 ->where('idempotency_key', $eventIdempotencyKey)
                 ->exists()) {
@@ -224,14 +222,6 @@ final class UpdatePetProfile
                     $normalizedBreedOrigins['origins'],
                 );
             }
-
-            // Keep pre-normalization profile snapshots readable during the compatibility window.
-            $this->state->updatePet([
-                'name' => $locked->name,
-                'story' => (string) $data['body'],
-                'status' => (string) ($nextProfileData['status'] ?? ''),
-                'breed' => $locked->breed ?? '',
-            ], $slug);
 
             $manager = $this->access->membership($locked, $user);
             $this->events->record(

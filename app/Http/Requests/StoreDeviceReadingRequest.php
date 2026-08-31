@@ -26,7 +26,12 @@ class StoreDeviceReadingRequest extends FormRequest
     {
         return [
             'external_event_id' => ['required', 'string', 'max:160'],
-            'pet_profile_key' => ['nullable', Rule::in(['scout', 'nori'])],
+            'pet_profile_key' => [
+                'nullable',
+                'string',
+                'max:120',
+                'regex:/^[a-z0-9-]+$/',
+            ],
             'metric_type' => [
                 'required',
                 Rule::in([

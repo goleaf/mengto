@@ -11,7 +11,10 @@ use App\Models\AuditLog;
 use App\Models\User;
 use App\Notifications\VerifyEmailNotification;
 use App\Services\EmailVerificationMode;
+use App\Services\SocialActorResolver;
 use Database\Seeders\DatabaseSeeder;
+use Illuminate\Auth\Events\Registered;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Route;
 use Livewire\Livewire;
@@ -23,6 +26,7 @@ test('email verification is enabled by default and owns the verified alias', fun
 
 test('only an exact false boolean disables email verification', function (): void {
     $user = User::factory()->unverified()->create();
+    app(SocialActorResolver::class)->provisionPrivateForUser($user);
     $this->actingAs($user);
 
     config()->set('platform.email_verification_enabled', 'false');
@@ -37,6 +41,7 @@ test('only an exact false boolean disables email verification', function (): voi
 
 test('central portal access blocks an active unverified account only while verification is enabled', function (): void {
     $user = User::factory()->unverified()->create();
+    app(SocialActorResolver::class)->provisionPrivateForUser($user);
     $this->actingAs($user);
 
     $this->get(route('content.index'))
@@ -80,6 +85,7 @@ test('disabled verification does not weaken guest or inactive account denial', f
 
 test('registration immediately verifies the account without sending mail when disabled', function (): void {
     Notification::fake();
+    Event::fake([Registered::class]);
     config()->set('platform.email_verification_enabled', false);
     auth()->logout();
 
@@ -95,6 +101,10 @@ test('registration immediately verifies the account without sending mail when di
     $user = User::query()->where('email', 'lina@example.test')->firstOrFail();
 
     expect($user->hasVerifiedEmail())->toBeTrue();
+    Event::assertDispatched(
+        Registered::class,
+        fn (Registered $event): bool => $event->user->is($user),
+    );
     Notification::assertNotSentTo($user, VerifyEmailNotification::class);
     $this->assertAuthenticatedAs($user);
 });
@@ -153,6 +163,7 @@ test('pending email activation refuses writes while verification is enabled', fu
 
 test('disabled mode root seeding creates no active pending email accounts and remains repeatable', function (): void {
     config()->set('platform.email_verification_enabled', false);
+    $before = User::query()->count();
 
     $this->seed(DatabaseSeeder::class);
     $this->seed(DatabaseSeeder::class);
@@ -161,5 +172,5 @@ test('disabled mode root seeding creates no active pending email accounts and re
         ->where('status', UserStatus::Active)
         ->whereNull('email_verified_at')
         ->count())->toBe(0)
-        ->and(User::query()->count())->toBe(10);
+        ->and(User::query()->count())->toBe($before + 10);
 });

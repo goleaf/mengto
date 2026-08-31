@@ -56,9 +56,6 @@ the decision column is the desired page-identity boundary.
 | Name | URI | Runtime owner | Class | Identity component or audited exception |
 | --- | --- | --- | --- | --- |
 | `home` | `/` | `HomeController` | `deliberate special case` | no page identity |
-| `profile.mia` | `/@mia-carter` | `MemberProfilePreviewController` | `detail` | verified localized token-compatible hero with stable tab/audience codes |
-| `pets.nori` | `/@mia-carter/nori` | `PetProfilePreviewController` | `detail` | retained by the completed exception audit below |
-| `pets.scout` | `/@mia-carter/scout` | `PetProfilePreviewController` | `detail` | retained by the completed exception audit below |
 | `admin.forum.index` | `/admin/forum` | `ForumAdministrationController` | `dashboard` | retain `x-page-header` |
 | `bookings.show` | `/bookings/{booking}` | `BookingController` | `workspace` | retained by the completed exception audit below |
 | `care-access.show` | `/care-access/{token}` | `CareSharedJournalController` | `shared access` | retain isolated semantic document |
@@ -136,13 +133,10 @@ the decision column is the desired page-identity boundary.
 | `medical-records.emergency` | `/medical-records/{medicalRecord}/emergency` | `MedicalEmergencyCardController` | `print/export` | retain isolated semantic document |
 | `medical-records.manage` | `/medical-records/{medicalRecord}/manage` | `MedicalRecordManageController` | `workspace` | retained by the completed exception audit below |
 | `meetups.index` | `/meetups` | `MeetupDirectoryPreviewController` | `directory` | retain `x-page-header` |
-| `meetups.small_dog_social` | `/meetups/small-dog-social` | `MeetupDetailPreviewController` | `detail` | retain `x-page-header` |
 | `meetups.show` | `/meetups/{event}` | `MeetupDetailPreviewController` | `detail` | retain `x-page-header` |
 | `meetups.created` | `/meetups/{item}` | `CreatedContentPreviewController` | `detail` | retained by the completed exception audit below |
 | `messages.index` | `/messages` | `MessageCenterPreviewController` | `workspace` | retain `x-page-header` |
-| `messages.details` | `/messages/{conversation}/details` | `ConversationDetailPreviewController` | `workspace` | retained by the completed exception audit below |
 | `neighbors.index` | `/neighbors` | `NeighborDirectoryPreviewController` | `directory` | retain `x-page-header` |
-| `neighbors.ari` | `/neighbors/ari-jensen` | `NeighborProfilePreviewController` | `detail` | verified profile-led hero, dedicated EN/LT/RU presenter, passive Blade, canonical icons, and responsive browser ratchet |
 | `notifications.index` | `/notifications` | `NotificationCenterPreviewController` | `directory` | retain `x-page-header` |
 | `onboarding.show` | `/onboarding` | `Onboarding` | `authentication` | dedicated authenticated account-flow shell with resumable server state |
 | `organizations.index` | `/organizations` | `Organizations\OrganizationDirectory` | `directory` | retain `x-page-header` |
@@ -155,8 +149,6 @@ the decision column is the desired page-identity boundary.
 | `pets.manage.show` | `/pets/manage/{petProfile:profile_key}` | `Pets\ManagePetProfile` | `editor` | retain `x-page-header` |
 | `pets.media.show` | `/pets/profile/{petProfile:profile_key}/media/{petProfileMedia:media_key}` | `PetProfileMediaController` | `deliberate special case` | no page identity |
 | `pets.profile` | `/pets/profile/{petProfile:profile_key}` | `Pets\PublicPetProfile` | `detail` | retained by the completed exception audit below |
-| `pets.scout.legacy` | `/pets/scout` | `RedirectController` | `deliberate special case` | no page identity |
-| `pets.created` | `/pets/{item}` | `CreatedContentPreviewController` | `detail` | retained by the completed exception audit below |
 | `places.index` | `/places` | `PlaceDirectoryPreviewController` | `directory` | retain `x-page-header`; policy-scoped persisted catalogue |
 | `places.moderation.submissions` | `/places/moderation/submissions` | `Places\PlaceModerationWorkspace` | `dashboard` | authorized moderator queue with canonical page identity |
 | `places.media.show` | `/places/{place:slug}/media/{placeMedia:media_key}/{variant}` | `PlaceMediaController` | `deliberate special case` | authenticated contained media response; no document identity |
@@ -166,7 +158,6 @@ the decision column is the desired page-identity boundary.
 | `portal-media.show` | `/portal-media/{path}` | `PortalMediaController` | `deliberate special case` | no page identity |
 | `posts.show` | `/posts/{post}` | `PostThreadPreviewController` | `detail` | retain `x-page-header` |
 | `preview.feed` | `/preview/feed` | `PreviewController` | `directory` | retain `x-page-header` |
-| `profile.mia.legacy` | `/profile/mia-carter` | `RedirectController` | `deliberate special case` | no page identity |
 | `profile.settings` | `/profile/settings` | `ProfileSettings` | `settings` | retain `x-page-header` |
 | `register` | `/register` | `Auth\Register` | `authentication` | retain auth shell |
 | `password.reset` | `/reset-password/{token}` | `Auth\ResetPassword` | `authentication` | retain auth shell |
@@ -188,9 +179,6 @@ inside one labelled, keyboard-reachable navigation contract.
 
 | Route | Current identity owner | Disposition and semantic reason |
 | --- | --- | --- |
-| `profile.mia` | `x-owner-profile` → `x-profile-hero` | Retain: profile cover/avatar, audience, relationship state, and profile actions form one entity identity. |
-| `pets.nori` | `x-pet-profile` | Retain: pet media, owner context, health-safe public signals, and profile actions differ from a normal header. |
-| `pets.scout` | `x-pet-profile` | Retain for the same pet-profile semantics; the legacy URL remains a separate redirect special case. |
 | `content.show` | `x-content-publication-card`, `data-content-detail-identity` | Retain: the publication document itself is the identity surface; a localized untitled fallback now guarantees one non-empty `h1`. |
 | `experts.show` | expert profile hero, `data-expert-detail-identity` | Retain: avatar, professional type, independent verification, scope, and authorized actions are inseparable profile identity. |
 | `forum.topics.show` | `x-page-header` | Canonical header; topic status and actions are prepared metadata, so no bespoke hero is needed. |
@@ -201,12 +189,9 @@ inside one labelled, keyboard-reachable navigation contract.
 | `lost-found.show` | case hero, `data-lost-found-detail-identity` | Retain: public case code, urgency, status, last-seen context, and coordination actions are safety-critical identity. |
 | `marketplace.show` | listing hero, `data-marketplace-detail-identity` | Retain: media, price, seller/status, safety information, and transaction actions are listing identity. |
 | `meetups.show` | `livewire:forum.forum-event-workspace` with `x-page-header` | Canonical event header inside the database-backed workspace; no parallel hero. |
-| `meetups.small_dog_social` | `livewire:forum.forum-event-workspace` with `x-page-header` | Canonical event header; compatibility deep link and event target remain unchanged. |
 | `meetups.created` | `x-created-content-detail` → `x-detail-page` / `x-detail-hero` | Retain the created-resource confirmation semantics. |
 | `members.show` | `x-page-header` | Canonical minimized member identity; policy and block-scoped profile data remain prepared upstream. |
-| `neighbors.ari` | `x-profile-hero` | Retain: relationship state, avatar, profile signals, and actions are profile-led identity. |
 | `pets.profile` | public-pet profile header | Retain: canonical pet identity, manager-safe public projection, media, and privacy state differ from a normal header. |
-| `pets.created` | `x-created-content-detail` → `x-detail-page` / `x-detail-hero` | Retain the created-resource confirmation semantics. |
 | `places.show` | `x-place-hero`, `data-place-detail-hero` | Retain: place media, public-safe location, open state, verification, warnings, and route actions are resource identity. |
 | `posts.show` | `x-page-header` | Canonical post-thread identity; thread content remains below the shared header. |
 | `share.show` | `x-detail-page` / `x-context-hero` | Retain: the explicitly selected share target and privacy boundary are the page identity. |
@@ -222,7 +207,6 @@ inside one labelled, keyboard-reachable navigation contract.
 | `medical-records.manage` | medical management header plus `x-detail-navigation` | Retain: encrypted owner controls and selected pet record are private operational identity. |
 | `medical-records.show` | medical record header, `data-medical-record-workspace-identity` | Retain: selected pet, privacy, clinical summary, and protected record actions are workspace identity. |
 | `messages.index` | shared messages view with `x-page-header` | Canonical header; nine-folder order remains below it and above the messaging shell. |
-| `messages.details` | shared messages view with `x-page-header` | Canonical header; the named details deep link selects current context without restoring the removed historical template. |
 | `organizations.show` | Livewire organization workspace with `x-page-header` | Canonical header inside policy-scoped organization operations. |
 | `pets.manage.access-requests` | Livewire manager workspace with `x-page-header` | Canonical header; pet binding and manager authorization remain server authoritative. |
 | `pets.manage.invitations` | Livewire invitation workspace with `x-page-header` | Canonical header; recipient-scoped invitation state remains below it. |

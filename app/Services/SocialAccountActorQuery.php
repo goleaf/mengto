@@ -53,7 +53,6 @@ final class SocialAccountActorQuery
                         ->whereIn('owner_user_id', $ids));
             })
             ->orderBy('id')
-            ->limit((int) config('social_relationships.account_actor_limit', 500))
             ->get();
     }
 

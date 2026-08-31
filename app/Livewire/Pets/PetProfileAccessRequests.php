@@ -11,7 +11,6 @@ use App\Models\PetProfile;
 use App\Models\PetProfileAccessRequest;
 use App\Models\User;
 use App\Services\LocaleFormatter;
-use App\Services\ProfilePresenter;
 use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Str;
@@ -33,19 +32,15 @@ final class PetProfileAccessRequests extends Component
 
     private ReviewPetProfileAccessRequest $reviewAction;
 
-    private ProfilePresenter $profiles;
-
     private LocaleFormatter $formatter;
 
     public function boot(
         Gate $gate,
         ReviewPetProfileAccessRequest $reviewAction,
-        ProfilePresenter $profiles,
         LocaleFormatter $formatter,
     ): void {
         $this->gate = $gate;
         $this->reviewAction = $reviewAction;
-        $this->profiles = $profiles;
         $this->formatter = $formatter;
     }
 
@@ -148,7 +143,6 @@ final class PetProfileAccessRequests extends Component
 
         return view('livewire.pets.pet-profile-access-requests', ['pet' => $pet])
             ->layout('components.livewire-app-layout', [
-                'owner' => $this->profiles->owner(),
                 'title' => __('pet_profiles.access_requests.review_title', ['name' => $pet['name']]),
                 'activeSection' => 'pets',
             ]);

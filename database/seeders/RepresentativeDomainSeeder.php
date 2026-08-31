@@ -70,6 +70,7 @@ use App\Models\TaxonVersion;
 use App\Models\User;
 use App\Services\SocialRelationshipKey;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Model;
@@ -114,7 +115,7 @@ final class RepresentativeDomainSeeder extends Seeder
 
     private function synchronizeCanonicalMedicalRecords(): void
     {
-        MedicalRecord::query()
+        $this->scopeDemoModel(MedicalRecord::query())
             ->with('petProfile.user:id,actor_key')
             ->whereNotNull('pet_profile_id')
             ->lazyById()
@@ -223,7 +224,10 @@ final class RepresentativeDomainSeeder extends Seeder
                 continue;
             }
 
-            $parent = $parentClass::query()
+            $parentQuery = $parentClass === User::class
+                ? $this->demoUserQuery()
+                : $parentClass::query();
+            $parent = $parentQuery
                 ->whereNotIn(
                     $foreignColumn,
                     $modelClass::query()->whereNotNull($column)->select($column),
@@ -302,7 +306,10 @@ final class RepresentativeDomainSeeder extends Seeder
         }
 
         if ($modelClass === ForumMentorship::class && $position === 0) {
-            $validator = User::query()->where('is_admin', true)->orderBy('id')->firstOrFail();
+            $validator = $this->demoUserQuery()
+                ->where('is_admin', true)
+                ->orderBy('id')
+                ->firstOrFail();
 
             return [
                 'state' => ForumMentorshipState::Completed,
@@ -378,7 +385,7 @@ final class RepresentativeDomainSeeder extends Seeder
         }
 
         if ($modelClass === MedicalRecord::class) {
-            $profile = PetProfile::query()
+            $profile = $this->scopeDemoModel(PetProfile::query())
                 ->with('user:id,actor_key')
                 ->whereDoesntHave('medicalRecord')
                 ->orderBy('id')
@@ -414,7 +421,7 @@ final class RepresentativeDomainSeeder extends Seeder
             $types = ForumJournalType::cases();
             $type = $types[$position % count($types)];
             $startedOn = now()->subDays($position)->toDateString();
-            $owners = User::query()->orderBy('id')->limit(10)->get();
+            $owners = $this->demoUsers();
             $owner = $owners[$position % $owners->count()];
             $topicTypeId = ForumTopicTypeModel::query()
                 ->where('stable_key', ForumTopicType::Journal->value)
@@ -546,7 +553,7 @@ final class RepresentativeDomainSeeder extends Seeder
         }
 
         if ($modelClass === ForumUserTrustLevel::class) {
-            $user = User::query()
+            $user = $this->demoUserQuery()
                 ->whereDoesntHave('forumTrustAssignments', function ($query): void {
                     $query
                         ->where('scope_type', 'global')
@@ -554,7 +561,7 @@ final class RepresentativeDomainSeeder extends Seeder
                 })
                 ->orderBy('id')
                 ->firstOrFail();
-            $administrator = User::query()
+            $administrator = $this->demoUserQuery()
                 ->where('is_admin', true)
                 ->orderBy('id')
                 ->firstOrFail();
@@ -587,7 +594,10 @@ final class RepresentativeDomainSeeder extends Seeder
                 ],
             ];
 
-            $profiles = PetProfile::query()->orderBy('id')->limit(10)->get();
+            $profiles = $this->scopeDemoModel(PetProfile::query())
+                ->orderBy('id')
+                ->limit(10)
+                ->get();
 
             foreach ($profiles as $profile) {
                 foreach ($variants as $key => $variant) {
@@ -659,7 +669,7 @@ final class RepresentativeDomainSeeder extends Seeder
                 ->whereNotNull('owner_id')
                 ->orderBy('id')
                 ->firstOrFail();
-            $sender = User::query()
+            $sender = $this->demoUserQuery()
                 ->whereKeyNot($case->owner_id)
                 ->orderBy('id')
                 ->firstOrFail();
@@ -703,7 +713,7 @@ final class RepresentativeDomainSeeder extends Seeder
         }
 
         if ($modelClass === SocialAccountBlock::class) {
-            $users = User::query()->orderBy('id')->limit(10)->get();
+            $users = $this->demoUsers();
 
             foreach ($users as $blocker) {
                 foreach ($users as $blocked) {
@@ -790,7 +800,7 @@ final class RepresentativeDomainSeeder extends Seeder
 
         if ($modelClass === ForumEventSessionStaff::class) {
             $sessions = ForumEventSession::query()->orderBy('id')->limit(10)->get();
-            $users = User::query()->orderBy('id')->limit(10)->get();
+            $users = $this->demoUsers();
 
             foreach ($sessions as $session) {
                 foreach ($users as $user) {
@@ -815,7 +825,7 @@ final class RepresentativeDomainSeeder extends Seeder
 
         if ($modelClass === ForumEventRegistrationPet::class) {
             $position = ForumEventRegistrationPet::query()->count();
-            $registrations = ForumEventRegistration::query()
+            $registrations = $this->scopeDemoModel(ForumEventRegistration::query())
                 ->with('user:id')
                 ->orderBy('id')
                 ->get();
@@ -870,7 +880,7 @@ final class RepresentativeDomainSeeder extends Seeder
                 ->select(['id', 'expert_profile_id'])
                 ->orderBy('id')
                 ->firstOrFail();
-            $client = User::query()->orderBy('id')->firstOrFail();
+            $client = $this->demoUserQuery()->orderBy('id')->firstOrFail();
             $booking = Booking::factory()->completed()->create([
                 'expert_profile_id' => $service->expert_profile_id,
                 'service_id' => $service->id,
@@ -1018,10 +1028,83 @@ final class RepresentativeDomainSeeder extends Seeder
     /** @param class-string<Model> $modelClass */
     private function refreshPool(string $modelClass): void
     {
-        $this->recyclePools[$modelClass] = $modelClass::query()
+        $query = $this->scopeDemoModel((new $modelClass)->newQuery());
+
+        $this->recyclePools[$modelClass] = $query
             ->orderBy((new $modelClass)->getKeyName())
             ->limit(RepresentativeModelManifest::TARGET_COUNT)
             ->get();
+    }
+
+    /** @return Builder<User> */
+    private function demoUserQuery(): Builder
+    {
+        return $this->scopeDemoUsers(User::query());
+    }
+
+    /**
+     * Keep representative reuse away from records tied to non-demo accounts.
+     * Tables without a direct users foreign key remain shared reference or
+     * aggregate-child pools; their user-owned parents are selected from the
+     * scoped pools resolved here.
+     *
+     * @template TModel of Model
+     *
+     * @param  Builder<TModel>  $query
+     * @return Builder<TModel>
+     */
+    private function scopeDemoModel(Builder $query): Builder
+    {
+        $model = $query->getModel();
+
+        if ($model instanceof User) {
+            return $query->where(static function (Builder $demoQuery): void {
+                $demoQuery
+                    ->where('actor_key', 'mia-carter')
+                    ->orWhere('actor_key', 'like', 'demo-%');
+            });
+        }
+
+        if ($model instanceof SocialActor) {
+            return $query->whereIn(
+                'user_id',
+                $this->demoUserQuery()->select('id'),
+            );
+        }
+
+        $userColumns = collect(Schema::getForeignKeys($model->getTable()))
+            ->filter(static fn (array $foreignKey): bool => ($foreignKey['foreign_table'] ?? null) === 'users')
+            ->flatMap(static fn (array $foreignKey): array => $foreignKey['columns'] ?? [])
+            ->filter(static fn (mixed $column): bool => is_string($column))
+            ->values();
+
+        foreach ($userColumns as $column) {
+            $query->where(function (Builder $userScope) use ($column): void {
+                $userScope
+                    ->whereNull($column)
+                    ->orWhereIn($column, $this->demoUserQuery()->select('id'));
+            });
+        }
+
+        return $query;
+    }
+
+    /** @param Builder<User> $query
+     * @return Builder<User>
+     */
+    private function scopeDemoUsers(Builder $query): Builder
+    {
+        return $query->where(static function (Builder $demoQuery): void {
+            $demoQuery
+                ->where('actor_key', 'mia-carter')
+                ->orWhere('actor_key', 'like', 'demo-%');
+        });
+    }
+
+    /** @return EloquentCollection<int, User> */
+    private function demoUsers(): EloquentCollection
+    {
+        return $this->demoUserQuery()->orderBy('id')->limit(10)->get();
     }
 
     private function remember(Model $model): void
@@ -1114,8 +1197,8 @@ final class RepresentativeDomainSeeder extends Seeder
 
     private function seedContentMedia(): void
     {
-        $publications = ContentPublication::query()->orderBy('id')->limit(10)->get();
-        $assets = ContentMediaAsset::query()->orderBy('id')->limit(10)->get();
+        $publications = $this->scopeDemoModel(ContentPublication::query())->orderBy('id')->limit(10)->get();
+        $assets = $this->scopeDemoModel(ContentMediaAsset::query())->orderBy('id')->limit(10)->get();
 
         foreach ($publications as $position => $publication) {
             $asset = $assets[$position];
@@ -1150,9 +1233,9 @@ final class RepresentativeDomainSeeder extends Seeder
             ->orderBy('id')
             ->limit(10)
             ->get();
-        $events = ForumEvent::query()->orderBy('id')->limit(10)->get();
-        $groups = ForumGroup::query()->orderBy('id')->limit(10)->get();
-        $topics = ForumTopic::query()->orderBy('id')->limit(10)->get();
+        $events = $this->scopeDemoModel(ForumEvent::query())->orderBy('id')->limit(10)->get();
+        $groups = $this->scopeDemoModel(ForumGroup::query())->orderBy('id')->limit(10)->get();
+        $topics = $this->scopeDemoModel(ForumTopic::query())->orderBy('id')->limit(10)->get();
 
         for ($position = 0; $position < 10; $position++) {
             $taxon = $taxa[$position];
@@ -1176,9 +1259,9 @@ final class RepresentativeDomainSeeder extends Seeder
 
     private function seedModerationReports(): void
     {
-        $cases = ForumModerationCase::query()->orderBy('id')->limit(10)->get();
-        $reports = ForumReport::query()->orderBy('id')->limit(10)->get();
-        $administrator = User::query()
+        $cases = $this->scopeDemoModel(ForumModerationCase::query())->orderBy('id')->limit(10)->get();
+        $reports = $this->scopeDemoModel(ForumReport::query())->orderBy('id')->limit(10)->get();
+        $administrator = $this->demoUserQuery()
             ->where('is_admin', true)
             ->orderBy('id')
             ->firstOrFail();

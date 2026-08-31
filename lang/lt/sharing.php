@@ -4,7 +4,6 @@ return [
     'page' => [
         'title' => 'Bendrinti „:title“ | PawCircle',
         'back_to_original' => 'Grįžti į pradinį turinį',
-        'open_original' => 'Atverti originalą',
     ],
     'channels' => [
         'eyebrow' => 'Už PawCircle ribų',

@@ -82,7 +82,6 @@ final class PlacePresenter
         $summary = $this->directorySummary($places, $filters, $emergency, $totalPlaces);
 
         return [
-            'owner' => $this->profiles->owner(),
             'page_title' => $emergency
                 ? __('place_directory.page.emergency_title')
                 : __('place_directory.page.title'),
@@ -101,6 +100,7 @@ final class PlacePresenter
                 'category_options' => $this->catalog->categoryOptions(),
                 'category_icons' => $this->catalog->iconOptions(),
                 'species_options' => $this->catalog->speciesOptions(),
+                'pet_options' => $this->petOptions(includeNone: true),
                 'size_options' => $this->catalog->sizeOptions(),
                 'sort_options' => $this->sortOptions(),
                 'view_options' => $this->viewOptions(),
@@ -171,9 +171,9 @@ final class PlacePresenter
             $this->state->warnings($key, $place['base_warnings']),
         );
         $content['history'] = $this->history($key, $content['updates']);
+        $petOptions = $this->petOptions();
 
         return [
-            'owner' => $this->profiles->owner(),
             'page_title' => __('presentation.brand_title', ['title' => $place['name']]),
             'active_section' => 'places',
             'place' => $place,
@@ -182,6 +182,8 @@ final class PlacePresenter
             'content' => $content,
             'check_in' => $this->presentCheckIn($this->state->currentCheckIn($key)),
             'collections' => $this->collectionOptions($key),
+            'pet_options' => $petOptions,
+            'default_pet_key' => (string) array_key_first($petOptions),
             'claims' => array_map(
                 static fn (array $claim): array => [
                     ...$claim,
@@ -512,7 +514,7 @@ final class PlacePresenter
             'verification' => (string) ($parameters['verification'] ?? 'any'),
             'crowd' => (string) ($parameters['crowd'] ?? $parsedQuery['crowd'] ?? 'any'),
             'visit_time' => (string) ($parameters['visit_time'] ?? $parsedQuery['visit_time'] ?? 'any'),
-            'pet' => (string) ($parameters['pet'] ?? 'scout'),
+            'pet' => (string) ($parameters['pet'] ?? 'none'),
             'sort' => (string) ($parameters['sort'] ?? 'recommended'),
             'view' => (string) ($parameters['view'] ?? 'split'),
             'mode' => (string) ($parameters['mode'] ?? 'browse'),
@@ -811,11 +813,21 @@ final class PlacePresenter
 
     private function petLabel(string $pet): string
     {
-        return match ($pet) {
-            'scout' => __('ui.scout'),
-            'nori' => __('ui.nori'),
-            default => __('place_directory.search.no_pet'),
-        };
+        $profile = $pet !== 'none' ? $this->profiles->pet($pet) : null;
+
+        return $profile['name'] ?? __('place_directory.search.no_pet');
+    }
+
+    /** @return array<string, string> */
+    private function petOptions(bool $includeNone = false): array
+    {
+        $options = collect($this->profiles->pets())->mapWithKeys(
+            static fn (array $pet): array => [$pet['profile_key'] => $pet['name']],
+        )->all();
+
+        return $includeNone
+            ? [...$options, 'none' => __('place_directory.search.no_pet')]
+            : $options;
     }
 
     /**
@@ -981,7 +993,7 @@ final class PlacePresenter
     {
         if (in_array('dog', $place['accepted_species'], true) && in_array('large', $place['accepted_sizes'], true)) {
             return [
-                'label' => $place['quiet_zone'] ? __('messages.may_suit_scout') : __('messages.discuss_crowd_level'),
+                'label' => $place['quiet_zone'] ? __('messages.review_pet_access') : __('messages.discuss_crowd_level'),
                 'detail' => $place['quiet_zone']
                     ? __('messages.large_dogs_and_a_quiet_space_preference_are_supported')
                     : __('messages.large_dogs_are_accepted_current_crowd_conditions_still_matter'),
@@ -991,7 +1003,7 @@ final class PlacePresenter
 
         if ($place['primary_category'] === 'grooming' && in_array('cat', $place['accepted_species'], true)) {
             return [
-                'label' => __('messages.may_suit_nori'),
+                'label' => __('messages.review_pet_access'),
                 'detail' => __('messages.cat_handling_and_a_quiet_appointment_are_listed'),
                 'tone' => 'positive',
             ];

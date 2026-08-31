@@ -27,12 +27,12 @@
                     ])
                 >
                     <span class="mx-auto grid size-7 place-items-center rounded-full border border-current md:mx-0" aria-hidden="true">{{ $progressStep['number'] }}</span>
-                    <span class="mt-1 hidden break-words leading-5 md:block">{{ $progressStep['label'] }}</span>
+                    <span class="mt-1 hidden break-words leading-5 md:block" aria-hidden="true">{{ $progressStep['label'] }}</span>
                     <span class="sr-only">{{ $progressStep['label'] }}: {{ __('onboarding.progress.status.'.$progressStep['status']) }}</span>
                     @if ($progressStep['status'] === 'current')
-                        <span class="mt-1 block break-words text-xs leading-5 md:hidden">{{ $progressStep['label'] }}</span>
+                        <span class="mt-1 block break-words text-xs leading-5 md:hidden" aria-hidden="true">{{ $progressStep['label'] }}</span>
                     @endif
-                    <span class="mt-1 hidden text-xs font-normal md:block">{{ __('onboarding.progress.status.'.$progressStep['status']) }}</span>
+                    <span class="mt-1 hidden text-xs font-normal md:block" aria-hidden="true">{{ __('onboarding.progress.status.'.$progressStep['status']) }}</span>
                 </li>
             @endforeach
         </ol>

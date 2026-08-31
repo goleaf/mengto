@@ -7,7 +7,6 @@ namespace App\Livewire\Organizations;
 use App\Actions\RespondToOrganizationInvitation;
 use App\Models\OrganizationInvitation;
 use App\Models\User;
-use App\Services\ProfilePresenter;
 use Illuminate\Contracts\Auth\Factory as AuthFactory;
 use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Contracts\View\View;
@@ -24,12 +23,9 @@ final class OrganizationInvitationResponse extends Component
 
     private AuthFactory $auth;
 
-    private ProfilePresenter $profiles;
-
-    public function boot(AuthFactory $auth, ProfilePresenter $profiles): void
+    public function boot(AuthFactory $auth): void
     {
         $this->auth = $auth;
-        $this->profiles = $profiles;
     }
 
     public function mount(OrganizationInvitation $organizationInvitation): void
@@ -82,7 +78,6 @@ final class OrganizationInvitationResponse extends Component
         return view('livewire.organizations.organization-invitation-response', [
             'invitation' => $this->invitation(),
         ])->layout('components.livewire-app-layout', [
-            'owner' => $this->profiles->owner(),
             'title' => __('organizations.pages.invitation.title'),
             'activeSection' => 'organizations',
         ]);

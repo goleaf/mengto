@@ -309,7 +309,7 @@ final readonly class DiscoveryCatalog
                 'reason' => $group->location_scope
                     ? __('discovery.reasons.community_in_region', ['region' => $group->location_scope])
                     : __('discovery.reasons.active_public_community'),
-                'url' => route('forum.groups.show', $group),
+                'url' => route('groups.show', $group),
                 'image' => data_get($media->get($group->stable_key), 'image'),
                 'image_alt' => data_get(
                     $media->get($group->stable_key),

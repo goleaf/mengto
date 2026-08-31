@@ -43,7 +43,15 @@ final class PlaceSubmissionDemoSeeder extends Seeder
             throw new LogicException('Place submission demo data may only be created in an explicitly allowed environment.');
         }
 
-        $users = User::query()->orderBy('id')->limit(10)->get()
+        $users = User::query()
+            ->where(static function ($query): void {
+                $query
+                    ->where('actor_key', 'mia-carter')
+                    ->orWhere('actor_key', 'like', 'demo-%');
+            })
+            ->orderBy('id')
+            ->limit(10)
+            ->get()
             ->sortBy(static fn (User $user): int => $user->email === 'user@example.com' ? 0 : $user->id)
             ->values();
         $destinations = Place::query()->publiclyDiscoverable()->orderBy('id')->limit(10)->get();

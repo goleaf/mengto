@@ -67,6 +67,7 @@ use Database\Seeders\MedicalRecordSeeder;
 use Database\Seeders\PerformanceSeeder;
 use Database\Seeders\SearchSeeder;
 use Database\Seeders\SmartDeviceSeeder;
+use Database\Seeders\SocialIdentitySeeder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
@@ -165,6 +166,7 @@ dataset('direct demo seeders', [
     'medical records' => [MedicalRecordSeeder::class],
     'search' => [SearchSeeder::class],
     'smart devices' => [SmartDeviceSeeder::class],
+    'social identities' => [SocialIdentitySeeder::class],
 ]);
 
 dataset('zero argument factory helpers', static function (): array {

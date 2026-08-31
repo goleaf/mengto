@@ -13,7 +13,6 @@ use Illuminate\Database\Eloquent\Builder;
 class KnowledgePresenter
 {
     public function __construct(
-        private readonly ProfilePresenter $profiles,
         private readonly ForumTaxonomy $taxonomy,
         private readonly LocaleFormatter $formatter,
         private readonly Gate $gate,
@@ -50,7 +49,6 @@ class KnowledgePresenter
         $articles->through(fn (KnowledgeArticle $article): array => $this->card($article));
 
         return [
-            'owner' => $this->profiles->owner(),
             'page_title' => __('messages.knowledge_base_brand'),
             'active_section' => 'forum',
             'articles' => $articles,
@@ -166,7 +164,6 @@ class KnowledgePresenter
                 ]);
 
         return [
-            'owner' => $this->profiles->owner(),
             'page_title' => __('presentation.brand_title', ['title' => $article->title]),
             'active_section' => 'forum',
             'article' => [

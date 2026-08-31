@@ -42,7 +42,7 @@ test('credential originals stay private while public profile exposes only a chec
 
     $response = $this->post(route('experts.store'), [
         'public_name' => 'Mia Care Coordinator',
-        'legal_name' => 'Mia Carter',
+        'legal_name' => 'Test Member',
         'primary_type' => 'shelter-specialist',
         'headline' => 'Volunteer care coordinator for adoption support',
         'bio' => str_repeat('Care coordination with explicit task ownership and privacy-aware communication. ', 2),
@@ -68,7 +68,7 @@ test('credential originals stay private while public profile exposes only a chec
         'credential_file' => UploadedFile::fake()->create('private-confirmation.pdf', 120, 'application/pdf'),
     ]);
 
-    $profile = ExpertProfile::query()->where('owner_key', 'mia-carter')->firstOrFail();
+    $profile = ExpertProfile::query()->where('owner_key', 'test-member')->firstOrFail();
     $credential = Credential::query()->where('expert_profile_id', $profile->id)->firstOrFail();
 
     $response->assertRedirect(route('experts.show', $profile));
@@ -93,7 +93,7 @@ test('only a completed service can produce one verified review', function () {
     $booking = Booking::factory()->create([
         'expert_profile_id' => $expert->id,
         'service_id' => $service->id,
-        'client_key' => 'mia-carter',
+        'client_key' => 'test-member',
         'status' => BookingStatus::Confirmed,
     ]);
 
@@ -126,7 +126,7 @@ test('review summary aggregates use one query and include only published reviews
     $booking = Booking::factory()->completed()->create([
         'expert_profile_id' => $expert->id,
         'service_id' => $service->id,
-        'client_key' => 'mia-carter',
+        'client_key' => 'test-member',
     ]);
 
     Review::factory()->create([
@@ -171,7 +171,7 @@ test('review summary aggregates use one query and include only published reviews
 });
 
 test('specialist must confirm the written consultation summary before it becomes final', function () {
-    $expert = ExpertProfile::factory()->create(['owner_key' => 'mia-carter']);
+    $expert = ExpertProfile::factory()->create(['owner_key' => 'test-member']);
     $service = Service::factory()->create(['expert_profile_id' => $expert->id]);
     $booking = Booking::factory()->create([
         'expert_profile_id' => $expert->id,

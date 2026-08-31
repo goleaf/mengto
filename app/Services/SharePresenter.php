@@ -73,7 +73,6 @@ final class SharePresenter
                 'page' => [
                     'title' => __('sharing.page.title', ['title' => $item['title']]),
                     'back' => __('sharing.page.back_to_original'),
-                    'open' => __('sharing.page.open_original'),
                 ],
                 'channels' => [
                     'eyebrow' => __('sharing.channels.eyebrow'),

@@ -58,8 +58,6 @@ final readonly class AuthenticateUser
             throw new LogicException(__('messages.authenticated_principal_is_not_a_brand_user'));
         }
 
-        $user->forceFill(['last_login_at' => now()])->saveQuietly();
-
         return $user;
     }
 }

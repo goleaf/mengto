@@ -20,7 +20,6 @@ use App\Models\UserOnboarding;
 use App\Services\EmailVerificationMode;
 use App\Services\OnboardingState;
 use App\Services\PetProfileDuplicateReview;
-use App\Services\ProfilePresenter;
 use Illuminate\Contracts\Auth\Factory as AuthFactory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Str;
@@ -70,8 +69,6 @@ final class CreatePetProfile extends Component
 
     private PetProfileDuplicateReview $duplicateReview;
 
-    private ProfilePresenter $profiles;
-
     private EmailVerificationMode $emailVerification;
 
     private OnboardingState $onboardingState;
@@ -84,7 +81,6 @@ final class CreatePetProfile extends Component
         StorePetPrimaryPhoto $storePhoto,
         SubmitPetProfileAccessRequest $submitAccessRequest,
         PetProfileDuplicateReview $duplicateReview,
-        ProfilePresenter $profiles,
         EmailVerificationMode $emailVerification,
         OnboardingState $onboardingState,
     ): void {
@@ -93,7 +89,6 @@ final class CreatePetProfile extends Component
         $this->storePhoto = $storePhoto;
         $this->submitAccessRequest = $submitAccessRequest;
         $this->duplicateReview = $duplicateReview;
-        $this->profiles = $profiles;
         $this->emailVerification = $emailVerification;
         $this->onboardingState = $onboardingState;
     }
@@ -380,7 +375,6 @@ final class CreatePetProfile extends Component
         }
 
         return $view->layout('components.livewire-app-layout', [
-            'owner' => $this->profiles->owner(),
             'title' => __('pet_profiles.create.title'),
             'activeSection' => 'pets',
         ]);

@@ -33,9 +33,7 @@ use App\Http\Controllers\ConnectionCenterPreviewController;
 use App\Http\Controllers\ConsultationController;
 use App\Http\Controllers\ContentFeedController;
 use App\Http\Controllers\ContentPublicationController;
-use App\Http\Controllers\ConversationDetailPreviewController;
 use App\Http\Controllers\CorrectionStoreController;
-use App\Http\Controllers\CreatedContentPreviewController;
 use App\Http\Controllers\DeviceAccessRevokeController;
 use App\Http\Controllers\DeviceAccessStoreController;
 use App\Http\Controllers\DeviceAutomationStoreController;
@@ -71,8 +69,6 @@ use App\Http\Controllers\ForumJournalDirectoryController;
 use App\Http\Controllers\ForumJournalExportController;
 use App\Http\Controllers\ForumJournalMediaController;
 use App\Http\Controllers\ForumMentorshipController;
-use App\Http\Controllers\GroupDetailPreviewController;
-use App\Http\Controllers\GroupDirectoryPreviewController;
 use App\Http\Controllers\GuestLocaleController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\KnowledgeController;
@@ -107,18 +103,14 @@ use App\Http\Controllers\MeetupDirectoryPreviewController;
 use App\Http\Controllers\MeetupEditController;
 use App\Http\Controllers\MeetupManageController;
 use App\Http\Controllers\MemberProfileController;
-use App\Http\Controllers\MemberProfilePreviewController;
 use App\Http\Controllers\MessageCenterPreviewController;
 use App\Http\Controllers\NeighborDirectoryPreviewController;
-use App\Http\Controllers\NeighborProfilePreviewController;
 use App\Http\Controllers\NotificationCenterPreviewController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OrderDisputeController;
 use App\Http\Controllers\PerformActionController;
-use App\Http\Controllers\PerformMessageActionController;
 use App\Http\Controllers\PetFriendCenterPreviewController;
 use App\Http\Controllers\PetProfileMediaController;
-use App\Http\Controllers\PetProfilePreviewController;
 use App\Http\Controllers\PetProfileWorkspaceController;
 use App\Http\Controllers\PhotoInteractionController;
 use App\Http\Controllers\PlaceDetailPreviewController;
@@ -268,20 +260,6 @@ Route::middleware('web')
                         Route::get('/', RelationshipCenter::class)->name('index');
                     });
                 Route::get('/messages', MessageCenterPreviewController::class)->name('messages.index');
-                Route::get('/messages/{conversation}/details', ConversationDetailPreviewController::class)
-                    ->whereIn('conversation', [
-                        'ari',
-                        'family-care',
-                        'vingis-walk',
-                        'paws-vet',
-                        'foster-adoption',
-                        'lost-luna',
-                        'trail-tails',
-                        'luna-request',
-                    ])
-                    ->name('messages.details');
-                Route::post('/messages/actions', PerformMessageActionController::class)
-                    ->name('messages.actions');
                 Route::get('/walks', WalkPlanPreviewController::class)->name('walks.index');
                 Route::get('/notifications', NotificationCenterPreviewController::class)
                     ->name('notifications.index');
@@ -290,7 +268,6 @@ Route::middleware('web')
                         'post',
                         'group',
                         'meetup',
-                        'walk',
                         'pet',
                         'place',
                         'place-correction',
@@ -298,7 +275,6 @@ Route::middleware('web')
                         'place-review',
                         'place-question',
                         'place-claim',
-                        'message',
                         'profile',
                         'pet-profile',
                         'profile-privacy',
@@ -339,30 +315,17 @@ Route::middleware('web')
                 Route::get('/{socialActor:actor_key}', MemberProfileController::class)
                     ->name('show');
             });
-        Route::get('/groups', GroupDirectoryPreviewController::class)->name('groups.index');
-        Route::get('/groups/apartment-pets-pdx', GroupDetailPreviewController::class)
-            ->defaults('group', 'apartment-pets')
-            ->name('groups.apartment_pets');
-        Route::get('/groups/{item}', CreatedContentPreviewController::class)
-            ->defaults('kind', 'group')
-            ->where('item', 'created-group-[A-Za-z0-9-]+')
-            ->name('groups.created');
-        Route::get('/groups/{group}', GroupDetailPreviewController::class)
-            ->whereIn('group', [
-                'apartment-pets',
-                'trail-tails',
-                'cat-people',
-                'foster-network',
-                'portland-labradors',
-                'senior-companions',
-            ])
-            ->name('groups.show');
+        Route::middleware(['auth', 'active', 'verified'])
+            ->prefix('groups')
+            ->name('groups.')
+            ->group(function (): void {
+                Route::get('/', ForumGroupDirectoryController::class)->name('index');
+                Route::get('/{forumGroup:stable_key}', ForumGroupShowController::class)
+                    ->name('show');
+            });
         Route::middleware(ProtectPrivateResponse::class)->group(function (): void {
             Route::get('/meetups', MeetupDirectoryPreviewController::class)->name('meetups.index');
             Route::get('/meetups/create', MeetupCreateController::class)->name('meetups.create');
-            Route::get('/meetups/small-dog-social', MeetupDetailPreviewController::class)
-                ->defaults('event', 'small-dog-social')
-                ->name('meetups.small_dog_social');
             Route::get('/meetups/{event}/edit', MeetupEditController::class)
                 ->where('event', '[A-Za-z0-9-]+')
                 ->name('meetups.edit');
@@ -476,7 +439,6 @@ Route::middleware('web')
                     ->name('corrections.store');
             });
         Route::get('/neighbors', NeighborDirectoryPreviewController::class)->name('neighbors.index');
-        Route::get('/neighbors/ari-jensen', NeighborProfilePreviewController::class)->name('neighbors.ari');
         Route::get('/pets', PetProfileWorkspaceController::class)->name('pets.index');
         Route::prefix('pets/profile')
             ->name('pets.')
@@ -490,22 +452,9 @@ Route::middleware('web')
                 Route::get('/{petProfile:profile_key}', PublicPetProfile::class)
                     ->name('profile');
             });
-        Route::get('/@mia-carter/scout', PetProfilePreviewController::class)
-            ->defaults('pet', 'scout')
-            ->name('pets.scout');
-        Route::get('/@mia-carter/nori', PetProfilePreviewController::class)
-            ->defaults('pet', 'nori')
-            ->name('pets.nori');
-        Route::redirect('/pets/scout', '/@mia-carter/scout', 301)->name('pets.scout.legacy');
-        Route::get('/pets/{item}', CreatedContentPreviewController::class)
-            ->defaults('kind', 'pet')
-            ->where('item', 'created-pet-[A-Za-z0-9-]+')
-            ->name('pets.created');
         Route::get('/posts/{post}', PostThreadPreviewController::class)
             ->where('post', '[A-Za-z0-9-]+')
             ->name('posts.show');
-        Route::get('/@mia-carter', MemberProfilePreviewController::class)->name('profile.mia');
-        Route::redirect('/profile/mia-carter', '/@mia-carter', 301)->name('profile.mia.legacy');
         Route::get('/share/{target}', SharePreviewController::class)
             ->where('target', '[A-Za-z0-9-]+')
             ->name('share.show');

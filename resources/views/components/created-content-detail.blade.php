@@ -1,7 +1,6 @@
-@props(['owner', 'content'])
+@props(['content'])
 
 <x-detail-page
-    :owner="$owner"
     :title="$content['page_title']"
     :active-section="$content['active_section']"
     :section="$content['section']"

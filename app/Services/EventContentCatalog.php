@@ -40,10 +40,10 @@ final class EventContentCatalog
     {
         return match ($event['event_type']) {
             'group-walk' => [
-                ['time' => __('messages.9_50_am'), 'title' => __('messages.quiet_arrival'), 'description' => __('messages.meet_the_host_without_bringing_pets_into_a_tight_cluster'), 'leader' => __('messages.mia_carter')],
-                ['time' => __('messages.10_00_am'), 'title' => __('messages.parallel_start'), 'description' => __('messages.pairs_leave_with_comfortable_spacing_and_no_direct_greeting'), 'leader' => __('messages.mia_carter')],
+                ['time' => __('messages.9_50_am'), 'title' => __('messages.quiet_arrival'), 'description' => __('messages.meet_the_host_without_bringing_pets_into_a_tight_cluster'), 'leader' => $event['organizer']],
+                ['time' => __('messages.10_00_am'), 'title' => __('messages.parallel_start'), 'description' => __('messages.pairs_leave_with_comfortable_spacing_and_no_direct_greeting'), 'leader' => $event['organizer']],
                 ['time' => __('messages.10_35_am'), 'title' => __('messages.water_and_reset'), 'description' => __('messages.short_pause_with_individual_bowls_in_a_shaded_area'), 'leader' => __('messages.noah_patel')],
-                ['time' => __('messages.11_30_am'), 'title' => __('messages.flexible_finish'), 'description' => __('messages.leave_independently_or_join_the_optional_calm_closing_loop'), 'leader' => __('messages.mia_carter')],
+                ['time' => __('messages.11_30_am'), 'title' => __('messages.flexible_finish'), 'description' => __('messages.leave_independently_or_join_the_optional_calm_closing_loop'), 'leader' => $event['organizer']],
             ],
             'training-course' => [
                 ['time' => __('messages.10_50_am'), 'title' => __('messages.check_in_and_settle'), 'description' => __('messages.enter_one_at_a_time_and_choose_a_marked_station'), 'leader' => __('messages.ari_jensen')],
@@ -64,9 +64,9 @@ final class EventContentCatalog
                 ['time' => __('messages.7_10_pm'), 'title' => __('messages.resources_and_recording'), 'description' => __('messages.slides_citations_and_recording_access_explained'), 'leader' => __('messages.support_team')],
             ],
             'search-action' => [
-                ['time' => __('messages.5_50_pm'), 'title' => __('messages.volunteer_check_in'), 'description' => __('messages.receive_a_zone_and_confirm_safe_sighting_instructions'), 'leader' => __('messages.mia_carter')],
+                ['time' => __('messages.5_50_pm'), 'title' => __('messages.volunteer_check_in'), 'description' => __('messages.receive_a_zone_and_confirm_safe_sighting_instructions'), 'leader' => $event['organizer']],
                 ['time' => __('messages.6_00_pm'), 'title' => __('messages.search_starts'), 'description' => __('messages.teams_move_through_assigned_public_areas'), 'leader' => __('messages.zone_coordinators')],
-                ['time' => __('messages.7_15_pm'), 'title' => __('messages.status_regroup'), 'description' => __('messages.share_sightings_through_the_private_coordinator_channel'), 'leader' => __('messages.mia_carter')],
+                ['time' => __('messages.7_15_pm'), 'title' => __('messages.status_regroup'), 'description' => __('messages.share_sightings_through_the_private_coordinator_channel'), 'leader' => $event['organizer']],
                 ['time' => __('messages.9_00_pm'), 'title' => __('messages.close_or_reassign'), 'description' => __('messages.checked_zones_are_recorded_before_volunteers_leave'), 'leader' => __('messages.search_team')],
             ],
             default => [
@@ -376,28 +376,7 @@ final class EventContentCatalog
      */
     private function applications(array $event): array
     {
-        if (! $event['managed_by_current_user']) {
-            return [];
-        }
-
-        return [
-            [
-                'key' => 'ari-mochi',
-                'name' => __('messages.ari_mochi'),
-                'detail' => __('messages.medium_dog_parallel_introduction_requested'),
-                'initials' => 'AM',
-                'tone' => 'sun',
-                'status' => __('messages.pending_review'),
-            ],
-            [
-                'key' => 'noah-juniper',
-                'name' => __('messages.noah_juniper'),
-                'detail' => __('messages.large_dog_calm_pace'),
-                'initials' => 'NJ',
-                'tone' => 'mint',
-                'status' => __('messages.pending_review'),
-            ],
-        ];
+        return [];
     }
 
     /**
@@ -406,20 +385,7 @@ final class EventContentCatalog
      */
     private function waitlist(array $event): array
     {
-        if (! $event['managed_by_current_user']) {
-            return [];
-        }
-
-        return [
-            [
-                'key' => 'lena-pip',
-                'name' => __('messages.lena_pip'),
-                'detail' => __('messages.first_in_line_12_minutes_to_confirm_after_promotion'),
-                'initials' => 'LP',
-                'tone' => 'paper',
-                'status' => __('messages.waiting'),
-            ],
-        ];
+        return [];
     }
 
     /**

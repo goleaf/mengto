@@ -35,82 +35,79 @@ Snapshot date: 2026-08-30.
 | Method | URI | Name | Action | Middleware |
 | --- | --- | --- | --- | --- |
 | `GET\|HEAD` | `/` | `home` | `App\Http\Controllers\HomeController` | `web` |
-| `GET\|HEAD` | `@mia-carter` | `profile.mia` | `App\Http\Controllers\MemberProfilePreviewController` | `web` |
-| `GET\|HEAD` | `@mia-carter/nori` | `pets.nori` | `App\Http\Controllers\PetProfilePreviewController` | `web` |
-| `GET\|HEAD` | `@mia-carter/scout` | `pets.scout` | `App\Http\Controllers\PetProfilePreviewController` | `web` |
 | `POST` | `actions` | `actions.perform` | `App\Http\Controllers\PerformActionController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser` |
-| `GET\|HEAD` | `admin/forum` | `admin.forum.index` | `App\Http\Controllers\ForumAdministrationController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, Illuminate\Auth\Middleware\EnsureEmailIsVerified` |
-| `GET\|HEAD` | `bookings/{booking}` | `bookings.show` | `App\Http\Controllers\BookingController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, Illuminate\Auth\Middleware\EnsureEmailIsVerified` |
-| `POST` | `bookings/{booking}/actions` | `bookings.actions` | `App\Http\Controllers\BookingActionController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, Illuminate\Auth\Middleware\EnsureEmailIsVerified, Illuminate\Routing\Middleware\ThrottleRequests:20,1` |
+| `GET\|HEAD` | `admin/forum` | `admin.forum.index` | `App\Http\Controllers\ForumAdministrationController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, App\Http\Middleware\EnsureEmailIsVerified` |
+| `GET\|HEAD` | `bookings/{booking}` | `bookings.show` | `App\Http\Controllers\BookingController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, App\Http\Middleware\EnsureEmailIsVerified` |
+| `POST` | `bookings/{booking}/actions` | `bookings.actions` | `App\Http\Controllers\BookingActionController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, App\Http\Middleware\EnsureEmailIsVerified, Illuminate\Routing\Middleware\ThrottleRequests:20,1` |
 | `GET\|HEAD` | `care-access/{token}` | `care-access.show` | `App\Http\Controllers\CareSharedJournalController` | `web, App\Http\Middleware\ProtectCareResponse, Illuminate\Routing\Middleware\ThrottleRequests:30,1` |
 | `POST` | `care-access/{token}/entries` | `care-access.entries.store` | `App\Http\Controllers\CareSharedEntryStoreController` | `web, App\Http\Middleware\ProtectCareResponse, Illuminate\Routing\Middleware\ThrottleRequests:20,1` |
 | `GET\|HEAD` | `care-access/{token}/media/{careMedia}` | `care-access.media.download` | `App\Http\Controllers\CareSharedMediaDownloadController` | `web, App\Http\Middleware\ProtectCareResponse, Illuminate\Routing\Middleware\ThrottleRequests:20,1` |
-| `GET\|HEAD` | `care-journals` | `care-journals.index` | `App\Http\Controllers\CareJournalDirectoryController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, Illuminate\Auth\Middleware\EnsureEmailIsVerified, App\Http\Middleware\ProtectCareResponse` |
-| `POST` | `care-journals` | `care-journals.store` | `App\Http\Controllers\CareJournalStoreController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, Illuminate\Auth\Middleware\EnsureEmailIsVerified, App\Http\Middleware\ProtectCareResponse, Illuminate\Routing\Middleware\ThrottleRequests:6,1` |
-| `GET\|HEAD` | `care-journals/new` | `care-journals.create` | `App\Http\Controllers\CareJournalCreateController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, Illuminate\Auth\Middleware\EnsureEmailIsVerified, App\Http\Middleware\ProtectCareResponse` |
-| `GET\|HEAD` | `care-journals/{careJournal}` | `care-journals.show` | `App\Http\Controllers\CareJournalController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, Illuminate\Auth\Middleware\EnsureEmailIsVerified, App\Http\Middleware\ProtectCareResponse` |
-| `POST` | `care-journals/{careJournal}/access` | `care-journals.access.store` | `App\Http\Controllers\CareAccessStoreController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, Illuminate\Auth\Middleware\EnsureEmailIsVerified, App\Http\Middleware\ProtectCareResponse, Illuminate\Routing\Middleware\ThrottleRequests:12,1` |
-| `DELETE` | `care-journals/{careJournal}/access/{careAccessGrant}` | `care-journals.access.revoke` | `App\Http\Controllers\CareAccessRevokeController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, Illuminate\Auth\Middleware\EnsureEmailIsVerified, App\Http\Middleware\ProtectCareResponse` |
-| `POST` | `care-journals/{careJournal}/entries` | `care-journals.entries.store` | `App\Http\Controllers\CareEntryStoreController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, Illuminate\Auth\Middleware\EnsureEmailIsVerified, App\Http\Middleware\ProtectCareResponse, Illuminate\Routing\Middleware\ThrottleRequests:40,1` |
-| `GET\|HEAD` | `care-journals/{careJournal}/manage` | `care-journals.manage` | `App\Http\Controllers\CareJournalManageController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, Illuminate\Auth\Middleware\EnsureEmailIsVerified, App\Http\Middleware\ProtectCareResponse` |
-| `GET\|HEAD` | `care-journals/{careJournal}/media/{careMedia}` | `care-journals.media.download` | `App\Http\Controllers\CareMediaDownloadController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, Illuminate\Auth\Middleware\EnsureEmailIsVerified, App\Http\Middleware\ProtectCareResponse` |
-| `GET\|HEAD` | `care-journals/{careJournal}/report` | `care-journals.report` | `App\Http\Controllers\CareJournalReportController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, Illuminate\Auth\Middleware\EnsureEmailIsVerified, App\Http\Middleware\ProtectCareResponse` |
-| `POST` | `care-journals/{careJournal}/routines` | `care-journals.routines.store` | `App\Http\Controllers\CareRoutineStoreController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, Illuminate\Auth\Middleware\EnsureEmailIsVerified, App\Http\Middleware\ProtectCareResponse, Illuminate\Routing\Middleware\ThrottleRequests:20,1` |
-| `POST` | `care-journals/{careJournal}/tasks` | `care-journals.tasks.store` | `App\Http\Controllers\CareTaskStoreController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, Illuminate\Auth\Middleware\EnsureEmailIsVerified, App\Http\Middleware\ProtectCareResponse, Illuminate\Routing\Middleware\ThrottleRequests:30,1` |
-| `POST` | `care-journals/{careJournal}/tasks/{careTask}/complete` | `care-journals.tasks.complete` | `App\Http\Controllers\CareTaskCompleteController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, Illuminate\Auth\Middleware\EnsureEmailIsVerified, App\Http\Middleware\ProtectCareResponse, Illuminate\Routing\Middleware\ThrottleRequests:40,1` |
+| `GET\|HEAD` | `care-journals` | `care-journals.index` | `App\Http\Controllers\CareJournalDirectoryController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, App\Http\Middleware\EnsureEmailIsVerified, App\Http\Middleware\ProtectCareResponse` |
+| `POST` | `care-journals` | `care-journals.store` | `App\Http\Controllers\CareJournalStoreController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, App\Http\Middleware\EnsureEmailIsVerified, App\Http\Middleware\ProtectCareResponse, Illuminate\Routing\Middleware\ThrottleRequests:6,1` |
+| `GET\|HEAD` | `care-journals/new` | `care-journals.create` | `App\Http\Controllers\CareJournalCreateController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, App\Http\Middleware\EnsureEmailIsVerified, App\Http\Middleware\ProtectCareResponse` |
+| `GET\|HEAD` | `care-journals/{careJournal}` | `care-journals.show` | `App\Http\Controllers\CareJournalController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, App\Http\Middleware\EnsureEmailIsVerified, App\Http\Middleware\ProtectCareResponse` |
+| `POST` | `care-journals/{careJournal}/access` | `care-journals.access.store` | `App\Http\Controllers\CareAccessStoreController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, App\Http\Middleware\EnsureEmailIsVerified, App\Http\Middleware\ProtectCareResponse, Illuminate\Routing\Middleware\ThrottleRequests:12,1` |
+| `DELETE` | `care-journals/{careJournal}/access/{careAccessGrant}` | `care-journals.access.revoke` | `App\Http\Controllers\CareAccessRevokeController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, App\Http\Middleware\EnsureEmailIsVerified, App\Http\Middleware\ProtectCareResponse` |
+| `POST` | `care-journals/{careJournal}/entries` | `care-journals.entries.store` | `App\Http\Controllers\CareEntryStoreController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, App\Http\Middleware\EnsureEmailIsVerified, App\Http\Middleware\ProtectCareResponse, Illuminate\Routing\Middleware\ThrottleRequests:40,1` |
+| `GET\|HEAD` | `care-journals/{careJournal}/manage` | `care-journals.manage` | `App\Http\Controllers\CareJournalManageController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, App\Http\Middleware\EnsureEmailIsVerified, App\Http\Middleware\ProtectCareResponse` |
+| `GET\|HEAD` | `care-journals/{careJournal}/media/{careMedia}` | `care-journals.media.download` | `App\Http\Controllers\CareMediaDownloadController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, App\Http\Middleware\EnsureEmailIsVerified, App\Http\Middleware\ProtectCareResponse` |
+| `GET\|HEAD` | `care-journals/{careJournal}/report` | `care-journals.report` | `App\Http\Controllers\CareJournalReportController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, App\Http\Middleware\EnsureEmailIsVerified, App\Http\Middleware\ProtectCareResponse` |
+| `POST` | `care-journals/{careJournal}/routines` | `care-journals.routines.store` | `App\Http\Controllers\CareRoutineStoreController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, App\Http\Middleware\EnsureEmailIsVerified, App\Http\Middleware\ProtectCareResponse, Illuminate\Routing\Middleware\ThrottleRequests:20,1` |
+| `POST` | `care-journals/{careJournal}/tasks` | `care-journals.tasks.store` | `App\Http\Controllers\CareTaskStoreController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, App\Http\Middleware\EnsureEmailIsVerified, App\Http\Middleware\ProtectCareResponse, Illuminate\Routing\Middleware\ThrottleRequests:30,1` |
+| `POST` | `care-journals/{careJournal}/tasks/{careTask}/complete` | `care-journals.tasks.complete` | `App\Http\Controllers\CareTaskCompleteController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, App\Http\Middleware\EnsureEmailIsVerified, App\Http\Middleware\ProtectCareResponse, Illuminate\Routing\Middleware\ThrottleRequests:40,1` |
 | `GET\|HEAD` | `circle` | `circle.index` | `App\Http\Controllers\CirclePreviewController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser` |
 | `GET\|HEAD` | `circle/connections` | `connections.index` | `App\Http\Controllers\ConnectionCenterPreviewController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser` |
 | `GET\|HEAD` | `circle/pet-friends` | `pet-friends.index` | `App\Http\Controllers\PetFriendCenterPreviewController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser` |
 | `GET\|HEAD` | `circle/social` | `social.index` | `App\Livewire\Social\RelationshipCenter` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser` |
 | `GET\|HEAD` | `compose/{kind}` | `compose` | `App\Http\Controllers\ComposerController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser` |
 | `GET\|HEAD` | `confirm-password` | `password.confirm` | `App\Livewire\Auth\ConfirmPassword` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser` |
-| `GET\|HEAD` | `consultations/{consultation}` | `consultations.show` | `App\Http\Controllers\ConsultationController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, Illuminate\Auth\Middleware\EnsureEmailIsVerified` |
+| `GET\|HEAD` | `consultations/{consultation}` | `consultations.show` | `App\Http\Controllers\ConsultationController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, App\Http\Middleware\EnsureEmailIsVerified` |
 | `GET\|HEAD` | `content` | `content.index` | `App\Http\Controllers\ContentFeedController` | `web` |
 | `GET\|HEAD` | `content/{contentPublication:publication_key}` | `content.show` | `App\Http\Controllers\ContentPublicationController` | `web` |
 | `GET\|HEAD` | `device-access/{token}` | `device-access.show` | `App\Http\Controllers\DeviceSharedDashboardController` | `web, App\Http\Middleware\ProtectDeviceResponse, Illuminate\Routing\Middleware\ThrottleRequests:30,1` |
-| `GET\|HEAD` | `devices` | `devices.index` | `App\Http\Controllers\SmartDeviceDirectoryController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, Illuminate\Auth\Middleware\EnsureEmailIsVerified, App\Http\Middleware\ProtectDeviceResponse` |
-| `POST` | `devices` | `devices.store` | `App\Http\Controllers\SmartDeviceStoreController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, Illuminate\Auth\Middleware\EnsureEmailIsVerified, App\Http\Middleware\ProtectDeviceResponse, Illuminate\Routing\Middleware\ThrottleRequests:6,1` |
-| `GET\|HEAD` | `devices/new` | `devices.create` | `App\Http\Controllers\SmartDeviceCreateController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, Illuminate\Auth\Middleware\EnsureEmailIsVerified, App\Http\Middleware\ProtectDeviceResponse` |
-| `GET\|HEAD` | `devices/{smartDevice}` | `devices.show` | `App\Http\Controllers\SmartDeviceController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, Illuminate\Auth\Middleware\EnsureEmailIsVerified, App\Http\Middleware\ProtectDeviceResponse, Illuminate\Auth\Middleware\RequirePassword` |
-| `POST` | `devices/{smartDevice}/access` | `devices.access.store` | `App\Http\Controllers\DeviceAccessStoreController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, Illuminate\Auth\Middleware\EnsureEmailIsVerified, App\Http\Middleware\ProtectDeviceResponse, Illuminate\Routing\Middleware\ThrottleRequests:12,1` |
-| `DELETE` | `devices/{smartDevice}/access/{deviceAccessGrant}` | `devices.access.revoke` | `App\Http\Controllers\DeviceAccessRevokeController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, Illuminate\Auth\Middleware\EnsureEmailIsVerified, App\Http\Middleware\ProtectDeviceResponse` |
-| `POST` | `devices/{smartDevice}/automations` | `devices.automations.store` | `App\Http\Controllers\DeviceAutomationStoreController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, Illuminate\Auth\Middleware\EnsureEmailIsVerified, App\Http\Middleware\ProtectDeviceResponse, Illuminate\Routing\Middleware\ThrottleRequests:12,1` |
-| `POST` | `devices/{smartDevice}/automations/{deviceAutomation}/test` | `devices.automations.test` | `App\Http\Controllers\DeviceAutomationTestController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, Illuminate\Auth\Middleware\EnsureEmailIsVerified, App\Http\Middleware\ProtectDeviceResponse, Illuminate\Routing\Middleware\ThrottleRequests:20,1` |
-| `POST` | `devices/{smartDevice}/commands` | `devices.commands.store` | `App\Http\Controllers\DeviceCommandStoreController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, Illuminate\Auth\Middleware\EnsureEmailIsVerified, App\Http\Middleware\ProtectDeviceResponse, Illuminate\Auth\Middleware\RequirePassword, Illuminate\Routing\Middleware\ThrottleRequests:20,1` |
-| `POST` | `devices/{smartDevice}/events/{deviceEvent}/acknowledge` | `devices.events.acknowledge` | `App\Http\Controllers\DeviceEventAcknowledgeController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, Illuminate\Auth\Middleware\EnsureEmailIsVerified, App\Http\Middleware\ProtectDeviceResponse` |
-| `POST` | `devices/{smartDevice}/events/{deviceEvent}/care-entry` | `devices.events.care-entry` | `App\Http\Controllers\DeviceEventCareEntryController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, Illuminate\Auth\Middleware\EnsureEmailIsVerified, App\Http\Middleware\ProtectDeviceResponse` |
-| `POST` | `devices/{smartDevice}/lifecycle` | `devices.lifecycle.store` | `App\Http\Controllers\DeviceLifecycleStoreController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, Illuminate\Auth\Middleware\EnsureEmailIsVerified, App\Http\Middleware\ProtectDeviceResponse, Illuminate\Auth\Middleware\RequirePassword, Illuminate\Routing\Middleware\ThrottleRequests:12,1` |
-| `GET\|HEAD` | `devices/{smartDevice}/manage` | `devices.manage` | `App\Http\Controllers\SmartDeviceManageController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, Illuminate\Auth\Middleware\EnsureEmailIsVerified, App\Http\Middleware\ProtectDeviceResponse, Illuminate\Auth\Middleware\RequirePassword` |
-| `POST` | `devices/{smartDevice}/readings` | `devices.readings.store` | `App\Http\Controllers\DeviceReadingStoreController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, Illuminate\Auth\Middleware\EnsureEmailIsVerified, App\Http\Middleware\ProtectDeviceResponse, Illuminate\Routing\Middleware\ThrottleRequests:40,1` |
-| `POST` | `devices/{smartDevice}/readings/{deviceReading}/medical-entry` | `devices.readings.medical-entry` | `App\Http\Controllers\DeviceReadingMedicalEventController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, Illuminate\Auth\Middleware\EnsureEmailIsVerified, App\Http\Middleware\ProtectDeviceResponse` |
-| `PUT` | `devices/{smartDevice}/retention` | `devices.retention.update` | `App\Http\Controllers\DeviceRetentionUpdateController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, Illuminate\Auth\Middleware\EnsureEmailIsVerified, App\Http\Middleware\ProtectDeviceResponse, Illuminate\Auth\Middleware\RequirePassword, Illuminate\Routing\Middleware\ThrottleRequests:12,1` |
-| `POST` | `devices/{smartDevice}/safe-zones` | `devices.safe-zones.store` | `App\Http\Controllers\DeviceSafeZoneStoreController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, Illuminate\Auth\Middleware\EnsureEmailIsVerified, App\Http\Middleware\ProtectDeviceResponse, Illuminate\Routing\Middleware\ThrottleRequests:12,1` |
-| `GET\|HEAD` | `discover` | `discover.index` | `App\Http\Controllers\DiscoverPreviewController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, Illuminate\Auth\Middleware\EnsureEmailIsVerified` |
-| `POST` | `discover/preferences` | `discover.preferences.store` | `App\Http\Controllers\DiscoveryPreferenceController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, Illuminate\Auth\Middleware\EnsureEmailIsVerified, Illuminate\Routing\Middleware\ThrottleRequests:30,1` |
+| `GET\|HEAD` | `devices` | `devices.index` | `App\Http\Controllers\SmartDeviceDirectoryController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, App\Http\Middleware\EnsureEmailIsVerified, App\Http\Middleware\ProtectDeviceResponse` |
+| `POST` | `devices` | `devices.store` | `App\Http\Controllers\SmartDeviceStoreController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, App\Http\Middleware\EnsureEmailIsVerified, App\Http\Middleware\ProtectDeviceResponse, Illuminate\Routing\Middleware\ThrottleRequests:6,1` |
+| `GET\|HEAD` | `devices/new` | `devices.create` | `App\Http\Controllers\SmartDeviceCreateController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, App\Http\Middleware\EnsureEmailIsVerified, App\Http\Middleware\ProtectDeviceResponse` |
+| `GET\|HEAD` | `devices/{smartDevice}` | `devices.show` | `App\Http\Controllers\SmartDeviceController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, App\Http\Middleware\EnsureEmailIsVerified, App\Http\Middleware\ProtectDeviceResponse, Illuminate\Auth\Middleware\RequirePassword` |
+| `POST` | `devices/{smartDevice}/access` | `devices.access.store` | `App\Http\Controllers\DeviceAccessStoreController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, App\Http\Middleware\EnsureEmailIsVerified, App\Http\Middleware\ProtectDeviceResponse, Illuminate\Routing\Middleware\ThrottleRequests:12,1` |
+| `DELETE` | `devices/{smartDevice}/access/{deviceAccessGrant}` | `devices.access.revoke` | `App\Http\Controllers\DeviceAccessRevokeController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, App\Http\Middleware\EnsureEmailIsVerified, App\Http\Middleware\ProtectDeviceResponse` |
+| `POST` | `devices/{smartDevice}/automations` | `devices.automations.store` | `App\Http\Controllers\DeviceAutomationStoreController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, App\Http\Middleware\EnsureEmailIsVerified, App\Http\Middleware\ProtectDeviceResponse, Illuminate\Routing\Middleware\ThrottleRequests:12,1` |
+| `POST` | `devices/{smartDevice}/automations/{deviceAutomation}/test` | `devices.automations.test` | `App\Http\Controllers\DeviceAutomationTestController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, App\Http\Middleware\EnsureEmailIsVerified, App\Http\Middleware\ProtectDeviceResponse, Illuminate\Routing\Middleware\ThrottleRequests:20,1` |
+| `POST` | `devices/{smartDevice}/commands` | `devices.commands.store` | `App\Http\Controllers\DeviceCommandStoreController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, App\Http\Middleware\EnsureEmailIsVerified, App\Http\Middleware\ProtectDeviceResponse, Illuminate\Auth\Middleware\RequirePassword, Illuminate\Routing\Middleware\ThrottleRequests:20,1` |
+| `POST` | `devices/{smartDevice}/events/{deviceEvent}/acknowledge` | `devices.events.acknowledge` | `App\Http\Controllers\DeviceEventAcknowledgeController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, App\Http\Middleware\EnsureEmailIsVerified, App\Http\Middleware\ProtectDeviceResponse` |
+| `POST` | `devices/{smartDevice}/events/{deviceEvent}/care-entry` | `devices.events.care-entry` | `App\Http\Controllers\DeviceEventCareEntryController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, App\Http\Middleware\EnsureEmailIsVerified, App\Http\Middleware\ProtectDeviceResponse` |
+| `POST` | `devices/{smartDevice}/lifecycle` | `devices.lifecycle.store` | `App\Http\Controllers\DeviceLifecycleStoreController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, App\Http\Middleware\EnsureEmailIsVerified, App\Http\Middleware\ProtectDeviceResponse, Illuminate\Auth\Middleware\RequirePassword, Illuminate\Routing\Middleware\ThrottleRequests:12,1` |
+| `GET\|HEAD` | `devices/{smartDevice}/manage` | `devices.manage` | `App\Http\Controllers\SmartDeviceManageController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, App\Http\Middleware\EnsureEmailIsVerified, App\Http\Middleware\ProtectDeviceResponse, Illuminate\Auth\Middleware\RequirePassword` |
+| `POST` | `devices/{smartDevice}/readings` | `devices.readings.store` | `App\Http\Controllers\DeviceReadingStoreController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, App\Http\Middleware\EnsureEmailIsVerified, App\Http\Middleware\ProtectDeviceResponse, Illuminate\Routing\Middleware\ThrottleRequests:40,1` |
+| `POST` | `devices/{smartDevice}/readings/{deviceReading}/medical-entry` | `devices.readings.medical-entry` | `App\Http\Controllers\DeviceReadingMedicalEventController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, App\Http\Middleware\EnsureEmailIsVerified, App\Http\Middleware\ProtectDeviceResponse` |
+| `PUT` | `devices/{smartDevice}/retention` | `devices.retention.update` | `App\Http\Controllers\DeviceRetentionUpdateController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, App\Http\Middleware\EnsureEmailIsVerified, App\Http\Middleware\ProtectDeviceResponse, Illuminate\Auth\Middleware\RequirePassword, Illuminate\Routing\Middleware\ThrottleRequests:12,1` |
+| `POST` | `devices/{smartDevice}/safe-zones` | `devices.safe-zones.store` | `App\Http\Controllers\DeviceSafeZoneStoreController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, App\Http\Middleware\EnsureEmailIsVerified, App\Http\Middleware\ProtectDeviceResponse, Illuminate\Routing\Middleware\ThrottleRequests:12,1` |
+| `GET\|HEAD` | `discover` | `discover.index` | `App\Http\Controllers\DiscoverPreviewController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, App\Http\Middleware\EnsureEmailIsVerified` |
+| `POST` | `discover/preferences` | `discover.preferences.store` | `App\Http\Controllers\DiscoveryPreferenceController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, App\Http\Middleware\EnsureEmailIsVerified, Illuminate\Routing\Middleware\ThrottleRequests:30,1` |
 | `GET\|HEAD` | `experts` | `experts.index` | `App\Http\Controllers\ExpertDirectoryController` | `web` |
-| `POST` | `experts` | `experts.store` | `App\Http\Controllers\ExpertProfileStoreController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, Illuminate\Auth\Middleware\EnsureEmailIsVerified, Illuminate\Routing\Middleware\ThrottleRequests:6,1` |
-| `GET\|HEAD` | `experts/new` | `experts.create` | `App\Http\Controllers\ExpertProfileCreateController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, Illuminate\Auth\Middleware\EnsureEmailIsVerified` |
-| `GET\|HEAD` | `experts/workspace` | `experts.dashboard` | `App\Http\Controllers\ExpertDashboardController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, Illuminate\Auth\Middleware\EnsureEmailIsVerified` |
+| `POST` | `experts` | `experts.store` | `App\Http\Controllers\ExpertProfileStoreController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, App\Http\Middleware\EnsureEmailIsVerified, Illuminate\Routing\Middleware\ThrottleRequests:6,1` |
+| `GET\|HEAD` | `experts/new` | `experts.create` | `App\Http\Controllers\ExpertProfileCreateController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, App\Http\Middleware\EnsureEmailIsVerified` |
+| `GET\|HEAD` | `experts/workspace` | `experts.dashboard` | `App\Http\Controllers\ExpertDashboardController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, App\Http\Middleware\EnsureEmailIsVerified` |
 | `GET\|HEAD` | `experts/{expertProfile}` | `experts.show` | `App\Http\Controllers\ExpertProfileController` | `web` |
-| `PUT` | `experts/{expertProfile}` | `experts.update` | `App\Http\Controllers\ExpertProfileUpdateController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, Illuminate\Auth\Middleware\EnsureEmailIsVerified` |
-| `POST` | `experts/{expertProfile}/actions` | `experts.actions` | `App\Http\Controllers\ExpertActionController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, Illuminate\Auth\Middleware\EnsureEmailIsVerified, Illuminate\Routing\Middleware\ThrottleRequests:30,1` |
-| `GET\|HEAD` | `experts/{expertProfile}/book` | `experts.bookings.create` | `App\Http\Controllers\BookingCreateController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, Illuminate\Auth\Middleware\EnsureEmailIsVerified` |
-| `POST` | `experts/{expertProfile}/book` | `experts.bookings.store` | `App\Http\Controllers\BookingStoreController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, Illuminate\Auth\Middleware\EnsureEmailIsVerified, Illuminate\Routing\Middleware\ThrottleRequests:8,1` |
-| `GET\|HEAD` | `experts/{expertProfile}/edit` | `experts.edit` | `App\Http\Controllers\ExpertProfileEditController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, Illuminate\Auth\Middleware\EnsureEmailIsVerified` |
-| `POST` | `experts/{expertProfile}/reviews` | `experts.reviews.store` | `App\Http\Controllers\ReviewStoreController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, Illuminate\Auth\Middleware\EnsureEmailIsVerified, Illuminate\Routing\Middleware\ThrottleRequests:6,1` |
+| `PUT` | `experts/{expertProfile}` | `experts.update` | `App\Http\Controllers\ExpertProfileUpdateController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, App\Http\Middleware\EnsureEmailIsVerified` |
+| `POST` | `experts/{expertProfile}/actions` | `experts.actions` | `App\Http\Controllers\ExpertActionController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, App\Http\Middleware\EnsureEmailIsVerified, Illuminate\Routing\Middleware\ThrottleRequests:30,1` |
+| `GET\|HEAD` | `experts/{expertProfile}/book` | `experts.bookings.create` | `App\Http\Controllers\BookingCreateController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, App\Http\Middleware\EnsureEmailIsVerified` |
+| `POST` | `experts/{expertProfile}/book` | `experts.bookings.store` | `App\Http\Controllers\BookingStoreController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, App\Http\Middleware\EnsureEmailIsVerified, Illuminate\Routing\Middleware\ThrottleRequests:8,1` |
+| `GET\|HEAD` | `experts/{expertProfile}/edit` | `experts.edit` | `App\Http\Controllers\ExpertProfileEditController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, App\Http\Middleware\EnsureEmailIsVerified` |
+| `POST` | `experts/{expertProfile}/reviews` | `experts.reviews.store` | `App\Http\Controllers\ReviewStoreController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, App\Http\Middleware\EnsureEmailIsVerified, Illuminate\Routing\Middleware\ThrottleRequests:6,1` |
 | `GET\|HEAD` | `forgot-password` | `password.request` | `App\Livewire\Auth\ForgotPassword` | `web, Illuminate\Auth\Middleware\RedirectIfAuthenticated` |
 | `GET\|HEAD` | `forum` | `forum.index` | `App\Http\Controllers\ForumController` | `web` |
 | `POST` | `forum/actions` | `forum.actions` | `App\Http\Controllers\ForumActionController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, Illuminate\Routing\Middleware\ThrottleRequests:60,1` |
 | `GET\|HEAD` | `forum/ask` | `forum.topics.create` | `App\Http\Controllers\TopicCreateController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser` |
 | `GET\|HEAD` | `forum/expert-sessions` | `forum.expert-sessions.index` | `App\Http\Controllers\ForumExpertSessionDirectoryController` | `web` |
 | `GET\|HEAD` | `forum/expert-sessions/{forumExpertSession:stable_key}` | `forum.expert-sessions.show` | `App\Http\Controllers\ForumExpertSessionShowController` | `web` |
-| `GET\|HEAD` | `forum/groups` | `forum.groups.index` | `App\Http\Controllers\ForumGroupDirectoryController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, Illuminate\Auth\Middleware\EnsureEmailIsVerified` |
-| `GET\|HEAD` | `forum/groups/{forumGroup:stable_key}` | `forum.groups.show` | `App\Http\Controllers\ForumGroupShowController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, Illuminate\Auth\Middleware\EnsureEmailIsVerified` |
-| `GET\|HEAD` | `forum/groups/{forumGroup:stable_key}/files/{file:stable_key}` | `forum.groups.files.download` | `App\Http\Controllers\ForumGroupFileDownloadController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, Illuminate\Auth\Middleware\EnsureEmailIsVerified, Illuminate\Routing\Middleware\ThrottleRequests:60,1` |
-| `GET\|HEAD` | `forum/journals` | `forum.journals.index` | `App\Http\Controllers\ForumJournalDirectoryController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, Illuminate\Auth\Middleware\EnsureEmailIsVerified` |
-| `GET\|HEAD` | `forum/journals/{forumJournal:stable_key}/export` | `forum.journals.export` | `App\Http\Controllers\ForumJournalExportController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, Illuminate\Auth\Middleware\EnsureEmailIsVerified, Illuminate\Routing\Middleware\ThrottleRequests:12,1` |
+| `GET\|HEAD` | `forum/groups` | `forum.groups.index` | `App\Http\Controllers\ForumGroupDirectoryController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, App\Http\Middleware\EnsureEmailIsVerified` |
+| `GET\|HEAD` | `forum/groups/{forumGroup:stable_key}` | `forum.groups.show` | `App\Http\Controllers\ForumGroupShowController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, App\Http\Middleware\EnsureEmailIsVerified` |
+| `GET\|HEAD` | `forum/groups/{forumGroup:stable_key}/files/{file:stable_key}` | `forum.groups.files.download` | `App\Http\Controllers\ForumGroupFileDownloadController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, App\Http\Middleware\EnsureEmailIsVerified, Illuminate\Routing\Middleware\ThrottleRequests:60,1` |
+| `GET\|HEAD` | `forum/journals` | `forum.journals.index` | `App\Http\Controllers\ForumJournalDirectoryController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, App\Http\Middleware\EnsureEmailIsVerified` |
+| `GET\|HEAD` | `forum/journals/{forumJournal:stable_key}/export` | `forum.journals.export` | `App\Http\Controllers\ForumJournalExportController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, App\Http\Middleware\EnsureEmailIsVerified, Illuminate\Routing\Middleware\ThrottleRequests:12,1` |
 | `GET\|HEAD` | `forum/journals/{forumJournal:stable_key}/media/{forumJournalMedia:stable_key}` | `forum.journals.media.show` | `App\Http\Controllers\ForumJournalMediaController` | `web, Illuminate\Routing\Middleware\ThrottleRequests:60,1` |
-| `GET\|HEAD` | `forum/mentorship` | `forum.mentorship.index` | `App\Http\Controllers\ForumMentorshipController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, Illuminate\Auth\Middleware\EnsureEmailIsVerified` |
+| `GET\|HEAD` | `forum/mentorship` | `forum.mentorship.index` | `App\Http\Controllers\ForumMentorshipController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, App\Http\Middleware\EnsureEmailIsVerified` |
 | `GET\|HEAD` | `forum/similar` | `forum.topics.similar` | `App\Http\Controllers\SimilarTopicController` | `web` |
 | `POST` | `forum/topics` | `forum.topics.store` | `App\Http\Controllers\TopicStoreController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, Illuminate\Routing\Middleware\ThrottleRequests:12,1` |
 | `DELETE` | `forum/topics/{forumTopic}` | `forum.topics.destroy` | `App\Http\Controllers\TopicDeleteController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser` |
@@ -124,13 +121,13 @@ Snapshot date: 2026-08-30.
 | `GET\|HEAD` | `groups/{group}` | `groups.show` | `App\Http\Controllers\GroupDetailPreviewController` | `web` |
 | `GET\|HEAD` | `groups/{item}` | `groups.created` | `App\Http\Controllers\CreatedContentPreviewController` | `web` |
 | `GET\|HEAD` | `knowledge` | `knowledge.index` | `App\Http\Controllers\KnowledgeController` | `web` |
-| `GET\|HEAD` | `knowledge/guides/new` | `knowledge.guides.create` | `App\Http\Controllers\KnowledgeGuideCreateController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, Illuminate\Auth\Middleware\EnsureEmailIsVerified` |
+| `GET\|HEAD` | `knowledge/guides/new` | `knowledge.guides.create` | `App\Http\Controllers\KnowledgeGuideCreateController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, App\Http\Middleware\EnsureEmailIsVerified` |
 | `GET\|HEAD` | `knowledge/{knowledgeArticle}` | `knowledge.articles.show` | `App\Http\Controllers\ArticleController` | `web` |
 | `POST` | `knowledge/{knowledgeArticle}/corrections` | `knowledge.corrections.store` | `App\Http\Controllers\CorrectionStoreController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, Illuminate\Routing\Middleware\ThrottleRequests:12,1` |
-| `GET\|HEAD` | `knowledge/{knowledgeArticle}/edit` | `knowledge.guides.edit` | `App\Http\Controllers\KnowledgeGuideEditController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, Illuminate\Auth\Middleware\EnsureEmailIsVerified` |
+| `GET\|HEAD` | `knowledge/{knowledgeArticle}/edit` | `knowledge.guides.edit` | `App\Http\Controllers\KnowledgeGuideEditController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, App\Http\Middleware\EnsureEmailIsVerified` |
 | `GET\|HEAD` | `knowledge/{knowledgeArticle}/export` | `knowledge.articles.export` | `App\Http\Controllers\KnowledgeGuideExportController` | `web` |
 | `GET\|HEAD` | `knowledge/{knowledgeArticle}/print` | `knowledge.articles.print` | `App\Http\Controllers\KnowledgeGuidePrintController` | `web` |
-| `GET\|HEAD` | `knowledge/{knowledgeArticle}/translations/new` | `knowledge.guides.translations.create` | `App\Http\Controllers\KnowledgeGuideTranslationCreateController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, Illuminate\Auth\Middleware\EnsureEmailIsVerified` |
+| `GET\|HEAD` | `knowledge/{knowledgeArticle}/translations/new` | `knowledge.guides.translations.create` | `App\Http\Controllers\KnowledgeGuideTranslationCreateController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, App\Http\Middleware\EnsureEmailIsVerified` |
 | `GET\|HEAD` | `livewire-5c61bfc4/css/{component}.css` | `-` | `Closure` | `` |
 | `GET\|HEAD` | `livewire-5c61bfc4/css/{component}.global.css` | `-` | `Closure` | `` |
 | `GET\|HEAD` | `livewire-5c61bfc4/js/{component}.js` | `-` | `Closure` | `` |
@@ -144,51 +141,50 @@ Snapshot date: 2026-08-30.
 | `GET\|HEAD` | `login` | `login` | `App\Livewire\Auth\Login` | `web, Illuminate\Auth\Middleware\RedirectIfAuthenticated` |
 | `POST` | `logout` | `logout` | `App\Http\Controllers\Auth\LogoutController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser` |
 | `GET\|HEAD` | `lost-found` | `lost-found.index` | `App\Http\Controllers\SearchDirectoryController` | `web` |
-| `POST` | `lost-found` | `lost-found.store` | `App\Http\Controllers\SearchCaseStoreController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, Illuminate\Auth\Middleware\EnsureEmailIsVerified, Illuminate\Routing\Middleware\ThrottleRequests:6,1` |
-| `GET\|HEAD` | `lost-found/new` | `lost-found.create` | `App\Http\Controllers\SearchCaseCreateController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, Illuminate\Auth\Middleware\EnsureEmailIsVerified` |
+| `POST` | `lost-found` | `lost-found.store` | `App\Http\Controllers\SearchCaseStoreController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, App\Http\Middleware\EnsureEmailIsVerified, Illuminate\Routing\Middleware\ThrottleRequests:6,1` |
+| `GET\|HEAD` | `lost-found/new` | `lost-found.create` | `App\Http\Controllers\SearchCaseCreateController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, App\Http\Middleware\EnsureEmailIsVerified` |
 | `GET\|HEAD` | `lost-found/{searchCase}` | `lost-found.show` | `App\Http\Controllers\SearchCaseController` | `web` |
-| `POST` | `lost-found/{searchCase}/actions` | `lost-found.actions` | `App\Http\Controllers\SearchActionController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, Illuminate\Auth\Middleware\EnsureEmailIsVerified, Illuminate\Routing\Middleware\ThrottleRequests:30,1` |
-| `POST` | `lost-found/{searchCase}/contact` | `lost-found.contact.store` | `App\Http\Controllers\SearchContactRelayController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, Illuminate\Auth\Middleware\EnsureEmailIsVerified, Illuminate\Routing\Middleware\ThrottleRequests:6,1` |
-| `GET\|HEAD` | `lost-found/{searchCase}/coordinate` | `lost-found.coordinate` | `App\Http\Controllers\SearchCoordinationController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, Illuminate\Auth\Middleware\EnsureEmailIsVerified` |
+| `POST` | `lost-found/{searchCase}/actions` | `lost-found.actions` | `App\Http\Controllers\SearchActionController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, App\Http\Middleware\EnsureEmailIsVerified, Illuminate\Routing\Middleware\ThrottleRequests:30,1` |
+| `POST` | `lost-found/{searchCase}/contact` | `lost-found.contact.store` | `App\Http\Controllers\SearchContactRelayController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, App\Http\Middleware\EnsureEmailIsVerified, Illuminate\Routing\Middleware\ThrottleRequests:6,1` |
+| `GET\|HEAD` | `lost-found/{searchCase}/coordinate` | `lost-found.coordinate` | `App\Http\Controllers\SearchCoordinationController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, App\Http\Middleware\EnsureEmailIsVerified` |
 | `GET\|HEAD` | `lost-found/{searchCase}/poster` | `lost-found.poster` | `App\Http\Controllers\SearchPosterController` | `web` |
-| `POST` | `lost-found/{searchCase}/reports` | `lost-found.reports.store` | `App\Http\Controllers\SearchReportController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, Illuminate\Auth\Middleware\EnsureEmailIsVerified, Illuminate\Routing\Middleware\ThrottleRequests:6,1` |
+| `POST` | `lost-found/{searchCase}/reports` | `lost-found.reports.store` | `App\Http\Controllers\SearchReportController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, App\Http\Middleware\EnsureEmailIsVerified, Illuminate\Routing\Middleware\ThrottleRequests:6,1` |
 | `POST` | `lost-found/{searchCase}/sightings` | `lost-found.sightings.store` | `App\Http\Controllers\SightingStoreController` | `web, Illuminate\Routing\Middleware\ThrottleRequests:12,1` |
 | `GET\|HEAD` | `marketplace` | `marketplace.index` | `App\Http\Controllers\ListingDirectoryController` | `web` |
-| `POST` | `marketplace` | `marketplace.store` | `App\Http\Controllers\ListingStoreController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, Illuminate\Auth\Middleware\EnsureEmailIsVerified, Illuminate\Routing\Middleware\ThrottleRequests:8,1` |
-| `GET\|HEAD` | `marketplace/new` | `marketplace.create` | `App\Http\Controllers\ListingCreateController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, Illuminate\Auth\Middleware\EnsureEmailIsVerified` |
+| `POST` | `marketplace` | `marketplace.store` | `App\Http\Controllers\ListingStoreController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, App\Http\Middleware\EnsureEmailIsVerified, Illuminate\Routing\Middleware\ThrottleRequests:8,1` |
+| `GET\|HEAD` | `marketplace/new` | `marketplace.create` | `App\Http\Controllers\ListingCreateController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, App\Http\Middleware\EnsureEmailIsVerified` |
 | `GET\|HEAD` | `marketplace/{listing}` | `marketplace.show` | `App\Http\Controllers\ListingController` | `web` |
-| `POST` | `marketplace/{listing}/actions` | `marketplace.actions` | `App\Http\Controllers\ListingActionController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, Illuminate\Auth\Middleware\EnsureEmailIsVerified, Illuminate\Routing\Middleware\ThrottleRequests:30,1` |
-| `GET\|HEAD` | `marketplace/{listing}/orders/{order}` | `marketplace.orders.show` | `App\Http\Controllers\OrderController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, Illuminate\Auth\Middleware\EnsureEmailIsVerified` |
-| `POST` | `marketplace/{listing}/orders/{order}/disputes` | `marketplace.orders.disputes.store` | `App\Http\Controllers\OrderDisputeController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, Illuminate\Auth\Middleware\EnsureEmailIsVerified, Illuminate\Routing\Middleware\ThrottleRequests:6,1` |
-| `POST` | `marketplace/{listing}/orders/{order}/reviews` | `marketplace.orders.reviews.store` | `App\Http\Controllers\ListingReviewController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, Illuminate\Auth\Middleware\EnsureEmailIsVerified, Illuminate\Routing\Middleware\ThrottleRequests:6,1` |
+| `POST` | `marketplace/{listing}/actions` | `marketplace.actions` | `App\Http\Controllers\ListingActionController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, App\Http\Middleware\EnsureEmailIsVerified, Illuminate\Routing\Middleware\ThrottleRequests:30,1` |
+| `GET\|HEAD` | `marketplace/{listing}/orders/{order}` | `marketplace.orders.show` | `App\Http\Controllers\OrderController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, App\Http\Middleware\EnsureEmailIsVerified` |
+| `POST` | `marketplace/{listing}/orders/{order}/disputes` | `marketplace.orders.disputes.store` | `App\Http\Controllers\OrderDisputeController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, App\Http\Middleware\EnsureEmailIsVerified, Illuminate\Routing\Middleware\ThrottleRequests:6,1` |
+| `POST` | `marketplace/{listing}/orders/{order}/reviews` | `marketplace.orders.reviews.store` | `App\Http\Controllers\ListingReviewController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, App\Http\Middleware\EnsureEmailIsVerified, Illuminate\Routing\Middleware\ThrottleRequests:6,1` |
 | `GET\|HEAD` | `medical-access/{token}` | `medical-access.show` | `App\Http\Controllers\MedicalSharedRecordController` | `web, App\Http\Middleware\ProtectMedicalResponse, Illuminate\Routing\Middleware\ThrottleRequests:30,1` |
 | `GET\|HEAD` | `medical-access/{token}/documents/{medicalDocument}` | `medical-access.documents.download` | `App\Http\Controllers\MedicalSharedDocumentDownloadController` | `web, App\Http\Middleware\ProtectMedicalResponse, Illuminate\Routing\Middleware\ThrottleRequests:20,1` |
-| `GET\|HEAD` | `medical-records` | `medical-records.index` | `App\Http\Controllers\MedicalRecordDirectoryController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, Illuminate\Auth\Middleware\EnsureEmailIsVerified, App\Http\Middleware\ProtectMedicalResponse` |
-| `POST` | `medical-records` | `medical-records.store` | `App\Http\Controllers\MedicalRecordStoreController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, Illuminate\Auth\Middleware\EnsureEmailIsVerified, App\Http\Middleware\ProtectMedicalResponse, Illuminate\Routing\Middleware\ThrottleRequests:6,1` |
-| `GET\|HEAD` | `medical-records/new` | `medical-records.create` | `App\Http\Controllers\MedicalRecordCreateController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, Illuminate\Auth\Middleware\EnsureEmailIsVerified, App\Http\Middleware\ProtectMedicalResponse` |
-| `GET\|HEAD` | `medical-records/{medicalRecord}` | `medical-records.show` | `App\Http\Controllers\MedicalRecordController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, Illuminate\Auth\Middleware\EnsureEmailIsVerified, App\Http\Middleware\ProtectMedicalResponse` |
-| `POST` | `medical-records/{medicalRecord}/access` | `medical-records.access.store` | `App\Http\Controllers\MedicalAccessStoreController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, Illuminate\Auth\Middleware\EnsureEmailIsVerified, App\Http\Middleware\ProtectMedicalResponse, Illuminate\Routing\Middleware\ThrottleRequests:12,1` |
-| `DELETE` | `medical-records/{medicalRecord}/access/{medicalAccessGrant}` | `medical-records.access.revoke` | `App\Http\Controllers\MedicalAccessRevokeController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, Illuminate\Auth\Middleware\EnsureEmailIsVerified, App\Http\Middleware\ProtectMedicalResponse` |
-| `POST` | `medical-records/{medicalRecord}/documents` | `medical-records.documents.store` | `App\Http\Controllers\MedicalDocumentStoreController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, Illuminate\Auth\Middleware\EnsureEmailIsVerified, App\Http\Middleware\ProtectMedicalResponse, Illuminate\Routing\Middleware\ThrottleRequests:12,1` |
-| `GET\|HEAD` | `medical-records/{medicalRecord}/documents/{document}` | `medical-records.documents.download` | `App\Http\Controllers\MedicalDocumentDownloadController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, Illuminate\Auth\Middleware\EnsureEmailIsVerified, App\Http\Middleware\ProtectMedicalResponse` |
-| `POST` | `medical-records/{medicalRecord}/doses` | `medical-records.doses.store` | `App\Http\Controllers\MedicationDoseStoreController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, Illuminate\Auth\Middleware\EnsureEmailIsVerified, App\Http\Middleware\ProtectMedicalResponse, Illuminate\Routing\Middleware\ThrottleRequests:40,1` |
-| `GET\|HEAD` | `medical-records/{medicalRecord}/emergency` | `medical-records.emergency` | `App\Http\Controllers\MedicalEmergencyCardController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, Illuminate\Auth\Middleware\EnsureEmailIsVerified, App\Http\Middleware\ProtectMedicalResponse` |
-| `POST` | `medical-records/{medicalRecord}/entries` | `medical-records.entries.store` | `App\Http\Controllers\MedicalEntryStoreController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, Illuminate\Auth\Middleware\EnsureEmailIsVerified, App\Http\Middleware\ProtectMedicalResponse, Illuminate\Routing\Middleware\ThrottleRequests:30,1` |
-| `GET\|HEAD` | `medical-records/{medicalRecord}/manage` | `medical-records.manage` | `App\Http\Controllers\MedicalRecordManageController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, Illuminate\Auth\Middleware\EnsureEmailIsVerified, App\Http\Middleware\ProtectMedicalResponse` |
-| `GET\|HEAD` | `meetups` | `meetups.index` | `App\Http\Controllers\MeetupDirectoryPreviewController` | `web` |
-| `GET\|HEAD` | `meetups/small-dog-social` | `meetups.small_dog_social` | `App\Http\Controllers\MeetupDetailPreviewController` | `web` |
-| `GET\|HEAD` | `meetups/{event}` | `meetups.show` | `App\Http\Controllers\MeetupDetailPreviewController` | `web` |
-| `GET\|HEAD` | `meetups/{item}` | `meetups.created` | `App\Http\Controllers\CreatedContentPreviewController` | `web` |
+| `GET\|HEAD` | `medical-records` | `medical-records.index` | `App\Http\Controllers\MedicalRecordDirectoryController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, App\Http\Middleware\EnsureEmailIsVerified, App\Http\Middleware\ProtectMedicalResponse` |
+| `POST` | `medical-records` | `medical-records.store` | `App\Http\Controllers\MedicalRecordStoreController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, App\Http\Middleware\EnsureEmailIsVerified, App\Http\Middleware\ProtectMedicalResponse, Illuminate\Routing\Middleware\ThrottleRequests:6,1` |
+| `GET\|HEAD` | `medical-records/new` | `medical-records.create` | `App\Http\Controllers\MedicalRecordCreateController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, App\Http\Middleware\EnsureEmailIsVerified, App\Http\Middleware\ProtectMedicalResponse` |
+| `GET\|HEAD` | `medical-records/{medicalRecord}` | `medical-records.show` | `App\Http\Controllers\MedicalRecordController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, App\Http\Middleware\EnsureEmailIsVerified, App\Http\Middleware\ProtectMedicalResponse` |
+| `POST` | `medical-records/{medicalRecord}/access` | `medical-records.access.store` | `App\Http\Controllers\MedicalAccessStoreController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, App\Http\Middleware\EnsureEmailIsVerified, App\Http\Middleware\ProtectMedicalResponse, Illuminate\Routing\Middleware\ThrottleRequests:12,1` |
+| `DELETE` | `medical-records/{medicalRecord}/access/{medicalAccessGrant}` | `medical-records.access.revoke` | `App\Http\Controllers\MedicalAccessRevokeController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, App\Http\Middleware\EnsureEmailIsVerified, App\Http\Middleware\ProtectMedicalResponse` |
+| `POST` | `medical-records/{medicalRecord}/documents` | `medical-records.documents.store` | `App\Http\Controllers\MedicalDocumentStoreController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, App\Http\Middleware\EnsureEmailIsVerified, App\Http\Middleware\ProtectMedicalResponse, Illuminate\Routing\Middleware\ThrottleRequests:12,1` |
+| `GET\|HEAD` | `medical-records/{medicalRecord}/documents/{document}` | `medical-records.documents.download` | `App\Http\Controllers\MedicalDocumentDownloadController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, App\Http\Middleware\EnsureEmailIsVerified, App\Http\Middleware\ProtectMedicalResponse` |
+| `POST` | `medical-records/{medicalRecord}/doses` | `medical-records.doses.store` | `App\Http\Controllers\MedicationDoseStoreController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, App\Http\Middleware\EnsureEmailIsVerified, App\Http\Middleware\ProtectMedicalResponse, Illuminate\Routing\Middleware\ThrottleRequests:40,1` |
+| `GET\|HEAD` | `medical-records/{medicalRecord}/emergency` | `medical-records.emergency` | `App\Http\Controllers\MedicalEmergencyCardController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, App\Http\Middleware\EnsureEmailIsVerified, App\Http\Middleware\ProtectMedicalResponse` |
+| `POST` | `medical-records/{medicalRecord}/entries` | `medical-records.entries.store` | `App\Http\Controllers\MedicalEntryStoreController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, App\Http\Middleware\EnsureEmailIsVerified, App\Http\Middleware\ProtectMedicalResponse, Illuminate\Routing\Middleware\ThrottleRequests:30,1` |
+| `GET\|HEAD` | `medical-records/{medicalRecord}/manage` | `medical-records.manage` | `App\Http\Controllers\MedicalRecordManageController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, App\Http\Middleware\EnsureEmailIsVerified, App\Http\Middleware\ProtectMedicalResponse` |
+| `GET\|HEAD` | `meetups` | `meetups.index` | `App\Http\Controllers\MeetupDirectoryPreviewController` | `web, App\Http\Middleware\ProtectPrivateResponse` |
+| `GET\|HEAD` | `meetups/create` | `meetups.create` | `App\Http\Controllers\MeetupCreateController` | `web, App\Http\Middleware\ProtectPrivateResponse` |
+| `GET\|HEAD` | `meetups/{event}` | `meetups.show` | `App\Http\Controllers\MeetupDetailPreviewController` | `web, App\Http\Middleware\ProtectPrivateResponse` |
+| `GET\|HEAD` | `meetups/{event}/edit` | `meetups.edit` | `App\Http\Controllers\MeetupEditController` | `web, App\Http\Middleware\ProtectPrivateResponse` |
+| `GET\|HEAD` | `meetups/{event}/manage` | `meetups.manage` | `App\Http\Controllers\MeetupManageController` | `web, App\Http\Middleware\ProtectPrivateResponse` |
 | `GET\|HEAD` | `members/{socialActor:actor_key}` | `members.show` | `App\Http\Controllers\MemberProfileController` | `web` |
 | `GET\|HEAD` | `messages` | `messages.index` | `App\Http\Controllers\MessageCenterPreviewController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser` |
-| `POST` | `messages/actions` | `messages.actions` | `App\Http\Controllers\PerformMessageActionController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser` |
-| `GET\|HEAD` | `messages/{conversation}/details` | `messages.details` | `App\Http\Controllers\ConversationDetailPreviewController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser` |
 | `GET\|HEAD` | `neighbors` | `neighbors.index` | `App\Http\Controllers\NeighborDirectoryPreviewController` | `web` |
-| `GET\|HEAD` | `neighbors/ari-jensen` | `neighbors.ari` | `App\Http\Controllers\NeighborProfilePreviewController` | `web` |
 | `GET\|HEAD` | `notifications` | `notifications.index` | `App\Http\Controllers\NotificationCenterPreviewController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser` |
-| `GET\|HEAD` | `organizations` | `organizations.index` | `App\Livewire\Organizations\OrganizationDirectory` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, Illuminate\Auth\Middleware\EnsureEmailIsVerified` |
-| `GET\|HEAD` | `organizations/invitations/{organizationInvitation:stable_key}/respond` | `organizations.invitations.respond` | `App\Livewire\Organizations\OrganizationInvitationResponse` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, Illuminate\Auth\Middleware\EnsureEmailIsVerified, Illuminate\Routing\Middleware\ValidateSignature, Illuminate\Routing\Middleware\ThrottleRequests:20,1` |
-| `GET\|HEAD` | `organizations/{organization:slug}` | `organizations.show` | `App\Livewire\Organizations\OrganizationWorkspace` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, Illuminate\Auth\Middleware\EnsureEmailIsVerified` |
+| `GET\|HEAD` | `onboarding` | `onboarding.show` | `App\Livewire\Onboarding` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser` |
+| `GET\|HEAD` | `organizations` | `organizations.index` | `App\Livewire\Organizations\OrganizationDirectory` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, App\Http\Middleware\EnsureEmailIsVerified` |
+| `GET\|HEAD` | `organizations/invitations/{organizationInvitation:stable_key}/respond` | `organizations.invitations.respond` | `App\Livewire\Organizations\OrganizationInvitationResponse` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, App\Http\Middleware\EnsureEmailIsVerified, Illuminate\Routing\Middleware\ValidateSignature, Illuminate\Routing\Middleware\ThrottleRequests:20,1` |
+| `GET\|HEAD` | `organizations/{organization:slug}` | `organizations.show` | `App\Livewire\Organizations\OrganizationWorkspace` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, App\Http\Middleware\EnsureEmailIsVerified` |
 | `GET\|HEAD` | `pets` | `pets.index` | `App\Http\Controllers\PetProfileWorkspaceController` | `web` |
 | `GET\|HEAD` | `pets/manage/invitations` | `pets.manage.invitations` | `App\Livewire\Pets\PetProfileInvitations` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser` |
 | `GET\|HEAD` | `pets/manage/new` | `pets.manage.create` | `App\Livewire\Pets\CreatePetProfile` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, Illuminate\Routing\Middleware\ThrottleRequests:30,1` |
@@ -196,18 +192,16 @@ Snapshot date: 2026-08-30.
 | `GET\|HEAD` | `pets/manage/{petProfile:profile_key}/access-requests` | `pets.manage.access-requests` | `App\Livewire\Pets\PetProfileAccessRequests` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser` |
 | `GET\|HEAD` | `pets/profile/{petProfile:profile_key}` | `pets.profile` | `App\Livewire\Pets\PublicPetProfile` | `web` |
 | `GET\|HEAD` | `pets/profile/{petProfile:profile_key}/media/{petProfileMedia:media_key}` | `pets.media.show` | `App\Http\Controllers\PetProfileMediaController` | `web, Illuminate\Routing\Middleware\ThrottleRequests:600,1` |
-| `GET\|HEAD\|POST\|PUT\|PATCH\|DELETE\|OPTIONS` | `pets/scout` | `pets.scout.legacy` | `Illuminate\Routing\RedirectController` | `web` |
-| `GET\|HEAD` | `pets/{item}` | `pets.created` | `App\Http\Controllers\CreatedContentPreviewController` | `web` |
 | `POST` | `photos/actions` | `photos.interactions.store` | `App\Http\Controllers\PhotoInteractionController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, Illuminate\Routing\Middleware\ThrottleRequests:40,1` |
 | `GET\|HEAD` | `places` | `places.index` | `App\Http\Controllers\PlaceDirectoryPreviewController` | `web` |
-| `GET\|HEAD` | `places/moderation/submissions` | `places.moderation.submissions` | `App\Livewire\Places\PlaceModerationWorkspace` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, Illuminate\Auth\Middleware\EnsureEmailIsVerified, Illuminate\Routing\Middleware\ThrottleRequests:60,1` |
-| `GET\|HEAD` | `places/submissions/new` | `places.submissions.create` | `App\Livewire\Places\CreatePlaceSubmission` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, Illuminate\Auth\Middleware\EnsureEmailIsVerified, Illuminate\Routing\Middleware\ThrottleRequests:30,1` |
-| `GET\|HEAD` | `places/submissions/{placeSubmission}` | `places.submissions.show` | `App\Livewire\Places\PlaceSubmissionStatusPage` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, Illuminate\Auth\Middleware\EnsureEmailIsVerified` |
+| `GET\|HEAD` | `places/moderation/submissions` | `places.moderation.submissions` | `App\Livewire\Places\PlaceModerationWorkspace` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, App\Http\Middleware\EnsureEmailIsVerified, Illuminate\Routing\Middleware\ThrottleRequests:60,1` |
+| `GET\|HEAD` | `places/submissions/new` | `places.submissions.create` | `App\Livewire\Places\CreatePlaceSubmission` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, App\Http\Middleware\EnsureEmailIsVerified, Illuminate\Routing\Middleware\ThrottleRequests:30,1` |
+| `GET\|HEAD` | `places/submissions/{placeSubmission}` | `places.submissions.show` | `App\Livewire\Places\PlaceSubmissionStatusPage` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, App\Http\Middleware\EnsureEmailIsVerified` |
+| `GET\|HEAD` | `places/{place:slug}/media/{placeMedia:media_key}/{variant}` | `places.media.show` | `App\Http\Controllers\PlaceMediaController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, App\Http\Middleware\EnsureEmailIsVerified, Illuminate\Routing\Middleware\ThrottleRequests:60,1` |
 | `GET\|HEAD` | `places/{place}` | `places.show` | `App\Http\Controllers\PlaceDetailPreviewController` | `web` |
-| `GET\|HEAD` | `portal-media/{path}` | `portal-media.show` | `App\Http\Controllers\PortalMediaController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, Illuminate\Auth\Middleware\EnsureEmailIsVerified, Illuminate\Routing\Middleware\ThrottleRequests:600,1` |
+| `GET\|HEAD` | `portal-media/{path}` | `portal-media.show` | `App\Http\Controllers\PortalMediaController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser, App\Http\Middleware\EnsureEmailIsVerified, Illuminate\Routing\Middleware\ThrottleRequests:600,1` |
 | `GET\|HEAD` | `posts/{post}` | `posts.show` | `App\Http\Controllers\PostThreadPreviewController` | `web` |
 | `GET\|HEAD` | `preview/feed` | `preview.feed` | `App\Http\Controllers\PreviewController` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser` |
-| `GET\|HEAD\|POST\|PUT\|PATCH\|DELETE\|OPTIONS` | `profile/mia-carter` | `profile.mia.legacy` | `Illuminate\Routing\RedirectController` | `web` |
 | `GET\|HEAD` | `profile/settings` | `profile.settings` | `App\Livewire\ProfileSettings` | `web, Illuminate\Auth\Middleware\Authenticate, App\Http\Middleware\EnsureActiveUser` |
 | `GET\|HEAD` | `register` | `register` | `App\Livewire\Auth\Register` | `web, Illuminate\Auth\Middleware\RedirectIfAuthenticated` |
 | `GET\|HEAD` | `reset-password/{token}` | `password.reset` | `App\Livewire\Auth\ResetPassword` | `web, Illuminate\Auth\Middleware\RedirectIfAuthenticated` |
@@ -228,11 +222,13 @@ Snapshot date: 2026-08-30.
 - `app/Enums/KnowledgeCollaboratorRole.php`: Maintainer=`maintainer`, Contributor=`contributor`, CommunityReviewer=`community-reviewer`, ExpertReviewer=`expert-reviewer`.
 - `app/Enums/OrganizationRole.php`: Owner=`owner`, Administrator=`administrator`, EventManager=`event_manager`, FinanceManager=`finance_manager`, SafetyLead=`safety_lead`, MarketplaceManager=`marketplace_manager`, ShelterCoordinator=`shelter_coordinator`, Member=`member`, Auditor=`auditor`.
 - `app/Enums/PetManagerRole.php`: PrimaryOwner=`primary-owner`, CoOwner=`co-owner`, LegalRepresentative=`legal-representative`, FamilyMember=`family-member`, Shelter=`shelter`, FosterCarer=`foster-carer`, Sitter=`sitter`, Caregiver=`caregiver`, ProfileAdministrator=`profile-administrator`, Specialist=`specialist`, Finder=`finder`, PreviousOwner=`previous-owner`, OrganizationAdministrator=`organization-administrator`, Volunteer=`volunteer`, Other=`other`.
+- `app/Enums/PlaceManagementReviewerRole.php`: Reviewer=`reviewer`, Moderator=`moderator`.
+- `app/Enums/PlaceManagementRole.php`: Owner=`owner`, OrganizationManager=`organization_manager`, StaffManager=`staff_manager`.
 - `app/Enums/UserStatus.php`: Active=`active`, Blocked=`blocked`, Suspended=`suspended`.
 
 ## Persistence Table Inventory
 
-The migration ledger creates 226 named application/framework tables; the isolated database smoke additionally reports framework-managed runtime tables where applicable.
+The migration ledger creates 292 named application/framework tables; the isolated database smoke additionally reports framework-managed runtime tables where applicable.
 
 - `adoption_applications` — `database/migrations/2026_07_31_000500_create_adoption_case_tables.php`
 - `adoption_cases` — `database/migrations/2026_07_31_000500_create_adoption_case_tables.php`
@@ -295,11 +291,36 @@ The migration ledger creates 226 named application/framework tables; the isolate
 - `forum_confirmation_votes` — `database/migrations/2026_07_31_000200_create_forum_reputation_and_confirmation_tables.php`
 - `forum_confirmations` — `database/migrations/2026_07_31_000200_create_forum_reputation_and_confirmation_tables.php`
 - `forum_engagements` — `database/migrations/2026_07_30_075845_create_forum_engagements_table.php`
+- `forum_event_capacity_allocations` — `database/migrations/2026_08_30_081125_create_event_participation_workflow.php`
+- `forum_event_capacity_hold_items` — `database/migrations/2026_08_30_081125_create_event_participation_workflow.php`
+- `forum_event_capacity_holds` — `database/migrations/2026_08_30_081125_create_event_participation_workflow.php`
+- `forum_event_capacity_pools` — `database/migrations/2026_08_30_081125_create_event_participation_workflow.php`
+- `forum_event_competition_appeals` — `database/migrations/2026_08_30_100100_create_forum_event_competition_tables.php`
+- `forum_event_competition_categories` — `database/migrations/2026_08_30_100100_create_forum_event_competition_tables.php`
+- `forum_event_competition_classes` — `database/migrations/2026_08_30_100100_create_forum_event_competition_tables.php`
+- `forum_event_competition_criteria` — `database/migrations/2026_08_30_100100_create_forum_event_competition_tables.php`
+- `forum_event_competition_entries` — `database/migrations/2026_08_30_100100_create_forum_event_competition_tables.php`
+- `forum_event_competition_entry_pets` — `database/migrations/2026_08_30_100100_create_forum_event_competition_tables.php`
+- `forum_event_competition_history` — `database/migrations/2026_08_30_100100_create_forum_event_competition_tables.php`
+- `forum_event_competition_judge_assignments` — `database/migrations/2026_08_30_100100_create_forum_event_competition_tables.php`
+- `forum_event_competition_judge_conflicts` — `database/migrations/2026_08_30_100100_create_forum_event_competition_tables.php`
+- `forum_event_competition_result_versions` — `database/migrations/2026_08_30_100100_create_forum_event_competition_tables.php`
+- `forum_event_competition_results` — `database/migrations/2026_08_30_100100_create_forum_event_competition_tables.php`
+- `forum_event_competition_rule_versions` — `database/migrations/2026_08_30_100100_create_forum_event_competition_tables.php`
+- `forum_event_competition_score_revisions` — `database/migrations/2026_08_30_100100_create_forum_event_competition_tables.php`
+- `forum_event_competition_scores` — `database/migrations/2026_08_30_100100_create_forum_event_competition_tables.php`
+- `forum_event_competitions` — `database/migrations/2026_08_30_100100_create_forum_event_competition_tables.php`
+- `forum_event_eligibility_decision_sets` — `database/migrations/2026_08_30_081125_create_event_participation_workflow.php`
+- `forum_event_eligibility_decisions` — `database/migrations/2026_08_30_081125_create_event_participation_workflow.php`
 - `forum_event_history` — `database/migrations/2026_07_31_001230_create_forum_event_tables.php`
 - `forum_event_invitations` — `database/migrations/2026_07_31_001230_create_forum_event_tables.php`
 - `forum_event_messages` — `database/migrations/2026_07_31_001230_create_forum_event_tables.php`
+- `forum_event_notification_intents` — `database/migrations/2026_08_30_081125_create_event_participation_workflow.php`
 - `forum_event_occurrences` — `database/migrations/2026_08_03_082152_create_forum_event_series_and_occurrences_tables.php`
+- `forum_event_participation_operations` — `database/migrations/2026_08_30_081125_create_event_participation_workflow.php`
+- `forum_event_participation_transitions` — `database/migrations/2026_08_30_081125_create_event_participation_workflow.php`
 - `forum_event_registration_pets` — `database/migrations/2026_08_03_082155_create_forum_event_registration_pets_table.php`
+- `forum_event_registration_snapshots` — `database/migrations/2026_08_30_081125_create_event_participation_workflow.php`
 - `forum_event_registrations` — `database/migrations/2026_07_31_001230_create_forum_event_tables.php`
 - `forum_event_reviews` — `database/migrations/2026_07_31_001230_create_forum_event_tables.php`
 - `forum_event_rooms` — `database/migrations/2026_08_03_120100_create_forum_event_schedule_tables.php`
@@ -311,6 +332,9 @@ The migration ledger creates 226 named application/framework tables; the isolate
 - `forum_event_tracks` — `database/migrations/2026_08_03_120100_create_forum_event_schedule_tables.php`
 - `forum_event_updates` — `database/migrations/2026_07_31_001230_create_forum_event_tables.php`
 - `forum_event_versions` — `database/migrations/2026_08_03_082153_create_forum_event_versions_and_team_memberships_tables.php`
+- `forum_event_waitlist_entries` — `database/migrations/2026_08_30_081125_create_event_participation_workflow.php`
+- `forum_event_waitlist_requirements` — `database/migrations/2026_08_30_081125_create_event_participation_workflow.php`
+- `forum_event_waitlists` — `database/migrations/2026_08_30_081125_create_event_participation_workflow.php`
 - `forum_events` — `database/migrations/2026_07_31_001230_create_forum_event_tables.php`
 - `forum_expert_session_answers` — `database/migrations/2026_07_31_001240_create_forum_expert_session_tables.php`
 - `forum_expert_session_corrections` — `database/migrations/2026_07_31_001240_create_forum_expert_session_tables.php`
@@ -413,16 +437,53 @@ The migration ledger creates 226 named application/framework tables; the isolate
 - `photo_reactions` — `database/migrations/2026_07_31_100000_create_photo_interaction_tables.php`
 - `place_access_audits` — `database/migrations/2026_08_03_140020_create_place_access_and_location_history_tables.php`
 - `place_access_grants` — `database/migrations/2026_08_03_140020_create_place_access_and_location_history_tables.php`
+- `place_compatibility_backfills` — `database/migrations/2026_08_30_230000_create_place_contribution_workflows.php`
+- `place_correction_events` — `database/migrations/2026_08_30_230000_create_place_contribution_workflows.php`
+- `place_corrections` — `database/migrations/2026_08_30_230000_create_place_contribution_workflows.php`
 - `place_duplicate_candidates` — `database/migrations/2026_08_30_120000_create_place_submission_publication_tables.php`
 - `place_facts` — `database/migrations/2026_08_30_120000_create_place_submission_publication_tables.php`
+- `place_invitation_events` — `database/migrations/2026_08_30_240000_create_place_presentation_privacy_tables.php`
+- `place_invitations` — `database/migrations/2026_08_30_240000_create_place_presentation_privacy_tables.php`
 - `place_location_versions` — `database/migrations/2026_08_03_140020_create_place_access_and_location_history_tables.php`
+- `place_management_abuse_reports` — `database/migrations/2026_08_30_130000_create_place_management_claim_tables.php`
+- `place_management_claim_events` — `database/migrations/2026_08_30_130000_create_place_management_claim_tables.php`
+- `place_management_claim_evidence` — `database/migrations/2026_08_30_130000_create_place_management_claim_tables.php`
+- `place_management_claim_scopes` — `database/migrations/2026_08_30_130000_create_place_management_claim_tables.php`
+- `place_management_claims` — `database/migrations/2026_08_30_130000_create_place_management_claim_tables.php`
+- `place_management_notification_intents` — `database/migrations/2026_08_30_130000_create_place_management_claim_tables.php`
+- `place_management_reviewer_recusals` — `database/migrations/2026_08_30_130000_create_place_management_claim_tables.php`
+- `place_management_reviewers` — `database/migrations/2026_08_30_130000_create_place_management_claim_tables.php`
+- `place_manager_authorities` — `database/migrations/2026_08_30_130000_create_place_management_claim_tables.php`
+- `place_manager_authority_scopes` — `database/migrations/2026_08_30_130000_create_place_management_claim_tables.php`
+- `place_media` — `database/migrations/2026_08_30_240000_create_place_presentation_privacy_tables.php`
+- `place_media_events` — `database/migrations/2026_08_30_240000_create_place_presentation_privacy_tables.php`
+- `place_media_variants` — `database/migrations/2026_08_30_240000_create_place_presentation_privacy_tables.php`
 - `place_merge_redirects` — `database/migrations/2026_08_30_120000_create_place_submission_publication_tables.php`
+- `place_operating_schedules` — `database/migrations/2026_08_30_250000_create_place_emergency_fact_tables.php`
+- `place_question_answer_versions` — `database/migrations/2026_08_30_230000_create_place_contribution_workflows.php`
 - `place_question_answers` — `database/migrations/2026_08_03_142638_create_place_question_answers_table.php`
+- `place_question_events` — `database/migrations/2026_08_30_230000_create_place_contribution_workflows.php`
 - `place_questions` — `database/migrations/2026_08_03_142637_create_place_questions_table.php`
+- `place_review_events` — `database/migrations/2026_08_30_230000_create_place_contribution_workflows.php`
+- `place_review_response_versions` — `database/migrations/2026_08_30_230000_create_place_contribution_workflows.php`
+- `place_review_responses` — `database/migrations/2026_08_30_230000_create_place_contribution_workflows.php`
+- `place_review_versions` — `database/migrations/2026_08_30_230000_create_place_contribution_workflows.php`
+- `place_reviews` — `database/migrations/2026_08_30_230000_create_place_contribution_workflows.php`
+- `place_schedule_exception_intervals` — `database/migrations/2026_08_30_250000_create_place_emergency_fact_tables.php`
+- `place_schedule_exceptions` — `database/migrations/2026_08_30_250000_create_place_emergency_fact_tables.php`
+- `place_service_definitions` — `database/migrations/2026_08_30_250000_create_place_emergency_fact_tables.php`
+- `place_service_offering_taxa` — `database/migrations/2026_08_30_250000_create_place_emergency_fact_tables.php`
+- `place_service_offerings` — `database/migrations/2026_08_30_250000_create_place_emergency_fact_tables.php`
 - `place_submission_events` — `database/migrations/2026_08_30_120000_create_place_submission_publication_tables.php`
 - `place_submission_identity_locks` — `database/migrations/2026_08_30_120000_create_place_submission_publication_tables.php`
 - `place_submission_revisions` — `database/migrations/2026_08_30_120000_create_place_submission_publication_tables.php`
 - `place_submissions` — `database/migrations/2026_08_30_120000_create_place_submission_publication_tables.php`
+- `place_warning_appeals` — `database/migrations/2026_08_30_230000_create_place_contribution_workflows.php`
+- `place_warning_confirmations` — `database/migrations/2026_08_30_230000_create_place_contribution_workflows.php`
+- `place_warning_disputes` — `database/migrations/2026_08_30_230000_create_place_contribution_workflows.php`
+- `place_warning_events` — `database/migrations/2026_08_30_230000_create_place_contribution_workflows.php`
+- `place_warnings` — `database/migrations/2026_08_30_230000_create_place_contribution_workflows.php`
+- `place_weekly_opening_intervals` — `database/migrations/2026_08_30_250000_create_place_emergency_fact_tables.php`
 - `places` — `database/migrations/2026_08_03_140000_create_places_table.php`
 - `publications` — `database/migrations/2026_07_30_084915_create_publications_table.php`
 - `reservations` — `database/migrations/2026_07_30_100930_create_reservations_table.php`
@@ -455,6 +516,7 @@ The migration ledger creates 226 named application/framework tables; the isolate
 - `taxon_sources` — `database/migrations/2026_07_31_000120_create_animal_taxonomy_tables.php`
 - `taxon_versions` — `database/migrations/2026_07_31_000120_create_animal_taxonomy_tables.php`
 - `user_domain_states` — `database/migrations/2026_07_30_191100_create_user_domain_states_table.php`
+- `user_onboardings` — `database/migrations/2026_08_30_270000_create_user_onboardings_table.php`
 - `users` — `database/migrations/0001_01_01_000000_create_users_table.php`
 - `vaccinations` — `database/migrations/2026_07_30_130003_create_vaccinations_table.php`
 - `venue_areas` — `database/migrations/2026_08_03_140010_create_venues_and_areas_tables.php`
@@ -464,7 +526,7 @@ The migration ledger creates 226 named application/framework tables; the isolate
 ## Cache And External-Client Inventory
 
 <details>
-<summary>First-party cache or atomic-lock consumers (10)</summary>
+<summary>First-party cache or atomic-lock consumers (9)</summary>
 
 - `app/Actions/ActivateTaxonomyImport.php`
 - `app/Actions/CancelTaxonomyImport.php`
@@ -472,7 +534,6 @@ The migration ledger creates 226 named application/framework tables; the isolate
 - `app/Actions/ValidateTaxonomyImport.php`
 - `app/Models/Listing.php`
 - `app/Models/SearchCase.php`
-- `app/Services/EventState.php`
 - `app/Services/ForumCategoryTree.php`
 - `app/Services/ForumTopicTypeSchemaRegistry.php`
 - `app/Services/PlaceState.php`
@@ -597,10 +658,18 @@ This table classifies every first-party Markdown file outside dependency, runtim
 | `.cursor/skills/testing-best-practices/rules/review.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
 | `.cursor/skills/testing-best-practices/rules/security.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
 | `.cursor/skills/testing-best-practices/rules/test-data.md` | Tooling mirror | Repository-local agent guidance subordinate to `AGENTS.md` |
+| `.superpowers/place-canonical-facts/accessibility-localization.md` | Supporting | Unregistered first-party Markdown; not an independent source of authority |
+| `.superpowers/place-canonical-facts/migration-rollout.md` | Supporting | Unregistered first-party Markdown; not an independent source of authority |
+| `.superpowers/place-canonical-facts/provenance-privacy.md` | Supporting | Unregistered first-party Markdown; not an independent source of authority |
+| `.superpowers/place-canonical-facts/schedule-dst.md` | Supporting | Unregistered first-party Markdown; not an independent source of authority |
+| `.superpowers/place-canonical-facts/schema-design.md` | Supporting | Unregistered first-party Markdown; not an independent source of authority |
+| `.superpowers/place-canonical-facts/service-taxonomy.md` | Supporting | Unregistered first-party Markdown; not an independent source of authority |
+| `.superpowers/sdd/progress.md` | Supporting | Unregistered first-party Markdown; not an independent source of authority |
 | `AGENTS.md` | Canonical / living | Root repository contract or source of truth |
 | `CHANGELOG.md` | Canonical / living | Root repository contract or source of truth |
 | `CLAUDE.md` | Supporting | Repository entry point or contributor adapter |
 | `DESIGN.md` | Canonical / living | Root repository contract or source of truth |
+| `PLANS.md` | Supporting | Unregistered first-party Markdown; not an independent source of authority |
 | `PRODUCT.md` | Canonical / living | Root repository contract or source of truth |
 | `README.md` | Supporting | Repository entry point or contributor adapter |
 | `SECURITY.md` | Canonical / living | Root repository contract or source of truth |
@@ -608,6 +677,11 @@ This table classifies every first-party Markdown file outside dependency, runtim
 | `docs/api-integrations-work-ledger.md` | Supporting | Unregistered first-party Markdown; not an independent source of authority |
 | `docs/architecture.md` | Canonical / living | Registered by `docs/index.md`: Rewritten |
 | `docs/audits/accessibility-responsive-seo-work-ledger.md` | Supporting evidence | Dated or living audit evidence; canonical documents retain authority |
+| `docs/audits/application-architecture-refactor-work-ledger.md` | Supporting evidence | Dated or living audit evidence; canonical documents retain authority |
+| `docs/audits/authenticated-identity-refactor-work-ledger.md` | Supporting evidence | Dated or living audit evidence; canonical documents retain authority |
+| `docs/audits/authentication-lifecycle-work-ledger.md` | Supporting evidence | Dated or living audit evidence; canonical documents retain authority |
+| `docs/audits/authorization-work-ledger.md` | Supporting evidence | Dated or living audit evidence; canonical documents retain authority |
+| `docs/audits/blade-browser-lifecycle-work-ledger.md` | Supporting evidence | Dated or living audit evidence; canonical documents retain authority |
 | `docs/audits/codex-remediation-baseline-work-ledger.md` | Supporting evidence | Dated or living audit evidence; canonical documents retain authority |
 | `docs/audits/communication-existing-system-audit.md` | Supporting evidence | Dated or living audit evidence; canonical documents retain authority |
 | `docs/audits/community-existing-system-audit.md` | Supporting evidence | Dated or living audit evidence; canonical documents retain authority |
@@ -615,25 +689,56 @@ This table classifies every first-party Markdown file outside dependency, runtim
 | `docs/audits/content-feed-gap-analysis.md` | Supporting evidence | Dated or living audit evidence; canonical documents retain authority |
 | `docs/audits/database-domain-audit-work-ledger.md` | Supporting evidence | Dated or living audit evidence; canonical documents retain authority |
 | `docs/audits/database-domain-audit.md` | Supporting evidence | Dated or living audit evidence; canonical documents retain authority |
+| `docs/audits/event-financial-attendance-work-ledger.md` | Supporting evidence | Dated or living audit evidence; canonical documents retain authority |
+| `docs/audits/event-p13-advanced-work-ledger.md` | Supporting evidence | Dated or living audit evidence; canonical documents retain authority |
+| `docs/audits/event-p13-advanced/certificates.md` | Supporting evidence | Dated or living audit evidence; canonical documents retain authority |
+| `docs/audits/event-p13-advanced/commercial-participants.md` | Supporting evidence | Dated or living audit evidence; canonical documents retain authority |
+| `docs/audits/event-p13-advanced/competitions-implementation-report.md` | Supporting evidence | Dated or living audit evidence; canonical documents retain authority |
+| `docs/audits/event-p13-advanced/competitions.md` | Supporting evidence | Dated or living audit evidence; canonical documents retain authority |
+| `docs/audits/event-p13-advanced/feedback.md` | Supporting evidence | Dated or living audit evidence; canonical documents retain authority |
+| `docs/audits/event-p13-advanced/safety-incidents.md` | Supporting evidence | Dated or living audit evidence; canonical documents retain authority |
+| `docs/audits/event-p13-advanced/volunteer-staffing.md` | Supporting evidence | Dated or living audit evidence; canonical documents retain authority |
+| `docs/audits/event-p13-advanced/weather-boundary.md` | Supporting evidence | Dated or living audit evidence; canonical documents retain authority |
+| `docs/audits/event-participation-work-ledger.md` | Supporting evidence | Dated or living audit evidence; canonical documents retain authority |
+| `docs/audits/final-release-audit-work-ledger.md` | Supporting evidence | Dated or living audit evidence; canonical documents retain authority |
+| `docs/audits/forum-atomic-catalogue-coordination-work-ledger.md` | Supporting evidence | Dated or living audit evidence; canonical documents retain authority |
 | `docs/audits/forum-existing-system-audit.md` | Supporting evidence | Dated or living audit evidence; canonical documents retain authority |
 | `docs/audits/forum-final-completeness-audit.md` | Supporting evidence | Dated or living audit evidence; canonical documents retain authority |
 | `docs/audits/forum-gap-analysis.md` | Supporting evidence | Dated or living audit evidence; canonical documents retain authority |
 | `docs/audits/forum-phase4-animal-science-work-ledger.md` | Supporting evidence | Dated or living audit evidence; canonical documents retain authority |
+| `docs/audits/full-stack-dependency-upgrade-work-ledger.md` | Supporting evidence | Dated or living audit evidence; canonical documents retain authority |
+| `docs/audits/global-page-identity-completion-work-ledger.md` | Supporting evidence | Dated or living audit evidence; canonical documents retain authority |
 | `docs/audits/groups-shared-card-ux-audit.md` | Supporting evidence | Dated or living audit evidence; canonical documents retain authority |
 | `docs/audits/icon-system-deep-audit.md` | Supporting evidence | Dated or living audit evidence; canonical documents retain authority |
+| `docs/audits/livewire4-modernization-work-ledger.md` | Supporting evidence | Dated or living audit evidence; canonical documents retain authority |
+| `docs/audits/localization-audit-work-ledger.md` | Supporting evidence | Dated or living audit evidence; canonical documents retain authority |
 | `docs/audits/medical-record-existing-system-audit.md` | Supporting evidence | Dated or living audit evidence; canonical documents retain authority |
+| `docs/audits/meetups-completion-work-ledger.md` | Supporting evidence | Dated or living audit evidence; canonical documents retain authority |
+| `docs/audits/meetups-threat-model.md` | Supporting evidence | Dated or living audit evidence; canonical documents retain authority |
+| `docs/audits/onboarding-audit-work-ledger.md` | Supporting evidence | Dated or living audit evidence; canonical documents retain authority |
 | `docs/audits/pet-profile-existing-system-audit.md` | Supporting evidence | Dated or living audit evidence; canonical documents retain authority |
 | `docs/audits/pet-profile-gap-analysis.md` | Supporting evidence | Dated or living audit evidence; canonical documents retain authority |
 | `docs/audits/pet-social-network-benchmark.md` | Supporting evidence | Dated or living audit evidence; canonical documents retain authority |
+| `docs/audits/petsocial.miniserver.fun-threat-model.md` | Supporting evidence | Dated or living audit evidence; canonical documents retain authority |
+| `docs/audits/place-canonical-facts-work-ledger.md` | Supporting evidence | Dated or living audit evidence; canonical documents retain authority |
 | `docs/audits/place-shared-card-classification.md` | Supporting evidence | Dated or living audit evidence; canonical documents retain authority |
+| `docs/audits/places-directory-query-work-ledger.md` | Supporting evidence | Dated or living audit evidence; canonical documents retain authority |
+| `docs/audits/places-management-verification-work-ledger.md` | Supporting evidence | Dated or living audit evidence; canonical documents retain authority |
+| `docs/audits/places-presentation-privacy-work-ledger.md` | Supporting evidence | Dated or living audit evidence; canonical documents retain authority |
 | `docs/audits/places-production-readiness-audit.md` | Supporting evidence | Dated or living audit evidence; canonical documents retain authority |
 | `docs/audits/places-submission-publication-work-ledger.md` | Supporting evidence | Dated or living audit evidence; canonical documents retain authority |
 | `docs/audits/portal-events-completion-gap-analysis.md` | Supporting evidence | Dated or living audit evidence; canonical documents retain authority |
+| `docs/audits/portal-events-p12-p16-work-ledger.md` | Supporting evidence | Dated or living audit evidence; canonical documents retain authority |
+| `docs/audits/portal-point-12-completion-work-ledger.md` | Supporting evidence | Dated or living audit evidence; canonical documents retain authority |
 | `docs/audits/repository-audit-work-ledger.md` | Supporting evidence | Dated or living audit evidence; canonical documents retain authority |
 | `docs/audits/repository-inventory.md` | Supporting evidence | Dated or living audit evidence; canonical documents retain authority |
+| `docs/audits/repository-performance-audit-2026-08-30.md` | Supporting evidence | Dated or living audit evidence; canonical documents retain authority |
+| `docs/audits/repository-performance-audit-work-ledger.md` | Supporting evidence | Dated or living audit evidence; canonical documents retain authority |
 | `docs/audits/shared-card-action-row.md` | Supporting evidence | Dated or living audit evidence; canonical documents retain authority |
+| `docs/audits/shared-directory-card-completion-work-ledger.md` | Supporting evidence | Dated or living audit evidence; canonical documents retain authority |
 | `docs/audits/social-relationships-existing-system-audit.md` | Supporting evidence | Dated or living audit evidence; canonical documents retain authority |
 | `docs/audits/social-relationships-gap-analysis.md` | Supporting evidence | Dated or living audit evidence; canonical documents retain authority |
+| `docs/audits/tailwind-css4-modernization-work-ledger.md` | Supporting evidence | Dated or living audit evidence; canonical documents retain authority |
 | `docs/authorization.md` | Canonical / living | Registered by `docs/index.md`: Canonical |
 | `docs/caching.md` | Canonical / living | Registered by `docs/index.md`: Canonical |
 | `docs/code-review.md` | Canonical / living | Registered by `docs/index.md`: Living evidence |
@@ -678,6 +783,7 @@ This table classifies every first-party Markdown file outside dependency, runtim
 | `docs/events/index.md` | Canonical / living | Registered by `docs/index.md`: Canonical |
 | `docs/events/localization.md` | Supporting | Unregistered first-party Markdown; not an independent source of authority |
 | `docs/events/media-and-privacy.md` | Supporting | Unregistered first-party Markdown; not an independent source of authority |
+| `docs/events/meetups.md` | Canonical / living | Registered by `docs/index.md`: Canonical Meetup projection |
 | `docs/events/organizers.md` | Supporting | Unregistered first-party Markdown; not an independent source of authority |
 | `docs/events/payments.md` | Supporting | Unregistered first-party Markdown; not an independent source of authority |
 | `docs/events/performance.md` | Supporting | Unregistered first-party Markdown; not an independent source of authority |
@@ -757,6 +863,7 @@ This table classifies every first-party Markdown file outside dependency, runtim
 | `docs/plans/join-landing-page-plan.md` | Supporting scoped plan | Scoped plan subordinate to `docs/implementation-plan.md` |
 | `docs/plans/medical-record-current-progress.md` | Supporting scoped plan | Scoped plan subordinate to `docs/implementation-plan.md` |
 | `docs/plans/medical-record-master-plan.md` | Supporting scoped plan | Scoped plan subordinate to `docs/implementation-plan.md` |
+| `docs/plans/onboarding-implementation-plan.md` | Supporting scoped plan | Scoped plan subordinate to `docs/implementation-plan.md` |
 | `docs/plans/pet-profile-appearance-color-work-package.md` | Supporting scoped plan | Scoped plan subordinate to `docs/implementation-plan.md` |
 | `docs/plans/pet-profile-birth-precision-work-package.md` | Supporting scoped plan | Scoped plan subordinate to `docs/implementation-plan.md` |
 | `docs/plans/pet-profile-body-covering-work-package.md` | Supporting scoped plan | Scoped plan subordinate to `docs/implementation-plan.md` |
@@ -795,13 +902,14 @@ This table classifies every first-party Markdown file outside dependency, runtim
 | `docs/portal/workflows.md` | Supporting | Unregistered first-party Markdown; not an independent source of authority |
 | `docs/privacy.md` | Canonical / living | Registered by `docs/index.md`: Canonical |
 | `docs/product-requirements.md` | Canonical / living | Registered by `docs/index.md`: Canonical |
+| `docs/reports/final-release-verification.md` | Canonical / living | Registered by `docs/index.md`: Current NO-GO release record |
 | `docs/requirements.md` | Canonical / living | Registered by `docs/index.md`: Canonical |
 | `docs/requirements/compliance-matrix.md` | Canonical requirement or generated evidence | Authority resolved by `docs/requirements.md` and repository precedence |
 | `docs/requirements/forum-master-requirements.md` | Canonical requirement or generated evidence | Authority resolved by `docs/requirements.md` and repository precedence |
 | `docs/requirements/forum-source-prompt.md` | Canonical requirement or generated evidence | Authority resolved by `docs/requirements.md` and repository precedence |
 | `docs/requirements/laravel-engineering-standard.md` | Canonical requirement or generated evidence | Authority resolved by `docs/requirements.md` and repository precedence |
 | `docs/security.md` | Canonical / living | Registered by `docs/index.md`: Canonical |
-| `docs/seeding-coverage.md` | Canonical generated evidence | Registered by `docs/index.md`: Canonical generated evidence |
+| `docs/seeding-coverage.md` | Canonical generated evidence | Registered by `docs/index.md`: Generated evidence; currently stale/failing |
 | `docs/seeding-work-ledger.md` | Supporting | Unregistered first-party Markdown; not an independent source of authority |
 | `docs/seeding.md` | Canonical / living | Registered by `docs/index.md`: Canonical |
 | `docs/social-relationships.md` | Canonical / living | Registered by `docs/index.md`: Canonical reference |
@@ -817,6 +925,9 @@ This table classifies every first-party Markdown file outside dependency, runtim
 | `docs/superpowers/plans/2026-07-30-places-map-mvp.md` | Historical / scoped evidence | Subordinate specification or delivery history |
 | `docs/superpowers/plans/2026-08-30-auth-password-visibility-toggle.md` | Historical / scoped evidence | Subordinate specification or delivery history |
 | `docs/superpowers/plans/2026-08-30-auth-runtime-browser-hardening.md` | Historical / scoped evidence | Subordinate specification or delivery history |
+| `docs/superpowers/plans/2026-08-30-configurable-email-verification.md` | Historical / scoped evidence | Subordinate specification or delivery history |
+| `docs/superpowers/plans/2026-08-30-readable-translation-keys.md` | Historical / scoped evidence | Subordinate specification or delivery history |
+| `docs/superpowers/plans/2026-08-30-tailwind-css4-design-system-modernization.md` | Historical / scoped evidence | Subordinate specification or delivery history |
 | `docs/superpowers/specs/2026-07-28-pet-directory-design.md` | Historical / scoped evidence | Subordinate specification or delivery history |
 | `docs/superpowers/specs/2026-07-28-pet-profile-design.md` | Historical / scoped evidence | Subordinate specification or delivery history |
 | `docs/superpowers/specs/2026-07-29-events-mvp-design.md` | Historical / scoped evidence | Subordinate specification or delivery history |
@@ -835,6 +946,9 @@ This table classifies every first-party Markdown file outside dependency, runtim
 | `docs/superpowers/specs/2026-07-31-seven-web-attack-surfaces-hardening.md` | Historical / scoped evidence | Subordinate specification or delivery history |
 | `docs/superpowers/specs/2026-08-30-auth-password-visibility-toggle.md` | Historical / scoped evidence | Subordinate specification or delivery history |
 | `docs/superpowers/specs/2026-08-30-auth-runtime-browser-hardening.md` | Historical / scoped evidence | Subordinate specification or delivery history |
+| `docs/superpowers/specs/2026-08-30-configurable-email-verification.md` | Historical / scoped evidence | Subordinate specification or delivery history |
+| `docs/superpowers/specs/2026-08-30-readable-translation-keys-design.md` | Historical / scoped evidence | Subordinate specification or delivery history |
+| `docs/superpowers/specs/2026-08-30-tailwind-css4-design-system-modernization.md` | Historical / scoped evidence | Subordinate specification or delivery history |
 | `docs/system-requirements.md` | Canonical / living | Registered by `docs/index.md`: Canonical |
 | `docs/tailwind.md` | Canonical / living | Registered by `docs/index.md`: Canonical |
 | `docs/testing.md` | Canonical / living | Registered by `docs/index.md`: Canonical |
@@ -879,7 +993,7 @@ This table classifies every first-party Markdown file outside dependency, runtim
 </details>
 
 <details>
-<summary>Configuration files (16)</summary>
+<summary>Configuration files (17)</summary>
 
 - `config/app.php`
 - `config/auth.php`
@@ -888,6 +1002,7 @@ This table classifies every first-party Markdown file outside dependency, runtim
 - `config/filesystems.php`
 - `config/forum.php`
 - `config/images.php`
+- `config/livewire.php`
 - `config/logging.php`
 - `config/mail.php`
 - `config/pet_profiles.php`
@@ -908,10 +1023,12 @@ This table classifies every first-party Markdown file outside dependency, runtim
 </details>
 
 <details>
-<summary>Console commands (5)</summary>
+<summary>Console commands (7)</summary>
 
+- `app/Console/Commands/ActivatePendingEmailUsers.php`
 - `app/Console/Commands/BackfillForumTaxonomy.php`
 - `app/Console/Commands/BackfillPetProfileFoundation.php`
+- `app/Console/Commands/BackfillPlaceContributions.php`
 - `app/Console/Commands/BackfillSocialActors.php`
 - `app/Console/Commands/ImportAnimalTaxonomy.php`
 - `app/Console/Commands/ReportContentCompatibility.php`
@@ -919,7 +1036,7 @@ This table classifies every first-party Markdown file outside dependency, runtim
 </details>
 
 <details>
-<summary>Enums (202)</summary>
+<summary>Enums (241)</summary>
 
 - `app/Enums/AdoptionApplicationStatus.php`
 - `app/Enums/AdoptionCaseStatus.php`
@@ -958,6 +1075,9 @@ This table classifies every first-party Markdown file outside dependency, runtim
 - `app/Enums/DiscoveryCategory.php`
 - `app/Enums/DiscoveryPreferenceScope.php`
 - `app/Enums/DisputeStatus.php`
+- `app/Enums/EventCompetitionAppealStatus.php`
+- `app/Enums/EventCompetitionEntryStatus.php`
+- `app/Enums/EventCompetitionStatus.php`
 - `app/Enums/ExpertProfileStatus.php`
 - `app/Enums/ForumCommunityNoteStatus.php`
 - `app/Enums/ForumCommunityNoteType.php`
@@ -1039,6 +1159,8 @@ This table classifies every first-party Markdown file outside dependency, runtim
 - `app/Enums/MedicationDoseStatus.php`
 - `app/Enums/MedicationStatus.php`
 - `app/Enums/ModerationStatus.php`
+- `app/Enums/OnboardingPetChoice.php`
+- `app/Enums/OnboardingStep.php`
 - `app/Enums/OrderStatus.php`
 - `app/Enums/OrganizationInvitationStatus.php`
 - `app/Enums/OrganizationMembershipStatus.php`
@@ -1084,18 +1206,52 @@ This table classifies every first-party Markdown file outside dependency, runtim
 - `app/Enums/PlaceAccessGrantStatus.php`
 - `app/Enums/PlaceAccessPurpose.php`
 - `app/Enums/PlaceAccessibilityStatus.php`
+- `app/Enums/PlaceCorrectionField.php`
+- `app/Enums/PlaceCorrectionResolution.php`
+- `app/Enums/PlaceCorrectionSource.php`
+- `app/Enums/PlaceCorrectionStatus.php`
 - `app/Enums/PlaceDuplicateConfidence.php`
 - `app/Enums/PlaceFactScope.php`
+- `app/Enums/PlaceInvitationStatus.php`
 - `app/Enums/PlaceLocationPrecision.php`
+- `app/Enums/PlaceManagementClaimAction.php`
+- `app/Enums/PlaceManagementClaimPurpose.php`
+- `app/Enums/PlaceManagementClaimStatus.php`
+- `app/Enums/PlaceManagementNotificationStatus.php`
+- `app/Enums/PlaceManagementReviewerRole.php`
+- `app/Enums/PlaceManagementRole.php`
+- `app/Enums/PlaceManagementScope.php`
+- `app/Enums/PlaceManagerAuthorityStatus.php`
+- `app/Enums/PlaceMediaStatus.php`
+- `app/Enums/PlaceMediaVariant.php`
+- `app/Enums/PlaceMediaVariantStatus.php`
+- `app/Enums/PlaceOpeningState.php`
+- `app/Enums/PlacePublicLocationPrecision.php`
 - `app/Enums/PlaceQuestionStatus.php`
+- `app/Enums/PlaceReviewAnonymityMode.php`
+- `app/Enums/PlaceReviewEligibilityContext.php`
+- `app/Enums/PlaceReviewModerationStatus.php`
+- `app/Enums/PlaceScheduleCoverage.php`
+- `app/Enums/PlaceScheduleExceptionKind.php`
+- `app/Enums/PlaceServiceAccessMode.php`
+- `app/Enums/PlaceServiceAvailability.php`
+- `app/Enums/PlaceSpeciesEligibility.php`
 - `app/Enums/PlaceStatus.php`
 - `app/Enums/PlaceSubmissionAction.php`
 - `app/Enums/PlaceSubmissionResolution.php`
 - `app/Enums/PlaceSubmissionSource.php`
 - `app/Enums/PlaceSubmissionStatus.php`
 - `app/Enums/PlaceType.php`
+- `app/Enums/PlaceVerificationMethod.php`
 - `app/Enums/PlaceVerificationStatus.php`
 - `app/Enums/PlaceVisibility.php`
+- `app/Enums/PlaceWarningAppealStatus.php`
+- `app/Enums/PlaceWarningCategory.php`
+- `app/Enums/PlaceWarningDisputeStatus.php`
+- `app/Enums/PlaceWarningResolution.php`
+- `app/Enums/PlaceWarningSeverity.php`
+- `app/Enums/PlaceWarningSource.php`
+- `app/Enums/PlaceWarningStatus.php`
 - `app/Enums/PublicationStatus.php`
 - `app/Enums/ReputationEventStatus.php`
 - `app/Enums/ReservationStatus.php`
@@ -1145,29 +1301,35 @@ This table classifies every first-party Markdown file outside dependency, runtim
 </details>
 
 <details>
-<summary>Notifications (1)</summary>
+<summary>Notifications (3)</summary>
 
+- `app/Notifications/PlaceManagementTransitionNotification.php`
 - `app/Notifications/PlaceSubmissionStatusChanged.php`
+- `app/Notifications/VerifyEmailNotification.php`
 
 </details>
 
 <details>
-<summary>HTTP middleware (9)</summary>
+<summary>HTTP middleware (13)</summary>
 
 - `app/Http/Middleware/AddSecurityHeaders.php`
 - `app/Http/Middleware/AttachRequestContext.php`
+- `app/Http/Middleware/EnrichRequestContext.php`
 - `app/Http/Middleware/EnsureActiveUser.php`
+- `app/Http/Middleware/EnsureEmailIsVerified.php`
+- `app/Http/Middleware/EnsureOnboardingIsComplete.php`
 - `app/Http/Middleware/ProtectCareResponse.php`
 - `app/Http/Middleware/ProtectDeviceResponse.php`
 - `app/Http/Middleware/ProtectMedicalResponse.php`
 - `app/Http/Middleware/ProtectPrivateResponse.php`
+- `app/Http/Middleware/ReportSlowRequest.php`
 - `app/Http/Middleware/RequirePortalAccess.php`
 - `app/Http/Middleware/SetLocale.php`
 
 </details>
 
 <details>
-<summary>HTTP controllers (147)</summary>
+<summary>HTTP controllers (146)</summary>
 
 - `app/Http/Controllers/AnswerStoreController.php`
 - `app/Http/Controllers/ArticleController.php`
@@ -1201,7 +1363,6 @@ This table classifies every first-party Markdown file outside dependency, runtim
 - `app/Http/Controllers/ContentFeedController.php`
 - `app/Http/Controllers/ContentPublicationController.php`
 - `app/Http/Controllers/Controller.php`
-- `app/Http/Controllers/ConversationDetailPreviewController.php`
 - `app/Http/Controllers/CorrectionStoreController.php`
 - `app/Http/Controllers/CreatedContentPreviewController.php`
 - `app/Http/Controllers/DeviceAccessRevokeController.php`
@@ -1269,25 +1430,25 @@ This table classifies every first-party Markdown file outside dependency, runtim
 - `app/Http/Controllers/MedicalSharedDocumentDownloadController.php`
 - `app/Http/Controllers/MedicalSharedRecordController.php`
 - `app/Http/Controllers/MedicationDoseStoreController.php`
+- `app/Http/Controllers/MeetupCreateController.php`
 - `app/Http/Controllers/MeetupDetailPreviewController.php`
 - `app/Http/Controllers/MeetupDirectoryPreviewController.php`
+- `app/Http/Controllers/MeetupEditController.php`
+- `app/Http/Controllers/MeetupManageController.php`
 - `app/Http/Controllers/MemberProfileController.php`
-- `app/Http/Controllers/MemberProfilePreviewController.php`
 - `app/Http/Controllers/MessageCenterPreviewController.php`
 - `app/Http/Controllers/NeighborDirectoryPreviewController.php`
-- `app/Http/Controllers/NeighborProfilePreviewController.php`
 - `app/Http/Controllers/NotificationCenterPreviewController.php`
 - `app/Http/Controllers/OrderController.php`
 - `app/Http/Controllers/OrderDisputeController.php`
 - `app/Http/Controllers/PerformActionController.php`
-- `app/Http/Controllers/PerformMessageActionController.php`
 - `app/Http/Controllers/PetFriendCenterPreviewController.php`
 - `app/Http/Controllers/PetProfileMediaController.php`
-- `app/Http/Controllers/PetProfilePreviewController.php`
 - `app/Http/Controllers/PetProfileWorkspaceController.php`
 - `app/Http/Controllers/PhotoInteractionController.php`
 - `app/Http/Controllers/PlaceDetailPreviewController.php`
 - `app/Http/Controllers/PlaceDirectoryPreviewController.php`
+- `app/Http/Controllers/PlaceMediaController.php`
 - `app/Http/Controllers/PortalMediaController.php`
 - `app/Http/Controllers/PostThreadPreviewController.php`
 - `app/Http/Controllers/PreviewController.php`
@@ -1320,7 +1481,7 @@ This table classifies every first-party Markdown file outside dependency, runtim
 </details>
 
 <details>
-<summary>Form Requests (67)</summary>
+<summary>Form Requests (66)</summary>
 
 - `app/Http/Requests/BrowseComposerRequest.php`
 - `app/Http/Requests/BrowseConnectionsRequest.php`
@@ -1347,7 +1508,6 @@ This table classifies every first-party Markdown file outside dependency, runtim
 - `app/Http/Requests/PerformExpertActionRequest.php`
 - `app/Http/Requests/PerformForumActionRequest.php`
 - `app/Http/Requests/PerformListingActionRequest.php`
-- `app/Http/Requests/PerformMessageActionRequest.php`
 - `app/Http/Requests/PerformSearchActionRequest.php`
 - `app/Http/Requests/PhotoInteractionRequest.php`
 - `app/Http/Requests/PromoteDeviceEventRequest.php`
@@ -1400,22 +1560,26 @@ This table classifies every first-party Markdown file outside dependency, runtim
 </details>
 
 <details>
-<summary>Actions (241)</summary>
+<summary>Actions (286)</summary>
 
 - `app/Actions/AcceptForumAnswer.php`
 - `app/Actions/AcceptPetProfileManagerInvitation.php`
 - `app/Actions/AcknowledgeDeviceEvent.php`
+- `app/Actions/ActivatePendingEmailUsers.php`
 - `app/Actions/ActivateTaxonomyImport.php`
 - `app/Actions/AddPetProfileName.php`
+- `app/Actions/AdvanceUserOnboarding.php`
 - `app/Actions/AnalyzeTaxonomySnapshot.php`
 - `app/Actions/AnswerPlaceQuestion.php`
 - `app/Actions/AppealForumReviewPanel.php`
+- `app/Actions/AppealPlaceWarning.php`
 - `app/Actions/ApplyForumModerationAction.php`
 - `app/Actions/ApplyOrganizationRestriction.php`
 - `app/Actions/ApprovePlaceSubmission.php`
 - `app/Actions/ArchiveForumExpertSession.php`
 - `app/Actions/ArchiveForumGroupFile.php`
 - `app/Actions/ArchiveForumJournal.php`
+- `app/Actions/AssignEventCompetitionJudge.php`
 - `app/Actions/AssignForumModerationCase.php`
 - `app/Actions/AssociateForumTopicWithGroup.php`
 - `app/Actions/AssociateKnowledgeGuideWithGroup.php`
@@ -1436,10 +1600,15 @@ This table classifies every first-party Markdown file outside dependency, runtim
 - `app/Actions/ChangeForumTrustLevel.php`
 - `app/Actions/CloseAdoptionCase.php`
 - `app/Actions/CloseForumModerationCase.php`
+- `app/Actions/ClosePlaceQuestion.php`
 - `app/Actions/CompleteCareTask.php`
+- `app/Actions/CompleteOnboardingPreferences.php`
+- `app/Actions/CompleteOnboardingPrivacy.php`
 - `app/Actions/ConfirmPlaceDuplicateCandidate.php`
+- `app/Actions/ConfirmPlaceWarning.php`
 - `app/Actions/ConfirmUserPassword.php`
 - `app/Actions/ContinueDistinctPlaceSubmission.php`
+- `app/Actions/CorrectEventCompetitionScore.php`
 - `app/Actions/CorrectForumExpertSessionAnswer.php`
 - `app/Actions/CreateAnswer.php`
 - `app/Actions/CreateBooking.php`
@@ -1453,6 +1622,8 @@ This table classifies every first-party Markdown file outside dependency, runtim
 - `app/Actions/CreateDeviceAccessGrant.php`
 - `app/Actions/CreateDeviceAutomation.php`
 - `app/Actions/CreateDeviceSafeZone.php`
+- `app/Actions/CreateEventCompetition.php`
+- `app/Actions/CreateEventCompetitionEntry.php`
 - `app/Actions/CreateExpertProfile.php`
 - `app/Actions/CreateForumConfirmation.php`
 - `app/Actions/CreateForumEvent.php`
@@ -1481,14 +1652,21 @@ This table classifies every first-party Markdown file outside dependency, runtim
 - `app/Actions/CreateSmartDevice.php`
 - `app/Actions/CreateSocialControl.php`
 - `app/Actions/CreateTopic.php`
+- `app/Actions/DeferOnboardingPetRelationship.php`
+- `app/Actions/DeletePlaceReview.php`
 - `app/Actions/DeleteTopic.php`
+- `app/Actions/DeliverPlaceManagementNotification.php`
+- `app/Actions/DisputePlaceWarning.php`
 - `app/Actions/EndMentorship.php`
 - `app/Actions/EndSocialRelationship.php`
 - `app/Actions/EnforceDeviceRetention.php`
+- `app/Actions/EnsureForumEventPlaceAccess.php`
+- `app/Actions/ExpirePlaceWarnings.php`
 - `app/Actions/FollowSocialActor.php`
 - `app/Actions/GrantForumJournalCollaborator.php`
 - `app/Actions/GrantPlaceAccess.php`
 - `app/Actions/InitializeForumEventLifecycle.php`
+- `app/Actions/InitializeUserOnboarding.php`
 - `app/Actions/InviteForumGroupMember.php`
 - `app/Actions/InviteOrganizationMember.php`
 - `app/Actions/InvitePetProfileManager.php`
@@ -1500,6 +1678,8 @@ This table classifies every first-party Markdown file outside dependency, runtim
 - `app/Actions/MergePlaceDuplicate.php`
 - `app/Actions/ModerateCommunityNote.php`
 - `app/Actions/ModerateForumExpertSessionQuestion.php`
+- `app/Actions/ModeratePlaceQuestion.php`
+- `app/Actions/ModeratePlaceReview.php`
 - `app/Actions/OpenForumModerationCase.php`
 - `app/Actions/OpenOrderDispute.php`
 - `app/Actions/PerformAction.php`
@@ -1510,7 +1690,6 @@ This table classifies every first-party Markdown file outside dependency, runtim
 - `app/Actions/PerformForumAction.php`
 - `app/Actions/PerformGroupAction.php`
 - `app/Actions/PerformListingAction.php`
-- `app/Actions/PerformMessageAction.php`
 - `app/Actions/PerformPetFriendAction.php`
 - `app/Actions/PerformPhotoInteraction.php`
 - `app/Actions/PerformPlaceAction.php`
@@ -1521,12 +1700,14 @@ This table classifies every first-party Markdown file outside dependency, runtim
 - `app/Actions/PrepareForumJournalMediaResponse.php`
 - `app/Actions/PrepareMedicalDocumentDownload.php`
 - `app/Actions/PreparePetProfileMediaResponse.php`
+- `app/Actions/PreparePlaceMediaResponse.php`
 - `app/Actions/PrepareTopicData.php`
 - `app/Actions/ProcessTaxonomyImportChunk.php`
 - `app/Actions/PromoteDeviceEventToCareJournal.php`
 - `app/Actions/PromoteDeviceReadingToMedicalRecord.php`
 - `app/Actions/ProposeCommunityNote.php`
 - `app/Actions/ProposeCorrection.php`
+- `app/Actions/PublishForumEvent.php`
 - `app/Actions/PublishForumEventUpdate.php`
 - `app/Actions/PublishForumExpertSessionAnswer.php`
 - `app/Actions/PublishForumGroupAnnouncement.php`
@@ -1538,6 +1719,7 @@ This table classifies every first-party Markdown file outside dependency, runtim
 - `app/Actions/RecordMedicationDose.php`
 - `app/Actions/RecordPetProfileFact.php`
 - `app/Actions/RecordReputationEvent.php`
+- `app/Actions/RecordSuccessfulLogin.php`
 - `app/Actions/RecuseForumModerator.php`
 - `app/Actions/RedirectForumTopic.php`
 - `app/Actions/RegisterUser.php`
@@ -1545,7 +1727,10 @@ This table classifies every first-party Markdown file outside dependency, runtim
 - `app/Actions/RemoveOrganizationMember.php`
 - `app/Actions/RemovePetPrimaryPhoto.php`
 - `app/Actions/RemovePetProfileName.php`
+- `app/Actions/RemovePlaceMedia.php`
+- `app/Actions/ReopenPlaceQuestion.php`
 - `app/Actions/ReopenPlaceSubmission.php`
+- `app/Actions/ReorderPlaceMedia.php`
 - `app/Actions/ReplaceForumPanelReviewer.php`
 - `app/Actions/ReportSocialRelationshipRequest.php`
 - `app/Actions/RequestForumGroupMembership.php`
@@ -1554,10 +1739,12 @@ This table classifies every first-party Markdown file outside dependency, runtim
 - `app/Actions/RequestPlaceSubmissionInformation.php`
 - `app/Actions/RescheduleForumEvent.php`
 - `app/Actions/ResolveAccessiblePlace.php`
+- `app/Actions/ResolveAccessiblePlaceSubmission.php`
 - `app/Actions/ResolveCareAccess.php`
 - `app/Actions/ResolveDeviceAccess.php`
 - `app/Actions/ResolveMedicalAccess.php`
 - `app/Actions/ResolvePlaceMergeRedirect.php`
+- `app/Actions/ResolvePlaceWarning.php`
 - `app/Actions/RespondToCommunityNote.php`
 - `app/Actions/RespondToForumEventInvitation.php`
 - `app/Actions/RespondToForumGroupInvitation.php`
@@ -1567,6 +1754,7 @@ This table classifies every first-party Markdown file outside dependency, runtim
 - `app/Actions/RespondToSocialRelationshipRequest.php`
 - `app/Actions/RestoreMergedPlace.php`
 - `app/Actions/RestorePetPrimaryPhoto.php`
+- `app/Actions/RestorePlaceReview.php`
 - `app/Actions/RestrictForumGroupMember.php`
 - `app/Actions/RevealPlaceExactLocation.php`
 - `app/Actions/ReverseReputationEvent.php`
@@ -1576,14 +1764,19 @@ This table classifies every first-party Markdown file outside dependency, runtim
 - `app/Actions/ReviewForumTopicUpdateRequest.php`
 - `app/Actions/ReviewKnowledgeCorrection.php`
 - `app/Actions/ReviewPetProfileAccessRequest.php`
+- `app/Actions/ReviewPlaceCorrection.php`
+- `app/Actions/ReviewPlaceMedia.php`
 - `app/Actions/ReviewProfessionalCredential.php`
 - `app/Actions/ReviseCommunityNote.php`
+- `app/Actions/RevisitOnboardingPetRelationship.php`
 - `app/Actions/RevokeCareAccess.php`
 - `app/Actions/RevokeDeviceAccess.php`
+- `app/Actions/RevokeForumEventInvitation.php`
 - `app/Actions/RevokeForumGroupInvitation.php`
 - `app/Actions/RevokeForumJournalCollaborator.php`
 - `app/Actions/RevokeMedicalAccess.php`
 - `app/Actions/RevokePetProfileManager.php`
+- `app/Actions/RevokePlaceAccess.php`
 - `app/Actions/RevokeSocialAccountBlock.php`
 - `app/Actions/RollbackKnowledgeGuideVersion.php`
 - `app/Actions/RollbackTaxonomyImport.php`
@@ -1601,10 +1794,13 @@ This table classifies every first-party Markdown file outside dependency, runtim
 - `app/Actions/StoreForumJournalMedia.php`
 - `app/Actions/StoreMedicalDocument.php`
 - `app/Actions/StorePetPrimaryPhoto.php`
+- `app/Actions/StorePlaceManagementClaimEvidence.php`
+- `app/Actions/StorePlaceMedia.php`
 - `app/Actions/StorePrivateImage.php`
 - `app/Actions/StorePublicImage.php`
 - `app/Actions/SubmitAdoptionApplication.php`
 - `app/Actions/SubmitCredentialVerificationAppeal.php`
+- `app/Actions/SubmitEventCompetitionScore.php`
 - `app/Actions/SubmitForumEventReport.php`
 - `app/Actions/SubmitForumEventReview.php`
 - `app/Actions/SubmitForumExpertSessionQuestion.php`
@@ -1613,8 +1809,12 @@ This table classifies every first-party Markdown file outside dependency, runtim
 - `app/Actions/SubmitForumReport.php`
 - `app/Actions/SubmitMentorshipFeedback.php`
 - `app/Actions/SubmitPetProfileAccessRequest.php`
+- `app/Actions/SubmitPlaceCorrection.php`
+- `app/Actions/SubmitPlaceManagementClaim.php`
 - `app/Actions/SubmitPlaceQuestion.php`
+- `app/Actions/SubmitPlaceReview.php`
 - `app/Actions/SubmitPlaceSubmission.php`
+- `app/Actions/SubmitPlaceWarning.php`
 - `app/Actions/SubmitSighting.php`
 - `app/Actions/SuspendOrganization.php`
 - `app/Actions/SynchronizeAdoptionCase.php`
@@ -1626,19 +1826,24 @@ This table classifies every first-party Markdown file outside dependency, runtim
 - `app/Actions/TransitionForumGroup.php`
 - `app/Actions/TransitionKnowledgeGuide.php`
 - `app/Actions/TransitionPetProfileStatus.php`
+- `app/Actions/UpdateCurrentUserProfile.php`
 - `app/Actions/UpdateDeviceRetention.php`
 - `app/Actions/UpdateDiscoveryPreference.php`
 - `app/Actions/UpdateExpertProfile.php`
 - `app/Actions/UpdateForumCategorySettings.php`
+- `app/Actions/UpdateForumEvent.php`
 - `app/Actions/UpdateForumJournalEntry.php`
 - `app/Actions/UpdateMentorProfile.php`
 - `app/Actions/UpdatePetProfile.php`
 - `app/Actions/UpdatePetProfilePrivacy.php`
 - `app/Actions/UpdatePetProfileStep.php`
 - `app/Actions/UpdatePlaceLocation.php`
+- `app/Actions/UpdatePlaceQuestionAnswer.php`
+- `app/Actions/UpdatePlaceReview.php`
 - `app/Actions/UpdateProfilePreferences.php`
 - `app/Actions/UpdateSocialActorSettings.php`
 - `app/Actions/UpdateTopic.php`
+- `app/Actions/UpsertPlaceReviewResponse.php`
 - `app/Actions/ValidateMentorshipCompletion.php`
 - `app/Actions/ValidateTaxonomyImport.php`
 - `app/Actions/WithdrawForumExpertSessionQuestion.php`
@@ -1647,8 +1852,11 @@ This table classifies every first-party Markdown file outside dependency, runtim
 </details>
 
 <details>
-<summary>Services (158)</summary>
+<summary>Services (172)</summary>
 
+- `app/Services/AccountEntryDestination.php`
+- `app/Services/ActiveAuthenticatedUser.php`
+- `app/Services/AuthenticatedUserPresenter.php`
 - `app/Services/CareJournalPresenter.php`
 - `app/Services/CirclePresenter.php`
 - `app/Services/CommunityMembershipActorEligibility.php`
@@ -1662,10 +1870,10 @@ This table classifies every first-party Markdown file outside dependency, runtim
 - `app/Services/ContentCompatibilityReport.php`
 - `app/Services/ContentFeedPresenter.php`
 - `app/Services/ContentPublicationVisibility.php`
-- `app/Services/ConversationPresenter.php`
 - `app/Services/CreatedContentPresenter.php`
 - `app/Services/DirectoryFilter.php`
 - `app/Services/DiscoveryCatalog.php`
+- `app/Services/EmailVerificationMode.php`
 - `app/Services/EventCatalog.php`
 - `app/Services/EventContentCatalog.php`
 - `app/Services/EventState.php`
@@ -1682,12 +1890,14 @@ This table classifies every first-party Markdown file outside dependency, runtim
 - `app/Services/ForumEventNotifier.php`
 - `app/Services/ForumEventOrganizerVerification.php`
 - `app/Services/ForumEventRegistrationService.php`
+- `app/Services/ForumEventTypeRegistry.php`
 - `app/Services/ForumExpertSessionAudit.php`
 - `app/Services/ForumExpertSessionHostEligibility.php`
 - `app/Services/ForumGroupAudit.php`
 - `app/Services/ForumJournalAudit.php`
 - `app/Services/ForumJournalMetricRegistry.php`
 - `app/Services/ForumModerationActionCatalog.php`
+- `app/Services/ForumModerationGuard.php`
 - `app/Services/ForumPollEligibility.php`
 - `app/Services/ForumPresenter.php`
 - `app/Services/ForumProfessionalAccess.php`
@@ -1719,10 +1929,10 @@ This table classifies every first-party Markdown file outside dependency, runtim
 - `app/Services/MentorMatcher.php`
 - `app/Services/MentorshipAudit.php`
 - `app/Services/MentorshipEligibility.php`
-- `app/Services/MessageCatalog.php`
 - `app/Services/MessagePresenter.php`
-- `app/Services/MessageState.php`
-- `app/Services/NeighborProfilePresenter.php`
+- `app/Services/OnboardingPetEvidence.php`
+- `app/Services/OnboardingPetRelationshipOverview.php`
+- `app/Services/OnboardingState.php`
 - `app/Services/OrderPresenter.php`
 - `app/Services/OrganizationAudit.php`
 - `app/Services/PersistentStateStore.php`
@@ -1750,6 +1960,8 @@ This table classifies every first-party Markdown file outside dependency, runtim
 - `app/Services/PetProfileCache.php`
 - `app/Services/PetProfileCatalog.php`
 - `app/Services/PetProfileCompletionPresenter.php`
+- `app/Services/PetProfileCreationInput.php`
+- `app/Services/PetProfileDuplicateIdentity.php`
 - `app/Services/PetProfileDuplicateReview.php`
 - `app/Services/PetProfileEventRecorder.php`
 - `app/Services/PetProfileFoundationBackfill.php`
@@ -1762,11 +1974,17 @@ This table classifies every first-party Markdown file outside dependency, runtim
 - `app/Services/PetSpeciesLabel.php`
 - `app/Services/PhotoInteractionState.php`
 - `app/Services/PlaceCatalog.php`
+- `app/Services/PlaceCompatibilityBackfillService.php`
 - `app/Services/PlaceContentCatalog.php`
+- `app/Services/PlaceContributionNotifier.php`
 - `app/Services/PlaceDuplicateDetector.php`
 - `app/Services/PlaceIdentityNormalizer.php`
+- `app/Services/PlaceManagementFingerprint.php`
+- `app/Services/PlaceManagementNotifier.php`
 - `app/Services/PlaceMediaCatalog.php`
+- `app/Services/PlaceOpeningStateEvaluator.php`
 - `app/Services/PlacePresenter.php`
+- `app/Services/PlacePublicLocation.php`
 - `app/Services/PlacePublicProjection.php`
 - `app/Services/PlaceQuestionPresenter.php`
 - `app/Services/PlaceState.php`
@@ -1779,6 +1997,7 @@ This table classifies every first-party Markdown file outside dependency, runtim
 - `app/Services/ProfileVisibility.php`
 - `app/Services/PrototypeState.php`
 - `app/Services/QrCodeGenerator.php`
+- `app/Services/SafeIntendedUrl.php`
 - `app/Services/SearchPresenter.php`
 - `app/Services/SearchSafety.php`
 - `app/Services/SearchTaxonomy.php`
@@ -1811,7 +2030,7 @@ This table classifies every first-party Markdown file outside dependency, runtim
 </details>
 
 <details>
-<summary>Models (211)</summary>
+<summary>Models (265)</summary>
 
 - `app/Models/AdoptionApplication.php`
 - `app/Models/AdoptionCase.php`
@@ -1850,6 +2069,20 @@ This table classifies every first-party Markdown file outside dependency, runtim
 - `app/Models/DiscoveryPreference.php`
 - `app/Models/DocumentGrant.php`
 - `app/Models/DomesticClassification.php`
+- `app/Models/EventCompetition.php`
+- `app/Models/EventCompetitionAppeal.php`
+- `app/Models/EventCompetitionCategory.php`
+- `app/Models/EventCompetitionCriterion.php`
+- `app/Models/EventCompetitionEntry.php`
+- `app/Models/EventCompetitionEntryPet.php`
+- `app/Models/EventCompetitionHistory.php`
+- `app/Models/EventCompetitionJudgeAssignment.php`
+- `app/Models/EventCompetitionJudgeConflict.php`
+- `app/Models/EventCompetitionResult.php`
+- `app/Models/EventCompetitionResultVersion.php`
+- `app/Models/EventCompetitionRuleVersion.php`
+- `app/Models/EventCompetitionScore.php`
+- `app/Models/EventCompetitionScoreRevision.php`
 - `app/Models/ExpertEngagement.php`
 - `app/Models/ExpertProfile.php`
 - `app/Models/ExpertReport.php`
@@ -1873,6 +2106,8 @@ This table classifies every first-party Markdown file outside dependency, runtim
 - `app/Models/ForumEventInvitation.php`
 - `app/Models/ForumEventMessage.php`
 - `app/Models/ForumEventOccurrence.php`
+- `app/Models/ForumEventParticipationOperation.php`
+- `app/Models/ForumEventParticipationTransition.php`
 - `app/Models/ForumEventRegistration.php`
 - `app/Models/ForumEventRegistrationPet.php`
 - `app/Models/ForumEventReview.php`
@@ -1979,16 +2214,53 @@ This table classifies every first-party Markdown file outside dependency, runtim
 - `app/Models/Place.php`
 - `app/Models/PlaceAccessAudit.php`
 - `app/Models/PlaceAccessGrant.php`
+- `app/Models/PlaceCompatibilityBackfill.php`
+- `app/Models/PlaceCorrection.php`
+- `app/Models/PlaceCorrectionEvent.php`
 - `app/Models/PlaceDuplicateCandidate.php`
 - `app/Models/PlaceFact.php`
+- `app/Models/PlaceInvitation.php`
+- `app/Models/PlaceInvitationEvent.php`
 - `app/Models/PlaceLocationVersion.php`
+- `app/Models/PlaceManagementAbuseReport.php`
+- `app/Models/PlaceManagementClaim.php`
+- `app/Models/PlaceManagementClaimEvent.php`
+- `app/Models/PlaceManagementClaimEvidence.php`
+- `app/Models/PlaceManagementClaimScope.php`
+- `app/Models/PlaceManagementNotificationIntent.php`
+- `app/Models/PlaceManagementReviewer.php`
+- `app/Models/PlaceManagementReviewerRecusal.php`
+- `app/Models/PlaceManagerAuthority.php`
+- `app/Models/PlaceManagerAuthorityScope.php`
+- `app/Models/PlaceMedia.php`
+- `app/Models/PlaceMediaEvent.php`
+- `app/Models/PlaceMediaVariant.php`
 - `app/Models/PlaceMergeRedirect.php`
+- `app/Models/PlaceOperatingSchedule.php`
 - `app/Models/PlaceQuestion.php`
 - `app/Models/PlaceQuestionAnswer.php`
+- `app/Models/PlaceQuestionAnswerVersion.php`
+- `app/Models/PlaceQuestionEvent.php`
+- `app/Models/PlaceReview.php`
+- `app/Models/PlaceReviewEvent.php`
+- `app/Models/PlaceReviewResponse.php`
+- `app/Models/PlaceReviewResponseVersion.php`
+- `app/Models/PlaceReviewVersion.php`
+- `app/Models/PlaceScheduleException.php`
+- `app/Models/PlaceScheduleExceptionInterval.php`
+- `app/Models/PlaceServiceDefinition.php`
+- `app/Models/PlaceServiceOffering.php`
+- `app/Models/PlaceServiceOfferingTaxon.php`
 - `app/Models/PlaceSubmission.php`
 - `app/Models/PlaceSubmissionEvent.php`
 - `app/Models/PlaceSubmissionIdentityLock.php`
 - `app/Models/PlaceSubmissionRevision.php`
+- `app/Models/PlaceWarning.php`
+- `app/Models/PlaceWarningAppeal.php`
+- `app/Models/PlaceWarningConfirmation.php`
+- `app/Models/PlaceWarningDispute.php`
+- `app/Models/PlaceWarningEvent.php`
+- `app/Models/PlaceWeeklyOpeningInterval.php`
 - `app/Models/Publication.php`
 - `app/Models/Reservation.php`
 - `app/Models/Review.php`
@@ -2020,6 +2292,7 @@ This table classifies every first-party Markdown file outside dependency, runtim
 - `app/Models/TaxonVersion.php`
 - `app/Models/User.php`
 - `app/Models/UserDomainState.php`
+- `app/Models/UserOnboarding.php`
 - `app/Models/Vaccination.php`
 - `app/Models/Venue.php`
 - `app/Models/VenueArea.php`
@@ -2028,7 +2301,7 @@ This table classifies every first-party Markdown file outside dependency, runtim
 </details>
 
 <details>
-<summary>Policies (48)</summary>
+<summary>Policies (55)</summary>
 
 - `app/Policies/AdoptionApplicationPolicy.php`
 - `app/Policies/AdoptionCasePolicy.php`
@@ -2038,6 +2311,7 @@ This table classifies every first-party Markdown file outside dependency, runtim
 - `app/Policies/ContentPublicationPolicy.php`
 - `app/Policies/CredentialPolicy.php`
 - `app/Policies/DiscoveryPreferencePolicy.php`
+- `app/Policies/EventCompetitionPolicy.php`
 - `app/Policies/ExpertProfilePolicy.php`
 - `app/Policies/ForumAnswerPolicy.php`
 - `app/Policies/ForumCategoryPolicy.php`
@@ -2067,9 +2341,15 @@ This table classifies every first-party Markdown file outside dependency, runtim
 - `app/Policies/PetProfilePolicy.php`
 - `app/Policies/PhotoCommentPolicy.php`
 - `app/Policies/PhotoReactionPolicy.php`
+- `app/Policies/PlaceCorrectionPolicy.php`
+- `app/Policies/PlaceManagementClaimPolicy.php`
+- `app/Policies/PlaceMediaPolicy.php`
 - `app/Policies/PlacePolicy.php`
 - `app/Policies/PlaceQuestionPolicy.php`
+- `app/Policies/PlaceReviewPolicy.php`
+- `app/Policies/PlaceReviewResponsePolicy.php`
 - `app/Policies/PlaceSubmissionPolicy.php`
+- `app/Policies/PlaceWarningPolicy.php`
 - `app/Policies/SearchCasePolicy.php`
 - `app/Policies/SmartDevicePolicy.php`
 - `app/Policies/SocialAccountBlockPolicy.php`
@@ -2082,8 +2362,9 @@ This table classifies every first-party Markdown file outside dependency, runtim
 </details>
 
 <details>
-<summary>Validation rules (3)</summary>
+<summary>Validation rules (4)</summary>
 
+- `app/Rules/ApproximateMeetupLocation.php`
 - `app/Rules/EventOrganizableOrganization.php`
 - `app/Rules/ValidPetProfileName.php`
 - `app/Rules/ValidWebVtt.php`
@@ -2091,7 +2372,7 @@ This table classifies every first-party Markdown file outside dependency, runtim
 </details>
 
 <details>
-<summary>Livewire components (40)</summary>
+<summary>Livewire components (41)</summary>
 
 - `app/Livewire/Auth/AuthPage.php`
 - `app/Livewire/Auth/ConfirmPassword.php`
@@ -2120,6 +2401,7 @@ This table classifies every first-party Markdown file outside dependency, runtim
 - `app/Livewire/Forum/MentorProfileManager.php`
 - `app/Livewire/Forum/MentorshipInbox.php`
 - `app/Livewire/Forum/ModerationOperations.php`
+- `app/Livewire/Onboarding.php`
 - `app/Livewire/Organizations/OrganizationDirectory.php`
 - `app/Livewire/Organizations/OrganizationInvitationResponse.php`
 - `app/Livewire/Organizations/OrganizationWorkspace.php`
@@ -2137,7 +2419,7 @@ This table classifies every first-party Markdown file outside dependency, runtim
 </details>
 
 <details>
-<summary>Livewire form objects (50)</summary>
+<summary>Livewire form objects (53)</summary>
 
 - `app/Livewire/Forms/AdoptionApplicationForm.php`
 - `app/Livewire/Forms/Auth/ConfirmPasswordForm.php`
@@ -2145,6 +2427,7 @@ This table classifies every first-party Markdown file outside dependency, runtim
 - `app/Livewire/Forms/Auth/RegistrationForm.php`
 - `app/Livewire/Forms/Auth/ResetPasswordForm.php`
 - `app/Livewire/Forms/CommunityNoteForm.php`
+- `app/Livewire/Forms/ForumEventEditForm.php`
 - `app/Livewire/Forms/ForumEventForm.php`
 - `app/Livewire/Forms/ForumEventInvitationForm.php`
 - `app/Livewire/Forms/ForumEventMessageForm.php`
@@ -2175,6 +2458,8 @@ This table classifies every first-party Markdown file outside dependency, runtim
 - `app/Livewire/Forms/MentorProfileForm.php`
 - `app/Livewire/Forms/MentorScopeForm.php`
 - `app/Livewire/Forms/MentorshipRequestForm.php`
+- `app/Livewire/Forms/OnboardingPetChoiceForm.php`
+- `app/Livewire/Forms/OnboardingPrivacyForm.php`
 - `app/Livewire/Forms/OrganizationForm.php`
 - `app/Livewire/Forms/OrganizationInvitationForm.php`
 - `app/Livewire/Forms/PetManagerInvitationForm.php`
@@ -2193,7 +2478,7 @@ This table classifies every first-party Markdown file outside dependency, runtim
 </details>
 
 <details>
-<summary>Blade views (360)</summary>
+<summary>Blade views (322)</summary>
 
 - `resources/views/care-journals/create.blade.php`
 - `resources/views/care-journals/index.blade.php`
@@ -2220,7 +2505,6 @@ This table classifies every first-party Markdown file outside dependency, runtim
 - `resources/views/components/avatar.blade.php`
 - `resources/views/components/booking-content.blade.php`
 - `resources/views/components/brand-link.blade.php`
-- `resources/views/components/call-consent-panel.blade.php`
 - `resources/views/components/callout.blade.php`
 - `resources/views/components/card-action-row.blade.php`
 - `resources/views/components/card-description.blade.php`
@@ -2253,9 +2537,6 @@ This table classifies every first-party Markdown file outside dependency, runtim
 - `resources/views/components/content-panel.blade.php`
 - `resources/views/components/content-publication-card.blade.php`
 - `resources/views/components/context-hero.blade.php`
-- `resources/views/components/conversation-item.blade.php`
-- `resources/views/components/conversation-list.blade.php`
-- `resources/views/components/conversation-toolbar.blade.php`
 - `resources/views/components/created-content-detail.blade.php`
 - `resources/views/components/definition-list.blade.php`
 - `resources/views/components/desktop-nav-item.blade.php`
@@ -2263,6 +2544,7 @@ This table classifies every first-party Markdown file outside dependency, runtim
 - `resources/views/components/detail-identity.blade.php`
 - `resources/views/components/detail-meta-item.blade.php`
 - `resources/views/components/detail-meta-list.blade.php`
+- `resources/views/components/detail-navigation.blade.php`
 - `resources/views/components/detail-page.blade.php`
 - `resources/views/components/device-card.blade.php`
 - `resources/views/components/device-event-list.blade.php`
@@ -2325,35 +2607,18 @@ This table classifies every first-party Markdown file outside dependency, runtim
 - `resources/views/components/medical-weight-chart.blade.php`
 - `resources/views/components/meetup-card.blade.php`
 - `resources/views/components/member-list.blade.php`
-- `resources/views/components/message-bubble.blade.php`
-- `resources/views/components/message-center-layout.blade.php`
-- `resources/views/components/message-composer.blade.php`
-- `resources/views/components/message-context.blade.php`
-- `resources/views/components/message-thread-header.blade.php`
-- `resources/views/components/message-thread.blade.php`
-- `resources/views/components/messaging-call-stage.blade.php`
-- `resources/views/components/messaging-channels.blade.php`
-- `resources/views/components/messaging-composer.blade.php`
-- `resources/views/components/messaging-context.blade.php`
 - `resources/views/components/messaging-folders.blade.php`
 - `resources/views/components/messaging-inbox.blade.php`
-- `resources/views/components/messaging-message-list.blade.php`
-- `resources/views/components/messaging-message.blade.php`
-- `resources/views/components/messaging-professional-banner.blade.php`
-- `resources/views/components/messaging-request.blade.php`
-- `resources/views/components/messaging-thread-header.blade.php`
 - `resources/views/components/metric-list.blade.php`
 - `resources/views/components/mobile-nav-item.blade.php`
-- `resources/views/components/mutual-neighbor-list.blade.php`
 - `resources/views/components/nearby-meetup-list.blade.php`
 - `resources/views/components/neighbor-card.blade.php`
 - `resources/views/components/neighbor-directory-results.blade.php`
-- `resources/views/components/neighbor-pet-summary.blade.php`
 - `resources/views/components/notice.blade.php`
 - `resources/views/components/notification-settings.blade.php`
+- `resources/views/components/onboarding-layout.blade.php`
 - `resources/views/components/optional-link.blade.php`
 - `resources/views/components/owner-identity.blade.php`
-- `resources/views/components/owner-profile.blade.php`
 - `resources/views/components/owner-summary.blade.php`
 - `resources/views/components/page-header.blade.php`
 - `resources/views/components/page-stack.blade.php`
@@ -2364,17 +2629,14 @@ This table classifies every first-party Markdown file outside dependency, runtim
 - `resources/views/components/pet-breed-origin-fields.blade.php`
 - `resources/views/components/pet-compatibility.blade.php`
 - `resources/views/components/pet-directory-card.blade.php`
-- `resources/views/components/pet-facts.blade.php`
 - `resources/views/components/pet-friend-card.blade.php`
 - `resources/views/components/pet-friend-dashboard.blade.php`
 - `resources/views/components/pet-friend-list.blade.php`
 - `resources/views/components/pet-friend-request-form.blade.php`
 - `resources/views/components/pet-friend-switcher.blade.php`
 - `resources/views/components/pet-friend-toolbar.blade.php`
-- `resources/views/components/pet-gallery.blade.php`
 - `resources/views/components/pet-profile-save-status.blade.php`
 - `resources/views/components/pet-profile-step-navigation.blade.php`
-- `resources/views/components/pet-profile.blade.php`
 - `resources/views/components/photo-social-panel.blade.php`
 - `resources/views/components/place-card.blade.php`
 - `resources/views/components/place-comparison.blade.php`
@@ -2393,16 +2655,8 @@ This table classifies every first-party Markdown file outside dependency, runtim
 - `resources/views/components/post-poll.blade.php`
 - `resources/views/components/post-social-proof.blade.php`
 - `resources/views/components/primary-navigation.blade.php`
-- `resources/views/components/profile-badge-list.blade.php`
 - `resources/views/components/profile-card-pet.blade.php`
 - `resources/views/components/profile-card.blade.php`
-- `resources/views/components/profile-hero.blade.php`
-- `resources/views/components/profile-identity.blade.php`
-- `resources/views/components/profile-manager-list.blade.php`
-- `resources/views/components/profile-pet-card.blade.php`
-- `resources/views/components/profile-pet-list.blade.php`
-- `resources/views/components/profile-safety-actions.blade.php`
-- `resources/views/components/profile-view-switcher.blade.php`
 - `resources/views/components/progress-meter.blade.php`
 - `resources/views/components/promo-card.blade.php`
 - `resources/views/components/quick-composer.blade.php`
@@ -2436,13 +2690,8 @@ This table classifies every first-party Markdown file outside dependency, runtim
 - `resources/views/components/tab-list.blade.php`
 - `resources/views/components/tag-list.blade.php`
 - `resources/views/components/text-link.blade.php`
-- `resources/views/components/thread-message-list.blade.php`
 - `resources/views/components/ui-icon.blade.php`
 - `resources/views/components/verification-list.blade.php`
-- `resources/views/components/walk-message-summary.blade.php`
-- `resources/views/components/walk-plan-actions.blade.php`
-- `resources/views/components/walk-plan-card.blade.php`
-- `resources/views/components/walk-plan-list.blade.php`
 - `resources/views/components/walk-plan-meta-item.blade.php`
 - `resources/views/components/walk-plan-meta.blade.php`
 - `resources/views/components/walk-planner-dashboard.blade.php`
@@ -2510,6 +2759,7 @@ This table classifies every first-party Markdown file outside dependency, runtim
 - `resources/views/livewire/forum/mentor-profile-manager.blade.php`
 - `resources/views/livewire/forum/mentorship-inbox.blade.php`
 - `resources/views/livewire/forum/moderation-operations.blade.php`
+- `resources/views/livewire/onboarding.blade.php`
 - `resources/views/livewire/organizations/organization-directory.blade.php`
 - `resources/views/livewire/organizations/organization-invitation-response.blade.php`
 - `resources/views/livewire/organizations/organization-workspace.blade.php`
@@ -2538,28 +2788,25 @@ This table classifies every first-party Markdown file outside dependency, runtim
 - `resources/views/medical-records/manage.blade.php`
 - `resources/views/medical-records/shared.blade.php`
 - `resources/views/medical-records/show.blade.php`
+- `resources/views/meetups/create.blade.php`
 - `resources/views/meetups/index.blade.php`
 - `resources/views/meetups/show.blade.php`
 - `resources/views/members/show.blade.php`
-- `resources/views/messages/details.blade.php`
 - `resources/views/messages/index.blade.php`
 - `resources/views/neighbors/index.blade.php`
-- `resources/views/neighbors/show.blade.php`
 - `resources/views/notifications/index.blade.php`
 - `resources/views/pet-friends/index.blade.php`
 - `resources/views/pets/index.blade.php`
-- `resources/views/pets/show.blade.php`
 - `resources/views/places/index.blade.php`
 - `resources/views/places/show.blade.php`
 - `resources/views/posts/show.blade.php`
-- `resources/views/profile/show.blade.php`
 - `resources/views/share/show.blade.php`
 - `resources/views/walks/index.blade.php`
 
 </details>
 
 <details>
-<summary>Anonymous Blade components (246)</summary>
+<summary>Anonymous Blade components (210)</summary>
 
 - `resources/views/components/action-control.blade.php`
 - `resources/views/components/action-form.blade.php`
@@ -2579,7 +2826,6 @@ This table classifies every first-party Markdown file outside dependency, runtim
 - `resources/views/components/avatar.blade.php`
 - `resources/views/components/booking-content.blade.php`
 - `resources/views/components/brand-link.blade.php`
-- `resources/views/components/call-consent-panel.blade.php`
 - `resources/views/components/callout.blade.php`
 - `resources/views/components/card-action-row.blade.php`
 - `resources/views/components/card-description.blade.php`
@@ -2612,9 +2858,6 @@ This table classifies every first-party Markdown file outside dependency, runtim
 - `resources/views/components/content-panel.blade.php`
 - `resources/views/components/content-publication-card.blade.php`
 - `resources/views/components/context-hero.blade.php`
-- `resources/views/components/conversation-item.blade.php`
-- `resources/views/components/conversation-list.blade.php`
-- `resources/views/components/conversation-toolbar.blade.php`
 - `resources/views/components/created-content-detail.blade.php`
 - `resources/views/components/definition-list.blade.php`
 - `resources/views/components/desktop-nav-item.blade.php`
@@ -2622,6 +2865,7 @@ This table classifies every first-party Markdown file outside dependency, runtim
 - `resources/views/components/detail-identity.blade.php`
 - `resources/views/components/detail-meta-item.blade.php`
 - `resources/views/components/detail-meta-list.blade.php`
+- `resources/views/components/detail-navigation.blade.php`
 - `resources/views/components/detail-page.blade.php`
 - `resources/views/components/device-card.blade.php`
 - `resources/views/components/device-event-list.blade.php`
@@ -2684,35 +2928,18 @@ This table classifies every first-party Markdown file outside dependency, runtim
 - `resources/views/components/medical-weight-chart.blade.php`
 - `resources/views/components/meetup-card.blade.php`
 - `resources/views/components/member-list.blade.php`
-- `resources/views/components/message-bubble.blade.php`
-- `resources/views/components/message-center-layout.blade.php`
-- `resources/views/components/message-composer.blade.php`
-- `resources/views/components/message-context.blade.php`
-- `resources/views/components/message-thread-header.blade.php`
-- `resources/views/components/message-thread.blade.php`
-- `resources/views/components/messaging-call-stage.blade.php`
-- `resources/views/components/messaging-channels.blade.php`
-- `resources/views/components/messaging-composer.blade.php`
-- `resources/views/components/messaging-context.blade.php`
 - `resources/views/components/messaging-folders.blade.php`
 - `resources/views/components/messaging-inbox.blade.php`
-- `resources/views/components/messaging-message-list.blade.php`
-- `resources/views/components/messaging-message.blade.php`
-- `resources/views/components/messaging-professional-banner.blade.php`
-- `resources/views/components/messaging-request.blade.php`
-- `resources/views/components/messaging-thread-header.blade.php`
 - `resources/views/components/metric-list.blade.php`
 - `resources/views/components/mobile-nav-item.blade.php`
-- `resources/views/components/mutual-neighbor-list.blade.php`
 - `resources/views/components/nearby-meetup-list.blade.php`
 - `resources/views/components/neighbor-card.blade.php`
 - `resources/views/components/neighbor-directory-results.blade.php`
-- `resources/views/components/neighbor-pet-summary.blade.php`
 - `resources/views/components/notice.blade.php`
 - `resources/views/components/notification-settings.blade.php`
+- `resources/views/components/onboarding-layout.blade.php`
 - `resources/views/components/optional-link.blade.php`
 - `resources/views/components/owner-identity.blade.php`
-- `resources/views/components/owner-profile.blade.php`
 - `resources/views/components/owner-summary.blade.php`
 - `resources/views/components/page-header.blade.php`
 - `resources/views/components/page-stack.blade.php`
@@ -2723,17 +2950,14 @@ This table classifies every first-party Markdown file outside dependency, runtim
 - `resources/views/components/pet-breed-origin-fields.blade.php`
 - `resources/views/components/pet-compatibility.blade.php`
 - `resources/views/components/pet-directory-card.blade.php`
-- `resources/views/components/pet-facts.blade.php`
 - `resources/views/components/pet-friend-card.blade.php`
 - `resources/views/components/pet-friend-dashboard.blade.php`
 - `resources/views/components/pet-friend-list.blade.php`
 - `resources/views/components/pet-friend-request-form.blade.php`
 - `resources/views/components/pet-friend-switcher.blade.php`
 - `resources/views/components/pet-friend-toolbar.blade.php`
-- `resources/views/components/pet-gallery.blade.php`
 - `resources/views/components/pet-profile-save-status.blade.php`
 - `resources/views/components/pet-profile-step-navigation.blade.php`
-- `resources/views/components/pet-profile.blade.php`
 - `resources/views/components/photo-social-panel.blade.php`
 - `resources/views/components/place-card.blade.php`
 - `resources/views/components/place-comparison.blade.php`
@@ -2752,16 +2976,8 @@ This table classifies every first-party Markdown file outside dependency, runtim
 - `resources/views/components/post-poll.blade.php`
 - `resources/views/components/post-social-proof.blade.php`
 - `resources/views/components/primary-navigation.blade.php`
-- `resources/views/components/profile-badge-list.blade.php`
 - `resources/views/components/profile-card-pet.blade.php`
 - `resources/views/components/profile-card.blade.php`
-- `resources/views/components/profile-hero.blade.php`
-- `resources/views/components/profile-identity.blade.php`
-- `resources/views/components/profile-manager-list.blade.php`
-- `resources/views/components/profile-pet-card.blade.php`
-- `resources/views/components/profile-pet-list.blade.php`
-- `resources/views/components/profile-safety-actions.blade.php`
-- `resources/views/components/profile-view-switcher.blade.php`
 - `resources/views/components/progress-meter.blade.php`
 - `resources/views/components/promo-card.blade.php`
 - `resources/views/components/quick-composer.blade.php`
@@ -2795,13 +3011,8 @@ This table classifies every first-party Markdown file outside dependency, runtim
 - `resources/views/components/tab-list.blade.php`
 - `resources/views/components/tag-list.blade.php`
 - `resources/views/components/text-link.blade.php`
-- `resources/views/components/thread-message-list.blade.php`
 - `resources/views/components/ui-icon.blade.php`
 - `resources/views/components/verification-list.blade.php`
-- `resources/views/components/walk-message-summary.blade.php`
-- `resources/views/components/walk-plan-actions.blade.php`
-- `resources/views/components/walk-plan-card.blade.php`
-- `resources/views/components/walk-plan-list.blade.php`
 - `resources/views/components/walk-plan-meta-item.blade.php`
 - `resources/views/components/walk-plan-meta.blade.php`
 - `resources/views/components/walk-planner-dashboard.blade.php`
@@ -2811,7 +3022,7 @@ This table classifies every first-party Markdown file outside dependency, runtim
 </details>
 
 <details>
-<summary>Migrations (140)</summary>
+<summary>Migrations (153)</summary>
 
 - `database/migrations/0001_01_01_000000_create_users_table.php`
 - `database/migrations/0001_01_01_000001_create_cache_table.php`
@@ -2952,12 +3163,25 @@ This table classifies every first-party Markdown file outside dependency, runtim
 - `database/migrations/2026_08_04_001000_add_life_stage_override_to_pet_profiles_table.php`
 - `database/migrations/2026_08_04_024152_create_pet_profile_identifying_marks_table.php`
 - `database/migrations/2026_08_04_034056_add_size_category_to_pet_profiles_table.php`
+- `database/migrations/2026_08_30_081125_create_event_participation_workflow.php`
+- `database/migrations/2026_08_30_100100_create_forum_event_competition_tables.php`
 - `database/migrations/2026_08_30_120000_create_place_submission_publication_tables.php`
+- `database/migrations/2026_08_30_121000_add_active_identifier_to_place_merge_redirects.php`
+- `database/migrations/2026_08_30_122000_create_place_submission_detection_lock.php`
+- `database/migrations/2026_08_30_130000_create_place_management_claim_tables.php`
+- `database/migrations/2026_08_30_230000_create_place_contribution_workflows.php`
+- `database/migrations/2026_08_30_240000_create_place_presentation_privacy_tables.php`
+- `database/migrations/2026_08_30_250000_create_place_emergency_fact_tables.php`
+- `database/migrations/2026_08_30_260000_add_measured_performance_indexes.php`
+- `database/migrations/2026_08_30_270000_create_user_onboardings_table.php`
+- `database/migrations/2026_08_30_280000_add_duplicate_name_hash_to_pet_profiles.php`
+- `database/migrations/2026_08_30_290000_add_generation_keys_to_forum_event_invitations.php`
+- `database/migrations/2026_08_30_291000_add_target_index_to_forum_moderation_actions.php`
 
 </details>
 
 <details>
-<summary>Factories (212)</summary>
+<summary>Factories (239)</summary>
 
 - `database/factories/AdoptionApplicationFactory.php`
 - `database/factories/AdoptionCaseFactory.php`
@@ -3125,17 +3349,43 @@ This table classifies every first-party Markdown file outside dependency, runtim
 - `database/factories/PhotoReactionFactory.php`
 - `database/factories/PlaceAccessAuditFactory.php`
 - `database/factories/PlaceAccessGrantFactory.php`
+- `database/factories/PlaceCompatibilityBackfillFactory.php`
+- `database/factories/PlaceCorrectionEventFactory.php`
+- `database/factories/PlaceCorrectionFactory.php`
 - `database/factories/PlaceDuplicateCandidateFactory.php`
 - `database/factories/PlaceFactFactory.php`
 - `database/factories/PlaceFactory.php`
+- `database/factories/PlaceInvitationFactory.php`
 - `database/factories/PlaceLocationVersionFactory.php`
+- `database/factories/PlaceManagementClaimEventFactory.php`
+- `database/factories/PlaceManagementClaimEvidenceFactory.php`
+- `database/factories/PlaceManagementClaimFactory.php`
+- `database/factories/PlaceManagementClaimScopeFactory.php`
+- `database/factories/PlaceManagementReviewerFactory.php`
+- `database/factories/PlaceManagementReviewerRecusalFactory.php`
+- `database/factories/PlaceManagerAuthorityFactory.php`
+- `database/factories/PlaceManagerAuthorityScopeFactory.php`
+- `database/factories/PlaceMediaFactory.php`
+- `database/factories/PlaceMediaVariantFactory.php`
 - `database/factories/PlaceMergeRedirectFactory.php`
 - `database/factories/PlaceQuestionAnswerFactory.php`
+- `database/factories/PlaceQuestionAnswerVersionFactory.php`
+- `database/factories/PlaceQuestionEventFactory.php`
 - `database/factories/PlaceQuestionFactory.php`
+- `database/factories/PlaceReviewEventFactory.php`
+- `database/factories/PlaceReviewFactory.php`
+- `database/factories/PlaceReviewResponseFactory.php`
+- `database/factories/PlaceReviewResponseVersionFactory.php`
+- `database/factories/PlaceReviewVersionFactory.php`
 - `database/factories/PlaceSubmissionEventFactory.php`
 - `database/factories/PlaceSubmissionFactory.php`
 - `database/factories/PlaceSubmissionIdentityLockFactory.php`
 - `database/factories/PlaceSubmissionRevisionFactory.php`
+- `database/factories/PlaceWarningAppealFactory.php`
+- `database/factories/PlaceWarningConfirmationFactory.php`
+- `database/factories/PlaceWarningDisputeFactory.php`
+- `database/factories/PlaceWarningEventFactory.php`
+- `database/factories/PlaceWarningFactory.php`
 - `database/factories/PublicationFactory.php`
 - `database/factories/ReservationFactory.php`
 - `database/factories/ReviewFactory.php`
@@ -3167,6 +3417,7 @@ This table classifies every first-party Markdown file outside dependency, runtim
 - `database/factories/TaxonVersionFactory.php`
 - `database/factories/UserDomainStateFactory.php`
 - `database/factories/UserFactory.php`
+- `database/factories/UserOnboardingFactory.php`
 - `database/factories/VaccinationFactory.php`
 - `database/factories/VenueAreaFactory.php`
 - `database/factories/VenueFactory.php`
@@ -3175,10 +3426,11 @@ This table classifies every first-party Markdown file outside dependency, runtim
 </details>
 
 <details>
-<summary>Seeders (47)</summary>
+<summary>Seeders (49)</summary>
 
 - `database/seeders/AdoptionCaseSeeder.php`
 - `database/seeders/AdoptionDemoSeeder.php`
+- `database/seeders/CanonicalIdentityBrowserSeeder.php`
 - `database/seeders/CareJournalSeeder.php`
 - `database/seeders/CatalogueOfLifeSourceSeeder.php`
 - `database/seeders/CollaborativeGuideDemoSeeder.php`
@@ -3210,6 +3462,7 @@ This table classifies every first-party Markdown file outside dependency, runtim
 - `database/seeders/MarketplaceExpansionSeeder.php`
 - `database/seeders/MedicalRecordSeeder.php`
 - `database/seeders/MentorshipDemoSeeder.php`
+- `database/seeders/OnboardingBrowserSeeder.php`
 - `database/seeders/OrganizationAuthoritySeeder.php`
 - `database/seeders/PerformanceSeeder.php`
 - `database/seeders/PetProfileFoundationSeeder.php`
@@ -3228,18 +3481,24 @@ This table classifies every first-party Markdown file outside dependency, runtim
 </details>
 
 <details>
-<summary>PHP tests and support (150)</summary>
+<summary>PHP tests and support (210)</summary>
 
 - `tests/Feature/AnimalTaxonomy/CoreAnimalTaxonomyTest.php`
 - `tests/Feature/AnimalTaxonomy/TaxonomyImportPipelineTest.php`
+- `tests/Feature/Architecture/CanonicalIdentityBoundaryTest.php`
 - `tests/Feature/ArchitectureComplianceTest.php`
 - `tests/Feature/Auth/AuthenticationTest.php`
 - `tests/Feature/Auth/AuthorizationTest.php`
+- `tests/Feature/Auth/ConfigurableEmailVerificationTest.php`
 - `tests/Feature/Auth/PolicyMatrixTest.php`
 - `tests/Feature/Auth/PortalAccessBoundaryTest.php`
 - `tests/Feature/Auth/PortalMediaAccessTest.php`
+- `tests/Feature/AuthenticatedContentIdentityTest.php`
+- `tests/Feature/AuthenticatedProfileIdentityTest.php`
+- `tests/Feature/BrowserCheckIsolationTest.php`
 - `tests/Feature/CareJournalDirectoryLocalizationTest.php`
 - `tests/Feature/CareJournalTest.php`
+- `tests/Feature/ComplianceMatrixCommandTest.php`
 - `tests/Feature/ComponentNamingTest.php`
 - `tests/Feature/ContentPublicationFoundationTest.php`
 - `tests/Feature/Database/CompleteDatabaseSeederTest.php`
@@ -3253,6 +3512,7 @@ This table classifies every first-party Markdown file outside dependency, runtim
 - `tests/Feature/Database/FactoryOwnerAndLocalMediaTest.php`
 - `tests/Feature/Database/FactoryRelationshipIntegrityTest.php`
 - `tests/Feature/Database/ForumTaxonomyFactoryTest.php`
+- `tests/Feature/Database/MeasuredPerformanceIndexTest.php`
 - `tests/Feature/Database/MedicalJournalGraphIntegrityTest.php`
 - `tests/Feature/Database/MigrationLifecycleVerificationTest.php`
 - `tests/Feature/Database/ModelSerializationPrivacyTest.php`
@@ -3260,7 +3520,9 @@ This table classifies every first-party Markdown file outside dependency, runtim
 - `tests/Feature/Database/SchemaIntegrityTest.php`
 - `tests/Feature/Database/SearchContactTokenSecurityTest.php`
 - `tests/Feature/Database/SeededFieldCoverageTest.php`
+- `tests/Feature/Database/StableDirectoryPaginationTest.php`
 - `tests/Feature/Database/UserIdentitySchemaTest.php`
+- `tests/Feature/DependencyManifestTest.php`
 - `tests/Feature/DiscoverExperienceTest.php`
 - `tests/Feature/ExpertBookingTest.php`
 - `tests/Feature/ExpertCredentialVerificationTest.php`
@@ -3268,11 +3530,13 @@ This table classifies every first-party Markdown file outside dependency, runtim
 - `tests/Feature/ExpertDirectoryTest.php`
 - `tests/Feature/ExpertSafetyTest.php`
 - `tests/Feature/Forum/AdoptionWorkflowTest.php`
+- `tests/Feature/Forum/AdvancedEventCompetitionTest.php`
 - `tests/Feature/Forum/CollaborativeGuideWorkflowTest.php`
 - `tests/Feature/Forum/CommunityProfileMembershipTest.php`
 - `tests/Feature/Forum/CommunityReviewAndNotesTest.php`
 - `tests/Feature/Forum/EventLifecycleFoundationTest.php`
 - `tests/Feature/Forum/EventLifecycleQueryBudgetTest.php`
+- `tests/Feature/Forum/EventParticipationSchemaTest.php`
 - `tests/Feature/Forum/EventScheduleWorkflowTest.php`
 - `tests/Feature/Forum/EventWorkflowTest.php`
 - `tests/Feature/Forum/ExpertQuestionSessionWorkflowTest.php`
@@ -3281,6 +3545,7 @@ This table classifies every first-party Markdown file outside dependency, runtim
 - `tests/Feature/Forum/ForumBeforeOwnershipCategoryTest.php`
 - `tests/Feature/Forum/ForumCategorySeedTest.php`
 - `tests/Feature/Forum/ForumDatabaseCorrectnessTest.php`
+- `tests/Feature/Forum/ForumEventTypeRegistryTest.php`
 - `tests/Feature/Forum/ForumJournalWorkflowTest.php`
 - `tests/Feature/Forum/ForumLivewireAdministrationTest.php`
 - `tests/Feature/Forum/ForumModerationTest.php`
@@ -3296,19 +3561,23 @@ This table classifies every first-party Markdown file outside dependency, runtim
 - `tests/Feature/Forum/ForumWildlifeCoexistenceCategoryTest.php`
 - `tests/Feature/Forum/GroupContentAndPollWorkflowTest.php`
 - `tests/Feature/Forum/GroupCoreWorkflowTest.php`
+- `tests/Feature/Forum/MeetupSecurityBoundaryTest.php`
 - `tests/Feature/Forum/MentorshipWorkflowTest.php`
+- `tests/Feature/Forum/SimilarTopicLocalizationTest.php`
 - `tests/Feature/Forum/UpdateForumCategorySettingsTest.php`
 - `tests/Feature/ForumDirectoryTest.php`
 - `tests/Feature/ForumTopicTest.php`
-- `tests/Feature/GroupContentLocalizationTest.php`
+- `tests/Feature/FrontendArchitectureTest.php`
 - `tests/Feature/GroupDetailLocalizationTest.php`
 - `tests/Feature/GroupDirectoryLocalizationTest.php`
 - `tests/Feature/GroupDirectoryPreviewTest.php`
+- `tests/Feature/Http/Controllers/MemberProfileControllerTest.php`
 - `tests/Feature/IconSystemContractTest.php`
 - `tests/Feature/JoinLandingPageTest.php`
 - `tests/Feature/KnowledgeBaseTest.php`
 - `tests/Feature/LinkedMediaNavigationContractTest.php`
 - `tests/Feature/ListingTest.php`
+- `tests/Feature/LivewirePayloadBudgetTest.php`
 - `tests/Feature/LocaleFormatterTest.php`
 - `tests/Feature/LocalizationTest.php`
 - `tests/Feature/LostFoundDirectoryLocalizationTest.php`
@@ -3319,14 +3588,21 @@ This table classifies every first-party Markdown file outside dependency, runtim
 - `tests/Feature/MedicalRecordDirectoryLocalizationTest.php`
 - `tests/Feature/MedicalRecordTest.php`
 - `tests/Feature/MeetupDirectoryPreviewTest.php`
-- `tests/Feature/MessageCenterLocalizationTest.php`
 - `tests/Feature/MessagingCenterInterfaceTest.php`
 - `tests/Feature/NamingConventionsTest.php`
 - `tests/Feature/NeighborDirectoryLocalizationTest.php`
-- `tests/Feature/NeighborProfileLocalizationTest.php`
 - `tests/Feature/ObservabilityTest.php`
+- `tests/Feature/Onboarding/OnboardingAccessTest.php`
+- `tests/Feature/Onboarding/OnboardingAuthenticationFlowTest.php`
+- `tests/Feature/Onboarding/OnboardingMigrationTest.php`
+- `tests/Feature/Onboarding/OnboardingPersistenceTest.php`
+- `tests/Feature/Onboarding/OnboardingPetIntegrationTest.php`
+- `tests/Feature/Onboarding/OnboardingPetStepTest.php`
+- `tests/Feature/Onboarding/OnboardingPreferencesTest.php`
+- `tests/Feature/Onboarding/OnboardingTransitionTest.php`
+- `tests/Feature/Onboarding/OnboardingWizardTest.php`
+- `tests/Feature/OnboardingTest.php`
 - `tests/Feature/Organizations/OrganizationAuthorityFoundationTest.php`
-- `tests/Feature/OwnerProfileLocalizationTest.php`
 - `tests/Feature/PageIdentityStandardizationTest.php`
 - `tests/Feature/PetProfileAppearanceTest.php`
 - `tests/Feature/PetProfileBirthPrecisionTest.php`
@@ -3339,7 +3615,6 @@ This table classifies every first-party Markdown file outside dependency, runtim
 - `tests/Feature/PetProfileLifeStageTest.php`
 - `tests/Feature/PetProfileMediaLifecycleTest.php`
 - `tests/Feature/PetProfileNameIdentityTest.php`
-- `tests/Feature/PetProfilePreviewTest.php`
 - `tests/Feature/PetProfileProgressiveCompletionTest.php`
 - `tests/Feature/PetProfileSizeCategoryTest.php`
 - `tests/Feature/PetProfileSpeciesConfidenceTest.php`
@@ -3349,37 +3624,75 @@ This table classifies every first-party Markdown file outside dependency, runtim
 - `tests/Feature/PlaceDirectoryTest.php`
 - `tests/Feature/PlaceLocalMediaTest.php`
 - `tests/Feature/PlaceSharedCardCompositionTest.php`
+- `tests/Feature/Places/CanonicalPlaceFactFoundationTest.php`
 - `tests/Feature/Places/PlaceAuthorityFoundationTest.php`
+- `tests/Feature/Places/PlaceCompatibilityBackfillTest.php`
+- `tests/Feature/Places/PlaceContributionSchemaTest.php`
+- `tests/Feature/Places/PlaceCorrectionWorkflowTest.php`
+- `tests/Feature/Places/PlaceDirectoryScalabilityTest.php`
+- `tests/Feature/Places/PlaceEmergencyFactSchemaTest.php`
+- `tests/Feature/Places/PlaceLocationPrivacyBoundaryTest.php`
+- `tests/Feature/Places/PlaceManagementClaimSubmissionTest.php`
+- `tests/Feature/Places/PlaceManagementClaimTransitionTest.php`
+- `tests/Feature/Places/PlaceManagementClaimWorkflowTest.php`
+- `tests/Feature/Places/PlaceMediaPrivacyLifecycleTest.php`
+- `tests/Feature/Places/PlaceOpeningStateResolverTest.php`
+- `tests/Feature/Places/PlacePresentationPrivacySchemaTest.php`
+- `tests/Feature/Places/PlaceQuestionLifecycleTest.php`
 - `tests/Feature/Places/PlaceQuestionWorkflowTest.php`
+- `tests/Feature/Places/PlaceReviewAuthorIdentityTest.php`
+- `tests/Feature/Places/PlaceReviewWorkflowTest.php`
+- `tests/Feature/Places/PlaceServiceEligibilityTest.php`
 - `tests/Feature/Places/PlaceSubmissionPublicationWorkflowTest.php`
+- `tests/Feature/Places/PlaceWarningWorkflowTest.php`
+- `tests/Feature/Places/ReadablePlaceCompatibilityFallbackTest.php`
+- `tests/Feature/Portal/PortalContextTest.php`
+- `tests/Feature/Portal/PortalNavigationRegistryTest.php`
+- `tests/Feature/Portal/PublicPortalProjectionTest.php`
 - `tests/Feature/PreviewTest.php`
 - `tests/Feature/PrimaryNavigationLocalizationTest.php`
 - `tests/Feature/PrivateFilePathTraversalTest.php`
 - `tests/Feature/PublicImageProcessingTest.php`
+- `tests/Feature/ReleaseVerificationScriptTest.php`
 - `tests/Feature/ResponsiveInterfaceTest.php`
 - `tests/Feature/Runtime/RuntimeArtisanCommandTest.php`
 - `tests/Feature/Runtime/TestRunnerIsolationTest.php`
+- `tests/Feature/SearchCaseDirectoryCacheTest.php`
+- `tests/Feature/SearchCoordinationPerformanceTest.php`
 - `tests/Feature/SecurityAttackSurfaceTest.php`
+- `tests/Feature/SecurityRuntimeConfigurationTest.php`
 - `tests/Feature/SharePageLocalizationTest.php`
 - `tests/Feature/SharedCardActionRowTest.php`
 - `tests/Feature/SharedCardSystemContinuationTest.php`
+- `tests/Feature/SharedDirectoryCardCompletionTest.php`
 - `tests/Feature/SmartDeviceTest.php`
 - `tests/Feature/SocialPersistenceTest.php`
 - `tests/Feature/SocialRelationshipFoundationTest.php`
 - `tests/Feature/SocialRelationshipSafetyTest.php`
+- `tests/Feature/TailwindCssArchitectureTest.php`
+- `tests/Feature/UniversalAccountIdentityJourneyTest.php`
+- `tests/Feature/View/Components/AppShellTest.php`
 - `tests/Fixtures/DatabaseSeedCoverage.php`
 - `tests/Fixtures/linked-media-navigation.php`
+- `tests/Fixtures/meetup_registration_race_worker.php`
 - `tests/Fixtures/place_submission_race_worker.php`
+- `tests/Fixtures/shared-directory-card-families.php`
 - `tests/Pest.php`
 - `tests/Support/page-identity-route-classification.php`
 - `tests/Support/route-coverage.php`
 - `tests/TestCase.php`
 - `tests/Unit/DatabaseDomainAuditGeneratorTest.php`
+- `tests/Unit/DirectoryCacheInvalidationTest.php`
 - `tests/Unit/EventLifecycleMigrationTest.php`
+- `tests/Unit/Forum/MeetupCapacityConcurrencyTest.php`
 - `tests/Unit/ForumTopicStatusTest.php`
 - `tests/Unit/MinorUnitAmountTest.php`
 - `tests/Unit/Places/PlaceSubmissionConcurrencyTest.php`
+- `tests/Unit/Services/OnboardingStateTest.php`
 - `tests/Unit/Services/PlaceIdentityNormalizerTest.php`
+- `tests/Unit/Services/PlaceOpeningStateEvaluatorTest.php`
+- `tests/Unit/Support/PhpMessageLiteralClassifierTest.php`
+- `tests/Unit/Support/ReadableTranslationKeyTest.php`
 
 </details>
 
@@ -3394,9 +3707,12 @@ This table classifies every first-party Markdown file outside dependency, runtim
 </details>
 
 <details>
-<summary>Runtime, generation, and verification scripts (20)</summary>
+<summary>Runtime, generation, and verification scripts (25)</summary>
 
+- `scripts/Support/PhpMessageLiteralClassifier.php`
+- `scripts/Support/ReadableTranslationKey.php`
 - `scripts/accessibility-browser-check.mjs`
+- `scripts/check-tailwind-build.mjs`
 - `scripts/discovery-browser-check.mjs`
 - `scripts/generate-compliance-matrix.php`
 - `scripts/generate-database-domain-audit.php`
@@ -3408,6 +3724,7 @@ This table classifies every first-party Markdown file outside dependency, runtim
 - `scripts/localize-blade-literals.php`
 - `scripts/localize-php-messages.php`
 - `scripts/migrate-icon-system.php`
+- `scripts/migrate-readable-translation-keys.php`
 - `scripts/pet-duplicate-access-browser-check.mjs`
 - `scripts/pet-workspace-browser-check.mjs`
 - `scripts/preserve-forum-source-prompt.php`
@@ -3416,6 +3733,7 @@ This table classifies every first-party Markdown file outside dependency, runtim
 - `scripts/sync-model-docblocks.php`
 - `scripts/verify-fresh-database.php`
 - `scripts/verify-migration-cycle.php`
+- `scripts/verify-onboarding-migration.php`
 
 </details>
 
@@ -3426,8 +3744,9 @@ This table classifies every first-party Markdown file outside dependency, runtim
 </details>
 
 <details>
-<summary>Resource JavaScript modules (9)</summary>
+<summary>Resource JavaScript modules (10)</summary>
 
+- `resources/js/action-forms.js`
 - `resources/js/app.js`
 - `resources/js/care-offline-sync.js`
 - `resources/js/forum-accessibility.js`
@@ -3479,7 +3798,7 @@ This table classifies every first-party Markdown file outside dependency, runtim
 </details>
 
 <details>
-<summary>Translation catalogues (138)</summary>
+<summary>Translation catalogues (141)</summary>
 
 - `lang/en/actions.php`
 - `lang/en/adoption.php`
@@ -3515,6 +3834,7 @@ This table classifies every first-party Markdown file outside dependency, runtim
 - `lang/en/messaging.php`
 - `lang/en/navigation.php`
 - `lang/en/neighbors.php`
+- `lang/en/onboarding.php`
 - `lang/en/organizations.php`
 - `lang/en/pet_profiles.php`
 - `lang/en/pet_workspace.php`
@@ -3561,6 +3881,7 @@ This table classifies every first-party Markdown file outside dependency, runtim
 - `lang/lt/messaging.php`
 - `lang/lt/navigation.php`
 - `lang/lt/neighbors.php`
+- `lang/lt/onboarding.php`
 - `lang/lt/organizations.php`
 - `lang/lt/pet_profiles.php`
 - `lang/lt/pet_workspace.php`
@@ -3607,6 +3928,7 @@ This table classifies every first-party Markdown file outside dependency, runtim
 - `lang/ru/messaging.php`
 - `lang/ru/navigation.php`
 - `lang/ru/neighbors.php`
+- `lang/ru/onboarding.php`
 - `lang/ru/organizations.php`
 - `lang/ru/pet_profiles.php`
 - `lang/ru/pet_workspace.php`

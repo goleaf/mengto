@@ -7,7 +7,6 @@ namespace App\Services;
 use App\Models\PetProfile;
 use App\Models\User;
 use Illuminate\Contracts\Auth\Factory as AuthFactory;
-use Illuminate\Support\Str;
 
 final class CreatedContentPresenter
 {
@@ -31,7 +30,7 @@ final class CreatedContentPresenter
             'image' => 'https://images.unsplash.com/photo-1624361239583-7ba5ffb376f5?auto=format&fit=crop&w=1200&h=900&q=85',
             'image_small' => 'https://images.unsplash.com/photo-1624361239583-7ba5ffb376f5?auto=format&fit=crop&w=576&h=432&q=80',
             'image_medium' => 'https://images.unsplash.com/photo-1624361239583-7ba5ffb376f5?auto=format&fit=crop&w=900&h=675&q=82',
-            'image_alt' => __('messages.scout_relaxing_in_the_grass_after_a_neighborhood_outing'),
+            'image_alt' => '',
             'tags' => array_values(array_filter([$post['category']])),
             'stats' => ['paws' => '0', 'replies' => '0'],
         ], $this->state->created('posts'));
@@ -42,7 +41,13 @@ final class CreatedContentPresenter
      */
     public function groups(): array
     {
-        return array_map(static function (array $group): array {
+        $user = $this->auth->guard()->user();
+
+        if (! $user instanceof User) {
+            return [];
+        }
+
+        return array_map(function (array $group) use ($user): array {
             $key = 'created-group-'.$group['id'];
 
             return [
@@ -59,10 +64,10 @@ final class CreatedContentPresenter
                 'location' => $group['location'] ?: __('messages.location_not_set'),
                 'language' => $group['language'] ?? __('messages.english'),
                 'rules' => $group['rules'] ?? '',
-                'pet_identity' => $group['pet_identity'] ?? 'mia',
+                'pet_identity' => $group['pet_identity'] ?? $user->actor_key,
                 'posting_policy' => $group['posting_policy'] ?? 'members',
-                'organizer' => __('messages.mia_carter'),
-                'organizer_initials' => 'MC',
+                'organizer' => $user->name,
+                'organizer_initials' => $this->initials($user->name),
                 'image' => 'https://images.unsplash.com/photo-1655306963086-a34411c0915b?auto=format&fit=crop&w=1200&h=800&q=85',
                 'image_small' => 'https://images.unsplash.com/photo-1655306963086-a34411c0915b?auto=format&fit=crop&w=576&h=384&q=80',
                 'image_medium' => 'https://images.unsplash.com/photo-1655306963086-a34411c0915b?auto=format&fit=crop&w=900&h=600&q=82',
@@ -76,6 +81,15 @@ final class CreatedContentPresenter
         }, $this->state->created('groups'));
     }
 
+    private function initials(string $name): string
+    {
+        return collect(preg_split('/\s+/u', trim($name)) ?: [])
+            ->filter()
+            ->take(2)
+            ->map(static fn (string $part): string => mb_strtoupper(mb_substr($part, 0, 1)))
+            ->implode('');
+    }
+
     /**
      * @return array<int, array<string, mixed>>
      */
@@ -83,6 +97,11 @@ final class CreatedContentPresenter
     {
         $user = $this->auth->guard()->user();
         $user = $user instanceof User ? $user : null;
+
+        if (! $user instanceof User) {
+            return [];
+        }
+
         $profiles = PetProfile::query()
             ->select([
                 'id',
@@ -99,6 +118,7 @@ final class CreatedContentPresenter
             ])
             ->with('user:id,name')
             ->visibleTo($user)
+            ->where('user_id', $user->id)
             ->where('profile_key', 'like', 'created-pet-%')
             ->latest('id')
             ->limit(8)
@@ -107,7 +127,7 @@ final class CreatedContentPresenter
         return $profiles->map(static function (PetProfile $profile): array {
             $profileData = $profile->profile_data ?? [];
             $key = $profile->profile_key;
-            $profileUrl = route('pets.created', ['item' => $key]);
+            $profileUrl = route('pets.profile', ['petProfile' => $key]);
 
             return [
                 'key' => $key,
@@ -118,15 +138,15 @@ final class CreatedContentPresenter
                 'owner' => $profile->user->name,
                 'neighborhood' => (string) ($profileData['location'] ?? __('messages.location_kept_private')),
                 'status' => (string) ($profileData['status'] ?? $profileData['story'] ?? ''),
-                'image' => (string) ($profileData['card_image'] ?? 'https://images.unsplash.com/photo-1654256578072-b932c33cb92e?auto=format&fit=crop&w=1200&h=900&q=85'),
-                'image_small' => (string) ($profileData['card_image_small'] ?? 'https://images.unsplash.com/photo-1654256578072-b932c33cb92e?auto=format&fit=crop&w=576&h=432&q=80'),
-                'image_medium' => (string) ($profileData['card_image_medium'] ?? 'https://images.unsplash.com/photo-1654256578072-b932c33cb92e?auto=format&fit=crop&w=900&h=675&q=82'),
+                'image' => (string) ($profileData['card_image'] ?? ''),
+                'image_small' => (string) ($profileData['card_image_small'] ?? ''),
+                'image_medium' => (string) ($profileData['card_image_medium'] ?? ''),
                 'image_alt' => (string) ($profileData['card_image_alt'] ?? __('messages.pet_profile_image_alt', ['pet' => $profile->name])),
                 'traits' => is_array($profileData['traits'] ?? null)
                     ? array_values($profileData['traits'])
                     : [__('messages.new_to_pawcircle')],
-                'profile_route' => 'pets.created',
-                'profile_parameters' => ['item' => $key],
+                'profile_route' => 'pets.profile',
+                'profile_parameters' => ['petProfile' => $key],
                 'media_target' => [
                     'url' => $profileUrl,
                     'label' => __('presentation.open_profile', ['name' => $profile->name]),
@@ -148,7 +168,6 @@ final class CreatedContentPresenter
 
         return match ($kind) {
             'group' => $this->groupDetail($item),
-            'pet' => $this->petDetail($item),
             default => null,
         };
     }
@@ -158,7 +177,7 @@ final class CreatedContentPresenter
      */
     public function shareTarget(string $key): ?array
     {
-        foreach (['group', 'pet'] as $kind) {
+        foreach (['group'] as $kind) {
             $content = $this->detail($kind, $key);
 
             if ($content === null) {
@@ -193,7 +212,6 @@ final class CreatedContentPresenter
     {
         $items = match ($kind) {
             'group' => $this->groups(),
-            'pet' => $this->pets(),
             default => [],
         };
 
@@ -281,90 +299,6 @@ final class CreatedContentPresenter
                 'icon' => 'sparkles',
                 'title' => __('messages.ready_for_its_first_neighbors'),
                 'description' => __('messages.share_the_community_or_add_the_first_useful_post_to_begin_the_conversation'),
-            ],
-        ];
-    }
-
-    /**
-     * @param  array<string, mixed>  $pet
-     * @return array<string, mixed>
-     */
-    private function petDetail(array $pet): array
-    {
-        return [
-            'kind' => 'pet',
-            'route' => 'pets.created',
-            'page_title' => __('presentation.brand_title', ['title' => $pet['name']]),
-            'active_section' => 'pets',
-            'back_route' => 'pets.index',
-            'back_label' => __('messages.back_to_pets'),
-            'section' => 'created-pet-detail',
-            'share_type' => __('messages.pet_profile'),
-            'share_eyebrow' => __('messages.share_a_pet_profile'),
-            'summary_label' => __('messages.pet_profile_summary'),
-            'summary_icons' => ['paw-print', 'users', 'footprints'],
-            'hero' => [
-                ...$this->media($pet),
-                'key' => $pet['key'],
-                'eyebrow' => __('presentation.species_profile', ['species' => $pet['species']]),
-                'title' => $pet['name'],
-                'description' => $pet['status'],
-                'meta' => [
-                    ['icon' => 'paw-print', 'label' => $pet['breed']],
-                    ['icon' => 'user-round', 'label' => __('messages.with').$pet['owner']],
-                    [
-                        'icon' => 'map-pin',
-                        'label' => __('presentation.neighborhood_location', [
-                            'neighborhood' => $pet['neighborhood'],
-                        ]),
-                    ],
-                ],
-                'tags' => $pet['traits'],
-                'stats' => [
-                    ['label' => __('messages.profile'), 'value' => __('messages.new'), 'detail' => __('messages.ready_to_discover')],
-                    ['label' => __('messages.friends'), 'value' => '0', 'detail' => __('messages.connections_so_far')],
-                    ['label' => __('messages.walks'), 'value' => '0', 'detail' => __('messages.plans_together')],
-                ],
-            ],
-            'primary' => [
-                'label' => __('messages.follow'),
-                'icon' => 'user-plus',
-                'active_label' => __('messages.following'),
-                'active_icon' => 'user-check',
-                'active' => $this->state->isActive('follows', $pet['key']),
-                'action' => 'toggle-follow',
-            ],
-            'about' => [
-                'eyebrow' => __('messages.daily_life'),
-                'title' => __('messages.about_prefix').$pet['name'],
-                'copy' => $pet['status'],
-            ],
-            'guidance' => [
-                [
-                    'icon' => 'message-circle',
-                    'title' => __('messages.ask_about_routines'),
-                    'description' => __('messages.start_with_familiar_places_greeting_preferences_and_the_pace_that_feels_comfortable'),
-                ],
-                [
-                    'icon' => 'heart-handshake',
-                    'title' => __('messages.plan_an_easy_first_meeting'),
-                    'description' => __('messages.choose_a_neutral_location_and_keep_the_first_introduction_short_and_optional'),
-                ],
-                [
-                    'icon' => 'shield-check',
-                    'title' => __('messages.keep_care_details_private'),
-                    'description' => __('messages.share_medical_or_access_information_only_with_the_people_directly_involved'),
-                ],
-            ],
-            'facts' => [
-                ['label' => __('messages.species'), 'value' => $pet['species']],
-                ['label' => __('messages.breed_or_type'), 'value' => $pet['breed']],
-                ['label' => __('messages.neighborhood'), 'value' => $pet['neighborhood']],
-            ],
-            'notice' => [
-                'icon' => 'paw-print',
-                'title' => __('messages.a_new_neighborhood_profile'),
-                'description' => __('messages.following_keeps_this_profile_in_my_circle_while_connections_begin_to_grow'),
             ],
         ];
     }

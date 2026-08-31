@@ -1,4 +1,4 @@
-<x-app-shell :owner="$owner" :title="$page_title" :active-section="$active_section">
+<x-app-shell :title="$page_title" :active-section="$active_section">
     <div class="forum-page">
         <x-page-header
             :eyebrow="$topic !== null ? __('ui.update_discussion') : __('ui.new_forum_topic')"
@@ -293,7 +293,7 @@
 
                         <label class="forum-form__field forum-form__field--full">
                             <span>{{ __('forum_accessibility.media.description') }}</span>
-                            <input name="photo_alt" value="{{ old('photo_alt') }}" maxlength="240" placeholder="{{ __('ui.scout_waits_several_metres_from_the_closed_lift_doors') }}" data-forum-media-description>
+                            <input name="photo_alt" value="{{ old('photo_alt') }}" maxlength="240" placeholder="{{ __('messages.describe_a_current_photo_or_another_verifiable_source') }}" data-forum-media-description>
                             <small>{{ __('forum_accessibility.media.description_help') }}</small>
                         </label>
 

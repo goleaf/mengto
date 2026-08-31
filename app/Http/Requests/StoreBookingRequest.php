@@ -19,7 +19,7 @@ class StoreBookingRequest extends FormRequest
             'service_id' => ['required', 'integer', Rule::exists('services', 'id')],
             'availability_slot_id' => ['required', 'integer', Rule::exists('availability_slots', 'id')],
             'idempotency_key' => ['required', 'uuid'],
-            'pet_key' => ['required', Rule::in(['scout', 'nori', 'kesha'])],
+            'pet_key' => ['required', 'string', 'max:120', 'regex:/^[a-z0-9-]+$/'],
             'main_question' => ['required', 'string', 'min:20', 'max:3000'],
             'started_at' => ['nullable', 'string', 'max:300'],
             'tried' => ['nullable', 'string', 'max:2000'],

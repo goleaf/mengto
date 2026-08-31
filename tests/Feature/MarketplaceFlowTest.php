@@ -108,8 +108,8 @@ test('adoption profiles require review and never become ordinary sale listings',
 
 test('accepting a rental reserves inventory and captures immutable order terms', function () {
     $listing = Listing::factory()->rental()->create([
-        'owner_key' => 'mia-carter',
-        'owner_name' => 'Mia Carter',
+        'owner_key' => 'test-member',
+        'owner_name' => 'Test Member',
         'quantity' => 5,
         'price' => '12.37',
         'return_policy' => 'Return clean before 18:00.',
@@ -193,7 +193,7 @@ test('validated rental money is normalized before exact order creation', functio
 
 test('accepting a request rejects totals wider than the order decimal boundary', function () {
     $listing = Listing::factory()->create([
-        'owner_key' => 'mia-carter',
+        'owner_key' => 'test-member',
         'quantity' => 100000,
         'price' => '999999.99',
     ]);
@@ -218,7 +218,7 @@ test('accepting a request rejects totals wider than the order decimal boundary',
 
 test('accepting a request permits an exact total immediately below the order boundary', function () {
     $listing = Listing::factory()->create([
-        'owner_key' => 'mia-carter',
+        'owner_key' => 'test-member',
         'quantity' => 100,
         'price' => '999999.99',
     ]);
@@ -240,7 +240,7 @@ test('accepting a request permits an exact total immediately below the order bou
 test('paid marketplace orders cannot be completed before protected payment', function () {
     [$listing, $reservation, $order] = acceptedMarketplaceOrder(
         buyerKey: 'marketplace-payment-buyer',
-        sellerKey: 'mia-carter',
+        sellerKey: 'test-member',
     );
 
     $this->from(route('marketplace.show', $listing))
@@ -281,7 +281,7 @@ test('paid marketplace orders cannot be completed before protected payment', fun
 
 test('a stale cancellation cannot restore reserved inventory twice', function () {
     [$listing, $reservation] = acceptedMarketplaceOrder(
-        buyerKey: 'mia-carter',
+        buyerKey: 'test-member',
         sellerKey: 'marketplace-cancellation-seller',
     );
     $action = app(PerformListingAction::class);
@@ -333,7 +333,7 @@ test('only order participants can view an order or open a dispute', function () 
 
 test('only a completed buyer can publish one verified review', function () {
     [$listing, $reservation, $order] = acceptedMarketplaceOrder(
-        buyerKey: 'mia-carter',
+        buyerKey: 'test-member',
         sellerKey: 'marketplace-review-seller',
     );
     $order->update([
@@ -354,7 +354,7 @@ test('only a completed buyer can publish one verified review', function () {
 
     expect(ListingReview::query()->firstOrFail())
         ->is_verified_buyer->toBeTrue()
-        ->reviewer_key->toBe('mia-carter');
+        ->reviewer_key->toBe('test-member');
 
     $this->from(route('marketplace.orders.show', [$listing, $order]))
         ->post(route('marketplace.orders.reviews.store', [$listing, $order]), $payload)
@@ -422,7 +422,7 @@ test('marketplace expansion seeder is idempotent and creates the demo order once
         'quiet-cat-sitter-home-visits',
     ])->count())->toBe(4)
         ->and(Order::query()->where('reference', 'ORD-DEMO-RAMP')->count())->toBe(1)
-        ->and(Reservation::query()->where('requester_key', 'mia-carter')->count())->toBe(1)
+        ->and(Reservation::query()->where('requester_key', 'test-member')->count())->toBe(1)
         ->and(Listing::query()
             ->where('slug', 'rehabilitation-ramp-rental-vilnius')
             ->value('quantity'))->toBe(1);

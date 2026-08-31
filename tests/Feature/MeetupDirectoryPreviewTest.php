@@ -56,9 +56,8 @@ test('meetups navigation is active on the schedule and linked from existing page
     $meetupsResponse = $this->get($meetupsUrl);
     $feedResponse = $this->get(route('preview.feed'));
     $petsResponse = $this->get(route('pets.index'));
-    $profileResponse = $this->get(route('pets.scout'));
 
-    foreach ([$meetupsResponse, $feedResponse, $petsResponse, $profileResponse] as $response) {
+    foreach ([$meetupsResponse, $feedResponse, $petsResponse] as $response) {
         $response
             ->assertSuccessful()
             ->assertSee('href="'.$meetupsUrl.'"', false)

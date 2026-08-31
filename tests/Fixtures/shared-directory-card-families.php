@@ -26,7 +26,6 @@ return [
     'resources/views/components/place-card.blade.php' => 'adopt shared leaf components',
     'resources/views/components/profile-card-pet.blade.php' => 'retain domain-specific implementation',
     'resources/views/components/profile-card.blade.php' => 'retain domain-specific implementation',
-    'resources/views/components/profile-pet-card.blade.php' => 'adopt shared leaf components',
     'resources/views/components/promo-card.blade.php' => 'retain domain-specific implementation',
     'resources/views/components/search-case-card.blade.php' => 'adopt shared leaf components',
     'resources/views/components/service-card.blade.php' => 'retain domain-specific implementation',

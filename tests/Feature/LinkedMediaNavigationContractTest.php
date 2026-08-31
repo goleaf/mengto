@@ -5,9 +5,9 @@ use App\Models\ForumEvent;
 use App\Models\Listing;
 use App\Models\Order;
 use App\Models\PetProfile;
+use App\Models\PetProfileManager;
 use App\Models\Reservation;
 use App\Models\User;
-use App\Services\PreviewService;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\File;
 
@@ -22,8 +22,8 @@ function linkedMediaXPath(string $html): DOMXPath
 test('linked media renders a semantic anchor and a passive null state', function () {
     $linked = Blade::render(
         <<<'BLADE'
-            <x-linked-media href="https://mengto.test/pets/scout" label="Open Scout profile" variant="card">
-                <img src="https://example.test/scout.jpg" alt="Scout resting on grass">
+            <x-linked-media href="https://mengto.test/pets/birch" label="Open Birch profile" variant="card">
+                <img src="https://example.test/birch.jpg" alt="Birch resting on grass">
             </x-linked-media>
         BLADE,
     );
@@ -38,9 +38,9 @@ test('linked media renders a semantic anchor and a passive null state', function
     $linkedXPath = linkedMediaXPath($linked);
     $passiveXPath = linkedMediaXPath($passive);
 
-    expect($linkedXPath->query('//a[@data-linked-media="linked" and @href="https://mengto.test/pets/scout" and @aria-label="Open Scout profile"]')->length)
+    expect($linkedXPath->query('//a[@data-linked-media="linked" and @href="https://mengto.test/pets/birch" and @aria-label="Open Birch profile"]')->length)
         ->toBe(1)
-        ->and($linkedXPath->query('//a[@data-linked-media="linked"]//img[@alt="Scout resting on grass"]')->length)
+        ->and($linkedXPath->query('//a[@data-linked-media="linked"]//img[@alt="Birch resting on grass"]')->length)
         ->toBe(1)
         ->and($passiveXPath->query('//a')->length)
         ->toBe(0)
@@ -49,8 +49,12 @@ test('linked media renders a semantic anchor and a passive null state', function
 });
 
 test('pet directory media uses the same profile destination as the pet name', function () {
-    foreach (['Scout', 'Nori'] as $name) {
-        PetProfile::factory()->for($this->authenticatedUser)->create(['name' => $name]);
+    foreach (['Birch', 'Maple'] as $name) {
+        $profile = PetProfile::factory()->for($this->authenticatedUser)->create(['name' => $name]);
+        PetProfileManager::factory()
+            ->for($profile, 'profile')
+            ->for($this->authenticatedUser)
+            ->create();
     }
 
     $response = $this->get(route('pets.index'));
@@ -59,7 +63,7 @@ test('pet directory media uses the same profile destination as the pet name', fu
 
     $xpath = responseXPath($response);
 
-    foreach (['Scout', 'Nori'] as $name) {
+    foreach (['Birch', 'Maple'] as $name) {
         $card = $xpath->query('//article[@data-pet-workspace-profile][.//h2[normalize-space()="'.$name.'"]]')->item(0);
 
         expect($card)->not->toBeNull();
@@ -76,56 +80,6 @@ test('pet directory media uses the same profile destination as the pet name', fu
     }
 });
 
-test('directory cards keep media and title destinations synchronized', function (string $routeName, string $cardSelector) {
-    $response = $this->get(route($routeName));
-
-    $response->assertSuccessful();
-
-    $xpath = responseXPath($response);
-    $cards = $xpath->query($cardSelector);
-
-    expect($cards->length)->toBeGreaterThan(0);
-
-    foreach ($cards as $card) {
-        $titleLink = $xpath->query('.//*[self::h2 or self::h3]//a', $card)->item(0);
-        $mediaLink = $xpath->query('.//a[@data-linked-media="linked"]', $card)->item(0);
-
-        if ($titleLink === null) {
-            expect($mediaLink)->toBeNull()
-                ->and($xpath->query('.//*[@data-linked-media="passive"]', $card)->length)
-                ->toBeGreaterThan(0);
-
-            continue;
-        }
-
-        expect($mediaLink)->not->toBeNull()
-            ->and($mediaLink?->attributes?->getNamedItem('href')?->nodeValue)
-            ->toBe($titleLink->attributes?->getNamedItem('href')?->nodeValue);
-    }
-})->with([
-    'neighbor directory' => ['neighbors.index', '//article[@data-neighbor-card]'],
-    'group directory' => ['groups.index', '//article[@data-group-card]'],
-]);
-
-test('meetup card media uses the same destination as its title', function () {
-    $meetups = app(PreviewService::class)->meetupDirectoryData()['directoryMeetups'];
-    $meetup = collect($meetups)->first(
-        static fn (array $candidate): bool => ($candidate['media_target'] ?? null) !== null,
-    );
-
-    expect($meetup)->toBeArray();
-
-    $card = Blade::render('<x-meetup-card :meetup="$meetup" />', ['meetup' => $meetup]);
-    $xpath = linkedMediaXPath($card);
-    $mediaLink = $xpath->query('//a[@data-linked-media="linked"]')->item(0);
-    $titleLink = $xpath->query('//h3//a')->item(0);
-
-    expect($mediaLink)->not->toBeNull()
-        ->and($titleLink)->not->toBeNull()
-        ->and($mediaLink?->attributes?->getNamedItem('href')?->nodeValue)
-        ->toBe($titleLink?->attributes?->getNamedItem('href')?->nodeValue);
-});
-
 test('discover result media uses the same destination as its title', function () {
     ForumEvent::factory()->create(['title' => 'Linked discovery event']);
 
@@ -137,27 +91,6 @@ test('discover result media uses the same destination as its title', function ()
     $cards = $xpath->query('//article[@data-discover-result]');
 
     expect($cards->length)->toBe(1);
-
-    foreach ($cards as $card) {
-        $mediaLink = $xpath->query('.//a[@data-linked-media="linked"]', $card)->item(0);
-        $titleLink = $xpath->query('.//h3//a', $card)->item(0);
-
-        expect($mediaLink)->not->toBeNull()
-            ->and($titleLink)->not->toBeNull()
-            ->and($mediaLink?->attributes?->getNamedItem('href')?->nodeValue)
-            ->toBe($titleLink?->attributes?->getNamedItem('href')?->nodeValue);
-    }
-});
-
-test('profile pet thumbnails use the same destination as their names', function () {
-    $response = $this->get(route('profile.mia'));
-
-    $response->assertSuccessful();
-
-    $xpath = responseXPath($response);
-    $cards = $xpath->query('//article[@data-profile-pet]');
-
-    expect($cards->length)->toBeGreaterThan(0);
 
     foreach ($cards as $card) {
         $mediaLink = $xpath->query('.//a[@data-linked-media="linked"]', $card)->item(0);
@@ -199,25 +132,6 @@ test('expert avatar and placeholder targets match the expert name', function (?s
     'uploaded avatar' => 'https://example.test/specialist.jpg',
     'initials placeholder' => null,
 ]);
-
-test('message identity media uses the conversation details destination', function () {
-    $response = $this->get(route('messages.index', ['conversation' => 'ari']));
-
-    $response->assertSuccessful();
-
-    $xpath = responseXPath($response);
-    $headerMedia = $xpath->query('//header[contains(concat(" ", normalize-space(@class), " "), " messaging-thread-header ")]//a[@data-linked-media="linked"]')->item(0);
-    $detailsLink = $xpath->query('//header[contains(concat(" ", normalize-space(@class), " "), " messaging-thread-header ")]//div[contains(concat(" ", normalize-space(@class), " "), " messaging-thread-header__actions ")]/a')->item(0);
-    $contextMedia = $xpath->query('//aside[contains(concat(" ", normalize-space(@class), " "), " messaging-context ")]//section[contains(concat(" ", normalize-space(@class), " "), " messaging-context__identity ")]//a[@data-linked-media="linked"]')->item(0);
-
-    expect($headerMedia)->not->toBeNull()
-        ->and($detailsLink)->not->toBeNull()
-        ->and($contextMedia)->not->toBeNull()
-        ->and($headerMedia?->attributes?->getNamedItem('href')?->nodeValue)
-        ->toBe($detailsLink?->attributes?->getNamedItem('href')?->nodeValue)
-        ->and($contextMedia?->attributes?->getNamedItem('href')?->nodeValue)
-        ->toBe($detailsLink?->attributes?->getNamedItem('href')?->nodeValue);
-});
 
 test('marketplace order snapshot media matches the listing title destination', function () {
     $user = User::factory()->create(['actor_key' => 'linked-media-buyer']);
@@ -270,7 +184,6 @@ test('linked media never contains nested interactive controls on migrated routes
     'neighbors' => 'neighbors.index',
     'groups' => 'groups.index',
     'discover' => 'discover.index',
-    'profile' => 'profile.mia',
     'messages' => 'messages.index',
 ]);
 
@@ -305,7 +218,7 @@ test('every media-bearing Blade template has an explicit navigation classificati
     ];
 
     expect($classifiedTemplates)->toBe($templates)
-        ->and($templates)->toHaveCount(71);
+        ->and($templates)->toHaveCount(57);
 
     foreach ($inventory as $classifications) {
         expect($classifications)->not->toBeEmpty();

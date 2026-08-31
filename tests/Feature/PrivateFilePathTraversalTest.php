@@ -98,7 +98,7 @@ test('medical downloads fail closed before auditing unsafe stored paths', functi
     string $case,
 ) {
     Storage::fake('local');
-    $record = MedicalRecord::factory()->create(['owner_key' => 'mia-carter']);
+    $record = MedicalRecord::factory()->create(['owner_key' => 'test-member']);
     $path = match ($case) {
         'traversal' => "medical-records/{$record->id}/../../care-journals/leak.pdf",
         'cross-domain' => 'care-journals/foreign/leak.pdf',

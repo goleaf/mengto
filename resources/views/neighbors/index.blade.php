@@ -1,12 +1,8 @@
 <x-directory-page
-    :owner="$owner"
     title="{{ __('neighbors.page.title') }}"
     active-section="neighbors"
     :summary="$summary"
     header-section="neighbor-header"
-    action-label="{{ __('neighbors.actions.new_message') }}"
-    action-icon="mail"
-    :action-href="route('compose', 'message')"
 >
     <x-slot:summary-strip>
         <x-summary-strip

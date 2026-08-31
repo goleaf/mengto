@@ -262,7 +262,7 @@ test('direct profile preference updates authorize the account and discard unrela
     expect($this->authenticatedUser->fresh())
         ->locale->toBe('lt')
         ->timezone->toBe('UTC')
-        ->actor_key->toBe('mia-carter')
+        ->actor_key->toBe('test-member')
         ->status->toBe(UserStatus::Active)
         ->is_admin->toBeFalse();
 });

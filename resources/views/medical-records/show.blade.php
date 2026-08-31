@@ -1,4 +1,4 @@
-<x-app-shell :owner="$owner" :title="$page_title" :active-section="$active_section">
+<x-app-shell :title="$page_title" :active-section="$active_section">
     <div class="grid gap-7">
         <header class="medical-record-header" data-medical-record-workspace-identity>
             <div class="medical-record-header__identity">

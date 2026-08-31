@@ -9,7 +9,6 @@ final class CirclePresenter
     private const FILTER_VALUES = ['overview', 'saved-posts', 'following', 'groups', 'meetups'];
 
     /**
-     * @param  array<string, mixed>  $owner
      * @param  array<int, array<string, mixed>>  $posts
      * @param  array<int, array<string, mixed>>  $pets
      * @param  array<int, array<string, mixed>>  $neighbors
@@ -19,7 +18,6 @@ final class CirclePresenter
      */
     public function present(
         string $filter,
-        array $owner,
         array $posts,
         array $pets,
         array $neighbors,
@@ -38,13 +36,11 @@ final class CirclePresenter
         $total = count($savedPosts) + count($following) + count($joinedGroups) + count($rsvpMeetups);
 
         return [
-            'owner' => $owner,
             'summary' => $this->summary($savedPosts, $following, $joinedGroups, $rsvpMeetups, $total),
             'filters' => $this->filters(),
             'activeFilter' => $activeFilter,
             'collections' => $this->visibleCollections($collections, $activeFilter),
-            'showStarter' => $activeFilter === 'overview' && $total === 0,
-            'starterItems' => $this->starterItems($posts, $neighbors, $meetups),
+            'showStarter' => false,
         ];
     }
 
@@ -202,42 +198,6 @@ final class CirclePresenter
                 ['label' => __('messages.following'), 'value' => (string) count($following), 'detail' => __('messages.people_and_pets')],
                 ['label' => __('messages.groups'), 'value' => (string) count($joinedGroups), 'detail' => 'joined'],
                 ['label' => __('messages.meetups'), 'value' => (string) count($rsvpMeetups), 'detail' => 'going'],
-            ],
-        ];
-    }
-
-    /**
-     * @param  array<int, array<string, mixed>>  $posts
-     * @param  array<int, array<string, mixed>>  $neighbors
-     * @param  array<int, array<string, mixed>>  $meetups
-     * @return array<int, array<string, mixed>>
-     */
-    private function starterItems(array $posts, array $neighbors, array $meetups): array
-    {
-        return [
-            [
-                'title' => __('presentation.pet_moments', ['pet' => $posts[0]['pet']]),
-                'meta' => __('messages.neighborhood_feed'),
-                ...array_intersect_key($posts[0], array_flip(['image', 'image_small', 'image_medium', 'image_alt'])),
-                'route' => 'preview.feed',
-                'icon' => 'bookmark',
-            ],
-            [
-                'title' => __('presentation.pet_pair', [
-                    'person' => $neighbors[0]['name'],
-                    'pet' => $neighbors[0]['pet'],
-                ]),
-                'meta' => $neighbors[0]['neighborhood'],
-                ...array_intersect_key($neighbors[0], array_flip(['image', 'image_small', 'image_medium', 'image_alt'])),
-                'route' => 'neighbors.index',
-                'icon' => 'user-plus',
-            ],
-            [
-                'title' => $meetups[0]['title'],
-                'meta' => $meetups[0]['place'],
-                ...array_intersect_key($meetups[0], array_flip(['image', 'image_small', 'image_medium', 'image_alt'])),
-                'route' => 'meetups.index',
-                'icon' => 'calendar-plus',
             ],
         ];
     }

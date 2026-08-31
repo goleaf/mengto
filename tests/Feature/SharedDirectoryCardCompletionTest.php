@@ -70,7 +70,6 @@ test('compatible audited families use only the declared shared leaves', function
     $contracts = [
         'resources/views/components/place-card.blade.php' => ['<x-card-media', '<x-card-heading', '<x-card-description', '<x-card-action-row'],
         'resources/views/components/search-case-card.blade.php' => ['<x-responsive-image', '<x-card-heading', '<x-card-description'],
-        'resources/views/components/profile-pet-card.blade.php' => ['<x-linked-media', '<x-responsive-image', '<x-card-heading'],
         'resources/views/components/discovery-result-card.blade.php' => ['<x-linked-media', '<x-responsive-image', '<x-card-heading', '<x-card-description', '<x-card-action-row'],
         'resources/views/components/expert-card.blade.php' => ['<x-linked-media', '<x-avatar', '<x-card-heading', '<x-card-action-row'],
         'resources/views/components/listing-card.blade.php' => ['<x-responsive-image', '<x-card-heading', '<x-card-description', '<x-card-action-row'],

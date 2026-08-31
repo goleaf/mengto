@@ -1,5 +1,4 @@
 <x-app-shell
-    :owner="$owner"
     :title="__('presentation.brand_title', ['title' => __('ui.conversation_about').' '.$post['pet']])"
     active-section="feed"
 >

@@ -12,6 +12,8 @@ use LogicException;
 
 final readonly class AuthenticatedUserPresenter
 {
+    public function __construct(private SocialActorResolver $socialActors) {}
+
     /**
      * @return array{
      *     name: string,
@@ -21,6 +23,7 @@ final readonly class AuthenticatedUserPresenter
      *     location: string,
      *     summary: string,
      *     profile_url: string,
+     *     profile_route_parameters: array{socialActor: string},
      *     media_target: array{url: string, label: string}
      * }
      */
@@ -32,8 +35,12 @@ final readonly class AuthenticatedUserPresenter
                 ->select(['id', 'actor_key', 'actor_type', 'status', 'user_id'])
                 ->first();
 
-        if (! $actor instanceof SocialActor
-            || $actor->actor_type !== SocialActorType::User
+        if (! $actor instanceof SocialActor) {
+            $actor = $this->socialActors->provisionPrivateForUser($user);
+            $user->setRelation('socialActor', $actor);
+        }
+
+        if ($actor->actor_type !== SocialActorType::User
             || $actor->status !== SocialActorStatus::Active
             || $actor->user_id !== $user->id
         ) {
@@ -50,6 +57,7 @@ final readonly class AuthenticatedUserPresenter
             'location' => '',
             'summary' => __('member_profiles.current.summary'),
             'profile_url' => $profileUrl,
+            'profile_route_parameters' => ['socialActor' => $actor->actor_key],
             'media_target' => [
                 'url' => $profileUrl,
                 'label' => __('navigation.utility.profile_for', ['name' => $user->name]),

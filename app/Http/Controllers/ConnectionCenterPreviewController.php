@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\BrowseConnectionsRequest;
 use App\Services\ConnectionPresenter;
-use App\Services\ProfilePresenter;
 use Illuminate\Contracts\View\View;
 
 final class ConnectionCenterPreviewController extends Controller
@@ -12,7 +11,6 @@ final class ConnectionCenterPreviewController extends Controller
     public function __invoke(
         BrowseConnectionsRequest $request,
         ConnectionPresenter $connections,
-        ProfilePresenter $profiles,
     ): View {
         $parameters = $request->validated();
 
@@ -22,7 +20,6 @@ final class ConnectionCenterPreviewController extends Controller
                 type: (string) ($parameters['type'] ?? 'all'),
                 sort: (string) ($parameters['sort'] ?? 'recommended'),
             ),
-            'owner' => $profiles->owner(),
         ]);
     }
 }

@@ -61,7 +61,7 @@ test('article page presents sources version history and accepts corrections', fu
 
     expect(KnowledgeCorrection::query()->firstOrFail())
         ->article_id->toBe($article->id)
-        ->reporter_key->toBe('mia-carter')
+        ->reporter_key->toBe('test-member')
         ->status->toBe(KnowledgeCorrectionStatus::Submitted);
 });
 

@@ -137,30 +137,33 @@ See `docs/decisions/0001-authenticated-actor-keys.md`.
 ## Presentation Boundaries
 
 - Blade components render prepared data.
-- Messaging persists locale-independent call type, lifecycle, and quality
-  codes. `MessagePresenter` resolves their current-locale labels and
-  `MessagingCallStage` prepares the fixed control/icon map before passive Blade
-  rendering. The conversation-details route reuses the policy-scoped context
-  projection and changes responsive visibility only; it does not introduce a
-  second data or authorization path.
+- Registration is the canonical account boundary. `RegisterUser` creates one
+  `User`, one private personal `SocialActor`, one privacy-first
+  `SocialActorSetting`, and one `UserOnboarding` in a short transaction. It
+  creates no pet profile, pet manager, pet access request, post, relationship,
+  or other demo content. The Livewire boundary authenticates the exact returned
+  `User` and regenerates the session before choosing verification, onboarding,
+  or portal entry.
+- `AuthenticatedUserPresenter` accepts an explicit `User` and derives the
+  lightweight application-shell identity from `User::name` plus that user's
+  active personal `SocialActor::actor_key`. `AppShell` obtains the authenticated
+  principal from the web guard and ignores caller-supplied owner identity. A
+  guest receives no owner projection. The header never reads person identity
+  from translations, prototype state, seed records, or a shared cache.
+- Self profile and public member profile share `members.show` and
+  `MemberProfileCatalog`. The current user's header URL targets their stable
+  personal actor key; names remain mutable account data and are never routing
+  identifiers. Viewer-aware policy, discoverability, active-account, and block
+  checks remain authoritative. Self-view may reveal owner-authorized private
+  data without making the actor publicly discoverable.
+- Messaging and neighbor surfaces render honest empty states until canonical,
+  policy-scoped records exist. They do not fabricate people, pets,
+  conversations, statistics, or profile destinations.
 - Share targets retain their original destination, media, title, and active
   navigation section, while `SharePresenter` maps the stable section code to
   current-locale target taxonomy, delivery channels, prepared recipient
   actions, link metadata, and privacy copy. The presenter performs no Eloquent
   query; Blade renders the prepared projection and canonical icon names.
-- The deliberate Ari neighbor profile keeps its profile-led hero while
-  `NeighborProfilePresenter` owns the complete current-locale identity,
-  statistics, action payloads, pet routine, mutual-neighbor, community, and
-  section projection. The presenter performs no Eloquent query; the existing
-  authenticated state and interaction services remain the only upstream data
-  boundaries, and profile Blade components render prepared copy and canonical
-  icon names without resolving routes or mutations.
-- The deliberate Mia owner profile keeps its profile-led hero while
-  `ProfilePresenter` prepares the localized identity, stable tab and audience
-  codes, privacy summary, actions, section copy, and canonical icon names.
-  Data-heavy pet and moment projections are loaded only for tabs that render
-  them; Blade remains passive and the existing authenticated route and action
-  boundaries remain authoritative.
 - Class-based Livewire components own server-backed interaction.
 - Alpine is the Livewire-provided client-state layer; no second Alpine install.
 - Existing vanilla JavaScript enhances map, message, publication-photo, and browser-media

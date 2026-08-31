@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Livewire\Auth;
 
 use App\Actions\AuthenticateUser;
+use App\Actions\RecordSuccessfulLogin;
 use App\Livewire\Forms\Auth\LoginForm;
 use App\Services\AccountEntryDestination;
 use Illuminate\Auth\AuthManager;
@@ -18,6 +19,7 @@ final class Login extends AuthPage
 
     public function authenticate(
         AuthenticateUser $authenticateUser,
+        RecordSuccessfulLogin $recordSuccessfulLogin,
         AccountEntryDestination $destination,
         AuthManager $auth,
     ): void {
@@ -40,6 +42,7 @@ final class Login extends AuthPage
         }
 
         Session::regenerate();
+        $recordSuccessfulLogin->handle($user);
         Session::put('locale', $user->locale);
 
         $this->redirect($destination->urlFor($user, route('home')));

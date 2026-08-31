@@ -11,7 +11,6 @@ use App\Models\UserDomainState;
 use App\Policies\PetProfilePolicy;
 use App\Services\EventState;
 use App\Services\GroupState;
-use App\Services\MessageState;
 use App\Services\PersistentStateStore;
 use App\Services\PetFriendState;
 use App\Services\PetProfileCatalog;
@@ -21,22 +20,20 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Validation\ValidationException;
 
 test('social mutations persist across sessions and remain isolated by user', function () {
-    app(PrototypeState::class)->toggle('saved', 'post-scout');
+    app(PrototypeState::class)->toggle('saved', 'post-alpha');
     app(GroupState::class)->join('quiet-walks', 'public');
     app(EventState::class)->toggleInterest('calm-park-event');
-    app(MessageState::class)->toggleConversation('ari', 'muted');
     app(PlaceState::class)->toggleSaved('vingis-quiet-loop');
     app(PetFriendState::class)->dismissRecommendation('pet-scout', 'pet-coco-spaniel');
 
     expect(UserDomainState::query()->where('user_id', $this->authenticatedUser->id)->count())
-        ->toBe(6);
+        ->toBe(5);
 
     Session::flush();
 
-    expect(app(PrototypeState::class)->isActive('saved', 'post-scout'))->toBeTrue()
+    expect(app(PrototypeState::class)->isActive('saved', 'post-alpha'))->toBeTrue()
         ->and(app(GroupState::class)->membership('quiet-walks'))->toBe('joined')
         ->and(app(EventState::class)->isInterested('calm-park-event'))->toBeTrue()
-        ->and(app(MessageState::class)->conversation('ari')['muted'])->toBeTrue()
         ->and(app(PlaceState::class)->isSaved('vingis-quiet-loop'))->toBeTrue()
         ->and(app(PetFriendState::class)->recommendationIsDismissed(
             'pet-scout',
@@ -46,65 +43,8 @@ test('social mutations persist across sessions and remain isolated by user', fun
     $other = User::factory()->create();
     $this->actingAs($other);
 
-    expect(app(PrototypeState::class)->isActive('saved', 'post-scout'))->toBeFalse()
+    expect(app(PrototypeState::class)->isActive('saved', 'post-alpha'))->toBeFalse()
         ->and(app(PlaceState::class)->isSaved('vingis-quiet-loop'))->toBeFalse();
-});
-
-test('the shared action endpoint dispatches extracted social domain handlers', function () {
-    $this->post(route('actions.perform'), [
-        'action' => 'toggle-event-interest',
-        'target' => 'small-dog-social',
-    ])->assertRedirect();
-
-    $this->post(route('actions.perform'), [
-        'action' => 'toggle-subscription',
-        'target' => 'owner-priya-shah',
-    ])->assertRedirect();
-
-    $this->post(route('actions.perform'), [
-        'action' => 'dismiss-pet-friend-recommendation',
-        'source_pet' => 'pet-scout',
-        'target' => 'pet-coco-spaniel',
-    ])->assertRedirect(route('pet-friends.index', [
-        'pet' => 'scout',
-        'tab' => 'discover',
-    ]));
-
-    $this->post(route('actions.perform'), [
-        'action' => 'join-group',
-        'target' => 'portland-labradors',
-    ])->assertRedirect(route('groups.show', [
-        'group' => 'portland-labradors',
-        'tab' => 'overview',
-    ]));
-
-    expect(app(EventState::class)->isInterested('small-dog-social'))->toBeTrue()
-        ->and(app(PrototypeState::class)->isSubscribed('owner-priya-shah'))->toBeTrue()
-        ->and(app(PetFriendState::class)->recommendationIsDismissed(
-            'pet-scout',
-            'pet-coco-spaniel',
-        ))->toBeTrue()
-        ->and(app(GroupState::class)->membership('portland-labradors'))->toBe('joined')
-        ->and(UserDomainState::query()
-            ->where('user_id', $this->authenticatedUser->id)
-            ->whereIn('namespace', [
-                'events.state.v1',
-                'prototype.state.v1',
-                'pet-friends.state.v1',
-                'groups.state.v1',
-            ])
-            ->count())->toBe(4);
-});
-
-test('dynamic social action feedback follows the active locale', function () {
-    $this->authenticatedUser->forceFill(['locale' => 'ru'])->save();
-
-    $this->post(route('actions.perform'), [
-        'action' => 'toggle-subscription',
-        'target' => 'owner-priya-shah',
-    ])
-        ->assertRedirect()
-        ->assertSessionHas('feedback', 'Вы подписались на Priya Shah.');
 });
 
 test('pet profiles are durable separate identities with owner-scoped policy decisions', function () {
@@ -113,7 +53,7 @@ test('pet profiles are durable separate identities with owner-scoped policy deci
         ->create([
             'profile_key' => 'pet-scout',
             'slug' => 'scout',
-            'name' => 'Scout Persisted',
+            'name' => 'Birch Persisted',
             'species' => 'Dog',
             'breed' => 'Collie mix',
             'profile_data' => ['status' => 'Ready for a calm walk'],
@@ -125,8 +65,8 @@ test('pet profiles are durable separate identities with owner-scoped policy deci
 
     expect($presented)
         ->not->toBeNull()
-        ->and($presented['name'])->toBe('Scout Persisted')
-        ->and($presented['status'])->toBe('Ready for a calm walk')
+        ->and($presented['name'])->toBe('Birch Persisted')
+        ->and($presented['status'])->toBe($profile->status->label())
         ->and($policy->view(null, $profile))->toBeTrue()
         ->and($policy->view($other, $profile))->toBeTrue()
         ->and($policy->update($this->authenticatedUser, $profile))->toBeTrue()
@@ -184,14 +124,14 @@ test('pet creation persists a private owner profile and renders only for its own
             ->where('target_id', (string) $profile->id)
             ->exists())->toBeTrue();
 
-    $response->assertRedirect(route('pets.created', ['item' => $profile->profile_key]));
-    $this->get(route('pets.created', ['item' => $profile->profile_key]))
+    $response->assertRedirect(route('pets.manage.show', ['petProfile' => $profile->profile_key]));
+    $this->get(route('pets.manage.show', ['petProfile' => $profile->profile_key]))
         ->assertOk()
         ->assertSee('Milo');
 
     auth()->logout();
 
-    $this->get(route('pets.created', ['item' => $profile->profile_key]))
+    $this->get(route('pets.manage.show', ['petProfile' => $profile->profile_key]))
         ->assertRedirect(route('login'));
 });
 
@@ -201,16 +141,16 @@ test('pet profile and privacy updates authorize the owner and persist durable da
         ->create([
             'profile_key' => 'pet-scout',
             'slug' => 'scout',
-            'name' => 'Scout',
+            'name' => 'Birch',
             'species' => 'Dog',
             'profile_data' => ['story' => 'Original story'],
         ]);
 
     app(UpdatePetProfile::class)->handle('scout', [
-        'title' => 'Scout Carter',
+        'title' => 'Birch Carter',
         'category' => 'Border Collie mix',
         'detail' => 'Ready for quiet walks',
-        'body' => 'Scout prefers low-pressure introductions.',
+        'body' => 'Birch prefers low-pressure introductions.',
     ]);
 
     app(UpdatePetProfilePrivacy::class)->handle('scout', [
@@ -223,10 +163,10 @@ test('pet profile and privacy updates authorize the owner and persist durable da
 
     $profile->refresh();
 
-    expect($profile->name)->toBe('Scout Carter')
+    expect($profile->name)->toBe('Birch Carter')
         ->and($profile->breed)->toBe('Border Collie mix')
         ->and($profile->profile_data)->toMatchArray([
-            'story' => 'Scout prefers low-pressure introductions.',
+            'story' => 'Birch prefers low-pressure introductions.',
             'status' => 'Ready for quiet walks',
             'privacy' => [
                 'location' => 'owners',
@@ -252,5 +192,5 @@ test('pet profile and privacy updates authorize the owner and persist durable da
         'body' => 'This must not be saved.',
     ]))->toThrow(ValidationException::class);
 
-    expect($profile->fresh()->name)->toBe('Scout Carter');
+    expect($profile->fresh()->name)->toBe('Birch Carter');
 });

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\BrowseComposerRequest;
+use App\Models\User;
 use App\Services\FeedPresenter;
 use App\Services\GroupCatalog;
 use App\Services\PlaceCatalog;
@@ -28,7 +29,6 @@ class ComposerController extends Controller
             'post',
             'group',
             'meetup',
-            'walk',
             'pet',
             'place',
             'place-correction',
@@ -36,7 +36,6 @@ class ComposerController extends Controller
             'place-review',
             'place-question',
             'place-claim',
-            'message',
             'profile',
             'pet-profile',
             'profile-privacy',
@@ -60,6 +59,10 @@ class ComposerController extends Controller
 
         if ($kind === 'place') {
             return to_route('places.submissions.create');
+        }
+
+        if ($kind === 'profile-privacy') {
+            return to_route('profile.settings');
         }
 
         $validated = $request->validated();
@@ -127,6 +130,9 @@ class ComposerController extends Controller
             404,
         );
 
-        return view('compose', $preview->composerData($kind, $validated));
+        $user = $request->user();
+        abort_unless($user instanceof User, 403);
+
+        return view('compose', $preview->composerData($kind, $validated, $user));
     }
 }

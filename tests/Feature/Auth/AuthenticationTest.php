@@ -435,6 +435,28 @@ test('stale profile settings cannot mutate preferences after verification is los
         ->timezone->toBe('Europe/Vilnius');
 });
 
+test('stale profile settings cannot mutate after the authenticated account changes', function (): void {
+    $alice = $this->authenticatedUser;
+    $component = Livewire::test(ProfileSettings::class)
+        ->set('form.locale', 'ru')
+        ->set('form.timezone', 'Europe/Riga');
+    $bob = User::factory()->onboarded()->create([
+        'name' => 'Bob Example',
+        'locale' => 'lt',
+        'timezone' => 'Europe/Vilnius',
+    ]);
+    auth()->login($bob);
+
+    $component->call('save')->assertForbidden();
+
+    expect($alice->fresh())
+        ->locale->toBe('en')
+        ->timezone->toBe('Europe/Vilnius')
+        ->and($bob->fresh())
+        ->locale->toBe('lt')
+        ->timezone->toBe('Europe/Vilnius');
+});
+
 test('registration does not expose language or timezone controls', function () {
     auth()->logout();
 

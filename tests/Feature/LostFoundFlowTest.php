@@ -37,8 +37,8 @@ test('a missing pet report stores only generalized public coordinates', function
     $rawExactLocation = (string) $searchCase->getRawOriginal('exact_location');
 
     expect($searchCase)
-        ->owner_key->toBe('mia-carter')
-        ->active_key->toBe('mia-carter:pet-scout')
+        ->owner_key->toBe('test-member')
+        ->active_key->toBe('test-member:pet-scout')
         ->public_latitude->toBe('54.683000')
         ->public_longitude->toBe('25.237000')
         ->alerts_active->toBeTrue()
@@ -94,7 +94,7 @@ test('one pet cannot have two active searches', function () {
         ->assertRedirect(route('lost-found.create'))
         ->assertSessionHasErrors('pet_profile_key');
 
-    expect(SearchCase::query()->where('active_key', 'mia-carter:pet-scout')->count())->toBe(1);
+    expect(SearchCase::query()->where('active_key', 'test-member:pet-scout')->count())->toBe(1);
 });
 
 test('sighting submissions are idempotent and retain actual observation time', function () {
@@ -177,14 +177,14 @@ test('a volunteer task can only be claimed once', function () {
 
     expect($task->refresh())
         ->status->toBe(SearchTaskStatus::Claimed)
-        ->assignee_key->toBe('mia-carter')
+        ->assignee_key->toBe('test-member')
         ->version->toBe(2);
 });
 
 test('returning a pet stops alerts tasks and temporary volunteer access', function () {
     $searchCase = SearchCase::factory()->create([
-        'owner_key' => 'mia-carter',
-        'coordinator_key' => 'mia-carter',
+        'owner_key' => 'test-member',
+        'coordinator_key' => 'test-member',
     ]);
     $alert = SearchAlert::factory()->create(['search_case_id' => $searchCase->id]);
     $task = SearchTask::factory()->create(['search_case_id' => $searchCase->id]);
@@ -216,13 +216,13 @@ test('returning a pet stops alerts tasks and temporary volunteer access', functi
 
 test('reactivating a closed search restores the unique active pet key', function () {
     $first = SearchCase::factory()->returned()->create([
-        'owner_key' => 'mia-carter',
-        'coordinator_key' => 'mia-carter',
+        'owner_key' => 'test-member',
+        'coordinator_key' => 'test-member',
         'pet_profile_key' => 'scout',
     ]);
     $second = SearchCase::factory()->returned()->create([
-        'owner_key' => 'mia-carter',
-        'coordinator_key' => 'mia-carter',
+        'owner_key' => 'test-member',
+        'coordinator_key' => 'test-member',
         'pet_profile_key' => 'scout',
     ]);
 
@@ -233,7 +233,7 @@ test('reactivating a closed search restores the unique active pet key', function
     ])->assertRedirect(route('lost-found.show', $first));
 
     expect($first->refresh())
-        ->active_key->toBe('mia-carter:scout')
+        ->active_key->toBe('test-member:scout')
         ->alerts_active->toBeTrue()
         ->volunteer_join_open->toBeTrue()
         ->and($first->alerts()->where('kind', 'search-reactivated')->exists())->toBeTrue();
@@ -243,7 +243,7 @@ test('reactivating a closed search restores the unique active pet key', function
         'status' => 'active',
     ]))->toThrow(ValidationException::class, 'This pet already has another active search.');
 
-    expect(SearchCase::query()->where('active_key', 'mia-carter:scout')->count())->toBe(1);
+    expect(SearchCase::query()->where('active_key', 'test-member:scout')->count())->toBe(1);
 });
 
 test('danger and extortion reports receive high priority', function () {
@@ -258,12 +258,12 @@ test('danger and extortion reports receive high priority', function () {
 
     expect(SearchReport::query()->firstOrFail())
         ->priority->toBe('high')
-        ->reporter_key->toBe('mia-carter');
+        ->reporter_key->toBe('test-member');
 });
 
 test('directory filters use structured report fields', function () {
     $dog = SearchCase::factory()->create([
-        'pet_name' => 'Scout Directory Match',
+        'pet_name' => 'Birch Directory Match',
         'species' => 'dog',
         'city' => 'Vilnius',
     ]);
@@ -285,8 +285,8 @@ test('directory filters use structured report fields', function () {
 
 test('catalog create public coordination and poster screens render', function () {
     $searchCase = SearchCase::factory()->create([
-        'owner_key' => 'mia-carter',
-        'coordinator_key' => 'mia-carter',
+        'owner_key' => 'test-member',
+        'coordinator_key' => 'test-member',
         'hidden_marks' => 'Coordinator-only mark',
     ]);
     Sighting::factory()->create(['search_case_id' => $searchCase->id]);
@@ -369,7 +369,7 @@ function searchCasePayload(array $overrides = []): array
         'type' => 'lost',
         'intent' => 'publish',
         'pet_profile_key' => 'scout',
-        'pet_name' => 'Scout',
+        'pet_name' => 'Birch',
         'species' => 'dog',
         'breed' => 'Labrador mix',
         'sex' => 'male',
@@ -379,7 +379,7 @@ function searchCasePayload(array $overrides = []): array
         'coat' => 'short',
         'distinctive_marks' => 'White chest patch and one folded ear.',
         'hidden_marks' => 'Crescent scar below the left shoulder.',
-        'description' => 'Scout slipped out of his harness after a loud sound and may keep distance from strangers.',
+        'description' => 'Birch slipped out of his harness after a loud sound and may keep distance from strangers.',
         'health_notice' => 'Needs regular medication; contact the owner promptly.',
         'approach_instructions' => 'Stay sideways, speak quietly, and send the location.',
         'avoid_instructions' => 'Do not chase, surround, shout, or enter unsafe areas.',

@@ -51,7 +51,7 @@ final class PlaceState
         return isset($this->state()['visited'][$place]);
     }
 
-    public function markVisited(string $place, string $pet = 'scout'): void
+    public function markVisited(string $place, string $pet): void
     {
         $state = $this->state();
         $state['visited'][$place] = [
@@ -486,29 +486,6 @@ final class PlaceState
     }
 
     /**
-     * @param  array<string, mixed>  $question
-     */
-    public function addQuestion(string $place, array $question): void
-    {
-        $state = $this->state();
-        $question = [
-            ...$question,
-            'key' => 'question-'.Str::lower(Str::random(10)),
-            'place' => $place,
-            'author' => __('messages.mia_carter'),
-            'answer' => null,
-            'answer_author' => null,
-            'answered_at' => null,
-            'created_at' => now()->toAtomString(),
-        ];
-        $state['questions'][$place] ??= [];
-        array_unshift($state['questions'][$place], $question);
-        $state['questions'][$place] = array_slice($state['questions'][$place], 0, 20);
-        $this->recordHistory($state, $place, __('messages.question_submitted_to_the_place_community'));
-        $this->store($state);
-    }
-
-    /**
      * @return array<int, array<string, mixed>>
      */
     public function questions(string $place): array
@@ -640,8 +617,8 @@ final class PlaceState
                     'privacy' => __('messages.shared_with_family'),
                     'places' => ['vingis-quiet-loop', 'paws-24-veterinary-center', 'old-town-pet-cafe'],
                 ],
-                'scout-places' => [
-                    'name' => __('messages.places_for_scout'),
+                'pet-places' => [
+                    'name' => __('messages.pet_places'),
                     'privacy' => 'private',
                     'places' => [],
                 ],

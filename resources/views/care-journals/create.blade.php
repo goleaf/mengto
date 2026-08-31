@@ -1,4 +1,4 @@
-<x-app-shell :owner="$owner" :title="$page_title" :active-section="$active_section">
+<x-app-shell :title="$page_title" :active-section="$active_section">
     <div class="mx-auto grid w-full max-w-4xl gap-7">
         <x-page-header
             :eyebrow="__('ui.private_by_default')"
@@ -48,7 +48,7 @@
                 </label>
                 <label>
                     {{ __('ui.responsible_today') }}
-                    <input name="current_caregiver_name" value="{{ old('current_caregiver_name', __('ui.mia_carter')) }}" maxlength="120">
+                    <input name="current_caregiver_name" value="{{ old('current_caregiver_name', $owner['name']) }}" maxlength="120">
                 </label>
             </div>
 

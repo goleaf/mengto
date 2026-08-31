@@ -10,13 +10,12 @@
         <p class="share-channel__description">{{ $channel['description'] }}</p>
     </div>
 
-    <x-action-control
-        :href="$channel['href']"
-        :label="$channel['label']"
-        icon="arrow-up-right"
-        variant="paper"
-        size="compact"
-        class="share-channel__action"
+    <a
+        href="{{ $channel['href'] }}"
+        class="action action--paper action--compact share-channel__action"
         data-share-channel-action
-    />
+    >
+        <x-ui-icon name="arrow-up-right" size="sm" />
+        <span data-action-label>{{ $channel['label'] }}</span>
+    </a>
 </article>

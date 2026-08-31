@@ -606,7 +606,7 @@ test('livewire group creation membership and locked identifiers are server autho
         ->where('name', 'Accessible local animal care')
         ->firstOrFail();
 
-    $component->assertRedirect(route('forum.groups.show', $group));
+    $component->assertRedirect(route('groups.show', $group));
 
     $member = User::factory()->create();
     Livewire::actingAs($member)

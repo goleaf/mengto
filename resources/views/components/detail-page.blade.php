@@ -1,5 +1,4 @@
 @props([
-    'owner',
     'title',
     'activeSection',
     'section',
@@ -7,7 +6,7 @@
     'backLabel',
 ])
 
-<x-app-shell :owner="$owner" :title="$title" :active-section="$activeSection">
+<x-app-shell :title="$title" :active-section="$activeSection">
     <div data-section="{{ $section }}" {{ $attributes->class(['detail-page']) }}>
         <x-detail-navigation :href="$backHref" :label="$backLabel" />
 

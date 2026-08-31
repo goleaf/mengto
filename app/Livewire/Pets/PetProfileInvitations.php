@@ -9,7 +9,6 @@ use App\Enums\PetManagerStatus;
 use App\Models\PetProfileManager;
 use App\Models\User;
 use App\Services\PetSpeciesLabel;
-use App\Services\ProfilePresenter;
 use Illuminate\Contracts\Auth\Factory as AuthFactory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Str;
@@ -24,19 +23,15 @@ final class PetProfileInvitations extends Component
 
     private AcceptPetProfileManagerInvitation $acceptAction;
 
-    private ProfilePresenter $profiles;
-
     private PetSpeciesLabel $speciesLabels;
 
     public function boot(
         AuthFactory $auth,
         AcceptPetProfileManagerInvitation $acceptAction,
-        ProfilePresenter $profiles,
         PetSpeciesLabel $speciesLabels,
     ): void {
         $this->auth = $auth;
         $this->acceptAction = $acceptAction;
-        $this->profiles = $profiles;
         $this->speciesLabels = $speciesLabels;
     }
 
@@ -101,7 +96,6 @@ final class PetProfileInvitations extends Component
     {
         return view('livewire.pets.pet-profile-invitations')
             ->layout('components.livewire-app-layout', [
-                'owner' => $this->profiles->owner(),
                 'title' => __('pet_profiles.invitations.title'),
                 'activeSection' => 'pets',
             ]);

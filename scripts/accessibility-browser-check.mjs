@@ -9,6 +9,7 @@ const browserOrigin = new URL(baseUrl);
 const groupsOnly = process.argv.includes('--groups-only');
 const placesOnly = process.argv.includes('--places-only');
 const pageIdentityOnly = process.argv.includes('--page-identity-only');
+const canonicalIdentityOnly = process.argv.includes('--canonical-identity-only');
 const animalScienceOnly = process.argv.includes('--animal-science-only');
 const onboardingOnly = process.argv.includes('--onboarding-only');
 const allowDataMutation = process.env.BROWSER_ALLOW_DATA_MUTATION === '1';
@@ -236,6 +237,32 @@ const login = async (client, sessionId, email) => {
     await waitUntil(
         async () => !(await evaluate(client, sessionId, 'location.pathname')).includes('/login'),
         `Login did not complete for ${email}.`,
+    );
+};
+
+const logout = async (client, sessionId) => {
+    const result = await evaluate(client, sessionId, `(async () => {
+        const token = document.querySelector('meta[name="csrf-token"]')?.content;
+        const response = await fetch('/logout', {
+            method: 'POST',
+            credentials: 'same-origin',
+            headers: {
+                Accept: 'text/html',
+                'X-CSRF-TOKEN': token,
+            },
+        });
+
+        return {
+            ok: response.ok,
+            redirected: response.redirected,
+            url: response.url,
+        };
+    })()`);
+    assert(result.ok && result.redirected, 'Logout endpoint did not complete its redirect.');
+    await navigate(client, sessionId, result.url);
+    assert(
+        await evaluate(client, sessionId, `location.pathname === '/login'`),
+        'Logout endpoint did not return to login.',
     );
 };
 
@@ -859,7 +886,131 @@ try {
         Buffer.from(accountEntryDesktopScreenshot.data, 'base64'),
     );
 
-    await login(client, sessionId, 'user@example.com');
+    await login(
+        client,
+        sessionId,
+        canonicalIdentityOnly ? 'andrej-browser@example.test' : 'user@example.com',
+    );
+
+    if (canonicalIdentityOnly) {
+        await client.send('Emulation.setDeviceMetricsOverride', {
+            width: 375,
+            height: 812,
+            deviceScaleFactor: 1,
+            mobile: true,
+            screenWidth: 375,
+            screenHeight: 812,
+        }, sessionId);
+        await client.send('Emulation.setEmulatedMedia', {
+            media: 'screen',
+            features: [
+                { name: 'prefers-reduced-motion', value: 'reduce' },
+                { name: 'forced-colors', value: 'active' },
+            ],
+        }, sessionId);
+        await navigate(client, sessionId, `${baseUrl}/content`);
+
+        const target = await evaluate(client, sessionId, `(() => {
+            const link = document.querySelector('[data-header-link="profile"]');
+
+            return {
+                name: link?.querySelector('.header-profile__name')?.textContent.trim() ?? null,
+                href: link?.href ?? null,
+                accessibleName: link?.getAttribute('aria-label') ?? null,
+            };
+        })()`);
+        assert(target.name === 'Andrej Browser', 'Canonical browser header did not render the exact User name.');
+        assert(target.accessibleName?.includes('Andrej Browser'), 'Canonical browser profile label did not identify Andrej.');
+        assert(
+            new URL(target.href).pathname === '/members/00000000-0000-4000-8000-000000000001',
+            'Canonical browser header did not use Andrej\'s personal actor route.',
+        );
+
+        await navigate(client, sessionId, target.href);
+        const pageAudit = await evaluate(client, sessionId, pageAuditExpression);
+        assertPageAudit(pageAudit, 'canonical Andrej self profile');
+        await evaluate(client, sessionId, `(() => {
+            document.querySelector('[data-detail-navigation] a, main a, main button')?.focus();
+
+            return true;
+        })()`);
+        const profileAudit = await evaluate(client, sessionId, `(() => {
+            const visible = (element) => {
+                const style = getComputedStyle(element);
+                const box = element.getBoundingClientRect();
+
+                return style.display !== 'none' && style.visibility !== 'hidden'
+                    && box.width > 0 && box.height > 0;
+            };
+            const focused = document.activeElement;
+            const focusedStyle = focused ? getComputedStyle(focused) : null;
+            const smallTargets = [...document.querySelectorAll(
+                'main a, main button, main input:not([type="hidden"]), main select, main textarea'
+            )].filter(visible).map((element) => ({
+                label: element.getAttribute('aria-label') || element.textContent.trim().slice(0, 80),
+                width: Math.round(element.getBoundingClientRect().width),
+                height: Math.round(element.getBoundingClientRect().height),
+            })).filter((item) => item.width < 44 || item.height < 44);
+
+            return {
+                path: location.pathname,
+                heading: document.querySelector('[data-section="member-profile-header"] h1')?.textContent.trim() ?? null,
+                headerName: document.querySelector('[data-header-link="profile"] .header-profile__name')?.textContent.trim() ?? null,
+                stats: [...document.querySelectorAll('[data-member-stat]')].map((element) => element.dataset.value),
+                smallTargets,
+                keyboardFocusTarget: Boolean(focused?.closest('main')),
+                focusVisible: Boolean(focusedStyle) && (
+                    (focusedStyle.outlineStyle !== 'none' && focusedStyle.outlineWidth !== '0px')
+                    || focusedStyle.boxShadow !== 'none'
+                ),
+                reducedMotion: matchMedia('(prefers-reduced-motion: reduce)').matches,
+                forcedColors: matchMedia('(forced-colors: active)').matches,
+                overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+                forbiddenDemoCopy: ['Mia Carter', 'Scout', 'Nori'].filter((value) => document.body.innerText.includes(value)),
+            };
+        })()`);
+        assert(profileAudit.path === '/members/00000000-0000-4000-8000-000000000001', 'Canonical browser self-profile path drifted.');
+        assert(profileAudit.heading === 'Andrej Browser', 'Canonical browser self profile did not render Andrej.');
+        assert(profileAudit.headerName === 'Andrej Browser', 'Canonical browser self profile changed the header identity.');
+        assert(JSON.stringify(profileAudit.stats) === JSON.stringify(['0', '0']), 'Canonical browser profile did not render honest zero counts.');
+        assert(profileAudit.smallTargets.length === 0, `Canonical browser profile controls below 44px ${JSON.stringify(profileAudit.smallTargets)}.`);
+        assert(profileAudit.keyboardFocusTarget && profileAudit.focusVisible, 'Canonical browser profile focus treatment is missing.');
+        assert(profileAudit.reducedMotion && profileAudit.forcedColors, 'Canonical browser profile accessibility media is inactive.');
+        assert(profileAudit.overflow <= 1, 'Canonical browser profile overflows horizontally.');
+        assert(profileAudit.forbiddenDemoCopy.length === 0, `Canonical browser profile leaked demo copy ${JSON.stringify(profileAudit.forbiddenDemoCopy)}.`);
+
+        await logout(client, sessionId);
+        const guestAudit = await evaluate(client, sessionId, `(() => ({
+            profileLink: Boolean(document.querySelector('[data-header-link="profile"]')),
+            previousNameVisible: document.body.innerText.includes('Andrej Browser'),
+            demoNameVisible: document.body.innerText.includes('Mia Carter'),
+        }))()`);
+        assert(! guestAudit.profileLink, 'Canonical browser logout retained the profile link.');
+        assert(! guestAudit.previousNameVisible && ! guestAudit.demoNameVisible, 'Canonical browser logout retained an account identity.');
+
+        const report = {
+            scope: 'canonical-identity',
+            baseUrl,
+            checkedAt: new Date().toISOString(),
+            target,
+            pageAudit,
+            profileAudit,
+            guestAudit,
+            consoleErrors,
+            resourceErrors,
+        };
+        await writeFile(
+            join(outputDirectory, 'canonical-identity-report.json'),
+            `${JSON.stringify(report, null, 2)}\n`,
+        );
+        console.log(JSON.stringify(report, null, 2));
+        assert(
+            consoleErrors.length === 0 && resourceErrors.length === 0,
+            `Canonical identity browser resource errors: ${JSON.stringify({ consoleErrors, resourceErrors })}`,
+        );
+
+        break auditRun;
+    }
 
     if (pageIdentityOnly) {
         const pageIdentityRoutes = [
@@ -897,8 +1048,6 @@ try {
         let englishExpertCopy = null;
         let englishGroupCopy = null;
         let englishNeighborCopy = null;
-        let englishOwnerProfileCopy = null;
-        let englishNeighborProfileCopy = null;
         let englishMessagingCopy = null;
         let englishCallStageCopy = null;
         let englishMessageDetailsCopy = null;
@@ -1135,6 +1284,7 @@ try {
                     const messagingFolders = document.querySelector('[data-messaging-folders]');
                     const messagingInbox = document.querySelector('[data-messaging-inbox]');
                     const messagingThread = document.querySelector('[data-messaging-thread-header]');
+                    const messagingEmpty = document.querySelector('.messaging-thread.messaging-state');
                     const messagingMessageList = document.querySelector('[data-messaging-message-list]');
                     const messagingComposer = document.querySelector('[data-messaging-composer]');
                     const messagingMessages = [...document.querySelectorAll('[data-messaging-message]')];
@@ -1452,9 +1602,9 @@ try {
                                 .map((element) => element.textContent.trim()),
                         },
                         neighborCopy: {
-                            actionLabel: header?.querySelector('.page-header__actions .action span')
-                                ?.textContent.trim() ?? null,
                             summaryLabel: neighborSummary?.getAttribute('aria-label') ?? null,
+                            summaryEmpty: neighborSummary?.querySelector('.summary-strip__empty')
+                                ?.textContent.trim() ?? null,
                             summaryLabels: [...(neighborSummary?.querySelectorAll('.summary-stat__label span') ?? [])]
                                 .map((element) => element.textContent.trim()),
                             summaryValues: [...(neighborSummary?.querySelectorAll('.summary-stat__value') ?? [])]
@@ -1476,6 +1626,13 @@ try {
                                 ?.getAttribute('placeholder') ?? null,
                             resultsTitle: neighborResults?.closest('section')?.querySelector('h2')
                                 ?.textContent.trim() ?? null,
+                            emptyTitle: neighborResults?.querySelector('.empty-state__title')
+                                ?.textContent.trim() ?? null,
+                            emptyDescription: neighborResults?.querySelector('.empty-state__description')
+                                ?.textContent.trim() ?? null,
+                            emptyAction: neighborResults?.querySelector('.empty-state .action span')
+                                ?.textContent.trim() ?? null,
+                            cardCount: neighborCards.length,
                             cardCategory: neighborCard?.querySelector('[data-neighbor-card-category] span:last-child')
                                 ?.textContent.trim() ?? null,
                             cardDistance: neighborCard?.querySelector('[data-neighbor-card-distance] span:last-child')
@@ -1657,6 +1814,10 @@ try {
                             shownCount: messagingInbox?.querySelector('[data-messaging-inbox-meta] strong')
                                 ?.textContent.trim() ?? null,
                             summary: messagingInbox?.querySelector('[data-messaging-inbox-meta] span')
+                                ?.textContent.trim() ?? null,
+                            emptyTitle: messagingEmpty?.querySelector('#empty-inbox-title')
+                                ?.textContent.trim() ?? null,
+                            emptyDescription: messagingEmpty?.querySelector('#empty-inbox-title + p')
                                 ?.textContent.trim() ?? null,
                             conversationTypes: [...(messagingInbox?.querySelectorAll(
                                 '[data-messaging-conversation-type]'
@@ -2147,11 +2308,8 @@ try {
 
                 if (route.path === '/neighbors') {
                     const neighborCopy = [
-                        behavior.neighborCopy.actionLabel,
                         behavior.neighborCopy.summaryLabel,
-                        ...behavior.neighborCopy.summaryLabels,
-                        ...behavior.neighborCopy.summaryValues,
-                        ...behavior.neighborCopy.summaryDetails.slice(1),
+                        behavior.neighborCopy.summaryEmpty,
                         behavior.neighborCopy.toolbarLabel,
                         behavior.neighborCopy.filterGroupLabel,
                         ...behavior.neighborCopy.filterLabels,
@@ -2160,23 +2318,16 @@ try {
                         behavior.neighborCopy.searchLabel,
                         behavior.neighborCopy.searchPlaceholder,
                         behavior.neighborCopy.resultsTitle,
-                        behavior.neighborCopy.cardCategory,
-                        behavior.neighborCopy.cardDistance,
-                        behavior.neighborCopy.cardPet,
-                        behavior.neighborCopy.cardStatus,
-                        ...behavior.neighborCopy.cardTags,
-                        behavior.neighborCopy.cardFollowLabel,
-                        behavior.neighborCopy.cardImageAlt,
-                        ...behavior.neighborCopy.remainingCardCategories,
-                        ...behavior.neighborCopy.remainingCardDistances,
-                        ...behavior.neighborCopy.remainingCardStatuses,
-                        ...behavior.neighborCopy.cardPets,
+                        behavior.neighborCopy.emptyTitle,
+                        behavior.neighborCopy.emptyDescription,
+                        behavior.neighborCopy.emptyAction,
                     ];
 
                     assert(
-                        neighborCopy.length === 43
+                        behavior.neighborCopy.cardCount === 0
+                            && neighborCopy.length === 17
                             && neighborCopy.every((value) => value?.length > 0),
-                        `${label}: the neighbor localization surface is incomplete ${JSON.stringify(behavior.neighborCopy)}.`,
+                        `${label}: the honest empty neighbor localization surface is incomplete ${JSON.stringify(behavior.neighborCopy)}.`,
                     );
 
                     if (viewport.locale === 'en') {
@@ -2278,7 +2429,6 @@ try {
 
                 if (route.path === '/messages') {
                     const messagingCopy = [
-                        behavior.messagingCopy.actionLabel,
                         behavior.messagingCopy.metaLabel,
                         behavior.messagingCopy.foldersLabel,
                         ...behavior.messagingCopy.folderLabels,
@@ -2289,83 +2439,15 @@ try {
                         behavior.messagingCopy.conversationsLabel,
                         behavior.messagingCopy.shownCount,
                         behavior.messagingCopy.summary,
-                        ...behavior.messagingCopy.conversationTypes,
-                        ...behavior.messagingCopy.relativeTimes,
-                        behavior.messagingCopy.threadBack,
-                        ...behavior.messagingCopy.threadActionTitles,
-                        ...behavior.messagingCopy.threadActionLabels,
-                        behavior.messagingCopy.messageListLabel,
-                        behavior.messagingCopy.messageDate,
-                        behavior.messagingCopy.composerLabel,
-                        behavior.messagingCopy.composerReply,
-                        behavior.messagingCopy.composerCancelReply,
-                        behavior.messagingCopy.composerDraftSaving,
-                        behavior.messagingCopy.composerDraftSaved,
-                        behavior.messagingCopy.composerMessageType,
-                        ...behavior.messagingCopy.composerToolTitles,
-                        ...behavior.messagingCopy.composerToolActionLabels,
-                        behavior.messagingCopy.composerRecipient,
-                        behavior.messagingCopy.composerPlaceholder,
-                        behavior.messagingCopy.composerQuiet,
-                        behavior.messagingCopy.composerDraftStatus,
-                        behavior.messagingCopy.composerSend,
-                        behavior.messagingCopy.composerSchedule,
-                        behavior.messagingCopy.composerSendAt,
-                        behavior.messagingCopy.composerScheduleHelp,
-                        behavior.messagingCopy.composerPrivacy,
-                        ...behavior.messagingCopy.structuredMessageTypes,
-                        ...behavior.messagingCopy.messageStatuses,
-                        behavior.messagingCopy.messageActionsLabel,
-                        ...behavior.messagingCopy.messageActionLabels,
-                        behavior.messagingCopy.audioActionLabel,
-                        behavior.messagingCopy.contextLabel,
-                        behavior.messagingCopy.contextPurpose,
-                        behavior.messagingCopy.contextPrivacy,
-                        behavior.messagingCopy.contextIdentityNote,
-                        behavior.messagingCopy.contextSearchLabel,
-                        behavior.messagingCopy.contextSearchPlaceholder,
-                        behavior.messagingCopy.contextControlsLabel,
-                        ...behavior.messagingCopy.contextControlLabels,
-                        behavior.messagingCopy.contextMembersTitle,
-                        behavior.messagingCopy.contextSharedTitle,
-                        ...behavior.messagingCopy.contextSharedLabels,
-                        ...behavior.messagingCopy.contextSharedValues,
-                        behavior.messagingCopy.contextSafetyTitle,
-                        ...behavior.messagingCopy.contextSafetyTitles,
-                        ...behavior.messagingCopy.contextSafetyDescriptions,
-                        ...behavior.messagingCopy.contextSafetyActionLabels,
-                        behavior.messagingCopy.contextBoundaryTitle,
-                        ...behavior.messagingCopy.contextBoundaryLabels,
-                        ...behavior.messagingCopy.contextBoundaryValues,
+                        behavior.messagingCopy.emptyTitle,
+                        behavior.messagingCopy.emptyDescription,
                     ];
 
                     assert(
-                        messagingCopy.length === 127
+                        behavior.messagingCopy.conversationTypes.length === 0
+                            && messagingCopy.length === 20
                             && messagingCopy.every((value) => value?.length > 0),
-                        `${label}: the messaging localization surface is incomplete ${JSON.stringify(behavior.messagingCopy)}.`,
-                    );
-                    assert(
-                        JSON.stringify(behavior.messagingCopy.messageStatusCodes)
-                            === JSON.stringify(['delivered', 'read', 'delivered', 'delivered']),
-                        `${label}: messaging delivery codes drifted ${JSON.stringify(behavior.messagingCopy.messageStatusCodes)}.`,
-                    );
-                    assert(
-                        JSON.stringify(behavior.messagingCopy.contextActionCodes)
-                            === JSON.stringify([
-                                'pin-conversation',
-                                'mute-conversation',
-                                'archive-conversation',
-                                'mark-conversation-unread',
-                                'restrict-conversation',
-                                'block-conversation',
-                                'export-conversation',
-                            ]),
-                        `${label}: messaging context action codes drifted ${JSON.stringify(behavior.messagingCopy.contextActionCodes)}.`,
-                    );
-                    assert(
-                        JSON.stringify(behavior.messagingCopy.contextActionIcons)
-                            === JSON.stringify(['pin', 'bell-off', 'archive', 'mail', 'shield-minus', 'ban', 'download']),
-                        `${label}: messaging context icons drifted ${JSON.stringify(behavior.messagingCopy.contextActionIcons)}.`,
+                        `${label}: the honest empty messaging localization surface is incomplete ${JSON.stringify(behavior.messagingCopy)}.`,
                     );
                     assert(
                         behavior.messagingLayout.clippedFolderLabels.length === 0,
@@ -2419,7 +2501,7 @@ try {
 
                 pageIdentityAudits[label] = { ...pageAudit, ...behavior };
 
-                if (route.path === '/messages') {
+                if (route.path === '/messages' && behavior.messagingCopy.conversationTypes.length > 0) {
                     const callLoaded = client.once('Page.loadEventFired', sessionId);
                     await evaluate(client, sessionId, `(() => {
                         const form = document.querySelector(
@@ -2908,60 +2990,43 @@ try {
                 }
             }
 
-            const ownerProfileLabel = `${viewport.label} owner profile`;
-            await navigate(client, sessionId, `${baseUrl}/@mia-carter`);
-            const ownerProfilePageAudit = await evaluate(client, sessionId, pageAuditExpression);
-            assertPageAudit(ownerProfilePageAudit, ownerProfileLabel);
-            const ownerProfileFocusTargetPrepared = await evaluate(client, sessionId, `(() => {
-                const target = document.querySelector('[data-profile-tab="overview"]');
-                target?.setAttribute('data-owner-profile-focus-target', '');
-                target?.focus();
 
-                return Boolean(target);
+            const selfProfileLabel = `${viewport.label} self profile`;
+            const selfProfileTarget = await evaluate(client, sessionId, `(() => {
+                const link = document.querySelector('[data-header-link="profile"]');
+
+                return {
+                    href: link?.href ?? null,
+                    name: link?.querySelector('.header-profile__name')?.textContent.trim() ?? null,
+                    accessibleName: link?.getAttribute('aria-label') ?? null,
+                };
             })()`);
-            assert(ownerProfileFocusTargetPrepared, `${ownerProfileLabel}: overview tab is missing.`);
-            await client.send('Input.dispatchKeyEvent', {
-                type: 'keyDown',
-                key: 'Tab',
-                code: 'Tab',
-                modifiers: 8,
-                windowsVirtualKeyCode: 9,
-                nativeVirtualKeyCode: 9,
-            }, sessionId);
-            await client.send('Input.dispatchKeyEvent', {
-                type: 'keyUp',
-                key: 'Tab',
-                code: 'Tab',
-                modifiers: 8,
-                windowsVirtualKeyCode: 9,
-                nativeVirtualKeyCode: 9,
-            }, sessionId);
-            await client.send('Input.dispatchKeyEvent', {
-                type: 'keyDown',
-                key: 'Tab',
-                code: 'Tab',
-                windowsVirtualKeyCode: 9,
-                nativeVirtualKeyCode: 9,
-            }, sessionId);
-            await client.send('Input.dispatchKeyEvent', {
-                type: 'keyUp',
-                key: 'Tab',
-                code: 'Tab',
-                windowsVirtualKeyCode: 9,
-                nativeVirtualKeyCode: 9,
-            }, sessionId);
-            const ownerProfileAudit = await evaluate(client, sessionId, `(() => {
-                const page = document.querySelector('[data-owner-profile]');
-                const hero = page?.querySelector('[data-owner-profile-hero]');
-                const summary = hero?.querySelector('.stat-grid');
-                const tabs = page?.querySelector('nav.tabs');
-                const preview = page?.querySelector('[data-owner-profile-preview]');
-                const about = page?.querySelector('[data-section="about-owner"]');
-                const pets = page?.querySelector('[data-section="profile-pets"]');
-                const moments = page?.querySelector('[data-section="owner-moments"]');
-                const completion = page?.querySelector('[data-section="owner-profile-completion"]');
-                const badges = page?.querySelector('[data-section="owner-profile-badges"]');
-                const availability = page?.querySelector('[data-section="owner-availability"]');
+            assert(selfProfileTarget.href?.length > 0, `${selfProfileLabel}: authenticated profile URL is missing.`);
+            assert(selfProfileTarget.name?.length > 0, `${selfProfileLabel}: authenticated profile name is missing.`);
+            assert(
+                selfProfileTarget.accessibleName?.includes(selfProfileTarget.name),
+                `${selfProfileLabel}: profile accessible name does not identify the authenticated user.`,
+            );
+            const selfProfilePath = new URL(selfProfileTarget.href).pathname;
+            assert(
+                /^\/members\/[^/]+$/.test(selfProfilePath),
+                `${selfProfileLabel}: self profile does not use the canonical member route.`,
+            );
+
+            await navigate(client, sessionId, selfProfileTarget.href);
+            const selfProfilePageAudit = await evaluate(client, sessionId, pageAuditExpression);
+            assertPageAudit(selfProfilePageAudit, selfProfileLabel);
+            await evaluate(client, sessionId, `(() => {
+                document.querySelector('[data-detail-navigation] a, main a, main button')?.focus();
+
+                return true;
+            })()`);
+            const selfProfileAudit = await evaluate(client, sessionId, `(() => {
+                const pageHeader = document.querySelector('[data-section="member-profile-header"]');
+                const headerProfile = document.querySelector('[data-header-link="profile"]');
+                const heading = pageHeader?.querySelector('h1');
+                const focused = document.activeElement;
+                const focusedStyle = focused ? getComputedStyle(focused) : null;
                 const visible = (element) => {
                     const style = getComputedStyle(element);
                     const box = element.getBoundingClientRect();
@@ -2969,9 +3034,9 @@ try {
                     return style.display !== 'none' && style.visibility !== 'hidden'
                         && box.width > 0 && box.height > 0;
                 };
-                const targets = [...(page?.querySelectorAll(
-                    'a, button, input:not([type="hidden"]), select, textarea, [role="button"]'
-                ) ?? [])].filter(visible).map((element) => ({
+                const smallTargets = [...document.querySelectorAll(
+                    'main a, main button, main input:not([type="hidden"]), main select, main textarea'
+                )].filter(visible).map((element) => ({
                     label: element.getAttribute('aria-label')
                         || element.textContent.trim().slice(0, 80)
                         || element.getAttribute('name'),
@@ -2979,459 +3044,82 @@ try {
                     height: Math.round(element.getBoundingClientRect().height),
                 })).filter((target) => target.width < 44 || target.height < 44);
                 const clippedRegions = [
-                    page,
-                    hero,
-                    hero?.querySelector('.profile-hero__body'),
-                    preview,
-                    about,
-                    pets,
-                    moments,
-                    completion,
-                    badges,
-                    availability,
-                    ...page?.querySelectorAll('.panel-heading, .section-heading') ?? [],
+                    pageHeader,
+                    pageHeader?.querySelector('.page-header__copy'),
+                    document.querySelector('[data-section="member-posts"]'),
+                    document.querySelector('[data-section="member-public-details"]'),
+                    document.querySelector('[data-section="member-public-pets"]'),
                 ].filter(Boolean).filter(
                     (element) => element.scrollWidth > element.clientWidth + 1,
-                ).map((element) => element.className || element.dataset.section || element.tagName);
-                const firstTab = document.activeElement;
-                const focusStyle = firstTab ? getComputedStyle(firstTab) : null;
-                const tabFocusVisible = Boolean(
-                    firstTab?.hasAttribute('data-owner-profile-focus-target')
-                    && firstTab.matches(':focus-visible')
-                    && focusStyle
-                    && ((focusStyle.outlineStyle !== 'none' && focusStyle.outlineWidth !== '0px')
-                        || focusStyle.boxShadow !== 'none')
-                );
+                ).map((element) => element.dataset.section || element.className || element.tagName);
 
                 return {
                     path: location.pathname,
-                    pageVisible: page ? visible(page) : false,
-                    tabCode: page?.dataset.ownerProfileTab ?? null,
-                    audienceCode: page?.dataset.ownerProfileAudience ?? null,
-                    copy: {
-                        documentTitle: document.title,
-                        summaryLabel: summary?.getAttribute('aria-label') ?? null,
-                        summaryLabels: [...(summary?.querySelectorAll('.stat-grid__label span') ?? [])]
-                            .map((element) => element.textContent.trim()),
-                        summaryDetails: [...(summary?.querySelectorAll('.stat-grid__detail') ?? [])]
-                            .map((element) => element.textContent.trim()),
-                        status: hero?.querySelector('.profile-hero__signals > .status-badge span')
-                            ?.textContent.trim() ?? null,
-                        avatarAlt: hero?.querySelector('.profile-hero__avatar')?.getAttribute('alt') ?? null,
-                        coverAlt: hero?.querySelector('[data-profile-cover]')?.getAttribute('alt') ?? null,
-                        actions: [...(hero?.querySelectorAll('.profile-hero__identity-row .action span') ?? [])]
-                            .map((element) => element.textContent.trim()),
-                        tabsLabel: tabs?.getAttribute('aria-label') ?? null,
-                        tabs: [...(tabs?.querySelectorAll('[data-profile-tab] > span:not(.tabs__count)') ?? [])]
-                            .map((element) => element.textContent.trim()),
-                        previewTitle: preview?.querySelector('.profile-preview__title')?.textContent.trim() ?? null,
-                        previewDescription: preview?.querySelector('.profile-preview__description')
-                            ?.textContent.trim() ?? null,
-                        previewLabel: preview?.querySelector('nav.tabs')?.getAttribute('aria-label') ?? null,
-                        previewOptions: [...(preview?.querySelectorAll('[data-profile-audience] > span') ?? [])]
-                            .map((element) => element.textContent.trim()),
-                        aboutEyebrow: about?.querySelector('.section-heading__eyebrow')?.textContent.trim() ?? null,
-                        aboutTitle: about?.querySelector('.section-heading__title')?.textContent.trim() ?? null,
-                        bio: about?.querySelector('.section-copy')?.textContent.trim() ?? null,
-                        petsEyebrow: pets?.querySelector('.section-heading__eyebrow')?.textContent.trim() ?? null,
-                        petsTitle: pets?.querySelector('.section-heading__title')?.textContent.trim() ?? null,
-                        addPet: pets?.querySelector('.action span')?.textContent.trim() ?? null,
-                        momentsEyebrow: moments?.querySelector('.section-heading__eyebrow')?.textContent.trim() ?? null,
-                        momentsTitle: moments?.querySelector('.section-heading__title')?.textContent.trim() ?? null,
-                        completionEyebrow: completion?.querySelector('.section-heading__eyebrow')
-                            ?.textContent.trim() ?? null,
-                        completionTitle: completion?.querySelector('.section-heading__title')
-                            ?.textContent.trim() ?? null,
-                        completionLabel: completion?.querySelector('.progress__label')?.textContent.trim() ?? null,
-                        completionDetail: completion?.querySelector('.progress__detail')?.textContent.trim() ?? null,
-                        badgesEyebrow: badges?.querySelector('.section-heading__eyebrow')?.textContent.trim() ?? null,
-                        badgesTitle: badges?.querySelector('.section-heading__title')?.textContent.trim() ?? null,
-                        badgeLabels: [...(badges?.querySelectorAll('.profile-badges .status-badge > span') ?? [])]
-                            .map((element) => element.textContent.trim()),
-                        availabilityEyebrow: availability?.querySelector('.section-heading__eyebrow')
-                            ?.textContent.trim() ?? null,
-                        availabilityTitle: availability?.querySelector('.section-heading__title')
-                            ?.textContent.trim() ?? null,
-                        availabilityLabels: [...(availability?.querySelectorAll('.definition-list__term') ?? [])]
-                            .map((element) => element.textContent.trim()),
-                        availabilityValues: [...(availability?.querySelectorAll('.definition-list__value') ?? [])]
-                            .map((element) => element.textContent.trim()),
-                    },
-                    tabCodes: [...(tabs?.querySelectorAll('[data-profile-tab]') ?? [])]
-                        .map((element) => element.dataset.profileTab),
-                    audienceCodes: [...(preview?.querySelectorAll('[data-profile-audience]') ?? [])]
-                        .map((element) => element.dataset.profileAudience),
-                    heroActionIcons: [...(hero?.querySelectorAll('.profile-hero__identity-row .action [data-ui-icon]') ?? [])]
-                        .map((element) => element.getAttribute('data-ui-icon')),
-                    summaryIcons: [...(summary?.querySelectorAll('.stat-grid__label [data-ui-icon]') ?? [])]
-                        .map((element) => element.getAttribute('data-ui-icon')),
-                    tabIcons: [...(tabs?.querySelectorAll('[data-profile-tab] [data-ui-icon]') ?? [])]
-                        .map((element) => element.getAttribute('data-ui-icon')),
-                    previewIcons: [...(preview?.querySelectorAll('[data-ui-icon]') ?? [])]
-                        .map((element) => element.getAttribute('data-ui-icon')),
-                    sectionIcons: [...(page?.querySelectorAll('[data-owner-profile-section-icon]') ?? [])]
-                        .map((section) => section.querySelector('.section-heading__title [data-ui-icon]')
-                            ?.getAttribute('data-ui-icon')),
-                    badgeIcons: [...(badges?.querySelectorAll('.profile-badges [data-ui-icon]') ?? [])]
-                        .map((element) => element.getAttribute('data-ui-icon')),
-                    tabFocusVisible,
-                    smallTargets: targets,
-                    clippedRegions,
+                    lang: document.documentElement.lang,
+                    heading: heading?.textContent.trim() ?? null,
+                    h1Count: document.querySelectorAll('h1').length,
+                    headerName: headerProfile?.querySelector('.header-profile__name')?.textContent.trim() ?? null,
+                    headerHref: headerProfile?.href ?? null,
+                    profileStatus: pageHeader?.querySelector('.page-header__count')?.textContent.trim() ?? null,
+                    stats: [...document.querySelectorAll('[data-member-stat]')].map((element) => ({
+                        key: element.dataset.memberStat,
+                        value: element.dataset.value,
+                    })),
                     overflow: document.documentElement.scrollWidth
                         - document.documentElement.clientWidth,
-                    rawTranslationKeys: document.body.innerText.match(
-                        /\bmember_profiles\.owner\.[a-z0-9_.-]+/gi
-                    ) ?? [],
-                };
-            })()`);
-            const ownerProfileCopy = [
-                ownerProfileAudit.copy.documentTitle,
-                ownerProfileAudit.copy.summaryLabel,
-                ...ownerProfileAudit.copy.summaryLabels,
-                ...ownerProfileAudit.copy.summaryDetails,
-                ownerProfileAudit.copy.status,
-                ownerProfileAudit.copy.avatarAlt,
-                ownerProfileAudit.copy.coverAlt,
-                ...ownerProfileAudit.copy.actions,
-                ownerProfileAudit.copy.tabsLabel,
-                ...ownerProfileAudit.copy.tabs,
-                ownerProfileAudit.copy.previewTitle,
-                ownerProfileAudit.copy.previewDescription,
-                ownerProfileAudit.copy.previewLabel,
-                ...ownerProfileAudit.copy.previewOptions,
-                ownerProfileAudit.copy.aboutEyebrow,
-                ownerProfileAudit.copy.aboutTitle,
-                ownerProfileAudit.copy.bio,
-                ownerProfileAudit.copy.petsEyebrow,
-                ownerProfileAudit.copy.petsTitle,
-                ownerProfileAudit.copy.addPet,
-                ownerProfileAudit.copy.momentsEyebrow,
-                ownerProfileAudit.copy.momentsTitle,
-                ownerProfileAudit.copy.completionEyebrow,
-                ownerProfileAudit.copy.completionTitle,
-                ownerProfileAudit.copy.completionLabel,
-                ownerProfileAudit.copy.completionDetail,
-                ownerProfileAudit.copy.badgesEyebrow,
-                ownerProfileAudit.copy.badgesTitle,
-                ...ownerProfileAudit.copy.badgeLabels,
-                ownerProfileAudit.copy.availabilityEyebrow,
-                ownerProfileAudit.copy.availabilityTitle,
-                ...ownerProfileAudit.copy.availabilityLabels,
-                ...ownerProfileAudit.copy.availabilityValues,
-            ];
-
-            assert(ownerProfileAudit.path === '/@mia-carter', `${ownerProfileLabel}: owner profile route path drifted.`);
-            assert(ownerProfileAudit.pageVisible, `${ownerProfileLabel}: owner profile is hidden.`);
-            assert(
-                ownerProfileCopy.length === 55
-                    && ownerProfileCopy.every((value) => value?.length > 0),
-                `${ownerProfileLabel}: owner profile localization surface is incomplete ${JSON.stringify(ownerProfileAudit.copy)}.`,
-            );
-            assert(ownerProfileAudit.tabCode === 'overview', `${ownerProfileLabel}: active tab code drifted.`);
-            assert(ownerProfileAudit.audienceCode === 'owner', `${ownerProfileLabel}: active audience code drifted.`);
-            assert(
-                JSON.stringify(ownerProfileAudit.tabCodes)
-                    === JSON.stringify(['overview', 'pets', 'posts', 'about']),
-                `${ownerProfileLabel}: tab codes drifted ${JSON.stringify(ownerProfileAudit.tabCodes)}.`,
-            );
-            assert(
-                JSON.stringify(ownerProfileAudit.audienceCodes)
-                    === JSON.stringify(['owner', 'public', 'follower', 'friend']),
-                `${ownerProfileLabel}: audience codes drifted ${JSON.stringify(ownerProfileAudit.audienceCodes)}.`,
-            );
-            assert(
-                JSON.stringify(ownerProfileAudit.heroActionIcons)
-                    === JSON.stringify(['pencil', 'settings', 'shield-check', 'share-2']),
-                `${ownerProfileLabel}: hero action icons drifted ${JSON.stringify(ownerProfileAudit.heroActionIcons)}.`,
-            );
-            assert(
-                JSON.stringify(ownerProfileAudit.summaryIcons)
-                    === JSON.stringify(['paw-print', 'users', 'user-round-check', 'images']),
-                `${ownerProfileLabel}: summary icons drifted ${JSON.stringify(ownerProfileAudit.summaryIcons)}.`,
-            );
-            assert(
-                JSON.stringify(ownerProfileAudit.tabIcons)
-                    === JSON.stringify(['layout-dashboard', 'paw-print', 'images', 'circle-user-round']),
-                `${ownerProfileLabel}: tab icons drifted ${JSON.stringify(ownerProfileAudit.tabIcons)}.`,
-            );
-            assert(
-                JSON.stringify(ownerProfileAudit.previewIcons)
-                    === JSON.stringify(['eye', 'key-round', 'globe-2', 'user-check', 'users-round']),
-                `${ownerProfileLabel}: preview icons drifted ${JSON.stringify(ownerProfileAudit.previewIcons)}.`,
-            );
-            assert(
-                JSON.stringify(ownerProfileAudit.sectionIcons)
-                    === JSON.stringify(['user-round', 'paw-print', 'images', 'gauge', 'badge-check', 'calendar-clock']),
-                `${ownerProfileLabel}: section icons drifted ${JSON.stringify(ownerProfileAudit.sectionIcons)}.`,
-            );
-            assert(
-                JSON.stringify(ownerProfileAudit.badgeIcons)
-                    === JSON.stringify(['badge-check', 'heart-handshake', 'circle-check-big']),
-                `${ownerProfileLabel}: badge icons drifted ${JSON.stringify(ownerProfileAudit.badgeIcons)}.`,
-            );
-            assert(ownerProfileAudit.tabFocusVisible, `${ownerProfileLabel}: focused profile tab has no visible focus treatment.`);
-            assert(ownerProfileAudit.smallTargets.length === 0, `${ownerProfileLabel}: controls below 44px ${JSON.stringify(ownerProfileAudit.smallTargets)}.`);
-            assert(ownerProfileAudit.clippedRegions.length === 0, `${ownerProfileLabel}: profile content is clipped ${JSON.stringify(ownerProfileAudit.clippedRegions)}.`);
-            assert(ownerProfileAudit.overflow <= 1, `${ownerProfileLabel}: profile overflows horizontally.`);
-            assert(ownerProfileAudit.rawTranslationKeys.length === 0, `${ownerProfileLabel}: raw owner profile translation keys remain.`);
-
-            if (viewport.locale === 'en') {
-                englishOwnerProfileCopy ??= ownerProfileCopy;
-                assert(
-                    ownerProfileCopy.every((value, index) => value === englishOwnerProfileCopy[index]),
-                    `${ownerProfileLabel}: English owner profile copy changed across viewports.`,
-                );
-            } else {
-                assert(englishOwnerProfileCopy !== null, `${ownerProfileLabel}: English owner profile baseline is missing.`);
-                assert(
-                    ownerProfileCopy.every((value, index) => value !== englishOwnerProfileCopy[index]),
-                    `${ownerProfileLabel}: English owner profile body fallback remains. Current ${JSON.stringify(ownerProfileCopy)}; English ${JSON.stringify(englishOwnerProfileCopy)}.`,
-                );
-            }
-
-            pageIdentityAudits[ownerProfileLabel] = {
-                ...ownerProfilePageAudit,
-                ...ownerProfileAudit,
-            };
-
-            if ([375, 1440].includes(viewport.width)) {
-                const ownerProfileScreenshotPath = join(
-                    outputDirectory,
-                    `page-identity-owner-profile-${viewport.width}.png`,
-                );
-                const ownerProfileScreenshotData = await client.send('Page.captureScreenshot', {
-                    format: 'png',
-                    captureBeyondViewport: true,
-                }, sessionId);
-                await writeFile(
-                    ownerProfileScreenshotPath,
-                    Buffer.from(ownerProfileScreenshotData.data, 'base64'),
-                );
-                pageIdentityScreenshots.push(ownerProfileScreenshotPath);
-            }
-
-            const neighborProfileLabel = `${viewport.label} neighbor profile`;
-            await navigate(client, sessionId, `${baseUrl}/neighbors/ari-jensen`);
-            const neighborProfilePageAudit = await evaluate(client, sessionId, pageAuditExpression);
-            assertPageAudit(neighborProfilePageAudit, neighborProfileLabel);
-            const neighborProfileAudit = await evaluate(client, sessionId, `(() => {
-                const page = document.querySelector('[data-neighbor-profile]');
-                const hero = page?.querySelector('[data-neighbor-profile-hero]');
-                const summary = hero?.querySelector('.stat-grid');
-                const about = page?.querySelector('[data-section="about-neighbor"]');
-                const pet = page?.querySelector('[data-neighbor-profile-pet]');
-                const interests = page?.querySelector('[data-section="neighbor-interests"]');
-                const mutuals = page?.querySelector('[data-neighbor-profile-mutuals]');
-                const communities = page?.querySelector('[data-neighbor-profile-communities]');
-                const moments = page?.querySelector('[data-neighbor-profile-moments]');
-                const visible = (element) => {
-                    const style = getComputedStyle(element);
-                    const box = element.getBoundingClientRect();
-
-                    return style.display !== 'none' && style.visibility !== 'hidden'
-                        && box.width > 0 && box.height > 0;
-                };
-                const targets = [...(page?.querySelectorAll(
-                    'a, button, input:not([type="hidden"]), select, textarea, [role="button"]'
-                ) ?? [])].filter(visible).map((element) => ({
-                    label: element.getAttribute('aria-label')
-                        || element.textContent.trim().slice(0, 80)
-                        || element.getAttribute('name'),
-                    width: Math.round(element.getBoundingClientRect().width),
-                    height: Math.round(element.getBoundingClientRect().height),
-                })).filter((target) => target.width < 44 || target.height < 44);
-                const clippedRegions = [
-                    page,
-                    hero,
-                    hero?.querySelector('.profile-hero__body'),
-                    about,
-                    pet,
-                    interests,
-                    mutuals,
-                    communities,
-                    moments,
-                    ...page?.querySelectorAll('.panel-heading, .section-heading, [data-neighbor-profile-routine] > div') ?? [],
-                ].filter(Boolean).filter(
-                    (element) => element.scrollWidth > element.clientWidth + 1,
-                ).map((element) => element.className || element.dataset.section || element.tagName);
-
-                return {
-                    path: location.pathname,
-                    pageVisible: page ? visible(page) : false,
-                    copy: {
-                        documentTitle: document.title,
-                        back: page?.querySelector(':scope > .text-link span')?.textContent.trim() ?? null,
-                        summaryLabel: summary?.getAttribute('aria-label') ?? null,
-                        summaryLabels: [...(summary?.querySelectorAll('.stat-grid__label span') ?? [])]
-                            .map((element) => element.textContent.trim()),
-                        summaryDetails: [...(summary?.querySelectorAll('.stat-grid__detail') ?? [])]
-                            .map((element) => element.textContent.trim()),
-                        status: hero?.querySelector('.profile-hero__signals .status-badge span')
-                            ?.textContent.trim() ?? null,
-                        avatarAlt: hero?.querySelector('.profile-hero__avatar')?.getAttribute('alt') ?? null,
-                        coverAlt: hero?.querySelector('[data-profile-cover]')?.getAttribute('alt') ?? null,
-                        actions: [...(hero?.querySelectorAll('.profile-hero__identity-row .action span') ?? [])]
-                            .map((element) => element.textContent.trim()),
-                        aboutEyebrow: about?.querySelector('.section-heading__eyebrow')?.textContent.trim() ?? null,
-                        aboutTitle: about?.querySelector('.section-heading__title')?.textContent.trim() ?? null,
-                        bio: about?.querySelector('.section-copy')?.textContent.trim() ?? null,
-                        petOwner: pet?.querySelector('[data-neighbor-profile-pet-owner]')?.textContent.trim() ?? null,
-                        petMeta: [...(pet?.querySelectorAll('[data-neighbor-profile-pet-meta] .meta span') ?? [])]
-                            .map((element) => element.textContent.trim()),
-                        petStatus: pet?.querySelector('[data-neighbor-profile-pet-status]')?.textContent.trim() ?? null,
-                        petAction: pet?.querySelector('.action span')?.textContent.trim() ?? null,
-                        traits: [...(pet?.querySelectorAll('[data-neighbor-profile-pet-traits] .tag') ?? [])]
-                            .map((element) => element.textContent.trim()),
-                        routineLabels: [...(pet?.querySelectorAll('[data-neighbor-profile-routine] dt span') ?? [])]
-                            .map((element) => element.textContent.trim()),
-                        routineValues: [...(pet?.querySelectorAll('[data-neighbor-profile-routine] dd') ?? [])]
-                            .map((element) => element.textContent.trim()),
-                        interestsTitle: interests?.querySelector('.panel-heading__title')?.textContent.trim() ?? null,
-                        interests: [...(interests?.querySelectorAll('.tag') ?? [])]
-                            .map((element) => element.textContent.trim()),
-                        mutualsTitle: mutuals?.querySelector('.panel-heading__title')?.textContent.trim() ?? null,
-                        mutualsCount: mutuals?.querySelector('.panel-heading__meta')?.textContent.trim() ?? null,
-                        mutualContexts: [...(mutuals?.querySelectorAll('[role="listitem"] p') ?? [])]
-                            .map((element) => element.textContent.trim()),
-                        communitiesTitle: communities?.querySelector('.panel-heading__title')?.textContent.trim() ?? null,
-                        communityTopics: [...(communities?.querySelectorAll('.content-list__detail') ?? [])]
-                            .map((element) => element.textContent.trim()),
-                        communityMembers: [...(communities?.querySelectorAll('.content-list__meta span') ?? [])]
-                            .map((element) => element.textContent.trim()),
-                        momentsEyebrow: moments?.querySelector('.section-heading__eyebrow')?.textContent.trim() ?? null,
-                        momentsTitle: moments?.querySelector('.section-heading__title')?.textContent.trim() ?? null,
-                        momentTimes: [...(moments?.querySelectorAll('[data-neighbor-profile-moment] time') ?? [])]
-                            .map((element) => element.textContent.trim()),
-                        momentBodies: [...(moments?.querySelectorAll('[data-neighbor-profile-moment] > div > p.mt-4') ?? [])]
-                            .map((element) => element.textContent.trim()),
-                        momentTags: [...(moments?.querySelectorAll('[data-neighbor-profile-moment] .tag') ?? [])]
-                            .map((element) => element.textContent.trim()),
-                    },
-                    petMetaIcons: [...(pet?.querySelectorAll('[data-neighbor-profile-pet-meta] [data-ui-icon]') ?? [])]
-                        .map((element) => element.getAttribute('data-ui-icon')),
-                    routineIcons: [...(pet?.querySelectorAll('[data-neighbor-profile-routine] [data-ui-icon]') ?? [])]
-                        .map((element) => element.getAttribute('data-ui-icon')),
-                    sectionIcons: [
-                        about?.querySelector('.section-heading__title [data-ui-icon]')?.getAttribute('data-ui-icon'),
-                        moments?.querySelector('.section-heading__title [data-ui-icon]')?.getAttribute('data-ui-icon'),
-                    ],
-                    panelIcons: [interests, mutuals, communities].map(
-                        (panel) => panel?.querySelector('.panel-heading__title [data-ui-icon]')
-                            ?.getAttribute('data-ui-icon'),
+                    smallTargets,
+                    clippedRegions,
+                    reducedMotion: matchMedia('(prefers-reduced-motion: reduce)').matches,
+                    forcedColors: matchMedia('(forced-colors: active)').matches,
+                    keyboardFocusTarget: Boolean(focused?.closest('main')),
+                    focusVisible: Boolean(focusedStyle) && (
+                        (focusedStyle.outlineStyle !== 'none' && focusedStyle.outlineWidth !== '0px')
+                        || focusedStyle.boxShadow !== 'none'
                     ),
-                    communityIcons: [...(communities?.querySelectorAll('.content-list [data-ui-icon]') ?? [])]
-                        .map((element) => element.getAttribute('data-ui-icon')),
-                    smallTargets: targets,
-                    clippedRegions,
-                    overflow: document.documentElement.scrollWidth
-                        - document.documentElement.clientWidth,
                     rawTranslationKeys: document.body.innerText.match(
-                        /\bneighbors\.profile\.[a-z0-9_.-]+/gi
+                        /\bmember_profiles\.[a-z0-9_.-]+/gi
                     ) ?? [],
                 };
             })()`);
-            const neighborProfileCopy = [
-                neighborProfileAudit.copy.documentTitle,
-                neighborProfileAudit.copy.back,
-                neighborProfileAudit.copy.summaryLabel,
-                ...neighborProfileAudit.copy.summaryLabels,
-                ...neighborProfileAudit.copy.summaryDetails,
-                neighborProfileAudit.copy.status,
-                neighborProfileAudit.copy.avatarAlt,
-                neighborProfileAudit.copy.coverAlt,
-                ...neighborProfileAudit.copy.actions,
-                neighborProfileAudit.copy.aboutEyebrow,
-                neighborProfileAudit.copy.aboutTitle,
-                neighborProfileAudit.copy.bio,
-                neighborProfileAudit.copy.petOwner,
-                ...neighborProfileAudit.copy.petMeta,
-                neighborProfileAudit.copy.petStatus,
-                neighborProfileAudit.copy.petAction,
-                ...neighborProfileAudit.copy.traits,
-                ...neighborProfileAudit.copy.routineLabels,
-                ...neighborProfileAudit.copy.routineValues,
-                neighborProfileAudit.copy.interestsTitle,
-                ...neighborProfileAudit.copy.interests,
-                neighborProfileAudit.copy.mutualsTitle,
-                neighborProfileAudit.copy.mutualsCount,
-                ...neighborProfileAudit.copy.mutualContexts,
-                neighborProfileAudit.copy.communitiesTitle,
-                ...neighborProfileAudit.copy.communityTopics,
-                ...neighborProfileAudit.copy.communityMembers,
-                neighborProfileAudit.copy.momentsEyebrow,
-                neighborProfileAudit.copy.momentsTitle,
-                ...neighborProfileAudit.copy.momentTimes,
-                ...neighborProfileAudit.copy.momentBodies,
-                ...neighborProfileAudit.copy.momentTags,
-            ];
 
-            assert(neighborProfileAudit.path === '/neighbors/ari-jensen', `${neighborProfileLabel}: neighbor profile route path drifted.`);
-            assert(neighborProfileAudit.pageVisible, `${neighborProfileLabel}: neighbor profile is hidden.`);
-            assert(
-                neighborProfileCopy.length === 58
-                    && neighborProfileCopy.every((value) => value?.length > 0),
-                `${neighborProfileLabel}: neighbor profile localization surface is incomplete ${JSON.stringify(neighborProfileAudit.copy)}.`,
-            );
-            assert(
-                JSON.stringify(neighborProfileAudit.petMetaIcons) === JSON.stringify(['paw-print', 'calendar-days']),
-                `${neighborProfileLabel}: pet metadata icons drifted ${JSON.stringify(neighborProfileAudit.petMetaIcons)}.`,
-            );
-            assert(
-                JSON.stringify(neighborProfileAudit.routineIcons) === JSON.stringify(['route', 'sunrise', 'coffee']),
-                `${neighborProfileLabel}: routine icons drifted ${JSON.stringify(neighborProfileAudit.routineIcons)}.`,
-            );
-            assert(
-                JSON.stringify(neighborProfileAudit.sectionIcons) === JSON.stringify(['user-round', 'images']),
-                `${neighborProfileLabel}: section icons drifted ${JSON.stringify(neighborProfileAudit.sectionIcons)}.`,
-            );
-            assert(
-                JSON.stringify(neighborProfileAudit.panelIcons) === JSON.stringify(['sparkles', 'users', 'users-round']),
-                `${neighborProfileLabel}: panel icons drifted ${JSON.stringify(neighborProfileAudit.panelIcons)}.`,
-            );
-            assert(
-                JSON.stringify(neighborProfileAudit.communityIcons)
-                    === JSON.stringify(['building-2', 'users', 'trees', 'users']),
-                `${neighborProfileLabel}: community icons drifted ${JSON.stringify(neighborProfileAudit.communityIcons)}.`,
-            );
-            assert(neighborProfileAudit.smallTargets.length === 0, `${neighborProfileLabel}: controls below 44px ${JSON.stringify(neighborProfileAudit.smallTargets)}.`);
-            assert(neighborProfileAudit.clippedRegions.length === 0, `${neighborProfileLabel}: profile content is clipped ${JSON.stringify(neighborProfileAudit.clippedRegions)}.`);
-            assert(neighborProfileAudit.overflow <= 1, `${neighborProfileLabel}: profile overflows horizontally.`);
-            assert(neighborProfileAudit.rawTranslationKeys.length === 0, `${neighborProfileLabel}: raw profile translation keys remain.`);
+            assert(selfProfileAudit.path === selfProfilePath, `${selfProfileLabel}: self-profile route changed after navigation.`);
+            assert(selfProfileAudit.lang === viewport.locale, `${selfProfileLabel}: document locale drifted.`);
+            assert(selfProfileAudit.heading === selfProfileTarget.name, `${selfProfileLabel}: page identity differs from the header identity.`);
+            assert(selfProfileAudit.headerName === selfProfileTarget.name, `${selfProfileLabel}: header identity changed on self profile.`);
+            assert(new URL(selfProfileAudit.headerHref).pathname === selfProfilePath, `${selfProfileLabel}: header profile URL changed on self profile.`);
+            assert(selfProfileAudit.profileStatus?.length > 0, `${selfProfileLabel}: profile privacy status is missing.`);
+            assert(selfProfileAudit.h1Count === 1, `${selfProfileLabel}: expected exactly one H1.`);
+            assert(selfProfileAudit.stats.length === 2, `${selfProfileLabel}: canonical real-data statistics are incomplete.`);
+            assert(selfProfileAudit.overflow <= 1, `${selfProfileLabel}: profile overflows horizontally.`);
+            assert(selfProfileAudit.smallTargets.length === 0, `${selfProfileLabel}: controls below 44px ${JSON.stringify(selfProfileAudit.smallTargets)}.`);
+            assert(selfProfileAudit.clippedRegions.length === 0, `${selfProfileLabel}: content is clipped ${JSON.stringify(selfProfileAudit.clippedRegions)}.`);
+            assert(selfProfileAudit.reducedMotion, `${selfProfileLabel}: reduced-motion emulation is inactive.`);
+            assert(selfProfileAudit.forcedColors === Boolean(viewport.forcedColors), `${selfProfileLabel}: forced-colors state is wrong.`);
+            assert(selfProfileAudit.keyboardFocusTarget, `${selfProfileLabel}: keyboard focus escaped the profile content.`);
+            assert(selfProfileAudit.focusVisible, `${selfProfileLabel}: focused profile control has no visible focus treatment.`);
+            assert(selfProfileAudit.rawTranslationKeys.length === 0, `${selfProfileLabel}: raw member-profile translation keys remain.`);
 
-            if (viewport.locale === 'en') {
-                englishNeighborProfileCopy ??= neighborProfileCopy;
-                assert(
-                    neighborProfileCopy.every((value, index) => value === englishNeighborProfileCopy[index]),
-                    `${neighborProfileLabel}: English neighbor profile copy changed across viewports.`,
-                );
-            } else {
-                assert(englishNeighborProfileCopy !== null, `${neighborProfileLabel}: English profile baseline is missing.`);
-                assert(
-                    neighborProfileCopy.every((value, index) => value !== englishNeighborProfileCopy[index]),
-                    `${neighborProfileLabel}: English neighbor profile body fallback remains. Current ${JSON.stringify(neighborProfileCopy)}; English ${JSON.stringify(englishNeighborProfileCopy)}.`,
-                );
-            }
-
-            pageIdentityAudits[neighborProfileLabel] = {
-                ...neighborProfilePageAudit,
-                ...neighborProfileAudit,
+            pageIdentityAudits[selfProfileLabel] = {
+                ...selfProfilePageAudit,
+                ...selfProfileAudit,
             };
 
             if ([375, 1440].includes(viewport.width)) {
-                const neighborProfileScreenshotPath = join(
+                const selfProfileScreenshotPath = join(
                     outputDirectory,
-                    `page-identity-neighbor-profile-${viewport.width}.png`,
+                    `page-identity-self-profile-${viewport.width}.png`,
                 );
-                const neighborProfileScreenshotData = await client.send('Page.captureScreenshot', {
+                const selfProfileScreenshotData = await client.send('Page.captureScreenshot', {
                     format: 'png',
                     captureBeyondViewport: true,
                 }, sessionId);
                 await writeFile(
-                    neighborProfileScreenshotPath,
-                    Buffer.from(neighborProfileScreenshotData.data, 'base64'),
+                    selfProfileScreenshotPath,
+                    Buffer.from(selfProfileScreenshotData.data, 'base64'),
                 );
-                pageIdentityScreenshots.push(neighborProfileScreenshotPath);
+                pageIdentityScreenshots.push(selfProfileScreenshotPath);
             }
+
 
             const shareLabel = `${viewport.label} share`;
             await navigate(client, sessionId, `${baseUrl}/share/apartment-pets`);
@@ -3480,7 +3168,6 @@ try {
                         back: page?.querySelector('[data-detail-navigation] .text-link span')
                             ?.textContent.trim() ?? null,
                         heroEyebrow: page?.querySelector('.context-hero__eyebrow')?.textContent.trim() ?? null,
-                        openOriginal: page?.querySelector('[data-share-open-original] span')?.textContent.trim() ?? null,
                         channels: {
                             eyebrow: channelsPanel?.querySelector('.section-heading__eyebrow')?.textContent.trim() ?? null,
                             title: channelsPanel?.querySelector('.section-heading__title')?.textContent.trim() ?? null,
@@ -3496,6 +3183,8 @@ try {
                             eyebrow: neighborsPanel?.querySelector('.section-heading__eyebrow')?.textContent.trim() ?? null,
                             title: neighborsPanel?.querySelector('.section-heading__title')?.textContent.trim() ?? null,
                             count: neighborsPanel?.querySelector('.panel-heading__meta')?.textContent.trim() ?? null,
+                            emptyTitle: neighborsPanel?.querySelector('.empty-state__title')?.textContent.trim() ?? null,
+                            emptyDescription: neighborsPanel?.querySelector('.empty-state__description')?.textContent.trim() ?? null,
                             actions: [...(neighborsPanel?.querySelectorAll('[data-share-recipient-action] span') ?? [])]
                                 .map((element) => element.textContent.trim()),
                         },
@@ -3531,7 +3220,6 @@ try {
                 shareAudit.copy.documentTitle,
                 shareAudit.copy.back,
                 shareAudit.copy.heroEyebrow,
-                shareAudit.copy.openOriginal,
                 shareAudit.copy.channels.eyebrow,
                 shareAudit.copy.channels.title,
                 shareAudit.copy.channels.count,
@@ -3541,6 +3229,8 @@ try {
                 shareAudit.copy.neighbors.eyebrow,
                 shareAudit.copy.neighbors.title,
                 shareAudit.copy.neighbors.count,
+                shareAudit.copy.neighbors.emptyTitle,
+                shareAudit.copy.neighbors.emptyDescription,
                 ...shareAudit.copy.neighbors.actions,
                 shareAudit.copy.details.title,
                 ...shareAudit.copy.details.labels,
@@ -3553,7 +3243,7 @@ try {
             assert(shareAudit.path === '/share/apartment-pets', `${shareLabel}: share route path drifted.`);
             assert(shareAudit.pageVisible, `${shareLabel}: share page is hidden.`);
             assert(
-                shareCopy.length === 34 && shareCopy.every((value) => value?.length > 0),
+                shareCopy.length === 27 && shareCopy.every((value) => value?.length > 0),
                 `${shareLabel}: share localization surface is incomplete ${JSON.stringify(shareAudit.copy)}.`,
             );
             assert(
@@ -3565,19 +3255,14 @@ try {
                 `${shareLabel}: share channel icons drifted ${JSON.stringify(shareAudit.channelIcons)}.`,
             );
             assert(
-                shareAudit.recipientIcons.length === 4
-                    && shareAudit.recipientIcons.every((icon) => icon === 'send'),
+                shareAudit.recipientIcons.length === 0,
                 `${shareLabel}: recipient action icons drifted ${JSON.stringify(shareAudit.recipientIcons)}.`,
             );
             assert(
                 JSON.stringify(shareAudit.pageIcons) === JSON.stringify([
                     'arrow-left',
-                    'external-link',
                     ...expectedChannelIcons,
-                    'send',
-                    'send',
-                    'send',
-                    'send',
+                    'users',
                     'shield-check',
                 ]),
                 `${shareLabel}: share page icon order drifted ${JSON.stringify(shareAudit.pageIcons)}.`,
@@ -3621,6 +3306,34 @@ try {
         }
 
         await setProfileLocale(originalProfileLocale);
+
+        await logout(client, sessionId);
+        await login(client, sessionId, 'andrej-browser@example.test');
+        const canonicalIdentityTarget = await evaluate(client, sessionId, `(() => {
+            const link = document.querySelector('[data-header-link="profile"]');
+
+            return {
+                name: link?.querySelector('.header-profile__name')?.textContent.trim() ?? null,
+                href: link?.href ?? null,
+            };
+        })()`);
+        assert(canonicalIdentityTarget.name === 'Andrej Browser', 'The non-demo browser account did not own the header identity.');
+        assert(
+            new URL(canonicalIdentityTarget.href).pathname === '/members/00000000-0000-4000-8000-000000000001',
+            'The non-demo browser account did not own the canonical actor profile URL.',
+        );
+        await navigate(client, sessionId, canonicalIdentityTarget.href);
+        const canonicalIdentityAudit = await evaluate(client, sessionId, `(() => ({
+            path: location.pathname,
+            heading: document.querySelector('[data-section="member-profile-header"] h1')?.textContent.trim() ?? null,
+            headerName: document.querySelector('[data-header-link="profile"] .header-profile__name')?.textContent.trim() ?? null,
+            forbiddenDemoCopy: ['Mia Carter', 'Scout', 'Nori'].filter((value) => document.body.innerText.includes(value)),
+        }))()`);
+        assert(canonicalIdentityAudit.path === '/members/00000000-0000-4000-8000-000000000001', 'The non-demo self profile route drifted.');
+        assert(canonicalIdentityAudit.heading === 'Andrej Browser', 'The non-demo self profile did not render its User name.');
+        assert(canonicalIdentityAudit.headerName === 'Andrej Browser', 'The non-demo self profile changed the header identity.');
+        assert(canonicalIdentityAudit.forbiddenDemoCopy.length === 0, `The non-demo profile leaked demo identity ${JSON.stringify(canonicalIdentityAudit.forbiddenDemoCopy)}.`);
+        pageIdentityAudits['canonical identity account switch'] = canonicalIdentityAudit;
 
         const report = {
             scope: 'page-identity',

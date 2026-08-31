@@ -148,7 +148,7 @@ final class GroupDirectory extends Component
             ->map(static fn (ForumGroupInvitation $invitation): array => [
                 'id' => $invitation->id,
                 'group_name' => $invitation->group->displayName(),
-                'group_url' => route('forum.groups.show', $invitation->group),
+                'group_url' => route('groups.show', $invitation->group),
                 'inviter_name' => $invitation->inviter->name,
                 'role' => $invitation->role->label(),
                 'message' => $invitation->message,
@@ -196,7 +196,7 @@ final class GroupDirectory extends Component
         Gate::authorize('create', ForumGroup::class);
         $group = $createGroup->handle($this->requireUser(), $this->form->data());
         $this->form->reset();
-        $this->redirectRoute('forum.groups.show', $group, navigate: true);
+        $this->redirectRoute('groups.show', $group, navigate: true);
     }
 
     public function render()
@@ -262,7 +262,7 @@ final class GroupDirectory extends Component
                 ->implode(', '),
             'is_member' => $membership?->state === ForumGroupMembershipState::Active,
             'membership_state' => $membership?->state->label(),
-            'url' => route('forum.groups.show', $group),
+            'url' => route('groups.show', $group),
             'owned_by_user' => $group->owner_user_id === $user->id,
         ];
     }

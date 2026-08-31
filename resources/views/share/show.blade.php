@@ -1,5 +1,4 @@
 <x-detail-page
-    :owner="$owner"
     :title="$share['copy']['page']['title']"
     :active-section="$share['item']['active_section']"
     section="share-hub"
@@ -8,18 +7,7 @@
     data-share-page
 >
     <x-slot:hero>
-        <x-context-hero :context="$share['item']" section="share-context">
-            <x-slot:actions>
-                <x-action-control
-                    :href="$share['item']['url']"
-                    :label="$share['copy']['page']['open']"
-                    icon="external-link"
-                    variant="paper"
-                    size="regular"
-                    data-share-open-original
-                />
-            </x-slot:actions>
-        </x-context-hero>
+        <x-context-hero :context="$share['item']" section="share-context" />
     </x-slot:hero>
 
     <x-slot:main>

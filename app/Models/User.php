@@ -21,13 +21,11 @@ use Illuminate\Support\Carbon;
 use Throwable;
 
 #[Fillable([
-    'actor_key',
     'name',
     'email',
     'password',
     'locale',
     'timezone',
-    'status',
 ])]
 #[Hidden(['password', 'remember_token'])]
 /**

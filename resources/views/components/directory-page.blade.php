@@ -1,5 +1,4 @@
 @props([
-    'owner',
     'title',
     'activeSection',
     'summary',
@@ -9,7 +8,7 @@
     'actionHref' => null,
 ])
 
-<x-app-shell :owner="$owner" :title="$title" :active-section="$activeSection">
+<x-app-shell :title="$title" :active-section="$activeSection">
     <div {{ $attributes->class(['grid gap-5']) }}>
         <x-page-header
             :eyebrow="$summary['eyebrow']"

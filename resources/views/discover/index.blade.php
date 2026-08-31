@@ -1,4 +1,4 @@
-<x-app-shell :owner="$owner" title="{{ __('discovery.page.browser_title') }}" active-section="discover">
+<x-app-shell title="{{ __('discovery.page.browser_title') }}" active-section="discover">
     <x-page-stack class="discovery-page">
         <x-page-header
             :eyebrow="$summary['eyebrow']"

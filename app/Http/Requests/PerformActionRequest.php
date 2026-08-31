@@ -39,7 +39,6 @@ class PerformActionRequest extends FormRequest
             'clear-place-history',
             'set-place-location',
             'clear-place-location',
-            'invite-to-place',
             'confirm-place-warning',
             'resolve-place-warning',
             'answer-place-question',
@@ -100,15 +99,12 @@ class PerformActionRequest extends FormRequest
                     ...$eventActions,
                     ...$placeActions,
                     'mark-all-read',
-                    'send-message',
                     'create-comment',
                     'create-post',
                     'create-group',
-                    'create-walk-plan',
                     'create-pet',
                     'update-profile',
                     'update-pet',
-                    'update-profile-privacy',
                     'update-pet-privacy',
                     'create-profile-report',
                     'set-reaction',
@@ -124,24 +120,12 @@ class PerformActionRequest extends FormRequest
                     'create-post-report',
                     'create-group-report',
                     'share',
-                    'plan-walk',
-                    'advance-walk-plan',
-                    'cancel-walk-plan',
-                    'call',
-                    'show-info',
                 ]),
             ],
             'target' => [
                 Rule::requiredIf(str_starts_with($action, 'toggle-') || in_array($action, [
-                    'send-message',
                     'create-comment',
                     'share',
-                    'plan-walk',
-                    'create-walk-plan',
-                    'advance-walk-plan',
-                    'cancel-walk-plan',
-                    'call',
-                    'show-info',
                     'update-pet',
                     'update-pet-privacy',
                     'create-profile-report',
@@ -184,24 +168,6 @@ class PerformActionRequest extends FormRequest
                 'string',
                 in_array($action, $placeTargetActions, true) ? 'max:190' : 'max:80',
                 'regex:/^[a-z0-9-]+$/',
-                ...($action === 'send-message'
-                    ? [Rule::in(['ari', 'lena', 'noah', 'priya'])]
-                    : []),
-                ...(in_array($action, ['call', 'show-info'], true)
-                    ? [Rule::in(['ari', 'lena', 'noah', 'priya'])]
-                    : []),
-                ...(in_array($action, ['plan-walk', 'create-walk-plan'], true)
-                    ? [Rule::in(['scout', 'mochi', 'juniper'])]
-                    : []),
-                ...($action === 'toggle-friend'
-                    ? [Rule::in(['owner-mia-carter'])]
-                    : []),
-                ...($action === 'toggle-block'
-                    ? [Rule::in(['owner-mia-carter', 'pet-scout', 'pet-nori'])]
-                    : []),
-                ...(in_array($action, ['update-pet', 'update-pet-privacy'], true)
-                    ? [Rule::in(['scout', 'nori'])]
-                    : []),
                 ...(in_array($action, [
                     'send-pet-friend-request',
                     'cancel-pet-friend-request',
@@ -213,27 +179,10 @@ class PerformActionRequest extends FormRequest
                     'dismiss-pet-friend-recommendation',
                     'undo-pet-friend-recommendation',
                 ], true)
-                    ? [Rule::in([
-                        'pet-mochi',
-                        'pet-juniper',
-                        'pet-luna-labrador',
-                        'pet-pip',
-                        'pet-olive-rabbit',
-                        'pet-coco-spaniel',
-                    ])]
+                    ? []
                     : []),
                 ...($action === 'create-profile-report'
-                    ? [Rule::in([
-                        'owner-mia-carter',
-                        'pet-scout',
-                        'pet-nori',
-                        'pet-mochi',
-                        'pet-juniper',
-                        'pet-luna-labrador',
-                        'pet-pip',
-                        'pet-olive-rabbit',
-                        'pet-coco-spaniel',
-                    ])]
+                    ? []
                     : []),
                 ...(in_array($action, [
                     'join-group',
@@ -261,7 +210,7 @@ class PerformActionRequest extends FormRequest
                         'beginner-training-series',
                         'rose-city-pet-show',
                         'shelter-open-house',
-                        'missing-scout-search',
+                        'missing-pet-search',
                         'baxter-birthday',
                         'travel-ready-webinar',
                     ])]
@@ -271,7 +220,6 @@ class PerformActionRequest extends FormRequest
             'title' => [
                 Rule::requiredIf(in_array($action, [
                     'create-group',
-                    'create-walk-plan',
                     'create-pet',
                     'update-profile',
                     'update-pet',
@@ -285,19 +233,15 @@ class PerformActionRequest extends FormRequest
             ],
             'body' => [
                 Rule::requiredIf(in_array($action, [
-                    'send-message',
                     'create-comment',
                     'create-post',
                     'update-post',
                     'create-post-report',
                     'create-group-report',
                     'create-group',
-                    'create-walk-plan',
                     'create-pet',
-                    'update-profile',
                     'update-pet',
                     'create-profile-report',
-                    'invite-to-place',
                     'answer-place-question',
                     'create-place',
                     'create-place-correction',
@@ -312,7 +256,7 @@ class PerformActionRequest extends FormRequest
             ],
             'detail' => ['nullable', 'string', 'max:160'],
             'location' => [
-                Rule::requiredIf(in_array($action, ['create-walk-plan', 'update-profile'], true)),
+                Rule::requiredIf($action === 'create-walk-plan'),
                 'nullable',
                 'string',
                 'max:120',
@@ -398,7 +342,9 @@ class PerformActionRequest extends FormRequest
             'identity' => [
                 Rule::requiredIf(in_array($action, ['create-post', 'update-post'], true)),
                 'nullable',
-                Rule::in(['mia', 'scout', 'nori']),
+                Rule::in([
+                    (string) $this->user()?->socialActor()->value('actor_key'),
+                ]),
             ],
             'format' => [
                 Rule::requiredIf(in_array($action, ['create-post', 'update-post'], true)),
@@ -423,7 +369,7 @@ class PerformActionRequest extends FormRequest
             'tags' => ['nullable', 'string', 'max:160'],
             'media' => [
                 'nullable',
-                Rule::in(['none', 'scout-field', 'nori-window', 'park-carousel', 'play-video']),
+                Rule::in(['none', 'play-video']),
             ],
             'media_alt' => [
                 Rule::requiredIf(
@@ -508,7 +454,9 @@ class PerformActionRequest extends FormRequest
                     'undo-pet-friend-recommendation',
                 ], true)),
                 'nullable',
-                Rule::in(['pet-scout', 'pet-nori']),
+                'string',
+                'max:124',
+                'regex:/^pet-[a-z0-9-]+$/',
             ],
             'friendship_intent' => [
                 Rule::requiredIf($action === 'send-pet-friend-request'),
@@ -556,7 +504,9 @@ class PerformActionRequest extends FormRequest
             'pet_identity' => [
                 Rule::requiredIf($action === 'create-group'),
                 'nullable',
-                Rule::in(['mia', 'scout', 'nori', 'all']),
+                'string',
+                'max:120',
+                'regex:/^[a-z0-9-]+$/',
             ],
             'posting_policy' => [
                 Rule::requiredIf($action === 'create-group'),
@@ -566,32 +516,22 @@ class PerformActionRequest extends FormRequest
             'parent' => ['nullable', 'string', 'max:80', 'regex:/^[a-z0-9-]+$/'],
             'original_key' => ['nullable', 'string', 'max:80', 'regex:/^[a-z0-9-]+$/'],
             'location_visibility' => [
-                Rule::requiredIf(in_array($action, ['update-profile-privacy', 'update-pet-privacy'], true)),
-                'nullable',
-                Rule::in(ProfileVisibility::values()),
-            ],
-            'pets_visibility' => [
-                Rule::requiredIf($action === 'update-profile-privacy'),
+                Rule::requiredIf($action === 'update-pet-privacy'),
                 'nullable',
                 Rule::in(ProfileVisibility::values()),
             ],
             'posts_visibility' => [
-                Rule::requiredIf(in_array($action, ['update-profile-privacy', 'update-pet-privacy'], true)),
+                Rule::requiredIf($action === 'update-pet-privacy'),
                 'nullable',
                 Rule::in(ProfileVisibility::values()),
             ],
             'friends_visibility' => [
-                Rule::requiredIf(in_array($action, ['update-profile-privacy', 'update-pet-privacy'], true)),
+                Rule::requiredIf($action === 'update-pet-privacy'),
                 'nullable',
                 Rule::in(ProfileVisibility::values()),
             ],
             'care_visibility' => [
                 Rule::requiredIf($action === 'update-pet-privacy'),
-                'nullable',
-                Rule::in(ProfileVisibility::values()),
-            ],
-            'activity_visibility' => [
-                Rule::requiredIf(in_array($action, ['update-profile-privacy', 'update-pet-privacy'], true)),
                 'nullable',
                 Rule::in(ProfileVisibility::values()),
             ],
@@ -643,12 +583,14 @@ class PerformActionRequest extends FormRequest
             'place_collection' => [
                 Rule::requiredIf($action === 'toggle-place-collection'),
                 'nullable',
-                Rule::in(['evening-walks', 'vilnius-trip', 'scout-places']),
+                Rule::in(['evening-walks', 'vilnius-trip', 'pet-places']),
             ],
             'place_pet' => [
                 Rule::requiredIf(in_array($action, ['mark-place-visited', 'check-in-place', 'create-place-review'], true)),
                 'nullable',
-                Rule::in(['scout', 'nori']),
+                'string',
+                'max:120',
+                'regex:/^[a-z0-9-]+$/',
             ],
             'place_visibility' => [
                 Rule::requiredIf($action === 'check-in-place'),
@@ -666,11 +608,6 @@ class PerformActionRequest extends FormRequest
                 'nullable',
                 'numeric',
                 'between:-180,180',
-            ],
-            'place_recipient' => [
-                Rule::requiredIf($action === 'invite-to-place'),
-                'nullable',
-                Rule::in(['ari-mochi', 'priya-luna', 'noah-juniper']),
             ],
             'place_visit_date' => [
                 'nullable',

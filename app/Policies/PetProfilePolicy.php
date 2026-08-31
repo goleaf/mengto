@@ -13,11 +13,13 @@ use App\Models\UserOnboarding;
 use App\Services\EmailVerificationMode;
 use App\Services\OnboardingState;
 use App\Services\PetProfileAccess;
+use App\Services\PetProfileViewerAccess;
 
 final class PetProfilePolicy
 {
     public function __construct(
         private readonly PetProfileAccess $access,
+        private readonly PetProfileViewerAccess $viewerAccess,
         private readonly EmailVerificationMode $emailVerification,
         private readonly OnboardingState $onboardingState,
     ) {}
@@ -29,7 +31,7 @@ final class PetProfilePolicy
 
     public function view(?User $user, PetProfile $petProfile): bool
     {
-        return $this->access->canView($petProfile, $user);
+        return $this->viewerAccess->canView($petProfile, $user);
     }
 
     public function create(User $user): bool

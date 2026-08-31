@@ -1,4 +1,4 @@
-<x-app-shell :owner="$owner" :title="$page_title" :active-section="$active_section">
+<x-app-shell :title="$page_title" :active-section="$active_section">
     <div class="grid grid-cols-[minmax(0,1fr)] gap-7">
         <header data-lost-found-detail-identity class="grid gap-5 border-b border-paw-line pb-6">
             <x-detail-navigation

@@ -1,1 +1,1 @@
-<x-created-content-detail :owner="$owner" :content="$content" />
+<x-created-content-detail :content="$content" />

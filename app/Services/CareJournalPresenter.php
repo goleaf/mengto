@@ -69,16 +69,13 @@ class CareJournalPresenter
         $existing = CareJournal::query()
             ->select(['id', 'owner_key', 'pet_profile_key'])
             ->where('owner_key', $this->actor->key())
-            ->whereIn('pet_profile_key', ['scout', 'nori'])
             ->pluck('pet_profile_key')
             ->all();
 
-        $options = collect(['scout', 'nori'])
-            ->reject(fn (string $key): bool => in_array($key, $existing, true))
-            ->mapWithKeys(function (string $key): array {
-                $pet = $this->profiles->pet($key);
-
-                return $pet === null ? [] : [$key => $pet['name'].' · '.$pet['species']];
+        $options = collect($this->profiles->pets())
+            ->reject(fn (array $pet): bool => in_array($pet['profile_key'], $existing, true))
+            ->mapWithKeys(function (array $pet): array {
+                return [$pet['profile_key'] => $pet['name'].' · '.$pet['species']];
             })
             ->all();
 

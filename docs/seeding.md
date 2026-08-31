@@ -30,6 +30,15 @@ without changing the repository.
 `PerformanceSeeder` creates 250 deterministic pet profiles only when invoked
 explicitly in a local, demo, or testing environment.
 
+Registration and onboarding never invoke a seeder. A new account is complete
+only when its `User`, private personal `SocialActor`, privacy-first setting,
+and `UserOnboarding` exist; it begins with zero pet profiles, pet-manager rows,
+and pet-access requests. Pet creation is a separate user-authorized domain
+operation. Demo people and pets are ordinary canonical records created only by
+explicit allowlisted seeders. Direct `SocialIdentitySeeder` execution applies
+the same environment guard as root demo seeding, and demo pet keys refuse an
+ownership collision instead of replacing another user's record.
+
 The deterministic `demo-unverified` identity remains pending when configured
 email verification is enabled. When the mode is disabled, root seeding stamps
 that identity as verified so repeat seeding cannot recreate an active pending
@@ -143,6 +152,9 @@ blocks correctly remove other actors' publications from Mia's feed.
 - Adoption demo and collaborative-guide demo seeders independently apply the
   same fail-closed allowlist before reading or mutating records, so invoking a
   child seeder directly cannot bypass `DatabaseSeeder`.
+- Social identity demo seeding independently applies that fail-closed
+  allowlist. It is optional runtime data and is never required by registration,
+  authentication, onboarding, the application shell, or self-profile routing.
 - Collaborative demo guide synchronization targets only two fixed demo slugs
   and runs only after the environment-gated demo users and forum graph exist.
 - Mentorship demo synchronization runs only in configured demo environments
@@ -200,11 +212,14 @@ Fresh verification uses:
 php scripts/verify-fresh-database.php
 ```
 
-The script creates and asserts a system temporary SQLite path before invoking
-`migrate:fresh --seed`, then repeats `db:seed` and compares stable counts. The
-root-seed, field-coverage, foreign-key, and pivot checks likewise run against an
-isolated testing database; they must never target a configured production or
-shared development database.
+The script creates and asserts a system temporary SQLite path, invokes an
+unseeded `migrate:fresh`, registers and authenticates a normalized account,
+verifies its canonical actor/settings/onboarding and zero-pet invariants, then
+runs `db:seed` twice to prove repeatability and that demo data cannot attach to
+the independently registered account. The root-seed, field-coverage,
+foreign-key, and pivot checks likewise run against an isolated testing
+database; they must never target a configured production or shared development
+database.
 
 `DatabaseSeeder` deliberately uses model factories for its guarded demo graph,
 so `fakerphp/faker` is a runtime Composer dependency. This keeps explicitly

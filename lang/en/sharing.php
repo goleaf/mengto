@@ -4,7 +4,6 @@ return [
     'page' => [
         'title' => 'Share :title | PawCircle',
         'back_to_original' => 'Back to original',
-        'open_original' => 'Open original',
     ],
     'channels' => [
         'eyebrow' => 'Outside PawCircle',

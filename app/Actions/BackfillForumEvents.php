@@ -91,17 +91,6 @@ final readonly class BackfillForumEvents
             ->where('actor_key', $organizerKey)
             ->first();
 
-        if (($record['managed_by_current_user'] ?? false) === true) {
-            $currentUser = User::query()
-                ->select(['id', 'actor_key', 'name'])
-                ->where('actor_key', 'mia-carter')
-                ->first();
-            $organizer = $currentUser ?? $organizer;
-            $organizerKey = $organizer instanceof User
-                ? $organizer->actor_key
-                : 'mia-carter';
-        }
-
         $startsAt = CarbonImmutable::parse((string) $record['starts_at']);
         $endsAt = CarbonImmutable::parse((string) $record['ends_at']);
         $rules = collect($content['rules'])

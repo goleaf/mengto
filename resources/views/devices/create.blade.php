@@ -1,4 +1,4 @@
-<x-app-shell :owner="$owner" :title="$page_title" :active-section="$active_section">
+<x-app-shell :title="$page_title" :active-section="$active_section">
     <div class="mx-auto grid w-full max-w-4xl gap-7">
         <x-page-header
             :eyebrow="__('ui.ownership_first')"
@@ -33,7 +33,7 @@
             <div class="device-form-grid">
                 <label>
                     {{ __('ui.device_name') }}
-                    <input name="name" value="{{ old('name') }}" maxlength="120" required placeholder="{{ __('ui.scout_gps') }}">
+                    <input name="name" value="{{ old('name') }}" maxlength="120" required placeholder="{{ __('ui.device_name') }}">
                 </label>
                 <label>
                     {{ __('ui.device_type') }}

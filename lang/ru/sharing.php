@@ -4,7 +4,6 @@ return [
     'page' => [
         'title' => 'Поделиться «:title» | PawCircle',
         'back_to_original' => 'Вернуться к оригиналу',
-        'open_original' => 'Открыть оригинал',
     ],
     'channels' => [
         'eyebrow' => 'За пределами PawCircle',

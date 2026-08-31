@@ -13,7 +13,7 @@ test('the share page owns a complete localized contract', function (): void {
     $english = Arr::dot(require lang_path('en/sharing.php'));
 
     expect($english)
-        ->toHaveCount(42)
+        ->toHaveCount(41)
         ->toHaveKeys([
             'page.title',
             'channels.email.title',
@@ -58,7 +58,7 @@ test('the share page renders localized system copy and target taxonomy', functio
         ->and(data_get($data, 'share.item.type'))->toBe((string) data_get($copy, 'targets.community.type'))
         ->and(data_get($data, 'share.item.eyebrow'))->toBe((string) data_get($copy, 'targets.community.eyebrow'))
         ->and(data_get($data, 'share.copy.channels.count'))->toBe(trans_choice('sharing.channels.count', 3, ['count' => 3]))
-        ->and(data_get($data, 'share.copy.neighbors.count'))->toBe(trans_choice('sharing.neighbors.count', 4, ['count' => 4]));
+        ->and(data_get($data, 'share.copy.neighbors.count'))->toBe(trans_choice('sharing.neighbors.count', 0, ['count' => 0]));
 
     $response = $this->get(route('share.show', ['target' => 'apartment-pets']))->assertOk();
 
@@ -75,7 +75,9 @@ test('the share page renders localized system copy and target taxonomy', functio
 
     $response
         ->assertSee(trans_choice('sharing.channels.count', 3, ['count' => 3]))
-        ->assertSee(trans_choice('sharing.neighbors.count', 4, ['count' => 4]));
+        ->assertSee(trans_choice('sharing.neighbors.count', 0, ['count' => 0]))
+        ->assertSee((string) data_get($copy, 'neighbors.empty.title'))
+        ->assertSee((string) data_get($copy, 'neighbors.empty.description'));
 })->with(['lt', 'ru']);
 
 test('the share page keeps stable channel codes and canonical icons', function (): void {
@@ -89,12 +91,12 @@ test('the share page keeps stable channel codes and canonical icons', function (
 
     expect($xpath->query('//*[@data-share-page]')->length)->toBe(1)
         ->and($xpath->query('//*[@data-share-page]//*[@data-share-channel]')->length)->toBe(3)
-        ->and($xpath->query('//*[@data-share-page]//*[@data-share-recipient]')->length)->toBe(4)
-        ->and($xpath->query('//*[@data-share-page]//*[@data-share-recipient-action]//*[@data-ui-icon="send"]')->length)->toBe(4)
+        ->and($xpath->query('//*[@data-share-page]//*[@data-share-recipient]')->length)->toBe(0)
+        ->and($xpath->query('//*[@data-share-page]//*[@data-share-recipient-action]')->length)->toBe(0)
+        ->and($xpath->query('//*[@data-share-page]//*[@data-share-recipients]//*[@data-ui-icon="users"]')->length)->toBe(1)
         ->and($xpath->query(
             '//*[@data-share-page]/*[@data-detail-navigation]//*[contains(concat(" ", normalize-space(@class), " "), " text-link ")]//*[@data-ui-icon="arrow-left"]',
         )->length)->toBe(1)
-        ->and($xpath->query('//*[@data-share-page]//*[@data-share-open-original]//*[@data-ui-icon="external-link"]')->length)->toBe(1)
         ->and($xpath->query('//*[@data-share-page]//*[@data-share-privacy]//*[@data-ui-icon="shield-check"]')->length)->toBe(1);
 
     foreach ($channelIcons as $code => $icon) {
@@ -174,9 +176,10 @@ test('the share page source stays inside its domain and browser ratchet', functi
         ->not->toContain("__('ui.", "__('messages.", "__('presentation.")
         ->and($browser)
         ->toContain(
-            'shareCopy.length === 34',
+            'shareCopy.length === 27',
             "querySelector('[data-detail-navigation] .text-link span')",
             "['mail', 'arrow-up-right', 'message-square-text', 'arrow-up-right', 'external-link', 'arrow-up-right']",
+            'shareAudit.recipientIcons.length === 0',
             'share controls below 44px',
             'English share fallback remains',
             'page-identity-share-',

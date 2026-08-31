@@ -81,7 +81,7 @@ function expertBookingPayload(
         'availability_slot_id' => $slot->id,
         'idempotency_key' => $key,
         'pet_key' => 'nori',
-        'main_question' => 'Nori becomes frightened by the carrier and we need a gradual preparation plan.',
+        'main_question' => 'Maple becomes frightened by the carrier and we need a gradual preparation plan.',
         'started_at' => 'The fear became stronger after the last clinic visit.',
         'tried' => 'We left the carrier open with a familiar blanket.',
         'previous_professional' => '',

@@ -20,6 +20,7 @@ use App\Models\ForumReportReason;
 use App\Models\PetProfile;
 use App\Models\PetProfileManager;
 use App\Models\SocialAccountBlock;
+use App\Models\SocialActor;
 use App\Models\SocialRelationship;
 use App\Models\SocialRelationshipEvent;
 use App\Models\SocialRelationshipRequest;
@@ -34,9 +35,23 @@ use Livewire\Livewire;
 
 uses(RefreshDatabase::class);
 
+function safetyPublicActor(User $user): SocialActor
+{
+    $actor = app(SocialActorResolver::class)->provisionPrivateForUser($user);
+    $actor->forceFill(['is_discoverable' => true])->saveOrFail();
+    $actor->settings()->firstOrFail()->forceFill([
+        'friend_request_policy' => 'everyone',
+        'follow_policy' => 'public',
+        'is_recommendable' => true,
+        'allow_message_requests' => true,
+    ])->saveOrFail();
+
+    return $actor;
+}
+
 it('migrates and rolls back account safety without removing the social foundation', function (): void {
     $user = User::factory()->create();
-    $actor = app(SocialActorResolver::class)->forUser($user);
+    $actor = safetyPublicActor($user);
     $migration = require database_path(
         'migrations/2026_07_31_235900_add_social_request_safety.php',
     );
@@ -97,8 +112,8 @@ it('blocks every current and future managed profile without revoking care roles'
         ->for($petManager)
         ->create();
     $resolver = app(SocialActorResolver::class);
-    $blockerActor = $resolver->forUser($blocker);
-    $blockedActor = $resolver->forUser($blocked);
+    $blockerActor = safetyPublicActor($blocker);
+    $blockedActor = safetyPublicActor($blocked);
     $blockerPetActor = $resolver->forPet($blockerPet);
     $blockedPetActor = $resolver->forPet($blockedPet);
     $blockedExpertActor = $resolver->forExpert($blockedExpert);
@@ -206,10 +221,10 @@ it('reduces request throughput only after a meaningful low acceptance sample', f
     $sender = User::factory()->create();
     $recipients = User::factory()->count(4)->create();
     $resolver = app(SocialActorResolver::class);
-    $source = $resolver->forUser($sender);
+    $source = safetyPublicActor($sender);
 
     foreach ($recipients->take(3) as $index => $recipient) {
-        $target = $resolver->forUser($recipient);
+        $target = safetyPublicActor($recipient);
         $this->actingAs($sender);
         $request = app(SendSocialRelationshipRequest::class)->handle(
             $source,
@@ -232,7 +247,7 @@ it('reduces request throughput only after a meaningful low acceptance sample', f
 
     expect(fn () => app(SendSocialRelationshipRequest::class)->handle(
         $source,
-        $resolver->forUser($recipients->last()),
+        safetyPublicActor($recipients->last()),
         SocialRelationshipType::OwnerFriendship,
         'low-acceptance-limited',
     ))->toThrow(ValidationException::class)
@@ -328,8 +343,8 @@ it('normalizes request context and stops contact details and repeated templates'
     $sender = User::factory()->create();
     $targets = User::factory()->count(4)->create();
     $resolver = app(SocialActorResolver::class);
-    $source = $resolver->forUser($sender);
-    $actors = $targets->map(fn (User $user) => $resolver->forUser($user));
+    $source = safetyPublicActor($sender);
+    $actors = $targets->map(fn (User $user) => safetyPublicActor($user));
     $this->actingAs($sender);
     $first = app(SendSocialRelationshipRequest::class)->handle(
         $source,
@@ -373,8 +388,8 @@ it('reports a request privately and can block its whole source account idempoten
     $recipient = User::factory()->create();
     $outsider = User::factory()->create();
     $resolver = app(SocialActorResolver::class);
-    $source = $resolver->forUser($sender);
-    $target = $resolver->forUser($recipient);
+    $source = safetyPublicActor($sender);
+    $target = safetyPublicActor($recipient);
     $this->actingAs($sender);
     $request = app(SendSocialRelationshipRequest::class)->handle(
         $source,
@@ -434,8 +449,8 @@ it('exposes safe request decisions and reporting through the livewire center', f
     $sender = User::factory()->create(['name' => 'Reported Sender']);
     $recipient = User::factory()->create();
     $resolver = app(SocialActorResolver::class);
-    $source = $resolver->forUser($sender);
-    $target = $resolver->forUser($recipient);
+    $source = safetyPublicActor($sender);
+    $target = safetyPublicActor($recipient);
     $this->actingAs($sender);
     $request = app(SendSocialRelationshipRequest::class)->handle(
         $source,

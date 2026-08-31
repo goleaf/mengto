@@ -19,7 +19,6 @@ use App\Models\PlaceDuplicateCandidate;
 use App\Models\PlaceSubmission;
 use App\Models\User;
 use App\Services\LocaleFormatter;
-use App\Services\ProfilePresenter;
 use Illuminate\Contracts\Auth\Factory as AuthFactory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Arr;
@@ -39,14 +38,11 @@ final class PlaceModerationWorkspace extends Component
 
     private AuthFactory $auth;
 
-    private ProfilePresenter $profiles;
-
     private LocaleFormatter $formatter;
 
-    public function boot(AuthFactory $auth, ProfilePresenter $profiles, LocaleFormatter $formatter): void
+    public function boot(AuthFactory $auth, LocaleFormatter $formatter): void
     {
         $this->auth = $auth;
-        $this->profiles = $profiles;
         $this->formatter = $formatter;
     }
 
@@ -244,7 +240,6 @@ final class PlaceModerationWorkspace extends Component
     {
         return view('livewire.places.place-moderation-workspace')
             ->layout('components.livewire-app-layout', [
-                'owner' => $this->profiles->owner(),
                 'title' => __('places.submissions.moderation.title'),
                 'activeSection' => 'places',
             ]);

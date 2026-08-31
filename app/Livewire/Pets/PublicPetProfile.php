@@ -16,7 +16,6 @@ use App\Services\PetLifeStagePresenter;
 use App\Services\PetProfileAgeLabel;
 use App\Services\PetSizeCategoryPresenter;
 use App\Services\PetSpeciesLabel;
-use App\Services\ProfilePresenter;
 use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Contracts\View\View;
 use Livewire\Attributes\Computed;
@@ -29,8 +28,6 @@ final class PublicPetProfile extends Component
     public int $profileId = 0;
 
     private Gate $gate;
-
-    private ProfilePresenter $profiles;
 
     private PetSpeciesLabel $speciesLabels;
 
@@ -50,7 +47,6 @@ final class PublicPetProfile extends Component
 
     public function boot(
         Gate $gate,
-        ProfilePresenter $profiles,
         PetProfileAgeLabel $ageLabels,
         PetBreedOriginPresenter $breedOrigins,
         PetAppearancePresenter $appearance,
@@ -61,7 +57,6 @@ final class PublicPetProfile extends Component
         PetSpeciesLabel $speciesLabels,
     ): void {
         $this->gate = $gate;
-        $this->profiles = $profiles;
         $this->ageLabels = $ageLabels;
         $this->breedOrigins = $breedOrigins;
         $this->appearance = $appearance;
@@ -83,7 +78,7 @@ final class PublicPetProfile extends Component
                 'is_discoverable',
             ])
             ->findOrFail($petProfile->id);
-        $this->gate->authorize('view', $profile);
+        abort_unless($this->gate->allows('view', $profile), 404);
         $this->profileId = $profile->id;
     }
 
@@ -171,7 +166,7 @@ final class PublicPetProfile extends Component
                     ->oldest('recorded_at'),
             ])
             ->findOrFail($this->profileId);
-        $this->gate->authorize('view', $profile);
+        abort_unless($this->gate->allows('view', $profile), 404);
         $profileData = $profile->profile_data ?? [];
         $settings = $profile->privacySetting;
         $ownerLabel = null;
@@ -238,7 +233,6 @@ final class PublicPetProfile extends Component
 
         return view('livewire.pets.public-pet-profile', ['pet' => $pet])
             ->layout('components.livewire-app-layout', [
-                'owner' => $this->profiles->owner(),
                 'title' => $pet['name'],
                 'activeSection' => 'pets',
             ]);

@@ -114,7 +114,7 @@ test('newly verified professionals remain discoverable without client reviews', 
 
 test('professional workspace shows the current specialists scope services and verification', function () {
     $expert = ExpertProfile::factory()->create([
-        'owner_key' => 'mia-carter',
+        'owner_key' => 'test-member',
         'public_name' => 'Mia Care Professional',
         'primary_type' => 'shelter-specialist',
         'qualification_verified' => true,
@@ -136,7 +136,7 @@ test('professional workspace shows the current specialists scope services and ve
 
 test('professional workspace keeps representative collections and query count bounded', function () {
     $expert = ExpertProfile::factory()->create([
-        'owner_key' => 'mia-carter',
+        'owner_key' => 'test-member',
         'public_name' => 'Bounded Workspace Professional',
     ]);
     $service = Service::factory()->create([

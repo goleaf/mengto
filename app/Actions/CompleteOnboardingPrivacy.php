@@ -10,8 +10,7 @@ use App\Models\SocialActor;
 use App\Models\SocialActorSetting;
 use App\Models\User;
 use App\Models\UserOnboarding;
-use App\Services\EmailVerificationMode;
-use App\Services\ForumActor;
+use App\Services\ActiveAuthenticatedUser;
 use App\Services\OnboardingPetEvidence;
 use App\Services\OnboardingState;
 use Illuminate\Support\Facades\DB;
@@ -20,8 +19,7 @@ use Illuminate\Validation\ValidationException;
 final readonly class CompleteOnboardingPrivacy
 {
     public function __construct(
-        private ForumActor $account,
-        private EmailVerificationMode $emailVerification,
+        private ActiveAuthenticatedUser $principal,
         private UpdateSocialActorSettings $updateSettings,
         private OnboardingState $onboardingState,
         private OnboardingPetEvidence $petEvidence,
@@ -37,13 +35,7 @@ final readonly class CompleteOnboardingPrivacy
         int $expectedOnboardingLockVersion,
         int $expectedSocialSettingsLockVersion,
     ): UserOnboarding {
-        $authenticated = $this->account->requireUser();
-        abort_unless(
-            $authenticated->is($user)
-                && $authenticated->isActive()
-                && $this->emailVerification->allows($authenticated),
-            403,
-        );
+        $this->principal->require($user);
 
         if (! $privacyAcknowledged) {
             throw ValidationException::withMessages([
@@ -60,6 +52,7 @@ final readonly class CompleteOnboardingPrivacy
             $isRecommendable,
             $user,
         ): UserOnboarding {
+            $user = $this->principal->require($user, true);
             $state = UserOnboarding::query()
                 ->whereBelongsTo($user)
                 ->lockForUpdate()

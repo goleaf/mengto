@@ -41,9 +41,9 @@
                 <span class="field-group__control">
                     <x-ui-icon name="paw-print" size="sm" />
                     <select id="place-pet" name="pet" class="field field--select">
-                        <option value="scout" @selected($filters['pet'] === 'scout')>{{ __('ui.scout') }}</option>
-                        <option value="nori" @selected($filters['pet'] === 'nori')>{{ __('ui.nori') }}</option>
-                        <option value="none" @selected($filters['pet'] === 'none')>{{ __('place_directory.search.no_pet') }}</option>
+                        @foreach ($places['pet_options'] as $value => $label)
+                            <option value="{{ $value }}" @selected($filters['pet'] === $value)>{{ $label }}</option>
+                        @endforeach
                     </select>
                 </span>
             </label>

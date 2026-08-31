@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use Illuminate\Support\Str;
+use App\Models\User;
 
 final class PreviewService
 {
     public function __construct(
         private readonly PrototypeState $state,
+        private readonly AuthenticatedUserPresenter $authenticatedUsers,
         private readonly ComposerCatalog $composers,
         private readonly ThreadCatalog $threads,
         private readonly InteractionPresenter $interactions,
@@ -23,7 +24,6 @@ final class PreviewService
         private readonly EventCatalog $events,
         private readonly PlaceCatalog $places,
         private readonly PlacePresenter $placePresenter,
-        private readonly NeighborProfilePresenter $neighborProfile,
     ) {}
 
     /**
@@ -41,25 +41,13 @@ final class PreviewService
     {
         return $this->circle->present(
             filter: $filter,
-            owner: $this->owner(),
             posts: array_values(array_column($this->interactions->posts([
                 ...$this->created->posts(),
-                ...$this->posts(),
-                ...$this->ariMoments(),
-                ...$this->scoutMoments(),
             ]), null, 'key')),
-            pets: $this->interactions->pets([
-                ...$this->created->pets(),
-                ...$this->circlePets(),
-            ]),
-            neighbors: $this->interactions->neighbors($this->directoryNeighbors()),
-            groups: $this->interactions->groups([
-                ...$this->created->groups(),
-                ...$this->directoryGroups(),
-            ]),
-            meetups: $this->interactions->meetups([
-                ...$this->directoryMeetups(),
-            ]),
+            pets: $this->interactions->pets($this->created->pets()),
+            neighbors: [],
+            groups: $this->interactions->groups($this->created->groups()),
+            meetups: [],
         );
     }
 
@@ -68,15 +56,7 @@ final class PreviewService
      */
     public function walkPlanData(string $filter = 'upcoming'): array
     {
-        return $this->walks->present($filter, $this->owner());
-    }
-
-    /**
-     * @return array{name: string, location: string, avatar: string, summary: string}
-     */
-    public function ownerData(): array
-    {
-        return $this->profiles->owner();
+        return $this->walks->present($filter);
     }
 
     /**
@@ -91,7 +71,6 @@ final class PreviewService
         }
 
         return [
-            'owner' => $this->owner(),
             'share' => $this->shares->present($item, $this->directoryNeighbors()),
         ];
     }
@@ -132,7 +111,6 @@ final class PreviewService
 
     /**
      * @return array{
-     *     owner: array{name: string, location: string, avatar: string, summary: string},
      *     pet: array{
      *         name: string,
      *         species: string,
@@ -152,18 +130,8 @@ final class PreviewService
      *     recentMoments: array<int, array{author: string, pet: string, time: string, datetime: string, body: string, image: string, image_small: string, image_medium: string, image_alt: string, tags: array<int, string>, stats: array{paws: string, replies: string}}>
      * }
      */
-    public function scoutProfileData(): array
-    {
-        return [
-            'owner' => $this->owner(),
-            'pet' => $this->scout(),
-            'recentMoments' => $this->interactions->posts($this->scoutMoments()),
-        ];
-    }
-
     /**
      * @return array{
-     *     owner: array{name: string, location: string, avatar: string, summary: string},
      *     summary: array{
      *         eyebrow: string,
      *         title: string,
@@ -201,7 +169,6 @@ final class PreviewService
     public function meetupDirectoryData(): array
     {
         return [
-            'owner' => $this->owner(),
             'summary' => [
                 'eyebrow' => __('messages.portland_meetups'),
                 'title' => __('messages.meet_your_neighborhood_pack'),
@@ -227,7 +194,6 @@ final class PreviewService
 
     /**
      * @return array{
-     *     owner: array{name: string, location: string, avatar: string, summary: string},
      *     summary: array{
      *         eyebrow: string,
      *         title: string,
@@ -258,7 +224,6 @@ final class PreviewService
     public function groupDirectoryData(): array
     {
         return [
-            'owner' => $this->owner(),
             'summary' => [
                 'eyebrow' => __('messages.portland_communities'),
                 'title' => __('messages.find_your_people_and_their_pets'),
@@ -285,7 +250,6 @@ final class PreviewService
 
     /**
      * @return array{
-     *     owner: array{name: string, location: string, avatar: string, summary: string},
      *     meetup: array<string, mixed>,
      *     expectations: array<int, array{icon: string, title: string, description: string}>,
      *     attendees: array<int, array{name: string, detail: string, initials: string, tone: string}>,
@@ -299,7 +263,6 @@ final class PreviewService
         $meetup = $meetups['small-dog-social'];
 
         return [
-            'owner' => $this->owner(),
             'meetup' => array_merge($meetup, [
                 'eyebrow' => __('messages.neighborhood_meetup'),
                 'long_description' => __('messages.this_small_host_guided_social_gives_dogs_time_to_arrive_observe_and_join_at_their_own_pace_the_fenced_lawn_is_split_into_an_active_play_area_and_a_quieter'),
@@ -339,7 +302,6 @@ final class PreviewService
             ],
             'attendees' => [
                 ['name' => __('messages.jamie_olive'), 'detail' => __('messages.host_corgi'), 'initials' => 'JO', 'tone' => 'sun'],
-                ['name' => __('messages.mia_scout'), 'detail' => __('messages.border_collie'), 'initials' => 'MS', 'tone' => 'mint'],
                 ['name' => __('messages.ari_mochi'), 'detail' => __('messages.shiba_mix'), 'initials' => 'AM', 'tone' => 'paper'],
                 ['name' => __('messages.theo_bean'), 'detail' => __('messages.terrier_mix'), 'initials' => 'TB', 'tone' => 'mint'],
             ],
@@ -361,7 +323,6 @@ final class PreviewService
 
     /**
      * @return array{
-     *     owner: array{name: string, location: string, avatar: string, summary: string},
      *     group: array<string, mixed>,
      *     principles: array<int, array{icon: string, title: string, description: string}>,
      *     moderators: array<int, array{name: string, detail: string, initials: string, tone: string}>,
@@ -375,7 +336,6 @@ final class PreviewService
         $group = $groups['apartment-pets'];
 
         return [
-            'owner' => $this->owner(),
             'group' => [
                 ...$group,
                 'title' => $group['name'],
@@ -443,7 +403,6 @@ final class PreviewService
 
     /**
      * @return array{
-     *     owner: array{name: string, location: string, avatar: string, summary: string},
      *     summary: array{
      *         eyebrow: string,
      *         title: string,
@@ -477,17 +436,12 @@ final class PreviewService
     public function neighborDirectoryData(): array
     {
         return [
-            'owner' => $this->owner(),
             'summary' => [
                 'eyebrow' => __('neighbors.page.eyebrow'),
                 'title' => __('neighbors.page.heading'),
                 'description' => __('neighbors.page.description'),
-                'count' => __('neighbors.page.count'),
-                'highlights' => [
-                    ['label' => __('neighbors.summary.closest.label'), 'value' => __('neighbors.summary.closest.value'), 'detail' => __('neighbors.summary.closest.detail')],
-                    ['label' => __('neighbors.summary.circles.label'), 'value' => __('neighbors.summary.circles.value'), 'detail' => __('neighbors.summary.circles.detail')],
-                    ['label' => __('neighbors.summary.pets.label'), 'value' => __('neighbors.summary.pets.value'), 'detail' => __('neighbors.summary.pets.detail')],
-                ],
+                'count' => '0',
+                'highlights' => [],
             ],
             'filters' => $this->filterOptions([
                 'recommended' => __('neighbors.filters.recommended'),
@@ -500,20 +454,7 @@ final class PreviewService
     }
 
     /**
-     * @return array<string, mixed>
-     */
-    public function ariNeighborProfileData(): array
-    {
-        return $this->neighborProfile->present(
-            owner: $this->owner(),
-            recentMoments: $this->interactions->posts($this->ariMoments()),
-            followed: $this->state->isActive('follows', 'ari'),
-        );
-    }
-
-    /**
      * @return array{
-     *     owner: array{name: string, location: string, avatar: string, summary: string},
      *     summary: array{eyebrow: string, title: string, description: string, count: string, unread_count: int},
      *     filters: list<array{value: string, label: string}>,
      *     activityGroups: array<int, array{
@@ -531,110 +472,12 @@ final class PreviewService
      *         }>
      *     }>,
      *     weeklyStats: array<int, array{label: string, value: string}>,
-     *     upcoming: array{eyebrow: string, title: string, date: string, place: string, attendees: string, image: string, image_alt: string},
+     *     upcoming: array{eyebrow: string, title: string, date: string, place: string, attendees: string, image: string, image_alt: string}|null,
      *     settings: array<int, array{label: string, description: string, enabled: bool}>
      * }
      */
     public function notificationCenterData(): array
     {
-        $neighbors = array_column($this->directoryNeighbors(), null, 'key');
-        $meetups = array_column($this->directoryMeetups(), null, 'key');
-        $groups = array_column($this->directoryGroups(), null, 'key');
-
-        $activityGroups = [
-            [
-                'label' => __('messages.today'),
-                'items' => [
-                    [
-                        'category' => __('messages.paws'),
-                        'title' => __('messages.ari_sent_scout_12_paws'),
-                        'body' => __('messages.your_yellow_frisbee_moment_is_getting_attention_from_nearby_dog_people'),
-                        'context' => __('messages.scout_recent_moment'),
-                        'time' => __('messages.12_min'),
-                        'datetime' => '2026-07-29T09:48:00-07:00',
-                        'unread' => true,
-                        'image' => $neighbors['ari']['thumbnail'],
-                        'image_alt' => $neighbors['ari']['image_alt'],
-                    ],
-                    [
-                        'category' => __('messages.reply'),
-                        'title' => __('messages.lena_replied_to_your_foster_checklist'),
-                        'body' => __('messages.she_added_a_note_about_creating_a_quiet_room_before_a_new_pet_arrives'),
-                        'context' => __('messages.foster_network_pdx'),
-                        'time' => __('messages.1_hr'),
-                        'datetime' => '2026-07-29T09:00:00-07:00',
-                        'unread' => true,
-                        'image' => $neighbors['lena']['thumbnail'],
-                        'image_alt' => $neighbors['lena']['image_alt'],
-                    ],
-                    [
-                        'category' => __('messages.meetup'),
-                        'title' => __('messages.calm_senior_dog_stroll_is_next_wednesday'),
-                        'body' => __('messages.the_shaded_riverside_route_has_eight_neighbors_going'),
-                        'context' => __('messages.sellwood_riverfront_park_6_00_pm'),
-                        'time' => __('messages.2_hr'),
-                        'datetime' => '2026-07-29T08:00:00-07:00',
-                        'unread' => true,
-                        'image' => $meetups['senior-stroll']['thumbnail'],
-                        'image_alt' => $meetups['senior-stroll']['image_alt'],
-                    ],
-                ],
-            ],
-            [
-                'label' => __('messages.earlier'),
-                'items' => [
-                    [
-                        'category' => __('messages.follow'),
-                        'title' => __('messages.priya_followed_you_and_scout'),
-                        'body' => __('messages.you_both_share_an_interest_in_calm_routines_and_garden_time'),
-                        'context' => __('messages.st_johns_3_8_mi_away'),
-                        'time' => __('messages.yesterday'),
-                        'datetime' => '2026-07-28T16:20:00-07:00',
-                        'unread' => false,
-                        'image' => $neighbors['priya']['thumbnail'],
-                        'image_alt' => $neighbors['priya']['image_alt'],
-                    ],
-                    [
-                        'category' => __('messages.group'),
-                        'title' => __('messages.apartment_pets_pdx_shared_a_new_guide'),
-                        'body' => __('messages.the_community_collected_practical_ideas_for_quieter_hallway_arrivals'),
-                        'context' => __('messages.small_space_routines_2_4k_members'),
-                        'time' => __('messages.yesterday'),
-                        'datetime' => '2026-07-28T11:30:00-07:00',
-                        'unread' => false,
-                        'image' => $groups['apartment-pets']['thumbnail'],
-                        'image_alt' => $groups['apartment-pets']['image_alt'],
-                    ],
-                    [
-                        'category' => __('messages.saved'),
-                        'title' => __('messages.noah_saved_your_shaded_route_note'),
-                        'body' => __('messages.your_richmond_walk_is_now_part_of_noah_and_juniper_s_summer_list'),
-                        'context' => __('messages.juniper_senior_care'),
-                        'time' => __('messages.mon'),
-                        'datetime' => '2026-07-27T15:10:00-07:00',
-                        'unread' => false,
-                        'image' => $neighbors['noah']['thumbnail'],
-                        'image_alt' => $neighbors['noah']['image_alt'],
-                    ],
-                ],
-            ],
-        ];
-
-        if ($this->state->notificationsAreRead()) {
-            $activityGroups = array_map(
-                static fn (array $group): array => [
-                    ...$group,
-                    'items' => array_map(
-                        static fn (array $item): array => [...$item, 'unread' => false],
-                        $group['items'],
-                    ),
-                ],
-                $activityGroups,
-            );
-        }
-
-        $activityItems = array_merge(...array_column($activityGroups, 'items'));
-        $unreadCount = count(array_filter($activityItems, static fn (array $item): bool => $item['unread']));
         $settings = $this->state->settings([
             'meetup-reminders' => true,
             'neighbor-replies' => true,
@@ -642,18 +485,15 @@ final class PreviewService
         ]);
 
         return [
-            'owner' => $this->owner(),
             'summary' => [
                 'eyebrow' => __('messages.brand.activity'),
                 'title' => __('messages.what_happened_around_your_pack'),
                 'description' => __('messages.reactions_replies_reminders_and_neighbor_updates_gathered_into_one_calm_timeline'),
                 'count' => __('presentation.updates_with_new', [
-                    'updates' => trans_choice('presentation.updates_count', count($activityItems), [
-                        'count' => count($activityItems),
-                    ]),
-                    'new' => __('presentation.new_count', ['count' => $unreadCount]),
+                    'updates' => trans_choice('presentation.updates_count', 0, ['count' => 0]),
+                    'new' => __('presentation.new_count', ['count' => 0]),
                 ]),
-                'unread_count' => $unreadCount,
+                'unread_count' => 0,
             ],
             'filters' => $this->filterOptions([
                 'all-activity' => __('messages.all_activity'),
@@ -661,25 +501,9 @@ final class PreviewService
                 'walks' => __('messages.walks'),
                 'groups' => __('messages.groups'),
             ]),
-            'activityGroups' => $activityGroups,
-            'weeklyStats' => [
-                ['label' => __('messages.paws'), 'value' => '32'],
-                ['label' => __('messages.replies'), 'value' => '8'],
-                ['label' => __('messages.neighbors'), 'value' => '3'],
-            ],
-            'upcoming' => [
-                'eyebrow' => __('messages.next_meetup'),
-                'title' => $meetups['small-dog-social']['title'],
-                'date' => $meetups['small-dog-social']['date_label'].' · '.$meetups['small-dog-social']['time'],
-                'datetime' => $meetups['small-dog-social']['datetime'],
-                'date_accessible' => $meetups['small-dog-social']['date_accessible'],
-                'place' => $meetups['small-dog-social']['place'],
-                'attendees' => $meetups['small-dog-social']['attendees'],
-                'image' => $meetups['small-dog-social']['image'],
-                'image_small' => $meetups['small-dog-social']['image_small'],
-                'image_medium' => $meetups['small-dog-social']['image_medium'],
-                'image_alt' => $meetups['small-dog-social']['image_alt'],
-            ],
+            'activityGroups' => [],
+            'weeklyStats' => [],
+            'upcoming' => null,
             'settings' => [
                 ['key' => 'meetup-reminders', 'label' => __('messages.meetup_reminders'), 'description' => __('messages.a_day_before_local_events'), 'enabled' => $settings['meetup-reminders']],
                 ['key' => 'neighbor-replies', 'label' => __('messages.neighbor_replies'), 'description' => __('messages.replies_and_mentions'), 'enabled' => $settings['neighbor-replies']],
@@ -688,93 +512,11 @@ final class PreviewService
         ];
     }
 
-    /**
-     * @return array{
-     *     owner: array{
-     *         name: string,
-     *         location: string,
-     *         avatar: string,
-     *         summary: string,
-     *         role: string,
-     *         member_since: string,
-     *         status: string,
-     *         bio: string,
-     *         cover_image: string,
-     *         cover_image_small: string,
-     *         cover_image_medium: string,
-     *         cover_image_alt: string,
-     *         stats: array<int, array{label: string, value: string, detail: string}>
-     *     },
-     *     pets: array<int, array{
-     *         name: string,
-     *         species: string,
-     *         breed: string,
-     *         age: string,
-     *         owner: string,
-     *         neighborhood: string,
-     *         status: string,
-     *         image: string,
-     *         image_small: string,
-     *         image_medium: string,
-     *         image_alt: string,
-     *         traits: array<int, string>,
-     *         profile_route: string|null
-     *     }>,
-     *     recentMoments: array<int, array{author: string, pet: string, time: string, datetime: string, body: string, image: string, image_small: string, image_medium: string, image_alt: string, tags: array<int, string>, stats: array{paws: string, replies: string}}>,
-     *     availability: array<int, array{label: string, value: string}>,
-     *     interests: array<int, string>,
-     *     communities: array<int, array{name: string, topic: string, members: string}>
-     * }
-     */
-    public function miaProfileData(): array
+    public function composerData(string $kind, array $context, User $user): array
     {
-        $communities = array_map(
-            static fn (array $group): array => [
-                'name' => $group['name'],
-                'topic' => $group['topic'],
-                'members' => $group['members'],
-            ],
-            array_slice($this->directoryGroups(), 0, 3),
-        );
-
-        return [
-            'owner' => $this->miaOwner(),
-            'pets' => array_slice($this->interactions->pets([
-                ...$this->created->pets(),
-                ...$this->circlePets(),
-            ]), 0, 4),
-            'recentMoments' => $this->interactions->posts($this->scoutMoments()),
-            'availability' => [
-                ['label' => __('messages.best_time'), 'value' => __('messages.weekend_mornings')],
-                ['label' => __('messages.usual_pace'), 'value' => __('messages.easy_to_moderate')],
-                ['label' => __('messages.home_base'), 'value' => __('messages.richmond_portland')],
-            ],
-            'interests' => [__('messages.trail_walks'), __('messages.foster_care'), __('messages.cat_enrichment'), __('messages.quiet_parks'), __('messages.positive_training_lowercase')],
-            'communities' => $communities,
-        ];
-    }
-
-    /**
-     * @return array{
-     *     owner: array<string, mixed>,
-     *     form: array{
-     *         eyebrow: string,
-     *         title: string,
-     *         description: string,
-     *         action: string,
-     *         submit_label: string,
-     *         submit_icon: string,
-     *         cancel_route: string,
-     *         active_section: string,
-     *         fields: array<int, array<string, mixed>>
-     *     }
-     * }
-     */
-    public function composerData(string $kind, array $context = []): array
-    {
-        $owner = $this->miaOwner();
-        $petSlug = (string) ($context['pet'] ?? 'scout');
-        $pet = $this->profiles->pet($petSlug) ?? $this->scout();
+        $owner = $this->authenticatedUsers->present($user);
+        $petKey = (string) ($context['pet'] ?? '');
+        $pet = $petKey !== '' ? ($this->profiles->pet($petKey) ?? []) : [];
         $report = isset($context['target'])
             ? $this->profiles->reportContext((string) $context['target'])
             : null;
@@ -805,8 +547,7 @@ final class PreviewService
                 pet: $pet,
                 context: [
                     ...$context,
-                    'owner_privacy' => $this->state->ownerPrivacy(),
-                    'pet_privacy' => $this->state->petPrivacy($petSlug),
+                    'pet_privacy' => [],
                     'report' => $report,
                     'post' => $post,
                     'post_report' => $postReport,
@@ -814,7 +555,14 @@ final class PreviewService
                     'place_report' => $placeReport,
                     'place_correction' => $placeCorrection,
                     'place_context' => $placeContext,
-                    'identities' => $this->feed->identities(),
+                    'identities' => [
+                        $owner['profile_route_parameters']['socialActor'] => $user->name,
+                    ],
+                    'pet_options' => collect($this->profiles->pets())->mapWithKeys(
+                        static fn (array $managedPet): array => [
+                            $managedPet['profile_key'] => $managedPet['name'],
+                        ],
+                    )->all(),
                     'topics' => $this->feed->topics(),
                     'audiences' => $this->feed->audiences(),
                     'comment_policies' => $this->feed->commentPolicies(),
@@ -825,14 +573,6 @@ final class PreviewService
                 visibilityOptions: $this->profiles->visibilityOptions(),
             ),
         ];
-    }
-
-    /**
-     * @return array<string, mixed>
-     */
-    private function miaOwner(): array
-    {
-        return $this->profiles->ownerProfile();
     }
 
     /**
@@ -908,27 +648,8 @@ final class PreviewService
             ];
         }
 
-        if ($target === 'mia-carter') {
-            $owner = $this->miaOwner();
-
-            return [
-                'target' => $target,
-                'type' => __('messages.member_profile'),
-                'active_section' => 'profile',
-                'eyebrow' => __('messages.share_a_neighbor_profile'),
-                'title' => $owner['name'],
-                'description' => $owner['bio'],
-                'image' => $owner['cover_image'],
-                'image_small' => $owner['cover_image_small'],
-                'image_medium' => $owner['cover_image_medium'],
-                'image_alt' => $owner['cover_image_alt'],
-                'route' => 'profile.mia',
-                'route_parameters' => [],
-            ];
-        }
-
-        if (in_array($target, ['scout', 'nori'], true)) {
-            $pet = $this->profiles->pet($target);
+        if (str_starts_with($target, 'pet-')) {
+            $pet = $this->profiles->pet(substr($target, 4));
 
             if ($pet === null) {
                 return null;
@@ -946,7 +667,7 @@ final class PreviewService
                 'image_medium' => $pet['cover_image_medium'],
                 'image_alt' => $pet['cover_image_alt'],
                 'route' => $pet['route'],
-                'route_parameters' => [],
+                'route_parameters' => $pet['route_parameters'],
             ];
         }
 
@@ -959,119 +680,6 @@ final class PreviewService
     private function owner(): array
     {
         return $this->profiles->owner();
-    }
-
-    /**
-     * @return array<int, array{
-     *     name: string,
-     *     species: string,
-     *     breed: string,
-     *     age: string,
-     *     owner: string,
-     *     neighborhood: string,
-     *     status: string,
-     *     image: string,
-     *     image_small: string,
-     *     image_medium: string,
-     *     image_alt: string,
-     *     traits: array<int, string>,
-     *     profile_route: string|null
-     * }>
-     */
-    private function circlePets(): array
-    {
-        return [
-            [
-                'name' => __('messages.scout'),
-                'species' => __('messages.dog'),
-                'breed' => __('messages.border_collie_mix'),
-                'age' => __('messages.4_years'),
-                'owner' => __('messages.mia_carter'),
-                'neighborhood' => __('messages.richmond'),
-                'status' => __('messages.available_for_park_walks'),
-                'image' => 'https://images.unsplash.com/photo-1654256578072-b932c33cb92e?auto=format&fit=crop&w=1200&h=900&q=85',
-                'image_small' => 'https://images.unsplash.com/photo-1654256578072-b932c33cb92e?auto=format&fit=crop&w=576&h=432&q=80',
-                'image_medium' => 'https://images.unsplash.com/photo-1654256578072-b932c33cb92e?auto=format&fit=crop&w=900&h=675&q=82',
-                'image_alt' => __('messages.scout_a_black_and_white_border_collie_resting_on_grass'),
-                'traits' => [__('messages.high_energy'), __('messages.trail_walks')],
-                'profile_route' => 'pets.scout',
-            ],
-            [
-                'name' => __('messages.nori'),
-                'species' => __('messages.cat'),
-                'breed' => __('messages.tabby'),
-                'age' => __('messages.2_years'),
-                'owner' => __('messages.mia_carter'),
-                'neighborhood' => __('messages.richmond'),
-                'status' => __('messages.window_watching_expert'),
-                'image' => 'https://images.unsplash.com/photo-1518791841217-8f162f1e1131?auto=format&fit=crop&w=1200&h=900&q=85',
-                'image_small' => 'https://images.unsplash.com/photo-1518791841217-8f162f1e1131?auto=format&fit=crop&w=576&h=432&q=80',
-                'image_medium' => 'https://images.unsplash.com/photo-1518791841217-8f162f1e1131?auto=format&fit=crop&w=900&h=675&q=82',
-                'image_alt' => __('messages.nori_a_tabby_cat_looking_toward_the_camera'),
-                'traits' => ['indoor', 'curious'],
-                'profile_route' => 'pets.nori',
-            ],
-            [
-                'name' => __('messages.maple'),
-                'species' => __('messages.dog'),
-                'breed' => __('messages.golden_retriever'),
-                'age' => __('messages.6_years'),
-                'owner' => __('messages.ari_jensen'),
-                'neighborhood' => __('messages.sellwood'),
-                'status' => __('messages.easy_trail_companion'),
-                'image' => 'https://images.unsplash.com/photo-1552053831-71594a27632d?auto=format&fit=crop&w=1200&h=900&q=85',
-                'image_small' => 'https://images.unsplash.com/photo-1552053831-71594a27632d?auto=format&fit=crop&w=576&h=432&q=80',
-                'image_medium' => 'https://images.unsplash.com/photo-1552053831-71594a27632d?auto=format&fit=crop&w=900&h=675&q=82',
-                'image_alt' => __('messages.maple_a_golden_retriever_sitting_outside_with_a_flower'),
-                'traits' => ['calm', __('messages.water_fan')],
-                'profile_route' => null,
-            ],
-            [
-                'name' => __('messages.olive'),
-                'species' => __('messages.dog'),
-                'breed' => __('messages.pembroke_corgi'),
-                'age' => __('messages.3_years'),
-                'owner' => __('messages.jamie_cho'),
-                'neighborhood' => __('messages.alberta_arts'),
-                'status' => __('messages.likes_short_social_walks'),
-                'image' => 'https://images.unsplash.com/photo-1744207503498-a0218ad58ff8?auto=format&fit=crop&w=1200&h=900&q=85',
-                'image_small' => 'https://images.unsplash.com/photo-1744207503498-a0218ad58ff8?auto=format&fit=crop&w=576&h=432&q=80',
-                'image_medium' => 'https://images.unsplash.com/photo-1744207503498-a0218ad58ff8?auto=format&fit=crop&w=900&h=675&q=82',
-                'image_alt' => __('messages.olive_a_corgi_sitting_on_a_sunny_path'),
-                'traits' => [__('messages.small_dog'), 'social'],
-                'profile_route' => null,
-            ],
-            [
-                'name' => __('messages.pico'),
-                'species' => __('messages.bird'),
-                'breed' => __('messages.green_cheek_conure'),
-                'age' => __('messages.5_years'),
-                'owner' => __('messages.sam_rivera'),
-                'neighborhood' => __('messages.hawthorne'),
-                'status' => __('messages.quiet_mornings_curious_afternoons'),
-                'image' => 'https://images.unsplash.com/photo-1705603476532-d7c91b4b3788?auto=format&fit=crop&w=1200&h=900&q=85',
-                'image_small' => 'https://images.unsplash.com/photo-1705603476532-d7c91b4b3788?auto=format&fit=crop&w=576&h=432&q=80',
-                'image_medium' => 'https://images.unsplash.com/photo-1705603476532-d7c91b4b3788?auto=format&fit=crop&w=900&h=675&q=82',
-                'image_alt' => __('messages.pico_a_green_cheek_conure_perched_on_a_camera_tripod'),
-                'traits' => ['indoor', 'talkative'],
-                'profile_route' => null,
-            ],
-            [
-                'name' => __('messages.clover'),
-                'species' => __('messages.rabbit'),
-                'breed' => __('messages.mini_lop_mix'),
-                'age' => __('messages.2_years'),
-                'owner' => __('messages.priya_shah'),
-                'neighborhood' => __('messages.st_johns'),
-                'status' => __('messages.gentle_garden_observer'),
-                'image' => 'https://images.unsplash.com/photo-1591561582301-7ce6588cc286?auto=format&fit=crop&w=1200&h=900&q=85',
-                'image_small' => 'https://images.unsplash.com/photo-1591561582301-7ce6588cc286?auto=format&fit=crop&w=576&h=432&q=80',
-                'image_medium' => 'https://images.unsplash.com/photo-1591561582301-7ce6588cc286?auto=format&fit=crop&w=900&h=675&q=82',
-                'image_alt' => __('messages.clover_a_white_rabbit_sitting_in_grass'),
-                'traits' => ['gentle', __('messages.garden_time')],
-                'profile_route' => null,
-            ],
-        ];
     }
 
     /**
@@ -1105,7 +713,7 @@ final class PreviewService
         return [
             [
                 'key' => 'small-dog-social',
-                'detail_route' => 'meetups.small_dog_social',
+                'detail_route' => null,
                 'title' => __('messages.small_dog_social_hour'),
                 'category' => __('messages.social'),
                 'day' => 'SAT',
@@ -1302,216 +910,7 @@ final class PreviewService
      */
     private function directoryNeighbors(): array
     {
-        return [
-            [
-                'key' => 'ari',
-                'name' => __('neighbors.catalog.ari.name'),
-                'category' => __('neighbors.catalog.ari.category'),
-                'category_icon' => 'footprints',
-                'neighborhood' => __('neighbors.catalog.ari.neighborhood'),
-                'distance' => __('neighbors.catalog.ari.distance'),
-                'distance_value' => 0.8,
-                'pet' => __('neighbors.catalog.ari.pet'),
-                'status' => __('neighbors.catalog.ari.status'),
-                'mutual_count' => 4,
-                'image' => 'https://images.unsplash.com/photo-1753685723016-78c233daa8a2?auto=format&fit=crop&w=1200&h=800&q=85',
-                'image_small' => 'https://images.unsplash.com/photo-1753685723016-78c233daa8a2?auto=format&fit=crop&w=576&h=384&q=80',
-                'image_medium' => 'https://images.unsplash.com/photo-1753685723016-78c233daa8a2?auto=format&fit=crop&w=900&h=600&q=82',
-                'thumbnail' => 'https://images.unsplash.com/photo-1753685723016-78c233daa8a2?auto=format&fit=crop&crop=faces&w=160&h=160&q=80',
-                'image_alt' => __('neighbors.catalog.ari.image_alt'),
-                'interests' => [__('neighbors.catalog.ari.interests.first'), __('neighbors.catalog.ari.interests.second')],
-                'search_tokens' => ['dog-people', 'walk', 'training'],
-                'profile_route' => 'neighbors.ari',
-            ],
-            [
-                'key' => 'noah',
-                'name' => __('neighbors.catalog.noah.name'),
-                'category' => __('neighbors.catalog.noah.category'),
-                'category_icon' => 'heart-handshake',
-                'neighborhood' => __('neighbors.catalog.noah.neighborhood'),
-                'distance' => __('neighbors.catalog.noah.distance'),
-                'distance_value' => 1.7,
-                'pet' => __('neighbors.catalog.noah.pet'),
-                'status' => __('neighbors.catalog.noah.status'),
-                'mutual_count' => 3,
-                'image' => 'https://images.unsplash.com/photo-1638552718376-7d4881e31418?auto=format&fit=crop&w=1200&h=800&q=85',
-                'image_small' => 'https://images.unsplash.com/photo-1638552718376-7d4881e31418?auto=format&fit=crop&w=576&h=384&q=80',
-                'image_medium' => 'https://images.unsplash.com/photo-1638552718376-7d4881e31418?auto=format&fit=crop&w=900&h=600&q=82',
-                'thumbnail' => 'https://images.unsplash.com/photo-1638552718376-7d4881e31418?auto=format&fit=crop&crop=faces&w=160&h=160&q=80',
-                'image_alt' => __('neighbors.catalog.noah.image_alt'),
-                'interests' => [__('neighbors.catalog.noah.interests.first'), __('neighbors.catalog.noah.interests.second')],
-                'search_tokens' => ['dog-people', 'senior', 'care'],
-                'profile_route' => null,
-            ],
-            [
-                'key' => 'lena',
-                'name' => __('neighbors.catalog.lena.name'),
-                'category' => __('neighbors.catalog.lena.category'),
-                'category_icon' => 'sparkles',
-                'neighborhood' => __('neighbors.catalog.lena.neighborhood'),
-                'distance' => __('neighbors.catalog.lena.distance'),
-                'distance_value' => 2.1,
-                'pet' => __('neighbors.catalog.lena.pet'),
-                'status' => __('neighbors.catalog.lena.status'),
-                'mutual_count' => 5,
-                'image' => 'https://images.unsplash.com/photo-1602135058921-09ccd6112363?auto=format&fit=crop&w=1200&h=800&q=85',
-                'image_small' => 'https://images.unsplash.com/photo-1602135058921-09ccd6112363?auto=format&fit=crop&w=576&h=384&q=80',
-                'image_medium' => 'https://images.unsplash.com/photo-1602135058921-09ccd6112363?auto=format&fit=crop&w=900&h=600&q=82',
-                'thumbnail' => 'https://images.unsplash.com/photo-1602135058921-09ccd6112363?auto=format&fit=crop&crop=faces&w=160&h=160&q=80',
-                'image_alt' => __('neighbors.catalog.lena.image_alt'),
-                'interests' => [__('neighbors.catalog.lena.interests.first'), __('neighbors.catalog.lena.interests.second')],
-                'search_tokens' => ['cat-people', 'foster-network', 'fostering'],
-                'profile_route' => null,
-            ],
-            [
-                'key' => 'priya',
-                'name' => __('neighbors.catalog.priya.name'),
-                'category' => __('neighbors.catalog.priya.category'),
-                'category_icon' => 'paw-print',
-                'neighborhood' => __('neighbors.catalog.priya.neighborhood'),
-                'distance' => __('neighbors.catalog.priya.distance'),
-                'distance_value' => 3.8,
-                'pet' => __('neighbors.catalog.priya.pet'),
-                'status' => __('neighbors.catalog.priya.status'),
-                'mutual_count' => 2,
-                'image' => 'https://images.unsplash.com/photo-1663363332899-7a2448f724f3?auto=format&fit=crop&w=1200&h=800&q=85',
-                'image_small' => 'https://images.unsplash.com/photo-1663363332899-7a2448f724f3?auto=format&fit=crop&w=576&h=384&q=80',
-                'image_medium' => 'https://images.unsplash.com/photo-1663363332899-7a2448f724f3?auto=format&fit=crop&w=900&h=600&q=82',
-                'thumbnail' => 'https://images.unsplash.com/photo-1663363332899-7a2448f724f3?auto=format&fit=crop&crop=faces&w=160&h=160&q=80',
-                'image_alt' => __('neighbors.catalog.priya.image_alt'),
-                'interests' => [__('neighbors.catalog.priya.interests.first'), __('neighbors.catalog.priya.interests.second')],
-                'search_tokens' => ['foster-network', 'rabbits', 'care'],
-                'profile_route' => null,
-            ],
-        ];
-    }
-
-    /**
-     * @return array<int, array{author: string, pet: string, time: string, datetime: string, body: string, image: string, image_small: string, image_medium: string, image_alt: string, tags: array<int, string>, stats: array{paws: string, replies: string}}>
-     */
-    private function posts(): array
-    {
-        return [
-            $this->ariFirstMoment(),
-            [
-                'author' => __('messages.noah_patel'),
-                'pet' => __('messages.juniper'),
-                'time' => __('messages.1_hr_ago'),
-                'datetime' => '2026-07-29T09:00:00-07:00',
-                'body' => __('messages.found_a_quiet_route_near_maple_loop_with_shade_almost_the_whole_way_good_for_senior_pups_on_warmer_afternoons'),
-                'image' => 'https://images.unsplash.com/photo-1587300003388-59208cc962cb?auto=format&fit=crop&w=1200&h=900&q=80',
-                'image_small' => 'https://images.unsplash.com/photo-1587300003388-59208cc962cb?auto=format&fit=crop&w=576&h=432&q=78',
-                'image_medium' => 'https://images.unsplash.com/photo-1587300003388-59208cc962cb?auto=format&fit=crop&w=900&h=675&q=80',
-                'image_alt' => __('messages.juniper_relaxing_during_a_shady_afternoon_walk'),
-                'tags' => [__('messages.senior_pets'), __('messages.walk_route')],
-                'stats' => ['paws' => '86', 'replies' => '11'],
-            ],
-            [
-                'author' => __('messages.lena_brooks'),
-                'pet' => __('messages.pip'),
-                'time' => __('messages.3_hrs_ago'),
-                'datetime' => '2026-07-29T07:00:00-07:00',
-                'body' => __('messages.first_successful_harness_session_pip_mostly_accepted_the_agreement_after_a_careful_review_of_the_snack_clause'),
-                'image' => 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&w=1200&h=900&q=80',
-                'image_small' => 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&w=576&h=432&q=78',
-                'image_medium' => 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&w=900&h=675&q=80',
-                'image_alt' => __('messages.pip_looking_toward_the_camera_from_a_soft_blanket'),
-                'tags' => [__('messages.cat_life'), __('messages.first_steps')],
-                'stats' => ['paws' => '203', 'replies' => '37'],
-            ],
-        ];
-    }
-
-    /**
-     * @return array<int, array{author: string, pet: string, time: string, datetime: string, body: string, image: string, image_small: string, image_medium: string, image_alt: string, tags: array<int, string>, stats: array{paws: string, replies: string}}>
-     */
-    private function ariMoments(): array
-    {
-        return [
-            $this->ariFirstMoment(),
-            [
-                'author' => __('neighbors.profile.moments.second.author'),
-                'pet' => __('neighbors.profile.moments.second.pet'),
-                'time' => __('neighbors.profile.moments.second.time'),
-                'datetime' => '2026-07-26T09:00:00-07:00',
-                'body' => __('neighbors.profile.moments.second.body'),
-                'image' => 'https://images.unsplash.com/photo-1765193091032-da4cc0f568e8?auto=format&fit=crop&w=1200&h=900&q=85',
-                'image_small' => 'https://images.unsplash.com/photo-1765193091032-da4cc0f568e8?auto=format&fit=crop&w=576&h=432&q=80',
-                'image_medium' => 'https://images.unsplash.com/photo-1765193091032-da4cc0f568e8?auto=format&fit=crop&w=900&h=675&q=82',
-                'image_alt' => __('neighbors.profile.moments.second.image_alt'),
-                'tags' => [
-                    __('neighbors.profile.moments.second.first_tag'),
-                    __('neighbors.profile.moments.second.second_tag'),
-                ],
-                'stats' => ['paws' => '96', 'replies' => '18'],
-            ],
-        ];
-    }
-
-    /**
-     * @return array{author: string, pet: string, time: string, datetime: string, body: string, image: string, image_small: string, image_medium: string, image_alt: string, tags: array<int, string>, stats: array{paws: string, replies: string}}
-     */
-    private function ariFirstMoment(): array
-    {
-        return [
-            'author' => __('neighbors.profile.moments.first.author'),
-            'pet' => __('neighbors.profile.moments.first.pet'),
-            'time' => __('neighbors.profile.moments.first.time'),
-            'datetime' => '2026-07-29T09:42:00-07:00',
-            'body' => __('neighbors.profile.moments.first.body'),
-            'image' => 'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?auto=format&fit=crop&w=1200&h=900&q=80',
-            'image_small' => 'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?auto=format&fit=crop&w=576&h=432&q=78',
-            'image_medium' => 'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?auto=format&fit=crop&w=900&h=675&q=80',
-            'image_alt' => __('neighbors.profile.moments.first.image_alt'),
-            'tags' => [
-                __('neighbors.profile.moments.first.first_tag'),
-                __('neighbors.profile.moments.first.second_tag'),
-            ],
-            'stats' => ['paws' => '128', 'replies' => '24'],
-        ];
-    }
-
-    /**
-     * @return array<string, mixed>
-     */
-    private function scout(): array
-    {
-        return $this->profiles->pet('scout') ?? [];
-    }
-
-    /**
-     * @return array<int, array{author: string, pet: string, time: string, datetime: string, body: string, image: string, image_small: string, image_medium: string, image_alt: string, tags: array<int, string>, stats: array{paws: string, replies: string}}>
-     */
-    private function scoutMoments(): array
-    {
-        return [
-            [
-                'author' => __('messages.mia_carter'),
-                'pet' => __('messages.scout'),
-                'time' => __('messages.yesterday'),
-                'datetime' => '2026-07-28T17:30:00-07:00',
-                'body' => __('messages.scout_locked_onto_the_yellow_frisbee_and_caught_it_on_the_second_try_the_trip_home_was_much_quieter'),
-                'image' => 'https://images.unsplash.com/photo-1625679895477-526b21a77f0c?auto=format&fit=crop&w=1200&h=900&q=85',
-                'image_small' => 'https://images.unsplash.com/photo-1625679895477-526b21a77f0c?auto=format&fit=crop&w=576&h=432&q=80',
-                'image_medium' => 'https://images.unsplash.com/photo-1625679895477-526b21a77f0c?auto=format&fit=crop&w=900&h=675&q=82',
-                'image_alt' => __('messages.scout_catching_a_yellow_frisbee_on_the_grass'),
-                'tags' => ['fetch', __('messages.scout')],
-                'stats' => ['paws' => '94', 'replies' => '16'],
-            ],
-            [
-                'author' => __('messages.mia_carter'),
-                'pet' => __('messages.scout'),
-                'time' => __('messages.4_days_ago'),
-                'datetime' => '2026-07-25T16:00:00-07:00',
-                'body' => __('messages.after_a_calm_neighborhood_walk_scout_claimed_the_porch_and_watched_the_trees_until_dinner'),
-                'image' => 'https://images.unsplash.com/photo-1621169225409-5de158d10015?auto=format&fit=crop&w=1200&h=900&q=85',
-                'image_small' => 'https://images.unsplash.com/photo-1621169225409-5de158d10015?auto=format&fit=crop&w=576&h=432&q=80',
-                'image_medium' => 'https://images.unsplash.com/photo-1621169225409-5de158d10015?auto=format&fit=crop&w=900&h=675&q=82',
-                'image_alt' => __('messages.scout_resting_on_a_wooden_porch'),
-                'tags' => [__('messages.slow_afternoon'), __('messages.small_wins')],
-                'stats' => ['paws' => '121', 'replies' => '21'],
-            ],
-        ];
+        return [];
     }
 
     /**

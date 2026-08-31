@@ -7,7 +7,6 @@ namespace App\Http\Controllers;
 use App\Models\ContentPublication;
 use App\Models\User;
 use App\Services\ContentFeedPresenter;
-use App\Services\ProfilePresenter;
 use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
@@ -19,7 +18,6 @@ final class ContentPublicationController extends Controller
         ContentPublication $contentPublication,
         Gate $gate,
         ContentFeedPresenter $presenter,
-        ProfilePresenter $profiles,
     ): View {
         $contentPublication->loadMissing([
             'publishingActor' => fn ($query) => $query->directoryFields(),
@@ -43,7 +41,6 @@ final class ContentPublicationController extends Controller
         );
 
         return view('content.show', [
-            'owner' => $profiles->owner(),
             'page_title' => $title,
             'publication' => [...$publication, 'title' => $title],
         ]);

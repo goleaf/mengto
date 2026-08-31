@@ -1,3 +1,3 @@
-<x-app-shell :owner="$owner" :title="$title" :active-section="$activeSection">
+<x-app-shell :title="$title" :active-section="$activeSection">
     {{ $slot }}
 </x-app-shell>

@@ -22,7 +22,6 @@ use App\Services\PetProfileCache;
 use App\Services\PetProfileEventRecorder;
 use App\Services\PetProfileNameHistory;
 use App\Services\PetSizeCategoryNormalizer;
-use App\Services\PrototypeState;
 use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
@@ -63,7 +62,6 @@ final class UpdatePetProfileStep
     public function __construct(
         private readonly ForumActor $actor,
         private readonly Gate $gate,
-        private readonly PrototypeState $state,
         private readonly PetProfileAccess $access,
         private readonly PetProfileEventRecorder $events,
         private readonly PetProfileCache $cache,
@@ -215,14 +213,6 @@ final class UpdatePetProfileStep
                     $user->id,
                 );
             }
-
-            $profileData = $locked->profile_data ?? [];
-            $this->state->updatePet([
-                'name' => $locked->name,
-                'story' => is_string($profileData['story'] ?? null) ? $profileData['story'] : '',
-                'status' => is_string($profileData['status'] ?? null) ? $profileData['status'] : '',
-                'breed' => $locked->breed ?? '',
-            ], $locked->slug);
 
             $manager = $this->access->membership($locked, $user);
             $this->events->record(

@@ -1,5 +1,4 @@
 <x-app-shell
-    :owner="$owner"
     :title="$page_title"
     :active-section="$active_section"
 >
@@ -32,6 +31,8 @@
             :question-url="$question_url"
             :claim-url="$claim_url"
             :event-url="$event_url"
+            :pet-options="$pet_options"
+            :default-pet-key="$default_pet_key"
         />
     </x-page-stack>
 </x-app-shell>

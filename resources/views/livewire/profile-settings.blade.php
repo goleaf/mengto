@@ -6,7 +6,7 @@
         heading-id="profile-settings-heading"
         :action-label="__('auth.settings.back')"
         action-icon="arrow-left"
-        :action-href="route('profile.mia')"
+        :action-href="$this->profileUrl"
     />
 
     <div class="grid min-w-0 gap-5 lg:grid-cols-[minmax(0,2fr)_minmax(17rem,1fr)] lg:items-start">

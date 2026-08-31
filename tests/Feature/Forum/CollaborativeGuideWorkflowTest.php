@@ -128,7 +128,7 @@ test('an invalid direct workflow transition is rejected without side effects', f
 test('popular forum content is never converted into official guidance automatically', function () {
     $topic = ForumTopic::factory()->resolved()->create([
         'author_id' => $this->authenticatedUser->id,
-        'author_key' => 'mia-carter',
+        'author_key' => 'test-member',
     ]);
     $answer = ForumAnswer::factory()->create([
         'topic_id' => $topic->id,

@@ -27,8 +27,7 @@ final class ComposerCatalog
             'post' => $this->post($context),
             'post-edit' => $this->post($context, true),
             'delete-post' => $this->deletePost($context),
-            'group' => $this->group(),
-            'walk' => $this->walk(),
+            'group' => $this->group($context),
             'pet' => $this->pet(),
             'place' => $this->place(),
             'place-correction' => $this->placeCorrection($context),
@@ -36,10 +35,8 @@ final class ComposerCatalog
             'place-review' => $this->placeReview($context),
             'place-question' => $this->placeQuestion($context),
             'place-claim' => $this->placeClaim($context),
-            'message' => $this->message(),
             'profile' => $this->profile($owner),
             'pet-profile' => $this->petProfile($pet),
-            'profile-privacy' => $this->profilePrivacy($context, $visibilityOptions),
             'pet-privacy' => $this->petPrivacy($pet, $context, $visibilityOptions),
             'report-profile' => $this->profileReport($context),
             'report-post' => $this->postReport($context),
@@ -68,6 +65,16 @@ final class ComposerCatalog
             }
         }
 
+        $identities = is_array($context['identities'] ?? null)
+            ? $context['identities']
+            : [];
+        $defaultIdentity = (string) array_key_first($identities);
+        $selectedIdentity = (string) ($post['identity'] ?? $defaultIdentity);
+
+        if (! array_key_exists($selectedIdentity, $identities)) {
+            $selectedIdentity = $defaultIdentity;
+        }
+
         return $this->definition(
             eyebrow: __('messages.neighborhood_feed'),
             title: $editing ? __('messages.edit_your_publication') : __('messages.create_a_publication'),
@@ -82,10 +89,10 @@ final class ComposerCatalog
                     'identity',
                     __('messages.publish_as'),
                     'select',
-                    (string) ($post['identity'] ?? 'mia'),
+                    $selectedIdentity,
                     '',
                     required: true,
-                    options: $context['identities'] ?? [],
+                    options: $identities,
                 ),
                 $this->field(
                     'format',
@@ -177,8 +184,13 @@ final class ComposerCatalog
     /**
      * @return array<string, mixed>
      */
-    private function group(): array
+    private function group(array $context): array
     {
+        $identities = is_array($context['identities'] ?? null)
+            ? $context['identities']
+            : [];
+        $defaultIdentity = (string) array_key_first($identities);
+
         return $this->definition(
             eyebrow: __('messages.community_builder'),
             title: __('messages.create_a_focused_group'),
@@ -239,15 +251,10 @@ final class ComposerCatalog
                     'pet_identity',
                     __('messages.participating_profiles'),
                     'select',
-                    'all',
+                    $defaultIdentity,
                     '',
                     required: true,
-                    options: [
-                        'mia' => __('messages.mia_only'),
-                        'scout' => __('messages.mia_with_scout'),
-                        'nori' => __('messages.mia_with_nori'),
-                        'all' => __('messages.mia_with_scout_and_nori'),
-                    ],
+                    options: $identities,
                 ),
                 $this->field(
                     'posting_policy',
@@ -264,56 +271,6 @@ final class ComposerCatalog
                 ),
                 $this->field('body', __('messages.description'), 'textarea', '', __('messages.who_is_this_group_for_and_what_belongs_here'), required: true),
                 $this->field('rules', __('messages.first_community_rules'), 'textarea', '', __('messages.add_privacy_safety_promotion_and_respectful_conversation_boundaries'), required: true),
-            ],
-        );
-    }
-
-    /**
-     * @return array<string, mixed>
-     */
-    private function walk(): array
-    {
-        return $this->definition(
-            eyebrow: __('messages.walk_planner'),
-            title: __('messages.plan_a_neighborhood_walk'),
-            description: __('messages.set_a_calm_route_clear_timing_and_an_easy_pace_before_sending_the_plan_to_a_neighbor'),
-            action: 'create-walk-plan',
-            submitLabel: __('messages.save_walk_draft'),
-            submitIcon: 'calendar-plus',
-            cancelRoute: 'walks.index',
-            activeSection: 'meetups',
-            fields: [
-                $this->field(
-                    'target',
-                    __('messages.walking_with'),
-                    'select',
-                    'mochi',
-                    '',
-                    required: true,
-                    options: [
-                        'mochi' => __('messages.ari_and_mochi'),
-                        'juniper' => __('messages.noah_and_juniper'),
-                        'scout' => __('messages.scout_and_mia'),
-                    ],
-                ),
-                $this->field('title', __('messages.plan_name'), 'text', '', __('messages.example_early_fields_park_loop'), required: true),
-                $this->field('date', __('messages.date'), 'date', '', '', required: true, min: today()->format('Y-m-d')),
-                $this->field('time', __('messages.start_time'), 'time', '08:30', '', required: true),
-                $this->field('location', __('messages.meeting_point'), 'text', '', __('messages.park_gate_quiet_corner_or_familiar_block'), required: true),
-                $this->field(
-                    'detail',
-                    __('messages.pace'),
-                    'select',
-                    __('messages.easy_pace_30_min'),
-                    '',
-                    options: [
-                        'Easy pace, 20 min' => __('messages.easy_pace_20_min'),
-                        'Easy pace, 30 min' => __('messages.easy_pace_30_min'),
-                        'Steady pace, 45 min' => __('messages.steady_pace_45_min'),
-                        'Sniff-friendly, no time limit' => __('messages.sniff_friendly_no_time_limit'),
-                    ],
-                ),
-                $this->field('body', __('messages.routine_notes'), 'textarea', '', __('messages.add_greetings_triggers_water_stops_or_a_quiet_finish'), required: true),
             ],
         );
     }
@@ -342,40 +299,6 @@ final class ComposerCatalog
     }
 
     /**
-     * @return array<string, mixed>
-     */
-    private function message(): array
-    {
-        return $this->definition(
-            eyebrow: __('messages.neighborhood_inbox'),
-            title: __('messages.start_a_new_message'),
-            description: __('messages.write_a_clear_note_about_a_walk_care_question_or_local_plan'),
-            action: 'send-message',
-            submitLabel: __('messages.send_message'),
-            submitIcon: 'send',
-            cancelRoute: 'messages.index',
-            activeSection: 'messages',
-            fields: [
-                $this->field(
-                    'target',
-                    'To',
-                    'select',
-                    'ari',
-                    '',
-                    required: true,
-                    options: [
-                        'ari' => __('messages.ari_jensen_and_mochi'),
-                        'lena' => __('messages.lena_brooks_and_pip'),
-                        'noah' => __('messages.noah_patel_and_juniper'),
-                        'priya' => __('messages.priya_shah_and_clover'),
-                    ],
-                ),
-                $this->field('body', __('messages.message'), 'textarea', '', __('messages.write_your_message'), required: true),
-            ],
-        );
-    }
-
-    /**
      * @param  array<string, mixed>  $owner
      * @return array<string, mixed>
      */
@@ -388,14 +311,12 @@ final class ComposerCatalog
             action: 'update-profile',
             submitLabel: __('messages.save_profile'),
             submitIcon: 'check',
-            cancelRoute: 'profile.mia',
+            cancelRoute: 'members.show',
             activeSection: 'profile',
             fields: [
                 $this->field('title', __('messages.name'), 'text', $owner['name'], __('messages.your_name'), required: true, autocomplete: 'name'),
-                $this->field('location', __('messages.location'), 'text', $owner['location'], __('messages.neighborhood_and_city'), required: true, autocomplete: 'address-level2'),
-                $this->field('detail', __('messages.availability'), 'text', $owner['status'], __('messages.when_are_you_open_to_meeting')),
-                $this->field('body', __('messages.about_you'), 'textarea', $owner['bio'], __('messages.share_your_routines_and_interests'), required: true),
             ],
+            cancelParameters: $owner['profile_route_parameters'],
         );
     }
 
@@ -425,34 +346,6 @@ final class ComposerCatalog
     }
 
     /**
-     * @param  array<string, mixed>  $context
-     * @param  array<string, string>  $visibilityOptions
-     * @return array<string, mixed>
-     */
-    private function profilePrivacy(array $context, array $visibilityOptions): array
-    {
-        $privacy = $context['owner_privacy'] ?? [];
-
-        return $this->definition(
-            eyebrow: __('messages.owner_profile_privacy'),
-            title: __('messages.choose_what_mia_shares'),
-            description: __('messages.each_profile_area_has_its_own_audience_exact_addresses_and_private_contact_details_stay_unavailable'),
-            action: 'update-profile-privacy',
-            submitLabel: __('messages.save_owner_privacy'),
-            submitIcon: 'shield-check',
-            cancelRoute: 'profile.mia',
-            activeSection: 'profile',
-            fields: [
-                $this->field('location_visibility', __('messages.city_and_area'), 'select', (string) ($privacy['location'] ?? 'public'), '', required: true, options: $visibilityOptions),
-                $this->field('pets_visibility', __('messages.pet_list'), 'select', (string) ($privacy['pets'] ?? 'public'), '', required: true, options: $visibilityOptions),
-                $this->field('posts_visibility', __('messages.owner_posts'), 'select', (string) ($privacy['posts'] ?? 'public'), '', required: true, options: $visibilityOptions),
-                $this->field('friends_visibility', __('messages.friend_list'), 'select', (string) ($privacy['friends'] ?? 'followers'), '', required: true, options: $visibilityOptions),
-                $this->field('activity_visibility', __('messages.activity_status'), 'select', (string) ($privacy['activity'] ?? 'followers'), '', required: true, options: $visibilityOptions),
-            ],
-        );
-    }
-
-    /**
      * @param  array<string, mixed>  $pet
      * @param  array<string, mixed>  $context
      * @param  array<string, string>  $visibilityOptions
@@ -465,7 +358,7 @@ final class ComposerCatalog
         return $this->definition(
             eyebrow: __('messages.pet_profile_privacy'),
             title: __('presentation.choose_sharing_for', ['name' => $pet['name']]),
-            description: __('messages.pet_visibility_is_independent_from_mia_profile_visibility_and_can_be_changed_at_any_time'),
+            description: __('messages.pet_visibility_can_be_changed_at_any_time'),
             action: 'update-pet-privacy',
             submitLabel: __('messages.save_pet_privacy'),
             submitIcon: 'shield-check',
@@ -820,13 +713,10 @@ final class ComposerCatalog
                     'place_pet',
                     __('messages.visited_with'),
                     'select',
-                    'scout',
+                    (string) array_key_first($context['pet_options'] ?? []),
                     '',
                     required: true,
-                    options: [
-                        'scout' => __('messages.scout'),
-                        'nori' => __('messages.nori'),
-                    ],
+                    options: $context['pet_options'] ?? [],
                 ),
                 $this->field(
                     'place_review_criterion',

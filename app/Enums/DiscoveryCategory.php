@@ -44,7 +44,7 @@ enum DiscoveryCategory: string
         return match ($this) {
             self::All => 'discover.index',
             self::Events => 'meetups.index',
-            self::Groups => 'forum.groups.index',
+            self::Groups => 'groups.index',
             self::Places => 'places.index',
             self::Experts => 'experts.index',
             self::Pets => 'pets.index',

@@ -72,7 +72,7 @@ test('the lost and found directory renders its system copy in the authenticated 
     $this->authenticatedUser->update(['locale' => $locale]);
 
     SearchCase::factory()->create([
-        'pet_name' => 'Scout Locale Test',
+        'pet_name' => 'Birch Locale Test',
         'species' => 'dog',
         'cover_url' => null,
     ]);

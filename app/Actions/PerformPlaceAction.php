@@ -6,11 +6,11 @@ namespace App\Actions;
 
 use App\Models\Place;
 use App\Models\User;
+use App\Services\PetProfileCatalog;
 use App\Services\PlaceCatalog;
 use App\Services\PlaceState;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
 final class PerformPlaceAction
@@ -18,6 +18,7 @@ final class PerformPlaceAction
     public function __construct(
         private readonly PlaceCatalog $catalog,
         private readonly PlaceState $state,
+        private readonly PetProfileCatalog $pets,
         private readonly ResolveAccessiblePlace $resolvePlace,
         private readonly SubmitPlaceQuestion $submitQuestion,
         private readonly AnswerPlaceQuestion $answerQuestion,
@@ -39,7 +40,6 @@ final class PerformPlaceAction
             'clear-place-history' => $this->clearHistory(),
             'set-place-location' => $this->setLocation($data),
             'clear-place-location' => $this->clearLocation(),
-            'invite-to-place' => $this->invite($data),
             'confirm-place-warning' => $this->confirmWarning($data),
             'resolve-place-warning' => $this->resolveWarning($data),
             'answer-place-question' => $this->answerQuestion($data),
@@ -114,7 +114,8 @@ final class PerformPlaceAction
     private function markVisited(array $data): array
     {
         $place = $this->requirePlace($data);
-        $this->state->markVisited($place['key'], (string) ($data['place_pet'] ?? 'scout'));
+        $pet = $this->requireManagedPet((string) ($data['place_pet'] ?? ''));
+        $this->state->markVisited($place['key'], $pet['profile_key']);
 
         return $this->placeResult($place, __('messages.visit_saved_privately_to_your_history'), $data);
     }
@@ -126,9 +127,10 @@ final class PerformPlaceAction
     private function checkIn(array $data): array
     {
         $place = $this->requirePlace($data);
+        $pet = $this->requireManagedPet((string) ($data['place_pet'] ?? ''));
         $this->state->checkIn(
             $place['key'],
-            (string) ($data['place_pet'] ?? 'scout'),
+            $pet['profile_key'],
             (string) ($data['place_visibility'] ?? 'private'),
         );
 
@@ -198,22 +200,6 @@ final class PerformPlaceAction
             'route' => 'places.index',
             'parameters' => ['area' => 'Vilnius'],
         ];
-    }
-
-    /**
-     * @param  array<string, mixed>  $data
-     * @return array{message: string, route: string, parameters: array<string, string>}
-     */
-    private function invite(array $data): array
-    {
-        $place = $this->requirePlace($data);
-        $this->state->addInvitation($place['key'], [
-            'recipient' => (string) $data['place_recipient'],
-            'proposed_date' => (string) ($data['place_visit_date'] ?? ''),
-            'body' => trim((string) ($data['body'] ?? '')),
-        ]);
-
-        return $this->placeResult($place, __('messages.private_place_invitation_sent'), $data);
     }
 
     /**
@@ -327,10 +313,11 @@ final class PerformPlaceAction
     {
         $actor = $this->requireActor();
         $place = $this->requirePlace($data);
+        $pet = $this->requireManagedPet((string) ($data['place_pet'] ?? ''));
         $this->state->addReview($place['key'], $actor, [
             'rating' => (int) $data['place_rating'],
             'body' => $this->requiredText($data, 'body'),
-            'visited_with' => Str::headline((string) ($data['place_pet'] ?? 'scout')),
+            'visited_with' => $pet['name'],
             'criterion' => (string) ($data['place_review_criterion'] ?? 'overall'),
             'anonymous' => ($data['place_anonymous'] ?? 'no') === 'yes',
         ]);
@@ -440,6 +427,21 @@ final class PerformPlaceAction
         }
 
         return $actor;
+    }
+
+    /** @return array<string, mixed> */
+    private function requireManagedPet(string $key): array
+    {
+        $user = $this->requireActor();
+        $pet = $key !== '' ? $this->pets->findFor($user, $key) : null;
+
+        if ($pet === null) {
+            throw ValidationException::withMessages([
+                'place_pet' => __('messages.choose_a_pet_profile_you_manage'),
+            ]);
+        }
+
+        return $pet;
     }
 
     /**

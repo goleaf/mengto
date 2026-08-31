@@ -1,4 +1,4 @@
-<x-app-shell :owner="$owner" title="{{ __('pet_workspace.browser_title') }}" active-section="pets">
+<x-app-shell title="{{ __('pet_workspace.browser_title') }}" active-section="pets">
     <x-page-stack data-section="pet-profile-workspace">
         <x-page-header
             :eyebrow="$summary['eyebrow']"

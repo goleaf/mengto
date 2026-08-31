@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 
-test('the member feed preview renders as a functional app shell', function () {
+test('the member feed preview renders the authenticated shell without fabricated feed records', function () {
     expect(Route::has('preview.feed'))->toBeTrue();
 
     $response = $this->get(route('preview.feed'));
@@ -15,14 +15,15 @@ test('the member feed preview renders as a functional app shell', function () {
         ->assertSee('data-section="meetups"', false)
         ->assertSee('data-section="groups"', false)
         ->assertSee('data-section="tips"', false)
-        ->assertSee('<form', false)
+        ->assertSee($this->authenticatedUser->name)
+        ->assertDontSee('Mia Carter')
+        ->assertDontSee('Scout')
+        ->assertDontSee('Nori')
         ->assertDontSee('Laravel');
 
     $xpath = responseXPath($response);
 
-    expect($xpath->query('//main//form')->length)->toBeGreaterThan(0)
-        ->and($xpath->query('//main//button[not(@disabled)]')->length)->toBeGreaterThan(0)
-        ->and($xpath->query('//header[@data-site-header]/*[@data-header-utility]')->length)->toBe(1)
+    expect($xpath->query('//header[@data-site-header]/*[@data-header-utility]')->length)->toBe(1)
         ->and($xpath->query('//header[@data-site-header]/*[@data-header-primary]')->length)->toBe(1)
         ->and($xpath->query('//header[@data-site-header]//nav[@data-navigation-variant="desktop"]')->length)->toBe(1)
         ->and($xpath->query('//header[@data-site-header]//nav[@data-navigation-variant="desktop"]//a[@data-nav-item]')->length)->toBe(13)

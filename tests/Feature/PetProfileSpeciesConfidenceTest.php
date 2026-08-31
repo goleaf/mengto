@@ -77,7 +77,7 @@ it('lets an authorized manager correct a possible identification without changin
         ->for($owner)
         ->possibleSpecies('dog')
         ->draft()
-        ->create(['name' => 'Scout']);
+        ->create(['name' => 'Birch']);
     PetProfileManager::factory()
         ->for($profile, 'profile')
         ->for($owner)

@@ -15,7 +15,6 @@ use Illuminate\Support\Str;
 class OrderPresenter
 {
     public function __construct(
-        private readonly ProfilePresenter $profiles,
         private readonly ForumActor $actor,
         private readonly ListingTaxonomy $taxonomy,
         private readonly LocaleFormatter $formatter,
@@ -72,7 +71,6 @@ class OrderPresenter
         $listingUrl = route('marketplace.show', $listing);
 
         return [
-            'owner' => $this->profiles->owner(),
             'page_title' => __('presentation.marketplace_order_title', ['reference' => $order->reference]),
             'active_section' => 'marketplace',
             'listing' => [

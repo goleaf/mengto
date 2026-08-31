@@ -7,8 +7,8 @@ namespace App\Livewire;
 use App\Actions\UpdateProfilePreferences;
 use App\Livewire\Forms\ProfilePreferencesForm;
 use App\Models\User;
+use App\Services\AuthenticatedUserPresenter;
 use App\Services\EmailVerificationMode;
-use App\Services\ProfilePresenter;
 use Illuminate\Contracts\Auth\Factory as AuthFactory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\App;
@@ -30,7 +30,7 @@ final class ProfileSettings extends Component
 
     private EmailVerificationMode $emailVerification;
 
-    private ProfilePresenter $profiles;
+    private AuthenticatedUserPresenter $authenticatedUsers;
 
     private UpdateProfilePreferences $updatePreferences;
 
@@ -38,13 +38,13 @@ final class ProfileSettings extends Component
 
     public function boot(
         AuthFactory $auth,
+        AuthenticatedUserPresenter $authenticatedUsers,
         EmailVerificationMode $emailVerification,
-        ProfilePresenter $profiles,
         UpdateProfilePreferences $updatePreferences,
     ): void {
         $this->auth = $auth;
+        $this->authenticatedUsers = $authenticatedUsers;
         $this->emailVerification = $emailVerification;
-        $this->profiles = $profiles;
         $this->updatePreferences = $updatePreferences;
     }
 
@@ -93,6 +93,12 @@ final class ProfileSettings extends Component
             ->all();
     }
 
+    #[Computed]
+    public function profileUrl(): string
+    {
+        return $this->authenticatedUsers->present($this->requireUser())['profile_url'];
+    }
+
     public function save(): void
     {
         $user = $this->updatePreferences->handle(
@@ -112,7 +118,6 @@ final class ProfileSettings extends Component
     {
         return view('livewire.profile-settings')
             ->layout('components.livewire-app-layout', [
-                'owner' => $this->profiles->owner(),
                 'title' => __('auth.settings.title'),
                 'activeSection' => 'profile',
             ]);

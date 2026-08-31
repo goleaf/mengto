@@ -105,9 +105,9 @@ final class GroupContentCatalog
             [
                 'key' => $group['key'].'-question',
                 'format' => __('messages.question'),
-                'author' => __('messages.mia_carter'),
-                'role' => __('messages.member_with_scout_and_nori'),
-                'initials' => 'MC',
+                'author' => __('messages.member'),
+                'role' => __('messages.member'),
+                'initials' => 'M',
                 'tone' => 'mint',
                 'time' => __('messages.yesterday_6_45_pm'),
                 'datetime' => '2026-07-28T18:45:00-07:00',
@@ -219,9 +219,9 @@ final class GroupContentCatalog
                 'badge' => $group['official'] ? __('messages.verified_organizer') : __('messages.owner'),
             ],
             [
-                'name' => __('messages.mia_carter'),
-                'detail' => __('messages.member_scout_and_nori'),
-                'initials' => 'MC',
+                'name' => __('messages.member'),
+                'detail' => __('messages.member'),
+                'initials' => 'M',
                 'tone' => 'mint',
                 'badge' => __('messages.active_member'),
             ],
@@ -248,36 +248,7 @@ final class GroupContentCatalog
      */
     private function pets(array $group): array
     {
-        return [
-            [
-                'name' => __('messages.scout'),
-                'detail' => __('messages.border_collie_active_learner'),
-                'image' => 'https://images.unsplash.com/photo-1553882809-a4f57e59501d?auto=format&fit=crop&w=240&h=240&q=80',
-                'image_alt' => __('messages.scout_a_black_and_white_border_collie'),
-                'status' => __('messages.open_to_calm_group_activities'),
-            ],
-            [
-                'name' => __('messages.nori'),
-                'detail' => __('messages.tabby_cat_indoor_enrichment'),
-                'image' => 'https://images.unsplash.com/photo-1574158622682-e40e69881006?auto=format&fit=crop&w=240&h=240&q=80',
-                'image_alt' => __('messages.nori_a_tabby_cat'),
-                'status' => __('messages.participates_through_mia'),
-            ],
-            [
-                'name' => __('messages.mochi'),
-                'detail' => __('messages.shiba_mix_neighborhood_walks'),
-                'image' => 'https://images.unsplash.com/photo-1612536057832-2ff7ead58194?auto=format&fit=crop&w=240&h=240&q=80',
-                'image_alt' => __('messages.mochi_a_shiba_mix'),
-                'status' => __('messages.event_regular'),
-            ],
-            [
-                'name' => __('messages.olive'),
-                'detail' => __('messages.corgi_gentle_introductions'),
-                'image' => 'https://images.unsplash.com/photo-1612195583950-b8fd34c87093?auto=format&fit=crop&w=240&h=240&q=80',
-                'image_alt' => __('messages.olive_a_corgi'),
-                'status' => __('messages.new_member'),
-            ],
-        ];
+        return [];
     }
 
     /**
@@ -361,10 +332,10 @@ final class GroupContentCatalog
                 'time' => __('messages.9_18_am'),
             ],
             [
-                'name' => __('messages.mia'),
-                'initials' => 'MC',
+                'name' => __('messages.member'),
+                'initials' => 'M',
                 'tone' => 'mint',
-                'body' => __('messages.thank_you_i_will_bring_scout_s_own_water_bowl_and_start_with_a_little_distance'),
+                'body' => __('messages.shared_routines'),
                 'time' => __('messages.9_24_am'),
             ],
             [

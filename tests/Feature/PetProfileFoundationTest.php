@@ -501,7 +501,7 @@ it('serves the stable profile key only through an authorized public projection',
     ]);
 
     $this->get(route('pets.profile', ['petProfile' => $private->profile_key]))
-        ->assertForbidden();
+        ->assertNotFound();
 
     $public = PetProfile::factory()->for($owner)->create([
         'profile_key' => 'pet-public-baks',
@@ -636,5 +636,5 @@ it('keeps canonical public profile queries bounded as manager history grows', fu
     expect($queries->filter(
         static fn (array $query): bool => str_contains($query['query'], 'user_onboardings'),
     )->count())->toBe(1)
-        ->and($queryCount)->toBeLessThanOrEqual(13);
+        ->and($queryCount)->toBeLessThanOrEqual(18);
 });

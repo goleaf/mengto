@@ -91,7 +91,7 @@ test('registration ignores privilege and identity fields outside its allow list'
 
 test('private medical upload rejects executable content disguised as an image', function () {
     Storage::fake('local');
-    $record = MedicalRecord::factory()->create(['owner_key' => 'mia-carter']);
+    $record = MedicalRecord::factory()->create(['owner_key' => 'test-member']);
     $temporaryPath = tempnam(sys_get_temp_dir(), 'security-upload-');
 
     if ($temporaryPath === false) {
@@ -127,7 +127,7 @@ test('private medical upload rejects executable content disguised as an image', 
 
 test('nested private document identifiers fail closed without an existence oracle', function () {
     Storage::fake('local');
-    $ownedRecord = MedicalRecord::factory()->create(['owner_key' => 'mia-carter']);
+    $ownedRecord = MedicalRecord::factory()->create(['owner_key' => 'test-member']);
     $foreignRecord = MedicalRecord::factory()->create(['owner_key' => 'another-owner']);
     $foreignDocument = MedicalDocument::factory()->for($foreignRecord)->create([
         'file_path' => 'medical-records/foreign/private.pdf',

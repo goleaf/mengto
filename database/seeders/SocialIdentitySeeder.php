@@ -6,12 +6,18 @@ namespace Database\Seeders;
 
 use App\Models\PetProfile;
 use App\Models\User;
+use Database\Seeders\Concerns\GuardsDemoSeeding;
 use Illuminate\Database\Seeder;
+use LogicException;
 
 final class SocialIdentitySeeder extends Seeder
 {
+    use GuardsDemoSeeding;
+
     public function run(): void
     {
+        $this->assertDemoSeedingIsAllowed();
+
         $user = User::query()
             ->select(['id', 'actor_key'])
             ->where('actor_key', 'mia-carter')
@@ -48,16 +54,21 @@ final class SocialIdentitySeeder extends Seeder
     /** @param array<string, mixed> $attributes */
     private function profile(User $user, array $attributes): void
     {
-        PetProfile::query()->updateOrCreate(
-            ['profile_key' => $attributes['profile_key']],
-            [
-                ...$attributes,
-                'user_id' => $user->id,
-                'visibility' => 'public',
-                'status' => 'active',
-                'is_discoverable' => true,
-                'published_at' => '2026-07-31 12:00:00',
-            ],
-        );
+        $profile = PetProfile::query()->firstOrNew([
+            'profile_key' => $attributes['profile_key'],
+        ]);
+
+        if ($profile->exists && $profile->user_id !== $user->id) {
+            throw new LogicException('Demo pet profile key is already owned by another account.');
+        }
+
+        $profile->forceFill([
+            ...$attributes,
+            'user_id' => $user->id,
+            'visibility' => 'public',
+            'status' => 'active',
+            'is_discoverable' => true,
+            'published_at' => '2026-07-31 12:00:00',
+        ])->saveOrFail();
     }
 }

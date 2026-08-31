@@ -12,7 +12,6 @@ final class GroupPresenter
         private readonly GroupCatalog $catalog,
         private readonly GroupContentCatalog $content,
         private readonly GroupState $state,
-        private readonly ProfilePresenter $profiles,
         private readonly CreatedContentPresenter $created,
         private readonly LocaleFormatter $formatter,
     ) {}
@@ -49,7 +48,6 @@ final class GroupPresenter
         ));
 
         return [
-            'owner' => $this->profiles->owner(),
             'page_title' => __('groups.directory.page_title'),
             'active_section' => 'groups',
             'summary' => [
@@ -95,7 +93,6 @@ final class GroupPresenter
         $content['poll'] = $this->decoratePoll($group, $content['poll'], $tab);
 
         return [
-            'owner' => $this->profiles->owner(),
             'page_title' => __('presentation.brand_title', ['title' => $group['name']]),
             'active_section' => 'groups',
             'group' => [

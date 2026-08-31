@@ -41,7 +41,7 @@ test('an owner can connect a private multi-pet device with encrypted identifiers
     $device = SmartDevice::query()->firstOrFail();
 
     expect($device)
-        ->owner_key->toBe('mia-carter')
+        ->owner_key->toBe('test-member')
         ->privacy->toBe('private')
         ->type->toBe(DeviceType::Waterer)
         ->serial_number->toBe('PRIVATE-SERIAL-1204')
@@ -57,7 +57,7 @@ test('an owner can connect a private multi-pet device with encrypted identifiers
 
 test('precise device pages and commands require recent password confirmation', function () {
     $device = SmartDevice::factory()->create([
-        'owner_key' => 'mia-carter',
+        'owner_key' => 'test-member',
         'type' => DeviceType::GpsTracker,
     ]);
     session()->forget('auth.password_confirmed_at');
@@ -76,7 +76,7 @@ test('precise device pages and commands require recent password confirmation', f
 
 test('device pages are owner-only and return private response headers', function () {
     $owned = SmartDevice::factory()->create([
-        'owner_key' => 'mia-carter',
+        'owner_key' => 'test-member',
         'name' => 'Private GPS',
         'type' => DeviceType::GpsTracker,
     ]);
@@ -97,17 +97,17 @@ test('device pages are owner-only and return private response headers', function
 
 test('readings are encrypted idempotent and shared devices do not invent a pet', function () {
     $device = SmartDevice::factory()->create([
-        'owner_key' => 'mia-carter',
+        'owner_key' => 'test-member',
         'type' => DeviceType::Waterer,
     ]);
     DevicePetAssignment::factory()->for($device)->create([
         'pet_profile_key' => 'scout',
-        'pet_name' => 'Scout',
+        'pet_name' => 'Birch',
         'is_primary' => true,
     ]);
     DevicePetAssignment::factory()->for($device)->create([
         'pet_profile_key' => 'nori',
-        'pet_name' => 'Nori',
+        'pet_name' => 'Maple',
         'is_primary' => false,
     ]);
     $payload = deviceReadingPayload([
@@ -138,7 +138,7 @@ test('readings are encrypted idempotent and shared devices do not invent a pet',
 
 test('stale reconnect telemetry is grouped without discarding source readings', function () {
     $device = SmartDevice::factory()->create([
-        'owner_key' => 'mia-carter',
+        'owner_key' => 'test-member',
         'type' => DeviceType::Waterer,
     ]);
     $recordedAt = now()->subMinutes(20)->startOfMinute();
@@ -165,12 +165,12 @@ test('stale reconnect telemetry is grouped without discarding source readings', 
 
 test('remote commands are idempotent and feeder duplication requires an override', function () {
     $device = SmartDevice::factory()->create([
-        'owner_key' => 'mia-carter',
+        'owner_key' => 'test-member',
         'type' => DeviceType::Feeder,
     ]);
     DevicePetAssignment::factory()->for($device)->create([
         'pet_profile_key' => 'nori',
-        'pet_name' => 'Nori',
+        'pet_name' => 'Maple',
         'is_primary' => true,
     ]);
     $key = (string) Str::uuid();
@@ -209,7 +209,7 @@ test('remote commands are idempotent and feeder duplication requires an override
 
 test('high-impact and prohibited commands are guarded server-side', function () {
     $gps = SmartDevice::factory()->create([
-        'owner_key' => 'mia-carter',
+        'owner_key' => 'test-member',
         'type' => DeviceType::GpsTracker,
     ]);
 
@@ -231,7 +231,7 @@ test('high-impact and prohibited commands are guarded server-side', function () 
 
 test('physical movement commands fail closed without fresh clear interlocks', function () {
     $door = SmartDevice::factory()->create([
-        'owner_key' => 'mia-carter',
+        'owner_key' => 'test-member',
         'type' => DeviceType::SmartDoor,
     ]);
 
@@ -267,7 +267,7 @@ test('physical movement commands fail closed without fresh clear interlocks', fu
 
 test('a theft report preserves owner access to lost mode', function () {
     $gps = SmartDevice::factory()->create([
-        'owner_key' => 'mia-carter',
+        'owner_key' => 'test-member',
         'type' => DeviceType::GpsTracker,
         'is_reported_stolen' => true,
     ]);
@@ -284,7 +284,7 @@ test('a theft report preserves owner access to lost mode', function () {
 
 test('owners can configure retention and record an encrypted device lifecycle', function () {
     $device = SmartDevice::factory()->create([
-        'owner_key' => 'mia-carter',
+        'owner_key' => 'test-member',
         'firmware_version' => '1.0.0',
     ]);
     $oldLocation = DeviceReading::factory()->for($device)->create([
@@ -344,11 +344,11 @@ test('owners can configure retention and record an encrypted device lifecycle', 
 
 test('safe-zone geometry is encrypted and only gps trackers accept zones', function () {
     $gps = SmartDevice::factory()->create([
-        'owner_key' => 'mia-carter',
+        'owner_key' => 'test-member',
         'type' => DeviceType::GpsTracker,
     ]);
     $feeder = SmartDevice::factory()->create([
-        'owner_key' => 'mia-carter',
+        'owner_key' => 'test-member',
         'type' => DeviceType::Feeder,
     ]);
     $payload = deviceSafeZonePayload();
@@ -374,7 +374,7 @@ test('safe-zone geometry is encrypted and only gps trackers accept zones', funct
 
 test('automation simulation records intent without sending a real command', function () {
     $gps = SmartDevice::factory()->create([
-        'owner_key' => 'mia-carter',
+        'owner_key' => 'test-member',
         'type' => DeviceType::GpsTracker,
     ]);
 
@@ -405,9 +405,9 @@ test('automation simulation records intent without sending a real command', func
 
 test('temporary device access is scoped masks home data expires by views and is revocable', function () {
     $device = SmartDevice::factory()->create([
-        'owner_key' => 'mia-carter',
+        'owner_key' => 'test-member',
         'type' => DeviceType::GpsTracker,
-        'name' => 'Scout Shared GPS',
+        'name' => 'Birch Shared GPS',
         'serial_number' => 'DO-NOT-SHARE-9911',
         'private_location_label' => 'Exact private bedroom shelf',
         'public_zone_label' => 'Home area',
@@ -511,15 +511,15 @@ test('unbound device access remains usable by an authenticated bearer other than
 });
 
 test('an owner can explicitly promote a device event into care as needs review', function () {
-    $device = SmartDevice::factory()->create(['owner_key' => 'mia-carter']);
+    $device = SmartDevice::factory()->create(['owner_key' => 'test-member']);
     CareJournal::factory()->create([
-        'owner_key' => 'mia-carter',
+        'owner_key' => 'test-member',
         'pet_profile_key' => 'scout',
-        'pet_name' => 'Scout',
+        'pet_name' => 'Birch',
     ]);
     $event = DeviceEvent::factory()->for($device)->create([
         'pet_profile_key' => 'scout',
-        'pet_name' => 'Scout',
+        'pet_name' => 'Birch',
         'type' => 'water-use',
         'title' => 'Water use needs confirmation',
         'summary' => 'Device detected water movement.',
@@ -540,19 +540,19 @@ test('an owner can explicitly promote a device event into care as needs review',
 
 test('an owner can explicitly promote a scale reading to health as non-clinical', function () {
     $device = SmartDevice::factory()->create([
-        'owner_key' => 'mia-carter',
+        'owner_key' => 'test-member',
         'type' => DeviceType::Scale,
-        'name' => 'Nori Home Scale',
+        'name' => 'Maple Home Scale',
     ]);
     $pet = PetProfile::factory()->for($this->authenticatedUser)->create([
         'profile_key' => 'nori',
         'slug' => 'nori',
-        'name' => 'Nori',
+        'name' => 'Maple',
     ]);
     MedicalRecord::factory()->forPetProfile($pet)->create();
     $reading = DeviceReading::factory()->for($device)->create([
         'pet_profile_key' => 'nori',
-        'pet_name' => 'Nori',
+        'pet_name' => 'Maple',
         'metric_type' => 'weight-grams',
         'numeric_value' => 4720,
         'unit' => 'g',
@@ -571,9 +571,9 @@ test('an owner can explicitly promote a scale reading to health as non-clinical'
 });
 
 test('device directory and detail queries remain bounded as telemetry grows', function () {
-    SmartDevice::factory()->count(8)->create(['owner_key' => 'mia-carter']);
+    SmartDevice::factory()->count(8)->create(['owner_key' => 'test-member']);
     $device = SmartDevice::factory()->create([
-        'owner_key' => 'mia-carter',
+        'owner_key' => 'test-member',
         'type' => DeviceType::GpsTracker,
     ]);
     DeviceReading::factory()->count(80)->for($device)->create();
@@ -607,7 +607,7 @@ test('the smart device seeder is idempotent and keeps shared readings honest', f
         ->where('external_event_id', 'water-shared-today')
         ->firstOrFail();
 
-    expect(SmartDevice::query()->where('owner_key', 'mia-carter')->count())->toBe(9)
+    expect(SmartDevice::query()->where('owner_key', 'test-member')->count())->toBe(9)
         ->and(DevicePetAssignment::query()->count())->toBe(12)
         ->and(DeviceReading::query()->count())->toBe(9)
         ->and(DeviceEvent::query()->count())->toBe(4)

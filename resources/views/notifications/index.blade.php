@@ -1,4 +1,4 @@
-<x-app-shell :owner="$owner" title="{{ __('ui.notifications_brand') }}" active-section="notifications">
+<x-app-shell title="{{ __('ui.notifications_brand') }}" active-section="notifications">
     <x-page-stack>
         <x-page-header
             :eyebrow="$summary['eyebrow']"
@@ -41,11 +41,13 @@
                     />
                 </x-content-panel>
 
-                <x-promo-card
-                    :item="$upcoming"
-                    section="activity-meetup"
-                    :attendees="$upcoming['attendees']"
-                />
+                @if ($upcoming !== null)
+                    <x-promo-card
+                        :item="$upcoming"
+                        section="activity-meetup"
+                        :attendees="$upcoming['attendees']"
+                    />
+                @endif
 
                 <x-notification-settings :settings="$settings" />
             </x-slot:sidebar>

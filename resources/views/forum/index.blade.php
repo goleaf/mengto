@@ -1,4 +1,4 @@
-<x-app-shell :owner="$owner" :title="$page_title" :active-section="$active_section">
+<x-app-shell :title="$page_title" :active-section="$active_section">
     <div class="forum-page">
         <x-page-header
             :eyebrow="__('ui.community_knowledge')"
@@ -12,7 +12,7 @@
                 <x-action-control :label="__('forum_expert_sessions.navigation.label')" icon="circle-help" :href="route('forum.expert-sessions.index')" variant="paper" size="regular" />
                 @auth
                     <x-action-control :label="__('forum_journals.navigation.label')" icon="notebook-tabs" :href="route('forum.journals.index')" variant="paper" size="regular" />
-                    <x-action-control :label="__('forum_groups.navigation.label')" icon="users" :href="route('forum.groups.index')" variant="paper" size="regular" />
+                    <x-action-control :label="__('forum_groups.navigation.label')" icon="users" :href="route('groups.index')" variant="paper" size="regular" />
                     <x-action-control :label="__('forum_mentorship.navigation.label')" icon="users-round" :href="route('forum.mentorship.index')" variant="paper" size="regular" />
                 @endauth
                 <x-action-control :label="__('ui.ask_a_question')" icon="square-pen" :href="route('forum.topics.create')" variant="primary" size="regular" />

@@ -235,7 +235,7 @@ test('topic create and update enforce active schema context attachments and vers
         'pet_key' => 'scout',
         'location' => 'Vilnius',
         'photos' => [UploadedFile::fake()->image('context.jpg', 64, 64)],
-        'photo_alt' => 'Scout resting on a blanket after a sound exercise.',
+        'photo_alt' => 'Birch resting on a blanket after a sound exercise.',
     ]))->assertRedirect();
 
     $topic = ForumTopic::query()->firstOrFail();
@@ -328,8 +328,8 @@ function runtimeSchemaTopicPayload(array $overrides = []): array
         'category' => 'behavior',
         'subcategory' => 'fear',
         'pet_key' => 'scout',
-        'title' => 'How can I help Scout stay calm around unfamiliar sounds?',
-        'body' => 'Scout becomes worried after sudden metallic sounds. I want a gradual plan that preserves distance, choice, and recovery while we track his response.',
+        'title' => 'How can I help Birch stay calm around unfamiliar sounds?',
+        'body' => 'Birch becomes worried after sudden metallic sounds. I want a gradual plan that preserves distance, choice, and recovery while we track his response.',
         'desired_answer' => 'step-by-step',
         'tags' => 'fear, sound, recovery',
         'location' => 'Vilnius',

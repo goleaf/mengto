@@ -4,7 +4,6 @@
     'activeFilter',
     'collections',
     'showStarter' => false,
-    'starterItems' => [],
 ])
 
 <div {{ $attributes->class('circle-dashboard') }}>
@@ -24,16 +23,7 @@
         label="{{ __('ui.filter_your_circle') }}"
     />
 
-    @if ($showStarter)
-        <x-media-starter
-            eyebrow="{{ __('ui.start_with_one_useful_thing') }}"
-            title="{{ __('ui.build_a_circle_around_real_routines') }}"
-            title-id="circle-starter-title"
-            description="{{ __('ui.save_a_useful_post_follow_a_familiar_neighbor_or_rsvp_to_a_comfortable_meetup_each_choice_will_return_here') }}"
-            :items="$starterItems"
-        />
-    @else
-        <div @class([
+    <div @class([
             'circle-collections',
             'circle-collections--single' => $activeFilter !== 'overview',
         ])>
@@ -52,6 +42,5 @@
                     action-icon="search"
                 />
             @endforelse
-        </div>
-    @endif
+    </div>
 </div>

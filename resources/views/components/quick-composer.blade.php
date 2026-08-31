@@ -1,12 +1,14 @@
-@props(['href', 'draftCount' => 0])
+@props(['href', 'owner', 'draftCount' => 0])
 
-<section class="quick-composer" aria-label="{{ __('ui.create_a_publication') }}">
+<section data-current-user-composer class="quick-composer" aria-label="{{ __('ui.create_a_publication') }}">
     <div class="quick-composer__prompt">
-        <x-avatar
-            src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&crop=faces&w=96&h=96&q=80"
-            alt="Mia Carter"
-            size="header"
-        />
+        <span
+            class="header-profile__initials"
+            role="img"
+            aria-label="{{ $owner['avatar_alt'] }}"
+        >
+            {{ $owner['initials'] }}
+        </span>
         <a href="{{ $href }}" class="quick-composer__input">
             <x-ui-icon name="square-pen" size="sm" />
             <span>{{ __('ui.share_something_useful_with_your_circle') }}</span>

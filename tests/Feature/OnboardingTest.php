@@ -31,6 +31,7 @@ use Illuminate\Cache\RateLimiter;
 use Illuminate\Database\QueryException;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\URL;
@@ -44,7 +45,7 @@ test('registration atomically provisions private onboarding identity', function 
     auth()->logout();
 
     Livewire::test(Register::class)
-        ->set('form.name', 'Onboarding Member')
+        ->set('form.name', "\u{00A0}Ona Petraitė\u{2003}")
         ->set('form.email', 'onboarding@example.test')
         ->set('form.password', 'Secure-Paw-2026')
         ->set('form.password_confirmation', 'Secure-Paw-2026')
@@ -58,6 +59,8 @@ test('registration atomically provisions private onboarding identity', function 
     $settings = SocialActorSetting::query()->whereBelongsTo($actor, 'actor')->firstOrFail();
 
     expect($onboarding->current_step)->toBe(OnboardingStep::Introduction)
+        ->and($user->name)->toBe('Ona Petraitė')
+        ->and(auth()->id())->toBe($user->id)
         ->and($onboarding->completed_at)->toBeNull()
         ->and($onboarding->lock_version)->toBe(1)
         ->and($actor->is_discoverable)->toBeFalse()
@@ -65,7 +68,10 @@ test('registration atomically provisions private onboarding identity', function 
         ->and($settings->allow_message_requests)->toBeFalse()
         ->and($user->onboarding()->count())->toBe(1)
         ->and($user->socialActor()->count())->toBe(1)
-        ->and($actor->settings()->count())->toBe(1);
+        ->and($actor->settings()->count())->toBe(1)
+        ->and($user->petProfiles()->count())->toBe(0)
+        ->and($user->managedPetProfiles()->count())->toBe(0)
+        ->and($user->petProfileAccessRequests()->count())->toBe(0);
 })->with([
     'verification enabled' => [true, 'verification.notice'],
     'verification disabled' => [false, 'onboarding.show'],
@@ -175,6 +181,8 @@ test('registration action converts a normalized uniqueness race into validation 
 });
 
 test('pet relationship transition requires canonical evidence or an explicit deferral', function (): void {
+    expect(PetProfile::query()->where('user_id', $this->authenticatedUser->id)->count())->toBe(0);
+
     $state = UserOnboarding::factory()
         ->for($this->authenticatedUser)
         ->petRelationship()
@@ -190,7 +198,90 @@ test('pet relationship transition requires canonical evidence or an explicit def
     expect($state->fresh())
         ->current_step->toBe(OnboardingStep::PrivacyDiscovery)
         ->pet_relationship_choice->toBe(OnboardingPetChoice::AddLater)
-        ->pet_relationship_completed_at->not->toBeNull();
+        ->pet_relationship_completed_at->not->toBeNull()
+        ->and($this->authenticatedUser->petProfiles()->count())->toBe(0)
+        ->and($this->authenticatedUser->managedPetProfiles()->count())->toBe(0)
+        ->and($this->authenticatedUser->petProfileAccessRequests()->count())->toBe(0);
+});
+
+test('complete non-pet onboarding journeys create no pet domain records', function (
+    OnboardingPetChoice $choice,
+): void {
+    $user = User::factory()->onboardingIncomplete()->create([
+        'email' => $choice->value.'-journey@example.test',
+    ]);
+    $this->actingAs($user);
+
+    Livewire::test(Onboarding::class)
+        ->call('acknowledgeIntroduction')
+        ->assertHasNoErrors();
+
+    Livewire::test(Onboarding::class)
+        ->set('preferencesForm.locale', 'en')
+        ->set('preferencesForm.timezone', 'Europe/Vilnius')
+        ->call('savePreferences')
+        ->assertHasNoErrors();
+
+    Livewire::test(Onboarding::class)
+        ->set('petForm.choice', $choice->value)
+        ->call('savePetRelationship')
+        ->assertHasNoErrors();
+
+    Livewire::test(Onboarding::class)
+        ->set('privacyForm.isDiscoverable', false)
+        ->set('privacyForm.isRecommendable', false)
+        ->set('privacyForm.allowMessageRequests', false)
+        ->set('privacyAcknowledged', true)
+        ->call('savePrivacy')
+        ->assertHasNoErrors()
+        ->assertRedirect(route('home'));
+
+    expect($user->onboarding()->firstOrFail()->isComplete())->toBeTrue()
+        ->and($user->petProfiles()->count())->toBe(0)
+        ->and($user->managedPetProfiles()->count())->toBe(0)
+        ->and($user->petProfileAccessRequests()->count())->toBe(0)
+        ->and(PetProfileManager::query()->whereBelongsTo($user)->count())->toBe(0);
+})->with([
+    'no pet' => [OnboardingPetChoice::NoPet],
+    'add later' => [OnboardingPetChoice::AddLater],
+]);
+
+test('mandatory onboarding initialization failure rolls back the entire account domain', function (): void {
+    $event = 'eloquent.creating: '.SocialActorSetting::class;
+    $before = [
+        User::query()->count(),
+        UserOnboarding::query()->count(),
+        SocialActor::query()->count(),
+        SocialActorSetting::query()->count(),
+        PetProfile::query()->count(),
+        PetProfileManager::query()->count(),
+        PetProfileAccessRequest::query()->count(),
+    ];
+
+    Event::listen($event, static function (): never {
+        throw new RuntimeException('Mandatory onboarding initialization failed.');
+    });
+
+    try {
+        expect(fn () => app(RegisterUser::class)->handle([
+            'name' => 'Rollback Member',
+            'email' => 'rollback-member@example.test',
+            'password' => 'Secure-Paw-2026',
+        ]))->toThrow(RuntimeException::class, 'Mandatory onboarding initialization failed.');
+    } finally {
+        Event::forget($event);
+    }
+
+    expect([
+        User::query()->count(),
+        UserOnboarding::query()->count(),
+        SocialActor::query()->count(),
+        SocialActorSetting::query()->count(),
+        PetProfile::query()->count(),
+        PetProfileManager::query()->count(),
+        PetProfileAccessRequest::query()->count(),
+    ])->toBe($before)
+        ->and(User::query()->where('email', 'rollback-member@example.test')->exists())->toBeFalse();
 });
 
 test('legacy users without onboarding state retain portal access', function (): void {
@@ -285,6 +376,7 @@ test('expired pet access evidence is not offered by the onboarding interface', f
 });
 
 test('onboarding repairs a missing canonical social identity with private defaults', function (): void {
+    $this->authenticatedUser->socialActor()->delete();
     UserOnboarding::factory()->for($this->authenticatedUser)->create();
 
     expect($this->authenticatedUser->socialActor()->exists())->toBeFalse();

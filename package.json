@@ -14,6 +14,7 @@
         "test:browser:animal-science": "php scripts/run-browser-check.php animal-science",
         "test:browser:groups": "php scripts/run-browser-check.php groups",
         "test:browser:page-identity": "php scripts/run-browser-check.php page-identity",
+        "test:browser:canonical-identity": "php scripts/run-browser-check.php canonical-identity",
         "test:browser:places": "php scripts/run-browser-check.php places",
         "test:browser:discover": "php scripts/run-browser-check.php discover",
         "test:browser:onboarding": "php scripts/run-browser-check.php onboarding",

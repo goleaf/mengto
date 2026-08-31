@@ -34,7 +34,7 @@ test('booking form renders structured pet choices and compatible openings', func
     ]))
         ->assertOk()
         ->assertSee('Request a consultation')
-        ->assertSee('Scout')
+        ->assertSee('Birch')
         ->assertSee('Dog')
         ->assertSee('Avian clinic visit')
         ->assertSee('Old Town clinic')

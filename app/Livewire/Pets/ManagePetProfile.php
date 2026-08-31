@@ -57,7 +57,6 @@ use App\Services\PetLifeStagePresenter;
 use App\Services\PetProfileAgeLabel;
 use App\Services\PetProfileCompletionPresenter;
 use App\Services\PetProfileLifecycle;
-use App\Services\ProfilePresenter;
 use App\Services\QrCodeGenerator;
 use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Contracts\Auth\Factory as AuthFactory;
@@ -111,8 +110,6 @@ final class ManagePetProfile extends Component
 
     private Gate $gate;
 
-    private ProfilePresenter $profiles;
-
     private PetProfileLifecycle $lifecycle;
 
     private UpdatePetProfileStep $updateStepAction;
@@ -156,7 +153,6 @@ final class ManagePetProfile extends Component
     public function boot(
         AuthFactory $auth,
         Gate $gate,
-        ProfilePresenter $profiles,
         PetProfileLifecycle $lifecycle,
         PetProfileCompletionPresenter $completionPresenter,
         PetBirthDetailsNormalizer $birthDetails,
@@ -178,7 +174,6 @@ final class ManagePetProfile extends Component
     ): void {
         $this->auth = $auth;
         $this->gate = $gate;
-        $this->profiles = $profiles;
         $this->lifecycle = $lifecycle;
         $this->completionPresenter = $completionPresenter;
         $this->birthDetails = $birthDetails;
@@ -920,7 +915,6 @@ final class ManagePetProfile extends Component
             'canManageDocuments' => $this->canManageDocuments($profile),
         ])
             ->layout('components.livewire-app-layout', [
-                'owner' => $this->profiles->owner(),
                 'title' => __('pet_profiles.manage.title', ['name' => $profile->name]),
                 'activeSection' => 'pets',
             ]);

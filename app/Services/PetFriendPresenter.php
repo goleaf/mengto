@@ -10,14 +10,13 @@ final class PetFriendPresenter
         private readonly PetFriendCatalog $catalog,
         private readonly PetFriendState $friendState,
         private readonly PrototypeState $state,
-        private readonly ProfilePresenter $profiles,
     ) {}
 
     /**
      * @return array<string, mixed>
      */
     public function page(
-        string $pet = 'scout',
+        string $pet = '',
         string $tab = 'friends',
         string $intent = 'all',
         string $sort = 'compatibility',
@@ -32,7 +31,6 @@ final class PetFriendPresenter
         $items = $this->items($source['id'], $tab, $intent, $sort, $query);
 
         return [
-            'owner' => $this->profiles->owner(),
             'page_title' => __('presentation.brand_title', [
                 'title' => __('presentation.pet_friends_for', ['pet' => $source['name']]),
             ]),
@@ -73,9 +71,9 @@ final class PetFriendPresenter
      */
     private function source(string $pet): array
     {
-        $source = $this->catalog->find('pet-'.$pet);
+        $source = $pet !== '' ? $this->catalog->find('pet-'.$pet) : null;
 
-        return $source ?? $this->catalog->find('pet-scout');
+        return $source ?? collect($this->catalog->owned())->firstOrFail();
     }
 
     /**
@@ -158,7 +156,7 @@ final class PetFriendPresenter
             : ($relationship['requester'] === $source ? 'outgoing' : 'incoming');
         $returnState = $this->returnState($tab, $intent, $sort, $query);
         $status = $this->status($relationship, $direction);
-        $walkHref = $this->walkHref($candidate);
+        $walkHref = null;
 
         return [
             ...$candidate,
@@ -201,6 +199,7 @@ final class PetFriendPresenter
                 ? [
                     'action' => 'send-pet-friend-request',
                     'source_pet' => $source,
+                    'source_pet_name' => (string) ($this->catalog->find($source)['name'] ?? ''),
                     'target' => $target,
                     'default_intent' => $this->defaultIntent($candidate, $intent),
                     'return_state' => $returnState,
@@ -616,16 +615,6 @@ final class PetFriendPresenter
         }
 
         return $candidate['intents'][0] ?? 'friend';
-    }
-
-    /**
-     * @param  array<string, mixed>  $candidate
-     */
-    private function walkHref(array $candidate): ?string
-    {
-        return in_array($candidate['slug'], ['mochi', 'juniper'], true)
-            ? route('compose', ['kind' => 'walk', 'target' => $candidate['slug']])
-            : null;
     }
 
     /**

@@ -27,7 +27,7 @@ test('the medical record directory renders its body in the authenticated users l
     $this->authenticatedUser->update(['locale' => $locale]);
 
     $pet = PetProfile::factory()->for($this->authenticatedUser)->create([
-        'name' => 'Scout Locale Test',
+        'name' => 'Birch Locale Test',
         'profile_data' => [
             'profile_image' => '/images/pets/scout-locale-test.jpg',
         ],
@@ -47,7 +47,7 @@ test('the medical record directory renders its body in the authenticated users l
 
     $expectedAlt = trans(
         'presentation.medical_record_image_alt',
-        ['pet' => 'Scout Locale Test'],
+        ['pet' => 'Birch Locale Test'],
         $locale,
     );
     $image = responseXPath($response)->query(
@@ -76,9 +76,9 @@ test('the medical record directory has complete non english copy and no hardcode
                 ->not->toBe(trans("ui.{$key}", locale: 'en'));
         }
 
-        expect(trans('presentation.medical_record_image_alt', ['pet' => 'Scout'], $locale))
-            ->not->toBe(trans('presentation.medical_record_image_alt', ['pet' => 'Scout'], 'en'))
-            ->toContain('Scout');
+        expect(trans('presentation.medical_record_image_alt', ['pet' => 'Birch'], $locale))
+            ->not->toBe(trans('presentation.medical_record_image_alt', ['pet' => 'Birch'], 'en'))
+            ->toContain('Birch');
     }
 
     expect(File::get(resource_path('views/components/medical-record-card.blade.php')))

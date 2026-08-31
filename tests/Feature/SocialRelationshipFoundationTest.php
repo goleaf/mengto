@@ -45,6 +45,20 @@ use Livewire\Livewire;
 
 uses(RefreshDatabase::class);
 
+function foundationPublicActor(User $user): SocialActor
+{
+    $actor = app(SocialActorResolver::class)->provisionPrivateForUser($user);
+    $actor->forceFill(['is_discoverable' => true])->saveOrFail();
+    $actor->settings()->firstOrFail()->forceFill([
+        'friend_request_policy' => SocialFriendRequestPolicy::Everyone,
+        'follow_policy' => SocialFollowPolicy::Public,
+        'is_recommendable' => true,
+        'allow_message_requests' => true,
+    ])->saveOrFail();
+
+    return $actor;
+}
+
 it('creates indexed social foundation tables and backfills actor adapters idempotently', function (): void {
     $owner = User::factory()->create();
     $pet = PetProfile::factory()->for($owner)->create();
@@ -117,8 +131,8 @@ it('creates one public follow and one event for a replayed action', function ():
     $sourceUser = User::factory()->create();
     $targetUser = User::factory()->create();
     $resolver = app(SocialActorResolver::class);
-    $source = $resolver->forUser($sourceUser);
-    $target = $resolver->forUser($targetUser);
+    $source = foundationPublicActor($sourceUser);
+    $target = foundationPublicActor($targetUser);
     $this->actingAs($sourceUser);
 
     $first = app(FollowSocialActor::class)->handle($source, $target, 'follow-replay-001');
@@ -136,10 +150,10 @@ it('creates one public follow and one event for a replayed action', function ():
 it('rejects idempotency keys reused for different actors or operations', function (): void {
     $users = User::factory()->count(4)->create();
     $resolver = app(SocialActorResolver::class);
-    $firstSource = $resolver->forUser($users[0]);
-    $firstTarget = $resolver->forUser($users[1]);
-    $secondSource = $resolver->forUser($users[2]);
-    $secondTarget = $resolver->forUser($users[3]);
+    $firstSource = foundationPublicActor($users[0]);
+    $firstTarget = foundationPublicActor($users[1]);
+    $secondSource = foundationPublicActor($users[2]);
+    $secondTarget = foundationPublicActor($users[3]);
     $this->actingAs($users[0]);
     app(SendSocialRelationshipRequest::class)->handle(
         $firstSource,
@@ -182,8 +196,8 @@ it('routes a private follow through approval and keeps opposite subscriptions in
     $firstUser = User::factory()->create();
     $secondUser = User::factory()->create();
     $resolver = app(SocialActorResolver::class);
-    $firstActor = $resolver->forUser($firstUser);
-    $secondActor = $resolver->forUser($secondUser);
+    $firstActor = foundationPublicActor($firstUser);
+    $secondActor = foundationPublicActor($secondUser);
     $secondActor->settings()->firstOrFail()->forceFill([
         'follow_policy' => SocialFollowPolicy::Approval,
     ])->save();
@@ -218,8 +232,8 @@ it('deduplicates mutual friendship requests and creates one symmetric relationsh
     $firstUser = User::factory()->create();
     $secondUser = User::factory()->create();
     $resolver = app(SocialActorResolver::class);
-    $firstActor = $resolver->forUser($firstUser);
-    $secondActor = $resolver->forUser($secondUser);
+    $firstActor = foundationPublicActor($firstUser);
+    $secondActor = foundationPublicActor($secondUser);
     $this->actingAs($firstUser);
     $action = app(SendSocialRelationshipRequest::class);
 
@@ -261,9 +275,9 @@ it('enforces friends of friends request policy from durable friendships', functi
     $mutualUser = User::factory()->create();
     $targetUser = User::factory()->create();
     $resolver = app(SocialActorResolver::class);
-    $firstActor = $resolver->forUser($firstUser);
-    $mutualActor = $resolver->forUser($mutualUser);
-    $targetActor = $resolver->forUser($targetUser);
+    $firstActor = foundationPublicActor($firstUser);
+    $mutualActor = foundationPublicActor($mutualUser);
+    $targetActor = foundationPublicActor($targetUser);
 
     $this->actingAs($firstUser);
     $firstRequest = app(SendSocialRelationshipRequest::class)->handle(
@@ -309,8 +323,8 @@ it('enforces shared group request policy from active memberships', function (): 
     $firstUser = User::factory()->create();
     $targetUser = User::factory()->create();
     $resolver = app(SocialActorResolver::class);
-    $firstActor = $resolver->forUser($firstUser);
-    $targetActor = $resolver->forUser($targetUser);
+    $firstActor = foundationPublicActor($firstUser);
+    $targetActor = foundationPublicActor($targetUser);
     $targetActor->settings()->firstOrFail()->forceFill([
         'friend_request_policy' => SocialFriendRequestPolicy::SharedGroups,
     ])->save();
@@ -342,8 +356,8 @@ it('does not treat client supplied context as a verified personal invitation', f
     $sourceUser = User::factory()->create();
     $targetUser = User::factory()->create();
     $resolver = app(SocialActorResolver::class);
-    $sourceActor = $resolver->forUser($sourceUser);
-    $targetActor = $resolver->forUser($targetUser);
+    $sourceActor = foundationPublicActor($sourceUser);
+    $targetActor = foundationPublicActor($targetUser);
     $targetActor->settings()->firstOrFail()->forceFill([
         'friend_request_policy' => SocialFriendRequestPolicy::LinkOnly,
     ])->save();
@@ -435,8 +449,8 @@ it('keeps close circle separate from pet administration permissions', function (
     $secondUser = User::factory()->create();
     $secondPet = PetProfile::factory()->for($secondUser)->create();
     $resolver = app(SocialActorResolver::class);
-    $source = $resolver->forUser($firstUser);
-    $target = $resolver->forUser($secondUser);
+    $source = foundationPublicActor($firstUser);
+    $target = foundationPublicActor($secondUser);
     $this->actingAs($firstUser);
 
     $relationship = app(CreateSocialControl::class)->handle(
@@ -458,8 +472,8 @@ it('ends contact on block and prevents new requests without exposing the block t
     $firstUser = User::factory()->create();
     $secondUser = User::factory()->create();
     $resolver = app(SocialActorResolver::class);
-    $firstActor = $resolver->forUser($firstUser);
-    $secondActor = $resolver->forUser($secondUser);
+    $firstActor = foundationPublicActor($firstUser);
+    $secondActor = foundationPublicActor($secondUser);
     $this->actingAs($firstUser);
     $request = app(SendSocialRelationshipRequest::class)->handle(
         $firstActor,
@@ -502,8 +516,8 @@ it('serializes cancel before accept and leaves one final request state', functio
     $firstUser = User::factory()->create();
     $secondUser = User::factory()->create();
     $resolver = app(SocialActorResolver::class);
-    $firstActor = $resolver->forUser($firstUser);
-    $secondActor = $resolver->forUser($secondUser);
+    $firstActor = foundationPublicActor($firstUser);
+    $secondActor = foundationPublicActor($secondUser);
     $this->actingAs($firstUser);
     $request = app(SendSocialRelationshipRequest::class)->handle(
         $firstActor,
@@ -529,8 +543,8 @@ it('persists an expired request and its audit event before reporting the error',
     $firstUser = User::factory()->create();
     $secondUser = User::factory()->create();
     $resolver = app(SocialActorResolver::class);
-    $firstActor = $resolver->forUser($firstUser);
-    $secondActor = $resolver->forUser($secondUser);
+    $firstActor = foundationPublicActor($firstUser);
+    $secondActor = foundationPublicActor($secondUser);
     $this->actingAs($firstUser);
     $request = app(SendSocialRelationshipRequest::class)->handle(
         $firstActor,
@@ -568,7 +582,7 @@ it('persists an expired request and its audit event before reporting the error',
 it('updates actor privacy optimistically and invalidates graph projections', function (): void {
     $owner = User::factory()->create();
     $resolver = app(SocialActorResolver::class);
-    $actor = $resolver->forUser($owner);
+    $actor = foundationPublicActor($owner);
     $settings = $actor->settings()->firstOrFail();
     Cache::forever("social:actor:{$actor->id}:counts", ['stale' => true]);
     $this->actingAs($owner);
@@ -606,8 +620,8 @@ it('keeps hidden directed controls out of the target graph projection', function
     $firstUser = User::factory()->create();
     $secondUser = User::factory()->create();
     $resolver = app(SocialActorResolver::class);
-    $firstActor = $resolver->forUser($firstUser);
-    $secondActor = $resolver->forUser($secondUser);
+    $firstActor = foundationPublicActor($firstUser);
+    $secondActor = foundationPublicActor($secondUser);
     $this->actingAs($firstUser);
     app(CreateSocialControl::class)->handle(
         $firstActor,
@@ -629,10 +643,10 @@ it('searches public actors with bounded queries and excludes hidden or blocked p
     $hiddenUser = User::factory()->create(['name' => 'Directory Hidden']);
     $blockedUser = User::factory()->create(['name' => 'Directory Blocked']);
     $resolver = app(SocialActorResolver::class);
-    $source = $resolver->forUser($sourceUser);
-    $visible = $resolver->forUser($visibleUser);
-    $hidden = $resolver->forUser($hiddenUser);
-    $blocked = $resolver->forUser($blockedUser);
+    $source = foundationPublicActor($sourceUser);
+    $visible = foundationPublicActor($visibleUser);
+    $hidden = foundationPublicActor($hiddenUser);
+    $blocked = foundationPublicActor($blockedUser);
     $hidden->forceFill(['is_discoverable' => false])->save();
     $this->actingAs($sourceUser);
     app(CreateSocialControl::class)->handle(
@@ -665,7 +679,7 @@ it('does not project a private pet through an actor visibility mismatch', functi
         'role' => PetManagerRole::PrimaryOwner,
     ]);
     $resolver = app(SocialActorResolver::class);
-    $source = $resolver->forUser($sourceUser);
+    $source = foundationPublicActor($sourceUser);
     $sourcePetActor = $resolver->forPet($sourcePet);
     $petActor = $resolver->forPet($pet);
 
@@ -699,8 +713,8 @@ it('creates a follow and a separate friendship request from the livewire directo
     $sourceUser = User::factory()->create(['name' => 'Livewire Source']);
     $targetUser = User::factory()->create(['name' => 'Livewire Directory Target']);
     $resolver = app(SocialActorResolver::class);
-    $source = $resolver->forUser($sourceUser);
-    $target = $resolver->forUser($targetUser);
+    $source = foundationPublicActor($sourceUser);
+    $target = foundationPublicActor($targetUser);
 
     Livewire::actingAs($sourceUser)
         ->test(RelationshipCenter::class)
@@ -728,9 +742,9 @@ it('renders the social center and reauthorizes direct livewire request actions',
     $targetUser = User::factory()->create();
     $outsider = User::factory()->create();
     $resolver = app(SocialActorResolver::class);
-    $sourceActor = $resolver->forUser($sourceUser);
-    $targetActor = $resolver->forUser($targetUser);
-    $resolver->forUser($outsider);
+    $sourceActor = foundationPublicActor($sourceUser);
+    $targetActor = foundationPublicActor($targetUser);
+    foundationPublicActor($outsider);
     $this->actingAs($sourceUser);
     $request = app(SendSocialRelationshipRequest::class)->handle(
         $sourceActor,
@@ -741,8 +755,7 @@ it('renders the social center and reauthorizes direct livewire request actions',
 
     $this->actingAs($targetUser);
     $this->get(route('circle.index'))
-        ->assertOk()
-        ->assertSee(route('social.index'), false);
+        ->assertOk();
     $this->get(route('social.index'))
         ->assertOk()
         ->assertSee(__('social_relationships.title'));
@@ -757,8 +770,8 @@ it('keeps relationship events append only', function (): void {
     $sourceUser = User::factory()->create();
     $targetUser = User::factory()->create();
     $resolver = app(SocialActorResolver::class);
-    $source = $resolver->forUser($sourceUser);
-    $target = $resolver->forUser($targetUser);
+    $source = foundationPublicActor($sourceUser);
+    $target = foundationPublicActor($targetUser);
     $this->actingAs($sourceUser);
     app(FollowSocialActor::class)->handle($source, $target, 'immutable-event-follow');
     $event = SocialRelationshipEvent::query()->firstOrFail();

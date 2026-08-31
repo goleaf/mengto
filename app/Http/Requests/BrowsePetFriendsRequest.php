@@ -19,7 +19,7 @@ final class BrowsePetFriendsRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'pet' => ['nullable', Rule::in(['scout', 'nori'])],
+            'pet' => ['nullable', 'string', 'max:120', 'regex:/^[a-z0-9-]+$/'],
             'tab' => ['nullable', Rule::in(['friends', 'requests', 'discover', 'walks'])],
             'intent' => ['nullable', Rule::in(['all', 'walk', 'play', 'training', 'neighbor'])],
             'sort' => ['nullable', Rule::in(['compatibility', 'recent', 'name'])],

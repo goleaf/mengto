@@ -2,12 +2,17 @@
 
 Date: 2026-08-01
 
-## Presentation Prototype
+## Superseded Presentation Prototype
+
+The fixed conversation catalogue and details route described in this section
+were retired by AIR-001 on 2026-08-31. The current `/messages` page renders an
+honest localized empty state until a canonical cross-account messaging domain
+exists; it does not retain a demo identity, conversation, or mutation surface.
 
 At the date of this audit, the authenticated `/messages` routes rendered Blade
 preview screens backed by `MessageCatalog`, `MessagePresenter`, the now-retired
 `ConversationPresenter`, and `MessageState`. The current implementation routes
-both `messages.index` and the preserved `messages.details` deep link through
+both `messages.index` and the then-preserved `messages.details` deep link through
 `MessagePresenter`, `resources/views/messages/index.blade.php`, and the active
 `messaging-*` components. The historical presenter/template/component cohort
 was removed only after a zero-consumer route/include/test/JavaScript/deep-link

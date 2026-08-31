@@ -20,7 +20,6 @@ use Illuminate\Support\Str;
 class ListingPresenter
 {
     public function __construct(
-        private readonly ProfilePresenter $profiles,
         private readonly ForumActor $actor,
         private readonly ListingTaxonomy $taxonomy,
         private readonly LocaleFormatter $formatter,
@@ -73,7 +72,6 @@ class ListingPresenter
         $listings->through(fn (Listing $listing): array => $this->card($listing));
 
         return [
-            'owner' => $this->profiles->owner(),
             'page_title' => __('messages.marketplace'),
             'active_section' => 'marketplace',
             'listings' => $listings,
@@ -203,7 +201,6 @@ class ListingPresenter
             ->all();
 
         return [
-            'owner' => $this->profiles->owner(),
             'page_title' => __('presentation.marketplace_listing_title', ['title' => $listing->title]),
             'active_section' => 'marketplace',
             'listing' => $this->detail($listing),
@@ -250,7 +247,6 @@ class ListingPresenter
     public function editor(): array
     {
         return [
-            'owner' => $this->profiles->owner(),
             'page_title' => __('messages.create_marketplace_listing'),
             'active_section' => 'marketplace',
             'types' => $this->taxonomy->types(),

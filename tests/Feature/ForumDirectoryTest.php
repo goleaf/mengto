@@ -118,7 +118,7 @@ test('blocked authors disappear from the directory without exposing the block', 
         'title' => 'A useful topic from an available author account',
     ]);
     ForumBlock::factory()->create([
-        'user_key' => 'mia-carter',
+        'user_key' => 'test-member',
         'blocked_author_key' => 'blocked-author',
     ]);
 

@@ -29,7 +29,7 @@ test('the care journal directory renders its body in the authenticated users loc
 
     CareJournal::factory()->create([
         'owner_key' => $this->authenticatedUser->actor_key,
-        'pet_name' => 'Scout Locale Test',
+        'pet_name' => 'Birch Locale Test',
         'species' => 'dog',
         'breed' => null,
         'image_url' => '/images/pets/scout-locale-test.jpg',
@@ -50,7 +50,7 @@ test('the care journal directory renders its body in the authenticated users loc
 
     $expectedMediaLabel = trans(
         'presentation.open_care_journal',
-        ['pet' => 'Scout Locale Test'],
+        ['pet' => 'Birch Locale Test'],
         $locale,
     );
     $media = responseXPath($response)->query(

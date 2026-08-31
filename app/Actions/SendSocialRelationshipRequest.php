@@ -107,9 +107,16 @@ final class SendSocialRelationshipRequest
 
             $assessment = $this->abuse->assess($user, $lockedTarget, $type, $message);
 
-            $settings = SocialActorSetting::query()->firstOrCreate([
-                'social_actor_id' => $lockedTarget->id,
-            ]);
+            $settings = SocialActorSetting::query()
+                ->where('social_actor_id', $lockedTarget->id)
+                ->lockForUpdate()
+                ->first();
+
+            if (! $settings instanceof SocialActorSetting) {
+                throw ValidationException::withMessages([
+                    'target' => __('social_relationships.validation.requests_disabled'),
+                ]);
+            }
             $this->validateRecipientPolicy($settings, $type, $user, $lockedTarget);
 
             $activeKey = SocialRelationshipKey::forRequest(

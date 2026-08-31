@@ -509,7 +509,7 @@ final class PlaceCatalog
                     'tone' => 'verified',
                 ],
                 'data_freshness' => __('messages.community_conditions_checked_2_hours_ago'),
-                'recommendation_reason' => __('messages.best_match_for_a_calm_evening_walk_with_scout'),
+                'recommendation_reason' => __('messages.shared_routines'),
                 'sponsored' => false,
                 'allow_events' => true,
                 'owner_managed' => false,

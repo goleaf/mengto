@@ -44,13 +44,7 @@ final class InteractionPresenter
     {
         return array_map(function (array $pet): array {
             $key = $pet['key'] ?? Str::slug((string) $pet['name']);
-            $profile = $key === 'scout'
-                ? array_intersect_key($this->state->pet(), $pet)
-                : [];
-            $presentedPet = [
-                ...$pet,
-                ...array_filter($profile, static fn (string $value): bool => $value !== ''),
-            ];
+            $presentedPet = $pet;
 
             return [
                 ...$presentedPet,

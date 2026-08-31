@@ -2,29 +2,119 @@
 
 Plan date: 2026-07-30
 
+## Active Delivery: Universal Runtime Entity Removal (`URE-001`)
+
+Status: `2026-08-31 audit and architecture reconciliation in progress; publication NO-GO`.
+
+The authenticated-identity work proved the real `User`/personal `SocialActor`
+path, but a broader re-audit confirms production still contains a parallel
+prototype entity store: named people and pets in translations and catalogues,
+normal product routes backed by `PrototypeState`/`PreviewService`, and literal
+group routes/allowlists. `URE-001` supersedes any historical prototype contract
+that treats those records as product behavior. The complete plan is
+`docs/plans/universal-registration-identity-and-demo-data-removal-plan.md`; the
+exclusive read-only specialist scopes and finding dispositions are recorded in
+`docs/audits/universal-runtime-entity-removal-work-ledger.md`.
+
+The target invariant is one database-driven runtime: registration creates one
+User, personal SocialActor, privacy-first setting and onboarding row with zero
+user-owned content; authenticated chrome and self profile use that same actor;
+and feeds, directories, messages, meetups, groups, posts, pets, places and
+notifications render authorized persisted records or honest localized empty
+states. Named fixture instances may exist only behind explicit seed/factory/test
+infrastructure and ordinary canonical routes/policies.
+
+The package phases are `URE-00` Git safety, `URE-01` inventory, `URE-02` domain
+map, `URE-03` registration baseline, `URE-04` onboarding, `URE-05` shell/self
+profile, `URE-06` prototype removal, `URE-07` database-backed surfaces,
+`URE-08` seed/factory isolation, `URE-09` legacy/existing-data cleanup,
+`URE-10` permanent guardrails, and `URE-11` verification/delivery. Production
+changes begin only after this plan checkpoint. No historical migration will be
+rewritten, no automatic production data purge is authorized, and no commit or
+push is allowed while any material full gate is red.
+
 ## Active Delivery: Canonical Authenticated Identity (`AIR-001`)
 
-Status: `current-main audit and root-cause verification complete; implementation
-authorized after this checkpoint` on 2026-08-30.
+Status: `2026-08-31 implementation and focused verification complete;
+publication remains NO-GO while repository-wide gates are red`.
 
-This delivery began on `main` at
-`24c9b513c7b06114e416dd6007b18d41d3ca3e61`, equal to the observed
-`origin/main`. The shared tree already contained staged, unstaged, and untracked
-forum/meetup work. Those bytes remain user-owned and must not enter this
-delivery's temporary-index commit. The attributable audit record is
+This re-audit began on clean `main` at
+`d92cf5e74593a0a79b23c721ffc874fb76eba3d2`, equal to the observed
+`origin/main`. That baseline already contains a partial authenticated-user
+presenter and regression tests from an earlier mixed delivery. This delivery
+must complete, independently verify, and publish the coherent identity slice
+without claiming the pre-existing partial work as newly authored. Any later
+unrelated bytes remain user-owned and must not enter this delivery's temporary
+index. The attributable audit record is
 `docs/audits/authenticated-identity-refactor-work-ledger.md`.
+
+### 2026-08-31 universal-account scope reconciliation
+
+The delivery scope now requires canonical dynamic routes only and an explicit
+zero-default-pets invariant. The earlier compatibility assumption is
+superseded: Mia/Scout/Nori preview routes, the parallel prototype owner page,
+person-specific runtime translations, demo action targets, and per-user
+prototype ownership defaults are production removal candidates. Optional demo
+records may exist only as ordinary User, SocialActor, SocialActorSetting and
+PetProfile rows created by explicitly environment-gated seeders.
+
+The expanded audit confirmed that registration and onboarding do not currently
+create pets, but this must be protected as a transactional invariant: one User,
+one personal User-type SocialActor, one privacy-first SocialActorSetting, one
+UserOnboarding, and zero PetProfile, manager, or pet-access-request rows. The
+no-pet and add-later onboarding paths must preserve zero pets; pet creation
+remains a separate authorized operation.
+
+The migration deletes the hardcoded profile.mia and Scout/Nori route family,
+migrates every real profile to members.show or the canonical PetProfile route,
+removes the owner prototype presenter/view/translation subtree after proving
+it unused, and replaces authenticated demo defaults with canonical persisted
+records or honest localized empty states. This includes authorship, pets,
+relationships, messages, notifications, care/device/booking choices and
+counts—not only header text.
+
+Affected boundaries now include registration/native fallback and rollback,
+verification events, onboarding pet-choice behavior, AppShell, canonical
+member/pet routing, ProfilePresenter cleanup, PrototypeState defaults,
+authenticated content attribution, demo seeding guards, EN/LT/RU, architecture
+hardcode guards, unseeded fresh-database verification, and final dead-code
+review. No schema or dependency change is planned.
+
+Acceptance requires an unseeded Andrej journey with exact authentication and
+zero pets, no-pet and add-later journeys, explicit pet creation separately,
+Alice/Bob/logout isolation, canonical owner/public/private/block profiles, no
+demo-named production route, and repository-wide proof that remaining demo
+names exist only in allowed seed/test/history locations. AIR-01 through AIR-10
+remain the ordered ledger, expanded to specialists AIR-A through AIR-L; no item
+may be marked verified before its observed checks pass.
 
 ### Confirmed defect and root cause
 
 Registration already normalizes and persists the submitted `users.name`, creates
 the exact `User` inside the account transaction, provisions that user's private
 personal `SocialActor`, `SocialActorSetting`, and `UserOnboarding`, then returns
-the same model for Livewire authentication and session regeneration. The defect
-is downstream: `ProfilePresenter::owner()` substitutes translated prototype
-identity fields, merges `PrototypeState::profile()`, and supplies a Mia image;
-`header-actions.blade.php` independently links every authenticated account to
-`profile.mia`. The base feature-test account is also Mia, so existing header
-tests cannot distinguish the prototype from the authenticated principal.
+the same model for Livewire authentication and session regeneration. Historical
+root-cause verification identified downstream substitution in
+`ProfilePresenter::owner()` plus a header link to `profile.mia`. Current `main`
+already routes authenticated shell identity through `AuthenticatedUserPresenter`
+and the current actor URL, and its non-Mia shell tests pass in isolation.
+
+The re-audit nevertheless confirms the migration is incomplete:
+
+- authenticated/member controller call sites still depend on ambient
+  `ProfilePresenter::owner()` even though the shell now ignores caller-supplied
+  prototype owner arrays;
+- the canonical member page omits owner-visible private pets, lacks honest
+  aggregate and verification presentation, and returns policy `403` for a
+  private actor where the privacy boundary requires an indistinguishable `404`;
+- production profile settings and action redirects still target `profile.mia`,
+  while explicit demo preview code retains translated Mia identity, fake
+  profile facts, and prototype state;
+- the base feature-test setup authenticates Mia globally, which can mask
+  identity leaks, and the fresh-database verifier seeds instead of proving a
+  no-demo registration journey;
+- the registration form advertises a native `POST` fallback to a GET-only route,
+  while failure rollback of mandatory identity initialization is unproved.
 
 The result is a production identity split-brain:
 
@@ -59,14 +149,19 @@ an authenticated-owner fallback.
   checks, and `MemberProfileCatalog`. Owners may view their non-discoverable
   actor; other viewers remain subject to status, verification,
   discoverability, privacy, and block rules.
-- Prototype owner pages, Scout/Nori pages, reports, and compatibility URLs are
-  isolated as demo-only surfaces. Production self-profile navigation never
-  calls `profile.mia`, and `PrototypeState` never overrides the authenticated
-  header or canonical member profile.
-- Existing schema and actor backfill are sufficient, so no migration is
-  planned. Deployment retains the documented bounded
-  `social:backfill-actors` prerequisite for legacy accounts. Fresh
-  registrations require no seeder or backfill.
+- Prototype owner pages, Scout/Nori pages, reports, and name-specific
+  compatibility URLs are removed from the runtime route/view/presenter graph.
+  Optional demo records use the same canonical dynamic routes as every other
+  record. Production self-profile navigation never calls `profile.mia`, and
+  `PrototypeState` never overrides the authenticated header or member profile.
+- Fresh registrations require no seeder or backfill. One already-released
+  2026-07-30 migration still recognizes `test@example.com` as the legacy Mia
+  fixture and assigns its old friendly actor key. Repository governance
+  forbids rewriting that production history. AIR therefore records it as the
+  sole migration hardcode exception, blocks publication until production data
+  is audited, and requires any affected non-demo row to be repaired through a
+  separately reviewed forward data-compatibility change. The regression guard
+  forbids that exception from spreading to any later migration.
 
 ### Affected boundaries
 
@@ -84,16 +179,47 @@ required by a shared route or test inventory.
 
 | ID | Dependency | Owner | Affected paths/modules | Acceptance criteria | Required tests / verification | Status | Rollback |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| AIR-01 | Repository contract and audit ledger | Principal plus read-only AIR-A..J | Auth, User, SocialActor, presentation, navigation, demo data, locales, tests | Current data flow and every Mia/prototype occurrence are classified with exact evidence; unrelated dirty work remains untouched | Git baseline, static call graph, specialist reports | in progress | Revert only AIR planning/audit additions |
-| AIR-02 | AIR-01 | Principal | Focused registration/header/member/security tests | RED proves a non-Mia authenticated user receives Mia/header route leakage on the old implementation and protects exact-user provisioning, privacy defaults, locale invariance, account switching, logout, and self/public access | Focused Pest files must fail for the intended old behavior before production edits | pending | Revert AIR tests only |
-| AIR-03 | AIR-02 | Principal | Authenticated-user presenter, AppShell/header/avatar presentation | Header name comes from `User::name`; URL comes from that user's `SocialActor`; no avatar inherits another person's image; guest/logout render no prior identity; normal header never calls `profile.mia` | Presenter unit/feature tests, header DOM assertions, EN/LT/RU matrix, query bound | pending | Revert presenter/shell slice; clear views |
-| AIR-04 | AIR-02..03 | Principal | Member profile controller/catalog, owner-profile/demo boundary | Canonical member/self page uses the viewed User and real member-since/pets/posts/social facts or honest empty states; owner-private access works; unrelated and blocked viewers remain denied; demo preview remains explicit | Self/public/private/block/IDOR/profile-count tests | pending | Revert profile slice; retain actor/settings/data |
-| AIR-05 | AIR-02..04 | Principal | Registration/auth/Livewire lifecycle hardening | Exact created User remains authenticated after session rotation; transaction rollback is complete; enabled/disabled verification and onboarding order remain intact; credential forms cannot degrade to GET; no browser field can set authority | Registration matrix, session/event/rollback/stale-component/security tests | pending | Revert lifecycle hardening; do not alter account data |
-| AIR-06 | AIR-03..05 | Principal | EN/LT/RU and accessibility copy, demo/prototype isolation | Runtime identity is data, labels are localized with placeholder parity, dynamic accessible profile labels are correct, person-specific demo copy is isolated, every remaining Mia/profile.mia occurrence is classified | Locale datasets, translation parity, architecture scans, accessibility assertions | pending | Revert copy/components together; clear views |
-| AIR-07 | AIR-03..06 | Independent read-only registration/auth/identity/actor/profile/demo/security/locale/test reviewers; principal dispositions | Frozen attributable diff | Reviewers explicitly answer source-of-truth/routing/demo/privacy questions; every reproduced in-scope finding is fixed and affected checks rerun | Reviewer reports and post-fix focused checks | pending | Revert only an unsafe attributable fix |
-| AIR-08 | AIR-07 | Principal | Documentation and complete repository boundary | Architecture, authorization, security, frontend, Livewire, testing, deployment, requirements/compliance and changelog describe observed behavior without claiming unrun gates | Documentation, generated-evidence, secret and full diff review | pending | Revert AIR documentation only |
-| AIR-09 | AIR-08 | Principal | Full locked application/runtime boundary | Pint, Larastan, focused/full Pest, fresh database, Composer, npm/Vite, route/view/config cache, browser where available, and diff gates run with observed results | User-specified commands plus applicable repository gates | pending | Stop publication on material failure |
-| AIR-10 | AIR-09 | Principal | Temporary Git index on `main` | Only AIR-owned paths/hunks are staged; staged diff/check are clean; coherent commit is created and non-force pushed only after gates | Temporary-index staged review, commit SHA, `git push origin main` result | pending | Do not commit/push on failure; after publication use an ordinary reviewed revert |
+| AIR-01 | Repository contract and audit ledger | Principal plus read-only AIR-A..J | Auth, User, SocialActor, presentation, navigation, demo data, locales, tests | Current data flow and every Mia/prototype occurrence are classified with exact evidence; unrelated dirty work remains untouched | Git baseline, static call graph, specialist reports | completed | Revert only AIR planning/audit additions |
+| AIR-02 | AIR-01 | Principal | Focused registration/header/member/security tests | RED protects exact-user provisioning, privacy defaults, locale invariance, account switching, logout, native registration fallback, rollback, and self/public access; already-green shell behavior is retained as baseline evidence | Focused Pest files fail only for intended current gaps before their production fixes | completed; universal journey and architecture guards added | Revert AIR tests only |
+| AIR-03 | AIR-02 | Principal | Authenticated-user presenter, AppShell/header/avatar presentation | Header name comes from `User::name`; URL comes from that user's `SocialActor`; no avatar inherits another person's image; guest/logout render no prior identity; normal header never calls `profile.mia` | Presenter unit/feature tests, header DOM assertions, EN/LT/RU matrix, query bound | completed; focused verification green | Revert presenter/shell slice; clear views |
+| AIR-04 | AIR-02..03 | Principal | Member profile controller/catalog, owner-profile/demo boundary | Canonical member/self page uses the viewed User and real member-since/pets/posts/social facts or honest empty states; owner-private access works; unrelated and blocked viewers remain denied; demo preview remains explicit | Self/public/private/block/IDOR/profile-count tests | completed; prototype owner routes/views removed | Revert profile slice; retain actor/settings/data |
+| AIR-05 | AIR-02..04 | Principal | Registration/auth/Livewire lifecycle hardening | Exact created User remains authenticated after session rotation; transaction rollback is complete; enabled/disabled verification and onboarding order remain intact; credential forms cannot degrade to GET; no browser field can set authority | Registration matrix, session/event/rollback/stale-component/security tests | completed; focused verification green | Revert lifecycle hardening; do not alter account data |
+| AIR-06 | AIR-03..05 | Principal | EN/LT/RU and accessibility copy, demo/prototype isolation | Runtime identity is data, labels are localized with placeholder parity, dynamic accessible profile labels are correct, person-specific demo copy is isolated, every remaining Mia/profile.mia occurrence is classified | Locale datasets, translation parity, architecture scans, accessibility assertions | completed; focused locale/profile and architecture checks green | Revert copy/components together; clear views |
+| AIR-07 | AIR-03..06 | Independent read-only registration/auth/identity/actor/profile/demo/security/locale/test reviewers; principal dispositions | Frozen attributable diff | Reviewers explicitly answer source-of-truth/routing/demo/privacy questions; every reproduced in-scope finding is fixed and affected checks rerun | Reviewer reports and post-fix focused checks | completed; all nine final reviews dispositioned, attributable findings fixed, released-migration exception retained as publication no-go | Revert only an unsafe attributable fix |
+| AIR-08 | AIR-07 | Principal | Documentation and complete repository boundary | Architecture, authorization, security, frontend, Livewire, testing, deployment, requirements/compliance and changelog describe observed behavior without claiming unrun gates | Documentation, generated-evidence, secret and full diff review | implemented; final reviewer dispositions and gate evidence pending | Revert AIR documentation only |
+| AIR-09 | AIR-08 | Principal | Full locked application/runtime boundary | Pint, Larastan, focused/full Pest, fresh database, Composer, npm/Vite, route/view/config cache, browser where available, and diff gates run with observed results | User-specified commands plus applicable repository gates | NO-GO: focused identity checks and fresh verifier pass; full Pest and full Larastan remain red on unfinished repository modules | Stop publication on material failure |
+| AIR-10 | AIR-09 | Principal | Temporary Git index on `main` | Only AIR-owned paths/hunks are staged; staged diff/check are clean; coherent commit is created and non-force pushed only after gates | Temporary-index staged review, commit SHA, `git push origin main` result | blocked by AIR-09; no commit or push authorized | Do not commit/push on failure; after publication use an ordinary reviewed revert |
+
+### Observed verification and publication decision — 2026-08-31
+
+- The current post-review identity slice passes 430 tests with 3,443
+  assertions, covering registration/authentication, verification modes,
+  onboarding and zero-pet behavior, canonical shell identity, EN/LT/RU member
+  presentation, self/public/private/block profiles, demo-seeder isolation,
+  honest share/photo fixtures and hardcode guards.
+- The earlier complete focused registration/profile/social group passed 236
+  tests with 1,419 assertions. The corrected isolated fresh verifier passed
+  with exact Andrej authentication, one actor/setting/onboarding, completed
+  add-later onboarding and zero pet/manager/access-request rows before and
+  after repeat demo seeding.
+- Targeted Larastan for the changed identity/presenter/Livewire/seeder boundary
+  is green. The required full Larastan run remains red with 49 findings in
+  unrelated unfinished EventCompetition/Place modules.
+- The required final-tree full Pest run remains red: 3,224 tests executed,
+  3,027 passed, 55 failed, 142 errored, and 124,744 assertions. The ordinary
+  wrapper first encountered the host's intermittent signal 11; the repeat with
+  CLI opcache disabled completed and produced these counts. Failures remain
+  dominated by missing unfinished EventCompetition/Place/Portal classes and
+  stale repository-wide generated/audit contracts; this delivery does not
+  weaken those gates.
+- Composer validation/audit/platform checks, npm audit/build, route/view cache,
+  and the fresh verifier were observed green. The connected canonical-identity
+  browser journey passes with Andrej's exact actor URL, one H1, 44-pixel target
+  coverage, visible keyboard focus, forced colors, reduced motion, zero
+  overflow, no demo copy, clean logout, and zero console/resource errors. The
+  broader page-identity browser remains red at the unfinished event workspace.
+- Because repository-wide Pest, Larastan, generated evidence, and connected
+  browser proof are not all green, AIR-001 must not be committed or pushed.
 
 ### Acceptance and rollback
 
@@ -2152,9 +2278,11 @@ Status: `implemented and release-verified` on 2026-08-04.
 Exact scope and observed evidence belong in
 `docs/plans/pet-profile-size-category-work-package.md`.
 
-## Active Interface Continuation: Owner Profile
+## Superseded Interface Continuation: Owner Profile
 
-Status: `implemented and release-verified` on 2026-08-04.
+Status: superseded by AIR-001 on 2026-08-31. The person-specific owner route,
+presenter, translations, and profile page described below were prototype
+evidence and are no longer a production contract.
 
 - Keep `/@mia-carter` as a deliberate authenticated profile hero while moving
   its complete first-party and system surface into one 131-leaf EN/LT/RU
@@ -2827,19 +2955,17 @@ tablet widths with a localized return control. This reuses the same protected
 route, presenter, and context projection and adds no query or authorization
 path.
 
-The next detail-page audit closes the `/share/{target}` English-fallback
-surface with a dedicated 42-leaf EN/LT/RU contract. `SharePresenter` resolves
-five stable target families and three stable delivery channels, prepares
-recipient actions and canonical icon names, and leaves destination, access,
-and mutation boundaries unchanged. The measured presenter query delta is zero.
+The detail-page audit closes the `/share/{target}` English-fallback surface
+with a dedicated 41-leaf EN/LT/RU contract. `SharePresenter` resolves five
+stable target families and three stable delivery channels, keeps a measured
+zero-query delta, and now renders a localized empty recipient state instead of
+prototype neighbors.
 
-The following deliberate-profile audit closes `/neighbors/ari-jensen`. The
-neighbors domain grows from 71 to 160 exact-parity leaves, and
-`NeighborProfilePresenter` now prepares the profile copy, statistics,
-follow/message/walk action payloads, pet routine, mutuals, communities, and
-canonical icon names. The profile-led hero remains intentional, all existing
-destinations and authenticated mutation boundaries remain unchanged, and the
-presenter query delta is zero.
+The earlier deliberate `/neighbors/ari-jensen` prototype profile delivery is
+superseded by AIR-001. Its name-specific route, presenter, statistics, pet
+routine and action payloads are removed from the runtime; the canonical
+neighbor directory now renders honest data or an empty state, and arbitrary
+member profiles use `members.show` with viewer-aware privacy.
 
 The next Package 8 wave migrated the medical-record, care-journal,
 lost-and-found, marketplace, and expert create/edit/booking flows, the device

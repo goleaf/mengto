@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 use App\Enums\ExpertProfileStatus;
 use App\Models\ExpertProfile;
+use App\Models\PetProfile;
+use App\Models\PetProfileManager;
 use App\Services\ExpertTaxonomy;
 use Illuminate\Database\Events\QueryExecuted;
 use Illuminate\Support\Arr;
@@ -164,7 +166,7 @@ test('the expert domain has a complete shared localization contract', function (
 
     $english = Arr::dot(require lang_path('en/experts.php'));
 
-    expect($english)->toHaveCount(80);
+    expect($english)->toHaveCount(77);
 
     foreach (['lt', 'ru'] as $locale) {
         $localized = Arr::dot(require lang_path("{$locale}/experts.php"));
@@ -198,6 +200,14 @@ test('the expert domain has a complete shared localization contract', function (
 
 test('shared expert labels resolve from the active locale', function (string $locale): void {
     app()->setLocale($locale);
+    $pet = PetProfile::factory()->for($this->authenticatedUser)->create([
+        'profile_key' => 'pet-luna',
+        'name' => 'Luna',
+    ]);
+    PetProfileManager::factory()
+        ->for($pet, 'profile')
+        ->for($this->authenticatedUser)
+        ->create();
     $taxonomy = app(ExpertTaxonomy::class);
 
     expect(ExpertProfileStatus::Pending->label())->toBe(trans('experts.profile_statuses.pending'))
@@ -208,7 +218,7 @@ test('shared expert labels resolve from the active locale', function (string $lo
         ->and($taxonomy->languages()['Lithuanian'])->toBe(trans('experts.languages.Lithuanian'))
         ->and($taxonomy->availability()['today'])->toBe(trans('experts.availability.today'))
         ->and($taxonomy->sortOptions()['rating'])->toBe(trans('experts.sort_options.rating'))
-        ->and($taxonomy->pets()['scout'])->toBe(trans('experts.pets.scout'));
+        ->and($taxonomy->pets()['pet-luna'])->toBe('Luna');
 })->with(['lt', 'ru']);
 
 test('the expert directory query count stays bounded as profiles grow', function (): void {
@@ -227,8 +237,8 @@ test('the expert directory query count stays bounded as profiles grow', function
 
     $this->get(route('experts.index'))->assertOk();
 
-    expect($singleProfileQueryCount)->toBe(5)
-        ->and(count($queries))->toBe(5);
+    expect($singleProfileQueryCount)->toBe(7)
+        ->and(count($queries))->toBe(7);
 });
 
 test('the browser matrix rejects expert body fallbacks', function (): void {

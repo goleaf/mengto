@@ -15,7 +15,6 @@ use App\Enums\PlaceVisibility;
 use App\Models\Place;
 use App\Models\PlaceSubmission;
 use App\Models\User;
-use App\Services\ProfilePresenter;
 use Illuminate\Contracts\Auth\Factory as AuthFactory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -38,17 +37,13 @@ final class PlaceSubmissionStatusPage extends Component
 
     private AuthFactory $auth;
 
-    private ProfilePresenter $profiles;
-
     private ResolveAccessiblePlaceSubmission $resolveSubmission;
 
     public function boot(
         AuthFactory $auth,
-        ProfilePresenter $profiles,
         ResolveAccessiblePlaceSubmission $resolveSubmission,
     ): void {
         $this->auth = $auth;
-        $this->profiles = $profiles;
         $this->resolveSubmission = $resolveSubmission;
     }
 
@@ -195,7 +190,6 @@ final class PlaceSubmissionStatusPage extends Component
 
         return view('livewire.places.place-submission-status-page')
             ->layout('components.livewire-app-layout', [
-                'owner' => $this->profiles->owner(),
                 'title' => __('places.submissions.status.title'),
                 'activeSection' => 'places',
             ]);

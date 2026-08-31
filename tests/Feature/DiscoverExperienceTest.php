@@ -57,6 +57,8 @@ function createDiscoveryWorld(): array
     $petOwner = User::factory()->create();
     $owner = User::factory()->create(['name' => 'Discovery Member Rowan']);
     $ownerActor = app(SocialActorResolver::class)->forUser($owner);
+    $ownerActor->forceFill(['is_discoverable' => true])->saveOrFail();
+    $ownerActor->settings()->update(['is_recommendable' => true]);
     $post = createDiscoveryPublication($owner, $ownerActor, attributes: [
         'title' => 'Discovery post about calm introductions',
         'summary' => 'A practical note about preparing pets for a controlled introduction.',
@@ -118,7 +120,7 @@ test('discover is a database backed recommendation hub with canonical destinatio
         ->assertSee($world['owner']->name)
         ->assertSee($world['post']->title)
         ->assertSee(route('meetups.show', $world['event']), false)
-        ->assertSee(route('forum.groups.show', $world['group']), false)
+        ->assertSee(route('groups.show', $world['group']), false)
         ->assertSee(route('places.show', $world['place']), false)
         ->assertSee(route('experts.show', $world['expert']), false)
         ->assertSee(route('pets.profile', $world['pet']), false)
@@ -287,6 +289,7 @@ test('discover excludes private unlisted blocked and non recommendable records',
 test('member profiles expose only policy scoped public identity pets and posts', function () {
     $member = User::factory()->create(['name' => 'Public Member Profile']);
     $actor = app(SocialActorResolver::class)->forUser($member);
+    $actor->forceFill(['is_discoverable' => true])->saveOrFail();
     $publicPet = PetProfile::factory()->for($member)->create([
         'name' => 'Public Member Pet',
         'published_at' => now(),
@@ -352,7 +355,7 @@ test('member profile route rejects hidden non member and inactive actors', funct
     $pet = PetProfile::factory()->create();
     $petActor = app(SocialActorResolver::class)->forPet($pet);
 
-    $this->get(route('members.show', $hiddenActor))->assertForbidden();
+    $this->get(route('members.show', $hiddenActor))->assertNotFound();
     $this->get(route('members.show', $inactiveActor))->assertNotFound();
     $this->get(route('members.show', $petActor))->assertNotFound();
 });

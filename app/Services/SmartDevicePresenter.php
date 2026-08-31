@@ -112,16 +112,12 @@ class SmartDevicePresenter
                 $connectionTypes,
                 'devices.connection_type',
             ),
-            'pets' => collect(['scout', 'nori'])
-                ->map(function (string $key): array {
-                    $pet = $this->profiles->pet($key);
-
-                    return [
-                        'key' => $key,
-                        'name' => $pet['name'],
-                        'species' => $pet['species'],
-                    ];
-                })
+            'pets' => collect($this->profiles->pets())
+                ->map(fn (array $pet): array => [
+                    'key' => $pet['profile_key'],
+                    'name' => $pet['name'],
+                    'species' => $pet['species'],
+                ])
                 ->all(),
         ];
     }
@@ -474,7 +470,6 @@ class SmartDevicePresenter
     private function page(string $title): array
     {
         return [
-            'owner' => $this->profiles->owner(),
             'page_title' => __('presentation.brand_title', ['title' => $title]),
             'active_section' => 'devices',
         ];

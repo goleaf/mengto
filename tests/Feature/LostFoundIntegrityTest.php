@@ -29,7 +29,7 @@ test('a new search case links only owned animal and valid taxonomy context', fun
     $pet = PetProfile::factory()->for($this->authenticatedUser)->create([
         'profile_key' => 'pet-scout',
         'slug' => 'scout',
-        'name' => 'Scout',
+        'name' => 'Birch',
     ]);
     $taxon = Taxon::factory()->create();
     TaxonVersion::factory()->for($taxon)->create([
@@ -63,7 +63,7 @@ test('a new search case links only owned animal and valid taxonomy context', fun
         ->and($searchCase->animal_snapshot['pet_profile_key'])->toBe('pet-scout')
         ->and($searchCase->animal_snapshot['temperament'])->toBe('Usually friendly but may hide after loud noises.')
         ->and($searchCase->accessories)->toBe(['blue collar'])
-        ->and((string) $searchCase->getRawOriginal('animal_snapshot'))->not->toContain('Scout')
+        ->and((string) $searchCase->getRawOriginal('animal_snapshot'))->not->toContain('Birch')
         ->and($searchCase->events()->where('event_type', 'case-created')->count())->toBe(1);
 
     $this->get(route('lost-found.show', $searchCase))
@@ -132,7 +132,7 @@ test('search case editor uses owned profiles and a singular taxonomy selector', 
     $pet = PetProfile::factory()->for($this->authenticatedUser)->create([
         'profile_key' => 'pet-scout',
         'slug' => 'scout',
-        'name' => 'Scout',
+        'name' => 'Birch',
         'species' => 'Dog',
         'breed' => 'Labrador mix',
     ]);
@@ -144,7 +144,7 @@ test('search case editor uses owned profiles and a singular taxonomy selector', 
         ->assertOk()
         ->assertSeeHtml('name="pet_profile_id"')
         ->assertSeeHtml('value="'.$pet->id.'" selected')
-        ->assertSee('Scout')
+        ->assertSee('Birch')
         ->assertDontSee($otherPet->name)
         ->assertSeeHtml('wire:name="forum.animal-taxonomy-selector"')
         ->assertSee('Animal taxonomy')
@@ -478,7 +478,7 @@ function integritySearchCasePayload(array $overrides = []): array
         'type' => SearchCaseType::Lost->value,
         'intent' => 'publish',
         'pet_profile_key' => 'scout',
-        'pet_name' => 'Scout',
+        'pet_name' => 'Birch',
         'species' => 'dog',
         'breed' => 'Labrador mix',
         'sex' => 'male',
@@ -488,7 +488,7 @@ function integritySearchCasePayload(array $overrides = []): array
         'coat' => 'short',
         'distinctive_marks' => 'White chest patch and one folded ear.',
         'hidden_marks' => 'Crescent scar below the left shoulder.',
-        'description' => 'Scout slipped out of his harness after a loud sound and may keep distance from strangers.',
+        'description' => 'Birch slipped out of his harness after a loud sound and may keep distance from strangers.',
         'health_notice' => 'Needs regular medication; contact the owner promptly.',
         'approach_instructions' => 'Stay sideways, speak quietly, and send the location.',
         'avoid_instructions' => 'Do not chase, surround, shout, or enter unsafe areas.',

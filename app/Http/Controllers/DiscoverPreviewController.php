@@ -8,7 +8,6 @@ use App\Enums\DiscoveryCategory;
 use App\Http\Requests\BrowseDiscoveryRequest;
 use App\Models\User;
 use App\Services\DiscoveryCatalog;
-use App\Services\ProfilePresenter;
 use Illuminate\Contracts\View\View;
 
 final class DiscoverPreviewController extends Controller
@@ -16,7 +15,6 @@ final class DiscoverPreviewController extends Controller
     public function __invoke(
         BrowseDiscoveryRequest $request,
         DiscoveryCatalog $discovery,
-        ProfilePresenter $profiles,
     ): View {
         $parameters = $request->validated();
         $user = $request->user();
@@ -25,7 +23,6 @@ final class DiscoverPreviewController extends Controller
         $query = trim((string) ($parameters['q'] ?? ''));
 
         return view('discover.index', [
-            'owner' => $profiles->owner(),
             ...$discovery->browse($user, $query, $category),
         ]);
     }

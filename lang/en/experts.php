@@ -89,11 +89,6 @@ return [
         'experience' => 'Experience',
         'newest' => 'Recently joined',
     ],
-    'pets' => [
-        'scout' => 'Scout · Dog · 4 years',
-        'nori' => 'Nori · Cat · 2 years',
-        'kesha' => 'Kesha · Bird · 2 years',
-    ],
     'profile_statuses' => [
         'draft' => 'Draft',
         'pending' => 'Verification pending',

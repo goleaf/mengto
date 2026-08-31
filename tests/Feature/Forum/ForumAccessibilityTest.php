@@ -92,10 +92,10 @@ test('topic captions are content validated and require a matching video', functi
 
 test('valid WebVTT captions and escaped transcripts are stored and rendered', function () {
     Storage::fake('public');
-    $transcript = 'A bell sounds. <script>alert("unsafe")</script> Scout enters the carrier.';
+    $transcript = 'A bell sounds. <script>alert("unsafe")</script> Birch enters the carrier.';
 
     $response = $this->post(route('forum.topics.store'), accessibleForumTopicPayload([
-        'photo_alt' => 'Scout stands beside an open carrier while a person points to a blanket.',
+        'photo_alt' => 'Birch stands beside an open carrier while a person points to a blanket.',
         'video_transcript' => $transcript,
         'video' => UploadedFile::fake()->create('routine.mp4', 512, 'video/mp4'),
         'video_captions' => UploadedFile::fake()->createWithContent(
@@ -112,7 +112,7 @@ test('valid WebVTT captions and escaped transcripts are stored and rendered', fu
     expect($media)
         ->toMatchArray([
             'type' => 'video',
-            'alt' => 'Scout stands beside an open carrier while a person points to a blanket.',
+            'alt' => 'Birch stands beside an open carrier while a person points to a blanket.',
             'transcript' => $transcript,
             'caption_locale' => 'en',
         ])

@@ -33,7 +33,7 @@ class StoreSmartDeviceRequest extends FormRequest
             'model' => ['nullable', 'string', 'max:120'],
             'serial_number' => ['nullable', 'string', 'max:255'],
             'pet_profile_keys' => ['required', 'array', 'min:1', 'max:2'],
-            'pet_profile_keys.*' => ['required', Rule::in(['scout', 'nori'])],
+            'pet_profile_keys.*' => ['required', 'string', 'max:120', 'distinct'],
             'public_zone_label' => ['nullable', 'string', 'max:160'],
             'private_location_label' => ['nullable', 'string', 'max:500'],
             'connection_type' => [

@@ -39,29 +39,6 @@ class PrototypeState
     }
 
     /**
-     * @param  array{target: string, sender: string, body: string, time: string, datetime: string, mine: bool}  $message
-     */
-    public function addMessage(array $message): void
-    {
-        $state = $this->state();
-        $state['messages'][] = $message;
-        $state['messages'] = array_slice($state['messages'], -20);
-
-        $this->store($state);
-    }
-
-    /**
-     * @return array<int, array{target: string, sender: string, body: string, time: string, datetime: string, mine: bool}>
-     */
-    public function messages(string $target): array
-    {
-        return array_values(array_filter(
-            $this->state()['messages'],
-            static fn (array $message): bool => ($message['target'] ?? 'ari') === $target,
-        ));
-    }
-
-    /**
      * @param  array<string, string|bool>  $comment
      */
     public function addComment(array $comment): void
@@ -272,105 +249,6 @@ class PrototypeState
     }
 
     /**
-     * @param  array<string, string>  $values
-     */
-    public function updateProfile(array $values): void
-    {
-        $state = $this->state();
-        $state['profile'] = [...$state['profile'], ...$values];
-
-        $this->store($state);
-    }
-
-    /**
-     * @return array<string, string>
-     */
-    public function profile(): array
-    {
-        return $this->state()['profile'];
-    }
-
-    /**
-     * @param  array<string, string>  $values
-     */
-    public function updatePet(array $values, string $pet = 'scout'): void
-    {
-        $state = $this->state();
-        $state['pets'] ??= [];
-        $current = $state['pets'][$pet] ?? ($pet === 'scout' ? ($state['pet'] ?? []) : []);
-        $state['pets'][$pet] = [...$current, ...$values];
-
-        if ($pet === 'scout') {
-            $state['pet'] = $state['pets'][$pet];
-        }
-
-        $this->store($state);
-    }
-
-    /**
-     * @return array<string, string>
-     */
-    public function pet(string $pet = 'scout'): array
-    {
-        $state = $this->state();
-        $legacy = $pet === 'scout' ? ($state['pet'] ?? []) : [];
-
-        return [...$legacy, ...($state['pets'][$pet] ?? [])];
-    }
-
-    /**
-     * @return array<string, string>
-     */
-    public function ownerPrivacy(): array
-    {
-        return [
-            ...$this->ownerPrivacyDefaults(),
-            ...($this->state()['privacy']['owner'] ?? []),
-        ];
-    }
-
-    /**
-     * @param  array<string, string>  $values
-     */
-    public function updateOwnerPrivacy(array $values): void
-    {
-        $state = $this->state();
-        $state['privacy'] ??= ['owner' => [], 'pets' => []];
-        $state['privacy']['owner'] = [
-            ...($state['privacy']['owner'] ?? []),
-            ...$values,
-        ];
-
-        $this->store($state);
-    }
-
-    /**
-     * @return array<string, string>
-     */
-    public function petPrivacy(string $pet): array
-    {
-        return [
-            ...$this->petPrivacyDefaults(),
-            ...($this->state()['privacy']['pets'][$pet] ?? []),
-        ];
-    }
-
-    /**
-     * @param  array<string, string>  $values
-     */
-    public function updatePetPrivacy(string $pet, array $values): void
-    {
-        $state = $this->state();
-        $state['privacy'] ??= ['owner' => [], 'pets' => []];
-        $state['privacy']['pets'][$pet] = [
-            ...($state['privacy']['pets'][$pet] ?? []),
-            ...$values,
-        ];
-
-        $this->store($state);
-    }
-
-    /**
      * @param  array{target: string, reason: string, body: string, created_at: string}  $report
      */
     public function addProfileReport(array $report): void
@@ -412,107 +290,6 @@ class PrototypeState
     }
 
     /**
-     * @param  array<string, string>  $plan
-     */
-    public function addWalkPlan(array $plan): void
-    {
-        $state = $this->state();
-        $state['walk_plans'] ??= [];
-        array_unshift($state['walk_plans'], $plan);
-        $state['walk_plans'] = array_slice($state['walk_plans'], 0, 12);
-
-        $this->store($state);
-    }
-
-    /**
-     * Reuse an open quick draft for the same pet instead of stacking duplicates.
-     *
-     * @param  array<string, string>  $plan
-     */
-    public function ensureWalkPlanDraft(array $plan): string
-    {
-        $state = $this->state();
-        $state['walk_plans'] ??= [];
-
-        foreach ($state['walk_plans'] as $index => $existing) {
-            if (($existing['target'] ?? '') !== $plan['target'] || ($existing['status'] ?? '') !== 'draft') {
-                continue;
-            }
-
-            $plan['id'] = (string) $existing['id'];
-            $plan['created_at'] = (string) ($existing['created_at'] ?? $plan['created_at']);
-            $state['walk_plans'][$index] = $plan;
-            $this->store($state);
-
-            return $plan['id'];
-        }
-
-        array_unshift($state['walk_plans'], $plan);
-        $state['walk_plans'] = array_slice($state['walk_plans'], 0, 12);
-        $this->store($state);
-
-        return $plan['id'];
-    }
-
-    /**
-     * @return array<int, array<string, string>>
-     */
-    public function walkPlans(): array
-    {
-        return $this->state()['walk_plans'] ?? [];
-    }
-
-    public function advanceWalkPlan(string $id): ?string
-    {
-        $state = $this->state();
-        $state['walk_plans'] ??= [];
-
-        foreach ($state['walk_plans'] as $index => $plan) {
-            if (($plan['id'] ?? '') !== $id) {
-                continue;
-            }
-
-            $nextStatus = match ($plan['status'] ?? 'draft') {
-                'draft' => 'confirmed',
-                'confirmed' => 'completed',
-                default => null,
-            };
-
-            if ($nextStatus === null) {
-                return null;
-            }
-
-            $state['walk_plans'][$index]['status'] = $nextStatus;
-            $state['walk_plans'][$index]['updated_at'] = now()->toAtomString();
-            $this->store($state);
-
-            return $nextStatus;
-        }
-
-        return null;
-    }
-
-    public function cancelWalkPlan(string $id): bool
-    {
-        $state = $this->state();
-        $state['walk_plans'] ??= [];
-
-        foreach ($state['walk_plans'] as $index => $plan) {
-            if (($plan['id'] ?? '') !== $id || in_array($plan['status'] ?? '', ['completed', 'cancelled'], true)) {
-                continue;
-            }
-
-            $state['walk_plans'][$index]['status'] = 'cancelled';
-            $state['walk_plans'][$index]['updated_at'] = now()->toAtomString();
-            $this->store($state);
-
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
      * @return array<string, array{
      *     notification_level: string,
      *     favorite: bool,
@@ -522,7 +299,7 @@ class PrototypeState
      */
     public function subscriptions(): array
     {
-        return $this->state()['subscriptions'] ?? $this->subscriptionDefaults();
+        return $this->state()['subscriptions'] ?? [];
     }
 
     /**
@@ -633,13 +410,7 @@ class PrototypeState
      */
     public function incomingFollowRequests(): array
     {
-        $defaults = $this->incomingFollowRequestDefaults();
-        $stored = $this->state()['incoming_follow_requests'] ?? [];
-
-        return [
-            ...$defaults,
-            ...array_intersect_key($stored, $defaults),
-        ];
+        return $this->state()['incoming_follow_requests'] ?? [];
     }
 
     public function incomingFollowRequestStatus(string $target): ?string
@@ -756,21 +527,15 @@ class PrototypeState
     /**
      * @return array{
      *     toggles: array<string, array<int, string>>,
-     *     messages: array<int, array{target: string, sender: string, body: string, time: string, datetime: string, mine: bool}>,
      *     comments: array<int, array<string, string|bool>>,
      *     notifications_read: bool,
      *     read_conversations: array<int, string>,
      *     settings: array<string, bool>,
-     *     profile: array<string, string>,
-     *     pet: array<string, string>,
-     *     pets: array<string, array<string, string>>,
-     *     privacy: array{owner: array<string, string>, pets: array<string, array<string, string>>},
      *     profile_reports: array<int, array{target: string, reason: string, body: string, created_at: string}>,
      *     post_reports: array<int, array<string, string>>,
      *     posts: array<int, array<string, string>>,
      *     reactions: array<string, string>,
      *     created: array<string, array<int, array<string, string>>>,
-     *     walk_plans: array<int, array<string, string>>,
      *     subscriptions?: array<string, array{notification_level: string, favorite: bool, muted: bool, followed_at: string}>,
      *     outgoing_follow_requests?: array<string, string>,
      *     incoming_follow_requests?: array<string, string>,
@@ -784,26 +549,17 @@ class PrototypeState
     {
         return $this->states->get(self::STATE_NAMESPACE, [
             'toggles' => [],
-            'messages' => [],
             'comments' => [],
             'notifications_read' => false,
             'read_conversations' => [],
             'settings' => [],
-            'profile' => [],
-            'pet' => [],
-            'pets' => [],
-            'privacy' => [
-                'owner' => [],
-                'pets' => [],
-            ],
             'profile_reports' => [],
             'post_reports' => [],
             'posts' => [],
             'reactions' => [],
-            'walk_plans' => [],
-            'subscriptions' => $this->subscriptionDefaults(),
+            'subscriptions' => [],
             'outgoing_follow_requests' => [],
-            'incoming_follow_requests' => $this->incomingFollowRequestDefaults(),
+            'incoming_follow_requests' => [],
             'removed_followers' => [],
             'dismissed_recommendations' => [],
             'last_dismissed_recommendation' => null,
@@ -823,76 +579,5 @@ class PrototypeState
     private function store(array $state): void
     {
         $this->states->put(self::STATE_NAMESPACE, $state);
-    }
-
-    /**
-     * @return array<string, string>
-     */
-    private function ownerPrivacyDefaults(): array
-    {
-        return [
-            'location' => 'public',
-            'pets' => 'public',
-            'posts' => 'public',
-            'friends' => 'followers',
-            'activity' => 'followers',
-        ];
-    }
-
-    /**
-     * @return array<string, string>
-     */
-    private function petPrivacyDefaults(): array
-    {
-        return [
-            'location' => 'followers',
-            'posts' => 'public',
-            'friends' => 'public',
-            'care' => 'owners',
-            'activity' => 'followers',
-        ];
-    }
-
-    /**
-     * @return array<string, array{
-     *     notification_level: string,
-     *     favorite: bool,
-     *     muted: bool,
-     *     followed_at: string
-     * }>
-     */
-    private function subscriptionDefaults(): array
-    {
-        return [
-            'owner-ari-jensen' => [
-                'notification_level' => 'standard',
-                'favorite' => false,
-                'muted' => false,
-                'followed_at' => '2026-07-18',
-            ],
-            'pet-mochi' => [
-                'notification_level' => 'important',
-                'favorite' => true,
-                'muted' => false,
-                'followed_at' => '2026-07-21',
-            ],
-            'organization-rose-city' => [
-                'notification_level' => 'feed',
-                'favorite' => false,
-                'muted' => false,
-                'followed_at' => '2026-06-30',
-            ],
-        ];
-    }
-
-    /**
-     * @return array<string, string>
-     */
-    private function incomingFollowRequestDefaults(): array
-    {
-        return [
-            'owner-noah-kim' => 'pending',
-            'owner-zoe-patel' => 'pending',
-        ];
     }
 }

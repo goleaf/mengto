@@ -1,4 +1,4 @@
-<x-app-shell :owner="$owner" title="{{ __('ui.my_circle_brand') }}" active-section="circle">
+<x-app-shell title="{{ __('ui.my_circle_brand') }}" active-section="circle">
     <x-page-stack>
         <x-page-header
             :eyebrow="$summary['eyebrow']"
@@ -40,7 +40,6 @@
             :active-filter="$activeFilter"
             :collections="$collections"
             :show-starter="$showStarter"
-            :starter-items="$starterItems"
         />
     </x-page-stack>
 </x-app-shell>

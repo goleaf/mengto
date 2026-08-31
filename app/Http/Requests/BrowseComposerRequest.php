@@ -4,7 +4,6 @@ namespace App\Http\Requests;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 class BrowseComposerRequest extends FormRequest
 {
@@ -19,7 +18,12 @@ class BrowseComposerRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'pet' => ['nullable', 'string', Rule::in(['scout', 'nori'])],
+            'pet' => [
+                'nullable',
+                'string',
+                'max:120',
+                'regex:/^[a-z0-9-]+$/',
+            ],
             'target' => [
                 'nullable',
                 'string',

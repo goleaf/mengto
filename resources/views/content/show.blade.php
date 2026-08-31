@@ -1,4 +1,4 @@
-<x-app-shell :owner="$owner" :title="$page_title" active-section="feed">
+<x-app-shell :title="$page_title" active-section="feed">
     <div class="mx-auto max-w-3xl">
         <x-detail-navigation
             :href="route('content.index')"

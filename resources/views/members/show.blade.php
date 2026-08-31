@@ -1,4 +1,4 @@
-<x-app-shell :owner="$owner" :title="$page_title" active-section="discover">
+<x-app-shell :title="$page_title" :active-section="$active_section">
     <x-page-stack>
         <x-detail-navigation
             :href="route('discover.index', ['category' => 'owners'])"
@@ -13,6 +13,19 @@
             :count="$profile['status']"
             data-section="member-profile-header"
         />
+
+        <dl class="grid grid-cols-2 gap-3" aria-label="{{ __('member_profiles.stats.label') }}">
+            @foreach ($profile['stats'] as $stat)
+                <div
+                    data-member-stat="{{ $stat['key'] }}"
+                    data-value="{{ $stat['value'] }}"
+                    class="rounded-lg border border-paw-line bg-white px-4 py-3"
+                >
+                    <dt class="text-sm font-medium text-paw-muted">{{ $stat['label'] }}</dt>
+                    <dd class="mt-1 text-xl font-semibold text-paw-ink">{{ $stat['value'] }}</dd>
+                </div>
+            @endforeach
+        </dl>
 
         <x-main-sidebar-layout>
             <x-slot:main>

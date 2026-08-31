@@ -249,7 +249,7 @@ final class PlaceContentCatalog
                 'author' => __('messages.marta_k'),
                 'initials' => 'MK',
                 'rating' => 5,
-                'visited_with' => __('messages.scout'),
+                'visited_with' => __('messages.pet_profile'),
                 'verified' => true,
                 'criterion' => $criterion,
                 'body' => __('messages.the_description_matched_our_visit_and_the_practical_access_notes_were_useful'),
@@ -291,7 +291,7 @@ final class PlaceContentCatalog
             [
                 'key' => $place['key'].'-question-two',
                 'question' => __('messages.how_current_is_the_information_on_this_page'),
-                'author' => __('messages.nori_s_owner'),
+                'author' => __('messages.pet_owner'),
                 'answer' => (string) $place['data_freshness'],
                 'answer_author' => __('messages.brand.data_note'),
                 'answered_at' => __('messages.current_status'),
@@ -345,14 +345,9 @@ final class PlaceContentCatalog
     private function social(array $place): array
     {
         return [
-            'friends' => [
-                ['name' => __('messages.ari_and_mochi'), 'initials' => 'AM', 'detail' => __('messages.saved_this_place')],
-                ['name' => __('messages.priya_and_luna'), 'initials' => 'PL', 'detail' => __('messages.visited_recently')],
-            ],
-            'summary' => __('messages.2_friends_have_a_privacy_permitted_connection_to_this_place'),
-            'story' => $place['key'] === 'zverynas-small-dog-run'
-                ? __('messages.a_few_dogs_are_here_the_small_dog_latch_needs_care')
-                : __('messages.latest_place_update_is_available_in_the_timeline'),
+            'friends' => [],
+            'summary' => __('ui.no_privacy_permitted_friend_activity'),
+            'story' => __('messages.latest_place_update_is_available_in_the_timeline'),
             'story_expires' => __('messages.temporary_stories_expire_after_24_hours'),
         ];
     }

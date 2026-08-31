@@ -102,7 +102,7 @@ test('owner can publish a structured listing with an attributable audit entry', 
     $response->assertRedirect(route('marketplace.show', $listing));
 
     expect($listing)
-        ->owner_key->toBe('mia-carter')
+        ->owner_key->toBe('test-member')
         ->type->toBe(ListingType::Exchange)
         ->status->toBe(ListingStatus::Published)
         ->species->toBe(['cat', 'dog'])
@@ -125,17 +125,17 @@ test('reservation requests are idempotent and an owner cannot request their own 
 
     expect(Reservation::query()->count())->toBe(1);
     expect(Reservation::query()->firstOrFail())
-        ->requester_key->toBe('mia-carter')
+        ->requester_key->toBe('test-member')
         ->status->toBe(ReservationStatus::Requested);
 
-    $ownListing = Listing::factory()->create(['owner_key' => 'mia-carter']);
+    $ownListing = Listing::factory()->create(['owner_key' => 'test-member']);
 
     $this->post(route('marketplace.actions', $ownListing), listingRequestPayload((string) Str::uuid()))
         ->assertForbidden();
 });
 
 test('accepting one request reserves the listing declines competitors and supports completion', function () {
-    $listing = Listing::factory()->create(['owner_key' => 'mia-carter']);
+    $listing = Listing::factory()->create(['owner_key' => 'test-member']);
     $accepted = Reservation::factory()->create([
         'listing_id' => $listing->id,
         'requester_key' => 'noah-williams',

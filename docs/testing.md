@@ -1418,40 +1418,25 @@ Observed package evidence on 2026-08-04:
 The reusable browser command is
 `npm run test:browser:page-identity`.
 
-## Owner Profile Localization And Icon Verification
+## Canonical Self-Profile Verification
 
-`OwnerProfileLocalizationTest` guards exact 131-leaf EN/LT/RU parity, stable
-tab and audience codes, prepared presentation and action data, passive Blade
-boundaries, the six overview section icons, and tab-aware query isolation.
+The former `OwnerProfileLocalizationTest`, Mia-specific route, audience
+preview, fake statistics and prototype owner page were removed by AIR-001.
+Their 2026-08-04 evidence is historical and is not a current production
+contract.
 
-Observed package evidence on 2026-08-04:
-
-- exact-tree focused suite: 10 tests and 1,090 assertions;
-- affected profile, preview, responsive, page-identity, linked-media, and
-  authentication-boundary slice: 128 tests and 2,368 assertions;
-- the page-identity browser matrix passed 91 primary audits plus seven each of
-  call-stage, message-details, share, neighbor-profile, and owner-profile
-  flows across 320-1920 pixels, EN/RU/LT, forced colors, reduced motion, and
-  effective 200% zoom;
-- all 54 owner-profile values, stable codes, hero, summary, tab, audience,
-  section, and badge icon maps, visible focus, 44-pixel targets, clipping,
-  overflow, raw-key, and console checks passed;
-- the first browser run exposed 42-pixel audience controls at 320 pixels; the
-  repeated production-build run passed after restoring the canonical
-  44-pixel minimum and produced 36 screenshots;
-- exact-tree complete sequential suite: 3,055 tests and 105,425 assertions in
-  176.605 seconds with a 1 GB PHP limit;
-- exact-tree full Pint and Larastan, Composer strict validation, locked audit,
-  PHP 8.5 platform requirements, npm audit, JavaScript syntax, Vite 8.2 build,
-  config/event/route/view cache compilation, 179-route and 173-first-party
-  route smoke, both forum-source checks, deterministic 38,377-requirement
-  generation, PHP localizer, and 859-call canonical icon audit passed;
-- disposable SQLite applied all 139 migrations, fully rolled them back,
-  reapplied them, retained 219 tables and five users, and passed repeated
-  complete seeding.
-
-The reusable browser command is
-`npm run test:browser:page-identity`.
+Current verification uses `MemberProfileControllerTest`,
+`AuthenticatedProfileIdentityTest`, `UniversalAccountIdentityJourneyTest`,
+`AppShellTest` and `CanonicalIdentityBoundaryTest`. Together they cover the
+authenticated `User.name`, stable personal `SocialActor.actor_key` route,
+viewer-aware privacy and blocks, real counts and empty states, EN/LT/RU copy,
+multiple-account isolation, logout and the absence of prototype identities.
+The focused connected gate is `npm run test:browser:canonical-identity`; it
+uses an explicit testing-only Andrej account and verifies exact name/actor
+ownership, zero-count profile facts, accessibility media/focus/targets and
+logout cleanup. The broader `npm run test:browser:page-identity` matrix also
+switches from the ordinary seeded Mia fixture to Andrej, but remains an
+independent whole-portal gate.
 
 ## Messaging Call Stage And Details Verification
 

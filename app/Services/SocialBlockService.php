@@ -43,6 +43,33 @@ final class SocialBlockService
         return $this->accountBlockedBetween([$sourceUser->id], $targetUserIds);
     }
 
+    public function actorBlockedForContact(User $sourceUser, SocialActor $target): bool
+    {
+        $sourceActorIds = $this->accountActors->controlledBy($sourceUser)->modelKeys();
+
+        if ($sourceActorIds === []) {
+            return false;
+        }
+
+        return SocialRelationship::query()
+            ->active()
+            ->where('relationship_type', SocialRelationshipType::Block->value)
+            ->where(function ($query) use ($sourceActorIds, $target): void {
+                $query
+                    ->where(function ($direct) use ($sourceActorIds, $target): void {
+                        $direct
+                            ->whereIn('source_actor_id', $sourceActorIds)
+                            ->where('target_actor_id', $target->id);
+                    })
+                    ->orWhere(function ($reverse) use ($sourceActorIds, $target): void {
+                        $reverse
+                            ->where('source_actor_id', $target->id)
+                            ->whereIn('target_actor_id', $sourceActorIds);
+                    });
+            })
+            ->exists();
+    }
+
     /**
      * @param  list<int>  $firstUserIds
      * @param  list<int>  $secondUserIds
@@ -83,7 +110,6 @@ final class SocialBlockService
                     ->orWhere('blocked_user_id', $user->id);
             })
             ->orderBy('id')
-            ->limit((int) config('social_relationships.account_block_limit', 1000))
             ->get()
             ->map(static fn (SocialAccountBlock $block): int => $block->blocker_user_id === $user->id
                     ? $block->blocked_user_id
@@ -117,7 +143,6 @@ final class SocialBlockService
                         ->orWhereIn('target_actor_id', $ownActorIds);
                 })
                 ->orderBy('id')
-                ->limit((int) config('social_relationships.relationship_limit', 1000))
                 ->get()
                 ->flatMap(static fn (SocialRelationship $relationship): array => [
                     $relationship->source_actor_id,

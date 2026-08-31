@@ -14,7 +14,6 @@ use App\Livewire\Forms\OrganizationInvitationForm;
 use App\Models\Organization;
 use App\Models\OrganizationMembership;
 use App\Models\User;
-use App\Services\ProfilePresenter;
 use Illuminate\Contracts\Auth\Factory as AuthFactory;
 use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Contracts\View\View;
@@ -49,12 +48,9 @@ final class OrganizationWorkspace extends Component
 
     private AuthFactory $auth;
 
-    private ProfilePresenter $profiles;
-
-    public function boot(AuthFactory $auth, ProfilePresenter $profiles): void
+    public function boot(AuthFactory $auth): void
     {
         $this->auth = $auth;
-        $this->profiles = $profiles;
     }
 
     public function mount(Organization $organization): void
@@ -245,7 +241,6 @@ final class OrganizationWorkspace extends Component
             'invitationUrl' => $this->invitationUrl(),
         ])
             ->layout('components.livewire-app-layout', [
-                'owner' => $this->profiles->owner(),
                 'title' => __('organizations.pages.show.title'),
                 'activeSection' => 'organizations',
             ]);

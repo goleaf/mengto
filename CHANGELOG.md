@@ -9,6 +9,14 @@ status, invalidated evidence, external blockers, and rollback guidance are in
 
 ### Repository Audit And Foundations
 
+- Removed the prototype Mia Carter owner fallback and name-specific profile,
+  pet, neighbor, message, and meetup routes from production identity paths.
+  Registration now remains one atomic `User`/private personal
+  `SocialActor`/privacy-first setting/`UserOnboarding` boundary, authenticates
+  the exact account, routes its header and self profile through the actor key,
+  and creates zero default pets. Optional Mia, Scout, and Nori records remain
+  guarded demo-seeder data only.
+
 - Completed the canonical `/meetups` projection on `ForumEvent` with
   privacy-scoped discovery, incomplete drafts and explicit publication,
   open/approval/invitation RSVP, payload-bound replay, concurrency-safe
@@ -184,20 +192,20 @@ status, invalidated evidence, external blockers, and rollback guidance are in
 - Added independent localized show/hide controls to every shared
   authentication password field, including accessible pressed state, Lucide
   eye icons, keyboard focus, 44-pixel targets, and mobile browser coverage.
-- Added a dedicated 131-leaf EN/LT/RU owner-profile contract for
-  `/@mia-carter`; stable tab and audience codes now drive passive Blade,
-  canonical Lucide icons identify every profile section, and inactive tabs no
-  longer load unrelated pet or moment data. The responsive audit also raised
-  the audience selector to the required 44-pixel target.
+- Removed the obsolete Mia-specific owner-profile contract and
+  `/@mia-carter` route family from the runtime. Self and arbitrary member
+  profiles now share the canonical actor-key route and real persisted facts;
+  EN/LT/RU files contain interface labels rather than a universal person.
 - Extended the dedicated `/neighbors` EN/LT/RU contract from 71 to 160 leaves
   for the complete Ari neighbor profile; extracted its presentation from the
   broad preview service into a zero-query presenter, moved the walk action out
   of Blade, and added canonical Lucide section, pet-metadata, routine, and
   community icons with responsive browser coverage.
-- Added a dedicated 42-leaf EN/LT/RU contract for `/share/{target}`; stable
+- Added a dedicated 41-leaf EN/LT/RU contract for `/share/{target}`; stable
   target and channel codes now drive localized page, delivery, recipient,
-  detail, privacy, subject, and message copy, while every share action retains
-  the canonical Lucide icon system and a 44-pixel interaction target.
+  detail, privacy, subject, and message copy. The share page now renders an
+  honest localized zero-neighbor state instead of prototype recipients while
+  every available channel retains canonical icons and 44-pixel targets.
 - Extended the dedicated `/messages` EN/LT/RU contract from 329 to 364 leaves
   for the complete call stage and responsive details return path; call state
   now persists stable type/status/quality codes instead of translated text,

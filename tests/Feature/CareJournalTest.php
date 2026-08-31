@@ -13,6 +13,7 @@ use App\Models\MedicalRecord;
 use App\Models\Medication;
 use App\Models\PetProfile;
 use App\Models\User;
+use App\Services\CareJournalPresenter;
 use Database\Seeders\CareJournalSeeder;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
@@ -27,10 +28,10 @@ test('an owner can create one private care journal for a managed pet', function 
     $journal = CareJournal::query()->firstOrFail();
 
     expect($journal)
-        ->owner_key->toBe('mia-carter')
+        ->owner_key->toBe('test-member')
         ->pet_profile_key->toBe('scout')
         ->privacy->toBe('private')
-        ->current_caregiver_name->toBe('Mia Carter')
+        ->current_caregiver_name->toBe('Test Member')
         ->and(AuditLog::query()->where('action', 'care-journal.created')->count())->toBe(1);
 
     $this->from(route('care-journals.create'))
@@ -62,7 +63,7 @@ test('private care notes and measurements are encrypted and other owners are for
 });
 
 test('care entries are structured idempotent and guard against accidental double feeding', function () {
-    $journal = CareJournal::factory()->create(['owner_key' => 'mia-carter']);
+    $journal = CareJournal::factory()->create(['owner_key' => 'test-member']);
     $key = (string) Str::uuid();
     $payload = careEntryPayload($key, [
         'entry_type' => 'feeding',
@@ -106,7 +107,7 @@ test('care entries are structured idempotent and guard against accidental double
 
 test('offline care entries preserve source time and synchronize idempotently', function () {
     $journal = CareJournal::factory()->create([
-        'owner_key' => 'mia-carter',
+        'owner_key' => 'test-member',
         'timezone' => 'Europe/Vilnius',
     ]);
     $key = (string) Str::uuid();
@@ -146,7 +147,7 @@ test('offline care entries preserve source time and synchronize idempotently', f
 });
 
 test('completing a care task creates exactly one timeline entry', function () {
-    $journal = CareJournal::factory()->create(['owner_key' => 'mia-carter']);
+    $journal = CareJournal::factory()->create(['owner_key' => 'test-member']);
     $task = CareTask::factory()->for($journal)->create([
         'title' => 'Refresh water',
         'type' => CareEntryType::Water,
@@ -164,13 +165,13 @@ test('completing a care task creates exactly one timeline entry', function () {
 
     expect($task->refresh())
         ->status->toBe(CareTaskStatus::Completed)
-        ->completed_by_name->toBe('Mia Carter')
+        ->completed_by_name->toBe('Test Member')
         ->and(CareEntry::query()->where('care_task_id', $task->id)->count())->toBe(1)
         ->and(CareEntry::query()->firstOrFail()->notes)->toBe('Kitchen bowl washed and refilled.');
 });
 
 test('temporary care access reveals selected sections and records contributor identity', function () {
-    $journal = CareJournal::factory()->create(['owner_key' => 'mia-carter']);
+    $journal = CareJournal::factory()->create(['owner_key' => 'test-member']);
     CareEntry::factory()->for($journal)->create([
         'type' => CareEntryType::Feeding,
         'title' => 'Visible breakfast',
@@ -311,7 +312,7 @@ test('read-only care access rejects entry submission without audit or view mutat
 
 test('care media stays private and owner and allowed shared downloads are audited', function () {
     Storage::fake('local');
-    $journal = CareJournal::factory()->create(['owner_key' => 'mia-carter']);
+    $journal = CareJournal::factory()->create(['owner_key' => 'test-member']);
 
     $this->post(route('care-journals.entries.store', $journal), careEntryPayload(
         (string) Str::uuid(),
@@ -392,12 +393,12 @@ test('the care journal reflects medication from the medical record without dupli
     $pet = PetProfile::factory()->for($this->authenticatedUser)->create([
         'profile_key' => 'scout',
         'slug' => 'scout',
-        'name' => 'Scout',
+        'name' => 'Birch',
     ]);
     $journal = CareJournal::factory()->create([
-        'owner_key' => 'mia-carter',
+        'owner_key' => 'test-member',
         'pet_profile_key' => $pet->slug,
-        'pet_name' => 'Scout',
+        'pet_name' => 'Birch',
     ]);
     $medicalRecord = MedicalRecord::factory()->forPetProfile($pet)->create();
     Medication::factory()->for($medicalRecord)->create([
@@ -415,8 +416,8 @@ test('the care journal reflects medication from the medical record without dupli
 
 test('directory detail manage shared report and create screens render with private headers', function () {
     $journal = CareJournal::factory()->create([
-        'owner_key' => 'mia-carter',
-        'pet_name' => 'Scout Care Test',
+        'owner_key' => 'test-member',
+        'pet_name' => 'Birch Care Test',
     ]);
     CareEntry::factory()->for($journal)->create(['title' => 'Timeline test entry']);
     CareTask::factory()->for($journal)->create(['title' => 'Task test entry']);
@@ -424,7 +425,7 @@ test('directory detail manage shared report and create screens render with priva
     $this->get(route('care-journals.index'))
         ->assertOk()
         ->assertSee('Private care journals')
-        ->assertSee('Scout Care Test');
+        ->assertSee('Birch Care Test');
     $this->get(route('care-journals.create'))
         ->assertOk()
         ->assertSee('Create a private care journal');
@@ -448,7 +449,7 @@ test('directory detail manage shared report and create screens render with priva
 });
 
 test('care journal screens keep query counts bounded as timeline data grows', function () {
-    $journal = CareJournal::factory()->create(['owner_key' => 'mia-carter']);
+    $journal = CareJournal::factory()->create(['owner_key' => 'test-member']);
     CareEntry::factory()->count(60)->for($journal)->create();
     CareTask::factory()->count(12)->for($journal)->create();
 
@@ -463,7 +464,7 @@ test('care journal screens keep query counts bounded as timeline data grows', fu
 });
 
 test('care journal audit history is scoped before its row budget is applied', function () {
-    $journal = CareJournal::factory()->create(['owner_key' => 'mia-carter']);
+    $journal = CareJournal::factory()->create(['owner_key' => 'test-member']);
     $unrelatedJournal = CareJournal::factory()->create(['owner_key' => 'another-owner']);
 
     AuditLog::factory()->count(5)->create([
@@ -483,7 +484,7 @@ test('care journal audit history is scoped before its row budget is applied', fu
         'created_at' => now(),
     ]);
 
-    $data = app(\App\Services\CareJournalPresenter::class)->show($journal, manage: true);
+    $data = app(CareJournalPresenter::class)->show($journal, manage: true);
 
     expect($data['audits'])->toHaveCount(5);
 });
@@ -497,7 +498,7 @@ test('the care journal seeder is idempotent and creates useful family care data'
     $scout = CareJournal::query()->where('slug', 'scout-care')->firstOrFail();
     $nori = CareJournal::query()->where('slug', 'nori-care')->firstOrFail();
 
-    expect(CareJournal::query()->where('owner_key', 'mia-carter')->count())->toBe(2)
+    expect(CareJournal::query()->where('owner_key', 'test-member')->count())->toBe(2)
         ->and($scout->entries()->count())->toBe(41)
         ->and($scout->routines()->count())->toBe(2)
         ->and($scout->tasks()->count())->toBe(3)
@@ -532,7 +533,7 @@ function careJournalPayload(array $overrides = []): array
     return [
         'pet_profile_key' => 'scout',
         'timezone' => 'Europe/Vilnius',
-        'current_caregiver_name' => 'Mia Carter',
+        'current_caregiver_name' => 'Test Member',
         'privacy_acknowledged' => 1,
         ...$overrides,
     ];
@@ -548,7 +549,7 @@ function careEntryPayload(string $key, array $overrides = []): array
         'started_at' => now()->startOfMinute()->format('Y-m-d H:i:s'),
         'status' => 'completed',
         'source_type' => 'owner',
-        'source_name' => 'Mia Carter',
+        'source_name' => 'Test Member',
         ...$overrides,
     ];
 }

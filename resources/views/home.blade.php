@@ -1,4 +1,4 @@
-<x-app-shell :owner="$owner" :title="$page_title">
+<x-app-shell :title="$page_title">
     <div class="grid gap-5">
         <x-page-header
             :eyebrow="$feed['summary']['eyebrow']"
@@ -29,7 +29,7 @@
 
         <x-feed-page-layout>
             <x-slot:feed>
-                <x-feed-stream :feed="$feed" />
+                <x-feed-stream :feed="$feed" :owner="$owner" />
             </x-slot:feed>
 
             <x-slot:profile>

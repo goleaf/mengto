@@ -8,6 +8,8 @@ use App\Enums\ForumSubscriptionLevel;
 use App\Enums\ForumTopicType;
 use App\Enums\ForumVisibility;
 use App\Models\ForumCategory;
+use App\Models\User;
+use Illuminate\Contracts\Auth\Factory;
 
 final readonly class ForumTaxonomy
 {
@@ -28,6 +30,8 @@ final readonly class ForumTaxonomy
     public function __construct(
         private ForumCategoryTree $categoryTree,
         private ForumTopicTypeSchemaRegistry $topicTypeSchemas,
+        private PetProfileCatalog $pets,
+        private Factory $auth,
     ) {}
 
     /**
@@ -182,19 +186,40 @@ final readonly class ForumTaxonomy
     public function petOptions(): array
     {
         return [
-            '' => 'No pet attached',
-            'scout' => 'Scout / dog / 4 years',
-            'nori' => 'Nori / cat / 2 years',
+            '' => __('messages.no_pet_attached'),
+            ...collect($this->pets())->mapWithKeys(
+                static fn (array $pet, string $key): array => [
+                    $key => implode(' / ', array_filter([$pet['name'], $pet['species']])),
+                ],
+            )->all(),
         ];
     }
 
     /** @return array<string, array{name: string, species: string, age: string}> */
     public function pets(): array
     {
-        return [
-            'scout' => ['name' => __('messages.scout'), 'species' => __('messages.dog'), 'age' => __('messages.4_years')],
-            'nori' => ['name' => __('messages.nori'), 'species' => __('messages.cat'), 'age' => __('messages.2_years')],
-        ];
+        $user = $this->currentUser();
+
+        if (! $user instanceof User) {
+            return [];
+        }
+
+        return collect($this->pets->managedBy($user))
+            ->mapWithKeys(static fn (array $pet): array => [
+                $pet['profile_key'] => [
+                    'name' => $pet['name'],
+                    'species' => $pet['species'],
+                    'age' => $pet['age'],
+                ],
+            ])
+            ->all();
+    }
+
+    private function currentUser(): ?User
+    {
+        $user = $this->auth->guard()->user();
+
+        return $user instanceof User ? $user : null;
     }
 
     /** @return array<string, string> */

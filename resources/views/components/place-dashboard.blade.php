@@ -14,6 +14,8 @@
     'questionUrl',
     'claimUrl',
     'eventUrl',
+    'petOptions',
+    'defaultPetKey',
 ])
 
 <div class="place-dashboard">
@@ -106,8 +108,11 @@
                             <input type="hidden" name="place_return_tab" value="overview">
                             <label for="check-in-pet">{{ __('ui.pet') }}</label>
                             <select id="check-in-pet" name="place_pet" class="field field--select">
-                                <option value="scout">{{ __('ui.scout') }}</option>
-                                <option value="nori">{{ __('ui.nori') }}</option>
+                                @forelse ($petOptions as $value => $label)
+                                    <option value="{{ $value }}">{{ $label }}</option>
+                                @empty
+                                    <option value="" disabled>{{ __('place_directory.search.no_pet') }}</option>
+                                @endforelse
                             </select>
                             <label for="check-in-visibility">{{ __('ui.visibility') }}</label>
                             <select id="check-in-visibility" name="place_visibility" class="field field--select">
@@ -116,7 +121,7 @@
                                 <option value="close-circle">{{ __('ui.close_circle') }}</option>
                                 <option value="anonymous">{{ __('ui.anonymous_statistics') }}</option>
                             </select>
-                            <x-action-control type="submit" label="{{ __('ui.check_in_for_2_hours') }}" icon="map-pin-check" variant="primary" size="compact" />
+                            <x-action-control type="submit" :disabled="$defaultPetKey === ''" label="{{ __('ui.check_in_for_2_hours') }}" icon="map-pin-check" variant="primary" size="compact" />
                         </form>
                     @endif
 
@@ -125,12 +130,13 @@
                         :payload="[
                             'action' => 'mark-place-visited',
                             'target' => $place['key'],
-                            'place_pet' => 'scout',
+                            'place_pet' => $defaultPetKey,
                             'place_return_tab' => 'overview',
                         ]"
                         :label="$place['visited'] ? __('ui.visit_saved') : __('ui.mark_visited')"
                         :icon="$place['visited'] ? 'history' : 'footprints'"
                         :active="$place['visited']"
+                        :disabled="$defaultPetKey === ''"
                         variant="surface"
                         size="compact"
                     />
@@ -185,23 +191,6 @@
                     @endforelse
                 </div>
 
-                <form method="POST" action="{{ route('actions.perform') }}" class="place-invite-form">
-                    @csrf
-                    <input type="hidden" name="action" value="invite-to-place">
-                    <input type="hidden" name="target" value="{{ $place['key'] }}">
-                    <input type="hidden" name="place_return_tab" value="overview">
-                    <label for="place-recipient">{{ __('ui.invite') }}</label>
-                    <select id="place-recipient" name="place_recipient" class="field field--select">
-                        <option value="ari-mochi">{{ __('ui.ari_and_mochi') }}</option>
-                        <option value="priya-luna">{{ __('ui.priya_and_luna') }}</option>
-                        <option value="noah-juniper">{{ __('ui.noah_and_juniper') }}</option>
-                    </select>
-                    <label for="place-date">{{ __('ui.proposed_date') }}</label>
-                    <input id="place-date" name="place_visit_date" type="date" class="field" min="{{ today()->format('Y-m-d') }}">
-                    <label for="place-message">{{ __('ui.message') }}</label>
-                    <textarea id="place-message" name="body" class="field field--textarea" maxlength="1200" required>{{ __('presentation.place_meeting_prompt', ['place' => $place['short_name']]) }}</textarea>
-                    <x-action-control type="submit" label="{{ __('ui.send_privately') }}" icon="send" variant="primary" size="compact" />
-                </form>
             </div>
         </section>
 

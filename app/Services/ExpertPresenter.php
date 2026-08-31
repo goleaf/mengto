@@ -28,7 +28,6 @@ class ExpertPresenter
     private const int DASHBOARD_SERVICE_LIMIT = 12;
 
     public function __construct(
-        private readonly ProfilePresenter $profiles,
         private readonly ForumActor $actor,
         private readonly ExpertTaxonomy $taxonomy,
         private readonly LocaleFormatter $formatter,
@@ -77,7 +76,6 @@ class ExpertPresenter
         $experts->through(fn (ExpertProfile $profile): array => $this->card($profile, $filters));
 
         return [
-            'owner' => $this->profiles->owner(),
             'page_title' => __('messages.expert_community'),
             'active_section' => 'experts',
             'experts' => $experts,
@@ -170,7 +168,6 @@ class ExpertPresenter
             ->get();
 
         return [
-            'owner' => $this->profiles->owner(),
             'page_title' => __('presentation.expert_profile_title', ['name' => $profile->public_name]),
             'active_section' => 'experts',
             'expert' => $this->detail($profile),
@@ -225,7 +222,6 @@ class ExpertPresenter
     public function editor(?ExpertProfile $profile = null): array
     {
         return [
-            'owner' => $this->profiles->owner(),
             'page_title' => $profile ? __('messages.edit_professional_profile') : __('messages.create_professional_profile'),
             'active_section' => 'experts',
             'expert' => $profile,
@@ -282,7 +278,6 @@ class ExpertPresenter
         $species = $this->taxonomy->species();
 
         return [
-            'owner' => $this->profiles->owner(),
             'page_title' => __('messages.book').$profile->public_name,
             'active_section' => 'experts',
             'expert' => $this->detail($profile),
@@ -330,7 +325,6 @@ class ExpertPresenter
             ->get();
 
         return [
-            'owner' => $this->profiles->owner(),
             'page_title' => __('messages.appointment').$booking->reference,
             'active_section' => 'experts',
             'booking' => [
@@ -402,7 +396,6 @@ class ExpertPresenter
 
         if ($profile === null) {
             return [
-                'owner' => $this->profiles->owner(),
                 'page_title' => __('messages.professional_workspace'),
                 'active_section' => 'experts',
                 'expert' => null,
@@ -444,7 +437,6 @@ class ExpertPresenter
         ]);
 
         return [
-            'owner' => $this->profiles->owner(),
             'page_title' => __('messages.professional_workspace'),
             'active_section' => 'experts',
             'expert' => $this->detail($profile),

@@ -8,8 +8,7 @@ use App\Enums\OnboardingPetChoice;
 use App\Enums\OnboardingStep;
 use App\Models\User;
 use App\Models\UserOnboarding;
-use App\Services\EmailVerificationMode;
-use App\Services\ForumActor;
+use App\Services\ActiveAuthenticatedUser;
 use App\Services\OnboardingPetEvidence;
 use App\Services\OnboardingState;
 use Illuminate\Support\Carbon;
@@ -19,8 +18,7 @@ use Illuminate\Validation\ValidationException;
 final readonly class AdvanceUserOnboarding
 {
     public function __construct(
-        private ForumActor $actor,
-        private EmailVerificationMode $emailVerification,
+        private ActiveAuthenticatedUser $principal,
         private OnboardingState $onboardingState,
         private OnboardingPetEvidence $petEvidence,
     ) {}
@@ -32,14 +30,7 @@ final readonly class AdvanceUserOnboarding
         ?OnboardingPetChoice $petChoice = null,
         bool $introductionAcknowledged = false,
     ): UserOnboarding {
-        $authenticated = $this->actor->requireUser();
-
-        abort_unless(
-            $authenticated->is($user)
-                && $authenticated->isActive()
-                && $this->emailVerification->allows($authenticated),
-            403,
-        );
+        $this->principal->require($user);
 
         return DB::transaction(function () use (
             $expectedLockVersion,
@@ -48,6 +39,7 @@ final readonly class AdvanceUserOnboarding
             $petChoice,
             $user,
         ): UserOnboarding {
+            $user = $this->principal->require($user, true);
             $state = UserOnboarding::query()
                 ->whereBelongsTo($user)
                 ->lockForUpdate()

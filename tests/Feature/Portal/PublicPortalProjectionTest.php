@@ -161,5 +161,4 @@ test('unsafe and non get compatibility requests remain outside the guest allowli
     auth()->logout();
 
     $this->post(route('actions.perform'), [])->assertRedirect(route('login'));
-    $this->delete(route('pets.scout.legacy'))->assertRedirect(route('login'));
 });

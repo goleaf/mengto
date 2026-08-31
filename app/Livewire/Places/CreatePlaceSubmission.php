@@ -10,7 +10,6 @@ use App\Enums\PlaceSubmissionSource;
 use App\Livewire\Forms\PlaceSubmissionForm;
 use App\Models\PlaceSubmission;
 use App\Models\User;
-use App\Services\ProfilePresenter;
 use Illuminate\Contracts\Auth\Factory as AuthFactory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -32,16 +31,12 @@ final class CreatePlaceSubmission extends Component
 
     private SubmitPlaceSubmission $submitPlace;
 
-    private ProfilePresenter $profiles;
-
     public function boot(
         AuthFactory $auth,
         SubmitPlaceSubmission $submitPlace,
-        ProfilePresenter $profiles,
     ): void {
         $this->auth = $auth;
         $this->submitPlace = $submitPlace;
-        $this->profiles = $profiles;
     }
 
     public function mount(): void
@@ -95,7 +90,6 @@ final class CreatePlaceSubmission extends Component
     {
         return view('livewire.places.create-place-submission')
             ->layout('components.livewire-app-layout', [
-                'owner' => $this->profiles->owner(),
                 'title' => __('places.submissions.create.title'),
                 'activeSection' => 'places',
             ]);

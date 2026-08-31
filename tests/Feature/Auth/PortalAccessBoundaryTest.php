@@ -55,7 +55,6 @@ test('guest product pages redirect before route model binding', function (string
     'care share' => ['care-access.show', ['token' => str_repeat('a', 64)]],
     'medical share' => ['medical-access.show', ['token' => str_repeat('b', 64)]],
     'device share' => ['device-access.show', ['token' => str_repeat('c', 64)]],
-    'legacy pet redirect' => ['pets.scout.legacy'],
     'livewire file preview' => ['livewire.preview-file', ['filename' => 'missing-preview']],
 ]);
 
@@ -72,7 +71,6 @@ test('guest product mutations stop before persistence', function (string $method
     'forum action' => ['POST', 'forum.actions'],
     'lost found sighting' => ['POST', 'lost-found.sightings.store', ['searchCase' => 999999]],
     'care share entry' => ['POST', 'care-access.entries.store', ['token' => str_repeat('d', 64)]],
-    'legacy pet mutation redirect' => ['DELETE', 'pets.scout.legacy'],
     'livewire file upload' => ['POST', 'livewire.upload-file'],
 ]);
 

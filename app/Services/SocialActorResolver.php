@@ -26,11 +26,7 @@ final class SocialActorResolver
 
     public function forUser(User $user): SocialActor
     {
-        return $this->resolve(
-            SocialActorType::User,
-            'user_id',
-            $user->id,
-        );
+        return $this->provisionPrivateForUser($user);
     }
 
     public function provisionPrivateForUser(User $user): SocialActor

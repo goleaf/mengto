@@ -2,8 +2,12 @@
 
 declare(strict_types=1);
 
+use App\Models\SocialActorSetting;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Session;
+
 test('authenticated shell renders the current users canonical identity in every locale', function (
     string $locale,
 ): void {
@@ -27,7 +31,7 @@ test('authenticated shell renders the current users canonical identity in every 
         ->toBe(trans('navigation.utility.profile_for', ['name' => 'Andrej Prus'], $locale))
         ->and($xpath->query('//*[@data-header-link="profile"]//img')->length)->toBe(0)
         ->and($xpath->evaluate('string(//*[@data-header-link="profile"]/@href)'))
-        ->not->toBe(route('profile.mia'));
+        ->not->toContain('mia-carter');
 })->with(['en', 'lt', 'ru']);
 
 test('authenticated shell replaces all current identity values when the account changes', function (): void {
@@ -94,4 +98,71 @@ test('logout removes the previous account identity from the next response', func
         ->assertDontSee('Alice Example')
         ->assertDontSee('data-header-link="profile"', false);
     $this->assertGuest();
+});
+
+test('authenticated current-user controls never inherit the demo portrait or profile route', function (): void {
+    $user = User::factory()->onboarded()->create([
+        'name' => 'Andrej Prus',
+        'email' => 'andrej-current-controls@example.test',
+    ]);
+    $actor = $user->socialActor()->firstOrFail();
+    $this->actingAs($user);
+
+    $feed = $this->get(route('preview.feed'))->assertOk();
+    $feedXPath = responseXPath($feed);
+
+    expect($feedXPath->query('//*[@data-current-user-composer]')->length)->toBe(1)
+        ->and($feedXPath->query('//*[@data-current-user-composer]//img')->length)->toBe(0)
+        ->and($feedXPath->evaluate('string(//*[@data-current-user-composer])'))
+        ->not->toContain('Mia Carter');
+
+    $this->get(route('profile.settings'))
+        ->assertOk()
+        ->assertSee(route('members.show', $actor), false)
+        ->assertDontSee('mia-carter', false);
+});
+
+test('authenticated presentation privately repairs a legacy account missing its personal actor', function (): void {
+    $user = User::factory()->create([
+        'name' => 'Legacy Account',
+        'email' => 'legacy-account@example.test',
+    ]);
+
+    expect($user->socialActor()->count())->toBe(0);
+
+    $this->actingAs($user)
+        ->get(route('preview.feed'))
+        ->assertOk()
+        ->assertSee('Legacy Account');
+
+    $actor = $user->socialActor()->firstOrFail();
+
+    expect($actor->is_discoverable)->toBeFalse()
+        ->and(SocialActorSetting::query()->where('social_actor_id', $actor->id)->count())->toBe(1)
+        ->and($actor->settings()->firstOrFail()->is_recommendable)->toBeFalse();
+});
+
+test('caller supplied owner data cannot override the authenticated shell principal', function (): void {
+    $alice = User::factory()->onboarded()->create([
+        'name' => 'Alice Example',
+        'email' => 'alice-forged-owner@example.test',
+    ]);
+    $bob = User::factory()->onboarded()->create([
+        'name' => 'Bob Example',
+        'email' => 'bob-forged-owner@example.test',
+    ]);
+    $this->actingAs($alice);
+    Session::start();
+
+    $rendered = Blade::render(
+        '<x-app-shell :owner="$forged"><p>Boundary</p></x-app-shell>',
+        ['forged' => [
+            'name' => $bob->name,
+            'profile_url' => route('members.show', $bob->socialActor()->firstOrFail()),
+        ]],
+    );
+
+    expect($rendered)->toContain('Alice Example')
+        ->not->toContain('Bob Example')
+        ->toContain(route('members.show', $alice->socialActor()->firstOrFail()));
 });

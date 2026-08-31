@@ -13,7 +13,6 @@ use App\Services\ForumActor;
 use App\Services\PetProfileAccess;
 use App\Services\PetProfileCache;
 use App\Services\PetProfileEventRecorder;
-use App\Services\PrototypeState;
 use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
@@ -23,7 +22,6 @@ final class UpdatePetProfilePrivacy
     public function __construct(
         private readonly ForumActor $actor,
         private readonly Gate $gate,
-        private readonly PrototypeState $state,
         private readonly PetProfileAccess $access,
         private readonly PetProfileEventRecorder $events,
         private readonly PetProfileCache $cache,
@@ -72,7 +70,7 @@ final class UpdatePetProfilePrivacy
             ? 'pet-privacy:'.hash('sha256', (string) $data['idempotency_key'])
             : null;
 
-        return DB::transaction(function () use ($data, $eventIdempotencyKey, $normalizedPrivacy, $privacy, $profile, $slug, $user): PetProfile {
+        return DB::transaction(function () use ($data, $eventIdempotencyKey, $normalizedPrivacy, $privacy, $profile, $user): PetProfile {
             if ($eventIdempotencyKey !== null && $profile->lifecycleEvents()
                 ->where('idempotency_key', $eventIdempotencyKey)
                 ->exists()) {
@@ -142,9 +140,6 @@ final class UpdatePetProfilePrivacy
                 'lock_version' => ((int) ($settings->lock_version ?? 0)) + 1,
                 'updated_by_user_id' => $user->id,
             ])->save();
-
-            // Keep pre-normalization profile snapshots readable during the compatibility window.
-            $this->state->updatePetPrivacy($slug, $privacy);
 
             $manager = $this->access->membership($locked, $user);
             $this->events->record(

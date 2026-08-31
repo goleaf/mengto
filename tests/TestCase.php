@@ -43,15 +43,15 @@ abstract class TestCase extends BaseTestCase
         parent::setUp();
 
         $this->authenticatedUser = User::factory()->create([
-            'actor_key' => 'mia-carter',
-            'name' => 'Mia Carter',
-            'email' => 'user@example.com',
+            'actor_key' => 'test-member',
+            'name' => 'Test Member',
+            'email' => 'member@example.test',
             'email_verified_at' => now(),
             'locale' => 'en',
             'timezone' => 'Europe/Vilnius',
             'status' => UserStatus::Active,
         ]);
-        app(SocialActorResolver::class)->forUser($this->authenticatedUser);
+        app(SocialActorResolver::class)->provisionPrivateForUser($this->authenticatedUser);
 
         $this->actingAs($this->authenticatedUser);
     }

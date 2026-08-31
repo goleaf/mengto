@@ -1,4 +1,4 @@
-<x-app-shell :owner="$owner" :title="$page_title" :active-section="$active_section">
+<x-app-shell :title="$page_title" :active-section="$active_section">
     <div class="forum-page">
         <nav class="forum-filter-tabs" aria-label="{{ __('ui.breadcrumb') }}">
             <a href="{{ route('knowledge.index') }}">

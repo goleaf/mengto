@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
+use App\Actions\AssignEventCompetitionJudge;
 use App\Actions\CreateEventCompetition;
 use App\Actions\CreateEventCompetitionEntry;
-use App\Actions\AssignEventCompetitionJudge;
 use App\Actions\SubmitEventCompetitionScore;
 use App\Models\EventCompetitionCategory;
 use App\Models\EventCompetitionCriterion;
+use App\Models\ForumEvent;
 use App\Models\ForumEventRegistration;
 use App\Models\ForumEventTeamMembership;
-use App\Models\ForumEvent;
 use App\Models\User;
 use Illuminate\Validation\ValidationException;
 
@@ -38,7 +38,7 @@ test('eligible event registration enters a scoped category and a conflicted judg
     $competition = app(CreateEventCompetition::class)->handle($organizer, $event, 'Agility finals', 'Competition rules version one.', 'competition-create-red-0002');
     $category = EventCompetitionCategory::query()->create(['competition_id' => $competition->id, 'stable_key' => 'agility-open', 'name' => 'Open']);
     $registration = ForumEventRegistration::factory()->for($event, 'event')->for($entrant)->create();
-    $entry = app(CreateEventCompetitionEntry::class)->handle($entrant, $competition, $category, $registration, 'Nori and Ada', 'competition-entry-red-0001');
+    $entry = app(CreateEventCompetitionEntry::class)->handle($entrant, $competition, $category, $registration, 'Maple and Ada', 'competition-entry-red-0001');
     $membership = ForumEventTeamMembership::factory()->for($event, 'event')->for($judge)->create(['role' => 'judge']);
     $assignment = app(AssignEventCompetitionJudge::class)->handle($organizer, $competition, $category, $judge, $membership, true);
     $assignment->conflicts()->create(['entry_id' => $entry->id, 'status' => 'confirmed', 'conflict_type' => 'household']);

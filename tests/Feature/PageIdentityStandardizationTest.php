@@ -101,8 +101,10 @@ test('canonical page chrome renders prepared identities and navigation without d
         <x-primary-navigation active-section="messages" variant="mobile" />
     BLADE, [
         'owner' => [
-            'name' => 'Mia Carter',
+            'name' => 'Test Member',
+            'initials' => 'TM',
             'avatar' => '/images/demo-avatar.webp',
+            'profile_url' => '/members/test-member',
         ],
     ]);
 
@@ -139,11 +141,9 @@ test('representative directory detail and workspace routes retain recorded query
     expect([
         'directory:experts.index' => $queryCount('experts.index'),
         'detail:experts.show' => $queryCount('experts.show', ['expertProfile' => $expert]),
-        'workspace:messages.details' => $queryCount('messages.details', ['conversation' => 'ari']),
     ])->toBe([
         'directory:experts.index' => 6,
         'detail:experts.show' => 13,
-        'workspace:messages.details' => 5,
     ]);
 });
 
@@ -353,8 +353,14 @@ test('the repeatable page identity browser matrix covers every priority surface 
         ->and($package)
         ->toContain('"test:browser:page-identity": "php scripts/run-browser-check.php page-identity"');
 
-    expect(strpos($source, "join(outputDirectory, 'page-identity-report.json')"))
-        ->toBeLessThan(strpos($source, 'consoleErrors.length === 0 && resourceErrors.length === 0'));
+    $reportPosition = strpos($source, "join(outputDirectory, 'page-identity-report.json')");
+    $resourceAssertionPosition = is_int($reportPosition)
+        ? strpos($source, 'consoleErrors.length === 0 && resourceErrors.length === 0', $reportPosition)
+        : false;
+
+    expect($reportPosition)->toBeInt()
+        ->and($resourceAssertionPosition)->toBeInt()
+        ->and($reportPosition)->toBeLessThan($resourceAssertionPosition);
 });
 
 test('priority page identity copy is translated instead of falling back to English', function () {
@@ -786,7 +792,6 @@ test('event workspaces render the canonical page identity', function (string $ro
         ->toBe(0);
 })->with([
     'event detail' => 'meetups.show',
-    'legacy small dog event detail' => 'meetups.small_dog_social',
 ]);
 
 test('the message folder toolbar remains between page identity and the messaging shell', function () {

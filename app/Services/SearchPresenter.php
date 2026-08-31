@@ -33,7 +33,6 @@ class SearchPresenter
     private const COORDINATION_HISTORY_LIMIT = 50;
 
     public function __construct(
-        private readonly ProfilePresenter $profiles,
         private readonly ForumActor $actor,
         private readonly SearchTaxonomy $taxonomy,
         private readonly PlaceCatalog $places,
@@ -461,7 +460,6 @@ class SearchPresenter
     private function page(string $title, string $section): array
     {
         return [
-            'owner' => $this->profiles->owner(),
             'page_title' => $title,
             'active_section' => $section,
         ];

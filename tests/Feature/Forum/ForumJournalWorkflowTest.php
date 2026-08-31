@@ -72,7 +72,7 @@ function forumJournalData(
     ForumVisibility $visibility = ForumVisibility::Public,
 ): CreateForumJournalData {
     return new CreateForumJournalData(
-        title: 'Scout training progress journal',
+        title: 'Birch training progress journal',
         body: 'A structured record of short training sessions, milestones, and setbacks.',
         categoryKey: 'training-education',
         type: $type,
@@ -97,7 +97,7 @@ function forumJournalEntryData(
     return new CreateForumJournalEntryData(
         kind: ForumJournalEntryKind::Entry,
         title: 'Calm lead practice',
-        body: 'Scout completed three short repetitions and remained relaxed.',
+        body: 'Birch completed three short repetitions and remained relaxed.',
         occurredAt: CarbonImmutable::now()->subHour(),
         timezone: 'Europe/Vilnius',
         measurements: $measurements,
@@ -376,7 +376,7 @@ test('entry edits use optimistic locking and preserve the previous version', fun
     $data = new UpdateForumJournalEntryData(
         kind: ForumJournalEntryKind::Milestone,
         title: 'Calm practice milestone',
-        body: 'Scout completed the full routine without pressure.',
+        body: 'Birch completed the full routine without pressure.',
         occurredAt: CarbonImmutable::now()->subMinutes(20),
         timezone: 'Europe/Vilnius',
         measurements: [
@@ -511,7 +511,7 @@ test('journal media validates real images uses private generated paths and enfor
         $journal,
         $entry,
         $upload,
-        'Scout practicing calmly beside a mat',
+        'Birch practicing calmly beside a mat',
         'Week one',
         'journal-media-idempotency-0001',
     );
@@ -739,7 +739,7 @@ test('livewire journal directory creates filters and protects its private scope'
         ->set('search', 'no matching journal title')
         ->assertSee(__('forum_journals.empty.journals_title'))
         ->set('search', '')
-        ->set('form.title', 'Nori recovery progress journal')
+        ->set('form.title', 'Maple recovery progress journal')
         ->set('form.body', 'A structured record of appetite, comfort, and recovery observations.')
         ->set('form.categoryKey', 'health')
         ->set('form.type', ForumJournalType::Recovery->value)
